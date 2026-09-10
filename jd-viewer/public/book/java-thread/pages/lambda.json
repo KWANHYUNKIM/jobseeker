@@ -1,0 +1,158 @@
+{
+ "book": "java-thread",
+ "id": "lambda",
+ "no": "3.5",
+ "chapter": 3,
+ "title": "람다로 적기",
+ "summary": "익명 클래스가 한 줄이 된다.",
+ "minutes": 11,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "람다로 옮긴다.",
+  "무엇이 캡처되는지 안다.",
+  "필드 캡처의 위험을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 `Runnable` 이 추상 메서드 하나짜리** 였다. **그래서 람다가** 된다.\n\n```java\nnew Thread(() -> log.info(\"일한다\"), \"w-0\").start();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "람다가 데려가는 것",
+   "ascii": "   what a lambda takes with it\n\n   a local variable   copied, and therefore must not change\n   a field            not copied, read through the enclosing object\n\n   the first is safe by construction, the second is shared state",
+   "note": "**앞의 것은 구조상 안전하고 뒤의 것은 공유** 상태다."
+  },
+  {
+   "type": "table",
+   "caption": "세 가지 표기",
+   "columns": [
+    "",
+    "줄 수",
+    "특징"
+   ],
+   "rows": [
+    [
+     "**익명 클래스**",
+     "**5줄**",
+     "`this` 가 자기 자신"
+    ],
+    [
+     "**람다**",
+     "**1줄**",
+     "**`this` 가 바깥 객체**"
+    ],
+    [
+     "**메서드 참조**",
+     "**1줄**",
+     "이름이 설명한다"
+    ],
+    [
+     "별도 클래스",
+     "여러 줄",
+     "**재사용·테스트**"
+    ]
+   ],
+   "note": "**둘째 줄의 `this` 차이가 나중에 락을 걸 때 드러난다**(6.3절)."
+  },
+  {
+   "type": "figure",
+   "caption": "반복 변수를 왜 못 쓰나",
+   "ascii": "   why the loop variable is refused\n\n   for (int i = 0; ...)   one variable, changing\n   a lambda capturing i   would see whichever value it has later\n\n   the compiler stops it instead of letting it be ambiguous",
+   "note": "**컴파일러가 애매하게 두는 대신 아예** 막는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "지역 변수는 복사되고 필드는 안 된다",
+   "md": "**둘이 완전히 다르게** 동작한다.\n\n```java\nvoid run() {\n    int localCount = 0;                      // 복사된다\n    new Thread(() -> log.info(\"{}\", localCount)).start();\n    // localCount++;   <- 하면 컴파일이 막는다\n}\n\nint fieldCount = 0;                          // 안 복사된다\nvoid run2() {\n    new Thread(() -> log.info(\"{}\", fieldCount)).start();\n    fieldCount++;                            // 이건 된다. 그래서 위험하다\n}\n```\n\n> **지역 변수는 사실상 `final` 이어야** 한다.\n> **필드를 캡처하면 실제로는 바깥 객체의 참조를 데려가는** 것이다.\n> **그래서 그 객체가 살아 있는 한 GC 도 안** 된다.\n\n| | 복사 | 바뀔 수 있나 |\n|---|---|---|\n| **지역 변수** | **예** | **아니오 (컴파일이 막음)** |\n| **필드** | **아니오** | **예 — 경쟁 상태** |\n| **배열 원소** | **아니오** | **예 — 흔한 우회** |"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "배열 한 칸으로 우회하면 안전장치가 사라진다",
+   "md": "**\"final 이어야 한다\" 를 피하는 흔한 수**다.\n\n```java\nint[] count = new int[1];                    // 참조는 final, 내용은 아니다\nfor (int i = 0; i < 4; i++)\n    new Thread(() -> { for (int j = 0; j < 100000; j++) count[0]++; }).start();\n```\n\n> **컴파일은** 된다.\n> **1.4절의 그 카운터와 똑같이** 깨진다.\n> **컴파일러가 막아 주던 걸 내가 뚫은** 것이다.\n\n**제대로 하려면 9장의 `AtomicInteger` 나 3.4절의 `join` + 각자 칸을** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 세 가지로 같은 것을 적는다 ---\n\n$ cat ThreeWays.java\n// ① 익명 클래스\nnew Thread(new Runnable() {\n    @Override public void run() { log.info(\"일한다\"); }\n}, \"anon\").start();\n\n// ② 람다\nnew Thread(() -> log.info(\"일한다\"), \"lambda\").start();\n\n// ③ 메서드 참조\nnew Thread(ThreeWays::work, \"ref\").start();\n\n$ java -cp out:libs/* ThreeWays\n00:12:02.104 [anon        ] INFO  ThreeWays - 일한다\n00:12:02.108 [lambda      ] INFO  ThreeWays - 일한다\n00:12:02.108 [ref         ] INFO  ThreeWays - 일한다\n\n$ grep -c '' ThreeWaysAnon.java ThreeWaysLambda.java\nThreeWaysAnon.java:11\nThreeWaysLambda.java:7\n\n#   같은 일을 4줄 짧게 적었다\n\n\n# --- 만들어진 클래스가 다르다 ---\n\n$ javac -d out ThreeWays.java && ls out/ | grep ThreeWays\nThreeWays$1.class\nThreeWays.class\n\n$ javap -p out/ThreeWays.class | grep lambda\n  private static void lambda$main$0();\n\n$ javap -c -p out/ThreeWays.class | grep -A2 'invokedynamic' | head -3\n      18: invokedynamic #29,  0   // InvokeDynamic #0:run:()Ljava/lang/Runnable;\n\n#   익명 클래스는 .class 파일이 생긴다\n#   람다는 안 생기고 invokedynamic 이 쓰인다\n\n\n# --- this 가 다르다 ---\n\n$ cat WhoIsThis.java\npublic class WhoIsThis {\n    void anon() {\n        new Thread(new Runnable() {\n            @Override public void run() { log.info(\"익명 this {}\", this.getClass().getName()); }\n        }).start();\n    }\n    void lambda() {\n        new Thread(() -> log.info(\"람다 this {}\", this.getClass().getName())).start();\n    }\n}\n\n$ java -cp out:libs/* WhoIsThis\n00:12:08.204 [Thread-0    ] INFO  WhoIsThis - 익명 this WhoIsThis$1\n00:12:08.208 [Thread-1    ] INFO  WhoIsThis - 람다 this WhoIsThis\n\n#   람다의 this 는 바깥 객체다\n#   6.3절에서 락을 걸 때 이 차이가 나온다\n\n\n# --- 지역 변수는 복사된다 ---\n\n$ cat CaptureLocal.java | grep -A5 'void run'\nvoid run() {\n    int n = 10;\n    new Thread(() -> log.info(\"람다가 본 n = {}\", n), \"w-0\").start();\n    n = 20;                                  // 컴파일 오류\n}\n\n$ javac -d out CaptureLocal.java 2>&1 | head -3\nCaptureLocal.java:5: error: local variables referenced from a lambda expression\n  must be final or effectively final\n        n = 20;\n        ^\n\n#   바꾸지 못하게 막는다\n\n\n# --- 왜 막나 ---\n\n$ cat WhyFinal.java | grep -A5 'void run'\nvoid run() {\n    int n = 10;\n    Runnable r = () -> log.info(\"n = {}\", n);\n    // n 이 바뀔 수 있다면 이 람다가 볼 값이 언제 정해지나?\n    new Thread(r).start();\n}\n\n$ javap -p out/WhyFinal.class | grep lambda\n  private static void lambda$run$0(int);\n\n#   값을 인자로 받아 간다\n#   복사본이라 원본이 바뀌어도 안 보인다\n\n\n# --- 반복 변수는 못 쓴다 ---\n\n$ cat LoopVar.java | grep -A3 'for (int i'\nfor (int i = 0; i < 3; i++)\n    new Thread(() -> log.info(\"i = {}\", i)).start();\n\n$ javac -d out LoopVar.java 2>&1 | head -2\nLoopVar.java:6: error: local variables referenced from a lambda expression\n  must be final or effectively final\n\n$ cat LoopVarFixed.java | grep -A4 'for (int i'\nfor (int i = 0; i < 3; i++) {\n    final int idx = i;                       // 매번 새 변수\n    new Thread(() -> log.info(\"idx = {}\", idx), \"w-\" + i).start();\n}\n\n$ java -cp out:libs/* LoopVarFixed 2>/dev/null | sort\n00:12:16.104 [w-0         ] INFO  LoopVarFixed - idx = 0\n00:12:16.108 [w-1         ] INFO  LoopVarFixed - idx = 1\n00:12:16.108 [w-2         ] INFO  LoopVarFixed - idx = 2\n\n$ cat ForEachOk.java | grep -A2 'for (int idx'\nfor (int idx : new int[]{0,1,2})\n    new Thread(() -> log.info(\"idx = {}\", idx)).start();\n\n$ javac -d out ForEachOk.java && echo '향상된 for 는 된다'\n향상된 for 는 된다\n\n#   향상된 for 는 매 회전마다 새 변수다\n\n\n# --- 필드는 안 복사된다 ---\n\n$ cat CaptureField.java\npublic class CaptureField {\n    int count = 0;\n\n    void run() throws Exception {\n        Thread[] ts = new Thread[4];\n        for (int i = 0; i < 4; i++) {\n            ts[i] = new Thread(() -> { for (int j = 0; j < 100000; j++) count++; }, \"w-\" + i);\n            ts[i].start();\n        }\n        for (Thread t : ts) t.join();\n        log.info(\"기대 400000 실제 {}\", count);\n    }\n}\n\n$ javac -d out CaptureField.java && echo '컴파일 통과'\n컴파일 통과\n\n$ ./run.sh CaptureField 20 '[0-9]+$' | head -3\n   2 400000\n   1 314204\n   1 288412\n\n$ ./run.sh CaptureField 20 '[0-9]+$' | awk '$2==400000 {print \"맞음\", $1\"/20\"}'\n맞음 2/20\n\n#   지역 변수는 막았는데 필드는 안 막는다\n#   1.4절과 같은 결과다\n\n\n# --- 배열로 우회하면 ---\n\n$ cat ArrayEscape.java | grep -A4 'void run'\nvoid run() throws Exception {\n    int[] count = new int[1];                // 참조는 final 이다\n    for (int i = 0; i < 4; i++)\n        new Thread(() -> { for (int j = 0; j < 100000; j++) count[0]++; }).start();\n}\n\n$ javac -d out ArrayEscape.java && echo '컴파일 통과'\n컴파일 통과\n\n$ ./run.sh ArrayEscape 20 '[0-9]+$' | awk '$2==400000 {print \"맞음\", $1\"/20\"}'\n맞음 1/20\n\n#   컴파일러가 막아 주던 걸 뚫었다\n#   \"final 이어야 한다\" 가 안전을 보장한 게 아니었다\n\n\n# --- 각자 칸을 쓰면 ---\n\n$ cat ArraySeparate.java | grep -A4 'void run'\nint[] result = new int[4];\nfor (int i = 0; i < 4; i++) {\n    final int idx = i;\n    ts[i] = new Thread(() -> { for (int j = 0; j < 100000; j++) result[idx]++; });\n}\n\n$ ./run.sh ArraySeparate 20 '합 [0-9]+' | head -2\n  20 합 400000\n\n#   같은 배열인데 칸이 달라 안 겹친다\n#   3.4절의 그 방법이다\n\n\n# --- 바깥 객체를 붙잡는다 ---\n\n$ cat HoldsOuter.java | grep -A6 'static Runnable make'\nstatic Runnable make() {\n    Big big = new Big();                     // 100MB 짜리\n    return () -> log.info(\"{}\", big.id);     // big 을 데려간다\n}\n\n$ java -Xmx512m -cp out:libs/* HoldsOuter --keep 4\n00:12:28.104 [main] INFO  HoldsOuter - 람다 4개 들고 있음\n$ jcmd $(pgrep -f HoldsOuter) GC.heap_info | head -1\n garbage-first heap   total 524288K, used 412048K\n\n$ java -Xmx512m -cp out:libs/* HoldsOuter --keep 6\n00:12:32.204 [main] ERROR HoldsOuter - java.lang.OutOfMemoryError: Java heap space\n\n#   람다가 살아 있으면 캡처한 것도 산다\n#   11.2절에서 큐에 쌓인 작업이 이러면 문제가 된다\n\n\n# --- 필요한 것만 데려간다 ---\n\n$ cat HoldsOnlyId.java | grep -A4 'static Runnable make'\nstatic Runnable make() {\n    Big big = new Big();\n    final long id = big.id;                  // 값만 뽑는다\n    return () -> log.info(\"{}\", id);\n}\n\n$ java -Xmx512m -cp out:libs/* HoldsOnlyId --keep 20\n00:12:36.104 [main] INFO  HoldsOnlyId - 람다 20개 들고 있음\n$ jcmd $(pgrep -f HoldsOnlyId) GC.heap_info | head -1\n garbage-first heap   total 524288K, used 12408K\n\n$ python3 -c \"print('412MB 가 12MB 가 됐다')\"\n412MB 가 12MB 가 됐다\n\n\n# --- 만드는 값 ---\n\n$ java -cp out:libs/* LambdaBench --count 1000000 --mode anon\n익명 클래스 100만개  84ms\n$ java -cp out:libs/* LambdaBench --count 1000000 --mode lambda\n람다 100만개         41ms\n$ java -cp out:libs/* LambdaBench --count 1000000 --mode lambda-capture\n캡처하는 람다 100만개 118ms\n\n#   캡처가 없으면 람다는 하나만 만들어 재사용한다\n#   캡처하면 매번 새로 만든다\n\n$ java -cp out:libs/* LambdaIdentity\n00:12:42.104 [main] INFO  LambdaIdentity - 캡처 없는 람다 두 개 같은 객체? true\n00:12:42.104 [main] INFO  LambdaIdentity - 캡처하는 람다 두 개 같은 객체? false\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '익명 클래스'     '11줄, .class 생김' \\\n  '람다'            '7줄, invokedynamic' \\\n  'this'            '바깥 객체' \\\n  '지역 변수'       '복사, 못 바꿈' \\\n  '반복 변수'       '컴파일 오류' \\\n  '고치는 법'       'final 사본' \\\n  '향상된 for'      '그냥 됨' \\\n  '필드'            '안 막힘, 2/20' \\\n  '배열 우회'       '1/20' \\\n  '각자 칸'         '20/20' \\\n  '캡처'            '바깥 객체를 붙잡음' \\\n  '값만 뽑으면'     '412MB 가 12MB'\n\n익명 클래스                11줄, .class 생김\n람다                       7줄, invokedynamic\nthis                       바깥 객체\n지역 변수                  복사, 못 바꿈\n반복 변수                  컴파일 오류\n고치는 법                  final 사본\n향상된 for                 그냥 됨\n필드                       안 막힘, 2/20\n배열 우회                  1/20\n각자 칸                    20/20\n캡처                       바깥 객체를 붙잡음\n값만 뽑으면                412MB 가 12MB",
+   "note": "**익명 클래스는 `.class` 파일이 생기고 람다는 `invokedynamic` 으로** 처리된다.\n\n**람다의 `this` 는 바깥 객체라 익명 클래스와 다르게** 찍힌다.\n\n**지역 변수를 바꾸면 컴파일이 막는데 필드는 안 막아 2/20 으로** 깨진다.\n\n**배열 한 칸으로 우회하면 컴파일은 통과하고 1/20 으로 더** 나빠진다.\n\n**람다가 큰 객체를 캡처하면 412MB 를 붙잡고 값만 뽑으면 12MB** 다."
+  }
+ ],
+ "recap": [
+  "Runnable 은 추상 메서드가 하나라 람다로 적을 수 있고 클래스 파일도 안 생긴다.",
+  "람다의 this 는 바깥 객체다 — 익명 클래스와 다르다.",
+  "지역 변수는 복사되므로 사실상 final 이어야 하고 컴파일러가 막아 준다.",
+  "필드는 복사되지 않아 그 안전장치가 없다 — 캡처하면 그냥 공유 상태다.",
+  "배열 한 칸으로 우회하면 컴파일러의 보호를 스스로 뚫는 것이다."
+ ],
+ "drills": [
+  {
+   "task": "같은 일을 익명 클래스와 람다로 적고 생성되는 클래스 파일을 비교한다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "반복 변수를 캡처해 컴파일 오류를 본 뒤 고친다.",
+   "done_when": "왜 막는지 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "지역 변수와 필드를 각각 캡처해 재현율을 비교한다.",
+   "done_when": "한쪽만 막히는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "큰 객체를 캡처한 람다를 여럿 들고 있어 본다.",
+   "done_when": "메모리를 붙잡는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "람다의 this 는 무엇인가.",
+   "a": "바깥 객체다. 익명 클래스는 자기 자신이다."
+  },
+  {
+   "q": "지역 변수가 final 이어야 하는 이유는.",
+   "a": "복사되기 때문에 언제 값을 정할지가 애매해져서다."
+  },
+  {
+   "q": "필드 캡처가 왜 위험한가.",
+   "a": "복사되지 않아 그냥 공유 상태가 되고 컴파일러도 안 막는다."
+  },
+  {
+   "q": "배열 한 칸 우회의 문제는.",
+   "a": "컴파일러의 보호를 뚫고 경쟁 상태를 만든다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "캡처",
+   "what": "람다가 바깥의 변수나 객체를 데려가는 것."
+  },
+  {
+   "term": "사실상 final",
+   "what": "final 을 안 적었지만 한 번 대입 뒤 안 바뀌는 지역 변수."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 15.27: Lambda Expressions",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.27",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 4.12.4: final Variables",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html#jls-4.12.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
