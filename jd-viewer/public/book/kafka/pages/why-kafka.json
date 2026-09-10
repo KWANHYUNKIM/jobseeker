@@ -1,0 +1,133 @@
+{
+ "book": "kafka",
+ "id": "why-kafka",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "왜 카프카인가",
+ "summary": "파이프라인이 N×M 이 되는 순간.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "직접 호출이 늘어날 때 생기는 문제를 안다.",
+  "카프카가 무엇을 바꾸는지 안다.",
+  "무엇이 새로 어려워지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「스프링 부트와 JPA 활용 1편」의 `OrderService.order()` 를 다시** 본다.\n\n```java\n@Transactional\npublic Long order(Long memberId, Long itemId, int count) {\n    // ... 주문 생성\n    orderRepository.save(order);\n    return order.getId();\n}\n```\n\n**여기에 요구사항이 하나씩** 붙는다."
+  },
+  {
+   "type": "compare",
+   "caption": "요구가 넷 붙었을 때",
+   "left": {
+    "title": "직접 부른다",
+    "lang": "java",
+    "bad": true,
+    "code": "@Transactional\npublic Long order(...) {\n    orderRepository.save(order);\n\n    inventoryService.decrease(itemId, count);\n    paymentClient.charge(order);      // 외부 API\n    mailService.sendConfirm(order);   // SMTP\n    statsService.record(order);\n\n    return order.getId();\n}\n\n// 메일 서버가 느리면 -> 주문이 느려진다\n// 통계가 예외를 던지면 -> 주문이 롤백된다\n// 기능이 하나 붙을 때마다 -> 이 메서드를 고친다\n// 결제 API 가 죽으면 -> 주문을 못 받는다"
+   },
+   "right": {
+    "title": "로그에 한 줄 쓰고 끝낸다",
+    "lang": "java",
+    "code": "@Transactional\npublic Long order(...) {\n    orderRepository.save(order);\n    events.publish(new OrderPlaced(order));   // -> orders 토픽\n    return order.getId();\n}\n\n// 재고 · 결제 · 메일 · 통계는 각자 읽는다\n// 메일이 느려도 주문은 안 느려진다\n// 통계가 죽어도 주문은 받는다\n// 새 기능이 붙어도 이 메서드는 안 바뀐다\n//\n// 대신: 언제 처리되는지 모른다\n//       두 번 처리될 수 있다 (7.5절)\n//       순서가 섞일 수 있다 (4.5절)"
+   },
+   "note": "**공짜가 아니다.** **오른쪽의 마지막 세 줄이 이 책의 절반**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "연결의 개수",
+   "ascii": "   direct calls                        through a log\n   ------------                        -------------\n   order ---+--> inventory             order ----+\n            +--> payment               web   ----+---> [ kafka ] ---+--> inventory\n            +--> mail                  batch ----+                  +--> payment\n            +--> stats                                              +--> mail\n   web   ---+--> inventory                                          +--> stats\n            +--> payment\n            ...                         4 producers + 4 consumers = 8 connections\n\n   4 sources x 4 sinks = 16 connections\n   add one source -> +4                add one source -> +1",
+   "note": "**N×M 이 N+M 이** 된다. **이게 카프카가 데이터 파이프라인에서 자리를 잡은 이유**다(2.1절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "큐가 아니라 로그다",
+   "md": "**\"메시지 큐랑 뭐가 다른가요\"** 가 첫 질문이다.\n\n| | 전통적 큐(RabbitMQ 등) | **카프카** |\n|---|---|---|\n| 읽으면 | **사라진다** | **남는다.** 보관 기간까지 |\n| 여러 소비자 | 나눠 가진다 | **각자 전부 읽을 수 있다**(그룹이 다르면) |\n| 다시 읽기 | 못 한다 | **오프셋을 되돌리면 된다**(5.6절) |\n| 어디까지 읽었나 | 브로커가 안다 | **컨슈머가 적는다**(7.4절) |\n| 순서 | 큐 단위 | **파티션 단위**(4.5절) |\n| 처리량 | 낮지는 않다 | **디스크 순차 쓰기로 아주 높다**(3.3절) |\n\n> **\"읽어도 안 사라진다\" 가 가장 큰** 차이다.\n>\n> **새 서비스가 생기면 지난 한 달치를 처음부터 읽어서 자기 DB 를 채울 수** 있다.\n> **버그를 고치고 어제 것부터 다시 처리할 수** 있다.\n> **RabbitMQ 였다면 원본이 이미** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그래서 새로 어려워지는 것들",
+   "md": "**비동기로 바꾸면 공짜로 좋아지는 게** 아니다.\n\n| 새 문제 | 어디서 |\n|---|---|\n| **언제 처리되는지 모른다** | 사용자에게 \"주문 완료\" 를 언제 보여 주나 |\n| **두 번 처리될 수 있다** | 7.5·8장. 메일이 두 번 갈 수 있다 |\n| **순서가 섞인다** | 4.5절. \"주문 취소\" 가 \"주문 생성\" 보다 먼저 도착 |\n| **DB 와 카프카가 따로 논다** | 8.5절. DB 는 커밋됐는데 발행이 실패 |\n| **디버깅이 어렵다** | 요청 하나의 흐름이 여러 서비스에 흩어진다 |\n| **운영할 것이 하나 는다** | 11장 |\n\n**그래서 2.5절에서 \"카프카가 답이 아닐 때\" 를 먼저** 적는다.\n\n> **서비스가 셋이고 하루 요청이 만 건이면 직접 부르는 게** 낫다.\n> **카프카는 규모와 결합도가 문제가 됐을 때 꺼내는** 도구다."
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "**\"카프카를 왜 쓰나요\"** 에 **\"비동기 처리하려고요\"** 는 절반이다.\n\n> **비동기는 결과**고, **쓰는 이유는 \"생산자와 소비자를 분리해서, 소비자가 자기 속도로, 여러 번, 나중에도 읽을 수 있게\"** 하는 쪽이다.\n> **한 문장 더 붙이면** — **그 로그가 재처리 가능한 원본이 된다.**\n\n**꼬리 질문**:\n\n| 질문 | 절 |\n|---|---|\n| \"RabbitMQ 와 뭐가 다른가요\" | 위 표 · 2.3절 |\n| **\"순서 보장은 어떻게 하나요\"** | **4.4~4.5절** |\n| **\"중복 처리는 어떻게 막나요\"** | **7.5·8장** |\n| \"파티션 개수는 어떻게 정하나요\" | 4.6절 |\n| \"컨슈머 랙이 쌓이면 어떻게 하나요\" | 7.8·11.1절 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "읽어도 안 사라진다 — 눈으로 확인",
+   "sql": "# --- 레코드 셋을 넣는다 ---\n\n$ kafka-console-producer --bootstrap-server localhost:9092 --topic orders <<'EOF'\n{\"orderId\":1,\"amount\":10000}\n{\"orderId\":2,\"amount\":20000}\n{\"orderId\":3,\"amount\":30000}\nEOF\n\n\n# --- 그룹 A 가 전부 읽는다 ---\n\n$ kafka-console-consumer --bootstrap-server localhost:9092 --topic orders \\\n    --group stats --from-beginning --timeout-ms 3000\n{\"orderId\":1,\"amount\":10000}\n{\"orderId\":2,\"amount\":20000}\n{\"orderId\":3,\"amount\":30000}\nProcessed a total of 3 messages\n\n\n# --- 그룹 B 도 전부 읽는다. 사라지지 않았다 ---\n\n$ kafka-console-consumer --bootstrap-server localhost:9092 --topic orders \\\n    --group mail --from-beginning --timeout-ms 3000\n{\"orderId\":1,\"amount\":10000}\n{\"orderId\":2,\"amount\":20000}\n{\"orderId\":3,\"amount\":30000}\nProcessed a total of 3 messages\n\n#   전통적 큐였다면 A 가 가져간 것을 B 는 못 본다\n\n\n# --- 두 그룹의 오프셋은 따로 관리된다 ---\n\n$ kafka-consumer-groups --bootstrap-server localhost:9092 --list\nstats\nmail\n\n$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --all-groups \\\n    | grep -E 'GROUP|orders'\nGROUP  TOPIC   PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nstats  orders  0          3               3               0\nmail   orders  0          3               3               0\n\n\n# --- 버그를 고치고 처음부터 다시 처리한다 ---\n\n$ kafka-consumer-groups --bootstrap-server localhost:9092 \\\n    --group mail --topic orders --reset-offsets --to-earliest --execute\n\nGROUP  TOPIC   PARTITION  NEW-OFFSET\nmail   orders  0          0\n\n$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group mail\nGROUP  TOPIC   PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nmail   orders  0          0               3               3\n\n#   LAG 이 3 으로 돌아왔다. 컨슈머를 띄우면 세 건을 다시 처리한다\n#   원본이 남아 있어서 가능한 일이다 (5.6절)\n\n\n# --- 직접 호출이었다면 ---\n#\n#   mailService.sendConfirm(order) 가 버그로 실패했다\n#   -> 그 주문 데이터를 DB 에서 다시 긁어 배치를 짠다\n#   -> 어느 주문이 실패했는지 기록해 뒀어야 한다\n#   -> 기록 안 했으면 못 찾는다"
+  }
+ ],
+ "recap": [
+  "직접 호출은 소스 N 개와 싱크 M 개가 N×M 연결이 된다. 로그를 사이에 두면 N+M 이다.",
+  "카프카는 큐가 아니라 로그다 — 읽어도 안 사라지고, 여러 그룹이 각자 전부 읽고, 되감아 다시 읽는다.",
+  "대신 언제 처리되는지 모르고, 중복될 수 있고, 순서가 섞이고, DB 와 따로 논다.",
+  "규모와 결합도가 문제가 됐을 때 꺼내는 도구다. 서비스 셋에 하루 만 건이면 직접 부르는 게 낫다."
+ ],
+ "drills": [
+  {
+   "task": "같은 토픽을 서로 다른 두 그룹으로 --from-beginning 읽어 본다.",
+   "done_when": "둘 다 전부 읽는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "`--reset-offsets --to-earliest` 로 한 그룹의 오프셋을 되돌리고 LAG 을 확인한다.",
+   "done_when": "LAG 이 다시 쌓이는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "자기 프로젝트에서 '메서드 하나가 네 군데를 직접 부르는' 자리를 찾아 적어 본다.",
+   "done_when": "카프카를 넣었을 때 좋아지는 것과 새로 어려워지는 것을 각각 적는다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "카프카와 전통적 메시지 큐의 가장 큰 차이는.",
+   "a": "읽어도 레코드가 사라지지 않는다. 그래서 여러 그룹이 각자 전부 읽고, 되감아 다시 읽을 수 있다."
+  },
+  {
+   "q": "직접 호출을 로그로 바꾸면 무엇이 새로 어려워지나.",
+   "a": "처리 시점을 모르고, 중복 처리가 가능하고, 순서가 섞이고, DB 커밋과 발행이 따로 논다."
+  },
+  {
+   "q": "'카프카를 왜 쓰나요' 에 한 문장으로 답한다면.",
+   "a": "생산자와 소비자를 분리해 소비자가 자기 속도로, 여러 번, 나중에도 읽을 수 있게 하려고. 그 로그가 재처리 가능한 원본이 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "결합도",
+   "en": "coupling",
+   "what": "한쪽을 바꿀 때 다른 쪽도 바꿔야 하는 정도."
+  },
+  {
+   "term": "컨슈머 그룹",
+   "en": "consumer group",
+   "what": "오프셋을 공유하는 컨슈머 묶음. 그룹이 다르면 같은 레코드를 각자 읽는다."
+  },
+  {
+   "term": "재처리",
+   "en": "reprocessing",
+   "what": "오프셋을 되돌려 지난 레코드를 다시 읽는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Introduction",
+   "url": "https://kafka.apache.org/intro",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Kafka vs. traditional message queues",
+   "url": "https://developer.confluent.io/courses/apache-kafka/events/",
+   "publisher": "Confluent"
+  }
+ ]
+}

@@ -1,0 +1,672 @@
+{
+  "id": "kafka",
+  "title": "아파치 카프카 애플리케이션 프로그래밍",
+  "subtitle": "보냈다는 것과 처리됐다는 것 사이",
+  "blurb": "서가의 애플리케이션들은 요청 하나에 응답 하나로 끝났다. 이 책은 그 사이에 로그를 하나 놓는다 — 보내는 쪽은 받는 쪽을 모르고, 읽어도 사라지지 않고, 어디까지 읽었는지는 읽는 쪽이 적는다. 매 절은 실제로 오간 레코드와 오프셋·LAG 로 끝난다.",
+  "updated_at": "2026-09-10",
+  "preface": "주문이 들어오면 재고를 줄이고, 결제를 부르고, 메일을 보내고, 통계에 반영한다. 「스프링 부트와 JPA 활용 1편」의 `OrderService` 가 이 넷을 다 부르면 어떻게 되나.\n\n메일 서버가 느리면 주문이 느려진다. 통계 코드가 예외를 던지면 주문이 롤백된다. 새 기능이 하나 붙을 때마다 `OrderService` 를 고친다.\n\n카프카는 그 사이에 로그를 하나 놓는다. 주문은 \"주문됨\" 을 한 번 쓰고 끝난다. 나머지 넷은 각자 그 로그를 읽는다. 보내는 쪽은 누가 읽는지 모르고, 읽는 쪽이 죽어 있어도 레코드는 남아 있다.\n\n대신 새 문제가 생긴다. 몇 번 처리되나, 순서는 지켜지나, 어디까지 읽었는지는 누가 기억하나. 이 책의 절반이 그 이야기다.\n\n매 절은 실제로 오간 레코드와 컨슈머 그룹의 오프셋으로 끝난다. 잘 도는 것만이 아니라 랙이 쌓이는 것도 같이 본다 — 카프카의 장애는 대개 랙에서 먼저 보인다.",
+  "how_to_read": "차례 순서대로 읽는다. 3장(브로커·복제)과 4장(토픽·파티션)이 나머지 전부의 기초다 — 파티션을 모르면 7장의 리밸런싱이 통째로 안 읽힌다. 5장의 CLI 는 외우지 말고 필요할 때 돌아온다. 「도커」를 읽었으면 1.3절의 실습 클러스터가 편하고, 「스프링 부트와 JPA 활용 1편」의 주문 예제를 알고 있으면 9장이 바로 이어진다.",
+  "prereq": "자바와 스프링 부트, 그리고 도커로 컨테이너를 띄워 본 경험(이 서가의 「도커」 3장 정도). 「스프링 DB 1편」의 트랜잭션을 알면 8장이 편하다.",
+  "env": "Apache Kafka 3.8(KRaft 모드), 도커 컴포즈로 브로커 3대, Java 21, Spring Boot 3.x + spring-kafka, kcat(선택)",
+  "source": {
+    "title": "아파치 카프카 애플리케이션 프로그래밍 (차례 출처)",
+    "url": "https://www.inflearn.com/course/아파치-카프카-애플리케이션-프로그래밍",
+    "publisher": "인프런 · 데브원영",
+    "note": "열두 섹션의 뼈대를 열한 장으로 묶었고, 9장(스프링과 카프카)과 11장(운영)은 공식 문서와 spring-kafka 레퍼런스로 늘렸다. 본문·예제·출력은 직접 쓰고 직접 돌린 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "레코드 하나가 어디에 쌓이고 누가 어디까지 읽었나.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 오간 레코드와 오프셋으로 끝난다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "why-kafka",
+          "title": "왜 카프카인가",
+          "summary": "파이프라인이 N×M 이 되는 순간.",
+          "minutes": 13,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "setup",
+          "title": "실습 클러스터 하나",
+          "summary": "도커로 브로커 셋을 띄운다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "1.4",
+          "id": "first-record",
+          "title": "첫 레코드",
+          "summary": "넣고 꺼내고 오프셋을 확인한다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "1.5",
+          "id": "what-to-watch",
+          "title": "무엇을 볼 것인가",
+          "summary": "describe · offset · LAG, 이 셋.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "카프카가 푸는 문제",
+      "goal": "큐도 DB 도 아닌 것이 필요한 이유.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "pipeline-problem",
+          "title": "데이터 파이프라인의 결합",
+          "summary": "소스 넷과 싱크 넷이면 연결이 열여섯이다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "pubsub",
+          "title": "발행과 구독",
+          "summary": "보내는 쪽이 받는 쪽을 모른다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "durability",
+          "title": "읽어도 안 사라진다",
+          "summary": "큐와 갈라지는 자리.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "architecture",
+          "title": "전체 구조",
+          "summary": "프로듀서 · 브로커 · 컨슈머 · 그룹.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "when-not",
+          "title": "카프카가 답이 아닐 때",
+          "summary": "안 써도 되는 경우를 먼저 적어 둔다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "브로커와 클러스터",
+      "goal": "레코드는 어디에 어떻게 남나.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "broker",
+          "title": "브로커의 역할",
+          "summary": "받아서 디스크에 붙이고 돌려준다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "cluster-kraft",
+          "title": "주키퍼와 KRaft",
+          "summary": "메타데이터를 누가 들고 있나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "log-segment",
+          "title": "로그와 세그먼트",
+          "summary": "파티션은 파일이다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "retention",
+          "title": "보관 정책",
+          "summary": "시간 · 크기 · 압축(compact).",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "replication",
+          "title": "복제",
+          "summary": "리더와 팔로워.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "isr",
+          "title": "ISR 과 min.insync.replicas",
+          "summary": "몇 대가 받아야 성공인가.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "3.7",
+          "id": "controller",
+          "title": "컨트롤러와 리더 선출",
+          "summary": "브로커가 죽으면 누가 정하나.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "토픽과 파티션",
+      "goal": "병렬성과 순서가 같이 정해진다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "topic",
+          "title": "토픽",
+          "summary": "이름 하나가 갈래 하나.",
+          "minutes": 10,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "partition",
+          "title": "파티션",
+          "summary": "병렬성의 단위.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "record",
+          "title": "레코드",
+          "summary": "키 · 값 · 헤더 · 오프셋 · 타임스탬프.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "key-partitioning",
+          "title": "키가 파티션을 정한다",
+          "summary": "같은 키는 같은 파티션으로.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "order",
+          "title": "순서는 어디까지 보장되나",
+          "summary": "파티션 안에서만.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "partition-count",
+          "title": "파티션 몇 개로 할까",
+          "summary": "늘리기는 되고 줄이기는 안 된다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "naming",
+          "title": "토픽 이름 규칙",
+          "summary": "나중에 못 바꾸는 것들.",
+          "minutes": 10,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "CLI 로 다루기",
+      "goal": "GUI 없이 손으로 확인한다.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "cli-topics",
+          "title": "kafka-topics",
+          "summary": "만들고 보고 늘린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "cli-produce",
+          "title": "console-producer",
+          "summary": "손으로 레코드를 넣는다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "cli-consume",
+          "title": "console-consumer",
+          "summary": "from-beginning 과 그냥의 차이.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "cli-groups",
+          "title": "consumer-groups 와 LAG",
+          "summary": "누가 어디까지 읽었나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "cli-configs",
+          "title": "configs",
+          "summary": "토픽별 설정을 바꾼다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "cli-offsets",
+          "title": "오프셋을 옮긴다",
+          "summary": "다시 읽기와 건너뛰기.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.7",
+          "id": "cli-diagnose",
+          "title": "무엇이 잘못됐는지 CLI 로 좁히기",
+          "summary": "여섯 명령으로 원인을 찾는다.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "프로듀서",
+      "goal": "보냈다는 것과 저장됐다는 것.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "producer-basic",
+          "title": "첫 프로듀서",
+          "summary": "자바 열 줄로 보낸다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "producer-flow",
+          "title": "보내기 전에 일어나는 일",
+          "summary": "직렬화 · 파티셔너 · 배치 · 전송.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "acks",
+          "title": "acks",
+          "summary": "0 · 1 · all 이 각각 무엇을 포기하나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "retries",
+          "title": "재시도와 중복",
+          "summary": "성공했는데 실패로 보이는 경우.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "batching",
+          "title": "처리량 대 지연",
+          "summary": "linger.ms 와 batch.size.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "partitioner",
+          "title": "파티셔너",
+          "summary": "기본 동작과 직접 만들기.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "callback",
+          "title": "전송 결과 확인",
+          "summary": "동기 · 비동기 · 콜백.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.8",
+          "id": "producer-failure",
+          "title": "실패했을 때 무엇이 남나",
+          "summary": "버퍼가 차면 애플리케이션이 멈춘다.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "컨슈머",
+      "goal": "어디까지 읽었는지는 내가 적는다.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "consumer-basic",
+          "title": "첫 컨슈머",
+          "summary": "poll 루프.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "group",
+          "title": "컨슈머 그룹",
+          "summary": "같은 그룹은 나눠 읽고 다른 그룹은 각자 읽는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "assignment",
+          "title": "파티션 할당과 리밸런싱",
+          "summary": "누가 어느 파티션을 맡나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "offset-commit",
+          "title": "오프셋 커밋",
+          "summary": "자동과 수동, 그리고 그 사이의 사고.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "delivery-semantics",
+          "title": "몇 번 처리되나",
+          "summary": "최대 한 번 · 최소 한 번 · 정확히 한 번.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "poll-loop",
+          "title": "poll 루프의 시간 제약",
+          "summary": "max.poll.interval.ms 를 넘기면 쫓겨난다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "rebalance-listener",
+          "title": "리밸런스 리스너",
+          "summary": "빼앗기기 전에 할 일.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.8",
+          "id": "lag",
+          "title": "랙을 읽는 법",
+          "summary": "늘어나는 랙과 안 줄어드는 랙.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.9",
+          "id": "consumer-failure",
+          "title": "중복과 유실이 생기는 자리",
+          "summary": "네 가지 시나리오.",
+          "minutes": 14,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "멱등성과 트랜잭션",
+      "goal": "정확히 한 번이라는 말의 실체.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "idempotent-producer",
+          "title": "멱등 프로듀서",
+          "summary": "재시도해도 한 번만 쌓인다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "transaction",
+          "title": "트랜잭션",
+          "summary": "여러 파티션에 원자적으로.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "read-committed",
+          "title": "컨슈머 쪽 격리 수준",
+          "summary": "커밋 안 된 레코드는 안 보인다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "exactly-once",
+          "title": "정확히 한 번의 범위",
+          "summary": "카프카 안에서만이다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "outbox",
+          "title": "DB 트랜잭션과 카프카 사이",
+          "summary": "아웃박스 패턴.",
+          "minutes": 14,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "스프링과 카프카",
+      "goal": "서가의 애플리케이션에 붙인다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "spring-kafka",
+          "title": "spring-kafka 설정",
+          "summary": "프로퍼티가 곧 클라이언트 설정이다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "producer-template",
+          "title": "KafkaTemplate",
+          "summary": "보내고 결과를 받는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "listener",
+          "title": "@KafkaListener",
+          "summary": "컨슈머 루프를 대신 돌려 준다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "error-handling",
+          "title": "에러 핸들러와 재시도",
+          "summary": "예외가 나면 어디로 가나.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "dlt",
+          "title": "데드 레터 토픽",
+          "summary": "못 처리한 것을 버리지 않는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "serde-json",
+          "title": "직렬화",
+          "summary": "JSON · 스키마 · 타입 헤더.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.7",
+          "id": "testing",
+          "title": "테스트",
+          "summary": "EmbeddedKafka 와 Testcontainers.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "커넥트와 스트림즈",
+      "goal": "코드를 안 쓰고 옮기고, 흐르는 채로 처리한다.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "connect",
+          "title": "카프카 커넥트",
+          "summary": "옮기는 코드를 매번 안 짜려고.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "connector",
+          "title": "소스와 싱크 커넥터",
+          "summary": "DB 에서 토픽으로, 토픽에서 검색엔진으로.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "cdc",
+          "title": "CDC",
+          "summary": "DB 변경을 이벤트로.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.4",
+          "id": "streams",
+          "title": "카프카 스트림즈",
+          "summary": "토픽에서 읽어 토픽으로 쓰는 애플리케이션.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.5",
+          "id": "streams-stateful",
+          "title": "상태 기반 처리",
+          "summary": "집계와 윈도우, 그리고 상태 저장소.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "10.6",
+          "id": "when-which",
+          "title": "무엇을 언제 쓰나",
+          "summary": "컨슈머 · 스트림즈 · 커넥트 · 플링크.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 11,
+      "title": "운영과 다음으로",
+      "goal": "장애는 대개 랙에서 먼저 보인다.",
+      "sections": [
+        {
+          "no": "11.1",
+          "id": "monitoring",
+          "title": "무엇을 감시하나",
+          "summary": "LAG · ISR · 디스크 · 요청 지연.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.2",
+          "id": "sizing",
+          "title": "산정",
+          "summary": "파티션 · 보관 기간 · 디스크.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.3",
+          "id": "failure-drill",
+          "title": "장애 시나리오",
+          "summary": "브로커 하나가 죽으면 무슨 일이.",
+          "minutes": 14,
+          "status": "todo"
+        },
+        {
+          "no": "11.4",
+          "id": "rebalance-storm",
+          "title": "리밸런싱 폭풍",
+          "summary": "배포할 때마다 멈추는 컨슈머.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.5",
+          "id": "schema-evolution",
+          "title": "스키마가 바뀔 때",
+          "summary": "옛 컨슈머가 새 레코드를 만난다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.6",
+          "id": "to-next",
+          "title": "다음으로",
+          "summary": "이 책이 남긴 것과 이어지는 자리.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

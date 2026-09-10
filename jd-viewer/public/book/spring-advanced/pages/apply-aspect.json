@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "apply-aspect",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "적용한다",
+ "summary": "설정 클래스가 사라진다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "남은 것을 지운다.",
+  "나누는 법을 고른다.",
+  "9 를 0 으로 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.2절에서 저절로 생기는 걸** 봤다. **손으로 만든 걸 다** 지운다."
+  },
+  {
+   "type": "figure",
+   "caption": "아홉 장이 남긴 것",
+   "ascii": "   what nine chapters of scaffolding leaves behind\n\n   chapter five   three hand written proxy classes\n   chapter six    two invocation handlers\n   chapter seven  two advice classes and a config\n   chapter eight  one config with one advisor bean\n\n   all of it deletes, and the log does not change",
+   "note": "**전부 지워지고 로그는 안** 바뀐다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "5장부터 8장까지가 통째로 지워진다",
+   "md": "**손 프록시** 셋이다.\n\n> **5.5절에서** 만들었다.\n> **아래에서** 지운다.\n> **인터페이스마다** 하나였다.\n\n**손잡이** 둘이다.\n\n> **6.4절과 6.6절**이다.\n> **아래에서** 지운다.\n> **JDK 와 CGLIB** 이다.\n\n**어드바이스** 둘이다.\n\n> **7.2절과 7.7절**이다.\n> **하나로** 합친다.\n> **아래에서** 센다.\n\n**설정이** 없다.\n\n> **8.6절에서 하나로** 줄였다.\n> **아래에서 0 으로** 만든다.\n> **9 가 0 이** 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 클래스인가 여럿인가",
+   "ascii": "   one aspect or several\n\n   one class, many methods   easy to find, grows long\n   one class per concern     easy to turn off, more files\n\n   the container cannot tell the difference",
+   "note": "**컨테이너는 둘을 구별하지** 못한다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "나누는 기준은 컨테이너가 아니라 사람이다",
+   "md": "**끄는 단위**로 나눈다.\n\n> **8.6절의 그** 조건이다.\n> **아래에서 끄기를** 본다.\n> **클래스마다 따로** 붙는다.\n\n**바뀌는 이유**로 나눈다.\n\n> **추적과 측정은 다른** 일이다.\n> **아래에서 갈라** 놓는다.\n> **파일이** 는다.\n\n**표현식이 겹치면** 합친다.\n\n> **같은 자리를 두 번** 적는다.\n> **11.9절에서 이름을** 붙인다.\n> **아래에서 미리** 본다.\n\n**순서가 필요하면** 나눈다.\n\n> **한 클래스 안에선 못** 정한다.\n> **9.4절에서 그걸** 겪는다.\n> **아래에서 예고**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 남아 있는 것을 센다\n\n$ find src/main/java/study/adv -name '*.java' | grep -vE 'app/|trace/|aspect/' | sort\nsrc/main/java/study/adv/auto/AutoProxyConfig.java\nsrc/main/java/study/adv/auto/LogTraceAdvice.java\nsrc/main/java/study/adv/decorator/TimeDecorator.java\nsrc/main/java/study/adv/dynamic/CglibHandler.java\nsrc/main/java/study/adv/dynamic/JdkHandler.java\nsrc/main/java/study/adv/factory/LogTraceAdvice.java\nsrc/main/java/study/adv/factory/ProxyFactoryConfig.java\nsrc/main/java/study/adv/proxy/OrderControllerProxy.java\nsrc/main/java/study/adv/proxy/OrderRepositoryProxy.java\nsrc/main/java/study/adv/proxy/OrderServiceProxy.java\n\n$ find src/main/java/study/adv -name '*.java' | grep -vE 'app/|trace/|aspect/' | wc -l\n      10\n\n\n-- 전부 지운다\n\n$ git rm -rq src/main/java/study/adv/proxy\n$ git rm -rq src/main/java/study/adv/decorator\n$ git rm -rq src/main/java/study/adv/dynamic\n$ git rm -rq src/main/java/study/adv/factory\n$ git rm -rq src/main/java/study/adv/auto\n\n$ find src/main/java/study/adv -type d | sort\nsrc/main/java/study/adv\nsrc/main/java/study/adv/app\nsrc/main/java/study/adv/aspect\nsrc/main/java/study/adv/trace\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n--   업무 코드와 추적기와 애스펙트만 남았다\n\n\n-- 로그가 그대로다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ diff <(cat 목표.txt | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V3//g') \\\n       <(grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- \\\n           | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V3//g') \\\n  && echo '같음'\n같음\n\n--   열 파일을 지웠는데 안 바뀌었다\n\n\n-- v1 과 v2 도 그대로다\n\n$ for v in v1 v2 v3; do\n    curl -s -o /dev/null \"localhost:8080/$v/request?itemId=연필\"\n    printf '%-4s %s 줄\\n' $v \"$(grep -c \"$v\" logs/app.log)\"\n  done\nv1   6 줄\nv2   6 줄\nv3   6 줄\n\n$ curl -s localhost:8080/proxy/census | sed -n '2p'\n프록시:        24\n\n--   5 장에서 v1 만 감싸느라 클래스 셋을 썼다\n--   지금은 셋 다 같은 표현식에 걸린다\n\n\n-- 클래스 수를 센다\n\n$ printf '%-8s %-22s %s\\n' \\\n  '5 장'  '손 프록시'        '3' \\\n  '6 장'  '손잡이'           '2' \\\n  '7 장'  '어드바이스+설정'  '3' \\\n  '8 장'  '설정'             '1' \\\n  '9 장'  '애스펙트'         '1'\n\n5 장     손 프록시              3\n6 장     손잡이                 2\n7 장     어드바이스+설정        3\n8 장     설정                   1\n9 장     애스펙트               1\n\n$ find src/main/java/study/adv/aspect -name '*.java' | wc -l\n       1\n\n--   9 개가 1 개가 됐다\n\n\n-- 줄 수를 센다\n\n$ git show v5:src/main/java/study/adv/proxy/*.java 2>/dev/null | wc -l\n     168\n$ git show v6:src/main/java/study/adv/dynamic/*.java 2>/dev/null | wc -l\n     104\n$ git show v8:src/main/java/study/adv/factory/*.java 2>/dev/null | wc -l\n      96\n$ git show v9-done:src/main/java/study/adv/auto/*.java 2>/dev/null | wc -l\n      40\n$ wc -l < src/main/java/study/adv/aspect/LogTraceAspect.java\n      28\n\n$ printf '%-8s %s\\n' v5 168 v6 104 v8 96 v9 40 v10 28\nv5       168\nv6       104\nv8       96\nv9       40\nv10      28\n\n--   업무 코드는 한 줄도 안 바뀌었다\n\n\n-- 업무 코드를 확인한다\n\n$ cat src/main/java/study/adv/app/OrderServiceV3.java\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV3 {\n\n    private final OrderRepositoryV3 orderRepository;\n\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);\n    }\n}\n\n$ diff <(git show v0:src/main/java/study/adv/app/OrderServiceV0.java | sed 's/V0//g') \\\n       <(sed 's/V3//g' src/main/java/study/adv/app/OrderServiceV3.java) \\\n  && echo '2.1 절의 v0 와 같음'\n2.1 절의 v0 와 같음\n\n--   1.4 절에서 세운 목표다\n\n\n-- 나눠 본다\n\nsrc/main/java/study/adv/aspect/\n├── LogTraceAspect.java      추적\n└── SlowAspect.java          느린 호출 경고\n\n@Slf4j\n@Aspect\n@Component\npublic class SlowAspect {\n    @Around(\"execution(* study.adv.app..*(..))\")\n    public Object slow(ProceedingJoinPoint jp) throws Throwable {\n        long t = System.nanoTime();\n        try { return jp.proceed(); }\n        finally {\n            long ms = (System.nanoTime() - t) / 1_000_000;\n            if (ms > 500) log.warn(\"느림 {} {}ms\", jp.getSignature().toShortString(), ms);\n        }\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '느림' logs/app.log | cut -c56-\n느림 OrderRepositoryV3.save() 1004ms\n느림 OrderServiceV3.orderItem() 1006ms\n느림 OrderControllerV3.request() 1007ms\n\n$ curl -s 'localhost:8080/advisor/count?name=orderServiceV3'\n어드바이저 2 개\n\n--   9.2 절에서 본 그것이다\n\n\n-- 하나만 끈다\n\n@Aspect\n@Component\n@ConditionalOnProperty(name = \"study.slow.enabled\", havingValue = \"true\")\npublic class SlowAspect { ... }\n\n$ ./gradlew bootRun 2>&1 | grep -c 'slowAspect'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '느림' logs/app.log\n0\n$ grep -c 'study.adv.trace' logs/app.log\n6\n\n$ curl -s 'localhost:8080/advisor/count?name=orderServiceV3'\n어드바이저 1 개\n\n--   8.6 절에서 하던 그 끄기다\n--   나눠 놨으니 하나만 꺼진다\n\n\n-- 한 클래스로 합치면\n\n@Aspect\n@Component\npublic class AppAspects {\n    @Around(\"execution(* study.adv.app..*(..))\")\n    public Object trace(ProceedingJoinPoint jp) throws Throwable { ... }\n\n    @Around(\"execution(* study.adv.app..*(..))\")\n    public Object slow(ProceedingJoinPoint jp) throws Throwable { ... }\n}\n\n$ curl -s 'localhost:8080/advisor/count?name=orderServiceV3'\n어드바이저 2 개\n\n$ find src/main/java/study/adv/aspect -name '*.java' | wc -l\n       1\n\n--   컨테이너 쪽 결과는 똑같다\n--   그런데 하나만 끌 방법이 없다\n\n\n-- 표현식이 겹친다\n\n$ grep -o 'execution([^)]*))' src/main/java/study/adv/aspect/*.java\nLogTraceAspect.java:execution(* study.adv.app..*(..))\nSlowAspect.java:execution(* study.adv.app..*(..))\n\n$ grep -c 'study.adv.app' src/main/java/study/adv/aspect/*.java\nLogTraceAspect.java:1\nSlowAspect.java:1\n\n--   같은 문자열을 두 번 적었다\n--   11.9 절에서 이름을 붙여 한 번만 적는다\n\n\n-- 순서는 못 정한다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -E '느림|study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n느림 OrderRepositoryV3.save() 1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n느림 OrderServiceV3.orderItem() 1006ms\n\n$ for i in 1 2 3; do\n    ./gradlew bootRun >/dev/null 2>&1 &\n    sleep 12; curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n    grep -E '느림|study.adv.trace' logs/app.log | tail -2 | head -1 | grep -o '느림\\|\\[' \n    pkill -f bootRun\n  done\n[\n느림\n[\n\n--   기동마다 다르다\n--   9.4 절에서 이걸 고친다\n\n\n-- 확인한다\n\n$ find src/main/java/study/adv -name '*Proxy*.java' -o -name '*Handler*.java' \\\n       -o -name '*Config*.java' | wc -l\n       0\n\n$ find src/main/java/study/adv -name '*.java' | wc -l\n      14\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '1,3p'\n빈 이름:   orderServiceV3\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n프록시인가: true\n\n$ ./gradlew test -q && echo 'test OK'\ntest OK\n\n$ git add -A && git commit -q -m 'refactor: 손 프록시 전부 제거' && git tag v10-clean\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '지운 파일'   '10 개' \\\n  '남은 클래스' '9 에서 1' \\\n  '남은 줄'     '168 에서 28' \\\n  '설정'        '0 개' \\\n  '로그'        '안 바뀜' \\\n  '업무 코드'   'v0 와 같음' \\\n  '나누는 기준' '끄기와 바뀌는 이유' \\\n  '겹침'        '표현식 두 번' \\\n  '순서'        '기동마다 다름'\n\n지운 파일                  10 개\n남은 클래스                9 에서 1\n남은 줄                    168 에서 28\n설정                       0 개\n로그                       안 바뀜\n업무 코드                  v0 와 같음\n나누는 기준                끄기와 바뀌는 이유\n겹침                       표현식 두 번\n순서                       기동마다 다름",
+   "note": "**5·6·7·8장이 남긴 열 파일을 지워도 목표 파일과 diff 0**이다.\n\n**손으로 만들던 클래스가 9 개에서 1 개, 168 줄에서 28 줄이 되고 설정은 0 개**다.\n\n**업무 코드는 2.1절 v0 와 diff 0 이라 아홉 장 동안 한 줄도 안** 바뀌었다.\n\n**애스펙트를 둘로 나누면 조건 하나로 느림만 꺼져 묶음이 2 개에서 1 개가** 된다.\n\n**같은 표현식을 두 번 적게 되고 둘의 순서는 기동마다 달라** 나온다."
+  }
+ ],
+ "recap": [
+  "**열 파일을** 지운다.",
+  "**9 가 1 이** 된다.",
+  "**설정이** 0 이다.",
+  "**로그가** 같다.",
+  "**업무 코드가** 같다.",
+  "**나누면 끌 수** 있다.",
+  "**합치면 못** 끈다.",
+  "**표현식이** 겹친다.",
+  "**순서가** 없다."
+ ],
+ "drills": [
+  {
+   "task": "남은 파일을 다 지운다.",
+   "done_when": "로그가 그대로인 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "v0 와 diff 한다.",
+   "done_when": "같은 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "애스펙트를 둘로 나눈다.",
+   "done_when": "하나만 끄는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "순서를 살펴본다.",
+   "done_when": "기동마다 다른 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "몇 파일이 지워졌나?",
+   "a": "5·6·7·8 장이 남긴 열 파일이고 로그는 안 바뀐다."
+  },
+  {
+   "q": "손으로 만든 클래스 수는?",
+   "a": "9 개에서 1 개가 됐다."
+  },
+  {
+   "q": "업무 코드는?",
+   "a": "2.1 절 v0 와 같다. 아홉 장 동안 안 바뀌었다."
+  },
+  {
+   "q": "애스펙트를 나누는 기준은?",
+   "a": "따로 끄고 싶은 단위와 바뀌는 이유다."
+  },
+  {
+   "q": "합쳐 적으면 뭐가 불편한가?",
+   "a": "하나만 끌 수 없고, 순서도 정하기 어렵다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "관심사",
+   "def": "따로 켜고 끌 만한 부가 기능의 한 갈래."
+  },
+  {
+   "term": "겹치는 표현식",
+   "def": "여러 애스펙트가 같은 자리를 각자 적어 둔 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — @AspectJ support",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Using the auto-proxy facility",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api/autoproxy.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

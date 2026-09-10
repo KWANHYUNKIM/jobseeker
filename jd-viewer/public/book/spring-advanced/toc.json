@@ -527,7 +527,7 @@
           "title": "누가 어드바이저로 바꾸나",
           "summary": "자동 프록시 생성기가 읽는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -535,7 +535,7 @@
           "title": "적용한다",
           "summary": "설정 클래스가 사라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
