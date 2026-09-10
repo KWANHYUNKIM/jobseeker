@@ -1,0 +1,154 @@
+{
+ "book": "kafka",
+ "id": "exactly-once",
+ "no": "8.4",
+ "chapter": 8,
+ "title": "정확히 한 번의 범위",
+ "summary": "카프카 안에서만이다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "EOS 가 성립하는 조건을 안다.",
+  "성립하지 않는 경계를 안다.",
+  "무엇을 골라야 하는지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**\"카프카는 정확히 한 번을 지원한다\"** 는 말이 있다. **맞는데, 범위가 좁다.**\n\n> **read-process-write** — **카프카에서 읽어서 처리해 카프카에 쓰는** 파이프라인 안에서다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ReadProcessWrite.java",
+   "caption": "EOS 가 성립하는 형태",
+   "code": "props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, \"processor-\" + instanceId);\nconsumerProps.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, \"read_committed\");\nconsumerProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);\n\nproducer.initTransactions();\n\nwhile (running) {\n    var records = consumer.poll(Duration.ofMillis(500));\n    if (records.isEmpty()) continue;\n\n    producer.beginTransaction();\n    try {\n        for (var r : records) {\n            var out = transform(r);                    // 순수 변환\n            producer.send(new ProducerRecord<>(\"out\", out.key(), out.value()));\n        }\n        // 오프셋 커밋도 같은 트랜잭션에\n        producer.sendOffsetsToTransaction(offsetsOf(records), consumer.groupMetadata());\n        producer.commitTransaction();\n    } catch (Exception e) {\n        producer.abortTransaction();\n    }\n}",
+   "note": "**`sendOffsetsToTransaction` 이 핵심**이다 — 출력 쓰기와 오프셋 커밋이 **한 트랜잭션**이 된다."
+  },
+  {
+   "type": "table",
+   "caption": "성립하는 것과 안 하는 것",
+   "columns": [
+    "구간",
+    "EOS",
+    "이유"
+   ],
+   "rows": [
+    [
+     "**카프카 → 처리 → 카프카**",
+     "**○**",
+     "위 코드. 트랜잭션 하나로 묶인다"
+    ],
+    [
+     "**카프카 → DB**",
+     "**✗**",
+     "**DB 커밋과 카프카 커밋이 다른 시스템**"
+    ],
+    [
+     "**DB → 카프카**",
+     "**✗**",
+     "같은 이유. 8.5절의 아웃박스"
+    ],
+    [
+     "카프카 → 외부 API",
+     "✗",
+     "API 호출을 롤백할 수 없다"
+    ],
+    [
+     "카프카 스트림즈",
+     "○",
+     "`processing.guarantee=exactly_once_v2`(10.4절)"
+    ],
+    [
+     "**처리가 부수효과를 가짐**",
+     "✗",
+     "메일 발송·파일 쓰기"
+    ]
+   ],
+   "note": "**두 번째 줄이 실무에서 가장 흔한 경우**다 — **그래서 대부분의 컨슈머는 EOS 를 못 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "카프카 → DB 에서 할 수 있는 것",
+   "md": "**두 시스템을 원자적으로 못 묶으면 방법은 둘**이다.\n\n**① 오프셋을 DB 에 저장한다**(7.7절)\n\n```java\n@Transactional\npublic void handle(ConsumerRecords<K,V> records) {\n    for (var r : records) applyToDb(r);\n    offsetStore.save(offsetsOf(records));    // 같은 트랜잭션\n}\n// 카프카에는 커밋하지 않는다. seek 으로 시작한다\n```\n\n> **처리와 위치가 한 트랜잭션이라 중복도 유실도** 없다.\n> **대신 리밸런싱마다 `seek` 을 직접 챙겨야** 한다.\n\n**② 멱등하게 처리한다**(7.5절)\n\n```java\n@Transactional\npublic void handle(Record r) {\n    if (processedRepo.existsById(r.eventId())) return;\n    apply(r);\n    processedRepo.save(r.eventId());\n}\n// 카프카에 커밋. 중복이 와도 결과가 같다\n```\n\n> **훨씬 단순하고 실무에서 압도적으로 많이** 쓴다.\n> **\"정확히 한 번\" 이 아니라 \"결과가 정확히 한 번 적용된 것과 같게\"** 다."
+  },
+  {
+   "type": "callout",
+   "tone": "interview",
+   "title": "면접에서는 이렇게 묻는다",
+   "md": "**\"카프카로 정확히 한 번을 보장할 수 있나요\"**\n\n> **카프카 안에서 읽고 쓰는 파이프라인은 트랜잭션으로** 가능하다.\n> **DB 나 외부 API 가 끼면 두 시스템이라 원자적으로 못** 묶는다.\n> **그래서 실무에서는 최소 한 번 + 멱등 처리로** 간다 — **결과가 같으면 정확히 한 번과 구분이 안 된다.**\n\n**꼬리 질문**:\n\n| 질문 | 절 |\n|---|---|\n| \"멱등하게 어떻게 만드나요\" | 7.5 |\n| \"DB 와 카프카를 어떻게 묶나요\" | **8.5절 아웃박스** |\n| \"스트림즈는요\" | 10.4 |\n| \"성능 비용은요\" | 8.2 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "read-process-write 를 죽여 가며 확인한다",
+   "sql": "$ kt --create --topic in --partitions 2 --replication-factor 3 >/dev/null\n$ kt --create --topic out --partitions 2 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 1000); do echo \"$i\"; done | kcp --topic in\n\n# --- EOS 프로세서를 돌리다 죽인다 ---\n\n$ java -cp 'out:libs/*' EosProcessor --in in --out out --group eos \\\n    --tid proc-1 --reset earliest --die-after 2000\nprocessed 412 (killed mid-transaction)\n\n$ kcc --topic out --from-beginning --timeout-ms 3000 --isolation-level read_committed | wc -l\n400\n\n#   412건을 처리했는데 400건만 커밋됐다\n#   마지막 트랜잭션(12건)은 어보트됐다\n\n$ kcg --describe --group eos | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 600\n\n#   오프셋도 400건까지만 커밋됐다. 출력과 오프셋이 같이 움직인다\n\n$ java -cp 'out:libs/*' EosProcessor --in in --out out --group eos \\\n    --tid proc-1 --timeout 20000\nprocessed 600\n\n$ kcc --topic out --from-beginning --timeout-ms 5000 --isolation-level read_committed | wc -l\n1000\n\n$ kcc --topic out --from-beginning --timeout-ms 5000 --isolation-level read_committed | \\\n    sort -n | uniq -d | wc -l\n0\n\n#   정확히 1000건, 중복 0\n#   여러 번 죽여도 결과가 같다\n\n\n# --- 트랜잭션 없이 같은 것을 하면 ---\n\n$ kt --create --topic out2 --partitions 2 --replication-factor 3 >/dev/null\n$ java -cp 'out:libs/*' PlainProcessor --in in --out out2 --group plain \\\n    --reset earliest --die-after 2000\nprocessed 412 (killed)\n\n$ java -cp 'out:libs/*' PlainProcessor --in in --out out2 --group plain --timeout 20000\nprocessed 620\n\n$ kcc --topic out2 --from-beginning --timeout-ms 5000 | wc -l\n1032\n\n$ kcc --topic out2 --from-beginning --timeout-ms 5000 | sort -n | uniq -d | wc -l\n32\n\n#   32건 중복. 커밋 전에 죽은 만큼이다\n\n\n# --- 카프카 -> DB 는 트랜잭션으로 못 묶는다 ---\n\n#   producer.beginTransaction();\n#   jdbc.update(\"insert into orders ...\");     <- 이건 카프카 트랜잭션 밖이다\n#   producer.sendOffsetsToTransaction(...);\n#   producer.commitTransaction();\n#\n#   -> jdbc 는 커밋됐는데 카프카 커밋이 실패하면?\n#      다음에 같은 레코드를 다시 읽어 DB 에 또 넣는다\n\n$ psql -h localhost -U shop -d shop -q -c 'drop table if exists sink' \\\n    -c 'create table sink(id int primary key)'\n\n$ java -cp 'out:libs/*' KafkaToDbProcessor --in in --group k2db --reset earliest \\\n    --die-after 2000 --no-idempotence\nprocessed 412 (killed)\n\n$ java -cp 'out:libs/*' KafkaToDbProcessor --in in --group k2db --timeout 20000 \\\n    --no-idempotence\nERROR duplicate key value violates unique constraint \"sink_pkey\"\n  Detail: Key (id)=(401) already exists.\n\n#   중복이 왔고 PK 제약이 잡아 줬다\n#   제약이 없었으면 조용히 두 번 들어갔을 것이다\n\n\n# --- 멱등하게 고치면 ---\n\n$ psql -h localhost -U shop -d shop -q -c 'truncate sink'\n$ kcg --delete --group k2db >/dev/null 2>&1\n\n$ java -cp 'out:libs/*' KafkaToDbProcessor --in in --group k2db2 --reset earliest \\\n    --die-after 2000 --upsert\nprocessed 412 (killed)\n$ java -cp 'out:libs/*' KafkaToDbProcessor --in in --group k2db2 --timeout 20000 --upsert\nprocessed 600 (12 were re-applied)\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from sink'\n1000\n\n#   1000건. 중복이 왔지만 UPSERT 라 결과가 같다\n#   \"정확히 한 번\" 은 아니지만 결과는 구분이 안 된다 (7.5절)\n\n$ for t in in out out2; do kt --delete --topic $t >/dev/null; done\n$ for g in eos plain k2db k2db2; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "EOS 는 카프카에서 읽어 카프카에 쓰는 파이프라인 안에서 성립한다.",
+  "sendOffsetsToTransaction 으로 출력 쓰기와 오프셋 커밋을 한 트랜잭션에 묶는다.",
+  "카프카 → DB, DB → 카프카, 외부 API 는 두 시스템이라 원자적으로 못 묶는다.",
+  "카프카 → DB 에서는 오프셋을 DB 에 저장하거나(엄밀) 멱등 처리를 한다(실용).",
+  "실무의 답은 최소 한 번 + 멱등 처리다. 결과가 같으면 정확히 한 번과 구분이 안 된다."
+ ],
+ "drills": [
+  {
+   "task": "EOS 프로세서를 중간에 죽였다 다시 띄우고 출력 건수와 중복을 확인한다.",
+   "done_when": "정확히 1000건, 중복 0 인 것을 본다.",
+   "minutes": 12
+  },
+  {
+   "task": "트랜잭션 없이 같은 것을 해서 중복 건수를 비교한다.",
+   "done_when": "차이를 숫자로 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "카프카 → DB 처리를 UPSERT 로 바꿔 중복이 와도 결과가 같은지 확인한다.",
+   "done_when": "1000건이 유지되는 것을 본다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "카프카의 EOS 가 성립하는 범위는.",
+   "a": "카프카에서 읽어 처리해 카프카에 쓰는 파이프라인. 오프셋 커밋까지 한 트랜잭션에 넣을 수 있다."
+  },
+  {
+   "q": "카프카 → DB 에서 EOS 가 안 되는 이유는.",
+   "a": "DB 트랜잭션과 카프카 트랜잭션은 다른 시스템이라 원자적으로 커밋할 수 없다."
+  },
+  {
+   "q": "실무에서 대신 무엇을 하나.",
+   "a": "최소 한 번 + 멱등 처리. 또는 오프셋을 처리 결과와 같은 DB 트랜잭션에 저장한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "EOS",
+   "en": "exactly-once semantics",
+   "what": "정확히 한 번 처리. 카프카 내부 파이프라인에 한정된다."
+  },
+  {
+   "term": "read-process-write",
+   "what": "카프카에서 읽어 변환해 카프카에 쓰는 패턴."
+  },
+  {
+   "term": "sendOffsetsToTransaction",
+   "what": "컨슈머 오프셋 커밋을 프로듀서 트랜잭션에 포함시키는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Exactly-once semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Exactly-once semantics in Kafka",
+   "url": "https://www.confluent.io/blog/exactly-once-semantics-are-possible-heres-how-apache-kafka-does-it/",
+   "publisher": "Confluent"
+  }
+ ]
+}

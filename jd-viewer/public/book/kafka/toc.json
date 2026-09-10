@@ -475,7 +475,7 @@
           "title": "컨슈머 쪽 격리 수준",
           "summary": "커밋 안 된 레코드는 안 보인다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
@@ -483,7 +483,7 @@
           "title": "정확히 한 번의 범위",
           "summary": "카프카 안에서만이다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
@@ -491,7 +491,7 @@
           "title": "DB 트랜잭션과 카프카 사이",
           "summary": "아웃박스 패턴.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

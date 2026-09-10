@@ -1,0 +1,150 @@
+{
+ "book": "kafka",
+ "id": "outbox",
+ "no": "8.5",
+ "chapter": 8,
+ "title": "DB 트랜잭션과 카프카 사이",
+ "summary": "아웃박스 패턴.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "이중 쓰기 문제를 안다.",
+  "아웃박스 패턴을 구현한다.",
+  "CDC 와의 관계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절의 `OrderService` 로** 돌아간다.\n\n```java\n@Transactional\npublic Long order(...) {\n    orderRepository.save(order);          // DB\n    producer.send(new OrderPlaced(order)); // 카프카\n    return order.getId();\n}\n```\n\n> **둘 중 하나만 성공하면 어떻게 되나.**"
+  },
+  {
+   "type": "figure",
+   "caption": "이중 쓰기의 네 갈래",
+   "ascii": "                        kafka send ok      kafka send fails\n                     +------------------+------------------+\n   db commit ok      |   consistent     |  event LOST      |\n                     |                  |  (order exists,  |\n                     |                  |   nobody knows)  |\n                     +------------------+------------------+\n   db rollback       |  PHANTOM event   |   consistent     |\n                     |  (event exists,  |                  |\n                     |   order doesn't) |                  |\n                     +------------------+------------------+\n\n   대각선 둘이 사고다. 순서를 바꿔도 사고는 남는다",
+   "note": "**`@Transactional` 안에서 `send()` 를 부르면 오른쪽 위**(유실)**나 왼쪽 아래**(유령 이벤트)**가** 난다."
+  },
+  {
+   "type": "table",
+   "caption": "흔한 시도와 그 한계",
+   "columns": [
+    "시도",
+    "무엇",
+    "한계"
+   ],
+   "rows": [
+    [
+     "트랜잭션 안에서 send",
+     "위 코드",
+     "**네 갈래 그대로**"
+    ],
+    [
+     "**커밋 후 send**",
+     "`@TransactionalEventListener(AFTER_COMMIT)`",
+     "**커밋 뒤 죽으면 유실**"
+    ],
+    [
+     "send 후 커밋",
+     "순서를 바꿈",
+     "**롤백되면 유령 이벤트**"
+    ],
+    [
+     "**2PC(XA)**",
+     "분산 트랜잭션",
+     "**카프카가 지원 안 한다**. 느리다"
+    ],
+    [
+     "**아웃박스**",
+     "**DB 에 이벤트도 같이 저장**",
+     "**정답에 가깝다.** 지연이 생긴다"
+    ]
+   ],
+   "note": "**두 번째가 가장 흔한 타협**이다 — **간단하고 대부분 잘 돌지만 유실 창이** 있다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "OutboxOrderService.java",
+   "caption": "아웃박스",
+   "code": "@Transactional\npublic Long order(Long memberId, Long itemId, int count) {\n    Order order = Order.create(memberId, itemId, count);\n    orderRepository.save(order);\n\n    // 같은 트랜잭션 안에서 DB 에 저장한다 (카프카를 안 부른다)\n    outboxRepository.save(new OutboxEvent(\n        UUID.randomUUID().toString(),      // eventId (7.5절의 멱등 키)\n        \"order.placed.v1\",                 // topic\n        order.getId().toString(),          // key\n        toJson(new OrderPlaced(order))     // payload\n    ));\n\n    return order.getId();\n}\n\n// 별도 스레드/프로세스\n@Scheduled(fixedDelay = 200)\npublic void publish() {\n    var batch = outboxRepository.findUnpublished(100);\n    for (var e : batch) {\n        kafkaTemplate.send(e.topic(), e.key(), e.payload())\n            .whenComplete((r, ex) -> {\n                if (ex == null) outboxRepository.markPublished(e.id());\n            });\n    }\n}",
+   "note": "**주문과 이벤트가 같은 DB 트랜잭션**이다. **둘 다 되거나 둘 다 안 된다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "아웃박스가 주는 것과 가져가는 것",
+   "md": "| 얻는 것 | 잃는 것 |\n|---|---|\n| **유실·유령 이벤트가 없다** | **지연**(폴링 주기만큼) |\n| **카프카가 죽어도 요청이 성공**(6.8절) | 테이블·발행기 운영 |\n| 재발행이 쉽다 | DB 부하(폴링) |\n| 순서가 DB 순서로 정해진다 | 발행기가 단일 실패점이 될 수 있다 |\n\n**중복은 여전히** 있다:\n\n```\n발행 성공 -> markPublished 전에 죽음 -> 다시 발행\n```\n\n> **그래서 `eventId` 를 넣고 컨슈머가 멱등하게 처리**한다(7.5절).\n> **아웃박스는 유실을 없애고, 멱등 처리가 중복을 없앤다.** **둘이 짝**이다.\n\n**폴링이 부담되면 CDC** 로 간다(10.3절) — **DB 의 변경 로그를 읽어 발행**한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "이중 쓰기 사고를 만들고 아웃박스로 고친다",
+   "sql": "$ psql -h localhost -U shop -d shop -q \\\n    -c 'drop table if exists orders' -c 'drop table if exists outbox' \\\n    -c 'create table orders(id serial primary key, amount int)' \\\n    -c \"create table outbox(id serial primary key, event_id text unique, topic text,\n        key text, payload text, published boolean default false, created_at timestamptz default now())\"\n\n$ kt --create --topic order.placed.v1 --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 시도 1: 트랜잭션 안에서 send. 카프카가 죽으면 ---\n\n$ docker compose stop kafka-1 kafka-2 kafka-3 >/dev/null && sleep 5\n\n$ java -cp 'out:libs/*' NaiveOrderService --orders 100 --max-block 3000\nERROR order failed: TimeoutException after 3004ms\n... 100 failures\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from orders'\n0\n\n#   카프카가 죽어서 주문을 하나도 못 받았다\n#   (트랜잭션이 롤백됐다)\n\n$ docker compose start kafka-1 kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 시도 2: 커밋 후 send. 그 사이에 죽으면 ---\n\n$ java -cp 'out:libs/*' AfterCommitOrderService --orders 100 --die-after 50\ncreated 50 orders, published 47 events, then killed\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from orders'\n50\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic order.placed.v1 | \\\n    awk -F: '{s+=$3} END {print \"events =\", s}'\nevents = 47\n\n#   주문 50건, 이벤트 47건. 3건이 유실됐다\n#   그 주문들은 재고도 안 줄고 메일도 안 간다\n#   그리고 아무도 모른다\n\n\n# --- 아웃박스 ---\n\n$ psql -h localhost -U shop -d shop -q -c 'truncate orders' -c 'truncate outbox'\n$ kt --delete --topic order.placed.v1 >/dev/null && sleep 2\n$ kt --create --topic order.placed.v1 --partitions 3 --replication-factor 3 >/dev/null\n\n$ java -cp 'out:libs/*' OutboxOrderService --orders 100 --die-after 50 --no-publisher\ncreated 50 orders with 50 outbox rows, then killed\n\n$ psql -h localhost -U shop -d shop -tAc \\\n    'select count(*) filter (where true), count(*) filter (where not published) from outbox'\n50|50\n\n#   주문 50, 아웃박스 50. 둘이 같은 트랜잭션이라 항상 같다\n\n$ java -cp 'out:libs/*' OutboxPublisher --timeout 15000\npublished 50 events\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic order.placed.v1 | \\\n    awk -F: '{s+=$3} END {print \"events =\", s}'\nevents = 50\n\n#   유실 0\n\n\n# --- 카프카가 죽어 있어도 주문은 받는다 (6.8절) ---\n\n$ docker compose stop kafka-1 kafka-2 kafka-3 >/dev/null && sleep 5\n\n$ java -cp 'out:libs/*' OutboxOrderService --orders 200 --no-publisher\ncreated 200 orders in 0.8s (0 failures)\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from outbox where not published'\n200\n\n$ docker compose start kafka-1 kafka-2 kafka-3 >/dev/null && sleep 20\n$ java -cp 'out:libs/*' OutboxPublisher --timeout 20000\npublished 200 events\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from outbox where not published'\n0\n\n#   브로커가 돌아오자 200건을 따라잡았다. 요청은 한 건도 실패 안 했다\n\n\n# --- 중복은 남는다 ---\n\n$ java -cp 'out:libs/*' OutboxPublisher --die-after-send --timeout 10000\npublished 30, killed before markPublished\n\n$ java -cp 'out:libs/*' OutboxPublisher --timeout 10000\npublished 30 (already sent, re-publishing)\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic order.placed.v1 | \\\n    awk -F: '{s+=$3} END {print \"events =\", s}'\nevents = 280\n\n#   30건이 두 번 발행됐다\n#   eventId 가 있으니 컨슈머가 걸러낸다 (7.5절)\n\n$ kcc --topic order.placed.v1 --from-beginning --timeout-ms 8000 2>/dev/null | \\\n    grep -o '\"eventId\":\"[^\"]*\"' | sort | uniq -d | wc -l\n30\n\n#   같은 eventId 가 30개. 컨슈머의 processed 테이블이 이걸 막는다\n\n\n# --- 아웃박스 테이블 정리 ---\n\n$ psql -h localhost -U shop -d shop -c \\\n    \"delete from outbox where published and created_at < now() - interval '7 days'\"\nDELETE 0\n\n#   발행된 것은 주기적으로 지운다. 안 지우면 테이블이 무한히 큰다\n\n$ kt --delete --topic order.placed.v1 >/dev/null"
+  }
+ ],
+ "recap": [
+  "DB 와 카프카에 둘 다 쓰면 유실이나 유령 이벤트 중 하나가 난다. 순서를 바꿔도 남는다.",
+  "커밋 후 발행은 흔한 타협이지만 그 사이에 죽으면 유실이다.",
+  "아웃박스는 이벤트를 DB 에 같은 트랜잭션으로 저장하고 별도 발행기가 보낸다.",
+  "유실과 유령 이벤트가 사라지고 카프카가 죽어도 요청이 성공한다. 대신 지연과 운영 부담이 생긴다.",
+  "중복은 남는다. eventId 를 넣어 컨슈머가 멱등하게 거른다. 아웃박스와 멱등 처리는 짝이다."
+ ],
+ "drills": [
+  {
+   "task": "커밋 후 발행하는 서비스를 중간에 죽여 주문 수와 이벤트 수가 다른 것을 확인한다.",
+   "done_when": "유실 건수를 숫자로 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "아웃박스로 바꿔 같은 실험을 하고 둘이 항상 같은 것을 확인한다.",
+   "done_when": "주문 수 = 아웃박스 행 수인 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "카프카를 내린 채 주문을 받고 브로커 복구 후 발행기가 따라잡는 것을 확인한다.",
+   "done_when": "요청 실패 0 과 미발행 0 을 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "DB 저장과 카프카 발행을 한 트랜잭션으로 못 묶는 이유는.",
+   "a": "다른 시스템이라 원자적 커밋이 불가능하다. 2PC 는 카프카가 지원하지 않는다."
+  },
+  {
+   "q": "아웃박스가 없애는 것과 남기는 것은.",
+   "a": "유실과 유령 이벤트를 없앤다. 중복은 남으므로 eventId 로 컨슈머가 거른다."
+  },
+  {
+   "q": "아웃박스 테이블 운영에서 잊기 쉬운 것은.",
+   "a": "발행된 행을 주기적으로 지우는 것. 안 지우면 무한히 커진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "이중 쓰기",
+   "en": "dual write",
+   "what": "두 시스템에 각각 쓰는 것. 원자성이 없다."
+  },
+  {
+   "term": "아웃박스",
+   "en": "transactional outbox",
+   "what": "이벤트를 DB 에 같이 저장하고 별도 발행기가 보내는 패턴."
+  },
+  {
+   "term": "유령 이벤트",
+   "what": "실제 상태 변경 없이 발행된 이벤트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "microservices.io — Transactional outbox",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "publisher": "microservices.io"
+  },
+  {
+   "title": "Debezium — Outbox event router",
+   "url": "https://debezium.io/documentation/reference/transformations/outbox-event-router.html",
+   "publisher": "Debezium"
+  }
+ ]
+}
