@@ -42,7 +42,7 @@
           "title": "실습 클러스터 하나",
           "summary": "도커로 브로커 셋을 띄운다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.4",
@@ -50,7 +50,7 @@
           "title": "첫 레코드",
           "summary": "넣고 꺼내고 오프셋을 확인한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.5",
@@ -58,7 +58,7 @@
           "title": "무엇을 볼 것인가",
           "summary": "describe · offset · LAG, 이 셋.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

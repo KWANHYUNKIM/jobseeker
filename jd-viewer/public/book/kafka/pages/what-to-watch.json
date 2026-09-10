@@ -1,0 +1,151 @@
+{
+ "book": "kafka",
+ "id": "what-to-watch",
+ "no": "1.5",
+ "chapter": 1,
+ "title": "무엇을 볼 것인가",
+ "summary": "describe · offset · LAG, 이 셋.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "막혔을 때 치는 순서를 안다.",
+  "LAG 의 두 가지 모양을 구분한다.",
+  "ISR 로 클러스터 건강을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**카프카에서 막히면 볼 곳도 정해져** 있다. **「도커」 1.5절과 같은 자리**다.\n\n> **추측하기 전에 세 명령을** 친다."
+  },
+  {
+   "type": "table",
+   "caption": "막혔을 때 치는 순서",
+   "columns": [
+    "순서",
+    "명령",
+    "무엇을 묻는가"
+   ],
+   "rows": [
+    [
+     "1",
+     "`kafka-topics --describe`",
+     "**토픽이 있나. 파티션 몇 개. ISR 이 온전한가**"
+    ],
+    [
+     "2",
+     "`GetOffsetShell` / `kcat -L`",
+     "**레코드가 들어가긴 했나**"
+    ],
+    [
+     "3",
+     "**`kafka-consumer-groups --describe`**",
+     "**누가 어디까지 읽었나. LAG 은**"
+    ],
+    [
+     "4",
+     "`kafka-console-consumer --from-beginning`",
+     "**내용이 예상한 것인가**"
+    ],
+    [
+     "5",
+     "애플리케이션 로그",
+     "프로듀서 콜백·컨슈머 예외"
+    ],
+    [
+     "6",
+     "`kafka-configs --describe`",
+     "설정이 생각한 값인가"
+    ]
+   ],
+   "note": "**1~3에서 대부분 끝난다.** **\"안 들어간 것\" 과 \"안 읽는 것\" 을 먼저** 가른다."
+  },
+  {
+   "type": "figure",
+   "caption": "증상에서 원인으로",
+   "ascii": "   \"데이터가 안 보여요\"\n           |\n     GetOffsetShell\n           |\n   +-------+--------------------+\n   |                            |\n   offset 이 0                  offset 이 늘고 있다\n   = 안 들어갔다                 = 들어갔다\n   |                            |\n   producer 로그               consumer-groups --describe\n   acks / 예외 / 토픽 이름         |\n   (6장)               +---------+----------+\n                       |                    |\n                   LAG 이 크다           LAG 이 0 인데 안 보인다\n                   = 못 따라간다          = 다른 그룹/다른 토픽을 본다\n                   (7.8절)               = 또는 이미 읽고 커밋했다\n\n   두 갈래로 나누는 것이 절반이다",
+   "note": "**\"안 들어갔다\" 와 \"안 읽었다\" 는 고치는 곳이 완전히** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "LAG 의 두 가지 모양",
+   "md": "**랙이 크다고 다 같은 문제가** 아니다.\n\n| 모양 | 뜻 | 어디를 보나 |\n|---|---|---|\n| **계속 늘어난다** | 처리 속도 < 유입 속도 | 컨슈머를 늘리거나 처리를 빠르게(7.8절) |\n| **일정하게 유지된다** | 따라가고는 있다. 지연이 고정 | 배치 크기·poll 주기 |\n| **한 파티션만 크다** | **키 쏠림**(4.4절) 또는 그 컨슈머만 느림 | 파티셔닝 전략 |\n| **0인데 처리가 안 된다** | **읽고 커밋했는데 실패**했다 | 예외를 삼키고 있다(9.4절) |\n| **갑자기 튄다** | 리밸런싱 중이었다 | 7.3·11.4절 |\n\n> **마지막에서 두 번째가 가장 위험**하다 — **랙은 0인데 아무 일도 안 일어난다.**\n> **자동 커밋을 켜 두고 예외를 삼키면 이렇게** 된다(7.4절)."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "ISR 이 줄면 먼저 알아야 한다",
+   "md": "```\nTopic: orders  Partition: 1  Leader: 3  Replicas: 3,1,2  Isr: 3,1\n```\n\n> **`Replicas` 는 셋인데 `Isr` 이 둘**이다. **브로커 2가 뒤처졌거나 죽었다.**\n\n| 상태 | 뜻 |\n|---|---|\n| `Isr` = `Replicas` | 건강 |\n| **`Isr` 이 줄었다** | 복제가 뒤처진다. **`acks=all` 이면 쓰기가 느려지거나 막힌다**(3.6절) |\n| **`Leader: none`** | **그 파티션은 읽고 쓸 수 없다** |\n| `UnderReplicatedPartitions > 0` | 운영에서 가장 먼저 감시하는 지표(11.1절) |\n\n**빠르게 훑는 법**:\n\n```bash\nkafka-topics --describe --under-replicated-partitions\nkafka-topics --describe --unavailable-partitions\n```\n\n> **평소에 아무것도 안 나오는 게 정상**이다. **뭔가 나오면 그때 본다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "세 명령으로 상태를 훑는다",
+   "sql": "# --- 1. 토픽과 복제 상태 ---\n\n$ kt --describe --topic orders\nTopic: orders  PartitionCount: 3  ReplicationFactor: 3  Configs: min.insync.replicas=2\n  Topic: orders  Partition: 0  Leader: 2  Replicas: 2,3,1  Isr: 2,3,1\n  Topic: orders  Partition: 1  Leader: 3  Replicas: 3,1,2  Isr: 3,1,2\n  Topic: orders  Partition: 2  Leader: 1  Replicas: 1,2,3  Isr: 1,2,3\n\n$ kt --describe --under-replicated-partitions\n(아무것도 안 나온다 = 정상)\n\n\n# --- 브로커 하나를 내려 본다 ---\n\n$ docker compose stop kafka-2\n$ sleep 8 && kt --describe --under-replicated-partitions\n  Topic: orders  Partition: 0  Leader: 3  Replicas: 2,3,1  Isr: 3,1\n  Topic: orders  Partition: 1  Leader: 3  Replicas: 3,1,2  Isr: 3,1\n  Topic: orders  Partition: 2  Leader: 1  Replicas: 1,2,3  Isr: 1,3\n\n#   Isr 에서 2가 빠졌고 0번 파티션의 리더가 2 -> 3 으로 넘어갔다 (3.7절)\n#   min.insync.replicas=2 라 아직 acks=all 로 쓸 수 있다\n\n$ docker compose start kafka-2 && sleep 10\n$ kt --describe --under-replicated-partitions\n(다시 비었다)\n\n\n# --- 2. 레코드가 들어갔나 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic orders\norders:0:2\norders:1:3\norders:2:1\n\n#   합 6. 안 들어갔으면 전부 0 이다\n\n\n# --- 3. 누가 어디까지 읽었나 ---\n\n$ kcg --list\norder-worker\nstats\n\n$ kcg --describe --group order-worker\nGROUP         TOPIC   PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG  CONSUMER-ID   HOST\norder-worker  orders  0          2               2               0    consumer-1-a  /172.20.0.5\norder-worker  orders  1          1               3               2    consumer-1-a  /172.20.0.5\norder-worker  orders  2          1               1               0    consumer-2-b  /172.20.0.6\n\n#   1번 파티션만 LAG 이 2 다\n#   같은 컨슈머가 0번은 따라잡았으니 컨슈머가 느린 게 아니라\n#   그 파티션에만 최근에 몰렸을 수 있다 (4.4절 키 쏠림)\n\n\n# --- 랙이 늘어나는지 보기 ---\n\n$ for i in 1 2 3; do\n>   kcg --describe --group order-worker | awk '/orders/ {s+=$6} END {print \"total lag =\", s}'\n>   sleep 5\n> done\ntotal lag = 2\ntotal lag = 118\ntotal lag = 240\n\n#   늘고 있다. 컨슈머가 못 따라가는 중이다 (7.8절)\n\n\n# --- 4. 내용이 예상한 것인가 ---\n\n$ kcc --topic orders --partition 1 --offset 1 --max-messages 2 \\\n    --property print.offset=true --property print.key=true\nOffset:1  null  {\"orderId\":5,\"amount\":50000}\nOffset:2  null  {\"orderId\":8,\"amount\":80000}\nProcessed a total of 2 messages\n\n#   특정 파티션의 특정 오프셋부터 볼 수 있다. 원인 추적에 편하다\n\n\n# --- 6. 설정이 생각한 값인가 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name orders --describe\nDynamic configs for topic orders are:\n  min.insync.replicas=2 sensitive=false synonyms={STATIC_BROKER_CONFIG:min.insync.replicas=2}\n\n#   기본값과 다르게 설정한 것만 나온다 (5.5절)"
+  }
+ ],
+ "recap": [
+  "막히면 topics --describe → 끝 오프셋 → consumer-groups --describe 순으로 친다.",
+  "'안 들어갔다' 와 '안 읽었다' 를 먼저 가른다. 고치는 곳이 완전히 다르다.",
+  "LAG 은 늘어나는지·한 파티션만 큰지·0인데 처리가 안 되는지로 원인이 갈린다.",
+  "ISR 이 Replicas 보다 적으면 복제가 뒤처진 것이다. under-replicated-partitions 가 평소에 비어 있어야 정상이다."
+ ],
+ "drills": [
+  {
+   "task": "브로커 하나를 stop 하고 `--under-replicated-partitions` 로 ISR 이 줄어드는 것을 확인한다.",
+   "done_when": "Isr 에서 그 브로커가 빠지고 리더가 넘어가는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "컨슈머를 멈춘 채 레코드를 계속 넣으며 5초 간격으로 총 LAG 을 찍어 본다.",
+   "done_when": "랙이 늘어나는 것을 숫자로 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "`--partition` 과 `--offset` 을 주고 특정 위치의 레코드만 읽어 본다.",
+   "done_when": "원하는 오프셋부터 몇 건만 보는 법을 익힌다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "'데이터가 안 보인다' 는 신고를 받으면 무엇부터 가르나.",
+   "a": "레코드가 들어갔는지(끝 오프셋)와 컨슈머가 읽었는지(LAG). 고치는 곳이 다르다."
+  },
+  {
+   "q": "LAG 이 0인데 처리가 안 되고 있다면.",
+   "a": "읽고 커밋은 했는데 처리에 실패했을 수 있다. 예외를 삼키고 있는지 본다."
+  },
+  {
+   "q": "Isr 이 Replicas 보다 적으면 무슨 뜻인가.",
+   "a": "일부 복제본이 뒤처졌거나 죽었다. acks=all 과 min.insync.replicas 에 따라 쓰기가 막힐 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ISR",
+   "en": "In-Sync Replicas",
+   "what": "리더를 충분히 따라잡은 복제본 목록. 3.6절."
+  },
+  {
+   "term": "under-replicated",
+   "what": "ISR 이 복제 수보다 적은 파티션. 운영에서 가장 먼저 보는 지표."
+  },
+  {
+   "term": "GetOffsetShell",
+   "what": "파티션별 끝 오프셋을 보는 도구."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Operations",
+   "url": "https://kafka.apache.org/documentation/#operations",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Monitoring",
+   "url": "https://kafka.apache.org/documentation/#monitoring",
+   "publisher": "Apache"
+  }
+ ]
+}
