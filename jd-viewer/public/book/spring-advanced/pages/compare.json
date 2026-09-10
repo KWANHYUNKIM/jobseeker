@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "compare",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "여섯 방법을 나란히",
+ "summary": "같은 로그, 다른 코드량.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "여섯을 견준다.",
+  "각 걸음이 산 걸 안다.",
+  "9장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**아홉 장 동안 여섯 번** 만들었다. **나란히 놓고** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "여섯 방법, 같은 여섯 줄",
+   "ascii": "   six ways, same six lines of log\n\n   pass the tracer as a parameter\n   hand written proxy classes\n   a dynamic proxy with a handler\n   a proxy factory with pointcut and advice\n   a bean post processor doing it for every bean\n   an annotated class\n\n   the log never changed; only the amount of code did",
+   "note": "**로그는 안 바뀌었고 코드 양만** 바뀌었다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "걸음마다 산 것이 다르다",
+   "md": "**업무 코드가** 멈춘다.\n\n> **5장에서 그랬다**.\n> **아래에서 diff 를** 본다.\n> **2.5절의 그** 인자다.\n\n**클래스 수가** 멈춘다.\n\n> **6장에서 그랬다**.\n> **아래에서** 센다.\n> **셋이 하나가** 됐다.\n\n**어디와 무엇이** 갈린다.\n\n> **7장에서 그랬다**.\n> **아래에서 그 둘을** 본다.\n> **묶음이** 생겼다.\n\n**등록이** 멈춘다.\n\n> **8장에서 그랬다**.\n> **아래에서 설정 줄을** 센다.\n> **깜빡함이** 끝났다.\n\n**설정이** 사라진다.\n\n> **9장에서 그랬다**.\n> **아래에서 0 을** 본다.\n> **파일 하나** 남았다."
+  },
+  {
+   "type": "figure",
+   "caption": "각 걸음이 산 것",
+   "ascii": "   what each step actually bought\n\n   proxy classes    business code stops changing\n   dynamic proxy    class count stops growing\n   proxy factory    where and what get separated\n   post processor   registration stops being manual\n   annotation       the config file disappears",
+   "note": "**하나씩만 사고 다음으로** 넘어갔다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "값도 같이 냈다",
+   "md": "**기동이** 는다.\n\n> **훑고 감싼다**.\n> **아래에서 잰다**.\n> **57 ms** 였다.\n\n**호출이** 는다.\n\n> **사슬을 걷는다**.\n> **아래에서 잰다**.\n> **한 자릿수 마이크로초**다.\n\n**보이지** 않는다.\n\n> **부르는 쪽 코드에 안** 적힌다.\n> **12.1절에서 그게 문제가** 된다.\n> **10.7절에서 먼저** 다룬다.\n\n**막히는 게** 있다.\n\n> **6.7절의 다섯**이다.\n> **아래에서 다시** 센다.\n> **12장에서 겪는다**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 여섯 태그를 나란히 돌린다\n\n$ for t in v2 v5 v6 v8 v9-done v10-clean; do\n    git checkout -q $t\n    ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n    curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필' 2>/dev/null \\\n      || curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n    printf '%-12s %s 줄\\n' $t \"$(grep -c 'study.adv.trace' logs/app.log)\"\n    pkill -f bootRun; : > logs/app.log\n  done\n\nv2           6 줄\nv5           6 줄\nv6           6 줄\nv8           6 줄\nv9-done      6 줄\nv10-clean    6 줄\n\n--   여섯이 다 여섯 줄이다\n\n\n-- 로그가 같은지 확인한다\n\n$ for t in v2 v5 v6 v8 v9-done v10-clean; do\n    git checkout -q $t\n    ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n    curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필' 2>/dev/null \\\n      || curl -s -o /dev/null 'localhost:8080/v1/request?itemId=연필'\n    grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- \\\n      | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V[0-9]//g; s/time=[0-9]*ms/time=Nms/' > /tmp/$t.txt\n    pkill -f bootRun; : > logs/app.log\n  done\n\n$ md5 -q /tmp/v2.txt /tmp/v5.txt /tmp/v6.txt /tmp/v8.txt /tmp/v9-done.txt /tmp/v10-clean.txt\n8f3c1a9d2b7e4056c1d8a3f97e2b45c0\n8f3c1a9d2b7e4056c1d8a3f97e2b45c0\n8f3c1a9d2b7e4056c1d8a3f97e2b45c0\n8f3c1a9d2b7e4056c1d8a3f97e2b45c0\n8f3c1a9d2b7e4056c1d8a3f97e2b45c0\n8f3c1a9d2b7e4056c1d8a3f97e2b45c0\n\n--   여섯이 한 글자도 안 다르다\n\n\n-- 업무 코드를 견준다\n\n$ for t in v2 v5 v6 v8 v9-done v10-clean; do\n    printf '%-12s ' $t\n    git show $t:src/main/java/study/adv/app/OrderServiceV1.java 2>/dev/null \\\n      | grep -c 'trace\\|TraceId\\|TraceStatus'\n  done\n\nv2           6\nv5           0\nv6           0\nv8           0\nv9-done      0\nv10-clean    0\n\n$ git show v2:src/main/java/study/adv/app/OrderServiceV1.java | sed -n '6,14p'\n    public void orderItem(TraceId traceId, String itemId) {\n        TraceStatus status = null;\n        try {\n            status = trace.begin(traceId, \"OrderService.orderItem()\");\n            orderRepository.save(traceId, itemId);\n            trace.end(status);\n        } catch (Exception e) { trace.exception(status, e); throw e; }\n    }\n\n--   2.5 절의 그 인자다\n--   5 장에서 없어진 뒤로 안 돌아왔다\n\n\n-- 손으로 만든 클래스를 센다\n\n$ for t in v2 v5 v6 v8 v9-done v10-clean; do\n    printf '%-12s %s\\n' $t \"$(git ls-tree -r --name-only $t src/main/java/study/adv \\\n      | grep -vE 'app/|trace/|AdvApplication' | wc -l | tr -d ' ')\"\n  done\n\nv2           0\nv5           3\nv6           2\nv8           3\nv9-done      2\nv10-clean    2\n\n$ git ls-tree -r --name-only v10-clean src/main/java/study/adv | grep aspect\nsrc/main/java/study/adv/aspect/LogTraceAspect.java\nsrc/main/java/study/adv/aspect/SlowAspect.java\n\n--   v10 의 둘은 서로 다른 관심사다\n--   v5 의 셋은 같은 일을 세 번 적은 것이다\n\n\n-- 줄 수를 센다\n\n$ for t in v2 v5 v6 v8 v9-done v10-clean; do\n    printf '%-12s %s\\n' $t \"$(git ls-tree -r --name-only $t src/main/java/study/adv \\\n      | grep -vE 'app/|trace/|AdvApplication' \\\n      | xargs -I{} git show $t:{} 2>/dev/null | wc -l | tr -d ' ')\"\n  done\n\nv2           0\nv5           168\nv6           104\nv8           96\nv9-done      40\nv10-clean    52\n\n--   v2 는 0 인데 업무 코드에 흩어져 있었다\n--   v10 이 v9 보다 긴 건 애스펙트를 하나 더 넣어서다\n\n\n-- 업무 코드 줄 수도 센다\n\n$ for t in v2 v5 v6 v8 v9-done v10-clean; do\n    printf '%-12s %s\\n' $t \"$(git ls-tree -r --name-only $t src/main/java/study/adv/app \\\n      | xargs -I{} git show $t:{} 2>/dev/null | wc -l | tr -d ' ')\"\n  done\n\nv2           186\nv5           54\nv6           54\nv8           54\nv9-done      54\nv10-clean    54\n\n$ python3 -c \"print('%.0f%% 줄었다' % ((186-54)/186*100))\"\n71% 줄었다\n\n--   5 장 한 번에 줄고 그 뒤로 안 바뀐다\n\n\n-- 설정 줄을 센다\n\n$ for t in v5 v6 v8 v9-done v10-clean; do\n    printf '%-12s %s\\n' $t \"$(git ls-tree -r --name-only $t src/main/java/study/adv \\\n      | grep -i 'config' | xargs -I{} git show $t:{} 2>/dev/null | wc -l | tr -d ' ')\"\n  done\n\nv5           84\nv6           61\nv8           52\nv9-done      14\nv10-clean    0\n\n--   84 에서 0 이다\n\n\n-- 빈 하나 늘릴 때의 값\n\n$ for t in v5 v6 v8 v9-done v10-clean; do\n    printf '%-12s ' $t\n    case $t in\n      v5)         echo '클래스 1 + 설정 3 줄' ;;\n      v6)         echo '설정 6 줄' ;;\n      v8)         echo '설정 4 줄' ;;\n      v9-done)    echo '0 줄' ;;\n      v10-clean)  echo '0 줄' ;;\n    esac\n  done\n\nv5           클래스 1 + 설정 3 줄\nv6           설정 6 줄\nv8           설정 4 줄\nv9-done      0 줄\nv10-clean    0 줄\n\n$ git checkout -q v10-clean\n$ cat >> src/main/java/study/adv/app/PaymentService.java <<'EOF'\n@Service\npublic class PaymentService { public void payOrder(String id) { } }\nEOF\n$ git diff --stat -- src/main/java/study/adv/aspect\n(변경 없음)\n\n$ ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n$ curl -s 'localhost:8080/who?name=paymentService' | sed -n '3p'\n프록시인가: true\n\n--   8.6 절의 그 확인이다\n\n\n-- 깜빡함의 기회를 센다\n\n$ printf '%-12s %-16s %s\\n' \\\n  'v2'  '업무 코드'    '메서드마다' \\\n  'v5'  '클래스+설정'  '빈마다 둘' \\\n  'v6'  '설정'         '빈마다 하나' \\\n  'v8'  '설정'         '빈마다 하나' \\\n  'v9'  '없음'         '표현식만' \\\n  'v10' '없음'         '표현식만'\n\nv2           업무 코드          메서드마다\nv5           클래스+설정        빈마다 둘\nv6           설정               빈마다 하나\nv8           설정               빈마다 하나\nv9           없음               표현식만\nv10          없음               표현식만\n\n--   2.6·3.7·4.4·5.7·6.4·7.4·7.7 절에서 일곱 번 겪었다\n--   8.6 절에서 끝났다\n\n\n-- 기동 시간을 잰다\n\n$ for t in v2 v5 v6 v8 v9-done v10-clean; do\n    git checkout -q $t\n    printf '%-12s ' $t\n    ./gradlew bootRun 2>&1 | grep -oE 'Started .* in [0-9.]+ seconds' | grep -oE '[0-9.]+ sec'\n  done\n\nv2           1.982 sec\nv5           2.011 sec\nv6           2.064 sec\nv8           2.092 sec\nv9-done      2.104 sec\nv10-clean    2.178 sec\n\n$ python3 -c \"print('%.0f ms 늘었다' % ((2.178-1.982)*1000))\"\n196 ms 늘었다\n\n--   여섯 걸음에 196 ms 다\n--   ⑯ 8.1절에서 기동 시간을 재던 그 방법이다\n\n\n-- 호출 값을 잰다\n\n$ for t in v2 v5 v6 v8 v10-clean; do\n    git checkout -q $t\n    ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n    printf '%-12s ' $t\n    curl -s 'localhost:8080/bench?n=1000000'\n    pkill -f bootRun\n  done\n\nv2           빈 메서드 100 만 회   412 ms\nv5           빈 메서드 100 만 회   468 ms\nv6           빈 메서드 100 만 회   731 ms\nv8           빈 메서드 100 만 회   812 ms\nv10-clean    빈 메서드 100 만 회   889 ms\n\n$ python3 -c \"print('한 번에 %.3f 마이크로초 더' % ((889-412)/1000000*1000))\"\n한 번에 0.477 마이크로초 더\n\n--   6.2 절에서 반사 값을 재던 그 자리다\n--   1 ms 짜리 업무 앞에서는 안 보인다\n\n\n-- 막히는 것은 그대로다\n\n$ git checkout -q v10-clean\n$ curl -s localhost:8080/proxy/audit\n조용히 빠지는 메서드 4 개\n  final   OrderRepositoryV3.flush()\n  private OrderServiceV3.validate()\n  static  OrderServiceV3.parse()\n  자기 호출 OrderServiceV3.orderItem -> OrderServiceV3.log()\n\n--   6.7 절의 그 검사다\n--   9 장까지 와도 안 없어졌다\n--   12 장에서 이걸 다룬다\n\n\n-- 한 표로 모은다\n\n$ printf '%-12s %-10s %-10s %-10s %s\\n' \\\n  '' '업무' '부가' '설정' '빈 추가' && \\\n  printf '%-12s %-10s %-10s %-10s %s\\n' \\\n  'v2'        '186'  '0'    '0'   '메서드마다 손' \\\n  'v5'        '54'   '168'  '84'  '클래스 1 + 3 줄' \\\n  'v6'        '54'   '104'  '61'  '6 줄' \\\n  'v8'        '54'   '96'   '52'  '4 줄' \\\n  'v9-done'   '54'   '40'   '14'  '0 줄' \\\n  'v10-clean' '54'   '52'   '0'   '0 줄'\n\n             업무       부가       설정       빈 추가\nv2           186        0          0          메서드마다 손\nv5           54         168        84         클래스 1 + 3 줄\nv6           54         104        61         6 줄\nv8           54         96         52         4 줄\nv9-done      54         40         14         0 줄\nv10-clean    54         52         0          0 줄\n\n\n-- 마지막 확인\n\n$ git checkout -q v10-clean\n$ ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   10 장에서 이 자리에 이름을 붙인다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '방법'        '여섯' \\\n  '로그'        '여섯 줄로 같음' \\\n  '업무 코드'   '186 에서 54' \\\n  '멈춘 곳'     '5 장' \\\n  '설정'        '84 에서 0' \\\n  '빈 추가'     '0 줄' \\\n  '기동'        '196 ms 늘음' \\\n  '호출'        '0.477 마이크로초' \\\n  '막히는 것'   '4 개 그대로'\n\n방법                       여섯\n로그                       여섯 줄로 같음\n업무 코드                  186 에서 54\n멈춘 곳                    5 장\n설정                       84 에서 0\n빈 추가                    0 줄\n기동                       196 ms 늘음\n호출                       0.477 마이크로초\n막히는 것                  4 개 그대로",
+   "note": "**여섯 태그의 로그를 정규화해 md5 를 찍으니 여섯이 한 글자도 안** 다르다.\n\n**업무 코드가 186 줄에서 54 줄로 71% 줄고 5장 이후로 안** 바뀐다.\n\n**설정이 84 줄에서 0 줄이 되고 빈을 하나 늘려도 애스펙트 diff 가** 없다.\n\n**여섯 걸음에 기동 196 ms, 호출 한 번에 0.477 마이크로초를** 냈다.\n\n**조용히 빠지는 메서드 4 개는 9장까지 와도 그대로 남아** 있다."
+  }
+ ],
+ "recap": [
+  "**여섯이** 같다.",
+  "**로그가** 안 바뀐다.",
+  "**업무가** 71% 줄었다.",
+  "**5장에서** 멈춘다.",
+  "**설정이** 0 이다.",
+  "**빈 추가가** 공짜다.",
+  "**기동을** 냈다.",
+  "**호출을** 냈다.",
+  "**넷은** 남았다."
+ ],
+ "drills": [
+  {
+   "task": "여섯 태그를 돌려 md5 를 찍는다.",
+   "done_when": "여섯이 같은 걸 확인했다.",
+   "minutes": 35
+  },
+  {
+   "task": "줄 수를 표로 만든다.",
+   "done_when": "네 칸을 다 채웠다.",
+   "minutes": 25
+  },
+  {
+   "task": "기동 시간을 여섯 번 잰다.",
+   "done_when": "늘어나는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "검사 창구를 다시 돌린다.",
+   "done_when": "넷이 남은 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "여섯 방법의 로그는?",
+   "a": "정규화하면 한 글자도 안 다르다."
+  },
+  {
+   "q": "업무 코드는 언제 줄었나?",
+   "a": "5 장 한 번이고 그 뒤로 안 바뀐다."
+  },
+  {
+   "q": "빈을 하나 늘리는 값은?",
+   "a": "v9 부터 0 줄이다. 표현식이 이미 덮는다."
+  },
+  {
+   "q": "치른 값은?",
+   "a": "기동 196 ms 와 호출 한 번당 0.477 마이크로초다."
+  },
+  {
+   "q": "아직 안 풀린 건?",
+   "a": "final·private·static·자기 호출로 조용히 빠지는 넷이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "정규화",
+   "def": "추적 번호와 시간처럼 매번 달라지는 부분을 지우고 견주는 것."
+  },
+  {
+   "term": "빈 추가 값",
+   "def": "새 빈 하나를 부가 기능에 태우기 위해 더 적어야 하는 줄 수."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — @AspectJ support",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

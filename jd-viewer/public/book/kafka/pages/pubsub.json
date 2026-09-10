@@ -1,0 +1,110 @@
+{
+ "book": "kafka",
+ "id": "pubsub",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "발행과 구독",
+ "summary": "보내는 쪽이 받는 쪽을 모른다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "발행-구독 모델을 안다.",
+  "토픽이 계약이 된다는 것을 안다.",
+  "이벤트 이름 짓기의 원칙을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**직접 호출과 발행-구독의 차이는 \"누구에게\" 가 사라지는** 것이다.\n\n```java\n// 호출: 받는 쪽을 이름으로 안다\nmailService.sendConfirm(order);\n\n// 발행: 무슨 일이 있었는지만 적는다\nevents.publish(new OrderPlaced(order));\n```\n\n> **`OrderPlaced` 를 누가 읽는지 주문 서비스는** 모른다. **알 필요도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이벤트는 명령이 아니다",
+   "md": "**가장 흔한 설계 실수**다.\n\n| | 이벤트 | 명령 |\n|---|---|---|\n| 이름 | **`OrderPlaced`** (과거형) | `SendMail` (동사) |\n| 뜻 | **일어난 사실** | 시켜야 할 일 |\n| 받는 쪽 | **모른다.** 여럿일 수 있다 | **하나다** |\n| 거부 | **못 한다.** 이미 일어났다 | 실패할 수 있다 |\n| 결합 | 낮다 | **높다.** 사실상 원격 호출 |\n\n**토픽 이름에서 바로 드러난다**:\n\n```\nsend-mail-requests     <- 명령. 결국 mailService.send() 를 카프카로 감싼 것\norder-placed           <- 이벤트. 메일이 필요 없어져도 이 토픽은 그대로다\n```\n\n> **명령을 카프카로 보내면 결합은 그대로 두고 지연만** 는다.\n> **다만 명령을 이벤트로 못 바꾸는 경우도** 있다 — **재시도·순서가 중요한 작업 큐**는 명령이 맞다. **그때는 그렇게 부르면** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "토픽이 계약이다",
+   "md": "**직접 호출에서는 인터페이스가 계약**이었다. **여기서는 토픽과 레코드 스키마가 계약**이다.\n\n| 계약에 들어가는 것 | 예 |\n|---|---|\n| **토픽 이름** | `order.placed.v1` |\n| **키** | 주문 ID (4.4절 — 순서 보장 범위를 정한다) |\n| **값의 스키마** | 필드 이름·타입 |\n| **의미** | \"결제 전\" 인가 \"결제 완료\" 인가 |\n| 보관 기간 | 며칠치를 재처리할 수 있나(3.4절) |\n| 파티션 수 | 늘릴 수는 있고 줄일 수는 없다(4.6절) |\n\n> **마지막 둘이 나중에 못 바꾸는 것**이다. **4.7절에서 이름 규칙과 함께** 본다.\n\n**그리고 계약은 문서가 아니라 스키마 레지스트리로 강제할 수도** 있다 — **11.5절.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이벤트에 무엇을 담을 것인가",
+   "md": "**두 가지 방식**이 있고 둘 다 함정이 있다.\n\n| 방식 | 담는 것 | 문제 |\n|---|---|---|\n| **얇은 이벤트** | `{orderId: 1001}` | 받는 쪽이 **매번 API 를 다시 부른다.** 결합이 안 끊긴다 |\n| **두꺼운 이벤트** | 주문 전체 스냅숏 | 레코드가 크다. **스키마 변경이 잦아진다** |\n\n**중간이 대개 답**이다.\n\n```json\n{\n  \"eventId\": \"9f2b1c0a-...\",\n  \"occurredAt\": \"2026-09-10T13:20:11Z\",\n  \"orderId\": 1001,\n  \"memberId\": 42,\n  \"totalAmount\": 25000,\n  \"items\": [{\"itemId\": 7, \"count\": 2}]\n}\n```\n\n> **받는 쪽 대부분이 필요한 것까지만** 담는다.\n> **`eventId` 와 `occurredAt` 은 거의 항상** 넣는다 — **중복 제거(7.5절)와 순서 판단에 쓴다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "발행 하나에 구독 셋",
+   "sql": "$ kt --create --topic order.placed.v1 --partitions 3 --replication-factor 3\nCreated topic order.placed.v1.\n\n\n# --- 발행: 받는 쪽을 모른 채로 쓴다 ---\n\n$ kcp --topic order.placed.v1 --property parse.key=true --property key.separator='|' <<'EOF'\n1001|{\"eventId\":\"e1\",\"occurredAt\":\"2026-09-10T13:20:11Z\",\"orderId\":1001,\"memberId\":42,\"totalAmount\":25000}\n1002|{\"eventId\":\"e2\",\"occurredAt\":\"2026-09-10T13:20:14Z\",\"orderId\":1002,\"memberId\":42,\"totalAmount\":13000}\nEOF\n\n\n# --- 구독 셋이 각자 자기 목적으로 읽는다 ---\n\n$ kcc --topic order.placed.v1 --group inventory --from-beginning --timeout-ms 2000 \\\n    --property print.key=true\n1001  {\"eventId\":\"e1\",...,\"totalAmount\":25000}\n1002  {\"eventId\":\"e2\",...,\"totalAmount\":13000}\nProcessed a total of 2 messages\n\n$ kcc --topic order.placed.v1 --group mail --from-beginning --timeout-ms 2000 >/dev/null\nProcessed a total of 2 messages\n\n$ kcc --topic order.placed.v1 --group analytics --from-beginning --timeout-ms 2000 >/dev/null\nProcessed a total of 2 messages\n\n$ kcg --list\nanalytics\ninventory\nmail\n\n#   프로듀서는 셋이 있는지 모른다\n\n\n# --- 구독 하나를 없애도 ---\n\n$ kcg --delete --group mail\nDeletion of requested consumer groups ('mail') was successful.\n\n$ kcg --list\nanalytics\ninventory\n\n#   프로듀서도 다른 컨슈머도 아무 영향이 없다\n\n\n# --- 명령 토픽과 이벤트 토픽의 차이 ---\n\n$ kt --create --topic send-mail-requests --partitions 3 --replication-factor 3 >/dev/null\n$ kt --list\norder.placed.v1\nsend-mail-requests\n\n#   send-mail-requests 는 받는 쪽이 '메일 서비스' 하나로 정해져 있다\n#   메일을 안 보내기로 하면 이 토픽은 의미가 없어진다\n#   order.placed.v1 은 메일이 사라져도 그대로다\n\n\n# --- 계약에 들어가는 것들을 확인한다 ---\n\n$ kt --describe --topic order.placed.v1\nTopic: order.placed.v1  PartitionCount: 3  ReplicationFactor: 3\n  Configs: retention.ms=604800000\n\n#   파티션 3 (나중에 줄일 수 없다 -- 4.6절)\n#   보관 7일 (그만큼만 재처리할 수 있다 -- 3.4절)\n\n$ kcc --topic order.placed.v1 --from-beginning --max-messages 1 \\\n    --property print.key=true --property print.timestamp=true\nCreateTime:1757493611000  1001  {\"eventId\":\"e1\",\"occurredAt\":\"2026-09-10T13:20:11Z\",...}\n\n#   레코드 자체의 타임스탬프와 이벤트 안의 occurredAt 은 다른 것이다\n#   전자는 브로커/프로듀서가 찍고 후자는 도메인이 찍는다"
+  }
+ ],
+ "recap": [
+  "발행-구독은 '누구에게' 를 없앤다. 보내는 쪽은 읽는 쪽을 모른다.",
+  "이벤트는 과거형 사실이고 명령은 시킬 일이다. 명령을 카프카로 보내면 결합은 그대로고 지연만 는다.",
+  "토픽 이름·키·스키마·의미·보관 기간·파티션 수가 계약이다. 뒤의 둘은 나중에 못 바꾼다.",
+  "이벤트에는 받는 쪽 대부분이 필요한 만큼 담고 eventId 와 occurredAt 을 넣는다."
+ ],
+ "drills": [
+  {
+   "task": "이벤트 토픽 하나에 그룹 셋을 붙여 각자 전부 읽게 한다.",
+   "done_when": "프로듀서를 안 건드리고 소비자가 늘고 주는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "자기 시스템의 토픽(또는 API) 이름을 이벤트형과 명령형으로 나눠 적어 본다.",
+   "done_when": "명령형인 것을 이벤트형으로 바꿔 쓸 수 있는지 판단한다.",
+   "minutes": 8
+  },
+  {
+   "task": "레코드에 `print.timestamp=true` 를 붙여 브로커 타임스탬프를 확인한다.",
+   "done_when": "이벤트 안의 시각과 레코드 타임스탬프가 다른 것을 안다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이벤트와 명령의 차이를 이름으로 구분하면.",
+   "a": "이벤트는 과거형 사실(OrderPlaced), 명령은 동사(SendMail). 이벤트는 받는 쪽이 여럿일 수 있다."
+  },
+  {
+   "q": "토픽에서 나중에 바꿀 수 없는 것 둘은.",
+   "a": "파티션 수를 줄이는 것과 이미 지나간 보관 기간의 데이터."
+  },
+  {
+   "q": "이벤트에 eventId 를 넣는 이유는.",
+   "a": "중복 처리 시 같은 이벤트인지 판단해 걸러내기 위해."
+  }
+ ],
+ "terms": [
+  {
+   "term": "발행-구독",
+   "en": "publish-subscribe",
+   "what": "보내는 쪽이 받는 쪽을 모르는 통신 방식."
+  },
+  {
+   "term": "이벤트",
+   "en": "event",
+   "what": "이미 일어난 사실. 거부할 수 없다."
+  },
+  {
+   "term": "스키마 레지스트리",
+   "what": "레코드 스키마를 중앙에서 관리·검증하는 컴포넌트."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Confluent — Events and event streams",
+   "url": "https://developer.confluent.io/courses/event-design/intro/",
+   "publisher": "Confluent"
+  },
+  {
+   "title": "Martin Fowler — What do you mean by Event-Driven?",
+   "url": "https://martinfowler.com/articles/201701-event-driven.html",
+   "publisher": "martinfowler.com"
+  }
+ ]
+}

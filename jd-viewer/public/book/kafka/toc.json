@@ -73,7 +73,7 @@
           "title": "데이터 파이프라인의 결합",
           "summary": "소스 넷과 싱크 넷이면 연결이 열여섯이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -81,7 +81,7 @@
           "title": "발행과 구독",
           "summary": "보내는 쪽이 받는 쪽을 모른다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",

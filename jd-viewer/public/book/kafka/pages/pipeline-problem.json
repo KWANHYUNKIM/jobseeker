@@ -1,0 +1,140 @@
+{
+ "book": "kafka",
+ "id": "pipeline-problem",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "데이터 파이프라인의 결합",
+ "summary": "소스 넷과 싱크 넷이면 연결이 열여섯이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "N×M 문제를 구체적으로 안다.",
+  "포맷과 배포가 어떻게 얽히는지 안다.",
+  "중간 로그가 무엇을 끊는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 그림으로 봤다.** **여기서는 그 열여섯 개의 연결이 실제로 무엇을 요구하는지를** 본다.\n\n> **선 하나가 그냥 화살표가** 아니다. **선 하나마다 코드·포맷·배포·장애 대응이** 붙는다."
+  },
+  {
+   "type": "table",
+   "caption": "연결 하나에 붙는 것들",
+   "columns": [
+    "무엇",
+    "구체적으로"
+   ],
+   "rows": [
+    [
+     "**전송 코드**",
+     "HTTP 클라이언트 · 재시도 · 타임아웃 · 커넥션 풀"
+    ],
+    [
+     "**포맷 합의**",
+     "필드 이름·타입. 한쪽이 바꾸면 다른 쪽이 깨진다"
+    ],
+    [
+     "**배포 순서**",
+     "보내는 쪽과 받는 쪽 중 누가 먼저 나가나"
+    ],
+    [
+     "**장애 처리**",
+     "받는 쪽이 죽었을 때 보낸 것을 어디에 쌓나"
+    ],
+    [
+     "**속도 차이**",
+     "받는 쪽이 느리면 보내는 쪽이 기다린다"
+    ],
+    [
+     "**모니터링**",
+     "이 선이 살아 있나를 따로 본다"
+    ]
+   ],
+   "note": "**여섯 개 × 열여섯 선**이다. **그래서 \"연동\" 이 늘 프로젝트가** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "포맷이 특히 아프다",
+   "md": "**주문 서비스가 필드 하나를 바꾼다.**\n\n```java\n// before\nclass OrderEvent { Long orderId; int amount; }\n\n// after -- amount 를 통화까지 담게 바꿨다\nclass OrderEvent { Long orderId; Money amount; }\n```\n\n**직접 호출이면**:\n\n| 순서 | 무슨 일 |\n|---|---|\n| 1 | 재고·결제·메일·통계 **네 팀에 공지** |\n| 2 | 네 팀이 각자 고친다 |\n| 3 | **배포 순서를 맞춘다.** 하나라도 어긋나면 장애 |\n| 4 | 롤백하려면 다시 네 팀 |\n\n> **연결이 열여섯이면 이 일이 열여섯 번**이다.\n\n**중간에 로그가 있으면 세 번째가** 바뀐다 — **보내는 쪽이 새 필드를 추가만 하면(호환되는 변경) 받는 쪽은 각자 시간 될 때 고친다.** **11.5절에서 이걸 자세히** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "선 하나가 끊어졌을 때",
+   "ascii": "   direct call                          through a log\n   -----------                          -------------\n   order --X--> mail (down)             order --> [ log ] --X--> mail (down)\n     |                                              |\n   what now?                                    records stay\n     - retry in-process? how long?                  |\n     - drop it?                             mail comes back\n     - write to a local queue?                      |\n     - roll back the order?                  reads from where it left off\n\n   실패 처리 코드를 선마다 쓴다              보관 기간 안이면 알아서 따라잡는다",
+   "note": "**왼쪽의 네 줄이 \"결국 큐를 직접 만들게 되는\" 경로**다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "그래도 직접 호출이 맞는 경우",
+   "md": "**전부 로그로 바꾸라는 이야기가** 아니다.\n\n| 직접 호출이 맞는 자리 | 왜 |\n|---|---|\n| **응답이 필요하다** | \"재고가 있나\" 를 물어야 주문을 받는다 |\n| **강한 일관성이 필요하다** | 결제 승인 결과를 즉시 알아야 한다 |\n| 호출이 하나뿐 | N×M 이 1×1 이면 문제가 없다 |\n| 지연을 못 참는다 | 사용자가 결과를 기다린다 |\n\n> **\"주문됨\" 은 사실이고 \"재고 있나\" 는 질문**이다.\n> **사실은 로그에, 질문은 호출로.** **이 구분이 실무에서 가장 쓸모 있는 기준**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "선 하나가 죽었을 때를 만들어 본다",
+   "sql": "# --- 소스 하나, 싱크 둘 ---\n\n$ kt --create --topic orders --partitions 3 --replication-factor 3\nCreated topic orders.\n\n#   싱크 A (재고) 와 싱크 B (메일) 를 그룹 둘로 흉내 낸다\n\n$ kcc --topic orders --group inventory --from-beginning --timeout-ms 2000 >/dev/null\n$ kcc --topic orders --group mail --from-beginning --timeout-ms 2000 >/dev/null\n\n\n# --- 메일 쪽이 죽어 있는 동안 주문이 계속 들어온다 ---\n\n$ for i in $(seq 1 50); do echo \"{\\\"orderId\\\":$i}\"; done | kcp --topic orders\n\n$ kcg --describe --group inventory | awk '/orders/ {s+=$6} END {print \"inventory lag =\", s}'\ninventory lag = 50\n\n$ kcg --describe --group mail | awk '/orders/ {s+=$6} END {print \"mail lag =\", s}'\nmail lag = 50\n\n#   둘 다 50건이 밀려 있다. 주문 쪽은 아무 영향이 없었다\n\n\n# --- 재고만 살아나서 따라잡는다 ---\n\n$ kcc --topic orders --group inventory --timeout-ms 3000 >/dev/null\nProcessed a total of 50 messages\n\n$ kcg --describe --group inventory | awk '/orders/ {s+=$6} END {print \"inventory lag =\", s}'\ninventory lag = 0\n\n$ kcg --describe --group mail | awk '/orders/ {s+=$6} END {print \"mail lag =\", s}'\nmail lag = 50\n\n#   한쪽만 따라잡았고 다른 쪽은 그대로 밀려 있다\n#   서로 아무 영향이 없다\n\n\n# --- 메일이 하루 뒤에 살아나도 ---\n\n$ kcc --topic orders --group mail --timeout-ms 3000 >/dev/null\nProcessed a total of 50 messages\n\n#   보관 기간 안이면 그대로 있다 (3.4절)\n#   직접 호출이었으면 그 50건은 어딘가에 따로 쌓아 뒀어야 한다\n\n\n# --- 새 싱크가 하나 더 붙는다 ---\n\n$ kcc --topic orders --group analytics --from-beginning --timeout-ms 3000 >/dev/null\nProcessed a total of 50 messages\n\n#   주문 서비스는 아무것도 안 했다. 코드도 배포도 없다\n#   이것이 N+M 의 실체다\n\n$ kcg --list\ninventory\nmail\nanalytics\n\n\n# --- 그런데 순서와 중복은 새 문제로 남는다 ---\n\n$ kcc --topic orders --group analytics --from-beginning --timeout-ms 3000 \\\n    --property print.partition=true | head -4\nPartition:0  {\"orderId\":1}\nPartition:0  {\"orderId\":4}\nPartition:1  {\"orderId\":2}\nPartition:1  {\"orderId\":5}\n\n#   1,2,3,4,5 순서가 아니다. 파티션이 셋이라 그렇다 (4.5절)"
+  }
+ ],
+ "recap": [
+  "연결 하나에는 전송 코드·포맷 합의·배포 순서·장애 처리·속도 차이·모니터링이 다 붙는다.",
+  "포맷 변경이 가장 아프다. 직접 호출이면 관련 팀의 배포 순서를 맞춰야 한다.",
+  "중간에 로그를 두면 한쪽이 죽어도 다른 쪽에 영향이 없고, 새 싱크는 소스를 안 건드리고 붙는다.",
+  "'사실' 은 로그에, '질문' 은 호출로. 응답이 필요하면 직접 호출이 맞다."
+ ],
+ "drills": [
+  {
+   "task": "그룹 둘로 컨슈머를 흉내 내고, 한쪽만 따라잡게 해서 LAG 이 따로 노는 것을 확인한다.",
+   "done_when": "한쪽 0, 한쪽 50 인 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "새 그룹을 하나 더 만들어 --from-beginning 으로 전부 읽어 본다.",
+   "done_when": "프로듀서를 전혀 안 건드리고 소비자가 하나 늘어나는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "자기 시스템에서 '사실' 과 '질문' 을 각각 세 개씩 적어 본다.",
+   "done_when": "어느 것이 이벤트로 갈 수 있는지 구분한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "연결 하나에 붙는 비용을 셋 이상 대라.",
+   "a": "전송 코드, 포맷 합의, 배포 순서, 장애 처리, 속도 차이 흡수, 모니터링."
+  },
+  {
+   "q": "싱크 하나가 죽었을 때 로그가 있으면 무엇이 달라지나.",
+   "a": "보내는 쪽은 영향이 없고, 되살아나면 멈춘 오프셋부터 따라잡는다. 실패 처리 코드를 선마다 안 써도 된다."
+  },
+  {
+   "q": "직접 호출이 맞는 경우는.",
+   "a": "응답이 필요하거나 강한 일관성이 필요할 때. '질문' 은 호출로 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "데이터 파이프라인",
+   "what": "데이터를 만드는 쪽에서 쓰는 쪽으로 옮기는 경로."
+  },
+  {
+   "term": "결합",
+   "en": "coupling",
+   "what": "한쪽 변경이 다른 쪽 변경을 강제하는 관계."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Confluent — Kafka as a data pipeline",
+   "url": "https://developer.confluent.io/courses/apache-kafka/events/",
+   "publisher": "Confluent"
+  },
+  {
+   "title": "Apache Kafka — Use cases",
+   "url": "https://kafka.apache.org/uses",
+   "publisher": "Apache"
+  }
+ ]
+}

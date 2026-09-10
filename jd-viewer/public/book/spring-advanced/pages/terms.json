@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "terms",
+ "no": "10.1",
+ "chapter": 10,
+ "title": "용어",
+ "summary": "조인 포인트와 애스펙트.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "이름을 붙인다.",
+  "두 어휘를 안다.",
+  "만든 것과 잇는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**아홉 장 동안 만든 것들에 이름이** 있다. **이제** 붙인다."
+  },
+  {
+   "type": "figure",
+   "caption": "말과 만든 것",
+   "ascii": "   the words, mapped onto what you already built\n\n   join point   a place where behaviour can be added\n   pointcut     the rule that selects those places\n   advice       the code that runs at a selected place\n   aspect       a pointcut and an advice, kept together\n   target       the object underneath the proxy\n   weaving      the act of putting them together",
+   "note": "**새로 배우는 게 아니라 이미 만든 것에 이름을** 붙인다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "말이 먼저가 아니라 물건이 먼저였다",
+   "md": "**조인 포인트가** 자리다.\n\n> **끼어들 수 있는 곳**이다.\n> **아래에서 물어** 본다.\n> **10.2절에서 좁힌다**.\n\n**포인트컷이** 규칙이다.\n\n> **7.3절에서 만들었다**.\n> **아래에서 이름을** 본다.\n> **11장이 통째로 이것**이다.\n\n**어드바이스가** 코드다.\n\n> **7.2절에서 만들었다**.\n> **아래에서 종류를** 센다.\n> **10.3절에서 다섯을** 본다.\n\n**애스펙트가** 둘의 묶음이다.\n\n> **7.4절에서 묶었다**.\n> **아래에서 두 이름을** 본다.\n> **9.1절에서 한 클래스로** 적었다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 것의 두 이름",
+   "ascii": "   two vocabularies for the same object\n\n   the pointcut and advice pair is called an advisor in code\n   the same pair is called an aspect in the documents\n\n   one name comes from the API, the other from the theory",
+   "note": "**하나는 API 에서, 하나는 이론에서 온** 말이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "타깃은 프록시가 아니다",
+   "md": "**타깃이** 원본이다.\n\n> **프록시 밑에** 있다.\n> **아래에서 둘을 나란히** 찍는다.\n> **5.2절부터 그랬다**.\n\n**주입되는 건** 프록시다.\n\n> **9.5절에서 확인했다**.\n> **아래에서 다시** 본다.\n> **헷갈리면 12장이** 아프다.\n\n**위빙이** 붙이는 일이다.\n\n> **기동에** 한다.\n> **10.5절에서 시점을** 본다.\n> **아래에서 그 시각을** 찍는다.\n\n**AOP 는 그 전부**다.\n\n> **흩어질 것을 한곳에** 모은다.\n> **10.7절에서 값도** 본다.\n> **아래에서 이름을** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 조인 포인트에 물어본다\n\n@Around(\"execution(* study.adv.app..*(..))\")\npublic Object execute(ProceedingJoinPoint jp) throws Throwable {\n    log.info(\"종류   {}\", jp.getKind());\n    log.info(\"자리   {}\", jp.getSignature().toShortString());\n    log.info(\"타깃   {}\", jp.getTarget().getClass().getName());\n    log.info(\"이것   {}\", jp.getThis().getClass().getName());\n    log.info(\"인자   {}\", Arrays.toString(jp.getArgs()));\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -E '종류|자리|타깃|이것|인자' logs/app.log | head -5 | cut -c56-\n종류   method-execution\n자리   OrderServiceV3.orderItem()\n타깃   study.adv.app.OrderServiceV3\n이것   study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n인자   [연필]\n\n--   타깃과 이것이 다르다\n--   5.2 절부터 있던 그 둘이다\n\n\n-- 종류를 세어 본다\n\n$ for i in $(seq 1 20); do curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'; done\n$ grep '종류' logs/app.log | sort | uniq -c | cut -c1-40\n  60 ... 종류   method-execution\n\n$ grep '종류' logs/app.log | grep -v 'method-execution' | wc -l\n       0\n\n--   한 종류뿐이다\n--   10.2 절에서 왜 그런지 본다\n\n\n-- 포인트컷에 이름을 붙인다\n\n$ curl -s 'localhost:8080/advisor/inside?name=orderServiceV3&index=0'\n묶음:      InstantiationModelAwarePointcutAdvisorImpl\n거르개:    AspectJExpressionPointcut\n부가 기능: AspectJAroundAdvice\n\n$ curl -s 'localhost:8080/advisor/pointcut?name=orderServiceV3'\n표현식: execution(* study.adv.app..*(..))\n\n--   거르개라고 부르던 게 포인트컷이다\n--   7.3 절에서 만든 그것이다\n\n\n-- 어드바이저와 애스펙트\n\n@GetMapping(value = \"/aop/terms\", produces = \"text/plain\")\nString terms(String name) {\n    Advised a = (Advised) ctx.getBean(name);\n    Advisor ad = a.getAdvisors()[0];\n    return \"어드바이저 %s%n포인트컷  %s%n어드바이스 %s%n타깃      %s%n\".formatted(\n        ad.getClass().getSimpleName(),\n        ((PointcutAdvisor) ad).getPointcut().getClass().getSimpleName(),\n        ad.getAdvice().getClass().getSimpleName(),\n        a.getTargetSource().getTargetClass().getName());\n}\n\n$ curl -s 'localhost:8080/aop/terms?name=orderServiceV3'\n어드바이저 InstantiationModelAwarePointcutAdvisorImpl\n포인트컷  AspectJExpressionPointcut\n어드바이스 AspectJAroundAdvice\n타깃      study.adv.app.OrderServiceV3\n\n$ grep -c '@Aspect' src/main/java/study/adv/aspect/*.java\nLogTraceAspect.java:1\nSlowAspect.java:1\n\n--   코드에는 Advisor 라 적혀 있다\n--   내가 쓴 건 @Aspect 다\n--   같은 것의 두 이름이다\n\n\n-- 이름을 다 모아 본다\n\n$ curl -s localhost:8080/aop/glossary\n조인 포인트  method-execution\n포인트컷     execution(* study.adv.app..*(..))\n어드바이스   AspectJAroundAdvice\n애스펙트     LogTraceAspect, SlowAspect\n타깃         OrderServiceV3, OrderRepositoryV3, OrderControllerV3 외 7\n프록시       …$$SpringCGLIB$$0\n어드바이저   2 개\n\n$ curl -s localhost:8080/proxy/census | head -3\n전체 빈:      196\n프록시:        24\n  내 것:       10\n\n--   10 개가 타깃이다\n\n\n-- 위빙 시각을 찍는다\n\n@Component\nclass WeaveClock implements BeanPostProcessor, Ordered {\n    @Override\n    public Object postProcessAfterInitialization(Object bean, String name) {\n        if (AopUtils.isAopProxy(bean))\n            log.info(\"위빙 {} {}\", name, LocalTime.now());\n        return bean;\n    }\n    @Override public int getOrder() { return Ordered.LOWEST_PRECEDENCE; }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '위빙' | head -3 | cut -c56-\n위빙 orderRepositoryV1 22:14:07.412\n위빙 orderServiceV1 22:14:07.418\n위빙 orderControllerV1 22:14:07.423\n\n$ ./gradlew bootRun 2>&1 | grep -c '위빙'\n10\n\n$ ./gradlew bootRun 2>&1 | grep -oE 'Started .* in [0-9.]+ seconds' | grep -oE '[0-9.]+ sec'\n2.178 sec\n\n--   기동 중에 다 끝난다\n--   10.5 절에서 다른 시점을 본다\n\n\n-- 부르는 쪽에는 아무 이름도 안 적힌다\n\n$ grep -rn 'Aspect\\|Advice\\|Pointcut\\|Proxy' src/main/java/study/adv/app/ | wc -l\n       0\n\n$ cat src/main/java/study/adv/app/OrderServiceV3.java\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV3 {\n\n    private final OrderRepositoryV3 orderRepository;\n\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);\n    }\n}\n\n--   이게 흩어짐이 모였다는 뜻이다\n--   10.7 절에서 이 값을 따진다\n\n\n-- 흩어진 것과 모인 것을 센다\n\n$ git show v2:src/main/java/study/adv/app/ -- 2>/dev/null | grep -c 'trace\\.'\n18\n$ grep -rc 'trace\\.' src/main/java/study/adv/app/ | grep -v ':0' | wc -l\n       0\n$ grep -c 'trace\\.' src/main/java/study/adv/aspect/LogTraceAspect.java\n3\n\n$ printf '%-12s %-12s %s\\n' 'v2' '업무 코드' '18 곳' 'v10' '애스펙트' '3 곳'\nv2           업무 코드    18 곳\nv10          애스펙트     3 곳\n\n--   18 곳이 3 곳이 됐다\n--   이걸 횡단 관심사라고 부른다\n\n\n-- 표로 잇는다\n\n$ printf '%-16s %-22s %s\\n' \\\n  '조인 포인트' '메서드 실행'          '10.2' \\\n  '포인트컷'    'AspectJExpression…'   '11 장' \\\n  '어드바이스'  'AspectJAroundAdvice'  '10.3' \\\n  '애스펙트'    'LogTraceAspect'       '9.1' \\\n  '어드바이저'  'InstantiationModel…'  '7.4' \\\n  '타깃'        'OrderServiceV3'       '5.2' \\\n  '프록시'      'SpringCGLIB'          '6.6' \\\n  '위빙'        '기동 중'              '10.5'\n\n조인 포인트      메서드 실행            10.2\n포인트컷         AspectJExpression…     11 장\n어드바이스       AspectJAroundAdvice    10.3\n애스펙트         LogTraceAspect         9.1\n어드바이저       InstantiationModel…    7.4\n타깃             OrderServiceV3         5.2\n프록시           SpringCGLIB            6.6\n위빙             기동 중                10.5\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ curl -s 'localhost:8080/aop/terms?name=orderServiceV3' | head -1\n어드바이저 InstantiationModelAwarePointcutAdvisorImpl\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   10.2 절에서 조인 포인트를 좁힌다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '조인 포인트'  '끼어들 자리' \\\n  '종류'         'method-execution 하나' \\\n  '포인트컷'     '고르는 규칙' \\\n  '어드바이스'   '끼어드는 코드' \\\n  '애스펙트'     '둘의 묶음' \\\n  '어드바이저'   '같은 것의 코드 이름' \\\n  '타깃'         '프록시 밑의 원본' \\\n  '이것'         '프록시' \\\n  '위빙'         '기동 중 10 개' \\\n  '흩어짐'       '18 곳이 3 곳'\n\n조인 포인트                끼어들 자리\n종류                       method-execution 하나\n포인트컷                   고르는 규칙\n어드바이스                 끼어드는 코드\n애스펙트                   둘의 묶음\n어드바이저                 같은 것의 코드 이름\n타깃                       프록시 밑의 원본\n이것                       프록시\n위빙                       기동 중 10 개\n흩어짐                     18 곳이 3 곳",
+   "note": "**조인 포인트에 물으니 타깃은 `OrderServiceV3`, 이것은 `…$$SpringCGLIB$$0` 으로** 갈린다.\n\n**60 번을 물어도 종류가 `method-execution` 하나뿐**이다.\n\n**코드는 `InstantiationModelAwarePointcutAdvisorImpl` 이라 부르고 나는 `@Aspect` 로** 적었다.\n\n**위빙이 기동 중 10 번 일어나고 그 시각까지 로그에** 남는다.\n\n**v2 에서 업무 코드 18 곳에 흩어져 있던 것이 애스펙트 3 곳으로** 모였다."
+  }
+ ],
+ "recap": [
+  "**이름을** 붙였다.",
+  "**자리가 조인** 포인트다.",
+  "**규칙이** 포인트컷이다.",
+  "**코드가** 어드바이스다.",
+  "**묶음이** 애스펙트다.",
+  "**코드는 어드바이저라** 부른다.",
+  "**타깃은** 원본이다.",
+  "**이것은** 프록시다.",
+  "**위빙은 기동** 중이다."
+ ],
+ "drills": [
+  {
+   "task": "조인 포인트에 다섯을 물어본다.",
+   "done_when": "타깃과 이것이 다른 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "용어 창구를 만든다.",
+   "done_when": "네 이름을 다 찍었다.",
+   "minutes": 20
+  },
+  {
+   "task": "위빙 시각을 찍는다.",
+   "done_when": "기동 중인 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "흩어짐을 센다.",
+   "done_when": "18 곳과 3 곳을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "조인 포인트란?",
+   "a": "부가 기능이 끼어들 수 있는 자리다."
+  },
+  {
+   "q": "포인트컷과 어드바이스의 차이는?",
+   "a": "어디에 걸지와 무엇을 할지다."
+  },
+  {
+   "q": "애스펙트와 어드바이저는?",
+   "a": "같은 것의 두 이름이다. 하나는 문서, 하나는 코드 쪽 말이다."
+  },
+  {
+   "q": "타깃과 이것은?",
+   "a": "타깃은 원본이고 이것은 프록시다."
+  },
+  {
+   "q": "위빙은 언제 일어나나?",
+   "a": "여기서는 기동 중이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조인 포인트",
+   "def": "부가 기능이 끼어들 수 있는 프로그램 안의 자리."
+  },
+  {
+   "term": "횡단 관심사",
+   "def": "여러 곳에 흩어져 같은 일을 하던 부가 기능."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — @AspectJ support",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java SE 21 — java.lang.reflect.Proxy",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Proxy.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
