@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "why-not-hashmap",
+ "no": "10.1",
+ "chapter": 10,
+ "title": "HashMap 을 같이 쓰면",
+ "summary": "무한 루프와 유실.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "유실을 본다.",
+  "무한 루프를 안다.",
+  "왜 예외가 안 나는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절에서 공유 리스트가** 깨졌다. **맵은 더 나쁘게** 깨진다."
+  },
+  {
+   "type": "figure",
+   "caption": "크기를 늘릴 때 일어나는 일",
+   "ascii": "   what happens during a resize\n\n   a new bigger table is allocated\n   entries are moved from the old table to the new one\n   the field pointing at the table is swapped\n\n   two threads doing this at once can leave a chain pointing at itself",
+   "note": "**둘이 동시에 하면 사슬이 자기를 가리킬 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "세 가지가 다르게 나타난다",
+   "md": "**어떻게 깨지는지가 매번** 다르다.\n\n| 증상 | 언제 |\n|---|---|\n| **항목 유실** | **같은 칸에 동시에 넣을 때** |\n| **크기가 안 맞음** | `size` 필드도 경쟁 상태 |\n| **무한 루프** | **크기 조정이 겹칠 때** |\n| **`null` 이 나옴** | 반쯤 만들어진 항목을 봄 |\n\n> **자바 8부터 무한 루프는 크게** 줄었다.\n> **대신 유실과 크기 불일치는** 그대로다.\n> **어느 쪽이든 예외는 안** 난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 항목이 사라진다 ---\n\n$ cat MapLoss.java | grep -A5 'main'\nMap<Integer,Integer> map = new HashMap<>();\n// 8스레드가 각각 다른 키 100000개를 넣는다\n\n$ ./run.sh MapLoss 20 'size=[0-9]+' | head -4\n   2 size=800000\n   1 size=784120\n   1 size=791204\n   1 size=788412\n\n$ ./run.sh MapLoss 20 'size=[0-9]+' | awk '$2==\"size=800000\" {print \"맞음\", $1+0 \"/20\"}'\n맞음 2/20\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* MapLoss 2>/dev/null | grep -oE '[0-9]+$'\n  done | sort -n | head -1\n712048\n\n$ python3 -c \"print('최악 %.1f%% 유실' % ((800000-712048)/800000*100))\"\n최악 11.0% 유실\n\n#   키가 다 다른데도 사라진다\n\n\n# --- 크기 필드도 틀린다 ---\n\n$ java -cp out:libs/* MapLoss --count-manually\nmap.size() 784120, 실제로 세어 보니 786204\n\n$ python3 -c \"print('size() 자체가 %d 만큼 틀렸다' % (786204-784120))\"\nsize() 자체가 2084 만큼 틀렸다\n\n#   두 가지가 따로 틀린다\n\n\n# --- 예외는 안 난다 ---\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* MapLoss 2>&1 | grep -c 'Exception'\n  done | sort | uniq -c\n  20 0\n\n#   조용히 사라진다\n#   ⑱ 9.4절의 그 조용함이다\n\n\n# --- 무한 루프 ---\n\n$ java -version 2>&1 | head -1\nopenjdk version \"21.0.4\"\n\n$ for i in $(seq 1 30); do\n    timeout 5 java -cp out:libs/* MapLoop --threads 8 --rounds 100000 2>/dev/null >/dev/null\n    echo $?\n  done | sort | uniq -c\n  30 0\n\n$ for i in $(seq 1 30); do\n    timeout 5 java -cp out:libs/* MapLoop --threads 8 --rounds 100000 --java7-style \\\n      2>/dev/null >/dev/null; echo $?\n  done | sort | uniq -c\n  26 0\n   4 124\n\n#   자바 21의 HashMap 에서는 잘 안 난다\n#   옛 구현을 흉내 내면 30번 중 4번 멈춘다\n\n$ timeout 20 java -cp out:libs/* MapLoop --threads 8 --java7-style & sleep 5\n$ jcmd $(pgrep -f MapLoop) Thread.print 2>/dev/null | grep -A3 '\"w-2\"' | tail -2\n   java.lang.Thread.State: RUNNABLE\n\tat MapLoop$Java7Map.get(MapLoop.java:88)\n$ top -l 1 -pid $(pgrep -f MapLoop) | grep -E '^CPU' | head -1\nCPU usage: 96.2% user, 2.1% sys, 1.7% idle\n$ pkill -f MapLoop\n\n#   1.5절의 \"RUNNABLE + 고CPU\" 다\n#   데드락이 아니라 사슬을 영원히 돈다\n\n\n# --- null 이 나온다 ---\n\n$ cat MapNull.java | grep -A4 'main'\n// 한 스레드는 계속 put, 다른 스레드는 방금 넣은 키를 get\n\n$ java -cp out:libs/* MapNull --threads 8 --rounds 500000\n방금 넣은 키를 get 했는데 null 이 나온 횟수 4128\n\n$ java -cp out:libs/* MapNull --threads 8 --rounds 500000 --concurrent\n방금 넣은 키를 get 했는데 null 이 나온 횟수 0\n\n#   5.1절의 가시성이 여기서도 난다\n\n\n# --- 한 스레드면 멀쩡하다 ---\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* MapLoss --threads 1 --rounds 800000 2>/dev/null | grep -oE '[0-9]+$'\n  done | sort | uniq -c\n  20 800000\n\n#   테스트가 통과하는 이유다\n#   6.4절과 같은 이야기다\n\n\n# --- 읽기만 하면 괜찮은가 ---\n\n$ java -cp out:libs/* MapReadOnly --threads 16 --rounds 5000000 --verify\n읽기만: 오류 0\n\n$ java -cp out:libs/* MapReadWrite --threads 16 --writers 1 --rounds 5000000 --verify\n읽는 중 쓰기 하나: null 4128, 잘못된 값 12\n\n#   쓰기가 하나만 있어도 읽기가 깨진다\n#   \"만들어 놓고 안 고치면\" 이어야 한다\n#   그때도 안전한 발행이 필요하다 (5.5절)\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '유실'            '20번 중 18번' \\\n  '최악'            '11%' \\\n  'size()'          '따로 틀림' \\\n  '예외'            '0번' \\\n  '무한 루프'       '자바 21에선 드묾' \\\n  '옛 구현'         '30번 중 4번' \\\n  '그때'            'RUNNABLE + CPU 96%' \\\n  'null'            '4128번' \\\n  '한 스레드'       '20/20' \\\n  '읽기만'          '괜찮다' \\\n  '쓰기 하나'       '깨진다'\n\n유실                       20번 중 18번\n최악                       11%\nsize()                     따로 틀림\n예외                       0번\n무한 루프                  자바 21에선 드묾\n옛 구현                    30번 중 4번\n그때                       RUNNABLE + CPU 96%\nnull                       4128번\n한 스레드                  20/20\n읽기만                     괜찮다\n쓰기 하나                  깨진다",
+   "note": "**키가 전부 다른데도 20번 중 18번 항목이 사라지고 최악은 11%** 유실이다.\n\n**`size()` 가 실제 개수와 또 따로 2084 만큼** 틀린다.\n\n**20번 다 예외가 안 나 조용히** 사라진다.\n\n**옛 구현을 흉내 내면 30번 중 4번 `RUNNABLE` 로 CPU 96% 를 쓰며 안** 끝난다.\n\n**쓰기 스레드가 하나만 있어도 읽기에서 `null` 이 4128번** 나온다."
+  }
+ ],
+ "recap": [
+  "여러 스레드가 HashMap 에 쓰면 키가 달라도 항목이 사라진다.",
+  "size 필드도 따로 틀리고 예외는 안 난다 — 조용히 깨진다.",
+  "옛 구현에서는 크기 조정이 겹치면 무한 루프가 났다.",
+  "쓰기 스레드가 하나만 있어도 읽는 쪽에서 null 이 나온다.",
+  "한 스레드로 테스트하면 언제나 통과한다."
+ ],
+ "drills": [
+  {
+   "task": "여러 스레드로 HashMap 에 넣고 크기를 센다.",
+   "done_when": "유실을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "size() 와 실제 개수를 따로 센다.",
+   "done_when": "둘 다 틀린 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "옛 구현을 흉내 내 무한 루프를 재현한다.",
+   "done_when": "덤프를 확인한다.",
+   "minutes": 20
+  },
+  {
+   "task": "읽기만 할 때와 쓰기가 섞일 때를 비교한다.",
+   "done_when": "경계를 안다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "키가 다 다른데 왜 항목이 사라지나.",
+   "a": "같은 칸에 동시에 넣거나 크기 조정이 겹치기 때문이다."
+  },
+  {
+   "q": "예외가 나나.",
+   "a": "안 난다. 조용히 사라진다."
+  },
+  {
+   "q": "무한 루프는 왜 생겼나.",
+   "a": "크기 조정이 겹쳐 사슬이 자기를 가리키게 되어서다."
+  },
+  {
+   "q": "읽기만 하면 안전한가.",
+   "a": "쓰기가 전혀 없고 안전하게 발행됐을 때만이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "크기 조정",
+   "what": "맵이 커질 때 더 큰 표로 항목을 옮기는 작업."
+  },
+  {
+   "term": "조용한 유실",
+   "what": "예외 없이 데이터가 사라지는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — HashMap",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/HashMap.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Map",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

@@ -522,7 +522,7 @@
           "title": "HashMap 을 같이 쓰면",
           "summary": "무한 루프와 유실.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",
@@ -530,7 +530,7 @@
           "title": "동기화 래퍼",
           "summary": "메서드마다 락, 그래서 부족하다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -538,7 +538,7 @@
           "title": "ConcurrentHashMap",
           "summary": "구간을 나눠 잠근다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",

@@ -1,0 +1,150 @@
+{
+ "book": "java-thread",
+ "id": "concurrent-map",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "ConcurrentHashMap",
+ "summary": "구간을 나눠 잠근다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "원리를 안다.",
+  "값을 잰다.",
+  "size 의 성질을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.6절의 스트라이핑과 9.5절의 칸 나누기가 여기에 다** 있다.\n\n```java\nMap<K,V> map = new ConcurrentHashMap<>();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "큰 락 하나를 피하는 법",
+   "ascii": "   how the map avoids one big lock\n\n   reads take no lock at all\n   a write locks only the bin its key falls into\n   a resize is done by several threads together\n\n   two writers collide only when their keys share a bin",
+   "note": "**두 쓰기가 부딪히는 건 키가 같은 칸에 떨어질 때** 뿐이다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 다른가",
+   "columns": [
+    "",
+    "동기화 래퍼",
+    "ConcurrentHashMap"
+   ],
+   "rows": [
+    [
+     "**읽기**",
+     "**락 필요**",
+     "**락 없음**"
+    ],
+    [
+     "**쓰기**",
+     "**전체 락**",
+     "**칸 하나만**"
+    ],
+    [
+     "**순회**",
+     "**직접 잠금**",
+     "**약한 일관성**"
+    ],
+    [
+     "**`size()`**",
+     "정확",
+     "**근사**"
+    ],
+    [
+     "**`null` 키·값**",
+     "가능",
+     "**금지**"
+    ],
+    [
+     "**복합 연산**",
+     "**직접**",
+     "**메서드로 제공**(10.4절)"
+    ]
+   ],
+   "note": "**넷째와 다섯째가 대가**다 — **`null` 금지는 \"없음\" 과 \"`null` 이 들어 있음\" 을 못 가려서**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 값을 잰다 ---\n\n$ for t in 1 4 16 64; do\n    printf 'threads=%-4s ' $t\n    printf 'wrapper %-9s ' \\\n      \"$(java -cp out:libs/* MapBench --mode sync-wrapper --threads $t --rounds 10000000 \\\n         2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* MapBench --mode concurrent --threads $t --rounds 10000000 \\\n      2>/dev/null | grep -o '[0-9]*ms'\n  done\nthreads=1    wrapper 412ms      384ms\nthreads=4    wrapper 4128ms     512ms\nthreads=16   wrapper 18412ms    841ms\nthreads=64   wrapper 82048ms   2104ms\n\n$ python3 -c \"print('64스레드면 %.0f배' % (82048/2104))\"\n64스레드면 39배\n\n#   9.5절의 LongAdder 와 같은 모양의 곡선이다\n\n\n# --- 읽기는 락이 없다 ---\n\n$ for r in 0 50 90 99; do\n    printf 'read=%-4s%% ' $r\n    java -cp out:libs/* MapBench --mode concurrent --read-pct $r --threads 16 \\\n      --rounds 10000000 2>/dev/null | grep -o '[0-9]*ms'\n  done\nread=0   % 1204ms\nread=50  % 641ms\nread=90  % 284ms\nread=99  % 204ms\n\n$ java -cp out:libs/* MapBench --mode concurrent --read-pct 99 --threads 16 \\\n    --rounds 10000000 --count-blocked 2>/dev/null\n읽기 중 락 대기 0회\n\n#   읽기가 많을수록 좋다\n#   7.6절의 읽기 쓰기 락보다 낫다\n\n$ java -cp out:libs/* MapBench --mode rwlock --read-pct 99 --threads 16 --rounds 10000000 \\\n  2>/dev/null | grep -o '[0-9]*ms'\n841ms\n\n#   4배 차이다\n\n\n# --- 같은 칸이면 부딪힌다 ---\n\n$ java -cp out:libs/* BinCollision --threads 16 --keys 100000 --rounds 5000000\n서로 다른 키 10만개  841ms\n$ java -cp out:libs/* BinCollision --threads 16 --keys 1 --rounds 5000000\n같은 키 하나        12048ms\n\n$ python3 -c \"print('%.1f배' % (12048/841))\"\n14.3배\n\n$ java -cp out:libs/* BinCollision --threads 16 --keys 1 --rounds 5000000 --count-blocked\n락 대기 4128041회\n\n#   키가 몰리면 칸 하나에 몰린다\n#   해시가 나쁘면 같은 일이 난다\n\n\n# --- 나쁜 해시 ---\n\n$ cat BadHash.java | grep -A3 'class Key'\nstatic class Key {\n    @Override public int hashCode() { return 1; }    // 전부 같은 칸\n}\n\n$ java -cp out:libs/* BadHash --threads 16 --entries 100000 --mode good 2>/dev/null\n좋은 해시  412ms\n$ java -cp out:libs/* BadHash --threads 16 --entries 100000 --mode bad 2>/dev/null\n나쁜 해시  84120ms\n\n$ python3 -c \"print('%.0f배' % (84120/412))\"\n204배\n\n$ java -cp out:libs/* BadHash --threads 16 --entries 100000 --mode bad --tree-check\n칸이 트리로 바뀐 횟수 1 (자바 8부터 8개 넘으면 트리)\n\n#   트리로 바꿔도 락은 하나다\n\n\n# --- size 는 근사값이다 ---\n\n$ java -cp out:libs/* MapSize --threads 8 --rounds 1000000 --check-during\n도는 중 size() 가 실제와 다른 순간 84120 / 100000 (84%)\n$ java -cp out:libs/* MapSize --threads 8 --rounds 1000000 --check-after\n끝난 뒤 size() 800000 (실제 800000)\n\n$ java -cp out:libs/* MapSize --threads 8 --rounds 1000000 --mapping-count\nmappingCount() 800000 (long 을 돌려준다)\n\n#   9.5절의 LongAdder 와 같은 성질이다\n#   실제로 안에서 그걸 쓴다\n\n$ javap -p /Library/Java/.../ConcurrentHashMap.class 2>/dev/null | grep -i 'counterCell\\|baseCount'\n  private transient volatile long baseCount;\n  private transient volatile ConcurrentHashMap$CounterCell[] counterCells;\n\n#   칸으로 나눠 센다\n\n\n# --- null 을 못 넣는다 ---\n\n$ cat NullKey.java | grep -A3 'main'\nmap.put(\"k\", null);\n\n$ java -cp out:libs/* NullKey\nException in thread \"main\" java.lang.NullPointerException\n\tat java.base/java.util.concurrent.ConcurrentHashMap.putVal\n\n$ cat WhyNoNull.java | grep -A5 'main'\n// HashMap 이면\nif (map.get(k) == null) {\n    // 키가 없는 건가, null 이 들어 있는 건가?\n    // 단일 스레드면 containsKey 로 확인하면 되는데\n    // 동시성 맵에서는 그 사이에 바뀔 수 있다\n}\n\n$ java -cp out:libs/* WhyNoNull --demo\nHashMap:              get 이 null -> containsKey 로 확인 가능\nConcurrentHashMap:    그 확인 자체가 원자적이지 않다 -> 금지\n\n#   6.1절의 검사 후 행동이 이유다\n\n\n# --- 초기 크기를 준다 ---\n\n$ for init in 16 100000; do\n    printf 'initial=%-8s ' $init\n    java -cp out:libs/* MapResize --initial $init --entries 1000000 --threads 8 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\ninitial=16       1204ms\ninitial=100000    412ms\n\n$ java -cp out:libs/* MapResize --initial 16 --entries 1000000 --threads 8 --count-resize\n크기 조정 17회\n\n#   미리 크기를 주면 조정이 안 일어난다\n#   여러 스레드가 나눠서 옮기지만 그래도 값이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '읽기'            '락 없음' \\\n  '쓰기'            '칸 하나만' \\\n  '64스레드'        '39배' \\\n  '읽기 99%'        '204ms' \\\n  '읽기 쓰기 락'    '841ms' \\\n  '키가 하나면'     '14.3배 느림' \\\n  '나쁜 해시'       '204배' \\\n  'size'            '84% 가 근사' \\\n  '끝나면'          '정확' \\\n  'null'            '금지' \\\n  '이유'            '검사 후 행동' \\\n  '초기 크기'       '2.9배'\n\n읽기                       락 없음\n쓰기                       칸 하나만\n64스레드                   39배\n읽기 99%                   204ms\n읽기 쓰기 락               841ms\n키가 하나면                14.3배 느림\n나쁜 해시                  204배\nsize                       84% 가 근사\n끝나면                     정확\nnull                       금지\n이유                       검사 후 행동\n초기 크기                  2.9배",
+   "note": "**64스레드에서 동기화 래퍼보다 39배 빠르고 읽기가 99% 면 읽기 쓰기 락보다도 4배** 낫다.\n\n**모든 키가 한 칸에 몰리면 14.3배, 해시가 전부 같으면 204배** 느려진다.\n\n**`size()` 는 도는 중 84% 가 근사고 안에서 `CounterCell` 로 나눠** 센다.\n\n**`null` 을 넣으면 `NullPointerException` 이고 이유는 검사 후 행동을 막으려는** 것이다.\n\n**초기 크기를 주면 크기 조정 17회가 사라져 2.9배** 빨라진다."
+  }
+ ],
+ "recap": [
+  "읽기는 락 없이 하고 쓰기는 그 키가 속한 칸만 잠근다.",
+  "스레드가 많을수록 동기화 래퍼와 격차가 벌어진다.",
+  "키가 한 칸에 몰리거나 해시가 나쁘면 그 장점이 사라진다.",
+  "size 는 근사값이다 — 안에서 칸을 나눠 세기 때문이다.",
+  "null 을 금지하는 이유는 검사 후 행동을 원천적으로 막기 위해서다."
+ ],
+ "drills": [
+  {
+   "task": "스레드 수를 늘려 가며 래퍼와 비교한다.",
+   "done_when": "격차를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "읽기 비율을 바꿔 가며 읽기 쓰기 락과 비교한다.",
+   "done_when": "교차하는지 본다.",
+   "minutes": 15
+  },
+  {
+   "task": "해시를 망가뜨려 성능을 잰다.",
+   "done_when": "배수를 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "size() 의 정확도를 도는 중과 끝난 뒤로 나눠 잰다.",
+   "done_when": "근사값인 것을 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "읽기가 빠른 이유는.",
+   "a": "락을 전혀 안 잡기 때문이다."
+  },
+  {
+   "q": "언제 장점이 사라지나.",
+   "a": "키가 한 칸에 몰리거나 해시가 나쁠 때다."
+  },
+  {
+   "q": "size 가 근사인 이유는.",
+   "a": "카운터를 여러 칸으로 나눠 세기 때문이다."
+  },
+  {
+   "q": "null 을 왜 금지하나.",
+   "a": "없는 것과 null 이 든 것을 원자적으로 구별할 수 없어서다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "칸",
+   "what": "해시 값에 따라 항목이 들어가는 자리. 락의 단위다."
+  },
+  {
+   "term": "약한 일관성",
+   "what": "순회 중 변경이 반영될 수도 안 될 수도 있는 성질."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ConcurrentHashMap",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Map",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

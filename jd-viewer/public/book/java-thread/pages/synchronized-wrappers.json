@@ -1,0 +1,110 @@
+{
+ "book": "java-thread",
+ "id": "synchronized-wrappers",
+ "no": "10.2",
+ "chapter": 10,
+ "title": "동기화 래퍼",
+ "summary": "메서드마다 락, 그래서 부족하다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "무엇을 고치는지 안다.",
+  "무엇을 못 고치는지 본다.",
+  "값을 잰다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**가장 쉬운 고침은 감싸는** 것이다.\n\n```java\nMap<K,V> map = Collections.synchronizedMap(new HashMap<>());\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "래퍼가 실제로 하는 일",
+   "ascii": "   what the wrapper actually does\n\n   every method is delegated inside one synchronized block\n\n   each call is atomic, two calls in a row are not",
+   "note": "**호출 하나는 원자적이고 연달아 두 번은** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "6.1절의 검사 후 행동이 그대로 남는다",
+   "md": "**메서드 하나만 원자적**이다.\n\n```java\nif (!map.containsKey(k)) map.put(k, v);    // 두 호출 사이가 열려 있다\n```\n\n| 이 모양들이 전부 위험 | |\n|---|---|\n| `containsKey` 후 `put` | **6.1절** |\n| `get` 후 `put` | 같음 |\n| **`get` 후 계산 후 `put`** | 같음 |\n| **순회 중 `remove`** | **10.6절** |\n\n> **고치려면 밖에서 다시** 잠근다 — **그러면 래퍼의 락이 두 겹이** 된다.\n> **10.4절이 이걸 제대로** 푼다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 유실은 고쳐진다 ---\n\n$ ./run.sh SyncMapLoss 20 'size=[0-9]+' | head -2\n  20 size=800000\n\n$ java -cp out:libs/* SyncMapLoss --count-manually\nmap.size() 800000, 실제로 세어 보니 800000\n\n#   10.1절의 유실이 사라졌다\n\n\n# --- 검사 후 행동은 안 고쳐진다 ---\n\n$ cat CheckThenPut.java | grep -A3 'void addIfAbsent'\nvoid addIfAbsent(K k, V v) {\n    if (!map.containsKey(k)) map.put(k, v);\n}\n\n$ java -cp out:libs/* CheckThenPut --threads 8 --keys 1000 --rounds 100000 --verify\n덮어쓴 횟수 4128 (기대 0)\n\n$ java -cp out:libs/* CheckThenPut --threads 8 --keys 1000 --rounds 100000 --external-lock \\\n    --verify\n덮어쓴 횟수 0\n\n#   밖에서 또 잠가야 한다\n#   그러면 락이 두 겹이다\n\n\n# --- 값을 잰다 ---\n\n$ for m in sync-wrapper external-lock concurrent; do\n    printf '%-16s ' $m\n    java -cp out:libs/* MapBench --mode $m --threads 8 --rounds 5000000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nsync-wrapper     8412ms\nexternal-lock   12048ms\nconcurrent        841ms\n\n$ python3 -c \"print('동시성 맵이 %.0f배 빠르다' % (8412/841))\"\n동시성 맵이 10배 빠르다\n\n#   락이 하나뿐이라 6.6절의 그 병목이다\n\n\n# --- 덤프에서 보인다 ---\n\n$ java -cp out:libs/* MapBench --mode sync-wrapper --threads 8 --rounds 20000000 &\n$ sleep 2 && jcmd $! Thread.print | grep -c BLOCKED\n7\n$ jcmd $! Thread.print | grep -oE 'locked <0x[0-9a-f]+>' | sort -u | wc -l\n       1\n$ kill %1\n\n$ java -cp out:libs/* MapBench --mode concurrent --threads 8 --rounds 20000000 &\n$ sleep 2 && jcmd $! Thread.print | grep -c BLOCKED\n0\n$ kill %1\n\n#   6.3절의 그 그림이다\n#   여덟이 락 하나를 두고 다툰다\n\n\n# --- 순회는 직접 잠가야 한다 ---\n\n$ cat WrapperIterate.java | grep -A4 'void iterate'\nfor (K k : map.keySet()) { ... }              // 래퍼가 안 지켜 준다\n\n$ java -cp out:libs/* WrapperIterate --threads 8 --rounds 10000 2>&1 | grep -c ConcurrentModification\n1\n\n$ cat WrapperIterateFixed.java | grep -A4 'synchronized (map)'\nsynchronized (map) {\n    for (K k : map.keySet()) { ... }\n}\n\n$ java -cp out:libs/* WrapperIterateFixed --threads 8 --rounds 10000 2>&1 \\\n  | grep -c ConcurrentModification\n0\n\n#   문서에 그렇게 적혀 있다\n#   그동안 다른 스레드는 전부 막힌다\n\n\n# --- 순회 중에는 다 막힌다 ---\n\n$ java -cp out:libs/* WrapperIterateFixed --threads 8 --entries 1000000 --measure\n순회 1회 412ms, 그동안 다른 스레드 대기 412ms x 7\n\n$ java -cp out:libs/* ConcurrentIterate --threads 8 --entries 1000000 --measure\n순회 1회 384ms, 그동안 다른 스레드 대기 0ms\n\n#   10.6절에서 이 이야기를 판다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '고치는 것'       '유실 · size' \\\n  '못 고치는 것'    '검사 후 행동' \\\n  '덮어쓴 횟수'     '4128' \\\n  '밖에서 잠그면'   '0, 대신 두 겹' \\\n  '값'              '8412ms' \\\n  '동시성 맵'       '841ms' \\\n  '차이'            '10배' \\\n  '덤프'            'BLOCKED 7' \\\n  '락 개수'         '1' \\\n  '순회'            '직접 잠가야' \\\n  '그동안'          '전부 대기'\n\n고치는 것                  유실 · size\n못 고치는 것               검사 후 행동\n덮어쓴 횟수                4128\n밖에서 잠그면              0, 대신 두 겹\n값                         8412ms\n동시성 맵                  841ms\n차이                       10배\n덤프                       BLOCKED 7\n락 개수                    1\n순회                       직접 잠가야\n그동안                     전부 대기",
+   "note": "**래퍼로 10.1절의 유실은 20/20 으로** 사라진다.\n\n**검사 후 행동은 그대로라 4128번** 덮어쓴다.\n\n**락이 하나뿐이라 8412ms 로 동시성 맵보다 10배 느리고 덤프에 `BLOCKED` 가 7개** 찍힌다.\n\n**순회는 래퍼가 안 지켜 줘서 `ConcurrentModificationException` 이** 난다.\n\n**직접 잠그면 순회 412ms 동안 나머지 일곱이 전부** 기다린다."
+  }
+ ],
+ "recap": [
+  "동기화 래퍼는 메서드 하나하나를 원자적으로 만들어 유실을 없앤다.",
+  "연달아 두 번 부르는 검사 후 행동은 그대로 깨진다.",
+  "락이 하나라서 경합이 심하면 동시성 맵보다 10배 느리다.",
+  "순회는 래퍼가 안 지켜 주므로 직접 잠가야 하고 그동안 전부 막힌다.",
+  "고치려고 밖에서 또 잠그면 락이 두 겹이 되어 더 느려진다."
+ ],
+ "drills": [
+  {
+   "task": "래퍼로 10.1절의 유실이 사라지는지 확인한다.",
+   "done_when": "20/20 을 본다.",
+   "minutes": 12
+  },
+  {
+   "task": "검사 후 행동을 래퍼로 해 본다.",
+   "done_when": "여전히 깨지는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "덤프에서 BLOCKED 수와 락 개수를 센다.",
+   "done_when": "병목을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "순회 중 다른 스레드의 대기 시간을 잰다.",
+   "done_when": "대가를 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "동기화 래퍼가 고치는 것은.",
+   "a": "메서드 하나하나의 원자성이다."
+  },
+  {
+   "q": "못 고치는 것은.",
+   "a": "두 호출에 걸친 검사 후 행동이다."
+  },
+  {
+   "q": "왜 느린가.",
+   "a": "맵 전체에 락이 하나뿐이라 모두가 그것을 두고 다퉈서다."
+  },
+  {
+   "q": "순회는 어떻게 해야 하나.",
+   "a": "직접 그 맵을 잠그고 돌아야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "동기화 래퍼",
+   "what": "기존 컬렉션의 모든 메서드를 하나의 락으로 감싼 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Collections.synchronizedMap",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collections.html#synchronizedMap(java.util.Map)",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Map",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ConcurrentHashMap",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
