@@ -1,0 +1,162 @@
+{
+ "book": "java-thread",
+ "id": "states",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "여섯 상태",
+ "summary": "NEW 에서 TERMINATED 까지.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "여섯을 안다.",
+  "무엇이 무엇을 만드는지 안다.",
+  "RUNNABLE 의 함정을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.5절에서 상태별 개수를** 셌다. **그 상태들이 무엇인지** 본다.\n\n```java\nlog.info(\"{}\", t.getState());   // NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "여섯 상태와 그 사이",
+   "ascii": "   six states, and what moves between them\n\n   NEW  -- start -->  RUNNABLE  -- run returns -->  TERMINATED\n\n   RUNNABLE  -- wants a lock -->  BLOCKED\n   RUNNABLE  -- wait, join, park -->  WAITING\n   RUNNABLE  -- sleep, timed wait -->  TIMED_WAITING\n\n   every one of the three comes back to RUNNABLE, never elsewhere",
+   "note": "**셋 다 다시 `RUNNABLE` 로만 돌아오고 다른 데로는 못** 간다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 그 상태를 만드나",
+   "columns": [
+    "상태",
+    "만드는 것",
+    "빠져나오는 조건"
+   ],
+   "rows": [
+    [
+     "**NEW**",
+     "`new Thread(...)`",
+     "`start()`"
+    ],
+    [
+     "**RUNNABLE**",
+     "`start()`",
+     "`run()` 이 끝나거나 아래로"
+    ],
+    [
+     "**BLOCKED**",
+     "**`synchronized` 진입 실패**",
+     "**락을 얻으면**"
+    ],
+    [
+     "**WAITING**",
+     "`wait()`·`join()`·`park()`",
+     "**누가 깨워야**"
+    ],
+    [
+     "**TIMED_WAITING**",
+     "`sleep(n)`·`wait(n)`·`join(n)`",
+     "**시간 또는 알림**"
+    ],
+    [
+     "**TERMINATED**",
+     "`run()` 종료 또는 예외",
+     "**없다**"
+    ]
+   ],
+   "note": "**`BLOCKED` 와 `WAITING` 의 차이가 중요**하다 — **앞은 락 하나만 기다리고 뒤는 조건을** 기다린다."
+  },
+  {
+   "type": "figure",
+   "caption": "RUNNABLE 이 실제로 덮는 것",
+   "ascii": "   what runnable actually covers\n\n   running on a core right now\n   sitting in the run queue waiting for a core\n   blocked inside a system call, reading a socket\n\n   the jvm cannot tell these apart, which is why cpu must be checked",
+   "note": "**JVM 이 셋을 구별 못 해서 CPU 를 같이 봐야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "I/O 대기가 RUNNABLE 로 보인다",
+   "md": "**소켓을 읽는 중인 스레드는 `RUNNABLE`** 이다.\n\n> **OS 입장에서는 블록됐지만 JVM 은 그걸 못** 본다.\n> **`Thread.State` 에 그런 상태가 아예** 없다.\n> **1.5절에서 `RUNNABLE` 인데 CPU 가 3.1% 면 I/O 라고 한 게** 이것이다.\n\n| 보이는 것 | 실제로 |\n|---|---|\n| `RUNNABLE` + CPU 높음 | **계산 중** |\n| **`RUNNABLE` + CPU 낮음** | **I/O 대기** |\n| **`BLOCKED` 여럿** | **락 병목**(6.6절) |\n| **`WAITING` 여럿** | **정상일 수도** — 풀의 대기 스레드 |\n\n> **스택을 같이 봐야 한다** — **`socketRead0` 이나 `park` 가 보이면** 대기다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 여섯을 다 만든다 ---\n\n$ cat AllStates.java | grep -A10 'main'\nObject lock = new Object();\nThread newThread   = new Thread(() -> {}, \"s-new\");\nThread runnable    = new Thread(() -> { while (true) sum++; }, \"s-runnable\");\nThread blocked     = new Thread(() -> { synchronized (lock) {} }, \"s-blocked\");\nThread waiting     = new Thread(() -> { synchronized (o) { o.wait(); } }, \"s-waiting\");\nThread timed       = new Thread(() -> sleep(60000), \"s-timed\");\nThread terminated  = new Thread(() -> {}, \"s-terminated\");\n\n$ java -cp out:libs/* AllStates\n00:21:02.104 [main] INFO  AllStates - s-new         NEW\n00:21:02.104 [main] INFO  AllStates - s-runnable    RUNNABLE\n00:21:02.105 [main] INFO  AllStates - s-blocked     BLOCKED\n00:21:02.105 [main] INFO  AllStates - s-waiting     WAITING\n00:21:02.105 [main] INFO  AllStates - s-timed       TIMED_WAITING\n00:21:02.106 [main] INFO  AllStates - s-terminated  TERMINATED\n\n$ java -cp out:libs/* AllStates 2>/dev/null | awk '{print $NF}' | sort -u | wc -l\n       6\n\n#   여섯을 한 번에 봤다\n\n\n# --- 덤프로도 본다 ---\n\n$ java -cp out:libs/* AllStates --hold &\n$ sleep 1 && jcmd $! Thread.print | grep -A1 '^\"s-' | grep -E '^\"|State'\n\"s-runnable\" #21 [12547] prio=5\n   java.lang.Thread.State: RUNNABLE\n\"s-blocked\" #22 [12548] prio=5\n   java.lang.Thread.State: BLOCKED (on object monitor)\n\"s-waiting\" #23 [12549] prio=5\n   java.lang.Thread.State: WAITING (on object monitor)\n\"s-timed\" #24 [12550] prio=5\n   java.lang.Thread.State: TIMED_WAITING (sleeping)\n\n#   괄호 안이 더 자세하다\n#   NEW 와 TERMINATED 는 덤프에 안 나온다\n\n$ jcmd $! Thread.print | grep -c 's-new\\|s-terminated'\n0\n\n#   OS 스레드가 없으니까\n\n\n# --- BLOCKED 와 WAITING 의 차이 ---\n\n$ jcmd $! Thread.print | grep -A3 '\"s-blocked\"' | tail -2\n   java.lang.Thread.State: BLOCKED (on object monitor)\n\tat AllStates.lambda$3(AllStates.java:18)\n\t- waiting to lock <0x000000061a2c4f18> (a java.lang.Object)\n\n$ jcmd $! Thread.print | grep -A4 '\"s-waiting\"' | tail -3\n   java.lang.Thread.State: WAITING (on object monitor)\n\tat java.base/java.lang.Object.wait0(Native Method)\n\t- waiting on <0x000000061a2c4f28> (a java.lang.Object)\n\n$ printf '%-14s %s\\n' 'waiting to lock' '락을 못 얻어서' 'waiting on' '누가 깨워 주기를'\nwaiting to lock 락을 못 얻어서\nwaiting on      누가 깨워 주기를\n\n#   한 글자 차이인데 뜻이 다르다\n#   6.7절에서 이 둘을 판다\n\n$ kill %1\n\n\n# --- I/O 는 RUNNABLE 이다 ---\n\n$ cat IoState.java | grep -A4 'Thread t'\nThread t = new Thread(() -> {\n    try (var in = new ServerSocket(19999).accept().getInputStream()) {\n        in.read();                           // 아무도 안 보낸다\n    } catch (Exception e) {}\n}, \"io-reader\");\n\n$ java -cp out:libs/* IoState &\n$ sleep 1 && nc localhost 19999 &\n$ sleep 1 && jcmd $(pgrep -f IoState) Thread.print | grep -A3 '\"io-reader\"' | tail -2\n   java.lang.Thread.State: RUNNABLE\n\tat java.base/sun.nio.ch.NioSocketImpl.park(NioSocketImpl.java:181)\n\n$ top -l 1 -pid $(pgrep -f IoState) | grep -E '^CPU' | head -1\nCPU usage: 2.1% user, 1.4% sys, 96.5% idle\n\n#   RUNNABLE 인데 CPU 는 2% 다\n#   스택에 park 가 보인다\n\n$ pkill -f IoState; pkill nc\n\n\n# --- 상태가 바뀌는 것을 지켜본다 ---\n\n$ cat StateWatch.java | grep -A6 'watcher'\nThread watcher = new Thread(() -> {\n    Thread.State last = null;\n    while (target.getState() != TERMINATED) {\n        Thread.State s = target.getState();\n        if (s != last) { log.info(\"-> {}\", s); last = s; }\n    }\n    log.info(\"-> {}\", TERMINATED);\n}, \"watcher\");\n\n$ java -cp out:libs/* StateWatch\n00:21:14.104 [watcher     ] INFO  StateWatch - -> RUNNABLE\n00:21:14.108 [watcher     ] INFO  StateWatch - -> TIMED_WAITING\n00:21:14.612 [watcher     ] INFO  StateWatch - -> RUNNABLE\n00:21:14.614 [watcher     ] INFO  StateWatch - -> BLOCKED\n00:21:15.118 [watcher     ] INFO  StateWatch - -> RUNNABLE\n00:21:15.120 [watcher     ] INFO  StateWatch - -> TERMINATED\n\n#   BLOCKED 에서 곧장 TERMINATED 로 안 간다\n#   반드시 RUNNABLE 을 거친다\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* StateWatch 2>/dev/null | grep -oE '[A-Z_]+$' | tr '\\n' ' '\n    echo\n  done | sort | uniq -c | sort -rn | head -3\n   6 RUNNABLE TIMED_WAITING RUNNABLE BLOCKED RUNNABLE TERMINATED \n   3 RUNNABLE TIMED_WAITING RUNNABLE TERMINATED \n   1 RUNNABLE TIMED_WAITING RUNNABLE BLOCKED RUNNABLE TERMINATED \n\n#   BLOCKED 를 아예 안 거치기도 한다\n#   락이 비어 있으면 바로 들어간다\n\n\n# --- 상태별로 세는 도구 ---\n\n$ cat StateCensus.java | grep -A5 'static void census'\nstatic void census() {\n    Map<Thread.State, Long> m = Thread.getAllStackTraces().keySet().stream()\n            .collect(groupingBy(Thread::getState, counting()));\n    log.info(\"{}\", m);\n}\n\n$ java -cp out:libs/* Mixed --io 5 --cpu 3 --block 2 --census &\n$ sleep 2\n00:21:22.104 [census      ] INFO  Mixed - {RUNNABLE=9, TIMED_WAITING=5, WAITING=3, BLOCKED=2}\n00:21:23.108 [census      ] INFO  Mixed - {RUNNABLE=9, TIMED_WAITING=5, WAITING=3, BLOCKED=2}\n\n$ kill %1\n\n#   1.5절에서 만든 그 도구다\n\n\n# --- 어느 상태가 문제인가 ---\n\n$ printf '%-18s %-30s %s\\n' \\\n  'BLOCKED 여럿'      '같은 락을 다툰다'          '6.6' \\\n  'WAITING 여럿'      '정상일 수 있다'            '11.2' \\\n  'RUNNABLE + 저CPU'  'I/O 대기'                  '1.5' \\\n  'RUNNABLE + 고CPU'  '계산 또는 바쁜 대기'       '8.2' \\\n  'TIMED_WAITING'     'sleep 또는 타임아웃 대기'  '4.2'\n\nBLOCKED 여럿          같은 락을 다툰다                6.6\nWAITING 여럿          정상일 수 있다                  11.2\nRUNNABLE + 저CPU      I/O 대기                        1.5\nRUNNABLE + 고CPU      계산 또는 바쁜 대기             8.2\nTIMED_WAITING         sleep 또는 타임아웃 대기        4.2\n\n\n# --- 풀은 WAITING 이 정상이다 ---\n\n$ java -cp out:libs/* IdlePool --size 10 &\n$ sleep 2 && jcmd $! Thread.print | grep -A3 'pool-1-thread-1' | tail -2\n   java.lang.Thread.State: WAITING (parking)\n\tat java.base/jdk.internal.misc.Unsafe.park(Native Method)\n\n$ jcmd $! Thread.print | grep -c 'WAITING (parking)'\n10\n\n#   할 일이 없어 큐에서 기다린다\n#   놀란 필요 없다\n$ kill %1\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '상태'            '여섯' \\\n  '덤프에 없는 것'  'NEW · TERMINATED' \\\n  'BLOCKED'         'waiting to lock' \\\n  'WAITING'         'waiting on' \\\n  '돌아오는 곳'     '언제나 RUNNABLE' \\\n  'I/O'             'RUNNABLE 로 보임' \\\n  '그때 CPU'        '2.1%' \\\n  '가르는 법'       '스택에 park' \\\n  '풀의 대기'       'WAITING (parking) 10개' \\\n  '전이'            'BLOCKED 를 건너뛰기도'\n\n상태                       여섯\n덤프에 없는 것             NEW · TERMINATED\nBLOCKED                    waiting to lock\nWAITING                    waiting on\n돌아오는 곳                언제나 RUNNABLE\nI/O                        RUNNABLE 로 보임\n그때 CPU                   2.1%\n가르는 법                  스택에 park\n풀의 대기                  WAITING (parking) 10개\n전이                       BLOCKED 를 건너뛰기도",
+   "note": "**여섯 상태를 한 프로그램에서 다 만들어 `getState()` 로 여섯 종류가 다** 찍힌다.\n\n**`NEW` 와 `TERMINATED` 는 OS 스레드가 없어 덤프에 아예 안** 나온다.\n\n**덤프의 `waiting to lock` 과 `waiting on` 이 `BLOCKED` 와 `WAITING` 을** 가른다.\n\n**소켓을 읽는 스레드가 `RUNNABLE` 인데 CPU 는 2.1% 고 스택에 `park` 가** 보인다.\n\n**상태 전이를 지켜보면 `BLOCKED` 에서 곧장 `TERMINATED` 로 안 가고 반드시 `RUNNABLE` 을** 거친다."
+  }
+ ],
+ "recap": [
+  "상태는 여섯이고 대기 상태 셋은 반드시 RUNNABLE 을 거쳐 돌아온다.",
+  "NEW 와 TERMINATED 는 OS 스레드가 없어 덤프에 안 나온다.",
+  "BLOCKED 는 락 하나를 기다리는 것이고 WAITING 은 누가 깨워 주기를 기다리는 것이다.",
+  "I/O 대기는 RUNNABLE 로 보인다 — CPU 사용률과 스택을 같이 봐야 가른다.",
+  "스레드 풀의 WAITING 은 정상이다. 할 일이 없어 큐에서 기다리는 것이다."
+ ],
+ "drills": [
+  {
+   "task": "여섯 상태를 한 프로그램에서 다 만들어 본다.",
+   "done_when": "getState 로 여섯 종류를 찍는다.",
+   "minutes": 15
+  },
+  {
+   "task": "덤프에서 BLOCKED 와 WAITING 의 문구 차이를 찾는다.",
+   "done_when": "두 줄을 구별한다.",
+   "minutes": 12
+  },
+  {
+   "task": "소켓을 읽는 스레드의 상태와 CPU 를 같이 본다.",
+   "done_when": "RUNNABLE 인데 CPU 가 낮은 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "상태 전이를 지켜보는 스레드를 만든다.",
+   "done_when": "반드시 RUNNABLE 을 거치는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "대기 상태에서 어디로 돌아가나.",
+   "a": "언제나 RUNNABLE 로만 돌아간다."
+  },
+  {
+   "q": "BLOCKED 와 WAITING 의 차이는.",
+   "a": "락 하나를 기다리는 것과 조건이 만족되기를 기다리는 것이다."
+  },
+  {
+   "q": "I/O 대기는 어떤 상태로 보이나.",
+   "a": "RUNNABLE 이다. CPU 와 스택을 같이 봐야 가른다."
+  },
+  {
+   "q": "풀 스레드가 WAITING 이면 문제인가.",
+   "a": "아니다. 할 일이 없어 큐에서 기다리는 정상 상태다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "BLOCKED",
+   "what": "synchronized 진입에 실패해 락을 기다리는 상태."
+  },
+  {
+   "term": "WAITING",
+   "what": "wait·join·park 로 누가 깨워 주기를 기다리는 상태."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Thread.State",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.State.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

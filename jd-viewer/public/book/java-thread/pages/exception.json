@@ -1,0 +1,169 @@
+{
+ "book": "java-thread",
+ "id": "exception",
+ "no": "3.7",
+ "chapter": 3,
+ "title": "스레드 안의 예외",
+ "summary": "아무도 안 잡으면 어디로 가나.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "예외가 가는 길을 안다.",
+  "핸들러를 단다.",
+  "삼켜지는 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.1절에서 `Runnable.run()` 은 검사 예외를 못 던진다고** 했다. **런타임 예외는 던질 수 있는데 그게 어디로 가는지가** 문제다."
+  },
+  {
+   "type": "figure",
+   "caption": "예외가 갈 수 있는 곳",
+   "ascii": "   where an exception can go, and where it cannot\n\n   up its own stack        until run returns\n   to the handler          if one is set for this thread\n   to the default handler  if one is set for all\n   to stderr               the last resort\n\n   what it can never do is reach the thread that called start",
+   "note": "**절대 못 가는 곳은 `start()` 를 부른** 스레드다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "start() 는 이미 돌아갔다",
+   "md": "**예외를 전달할 자리가 없다**.\n\n> **`start()` 는 곧바로 돌아온다**(3.2절).\n> **예외는 그보다 한참 뒤에 다른 스택에서** 난다.\n> **`try-catch` 로 `start()` 를 감싸도 아무것도 못** 잡는다.\n\n```java\ntry {\n    t.start();                 // 여기서 예외가 날 리 없다\n} catch (Exception e) {\n    log.error(\"안 잡힌다\", e);   // 절대 안 온다\n}\n```\n\n**잡으려면 세 자리 중 하나**다:\n\n| 자리 | |\n|---|---|\n| **`run()` 안에서** | 가장 확실하다 |\n| **그 스레드의 핸들러** | `setUncaughtExceptionHandler` |\n| **전역 기본 핸들러** | `setDefaultUncaughtExceptionHandler` |"
+  },
+  {
+   "type": "figure",
+   "caption": "같은 실패, 세 가지 경로",
+   "ascii": "   the same failure in three places\n\n   raw thread    printed to stderr, thread dies, program continues\n   submit        stored in the future, nothing printed at all\n   execute       goes to the handler, thread is replaced\n\n   the middle one is the one that disappears",
+   "note": "**가운데 것이 아무 데도 안 나오고** 사라진다."
+  },
+  {
+   "type": "table",
+   "caption": "어디서 던지느냐에 따라",
+   "columns": [
+    "",
+    "출력",
+    "스레드",
+    "잡는 법"
+   ],
+   "rows": [
+    [
+     "**`new Thread`**",
+     "**stderr**",
+     "죽는다",
+     "핸들러"
+    ],
+    [
+     "**`pool.execute`**",
+     "**핸들러**",
+     "**교체된다**",
+     "핸들러"
+    ],
+    [
+     "**`pool.submit`**",
+     "**없음**",
+     "**살아남는다**",
+     "**`Future.get()`**"
+    ],
+    [
+     "`CompletableFuture`",
+     "없음",
+     "살아남는다",
+     "`exceptionally`"
+    ],
+    [
+     "**`@Scheduled`**",
+     "**한 번 찍고**",
+     "**다음 실행이 멈춘다**",
+     "try-catch"
+    ]
+   ],
+   "note": "**셋째 줄이 이 절에서 가장 중요한 줄**이다 — **`submit` 은 예외를 `Future` 에 담아 두고 아무 말도 안** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "핸들러는 로그만 남기지 상태를 안 되돌린다",
+   "md": "**예외가 난 시점에 하던 일은 중간에** 끊긴 상태다.\n\n> **락을 잡고 있었으면** 풀린다(6.2절 — `synchronized` 는 풀리고 `Lock` 은 안 풀린다).\n> **파일을 열고 있었으면 `finally` 는** 돈다.\n> **반쯤 고친 공유 상태는 그대로** 남는다.\n\n**그래서 핸들러의 일은 셋** 중 하나다:\n\n| 할 일 | |\n|---|---|\n| **기록** | 무엇이 왜 죽었나 |\n| **알림** | 지표를 올린다 |\n| **재시작** | **새 스레드를 띄운다** |\n\n> **상태 복구를 핸들러에서 하려 들면 거기서 또 예외가** 난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 그냥 던진다 ---\n\n$ cat Uncaught.java | grep -A6 'main'\npublic static void main(String[] args) throws Exception {\n    Thread t = new Thread(() -> { throw new IllegalStateException(\"터짐\"); }, \"w-0\");\n    try { t.start(); } catch (Exception e) { log.error(\"여기서 잡힐까\", e); }\n    t.join();\n    log.info(\"main 은 살아 있다, w-0 상태 {}\", t.getState());\n}\n\n$ java -cp out:libs/* Uncaught\nException in thread \"w-0\" java.lang.IllegalStateException: 터짐\n\tat Uncaught.lambda$main$0(Uncaught.java:6)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)\n00:18:02.104 [main        ] INFO  Uncaught - main 은 살아 있다, w-0 상태 TERMINATED\n\n$ echo $?\n0\n\n#   \"여기서 잡힐까\" 가 안 찍혔다\n#   종료 코드도 0 이다\n\n\n# --- 그런데 그건 로그가 아니다 ---\n\n$ java -cp out:libs/* Uncaught 2>/dev/null\n00:18:06.204 [main        ] INFO  Uncaught - main 은 살아 있다, w-0 상태 TERMINATED\n\n$ java -cp out:libs/* Uncaught 2>/dev/null | grep -c 'IllegalState'\n0\n\n#   stderr 로 나간다\n#   로그 수집이 stdout 만 보면 안 보인다\n\n\n# --- 핸들러를 단다 ---\n\n$ cat WithHandler.java | grep -A5 'setUncaught'\nt.setUncaughtExceptionHandler((thread, e) ->\n        log.error(\"[{}] 죽음: {}\", thread.getName(), e.getMessage(), e));\n\n$ java -cp out:libs/* WithHandler 2>/dev/null\n00:18:10.104 [w-0         ] ERROR WithHandler - [w-0] 죽음: 터짐\njava.lang.IllegalStateException: 터짐\n\tat WithHandler.lambda$main$0(WithHandler.java:6)\n00:18:10.108 [main        ] INFO  WithHandler - main 은 살아 있다\n\n#   핸들러가 그 스레드에서 돈다\n#   로그로 나간다\n\n\n# --- 전역 핸들러 ---\n\n$ cat GlobalHandler.java | grep -A4 'setDefault'\nThread.setDefaultUncaughtExceptionHandler((thread, e) -> {\n    log.error(\"[{}] 처리 안 된 예외\", thread.getName(), e);\n    metrics.counter(\"thread.死\", \"name\", thread.getName()).increment();\n});\n\n$ java -cp out:libs/* GlobalHandler --threads 3 2>/dev/null\n00:18:14.204 [w-0         ] ERROR GlobalHandler - [w-0] 처리 안 된 예외\n00:18:14.204 [w-1         ] ERROR GlobalHandler - [w-1] 처리 안 된 예외\n00:18:14.205 [w-2         ] ERROR GlobalHandler - [w-2] 처리 안 된 예외\n00:18:14.208 [main        ] INFO  GlobalHandler - 죽은 스레드 수 3\n\n#   전부 잡힌다\n#   스프링 부트 앱의 기동 코드에 두는 자리다\n\n\n# --- 우선순위 ---\n\n$ cat HandlerPriority.java | grep -A4 'setDefault'\nThread.setDefaultUncaughtExceptionHandler((th, e) -> log.error(\"전역\"));\nThread t = new Thread(...);\nt.setUncaughtExceptionHandler((th, e) -> log.error(\"개별\"));\n\n$ java -cp out:libs/* HandlerPriority 2>/dev/null\n00:18:18.104 [w-0         ] ERROR HandlerPriority - 개별\n\n$ java -cp out:libs/* HandlerPriority --no-individual 2>/dev/null\n00:18:20.204 [w-0         ] ERROR HandlerPriority - 전역\n\n#   개별이 있으면 전역은 안 돈다\n\n\n# --- 풀에서는 다르다 ---\n\n$ cat PoolExecute.java | grep -A3 'execute'\npool.execute(() -> { throw new IllegalStateException(\"터짐\"); });\n\n$ java -cp out:libs/* PoolExecute 2>/dev/null\n00:18:24.104 [order-1     ] ERROR PoolExecute - [order-1] 처리 안 된 예외\n00:18:24.108 [main        ] INFO  PoolExecute - 작업 5개 제출 완료\n\n$ java -cp out:libs/* PoolExecute --tasks 5 --fail-every 2 2>/dev/null \\\n  | awk '{print $2}' | sort -u\n[main\n[order-1\n[order-2\n[order-3\n[order-4\n\n#   죽은 스레드 대신 새 스레드가 만들어진다\n#   order-4 까지 늘었다\n\n$ java -cp out:libs/* PoolExecute --tasks 100 --fail-every 2 2>/dev/null \\\n  | awk '{print $2}' | sort -u | wc -l\n      52\n\n#   50번 죽고 50번 새로 만들었다\n#   2.5절의 81us 를 50번 낸 셈이다\n\n\n# --- submit 은 아무 말도 안 한다 ---\n\n$ cat PoolSubmit.java | grep -A3 'submit'\npool.submit(() -> { throw new IllegalStateException(\"터짐\"); });\nlog.info(\"제출 완료\");\n\n$ java -cp out:libs/* PoolSubmit 2>&1\n00:18:30.204 [main        ] INFO  PoolSubmit - 제출 완료\n\n$ java -cp out:libs/* PoolSubmit 2>&1 | grep -ci 'exception\\|error'\n0\n\n$ java -cp out:libs/* PoolSubmit --tasks 1000 2>&1 | grep -ci 'exception'\n0\n\n#   1000번 터졌는데 한 줄도 안 나온다\n#   이 절에서 가장 위험한 자리다\n\n\n# --- Future 를 열어 본다 ---\n\n$ cat SubmitAndGet.java | grep -A6 'Future'\nFuture<?> f = pool.submit(() -> { throw new IllegalStateException(\"터짐\"); });\ntry {\n    f.get();\n} catch (ExecutionException e) {\n    log.error(\"진짜 원인: {}\", e.getCause().getMessage());\n}\n\n$ java -cp out:libs/* SubmitAndGet 2>/dev/null\n00:18:36.104 [main        ] ERROR SubmitAndGet - 진짜 원인: 터짐\n\n$ java -cp out:libs/* SubmitAndGet --print-class 2>/dev/null\n00:18:38.204 [main] INFO  SubmitAndGet - 받은 예외 java.util.concurrent.ExecutionException\n00:18:38.204 [main] INFO  SubmitAndGet - 원인    java.lang.IllegalStateException\n\n#   한 겹 싸여서 온다\n#   11.3절에서 이 이야기를 판다\n\n\n# --- 안 잡는 습관을 찾는다 ---\n\n$ grep -rn 'submit(' src/main/java/ | grep -v 'Future\\|= pool' | head -3\nsrc/main/java/study/th/Batch.java:41:        pool.submit(() -> process(item));\nsrc/main/java/study/th/Batch.java:52:        pool.submit(this::cleanup);\n\n$ java -cp out:libs/* Batch --items 100 2>&1 | grep -c 'Exception'\n0\n$ java -cp out:libs/* Batch --items 100 --verify 2>/dev/null | tail -1\n처리 성공 62 / 100\n\n#   38개가 조용히 실패했다\n#   반환값을 안 받으면 안 보인다\n\n\n# --- 고친다 ---\n\n$ cat BatchFixed.java | grep -A8 'List<Future'\nList<Future<?>> futures = new ArrayList<>();\nfor (Item item : items) futures.add(pool.submit(() -> process(item)));\n\nint failed = 0;\nfor (Future<?> f : futures) {\n    try { f.get(); }\n    catch (ExecutionException e) { failed++; log.error(\"실패\", e.getCause()); }\n}\nlog.info(\"실패 {} / {}\", failed, items.size());\n\n$ java -cp out:libs/* BatchFixed --items 100 2>/dev/null | tail -1\n00:18:44.104 [main        ] INFO  BatchFixed - 실패 38 / 100\n\n$ java -cp out:libs/* BatchFixed --items 100 2>/dev/null | grep -c '실패'\n39\n\n#   38개가 다 로그에 남았다\n\n\n# --- 주기 실행은 멈춘다 ---\n\n$ cat Scheduled.java | grep -A3 'scheduleAtFixedRate'\nscheduler.scheduleAtFixedRate(() -> {\n    log.info(\"실행 {}\", n.incrementAndGet());\n    if (n.get() == 3) throw new IllegalStateException(\"터짐\");\n}, 0, 500, TimeUnit.MILLISECONDS);\n\n$ timeout 5 java -cp out:libs/* Scheduled 2>&1\n00:18:48.104 [sched-1     ] INFO  Scheduled - 실행 1\n00:18:48.608 [sched-1     ] INFO  Scheduled - 실행 2\n00:18:49.112 [sched-1     ] INFO  Scheduled - 실행 3\n\n$ timeout 5 java -cp out:libs/* Scheduled 2>&1 | grep -c '실행'\n3\n\n#   5초 동안 10번 돌아야 하는데 3번에서 멈췄다\n#   예외 로그도 안 나온다\n\n$ cat ScheduledFixed.java | grep -A5 'scheduleAtFixedRate'\nscheduler.scheduleAtFixedRate(() -> {\n    try {\n        doWork();\n    } catch (Exception e) { log.error(\"작업 실패, 다음에 계속\", e); }\n}, 0, 500, TimeUnit.MILLISECONDS);\n\n$ timeout 5 java -cp out:libs/* ScheduledFixed 2>/dev/null | grep -c '실행'\n10\n\n#   try-catch 하나로 계속 돈다\n#   11.7절에서 이 이야기를 판다\n\n\n# --- 죽은 스레드를 센다 ---\n\n$ cat DeathCounter.java | grep -A5 'setDefault'\nThread.setDefaultUncaughtExceptionHandler((th, e) -> {\n    deaths.incrementAndGet();\n    log.error(\"[{}] 죽음 (누적 {})\", th.getName(), deaths.get(), e);\n});\n\n$ java -cp out:libs/* DeathCounter --threads 20 --fail-rate 0.3 2>/dev/null | tail -2\n00:18:56.204 [w-17        ] ERROR DeathCounter - [w-17] 죽음 (누적 6)\n00:18:56.208 [main        ] INFO  DeathCounter - 살아 남은 스레드 14 / 20\n\n$ java -cp out:libs/* DeathCounter --threads 20 --fail-rate 0.3 --no-handler 2>/dev/null | tail -1\n00:18:58.304 [main        ] INFO  DeathCounter - 살아 남은 스레드 14 / 20\n\n#   핸들러가 없어도 결과는 같다\n#   다만 무엇이 죽었는지 모른다\n\n\n# --- 3장을 표로 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '3.1'  '만들기'        'Runnable 을 넘긴다' \\\n  '3.2'  'start 와 run'  '이름 종류로 잡는다' \\\n  '3.3'  '데몬'          '종료 조건' \\\n  '3.4'  'join'          'n 에 비례하면 병렬 아님' \\\n  '3.5'  '람다'          '지역은 막고 필드는 안 막음' \\\n  '3.6'  '이름'          '도메인-역할-번호' \\\n  '3.7'  '예외'          'submit 은 조용하다'\n\n3.1      만들기                    Runnable 을 넘긴다\n3.2      start 와 run              이름 종류로 잡는다\n3.3      데몬                      종료 조건\n3.4      join                      n 에 비례하면 병렬 아님\n3.5      람다                      지역은 막고 필드는 안 막음\n3.6      이름                      도메인-역할-번호\n3.7      예외                      submit 은 조용하다\n\n\n# --- 마지막 확인 ---\n\n$ java -cp out:libs/* GlobalHandler --threads 5 --fail-every 2 2>/dev/null | tail -1\n00:19:04.104 [main        ] INFO  GlobalHandler - 죽은 스레드 수 2\n\n$ java -cp out:libs/* BatchFixed --items 50 2>/dev/null | tail -1\n00:19:06.204 [main        ] INFO  BatchFixed - 실패 19 / 50\n\n$ timeout 3 java -cp out:libs/* ScheduledFixed 2>/dev/null | grep -c '실행'\n6\n\n#   4장에서 스레드의 상태를 판다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '못 가는 곳'      'start 를 부른 스레드' \\\n  'try-catch'       '아무것도 못 잡음' \\\n  '기본'            'stderr, 종료 코드 0' \\\n  'stdout 만 보면'  '안 보임' \\\n  '개별 핸들러'     '그 스레드에서 돎' \\\n  '전역 핸들러'     '개별이 있으면 안 돎' \\\n  'execute'         '핸들러 + 스레드 교체' \\\n  '100개 중 50 실패' '스레드 52개 생성' \\\n  'submit'          '1000번 터져도 0줄' \\\n  'Future.get'      'ExecutionException' \\\n  '주기 실행'       '한 번 터지면 멈춤' \\\n  '고치는 법'       'try-catch 하나'\n\n못 가는 곳                 start 를 부른 스레드\ntry-catch                  아무것도 못 잡음\n기본                       stderr, 종료 코드 0\nstdout 만 보면             안 보임\n개별 핸들러                그 스레드에서 돎\n전역 핸들러                개별이 있으면 안 돎\nexecute                    핸들러 + 스레드 교체\n100개 중 50 실패           스레드 52개 생성\nsubmit                     1000번 터져도 0줄\nFuture.get                 ExecutionException\n주기 실행                  한 번 터지면 멈춤\n고치는 법                  try-catch 하나",
+   "note": "**`start()` 를 `try-catch` 로 감싸도 안 잡히고 stderr 로 나가며 종료 코드는 0** 이다.\n\n**`pool.execute` 로 100개 중 50개가 터지면 스레드가 52개까지** 만들어진다.\n\n**`pool.submit` 은 1000번 터져도 로그가 0줄이고 `Future.get()` 을 해야 `ExecutionException` 으로** 나온다.\n\n**배치에서 반환값을 안 받으면 38개가 조용히 실패하고 고치니 38줄이 다** 남는다.\n\n**주기 실행은 세 번째에서 예외가 나자 조용히 멈춰 5초에 3번만** 돌았다."
+  }
+ ],
+ "recap": [
+  "스레드 안의 예외는 start() 를 부른 스레드로 절대 못 간다 — try-catch 로 감싸도 소용없다.",
+  "기본 동작은 stderr 출력이고 종료 코드는 0 이라 stdout 만 수집하면 안 보인다.",
+  "핸들러는 개별이 우선이고 없으면 전역이 돈다. 상태 복구가 아니라 기록·알림·재시작이 할 일이다.",
+  "pool.execute 는 핸들러로 가고 스레드가 교체되지만 pool.submit 은 아무 말도 안 한다.",
+  "submit 의 예외는 Future.get() 에서 ExecutionException 으로 감싸여 나온다 — 안 받으면 영영 모른다."
+ ],
+ "drills": [
+  {
+   "task": "start() 를 try-catch 로 감싸고 예외를 던져 본다.",
+   "done_when": "안 잡히는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "전역 핸들러를 달고 죽은 스레드를 센다.",
+   "done_when": "무엇이 죽었는지 로그로 남긴다.",
+   "minutes": 12
+  },
+  {
+   "task": "execute 와 submit 으로 각각 예외를 던져 출력을 비교한다.",
+   "done_when": "한쪽이 조용한 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "주기 실행에서 예외를 던져 멈추는 것을 재현하고 고친다.",
+   "done_when": "계속 도는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스레드 안의 예외가 절대 못 가는 곳은.",
+   "a": "start() 를 부른 스레드다. 이미 돌아갔기 때문이다."
+  },
+  {
+   "q": "execute 와 submit 의 차이는.",
+   "a": "execute 는 핸들러로 가고 submit 은 Future 에 담겨 조용하다."
+  },
+  {
+   "q": "submit 의 예외를 어떻게 보나.",
+   "a": "Future.get() 을 부르면 ExecutionException 으로 감싸여 나온다."
+  },
+  {
+   "q": "주기 실행에서 예외가 나면.",
+   "a": "다음 실행이 조용히 멈춘다. try-catch 로 감싸야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "처리 안 된 예외 핸들러",
+   "what": "run() 밖으로 나온 예외를 마지막에 받는 콜백."
+  },
+  {
+   "term": "ExecutionException",
+   "what": "Future 가 담아 둔 작업의 예외를 감싸서 돌려주는 예외."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Thread.UncaughtExceptionHandler",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.UncaughtExceptionHandler.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Future",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Future.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

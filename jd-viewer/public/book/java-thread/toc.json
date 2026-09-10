@@ -169,7 +169,7 @@
           "title": "스레드 안의 예외",
           "summary": "아무도 안 잡으면 어디로 가나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -184,7 +184,7 @@
           "title": "여섯 상태",
           "summary": "NEW 에서 TERMINATED 까지.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
