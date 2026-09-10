@@ -1,0 +1,147 @@
+{
+ "book": "kafka",
+ "id": "serde-json",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "직렬화",
+ "summary": "JSON · 스키마 · 타입 헤더.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "JsonSerializer 의 동작을 안다.",
+  "역직렬화 실패를 다룬다.",
+  "스키마 선택지를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.3절에서 \"브로커에게 키와 값은 바이트\" 라고** 했다. **객체↔바이트 변환은 클라이언트의 일**이다."
+  },
+  {
+   "type": "table",
+   "caption": "직렬화 선택지",
+   "columns": [
+    "형식",
+    "크기",
+    "스키마",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**JSON**",
+     "크다",
+     "**없다**",
+     "**시작하기 쉽다.** 대부분 여기서 시작"
+    ],
+    [
+     "**Avro**",
+     "작다",
+     "**있다(레지스트리)**",
+     "호환성 검사가 강하다"
+    ],
+    [
+     "Protobuf",
+     "작다",
+     "있다",
+     "gRPC 를 쓰면 자연스럽다"
+    ],
+    [
+     "String",
+     "—",
+     "없다",
+     "이미 직렬화된 것을 넘길 때"
+    ],
+    [
+     "byte[]",
+     "—",
+     "없다",
+     "가장 낮은 층"
+    ]
+   ],
+   "note": "**JSON 으로 시작하고 필요해지면 Avro 로** 간다. **필요해지는 시점은 대개 \"컨슈머가 여러 팀\" 일 때**(11.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "__TypeId__ 헤더의 함정",
+   "md": "**`JsonSerializer` 는 클래스 이름을 헤더에** 넣는다.\n\n```\n__TypeId__=com.acme.order.OrderPlaced\n```\n\n**`JsonDeserializer` 는 그걸 보고 그 클래스로** 만든다.\n\n| 문제 | |\n|---|---|\n| **컨슈머에 그 클래스가 없다** | `ClassNotFoundException` |\n| **패키지를 바꿨다** | 옛 레코드를 못 읽는다 |\n| **신뢰할 수 없는 패키지** | 임의 클래스 인스턴스화 위험 |\n\n**그래서 두 가지 설정이** 있다.\n\n```yaml\nspring.kafka.consumer.properties:\n  spring.json.trusted.packages: 'com.acme.events'   # 또는 '*'\n  spring.json.use.type.headers: false               # 헤더를 무시하고\n  spring.json.value.default.type: com.acme.events.OrderPlaced   # 이걸로 고정\n```\n\n> **서비스 간 통신이면 `use.type.headers: false` + `default.type` 이 안전**하다.\n> **생산자의 클래스 이름에 소비자가 묶이지 않는다.**\n\n**아예 헤더를 안 붙이려면**:\n\n```yaml\nspring.kafka.producer.properties:\n  spring.json.add.type.headers: false\n```"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "역직렬화 실패는 무한 루프가 된다",
+   "md": "**잘못된 JSON 이 하나 들어오면**:\n\n```\npoll -> 역직렬화 실패 -> 예외 -> 커밋 안 됨\n  -> 다시 poll -> 같은 레코드 -> 또 실패 -> ...\n```\n\n> **`@KafkaListener` 에 도달하기 전에 터지므로 에러 핸들러도 못** 잡는다(9.4절).\n> **\"독약 레코드(poison pill)\"** 라고 부른다.\n\n**막는 법**:\n\n```yaml\nspring.kafka.consumer:\n  key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer\n  value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer\n  properties:\n    spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer\n    spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer\n```\n\n> **`ErrorHandlingDeserializer` 가 실패를 예외 대신 헤더에 담아** 넘긴다.\n> **그러면 에러 핸들러가 잡아 DLT 로 보낼 수** 있다(9.5절).\n>\n> **이 설정이 없으면 잘못된 레코드 하나가 파티션을 영원히** 막는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "타입 헤더와 독약 레코드",
+   "sql": "$ kt --create --topic ser --partitions 3 --replication-factor 3 >/dev/null\n$ kt --create --topic ser.DLT --partitions 3 --replication-factor 3 >/dev/null\n\n# --- JsonSerializer 가 붙이는 헤더 ---\n\n$ curl -s -X POST localhost:8080/publish -d 'topic=ser&orderId=1'\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C \\\n    -t ser -o -1 -c 1 -e -f 'headers=%h\\npayload=%s\\n' 2>/dev/null\nheaders=__TypeId__=com.acme.events.OrderPlaced\npayload={\"orderId\":1,\"memberId\":1,\"amount\":25000}\n\n\n# --- 컨슈머에 그 클래스가 없으면 ---\n\n#   다른 서비스(패키지가 com.other.events)에서 읽으면:\n#\n#   ERROR o.s.k.s.JsonDeserializer : Could not resolve type id\n#     'com.acme.events.OrderPlaced' as a subtype of ...\n#   Caused by: java.lang.ClassNotFoundException: com.acme.events.OrderPlaced\n\n\n# --- 헤더를 무시하고 고정 타입으로 ---\n\n#   spring.json.use.type.headers: false\n#   spring.json.value.default.type: com.other.events.OrderPlacedView\n\n$ ./gradlew bootRun 2>&1 | grep 'handling order'\nINFO  OrderViewListener : handling orderId=1 (as com.other.events.OrderPlacedView)\n\n#   생산자의 클래스 이름과 무관하게 읽었다\n\n\n# --- 독약 레코드 ---\n\n$ echo 'this is not json' | kcp --topic ser\n\n#   ErrorHandlingDeserializer 없이:\n$ ./gradlew bootRun 2>&1 | grep -c 'JsonParseException'\n2841\n\n$ kcg --describe --group ser-group | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 1\n\n#   같은 예외가 2841번 찍혔다. 랙은 1에서 안 줄어든다\n#   파티션 하나가 영원히 막혔다\n\n$ ./gradlew bootRun 2>&1 | grep -A2 'Error deserializing' | head -3\nERROR o.a.k.c.c.i.Fetcher : [Consumer clientId=..., groupId=ser-group]\n  Error deserializing key/value for partition ser-2 at offset 1.\n  If needed, please seek past the record to continue consumption.\n\n#   \"오프셋을 건너뛰라\" 고 말해 준다. 손으로 해야 한다는 뜻이다\n\n\n# --- ErrorHandlingDeserializer 를 붙인다 ---\n\n$ ./gradlew bootRun 2>&1 | grep -E 'sending to ser.DLT|DeserializationException'\nINFO  DeadLetterPublishingRecoverer : Original record (topic='ser', partition=2,\n  offset=1) : sending to ser.DLT\n\n$ kcg --describe --group ser-group2 | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 0\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C \\\n    -t ser.DLT -o beginning -e -f 'headers=%h\\npayload=%s\\n' 2>/dev/null | head -4\nheaders=kafka_dlt-original-topic=ser,kafka_dlt-original-offset=1,\nkafka_dlt-exception-fqcn=org.springframework.kafka.support.serializer.DeserializationException,\nkafka_dlt-exception-message=failed to deserialize\npayload=this is not json\n\n#   원문이 그대로 DLT 에 있다. 파티션은 계속 돈다\n\n\n# --- 크기 비교 ---\n\n$ java -cp 'out:libs/*' SerdeSizeBench --records 10000\nformat    avg record size   topic size\nJSON      142 bytes         1.42 MB\nAvro       38 bytes         0.38 MB\nProtobuf   41 bytes         0.41 MB\n\n#   같은 데이터인데 JSON 이 3.7배다\n#   초당 10만 건이면 하루에 100GB 대 27GB 차이\n\n\n# --- 압축을 켜면 격차가 줄어든다 (6.5절) ---\n\n$ java -cp 'out:libs/*' SerdeSizeBench --records 10000 --compression lz4\nformat    topic size (lz4)\nJSON      0.41 MB\nAvro      0.29 MB\n\n#   JSON + lz4 가 Avro 무압축과 비슷하다\n#   \"JSON 은 크다\" 는 압축을 안 쓸 때 이야기다\n\n$ kt --delete --topic ser >/dev/null; kt --delete --topic ser.DLT >/dev/null"
+  }
+ ],
+ "recap": [
+  "직렬화는 클라이언트의 일이다. JSON 으로 시작하고 필요하면 Avro 로 간다.",
+  "JsonSerializer 는 __TypeId__ 헤더에 클래스 이름을 넣는다. 서비스 간에는 use.type.headers=false + default.type 이 안전하다.",
+  "역직렬화 실패는 리스너에 도달하기 전에 터져 에러 핸들러가 못 잡는다. 파티션이 영원히 막힌다.",
+  "ErrorHandlingDeserializer 를 쓰면 실패를 헤더로 넘겨 DLT 로 보낼 수 있다.",
+  "JSON 은 Avro 의 3~4배 크기지만 lz4 압축을 켜면 격차가 줄어든다."
+ ],
+ "drills": [
+  {
+   "task": "JsonSerializer 로 보낸 레코드의 __TypeId__ 헤더를 kcat 으로 확인한다.",
+   "done_when": "클래스 이름이 들어 있는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "잘못된 JSON 을 넣고 ErrorHandlingDeserializer 없이 무한 루프를 재현한다.",
+   "done_when": "같은 예외가 반복되고 랙이 안 주는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "ErrorHandlingDeserializer 를 붙여 DLT 로 가는 것을 확인한다.",
+   "done_when": "랙이 0이 되고 DLT 에 원문이 있는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "__TypeId__ 헤더가 만드는 문제는.",
+   "a": "소비자가 생산자의 클래스 이름·패키지에 묶인다. 클래스가 없으면 ClassNotFound 다."
+  },
+  {
+   "q": "역직렬화 실패가 에러 핸들러로 안 잡히는 이유는.",
+   "a": "리스너 메서드에 도달하기 전에 컨슈머 내부에서 터지기 때문."
+  },
+  {
+   "q": "독약 레코드를 막는 설정은.",
+   "a": "ErrorHandlingDeserializer 로 감싸고 delegate 로 실제 역직렬화기를 지정한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "독약 레코드",
+   "en": "poison pill",
+   "what": "역직렬화가 안 되어 파티션을 막는 레코드."
+  },
+  {
+   "term": "ErrorHandlingDeserializer",
+   "what": "역직렬화 실패를 예외 대신 헤더로 넘기는 래퍼."
+  },
+  {
+   "term": "__TypeId__",
+   "what": "JsonSerializer 가 넣는 타입 정보 헤더."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring for Apache Kafka — Serialization",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/serdes.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Confluent — Schema Registry",
+   "url": "https://docs.confluent.io/platform/current/schema-registry/index.html",
+   "publisher": "Confluent"
+  }
+ ]
+}

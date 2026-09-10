@@ -546,7 +546,7 @@
           "title": "직렬화",
           "summary": "JSON · 스키마 · 타입 헤더.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.7",
@@ -554,7 +554,7 @@
           "title": "테스트",
           "summary": "EmbeddedKafka 와 Testcontainers.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
