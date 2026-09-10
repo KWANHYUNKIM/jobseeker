@@ -137,7 +137,7 @@
           "title": "데몬 스레드",
           "summary": "남아 있으면 JVM 이 안 끝난다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
@@ -145,7 +145,7 @@
           "title": "join",
           "summary": "끝나기를 기다린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",

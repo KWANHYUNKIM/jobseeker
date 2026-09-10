@@ -1,0 +1,168 @@
+{
+ "book": "java-thread",
+ "id": "daemon",
+ "no": "3.3",
+ "chapter": 3,
+ "title": "데몬 스레드",
+ "summary": "남아 있으면 JVM 이 안 끝난다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "종료 조건을 안다.",
+  "데몬으로 바꾼다.",
+  "데몬이 위험한 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**`main` 이 끝나면 프로그램이 끝나는 게** 아니다. **스레드가 하나라도 남아 있으면 안** 끝난다.\n\n```java\nt.setDaemon(true);    // start() 전에 불러야 한다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "JVM 이 끝나는 조건",
+   "ascii": "   when the jvm decides to stop\n\n   count the threads that are still alive\n   ignore the ones marked as daemon\n   if nothing is left, run the shutdown hooks and exit\n\n   main finishing is not the condition, an empty count is",
+   "note": "**`main` 이 끝나는 게 조건이 아니라 세어 남는 게 없는 게** 조건이다."
+  },
+  {
+   "type": "table",
+   "caption": "두 종류",
+   "columns": [
+    "",
+    "일반 스레드",
+    "데몬 스레드"
+   ],
+   "rows": [
+    [
+     "**JVM 종료를 막나**",
+     "**막는다**",
+     "**안 막는다**"
+    ],
+    [
+     "**종료될 때**",
+     "**끝날 때까지 기다림**",
+     "**중간에 끊긴다**"
+    ],
+    [
+     "`finally` 블록",
+     "돈다",
+     "**안 돌 수 있다**"
+    ],
+    [
+     "**기본값**",
+     "**부모를 따라간다**",
+     "-"
+    ],
+    [
+     "**바꾸는 시점**",
+     "**`start()` 전에만**",
+     "-"
+    ],
+    [
+     "쓰는 자리",
+     "**일하는 스레드**",
+     "**감시·정리·타이머**"
+    ]
+   ],
+   "note": "**셋째 줄이 데몬의 진짜 위험**이다 — **`finally` 도 안 돌 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "종료될 때 데몬이 겪는 것",
+   "ascii": "   what happens to a daemon at exit\n\n   it is not interrupted, not asked, not joined\n   the process simply ends underneath it\n\n   whatever it was in the middle of stays in the middle",
+   "note": "**하던 일 중간에서 그냥** 끊긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "데몬으로 파일을 쓰면 안 된다",
+   "md": "**중간에 끊기면 반쯤 쓴 파일이** 남는다.\n\n```java\nThread writer = new Thread(() -> {\n    try (var out = Files.newBufferedWriter(path)) {\n        for (String line : lines) out.write(line);   // 여기서 JVM 이 끝나면\n    }                                                // close 가 안 돈다\n});\nwriter.setDaemon(true);   // 하면 안 되는 자리\n```\n\n| 데몬으로 두면 안 되는 것 | |\n|---|---|\n| **파일·DB 쓰기** | 반만 쓰인다 |\n| **네트워크 전송** | 반만 나간다 |\n| **락을 잡는 일** | **잡은 채 끊긴다** |\n| **버퍼를 들고 있는 일** | 안 비워진다 |\n\n> **끝나기를 기다려야 하는 일이면 데몬이** 아니다.\n> **종료 시점에 뭔가 해야 하면 종료 훅을** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "종료 훅은 데몬 뒤에 돈다",
+   "md": "**`Runtime.addShutdownHook` 으로 등록한 스레드는 종료 직전에** 돈다.\n\n```java\nRuntime.getRuntime().addShutdownHook(new Thread(() -> {\n    log.info(\"정리한다\");\n    pool.shutdown();\n}, \"shutdown\"));\n```\n\n> **일반 스레드가 다 끝나야 훅이** 시작된다.\n> **훅이 도는 동안 데몬은 아직 살아 있을 수도** 있다.\n> **`kill -9` 나 `System.halt()` 면 훅도 안** 돈다.\n\n**11.6절의 스레드 풀 종료가 이 훅에 들어가는 대표** 코드다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- main 이 끝나도 안 끝난다 ---\n\n$ cat NotDaemon.java\npublic static void main(String[] args) {\n    new Thread(() -> {\n        for (int i = 0; i < 5; i++) { sleep(1000); log.info(\"살아 있다 {}\", i); }\n    }, \"worker\").start();\n    log.info(\"main 끝\");\n}\n\n$ time java -cp out:libs/* NotDaemon\n00:07:02.104 [main        ] INFO  NotDaemon - main 끝\n00:07:03.108 [worker      ] INFO  NotDaemon - 살아 있다 0\n00:07:04.112 [worker      ] INFO  NotDaemon - 살아 있다 1\n00:07:05.116 [worker      ] INFO  NotDaemon - 살아 있다 2\n00:07:06.120 [worker      ] INFO  NotDaemon - 살아 있다 3\n00:07:07.124 [worker      ] INFO  NotDaemon - 살아 있다 4\n\nreal\t0m5.412s\n\n#   main 은 0.1초에 끝났는데 5.4초 걸렸다\n\n\n# --- 데몬으로 바꾼다 ---\n\n$ cat Daemon.java | grep -A2 'Thread t'\nThread t = new Thread(..., \"worker\");\nt.setDaemon(true);\nt.start();\n\n$ time java -cp out:libs/* Daemon\n00:07:12.204 [main        ] INFO  Daemon - main 끝\n\nreal\t0m0.284s\n\n$ python3 -c \"print('%.0f배 빨리 끝난다' % (5.412/0.284))\"\n19배 빨리 끝난다\n\n#   \"살아 있다\" 가 한 줄도 안 찍혔다\n#   시작하자마자 끊겼다\n\n\n# --- 조금 기다려 주면 ---\n\n$ cat DaemonWithSleep.java | grep -A1 'main 끝'\nlog.info(\"main 끝\");\nsleep(2500);\n\n$ java -cp out:libs/* DaemonWithSleep\n00:07:16.104 [main        ] INFO  DaemonWithSleep - main 끝\n00:07:17.108 [worker      ] INFO  DaemonWithSleep - 살아 있다 0\n00:07:18.112 [worker      ] INFO  DaemonWithSleep - 살아 있다 1\n\n$ java -cp out:libs/* DaemonWithSleep 2>/dev/null | grep -c '살아 있다'\n2\n\n#   2.5초 동안 두 번 찍고 끊겼다\n#   3, 4 는 없다\n\n\n# --- start 뒤에는 못 바꾼다 ---\n\n$ cat TooLate.java | grep -A2 't.start'\nt.start();\nt.setDaemon(true);\n\n$ java -cp out:libs/* TooLate\nException in thread \"main\" java.lang.IllegalThreadStateException\n\tat java.base/java.lang.Thread.setDaemon(Thread.java:1621)\n\tat TooLate.main(TooLate.java:8)\n\n#   3.2절의 그 예외다\n\n\n# --- 기본값은 부모를 따라간다 ---\n\n$ cat Inherit.java | grep -A6 'main'\npublic static void main(String[] args) throws Exception {\n    log.info(\"main 데몬? {}\", Thread.currentThread().isDaemon());\n    Thread parent = new Thread(() -> {\n        Thread child = new Thread(() -> {}, \"child\");\n        log.info(\"child 데몬? {}\", child.isDaemon());\n    }, \"parent\");\n    parent.setDaemon(true);\n    parent.start(); parent.join();\n}\n\n$ java -cp out:libs/* Inherit\n00:07:24.104 [main        ] INFO  Inherit - main 데몬? false\n00:07:24.108 [parent      ] INFO  Inherit - child 데몬? true\n\n#   데몬이 만든 스레드는 데몬이다\n#   깜빡 물려받는 자리다\n\n\n# --- finally 가 안 돈다 ---\n\n$ cat DaemonFinally.java | grep -A7 'Thread t'\nThread t = new Thread(() -> {\n    try {\n        log.info(\"열었다\");\n        sleep(3000);\n    } finally {\n        log.info(\"닫는다\");            // 이게 안 돌 수 있다\n    }\n}, \"worker\");\n\n$ java -cp out:libs/* DaemonFinally\n00:07:28.204 [worker      ] INFO  DaemonFinally - 열었다\n00:07:28.208 [main        ] INFO  DaemonFinally - main 끝\n\n$ java -cp out:libs/* DaemonFinally 2>/dev/null | grep -c '닫는다'\n0\n\n#   \"닫는다\" 가 안 찍혔다\n#   try-with-resources 도 마찬가지다\n\n\n# --- 파일이 반만 쓰인다 ---\n\n$ cat DaemonWriter.java | grep -A6 'Thread t'\nThread t = new Thread(() -> {\n    try (var out = Files.newBufferedWriter(Path.of(\"out.txt\"))) {\n        for (int i = 0; i < 100000; i++) out.write(\"line \" + i + \"\\n\");\n    } catch (IOException e) { }\n}, \"writer\");\nt.setDaemon(true);\n\n$ rm -f out.txt && java -cp out:libs/* DaemonWriter && sleep 0.2\n00:07:32.104 [main        ] INFO  DaemonWriter - main 끝\n\n$ wc -l out.txt\n    3541 out.txt\n\n$ tail -1 out.txt\nline 354\n\n$ python3 -c \"print('10만 줄 중 %d 줄, 마지막 줄도 잘렸다' % 3541)\"\n10만 줄 중 3541 줄, 마지막 줄도 잘렸다\n\n#   버퍼가 안 비워졌다\n#   데몬으로 두면 안 되는 자리다\n\n\n# --- 일반 스레드로 바꾸면 ---\n\n$ rm -f out.txt\n$ sed -i '' 's/t.setDaemon(true);//' DaemonWriter.java && javac -d out DaemonWriter.java\n$ java -cp out:libs/* DaemonWriter\n00:07:36.204 [main        ] INFO  DaemonWriter - main 끝\n\n$ wc -l out.txt\n  100000 out.txt\n$ tail -1 out.txt\nline 99999\n\n#   다 쓰고 끝났다\n\n\n# --- 종료 훅 ---\n\n$ cat WithHook.java | grep -A5 'addShutdownHook'\nRuntime.getRuntime().addShutdownHook(new Thread(() -> {\n    log.info(\"훅: 정리 시작\");\n    sleep(300);\n    log.info(\"훅: 정리 끝\");\n}, \"shutdown\"));\n\n$ java -cp out:libs/* WithHook\n00:07:40.104 [main        ] INFO  WithHook - main 끝\n00:07:40.108 [shutdown    ] INFO  WithHook - 훅: 정리 시작\n00:07:40.412 [shutdown    ] INFO  WithHook - 훅: 정리 끝\n\n#   main 이 끝난 뒤에 돈다\n\n\n# --- 일반 스레드가 남으면 훅이 늦게 돈다 ---\n\n$ java -cp out:libs/* WithHookAndWorker\n00:07:44.204 [main        ] INFO  WithHookAndWorker - main 끝\n00:07:45.208 [worker      ] INFO  WithHookAndWorker - 일 0\n00:07:46.212 [worker      ] INFO  WithHookAndWorker - 일 1\n00:07:47.216 [worker      ] INFO  WithHookAndWorker - 일 2\n00:07:47.220 [shutdown    ] INFO  WithHookAndWorker - 훅: 정리 시작\n\n#   일반 스레드가 다 끝난 뒤에야 훅이 시작된다\n\n\n# --- kill -9 면 훅도 안 돈다 ---\n\n$ java -cp out:libs/* WithHookLong &\n$ sleep 1 && kill -TERM %1 && sleep 1\n00:07:52.104 [shutdown    ] INFO  WithHookLong - 훅: 정리 시작\n00:07:52.408 [shutdown    ] INFO  WithHookLong - 훅: 정리 끝\n\n$ java -cp out:libs/* WithHookLong &\n$ sleep 1 && kill -9 %1 && sleep 1\n[1]+  Killed\n\n$ java -cp out:libs/* WithHookLong 2>/dev/null & sleep 1; kill -9 %1; sleep 1\n$ echo '훅 로그 없음'\n훅 로그 없음\n\n#   SIGTERM 이면 돌고 SIGKILL 이면 안 돈다\n#   ⑪ 6장의 컨테이너 종료와 같은 이야기다\n\n\n# --- 어디에 데몬이 있나 ---\n\n$ java -cp out:libs/* Mixed --io 3 &\n$ sleep 1 && jcmd $! Thread.print | grep '^\"' | awk -F'\"' '{print $2, ($0 ~ /daemon/ ? \"daemon\" : \"user\")}'\nworker-0 user\nworker-1 user\nworker-2 user\nNotification Thread daemon\nCommon-Cleaner daemon\nSignal Dispatcher daemon\nFinalizer daemon\nReference Handler daemon\nmain user\nG1 Service daemon\nGC Thread#0 daemon\n\n$ jcmd $! Thread.print | grep -c 'daemon'\n11\n$ kill %1\n\n#   JVM 이 만든 것은 거의 다 데몬이다\n#   그래서 내 스레드만 끝나면 프로그램이 끝난다\n\n\n# --- 스레드 풀의 기본값 ---\n\n$ cat PoolDaemon.java | grep -A3 'newFixedThreadPool'\nExecutorService pool = Executors.newFixedThreadPool(2);\npool.submit(() -> log.info(\"일한다\"));\n// shutdown 을 안 부른다\n\n$ time java -cp out:libs/* PoolDaemon\n00:08:02.104 [pool-1-thread-1] INFO  PoolDaemon - 일한다\n00:08:02.108 [main        ] INFO  PoolDaemon - main 끝\n^C\nreal\t0m12.412s   (직접 끊었다)\n\n$ jcmd $(pgrep -f PoolDaemon) Thread.print 2>/dev/null | grep 'pool-1' | head -1\n\"pool-1-thread-1\" #21 [12547] prio=5 os_prio=31 ...\n\n#   기본 스레드 풀은 데몬이 아니다\n#   shutdown 을 안 부르면 영영 안 끝난다\n#   11.6절에서 이 이야기를 판다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '종료 조건'       '일반 스레드가 0' \\\n  'main 끝'         '조건이 아님' \\\n  '일반 스레드'     '5.4초' \\\n  '데몬'            '0.28초' \\\n  '차이'            '19배' \\\n  '데몬 로그'       '한 줄도 안 찍힘' \\\n  'start 뒤'        'IllegalThreadState' \\\n  '기본값'          '부모를 따라감' \\\n  'finally'         '안 돌 수 있음' \\\n  '파일'            '3541/100000 줄' \\\n  '훅'              '일반 스레드 뒤' \\\n  'kill -9'         '훅도 안 돎' \\\n  'JVM 스레드'      '11개가 데몬' \\\n  '스레드 풀'       '데몬 아님'\n\n종료 조건                  일반 스레드가 0\nmain 끝                    조건이 아님\n일반 스레드                5.4초\n데몬                       0.28초\n차이                       19배\n데몬 로그                  한 줄도 안 찍힘\nstart 뒤                   IllegalThreadState\n기본값                     부모를 따라감\nfinally                    안 돌 수 있음\n파일                       3541/100000 줄\n훅                         일반 스레드 뒤\nkill -9                    훅도 안 돎\nJVM 스레드                 11개가 데몬\n스레드 풀                  데몬 아님",
+   "note": "**`main` 이 0.1초에 끝나도 일반 스레드 때문에 5.4초가 걸리고 데몬이면 0.28초**다.\n\n**데몬으로 두면 `finally` 가 안 돌아 \"닫는다\" 가 0줄** 찍힌다.\n\n**데몬이 파일을 쓰면 10만 줄 중 3541 줄만 남고 마지막 줄도** 잘린다.\n\n**`SIGTERM` 이면 종료 훅이 돌고 `SIGKILL` 이면 안** 돈다.\n\n**덤프를 보면 JVM 이 만든 11개가 다 데몬이고 스레드 풀만** 아니다."
+  }
+ ],
+ "recap": [
+  "JVM 은 main 이 끝나는 게 아니라 일반 스레드가 하나도 안 남았을 때 끝난다.",
+  "데몬 스레드는 종료를 안 막고 중간에 그냥 끊긴다.",
+  "그래서 finally 도 안 돌고 버퍼도 안 비워진다 — 파일·네트워크 작업에 쓰면 안 된다.",
+  "데몬 여부는 start() 전에만 정할 수 있고 기본값은 부모를 따라간다.",
+  "종료 시점에 할 일은 종료 훅에 둔다. 단 SIGKILL 이면 훅도 안 돈다."
+ ],
+ "drills": [
+  {
+   "task": "같은 코드를 일반과 데몬으로 각각 돌려 시간을 잰다.",
+   "done_when": "종료 조건을 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "데몬이 finally 를 안 도는 것을 재현한다.",
+   "done_when": "로그가 0줄인 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "데몬으로 파일을 쓰고 줄 수를 센다.",
+   "done_when": "반만 쓰인 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "종료 훅을 걸고 SIGTERM 과 SIGKILL 로 각각 끝내 본다.",
+   "done_when": "훅이 도는 조건을 안다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JVM 이 끝나는 조건은.",
+   "a": "데몬이 아닌 스레드가 하나도 안 남는 것이다."
+  },
+  {
+   "q": "데몬 스레드가 종료될 때 무엇을 못 하나.",
+   "a": "정리다. finally 도 안 돌고 버퍼도 안 비워진다."
+  },
+  {
+   "q": "데몬 여부는 언제 정하나.",
+   "a": "start() 전에만 가능하다. 기본값은 부모를 따라간다."
+  },
+  {
+   "q": "종료 훅이 안 도는 경우는.",
+   "a": "SIGKILL 이나 halt() 로 끝날 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "데몬 스레드",
+   "what": "JVM 종료를 막지 않는 스레드. 종료 시 중간에 끊긴다."
+  },
+  {
+   "term": "종료 훅",
+   "what": "JVM 이 끝나기 직전에 실행되도록 등록한 스레드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Runtime.addShutdownHook",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runtime.html#addShutdownHook(java.lang.Thread)",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

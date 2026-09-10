@@ -1,0 +1,163 @@
+{
+ "book": "java-thread",
+ "id": "join",
+ "no": "3.4",
+ "chapter": 3,
+ "title": "join",
+ "summary": "끝나기를 기다린다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "기다리는 법을 안다.",
+  "순서를 틀리면 어떻게 되는지 본다.",
+  "결과를 받는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.2절에서 `start()` 는 안** 기다렸다. **기다리려면 따로 말해야** 한다.\n\n```java\nt.start();\nt.join();      // t 가 끝날 때까지 여기서 멈춘다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "join 이 하는 일",
+   "ascii": "   what join does to the caller\n\n   caller  running  -> waiting -> running\n   target  running ............ finished\n\n   the caller stops until the target reaches its end",
+   "note": "**부른 쪽이 멈추고 대상이 끝에 닿을 때까지** 기다린다."
+  },
+  {
+   "type": "figure",
+   "caption": "반복문에서 순서를 틀리면",
+   "ascii": "   joining in a loop still waits for all of them\n\n   start all, then join all     total is the slowest one\n   start one, join, start next  total is the sum of all\n\n   the second one is not concurrent at all",
+   "note": "**아래쪽은 동시성이 아예** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "start 와 join 을 한 반복문에 넣지 않는다",
+   "md": "**가장 흔한 실수**다.\n\n```java\n// 틀린 것 -- 순서대로 돈다\nfor (Thread t : ts) { t.start(); t.join(); }\n\n// 맞는 것 -- 다 띄우고 기다린다\nfor (Thread t : ts) t.start();\nfor (Thread t : ts) t.join();\n```\n\n> **위는 스레드를 쓰는데 시간이 안** 준다.\n> **로그의 스레드 이름은 제대로** 나온다 — **3.2절처럼 이름으로는 못** 잡는다.\n> **잡는 방법은 시간을** 재는 것이다.\n\n| 걸리는 시간 | |\n|---|---|\n| **다 띄우고 기다림** | **가장 느린 하나** |\n| **하나씩 기다림** | **전부의 합** |"
+  },
+  {
+   "type": "table",
+   "caption": "join 의 세 모양",
+   "columns": [
+    "",
+    "하는 일",
+    "돌아오는 조건"
+   ],
+   "rows": [
+    [
+     "**`join()`**",
+     "**끝날 때까지**",
+     "대상이 종료"
+    ],
+    [
+     "**`join(ms)`**",
+     "**최대 그만큼**",
+     "**종료 또는 시간 초과**"
+    ],
+    [
+     "`join(0)`",
+     "무한",
+     "`join()` 과 같다"
+    ],
+    [
+     "**끝난 뒤 부르면**",
+     "**바로 돌아온다**",
+     "-"
+    ],
+    [
+     "**자기를 join**",
+     "**영원히 멈춘다**",
+     "**절대 안 끝난다**"
+    ]
+   ],
+   "note": "**둘째 줄은 돌아온 이유를 안 알려 준다** — **`isAlive()` 로 따로 확인해야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "join 은 결과를 안 돌려준다",
+   "md": "**`Runnable` 이 `void` 라서**다(3.1절).\n\n> **기다릴 수는 있는데 무엇이 나왔는지는 못** 받는다.\n> **그래서 결과를 담을 자리를 밖에 만들어** 둔다.\n> **그 자리가 공유되니 5장과 6장의 문제가 따라** 온다.\n\n```java\nint[] result = new int[1];                 // 담을 자리\nThread t = new Thread(() -> result[0] = compute());\nt.start();\nt.join();                                  // 여기까지 오면 안전하다\nlog.info(\"{}\", result[0]);\n```\n\n> **`join()` 뒤에는 그 스레드가 쓴 값이 보인다** — **5.4절의 happens-before** 다.\n> **11.3절의 `Future` 가 이걸 제대로** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- join 없이 ---\n\n$ cat NoJoin.java | grep -A5 'main'\npublic static void main(String[] args) {\n    for (int i = 0; i < 3; i++)\n        new Thread(() -> { sleep(500); log.info(\"일 끝\"); }, \"w-\" + i).start();\n    log.info(\"main 끝\");\n}\n\n$ java -cp out:libs/* NoJoin\n00:10:02.104 [main        ] INFO  NoJoin - main 끝\n00:10:02.608 [w-0         ] INFO  NoJoin - 일 끝\n00:10:02.608 [w-2         ] INFO  NoJoin - 일 끝\n00:10:02.608 [w-1         ] INFO  NoJoin - 일 끝\n\n#   main 이 먼저 끝났다\n\n\n# --- join 을 넣는다 ---\n\n$ cat WithJoin.java | grep -A6 'main'\nThread[] ts = new Thread[3];\nfor (int i = 0; i < 3; i++) { ts[i] = new Thread(...); ts[i].start(); }\nfor (Thread t : ts) t.join();\nlog.info(\"main 끝\");\n\n$ time java -cp out:libs/* WithJoin\n00:10:06.204 [w-0         ] INFO  WithJoin - 일 끝\n00:10:06.204 [w-1         ] INFO  WithJoin - 일 끝\n00:10:06.205 [w-2         ] INFO  WithJoin - 일 끝\n00:10:06.205 [main        ] INFO  WithJoin - main 끝\n\nreal\t0m0.812s\n\n#   main 이 마지막이다\n\n\n# --- 한 반복문에 넣으면 ---\n\n$ cat JoinInLoop.java | grep -A3 'for (int i'\nfor (int i = 0; i < 3; i++) {\n    Thread t = new Thread(...); t.start(); t.join();\n}\n\n$ time java -cp out:libs/* JoinInLoop\n00:10:10.104 [w-0         ] INFO  JoinInLoop - 일 끝\n00:10:10.608 [w-1         ] INFO  JoinInLoop - 일 끝\n00:10:11.112 [w-2         ] INFO  JoinInLoop - 일 끝\n00:10:11.112 [main        ] INFO  JoinInLoop - main 끝\n\nreal\t0m1.812s\n\n$ python3 -c \"print('%.1f배 느리다' % (1.812/0.812))\"\n2.2배 느리다\n\n#   스레드 이름은 w-0 w-1 w-2 로 제대로 나온다\n#   3.2절처럼 이름으로는 못 잡는다\n\n\n# --- 시간으로 잡는다 ---\n\n$ for n in 3 10 30; do\n    printf 'n=%-4s ' $n\n    printf '%-14s ' \"$(java -cp out:libs/* WithJoin --n $n 2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* JoinInLoop --n $n 2>/dev/null | grep -o '[0-9]*ms'\n  done\nn=3    504ms         1512ms\nn=10   508ms         5024ms\nn=30   512ms         15048ms\n\n$ python3 -c \"print('n 이 커질수록 벌어진다: %.0f배' % (15048/512))\"\nn 이 커질수록 벌어진다: 29배\n\n#   앞은 거의 안 늘고 뒤는 비례한다\n#   \"n 에 비례하면 병렬이 아니다\"\n\n\n# --- 시간 제한 join ---\n\n$ cat JoinTimeout.java | grep -A5 'main'\nThread t = new Thread(() -> sleep(3000), \"slow\");\nt.start();\nlong s = System.currentTimeMillis();\nt.join(500);\nlog.info(\"{}ms 뒤 돌아옴, 아직 살아 있나 {}\", System.currentTimeMillis() - s, t.isAlive());\n\n$ java -cp out:libs/* JoinTimeout\n00:10:20.604 [main        ] INFO  JoinTimeout - 502ms 뒤 돌아옴, 아직 살아 있나 true\n00:10:23.108 [slow        ] INFO  JoinTimeout - slow 끝\n\n#   기다리다 포기했다\n#   그런데 스레드는 계속 돈다\n\n$ java -cp out:libs/* JoinTimeout --wait 5000\n00:10:28.104 [slow        ] INFO  JoinTimeout - slow 끝\n00:10:28.105 [main        ] INFO  JoinTimeout - 3004ms 뒤 돌아옴, 아직 살아 있나 false\n\n#   돌아온 이유를 isAlive 로 갈라야 한다\n\n\n# --- 끝난 뒤 join 하면 ---\n\n$ cat JoinAfterDone.java | grep -A4 'main'\nThread t = new Thread(() -> {}, \"w-0\");\nt.start();\nsleep(200);\nlong s = System.nanoTime();\nt.join();\nlog.info(\"{}us 걸림, 상태 {}\", (System.nanoTime()-s)/1000, t.getState());\n\n$ java -cp out:libs/* JoinAfterDone\n00:10:32.304 [main        ] INFO  JoinAfterDone - 12us 걸림, 상태 TERMINATED\n\n#   바로 돌아온다\n\n\n# --- 자기를 join 하면 ---\n\n$ cat JoinSelf.java | grep -A2 'main'\nlog.info(\"join 전\");\nThread.currentThread().join();\nlog.info(\"join 후\");                       // 안 찍힌다\n\n$ timeout 3 java -cp out:libs/* JoinSelf\n00:10:36.104 [main        ] INFO  JoinSelf - join 전\n\n$ echo $?\n124\n\n$ timeout 3 java -cp out:libs/* JoinSelf & sleep 1\n$ jcmd $(pgrep -f JoinSelf) Thread.print 2>/dev/null | grep -A2 '\"main\"'\n\"main\" #1 [8963] prio=5 os_prio=31 cpu=41.20ms elapsed=1.02s\n   java.lang.Thread.State: WAITING (on object monitor)\n\tat java.base/java.lang.Object.wait0(Native Method)\n\n#   자기가 끝나기를 자기가 기다린다\n#   영원히 안 끝난다\n\n\n# --- 결과를 받는다 ---\n\n$ cat JoinResult.java\npublic static void main(String[] args) throws Exception {\n    int[] result = new int[4];\n    Thread[] ts = new Thread[4];\n    for (int i = 0; i < 4; i++) {\n        final int idx = i;\n        ts[i] = new Thread(() -> result[idx] = sum(idx * 250_000, (idx+1) * 250_000), \"w-\" + i);\n        ts[i].start();\n    }\n    for (Thread t : ts) t.join();\n    log.info(\"합 {}\", Arrays.stream(result).sum());\n}\n\n$ ./run.sh JoinResult 20 '합 [0-9]+' | head -2\n  20 합 499999500000\n\n#   20번 다 맞았다\n#   각자 다른 칸에 써서 겹치지 않는다\n\n\n# --- join 을 빼면 ---\n\n$ sed -i '' 's/for (Thread t : ts) t.join();//' JoinResult.java && javac -d out JoinResult.java\n$ ./run.sh JoinResultNoJoin 20 '합 [0-9]+' | head -4\n   9 합 0\n   4 합 31249875000\n   2 합 124999750000\n   1 합 499999500000\n\n$ ./run.sh JoinResultNoJoin 20 '합 [0-9]+' | awk '$3==499999500000 {print \"맞음\", $1\"/20\"}'\n맞음 1/20\n\n#   9번은 아예 0 이다\n#   아직 아무도 안 썼다\n\n\n# --- join 이 보장하는 것 ---\n\n$ cat JoinVisibility.java | grep -A6 'main'\nint[] box = new int[1];\nThread t = new Thread(() -> { sleep(100); box[0] = 42; }, \"w-0\");\nt.start();\nt.join();\nlog.info(\"box[0] = {}\", box[0]);           // 반드시 42 다\n\n$ ./run.sh JoinVisibility 30 'box\\[0\\] = [0-9]+' | head -2\n  30 box[0] = 42\n\n#   30번 다 42 다\n#   volatile 도 synchronized 도 없다\n#   5.4절에서 왜 그런지 본다\n\n\n# --- 시간을 재는 도구 ---\n\n$ cat is-parallel.sh\n#!/bin/sh\n# n 을 늘려도 시간이 안 늘면 병렬이다\nfor n in 2 4 8 16; do\n  printf 'n=%-4s %s\\n' $n \"$(java -cp out:libs/* \"$1\" --n $n 2>/dev/null | grep -o '[0-9]*ms')\"\ndone\n\n$ ./is-parallel.sh WithJoin\nn=2    504ms\nn=4    506ms\nn=8    508ms\nn=16   512ms\n\n$ ./is-parallel.sh JoinInLoop\nn=2    1008ms\nn=4    2016ms\nn=8    4032ms\nn=16   8064ms\n\n#   두 배씩 는다\n#   이 표가 3.2절의 \"이름 종류 세기\" 에 짝이 된다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'join'            '끝날 때까지 멈춤' \\\n  'join 없이'       'main 이 먼저' \\\n  '다 띄우고 join'  '504ms' \\\n  '한 반복문'       '15048ms' \\\n  'n=30 이면'       '29배' \\\n  '잡는 법'         'n 에 비례하나' \\\n  'join(ms)'        '이유를 안 알려 줌' \\\n  '끝난 뒤'         '12us' \\\n  '자기를 join'     '영원히 WAITING' \\\n  '결과'            '밖에 담을 자리' \\\n  'join 빼면'       '9/20 은 0' \\\n  'join 뒤'         '30/30 보임'\n\njoin                       끝날 때까지 멈춤\njoin 없이                  main 이 먼저\n다 띄우고 join             504ms\n한 반복문                  15048ms\nn=30 이면                  29배\n잡는 법                    n 에 비례하나\njoin(ms)                   이유를 안 알려 줌\n끝난 뒤                    12us\n자기를 join                영원히 WAITING\n결과                       밖에 담을 자리\njoin 빼면                  9/20 은 0\njoin 뒤                    30/30 보임",
+   "note": "**`start()` 와 `join()` 을 한 반복문에 넣으면 n=30 에서 512ms 가 15048ms 로 29배**다.\n\n**스레드 이름은 제대로 나와서 3.2절과 달리 시간이 n 에 비례하는지로** 잡는다.\n\n**`join(500)` 은 돌아온 이유를 안 알려 줘 `isAlive()` 로 따로 확인해야** 한다.\n\n**`join()` 을 빼면 20번 중 9번이 합계 0 으로** 나온다.\n\n**`join()` 뒤에는 `volatile` 없이도 30/30 으로 42 가 보인다 — 5.4절 몫**이다."
+  }
+ ],
+ "recap": [
+  "join() 은 부른 쪽을 멈추고 대상 스레드가 끝날 때까지 기다린다.",
+  "start 와 join 을 한 반복문에 넣으면 순서대로 돌아 동시성이 사라진다.",
+  "이 실수는 스레드 이름으로 안 잡히고 n 에 비례하는 시간으로 잡는다.",
+  "join(ms) 는 돌아온 이유를 안 알려 주므로 isAlive() 로 확인한다.",
+  "join() 은 결과를 안 돌려준다. 밖에 담을 자리를 두고 join 뒤에 읽으면 보인다."
+ ],
+ "drills": [
+  {
+   "task": "join 을 반복문 안과 밖에 두고 n 을 늘려 가며 시간을 잰다.",
+   "done_when": "비례하는지로 가른다.",
+   "minutes": 15
+  },
+  {
+   "task": "join(ms) 로 기다리다 포기해 본다.",
+   "done_when": "isAlive 로 이유를 가른다.",
+   "minutes": 12
+  },
+  {
+   "task": "결과 배열을 두고 join 을 넣고 빼며 결과를 비교한다.",
+   "done_when": "0 이 나오는 경우를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "병렬인지 검사하는 스크립트를 만든다.",
+   "done_when": "두 코드를 구별한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "join 은 누구를 멈추나.",
+   "a": "부른 쪽 스레드다. 대상이 끝날 때까지 기다린다."
+  },
+  {
+   "q": "start 와 join 을 한 반복문에 넣으면.",
+   "a": "순서대로 돌아 전체 시간이 합이 된다."
+  },
+  {
+   "q": "그 실수를 어떻게 잡나.",
+   "a": "스레드 수를 늘려 가며 시간이 비례하는지 본다."
+  },
+  {
+   "q": "join 뒤에 결과를 읽으면 왜 안전한가.",
+   "a": "join 이 happens-before 관계를 만들어 쓴 값이 보인다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "join",
+   "what": "대상 스레드가 끝날 때까지 부른 쪽을 멈추는 호출."
+  },
+  {
+   "term": "담을 자리",
+   "what": "결과를 못 돌려주는 Runnable 대신 밖에 두는 배열이나 필드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}
