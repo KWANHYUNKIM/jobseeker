@@ -1,0 +1,126 @@
+{
+ "book": "java-thread",
+ "id": "happens-before",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "happens-before",
+ "summary": "무엇이 무엇보다 먼저인가.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "규칙을 안다.",
+  "이미 쓴 관계들을 찾는다.",
+  "끊어진 자리를 찾는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.4절에서 `join()` 뒤에는 `volatile` 없이도 값이** 보였다. **왜 그런지가 이 절**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "규칙 한 줄",
+   "ascii": "   the rule in one sentence\n\n   if a happens before b, then everything a wrote is visible to b\n\n   it is not about time, it is about a chain you can point at",
+   "note": "**시간의 문제가 아니라 가리킬 수 있는 사슬의** 문제다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "시간 순서가 아니다",
+   "md": "**\"먼저 일어났다\" 는 이름이 오해를** 부른다.\n\n> **시계로 먼저여도 관계가 없으면 안** 보인다.\n> **관계가 있으면 보인다** — **몇 나노초 차이든**.\n> **5.1절이 그** 예다: **`main` 이 먼저 썼는데도 안** 보였다.\n\n**관계를 만드는 건 정해진 몇 가지**뿐이다:\n\n| 관계 | 어디서 썼나 |\n|---|---|\n| **프로그램 순서** | 한 스레드 안 |\n| **`start()`** | **3.1절** |\n| **`join()`** | **3.4절** |\n| **락 해제 → 획득** | **6장** |\n| **`volatile` 쓰기 → 읽기** | **5.3절** |\n| **`final` 필드** | **5.5절** |\n| 스레드 종료 → `isAlive()` false | - |\n\n> **이 관계는 이어 붙는다** — **A→B 이고 B→C 면 A→C** 다."
+  },
+  {
+   "type": "figure",
+   "caption": "이미 쓰고 있던 관계들",
+   "ascii": "   the edges you already used without naming them\n\n   start        everything before start is visible inside the thread\n   join         everything the thread did is visible after join\n   unlock lock  everything before unlock is visible after the next lock\n   volatile     everything before the write is visible after the read",
+   "note": "**이름을 몰랐을 뿐 3장부터 쓰고** 있었다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "관계 하나가 그 앞의 전부를 실어 나른다",
+   "md": "**`volatile` 필드 하나가 일반 필드 여럿을 같이** 보이게 한다.\n\n```java\nint data;                  // 일반 필드\nvolatile boolean ready;    // volatile\n\n// 쓰는 쪽\ndata = 42;\nready = true;              // 이 쓰기가 위의 쓰기도 실어 보낸다\n\n// 읽는 쪽\nif (ready) {\n    use(data);             // 반드시 42 다\n}\n```\n\n> **`data` 에는 아무것도 안 붙였는데** 보인다.\n> **순서가 중요하다** — **`ready` 를 먼저 쓰면 안** 된다.\n> **5.2절에서 컴파일러가 순서를 뒤집던 그** 예제다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- join 이 만드는 관계 ---\n\n$ cat JoinEdge.java | grep -A6 'main'\nint[] box = new int[1];\nThread t = new Thread(() -> { sleep(50); box[0] = 42; }, \"w\");\nt.start();\nt.join();\nlog.info(\"box[0] = {}\", box[0]);\n\n$ ./run.sh JoinEdge 50 'box\\[0\\] = [0-9]+' | head -2\n  50 box[0] = 42\n\n$ cat JoinEdgeNoJoin.java | grep -A2 't.start'\nt.start();\nsleep(200);                            // 시간으로만 기다린다\n\n$ ./run.sh JoinEdgeNoJoin 50 'box\\[0\\] = [0-9]+' | head -3\n  48 box[0] = 42\n   2 box[0] = 0\n\n#   시간으로 기다린 건 보장이 아니다\n#   50번 중 2번 0 을 봤다\n\n\n# --- start 가 만드는 관계 ---\n\n$ cat StartEdge.java | grep -A5 'main'\nint[] box = new int[1];\nbox[0] = 42;                           // start 보다 먼저 쓴다\nThread t = new Thread(() -> log.info(\"안에서 본 값 {}\", box[0]), \"w\");\nt.start();\n\n$ ./run.sh StartEdge 50 '본 값 [0-9]+' | head -2\n  50 본 값 42\n\n$ cat StartEdgeAfter.java | grep -A4 'start'\nt.start();\nbox[0] = 42;                           // start 뒤에 쓴다\n\n$ ./run.sh StartEdgeAfter 50 '본 값 [0-9]+' | head -3\n  31 본 값 42\n  19 본 값 0\n\n#   한 줄 위아래 차이로 50/50 과 31/50 이 갈린다\n\n\n# --- volatile 이 실어 나른다 ---\n\n$ cat PiggyBack.java\nstatic int data;                       // 일반 필드\nstatic volatile boolean ready;\n\npublic static void main(String[] args) throws Exception {\n    new Thread(() -> {\n        while (!ready) { }\n        log.info(\"data = {}\", data);\n    }, \"reader\").start();\n\n    sleep(50);\n    data = 42;\n    ready = true;\n}\n\n$ ./run.sh PiggyBack 50 'data = [0-9]+' | head -2\n  50 data = 42\n\n$ cat PiggyBackWrong.java | grep -A3 'sleep(50)'\nsleep(50);\nready = true;                          // 순서를 뒤집었다\ndata = 42;\n\n$ ./run.sh PiggyBackWrong 50 'data = [0-9]+' | head -3\n  38 data = 42\n   12 data = 0\n\n#   volatile 필드는 하나인데 순서가 결과를 정한다\n#   5.2절에서 컴파일러가 뒤집던 그 코드다\n\n\n# --- 둘 다 일반이면 ---\n\n$ cat NoEdge.java | grep -E 'static (int|boolean)'\nstatic int data;\nstatic boolean ready;                  // volatile 이 없다\n\n$ timeout 5 ./run.sh NoEdge 10 'data = [0-9]+' | head -2\n(아무것도 안 나온다)\n\n$ timeout 5 java -cp out:libs/* NoEdge 2>/dev/null | grep -c 'data'\n0\n\n#   5.1절처럼 아예 안 끝난다\n\n\n# --- 락도 관계를 만든다 ---\n\n$ cat LockEdge.java | grep -A8 'static'\nstatic int data;\nstatic final Object lock = new Object();\nstatic boolean ready;\n\nstatic void write() { synchronized (lock) { data = 42; ready = true; } }\nstatic boolean read() { synchronized (lock) { return ready; } }\n\n$ ./run.sh LockEdge 50 'data = [0-9]+' | head -2\n  50 data = 42\n\n$ cat LockEdgeDifferent.java | grep -A4 'lock2'\nstatic final Object lock2 = new Object();\nstatic boolean read() { synchronized (lock2) { return ready; } }   // 다른 락\n\n$ timeout 5 java -cp out:libs/* LockEdgeDifferent 2>/dev/null | grep -c 'data'\n0\n\n#   같은 락이어야 관계가 생긴다\n#   6.4절에서 이 이야기를 판다\n\n\n# --- 관계가 이어 붙는다 ---\n\n$ cat Transitive.java | grep -A12 'main'\nint[] box = new int[1];\nvolatile boolean flagA = false, flagB = false;\n\nnew Thread(() -> { box[0] = 42; flagA = true; }, \"a\").start();\nnew Thread(() -> { while (!flagA) {} flagB = true; }, \"b\").start();\nnew Thread(() -> { while (!flagB) {} log.info(\"box = {}\", box[0]); }, \"c\").start();\n\n$ ./run.sh Transitive 50 'box = [0-9]+' | head -2\n  50 box = 42\n\n#   a 가 쓴 것을 c 가 본다\n#   a 와 c 사이에 직접 관계는 없다\n#   b 를 거쳐 이어졌다\n\n\n# --- sleep 은 관계를 안 만든다 ---\n\n$ cat SleepNoEdge.java | grep -A5 'main'\nnew Thread(() -> { data = 42; }, \"w\").start();\nThread.sleep(500);                     // 충분히 기다린다\nlog.info(\"data = {}\", data);\n\n$ ./run.sh SleepNoEdge 100 'data = [0-9]+' | head -3\n  97 data = 42\n   3 data = 0\n\n$ python3 -c \"print('100번 중 3번 0 -- 대개 되지만 보장이 아니다')\"\n100번 중 3번 0 -- 대개 되지만 보장이 아니다\n\n#   4.2절의 sleep 은 대기지 동기화가 아니다\n#   \"충분히 기다렸으니 괜찮다\" 는 근거가 없다\n\n\n# --- 왜 5.1절에서는 sleep 이 고쳤나 ---\n\n$ java -cp out:libs/* StopFlagSleep 2>/dev/null | grep -c '끝났다'\n1\n\n$ printf '%-40s %s\\n' \\\n  '반복문 안의 sleep'      'JIT 최적화를 막는다' \\\n  '관계를 만드나'          '아니다' \\\n  '그래서'                 '우연히 고쳐진 것'\n\n반복문 안의 sleep           JIT 최적화를 막는다\n관계를 만드나               아니다\n그래서                      우연히 고쳐진 것\n\n#   5.1절에서 sleep 을 넣으니 끝난 건 최적화가 막힌 것이지\n#   happens-before 가 생긴 게 아니다\n\n\n# --- 관계를 그림으로 ---\n\n$ java -cp out:libs/* HbTrace --demo piggyback\n[w] data = 42         (프로그램 순서)\n[w] ready = true      (volatile 쓰기)\n      |\n      |  happens-before\n      v\n[r] ready 를 true 로 읽음   (volatile 읽기)\n[r] data 를 읽음      (프로그램 순서)  -> 42 보장\n\n$ java -cp out:libs/* HbTrace --demo sleep\n[w] data = 42\n\n[m] sleep(500)\n[m] data 를 읽음      -> 보장 없음 (연결선 없음)\n\n#   선이 이어지는지만 보면 된다\n\n\n# --- 실무에서 쓰는 관계 ---\n\n$ printf '%-32s %s\\n' \\\n  'BlockingQueue put/take'   '8.5절' \\\n  'CountDownLatch await'     '11.3절' \\\n  'Future.get()'             '11.3절' \\\n  'ExecutorService.submit'   '11.2절' \\\n  'AtomicInteger get/set'    '9.3절' \\\n  'ConcurrentHashMap'        '10.3절'\n\nBlockingQueue put/take     8.5절\nCountDownLatch await       11.3절\nFuture.get()               11.3절\nExecutorService.submit     11.2절\nAtomicInteger get/set      9.3절\nConcurrentHashMap          10.3절\n\n$ java -cp out:libs/* QueueEdge --trials 50\n큐를 통해 받은 값이 항상 최신인가: 50/50\n\n#   이것들을 쓰면 관계가 저절로 생긴다\n#   그래서 대부분의 경우 직접 안 따져도 된다\n\n\n# --- 끊어진 자리를 찾는다 ---\n\n$ cat find-unsynced.sh\n#!/bin/sh\n# 여러 스레드가 쓰는데 volatile 도 락도 없는 필드를 대충 찾는다\ngrep -rn 'static [a-z].* [a-zA-Z_]* *=' src/main/java/ \\\n | grep -v 'final\\|volatile' | head\n\n$ ./find-unsynced.sh\nsrc/main/java/study/th/Cache.java:14:    static boolean loaded = false;\nsrc/main/java/study/th/Stats.java:9:     static long total = 0;\n\n$ ./find-unsynced.sh | wc -l\n       2\n\n#   완벽하진 않지만 시작점은 된다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '규칙'            'A 가 먼저면 A 가 쓴 게 보임' \\\n  '시간'            '관계 없음' \\\n  'join'            '50/50' \\\n  'sleep 으로 대신' '48/50' \\\n  'start 앞'        '50/50' \\\n  'start 뒤'        '31/50' \\\n  'volatile 실어 나르기' '50/50' \\\n  '순서 뒤집으면'   '38/50' \\\n  '둘 다 일반'      '안 끝남' \\\n  '다른 락'         '안 됨' \\\n  '이어 붙음'       'a→b→c' \\\n  '5.1의 sleep'     '우연이었다'\n\n규칙                       A 가 먼저면 A 가 쓴 게 보임\n시간                       관계 없음\njoin                       50/50\nsleep 으로 대신            48/50\nstart 앞                   50/50\nstart 뒤                   31/50\nvolatile 실어 나르기       50/50\n순서 뒤집으면              38/50\n둘 다 일반                 안 끝남\n다른 락                    안 됨\n이어 붙음                  a→b→c\n5.1의 sleep                우연이었다",
+   "note": "**`join()` 이면 50/50 인데 `sleep(200)` 으로 대신하면 48/50 으로 두 번** 어긋난다.\n\n**`start()` 앞에 쓰면 50/50, 한 줄 아래로 옮기면 31/50** 이다.\n\n**`volatile` 하나가 일반 필드를 실어 나르는데 순서를 뒤집으면 38/50 으로** 깨진다.\n\n**같은 락이어야 관계가 생기고 다른 락이면 5.1절처럼 안** 끝난다.\n\n**5.1절에서 `sleep` 이 고친 건 관계 때문이 아니라 JIT 최적화가 막혔기** 때문이다."
+  }
+ ],
+ "recap": [
+  "happens-before 는 시간 순서가 아니라 가리킬 수 있는 관계의 사슬이다.",
+  "start, join, 같은 락의 해제와 획득, volatile 쓰기와 읽기가 그 관계를 만든다.",
+  "관계 하나가 그 앞에서 쓴 일반 필드 전부를 실어 나른다 — 대신 순서를 지켜야 한다.",
+  "sleep 은 아무 관계도 안 만든다. 충분히 기다렸다는 것은 근거가 아니다.",
+  "concurrent 패키지의 도구들은 이 관계를 저절로 만들어 준다."
+ ],
+ "drills": [
+  {
+   "task": "join 과 sleep 으로 각각 기다려 결과를 50번씩 비교한다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "start 앞뒤로 쓰기를 옮겨 본다.",
+   "done_when": "한 줄 차이의 결과를 본다.",
+   "minutes": 12
+  },
+  {
+   "task": "volatile 하나로 일반 필드를 실어 나른 뒤 순서를 뒤집어 본다.",
+   "done_when": "깨지는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "세 스레드로 관계가 이어 붙는 것을 확인한다.",
+   "done_when": "직접 관계 없이 보이는 것을 본다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "happens-before 는 무엇에 대한 규칙인가.",
+   "a": "시간이 아니라 쓴 값이 보이는지에 대한 관계다."
+  },
+  {
+   "q": "관계를 만드는 것 네 가지는.",
+   "a": "start, join, 같은 락의 해제-획득, volatile 쓰기-읽기다."
+  },
+  {
+   "q": "sleep 은 관계를 만드나.",
+   "a": "안 만든다. 오래 기다려도 보장이 없다."
+  },
+  {
+   "q": "volatile 하나가 일반 필드를 보이게 하려면.",
+   "a": "일반 필드를 먼저 쓰고 volatile 을 나중에 써야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "happens-before",
+   "what": "앞의 것이 쓴 값이 뒤의 것에 반드시 보이는 관계."
+  },
+  {
+   "term": "실어 나르기",
+   "what": "한 관계가 그 앞에서 쓴 다른 필드까지 함께 보이게 하는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 17.4: Memory Model",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 8.3.1.4: volatile Fields",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.3.1.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

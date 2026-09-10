@@ -1,0 +1,126 @@
+{
+ "book": "java-thread",
+ "id": "final-safe",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "안전한 발행",
+ "summary": "final 과 생성자 밖으로 새는 this.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "final 의 보장을 안다.",
+  "새는 세 가지를 안다.",
+  "5장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.2절에서 생성자에서 `this` 가 새자 `final` 필드인데 0 이** 보였다. **그 규칙을** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "final 이 받는 추가 약속",
+   "ascii": "   the extra promise final fields get\n\n   when a constructor finishes without leaking this\n   every final field is visible to anyone who sees the object\n\n   no lock, no volatile, no ordering work by the reader",
+   "note": "**읽는 쪽은 락도 `volatile` 도 순서 맞추기도** 필요 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "생성자가 끝나는 자리에 배리어가 있다",
+   "md": "**`final` 필드를 가진 객체는 생성자 끝에서 한 번** 밀어낸다.\n\n```java\nclass Config {\n    private final int timeout;\n    private final List<String> hosts;\n\n    Config(int t, List<String> h) {\n        this.timeout = t;\n        this.hosts = List.copyOf(h);\n    }                                  // 여기서 두 필드가 확정된다\n}\n```\n\n> **이 객체 참조를 아무렇게나 넘겨도 두 필드는 제대로** 보인다.\n> **`volatile` 없이** 그렇다.\n> **불변 객체가 스레드에 안전한 진짜** 이유다.\n\n| 조건 | |\n|---|---|\n| **모든 필드가 `final`** | 필수 |\n| **생성자에서 `this` 안 샘** | **필수** |\n| **가변 객체를 안 담음** | **담으려면 복사** |"
+  },
+  {
+   "type": "figure",
+   "caption": "약속이 깨지는 세 자리",
+   "ascii": "   what breaks the promise\n\n   registering this inside the constructor\n   starting a thread inside the constructor\n   an overridable method called from the constructor\n\n   in all three the object escapes before it is finished",
+   "note": "**셋 다 객체가 완성되기 전에 밖으로** 나간다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "final 이 아닌 필드는 그 보장이 없다",
+   "md": "**같은 객체 안에서도 필드마다** 다르다.\n\n```java\nclass Half {\n    final int a = 1;\n    int b = 2;                 // final 이 아니다\n}\n```\n\n> **다른 스레드가 `a` 는 1 로 보고 `b` 는 0 으로 볼 수** 있다.\n> **아래에서 실제로** 센다.\n\n**그래서 안전하게 넘기는 방법은** 넷이다:\n\n| 방법 | 어디서 |\n|---|---|\n| **모든 필드 `final`** | 이 절 |\n| **`volatile` 필드에 담기** | 5.3절 |\n| **락 안에서 넘기기** | 6장 |\n| **동시성 컬렉션에 넣기** | 10장 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- final 은 보인다 ---\n\n$ cat FinalSafe.java\nstatic class Holder {\n    final int a;\n    Holder(int a) { this.a = a; }\n}\nstatic Holder shared;                  // volatile 도 아니다\n\npublic static void main(String[] args) {\n    new Thread(() -> { shared = new Holder(42); }, \"writer\").start();\n    new Thread(() -> {\n        Holder h;\n        while ((h = shared) == null) { }\n        if (h.a != 42) log.error(\"덜 만들어진 것을 봤다 a={}\", h.a);\n    }, \"reader\").start();\n}\n\n$ java -cp out:libs/* FinalSafe --trials 1000000\n00:45:02.104 [main] INFO  FinalSafe - 100만 회, 덜 만들어진 것을 본 횟수 0\n\n$ for i in $(seq 1 5); do\n    java -cp out:libs/* FinalSafe --trials 1000000 2>/dev/null | grep -oE '[0-9]+$'\n  done\n0\n0\n0\n0\n0\n\n#   500만 번에 0 이다\n\n\n# --- final 이 아니면 ---\n\n$ cat NonFinalUnsafe.java | grep -A3 'class Holder'\nstatic class Holder {\n    int a;                             // final 이 아니다\n    Holder(int a) { this.a = a; }\n}\n\n$ java -cp out:libs/* NonFinalUnsafe --trials 1000000\n00:45:08.204 [main] INFO  NonFinalUnsafe - 100만 회, 덜 만들어진 것을 본 횟수 41\n\n$ for i in $(seq 1 5); do\n    java -cp out:libs/* NonFinalUnsafe --trials 1000000 2>/dev/null | grep -oE '[0-9]+$'\n  done\n41\n28\n52\n0\n38\n\n$ python3 -c \"print('평균 %.0f회 -- 0.003%%' % ((41+28+52+0+38)/5))\"\n평균 32회 -- 0.003%\n\n#   낱말 하나 차이다\n\n\n# --- 섞여 있으면 ---\n\n$ cat HalfFinal.java | grep -A4 'class Holder'\nstatic class Holder {\n    final int a;\n    int b;\n    Holder(int v) { this.a = v; this.b = v; }\n}\n\n$ java -cp out:libs/* HalfFinal --trials 1000000\n00:45:14.104 [main] INFO  HalfFinal - a 가 틀린 횟수 0\n00:45:14.104 [main] INFO  HalfFinal - b 가 틀린 횟수 38\n\n#   같은 객체 안에서 갈린다\n\n\n# --- this 가 새면 final 도 소용없다 ---\n\n$ cat LeakInCtor.java\nstatic class Holder {\n    final int a;\n    Holder(List<Holder> registry) {\n        registry.add(this);            // 아직 안 끝났다\n        sleep(1);\n        this.a = 42;\n    }\n}\n\n$ ./run.sh LeakInCtor 30 'a = [0-9]+' | head -3\n  26 a = 0\n   4 a = 42\n\n$ python3 -c \"print('30번 중 26번 0 을 봤다')\"\n30번 중 26번 0 을 봤다\n\n#   2.2절에서 본 그것이다\n#   final 의 보장은 생성자가 끝나야 생긴다\n\n\n# --- 생성자에서 스레드를 띄우면 ---\n\n$ cat StartInCtor.java | grep -A6 'class Worker'\nstatic class Worker {\n    final int id;\n    Worker(int id) {\n        new Thread(this::run, \"w\").start();     // 아직 안 끝났다\n        this.id = id;\n    }\n    void run() { log.info(\"id = {}\", id); }\n}\n\n$ ./run.sh StartInCtor 30 'id = [0-9]+' | head -3\n  22 id = 0\n   8 id = 7\n\n$ cat StartAfterCtor.java | grep -A5 'static Worker create'\nstatic Worker create(int id) {\n    Worker w = new Worker(id);         // 다 만들고\n    w.start();                         // 그다음에 띄운다\n    return w;\n}\n\n$ ./run.sh StartAfterCtor 30 'id = [0-9]+' | head -2\n  30 id = 7\n\n#   공장 메서드로 빼면 된다\n\n\n# --- 생성자에서 재정의 가능한 메서드 ---\n\n$ cat CallOverridable.java\nstatic class Base {\n    Base() { init(); }                 // 자식이 재정의할 수 있다\n    void init() {}\n}\nstatic class Child extends Base {\n    final int value;\n    Child() { this.value = 42; }\n    @Override void init() { log.info(\"init 에서 본 value = {}\", value); }\n}\n\n$ java -cp out:libs/* CallOverridable\n00:45:26.104 [main] INFO  CallOverridable - init 에서 본 value = 0\n\n$ java -cp out:libs/* CallOverridable --after\n00:45:28.204 [main] INFO  CallOverridable - init 에서 본 value = 42\n\n#   스레드가 없어도 0 이 보인다\n#   이건 동시성 문제가 아니라 초기화 순서 문제다\n#   그런데 결과는 똑같이 나쁘다\n\n\n# --- 가변 객체를 담으면 ---\n\n$ cat MutableInside.java | grep -A5 'class Config'\nstatic class Config {\n    final List<String> hosts;\n    Config(List<String> hosts) { this.hosts = hosts; }   // 그대로 담는다\n}\n\n$ java -cp out:libs/* MutableInside --trials 20\n00:45:32.104 [main] INFO  MutableInside - 크기가 달라진 횟수 14 / 20\n\n$ cat CopyInside.java | grep -A2 'Config('\nConfig(List<String> hosts) { this.hosts = List.copyOf(hosts); }\n\n$ java -cp out:libs/* CopyInside --trials 20\n00:45:34.204 [main] INFO  CopyInside - 크기가 달라진 횟수 0 / 20\n\n#   final 은 참조가 안 바뀐다는 뜻이지\n#   가리키는 것이 안 바뀐다는 뜻이 아니다\n\n\n# --- 안전하게 넘기는 네 가지 ---\n\n$ for m in final volatile lock concurrent; do\n    printf '%-12s ' $m\n    java -cp out:libs/* PublishSafely --mode $m --trials 1000000 2>/dev/null \\\n      | grep -oE '[0-9]+$'\n  done\nfinal        0\nvolatile     0\nlock         0\nconcurrent   0\n\n$ java -cp out:libs/* PublishSafely --mode plain --trials 1000000 2>/dev/null | grep -oE '[0-9]+$'\n38\n\n$ for m in final volatile lock concurrent plain; do\n    printf '%-12s ' $m\n    java -cp out:libs/* PublishSafely --mode $m --bench --rounds 100000000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nfinal        412ms\nvolatile     448ms\nlock         4128ms\nconcurrent   1204ms\nplain        408ms\n\n#   final 이 가장 싸고 가장 안전하다\n\n\n# --- 불변으로 만든다 ---\n\n$ cat ImmutableConfig.java\nrecord Config(int timeout, List<String> hosts) {\n    Config {\n        hosts = List.copyOf(hosts);    // 압축 생성자에서 복사\n    }\n}\n\n$ javap -p out/Config.class | head -4\npublic final class Config extends java.lang.Record {\n  private final int timeout;\n  private final java.util.List<java.lang.String> hosts;\n\n$ java -cp out:libs/* RecordSafe --trials 1000000\n00:45:42.104 [main] INFO  RecordSafe - 덜 만들어진 것을 본 횟수 0\n\n#   record 는 필드가 전부 final 이다\n#   이 절의 조건을 자동으로 만족한다\n\n\n# --- 5장을 표로 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '5.1'  '가시성'        '안 끝나는 반복문' \\\n  '5.2'  '캐시와 재배치'  '레지스터가 원인' \\\n  '5.3'  'volatile'      '보이게만 한다' \\\n  '5.4'  'happens-before' '관계의 사슬' \\\n  '5.5'  '안전한 발행'    'final 과 새는 this'\n\n5.1      가시성                    안 끝나는 반복문\n5.2      캐시와 재배치             레지스터가 원인\n5.3      volatile                  보이게만 한다\n5.4      happens-before            관계의 사슬\n5.5      안전한 발행               final 과 새는 this\n\n\n# --- 마지막 확인 ---\n\n$ java -cp out:libs/* FinalSafe --trials 1000000 2>/dev/null | grep -oE '[0-9]+$'\n0\n$ java -cp out:libs/* NonFinalUnsafe --trials 1000000 2>/dev/null | grep -oE '[0-9]+$'\n44\n$ ./run.sh LeakInCtor 20 'a = 0' | head -1\n  17 a = 0\n\n#   6장에서 락으로 원자성을 되찾는다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'final'           '500만에 0회' \\\n  '아니면'          '100만에 32회' \\\n  '섞여 있으면'     'a 0회 b 38회' \\\n  'this 유출'       '30번 중 26번 0' \\\n  '생성자 스레드'   '30번 중 22번 0' \\\n  '재정의 메서드'   '스레드 없이도 0' \\\n  '가변 객체'       '복사해야 함' \\\n  '안전한 방법'     '넷' \\\n  '값'              'final 이 가장 쌈' \\\n  'record'          '조건을 자동 충족'\n\nfinal                      500만에 0회\n아니면                     100만에 32회\n섞여 있으면                a 0회 b 38회\nthis 유출                  30번 중 26번 0\n생성자 스레드              30번 중 22번 0\n재정의 메서드              스레드 없이도 0\n가변 객체                  복사해야 함\n안전한 방법                넷\n값                         final 이 가장 쌈\nrecord                     조건을 자동 충족",
+   "note": "**`final` 필드는 500만 번에 0회 어긋나고 `final` 을 빼면 100만 번에 평균 32회** 어긋난다.\n\n**같은 객체에서 `final` 인 `a` 는 0회, 아닌 `b` 는 38회로** 갈린다.\n\n**생성자에서 `this` 가 새면 30번 중 26번 0 이 보여 `final` 의 보장이** 깨진다.\n\n**가변 리스트를 그대로 담으면 20번 중 14번 크기가 달라지고 복사하면 0**이다.\n\n**네 가지 안전한 방법 중 `final` 이 412ms 로 가장** 싸다."
+  }
+ ],
+ "recap": [
+  "final 필드는 생성자가 끝나면 그 객체를 보는 누구에게나 제대로 보인다.",
+  "그 보장은 생성자에서 this 가 새지 않을 때만 성립한다.",
+  "final 이 아닌 필드는 같은 객체 안이어도 그 보장을 못 받는다.",
+  "final 은 참조가 안 바뀐다는 뜻이지 가리키는 객체가 안 바뀐다는 뜻이 아니다.",
+  "안전하게 넘기는 네 방법 중 final 이 가장 싸고 record 는 조건을 자동으로 만족한다."
+ ],
+ "drills": [
+  {
+   "task": "final 유무만 바꿔 100만 번씩 돌려 비교한다.",
+   "done_when": "한쪽만 어긋나는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성자에서 this 를 유출시켜 본다.",
+   "done_when": "final 의 보장이 깨지는 것을 본다.",
+   "minutes": 15
+  },
+  {
+   "task": "가변 리스트를 담고 복사해 본다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "네 가지 발행 방법의 성능을 잰다.",
+   "done_when": "final 이 가장 싼 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "final 필드가 받는 추가 보장은.",
+   "a": "생성자가 끝나면 그 객체를 보는 누구에게나 값이 보인다."
+  },
+  {
+   "q": "그 보장이 깨지는 조건은.",
+   "a": "생성자 안에서 this 가 밖으로 나가는 것이다."
+  },
+  {
+   "q": "final 이 가변 객체를 담으면.",
+   "a": "참조만 고정되고 내용은 계속 바뀐다. 복사해야 한다."
+  },
+  {
+   "q": "안전하게 발행하는 네 방법은.",
+   "a": "모든 필드 final, volatile 에 담기, 락 안에서 넘기기, 동시성 컬렉션이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "안전한 발행",
+   "what": "만들어진 객체를 다른 스레드가 온전한 상태로 보게 넘기는 것."
+  },
+  {
+   "term": "this 유출",
+   "what": "생성자가 끝나기 전에 그 객체 참조가 밖으로 나가는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 17.5: final Field Semantics",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.5",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17.4: Memory Model",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

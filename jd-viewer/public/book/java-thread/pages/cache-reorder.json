@@ -1,0 +1,163 @@
+{
+ "book": "java-thread",
+ "id": "cache-reorder",
+ "no": "5.2",
+ "chapter": 5,
+ "title": "캐시와 재배치",
+ "summary": "왜 그런 일이 생기나.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "값이 어디 있는지 안다.",
+  "재배치의 세 자리를 안다.",
+  "규칙을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 쓴 값이 안** 보였다. **값이 어디에 머무는지, 왜 순서가 바뀌는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "쓴 값이 보이기까지의 거리",
+   "ascii": "   how far a write has to travel to be seen\n\n   register      not memory at all, invisible to everyone\n   store buffer  written, but not yet visible\n   l1 cache      visible after the coherence protocol runs\n   main memory   visible to all\n\n   the first row is what chapter five point one actually hit",
+   "note": "**5.1절이 실제로 부딪힌 건 맨 윗줄**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "5.1절은 캐시 문제가 아니었다",
+   "md": "**흔히 \"캐시 때문\" 이라고** 하는데 정확하지 않다.\n\n> **하드웨어 캐시는 일관성 프로토콜로 자동으로** 맞춰진다.\n> **그 시간은 수십 나노초**다.\n> **영원히 안 보이는 건 그 위, 레지스터**다.\n\n**5.1절에서 `PrintCompilation` 에 `%` 가 찍혔다** — **JIT 이 반복문을 컴파일하며 필드를 레지스터에** 올렸다:\n\n```\n// 원래\nwhile (running) n++;\n\n// JIT 이 만든 것에 가깝게\nboolean r = running;      // 한 번만 읽는다\nwhile (r) n++;            // 다시 안 읽는다\n```\n\n> **단일 스레드만 보면 이 변환은 완벽히** 옳다.\n> **`running` 을 아무도 안 바꾼다면 결과가** 같다.\n> **컴파일러는 다른 스레드를 고려할 의무가** 없다 — **내가 말해 주기 전까지는**."
+  },
+  {
+   "type": "figure",
+   "caption": "순서가 바뀌는 세 자리",
+   "ascii": "   three places an instruction order can change\n\n   the compiler   moves a read out of a loop\n   the jit        keeps a field in a register\n   the cpu        starts a later load before an earlier store lands\n\n   all three are legal as long as one thread cannot tell",
+   "note": "**한 스레드가 알아챌 수 없는 한 셋 다** 합법이다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 언제 보이나",
+   "columns": [
+    "",
+    "얼마나 걸리나",
+    "고칠 수 있나"
+   ],
+   "rows": [
+    [
+     "**레지스터에 머묾**",
+     "**영원히**",
+     "**`volatile`·락**"
+    ],
+    [
+     "**스토어 버퍼**",
+     "**수십 ns**",
+     "메모리 배리어"
+    ],
+    [
+     "**캐시 일관성**",
+     "**자동**",
+     "안 고쳐도 된다"
+    ],
+    [
+     "**컴파일러 재배치**",
+     "-",
+     "**`volatile`·락**"
+    ],
+    [
+     "**CPU 재배치**",
+     "-",
+     "**메모리 배리어**"
+    ]
+   ],
+   "note": "**`volatile` 은 첫째·넷째를 막고 배리어가 둘째·다섯째를** 막는다 — **5.3절에서 그걸** 본다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "재배치는 눈으로 보기 어렵다",
+   "md": "**하나의 스레드에서는 절대 안** 보인다.\n\n> **두 스레드가 서로의 쓰기를 보는 실험을 해야** 드러난다.\n> **아주 드물게** 난다 — **수백만 번에 몇 번**.\n> **그래서 `jcstress` 같은 도구가 따로** 있다.\n\n**가장 유명한 예가** 이것이다:\n\n```\n초기: x = 0, y = 0\n\n스레드 1:  x = 1;  r1 = y;\n스레드 2:  y = 1;  r2 = x;\n\n순서대로라면 r1 = 0, r2 = 0 은 나올 수 없다\n```\n\n> **그런데 실제로** 나온다.\n> **아래에서 몇 번 나오는지** 센다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- JIT 이 무엇을 했나 ---\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation \\\n    -cp out:libs/* StopFlag 2>/dev/null | grep 'StopFlag::lambda'\n    104   38       3       StopFlag::lambda$main$0 (24 bytes)\n    118   41 %     4       StopFlag::lambda$main$0 @ 2 (24 bytes)\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation \\\n    -cp out:libs/* StopFlagVolatile 2>/dev/null | grep 'lambda' | tail -1\n    121   42 %     4       StopFlagVolatile::lambda$main$0 @ 2 (28 bytes)\n\n#   둘 다 컴파일된다\n#   차이는 컴파일 결과에 있다\n\n\n# --- 어셈블리를 본다 ---\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,StopFlag::lambda* \\\n    -cp out:libs/* StopFlag 2>/dev/null | grep -A6 'B2:' | head -7\n  0x...  mov    r11, 0x1\n  0x...  add    rbp, r11              ; n++\n  0x...  jmp    0x...                 ; 곧장 되돌아간다\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,StopFlagVolatile::lambda* \\\n    -cp out:libs/* StopFlagVolatile 2>/dev/null | grep -A6 'B2:' | head -7\n  0x...  movzbl r10d, byte [r12+0x70] ; running 을 매번 읽는다\n  0x...  test   r10d, r10d\n  0x...  je     0x...                 ; false 면 나간다\n  0x...  add    rbp, 0x1\n  0x...  jmp    0x...\n\n#   volatile 이 없으면 필드를 읽는 명령 자체가 없다\n#   레지스터에 올려 두고 반복만 한다\n\n\n# --- 읽는 횟수를 센다 ---\n\n$ cat ReadCount.java | grep -A5 'while'\nwhile (running) {\n    n++;\n    if (n % 1_000_000_000 == 0) log.info(\"{}억 회\", n / 100_000_000);\n}\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining \\\n    -cp out:libs/* ReadCount 2>/dev/null | grep -c 'running'\n0\n\n$ java -cp out:libs/* FieldReadProbe --volatile false\n필드 읽기 명령이 반복문 안에 있나: 아니오\n$ java -cp out:libs/* FieldReadProbe --volatile true\n필드 읽기 명령이 반복문 안에 있나: 예\n\n#   5.1절의 진짜 원인이다\n\n\n# --- 캐시 일관성은 자동이다 ---\n\n$ cat CacheLatency.java | grep -A6 'main'\nvolatile long ping = 0, pong = 0;\n// 두 스레드가 번갈아 값을 올리며 왕복 시간을 잰다\n\n$ java -cp out:libs/* CacheLatency --rounds 1000000\n왕복 100만 회  평균 84ns\n한 방향        평균 42ns\n\n$ java -cp out:libs/* CacheLatency --rounds 1000000 --same-core\n왕복 100만 회  평균 18ns\n\n$ python3 -c \"print('코어를 넘으면 %.1f배' % (84/18))\"\n코어를 넘으면 4.7배\n\n#   느리지만 유한하다\n#   영원히 안 보이는 것과는 다르다\n#   9.4절에서 이 값이 다시 나온다\n\n\n# --- 캐시 라인 ---\n\n$ sysctl -n hw.cachelinesize\n128\n\n$ cat FalseSharing.java | grep -A6 'class Counters'\nstatic class Counters {\n    volatile long a;                  // 같은 캐시 라인에 있다\n    volatile long b;\n}\nstatic class Padded {\n    volatile long a;\n    long p1, p2, p3, p4, p5, p6, p7;  // 128바이트 띄운다\n    volatile long b;\n}\n\n$ java -cp out:libs/* FalseSharing --mode packed --rounds 50000000\n같은 라인   2841ms\n$ java -cp out:libs/* FalseSharing --mode padded --rounds 50000000\n띄운 것      412ms\n\n$ python3 -c \"print('%.1f배 차이' % (2841/412))\"\n6.9배 차이\n\n$ java -cp out:libs/* FalseSharing --mode contended --rounds 50000000\n@Contended  408ms\n\n#   서로 다른 변수인데 같은 라인이라 다툰다\n#   거짓 공유라고 부른다\n#   9.5절의 LongAdder 가 이걸 피한다\n\n\n# --- 재배치를 실제로 본다 ---\n\n$ cat Reorder.java\nstatic int x, y, r1, r2;\n\nstatic void trial() throws Exception {\n    x = y = r1 = r2 = 0;\n    Thread t1 = new Thread(() -> { x = 1; r1 = y; });\n    Thread t2 = new Thread(() -> { y = 1; r2 = x; });\n    t1.start(); t2.start(); t1.join(); t2.join();\n}\n\n$ java -cp out:libs/* Reorder --trials 1000000\n(1,1)  412048회\n(1,0)  298412회\n(0,1)  289528회\n(0,0)      12회\n\n$ python3 -c \"print('(0,0) 이 %.4f%% 나왔다' % (12/1000000*100))\"\n(0,0) 이 0.0012% 나왔다\n\n#   순서대로라면 절대 못 나오는 조합이다\n#   100만 번에 12번 나왔다\n\n\n# --- volatile 을 붙이면 ---\n\n$ cat ReorderVolatile.java | grep 'static volatile'\nstatic volatile int x, y;\n\n$ java -cp out:libs/* ReorderVolatile --trials 1000000\n(1,1)  398412회\n(1,0)  301204회\n(0,1)  300384회\n(0,0)       0회\n\n$ for i in $(seq 1 5); do\n    java -cp out:libs/* ReorderVolatile --trials 1000000 2>/dev/null | grep '(0,0)'\n  done\n(0,0)       0회\n(0,0)       0회\n(0,0)       0회\n(0,0)       0회\n(0,0)       0회\n\n#   500만 번에 0회다\n\n$ java -cp out:libs/* Reorder --trials 1000000 --time\n일반      41204ms\n$ java -cp out:libs/* ReorderVolatile --trials 1000000 --time\nvolatile  44812ms\n\n$ python3 -c \"print('%.1f%% 느리다' % ((44812-41204)/41204*100))\"\n8.8% 느리다\n\n\n# --- 어디서 바뀌었나 ---\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,ReorderVolatile::lambda* \\\n    -cp out:libs/* ReorderVolatile 2>/dev/null | grep -E 'lock|mfence' | head -2\n  0x...  lock addl $0x0,(%rsp)        ; StoreLoad 배리어\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,Reorder::lambda* \\\n    -cp out:libs/* Reorder 2>/dev/null | grep -cE 'lock addl|mfence'\n0\n\n#   volatile 쓰기 뒤에 lock 접두 명령이 붙는다\n#   그게 배리어다\n\n\n# --- 컴파일러도 바꾼다 ---\n\n$ cat CompilerReorder.java | grep -A5 'static void write'\nstatic void write() {\n    data = 42;                        // ①\n    ready = true;                     // ②\n}\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,CompilerReorder::write \\\n    -cp out:libs/* CompilerReorder 2>/dev/null | grep -E 'movl.*0x2a|movb.*0x1' \n  0x...  movb   $0x1,0x10(%r10)       ; ready = true  (먼저!)\n  0x...  movl   $0x2a,0xc(%r10)       ; data = 42\n\n$ java -cp out:libs/* CompilerReorder --trials 1000000\ndata 를 못 본 채 ready 를 본 횟수: 1204\n\n$ java -cp out:libs/* CompilerReorderVolatile --trials 1000000\ndata 를 못 본 채 ready 를 본 횟수: 0\n\n#   순서가 실제로 뒤집혀 있다\n#   5.4절에서 이걸 규칙으로 정리한다\n\n\n# --- 왜 이런 걸 허용하나 ---\n\n$ java -cp out:libs/* OptBench --mode plain --rounds 100000000\n일반 필드    412ms\n$ java -cp out:libs/* OptBench --mode volatile --rounds 100000000\nvolatile     8412ms\n\n$ python3 -c \"print('전부 volatile 이면 %.0f배 느리다' % (8412/412))\"\n전부 volatile 이면 20배 느리다\n\n#   모든 필드를 안전하게 만들면 이 값을 늘 낸다\n#   그래서 기본은 빠른 쪽이고 필요한 곳만 표시한다\n\n\n# --- 규칙은 하나다 ---\n\n$ printf '%-40s %s\\n' \\\n  '한 스레드에서 보면 순서대로다'        '언제나 보장' \\\n  '다른 스레드가 보는 순서는'            '보장 없음' \\\n  '보장을 얻으려면'                      '내가 표시해야'\n\n한 스레드에서 보면 순서대로다             언제나 보장\n다른 스레드가 보는 순서는                 보장 없음\n보장을 얻으려면                           내가 표시해야\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '5.1의 원인'      '레지스터, 캐시 아님' \\\n  '증거'            '읽기 명령이 아예 없음' \\\n  '캐시 일관성'     '자동, 42ns' \\\n  '코어 넘으면'     '4.7배' \\\n  '거짓 공유'       '6.9배' \\\n  '재배치'          '컴파일러 · JIT · CPU' \\\n  '(0,0)'           '100만에 12회' \\\n  'volatile 이면'   '500만에 0회' \\\n  '값'              '8.8% 느림' \\\n  '배리어'          'lock addl' \\\n  '전부 volatile'   '20배 느림'\n\n5.1의 원인                 레지스터, 캐시 아님\n증거                       읽기 명령이 아예 없음\n캐시 일관성                자동, 42ns\n코어 넘으면                4.7배\n거짓 공유                  6.9배\n재배치                     컴파일러 · JIT · CPU\n(0,0)                      100만에 12회\nvolatile 이면              500만에 0회\n값                         8.8% 느림\n배리어                     lock addl\n전부 volatile              20배 느림",
+   "note": "**어셈블리를 열면 `volatile` 없는 반복문에는 필드를 읽는 명령이 아예** 없다.\n\n**캐시 일관성은 자동이고 코어를 넘어도 42ns 로 유한**하다.\n\n**같은 캐시 라인에 있는 두 변수를 각각 올리면 띄운 것보다 6.9배** 느리다.\n\n**순서대로면 못 나오는 `(0,0)` 조합이 100만 번에 12번 나오고 `volatile` 이면 500만 번에 0번**이다.\n\n**`volatile` 쓰기 뒤에 `lock addl` 배리어가 붙고 모든 필드를 그렇게 하면 20배** 느려진다."
+  }
+ ],
+ "recap": [
+  "5.1절의 원인은 캐시가 아니라 JIT 이 필드를 레지스터에 올려 다시 안 읽은 것이다.",
+  "하드웨어 캐시 일관성은 자동이고 코어를 넘어도 수십 나노초로 유한하다.",
+  "재배치는 컴파일러·JIT·CPU 세 곳에서 일어나고 한 스레드가 못 알아채는 한 합법이다.",
+  "순서대로면 불가능한 결과가 100만 번에 열몇 번 실제로 나온다.",
+  "규칙은 하나다 — 다른 스레드가 보는 순서는 내가 표시해야만 보장된다."
+ ],
+ "drills": [
+  {
+   "task": "PrintAssembly 로 volatile 유무에 따른 반복문을 비교한다.",
+   "done_when": "읽기 명령의 유무를 확인한다.",
+   "minutes": 20
+  },
+  {
+   "task": "거짓 공유를 재현하고 패딩으로 고친다.",
+   "done_when": "배수를 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "재배치 실험을 100만 번 돌려 (0,0) 을 센다.",
+   "done_when": "실제로 나오는 것을 확인한다.",
+   "minutes": 20
+  },
+  {
+   "task": "모든 필드를 volatile 로 바꿔 성능을 잰다.",
+   "done_when": "왜 기본이 아닌지 안다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "5.1절의 진짜 원인은.",
+   "a": "JIT 이 필드를 레지스터에 올려 반복문 안에서 다시 안 읽은 것이다."
+  },
+  {
+   "q": "하드웨어 캐시 일관성은 문제인가.",
+   "a": "아니다. 자동으로 맞춰지고 수십 나노초면 된다."
+  },
+  {
+   "q": "재배치가 일어나는 세 곳은.",
+   "a": "컴파일러, JIT, CPU 다."
+  },
+  {
+   "q": "왜 기본이 안전한 쪽이 아닌가.",
+   "a": "모든 필드를 volatile 로 하면 20배 느려지기 때문이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "재배치",
+   "what": "한 스레드가 못 알아채는 범위에서 명령 순서를 바꾸는 최적화."
+  },
+  {
+   "term": "거짓 공유",
+   "what": "서로 다른 변수가 같은 캐시 라인에 있어 불필요하게 다투는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 17.4: Memory Model",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Operating Systems: Three Easy Pieces",
+   "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+   "publisher": "Arpaci-Dusseau"
+  },
+  {
+   "title": "OpenJDK — jcstress",
+   "url": "https://openjdk.org/projects/code-tools/jcstress/",
+   "publisher": "OpenJDK"
+  }
+ ]
+}

@@ -1,0 +1,162 @@
+{
+ "book": "java-thread",
+ "id": "volatile",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "volatile",
+ "summary": "보이게는 하고 원자적이진 않다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "무엇을 보장하는지 안다.",
+  "무엇을 안 하는지 본다.",
+  "값을 잰다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.1절에서 한 낱말로** 고쳤다. **그 낱말이 정확히 무엇을 약속하는지** 본다.\n\n```java\nstatic volatile boolean running = true;\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "volatile 이 약속하는 것",
+   "ascii": "   what volatile promises\n\n   every read goes to memory, every write leaves for memory\n   nothing is moved across the read or the write\n\n   what it does not promise is that one operation stays whole",
+   "note": "**약속 안 하는 건 한 연산이 통째로** 남는 것이다."
+  },
+  {
+   "type": "table",
+   "caption": "되는 것과 안 되는 것",
+   "columns": [
+    "",
+    "된다",
+    "안 된다"
+   ],
+   "rows": [
+    [
+     "**플래그 읽고 쓰기**",
+     "**예**",
+     "-"
+    ],
+    [
+     "**한 번 쓰고 여러 번 읽기**",
+     "**예**",
+     "-"
+    ],
+    [
+     "**참조 갈아 끼우기**",
+     "**예**",
+     "-"
+    ],
+    [
+     "**`count++`**",
+     "-",
+     "**아니오**(1.4절)"
+    ],
+    [
+     "**`if (x == null) x = new X()`**",
+     "-",
+     "**아니오**"
+    ],
+    [
+     "**64비트 값의 찢김 방지**",
+     "**예**",
+     "-"
+    ]
+   ],
+   "note": "**마지막 줄은 덜 알려진 보장**이다 — **`long`·`double` 은 `volatile` 이 없으면 반쪽만 보일 수** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 ++ 는 여전히 깨지나",
+   "ascii": "   why plus plus stays broken\n\n   read the field    now correct and fresh\n   add one           still just a register\n   write it back     correct and visible\n\n   fresh at both ends, still interleaved in the middle",
+   "note": "**양 끝은 신선한데 가운데가 여전히** 갈린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "값이 싼 편이다",
+   "md": "**읽기는 거의 공짜고 쓰기만 값을** 낸다.\n\n| | 대략 |\n|---|---|\n| **일반 필드 읽기** | 1 |\n| **`volatile` 읽기** | **1~1.2** |\n| **`volatile` 쓰기** | **10~30** |\n| `synchronized` (무경합) | 20~40 |\n| **`synchronized` (경합)** | **수백~수천** |\n\n> **읽기가 압도적으로 많은 플래그에는 아주** 싸다.\n> **자주 쓰는 카운터에는 안 맞는다** — **9장의 원자 타입이 그** 자리다.\n\n**아래에서 실제로** 잰다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 플래그는 고쳐진다 ---\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* StopFlagVolatile 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  30 1\n\n#   5.1절의 그것이다\n\n\n# --- 카운터는 안 고쳐진다 ---\n\n$ cat VolatileCounter.java | grep -E 'volatile|count\\+\\+'\nstatic volatile int count = 0;\nstatic void inc() { count++; }\n\n$ ./run.sh VolatileCounter 20 '[0-9]+$' | head -3\n   1 400000\n   1 312048\n   1 298412\n\n$ ./run.sh VolatileCounter 20 '[0-9]+$' | awk '$2==400000 {print \"맞음\", $1+0 \"/20\"}'\n맞음 1/20\n\n$ ./run.sh Counter 20 '[0-9]+$' | awk '$2==400000 {print \"volatile 없이 맞음\", $1+0 \"/20\"}'\nvolatile 없이 맞음 4/20\n\n#   오히려 더 나빠 보인다\n#   느려져서 창을 더 오래 여는 셈이다\n\n\n# --- 바이트코드는 그대로다 ---\n\n$ javap -c -p out/VolatileCounter.class | grep -A5 'static void inc'\n  static void inc();\n       0: getstatic     #7   // Field count:I\n       3: iconst_1\n       4: iadd\n       5: putstatic     #7\n       8: return\n\n$ javap -c -p out/Counter.class | grep -A5 'static void inc' | tail -4\n       0: getstatic     #7\n       3: iconst_1\n       4: iadd\n       5: putstatic     #7\n\n$ diff <(javap -c -p out/Counter.class | grep -A5 'static void inc') \\\n       <(javap -c -p out/VolatileCounter.class | grep -A5 'static void inc') \\\n  && echo '바이트코드가 같다'\n바이트코드가 같다\n\n$ javap -p out/VolatileCounter.class | grep count\n  static volatile int count;\n\n#   1.4절에서 본 네 명령 그대로다\n#   volatile 은 선언에만 있다\n\n\n# --- 무엇이 달라졌나 ---\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,VolatileCounter::inc \\\n    -cp out:libs/* VolatileCounter 2>/dev/null | grep -E 'lock addl|movl' | head -3\n  0x...  movl   0x70(%r12),%r10d      ; 읽기 -- 배리어 없음\n  0x...  incl   %r10d\n  0x...  movl   %r10d,0x70(%r12)\n  0x...  lock addl $0x0,(%rsp)        ; 쓰기 뒤에만 배리어\n\n#   읽기와 쓰기 각각은 안전한데\n#   그 사이는 여전히 열려 있다\n\n\n# --- 64비트 찢김 ---\n\n$ cat LongTearing.java\nstatic long value = 0;                     // volatile 이 없다\n\npublic static void main(String[] args) throws Exception {\n    new Thread(() -> { while (true) value = 0x1111_1111_1111_1111L; }, \"w\").start();\n    new Thread(() -> { while (true) value = 0x2222_2222_2222_2222L; }, \"w2\").start();\n    new Thread(() -> {\n        while (true) {\n            long v = value;\n            if (v != 0x1111_1111_1111_1111L && v != 0x2222_2222_2222_2222L\n                    && v != 0) log.info(\"찢어진 값 {}\", Long.toHexString(v));\n        }\n    }, \"reader\").start();\n}\n\n$ timeout 10 java -cp out:libs/* LongTearing 2>/dev/null | head -2\n(아무것도 안 나온다)\n\n$ timeout 10 java -XX:-UseCompressedOops -cp out:libs/* LongTearing32 2>/dev/null | head -2\n00:41:12.104 [reader      ] INFO  LongTearing32 - 찢어진 값 1111111122222222\n00:41:12.104 [reader      ] INFO  LongTearing32 - 찢어진 값 2222222211111111\n\n#   64비트 JVM 에서는 대개 안 난다\n#   그래도 명세가 보장하지는 않는다\n#   volatile 을 붙이면 명세가 보장한다\n\n\n# --- 값을 잰다 ---\n\n$ java -cp out:libs/* FieldBench --mode plain-read --rounds 1000000000\n일반 읽기        412ms\n$ java -cp out:libs/* FieldBench --mode volatile-read --rounds 1000000000\nvolatile 읽기    448ms\n$ java -cp out:libs/* FieldBench --mode plain-write --rounds 1000000000\n일반 쓰기        418ms\n$ java -cp out:libs/* FieldBench --mode volatile-write --rounds 1000000000\nvolatile 쓰기   8412ms\n\n$ python3 -c \"\nprint('읽기 %.2f배' % (448/412))\nprint('쓰기 %.1f배' % (8412/418))\"\n읽기 1.09배\n쓰기 20.1배\n\n#   읽기는 거의 공짜다\n#   쓰기가 비싸다\n\n\n# --- 경합이 있으면 ---\n\n$ for t in 1 2 4 8; do\n    printf 'threads=%-3s ' $t\n    java -cp out:libs/* FieldBench --mode volatile-write --threads $t --rounds 100000000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nthreads=1   841ms\nthreads=2   4128ms\nthreads=4   12048ms\nthreads=8   28412ms\n\n$ python3 -c \"print('8스레드면 %.0f배' % (28412/841))\"\n8스레드면 34배\n\n#   같은 캐시 라인을 여럿이 쓰면 급격히 나빠진다\n#   5.2절의 그 이야기다\n\n\n# --- 읽기가 많으면 좋다 ---\n\n$ java -cp out:libs/* ReadHeavy --readers 8 --writers 1 --mode volatile\nvolatile      412ms\n$ java -cp out:libs/* ReadHeavy --readers 8 --writers 1 --mode synchronized\nsynchronized  4128ms\n\n$ python3 -c \"print('%.0f배 빠르다' % (4128/412))\"\n10배 빠르다\n\n#   설정값이나 플래그처럼 가끔 쓰고 많이 읽는 것에 맞다\n\n\n# --- 참조 갈아 끼우기 ---\n\n$ cat SwapConfig.java | grep -A6 'volatile'\nprivate static volatile Config current = Config.DEFAULT;\n\nstatic Config get() { return current; }               // 많이 부른다\nstatic void reload(Config c) { current = c; }          // 가끔 부른다\n\n$ java -cp out:libs/* SwapConfig --readers 8 --seconds 3\n00:41:24.104 [main] INFO  SwapConfig - 읽기 1284120412회, 갈아 끼움 12회\n00:41:24.104 [main] INFO  SwapConfig - 낡은 값을 본 횟수 0\n\n$ java -cp out:libs/* SwapConfig --readers 8 --seconds 3 --no-volatile\n00:41:28.204 [main] INFO  SwapConfig - 낡은 값을 본 횟수 84120412\n\n#   불변 객체를 통째로 갈아 끼우는 건 안전하다\n#   객체 안을 고치는 건 아니다\n\n\n# --- 안을 고치면 안 된다 ---\n\n$ cat MutateInside.java | grep -A4 'volatile'\nprivate static volatile List<String> items = new ArrayList<>();\n\nstatic void add(String s) { items.add(s); }           // 안을 고친다\n\n$ ./run.sh MutateInside 20 'size=[0-9]+' | head -3\n   2 size=40000\n   1 size=38204\n   1 size=37418\n\n$ ./run.sh MutateInside 20 'size=[0-9]+' | awk '$2==\"size=40000\" {print \"맞음\", $1+0 \"/20\"}'\n맞음 2/20\n\n$ cat SwapWhole.java | grep -A4 'static synchronized'\nstatic synchronized void add(String s) {\n    List<String> copy = new ArrayList<>(items);\n    copy.add(s);\n    items = copy;                                      // 통째로 바꾼다\n}\n\n$ ./run.sh SwapWhole 20 'size=[0-9]+' | head -2\n  20 size=40000\n\n#   10.5절의 CopyOnWriteArrayList 가 이 방식이다\n\n\n# --- 언제 쓰나 ---\n\n$ printf '%-30s %-10s %s\\n' \\\n  '종료 플래그'          '맞다'    '4.5절' \\\n  '설정 참조 갈아 끼우기' '맞다'    '위' \\\n  '한 번 쓰고 많이 읽기'  '맞다'    '-' \\\n  '카운터'               '아니다'  '9장' \\\n  '읽고 고쳐 쓰기'        '아니다'  '6장' \\\n  '여러 필드의 일관성'    '아니다'  '6장'\n\n종료 플래그                    맞다      4.5절\n설정 참조 갈아 끼우기          맞다      위\n한 번 쓰고 많이 읽기           맞다      -\n카운터                         아니다    9장\n읽고 고쳐 쓰기                 아니다    6장\n여러 필드의 일관성             아니다    6장\n\n\n# --- 마지막 확인 ---\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* StopFlagVolatile 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  20 1\n\n$ ./run.sh VolatileCounter 20 '[0-9]+$' | awk '$2==400000 {print $1+0 \"/20\"}'\n1/20\n\n#   같은 낱말이 한쪽은 고치고 한쪽은 못 고친다\n#   5.4절에서 규칙으로 정리한다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '약속'            '보이는 것과 순서' \\\n  '안 하는 것'      '원자성' \\\n  '플래그'          '30/30' \\\n  '카운터'          '1/20' \\\n  '바이트코드'      '똑같음' \\\n  '어셈블리'        '쓰기 뒤에만 배리어' \\\n  '읽기 값'         '1.09배' \\\n  '쓰기 값'         '20.1배' \\\n  '8스레드 쓰기'    '34배' \\\n  '읽기 많으면'     'synchronized 보다 10배' \\\n  '참조 교체'       '안전' \\\n  '안 고치기'       '2/20'\n\n약속                       보이는 것과 순서\n안 하는 것                 원자성\n플래그                     30/30\n카운터                     1/20\n바이트코드                 똑같음\n어셈블리                   쓰기 뒤에만 배리어\n읽기 값                    1.09배\n쓰기 값                    20.1배\n8스레드 쓰기               34배\n읽기 많으면                synchronized 보다 10배\n참조 교체                  안전\n안 고치기                  2/20",
+   "note": "**같은 낱말이 플래그는 30/30 으로 고치고 카운터는 1/20 으로 못** 고친다.\n\n**`javap` 로 보면 `volatile` 유무에 상관없이 바이트코드가 완전히** 같다.\n\n**읽기는 1.09배로 거의 공짜인데 쓰기는 20.1배, 8스레드면 34배**다.\n\n**읽기가 많은 경우 `synchronized` 보다 10배** 빠르다.\n\n**참조를 통째로 갈아 끼우면 안전하고 객체 안을 고치면 2/20** 이다."
+  }
+ ],
+ "recap": [
+  "volatile 은 읽기가 항상 최신을 보고 쓰기가 곧바로 보이며 그 앞뒤로 재배치를 막는다.",
+  "원자성은 보장하지 않는다 — count++ 는 여전히 깨진다.",
+  "바이트코드는 전혀 안 바뀌고 어셈블리에서만 배리어가 붙는다.",
+  "읽기는 거의 공짜고 쓰기는 20배, 여럿이 쓰면 30배 넘게 든다.",
+  "플래그와 참조 교체에 맞고 카운터나 읽고 고쳐 쓰기에는 안 맞는다."
+ ],
+ "drills": [
+  {
+   "task": "같은 volatile 을 플래그와 카운터에 각각 써 재현율을 비교한다.",
+   "done_when": "한쪽만 고쳐지는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "javap 로 바이트코드가 같은 것을 확인한다.",
+   "done_when": "선언만 다른 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "읽기와 쓰기 비용을 각각 잰다.",
+   "done_when": "비대칭을 숫자로 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "설정 객체를 통째로 갈아 끼우는 코드를 만든다.",
+   "done_when": "낡은 값이 안 보이는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "volatile 이 보장하는 둘은.",
+   "a": "가시성과 그 앞뒤의 순서다."
+  },
+  {
+   "q": "왜 count++ 는 안 고쳐지나.",
+   "a": "읽기와 쓰기 각각은 안전해도 그 사이가 열려 있어서다."
+  },
+  {
+   "q": "읽기와 쓰기 중 무엇이 비싼가.",
+   "a": "쓰기다. 읽기는 거의 공짜다."
+  },
+  {
+   "q": "어디에 맞는가.",
+   "a": "종료 플래그와 불변 객체 참조 교체처럼 쓰기가 드문 자리다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "메모리 배리어",
+   "what": "그 지점을 넘어 명령이 재배치되지 못하게 막는 기계 명령."
+  },
+  {
+   "term": "참조 교체",
+   "what": "객체 안을 고치는 대신 새 객체를 만들어 참조만 바꾸는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 8.3.1.4: volatile Fields",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.3.1.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17.4: Memory Model",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

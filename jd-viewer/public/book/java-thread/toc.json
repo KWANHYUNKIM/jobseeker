@@ -247,7 +247,7 @@
           "title": "캐시와 재배치",
           "summary": "왜 그런 일이 생기나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -255,7 +255,7 @@
           "title": "volatile",
           "summary": "보이게는 하고 원자적이진 않다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -263,7 +263,7 @@
           "title": "happens-before",
           "summary": "무엇이 무엇보다 먼저인가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -271,7 +271,7 @@
           "title": "안전한 발행",
           "summary": "final 과 생성자 밖으로 새는 this.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
