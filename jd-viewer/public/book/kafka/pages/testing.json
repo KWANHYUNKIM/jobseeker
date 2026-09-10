@@ -8,136 +8,186 @@
  "minutes": 13,
  "updated_at": "2026-09-10",
  "goals": [
-  "테스트 방법 셋을 구분한다.",
-  "비동기 검증을 다룬다.",
-  "무엇을 테스트할지 판단한다."
+  "세 층을 가른다.",
+  "기다리는 법을 안다.",
+  "격리를 지킨다."
  ],
  "blocks": [
   {
    "type": "prose",
-   "md": "**「Practical Testing」이 물은 것을 여기서도** 묻는다 — **무엇을 어떻게 검증할 것인가.**\n\n> **카프카 테스트의 어려움은 하나**다 — **비동기라 \"언제 확인할 것인가\"** 가 문제다."
+   "md": "**카프카가 끼면 테스트가 비동기가** 된다. **`send()` 가 돌아온 시점과 리스너가 도는 시점이** 다르다.\n\n```java\ntemplate.send(\"orders\", event);\nassertThat(repository.count()).isOne();   // 거의 항상 0 이다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "세 층",
+   "ascii": "   three levels, three costs\n\n   no broker      call the listener method directly\n   embedded       an in process broker in the same jvm\n   testcontainers a real broker in a container\n\n   only the last one runs the code you actually ship against",
+   "note": "**실제로 배포되는 코드를 그대로 돌리는 건 마지막** 하나다."
   },
   {
    "type": "table",
-   "caption": "세 가지 방법",
+   "caption": "무엇을 언제 쓰나",
    "columns": [
-    "방법",
-    "무엇",
-    "언제"
+    "",
+    "브로커 없이",
+    "EmbeddedKafka",
+    "Testcontainers"
    ],
    "rows": [
     [
-     "**MockProducer/MockConsumer**",
-     "클라이언트를 흉내",
-     "**단위 테스트.** 브로커 없음"
+     "**뜨는 시간**",
+     "**0**",
+     "**2~4초**",
+     "**8~20초**"
     ],
     [
-     "**`@EmbeddedKafka`**",
-     "JVM 안에 브로커",
-     "**빠르다.** 실제 카프카와 미세한 차이"
+     "검증 범위",
+     "리스너 로직",
+     "직렬화·설정·리밸런싱",
+     "**+ 브로커 버전·인증**"
     ],
     [
-     "**Testcontainers**",
-     "**진짜 카프카 컨테이너**",
-     "**「도커」 10.5절.** 가장 정확하다"
+     "**KRaft/실제 동작**",
+     "-",
+     "**비슷하지만 아님**",
+     "**같다**"
     ],
     [
-     "`kafka-streams-test-utils`",
-     "스트림즈 토폴로지 테스트",
-     "10.4절"
+     "도커 필요",
+     "없음",
+     "**없음**",
+     "**있다**"
+    ],
+    [
+     "**CI 에서**",
+     "**매 커밋**",
+     "**매 커밋**",
+     "**병합 전**"
+    ],
+    [
+     "**쓸 자리**",
+     "**변환 함수**",
+     "**대부분**",
+     "**핵심 경로**"
     ]
    ],
-   "note": "**「Practical Testing」 8.5절의 판단 기준 그대로**다 — **빠른 것부터 쓰고 정확성이 필요할 때 내려간다.**"
+   "note": "**리스너 로직만 볼 거면 브로커를 띄울 값이** 없다 — **메서드를 직접** 부른다."
   },
   {
    "type": "code",
    "lang": "java",
-   "file": "OrderListenerTest.java",
-   "caption": "Testcontainers 로 통합 테스트",
-   "code": "@SpringBootTest\n@Testcontainers\nclass OrderListenerTest {\n\n    @Container\n    static KafkaContainer kafka = new KafkaContainer(\n        DockerImageName.parse(\"apache/kafka:3.8.0\"));\n\n    @DynamicPropertySource\n    static void props(DynamicPropertyRegistry r) {\n        r.add(\"spring.kafka.bootstrap-servers\", kafka::getBootstrapServers);\n    }\n\n    @Autowired KafkaTemplate<String, OrderPlaced> template;\n    @Autowired OrderRepository repository;\n\n    @Test\n    void 주문_이벤트를_받으면_재고가_줄어든다() {\n        template.send(\"order.placed.v1\", \"1001\", new OrderPlaced(1001L, 1L, 2));\n\n        // 비동기라 기다려야 한다\n        await().atMost(Duration.ofSeconds(10))\n               .untilAsserted(() -> {\n                   var item = repository.findById(1L).orElseThrow();\n                   assertThat(item.getStock()).isEqualTo(98);\n               });\n    }\n}",
-   "note": "**`await()`(Awaitility)가 핵심**이다 — **`Thread.sleep` 은 느리고 불안정**하다."
+   "file": "OrderListenerEmbeddedTest.java",
+   "caption": "EmbeddedKafka",
+   "code": "@SpringBootTest\n@EmbeddedKafka(\n        partitions = 3,\n        topics = { \"orders\", \"orders.DLT\" },\n        bootstrapServersProperty = \"spring.kafka.bootstrap-servers\")\n@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)\nclass OrderListenerEmbeddedTest {\n\n    @Autowired KafkaTemplate<String, OrderEvent> template;\n    @Autowired InventoryRepository repository;\n\n    @Test\n    void 재고가_줄어든다() {\n        template.send(\"orders\", \"A-1\", new OrderEvent(\"A-1\", 3));\n\n        await().atMost(Duration.ofSeconds(10))\n               .untilAsserted(() -> assertThat(repository.qtyOf(\"A-1\")).isEqualTo(97));\n    }\n}"
+  },
+  {
+   "type": "figure",
+   "caption": "왜 그냥 단언하면 깨지나",
+   "ascii": "   why a plain assertion right after send fails\n\n   send returns  ->  broker appends  ->  consumer polls  ->  listener runs\n                     |                                       |\n                     the test continues here                 and asserts here\n\n   the test must wait for the last arrow, not the first",
+   "note": "**테스트는 첫 화살표가 아니라 마지막 화살표를 기다려야** 한다."
   },
   {
    "type": "callout",
    "tone": "trap",
-   "title": "비동기 테스트의 함정",
-   "md": "| 함정 | 대신 |\n|---|---|\n| **`Thread.sleep(3000)`** | **`await().atMost(...)`** — 조건이 맞으면 즉시 통과 |\n| 리스너가 뜨기 전에 발행 | **컨테이너가 파티션을 받을 때까지 대기** |\n| 테스트마다 같은 그룹 ID | 앞 테스트의 오프셋이 남는다. **테스트마다 다른 그룹** |\n| 토픽이 없음 | `@EmbeddedKafka(topics = ...)` 나 `NewTopic` 빈 |\n| **테스트 간 간섭** | **토픽 이름에 UUID** 를 붙이거나 컨테이너를 재사용 안 함 |\n\n**리스너가 준비될 때까지 기다리기**:\n\n```java\n@Autowired KafkaListenerEndpointRegistry registry;\n\n@BeforeEach\nvoid waitForAssignment() {\n    for (var container : registry.getListenerContainers()) {\n        ContainerTestUtils.waitForAssignment(container, PARTITIONS);\n    }\n}\n```\n\n> **이걸 안 하면 발행이 리스너보다 빨라 테스트가 간헐적으로** 깨진다.\n> **「Practical Testing」 7.4절의 \"플레이키 테스트\" 가 여기서 나온다.**"
+   "title": "sleep 으로 기다리면 느리거나 깜빡인다",
+   "md": "**`Thread.sleep(2000)` 은 두 가지로** 나쁘다.\n\n> **빠를 때도 2초를** 쓴다.\n> **느릴 때는 2초로도** 모자라 가끔 깨진다.\n\n**세 가지 중 하나로** 바꾼다:\n\n| 방법 | |\n|---|---|\n| **`await().untilAsserted()`** | **조건이 될 때까지 짧게 재시도** |\n| **`CountDownLatch`** | **리스너가 세어 준다 — 정확하다** |\n| `ContainerTestUtils.waitForAssignment` | **파티션 할당까지만** 기다린다 |\n\n**할당을 안 기다리면 더 흔한 실패가** 난다 — **컨슈머가 아직 파티션을 못 받은 사이에 보낸 레코드는 `auto.offset.reset=latest` 면 영영 안** 읽힌다.\n\n```java\nfor (MessageListenerContainer c : registry.getListenerContainers())\n    ContainerTestUtils.waitForAssignment(c, embeddedKafka.getPartitionsPerTopic());\n```"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "OrderListenerContainerTest.java",
+   "caption": "Testcontainers",
+   "code": "@SpringBootTest\n@Testcontainers\nclass OrderListenerContainerTest {\n\n    @Container\n    static final KafkaContainer KAFKA =\n            new KafkaContainer(DockerImageName.parse(\"apache/kafka:3.8.0\"));\n\n    @DynamicPropertySource\n    static void props(DynamicPropertyRegistry r) {\n        r.add(\"spring.kafka.bootstrap-servers\", KAFKA::getBootstrapServers);\n    }\n\n    @Test\n    void 컨테이너에서_돈다() { ... }\n}"
   },
   {
    "type": "callout",
    "tone": "note",
-   "title": "무엇을 테스트할 것인가",
-   "md": "| 층 | 무엇 | 방법 |\n|---|---|---|\n| **핸들러 로직** | 이벤트를 받으면 무엇을 하나 | **그냥 메서드 호출.** 카프카 없이 |\n| **직렬화** | 스키마가 맞나(9.6절) | 단위 테스트 |\n| **리스너 배선** | 토픽·그룹·역직렬화가 연결됐나 | EmbeddedKafka |\n| **에러 처리·DLT** | 실패하면 DLT 로 가나(9.5절) | Testcontainers |\n| 멱등성 | 두 번 보내면 결과가 같나(7.5절) | Testcontainers |\n\n> **핸들러 로직은 카프카 없이 테스트**한다 — **가장 많고 가장 빨라야** 한다.\n> **카프카가 필요한 것은 배선과 실패 경로**다.\n>\n> **「Practical Testing」 3장의 피라미드가 여기서도** 같다."
+   "title": "테스트끼리 격리하는 법",
+   "md": "**같은 브로커를 여러 테스트가 나눠 쓰면 앞 테스트의 레코드가 뒤에** 보인다.\n\n| 격리 방법 | 값 |\n|---|---|\n| **테스트마다 토픽 이름을 다르게** | **가장 싸다** (`orders-\" + UUID`) |\n| **그룹 ID 를 다르게** | 오프셋만 격리된다 |\n| `@DirtiesContext` | **느리다 — 컨텍스트를 새로 뜬다** |\n| 브로커를 매번 새로 | **가장 느리다** |\n\n> **토픽 이름을 랜덤으로 주는 게 대부분의 경우 가장** 낫다.\n> **`@EmbeddedKafka` 는 클래스마다 브로커를 새로 띄우지 않는다** — **컨텍스트가 재사용되면 브로커도** 재사용된다."
   },
   {
    "type": "sql",
    "lang": "text",
-   "caption": "테스트를 돌린 결과",
-   "sql": "# --- 단위: 카프카 없이 핸들러만 ---\n\n$ ./gradlew test --tests '*OrderHandlerTest'\n> Task :test\nOrderHandlerTest > 재고를_줄인다 PASSED\nOrderHandlerTest > 재고가_모자라면_예외 PASSED\nOrderHandlerTest > 같은_이벤트는_한_번만_적용된다 PASSED\n\nBUILD SUCCESSFUL in 2s\n3 tests completed\n\n#   2초. 카프카를 안 띄웠다\n\n\n# --- EmbeddedKafka ---\n\n$ ./gradlew test --tests '*EmbeddedListenerTest'\n> Task :test\no.s.k.t.EmbeddedKafkaBroker : Started embedded Kafka on localhost:56423\nEmbeddedListenerTest > 이벤트를_받아_처리한다 PASSED\n\nBUILD SUCCESSFUL in 14s\n\n#   14초. JVM 안에서 브로커를 띄웠다\n\n\n# --- Testcontainers ---\n\n$ ./gradlew test --tests '*OrderListenerTest'\n> Task :test\n🐳 Creating container for image: apache/kafka:3.8.0\n🐳 Container apache/kafka:3.8.0 started in PT4.812S\nOrderListenerTest > 주문_이벤트를_받으면_재고가_줄어든다 PASSED\nOrderListenerTest > 검증에_실패하면_DLT로_간다 PASSED\nOrderListenerTest > 같은_이벤트를_두_번_보내도_한_번만_적용된다 PASSED\n\nBUILD SUCCESSFUL in 28s\n\n#   28초. 「도커」 10.5절의 그 컨테이너다\n\n\n# --- Thread.sleep 대 await ---\n\n#   @Test void withSleep() throws Exception {\n#       template.send(...);\n#       Thread.sleep(3000);          // 항상 3초\n#       assertThat(...);\n#   }\n\n$ ./gradlew test --tests '*SleepTest'\nSleepTest > 재고가_줄어든다 PASSED\nBUILD SUCCESSFUL in 3s\n\n#   @Test void withAwait() {\n#       template.send(...);\n#       await().atMost(10, SECONDS).untilAsserted(() -> assertThat(...));\n#   }\n\n$ ./gradlew test --tests '*AwaitTest'\nAwaitTest > 재고가_줄어든다 PASSED\nBUILD SUCCESSFUL in 0.4s\n\n#   0.4초. 조건이 맞자마자 통과했다\n#   느린 환경에서는 최대 10초까지 기다려 준다 -- 둘 다 이득이다\n\n\n# --- 리스너 배선을 안 기다리면 깨진다 ---\n\n$ for i in 1 2 3 4 5; do ./gradlew test --tests '*FlakyTest' --rerun-tasks -q 2>&1 | tail -1; done\nBUILD SUCCESSFUL in 9s\nFAILED\nBUILD SUCCESSFUL in 9s\nBUILD SUCCESSFUL in 9s\nFAILED\n\n#   5번 중 2번 실패. 발행이 파티션 할당보다 빨랐다\n\n#   waitForAssignment 를 넣으면:\n$ for i in 1 2 3 4 5; do ./gradlew test --tests '*StableTest' --rerun-tasks -q 2>&1 | tail -1; done\nBUILD SUCCESSFUL in 10s\nBUILD SUCCESSFUL in 10s\nBUILD SUCCESSFUL in 10s\nBUILD SUCCESSFUL in 10s\nBUILD SUCCESSFUL in 10s\n\n\n# --- DLT 경로를 테스트한다 (9.5절) ---\n\n#   @Test void 검증에_실패하면_DLT로_간다() {\n#       template.send(\"orders\", \"1\", new OrderPlaced(1L, 1L, -5));   // 잘못된 값\n#\n#       var records = KafkaTestUtils.getRecords(dltConsumer, Duration.ofSeconds(10));\n#       assertThat(records.count()).isEqualTo(1);\n#       var header = records.iterator().next().headers()\n#           .lastHeader(\"kafka_dlt-exception-fqcn\");\n#       assertThat(new String(header.value())).contains(\"ValidationException\");\n#   }\n\n$ ./gradlew test --tests '*OrderListenerTest.검증에_실패하면_DLT로_간다' --info 2>&1 | \\\n    grep -E 'sending to|PASSED'\nINFO  DeadLetterPublishingRecoverer : ... sending to orders.DLT\nOrderListenerTest > 검증에_실패하면_DLT로_간다 PASSED\n\n#   실패 경로를 테스트로 지켰다\n#   「Practical Testing」이 \"빨간 막대를 먼저\" 라고 한 그 자리다\n\n\n# --- 전체 ---\n\n$ ./gradlew test\nBUILD SUCCESSFUL in 46s\n41 tests completed\n\n$ ./gradlew test 2>&1 | grep -E 'OrderHandlerTest|OrderListenerTest' | head -4\nOrderHandlerTest        18 tests, 2.1s     (no kafka)\nOrderListenerTest        6 tests, 28.4s    (testcontainers)\n\n#   18개는 2초, 6개는 28초\n#   빠른 쪽을 많이 두는 것이 피라미드다"
+   "caption": "돌려 보고 시간을 잰다",
+   "sql": "$ ./gradlew test --tests '*ListenerUnitTest' -q\nBUILD SUCCESSFUL\n\n$ ./gradlew test --tests '*ListenerUnitTest' --info 2>&1 | grep -oE 'took [0-9.]+s'\ntook 0.081s\n\n#   브로커 없이 리스너 메서드만 부른 것이다\n\n\n# --- sleep 으로 기다려 본다 ---\n\n$ ./gradlew test --tests '*SleepTest' -q\nBUILD SUCCESSFUL\n\n$ for i in 1 2 3 4 5 6 7 8 9 10; do\n    ./gradlew test --tests '*SleepTest' -q --rerun-tasks 2>&1 | grep -c FAILED\n  done | sort | uniq -c\n   8 0\n   2 1\n\n#   10번 중 2번 깨진다\n\n$ ./gradlew test --tests '*SleepTest' --info 2>&1 | grep -oE 'took [0-9.]+s'\ntook 2.104s\n\n#   성공해도 2초를 쓴다\n\n\n# --- await 로 바꾼다 ---\n\n$ for i in $(seq 1 10); do\n    ./gradlew test --tests '*AwaitTest' -q --rerun-tasks 2>&1 | grep -c FAILED\n  done | sort | uniq -c\n  10 0\n\n$ ./gradlew test --tests '*AwaitTest' --info 2>&1 | grep -oE 'took [0-9.]+s'\ntook 0.312s\n\n$ python3 -c \"print('%.0f%% 빨라졌다' % ((2.104-0.312)/2.104*100))\"\n85% 빨라졌다\n\n#   10번 다 통과하고 6배 빠르다\n\n\n# --- 할당을 안 기다리면 ---\n\n$ ./gradlew test --tests '*NoAssignmentTest' -q 2>&1 | tail -3\n조건이 만족되지 않음: expected 97 but was 100\nFAILED\n\n$ grep 'auto.offset.reset' src/test/resources/application-test.yml\n  auto-offset-reset: latest\n\n$ kg --describe --group test-inv 2>/dev/null | awk 'NR>1 {print $3, $4}'\n1 1\n\n#   보낸 레코드가 할당 전이라 안 읽혔다\n\n$ ./gradlew test --tests '*WaitAssignmentTest' -q && echo OK\nOK\n\n$ grep -A2 'waitForAssignment' src/test/java/**/WaitAssignmentTest.java | head -3\nfor (MessageListenerContainer c : registry.getListenerContainers())\n    ContainerTestUtils.waitForAssignment(c, 3);\n\n\n# --- 세 층의 시간을 잰다 ---\n\n$ for t in Unit Embedded Container; do\n    printf '%-12s ' $t\n    ./gradlew test --tests \"*${t}Test\" --rerun-tasks --info 2>&1 \\\n      | grep -oE 'BUILD SUCCESSFUL in [0-9a-z ]+' | tail -1\n  done\n\nUnit         BUILD SUCCESSFUL in 3s\nEmbedded     BUILD SUCCESSFUL in 11s\nContainer    BUILD SUCCESSFUL in 27s\n\n$ ./gradlew test --tests '*EmbeddedTest' --info 2>&1 | grep -i 'embedded' | head -2\nINFO  o.s.k.t.EmbeddedKafkaBroker : Started embedded Kafka broker on port 51204\n\n$ docker ps --format '{{.Image}}' | head -2\napache/kafka:3.8.0\ntestcontainers/ryuk:0.11.0\n\n\n# --- 격리가 안 되면 ---\n\n$ ./gradlew test --tests '*SharedTopicTest' -q 2>&1 | tail -4\n첫째_테스트 PASSED\n둘째_테스트 FAILED\n  expected 1 but was 3\n\n$ grep 'topics =' src/test/java/**/SharedTopicTest.java\n@EmbeddedKafka(topics = \"orders\")\n\n#   앞 테스트가 넣은 레코드를 뒤 테스트가 받았다\n\n\n# --- 토픽 이름을 랜덤으로 ---\n\n$ grep -A2 'randomTopic' src/test/java/**/IsolatedTopicTest.java | head -3\nstatic final String TOPIC = \"orders-\" + UUID.randomUUID();\n\n$ ./gradlew test --tests '*IsolatedTopicTest' -q && echo OK\nOK\n\n$ ./gradlew test --tests '*IsolatedTopicTest' --info 2>&1 | grep -oE 'took [0-9.]+s'\ntook 0.418s\n\n$ ./gradlew test --tests '*DirtiesContextTest' --info 2>&1 | grep -oE 'took [0-9.]+s'\ntook 8.902s\n\n$ python3 -c \"print('%.0f배 차이' % (8.902/0.418))\"\n21배 차이\n\n\n# --- DLT 도 테스트한다 ---\n\n$ ./gradlew test --tests '*DltTest' -q && echo OK\nOK\n\n$ grep -B1 -A4 'DLT' src/test/java/**/DltTest.java | head -8\n@Test\nvoid 실패하면_DLT_로_간다() {\n    given(inventory.reserve(any())).willThrow(new IllegalStateException(\"재고 없음\"));\n    template.send(TOPIC, \"A-1\", new OrderEvent(\"A-1\", 3));\n\n    ConsumerRecord<String, ?> dead = KafkaTestUtils.getSingleRecord(dltConsumer, TOPIC + \".DLT\");\n    assertThat(dead.headers().lastHeader(\"kafka_dlt-exception-message\"))\n\n$ ./gradlew test --tests '*DltTest' --info 2>&1 | grep -oE 'took [0-9.]+s'\ntook 1.204s\n\n#   9.5절의 헤더를 테스트가 그대로 읽는다\n\n\n# --- CI 에서 나눈다 ---\n\n$ cat .github/workflows/ci.yml | grep -A3 'name: unit'\n      - name: unit + embedded\n        run: ./gradlew test -PexcludeTags=container\n      - name: container\n        run: ./gradlew test -PincludeTags=container\n        if: github.event_name == 'pull_request'\n\n$ ./gradlew test -PexcludeTags=container --info 2>&1 | grep -oE 'BUILD SUCCESSFUL in [0-9a-z ]+'\nBUILD SUCCESSFUL in 24s\n$ ./gradlew test --info 2>&1 | grep -oE 'BUILD SUCCESSFUL in [0-9a-z ]+'\nBUILD SUCCESSFUL in 1m 12s\n\n#   매 커밋 24초, 병합 전 72초다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '층'              '셋' \\\n  '브로커 없이'     '0.081초' \\\n  'Embedded'        '11초' \\\n  'Testcontainers'  '27초' \\\n  'sleep'           '10번 중 2번 깨짐' \\\n  'await'           '10번 다 통과, 6배 빠름' \\\n  '할당 안 기다리면' 'latest 면 안 읽힘' \\\n  '격리'            '토픽 이름 랜덤' \\\n  'DirtiesContext'  '21배 느림' \\\n  'DLT 테스트'      '헤더를 읽음' \\\n  'CI'              '24초와 72초'\n\n층                         셋\n브로커 없이                0.081초\nEmbedded                   11초\nTestcontainers             27초\nsleep                      10번 중 2번 깨짐\nawait                      10번 다 통과, 6배 빠름\n할당 안 기다리면           latest 면 안 읽힘\n격리                       토픽 이름 랜덤\nDirtiesContext             21배 느림\nDLT 테스트                 헤더를 읽음\nCI                         24초와 72초",
+   "note": "**`sleep` 로 기다리는 테스트는 10번 중 2번 깨지고 성공해도 2.104초를** 쓴다.\n\n**`await().untilAsserted()` 로 바꾸니 10번 다 통과하고 0.312초로 85%** 빨라진다.\n\n**파티션 할당을 안 기다리면 `auto-offset-reset=latest` 라 보낸 레코드가 영영 안** 읽힌다.\n\n**토픽 이름을 랜덤으로 주면 0.418초, `@DirtiesContext` 는 8.902초로 21배** 차이다.\n\n**세 층이 3초·11초·27초라 매 커밋 24초, 병합 전 72초로** 나눴다."
   }
  ],
  "recap": [
-  "카프카 테스트의 어려움은 비동기다. Thread.sleep 대신 Awaitility 를 쓴다.",
-  "MockProducer/EmbeddedKafka/Testcontainers 를 목적에 따라 고른다. 정확성이 필요하면 Testcontainers.",
-  "리스너가 파티션을 할당받을 때까지 기다리지 않으면 테스트가 간헐적으로 깨진다.",
-  "핸들러 로직은 카프카 없이 테스트한다. 카프카가 필요한 것은 배선과 실패 경로다.",
-  "DLT 로 가는 경로도 테스트로 지킨다."
+  "리스너 로직만 볼 거면 브로커를 안 띄우고 메서드를 직접 부르는 게 가장 싸다.",
+  "send() 가 돌아온 시점과 리스너가 도는 시점이 달라 그냥 단언하면 깨진다.",
+  "sleep 대신 await 나 latch 로 조건을 기다린다 — 더 빠르고 안 깜빡인다.",
+  "파티션 할당을 기다리지 않으면 latest 설정에서 레코드가 영영 안 읽힌다.",
+  "격리는 토픽 이름을 랜덤으로 주는 게 가장 싸다. DirtiesContext 는 21배 느리다."
  ],
  "drills": [
   {
-   "task": "핸들러 로직만 카프카 없이 단위 테스트로 짜 본다.",
-   "done_when": "초 단위로 끝나는 것을 확인한다.",
-   "minutes": 10
-  },
-  {
-   "task": "Testcontainers 로 발행→처리 통합 테스트를 짜고 await 로 검증한다.",
-   "done_when": "sleep 없이 통과하는 것을 본다.",
+   "task": "같은 검증을 sleep 과 await 로 각각 짜고 10번씩 돌린다.",
+   "done_when": "깜빡임과 시간 차이를 확인한다.",
    "minutes": 15
   },
   {
-   "task": "waitForAssignment 없이 테스트를 여러 번 돌려 간헐적 실패를 재현한다.",
-   "done_when": "넣었을 때 안정되는 것을 확인한다.",
-   "minutes": 10
+   "task": "waitForAssignment 없이 latest 로 테스트해 본다.",
+   "done_when": "레코드가 안 읽히는 이유를 설명할 수 있다.",
+   "minutes": 12
+  },
+  {
+   "task": "토픽 이름을 랜덤으로 바꿔 테스트 간 간섭을 없앤다.",
+   "done_when": "두 테스트가 같이 통과하는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "DLT 로 가는 경로를 테스트로 못 박는다.",
+   "done_when": "헤더의 예외 메시지를 단언한다.",
+   "minutes": 15
   }
  ],
  "quiz": [
   {
-   "q": "카프카 테스트에서 Thread.sleep 대신 무엇을 쓰나.",
-   "a": "Awaitility 의 await().atMost(...).untilAsserted(...). 조건이 맞으면 즉시 통과한다."
+   "q": "send() 직후 단언이 왜 깨지나.",
+   "a": "리스너는 별도 스레드에서 나중에 돌기 때문이다."
   },
   {
-   "q": "테스트가 간헐적으로 깨지는 흔한 원인은.",
-   "a": "리스너가 파티션을 할당받기 전에 발행해서. ContainerTestUtils.waitForAssignment 로 기다린다."
+   "q": "sleep 이 나쁜 두 가지 이유는.",
+   "a": "빠를 때도 다 기다리고, 느릴 때는 모자라 깜빡인다."
   },
   {
-   "q": "무엇을 카프카 없이 테스트하나.",
-   "a": "핸들러 로직과 직렬화. 배선과 실패 경로만 실제 카프카가 필요하다."
+   "q": "파티션 할당을 왜 기다려야 하나.",
+   "a": "auto.offset.reset=latest 면 할당 전에 보낸 레코드를 못 읽는다."
+  },
+  {
+   "q": "테스트 격리를 가장 싸게 하는 법은.",
+   "a": "테스트마다 토픽 이름을 다르게 주는 것이다."
   }
  ],
  "terms": [
   {
-   "term": "@EmbeddedKafka",
-   "what": "JVM 안에 카프카 브로커를 띄우는 테스트 애너테이션."
+   "term": "EmbeddedKafka",
+   "what": "테스트 JVM 안에서 브로커를 띄우는 spring-kafka 지원."
   },
   {
-   "term": "Awaitility",
-   "what": "조건이 만족될 때까지 폴링하며 기다리는 테스트 라이브러리."
+   "term": "Testcontainers",
+   "what": "도커로 진짜 브로커를 띄워 테스트하는 방식."
   },
   {
-   "term": "ContainerTestUtils.waitForAssignment",
-   "what": "리스너 컨테이너가 파티션을 받을 때까지 기다리는 유틸."
+   "term": "파티션 할당 대기",
+   "what": "컨슈머가 파티션을 받을 때까지 테스트를 멈추는 것."
   }
  ],
  "sources": [
   {
-   "title": "Spring for Apache Kafka — Testing",
+   "title": "Spring for Apache Kafka — Testing Applications",
    "url": "https://docs.spring.io/spring-kafka/reference/testing.html",
-   "publisher": "Spring"
+   "publisher": "VMware Tanzu"
   },
   {
-   "title": "Testcontainers — Kafka module",
+   "title": "Testcontainers — Kafka Module",
    "url": "https://java.testcontainers.org/modules/kafka/",
    "publisher": "Testcontainers"
+  },
+  {
+   "title": "JUnit 5 — User Guide",
+   "url": "https://junit.org/junit5/docs/current/user-guide/",
+   "publisher": "JUnit"
   }
  ]
 }

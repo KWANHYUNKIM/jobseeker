@@ -1,0 +1,144 @@
+{
+ "book": "kafka",
+ "id": "connector",
+ "no": "10.2",
+ "chapter": 10,
+ "title": "소스와 싱크 커넥터",
+ "summary": "DB 에서 토픽으로, 토픽에서 검색엔진으로.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "소스와 싱크를 구분한다.",
+  "JDBC 소스의 한계를 안다.",
+  "변환(SMT)을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "table",
+   "caption": "소스와 싱크",
+   "columns": [
+    "",
+    "소스(Source)",
+    "싱크(Sink)"
+   ],
+   "rows": [
+    [
+     "방향",
+     "**외부 → 카프카**",
+     "**카프카 → 외부**"
+    ],
+    [
+     "예",
+     "JDBC, Debezium(CDC), 파일",
+     "JDBC, Elasticsearch, S3, HDFS"
+    ],
+    [
+     "오프셋",
+     "**소스 오프셋**(어디까지 읽었나)",
+     "**컨슈머 그룹**(10.1절)"
+    ],
+    [
+     "병렬성",
+     "`tasks.max` + 소스가 나눌 수 있는 만큼",
+     "**파티션 수까지**"
+    ],
+    [
+     "실패 처리",
+     "재시도",
+     "**DLQ 설정**"
+    ]
+   ],
+   "note": "**싱크는 결국 컨슈머**다 — **7장의 규칙이 그대로 적용**된다."
+  },
+  {
+   "type": "code",
+   "lang": "json",
+   "file": "jdbc-source.json",
+   "caption": "JDBC 소스 — 폴링 방식",
+   "code": "{\n  \"name\": \"orders-jdbc-source\",\n  \"config\": {\n    \"connector.class\": \"io.confluent.connect.jdbc.JdbcSourceConnector\",\n    \"connection.url\": \"jdbc:postgresql://db:5432/shop\",\n    \"connection.user\": \"shop\",\n    \"connection.password\": \"${file:/secrets/db.properties:password}\",\n\n    \"mode\": \"timestamp+incrementing\",\n    \"incrementing.column.name\": \"id\",\n    \"timestamp.column.name\": \"updated_at\",\n\n    \"table.whitelist\": \"orders\",\n    \"topic.prefix\": \"db.\",\n    \"poll.interval.ms\": \"5000\",\n    \"tasks.max\": \"1\"\n  }\n}",
+   "note": "`mode` 가 핵심이다 — **어디까지 읽었는지를 컬럼으로 판단**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "JDBC 소스가 놓치는 것들",
+   "md": "| 놓치는 것 | 왜 |\n|---|---|\n| **삭제(DELETE)** | **폴링으로는 사라진 행을 알 수 없다** |\n| **폴링 사이의 중간 변경** | A→B→C 로 바뀌면 C 만 본다 |\n| **트랜잭션 경계** | 커밋 순서와 `updated_at` 순서가 다를 수 있다 |\n| 시계 문제 | 서버 시각이 뒤로 가면 놓친다 |\n| **DB 부하** | 5초마다 쿼리 |\n\n**특히 첫 번째가 치명적**이다:\n\n```\n주문이 취소되어 행이 삭제됐다\n  -> JDBC 소스는 아무것도 발행 안 한다\n  -> 검색엔진에는 그 주문이 계속 남아 있다\n```\n\n> **그래서 진지한 경우에는 CDC**(10.3절)**로** 간다.\n> **JDBC 소스는 \"추가만 되는 테이블\" 이나 \"삭제가 없는 마스터 데이터\" 에** 쓴다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "SMT — 가벼운 변환",
+   "md": "```json\n\"transforms\": \"unwrap,route,mask\",\n\n\"transforms.unwrap.type\": \"io.debezium.transforms.ExtractNewRecordState\",\n\n\"transforms.route.type\": \"org.apache.kafka.connect.transforms.RegexRouter\",\n\"transforms.route.regex\": \"db\\\\.public\\\\.(.*)\",\n\"transforms.route.replacement\": \"$1.changed.v1\",\n\n\"transforms.mask.type\": \"org.apache.kafka.connect.transforms.MaskField$Value\",\n\"transforms.mask.fields\": \"ssn,phone\"\n```\n\n| 자주 쓰는 SMT | 무엇 |\n|---|---|\n| `RegexRouter` | **토픽 이름 바꾸기**(4.7절의 규칙에 맞추기) |\n| `MaskField` | 민감 필드 가리기 |\n| `ValueToKey` + `ExtractField` | **PK 를 레코드 키로**(4.4절) |\n| `Filter` | 조건에 맞는 것만 |\n| `InsertField` | 타임스탬프·출처 추가 |\n\n> **SMT 는 레코드 하나 단위**다 — **조인·집계는 못 한다.** **그건 스트림즈**(10.4절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "JDBC 소스와 싱크를 붙인다",
+   "sql": "# --- 소스: DB -> 카프카 ---\n\n$ psql -h localhost -U shop -d shop -q \\\n    -c 'drop table if exists products' \\\n    -c 'create table products(id serial primary key, name text, price int,\n        updated_at timestamptz default now())' \\\n    -c \"insert into products(name, price) values ('keyboard', 89000), ('mouse', 32000)\"\n\n$ curl -s -X POST localhost:8083/connectors -H 'Content-Type: application/json' \\\n    -d @jdbc-source.json | python3 -c \"import json,sys; print(json.load(sys.stdin)['name'])\"\nproducts-jdbc-source\n\n$ sleep 10\n$ kt --list | grep db\\\\.\ndb.products\n\n$ kcc --topic db.products --from-beginning --timeout-ms 3000 | python3 -m json.tool | head -12\n{\n    \"schema\": {\"type\": \"struct\", \"fields\": [...], \"name\": \"products\"},\n    \"payload\": {\n        \"id\": 1,\n        \"name\": \"keyboard\",\n        \"price\": 89000,\n        \"updated_at\": 1757511021004\n    }\n}\n\n#   JsonConverter 가 스키마를 함께 넣었다\n#   schemas.enable=false 로 하면 payload 만 나온다\n\n\n# --- 추가하면 따라온다 ---\n\n$ psql -h localhost -U shop -d shop -q -c \\\n    \"insert into products(name, price) values ('monitor', 340000)\"\n$ sleep 8\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic db.products | \\\n    awk -F: '{s+=$3} END {print \"records =\", s}'\nrecords = 3\n\n\n# --- 수정도 따라온다 (timestamp 모드) ---\n\n$ psql -h localhost -U shop -d shop -q -c \\\n    \"update products set price = 79000, updated_at = now() where name = 'keyboard'\"\n$ sleep 8\n$ kcc --topic db.products --from-beginning --timeout-ms 3000 2>/dev/null | \\\n    grep -o '\"price\":[0-9]*' | tail -1\n\"price\":79000\n\n\n# --- 삭제는 안 따라온다 ---\n\n$ psql -h localhost -U shop -d shop -q -c \"delete from products where name = 'mouse'\"\n$ sleep 10\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic db.products | \\\n    awk -F: '{s+=$3} END {print \"records =\", s}'\nrecords = 4\n\n#   4건 그대로다. 삭제 이벤트가 없다\n#   싱크 쪽에는 mouse 가 영원히 남는다 -> CDC 가 필요하다 (10.3절)\n\n\n# --- SMT 로 토픽 이름과 키를 바꾼다 ---\n\n$ curl -s -X PUT localhost:8083/connectors/products-jdbc-source/config \\\n    -H 'Content-Type: application/json' -d '{\n  \"connector.class\": \"io.confluent.connect.jdbc.JdbcSourceConnector\",\n  \"connection.url\": \"jdbc:postgresql://db:5432/shop\",\n  \"connection.user\": \"shop\", \"connection.password\": \"devpass\",\n  \"mode\": \"timestamp+incrementing\",\n  \"incrementing.column.name\": \"id\", \"timestamp.column.name\": \"updated_at\",\n  \"table.whitelist\": \"products\", \"topic.prefix\": \"db.\",\n  \"transforms\": \"key,extract,route\",\n  \"transforms.key.type\": \"org.apache.kafka.connect.transforms.ValueToKey\",\n  \"transforms.key.fields\": \"id\",\n  \"transforms.extract.type\": \"org.apache.kafka.connect.transforms.ExtractField$Key\",\n  \"transforms.extract.field\": \"id\",\n  \"transforms.route.type\": \"org.apache.kafka.connect.transforms.RegexRouter\",\n  \"transforms.route.regex\": \"db\\\\.(.*)\",\n  \"transforms.route.replacement\": \"$1.changed.v1\"\n}' >/dev/null\n\n$ sleep 12 && kt --list | grep changed\nproducts.changed.v1\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C \\\n    -t products.changed.v1 -o beginning -e -f 'key=%k value=%s\\n' 2>/dev/null | head -2\nkey=1 value={\"schema\":...,\"payload\":{\"id\":1,\"name\":\"keyboard\",...}}\nkey=3 value={\"schema\":...,\"payload\":{\"id\":3,\"name\":\"monitor\",...}}\n\n#   PK 가 키가 됐다 -> 같은 상품의 변경이 같은 파티션으로 (4.4절)\n#   토픽 이름도 규칙에 맞게 바뀌었다 (4.7절)\n\n\n# --- 싱크: 카프카 -> DB ---\n\n$ curl -s -X POST localhost:8083/connectors -H 'Content-Type: application/json' -d '{\n  \"name\": \"products-jdbc-sink\",\n  \"config\": {\n    \"connector.class\": \"io.confluent.connect.jdbc.JdbcSinkConnector\",\n    \"connection.url\": \"jdbc:postgresql://db:5432/warehouse\",\n    \"connection.user\": \"shop\", \"connection.password\": \"devpass\",\n    \"topics\": \"products.changed.v1\",\n    \"insert.mode\": \"upsert\",\n    \"pk.mode\": \"record_key\",\n    \"pk.fields\": \"id\",\n    \"auto.create\": \"true\",\n    \"errors.tolerance\": \"all\",\n    \"errors.deadletterqueue.topic.name\": \"products.changed.v1.DLQ\",\n    \"errors.deadletterqueue.context.headers.enable\": \"true\"\n  }\n}' >/dev/null\n\n$ sleep 10\n$ psql -h localhost -U shop -d warehouse -c 'select id, name, price from \"products.changed.v1\"'\n id |   name   | price\n----+----------+--------\n  1 | keyboard |  79000\n  3 | monitor  | 340000\n\n#   upsert 라 중복이 와도 결과가 같다 (7.5절)\n#   DLQ 도 설정 한 줄이다 (9.5절)\n\n$ curl -s -X DELETE localhost:8083/connectors/products-jdbc-source\n$ curl -s -X DELETE localhost:8083/connectors/products-jdbc-sink"
+  }
+ ],
+ "recap": [
+  "소스는 외부→카프카, 싱크는 카프카→외부다. 싱크는 결국 컨슈머라 7장의 규칙이 그대로다.",
+  "JDBC 소스는 폴링이라 삭제와 폴링 사이의 중간 변경을 놓친다.",
+  "삭제가 있는 데이터는 CDC 를 쓴다. JDBC 소스는 추가만 되는 테이블에 맞다.",
+  "SMT 로 토픽 이름·키·마스킹 같은 가벼운 변환을 한다. 조인·집계는 못 한다.",
+  "싱크의 upsert 와 DLQ 는 설정 한 줄이다. 직접 짜면 7·9장을 다시 짜야 한다."
+ ],
+ "drills": [
+  {
+   "task": "JDBC 소스로 테이블을 토픽으로 옮기고 INSERT·UPDATE 가 따라오는지 확인한다.",
+   "done_when": "레코드가 느는 것을 본다.",
+   "minutes": 12
+  },
+  {
+   "task": "행을 DELETE 하고 토픽에 아무 일도 안 일어나는 것을 확인한다.",
+   "done_when": "JDBC 소스의 한계를 눈으로 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "ValueToKey + ExtractField SMT 로 PK 를 레코드 키로 만든다.",
+   "done_when": "kcat 으로 키가 붙은 것을 확인한다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "JDBC 소스가 놓치는 가장 치명적인 것은.",
+   "a": "삭제. 폴링으로는 사라진 행을 알 수 없어 싱크 쪽에 데이터가 영원히 남는다."
+  },
+  {
+   "q": "싱크 커넥터의 병렬성 상한은.",
+   "a": "토픽의 파티션 수. 컨슈머 그룹이기 때문이다."
+  },
+  {
+   "q": "SMT 로 할 수 없는 것은.",
+   "a": "여러 레코드에 걸친 조인·집계. 레코드 하나 단위 변환만 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "소스 커넥터",
+   "what": "외부 시스템에서 카프카로 데이터를 넣는 커넥터."
+  },
+  {
+   "term": "싱크 커넥터",
+   "what": "카프카에서 외부 시스템으로 내보내는 커넥터."
+  },
+  {
+   "term": "errors.tolerance",
+   "what": "실패를 견디고 DLQ 로 보낼지 정하는 커넥트 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Confluent — JDBC Source Connector",
+   "url": "https://docs.confluent.io/kafka-connectors/jdbc/current/source-connector/index.html",
+   "publisher": "Confluent"
+  },
+  {
+   "title": "Apache Kafka — Connect transformations",
+   "url": "https://kafka.apache.org/documentation/#connect_transforms",
+   "publisher": "Apache"
+  }
+ ]
+}

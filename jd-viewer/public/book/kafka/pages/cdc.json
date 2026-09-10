@@ -1,0 +1,152 @@
+{
+ "book": "kafka",
+ "id": "cdc",
+ "no": "10.3",
+ "chapter": 10,
+ "title": "CDC",
+ "summary": "DB 변경을 이벤트로.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "CDC 의 원리를 안다.",
+  "JDBC 소스와의 차이를 안다.",
+  "아웃박스와의 관계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.2절에서 JDBC 소스가 삭제를 놓쳤다.** **CDC 는 DB 의 변경 로그를 직접** 읽는다.\n\n> **PostgreSQL 의 WAL, MySQL 의 binlog** — **DB 가 복제를 위해 이미 쓰고 있는 그 로그**다.\n> **「스프링 DB 1편」에서 트랜잭션 로그를 이야기했다.** **그것을 다른 시스템이 읽는** 것이다."
+  },
+  {
+   "type": "table",
+   "caption": "JDBC 소스와 CDC",
+   "columns": [
+    "",
+    "JDBC 소스(폴링)",
+    "**CDC(로그 읽기)**"
+   ],
+   "rows": [
+    [
+     "삭제",
+     "**놓친다**",
+     "**잡는다**"
+    ],
+    [
+     "중간 변경",
+     "놓친다",
+     "**전부 잡는다**"
+    ],
+    [
+     "순서",
+     "`updated_at` 순",
+     "**커밋 순서 그대로**"
+    ],
+    [
+     "DB 부하",
+     "주기적 쿼리",
+     "**거의 없다**"
+    ],
+    [
+     "지연",
+     "폴링 주기",
+     "**거의 실시간**"
+    ],
+    [
+     "설정",
+     "간단",
+     "**복제 슬롯·권한 필요**"
+    ],
+    [
+     "before/after",
+     "after 만",
+     "**둘 다**"
+    ]
+   ],
+   "note": "**대표 구현이 Debezium** 이다 — **커넥트 플러그인으로** 돈다(10.1절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "CDC 이벤트의 모양",
+   "md": "```json\n{\n  \"op\": \"u\",                       // c=create, u=update, d=delete, r=snapshot\n  \"before\": {\"id\": 1, \"price\": 89000},\n  \"after\":  {\"id\": 1, \"price\": 79000},\n  \"source\": {\n    \"db\": \"shop\", \"table\": \"products\",\n    \"lsn\": 24857392, \"ts_ms\": 1757511021004\n  },\n  \"ts_ms\": 1757511021118\n}\n```\n\n| 필드 | 쓰임 |\n|---|---|\n| **`op`** | **무슨 변경인가** |\n| **`before`/`after`** | **무엇이 어떻게 바뀌었나** |\n| `source.lsn` | DB 로그 위치. **순서의 근거** |\n| `source.ts_ms` | DB 에서 일어난 시각 |\n\n**삭제는 두 레코드**로 온다:\n\n```\n1) op=\"d\", before={...}, after=null\n2) 툼스톤 (value=null)      <- compact 토픽에서 키를 지운다 (3.4절)\n```\n\n> **`ExtractNewRecordState` SMT 로 `after` 만 꺼내 평평하게 만드는 게 흔한** 형태다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "CDC 는 DB 스키마를 이벤트로 노출한다",
+   "md": "**가장 자주 지적되는 문제**다.\n\n```\nproducts 테이블의 컬럼 이름을 바꿨다\n  -> CDC 이벤트의 필드 이름이 바뀐다\n  -> 다른 팀의 컨슈머가 깨진다\n```\n\n> **DB 스키마는 내부 구현인데 그것이 팀 간 계약이** 되어 버린다(2.2절의 \"토픽이 계약\").\n\n| 대응 | |\n|---|---|\n| **아웃박스 + CDC** | **아웃박스 테이블만 CDC 로 읽는다**(8.5절). 스키마는 내가 정한다 |\n| 스트림즈로 변환 | CDC 토픽을 읽어 도메인 이벤트로(10.4절) |\n| SMT 로 변환 | 간단한 것만(10.2절) |\n| 그냥 노출 | 같은 팀 안이면 실용적 |\n\n**아웃박스 + CDC 가 실무의 좋은 조합**이다:\n\n> **8.5절의 폴링 발행기를 CDC 로 대체**한다.\n> **DB 부하가 없고 지연이 짧고 순서가 커밋 순서**다.\n> **Debezium 에 `outbox-event-router` SMT 가 아예** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "Debezium 으로 변경을 잡는다",
+   "sql": "# --- PostgreSQL 을 논리 복제 모드로 ---\n\n#   compose.yaml 의 db 서비스에:\n#     command: [\"postgres\", \"-c\", \"wal_level=logical\"]\n\n$ psql -h localhost -U shop -d shop -tAc 'show wal_level'\nlogical\n\n\n# --- Debezium 커넥터 ---\n\n$ curl -s -X POST localhost:8083/connectors -H 'Content-Type: application/json' -d '{\n  \"name\": \"shop-cdc\",\n  \"config\": {\n    \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\n    \"database.hostname\": \"db\", \"database.port\": \"5432\",\n    \"database.user\": \"shop\", \"database.password\": \"devpass\",\n    \"database.dbname\": \"shop\",\n    \"topic.prefix\": \"cdc\",\n    \"table.include.list\": \"public.products\",\n    \"plugin.name\": \"pgoutput\",\n    \"slot.name\": \"shop_slot\"\n  }\n}' >/dev/null\n\n$ sleep 15\n$ kt --list | grep cdc\ncdc.public.products\n\n$ psql -h localhost -U shop -d shop -c \\\n    'select slot_name, plugin, active from pg_replication_slots'\n slot_name  |  plugin  | active\n------------+----------+--------\n shop_slot  | pgoutput | t\n\n#   복제 슬롯이 생겼다. DB 가 이 슬롯이 읽을 때까지 WAL 을 보관한다\n\n\n# --- 스냅숏이 먼저 온다 ---\n\n$ kcc --topic cdc.public.products --from-beginning --timeout-ms 5000 2>/dev/null | \\\n    python3 -c \"\nimport sys, json\nfor line in sys.stdin:\n    d = json.loads(line)['payload']\n    print(d['op'], d.get('after'))\" | head -3\nr {'id': 1, 'name': 'keyboard', 'price': 79000, ...}\nr {'id': 3, 'name': 'monitor', 'price': 340000, ...}\n\n#   op=r 는 스냅숏(read)이다. 기존 행을 먼저 다 보낸다\n\n\n# --- INSERT / UPDATE / DELETE 를 전부 잡는다 ---\n\n$ psql -h localhost -U shop -d shop -q \\\n    -c \"insert into products(name, price) values ('cable', 12000)\" \\\n    -c \"update products set price = 15000 where name = 'cable'\" \\\n    -c \"delete from products where name = 'cable'\"\n\n$ sleep 5\n$ kcc --topic cdc.public.products --from-beginning --timeout-ms 5000 2>/dev/null | \\\n    python3 -c \"\nimport sys, json\nfor line in sys.stdin:\n    if not line.strip(): continue\n    p = json.loads(line).get('payload')\n    if p is None: print('tombstone'); continue\n    b = p.get('before'); a = p.get('after')\n    print(p['op'], (b or {}).get('price'), '->', (a or {}).get('price'))\" | tail -4\nc None -> 12000\nu 12000 -> 15000\nd 15000 -> None\ntombstone\n\n#   생성·수정·삭제가 다 잡혔고 before/after 가 있다\n#   삭제 뒤에 툼스톤까지 (3.4절)\n#   JDBC 소스는 이 중 삭제를 못 잡았다 (10.2절)\n\n\n# --- 순서는 커밋 순서다 ---\n\n$ kcc --topic cdc.public.products --from-beginning --timeout-ms 5000 2>/dev/null | \\\n    python3 -c \"\nimport sys, json\nfor line in sys.stdin:\n    if not line.strip(): continue\n    p = json.loads(line).get('payload')\n    if p: print(p['source']['lsn'], p['op'])\" | tail -3\n24857392 c\n24857544 u\n24857701 d\n\n#   LSN 이 증가한다. DB 커밋 순서 그대로다\n\n\n# --- 아웃박스 + CDC (8.5절) ---\n\n$ curl -s -X POST localhost:8083/connectors -H 'Content-Type: application/json' -d '{\n  \"name\": \"outbox-cdc\",\n  \"config\": {\n    \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\n    \"database.hostname\": \"db\", \"database.user\": \"shop\",\n    \"database.password\": \"devpass\", \"database.dbname\": \"shop\",\n    \"topic.prefix\": \"ob\", \"table.include.list\": \"public.outbox\",\n    \"plugin.name\": \"pgoutput\", \"slot.name\": \"outbox_slot\",\n    \"transforms\": \"outbox\",\n    \"transforms.outbox.type\": \"io.debezium.transforms.outbox.EventRouter\",\n    \"transforms.outbox.route.by.field\": \"topic\",\n    \"transforms.outbox.table.field.event.key\": \"key\",\n    \"transforms.outbox.table.field.event.payload\": \"payload\"\n  }\n}' >/dev/null\n\n$ sleep 15\n$ psql -h localhost -U shop -d shop -q -c \\\n    \"insert into outbox(event_id, topic, key, payload)\n     values ('e-900', 'order.placed.v1', '900', '{\\\"orderId\\\":900}')\"\n\n$ sleep 5\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C \\\n    -t order.placed.v1 -o -1 -c 1 -e -f 'key=%k value=%s\\n' 2>/dev/null\nkey=900 value={\"orderId\":900}\n\n#   아웃박스 테이블에 INSERT 한 것이 도메인 토픽으로 나갔다\n#   폴링 발행기가 없다. DB 부하도 없다 (8.5절)\n\n\n# --- 복제 슬롯을 안 지우면 WAL 이 쌓인다 ---\n\n$ curl -s -X DELETE localhost:8083/connectors/shop-cdc\n$ sleep 3\n$ psql -h localhost -U shop -d shop -c \\\n    \"select slot_name, active, pg_size_pretty(pg_wal_lsn_diff(pg_current_wal_lsn(), restart_lsn)) as retained\n     from pg_replication_slots\"\n slot_name   | active | retained\n-------------+--------+----------\n shop_slot   | f      | 1024 kB\n outbox_slot | t      | 0 bytes\n\n#   커넥터를 지웠는데 슬롯이 남아 active=f 다\n#   DB 는 이 슬롯을 위해 WAL 을 계속 보관한다 -> 디스크가 찬다\n\n$ psql -h localhost -U shop -d shop -c \"select pg_drop_replication_slot('shop_slot')\"\n\n#   커넥터를 지울 때 슬롯도 지운다. 잊으면 DB 디스크가 터진다"
+  }
+ ],
+ "recap": [
+  "CDC 는 DB 의 복제 로그(WAL·binlog)를 읽어 변경을 잡는다. 삭제와 중간 변경까지 전부 온다.",
+  "이벤트에 op·before·after·lsn 이 있어 무엇이 어떻게 바뀌었고 순서가 어떤지 알 수 있다.",
+  "삭제는 op=d 레코드와 툼스톤 두 개로 온다.",
+  "CDC 는 DB 스키마를 팀 간 계약으로 노출한다. 아웃박스 테이블만 CDC 로 읽는 조합이 좋다.",
+  "복제 슬롯을 안 지우면 DB 가 WAL 을 계속 보관해 디스크가 찬다."
+ ],
+ "drills": [
+  {
+   "task": "Debezium 커넥터를 만들고 INSERT/UPDATE/DELETE 를 전부 잡는지 확인한다.",
+   "done_when": "op 가 c/u/d 로 오고 툼스톤까지 오는 것을 본다.",
+   "minutes": 15
+  },
+  {
+   "task": "JDBC 소스와 비교해 삭제 처리의 차이를 확인한다.",
+   "done_when": "한쪽만 삭제를 잡는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "커넥터를 지운 뒤 복제 슬롯이 남아 있는지 확인하고 지운다.",
+   "done_when": "retained 가 늘어나는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "CDC 가 JDBC 소스보다 나은 점 셋은.",
+   "a": "삭제를 잡고, 중간 변경을 전부 잡고, 커밋 순서를 지키며 DB 부하가 거의 없다."
+  },
+  {
+   "q": "CDC 의 구조적 문제는.",
+   "a": "DB 스키마가 팀 간 계약으로 노출된다. 컬럼을 바꾸면 남의 컨슈머가 깨진다."
+  },
+  {
+   "q": "복제 슬롯을 방치하면.",
+   "a": "DB 가 그 슬롯을 위해 WAL 을 계속 보관해 디스크가 찬다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "CDC",
+   "en": "Change Data Capture",
+   "what": "DB 변경을 로그에서 잡아 이벤트로 만드는 것."
+  },
+  {
+   "term": "WAL / binlog",
+   "what": "DB 가 복제·복구를 위해 쓰는 변경 로그."
+  },
+  {
+   "term": "복제 슬롯",
+   "en": "replication slot",
+   "what": "어디까지 읽었는지 DB 가 기억하는 지점. 안 지우면 WAL 이 쌓인다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Debezium — PostgreSQL connector",
+   "url": "https://debezium.io/documentation/reference/connectors/postgresql.html",
+   "publisher": "Debezium"
+  },
+  {
+   "title": "Debezium — Outbox event router",
+   "url": "https://debezium.io/documentation/reference/transformations/outbox-event-router.html",
+   "publisher": "Debezium"
+  }
+ ]
+}

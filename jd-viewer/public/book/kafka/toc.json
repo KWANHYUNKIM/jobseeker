@@ -569,7 +569,7 @@
           "title": "카프카 커넥트",
           "summary": "옮기는 코드를 매번 안 짜려고.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",
@@ -577,7 +577,7 @@
           "title": "소스와 싱크 커넥터",
           "summary": "DB 에서 토픽으로, 토픽에서 검색엔진으로.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -585,7 +585,7 @@
           "title": "CDC",
           "summary": "DB 변경을 이벤트로.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",
