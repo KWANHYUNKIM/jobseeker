@@ -467,7 +467,7 @@
           "title": "왜 ++ 가 안 되나",
           "summary": "세 연산이다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -475,7 +475,7 @@
           "title": "CAS",
           "summary": "비교하고 바꾸기.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -483,7 +483,7 @@
           "title": "Atomic 타입들",
           "summary": "AtomicInteger 와 그 친척들.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",

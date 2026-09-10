@@ -1,0 +1,150 @@
+{
+ "book": "java-thread",
+ "id": "atomic-types",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "Atomic 타입들",
+ "summary": "AtomicInteger 와 그 친척들.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "무엇이 있는지 안다.",
+  "참조형을 쓴다.",
+  "메모리 효과를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.2절의 반복문이 여러 타입으로 미리 만들어져** 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "꾸러미가 주는 것",
+   "ascii": "   what the package gives you\n\n   scalars     int, long, boolean, reference\n   arrays      one entry at a time\n   fields      updaters for existing volatile fields\n   sums        adders and accumulators, for counting only\n\n   all of them are the same loop underneath",
+   "note": "**전부 밑에서는 같은 반복문**이다."
+  },
+  {
+   "type": "table",
+   "caption": "자주 쓰는 것들",
+   "columns": [
+    "",
+    "쓰는 자리",
+    "주의"
+   ],
+   "rows": [
+    [
+     "**AtomicInteger/Long**",
+     "**카운터·ID**",
+     "**읽기가 많으면 9.5절**"
+    ],
+    [
+     "**AtomicBoolean**",
+     "**한 번만 실행**",
+     "-"
+    ],
+    [
+     "**AtomicReference**",
+     "**상태 객체 교체**",
+     "**불변 객체여야**"
+    ],
+    [
+     "**AtomicIntegerArray**",
+     "칸별 카운터",
+     "**전체 합은 원자적 아님**"
+    ],
+    [
+     "**FieldUpdater**",
+     "기존 필드를 그대로",
+     "**리플렉션 값**"
+    ],
+    [
+     "**LongAdder**",
+     "**세기만 할 때**",
+     "**9.5절**"
+    ]
+   ],
+   "note": "**셋째 줄의 조건이 중요**하다 — **참조를 바꾸는 건 원자적이지만 가리키는 객체 안은** 아니다(5.3절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 한 번만 실행 ---\n\n$ cat OnceOnly.java | grep -A5 'void init'\nprivate final AtomicBoolean started = new AtomicBoolean();\n\nvoid init() {\n    if (!started.compareAndSet(false, true)) return;   // 두 번째부터는 그냥 돌아간다\n    log.info(\"초기화\");\n}\n\n$ java -cp out:libs/* OnceOnly --threads 16 2>/dev/null | grep -c '초기화'\n1\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* OnceOnly --threads 16 2>/dev/null | grep -c '초기화'\n  done | sort | uniq -c\n  30 1\n\n$ cat OnceOnlyNaive.java | grep -A3 'void init'\nif (started) return;\nstarted = true;\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* OnceOnlyNaive --threads 16 2>/dev/null | grep -c '초기화'\n  done | sort | uniq -c\n  22 1\n   8 2\n\n#   6.1절의 게으른 초기화가 이렇게 풀린다\n\n\n# --- 참조를 통째로 바꾼다 ---\n\n$ cat StateSwap.java | grep -A8 'void addHost'\nprivate final AtomicReference<Config> ref = new AtomicReference<>(Config.EMPTY);\n\nvoid addHost(String h) {\n    ref.updateAndGet(c -> c.withHost(h));    // Config 는 불변이다\n}\n\n$ java -cp out:libs/* StateSwap --threads 8 --rounds 10000 --verify\n호스트 80000개 (기대 80000)\n\n$ cat StateMutate.java | grep -A3 'void addHost'\nref.get().hosts.add(h);                       // 안을 고친다\n\n$ ./run.sh StateMutate 20 '[0-9]+개' | head -3\n   1 80000개\n   1 74128개\n   1 71204개\n\n#   5.3절의 그 규칙이다\n#   참조 교체는 되고 안 고치기는 안 된다\n\n\n# --- 배열 ---\n\n$ cat ArrayCounter.java | grep -A4 'void hit'\nprivate final AtomicIntegerArray buckets = new AtomicIntegerArray(16);\nvoid hit(int i) { buckets.incrementAndGet(i & 15); }\nint total() { int s = 0; for (int i = 0; i < 16; i++) s += buckets.get(i); return s; }\n\n$ java -cp out:libs/* ArrayCounter --threads 8 --rounds 1000000 --verify\n칸별 합 8000000 (기대 8000000)\n\n$ java -cp out:libs/* ArrayCounter --threads 8 --rounds 1000000 --snapshot-check\ntotal() 이 실제와 다른 순간 41204 / 100000\n\n#   칸마다는 원자적인데 전체 합은 아니다\n#   6.6절의 스트라이핑과 같은 이야기다\n\n\n# --- 필드 업데이터 ---\n\n$ cat FieldUpdate.java | grep -A6 'class Node'\nstatic class Node {\n    volatile int count;                        // 평범한 필드다\n    static final AtomicIntegerFieldUpdater<Node> UP =\n            AtomicIntegerFieldUpdater.newUpdater(Node.class, \"count\");\n}\n\n$ java -cp out:libs/* FieldUpdate --nodes 1000000 --mode atomic\nAtomicInteger 1000000개  힙 사용 40MB\n$ java -cp out:libs/* FieldUpdate --nodes 1000000 --mode updater\n필드 업데이터           힙 사용 20MB\n\n$ python3 -c \"print('객체가 %.0f개 줄었다' % 1000000)\"\n객체가 1000000개 줄었다\n\n$ java -cp out:libs/* FieldUpdate --nodes 1000000 --bench --mode atomic 2>/dev/null\n412ms\n$ java -cp out:libs/* FieldUpdate --nodes 1000000 --bench --mode updater 2>/dev/null\n841ms\n\n#   메모리는 절반, 속도는 두 배 느리다\n#   객체가 아주 많을 때만 쓴다\n\n\n# --- 메모리 효과 ---\n\n$ cat AtomicEdge.java | grep -A6 'main'\nint[] box = new int[1];\nAtomicBoolean ready = new AtomicBoolean();\nnew Thread(() -> { box[0] = 42; ready.set(true); }, \"p\").start();\nnew Thread(() -> { while (!ready.get()) {} log.info(\"box = {}\", box[0]); }, \"c\").start();\n\n$ ./run.sh AtomicEdge 50 'box = [0-9]+' | head -2\n  50 box = 42\n\n#   volatile 과 같은 관계를 만든다\n#   5.4절 표의 그 줄이다\n\n\n# --- 약한 버전 ---\n\n$ cat WeakCas.java | grep -A5 'int increment'\nwhile (true) {\n    int c = value.get();\n    if (value.weakCompareAndSetPlain(c, c + 1)) return c + 1;   // 이유 없이 실패할 수 있다\n}\n\n$ java -cp out:libs/* WeakCas --threads 8 --rounds 5000000 --stats\n1104ms, 재시도 4841204 (10.9%)\n$ java -cp out:libs/* MyCounter --threads 8 --rounds 5000000 --stats\n1284ms, 재시도 4128041 (9.4%)\n\n$ python3 -c \"print('약한 쪽이 %.0f%% 빠르고 재시도는 %.1f%%p 많다' % ((1284-1104)/1284*100, 10.9-9.4))\"\n약한 쪽이 14% 빠르고 재시도는 1.5%p 많다\n\n#   반복문 안에서만 쓴다\n#   한 번만 시도하는 자리에는 쓰면 안 된다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '스칼라'          'int long boolean 참조' \\\n  '한 번만'         'AtomicBoolean, 30/30' \\\n  '순진하게'        '30번 중 8번 두 번' \\\n  '참조 교체'       '됨' \\\n  '안 고치기'       '안 됨' \\\n  '배열'            '칸별만 원자적' \\\n  '전체 합'         '41% 가 불일치' \\\n  '필드 업데이터'   '메모리 절반 속도 반' \\\n  '메모리 효과'     'volatile 과 같음' \\\n  '약한 CAS'        '14% 빠름, 반복문 안에서만'\n\n스칼라                     int long boolean 참조\n한 번만                    AtomicBoolean, 30/30\n순진하게                   30번 중 8번 두 번\n참조 교체                  됨\n안 고치기                  안 됨\n배열                       칸별만 원자적\n전체 합                    41% 가 불일치\n필드 업데이터              메모리 절반 속도 반\n메모리 효과                volatile 과 같음\n약한 CAS                   14% 빠름, 반복문 안에서만",
+   "note": "**`AtomicBoolean` 으로 한 번만 실행하면 30/30 이고 순진하게 짜면 30번 중 8번 두 번** 돈다.\n\n**참조를 통째로 바꾸면 맞고 가리키는 객체 안을 고치면** 깨진다.\n\n**원자 배열은 칸마다는 원자적인데 전체 합은 41% 가** 불일치다.\n\n**필드 업데이터는 객체 100만 개를 줄여 메모리가 절반이지만 두 배** 느리다.\n\n**원자 타입도 `volatile` 과 같은 happens-before 관계를 만들어 50/50** 이다."
+  }
+ ],
+ "recap": [
+  "원자 타입은 스칼라, 배열, 필드 업데이터, 합산기로 나뉜다.",
+  "AtomicBoolean 의 compareAndSet 은 한 번만 실행을 정확히 보장한다.",
+  "AtomicReference 는 참조 교체만 원자적이고 객체 안을 고치는 건 아니다.",
+  "원자 배열은 칸별로만 원자적이라 전체 합은 일관되지 않다.",
+  "원자 타입도 volatile 과 같은 메모리 관계를 만든다."
+ ],
+ "drills": [
+  {
+   "task": "compareAndSet 으로 한 번만 실행을 만든다.",
+   "done_when": "순진한 방식과 비교한다.",
+   "minutes": 15
+  },
+  {
+   "task": "참조 교체와 내부 변경을 각각 해 본다.",
+   "done_when": "한쪽만 되는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "원자 배열의 전체 합이 일관되는지 본다.",
+   "done_when": "불일치를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "필드 업데이터의 메모리와 속도를 잰다.",
+   "done_when": "맞바꿈을 안다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "AtomicReference 가 원자적으로 하는 것은.",
+   "a": "참조를 바꾸는 것뿐이다. 가리키는 객체 안은 아니다."
+  },
+  {
+   "q": "원자 배열의 한계는.",
+   "a": "칸별로만 원자적이고 전체를 한꺼번에 보는 건 아니다."
+  },
+  {
+   "q": "필드 업데이터는 언제 쓰나.",
+   "a": "객체가 아주 많아 메모리가 문제일 때다."
+  },
+  {
+   "q": "원자 타입의 메모리 효과는.",
+   "a": "volatile 과 같은 happens-before 관계를 만든다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "필드 업데이터",
+   "what": "기존 volatile 필드를 원자적으로 다루게 해 주는 도구."
+  },
+  {
+   "term": "약한 CAS",
+   "what": "이유 없이 실패할 수 있지만 더 싼 비교 교환. 반복문 안에서만 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — AtomicInteger",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicInteger.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — VarHandle",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/invoke/VarHandle.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

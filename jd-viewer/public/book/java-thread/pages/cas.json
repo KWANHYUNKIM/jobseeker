@@ -1,0 +1,120 @@
+{
+ "book": "java-thread",
+ "id": "cas",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "CAS",
+ "summary": "비교하고 바꾸기.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "명령을 안다.",
+  "반복문을 직접 짠다.",
+  "보장 범위를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.1절의 \"부딪혔는지 알아채기\" 를 하드웨어가** 해 준다.\n\n```java\nboolean ok = atomic.compareAndSet(expected, next);\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "명령 하나, 인자 셋",
+   "ascii": "   one instruction, three arguments\n\n   an address, the value you expect, the value you want\n\n   it writes only if the address still holds what you expected",
+   "note": "**기대한 값이 그대로일 때만** 쓴다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 장의 모든 것이 만들어지는 반복문",
+   "ascii": "   the loop everything in this chapter is built from\n\n   read the current value\n   compute the next value\n   compare and swap\n   if it failed, start again from the read\n\n   nobody waits, but somebody may repeat",
+   "note": "**아무도 안 기다리고 누군가는 되풀이**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "락과 다른 종류의 진행 보장",
+   "md": "**\"누군가는 반드시 앞으로 나간다\"** 를 보장한다.\n\n| | 락 | CAS |\n|---|---|---|\n| **한 스레드가 멈추면** | **전부 멈춘다** | **나머지는 진행** |\n| **보장** | 없음 | **락 프리** |\n| **개별 스레드** | 언젠가 들어감 | **영원히 실패할 수도** |\n| **데드락** | 가능 | **불가능** |\n\n> **셋째 줄이 대가**다 — **운 나쁜 스레드가 계속 질 수** 있다.\n> **6.5절의 데드락은 원리적으로 안** 생긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 직접 짠다 ---\n\n$ cat MyCounter.java | grep -A8 'int increment'\nprivate final AtomicInteger value = new AtomicInteger();\n\nint increment() {\n    while (true) {\n        int current = value.get();                    // 1. 읽는다\n        int next = current + 1;                        // 2. 계산한다\n        if (value.compareAndSet(current, next))        // 3. 바꾼다\n            return next;\n        retries.increment();                           // 4. 실패하면 다시\n    }\n}\n\n$ ./run.sh MyCounter 30 '[0-9]+$' | head -2\n  30 400000\n\n$ java -cp out:libs/* MyCounter --threads 8 --rounds 5000000 --stats\n1284ms, 재시도 4128041 / 44128041 (9.4%)\n\n#   9.1절에서 예고한 그 반복문이다\n\n\n# --- 이미 있는 것과 같다 ---\n\n$ java -cp out:libs/* MyCounter --threads 8 --rounds 5000000 2>/dev/null | grep -o '[0-9]*ms'\n1284ms\n$ java -cp out:libs/* CounterWays --mode atomic --threads 8 --rounds 5000000 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n1204ms\n\n$ javap -c -p /Library/Java/.../AtomicInteger.class 2>/dev/null \\\n  | grep -A4 'incrementAndGet' | grep -i 'getAndAdd\\|VarHandle'\n     1: invokevirtual  #x  // Method getAndAdd\n\n#   AtomicInteger 도 같은 일을 한다\n#   다만 안에서 더 좋은 명령을 쓴다\n\n\n# --- 어떤 기계 명령인가 ---\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,'*AtomicInteger.incrementAndGet' \\\n    -cp out:libs/* CounterWays --mode atomic 2>/dev/null | grep -E 'lock (xadd|cmpxchg)' | head -2\n  0x...  lock xaddl  %eax,(%rsi)\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly \\\n    -XX:CompileCommand=print,'MyCounter.increment' \\\n    -cp out:libs/* MyCounter 2>/dev/null | grep -E 'lock cmpxchg' | head -1\n  0x...  lock cmpxchgl %ecx,(%rsi)\n\n#   내 반복문은 cmpxchg, 표준 것은 xadd 다\n#   더하기는 전용 명령이 있어 재시도가 없다\n\n\n# --- 그래서 더 빠르다 ---\n\n$ for m in mine standard; do\n    for t in 2 8 32; do\n      printf '%-10s threads=%-4s ' $m $t\n      java -cp out:libs/* CasCompare --mode $m --threads $t --rounds 5000000 2>/dev/null \\\n        | grep -o '[0-9]*ms'\n    done\n  done\nmine       threads=2     412ms\nmine       threads=8    1284ms\nmine       threads=32   8412ms\nstandard   threads=2     398ms\nstandard   threads=8    1204ms\nstandard   threads=32   4128ms\n\n$ python3 -c \"print('32스레드에서 %.1f배' % (8412/4128))\"\n32스레드에서 2.0배\n\n#   경합이 셀수록 차이가 난다\n#   xadd 는 절대 실패하지 않는다\n\n\n# --- 계산이 필요하면 반복문을 쓴다 ---\n\n$ cat CasUpdate.java | grep -A6 'int capAt'\nint capAt(int max) {\n    while (true) {\n        int c = value.get();\n        int next = Math.min(c + 1, max);\n        if (value.compareAndSet(c, next)) return next;\n    }\n}\n\n$ java -cp out:libs/* CasUpdate --threads 8 --rounds 100000 --max 1000\n최종 값 1000 (기대 1000)\n\n$ cat CasUpdateShort.java | grep -A2 'int capAt'\nint capAt(int max) { return value.updateAndGet(c -> Math.min(c + 1, max)); }\n\n$ java -cp out:libs/* CasUpdateShort --threads 8 --rounds 100000 --max 1000\n최종 값 1000 (기대 1000)\n\n#   updateAndGet 이 그 반복문을 대신 돈다\n#   람다가 여러 번 불릴 수 있다는 뜻이다\n\n\n# --- 람다가 여러 번 돈다 ---\n\n$ java -cp out:libs/* CasUpdateShort --threads 8 --rounds 100000 --count-calls\n람다 호출 812041, 실제 갱신 800000 (1.5% 헛일)\n\n$ cat SideEffect.java | grep -A3 'updateAndGet'\nvalue.updateAndGet(c -> { log.info(\"계산\"); return c + 1; });   // 하면 안 된다\n\n$ java -cp out:libs/* SideEffect --threads 8 --rounds 1000 2>/dev/null | grep -c '계산'\n1041\n\n#   1000번인데 1041줄이 찍혔다\n#   람다에 부작용을 넣으면 안 된다\n#   10.4절에서 이 규칙을 다시 본다\n\n\n# --- 6.1절의 출금을 CAS 로 ---\n\n$ cat CasWithdraw.java | grep -A7 'boolean withdraw'\nboolean withdraw(int n) {\n    while (true) {\n        int c = balance.get();\n        if (c < n) return false;                  // 검사\n        if (balance.compareAndSet(c, c - n))      // 행동\n            return true;\n    }\n}\n\n$ ./run.sh CasWithdraw 30 '실제 -?[0-9]+' | head -2\n  30 실제 0\n\n$ java -cp out:libs/* CasWithdraw --threads 10 --rounds 100 --verify\n성공한 출금 100건, 잔고 0\n\n#   6.1절의 검사 후 행동이 CAS 로 풀린다\n#   7.7절에서 \"Atomic 은 불가\" 라고 한 건 반복문 없이 쓸 때다\n\n\n# --- 락 프리를 확인한다 ---\n\n$ cat StopOne.java | grep -A5 'main'\n// 스레드 하나를 SIGSTOP 으로 멈춘다\n// 락 방식과 CAS 방식에서 나머지가 계속 도는지 본다\n\n$ java -cp out:libs/* StopOne --mode lock --threads 4 &\n$ sleep 1 && kill -STOP $(pgrep -f StopOne) && sleep 2 && kill -CONT $(pgrep -f StopOne)\n$ wait; java -cp out:libs/* StopOne --mode lock --threads 4 --report\n멈춘 동안 나머지가 진행한 횟수 0\n\n$ java -cp out:libs/* StopOne --mode cas --threads 4 --report\n멈춘 동안 나머지가 진행한 횟수 4128041\n\n#   락은 쥔 스레드가 멈추면 전부 멈춘다\n#   CAS 는 나머지가 계속 간다\n\n\n# --- 개별 스레드는 굶을 수 있다 ---\n\n$ java -cp out:libs/* CasStarve --threads 16 --seconds 5\n스레드별 성공 횟수 최소 8412, 최대 412048\n$ python3 -c \"print('%.0f배 차이' % (412048/8412))\"\n49배 차이\n\n$ java -cp out:libs/* LockStarve --fair true --threads 16 --seconds 5\n스레드별 성공 횟수 최소 41204, 최대 41208\n\n#   7.4절의 공정성 같은 개념이 CAS 에는 없다\n#   전체는 진행하는데 개별은 밀릴 수 있다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'CAS'             '기대값이 맞을 때만 쓰기' \\\n  '반복문'          '읽고 계산하고 바꾸고 다시' \\\n  '직접 짜면'       '1284ms 재시도 9.4%' \\\n  '표준'            '1204ms' \\\n  '명령'            'cmpxchg 대 xadd' \\\n  '32스레드'        '2.0배 차이' \\\n  'updateAndGet'    '람다가 1.5% 더 돎' \\\n  '부작용'          '넣으면 안 됨' \\\n  '검사 후 행동'    'CAS 로 됨' \\\n  '락 프리'         '멈춰도 나머지 진행' \\\n  '대가'            '개별은 49배 차이'\n\nCAS                        기대값이 맞을 때만 쓰기\n반복문                     읽고 계산하고 바꾸고 다시\n직접 짜면                  1284ms 재시도 9.4%\n표준                       1204ms\n명령                       cmpxchg 대 xadd\n32스레드                   2.0배 차이\nupdateAndGet               람다가 1.5% 더 돎\n부작용                     넣으면 안 됨\n검사 후 행동               CAS 로 됨\n락 프리                    멈춰도 나머지 진행\n대가                       개별은 49배 차이",
+   "note": "**직접 짠 CAS 반복문이 30/30 으로 맞고 재시도가 9.4%** 다.\n\n**어셈블리를 보면 내 것은 `lock cmpxchgl`, 표준 증가는 `lock xaddl` 로 절대 실패하지** 않는다.\n\n**`updateAndGet` 의 람다가 1000번 요청에 1041번 불려 부작용을 넣으면** 안 된다.\n\n**6.1절의 검사 후 행동이 CAS 반복문으로 30/30** 풀린다.\n\n**스레드 하나를 멈춰도 CAS 는 나머지가 412만 번 진행하고 락은 0** 이다."
+  }
+ ],
+ "recap": [
+  "CAS 는 기대한 값이 그대로일 때만 쓰는 하나의 기계 명령이다.",
+  "읽고 계산하고 바꾸고 실패하면 다시 하는 반복문이 이 장의 기본형이다.",
+  "단순 증가는 절대 실패하지 않는 전용 명령이 있어 더 빠르다.",
+  "updateAndGet 의 람다는 여러 번 불릴 수 있으므로 부작용을 넣으면 안 된다.",
+  "락과 달리 한 스레드가 멈춰도 나머지는 진행한다 — 대신 개별 스레드는 굶을 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "CAS 반복문을 직접 짜고 재시도를 센다.",
+   "done_when": "표준 것과 비교한다.",
+   "minutes": 20
+  },
+  {
+   "task": "어셈블리에서 두 명령을 찾는다.",
+   "done_when": "차이를 설명한다.",
+   "minutes": 15
+  },
+  {
+   "task": "updateAndGet 의 람다 호출 횟수를 센다.",
+   "done_when": "요청보다 많은 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "6.1절의 출금을 CAS 로 다시 만든다.",
+   "done_when": "30번 다 맞는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "CAS 가 하는 일은.",
+   "a": "기대한 값이 그대로일 때만 새 값을 쓰고 결과를 알려 준다."
+  },
+  {
+   "q": "왜 단순 증가가 더 빠른가.",
+   "a": "실패하지 않는 전용 명령이 따로 있어서다."
+  },
+  {
+   "q": "updateAndGet 의 람다 규칙은.",
+   "a": "여러 번 불릴 수 있으니 부작용이 없어야 한다."
+  },
+  {
+   "q": "락 프리가 보장하는 것은.",
+   "a": "한 스레드가 멈춰도 전체는 진행한다는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "CAS",
+   "what": "비교해서 같으면 바꾸는 하나의 원자적 기계 명령."
+  },
+  {
+   "term": "락 프리",
+   "what": "누군가는 반드시 진행한다는 보장. 개별 스레드는 굶을 수 있다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — AtomicInteger",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicInteger.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JVM Specification",
+   "url": "https://docs.oracle.com/javase/specs/jvms/se21/html/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

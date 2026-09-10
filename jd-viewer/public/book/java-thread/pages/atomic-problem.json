@@ -1,0 +1,157 @@
+{
+ "book": "java-thread",
+ "id": "atomic-problem",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "왜 ++ 가 안 되나",
+ "summary": "세 연산이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "다시 정리한다.",
+  "무엇을 막아야 하는지 안다.",
+  "락 말고 다른 길을 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 `count++` 가 명령 넷이라고** 했다. **이 장은 그걸 하나로 만드는** 이야기다."
+  },
+  {
+   "type": "figure",
+   "caption": "락이 실제로 지키던 것",
+   "ascii": "   what the lock was actually protecting\n\n   the gap between reading a value and writing it back\n\n   if the hardware could close that gap, no lock would be needed",
+   "note": "**하드웨어가 그 틈을 닫을 수 있으면 락이 필요** 없다."
+  },
+  {
+   "type": "table",
+   "caption": "지금까지의 해법",
+   "columns": [
+    "",
+    "무엇을 하나",
+    "값",
+    "절"
+   ],
+   "rows": [
+    [
+     "**`volatile`**",
+     "**보이게만**",
+     "읽기 공짜",
+     "**5.3절 — 안 됨**"
+    ],
+    [
+     "**`synchronized`**",
+     "**틈을 막음**",
+     "무경합 4.5배",
+     "6.2절"
+    ],
+    [
+     "**`ReentrantLock`**",
+     "같음",
+     "경합 시 유리",
+     "7.1절"
+    ],
+    [
+     "**스레드마다 따로**",
+     "**틈이 없음**",
+     "**가장 빠름**",
+     "7.7절"
+    ],
+    [
+     "**CAS**",
+     "**하드웨어가 닫음**",
+     "**?**",
+     "**이 장**"
+    ]
+   ],
+   "note": "**넷째가 가능하면 그게 최선**이다 — **이 장은 그게 안 될 때의** 답이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "실패를 감지할 수 있으면 락이 필요 없다",
+   "md": "**막는 대신 부딪혔는지 알아채고 다시 하는** 방법이 있다.\n\n```\n1. 지금 값을 읽는다\n2. 새 값을 계산한다\n3. \"아직 그 값이면 바꿔라\" 라고 요청한다\n4. 실패했으면 1로 돌아간다\n```\n\n> **셋째 단계가 하나의 기계 명령이면** 된다.\n> **그 명령이 CAS**다(9.2절).\n> **누구도 안 막고 아무도 안 기다린다**.\n\n| | 락 | CAS |\n|---|---|---|\n| **충돌 전** | **막는다** | **그냥 한다** |\n| **충돌하면** | 기다린다 | **다시 한다** |\n| **경합 없으면** | 락 값 | **거의 공짜** |\n| **경합 세면** | 대기 | **헛일이 늘어난다** |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 다시 확인한다 ---\n\n$ javap -c -p out/Counter.class | grep -A5 'static void inc' | tail -4\n       0: getstatic     #7\n       3: iconst_1\n       4: iadd\n       5: putstatic     #7\n\n$ ./run.sh Counter 20 '[0-9]+$' | awk '$2==400000 {print \"맞음\", $1+0 \"/20\"}'\n맞음 4/20\n\n#   1.4절의 그것이다\n\n\n# --- 지금까지의 답 ---\n\n$ for m in plain volatile sync lock threadlocal; do\n    printf '%-12s ' $m\n    java -cp out:libs/* CounterWays --mode $m --threads 8 --rounds 5000000 2>/dev/null \\\n      | grep -oE '[0-9]+ms 값 [0-9]+'\n  done\nplain        204ms 값 18412048\nvolatile     841ms 값 21048204\nsync        8412ms 값 40000000\nlock        6041ms 값 40000000\nthreadlocal  204ms 값 40000000\n\n#   7.7절의 그 표다\n#   맞으면서 빠른 것은 스레드마다 따로 두는 것뿐이다\n\n\n# --- 따로 둘 수 없을 때 ---\n\n$ cat MustShare.java | grep -A6 'main'\n// 요구: 현재 접속자 수를 여러 스레드가 올리고 내리며\n//       아무 때나 정확한 값을 읽을 수 있어야 한다\n\n$ java -cp out:libs/* MustShare --mode threadlocal --threads 8 --rounds 100000\n스레드별 합계는 맞지만 지금 값을 못 읽는다\n$ java -cp out:libs/* MustShare --mode sync --threads 8 --rounds 100000\n8412ms, 값 정확\n\n#   합쳐서 읽어야 하면 스레드마다 두는 게 안 통한다\n#   9.5절에서 이 이야기를 다시 한다\n\n\n# --- 락이 하는 일을 쪼갠다 ---\n\n$ java -cp out:libs/* LockCost --threads 8 --rounds 5000000 --breakdown\n총 8412ms\n  실제 증가 연산      12ms (0.1%)\n  락 획득/해제       1204ms (14.3%)\n  대기               7196ms (85.6%)\n\n#   실제 일은 0.1% 다\n#   나머지는 서로 안 부딪히게 하는 값이다\n\n\n# --- 부딪히는 비율을 센다 ---\n\n$ java -cp out:libs/* CollisionRate --threads 8 --rounds 5000000\n증가 시도 40000000\n실제로 겹친 횟수 (락 대기 발생) 4128041 (10.3%)\n\n$ java -cp out:libs/* CollisionRate --threads 2 --rounds 5000000\n증가 시도 10000000\n실제로 겹친 횟수 412048 (4.1%)\n\n#   90% 는 안 부딪히는데 그 90% 도 락 값을 낸다\n#   그게 이 장의 출발점이다\n\n\n# --- 부딪혔을 때만 다시 하면 ---\n\n$ java -cp out:libs/* CounterWays --mode atomic --threads 8 --rounds 5000000 2>/dev/null \\\n  | grep -oE '[0-9]+ms 값 [0-9]+'\n1204ms 값 40000000\n\n$ python3 -c \"print('synchronized 보다 %.1f배 빠르다' % (8412/1204))\"\nsynchronized 보다 7.0배 빠르다\n\n$ java -cp out:libs/* CounterWays --mode atomic --threads 8 --rounds 5000000 --count-retry\nCAS 시도 44128041, 성공 40000000, 재시도 4128041 (10.3%)\n\n#   위에서 잰 겹침 비율과 같다\n#   부딪힌 만큼만 다시 한다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '문제'            '읽기와 쓰기 사이의 틈' \\\n  'volatile'        '못 막음' \\\n  '락'              '막음, 8412ms' \\\n  '실제 일'         '0.1%' \\\n  '겹치는 비율'     '10.3%' \\\n  '나머지 90%'      '안 겹치는데 값을 냄' \\\n  '다른 길'         '부딪히면 다시 하기' \\\n  'atomic'          '1204ms' \\\n  '재시도'          '10.3%' \\\n  '스레드마다 따로' '가능하면 최선'\n\n문제                       읽기와 쓰기 사이의 틈\nvolatile                   못 막음\n락                         막음, 8412ms\n실제 일                    0.1%\n겹치는 비율                10.3%\n나머지 90%                 안 겹치는데 값을 냄\n다른 길                    부딪히면 다시 하기\natomic                     1204ms\n재시도                     10.3%\n스레드마다 따로            가능하면 최선",
+   "note": "**락 방식에서 실제 증가 연산은 0.1% 고 85.6% 가 대기**다.\n\n**8스레드에서 실제로 겹치는 비율은 10.3% 라 90% 는 헛되이 락 값을** 낸다.\n\n**원자 타입으로 바꾸면 8412ms 가 1204ms 로 7배** 빨라진다.\n\n**그 재시도 비율이 앞에서 잰 겹침 비율 10.3% 와 정확히** 같다.\n\n**합쳐서 읽어야 하면 스레드마다 따로 두는 방법은 못** 쓴다."
+  }
+ ],
+ "recap": [
+  "락이 지키던 것은 읽기와 쓰기 사이의 틈 하나다.",
+  "실제로 겹치는 비율은 10% 안팎인데 락은 나머지 90% 에서도 값을 낸다.",
+  "막는 대신 부딪혔는지 알아채고 다시 하는 길이 있다.",
+  "그러면 겹친 만큼만 헛일을 하고 나머지는 거의 공짜가 된다.",
+  "공유를 아예 안 할 수 있으면 그게 여전히 최선이다."
+ ],
+ "drills": [
+  {
+   "task": "락 방식의 시간을 항목별로 쪼갠다.",
+   "done_when": "실제 일의 비율을 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "겹치는 비율을 스레드 수별로 센다.",
+   "done_when": "경향을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "원자 타입으로 바꿔 재시도 비율을 센다.",
+   "done_when": "겹침 비율과 같은 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "스레드마다 따로 둘 수 없는 요구를 만들어 본다.",
+   "done_when": "왜 안 되는지 설명한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "락이 실제로 지키는 것은.",
+   "a": "읽기와 쓰기 사이의 틈이다."
+  },
+  {
+   "q": "락 방식의 낭비는.",
+   "a": "안 겹치는 대부분의 경우에도 획득과 해제 값을 낸다."
+  },
+  {
+   "q": "다른 접근이란.",
+   "a": "막지 않고 부딪혔는지 확인해 다시 하는 것이다."
+  },
+  {
+   "q": "재시도 비율은 무엇과 같은가.",
+   "a": "실제로 겹치는 비율이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "겹침",
+   "what": "두 스레드가 같은 값을 동시에 고치려 한 상황."
+  },
+  {
+   "term": "재시도",
+   "what": "쓰기가 실패했을 때 다시 읽고 다시 시도하는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — AtomicInteger",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicInteger.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
