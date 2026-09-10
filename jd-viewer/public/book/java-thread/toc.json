@@ -326,7 +326,7 @@
           "title": "락의 범위",
           "summary": "좁힐수록 빠르고 위험하다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
@@ -334,7 +334,7 @@
           "title": "wait 와 notify",
           "summary": "락을 놓고 기다린다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -349,7 +349,7 @@
           "title": "ReentrantLock",
           "summary": "try-finally 가 필수다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",

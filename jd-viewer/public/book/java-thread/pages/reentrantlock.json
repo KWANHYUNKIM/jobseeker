@@ -1,0 +1,161 @@
+{
+ "book": "java-thread",
+ "id": "reentrantlock",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "ReentrantLock",
+ "summary": "try-finally 가 필수다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "모양을 익힌다.",
+  "안 풀리는 걸 본다.",
+  "무엇을 얻는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2절에서 예외가 나도 락이** 풀렸다. **여기서는 안** 풀린다.\n\n```java\nlock.lock();\ntry { ... } finally { lock.unlock(); }\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "반드시 이렇게 적는다",
+   "ascii": "   the shape you must always write\n\n   lock\n   try   the body\n   finally   unlock\n\n   without the finally, one exception keeps the lock forever",
+   "note": "**`finally` 가 없으면 예외 한 번에 락이 영원히** 잠긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "낱말을 포기하고 얻는 것",
+   "ascii": "   what you buy by giving up the keyword\n\n   a lock attempt that can fail          try lock\n   a lock attempt that can be cancelled  lock interruptibly\n   a choice about fairness\n   several wait rooms instead of one\n\n   the price is that the compiler no longer releases it for you",
+   "note": "**값은 컴파일러가 더 이상 대신 풀어 주지 않는다는** 것이다."
+  },
+  {
+   "type": "table",
+   "caption": "synchronized 와 견준다",
+   "columns": [
+    "",
+    "`synchronized`",
+    "`ReentrantLock`"
+   ],
+   "rows": [
+    [
+     "**해제**",
+     "**자동**",
+     "**직접**"
+    ],
+    [
+     "**예외 시**",
+     "**풀린다**",
+     "**`finally` 가 있어야**"
+    ],
+    [
+     "**포기 가능**",
+     "아니오",
+     "**`tryLock`**(7.2절)"
+    ],
+    [
+     "**인터럽트**",
+     "**안 먹힘**(4.3절)",
+     "**가능**(7.3절)"
+    ],
+    [
+     "**공정성**",
+     "아니오",
+     "**고를 수 있다**(7.4절)"
+    ],
+    [
+     "**대기실**",
+     "**하나**",
+     "**여럿**(7.5절)"
+    ],
+    [
+     "**덤프**",
+     "**주인이 보인다**",
+     "**덜 보인다**"
+    ]
+   ],
+   "note": "**마지막 줄이 덜 알려진 대가**다 — **데드락 탐지도 `synchronized` 쪽이** 낫다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 기본 모양 ---\n\n$ cat Basic.java | grep -A6 'void inc'\nprivate final ReentrantLock lock = new ReentrantLock();\n\nvoid inc() {\n    lock.lock();\n    try { count++; }\n    finally { lock.unlock(); }\n}\n\n$ ./run.sh LockCounter 30 '[0-9]+$' | head -2\n  30 400000\n\n#   6.2절의 synchronized 와 같은 결과다\n\n\n# --- finally 를 빼면 ---\n\n$ cat NoFinally.java | grep -A5 'void inc'\nvoid inc() {\n    lock.lock();\n    count++;\n    if (count % 1000 == 0) throw new IllegalStateException(\"터짐\");\n    lock.unlock();\n}\n\n$ timeout 5 java -cp out:libs/* NoFinally --threads 4 2>/dev/null | tail -1\n(멈춤)\n\n$ echo $?\n124\n\n$ timeout 10 java -cp out:libs/* NoFinally --threads 4 & sleep 3\n$ jcmd $(pgrep -f NoFinally) Thread.print 2>/dev/null \\\n  | grep -c 'WAITING (parking)'\n3\n$ jcmd $(pgrep -f NoFinally) Thread.print 2>/dev/null \\\n  | grep -A3 'w-1' | grep -c 'ReentrantLock'\n1\n$ pkill -f NoFinally\n\n#   예외가 난 스레드가 락을 쥔 채 죽었다\n#   나머지가 영원히 기다린다\n#   6.2절과 정반대다\n\n\n# --- 덤프에서 주인이 잘 안 보인다 ---\n\n$ timeout 10 java -cp out:libs/* NoFinally --threads 4 & sleep 3\n$ jcmd $(pgrep -f NoFinally) Thread.print 2>/dev/null | grep -c 'Found one Java-level deadlock'\n0\n$ jcmd $(pgrep -f NoFinally) Thread.print 2>/dev/null | grep -A4 '\"w-1\"' | tail -3\n   java.lang.Thread.State: WAITING (parking)\n\tat jdk.internal.misc.Unsafe.park(Native Method)\n\t- parking to wait for  <0x000000061a2c4f18> (a java.util.concurrent.locks.ReentrantLock$NonfairSync)\n$ pkill -f NoFinally\n\n#   \"누가 쥐고 있는지\" 가 안 나온다\n#   6.5절의 synchronized 데드락 보고와 다르다\n\n\n# --- 물어보면 나온다 ---\n\n$ cat LockInfo.java | grep -A6 'void dump'\nvoid dump() {\n    log.info(\"잠겨 있나 {}\", lock.isLocked());\n    log.info(\"내가 쥐었나 {}\", lock.isHeldByCurrentThread());\n    log.info(\"재진입 횟수 {}\", lock.getHoldCount());\n    log.info(\"기다리는 수 {}\", lock.getQueueLength());\n}\n\n$ java -cp out:libs/* LockInfo --threads 8\n01:09:02.104 [probe] INFO  LockInfo - 잠겨 있나 true\n01:09:02.104 [probe] INFO  LockInfo - 내가 쥐었나 false\n01:09:02.105 [probe] INFO  LockInfo - 재진입 횟수 0\n01:09:02.105 [probe] INFO  LockInfo - 기다리는 수 7\n\n#   synchronized 에는 없는 창구다\n#   11.1절의 감시에 쓸 수 있다\n\n\n# --- 재진입 ---\n\n$ cat Reenter.java | grep -A8 'void outer'\nvoid outer() {\n    lock.lock();\n    try {\n        log.info(\"outer, 횟수 {}\", lock.getHoldCount());\n        inner();\n        log.info(\"outer 복귀, 횟수 {}\", lock.getHoldCount());\n    } finally { lock.unlock(); }\n}\nvoid inner() { lock.lock(); try { log.info(\"inner, 횟수 {}\", lock.getHoldCount()); } finally { lock.unlock(); } }\n\n$ java -cp out:libs/* Reenter\n01:09:06.204 [main] INFO  Reenter - outer, 횟수 1\n01:09:06.204 [main] INFO  Reenter - inner, 횟수 2\n01:09:06.205 [main] INFO  Reenter - outer 복귀, 횟수 1\n\n#   6.3절의 그 횟수가 눈에 보인다\n\n\n# --- unlock 을 더 부르면 ---\n\n$ cat TooManyUnlocks.java | grep -A3 'main'\nlock.lock();\nlock.unlock();\nlock.unlock();\n\n$ java -cp out:libs/* TooManyUnlocks\nException in thread \"main\" java.lang.IllegalMonitorStateException\n\tat java.base/java.util.concurrent.locks.ReentrantLock$Sync.tryRelease\n\n#   짝이 안 맞으면 알려 준다\n\n\n# --- 남의 락을 풀 수 있나 ---\n\n$ cat UnlockOthers.java | grep -A5 'main'\nnew Thread(() -> { lock.lock(); sleep(3000); lock.unlock(); }, \"holder\").start();\nsleep(200);\nlock.unlock();\n\n$ java -cp out:libs/* UnlockOthers\nException in thread \"main\" java.lang.IllegalMonitorStateException\n\n#   쥔 스레드만 풀 수 있다\n\n\n# --- 값을 잰다 ---\n\n$ for m in sync lock; do\n    for t in 1 2 8; do\n      printf '%-6s %-3s threads ' $m $t\n      java -cp out:libs/* LockBench2 --mode $m --threads $t --rounds 50000000 2>/dev/null \\\n        | grep -o '[0-9]*ms'\n    done\n  done\nsync   1   threads 918ms\nsync   2   threads 6041ms\nsync   8   threads 20412ms\nlock   1   threads 984ms\nlock   2   threads 4128ms\nlock   8   threads 12048ms\n\n$ python3 -c \"\nprint('무경합: lock 이 %.0f%% 느림' % ((984-918)/918*100))\nprint('8스레드: lock 이 %.1f배 빠름' % (20412/12048))\"\n무경합: lock 이 7% 느림\n8스레드: lock 이 1.7배 빠름\n\n#   경합이 세면 Lock 이 낫다\n#   무경합이면 synchronized 가 조금 낫다\n\n\n# --- 실수를 찾는다 ---\n\n$ cat check-unlock.sh\n#!/bin/sh\n# lock() 뒤에 try 가 안 오는 자리를 찾는다\ngrep -rn -A1 '\\.lock();' src/main/java/ \\\n | awk '/\\.lock\\(\\);/ {f=$0; next} /^--/ {next} {if ($0 !~ /try/) print f}'\n\n$ ./check-unlock.sh\nsrc/main/java/study/th/Registry.java:41:        lock.lock();\nsrc/main/java/study/th/Cache.java:88:           lock.lock();\n\n$ ./check-unlock.sh | wc -l\n       2\n\n$ ./check-unlock.sh | wc -l   # 고친 뒤\n       0\n\n#   4장에서 만든 스크립트들에 하나가 더 붙는다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '모양'            'lock try finally unlock' \\\n  'finally 없으면'  '영원히 잠김' \\\n  'synchronized'    '예외에도 풀림' \\\n  '덤프'            '주인이 안 보임' \\\n  '데드락 탐지'     '안 됨' \\\n  '물어보기'        'isLocked getQueueLength' \\\n  '재진입'          'getHoldCount 로 보임' \\\n  '짝 안 맞으면'    'IllegalMonitorState' \\\n  '남의 락'         '못 푼다' \\\n  '무경합'          '7% 느림' \\\n  '8스레드'         '1.7배 빠름' \\\n  '검사'            'lock 뒤 try'\n\n모양                       lock try finally unlock\nfinally 없으면             영원히 잠김\nsynchronized               예외에도 풀림\n덤프                       주인이 안 보임\n데드락 탐지                안 됨\n물어보기                   isLocked getQueueLength\n재진입                     getHoldCount 로 보임\n짝 안 맞으면               IllegalMonitorState\n남의 락                    못 푼다\n무경합                     7% 느림\n8스레드                    1.7배 빠름\n검사                       lock 뒤 try",
+   "note": "**`finally` 를 빼고 예외를 던지면 나머지 셋이 `WAITING (parking)` 으로 영원히** 기다린다.\n\n**덤프에 `parking to wait for` 만 나오고 누가 쥐었는지도 데드락 보고도** 없다.\n\n**대신 `isLocked`·`getQueueLength`·`getHoldCount` 로 물어볼 수** 있다.\n\n**무경합이면 `synchronized` 가 7% 빠르고 8스레드면 `Lock` 이 1.7배** 빠르다.\n\n**`lock()` 뒤에 `try` 가 안 오는 자리를 스크립트로 2곳** 찾았다."
+  }
+ ],
+ "recap": [
+  "ReentrantLock 은 반드시 lock-try-finally-unlock 모양으로 쓴다.",
+  "finally 를 빼면 예외 한 번에 락이 영원히 잠긴다 — synchronized 와 정반대다.",
+  "덤프에서 주인이 잘 안 보이고 데드락 자동 탐지도 안 된다.",
+  "대신 잠김 여부와 대기 수를 코드로 물어볼 수 있다.",
+  "무경합이면 synchronized 가 조금 낫고 경합이 세면 Lock 이 낫다."
+ ],
+ "drills": [
+  {
+   "task": "finally 없이 예외를 던져 락이 안 풀리는 것을 본다.",
+   "done_when": "덤프로 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "getHoldCount 로 재진입 횟수를 찍는다.",
+   "done_when": "6.3절과 이어 본다.",
+   "minutes": 12
+  },
+  {
+   "task": "두 방식의 성능을 스레드 수별로 잰다.",
+   "done_when": "교차점을 찾는다.",
+   "minutes": 15
+  },
+  {
+   "task": "lock 뒤에 try 가 없는 자리를 찾는 스크립트를 만든다.",
+   "done_when": "실제로 몇 곳인지 센다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "ReentrantLock 의 필수 모양은.",
+   "a": "lock 하고 try 로 감싸고 finally 에서 unlock 이다."
+  },
+  {
+   "q": "finally 를 빼면.",
+   "a": "예외가 난 스레드가 락을 쥔 채 죽어 아무도 못 들어간다."
+  },
+  {
+   "q": "덤프에서 무엇이 아쉬운가.",
+   "a": "락 주인이 안 보이고 데드락 자동 탐지가 안 된다."
+  },
+  {
+   "q": "언제 synchronized 가 나은가.",
+   "a": "경합이 거의 없을 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "명시적 락",
+   "what": "언어 낱말이 아니라 객체와 메서드로 다루는 락."
+  },
+  {
+   "term": "getHoldCount",
+   "what": "현재 스레드가 그 락을 몇 겹으로 쥐고 있는지 알려 주는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ReentrantLock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/ReentrantLock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.locks",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/package-summary.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
