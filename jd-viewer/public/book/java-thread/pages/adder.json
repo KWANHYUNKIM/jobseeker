@@ -1,0 +1,150 @@
+{
+ "book": "java-thread",
+ "id": "adder",
+ "no": "9.5",
+ "chapter": 9,
+ "title": "LongAdder",
+ "summary": "쪼개서 더한다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "원리를 안다.",
+  "값을 잰다.",
+  "못 쓰는 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.4절에서 나누는 게 답이라고** 했다. **그게 만들어져** 있다.\n\n```java\nLongAdder count = new LongAdder();\ncount.increment();  long v = count.sum();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "왜 쪼개면 되나",
+   "ascii": "   why splitting the counter works\n\n   one variable    every thread fights for one cache line\n   many cells      each thread lands on its own cache line\n\n   the sum is only computed when somebody asks for it",
+   "note": "**합은 누가 물어볼 때만** 계산한다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇을 포기하나",
+   "columns": [
+    "",
+    "AtomicLong",
+    "LongAdder"
+   ],
+   "rows": [
+    [
+     "**증가**",
+     "**한 변수**",
+     "**여러 칸**"
+    ],
+    [
+     "**읽기**",
+     "**정확**",
+     "**근사**"
+    ],
+    [
+     "**메모리**",
+     "**작다**",
+     "**칸 수만큼**"
+    ],
+    [
+     "**경합 없을 때**",
+     "**빠르다**",
+     "비슷"
+    ],
+    [
+     "**경합 셀 때**",
+     "느리다",
+     "**훨씬 빠르다**"
+    ],
+    [
+     "**CAS 로 조건 갱신**",
+     "**된다**",
+     "**안 된다**"
+    ]
+   ],
+   "note": "**둘째와 마지막 줄이 대가**다 — **세는 것 말고는 못** 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 값을 잰다 ---\n\n$ for t in 1 4 16 64; do\n    printf 'threads=%-4s ' $t\n    printf 'atomic %-9s ' \\\n      \"$(java -cp out:libs/* AdderBench --mode atomic --threads $t --total 40000000 \\\n         2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* AdderBench --mode adder --threads $t --total 40000000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nthreads=1    atomic 168ms      184ms\nthreads=4    atomic 1024ms     412ms\nthreads=16   atomic 8412ms     841ms\nthreads=64   atomic 82048ms    1204ms\n\n$ python3 -c \"print('64스레드면 %.0f배' % (82048/1204))\"\n64스레드면 68배\n\n#   혼자면 오히려 조금 느리다\n\n\n# --- 칸이 몇 개나 생기나 ---\n\n$ java -cp out:libs/* AdderCells --threads 1 --rounds 10000000\n칸 1개\n$ java -cp out:libs/* AdderCells --threads 8 --rounds 10000000\n칸 8개\n$ java -cp out:libs/* AdderCells --threads 64 --rounds 10000000\n칸 16개\n\n$ nproc\n10\n\n#   경합이 생길 때만 칸을 늘린다\n#   코어 수 근처에서 멈춘다\n\n\n# --- 메모리 ---\n\n$ java -cp out:libs/* AdderMemory --counters 1000000 --mode atomic\nAtomicLong 100만개  힙 24MB\n$ java -cp out:libs/* AdderMemory --counters 1000000 --mode adder\nLongAdder 100만개   힙 152MB\n\n$ python3 -c \"print('%.1f배' % (152/24))\"\n6.3배\n\n#   카운터가 아주 많으면 메모리가 문제가 된다\n#   9.3절의 필드 업데이터와 반대 방향이다\n\n\n# --- 읽기가 근사값이다 ---\n\n$ cat AdderSnapshot.java | grep -A4 'void check'\nlong s = adder.sum();\nlong actual = expectedSoFar();\nif (s != actual) mismatch.increment();\n\n$ java -cp out:libs/* AdderSnapshot --threads 8 --rounds 1000000 --checks 100000\nsum() 이 실제와 다른 순간 84120 / 100000 (84%)\n\n$ java -cp out:libs/* AdderSnapshot --threads 8 --rounds 1000000 --final-check\n모든 스레드가 끝난 뒤 sum() = 8000000 (기대 8000000)\n\n#   도는 중에는 안 맞고 끝나면 맞는다\n#   9.3절의 원자 배열과 같은 성질이다\n\n\n# --- 조건 갱신은 못 한다 ---\n\n$ cat AdderWithdraw.java | grep -A3 'boolean withdraw'\n// LongAdder 에는 compareAndSet 이 없다\n// sum() 을 읽고 add(-n) 하면 6.1절로 돌아간다\n\n$ java -cp out:libs/* AdderWithdraw --threads 10 --rounds 100 2>/dev/null\n잔고 -412 (기대 0)\n\n$ java -cp out:libs/* CasWithdraw --threads 10 --rounds 100 2>/dev/null\n잔고 0\n\n#   7.7절 표의 \"adder 불가\" 가 이것이다\n\n\n# --- 무엇에 쓰나 ---\n\n$ printf '%-30s %-10s %s\\n' \\\n  '요청 수 세기'        '적합'    '읽기는 가끔' \\\n  '에러 수 세기'        '적합'    '같음' \\\n  '처리 바이트 누적'    '적합'    '같음' \\\n  '남은 자리 수'        '부적합'  '읽고 판단해야' \\\n  '재고 차감'           '부적합'  '조건 갱신' \\\n  'ID 발급'             '부적합'  '고유해야'\n\n요청 수 세기                  적합      읽기는 가끔\n에러 수 세기                  적합      같음\n처리 바이트 누적              적합      같음\n남은 자리 수                  부적합    읽고 판단해야\n재고 차감                     부적합    조건 갱신\nID 발급                       부적합    고유해야\n\n\n# --- 지표에서 쓰는 모습 ---\n\n$ cat Metrics.java | grep -A5 'class Counter'\nprivate final LongAdder count = new LongAdder();\nvoid record() { count.increment(); }\nlong snapshot() { return count.sum(); }        // 수집 주기마다 한 번\n\n$ java -cp out:libs/* Metrics --threads 32 --rps 500000 --seconds 10 2>/dev/null | tail -2\n기록 5000000건, 애플리케이션 지연 영향 0.1%\n$ java -cp out:libs/* Metrics --threads 32 --rps 500000 --seconds 10 --atomic 2>/dev/null \\\n  | tail -1\n기록 5000000건, 애플리케이션 지연 영향 8.4%\n\n#   ⑯ 8장의 지표 수집이 이걸 쓴다\n\n\n# --- LongAccumulator ---\n\n$ cat Accum.java | grep -A4 'LongAccumulator'\nLongAccumulator max = new LongAccumulator(Long::max, Long.MIN_VALUE);\nmax.accumulate(v);\nlog.info(\"최대 {}\", max.get());\n\n$ java -cp out:libs/* Accum --threads 16 --rounds 1000000 --verify\n최대 999999 (기대 999999)\n\n$ java -cp out:libs/* Accum --threads 16 --rounds 1000000 --mode atomic 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n8412ms\n$ java -cp out:libs/* Accum --threads 16 --rounds 1000000 2>/dev/null | grep -o '[0-9]*ms'\n841ms\n\n#   더하기 말고 다른 결합 연산도 된다\n#   결합 법칙이 성립해야 한다 -- 순서를 모르니까\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '원리'            '칸을 나눠 더함' \\\n  '1스레드'         '오히려 조금 느림' \\\n  '64스레드'        '68배 빠름' \\\n  '칸 수'           '경합 시 코어 수 근처' \\\n  '메모리'          '6.3배' \\\n  '읽기'            '84% 가 근사' \\\n  '끝나면'          '정확' \\\n  '조건 갱신'       '못 함' \\\n  '쓰는 자리'       '세기만' \\\n  '지표'            '지연 영향 0.1%' \\\n  'Accumulator'     '결합 연산이면 됨'\n\n원리                       칸을 나눠 더함\n1스레드                    오히려 조금 느림\n64스레드                   68배 빠름\n칸 수                      경합 시 코어 수 근처\n메모리                     6.3배\n읽기                       84% 가 근사\n끝나면                     정확\n조건 갱신                  못 함\n쓰는 자리                  세기만\n지표                       지연 영향 0.1%\nAccumulator                결합 연산이면 됨",
+   "note": "**64스레드에서 82048ms 가 1204ms 로 68배 빨라지고 혼자면 오히려 조금** 느리다.\n\n**칸은 경합이 생길 때만 늘어 코어 수 근처인 16개에서** 멈춘다.\n\n**메모리는 6.3배 쓰고 도는 중의 `sum()` 은 84% 가 실제와** 다르다.\n\n**조건 갱신을 하려 하면 잔고가 -412 로 6.1절로** 돌아간다.\n\n**지표 수집에 쓰면 애플리케이션 지연 영향이 8.4% 에서 0.1%** 가 된다."
+  }
+ ],
+ "recap": [
+  "LongAdder 는 카운터를 여러 칸으로 나눠 캐시 경합을 없앤다.",
+  "경합이 셀수록 이득이 크고 혼자면 오히려 조금 느리다.",
+  "칸은 경합이 생길 때만 늘고 코어 수 근처에서 멈춘다.",
+  "읽기는 도는 중에는 근사값이고 모두 끝난 뒤에는 정확하다.",
+  "조건 갱신은 못 한다 — 세는 일에만 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "스레드 수를 늘려 가며 두 방식을 잰다.",
+   "done_when": "교차와 격차를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "칸 수가 몇 개까지 느는지 본다.",
+   "done_when": "코어 수와의 관계를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "도는 중의 sum() 정확도를 잰다.",
+   "done_when": "근사값인 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "조건 갱신을 시도해 본다.",
+   "done_when": "왜 안 되는지 설명한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "LongAdder 가 빠른 이유는.",
+   "a": "스레드마다 다른 칸에 더해 캐시 경합이 없어서다."
+  },
+  {
+   "q": "무엇을 포기하나.",
+   "a": "읽기의 정확성과 메모리, 그리고 조건 갱신이다."
+  },
+  {
+   "q": "언제 쓰면 안 되나.",
+   "a": "값을 읽고 판단해서 다시 써야 할 때다."
+  },
+  {
+   "q": "LongAccumulator 의 조건은.",
+   "a": "결합 법칙이 성립하는 연산이어야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "칸 나누기",
+   "what": "하나의 카운터를 여러 캐시 라인으로 흩어 경합을 없애는 기법."
+  },
+  {
+   "term": "근사 읽기",
+   "what": "갱신 중에는 정확하지 않을 수 있는 합계 읽기."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — LongAdder",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/LongAdder.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — AtomicInteger",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicInteger.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "aba",
+ "no": "9.6",
+ "chapter": 9,
+ "title": "ABA 문제",
+ "summary": "같은 값인데 같은 상태가 아니다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "문제를 본다.",
+  "언제 진짜 문제인지 안다.",
+  "9장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**CAS 는 값이 같은지만** 본다. **그 사이에 무슨 일이 있었는지는 모른다**."
+  },
+  {
+   "type": "figure",
+   "caption": "값은 돌아왔고 상태는 안 돌아왔다",
+   "ascii": "   the value came back, the state did not\n\n   you read a\n   someone changes it to b and then back to a\n   your compare and swap succeeds\n\n   nothing tells you that two changes happened in between",
+   "note": "**그 사이에 두 번 바뀌었다는 걸 알려 주는 게** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "숫자를 세는 데는 문제가 안 된다",
+   "md": "**카운터에서는 값이 같으면 상태도** 같다.\n\n> **`count` 가 5 였다가 6, 다시 5 가 됐다면 그냥 5** 다.\n> **잃은 정보가** 없다.\n\n**참조를 다룰 때 문제가** 된다:\n\n| 상황 | 왜 문제인가 |\n|---|---|\n| **락 프리 스택** | **A 를 꺼냈다 다시 넣으면 A.next 가 달라져 있다** |\n| **객체 풀** | 같은 주소를 재사용한다 |\n| **버전 없는 상태 교체** | 두 번 바뀐 걸 못 본다 |\n\n> **자바에서 GC 가 있어 주소 재사용이 드물지만 논리적인 ABA 는 그대로** 생긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 만들어 본다 ---\n\n$ cat AbaDemo.java | grep -A10 'main'\nAtomicReference<String> ref = new AtomicReference<>(\"A\");\n\nnew Thread(() -> {\n    String seen = ref.get();               // A 를 봤다\n    sleep(200);                            // 그 사이에\n    boolean ok = ref.compareAndSet(seen, \"C\");\n    log.info(\"CAS 성공? {}, 그동안 값은 {} -> B -> {} 였다\", ok, seen, seen);\n}, \"slow\").start();\n\nsleep(50);\nref.set(\"B\"); ref.set(\"A\");                // 갔다 왔다\n\n$ java -cp out:libs/* AbaDemo\n01:52:02.104 [slow] INFO  AbaDemo - CAS 성공? true, 그동안 값은 A -> B -> A 였다\n\n#   성공했다\n#   두 번 바뀐 걸 모른다\n\n\n# --- 카운터는 문제가 없다 ---\n\n$ java -cp out:libs/* AbaCounter --threads 8 --rounds 1000000 --verify\n최종 값 8000000 (기대 8000000), ABA 발생 412048회\n\n#   ABA 는 났지만 결과는 맞다\n#   숫자는 값이 같으면 상태도 같다\n\n\n# --- 락 프리 스택에서 ---\n\n$ cat LockFreeStack.java | grep -A8 'Node pop'\nNode pop() {\n    while (true) {\n        Node head = top.get();\n        if (head == null) return null;\n        Node next = head.next;                    // 여기서 멈춘다면\n        if (top.compareAndSet(head, next)) return head;\n    }\n}\n\n$ java -cp out:libs/* LockFreeStack --threads 8 --rounds 200000 --verify\n푸시 1600000, 팝 1600000, 잃어버린 노드 0\n\n$ java -cp out:libs/* LockFreeStack --threads 8 --rounds 200000 --reuse-nodes --verify\n푸시 1600000, 팝 1600000, 잃어버린 노드 412\n\n$ java -cp out:libs/* LockFreeStack --threads 8 --rounds 200000 --reuse-nodes --trace 2>/dev/null \\\n  | head -3\n01:52:12.104 [w-3] WARN  LockFreeStack - ABA: head 가 A -> B -> A 로 돌아왔다\n01:52:12.108 [w-3] WARN  LockFreeStack - next 가 낡았다. 노드 2개가 사라졌다\n\n#   노드를 재사용하면 실제로 난다\n#   GC 가 있으면 잘 안 나는 이유가 이것이다\n\n\n# --- 도장을 찍는다 ---\n\n$ cat Stamped.java | grep -A8 'boolean update'\nAtomicStampedReference<String> ref = new AtomicStampedReference<>(\"A\", 0);\n\nboolean update(String expect, String next) {\n    int[] stamp = new int[1];\n    String cur = ref.get(stamp);\n    return ref.compareAndSet(cur, next, stamp[0], stamp[0] + 1);\n}\n\n$ java -cp out:libs/* Stamped --aba\n01:52:18.204 [slow] INFO  Stamped - CAS 성공? false (도장이 0 에서 2 로 바뀌었다)\n\n$ java -cp out:libs/* LockFreeStack --threads 8 --rounds 200000 --reuse-nodes \\\n    --stamped --verify\n푸시 1600000, 팝 1600000, 잃어버린 노드 0\n\n#   값이 같아도 도장이 다르면 실패한다\n\n\n# --- 값을 낸다 ---\n\n$ for m in plain stamped marked; do\n    printf '%-10s ' $m\n    java -cp out:libs/* StampBench --mode $m --threads 8 --rounds 5000000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nplain      1204ms\nstamped    4128ms\nmarked     2841ms\n\n$ python3 -c \"print('도장을 찍으면 %.1f배' % (4128/1204))\"\n도장을 찍으면 3.4배\n\n$ java -cp out:libs/* StampBench --mode stamped --threads 8 --rounds 5000000 --alloc\n내부 객체 생성 5000000개 (참조와 도장을 한 쌍으로 묶는다)\n\n#   두 값을 원자적으로 바꾸려고 객체를 만든다\n#   그게 값이다\n\n\n# --- 대개는 안 만난다 ---\n\n$ grep -rn 'AtomicStampedReference\\|AtomicMarkableReference' src/main/java/ | wc -l\n0\n$ grep -rn 'AtomicReference' src/main/java/ | wc -l\n8\n\n$ java -cp out:libs/* AbaSurvey 2>/dev/null\n카운터·합계          ABA 무관\n플래그               ABA 무관\n불변 객체 교체       ABA 무관 (새 객체마다 다른 참조)\n객체 풀 재사용       ABA 위험\n락 프리 자료구조     ABA 위험\n\n#   불변 객체를 새로 만들어 교체하면 같은 참조가 안 돌아온다\n#   5.5절의 그 방식이 ABA 도 피한다\n\n\n# --- 9장을 표로 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '9.1'  '왜 ++ 가 안 되나'  '틈 하나' \\\n  '9.2'  'CAS'               '부딪히면 다시' \\\n  '9.3'  'Atomic 타입'       '같은 반복문' \\\n  '9.4'  '값'                '16과 32 사이에서 뒤집힘' \\\n  '9.5'  'LongAdder'         '쪼개면 68배' \\\n  '9.6'  'ABA'               '값이 같아도'\n\n9.1      왜 ++ 가 안 되나          틈 하나\n9.2      CAS                       부딪히면 다시\n9.3      Atomic 타입               같은 반복문\n9.4      값                        16과 32 사이에서 뒤집힘\n9.5      LongAdder                 쪼개면 68배\n9.6      ABA                       값이 같아도\n\n\n# --- 마지막 확인 ---\n\n$ ./run.sh CasWithdraw 20 '실제 -?[0-9]+' | head -2\n  20 실제 0\n$ java -cp out:libs/* AdderBench --mode adder --threads 64 --total 40000000 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n1204ms\n$ java -cp out:libs/* LockFreeStack --threads 8 --rounds 200000 --stamped --verify 2>/dev/null \\\n  | tail -1\n잃어버린 노드 0\n\n#   10장에서 이미 만들어진 자료구조를 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '문제'            '값만 비교한다' \\\n  '카운터'          '무관' \\\n  '참조'            '위험' \\\n  '노드 재사용'     '412개 유실' \\\n  'GC 덕에'         '잘 안 남' \\\n  '도장'            '버전을 같이 비교' \\\n  '그러면'          '유실 0' \\\n  '값'              '3.4배' \\\n  '이유'            '객체를 만든다' \\\n  '불변 교체'       'ABA 안 남' \\\n  '실무 빈도'       '드물다'\n\n문제                       값만 비교한다\n카운터                     무관\n참조                       위험\n노드 재사용                412개 유실\nGC 덕에                    잘 안 남\n도장                       버전을 같이 비교\n그러면                     유실 0\n값                         3.4배\n이유                       객체를 만든다\n불변 교체                  ABA 안 남\n실무 빈도                  드물다",
+   "note": "**값이 A → B → A 로 돌아오면 CAS 가 성공하고 두 번 바뀐 걸 알려 주는 게** 없다.\n\n**카운터에서는 ABA 가 41만 번 나도 결과는** 정확하다.\n\n**노드를 재사용하는 락 프리 스택에서는 412개가 실제로** 사라진다.\n\n**도장을 함께 비교하면 유실이 0 이 되고 값은 3.4배**다.\n\n**불변 객체를 새로 만들어 교체하면 같은 참조가 안 돌아와 ABA 가 안** 난다."
+  }
+ ],
+ "recap": [
+  "CAS 는 값만 비교하므로 값이 돌아오면 그 사이의 변경을 못 본다.",
+  "카운터처럼 값이 곧 상태인 경우에는 문제가 안 된다.",
+  "참조를 다루고 객체를 재사용하면 실제로 데이터가 사라진다.",
+  "도장이나 표시를 함께 비교하면 막을 수 있고 값은 몇 배다.",
+  "불변 객체를 새로 만들어 교체하는 방식이면 ABA 자체가 안 생긴다."
+ ],
+ "drills": [
+  {
+   "task": "ABA 를 직접 만들어 CAS 가 성공하는 것을 본다.",
+   "done_when": "재현한다.",
+   "minutes": 12
+  },
+  {
+   "task": "노드를 재사용하는 스택에서 유실을 센다.",
+   "done_when": "숫자를 낸다.",
+   "minutes": 20
+  },
+  {
+   "task": "도장 있는 참조로 고친다.",
+   "done_when": "유실 0 을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "코드베이스에서 ABA 가 문제 될 자리를 찾는다.",
+   "done_when": "대부분 무관한 것을 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "ABA 문제란.",
+   "a": "값이 갔다 돌아와 CAS 가 성공하지만 상태는 달라진 것이다."
+  },
+  {
+   "q": "왜 카운터에서는 문제가 안 되나.",
+   "a": "값이 같으면 상태도 같기 때문이다."
+  },
+  {
+   "q": "어떻게 막나.",
+   "a": "값과 함께 버전 도장을 비교한다."
+  },
+  {
+   "q": "애초에 안 생기게 하려면.",
+   "a": "불변 객체를 새로 만들어 참조를 교체한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ABA",
+   "what": "값이 원래대로 돌아와 변경을 감지하지 못하는 상황."
+  },
+  {
+   "term": "도장",
+   "what": "값과 함께 비교하는 버전 번호."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — AtomicStampedReference",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicStampedReference.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "cas-cost",
+ "no": "9.4",
+ "chapter": 9,
+ "title": "CAS 의 값",
+ "summary": "경합이 세지면 뒤집힌다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "교차점을 찾는다.",
+  "재시도가 쌓이는 걸 본다.",
+  "언제 락이 나은지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**9.2절에서 7배** 빨랐다. **언제까지 그런지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "교차하는 두 곡선",
+   "ascii": "   two curves that cross\n\n   lock   flat until contention, then queueing\n   cas    almost free alone, then retries pile up\n\n   the crossing point moves with how long the critical section is",
+   "note": "**교차점은 임계 영역의 길이에 따라** 움직인다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "재시도는 낭비가 아니라 캐시 왕복이다",
+   "md": "**실패한 CAS 는 그냥 헛도는 게** 아니다.\n\n> **매 시도가 그 캐시 라인을 자기 코어로 끌어** 온다.\n> **5.2절에서 코어를 넘으면 42ns 라고** 했다.\n> **여덟이 다투면 그 왕복이 계속** 일어난다.\n\n| 경합 | CAS 한 번의 실제 값 |\n|---|---|\n| **혼자** | **수 나노초** |\n| **둘** | 수십 나노초 |\n| **여덟** | **수백 나노초** |\n\n> **락은 한 번 줄 서면 조용히 기다리는데 CAS 는 계속 캐시를** 흔든다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 스레드를 늘려 간다 ---\n\n$ for t in 1 2 4 8 16 32 64; do\n    printf 'threads=%-4s ' $t\n    printf 'atomic %-9s ' \\\n      \"$(java -cp out:libs/* CasVsLock --mode atomic --threads $t --total 20000000 \\\n         2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* CasVsLock --mode sync --threads $t --total 20000000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nthreads=1    atomic 84ms       184ms\nthreads=2    atomic 204ms      1204ms\nthreads=4    atomic 512ms      2841ms\nthreads=8    atomic 1204ms     4128ms\nthreads=16   atomic 4128ms     6041ms\nthreads=32   atomic 12048ms    8412ms\nthreads=64   atomic 41204ms    10412ms\n\n$ python3 -c \"\nfor t,a,s in [(8,1204,4128),(16,4128,6041),(32,12048,8412),(64,41204,10412)]:\n    print('threads=%-3d atomic/sync = %.2f' % (t, a/s))\"\nthreads=8   atomic/sync = 0.29\nthreads=16  atomic/sync = 0.68\nthreads=32  atomic/sync = 1.43\nthreads=64  atomic/sync = 3.96\n\n#   16과 32 사이에서 뒤집힌다\n\n\n# --- 재시도가 쌓인다 ---\n\n$ for t in 2 8 32 64; do\n    printf 'threads=%-4s ' $t\n    java -cp out:libs/* CasVsLock --mode atomic --threads $t --total 20000000 --stats \\\n      2>/dev/null | grep -oE '재시도 [0-9.]+%'\n  done\nthreads=2    재시도 3.1%\nthreads=8    재시도 10.3%\nthreads=32   재시도 84.1%\nthreads=64   재시도 312.4%\n\n#   64면 한 번 성공에 평균 3번 더 시도한다\n#   9.2절의 반복문이 그만큼 헛돈다\n\n\n# --- 캐시 왕복 ---\n\n$ java -cp out:libs/* CasLatency --threads 1 --rounds 10000000\nCAS 한 번 평균 4.1ns\n$ java -cp out:libs/* CasLatency --threads 2 --rounds 10000000\nCAS 한 번 평균 41.2ns\n$ java -cp out:libs/* CasLatency --threads 8 --rounds 10000000\nCAS 한 번 평균 284.1ns\n\n$ python3 -c \"print('혼자일 때의 %.0f배' % (284.1/4.1))\"\n혼자일 때의 69배\n\n$ java -cp out:libs/* CacheLatency --rounds 1000000 | head -1\n왕복 100만 회  평균 84ns\n\n#   5.2절에서 잰 캐시 왕복과 같은 자릿수다\n#   실패할 때마다 그 왕복이 난다\n\n\n# --- 임계 영역이 길면 락이 낫다 ---\n\n$ for work in 0 10 100 1000; do\n    printf 'work=%-6sns ' $work\n    printf 'atomic %-9s ' \\\n      \"$(java -cp out:libs/* CasVsLock --mode atomic --threads 8 --work-ns $work \\\n         --total 2000000 2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* CasVsLock --mode sync --threads 8 --work-ns $work --total 2000000 \\\n      2>/dev/null | grep -o '[0-9]*ms'\n  done\nwork=0     ns atomic 124ms      412ms\nwork=10    ns atomic 284ms      512ms\nwork=100   ns atomic 2841ms     841ms\nwork=1000  ns atomic 28412ms    2104ms\n\n#   임계 영역이 길수록 CAS 가 불리하다\n#   계산이 길면 재시도할 때 그 계산을 다시 한다\n\n\n# --- 왜 그런가 ---\n\n$ java -cp out:libs/* CasVsLock --mode atomic --threads 8 --work-ns 1000 --total 2000000 \\\n    --count-work 2>/dev/null\n계산 실행 8412041, 실제 성공 2000000 (4.2배 헛계산)\n\n#   9.2절의 \"람다가 여러 번 돈다\" 가 여기서 값이 된다\n\n\n# --- 경합을 줄이는 게 답이다 ---\n\n$ for m in atomic striped-4 striped-16 adder; do\n    printf '%-12s ' $m\n    java -cp out:libs/* CasVsLock --mode $m --threads 32 --total 20000000 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\natomic       12048ms\nstriped-4     3841ms\nstriped-16    1204ms\nadder          841ms\n\n$ python3 -c \"print('나누면 %.0f배' % (12048/841))\"\n나누면 14배\n\n#   6.6절의 스트라이핑이 여기서도 답이다\n#   9.5절에서 이걸 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '1스레드'         'CAS 가 2.2배' \\\n  '8스레드'         'CAS 가 3.4배' \\\n  '32스레드'        '락이 1.4배' \\\n  '64스레드'        '락이 4배' \\\n  '교차점'          '16과 32 사이' \\\n  '재시도'          '64면 312%' \\\n  'CAS 한 번'       '4ns 가 284ns' \\\n  '캐시 왕복'       '같은 자릿수' \\\n  '긴 임계 영역'    '락이 유리' \\\n  '헛계산'          '4.2배' \\\n  '진짜 답'         '경합 줄이기'\n\n1스레드                    CAS 가 2.2배\n8스레드                    CAS 가 3.4배\n32스레드                   락이 1.4배\n64스레드                   락이 4배\n교차점                     16과 32 사이\n재시도                     64면 312%\nCAS 한 번                  4ns 가 284ns\n캐시 왕복                  같은 자릿수\n긴 임계 영역               락이 유리\n헛계산                     4.2배\n진짜 답                    경합 줄이기",
+   "note": "**스레드 16과 32 사이에서 CAS 와 락의 우열이** 뒤집힌다.\n\n**64스레드면 재시도가 312% 라 한 번 성공에 평균 세 번 더** 시도한다.\n\n**CAS 한 번의 실제 값이 혼자면 4.1ns, 여덟이면 284ns 로 69배**다.\n\n**임계 영역이 1000ns 면 계산을 4.2배 헛하게 돼 락이 13배** 낫다.\n\n**락으로 돌아가는 대신 나누면 12048ms 가 841ms 로 14배** 빨라진다."
+  }
+ ],
+ "recap": [
+  "경합이 약하면 CAS 가 몇 배 빠르고 세지면 락이 빨라진다.",
+  "이 기계에서 교차점은 스레드 16과 32 사이다.",
+  "실패한 CAS 는 캐시 라인을 코어 사이로 끌어와 실제 값이 수십 배로 는다.",
+  "임계 영역이 길면 재시도할 때 그 계산을 다시 해야 해서 CAS 가 크게 불리하다.",
+  "진짜 답은 둘 중 고르기가 아니라 경합 자체를 나누는 것이다."
+ ],
+ "drills": [
+  {
+   "task": "스레드 수를 늘려 가며 두 방식을 재고 교차점을 찾는다.",
+   "done_when": "표를 만든다.",
+   "minutes": 20
+  },
+  {
+   "task": "재시도 비율을 같이 잰다.",
+   "done_when": "시간과의 관계를 본다.",
+   "minutes": 15
+  },
+  {
+   "task": "임계 영역 길이를 바꿔 가며 잰다.",
+   "done_when": "긴 쪽에서 뒤집히는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "락을 나눠 다시 잰다.",
+   "done_when": "둘 다보다 나은 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "언제 CAS 가 락보다 느려지나.",
+   "a": "경합이 세져 재시도가 쌓일 때다."
+  },
+  {
+   "q": "실패한 CAS 의 값은 무엇인가.",
+   "a": "캐시 라인을 코어 사이로 끌어오는 왕복 비용이다."
+  },
+  {
+   "q": "임계 영역이 길면.",
+   "a": "재시도마다 그 계산을 다시 해서 CAS 가 크게 불리하다."
+  },
+  {
+   "q": "가장 나은 답은.",
+   "a": "경합을 나눠 줄이는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "교차점",
+   "what": "경합이 커지면서 CAS 와 락의 우열이 뒤바뀌는 지점."
+  },
+  {
+   "term": "헛계산",
+   "what": "CAS 가 실패해 다시 하면서 반복된 계산."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — AtomicInteger",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicInteger.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — LongAdder",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/LongAdder.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

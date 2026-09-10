@@ -491,7 +491,7 @@
           "title": "CAS 의 값",
           "summary": "경합이 세지면 뒤집힌다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -499,7 +499,7 @@
           "title": "LongAdder",
           "summary": "쪼개서 더한다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",
@@ -507,7 +507,7 @@
           "title": "ABA 문제",
           "summary": "같은 값인데 같은 상태가 아니다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
