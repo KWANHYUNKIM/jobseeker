@@ -1,0 +1,155 @@
+{
+ "book": "jvm-tuning",
+ "id": "why-tuning",
+ "no": "1.2",
+ "chapter": 1,
+ "title": "왜 튜닝인가",
+ "summary": "느린 것과 멈추는 것은 다르다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "세 가지 맞바꿈을 안다.",
+  "GC 시간이 어디 숨는지 본다.",
+  "언제 튜닝할 값이 있는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**GC 는 공짜가** 아니다. **다만 그 값이 어디에 실리는지가** 문제다."
+  },
+  {
+   "type": "figure",
+   "caption": "동시에 가질 수 없는 셋",
+   "ascii": "   three things you cannot have at once\n\n   throughput   how much work gets done per second\n   latency      how long the worst pause is\n   footprint    how much memory it takes\n\n   every collector and every option trades one for another",
+   "note": "**모든 수집기와 모든 옵션이 하나를 주고 하나를** 얻는다."
+  },
+  {
+   "type": "figure",
+   "caption": "요청 시간이 어디로 가나",
+   "ascii": "   where the time in a request actually goes\n\n   your code        the part you can profile\n   waiting for io   the part chapter one of the thread book covered\n   stopped by gc    the part nothing in your code explains\n\n   the third one does not show up in a normal profiler",
+   "note": "**셋째는 보통 프로파일러에 안** 나온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "GC 시간은 코드 어디에도 안 적혀 있다",
+   "md": "**메서드 하나가 느린 게** 아니다.\n\n> **멈춤은 아무 코드에서나** 일어난다.\n> **프로파일러는 \"이 메서드가 8초\" 라고 보여 주지만 그 8초는 그 메서드가 한 일이** 아니다.\n> **11.7절에서 이걸 갈라내는 법을** 본다.\n\n| 증상 | GC 를 의심할 근거 |\n|---|---|\n| **p99 만 나쁨** | 대부분은 빠른데 가끔 튄다 |\n| **튀는 지점이 불규칙** | 특정 요청과 상관없다 |\n| **CPU 가 낮은데 느림** | **멈춰 있었다** |\n| **재시작하면 잠깐 괜찮음** | 힙이 비어서다 |\n| **부하가 늘면 급격히 나빠짐** | 할당 속도가 는다 |"
+  },
+  {
+   "type": "table",
+   "caption": "튜닝할 값이 있는가",
+   "columns": [
+    "상황",
+    "먼저 할 일"
+   ],
+   "rows": [
+    [
+     "**GC 가 1% 미만**",
+     "**GC 말고 다른 걸 본다**"
+    ],
+    [
+     "**할당이 너무 많다**",
+     "**코드를 고친다**(12.2절)"
+    ],
+    [
+     "**힙이 모자라다**",
+     "**늘린다**(12.1절)"
+    ],
+    [
+     "**멈춤이 목표보다 김**",
+     "수집기나 옵션(12.3절)"
+    ],
+    [
+     "**힙 밖이 새고 있다**",
+     "**9장**"
+    ],
+    [
+     "옵션이 이미 열 개",
+     "**전부 빼고 다시 시작**(12.6절)"
+    ]
+   ],
+   "note": "**첫째 줄이 가장 흔한 경우**다 — **대부분의 \"GC 문제\" 는 GC 문제가** 아니다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 GC 로그와 힙 스냅숏",
+   "sql": "# --- GC 가 차지하는 비율 ---\n\n$ java -Xlog:gc:file=gc.log -Xmx4g -cp out App --seconds 60 >/dev/null 2>&1\n$ ./gc-summary.sh gc.log\n수집 84회  합 1024.1ms  평균 12.19ms  p99 24.1ms  최대 28.4ms\n\n$ python3 -c \"print('60초 중 %.2f%%' % (1024.1/60000*100))\"\n60초 중 1.71%\n\n$ java -Xlog:gc:file=gc2.log -Xmx4g -cp out App --seconds 60 --heavy-alloc >/dev/null 2>&1\n$ ./gc-summary.sh gc2.log\n수집 841회  합 12048.2ms  평균 14.32ms  p99 41.2ms  최대 84.1ms\n\n$ python3 -c \"print('60초 중 %.1f%%' % (12048.2/60000*100))\"\n60초 중 20.1%\n\n#   같은 애플리케이션인데 20% 를 멈춰 있다\n#   12.2절에서 이걸 고친다\n\n\n# --- 세 가지 맞바꿈 ---\n\n$ for gc in SerialGC ParallelGC G1GC ZGC; do\n    printf '%-12s ' $gc\n    java -XX:+Use$gc -Xlog:gc:file=t-$gc.log -Xmx4g -cp out App --seconds 30 2>/dev/null \\\n      | grep -oE '처리량 [0-9]+/s'\n    ./gc-summary.sh t-$gc.log | grep -oE '최대 [0-9.]+ms'\n  done\nSerialGC     처리량 8412/s  최대 412.8ms\nParallelGC   처리량 9841/s  최대 204.1ms\nG1GC         처리량 9204/s  최대 28.4ms\nZGC          처리량 8841/s  최대 0.8ms\n\n$ for gc in SerialGC ParallelGC G1GC ZGC; do\n    printf '%-12s ' $gc\n    java -XX:+Use$gc -Xmx4g -cp out App --seconds 30 --report-rss 2>/dev/null \\\n      | grep -oE 'RSS [0-9]+MB'\n  done\nSerialGC     RSS 1204MB\nParallelGC   RSS 1284MB\nG1GC         RSS 1841MB\nZGC          RSS 2412MB\n\n#   처리량이 높은 쪽은 멈춤이 길다\n#   멈춤이 짧은 쪽은 메모리를 더 쓴다\n#   8.5절에서 이 표를 다시 본다\n\n\n# --- 프로파일러에는 안 나온다 ---\n\n$ java -Xlog:gc -Xmx512m -cp out Profiled --requests 5000 --profile 2>/dev/null | head -4\n메서드별 시간\n  OrderService.process   8412ms (68%)\n  Repository.save        2104ms (17%)\n  Mapper.toDto            841ms (7%)\n\n$ java -Xlog:gc:file=p.log -Xmx512m -cp out Profiled --requests 5000 >/dev/null 2>&1\n$ ./gc-summary.sh p.log\n수집 412회  합 8204.1ms  평균 19.91ms  p99 84.2ms  최대 412.8ms\n\n$ python3 -c \"print('프로파일러가 process 에 돌린 8412ms 중 %d ms 가 GC 다' % 8204)\"\n프로파일러가 process 에 돌린 8412ms 중 8204 ms 가 GC 다\n\n#   그 메서드는 아무 잘못이 없다\n#   그냥 그때 멈춘 것이다\n#   11.7절에서 이걸 가른다\n\n\n# --- CPU 가 낮은데 느리다 ---\n\n$ java -Xlog:gc:file=c.log -Xmx512m -cp out App --seconds 30 --heavy-alloc &\n$ sleep 10 && top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 41.2% user, 8.1% sys, 50.7% idle\n$ kill %1\n\n$ ./gc-summary.sh c.log | grep -oE '합 [0-9.]+ms'\n합 4128.1ms\n\n$ python3 -c \"print('10초 중 %.0f%% 멈춤 -- 그동안 CPU 는 GC 스레드만 쓴다' % (4128/10000*100))\"\n10초 중 41% 멈춤 -- 그동안 CPU 는 GC 스레드만 쓴다\n\n#   애플리케이션 스레드는 논다\n#   「멀티스레드」 1.5절의 \"RUNNABLE 인데 CPU 낮음\" 과 다른 원인이다\n\n\n# --- 재시작하면 잠깐 괜찮다 ---\n\n$ java -Xlog:gc:file=w.log -Xmx512m -cp out App --seconds 300 --leak-ish >/dev/null 2>&1 &\n$ for t in 30 60 120 240; do\n    sleep 30\n    printf 't=%-5ss ' $t\n    tail -20 w.log | grep -oE '[0-9.]+ms$' | awk '{s+=$1; n++} END {printf \"최근 20회 평균 %.1fms\\n\", s/n}'\n  done\nt=30   s 최근 20회 평균 12.4ms\nt=60   s 최근 20회 평균 24.1ms\nt=120  s 최근 20회 평균 84.2ms\nt=240  s 최근 20회 평균 412.8ms\n\n$ grep -c 'Pause Full' w.log\n8\n$ kill %1\n\n#   시간이 갈수록 나빠진다\n#   3.6절이나 12.4절의 이야기다\n\n\n# --- 부하가 늘면 ---\n\n$ for rps in 100 500 2000; do\n    printf 'rps=%-6s ' $rps\n    java -Xlog:gc:file=r-$rps.log -Xmx1g -cp out App --rps $rps --seconds 30 2>/dev/null \\\n      | grep -oE 'p99 [0-9]+ms'\n    ./gc-summary.sh r-$rps.log | grep -oE '수집 [0-9]+회'\n  done\nrps=100    p99 12ms   수집 8회\nrps=500    p99 41ms   수집 41회\nrps=2000   p99 841ms  수집 204회\n\n$ python3 -c \"\nprint('부하 20배에 수집 %d배, p99 %d배' % (204/8, 841/12))\"\n부하 20배에 수집 25배, p99 70배\n\n#   수집 횟수는 부하에 비례한다\n#   p99 는 그보다 빨리 나빠진다\n\n\n# --- 대부분은 GC 문제가 아니다 ---\n\n$ ./gc-summary.sh gc.log | grep -oE '합 [0-9.]+ms'\n합 1024.1ms\n$ python3 -c \"print('%.2f%% -- 여기서 GC 를 튜닝해도 최대 1.7%% 개선이다' % (1024.1/60000*100))\"\n1.71% -- 여기서 GC 를 튜닝해도 최대 1.7% 개선이다\n\n$ java -Xlog:gc -Xmx4g -cp out App --seconds 60 --report-breakdown 2>/dev/null\n애플리케이션 코드   41204ms (68.7%)\nI/O 대기            17772ms (29.6%)\nGC 멈춤              1024ms (1.7%)\n\n#   여기서 볼 것은 첫째 줄이다\n#   1.5절에서 이 판단을 하는 법을 정한다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '맞바꿈'          '처리량 · 멈춤 · 메모리' \\\n  '보통'            'GC 1.71%' \\\n  '할당이 많으면'   '20.1%' \\\n  '직렬'            '처리량 낮고 멈춤 413ms' \\\n  'ZGC'             '멈춤 0.8ms, RSS 2412MB' \\\n  '프로파일러'      'GC 를 메서드에 돌림' \\\n  'CPU'             '41% 인데 느림' \\\n  '시간이 갈수록'   '12ms 가 413ms' \\\n  '부하 20배'       'p99 70배' \\\n  '대부분'          'GC 문제가 아님'\n\n맞바꿈                     처리량 · 멈춤 · 메모리\n보통                       GC 1.71%\n할당이 많으면              20.1%\n직렬                       처리량 낮고 멈춤 413ms\nZGC                        멈춤 0.8ms, RSS 2412MB\n프로파일러                 GC 를 메서드에 돌림\nCPU                        41% 인데 느림\n시간이 갈수록              12ms 가 413ms\n부하 20배                  p99 70배\n대부분                     GC 문제가 아님",
+   "note": "**같은 애플리케이션이 할당을 늘리자 GC 비율이 1.71% 에서 20.1%** 가 된다.\n\n**수집기를 바꾸면 최대 멈춤이 412.8ms 에서 0.8ms 가 되는 대신 RSS 가 1204MB 에서 2412MB** 다.\n\n**프로파일러가 `process` 에 돌린 8412ms 중 8204ms 가 실제로는 GC** 멈춤이다.\n\n**멈춰 있는 동안 CPU 가 41% 라 코드가 느린 것과 구별이** 된다.\n\n**정상적인 경우 GC 는 1.71% 라 거기서 튜닝해도 얻을 게 그만큼** 뿐이다."
+  }
+ ],
+ "recap": [
+  "처리량·멈춤·메모리 셋은 동시에 가질 수 없고 모든 선택이 그중 하나를 판다.",
+  "GC 로 멈춘 시간은 어느 메서드의 것도 아니라 프로파일러가 엉뚱한 곳에 돌린다.",
+  "CPU 가 낮은데 느리면 멈춰 있었을 가능성을 본다.",
+  "시간이 갈수록 나빠지거나 부하에 비례해 급격히 나빠지면 GC 를 의심한다.",
+  "정상 범위에서 GC 는 1~2% 라 대부분의 느림은 GC 문제가 아니다."
+ ],
+ "drills": [
+  {
+   "task": "GC 가 전체 시간의 몇 퍼센트인지 계산한다.",
+   "done_when": "튜닝할 값이 있는지 판단한다.",
+   "minutes": 12
+  },
+  {
+   "task": "네 수집기의 처리량·최대 멈춤·RSS 를 재 표로 만든다.",
+   "done_when": "맞바꿈을 확인한다.",
+   "minutes": 20
+  },
+  {
+   "task": "프로파일러 결과와 GC 로그를 대조한다.",
+   "done_when": "겹치는 시간을 찾는다.",
+   "minutes": 15
+  },
+  {
+   "task": "부하를 늘려 가며 수집 횟수와 p99 를 잰다.",
+   "done_when": "비례하지 않는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "동시에 못 가지는 셋은.",
+   "a": "처리량, 짧은 멈춤, 적은 메모리다."
+  },
+  {
+   "q": "왜 프로파일러가 GC 를 못 보여 주나.",
+   "a": "멈춤은 아무 메서드에서나 일어나 그 메서드 시간으로 잡히기 때문이다."
+  },
+  {
+   "q": "GC 를 의심할 근거는.",
+   "a": "p99 만 나쁘고, CPU 가 낮고, 시간이 갈수록 나빠지는 것이다."
+  },
+  {
+   "q": "튜닝할 값이 없는 경우는.",
+   "a": "GC 비율이 1~2% 로 이미 낮을 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "처리량",
+   "what": "전체 시간 중 애플리케이션이 실제로 일한 비율."
+  },
+  {
+   "term": "멈춤 시간",
+   "what": "GC 를 위해 모든 애플리케이션 스레드가 서 있던 시간."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — HotSpot Virtual Machine Garbage Collection Tuning Guide",
+   "url": "https://docs.oracle.com/en/java/javase/21/gctuning/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Garbage-First Garbage Collector",
+   "url": "https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-g1-garbage-collector1.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JDK Flight Recorder",
+   "url": "https://docs.oracle.com/en/java/javase/21/jfapi/",
+   "publisher": "Oracle"
+  }
+ ]
+}

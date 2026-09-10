@@ -1,0 +1,736 @@
+{
+  "id": "jvm-tuning",
+  "title": "자바 성능 튜닝 — JVM 과 GC",
+  "subtitle": "멈춰 있던 시간을 센다",
+  "blurb": "「멀티스레드와 동시성」이 밖에서 스레드를 들여다봤다면 이 책은 그 아래층을 연다 — 객체가 어디에 쌓이고, 누가 언제 그것을 지우고, 그동안 애플리케이션이 얼마나 서 있었나. 매 절은 실제로 찍힌 GC 로그와 힙 스냅숏으로 끝난다.",
+  "updated_at": "2026-09-11",
+  "preface": "「스프링 부트와 JPA 활용 1편」에서 쿼리 개수를 세고, 「멀티스레드와 동시성」에서 스레드 이름을 찍었다. 둘 다 내가 쓴 코드가 만든 것이었다.\n\n이 책은 내가 안 쓴 코드를 본다.\n\n객체 하나를 `new` 하면 어디에 놓이는지, 그게 언제 사라지는지, 사라지게 하려고 누가 무엇을 하는지. 그 일이 벌어지는 동안 내 스레드는 전부 멈춰 있다. 그 멈춤이 1밀리초인지 8초인지가 이 책의 주제다.\n\n\"느리다\" 는 말은 쓸모가 없다. 처리량이 낮은 것과 가끔 멈추는 것은 다른 문제고, 고치는 방법도 반대다. 그래서 매 절은 숫자로 끝난다 — 찍힌 GC 로그 한 줄과, 그 순간의 힙 스냅숏.\n\n튜닝은 마지막에 한다. 이 책의 절반은 무엇을 재야 하는지에 대한 것이고, 마지막 장에 가서야 옵션을 만진다. 인터넷에서 복사한 플래그 열 개보다 `-Xlog:gc` 한 줄이 낫다.",
+  "how_to_read": "차례 순서대로 읽는다. 4장(메모리 영역)과 5장(객체의 일생)이 나머지 전부의 기초다 — 6장의 알고리즘은 그 둘을 알아야 왜 그렇게 하는지 보인다. 11장(측정)을 먼저 읽고 싶어질 텐데, 무엇을 보는지 모르고 도구를 켜면 숫자만 많아진다. 「실전 자바 — 멀티스레드와 동시성」의 2장(메모리 구조)과 11장(스레드 풀)을 읽었으면 4장과 9장이 바로 이어진다.",
+  "prereq": "자바 문법과 객체·참조. 「멀티스레드와 동시성」 2장 정도의 메모리 구조. 리눅스에서 프로세스 메모리를 본 경험이 있으면 9장이 편하다.",
+  "env": "Java 21 (G1 기본), 힙 4GB, 10코어 · 16GB 머신. GC 로그는 -Xlog:gc*:file=gc.log:time,uptime,level,tags. JFR·jcmd·jmap 은 JDK 에 들어 있는 것만 쓴다",
+  "rule": "매 절은 실제로 찍힌 GC 로그와 그 순간의 힙 스냅숏으로 끝난다. 옵션을 바꿨으면 바꾸기 전 로그도 같이 싣는다.",
+  "source": {
+    "title": "인프런 자바 성능 튜닝 · JVM 강의 (차례 출처)",
+    "url": "https://www.inflearn.com/courses?s=JVM",
+    "publisher": "인프런",
+    "note": "여러 JVM·성능 강의의 공통된 차례 뼈대를 열두 장으로 묶었고, 8장(최신 수집기)과 9장(힙 밖 메모리)은 JDK 공식 문서와 JEP 로 늘렸다. 본문·예제·출력은 직접 쓰고 직접 돌린 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "느리다는 말을 숫자로 바꾼다.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 찍힌 GC 로그와 힙 스냅숏으로 끝난다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "why-tuning",
+          "title": "왜 튜닝인가",
+          "summary": "느린 것과 멈추는 것은 다르다.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "env",
+          "title": "실습 환경",
+          "summary": "자바 21, GC 로그를 켜 둔다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "1.4",
+          "id": "first-pause",
+          "title": "첫 멈춤",
+          "summary": "애플리케이션이 조용히 서 있는 시간.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "1.5",
+          "id": "what-to-watch",
+          "title": "무엇을 볼 것인가",
+          "summary": "멈춤 · 처리량 · 사용량, 이 셋.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "JVM 의 구조",
+      "goal": "무엇이 무엇을 들고 있나.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "overview",
+          "title": "전체 그림",
+          "summary": "클래스 로더 · 실행 엔진 · 메모리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "runtime-areas",
+          "title": "런타임 데이터 영역",
+          "summary": "공유하는 것과 스레드마다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "frames",
+          "title": "스택 프레임",
+          "summary": "메서드 하나가 쓰는 공간.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "bytecode",
+          "title": "바이트코드",
+          "summary": "실행 엔진이 읽는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "native",
+          "title": "네이티브 경계",
+          "summary": "JNI 너머의 메모리.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "versions",
+          "title": "판마다 다른 것",
+          "summary": "8 · 11 · 17 · 21.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "클래스 로딩",
+      "goal": "코드가 메모리에 들어오기까지.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "loading",
+          "title": "로딩 · 링킹 · 초기화",
+          "summary": "세 단계로 나뉜다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "loaders",
+          "title": "로더 계층",
+          "summary": "부트스트랩부터 애플리케이션까지.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "delegation",
+          "title": "위임 모델",
+          "summary": "먼저 부모에게 묻는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "init-order",
+          "title": "초기화 시점",
+          "summary": "언제 static 이 도나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "unloading",
+          "title": "언로딩",
+          "summary": "클래스도 사라진다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "leak",
+          "title": "클래스로더 누수",
+          "summary": "재배포마다 늘어나는 메타스페이스.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "메모리 영역",
+      "goal": "어디에 무엇이 쌓이나.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "heap-layout",
+          "title": "힙의 구성",
+          "summary": "영 · 올드, 그리고 그 안.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "metaspace",
+          "title": "메타스페이스",
+          "summary": "힙 밖의 클래스 데이터.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "stack-size",
+          "title": "스택",
+          "summary": "스레드마다, 넘치면 그 스레드만.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "code-cache",
+          "title": "코드 캐시",
+          "summary": "JIT 이 만든 기계어가 사는 곳.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "direct",
+          "title": "다이렉트 버퍼",
+          "summary": "GC 가 늦게 아는 메모리.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "footprint",
+          "title": "실제 사용량",
+          "summary": "Xmx 가 전부가 아니다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.7",
+          "id": "container",
+          "title": "컨테이너 안에서",
+          "summary": "cgroup 이 정하는 기본값.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "객체의 일생",
+      "goal": "만들어져서 사라지기까지.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "allocation",
+          "title": "할당",
+          "summary": "TLAB 과 포인터 밀기.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "escape",
+          "title": "탈출 분석",
+          "summary": "안 만들어지는 객체.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "promotion",
+          "title": "승격",
+          "summary": "영에서 올드로 가는 조건.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "reachability",
+          "title": "도달 가능성",
+          "summary": "산 것과 죽은 것의 기준.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "references",
+          "title": "참조 네 종류",
+          "summary": "강 · 소프트 · 위크 · 팬텀.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "finalize",
+          "title": "정리 훅",
+          "summary": "finalize 와 Cleaner.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "GC 알고리즘",
+      "goal": "무엇을 어떻게 지우나.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "mark-sweep",
+          "title": "표시하고 쓸기",
+          "summary": "가장 단순한 형태.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "copying",
+          "title": "복사",
+          "summary": "영 영역이 쓰는 방식.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "generational",
+          "title": "세대 가설",
+          "summary": "대부분은 금방 죽는다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "card-table",
+          "title": "카드 테이블",
+          "summary": "세대를 넘는 참조.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "concurrent",
+          "title": "동시 표시",
+          "summary": "애플리케이션과 같이 돈다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "write-barrier",
+          "title": "쓰기 장벽",
+          "summary": "공짜가 아닌 추적.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.7",
+          "id": "compaction",
+          "title": "압축",
+          "summary": "조각난 힙.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "G1 GC",
+      "goal": "자바의 기본 수집기.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "regions",
+          "title": "리전",
+          "summary": "힙을 격자로 나눈다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "young-collection",
+          "title": "영 수집",
+          "summary": "가장 자주 일어나는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "concurrent-cycle",
+          "title": "동시 표시 주기",
+          "summary": "언제 시작하나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "mixed",
+          "title": "혼합 수집",
+          "summary": "올드를 조금씩 지운다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "pause-target",
+          "title": "목표 멈춤 시간",
+          "summary": "지켜지는 약속이 아니다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "humongous",
+          "title": "거대 객체",
+          "summary": "리전보다 큰 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.7",
+          "id": "full-gc",
+          "title": "풀 GC",
+          "summary": "여기까지 오면 진 것이다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.8",
+          "id": "g1-tuning",
+          "title": "손댈 만한 것",
+          "summary": "대부분은 안 건드린다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "다른 수집기들",
+      "goal": "고를 수 있는 것과 그 값.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "serial-parallel",
+          "title": "직렬과 병렬",
+          "summary": "작고 단순할 때.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "zgc",
+          "title": "ZGC",
+          "summary": "힙 크기와 무관한 멈춤.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "shenandoah",
+          "title": "셰넌도어",
+          "summary": "동시 압축.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "epsilon",
+          "title": "무수집기",
+          "summary": "아무것도 안 지운다.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "choosing",
+          "title": "무엇을 언제 쓰나",
+          "summary": "기본값을 안 바꾸는 이유.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "comparing",
+          "title": "직접 견준다",
+          "summary": "같은 부하, 다른 수집기.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "힙 밖의 메모리",
+      "goal": "Xmx 를 지켰는데 죽는다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "nmt",
+          "title": "네이티브 메모리 추적",
+          "summary": "JVM 이 스스로 세는 것.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "thread-stacks",
+          "title": "스레드 스택",
+          "summary": "예약과 실제.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "metaspace-limit",
+          "title": "메타스페이스 한계",
+          "summary": "무한이 아니다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "direct-leak",
+          "title": "다이렉트 버퍼 누수",
+          "summary": "GC 가 못 따라간다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "malloc",
+          "title": "네이티브 라이브러리",
+          "summary": "JVM 이 모르는 할당.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "rss",
+          "title": "RSS 를 설명한다",
+          "summary": "합이 안 맞을 때.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "JIT 컴파일",
+      "goal": "같은 코드가 빨라진다.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "interpreter",
+          "title": "해석과 컴파일",
+          "summary": "두 실행 방식.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "tiers",
+          "title": "티어",
+          "summary": "다섯 단계로 올라간다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "inlining",
+          "title": "인라이닝",
+          "summary": "가장 큰 최적화.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.4",
+          "id": "deopt",
+          "title": "역최적화",
+          "summary": "가정이 깨지면 되돌린다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.5",
+          "id": "warmup",
+          "title": "워밍업",
+          "summary": "첫 요청이 느린 이유.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.6",
+          "id": "code-cache-full",
+          "title": "코드 캐시가 차면",
+          "summary": "조용히 해석으로 돌아간다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.7",
+          "id": "aot",
+          "title": "미리 컴파일하기",
+          "summary": "AOT 와 CDS.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 11,
+      "title": "측정과 진단",
+      "goal": "짐작하지 않는다.",
+      "sections": [
+        {
+          "no": "11.1",
+          "id": "gc-log",
+          "title": "GC 로그 읽기",
+          "summary": "한 줄에 든 것.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.2",
+          "id": "jfr",
+          "title": "비행 기록",
+          "summary": "돌아가는 채로 본다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.3",
+          "id": "heap-dump",
+          "title": "힙 덤프",
+          "summary": "무엇이 살아 있나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.4",
+          "id": "dominator",
+          "title": "누가 붙잡고 있나",
+          "summary": "지배자 트리.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.5",
+          "id": "alloc-profiling",
+          "title": "할당 프로파일링",
+          "summary": "누가 쓰레기를 만드나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.6",
+          "id": "safepoint",
+          "title": "세이프포인트",
+          "summary": "GC 아닌 멈춤.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.7",
+          "id": "latency",
+          "title": "지연 분석",
+          "summary": "p99 가 나쁜 이유.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.8",
+          "id": "checklist",
+          "title": "진단 순서",
+          "summary": "무엇부터 보나.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 12,
+      "title": "튜닝 실전",
+      "goal": "고치고 다시 잰다.",
+      "sections": [
+        {
+          "no": "12.1",
+          "id": "sizing",
+          "title": "힙 크기 정하기",
+          "summary": "크면 좋은 게 아니다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.2",
+          "id": "allocation-rate",
+          "title": "쓰레기를 줄인다",
+          "summary": "가장 확실한 튜닝.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.3",
+          "id": "long-pause",
+          "title": "긴 멈춤 잡기",
+          "summary": "원인은 대개 셋 중 하나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.4",
+          "id": "oom",
+          "title": "메모리 부족",
+          "summary": "여덟 가지 메시지.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.5",
+          "id": "container-tuning",
+          "title": "컨테이너에서",
+          "summary": "요청과 한계 사이.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "12.6",
+          "id": "antipatterns",
+          "title": "하면 안 되는 것",
+          "summary": "인터넷에서 복사한 옵션.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "12.7",
+          "id": "to-next",
+          "title": "다음으로",
+          "summary": "이 책이 남긴 것과 이어지는 자리.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

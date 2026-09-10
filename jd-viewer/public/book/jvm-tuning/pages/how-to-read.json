@@ -1,0 +1,178 @@
+{
+ "book": "jvm-tuning",
+ "id": "how-to-read",
+ "no": "1.1",
+ "chapter": 1,
+ "title": "이 책을 읽는 법",
+ "summary": "매 절은 찍힌 GC 로그와 힙 스냅숏으로 끝난다.",
+ "minutes": 10,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "이 책의 끝나는 방식을 안다.",
+  "두 종류의 느림을 가른다.",
+  "무엇을 기대하지 말아야 하는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「멀티스레드와 동시성」은 스레드 이름으로** 끝났다. **여기서는 GC 가 찍은 한 줄로** 끝난다.\n\n```\n[2.104s][info][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 412M->84M(4096M) 12.418ms\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "매 절이 끝나는 모양",
+   "ascii": "   what every section ends with\n\n   a line the collector printed, with its pause time\n   the heap right before and right after that line\n\n   if an option changed, the log from before the change is there too",
+   "note": "**옵션을 바꿨으면 바꾸기 전 로그도 같이** 싣는다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "한 줄에 다섯 가지가 들어 있다",
+   "md": "**위 로그를 조각내면** 이렇다.\n\n| 조각 | 뜻 |\n|---|---|\n| **`2.104s`** | 기동 뒤 흐른 시간 |\n| **`GC(3)`** | **세 번째 수집** |\n| **`Pause Young`** | **멈추고 영 영역을 치웠다** |\n| **`412M->84M`** | **치우기 전과 뒤의 사용량** |\n| **`(4096M)`** | 힙 전체 크기 |\n| **`12.418ms`** | **그동안 애플리케이션이 서 있었다** |\n\n> **마지막 숫자가 이 책의 주인공**이다.\n> **그 12ms 동안 내 스레드는 하나도 안** 돌았다."
+  },
+  {
+   "type": "figure",
+   "caption": "같아 보이는 두 불평",
+   "ascii": "   two complaints that sound the same\n\n   slow     every request takes longer than it should\n   stalls   most requests are fine, some take eight seconds\n\n   the fixes point in opposite directions",
+   "note": "**고치는 방향이** 정반대다."
+  },
+  {
+   "type": "table",
+   "caption": "이 책의 구성",
+   "columns": [
+    "장",
+    "무엇을",
+    "눈으로 보는 것"
+   ],
+   "rows": [
+    [
+     "**1~2**",
+     "**무엇을 재나**",
+     "GC 로그 한 줄"
+    ],
+    [
+     "3~4",
+     "어디에 쌓이나",
+     "**영역별 사용량**"
+    ],
+    [
+     "**5**",
+     "**객체의 일생**",
+     "**할당과 승격**"
+    ],
+    [
+     "**6~8**",
+     "**누가 어떻게 지우나**",
+     "**수집기별 멈춤**"
+    ],
+    [
+     "9",
+     "힙 밖",
+     "**RSS 와 NMT**"
+    ],
+    [
+     "10",
+     "JIT",
+     "컴파일 로그"
+    ],
+    [
+     "**11**",
+     "**측정**",
+     "**JFR · 힙 덤프**"
+    ],
+    [
+     "12",
+     "튜닝",
+     "**바꾸기 전후**"
+    ]
+   ],
+   "note": "**4장과 5장이 나머지의** 기초다 — **거기를 건너뛰면 6장의 알고리즘이 그냥 이름** 목록이 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "옵션부터 만지면 안 된다",
+   "md": "**이 책은 12장에 가서야 플래그를** 바꾼다.\n\n> **그 전 열한 장은 무엇을 재고 어떻게 읽는지에 대한** 것이다.\n> **원인을 모르고 옵션을 바꾸면 우연히 나아지거나 우연히** 나빠진다.\n> **12.6절에서 그 우연들을 모아** 본다.\n\n**기억할 순서** 하나:\n\n```\n재고 -> 읽고 -> 원인을 정하고 -> 한 번에 하나만 바꾸고 -> 다시 잰다\n```\n\n> **인터넷에서 복사한 플래그 열 개보다 `-Xlog:gc` 한 줄이** 낫다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 GC 로그와 힙 스냅숏",
+   "sql": "$ java --version | head -1\nopenjdk 21.0.4 2024-07-16 LTS\n\n$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -E 'UseG1GC|MaxHeapSize' | head -2\n     bool UseG1GC          = true    {product} {ergonomic}\n   size_t MaxHeapSize      = 4294967296  {product} {ergonomic}\n\n#   기본 수집기가 G1 이다 (7장)\n#   힙은 물리 메모리의 4분의 1로 잡혔다 (4.7절)\n\n\n# --- 이 책의 기본 출력 ---\n\n$ java -Xlog:gc -Xmx4g -cp out Churn --seconds 5\n[0.412s][info][gc] Using G1\n[1.204s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 204M->12M(4096M) 8.412ms\n[2.104s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 412M->84M(4096M) 12.418ms\n[3.008s][info][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause) 484M->88M(4096M) 11.204ms\n[4.012s][info][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 488M->91M(4096M) 12.841ms\n\n$ java -Xlog:gc -Xmx4g -cp out Churn --seconds 5 2>/dev/null | grep -oE '[0-9.]+ms$' \\\n  | awk '{s+=$1; n++} END {printf \"수집 %d회 멈춤 합 %.1fms\\n\", n, s}'\n수집 4회 멈춤 합 44.9ms\n\n$ python3 -c \"print('5초 중 %.2f%% 를 멈춰 있었다' % (44.9/5000*100))\"\n5초 중 0.90% 를 멈춰 있었다\n\n#   이 비율이 처리량 손실이다\n\n\n# --- 힙 스냅숏 ---\n\n$ java -Xlog:gc -Xmx4g -cp out Churn --seconds 30 &\n$ sleep 3 && jcmd $! GC.heap_info\n garbage-first heap   total 4194304K, used 412048K [0x0000000700000000, ...)\n  region size 2048K, 201 young (411648K), 0 survivors (0K)\n Metaspace       used 12841K, committed 13312K, reserved 1114112K\n  class space    used 1204K, committed 1536K, reserved 1048576K\n\n$ jcmd $! GC.heap_info | head -1 | grep -oE 'used [0-9]+K'\nused 412048K\n$ jcmd $! GC.run >/dev/null && jcmd $! GC.heap_info | head -1 | grep -oE 'used [0-9]+K'\nused 84120K\n\n$ kill %1\n\n#   로그의 412M->84M 과 같은 숫자다\n#   밖에서도 같은 값을 볼 수 있다\n\n\n# --- 두 종류의 느림 ---\n\n$ java -Xlog:gc -Xmx512m -cp out Slow --mode throughput --requests 10000 2>/dev/null | tail -2\n처리량 412 req/s\n응답 p50 24ms  p99 41ms\n\n$ java -Xlog:gc -Xmx512m -cp out Slow --mode stall --requests 10000 2>/dev/null | tail -2\n처리량 1841 req/s\n응답 p50 2ms  p99 8412ms\n\n$ python3 -c \"\nprint('처리량형: p50 %dms p99 %dms  (%.1f배)' % (24, 41, 41/24))\nprint('멈춤형:   p50 %dms p99 %dms  (%.0f배)' % (2, 8412, 8412/2))\"\n처리량형: p50 24ms p99 41ms  (1.7배)\n멈춤형:   p50 2ms p99 8412ms  (4206배)\n\n#   평균만 보면 아래쪽이 4배 빠르다\n#   p99 를 보면 정반대다\n\n\n# --- 그 8초가 어디서 왔나 ---\n\n$ java -Xlog:gc -Xmx512m -cp out Slow --mode stall --requests 10000 2>&1 \\\n  | grep -E 'Pause Full' | tail -2\n[41.204s][info][gc] GC(84) Pause Full (G1 Compaction Pause) 498M->412M(512M) 8412.041ms\n[48.128s][info][gc] GC(91) Pause Full (G1 Compaction Pause) 501M->418M(512M) 8204.812ms\n\n$ java -Xlog:gc -Xmx512m -cp out Slow --mode stall --requests 10000 2>&1 | grep -c 'Pause Full'\n12\n\n#   7.7절에서 \"여기까지 오면 진 것\" 이라고 할 그 줄이다\n#   8.4초짜리 멈춤이 12번 있었다\n\n\n# --- 평균은 속인다 ---\n\n$ java -Xlog:gc -Xmx512m -cp out Slow --mode stall --requests 10000 2>/dev/null \\\n  | grep -oE 'p[0-9]+ [0-9]+ms'\np50 2ms\np90 4ms\np99 8412ms\np999 8841ms\n\n$ java -Xlog:gc -Xmx512m -cp out Slow --mode stall --requests 10000 --avg 2>/dev/null\n평균 응답 88ms\n\n$ python3 -c \"print('평균 %dms 인데 100명 중 1명은 %.1f초를 기다린다' % (88, 8412/1000))\"\n평균 88ms 인데 100명 중 1명은 8.4초를 기다린다\n\n#   1.5절에서 무엇을 볼지 정한다\n\n\n# --- 이 책에서 세는 것들 ---\n\n$ printf '%-24s %s\\n' \\\n  '멈춤 횟수'      '5초에 4회' \\\n  '멈춤 합'        '44.9ms' \\\n  '멈춰 있던 비율' '0.90%' \\\n  '최대 멈춤'      '12.8ms' \\\n  '힙 사용'        '412M -> 84M' \\\n  '풀 GC'          '0회'\n\n멈춤 횟수                5초에 4회\n멈춤 합                  44.9ms\n멈춰 있던 비율           0.90%\n최대 멈춤                12.8ms\n힙 사용                  412M -> 84M\n풀 GC                    0회\n\n\n# --- 앞으로 계속 쓸 도구 ---\n\n$ cat gc-summary.sh\n#!/bin/sh\n# GC 로그에서 멈춤 통계를 낸다\ngrep -oE '[0-9.]+ms$' \"$1\" | sort -n | awk '\n{ a[NR]=$1; s+=$1 }\nEND {\n  printf \"수집 %d회  합 %.1fms  평균 %.2fms  p99 %.1fms  최대 %.1fms\\n\",\n         NR, s, s/NR, a[int(NR*0.99)+0], a[NR]\n}'\n\n$ java -Xlog:gc:file=gc.log -Xmx4g -cp out Churn --seconds 30 >/dev/null 2>&1\n$ ./gc-summary.sh gc.log\n수집 28회  합 341.2ms  평균 12.19ms  p99 24.1ms  최대 24.8ms\n\n#   이 스크립트가 이 책의 실습 도구다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '매 절의 끝'      'GC 로그와 힙 스냅숏' \\\n  '한 줄에'         '시각 · 종류 · 전후 · 멈춤' \\\n  '주인공'          '마지막 숫자' \\\n  '느림 두 종류'    '처리량과 멈춤' \\\n  '처리량형'        'p99 가 p50 의 1.7배' \\\n  '멈춤형'          '4206배' \\\n  '원인'            '8.4초 풀 GC 12회' \\\n  '평균'            '88ms 로 속인다' \\\n  '옵션'            '12장에서' \\\n  '순서'            '재고 읽고 정하고 바꾼다'\n\n매 절의 끝                 GC 로그와 힙 스냅숏\n한 줄에                    시각 · 종류 · 전후 · 멈춤\n주인공                     마지막 숫자\n느림 두 종류               처리량과 멈춤\n처리량형                   p99 가 p50 의 1.7배\n멈춤형                     4206배\n원인                       8.4초 풀 GC 12회\n평균                       88ms 로 속인다\n옵션                       12장에서\n순서                       재고 읽고 정하고 바꾼다",
+   "note": "**GC 로그 한 줄에 시각·번호·종류·전후 사용량·힙 크기·멈춤 시간이 다 들어** 있다.\n\n**5초에 네 번 멈춰 합이 44.9ms 라 0.90% 를 서 있었다**.\n\n**`jcmd GC.heap_info` 로 밖에서 본 사용량이 로그의 `412M->84M` 과** 같다.\n\n**처리량형은 p99 가 p50 의 1.7배인데 멈춤형은 4206배**다.\n\n**그 8.4초짜리 풀 GC 가 12번 있었고 평균으로 보면 88ms 로** 가려진다."
+  }
+ ],
+ "recap": [
+  "매 절은 GC 가 찍은 로그 한 줄과 그 순간의 힙 스냅숏으로 끝난다.",
+  "로그 한 줄에 언제·무엇을·얼마나 치웠고 몇 밀리초 멈췄는지가 다 들어 있다.",
+  "느리다는 말은 처리량이 낮은 것과 가끔 멈추는 것으로 갈라야 한다.",
+  "평균은 멈춤을 가린다 — p99 와 최대 멈춤을 본다.",
+  "옵션은 12장에서 만진다. 그 전에 재고 읽는 법을 익힌다."
+ ],
+ "drills": [
+  {
+   "task": "GC 로그를 켜고 한 줄을 조각내 설명한다.",
+   "done_when": "여섯 조각을 다 말한다.",
+   "minutes": 10
+  },
+  {
+   "task": "로그의 사용량과 jcmd 의 값을 대조한다.",
+   "done_when": "같은 숫자인 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "두 종류의 느림을 각각 재현해 p50 과 p99 를 잰다.",
+   "done_when": "차이를 숫자로 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "GC 로그 요약 스크립트를 만든다.",
+   "done_when": "이 책 내내 쓸 수 있게 해 둔다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "GC 로그 한 줄의 마지막 숫자는.",
+   "a": "그 수집 동안 애플리케이션이 멈춰 있던 시간이다."
+  },
+  {
+   "q": "두 종류의 느림은.",
+   "a": "처리량이 낮은 것과 가끔 오래 멈추는 것이다."
+  },
+  {
+   "q": "왜 평균을 안 보나.",
+   "a": "드물게 나는 긴 멈춤이 평균에 묻히기 때문이다."
+  },
+  {
+   "q": "옵션을 언제 만지나.",
+   "a": "무엇이 원인인지 정한 뒤, 한 번에 하나씩이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "멈춤 시간",
+   "what": "GC 가 도는 동안 애플리케이션 스레드가 전부 서 있던 시간."
+  },
+  {
+   "term": "힙 스냅숏",
+   "what": "그 순간 힙의 영역별 사용량을 찍은 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — HotSpot Virtual Machine Garbage Collection Tuning Guide",
+   "url": "https://docs.oracle.com/en/java/javase/21/gctuning/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "JEP 158 — Unified JVM Logging",
+   "url": "https://openjdk.org/jeps/158",
+   "publisher": "OpenJDK"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
