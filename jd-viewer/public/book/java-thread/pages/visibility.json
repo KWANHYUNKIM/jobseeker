@@ -1,0 +1,126 @@
+{
+ "book": "java-thread",
+ "id": "visibility",
+ "no": "5.1",
+ "chapter": 5,
+ "title": "가시성 문제",
+ "summary": "끝나야 할 반복문이 안 끝난다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "안 끝나는 걸 재현한다.",
+  "원자성과 다른 문제임을 안다.",
+  "환경에 따라 갈리는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.4절에서 예고한 그** 예제다. **락도 안 쓰고 값도 하나뿐인데 안** 끝난다.\n\n```java\nstatic boolean running = true;      // volatile 이 없다\nwhile (running) { }\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "끝나야 하는데 안 끝나는 반복문",
+   "ascii": "   the loop that should end and does not\n\n   main     sets the flag to false, prints, exits\n   worker   keeps reading a value that is already stale\n\n   nothing throws, nothing blocks, the cpu just stays at one hundred",
+   "note": "**예외도 없고 멈추지도 않고 CPU 만 100 에** 붙어 있다."
+  },
+  {
+   "type": "figure",
+   "caption": "닮아 보이는 두 문제",
+   "ascii": "   two separate problems that look the same\n\n   atomicity    two threads interleave inside one operation\n   visibility   one thread never sees what another wrote\n\n   chapter one was the first, this chapter is the second",
+   "note": "**1장은 앞이고 이 장은** 뒤다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "원자성과 가시성은 다른 문제다",
+   "md": "**1.4절의 카운터는 값이 틀렸고 여기서는 값이 안** 온다.\n\n| | 1.4절 | 5.1절 |\n|---|---|---|\n| **연산** | **읽고 더하고 쓰기** | **읽기만** |\n| **문제** | **끼어듦** | **낡은 값** |\n| 증상 | 값이 적다 | **안 끝난다** |\n| **코어 1개면** | 28/30 | **10/10 (안 남)** |\n| **`synchronized`** | 고쳐진다 | **고쳐진다** |\n| **`volatile`** | **안 고쳐진다** | **고쳐진다** |\n\n> **마지막 두 줄이 5장과 6장을** 가른다.\n> **`volatile` 은 보이게만 하고 원자적으로 만들지는 않는다**(5.3절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "재현이 환경을 심하게 탄다",
+   "md": "**같은 코드가 어디서는 나고 어디서는 안** 난다.\n\n| 조건 | 재현 |\n|---|---|\n| **코어 여럿 + JIT** | **거의 항상** |\n| **코어 1개** | **거의 안 남**(2.4절) |\n| **`-Xint`** | **안 남** |\n| **반복문 안에 로그** | **안 남**(1.3절) |\n| 반복문 안에 `sleep` | **안 남** |\n| **반복문이 아주 짧으면** | 안 남 |\n\n> **\"내 노트북에서는 되는데\" 의 정반대 버전**이다 — **개발에서는 나고 CI 에서는 안** 난다.\n> **안 났다고 없는 게 아니다**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 안 끝나는 반복문 ---\n\n$ cat StopFlag.java\npublic class StopFlag {\n    static boolean running = true;\n\n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> {\n            long n = 0;\n            while (running) n++;\n            log.info(\"끝났다 {} 회\", n);\n        }, \"worker\");\n        t.start();\n        Thread.sleep(1000);\n        running = false;\n        log.info(\"플래그를 내렸다\");\n        t.join(3000);\n        log.info(\"worker 살아 있나 {}\", t.isAlive());\n    }\n}\n\n$ java -cp out:libs/* StopFlag\n00:37:02.104 [main        ] INFO  StopFlag - 플래그를 내렸다\n00:37:05.108 [main        ] INFO  StopFlag - worker 살아 있나 true\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* StopFlag 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  20 0\n\n#   20번 다 안 끝났다\n#   2.4절에서 본 그것이다\n\n\n# --- 스레드는 살아서 돌고 있다 ---\n\n$ java -cp out:libs/* StopFlag --hold &\n$ sleep 2 && jcmd $! Thread.print | grep -A2 '\"worker\"'\n\"worker\" #21 [12547] prio=5 os_prio=31 cpu=1912.41ms elapsed=2.01s\n   java.lang.Thread.State: RUNNABLE\n\tat StopFlag.lambda$main$0(StopFlag.java:9)\n\n$ top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 12.4% user, 1.1% sys, 86.5% idle\n\n$ jcmd $! Thread.print | grep -c 'BLOCKED\\|WAITING'\n3\n\n#   RUNNABLE 이고 CPU 를 쓰고 있다\n#   막힌 게 아니라 낡은 값을 보고 있다\n$ kill %1\n\n\n# --- 값이 실제로 바뀌었나 ---\n\n$ cat StopFlagProbe.java | grep -A5 'main'\nrunning = false;\nlog.info(\"main 이 읽은 running = {}\", running);\nsleep(500);\nlog.info(\"main 이 다시 읽은 running = {}\", running);\n\n$ java -cp out:libs/* StopFlagProbe 2>/dev/null | grep 'main 이'\n00:37:12.104 [main        ] INFO  StopFlagProbe - main 이 읽은 running = false\n00:37:12.608 [main        ] INFO  StopFlagProbe - main 이 다시 읽은 running = false\n\n#   쓴 쪽에서는 false 다\n#   읽는 쪽만 true 로 본다\n\n\n# --- 코어를 하나로 묶으면 ---\n\n$ for i in $(seq 1 20); do\n    taskset -c 0 java -cp out:libs/* StopFlag 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  20 1\n\n$ taskset -c 0 java -cp out:libs/* StopFlag 2>/dev/null | grep '끝났다'\n00:37:18.104 [worker      ] INFO  StopFlag - 끝났다 412048204 회\n\n#   20번 다 끝났다\n#   2.4절의 정반대 결과다\n\n\n# --- -Xint 로 돌리면 ---\n\n$ for i in $(seq 1 10); do\n    java -Xint -cp out:libs/* StopFlag 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  10 1\n\n$ java -Xint -cp out:libs/* StopFlag 2>/dev/null | grep -oE '[0-9]+ 회'\n8412041 회\n\n$ java -cp out:libs/* StopFlagVolatile 2>/dev/null | grep -oE '[0-9]+ 회'\n398412048 회\n\n$ python3 -c \"print('-Xint 는 %.0f배 적게 돈다' % (398412048/8412041))\"\n-Xint 는 47배 적게 돈다\n\n#   1.4절에서는 -Xint 가 버그를 더 잘 드러냈다\n#   여기서는 반대로 감춘다\n\n\n# --- 언제 컴파일됐나 ---\n\n$ java -XX:+PrintCompilation -cp out:libs/* StopFlag 2>/dev/null \\\n  | grep 'StopFlag::lambda' \n    104   38       3       StopFlag::lambda$main$0 (24 bytes)\n    118   41 %     4       StopFlag::lambda$main$0 @ 2 (24 bytes)\n\n$ java -XX:+PrintCompilation -cp out:libs/* StopFlag 2>/dev/null \\\n  | grep 'StopFlag::lambda' | grep -c '%'\n1\n\n#   % 가 OSR -- 도는 중인 반복문을 통째로 컴파일했다\n#   118ms 만에 일어났다\n#   그 뒤로는 필드를 다시 안 읽는다\n\n\n# --- 로그를 넣으면 안 난다 ---\n\n$ cat StopFlagLog.java | grep -A3 'while'\nwhile (running) {\n    n++;\n    if (n % 100_000_000 == 0) log.info(\"{}억\", n / 100_000_000);\n}\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* StopFlagLog 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  10 1\n\n#   1.3절에서 println 이 버그를 감춘 것과 같다\n#   로거 안에 동기화가 있다\n\n\n# --- sleep 을 넣어도 안 난다 ---\n\n$ cat StopFlagSleep.java | grep -A3 'while'\nwhile (running) {\n    n++;\n    if (n % 1_000_000 == 0) Thread.sleep(1);\n}\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* StopFlagSleep 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  10 1\n\n#   sleep 이 메모리 배리어를 만든다\n#   5.4절에서 이 이야기를 한다\n\n\n# --- 진짜로 고친다 ---\n\n$ diff StopFlag.java StopFlagVolatile.java\n3c3\n<     static boolean running = true;\n---\n>     static volatile boolean running = true;\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* StopFlagVolatile 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  30 1\n\n$ java -cp out:libs/* StopFlagVolatile 2>/dev/null\n00:37:32.104 [main        ] INFO  StopFlagVolatile - 플래그를 내렸다\n00:37:32.104 [worker      ] INFO  StopFlagVolatile - 끝났다 398412048 회\n00:37:32.105 [main        ] INFO  StopFlagVolatile - worker 살아 있나 false\n\n#   한 낱말이다\n#   5.3절에서 이게 무엇을 하는지 본다\n\n\n# --- synchronized 로도 고쳐진다 ---\n\n$ cat StopFlagSync.java | grep -A4 'static synchronized'\nstatic synchronized boolean isRunning() { return running; }\nstatic synchronized void stop() { running = false; }\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* StopFlagSync 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  20 1\n\n$ java -cp out:libs/* StopFlagSync 2>/dev/null | grep -oE '[0-9]+ 회'\n41204812 회\n\n$ python3 -c \"print('volatile 보다 %.1f배 적게 돈다' % (398412048/41204812))\"\nvolatile 보다 9.7배 적게 돈다\n\n#   둘 다 고쳐지는데 값이 다르다\n#   6장에서 이 값을 판다\n\n\n# --- 얼마나 걸려서 알아채나 ---\n\n$ cat NoticeDelay.java | grep -A5 'main'\nlong s = System.nanoTime();\nrunning = false;\nt.join();\nlog.info(\"알아채는 데 {}us\", (System.nanoTime() - s) / 1000);\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* NoticeDelay 2>/dev/null | grep -oE '[0-9]+us'\n  done | sort -n | head -3\n2us\n4us\n8us\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* NoticeDelay 2>/dev/null | grep -oE '[0-9]+us'\n  done | sort -n | tail -1\n41us\n\n#   volatile 이면 마이크로초 단위다\n#   없으면 영영 안 온다 -- 그 사이에 중간은 없다\n\n\n# --- 인터럽트 플래그는 왜 안 그런가 ---\n\n$ cat InterruptNoVolatile.java | grep -A4 'while'\nwhile (!Thread.currentThread().isInterrupted()) n++;\nlog.info(\"끝났다 {} 회\", n);\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* InterruptNoVolatile 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  20 1\n\n#   내가 volatile 을 안 붙였는데 잘 된다\n#   4.5절에서 \"인터럽트 플래그는 그럴 걱정이 없다\" 고 한 게 이것이다\n#   JVM 이 안전하게 관리한다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '증상'            '안 끝난다' \\\n  '상태'            'RUNNABLE' \\\n  '예외'            '없음' \\\n  '쓴 쪽'           'false 로 보임' \\\n  '읽는 쪽'         'true 로 봄' \\\n  '기본'            '20/20 안 끝남' \\\n  '코어 1개'        '20/20 끝남' \\\n  '-Xint'           '10/10 끝남' \\\n  '로그 넣으면'     '끝남' \\\n  'sleep 넣으면'    '끝남' \\\n  'volatile'        '30/30 끝남' \\\n  'synchronized'    '끝나고 9.7배 느림' \\\n  '인터럽트 플래그' '그냥 됨'\n\n증상                       안 끝난다\n상태                       RUNNABLE\n예외                       없음\n쓴 쪽                      false 로 보임\n읽는 쪽                    true 로 봄\n기본                       20/20 안 끝남\n코어 1개                   20/20 끝남\n-Xint                      10/10 끝남\n로그 넣으면                끝남\nsleep 넣으면               끝남\nvolatile                   30/30 끝남\nsynchronized               끝나고 9.7배 느림\n인터럽트 플래그            그냥 됨",
+   "note": "**같은 프로그램이 20번 다 안 끝나고 스레드는 `RUNNABLE` 로 CPU 를 쓰고** 있다.\n\n**쓴 쪽에서 다시 읽으면 `false` 인데 읽는 쪽만 `true` 로** 본다.\n\n**코어 하나로 묶으면 20/20, `-Xint` 면 10/10 으로 끝나 1.4절과 정반대** 방향이다.\n\n**`PrintCompilation` 에 `%` 가 찍혀 118ms 만에 반복문이 통째로** 컴파일된다.\n\n**`volatile` 한 낱말로 30/30 이 되고 `synchronized` 로도 되지만 9.7배** 느리다."
+  }
+ ],
+ "recap": [
+  "가시성 문제는 값이 틀리는 게 아니라 쓴 값이 다른 스레드에 영영 안 보이는 것이다.",
+  "증상은 안 끝나는 반복문이고 상태는 RUNNABLE, 예외도 없다.",
+  "코어를 하나로 묶거나 -Xint 로 돌리면 안 난다 — 1.4절과 정반대 방향이다.",
+  "반복문 안에 로그나 sleep 을 넣어도 사라진다. 안 났다고 없는 게 아니다.",
+  "volatile 한 낱말로 고쳐지고 synchronized 로도 되지만 값이 다르다."
+ ],
+ "drills": [
+  {
+   "task": "안 끝나는 반복문을 재현하고 스레드 덤프를 뜬다.",
+   "done_when": "RUNNABLE 인 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "코어 1개, -Xint, 로그 삽입 각각에서 결과를 비교한다.",
+   "done_when": "전부 사라지는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "PrintCompilation 으로 OSR 이 언제 일어나는지 본다.",
+   "done_when": "% 표시를 찾는다.",
+   "minutes": 12
+  },
+  {
+   "task": "volatile 과 synchronized 로 각각 고치고 반복 횟수를 비교한다.",
+   "done_when": "값의 차이를 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "원자성 문제와 가시성 문제의 차이는.",
+   "a": "앞은 연산 도중 끼어드는 것이고 뒤는 쓴 값이 안 보이는 것이다."
+  },
+  {
+   "q": "이 문제의 증상은.",
+   "a": "예외 없이 안 끝나고 스레드는 RUNNABLE 로 CPU 를 쓴다."
+  },
+  {
+   "q": "코어를 하나로 묶으면 왜 안 나나.",
+   "a": "캐시가 하나라 낡은 값을 볼 자리가 없어서다."
+  },
+  {
+   "q": "가장 작은 고침은.",
+   "a": "필드에 volatile 을 붙이는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "가시성",
+   "what": "한 스레드가 쓴 값이 다른 스레드에 보이는가의 문제."
+  },
+  {
+   "term": "OSR",
+   "what": "이미 돌고 있는 반복문을 도중에 컴파일해 갈아 끼우는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 17.4: Memory Model",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 8.3.1.4: volatile Fields",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.3.1.4",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

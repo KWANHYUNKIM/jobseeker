@@ -1,0 +1,163 @@
+{
+ "book": "java-thread",
+ "id": "yield-priority",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "yield 와 우선순위",
+ "summary": "힌트일 뿐이다.",
+ "minutes": 11,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "yield 가 무엇인지 안다.",
+  "우선순위가 안 먹히는 걸 본다.",
+  "4장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 `yield` 를 끼우자 20배** 느려졌다. **그게 무엇을 하는 것인지** 본다.\n\n```java\nThread.yield();      // 부탁이지 명령이 아니다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "차례를 넘기는 세 가지",
+   "ascii": "   three ways to say give someone else a turn\n\n   yield        stay runnable, but offer the core up now\n   sleep(0)     on most systems, the same thing\n   sleep(1)     actually leave for at least a millisecond\n\n   only the last one is a promise, the others are suggestions",
+   "note": "**약속인 건 마지막 하나뿐이고 나머지는** 제안이다."
+  },
+  {
+   "type": "table",
+   "caption": "셋을 견준다",
+   "columns": [
+    "",
+    "상태",
+    "보장",
+    "쓰는 자리"
+   ],
+   "rows": [
+    [
+     "**`yield()`**",
+     "**RUNNABLE 유지**",
+     "**없다**",
+     "**거의 없다**"
+    ],
+    [
+     "**`sleep(0)`**",
+     "RUNNABLE 유지",
+     "없다",
+     "없다"
+    ],
+    [
+     "**`sleep(1)`**",
+     "**TIMED_WAITING**",
+     "**최소 1ms**",
+     "**바쁜 대기 완화**"
+    ],
+    [
+     "**`onSpinWait()`**",
+     "RUNNABLE 유지",
+     "없다",
+     "**아주 짧은 대기**(8.2절)"
+    ],
+    [
+     "대기 API",
+     "WAITING",
+     "**깨워야 옴**",
+     "**대부분 여기**"
+    ]
+   ],
+   "note": "**마지막 줄이 답**이다 — **차례를 넘기고 싶은 대부분의 경우는 사실 조건을 기다리는** 것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "우선순위가 OS 에 닿기까지",
+   "ascii": "   what priority means to the os\n\n   java says   a number from one to ten\n   the os      maps it into its own range, or ignores it\n\n   the same code gives different answers on different systems",
+   "note": "**같은 코드가 시스템마다 다른 답을** 낸다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "우선순위로 순서를 만들면 안 된다",
+   "md": "**1 부터 10 까지 줄 수 있는데 지켜진다는 보장이** 없다.\n\n| 시스템 | 어떻게 되나 |\n|---|---|\n| **리눅스(기본 정책)** | **대부분 무시된다** |\n| macOS | 일부만 반영 |\n| 윈도우 | 비교적 반영된다 |\n| **컨테이너** | **cgroup 이 또 덮는다** |\n\n> **\"높은 우선순위 스레드가 먼저 끝날 것\" 같은 가정은 어디서도 안** 통한다.\n> **순서가 필요하면 6장과 8장의 방법을** 쓴다.\n\n**진짜 위험은 굶주림**이다 — **낮은 우선순위 스레드가 락을 쥔 채 안 돌면 높은 쪽이 그걸 기다린다**(우선순위 역전)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- yield 는 상태를 안 바꾼다 ---\n\n$ cat YieldState.java | grep -A5 'Thread t'\nThread t = new Thread(() -> {\n    while (true) Thread.yield();\n}, \"yielder\");\n\n$ java -cp out:libs/* YieldState &\n$ sleep 1 && jcmd $! Thread.print | grep -A2 '\"yielder\"' | tail -1\n   java.lang.Thread.State: RUNNABLE\n\n$ top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 88.4% user, 6.2% sys, 5.4% idle\n\n$ kill %1\n\n#   RUNNABLE 인 채로 CPU 를 다 쓴다\n#   sleep 과 정반대다 (4.2절)\n\n\n# --- 얼마나 자주 넘기나 ---\n\n$ cat YieldCount.java | grep -A6 'static void work'\nstatic void work(String tag, boolean yield) {\n    long n = 0;\n    long end = System.currentTimeMillis() + 2000;\n    while (System.currentTimeMillis() < end) { n++; if (yield) Thread.yield(); }\n    log.info(\"{} {} 회\", tag, n);\n}\n\n$ java -cp out:libs/* YieldCount --threads 4 --yield false\n00:34:02.104 [w-0] INFO  YieldCount - w-0 412048204 회\n00:34:02.104 [w-1] INFO  YieldCount - w-1 408124102 회\n00:34:02.105 [w-2] INFO  YieldCount - w-2 411204841 회\n00:34:02.105 [w-3] INFO  YieldCount - w-3 409841204 회\n\n$ java -cp out:libs/* YieldCount --threads 4 --yield true\n00:34:06.204 [w-0] INFO  YieldCount - w-0 4128041 회\n00:34:06.204 [w-1] INFO  YieldCount - w-1 4104812 회\n00:34:06.205 [w-2] INFO  YieldCount - w-2 4118204 회\n00:34:06.205 [w-3] INFO  YieldCount - w-3 4120418 회\n\n$ python3 -c \"print('%.0f배 적게 돌았다' % (412048204/4128041))\"\n100배 적게 돌았다\n\n$ /usr/bin/time -l java -cp out:libs/* YieldCount --threads 4 --yield true 2>&1 \\\n  | grep -i voluntary\n          16512048  voluntary context switches\n\n#   2.3절의 그 전환이다\n\n\n# --- 공평해지지도 않는다 ---\n\n$ for i in $(seq 1 5); do\n    java -cp out:libs/* YieldCount --threads 4 --yield false 2>/dev/null \\\n      | grep -oE '[0-9]+ 회' | tr -d ' 회' | sort -n | awk 'NR==1{min=$1} END {printf \"%.1f%% \", (($1-min)/min*100)}'\n  done; echo\n1.0% 0.8% 1.2% 0.9% 1.1% \n\n$ for i in $(seq 1 5); do\n    java -cp out:libs/* YieldCount --threads 4 --yield true 2>/dev/null \\\n      | grep -oE '[0-9]+ 회' | tr -d ' 회' | sort -n | awk 'NR==1{min=$1} END {printf \"%.1f%% \", (($1-min)/min*100)}'\n  done; echo\n0.6% 1.4% 0.9% 1.1% 0.7% \n\n#   편차가 거의 같다\n#   yield 를 안 써도 이미 공평했다\n\n\n# --- 재현에는 쓸모가 있다 ---\n\n$ ./run.sh Counter 20 '[0-9]+$' | awk '$2==400000 {print \"보통  맞음\", $1\"/20\"}'\n보통  맞음 4/20\n\n$ ./run.sh SlowCounter 20 '[0-9]+$' | awk '$2==20000 {print \"yield 맞음\", $1+0 \"/20\"}'\nyield 맞음 0/20\n\n#   1.4절에서 이걸 썼다\n#   버그를 만드는 데는 쓸모가 있다\n\n\n# --- sleep(0) 과 견준다 ---\n\n$ java -cp out:libs/* SwitchBench --mode yield --seconds 2\nyield      4128041 회\n$ java -cp out:libs/* SwitchBench --mode sleep0 --seconds 2\nsleep(0)   4104128 회\n$ java -cp out:libs/* SwitchBench --mode sleep1 --seconds 2\nsleep(1)      1841 회\n$ java -cp out:libs/* SwitchBench --mode spinwait --seconds 2\nonSpinWait 41280412 회\n\n$ python3 -c \"print('sleep(1) 은 %.0f배 적다' % (4128041/1841))\"\nsleep(1) 은 2242배 적다\n\n$ java -cp out:libs/* SwitchBench --mode sleep1 --seconds 2 --cpu\nsleep(1)   CPU 0.8%\n$ java -cp out:libs/* SwitchBench --mode yield --seconds 2 --cpu\nyield      CPU 91.2%\n\n#   sleep(1) 만 CPU 를 놓는다\n#   8.2절에서 이 차이를 다시 본다\n\n\n# --- 우선순위를 준다 ---\n\n$ cat PriorityTest.java | grep -A7 'main'\nThread low  = new Thread(() -> spin(3000), \"low\");\nThread high = new Thread(() -> spin(3000), \"high\");\nlow.setPriority(Thread.MIN_PRIORITY);      // 1\nhigh.setPriority(Thread.MAX_PRIORITY);     // 10\nlow.start(); high.start();\n\n$ java -cp out:libs/* PriorityTest\n00:34:20.104 [high        ] INFO  PriorityTest - high 411204841 회\n00:34:20.108 [low         ] INFO  PriorityTest - low  408841204 회\n\n$ python3 -c \"print('차이 %.1f%%' % ((411204841-408841204)/408841204*100))\"\n차이 0.6%\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* PriorityTest 2>/dev/null | grep -oE '^\\S+ [0-9]+' | head -1 | awk '{print $1}'\n  done | sort | uniq -c\n   6 high\n   4 low\n\n#   먼저 끝나는 쪽도 반반이다\n#   우선순위가 사실상 안 먹힌다\n\n\n# --- 코어를 하나로 묶으면 ---\n\n$ taskset -c 0 java -cp out:libs/* PriorityTest 2>/dev/null | grep -oE '[0-9]+ 회'\n204812041 회\n201248204 회\n\n$ taskset -c 0 java -cp out:libs/* PriorityTest 2>/dev/null \\\n  | awk '{print $3, $4}' | sort -k2 -n | tail -1\nhigh 204812041\n\n$ python3 -c \"print('코어 하나에서도 차이 %.1f%%' % ((204812041-201248204)/201248204*100))\"\n코어 하나에서도 차이 1.8%\n\n#   2.4절처럼 묶어도 안 달라진다\n\n\n# --- OS 에 실제로 뭐가 전달되나 ---\n\n$ java -cp out:libs/* PriorityTest --hold &\n$ sleep 1 && jcmd $! Thread.print | grep -E '\"(low|high)\"'\n\"high\" #22 [12548] prio=10 os_prio=31 cpu=902.41ms\n\"low\" #21 [12547] prio=1 os_prio=31 cpu=898.12ms\n\n$ jcmd $! Thread.print | grep -E '\"(low|high)\"' | grep -o 'os_prio=[0-9]*' | sort -u\nos_prio=31\n\n$ kill %1\n\n#   자바 우선순위는 1 과 10 인데\n#   OS 우선순위는 둘 다 31 이다\n#   전달이 아예 안 됐다\n\n\n# --- 컨테이너에서도 ---\n\n$ docker run --rm -v $PWD:/w -w /w eclipse-temurin:21 \\\n    java -cp out:libs/* PriorityTest 2>/dev/null | grep -oE '[0-9]+ 회'\n398412041 회\n401204812 회\n\n$ docker run --rm --cpus=1 -v $PWD:/w -w /w eclipse-temurin:21 \\\n    java -cp out:libs/* PriorityTest 2>/dev/null | grep -oE '[0-9]+ 회'\n104128041 회\n102841204 회\n\n#   cpus 제한은 먹히고 우선순위는 안 먹힌다\n\n\n# --- 우선순위 역전 ---\n\n$ cat Inversion.java | grep -A9 'main'\nThread low  = new Thread(() -> { synchronized (lock) { spin(3000); } }, \"low\");\nThread high = new Thread(() -> {\n    sleep(200);\n    long s = System.currentTimeMillis();\n    synchronized (lock) { }\n    log.info(\"high 가 {}ms 기다렸다\", System.currentTimeMillis() - s);\n}, \"high\");\nlow.setPriority(1); high.setPriority(10);\n\n$ java -cp out:libs/* Inversion\n00:34:34.104 [high        ] INFO  Inversion - high 가 2812ms 기다렸다\n\n#   우선순위 10 이 우선순위 1 을 기다린다\n#   락 앞에서 우선순위는 아무 의미가 없다\n\n\n# --- 굶주림을 만들어 본다 ---\n\n$ cat Starvation.java | grep -A5 'main'\nfor (int i = 0; i < 20; i++)\n    new Thread(() -> { while (true) synchronized (lock) { spin(1); } }, \"hog-\" + i).start();\nsleep(500);\nnew Thread(() -> { long s = now(); synchronized (lock) { log.info(\"{}ms 만에 들어왔다\", now()-s); } }, \"late\").start();\n\n$ timeout 10 java -cp out:libs/* Starvation 2>/dev/null | tail -1\n00:34:40.204 [late        ] INFO  Starvation - 4128ms 만에 들어왔다\n\n$ for i in $(seq 1 5); do\n    timeout 10 java -cp out:libs/* Starvation 2>/dev/null | grep -oE '[0-9]+ms'\n  done\n4128ms\n8412ms\n2041ms\n(안 들어옴)\n6204ms\n\n#   한 번은 10초 안에 못 들어왔다\n#   7.4절의 공정성에서 이 이야기를 판다\n\n\n# --- 4장을 표로 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '4.1'  '여섯 상태'      'RUNNABLE 의 함정' \\\n  '4.2'  'sleep'          '코어는 놓고 락은 쥔다' \\\n  '4.3'  '인터럽트'       '반은 되고 반은 안 된다' \\\n  '4.4'  '플래그'         '잡으면 지워진다' \\\n  '4.5'  '안전한 종료'    '둘 다 쓰면 1ms' \\\n  '4.6'  'yield 우선순위' '보장이 없다'\n\n4.1      여섯 상태                 RUNNABLE 의 함정\n4.2      sleep                     코어는 놓고 락은 쥔다\n4.3      인터럽트                  반은 되고 반은 안 된다\n4.4      플래그                    잡으면 지워진다\n4.5      안전한 종료               둘 다 쓰면 1ms\n4.6      yield 우선순위            보장이 없다\n\n\n# --- 마지막 확인 ---\n\n$ java -cp out:libs/* YieldState & sleep 1\n$ jcmd $! Thread.print | grep -A1 '\"yielder\"' | tail -1\n   java.lang.Thread.State: RUNNABLE\n$ kill %1\n\n$ java -cp out:libs/* PriorityTest --hold & sleep 1\n$ jcmd $! Thread.print | grep -c 'os_prio=31'\n2\n$ kill %1\n\n#   5장에서 본 것과 실제로 있는 것을 가른다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'yield'           'RUNNABLE 유지' \\\n  'CPU'             '88.4% 그대로 씀' \\\n  '넣으면'          '100배 적게 돎' \\\n  '공평해지나'      '아니다' \\\n  '쓸모'            '버그 재현' \\\n  'sleep(0)'        'yield 와 같음' \\\n  'sleep(1)'        '2242배 적고 CPU 0.8%' \\\n  '우선순위'        '차이 0.6%' \\\n  '먼저 끝나는 쪽'  '6대 4' \\\n  'os_prio'         '둘 다 31' \\\n  '역전'            '10 이 1 을 2.8초 기다림' \\\n  '굶주림'          '10초 안에 못 들어오기도'\n\nyield                      RUNNABLE 유지\nCPU                        88.4% 그대로 씀\n넣으면                     100배 적게 돎\n공평해지나                 아니다\n쓸모                       버그 재현\nsleep(0)                   yield 와 같음\nsleep(1)                   2242배 적고 CPU 0.8%\n우선순위                   차이 0.6%\n먼저 끝나는 쪽             6대 4\nos_prio                    둘 다 31\n역전                       10 이 1 을 2.8초 기다림\n굶주림                     10초 안에 못 들어오기도",
+   "note": "**`yield` 는 `RUNNABLE` 을 유지하며 CPU 88.4% 를 그대로 쓰고 반복은 100배 적게** 돈다.\n\n**`yield` 를 넣어도 스레드 간 편차가 1% 안팎으로 그대로라 공평해지지도** 않는다.\n\n**우선순위 1 과 10 의 차이가 0.6% 고 먼저 끝나는 쪽이 6대 4**다.\n\n**덤프를 보면 `prio=1` 과 `prio=10` 인데 `os_prio` 는 둘 다 31 로 전달이 안** 됐다.\n\n**우선순위 10 이 1 을 2812ms 기다리고 굶주림 실험에서는 10초 안에 못 들어오기도** 한다."
+  }
+ ],
+ "recap": [
+  "yield 는 RUNNABLE 을 유지한 채 차례를 양보하겠다는 힌트일 뿐 보장이 없다.",
+  "넣으면 전환만 늘어 100배 적게 돌고 공평해지지도 않는다.",
+  "sleep(1) 만이 실제로 코어를 놓는다 — CPU 가 0.8% 로 떨어진다.",
+  "우선순위는 이 환경에서 os_prio 로 전달조차 안 되고 결과 차이도 1% 미만이다.",
+  "락 앞에서 우선순위는 무의미하고 우선순위 역전과 굶주림만 남는다."
+ ],
+ "drills": [
+  {
+   "task": "yield 를 넣고 빼며 반복 횟수와 CPU 를 잰다.",
+   "done_when": "상태가 안 바뀌는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "yield·sleep(0)·sleep(1)·onSpinWait 를 나란히 잰다.",
+   "done_when": "CPU 를 놓는 것이 무엇인지 안다.",
+   "minutes": 15
+  },
+  {
+   "task": "우선순위를 1 과 10 으로 주고 여러 번 돌린다.",
+   "done_when": "차이가 없는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "우선순위 역전을 재현한다.",
+   "done_when": "높은 쪽이 기다리는 시간을 잰다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "yield 는 어떤 상태를 만드나.",
+   "a": "아무 상태도 안 만든다. RUNNABLE 을 유지한다."
+  },
+  {
+   "q": "yield 와 sleep(1) 의 차이는.",
+   "a": "yield 는 CPU 를 계속 쓰고 sleep(1) 은 실제로 놓는다."
+  },
+  {
+   "q": "우선순위가 왜 안 먹히나.",
+   "a": "OS 로 전달되지 않거나 무시되기 때문이다."
+  },
+  {
+   "q": "우선순위 역전이란.",
+   "a": "낮은 우선순위 스레드가 쥔 락을 높은 쪽이 기다리는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "yield",
+   "what": "지금 코어를 양보하겠다는 힌트. 보장은 없다."
+  },
+  {
+   "term": "우선순위 역전",
+   "what": "낮은 우선순위가 쥔 자원을 높은 우선순위가 기다리게 되는 상황."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Thread.onSpinWait",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html#onSpinWait()",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Operating Systems: Three Easy Pieces — Scheduling",
+   "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+   "publisher": "Arpaci-Dusseau"
+  }
+ ]
+}

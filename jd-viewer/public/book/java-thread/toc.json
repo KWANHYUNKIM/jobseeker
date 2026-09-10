@@ -224,7 +224,7 @@
           "title": "yield 와 우선순위",
           "summary": "힌트일 뿐이다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -239,7 +239,7 @@
           "title": "가시성 문제",
           "summary": "끝나야 할 반복문이 안 끝난다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
