@@ -740,7 +740,7 @@
           "title": "무엇으로 만들어졌나",
           "summary": "JDK 냐 CGLIB 냐.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.5",
@@ -748,7 +748,7 @@
           "title": "타입 캐스팅",
           "summary": "구체 타입으로 못 받는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.6",

@@ -1,0 +1,156 @@
+{
+ "book": "kafka",
+ "id": "delivery-semantics",
+ "no": "7.5",
+ "chapter": 7,
+ "title": "몇 번 처리되나",
+ "summary": "최대 한 번 · 최소 한 번 · 정확히 한 번.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 가지 의미를 구분한다.",
+  "실무의 기본이 무엇인지 안다.",
+  "멱등하게 처리하는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "table",
+   "caption": "세 가지 전달 의미",
+   "columns": [
+    "",
+    "최대 한 번",
+    "**최소 한 번**",
+    "정확히 한 번"
+   ],
+   "rows": [
+    [
+     "영어",
+     "at-most-once",
+     "**at-least-once**",
+     "exactly-once"
+    ],
+    [
+     "커밋 시점",
+     "**처리 전**",
+     "**처리 후**",
+     "트랜잭션(8장)"
+    ],
+    [
+     "유실",
+     "**있다**",
+     "없다",
+     "없다"
+    ],
+    [
+     "중복",
+     "없다",
+     "**있다**",
+     "없다(범위 안에서)"
+    ],
+    [
+     "복잡도",
+     "낮다",
+     "**낮다**",
+     "높다"
+    ],
+    [
+     "쓰는 곳",
+     "메트릭",
+     "**대부분**",
+     "정산·중복 불가"
+    ]
+   ],
+   "note": "**실무의 기본은 최소 한 번 + 멱등 처리**다. **정확히 한 번은 8장에서 보되 범위가 좁다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "중복은 어디서든 생긴다",
+   "md": "**컨슈머 커밋만의 문제가** 아니다.\n\n| 경로 | 어디 |\n|---|---|\n| 프로듀서 재시도 | 6.4절 (멱등 프로듀서로 완화) |\n| **컨슈머 재시작** | 커밋 전에 죽으면(7.4절) |\n| **리밸런싱** | 회수 전에 커밋을 못 하면(7.3·7.7절) |\n| 재처리 | 오프셋 되감기(5.6절) |\n| 이관 | v1→v2 이중 쓰기(4.7절) |\n\n> **어느 하나를 막아도 다른 경로가** 남는다.\n> **그래서 \"중복을 없앤다\" 가 아니라 \"중복이 와도 괜찮게\"** 로 간다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "IdempotentHandler.java",
+   "caption": "멱등하게 처리하는 네 가지 방법",
+   "code": "// 1) 처리 기록 테이블 (가장 확실하다)\n@Transactional\npublic void handle(OrderEvent e) {\n    if (processedRepo.existsById(e.eventId())) return;      // 이미 했다\n    orderService.apply(e);\n    processedRepo.save(new Processed(e.eventId(), Instant.now()));\n}\n\n// 2) UPSERT (상태를 덮어쓴다)\njdbc.update(\"\"\"\n    insert into order_view (order_id, status, version) values (?, ?, ?)\n    on conflict (order_id) do update set status = ?, version = ?\n    where order_view.version < ?\n    \"\"\", ...);\n\n// 3) 버전/타임스탬프 비교 (4.5절)\nif (e.version() <= current.version()) return;\n\n// 4) 자연 멱등 (연산 자체가 멱등)\ncache.put(key, value);           // 몇 번 해도 같다\nstatus = CANCELLED;              // 대입은 멱등, 증감은 아니다",
+   "note": "**1번의 `processed` 테이블은 커지므로 보관 기간을 두고 지운다** — 이벤트 ID + 처리 시각으로 인덱스."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "멱등하지 않은 연산들",
+   "md": "| 연산 | 멱등한가 | 대안 |\n|---|---|---|\n| `status = 'PAID'` | **○** | — |\n| **`count = count + 1`** | **✗** | 처리 기록 테이블(1번) |\n| **메일 발송** | **✗** | 발송 기록 + 조회 후 발송 |\n| **결제 승인** | **✗** | **PG 의 멱등 키** 사용 |\n| `INSERT` | ✗ | UPSERT 또는 유니크 제약 + 예외 무시 |\n| 파일 추가 쓰기 | ✗ | 파일명에 이벤트 ID |\n\n> **\"두 번 와도 괜찮나\" 를 연산마다** 묻는다.\n> **하나라도 안 괜찮으면 그 핸들러 전체에 처리 기록이** 필요하다.\n\n**외부 API 는 그쪽의 멱등 키를 쓴다**:\n\n```java\npgClient.approve(payment, /* idempotencyKey */ e.eventId());\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "중복을 만들고 멱등 처리로 막는다",
+   "sql": "$ kt --create --topic dl --partitions 1 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 100); do echo \"{\\\"eventId\\\":\\\"e-$i\\\",\\\"amount\\\":100}\"; done | kcp --topic dl\n\n# --- 최소 한 번: 중복이 생긴다 ---\n\n$ psql -h localhost -U shop -d shop -q -c 'drop table if exists totals' \\\n    -c 'create table totals(id int primary key, sum bigint)' \\\n    -c 'insert into totals values (1, 0)'\n\n$ java -cp 'out:libs/*' SumConsumer --group s1 --reset earliest \\\n    --handle-ms 50 --die-after 3000\nprocessed 58 events\n(killed)\n\n$ psql -h localhost -U shop -d shop -tAc 'select sum from totals'\n5800\n\n$ java -cp 'out:libs/*' SumConsumer --group s1 --reset earliest --timeout 10000\nprocessed 70 events\n\n$ psql -h localhost -U shop -d shop -tAc 'select sum from totals'\n12800\n\n#   100건 × 100 = 10000 이어야 하는데 12800 이다\n#   28건이 두 번 더해졌다 (커밋 전에 죽어서)\n#   count = count + 1 이 멱등하지 않기 때문이다\n\n\n# --- 처리 기록 테이블로 막는다 ---\n\n$ psql -h localhost -U shop -d shop -q \\\n    -c 'update totals set sum = 0 where id = 1' \\\n    -c 'drop table if exists processed' \\\n    -c 'create table processed(event_id text primary key, at timestamptz default now())'\n\n$ java -cp 'out:libs/*' IdempotentSumConsumer --group s2 --reset earliest \\\n    --handle-ms 50 --die-after 3000\nprocessed 58 events (skipped 0 duplicates)\n(killed)\n\n$ java -cp 'out:libs/*' IdempotentSumConsumer --group s2 --reset earliest --timeout 10000\nprocessed 42 events (skipped 28 duplicates)\n\n$ psql -h localhost -U shop -d shop -tAc 'select sum from totals'\n10000\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from processed'\n100\n\n#   정확히 10000. 28건은 이미 처리한 것으로 걸러졌다\n#   \"중복이 와도 괜찮게\" 를 만든 것이다\n\n\n# --- 최대 한 번: 커밋을 먼저 하면 ---\n\n$ psql -h localhost -U shop -d shop -q -c 'update totals set sum = 0 where id = 1'\n$ java -cp 'out:libs/*' CommitFirstConsumer --group s3 --reset earliest \\\n    --handle-ms 50 --die-after 3000\ncommitted 100, processed 58\n(killed)\n\n$ java -cp 'out:libs/*' CommitFirstConsumer --group s3 --reset earliest --timeout 5000\nprocessed 0 events\n\n$ psql -h localhost -U shop -d shop -tAc 'select sum from totals'\n5800\n\n#   42건이 영영 처리되지 않았다. 최대 한 번의 대가다\n\n\n# --- 자연 멱등한 연산이면 그냥 된다 ---\n\n$ psql -h localhost -U shop -d shop -q \\\n    -c 'drop table if exists order_status' \\\n    -c 'create table order_status(order_id int primary key, status text, version int)'\n\n$ java -cp 'out:libs/*' UpsertConsumer --group s4 --reset earliest \\\n    --handle-ms 50 --die-after 3000\n(killed)\n$ java -cp 'out:libs/*' UpsertConsumer --group s4 --reset earliest --timeout 10000\nprocessed 70 events (28 were re-applied)\n\n$ psql -h localhost -U shop -d shop -tAc \\\n    \"select count(*), count(distinct status) from order_status\"\n100|1\n\n#   28건이 다시 적용됐지만 결과가 같다\n#   UPSERT 라 몇 번 해도 같은 상태다\n\n\n# --- 처리 기록 테이블은 커진다 ---\n\n$ psql -h localhost -U shop -d shop -tAc \\\n    \"select pg_size_pretty(pg_total_relation_size('processed'))\"\n64 kB\n\n#   운영에서는 보관 기간을 두고 지운다:\n#   delete from processed where at < now() - interval '7 days';\n#   (보관 기간은 재처리 범위보다 길게 -- 3.4절)\n\n$ kt --delete --topic dl >/dev/null\n$ for g in s1 s2 s3 s4; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "커밋을 처리 전에 하면 최대 한 번(유실), 처리 후에 하면 최소 한 번(중복)이다.",
+  "중복은 프로듀서 재시도·컨슈머 재시작·리밸런싱·재처리·이관 등 여러 경로로 생긴다.",
+  "실무의 기본은 최소 한 번 + 멱등 처리다. '중복을 없앤다' 가 아니라 '중복이 와도 괜찮게'.",
+  "멱등하게 만드는 방법은 처리 기록 테이블·UPSERT·버전 비교·자연 멱등 넷이다.",
+  "증감·메일 발송·결제 승인은 멱등하지 않다. 기록을 남기거나 외부의 멱등 키를 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "count = count + 1 하는 컨슈머를 커밋 전에 죽여 합계가 부풀어 오르는 것을 확인한다.",
+   "done_when": "기대값과 다른 숫자를 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "처리 기록 테이블을 붙여 같은 실험을 하고 정확한 값이 나오는지 확인한다.",
+   "done_when": "중복이 걸러지는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "자기 컨슈머의 처리 로직에서 멱등하지 않은 연산을 찾아 적는다.",
+   "done_when": "각각에 대한 대안을 적는다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "최소 한 번과 최대 한 번을 가르는 것은.",
+   "a": "커밋을 처리 후에 하느냐 전에 하느냐."
+  },
+  {
+   "q": "'중복을 없앤다' 대신 무엇을 목표로 하나.",
+   "a": "중복이 와도 결과가 같게(멱등) 만든다. 중복 경로가 여러 개라 하나만 막아서는 안 된다."
+  },
+  {
+   "q": "멱등하지 않은 연산의 예와 대안은.",
+   "a": "카운터 증가 → 처리 기록 테이블, 메일 발송 → 발송 기록 확인, 결제 → PG 의 멱등 키."
+  }
+ ],
+ "terms": [
+  {
+   "term": "at-least-once",
+   "what": "최소 한 번 전달. 중복 가능."
+  },
+  {
+   "term": "멱등 처리",
+   "what": "같은 이벤트를 여러 번 처리해도 결과가 같게 만드는 것."
+  },
+  {
+   "term": "처리 기록 테이블",
+   "what": "이벤트 ID 를 저장해 중복을 거르는 테이블."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Message delivery semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Exactly-once semantics",
+   "url": "https://docs.confluent.io/kafka/design/delivery-semantics.html",
+   "publisher": "Confluent"
+  }
+ ]
+}

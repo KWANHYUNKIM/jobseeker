@@ -1,0 +1,176 @@
+{
+ "book": "kafka",
+ "id": "assignment",
+ "no": "7.3",
+ "chapter": 7,
+ "title": "파티션 할당과 리밸런싱",
+ "summary": "누가 어느 파티션을 맡나.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "리밸런싱이 언제 일어나는지 안다.",
+  "할당 전략을 구분한다.",
+  "협력적 리밸런싱을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**컨슈머가 들거나 나면 파티션을 다시** 나눈다. **그 과정이 리밸런싱**이다.\n\n> **그동안 처리가 멈춘다.** **그래서 자주 일어나면 문제**가 된다(11.4절)."
+  },
+  {
+   "type": "table",
+   "caption": "리밸런싱이 일어나는 때",
+   "columns": [
+    "언제",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**컨슈머가 들어온다**",
+     "배포·스케일 아웃"
+    ],
+    [
+     "**컨슈머가 나간다**",
+     "`close()` 로 정상 종료 — 즉시"
+    ],
+    [
+     "**컨슈머가 죽는다**",
+     "`session.timeout.ms`(45초) 뒤"
+    ],
+    [
+     "**poll 이 늦다**",
+     "`max.poll.interval.ms`(5분) 초과(7.6절)"
+    ],
+    [
+     "**파티션이 늘었다**",
+     "4.6절"
+    ],
+    [
+     "패턴 구독의 새 토픽",
+     "`metadata.max.age.ms` 마다 확인"
+    ]
+   ],
+   "note": "**배포할 때 인스턴스를 하나씩 내리면 리밸런싱이 인스턴스 수만큼** 일어난다(11.4절)."
+  },
+  {
+   "type": "figure",
+   "caption": "eager 와 cooperative",
+   "ascii": "   eager (RangeAssignor, RoundRobinAssignor)\n   -----------------------------------------\n   c1: p0,p1,p2   c2 joins\n        |\n   ALL partitions revoked from everyone     <- 전부 멈춘다\n        |\n   new assignment: c1: p0,p1  c2: p2\n        |\n   everyone resumes\n\n   \"stop the world\"\n\n\n   cooperative (CooperativeStickyAssignor)\n   ---------------------------------------\n   c1: p0,p1,p2   c2 joins\n        |\n   only p2 revoked from c1                  <- p0,p1 은 계속 처리\n        |\n   c2 gets p2\n\n   두 번의 리밸런싱을 거치지만 멈추는 범위가 작다",
+   "note": "**3.x 의 기본은 여전히 `RangeAssignor` + `CooperativeStickyAssignor` 조합을 명시**해야 협력적이 된다."
+  },
+  {
+   "type": "table",
+   "caption": "할당 전략",
+   "columns": [
+    "전략",
+    "방식",
+    "특징"
+   ],
+   "rows": [
+    [
+     "`RangeAssignor`",
+     "**토픽마다 파티션을 순서대로 나눔**",
+     "기본. **토픽이 여러 개면 불균형**"
+    ],
+    [
+     "`RoundRobinAssignor`",
+     "전체 파티션을 돌아가며",
+     "균형이 좋다"
+    ],
+    [
+     "**`StickyAssignor`**",
+     "**기존 할당을 최대한 유지**",
+     "리밸런싱 후 이동이 적다"
+    ],
+    [
+     "**`CooperativeStickyAssignor`**",
+     "**sticky + 협력적**",
+     "**요즘 권장**"
+    ]
+   ],
+   "note": "```java\nprops.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG,\n    CooperativeStickyAssignor.class.getName());\n```\n**바꿀 때는 롤링 업그레이드 절차가** 있다 — **두 전략을 함께 두고 배포한 뒤 옛것을 뺀다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "리밸런싱 중에는 처리가 멈춘다",
+   "md": "**멈추는 시간**:\n\n```\n리밸런싱 시간 ≈ 그룹 조율 + 파티션 수 × 오버헤드 + 컨슈머의 onPartitionsRevoked 처리\n```\n\n| 늘리는 것 | |\n|---|---|\n| **파티션이 많다** | 4.6절에서 500개일 때 9.4초 |\n| **컨슈머가 많다** | 전부 다시 조율한다 |\n| **`session.timeout.ms` 가 길다** | 죽은 컨슈머를 늦게 알아챈다 |\n| 리스너에서 무거운 일 | 7.7절 |\n\n**줄이는 법**:\n\n| 방법 | |\n|---|---|\n| **`CooperativeStickyAssignor`** | 멈추는 범위를 줄인다 |\n| **`group.instance.id`(정적 멤버십)** | **재시작해도 리밸런싱을 안 한다**(2.4+) |\n| 배포 방식 | 한꺼번에 교체(11.4절) |\n| 파티션 수를 줄인다 | 4.6절 |\n\n**정적 멤버십이 특히 효과적**이다:\n\n```java\nprops.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, \"worker-\" + podOrdinal);\n```\n\n> **`session.timeout.ms` 안에 같은 ID 로 돌아오면 파티션을 그대로 돌려** 준다.\n> **쿠버네티스 StatefulSet 의 파드 번호를 쓰면 딱 맞는다**(「쿠버네티스 입문」 5.5절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "리밸런싱을 관찰한다",
+   "sql": "$ kt --create --topic rb --partitions 6 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 600); do echo \"m-$i\"; done | kcp --topic rb\n\n# --- 컨슈머를 하나씩 늘린다 ---\n\n$ java -cp 'out:libs/*' RebalanceConsumer --group r1 --label c1 --timeout 40000 &\n$ sleep 4\n$ kcg --describe --group r1 --members\nGROUP  CONSUMER-ID      CLIENT-ID  #PARTITIONS\nr1     consumer-r1-1..  c1         6\n\n$ java -cp 'out:libs/*' RebalanceConsumer --group r1 --label c2 --timeout 30000 &\n$ sleep 4\n$ kcg --describe --group r1 --members\nGROUP  CONSUMER-ID      CLIENT-ID  #PARTITIONS\nr1     consumer-r1-1..  c1         3\nr1     consumer-r1-2..  c2         3\n\n#   c1 의 로그:\n#   [c1] onPartitionsRevoked: [rb-0, rb-1, rb-2, rb-3, rb-4, rb-5]\n#   [c1] onPartitionsAssigned: [rb-0, rb-1, rb-2]\n#\n#   eager 전략이라 전부 회수했다가 절반을 다시 받았다\n\n$ wait 2>/dev/null\n\n\n# --- 협력적 전략으로 바꾼다 ---\n\n$ java -cp 'out:libs/*' RebalanceConsumer --group r2 --label c1 --timeout 40000 \\\n    --assignor cooperative-sticky &\n$ sleep 4\n$ java -cp 'out:libs/*' RebalanceConsumer --group r2 --label c2 --timeout 30000 \\\n    --assignor cooperative-sticky &\n$ sleep 4\n\n#   c1 의 로그:\n#   [c1] onPartitionsRevoked: [rb-3, rb-4, rb-5]     <- 셋만 내놨다\n#   [c1] onPartitionsAssigned: []\n#   [c1] still processing rb-0, rb-1, rb-2 throughout\n#\n#   나머지 셋은 처리가 안 멈췄다\n\n$ wait 2>/dev/null\n\n\n# --- 멈추는 시간을 잰다 ---\n\n$ java -cp 'out:libs/*' RebalanceTimer --group r3 --partitions 6 --consumers 3\nassignor=range              total pause = 1284 ms\nassignor=cooperative-sticky total pause = 412 ms\n\n$ java -cp 'out:libs/*' RebalanceTimer --group r4 --topic big500 --consumers 3\nassignor=range              total pause = 9412 ms\nassignor=cooperative-sticky total pause = 3108 ms\n\n#   파티션이 많을수록 차이가 크다 (4.6절)\n\n\n# --- 정적 멤버십: 재시작해도 리밸런싱을 안 한다 ---\n\n$ java -cp 'out:libs/*' RebalanceConsumer --group r5 --label c1 \\\n    --instance-id worker-1 --timeout 60000 &\n$ java -cp 'out:libs/*' RebalanceConsumer --group r5 --label c2 \\\n    --instance-id worker-2 --timeout 60000 &\n$ sleep 5\n\n$ kcg --describe --group r5 --members --verbose\nGROUP  CONSUMER-ID          GROUP-INSTANCE-ID  #PARTITIONS  ASSIGNMENT\nr5     consumer-r5-1-...    worker-1           3            rb(0,1,2)\nr5     consumer-r5-2-...    worker-2           3            rb(3,4,5)\n\n$ pkill -f 'label c2'\n$ sleep 3\n$ kcg --describe --group r5 --members --verbose\nGROUP  CONSUMER-ID          GROUP-INSTANCE-ID  #PARTITIONS  ASSIGNMENT\nr5     consumer-r5-1-...    worker-1           3            rb(0,1,2)\nr5     (static, offline)    worker-2           3            rb(3,4,5)\n\n#   c2 가 죽었는데 c1 이 파티션을 안 가져갔다\n#   session.timeout.ms 안에 worker-2 가 돌아오길 기다린다\n\n$ java -cp 'out:libs/*' RebalanceConsumer --group r5 --label c2b \\\n    --instance-id worker-2 --timeout 20000 &\n$ sleep 3\n$ kcg --describe --group r5 --members --verbose | grep worker-2\nr5     consumer-r5-3-...    worker-2           3            rb(3,4,5)\n\n#   같은 파티션을 그대로 받았다. 리밸런싱이 아예 없었다\n#   배포 때 이게 크다 (11.4절)\n\n$ wait 2>/dev/null\n\n\n# --- 죽은 컨슈머를 알아채는 시간 ---\n\n$ java -cp 'out:libs/*' RebalanceConsumer --group r6 --label c1 --timeout 90000 &\n$ java -cp 'out:libs/*' RebalanceConsumer --group r6 --label c2 --timeout 90000 &\n$ sleep 5\n$ pkill -9 -f 'label c2'\n\n$ for i in $(seq 1 6); do\n>   printf '%2ds  members=%s\\n' $((i*10)) \\\n>     \"$(kcg --describe --group r6 --members 2>/dev/null | grep -c consumer-)\"\n>   sleep 10\n> done\n10s  members=2\n20s  members=2\n30s  members=2\n40s  members=2\n50s  members=1\n60s  members=1\n\n#   45초(session.timeout.ms) 가 지나서야 알아챘다\n#   그동안 c2 가 맡던 파티션은 아무도 안 읽는다\n#   kill -9 대신 정상 종료(close)면 즉시다 (7.1절)\n\n$ wait 2>/dev/null\n$ kt --delete --topic rb >/dev/null\n$ for g in r1 r2 r3 r4 r5 r6; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "컨슈머가 들고 나거나 죽거나 poll 이 늦거나 파티션이 늘면 리밸런싱이 일어난다.",
+  "eager 전략은 전부 회수했다 다시 나눈다. 그동안 처리가 멈춘다.",
+  "CooperativeStickyAssignor 는 옮길 파티션만 회수해 멈추는 범위를 줄인다.",
+  "정적 멤버십(group.instance.id)은 재시작할 때 리밸런싱을 아예 안 한다.",
+  "kill -9 로 죽으면 session.timeout.ms(45초) 동안 그 파티션을 아무도 안 읽는다."
+ ],
+ "drills": [
+  {
+   "task": "컨슈머를 하나 띄운 뒤 하나를 더 붙여 onPartitionsRevoked/Assigned 로그를 본다.",
+   "done_when": "전부 회수됐다 절반을 받는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "CooperativeStickyAssignor 로 같은 실험을 해 회수 범위를 비교한다.",
+   "done_when": "옮길 파티션만 회수되는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "group.instance.id 를 주고 컨슈머를 재시작해 리밸런싱이 안 일어나는 것을 확인한다.",
+   "done_when": "같은 파티션을 그대로 받는 것을 본다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "리밸런싱이 일어나는 경우를 넷 대라.",
+   "a": "컨슈머 참여·정상 종료·비정상 종료(세션 타임아웃)·poll 지연, 그리고 파티션 증가."
+  },
+  {
+   "q": "CooperativeStickyAssignor 가 나은 이유는.",
+   "a": "전부 회수하지 않고 옮길 파티션만 회수해 나머지는 처리가 안 멈춘다."
+  },
+  {
+   "q": "정적 멤버십은 무엇을 해결하나.",
+   "a": "재시작(배포)할 때의 리밸런싱. 같은 instance.id 로 세션 타임아웃 안에 돌아오면 파티션을 그대로 돌려준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "리밸런싱",
+   "what": "그룹 멤버 변화에 맞춰 파티션을 다시 나누는 과정."
+  },
+  {
+   "term": "eager / cooperative",
+   "what": "전부 회수하느냐 필요한 것만 회수하느냐."
+  },
+  {
+   "term": "정적 멤버십",
+   "en": "static membership",
+   "what": "group.instance.id 로 멤버를 고정해 재시작 시 리밸런싱을 피하는 기능."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Consumer rebalance protocol",
+   "url": "https://kafka.apache.org/documentation/#consumerconfigs_partition.assignment.strategy",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-345 — Static membership",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-345",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-429 — Incremental cooperative rebalancing",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-429",
+   "publisher": "Apache"
+  }
+ ]
+}

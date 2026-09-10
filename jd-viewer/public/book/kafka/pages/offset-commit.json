@@ -1,0 +1,142 @@
+{
+ "book": "kafka",
+ "id": "offset-commit",
+ "no": "7.4",
+ "chapter": 7,
+ "title": "오프셋 커밋",
+ "summary": "자동과 수동, 그리고 그 사이의 사고.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "자동 커밋의 동작과 위험을 안다.",
+  "수동 커밋 세 가지를 구분한다.",
+  "무엇을 고를지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**\"어디까지 읽었나\" 를 컨슈머가 적는다**(2.3절). **언제 적느냐가 중복과 유실을** 가른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자동 커밋은 시간 기반이다",
+   "md": "```\nenable.auto.commit = true      (기본)\nauto.commit.interval.ms = 5000 (기본)\n```\n\n**\"처리했으니 커밋\" 이** 아니다. **\"5초 지났으니 poll 할 때 커밋\"** 이다.\n\n```\npoll() -> 500건 반환\n  처리 중 ...\npoll() -> 5초 지났으면 직전 poll 이 준 것까지 커밋\n```\n\n| 문제 | 언제 |\n|---|---|\n| **유실** | **커밋된 뒤 처리 중에 죽으면** 그 건들은 다시 안 온다 |\n| 중복 | 커밋 전에 죽으면 다시 온다 |\n\n> **중복은 어차피 있다**(7.5절). **문제는 유실**이다.\n> **\"랙은 0인데 처리가 안 됐다\"**(1.5절)**가 이 경로**다.\n\n**그런데도 자동 커밋을 쓰는 경우가** 있다 — **유실을 견디는 데이터**이고 **코드가 단순해지기** 때문이다."
+  },
+  {
+   "type": "table",
+   "caption": "커밋 방식 넷",
+   "columns": [
+    "방식",
+    "코드",
+    "특징"
+   ],
+   "rows": [
+    [
+     "자동",
+     "`enable.auto.commit=true`",
+     "단순. **유실 가능**"
+    ],
+    [
+     "**동기**",
+     "`commitSync()`",
+     "**확실하다. 느리다.** 실패 시 재시도"
+    ],
+    [
+     "**비동기**",
+     "`commitAsync()`",
+     "빠르다. **실패해도 재시도 안 한다**"
+    ],
+    [
+     "**둘 다**",
+     "루프는 async, 종료 시 sync",
+     "**실무의 표준 형태**"
+    ]
+   ],
+   "note": "**`commitAsync()` 를 재시도하면 안 된다** — **더 뒤의 오프셋이 이미 커밋됐을 수 있어 되돌리는 꼴**이 된다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "ManualCommitConsumer.java",
+   "caption": "실무의 표준 형태",
+   "code": "props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);\n\ntry {\n    while (running) {\n        var records = consumer.poll(Duration.ofMillis(500));\n        for (var r : records) {\n            handle(r);                    // 처리가 먼저\n        }\n        if (!records.isEmpty()) {\n            consumer.commitAsync((offsets, ex) -> {\n                if (ex != null) log.warn(\"commit failed, will retry next round\", ex);\n            });\n        }\n    }\n} catch (WakeupException e) {\n    // 정상 종료\n} finally {\n    try {\n        consumer.commitSync();            // 마지막은 확실하게\n    } finally {\n        consumer.close();\n    }\n}"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "부분 커밋과 파티션별 커밋",
+   "md": "**한 poll 이 여러 파티션의 레코드를** 준다. **중간에 실패하면.**\n\n```java\n// 파티션별로 처리하고 그 파티션만 커밋한다\nfor (var tp : records.partitions()) {\n    var partitionRecords = records.records(tp);\n    long lastOffset = -1;\n    try {\n        for (var r : partitionRecords) {\n            handle(r);\n            lastOffset = r.offset();\n        }\n    } catch (Exception e) {\n        log.error(\"failed at {}-{} offset {}\", tp.topic(), tp.partition(), lastOffset + 1, e);\n    }\n    if (lastOffset >= 0) {\n        consumer.commitSync(Map.of(tp, new OffsetAndMetadata(lastOffset + 1)));\n    }\n}\n```\n\n> **커밋하는 오프셋은 \"다음에 읽을 위치\" 라 `+1`** 이다. **자주 틀리는 자리.**\n> **실패한 파티션은 커밋을 안 하므로 다음에 다시** 온다.\n\n**그런데 이러면 그 파티션이 계속 같은 레코드에 막힌다** — **9.5절의 DLT 가 그 답**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "자동 커밋으로 유실을 만든다",
+   "sql": "$ kt --create --topic cm --partitions 1 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 100); do echo \"m-$i\"; done | kcp --topic cm\n\n# --- 자동 커밋 + 느린 처리 + 강제 종료 ---\n\n$ java -cp 'out:libs/*' AutoCommitConsumer --group ac --reset earliest \\\n    --handle-ms 200 --die-after 8000\n[ac] processed m-1\n[ac] processed m-2\n...\n[ac] processed m-39\n(killed)\n\n$ kcg --describe --group ac\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nac     cm     0          100             100             0\n\n#   39건만 처리했는데 오프셋은 100 이다\n#   첫 poll 이 100건을 다 가져왔고 5초 뒤 커밋됐다\n#   61건이 처리되지 않은 채로 랙 0 이다\n\n$ java -cp 'out:libs/*' AutoCommitConsumer --group ac --reset earliest --timeout 5000\nconsumed 0 records\n\n#   다시 띄워도 안 온다. 유실이다\n\n\n# --- max.poll.records 를 줄이면 창이 좁아진다 ---\n\n$ kcg --delete --group ac >/dev/null\n$ java -cp 'out:libs/*' AutoCommitConsumer --group ac2 --reset earliest \\\n    --handle-ms 200 --die-after 8000 --max-poll-records 10\n[ac2] processed m-1\n...\n[ac2] processed m-39\n(killed)\n\n$ kcg --describe --group ac2\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nac2    cm     0          30              100             70\n\n#   30까지만 커밋됐다. 유실이 61건 -> 9건으로 줄었다\n#   그래도 0은 아니다\n\n\n# --- 수동 커밋: 처리 후 커밋 ---\n\n$ java -cp 'out:libs/*' ManualCommitConsumer --group mc --reset earliest \\\n    --handle-ms 200 --die-after 8000\n[mc] processed m-1\n...\n[mc] processed m-39\n(killed)\n\n$ kcg --describe --group mc\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nmc     cm     0          30              100             70\n\n$ java -cp 'out:libs/*' ManualCommitConsumer --group mc --reset earliest --timeout 8000 | tail -2\n[mc] processed m-100\nconsumed 70 records\n\n#   31번부터 다시 왔다\n#   31~39 는 두 번 처리됐다 (중복) -- 유실보다는 낫다 (7.5절)\n\n\n# --- 커밋 오프셋은 +1 이다 ---\n\n$ java -cp 'out:libs/*' OffsetPlusOneDemo --topic cm --group po --reset earliest --max 5\nlast processed offset = 4\ncommitting offset = 5   (next to read)\n\n$ kcg --describe --group po\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\npo     cm     0          5               100             95\n\n#   5를 커밋하면 다음에 5번부터 읽는다\n#   4를 커밋하면 4번을 또 읽는다\n\n\n# --- commitAsync 는 실패해도 조용하다 ---\n\n$ docker compose stop kafka-1 kafka-2 kafka-3 >/dev/null && sleep 5\n$ java -cp 'out:libs/*' ManualCommitConsumer --group mc2 --async-only --timeout 8000\n[mc2] commit failed: TimeoutException\n[mc2] commit failed: TimeoutException\nconsumed 0 records (broker down)\n\n#   콜백으로 알 수는 있다. 재시도는 안 한다\n#   다음 라운드의 커밋이 더 큰 오프셋을 담으므로 대개 문제가 없다\n\n$ docker compose start kafka-1 kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 파티션별 커밋 ---\n\n$ kt --create --topic pp --partitions 3 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 90); do echo \"m-$i\"; done | kcp --topic pp\n\n$ java -cp 'out:libs/*' PerPartitionCommitConsumer --group pc --reset earliest \\\n    --fail-partition 1 --timeout 8000\n[pc] pp-0 committed offset 30\n[pc] pp-1 FAILED at offset 12, not committing\n[pc] pp-2 committed offset 30\n\n$ kcg --describe --group pc\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\npc     pp     0          30              30              0\npc     pp     1          12              30              18\npc     pp     2          30              30              0\n\n#   실패한 파티션만 랙이 남았다\n#   다시 띄우면 12번부터 온다. 같은 곳에서 또 실패하면 무한 반복이다 (9.5절)\n\n$ kt --delete --topic cm >/dev/null; kt --delete --topic pp >/dev/null\n$ for g in ac ac2 mc mc2 po pc; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "자동 커밋은 '처리했으니' 가 아니라 '시간이 됐으니' 커밋한다. 처리 전에 커밋되면 유실이다.",
+  "'랙은 0인데 처리가 안 됐다' 가 자동 커밋 유실의 모양이다.",
+  "수동 커밋은 처리 후에 커밋한다. 중복은 생기지만 유실은 막는다.",
+  "실무 형태는 루프에서 commitAsync, 종료 시 commitSync 다. commitAsync 는 재시도하지 않는다.",
+  "커밋하는 값은 '다음에 읽을 오프셋' 이라 마지막 처리 오프셋 +1 이다."
+ ],
+ "drills": [
+  {
+   "task": "자동 커밋으로 느리게 처리하다 강제 종료해 '랙 0인데 미처리' 를 재현한다.",
+   "done_when": "처리 건수와 커밋 오프셋이 다른 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "같은 실험을 수동 커밋으로 해서 중복은 생기지만 유실은 없는 것을 확인한다.",
+   "done_when": "다시 띄웠을 때 미처리분이 오는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "파티션별 커밋으로 한 파티션만 실패시켜 그 파티션만 랙이 남는 것을 본다.",
+   "done_when": "다른 파티션은 진행되는 것을 확인한다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "자동 커밋에서 유실이 생기는 과정은.",
+   "a": "poll 이 준 레코드를 처리하는 중에 커밋 주기가 돌아와 커밋되고, 그다음 죽으면 미처리분이 다시 안 온다."
+  },
+  {
+   "q": "commitAsync 실패를 재시도하면 안 되는 이유는.",
+   "a": "그 사이 더 큰 오프셋이 커밋됐을 수 있어 오프셋을 되돌리는 꼴이 된다."
+  },
+  {
+   "q": "커밋할 오프셋 값은.",
+   "a": "마지막으로 처리한 오프셋 + 1. '다음에 읽을 위치' 다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자동 커밋",
+   "what": "주기적으로 poll 시점에 커밋하는 기본 동작."
+  },
+  {
+   "term": "commitSync / commitAsync",
+   "what": "동기·비동기 수동 커밋."
+  },
+  {
+   "term": "OffsetAndMetadata",
+   "what": "커밋할 오프셋과 부가 정보를 담는 객체."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Offsets and consumer position",
+   "url": "https://kafka.apache.org/documentation/#theconsumer",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Manual offset control",
+   "url": "https://kafka.apache.org/38/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html",
+   "publisher": "Apache"
+  }
+ ]
+}

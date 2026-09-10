@@ -1,0 +1,146 @@
+{
+ "book": "kafka",
+ "id": "poll-loop",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "poll 루프의 시간 제약",
+ "summary": "max.poll.interval.ms 를 넘기면 쫓겨난다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 가지 타임아웃을 구분한다.",
+  "처리가 느릴 때의 증상을 안다.",
+  "해결 방법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.1절에서 \"poll 을 오래 안 부르면 쫓겨난다\" 고** 했다. **관련 설정이 셋**이다."
+  },
+  {
+   "type": "table",
+   "caption": "세 가지 타임아웃",
+   "columns": [
+    "설정",
+    "기본",
+    "무엇을 재나",
+    "넘으면"
+   ],
+   "rows": [
+    [
+     "**`session.timeout.ms`**",
+     "**45초**",
+     "**하트비트가 안 온 시간**",
+     "죽은 것으로 보고 리밸런싱"
+    ],
+    [
+     "`heartbeat.interval.ms`",
+     "3초",
+     "하트비트 주기",
+     "(session 의 1/3 정도로)"
+    ],
+    [
+     "**`max.poll.interval.ms`**",
+     "**5분**",
+     "**poll 사이 간격**",
+     "**그룹에서 뺀다**"
+    ],
+    [
+     "`max.poll.records`",
+     "500",
+     "한 번에 가져올 최대 건수",
+     "—"
+    ]
+   ],
+   "note": "**하트비트는 별도 스레드**가 보낸다(0.10.1+). **그래서 처리가 느려도 세션은 살아 있고, `max.poll.interval.ms` 가 처리 시간의 상한**이 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "처리가 느리면 벌어지는 일",
+   "ascii": "   poll() -> 500 records\n     |\n   handle each: 500 x 1s = 500s\n     |\n     |  heartbeat thread keeps sending (session ok)\n     |\n     |  at 300s: max.poll.interval.ms exceeded\n     |     coordinator removes this consumer\n     |     rebalance -> partitions go to others\n     |\n   poll() finally called\n     |\n   CommitFailedException\n     \"Commit cannot be completed since the group has already rebalanced\"\n\n   같은 레코드를 다른 컨슈머가 이미 처리하고 있다 -> 중복",
+   "note": "**로그에 `CommitFailedException` 이 반복되면 거의 항상 이것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "증상: 리밸런싱이 계속 돈다",
+   "md": "```\n[Consumer clientId=c1, groupId=order-worker] Member c1 sending LeaveGroup request\n  to coordinator due to consumer poll timeout has expired.\n  This means the time between subsequent calls to poll() was longer than the\n  configured max.poll.interval.ms\n```\n\n**그러면 이런 순환이** 생긴다.\n\n```\n처리가 느리다 -> 쫓겨난다 -> 리밸런싱 -> 다시 들어온다\n  -> 처음부터(커밋 못 했으니) 다시 처리 -> 또 느리다 -> ...\n```\n\n> **랙이 안 줄고 같은 레코드가 계속 처리**된다.\n> **CPU 는 바쁜데 진도가 안 나간다.**\n\n**해결 순서**:\n\n| 순서 | 방법 |\n|---|---|\n| 1 | **`max.poll.records` 를 줄인다**(500 → 50). **가장 간단하고 효과적** |\n| 2 | 처리를 빠르게 (배치 INSERT, 캐시) |\n| 3 | **`max.poll.interval.ms` 를 늘린다.** 죽은 컨슈머를 늦게 알아채는 대가 |\n| 4 | 파티션·컨슈머를 늘린다(7.8절) |\n| 5 | 무거운 처리는 별도 큐로 넘긴다 |\n\n> **3번을 먼저 하는 사람이 많은데 1번이 대개 맞다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "pause / resume",
+   "md": "**처리가 오래 걸리는데 poll 은 계속 불러야** 할 때.\n\n```java\nvar records = consumer.poll(Duration.ofMillis(500));\nif (!records.isEmpty()) {\n    consumer.pause(consumer.assignment());        // 더 안 가져온다\n    executor.submit(() -> {\n        process(records);\n        pendingDone.set(true);\n    });\n}\n\n// 루프는 계속 돌면서 poll 을 부른다 (빈 결과가 온다)\nif (pendingDone.get()) {\n    consumer.resume(consumer.assignment());\n    consumer.commitSync();\n}\n```\n\n| 얻는 것 | 잃는 것 |\n|---|---|\n| **poll 간격을 지킨다** | 코드가 복잡해진다 |\n| 처리 시간 제한이 사라진다 | **커밋 시점 관리를 직접** |\n\n> **스프링에서는 `@KafkaListener` 의 컨테이너가 비슷한 일을 해** 준다(9.3절).\n> **직접 짜기 전에 스프링 쪽 옵션을 먼저** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "쫓겨나는 것을 만든다",
+   "sql": "$ kt --create --topic slow --partitions 2 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 200); do echo \"m-$i\"; done | kcp --topic slow\n\n# --- 처리가 느리면 쫓겨난다 ---\n\n$ java -cp 'out:libs/*' SlowConsumer --group sl --reset earliest \\\n    --handle-ms 400 --max-poll-records 500 --max-poll-interval 20000 --timeout 90000\n[sl] poll returned 200 records\n[sl] processed 1 ...\n[sl] processed 50 (20.1s elapsed)\n[sl] WARN consumer poll timeout has expired\n[sl] rebalance: onPartitionsRevoked [slow-0, slow-1]\n[sl] processed 51 ... (계속 처리 중)\n[sl] processed 200\n[sl] ERROR CommitFailedException: Offset commit cannot be completed since the\n     consumer is not part of an active group for auto partition assignment;\n     it is likely that the consumer was kicked out of the group.\n[sl] rejoining...\n[sl] poll returned 200 records          <- 처음부터 다시\n\n#   200건을 처리했는데 커밋을 못 했고 다시 200건을 받았다\n#   무한 반복이다\n\n$ kcg --describe --group sl\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nsl     slow   0          0               100             100\nsl     slow   1          0               100             100\n\n#   랙이 그대로다. CPU 는 계속 바빴는데\n\n\n# --- max.poll.records 를 줄인다 ---\n\n$ kcg --delete --group sl >/dev/null\n$ java -cp 'out:libs/*' SlowConsumer --group sl2 --reset earliest \\\n    --handle-ms 400 --max-poll-records 20 --max-poll-interval 20000 --timeout 120000\n[sl2] poll returned 20 records\n[sl2] processed 20 (8.1s)\n[sl2] committed offset 20\n[sl2] poll returned 20 records\n...\n[sl2] committed offset 100\nconsumed 200 records\n\n$ kcg --describe --group sl2 | awk 'NR>1 {s+=$6} END {print \"lag =\", s}'\nlag = 0\n\n#   한 번에 20건씩이라 poll 간격이 8초다. 20초 안에 들어온다\n#   설정 하나로 해결됐다\n\n\n# --- max.poll.interval.ms 를 늘리는 방법 ---\n\n$ kcg --delete --group sl >/dev/null 2>&1\n$ java -cp 'out:libs/*' SlowConsumer --group sl3 --reset earliest \\\n    --handle-ms 400 --max-poll-records 500 --max-poll-interval 300000 --timeout 120000\n[sl3] poll returned 200 records\n[sl3] processed 200 (80.4s)\n[sl3] committed offset 100\nconsumed 200 records\n\n#   되긴 된다. 대신 이 컨슈머가 진짜 죽어도 5분 동안 아무도 모른다\n\n\n# --- 하트비트는 별도 스레드다 ---\n\n$ java -cp 'out:libs/*' SlowConsumer --group sl4 --reset earliest \\\n    --handle-ms 400 --max-poll-records 500 --max-poll-interval 300000 \\\n    --log-heartbeat --timeout 60000 2>&1 | grep -E 'heartbeat|processed 1$|processed 100$'\n[sl4] processed 1\n[kafka-coordinator-heartbeat-thread | sl4] sending heartbeat\n[kafka-coordinator-heartbeat-thread | sl4] sending heartbeat\n[sl4] processed 100\n\n#   처리 중에도 하트비트가 계속 나간다\n#   그래서 session.timeout.ms 는 안 걸리고 max.poll.interval.ms 만 걸린다\n\n\n# --- pause / resume ---\n\n$ java -cp 'out:libs/*' PauseResumeConsumer --group sl5 --reset earliest \\\n    --handle-ms 400 --timeout 120000\n[sl5] poll -> 200 records, pausing\n[sl5] submitted to worker pool\n[sl5] poll -> 0 records (paused)   x 40\n[sl5] worker done, resuming, committing offset 100\nconsumed 200 records\n\n$ kcg --describe --group sl5 | awk 'NR>1 {s+=$6} END {print \"lag =\", s}'\nlag = 0\n\n#   처리하는 동안에도 poll 을 계속 불러 쫓겨나지 않았다\n#   대신 커밋과 스레드 관리를 직접 해야 한다\n\n$ kt --delete --topic slow >/dev/null\n$ for g in sl sl2 sl3 sl4 sl5; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "하트비트는 별도 스레드가 보낸다. 그래서 처리 시간의 실제 상한은 max.poll.interval.ms(5분)다.",
+  "poll 간격을 넘기면 그룹에서 빠지고, 커밋이 CommitFailedException 으로 실패하며 같은 레코드를 다시 받는다.",
+  "증상은 '랙이 안 줄고 CPU 는 바쁜' 무한 반복이다.",
+  "해결은 max.poll.records 를 줄이는 것이 가장 간단하고 효과적이다.",
+  "정말 오래 걸리는 처리는 pause/resume 으로 poll 을 계속 부르며 처리한다."
+ ],
+ "drills": [
+  {
+   "task": "handle 을 느리게 만들고 max.poll.interval.ms 를 짧게 줘서 CommitFailedException 을 재현한다.",
+   "done_when": "랙이 안 줄고 같은 레코드가 반복되는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "max.poll.records 만 줄여 같은 처리 속도로 해결되는 것을 확인한다.",
+   "done_when": "랙이 0이 되는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "하트비트 스레드 로그를 켜서 처리 중에도 하트비트가 나가는 것을 확인한다.",
+   "done_when": "세션과 poll 간격이 다른 것을 이해한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "처리가 오래 걸릴 때 걸리는 것은 session.timeout 인가 max.poll.interval 인가.",
+   "a": "max.poll.interval.ms. 하트비트는 별도 스레드가 계속 보내므로 세션은 살아 있다."
+  },
+  {
+   "q": "CommitFailedException 이 반복되면 무엇을 의심하나.",
+   "a": "poll 간격 초과로 그룹에서 빠진 것. max.poll.records 를 줄인다."
+  },
+  {
+   "q": "max.poll.interval.ms 를 늘리는 것의 대가는.",
+   "a": "정말 죽은 컨슈머를 그만큼 늦게 알아채 그 파티션이 오래 방치된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "max.poll.interval.ms",
+   "what": "poll 사이의 최대 간격. 사실상 배치 처리 시간의 상한."
+  },
+  {
+   "term": "하트비트 스레드",
+   "what": "백그라운드에서 그룹에 살아 있음을 알리는 스레드."
+  },
+  {
+   "term": "pause/resume",
+   "what": "파티션에서 더 가져오지 않게 잠시 멈추는 API."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Consumer configs: max.poll.interval.ms",
+   "url": "https://kafka.apache.org/documentation/#consumerconfigs_max.poll.interval.ms",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-62 — Allow consumer to send heartbeats from a background thread",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-62",
+   "publisher": "Apache"
+  }
+ ]
+}

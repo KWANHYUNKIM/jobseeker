@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "proxy-type",
+ "no": "12.4",
+ "chapter": 12,
+ "title": "무엇으로 만들어졌나",
+ "summary": "JDK 냐 CGLIB 냐.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "둘을 가른다.",
+  "고르는 법을 안다.",
+  "기본이 왜 바뀌었는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6장에서 둘을 다** 만들었다. **지금 무엇이 서 있는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "앞에 서는 두 방법",
+   "ascii": "   two ways to stand in front of the same object\n\n   implement the interfaces   the proxy is a sibling of the target\n   extend the class           the proxy is a child of the target\n\n   a sibling has only what the interface declares",
+   "note": "**형제는 인터페이스가 적어 둔 것만 갖고** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "형제냐 자식이냐가 나머지를 다 정한다",
+   "md": "**형제는** 좁다.\n\n> **인터페이스에 있는 것만**이다.\n> **6.4절에서 그랬다**.\n> **아래에서 세어** 본다.\n\n**자식은** 넓다.\n\n> **클래스 전부**다.\n> **6.6절에서 그랬다**.\n> **아래에서 견준다**.\n\n**받는 타입이** 갈린다.\n\n> **12.5절이 통째로 이것**이다.\n> **아래에서 미리** 본다.\n> **오류가** 난다.\n\n**기본이** 바뀌었다.\n\n> **예전엔 형제였다**.\n> **아래에서 그** 옵션을 본다.\n> **부트가** 정했다."
+  },
+  {
+   "type": "figure",
+   "caption": "지금 고르는 법",
+   "ascii": "   how the choice is made now\n\n   the framework asks for a class based proxy by default\n   an interface based one is used only when explicitly requested\n\n   which is the opposite of what older versions did",
+   "note": "**예전 판과 정반대** 기본값이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "인터페이스가 있어도 자식으로 만든다",
+   "md": "**있어도 안** 쓴다.\n\n> **기본이 그렇다**.\n> **아래에서 확인**한다.\n> **6.6절과 다르다**.\n\n**끄면 갈린다**.\n\n> **인터페이스가 있으면** 형제다.\n> **없으면 여전히** 자식이다.\n> **아래에서 둘 다** 본다.\n\n**final 이** 막는다.\n\n> **자식을 못** 만든다.\n> **10.4절의 그것**이다.\n> **아래에서 다시** 본다.\n\n**생성자가 두 번** 돈다.\n\n> **자식이라** 그렇다.\n> **아래에서 그걸** 겪는다.\n> **놀라는** 자리다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 지금 무엇이 서 있나\n\n$ curl -s 'localhost:8080/who?name=orderRepositoryV3'\n빈 이름:   orderRepositoryV3\n주입된 것: study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n프록시인가: true\nJDK:       false\nCGLIB:     true\n원본:      study.adv.app.OrderRepositoryV3\n\n$ javap -p build/classes/java/main/study/adv/app/OrderRepositoryV3.class | head -1\npublic class study.adv.app.OrderRepositoryV3 implements study.adv.app.Repo {\n\n--   인터페이스가 있는데 자식으로 만들었다\n--   6.4 절에서 만든 그 형제가 아니다\n\n\n-- 전부를 센다\n\n$ curl -s localhost:8080/proxy/census\n전체 빈:      196\n프록시:        24\n  내 것:       10\n  JDK:          0\n  CGLIB:       24\n\n$ curl -s localhost:8080/proxy/kinds | head -4\norderRepositoryV3     CGLIB   인터페이스 1 개\norderServiceV3        CGLIB   인터페이스 0 개\ndataSource            CGLIB   인터페이스 3 개\nentityManagerFactory  JDK     인터페이스 4 개\n\n--   남의 것 중엔 형제도 있다\n--   직접 만들어 등록한 것들이다\n\n\n-- 끄면 갈린다\n\nspring:\n  aop:\n    proxy-target-class: false\n\n$ curl -s 'localhost:8080/who?name=orderRepositoryV3' | sed -n '2,5p'\n주입된 것: jdk.proxy2.$Proxy187\n프록시인가: true\nJDK:       true\nCGLIB:     false\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2,5p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n프록시인가: true\nJDK:       false\nCGLIB:     true\n\n--   인터페이스가 있는 것만 형제가 된다\n--   없으면 여전히 자식이다\n\n\n-- 형제가 가진 것\n\n$ curl -s 'localhost:8080/proxy/methods?name=orderRepositoryV3'\n프록시:      jdk.proxy2.$Proxy187\n프록시 메서드: save, equals, hashCode, toString\n원본 메서드:   save, flush, count, reset\n\n$ javap -p build/classes/java/main/study/adv/app/Repo.class\npublic interface study.adv.app.Repo {\n  public abstract void save(java.lang.String);\n}\n\n--   인터페이스에 있는 하나만 있다\n--   6.5 절에서 본 그 한계다\n\n\n-- 자식이 가진 것\n\nspring:\n  aop:\n    proxy-target-class: true\n\n$ curl -s 'localhost:8080/proxy/methods?name=orderRepositoryV3'\n프록시:      study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n프록시 메서드: save, flush, count, reset, equals, hashCode, toString\n원본 메서드:   save, flush, count, reset\n\n--   전부 있다\n\n\n-- 안 걸리던 메서드가 걸린다\n\n@Around(\"execution(* study.adv.app..*(..))\")\n\n// 형제일 때\n$ curl -s -o /dev/null 'localhost:8080/repo/count'\n$ grep -c 'OrderRepositoryV3.count' logs/app.log\n0\n\n// 자식일 때\n$ curl -s -o /dev/null 'localhost:8080/repo/count'\n$ grep -c 'OrderRepositoryV3.count' logs/app.log\n2\n\n--   인터페이스에 없는 메서드는 형제가 못 감싼다\n--   10.4 절의 다섯에 한 줄이 더 붙는 셈이다\n\n\n-- 기본이 언제 바뀌었나\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep -B1 -A2 'proxyTargetClass' | head -5\n   AopAutoConfiguration.CglibAutoProxyConfiguration matched:\n      - @ConditionalOnProperty (spring.aop.proxy-target-class=true) matched\n        (OnPropertyCondition)\n\n$ ./gradlew bootRun --args='--debug' 2>&1 | grep 'matchIfMissing' | head -1\n(로그에는 안 나온다)\n\n$ curl -s localhost:8080/aop/defaults\nspring.aop.auto                 true\nspring.aop.proxy-target-class   true (기본값)\n\n--   ⑯ 6.6절에서 조건을 읽던 그 자리다\n--   안 적으면 true 다\n\n\n-- 왜 자식을 기본으로 삼았나\n\n$ curl -s localhost:8080/aop/why-cglib\n인터페이스 없는 빈도 감쌈           서비스 대부분\n구체 타입으로 주입해도 안 깨짐      12.5\n인터페이스에 없는 메서드도 감쌈     위\n\n$ grep -rln 'implements' src/main/java/study/adv/app/ | wc -l\n       3\n$ ls src/main/java/study/adv/app/*.java | wc -l\n      10\n\n--   열 중 셋만 인터페이스가 있다\n--   ⑯ 3장에서 부트가 고르는 기본을 보던 그 결이다\n\n\n-- 생성자가 두 번 돈다\n\n@Service\npublic class OrderServiceV3 {\n    public OrderServiceV3(OrderRepositoryV3 r) {\n        log.info(\"생성자 {}\", this.getClass().getName());\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '생성자' | cut -c56-\n생성자 study.adv.app.OrderServiceV3\n생성자 study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n$ ./gradlew bootRun 2>&1 | grep -c '생성자'\n2\n\n--   자식을 만들 때 부모 생성자가 또 돈다\n--   여기에 무거운 걸 넣으면 두 번 한다\n\n\n-- 형제는 한 번이다\n\nspring:\n  aop:\n    proxy-target-class: false\n\n$ ./gradlew bootRun 2>&1 | grep -c '생성자'\n1\n\n$ ./gradlew bootRun 2>&1 | grep '생성자' | cut -c56-\n생성자 study.adv.app.OrderServiceV3\n\n--   OrderServiceV3 은 인터페이스가 없어 여전히 자식이다\n--   위 결과는 Repo 를 붙였을 때다\n\n\n-- 필드가 비어 있다\n\n@Service\npublic class OrderRepositoryV3 implements Repo {\n    private final int delayMs;\n    public OrderRepositoryV3() { this.delayMs = 1000; }\n}\n\n$ curl -s 'localhost:8080/proxy/fields?name=orderRepositoryV3'\n프록시의 delayMs: 1000\n원본의 delayMs:   1000\n\n$ curl -s 'localhost:8080/proxy/fields?name=orderRepositoryV3&raw=true'\nCGLIB 자식의 delayMs (생성자 두 번 돌아 채워짐): 1000\n\n--   생성자가 두 번 돌아 채워졌다\n--   그래서 값이 있다\n\n\n-- final 이 막는다\n\n@Service\npublic final class SealedRepository implements Repo { public void save(String s) { } }\n\n// 자식일 때\n$ ./gradlew bootRun 2>&1 | grep -i 'Cannot subclass final' | head -1\n... Cannot subclass final class study.adv.app.SealedRepository\n\n// 형제일 때\nspring:\n  aop:\n    proxy-target-class: false\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'Cannot subclass final'\n0\n\n$ curl -s 'localhost:8080/who?name=sealedRepository' | sed -n '2p'\n주입된 것: jdk.proxy2.$Proxy191\n\n--   10.4 절에서 기동을 죽이던 그것이다\n--   인터페이스가 있으면 형제로 피할 수 있다\n\n\n-- 하나만 다르게 한다\n\n@EnableTransactionManagement(proxyTargetClass = false)\n\n$ curl -s localhost:8080/proxy/kinds | grep -E 'orderProcessor|orderServiceV3'\norderProcessor    CGLIB   인터페이스 0 개\norderServiceV3    CGLIB   인터페이스 0 개\n\n@Configuration\n@EnableAspectJAutoProxy(proxyTargetClass = false)\npublic class AopConfig { }\n\n$ curl -s localhost:8080/proxy/census | tail -2\n  JDK:          3\n  CGLIB:       21\n\n--   전역이 아니라 부분으로도 정한다\n\n\n-- 값을 잰다\n\n$ for k in cglib jdk; do\n    printf '%-8s ' $k\n    curl -s \"localhost:8080/bench/proxy?kind=$k&n=1000000\"\n  done\n\ncglib    100 만 회   889 ms\njdk      100 만 회   1043 ms\n\n$ python3 -c \"print('%.0f ms 차이' % (1043-889))\"\n154 ms 차이\n\n$ for k in cglib jdk; do\n    printf '%-8s ' $k\n    ./gradlew bootRun --args=\"--spring.aop.proxy-target-class=$([ $k = cglib ] && echo true || echo false)\" 2>&1 \\\n      | grep -oE 'in [0-9.]+ seconds' | grep -oE '[0-9.]+'\n  done\n\ncglib    2.181\njdk      2.094\n\n--   6.6 절에서 만드는 값이 더 컸다\n--   부르는 값은 자식이 낫다\n\n\n-- 무엇으로 만들어졌는지 묻는 법\n\n@GetMapping(value = \"/proxy/kind\", produces = \"text/plain\")\nString kind(String name) {\n    Object b = ctx.getBean(name);\n    return \"\"\"\n        프록시:   %s\n        AOP:      %s\n        JDK:      %s\n        CGLIB:    %s\n        타깃:     %s\n        \"\"\".formatted(b.getClass().getName(),\n            AopUtils.isAopProxy(b), AopUtils.isJdkDynamicProxy(b),\n            AopUtils.isCglibProxy(b), AopUtils.getTargetClass(b).getName());\n}\n\n$ curl -s 'localhost:8080/proxy/kind?name=orderRepositoryV3'\n프록시:   study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\nAOP:      true\nJDK:      false\nCGLIB:    true\n타깃:     study.adv.app.OrderRepositoryV3\n\n--   9.5 절부터 쓰던 그 창구다\n\n\n-- 되돌리고 확인한다\n\n$ git checkout -- src/main/resources/application.yml src/main/java/\n$ curl -s localhost:8080/proxy/census\n전체 빈:      196\n프록시:        24\n  내 것:       10\n  JDK:          0\n  CGLIB:       24\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   12.5 절에서 이 갈림이 만드는 오류를 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '두 방법'      '형제와 자식' \\\n  '지금'         '전부 자식 24 개' \\\n  '기본'         'proxy-target-class=true' \\\n  '끄면'         '인터페이스 있는 것만 형제' \\\n  '형제'         '인터페이스 것만' \\\n  '자식'         '전부' \\\n  '안 걸리던 것' '자식이면 걸림' \\\n  '생성자'       '자식은 두 번' \\\n  'final'        '자식만 막힘' \\\n  '부분 설정'    '됨' \\\n  '값'           '자식이 154 ms 빠름'\n\n두 방법                    형제와 자식\n지금                       전부 자식 24 개\n기본                       proxy-target-class=true\n끄면                       인터페이스 있는 것만 형제\n형제                       인터페이스 것만\n자식                       전부\n안 걸리던 것               자식이면 걸림\n생성자                     자식은 두 번\nfinal                      자식만 막힘\n부분 설정                  됨\n값                         자식이 154 ms 빠름",
+   "note": "**인터페이스가 있는 저장소도 `…$$SpringCGLIB$$0` 으로 자식이** 된다.\n\n**끄면 저장소만 `jdk.proxy2.$Proxy187` 이 되고 인터페이스 없는 서비스는 그대로** 자식이다.\n\n**형제 프록시는 메서드가 넷뿐이라 `count()` 가 0 회, 자식이면 2 회** 걸린다.\n\n**자식이면 생성자가 원본과 프록시 두 번 찍혀 `생성자` 줄이 2** 개다.\n\n**100 만 회에 889 대 1043 ms 로 자식이 154 ms** 빠르다."
+  }
+ ],
+ "recap": [
+  "**둘이** 있다.",
+  "**지금은** 자식이다.",
+  "**기본이** 그렇다.",
+  "**끄면** 갈린다.",
+  "**형제는** 좁다.",
+  "**자식은** 넓다.",
+  "**생성자가 두 번** 돈다.",
+  "**final 은** 막는다.",
+  "**자식이 조금** 빠르다."
+ ],
+ "drills": [
+  {
+   "task": "지금 무엇인지 물어본다.",
+   "done_when": "전부 자식인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "옵션을 꺼 본다.",
+   "done_when": "갈리는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "인터페이스에 없는 메서드를 건다.",
+   "done_when": "형제가 못 잡는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "생성자 로그를 찍는다.",
+   "done_when": "두 번 도는 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "지금 기본은?",
+   "a": "클래스를 물려받는 자식 프록시다."
+  },
+  {
+   "q": "옵션을 끄면?",
+   "a": "인터페이스가 있는 빈만 형제가 되고 없으면 여전히 자식이다."
+  },
+  {
+   "q": "형제의 한계는?",
+   "a": "인터페이스에 없는 메서드를 감쌀 수 없다."
+  },
+  {
+   "q": "자식의 놀라운 점은?",
+   "a": "원본 생성자가 두 번 돈다."
+  },
+  {
+   "q": "final 클래스는?",
+   "a": "자식으로는 못 만든다. 인터페이스가 있으면 형제로 피한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "형제 프록시",
+   "def": "같은 인터페이스를 구현해 앞에 서는 프록시."
+  },
+  {
+   "term": "자식 프록시",
+   "def": "클래스를 물려받아 앞에 서는 프록시."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java SE 21 — java.lang.reflect.Proxy",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Proxy.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

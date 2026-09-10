@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "type-cast",
+ "no": "12.5",
+ "chapter": 12,
+ "title": "타입 캐스팅",
+ "summary": "구체 타입으로 못 받는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "왜 깨지는지 안다.",
+  "언제 터지는지 안다.",
+  "고치는 법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**12.4절에서 형제가 될 수** 있었다. **형제면 무엇이 깨지는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 못 넘기나",
+   "ascii": "   why a sibling cannot be handed over as the class\n\n   the field asks for the concrete class\n   the container has an object implementing only the interface\n\n   there is no relationship between the two, so it fails",
+   "note": "**둘 사이에 아무 관계가 없어** 실패한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "형제는 구체 타입이 아니다",
+   "md": "**형제**다.\n\n> **자식이** 아니다.\n> **12.4절의 그** 그림이다.\n> **아래에서 계보를** 찍는다.\n\n**구체 타입이** 아니다.\n\n> **인터페이스만 같다**.\n> **아래에서 확인**한다.\n> **관계가** 없다.\n\n**주입에서** 터진다.\n\n> **필드 타입이 구체면**이다.\n> **아래에서 그 글을** 본다.\n> **기동에서** 막힌다.\n\n**형변환에서도** 터진다.\n\n> **런타임에서**다.\n> **아래에서 그걸** 겪는다.\n> **테스트를** 지난다."
+  },
+  {
+   "type": "figure",
+   "caption": "언제 터지나",
+   "ascii": "   when the failure shows up\n\n   at startup   if the field type is the concrete class\n   at runtime   if the code casts, or asks for the target\n\n   the second one survives every test that never takes that path",
+   "note": "**둘째는 그 길을 안 지나는 테스트를 전부** 통과한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "자식이라고 안심할 것도 아니다",
+   "md": "**자식은 넘어**간다.\n\n> **구체 타입이 맞다**.\n> **아래에서 확인**한다.\n> **기본이라 잘 안** 겪는다.\n\n**필드는** 빈다.\n\n> **자식 것은 안** 채워진다.\n> **아래에서 그걸** 본다.\n> **직접 읽으면 다르다**.\n\n**타깃을 꺼내면** 다르다.\n\n> **원본이** 온다.\n> **아래에서 견준다**.\n> **12.1절의 그** 함정이다.\n\n**같은지 물으면** 아니다.\n\n> **동일성이 안** 맞는다.\n> **아래에서 확인**한다.\n> **12.8절에서 마무리한다**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 형제로 만든다\n\nspring:\n  aop:\n    proxy-target-class: false\n\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV3 {\n    private final OrderRepositoryV3 orderRepository;      // 구체 타입\n}\n\n$ ./gradlew bootRun 2>&1 | grep -A3 'BeanNotOfRequiredTypeException' | head -4\norg.springframework.beans.factory.BeanNotOfRequiredTypeException: Bean named\n  'orderRepositoryV3' is expected to be of type\n  'study.adv.app.OrderRepositoryV3' but was actually of type\n  'jdk.proxy2.$Proxy187'\n\n--   기동에서 막는다\n--   12.4 절에서 만든 그 형제다\n\n\n-- 계보를 찍는다\n\n@GetMapping(value = \"/proxy/tree\", produces = \"text/plain\")\nString tree(String name) {\n    Object b = ctx.getBean(name);\n    StringBuilder sb = new StringBuilder(\"클래스 \" + b.getClass().getName() + \"\\n\");\n    for (Class<?> k = b.getClass().getSuperclass(); k != null; k = k.getSuperclass())\n        sb.append(\"  부모 \").append(k.getName()).append('\\n');\n    for (Class<?> i : b.getClass().getInterfaces())\n        sb.append(\"  구현 \").append(i.getName()).append('\\n');\n    return sb.toString();\n}\n\n$ curl -s 'localhost:8080/proxy/tree?name=orderRepositoryV3'\n클래스 jdk.proxy2.$Proxy187\n  부모 java.lang.reflect.Proxy\n  부모 java.lang.Object\n  구현 study.adv.app.Repo\n  구현 org.springframework.aop.SpringProxy\n  구현 org.springframework.aop.framework.Advised\n\n$ curl -s 'localhost:8080/proxy/tree?name=orderRepositoryV3' | grep -c 'OrderRepositoryV3'\n0\n\n--   원본 이름이 계보 어디에도 없다\n\n\n-- 자식은 있다\n\nspring:\n  aop:\n    proxy-target-class: true\n\n$ curl -s 'localhost:8080/proxy/tree?name=orderRepositoryV3'\n클래스 study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n  부모 study.adv.app.OrderRepositoryV3\n  부모 java.lang.Object\n  구현 study.adv.app.Repo\n  구현 org.springframework.aop.SpringProxy\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'BeanNotOfRequiredType'\n0\n\n--   부모 줄에 원본이 있다\n--   그래서 넘어간다\n\n\n-- 인터페이스로 받으면 된다\n\nspring:\n  aop:\n    proxy-target-class: false\n\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV3 {\n    private final Repo orderRepository;                    // 인터페이스\n}\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'BeanNotOfRequiredType'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   5.3 절에서 인터페이스를 만든 이유다\n\n\n-- 형변환은 런타임에 터진다\n\n@RestController\npublic class AdminController {\n    private final Repo repo;\n\n    @GetMapping(\"/admin/reset\")\n    public String reset() {\n        ((OrderRepositoryV3) repo).reset();      // 구체 타입으로 형변환\n        return \"ok\";\n    }\n}\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error'\n0\n\n$ curl -s -w '%{http_code}\\n' 'localhost:8080/admin/reset' | tail -1\n500\n\n$ grep -i 'ClassCastException' logs/app.log | head -1 | cut -c56-\njava.lang.ClassCastException: class jdk.proxy2.$Proxy187 cannot be cast to\n  class study.adv.app.OrderRepositoryV3\n\n--   컴파일도 기동도 통과한다\n--   그 길을 지날 때 터진다\n\n\n-- 테스트를 지난다\n\n@SpringBootTest\nclass RepoTest {\n    @Autowired Repo repo;\n\n    @Test void 저장된다() { repo.save(\"연필\"); assertThat(count()).isOne(); }\n}\n\n$ ./gradlew test --tests RepoTest -q && echo 'test OK'\ntest OK\n\n$ grep -c 'reset' src/test/java/study/adv/app/RepoTest.java\n0\n\n--   그 길을 안 지나는 테스트는 다 통과한다\n--   12.1 절과 같은 결의 함정이다\n\n\n-- 자식이면 넘어간다\n\nspring:\n  aop:\n    proxy-target-class: true\n\n$ curl -s -w '%{http_code}\\n' 'localhost:8080/admin/reset' | tail -1\n200\n\n$ curl -s 'localhost:8080/proxy/tree?name=orderRepositoryV3' | grep '부모 study'\n  부모 study.adv.app.OrderRepositoryV3\n\n--   기본값이라 대개 안 겪는다\n\n\n-- 자식이라도 필드는 다르다\n\n@Service\npublic class OrderRepositoryV3 implements Repo {\n    public int savedCount = 0;\n    public void save(String s) { savedCount++; }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ curl -s 'localhost:8080/repo/count-field'\n프록시로 읽은 savedCount: 0\n타깃으로 읽은 savedCount: 1\n\n$ curl -s 'localhost:8080/proxy/fields?name=orderRepositoryV3&direct=true'\n프록시 객체의 필드:  0\n원본 객체의 필드:    1\n\n--   메서드는 넘겨 주는데 필드는 안 그렇다\n--   6.6 절에서 자식이 덮는 건 메서드뿐이라 했다\n\n\n-- 타깃을 꺼내면\n\n@GetMapping(value = \"/proxy/unwrap\", produces = \"text/plain\")\nString unwrap(String name) throws Exception {\n    Object b = ctx.getBean(name);\n    Object t = ((Advised) b).getTargetSource().getTarget();\n    return \"\"\"\n        빈:     %s\n        타깃:   %s\n        같은가: %s\n        \"\"\".formatted(b.getClass().getName(), t.getClass().getName(), b == t);\n}\n\n$ curl -s 'localhost:8080/proxy/unwrap?name=orderRepositoryV3'\n빈:     study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n타깃:   study.adv.app.OrderRepositoryV3\n같은가: false\n\n$ curl -s -o /dev/null 'localhost:8080/repo/via-target'\n$ grep -c 'OrderRepositoryV3.save' logs/app.log\n0\n\n--   타깃으로 부르면 안 걸린다\n--   12.1 절의 자기 호출과 같은 자리다\n\n\n-- 같은지 물으면\n\n@Component\nclass IdentityCheck implements InitializingBean {\n    @Override public void afterPropertiesSet() {\n        Object a = ctx.getBean(OrderRepositoryV3.class);\n        Object b = ctx.getBean(\"orderRepositoryV3\");\n        log.info(\"빈 == 빈      {}\", a == b);\n        log.info(\"빈.equals(타깃) {}\", a.equals(target));\n        log.info(\"해시 같은가    {}\", a.hashCode() == target.hashCode());\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -E '빈 ==|equals|해시' | cut -c56-\n빈 == 빈      true\n빈.equals(타깃) false\n해시 같은가    false\n\n$ curl -s 'localhost:8080/proxy/methods?name=orderRepositoryV3' | grep -c 'equals'\n1\n\n--   프록시가 equals 를 자기 것으로 갖고 있다\n--   비교에 쓰는 자리를 조심해야 한다\n\n\n-- 남의 코드가 형변환할 때\n\npublic void register(Object handler) {\n    if (handler instanceof OrderRepositoryV3 r) r.reset();\n    else log.warn(\"모르는 타입 {}\", handler.getClass().getName());\n}\n\n// 형제일 때\n$ curl -s -o /dev/null 'localhost:8080/admin/register'\n$ grep '모르는 타입' logs/app.log | tail -1 | cut -c56-\n모르는 타입 jdk.proxy2.$Proxy187\n\n// 자식일 때\n$ curl -s -o /dev/null 'localhost:8080/admin/register'\n$ grep -c '모르는 타입' logs/app.log\n0\n\n--   오류도 안 나고 다른 길로 샌다\n--   제일 찾기 힘든 모양이다\n\n\n-- 검사로 만든다\n\n@Component\nclass CastAudit implements InitializingBean {\n    @Override public void afterPropertiesSet() {\n        for (String name : ctx.getBeanDefinitionNames()) {\n            Object b = ctx.getBean(name);\n            if (!AopUtils.isJdkDynamicProxy(b)) continue;\n            Class<?> t = AopUtils.getTargetClass(b);\n            if (!t.getName().startsWith(\"study.adv\")) continue;\n            log.warn(\"형제 프록시 {} 구체 타입 {} 로는 못 받음\", name, t.getSimpleName());\n        }\n    }\n}\n\n$ ./gradlew bootRun --args='--spring.aop.proxy-target-class=false' 2>&1 \\\n    | grep '형제 프록시' | cut -c56-\n형제 프록시 orderRepositoryV3 구체 타입 OrderRepositoryV3 로는 못 받음\n\n$ ./gradlew bootRun 2>&1 | grep -c '형제 프록시'\n0\n\n--   기본값에서는 조용하다\n\n\n-- 고치는 길\n\n$ printf '%-26s %-16s %s\\n' \\\n  '인터페이스로 받는다'    '가장 낫다'   '5.3' \\\n  '자식으로 만든다'        '기본값'      '12.4' \\\n  '형변환을 없앤다'        '설계'        '-' \\\n  '타깃을 꺼낸다'          '안 걸림'     '위'\n\n인터페이스로 받는다        가장 낫다       5.3\n자식으로 만든다            기본값          12.4\n형변환을 없앤다            설계            -\n타깃을 꺼낸다              안 걸림         위\n\n\n-- 확인한다\n\n$ git checkout -- src/main/resources/application.yml src/main/java/\n$ curl -s 'localhost:8080/proxy/tree?name=orderRepositoryV3' | head -2\n클래스 study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n  부모 study.adv.app.OrderRepositoryV3\n\n$ curl -s -w '%{http_code}\\n' -o /dev/null 'localhost:8080/admin/reset'\n200\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   12.6 절에서 final 과 private 을 다시 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '형제'         '구체 타입 아님' \\\n  '계보'         '원본이 없음' \\\n  '자식'         '부모에 원본 있음' \\\n  '주입'         '기동에서 막힘' \\\n  '형변환'       '런타임에 터짐' \\\n  '테스트'       '안 지나면 통과' \\\n  '필드'         '프록시 것은 빔' \\\n  '타깃'         '꺼내면 안 걸림' \\\n  'equals'       '다름' \\\n  'instanceof'   '조용히 샘' \\\n  '고치기'       '인터페이스로 받음'\n\n형제                       구체 타입 아님\n계보                       원본이 없음\n자식                       부모에 원본 있음\n주입                       기동에서 막힘\n형변환                     런타임에 터짐\n테스트                     안 지나면 통과\n필드                       프록시 것은 빔\n타깃                       꺼내면 안 걸림\nequals                     다름\ninstanceof                 조용히 샘\n고치기                     인터페이스로 받음",
+   "note": "**형제 프록시의 계보에 `OrderRepositoryV3` 이 0 번 나와 구체 타입으로 주입하면 `BeanNotOfRequiredTypeException` 이** 난다.\n\n**형변환은 컴파일·기동을 다 지나고 그 길을 밟을 때 `ClassCastException` 으로** 터진다.\n\n**자식이라도 프록시로 읽은 필드는 0, 타깃으로 읽으면 1 로** 갈린다.\n\n**타깃을 꺼내 부르면 `OrderRepositoryV3.save` 가 0 회로 12.1절과 같은** 자리다.\n\n**`instanceof` 는 오류도 안 내고 `모르는 타입 jdk.proxy2.$Proxy187` 로 조용히** 샌다."
+  }
+ ],
+ "recap": [
+  "**형제는 구체 타입이** 아니다.",
+  "**계보에** 없다.",
+  "**주입이** 막힌다.",
+  "**형변환은** 터진다.",
+  "**테스트를** 지난다.",
+  "**자식은** 넘어간다.",
+  "**필드는** 다르다.",
+  "**타깃은 안** 걸린다.",
+  "**instanceof 는** 샌다."
+ ],
+ "drills": [
+  {
+   "task": "형제로 바꿔 주입해 본다.",
+   "done_when": "기동 오류를 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "계보를 찍는 창구를 만든다.",
+   "done_when": "원본이 없는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "형변환을 넣어 본다.",
+   "done_when": "런타임에 터지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "필드를 두 길로 읽는다.",
+   "done_when": "값이 다른 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "형제를 구체 타입으로 못 받는 이유는?",
+   "a": "계보에 원본 클래스가 없어 관계가 없어서다."
+  },
+  {
+   "q": "언제 터지나?",
+   "a": "주입이면 기동에서, 형변환이면 그 길을 지날 때다."
+  },
+  {
+   "q": "자식이면 다 괜찮은가?",
+   "a": "주입은 되지만 필드는 프록시 쪽이 비어 있다."
+  },
+  {
+   "q": "타깃을 꺼내 부르면?",
+   "a": "프록시를 안 지나 부가 기능이 안 걸린다."
+  },
+  {
+   "q": "제일 나은 고침은?",
+   "a": "인터페이스로 받는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "형변환 오류",
+   "def": "형제 프록시를 구체 타입으로 바꾸려다 런타임에 나는 실패."
+  },
+  {
+   "term": "타깃 꺼내기",
+   "def": "프록시에서 원본 객체를 직접 얻는 것. 그 뒤 호출은 안 걸린다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java SE 21 — java.lang.reflect.Proxy",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Proxy.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
