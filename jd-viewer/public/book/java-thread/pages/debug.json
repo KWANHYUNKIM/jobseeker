@@ -1,0 +1,150 @@
+{
+ "book": "java-thread",
+ "id": "debug",
+ "no": "12.5",
+ "chapter": 12,
+ "title": "동시성 버그를 잡는 법",
+ "summary": "재현하고 좁힌다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "재현율을 올린다.",
+  "좁히는 법을 안다.",
+  "도구를 모은다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 \"한 번 돌아간 것은 증거가 아니다\" 라고** 했다. **거꾸로 한 번 깨진 것도 원인이** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "실제로 통하는 순서",
+   "ascii": "   the order that actually works\n\n   make it happen more often\n   make the failing run small\n   name what was supposed to be true\n   find the code that can break it\n\n   most time is lost by skipping the first step",
+   "note": "**첫 단계를 건너뛰어서 시간을 가장 많이** 잃는다."
+  },
+  {
+   "type": "table",
+   "caption": "증상별 첫 수",
+   "columns": [
+    "증상",
+    "먼저 할 것",
+    "절"
+   ],
+   "rows": [
+    [
+     "**가끔 값이 틀림**",
+     "**반복 실행 분포**",
+     "1.3절"
+    ],
+    [
+     "**안 끝남**",
+     "**덤프 두 번**",
+     "1.5절"
+    ],
+    [
+     "**느림**",
+     "락 별 대기 세기",
+     "6.3절"
+    ],
+    [
+     "**로그가 섞임**",
+     "**MDC 확인**",
+     "3.6절, 12.2절"
+    ],
+    [
+     "**운영에서만**",
+     "**코어 수·부하 차이**",
+     "2.4절"
+    ],
+    [
+     "**테스트만 통과**",
+     "**스레드 수 늘리기**",
+     "3.2절"
+    ]
+   ],
+   "note": "**마지막 두 줄이 이 책 전체에서 되풀이된 것**이다 — **환경이 버그를** 감춘다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 1. 자주 나게 만든다 ---\n\n$ ./run.sh Suspect 20 'result=[0-9]+' | head -2\n  19 result=800000\n   1 result=794128\n\n$ for opt in '' '-XX:-TieredCompilation' '-Xint'; do\n    printf '%-24s ' \"${opt:-기본}\"\n    for i in $(seq 1 20); do\n      java $opt -cp out:libs/* Suspect 2>/dev/null | grep -oE '[0-9]+$'\n    done | awk '$1!=800000 {n++} END {printf \"틀림 %d/20\\n\", n+0}'\n  done\n기본                     틀림 1/20\n-XX:-TieredCompilation   틀림 6/20\n-Xint                    틀림 18/20\n\n$ for t in 4 16 64; do\n    printf 'threads=%-4s ' $t\n    for i in $(seq 1 20); do\n      java -cp out:libs/* Suspect --threads $t 2>/dev/null | grep -oE '[0-9]+$'\n    done | awk -v e=$((t*100000)) '$1!=e {n++} END {printf \"틀림 %d/20\\n\", n+0}'\n  done\nthreads=4    틀림 1/20\nthreads=16   틀림 12/20\nthreads=64   틀림 20/20\n\n#   1.3절의 손잡이들이다\n#   20/20 이 되면 그때부터 빠르다\n\n\n# --- 2. 작게 만든다 ---\n\n$ java -cp out:libs/* Suspect --threads 64 --rounds 100000 2>/dev/null | tail -1\n틀림\n$ java -cp out:libs/* Suspect --threads 2 --rounds 100 --yield 2>/dev/null | tail -1\n틀림\n\n$ cat Minimal.java | wc -l\n18\n\n$ ./run.sh Minimal 20 '[0-9]+$' | awk '$2!=200 {n+=$1} END {print \"틀림\", n+0 \"/20\"}'\n틀림 20/20\n\n#   1.4절에서 yield 를 끼워 창을 벌린 그 방법이다\n#   18줄이면 눈으로 읽힌다\n\n\n# --- 3. 무엇이 참이어야 했나 ---\n\n$ cat Invariants.java | grep -A5 'void check'\n// 이 코드가 전제하던 것:\n//  1. total 은 언제나 각 칸의 합과 같다\n//  2. count 는 절대 줄지 않는다\n//  3. 같은 키는 한 번만 처리된다\n\n$ java -cp out:libs/* Invariants --check-all --threads 16 --rounds 100000 2>/dev/null\n불변식 1 깨진 횟수 4128\n불변식 2 깨진 횟수 0\n불변식 3 깨진 횟수 0\n\n#   무엇이 깨졌는지 정해지면 범위가 확 준다\n#   6.6절의 그 불변식이다\n\n\n# --- 4. 깰 수 있는 코드를 찾는다 ---\n\n$ grep -rn 'total' src/main/java/ | grep -v 'GuardedBy\\|//' | head -3\nsrc/main/java/study/th/Stats.java:14:    static long total = 0;\nsrc/main/java/study/th/Stats.java:22:        total += n;\nsrc/main/java/study/th/Stats.java:31:        return total;\n\n$ ./find-unsynced.sh | grep total\nsrc/main/java/study/th/Stats.java:14:    static long total = 0;\n\n$ sed -n '20,24p' src/main/java/study/th/Stats.java\n    void add(long n) {\n        total += n;                      // 1.4절\n        cells[idx()].add(n);\n    }\n\n#   5.4절에서 만든 스크립트가 짚어 준다\n\n\n# --- 이 책에서 만든 도구들 ---\n\n$ ls *.sh\ncheck-interrupt.sh\ncheck-lock-need.sh\ncheck-threadlocal.sh\ncheck-threads.sh\ncheck-unlock.sh\ndeadlock-watch.sh\nfind-unstoppable.sh\nfind-unsynced.sh\nis-parallel.sh\nlock-census.sh\nrun.sh\n\n$ for s in *.sh; do printf '%-24s %s\\n' $s \"$(sed -n '2p' $s | sed 's/^# //')\"; done\ncheck-interrupt.sh       InterruptedException 을 잡고 복원도 되던지지도 않는 자리\ncheck-lock-need.sh       ReentrantLock 을 쓰면서 네 기능을 안 쓰는 자리\ncheck-threadlocal.sh     set 이 있는데 remove 가 없는 파일\ncheck-threads.sh         로그에 나온 스레드 이름 종류를 센다\ncheck-unlock.sh          lock() 뒤에 try 가 안 오는 자리\ndeadlock-watch.sh        주기적으로 데드락을 확인한다\nfind-unstoppable.sh      while(true) 인데 아무것도 안 보는 반복문\nfind-unsynced.sh         여러 스레드가 쓰는데 volatile 도 락도 없는 필드\nis-parallel.sh           n 을 늘려도 시간이 안 늘면 병렬이다\nlock-census.sh           덤프를 여러 번 떠서 락별 대기 횟수를 센다\nrun.sh                   같은 프로그램을 N번 돌려 결과 분포를 낸다\n\n$ ./run.sh Minimal 20 '[0-9]+$' >/dev/null && ./find-unsynced.sh | wc -l && ./check-unlock.sh | wc -l\n       1\n       0\n\n#   11개다\n\n\n# --- 테스트로 못 박는다 ---\n\n$ cat ConcurrentTest.java | grep -A10 'void 동시에_안전하다'\n@RepeatedTest(50)\nvoid 동시에_안전하다() throws Exception {\n    var pool = Executors.newFixedThreadPool(16);\n    var latch = new CountDownLatch(1);\n    var futures = IntStream.range(0, 16)\n            .mapToObj(i -> pool.submit(() -> { latch.await(); work(); return null; }))\n            .toList();\n    latch.countDown();                   // 한꺼번에 출발시킨다\n    for (var f : futures) f.get();\n    assertThat(counter.get()).isEqualTo(16 * ROUNDS);\n}\n\n$ ./gradlew test --tests ConcurrentTest -q 2>&1 | tail -2\n50 tests completed, 12 failed\n\n$ ./gradlew test --tests ConcurrentTest -q 2>&1 | tail -1   # 고친 뒤\nBUILD SUCCESSFUL\n\n#   래치로 동시에 출발시키면 재현율이 오른다\n#   반복 테스트로 못 박는다\n\n\n# --- 운영에서만 나면 ---\n\n$ cat prod-vs-dev.txt\n항목            개발      운영\n코어            10        64\n동시 요청       1         2000\nJIT             안 데워짐  데워짐\n힙              2GB       16GB\nGC              G1        G1\n\n$ java -XX:ActiveProcessorCount=64 -cp out:libs/* Suspect --threads 64 2>/dev/null | tail -1\n틀림\n\n$ java -cp out:libs/* Suspect --threads 1 2>/dev/null | tail -1\n맞음\n\n#   2.4절의 그 표다\n#   코어 수와 동시 요청 수를 맞춰 보는 것이 먼저다\n\n\n# --- 비행 기록 ---\n\n$ java -XX:StartFlightRecording=duration=30s,filename=r.jfr -cp out:libs/* Suspect --threads 32\n$ jfr summary r.jfr | grep -iE 'monitor|park' | head -3\n jdk.JavaMonitorEnter                  4128\n jdk.JavaMonitorWait                    841\n jdk.ThreadPark                       12048\n\n$ jfr print --events JavaMonitorEnter r.jfr | grep -A2 'monitorClass' | head -3\n  monitorClass = study.th.Stats\n  duration = 41.2 ms\n\n#   어느 객체에서 얼마나 기다렸는지 나온다\n#   6.3절의 lock-census.sh 보다 정확하다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '1단계'           '자주 나게' \\\n  '-Xint'           '1/20 이 18/20' \\\n  '스레드 64'       '20/20' \\\n  '2단계'           '작게' \\\n  '결과'            '18줄' \\\n  '3단계'           '불변식 정하기' \\\n  '4단계'           '깰 수 있는 코드' \\\n  '스크립트'        '11개' \\\n  '테스트'          '래치로 동시 출발' \\\n  '운영 차이'       '코어와 동시 요청' \\\n  'JFR'             '어느 객체에서 얼마나'\n\n1단계                      자주 나게\n-Xint                      1/20 이 18/20\n스레드 64                  20/20\n2단계                      작게\n결과                       18줄\n3단계                      불변식 정하기\n4단계                      깰 수 있는 코드\n스크립트                   11개\n테스트                     래치로 동시 출발\n운영 차이                  코어와 동시 요청\nJFR                        어느 객체에서 얼마나",
+   "note": "**재현율이 1/20 이던 것이 `-Xint` 로 18/20, 스레드 64개로 20/20** 이 된다.\n\n**거기서 좁히면 18줄짜리 재현 코드가 나오고 그건 눈으로** 읽힌다.\n\n**불변식 셋 중 첫째만 4128번 깨져 볼 범위가 확** 준다.\n\n**5.4절에서 만든 스크립트가 그 필드를** 짚어 준다.\n\n**JFR 로 어느 객체의 모니터에서 얼마나 기다렸는지까지** 나온다."
+  }
+ ],
+ "recap": [
+  "동시성 버그는 재현율을 먼저 올린다 — 그 전에는 아무것도 확인할 수 없다.",
+  "재현이 잦아지면 코드를 최소로 줄여 눈으로 읽히게 만든다.",
+  "무엇이 참이어야 했는지 불변식을 적으면 볼 범위가 급격히 준다.",
+  "그다음 그 불변식을 깰 수 있는 코드를 찾는다 — 스크립트가 짚어 준다.",
+  "테스트는 래치로 동시에 출발시키고 반복해서 못 박는다."
+ ],
+ "drills": [
+  {
+   "task": "재현율이 낮은 버그의 손잡이를 하나씩 흔들어 본다.",
+   "done_when": "20/20 으로 만든다.",
+   "minutes": 20
+  },
+  {
+   "task": "최소 재현 코드를 20줄 이하로 줄인다.",
+   "done_when": "눈으로 읽히게 만든다.",
+   "minutes": 20
+  },
+  {
+   "task": "불변식을 코드로 적어 검사한다.",
+   "done_when": "어느 것이 깨지는지 특정한다.",
+   "minutes": 20
+  },
+  {
+   "task": "래치를 쓴 반복 테스트를 만든다.",
+   "done_when": "고치기 전에 실패하는 것을 확인한다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 먼저 할 일은.",
+   "a": "재현율을 올리는 것이다."
+  },
+  {
+   "q": "재현율을 올리는 손잡이는.",
+   "a": "반복 횟수, 스레드 수, -Xint, yield 삽입 등이다."
+  },
+  {
+   "q": "불변식을 적으면 무엇이 좋은가.",
+   "a": "무엇이 깨졌는지 정해져 볼 코드 범위가 준다."
+  },
+  {
+   "q": "테스트에서 재현율을 올리려면.",
+   "a": "래치로 여러 스레드를 동시에 출발시키고 반복한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "최소 재현",
+   "what": "문제가 나는 가장 작은 코드."
+  },
+  {
+   "term": "래치 출발",
+   "what": "여러 스레드를 한 지점에서 동시에 풀어 경합을 세게 만드는 기법."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JDK Flight Recorder",
+   "url": "https://docs.oracle.com/en/java/javase/21/jfapi/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "OpenJDK — jcstress",
+   "url": "https://openjdk.org/projects/code-tools/jcstress/",
+   "publisher": "OpenJDK"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

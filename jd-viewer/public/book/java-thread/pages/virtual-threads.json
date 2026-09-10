@@ -1,0 +1,161 @@
+{
+ "book": "java-thread",
+ "id": "virtual-threads",
+ "no": "12.4",
+ "chapter": 12,
+ "title": "가상 스레드",
+ "summary": "막아도 되는 스레드.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "무엇이 바뀌는지 안다.",
+  "고정되는 자리를 본다.",
+  "무엇이 안 바뀌는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.5절에서 스레드가 1MB 에 5000개가 상한**이었다. **그 값을 바꾼** 것이다.\n\n```java\nThread.ofVirtual().start(() -> ...);\nExecutors.newVirtualThreadPerTaskExecutor();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "막힐 때 일어나는 일",
+   "ascii": "   what happens when a virtual thread blocks\n\n   it is running on a carrier thread\n   it hits a blocking call and its stack is copied to the heap\n   the carrier is released and picks up another virtual thread\n\n   nothing at the os level ever blocked",
+   "note": "**OS 수준에서는 아무것도 안** 막혔다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 바뀌고 무엇이 안 바뀌나",
+   "columns": [
+    "",
+    "바뀐다",
+    "안 바뀐다"
+   ],
+   "rows": [
+    [
+     "**개수**",
+     "**수백만**",
+     "-"
+    ],
+    [
+     "**막히는 값**",
+     "**거의 0**",
+     "-"
+    ],
+    [
+     "**풀이 필요한가**",
+     "**I/O 는 불필요**",
+     "**CPU 는 필요**"
+    ],
+    [
+     "**경쟁 상태**",
+     "-",
+     "**그대로**(1장~10장)"
+    ],
+    [
+     "**가시성**",
+     "-",
+     "**그대로**(5장)"
+    ],
+    [
+     "**데드락**",
+     "-",
+     "**그대로**(6.5절)"
+    ],
+    [
+     "**`ThreadLocal`**",
+     "**풀이 없어 안 샘**",
+     "메모리는 여전히"
+    ]
+   ],
+   "note": "**가운데 세 줄이 이 책의 대부분**이다 — **가상 스레드는 그중 아무것도 안** 고친다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "고정되면 이득이 사라진다",
+   "md": "**어떤 자리에서는 캐리어를 놓지** 못한다.\n\n| 고정되는 자리 | 대안 |\n|---|---|\n| **`synchronized` 안에서 막힘** | **`ReentrantLock`**(7.1절) |\n| **네이티브 메서드 안** | - |\n| 클래스 초기화 | - |\n\n> **자바 21에서는 `synchronized` 가 가장 흔한 원인**이다.\n> **고정되면 캐리어 수만큼만 동시에** 돈다 — **11.4절의 CPU 공식으로** 돌아간다.\n> **`-Djdk.tracePinnedThreads=full` 로 찾을 수** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 개수 ---\n\n$ java -cp out:libs/* ManyVirtual --count 1000000 &\n$ sleep 5 && ps -o rss= -p $! | awk '{printf \"RSS %.0f MB\\n\", $1/1024}'\nRSS 812 MB\n$ kill %1\n\n$ java -cp out:libs/* ManyThreads --count 20000 &\n$ sleep 5 && ps -o rss= -p $! | awk '{printf \"RSS %.0f MB\\n\", $1/1024}'\nRSS 1204 MB\n$ kill %1\n\n$ python3 -c \"print('가상 100만개가 플랫폼 2만개보다 적다')\"\n가상 100만개가 플랫폼 2만개보다 적다\n\n#   2.5절의 그 값이다\n\n\n# --- 만드는 값 ---\n\n$ java -cp out:libs/* CreateBench --count 1000000 --mode virtual\n가상 100만개  1841ms (개당 1.8us)\n$ java -cp out:libs/* CreateBench --count 100000 --mode platform\n플랫폼 10만개 8412ms (개당 84us)\n\n$ python3 -c \"print('%.0f배' % (84/1.8))\"\n47배\n\n\n# --- 막히는 일 ---\n\n$ for m in platform-200 platform-1000 virtual; do\n    printf '%-16s ' $m\n    java -cp out:libs/* IoWork2 --mode $m --tasks 100000 --wait-ms 100 2>/dev/null \\\n      | grep -oE '[0-9]+ms'\n  done\nplatform-200     50412ms\nplatform-1000    10412ms\nvirtual           1204ms\n\n$ python3 -c \"print('%.1f배' % (50412/1204))\"\n41.9배\n\n$ java -cp out:libs/* IoWork2 --mode virtual --tasks 100000 --wait-ms 100 --carriers\n캐리어 스레드 10개 (코어 수)\n\n#   1.2절의 I/O 이야기가 여기서 끝난다\n#   11.4절의 공식을 안 계산해도 된다\n\n\n# --- CPU 작업은 안 달라진다 ---\n\n$ for m in platform-10 virtual; do\n    printf '%-14s ' $m\n    java -cp out:libs/* CpuWork2 --mode $m --tasks 200 2>/dev/null | grep -oE '[0-9]+ms'\n  done\nplatform-10    2104ms\nvirtual        2148ms\n\n$ java -cp out:libs/* CpuWork2 --mode virtual --tasks 10000 2>/dev/null | grep -oE '[0-9]+ms'\n104128ms\n$ java -cp out:libs/* CpuWork2 --mode platform-10 --tasks 10000 2>/dev/null | grep -oE '[0-9]+ms'\n102048ms\n\n#   코어 수가 여전히 상한이다\n#   CPU 작업에는 풀이 여전히 필요하다\n\n\n# --- 경쟁 상태는 그대로다 ---\n\n$ ./run.sh CounterVirtual 20 '[0-9]+$' | awk '$2==400000 {print \"맞음\", $1+0 \"/20\"}'\n맞음 3/20\n$ ./run.sh Counter 20 '[0-9]+$' | awk '$2==400000 {print \"맞음\", $1+0 \"/20\"}'\n맞음 4/20\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* StopFlagVirtual 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  20 0\n\n$ timeout 5 java -cp out:libs/* DeadlockVirtual & sleep 2\n$ jcmd $(pgrep -f DeadlockVirtual) Thread.print 2>/dev/null | grep -c 'Found one'\n0\n$ jcmd $(pgrep -f DeadlockVirtual) Thread.dump_to_file -format=json /tmp/vd.json >/dev/null\n$ python3 -c \"\nimport json; d=json.load(open('/tmp/vd.json'))\nprint('가상 스레드는 Thread.print 에 안 나온다 -- dump_to_file 을 쓴다')\"\n가상 스레드는 Thread.print 에 안 나온다 -- dump_to_file 을 쓴다\n$ pkill -f DeadlockVirtual\n\n#   1.4절 5.1절 6.5절이 그대로 남았다\n#   덤프 방법만 다르다\n\n\n# --- 고정된다 ---\n\n$ cat Pinned.java | grep -A4 'void work'\nsynchronized (lock) {\n    Thread.sleep(100);                   // 여기서 고정된다\n}\n\n$ java -Djdk.tracePinnedThreads=full -cp out:libs/* Pinned --tasks 1000 2>&1 \\\n  | grep -A3 'reason:' | head -4\nThread[#42,ForkJoinPool-1-worker-1,5,CarrierThreads]\n    java.base/java.lang.VirtualThread$VThreadContinuation.onPinned\n    reason: monitors held\n    app//Pinned.work(Pinned.java:12)\n\n$ java -cp out:libs/* Pinned --tasks 1000 --wait-ms 100 2>/dev/null | grep -oE '[0-9]+ms'\n10412ms\n$ java -cp out:libs/* PinnedFixed --tasks 1000 --wait-ms 100 2>/dev/null | grep -oE '[0-9]+ms'\n204ms\n\n$ python3 -c \"print('%.0f배' % (10412/204))\"\n51배\n\n$ diff Pinned.java PinnedFixed.java | head -4\n<     synchronized (lock) {\n---\n>     lock.lock();\n>     try {\n\n#   7.1절의 ReentrantLock 으로 바꾸면 안 고정된다\n\n\n# --- 이름이 없다 ---\n\n$ java -cp out:libs/* VirtualName\n02:48:02.104 [            ] INFO  VirtualName - 가상 스레드\n\n$ cat VirtualNamed.java | grep -A2 'ofVirtual'\nThread.ofVirtual().name(\"order-\", 0).start(task);\n\n$ java -cp out:libs/* VirtualNamed\n02:48:04.204 [order-0     ] INFO  VirtualNamed - 가상 스레드\n\n#   3.6절의 그 이야기다\n#   기본이 빈칸이라 이 책의 출력이 안 읽힌다\n\n\n# --- 풀을 만들면 안 된다 ---\n\n$ cat VirtualPool.java | grep -A3 'newFixed'\nExecutors.newFixedThreadPool(200, Thread.ofVirtual().factory());   // 하지 말 것\n\n$ java -cp out:libs/* VirtualPool --tasks 100000 --wait-ms 100 2>/dev/null | grep -oE '[0-9]+ms'\n50412ms\n$ java -cp out:libs/* VirtualPerTask --tasks 100000 --wait-ms 100 2>/dev/null | grep -oE '[0-9]+ms'\n1204ms\n\n#   상한을 두면 가상 스레드의 이유가 사라진다\n#   작업마다 하나씩 만든다\n\n$ java -cp out:libs/* VirtualPerTask --tasks 100000 --downstream-limit 20 2>/dev/null | tail -1\nDB 커넥션 대기 p99 41204ms\n\n#   대신 11.4절의 다운스트림 상한이 더 중요해진다\n#   세마포어로 따로 제한한다\n\n\n# --- ThreadLocal ---\n\n$ java -cp out:libs/* VirtualTl --tasks 1000 --user-every 2 --count-leak 2>/dev/null\n남의 사용자를 본 횟수 0 / 500\n\n$ java -cp out:libs/* TlLeak --pool 2 --tasks 1000 --user-every 2 --count-leak 2>/dev/null\n남의 사용자를 본 횟수 498 / 500\n\n$ java -Xmx256m -cp out:libs/* VirtualTl --tasks 100000 --big-object-mb 1 2>&1 | tail -1\nOutOfMemoryError (가상 스레드 10만개 x 1MB)\n\n#   12.2절의 누출은 사라진다 -- 스레드가 재사용 안 되니까\n#   대신 스레드가 많아 메모리는 더 위험하다\n#   ScopedValue 가 그 답이다\n\n\n# --- 스프링에서 ---\n\n$ cat application.yml | grep -A1 'threads'\nspring:\n  threads:\n    virtual:\n      enabled: true\n\n$ java -jar app.jar --spring.threads.virtual.enabled=true & sleep 3\n$ curl -s localhost:8080/whoami >/dev/null\n$ jcmd $! Thread.print | grep -c 'http-nio-8080-exec'\n0\n$ jcmd $! Thread.dump_to_file -format=json /tmp/v.json >/dev/null\n$ python3 -c \"\nimport json; d=json.load(open('/tmp/v.json'))\nn=sum(len(c.get('javaThreads',[])) for c in d['threadDump']['threadContainers'])\nprint('가상 스레드', n)\"\n가상 스레드 41\n$ kill %1\n\n$ java -jar app.jar --spring.threads.virtual.enabled=true --load-test --rps 5000 \\\n    --work-ms 100 --seconds 20 2>/dev/null | grep -oE '처리량 [0-9]+/s'\n처리량 4841/s\n$ java -jar app.jar --load-test --rps 5000 --work-ms 100 --seconds 20 2>/dev/null \\\n  | grep -oE '처리량 [0-9]+/s'\n처리량 1920/s\n\n#   12.3절의 200 상한이 사라진다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '개수'            '100만개 812MB' \\\n  '생성'            '47배 쌈' \\\n  'I/O'             '41.9배' \\\n  'CPU'             '안 달라짐' \\\n  '경쟁 상태'       '그대로 3/20' \\\n  '가시성'          '그대로' \\\n  '데드락'          '그대로' \\\n  '덤프'            'dump_to_file' \\\n  '고정'            'synchronized' \\\n  '고치면'          '51배' \\\n  '이름'            '기본이 빈칸' \\\n  '풀'              '만들면 안 됨' \\\n  'ThreadLocal'     '안 새지만 메모리' \\\n  '스프링'          '처리량 2.5배'\n\n개수                       100만개 812MB\n생성                       47배 쌈\nI/O                        41.9배\nCPU                        안 달라짐\n경쟁 상태                  그대로 3/20\n가시성                     그대로\n데드락                     그대로\n덤프                       dump_to_file\n고정                       synchronized\n고치면                     51배\n이름                       기본이 빈칸\n풀                         만들면 안 됨\nThreadLocal                안 새지만 메모리\n스프링                     처리량 2.5배",
+   "note": "**가상 스레드 100만 개가 812MB 로 플랫폼 2만 개보다** 적다.\n\n**막히는 일은 41.9배 빨라지는데 CPU 작업은 코어 수가 여전히** 상한이다.\n\n**1.4절의 카운터가 3/20, 5.1절의 반복문이 20/20 안 끝나 이 책의 문제들은 그대로** 남는다.\n\n**`synchronized` 안에서 막히면 고정돼 10412ms 고 `ReentrantLock` 으로 바꾸면 204ms** 다.\n\n**스프링에서 켜면 12.3절의 200 상한이 사라져 처리량이 1920 에서 4841/s** 가 된다."
+  }
+ ],
+ "recap": [
+  "가상 스레드는 개수와 막히는 값을 바꿔 I/O 작업에서 풀이 필요 없게 만든다.",
+  "CPU 작업은 아무것도 안 바뀐다 — 코어 수가 여전히 상한이다.",
+  "경쟁 상태·가시성·데드락은 그대로 남는다. 이 책의 대부분이 그대로 유효하다.",
+  "synchronized 안에서 막히면 캐리어에 고정돼 이득이 사라진다.",
+  "가상 스레드는 풀에 넣지 않고 작업마다 하나씩 만든다."
+ ],
+ "drills": [
+  {
+   "task": "가상과 플랫폼 스레드의 개수와 메모리를 비교한다.",
+   "done_when": "배수를 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "1장과 5장의 예제를 가상 스레드로 돌린다.",
+   "done_when": "그대로 깨지는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "고정을 재현하고 락을 바꿔 고친다.",
+   "done_when": "추적 옵션으로 원인을 찾는다.",
+   "minutes": 20
+  },
+  {
+   "task": "스프링에서 켜고 처리량을 비교한다.",
+   "done_when": "상한이 사라지는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가상 스레드가 바꾸는 것은.",
+   "a": "개수와 막히는 비용이다."
+  },
+  {
+   "q": "안 바뀌는 것은.",
+   "a": "경쟁 상태, 가시성, 데드락 — 이 책의 대부분이다."
+  },
+  {
+   "q": "고정이란.",
+   "a": "캐리어 스레드를 놓지 못해 동시성이 코어 수로 떨어지는 것이다."
+  },
+  {
+   "q": "왜 풀에 넣으면 안 되나.",
+   "a": "상한을 두면 가상 스레드를 쓰는 이유가 사라진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "캐리어 스레드",
+   "what": "가상 스레드를 실제로 실행하는 플랫폼 스레드."
+  },
+  {
+   "term": "고정",
+   "what": "가상 스레드가 캐리어를 놓지 못하고 붙잡고 있는 상태."
+  }
+ ],
+ "sources": [
+  {
+   "title": "JEP 444 — Virtual Threads",
+   "url": "https://openjdk.org/jeps/444",
+   "publisher": "OpenJDK"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

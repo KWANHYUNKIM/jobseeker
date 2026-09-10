@@ -672,7 +672,7 @@
           "title": "가상 스레드",
           "summary": "막아도 되는 스레드.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.5",
@@ -680,7 +680,7 @@
           "title": "동시성 버그를 잡는 법",
           "summary": "재현하고 좁힌다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.6",
@@ -688,7 +688,7 @@
           "title": "다음으로",
           "summary": "이 책이 남긴 것과 이어지는 자리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }
