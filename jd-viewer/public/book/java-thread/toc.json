@@ -656,7 +656,7 @@
           "title": "ThreadLocal",
           "summary": "풀에서 되면 안 지워진다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.3",
@@ -664,7 +664,7 @@
           "title": "서블릿 스레드",
           "summary": "요청 하나에 스레드 하나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.4",

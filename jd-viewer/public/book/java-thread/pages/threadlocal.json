@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "threadlocal",
+ "no": "12.2",
+ "chapter": 12,
+ "title": "ThreadLocal",
+ "summary": "풀에서 되면 안 지워진다.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "어디 사는지 안다.",
+  "풀에서 새는 걸 본다.",
+  "지우는 규칙을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7.7절에서 \"공유 안 하기\" 가 최선이라고** 했다. **그걸 하는 도구**다.\n\n```java\nprivate static final ThreadLocal<Ctx> CTX = new ThreadLocal<>();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "값이 실제로 사는 곳",
+   "ascii": "   where the value actually lives\n\n   the thread object holds a map\n   the ThreadLocal object is the key into that map\n\n   so the value belongs to the thread, not to the ThreadLocal",
+   "note": "**값은 그 스레드의 것이지 이 객체의 것이** 아니다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "풀 스레드는 안 죽는다",
+   "md": "**3.6절에서 `order-1` 이 작업 0 과 3 을 했다**.\n\n> **작업이 끝나도 스레드는** 산다.\n> **지우지 않으면 그 값이 다음 작업에** 남는다.\n> **요청 A 의 사용자 정보가 요청 B 에 보이는** 사고다.\n\n| 새면 생기는 일 | |\n|---|---|\n| **정보 노출** | **남의 사용자 정보** |\n| **잘못된 테넌트** | 다른 회사 데이터 |\n| **메모리 누수** | **큰 객체가 스레드 수명만큼** |\n| **로그 오염** | 3.6절의 MDC |\n\n> **`try-finally` 로 반드시** 지운다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 스레드마다 따로다 ---\n\n$ cat TlBasic.java | grep -A5 'main'\nThreadLocal<Integer> tl = ThreadLocal.withInitial(() -> 0);\n// 8스레드가 각각 100000번 증가\n\n$ ./run.sh TlBasic 20 '합 [0-9]+' | head -2\n  20 합 800000\n\n$ java -cp out:libs/* TlBasic --threads 8 --rounds 5000000 2>/dev/null | grep -o '[0-9]*ms'\n204ms\n$ java -cp out:libs/* CounterWays --mode sync --threads 8 --rounds 5000000 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n8412ms\n\n$ python3 -c \"print('%.0f배' % (8412/204))\"\n41배\n\n#   7.7절의 그 41배다\n\n\n# --- 어디 사는지 본다 ---\n\n$ cat TlLocation.java | grep -A5 'void inspect'\nField f = Thread.class.getDeclaredField(\"threadLocals\");\nf.setAccessible(true);\nObject map = f.get(Thread.currentThread());\nlog.info(\"threadLocals {}\", map);\n\n$ java --add-opens java.base/java.lang=ALL-UNNAMED -cp out:libs/* TlLocation\n02:42:02.104 [main] INFO  TlLocation - threadLocals java.lang.ThreadLocal$ThreadLocalMap@1a2c4f18\n02:42:02.104 [w-0 ] INFO  TlLocation - threadLocals java.lang.ThreadLocal$ThreadLocalMap@5a20b1c2\n\n#   맵이 스레드마다 하나씩이다\n#   ThreadLocal 객체는 그 맵의 키다\n\n\n# --- 풀에서 샌다 ---\n\n$ cat TlLeak.java | grep -A5 'submit'\npool.submit(() -> {\n    if (hasUser) USER.set(user);         // 어떤 요청만 설정한다\n    log.info(\"처리 사용자={}\", USER.get());\n});\n\n$ java -cp out:libs/* TlLeak --pool 2 --tasks 6 --user-every 2 2>/dev/null\n02:42:08.104 [task-1] INFO  TlLeak - 처리 사용자=user-0\n02:42:08.104 [task-2] INFO  TlLeak - 처리 사용자=null\n02:42:08.108 [task-1] INFO  TlLeak - 처리 사용자=user-0\n02:42:08.108 [task-2] INFO  TlLeak - 처리 사용자=user-3\n02:42:08.112 [task-1] INFO  TlLeak - 처리 사용자=user-4\n02:42:08.112 [task-2] INFO  TlLeak - 처리 사용자=user-3\n\n$ java -cp out:libs/* TlLeak --pool 2 --tasks 1000 --user-every 2 --count-leak 2>/dev/null\n사용자를 설정 안 한 작업이 남의 사용자를 본 횟수 498 / 500\n\n#   3.6절의 MDC 와 같은 그림이다\n#   여기서는 사용자 정보다\n\n\n# --- 웹에서 재현한다 ---\n\n$ java -jar app.jar --leaky-filter & sleep 2\n$ curl -s -H 'X-User: alice' localhost:8080/whoami\nalice\n$ curl -s localhost:8080/whoami\nalice\n\n$ for i in $(seq 1 20); do curl -s localhost:8080/whoami; echo; done | sort | uniq -c\n  14 alice\n   6 (none)\n\n$ pkill -f app.jar\n\n#   헤더를 안 보낸 요청이 alice 로 보인다\n#   실제 사고의 모양이다\n\n\n# --- 지운다 ---\n\n$ cat TlClear.java | grep -A6 'submit'\npool.submit(() -> {\n    try {\n        if (hasUser) USER.set(user);\n        process();\n    } finally {\n        USER.remove();                   // 반드시\n    }\n});\n\n$ java -cp out:libs/* TlClear --pool 2 --tasks 1000 --user-every 2 --count-leak 2>/dev/null\n남의 사용자를 본 횟수 0 / 500\n\n$ java -jar app.jar --clearing-filter & sleep 2\n$ for i in $(seq 1 20); do curl -s -H \"X-User: u$i\" localhost:8080/whoami; echo; done \\\n  | sort -u | wc -l\n      20\n$ pkill -f app.jar\n\n#   서블릿 필터의 finally 에서 지운다\n\n\n# --- set 대신 remove 여야 한다 ---\n\n$ cat SetNull.java | grep -A2 'finally'\nfinally { USER.set(null); }              // remove 가 아니다\n\n$ java -cp out:libs/* SetNull --pool 2 --tasks 1000 --count-leak 2>/dev/null\n남의 사용자를 본 횟수 0 / 500\n\n$ java --add-opens java.base/java.lang=ALL-UNNAMED -cp out:libs/* SetNull --entries 2>/dev/null\nThreadLocalMap 항목 수 1 (set(null) 은 항목을 남긴다)\n$ java --add-opens java.base/java.lang=ALL-UNNAMED -cp out:libs/* TlClear --entries 2>/dev/null\nThreadLocalMap 항목 수 0\n\n#   값은 안 새는데 항목이 남는다\n#   많이 쌓이면 메모리 문제가 된다\n\n\n# --- 메모리 누수 ---\n\n$ java -Xmx256m -cp out:libs/* TlMemory --pool 200 --big-object-mb 1 --tasks 10000 \\\n    --no-remove 2>&1 | tail -1\n02:42:24.104 [main] ERROR TlMemory - OutOfMemoryError (스레드 200개 x 1MB)\n\n$ java -Xmx256m -cp out:libs/* TlMemory --pool 200 --big-object-mb 1 --tasks 10000 2>/dev/null \\\n  | tail -1\n완료, 최대 힙 42MB\n\n#   풀 스레드가 안 죽으니 값도 안 죽는다\n#   11.1절에서 스레드를 재사용한 대가다\n\n\n# --- InheritableThreadLocal ---\n\n$ cat Inheritable.java | grep -A4 'main'\nInheritableThreadLocal<String> ctx = new InheritableThreadLocal<>();\nctx.set(\"parent-value\");\nnew Thread(() -> log.info(\"자식이 본 값 {}\", ctx.get())).start();\n\n$ java -cp out:libs/* Inheritable\n02:42:30.104 [Thread-0] INFO  Inheritable - 자식이 본 값 parent-value\n\n$ java -cp out:libs/* Inheritable --with-pool\n02:42:32.204 [task-1] INFO  Inheritable - 자식이 본 값 처음-만들어질-때-값\n\n#   풀에서는 스레드가 만들어진 시점의 값이 박힌다\n#   3.3절의 데몬 상속과 같은 함정이다\n\n\n# --- 대신 명시적으로 넘긴다 ---\n\n$ cat ExplicitContext.java | grep -A4 'submit'\nCtx ctx = CTX.get();                     // 제출하는 쪽에서 꺼낸다\npool.submit(() -> {\n    try { CTX.set(ctx); process(); } finally { CTX.remove(); }\n});\n\n$ java -cp out:libs/* ExplicitContext --pool 4 --tasks 1000 --verify 2>/dev/null\n문맥이 어긋난 횟수 0 / 1000\n\n#   스프링의 TaskDecorator 가 이걸 해 준다\n\n$ cat MdcDecorator.java | grep -A6 'TaskDecorator'\nex.setTaskDecorator(runnable -> {\n    Map<String,String> ctx = MDC.getCopyOfContextMap();\n    return () -> {\n        if (ctx != null) MDC.setContextMap(ctx);\n        try { runnable.run(); } finally { MDC.clear(); }\n    };\n});\n\n$ java -jar app.jar --with-decorator 2>/dev/null | grep -oE '\\[t-[0-9]+\\]' | sort -u | wc -l\n      20\n$ java -jar app.jar --no-decorator 2>/dev/null | grep -c '\\[\\]'\n20\n\n#   3.6절의 MDC 가 비동기로 넘어간다\n\n\n# --- 검사한다 ---\n\n$ cat check-threadlocal.sh\n#!/bin/sh\n# ThreadLocal.set 이 있는데 remove 가 없는 파일을 찾는다\nfor f in $(grep -rl '\\.set(' src/main/java/ | xargs grep -l 'ThreadLocal'); do\n  grep -q '\\.remove()' \"$f\" || echo \"$f\"\ndone\n\n$ ./check-threadlocal.sh\nsrc/main/java/study/th/TenantContext.java\nsrc/main/java/study/th/AuditContext.java\n\n$ ./check-threadlocal.sh | wc -l\n       2\n$ ./check-threadlocal.sh | wc -l   # 고친 뒤\n       0\n\n#   4장부터 쌓아 온 스크립트에 하나가 더 붙는다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '사는 곳'         '스레드의 맵' \\\n  '키'              'ThreadLocal 객체' \\\n  '속도'            '41배' \\\n  '풀에서'          '498/500 이 남의 것을 봄' \\\n  '웹에서'          '헤더 없는 요청이 alice' \\\n  '고침'            'finally 에서 remove' \\\n  'set(null)'       '값은 안 새고 항목이 남음' \\\n  '메모리'          '풀 스레드 수명만큼' \\\n  '상속'            '풀에서는 생성 시점 값' \\\n  '넘기려면'        'TaskDecorator' \\\n  '검사'            'set 있고 remove 없는 파일'\n\n사는 곳                    스레드의 맵\n키                         ThreadLocal 객체\n속도                       41배\n풀에서                     498/500 이 남의 것을 봄\n웹에서                     헤더 없는 요청이 alice\n고침                       finally 에서 remove\nset(null)                  값은 안 새고 항목이 남음\n메모리                     풀 스레드 수명만큼\n상속                       풀에서는 생성 시점 값\n넘기려면                   TaskDecorator\n검사                       set 있고 remove 없는 파일",
+   "note": "**리플렉션으로 열면 `ThreadLocalMap` 이 스레드마다 하나씩 있고 `ThreadLocal` 은 그** 키다.\n\n**풀에서 안 지우면 사용자를 설정 안 한 작업이 498/500 에서 남의 사용자를** 본다.\n\n**웹에서 재현하면 헤더를 안 보낸 요청이 `alice` 로** 응답한다.\n\n**`set(null)` 은 값은 안 새게 하지만 맵 항목이 남아 `remove` 여야** 한다.\n\n**`InheritableThreadLocal` 은 풀에서 스레드가 만들어진 시점의 값이** 박힌다."
+  }
+ ],
+ "recap": [
+  "값은 스레드가 가진 맵에 들어가고 ThreadLocal 객체는 그 키다.",
+  "공유를 없애 아주 빠르지만 풀 스레드는 안 죽으므로 값이 다음 작업에 남는다.",
+  "웹에서는 그것이 남의 사용자 정보가 보이는 사고가 된다.",
+  "finally 에서 remove 로 지운다 — set(null) 은 항목을 남긴다.",
+  "비동기로 문맥을 넘기려면 제출 시점에 복사해 넘기는 장치를 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "풀에서 지우지 않고 값이 남는 것을 재현한다.",
+   "done_when": "횟수를 센다.",
+   "minutes": 15
+  },
+  {
+   "task": "웹 필터에서 같은 사고를 만들고 고친다.",
+   "done_when": "헤더 없는 요청의 응답을 확인한다.",
+   "minutes": 20
+  },
+  {
+   "task": "set(null) 과 remove 의 맵 항목 수를 비교한다.",
+   "done_when": "차이를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "remove 없는 파일을 찾는 스크립트를 만든다.",
+   "done_when": "실제로 몇 곳인지 센다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "값은 어디에 사나.",
+   "a": "각 스레드가 가진 맵이다. ThreadLocal 은 그 키다."
+  },
+  {
+   "q": "풀에서 왜 위험한가.",
+   "a": "스레드가 안 죽어 값이 다음 작업에 그대로 남는다."
+  },
+  {
+   "q": "set(null) 로 충분한가.",
+   "a": "값은 안 새지만 맵 항목이 남아 메모리 문제가 된다."
+  },
+  {
+   "q": "비동기로 문맥을 넘기려면.",
+   "a": "제출 시점에 복사해 작업 시작에 설정하고 끝에 지운다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ThreadLocalMap",
+   "what": "각 스레드가 가진, ThreadLocal 을 키로 하는 맵."
+  },
+  {
+   "term": "문맥 전파",
+   "what": "제출하는 스레드의 값을 실행 스레드로 복사해 넘기는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ThreadLocal",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ThreadLocal.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Logback — Mapped Diagnostic Context",
+   "url": "https://logback.qos.ch/manual/mdc.html",
+   "publisher": "QOS.ch"
+  },
+  {
+   "title": "JEP 446 — Scoped Values",
+   "url": "https://openjdk.org/jeps/446",
+   "publisher": "OpenJDK"
+  }
+ ]
+}
