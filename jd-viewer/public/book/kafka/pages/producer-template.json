@@ -1,0 +1,146 @@
+{
+ "book": "kafka",
+ "id": "producer-template",
+ "no": "9.2",
+ "chapter": 9,
+ "title": "KafkaTemplate",
+ "summary": "보내고 결과를 받는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "KafkaTemplate 의 사용법을 안다.",
+  "전송 결과를 다룬다.",
+  "트랜잭션과 연동한다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "OrderEventPublisher.java",
+   "caption": "기본 사용",
+   "code": "@Component\n@RequiredArgsConstructor\npublic class OrderEventPublisher {\n\n    private final KafkaTemplate<String, OrderPlaced> kafkaTemplate;\n\n    public void publish(OrderPlaced event) {\n        kafkaTemplate.send(\"order.placed.v1\", event.orderId().toString(), event)\n            .whenComplete((result, ex) -> {\n                if (ex != null) {\n                    log.error(\"publish failed orderId={}\", event.orderId(), ex);\n                    failures.increment();\n                    return;\n                }\n                var meta = result.getRecordMetadata();\n                log.debug(\"published to {}-{}@{}\",\n                    meta.topic(), meta.partition(), meta.offset());\n            });\n    }\n}",
+   "note": "`send()` 가 **`CompletableFuture`** 를 돌려준다(3.0+). **6.7절의 콜백과 같은 것**이다."
+  },
+  {
+   "type": "table",
+   "caption": "보내는 여러 형태",
+   "columns": [
+    "메서드",
+    "무엇"
+   ],
+   "rows": [
+    [
+     "`send(topic, value)`",
+     "키 없이"
+    ],
+    [
+     "**`send(topic, key, value)`**",
+     "**가장 흔하다**"
+    ],
+    [
+     "`send(topic, partition, key, value)`",
+     "파티션 지정(6.6절)"
+    ],
+    [
+     "**`send(ProducerRecord)`**",
+     "**헤더를 붙이려면**"
+    ],
+    [
+     "`send(Message<?>)`",
+     "스프링 메시징 추상화"
+    ],
+    [
+     "`sendDefault(...)`",
+     "`default-topic` 설정을 쓴다"
+    ],
+    [
+     "**`executeInTransaction(...)`**",
+     "트랜잭션(8.2절)"
+    ]
+   ],
+   "note": "**헤더를 붙이려면 `ProducerRecord` 나 `Message`** 를 쓴다 — **추적 ID·이벤트 타입**(4.3절)."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "결과를 안 받으면 fire-and-forget 이다",
+   "md": "```java\nkafkaTemplate.send(topic, key, value);     // 결과를 안 본다\n```\n\n> **6.7절의 fire-and-forget** 이다. **실패해도 아무 일도 안 일어난다.**\n\n**최소한 이렇게**:\n\n```java\nkafkaTemplate.send(topic, key, value)\n    .whenComplete((r, ex) -> { if (ex != null) failures.increment(); });\n```\n\n**동기로 기다려야 하면**:\n\n```java\ntry {\n    var result = kafkaTemplate.send(topic, key, value).get(5, TimeUnit.SECONDS);\n} catch (Exception e) {\n    throw new PublishFailedException(e);\n}\n```\n\n> **웹 요청 안에서 `get()` 을 부르면 6.8절의 문제**가 온다. **타임아웃을 반드시** 준다.\n> **정말 확실해야 하면 아웃박스**(8.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "스프링 트랜잭션과 묶기",
+   "md": "**8.5절에서 \"DB 와 카프카는 못 묶는다\" 고** 했다. **스프링이 주는 것은 두 가지**다.\n\n**① 카프카 트랜잭션**(카프카끼리)\n\n```yaml\nspring.kafka.producer.transaction-id-prefix: order-tx-\n```\n\n```java\n@Transactional(\"kafkaTransactionManager\")\npublic void publishBoth(OrderPlaced a, InventoryChanged b) {\n    kafkaTemplate.send(\"orders\", a.key(), a);\n    kafkaTemplate.send(\"inventory\", b.key(), b);\n}   // 둘 다 커밋되거나 둘 다 안 된다 (8.2절)\n```\n\n**② 커밋 후 발행**(DB 와 카프카)\n\n```java\n@TransactionalEventListener(phase = AFTER_COMMIT)\npublic void on(OrderPlacedDomainEvent e) {\n    kafkaTemplate.send(\"order.placed.v1\", e.orderId(), toEvent(e));\n}\n```\n\n> **②는 커밋 뒤 죽으면 유실**이다(8.5절의 표). **간단하지만 완전하지** 않다.\n> **`ChainedKafkaTransactionManager` 는 3.x 에서 폐기**됐다 — **2PC 가 아니었고 오해를 만들었다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "보내고 결과를 확인한다",
+   "sql": "# --- 애플리케이션에서 보낸다 ---\n\n$ curl -s -X POST localhost:8080/orders -H 'Content-Type: application/json' \\\n    -d '{\"memberId\":1,\"itemId\":7,\"count\":2}'\n{\"orderId\":1001}\n\n$ ./gradlew bootRun 2>&1 | grep 'published to'\nDEBUG o.a.OrderEventPublisher : published to order.placed.v1-2@0\n\n$ kcc --topic order.placed.v1 --from-beginning --timeout-ms 3000 \\\n    --property print.key=true --property print.partition=true\nPartition:2  1001  {\"orderId\":1001,\"memberId\":1,\"amount\":25000}\n\n#   RecordMetadata 의 파티션·오프셋과 CLI 가 일치한다 (6.1절)\n\n\n# --- 헤더를 붙인다 ---\n\n#   var record = new ProducerRecord<>(\"order.placed.v1\", null, key, event);\n#   record.headers().add(\"eventType\", \"OrderPlaced\".getBytes());\n#   record.headers().add(\"traceId\", traceId.getBytes());\n#   kafkaTemplate.send(record);\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C \\\n    -t order.placed.v1 -o -1 -c 1 -e -f 'headers=%h\\npayload=%s\\n' 2>/dev/null\nheaders=eventType=OrderPlaced,traceId=4f2a9c1e,__TypeId__=com.acme.events.OrderPlaced\npayload={\"orderId\":1001,\"memberId\":1,\"amount\":25000}\n\n#   __TypeId__ 는 JsonSerializer 가 붙인다 (9.6절)\n\n\n# --- 실패를 잡는다 ---\n\n$ docker compose stop kafka-1 kafka-2 kafka-3 >/dev/null && sleep 5\n$ curl -s -o /dev/null -w '%{http_code} %{time_total}s\\n' -X POST localhost:8080/orders \\\n    -H 'Content-Type: application/json' -d '{\"memberId\":1,\"itemId\":7,\"count\":2}'\n200 3.104s\n\n#   max.block.ms=3000 이라 3초 뒤 응답했다 (6.8절)\n#   200 인 것은 DB 저장은 됐고 발행만 실패했기 때문\n\n$ ./gradlew bootRun 2>&1 | grep 'publish failed'\nERROR o.a.OrderEventPublisher : publish failed orderId=1002\n  org.apache.kafka.common.errors.TimeoutException: Topic order.placed.v1 not present\n  in metadata after 3000 ms.\n\n$ curl -s localhost:8080/actuator/metrics/kafka.publish.failures | python3 -m json.tool | head -6\n{\n    \"name\": \"kafka.publish.failures\",\n    \"measurements\": [{\"statistic\": \"COUNT\", \"value\": 1.0}]\n}\n\n#   지표로 남았다. 알람을 걸 수 있다 (11.1절)\n\n$ docker compose start kafka-1 kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 카프카 트랜잭션 ---\n\n#   spring.kafka.producer.transaction-id-prefix: order-tx-\n\n$ curl -s -X POST localhost:8080/orders/with-inventory -H 'Content-Type: application/json' \\\n    -d '{\"memberId\":1,\"itemId\":7,\"count\":2,\"fail\":false}'\n{\"orderId\":1003}\n\n$ kcc --topic order.placed.v1 --timeout-ms 2000 --isolation-level read_committed | wc -l\n1\n$ kcc --topic inventory.changed.v1 --timeout-ms 2000 --isolation-level read_committed | wc -l\n1\n\n$ curl -s -X POST localhost:8080/orders/with-inventory -H 'Content-Type: application/json' \\\n    -d '{\"memberId\":1,\"itemId\":7,\"count\":2,\"fail\":true}'\n{\"error\":\"simulated\"}\n\n$ kcc --topic order.placed.v1 --timeout-ms 2000 --isolation-level read_committed | wc -l\n1\n$ kcc --topic inventory.changed.v1 --timeout-ms 2000 --isolation-level read_committed | wc -l\n1\n\n#   안 늘었다. 둘 다 어보트됐다 (8.2절)\n\n$ ./gradlew bootRun 2>&1 | grep -E 'transactional.id|Aborting'\n\ttransactional.id = order-tx-0\no.s.k.core.KafkaTemplate : Aborting transaction\n\n\n# --- 커밋 후 발행 ---\n\n#   @TransactionalEventListener(phase = AFTER_COMMIT)\n\n$ curl -s -X POST localhost:8080/orders/rollback-test -H 'Content-Type: application/json' \\\n    -d '{\"memberId\":1,\"fail\":true}'\n{\"error\":\"rolled back\"}\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from orders where member_id=1'\n3\n$ kcc --topic order.placed.v1 --from-beginning --timeout-ms 2000 | wc -l\n3\n\n#   롤백된 주문의 이벤트는 발행 안 됐다 (유령 이벤트 없음)\n#   대신 커밋 후 죽으면 유실이다 (8.5절)"
+  }
+ ],
+ "recap": [
+  "KafkaTemplate.send() 는 CompletableFuture 를 돌려준다. whenComplete 로 실패를 잡는다.",
+  "결과를 안 받으면 fire-and-forget 이다. 최소한 실패 지표를 남긴다.",
+  "헤더를 붙이려면 ProducerRecord 나 Message 를 쓴다.",
+  "transaction-id-prefix 를 주면 카프카끼리의 트랜잭션이 된다. DB 와는 못 묶는다.",
+  "@TransactionalEventListener(AFTER_COMMIT) 는 유령 이벤트를 없애지만 유실 창은 남는다."
+ ],
+ "drills": [
+  {
+   "task": "send() 결과에 whenComplete 를 달아 성공 시 파티션·오프셋을 로그로 찍는다.",
+   "done_when": "CLI 로 같은 위치를 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "브로커를 내린 채 요청을 보내 실패가 지표로 잡히는지 확인한다.",
+   "done_when": "actuator 메트릭이 오르는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "transaction-id-prefix 를 주고 두 토픽에 보내다 실패시켜 둘 다 안 보이는 것을 확인한다.",
+   "done_when": "read_committed 로 건수가 안 느는 것을 본다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "KafkaTemplate.send() 의 반환값은.",
+   "a": "CompletableFuture<SendResult>. whenComplete 나 get 으로 결과를 본다."
+  },
+  {
+   "q": "헤더를 붙이려면.",
+   "a": "ProducerRecord 를 직접 만들거나 Message 를 쓴다."
+  },
+  {
+   "q": "@TransactionalEventListener(AFTER_COMMIT) 의 한계는.",
+   "a": "DB 커밋 후 발행 전에 죽으면 이벤트가 유실된다. 아웃박스가 그 답이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "KafkaTemplate",
+   "what": "스프링의 카프카 전송 추상화."
+  },
+  {
+   "term": "transaction-id-prefix",
+   "what": "카프카 트랜잭션을 켜는 프로퍼티. 인스턴스마다 고유 ID 가 만들어진다."
+  },
+  {
+   "term": "@TransactionalEventListener",
+   "what": "트랜잭션 단계에 맞춰 도메인 이벤트를 처리하는 리스너."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring for Apache Kafka — Sending Messages",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/sending-messages.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring for Apache Kafka — Transactions",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/transactions.html",
+   "publisher": "Spring"
+  }
+ ]
+}

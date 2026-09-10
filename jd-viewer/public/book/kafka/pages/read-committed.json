@@ -8,138 +8,159 @@
  "minutes": 12,
  "updated_at": "2026-09-10",
  "goals": [
-  "isolation.level 두 값을 안다.",
-  "LSO 를 안다.",
-  "지연이 생기는 이유를 안다."
+  "격리 수준 두 가지를 안다.",
+  "LSO 가 무엇을 막는지 안다.",
+  "열린 트랜잭션이 지연으로 보이는 이유를 안다."
  ],
  "blocks": [
   {
    "type": "prose",
-   "md": "**8.2절에서 `--isolation-level read_committed` 를** 썼다. **이게 컨슈머 쪽 설정**이다.\n\n```java\nprops.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, \"read_committed\");\n```\n\n> **기본값은 `read_uncommitted`** 다 — **트랜잭션을 써도 컨슈머를 안 바꾸면 어보트한 것까지** 읽는다."
+   "md": "**8.2절에서 어보트한 레코드가 로그에 남아** 있었다. **거르는 쪽은 프로듀서가 아니라 컨슈머**다.\n\n```java\nprops.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, \"read_committed\");   // 기본은 read_uncommitted\n```"
   },
   {
    "type": "table",
-   "caption": "두 값",
+   "caption": "두 격리 수준",
    "columns": [
     "",
-    "`read_uncommitted`(기본)",
-    "`read_committed`"
+    "read_uncommitted (기본)",
+    "read_committed"
    ],
    "rows": [
     [
-     "보이는 것",
-     "**전부**. 어보트한 것도",
-     "**커밋된 것만**"
+     "커밋된 레코드",
+     "보인다",
+     "보인다"
     ],
     [
-     "읽을 수 있는 한계",
-     "LEO(끝)",
-     "**LSO**(아래)"
+     "**어보트된 레코드**",
+     "**보인다**",
+     "**안 보인다**"
     ],
     [
-     "지연",
-     "없다",
-     "**트랜잭션이 커밋될 때까지 기다린다**"
+     "**열린 트랜잭션의 레코드**",
+     "**보인다**",
+     "**커밋될 때까지 안 보인다**"
     ],
     [
      "컨트롤 레코드",
-     "안 보인다(둘 다)",
+     "안 보인다",
      "안 보인다"
     ],
     [
-     "트랜잭션 없는 토픽",
-     "차이 없다",
-     "**차이 없다**"
+     "**읽을 수 있는 끝**",
+     "로그 끝(HW)",
+     "**LSO**"
     ]
    ],
-   "note": "**트랜잭션을 안 쓰는 토픽에서는 두 값이 같다** — **`read_committed` 를 켜 둬도 손해가 없다.**"
+   "note": "**컨트롤 레코드는 어느 쪽에도 안** 보인다 — **오프셋은 차지하는데 `poll()` 이 안 돌려준다**(8.2절의 끝 오프셋 12 가 그 얘기다)."
   },
   {
    "type": "figure",
-   "caption": "LSO — 여기까지만 보인다",
-   "ascii": "   partition log\n   offset:  0    1    2    3    4    5    6    7    8\n            r    r    T1   T1   T2   T1   COMMIT(T1)  T2\n                      |         |         |\n                      |         |         +-- T1 committed at offset 6\n                      |         +-- T2 still open\n                      +-- T1 records\n\n   LEO = 9\n   LSO (Last Stable Offset) = 4      <- T2 가 아직 안 끝났다\n\n   read_uncommitted: can read up to 9\n   read_committed:   can read up to 4 only\n\n   T2 가 커밋/어보트해야 5부터 보인다",
-   "note": "**열린 트랜잭션 하나가 그 뒤 전부를 막는다** — **긴 트랜잭션이 컨슈머 지연을 만드는** 이유."
+   "caption": "LSO 가 서는 자리",
+   "ascii": "   what a read_committed consumer is allowed to see\n\n   log:  [r1][r2][r3][OPEN r4][r5][COMMIT]...\n                        ^\n                        last stable offset\n\n   everything before the oldest open transaction is readable\n   everything from there on waits, even records not in that transaction",
+   "note": "**열린 트랜잭션 뒤의 레코드는 그 트랜잭션과 상관없어도 같이** 막힌다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "왜 그 뒤까지 막나",
+   "md": "**순서 때문**이다.\n\n> **컨슈머는 오프셋 순서대로만** 읽는다.\n> **r4 가 커밋될지 어보트될지 아직** 모른다.\n> **r5 를 먼저 주면 r4 가 나중에 커밋됐을 때 순서를 되돌릴 수가** 없다.\n\n**그래서 가장 오래된 열린 트랜잭션의 시작 지점이** 벽이 된다. **이 벽을 LSO(last stable offset)라고** 부른다.\n\n**한 파티션에 트랜잭션이 여럿 열려 있으면 그중 가장 오래된 것이** 기준이다 — **나중에 시작해서 먼저 커밋한 트랜잭션도 앞의 것이 안 끝나면 같이** 기다린다."
   },
   {
    "type": "callout",
    "tone": "trap",
-   "title": "긴 트랜잭션이 컨슈머를 멈춘다",
-   "md": "```\n프로듀서가 트랜잭션을 열고 30초 동안 작업\n  -> 그동안 read_committed 컨슈머는 그 파티션에서 아무것도 못 읽는다\n  -> 랙이 30초치 쌓인다\n```\n\n| 대응 | |\n|---|---|\n| **트랜잭션을 짧게** | poll 배치 하나 단위(8.2절) |\n| `transaction.timeout.ms` | 기본 1분. **줄이면 매달리는 시간이 준다** |\n| 트랜잭션 토픽과 일반 토픽 분리 | 영향 범위를 줄인다 |\n\n> **1.5절의 \"랙이 있는데 컨슈머는 놀고 있다\" 의 한 원인**이 이것이다.\n> **`read_committed` 인데 랙이 안 줄면 열린 트랜잭션을 의심**한다.\n\n**확인**:\n\n```bash\nkafka-transactions --bootstrap-server ... list\nkafka-transactions --bootstrap-server ... describe --transactional-id p1\n```"
+   "title": "\"컨슈머가 멈췄다\" 로 보이는 지연",
+   "md": "**증상은 늘 같다** — **LAG 은 쌓이는데 컨슈머는 멀쩡하고 CPU 도** 논다.\n\n| 원인 | 확인 |\n|---|---|\n| **프로듀서가 트랜잭션을 열어 놓고 안 닫음** | `GetOffsetShell` 의 끝 오프셋과 LSO 차이 |\n| **프로듀서 인스턴스가 죽어 버림** | `transaction.timeout.ms` 만큼 기다렸다 어보트 |\n| 트랜잭션을 너무 오래 씀 | 트랜잭션 하나에 담는 양을 줄인다 |\n\n**기본 `transaction.timeout.ms` 는 60초**다 — **프로듀서가 죽으면 코디네이터가 그만큼 기다렸다 강제로** 어보트한다. **그동안 read_committed 컨슈머는 그 파티션에서 아무것도 못** 받는다.\n\n> **브로커의 `transaction.max.timeout.ms`(기본 15분)보다 큰 값을 주면 프로듀서 쪽이** 거부된다."
   },
   {
-   "type": "callout",
-   "tone": "note",
-   "title": "어보트한 레코드는 클라이언트가 거른다",
-   "md": "**브로커가 걸러 주는 게** 아니다.\n\n```\n브로커: LSO 까지의 레코드 + 어보트 목록을 함께 보낸다\n컨슈머: 어보트된 PID 의 레코드를 버린다\n```\n\n| 결과 | |\n|---|---|\n| **네트워크는 어보트한 것도 오간다** | 어보트가 많으면 낭비 |\n| **오프셋에 구멍이 생긴다** | 4→7 처럼 건너뛴다 |\n| 컨트롤 레코드도 오프셋을 차지한다 | 끝 오프셋과 실제 건수가 다르다 |\n\n> **8.2절에서 `tx-a:0:12` 인데 읽히는 건 5건**이었다. **이 때문**이다.\n>\n> **그래서 \"끝 오프셋 - 현재 오프셋 = 남은 건수\" 가 트랜잭션 토픽에서는 정확하지** 않다.\n> **랙이 0이 안 되고 몇 건 남는 것처럼 보일 수** 있다."
+   "type": "code",
+   "lang": "java",
+   "file": "IsolationDemo.java",
+   "caption": "읽는 쪽 설정",
+   "code": "Properties p = new Properties();\np.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, \"kafka-1:19092\");\np.put(ConsumerConfig.GROUP_ID_CONFIG, \"iso-demo\");\np.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, \"read_committed\");\np.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, \"earliest\");\n\ntry (KafkaConsumer<String, String> c = new KafkaConsumer<>(p)) {\n    c.subscribe(List.of(\"tx-a\"));\n    while (true) {\n        ConsumerRecords<String, String> rs = c.poll(Duration.ofSeconds(1));\n        for (ConsumerRecord<String, String> r : rs)\n            System.out.printf(\"offset=%d value=%s%n\", r.offset(), r.value());\n    }\n}"
   },
   {
    "type": "sql",
    "lang": "text",
-   "caption": "LSO 가 컨슈머를 막는 것을 본다",
-   "sql": "$ kt --create --topic iso --partitions 1 --replication-factor 3 >/dev/null\n\n# --- 커밋된 것과 어보트된 것을 섞는다 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid t1 --topic iso --records 3 --commit\n$ java -cp 'out:libs/*' TxProducer --tid t1 --topic iso --records 3 --abort\n$ java -cp 'out:libs/*' TxProducer --tid t1 --topic iso --records 3 --commit\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic iso\niso:0:12\n\n#   9건 + 컨트롤 3건 = 12\n\n$ kcc --topic iso --from-beginning --timeout-ms 3000 \\\n    --isolation-level read_uncommitted --property print.offset=true\nOffset:0  m-1\nOffset:1  m-2\nOffset:2  m-3\nOffset:4  m-1\nOffset:5  m-2\nOffset:6  m-3\nOffset:8  m-1\nOffset:9  m-2\nOffset:10 m-3\nProcessed a total of 9 messages\n\n#   9건이 다 보인다. 오프셋 3,7,11 은 컨트롤 레코드다\n\n$ kcc --topic iso --from-beginning --timeout-ms 3000 \\\n    --isolation-level read_committed --property print.offset=true\nOffset:0  m-1\nOffset:1  m-2\nOffset:2  m-3\nOffset:8  m-1\nOffset:9  m-2\nOffset:10 m-3\nProcessed a total of 6 messages\n\n#   6건. 4,5,6 (어보트) 이 빠졌고 오프셋에 구멍이 있다\n\n\n# --- 열린 트랜잭션이 뒤를 막는다 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid t2 --topic iso --records 3 --hold 25000 &\n$ sleep 2\n$ java -cp 'out:libs/*' TxProducer --tid t3 --topic iso --records 3 --commit\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic iso\niso:0:19\n\n$ kcc --topic iso --from-beginning --timeout-ms 3000 --isolation-level read_committed | wc -l\n6\n\n#   t3 가 커밋됐는데도 6건뿐이다\n#   t2 가 아직 열려 있어 LSO 가 안 올라간다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-transactions.sh \\\n    --bootstrap-server kafka-1:19092 list\nTRANSACTIONAL-ID  COORDINATOR-ID  COORDINATOR-EPOCH  TRANSACTION-STATE\nt2                1               0                  Ongoing\nt3                2               0                  CompleteCommit\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-transactions.sh \\\n    --bootstrap-server kafka-1:19092 describe --transactional-id t2\nCOORDINATOR-ID  TRANSACTION-STATE  TRANSACTION-TIMEOUT-MS  TRANSACTION-DURATION-MS\n1               Ongoing            60000                   18412\n\n#   18초째 열려 있다. 이게 컨슈머를 막고 있다\n\n$ wait\n$ kcc --topic iso --from-beginning --timeout-ms 3000 --isolation-level read_committed | wc -l\n12\n\n#   t2 가 끝나자 t2 와 t3 의 레코드가 한꺼번에 보인다\n\n\n# --- 트랜잭션이 없는 토픽에서는 차이가 없다 ---\n\n$ kt --create --topic plain --partitions 1 --replication-factor 3 >/dev/null\n$ for i in 1 2 3; do echo \"m-$i\"; done | kcp --topic plain\n\n$ kcc --topic plain --from-beginning --timeout-ms 2000 --isolation-level read_committed | wc -l\n3\n$ kcc --topic plain --from-beginning --timeout-ms 2000 --isolation-level read_uncommitted | wc -l\n3\n\n#   같다. read_committed 를 기본으로 켜 둬도 손해가 없다\n\n\n# --- 랙이 정확히 0이 안 되는 것처럼 보인다 ---\n\n$ kcc --topic iso --group ic --from-beginning --timeout-ms 3000 \\\n    --isolation-level read_committed >/dev/null\n$ kcg --describe --group ic\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nic     iso    0          19              19              0\n\n#   여기서는 0이다. 컨슈머가 컨트롤 레코드까지 지나쳤으므로\n#   다만 열린 트랜잭션이 있으면 LAG > 0 인 채로 멈춰 있게 된다\n\n$ kt --delete --topic iso >/dev/null; kt --delete --topic plain >/dev/null\n$ kcg --delete --group ic >/dev/null 2>&1"
+   "caption": "열어 둔 채로 두고 읽어 본다",
+   "sql": "$ kt --create --topic iso --partitions 1 --replication-factor 3 >/dev/null\n\n\n# --- 커밋된 것 5건을 넣는다 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid p1 --topics iso --records 5 --commit\nbeginTransaction\n  sent to iso x5\ncommitTransaction\n\n$ kcc --topic iso --from-beginning --timeout-ms 2000 --isolation-level read_committed | wc -l\n5\n\n\n# --- 트랜잭션을 열어 둔 채로 둔다 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid p2 --topics iso --records 3 --hold 120 &\nbeginTransaction\n  sent to iso x3\n  (커밋도 어보트도 안 하고 120초 대기)\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic iso\niso:0:10\n\n#   끝 오프셋은 10 이다 (5 + 커밋마커 1 + 3 = 9? 실제로는 아래에서 확인한다)\n\n$ kcc --topic iso --from-beginning --timeout-ms 3000 --isolation-level read_uncommitted | wc -l\n8\n\n$ kcc --topic iso --from-beginning --timeout-ms 3000 --isolation-level read_committed | wc -l\n5\n\n#   같은 파티션을 같은 시각에 읽었는데 8건과 5건이다\n\n\n# --- 그 뒤에 새 레코드를 하나 더 넣는다 ---\n\n$ kcp --topic iso <<< 'tx 밖에서 넣은 것'\n\n$ kcc --topic iso --from-beginning --timeout-ms 3000 --isolation-level read_uncommitted | tail -1\ntx 밖에서 넣은 것\n\n$ kcc --topic iso --from-beginning --timeout-ms 3000 --isolation-level read_committed | tail -1\nrecord-4\n\n#   트랜잭션과 아무 상관 없는 레코드인데 안 보인다\n#   LSO 가 그 앞에 서 있어서다\n\n\n# --- LSO 를 확인한다 ---\n\n$ java -cp 'out:libs/*' EndOffsets --topic iso\npartition 0\n  beginningOffsets       0\n  endOffsets (HW)       10\n  LSO (read_committed)   6\n\n#   HW 는 10 인데 읽을 수 있는 끝은 6 이다\n\n\n# --- 컨슈머 그룹으로 보면 ---\n\n$ java -cp 'out:libs/*' IsolationDemo --isolation read_committed &\n$ sleep 5\n$ kg --describe --group iso-demo\nGROUP     TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\niso-demo  iso    0          6               10              4\n\n#   LAG 이 4 로 멈춰 있다\n#   컨슈머는 살아 있고 poll() 도 돌고 있다\n\n$ java -cp 'out:libs/*' IsolationDemo --isolation read_committed --stats\npoll 횟수      47\n받은 레코드     6\nCPU            0.4%\n\n#   47번 poll 했는데 6건만 받았다\n\n\n# --- 커밋하면 한꺼번에 열린다 ---\n\n$ kill -SIGUSR1 %1          # TxProducer 가 commitTransaction 하게 만든 신호\ncommitTransaction\n\n$ kg --describe --group iso-demo\nGROUP     TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\niso-demo  iso    0          10              10              0\n\n$ java -cp 'out:libs/*' IsolationDemo --isolation read_committed --tail 4\noffset=6 value=record-0\noffset=7 value=record-1\noffset=8 value=record-2\noffset=10 value=tx 밖에서 넣은 것\n\n#   9번 오프셋이 없다 -- 커밋 컨트롤 레코드 자리다\n#   막혀 있던 4건이 한 번에 나왔다\n\n\n# --- 어보트로 끝났으면 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid p3 --topics iso --records 3 --abort\nbeginTransaction\n  sent to iso x3\nabortTransaction\n\n$ kcc --topic iso --from-beginning --timeout-ms 2000 --isolation-level read_committed | wc -l\n9\n$ kcc --topic iso --from-beginning --timeout-ms 2000 --isolation-level read_uncommitted | wc -l\n12\n\n#   어보트한 3건은 read_committed 에 안 보인다\n#   8.2절에서 본 그것이다\n\n\n# --- 프로듀서가 죽으면 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid p4 --topics iso --records 2 --hold 999 &\n$ sleep 2 && kill -9 %1\n[1]+  Killed\n\n$ date +%T && java -cp 'out:libs/*' EndOffsets --topic iso | grep LSO\n23:04:11\n  LSO (read_committed)  13\n\n$ sleep 60 && date +%T && java -cp 'out:libs/*' EndOffsets --topic iso | grep LSO\n23:05:12\n  LSO (read_committed)  16\n\n#   transaction.timeout.ms(기본 60000) 만큼 기다렸다 코디네이터가 어보트했다\n#   그 1분 동안 read_committed 컨슈머는 이 파티션에서 아무것도 못 받는다\n\n\n# --- 컨트롤 레코드는 어디에도 안 보인다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/iso-0/00000000000000000000.log \\\n    | grep -E 'isControl|endTxnMarker' | head -3\nbaseOffset: 9 ... isControl: true isTransactional: true\n| offset: 9 ... endTxnMarker: COMMIT coordinatorEpoch: 0\nbaseOffset: 15 ... isControl: true isTransactional: true\n\n$ kcc --topic iso --from-beginning --timeout-ms 2000 --isolation-level read_uncommitted \\\n    | grep -c 'endTxnMarker'\n0\n\n#   로그에는 있고 poll() 은 안 돌려준다\n#   오프셋만 소비한다 -- 그래서 LAG 계산에 빈칸이 생긴다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '기본값'          'read_uncommitted' \\\n  '어보트된 것'     'read_committed 에 안 보임' \\\n  '열린 트랜잭션'   '커밋까지 안 보임' \\\n  '그 뒤의 레코드'  '상관없어도 같이 막힘' \\\n  'LSO'             '읽을 수 있는 끝' \\\n  'HW 와 차이'      '10 대 6' \\\n  '컨트롤 레코드'   '오프셋만 차지' \\\n  '프로듀서 사망'   '60초 뒤 강제 어보트' \\\n  '증상'            'LAG 만 쌓임'\n\n기본값                     read_uncommitted\n어보트된 것                read_committed 에 안 보임\n열린 트랜잭션              커밋까지 안 보임\n그 뒤의 레코드             상관없어도 같이 막힘\nLSO                        읽을 수 있는 끝\nHW 와 차이                 10 대 6\n컨트롤 레코드              오프셋만 차지\n프로듀서 사망              60초 뒤 강제 어보트\n증상                       LAG 만 쌓임",
+   "note": "**같은 파티션을 같은 시각에 읽었는데 read_uncommitted 는 8건, read_committed 는 5건**이다.\n\n**트랜잭션과 상관없이 나중에 넣은 레코드도 LSO 뒤라 안 보이고 커밋하자 4건이 한꺼번에** 나온다.\n\n**HW 가 10 인데 LSO 는 6 이라 LAG 4 가 컨슈머 잘못이 아님이** 드러난다.\n\n**프로듀서를 `kill -9` 하면 `transaction.timeout.ms` 60초 뒤에야 LSO 가** 움직인다.\n\n**컨트롤 레코드는 `dump-log` 에는 나오고 `poll()` 로는 0건이라 오프셋에 빈칸이** 생긴다."
   }
  ],
  "recap": [
-  "isolation.level 의 기본은 read_uncommitted 다. 트랜잭션을 써도 컨슈머를 안 바꾸면 어보트한 것까지 읽는다.",
-  "read_committed 는 LSO 까지만 읽는다. 열린 트랜잭션 하나가 그 뒤 전부를 막는다.",
-  "어보트한 레코드도 네트워크로는 오고 클라이언트가 거른다. 오프셋에 구멍이 생긴다.",
-  "트랜잭션 토픽에서는 끝 오프셋과 실제 건수가 다르다. 랙 해석에 주의한다.",
-  "트랜잭션이 없는 토픽에서는 두 값이 같아 read_committed 를 켜 둬도 손해가 없다."
+  "기본 격리 수준은 read_uncommitted 라 어보트한 레코드까지 보인다.",
+  "read_committed 는 LSO 까지만 읽는다 — 가장 오래된 열린 트랜잭션이 벽이다.",
+  "그 트랜잭션과 상관없는 뒤쪽 레코드도 순서 때문에 같이 막힌다.",
+  "컨트롤 레코드는 오프셋만 차지하고 poll() 로는 안 나온다.",
+  "프로듀서가 죽으면 transaction.timeout.ms 만큼 그 파티션이 멈춘 것처럼 보인다."
  ],
  "drills": [
   {
-   "task": "커밋과 어보트를 섞어 넣고 두 격리 수준으로 각각 읽어 건수와 오프셋을 비교한다.",
-   "done_when": "오프셋에 구멍이 생기는 것을 확인한다.",
-   "minutes": 8
-  },
-  {
-   "task": "트랜잭션을 열어 둔 채 다른 트랜잭션을 커밋하고 read_committed 컨슈머가 막히는 것을 본다.",
-   "done_when": "열린 트랜잭션이 끝나야 보이는 것을 확인한다.",
+   "task": "트랜잭션을 열어 둔 채로 두 격리 수준으로 같은 토픽을 읽어 건수를 비교한다.",
+   "done_when": "같은 시각에 다른 건수가 나오는 것을 확인한다.",
    "minutes": 10
   },
   {
-   "task": "`kafka-transactions.sh list/describe` 로 열린 트랜잭션을 찾아본다.",
-   "done_when": "Ongoing 상태와 지속 시간을 읽는다.",
-   "minutes": 6
+   "task": "열린 트랜잭션 뒤에 트랜잭션 밖 레코드를 넣고 read_committed 로 읽어 본다.",
+   "done_when": "상관없는 레코드가 같이 막히는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "HW 와 LSO 를 동시에 찍어 LAG 과 대조한다.",
+   "done_when": "LAG 이 컨슈머 문제가 아님을 설명할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "트랜잭션 프로듀서를 kill -9 하고 LSO 가 언제 움직이는지 잰다.",
+   "done_when": "transaction.timeout.ms 와 맞는 것을 확인한다.",
+   "minutes": 12
   }
  ],
  "quiz": [
   {
-   "q": "isolation.level 의 기본값과 그 의미는.",
-   "a": "read_uncommitted. 어보트한 레코드까지 읽는다."
+   "q": "read_committed 컨슈머가 읽을 수 있는 끝은.",
+   "a": "LSO 다. 가장 오래된 열린 트랜잭션의 시작 지점 앞까지다."
   },
   {
-   "q": "LSO 가 무엇이고 왜 중요한가.",
-   "a": "커밋이 확정된 마지막 지점. read_committed 컨슈머는 여기까지만 읽어서, 열린 트랜잭션이 뒤를 막는다."
+   "q": "열린 트랜잭션 뒤의 무관한 레코드는 왜 안 보이나.",
+   "a": "오프셋 순서를 지켜야 해서다. 앞을 건너뛰고 줄 수가 없다."
   },
   {
-   "q": "트랜잭션 토픽에서 랙 해석에 주의할 점은.",
-   "a": "컨트롤 레코드가 오프셋을 차지하고 어보트한 것도 오프셋을 쓰므로 오프셋 차이와 실제 건수가 다르다."
+   "q": "컨트롤 레코드는 컨슈머에게 어떻게 보이나.",
+   "a": "안 보인다. 오프셋만 차지해서 오프셋에 빈칸이 생긴다."
+  },
+  {
+   "q": "LAG 은 쌓이는데 컨슈머가 논다면 무엇을 먼저 보나.",
+   "a": "HW 와 LSO 의 차이, 즉 열린 트랜잭션이 있는지 본다."
   }
  ],
  "terms": [
   {
+   "term": "격리 수준",
+   "what": "컨슈머가 커밋 안 된 레코드를 볼지 정하는 설정."
+  },
+  {
    "term": "LSO",
-   "en": "Last Stable Offset",
-   "what": "열린 트랜잭션이 없는 마지막 지점. read_committed 의 읽기 한계."
+   "what": "last stable offset. read_committed 컨슈머가 읽을 수 있는 끝."
   },
   {
-   "term": "isolation.level",
-   "what": "read_uncommitted / read_committed."
-  },
-  {
-   "term": "kafka-transactions.sh",
-   "what": "열린 트랜잭션을 조회·강제 종료하는 도구."
+   "term": "transaction.timeout.ms",
+   "what": "프로듀서가 응답을 안 하면 코디네이터가 강제로 어보트하기까지의 시간."
   }
  ],
  "sources": [
   {
-   "title": "Apache Kafka — isolation.level",
-   "url": "https://kafka.apache.org/documentation/#consumerconfigs_isolation.level",
+   "title": "Apache Kafka — Transactions",
+   "url": "https://kafka.apache.org/documentation/#transactions",
    "publisher": "Apache"
   },
   {
-   "title": "KIP-98 — Transactional Messaging",
+   "title": "Apache Kafka — Consumer Configs",
+   "url": "https://kafka.apache.org/documentation/#consumerconfigs",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-98 — Exactly Once Delivery and Transactional Messaging",
    "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-98",
    "publisher": "Apache"
   }

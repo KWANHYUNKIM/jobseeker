@@ -1,0 +1,147 @@
+{
+ "book": "kafka",
+ "id": "spring-kafka",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "spring-kafka 설정",
+ "summary": "프로퍼티가 곧 클라이언트 설정이다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "프로퍼티와 클라이언트 설정의 대응을 안다.",
+  "자동 구성이 무엇을 만드는지 안다.",
+  "설정이 안 먹을 때 확인법을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**「스프링 부트 — 핵심 원리와 활용」에서 본 자동 구성이 여기도** 있다.\n\n```gradle\nimplementation 'org.springframework.kafka:spring-kafka'\n```\n\n> **의존성 하나면 `KafkaTemplate` 과 리스너 컨테이너 팩토리가 만들어진다.**"
+  },
+  {
+   "type": "code",
+   "lang": "yaml",
+   "file": "application.yml",
+   "caption": "6~8장의 설정이 그대로 프로퍼티가 된다",
+   "code": "spring:\n  kafka:\n    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094\n\n    producer:\n      key-serializer: org.apache.kafka.common.serialization.StringSerializer\n      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer\n      acks: all                       # 6.3절\n      properties:\n        enable.idempotence: true      # 8.1절\n        max.block.ms: 3000            # 6.8절\n        delivery.timeout.ms: 15000    # 6.4절\n        linger.ms: 10                 # 6.5절\n        compression.type: lz4\n\n    consumer:\n      group-id: order-worker          # 7.2절\n      auto-offset-reset: earliest     # 7.1절\n      enable-auto-commit: false       # 7.4절\n      max-poll-records: 50            # 7.6절\n      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer\n      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer\n      properties:\n        isolation.level: read_committed          # 8.3절\n        spring.json.trusted.packages: 'com.acme.events'   # 9.6절\n        partition.assignment.strategy: >\n          org.apache.kafka.clients.consumer.CooperativeStickyAssignor    # 7.3절\n\n    listener:\n      ack-mode: MANUAL_IMMEDIATE      # 9.3절\n      concurrency: 3                  # 9.3절\n      observation-enabled: true       # 추적",
+   "note": "**`properties:` 아래는 카프카 클라이언트 설정 이름 그대로**다. **스프링이 이름을 안 바꿔 주는 것은 여기 적는다.**"
+  },
+  {
+   "type": "table",
+   "caption": "자동 구성이 만드는 빈",
+   "columns": [
+    "빈",
+    "무엇",
+    "바꾸려면"
+   ],
+   "rows": [
+    [
+     "`ProducerFactory`",
+     "프로듀서를 만든다",
+     "직접 정의하면 자동 구성이 물러난다"
+    ],
+    [
+     "**`KafkaTemplate`**",
+     "**전송용**",
+     "9.2절"
+    ],
+    [
+     "`ConsumerFactory`",
+     "컨슈머를 만든다",
+     ""
+    ],
+    [
+     "**`ConcurrentKafkaListenerContainerFactory`**",
+     "**`@KafkaListener` 가 쓴다**",
+     "9.3절"
+    ],
+    [
+     "`KafkaAdmin`",
+     "토픽 자동 생성",
+     "`NewTopic` 빈을 두면 만든다"
+    ],
+    [
+     "`DefaultErrorHandler`",
+     "에러 처리",
+     "9.4절"
+    ]
+   ],
+   "note": "**「스프링 부트」 6장의 자동 구성 규칙 그대로**다 — **내가 같은 타입 빈을 정의하면 그것이 이긴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "토픽을 애플리케이션이 만들게 하기",
+   "md": "```java\n@Bean\npublic KafkaAdmin.NewTopics topics() {\n    return new KafkaAdmin.NewTopics(\n        TopicBuilder.name(\"order.placed.v1\")\n            .partitions(6)\n            .replicas(3)\n            .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, \"2\")\n            .config(TopicConfig.RETENTION_MS_CONFIG, \"604800000\")\n            .build(),\n        TopicBuilder.name(\"order.placed.v1.DLT\").partitions(6).replicas(3).build()\n    );\n}\n```\n\n| 좋은 점 | 주의 |\n|---|---|\n| 설정이 코드에 남는다 | **파티션은 늘어나기만 한다**(4.6절) |\n| 로컬·테스트가 편하다 | **운영에서는 권한을 안 주는 곳이 많다** |\n| DLT 를 잊지 않는다 | 이미 있으면 **설정 변경은 안 된다** |\n\n> **운영에서는 대개 인프라 팀이 토픽을 만든다.** **그래도 이 빈을 두면 로컬·CI 가 편하다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "적용된 설정을 확인한다",
+   "sql": "# --- 애플리케이션을 띄우면 로그에 전체 설정이 찍힌다 ---\n\n$ ./gradlew bootRun 2>&1 | grep -A6 'ProducerConfig values'\nProducerConfig values:\n\tacks = -1\n\tbatch.size = 16384\n\tbootstrap.servers = [localhost:9092, localhost:9093, localhost:9094]\n\tcompression.type = lz4\n\tdelivery.timeout.ms = 15000\n\tenable.idempotence = true\n\n$ ./gradlew bootRun 2>&1 | grep -A8 'ConsumerConfig values'\nConsumerConfig values:\n\tauto.commit.interval.ms = 5000\n\tauto.offset.reset = earliest\n\tenable.auto.commit = false\n\tgroup.id = order-worker\n\tisolation.level = read_committed\n\tmax.poll.records = 50\n\tpartition.assignment.strategy = [org.apache...CooperativeStickyAssignor]\n\n#   6.1절에서 본 그 로그다\n#   \"설정을 줬는데 안 먹는다\" 싶으면 여기부터 본다\n\n\n# --- properties 아래가 아니면 안 먹는 경우 ---\n\n#   spring:\n#     kafka:\n#       consumer:\n#         max-poll-interval-ms: 60000     <- 이런 프로퍼티는 없다\n#\n#   -> 조용히 무시된다. 로그에는 기본값 300000 이 찍힌다\n#\n#   spring:\n#     kafka:\n#       consumer:\n#         properties:\n#           max.poll.interval.ms: 60000   <- 이렇게 써야 한다\n\n$ ./gradlew bootRun 2>&1 | grep 'max.poll.interval.ms'\n\tmax.poll.interval.ms = 60000\n\n\n# --- 리스너 컨테이너가 만든 컨슈머 ---\n\n$ ./gradlew bootRun 2>&1 | grep -E 'Subscribed to topic|partitions assigned'\no.a.k.c.c.internals.ConsumerCoordinator : [Consumer clientId=consumer-order-worker-1,\n  groupId=order-worker] Subscribed to topic(s): order.placed.v1\no.s.k.l.KafkaMessageListenerContainer : order-worker: partitions assigned:\n  [order.placed.v1-0, order.placed.v1-1]\n\n#   concurrency: 3 이면 컨슈머가 셋 만들어진다\n$ ./gradlew bootRun 2>&1 | grep -c 'partitions assigned'\n3\n\n\n# --- 토픽 자동 생성 ---\n\n$ kt --list | grep order\n(비어 있음)\n\n$ ./gradlew bootRun &\n$ sleep 15\n$ kt --list | grep order\norder.placed.v1\norder.placed.v1.DLT\n\n$ kt --describe --topic order.placed.v1 | head -2\nTopic: order.placed.v1  PartitionCount: 6  ReplicationFactor: 3\n  Configs: min.insync.replicas=2,retention.ms=604800000\n\n#   NewTopics 빈이 만들었다\n\n\n# --- 이미 있는 토픽의 설정은 안 바꾼다 ---\n\n$ kt --alter --topic order.placed.v1 --partitions 12\n$ pkill -f bootRun; ./gradlew bootRun & sleep 15\n$ kt --describe --topic order.placed.v1 | head -1\nTopic: order.placed.v1  PartitionCount: 12  ReplicationFactor: 3\n\n#   12 그대로다. 애플리케이션이 6으로 되돌리지 않는다\n#   (늘리는 것은 하지만 줄이지는 못한다 -- 4.6절)\n\n$ pkill -f bootRun"
+  }
+ ],
+ "recap": [
+  "spring-kafka 의존성 하나로 KafkaTemplate 과 리스너 컨테이너 팩토리가 자동 구성된다.",
+  "스프링이 이름을 매핑해 주지 않는 설정은 properties: 아래에 카프카 이름 그대로 적는다.",
+  "오타 난 프로퍼티는 조용히 무시된다. 기동 로그의 ProducerConfig/ConsumerConfig 를 확인한다.",
+  "NewTopics 빈으로 토픽을 만들 수 있다. 이미 있으면 설정을 바꾸지는 않는다.",
+  "6~8장의 설정이 그대로 프로퍼티가 된다. 새로 외울 것이 적다."
+ ],
+ "drills": [
+  {
+   "task": "application.yml 에 설정을 넣고 기동 로그의 ProducerConfig/ConsumerConfig 와 대조한다.",
+   "done_when": "내가 준 값이 반영됐는지 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "일부러 없는 프로퍼티 이름을 넣고 조용히 무시되는 것을 확인한다.",
+   "done_when": "로그에 기본값이 찍히는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "NewTopics 빈으로 토픽과 DLT 를 만들어 본다.",
+   "done_when": "describe 로 파티션·설정을 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스프링이 이름을 매핑 안 해 주는 카프카 설정은 어디에 적나.",
+   "a": "spring.kafka.{producer,consumer}.properties 아래에 카프카 이름 그대로."
+  },
+  {
+   "q": "프로퍼티 이름을 틀리면 어떻게 되나.",
+   "a": "조용히 무시된다. 기동 로그의 Config values 로 확인해야 한다."
+  },
+  {
+   "q": "NewTopics 빈이 이미 있는 토픽에 하는 일은.",
+   "a": "파티션을 늘리는 것은 하지만 다른 설정을 바꾸거나 파티션을 줄이지는 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "spring-kafka",
+   "what": "스프링의 카프카 통합 모듈."
+  },
+  {
+   "term": "ConsumerFactory / ProducerFactory",
+   "what": "클라이언트를 만드는 팩토리 빈."
+  },
+  {
+   "term": "KafkaAdmin",
+   "what": "토픽 생성·조회를 담당하는 빈."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring for Apache Kafka — Reference",
+   "url": "https://docs.spring.io/spring-kafka/reference/",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring Boot — Kafka properties",
+   "url": "https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.integration",
+   "publisher": "Spring"
+  }
+ ]
+}

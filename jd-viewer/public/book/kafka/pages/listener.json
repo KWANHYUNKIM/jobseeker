@@ -1,0 +1,137 @@
+{
+ "book": "kafka",
+ "id": "listener",
+ "no": "9.3",
+ "chapter": 9,
+ "title": "@KafkaListener",
+ "summary": "컨슈머 루프를 대신 돌려 준다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "리스너의 기본 모양을 안다.",
+  "concurrency 와 파티션의 관계를 안다.",
+  "ack 모드를 고른다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "OrderListener.java",
+   "caption": "여러 모양",
+   "code": "@Component\npublic class OrderListener {\n\n    // 1) 값만\n    @KafkaListener(topics = \"order.placed.v1\", groupId = \"inventory\")\n    public void handle(OrderPlaced event) {\n        inventoryService.decrease(event);\n    }\n\n    // 2) 레코드 전체 (파티션·오프셋·헤더가 필요할 때)\n    @KafkaListener(topics = \"order.placed.v1\", groupId = \"audit\")\n    public void handleRecord(ConsumerRecord<String, OrderPlaced> record) {\n        log.info(\"{}-{}@{}\", record.topic(), record.partition(), record.offset());\n    }\n\n    // 3) 애너테이션으로 꺼내기\n    @KafkaListener(topics = \"order.placed.v1\", groupId = \"mail\")\n    public void handleWithHeaders(\n            @Payload OrderPlaced event,\n            @Header(KafkaHeaders.RECEIVED_KEY) String key,\n            @Header(name = \"traceId\", required = false) String traceId) {\n        mailService.send(event, traceId);\n    }\n\n    // 4) 수동 커밋 (7.4절)\n    @KafkaListener(topics = \"order.placed.v1\", groupId = \"settle\")\n    public void handleManual(OrderPlaced event, Acknowledgment ack) {\n        settle(event);\n        ack.acknowledge();\n    }\n\n    // 5) 배치로 받기\n    @KafkaListener(topics = \"order.placed.v1\", groupId = \"bulk\",\n                   containerFactory = \"batchFactory\")\n    public void handleBatch(List<OrderPlaced> events, Acknowledgment ack) {\n        repository.saveAll(events);      // 배치 INSERT\n        ack.acknowledge();\n    }\n}"
+  },
+  {
+   "type": "table",
+   "caption": "ack 모드",
+   "columns": [
+    "`ack-mode`",
+    "언제 커밋"
+   ],
+   "rows": [
+    [
+     "`RECORD`",
+     "**레코드 하나 처리할 때마다**. 안전하지만 느리다"
+    ],
+    [
+     "**`BATCH`**(기본)",
+     "**poll 배치를 다 처리하고**"
+    ],
+    [
+     "`TIME` / `COUNT`",
+     "시간·건수마다"
+    ],
+    [
+     "**`MANUAL`**",
+     "`ack.acknowledge()` 를 호출. **배치 끝에 커밋**"
+    ],
+    [
+     "**`MANUAL_IMMEDIATE`**",
+     "`acknowledge()` 즉시 커밋"
+    ]
+   ],
+   "note": "**리스너에서 예외가 나면 커밋을 안 한다** — **그래서 기본값 `BATCH` 로도 유실이** 없다(7.4절과 다른 점)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "concurrency 는 파티션을 나눈다",
+   "md": "```yaml\nspring.kafka.listener.concurrency: 3\n```\n\n```java\n@KafkaListener(topics = \"orders\", concurrency = \"3\")\n```\n\n> **컨슈머 인스턴스를 3개 만들어 한 JVM 안에서** 돌린다.\n> **각각 자기 스레드에서 poll 루프를** 돈다(7.1절의 규칙을 지킨다).\n\n| 관계 | 결과 |\n|---|---|\n| concurrency ≤ 파티션 | 나눠 맡는다 |\n| **concurrency > 파티션** | **남는 컨슈머는 논다**(7.2절) |\n| 인스턴스 2개 × concurrency 3 | **그룹 안에 컨슈머 6개** |\n\n**한 파티션 안의 순서는 지켜진다** — **같은 스레드가 순서대로** 처리한다(4.5절).\n\n> **`@Async` 나 스레드 풀을 리스너 안에서 쓰면 그 순서가** 깨진다.\n> **병렬성이 더 필요하면 파티션을 늘린다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "리스너 컨테이너가 감추는 것들",
+   "md": "| 감추는 것 | 실제 |\n|---|---|\n| poll 루프 | 컨테이너가 돈다 |\n| 커밋 | ack-mode 대로 |\n| **예외** | **DefaultErrorHandler 가 잡는다**(9.4절) |\n| 리밸런스 리스너 | `ConsumerAwareRebalanceListener` 로 붙일 수 있다 |\n| **역직렬화 실패** | **ErrorHandlingDeserializer 가 필요**(9.6절) |\n| 종료 | `stop()` 시 정상 종료 |\n\n**컨테이너를 직접 다뤄야 할 때**:\n\n```java\n@Autowired KafkaListenerEndpointRegistry registry;\n\nvoid pause() { registry.getListenerContainer(\"orderListener\").pause(); }\nvoid resume() { registry.getListenerContainer(\"orderListener\").resume(); }\n```\n\n> **`@KafkaListener(id = \"orderListener\")`** 로 이름을 주면 찾을 수 있다.\n> **점검 중 소비를 멈추거나, 랙을 일부러 쌓아 두거나 할 때** 쓴다(7.6절의 pause/resume 을 대신 해 준다)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "리스너가 만드는 컨슈머를 확인한다",
+   "sql": "# --- concurrency 3 ---\n\n$ kt --create --topic orders --partitions 6 --replication-factor 3 >/dev/null\n$ ./gradlew bootRun & sleep 15\n\n$ kcg --describe --group inventory --members\nGROUP      CONSUMER-ID                          CLIENT-ID              #PARTITIONS\ninventory  consumer-inventory-1-...             consumer-inventory-1   2\ninventory  consumer-inventory-2-...             consumer-inventory-2   2\ninventory  consumer-inventory-3-...             consumer-inventory-3   2\n\n#   한 JVM 인데 컨슈머가 셋이다\n\n$ jcmd $(pgrep -f bootRun) Thread.print | grep -c 'org.springframework.kafka.KafkaListenerEndpointContainer'\n3\n\n#   스레드도 셋\n\n\n# --- 파티션보다 많으면 논다 ---\n\n$ kt --create --topic small --partitions 2 --replication-factor 3 >/dev/null\n#   @KafkaListener(topics = \"small\", concurrency = \"5\")\n\n$ kcg --describe --group small-group --members\nGROUP        CONSUMER-ID  CLIENT-ID              #PARTITIONS\nsmall-group  ...          consumer-small-1       1\nsmall-group  ...          consumer-small-2       1\nsmall-group  ...          consumer-small-3       0\nsmall-group  ...          consumer-small-4       0\nsmall-group  ...          consumer-small-5       0\n\n#   7.2절 그대로다\n\n\n# --- 순서: 한 파티션은 한 스레드가 ---\n\n$ kcp --topic orders --property parse.key=true --property key.separator='|' <<'EOF'\norder-1|{\"orderId\":1,\"step\":\"PLACED\"}\norder-1|{\"orderId\":1,\"step\":\"PAID\"}\norder-1|{\"orderId\":1,\"step\":\"SHIPPED\"}\nEOF\n\n$ ./gradlew bootRun 2>&1 | grep 'handling order-1'\n[consumer-inventory-2] handling order-1 step=PLACED\n[consumer-inventory-2] handling order-1 step=PAID\n[consumer-inventory-2] handling order-1 step=SHIPPED\n\n#   같은 스레드가 순서대로 처리했다\n\n\n# --- 리스너 안에서 스레드 풀을 쓰면 순서가 깨진다 ---\n\n#   @KafkaListener(...)\n#   public void handle(OrderPlaced e) {\n#       executor.submit(() -> process(e));    // 이러면 안 된다\n#   }\n\n$ ./gradlew bootRun 2>&1 | grep 'async handling order-1'\n[pool-2-thread-3] async handling order-1 step=PAID\n[pool-2-thread-1] async handling order-1 step=PLACED\n[pool-2-thread-5] async handling order-1 step=SHIPPED\n\n#   순서가 뒤집혔다 (4.5절)\n\n\n# --- 예외가 나면 커밋을 안 한다 ---\n\n$ kcg --describe --group settle | awk 'NR>1 {print $6}' | paste -sd' '\n0 0 0 0 0 0\n\n$ curl -s -X POST localhost:8080/simulate-failure -d 'topic=orders&count=5'\n$ sleep 3\n$ kcg --describe --group settle | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 5\n\n#   랙이 남았다. 커밋이 안 됐다\n#   기본 에러 핸들러가 재시도하고 있다 (9.4절)\n\n\n# --- 컨테이너를 멈추고 재개한다 ---\n\n$ curl -s -X POST localhost:8080/admin/kafka/pause/orderListener\n{\"paused\":true}\n\n$ for i in $(seq 1 100); do echo \"{\\\"orderId\\\":$i}\"; done | kcp --topic orders\n$ sleep 3\n$ kcg --describe --group inventory | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 100\n\n#   랙이 쌓인다. 컨슈머는 살아 있지만 안 가져온다\n\n$ curl -s -X POST localhost:8080/admin/kafka/resume/orderListener\n{\"paused\":false}\n$ sleep 3\n$ kcg --describe --group inventory | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 0\n\n#   리밸런싱 없이 멈췄다 재개했다 (7.6절의 pause/resume)\n\n$ pkill -f bootRun"
+  }
+ ],
+ "recap": [
+  "@KafkaListener 는 poll 루프·커밋·예외 처리를 대신 해 준다.",
+  "값·ConsumerRecord·@Header·Acknowledgment·List 등 여러 시그니처를 받는다.",
+  "concurrency 는 한 JVM 안에 컨슈머를 여러 개 만든다. 파티션보다 많으면 논다.",
+  "한 파티션은 한 스레드가 순서대로 처리한다. 리스너 안에서 스레드 풀을 쓰면 그 순서가 깨진다.",
+  "리스너에서 예외가 나면 커밋을 안 한다. 컨테이너는 registry 로 pause/resume 할 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "concurrency 를 3으로 주고 --members 로 컨슈머가 셋 생기는 것을 확인한다.",
+   "done_when": "한 JVM 인데 그룹 멤버가 셋인 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "같은 키로 세 이벤트를 넣고 같은 스레드가 순서대로 처리하는지 로그로 확인한다.",
+   "done_when": "스레드 이름이 같고 순서가 맞는 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "컨테이너를 pause 했다 resume 하며 랙이 쌓였다 줄어드는 것을 확인한다.",
+   "done_when": "리밸런싱 없이 되는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "concurrency 5 인데 파티션이 2면.",
+   "a": "컨슈머 3개는 아무 파티션도 못 받고 논다."
+  },
+  {
+   "q": "리스너 안에서 스레드 풀에 던지면 무엇이 깨지나.",
+   "a": "한 파티션 안의 처리 순서. 그리고 예외 기반 재처리도 안 먹는다."
+  },
+  {
+   "q": "@KafkaListener 에서 예외가 나면 커밋되나.",
+   "a": "안 된다. 에러 핸들러가 재시도하고 최종 실패 시 정책에 따른다(9.4절)."
+  }
+ ],
+ "terms": [
+  {
+   "term": "@KafkaListener",
+   "what": "메서드를 카프카 리스너로 만드는 애너테이션."
+  },
+  {
+   "term": "concurrency",
+   "what": "한 리스너가 만들 컨슈머(스레드) 수."
+  },
+  {
+   "term": "Acknowledgment",
+   "what": "수동 커밋용 객체. ack-mode 가 MANUAL 계열일 때 주입된다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring for Apache Kafka — Receiving Messages",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/receiving-messages.html",
+   "publisher": "Spring"
+  },
+  {
+   "title": "Spring for Apache Kafka — Container properties",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/container-props.html",
+   "publisher": "Spring"
+  }
+ ]
+}
