@@ -543,7 +543,7 @@
           "title": "순서",
           "summary": "여럿이 걸리면 누가 먼저.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -551,7 +551,7 @@
           "title": "전체 흐름",
           "summary": "기동부터 호출까지.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",
