@@ -1,0 +1,140 @@
+{
+ "book": "kafka",
+ "id": "batching",
+ "no": "6.5",
+ "chapter": 6,
+ "title": "처리량 대 지연",
+ "summary": "linger.ms 와 batch.size.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "배치 설정 셋을 안다.",
+  "압축의 효과를 안다.",
+  "무엇을 조절할지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.2절에서 `linger.ms` 하나로 처리량이 2.4배**가 됐다. **그 맞바꿈을 정리**한다."
+  },
+  {
+   "type": "table",
+   "caption": "배치 관련 설정",
+   "columns": [
+    "설정",
+    "기본",
+    "올리면"
+   ],
+   "rows": [
+    [
+     "**`batch.size`**",
+     "**16KB**",
+     "한 배치에 더 많이 담는다. **넘으면 즉시 전송**"
+    ],
+    [
+     "**`linger.ms`**",
+     "**0**",
+     "**배치가 안 차도 이만큼 기다린다.** 처리량↑ 지연↑"
+    ],
+    [
+     "`buffer.memory`",
+     "32MB",
+     "버퍼 총량. 넘으면 `max.block.ms` 만큼 막힌다"
+    ],
+    [
+     "**`compression.type`**",
+     "none",
+     "`lz4`/`zstd`/`snappy`/`gzip`"
+    ],
+    [
+     "`max.request.size`",
+     "1MB",
+     "한 요청의 상한(4.3절)"
+    ]
+   ],
+   "note": "**`batch.size` 는 상한이고 `linger.ms` 는 하한**이다 — **둘 중 먼저 오는 쪽에 전송**한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "linger.ms 는 '일부러 기다리는' 시간이다",
+   "md": "**`linger.ms=0` 이어도 배치는** 된다(6.2절). **앞 요청이 나가 있는 동안 쌓인 것이 다음 배치**다.\n\n```\nlinger.ms=0,  부하 낮음  -> 배치 1~2건.  요청이 잦다\nlinger.ms=0,  부하 높음  -> 배치 자연스럽게 커진다\nlinger.ms=20, 부하 낮음  -> 20ms 모아서 한 번에\n```\n\n| 언제 올리나 | |\n|---|---|\n| **처리량이 목표** | 로그·이벤트 대량 수집 |\n| **네트워크 왕복이 비싸다** | 다른 리전·클라우드 |\n| **압축을 쓴다** | 배치가 커야 압축률이 좋다 |\n\n| 언제 0으로 두나 | |\n|---|---|\n| **사용자 요청 경로** | 몇 ms 도 아깝다 |\n| 이미 부하가 높다 | 자연 배치로 충분하다 |\n\n> **5~20ms 가 흔한 절충**이다. **100ms 를 넘기면 대개 과하다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "압축은 배치 단위로 걸린다",
+   "md": "**레코드 하나씩이 아니라 배치를 통째로** 압축한다.\n\n| 코덱 | 압축률 | CPU | 비고 |\n|---|---|---|---|\n| `none` | — | — | 기본 |\n| **`lz4`** | 중간 | **낮다** | **가장 무난한 기본 선택** |\n| **`zstd`** | **높다** | 중간 | 네트워크가 비싸면. 2.1+ |\n| `snappy` | 중간 | 낮다 | lz4 와 비슷 |\n| `gzip` | 높다 | **높다** | CPU 를 많이 먹는다 |\n\n**중요한 성질**:\n\n> **브로커는 압축을 풀지 않는다**(`compression.type=producer` 가 토픽 기본값).\n> **디스크에도 압축된 채로 저장되고 컨슈머가 푼다.**\n> **그래서 네트워크·디스크·페이지 캐시가 모두 절약**된다.\n\n**다만 토픽에 다른 코덱을 지정하면 브로커가 다시 압축**한다 — **CPU 를 먹으므로 대개 `producer` 로** 둔다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "설정을 바꿔 가며 잰다",
+   "sql": "$ kt --create --topic bat --partitions 6 --replication-factor 3 >/dev/null\n\n# --- linger.ms 를 바꿔 가며 ---\n\n$ for l in 0 5 20 100; do\n>   printf 'linger=%-4s ' \"$l\"\n>   docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n>     --topic bat --num-records 300000 --record-size 300 --throughput -1 \\\n>     --producer-props bootstrap.servers=kafka-1:19092 acks=1 linger.ms=$l \\\n>     | tail -1 | sed 's/records sent, //' | cut -d, -f1,3,5\n> done\nlinger=0     92592.6 records/sec  12.41 ms avg latency  89 ms 99th\nlinger=5    148514.9 records/sec   9.87 ms avg latency  47 ms 99th\nlinger=20   184331.8 records/sec  14.02 ms avg latency  52 ms 99th\nlinger=100  191204.6 records/sec  61.88 ms avg latency 214 ms 99th\n\n#   5 -> 20 까지는 처리량이 늘고 지연도 나쁘지 않다\n#   100 은 처리량이 거의 안 늘고 지연만 4배가 됐다\n#   5~20 이 흔한 절충인 이유\n\n\n# --- batch.size 를 바꿔 가며 ---\n\n$ for b in 4096 16384 65536 262144; do\n>   printf 'batch=%-7s ' \"$b\"\n>   docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n>     --topic bat --num-records 300000 --record-size 300 --throughput -1 \\\n>     --producer-props bootstrap.servers=kafka-1:19092 acks=1 linger.ms=10 batch.size=$b \\\n>     | tail -1 | cut -d, -f2,4\n> done\nbatch=4096     121457.3 records/sec  8.12 ms avg latency\nbatch=16384    172413.8 records/sec  9.44 ms avg latency\nbatch=65536    198412.7 records/sec 11.02 ms avg latency\nbatch=262144   201207.2 records/sec 12.88 ms avg latency\n\n#   64KB 까지는 효과가 있고 그 뒤로는 거의 평평하다\n\n\n# --- 압축 ---\n\n$ for c in none lz4 zstd gzip; do\n>   printf 'compression=%-5s ' \"$c\"\n>   docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n>     --topic bat --num-records 300000 --record-size 500 --throughput -1 \\\n>     --producer-props bootstrap.servers=kafka-1:19092 acks=1 linger.ms=10 \\\n>       compression.type=$c | tail -1 | cut -d, -f1,2\n> done\ncompression=none  300000 records sent  178571.4 records/sec (85.14 MB/sec)\ncompression=lz4   300000 records sent  208333.3 records/sec (99.32 MB/sec)\ncompression=zstd  300000 records sent  192307.7 records/sec (91.68 MB/sec)\ncompression=gzip  300000 records sent   87719.3 records/sec (41.82 MB/sec)\n\n#   lz4 가 압축 안 한 것보다 빠르다 -- 네트워크가 병목이었기 때문\n#   gzip 은 CPU 를 먹어 절반으로 떨어졌다\n\n\n# --- 디스크에 압축된 채로 저장된다 ---\n\n$ kt --create --topic craw --partitions 1 --replication-factor 1 >/dev/null\n$ kt --create --topic clz4 --partitions 1 --replication-factor 1 >/dev/null\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n    --topic craw --num-records 100000 --record-size 500 --throughput -1 \\\n    --producer-props bootstrap.servers=kafka-1:19092 compression.type=none >/dev/null\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n    --topic clz4 --num-records 100000 --record-size 500 --throughput -1 \\\n    --producer-props bootstrap.servers=kafka-1:19092 compression.type=lz4 >/dev/null\n\n$ docker compose exec -T kafka-1 du -sh /var/lib/kafka/data/craw-0 /var/lib/kafka/data/clz4-0\n49M\t/var/lib/kafka/data/craw-0\n2.1M\t/var/lib/kafka/data/clz4-0\n\n#   49MB -> 2.1MB. perf-test 데이터가 반복 패턴이라 압축률이 특히 좋다\n#   브로커가 안 풀고 그대로 저장했다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/clz4-0/00000000000000000000.log 2>/dev/null | \\\n    grep -o 'compresscodec: [a-z0-9]*' | sort | uniq -c\n 674 compresscodec: lz4\n\n#   배치마다 lz4 로 표시돼 있다\n\n\n# --- 버퍼가 차면 앱 스레드가 막힌다 ---\n\n$ java -cp 'out:libs/*' SlowBrokerProducer --buffer-memory 1048576 --records 100000\n[main] send() blocked for 60000 ms\nException in thread \"main\" org.apache.kafka.common.errors.TimeoutException:\n  Expiring ... / buffer memory\n\n#   buffer.memory 1MB 에 100000건을 밀어 넣으니 앱 스레드가 막혔다\n#   max.block.ms 를 넘기면 예외다 (6.8절)\n\n$ for t in bat craw clz4; do kt --delete --topic $t >/dev/null; done"
+  }
+ ],
+ "recap": [
+  "batch.size 는 상한, linger.ms 는 하한이다. 먼저 오는 쪽에 전송한다.",
+  "linger.ms 는 5~20ms 가 흔한 절충이다. 100ms 를 넘기면 처리량은 거의 안 늘고 지연만 는다.",
+  "batch.size 는 64KB 정도까지 효과가 있고 그 뒤로는 평평하다.",
+  "lz4 는 압축 안 한 것보다 빠를 수 있다. 네트워크가 병목이면 그렇다. gzip 은 CPU 를 먹는다.",
+  "브로커는 압축을 풀지 않는다. 디스크에도 압축된 채로 저장되고 컨슈머가 푼다."
+ ],
+ "drills": [
+  {
+   "task": "linger.ms 를 0/5/20/100 으로 바꿔 처리량과 99% 지연을 재 본다.",
+   "done_when": "어디서 이득이 꺾이는지 찾는다.",
+   "minutes": 10
+  },
+  {
+   "task": "compression.type 을 none/lz4/gzip 으로 바꿔 처리량을 비교한다.",
+   "done_when": "lz4 가 none 보다 빠를 수 있는 이유를 설명한다.",
+   "minutes": 8
+  },
+  {
+   "task": "압축 유무로 저장된 파티션 디렉터리 크기를 비교한다.",
+   "done_when": "브로커가 압축을 안 푸는 것을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "batch.size 와 linger.ms 의 관계는.",
+   "a": "batch.size 는 상한(차면 즉시 보냄), linger.ms 는 하한(안 차도 그만큼 기다림). 먼저 오는 쪽."
+  },
+  {
+   "q": "lz4 압축이 압축 안 한 것보다 빠를 수 있는 이유는.",
+   "a": "네트워크가 병목이면 보낼 바이트가 줄어드는 이득이 CPU 비용보다 크다."
+  },
+  {
+   "q": "브로커는 압축을 푸는가.",
+   "a": "compression.type=producer(기본)면 안 푼다. 디스크에도 압축된 채로 두고 컨슈머가 푼다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "linger.ms",
+   "what": "배치가 안 차도 기다리는 시간."
+  },
+  {
+   "term": "compression.type",
+   "what": "배치 압축 코덱. lz4/zstd/snappy/gzip."
+  },
+  {
+   "term": "buffer.memory",
+   "what": "프로듀서 버퍼 총량. 넘으면 send() 가 막힌다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Producer configs: batching",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs_batch.size",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Producer tuning",
+   "url": "https://docs.confluent.io/cloud/current/client-apps/optimizing/throughput.html",
+   "publisher": "Confluent"
+  }
+ ]
+}

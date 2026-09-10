@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "internal-call",
+ "no": "12.1",
+ "chapter": 12,
+ "title": "내부 호출",
+ "summary": "프록시를 안 지난다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "왜 그런지 안다.",
+  "찾는 법을 안다.",
+  "무엇이 아픈지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.4절부터 일곱 번** 나왔다. **이제 통째로** 판다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 객체, 두 길",
+   "ascii": "   the same object, reached two ways\n\n   from outside   caller holds the proxy, the proxy calls the target\n   from inside    the target calls itself, directly\n\n   the second path has no proxy on it anywhere",
+   "note": "**둘째 길 어디에도 프록시가** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "컴파일러가 이미 정해 놓았다",
+   "md": "**this 로** 부른다.\n\n> **점 없이 적은 호출**이다.\n> **아래에서 바이트코드를** 연다.\n> **원본** 자신이다.\n\n**컨테이너 전**이다.\n\n> **빌드 때 정해진다**.\n> **아래에서 확인**한다.\n> **바꿀 수** 없다.\n\n**public 이어도** 안 된다.\n\n> **10.4절에서 봤다**.\n> **아래에서 다시** 본다.\n> **경로가** 정한다.\n\n**아무도 안** 알린다.\n\n> **오류가** 없다.\n> **아래에서 센다**.\n> **11.9절에서 남은 다섯 중 하나**다."
+  },
+  {
+   "type": "figure",
+   "caption": "컴파일러가 적은 것",
+   "ascii": "   what the compiler wrote\n\n   an unqualified call becomes load this, then invoke\n   this is the target object, never the proxy\n\n   so the jump is decided long before the container exists",
+   "note": "**뛰는 자리가 컨테이너보다 훨씬 먼저** 정해진다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "트랜잭션에서 특히 아프다",
+   "md": "**안 열린다**.\n\n> **10.4절에서 0 줄이었다**.\n> **아래에서 다시** 본다.\n> **12.7절에서 판다**.\n\n**되돌리기가 안** 된다.\n\n> **트랜잭션이 없어서**다.\n> **아래에서 그걸** 겪는다.\n> **데이터가** 남는다.\n\n**테스트가** 통과한다.\n\n> **직접 부르면** 걸린다.\n> **아래에서 그걸** 본다.\n> **⑨ 4장의 그** 함정이다.\n\n**찾을 수** 있다.\n\n> **바이트코드를** 센다.\n> **아래에서 도구를** 만든다.\n> **12.2절부터 고친다**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 두 길을 만든다\n\n@Service\npublic class OrderServiceV3 {\n\n    public void outer(String itemId) {\n        log.info(\"outer 들어옴\");\n        inner(itemId);                       // 안에서\n    }\n\n    public void inner(String itemId) {\n        log.info(\"inner 들어옴\");\n        orderRepository.save(itemId);\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | cut -c56-\n[796bccd9] OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.outer() time=1006ms\n[796bccd9] OrderControllerV3.outer() time=1007ms\n\n$ grep -c 'OrderServiceV3.inner' logs/app.log\n0\n\n--   inner 줄이 없다\n--   그 사이에 저장소 줄은 있다\n\n\n-- 밖에서 부르면\n\n$ curl -s -o /dev/null 'localhost:8080/v3/inner?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | cut -c56-\n[3f9a2b81] OrderControllerV3.inner()\n[3f9a2b81] |-->OrderServiceV3.inner()\n[3f9a2b81] |   |-->OrderRepositoryV3.save()\n[3f9a2b81] |   |<--OrderRepositoryV3.save() time=1004ms\n[3f9a2b81] |<--OrderServiceV3.inner() time=1005ms\n[3f9a2b81] OrderControllerV3.inner() time=1006ms\n\n$ grep -c 'OrderServiceV3.inner' logs/app.log\n2\n\n--   같은 메서드가 걸린다\n--   10.4 절의 그 말이다\n\n\n-- 컴파일러가 적은 것\n\n$ javap -c -p build/classes/java/main/study/adv/app/OrderServiceV3.class \\\n    | grep -A6 'public void outer'\n  public void outer(java.lang.String);\n     0: getstatic     #7   // Field log\n     3: ldc           #13  // String outer 들어옴\n     5: invokeinterface #15,  2\n    10: aload_0\n    11: aload_1\n    12: invokevirtual #21  // Method inner:(Ljava/lang/String;)V\n\n$ javap -c -p build/classes/java/main/study/adv/app/OrderServiceV3.class \\\n    | grep -c 'aload_0'\n7\n\n--   aload_0 이 this 다\n--   자기 자신에게 곧장 뛴다\n\n\n-- this 가 무엇인가\n\n@Service\npublic class OrderServiceV3 {\n    public void outer(String itemId) {\n        log.info(\"안에서 본 나 {}\", this.getClass().getName());\n        inner(itemId);\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep '안에서 본 나' logs/app.log | tail -1 | cut -c56-\n안에서 본 나 study.adv.app.OrderServiceV3\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   10.4 절에서 본 그 둘이다\n\n\n-- this 를 붙여도 같다\n\npublic void outer(String itemId) {\n    this.inner(itemId);                 // 명시적으로 적어도\n}\n\n$ javap -c -p build/classes/java/main/study/adv/app/OrderServiceV3.class \\\n    | grep -A2 'public void outer' | grep invokevirtual\n    12: invokevirtual #21  // Method inner:(Ljava/lang/String;)V\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -c 'OrderServiceV3.inner' logs/app.log\n0\n\n--   바이트코드가 한 글자도 안 다르다\n\n\n-- 조용하다\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'internal\\|self.invocation'\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '3p'\n프록시인가: true\n\n--   프록시는 잘 만들어졌다\n--   11.9 절에서 남은 다섯 중 하나다\n\n\n-- 트랜잭션에서\n\n@Service\npublic class OrderServiceV3 {\n\n    public void outer(String itemId) { inner(itemId); }\n\n    @Transactional\n    public void inner(String itemId) {\n        orderRepository.save(itemId);\n        throw new IllegalStateException(\"실패\");\n    }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -c 'Creating new transaction' logs/app.log\n0\n\n$ curl -s localhost:8080/orders/count\n1\n\n--   되돌려지지 않았다\n--   ⑤ 6.4절에서 읽던 그 로그가 아예 없다\n\n\n-- 밖에서 부르면 되돌려진다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/inner?itemId=연필'\n$ grep -E 'Creating new transaction|Initiating transaction rollback' logs/app.log | cut -c56-\nCreating new transaction with name [study.adv.app.OrderServiceV3.inner]\nInitiating transaction rollback\n\n$ curl -s localhost:8080/orders/count\n1\n\n--   두 번 불렀는데 하나만 남았다\n--   12.7 절에서 이 이야기를 마무리한다\n\n\n-- 테스트는 통과한다\n\n@SpringBootTest\nclass OrderServiceTest {\n    @Autowired OrderServiceV3 service;\n\n    @Test\n    void 되돌려진다() {\n        assertThatThrownBy(() -> service.inner(\"연필\"))\n            .isInstanceOf(IllegalStateException.class);\n        assertThat(repository.count()).isZero();\n    }\n}\n\n$ ./gradlew test --tests OrderServiceTest -q && echo 'test OK'\ntest OK\n\n$ grep -c 'service.outer' src/test/java/study/adv/app/OrderServiceTest.java\n0\n\n--   테스트는 밖에서 부른다\n--   ⑨ 4.7절에서 말한 그 함정이다\n\n\n-- 밖을 거치게 하면 실패한다\n\n@Test\nvoid 밖에서_안쪽까지() {\n    assertThatThrownBy(() -> service.outer(\"연필\"))\n        .isInstanceOf(IllegalStateException.class);\n    assertThat(repository.count()).isZero();\n}\n\n$ ./gradlew test --tests OrderServiceTest 2>&1 | grep -A2 'expected' | head -3\nexpected: 0L\n but was: 1L\n\n--   이 테스트를 적어야 잡힌다\n\n\n-- 찾는 도구를 만든다\n\n@Component\nclass SelfCallScanner implements InitializingBean {\n\n    @Override\n    public void afterPropertiesSet() throws Exception {\n        int n = 0;\n        for (String name : ctx.getBeanDefinitionNames()) {\n            Class<?> t = AopUtils.getTargetClass(ctx.getBean(name));\n            if (!t.getName().startsWith(\"study.adv\")) continue;\n            if (!AopUtils.isAopProxy(ctx.getBean(name))) continue;\n            for (String[] call : scanInvokeVirtualOnThis(t)) {\n                log.warn(\"자기 호출 {}.{} -> {}\", t.getSimpleName(), call[0], call[1]);\n                n++;\n            }\n        }\n        log.warn(\"자기 호출 {} 곳\", n);\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '자기 호출' | cut -c56-\n자기 호출 OrderServiceV3.outer -> inner\n자기 호출 LimitService.outer -> inner\n자기 호출 TxLimitService.outer -> inner\n자기 호출 3 곳\n\n--   10.4 절에서 셋을 세던 그것이다\n--   바이트코드를 읽어 찾는다\n\n\n-- 걸려야 할 것만 센다\n\n@Component\nclass SelfCallScanner {\n    boolean shouldMatch(Class<?> t, String method) {\n        Method m = ReflectionUtils.findMethod(t, method);\n        for (Advisor a : advisors)\n            if (a instanceof PointcutAdvisor pa\n                && pa.getPointcut().getMethodMatcher().matches(m, t)) return true;\n        return false;\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '놓친 자기 호출' | cut -c56-\n놓친 자기 호출 OrderServiceV3.outer -> inner    (걸려야 함)\n놓친 자기 호출 TxLimitService.outer -> inner    (@Transactional)\n놓친 자기 호출 2 곳\n\n--   셋 중 둘이 진짜 문제다\n\n\n-- 기동에서 막는다\n\nif (n > 0 && failOnSelfCall) throw new IllegalStateException(\"놓친 자기 호출 \" + n + \" 곳\");\n\n$ ./gradlew bootRun --args='--study.aop.fail-on-self-call=true' 2>&1 \\\n    | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException: 놓친 자기 호출 2 곳\n\n$ curl -s localhost:8080/aop/silent | grep -c '조용함'\n4\n\n--   11.9 절에서 다섯이었다\n--   또 하나가 시끄러워졌다\n\n\n-- 고치는 길을 미리 본다\n\n$ printf '%-24s %-20s %s\\n' \\\n  '자기를 주입한다'    '한 줄'        '12.2' \\\n  '클래스를 나눈다'    '구조를 바꿈'  '12.3' \\\n  '로드 위빙'          '값이 큼'      '10.5'\n\n자기를 주입한다          한 줄            12.2\n클래스를 나눈다          구조를 바꿈      12.3\n로드 위빙                값이 큼          10.5\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ ./gradlew bootRun 2>&1 | grep '놓친 자기 호출' | tail -1 | cut -c56-\n놓친 자기 호출 2 곳\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   12.2 절에서 첫째 길을 간다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '두 길'        '밖과 안' \\\n  '안쪽'         '프록시 없음' \\\n  '바이트코드'   'aload_0 invokevirtual' \\\n  'this'         '원본' \\\n  'this 붙여도'  '같음' \\\n  '조용함'       '오류 0' \\\n  '트랜잭션'     '안 열림' \\\n  '데이터'       '남음' \\\n  '테스트'       '밖에서 부르면 통과' \\\n  '찾기'         '바이트코드 검사' \\\n  '놓친 것'      '2 곳'\n\n두 길                      밖과 안\n안쪽                       프록시 없음\n바이트코드                 aload_0 invokevirtual\nthis                       원본\nthis 붙여도                같음\n조용함                     오류 0\n트랜잭션                   안 열림\n데이터                     남음\n테스트                     밖에서 부르면 통과\n찾기                       바이트코드 검사\n놓친 것                    2 곳",
+   "note": "**안에서 부르면 `OrderServiceV3.inner` 줄이 0 개, 밖에서 부르면 2 개**다.\n\n**`javap` 가 `aload_0` 다음 `invokevirtual` 을 보여 줘 컨테이너보다 먼저 정해진 걸** 드러낸다.\n\n**`this.` 를 명시해도 바이트코드가 한 글자도 안** 다르다.\n\n**트랜잭션이 안 열려 `Creating new transaction` 이 0 줄이고 데이터가 그대로** 남는다.\n\n**바이트코드를 훑는 검사가 `놓친 자기 호출 2 곳` 으로 기동을** 멈춘다."
+  }
+ ],
+ "recap": [
+  "**두 길이** 있다.",
+  "**안쪽엔 프록시가** 없다.",
+  "**컴파일러가** 정했다.",
+  "**this 가** 원본이다.",
+  "**붙여도** 같다.",
+  "**조용하다**.",
+  "**트랜잭션이 안** 열린다.",
+  "**테스트가** 속인다.",
+  "**찾을 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "두 길로 같은 메서드를 부른다.",
+   "done_when": "로그가 다른 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "바이트코드를 열어 본다.",
+   "done_when": "this 로 뛰는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "트랜잭션으로 겪어 본다.",
+   "done_when": "안 되돌려지는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "찾는 검사를 만든다.",
+   "done_when": "기동에서 멈추는 걸 확인했다.",
+   "minutes": 30
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 안 걸리나?",
+   "a": "안에서 부르면 this 곧 원본으로 곧장 뛰어 프록시를 안 지나서다."
+  },
+  {
+   "q": "this 를 붙이면 달라지나?",
+   "a": "안 달라진다. 바이트코드가 같다."
+  },
+  {
+   "q": "무엇이 제일 아픈가?",
+   "a": "트랜잭션이 안 열려 되돌리기가 안 되는 것이다."
+  },
+  {
+   "q": "왜 테스트로 잘 안 잡히나?",
+   "a": "테스트는 대개 밖에서 부르기 때문이다."
+  },
+  {
+   "q": "어떻게 찾나?",
+   "a": "바이트코드에서 this 로 뛰는 호출을 세어 기동에서 막는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자기 호출",
+   "def": "객체가 자기 메서드를 점 없이 부르는 것. 프록시를 안 지난다."
+  },
+  {
+   "term": "놓친 자기 호출",
+   "def": "포인트컷에는 맞는데 자기 호출이라 실제로 안 걸리는 자리."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,129 @@
+{
+ "book": "kafka",
+ "id": "partitioner",
+ "no": "6.6",
+ "chapter": 6,
+ "title": "파티셔너",
+ "summary": "기본 동작과 직접 만들기.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "기본 파티셔너의 규칙을 코드로 안다.",
+  "커스텀 파티셔너를 만든다.",
+  "언제 만들지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**4.4절에서 규칙을** 봤다. **여기서는 그것을 바꾸는 법**이다.\n\n```\n키가 있으면   murmur2(key) % numPartitions\n키가 없으면   스티키 파티셔닝\n파티션 지정   ProducerRecord(topic, partition, key, value)\n```"
+  },
+  {
+   "type": "table",
+   "caption": "파티션을 정하는 세 가지 방법",
+   "columns": [
+    "방법",
+    "코드",
+    "쓰는 데"
+   ],
+   "rows": [
+    [
+     "**키**",
+     "`new ProducerRecord<>(t, key, value)`",
+     "**거의 항상 이것**"
+    ],
+    [
+     "**직접 지정**",
+     "`new ProducerRecord<>(t, 2, key, value)`",
+     "특수한 경우. 파티션 수를 알아야 한다"
+    ],
+    [
+     "**커스텀 파티셔너**",
+     "`partitioner.class`",
+     "아래"
+    ]
+   ],
+   "note": "**직접 지정은 파티션 수가 바뀌면 깨진다** — **하드코딩된 2번이 없어질 수는 없지만 의미가** 달라진다."
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "VipPartitioner.java",
+   "caption": "쏠린 키를 분산하는 파티셔너",
+   "code": "public class VipPartitioner implements Partitioner {\n\n    private static final Set<String> VIPS = Set.of(\"vip-user\", \"bulk-loader\");\n\n    @Override\n    public int partition(String topic, Object key, byte[] keyBytes,\n                         Object value, byte[] valueBytes, Cluster cluster) {\n        int n = cluster.partitionCountForTopic(topic);\n\n        if (keyBytes == null) {\n            return ThreadLocalRandom.current().nextInt(n);\n        }\n\n        String k = (String) key;\n\n        // 쏠리는 키는 여러 파티션에 흩는다 (순서 보장을 포기한다)\n        if (VIPS.contains(k)) {\n            return ThreadLocalRandom.current().nextInt(n);\n        }\n\n        // 나머지는 기본과 같게\n        return Utils.toPositive(Utils.murmur2(keyBytes)) % n;\n    }\n\n    @Override public void close() {}\n    @Override public void configure(Map<String, ?> configs) {}\n}",
+   "note": "**VIP 키의 순서 보장을 포기하는 대신 쏠림을 없앤다.** 4.4절의 270/12/18 을 고치는 방법 하나."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "커스텀 파티셔너를 만들기 전에",
+   "md": "**대부분은 안 만들어도** 된다.\n\n| 하고 싶은 것 | 더 나은 방법 |\n|---|---|\n| **쏠림 해소** | **키를 바꾼다.** `vip-user` → `vip-user#{0..9}` |\n| 특정 파티션 고정 | `ProducerRecord(t, partition, ...)` |\n| 지역별 분리 | **토픽을 나눈다** |\n| 순서 그룹 재정의 | 키를 다시 설계한다(4.4절) |\n\n**만들면 생기는 비용**:\n\n> **컨슈머 쪽에서 \"이 키가 어느 파티션인지\" 를 계산 못** 한다.\n> **파티션 수가 바뀌면 로직을 다시 봐야** 한다.\n> **다른 언어 클라이언트가 같은 로직을 구현해야** 한다.\n\n**진짜 필요한 경우**: **키를 못 바꾸는 레거시** 또는 **파티션 매핑을 파티션 수와 무관하게 고정해야 할 때**(4.4절의 재해싱 문제)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "쏠림을 파티셔너로 고친다",
+   "sql": "$ kt --create --topic vip --partitions 6 --replication-factor 3 >/dev/null\n\n# --- 기본 파티셔너: 쏠린다 ---\n\n$ java -cp 'out:libs/*' SkewProducer --topic vip --records 6000 --vip-ratio 0.9\nsent 6000\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic vip\nvip:0:112\nvip:1:98\nvip:2:5487\nvip:3:104\nvip:4:96\nvip:5:103\n\n#   2번 파티션에 5487건. 4.4절의 그 모양이다\n\n\n# --- 커스텀 파티셔너 ---\n\n$ kt --create --topic vip2 --partitions 6 --replication-factor 3 >/dev/null\n$ java -cp 'out:libs/*' SkewProducer --topic vip2 --records 6000 --vip-ratio 0.9 \\\n    --partitioner com.example.VipPartitioner\nsent 6000\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic vip2\nvip2:0:1012\nvip2:1:987\nvip2:2:1043\nvip2:3:998\nvip2:4:961\nvip2:5:999\n\n#   고르게 나뉘었다. 대신 vip-user 의 순서 보장을 잃었다\n\n\n# --- 파티셔너 없이 키만 바꿔도 된다 ---\n\n$ kt --create --topic vip3 --partitions 6 --replication-factor 3 >/dev/null\n$ java -cp 'out:libs/*' SkewProducer --topic vip3 --records 6000 --vip-ratio 0.9 \\\n    --salt-vip-key 10\nsent 6000   (vip keys: vip-user#0 .. vip-user#9)\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic vip3\nvip3:0:1104\nvip3:1:882\nvip3:2:1121\nvip3:3:901\nvip3:4:1013\nvip3:5:979\n\n#   비슷하게 고르다. 커스텀 파티셔너 없이\n#   그리고 vip-user#3 안에서는 여전히 순서가 지켜진다\n#   대개 이 방법이 낫다\n\n\n# --- 파티션을 직접 지정 ---\n\n$ java -cp 'out:libs/*' FixedPartitionProducer --topic vip --partition 5 --records 100\nsent 100 to partition 5\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic vip --partitions 5\nvip:5:203\n\n#   103 -> 203. 전부 5번으로 갔다\n\n$ java -cp 'out:libs/*' FixedPartitionProducer --topic vip --partition 9 --records 1\nException: org.apache.kafka.common.KafkaException: Invalid partition given\n  with record: 9 is not in the range [0...6).\n\n#   없는 파티션을 주면 예외다. 파티션 수를 알아야 한다\n\n\n# --- 어느 파티션에 갈지 미리 계산 ---\n\n$ java -cp 'out:libs/*' WhichPartition --topic vip --key order-1042\nkey=order-1042 murmur2=1836342119 partitions=6 -> partition 1\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -P -t vip \\\n    -k 'order-1042' <<< 'x'\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t vip \\\n    -o -1 -c 1 -e -f 'p%p k=%k\\n' 2>/dev/null\np1 k=order-1042\n\n#   계산과 실제가 같다\n#   커스텀 파티셔너를 쓰면 이 계산을 못 한다 -- 디버깅이 어려워진다\n\n$ for t in vip vip2 vip3; do kt --delete --topic $t >/dev/null; done"
+  }
+ ],
+ "recap": [
+  "파티션은 키·직접 지정·커스텀 파티셔너 셋 중 하나로 정해진다. 거의 항상 키를 쓴다.",
+  "쏠림은 커스텀 파티셔너보다 키에 접미사를 붙여 해결하는 게 낫다.",
+  "키에 접미사를 붙이면 그 안에서는 순서가 유지되고 계산도 그대로 된다.",
+  "커스텀 파티셔너를 쓰면 어느 키가 어느 파티션인지 밖에서 계산할 수 없어 디버깅이 어려워진다.",
+  "파티션을 직접 지정하면 파티션 수가 바뀔 때 깨지고 범위를 벗어나면 예외다."
+ ],
+ "drills": [
+  {
+   "task": "한 키가 90%인 데이터를 넣어 쏠림을 만들고, 키에 #0~#9 접미사를 붙여 다시 넣어 본다.",
+   "done_when": "파티션 분포가 고르게 바뀌는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "murmur2 로 어느 파티션에 갈지 계산하는 작은 프로그램을 만들고 실제와 비교한다.",
+   "done_when": "계산과 실제가 같은 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "없는 파티션 번호를 직접 지정해 예외를 확인한다.",
+   "done_when": "범위 밖 지정이 실패하는 것을 본다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쏠린 키를 해결하는 가장 간단한 방법은.",
+   "a": "키에 접미사를 붙여 여러 키로 쪼갠다. 커스텀 파티셔너보다 낫다."
+  },
+  {
+   "q": "커스텀 파티셔너의 비용은.",
+   "a": "밖에서 키→파티션을 계산할 수 없어 디버깅이 어렵고, 다른 언어 클라이언트에도 같은 로직이 필요하다."
+  },
+  {
+   "q": "ProducerRecord 에 파티션을 직접 주면 무엇을 조심하나.",
+   "a": "파티션 수가 바뀌면 의미가 달라지고, 범위를 벗어나면 예외가 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Partitioner",
+   "what": "파티션을 정하는 인터페이스. partitioner.class 로 지정한다."
+  },
+  {
+   "term": "키 솔팅",
+   "en": "key salting",
+   "what": "쏠린 키에 접미사를 붙여 여러 키로 쪼개는 기법."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Partitioner interface",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs_partitioner.class",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Sticky partitioner",
+   "url": "https://www.confluent.io/blog/apache-kafka-producer-improvements-sticky-partitioner/",
+   "publisher": "Confluent"
+  }
+ ]
+}

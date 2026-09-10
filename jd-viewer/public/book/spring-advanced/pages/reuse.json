@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "reuse",
+ "no": "11.9",
+ "chapter": 11,
+ "title": "이름 붙여 재사용",
+ "summary": "한 곳에 모은다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "이름을 붙인다.",
+  "나눠 쓴다.",
+  "11장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.7절에서 같은 이름을 네 번** 적었다. **한 곳에** 모은다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름 붙은 표현식",
+   "ascii": "   an expression with a name\n\n   an empty method whose body is never run\n   its name becomes the handle for the expression\n   advices refer to the handle instead of repeating the text",
+   "note": "**어드바이스는 글을 되풀이하는 대신 그 이름을** 부른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "표현식도 코드다",
+   "md": "**빈 메서드에** 붙인다.\n\n> **몸통은 안** 돈다.\n> **아래에서 확인**한다.\n> **이름만** 쓴다.\n\n**되풀이가** 는다.\n\n> **11.7절에서 네 번**이었다.\n> **아래에서** 센다.\n> **고칠 때** 아프다.\n\n**나눠 쓸 수** 있다.\n\n> **공개면 남도** 부른다.\n> **아래에서 그걸** 본다.\n> **타입을 붙여** 적는다.\n\n**합쳐** 만든다.\n\n> **이름끼리도** 합친다.\n> **11.7절의 셋**이다.\n> **아래에서 쌓아** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "이름이 닿는 데",
+   "ascii": "   how far a name reaches\n\n   private     only inside its own class\n   public      any aspect, written as type dot name\n\n   a class of nothing but names is the usual shape",
+   "note": "**이름만 모아 둔 클래스가 흔한** 모양이다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "표현식을 코드처럼 다룬다",
+   "md": "**한 곳에서** 고친다.\n\n> **꾸러미를 옮겨도 한** 줄이다.\n> **11.6절에서 깨졌던 것**이다.\n> **아래에서 겪는다**.\n\n**이름이** 설명한다.\n\n> **글을 안 읽어도** 안다.\n> **아래에서 견준다**.\n> **10.7절의 그** 문제다.\n\n**검사를** 붙인다.\n\n> **0 개면** 멈춘다.\n> **11.2절에서 만들었다**.\n> **아래에서 다듬는다**.\n\n**11장이 여기서** 끝난다.\n\n> **아홉 절을 한 클래스에** 담는다.\n> **아래에서 그걸** 본다.\n> **12장은 안 걸리는 자리**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 11.7 절의 되풀이를 센다\n\n$ grep -o 'study.adv.app' src/main/java/study/adv/aspect/*.java | wc -l\n       4\n\n$ grep -c 'execution\\|within\\|args\\|bean\\|@annotation' src/main/java/study/adv/aspect/*.java\nLogTraceAspect.java:3\nSlowAspect.java:3\n\n$ grep -o '@Around(\"[^)]*' src/main/java/study/adv/aspect/LogTraceAspect.java | wc -c\n     142\n\n\n-- 이름을 붙인다\n\n@Aspect\n@Component\npublic class LogTraceAspect {\n\n    @Pointcut(\"within(study.adv.app..*)\")\n    private void appLayer() {}\n\n    @Pointcut(\"execution(public * *(..))\")\n    private void publicMethod() {}\n\n    @Around(\"appLayer() && publicMethod()\")\n    public Object execute(ProceedingJoinPoint jp) throws Throwable { ... }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ grep -o 'study.adv.app' src/main/java/study/adv/aspect/LogTraceAspect.java | wc -l\n       1\n\n--   네 번이 한 번이 됐다\n\n\n-- 몸통은 안 돈다\n\n@Pointcut(\"within(study.adv.app..*)\")\nprivate void appLayer() { log.info(\"이건 안 찍힌다\"); }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '이건 안 찍힌다' logs/app.log\n0\n\n$ ./gradlew bootRun 2>&1 | grep -c '이건 안 찍힌다'\n0\n\n$ javap -p build/classes/java/main/study/adv/aspect/LogTraceAspect.class | grep appLayer\n  private void appLayer();\n\n--   메서드는 있는데 아무도 안 부른다\n--   이름을 걸어 두는 자리일 뿐이다\n\n\n-- 반환형은 void 여야 한다\n\n@Pointcut(\"within(study.adv.app..*)\")\nprivate String appLayer() { return null; }\n\n$ ./gradlew bootRun 2>&1 | grep -i 'void' | head -2\njava.lang.IllegalArgumentException: Pointcut method must return void:\n  private java.lang.String study.adv.aspect.LogTraceAspect.appLayer()\n\n--   시끄럽게 막는다\n\n\n-- 나눠 쓴다\n\npublic class Pointcuts {\n\n    @Pointcut(\"within(study.adv.app..*)\")\n    public void appLayer() {}\n\n    @Pointcut(\"within(study.adv.app..*Service*)\")\n    public void serviceLayer() {}\n\n    @Pointcut(\"within(study.adv.app..*Repository*)\")\n    public void repositoryLayer() {}\n\n    @Pointcut(\"execution(public * *(..))\")\n    public void publicMethod() {}\n\n    @Pointcut(\"!within(study.adv.aspect..*) && !within(study.adv.trace..*)\")\n    public void notMine() {}\n}\n\n@Around(\"study.adv.aspect.Pointcuts.appLayer() && study.adv.aspect.Pointcuts.publicMethod()\")\npublic Object execute(ProceedingJoinPoint jp) throws Throwable { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n6\n\n$ grep -c '@Aspect' src/main/java/study/adv/aspect/Pointcuts.java\n0\n\n--   애스펙트가 아니어도 된다\n--   빈일 필요도 없다\n\n\n-- 공개가 아니면\n\npublic class Pointcuts {\n    @Pointcut(\"within(study.adv.app..*)\")\n    private void appLayer() {}\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i \"can't find referenced pointcut\" | head -2\njava.lang.IllegalArgumentException: error at ::0 can't find referenced pointcut appLayer\n\n--   10.6 절에서 bean 을 로드 위빙에 넣었을 때와 같은 글이다\n\n\n-- 이름끼리 합친다\n\n@Pointcut(\"appLayer() && !repositoryLayer()\")\npublic void appExceptRepo() {}\n\n@Pointcut(\"serviceLayer() || repositoryLayer()\")\npublic void backend() {}\n\n$ for e in 'appLayer' 'serviceLayer' 'repositoryLayer' 'appExceptRepo' 'backend'; do\n    printf '%-18s ' \"$e\"\n    curl -s --get 'localhost:8080/pointcut/count-beans' \\\n      --data-urlencode \"expr=study.adv.aspect.Pointcuts.$e()\" | head -1\n  done\n\nappLayer           맞는 빈 10 개\nserviceLayer       맞는 빈 3 개\nrepositoryLayer    맞는 빈 3 개\nappExceptRepo      맞는 빈 7 개\nbackend            맞는 빈 6 개\n\n--   11.7 절의 셋을 이름 위에서 쓴다\n\n\n-- 층마다 다르게 건다\n\n@Aspect\n@Component\n@Order(1)\npublic class LogTraceAspect {\n    @Around(\"study.adv.aspect.Pointcuts.appLayer()\")\n    public Object trace(ProceedingJoinPoint jp) throws Throwable { ... }\n}\n\n@Aspect\n@Component\n@Order(2)\npublic class SlowAspect {\n    @Around(\"study.adv.aspect.Pointcuts.repositoryLayer()\")\n    public Object slow(ProceedingJoinPoint jp) throws Throwable { ... }\n}\n\n$ curl -s 'localhost:8080/advisor/count?name=orderServiceV3'\n어드바이저 1 개\n\n$ curl -s 'localhost:8080/advisor/count?name=orderRepositoryV3'\n어드바이저 2 개\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '느림' logs/app.log | cut -c56-\n느림 OrderRepositoryV3.save() 1004ms\n\n--   9.2 절에서 본 그 수다\n--   표현식을 안 되풀이하고 층을 갈랐다\n\n\n-- 꾸러미를 옮겨 본다\n\n$ git mv src/main/java/study/adv/app src/main/java/study/adv/domain\n$ grep -rn 'study.adv.app' src/main/java/study/adv/aspect/\nsrc/main/java/study/adv/aspect/Pointcuts.java:8:    @Pointcut(\"within(study.adv.app..*)\")\nsrc/main/java/study/adv/aspect/Pointcuts.java:11:   @Pointcut(\"within(study.adv.app..*Service*)\")\nsrc/main/java/study/adv/aspect/Pointcuts.java:14:   @Pointcut(\"within(study.adv.app..*Repository*)\")\n\n$ sed -i '' 's/study.adv.app/study.adv.domain/g' src/main/java/study/adv/aspect/Pointcuts.java\n\n$ grep -rc 'study.adv.app' src/main/java/study/adv/aspect/*.java\nLogTraceAspect.java:0\nPointcuts.java:0\nSlowAspect.java:0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n6\n\n--   한 파일만 고쳤다\n--   11.6 절에서 조용히 깨지던 그 자리다\n\n\n-- 이름이 설명한다\n\n// 글로\n@Around(\"within(study.adv.app..*) && !within(study.adv.app.internal..*) \" +\n        \"&& execution(public * *(..))\")\n\n// 이름으로\n@Around(\"appLayer() && !internal() && publicMethod()\")\n\n$ grep -c 'appLayer\\|internal\\|publicMethod' src/main/java/study/adv/aspect/LogTraceAspect.java\n1\n\n$ curl -s 'localhost:8080/advisor/pointcut?name=orderServiceV3'\n표현식: (within(study.adv.app..*) && !within(study.adv.app.internal..*))\n  && execution(public * *(..))\n\n--   풀린 글은 그대로 남는다\n--   읽는 자리만 짧아진다\n\n\n-- 검사를 다듬는다\n\n@Component\nclass PointcutAudit implements InitializingBean {\n\n    @Override\n    public void afterPropertiesSet() {\n        for (Method m : Pointcuts.class.getDeclaredMethods()) {\n            Pointcut pc = m.getAnnotation(Pointcut.class);\n            if (pc == null) continue;\n            AspectJExpressionPointcut p = new AspectJExpressionPointcut();\n            p.setExpression(\"study.adv.aspect.Pointcuts.\" + m.getName() + \"()\");\n            long n = count(p);\n            log.info(\"[검사] {} 맞는 메서드 {}\", m.getName(), n);\n            if (n == 0) throw new IllegalStateException(\"0 개 매칭: \" + m.getName());\n        }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[검사\\]' | cut -c56-\n[검사] appLayer 맞는 메서드 16\n[검사] serviceLayer 맞는 메서드 6\n[검사] repositoryLayer 맞는 메서드 3\n[검사] publicMethod 맞는 메서드 412\n[검사] appExceptRepo 맞는 메서드 13\n[검사] backend 맞는 메서드 9\n\n$ sed -i '' 's/study.adv.app..\\*Service\\*/study.adv.app..*Servcie*/' \\\n    src/main/java/study/adv/aspect/Pointcuts.java\n\n$ ./gradlew bootRun 2>&1 | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException: 0 개 매칭: serviceLayer\n\n--   11.2 절에서 만든 그 검사다\n--   이름이 붙으니 어느 것이 0 인지 나온다\n\n\n-- 조용한 자리를 하나 덜어 낸다\n\n$ curl -s localhost:8080/aop/silent\n표현식 오타         이제 기동에서 잡힘   11.9\n@Component 누락     조용함               9.1\n자기 호출           조용함               12.1\nfinal 메서드        조용함               10.4\nprivate static      조용함               10.4\n이른 빈             정보 로그            8.7\nget set 표현식      조용함               10.2\n\n$ curl -s localhost:8080/aop/silent | grep -c '조용함'\n5\n\n--   10.7 절에서 일곱이었다\n--   하나가 시끄러워졌다\n\n\n-- 11 장을 한 파일에 담는다\n\n$ cat src/main/java/study/adv/aspect/Pointcuts.java\npublic class Pointcuts {\n\n    @Pointcut(\"within(study.adv.app..*)\")                  // 11.3\n    public void appLayer() {}\n\n    @Pointcut(\"within(study.adv.app..*Service*)\")          // 11.3\n    public void serviceLayer() {}\n\n    @Pointcut(\"within(study.adv.app..*Repository*)\")       // 11.3\n    public void repositoryLayer() {}\n\n    @Pointcut(\"execution(public * *(..))\")                 // 11.1 11.2\n    public void publicMethod() {}\n\n    @Pointcut(\"@annotation(study.adv.trace.Traced)\")       // 11.5\n    public void traced() {}\n\n    @Pointcut(\"bean(*RepositoryV3)\")                       // 11.6\n    public void v3Repo() {}\n\n    @Pointcut(\"args(String, ..)\")                          // 11.4\n    public void firstIsString() {}\n\n    @Pointcut(\"appLayer() && publicMethod() && !within(study.adv.app.internal..*)\")\n    public void tracked() {}                               // 11.7\n}\n\n$ wc -l < src/main/java/study/adv/aspect/Pointcuts.java\n      32\n\n$ ./gradlew bootRun 2>&1 | grep '\\[검사\\]' | wc -l\n8\n\n--   아홉 절이 32 줄이다\n\n\n-- 실제로 쓴다\n\n@Around(\"study.adv.aspect.Pointcuts.tracked()\")\npublic Object execute(ProceedingJoinPoint jp) throws Throwable { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s localhost:8080/proxy/census | sed -n '3p'\n  내 것:       10\n\n$ curl -s localhost:8080/pointcut/count\n[물음] 0\n\n$ wc -l < src/main/java/study/adv/aspect/LogTraceAspect.java\n      26\n\n--   9.5 절의 10 개와 0 회가 그대로다\n--   9.1 절의 28 줄이 26 줄이 됐다\n\n\n-- 값은 안 바뀐다\n\n$ curl -s 'localhost:8080/bench/pointcut?expr=study.adv.aspect.Pointcuts.tracked()&n=1000000'\n100 만 회   1436 ms\n\n$ curl -s 'localhost:8080/bench/pointcut?expr=within(study.adv.app..*)%20%26%26%20execution(public%20*%20*(..))&n=1000000'\n100 만 회   1431 ms\n\n$ ./gradlew bootRun 2>&1 | grep -oE 'in [0-9.]+ seconds' | grep -oE '[0-9.]+'\n2.181\n\n--   이름은 기동에 풀린다\n--   11.7 절의 그 값 그대로다\n\n\n-- 확인한다\n\n$ git checkout -- . && ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n$ ./gradlew bootRun 2>&1 | grep '\\[검사\\]' | wc -l\n8\n\n$ git add -A && git commit -q -m 'refactor: 포인트컷을 한 곳에' && git tag v13\n\n--   12 장에서 안 걸리는 자리를 다시 본다\n\n\n-- 11 장을 한 표로\n\n$ printf '%-14s %-26s %-12s %s\\n' '' '보는 것' '시점' '값' && \\\n  printf '%-14s %-26s %-12s %s\\n' \\\n  'execution'   '메서드 전체'        '기동'   '1412 ms' \\\n  'within'      '타입'               '기동'   '319 ms' \\\n  'args'        '넘어온 값'          '호출'   '+0.215' \\\n  'target this' '원본과 든 것'       '기동'   '-' \\\n  '@annotation' '메서드의 표시'      '기동'   '731 ms' \\\n  '@within'     '클래스의 표시'      '기동'   '402 ms' \\\n  'bean'        '빈 이름'            '기동'   '84 ms'\n\n                보는 것                      시점         값\nexecution       메서드 전체                  기동         1412 ms\nwithin          타입                         기동         319 ms\nargs            넘어온 값                    호출         +0.215\ntarget this     원본과 든 것                 기동         -\n@annotation     메서드의 표시                기동         731 ms\n@within         클래스의 표시                기동         402 ms\nbean            빈 이름                      기동         84 ms\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '적는 법'      '빈 메서드에 붙임' \\\n  '몸통'         '안 돎' \\\n  '반환형'       'void 여야 함' \\\n  '되풀이'       '4 에서 1' \\\n  '나눠 쓰기'    '공개면 됨' \\\n  '비공개면'     '못 찾음' \\\n  '합치기'       '이름끼리도 됨' \\\n  '옮기기'       '한 파일만' \\\n  '검사'         '어느 것이 0 인지' \\\n  '조용한 자리'  '일곱에서 다섯' \\\n  '값'           '안 바뀜'\n\n적는 법                    빈 메서드에 붙임\n몸통                       안 돎\n반환형                     void 여야 함\n되풀이                     4 에서 1\n나눠 쓰기                  공개면 됨\n비공개면                   못 찾음\n합치기                     이름끼리도 됨\n옮기기                     한 파일만\n검사                       어느 것이 0 인지\n조용한 자리                일곱에서 다섯\n값                         안 바뀜",
+   "note": "**같은 꾸러미 이름이 네 번에서 한 번으로 줄고 로그는 여섯 줄 그대로**다.\n\n**몸통에 로그를 넣어도 0 회 찍혀 이름을 걸어 두는 자리일 뿐임이** 드러난다.\n\n**꾸러미를 옮길 때 한 파일만 고쳐 11.6절에서 조용히 깨지던 자리가** 막힌다.\n\n**검사가 `0 개 매칭: serviceLayer` 로 어느 이름이 비었는지** 짚어 준다.\n\n**아홉 절이 32 줄 한 파일이 되고 프록시 10 개·물음 0 회는 안** 바뀐다."
+  }
+ ],
+ "recap": [
+  "**이름을** 붙인다.",
+  "**몸통은 안** 돈다.",
+  "**void 여야** 한다.",
+  "**되풀이가** 준다.",
+  "**나눠 쓸 수** 있다.",
+  "**공개여야** 한다.",
+  "**이름끼리** 합친다.",
+  "**한 파일만** 고친다.",
+  "**검사가** 짚어 준다."
+ ],
+ "drills": [
+  {
+   "task": "이름을 붙여 본다.",
+   "done_when": "되풀이가 준 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "몸통에 로그를 넣어 본다.",
+   "done_when": "안 찍히는 걸 확인했다.",
+   "minutes": 10
+  },
+  {
+   "task": "이름 모음 클래스를 만든다.",
+   "done_when": "다른 애스펙트에서 쓰는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "꾸러미를 옮겨 본다.",
+   "done_when": "한 파일만 고치면 되는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이름은 어디에 붙이나?",
+   "a": "반환형이 void 인 빈 메서드다. 몸통은 안 돈다."
+  },
+  {
+   "q": "다른 클래스에서 쓰려면?",
+   "a": "공개여야 하고 타입 이름을 붙여 적는다."
+  },
+  {
+   "q": "이름끼리 합칠 수 있나?",
+   "a": "된다. 그리고·또는·아니다를 그대로 쓴다."
+  },
+  {
+   "q": "이름을 붙이면 무엇이 좋아지나?",
+   "a": "고칠 자리가 한 곳이고 검사가 어느 이름이 0 인지 짚어 준다."
+  },
+  {
+   "q": "값은 달라지나?",
+   "a": "안 달라진다. 이름은 기동에 풀린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "이름 붙은 표현식",
+   "def": "빈 메서드의 이름으로 부르는 포인트컷."
+  },
+  {
+   "term": "이름 모음",
+   "def": "표현식 이름만 모아 둔, 애스펙트도 빈도 아닌 클래스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declaring a Pointcut",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "The AspectJ Programming Guide",
+   "url": "https://eclipse.dev/aspectj/doc/latest/progguide/index.html",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,145 @@
+{
+ "book": "kafka",
+ "id": "retries",
+ "no": "6.4",
+ "chapter": 6,
+ "title": "재시도와 중복",
+ "summary": "성공했는데 실패로 보이는 경우.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "재시도 관련 설정을 안다.",
+  "중복이 생기는 경로를 안다.",
+  "시한 설정을 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.7절에서 리더가 바뀌는 동안 프로듀서가 재시도로** 넘어갔다. **그 재시도의 규칙**이다."
+  },
+  {
+   "type": "table",
+   "caption": "재시도 관련 설정",
+   "columns": [
+    "설정",
+    "기본",
+    "뜻"
+   ],
+   "rows": [
+    [
+     "`retries`",
+     "**Integer.MAX_VALUE**",
+     "재시도 횟수. **사실상 무한**"
+    ],
+    [
+     "**`delivery.timeout.ms`**",
+     "**2분**",
+     "**전체 시한.** 이걸 넘으면 실패로 끝낸다"
+    ],
+    [
+     "`request.timeout.ms`",
+     "30초",
+     "한 번의 요청 응답 대기"
+    ],
+    [
+     "`retry.backoff.ms`",
+     "100ms",
+     "재시도 간격"
+    ],
+    [
+     "`retry.backoff.max.ms`",
+     "1초",
+     "백오프 상한(3.7+)"
+    ],
+    [
+     "`max.block.ms`",
+     "60초",
+     "버퍼·메타데이터 대기(6.2절)"
+    ]
+   ],
+   "note": "**`retries` 를 줄이는 대신 `delivery.timeout.ms` 로 제어**하는 게 요즘 방식이다. **`delivery.timeout.ms ≥ linger.ms + request.timeout.ms`** 여야 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "재시도가 중복을 만드는 경로",
+   "md": "```\n프로듀서 -> 브로커: \"m-1 저장해\"\n브로커:   로그에 쓴다. 응답을 보낸다\n           ... 응답이 네트워크에서 유실 ...\n프로듀서: 타임아웃. \"실패했나 보다\" -> 재시도\n브로커:   또 쓴다\n\n로그: m-1, m-1\n```\n\n> **브로커는 이미 썼는데 프로듀서는 모른다.**\n> **\"최소 한 번\"(at-least-once)이 이래서** 나온다(7.5절).\n\n**막는 법**:\n\n```java\nprops.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);   // 3.0+ 기본\n```\n\n> **프로듀서마다 ID 와 시퀀스 번호를 붙이고 브로커가 중복을 걸러** 준다(8.1절).\n> **한 프로듀서 세션 안에서, 한 파티션에 대해** 보장된다.\n>\n> **프로세스가 재시작하면 새 프로듀서 ID 라 이 보장이 끊긴다** — **거기서부터는 8.2절(트랜잭션)이나 컨슈머 쪽 멱등성**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "재시도해도 소용없는 에러가 있다",
+   "md": "| 종류 | 예 | 재시도 |\n|---|---|---|\n| **일시적(retriable)** | `NotLeaderOrFollower`, `NetworkException`, `NotEnoughReplicas` | **자동으로 한다** |\n| **영구적** | `RecordTooLarge`, `SerializationException`, `AuthorizationException` | **안 한다.** 즉시 실패 |\n| **애매한 것** | `TimeoutException` | 한다. **중복 위험이 여기 있다** |\n\n```java\nproducer.send(record, (meta, ex) -> {\n    if (ex == null) return;\n    if (ex instanceof RetriableException) {\n        // 클라이언트가 이미 재시도했고 그래도 실패한 것\n        log.error(\"retriable but exhausted\", ex);\n    } else {\n        // 재시도해 봐야 소용없다 -> DLT 나 알람 (9.5절)\n        log.error(\"permanent failure\", ex);\n    }\n});\n```\n\n> **콜백에서 이 둘을 구분하지 않으면 \"무조건 다시 보내기\" 를 짜게** 되고, **그게 중복의 두 번째 원인**이 된다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "재시도와 중복을 관찰한다",
+   "sql": "$ kt --create --topic rt --partitions 1 --replication-factor 3 \\\n    --config min.insync.replicas=2 >/dev/null\n\n# --- 리더를 죽여도 재시도로 넘어간다 ---\n\n$ LEADER=$(kt --describe --topic rt | awk '/Partition:/ {print $6}')\n$ java -cp 'out:libs/*' RetryProducer --topic rt --records 50000 --acks all &\n$ sleep 2 && docker compose stop kafka-$LEADER >/dev/null\n$ wait\nsent=50000 ok=50000 failed=0\nretries observed: 3 (NotLeaderOrFollowerException)\n\n$ sleep 8\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic rt\nrt:0:50000\n\n#   정확히 50000. 멱등 프로듀서라 재시도해도 중복이 안 생겼다\n\n$ docker compose start kafka-$LEADER >/dev/null && sleep 15\n\n\n# --- 멱등성을 끄면 중복이 생긴다 ---\n\n$ kt --create --topic dup --partitions 1 --replication-factor 3 \\\n    --config min.insync.replicas=2 >/dev/null\n\n$ LEADER=$(kt --describe --topic dup | awk '/Partition:/ {print $6}')\n$ java -cp 'out:libs/*' RetryProducer --topic dup --records 50000 --acks all \\\n    --idempotence false --max-in-flight 5 &\n$ sleep 2 && docker compose stop kafka-$LEADER >/dev/null\n$ wait\nsent=50000 ok=50000 failed=0\n\n$ sleep 8\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic dup\ndup:0:50318\n\n#   50318. 318건이 중복이다\n\n$ kcc --topic dup --from-beginning --timeout-ms 8000 2>/dev/null | \\\n    sort | uniq -d | head -3\n{\"seq\":31204}\n{\"seq\":31205}\n{\"seq\":31206}\n\n$ kcc --topic dup --from-beginning --timeout-ms 8000 2>/dev/null | \\\n    sort | uniq -d | wc -l\n318\n\n#   같은 레코드가 두 번 들어간 것이 318개\n#   프로듀서는 \"성공 50000\" 이라고 했다\n\n$ docker compose start kafka-$LEADER >/dev/null && sleep 15\n\n\n# --- delivery.timeout.ms 를 넘기면 실패로 끝난다 ---\n\n$ docker compose stop kafka-2 kafka-3 >/dev/null && sleep 35\n\n$ time java -cp 'out:libs/*' RetryProducer --topic rt --records 10 --acks all \\\n    --delivery-timeout 10000\nsent=10 ok=0 failed=10\nlast error: org.apache.kafka.common.errors.TimeoutException:\n  Expiring 10 record(s) for rt-0:10004 ms has passed since batch creation\n\nreal    0m10.612s\n\n#   10초 동안 재시도하다 포기했다\n#   (min.insync.replicas=2 를 못 맞춘다 -- 3.6절)\n\n$ time java -cp 'out:libs/*' RetryProducer --topic rt --records 10 --acks all \\\n    --delivery-timeout 120000\n^C\nreal    0m45.201s\n\n#   기본값 2분이면 그동안 앱이 매달려 있다\n#   운영에서는 요청 처리 시간에 맞춰 줄인다\n\n$ docker compose start kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 영구 에러는 재시도를 안 한다 ---\n\n$ time java -cp 'out:libs/*' RetryProducer --topic rt --record-size 2000000\nsent=1 ok=0 failed=1\nlast error: org.apache.kafka.common.errors.RecordTooLargeException\n\nreal    0m0.418s\n\n#   즉시 실패했다. delivery.timeout.ms 를 기다리지 않는다\n\n$ kt --delete --topic rt >/dev/null; kt --delete --topic dup >/dev/null"
+  }
+ ],
+ "recap": [
+  "retries 는 사실상 무한이고 실제 상한은 delivery.timeout.ms(기본 2분)다.",
+  "응답이 유실되면 브로커는 썼는데 프로듀서는 모른다. 재시도가 중복을 만든다.",
+  "enable.idempotence(3.0+ 기본)가 한 세션·한 파티션 안에서 그 중복을 막는다.",
+  "일시적 에러는 자동 재시도, 영구 에러는 즉시 실패한다. 콜백에서 둘을 구분한다.",
+  "delivery.timeout.ms 기본 2분은 웹 요청에 길다. 처리 시간에 맞춰 줄인다."
+ ],
+ "drills": [
+  {
+   "task": "멱등성을 켜고 끈 상태로 각각 리더를 죽이며 보내고 최종 레코드 수를 비교한다.",
+   "done_when": "멱등성 없이 중복이 생기는 것을 숫자로 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "delivery.timeout.ms 를 10초로 주고 ISR 부족 상태에서 보내 실패까지 걸리는 시간을 잰다.",
+   "done_when": "설정한 시간 근처에서 끝나는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "2MB 레코드를 보내 영구 에러는 재시도 없이 즉시 실패하는 것을 확인한다.",
+   "done_when": "소요 시간이 밀리초 단위인 것을 본다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "재시도가 중복을 만드는 과정은.",
+   "a": "브로커가 쓰고 보낸 응답이 유실되면 프로듀서가 실패로 보고 다시 보낸다."
+  },
+  {
+   "q": "멱등 프로듀서의 보장 범위는.",
+   "a": "한 프로듀서 세션 안에서 한 파티션에 대한 중복 제거. 프로세스가 재시작하면 끊긴다."
+  },
+  {
+   "q": "retries 대신 무엇으로 재시도를 제어하나.",
+   "a": "delivery.timeout.ms. 전체 시한을 정하는 쪽이 예측하기 쉽다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "delivery.timeout.ms",
+   "what": "send() 부터 최종 성공/실패까지의 전체 시한."
+  },
+  {
+   "term": "RetriableException",
+   "what": "다시 시도하면 될 수 있는 예외의 상위 타입."
+  },
+  {
+   "term": "at-least-once",
+   "what": "최소 한 번 전달. 중복이 가능하다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Producer retries",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs_retries",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-91 — Provide Intuitive User Timeouts in The Producer",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-91",
+   "publisher": "Apache"
+  }
+ ]
+}

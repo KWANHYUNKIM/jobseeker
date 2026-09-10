@@ -1,0 +1,136 @@
+{
+ "book": "kafka",
+ "id": "acks",
+ "no": "6.3",
+ "chapter": 6,
+ "title": "acks",
+ "summary": "0 · 1 · all 이 각각 무엇을 포기하나.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "acks 세 값의 의미를 안다.",
+  "min.insync.replicas 와의 관계를 안다.",
+  "무엇을 고를지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**\"보냈다\" 가 언제 성공인가**를 정하는 설정이다.\n\n> **3.6절에서 브로커 쪽을 봤다.** **여기서는 프로듀서 쪽**이다."
+  },
+  {
+   "type": "table",
+   "caption": "세 값",
+   "columns": [
+    "`acks`",
+    "언제 성공으로 보나",
+    "유실",
+    "처리량"
+   ],
+   "rows": [
+    [
+     "**`0`**",
+     "**보내자마자.** 응답을 안 기다린다",
+     "**브로커가 안 받아도 성공**",
+     "가장 높다"
+    ],
+    [
+     "**`1`**",
+     "**리더가 자기 로그에 썼을 때**",
+     "**리더가 죽으면 유실 가능**",
+     "중간"
+    ],
+    [
+     "**`all`(-1)**",
+     "**ISR 전부가 썼을 때**",
+     "**거의 없다**(min.isr 과 함께)",
+     "가장 낮다"
+    ]
+   ],
+   "note": "**카프카 3.0+ 의 기본값은 `all`** 이다. **그전에는 `1`** 이었다 — **오래된 자료와 다른** 자리."
+  },
+  {
+   "type": "figure",
+   "caption": "acks=1 에서 유실이 생기는 순간",
+   "ascii": "   t0   producer -> leader(b1): write \"m-100\"\n   t1   leader writes to its log            LEO=101\n   t2   leader replies OK                   producer thinks: success\n   t3   (follower b2 has not fetched yet)   b2 LEO=100\n   t4   b1 crashes\n   t5   controller elects b2 as leader\n   t6   new leader's log ends at 100\n\n        \"m-100\" is gone. the producer was told OK.\n\n   acks=all 이면 t2 에서 b2, b3 가 받을 때까지 기다린다",
+   "note": "**흔한 오해**: acks=1 은 \"한 대에는 확실히 있다\" 인데, **그 한 대가 죽으면 없다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "acks=all 만으로는 부족하다",
+   "md": "**`acks=all` 은 \"ISR 전부\" 인데, ISR 이 하나면 한 대**다(3.6절).\n\n```\nrf=3, ISR=[1], acks=all\n  -> 브로커 1만 받으면 성공\n  -> 1이 죽으면 유실\n```\n\n**그래서 짝이 필요**하다.\n\n```\nreplication.factor = 3\nmin.insync.replicas = 2      (토픽 설정)\nacks = all                   (프로듀서 설정)\n```\n\n| 셋이 다 있어야 | |\n|---|---|\n| rf=3 | 복제본이 셋 |\n| min.isr=2 | **둘 이상이 받아야 성공으로 인정** |\n| acks=all | 프로듀서가 그 조건을 요구 |\n\n> **하나라도 빠지면 보장이 무너진다.**\n> **\"acks=all 로 했는데 유실됐어요\" 는 대개 min.insync.replicas 가 1**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "acks=0 을 쓸 자리",
+   "md": "**거의 없다.** **그런데 있기는** 하다.\n\n| 쓸 수 있는 자리 | 왜 |\n|---|---|\n| 메트릭·클릭 로그 | 몇 건 잃어도 통계가 안 바뀐다 |\n| 초당 수십만 건의 텔레메트리 | 처리량이 전부 |\n\n**대가**:\n\n```\n브로커가 죽어 있어도 성공으로 보인다\n네트워크가 끊겨도 성공으로 보인다\n재시도가 의미 없다 (실패를 모르니까)\n```\n\n> **`acks=0` + 멱등 프로듀서는 같이 못** 쓴다 — **응답을 안 받으니 시퀀스 확인이** 안 된다(8.1절).\n> **3.0+ 에서 `enable.idempotence=true` 가 기본이라 `acks=0` 을 주면 설정 충돌 예외**가 난다.\n>\n> ```\n> ConfigException: Must set acks to all in order to use the idempotent producer.\n> ```\n> **`acks=0` 을 쓰려면 `enable.idempotence=false` 를 명시**해야 한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "세 값의 차이를 재고 유실을 만든다",
+   "sql": "$ kt --create --topic ak --partitions 1 --replication-factor 3 \\\n    --config min.insync.replicas=2 >/dev/null\n\n# --- 처리량 비교 ---\n\n$ for a in 0 1 all; do\n>   printf 'acks=%-4s ' \"$a\"\n>   docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n>     --topic ak --num-records 200000 --record-size 200 --throughput -1 \\\n>     --producer-props bootstrap.servers=kafka-1:19092 acks=$a \\\n>       enable.idempotence=false | tail -1 | cut -d, -f2,4\n> done\nacks=0     198412.699 records/sec  1.24 ms avg latency\nacks=1     124223.602 records/sec  3.87 ms avg latency\nacks=all    89285.714 records/sec  8.42 ms avg latency\n\n#   0 -> 1 -> all 로 갈수록 느려진다\n#   차이가 2배 정도다. 유실 위험과 맞바꾼다\n\n\n# --- acks=0 은 브로커가 죽어도 성공이다 ---\n\n$ kt --create --topic ak0 --partitions 1 --replication-factor 1 >/dev/null\n$ kt --describe --topic ak0 | tail -1\n  Topic: ak0  Partition: 0  Leader: 2  Replicas: 2  Isr: 2\n\n$ docker compose stop kafka-2 >/dev/null && sleep 8\n\n$ java -cp 'out:libs/*' AcksProducer --topic ak0 --acks 0 --records 100\nsent 100 records, 0 errors\n\n#   에러가 하나도 없다. \"성공\" 이다\n\n$ docker compose start kafka-2 >/dev/null && sleep 12\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic ak0\nak0:0:0\n\n#   0건이다. 100건이 전부 사라졌는데 프로듀서는 성공이라고 했다\n\n$ java -cp 'out:libs/*' AcksProducer --topic ak0 --acks 1 --records 100\nsent 100 records, 0 errors\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic ak0\nak0:0:100\n\n\n# --- acks=1 의 유실: 리더가 죽는 순간 ---\n\n#   (재현이 까다로워 조건을 만든다: 복제를 느리게)\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type brokers --entity-default \\\n    --alter --add-config num.replica.fetchers=1 >/dev/null\n\n$ kt --create --topic loss --partitions 1 --replication-factor 3 >/dev/null\n$ LEADER=$(kt --describe --topic loss | awk '/Partition:/ {print $6}')\n$ echo \"leader = broker $LEADER\"\nleader = broker 3\n\n$ java -cp 'out:libs/*' AcksProducer --topic loss --acks 1 --records 200000 &\n$ sleep 2 && docker compose stop kafka-$LEADER >/dev/null\n$ wait\nsent 200000 records, 1841 errors\n\n$ sleep 10\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic loss\nloss:0:196284\n\n#   성공했다고 본 것: 200000 - 1841 = 198159\n#   실제로 남은 것: 196284\n#   1875건이 \"성공\" 인데 사라졌다\n\n$ docker compose start kafka-$LEADER >/dev/null && sleep 15\n\n\n# --- acks=all + min.isr=2 로 같은 실험 ---\n\n$ kt --create --topic noloss --partitions 1 --replication-factor 3 \\\n    --config min.insync.replicas=2 >/dev/null\n$ LEADER=$(kt --describe --topic noloss | awk '/Partition:/ {print $6}')\n\n$ java -cp 'out:libs/*' AcksProducer --topic noloss --acks all --records 200000 &\n$ sleep 2 && docker compose stop kafka-$LEADER >/dev/null\n$ wait\nsent 200000 records, 0 errors\n\n$ sleep 10\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic noloss\nnoloss:0:200000\n\n#   200000건이 그대로 있다. 에러도 0\n#   리더가 죽는 동안 재시도로 새 리더에게 넘어갔다 (3.7·6.4절)\n\n$ docker compose start kafka-$LEADER >/dev/null && sleep 15\n\n\n# --- acks=0 과 멱등성은 같이 못 쓴다 ---\n\n$ java -cp 'out:libs/*' AcksProducer --topic ak --acks 0 --idempotence true\nException in thread \"main\" org.apache.kafka.common.config.ConfigException:\n  Must set acks to all in order to use the idempotent producer.\n  Otherwise we cannot guarantee idempotence.\n\n$ for t in ak ak0 loss noloss; do kt --delete --topic $t >/dev/null; done\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type brokers --entity-default \\\n    --alter --delete-config num.replica.fetchers >/dev/null"
+  }
+ ],
+ "recap": [
+  "acks 는 '언제 성공으로 볼 것인가' 다. 0(안 기다림)·1(리더만)·all(ISR 전부).",
+  "acks=1 은 리더가 쓴 직후 죽으면 '성공' 이라고 답한 레코드가 사라진다.",
+  "보장은 rf=3 + min.insync.replicas=2 + acks=all 셋이 함께 있어야 성립한다.",
+  "3.0+ 의 기본은 acks=all 과 enable.idempotence=true 다. 둘은 짝이라 acks=0 을 쓰려면 멱등성을 꺼야 한다.",
+  "처리량 차이는 대략 2배다. 유실 위험과 맞바꾼다."
+ ],
+ "drills": [
+  {
+   "task": "perf-test 로 acks 0/1/all 의 처리량과 지연을 각각 재 본다.",
+   "done_when": "세 숫자를 표로 적을 수 있다.",
+   "minutes": 8
+  },
+  {
+   "task": "복제 계수 1인 토픽에서 브로커를 내린 채 acks=0 으로 보내 '에러 0인데 데이터 0' 을 확인한다.",
+   "done_when": "성공이라고 보고된 것이 사라지는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "acks=1 로 보내는 중에 리더를 죽여 '성공한 건수' 와 '실제 저장 건수' 를 비교한다.",
+   "done_when": "차이가 나는 것을 숫자로 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "acks=1 에서 유실이 생기는 순간은.",
+   "a": "리더가 자기 로그에 쓰고 응답한 뒤, 팔로워가 복제하기 전에 리더가 죽었을 때."
+  },
+  {
+   "q": "'acks=all 로 했는데 유실됐다' 면 무엇을 확인하나.",
+   "a": "min.insync.replicas. 1이면 ISR 이 하나여도 성공이라 사실상 acks=1 이다."
+  },
+  {
+   "q": "acks=0 과 멱등 프로듀서를 같이 못 쓰는 이유는.",
+   "a": "응답을 안 받으므로 브로커가 중복을 걸러 준 결과를 확인할 수 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "acks",
+   "what": "프로듀서가 성공으로 인정하는 조건."
+  },
+  {
+   "term": "min.insync.replicas",
+   "what": "acks=all 성공에 필요한 최소 ISR 수(토픽 설정)."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — acks",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs_acks",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Durability guarantees",
+   "url": "https://docs.confluent.io/kafka/design/replication.html",
+   "publisher": "Confluent"
+  }
+ ]
+}

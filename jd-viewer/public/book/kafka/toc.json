@@ -325,7 +325,7 @@
           "title": "acks",
           "summary": "0 · 1 · all 이 각각 무엇을 포기하나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
@@ -333,7 +333,7 @@
           "title": "재시도와 중복",
           "summary": "성공했는데 실패로 보이는 경우.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
@@ -341,7 +341,7 @@
           "title": "처리량 대 지연",
           "summary": "linger.ms 와 batch.size.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -349,7 +349,7 @@
           "title": "파티셔너",
           "summary": "기본 동작과 직접 만들기.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",
