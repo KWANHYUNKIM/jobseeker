@@ -381,7 +381,7 @@
           "title": "Condition",
           "summary": "조건마다 대기실을 따로.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -389,7 +389,7 @@
           "title": "읽기 쓰기 락",
           "summary": "읽기끼리는 같이 들어간다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",
@@ -397,7 +397,7 @@
           "title": "무엇을 언제 쓰나",
           "summary": "synchronized 로 되면 그걸 쓴다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

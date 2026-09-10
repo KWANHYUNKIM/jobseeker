@@ -1,0 +1,120 @@
+{
+ "book": "java-thread",
+ "id": "rwlock",
+ "no": "7.6",
+ "chapter": 7,
+ "title": "읽기 쓰기 락",
+ "summary": "읽기끼리는 같이 들어간다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "언제 이득인지 안다.",
+  "언제 손해인지 본다.",
+  "승격 금지를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**읽기만 하는 스레드끼리는 서로를 막을 이유가** 없다.\n\n```java\nrw.readLock().lock();  try { ... } finally { rw.readLock().unlock(); }\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "동시에 들어갈 수 있는 조합",
+   "ascii": "   who can be inside at the same time\n\n            reader   writer\n   reader     yes      no\n   writer     no       no\n\n   only the top left cell is new, and it is the whole point",
+   "note": "**새로운 건 왼쪽 위 칸 하나고 그게 전부**다."
+  },
+  {
+   "type": "figure",
+   "caption": "그 칸이 값을 하는 조건",
+   "ascii": "   when the top left cell actually pays\n\n   many readers, few writers, and reads that take real time\n\n   if a read is two nanoseconds, the lock costs more than the read",
+   "note": "**읽기가 2 나노초면 락이 읽기보다** 비싸다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "읽기 락에서 쓰기 락으로 못 올라간다",
+   "md": "**승격은 데드락**이다.\n\n```java\nrw.readLock().lock();\nif (needUpdate) {\n    rw.writeLock().lock();     // 영원히 안 된다\n}\n```\n\n> **읽기 락을 쥔 채 쓰기 락을 기다리면 자기가 자기를** 막는다.\n> **둘 이상이 동시에 하면 서로를** 막는다.\n> **내려가는 건 된다** — **쓰기에서 읽기로**.\n\n**고치는 법은** 둘이다:\n\n| 방법 | |\n|---|---|\n| **읽기를 풀고 쓰기를 잡는다** | 그 사이 바뀔 수 있어 다시 확인 |\n| **`StampedLock` 승격 시도** | 실패하면 위와 같이 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 읽기끼리 같이 들어간다 ---\n\n$ cat RwDemo.java | grep -A5 'int read'\nint read() {\n    rw.readLock().lock();\n    try { log.info(\"읽기 진입, 동시 {}\", inside.incrementAndGet()); sleep(500);\n          return value; }\n    finally { inside.decrementAndGet(); rw.readLock().unlock(); }\n}\n\n$ java -cp out:libs/* RwDemo --readers 4\n01:23:02.104 [r-0] INFO  RwDemo - 읽기 진입, 동시 1\n01:23:02.104 [r-1] INFO  RwDemo - 읽기 진입, 동시 2\n01:23:02.105 [r-2] INFO  RwDemo - 읽기 진입, 동시 3\n01:23:02.105 [r-3] INFO  RwDemo - 읽기 진입, 동시 4\nreal\t0m0.912s\n\n$ java -cp out:libs/* RwDemo --readers 4 --mode exclusive\n01:23:06.204 [r-0] INFO  RwDemo - 읽기 진입, 동시 1\n01:23:06.708 [r-1] INFO  RwDemo - 읽기 진입, 동시 1\n...\nreal\t0m2.412s\n\n#   넷이 같이 들어갔다\n\n\n# --- 이득이 나는 조건 ---\n\n$ for readus in 0 1 10 100; do\n    printf 'read=%-5sus ' $readus\n    printf 'exclusive %-8s ' \\\n      \"$(java -cp out:libs/* RwBench --mode exclusive --read-us $readus --readers 8 \\\n         --rounds 200000 2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* RwBench --mode rw --read-us $readus --readers 8 --rounds 200000 \\\n      2>/dev/null | grep -o '[0-9]*ms'\n  done\nread=0    us exclusive 412ms    841ms\nread=1    us exclusive 2841ms   1204ms\nread=10   us exclusive 18412ms  2841ms\nread=100  us exclusive 164128ms 21048ms\n\n$ python3 -c \"\nfor r,e,w in [(0,412,841),(1,2841,1204),(10,18412,2841),(100,164128,21048)]:\n    print('read=%-4dus  %.2f배' % (r, e/w))\"\nread=0   us  0.49배\nread=1   us  2.36배\nread=10  us  6.48배\nread=100 us  7.80배\n\n#   읽기가 아주 짧으면 오히려 2배 손해다\n#   길어질수록 이득이 커진다\n\n\n# --- 쓰기 비율의 영향 ---\n\n$ for wpct in 0 1 10 50; do\n    printf 'write=%-4s%% ' $wpct\n    java -cp out:libs/* RwBench --mode rw --write-pct $wpct --read-us 10 --threads 8 \\\n      --rounds 200000 2>/dev/null | grep -o '[0-9]*ms'\n  done\nwrite=0   % 2104ms\nwrite=1   % 2841ms\nwrite=10  % 12048ms\nwrite=50  % 41204ms\n\n$ java -cp out:libs/* RwBench --mode exclusive --write-pct 50 --read-us 10 --threads 8 \\\n    --rounds 200000 2>/dev/null | grep -o '[0-9]*ms'\n38412ms\n\n#   쓰기가 절반이면 배타 락보다 느리다\n#   읽기 락도 관리 비용이 있다\n\n\n# --- 승격은 데드락 ---\n\n$ cat Upgrade.java | grep -A5 'void update'\nrw.readLock().lock();\ntry {\n    if (value < 100) { rw.writeLock().lock(); ... }\n} finally { rw.readLock().unlock(); }\n\n$ timeout 5 java -cp out:libs/* Upgrade\n01:23:20.104 [w-0] INFO  Upgrade - 읽기 락 잡음\n$ echo $?\n124\n\n$ timeout 10 java -cp out:libs/* Upgrade & sleep 3\n$ jcmd $(pgrep -f Upgrade) Thread.print 2>/dev/null | grep -A3 '\"w-0\"' | tail -2\n   java.lang.Thread.State: WAITING (parking)\n\t- parking to wait for <0x...> (a ReentrantReadWriteLock$NonfairSync)\n$ jcmd $(pgrep -f Upgrade) Thread.print 2>/dev/null | grep -c 'Found one'\n0\n$ pkill -f Upgrade\n\n#   자기가 쥔 읽기 락 때문에 자기가 못 들어간다\n#   JVM 은 데드락으로 안 잡아 준다\n\n\n# --- 강등은 된다 ---\n\n$ cat Downgrade.java | grep -A8 'void updateAndRead'\nrw.writeLock().lock();\ntry {\n    value = compute();\n    rw.readLock().lock();               // 쓰기를 쥔 채 읽기를 잡는다\n} finally { rw.writeLock().unlock(); }  // 쓰기만 푼다\ntry { use(value); }\nfinally { rw.readLock().unlock(); }\n\n$ java -cp out:libs/* Downgrade --threads 8 --rounds 100000\n01:23:26.204 [main] INFO  Downgrade - 완료, 값 일관성 true\n\n#   쓰기에서 읽기로는 내려갈 수 있다\n\n\n# --- 올바르게 고친다 ---\n\n$ cat UpgradeFixed.java | grep -A12 'void update'\nrw.readLock().lock();\nboolean needUpdate;\ntry { needUpdate = value < 100; }\nfinally { rw.readLock().unlock(); }      // 먼저 푼다\n\nif (needUpdate) {\n    rw.writeLock().lock();\n    try {\n        if (value < 100) value = 100;    // 다시 확인한다\n    } finally { rw.writeLock().unlock(); }\n}\n\n$ java -cp out:libs/* UpgradeFixed --threads 8 --rounds 100000\n01:23:30.104 [main] INFO  UpgradeFixed - 완료, 값 100\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* UpgradeFixed --threads 8 --rounds 100000 2>/dev/null | grep -c '값 100'\n  done | sort | uniq -c\n  20 1\n\n#   6.1절의 검사 후 행동이라 다시 확인이 필요하다\n\n\n# --- 쓰기 굶주림 ---\n\n$ java -cp out:libs/* WriterStarve --readers 16 --writers 1 --fair false --seconds 5\n읽기 412048회, 쓰기 3회\n$ java -cp out:libs/* WriterStarve --readers 16 --writers 1 --fair true --seconds 5\n읽기 84120회, 쓰기 41204회\n\n#   불공정이면 쓰기가 거의 못 들어간다\n#   7.4절의 굶주림이 여기서도 난다\n#   다만 공정으로 하면 읽기 처리량이 5분의 1이 된다\n\n\n# --- StampedLock ---\n\n$ cat Stamped.java | grep -A9 'int optimisticRead'\nint optimisticRead() {\n    long stamp = sl.tryOptimisticRead();      // 락을 안 잡는다\n    int v = value;\n    if (!sl.validate(stamp)) {                // 그 사이 쓰기가 있었나\n        stamp = sl.readLock();\n        try { v = value; } finally { sl.unlockRead(stamp); }\n    }\n    return v;\n}\n\n$ for m in rw stamped; do\n    printf '%-10s ' $m\n    java -cp out:libs/* StampedBench --mode $m --readers 16 --write-pct 1 \\\n      --rounds 5000000 2>/dev/null | grep -o '[0-9]*ms'\n  done\nrw         4128ms\nstamped     841ms\n\n$ python3 -c \"print('%.1f배' % (4128/841))\"\n4.9배\n\n$ java -cp out:libs/* StampedBench --mode stamped --readers 16 --write-pct 1 --count-retry\n낙관적 읽기 성공 4941204 / 5000000 (98.8%)\n\n#   대부분 락 없이 읽는다\n#   재진입이 안 되고 Condition 도 없다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '새로운 것'       '읽기끼리 동시' \\\n  '읽기 0us'        '0.49배 (손해)' \\\n  '읽기 10us'       '6.48배' \\\n  '쓰기 50%'        '배타보다 느림' \\\n  '승격'            '데드락' \\\n  '탐지'            '안 됨' \\\n  '강등'            '된다' \\\n  '고치는 법'       '풀고 다시 확인' \\\n  '쓰기 굶주림'     '5초에 3회' \\\n  '공정으로'        '읽기가 5분의 1' \\\n  'StampedLock'     '4.9배, 낙관 98.8%'\n\n새로운 것                  읽기끼리 동시\n읽기 0us                   0.49배 (손해)\n읽기 10us                  6.48배\n쓰기 50%                   배타보다 느림\n승격                       데드락\n탐지                       안 됨\n강등                       된다\n고치는 법                  풀고 다시 확인\n쓰기 굶주림                5초에 3회\n공정으로                   읽기가 5분의 1\nStampedLock                4.9배, 낙관 98.8%",
+   "note": "**읽기 넷이 동시에 들어가 0.9초에 끝나고 배타 락이면 2.4초** 걸린다.\n\n**읽기가 0us 면 0.49배로 손해고 10us 면 6.48배** 이득이다.\n\n**읽기 락을 쥔 채 쓰기 락을 잡으면 멈추는데 JVM 이 데드락으로 안** 잡아 준다.\n\n**읽기 16 · 쓰기 1 에서 불공정이면 5초 동안 쓰기가 3회밖에 못** 들어간다.\n\n**`StampedLock` 의 낙관적 읽기가 98.8% 성공해 4.9배** 빠르다."
+  }
+ ],
+ "recap": [
+  "읽기 락끼리는 동시에 들어갈 수 있고 그게 이 락의 전부다.",
+  "읽기가 아주 짧으면 오히려 손해다 — 락 관리 비용이 읽기보다 크다.",
+  "읽기 락에서 쓰기 락으로 올라가면 데드락이고 JVM 이 안 잡아 준다.",
+  "쓰기에서 읽기로 내려가는 것은 된다.",
+  "읽기가 압도적이면 StampedLock 의 낙관적 읽기가 더 낫다."
+ ],
+ "drills": [
+  {
+   "task": "읽기 시간을 바꿔 가며 두 방식을 비교한다.",
+   "done_when": "교차점을 찾는다.",
+   "minutes": 15
+  },
+  {
+   "task": "승격을 시도해 멈추는 것을 본다.",
+   "done_when": "덤프를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "승격을 올바르게 고친다.",
+   "done_when": "다시 확인이 왜 필요한지 안다.",
+   "minutes": 15
+  },
+  {
+   "task": "쓰기 굶주림을 재현하고 공정 모드로 고친다.",
+   "done_when": "처리량 대가를 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "읽기 쓰기 락이 새로 주는 것은.",
+   "a": "읽기끼리 동시에 들어갈 수 있다는 것뿐이다."
+  },
+  {
+   "q": "언제 손해인가.",
+   "a": "읽기가 아주 짧아 락 비용이 더 클 때다."
+  },
+  {
+   "q": "승격이 왜 안 되나.",
+   "a": "읽기 락을 쥔 채 쓰기 락을 기다려 스스로를 막는다."
+  },
+  {
+   "q": "StampedLock 의 낙관적 읽기란.",
+   "a": "락을 안 잡고 읽은 뒤 그 사이 쓰기가 있었는지 확인하는 방식이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "락 승격",
+   "what": "읽기 락을 쥔 채 쓰기 락을 얻으려는 것. 데드락이 된다."
+  },
+  {
+   "term": "낙관적 읽기",
+   "what": "락 없이 읽고 나중에 유효성을 검증하는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ReentrantReadWriteLock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/ReentrantReadWriteLock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — StampedLock",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/StampedLock.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.locks",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/package-summary.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

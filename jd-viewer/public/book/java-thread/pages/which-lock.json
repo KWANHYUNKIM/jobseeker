@@ -1,0 +1,175 @@
+{
+ "book": "java-thread",
+ "id": "which-lock",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "무엇을 언제 쓰나",
+ "summary": "synchronized 로 되면 그걸 쓴다.",
+ "minutes": 11,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "고르는 순서를 안다.",
+  "네 물음을 안다.",
+  "7장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장에서 고를 수 있는 게** 늘었다. **무엇부터 시도할지** 정한다."
+  },
+  {
+   "type": "figure",
+   "caption": "시도할 순서",
+   "ascii": "   the order to try things in\n\n   share nothing at all\n   share something immutable\n   use a concurrent collection\n   use an atomic type\n   use synchronized\n   use an explicit lock\n\n   each step down costs more thought, so only go when forced",
+   "note": "**한 칸 내려갈수록 생각할 게 늘어나니 밀릴 때만** 내려간다."
+  },
+  {
+   "type": "figure",
+   "caption": "명시적 락이 필요한 네 물음",
+   "ascii": "   the four questions that force an explicit lock\n\n   do you need to give up waiting\n   do you need to cancel a waiter\n   do you need several wait rooms\n   do you need readers to run together\n\n   if all four are no, the keyword is enough",
+   "note": "**넷 다 아니면 낱말로** 충분하다."
+  },
+  {
+   "type": "table",
+   "caption": "전체를 한 표로",
+   "columns": [
+    "",
+    "언제",
+    "장",
+    "값"
+   ],
+   "rows": [
+    [
+     "**공유 안 함**",
+     "**가능하면 언제나**",
+     "2.2절",
+     "**0**"
+    ],
+    [
+     "**불변 객체**",
+     "**설정·값 객체**",
+     "5.5절",
+     "**0**"
+    ],
+    [
+     "**동시성 컬렉션**",
+     "**맵·큐·리스트**",
+     "10장",
+     "낮다"
+    ],
+    [
+     "**원자 타입**",
+     "**카운터·플래그**",
+     "9장",
+     "낮다"
+    ],
+    [
+     "`volatile`",
+     "플래그·참조 교체",
+     "5.3절",
+     "**읽기 공짜**"
+    ],
+    [
+     "**`synchronized`**",
+     "**그 밖의 대부분**",
+     "6장",
+     "**무경합 4.5배**"
+    ],
+    [
+     "**`ReentrantLock`**",
+     "**네 물음 중 하나라도 예**",
+     "7장",
+     "경합 시 유리"
+    ],
+    [
+     "**읽기 쓰기 락**",
+     "**읽기가 길고 압도적**",
+     "7.6절",
+     "조건부"
+    ]
+   ],
+   "note": "**위 넷이 이 책 절반의 결론**이다 — **락을 안 쓰는 게 가장** 좋다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 같은 요구를 여덟 가지로 ---\n\n# 요구: 여러 스레드가 카운터를 올리고 가끔 읽는다\n\n$ for m in threadlocal atomic volatile sync lock rwlock striped adder; do\n    printf '%-14s ' $m\n    java -cp out:libs/* CounterWays --mode $m --threads 8 --rounds 5000000 2>/dev/null \\\n      | grep -oE '[0-9]+ms 값 [0-9]+'\n  done\n\nthreadlocal    204ms 값 40000000\natomic         1204ms 값 40000000\nvolatile       841ms 값 21048204\nsync           8412ms 값 40000000\nlock           6041ms 값 40000000\nrwlock         12048ms 값 40000000\nstriped        1841ms 값 40000000\nadder          412ms 값 40000000\n\n$ java -cp out:libs/* CounterWays --mode volatile --threads 8 --rounds 5000000 --verify\nvolatile: 값이 틀림 (5.3절)\n\n#   volatile 만 틀렸다\n#   나머지는 41배 차이가 난다\n\n\n# --- 요구가 바뀌면 순위도 바뀐다 ---\n\n# 요구를 바꾼다: 잔고를 확인하고 출금한다 (6.1절)\n\n$ for m in atomic sync lock adder; do\n    printf '%-10s ' $m\n    java -cp out:libs/* WithdrawWays --mode $m --threads 8 --rounds 100000 2>/dev/null\n  done\natomic     불가 (검사 후 행동은 CAS 반복이 필요, 9.2절)\nsync       412ms 잔고 0\nlock       398ms 잔고 0\nadder      불가 (읽기가 정확하지 않음)\n\n#   9.2절에서 atomic 으로 하는 법을 본다\n\n\n# --- 네 물음을 던진다 ---\n\n$ cat WhichLock.java | grep -A10 'static String recommend'\nstatic String recommend(boolean needTimeout, boolean needCancel,\n                        boolean multiCondition, boolean readHeavy) {\n    if (needTimeout || needCancel || multiCondition) return \"ReentrantLock\";\n    if (readHeavy) return \"ReadWriteLock 또는 StampedLock\";\n    return \"synchronized\";\n}\n\n$ java -cp out:libs/* WhichLock --survey\n포기해야 하나?           아니오\n취소해야 하나?           예\n대기실이 여럿인가?       아니오\n읽기가 압도적인가?       아니오\n-> ReentrantLock\n\n$ java -cp out:libs/* WhichLock --survey --all-no\n-> synchronized\n\n\n# --- 실제 코드에서 세어 본다 ---\n\n$ grep -rc 'synchronized' src/main/java/ | awk -F: '{s+=$2} END {print \"synchronized\", s}'\nsynchronized 41\n$ grep -rc 'ReentrantLock' src/main/java/ | awk -F: '{s+=$2} END {print \"ReentrantLock\", s}'\nReentrantLock 4\n$ grep -rc 'Atomic' src/main/java/ | awk -F: '{s+=$2} END {print \"Atomic\", s}'\nAtomic 18\n$ grep -rc 'Concurrent' src/main/java/ | awk -F: '{s+=$2} END {print \"Concurrent\", s}'\nConcurrent 12\n\n$ cat check-lock-need.sh\n#!/bin/sh\n# ReentrantLock 을 쓰면서 네 기능을 하나도 안 쓰는 자리를 찾는다\nfor f in $(grep -rl 'ReentrantLock' src/main/java/); do\n  if ! grep -q 'tryLock\\|lockInterruptibly\\|newCondition' \"$f\"; then\n    echo \"$f  (synchronized 로 충분할 수 있다)\"\n  fi\ndone\n\n$ ./check-lock-need.sh\nsrc/main/java/study/th/Registry.java  (synchronized 로 충분할 수 있다)\n\n$ ./check-lock-need.sh | wc -l\n       1\n\n#   넷 중 하나도 안 쓰면 낱말로 돌아가도 된다\n\n\n# --- 7장을 표로 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '7.1'  'ReentrantLock'   'try-finally 필수' \\\n  '7.2'  'tryLock'         '포기로 데드락을 푼다' \\\n  '7.3'  '취소 가능 대기'  '4.3절의 빈칸' \\\n  '7.4'  '공정성'          '10배 느리고 굶주림 없음' \\\n  '7.5'  'Condition'       '대기실을 나눈다' \\\n  '7.6'  '읽기 쓰기 락'    '읽기가 길 때만' \\\n  '7.7'  '고르기'          '위에서부터'\n\n7.1      ReentrantLock             try-finally 필수\n7.2      tryLock                   포기로 데드락을 푼다\n7.3      취소 가능 대기            4.3절의 빈칸\n7.4      공정성                    10배 느리고 굶주림 없음\n7.5      Condition                 대기실을 나눈다\n7.6      읽기 쓰기 락              읽기가 길 때만\n7.7      고르기                    위에서부터\n\n\n# --- 마지막 확인 ---\n\n$ java -cp out:libs/* CounterWays --mode threadlocal --threads 8 --rounds 5000000 2>/dev/null\n204ms 값 40000000\n$ java -cp out:libs/* CounterWays --mode sync --threads 8 --rounds 5000000 2>/dev/null\n8412ms 값 40000000\n\n$ python3 -c \"print('공유를 안 하면 %.0f배 빠르다' % (8412/204))\"\n공유를 안 하면 41배 빠르다\n\n#   8장에서 스레드끼리 물건을 넘기는 문제를 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '첫째'            '공유 안 하기' \\\n  '둘째'            '불변' \\\n  '셋째'            '동시성 컬렉션' \\\n  '넷째'            '원자 타입' \\\n  '다섯째'          'synchronized' \\\n  '여섯째'          '명시적 락' \\\n  '네 물음'         '포기 · 취소 · 대기실 · 읽기' \\\n  '넷 다 아니면'    '낱말로 충분' \\\n  '같은 요구'       '41배 차이' \\\n  'volatile'        '여기선 틀림' \\\n  '검사'            '기능을 안 쓰는 락 찾기'\n\n첫째                       공유 안 하기\n둘째                       불변\n셋째                       동시성 컬렉션\n넷째                       원자 타입\n다섯째                     synchronized\n여섯째                     명시적 락\n네 물음                    포기 · 취소 · 대기실 · 읽기\n넷 다 아니면               낱말로 충분\n같은 요구                  41배 차이\nvolatile                   여기선 틀림\n검사                       기능을 안 쓰는 락 찾기",
+   "note": "**같은 카운터를 여덟 가지로 만들면 204ms 에서 12048ms 까지 41배** 차이가 난다.\n\n**그중 `volatile` 만 값이 틀리고 나머지 일곱은 다** 맞다.\n\n**요구를 검사 후 행동으로 바꾸면 `Atomic` 과 `LongAdder` 는 그대로는 못** 쓴다.\n\n**네 물음에 다 아니오면 `synchronized` 를** 고른다.\n\n**`ReentrantLock` 을 쓰면서 네 기능을 하나도 안 쓰는 자리를 1곳** 찾았다."
+  }
+ ],
+ "recap": [
+  "고르는 순서는 공유 안 하기, 불변, 동시성 컬렉션, 원자 타입, synchronized, 명시적 락이다.",
+  "명시적 락이 필요한 건 포기·취소·여러 대기실·읽기 병렬 중 하나라도 필요할 때다.",
+  "같은 요구를 여러 방식으로 만들면 수십 배 차이가 난다.",
+  "요구가 검사 후 행동이면 쓸 수 있는 방식이 줄어든다.",
+  "명시적 락을 쓰면서 그 기능을 하나도 안 쓰면 낱말로 돌아가도 된다."
+ ],
+ "drills": [
+  {
+   "task": "같은 카운터를 여러 방식으로 만들어 성능을 잰다.",
+   "done_when": "표를 완성한다.",
+   "minutes": 25
+  },
+  {
+   "task": "요구를 검사 후 행동으로 바꿔 다시 재 본다.",
+   "done_when": "쓸 수 없는 방식을 가른다.",
+   "minutes": 15
+  },
+  {
+   "task": "네 물음을 코드베이스의 락마다 던져 본다.",
+   "done_when": "필요 없는 곳을 찾는다.",
+   "minutes": 15
+  },
+  {
+   "task": "명시적 락의 기능을 안 쓰는 자리를 찾는 스크립트를 만든다.",
+   "done_when": "실제로 몇 곳인지 센다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "가장 먼저 시도할 것은.",
+   "a": "공유를 아예 안 하는 것이다."
+  },
+  {
+   "q": "명시적 락이 필요한 네 경우는.",
+   "a": "포기, 취소, 여러 대기실, 읽기 병렬이다."
+  },
+  {
+   "q": "네 물음이 다 아니오면.",
+   "a": "synchronized 로 충분하다."
+  },
+  {
+   "q": "읽기 쓰기 락은 언제 고르나.",
+   "a": "읽기가 실제로 오래 걸리고 압도적으로 많을 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "고르는 사다리",
+   "what": "공유 안 하기에서 명시적 락까지 순서대로 시도하는 기준."
+  },
+  {
+   "term": "네 물음",
+   "what": "명시적 락이 필요한지 가려내는 네 가지 질문."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — java.util.concurrent.locks",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/package-summary.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.util.concurrent.atomic",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
