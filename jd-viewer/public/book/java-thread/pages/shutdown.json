@@ -1,0 +1,145 @@
+{
+ "book": "java-thread",
+ "id": "shutdown",
+ "no": "11.6",
+ "chapter": 11,
+ "title": "종료",
+ "summary": "shutdown 과 shutdownNow.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "세 단계를 안다.",
+  "안 끝나는 경우를 본다.",
+  "4.5절과 잇는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**3.3절에서 스레드 풀이 데몬이 아니라고** 했다. **안 끝내면 JVM 이 안** 끝난다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 단계 종료",
+   "ascii": "   the three step shutdown\n\n   stop accepting new work\n   wait a while for what is running\n   interrupt what is left, then wait again\n\n   skipping the last step leaves the jvm alive forever",
+   "note": "**마지막을 건너뛰면 JVM 이 영원히 살아** 있다."
+  },
+  {
+   "type": "table",
+   "caption": "두 메서드",
+   "columns": [
+    "",
+    "`shutdown()`",
+    "`shutdownNow()`"
+   ],
+   "rows": [
+    [
+     "**새 제출**",
+     "**거부**",
+     "거부"
+    ],
+    [
+     "**큐에 있는 것**",
+     "**다 실행**",
+     "**돌려주고 버림**"
+    ],
+    [
+     "**돌고 있는 것**",
+     "**끝까지**",
+     "**인터럽트**"
+    ],
+    [
+     "**돌아오는 값**",
+     "없음",
+     "**실행 못 한 작업 목록**"
+    ],
+    [
+     "**막히나**",
+     "**아니오**",
+     "아니오"
+    ]
+   ],
+   "note": "**마지막 줄이 흔한 오해**다 — **둘 다 곧바로 돌아오고 기다리려면 `awaitTermination`** 이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 종료를 안 하면 ---\n\n$ cat NoShutdown.java | grep -A3 'main'\nExecutorService pool = Executors.newFixedThreadPool(2);\npool.submit(() -> log.info(\"일함\"));\nlog.info(\"main 끝\");\n\n$ timeout 10 java -cp out:libs/* NoShutdown\n02:26:02.104 [pool-1-thread-1] INFO  NoShutdown - 일함\n02:26:02.108 [main] INFO  NoShutdown - main 끝\n$ echo $?\n124\n\n$ timeout 10 java -cp out:libs/* NoShutdown & sleep 2\n$ jcmd $(pgrep -f NoShutdown) Thread.print 2>/dev/null | grep -A2 'pool-1-thread-1' | tail -1\n   java.lang.Thread.State: WAITING (parking)\n$ pkill -f NoShutdown\n\n#   3.3절의 그것이다\n#   큐에서 영원히 기다린다\n\n\n# --- 세 단계 ---\n\n$ cat GoodShutdown.java | grep -A12 'void shutdown'\nvoid shutdown() {\n    pool.shutdown();                                   // 1. 새 제출 거부\n    try {\n        if (!pool.awaitTermination(30, SECONDS)) {     // 2. 기다린다\n            List<Runnable> left = pool.shutdownNow();  // 3. 인터럽트\n            log.warn(\"실행 못 한 작업 {}\", left.size());\n            if (!pool.awaitTermination(10, SECONDS))\n                log.error(\"그래도 안 끝났다\");\n        }\n    } catch (InterruptedException e) {\n        pool.shutdownNow();\n        Thread.currentThread().interrupt();            // 4.4절\n    }\n}\n\n$ java -cp out:libs/* GoodShutdown --tasks 100 --work-ms 50\n02:26:12.104 [main] INFO  GoodShutdown - 종료 완료 (2841ms)\n$ echo $?\n0\n\n\n# --- 곧바로 돌아온다 ---\n\n$ cat NotBlocking.java | grep -A4 'main'\nlong s = now();\npool.shutdown();\nlog.info(\"shutdown 이 {}ms 걸렸다\", now() - s);\nlog.info(\"아직 도는 작업 {}\", ((ThreadPoolExecutor)pool).getActiveCount());\n\n$ java -cp out:libs/* NotBlocking --tasks 100 --work-ms 100\n02:26:16.104 [main] INFO  NotBlocking - shutdown 이 0ms 걸렸다\n02:26:16.104 [main] INFO  NotBlocking - 아직 도는 작업 8\n\n#   기다리는 게 아니다\n\n\n# --- 인터럽트를 안 보면 ---\n\n$ java -cp out:libs/* GoodShutdown --tasks 10 --work-ms 60000 --ignores-interrupt\n02:26:20.104 [main] WARN  GoodShutdown - 실행 못 한 작업 2\n02:26:30.108 [main] ERROR GoodShutdown - 그래도 안 끝났다\n\n$ java -cp out:libs/* GoodShutdown --tasks 10 --work-ms 60000 --checks-interrupt\n02:26:34.204 [main] INFO  GoodShutdown - 종료 완료 (204ms)\n\n#   4.3절과 4.5절의 그 이야기다\n#   작업이 협력해야 종료가 된다\n\n\n# --- 큐에 남은 것 ---\n\n$ java -cp out:libs/* ShutdownNow --tasks 1000 --pool 4 --work-ms 10\n02:26:40.104 [main] INFO  ShutdownNow - 완료 41, 돌려받은 작업 951, 인터럽트된 작업 4\n\n$ python3 -c \"print('41 + 951 + 4 = %d (기대 1000이 아니다 -- 4개는 중간에 끊겼다)' % (41+951+4))\"\n41 + 951 + 4 = 996 (기대 1000이 아니다 -- 4개는 중간에 끊겼다)\n\n$ java -cp out:libs/* ShutdownNow --tasks 1000 --pool 4 --work-ms 10 --requeue\n돌려받은 951개를 다시 제출해 처리함\n\n#   돌려받은 목록을 버리면 그만큼 사라진다\n\n\n# --- 스프링에서 ---\n\n$ cat SpringPool.java | grep -B1 -A5 'setWaitForTasks'\n@Bean(destroyMethod = \"shutdown\")\npublic ThreadPoolTaskExecutor executor() {\n    ThreadPoolTaskExecutor ex = new ThreadPoolTaskExecutor();\n    ex.setWaitForTasksToCompleteOnShutdown(true);\n    ex.setAwaitTerminationSeconds(30);\n    ...\n}\n\n$ java -jar app.jar & sleep 3 && kill -TERM %1 && sleep 5\n02:26:50.104 [main] INFO  - Shutting down ExecutorService 'executor'\n02:26:52.108 [main] INFO  - 진행 중 작업 12개 완료 대기\n02:26:54.112 [main] INFO  - 종료 완료\n\n$ java -jar app.jar --no-wait & sleep 3 && kill -TERM %1 && sleep 2\n02:27:00.204 [main] INFO  - Shutting down ExecutorService 'executor'\n02:27:00.208 [order-3] WARN  - 작업이 중간에 끊겼다\n\n#   12.1절에서 이 설정을 다시 본다\n\n\n# --- try-with-resources ---\n\n$ cat AutoClose.java | grep -A4 'try'\ntry (ExecutorService pool = Executors.newFixedThreadPool(4)) {\n    for (Task t : tasks) pool.submit(t);\n}                                          // close() 가 shutdown + await 를 한다\n\n$ java -cp out:libs/* AutoClose --tasks 100 --work-ms 10\n02:27:06.104 [main] INFO  AutoClose - 완료 100, 종료됨\n$ echo $?\n0\n\n$ java -cp out:libs/* AutoClose --tasks 10 --work-ms 60000 --timeout-check\n(close 가 안 끝난다 -- 무한히 기다린다)\n\n#   자바 19부터 AutoCloseable 이다\n#   대신 시간 제한이 없다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '안 하면'         'JVM 이 안 끝남' \\\n  '세 단계'         'shutdown → await → shutdownNow' \\\n  '둘 다'           '곧바로 돌아옴' \\\n  '기다리려면'      'awaitTermination' \\\n  '인터럽트 무시'   '10초 뒤에도 안 끝남' \\\n  '보면'            '0.2초' \\\n  'shutdownNow'     '큐를 돌려줌' \\\n  '버리면'          '951개 사라짐' \\\n  '스프링'          'setWaitForTasks...' \\\n  'try-with'        '자바 19+, 시간 제한 없음'\n\n안 하면                    JVM 이 안 끝남\n세 단계                    shutdown → await → shutdownNow\n둘 다                      곧바로 돌아옴\n기다리려면                 awaitTermination\n인터럽트 무시              10초 뒤에도 안 끝남\n보면                       0.2초\nshutdownNow                큐를 돌려줌\n버리면                     951개 사라짐\n스프링                     setWaitForTasks...\ntry-with                   자바 19+, 시간 제한 없음",
+   "note": "**종료를 안 부르면 `pool-1-thread-1` 이 `WAITING (parking)` 으로 남아 JVM 이 안** 끝난다.\n\n**`shutdown()` 은 0ms 에 돌아오고 그때도 여덟 작업이 돌고** 있다.\n\n**작업이 인터럽트를 안 보면 `shutdownNow` 뒤 10초를 더 기다려도 안** 끝난다.\n\n**`shutdownNow` 가 돌려준 951개를 버리면 그만큼** 사라진다.\n\n**자바 19부터 `try-with-resources` 로 닫을 수 있지만 시간 제한이** 없다."
+  }
+ ],
+ "recap": [
+  "스레드 풀은 데몬이 아니라 종료를 안 부르면 JVM 이 안 끝난다.",
+  "shutdown 으로 새 제출을 막고 기다렸다가 안 끝나면 shutdownNow 로 인터럽트한다.",
+  "두 메서드 모두 곧바로 돌아오므로 awaitTermination 으로 기다려야 한다.",
+  "작업이 인터럽트를 안 보면 shutdownNow 도 소용없다.",
+  "shutdownNow 가 돌려준 목록을 버리면 그 작업들이 사라진다."
+ ],
+ "drills": [
+  {
+   "task": "종료를 안 부르고 JVM 이 안 끝나는 것을 본다.",
+   "done_when": "덤프로 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "세 단계 종료를 구현한다.",
+   "done_when": "정상 종료를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "인터럽트를 무시하는 작업으로 종료해 본다.",
+   "done_when": "안 끝나는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "shutdownNow 가 돌려준 목록을 처리한다.",
+   "done_when": "유실을 없앤다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "종료를 안 부르면.",
+   "a": "풀 스레드가 데몬이 아니라 JVM 이 안 끝난다."
+  },
+  {
+   "q": "shutdown 은 기다리나.",
+   "a": "안 기다린다. awaitTermination 을 따로 불러야 한다."
+  },
+  {
+   "q": "shutdownNow 가 돌려주는 것은.",
+   "a": "큐에 있어 실행하지 못한 작업 목록이다."
+  },
+  {
+   "q": "작업이 인터럽트를 무시하면.",
+   "a": "shutdownNow 로도 못 끝낸다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "awaitTermination",
+   "what": "풀이 완전히 끝날 때까지 정해진 시간 기다리는 메서드."
+  },
+  {
+   "term": "돌려받은 작업",
+   "what": "shutdownNow 가 큐에서 꺼내 반환한, 실행되지 못한 작업들."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ThreadPoolExecutor",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

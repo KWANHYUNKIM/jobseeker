@@ -601,7 +601,7 @@
           "title": "풀 크기",
           "summary": "CPU 바운드와 I/O 바운드.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",
@@ -609,7 +609,7 @@
           "title": "큐와 거부 정책",
           "summary": "다 차면 무슨 일이.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
@@ -617,7 +617,7 @@
           "title": "종료",
           "summary": "shutdown 과 shutdownNow.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.7",

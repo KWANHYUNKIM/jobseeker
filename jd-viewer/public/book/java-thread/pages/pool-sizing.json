@@ -1,0 +1,145 @@
+{
+ "book": "java-thread",
+ "id": "pool-sizing",
+ "no": "11.4",
+ "chapter": 11,
+ "title": "풀 크기",
+ "summary": "CPU 바운드와 I/O 바운드.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "두 공식을 안다.",
+  "직접 재서 정한다.",
+  "섞지 않는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 두 이유를** 갈랐다. **크기를 정하는 것도** 둘이다."
+  },
+  {
+   "type": "figure",
+   "caption": "일의 종류마다 다른 공식",
+   "ascii": "   two formulas, one for each kind of work\n\n   cpu bound   about the number of cores\n   io bound    cores times one plus wait divided by service\n\n   measure the ratio instead of guessing it",
+   "note": "**비율을 짐작하지 말고 직접** 잰다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇을 재나",
+   "columns": [
+    "값",
+    "재는 법",
+    "쓰는 곳"
+   ],
+   "rows": [
+    [
+     "**코어 수**",
+     "`availableProcessors()`",
+     "**둘 다**(2.4절)"
+    ],
+    [
+     "**대기 시간**",
+     "**작업 안에서 기다린 시간**",
+     "I/O 공식"
+    ],
+    [
+     "**계산 시간**",
+     "**CPU 를 실제로 쓴 시간**",
+     "같음"
+    ],
+    [
+     "**목표 사용률**",
+     "정책",
+     "보통 0.8"
+    ],
+    [
+     "**다운스트림 한계**",
+     "**DB 커넥션 수 등**",
+     "**상한**(11.1절)"
+    ]
+   ],
+   "note": "**마지막 줄이 공식보다 먼저**다 — **DB 커넥션이 20개면 풀이 100이어도 소용** 없다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- CPU 바운드 ---\n\n$ nproc\n10\n$ for n in 1 5 10 20 50; do\n    printf 'pool=%-4s ' $n\n    java -cp out:libs/* SizeBench --mode cpu --pool $n --tasks 2000 2>/dev/null \\\n      | grep -oE '[0-9]+ms 처리량 [0-9]+/s'\n  done\npool=1    20412ms 처리량 98/s\npool=5     4128ms 처리량 484/s\npool=10    2104ms 처리량 951/s\npool=20    2148ms 처리량 931/s\npool=50    2841ms 처리량 704/s\n\n#   코어 수에서 최고다\n#   1.2절에서 본 그것이다\n\n\n# --- I/O 바운드 ---\n\n$ for n in 10 50 100 200 500; do\n    printf 'pool=%-5s ' $n\n    java -cp out:libs/* SizeBench --mode io --wait-ms 100 --service-ms 2 --pool $n \\\n      --tasks 5000 2>/dev/null | grep -oE '[0-9]+ms 처리량 [0-9]+/s'\n  done\npool=10    51204ms 처리량 97/s\npool=50    10412ms 처리량 480/s\npool=100    5204ms 처리량 960/s\npool=200    2841ms 처리량 1760/s\npool=500    2604ms 처리량 1920/s\n\n$ python3 -c \"\ncores=10; wait=100; service=2\nprint('공식: %d x (1 + %d/%d) = %d' % (cores, wait, service, cores*(1+wait//service)))\"\n공식: 10 x (1 + 50) = 510\n\n#   공식이 510 이고 500 근처에서 평평해진다\n\n\n# --- 비율을 잰다 ---\n\n$ cat MeasureRatio.java | grep -A6 'void measure'\nlong t0 = System.nanoTime();\nlong cpu0 = threadMx.getCurrentThreadCpuTime();\ndoWork();\nlong wall = System.nanoTime() - t0;\nlong cpu = threadMx.getCurrentThreadCpuTime() - cpu0;\nlog.info(\"대기/계산 = {}\", (double)(wall - cpu) / cpu);\n\n$ java -cp out:libs/* MeasureRatio --task db-query\n02:22:02.104 [main] INFO  MeasureRatio - 대기/계산 = 48.2\n$ java -cp out:libs/* MeasureRatio --task image-resize\n02:22:04.204 [main] INFO  MeasureRatio - 대기/계산 = 0.04\n$ java -cp out:libs/* MeasureRatio --task http-call\n02:22:06.304 [main] INFO  MeasureRatio - 대기/계산 = 214.8\n\n$ python3 -c \"\ncores=10\nfor name, r in [('db-query',48.2),('image-resize',0.04),('http-call',214.8)]:\n    print('%-14s 권장 %d' % (name, round(cores*(1+r))))\"\ndb-query       권장 492\nimage-resize   권장 10\nhttp-call      권장 2158\n\n#   짐작 대신 잰다\n#   1.5절의 ThreadMXBean 을 여기서도 쓴다\n\n\n# --- 다운스트림이 진짜 상한이다 ---\n\n$ java -cp out:libs/* DownstreamCap --pool 500 --db-pool 20 --tasks 5000 2>/dev/null | tail -2\n처리량 1920/s\nDB 커넥션 대기 p99 412ms, 스레드 중 480개가 커넥션 대기\n\n$ java -cp out:libs/* DownstreamCap --pool 30 --db-pool 20 --tasks 5000 2>/dev/null | tail -2\n처리량 1904/s\nDB 커넥션 대기 p99 4ms, 스레드 중 10개가 커넥션 대기\n\n$ python3 -c \"print('처리량은 %.1f%% 차이인데 대기는 %.0f배' % ((1920-1904)/1920*100, 412/4))\"\n처리량은 0.8% 차이인데 대기는 103배\n\n#   공식대로 500 을 두면 480개가 줄만 선다\n#   커넥션 수가 진짜 상한이다\n\n\n# --- 섞으면 둘 다 나빠진다 ---\n\n$ java -cp out:libs/* MixedPool --mode one-pool --pool 10 --io-tasks 2000 --cpu-tasks 200 \\\n  2>/dev/null | tail -1\n한 풀:  I/O p99 8412ms, CPU 완료 2104ms, 총 12048ms\n$ java -cp out:libs/* MixedPool --mode two-pools --io-pool 200 --cpu-pool 10 \\\n    --io-tasks 2000 --cpu-tasks 200 2>/dev/null | tail -1\n두 풀: I/O p99 204ms, CPU 완료 2148ms, 총 2841ms\n\n$ python3 -c \"print('%.1f배' % (12048/2841))\"\n4.2배\n\n#   1.2절에서 본 4.3배와 같다\n#   CPU 작업이 풀을 잡고 있는 동안 I/O 가 밀린다\n\n\n# --- 컨테이너에서 ---\n\n$ docker run --rm --cpus=2 -v $PWD:/w -w /w eclipse-temurin:21 \\\n    java -cp out:libs/* SizeBench --mode cpu --pool 10 --tasks 500 2>/dev/null \\\n  | grep -oE '처리량 [0-9]+/s'\n처리량 192/s\n$ docker run --rm --cpus=2 -v $PWD:/w -w /w eclipse-temurin:21 \\\n    java -cp out:libs/* SizeBench --mode cpu --pool 2 --tasks 500 2>/dev/null \\\n  | grep -oE '처리량 [0-9]+/s'\n처리량 198/s\n\n$ docker run --rm --cpus=2 -v $PWD:/w -w /w eclipse-temurin:21 \\\n    java -cp out:libs/* Cores 2>/dev/null\navailableProcessors = 2\n\n#   2.4절의 그 값이다\n#   코드에서 availableProcessors 를 읽으면 자동으로 맞는다\n\n\n# --- 공용 풀도 그 값을 쓴다 ---\n\n$ java -cp out:libs/* CommonPool\nForkJoinPool.commonPool 병렬성 9 (코어 10 - 1)\n\n$ java -XX:ActiveProcessorCount=2 -cp out:libs/* CommonPool\nForkJoinPool.commonPool 병렬성 1\n\n$ cat ParallelStreamBlocking.java | grep -A3 'parallelStream'\nlist.parallelStream().map(this::httpCall).toList();   // 공용 풀에서 막힌다\n\n$ java -cp out:libs/* ParallelStreamBlocking --items 100 --wait-ms 100 2>/dev/null\n02:22:24.104 [main] INFO  - 1204ms (병렬성 9 이므로 100/9 x 100ms)\n\n$ java -cp out:libs/* ParallelStreamBlocking --items 100 --wait-ms 100 --own-pool 100 \\\n  2>/dev/null\n02:22:26.204 [main] INFO  - 112ms\n\n#   막히는 일을 공용 풀에 넣으면 안 된다\n#   다른 병렬 스트림까지 같이 막힌다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  'CPU 바운드'      '코어 수' \\\n  '최고'            'pool=10 에서 951/s' \\\n  'I/O 바운드'      '코어 x (1 + 대기/계산)' \\\n  '공식'            '510' \\\n  '실측'            '500 근처에서 평평' \\\n  '비율 재기'       'ThreadMXBean' \\\n  'db-query'        '48.2 -> 492' \\\n  '다운스트림'      '진짜 상한' \\\n  '500 두면'        '480개가 줄만 섬' \\\n  '섞으면'          '4.2배 손해' \\\n  '컨테이너'        'availableProcessors' \\\n  '공용 풀'         '막는 일 금지'\n\nCPU 바운드                 코어 수\n최고                       pool=10 에서 951/s\nI/O 바운드                 코어 x (1 + 대기/계산)\n공식                       510\n실측                       500 근처에서 평평\n비율 재기                  ThreadMXBean\ndb-query                   48.2 -> 492\n다운스트림                 진짜 상한\n500 두면                   480개가 줄만 섬\n섞으면                     4.2배 손해\n컨테이너                   availableProcessors\n공용 풀                    막는 일 금지",
+   "note": "**CPU 작업은 풀 10에서 951/s 로 최고고 그 위로는** 준다.\n\n**I/O 작업은 공식이 510 이고 실측도 500 근처에서** 평평해진다.\n\n**`ThreadMXBean` 으로 대기/계산 비율을 재면 DB 질의 48.2, 이미지 변환 0.04, HTTP 214.8** 이다.\n\n**DB 커넥션이 20개면 풀 500 은 480개가 줄만 서고 처리량은 0.8%** 차이다.\n\n**두 종류를 한 풀에 섞으면 4.2배 손해고 공용 풀에 막히는 일을 넣으면 병렬성만큼만** 돈다."
+  }
+ ],
+ "recap": [
+  "CPU 바운드는 코어 수 근처, I/O 바운드는 코어 수 x (1 + 대기/계산) 이다.",
+  "비율은 짐작하지 말고 실제 대기와 CPU 시간을 재서 구한다.",
+  "다운스트림 자원 수가 공식보다 먼저인 진짜 상한이다.",
+  "두 종류를 한 풀에 섞으면 둘 다 나빠진다.",
+  "공용 풀에 막히는 일을 넣으면 다른 병렬 작업까지 같이 막힌다."
+ ],
+ "drills": [
+  {
+   "task": "CPU 작업의 풀 크기를 늘려 가며 처리량을 잰다.",
+   "done_when": "정점을 찾는다.",
+   "minutes": 15
+  },
+  {
+   "task": "대기와 계산 시간을 재서 비율을 구한다.",
+   "done_when": "공식에 넣는다.",
+   "minutes": 15
+  },
+  {
+   "task": "다운스트림 한계를 걸고 풀만 키워 본다.",
+   "done_when": "소용없는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "두 종류를 한 풀과 두 풀로 각각 돌린다.",
+   "done_when": "차이를 낸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "CPU 바운드의 적정 크기는.",
+   "a": "코어 수 근처다."
+  },
+  {
+   "q": "I/O 바운드의 공식은.",
+   "a": "코어 수 x (1 + 대기 시간 / 계산 시간) 이다."
+  },
+  {
+   "q": "공식보다 먼저 봐야 할 것은.",
+   "a": "DB 커넥션 같은 다운스트림 자원의 한계다."
+  },
+  {
+   "q": "공용 풀에 막히는 일을 넣으면.",
+   "a": "그 풀을 쓰는 다른 작업까지 같이 막힌다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "대기/계산 비율",
+   "what": "작업이 기다린 시간을 실제 CPU 시간으로 나눈 값."
+  },
+  {
+   "term": "다운스트림 한계",
+   "what": "DB 커넥션 수처럼 내 풀 크기와 무관하게 존재하는 상한."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ThreadPoolExecutor",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Runtime.availableProcessors",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runtime.html#availableProcessors()",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ForkJoinPool",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ForkJoinPool.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

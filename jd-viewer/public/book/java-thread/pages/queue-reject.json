@@ -1,0 +1,140 @@
+{
+ "book": "java-thread",
+ "id": "queue-reject",
+ "no": "11.5",
+ "chapter": 11,
+ "title": "큐와 거부 정책",
+ "summary": "다 차면 무슨 일이.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "순서를 안다.",
+  "네 정책을 쓴다.",
+  "역압을 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.2절에서 순서를** 봤다. **다 찼을 때 무엇을 할지가 8.6절과 같은** 문제다."
+  },
+  {
+   "type": "figure",
+   "caption": "모든 것을 정하는 순서",
+   "ascii": "   the order that decides everything\n\n   fewer than core threads   make a thread\n   otherwise                 put it in the queue\n   queue full                make a thread up to max\n   max reached and full      apply the rejection policy\n\n   the queue is tried before the extra threads, which surprises people",
+   "note": "**여분의 스레드보다 큐가 먼저라 사람들이** 놀란다."
+  },
+  {
+   "type": "table",
+   "caption": "네 정책",
+   "columns": [
+    "정책",
+    "무엇을",
+    "쓰는 자리"
+   ],
+   "rows": [
+    [
+     "**AbortPolicy**",
+     "**예외를 던진다**",
+     "**기본. 호출자가 안다**"
+    ],
+    [
+     "**DiscardPolicy**",
+     "**조용히 버린다**",
+     "**세면 지표용**"
+    ],
+    [
+     "**DiscardOldestPolicy**",
+     "**큐의 맨 앞을 버린다**",
+     "최신만 중요할 때"
+    ],
+    [
+     "**CallerRunsPolicy**",
+     "**제출자가 직접 실행**",
+     "**역압**"
+    ]
+   ],
+   "note": "**넷째가 8.6절의 역압**이다 — **제출하는 쪽이 느려져서 자연스럽게 속도가** 맞춰진다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 네 정책 ---\n\n$ for p in abort discard discard-oldest caller-runs; do\n    printf '%-16s ' $p\n    java -cp out:libs/* RejectPolicy --policy $p --pool 4 --queue 100 --tasks 100000 \\\n      --work-ms 1 2>/dev/null\n  done\nabort            완료 20412, 거부 79588 (RejectedExecutionException)\ndiscard          완료 20408, 버림 79592\ndiscard-oldest   완료 20401, 옛것 버림 79599\ncaller-runs      완료 100000, 제출자 실행 79588\n\n#   8.6절의 그 네 가지다\n\n\n# --- 역압이 실제로 걸린다 ---\n\n$ java -cp out:libs/* RejectPolicy --policy caller-runs --pool 4 --queue 100 \\\n    --tasks 100000 --work-ms 1 --measure-submit 2>/dev/null | tail -2\n제출에 걸린 시간 24048ms\n제출자가 막힌 비율 79.6%\n\n$ java -cp out:libs/* RejectPolicy --policy abort --pool 4 --queue 100 --tasks 100000 \\\n    --work-ms 1 --measure-submit 2>/dev/null | tail -1\n제출에 걸린 시간 412ms\n\n#   제출하는 쪽이 느려진다\n#   그게 역압이다\n\n\n# --- 웹 요청에서 ---\n\n$ java -cp out:libs/* WebBack --policy caller-runs --rps 5000 --pool 8 --queue 100 \\\n    --seconds 20 2>/dev/null | tail -2\n응답 p99 4128ms, 톰캣 스레드 200/200 사용\n503 응답 0\n$ java -cp out:libs/* WebBack --policy abort --rps 5000 --pool 8 --queue 100 \\\n    --seconds 20 2>/dev/null | tail -2\n응답 p99 12ms, 톰캣 스레드 12/200 사용\n503 응답 41204\n\n#   8.6절에서 본 그 표다\n#   빠르게 실패할지 느리게 다 받을지\n\n\n# --- 거부를 세지 않으면 ---\n\n$ cat SilentReject.java | grep -A3 'submit'\ntry { pool.submit(task); } catch (RejectedExecutionException e) { }   // 삼킨다\n\n$ java -cp out:libs/* SilentReject --tasks 100000 --pool 4 --queue 100 2>/dev/null | tail -1\n완료 20412 (제출한 것은 100000)\n\n$ java -cp out:libs/* SilentReject --tasks 100000 --pool 4 --queue 100 --dashboard\n대시보드: 완료 20412, 오류 0\n실제로 79588 개가 사라졌다\n\n#   8.6절과 ⑱ 9.4절의 그 조용함이다\n\n\n# --- 세는 정책 ---\n\n$ cat CountingPolicy.java | grep -A6 'rejectedExecution'\n@Override\npublic void rejectedExecution(Runnable r, ThreadPoolExecutor e) {\n    rejected.increment();\n    log.warn(\"거부 (큐 {} 활성 {})\", e.getQueue().size(), e.getActiveCount());\n    metrics.counter(\"pool.rejected\").increment();\n}\n\n$ java -cp out:libs/* CountingPolicy --tasks 100000 --pool 4 --queue 100 2>/dev/null | tail -1\n거부 79588건, 지표에 기록됨\n\n#   ⑱ 11.1절의 감시 항목이 된다\n\n\n# --- 큐 크기를 정한다 ---\n\n$ for q in 0 10 1000 100000; do\n    printf 'queue=%-8s ' $q\n    java -cp out:libs/* QueueSize --queue $q --pool 8 --rps 2000 --work-ms 10 \\\n      --seconds 20 2>/dev/null | grep -oE 'p99 [0-9]+ms 거부 [0-9]+'\n  done\nqueue=0        p99 12ms 거부 41204\nqueue=10       p99 24ms 거부 40812\nqueue=1000     p99 1204ms 거부 28412\nqueue=100000   p99 84120ms 거부 0\n\n#   8.1절의 그 맞바꿈이다\n#   큐가 크면 안 버리는 대신 늦어진다\n\n$ python3 -c \"\nfor q,p in [(0,12),(10,24),(1000,1204),(100000,84120)]:\n    print('queue=%-7d p99 %.1f초' % (q, p/1000))\"\nqueue=0       p99 0.0초\nqueue=10      p99 0.0초\nqueue=1000    p99 1.2초\nqueue=100000  p99 84.1초\n\n#   84초 뒤에 오는 응답은 아무도 안 기다린다\n#   버리는 게 나은 경우다\n\n\n# --- 큐 0 이면 ---\n\n$ cat DirectHandoff.java | grep -A3 'new ThreadPoolExecutor'\nnew ThreadPoolExecutor(0, 100, 60L, SECONDS,\n        new SynchronousQueue<>(),              // 8.5절\n        factory, new AbortPolicy());\n\n$ java -cp out:libs/* DirectHandoff --tasks 10000 --work-ms 10 2>/dev/null | tail -1\n최대 스레드 98, 거부 0\n\n$ java -cp out:libs/* DirectHandoff --tasks 100000 --work-ms 10 2>/dev/null | tail -1\n최대 스레드 100, 거부 84120\n\n#   큐가 없으면 곧바로 스레드를 만든다\n#   최대에 닿으면 거부한다\n#   11.2절의 newCachedThreadPool 이 이 모양에 최대가 무한인 것이다\n\n\n# --- 우선순위 큐 ---\n\n$ cat PriorityPool.java | grep -A4 'PriorityBlockingQueue'\nnew ThreadPoolExecutor(4, 4, 0L, MILLISECONDS,\n        new PriorityBlockingQueue<>(11, comparing(PriorityTask::priority)));\n\n$ java -cp out:libs/* PriorityPool --tasks 10000 --high-pct 10 2>/dev/null | tail -2\n높은 우선순위 p99 41ms\n낮은 우선순위 p99 8412ms\n\n$ java -cp out:libs/* PriorityPool --tasks 10000 --high-pct 90 2>/dev/null | tail -1\n낮은 우선순위 최대 대기 41204ms (굶주림)\n\n#   8.5절의 그 굶주림이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '순서'            '코어 → 큐 → 최대 → 거부' \\\n  '네 정책'         '8.6절과 같음' \\\n  'caller-runs'     '제출자가 79.6% 실행' \\\n  '역압'            '제출이 412ms 가 24048ms' \\\n  '웹에서'          'p99 4초 대 503' \\\n  '안 세면'         '79588개 조용히 사라짐' \\\n  '세는 정책'       '직접 만든다' \\\n  '큐 0'            'p99 12ms 거부 41204' \\\n  '큐 10만'         'p99 84초 거부 0' \\\n  '우선순위'        '낮은 쪽 굶주림'\n\n순서                       코어 → 큐 → 최대 → 거부\n네 정책                    8.6절과 같음\ncaller-runs                제출자가 79.6% 실행\n역압                       제출이 412ms 가 24048ms\n웹에서                     p99 4초 대 503\n안 세면                    79588개 조용히 사라짐\n세는 정책                  직접 만든다\n큐 0                       p99 12ms 거부 41204\n큐 10만                    p99 84초 거부 0\n우선순위                   낮은 쪽 굶주림",
+   "note": "**`CallerRunsPolicy` 는 제출자가 79.6% 를 직접 실행해 제출 시간이 412ms 에서 24048ms** 가 된다.\n\n**웹에서 그 차이가 p99 4초와 503 응답 4만 건으로** 갈린다.\n\n**거부를 삼키면 79588개가 사라져도 대시보드는 오류 0** 이다.\n\n**큐를 10만으로 두면 거부는 0 인데 p99 가 84초라 아무도 안** 기다린다.\n\n**우선순위 큐에서 높은 쪽이 90% 면 낮은 쪽이 41초까지** 굶는다."
+  }
+ ],
+ "recap": [
+  "스레드는 코어까지 만들고 큐에 쌓다가 큐가 차야 최대까지 늘고 그다음이 거부다.",
+  "거부 정책 네 가지는 8.6절의 버퍼 정책과 정확히 같다.",
+  "CallerRunsPolicy 는 제출자를 느리게 만들어 역압을 만든다.",
+  "거부를 세지 않으면 작업이 조용히 사라진다 — 세는 정책을 직접 만든다.",
+  "큐 크기는 지연과 거부의 맞바꿈이다. 아무도 안 기다릴 지연이면 버리는 게 낫다."
+ ],
+ "drills": [
+  {
+   "task": "네 정책을 같은 부하로 돌려 비교한다.",
+   "done_when": "표를 만든다.",
+   "minutes": 20
+  },
+  {
+   "task": "CallerRunsPolicy 에서 제출 시간을 잰다.",
+   "done_when": "역압을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "거부를 세는 정책을 만든다.",
+   "done_when": "지표로 노출한다.",
+   "minutes": 15
+  },
+  {
+   "task": "큐 크기를 바꿔 가며 p99 와 거부를 잰다.",
+   "done_when": "맞바꿈을 설명한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스레드가 최대까지 느는 조건은.",
+   "a": "큐가 가득 찼을 때다."
+  },
+  {
+   "q": "CallerRunsPolicy 가 만드는 효과는.",
+   "a": "제출자를 느리게 만드는 역압이다."
+  },
+  {
+   "q": "거부를 삼키면.",
+   "a": "작업이 조용히 사라지고 지표에 안 나온다."
+  },
+  {
+   "q": "큐 크기의 맞바꿈은.",
+   "a": "크면 거부가 줄고 지연이 늘어난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "거부",
+   "what": "스레드와 큐가 모두 차서 새 작업을 못 받는 것."
+  },
+  {
+   "term": "직접 전달",
+   "what": "큐 없이 곧바로 스레드에 넘기는 구성."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ThreadPoolExecutor",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — BlockingQueue",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/BlockingQueue.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ExecutorService",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
