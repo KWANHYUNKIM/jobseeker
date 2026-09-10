@@ -1,0 +1,162 @@
+{
+ "book": "kafka",
+ "id": "partition-count",
+ "no": "4.6",
+ "chapter": 4,
+ "title": "파티션 몇 개로 할까",
+ "summary": "늘리기는 되고 줄이기는 안 된다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "파티션 수를 계산하는 방법을 안다.",
+  "상한을 정하는 요인을 안다.",
+  "나중에 바꾸는 비용을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**토픽을 만들 때 가장 먼저 묻는 숫자**다. **그리고 나중에 줄일 수 없는** 숫자다(4.2절).\n\n> **너무 적으면** 병렬성이 모자라고, **너무 많으면** 파일·리밸런싱·지연 비용을 낸다."
+  },
+  {
+   "type": "steps",
+   "caption": "정하는 순서",
+   "items": [
+    {
+     "title": "목표 처리량을 잡는다",
+     "md": "**초당 몇 건, 몇 MB** 인가. 피크 기준으로"
+    },
+    {
+     "title": "컨슈머 하나의 처리량을 잰다",
+     "md": "**실제로 재 본다.** \"초당 2,000건\" 처럼"
+    },
+    {
+     "title": "나눈다",
+     "md": "`파티션 ≥ 목표 처리량 / 컨슈머 하나의 처리량`"
+    },
+    {
+     "title": "성장 여유를 얹는다",
+     "md": "**2~3배.** 늘리는 게 위험한 변경이라(4.4절)"
+    },
+    {
+     "title": "상한을 확인한다",
+     "md": "브로커당 파티션 수, 클러스터 전체 파티션 수(아래)"
+    }
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "계산 예",
+   "md": "```\n목표: 피크 초당 20,000건\n컨슈머 하나: 초당 2,500건 (측정값 — DB 쓰기가 병목)\n\n필요 파티션 = 20,000 / 2,500 = 8\n여유 2배    = 16\n```\n\n**여기서 확인할 것**:\n\n| 확인 | |\n|---|---|\n| **컨슈머 인스턴스를 16개까지 띄울 수 있나** | 못 띄우면 파티션이 남는다 |\n| **키 분포가 고른가** | 쏠리면 16개여도 소용없다(4.4절) |\n| 순서 요구가 있나 | 키 단위면 괜찮다(4.5절) |\n| 브로커가 몇 대인가 | 파티션이 브로커 수의 배수면 균형이 좋다 |\n\n> **브로커 3대에 파티션 16개면 6/5/5 로 나뉜다.** **12나 15가 더 고르다.**"
+  },
+  {
+   "type": "table",
+   "caption": "상한을 정하는 요인",
+   "columns": [
+    "요인",
+    "대략적인 한계",
+    "왜"
+   ],
+   "rows": [
+    [
+     "**브로커당 파티션**",
+     "**2,000~4,000**",
+     "파일 핸들·메모리·복제 스레드"
+    ],
+    [
+     "**클러스터 전체**",
+     "KRaft 는 **수십만~수백만**",
+     "주키퍼 시절에는 수만이 한계였다(3.2절)"
+    ],
+    [
+     "**리밸런싱 시간**",
+     "파티션 수에 비례",
+     "7.3절. 파티션이 많으면 배포마다 오래 멈춘다"
+    ],
+    [
+     "**엔드투엔드 지연**",
+     "파티션이 많을수록 배치가 잘게 나뉜다",
+     "6.5절"
+    ],
+    [
+     "디스크",
+     "활성 세그먼트 × 파티션",
+     "3.4절. 빈 토픽도 용량을 먹는다(4.2절)"
+    ]
+   ],
+   "note": "**\"토픽 100개 × 파티션 50개 = 5,000 파티션\" 이 브로커 3대에 있으면 브로커당 5,000**이다(복제 포함하면 더). **토픽 수도 같이** 센다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "나중에 바꾸는 비용",
+   "md": "| 하려는 것 | 되나 | 비용 |\n|---|---|---|\n| **늘리기** | 된다(`--alter`) | **키→파티션 매핑이 바뀐다**(4.4절). 순서가 깨진다 |\n| **줄이기** | **안 된다** | 새 토픽을 만들고 옮겨야 한다 |\n| 재배치(브로커 이동) | 된다 | 네트워크·디스크 부담. 5.7절 |\n\n**줄여야 하는 상황이 실제로** 생긴다:\n\n```\n\"일단 100개로 잡았는데 트래픽이 예상의 1/10 이다\"\n  -> 파티션 100개가 리밸런싱을 느리게 하고 디스크를 먹는다\n  -> 줄일 수 없다\n  -> 새 토픽 v2 를 만들고 컨슈머를 옮긴다\n```\n\n> **그래서 \"넉넉히\" 도 정도가** 있다. **2~3배 여유가 적당**하고 **10배는 과하다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "컨슈머 처리량을 재고 파티션 수를 정한다",
+   "sql": "# --- 1. 컨슈머 하나의 처리량을 잰다 ---\n\n$ kt --create --topic bench --partitions 1 --replication-factor 3 >/dev/null\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n    --topic bench --num-records 500000 --record-size 300 --throughput -1 \\\n    --producer-props bootstrap.servers=kafka-1:19092 acks=1 >/dev/null\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-consumer-perf-test.sh \\\n    --bootstrap-server kafka-1:19092 --topic bench --messages 500000 2>/dev/null | tail -1\n2026-09-10 15:41:02, 2026-09-10 15:41:09, 143.0511, 20.4359, 500000, 71428.5714\n\n#   초당 71,428건. 하지만 이건 '아무 일도 안 하는' 컨슈머다\n#   실제로는 DB 쓰기·API 호출이 병목이다\n\n#   실제 애플리케이션이라면:\n#     한 건 처리에 0.4ms (DB insert) -> 초당 2,500건\n#     목표 20,000건/초 -> 파티션 8개 -> 여유 2배 -> 16\n\n\n# --- 2. 브로커 수의 배수로 맞춘다 ---\n\n$ kt --create --topic sized --partitions 12 --replication-factor 3 >/dev/null\n$ kt --describe --topic sized | awk '/Leader:/ {print $6}' | sort | uniq -c\n   4 1\n   4 2\n   4 3\n\n#   브로커 3대에 리더가 4개씩. 고르다\n\n$ kt --create --topic sized16 --partitions 16 --replication-factor 3 >/dev/null\n$ kt --describe --topic sized16 | awk '/Leader:/ {print $6}' | sort | uniq -c\n   6 1\n   5 2\n   5 3\n\n#   6/5/5. 나쁘지는 않지만 12나 15가 더 고르다\n\n\n# --- 3. 클러스터 전체 파티션 수를 센다 ---\n\n$ kt --list | while read t; do\n>   kt --describe --topic \"$t\" 2>/dev/null | grep -c 'Partition:'\n> done | awk '{s+=$1} END {print \"total partitions (leaders) =\", s}'\ntotal partitions (leaders) = 34\n\n$ kt --list | while read t; do\n>   kt --describe --topic \"$t\" 2>/dev/null | \\\n>     awk '/Replicas:/ {n=split($8,a,\",\"); s+=n} END {print s}'\n> done | awk '{s+=$1} END {print \"total replicas =\", s}'\ntotal replicas = 96\n\n#   복제까지 세면 96개다. 브로커당 32개\n#   브로커당 2,000~4,000 이 한계이므로 아직 여유가 많다\n\n\n# --- 4. 파티션이 많으면 리밸런싱이 느리다 ---\n\n$ kt --create --topic big --partitions 500 --replication-factor 3 >/dev/null\n\n$ time kcc --topic big --group rb --from-beginning --timeout-ms 5000 >/dev/null 2>&1\nreal    0m9.412s\n\n$ time kcc --topic sized --group rb2 --from-beginning --timeout-ms 5000 >/dev/null 2>&1\nreal    0m6.108s\n\n#   컨슈머가 붙는 데 걸리는 시간이 다르다\n#   배포할 때마다 이만큼 멈춘다 (7.3·11.4절)\n\n\n# --- 5. 줄일 수는 없다 ---\n\n$ kt --alter --topic big --partitions 100\nError while executing topic command : Topic currently has 500 partitions,\n  which is higher than the requested 100.\n\n#   방법은 새 토픽을 만들고 옮기는 것뿐이다\n\n$ for t in bench sized sized16 big; do kt --delete --topic $t >/dev/null; done\n$ kcg --delete --group rb >/dev/null 2>&1; kcg --delete --group rb2 >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "목표 처리량 ÷ 컨슈머 하나의 실제 처리량으로 계산하고 2~3배 여유를 얹는다.",
+  "컨슈머 하나의 처리량은 벤치마크가 아니라 실제 처리(DB·API 포함)로 잰다.",
+  "브로커 수의 배수로 맞추면 리더 분포가 고르다.",
+  "브로커당 2,000~4,000 파티션이 대략의 한계다. 토픽 수 × 파티션 × 복제로 센다.",
+  "늘릴 수는 있지만 키 매핑이 바뀌고, 줄이려면 새 토픽으로 옮겨야 한다."
+ ],
+ "drills": [
+  {
+   "task": "`kafka-consumer-perf-test.sh` 로 컨슈머 처리량을 재 보고, 실제 애플리케이션의 건당 처리 시간과 비교한다.",
+   "done_when": "두 숫자가 크게 다른 이유를 설명할 수 있다.",
+   "minutes": 8
+  },
+  {
+   "task": "파티션 12와 16인 토픽을 만들어 리더 분포를 세어 본다.",
+   "done_when": "브로커 수의 배수가 고른 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "클러스터 전체 파티션(복제 포함) 수를 세는 명령을 만들어 둔다.",
+   "done_when": "브로커당 몇 개인지 말할 수 있다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "파티션 수를 계산하는 기본 식은.",
+   "a": "목표 처리량 ÷ 컨슈머 하나의 처리량. 여기에 2~3배 여유를 얹는다."
+  },
+  {
+   "q": "파티션을 과하게 많이 잡으면 무엇이 나빠지나.",
+   "a": "리밸런싱이 느려지고 파일 핸들·디스크를 먹고 배치가 잘게 나뉘어 지연이 는다."
+  },
+  {
+   "q": "파티션을 줄여야 하면.",
+   "a": "줄일 수 없다. 새 토픽을 만들고 컨슈머를 옮긴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "consumer-perf-test",
+   "what": "카프카 내장 컨슈머 벤치마크. 처리 로직이 없는 상한값을 준다."
+  },
+  {
+   "term": "리밸런싱",
+   "what": "컨슈머가 들고 날 때 파티션을 다시 나누는 과정. 7.3절."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Confluent — How to choose the number of partitions",
+   "url": "https://www.confluent.io/blog/how-choose-number-topics-partitions-kafka-cluster/",
+   "publisher": "Confluent"
+  },
+  {
+   "title": "Apache Kafka — Modifying topics",
+   "url": "https://kafka.apache.org/documentation/#basic_ops_modify_topic",
+   "publisher": "Apache"
+  }
+ ]
+}

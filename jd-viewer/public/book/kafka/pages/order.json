@@ -1,0 +1,141 @@
+{
+ "book": "kafka",
+ "id": "order",
+ "no": "4.5",
+ "chapter": 4,
+ "title": "순서는 어디까지 보장되나",
+ "summary": "파티션 안에서만.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "순서 보장의 범위를 정확히 안다.",
+  "순서가 깨지는 네 가지 경로를 안다.",
+  "필요한 만큼만 순서를 지키는 설계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**카프카의 순서 보장은 딱 한 줄**이다.\n\n> **한 파티션 안에서, 쓰인 순서대로 읽힌다.**\n\n**그 밖의 어떤 순서도 보장하지** 않는다."
+  },
+  {
+   "type": "table",
+   "caption": "순서가 깨지는 네 경로",
+   "columns": [
+    "경로",
+    "왜",
+    "막는 법"
+   ],
+   "rows": [
+    [
+     "**파티션이 다르다**",
+     "키가 다르거나 키가 없다",
+     "**순서가 필요한 것끼리 같은 키**(4.4절)"
+    ],
+    [
+     "**프로듀서 재시도**",
+     "앞 배치가 실패해 뒤 배치가 먼저 들어간다",
+     "**`max.in.flight=1` 또는 멱등 프로듀서**(6.4·8.1절)"
+    ],
+    [
+     "**컨슈머가 병렬 처리**",
+     "poll 로 받아서 스레드 풀에 던진다",
+     "파티션 단위로 순차 처리(9.3절)"
+    ],
+    [
+     "**토픽이 다르다**",
+     "`order.placed` 와 `order.cancelled`",
+     "한 토픽에 합치거나 상태 머신으로"
+    ]
+   ],
+   "note": "**두 번째가 가장 안 보이는** 경로다 — **코드는 순서대로 보냈는데 로그에는 뒤집혀** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "재시도가 순서를 뒤집는 과정",
+   "md": "```\nmax.in.flight.requests.per.connection = 5   (기본)\n\n프로듀서가 동시에 5개 배치를 날린다\n\n  batch1 (record 1,2,3)  -> 실패 (일시적 네트워크 오류)\n  batch2 (record 4,5,6)  -> 성공\n  batch1 재시도          -> 성공\n\n로그: 4 5 6 1 2 3\n```\n\n**막는 법 두 가지**:\n\n| 방법 | 대가 |\n|---|---|\n| `max.in.flight.requests.per.connection=1` | **처리량이 크게 준다** |\n| **`enable.idempotence=true`**(3.0+ 기본) | **거의 없다.** 시퀀스 번호로 브로커가 순서를 잡아 준다 |\n\n> **멱등 프로듀서를 켜면 `max.in.flight` 를 5까지 두고도 순서가 지켜**진다.\n> **8.1절에서 이걸 자세히** 본다. **요즘 기본값이라 대개 이미 켜져** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨슈머 쪽에서 깨는 경우",
+   "md": "**브로커가 순서대로 줬는데 애플리케이션이 뒤집는다.**\n\n```java\n// 이렇게 하면 순서가 깨진다\nwhile (true) {\n    var records = consumer.poll(Duration.ofMillis(500));\n    for (var r : records) {\n        executor.submit(() -> handle(r));   // 스레드 풀에 던진다\n    }\n    consumer.commitSync();                  // 처리 끝나기 전에 커밋된다\n}\n```\n\n| 문제 | |\n|---|---|\n| **순서** | 같은 파티션의 레코드가 동시에 처리된다 |\n| **유실** | 처리 실패해도 커밋이 됐다(7.4절) |\n\n**병렬 처리가 필요하면 파티션 단위로** 나눈다.\n\n> **`@KafkaListener(concurrency = 3)` 은 파티션을 스레드에 나눠 주는** 것이라 안전하다(9.3절).\n> **한 파티션 안을 병렬로 돌리는 순간 순서가** 깨진다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "순서가 정말 필요한가",
+   "md": "**전체 순서를 원하면 파티션이 하나여야 하고, 그러면 병렬성이** 없다.\n\n**대부분은 이렇게 완화**한다.\n\n| 방법 | 예 |\n|---|---|\n| **키 단위 순서로 충분** | 한 주문 안에서만 순서가 맞으면 된다 |\n| **버전 번호로 판단** | 레코드에 `version` 을 넣고 **낮은 것은 무시** |\n| **타임스탬프 비교** | `occurredAt` 이 더 오래되면 버린다 |\n| 멱등하게 설계 | 순서가 바뀌어도 결과가 같게 |\n| 상태 머신 | `CANCELLED` 인데 `PAID` 가 오면 무시 |\n\n> **\"순서를 지켜 주세요\" 보다 \"순서가 바뀌어도 괜찮게\" 가 대개 더 튼튼**하다.\n> **7.5절의 중복 처리와 같은 태도**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "순서가 지켜지는 것과 깨지는 것",
+   "sql": "$ kt --create --topic ord --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 같은 키: 순서가 지켜진다 ---\n\n$ kcp --topic ord --property parse.key=true --property key.separator='|' <<'EOF'\norder-1|PLACED\norder-1|PAID\norder-1|SHIPPED\norder-1|DELIVERED\nEOF\n\n$ kcc --topic ord --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.partition=true --property print.offset=true\nPartition:2  Offset:0  order-1  PLACED\nPartition:2  Offset:1  order-1  PAID\nPartition:2  Offset:2  order-1  SHIPPED\nPartition:2  Offset:3  order-1  DELIVERED\n\n#   한 파티션에 순서대로. 몇 번을 읽어도 이 순서다\n\n\n# --- 키가 없으면 순서가 안 지켜진다 ---\n\n$ kt --create --topic ord2 --partitions 3 --replication-factor 3 >/dev/null\n$ printf 'PLACED\\nPAID\\nSHIPPED\\nDELIVERED\\n' | kcp --topic ord2\n\n$ kcc --topic ord2 --from-beginning --timeout-ms 2000 \\\n    --property print.partition=true --property print.offset=true\nPartition:0  Offset:0  PLACED\nPartition:0  Offset:1  PAID\nPartition:0  Offset:2  SHIPPED\nPartition:0  Offset:3  DELIVERED\n\n#   여기서는 우연히 한 파티션에 갔다 (스티키 파티셔닝, 4.4절)\n#   배치가 나뉘면 흩어진다:\n\n$ for i in $(seq 1 6); do printf 'EVENT-%d\\n' $i; sleep 0.3; done | kcp --topic ord2\n$ kcc --topic ord2 --from-beginning --timeout-ms 2000 \\\n    --property print.partition=true | grep EVENT\nPartition:0  EVENT-1\nPartition:0  EVENT-4\nPartition:1  EVENT-2\nPartition:1  EVENT-5\nPartition:2  EVENT-3\nPartition:2  EVENT-6\n\n#   1,2,3,4,5,6 이 세 파티션에 흩어졌다\n#   컨슈머가 읽는 순서는 1,4,2,5,3,6 이다\n\n\n# --- 토픽이 다르면 당연히 순서가 없다 ---\n\n$ kt --create --topic order.placed --partitions 1 --replication-factor 3 >/dev/null\n$ kt --create --topic order.cancelled --partitions 1 --replication-factor 3 >/dev/null\n\n$ echo 'order-1 placed at 10:00:00.100' | kcp --topic order.placed\n$ echo 'order-1 cancelled at 10:00:00.150' | kcp --topic order.cancelled\n\n#   컨슈머 둘이 각자 자기 속도로 읽는다\n#   취소 컨슈머가 빠르면 '취소' 를 '생성' 보다 먼저 처리한다\n#   -> 없는 주문을 취소하려 한다\n\n\n# --- 멱등 프로듀서가 켜져 있나 ---\n\n$ docker compose exec -T kafka-1 sh -c \\\n    '/opt/kafka/bin/kafka-configs.sh --bootstrap-server kafka-1:19092 \\\n     --entity-type brokers --entity-name 1 --describe 2>/dev/null | head -1'\nDynamic configs for broker 1 are:\n\n#   프로듀서 쪽 설정이다. 자바 클라이언트 3.0+ 는 기본 true\n#\n#   props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);\n#   props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 5);\n#   -> 순서 보장 + 처리량 둘 다 (8.1절)\n\n\n# --- 순서를 버전으로 대신한다 ---\n\n$ kt --create --topic ver --partitions 3 --replication-factor 3 >/dev/null\n$ kcp --topic ver --property parse.key=true --property key.separator='|' <<'EOF'\nuser-1|{\"version\":3,\"city\":\"busan\"}\nuser-1|{\"version\":1,\"city\":\"seoul\"}\nuser-1|{\"version\":2,\"city\":\"daegu\"}\nEOF\n\n$ kcc --topic ver --from-beginning --timeout-ms 2000 --property print.key=true\nuser-1  {\"version\":3,\"city\":\"busan\"}\nuser-1  {\"version\":1,\"city\":\"seoul\"}\nuser-1  {\"version\":2,\"city\":\"daegu\"}\n\n#   순서가 뒤집혀 왔어도 컨슈머가 version 을 비교해\n#   지금 저장된 것보다 낮으면 무시하면 된다\n#   \"순서를 지켜 주세요\" 대신 \"순서가 바뀌어도 괜찮게\"\n\n$ for t in ord ord2 order.placed order.cancelled ver; do kt --delete --topic $t >/dev/null; done"
+  }
+ ],
+ "recap": [
+  "순서 보장은 '한 파티션 안에서 쓰인 순서대로' 뿐이다.",
+  "깨지는 경로는 파티션이 다를 때·프로듀서 재시도·컨슈머 병렬 처리·토픽이 다를 때 넷이다.",
+  "재시도로 뒤집히는 것은 멱등 프로듀서(3.0+ 기본)가 막아 준다.",
+  "한 파티션 안을 여러 스레드로 처리하면 순서가 깨진다. 병렬성은 파티션 단위로.",
+  "전체 순서 대신 키 단위 순서 + 버전/타임스탬프 판단이 대개 더 튼튼하다."
+ ],
+ "drills": [
+  {
+   "task": "같은 키로 상태 변화 네 건을 넣고 항상 같은 순서로 읽히는지 확인한다.",
+   "done_when": "한 파티션에 오프셋 순으로 들어간 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "키 없이 여섯 건을 천천히 넣어 여러 파티션에 흩어지게 하고 읽는 순서를 확인한다.",
+   "done_when": "입력 순서와 다른 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "레코드에 version 을 넣고 뒤집힌 순서로 넣어 본 뒤, 컨슈머가 어떻게 판단해야 할지 적는다.",
+   "done_when": "'낮은 버전은 무시' 규칙을 쓸 수 있다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "카프카의 순서 보장을 한 문장으로.",
+   "a": "한 파티션 안에서 쓰인 순서대로 읽힌다. 그 밖에는 보장이 없다."
+  },
+  {
+   "q": "코드는 순서대로 보냈는데 로그가 뒤집혔다면.",
+   "a": "프로듀서 재시도와 in-flight 요청 때문. 멱등 프로듀서를 켜면 막힌다."
+  },
+  {
+   "q": "컨슈머에서 병렬 처리를 하고 싶으면.",
+   "a": "파티션 단위로 나눈다. 한 파티션 안을 여러 스레드로 처리하면 순서가 깨진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "max.in.flight.requests.per.connection",
+   "what": "응답을 안 기다리고 동시에 보낼 수 있는 요청 수. 기본 5."
+  },
+  {
+   "term": "멱등 프로듀서",
+   "what": "시퀀스 번호로 중복과 순서 뒤집힘을 막는 프로듀서. 3.0+ 기본."
+  },
+  {
+   "term": "상태 머신",
+   "what": "허용된 상태 전이만 처리하는 방식. 순서 문제를 완화한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Guarantees",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Idempotent producer",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs_enable.idempotence",
+   "publisher": "Apache"
+  }
+ ]
+}

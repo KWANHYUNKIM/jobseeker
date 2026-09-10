@@ -215,7 +215,7 @@
           "title": "순서는 어디까지 보장되나",
           "summary": "파티션 안에서만.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -223,7 +223,7 @@
           "title": "파티션 몇 개로 할까",
           "summary": "늘리기는 되고 줄이기는 안 된다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",
@@ -231,7 +231,7 @@
           "title": "토픽 이름 규칙",
           "summary": "나중에 못 바꾸는 것들.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
