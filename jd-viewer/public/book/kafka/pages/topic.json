@@ -1,0 +1,141 @@
+{
+ "book": "kafka",
+ "id": "topic",
+ "no": "4.1",
+ "chapter": 4,
+ "title": "토픽",
+ "summary": "이름 하나가 갈래 하나.",
+ "minutes": 10,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "토픽의 단위를 어떻게 나눌지 안다.",
+  "토픽 설정이 무엇을 정하는지 안다.",
+  "토픽을 지울 때 무슨 일이 생기는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**토픽은 이름이 붙은 로그**다. **DB 로 치면 테이블에 가깝지만 스키마를 강제하지** 않는다.\n\n> **그래서 \"무엇을 한 토픽으로 묶을 것인가\" 가 설계**가 된다."
+  },
+  {
+   "type": "table",
+   "caption": "토픽을 나누는 기준",
+   "columns": [
+    "기준",
+    "예",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**같은 종류의 사실**",
+     "`order.placed` / `order.cancelled`",
+     "가장 흔하다"
+    ],
+    [
+     "**같은 스키마**",
+     "한 토픽에 여러 이벤트를 섞으면 컨슈머가 분기해야 한다",
+     "섞으려면 타입 헤더를 둔다"
+    ],
+    [
+     "**같은 보관 정책**",
+     "감사 로그 90일 / 이벤트 7일",
+     "3.4절. 정책은 토픽 단위다"
+    ],
+    [
+     "**같은 접근 권한**",
+     "결제 이벤트는 아무나 못 읽게",
+     "ACL 이 토픽 단위다"
+    ],
+    [
+     "처리량이 크게 다르면",
+     "초당 10건과 초당 10만 건",
+     "파티션 수가 달라야 한다"
+    ]
+   ],
+   "note": "**\"이벤트 하나에 토픽 하나\" 가 기본이되, 순서가 함께 지켜져야 하는 것들은 한 토픽에** 둔다(4.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "한 토픽에 섞을 것인가 나눌 것인가",
+   "md": "**`order.placed` 와 `order.cancelled` 를 한 토픽에 둘 수도** 있다.\n\n| | 나눈다 | 섞는다(`order.events`) |\n|---|---|---|\n| 컨슈머 | **관심 있는 것만** 구독 | 전부 받아 분기 |\n| **순서** | **토픽이 다르면 순서 보장이 없다** | **같은 키면 순서가 지켜진다** |\n| 스키마 | 단순 | 타입 필드·헤더가 필요 |\n| 권한·보관 | 따로 정한다 | 하나로 묶인다 |\n\n> **\"취소가 생성보다 먼저 처리되면 안 된다\" 면 한 토픽에 같은 키로** 넣는다.\n> **서로 독립이면 나누는 게** 깔끔하다.\n\n**이게 4.5절(순서)과 이어지는 첫 결정**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "토픽 삭제는 생각보다 조심스럽다",
+   "md": "```bash\nkafka-topics --delete --topic orders\n```\n\n| 무슨 일 | |\n|---|---|\n| 즉시 안 지워질 수 있다 | 브로커가 파일을 정리할 때까지 |\n| **컨슈머 그룹 오프셋은 남는다** | `__consumer_offsets` 에 그대로 |\n| **같은 이름으로 다시 만들면** | **topicId 가 달라진다.** 옛 오프셋이 엉킬 수 있다 |\n| 재생성 직후 | 컨슈머가 `UNKNOWN_TOPIC_OR_PARTITION` 을 잠깐 본다 |\n\n> **운영에서 토픽을 지우고 같은 이름으로 다시 만드는 건 피한다.**\n> **바꿔야 하면 `v2` 를 새로 만들고 옮긴다**(4.7절).\n\n**그리고 `delete.topic.enable=false` 인 클러스터면 삭제 요청이 무시**된다 — **요즘 기본은 `true`** 다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "토픽을 만들고 설정을 확인한다",
+   "sql": "# --- 만들기 ---\n\n$ kt --create --topic order.placed.v1 --partitions 3 --replication-factor 3 \\\n    --config retention.ms=604800000 --config min.insync.replicas=2\nCreated topic order.placed.v1.\n\n$ kt --describe --topic order.placed.v1\nTopic: order.placed.v1  TopicId: kK3nQ8fRSJ2mB9xLpW7vTg  PartitionCount: 3  ReplicationFactor: 3\n  Configs: min.insync.replicas=2,retention.ms=604800000\n  Topic: order.placed.v1  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1,2,3\n  Topic: order.placed.v1  Partition: 1  Leader: 2  Replicas: 2,3,1  Isr: 2,3,1\n  Topic: order.placed.v1  Partition: 2  Leader: 3  Replicas: 3,1,2  Isr: 3,1,2\n\n#   TopicId 가 있다. 이름이 같아도 다시 만들면 이 값이 달라진다\n\n\n# --- 기본값과 다른 설정만 보인다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name order.placed.v1 --describe\nDynamic configs for topic order.placed.v1 are:\n  min.insync.replicas=2 sensitive=false synonyms={DYNAMIC_TOPIC_CONFIG:min.insync.replicas=2,...}\n  retention.ms=604800000 sensitive=false synonyms={DYNAMIC_TOPIC_CONFIG:retention.ms=604800000}\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name order.placed.v1 \\\n    --describe --all 2>/dev/null | head -6\nAll configs for topic order.placed.v1 are:\n  cleanup.policy=delete sensitive=false synonyms={DEFAULT_CONFIG:log.cleanup.policy=delete}\n  compression.type=producer sensitive=false ...\n  max.message.bytes=1048588 sensitive=false ...\n  min.insync.replicas=2 ...\n\n#   --all 을 주면 기본값까지 전부 나온다\n\n\n# --- 한 토픽에 섞을 때는 타입을 헤더로 ---\n\n$ kt --create --topic order.events --partitions 3 --replication-factor 3 >/dev/null\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -P \\\n    -t order.events -k 1001 -H 'eventType=OrderPlaced' <<< '{\"orderId\":1001}'\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -P \\\n    -t order.events -k 1001 -H 'eventType=OrderCancelled' <<< '{\"orderId\":1001}'\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C \\\n    -t order.events -o beginning -e -f 'p%p o%o key=%k headers=%h payload=%s\\n'\np1 o0 key=1001 headers=eventType=OrderPlaced payload={\"orderId\":1001}\np1 o1 key=1001 headers=eventType=OrderCancelled payload={\"orderId\":1001}\n\n#   같은 키라 같은 파티션(1)에 순서대로 들어갔다 (4.4·4.5절)\n#   컨슈머는 헤더로 분기한다\n\n\n# --- 토픽을 지우고 같은 이름으로 다시 만들면 ---\n\n$ kcc --topic order.events --group evt --from-beginning --timeout-ms 2000 >/dev/null\n$ kcg --describe --group evt\nGROUP  TOPIC         PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nevt    order.events  1          2               2               0\n\n$ kt --delete --topic order.events\n$ sleep 3\n$ kt --create --topic order.events --partitions 3 --replication-factor 3 >/dev/null\n\n$ kt --describe --topic order.events | head -1\nTopic: order.events  TopicId: 9fB2mQ1xTk6aLpZ0vRcNwA  PartitionCount: 3\n\n#   TopicId 가 달라졌다 (kK3n... -> 9fB2...)\n\n$ kcg --describe --group evt\nGROUP  TOPIC         PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nevt    order.events  1          2               0               0\n\n#   오프셋 기록은 남아 있는데 토픽은 비었다\n#   CURRENT-OFFSET 2 > LOG-END-OFFSET 0 인 이상한 상태다\n#   컨슈머를 붙이면 OFFSET_OUT_OF_RANGE 로 auto.offset.reset 이 동작한다 (7.4절)\n\n$ kt --delete --topic order.events >/dev/null\n$ kcg --delete --group evt >/dev/null"
+  }
+ ],
+ "recap": [
+  "토픽은 이름이 붙은 로그다. 무엇을 한 토픽으로 묶을지가 설계다.",
+  "같은 종류·같은 스키마·같은 보관 정책·같은 권한을 기준으로 나눈다.",
+  "순서가 함께 지켜져야 하는 이벤트는 한 토픽에 같은 키로 넣는다.",
+  "토픽을 지우고 같은 이름으로 다시 만들면 topicId 가 바뀌고 옛 오프셋이 엉킨다. v2 를 새로 만드는 게 낫다."
+ ],
+ "drills": [
+  {
+   "task": "토픽을 만들고 `--describe --all` 로 기본값까지 확인한다.",
+   "done_when": "내가 지정한 설정과 기본값을 구분할 수 있다.",
+   "minutes": 5
+  },
+  {
+   "task": "kcat 으로 헤더를 붙여 두 종류의 이벤트를 한 토픽에 넣고 헤더로 구분해 읽는다.",
+   "done_when": "같은 키가 같은 파티션에 순서대로 들어가는 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "토픽을 지우고 같은 이름으로 다시 만든 뒤 옛 그룹의 오프셋을 확인한다.",
+   "done_when": "CURRENT-OFFSET 이 LOG-END-OFFSET 보다 큰 이상한 상태를 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "두 이벤트를 한 토픽에 섞을 이유가 있다면.",
+   "a": "둘 사이의 순서가 지켜져야 할 때. 토픽이 다르면 순서 보장이 없다."
+  },
+  {
+   "q": "토픽을 지우고 같은 이름으로 다시 만들면 무엇이 문제인가.",
+   "a": "topicId 가 바뀌고, 남아 있는 컨슈머 그룹 오프셋이 실제 로그와 안 맞아 OFFSET_OUT_OF_RANGE 가 난다."
+  },
+  {
+   "q": "토픽 설정에서 --describe 와 --describe --all 의 차이는.",
+   "a": "앞은 기본값과 다르게 지정한 것만, 뒤는 기본값까지 전부 보여 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "토픽",
+   "en": "topic",
+   "what": "이름이 붙은 로그. 파티션들의 묶음이다."
+  },
+  {
+   "term": "topicId",
+   "what": "토픽의 내부 식별자. 같은 이름으로 다시 만들면 달라진다."
+  },
+  {
+   "term": "헤더",
+   "en": "header",
+   "what": "레코드에 붙이는 키-값 메타데이터. 이벤트 타입 표시에 쓴다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Topic operations",
+   "url": "https://kafka.apache.org/documentation/#basic_ops_add_topic",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Topic design",
+   "url": "https://developer.confluent.io/courses/event-design/intro/",
+   "publisher": "Confluent"
+  }
+ ]
+}

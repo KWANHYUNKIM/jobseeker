@@ -183,7 +183,7 @@
           "title": "토픽",
           "summary": "이름 하나가 갈래 하나.",
           "minutes": 10,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -191,7 +191,7 @@
           "title": "파티션",
           "summary": "병렬성의 단위.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",

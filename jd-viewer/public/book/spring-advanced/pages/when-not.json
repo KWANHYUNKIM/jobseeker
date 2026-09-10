@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "when-not",
+ "no": "10.7",
+ "chapter": 10,
+ "title": "안 쓰는 게 나을 때",
+ "summary": "숨는 코드의 값.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "숨는 값을 잰다.",
+  "안 쓸 때를 안다.",
+  "10장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**아홉 장 동안 코드를** 지웠다. **지운 게 아니라 숨긴** 것이다."
+  },
+  {
+   "type": "figure",
+   "caption": "처음 보는 사람이 읽는 것",
+   "ascii": "   the same code, read by someone new\n\n   what the file says   two lines of business logic\n   what actually runs   two advices, a transaction, a cache\n\n   nothing in the file points at any of them",
+   "note": "**파일 안에 그걸 가리키는 게 하나도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안 적혀 있다는 게 값이자 값이다",
+   "md": "**깜빡할 수** 없다.\n\n> **8.6절에서 그걸** 얻었다.\n> **아래에서 다시** 본다.\n> **일곱 번** 겪었다.\n\n**보이지** 않는다.\n\n> **파일을 읽어도 모른다**.\n> **아래에서 세어** 본다.\n> **찾을 방법이** 있다.\n\n**따라가기** 어렵다.\n\n> **스택이** 길어진다.\n> **아래에서 잰다**.\n> **디버거가** 헷갈린다.\n\n**틀려도** 조용하다.\n\n> **9.1절부터 이어진 것**이다.\n> **아래에서 센다**.\n> **11.9절에서 잡는다**."
+  },
+  {
+   "type": "figure",
+   "caption": "숨기는 게 이득일 때",
+   "ascii": "   when hiding is worth it\n\n   worth it     the same thing in many places, and always the same\n   worth it     you must not be able to forget it\n\n   not worth it   it happens in two places\n   not worth it   it differs slightly every time\n   not worth it   reading the flow matters more than writing less",
+   "note": "**적게 쓰는 것보다 흐름을 읽는 게 중요하면 안** 숨긴다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "두 곳이면 그냥 적는다",
+   "md": "**두 곳은 그냥** 적는다.\n\n> **표현식이 더** 길다.\n> **아래에서 견준다**.\n> **찾기도** 쉽다.\n\n**조금씩 다르면 안** 숨긴다.\n\n> **조건이 표현식에** 는다.\n> **아래에서 그걸** 본다.\n> **11.7절의 조합이** 커진다.\n\n**흐름이 중요하면 안** 숨긴다.\n\n> **4장의 콜백이** 낫다.\n> **아래에서 견준다**.\n> **눈에** 보인다.\n\n**늘 같아야 하면** 숨긴다.\n\n> **빠뜨리면 안 되는 것**이다.\n> **아래에서 예를** 본다.\n> **⑩ 4장의 보안이** 그렇다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 파일이 말하는 것\n\n$ cat src/main/java/study/adv/app/OrderServiceV3.java\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV3 {\n\n    private final OrderRepositoryV3 orderRepository;\n\n    public void orderItem(String itemId) {\n        orderRepository.save(itemId);\n    }\n}\n\n$ wc -l < src/main/java/study/adv/app/OrderServiceV3.java\n      10\n\n\n-- 실제로 도는 것\n\n$ curl -s 'localhost:8080/aop/chain?name=orderServiceV3'\n1 AspectJAroundAdvice          LogTraceAspect.execute\n2 AspectJAroundAdvice          SlowAspect.slow\n3 TransactionInterceptor\n4 CacheInterceptor\n5 원본 study.adv.app.OrderServiceV3\n\n$ grep -cE 'Aspect|Advice|Proxy|Transactional|Cacheable' \\\n    src/main/java/study/adv/app/OrderServiceV3.java\n0\n\n--   네 겹인데 파일엔 한 글자도 없다\n\n\n-- 스택이 얼마나 깊어지나\n\n@Service\npublic class OrderServiceV3 {\n    public void orderItem(String itemId) {\n        log.info(\"스택 깊이 {}\", Thread.currentThread().getStackTrace().length);\n        orderRepository.save(itemId);\n    }\n}\n\n// 애스펙트를 다 끄고\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '스택 깊이' logs/app.log | tail -1 | cut -c56-\n스택 깊이 68\n\n// 넷을 다 걸고\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '스택 깊이' logs/app.log | tail -1 | cut -c56-\n스택 깊이 96\n\n$ python3 -c \"print('%d 줄 늘었다' % (96-68))\"\n28 줄 늘었다\n\n--   예외가 나면 이 줄들이 다 찍힌다\n\n\n-- 예외 스택을 본다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=ex'\n$ grep -A30 'IllegalStateException' logs/app.log | grep -c 'aop\\|cglib\\|reflect'\n21\n$ grep -A30 'IllegalStateException' logs/app.log | grep -c 'study.adv.app'\n3\n\n$ python3 -c \"print('내 코드는 %.0f%%' % (3/24*100))\"\n내 코드는 12%\n\n--   ⑨ 3.6절에서 스택을 읽던 그 자리다\n--   88% 가 남의 줄이다\n\n\n-- 무엇이 걸려 있나 찾는 법\n\n@GetMapping(value = \"/aop/explain\", produces = \"text/plain\")\nString explain(String bean, String method) {\n    Object b = ctx.getBean(bean);\n    Class<?> t = AopUtils.getTargetClass(b);\n    Method m = ReflectionUtils.findMethod(t, method);\n    StringBuilder sb = new StringBuilder();\n    for (Advisor a : ((Advised) b).getAdvisors()) {\n        if (a instanceof PointcutAdvisor pa\n            && pa.getPointcut().getMethodMatcher().matches(m, t))\n            sb.append(a.getAdvice().getClass().getSimpleName()).append('\\n');\n    }\n    return sb.toString();\n}\n\n$ curl -s 'localhost:8080/aop/explain?bean=orderServiceV3&method=orderItem'\nAspectJAroundAdvice\nAspectJAroundAdvice\nTransactionInterceptor\nCacheInterceptor\n\n--   물어보면 답은 나온다\n--   물어볼 생각을 해야 한다\n\n\n-- 두 곳뿐이면\n\n// 애스펙트로\n@Around(\"execution(* study.adv.app.OrderServiceV3.orderItem(..)) || \" +\n        \"execution(* study.adv.app.OrderRepositoryV3.save(..))\")\npublic Object two(ProceedingJoinPoint jp) throws Throwable { ... }\n\n$ grep -o 'execution([^)]*))' src/main/java/study/adv/aspect/TwoAspect.java | wc -l\n       2\n$ wc -l < src/main/java/study/adv/aspect/TwoAspect.java\n      18\n\n// 그냥 적으면\npublic void orderItem(String itemId) {\n    long t = System.currentTimeMillis();\n    try { orderRepository.save(itemId); }\n    finally { log.info(\"{}ms\", System.currentTimeMillis() - t); }\n}\n\n$ printf '%-16s %s\\n' '애스펙트' '18 줄 + 표현식 2' '직접' '6 줄 x 2 = 12 줄'\n애스펙트         18 줄 + 표현식 2\n직접             6 줄 x 2 = 12 줄\n\n--   두 곳이면 안 줄어든다\n--   9.6 절에서는 열여덟 곳이었다\n\n\n-- 조금씩 다르면\n\n@Around(\"execution(* study.adv.app..*(..))\")\npublic Object mixed(ProceedingJoinPoint jp) throws Throwable {\n    String name = jp.getSignature().toShortString();\n    if (name.startsWith(\"OrderRepository\")) { ... }        // 저장소만\n    else if (name.contains(\"Controller\")) { ... }          // 컨트롤러만\n    else if (jp.getArgs().length > 0) { ... }              // 인자 있을 때만\n    return jp.proceed();\n}\n\n$ grep -c 'if\\|else' src/main/java/study/adv/aspect/MixedAspect.java\n5\n\n$ curl -s 'localhost:8080/aop/explain?bean=orderServiceV3&method=orderItem'\nAspectJAroundAdvice\n\n--   걸려는 있는데 안에서 갈라진다\n--   포인트컷이 할 일을 자바가 한다\n--   11.7 절에서 이걸 표현식으로 옮긴다\n\n\n-- 흐름이 중요하면\n\n// 애스펙트\n@Around(\"execution(* study.adv.app..*(..))\")\npublic Object tx(ProceedingJoinPoint jp) throws Throwable { ... }\n\n// 4 장의 콜백\npublic void orderItem(String itemId) {\n    template.execute(\"OrderService.orderItem()\", () -> orderRepository.save(itemId));\n}\n\n$ grep -c 'template.execute' src/main/java/study/adv/app/*.java\n0\n\n$ git show v7:src/main/java/study/adv/app/OrderServiceV1.java | grep -c 'template.execute'\n1\n\n--   4.8 절에서 이렇게 적었다\n--   부르는 자리에 보인다\n--   대신 빠뜨릴 수 있다\n\n\n-- 셋을 나란히\n\n$ printf '%-14s %-14s %-14s %s\\n' '' '보임' '깜빡함' '코드' && \\\n  printf '%-14s %-14s %-14s %s\\n' \\\n  '직접 적기'  '보임'      '있음'  '메서드마다' \\\n  '콜백'       '보임'      '있음'  '한 줄' \\\n  '애스펙트'   '안 보임'   '없음'  '없음'\n\n                보임           깜빡함         코드\n직접 적기       보임           있음           메서드마다\n콜백            보임           있음           한 줄\n애스펙트        안 보임        없음           없음\n\n\n-- 조용히 틀리는 자리를 센다\n\n$ curl -s localhost:8080/aop/silent\n표현식 오타         조용함     11.9\n@Component 누락     조용함     9.1\n자기 호출           조용함     12.1\nfinal 메서드        조용함     10.4\nprivate static      조용함     10.4\n이른 빈             정보 로그  8.7\nget set 표현식      조용함     10.2\n\n$ curl -s localhost:8080/aop/silent | wc -l\n       7\n\n--   9 장까지 오면서 일곱 자리를 만났다\n--   전부 오류 없이 안 걸린다\n\n\n-- 시끄럽게 만드는 법을 모은다\n\n$ curl -s localhost:8080/aop/guards\n기동 검사      필수 빈이 프록시인지        8.7\n검사 창구      조용히 빠지는 메서드        6.7 10.4\n적중 수        기동 뒤 0 이면 실패         11.9\n관문 창구      왜 안 걸렸는지              8.7\n\n$ ./gradlew bootRun 2>&1 | grep -E '조용히 빠지는|안 감싸짐' | cut -c56-\n조용히 빠지는 메서드 4 개\n\n--   6.2 절부터 계속 만들어 온 것들이다\n\n\n-- 쓸지 말지의 한 줄\n\n$ printf '%-30s %s\\n' \\\n  '몇 곳에 있나'       '열 곳 넘으면 숨김' \\\n  '늘 같은가'          '다르면 안 숨김' \\\n  '빠뜨리면 큰일인가'  '그러면 숨김' \\\n  '흐름을 읽나'        '읽어야 하면 안 숨김'\n\n몇 곳에 있나                   열 곳 넘으면 숨김\n늘 같은가                      다르면 안 숨김\n빠뜨리면 큰일인가              그러면 숨김\n흐름을 읽나                    읽어야 하면 안 숨김\n\n$ curl -s localhost:8080/pointcut/hits | wc -l\n      10\n\n--   내 경우는 열 곳이고 늘 같다\n--   그래서 숨겼다\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s 'localhost:8080/aop/explain?bean=orderServiceV3&method=orderItem'\nAspectJAroundAdvice\nAspectJAroundAdvice\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   11 장에서 표현식만 판다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '파일'        '10 줄' \\\n  '실제'        '네 겹' \\\n  '단서'        '0 개' \\\n  '스택'        '28 줄 늘음' \\\n  '내 코드'     '12%' \\\n  '찾는 법'     '물어보는 창구' \\\n  '두 곳'       '안 줄어듦' \\\n  '다르면'      '자바로 갈라짐' \\\n  '조용한 자리' '일곱' \\\n  '기준'        '곳 수와 같음'\n\n파일                       10 줄\n실제                       네 겹\n단서                       0 개\n스택                       28 줄 늘음\n내 코드                    12%\n찾는 법                    물어보는 창구\n두 곳                      안 줄어듦\n다르면                     자바로 갈라짐\n조용한 자리                일곱\n기준                       곳 수와 같음",
+   "note": "**10 줄짜리 파일 뒤에 네 겹이 걸려 있는데 파일 안에 단서가 0 개**다.\n\n**스택이 68 에서 96 으로 28 줄 늘고 예외 스택에서 내 코드는 12%** 다.\n\n**두 곳뿐이면 애스펙트 18 줄이 직접 적는 12 줄보다** 길다.\n\n**조건이 다르면 포인트컷이 할 일을 `if` 다섯 개가 대신** 한다.\n\n**9장까지 오며 조용히 틀리는 자리를 일곱 개 만났고 시끄럽게 만드는 법도 넷** 모았다."
+  }
+ ],
+ "recap": [
+  "**숨은 것**이다.",
+  "**단서가** 없다.",
+  "**스택이** 는다.",
+  "**찾는 법이** 있다.",
+  "**두 곳은 그냥** 적는다.",
+  "**다르면 안** 숨긴다.",
+  "**흐름이면 안** 숨긴다.",
+  "**늘 같으면** 숨긴다.",
+  "**조용한 자리가** 일곱이다."
+ ],
+ "drills": [
+  {
+   "task": "스택 깊이를 잰다.",
+   "done_when": "늘어난 줄을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "설명 창구를 만든다.",
+   "done_when": "걸린 넷을 다 찍었다.",
+   "minutes": 25
+  },
+  {
+   "task": "두 곳짜리로 견준다.",
+   "done_when": "안 줄어드는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "조용한 자리를 목록으로 만든다.",
+   "done_when": "일곱을 다 적었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "숨기는 것의 값은?",
+   "a": "깜빡할 수 없다는 것이다."
+  },
+  {
+   "q": "숨기는 것의 대가는?",
+   "a": "파일에 단서가 없고 스택이 길어지며 틀려도 조용하다."
+  },
+  {
+   "q": "언제 안 숨기나?",
+   "a": "곳이 적을 때, 조금씩 다를 때, 흐름을 읽어야 할 때다."
+  },
+  {
+   "q": "무엇이 걸렸는지 어떻게 아나?",
+   "a": "묶음 목록에 물어보는 창구를 만들면 된다."
+  },
+  {
+   "q": "조용히 틀리는 자리는 몇 개였나?",
+   "a": "9 장까지 오며 일곱 자리를 만났다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "숨은 코드",
+   "def": "부르는 자리에 한 글자도 안 적혀 있는데 실제로 도는 코드."
+  },
+  {
+   "term": "시끄럽게 만들기",
+   "def": "조용히 안 걸리는 상황을 기동이나 검사에서 드러내는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Choosing which AOP declaration style to use",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/choosing.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

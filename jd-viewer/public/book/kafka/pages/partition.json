@@ -1,0 +1,104 @@
+{
+ "book": "kafka",
+ "id": "partition",
+ "no": "4.2",
+ "chapter": 4,
+ "title": "파티션",
+ "summary": "병렬성의 단위.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "파티션이 무엇을 나누는지 안다.",
+  "파티션이 늘면 무엇이 좋아지고 나빠지는지 안다.",
+  "컨슈머 수와의 관계를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**파티션은 토픽을 쪼갠 조각**이고, **카프카에서 거의 모든 것의 단위**다.\n\n> **저장의 단위**(3.3절 — 파티션 하나가 디렉터리 하나)\n> **복제의 단위**(3.5절 — 파티션마다 리더가 따로)\n> **순서의 단위**(4.5절)\n> **병렬성의 단위**(7.3절 — 컨슈머가 파티션 단위로 나눠 맡는다)"
+  },
+  {
+   "type": "figure",
+   "caption": "파티션이 늘면 병렬성이 는다",
+   "ascii": "   partitions = 1                      partitions = 3\n   -------------                       -------------\n   p0: ############                    p0: ####    <- consumer 1\n       ^                               p1: ####    <- consumer 2\n       |                               p2: ####    <- consumer 3\n   consumer 1 only\n   (2nd consumer idles)                three at once\n\n   throughput bound by one consumer    ~3x, if the work is CPU/IO bound\n   total order guaranteed              order only within each partition",
+   "note": "**왼쪽은 전체 순서가 보장되고 오른쪽은 아니다.** **병렬성과 순서를 맞바꾼다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "파티션이 늘면 좋아지는 것",
+   "md": "| 좋아지는 것 | 왜 |\n|---|---|\n| **컨슈머 병렬성** | 컨슈머 수 상한이 파티션 수다(2.5절) |\n| **쓰기 처리량** | 리더가 여러 브로커에 흩어져 병렬로 받는다 |\n| 브로커 부하 분산 | 한 브로커에 몰리지 않는다 |\n| 복구 병렬성 | 재복제가 여러 파티션에서 동시에 |\n\n**그리고 나빠지는 것**:\n\n| 나빠지는 것 | 얼마나 |\n|---|---|\n| **순서 범위** | 전체 순서가 깨진다(4.5절) |\n| **파일 핸들·메모리** | 파티션마다 세그먼트 + 인덱스(3.3절) |\n| **리밸런싱 시간** | 파티션이 많으면 오래 걸린다(7.3절) |\n| **엔드투엔드 지연** | 프로듀서 배치가 파티션마다 나뉜다(6.5절) |\n| **디스크** | 활성 세그먼트 × 파티션 수(3.4절) |\n| 리더 선출 시간 | 브로커 장애 시 옮길 파티션이 많다 |\n\n> **\"일단 많이 잡아 두자\" 가 안 되는 이유**다. **4.6절에서 숫자로** 정한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨슈머를 늘려도 안 빨라지는 경우",
+   "md": "**2.5절에서 컨슈머 5개 중 2개가 놀았다.** **반대 경우도** 있다.\n\n| 상황 | 결과 |\n|---|---|\n| 파티션 3, 컨슈머 1 | **한 컨슈머가 셋을 다 읽는다.** 순서대로가 아니라 번갈아 |\n| 파티션 3, 컨슈머 3 | 하나씩. **이상적** |\n| 파티션 3, 컨슈머 5 | **둘이 논다** |\n| 파티션 3, 컨슈머 3 인데 **키가 한쪽에 쏠림** | **한 컨슈머만 바쁘다**(4.4절) |\n\n**마지막이 실무에서 가장 흔한 함정**이다.\n\n> **파티션을 늘렸는데 랙이 안 줄면 키 분포를 먼저** 본다.\n> **1.5절의 \"한 파티션만 LAG 이 크다\" 가 이것**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "파티션 수와 처리량·순서를 재 본다",
+   "sql": "# --- 파티션 1 과 6 ---\n\n$ kt --create --topic p1 --partitions 1 --replication-factor 3 >/dev/null\n$ kt --create --topic p6 --partitions 6 --replication-factor 3 >/dev/null\n\n\n# --- 쓰기 처리량 비교 (내장 벤치마크) ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n    --topic p1 --num-records 200000 --record-size 200 --throughput -1 \\\n    --producer-props bootstrap.servers=kafka-1:19092 acks=1\n200000 records sent, 62893.081761 records/sec (11.99 MB/sec),\n  184.32 ms avg latency, 612.00 ms max latency.\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n    --topic p6 --num-records 200000 --record-size 200 --throughput -1 \\\n    --producer-props bootstrap.servers=kafka-1:19092 acks=1\n200000 records sent, 148148.148148 records/sec (28.25 MB/sec),\n  61.14 ms avg latency, 288.00 ms max latency.\n\n#   62,893 -> 148,148 records/sec. 리더가 세 브로커에 흩어져 병렬로 받는다\n#   지연도 184ms -> 61ms 로 줄었다\n\n\n# --- 읽기 병렬성 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-consumer-perf-test.sh \\\n    --bootstrap-server kafka-1:19092 --topic p1 --messages 200000 --threads 1 2>/dev/null | tail -1\nstart.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec\n2026-09-10 15:12:01, 2026-09-10 15:12:06, 38.1470, 7.6294, 200000, 40000.0000\n\n#   컨슈머 하나로는 파티션 수와 무관하게 비슷하다\n#   병렬성은 컨슈머를 늘려야 나온다 (7.3절)\n\n\n# --- 파티션 3, 컨슈머 1: 번갈아 읽는다 ---\n\n$ kt --create --topic mix --partitions 3 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 9); do echo \"m-$i\"; done | kcp --topic mix\n\n$ kcc --topic mix --from-beginning --timeout-ms 2000 --property print.partition=true\nPartition:0  m-1\nPartition:0  m-4\nPartition:0  m-7\nPartition:1  m-2\nPartition:1  m-5\nPartition:1  m-8\nPartition:2  m-3\nPartition:2  m-6\nPartition:2  m-9\nProcessed a total of 9 messages\n\n#   1,2,3,4... 순서가 아니다. 파티션 단위로 뭉쳐서 나온다\n#   전체 순서를 원하면 파티션이 하나여야 한다 (4.5절)\n\n\n# --- 파티션을 늘린다 (줄이지는 못한다) ---\n\n$ kt --alter --topic mix --partitions 6\n$ kt --describe --topic mix | head -1\nTopic: mix  PartitionCount: 6  ReplicationFactor: 3\n\n$ kt --alter --topic mix --partitions 3\nError while executing topic command : Topic currently has 6 partitions,\n  which is higher than the requested 3.\n\n#   줄이는 건 안 된다 (4.6절)\n\n\n# --- 파티션이 많으면 파일도 많다 ---\n\n$ kt --create --topic many --partitions 100 --replication-factor 3 >/dev/null\n$ docker compose exec -T kafka-1 sh -c 'ls -d /var/lib/kafka/data/many-* | wc -l'\n34\n\n$ docker compose exec -T kafka-1 sh -c 'du -sh /var/lib/kafka/data/many-* | head -1'\n21M\t/var/lib/kafka/data/many-0\n\n$ docker compose exec -T kafka-1 sh -c 'du -sch /var/lib/kafka/data/many-* | tail -1'\n714M\ttotal\n\n#   레코드가 하나도 없는데 714MB 다\n#   파티션마다 인덱스 파일을 미리 잡아 뒀기 때문이다 (3.3절)\n#   \"일단 많이 잡아 두자\" 가 안 되는 이유\n\n$ kt --delete --topic many >/dev/null\n$ kt --delete --topic p1 >/dev/null; kt --delete --topic p6 >/dev/null; kt --delete --topic mix >/dev/null"
+  }
+ ],
+ "recap": [
+  "파티션은 저장·복제·순서·병렬성의 단위다.",
+  "파티션을 늘리면 쓰기 처리량과 컨슈머 병렬성이 늘고, 순서 범위·파일 핸들·리밸런싱 시간이 나빠진다.",
+  "컨슈머 수는 파티션 수를 넘을 수 없고, 키가 쏠리면 파티션이 많아도 한 컨슈머만 바쁘다.",
+  "파티션은 늘릴 수만 있고 줄일 수 없다. 빈 토픽도 파티션 수만큼 인덱스를 미리 잡는다."
+ ],
+ "drills": [
+  {
+   "task": "파티션 1과 6인 토픽에 `kafka-producer-perf-test.sh` 로 같은 부하를 주고 처리량을 비교한다.",
+   "done_when": "records/sec 차이를 숫자로 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "파티션 3짜리 토픽에 9건을 넣고 컨슈머 하나로 읽어 순서를 본다.",
+   "done_when": "입력 순서가 아니라 파티션 단위로 뭉쳐 나오는 것을 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "파티션 100짜리 토픽을 만들고 데이터 디렉터리 용량을 본다.",
+   "done_when": "레코드가 없는데도 용량이 큰 이유를 설명할 수 있다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "파티션을 늘리면 나빠지는 것 셋은.",
+   "a": "순서 보장 범위, 파일 핸들·메모리, 리밸런싱 시간(그리고 디스크·지연)."
+  },
+  {
+   "q": "파티션 3에 컨슈머 1이면.",
+   "a": "한 컨슈머가 셋을 다 읽는다. 파티션 단위로 뭉쳐서 나오고 전체 순서는 아니다."
+  },
+  {
+   "q": "파티션을 늘렸는데 랙이 안 줄면 먼저 볼 것은.",
+   "a": "키 분포. 한 파티션에 쏠려 있으면 병렬성이 안 나온다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "파티션",
+   "what": "토픽을 쪼갠 조각. 저장·복제·순서·병렬성의 단위."
+  },
+  {
+   "term": "producer-perf-test",
+   "what": "카프카 내장 프로듀서 벤치마크 도구."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Topics and partitions",
+   "url": "https://kafka.apache.org/documentation/#intro_concepts_and_terms",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — How to choose the number of partitions",
+   "url": "https://www.confluent.io/blog/how-choose-number-topics-partitions-kafka-cluster/",
+   "publisher": "Confluent"
+  }
+ ]
+}

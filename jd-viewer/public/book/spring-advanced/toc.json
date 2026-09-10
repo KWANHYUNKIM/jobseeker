@@ -614,7 +614,7 @@
           "title": "AspectJ 와 다른 점",
           "summary": "빌린 것과 안 빌린 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.7",
@@ -622,7 +622,7 @@
           "title": "안 쓰는 게 나을 때",
           "summary": "숨는 코드의 값.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
