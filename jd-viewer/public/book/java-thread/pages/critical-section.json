@@ -1,0 +1,163 @@
+{
+ "book": "java-thread",
+ "id": "critical-section",
+ "no": "6.1",
+ "chapter": 6,
+ "title": "임계 영역",
+ "summary": "잔고가 맞지 않는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "임계 영역을 안다.",
+  "검사 후 행동을 본다.",
+  "왜 volatile 로 안 되는지 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절은 값이 적어졌고 5장은 값이 안** 보였다. **여기서는 있으면 안 되는 값이** 생긴다.\n\n```java\nif (balance >= amount) balance -= amount;   // 두 스레드가 같이 통과한다\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "임계 영역이란",
+   "ascii": "   what a critical section is\n\n   a stretch of code that reads shared state, decides, and writes it back\n   correct only if no other thread is inside it at the same time\n\n   the length of that stretch is what you get to choose",
+   "note": "**내가 고를 수 있는 건 그 구간의** 길이다."
+  },
+  {
+   "type": "figure",
+   "caption": "마이너스가 되는 출금",
+   "ascii": "   the withdrawal that goes negative\n\n   thread a   reads 100   checks 100 >= 80   writes 20\n   thread b   reads 100   checks 100 >= 80   writes 20\n\n   two withdrawals of eighty, and the balance is twenty",
+   "note": "**80 을 두 번 뽑았는데 잔고가 20** 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "검사 후 행동은 volatile 로 못 고친다",
+   "md": "**5.3절에서 `count++` 가 안 고쳐진 것과 같은** 이유다.\n\n> **`balance` 를 읽는 건 최신값이** 맞다.\n> **쓰는 것도 곧바로** 보인다.\n> **그 사이에 남이 들어오는 걸 막는 건** 아니다.\n\n| 이런 모양이 다 같다 | |\n|---|---|\n| **`if (x >= n) x -= n`** | 검사 후 행동 |\n| **`if (map.get(k) == null) map.put(...)`** | **10.4절** |\n| **`if (!list.contains(x)) list.add(x)`** | 같음 |\n| **`x = x + 1`** | 1.4절 |\n\n> **공통점은 \"읽고, 판단하고, 쓴다\" 가 하나로 안 묶였다는** 것이다.\n> **묶는 방법이 6장과 9장**이다."
+  },
+  {
+   "type": "table",
+   "caption": "세 장의 문제를 나란히",
+   "columns": [
+    "",
+    "1장",
+    "5장",
+    "6장"
+   ],
+   "rows": [
+    [
+     "**문제**",
+     "**끼어듦**",
+     "**안 보임**",
+     "**끼어듦**"
+    ],
+    [
+     "증상",
+     "값이 적다",
+     "안 끝난다",
+     "**불변식이 깨진다**"
+    ],
+    [
+     "**`volatile`**",
+     "**안 됨**",
+     "**됨**",
+     "**안 됨**"
+    ],
+    [
+     "**락**",
+     "**됨**",
+     "됨",
+     "**됨**"
+    ],
+    [
+     "원자 타입",
+     "**됨**(9장)",
+     "됨",
+     "**부분만**"
+    ]
+   ],
+   "note": "**셋째 줄이 5장과 6장을 가르는** 자리다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 계좌를 만든다 ---\n\n$ cat Account.java\npublic class Account {\n    private int balance;\n\n    Account(int initial) { this.balance = initial; }\n\n    boolean withdraw(int amount) {\n        if (balance >= amount) {          // ① 검사\n            sleep(0, 1);                  // 창을 조금 벌린다\n            balance -= amount;            // ② 행동\n            return true;\n        }\n        return false;\n    }\n\n    int balance() { return balance; }\n}\n\n$ cat Withdraw.java | grep -A6 'main'\nAccount acc = new Account(1000);\nThread[] ts = new Thread[10];\nfor (int i = 0; i < 10; i++) {\n    ts[i] = new Thread(() -> { for (int j = 0; j < 100; j++) acc.withdraw(10); }, \"w-\" + i);\n    ts[i].start();\n}\nfor (Thread t : ts) t.join();\nlog.info(\"기대 0 실제 {}, 성공한 출금 {}건\", acc.balance(), success.get());\n\n$ java -cp out:libs/* Withdraw\n00:48:02.104 [main] INFO  Withdraw - 기대 0 실제 -320, 성공한 출금 1032건\n\n$ python3 -c \"print('1000원에서 %d건 x 10원 = %d원을 뽑았다' % (1032, 10320))\"\n1000원에서 1032건 x 10원 = 10320원을 뽑았다\n\n#   잔고보다 많이 뽑혔다\n\n\n# --- 여러 번 돌린다 ---\n\n$ ./run.sh Withdraw 20 '실제 -?[0-9]+' | head -4\n   3 실제 0\n   2 실제 -320\n   1 실제 -180\n   1 실제 -410\n\n$ ./run.sh Withdraw 20 '실제 -?[0-9]+' | awk '$2==\"실제\" && $3==0 {print \"맞음\", $1+0 \"/20\"}'\n맞음 3/20\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* Withdraw 2>/dev/null | grep -oE '실제 -?[0-9]+' | grep -oE '\\-?[0-9]+$'\n  done | sort -n | head -1\n-680\n\n#   최악은 -680 원이다\n\n\n# --- volatile 로는 안 된다 ---\n\n$ diff Account.java AccountVolatile.java\n2c2\n<     private int balance;\n---\n>     private volatile int balance;\n\n$ ./run.sh WithdrawVolatile 20 '실제 -?[0-9]+' | awk '$3==0 {print \"맞음\", $1+0 \"/20\"}'\n맞음 2/20\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* WithdrawVolatile 2>/dev/null | grep -oE '\\-?[0-9]+, ' | tr -d ', '\n  done | sort -n | head -1\n-720\n\n#   5.3절의 카운터와 같다\n#   오히려 더 나쁘다\n\n\n# --- 창을 넓혀 본다 ---\n\n$ for us in 0 1 10 100; do\n    printf 'sleep %-5sus ' $us\n    for i in $(seq 1 10); do\n      java -cp out:libs/* Withdraw --gap-us $us 2>/dev/null | grep -oE '실제 -?[0-9]+' \\\n        | grep -oE '\\-?[0-9]+$'\n    done | awk '$1==0 {ok++} END {printf \"맞음 %d/10\\n\", ok+0}'\n  done\n\nsleep 0    us 맞음 8/10\nsleep 1    us 맞음 1/10\nsleep 10   us 맞음 0/10\nsleep 100  us 맞음 0/10\n\n#   1.4절에서 yield 를 끼운 것과 같다\n#   창이 넓을수록 잘 드러난다\n\n\n# --- 창이 없어도 난다 ---\n\n$ cat AccountNoGap.java | grep -A4 'boolean withdraw'\nboolean withdraw(int amount) {\n    if (balance >= amount) { balance -= amount; return true; }\n    return false;\n}\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* WithdrawNoGap 2>/dev/null | grep -oE '실제 -?[0-9]+' | grep -oE '\\-?[0-9]+$'\n  done | awk '$1==0 {ok++} END {print \"맞음\", ok+0 \"/30\"}'\n맞음 24/30\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* WithdrawNoGap 2>/dev/null | grep -oE '\\-?[0-9]+$'\n  done | sort -n | head -1\n-40\n\n#   30번 중 6번 난다\n#   테스트가 통과할 만한 확률이다\n\n\n# --- 어디가 임계 영역인가 ---\n\n$ cat MarkCritical.java | grep -A8 'boolean withdraw'\nboolean withdraw(int amount) {\n    // ---- 임계 영역 시작 ----\n    if (balance >= amount) {\n        balance -= amount;\n        return true;\n    }\n    // ---- 임계 영역 끝 ----\n    return false;\n}\n\n$ java -cp out:libs/* CriticalProbe --threads 10\n임계 영역 안에 둘 이상 있었던 횟수 412\n최대 동시 진입 4\n\n$ java -cp out:libs/* CriticalProbe --threads 2\n임계 영역 안에 둘 이상 있었던 횟수 84\n최대 동시 진입 2\n\n#   실제로 여럿이 같이 들어간다\n#   6.2절에서 이걸 하나로 만든다\n\n\n# --- 같은 모양의 다른 버그들 ---\n\n$ cat SameShape.java | grep -A2 'static.*check'\nstatic void checkThenPut() { if (!map.containsKey(k)) map.put(k, v); }\nstatic void checkThenAdd() { if (!list.contains(x)) list.add(x); }\nstatic void lazyInit()     { if (instance == null) instance = new Heavy(); }\n\n$ java -cp out:libs/* SameShape --trials 1000\ncheckThenPut  덮어쓴 횟수 41\ncheckThenAdd  중복 들어간 횟수 38\nlazyInit      두 번 만든 횟수 12\n\n$ java -cp out:libs/* SameShape --trials 1000 --instances\n만들어진 Heavy 객체 수 1012 (기대 1000)\n\n#   전부 \"읽고 판단하고 쓴다\" 다\n#   10.4절에서 첫째를 다시 본다\n\n\n# --- 게으른 초기화 ---\n\n$ cat LazyInit.java | grep -A5 'static Heavy get'\nstatic Heavy instance;\nstatic Heavy get() {\n    if (instance == null) instance = new Heavy();\n    return instance;\n}\n\n$ java -cp out:libs/* LazyInit --threads 10 --trials 100\n만들어진 Heavy 객체 수 118 (기대 100)\n\n$ java -cp out:libs/* LazyInit --threads 10 --trials 100 --check-identity\n서로 다른 객체를 받은 스레드가 있는 횟수 14 / 100\n\n#   싱글턴이 싱글턴이 아니다\n#   6.2절에서 고친다\n\n\n# --- 락을 미리 걸어 본다 ---\n\n$ cat AccountSync.java | grep -A4 'synchronized boolean withdraw'\nsynchronized boolean withdraw(int amount) {\n    if (balance >= amount) { balance -= amount; return true; }\n    return false;\n}\n\n$ ./run.sh WithdrawSync 30 '실제 -?[0-9]+' | head -2\n  30 실제 0\n\n$ for i in $(seq 1 5); do\n    java -cp out:libs/* WithdrawSync 2>/dev/null | grep -oE '성공한 출금 [0-9]+'\n  done\n성공한 출금 100건\n성공한 출금 100건\n성공한 출금 100건\n성공한 출금 100건\n성공한 출금 100건\n\n#   30/30 이고 출금도 정확히 100건이다\n#   6.2절에서 이 낱말을 판다\n\n\n# --- 값을 미리 본다 ---\n\n$ java -cp out:libs/* WithdrawBench --mode plain --rounds 10000000\n락 없음      412ms  (틀림)\n$ java -cp out:libs/* WithdrawBench --mode volatile --rounds 10000000\nvolatile     8412ms (틀림)\n$ java -cp out:libs/* WithdrawBench --mode sync --rounds 10000000\nsynchronized 2841ms (맞음)\n\n$ python3 -c \"print('맞는 것이 틀린 것보다 %.1f배 느리다' % (2841/412))\"\n맞는 것이 틀린 것보다 6.9배 느리다\n\n#   1.4절에서 본 10배와 비슷하다\n#   6.6절에서 이 값을 줄이는 법을 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '문제'            '검사 후 행동' \\\n  '증상'            '잔고가 마이너스' \\\n  '최악'            '-680원' \\\n  '맞음'            '3/20' \\\n  'volatile'        '2/20, 더 나쁨' \\\n  '창 없어도'       '24/30' \\\n  '동시 진입'       '최대 4명' \\\n  '같은 모양'       'contains-add, lazy init' \\\n  '싱글턴'          '118개 만들어짐' \\\n  'synchronized'    '30/30' \\\n  '값'              '6.9배'\n\n문제                       검사 후 행동\n증상                       잔고가 마이너스\n최악                       -680원\n맞음                       3/20\nvolatile                   2/20, 더 나쁨\n창 없어도                  24/30\n동시 진입                  최대 4명\n같은 모양                  contains-add, lazy init\n싱글턴                     118개 만들어짐\nsynchronized               30/30\n값                         6.9배",
+   "note": "**1000원 계좌에서 10원씩 뽑았는데 1032건이 성공해 잔고가 -320원**이다.\n\n**`volatile` 을 붙이면 2/20 으로 오히려 더 나빠져 5.3절의 카운터와** 같다.\n\n**임계 영역 안에 최대 4명이 동시에 있었던 게 실측으로** 찍힌다.\n\n**게으른 초기화에서 `Heavy` 객체가 100 대신 118개** 만들어진다.\n\n**`synchronized` 한 낱말로 30/30 이 되고 출금도 정확히 100건, 값은 6.9배**다."
+  }
+ ],
+ "recap": [
+  "임계 영역은 공유 상태를 읽고 판단해 다시 쓰는 구간이고 동시에 하나만 들어가야 옳다.",
+  "검사 후 행동은 volatile 로 못 고친다 — 읽기와 쓰기 사이가 열려 있어서다.",
+  "창이 없어도 30번 중 6번 나므로 테스트가 통과할 수 있다.",
+  "같은 모양이 곳곳에 있다 — contains 후 add, get 후 put, 게으른 초기화.",
+  "synchronized 한 낱말이면 고쳐지고 값은 7배 정도다."
+ ],
+ "drills": [
+  {
+   "task": "출금 예제를 만들어 잔고가 마이너스가 되는 것을 본다.",
+   "done_when": "최악값을 기록한다.",
+   "minutes": 15
+  },
+  {
+   "task": "volatile 을 붙여도 안 고쳐지는 것을 확인한다.",
+   "done_when": "5.3절과 이어서 설명한다.",
+   "minutes": 12
+  },
+  {
+   "task": "임계 영역 동시 진입 수를 세는 코드를 만든다.",
+   "done_when": "1보다 큰 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "게으른 초기화로 객체가 여러 개 만들어지는 것을 본다.",
+   "done_when": "개수를 센다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "임계 영역이란.",
+   "a": "공유 상태를 읽고 판단해 쓰는, 동시에 하나만 들어가야 하는 구간이다."
+  },
+  {
+   "q": "왜 volatile 로 안 고쳐지나.",
+   "a": "읽기와 쓰기 각각은 안전해도 그 사이에 남이 들어올 수 있어서다."
+  },
+  {
+   "q": "같은 모양의 다른 예는.",
+   "a": "contains 후 add, get 후 put, 게으른 초기화다."
+  },
+  {
+   "q": "창을 안 벌려도 나나.",
+   "a": "난다. 다만 확률이 낮아 테스트가 통과할 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "임계 영역",
+   "what": "한 번에 한 스레드만 들어가야 옳은 코드 구간."
+  },
+  {
+   "term": "검사 후 행동",
+   "what": "조건을 확인하고 그 결과에 따라 상태를 바꾸는 패턴."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17.4: Memory Model",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html#jls-17.4",
+   "publisher": "Oracle"
+  }
+ ]
+}

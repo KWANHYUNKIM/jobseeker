@@ -286,7 +286,7 @@
           "title": "임계 영역",
           "summary": "잔고가 맞지 않는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -294,7 +294,7 @@
           "title": "synchronized",
           "summary": "메서드와 블록.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",

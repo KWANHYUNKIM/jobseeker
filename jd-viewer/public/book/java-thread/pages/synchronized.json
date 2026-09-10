@@ -1,0 +1,157 @@
+{
+ "book": "java-thread",
+ "id": "synchronized",
+ "no": "6.2",
+ "chapter": 6,
+ "title": "synchronized",
+ "summary": "메서드와 블록.",
+ "minutes": 13,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "세 가지 모양을 안다.",
+  "바이트코드를 본다.",
+  "예외에도 풀리는 걸 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.1절에서 한 낱말로** 고쳤다. **그 낱말이 무엇을 하는지** 연다.\n\n```java\nsynchronized boolean withdraw(int amount) { ... }\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "같은 락, 세 가지 표기",
+   "ascii": "   the same lock, written three ways\n\n   synchronized method       locks this\n   static synchronized       locks the class object\n   synchronized block        locks whatever you name\n\n   only the third one lets you choose the object and the length",
+   "note": "**대상과 길이를 고를 수 있는 건 셋째** 뿐이다."
+  },
+  {
+   "type": "figure",
+   "caption": "바이트코드가 하는 일",
+   "ascii": "   what the bytecode does\n\n   monitorenter    take the monitor, or wait for it\n   the body\n   monitorexit     release it\n   monitorexit     release it again, on the exception path\n\n   the duplicated exit is why an exception still frees the lock",
+   "note": "**해제가 두 번 적히는 게 예외에도 락이 풀리는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "락은 객체에 붙는다",
+   "md": "**모든 객체가 락 하나씩을 갖고** 있다.\n\n> **`synchronized` 메서드는 `this` 를 잠그는 것**이다.\n> **`static synchronized` 는 클래스 객체를** 잠근다.\n> **둘은 다른 락**이다(6.4절).\n\n```java\nsynchronized void a() { }\n// 와 같다\nvoid a() { synchronized (this) { } }\n```\n\n**락을 걸면 두 가지를 같이** 얻는다:\n\n| | |\n|---|---|\n| **상호 배제** | 한 번에 하나만 |\n| **가시성** | **5.4절의 happens-before** |\n\n> **그래서 6.1절의 검사 후 행동도, 5.1절의 안 끝나는 반복문도 락으로 다** 고쳐진다."
+  },
+  {
+   "type": "table",
+   "caption": "세 모양의 차이",
+   "columns": [
+    "",
+    "잠그는 것",
+    "고를 수 있나",
+    "쓰는 자리"
+   ],
+   "rows": [
+    [
+     "**메서드**",
+     "**`this`**",
+     "**아니오**",
+     "간단할 때"
+    ],
+    [
+     "**static 메서드**",
+     "**클래스 객체**",
+     "아니오",
+     "정적 상태"
+    ],
+    [
+     "**블록**",
+     "**적은 것**",
+     "**예**",
+     "**대부분**"
+    ],
+    [
+     "**public 객체에 걸기**",
+     "남이 볼 수 있는 것",
+     "-",
+     "**하면 안 된다**"
+    ]
+   ],
+   "note": "**마지막 줄이 `synchronized` 메서드의 숨은 문제**다 — **`this` 는 밖에서도 잠글 수** 있다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 바이트코드를 연다 ---\n\n$ cat SyncForms.java | grep -A3 'void block'\nvoid block() {\n    synchronized (lock) { count++; }\n}\n\n$ javap -c -p out/SyncForms.class | grep -A12 'void block'\n  void block();\n     0: aload_0\n     1: getfield      #7    // Field lock\n     4: dup\n     5: astore_1\n     6: monitorenter               // 잡는다\n     7: aload_0\n    ...\n    17: aload_1\n    18: monitorexit                // 정상 경로\n    19: goto          27\n    22: astore_2\n    23: aload_1\n    24: monitorexit                // 예외 경로\n    25: aload_2\n    26: athrow\n\n$ javap -c -p out/SyncForms.class | grep -c monitorexit\n2\n\n#   해제가 두 번 적혀 있다\n\n\n# --- 메서드는 다르게 적힌다 ---\n\n$ javap -c -p out/SyncForms.class | grep -A4 'synchronized void method'\n  synchronized void method();\n     0: aload_0\n     1: dup\n     ...\n\n$ javap -v out/SyncForms.class | grep -A2 'void method' | grep flags\n    flags: (0x0020) ACC_SYNCHRONIZED\n\n$ javap -c -p out/SyncForms.class | grep -A6 'synchronized void method' | grep -c monitorenter\n0\n\n#   메서드는 명령이 아니라 플래그다\n#   JVM 이 진입할 때 알아서 잡는다\n\n\n# --- 예외가 나도 풀린다 ---\n\n$ cat ExceptionUnlock.java | grep -A8 'main'\nThread a = new Thread(() -> {\n    try { synchronized (lock) { log.info(\"a 진입\"); throw new RuntimeException(); } }\n    catch (Exception e) { log.info(\"a 예외\"); }\n}, \"a\");\nThread b = new Thread(() -> { sleep(100); synchronized (lock) { log.info(\"b 진입\"); } }, \"b\");\n\n$ java -cp out:libs/* ExceptionUnlock\n00:51:02.104 [a           ] INFO  ExceptionUnlock - a 진입\n00:51:02.105 [a           ] INFO  ExceptionUnlock - a 예외\n00:51:02.208 [b           ] INFO  ExceptionUnlock - b 진입\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* ExceptionUnlock 2>/dev/null | grep -c 'b 진입'\n  done | sort | uniq -c\n  20 1\n\n#   20번 다 b 가 들어왔다\n#   7.1절의 Lock 과 정반대다\n\n\n# --- 6.1절을 고친다 ---\n\n$ cat AccountSync.java | grep -A4 'synchronized'\nsynchronized boolean withdraw(int amount) {\n    if (balance >= amount) { balance -= amount; return true; }\n    return false;\n}\n\n$ ./run.sh WithdrawSync 30 '실제 -?[0-9]+' | head -2\n  30 실제 0\n\n$ java -cp out:libs/* CriticalProbe --sync --threads 10\n임계 영역 안에 둘 이상 있었던 횟수 0\n최대 동시 진입 1\n\n#   6.1절에서 최대 4명이었다\n\n\n# --- 1.4절도 고쳐진다 ---\n\n$ ./run.sh SyncCounter 30 '[0-9]+$' | head -2\n  30 400000\n\n#   1.4절의 카운터다\n\n\n# --- 5.1절도 고쳐진다 ---\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* StopFlagSync 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  20 1\n\n#   5.1절의 반복문이다\n#   락은 상호 배제와 가시성을 같이 준다\n\n\n# --- 블록으로 좁힌다 ---\n\n$ cat NarrowLock.java | grep -A10 'void process'\nvoid process(Item item) {\n    Result r = compute(item);              // 오래 걸린다. 공유 상태를 안 만진다\n    synchronized (lock) {\n        results.add(r);                    // 짧다\n    }\n    log(r);                                // 공유 상태를 안 만진다\n}\n\n$ java -cp out:libs/* NarrowLock --mode whole --threads 8 --items 2000\n메서드 전체    8412ms\n$ java -cp out:libs/* NarrowLock --mode narrow --threads 8 --items 2000\n블록만        1204ms\n\n$ python3 -c \"print('%.1f배 빠르다' % (8412/1204))\"\n7.0배 빠르다\n\n$ java -cp out:libs/* NarrowLock --mode narrow --threads 8 --items 2000 --verify\n결과 개수 2000 (기대 2000)\n\n#   6.6절에서 이 이야기를 판다\n\n\n# --- this 를 잠그면 남이 잠글 수 있다 ---\n\n$ cat PublicLock.java | grep -A6 'main'\nCounter c = new Counter();                 // synchronized 메서드를 쓴다\n\nnew Thread(() -> { synchronized (c) { sleep(3000); } }, \"outsider\").start();\nsleep(100);\nlong s = System.currentTimeMillis();\nc.increment();\nlog.info(\"increment 가 {}ms 걸렸다\", System.currentTimeMillis() - s);\n\n$ java -cp out:libs/* PublicLock\n00:51:16.104 [main        ] INFO  PublicLock - increment 가 2904ms 걸렸다\n\n#   남이 내 객체를 잠갔다\n#   내 클래스는 아무 잘못이 없다\n\n$ cat PrivateLock.java | grep -A4 'private final'\nprivate final Object lock = new Object();\nvoid increment() { synchronized (lock) { count++; } }\n\n$ java -cp out:libs/* PrivateLock\n00:51:20.204 [main        ] INFO  PrivateLock - increment 가 0ms 걸렸다\n\n#   전용 락 객체를 두면 밖에서 못 건드린다\n\n\n# --- 어떤 객체로 잠그면 안 되나 ---\n\n$ cat BadLocks.java | grep -A6 'static void bad'\nsynchronized (\"lock\")            { }   // 문자열 상수 -- 전역 공유\nsynchronized (Integer.valueOf(1)) { }   // 캐시된 박싱 객체\nsynchronized (Boolean.TRUE)       { }   // 전역 상수\n\n$ java -cp out:libs/* BadLocks --demo string\n00:51:24.104 [b] INFO  BadLocks - 전혀 관계없는 클래스가 같은 락을 잡았다\n\n$ java -cp out:libs/* BadLocks --demo boxed\n00:51:26.204 [b] INFO  BadLocks - Integer 캐시 때문에 같은 객체다\n\n$ java -cp out:libs/* BadLocks --check\n\"lock\" 두 곳이 같은 객체인가: true\nInteger.valueOf(1) 두 번이 같은 객체인가: true\nnew Object() 두 번이 같은 객체인가: false\n\n#   전역에서 공유되는 것을 락으로 쓰면 안 된다\n\n\n# --- 값을 잰다 ---\n\n$ java -cp out:libs/* LockBench --mode none --rounds 100000000\n락 없음            412ms\n$ java -cp out:libs/* LockBench --mode sync-1 --rounds 100000000\nsynchronized 1스레드 1841ms\n$ java -cp out:libs/* LockBench --mode sync-2 --rounds 100000000\nsynchronized 2스레드 12048ms\n$ java -cp out:libs/* LockBench --mode sync-8 --rounds 100000000\nsynchronized 8스레드 41204ms\n\n$ python3 -c \"\nprint('무경합 %.1f배' % (1841/412))\nprint('2스레드 %.1f배' % (12048/412))\nprint('8스레드 %.0f배' % (41204/412))\"\n무경합 4.5배\n2스레드 29.2배\n8스레드 100배\n\n#   경합이 값을 만든다\n#   6.6절에서 줄이는 법을 본다\n\n\n# --- 덤프에서 보인다 ---\n\n$ java -cp out:libs/* LockBench --mode sync-8 --rounds 1000000000 &\n$ sleep 2 && jcmd $! Thread.print | grep -c 'BLOCKED'\n7\n$ jcmd $! Thread.print | grep -A3 'BLOCKED' | grep 'waiting to lock' | head -1\n\t- waiting to lock <0x000000061a2c4f18> (a java.lang.Object)\n$ jcmd $! Thread.print | grep 'locked <0x000000061a2c4f18>' | head -1\n\t- locked <0x000000061a2c4f18> (a java.lang.Object)\n$ kill %1\n\n#   4.1절의 그 두 줄이다\n#   같은 주소를 하나가 잡고 일곱이 기다린다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '세 모양'         '메서드 · static · 블록' \\\n  '메서드'          'this 를 잠금' \\\n  '바이트코드'      'ACC_SYNCHRONIZED 플래그' \\\n  '블록'            'monitorenter/exit' \\\n  'exit'            '두 번 적힘' \\\n  '예외'            '20/20 풀림' \\\n  '고쳐지는 것'     '1.4 · 5.1 · 6.1절' \\\n  '동시 진입'       '4에서 1' \\\n  '좁히면'          '7.0배' \\\n  'this 잠그면'     '남이 2.9초 막음' \\\n  '전용 락'         '0ms' \\\n  '값'              '무경합 4.5배, 8스레드 100배'\n\n세 모양                    메서드 · static · 블록\n메서드                     this 를 잠금\n바이트코드                 ACC_SYNCHRONIZED 플래그\n블록                       monitorenter/exit\nexit                       두 번 적힘\n예외                       20/20 풀림\n고쳐지는 것                1.4 · 5.1 · 6.1절\n동시 진입                  4에서 1\n좁히면                     7.0배\nthis 잠그면                남이 2.9초 막음\n전용 락                    0ms\n값                         무경합 4.5배, 8스레드 100배",
+   "note": "**블록은 `monitorenter` 와 `monitorexit` 두 개, 메서드는 `ACC_SYNCHRONIZED` 플래그**다.\n\n**해제가 두 번 적혀 있어 예외가 나도 20/20 으로 다음 스레드가** 들어온다.\n\n**락 하나로 1.4절·5.1절·6.1절이 다 고쳐지고 동시 진입이 4에서 1 이** 된다.\n\n**메서드 전체 대신 블록으로 좁히면 8412ms 가 1204ms 로 7배** 빨라진다.\n\n**`this` 를 잠그면 밖에서 잠가 `increment()` 가 2904ms 걸리고 전용 락이면 0ms** 다."
+  }
+ ],
+ "recap": [
+  "synchronized 는 객체마다 하나씩 있는 모니터를 잡는 것이다.",
+  "메서드는 ACC_SYNCHRONIZED 플래그, 블록은 monitorenter/monitorexit 명령이다.",
+  "해제가 예외 경로에도 적혀 있어 예외가 나도 락이 풀린다.",
+  "락은 상호 배제와 가시성을 같이 주므로 1장·5장·6장의 문제가 모두 고쳐진다.",
+  "this 나 전역 상수를 잠그면 밖에서 간섭할 수 있다 — 전용 락 객체를 둔다."
+ ],
+ "drills": [
+  {
+   "task": "블록과 메서드의 바이트코드를 비교한다.",
+   "done_when": "명령과 플래그의 차이를 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "락 안에서 예외를 던지고 다음 스레드가 들어오는지 본다.",
+   "done_when": "20번 다 들어오는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "메서드 전체와 블록만 잠근 경우의 시간을 잰다.",
+   "done_when": "배수를 낸다.",
+   "minutes": 15
+  },
+  {
+   "task": "밖에서 남의 객체를 잠가 본다.",
+   "done_when": "전용 락으로 고친다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "synchronized 메서드가 잠그는 것은.",
+   "a": "this 다. static 이면 클래스 객체다."
+  },
+  {
+   "q": "예외가 나도 락이 풀리는 이유는.",
+   "a": "바이트코드에 monitorexit 가 예외 경로에도 적혀 있어서다."
+  },
+  {
+   "q": "락이 주는 두 가지는.",
+   "a": "상호 배제와 가시성이다."
+  },
+  {
+   "q": "this 를 잠그면 무엇이 위험한가.",
+   "a": "밖에서도 그 객체를 잠글 수 있어 간섭받는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "모니터",
+   "what": "모든 객체가 하나씩 가진 락."
+  },
+  {
+   "term": "전용 락 객체",
+   "what": "밖에서 접근 못 하도록 private final 로 둔 잠금 전용 객체."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JVM Specification, monitorenter",
+   "url": "https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-6.html#jvms-6.5.monitorenter",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
