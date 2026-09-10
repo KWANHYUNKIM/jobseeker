@@ -1,0 +1,117 @@
+{
+ "book": "kafka",
+ "id": "durability",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "읽어도 안 사라진다",
+ "summary": "큐와 갈라지는 자리.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "로그와 큐의 차이를 정확히 안다.",
+  "오프셋을 컨슈머가 들고 있다는 것의 의미를 안다.",
+  "재처리가 가능한 이유를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절의 표에서 가장 큰 줄**이었다. **여기서 그 결과를 하나씩** 본다.\n\n> **카프카는 읽었다고 지우지** 않는다. **보관 기간이 되면 지운다**(3.4절).\n> **\"누가 읽었나\" 는 브로커의 관심사가** 아니다."
+  },
+  {
+   "type": "compare",
+   "caption": "소비의 두 모델",
+   "left": {
+    "title": "큐 — 브로커가 상태를 들고 있다",
+    "lang": "text",
+    "code": "queue: [ m1 m2 m3 m4 ]\n\nconsumer A: receive() -> m1\n  queue: [ m2 m3 m4 ]     m1 은 사라졌다(또는 잠겼다)\n\nconsumer A: ack(m1)\n  m1 은 완전히 삭제\n\nconsumer B: receive() -> m2\n\n결과:\n  - 브로커가 '누가 무엇을 받았나' 를 기억한다\n  - 소비자가 늘면 나눠 갖는다\n  - 다시 읽을 수 없다\n  - 브로커 상태가 소비자 수에 비례해 커진다"
+   },
+   "right": {
+    "title": "로그 — 컨슈머가 위치를 들고 있다",
+    "lang": "text",
+    "code": "log:  m1 m2 m3 m4\n      0  1  2  3      <- offset\n\ngroup A: position = 2   (m1, m2 를 읽음)\ngroup B: position = 0   (아직 아무것도)\n\n브로커는 m1~m4 를 그대로 갖고 있다\n\n결과:\n  - 브로커는 '어디까지 읽었나' 를 저장만 한다\n  - 그룹이 늘어도 데이터는 한 벌\n  - position 을 되돌리면 다시 읽는다\n  - 소비자 수가 브로커 부하와 거의 무관하다"
+   },
+   "note": "**오른쪽에서 브로커가 하는 일은 \"붙이고 돌려주는\" 것뿐**이다. **그래서 처리량이 높다**(3.3절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "오프셋도 결국 카프카 안에 있다",
+   "md": "**\"컨슈머가 들고 있다\" 는 말이 \"컨슈머 메모리에 있다\" 는 뜻은** 아니다.\n\n```\n__consumer_offsets   <- 내부 토픽. 여기에 커밋된다\n```\n\n```bash\nkafka-topics --list --exclude-internal   # 이걸 빼면 안 보인다\n```\n\n| | |\n|---|---|\n| 저장 위치 | **`__consumer_offsets` 토픽**(기본 파티션 50개) |\n| 키 | `(그룹, 토픽, 파티션)` |\n| 값 | 커밋된 오프셋 |\n| 정리 방식 | **compact**(3.4절) — 키마다 최신 값만 남는다 |\n\n> **그래서 컨슈머가 죽었다 살아나도 어디까지 읽었는지** 안다.\n> **그리고 이 토픽도 복제된다** — `offsets.topic.replication.factor=3`(1.3절에서 준 값).\n\n**「스프링 DB 1편」에서 \"상태를 어디에 두느냐\" 를 계속** 물었다. **여기서는 그 답이 \"또 다른 토픽\"** 이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "안 사라진다는 것의 대가",
+   "md": "| 대가 | 무슨 일 |\n|---|---|\n| **디스크가 필요하다** | 7일 × 하루 100GB = 700GB × 복제 3 = 2.1TB(11.2절) |\n| **보관 기간이 지나면 없다** | 컨슈머가 일주일 죽어 있었으면 **유실**이다 |\n| **되감으면 다시 처리된다** | 메일이 두 번 간다. **멱등성이 필요**(7.5·8장) |\n| **민감 정보가 남는다** | \"지워 주세요\" 요청. compact 나 암호화로 다뤄야 한다 |\n| 오래된 것을 읽으면 느리다 | 페이지 캐시에 없어 디스크를 읽는다 |\n\n> **두 번째가 실무에서 가장 아프다.**\n> **\"카프카에 있으니 괜찮아요\" 는 보관 기간 안에서만 맞는** 말이다.\n> **`retention.ms` 를 늘리는 건 디스크로 값을 치르는 일**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "되감아 다시 읽고, 오프셋이 어디 있는지 본다",
+   "sql": "# --- 레코드 다섯 개 ---\n\n$ kt --create --topic events --partitions 1 --replication-factor 3 >/dev/null\n$ for i in 1 2 3 4 5; do echo \"m$i\"; done | kcp --topic events\n\n$ kcc --topic events --group worker --from-beginning --timeout-ms 2000\nm1\nm2\nm3\nm4\nm5\nProcessed a total of 5 messages\n\n$ kcg --describe --group worker\nGROUP   TOPIC   PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nworker  events  0          5               5               0\n\n\n# --- 다 읽었는데 데이터는 그대로 있다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic events\nevents:0:5\n\n$ kcc --topic events --group another --from-beginning --timeout-ms 2000\nm1\nm2\nm3\nm4\nm5\nProcessed a total of 5 messages\n\n#   새 그룹이 처음부터 다 읽었다. 큐였다면 비어 있었을 것이다\n\n\n# --- 되감는다 ---\n\n$ kcg --group worker --topic events --reset-offsets --to-offset 2 --execute\nGROUP   TOPIC   PARTITION  NEW-OFFSET\nworker  events  0          2\n\n$ kcc --topic events --group worker --timeout-ms 2000\nm3\nm4\nm5\nProcessed a total of 3 messages\n\n#   3번째부터 다시 읽었다\n\n\n# --- 시간으로 되감기 ---\n\n$ kcg --group worker --topic events --reset-offsets --to-datetime 2026-09-10T13:00:00.000 --dry-run\nGROUP   TOPIC   PARTITION  NEW-OFFSET\nworker  events  0          0\n\n#   --dry-run 은 보여만 준다. 운영에서는 항상 먼저 이걸 친다 (5.6절)\n\n\n# --- 오프셋이 어디 저장돼 있나 ---\n\n$ kt --list\nevents\n\n$ kt --list --exclude-internal=false 2>/dev/null | head -3\n__consumer_offsets\nevents\n\n$ kcc --topic __consumer_offsets --from-beginning --max-messages 3 \\\n    --formatter 'kafka.coordinator.group.GroupMetadataManager$OffsetsMessageFormatter' 2>/dev/null\n[worker,events,0]::OffsetAndMetadata(offset=5, leaderEpoch=Optional[0], metadata=, commitTimestamp=1757494012345)\n[another,events,0]::OffsetAndMetadata(offset=5, ...)\n[worker,events,0]::OffsetAndMetadata(offset=2, ...)\n\n#   커밋이 레코드로 쌓여 있다\n#   키가 (그룹, 토픽, 파티션) 이라 compact 로 최신만 남는다 (3.4절)\n\n$ kt --describe --topic __consumer_offsets 2>/dev/null | head -2\nTopic: __consumer_offsets  PartitionCount: 50  ReplicationFactor: 3\n  Configs: cleanup.policy=compact,segment.bytes=104857600\n\n#   cleanup.policy=compact 다\n\n\n# --- 보관 기간이 지나면 없다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name events \\\n    --alter --add-config retention.ms=10000,segment.ms=5000\nCompleted updating config for topic events.\n\n$ sleep 25\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic events\nevents:0:5\n\n$ kcc --topic events --from-beginning --timeout-ms 3000\nProcessed a total of 0 messages\n\n#   끝 오프셋은 5 그대로인데 읽을 게 없다\n#   레코드는 지워졌고 오프셋 번호만 이어진다 (1.4절)\n#   \"카프카에 있으니 괜찮다\" 는 보관 기간 안에서만 맞다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name events \\\n    --alter --delete-config retention.ms,segment.ms >/dev/null"
+  }
+ ],
+ "recap": [
+  "큐는 브로커가 '누가 받았나' 를 기억하고, 카프카는 컨슈머의 위치(오프셋)만 저장한다.",
+  "그래서 그룹이 늘어도 데이터는 한 벌이고, 오프셋을 되돌리면 다시 읽는다.",
+  "오프셋도 __consumer_offsets 라는 내부 토픽에 compact 정책으로 저장된다.",
+  "안 사라지는 대가는 디스크·재처리 중복·민감 정보, 그리고 보관 기간이 지나면 유실이다."
+ ],
+ "drills": [
+  {
+   "task": "한 그룹으로 다 읽은 뒤 새 그룹으로 --from-beginning 읽어 데이터가 남아 있는지 확인한다.",
+   "done_when": "둘 다 전부 읽는 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "`--reset-offsets --to-offset N --dry-run` 을 먼저 치고 --execute 로 되감아 본다.",
+   "done_when": "dry-run 과 execute 의 차이를 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "retention.ms 를 10초로 줄여 레코드가 사라지는 것을 확인한다.",
+   "done_when": "끝 오프셋은 그대로인데 읽을 게 없는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "카프카에서 브로커가 '누가 읽었나' 를 어떻게 다루나.",
+   "a": "기억하지 않는다. 컨슈머 그룹이 커밋한 오프셋을 __consumer_offsets 토픽에 저장할 뿐이다."
+  },
+  {
+   "q": "소비자가 늘어도 브로커 부하가 크게 안 느는 이유는.",
+   "a": "데이터를 복제해 주는 게 아니라 같은 로그를 각자 자기 위치에서 읽기 때문."
+  },
+  {
+   "q": "'카프카에 있으니 안 잃는다' 가 틀린 경우는.",
+   "a": "보관 기간이 지나면 지워진다. 컨슈머가 그보다 오래 죽어 있으면 유실이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "__consumer_offsets",
+   "what": "컨슈머 그룹의 커밋 오프셋을 저장하는 내부 토픽."
+  },
+  {
+   "term": "compact",
+   "what": "같은 키의 최신 값만 남기는 정리 정책. 3.4절."
+  },
+  {
+   "term": "retention.ms",
+   "what": "레코드를 보관하는 시간. 지나면 세그먼트 단위로 지워진다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Design: Persistence",
+   "url": "https://kafka.apache.org/documentation/#persistence",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Consumer position",
+   "url": "https://kafka.apache.org/documentation/#theconsumer",
+   "publisher": "Apache"
+  }
+ ]
+}

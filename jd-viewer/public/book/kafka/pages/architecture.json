@@ -1,0 +1,152 @@
+{
+ "book": "kafka",
+ "id": "architecture",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "전체 구조",
+ "summary": "프로듀서 · 브로커 · 컨슈머 · 그룹.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "구성 요소와 그 관계를 안다.",
+  "클라이언트가 브로커를 어떻게 찾는지 안다.",
+  "3~7장의 지도를 그린다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "전체 그림",
+   "ascii": "   producers                 kafka cluster                 consumers\n   ---------                 -------------                 ---------\n   app A --+                 broker 1                      +-- group X\n   app B --+---> [ topic: orders ]                         |    consumer 1 -> p0\n   app C --+       p0 (leader: b1, isr: b1,b2,b3)          |    consumer 2 -> p1,p2\n                   p1 (leader: b2, isr: b2,b3,b1)          |\n                   p2 (leader: b3, isr: b3,b1,b2)          +-- group Y\n                                                                consumer 1 -> p0,p1,p2\n   writes go to the LEADER of a partition\n   followers replicate; ISR = caught up\n   each partition is read by ONE consumer per group",
+   "note": "**마지막 줄이 7장 전체의 규칙**이다 — **한 파티션은 그룹 안에서 한 컨슈머만 읽는다.**"
+  },
+  {
+   "type": "table",
+   "caption": "구성 요소",
+   "columns": [
+    "이름",
+    "하는 일",
+    "어디서"
+   ],
+   "rows": [
+    [
+     "**프로듀서**",
+     "레코드를 만들어 파티션 리더에게 보낸다",
+     "6장"
+    ],
+    [
+     "**브로커**",
+     "받아서 디스크에 붙이고 복제하고 돌려준다",
+     "3장"
+    ],
+    [
+     "**컨트롤러**",
+     "파티션 리더를 정하고 메타데이터를 관리",
+     "3.2·3.7절"
+    ],
+    [
+     "**토픽 / 파티션**",
+     "레코드가 쌓이는 갈래와 그 조각",
+     "4장"
+    ],
+    [
+     "**컨슈머**",
+     "자기 위치에서 읽고 오프셋을 커밋",
+     "7장"
+    ],
+    [
+     "**컨슈머 그룹**",
+     "파티션을 나눠 맡는 단위",
+     "7.2절"
+    ],
+    [
+     "커넥트 / 스트림즈",
+     "코드 없이 옮기기 / 흐르는 채로 처리",
+     "10장"
+    ]
+   ],
+   "note": "**\"클러스터\" 라는 말은 브로커 여러 대 + 그들이 공유하는 메타데이터**를 뜻한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "클라이언트는 브로커 하나만 알면 된다",
+   "md": "```properties\nbootstrap.servers=localhost:9092,localhost:9093\n```\n\n**여기 적은 주소는 \"처음 물어볼 곳\"** 이다.\n\n| 단계 | 무슨 일 |\n|---|---|\n| 1 | 부트스트랩 서버 중 하나에 붙는다 |\n| 2 | **메타데이터를 받는다** — 브로커 목록, 토픽의 파티션과 각 리더 |\n| 3 | **필요한 파티션의 리더에게 직접** 붙는다 |\n| 4 | 리더가 바뀌면 **메타데이터를 다시** 받는다 |\n\n> **그래서 부트스트랩에 적힌 브로커가 죽어도 클라이언트는** 산다 — **이미 전체 목록을 알고** 있다.\n> **다만 재시작할 때는 그 주소로 물어보므로 둘 이상 적어** 둔다.\n\n**1.3절에서 리스너가 문제였던 이유가 2번**이다 — **브로커가 알려 주는 주소로 3번을 하기** 때문이다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "쓰기와 읽기는 리더에게 간다",
+   "md": "**팔로워는 복제만** 한다. **읽기도 기본은 리더**다.\n\n| | 어디로 |\n|---|---|\n| 프로듀서 쓰기 | **파티션 리더** |\n| 컨슈머 읽기 | **파티션 리더**(기본) |\n| 팔로워 | 리더에서 당겨와 복제 |\n\n> **\"팔로워에서 읽으면 부하가 분산되지 않나\"** — **카프카 2.4+ 에 팔로워 페치가** 있지만 **랙(지연)이 생기고 설정이 까다로워** 기본은 아니다. **보통은 파티션을 늘려 분산**한다.\n\n**리더가 브로커마다 골고루 나뉘어야 부하가 고르다** — **1.4절의 `describe` 에서 `Leader:` 가 2,3,1 로 흩어져 있던** 이유다. **한 브로커에 리더가 몰리면 그 브로커만 바쁘다**(11.3절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "메타데이터와 리더 배치를 본다",
+   "sql": "# --- 클라이언트가 받는 메타데이터 ---\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -L -t orders\nMetadata for topic orders (from broker 1: localhost:9092/1):\n 3 brokers:\n  broker 1 at localhost:9092\n  broker 2 at localhost:9093\n  broker 3 at localhost:9094 (controller)\n 1 topics:\n  topic \"orders\" with 3 partitions:\n    partition 0, leader 2, replicas: 2,3,1, isrs: 2,3,1\n    partition 1, leader 3, replicas: 3,1,2, isrs: 3,1,2\n    partition 2, leader 1, replicas: 1,2,3, isrs: 1,2,3\n\n#   브로커 하나에 물었는데 전체 지도를 받았다\n#   이 지도를 보고 파티션마다 리더에게 직접 붙는다\n\n\n# --- 컨트롤러가 누구인가 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-metadata-quorum.sh \\\n    --bootstrap-server kafka-1:19092 describe --status | head -4\nClusterId:              4L6g3nShT-eMCtK--X86sw\nLeaderId:               3\nLeaderEpoch:            4\nCurrentVoters:          [1,2,3]\n\n#   3번이 컨트롤러다 (3.2절)\n\n\n# --- 리더가 골고루 나뉘어 있나 ---\n\n$ kt --describe --topic orders | awk '/Leader:/ {print $6}' | sort | uniq -c\n   1 1\n   1 2\n   1 3\n\n#   브로커마다 리더가 하나씩. 균형이 잡혀 있다\n\n\n# --- 브로커를 하나 내리면 리더가 옮겨 간다 ---\n\n$ docker compose stop kafka-2 && sleep 8\n$ kt --describe --topic orders | awk '/Leader:/ {print $6}' | sort | uniq -c\n   2 1\n   1 3\n\n#   2번이 맡던 리더가 1번으로 넘어갔다. 1번이 둘을 맡는다\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -L -t orders 2>/dev/null | grep partition\n    partition 0, leader 1, replicas: 2,3,1, isrs: 3,1\n    partition 1, leader 3, replicas: 3,1,2, isrs: 3,1\n    partition 2, leader 1, replicas: 1,2,3, isrs: 1,3\n\n#   클라이언트도 새 지도를 받는다. 코드는 아무것도 안 바뀐다\n\n\n# --- 돌아오면 다시 균형을 잡는다 ---\n\n$ docker compose start kafka-2 && sleep 15\n$ kt --describe --topic orders | awk '/Leader:/ {print $6}' | sort | uniq -c\n   2 1\n   1 3\n\n#   자동으로는 안 돌아온다. 선호 리더로 되돌리려면 (11.3절)\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-leader-election.sh \\\n    --bootstrap-server kafka-1:19092 --election-type preferred --all-topic-partitions\nSuccessfully completed leader election (PREFERRED) for partitions orders-0\n\n$ kt --describe --topic orders | awk '/Leader:/ {print $6}' | sort | uniq -c\n   1 1\n   1 2\n   1 3\n\n#   Replicas 목록의 첫 번째가 '선호 리더' 다\n\n\n# --- 한 파티션은 그룹 안에서 한 컨슈머만 ---\n\n#   (7장에서 자세히. 여기서는 규칙만 확인한다)\n$ kcg --describe --group order-worker\nGROUP         TOPIC   PARTITION  CURRENT-OFFSET  LAG  CONSUMER-ID\norder-worker  orders  0          2               0    consumer-1-a1b2\norder-worker  orders  1          3               0    consumer-1-a1b2\norder-worker  orders  2          1               0    consumer-2-c3d4\n\n#   consumer-1 이 0,1 을 consumer-2 가 2 를 맡았다\n#   같은 파티션을 둘이 동시에 읽는 일은 없다"
+  }
+ ],
+ "recap": [
+  "프로듀서는 파티션 리더에게 쓰고, 팔로워가 복제하고, 컨슈머는 그룹 단위로 파티션을 나눠 읽는다.",
+  "클라이언트는 부트스트랩 서버에 한 번 물어 전체 지도를 받고 그 뒤로는 리더에게 직접 붙는다.",
+  "리더가 브로커마다 골고루 나뉘어야 부하가 고르다. 브로커가 죽으면 리더가 옮겨 가고 자동으로 안 돌아온다.",
+  "한 파티션은 한 그룹 안에서 한 컨슈머만 읽는다."
+ ],
+ "drills": [
+  {
+   "task": "kcat -L 로 토픽의 파티션·리더·ISR 지도를 본다.",
+   "done_when": "브로커 하나에 물었는데 전체가 보이는 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "브로커를 하나 내렸다 올리고 리더 분포가 어떻게 변하는지 센다.",
+   "done_when": "자동으로 균형이 안 돌아오는 것을 확인하고 preferred election 을 돌려 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "컨슈머 둘을 같은 그룹으로 띄우고 파티션 할당을 확인한다.",
+   "done_when": "한 파티션에 컨슈머가 하나씩만 붙는 것을 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "bootstrap.servers 에 적은 주소의 역할은.",
+   "a": "처음 붙어 클러스터 메타데이터를 받아 오는 곳. 그 뒤로는 각 파티션 리더에게 직접 붙는다."
+  },
+  {
+   "q": "쓰기와 읽기는 어느 복제본으로 가나.",
+   "a": "기본적으로 둘 다 파티션 리더. 팔로워는 복제만 한다."
+  },
+  {
+   "q": "브로커가 되살아나면 리더가 자동으로 원래대로 돌아오나.",
+   "a": "안 돌아온다. preferred leader election 을 돌리거나 자동 리밸런스 설정이 필요하다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "리더 / 팔로워",
+   "what": "파티션 복제본 중 읽고 쓰는 쪽과 복제만 하는 쪽."
+  },
+  {
+   "term": "선호 리더",
+   "en": "preferred leader",
+   "what": "Replicas 목록의 첫 번째 브로커. 균형의 기준."
+  },
+  {
+   "term": "메타데이터",
+   "what": "브로커 목록과 각 파티션의 리더 정보."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Design",
+   "url": "https://kafka.apache.org/documentation/#design",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Replication",
+   "url": "https://kafka.apache.org/documentation/#replication",
+   "publisher": "Apache"
+  }
+ ]
+}

@@ -89,7 +89,7 @@
           "title": "읽어도 안 사라진다",
           "summary": "큐와 갈라지는 자리.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",
@@ -97,7 +97,7 @@
           "title": "전체 구조",
           "summary": "프로듀서 · 브로커 · 컨슈머 · 그룹.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -105,7 +105,7 @@
           "title": "카프카가 답이 아닐 때",
           "summary": "안 써도 되는 경우를 먼저 적어 둔다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
