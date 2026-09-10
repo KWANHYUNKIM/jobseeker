@@ -82,7 +82,7 @@
           "title": "무엇을 공유하나",
           "summary": "힙은 같이, 스택은 따로.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -90,7 +90,7 @@
           "title": "문맥 전환",
           "summary": "공짜가 아닌 전환.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",

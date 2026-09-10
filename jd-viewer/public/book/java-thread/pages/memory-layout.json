@@ -1,0 +1,173 @@
+{
+ "book": "java-thread",
+ "id": "memory-layout",
+ "no": "2.2",
+ "chapter": 2,
+ "title": "무엇을 공유하나",
+ "summary": "힙은 같이, 스택은 따로.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "영역별 주인을 안다.",
+  "지역 변수가 왜 안전한지 안다.",
+  "안전이 깨지는 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.1절에서 지역 변수는 20/20 이고 정적 필드는 3/20** 이었다. **그 차이가 어디서 오는지** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "런타임 영역과 그 주인",
+   "ascii": "   the runtime areas, split by who owns them\n\n   shared by all threads\n     heap            every object, every array\n     metaspace       class data, static fields\n\n   one per thread\n     stack           frames, local variables, operand stack\n     pc register     which instruction is next",
+   "note": "**위 둘은 다 같이, 아래 둘은 스레드마다** 하나씩이다."
+  },
+  {
+   "type": "table",
+   "caption": "어디에 있느냐가 정한다",
+   "columns": [
+    "",
+    "어디에",
+    "공유되나"
+   ],
+   "rows": [
+    [
+     "**지역 변수(기본형)**",
+     "**스택**",
+     "**아니오**"
+    ],
+    [
+     "**지역 변수(참조)**",
+     "**스택에 참조, 힙에 객체**",
+     "**참조는 아니오, 객체는 경우에 따라**"
+    ],
+    [
+     "**메서드 인자**",
+     "스택",
+     "아니오"
+    ],
+    [
+     "**인스턴스 필드**",
+     "**힙**",
+     "**그 객체를 같이 보면 예**"
+    ],
+    [
+     "**static 필드**",
+     "**메타스페이스**",
+     "**언제나 예**"
+    ],
+    [
+     "배열 원소",
+     "**힙**",
+     "**예**"
+    ],
+    [
+     "**ThreadLocal**",
+     "**각 스레드의 맵**",
+     "**아니오**(12.2절)"
+    ]
+   ],
+   "note": "**둘째 줄이 이 절의 핵심**이다 — **참조 변수가 스택에 있다고 가리키는 객체까지 안전한 건** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "참조는 스택, 객체는 힙",
+   "ascii": "   a local variable is safe, what it points at may not be\n\n   int n = 0            the value itself lives on the stack\n   List l = new ...     the reference is on the stack\n                        the list is on the heap\n\n   handing that reference to another thread shares the list",
+   "note": "**그 참조를 남에게 넘기는 순간 리스트가** 공유된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "스택이 따로라서 재귀도 각자다",
+   "md": "**같은 메서드를 열 스레드가 동시에 불러도 프레임은** 열 개다.\n\n> **`int local` 은 프레임 안에 있고 프레임은 그 스레드의** 것이다.\n> **그래서 같은 코드가 서로를 안** 건드린다.\n> **2.1절에서 20/20 이 나온 이유가** 이것이다.\n\n**스택 크기는 스레드마다 따로 잡힌다** — **기본 1MB**(2.5절).\n\n```\njava -Xss512k   스택을 절반으로\n```\n\n> **깊은 재귀는 그 스레드의 스택만** 넘친다.\n> **`StackOverflowError` 가 그 스레드에서만 나는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "생성자에서 this 가 새면 미완성 객체가 보인다",
+   "md": "**객체가 다 만들어지기 전에 참조가** 나갈 수 있다.\n\n```java\nclass Leaky {\n    private final int value;\n    Leaky(Registry r) {\n        r.register(this);          // 아직 value 가 안 채워졌다\n        this.value = 42;\n    }\n}\n```\n\n| 새는 흔한 방법 | |\n|---|---|\n| **생성자에서 `this` 전달** | 위 |\n| **생성자에서 스레드 시작** | `new Thread(this).start()` |\n| **내부 클래스 등록** | 리스너를 생성자에서 |\n\n> **다른 스레드가 그 참조로 `value` 를 읽으면 0 을 볼 수** 있다.\n> **5.5절에서 `final` 이 이걸 어떻게 막는지** 본다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 스택은 따로다 ---\n\n$ cat StackPerThread.java | grep -A5 'static void count'\nstatic void count(String tag) {\n    int local = 0;\n    for (int i = 0; i < 1_000_000; i++) local++;\n    log.info(\"{} local={} 스택깊이={}\", tag, local,\n             Thread.currentThread().getStackTrace().length);\n}\n\n$ java -cp out:libs/* StackPerThread --threads 4\n00:05:02.104 [w-0         ] INFO  StackPerThread - w-0 local=1000000 스택깊이=3\n00:05:02.104 [w-1         ] INFO  StackPerThread - w-1 local=1000000 스택깊이=3\n00:05:02.105 [w-2         ] INFO  StackPerThread - w-2 local=1000000 스택깊이=3\n00:05:02.105 [w-3         ] INFO  StackPerThread - w-3 local=1000000 스택깊이=3\n\n$ ./run.sh StackPerThread 20 'local=[0-9]+' | head -2\n  80 local=1000000\n\n#   20번 x 4스레드 = 80줄이 다 맞았다\n\n\n# --- 힙은 같이 쓴다 ---\n\n$ cat HeapShared.java | grep -A4 'static final'\nstatic final List<Integer> list = new ArrayList<>();\nstatic void add(String tag) {\n    for (int i = 0; i < 10000; i++) list.add(i);\n}\n\n$ ./run.sh HeapShared 20 'size=[0-9]+' | head -4\n   4 size=40000\n   2 size=38104\n   1 size=39204\n   1 size=37418\n\n$ java -cp out:libs/* HeapShared --threads 4 2>&1 | grep -c 'ArrayIndexOutOfBounds'\n1\n\n$ java -cp out:libs/* HeapShared --threads 4 2>&1 | grep 'Exception' | head -1\nException in thread \"w-2\" java.lang.ArrayIndexOutOfBoundsException:\n  Index 12041 out of bounds for length 12041\n\n#   값이 안 맞을 뿐 아니라 예외까지 난다\n#   10.1절에서 이 이야기를 판다\n\n\n# --- 어디에 있나 확인한다 ---\n\n$ jcmd $(pgrep -f HeapShared) GC.class_histogram 2>/dev/null | head -5\n num     #instances         #bytes  class name\n----------------------------------------------\n   1:         41204        1648160  java.lang.Integer\n   2:             8         131136  java.lang.Object[]\n   3:          1204          38528  java.lang.String\n\n$ jcmd $(pgrep -f StackPerThread) GC.class_histogram 2>/dev/null | grep -c 'Integer'\n1\n\n#   지역 변수 int 는 힙에 안 나온다\n\n\n# --- 참조를 넘기면 ---\n\n$ cat EscapeDemo.java | grep -A8 'static void run'\nstatic void run(boolean share) throws Exception {\n    List<Integer> list = new ArrayList<>();      // 지역 변수다\n    Thread[] ts = new Thread[4];\n    for (int i = 0; i < 4; i++) {\n        List<Integer> target = share ? list : new ArrayList<>();\n        ts[i] = new Thread(() -> { for (int j = 0; j < 10000; j++) target.add(j); });\n        ts[i].start();\n    }\n    for (Thread t : ts) t.join();\n}\n\n$ ./run.sh EscapeDemoSeparate 20 'total=[0-9]+' | head -2\n  20 total=40000\n\n$ ./run.sh EscapeDemoShared 20 'size=[0-9]+' | head -3\n   3 size=40000\n   2 size=38204\n   1 size=36410\n\n#   같은 지역 변수인데 참조를 넘기니 깨진다\n#   \"지역 변수라 안전하다\" 는 반쪽만 맞다\n\n\n# --- 스택 크기를 바꾼다 ---\n\n$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -w ThreadStackSize\n     intx ThreadStackSize   = 1024   {pd product} {default}\n\n$ cat DeepRecursion.java | grep -A3 'static int depth'\nstatic int depth(int n) { return depth(n + 1); }\n\n$ java -cp out:libs/* DeepRecursion\n00:06:04.104 [w-0         ] INFO  DeepRecursion - 깊이 22412 에서 StackOverflowError\n00:06:04.108 [main        ] INFO  DeepRecursion - main 은 살아 있다\n\n$ java -Xss512k -cp out:libs/* DeepRecursion\n00:06:06.204 [w-0         ] INFO  DeepRecursion - 깊이 11204 에서 StackOverflowError\n\n$ java -Xss4m -cp out:libs/* DeepRecursion\n00:06:08.104 [w-0         ] INFO  DeepRecursion - 깊이 89412 에서 StackOverflowError\n\n$ python3 -c \"print('스택을 8배로 하니 깊이가 %.1f배' % (89412/11204))\"\n스택을 8배로 하니 깊이가 8.0배\n\n#   스레드마다 따로라 하나만 넘친다\n\n\n# --- 동시에 재귀해도 서로 안 건드린다 ---\n\n$ java -cp out:libs/* DeepRecursion --threads 4\n00:06:12.104 [w-0         ] INFO  DeepRecursion - 깊이 22380 에서 StackOverflowError\n00:06:12.108 [w-2         ] INFO  DeepRecursion - 깊이 22412 에서 StackOverflowError\n00:06:12.108 [w-1         ] INFO  DeepRecursion - 깊이 22404 에서 StackOverflowError\n00:06:12.112 [w-3         ] INFO  DeepRecursion - 깊이 22396 에서 StackOverflowError\n\n$ java -cp out:libs/* DeepRecursion --threads 4 2>&1 | grep -c 'StackOverflow'\n4\n\n#   넷이 각자 넘쳤다\n#   깊이가 거의 같은 건 스택 크기가 같아서다\n\n\n# --- static 은 언제나 공유다 ---\n\n$ cat StaticShared.java | grep -E 'static|instance'\nstatic int staticCount = 0;\nint instanceCount = 0;\n\n$ java -cp out:libs/* StaticShared --instances 4 --threads 4\n00:06:20.104 [main] INFO  StaticShared - static   기대 400000 실제 284102\n00:06:20.104 [main] INFO  StaticShared - instance 기대 100000 실제 100000 x4\n\n$ ./run.sh StaticShared 20 'static.*[0-9]+$' | awk '$0 ~ /400000/ {print \"static 맞음\", $1\"/20\"}'\nstatic 맞음 2/20\n\n$ ./run.sh StaticSharedInstances 20 'instance.*[0-9]+' | head -2\n  20 instance 100000 x4\n\n#   객체를 스레드마다 따로 주면 안 깨진다\n#   그게 12.2절의 ThreadLocal 이 하는 일이다\n\n\n# --- 생성자에서 this 가 샌다 ---\n\n$ cat LeakyCtor.java\nclass Leaky {\n    final int value;\n    Leaky(List<Leaky> registry) {\n        registry.add(this);          // 아직 안 만들어졌다\n        try { Thread.sleep(1); } catch (Exception e) {}\n        this.value = 42;\n    }\n}\n\n$ java -cp out:libs/* LeakyCtor\n00:06:28.104 [reader      ] INFO  LeakyCtor - 읽은 value = 0\n00:06:28.106 [main        ] INFO  LeakyCtor - 다 만든 뒤 value = 42\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* LeakyCtor 2>/dev/null | grep '읽은' | grep -oE '[0-9]+$'\n  done | sort | uniq -c\n  17 0\n   3 42\n\n#   final 인데 0 이 보인다\n#   5.5절에서 왜 그런지 본다\n\n\n# --- 스레드가 쓰는 메모리를 센다 ---\n\n$ java -cp out:libs/* ManyThreads --count 2000 &\n$ sleep 2\n$ jcmd $! GC.heap_info | head -1\n garbage-first heap   total 262144K, used 12408K\n\n$ jcmd $! VM.native_memory summary 2>/dev/null | grep -A2 'Thread' | head -3\n-                    Thread (reserved=2081234KB, committed=104112KB)\n                            (thread #2003)\n                            (stack: reserved=2048000KB, committed=98304KB)\n\n$ python3 -c \"print('스레드 2000개의 스택 예약 %.1f GB, 실제 사용 %.0f MB' % (2048000/1024/1024, 98304/1024))\"\n스레드 2000개의 스택 예약 2.0 GB, 실제 사용 96 MB\n\n#   예약과 실제가 다르다\n#   2.5절에서 이 값을 판다\n\n$ kill %1\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '공유'            '힙 · 메타스페이스' \\\n  '각자'            '스택 · PC' \\\n  '지역 변수'       '80/80 맞음' \\\n  '공유 리스트'     '4/20, 예외까지' \\\n  '참조를 넘기면'   '지역이어도 깨짐' \\\n  '스택 크기'       '기본 1MB' \\\n  '재귀 깊이'       '22412' \\\n  '4배로 늘리면'    '89412' \\\n  '동시 재귀'       '각자 넘침' \\\n  'static'          '2/20' \\\n  '인스턴스 분리'   '20/20' \\\n  '생성자 유출'     'final 인데 0'\n\n공유                       힙 · 메타스페이스\n각자                       스택 · PC\n지역 변수                  80/80 맞음\n공유 리스트                4/20, 예외까지\n참조를 넘기면              지역이어도 깨짐\n스택 크기                  기본 1MB\n재귀 깊이                  22412\n4배로 늘리면               89412\n동시 재귀                  각자 넘침\nstatic                     2/20\n인스턴스 분리              20/20\n생성자 유출                final 인데 0",
+   "note": "**지역 변수로만 세면 20번 x 4스레드 = 80줄이 다 맞고 공유 리스트는 4/20 에 예외까지** 난다.\n\n**같은 지역 변수라도 그 참조를 네 스레드에 넘기면 그대로** 깨진다.\n\n**`-Xss` 를 8배로 주면 재귀 깊이가 11204 에서 89412 로 정확히 8배**가 된다.\n\n**네 스레드가 동시에 재귀해도 각자 넘쳐 `StackOverflowError` 가 4번** 난다.\n\n**생성자에서 `this` 가 새면 `final` 필드인데도 20번 중 17번 0 이** 보인다."
+  }
+ ],
+ "recap": [
+  "힙과 메타스페이스는 모든 스레드가 공유하고 스택과 PC 레지스터는 스레드마다 하나씩이다.",
+  "지역 변수가 안전한 건 그 스레드의 스택에 있기 때문이다.",
+  "참조를 다른 스레드에 넘기면 지역 변수여도 가리키는 객체는 공유된다.",
+  "스택 크기는 스레드마다 따로라 재귀가 넘쳐도 그 스레드만 죽는다.",
+  "생성자에서 this 가 새면 final 필드도 초기화 전 값이 보일 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "지역 변수와 공유 리스트로 같은 일을 시켜 재현율을 비교한다.",
+   "done_when": "한쪽에서 예외까지 나는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "지역 변수의 참조를 여러 스레드에 넘겨 본다.",
+   "done_when": "지역이어도 깨지는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "-Xss 를 바꿔 가며 재귀 깊이를 잰다.",
+   "done_when": "비례하는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "생성자에서 this 를 등록하고 다른 스레드가 읽게 한다.",
+   "done_when": "초기화 전 값을 본다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "무엇이 공유되고 무엇이 각자인가.",
+   "a": "힙과 메타스페이스는 공유, 스택과 PC 는 스레드마다다."
+  },
+  {
+   "q": "지역 변수가 안전한 이유는.",
+   "a": "그 스레드의 스택 프레임 안에 있어서다."
+  },
+  {
+   "q": "지역 변수인데 깨지는 경우는.",
+   "a": "그 참조가 가리키는 힙 객체를 다른 스레드와 나눠 쓸 때다."
+  },
+  {
+   "q": "생성자에서 this 를 넘기면 무엇이 위험한가.",
+   "a": "아직 초기화 안 된 필드를 다른 스레드가 읽을 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스택 프레임",
+   "what": "메서드 호출마다 스택에 쌓이는 지역 변수와 피연산자 공간."
+  },
+  {
+   "term": "this 유출",
+   "what": "객체가 다 만들어지기 전에 그 참조가 밖으로 나가는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JVM Specification, Run-Time Data Areas",
+   "url": "https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

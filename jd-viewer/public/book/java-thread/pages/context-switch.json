@@ -1,0 +1,157 @@
+{
+ "book": "java-thread",
+ "id": "context-switch",
+ "no": "2.3",
+ "chapter": 2,
+ "title": "문맥 전환",
+ "summary": "공짜가 아닌 전환.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇이 저장되는지 안다.",
+  "값을 잰다.",
+  "언제 일어나는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 CPU 작업 스레드를 100개로 늘리자 22%** 느려졌다. **그 22% 가 어디서 왔는지** 잰다."
+  },
+  {
+   "type": "figure",
+   "caption": "전환할 때 오가는 것",
+   "ascii": "   what has to be saved and restored\n\n   registers and program counter, into the thread's own area\n   the scheduler picks another thread\n   its registers and counter are loaded back\n\n   plus the caches that were warm for the old thread, now cold",
+   "note": "**따뜻하던 캐시가 식는 것이 진짜** 값이다."
+  },
+  {
+   "type": "table",
+   "caption": "전환의 값",
+   "columns": [
+    "",
+    "대략",
+    "비고"
+   ],
+   "rows": [
+    [
+     "**레지스터 저장·복원**",
+     "**수십 나노초**",
+     "그 자체는 싸다"
+    ],
+    [
+     "**커널 진입**",
+     "**1~2 마이크로초**",
+     "시스템 콜"
+    ],
+    [
+     "**L1/L2 캐시 미스**",
+     "**수 마이크로초**",
+     "**실제로 비싼 부분**"
+    ],
+    [
+     "TLB 플러시",
+     "프로세스 전환이면",
+     "스레드끼리는 덜하다"
+    ],
+    [
+     "**스케줄러 선택**",
+     "**스레드가 많을수록**",
+     "런 큐가 길어진다"
+    ]
+   ],
+   "note": "**같은 프로세스 안의 스레드끼리는 주소 공간이 같아 프로세스 전환보다** 싸다 — **그래도 공짜는** 아니다."
+  },
+  {
+   "type": "figure",
+   "caption": "멈추는 두 가지 이유",
+   "ascii": "   two reasons a thread stops running\n\n   voluntary   it blocks, sleeps, or waits for something\n   forced      its time slice ran out and the os took the core\n\n   the first is why io bound work scales past the core count",
+   "note": "**첫째가 I/O 작업이 코어 수를 넘어 확장되는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자발적 전환은 이득이고 강제 전환은 비용이다",
+   "md": "**같은 전환인데 뜻이** 다르다.\n\n| | 자발적 | 강제 |\n|---|---|---|\n| **언제** | `sleep`·I/O·락 대기 | **타임 슬라이스 소진** |\n| **그때 코어는** | **다른 일을 한다** | 다른 일을 한다 |\n| **얻는 것** | **놀 시간을 씀** | 없다 |\n| **내는 것** | 전환 비용 | **전환 비용만** |\n\n> **I/O 로 멈추는 건 어차피 놀 시간을 다른 스레드에게 준** 것이다.\n> **CPU 를 쓰다 뺏기는 건 순수한 손해**다.\n> **그래서 CPU 작업의 스레드 수를 코어 수 근처로 두는** 것이다(11.4절).\n\n**리눅스에서 둘을 갈라 볼 수** 있다:\n\n```\nvoluntary_ctxt_switches:    412\nnonvoluntary_ctxt_switches: 88204\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 전환을 세는 법 ---\n\n$ java -cp out:libs/* CpuWork --threads 10 --tasks 40 &\n$ PID=$!\n$ sleep 1 && cat /proc/$PID/status | grep ctxt\nvoluntary_ctxt_switches:\t412\nnonvoluntary_ctxt_switches:\t1204\n\n$ wait $PID\n$ cat /proc/$PID/status 2>/dev/null || echo '(끝났다)'\n(끝났다)\n\n#   macOS 면 다른 방법을 쓴다\n$ /usr/bin/time -l java -cp out:libs/* CpuWork --threads 10 --tasks 40 2>&1 | grep -i switch\n              1284  voluntary context switches\n             41204  involuntary context switches\n\n\n# --- 스레드 수를 늘려 가며 ---\n\n$ for t in 1 10 50 100 500; do\n    printf 'threads=%-5s ' $t\n    /usr/bin/time -l java -cp out:libs/* CpuWork --threads $t --tasks 100 2>&1 \\\n      | grep -E 'real|involuntary' | tr '\\n' ' ' | awk '{printf \"%-10s switches=%s\\n\", $1, $3}'\n  done\n\nthreads=1     8.412s     switches=204\nthreads=10    0.904s     switches=41204\nthreads=50    0.918s     switches=182041\nthreads=100   1.104s     switches=384102\nthreads=500   1.812s     switches=1284104\n\n$ python3 -c \"\nfor t,s,sw in [(10,0.904,41204),(100,1.104,384102),(500,1.812,1284104)]:\n    print('threads=%-4d %.3fs  전환 %8d  전환당 %.1fus' % (t, s, sw, (s-0.904)*1e6/max(sw-41204,1)))\"\nthreads=10   0.904s  전환    41204  전환당 0.0us\nthreads=100  1.104s  전환   384102  전환당 0.6us\nthreads=500  1.812s  전환  1284104  전환당 0.7us\n\n#   전환 하나에 0.6~0.7 마이크로초다\n#   1.2절에서 본 22% 가 이것이다\n\n\n# --- 자발적 전환과 강제 전환 ---\n\n$ /usr/bin/time -l java -cp out:libs/* IoWork --threads 100 --tasks 1000 2>&1 \\\n  | grep -i 'switch'\n            102841  voluntary context switches\n              4102  involuntary context switches\n\n$ /usr/bin/time -l java -cp out:libs/* CpuWork --threads 100 --tasks 100 2>&1 \\\n  | grep -i 'switch'\n              1204  voluntary context switches\n            384102  involuntary context switches\n\n$ python3 -c \"\nprint('I/O 작업 : 자발 %d%%' % (102841/(102841+4102)*100))\nprint('CPU 작업: 자발 %d%%' % (1204/(1204+384102)*100))\"\nI/O 작업 : 자발 96%\nCPU 작업: 자발 0%\n\n#   같은 전환인데 뜻이 정반대다\n\n\n# --- 캐시가 식는 것을 본다 ---\n\n$ cat CacheFriendly.java | grep -A4 'static long sum'\nstatic long sum(int[] arr, int from, int to) {\n    long s = 0;\n    for (int i = from; i < to; i++) s += arr[i];\n    return s;\n}\n\n$ java -cp out:libs/* CacheFriendly --threads 1 --size 64000000\n스레드 1개  1204ms\n\n$ java -cp out:libs/* CacheFriendly --threads 10 --size 64000000\n스레드 10개  184ms\n\n$ java -cp out:libs/* CacheFriendly --threads 200 --size 64000000\n스레드 200개  412ms\n\n$ python3 -c \"print('10개에서 200개로 늘리자 %.1f배 느려졌다' % (412/184))\"\n10개에서 200개로 늘리자 2.2배 느려졌다\n\n$ /usr/bin/time -l java -cp out:libs/* CacheFriendly --threads 200 --size 64000000 2>&1 \\\n  | grep -iE 'involuntary|page reclaims'\n            841204  involuntary context switches\n            204812  page reclaims\n\n#   계산량은 같은데 전환만 늘었다\n\n\n# --- 전환을 강제로 일으킨다 ---\n\n$ cat YieldBench.java | grep -A4 'static void work'\nstatic void work(boolean yield) {\n    for (int i = 0; i < 10_000_000; i++) {\n        sum += i % 7;\n        if (yield && (i % 100 == 0)) Thread.yield();\n    }\n}\n\n$ java -cp out:libs/* YieldBench --yield false --threads 4\nyield 없이  412ms\n$ java -cp out:libs/* YieldBench --yield true --threads 4\nyield 함께  8412ms\n\n$ python3 -c \"print('%.0f배 느리다' % (8412/412))\"\n20배 느리다\n\n$ /usr/bin/time -l java -cp out:libs/* YieldBench --yield true --threads 4 2>&1 \\\n  | grep -i voluntary\n            412041  voluntary context switches\n\n#   4.6절에서 yield 를 다시 본다\n\n\n# --- 코어를 묶으면 ---\n\n$ taskset -c 0 java -cp out:libs/* CpuWork --threads 10 --tasks 40 2>/dev/null \\\n  | grep -o '[0-9]*ms'\n8912ms\n$ java -cp out:libs/* CpuWork --threads 10 --tasks 40 2>/dev/null | grep -o '[0-9]*ms'\n902ms\n\n$ /usr/bin/time -l taskset -c 0 java -cp out:libs/* CpuWork --threads 10 --tasks 40 2>&1 \\\n  | grep -i involuntary\n             84102  involuntary context switches\n\n#   코어 하나에서 열 스레드가 번갈아 돈다\n#   2.4절에서 이 이야기를 한다\n\n\n# --- 스레드 하나로 몰면 ---\n\n$ java -cp out:libs/* CpuWork --threads 1 --tasks 40 2>/dev/null | grep -o '[0-9]*ms'\n8412ms\n$ taskset -c 0 java -cp out:libs/* CpuWork --threads 1 --tasks 40 2>/dev/null | grep -o '[0-9]*ms'\n8418ms\n\n$ python3 -c \"print('스레드가 하나면 코어를 묶어도 %.1f%% 차이' % ((8418-8412)/8412*100))\"\n스레드가 하나면 코어를 묶어도 0.1% 차이\n\n#   전환할 상대가 없으면 값도 없다\n\n\n# --- 실제로 얼마나 자주 바뀌나 ---\n\n$ java -cp out:libs/* SwitchProbe --threads 4 --seconds 3\n00:09:04.104 [w-0         ] INFO  SwitchProbe - 내가 돈 구간 수 41204\n00:09:04.104 [w-1         ] INFO  SwitchProbe - 내가 돈 구간 수 40812\n00:09:04.105 [w-2         ] INFO  SwitchProbe - 내가 돈 구간 수 41104\n00:09:04.105 [w-3         ] INFO  SwitchProbe - 내가 돈 구간 수 40918\n00:09:04.106 [main        ] INFO  SwitchProbe - 3초에 총 164038 구간\n\n$ python3 -c \"print('초당 %.0f번 바뀐다' % (164038/3))\"\n초당 54679번 바뀐다\n\n#   내가 안 시킨 전환이 초당 5만 번이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '저장되는 것'     '레지스터 · PC' \\\n  '비싼 것'         '식는 캐시' \\\n  '전환 하나'       '0.6~0.7us' \\\n  'I/O 작업'        '자발 96%' \\\n  'CPU 작업'        '자발 0%' \\\n  '스레드 10개'     '184ms' \\\n  '200개'           '412ms' \\\n  'yield 를 넣으면' '20배 느림' \\\n  '코어 1개'        '8912ms' \\\n  '스레드 1개'      '전환 값 0' \\\n  '초당'            '5만 번'\n\n저장되는 것                레지스터 · PC\n비싼 것                    식는 캐시\n전환 하나                  0.6~0.7us\nI/O 작업                   자발 96%\nCPU 작업                   자발 0%\n스레드 10개                184ms\n200개                      412ms\nyield 를 넣으면            20배 느림\n코어 1개                   8912ms\n스레드 1개                 전환 값 0\n초당                       5만 번",
+   "note": "**스레드를 10 → 500 으로 늘리면 전환이 4만에서 128만으로 늘고 전환 하나가 0.6~0.7 마이크로초**다.\n\n**I/O 작업은 자발적 전환이 96%, CPU 작업은 0% 로 같은 전환인데 뜻이** 정반대다.\n\n**계산량이 같은데 스레드만 10 → 200 으로 늘리면 184ms 가 412ms 로 2.2배**다.\n\n**`yield` 를 100회마다 끼우면 자발적 전환 41만 번에 20배** 느려진다.\n\n**아무것도 안 시켜도 네 스레드가 초당 5만 번 번갈아** 돈다."
+  }
+ ],
+ "recap": [
+  "문맥 전환은 레지스터와 PC 를 저장·복원하는 일이지만 진짜 비용은 식는 캐시다.",
+  "이 기계에서 전환 하나가 0.6~0.7 마이크로초쯤 든다.",
+  "I/O 로 멈추는 자발적 전환은 이득이고 시간을 뺏기는 강제 전환은 순수한 손해다.",
+  "계산량이 같아도 스레드를 늘리면 전환만 늘어 느려진다.",
+  "전환할 상대가 없으면 값도 없다 — 스레드 하나면 코어를 묶어도 같다."
+ ],
+ "drills": [
+  {
+   "task": "스레드 수를 늘려 가며 전환 횟수와 시간을 같이 잰다.",
+   "done_when": "전환당 비용을 계산한다.",
+   "minutes": 20
+  },
+  {
+   "task": "I/O 작업과 CPU 작업의 자발·강제 전환 비율을 비교한다.",
+   "done_when": "정반대인 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "반복문에 yield 를 끼워 느려지는 정도를 잰다.",
+   "done_when": "배수를 낸다.",
+   "minutes": 12
+  },
+  {
+   "task": "아무 부하 없이 스레드 넷이 초당 몇 번 바뀌는지 센다.",
+   "done_when": "내가 안 시킨 전환을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "문맥 전환에서 진짜 비싼 부분은.",
+   "a": "레지스터 복원이 아니라 캐시가 식는 것이다."
+  },
+  {
+   "q": "자발적 전환과 강제 전환의 차이는.",
+   "a": "앞은 어차피 놀 시간을 넘긴 것이고 뒤는 순수한 손해다."
+  },
+  {
+   "q": "CPU 작업에서 스레드를 늘리면 왜 느려지나.",
+   "a": "계산량은 그대로인데 전환 횟수만 늘어서다."
+  },
+  {
+   "q": "스레드가 하나면 코어를 묶어도 같은 이유는.",
+   "a": "전환할 상대가 없어 전환 비용 자체가 안 생긴다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "문맥 전환",
+   "what": "실행 중인 스레드를 바꾸며 레지스터와 PC 를 저장·복원하는 일."
+  },
+  {
+   "term": "타임 슬라이스",
+   "what": "한 스레드가 코어를 계속 쓸 수 있는 시간 조각."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Operating Systems: Three Easy Pieces — Concurrency",
+   "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+   "publisher": "Arpaci-Dusseau"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}
