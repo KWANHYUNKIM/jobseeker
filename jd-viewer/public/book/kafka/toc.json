@@ -357,7 +357,7 @@
           "title": "전송 결과 확인",
           "summary": "동기 · 비동기 · 콜백.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.8",
@@ -365,7 +365,7 @@
           "title": "실패했을 때 무엇이 남나",
           "summary": "버퍼가 차면 애플리케이션이 멈춘다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

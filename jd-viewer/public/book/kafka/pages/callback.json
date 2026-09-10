@@ -1,0 +1,115 @@
+{
+ "book": "kafka",
+ "id": "callback",
+ "no": "6.7",
+ "chapter": 6,
+ "title": "전송 결과 확인",
+ "summary": "동기 · 비동기 · 콜백.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 방식의 처리량 차이를 안다.",
+  "콜백에서 무엇을 해야 하는지 안다.",
+  "콜백의 주의점을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "compare",
+   "caption": "동기와 비동기 콜백",
+   "left": {
+    "title": "동기 — 배치가 안 된다",
+    "lang": "java",
+    "bad": true,
+    "code": "for (var order : orders) {\n    RecordMetadata meta = producer\n        .send(new ProducerRecord<>(\"orders\", order.id(), json))\n        .get();                       // 여기서 막힌다\n    log.info(\"sent to {}-{}\", meta.partition(), meta.offset());\n}\n\n// 한 건 보내고 응답 기다리고 다음 건\n// 배치가 1건씩이다 (6.5절)\n// 처리량이 수십 배 떨어진다\n//\n// 쓸 자리: 정말 한 건씩 확인해야 할 때\n//          (테스트, 초기화, 극히 드문 이벤트)"
+   },
+   "right": {
+    "title": "비동기 콜백 — 실무의 기본",
+    "lang": "java",
+    "code": "for (var order : orders) {\n    producer.send(new ProducerRecord<>(\"orders\", order.id(), json),\n        (meta, ex) -> {\n            if (ex != null) {\n                log.error(\"send failed key={}\", order.id(), ex);\n                failureCounter.increment();\n                return;\n            }\n            log.debug(\"sent to {}-{}\", meta.partition(), meta.offset());\n        });\n}\nproducer.flush();   // 필요하면 여기서 기다린다\n\n// 버퍼에 넣고 바로 다음 건\n// 배치가 제대로 된다\n// 실패는 콜백에서 처리한다"
+   },
+   "note": "**`get()` 을 루프 안에서 부르는 것이 가장 흔한 성능 실수**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "콜백은 sender 스레드에서 돈다",
+   "md": "| 지켜야 할 것 | 왜 |\n|---|---|\n| **빨라야 한다** | **콜백이 느리면 전송 전체가 느려진다** |\n| **블로킹 금지** | DB 호출·HTTP 호출을 콜백에서 하지 않는다 |\n| **예외를 삼키지 않는다** | 콜백에서 던진 예외는 로그에만 남는다 |\n| 순서 | 같은 파티션의 콜백은 순서대로 불린다 |\n\n```java\n// 이렇게 하지 않는다\nproducer.send(record, (meta, ex) -> {\n    if (ex != null) {\n        deadLetterRepository.save(record);   // DB 호출 -- sender 스레드가 막힌다\n    }\n});\n\n// 이렇게 한다\nproducer.send(record, (meta, ex) -> {\n    if (ex != null) failedQueue.offer(record);   // 큐에 넣고 끝\n});\n```\n\n> **실패 처리를 콜백 안에서 다 하려 하면 프로듀서 전체가 그 속도에 묶인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "실패를 어디까지 책임질 것인가",
+   "md": "**콜백에서 실패를 받았다.** **그다음은.**\n\n| 선택 | 언제 |\n|---|---|\n| **로그와 지표만** | 유실을 견디는 데이터(메트릭) |\n| **로컬 큐에 넣고 재시도** | 잠깐의 장애를 넘기고 싶다 |\n| **DB 에 저장(아웃박스)** | **유실이 안 되는 데이터.** 8.5절 |\n| **요청 자체를 실패시킨다** | 동기 경로. `get()` 이나 `CompletableFuture` |\n\n**스프링에서는 `KafkaTemplate` 이 `CompletableFuture` 를** 준다(9.2절).\n\n```java\nkafkaTemplate.send(\"orders\", key, value)\n    .whenComplete((result, ex) -> { ... });\n```\n\n> **\"보냈으니 됐다\" 로 끝내면 조용한 유실**이 된다.\n> **최소한 실패 건수를 지표로 뽑아 알람을 건다**(11.1절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "세 방식의 처리량을 잰다",
+   "sql": "$ kt --create --topic cb --partitions 6 --replication-factor 3 >/dev/null\n\n# --- 세 방식 ---\n\n$ java -cp 'out:libs/*' SendModeBench --topic cb --records 50000 --mode fire-and-forget\nmode=fire-and-forget  50000 records in 0.61s  =  81967 rec/s   errors=?\n\n$ java -cp 'out:libs/*' SendModeBench --topic cb --records 50000 --mode callback\nmode=callback         50000 records in 0.68s  =  73529 rec/s   errors=0\n\n$ java -cp 'out:libs/*' SendModeBench --topic cb --records 50000 --mode sync\nmode=sync             50000 records in 41.28s =   1211 rec/s   errors=0\n\n#   동기는 60배 느리다\n#   fire-and-forget 과 callback 은 거의 같다 -- 콜백은 공짜에 가깝다\n\n\n# --- 콜백이 느리면 전송이 느려진다 ---\n\n$ java -cp 'out:libs/*' SendModeBench --topic cb --records 50000 --mode callback \\\n    --callback-sleep-ms 1\nmode=callback(sleep 1ms)  50000 records in 12.41s = 4028 rec/s\n\n#   콜백에 1ms 를 넣었더니 18배 느려졌다\n#   sender 스레드가 콜백을 순차로 부르기 때문이다\n\n\n# --- 콜백에서 실패를 잡는다 ---\n\n$ docker compose stop kafka-2 kafka-3 >/dev/null && sleep 35\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name cb \\\n    --alter --add-config min.insync.replicas=2 >/dev/null\n\n$ java -cp 'out:libs/*' SendModeBench --topic cb --records 1000 --mode callback \\\n    --acks all --delivery-timeout 5000\nmode=callback  1000 records in 5.41s\nerrors=1000\n  NotEnoughReplicasException: 1000\nfirst error: Messages are rejected since there are fewer in-sync replicas than required\n\n#   콜백이 1000번 불렸고 전부 예외였다\n#   fire-and-forget 이었으면 이걸 몰랐다\n\n$ java -cp 'out:libs/*' SendModeBench --topic cb --records 1000 --mode fire-and-forget \\\n    --acks all --delivery-timeout 5000\nmode=fire-and-forget  1000 records in 0.08s  errors=?\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic cb | \\\n    awk -F: '{s+=$3} END {print \"records =\", s}'\nrecords = 150000\n\n#   1000건이 안 들어갔는데 프로그램은 0.08초 만에 성공적으로 끝났다\n#   \"보냈으니 됐다\" 의 결과다\n\n$ docker compose start kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 실패를 큐에 넣고 나중에 재시도 ---\n\n#   producer.send(record, (meta, ex) -> {\n#       if (ex != null) failed.offer(record);      // 콜백은 여기까지\n#   });\n#\n#   // 별도 스레드\n#   while (!failed.isEmpty()) {\n#       var r = failed.poll();\n#       producer.send(r, retryCallback);\n#   }\n\n$ java -cp 'out:libs/*' RetryQueueProducer --topic cb --records 1000 --break-brokers\nsent=1000 failed-first-try=412 requeued=412 finally-ok=1000 finally-failed=0\n\n#   412건이 실패했다가 브로커가 돌아온 뒤 재시도로 들어갔다\n#   콜백은 큐에 넣기만 했다\n\n\n# --- 스프링에서는 CompletableFuture ---\n\n#   kafkaTemplate.send(\"orders\", key, value)\n#       .whenComplete((result, ex) -> {\n#           if (ex != null) { ... }\n#           else log.debug(\"offset={}\", result.getRecordMetadata().offset());\n#       });\n#\n#   9.2절에서 자세히\n\n$ kt --delete --topic cb >/dev/null"
+  }
+ ],
+ "recap": [
+  "send().get() 을 루프 안에서 부르면 배치가 안 되어 처리량이 수십 배 떨어진다.",
+  "비동기 콜백은 fire-and-forget 과 처리량이 거의 같다. 실무의 기본이다.",
+  "콜백은 sender 스레드에서 돈다. 느리면 전송 전체가 느려지고 블로킹 호출은 금지다.",
+  "fire-and-forget 은 실패를 아예 모른다. 최소한 실패 건수를 지표로 뽑는다.",
+  "실패 처리는 콜백에서 큐에 넣고 별도 스레드가 한다."
+ ],
+ "drills": [
+  {
+   "task": "fire-and-forget·callback·sync 세 방식의 처리량을 재 본다.",
+   "done_when": "동기가 수십 배 느린 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "콜백에 1ms sleep 을 넣고 처리량 변화를 본다.",
+   "done_when": "콜백이 전송을 막는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "브로커를 내린 채 fire-and-forget 과 callback 으로 각각 보내 결과 차이를 본다.",
+   "done_when": "앞은 실패를 모르고 뒤는 아는 것을 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "send().get() 을 루프에서 부르면 왜 느린가.",
+   "a": "한 건마다 응답을 기다려 배치가 1건씩이 된다."
+  },
+  {
+   "q": "콜백에서 DB 저장을 하면 무엇이 문제인가.",
+   "a": "콜백이 sender 스레드에서 돌아 전송 전체가 그 속도에 묶인다."
+  },
+  {
+   "q": "fire-and-forget 의 위험은.",
+   "a": "실패를 아예 모른다. 브로커가 안 받아도 프로그램은 성공적으로 끝난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "Callback",
+   "what": "전송 완료 시 불리는 인터페이스. (metadata, exception) 을 받는다."
+  },
+  {
+   "term": "fire-and-forget",
+   "what": "결과를 확인하지 않고 보내는 방식."
+  },
+  {
+   "term": "flush()",
+   "what": "버퍼의 레코드가 전부 전송될 때까지 기다린다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Producer send with callback",
+   "url": "https://kafka.apache.org/documentation/#producerapi",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring for Apache Kafka — Sending Messages",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/sending-messages.html",
+   "publisher": "Spring"
+  }
+ ]
+}

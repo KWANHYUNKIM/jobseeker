@@ -1,0 +1,146 @@
+{
+ "book": "kafka",
+ "id": "producer-failure",
+ "no": "6.8",
+ "chapter": 6,
+ "title": "실패했을 때 무엇이 남나",
+ "summary": "버퍼가 차면 애플리케이션이 멈춘다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "브로커 장애가 애플리케이션에 어떻게 전파되는지 안다.",
+  "막히지 않게 설정한다.",
+  "6장을 체크리스트로 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**카프카가 죽으면 내 애플리케이션은 어떻게** 되나.\n\n> **답은 설정에 달렸다.** **잘못 두면 웹 요청이 통째로 멈춘다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "브로커가 죽었을 때 벌어지는 일",
+   "ascii": "   brokers down\n        |\n   sender thread cannot send\n        |\n   RecordAccumulator fills up          (buffer.memory = 32MB)\n        |\n   send() blocks                       (max.block.ms = 60s)\n        |\n   your request thread is stuck\n        |\n   thread pool exhausted\n        |\n   the whole service stops responding\n\n   카프카 장애가 웹 서비스 장애가 되는 경로",
+   "note": "**\"카프카는 비동기니까 죽어도 괜찮다\" 가 틀리는** 자리다."
+  },
+  {
+   "type": "table",
+   "caption": "막히지 않게 하는 설정",
+   "columns": [
+    "설정",
+    "기본",
+    "운영에서"
+   ],
+   "rows": [
+    [
+     "**`max.block.ms`**",
+     "**60초**",
+     "**3~5초.** 요청 처리 시간 안에"
+    ],
+    [
+     "**`delivery.timeout.ms`**",
+     "**2분**",
+     "**10~30초**. 재시도 시한(6.4절)"
+    ],
+    [
+     "`request.timeout.ms`",
+     "30초",
+     "5~10초"
+    ],
+    [
+     "`buffer.memory`",
+     "32MB",
+     "트래픽에 맞춰. 크면 오래 버티고 늦게 터진다"
+    ],
+    [
+     "`linger.ms`",
+     "0",
+     "5~20(6.5절)"
+    ]
+   ],
+   "note": "**`max.block.ms` 가 가장 중요**하다 — **이게 웹 요청이 멈추는 시간의 상한**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "보내기 자체를 요청 경로에서 뺀다",
+   "md": "**설정을 줄여도 몇 초는 멈춘다.** **근본 대책은 요청 경로에서 빼는** 것이다.\n\n| 방법 | 어떻게 |\n|---|---|\n| **아웃박스** | **DB 트랜잭션에 이벤트를 같이 저장**하고 별도 프로세스가 발행(8.5절) |\n| 로컬 큐 | 메모리 큐에 넣고 별도 스레드가 발행. **프로세스가 죽으면 유실** |\n| 트랜잭션 이벤트 리스너 | 스프링의 `@TransactionalEventListener(AFTER_COMMIT)`. 여전히 요청 스레드일 수 있다 |\n| 그냥 감수 | 유실을 견디는 데이터면 `max.block.ms` 를 짧게 |\n\n> **주문·결제처럼 잃으면 안 되는 것은 아웃박스**다.\n> **클릭 로그처럼 잃어도 되는 것은 짧은 타임아웃 + 실패 무시**가 맞다.\n>\n> **둘을 같은 코드로 다루려 하면 둘 다 나빠진다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "6장 체크리스트",
+   "md": "| 항목 | 값 | 절 |\n|---|---|---|\n| `acks` | **all** (기본) | 6.3 |\n| `enable.idempotence` | **true** (기본) | 6.4·8.1 |\n| 토픽 `min.insync.replicas` | **2** (rf=3) | 3.6 |\n| `max.block.ms` | **3~5초** | 6.8 |\n| `delivery.timeout.ms` | **10~30초** | 6.4 |\n| `linger.ms` | 5~20 | 6.5 |\n| `compression.type` | lz4 | 6.5 |\n| 전송 방식 | **콜백** | 6.7 |\n| 실패 처리 | **지표 + 큐/아웃박스** | 6.7·8.5 |\n| 키 | **순서 단위** | 4.4 |\n| 프로듀서 인스턴스 | **하나를 공유** | 6.1 |\n\n> **기본값이 이미 안전한 쪽**이다(3.0+). **바꿔야 하는 건 주로 타임아웃**이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "카프카 장애가 애플리케이션을 멈추는 것을 재현한다",
+   "sql": "$ kt --create --topic fail --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 기본 설정으로 웹 요청을 흉내 낸다 ---\n\n$ java -cp 'out:libs/*' FakeWebApp --topic fail --threads 8 --rps 50 &\n$ sleep 3\n$ curl -s -o /dev/null -w 'first request: %{http_code} in %{time_total}s\\n' localhost:7070/order\nfirst request: 200 in 0.004s\n\n\n# --- 브로커를 전부 내린다 ---\n\n$ docker compose stop kafka-1 kafka-2 kafka-3 >/dev/null\n$ sleep 5\n\n$ curl -s -o /dev/null -w 'during outage: %{http_code} in %{time_total}s\\n' -m 90 localhost:7070/order\nduring outage: 500 in 60.412s\n\n#   60초를 매달려 있다가 실패했다 (max.block.ms 기본값)\n#   8개 스레드가 전부 이 상태가 되면 서비스가 통째로 멈춘다\n\n$ curl -s -o /dev/null -w 'health check: %{http_code} in %{time_total}s\\n' -m 5 localhost:7070/health\nhealth check: 000 in 5.001s\n\n#   헬스체크도 응답을 못 한다. 스레드 풀이 다 찼다\n#   로드밸런서가 이 인스턴스를 빼고, 다른 인스턴스도 같은 상태가 된다\n\n$ kill %1 2>/dev/null\n$ docker compose start kafka-1 kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 타임아웃을 줄인다 ---\n\n$ java -cp 'out:libs/*' FakeWebApp --topic fail --threads 8 --rps 50 \\\n    --max-block 3000 --delivery-timeout 10000 &\n$ sleep 3\n$ docker compose stop kafka-1 kafka-2 kafka-3 >/dev/null && sleep 5\n\n$ curl -s -o /dev/null -w 'during outage: %{http_code} in %{time_total}s\\n' -m 30 localhost:7070/order\nduring outage: 500 in 3.104s\n\n$ curl -s -o /dev/null -w 'health check: %{http_code} in %{time_total}s\\n' -m 5 localhost:7070/health\nhealth check: 200 in 0.003s\n\n#   3초 만에 실패하고 헬스체크는 살아 있다\n#   이벤트는 못 보냈지만 서비스는 돈다\n\n$ kill %1 2>/dev/null\n$ docker compose start kafka-1 kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 아웃박스로 빼면 아예 안 막힌다 ---\n\n$ java -cp 'out:libs/*' OutboxWebApp --topic fail --threads 8 &\n$ sleep 3\n$ docker compose stop kafka-1 kafka-2 kafka-3 >/dev/null && sleep 5\n\n$ curl -s -o /dev/null -w 'during outage: %{http_code} in %{time_total}s\\n' localhost:7071/order\nduring outage: 200 in 0.006s\n\n#   200 이다. 이벤트는 DB 아웃박스 테이블에 들어갔다\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from outbox where published = false'\n142\n\n$ docker compose start kafka-1 kafka-2 kafka-3 >/dev/null && sleep 25\n$ sleep 10\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from outbox where published = false'\n0\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic fail | \\\n    awk -F: '{s+=$3} END {print \"records =\", s}'\nrecords = 142\n\n#   브로커가 돌아오자 발행기가 142건을 전부 보냈다\n#   요청은 한 건도 실패하지 않았다 (8.5절)\n\n$ kill %1 2>/dev/null\n$ kt --delete --topic fail >/dev/null"
+  }
+ ],
+ "recap": [
+  "브로커가 죽으면 버퍼가 차고 send() 가 막혀 요청 스레드가 멈춘다. 카프카 장애가 웹 장애가 된다.",
+  "max.block.ms 가 요청이 멈추는 시간의 상한이다. 기본 60초는 너무 길다.",
+  "타임아웃을 줄이면 서비스는 살지만 이벤트는 잃는다.",
+  "잃으면 안 되는 이벤트는 아웃박스로 요청 경로에서 뺀다. 브로커가 돌아오면 발행기가 따라잡는다.",
+  "3.0+ 의 기본값은 이미 안전한 쪽이다. 주로 바꿀 것은 타임아웃이다."
+ ],
+ "drills": [
+  {
+   "task": "브로커를 전부 내린 채 기본 설정으로 send() 를 불러 몇 초 막히는지 잰다.",
+   "done_when": "60초 근처인 것을 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "max.block.ms 를 3초로 줄이고 같은 실험을 한다.",
+   "done_when": "3초에 실패하고 헬스체크가 사는 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "자기 프로젝트의 프로듀서 설정을 6장 체크리스트와 대조한다.",
+   "done_when": "바꿔야 할 항목을 적는다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "카프카가 죽었는데 웹 서비스가 멈추는 경로는.",
+   "a": "버퍼가 차면 send() 가 max.block.ms 만큼 막히고, 요청 스레드가 거기 묶여 스레드 풀이 고갈된다."
+  },
+  {
+   "q": "타임아웃을 줄이면 무엇을 얻고 무엇을 잃나.",
+   "a": "서비스는 계속 응답하지만 그동안의 이벤트는 잃는다."
+  },
+  {
+   "q": "잃으면 안 되는 이벤트는 어떻게 하나.",
+   "a": "아웃박스 — DB 트랜잭션에 함께 저장하고 별도 발행기가 보낸다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "max.block.ms",
+   "what": "버퍼가 차거나 메타데이터가 없을 때 send() 가 막히는 상한."
+  },
+  {
+   "term": "스레드 풀 고갈",
+   "what": "모든 요청 스레드가 한 지점에서 대기해 서비스가 멈추는 상태."
+  },
+  {
+   "term": "아웃박스",
+   "what": "DB 트랜잭션에 이벤트를 같이 저장하고 나중에 발행하는 패턴. 8.5절."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Producer configs",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs",
+   "publisher": "Apache"
+  },
+  {
+   "title": "microservices.io — Transactional outbox",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "publisher": "microservices.io"
+  }
+ ]
+}
