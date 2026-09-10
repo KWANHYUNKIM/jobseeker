@@ -1,0 +1,168 @@
+{
+ "book": "java-thread",
+ "id": "what-to-watch",
+ "no": "1.5",
+ "chapter": 1,
+ "title": "무엇을 볼 것인가",
+ "summary": "스레드 이름 · 상태 · 순서, 이 셋.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 가지 물음을 안다.",
+  "답이 어디서 오는지 안다.",
+  "1장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 값이** 사라졌다. **무엇을 봐야 알 수 있었는지** 정리한다."
+  },
+  {
+   "type": "figure",
+   "caption": "물어볼 세 가지",
+   "ascii": "   three questions, in the order worth asking\n\n   who   which thread ran this line\n   what  what state is it in right now\n   when  in what order did the lines actually happen\n\n   almost every bug in this book is answered by one of these",
+   "note": "**이 책의 거의 모든 버그가 셋 중 하나로** 답해진다."
+  },
+  {
+   "type": "figure",
+   "caption": "답이 나오는 곳",
+   "ascii": "   where each answer comes from\n\n   who    the log pattern, printed by the thread itself\n   what   a thread dump, taken from outside\n   when   many runs, compared as a distribution\n\n   the first is free, the second is a snapshot, the third takes time",
+   "note": "**첫째는 공짜, 둘째는 스냅숏, 셋째는 시간이** 든다."
+  },
+  {
+   "type": "table",
+   "caption": "증상별로 먼저 볼 것",
+   "columns": [
+    "증상",
+    "먼저 보는 것",
+    "장"
+   ],
+   "rows": [
+    [
+     "**값이 안 맞는다**",
+     "**반복해서 분포**",
+     "6, 9"
+    ],
+    [
+     "**안 끝난다**",
+     "**스레드 덤프**",
+     "**5, 6.5**"
+    ],
+    [
+     "**멈춘 것처럼 느리다**",
+     "**상태별 개수**",
+     "6.6, 11.5"
+    ],
+    [
+     "**순서가 이상하다**",
+     "스레드 이름 붙은 로그",
+     "3, 4"
+    ],
+    [
+     "메모리가 는다",
+     "스레드 개수",
+     "**2.5, 11.1**"
+    ],
+    [
+     "**가끔만 틀린다**",
+     "**재현율을 올린다**",
+     "**1.3**"
+    ]
+   ],
+   "note": "**\"안 끝난다\" 와 \"느리다\" 는 다른 증상**이다 — **덤프를 두 번 떠서 스택이 안 바뀌면 안 끝나는** 것이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "덤프는 두 번 떠야 뜻이 생긴다",
+   "md": "**한 장만 보면 지금 저기 있다는 것밖에** 모른다.\n\n```\n1차: worker-0  RUNNABLE  at Work.loop(Work.java:14)\n2차: worker-0  RUNNABLE  at Work.loop(Work.java:14)\n  -> 같은 줄이다. 안 나가고 있다\n\n1차: worker-0  RUNNABLE  at Work.loop(Work.java:14)\n2차: worker-0  RUNNABLE  at Work.parse(Work.java:41)\n  -> 움직이고 있다. 느린 것이다\n```\n\n> **`BLOCKED` 는 락을 기다리는 것이고 `WAITING` 은 누가 깨워 주기를 기다리는** 것이다(4.1절).\n> **덤프에 `BLOCKED` 가 여럿이면 그 락이 병목**이다(6.6절).\n> **`RUNNABLE` 인데 CPU 가 안 오르면 대개 I/O** 대기다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "1장에서 만든 도구들",
+   "md": "**앞으로 계속 쓰는 것** 넷이다.\n\n| 도구 | 어디서 |\n|---|---|\n| **`%thread` 로그 패턴** | 1.3절 |\n| **`run.sh` 반복 실행** | 1.3절 |\n| **`jcmd Thread.print`** | 1.3절 |\n| **`-Xint` 로 재현율 올리기** | 1.3절 |\n\n**여기에 하나를 더** 만든다 — **`ThreadMXBean` 으로 프로그램이 자기 상태를 스스로** 찍게 한다.\n\n```java\nThreadMXBean mx = ManagementFactory.getThreadMXBean();\nfor (ThreadInfo i : mx.dumpAllThreads(false, false))\n    log.info(\"{} {}\", i.getThreadName(), i.getThreadState());\n```\n\n> **밖에서 `jcmd` 를 칠 수 없는 순간에도 찍힌다** — **11장의 스레드 풀에서** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- ① 누가 ---\n\n$ java -cp out:libs/* Counter 4 100000\n23:56:02.104 [main        ] INFO  Counter - 기대 400000 실제 284102\n\n$ java -cp out:libs/* TraceCounter 2 2 2>/dev/null\n23:56:04.118 [w-0         ] INFO  TraceCounter - 읽음 0\n23:56:04.118 [w-1         ] INFO  TraceCounter - 읽음 0\n23:56:04.119 [w-0         ] INFO  TraceCounter - 씀   1\n23:56:04.119 [w-1         ] INFO  TraceCounter - 씀   1\n23:56:04.119 [w-0         ] INFO  TraceCounter - 읽음 1\n23:56:04.120 [w-1         ] INFO  TraceCounter - 읽음 1\n23:56:04.120 [w-0         ] INFO  TraceCounter - 씀   2\n23:56:04.120 [w-1         ] INFO  TraceCounter - 씀   2\n23:56:04.121 [main        ] INFO  TraceCounter - 기대 4 실제 2\n\n#   1.4절에서 본 그것이다\n#   둘째 칸이 없으면 이 여덟 줄은 아무 뜻이 없다\n\n\n# --- ② 무엇을 ---\n\n$ java -cp out:libs/* Mixed --io 5 --cpu 3 --block 2 &\n[1] 42104\n\n$ jcmd 42104 Thread.print | grep 'java.lang.Thread.State' | awk '{print $2}' \\\n  | sort | uniq -c | sort -rn\n  11 RUNNABLE\n   5 TIMED_WAITING\n   2 BLOCKED\n   2 WAITING\n\n$ jcmd 42104 Thread.print | grep -B2 'BLOCKED' | grep '^\"' | awk -F'\"' '{print $2}'\nblocker-0\nblocker-1\n\n$ jcmd 42104 Thread.print | grep -A3 'blocker-0\"' | tail -2\n   java.lang.Thread.State: BLOCKED (on object monitor)\n\tat Mixed.lambda$block$2(Mixed.java:41) - waiting to lock <0x000000061a2c4f18>\n\n#   같은 객체를 기다리고 있다\n#   6.6절에서 이 줄을 다시 본다\n\n\n# --- 안 끝나나 느린가 ---\n\n$ jcmd 42104 Thread.print | grep -A2 'cpu-0\"' | tail -1 > /tmp/d1.txt\n$ sleep 2\n$ jcmd 42104 Thread.print | grep -A2 'cpu-0\"' | tail -1 > /tmp/d2.txt\n$ diff /tmp/d1.txt /tmp/d2.txt && echo '같은 줄 -- 안 나가고 있다' || echo '움직이고 있다'\n2c2\n<\tat Mixed.spin(Mixed.java:22)\n---\n>\tat Mixed.reduce(Mixed.java:29)\n움직이고 있다\n\n$ jcmd 42104 Thread.print | grep -A2 'stuck-0\"' | tail -1 > /tmp/s1.txt\n$ sleep 2 && jcmd 42104 Thread.print | grep -A2 'stuck-0\"' | tail -1 > /tmp/s2.txt\n$ diff -q /tmp/s1.txt /tmp/s2.txt && echo '같은 줄 -- 안 나가고 있다'\n같은 줄 -- 안 나가고 있다\n\n$ cat /tmp/s1.txt\n\tat Mixed.lambda$stuck$3(Mixed.java:52)\n\n$ sed -n '50,53p' Mixed.java\n    static void stuck() {\n        while (!flag) { }        // 5장에서 이 줄을 다룬다\n    }\n\n#   두 번 떠야 알 수 있었다\n\n$ kill %1\n\n\n# --- CPU 도 같이 본다 ---\n\n$ java -cp out:libs/* Mixed --io 10 --cpu 0 &\n$ sleep 1 && top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 3.1% user, 1.2% sys, 95.7% idle\n$ jcmd $! Thread.print | grep -c 'TIMED_WAITING'\n10\n$ kill %1\n\n$ java -cp out:libs/* Mixed --io 0 --cpu 10 &\n$ sleep 1 && top -l 1 -pid $! | grep -E '^CPU' | head -1\nCPU usage: 92.4% user, 2.8% sys, 4.8% idle\n$ jcmd $! Thread.print | grep -c 'RUNNABLE'\n11\n$ kill %1\n\n#   RUNNABLE 인데 CPU 가 안 오르면 I/O 대기다\n#   1.2절에서 본 그것이다\n\n\n# --- ③ 어떤 순서로 ---\n\n$ ./run.sh Counter 30 '[0-9]+$' | head -4\n  16 400000\n   1 384102\n   1 371240\n   1 368410\n---\n총 30 회\n\n$ ./run.sh Counter 30 '[0-9]+$' | awk 'NR==1 {print \"가장 흔한 결과\", $2, \"(\" $1 \"/30)\"}'\n가장 흔한 결과 400000 (16/30)\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* Counter 4 100000 2>/dev/null | grep -oE '[0-9]+$'\n  done | awk '{s+=$1; n++; if($1<min || n==1) min=$1} END {\n    printf \"평균 %.0f  최소 %d  기대 400000\\n\", s/n, min }'\n평균 391204  최소 284102  기대 400000\n\n#   평균만 보면 2% 오차로 보인다\n#   최소값이 진짜 이야기다\n\n\n# --- 스스로 찍게 한다 ---\n\n$ cat SelfDump.java | grep -A5 'static void dump'\nstatic void dump() {\n    ThreadMXBean mx = ManagementFactory.getThreadMXBean();\n    Map<Thread.State, Long> byState = Arrays.stream(mx.dumpAllThreads(false, false))\n            .collect(groupingBy(ThreadInfo::getThreadState, counting()));\n    log.info(\"상태 {}\", byState);\n}\n\n$ java -cp out:libs/* SelfDump --io 5 --cpu 3\n23:58:02.104 [monitor     ] INFO  SelfDump - 상태 {RUNNABLE=6, TIMED_WAITING=5, WAITING=3}\n23:58:03.108 [monitor     ] INFO  SelfDump - 상태 {RUNNABLE=6, TIMED_WAITING=5, WAITING=3}\n23:58:04.112 [monitor     ] INFO  SelfDump - 상태 {RUNNABLE=4, TIMED_WAITING=0, WAITING=3}\n\n#   밖에서 못 칠 때도 남는다\n#   11.3절의 스레드 풀에서 이걸 쓴다\n\n\n# --- 데드락이면 알려 준다 ---\n\n$ java -cp out:libs/* Deadlock &\n$ sleep 2 && jcmd $! Thread.print | grep -A6 'Found one Java-level deadlock'\nFound one Java-level deadlock:\n=============================\n\"w-0\":\n  waiting to lock monitor 0x0000600002a04f18 (object 0x000000061a2c4f18, a java.lang.Object),\n  which is held by \"w-1\"\n\"w-1\":\n  waiting to lock monitor 0x0000600002a05a20 (object 0x000000061a2c4f28, a java.lang.Object),\n  which is held by \"w-0\"\n\n$ jcmd $! Thread.print | grep -c 'Found one Java-level deadlock'\n1\n\n#   JVM 이 찾아서 적어 준다\n#   6.5절에서 이 출력을 다시 본다\n\n$ kill -9 %1\n\n\n# --- 1장이 만든 것 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '1.1'  '읽는 법'        '한 번은 증거가 아님' \\\n  '1.2'  '왜 동시성'      '기다림과 코어' \\\n  '1.3'  '환경'           '이름 · 덤프 · 반복' \\\n  '1.4'  '첫 어긋남'      'count++ 는 세 단계' \\\n  '1.5'  '무엇을 볼까'    '누가 · 무엇을 · 언제'\n\n1.1      읽는 법                   한 번은 증거가 아님\n1.2      왜 동시성                 기다림과 코어\n1.3      환경                      이름 · 덤프 · 반복\n1.4      첫 어긋남                 count++ 는 세 단계\n1.5      무엇을 볼까               누가 · 무엇을 · 언제\n\n$ ls *.sh\nrun.sh\n\n$ grep -c '' run.sh\n11\n\n#   11줄짜리 스크립트 하나로 1장을 다 했다\n\n\n# --- 마지막 확인 ---\n\n$ ./run.sh Counter 10 '[0-9]+$'\n   6 400000\n   1 392104\n   1 388420\n   1 371204\n   1 364810\n---\n총 10 회\n\n$ java -cp out:libs/* Mixed --io 3 --cpu 1 &\n$ sleep 1 && jcmd $! Thread.print | grep 'java.lang.Thread.State' \\\n    | awk '{print $2}' | sort | uniq -c\n   3 TIMED_WAITING\n   2 WAITING\n   9 RUNNABLE\n$ kill %1\n\n#   2장에서 이 스레드들이 무엇을 나눠 갖는지 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '물음'            '누가 무엇을 언제' \\\n  '누가'            '로그 패턴' \\\n  '무엇을'          '스레드 덤프' \\\n  '언제'            '반복 분포' \\\n  '덤프'            '두 번 떠야 뜻이 있음' \\\n  '안 끝남'         '같은 줄' \\\n  '느림'            '줄이 바뀜' \\\n  'BLOCKED'         '락 병목' \\\n  'RUNNABLE + 저CPU' 'I/O 대기' \\\n  '평균'            '속인다' \\\n  '최소값'          '진짜 이야기' \\\n  '데드락'          'JVM 이 적어 줌'\n\n물음                       누가 무엇을 언제\n누가                       로그 패턴\n무엇을                     스레드 덤프\n언제                       반복 분포\n덤프                       두 번 떠야 뜻이 있음\n안 끝남                    같은 줄\n느림                       줄이 바뀜\nBLOCKED                    락 병목\nRUNNABLE + 저CPU           I/O 대기\n평균                       속인다\n최소값                     진짜 이야기\n데드락                     JVM 이 적어 줌",
+   "note": "**덤프를 두 번 떠서 스택이 같은 줄이면 안 나가는 것이고 줄이 바뀌면 느린** 것이다.\n\n**`BLOCKED` 스레드의 스택에 `waiting to lock <0x…>` 로 어느 객체를 기다리는지** 나온다.\n\n**`RUNNABLE` 11개인데 CPU 가 3.1% 면 실제로는 I/O** 대기다.\n\n**30번 돌린 평균은 391204 로 2% 오차 같지만 최소값이 284102**다.\n\n**데드락은 `Found one Java-level deadlock` 으로 JVM 이 직접 찾아** 적는다."
+  }
+ ],
+ "recap": [
+  "물어볼 것은 셋이다 — 누가 찍었나, 지금 무슨 상태인가, 어떤 순서로 일어났나.",
+  "답은 각각 로그 패턴, 스레드 덤프, 반복 실행 분포에서 나온다.",
+  "덤프는 두 번 떠야 안 끝나는 것과 느린 것을 가를 수 있다.",
+  "평균은 속인다. 여러 번 돌린 결과의 최소값이 진짜 이야기다.",
+  "데드락은 JVM 이 덤프에 직접 찾아 적어 준다."
+ ],
+ "drills": [
+  {
+   "task": "여러 상태의 스레드를 만들고 상태별 개수를 센다.",
+   "done_when": "네 가지 상태를 다 본다.",
+   "minutes": 12
+  },
+  {
+   "task": "덤프를 두 번 떠서 같은 줄인지 확인한다.",
+   "done_when": "안 끝나는 것과 느린 것을 가른다.",
+   "minutes": 12
+  },
+  {
+   "task": "ThreadMXBean 으로 스스로 상태를 찍게 한다.",
+   "done_when": "주기적으로 남는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "30번 돌린 결과의 평균과 최소값을 같이 낸다.",
+   "done_when": "평균만 보면 안 되는 이유를 안다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "세 가지 물음은.",
+   "a": "누가 찍었나, 지금 무슨 상태인가, 어떤 순서로 일어났나다."
+  },
+  {
+   "q": "덤프를 두 번 뜨는 이유는.",
+   "a": "스택이 그대로면 안 나가는 것이고 바뀌면 움직이는 것이라서다."
+  },
+  {
+   "q": "RUNNABLE 인데 CPU 가 낮으면.",
+   "a": "대개 I/O 를 기다리는 중이다."
+  },
+  {
+   "q": "평균 대신 무엇을 보나.",
+   "a": "여러 번 돌린 결과의 최소값과 재현율이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "스레드 덤프",
+   "what": "그 순간 모든 스레드의 상태와 스택을 찍은 것."
+  },
+  {
+   "term": "ThreadMXBean",
+   "what": "프로그램이 자기 스레드 상태를 스스로 조회하는 관리 인터페이스."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ThreadMXBean",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.management/java/lang/management/ThreadMXBean.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

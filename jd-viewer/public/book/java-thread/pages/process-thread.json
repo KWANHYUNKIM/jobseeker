@@ -1,0 +1,178 @@
+{
+ "book": "java-thread",
+ "id": "process-thread",
+ "no": "2.1",
+ "chapter": 2,
+ "title": "프로세스와 스레드",
+ "summary": "주소 공간을 나누느냐 마느냐.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "무엇이 나뉘는지 안다.",
+  "왜 스레드를 쓰는지 안다.",
+  "그 대가를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 일을 프로세스 여럿으로도 할 수** 있다. **둘의 차이는 주소 공간을 나누느냐** 하나다."
+  },
+  {
+   "type": "figure",
+   "caption": "프로세스가 가진 것, 스레드가 빌리는 것",
+   "ascii": "   what a process owns and what a thread borrows\n\n   process   address space, file descriptors, one pid\n     thread  program counter, registers, its own stack\n     thread  program counter, registers, its own stack\n\n   two threads see the same objects, two processes do not",
+   "note": "**스레드 둘은 같은 객체를 보고 프로세스 둘은 못** 본다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 다른가",
+   "columns": [
+    "",
+    "프로세스",
+    "스레드"
+   ],
+   "rows": [
+    [
+     "**주소 공간**",
+     "**각자**",
+     "**공유**"
+    ],
+    [
+     "**힙의 객체**",
+     "**못 본다**",
+     "**같은 것을 본다**"
+    ],
+    [
+     "스택",
+     "각자",
+     "**각자**"
+    ],
+    [
+     "**정적 필드**",
+     "**각자**",
+     "**공유**"
+    ],
+    [
+     "파일 디스크립터",
+     "각자",
+     "공유"
+    ],
+    [
+     "**만드는 값**",
+     "**밀리초**",
+     "**마이크로초**"
+    ],
+    [
+     "**하나가 죽으면**",
+     "**그것만**",
+     "**JVM 전체**"
+    ],
+    [
+     "주고받기",
+     "**IPC·직렬화**",
+     "**참조 하나**"
+    ]
+   ],
+   "note": "**마지막 두 줄이 이 책 전체의** 이유다 — **공짜로 주고받는 대신 같이** 죽는다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 줄로 요약하면",
+   "ascii": "   the tradeoff in one line\n\n   processes   one crash kills one, sharing costs a copy\n   threads     one crash kills all, sharing costs nothing\n\n   this whole book is the price of that second zero",
+   "note": "**이 책 전체가 그 둘째 줄 마지막 0 의** 값이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자바에서는 사실상 스레드뿐이다",
+   "md": "**JVM 하나가 프로세스** 하나다.\n\n> **`Thread` 를 만들면 그 JVM 안에** 생긴다.\n> **프로세스를 늘리려면 JVM 을 여러 개** 띄운다.\n> **그러면 힙이 따로라 객체를 못 주고받는다 — 그게 장점이자** 단점이다.\n\n| 프로세스를 나누는 실제 사례 | |\n|---|---|\n| **여러 인스턴스 배포** | **12.3절의 서버 여러 대** |\n| **격리가 필요한 실행** | 샌드박스 |\n| **GC 를 나누고 싶을 때** | 힙이 너무 클 때 |\n\n> **그래서 이 책은 한 JVM 안의 스레드만** 다룬다.\n> **여러 JVM 사이의 조율은 「아파치 카프카」와 「쿠버네티스」 쪽** 이야기다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "공유는 기본값이라 실수도 기본값이다",
+   "md": "**필드를 그냥 두면 공유되는 게** 기본이다.\n\n```java\nclass Handler {\n    private int count;            // 인스턴스 하나를 여럿이 쓰면 공유된다\n    static int total;             // 언제나 공유된다\n    void handle() { count++; total++; }\n}\n```\n\n> **「스프링 핵심 원리 - 고급편」 3장에서 싱글턴 빈에 상태를 두지 말라고 한 게** 이것이다.\n> **빈은 하나고 요청 스레드는** 여럿이다(12.3절).\n\n| 안전한 것 | 위험한 것 |\n|---|---|\n| **지역 변수** | **인스턴스 필드** |\n| **메서드 인자** | **static 필드** |\n| 불변 객체 | **가변 컬렉션** |\n| **ThreadLocal**(12.2절) | 공유 캐시 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 스레드는 같은 객체를 본다 ---\n\n$ cat ShareDemo.java\nstatic int shared = 0;\npublic static void main(String[] args) throws Exception {\n    Thread t = new Thread(() -> {\n        shared = 42;\n        log.info(\"쓴 뒤 {} (객체 {})\", shared, System.identityHashCode(ShareDemo.class));\n    }, \"writer\");\n    t.start(); t.join();\n    log.info(\"읽음  {} (객체 {})\", shared, System.identityHashCode(ShareDemo.class));\n}\n\n$ java -cp out:libs/* ShareDemo\n00:02:04.104 [writer      ] INFO  ShareDemo - 쓴 뒤 42 (객체 1329552164)\n00:02:04.106 [main        ] INFO  ShareDemo - 읽음  42 (객체 1329552164)\n\n#   같은 클래스 객체다\n#   정적 필드가 그대로 보인다\n\n\n# --- 프로세스는 못 본다 ---\n\n$ cat ProcDemo.java | grep -A4 'main'\npublic static void main(String[] args) {\n    if (args.length > 0) { ShareDemo.shared = 42; log.info(\"자식이 씀 {}\", ShareDemo.shared); }\n    else log.info(\"부모가 읽음 {}\", ShareDemo.shared);\n}\n\n$ java -cp out:libs/* ProcDemo child\n00:02:08.204 [main        ] INFO  ProcDemo - 자식이 씀 42\n\n$ java -cp out:libs/* ProcDemo\n00:02:08.412 [main        ] INFO  ProcDemo - 부모가 읽음 0\n\n#   JVM 이 다르면 0 이다\n#   같은 static 필드가 아니다\n\n\n# --- 스택은 각자다 ---\n\n$ cat StackDemo.java | grep -A6 'static void work'\nstatic void work(String tag) {\n    int local = 0;                    // 스레드마다 따로\n    for (int i = 0; i < 100000; i++) local++;\n    log.info(\"{} local = {}\", tag, local);\n}\n\n$ java -cp out:libs/* StackDemo\n00:02:12.104 [w-0         ] INFO  StackDemo - w-0 local = 100000\n00:02:12.104 [w-1         ] INFO  StackDemo - w-1 local = 100000\n00:02:12.105 [w-2         ] INFO  StackDemo - w-2 local = 100000\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* StackDemo 2>/dev/null | grep -c '= 100000'\n  done | sort | uniq -c\n  20 3\n\n#   20번 다 셋 다 맞았다\n#   1.4절의 정적 필드와 정반대다\n\n\n# --- 같은 코드, 필드만 바꾼다 ---\n\n$ diff StackDemo.java FieldDemo.java\n<     int local = 0;\n---\n>     count = 0;                     // static 필드로 바꿨다\n\n$ ./run.sh FieldDemo 20 '[0-9]+$' | head -3\n   3 300000\n   1 284102\n   1 271840\n\n$ ./run.sh FieldDemo 20 '[0-9]+$' | awk '$2==300000 {print \"맞음\", $1\"/20\"}'\n맞음 3/20\n\n#   한 글자 차이로 20번 중 17번 틀린다\n\n\n# --- 하나가 죽으면 ---\n\n$ cat CrashDemo.java | grep -A3 'Thread(() ->'\nnew Thread(() -> {\n    log.info(\"시작\");\n    throw new OutOfMemoryError(\"터짐\");\n}, \"bad\").start();\n\n$ java -cp out:libs/* CrashDemo\n00:02:20.104 [bad         ] INFO  CrashDemo - 시작\nException in thread \"bad\" java.lang.OutOfMemoryError: 터짐\n00:02:21.108 [main        ] INFO  CrashDemo - 나는 살아 있다\n\n$ echo $?\n0\n\n#   스레드 하나의 예외는 그 스레드만 끝낸다\n#   3.7절에서 이 이야기를 판다\n\n$ cat KillAll.java | grep -A2 'Thread(() ->'\nnew Thread(() -> { int[] a = new int[Integer.MAX_VALUE]; }, \"hog\").start();\n\n$ java -Xmx64m -cp out:libs/* KillAll\n00:02:24.204 [hog         ] ERROR KillAll - java.lang.OutOfMemoryError: Java heap space\n00:02:24.208 [main        ] ERROR KillAll - java.lang.OutOfMemoryError: Java heap space\n\n$ echo $?\n1\n\n#   힙을 다 쓰면 다 같이 죽는다\n#   힙을 공유하니까\n\n\n# --- 주고받는 값 ---\n\n$ java -cp out:libs/* HandoffBench --mode thread --n 1000000\n스레드 사이 (큐)     100만 건  412ms\n\n$ java -cp out:libs/* HandoffBench --mode process --n 1000000\n프로세스 사이 (소켓+직렬화)  100만 건  8412ms\n\n$ python3 -c \"print('%.0f배' % (8412/412))\"\n20배\n\n#   참조 하나를 넘기는 것과 직렬화해서 보내는 것의 차이다\n\n\n# --- 만드는 값 ---\n\n$ java -cp out:libs/* CreateBench --threads 1000\n스레드 1000개 생성   84ms  (평균 84us)\n\n$ time (for i in $(seq 1 100); do java -version >/dev/null 2>&1; done)\nreal\t0m9.412s\n\n$ python3 -c \"print('JVM 하나 띄우기 %.0fms, 스레드 하나 %.3fms' % (9412/100, 0.084))\"\nJVM 하나 띄우기 94ms, 스레드 하나 0.084ms\n\n$ python3 -c \"print('%.0f배' % (94/0.084))\"\n1119배\n\n#   2.5절에서 스레드의 값을 더 자세히 잰다\n\n\n# --- 실제로 공유되는 것을 센다 ---\n\n$ java -cp out:libs/* WhatIsShared &\n$ sleep 1 && jcmd $! GC.heap_info | head -2\n garbage-first heap   total 262144K, used 8412K [0x0000000700000000, ...)\n  region size 1024K, 5 young (5120K), 0 survivors (0K)\n\n$ jcmd $! Thread.print | grep -c '^\"'\n14\n\n$ jcmd $! VM.info 2>/dev/null | grep -i 'thread stack' | head -1\nThreadStackSize: 1024k\n\n$ python3 -c \"print('힙 하나를 14개가 나눠 쓰고 스택은 14 x 1MB')\"\n힙 하나를 14개가 나눠 쓰고 스택은 14 x 1MB\n\n$ kill %1\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '차이'            '주소 공간' \\\n  '스레드'          '같은 객체를 봄' \\\n  '프로세스'        '0 을 읽음' \\\n  '지역 변수'       '20/20 안전' \\\n  'static 필드'     '3/20' \\\n  '차이'            '한 글자' \\\n  '스레드 예외'     '그것만 끝남' \\\n  '힙 고갈'         '다 같이 죽음' \\\n  '주고받기'        '20배 차이' \\\n  '만들기'          '1119배 차이' \\\n  '이 책'           '공짜 공유의 값'\n\n차이                       주소 공간\n스레드                     같은 객체를 봄\n프로세스                   0 을 읽음\n지역 변수                  20/20 안전\nstatic 필드                3/20\n차이                       한 글자\n스레드 예외                그것만 끝남\n힙 고갈                    다 같이 죽음\n주고받기                   20배 차이\n만들기                     1119배 차이\n이 책                      공짜 공유의 값",
+   "note": "**같은 정적 필드를 스레드는 42 로 보고 다른 JVM 은 0 으로** 읽는다.\n\n**지역 변수로 세면 20/20 이 맞고 한 글자만 정적 필드로 바꾸면 3/20**이다.\n\n**스레드 하나의 예외는 그 스레드만 끝내지만 힙을 다 쓰면 종료 코드 1 로 같이** 죽는다.\n\n**100만 건 주고받기가 스레드 사이 412ms, 프로세스 사이 8412ms 로 20배**다.\n\n**JVM 하나 띄우기 94ms 대 스레드 하나 0.084ms 로 1119배** 차이다."
+  }
+ ],
+ "recap": [
+  "프로세스와 스레드의 차이는 주소 공간을 나누느냐 하나다.",
+  "스레드는 힙과 정적 필드를 공유하고 스택만 각자 갖는다.",
+  "지역 변수는 안전하고 인스턴스·정적 필드는 기본으로 공유된다.",
+  "공짜로 주고받는 대신 하나가 힙을 다 쓰면 같이 죽는다.",
+  "만드는 값과 주고받는 값이 프로세스보다 수십에서 천 배 싸다 — 그래서 스레드를 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "정적 필드를 스레드와 별도 JVM 에서 각각 읽어 본다.",
+   "done_when": "값이 다른 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "같은 코드를 지역 변수와 정적 필드로 각각 돌려 재현율을 비교한다.",
+   "done_when": "한 글자 차이의 결과를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "스레드에서 예외를 던지고 JVM 이 사는지 본다.",
+   "done_when": "힙 고갈과 다른 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "스레드 생성과 JVM 기동 시간을 각각 잰다.",
+   "done_when": "배수를 숫자로 낸다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "프로세스와 스레드의 근본 차이는.",
+   "a": "주소 공간을 나누느냐다."
+  },
+  {
+   "q": "스레드가 각자 갖는 것은.",
+   "a": "프로그램 카운터, 레지스터, 스택이다."
+  },
+  {
+   "q": "왜 지역 변수는 안전한가.",
+   "a": "스레드마다 자기 스택에 있어 공유되지 않아서다."
+  },
+  {
+   "q": "공짜 공유의 대가는.",
+   "a": "하나가 힙을 다 쓰거나 상태를 망치면 전체가 영향을 받는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "주소 공간",
+   "what": "프로세스가 가진 메모리 영역. 스레드는 이걸 공유한다."
+  },
+  {
+   "term": "공유 상태",
+   "what": "여러 스레드가 같이 보는 힙의 객체나 정적 필드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Operating Systems: Three Easy Pieces — Concurrency",
+   "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+   "publisher": "Arpaci-Dusseau"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

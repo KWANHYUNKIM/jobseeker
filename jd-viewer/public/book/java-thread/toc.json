@@ -59,7 +59,7 @@
           "title": "무엇을 볼 것인가",
           "summary": "스레드 이름 · 상태 · 순서, 이 셋.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -74,7 +74,7 @@
           "title": "프로세스와 스레드",
           "summary": "주소 공간을 나누느냐 마느냐.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
