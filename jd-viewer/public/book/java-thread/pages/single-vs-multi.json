@@ -1,0 +1,168 @@
+{
+ "book": "java-thread",
+ "id": "single-vs-multi",
+ "no": "2.4",
+ "chapter": 2,
+ "title": "단일 코어와 멀티 코어",
+ "summary": "동시에 보이는 것과 실제로 동시인 것.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "번갈아와 진짜 동시를 가른다.",
+  "코어 수가 무엇을 바꾸는지 안다.",
+  "안 드러나는 버그를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 코어를 하나로 묶으니 20/20 이** 됐다. **버그가 없어진 게 아니라는 걸** 확인한다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 두 스레드, 코어 하나와 둘",
+   "ascii": "   the same two threads, on one core and on two\n\n   one core    a a a . b b b . a a a . b b b\n   two cores   a a a a a a a a\n               b b b b b b b b\n\n   only the second one can have both threads inside the same line",
+   "note": "**같은 순간에 둘이 한 줄 안에 있을 수 있는 건 아래**뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "코어가 하나여도 어긋난다",
+   "md": "**번갈아 도는 것만으로도 1.4절의 창은** 열린다.\n\n```\nw-0: 읽음 100\n     (여기서 뺏김)\nw-1: 읽음 100  씀 101\n     (여기서 뺏김)\nw-0: 씀 101\n```\n\n> **명령 사이에서 뺏기면 코어가 하나여도 값이** 사라진다.\n> **다만 뺏기는 지점이 제한적이라 확률이 훨씬** 낮다.\n> **1.1절에서 20/20 이 나온 이유가** 그것이다.\n\n**진짜로 코어가 하나라서 안 나는 버그는** 따로 있다 — **5장의 가시성**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "기계가 보여 줄 수 있는 버그",
+   "ascii": "   which bugs each machine can show you\n\n   one core    interleaving between statements\n   many cores  interleaving, plus caches that disagree\n\n   chapter five is the second row, and one core cannot show it",
+   "note": "**5장은 아랫줄이고 코어 하나로는 못** 보여 준다."
+  },
+  {
+   "type": "table",
+   "caption": "코어 수가 바꾸는 것",
+   "columns": [
+    "",
+    "코어 1개",
+    "코어 여럿"
+   ],
+   "rows": [
+    [
+     "**끼어드는 지점**",
+     "**전환 지점만**",
+     "**어디서나**"
+    ],
+    [
+     "**1.4절 어긋남**",
+     "**드물게 남**",
+     "**자주 남**"
+    ],
+    [
+     "**5장 가시성**",
+     "**거의 안 남**",
+     "**남**"
+    ],
+    [
+     "CPU 작업 속도",
+     "**스레드 수와 무관**",
+     "코어 수까지 빨라짐"
+    ],
+    [
+     "I/O 작업 속도",
+     "**스레드로 빨라짐**",
+     "빨라짐"
+    ],
+    [
+     "**캐시**",
+     "**하나**",
+     "**코어마다**"
+    ]
+   ],
+   "note": "**개발 노트북이 코어가 많아 잘 드러나는데 CI 컨테이너가 하나면 거기서 통과할 수** 있다 — **반대 경우가 더** 무섭다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "availableProcessors 가 진짜 코어 수가 아니다",
+   "md": "**컨테이너 안에서는 다르게** 나온다.\n\n| 환경 | 무엇을 보나 |\n|---|---|\n| **맨 머신** | 논리 코어 수 |\n| **도커 `--cpus=2`** | **cgroup 제한을 읽는다** |\n| **쿠버네티스 limits** | 같다 |\n| **`-XX:ActiveProcessorCount`** | **강제로 정한다** |\n\n> **이 값이 스레드 풀 기본 크기와 GC 스레드 수와 `ForkJoinPool.commonPool` 크기를** 정한다(11.4절).\n> **「도커」와 「쿠버네티스」에서 리소스 제한을 다룬 그** 값이 여기로 들어온다.\n\n```\n-XX:ActiveProcessorCount=2   테스트로 코어 수를 흉내 낼 때\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "$ nproc\n10\n$ java -cp out:libs/* Cores\n00:11:02.104 [main] INFO  Cores - availableProcessors = 10\n\n\n# --- 코어를 묶고 1.4절을 다시 ---\n\n$ for i in $(seq 1 30); do\n    java -cp out:libs/* Counter 4 100000 2>/dev/null | grep -oE '[0-9]+$'\n  done | awk '$1==400000 {ok++} END {print \"전체 코어: 맞음 \" ok+0 \"/30\"}'\n전체 코어: 맞음 4/30\n\n$ for i in $(seq 1 30); do\n    taskset -c 0 java -cp out:libs/* Counter 4 100000 2>/dev/null | grep -oE '[0-9]+$'\n  done | awk '$1==400000 {ok++} END {print \"코어 1개  : 맞음 \" ok+0 \"/30\"}'\n코어 1개  : 맞음 28/30\n\n#   28/30 이다. 30/30 이 아니다\n#   코어가 하나여도 가끔 어긋난다\n\n$ for i in $(seq 1 30); do\n    taskset -c 0 java -cp out:libs/* Counter 4 100000 2>/dev/null | grep -oE '[0-9]+$'\n  done | sort -n | head -1\n399421\n\n$ python3 -c \"print('최악이어도 %.2f%% 만 잃었다' % ((400000-399421)/400000*100))\"\n최악이어도 0.14% 만 잃었다\n\n#   전체 코어에서는 평균 52% 를 잃었다 (1.4절)\n\n\n# --- 창을 넓히면 코어 하나에서도 확 난다 ---\n\n$ for i in $(seq 1 10); do\n    taskset -c 0 java -cp out:libs/* SlowCounter 2 10000 2>/dev/null | grep -oE '[0-9]+$'\n  done | awk '$1==20000 {ok++} END {print \"yield 끼운 것: 맞음 \" ok+0 \"/10\"}'\nyield 끼운 것: 맞음 0/10\n\n#   1.4절의 yield 버전은 코어 하나여도 항상 틀린다\n#   전환 지점을 내가 만들어 줬기 때문이다\n\n\n# --- CPU 작업은 코어 수까지만 ---\n\n$ for c in 1 2 4 8 10; do\n    printf 'cores=%-3s ' $c\n    taskset -c 0-$((c-1)) java -cp out:libs/* CpuWork --threads 10 --tasks 40 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\ncores=1   8912ms\ncores=2   4512ms\ncores=4   2284ms\ncores=8   1184ms\ncores=10   902ms\n\n$ python3 -c \"\nfor c,ms in [(1,8912),(2,4512),(4,2284),(8,1184),(10,902)]:\n    print('cores=%-3d %5dms  배수 %.1f' % (c, ms, 8912/ms))\"\ncores=1   8912ms  배수 1.0\ncores=2   4512ms  배수 2.0\ncores=4   2284ms  배수 3.9\ncores=8   1184ms  배수 7.5\ncores=10   902ms  배수 9.9\n\n#   코어 수에 비례한다\n\n\n# --- I/O 작업은 코어 하나여도 빨라진다 ---\n\n$ for t in 1 10 100; do\n    printf 'threads=%-4s ' $t\n    taskset -c 0 java -cp out:libs/* IoWork --threads $t --tasks 200 2>/dev/null \\\n      | grep -o '[0-9]*ms'\n  done\nthreads=1    20142ms\nthreads=10    2028ms\nthreads=100    218ms\n\n$ python3 -c \"print('코어 1개인데 %.0f배 빨라졌다' % (20142/218))\"\n코어 1개인데 92배 빨라졌다\n\n#   1.2절의 그것이다\n#   기다리는 일에는 코어가 상관없다\n\n\n# --- 가시성은 코어 하나로 못 본다 ---\n\n$ cat StopFlag.java\nstatic boolean running = true;         // volatile 이 없다\npublic static void main(String[] args) throws Exception {\n    Thread t = new Thread(() -> {\n        long n = 0;\n        while (running) n++;\n        log.info(\"끝났다 {}\", n);\n    }, \"worker\");\n    t.start();\n    Thread.sleep(1000);\n    running = false;\n    log.info(\"플래그를 내렸다\");\n    t.join(3000);\n    log.info(\"worker 살아 있나 {}\", t.isAlive());\n}\n\n$ java -cp out:libs/* StopFlag\n00:12:04.104 [main        ] INFO  StopFlag - 플래그를 내렸다\n00:12:07.108 [main        ] INFO  StopFlag - worker 살아 있나 true\n\n$ for i in $(seq 1 10); do\n    java -cp out:libs/* StopFlag 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  10 0\n\n#   열 번 다 안 끝났다\n\n$ for i in $(seq 1 10); do\n    taskset -c 0 java -cp out:libs/* StopFlag 2>/dev/null | grep -c '끝났다'\n  done | sort | uniq -c\n  10 1\n\n#   코어 하나에서는 열 번 다 끝난다\n#   5.1절에서 이 코드를 판다\n\n\n# --- 왜 그런가 ---\n\n$ taskset -c 0 java -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation \\\n    -cp out:libs/* StopFlag 2>/dev/null | grep -c 'StopFlag::lambda'\n2\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation \\\n    -cp out:libs/* StopFlag 2>/dev/null | grep 'StopFlag::lambda' | tail -1\n   214  412 %     4       StopFlag::lambda$main$0 @ 2 (24 bytes)\n\n$ java -Xint -cp out:libs/* StopFlag 2>/dev/null | grep -c '끝났다'\n1\n\n#   JIT 이 running 을 레지스터에 올려 두면 다시 안 읽는다\n#   -Xint 로 최적화를 끄면 끝난다\n#   5.2절에서 이 이야기를 한다\n\n\n# --- 코어 수를 흉내 낸다 ---\n\n$ java -XX:ActiveProcessorCount=2 -cp out:libs/* Cores\n00:13:02.104 [main] INFO  Cores - availableProcessors = 2\n\n$ java -XX:ActiveProcessorCount=2 -cp out:libs/* PoolSizes\n00:13:04.108 [main] INFO  PoolSizes - commonPool 병렬성 = 1\n00:13:04.108 [main] INFO  PoolSizes - GC 스레드 = 2\n\n$ java -cp out:libs/* PoolSizes\n00:13:06.204 [main] INFO  PoolSizes - commonPool 병렬성 = 9\n00:13:06.204 [main] INFO  PoolSizes - GC 스레드 = 8\n\n#   이 값 하나가 여러 기본값을 정한다\n#   11.4절에서 이 이야기를 판다\n\n\n# --- 컨테이너에서 ---\n\n$ docker run --rm --cpus=2 -v $PWD:/w -w /w eclipse-temurin:21 \\\n    java -cp out:libs/* Cores\n00:13:10.104 [main] INFO  Cores - availableProcessors = 2\n\n$ docker run --rm -v $PWD:/w -w /w eclipse-temurin:21 java -cp out:libs/* Cores\n00:13:12.204 [main] INFO  Cores - availableProcessors = 10\n\n$ docker run --rm --cpus=2 -v $PWD:/w -w /w eclipse-temurin:21 \\\n    sh -c 'for i in 1 2 3 4 5 6 7 8 9 10; do java -cp out:libs/* Counter 4 100000 2>/dev/null | grep -oE \"[0-9]+$\"; done' \\\n  | awk '$1==400000 {ok++} END {print \"컨테이너 2코어: 맞음 \" ok+0 \"/10\"}'\n컨테이너 2코어: 맞음 6/10\n\n#   CI 가 2코어면 여기서 통과할 수도 있다\n\n\n# --- 두 기계를 나란히 ---\n\n$ printf '%-22s %-14s %-14s %s\\n' '' '코어 1' '코어 2' '코어 10' && \\\n  printf '%-22s %-14s %-14s %s\\n' \\\n  '1.4절 카운터'      '28/30'   '6/10'   '4/30' \\\n  '1.4절 yield 판'    '0/10'    '0/10'   '0/10' \\\n  '5.1절 플래그'      '10/10'   '2/10'   '0/10' \\\n  'CPU 40개'          '8912ms'  '4512ms' '902ms' \\\n  'I/O 200개'         '218ms'   '214ms'  '214ms'\n\n                       코어 1         코어 2         코어 10\n1.4절 카운터           28/30          6/10           4/30\n1.4절 yield 판         0/10           0/10           0/10\n5.1절 플래그           10/10          2/10           0/10\nCPU 40개               8912ms         4512ms         902ms\nI/O 200개              218ms          214ms          214ms\n\n#   세 번째 줄이 이 절의 결론이다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '코어 1개'        '번갈아 돎' \\\n  '어긋남'          '28/30, 없진 않음' \\\n  '잃는 양'         '0.14% 대 52%' \\\n  'yield 판'        '코어와 무관하게 0/10' \\\n  '가시성'          '코어 1개면 10/10' \\\n  '이유'            'JIT 이 레지스터에' \\\n  '-Xint'           '끝난다' \\\n  'CPU'             '코어 수에 비례' \\\n  'I/O'             '코어와 무관' \\\n  'availableProcessors' '컨테이너 제한을 읽음' \\\n  '그 값이'         '풀 크기와 GC 수를 정함'\n\n코어 1개                   번갈아 돎\n어긋남                     28/30, 없진 않음\n잃는 양                    0.14% 대 52%\nyield 판                   코어와 무관하게 0/10\n가시성                     코어 1개면 10/10\n이유                       JIT 이 레지스터에\n-Xint                      끝난다\nCPU                        코어 수에 비례\nI/O                        코어와 무관\navailableProcessors        컨테이너 제한을 읽음\n그 값이                    풀 크기와 GC 수를 정함",
+   "note": "**코어를 하나로 묶어도 30번 중 2번은 어긋나고 다만 잃는 양이 52% 에서 0.14% 로** 준다.\n\n**`yield` 를 끼운 판은 코어 수와 상관없이 0/10 으로 항상** 틀린다.\n\n**5장의 플래그 예제는 코어 10개면 0/10, 코어 1개면 10/10 으로 정반대**다.\n\n**`-Xint` 로 돌리면 끝나서 원인이 JIT 최적화임이** 드러난다.\n\n**`--cpus=2` 컨테이너에서 `availableProcessors` 가 2 로 나오고 `commonPool` 병렬성이 1 이** 된다."
+  }
+ ],
+ "recap": [
+  "코어가 하나여도 명령 사이에서 뺏기면 어긋난다 — 다만 훨씬 드물다.",
+  "yield 로 전환 지점을 만들면 코어 수와 무관하게 항상 틀린다.",
+  "5장의 가시성 문제는 코어가 하나면 거의 안 드러난다 — 정반대 결과가 나온다.",
+  "CPU 작업은 코어 수에 비례하고 I/O 작업은 코어 수와 거의 무관하다.",
+  "availableProcessors 는 컨테이너 제한을 읽고 그 값이 여러 기본값을 정한다."
+ ],
+ "drills": [
+  {
+   "task": "코어를 하나로 묶고 카운터를 30번 돌려 잃는 양을 비교한다.",
+   "done_when": "안 드러나는 것과 없는 것을 가른다.",
+   "minutes": 15
+  },
+  {
+   "task": "플래그 예제를 코어 1개와 여럿에서 각각 돌린다.",
+   "done_when": "정반대 결과를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "taskset 으로 코어 수를 늘려 가며 CPU 작업 시간을 잰다.",
+   "done_when": "비례하는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "컨테이너에 CPU 제한을 걸고 availableProcessors 를 찍는다.",
+   "done_when": "풀 크기가 따라 바뀌는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "코어가 하나면 경쟁 상태가 없나.",
+   "a": "있다. 명령 사이에서 뺏기면 어긋난다. 다만 훨씬 드물다."
+  },
+  {
+   "q": "코어 하나로 못 보여 주는 버그는.",
+   "a": "5장의 가시성 문제다. 캐시가 하나라서다."
+  },
+  {
+   "q": "CPU 작업과 I/O 작업이 코어 수에 반응하는 차이는.",
+   "a": "앞은 비례하고 뒤는 거의 무관하다."
+  },
+  {
+   "q": "availableProcessors 가 정하는 것은.",
+   "a": "공용 풀 병렬성, GC 스레드 수 등 여러 기본값이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "번갈아 돌기",
+   "what": "코어 하나에서 스레드들이 시간을 나눠 쓰는 것."
+  },
+  {
+   "term": "availableProcessors",
+   "what": "JVM 이 인식한 사용 가능한 프로세서 수. 컨테이너 제한을 반영한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Runtime.availableProcessors",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runtime.html#availableProcessors()",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Operating Systems: Three Easy Pieces — Concurrency",
+   "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+   "publisher": "Arpaci-Dusseau"
+  },
+  {
+   "title": "Java SE 21 — JLS 17: Threads and Locks",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

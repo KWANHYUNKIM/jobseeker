@@ -98,7 +98,7 @@
           "title": "단일 코어와 멀티 코어",
           "summary": "동시에 보이는 것과 실제로 동시인 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -106,7 +106,7 @@
           "title": "스레드의 값",
           "summary": "메모리 1MB 와 생성 시간.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

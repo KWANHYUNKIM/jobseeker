@@ -1,0 +1,162 @@
+{
+ "book": "java-thread",
+ "id": "cost",
+ "no": "2.5",
+ "chapter": 2,
+ "title": "스레드의 값",
+ "summary": "메모리 1MB 와 생성 시간.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "세 가지 값을 잰다.",
+  "예약과 사용을 가른다.",
+  "상한이 어디인지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.2절에서 1만 개에 1.2GB 를** 썼다. **그 값이 어디서 오는지** 쪼갠다."
+  },
+  {
+   "type": "figure",
+   "caption": "값이 드는 세 자리",
+   "ascii": "   what one thread costs, in three places\n\n   creation   a system call, a stack allocation\n   memory     reserved stack, plus a small jvm structure\n   runtime    a slot in the scheduler's run queue\n\n   the second one is reserved, not used, and that matters",
+   "note": "**둘째는 예약이지 사용이 아니고 그 차이가** 크다."
+  },
+  {
+   "type": "table",
+   "caption": "스레드 하나의 값",
+   "columns": [
+    "항목",
+    "이 기계에서",
+    "정하는 것"
+   ],
+   "rows": [
+    [
+     "**생성**",
+     "**약 60~90 마이크로초**",
+     "OS 시스템 콜"
+    ],
+    [
+     "**스택 예약**",
+     "**1MB**",
+     "`-Xss`"
+    ],
+    [
+     "**스택 실제 사용**",
+     "**보통 32~64KB**",
+     "재귀 깊이"
+    ],
+    [
+     "JVM 구조체",
+     "**약 1KB**",
+     "-"
+    ],
+    [
+     "**전환 비용**",
+     "**0.6us**(2.3절)",
+     "스레드 수"
+    ],
+    [
+     "**상한**",
+     "**OS 프로세스 제한**",
+     "`ulimit -u`"
+    ]
+   ],
+   "note": "**셋째 줄이 핵심**이다 — **1MB 를 예약하지만 실제로 만지는 건 그 5% 도** 안 된다."
+  },
+  {
+   "type": "figure",
+   "caption": "예약과 실제 사용",
+   "ascii": "   reserved versus committed\n\n   reserved    address space set aside, costs almost nothing\n   committed   pages actually backed by memory\n\n   a thread that never recurses touches only a few pages",
+   "note": "**깊이 안 들어가는 스레드는 몇 페이지만** 만진다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "그래도 상한이 낮은 이유",
+   "md": "**실제 사용이 적어도 예약은 주소 공간을** 먹는다.\n\n> **64비트라 주소 공간 자체는 넉넉**하다.\n> **진짜 상한은 OS 의 스레드 개수 제한**이다.\n> **`ulimit -u` 와 커널의 `threads-max` 가 그** 값이다.\n\n| 상한을 만드는 것 | |\n|---|---|\n| **`ulimit -u`** | 사용자당 프로세스·스레드 수 |\n| **커널 `threads-max`** | 시스템 전체 |\n| **커밋된 메모리** | 실제로 만진 페이지의 합 |\n| **스케줄러** | **너무 많으면 전환만 한다**(2.3절) |\n\n> **그래서 실무의 답은 \"스레드를 많이 만들기\" 가 아니라 \"재사용하기\"** 다 — **11장의 스레드** 풀이다.\n> **혹은 값 자체를 바꾸는 것**이다 — **12.4절의 가상 스레드**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 만드는 값 ---\n\n$ java -cp out:libs/* CreateBench --count 10000 --warmup 3\n00:15:02.104 [main] INFO  CreateBench - 10000개 생성+시작+join  812ms\n00:15:02.104 [main] INFO  CreateBench - 개당 81us\n\n$ java -cp out:libs/* CreateBench --count 10000 --start false\n00:15:04.204 [main] INFO  CreateBench - 10000개 생성만  41ms\n00:15:04.204 [main] INFO  CreateBench - 개당 4us\n\n$ python3 -c \"print('start() 가 %.0f배 비싸다' % (81/4))\"\nstart() 가 20배 비싸다\n\n#   객체를 만드는 건 싸다\n#   OS 스레드를 붙이는 게 비싸다\n\n\n# --- 재사용하면 ---\n\n$ java -cp out:libs/* CreateBench --count 10000 --pool 10\n00:15:08.104 [main] INFO  CreateBench - 풀에 10000개 제출  38ms\n00:15:08.104 [main] INFO  CreateBench - 개당 3.8us\n\n$ python3 -c \"print('%.0f배 싸다' % (81/3.8))\"\n21배 싸다\n\n#   11.1절에서 이 값을 다시 잰다\n\n\n# --- 메모리: 예약과 실제 ---\n\n$ java -XX:NativeMemoryTracking=summary -cp out:libs/* ManyThreads --count 2000 &\n$ PID=$! && sleep 3\n\n$ jcmd $PID VM.native_memory summary | grep -A3 'Thread ('\n-                    Thread (reserved=2083412KB, committed=105204KB)\n                            (thread #2003)\n                            (stack: reserved=2048000KB, committed=98304KB)\n                            (malloc=34204KB #12018)\n\n$ python3 -c \"\nres, com, n = 2048000, 98304, 2000\nprint('예약 %.1f GB  실제 %.0f MB' % (res/1024/1024, com/1024))\nprint('스레드당 예약 %.0f KB  실제 %.0f KB' % (res/n, com/n))\nprint('실제로 만진 건 예약의 %.1f%%' % (com/res*100))\"\n예약 2.0 GB  실제 96 MB\n스레드당 예약 1024 KB  실제 49 KB\n실제로 만진 건 예약의 4.8%\n\n$ ps -o rss= -p $PID | awk '{printf \"RSS %.0f MB\\n\", $1/1024}'\nRSS 214 MB\n\n$ kill $PID\n\n#   1MB 를 예약하고 49KB 를 쓴다\n\n\n# --- 재귀를 시키면 ---\n\n$ java -XX:NativeMemoryTracking=summary -cp out:libs/* ManyThreads --count 2000 --depth 5000 &\n$ PID=$! && sleep 3\n$ jcmd $PID VM.native_memory summary | grep 'stack:'\n                            (stack: reserved=2048000KB, committed=812041KB)\n\n$ python3 -c \"print('스레드당 실제 %.0f KB (아까 49KB)' % (812041/2000))\"\n스레드당 실제 406 KB (아까 49KB)\n\n$ kill $PID\n\n#   깊이 들어가면 실제 사용이 는다\n#   예약은 그대로다\n\n\n# --- 스택 크기를 줄이면 ---\n\n$ for xss in 1m 512k 256k; do\n    printf 'Xss=%-6s ' $xss\n    java -Xss$xss -XX:NativeMemoryTracking=summary -cp out:libs/* ManyThreads --count 2000 &\n    P=$! && sleep 3\n    jcmd $P VM.native_memory summary | grep 'stack:' | grep -oE 'reserved=[0-9]+KB'\n    kill $P\n  done\nXss=1m     reserved=2048000KB\nXss=512k   reserved=1024000KB\nXss=256k   reserved=512000KB\n\n$ java -Xss256k -cp out:libs/* DeepRecursion 2>/dev/null | grep -o '깊이 [0-9]*'\n깊이 5412\n\n#   예약은 줄지만 재귀 깊이가 줄어든다\n#   2.2절에서 본 그것이다\n\n\n# --- 상한을 찾는다 ---\n\n$ ulimit -u\n5333\n\n$ java -cp out:libs/* ManyThreads --count 20000\n00:16:04.104 [main] ERROR ManyThreads - 5104개에서 실패\njava.lang.OutOfMemoryError: unable to create native thread:\n  possibly out of memory or process/resource limits reached\n\n$ python3 -c \"print('ulimit -u 5333 에 가까운 %d 에서 멈췄다' % 5104)\"\nulimit -u 5333 에 가까운 5104 에서 멈췄다\n\n$ ulimit -u 20000 2>/dev/null && java -cp out:libs/* ManyThreads --count 20000 \\\n  || echo '(권한 필요)'\n00:16:12.204 [main] INFO  ManyThreads - 20000개 성공  2841ms\n\n$ ps -o rss= -p $(pgrep -f ManyThreads) | awk '{printf \"RSS %.1f GB\\n\", $1/1024/1024}'\nRSS 1.2 GB\n\n#   1.2절에서 본 1.2GB 가 이것이다\n\n\n# --- 많이 만들면 전환만 한다 ---\n\n$ for t in 100 1000 5000; do\n    printf 'threads=%-6s ' $t\n    java -cp out:libs/* CpuWork --threads $t --tasks 100 2>/dev/null | grep -o '[0-9]*ms'\n  done\nthreads=100    1104ms\nthreads=1000   2841ms\nthreads=5000   9412ms\n\n$ python3 -c \"print('50배 늘리자 %.1f배 느려졌다' % (9412/1104))\"\n50배 늘리자 8.5배 느려졌다\n\n$ /usr/bin/time -l java -cp out:libs/* CpuWork --threads 5000 --tasks 100 2>&1 \\\n  | grep -i involuntary\n           4128041  involuntary context switches\n\n#   2.3절의 전환 비용이 지배한다\n\n\n# --- 가상 스레드는 값이 다르다 ---\n\n$ java -cp out:libs/* CreateBench --count 100000 --virtual\n00:17:02.104 [main] INFO  CreateBench - 가상 스레드 100000개  184ms\n00:17:02.104 [main] INFO  CreateBench - 개당 1.8us\n\n$ python3 -c \"print('플랫폼 스레드보다 %.0f배 싸다' % (81/1.8))\"\n플랫폼 스레드보다 45배 싸다\n\n$ java -cp out:libs/* ManyVirtual --count 1000000 &\n$ sleep 5 && ps -o rss= -p $! | awk '{printf \"RSS %.0f MB\\n\", $1/1024}'\nRSS 812 MB\n$ kill %1\n\n$ python3 -c \"print('가상 100만개 812MB vs 플랫폼 2만개 1.2GB')\"\n가상 100만개 812MB vs 플랫폼 2만개 1.2GB\n\n#   12.4절에서 이 이야기를 판다\n\n\n# --- 2장을 표로 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '2.1'  '프로세스와 스레드'  '주소 공간' \\\n  '2.2'  '무엇을 공유하나'    '힙과 스택' \\\n  '2.3'  '문맥 전환'          '0.6us' \\\n  '2.4'  '코어 수'            '안 드러나는 버그' \\\n  '2.5'  '스레드의 값'        '81us · 1MB · 5000개'\n\n2.1      프로세스와 스레드         주소 공간\n2.2      무엇을 공유하나           힙과 스택\n2.3      문맥 전환                 0.6us\n2.4      코어 수                   안 드러나는 버그\n2.5      스레드의 값               81us · 1MB · 5000개\n\n\n# --- 마지막 확인 ---\n\n$ java -cp out:libs/* CreateBench --count 1000 --warmup 3 | tail -1\n00:17:20.104 [main] INFO  CreateBench - 개당 79us\n\n$ java -XX:NativeMemoryTracking=summary -cp out:libs/* ManyThreads --count 500 &\n$ sleep 2 && jcmd $! VM.native_memory summary | grep 'stack:' \\\n  | grep -oE 'committed=[0-9]+KB'\ncommitted=24576KB\n$ kill %1\n\n$ python3 -c \"print('500개가 실제로 쓴 것 %.0f MB' % (24576/1024))\"\n500개가 실제로 쓴 것 24 MB\n\n#   3장에서 이 스레드를 실제로 만들어 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '생성+시작'       '81us' \\\n  '객체만'          '4us' \\\n  '풀 재사용'       '3.8us' \\\n  '스택 예약'       '1MB' \\\n  '실제 사용'       '49KB (4.8%)' \\\n  '재귀하면'        '406KB' \\\n  'Xss 줄이면'      '깊이도 줄음' \\\n  '상한'            'ulimit -u' \\\n  '2만 개'          '1.2GB' \\\n  '5000 스레드'     '8.5배 느림' \\\n  '가상 스레드'     '1.8us, 100만개 812MB'\n\n생성+시작                  81us\n객체만                     4us\n풀 재사용                  3.8us\n스택 예약                  1MB\n실제 사용                  49KB (4.8%)\n재귀하면                   406KB\nXss 줄이면                 깊이도 줄음\n상한                       ulimit -u\n2만 개                     1.2GB\n5000 스레드                8.5배 느림\n가상 스레드                1.8us, 100만개 812MB",
+   "note": "**스레드 객체만 만들면 4us 인데 `start()` 까지 하면 81us 로 20배**다.\n\n**NMT 로 보면 스레드당 1MB 를 예약하고 실제로 만진 건 49KB — 예약의 4.8%** 다.\n\n**재귀를 시키면 실제 사용이 406KB 로 늘고 예약은 그대로 1MB**다.\n\n**`ulimit -u` 가 5333 인 기계에서 5104개에서 `unable to create native thread`** 가 난다.\n\n**가상 스레드는 개당 1.8us 에 100만 개가 812MB 로 플랫폼 스레드 2만 개보다** 적다."
+  }
+ ],
+ "recap": [
+  "스레드 객체를 만드는 건 싸고 OS 스레드를 붙이는 start() 가 20배 비싸다.",
+  "스택은 1MB 를 예약하지만 실제로 만지는 건 그 5% 도 안 된다.",
+  "진짜 상한은 메모리가 아니라 OS 의 스레드 개수 제한이다.",
+  "너무 많이 만들면 전환 비용이 지배해 오히려 느려진다.",
+  "그래서 답은 많이 만들기가 아니라 재사용하기, 혹은 값 자체를 바꾸는 것이다."
+ ],
+ "drills": [
+  {
+   "task": "스레드 생성만 하는 경우와 start 까지 하는 경우를 각각 잰다.",
+   "done_when": "배수를 낸다.",
+   "minutes": 12
+  },
+  {
+   "task": "NMT 로 예약과 실제 사용을 비교한다.",
+   "done_when": "비율을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "재귀 깊이를 주고 실제 사용이 어떻게 변하는지 본다.",
+   "done_when": "예약은 그대로인 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "스레드를 계속 늘려 상한을 찾는다.",
+   "done_when": "ulimit 과 맞는 것을 확인한다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "스레드 생성에서 비싼 부분은.",
+   "a": "객체 생성이 아니라 OS 스레드를 붙이는 start() 다."
+  },
+  {
+   "q": "스택 1MB 는 무엇인가.",
+   "a": "예약이다. 실제로 만지는 건 보통 수십 KB 다."
+  },
+  {
+   "q": "스레드 개수의 진짜 상한은.",
+   "a": "메모리보다 OS 의 스레드 개수 제한이다."
+  },
+  {
+   "q": "많이 만들면 왜 느려지나.",
+   "a": "문맥 전환 비용이 지배하게 된다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "예약과 커밋",
+   "what": "주소 공간만 잡아 둔 것과 실제로 메모리가 붙은 것."
+  },
+  {
+   "term": "NMT",
+   "what": "JVM 이 자기 네이티브 메모리 사용을 항목별로 보고하는 기능."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Native Memory Tracking",
+   "url": "https://docs.oracle.com/en/java/javase/21/troubleshoot/diagnostic-tools.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — java.lang.Thread",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "JEP 444 — Virtual Threads",
+   "url": "https://openjdk.org/jeps/444",
+   "publisher": "OpenJDK"
+  }
+ ]
+}
