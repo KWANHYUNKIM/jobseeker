@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "aspect-anno",
+ "no": "9.1",
+ "chapter": 9,
+ "title": "@Aspect",
+ "summary": "클래스 하나로 적는다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "애너테이션으로 옮긴다.",
+  "같은 것임을 확인한다.",
+  "설정을 없앤다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.7절에서 조립 세 줄이** 남았다. **그걸 애너테이션으로** 옮긴다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 둘, 다른 표기",
+   "ascii": "   the same two things, written differently\n\n   before   a pointcut object and an advice object, paired in config\n   after    an expression string and a method, in one class\n\n   nothing new appears; the same pair is just written closer together",
+   "note": "**새로 생기는 건 없고 같은 쌍을 더 가까이 적을** 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "묶음을 클래스 하나로 적는다",
+   "md": "**거르개가** 문자열이다.\n\n> **7.3절의 표현식**이다.\n> **애너테이션에** 적는다.\n> **아래에서 같은 걸** 쓴다.\n\n**부가 기능이** 메서드다.\n\n> **7.2절의 그** 모양이다.\n> **아래에서 견줘** 본다.\n> **인자가 하나** 온다.\n\n**둘이 붙어** 있다.\n\n> **7.4절에서 묶음으로** 만들었다.\n> **여기선 한 클래스**다.\n> **떨어져 있지** 않다.\n\n**설정이** 사라진다.\n\n> **스캔이 찾아** 준다.\n> **아래에서 확인**한다.\n> **8.6절의 그 빈도** 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "메서드의 모양",
+   "ascii": "   what the method has to look like\n\n   it takes the join point as its first parameter\n   it calls proceed to continue\n   it returns what proceed returned\n\n   which is exactly the interceptor from chapter seven",
+   "note": "**7장의 그 인터셉터와 정확히** 같다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "애너테이션만으로는 아무 일도 안 일어난다",
+   "md": "**빈이어야** 한다.\n\n> **스캔되거나 등록되거나**다.\n> **아래에서 그걸** 겪는다.\n> **조용히 안** 걸린다.\n\n**켜져 있어야** 한다.\n\n> **8.4절의 그** 자동 구성이다.\n> **아래에서 꺼** 본다.\n> **부트는 켜** 준다.\n\n**표현식이** 틀리면 안 걸린다.\n\n> **문자열이라 컴파일이 안** 잡는다.\n> **6.2절의 그** 이야기다.\n> **아래에서 그걸** 겪는다.\n\n**애스펙트 자신은 안** 감싸진다.\n\n> **8.7절의 그** 자리다.\n> **아래에서 확인**한다.\n> **무한을** 막는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 8.7 절의 설정\n\n@Configuration\npublic class AutoProxyConfig {\n    @Bean\n    public Advisor logTraceAdvisor(LogTrace trace) {\n        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();\n        pointcut.setExpression(\"execution(* study.adv.app..*(..))\");\n        return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n    }\n}\n\n$ wc -l src/main/java/study/adv/auto/*.java | tail -1\n      40 total\n\n\n-- 애너테이션으로 옮긴다\n\n@Slf4j\n@Aspect\n@Component\n@RequiredArgsConstructor\npublic class LogTraceAspect {\n\n    private final LogTrace trace;\n\n    @Around(\"execution(* study.adv.app..*(..))\")\n    public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {\n        TraceStatus status = null;\n        try {\n            String message = joinPoint.getSignature().toShortString();\n            status = trace.begin(message);\n            Object result = joinPoint.proceed();\n            trace.end(status);\n            return result;\n        } catch (Exception e) {\n            trace.exception(status, e);\n            throw e;\n        }\n    }\n}\n\n$ git rm -q src/main/java/study/adv/auto/AutoProxyConfig.java\n$ git rm -q src/main/java/study/adv/auto/LogTraceAdvice.java\n\n$ find src/main/java/study/adv/aspect -name '*.java' | wc -l\n       1\n$ wc -l < src/main/java/study/adv/aspect/LogTraceAspect.java\n      28\n\n--   두 파일 40 줄이 한 파일 28 줄이 됐다\n\n\n-- 7.2 절의 어드바이스와 견준다\n\n// 7.2 절\npublic Object invoke(MethodInvocation invocation) throws Throwable {\n    ...\n    Object result = invocation.proceed();\n    ...\n}\n\n// 여기\npublic Object execute(ProceedingJoinPoint joinPoint) throws Throwable {\n    ...\n    Object result = joinPoint.proceed();\n    ...\n}\n\n$ diff <(git show v8-advice:src/main/java/study/adv/factory/LogTraceAdvice.java \\\n           | grep -v 'import\\|MethodInterceptor\\|MethodInvocation\\|invocation') \\\n       <(grep -v 'import\\|Aspect\\|Around\\|ProceedingJoinPoint\\|joinPoint' \\\n           src/main/java/study/adv/aspect/LogTraceAspect.java) \\\n  | grep -c '^[<>]'\n4\n\n--   이름만 다르다\n--   7.2 절에서 만든 그것이다\n\n\n-- 돌려 본다\n\n$ curl -s 'localhost:8080/v3/request?itemId=연필'\nok\n\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ grep -c '@Bean' src/main/java/study/adv/aspect/*.java\n0\n\n--   2.4 절의 여섯 줄이다\n--   설정 클래스가 없다\n\n\n-- 이름이 조금 다르다\n\n// 8.7 절에서는\n[796bccd9] OrderServiceV3.orderItem()\n\n// getSignature().toShortString() 이면\n[796bccd9] OrderServiceV3.orderItem()\n\n$ curl -s localhost:8080/aspect/signature\ntoShortString():     OrderServiceV3.orderItem()\ntoLongString():      public void study.adv.app.OrderServiceV3.orderItem(String)\ngetName():           orderItem\ngetDeclaringType():  study.adv.app.OrderServiceV3\n\n--   6.1 절에서 메서드에 물어보던 그것이다\n--   여기선 조인 포인트에 묻는다\n\n\n-- 여전히 감싸진다\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n프록시인가: true\n원본:      study.adv.app.OrderServiceV3\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      196\n프록시:        24\n\n--   8.6 절과 같은 수다\n--   만드는 장치는 안 바뀌었다\n\n\n-- 무엇이 만들어졌나\n\n$ curl -s 'localhost:8080/advisor/count?name=orderServiceV3'\n어드바이저 1 개\n  1 InstantiationModelAwarePointcutAdvisor\n\n$ curl -s 'localhost:8080/advisor/inside?name=orderServiceV3&index=0'\n묶음:      InstantiationModelAwarePointcutAdvisorImpl\n거르개:    AspectJExpressionPointcut\n부가 기능: AspectJAroundAdvice\n\n--   7.4 절의 그 구조다\n--   내가 안 만들었는데 만들어져 있다\n--   9.2 절에서 누가 만들었는지 본다\n\n\n-- 표현식이 그대로다\n\n$ curl -s 'localhost:8080/advisor/pointcut?name=orderServiceV3'\n표현식: execution(* study.adv.app..*(..))\n\n$ grep -o '@Around(\".*\")' src/main/java/study/adv/aspect/LogTraceAspect.java\n@Around(\"execution(* study.adv.app..*(..))\")\n\n--   8.7 절에서 setExpression 에 준 것과 같다\n--   자리만 옮겼다\n\n\n-- 빈이 아니면 안 걸린다\n\n@Aspect\npublic class LogTraceAspect {          // @Component 를 뺐다\n    ...\n}\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n\n$ curl -s 'localhost:8080/who?name=logTraceAspect'\n(그런 빈이 없다)\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n프록시인가: false\n\n--   조용히 아무 일도 안 일어난다\n--   6 장 내내 나온 그 조용함이다\n\n\n-- 빈으로 등록하는 두 길\n\n// ① 스캔\n@Aspect\n@Component\npublic class LogTraceAspect { ... }\n\n// ② 설정\n@Bean\npublic LogTraceAspect logTraceAspect(LogTrace trace) {\n    return new LogTraceAspect(trace);\n}\n\n$ curl -s 'localhost:8080/who?name=logTraceAspect' | head -2\n빈 이름:   logTraceAspect\n주입된 것: study.adv.aspect.LogTraceAspect\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | wc -l\n6\n\n--   둘 다 된다\n--   ②는 설정 클래스가 다시 생긴다\n\n\n-- 켜져 있어야 한다\n\nspring:\n  aop:\n    auto: false\n\n$ curl -s 'localhost:8080/who?name=logTraceAspect' | sed -n '2p'\n주입된 것: study.adv.aspect.LogTraceAspect\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n프록시인가: false\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n--   애스펙트 빈은 있는데 안 걸린다\n--   8.4 절의 그 스위치다\n\n\n-- 부트가 켜 준다\n\n$ ./gradlew bootRun --args='--debug' 2>&1 \\\n    | grep -A2 'AopAutoConfiguration' | head -4\n   AopAutoConfiguration.AspectJAutoProxyingConfiguration matched:\n      - @ConditionalOnClass found required class\n        'org.aspectj.weaver.Advice'\n      - @ConditionalOnProperty (spring.aop.auto=true) matched\n\n$ ./gradlew dependencies --configuration runtimeClasspath | grep -c aspectjweaver\n1\n\n--   ⑯ 6.6절의 조건이다\n--   1.3 절에서 넣은 스타터가 켰다\n\n\n-- 표현식이 틀리면\n\n@Around(\"execution(* study.adv.appp..*(..))\")      // 오타\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n--   컴파일도 기동도 통과한다\n--   6.2 절에서 말한 그 값이다\n--   11.9 절에서 이걸 잡는 법을 본다\n\n\n-- 문법이 틀리면\n\n@Around(\"execution(* study.adv.app..*(..)\")        // 괄호가 빠졌다\n\n$ ./gradlew bootRun 2>&1 | grep -A2 'IllegalArgument' | head -3\njava.lang.IllegalArgumentException: Pointcut is not well-formed:\n  expecting ')' at character position 33\nexecution(* study.adv.app..*(..)\n\n--   문법은 기동에서 잡는다\n--   맞는 이름인지는 안 잡는다\n\n\n-- 애스펙트 자신은 안 감싸진다\n\n@Around(\"execution(* study.adv..*(..))\")           // 자기까지 포함\n\n$ curl -s 'localhost:8080/who?name=logTraceAspect' | sed -n '2p'\n프록시인가: false\n\n$ ./gradlew bootRun 2>&1 | grep -c 'StackOverflow'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n38\n\n--   8.6 절에서 무한이 됐던 그 표현식이다\n--   애스펙트는 자동으로 빠진다\n--   추적기는 여전히 걸린다\n\n\n-- 추적기도 뺀다\n\n@Around(\"execution(* study.adv.app..*(..))\")\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n6\n\n--   8.6 절에서 좁히던 그것이다\n\n\n-- 설정을 센다\n\n$ printf '%-10s %-16s %s\\n' \\\n  '8.1'  '52 줄'  '빈 7 개' \\\n  '8.4'  '14 줄'  '빈 1 개' \\\n  '9.1'  '0 줄'   '빈 0 개'\n\n8.1        52 줄            빈 7 개\n8.4        14 줄            빈 1 개\n9.1        0 줄             빈 0 개\n\n$ find src/main/java/study/adv -name '*Config*.java' | wc -l\n       0\n\n$ find src/main/java/study/adv/aspect -name '*.java' | wc -l\n       1\n$ wc -l < src/main/java/study/adv/aspect/LogTraceAspect.java\n      28\n\n--   설정 클래스가 하나도 없다\n\n\n-- 1.1 절의 그 여섯 줄\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ diff <(cat 목표.txt | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V3//g') \\\n       <(grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56- \\\n           | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V3//g') \\\n  && echo '같음'\n같음\n\n--   2.1 절에서 적어 둔 목표 파일이다\n--   1.1 절에서 예고한 그것이다\n\n\n-- 확인한다\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n프록시인가: true\nJDK:       false\nCGLIB:     true\n원본:      study.adv.app.OrderServiceV3\n\n$ curl -s 'localhost:8080/advisor/count?name=orderServiceV3'\n어드바이저 1 개\n  1 InstantiationModelAwarePointcutAdvisor\n\n$ find src/main/java/study/adv -name '*Config*.java' -o -name '*Proxy*.java' | wc -l\n       0\n\n$ git add -A && git commit -q -m 'feat: v10 @Aspect' && git tag v10\n\n--   9.2 절에서 누가 어드바이저로 바꿨는지 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '표기'        '애너테이션과 메서드' \\\n  '같은 것'     '거르개와 부가 기능' \\\n  '파일'        '2 에서 1' \\\n  '줄'          '40 에서 28' \\\n  '설정'        '0 줄' \\\n  '만들어진 것' '어드바이저' \\\n  '빈이 아니면' '조용함' \\\n  '꺼져 있으면' '안 걸림' \\\n  '오타'        '조용함' \\\n  '문법'        '기동 실패'\n\n표기                       애너테이션과 메서드\n같은 것                    거르개와 부가 기능\n파일                       2 에서 1\n줄                         40 에서 28\n설정                       0 줄\n만들어진 것                어드바이저\n빈이 아니면                조용함\n꺼져 있으면                안 걸림\n오타                       조용함\n문법                       기동 실패",
+   "note": "**두 파일 40 줄이 한 파일 28 줄이 되고 설정 클래스가 0 개**다.\n\n**7.2절의 어드바이스와 이름만 다르고 안에서 만들어진 건 여전히 어드바이저**다.\n\n**`@Component` 를 빼면 오류 없이 아무 일도 안 일어나고 표현식 오타도** 조용하다.\n\n**문법이 틀리면 `Pointcut is not well-formed` 로 기동에서** 멈춘다.\n\n**애스펙트 자신은 자동으로 빠져 8.6절의 무한이 안 나고 2.1절의 목표 파일과 diff 0**이다."
+  }
+ ],
+ "recap": [
+  "**애너테이션으로** 옮긴다.",
+  "**같은 둘**이다.",
+  "**한 파일**이다.",
+  "**설정이** 없다.",
+  "**어드바이저가** 생긴다.",
+  "**빈이어야** 한다.",
+  "**켜져 있어야** 한다.",
+  "**오타는** 조용하다.",
+  "**자신은** 빠진다."
+ ],
+ "drills": [
+  {
+   "task": "애너테이션으로 옮긴다.",
+   "done_when": "같은 로그를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "7.2 절과 diff 한다.",
+   "done_when": "이름만 다른 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "`@Component` 를 빼 본다.",
+   "done_when": "조용히 안 걸리는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "표현식을 틀려 본다.",
+   "done_when": "오타와 문법 오류를 갈랐다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "애너테이션이 담는 둘은?",
+   "a": "표현식과 부가 기능 메서드, 곧 포인트컷과 어드바이스다."
+  },
+  {
+   "q": "이 클래스만 있으면 도나?",
+   "a": "안 된다. 빈으로 등록되고 기능이 켜져 있어야 한다."
+  },
+  {
+   "q": "표현식 오타는?",
+   "a": "컴파일도 기동도 통과하고 조용히 안 걸린다."
+  },
+  {
+   "q": "문법 오류는?",
+   "a": "기동할 때 잡힌다."
+  },
+  {
+   "q": "애스펙트 자신은?",
+   "a": "자동으로 대상에서 빠져 무한 호출이 안 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "애스펙트",
+   "def": "거르개와 부가 기능을 한 클래스에 애너테이션으로 적은 것."
+  },
+  {
+   "term": "조인 포인트",
+   "def": "부가 기능 메서드가 받는, 지금 호출을 나타내는 인자."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — @AspectJ support",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Using the auto-proxy facility",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api/autoproxy.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Boot — Reference Documentation",
+   "url": "https://docs.spring.io/spring-boot/reference/",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

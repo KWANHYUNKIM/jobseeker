@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "no-target",
+ "no": "8.7",
+ "chapter": 8,
+ "title": "안 걸리는 것",
+ "summary": "프록시가 아예 안 생긴다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 관문을 안다.",
+  "이른 빈을 본다.",
+  "8장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**8.6절에서 다 걸렸다.** **안 걸리는 자리를** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "감싸지기까지 네 관문",
+   "ascii": "   four gates before a bean gets wrapped\n\n   is it a bean the container makes at all\n   is it created late enough to be seen\n   does the class filter match\n   does at least one method match\n\n   the second one is the surprising gate",
+   "note": "**둘째가 사람을** 놀라게 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "안 걸린 이유가 넷 중 하나다",
+   "md": "**빈이 아니면 못** 감싼다.\n\n> **`new` 로 만든 것**이다.\n> **5.1절에서 그걸** 봤다.\n> **아래에서 다시** 겪는다.\n\n**너무 이르면 못** 본다.\n\n> **후처리기보다 먼저** 만들어진다.\n> **8.2절에서 경고를** 봤다.\n> **아래에서 그 목록을** 센다.\n\n**클래스가 안 맞으면** 안 본다.\n\n> **8.5절의 그** 순서다.\n> **아래에서 다시** 확인한다.\n> **표현식을** 본다.\n\n**메서드가 0 이면 안** 만든다.\n\n> **8.5절에서** 봤다.\n> **아래에서 세어** 본다.\n> **네 관문이 다** 통과해야 한다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 너무 이른가",
+   "ascii": "   why some beans are made too early\n\n   the postprocessor itself is a bean\n   anything it depends on must exist before it\n   so those beans miss the postprocessor entirely\n\n   the log says not eligible, and nothing else goes wrong",
+   "note": "**로그에 `not eligible` 이라 적히고 그 밖엔 아무 일도** 없다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "이른 빈은 오류가 아니라 정보로만 남는다",
+   "md": "**정보 수준 로그**다.\n\n> **경고도** 아니다.\n> **아래에서 그** 줄을 본다.\n> **못 보고** 지나간다.\n\n**의존성 하나가** 옮긴다.\n\n> **후처리기가 쓰면 그 빈이** 이르다.\n> **아래에서 그걸** 만든다.\n> **간접으로도** 옮는다.\n\n**설정 클래스도** 그렇다.\n\n> **빈을 만드는 쪽**이다.\n> **아래에서 확인**한다.\n> **1.4절의 그 클래스**다.\n\n**고치는 길이** 있다.\n\n> **늦게 받게** 한다.\n> **아래에서 셋을** 본다.\n> **12장에서 다시** 만난다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 관문 ① 빈이 아니다\n\n@Service\npublic class OrderServiceV3 {\n    private final OrderRepositoryV3 repository = new OrderRepositoryV3();   // new\n}\n\n$ curl -s 'localhost:8080/who?name=orderRepositoryV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderRepositoryV3$$SpringCGLIB$$0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -4 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |<--OrderServiceV3.orderItem() time=1004ms\n[796bccd9] OrderControllerV3.request() time=1006ms\n\n--   빈은 감싸졌는데 저장소 줄이 없다\n--   서비스가 자기 것을 만들어 쓴다\n--   5.1 절에서 본 그것이다\n\n\n-- 관문 ② 너무 이르다\n\n@Component\npublic class TraceProperties {\n    private final List<String> patterns = List.of(\"order*\", \"find*\");\n    public List<String> getPatterns() { return patterns; }\n}\n\n@Bean\npublic Advisor logTraceAdvisor(LogTrace trace, TraceProperties props) {\n    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\n    pointcut.setMappedNames(props.getPatterns().toArray(String[]::new));\n    return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n}\n\n$ ./gradlew bootRun 2>&1 | grep 'not eligible'\nINFO ... : Bean 'traceProperties' of type [study.adv.auto.TraceProperties] is not\n  eligible for getting processed by all BeanPostProcessors (for example: not\n  eligible for auto-proxying)\nINFO ... : Bean 'logTrace' of type [study.adv.trace.ThreadLocalLogTrace] is not\n  eligible for getting processed by all BeanPostProcessors\n\n$ curl -s 'localhost:8080/who?name=traceProperties' | sed -n '2p'\n프록시인가: false\n\n--   8.2 절에서 본 그 경고다\n--   묶음이 쓰는 빈은 먼저 만들어진다\n\n\n-- 간접으로도 옮는다\n\n@Component\npublic class TraceProperties {\n    private final ConfigLoader loader;             // 이것도 이르다\n}\n\n@Component\npublic class ConfigLoader {\n    private final FileReader reader;               // 이것도\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c 'not eligible'\n5\n\n$ ./gradlew bootRun 2>&1 | grep 'not eligible' | grep -oE \"Bean '[a-zA-Z]+'\"\nBean 'traceProperties'\nBean 'configLoader'\nBean 'fileReader'\nBean 'logTrace'\nBean 'logTraceAdvisor'\n\n--   의존성을 따라 다섯이 됐다\n--   묶음 하나가 다섯을 이르게 만들었다\n\n\n-- 그 빈들은 안 감싸진다\n\n@Component\npublic class ConfigLoader {\n    public void orderConfig() { log.info(\"설정 읽음\"); }   // 거르개에 맞는 이름\n}\n\n$ curl -s -o /dev/null 'localhost:8080/config/load'\n$ grep -c 'ConfigLoader.orderConfig' logs/app.log\n0\n\n$ curl -s 'localhost:8080/proxy/decide?bean=configLoader'\nLogTraceAdvice        클래스=true 메서드=1\n\n$ curl -s 'localhost:8080/who?name=configLoader' | sed -n '2p'\n프록시인가: false\n\n--   거르개는 맞는데 안 감싸졌다\n--   관문 ②에서 막혔다\n\n\n-- 고치는 길 ① 늦게 받는다\n\n@Bean\npublic Advisor logTraceAdvisor(ObjectProvider<TraceProperties> props,\n                               ObjectProvider<LogTrace> trace) {\n    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\n    pointcut.setMappedNames(props.getObject().getPatterns().toArray(String[]::new));\n    return new DefaultPointcutAdvisor(pointcut,\n            new LogTraceAdvice(trace.getObject()));\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c 'not eligible'\n2\n\n$ ./gradlew bootRun 2>&1 | grep 'not eligible' | grep -oE \"Bean '[a-zA-Z]+'\"\nBean 'logTrace'\nBean 'logTraceAdvisor'\n\n--   다섯이 둘로 줄었다\n--   지연으로 받으니 안 옮았다\n\n\n-- 고치는 길 ② 값으로 받는다\n\n@Bean\npublic Advisor logTraceAdvisor(LogTrace trace,\n                               @Value(\"${study.trace.patterns}\") String[] patterns) {\n    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();\n    pointcut.setMappedNames(patterns);\n    return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n}\n\nstudy.trace.patterns: order*,find*,save*,request*\n\n$ ./gradlew bootRun 2>&1 | grep -c 'not eligible'\n2\n\n$ curl -s 'localhost:8080/who?name=configLoader' | sed -n '2p'\n프록시인가: true\n\n--   ⑯ 7.7절의 그 방법이다\n--   빈을 안 받으니 아무도 안 이르다\n\n\n-- 고치는 길 ③ 감쌀 필요가 없는 걸 쓴다\n\n@Bean\npublic Advisor logTraceAdvisor() {\n    AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();\n    pointcut.setExpression(\"execution(* study.adv.app..*(..))\");\n    return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(new ThreadLocalLogTrace()));\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c 'not eligible'\n1\n\n$ ./gradlew bootRun 2>&1 | grep 'not eligible'\nINFO ... : Bean 'logTraceAdvisor' of type [DefaultPointcutAdvisor] is not eligible\n\n--   묶음 자신만 남았다\n--   그건 어차피 감쌀 필요가 없다\n\n\n-- 설정 클래스도 이르다\n\n@Configuration\npublic class AutoProxyConfig {\n    @Bean public Advisor logTraceAdvisor() { ... }\n\n    public void orderSomething() { }        // 거르개에 맞는다\n}\n\n$ curl -s 'localhost:8080/who?name=autoProxyConfig'\n주입된 것: study.adv.auto.AutoProxyConfig$$SpringCGLIB$$0\n프록시인가: false\n\n$ curl -s 'localhost:8080/proxy/decide?bean=autoProxyConfig'\nLogTraceAdvice        클래스=false 메서드=0\n\n--   1.4 절에서 본 그 클래스다\n--   AOP 프록시는 아니다\n\n\n-- 관문 ③ 클래스가 안 맞는다\n\npointcut.setExpression(\"execution(* study.adv.app..*(..))\");\n\n@Service\npublic class BillingService { }             // study.adv.billing\n\n$ curl -s 'localhost:8080/proxy/decide?bean=billingService'\nLogTraceAdvice        클래스=false 메서드=0\n\n$ curl -s 'localhost:8080/who?name=billingService' | sed -n '2p'\n프록시인가: false\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.aop.framework.autoproxy=TRACE' 2>&1 \\\n    | grep -c 'Did not attempt to auto-proxy'\n181\n\n--   8.5 절에서 본 그것이다\n--   181 개가 여기서 걸러진다\n\n\n-- 관문 ④ 메서드가 0 이다\n\n@Service\npublic class ClockService {\n    public String now() { return Instant.now().toString(); }\n}\n\n$ curl -s 'localhost:8080/proxy/decide?bean=clockService'\nLogTraceAdvice        클래스=true 메서드=0\n\n$ curl -s 'localhost:8080/who?name=clockService' | sed -n '2p'\n프록시인가: false\n\n--   8.5 절에서 본 그것이다\n\n\n-- 네 관문을 한 번에 훑는다\n\n@GetMapping(value = \"/proxy/why\", produces = \"text/plain\")\nString why(String name) {\n    if (!ctx.containsBean(name)) return \"① 빈이 아니다\\n\";\n    Object bean = ctx.getBean(name);\n    if (AopUtils.isAopProxy(bean)) return \"감싸졌다\\n\";\n\n    Class<?> clazz = bean.getClass();\n    for (Advisor a : ctx.getBeansOfType(Advisor.class).values()) {\n        if (!(a instanceof PointcutAdvisor pa)) continue;\n        if (!pa.getPointcut().getClassFilter().matches(clazz))\n            return \"③ 클래스가 안 맞는다\\n\";\n        long n = Arrays.stream(clazz.getMethods())\n            .filter(m -> pa.getPointcut().getMethodMatcher().matches(m, clazz))\n            .count();\n        if (n == 0) return \"④ 걸리는 메서드가 없다\\n\";\n    }\n    return \"② 너무 일찍 만들어졌다\\n\";\n}\n\n$ for b in orderServiceV3 clockService billingService configLoader nothingBean; do\n    printf '%-18s ' \"$b\"\n    curl -s \"localhost:8080/proxy/why?name=$b\"\n  done\n\norderServiceV3     감싸졌다\nclockService       ④ 걸리는 메서드가 없다\nbillingService     ③ 클래스가 안 맞는다\nconfigLoader       ② 너무 일찍 만들어졌다\nnothingBean        ① 빈이 아니다\n\n--   6.12 절에서 관문 다섯을 훑던 것과 같다\n\n\n-- 관문 ②를 더 캔다\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.beans.factory=DEBUG' 2>&1 \\\n    | grep -B1 \"Creating shared instance of singleton bean 'logTraceAdvisor'\" | head -2\nDEBUG ... : Creating shared instance of singleton bean 'traceProperties'\nDEBUG ... : Creating shared instance of singleton bean 'logTraceAdvisor'\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.beans.factory=DEBUG' 2>&1 \\\n    | grep -n \"internalAutoProxyCreator\" | head -1\n42:DEBUG ... : Creating shared instance of singleton bean\n  'org.springframework.aop.config.internalAutoProxyCreator'\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.beans.factory=DEBUG' 2>&1 \\\n    | grep -n \"singleton bean 'traceProperties'\" | head -1\n38:DEBUG ... : Creating shared instance of singleton bean 'traceProperties'\n\n--   38 번 줄이 42 번 줄보다 앞이다\n--   후처리기가 만들어지기 전이다\n\n\n-- 몇 개나 이른가\n\n$ ./gradlew bootRun 2>&1 | grep -c 'not eligible'\n5\n\n$ curl -s localhost:8080/actuator/beans | python3 -c \"\nimport json,sys\nprint(len(json.load(sys.stdin)['contexts']['application']['beans']))\"\n196\n\n$ python3 -c \"print('%.1f%% 가 이르다' % (5/196*100))\"\n2.6% 가 이르다\n\n--   많지는 않다\n--   그런데 하필 내 것일 때가 있다\n\n\n-- 트랜잭션도 같은 자리다\n\n@Component\npublic class TxHelper {\n    @Transactional\n    public void work() { ... }\n}\n\n@Bean\npublic Advisor logTraceAdvisor(TxHelper helper) { ... }     // 묶음이 쓴다\n\n$ ./gradlew bootRun 2>&1 | grep 'not eligible' | grep txHelper\nINFO ... : Bean 'txHelper' of type [study.adv.app.TxHelper] is not eligible\n\n$ curl -s -o /dev/null 'localhost:8080/tx/work'\n$ grep -c 'Creating new transaction' logs/app.log\n0\n\n--   트랜잭션도 안 걸린다\n--   같은 후처리기를 지나서다\n--   12.7 절에서 이 이야기를 다시 한다\n\n\n-- 조용하다\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n\n$ ./gradlew bootRun 2>&1 | grep 'not eligible' | head -1 | grep -o '^[A-Z]*'\nINFO\n\n--   정보 수준이다\n--   6 장 내내 나온 그 조용함이다\n\n\n-- 시끄럽게 만든다\n\n@Component\nclass EligibilityCheck implements InitializingBean {\n    private static final List<String> MUST = List.of(\n        \"orderServiceV3\", \"orderRepositoryV3\", \"configLoader\", \"txHelper\");\n\n    @Override\n    public void afterPropertiesSet() {\n        for (String name : MUST) {\n            Object bean = ctx.getBean(name);\n            if (!AopUtils.isAopProxy(bean))\n                throw new IllegalStateException(\"안 감싸짐: \" + name);\n        }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException: 안 감싸짐: configLoader\n\n--   6.2 절과 6.7 절과 7.7 절에서 하던 그 검사다\n--   기동에서 막았다\n\n\n-- 8 장이 만든 것\n\n$ printf '%-8s %-26s %s\\n' \\\n  '8.1'  '설정이 늘어난다'    '빈마다 세 줄' \\\n  '8.2'  '빈 후처리기'        '만들어진 뒤 가로챔' \\\n  '8.3'  '적용'               '설정 18 줄' \\\n  '8.4'  '자동 프록시 생성기' '이미 있었음' \\\n  '8.5'  '두 시점'            '만들 때와 부를 때' \\\n  '8.6'  '어드바이저만'       '깜빡함이 끝남' \\\n  '8.7'  '안 걸리는 것'       '관문 넷'\n\n8.1    설정이 늘어난다             빈마다 세 줄\n8.2    빈 후처리기                 만들어진 뒤 가로챔\n8.3    적용                        설정 18 줄\n8.4    자동 프록시 생성기          이미 있었음\n8.5    두 시점                     만들 때와 부를 때\n8.6    어드바이저만                깜빡함이 끝남\n8.7    안 걸리는 것                관문 넷\n\n\n-- 남은 것을 센다\n\n$ cat src/main/java/study/adv/auto/AutoProxyConfig.java\n@Configuration\npublic class AutoProxyConfig {\n\n    @Bean\n    public Advisor logTraceAdvisor(LogTrace trace) {\n        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();\n        pointcut.setExpression(\"execution(* study.adv.app..*(..))\");\n        return new DefaultPointcutAdvisor(pointcut, new LogTraceAdvice(trace));\n    }\n}\n\n$ wc -l src/main/java/study/adv/auto/*.java | tail -1\n      40 total\n\n$ grep -c 'new AspectJExpressionPointcut\\|new DefaultPointcutAdvisor\\|setExpression' \\\n    src/main/java/study/adv/auto/AutoProxyConfig.java\n3\n\n--   조립하는 세 줄이 남았다\n--   9 장이 이걸 애너테이션으로 바꾼다\n\n\n-- 다음 장의 목표\n\n$ printf '%-8s %-26s %s\\n' \\\n  '지금'  '설정 클래스 + 묶음 빈'  '조립 세 줄' \\\n  '9 장'  '애너테이션 하나'        '설정 클래스도 사라짐'\n\n지금     설정 클래스 + 묶음 빈       조립 세 줄\n9 장     애너테이션 하나             설정 클래스도 사라짐\n\n\n-- 마지막 확인\n\n$ git checkout HEAD -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ for b in orderServiceV3 clockService billingService; do\n    printf '%-18s ' \"$b\"; curl -s \"localhost:8080/proxy/why?name=$b\"\n  done\norderServiceV3     감싸졌다\nclockService       ④ 걸리는 메서드가 없다\nbillingService     ③ 클래스가 안 맞는다\n\n$ curl -s localhost:8080/proxy/census | head -2\n전체 빈:      196\n프록시:        24\n\n$ git add -A && git commit -q -m 'chore: v9 정리' && git tag v9-done\n\n--   9.1 절에서 애너테이션으로 옮긴다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '관문'        '넷' \\\n  '① 빈'        'new 는 못 감쌈' \\\n  '② 이름'      '후처리기보다 먼저' \\\n  '③ 클래스'    '181 개가 걸러짐' \\\n  '④ 메서드'    '0 이면 안 만듦' \\\n  '이른 빈'     '5 개, 2.6%' \\\n  '옮음'        '의존성을 따라감' \\\n  '고치는 길'   '셋' \\\n  '조용함'      '정보 수준' \\\n  '남은 것'     '조립 세 줄'\n\n관문                       넷\n① 빈                       new 는 못 감쌈\n② 이름                     후처리기보다 먼저\n③ 클래스                   181 개가 걸러짐\n④ 메서드                   0 이면 안 만듦\n이른 빈                    5 개, 2.6%\n옮음                       의존성을 따라감\n고치는 길                  셋\n조용함                     정보 수준\n남은 것                    조립 세 줄",
+   "note": "**네 관문 중 어디서 막혔는지 묻는 창구를 만들어 다섯 빈이 각각 다른 답을** 냈다.\n\n**묶음이 쓰는 빈이 후처리기보다 먼저 만들어져 `not eligible` 로 다섯 개가** 이르다.\n\n**의존성을 따라 옮아 `traceProperties` 하나가 `configLoader`·`fileReader` 까지** 이르게 만든다.\n\n**같은 자리라 그 빈의 `@Transactional` 도 안 걸려 트랜잭션 로그가 0 줄**이다.\n\n**전부 정보 수준 로그라 조용해서 기동 검사로 시끄럽게** 만들었다."
+  }
+ ],
+ "recap": [
+  "**관문이** 넷이다.",
+  "**new 는 못** 감싼다.",
+  "**이르면 못** 본다.",
+  "**의존성을 따라** 옮는다.",
+  "**클래스가 먼저**다.",
+  "**0 이면 안** 만든다.",
+  "**조용하다.**",
+  "**시끄럽게** 만든다.",
+  "**조립 세 줄이** 남았다."
+ ],
+ "drills": [
+  {
+   "task": "네 관문 창구를 만든다.",
+   "done_when": "빈마다 다른 답을 봤다.",
+   "minutes": 25
+  },
+  {
+   "task": "이른 빈을 만들어 본다.",
+   "done_when": "not eligible 을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "지연으로 받아 고친다.",
+   "done_when": "수가 줄어든 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "기동 검사를 넣는다.",
+   "done_when": "안 감싸진 빈에서 멈추는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "네 관문은?",
+   "a": "빈인가, 충분히 늦게 만들어졌나, 클래스가 맞나, 메서드가 맞나다."
+  },
+  {
+   "q": "왜 어떤 빈은 너무 이른가?",
+   "a": "후처리기나 그 의존성으로 쓰여 먼저 만들어져서다."
+  },
+  {
+   "q": "이른 빈은 어떻게 알리나?",
+   "a": "정보 수준 로그 한 줄뿐이라 놓치기 쉽다."
+  },
+  {
+   "q": "어떻게 고치나?",
+   "a": "지연으로 받거나 값으로 받거나 빈을 아예 안 받는다."
+  },
+  {
+   "q": "이른 빈의 트랜잭션은?",
+   "a": "같은 후처리기를 지나므로 함께 안 걸린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "이른 빈",
+   "def": "후처리기보다 먼저 만들어져 감싸지지 못한 빈."
+  },
+  {
+   "term": "관문",
+   "def": "감싸지기까지 통과해야 하는 단계들."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Using the auto-proxy facility",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop-api/autoproxy.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — BeanPostProcessor",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Core Technologies",
+   "url": "https://docs.spring.io/spring-framework/reference/core.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

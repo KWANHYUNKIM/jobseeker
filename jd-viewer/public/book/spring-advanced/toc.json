@@ -504,7 +504,7 @@
           "title": "안 걸리는 것",
           "summary": "프록시가 아예 안 생긴다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
@@ -519,7 +519,7 @@
           "title": "@Aspect",
           "summary": "클래스 하나로 적는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
