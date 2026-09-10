@@ -43,7 +43,7 @@
           "title": "실습 환경",
           "summary": "자바 21, GC 로그를 켜 둔다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.4",
@@ -51,7 +51,7 @@
           "title": "첫 멈춤",
           "summary": "애플리케이션이 조용히 서 있는 시간.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.5",
@@ -59,7 +59,7 @@
           "title": "무엇을 볼 것인가",
           "summary": "멈춤 · 처리량 · 사용량, 이 셋.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

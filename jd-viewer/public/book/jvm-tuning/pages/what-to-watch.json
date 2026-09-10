@@ -1,0 +1,169 @@
+{
+ "book": "jvm-tuning",
+ "id": "what-to-watch",
+ "no": "1.5",
+ "chapter": 1,
+ "title": "무엇을 볼 것인가",
+ "summary": "멈춤 · 처리량 · 사용량, 이 셋.",
+ "minutes": 11,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "세 숫자를 정하고 그 순서를 안다.",
+  "라이브 셋을 재는 법을 안다.",
+  "무엇이 정상인지 기준을 갖는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**볼 숫자는** 셋이다. **나머지는 이 셋을 설명하는** 재료다."
+  },
+  {
+   "type": "figure",
+   "caption": "이 순서로 본다",
+   "ascii": "   three numbers, in this order\n\n   1  worst pause      p99 and max, never the average\n   2  gc share         total pause time over wall time\n   3  live set         heap used right after a full collection\n\n   everything in chapter twelve is chosen by these three",
+   "note": "**12장의 모든 결정이 이 셋으로** 정해진다."
+  },
+  {
+   "type": "figure",
+   "caption": "의미 있는 힙 숫자는 하나뿐",
+   "ascii": "   the only heap number that means anything\n\n   used before gc   grows and shrinks with allocation, tells nothing\n   used after  gc   what is actually still reachable\n\n   a live set that keeps climbing is the leak signal",
+   "note": "**수집 뒤 값이 계속 오르면 그게 누수** 신호다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "라이브 셋이 모든 크기의 기준이다",
+   "md": "**힙을 얼마로 잡을지, GC 가 자주 도는지, 누수인지 — 다 라이브 셋으로** 판단한다.\n\n> **라이브 셋은 풀 GC 직후의 사용량**이다.\n> **그 순간 살아 있다고 확인된 것만 남아** 있다.\n> **경험칙으로 힙은 라이브 셋의 2~3배**다(12.1절).\n\n| 힙 / 라이브 셋 | 결과 |\n|---|---|\n| **1.2배 이하** | **GC 가 쉴 새 없이 돈다** |\n| 2~3배 | 보통 |\n| **5배 이상** | **메모리가 남는다** |"
+  },
+  {
+   "type": "table",
+   "caption": "정상 범위의 눈금",
+   "columns": [
+    "숫자",
+    "괜찮음",
+    "볼 만함",
+    "고칠 것"
+   ],
+   "rows": [
+    [
+     "**GC 비율**",
+     "**~2%**",
+     "2~5%",
+     "**5% 초과**"
+    ],
+    [
+     "영 수집 멈춤",
+     "~30ms",
+     "30~100ms",
+     "**100ms 초과**"
+    ],
+    [
+     "**풀 GC**",
+     "**0회**",
+     "드물게",
+     "**주기적**"
+    ],
+    [
+     "라이브 셋 추세",
+     "**평평**",
+     "천천히 증가",
+     "**계속 증가**"
+    ],
+    [
+     "**할당 속도**",
+     "**~500MB/s**",
+     "0.5~2GB/s",
+     "**2GB/s 초과**"
+    ]
+   ],
+   "note": "**절대 기준은 없다** — **자기 애플리케이션의 평소 값을 먼저 재 두는 게** 먼저다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "먼저 평소를 재 둔다",
+   "md": "**튜닝은 비교**다.\n\n```\n오늘 정상일 때의 세 숫자를 파일로 남긴다\n문제가 났을 때 같은 세 숫자를 잰다\n달라진 것 하나를 고친다\n```\n\n> **평소 값이 없으면 지금이 나쁜 건지 원래 그런 건지 알 수** 없다.\n> **11.8절의 점검표가 이걸 정리해** 준다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 GC 로그와 힙 스냅숏",
+   "sql": "# --- 1) 최악 멈춤 ---\n\n$ ./run.sh -Xmx2g -cp out App --seconds 120 >/dev/null 2>&1\n$ ./gc-summary.sh gc.log\n수집 204회  합 2412.8ms  평균 11.82ms  p99 41.2ms  최대 84.1ms\n\n$ grep -oE '[0-9.]+ms$' gc.log | sort -n | tail -3\n68.412ms\n72.104ms\n84.128ms\n\n$ grep '84.128ms' gc.log\n[84.128s][info][gc] GC(148) Pause Young (Mixed) (G1 Evacuation Pause) 1841M->412M(2048M) 84.128ms\n\n#   최악은 Mixed 였다 (7.4절)\n#   평균 11.82ms 를 보고 있으면 이걸 못 본다\n\n\n# --- 2) GC 비율 ---\n\n$ python3 -c \"print('120초 중 %.1fms = %.2f%%' % (2412.8, 2412.8/120000*100))\"\n120초 중 2412.8ms = 2.01%\n\n$ cat gc-share.sh\n#!/bin/sh\n# GC 비율 -- 로그 파일과 실행 시간(초)을 준다\nsum=$(grep -oE '[0-9.]+ms$' \"$1\" | awk '{s+=$1} END {print s}')\nawk -v s=\"$sum\" -v w=\"$2\" 'BEGIN {printf \"GC %.1fms / %ds = %.2f%%\\n\", s, w, s/(w*1000)*100}'\n\n$ ./gc-share.sh gc.log 120\nGC 2412.8ms / 120s = 2.01%\n\n#   2% 면 눈금상 괜찮음이다\n\n\n# --- 3) 라이브 셋 ---\n\n$ java -Xlog:gc -Xmx2g -cp out App --seconds 60 &\n$ jcmd $! GC.run > /dev/null && jcmd $! GC.heap_info | head -1\n garbage-first heap   total 2097152K, used 318464K [0x0000000700000000, ...)\n\n$ python3 -c \"print('라이브 셋 %.0fMB -- 힙 2048MB 는 %.1f배' % (318464/1024, 2048/(318464/1024)))\"\n라이브 셋 311MB -- 힙 2048MB 는 6.6배\n\n$ kill %1\n\n#   6.6배면 메모리가 남는다 -- 12.1절에서 줄인다\n\n\n# --- 라이브 셋을 로그에서 뽑는다 ---\n\n$ cat live-set.sh\n#!/bin/sh\n# 풀 GC 또는 Concurrent Mark 직후 사용량의 추세\ngrep -E 'Pause Full|Pause Young \\(Concurrent Start\\)' \"$1\" \\\n  | grep -oE '\\->[0-9]+M' | tr -d '>-M'\n\n$ ./live-set.sh gc.log | head -8\n84\n88\n91\n92\n94\n93\n95\n94\n\n$ ./live-set.sh gc.log | awk 'NR==1{f=$1} {l=$1} END {printf \"처음 %dM -> 마지막 %dM (%+dM)\\n\", f, l, l-f}'\n처음 84M -> 마지막 94M (+10M)\n\n#   10MB 오르고 평평해졌다 -- 캐시가 채워진 것이다\n\n\n# --- 누수는 이렇게 보인다 ---\n\n$ ./run.sh -Xmx1g -cp out App --seconds 300 --leak-ish >/dev/null 2>&1\n$ ./live-set.sh gc.log | awk 'NR%8==1'\n84\n204\n412\n618\n824\n\n$ ./live-set.sh gc.log | awk 'NR==1{f=$1} {l=$1} END {printf \"처음 %dM -> 마지막 %dM (%+dM)\\n\", f, l, l-f}'\n처음 84M -> 마지막 824M (+740M)\n\n$ grep -c 'Pause Full' gc.log\n6\n\n#   평평해지지 않는다 -- 12.4절로 간다\n\n\n# --- 세 숫자를 한 번에 ---\n\n$ cat gc-three.sh\n#!/bin/sh\n# 이 책이 보는 세 숫자 -- 로그 파일과 실행 시간(초)\necho \"1) 최악 멈춤\"; grep -oE '[0-9.]+ms$' \"$1\" | sort -n | tail -1\necho \"2) GC 비율\";  ./gc-share.sh \"$1\" \"$2\"\necho \"3) 라이브 셋\"; ./live-set.sh \"$1\" | awk 'NR==1{f=$1} {l=$1} END {printf \"%dM -> %dM (%+dM)\\n\", f, l, l-f}'\n\n$ ./gc-three.sh gc.log 300\n1) 최악 멈춤\n412.804ms\n2) GC 비율\nGC 8412.1ms / 300s = 2.80%\n3) 라이브 셋\n84M -> 824M (+740M)\n\n#   1번과 2번은 눈금상 괜찮은데 3번이 나쁘다\n#   순서대로 보면 놓치지 않는다\n\n\n# --- 평소를 남겨 둔다 ---\n\n$ ./gc-three.sh baseline.log 300 > baseline.txt\n$ cat baseline.txt\n1) 최악 멈춤\n84.128ms\n2) GC 비율\nGC 6024.1ms / 300s = 2.01%\n3) 라이브 셋\n84M -> 94M (+10M)\n\n$ diff baseline.txt <(./gc-three.sh gc.log 300)\n2c2\n< 84.128ms\n---\n> 412.804ms\n4c4\n< GC 6024.1ms / 300s = 2.01%\n---\n> GC 8412.1ms / 300s = 2.80%\n6c6\n< 84M -> 94M (+10M)\n---\n> 84M -> 824M (+740M)\n\n#   무엇이 달라졌는지가 곧 어디를 볼지다\n\n\n# --- 안 볼 것들 ---\n\n$ java -Xlog:gc -Xmx2g -cp out App --seconds 30 --report-runtime 2>/dev/null\nRuntime.totalMemory()  1073741824\nRuntime.freeMemory()    418412032\nRuntime.maxMemory()    2147483648\n\n$ python3 -c \"\nt,f = 1073741824, 418412032\nprint('used = %.0fMB 처럼 보이지만 수집 직전인지 직후인지 모른다' % ((t-f)/2**20))\"\nused = 625MB 처럼 보이지만 수집 직전인지 직후인지 모른다\n\n#   Runtime 의 값은 언제 찍었느냐에 따라 다섯 배가 바뀐다\n#   대시보드의 힙 사용률 그래프가 톱니인 것도 같은 이유다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '볼 것'         '멈춤 · 비율 · 라이브 셋' \\\n  '1번'           'p99 와 최대' \\\n  '평균'          '84ms 를 11.8ms 로 가림' \\\n  '2번'           'GC 2.01%' \\\n  '3번'           '풀 GC 직후 사용량' \\\n  '정상'          '84M -> 94M 평평' \\\n  '누수'          '84M -> 824M' \\\n  '힙 배수'       '라이브 셋의 2~3배' \\\n  '안 볼 것'      'Runtime.freeMemory' \\\n  '먼저 할 일'    '평소를 파일로 남긴다'\n\n볼 것                      멈춤 · 비율 · 라이브 셋\n1번                        p99 와 최대\n평균                       84ms 를 11.8ms 로 가림\n2번                        GC 2.01%\n3번                        풀 GC 직후 사용량\n정상                       84M -> 94M 평평\n누수                       84M -> 824M\n힙 배수                    라이브 셋의 2~3배\n안 볼 것                   Runtime.freeMemory\n먼저 할 일                 평소를 파일로 남긴다",
+   "note": "**최악 멈춤 84.128ms 가 평균 11.82ms 뒤에 가려져 있고, 그 줄이 Mixed 라는 것까지** 보인다.\n\n**GC 비율 2.01% 는 눈금상** 괜찮다.\n\n**라이브 셋은 정상일 때 84M→94M 로 평평하고 누수일 때 84M→824M 로 계속** 오른다.\n\n**힙 2048MB 가 라이브 셋 311MB 의 6.6배라 남는다는 것도 여기서** 나온다.\n\n**`Runtime.freeMemory()` 는 수집 직전인지 직후인지에 따라 값이 다섯 배** 바뀐다."
+  }
+ ],
+ "recap": [
+  "볼 숫자는 최악 멈춤, GC 비율, 라이브 셋 셋이고 이 순서로 본다.",
+  "평균 멈춤은 최악을 가리므로 p99 와 최대만 본다.",
+  "라이브 셋은 풀 GC 직후 사용량이고 힙 크기의 기준이 된다.",
+  "라이브 셋이 평평하지 않고 계속 오르면 누수다.",
+  "정상일 때의 세 숫자를 미리 파일로 남겨 두어야 비교가 된다."
+ ],
+ "drills": [
+  {
+   "task": "gc-three.sh 를 만들어 세 숫자를 한 번에 낸다.",
+   "done_when": "이 책 내내 쓴다.",
+   "minutes": 15
+  },
+  {
+   "task": "라이브 셋 추세를 뽑아 평평한지 본다.",
+   "done_when": "정상과 누수를 구분한다.",
+   "minutes": 12
+  },
+  {
+   "task": "힙 크기가 라이브 셋의 몇 배인지 계산한다.",
+   "done_when": "눈금과 대조한다.",
+   "minutes": 10
+  },
+  {
+   "task": "평소 값을 baseline.txt 로 남기고 diff 한다.",
+   "done_when": "달라진 항목을 짚는다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "볼 세 숫자는.",
+   "a": "최악 멈춤, GC 비율, 라이브 셋이다."
+  },
+  {
+   "q": "라이브 셋은 무엇인가.",
+   "a": "풀 GC 직후 힙 사용량, 즉 실제로 살아 있는 양이다."
+  },
+  {
+   "q": "왜 Runtime.freeMemory 를 안 보나.",
+   "a": "수집 직전인지 직후인지에 따라 값이 몇 배씩 달라지기 때문이다."
+  },
+  {
+   "q": "튜닝 전에 먼저 할 일은.",
+   "a": "정상일 때의 세 숫자를 재서 남겨 두는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "라이브 셋",
+   "what": "수집 직후 힙에 남은 양. 실제로 도달 가능한 객체의 총량."
+  },
+  {
+   "term": "GC 비율",
+   "what": "전체 시간 중 멈춤이 차지한 비율."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — HotSpot Virtual Machine Garbage Collection Tuning Guide",
+   "url": "https://docs.oracle.com/en/java/javase/21/gctuning/",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — jcmd",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — JDK Flight Recorder",
+   "url": "https://docs.oracle.com/en/java/javase/21/jfapi/",
+   "publisher": "Oracle"
+  }
+ ]
+}
