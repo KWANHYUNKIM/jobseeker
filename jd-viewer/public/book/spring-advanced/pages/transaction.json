@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "transaction",
+ "no": "12.7",
+ "chapter": 12,
+ "title": "트랜잭션도 같은 것",
+ "summary": "⑤에서 본 그 자리.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "같은 장치임을 본다.",
+  "왜 더 아픈지 안다.",
+  "겹칠 때를 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**열두 장 동안 본 게 남의 기능에도 그대로** 있다. **열어** 본다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 장치, 두 번",
+   "ascii": "   the same machinery, seen twice\n\n   what I built    a pointcut, an advice, an advisor, a proxy\n   what it uses    a pointcut, an advice, an advisor, a proxy\n\n   only the names of the classes differ",
+   "note": "**다른 건 클래스 이름** 뿐이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "만든 것과 쓰는 것이 같다",
+   "md": "**묶음이** 있다.\n\n> **7.4절의 그것**이다.\n> **아래에서 이름을** 본다.\n> **내 것 옆에** 있다.\n\n**거르개가** 있다.\n\n> **11.5절의 표시로** 고른다.\n> **아래에서 확인**한다.\n> **표현식이** 아니다.\n\n**부가 기능이** 있다.\n\n> **10.3절의 감싸기**다.\n> **아래에서 안을** 본다.\n> **여닫는 코드**다.\n\n**한계가** 같다.\n\n> **12.1절부터 계속** 나왔다.\n> **아래에서 모아** 본다.\n> **하나도 안** 다르다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 더 아픈가",
+   "ascii": "   why the missing boundary is worse than a missing log line\n\n   a missing log line loses information\n   a missing boundary joins two units of work into one\n\n   or splits one into two, which is the part that loses data",
+   "note": "**하나가 둘로 갈리는 쪽이 데이터를** 잃는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "겹치면 순서가 결과를 바꾼다",
+   "md": "**기본이 가장** 안쪽이다.\n\n> **9.4절에서 봤다**.\n> **아래에서 다시** 본다.\n> **번호가 제일** 크다.\n\n**밖이면 다** 감싼다.\n\n> **내 로그가 안에** 든다.\n> **아래에서 견준다**.\n> **커밋 값이 잡힌다**.\n\n**예외를 삼키면** 안 된다.\n\n> **10.3절의 그** 의무다.\n> **아래에서 겪는다**.\n> **커밋이** 된다.\n\n**둘을 겹쳐 쓰면 판다**.\n\n> **어느 게 밖인지** 안다.\n> **아래에서 확인**한다.\n> **12.8절에서 다** 읽는다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 사슬을 연다\n\n@Service\npublic class OrderProcessor {\n    @Transactional\n    public void process(String itemId) { orderRepository.save(itemId); }\n}\n\n$ curl -s 'localhost:8080/aop/chain?name=orderProcessor'\n1 AspectJAroundAdvice          LogTraceAspect.execute\n2 TransactionInterceptor\n3 원본 study.adv.app.OrderProcessor\n\n$ curl -s 'localhost:8080/aop/terms?name=orderProcessor&index=1'\n어드바이저 BeanFactoryTransactionAttributeSourceAdvisor\n포인트컷  TransactionAttributeSourcePointcut\n어드바이스 TransactionInterceptor\n타깃      study.adv.app.OrderProcessor\n\n--   10.1 절에서 내 것을 열던 그 창구다\n--   같은 네 칸이 채워진다\n\n\n-- 거르개가 무엇을 보나\n\n$ curl -s 'localhost:8080/pointcut/inside?bean=orderProcessor&index=1'\n종류:    TransactionAttributeSourcePointcut\n표현식:  (없음)\n방법:    애너테이션 탐색\n찾는 것: @Transactional (클래스와 메서드)\n\n$ curl -s 'localhost:8080/anno/visible?type=org.springframework.transaction.annotation.Transactional'\n보존 RUNTIME\n대상 [TYPE, METHOD]\n\n--   11.5 절의 그 방식이다\n--   표현식이 아니라 표시를 찾는다\n\n\n-- 부가 기능 안을 본다\n\n$ curl -s 'localhost:8080/advice/source?bean=orderProcessor&index=1'\nTransactionInterceptor.invoke\n  -> invokeWithinTransaction\n     createTransactionIfNecessary\n     invocation.proceedWithInvocation()\n     completeTransactionAfterThrowing / commitTransactionAfterReturning\n\n$ grep -c 'proceed' src/main/java/study/adv/aspect/LogTraceAspect.java\n1\n\n--   10.3 절의 감싸기다\n--   내 애스펙트와 같은 모양이다\n\n\n-- 두 로그를 나란히 본다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -E 'study.adv.trace|transaction' logs/app.log | cut -c56-\n[796bccd9] OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[796bccd9] |   |-->OrderProcessor.process()\nCreating new transaction with name [study.adv.app.OrderProcessor.process]\n[796bccd9] |   |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |   |<--OrderRepositoryV3.save() time=1004ms\nInitiating transaction commit\n[796bccd9] |   |<--OrderProcessor.process() time=1006ms\n[796bccd9] |<--OrderServiceV3.outer() time=1007ms\n[796bccd9] OrderControllerV3.outer() time=1008ms\n\n--   내 줄 안쪽에 트랜잭션 줄이 든다\n--   9.4 절의 그 겹침이다\n\n\n-- 순서를 확인한다\n\n$ curl -s localhost:8080/aop/orders\nLogTraceAspect                                     1\nSlowAspect                                         2\nBeanFactoryTransactionAttributeSourceAdvisor    2147483647\n\n$ curl -s 'localhost:8080/aop/chain?name=orderProcessor' | head -2\n1 AspectJAroundAdvice          LogTraceAspect.execute\n2 TransactionInterceptor\n\n--   9.4 절에서 본 그 기본값이다\n\n\n-- 밖으로 보내면\n\n@EnableTransactionManagement(order = 0)\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -E 'study.adv.trace|transaction' logs/app.log | cut -c56- | head -4\nCreating new transaction with name [study.adv.app.OrderProcessor.process]\n[796bccd9] OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[796bccd9] |   |-->OrderProcessor.process()\n\n$ grep 'OrderProcessor.process() time' logs/app.log | cut -c56-\n[796bccd9] |   |<--OrderProcessor.process() time=1004ms\n\n// 안쪽일 때\n[796bccd9] |   |<--OrderProcessor.process() time=1006ms\n\n$ python3 -c \"print('%d ms 차이 = 커밋 값' % (1006-1004))\"\n2 ms 차이 = 커밋 값\n\n--   9.4 절에서 바깥이 더 잰다고 했다\n--   그 2 ms 가 커밋이다\n\n\n-- 한계가 같다\n\n$ curl -s localhost:8080/tx/limits\n자기 호출        안 걸림   12.1\nprivate          안 걸림   12.6\nfinal            안 걸림   12.6\nstatic           안 걸림   12.6\nnew 로 만든 것   안 걸림   10.4\n이른 빈          안 걸림   8.7\n\n$ curl -s localhost:8080/tx/limits | wc -l\n       6\n\n$ curl -s localhost:8080/aop/limits | wc -l\n       6\n\n--   두 목록이 같다\n--   같은 후처리기를 지나서다\n\n\n-- 자기 호출을 다시 겪는다\n\n@Service\npublic class TxService {\n    public void outer() { inner(); }\n    @Transactional public void inner() { save(); throw new IllegalStateException(); }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/tx/outer'\n$ grep -c 'Creating new transaction' logs/app.log\n0\n$ curl -s localhost:8080/orders/count\n1\n\n--   12.1 절과 한 글자도 안 다르다\n\n\n-- 여기선 로그가 아니라 데이터다\n\n// 내 애스펙트가 안 걸리면\n$ grep -c 'study.adv.trace' logs/app.log\n0\n$ curl -s localhost:8080/orders/count\n1\n\n// 트랜잭션이 안 걸리면\n$ grep -c 'Creating new transaction' logs/app.log\n0\n$ curl -s localhost:8080/orders/count\n1\n\n$ curl -s localhost:8080/orders/list\n연필 (실패한 주문)\n\n--   한쪽은 못 본 것이고\n--   한쪽은 남으면 안 될 것이 남았다\n\n\n-- 예외를 삼키면\n\n@Around(\"execution(* study.adv.app..*(..))\")\n@Order(0)\npublic Object swallow(ProceedingJoinPoint jp) throws Throwable {\n    try { return jp.proceed(); }\n    catch (Exception e) { log.warn(\"삼킴\"); return null; }\n}\n\n$ curl -s -w '%{http_code}\\n' -o /dev/null 'localhost:8080/tx/inner'\n200\n\n$ grep -E 'Initiating transaction (commit|rollback)' logs/app.log | cut -c56-\nInitiating transaction rollback\n\n$ curl -s localhost:8080/orders/count\n0\n\n--   트랜잭션이 더 안쪽이라 먼저 되돌렸다\n--   삼킨 건 그 바깥이다\n\n\n-- 밖에 있으면 다르다\n\n@EnableTransactionManagement(order = 1)\n@Order(0) public class SwallowAspect { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/tx/inner'\n$ grep -E 'Initiating transaction (commit|rollback)' logs/app.log | cut -c56-\nInitiating transaction commit\n\n$ curl -s localhost:8080/orders/count\n1\n\n--   내가 삼켜 트랜잭션이 성공으로 봤다\n--   10.3 절에서 말한 되던질 의무다\n\n\n-- 겹칠 때의 규칙\n\n$ printf '%-30s %s\\n' \\\n  '트랜잭션이 안쪽'      '내 예외 처리가 커밋 뒤' \\\n  '트랜잭션이 바깥'      '내 예외 처리가 커밋 앞' \\\n  '예외를 삼키면'        '바깥이면 커밋됨' \\\n  '시간을 재면'          '바깥이 커밋까지 잼'\n\n트랜잭션이 안쪽                내 예외 처리가 커밋 뒤\n트랜잭션이 바깥                내 예외 처리가 커밋 앞\n예외를 삼키면                  바깥이면 커밋됨\n시간을 재면                    바깥이 커밋까지 잼\n\n\n-- 검사를 트랜잭션에도 쓴다\n\n@Component\nclass TxAudit implements InitializingBean {\n    @Override public void afterPropertiesSet() {\n        int n = 0;\n        for (String name : ctx.getBeanDefinitionNames()) {\n            Class<?> t = AopUtils.getTargetClass(ctx.getBean(name));\n            if (!t.getName().startsWith(\"study.adv\")) continue;\n            for (Method m : t.getDeclaredMethods()) {\n                if (!m.isAnnotationPresent(Transactional.class)) continue;\n                int mod = m.getModifiers();\n                if (Modifier.isPublic(mod) && !Modifier.isFinal(mod) && !Modifier.isStatic(mod)\n                    && AopUtils.isAopProxy(ctx.getBean(name))) continue;\n                log.warn(\"@Transactional 이 안 걸림 {}.{}\", t.getSimpleName(), m.getName());\n                n++;\n            }\n        }\n        if (n > 0) throw new IllegalStateException(\"안 걸리는 @Transactional \" + n + \" 개\");\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException: 안 걸리는 @Transactional 2 개\n\n$ ./gradlew bootRun 2>&1 | grep '안 걸림' | cut -c56-\n@Transactional 이 안 걸림 TxService.hidden\n@Transactional 이 안 걸림 TxLimitService.sealed\n\n--   12.6 절의 검사를 표시 하나만 바꿔 쓴다\n\n\n-- ⑤ 에서 본 것과 잇는다\n\n$ printf '%-26s %-18s %s\\n' \\\n  '⑤ 6.1'  '트랜잭션 매니저'  '여닫는 코드를 옮김' \\\n  '⑤ 6.4'  '트랜잭션 AOP'     '@Transactional' \\\n  '⑰ 7'    '프록시 팩토리'    '그 AOP 의 속' \\\n  '⑰ 12.7' '한계'             '같은 자리에서 안 걸림'\n\n⑤ 6.1      트랜잭션 매니저      여닫는 코드를 옮김\n⑤ 6.4      트랜잭션 AOP         @Transactional\n⑰ 7        프록시 팩토리        그 AOP 의 속\n⑰ 12.7     한계                 같은 자리에서 안 걸림\n\n$ curl -s 'localhost:8080/aop/chain?name=orderProcessor'\n1 AspectJAroundAdvice          LogTraceAspect.execute\n2 TransactionInterceptor\n3 원본 study.adv.app.OrderProcessor\n\n--   ⑤ 에서 쓰기만 하던 것을 여기서 열었다\n\n\n-- 확인한다\n\n$ git checkout -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -E 'study.adv.trace|transaction' logs/app.log | cut -c56- | sed -n '3,4p'\n[796bccd9] |   |-->OrderProcessor.process()\nCreating new transaction with name [study.adv.app.OrderProcessor.process]\n\n$ ./gradlew bootRun 2>&1 | grep -c '안 걸리는 @Transactional'\n0\n\n--   12.8 절에서 한 요청을 통째로 읽는다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '장치'         '같음' \\\n  '묶음'         'BeanFactoryTransaction…' \\\n  '거르개'       '표시 탐색' \\\n  '부가 기능'    'TransactionInterceptor' \\\n  '순서'         '기본이 가장 안쪽' \\\n  '바깥이면'     '커밋까지 잼' \\\n  '한계'         '여섯이 같음' \\\n  '자기 호출'    '똑같이 안 걸림' \\\n  '차이'         '로그가 아니라 데이터' \\\n  '삼키면'       '바깥이면 커밋' \\\n  '검사'         '표시만 바꿔 씀'\n\n장치                       같음\n묶음                       BeanFactoryTransaction…\n거르개                     표시 탐색\n부가 기능                  TransactionInterceptor\n순서                       기본이 가장 안쪽\n바깥이면                   커밋까지 잼\n한계                       여섯이 같음\n자기 호출                  똑같이 안 걸림\n차이                       로그가 아니라 데이터\n삼키면                     바깥이면 커밋\n검사                       표시만 바꿔 씀",
+   "note": "**사슬을 열면 내 어드바이스 옆에 `TransactionInterceptor` 가 같은 모양으로** 서 있다.\n\n**거르개가 표현식이 아니라 `@Transactional` 을 찾는 11.5절 방식**이다.\n\n**트랜잭션이 안쪽이면 1006 ms, 바깥이면 1004 ms 로 그 2 ms 가** 커밋이다.\n\n**한계 목록 여섯 줄이 내 애스펙트 것과 한 줄도 안** 다르다.\n\n**12.6절 검사를 표시만 바꿔 `안 걸리는 @Transactional 2 개` 로 기동을** 멈춘다."
+  }
+ ],
+ "recap": [
+  "**같은** 장치다.",
+  "**묶음이** 있다.",
+  "**표시로** 고른다.",
+  "**감싸기**다.",
+  "**기본이** 안쪽이다.",
+  "**바깥이면 더** 잰다.",
+  "**한계가** 같다.",
+  "**데이터를** 잃는다.",
+  "**검사를 그대로** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "사슬을 열어 본다.",
+   "done_when": "내 것 옆의 그것을 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "순서를 바꿔 본다.",
+   "done_when": "잰 시간이 달라지는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "예외를 삼켜 본다.",
+   "done_when": "순서에 따라 갈리는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "검사를 트랜잭션용으로 고친다.",
+   "done_when": "안 걸리는 자리를 찾았다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "트랜잭션은 무엇으로 만들어졌나?",
+   "a": "포인트컷·어드바이스·어드바이저·프록시로, 내가 만든 것과 같다."
+  },
+  {
+   "q": "거르개가 보는 것은?",
+   "a": "표현식이 아니라 붙은 애너테이션이다."
+  },
+  {
+   "q": "기본 순서는?",
+   "a": "가장 안쪽이다. 번호가 가장 크다."
+  },
+  {
+   "q": "예외를 삼키면?",
+   "a": "내가 바깥이면 커밋된다. 안쪽이면 이미 되돌린 뒤다."
+  },
+  {
+   "q": "내 애스펙트와 뭐가 다른가?",
+   "a": "안 걸리면 로그가 아니라 데이터를 잃는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "트랜잭션 인터셉터",
+   "def": "여닫는 코드를 담은 어드바이스. 내 감싸기와 같은 모양이다."
+  },
+  {
+   "term": "경계",
+   "def": "한 번에 되거나 한 번에 안 되어야 하는 구간의 시작과 끝."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Transaction Propagation",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

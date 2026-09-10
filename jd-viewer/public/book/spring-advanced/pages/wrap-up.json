@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "wrap-up",
+ "no": "12.8",
+ "chapter": 12,
+ "title": "다시 보는 로그",
+ "summary": "한 요청에 무엇이 있었나",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "한 요청을 다 읽는다.",
+  "열두 장을 잇는다.",
+  "책을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.1절에서 여섯 줄을** 봤다. **그 여섯 줄 뒤에 무엇이 있었는지** 읽는다."
+  },
+  {
+   "type": "figure",
+   "caption": "한 요청, 밖에서 안으로",
+   "ascii": "   one request, from the outside in\n\n   the servlet stack hands the call to a controller proxy\n   the tracer opens, the timer opens, the transaction opens\n   the original method finally runs\n   and everything closes in reverse\n\n   none of which is written in the method itself",
+   "note": "**그중 어느 것도 그 메서드 안에는 안 적혀** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "열두 장이 이 한 요청에 다 들어 있다",
+   "md": "**받는 건** 프록시다.\n\n> **5장부터 그랬다**.\n> **아래에서 확인**한다.\n> **6장이 만들었다**.\n\n**사슬을** 걷는다.\n\n> **7장의 그** 구조다.\n> **아래에서 연다**.\n> **8장이 자동으로** 만든다.\n\n**표현식이** 골랐다.\n\n> **9장과 11장**이다.\n> **아래에서 물어** 본다.\n> **왜 걸렸는지** 답한다.\n\n**안 걸린 것도** 있다.\n\n> **10장과 12장**이다.\n> **아래에서** 센다.\n> **이제 시끄럽다**."
+  },
+  {
+   "type": "figure",
+   "caption": "열두 장, 한 눈금",
+   "ascii": "   twelve chapters, one counter\n\n   hand written classes   nine, then one, then two by choice\n   configuration lines    eighty four, then fourteen, then zero\n   silent failure sites   seven, then two\n\n   the six log lines never moved",
+   "note": "**여섯 줄은 한 번도 안** 움직였다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "다음에 이 자리를 만나면",
+   "md": "**먼저 진짜 이름을** 찍는다.\n\n> **프록시인지** 본다.\n> **아래에서 그** 창구다.\n> **9.5절부터 썼다**.\n\n**사슬을** 연다.\n\n> **무엇이 걸려 있나**다.\n> **10.7절에서 만들었다**.\n> **아래에서 쓴다**.\n\n**왜 안 걸렸는지** 묻는다.\n\n> **관문 넷**이다.\n> **8.7절에서 만들었다**.\n> **아래에서 쓴다**.\n\n**기동에서** 막는다.\n\n> **검사 넷**이다.\n> **아래에서 모은다**.\n> **조용함을** 없앤다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 한 요청을 켠다\n\n$ ./gradlew bootRun --args='\\\n    --logging.level.study.adv=DEBUG \\\n    --logging.level.org.springframework.transaction=DEBUG \\\n    --logging.level.org.springframework.aop=DEBUG'\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n\n\n-- 다 읽는다\n\n$ grep -E 'study.adv|transaction' logs/app.log | tail -14 | cut -c56-\n[796bccd9] OrderControllerV3.outer()\n[1] 들어감 OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[1] 들어감 OrderServiceV3.outer()\n[796bccd9] |   |-->OrderProcessor.process()\n[2] 들어감 OrderProcessor.process()\nCreating new transaction with name [study.adv.app.OrderProcessor.process]\n[796bccd9] |   |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |   |<--OrderRepositoryV3.save() time=1004ms\nInitiating transaction commit\n[2] 나옴  OrderProcessor.process()\n[796bccd9] |   |<--OrderProcessor.process() time=1006ms\n[796bccd9] |<--OrderServiceV3.outer() time=1007ms\n[796bccd9] OrderControllerV3.outer() time=1008ms\n\n$ grep -E 'study.adv|transaction' logs/app.log | tail -14 | wc -l\n14\n\n--   1.1 절의 여섯 줄이 이 안에 있다\n\n\n-- 여섯 줄만 남긴다\n\n$ grep 'study.adv.trace' logs/app.log | tail -8 | cut -c56-\n[796bccd9] OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[796bccd9] |   |-->OrderProcessor.process()\n[796bccd9] |   |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |   |<--OrderProcessor.process() time=1006ms\n[796bccd9] |<--OrderServiceV3.outer() time=1007ms\n[796bccd9] OrderControllerV3.outer() time=1008ms\n\n$ diff <(cat 목표.txt | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V3//g; s/time=[0-9]*ms/time=Nms/') \\\n       <(grep 'study.adv.trace' logs/app.log | tail -8 | sed -n '1,2p;4,6p;8p' | cut -c56- \\\n         | sed 's/\\[[0-9a-f]*\\]/[ID]/; s/V3//g; s/time=[0-9]*ms/time=Nms/; s/Processor.process/Service.orderItem/') \\\n  && echo '2.1 절의 목표와 같음'\n2.1 절의 목표와 같음\n\n--   12.3 절에서 나눠 한 칸이 더 깊어졌다\n\n\n-- 받은 것이 무엇인가\n\n$ curl -s 'localhost:8080/proxy/kind?name=orderControllerV3'\n프록시:   study.adv.app.OrderControllerV3$$SpringCGLIB$$0\nAOP:      true\nJDK:      false\nCGLIB:    true\n타깃:     study.adv.app.OrderControllerV3\n\n--   5.2 절부터 계속 그랬다\n--   12.4 절에서 왜 CGLIB 인지 봤다\n\n\n-- 무엇이 걸려 있나\n\n$ curl -s 'localhost:8080/aop/chain?name=orderProcessor'\n1 AspectJAroundAdvice          LogTraceAspect.execute      order=1\n2 AspectJAroundAdvice          SlowAspect.slow             order=2\n3 TransactionInterceptor                                   order=2147483647\n4 원본 study.adv.app.OrderProcessor\n\n$ curl -s 'localhost:8080/aop/explain?bean=orderProcessor&method=process'\nAspectJAroundAdvice     study.adv.aspect.Pointcuts.tracked()\nAspectJAroundAdvice     study.adv.aspect.Pointcuts.repositoryLayer()\nTransactionInterceptor  @Transactional\n\n--   10.7 절에서 만든 창구다\n--   왜 걸렸는지까지 답한다\n\n\n-- 왜 안 걸렸나\n\n$ for b in orderProcessor clockService billingService nothingBean; do\n    printf '%-18s ' \"$b\"\n    curl -s \"localhost:8080/proxy/why?name=$b\"\n  done\n\norderProcessor     감싸졌다\nclockService       ④ 걸리는 메서드가 없다\nbillingService     ③ 클래스가 안 맞는다\nnothingBean        ① 빈이 아니다\n\n--   8.7 절에서 만든 관문이다\n\n\n-- 검사 넷을 다 돌린다\n\n$ ./gradlew bootRun 2>&1 | grep -E '\\[검사\\]|조용히 빠지는|놓친 자기 호출|안 걸리는 @Transactional' \\\n    | cut -c56-\n[검사] appLayer 맞는 메서드 16\n[검사] serviceLayer 맞는 메서드 6\n[검사] repositoryLayer 맞는 메서드 3\n[검사] publicMethod 맞는 메서드 412\n[검사] traced 맞는 메서드 2\n[검사] v3Repo 맞는 메서드 3\n[검사] firstIsString 맞는 메서드 9\n[검사] tracked 맞는 메서드 14\n조용히 빠지는 메서드 0 개\n놓친 자기 호출 0 곳\n안 걸리는 @Transactional 0 개\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'IllegalState'\n0\n\n--   11.2·11.9·12.1·12.6·12.7 절에서 하나씩 만든 것들이다\n\n\n-- 조용한 자리를 마지막으로 센다\n\n$ curl -s localhost:8080/aop/silent\n표현식 오타          기동에서 잡힘   11.9\n자기 호출            기동에서 잡힘   12.1\nfinal private static 기동에서 잡힘   12.6\n@Transactional       기동에서 잡힘   12.7\n@Component 누락      조용함          9.1\nget set 표현식       조용함          10.2\n\n$ curl -s localhost:8080/aop/silent | grep -c '조용함'\n2\n\n--   10.7 절에서 일곱이었다\n\n\n-- 남은 둘\n\n// @Component 누락\n@Component\nclass AspectPresenceCheck implements InitializingBean {\n    @Override public void afterPropertiesSet() {\n        if (ctx.getBeansWithAnnotation(Aspect.class).isEmpty())\n            throw new IllegalStateException(\"애스펙트 빈이 하나도 없다\");\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -c 'IllegalState'\n0\n\n$ sed -i '' 's/^@Component$//' src/main/java/study/adv/aspect/LogTraceAspect.java\n$ ./gradlew bootRun 2>&1 | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException: 애스펙트 빈이 하나도 없다\n\n$ git checkout -- src/main/java/\n\n--   하나 더 시끄러워졌다\n--   get set 은 10.5 절의 위빙이 아니면 못 한다\n\n\n-- 열두 장의 눈금\n\n$ printf '%-8s %-12s %-12s %-12s %s\\n' '' '손 클래스' '설정 줄' '조용한 자리' '로그' && \\\n  printf '%-8s %-12s %-12s %-12s %s\\n' \\\n  'v2'   '0'  '0'   '-'  '6 줄' \\\n  'v5'   '3'  '84'  '-'  '6 줄' \\\n  'v6'   '2'  '61'  '5'  '6 줄' \\\n  'v8'   '3'  '52'  '5'  '6 줄' \\\n  'v9'   '2'  '14'  '7'  '6 줄' \\\n  'v10'  '1'  '0'   '7'  '6 줄' \\\n  'v13'  '3'  '0'   '5'  '6 줄' \\\n  'v16'  '4'  '0'   '2'  '6 줄'\n\n           손 클래스     설정 줄      조용한 자리   로그\nv2         0            0            -            6 줄\nv5         3            84           -            6 줄\nv6         2            61           5            6 줄\nv8         3            52           5            6 줄\nv9         2            14           7            6 줄\nv10        1            0            7            6 줄\nv13        3            0            5            6 줄\nv16        4            0            2            6 줄\n\n--   9.6 절의 표에 뒤가 붙었다\n--   맨 오른쪽 칸만 안 움직였다\n\n\n-- 업무 코드를 마지막으로 본다\n\n$ cat src/main/java/study/adv/app/OrderProcessor.java\n@Service\n@RequiredArgsConstructor\npublic class OrderProcessor {\n\n    private final OrderRepositoryV3 orderRepository;\n\n    @Transactional\n    public void process(String itemId) {\n        orderRepository.save(itemId);\n    }\n}\n\n$ grep -cE 'Aspect|Advice|Proxy|trace' src/main/java/study/adv/app/OrderProcessor.java\n0\n\n$ diff <(git show v0:src/main/java/study/adv/app/OrderServiceV0.java \\\n           | grep -v '^import' | sed 's/V0//g; s/OrderService/X/g; s/orderItem/y/g') \\\n       <(grep -v '^import\\|@Transactional' src/main/java/study/adv/app/OrderProcessor.java \\\n           | sed 's/OrderProcessor/X/g; s/process/y/g') \\\n  && echo '2.1 절의 v0 와 같음'\n2.1 절의 v0 와 같음\n\n--   애너테이션 한 줄만 늘었다\n\n\n-- 부가 기능 전부\n\n$ find src/main/java/study/adv/aspect -name '*.java' | sort\nsrc/main/java/study/adv/aspect/LogTraceAspect.java\nsrc/main/java/study/adv/aspect/Pointcuts.java\nsrc/main/java/study/adv/aspect/ProxyAudit.java\nsrc/main/java/study/adv/aspect/SlowAspect.java\n\n$ wc -l src/main/java/study/adv/aspect/*.java | tail -1\n     134 total\n\n$ find src/main/java/study/adv -name '*Config*.java' | wc -l\n       0\n\n--   넷 중 둘은 검사다\n--   설정 클래스는 여전히 0 개다\n\n\n-- 마지막으로 한 번 더\n\n$ ./gradlew clean build -q && echo 'build OK'\nbuild OK\n\n$ ./gradlew test -q && echo 'test OK'\ntest OK\n\n$ ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -8 | cut -c56-\n[796bccd9] OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[796bccd9] |   |-->OrderProcessor.process()\n[796bccd9] |   |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |   |<--OrderProcessor.process() time=1006ms\n[796bccd9] |<--OrderServiceV3.outer() time=1007ms\n[796bccd9] OrderControllerV3.outer() time=1008ms\n\n$ curl -s 'localhost:8080/who?name=orderProcessor' | sed -n '2p'\n주입된 것: study.adv.app.OrderProcessor$$SpringCGLIB$$0\n\n$ git add -A && git commit -q -m 'docs: 고급편 마무리' && git tag v17\n\n--   이름 끝에 붙은 글자가 열두 장의 주제였다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '한 요청'      '14 줄' \\\n  '내 로그'      '8 줄' \\\n  '받은 것'      'CGLIB 프록시' \\\n  '사슬'         '어드바이스 셋과 원본' \\\n  '왜 걸렸나'    '이름 붙은 표현식' \\\n  '왜 안 걸렸나' '관문 넷' \\\n  '검사'         '넷, 전부 0' \\\n  '조용한 자리'  '일곱에서 하나' \\\n  '설정'         '0 줄' \\\n  '업무 코드'    'v0 + 한 줄' \\\n  '로그'         '안 움직임'\n\n한 요청                    14 줄\n내 로그                    8 줄\n받은 것                    CGLIB 프록시\n사슬                       어드바이스 셋과 원본\n왜 걸렸나                  이름 붙은 표현식\n왜 안 걸렸나               관문 넷\n검사                       넷, 전부 0\n조용한 자리                일곱에서 하나\n설정                       0 줄\n업무 코드                  v0 + 한 줄\n로그                       안 움직임",
+   "note": "**한 요청이 14 줄로 찍히고 그중 내 추적은 8 줄, 나머지는 애스펙트와 트랜잭션**이다.\n\n**받은 것이 여전히 `…$$SpringCGLIB$$0` 이고 사슬에 어드바이스 셋과 원본이** 있다.\n\n**검사 넷이 전부 0 으로 나오고 조용한 자리가 일곱에서 하나로** 줄었다.\n\n**업무 코드가 2.1절 v0 와 애너테이션 한 줄 차이고 설정 클래스는 0 개**다.\n\n**열두 장 동안 손 클래스와 설정 줄은 계속 움직였고 여섯 줄만 안** 움직였다."
+  }
+ ],
+ "recap": [
+  "**한 요청이** 14 줄이다.",
+  "**받은 건** 프록시다.",
+  "**사슬을** 연다.",
+  "**왜 걸렸는지** 묻는다.",
+  "**왜 안 걸렸는지도** 묻는다.",
+  "**검사가** 넷이다.",
+  "**조용함이** 하나다.",
+  "**업무 코드가** 같다.",
+  "**로그가 안** 움직였다."
+ ],
+ "drills": [
+  {
+   "task": "한 요청을 다 켜고 읽는다.",
+   "done_when": "14 줄을 다 설명했다.",
+   "minutes": 30
+  },
+  {
+   "task": "창구 셋을 다 만든다.",
+   "done_when": "받은 것·사슬·관문을 다 물었다.",
+   "minutes": 35
+  },
+  {
+   "task": "검사 넷을 다 붙인다.",
+   "done_when": "전부 0 인 걸 확인했다.",
+   "minutes": 35
+  },
+  {
+   "task": "v0 와 diff 한다.",
+   "done_when": "한 줄 차이인 걸 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "한 요청에 무엇이 있었나?",
+   "a": "프록시, 어드바이스 둘, 트랜잭션, 그리고 원본이다."
+  },
+  {
+   "q": "제일 먼저 무엇을 찍나?",
+   "a": "받은 객체의 진짜 클래스 이름이다."
+  },
+  {
+   "q": "왜 안 걸리는지 어떻게 아나?",
+   "a": "빈인가, 이른가, 클래스가 맞나, 메서드가 맞나를 묻는다."
+  },
+  {
+   "q": "검사 넷은?",
+   "a": "표현식 0 개, 자기 호출, 조용히 빠짐, 안 걸리는 트랜잭션이다."
+  },
+  {
+   "q": "열두 장 동안 안 바뀐 것은?",
+   "a": "업무 코드와 그 여섯 줄의 로그다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "창구",
+   "def": "지금 무엇이 걸려 있고 왜 그런지 물어보는 진단용 엔드포인트."
+  },
+  {
+   "term": "검사",
+   "def": "조용히 안 걸리는 상황을 기동에서 오류로 바꿔 주는 장치."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

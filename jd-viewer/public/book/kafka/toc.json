@@ -459,7 +459,7 @@
           "title": "멱등 프로듀서",
           "summary": "재시도해도 한 번만 쌓인다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -467,7 +467,7 @@
           "title": "트랜잭션",
           "summary": "여러 파티션에 원자적으로.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",

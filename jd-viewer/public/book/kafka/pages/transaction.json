@@ -1,0 +1,138 @@
+{
+ "book": "kafka",
+ "id": "transaction",
+ "no": "8.2",
+ "chapter": 8,
+ "title": "트랜잭션",
+ "summary": "여러 파티션에 원자적으로.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "트랜잭션 API 를 안다.",
+  "무엇이 원자적인지 안다.",
+  "좀비 차단을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**멱등성은 한 파티션**이었다(8.1절). **여러 파티션에 걸쳐 \"전부 또는 아무것도\" 가 필요하면 트랜잭션**이다.\n\n```java\nprops.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, \"order-processor-1\");\n```"
+  },
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "TransactionalProducer.java",
+   "caption": "기본 형태",
+   "code": "producer.initTransactions();          // 시작할 때 한 번\n\ntry {\n    producer.beginTransaction();\n\n    producer.send(new ProducerRecord<>(\"orders\", key, orderJson));\n    producer.send(new ProducerRecord<>(\"inventory\", key, invJson));\n    producer.send(new ProducerRecord<>(\"audit\", key, auditJson));\n\n    producer.commitTransaction();     // 셋 다 보이거나\n} catch (ProducerFencedException | OutOfOrderSequenceException e) {\n    producer.close();                 // 회복 불가 -- 새로 만들어야 한다\n} catch (KafkaException e) {\n    producer.abortTransaction();      // 셋 다 안 보인다\n}",
+   "note": "`transactional.id` 는 **인스턴스마다 고유**해야 한다 — 같으면 서로를 좀비로 만든다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 원자적인가",
+   "columns": [
+    "되는 것",
+    "안 되는 것"
+   ],
+   "rows": [
+    [
+     "**여러 토픽·파티션에 대한 쓰기**",
+     "**DB 와 카프카 사이**(8.5절)"
+    ],
+    [
+     "**쓰기 + 컨슈머 오프셋 커밋**",
+     "외부 API 호출"
+    ],
+    [
+     "같은 프로듀서의 여러 send",
+     "서로 다른 프로듀서"
+    ],
+    [
+     "`sendOffsetsToTransaction()`",
+     "**컨슈머의 처리 결과 자체**"
+    ]
+   ],
+   "note": "**카프카 안에서만**이다. **\"정확히 한 번\" 이 카프카→카프카 파이프라인에 한정되는 이유**(8.4절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "좀비 차단 — transactional.id 와 epoch",
+   "md": "**GC 로 멈췄던 인스턴스가 깨어나 계속 쓰면** 어떻게 되나.\n\n```\nc1 (transactional.id=\"p1\", epoch=3): GC 로 멈춤\n  -> 코디네이터가 죽은 것으로 보고 c1' 이 뜬다\nc1' (transactional.id=\"p1\", epoch=4): initTransactions()\n  -> epoch 이 4로 올라간다\nc1 이 깨어나서 send()\n  -> ProducerFencedException (epoch 3 은 낡았다)\n```\n\n> **같은 `transactional.id` 로 새 프로듀서가 초기화하면 옛것이 차단**된다.\n> **`ProducerFencedException` 은 회복 불가**다 — **`close()` 하고 프로세스를 끝내는 게** 맞다.\n\n**그래서 `transactional.id` 를 어떻게 정하느냐가** 중요하다:\n\n| 방식 | |\n|---|---|\n| **인스턴스 고정 ID** | `worker-1`, `worker-2` (StatefulSet 파드 번호) |\n| 랜덤 UUID | **좀비 차단이 안 된다.** 옛 인스턴스가 계속 쓴다 |\n| 파티션 기반 | 스트림즈가 쓰는 방식 |"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "트랜잭션의 비용",
+   "md": "| 비용 | 얼마나 |\n|---|---|\n| **처리량** | 커밋 표시 레코드와 조율 왕복. **대략 3~20% 하락** |\n| **지연** | 커밋이 끝나야 컨슈머에게 보인다(8.3절) |\n| **`transaction.timeout.ms`** | 기본 1분. 넘기면 자동 abort |\n| 복잡도 | 예외 처리 분기가 는다 |\n| 컨슈머 설정 | `isolation.level=read_committed` 여야 의미가 있다(8.3절) |\n\n**트랜잭션 크기**:\n\n> **너무 작으면**(레코드 하나마다) 오버헤드가 크다.\n> **너무 크면**(수만 건) 타임아웃과 지연이 문제다.\n> **poll 한 배치 = 트랜잭션 하나가 흔한 단위**다.\n\n**그리고 대부분의 경우 트랜잭션이 필요 없다** — **멱등 프로듀서 + 컨슈머 멱등 처리**로 충분하다(7.5절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "커밋과 어보트를 눈으로 본다",
+   "sql": "$ kt --create --topic tx-a --partitions 1 --replication-factor 3 >/dev/null\n$ kt --create --topic tx-b --partitions 1 --replication-factor 3 >/dev/null\n\n# --- 커밋 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid p1 --topics tx-a,tx-b --records 5 --commit\nbeginTransaction\n  sent to tx-a x5\n  sent to tx-b x5\ncommitTransaction\n\n$ kcc --topic tx-a --from-beginning --timeout-ms 2000 --isolation-level read_committed | wc -l\n5\n$ kcc --topic tx-b --from-beginning --timeout-ms 2000 --isolation-level read_committed | wc -l\n5\n\n\n# --- 어보트 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid p1 --topics tx-a,tx-b --records 5 --abort\nbeginTransaction\n  sent to tx-a x5\n  sent to tx-b x5\nabortTransaction\n\n$ kcc --topic tx-a --from-beginning --timeout-ms 2000 --isolation-level read_committed | wc -l\n5\n\n#   여전히 5건. 어보트한 것은 안 보인다\n\n$ kcc --topic tx-a --from-beginning --timeout-ms 2000 --isolation-level read_uncommitted | wc -l\n10\n\n#   read_uncommitted 로는 10건이 보인다\n#   어보트한 레코드도 로그에는 있다 (8.3절)\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic tx-a\ntx-a:0:12\n\n#   끝 오프셋이 12 다 (5 + 5 + 커밋 표시 2건)\n\n\n# --- 로그 안을 본다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/tx-a-0/00000000000000000000.log --print-data-log 2>/dev/null | \\\n    grep -E 'isTransactional|isControl|endTxnMarker' | head -6\nbaseOffset: 0 ... isTransactional: true isControl: false producerId: 4000\nbaseOffset: 5 ... isTransactional: true isControl: true  endTxnMarker: COMMIT\nbaseOffset: 6 ... isTransactional: true isControl: false producerId: 4000\nbaseOffset: 11 ... isTransactional: true isControl: true endTxnMarker: ABORT\n\n#   COMMIT / ABORT 표시가 레코드로 들어가 있다 (control batch)\n#   컨슈머가 이걸 보고 걸러낸다\n\n\n# --- 부분 실패는 없다 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid p1 --topics tx-a,tx-b --records 5 \\\n    --fail-after-first-topic\nbeginTransaction\n  sent to tx-a x5\n  ERROR simulated failure before tx-b\nabortTransaction\n\n$ kcc --topic tx-a --from-beginning --timeout-ms 2000 --isolation-level read_committed | wc -l\n5\n$ kcc --topic tx-b --from-beginning --timeout-ms 2000 --isolation-level read_committed | wc -l\n5\n\n#   tx-a 에도 안 늘었다. 전부 아니면 전무\n\n\n# --- 좀비 차단 ---\n\n$ java -cp 'out:libs/*' TxProducer --tid p1 --hold 30000 &\n$ sleep 3\n$ java -cp 'out:libs/*' TxProducer --tid p1 --records 1 --commit\ninitTransactions (epoch bumped)\ncommitTransaction\n\n$ wait\n[first producer] ERROR org.apache.kafka.common.errors.ProducerFencedException:\n  There is a newer producer with the same transactionalId which fences the\n  current one.\n\n#   같은 transactional.id 로 새 프로듀서가 뜨자 옛것이 차단됐다\n#   GC 로 멈췄다 깨어난 인스턴스를 막는 장치다\n\n\n# --- 처리량 비용 ---\n\n$ java -cp 'out:libs/*' TxBench --topic tx-a --records 200000 --tx-size 0\nno transaction:      142857 rec/s\n$ java -cp 'out:libs/*' TxBench --topic tx-a --records 200000 --tx-size 500\ntx per 500 records:  131578 rec/s   (-8%)\n$ java -cp 'out:libs/*' TxBench --topic tx-a --records 200000 --tx-size 1\ntx per 1 record:      12048 rec/s   (-92%)\n\n#   배치 단위 트랜잭션은 8% 정도지만\n#   레코드마다 트랜잭션을 열면 재앙이다\n\n$ kt --delete --topic tx-a >/dev/null; kt --delete --topic tx-b >/dev/null"
+  }
+ ],
+ "recap": [
+  "트랜잭션은 여러 토픽·파티션에 대한 쓰기와 오프셋 커밋을 원자적으로 만든다.",
+  "커밋/어보트는 컨트롤 레코드로 로그에 들어가고 컨슈머가 그것을 보고 거른다.",
+  "어보트한 레코드도 로그에는 남는다. read_uncommitted 로는 보인다.",
+  "같은 transactional.id 로 새 프로듀서가 초기화하면 옛것이 ProducerFenced 로 차단된다.",
+  "비용은 배치 단위면 8% 정도지만 레코드마다 열면 처리량이 10분의 1이 된다."
+ ],
+ "drills": [
+  {
+   "task": "커밋과 어보트를 각각 실행하고 read_committed/uncommitted 로 읽어 건수를 비교한다.",
+   "done_when": "어보트한 것이 로그에는 있지만 안 보이는 것을 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "dump-log 로 COMMIT/ABORT 컨트롤 배치를 찾아본다.",
+   "done_when": "endTxnMarker 를 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "같은 transactional.id 로 두 프로듀서를 띄워 ProducerFencedException 을 재현한다.",
+   "done_when": "옛 프로듀서가 차단되는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "트랜잭션이 원자적으로 묶는 범위는.",
+   "a": "여러 토픽·파티션에 대한 쓰기와 컨슈머 오프셋 커밋. 카프카 밖은 아니다."
+  },
+  {
+   "q": "어보트한 레코드는 로그에서 지워지나.",
+   "a": "안 지워진다. 컨트롤 레코드로 어보트가 표시되고 read_committed 컨슈머가 거른다."
+  },
+  {
+   "q": "transactional.id 를 UUID 로 하면 무엇이 안 되나.",
+   "a": "좀비 차단. 멈췄다 깨어난 옛 인스턴스를 막지 못한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "transactional.id",
+   "what": "트랜잭션 프로듀서의 고유 이름. 좀비 차단의 기준."
+  },
+  {
+   "term": "컨트롤 레코드",
+   "what": "커밋/어보트를 표시하는 특수 레코드."
+  },
+  {
+   "term": "ProducerFencedException",
+   "what": "같은 transactional.id 의 더 새로운 프로듀서에게 밀려난 예외."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Transactions",
+   "url": "https://kafka.apache.org/documentation/#transactions",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-98 — Exactly Once Delivery",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-98",
+   "publisher": "Apache"
+  }
+ ]
+}

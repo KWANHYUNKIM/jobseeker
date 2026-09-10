@@ -1,0 +1,137 @@
+{
+ "book": "kafka",
+ "id": "idempotent-producer",
+ "no": "8.1",
+ "chapter": 8,
+ "title": "멱등 프로듀서",
+ "summary": "재시도해도 한 번만 쌓인다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "멱등 프로듀서의 원리를 안다.",
+  "보장 범위를 정확히 안다.",
+  "설정 제약을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.4절에서 재시도가 중복을 만들었다.** **그것을 브로커가 걸러 주는 기능**이다.\n\n```java\nprops.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);   // 3.0+ 기본\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "시퀀스 번호로 중복을 안다",
+   "ascii": "   producer (PID=7, epoch=0)          broker (partition orders-0)\n   -----------------------------      ------------------------------\n   seq=0  \"m-1\"  ------------------>  last seq for (PID 7, p0) = -1\n                                      0 == -1+1  -> accept, store, last=0\n          <----- ack (lost) --------\n\n   seq=0  \"m-1\"  (retry) ---------->  0 <= last(0)\n                                      -> DUPLICATE, do not store\n          <----- ack (offset of the first write)\n\n   seq=1  \"m-2\"  ------------------>  1 == 0+1 -> accept\n\n   브로커가 (프로듀서 ID, 파티션)마다 마지막 시퀀스를 기억한다",
+   "note": "**프로듀서가 재시도해도 브로커가 \"이미 받은 것\" 을 안다.** **응답은 원래 오프셋을 돌려준다.**"
+  },
+  {
+   "type": "table",
+   "caption": "멱등 프로듀서가 강제하는 설정",
+   "columns": [
+    "설정",
+    "요구값",
+    "이유"
+   ],
+   "rows": [
+    [
+     "`acks`",
+     "**all**",
+     "응답을 받아야 시퀀스를 확인한다"
+    ],
+    [
+     "`retries`",
+     "**> 0**",
+     "재시도가 있어야 의미가 있다"
+    ],
+    [
+     "**`max.in.flight.requests.per.connection`**",
+     "**≤ 5**",
+     "브로커가 5개까지 순서를 재정렬해 준다"
+    ]
+   ],
+   "note": "**셋 중 하나라도 어기면 `ConfigException`** 이다(6.3절). **3.0+ 는 기본값이 이미 이 조합**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "순서까지 지켜 준다",
+   "md": "**4.5절에서 재시도가 순서를 뒤집는 것을** 봤다. **멱등 프로듀서는 그것도 막는다.**\n\n```\nmax.in.flight=5, 멱등성 켜짐\n\n  seq 0,1,2,3,4 를 동시에 날린다\n  seq 1 이 실패\n  -> 브로커는 seq 2,3,4 를 \"순서가 안 맞다\" 며 거부(OutOfOrderSequence)\n  -> 프로듀서가 1부터 다시 보낸다\n  -> 순서가 지켜진다\n```\n\n> **멱등성 없이 순서를 지키려면 `max.in.flight=1` 이어야 하고 처리량이 크게** 준다.\n> **멱등성을 켜면 5까지 두고도 순서가 지켜진다.**\n\n**성능 비용은 거의** 없다 — **레코드마다 몇 바이트(PID·epoch·seq)가 붙을 뿐**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "보장 범위가 좁다",
+   "md": "| 보장되는 것 | 보장 안 되는 것 |\n|---|---|\n| **한 프로듀서 세션** | **프로세스 재시작 후** (새 PID) |\n| **한 파티션** | 여러 파티션에 걸친 원자성 |\n| 프로듀서→브로커 구간 | **애플리케이션 레벨의 중복** |\n\n**예**:\n\n```java\n// 이건 멱등 프로듀서가 못 막는다\ntry {\n    orderRepo.save(order);\n    producer.send(event).get();\n} catch (Exception e) {\n    // 재시도 -> 애플리케이션이 같은 이벤트를 새 레코드로 다시 만든다\n    producer.send(event).get();   // 새 시퀀스 번호 -> 중복\n}\n```\n\n> **\"같은 `send()` 호출의 재시도\" 만** 걸러진다.\n> **애플리케이션이 다시 만들어 보내면 브로커가 알 길이** 없다.\n>\n> **그래서 컨슈머 쪽 멱등 처리가 여전히 필요**하다(7.5절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "켜고 끄고 비교한다",
+   "sql": "$ kt --create --topic idem --partitions 1 --replication-factor 3 \\\n    --config min.insync.replicas=2 >/dev/null\n\n# --- 멱등성을 끄고 리더를 죽인다 ---\n\n$ LEADER=$(kt --describe --topic idem | awk '/Partition:/ {print $6}')\n$ java -cp 'out:libs/*' SeqProducer --topic idem --records 100000 \\\n    --idempotence false --max-in-flight 5 &\n$ sleep 2 && docker compose stop kafka-$LEADER >/dev/null\n$ wait\nsent=100000 acked=100000\n\n$ sleep 8\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic idem\nidem:0:100213\n\n$ kcc --topic idem --from-beginning --timeout-ms 15000 2>/dev/null | \\\n    sort -n | uniq -d | wc -l\n213\n\n#   213건 중복\n\n$ docker compose start kafka-$LEADER >/dev/null && sleep 15\n\n\n# --- 멱등성을 켜고 같은 실험 ---\n\n$ kt --create --topic idem2 --partitions 1 --replication-factor 3 \\\n    --config min.insync.replicas=2 >/dev/null\n$ LEADER=$(kt --describe --topic idem2 | awk '/Partition:/ {print $6}')\n\n$ java -cp 'out:libs/*' SeqProducer --topic idem2 --records 100000 --idempotence true &\n$ sleep 2 && docker compose stop kafka-$LEADER >/dev/null\n$ wait\nsent=100000 acked=100000\n\n$ sleep 8\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic idem2\nidem2:0:100000\n\n$ kcc --topic idem2 --from-beginning --timeout-ms 15000 2>/dev/null | \\\n    sort -n | uniq -d | wc -l\n0\n\n#   정확히 100000. 중복 0\n\n$ docker compose start kafka-$LEADER >/dev/null && sleep 15\n\n\n# --- 프로듀서 ID 를 확인한다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/idem2-0/00000000000000000000.log --print-data-log 2>/dev/null | \\\n    grep -o 'producerId: [0-9-]*' | sort -u\nproducerId: 3000\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/idem-0/00000000000000000000.log --print-data-log 2>/dev/null | \\\n    grep -o 'producerId: [0-9-]*' | sort -u\nproducerId: -1\n\n#   멱등 프로듀서는 producerId 가 있고 아닌 것은 -1 이다\n#   브로커가 이 ID 로 시퀀스를 추적한다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/idem2-0/00000000000000000000.log --print-data-log 2>/dev/null | \\\n    grep -oE 'baseSequence: [0-9]+ lastSequence: [0-9]+' | head -3\nbaseSequence: 0 lastSequence: 121\nbaseSequence: 122 lastSequence: 243\nbaseSequence: 244 lastSequence: 365\n\n#   배치마다 시퀀스 범위가 이어진다\n\n\n# --- 설정 충돌 ---\n\n$ java -cp 'out:libs/*' SeqProducer --topic idem2 --idempotence true --acks 1\nException: ConfigException: Must set acks to all in order to use the idempotent producer\n\n$ java -cp 'out:libs/*' SeqProducer --topic idem2 --idempotence true --max-in-flight 10\nException: ConfigException: Must set max.in.flight.requests.per.connection to at most 5\n  when using the idempotent producer\n\n\n# --- 프로세스를 재시작하면 보장이 끊긴다 ---\n\n$ java -cp 'out:libs/*' SeqProducer --topic idem2 --records 10 --idempotence true \\\n    --start-seq 0 --print-pid\nproducerId=3001 epoch=0  sent 10\n\n$ java -cp 'out:libs/*' SeqProducer --topic idem2 --records 10 --idempotence true \\\n    --start-seq 0 --print-pid\nproducerId=3002 epoch=0  sent 10\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic idem2\nidem2:0:100020\n\n#   같은 내용을 두 번 보냈는데 20건이 다 들어갔다\n#   프로듀서 ID 가 다르니 브로커는 다른 프로듀서로 본다\n#   \"애플리케이션이 다시 만들어 보내는\" 중복은 못 막는다\n\n$ kt --delete --topic idem >/dev/null; kt --delete --topic idem2 >/dev/null"
+  }
+ ],
+ "recap": [
+  "멱등 프로듀서는 (프로듀서 ID, 파티션)마다 시퀀스 번호를 붙이고 브로커가 중복을 거른다.",
+  "acks=all, retries>0, max.in.flight<=5 를 강제한다. 3.0+ 는 기본값이 이 조합이다.",
+  "순서까지 지켜 준다. 멱등성 없이 순서를 지키려면 max.in.flight=1 이라 느리다.",
+  "보장은 한 프로듀서 세션·한 파티션 안이다. 프로세스가 재시작하면 새 ID 라 끊긴다.",
+  "애플리케이션이 같은 이벤트를 다시 만들어 보내는 중복은 못 막는다. 컨슈머 쪽 멱등 처리가 여전히 필요하다."
+ ],
+ "drills": [
+  {
+   "task": "멱등성을 끄고 켜고 각각 리더를 죽이며 보내 최종 건수와 중복 수를 비교한다.",
+   "done_when": "213건 대 0건 같은 차이를 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "dump-log 로 producerId 와 baseSequence 를 확인한다.",
+   "done_when": "멱등 프로듀서만 ID 가 있는 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "acks=1 이나 max.in.flight=10 과 함께 멱등성을 켜서 ConfigException 을 확인한다.",
+   "done_when": "설정 제약을 눈으로 본다.",
+   "minutes": 4
+  }
+ ],
+ "quiz": [
+  {
+   "q": "멱등 프로듀서가 중복을 거르는 원리는.",
+   "a": "(프로듀서 ID, 파티션)마다 마지막 시퀀스를 브로커가 기억하고, 그보다 작거나 같으면 저장하지 않는다."
+  },
+  {
+   "q": "멱등성을 켜면 max.in.flight 를 5로 둬도 순서가 지켜지는 이유는.",
+   "a": "브로커가 시퀀스가 안 맞는 배치를 거부하고 프로듀서가 순서대로 다시 보낸다."
+  },
+  {
+   "q": "프로세스 재시작 후에도 중복이 안 생기나.",
+   "a": "생긴다. 새 프로듀서 ID 라 브로커가 이전 것과 연결하지 못한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "PID",
+   "en": "producer ID",
+   "what": "브로커가 프로듀서에게 발급하는 식별자."
+  },
+  {
+   "term": "시퀀스 번호",
+   "what": "파티션별로 증가하는 레코드 번호. 중복 판단에 쓴다."
+  },
+  {
+   "term": "epoch",
+   "what": "같은 PID 의 세대 번호. 트랜잭션에서 좀비 차단에 쓴다(8.2절)."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Idempotent producer",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs_enable.idempotence",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-98 — Exactly Once Delivery and Transactional Messaging",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-98",
+   "publisher": "Apache"
+  }
+ ]
+}

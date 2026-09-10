@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "final-private",
+ "no": "12.6",
+ "chapter": 12,
+ "title": "final 과 private",
+ "summary": "안 걸리는 자리.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "덮을 수 있는 걸 안다.",
+  "조용한 셋을 안다.",
+  "시끄럽게 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**6.7절부터 넷이 계속** 남아 있었다. **마지막으로** 판다."
+  },
+  {
+   "type": "figure",
+   "caption": "자식이 바꿔 놓을 수 있는 것",
+   "ascii": "   what a child can and cannot replace\n\n   overridable   public and protected instance methods\n   not final     the keyword forbids replacing it\n   not private   the child cannot even see it\n   not static    it belongs to the class, not the object\n\n   whatever cannot be replaced is called on the original",
+   "note": "**못 바꾸는 건 원본 것이 그대로** 불린다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "덮을 수 없으면 프록시가 없는 것과 같다",
+   "md": "**자식이** 덮는다.\n\n> **12.4절의 그** 방법이다.\n> **아래에서 프록시를** 연다.\n> **덮은 것만** 걸린다.\n\n**final 은** 막는다.\n\n> **자바가 금지한다**.\n> **아래에서 확인**한다.\n> **컴파일이 정한 것**이다.\n\n**private 은 안** 보인다.\n\n> **자식이 못** 본다.\n> **아래에서 세어** 본다.\n> **덮을 대상이** 아니다.\n\n**static 은 객체 것이** 아니다.\n\n> **클래스에** 붙는다.\n> **아래에서 그걸** 본다.\n> **프록시가 낄 자리가** 없다."
+  },
+  {
+   "type": "figure",
+   "caption": "하나만 시끄럽다",
+   "ascii": "   one is loud, four are silent\n\n   a final class stops startup with a clear message\n   a final method, a private one, a static one say nothing\n\n   the missing log line is the only symptom",
+   "note": "**빠진 로그 한 줄이 유일한** 증상이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "형제로 바꾸면 다른 자리가 막힌다",
+   "md": "**형제는 final 을** 넘는다.\n\n> **자식이 아니라서**다.\n> **12.4절에서 봤다**.\n> **아래에서 확인**한다.\n\n**대신 인터페이스만**이다.\n\n> **없는 메서드는 못** 감싼다.\n> **12.4절의 그** 넷이다.\n> **아래에서 견준다**.\n\n**private 은 둘 다** 못 한다.\n\n> **어느 쪽도 못** 본다.\n> **아래에서** 센다.\n> **10.5절만** 잡는다.\n\n**막으면** 끝난다.\n\n> **기동에서** 세운다.\n> **아래에서 그걸** 만든다.\n> **조용한 자리가** 준다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 넷을 한 클래스에 모은다\n\n@Service\npublic class LimitService implements Repo {\n    public void save(String s) { log.info(\"save 돎\"); }\n    public final void sealed() { log.info(\"sealed 돎\"); }\n    private void hidden() { log.info(\"hidden 돎\"); }\n    public static void statik() { log.info(\"statik 돎\"); }\n    public void callAll() { sealed(); hidden(); statik(); }\n}\n\n@Around(\"execution(* study.adv.limit..*(..))\")\n\n$ curl -s -o /dev/null 'localhost:8080/limit/all'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 LimitService.callAll()\n\n$ grep -cE 'save 돎|sealed 돎|hidden 돎|statik 돎' logs/app.log\n3\n\n--   셋은 돌았는데 하나도 안 걸렸다\n\n\n-- 프록시를 연다\n\n$ ./gradlew bootRun --args='--spring.aop.dump=build/proxy-dump'\n$ javap -p 'build/proxy-dump/study/adv/limit/LimitService$$SpringCGLIB$$0.class' \\\n    | grep -E 'save|sealed|hidden|statik|callAll'\n  public void save(java.lang.String);\n  public void callAll();\n\n$ javap -p 'build/proxy-dump/study/adv/limit/LimitService$$SpringCGLIB$$0.class' \\\n    | grep -c 'CGLIB\\$'\n14\n\n$ javap -p build/classes/java/main/study/adv/limit/LimitService.class \\\n    | grep -cE 'save|sealed|hidden|statik|callAll'\n5\n\n--   원본 다섯 중 둘만 프록시에 있다\n--   6.6 절에서 프록시를 덤프하던 그 방법이다\n\n\n-- 자바가 금지한다\n\npublic class Child extends LimitService {\n    @Override public void sealed() { }\n}\n\n$ ./gradlew compileJava 2>&1 | grep -i 'error' | head -2\nerror: sealed() in Child cannot override sealed() in LimitService\n  overridden method is final\n\n--   프록시 이야기가 아니다\n--   자바 규칙이다\n\n\n-- private 은 안 보인다\n\npublic class Child extends LimitService {\n    @Override public void hidden() { }\n}\n\n$ ./gradlew compileJava 2>&1 | grep -i 'error' | head -2\nerror: method does not override or implement a method from a supertype\n\n$ javap -p build/classes/java/main/study/adv/limit/LimitService.class | grep hidden\n  private void hidden();\n\n--   덮는 게 아니라 새로 만드는 셈이 된다\n\n\n-- static 은 객체 것이 아니다\n\n$ javap -c -p build/classes/java/main/study/adv/limit/LimitService.class \\\n    | grep -A3 'public void callAll' | grep invoke\n     4: invokevirtual #21  // Method sealed:()V\n    11: invokespecial #25  // Method hidden:()V\n    18: invokestatic  #29  // Method statik:()V\n\n$ javap -c -p build/classes/java/main/study/adv/limit/LimitService.class \\\n    | grep -c invokestatic\n1\n\n--   부르는 명령부터 다르다\n--   객체를 안 거치니 프록시가 낄 데가 없다\n\n\n-- final 클래스만 시끄럽다\n\n@Service\npublic final class SealedService { public void work() { } }\n\n$ ./gradlew bootRun 2>&1 | grep -i 'Cannot subclass final' | head -2\nCaused by: org.springframework.aop.framework.AopConfigException: Could not\n  generate CGLIB subclass of class study.adv.limit.SealedService:\n  ... Cannot subclass final class study.adv.limit.SealedService\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'final method\\|private method\\|static method'\n0\n\n--   10.4 절에서 본 그 갈림이다\n\n\n-- 형제로 바꾸면\n\nspring:\n  aop:\n    proxy-target-class: false\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'Cannot subclass final'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/limit/all'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 LimitService.save()\n\n$ grep -c '걸림 LimitService.callAll' logs/app.log\n0\n\n--   final 클래스는 넘었다\n--   대신 callAll 이 빠졌다\n--   인터페이스에 없어서다\n\n\n-- 둘을 견준다\n\n$ printf '%-14s %-12s %-12s %s\\n' '' '자식' '형제' '로드 위빙' && \\\n  printf '%-14s %-12s %-12s %s\\n' \\\n  'public'       '걸림'    '인터페이스만' '걸림' \\\n  'final 메서드' '안 걸림' '걸림'         '걸림' \\\n  'final 클래스' '기동 실패' '걸림'       '걸림' \\\n  'private'      '안 걸림' '안 걸림'      '걸림' \\\n  'static'       '안 걸림' '안 걸림'      '걸림'\n\n                 자식         형제         로드 위빙\npublic           걸림         인터페이스만  걸림\nfinal 메서드     안 걸림      걸림         걸림\nfinal 클래스     기동 실패    걸림         걸림\nprivate          안 걸림      안 걸림      걸림\nstatic           안 걸림      안 걸림      걸림\n\n--   10.5 절의 그 위빙만 다 잡는다\n\n\n-- 트랜잭션도 같다\n\n@Service\npublic class TxLimitService {\n    @Transactional\n    private void hidden() { orderRepository.save(\"연필\"); }\n\n    @Transactional\n    public final void sealed() { orderRepository.save(\"연필\"); }\n}\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/tx/sealed'\n$ grep -c 'Creating new transaction' logs/app.log\n0\n\n--   애너테이션이 무시된다\n--   12.1 절과 같은 조용함이다\n\n\n-- 코틀린이면 더 흔하다\n\n// 코틀린은 클래스와 메서드가 기본으로 final 이다\nclass OrderService {\n    fun order() { }\n}\n\n$ curl -s localhost:8080/aop/kotlin-note\n코틀린 기본:  class 와 fun 이 final\n필요한 것:    open 을 붙이거나 all-open 플러그인\n스프링 플러그인: @Component 붙은 클래스를 자동으로 open\n\n--   자바에서 드문 일이 거기선 기본값이다\n\n\n-- 검사를 완성한다\n\n@Component\nclass ProxyAudit implements InitializingBean {\n\n    @Override\n    public void afterPropertiesSet() {\n        int n = 0;\n        for (String name : ctx.getBeanDefinitionNames()) {\n            Object bean = ctx.getBean(name);\n            if (!AopUtils.isAopProxy(bean)) continue;\n            Class<?> t = AopUtils.getTargetClass(bean);\n            if (!t.getName().startsWith(\"study.adv\")) continue;\n\n            for (Method m : t.getDeclaredMethods()) {\n                if (!shouldMatch(t, m)) continue;\n                int mod = m.getModifiers();\n                String why = Modifier.isFinal(mod) ? \"final\"\n                           : Modifier.isPrivate(mod) ? \"private\"\n                           : Modifier.isStatic(mod) ? \"static\" : null;\n                if (why == null) continue;\n                log.warn(\"조용히 빠짐 {}.{} ({})\", t.getSimpleName(), m.getName(), why);\n                n++;\n            }\n        }\n        log.warn(\"조용히 빠지는 메서드 {} 개\", n);\n        if (n > 0 && failOnSilent) throw new IllegalStateException(\"조용히 빠짐 \" + n + \" 개\");\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '조용히 빠짐' | cut -c56-\n조용히 빠짐 LimitService.sealed (final)\n조용히 빠짐 LimitService.hidden (private)\n조용히 빠짐 LimitService.statik (static)\n조용히 빠짐 TxLimitService.sealed (final)\n\n$ ./gradlew bootRun --args='--study.aop.fail-on-silent=true' 2>&1 \\\n    | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException: 조용히 빠짐 4 개\n\n--   6.2·6.7·7.7·9.6·10.4 절에서 다듬어 온 그것이다\n\n\n-- 고친다\n\n@Service\npublic class LimitService implements Repo {\n    public void save(String s) { }\n    public void sealed() { }              // final 뗌\n    void hidden() { }                     // 묶음 안에서 보이게\n    public static void statik() { }       // 남김\n}\n\n$ ./gradlew bootRun 2>&1 | grep '조용히 빠지는' | cut -c56-\n조용히 빠지는 메서드 1 개\n\n$ curl -s -o /dev/null 'localhost:8080/limit/all'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 LimitService.callAll()\n걸림 LimitService.sealed()\n\n--   final 을 떼니 걸린다\n--   묶음 접근은 자식이 못 덮는다\n\n\n-- 묶음 접근도 안 된다\n\n$ javap -p 'build/proxy-dump/study/adv/limit/LimitService$$SpringCGLIB$$0.class' | grep hidden\n(없음)\n\n$ curl -s 'localhost:8080/aop/overrides?bean=limitService'\nsave     덮어씀 예\ncallAll  덮어씀 예\nsealed   덮어씀 예\nhidden   덮어씀 아니오   다른 꾸러미의 자식은 못 봄\nstatik   덮어씀 아니오   static\n\n$ curl -s 'localhost:8080/proxy/kind?name=limitService' | sed -n '1p'\n프록시:   study.adv.limit.LimitService$$SpringCGLIB$$0\n\n--   프록시가 같은 꾸러미에 안 만들어진다\n--   public 이나 protected 여야 한다\n\n\n-- 마지막 하나는 남긴다\n\n$ ./gradlew bootRun 2>&1 | grep '조용히 빠짐' | cut -c56-\n조용히 빠짐 LimitService.statik (static)\n\n@Around(\"execution(* study.adv.limit..*(..)) && !execution(static * *(..))\")\n\n$ ./gradlew bootRun 2>&1 | grep '조용히 빠지는' | cut -c56-\n조용히 빠지는 메서드 0 개\n\n--   11.7 절의 빼기로 표현식에서 지웠다\n--   못 걸 것을 걸려고 하지 않는다\n\n\n-- 조용한 자리를 센다\n\n$ curl -s localhost:8080/aop/silent\n표현식 오타         기동에서 잡힘   11.9\n자기 호출           기동에서 잡힘   12.1\nfinal private static 기동에서 잡힘  12.6\n@Component 누락     조용함          9.1\n이른 빈             정보 로그       8.7\nget set 표현식      조용함          10.2\n\n$ curl -s localhost:8080/aop/silent | grep -c '조용함'\n2\n\n--   10.7 절에서 일곱이었다\n--   둘이 남았다\n\n\n-- 확인한다\n\n$ git checkout -- src/main/resources/application.yml\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ ./gradlew bootRun 2>&1 | grep '조용히 빠지는' | cut -c56-\n조용히 빠지는 메서드 0 개\n\n$ git add -A && git commit -q -m 'fix: 조용히 빠지는 메서드 제거' && git tag v16\n\n--   12.7 절에서 트랜잭션 이야기를 마무리한다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '덮는 것'      'public protected 인스턴스' \\\n  'final'        '자바가 금지' \\\n  'private'      '자식이 못 봄' \\\n  'static'       '객체 것이 아님' \\\n  '묶음 접근'    '꾸러미가 달라 못 봄' \\\n  '시끄러운 것'  'final 클래스 하나' \\\n  '형제'         'final 은 넘고 범위가 좁음' \\\n  '로드 위빙'    '다 잡음' \\\n  '트랜잭션'     '같이 무시됨' \\\n  '코틀린'       '기본이 final' \\\n  '조용한 자리'  '일곱에서 둘'\n\n덮는 것                    public protected 인스턴스\nfinal                      자바가 금지\nprivate                    자식이 못 봄\nstatic                     객체 것이 아님\n묶음 접근                  꾸러미가 달라 못 봄\n시끄러운 것                final 클래스 하나\n형제                       final 은 넘고 범위가 좁음\n로드 위빙                  다 잡음\n트랜잭션                   같이 무시됨\n코틀린                     기본이 final\n조용한 자리                일곱에서 둘",
+   "note": "**원본 다섯 메서드 중 프록시에는 둘만 있어 나머지는 원본 것이 그대로** 불린다.\n\n**바이트코드가 `invokevirtual`·`invokespecial`·`invokestatic` 으로 갈려 부르는 명령부터** 다르다.\n\n**형제로 바꾸면 `final` 클래스는 넘지만 인터페이스에 없는 `callAll` 이** 빠진다.\n\n**`@Transactional` 을 `private` 에 붙이면 `Creating new transaction` 이 0 줄로** 무시된다.\n\n**검사가 `조용히 빠짐 4 개` 로 멈추고 고치니 0 개, 조용한 자리가 일곱에서 둘로** 준다."
+  }
+ ],
+ "recap": [
+  "**덮을 수 있어야** 한다.",
+  "**final 은** 금지다.",
+  "**private 은 안** 보인다.",
+  "**static 은** 딴 것이다.",
+  "**하나만** 시끄럽다.",
+  "**형제는 다르게** 막힌다.",
+  "**위빙은 다** 잡는다.",
+  "**트랜잭션도** 같다.",
+  "**막을 수** 있다."
+ ],
+ "drills": [
+  {
+   "task": "프록시를 덤프해 연다.",
+   "done_when": "빠진 메서드를 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "바이트코드 명령을 견준다.",
+   "done_when": "셋이 다른 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "형제로 바꿔 견준다.",
+   "done_when": "막히는 자리가 바뀐 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "검사로 기동을 막는다.",
+   "done_when": "0 개로 만들었다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "자식이 못 덮는 것은?",
+   "a": "final, private, static 메서드다."
+  },
+  {
+   "q": "왜 static 은 안 되나?",
+   "a": "객체가 아니라 클래스에 붙어 프록시가 낄 자리가 없다."
+  },
+  {
+   "q": "형제로 바꾸면?",
+   "a": "final 은 넘지만 인터페이스에 없는 메서드가 빠진다."
+  },
+  {
+   "q": "무엇이 시끄러운가?",
+   "a": "final 클래스 하나뿐이고 나머지 셋은 조용하다."
+  },
+  {
+   "q": "어떻게 막나?",
+   "a": "걸려야 하는데 못 덮는 메서드를 세어 기동에서 멈춘다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "덮어쓰기",
+   "def": "자식 클래스가 부모 메서드를 자기 것으로 바꿔 놓는 것."
+  },
+  {
+   "term": "조용히 빠짐",
+   "def": "포인트컷에는 맞는데 덮을 수 없어 실제로 안 걸리는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java SE 21 — Java Language Specification, Method Dispatch",
+   "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

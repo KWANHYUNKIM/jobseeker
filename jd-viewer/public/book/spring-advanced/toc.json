@@ -756,7 +756,7 @@
           "title": "final 과 private",
           "summary": "안 걸리는 자리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.7",
@@ -764,7 +764,7 @@
           "title": "트랜잭션도 같은 것",
           "summary": "⑤에서 본 그 자리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.8",
@@ -772,7 +772,7 @@
           "title": "다시 보는 로그",
           "summary": "한 요청에 무엇이 있었나",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }
