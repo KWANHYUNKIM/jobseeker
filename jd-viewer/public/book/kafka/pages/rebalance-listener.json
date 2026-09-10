@@ -1,0 +1,138 @@
+{
+ "book": "kafka",
+ "id": "rebalance-listener",
+ "no": "7.7",
+ "chapter": 7,
+ "title": "리밸런스 리스너",
+ "summary": "빼앗기기 전에 할 일.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "콜백 세 개의 순서를 안다.",
+  "무엇을 해야 하는지 안다.",
+  "seek 으로 시작 위치를 정한다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "RebalanceListener.java",
+   "caption": "세 개의 콜백",
+   "code": "consumer.subscribe(List.of(\"orders\"), new ConsumerRebalanceListener() {\n\n    @Override\n    public void onPartitionsRevoked(Collection<TopicPartition> revoked) {\n        // 빼앗기기 직전 -- 마지막 기회다\n        log.info(\"revoked {}\", revoked);\n        consumer.commitSync(currentOffsets);      // 여기서 커밋한다\n        flushPendingWrites();\n    }\n\n    @Override\n    public void onPartitionsAssigned(Collection<TopicPartition> assigned) {\n        // 새로 받았다\n        log.info(\"assigned {}\", assigned);\n        // 필요하면 seek 으로 시작 위치를 정한다\n    }\n\n    @Override\n    public void onPartitionsLost(Collection<TopicPartition> lost) {\n        // 이미 빼앗겼다 (poll 간격 초과 등) -- 커밋해 봐야 실패한다\n        log.warn(\"lost {} -- cleaning up without commit\", lost);\n        discardPending();\n    }\n});",
+   "note": "**`onPartitionsLost` 는 3.x 에서 추가**됐다. 기본 구현은 `onPartitionsRevoked` 를 부르므로 **구분이 필요하면 직접 오버라이드**한다."
+  },
+  {
+   "type": "table",
+   "caption": "언제 무엇이 불리나",
+   "columns": [
+    "상황",
+    "불리는 것"
+   ],
+   "rows": [
+    [
+     "정상 리밸런싱(멤버 추가·제거)",
+     "**Revoked → (조율) → Assigned**"
+    ],
+    [
+     "**poll 간격 초과로 쫓겨남**",
+     "**Lost**(구현했다면). 커밋이 이미 불가능"
+    ],
+    [
+     "첫 가입",
+     "Assigned 만"
+    ],
+    [
+     "`close()`",
+     "Revoked"
+    ],
+    [
+     "협력적 리밸런싱",
+     "**옮길 파티션만** Revoked/Assigned(7.3절)"
+    ]
+   ],
+   "note": "**`onPartitionsRevoked` 안에서 `commitSync()` 가 흔한 패턴**이다 — **다음 컨슈머가 중복으로 읽는 범위를 줄인다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "여기서 커밋하면 중복이 줄어든다",
+   "md": "**커밋 없이 리밸런싱이 나면**:\n\n```\nc1: 오프셋 100까지 처리, 커밋은 80까지\n     리밸런싱 -> p0 를 c2 가 받음\nc2: 80부터 읽는다 -> 81~100 을 다시 처리 (중복 20건)\n```\n\n**`onPartitionsRevoked` 에서 커밋하면**:\n\n```\nc1: 100까지 처리, revoked 콜백에서 100 커밋\nc2: 100부터 -> 중복 0\n```\n\n> **완전히 없앨 수는** 없다 — **커밋 직후 처리 중에 리밸런싱이 나면 여전히** 중복이다.\n> **줄이는 것이고, 없애려면 8장이나 멱등 처리**(7.5절)다.\n\n**주의**: **이 콜백은 poll 스레드에서 불린다.** **오래 걸리면 리밸런싱 전체가 늦어**진다(7.3절)."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "seek 으로 시작 위치를 정한다",
+   "md": "**오프셋을 카프카가 아니라 내 DB 에 저장하는 경우**가 있다.\n\n```java\n@Override\npublic void onPartitionsAssigned(Collection<TopicPartition> assigned) {\n    for (var tp : assigned) {\n        long offset = offsetStore.load(tp);      // 내 DB 에서\n        if (offset >= 0) consumer.seek(tp, offset);\n        else consumer.seekToBeginning(List.of(tp));\n    }\n}\n```\n\n**왜 이렇게 하나**:\n\n> **처리 결과와 오프셋을 같은 DB 트랜잭션에 저장**하면 **정확히 한 번**이 된다(8.4절).\n> **카프카에 커밋하면 두 시스템이라 원자적이지** 않다.\n\n**seek 계열**:\n\n| 메서드 | |\n|---|---|\n| `seek(tp, offset)` | 정확한 위치 |\n| `seekToBeginning(tps)` | 가장 이른 것으로 |\n| `seekToEnd(tps)` | 끝으로 |\n| `offsetsForTimes(map)` | **시각 → 오프셋**(5.6절의 `--to-datetime`) |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "콜백 순서와 커밋 효과를 본다",
+   "sql": "$ kt --create --topic rl --partitions 4 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 400); do echo \"m-$i\"; done | kcp --topic rl\n\n# --- 콜백 순서 ---\n\n$ java -cp 'out:libs/*' ListenerConsumer --group l1 --label c1 --reset earliest \\\n    --timeout 30000 &\n$ sleep 4\n$ java -cp 'out:libs/*' ListenerConsumer --group l1 --label c2 --reset earliest \\\n    --timeout 20000 &\n$ sleep 5\n\n#   c1 의 로그:\n#   [c1] onPartitionsAssigned: [rl-0, rl-1, rl-2, rl-3]      <- 첫 가입\n#   [c1] processed 137 records\n#   [c1] onPartitionsRevoked: [rl-0, rl-1, rl-2, rl-3]       <- c2 가 들어옴\n#   [c1]   commitSync -> {rl-0=35, rl-1=34, rl-2=34, rl-3=34}\n#   [c1] onPartitionsAssigned: [rl-0, rl-1]\n#\n#   c2 의 로그:\n#   [c2] onPartitionsAssigned: [rl-2, rl-3]\n#   [c2] starting from committed offsets 34, 34\n\n$ wait 2>/dev/null\n\n\n# --- revoked 에서 커밋하지 않으면 ---\n\n$ kcg --delete --group l1 >/dev/null 2>&1\n$ java -cp 'out:libs/*' ListenerConsumer --group l2 --label c1 --reset earliest \\\n    --no-commit-on-revoke --commit-interval 10000 --timeout 30000 &\n$ sleep 4\n$ java -cp 'out:libs/*' ListenerConsumer --group l2 --label c2 --reset earliest \\\n    --no-commit-on-revoke --timeout 20000 &\n$ wait 2>/dev/null\n\n$ java -cp 'out:libs/*' DuplicateCounter --group l2 --topic rl\ntotal processed = 462\nunique records  = 400\nduplicates      = 62\n\n#   62건이 두 번 처리됐다\n\n$ kcg --delete --group l2 >/dev/null 2>&1\n$ java -cp 'out:libs/*' ListenerConsumer --group l3 --label c1 --reset earliest \\\n    --commit-on-revoke --commit-interval 10000 --timeout 30000 &\n$ sleep 4\n$ java -cp 'out:libs/*' ListenerConsumer --group l3 --label c2 --reset earliest \\\n    --commit-on-revoke --timeout 20000 &\n$ wait 2>/dev/null\n\n$ java -cp 'out:libs/*' DuplicateCounter --group l3 --topic rl\ntotal processed = 403\nunique records  = 400\nduplicates      = 3\n\n#   62 -> 3. 완전히 0은 아니다 (커밋 직후의 짧은 창)\n\n\n# --- onPartitionsLost ---\n\n$ java -cp 'out:libs/*' ListenerConsumer --group l4 --label c1 --reset earliest \\\n    --handle-ms 300 --max-poll-interval 15000 --max-poll-records 500 --timeout 60000\n[c1] onPartitionsAssigned: [rl-0, rl-1, rl-2, rl-3]\n[c1] processed 50 (15.2s)\n[c1] WARN consumer poll timeout has expired\n[c1] onPartitionsLost: [rl-0, rl-1, rl-2, rl-3]\n[c1]   NOT committing (already removed from group)\n[c1] onPartitionsAssigned: [rl-0, rl-1, rl-2, rl-3]   <- 다시 가입\n\n#   Lost 에서 커밋을 시도했다면:\n#   CommitFailedException: Offset commit cannot be completed since the consumer\n#     is not part of an active group\n#\n#   그래서 Revoked 와 Lost 를 구분한다\n\n\n# --- seek 으로 내 DB 의 오프셋에서 시작 ---\n\n$ psql -h localhost -U shop -d shop -q \\\n    -c 'drop table if exists my_offsets' \\\n    -c 'create table my_offsets(topic text, partition int, offset_ bigint, primary key(topic,partition))'\n\n$ java -cp 'out:libs/*' ExternalOffsetConsumer --group l5 --topic rl \\\n    --max 100 --timeout 15000\n[l5] onPartitionsAssigned: [rl-0, rl-1, rl-2, rl-3]\n[l5]   no stored offset for rl-0, seekToBeginning\n[l5] processed 100, stored offsets to DB in same transaction\n\n$ psql -h localhost -U shop -d shop -c 'select * from my_offsets order by partition'\n topic | partition | offset_\n-------+-----------+---------\n rl    |         0 |      25\n rl    |         1 |      25\n rl    |         2 |      25\n rl    |         3 |      25\n\n$ kcg --describe --group l5 2>/dev/null | head -2\nConsumer group 'l5' has no active members.\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\n\n#   카프카에는 커밋이 없다. 내 DB 에만 있다\n\n$ java -cp 'out:libs/*' ExternalOffsetConsumer --group l5 --topic rl \\\n    --max 100 --timeout 15000\n[l5] onPartitionsAssigned: [rl-0, rl-1, rl-2, rl-3]\n[l5]   seek rl-0 to 25\n[l5]   seek rl-1 to 25\n[l5] processed 100\n\n#   내 DB 의 위치에서 이어서 읽었다\n#   처리와 오프셋이 한 트랜잭션이라 중복도 유실도 없다 (8.4절)\n\n$ kt --delete --topic rl >/dev/null\n$ for g in l1 l2 l3 l4 l5; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "리밸런스 리스너는 Revoked → Assigned 순으로 불린다. Lost 는 이미 빼앗긴 경우다.",
+  "onPartitionsRevoked 에서 commitSync 하면 중복이 62건에서 3건으로 준다. 0은 아니다.",
+  "Lost 에서는 커밋이 실패한다. Revoked 와 구분해 처리한다.",
+  "콜백은 poll 스레드에서 불린다. 오래 걸리면 리밸런싱 전체가 늦어진다.",
+  "onPartitionsAssigned 에서 seek 하면 오프셋을 내 DB 에 둘 수 있다. 처리와 한 트랜잭션이 된다."
+ ],
+ "drills": [
+  {
+   "task": "컨슈머 둘로 리밸런싱을 일으켜 Revoked/Assigned 로그 순서를 확인한다.",
+   "done_when": "c1 이 전부 내놨다 절반을 받는 순서를 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "revoked 에서 커밋하는 경우와 안 하는 경우의 중복 건수를 비교한다.",
+   "done_when": "숫자 차이를 확인한다.",
+   "minutes": 10
+  },
+  {
+   "task": "오프셋을 DB 에 저장하고 seek 으로 이어 읽는 컨슈머를 만들어 본다.",
+   "done_when": "카프카에 커밋이 없는데도 이어서 읽는 것을 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "onPartitionsRevoked 에서 커밋하는 이유는.",
+   "a": "다음 컨슈머가 다시 읽는 범위를 줄여 중복을 줄인다."
+  },
+  {
+   "q": "onPartitionsLost 에서 커밋하면.",
+   "a": "이미 그룹에서 빠졌으므로 CommitFailedException 이 난다. 커밋하지 않고 정리만 한다."
+  },
+  {
+   "q": "오프셋을 내 DB 에 두면 무엇이 좋아지나.",
+   "a": "처리 결과와 오프셋을 한 트랜잭션에 저장할 수 있어 중복도 유실도 없앨 수 있다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "ConsumerRebalanceListener",
+   "what": "파티션 할당·회수 시 불리는 콜백 인터페이스."
+  },
+  {
+   "term": "seek",
+   "what": "특정 파티션의 읽기 위치를 지정하는 메서드."
+  },
+  {
+   "term": "offsetsForTimes",
+   "what": "타임스탬프로 오프셋을 찾는 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — ConsumerRebalanceListener",
+   "url": "https://kafka.apache.org/38/javadoc/org/apache/kafka/clients/consumer/ConsumerRebalanceListener.html",
+   "publisher": "Apache"
+  },
+  {
+   "title": "KIP-429 — Incremental cooperative rebalancing",
+   "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-429",
+   "publisher": "Apache"
+  }
+ ]
+}

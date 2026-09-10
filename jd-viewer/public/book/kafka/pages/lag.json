@@ -1,0 +1,142 @@
+{
+ "book": "kafka",
+ "id": "lag",
+ "no": "7.8",
+ "chapter": 7,
+ "title": "랙을 읽는 법",
+ "summary": "늘어나는 랙과 안 줄어드는 랙.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "랙의 모양별 원인을 안다.",
+  "처리량을 계산한다.",
+  "무엇을 늘릴지 판단한다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.5절에서 다섯 가지 모양을** 봤다. **여기서는 그것을 고치는 법**이다."
+  },
+  {
+   "type": "table",
+   "caption": "랙의 모양과 원인",
+   "columns": [
+    "모양",
+    "원인",
+    "고치는 법"
+   ],
+   "rows": [
+    [
+     "**일정하게 늘어난다**",
+     "유입 > 처리",
+     "**컨슈머·파티션을 늘리거나 처리를 빠르게**"
+    ],
+    [
+     "**계단식으로 튄다**",
+     "리밸런싱 반복(7.6절)",
+     "`max.poll.records` 를 줄인다"
+    ],
+    [
+     "**한 파티션만**",
+     "키 쏠림(4.4절) 또는 그 컨슈머만 느림",
+     "키 설계 또는 그 인스턴스 확인"
+    ],
+    [
+     "**갑자기 확 늘었다**",
+     "컨슈머가 죽었다(5.4절)",
+     "`CONSUMER-ID` 확인"
+    ],
+    [
+     "**0인데 처리가 안 된다**",
+     "자동 커밋 유실(7.4절) 또는 예외 삼킴",
+     "커밋 방식 확인"
+    ],
+    [
+     "평소보다 조금 높다",
+     "배치·GC·DB 느림",
+     "지연 지표를 본다"
+    ]
+   ],
+   "note": "**첫 두 개를 구분하는 게 중요**하다 — **하나는 자원 부족이고 하나는 설정 문제**다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "처리량을 계산한다",
+   "md": "```\n필요한 컨슈머 수 = 초당 유입 / 컨슈머 하나의 초당 처리량\n```\n\n**측정하는 법**:\n\n```bash\n# 초당 유입 (끝 오프셋의 증가율)\nfor i in 1 2 3; do\n  GetOffsetShell --topic orders | awk -F: '{s+=$3} END {print s}'\n  sleep 10\ndone\n\n# 컨슈머 하나의 처리량 (애플리케이션 지표)\n# records-consumed-rate 또는 직접 카운트\n```\n\n**예**:\n\n```\n유입: 초당 8,000건\n컨슈머 하나: 초당 1,200건 (DB 쓰기 병목)\n필요: 8000 / 1200 = 6.7 -> 7개\n파티션이 6개면? -> 컨슈머를 7개 못 쓴다 (7.2절)\n  -> 파티션을 늘리거나 처리를 빠르게 해야 한다\n```\n\n> **파티션 수가 상한**이다(4.6절). **랙 문제가 결국 파티션 설계로 돌아오는** 이유다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "밀린 랙을 따라잡는 시간",
+   "md": "```\n따라잡는 시간 = 현재 랙 / (처리량 - 유입량)\n```\n\n**처리량이 유입량보다 크지 않으면 영영 못 따라잡는다.**\n\n```\n랙 500만, 처리 1200/s, 유입 8000/s\n  -> 1200 - 8000 < 0 -> 영영 못 따라잡는다\n\n컨슈머를 10개로: 12000/s\n  -> 12000 - 8000 = 4000/s\n  -> 5,000,000 / 4000 = 1250초 = 21분\n```\n\n**급하면**:\n\n| 선택 | 대가 |\n|---|---|\n| 컨슈머를 일시적으로 크게 늘린다 | 파티션 수 한도 |\n| **처리를 잠시 단순화** | 부가 로직을 끄고 핵심만 |\n| **별도 그룹으로 최신부터 따로 처리** | 밀린 것과 새것을 나눠서 |\n| `--to-latest` 로 버린다 | **데이터 손실**(5.6절) |\n\n> **마지막을 고르기 전에 그 구간을 기록**한다(5.6절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "랙을 만들고 고친다",
+   "sql": "$ kt --create --topic lag --partitions 6 --replication-factor 3 >/dev/null\n\n# --- 유입 > 처리: 랙이 는다 ---\n\n$ java -cp 'out:libs/*' SteadyProducer --topic lag --rps 3000 --seconds 60 &\n$ java -cp 'out:libs/*' SlowConsumer --group lg --reset earliest \\\n    --handle-ms 1 --max-poll-records 100 --timeout 60000 &\n\n$ for i in $(seq 1 5); do\n>   printf '%s lag=%s\\n' \"$(date +%T)\" \\\n>     \"$(kcg --describe --group lg | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\n>   sleep 10\n> done\n17:02:11 lag=4821\n17:02:21 lag=13204\n17:02:31 lag=21877\n17:02:41 lag=30412\n17:02:51 lag=39108\n\n#   10초마다 8500씩 는다\n#   유입 3000/s, 처리 ~1150/s -> 차이 1850/s ≈ 18500/10s\n#   (측정값이 다른 건 poll 오버헤드)\n\n$ wait 2>/dev/null\n\n\n# --- 컨슈머를 늘린다 ---\n\n$ kcg --describe --group lg | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"backlog =\", s}'\nbacklog = 41203\n\n$ for i in 1 2 3; do\n>   java -cp 'out:libs/*' SlowConsumer --group lg --handle-ms 1 \\\n>     --max-poll-records 100 --timeout 40000 --label \"c$i\" &\n> done\n\n$ for i in $(seq 1 4); do\n>   printf 'lag=%s\\n' \"$(kcg --describe --group lg | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\n>   sleep 10\n> done\nlag=41203\nlag=28104\nlag=14872\nlag=1204\n\n#   유입이 멈춘 상태라 13000/10s 로 줄었다\n#   컨슈머 3개 = 처리 ~3500/s\n\n$ wait 2>/dev/null\n\n\n# --- 파티션 수가 상한이다 ---\n\n$ kt --create --topic small --partitions 2 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 20000); do echo \"m-$i\"; done | kcp --topic small\n\n$ for i in 1 2 3 4 5 6; do\n>   java -cp 'out:libs/*' SlowConsumer --group sm --reset earliest --handle-ms 1 \\\n>     --timeout 30000 --label \"c$i\" &\n> done\n$ sleep 4\n$ kcg --describe --group sm --members\nGROUP  CONSUMER-ID  CLIENT-ID  #PARTITIONS\nsm     ...          c1         1\nsm     ...          c2         1\nsm     ...          c3         0\nsm     ...          c4         0\nsm     ...          c5         0\nsm     ...          c6         0\n\n#   6개를 띄웠는데 2개만 일한다\n#   \"컨슈머를 늘렸는데 안 빨라져요\" (7.2절)\n\n$ wait 2>/dev/null\n\n\n# --- 한 파티션만 랙 ---\n\n$ kt --create --topic skewlag --partitions 4 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 4000); do\n>   if [ $((i % 5)) -eq 0 ]; then echo \"k-$i|v\"; else echo \"hot|v\"; fi\n> done | kcp --topic skewlag --property parse.key=true --property key.separator='|'\n\n$ java -cp 'out:libs/*' SlowConsumer --group sk --reset earliest --handle-ms 2 \\\n    --timeout 15000 &\n$ sleep 8\n$ kcg --describe --group sk | awk 'NR>1 && $6 ~ /^[0-9]+$/ {print $6, $2\"-\"$3}' | sort -rn\n2104 skewlag-1\n0 skewlag-0\n0 skewlag-2\n0 skewlag-3\n\n#   1번 파티션만 남았다. 컨슈머를 늘려도 이건 안 나뉜다\n#   키 설계를 고쳐야 한다 (4.4·6.6절)\n\n$ wait 2>/dev/null\n\n\n# --- 따라잡는 시간을 계산한다 ---\n\n$ java -cp 'out:libs/*' LagForecast --group lg --topic lag\ncurrent lag        : 41203\nincoming rate      : 0 rec/s (producer stopped)\nconsume rate       : 1180 rec/s per consumer\nconsumers          : 1\nnet drain rate     : 1180 rec/s\nestimated catch-up : 34.9 s\n\nwith 3 consumers   : 3540 rec/s -> 11.6 s\nwith 6 consumers   : capped by 6 partitions -> 7080 rec/s -> 5.8 s\nwith 12 consumers  : still 6 partitions -> no change\n\n#   파티션 수가 상한이라는 것이 숫자로 보인다\n\n$ for t in lag small skewlag; do kt --delete --topic $t >/dev/null; done\n$ for g in lg sm sk; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "랙의 모양이 원인을 말해 준다 — 꾸준히 늘면 자원 부족, 계단식이면 리밸런싱, 한 파티션만이면 키 쏠림.",
+  "필요한 컨슈머 수 = 유입량 ÷ 컨슈머 하나의 처리량. 파티션 수가 그 상한이다.",
+  "따라잡는 시간 = 현재 랙 ÷ (처리량 - 유입량). 처리량이 더 크지 않으면 영영 못 따라잡는다.",
+  "한 파티션만 밀리면 컨슈머를 늘려도 안 낫는다. 키 설계를 고친다.",
+  "급하면 처리를 단순화하거나 별도 그룹으로 나눈다. 버리는 것은 마지막이고 기록을 남긴다."
+ ],
+ "drills": [
+  {
+   "task": "유입보다 느린 컨슈머로 랙이 꾸준히 느는 것을 10초 간격으로 찍어 본다.",
+   "done_when": "증가율을 계산할 수 있다.",
+   "minutes": 10
+  },
+  {
+   "task": "컨슈머를 늘려 랙이 줄어드는 속도를 재고 파티션 수 상한에 부딪히는 것을 확인한다.",
+   "done_when": "#PARTITIONS 가 0인 멤버가 생기는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "키를 쏠리게 넣고 한 파티션만 랙이 남는 것을 확인한다.",
+   "done_when": "컨슈머를 늘려도 안 나아지는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "랙이 계단식으로 튀면 무엇을 의심하나.",
+   "a": "리밸런싱 반복. poll 간격 초과일 가능성이 높다(7.6절)."
+  },
+  {
+   "q": "컨슈머를 늘렸는데 안 빨라지는 두 경우는.",
+   "a": "컨슈머 수가 파티션 수를 넘었거나, 키가 한 파티션에 쏠렸을 때."
+  },
+  {
+   "q": "따라잡는 시간을 계산하는 식은.",
+   "a": "현재 랙 ÷ (처리량 - 유입량). 분모가 0 이하면 못 따라잡는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "드레인 레이트",
+   "en": "drain rate",
+   "what": "처리량에서 유입량을 뺀 값. 랙이 줄어드는 속도."
+  },
+  {
+   "term": "records-consumed-rate",
+   "what": "컨슈머의 초당 소비 레코드 수 지표."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Consumer metrics",
+   "url": "https://kafka.apache.org/documentation/#consumer_monitoring",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Monitoring consumer lag",
+   "url": "https://docs.confluent.io/platform/current/kafka/monitoring.html",
+   "publisher": "Confluent"
+  }
+ ]
+}

@@ -1,0 +1,147 @@
+{
+ "book": "kafka",
+ "id": "consumer-failure",
+ "no": "7.9",
+ "chapter": 7,
+ "title": "중복과 유실이 생기는 자리",
+ "summary": "네 가지 시나리오.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "7장의 함정을 한자리에 모은다.",
+  "각각의 대응을 안다.",
+  "컨슈머 체크리스트를 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**7장을 닫으면서 지금까지 나온 사고를 한자리에** 모은다."
+  },
+  {
+   "type": "table",
+   "caption": "네 가지 시나리오",
+   "columns": [
+    "#",
+    "무슨 일",
+    "결과",
+    "막는 법"
+   ],
+   "rows": [
+    [
+     "1",
+     "**자동 커밋 후 처리 중 죽음**",
+     "**유실**",
+     "수동 커밋(7.4절)"
+    ],
+    [
+     "2",
+     "**처리 후 커밋 전 죽음**",
+     "**중복**",
+     "멱등 처리(7.5절)"
+    ],
+    [
+     "3",
+     "**poll 지연으로 쫓겨남**",
+     "**중복 + 진도 없음**",
+     "`max.poll.records`↓(7.6절)"
+    ],
+    [
+     "4",
+     "**예외를 삼키고 커밋**",
+     "**조용한 유실**",
+     "예외 처리·DLT(9.5절)"
+    ]
+   ],
+   "note": "**4번이 가장 위험**하다 — **랙도 0이고 에러 로그도 없는데 처리가 안 된** 상태."
+  },
+  {
+   "type": "compare",
+   "caption": "4번 — 예외를 삼키는 코드",
+   "left": {
+    "title": "조용한 유실",
+    "lang": "java",
+    "bad": true,
+    "code": "for (var r : records) {\n    try {\n        handle(r);\n    } catch (Exception e) {\n        log.warn(\"failed\", e);     // 로그만 찍고 넘어간다\n    }\n}\nconsumer.commitSync();             // 실패한 것까지 커밋된다\n\n// 랙 = 0\n// 에러 로그는 warn 이라 알람에 안 걸린다\n// 그 레코드는 영영 처리 안 된다\n//\n// \"데이터가 안 들어와요\" 신고를 받고\n// 랙을 보니 0 이라 \"정상입니다\" 라고 답하게 된다"
+   },
+   "right": {
+    "title": "실패를 남긴다",
+    "lang": "java",
+    "code": "for (var r : records) {\n    try {\n        handle(r);\n    } catch (RetryableException e) {\n        throw e;                   // 커밋하지 않고 다시 시도\n    } catch (Exception e) {\n        dlt.send(r, e);            // 못 고칠 것은 따로 모은다 (9.5절)\n        failureCounter.increment(); // 지표로 뽑아 알람\n    }\n}\nconsumer.commitSync();\n\n// 실패가 어디로든 남는다\n// DLT 의 건수를 감시하면 조용한 유실이 없다"
+   },
+   "note": "**\"실패한 레코드가 어디로 갔는지\" 에 답할 수 있어야** 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "7장 체크리스트",
+   "md": "| 항목 | 값 | 절 |\n|---|---|---|\n| `group.id` | **논리적 컨슈머 이름 하나** | 7.2 |\n| `auto.offset.reset` | **earliest**(대개) | 7.1 |\n| `enable.auto.commit` | **false** | 7.4 |\n| 커밋 시점 | **처리 후** | 7.4 |\n| 커밋 방식 | 루프 async + 종료 sync | 7.4 |\n| `max.poll.records` | **처리 시간 × 건수 < interval** | 7.6 |\n| `partition.assignment.strategy` | **CooperativeSticky** | 7.3 |\n| `group.instance.id` | 정적 멤버십 | 7.3 |\n| 리밸런스 리스너 | **revoked 에서 커밋** | 7.7 |\n| 처리 | **멱등하게** | 7.5 |\n| 실패 | **DLT + 지표** | 9.5 |\n| 종료 | wakeup + close | 7.1 |\n\n> **스프링을 쓰면 절반이 기본으로 잘 되어** 있다(9장). **그래도 무엇이 왜 그런지는 알고** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "네 시나리오를 차례로 재현한다",
+   "sql": "$ kt --create --topic fail --partitions 2 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 200); do echo \"{\\\"id\\\":$i}\"; done | kcp --topic fail\n\n# --- 1. 자동 커밋 유실 ---\n\n$ java -cp 'out:libs/*' Scenario1 --group f1 --reset earliest\nprocessed=73 committed-offset=200 lag=0\n\n$ java -cp 'out:libs/*' Scenario1 --group f1 --timeout 5000\nprocessed=0\n\n#   127건이 영영 처리 안 됐는데 랙은 0이다\n\n\n# --- 2. 수동 커밋 중복 ---\n\n$ java -cp 'out:libs/*' Scenario2 --group f2 --reset earliest\nprocessed=73 committed-offset=60 lag=140\n\n$ java -cp 'out:libs/*' Scenario2 --group f2 --timeout 10000\nprocessed=140\n\n$ echo \"total = $((73 + 140)) for 200 records\"\ntotal = 213 for 200 records\n\n#   13건이 중복 처리됐다. 유실은 없다\n\n\n# --- 3. poll 지연 ---\n\n$ java -cp 'out:libs/*' Scenario3 --group f3 --reset earliest \\\n    --handle-ms 300 --max-poll-records 200 --max-poll-interval 20000 --timeout 90000\nround 1: processed 200, commit FAILED (CommitFailedException)\nround 2: processed 200, commit FAILED\nround 3: processed 200, commit FAILED\n...\n\n$ kcg --describe --group f3 | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 200\n\n#   600건을 처리했는데 랙이 그대로다. 전부 중복이고 진도가 0이다\n\n\n# --- 4. 예외를 삼키고 커밋 ---\n\n$ psql -h localhost -U shop -d shop -q -c 'drop table if exists applied' \\\n    -c 'create table applied(id int primary key)'\n\n$ java -cp 'out:libs/*' Scenario4 --group f4 --reset earliest --fail-every 7 --swallow\nprocessed=172 failed=28 (swallowed)\n\n$ kcg --describe --group f4 | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 0\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from applied'\n172\n\n#   랙 0, 에러 로그는 warn, 그런데 28건이 없다\n#   \"정상입니다\" 라고 답하게 되는 상태\n\n\n# --- 4를 고친다: DLT 로 보낸다 ---\n\n$ kt --create --topic fail.DLT --partitions 2 --replication-factor 3 >/dev/null\n$ psql -h localhost -U shop -d shop -q -c 'truncate applied'\n$ kcg --delete --group f4 >/dev/null 2>&1\n\n$ java -cp 'out:libs/*' Scenario4 --group f5 --reset earliest --fail-every 7 --dlt fail.DLT\nprocessed=172 sent-to-dlt=28\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic fail.DLT | \\\n    awk -F: '{s+=$3} END {print \"DLT records =\", s}'\nDLT records = 28\n\n$ kcc --topic fail.DLT --from-beginning --timeout-ms 3000 \\\n    --property print.headers=true 2>/dev/null | head -1\nkafka_dlt-exception-message=simulated failure,kafka_dlt-original-offset=6\t{\"id\":7}\n\n#   실패한 것이 헤더와 함께 남아 있다\n#   DLT 의 건수를 감시하면 조용한 유실이 없다 (9.5절)\n\n\n# --- 체크리스트를 다 적용하면 ---\n\n$ psql -h localhost -U shop -d shop -q -c 'truncate applied' \\\n    -c 'drop table if exists processed' \\\n    -c 'create table processed(event_id text primary key)'\n\n$ java -cp 'out:libs/*' GoodConsumer --group f6 --reset earliest \\\n    --manual-commit --idempotent --max-poll-records 50 \\\n    --assignor cooperative-sticky --dlt fail.DLT --die-after 4000\nprocessed=118 (killed)\n\n$ java -cp 'out:libs/*' GoodConsumer --group f6 --timeout 10000 \\\n    --manual-commit --idempotent --max-poll-records 50 --dlt fail.DLT\nprocessed=82 skipped-duplicates=18\n\n$ psql -h localhost -U shop -d shop -tAc 'select count(*) from applied'\n200\n\n$ kcg --describe --group f6 | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print \"lag =\", s}'\nlag = 0\n\n#   200건이 정확히 한 번씩 적용됐고 랙도 0이다\n#   중복은 왔지만 멱등 처리가 걸렀다\n\n$ kt --delete --topic fail >/dev/null; kt --delete --topic fail.DLT >/dev/null\n$ for g in f1 f2 f3 f4 f5 f6; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "자동 커밋 후 처리 중 죽으면 유실, 처리 후 커밋 전 죽으면 중복이다.",
+  "poll 지연으로 쫓겨나면 중복이 나면서 진도가 아예 안 나간다.",
+  "예외를 삼키고 커밋하면 랙 0·에러 없음인데 데이터가 없는 조용한 유실이 된다.",
+  "실패한 레코드가 어디로 갔는지 답할 수 있어야 한다 — DLT 와 지표.",
+  "체크리스트를 다 적용하면 중복은 오되 멱등 처리가 걸러 결과가 정확해진다."
+ ],
+ "drills": [
+  {
+   "task": "네 시나리오를 차례로 재현하고 각각의 랙과 실제 처리 건수를 표로 적는다.",
+   "done_when": "랙만으로는 알 수 없는 경우가 있다는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외를 삼키는 코드를 DLT 로 보내게 고치고 DLT 건수를 확인한다.",
+   "done_when": "실패가 남는 것을 본다.",
+   "minutes": 10
+  },
+  {
+   "task": "자기 컨슈머 설정을 7장 체크리스트와 대조한다.",
+   "done_when": "바꿔야 할 항목을 적는다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "랙이 0인데 데이터가 없다면 어떤 경우인가.",
+   "a": "자동 커밋 유실이거나 예외를 삼키고 커밋한 경우."
+  },
+  {
+   "q": "'실패한 레코드가 어디로 갔나' 에 답하려면.",
+   "a": "DLT 로 보내고 그 건수를 지표로 감시한다."
+  },
+  {
+   "q": "중복을 완전히 없앨 수 없다면 무엇을 하나.",
+   "a": "멱등하게 처리한다. 중복이 와도 결과가 같게 만든다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "조용한 유실",
+   "what": "에러도 랙도 없는데 처리가 안 된 상태."
+  },
+  {
+   "term": "DLT",
+   "en": "Dead Letter Topic",
+   "what": "처리 실패한 레코드를 모으는 토픽. 9.5절."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Delivery semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Spring for Apache Kafka — Error handling",
+   "url": "https://docs.spring.io/spring-kafka/reference/kafka/annotation-error-handling.html",
+   "publisher": "Spring"
+  }
+ ]
+}

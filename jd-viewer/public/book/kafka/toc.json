@@ -412,7 +412,7 @@
           "title": "몇 번 처리되나",
           "summary": "최대 한 번 · 최소 한 번 · 정확히 한 번.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -420,7 +420,7 @@
           "title": "poll 루프의 시간 제약",
           "summary": "max.poll.interval.ms 를 넘기면 쫓겨난다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",
@@ -428,7 +428,7 @@
           "title": "리밸런스 리스너",
           "summary": "빼앗기기 전에 할 일.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.8",
@@ -436,7 +436,7 @@
           "title": "랙을 읽는 법",
           "summary": "늘어나는 랙과 안 줄어드는 랙.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.9",
@@ -444,7 +444,7 @@
           "title": "중복과 유실이 생기는 자리",
           "summary": "네 가지 시나리오.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
