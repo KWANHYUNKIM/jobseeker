@@ -1,0 +1,150 @@
+{
+ "book": "java-thread",
+ "id": "iteration",
+ "no": "10.6",
+ "chapter": 10,
+ "title": "순회 중 변경",
+ "summary": "예외냐 스냅숏이냐.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "세 가지를 가른다.",
+  "예외가 보장이 아님을 안다.",
+  "10장을 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**순회 중에 누가 고치면 무엇이 일어나는지가 컬렉션마다** 다르다."
+  },
+  {
+   "type": "figure",
+   "caption": "세 가지 답",
+   "ascii": "   three answers to changing while iterating\n\n   fail fast     notice and throw\n   snapshot      iterate the old copy\n   weakly consistent   iterate the live structure, may or may not see changes\n\n   only the first one tells you something is wrong",
+   "note": "**뭔가 잘못됐다고 알려 주는 건 첫째** 뿐이다."
+  },
+  {
+   "type": "table",
+   "caption": "무엇이 어느 쪽인가",
+   "columns": [
+    "",
+    "동작",
+    "예외"
+   ],
+   "rows": [
+    [
+     "**HashMap·ArrayList**",
+     "**빨리 실패**",
+     "**대개 난다**"
+    ],
+    [
+     "**동기화 래퍼**",
+     "**빨리 실패**",
+     "같음"
+    ],
+    [
+     "**ConcurrentHashMap**",
+     "**약한 일관성**",
+     "**안 난다**"
+    ],
+    [
+     "**CopyOnWriteArrayList**",
+     "**스냅숏**",
+     "**안 난다**"
+    ],
+    [
+     "**ConcurrentLinkedQueue**",
+     "약한 일관성",
+     "안 난다"
+    ],
+    [
+     "**ConcurrentSkipListMap**",
+     "약한 일관성",
+     "안 난다"
+    ]
+   ],
+   "note": "**첫째 줄의 \"대개\" 가 중요**하다 — **`ConcurrentModificationException` 은 최선의 노력이지 보장이** 아니다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 빨리 실패 ---\n\n$ cat FailFast.java | grep -A4 'void iterate'\nfor (String s : list) { ... }          // 다른 스레드가 add 한다\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* FailFast --threads 2 --rounds 10000 2>&1 | grep -c ConcurrentModification\n  done | awk '{s+=$1} END {print \"예외 난 실행\", s \"/20\"}'\n예외 난 실행 20/20\n\n$ java -cp out:libs/* FailFast --threads 2 --rounds 10000 2>&1 | grep -A2 ConcurrentModification | head -2\njava.util.ConcurrentModificationException\n\tat java.base/java.util.ArrayList$Itr.checkForComodification\n\n#   modCount 를 비교해서 잡는다\n\n\n# --- 그런데 보장이 아니다 ---\n\n$ cat MissedDetection.java | grep -A6 'void demo'\n// 한 스레드가 add 하고 다른 스레드가 remove 해서\n// modCount 는 늘어나지만 크기가 같아지는 경우\n\n$ for i in $(seq 1 50); do\n    java -cp out:libs/* MissedDetection 2>&1 | grep -c 'ConcurrentModification'\n  done | sort | uniq -c\n  47 1\n   3 0\n\n$ java -cp out:libs/* MissedDetection --no-exception-case 2>/dev/null | tail -1\n예외 없이 잘못된 결과를 얻었다: 항목 3개를 두 번 봤다\n\n#   50번 중 3번은 예외 없이 틀린 결과가 나온다\n#   문서가 \"최선의 노력\" 이라고 적어 둔 이유다\n\n\n# --- 약한 일관성 ---\n\n$ cat WeaklyConsistent.java | grep -A6 'void demo'\nIterator<String> it = map.keySet().iterator();\nmap.put(\"new\", 1);                     // 순회 시작 뒤에 추가\nint n = 0;\nwhile (it.hasNext()) { it.next(); n++; }\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* WeaklyConsistent 2>/dev/null | grep -oE '순회한 개수 [0-9]+'\n  done | sort | uniq -c\n  13 순회한 개수 3\n   7 순회한 개수 4\n\n#   보일 수도 안 보일 수도 있다\n#   예외는 안 난다\n\n$ java -cp out:libs/* WeaklyConsistent --removed-during 2>/dev/null | tail -1\n순회 중 지워진 항목을 본 횟수 8 / 20\n\n#   이미 지워진 것을 볼 수도 있다\n\n\n# --- 스냅숏 ---\n\n$ for i in $(seq 1 20); do\n    java -cp out:libs/* CowSnapshot 2>/dev/null | grep -oE '순회한 개수 [0-9]+'\n  done | sort | uniq -c\n  20 순회한 개수 3\n\n#   언제나 시작 시점 그대로다\n#   10.5절의 그것이다\n\n\n# --- 셋을 나란히 ---\n\n$ java -cp out:libs/* IterCompare --threads 8 --rounds 20000 2>/dev/null\nArrayList          예외 20/20, 완료 0\nsynchronizedList   예외 20/20, 완료 0\nConcurrentHashMap  예외 0/20,  완료 20\nCopyOnWriteList    예외 0/20,  완료 20\n\n$ java -cp out:libs/* IterCompare --threads 8 --rounds 20000 --check-consistency 2>/dev/null\nConcurrentHashMap  순회 결과가 어느 시점과도 안 맞는 경우 12/20\nCopyOnWriteList    순회 결과가 시작 시점과 항상 일치 20/20\n\n#   예외가 안 난다고 일관된 건 아니다\n\n\n# --- 안전하게 지우기 ---\n\n$ cat SafeRemove.java | grep -A4 'void removeAll'\nmap.entrySet().removeIf(e -> e.getValue() < threshold);   // 원자적이지는 않다\n\n$ java -cp out:libs/* SafeRemove --threads 8 --rounds 10000 2>&1 | grep -c Exception\n0\n\n$ cat UnsafeRemove.java | grep -A4 'for'\nfor (K k : map.keySet()) {\n    if (cond(k)) map.remove(k);        // ConcurrentHashMap 이면 괜찮다\n}\n\n$ java -cp out:libs/* UnsafeRemove --map concurrent --threads 8 2>&1 | grep -c Exception\n0\n$ java -cp out:libs/* UnsafeRemove --map hashmap --threads 1 2>&1 | grep -c Exception\n1\n\n#   같은 코드가 맵 종류에 따라 갈린다\n#   단일 스레드에서도 HashMap 은 예외다\n\n\n# --- 값을 잰다 ---\n\n$ for m in sync concurrent cow; do\n    printf '%-12s ' $m\n    java -cp out:libs/* IterBench --mode $m --size 1000000 --iterations 100 --threads 8 \\\n      2>/dev/null | grep -oE '[0-9]+ms 다른 스레드 대기 [0-9]+ms'\n  done\nsync         412ms 다른 스레드 대기 412ms\nconcurrent   384ms 다른 스레드 대기 0ms\ncow          298ms 다른 스레드 대기 0ms\n\n#   10.2절에서 본 그 대기다\n\n\n# --- 10장을 표로 ---\n\n$ printf '%-8s %-24s %s\\n' \\\n  '10.1'  'HashMap 공유'    '조용히 유실' \\\n  '10.2'  '동기화 래퍼'     '락 하나' \\\n  '10.3'  'ConcurrentHashMap' '칸마다 락' \\\n  '10.4'  '원자적 갱신'     '틈을 없앤다' \\\n  '10.5'  '쓰기 시 복사'    '읽기가 압도적일 때' \\\n  '10.6'  '순회'            '예외냐 스냅숏이냐'\n\n10.1     HashMap 공유              조용히 유실\n10.2     동기화 래퍼               락 하나\n10.3     ConcurrentHashMap         칸마다 락\n10.4     원자적 갱신               틈을 없앤다\n10.5     쓰기 시 복사              읽기가 압도적일 때\n10.6     순회                      예외냐 스냅숏이냐\n\n\n# --- 마지막 확인 ---\n\n$ java -cp out:libs/* IterCompare --threads 8 --rounds 20000 2>/dev/null | tail -2\nConcurrentHashMap  예외 0/20,  완료 20\nCopyOnWriteList    예외 0/20,  완료 20\n\n$ java -cp out:libs/* AtomicOps --threads 8 --keys 1000 --rounds 100000 --verify 2>/dev/null \\\n  | head -1\nputIfAbsent 덮어쓴 횟수 0\n\n#   11장에서 스레드를 재사용하는 법을 본다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '세 가지'         '빨리 실패 · 스냅숏 · 약한 일관성' \\\n  '빨리 실패'       '20/20 예외' \\\n  '그런데'          '50번 중 3번 놓침' \\\n  '약한 일관성'     '보일 수도 안 보일 수도' \\\n  '지워진 것'       '8/20 에서 보임' \\\n  '스냅숏'          '20/20 일관' \\\n  '예외 없음'       '일관되다는 뜻 아님' \\\n  '같은 코드'       '맵 종류에 따라 갈림' \\\n  '순회 중 대기'    '동기화만 412ms'\n\n세 가지                    빨리 실패 · 스냅숏 · 약한 일관성\n빨리 실패                  20/20 예외\n그런데                     50번 중 3번 놓침\n약한 일관성                보일 수도 안 보일 수도\n지워진 것                  8/20 에서 보임\n스냅숏                     20/20 일관\n예외 없음                  일관되다는 뜻 아님\n같은 코드                  맵 종류에 따라 갈림\n순회 중 대기               동기화만 412ms",
+   "note": "**빨리 실패하는 컬렉션은 20/20 으로 예외를 던지는데 50번 중 3번은 예외 없이 틀린 결과를** 준다.\n\n**약한 일관성은 추가된 항목이 보이기도 안 보이기도 하고 이미 지워진 것을 8/20 에서** 본다.\n\n**스냅숏은 20/20 으로 시작 시점과** 일치한다.\n\n**예외가 안 난다고 일관된 게 아니라 12/20 은 어느 시점과도 안** 맞는다.\n\n**순회 중 다른 스레드가 기다리는 건 동기화 래퍼뿐**이다."
+  }
+ ],
+ "recap": [
+  "순회 중 변경에 대한 답은 빨리 실패, 스냅숏, 약한 일관성 셋이다.",
+  "ConcurrentModificationException 은 최선의 노력이지 보장이 아니다 — 놓칠 수 있다.",
+  "약한 일관성은 예외를 안 던지는 대신 어느 시점과도 안 맞을 수 있다.",
+  "스냅숏은 언제나 시작 시점과 일치하지만 낡은 값을 본다.",
+  "같은 순회 코드가 컬렉션 종류에 따라 완전히 다르게 동작한다."
+ ],
+ "drills": [
+  {
+   "task": "세 종류 컬렉션을 같은 코드로 순회한다.",
+   "done_when": "결과가 다른 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "예외가 안 나는데 결과가 틀린 경우를 재현한다.",
+   "done_when": "보장이 아님을 확인한다.",
+   "minutes": 20
+  },
+  {
+   "task": "약한 일관성 순회에서 추가·삭제가 보이는지 센다.",
+   "done_when": "일정하지 않은 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "순회 중 다른 스레드의 대기 시간을 잰다.",
+   "done_when": "동기화 래퍼만 막는 것을 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "순회 중 변경의 세 가지 답은.",
+   "a": "빨리 실패, 스냅숏, 약한 일관성이다."
+  },
+  {
+   "q": "ConcurrentModificationException 은 보장인가.",
+   "a": "아니다. 최선의 노력이라 놓칠 수 있다."
+  },
+  {
+   "q": "약한 일관성의 뜻은.",
+   "a": "변경이 보일 수도 안 보일 수도 있고 예외는 안 난다는 것이다."
+  },
+  {
+   "q": "스냅숏의 대가는.",
+   "a": "순회 중에는 낡은 내용을 본다는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "빨리 실패",
+   "what": "순회 중 변경을 감지하면 예외를 던지는 방식."
+  },
+  {
+   "term": "약한 일관성",
+   "what": "예외 없이 살아 있는 구조를 순회하되 변경 반영이 보장되지 않는 방식."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — Iterator",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Iterator.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — ConcurrentHashMap",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — CopyOnWriteArrayList",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html",
+   "publisher": "Oracle"
+  }
+ ]
+}

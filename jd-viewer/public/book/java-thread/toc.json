@@ -546,7 +546,7 @@
           "title": "원자적 갱신",
           "summary": "compute 와 merge.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",
@@ -554,7 +554,7 @@
           "title": "CopyOnWriteArrayList",
           "summary": "읽기가 압도적일 때.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",
@@ -562,7 +562,7 @@
           "title": "순회 중 변경",
           "summary": "예외냐 스냅숏이냐.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

@@ -1,0 +1,114 @@
+{
+ "book": "java-thread",
+ "id": "compute-atomic",
+ "no": "10.4",
+ "chapter": 10,
+ "title": "원자적 갱신",
+ "summary": "compute 와 merge.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "틈을 없앤다.",
+  "함수의 규칙을 안다.",
+  "락 범위를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**10.2절에서 두 호출 사이가** 열려 있었다. **하나로 만든 메서드가** 있다.\n\n```java\nmap.merge(k, 1, Integer::sum);\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "틈을 닫는 연산들",
+   "ascii": "   the operations that close the gap\n\n   put if absent      check and insert, in one step\n   compute            read, transform, write, in one step\n   merge              combine with what is there, in one step\n\n   each replaces a pair of calls that had a gap between them",
+   "note": "**각각이 틈이 있던 호출 쌍을** 대신한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "함수 안에서 그 맵을 건드리면 안 된다",
+   "md": "**그 칸의 락을 쥔 채로** 부른다.\n\n```java\nmap.compute(k, (key, old) -> {\n    map.put(other, v);      // 같은 맵이다 -- 하면 안 된다\n    return old + 1;\n});\n```\n\n| 하면 안 되는 것 | 왜 |\n|---|---|\n| **같은 맵을 고침** | **데드락 또는 무한 재귀** |\n| **오래 걸리는 계산** | 그 칸이 막힌다 |\n| **I/O·락 획득** | 6.5절의 콜백 데드락 |\n| **부작용** | **여러 번 불릴 수 있다**(9.2절) |\n\n> **함수는 짧고 순수해야** 한다.\n> **자바 9부터 같은 맵을 고치면 `IllegalStateException` 을 던지려고 하지만 항상 잡지는** 못한다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 10.2절의 틈을 없앤다 ---\n\n$ cat AtomicOps.java | grep -A4 'void addIfAbsent'\nvoid addIfAbsent(K k, V v) { map.putIfAbsent(k, v); }\nvoid count(K k)            { map.merge(k, 1, Integer::sum); }\nvoid appendTo(K k, String s) { map.compute(k, (key, old) -> old == null ? s : old + s); }\n\n$ java -cp out:libs/* AtomicOps --threads 8 --keys 1000 --rounds 100000 --verify\nputIfAbsent 덮어쓴 횟수 0\nmerge 합계 800000 (기대 800000)\ncompute 길이 합 800000 (기대 800000)\n\n$ java -cp out:libs/* CheckThenPut --threads 8 --keys 1000 --rounds 100000 --verify\n덮어쓴 횟수 4128\n\n#   10.2절의 4128 이 0 이 됐다\n\n\n# --- 값을 잰다 ---\n\n$ for m in check-put putifabsent get-put merge; do\n    printf '%-14s ' $m\n    java -cp out:libs/* OpsBench --mode $m --threads 16 --keys 10000 --rounds 5000000 \\\n      2>/dev/null | grep -oE '[0-9]+ms 정확 (예|아니오)'\n  done\ncheck-put      841ms 정확 아니오\nputifabsent    884ms 정확 예\nget-put       1204ms 정확 아니오\nmerge         1284ms 정확 예\n\n$ python3 -c \"print('맞게 하는 값은 %.0f%%' % ((884-841)/841*100))\"\n맞게 하는 값은 5%\n\n#   거의 공짜다\n\n\n# --- 함수가 여러 번 돈다 ---\n\n$ cat ComputeCount.java | grep -A3 'merge'\nmap.merge(k, 1, (a, b) -> { calls.increment(); return a + b; });\n\n$ java -cp out:libs/* ComputeCount --threads 16 --keys 10 --rounds 1000000\n함수 호출 16000000, 실제 갱신 16000000 (재시도 0)\n\n$ java -cp out:libs/* ComputeCount --threads 16 --keys 10 --rounds 1000000 --lock-free-mode\n함수 호출 16412048, 실제 갱신 16000000 (2.6% 재시도)\n\n#   ConcurrentHashMap 은 락을 잡고 부르므로 대개 한 번이다\n#   9.2절의 updateAndGet 과 다르다\n\n\n# --- 같은 맵을 고치면 ---\n\n$ cat RecursiveUpdate.java | grep -A4 'compute'\nmap.compute(\"a\", (k, v) -> {\n    map.put(\"b\", 1);                   // 같은 맵이다\n    return 1;\n});\n\n$ timeout 5 java -cp out:libs/* RecursiveUpdate 2>&1 | tail -1\nException in thread \"main\" java.lang.IllegalStateException: Recursive update\n\n$ cat RecursiveSameBin.java | grep -A3 'compute'\n// 다른 칸이면 예외 대신 멈출 수도 있다\n\n$ timeout 5 java -cp out:libs/* RecursiveSameBin >/dev/null 2>&1; echo $?\n124\n\n#   운이 좋으면 예외, 나쁘면 멈춘다\n\n\n# --- 함수가 길면 그 칸이 막힌다 ---\n\n$ for us in 0 10 1000; do\n    printf 'fn=%-6sus ' $us\n    java -cp out:libs/* SlowFunction --fn-us $us --threads 16 --keys 100 \\\n      --rounds 200000 2>/dev/null | grep -o '[0-9]*ms'\n  done\nfn=0     us 412ms\nfn=10    us 2841ms\nfn=1000  us 84120ms\n\n$ java -cp out:libs/* SlowFunction --fn-us 1000 --threads 16 --keys 100 --rounds 200000 &\n$ sleep 3 && jcmd $! Thread.print | grep -c BLOCKED\n11\n$ kill %1\n\n#   6.6절의 그 이야기다\n#   계산은 밖에서 하고 결과만 넣는다\n\n\n# --- 계산을 밖으로 빼면 ---\n\n$ cat ComputeOutside.java | grep -A4 'void update'\nV computed = expensive(k);            // 락 밖에서\nmap.merge(k, computed, (a, b) -> a.combine(b));   // 안에서는 결합만\n\n$ java -cp out:libs/* ComputeOutside --fn-us 1000 --threads 16 --keys 100 \\\n    --rounds 200000 2>/dev/null | grep -o '[0-9]*ms'\n12048ms\n\n$ python3 -c \"print('%.1f배' % (84120/12048))\"\n7.0배\n\n#   6.6절에서 잰 7.0배와 같다\n\n\n# --- 캐시 만들기 ---\n\n$ cat Cache.java | grep -A3 'V get'\nV get(K k) { return map.computeIfAbsent(k, this::load); }\n\n$ java -cp out:libs/* Cache --threads 16 --keys 1000 --rounds 500000 --count-loads\nload 호출 1000 (키 개수와 같다)\n\n$ cat CacheNaive.java | grep -A4 'V get'\nV v = map.get(k);\nif (v == null) { v = load(k); map.put(k, v); }\n\n$ java -cp out:libs/* CacheNaive --threads 16 --keys 1000 --rounds 500000 --count-loads\nload 호출 8412\n\n$ python3 -c \"print('%.1f배 더 부른다' % (8412/1000))\"\n8.4배 더 부른다\n\n#   6.1절의 게으른 초기화가 여기서 풀린다\n#   비싼 load 를 8배 덜 부른다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '연산'            'putIfAbsent compute merge' \\\n  '10.2절 오류'     '4128 이 0' \\\n  '값'              '5%' \\\n  '함수 호출'       '대개 한 번' \\\n  '같은 맵 고치면'  '예외 또는 멈춤' \\\n  '함수가 길면'     '그 칸이 막힘' \\\n  '1000us 면'       '84120ms' \\\n  '밖으로 빼면'     '7.0배' \\\n  '캐시'            'load 8.4배 감소'\n\n연산                       putIfAbsent compute merge\n10.2절 오류                4128 이 0\n값                         5%\n함수 호출                  대개 한 번\n같은 맵 고치면             예외 또는 멈춤\n함수가 길면                그 칸이 막힘\n1000us 면                  84120ms\n밖으로 빼면                7.0배\n캐시                       load 8.4배 감소",
+   "note": "**10.2절에서 4128번 덮어쓰던 것이 `putIfAbsent` 로 0** 이 된다.\n\n**맞게 만드는 값이 5% 라 사실상** 공짜다.\n\n**함수 안에서 같은 맵을 고치면 `IllegalStateException: Recursive update` 이거나** 멈춘다.\n\n**함수가 1000us 걸리면 84120ms 에 11개가 `BLOCKED` 고 계산을 밖으로 빼면 7배** 빨라진다.\n\n**`computeIfAbsent` 로 캐시를 만들면 비싼 `load` 를 8.4배 덜** 부른다."
+  }
+ ],
+ "recap": [
+  "putIfAbsent·compute·merge 는 검사 후 행동을 한 연산으로 만든다.",
+  "맞게 만드는 값은 5% 정도로 사실상 공짜다.",
+  "함수는 그 칸의 락을 쥔 채 불리므로 짧고 순수해야 한다.",
+  "함수 안에서 같은 맵을 고치면 예외가 나거나 멈춘다.",
+  "computeIfAbsent 로 캐시를 만들면 비싼 로딩이 키 개수만큼만 일어난다."
+ ],
+ "drills": [
+  {
+   "task": "10.2절의 검사 후 행동을 원자 연산으로 바꾼다.",
+   "done_when": "오류가 0 이 되는 것을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "함수 안에서 같은 맵을 고쳐 본다.",
+   "done_when": "예외나 멈춤을 확인한다.",
+   "minutes": 12
+  },
+  {
+   "task": "함수 길이를 늘려 가며 잰다.",
+   "done_when": "계산을 밖으로 빼 고친다.",
+   "minutes": 15
+  },
+  {
+   "task": "computeIfAbsent 캐시와 순진한 캐시의 로딩 횟수를 센다.",
+   "done_when": "차이를 낸다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "이 연산들이 없애는 것은.",
+   "a": "두 호출 사이의 틈, 곧 검사 후 행동이다."
+  },
+  {
+   "q": "함수의 조건은.",
+   "a": "짧고 순수해야 하며 같은 맵을 건드리면 안 된다."
+  },
+  {
+   "q": "함수가 길면 왜 나쁜가.",
+   "a": "그 칸의 락을 쥔 채 도는 것이라 같은 칸이 전부 막힌다."
+  },
+  {
+   "q": "computeIfAbsent 의 이득은.",
+   "a": "비싼 로딩이 키마다 한 번만 일어난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "원자적 갱신",
+   "what": "읽고 계산하고 쓰는 것을 한 연산으로 만든 메서드."
+  },
+  {
+   "term": "재귀적 갱신",
+   "what": "갱신 함수 안에서 같은 맵을 고치는 것. 금지다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — ConcurrentHashMap",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Map",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Oracle — Concurrency Tutorial",
+   "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+   "publisher": "Oracle"
+  }
+ ]
+}

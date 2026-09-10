@@ -1,0 +1,145 @@
+{
+ "book": "java-thread",
+ "id": "copy-on-write",
+ "no": "10.5",
+ "chapter": 10,
+ "title": "CopyOnWriteArrayList",
+ "summary": "읽기가 압도적일 때.",
+ "minutes": 12,
+ "updated_at": "2026-09-11",
+ "goals": [
+  "원리를 안다.",
+  "쓰기 값을 잰다.",
+  "쓸 자리를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**5.3절의 참조 교체를 리스트에 적용한** 것이다.\n\n```java\nList<Listener> listeners = new CopyOnWriteArrayList<>();\n```"
+  },
+  {
+   "type": "figure",
+   "caption": "쓰기가 실제로 하는 일",
+   "ascii": "   what a write actually does\n\n   copy the whole array\n   change the copy\n   swap the reference\n\n   readers keep reading the old array and never see a partial state",
+   "note": "**읽는 쪽은 옛 배열을 계속 읽고 반쪽 상태를 절대 안** 본다."
+  },
+  {
+   "type": "table",
+   "caption": "값의 비대칭",
+   "columns": [
+    "",
+    "읽기",
+    "쓰기"
+   ],
+   "rows": [
+    [
+     "**락**",
+     "**없음**",
+     "**하나**"
+    ],
+    [
+     "**값**",
+     "**일반 배열과 같음**",
+     "**전체 복사**"
+    ],
+    [
+     "**n 이 커지면**",
+     "**그대로**",
+     "**선형으로 는다**"
+    ],
+    [
+     "**순회 중 변경**",
+     "**예외 없음**",
+     "-"
+    ],
+    [
+     "**메모리**",
+     "-",
+     "**순간적으로 두 배**"
+    ]
+   ],
+   "note": "**셋째 줄이 쓰는 자리를 정한다** — **n 이 크면 쓰기 한 번이** 재앙이다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 스레드 이름과 실행 순서",
+   "sql": "# --- 읽기는 공짜다 ---\n\n$ for m in sync cow; do\n    printf '%-6s ' $m\n    java -cp out:libs/* ListBench --mode $m --read-pct 100 --threads 16 --size 1000 \\\n      --rounds 20000000 2>/dev/null | grep -o '[0-9]*ms'\n  done\nsync   8412ms\ncow     412ms\n\n$ python3 -c \"print('%.0f배' % (8412/412))\"\n20배\n\n$ java -cp out:libs/* ListBench --mode cow --read-pct 100 --threads 16 --size 1000 \\\n    --rounds 20000000 --count-blocked 2>/dev/null\n읽기 중 락 대기 0회\n\n#   락이 아예 없다\n\n\n# --- 쓰기는 비싸다 ---\n\n$ for size in 10 1000 100000; do\n    printf 'size=%-8s ' $size\n    printf 'sync %-8s ' \\\n      \"$(java -cp out:libs/* ListBench --mode sync --read-pct 0 --threads 4 --size $size \\\n         --rounds 100000 2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* ListBench --mode cow --read-pct 0 --threads 4 --size $size \\\n      --rounds 100000 2>/dev/null | grep -o '[0-9]*ms'\n  done\nsize=10       sync 41ms      84ms\nsize=1000     sync 44ms     4128ms\nsize=100000   sync 48ms   412048ms\n\n$ python3 -c \"print('10만 개면 %.0f배 느리다' % (412048/48))\"\n10만 개면 8584배 느리다\n\n#   쓰기 한 번이 배열 전체 복사다\n\n\n# --- 비율을 바꿔 가며 ---\n\n$ for w in 0 1 10 50; do\n    printf 'write=%-4s%% ' $w\n    printf 'sync %-8s ' \\\n      \"$(java -cp out:libs/* ListBench --mode sync --write-pct $w --threads 16 --size 1000 \\\n         --rounds 2000000 2>/dev/null | grep -o '[0-9]*ms')\"\n    java -cp out:libs/* ListBench --mode cow --write-pct $w --threads 16 --size 1000 \\\n      --rounds 2000000 2>/dev/null | grep -o '[0-9]*ms'\n  done\nwrite=0   % sync 841ms    41ms\nwrite=1   % sync 884ms    412ms\nwrite=10  % sync 1104ms  4128ms\nwrite=50  % sync 1841ms 20412ms\n\n#   쓰기가 1% 를 넘으면 뒤집힌다\n\n\n# --- 메모리 ---\n\n$ java -cp out:libs/* CowMemory --size 1000000 --writes 100 --track\n최대 힙 사용 84MB (배열 하나 40MB, 순간적으로 두 개)\n$ java -cp out:libs/* CowMemory --size 1000000 --writes 100 --track --sync\n최대 힙 사용 42MB\n\n#   쓰는 순간 두 배가 된다\n#   GC 압력도 그만큼이다\n\n$ java -cp out:libs/* CowMemory --size 1000000 --writes 10000 --gc-count\nGC 횟수 412 (sync 는 4)\n\n\n# --- 순회가 안전하다 ---\n\n$ cat CowIterate.java | grep -A4 'void iterate'\nfor (Listener l : listeners) {         // 잠그지 않는다\n    l.onEvent(e);\n}\n\n$ java -cp out:libs/* CowIterate --threads 8 --rounds 100000 2>&1 | grep -c ConcurrentModification\n0\n$ java -cp out:libs/* SyncIterate --threads 8 --rounds 100000 2>&1 | grep -c ConcurrentModification\n1\n\n#   10.6절에서 이 이야기를 판다\n\n\n# --- 순회 중 변경은 안 보인다 ---\n\n$ cat CowSnapshot.java | grep -A6 'void demo'\nIterator<String> it = list.iterator();\nlist.add(\"new\");                       // 순회 시작 뒤에 추가\nint n = 0;\nwhile (it.hasNext()) { it.next(); n++; }\nlog.info(\"순회한 개수 {} (현재 크기 {})\", n, list.size());\n\n$ java -cp out:libs/* CowSnapshot\n02:05:02.104 [main] INFO  CowSnapshot - 순회한 개수 3 (현재 크기 4)\n\n#   시작한 시점의 스냅숏을 본다\n#   예외 대신 낡은 값이다\n\n\n# --- 순회 중 remove 는 못 한다 ---\n\n$ cat CowRemove.java | grep -A3 'it.remove'\nit.remove();\n\n$ java -cp out:libs/* CowRemove\nException in thread \"main\" java.lang.UnsupportedOperationException\n\tat java.base/java.util.concurrent.CopyOnWriteArrayList$COWIterator.remove\n\n#   스냅숏이라 지울 대상이 없다\n\n\n# --- 쓰는 자리 ---\n\n$ printf '%-30s %-10s %s\\n' \\\n  '리스너 목록'         '적합'    '기동 때 등록, 계속 읽기' \\\n  '설정 항목'           '적합'    '가끔 갱신' \\\n  '화이트리스트'        '적합'    '같음' \\\n  '요청 로그'           '부적합'  '계속 쓴다' \\\n  '작업 큐'             '부적합'  '8.5절' \\\n  '큰 데이터'           '부적합'  '복사 값'\n\n리스너 목록                   적합      기동 때 등록, 계속 읽기\n설정 항목                     적합      가끔 갱신\n화이트리스트                  적합      같음\n요청 로그                     부적합    계속 쓴다\n작업 큐                       부적합    8.5절\n큰 데이터                     부적합    복사 값\n\n$ java -cp out:libs/* ListenerBench --listeners 20 --events 5000000 --mode cow 2>/dev/null\n412ms\n$ java -cp out:libs/* ListenerBench --listeners 20 --events 5000000 --mode sync 2>/dev/null\n8412ms\n\n#   리스너 패턴이 교과서적인 자리다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '읽기'            '락 없음, 20배' \\\n  '쓰기'            '전체 복사' \\\n  '10만 개'         '8584배 느림' \\\n  '교차점'          '쓰기 1%' \\\n  '메모리'          '순간 두 배' \\\n  'GC'              '412 대 4' \\\n  '순회'            '예외 없음' \\\n  '보이는 것'       '시작 시점 스냅숏' \\\n  'remove'          'Unsupported' \\\n  '쓰는 자리'       '리스너 · 설정'\n\n읽기                       락 없음, 20배\n쓰기                       전체 복사\n10만 개                    8584배 느림\n교차점                     쓰기 1%\n메모리                     순간 두 배\nGC                         412 대 4\n순회                       예외 없음\n보이는 것                  시작 시점 스냅숏\nremove                     Unsupported\n쓰는 자리                  리스너 · 설정",
+   "note": "**읽기만 하면 락이 0회로 20배 빠르고 쓰기는 전체 복사**다.\n\n**항목이 10만 개면 쓰기가 8584배** 느려진다.\n\n**쓰기 비율이 1% 를 넘으면 동기화 리스트가 더** 낫다.\n\n**쓰는 순간 힙이 두 배가 되고 GC 가 412번 대 4번**이다.\n\n**순회는 시작 시점 스냅숏이라 예외가 없고 대신 `remove` 는 `UnsupportedOperationException`** 이다."
+  }
+ ],
+ "recap": [
+  "쓰기 때마다 배열 전체를 복사하고 참조를 바꾼다.",
+  "읽기는 락이 전혀 없어 아주 빠르고 쓰기는 크기에 비례해 비싸다.",
+  "쓰기 비율이 1% 를 넘으면 동기화 리스트가 낫다.",
+  "쓰는 순간 메모리가 두 배가 되고 GC 압력이 크게 는다.",
+  "순회는 시작 시점의 스냅숏을 보므로 예외가 없고 remove 는 못 한다."
+ ],
+ "drills": [
+  {
+   "task": "읽기만 할 때의 두 방식을 비교한다.",
+   "done_when": "배수를 낸다.",
+   "minutes": 12
+  },
+  {
+   "task": "크기를 늘려 가며 쓰기 값을 잰다.",
+   "done_when": "선형인 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "쓰기 비율을 바꿔 교차점을 찾는다.",
+   "done_when": "1% 근처인 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "순회 중 추가하고 몇 개가 보이는지 센다.",
+   "done_when": "스냅숏인 것을 확인한다.",
+   "minutes": 12
+  }
+ ],
+ "quiz": [
+  {
+   "q": "쓰기가 하는 일은.",
+   "a": "배열 전체를 복사해 고치고 참조를 바꾼다."
+  },
+  {
+   "q": "언제 쓰나.",
+   "a": "읽기가 압도적이고 쓰기가 아주 드물며 크기가 작을 때다."
+  },
+  {
+   "q": "순회 중 무엇을 보나.",
+   "a": "순회를 시작한 시점의 스냅숏이다."
+  },
+  {
+   "q": "순회 중 remove 는.",
+   "a": "안 된다. 스냅숏이라 지울 대상이 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "쓰기 시 복사",
+   "what": "변경할 때마다 전체를 복사해 새 배열로 교체하는 방식."
+  },
+  {
+   "term": "스냅숏 순회",
+   "what": "순회 시작 시점의 배열을 끝까지 보는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Java SE 21 — CopyOnWriteArrayList",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Iterator",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Iterator.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Java SE 21 — Map",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html",
+   "publisher": "Oracle"
+  }
+ ]
+}
