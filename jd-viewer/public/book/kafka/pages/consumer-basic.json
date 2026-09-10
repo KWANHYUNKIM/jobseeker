@@ -1,0 +1,149 @@
+{
+ "book": "kafka",
+ "id": "consumer-basic",
+ "no": "7.1",
+ "chapter": 7,
+ "title": "첫 컨슈머",
+ "summary": "poll 루프.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "컨슈머의 기본 모양을 안다.",
+  "poll 이 무엇을 하는지 안다.",
+  "컨슈머가 스레드 안전하지 않다는 것을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "java",
+   "file": "SimpleConsumer.java",
+   "caption": "컨슈머의 기본 모양",
+   "code": "Properties props = new Properties();\nprops.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, \"localhost:9092\");\nprops.put(ConsumerConfig.GROUP_ID_CONFIG, \"order-worker\");\nprops.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());\nprops.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());\nprops.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, \"earliest\");\n\ntry (var consumer = new KafkaConsumer<String, String>(props)) {\n    consumer.subscribe(List.of(\"orders\"));\n\n    while (true) {\n        var records = consumer.poll(Duration.ofMillis(500));\n\n        for (var r : records) {\n            System.out.printf(\"p=%d o=%d key=%s value=%s%n\",\n                r.partition(), r.offset(), r.key(), r.value());\n            handle(r);\n        }\n        // 커밋은 7.4절\n    }\n}",
+   "note": "프로듀서와 달리 **`group.id` 가 필수**다(그룹 없이 쓰려면 `assign()` — 아래)."
+  },
+  {
+   "type": "table",
+   "caption": "필수·중요 설정",
+   "columns": [
+    "설정",
+    "기본",
+    "뜻"
+   ],
+   "rows": [
+    [
+     "`bootstrap.servers`",
+     "—",
+     "필수"
+    ],
+    [
+     "**`group.id`**",
+     "—",
+     "**`subscribe()` 를 쓰려면 필수**"
+    ],
+    [
+     "`key/value.deserializer`",
+     "—",
+     "필수"
+    ],
+    [
+     "**`auto.offset.reset`**",
+     "**`latest`**",
+     "**커밋이 없을 때 어디부터.** 1.4절"
+    ],
+    [
+     "`enable.auto.commit`",
+     "**`true`**",
+     "자동 커밋(7.4절)"
+    ],
+    [
+     "`max.poll.records`",
+     "500",
+     "한 번의 poll 이 가져올 최대 건수"
+    ]
+   ],
+   "note": "**`auto.offset.reset=latest` 가 기본**이라 **새 그룹은 과거를 안 읽는다**(1.4절). **배포하고 \"지난 게 안 처리돼요\" 의 원인.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "poll() 이 하는 일은 읽기만이 아니다",
+   "md": "**`poll()` 은 레코드를 가져오는 것 말고도 여러 일을** 한다.\n\n| 하는 일 | |\n|---|---|\n| **레코드 가져오기** | 브로커에 fetch 요청 |\n| **하트비트**(옛 버전) | 지금은 별도 스레드지만 **poll 간격 자체가 살아 있음의 증거**(7.6절) |\n| **리밸런싱 처리** | 파티션 할당·회수가 `poll()` 안에서 일어난다(7.3절) |\n| **자동 커밋** | `enable.auto.commit=true` 면 여기서(7.4절) |\n| 코디네이터 찾기 | 첫 poll 에서 |\n\n> **그래서 \"poll 을 오래 안 부르면 쫓겨난다\"** 는 규칙이 나온다(7.6절).\n> **처리가 오래 걸리면 다음 poll 이 늦고, 그러면 그룹에서 빠진다.**\n\n**첫 `poll()` 은 시간이 걸린다** — **코디네이터를 찾고, 그룹에 들어가고, 파티션을 할당받는다.** **`poll(0)` 을 부르고 끝내면 아무것도 안 나온다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "컨슈머는 스레드 안전하지 않다",
+   "md": "**프로듀서와 반대**다(6.1절).\n\n```java\n// 이렇게 하면 예외가 난다\nexecutor.submit(() -> consumer.poll(...));   // 스레드 A\nexecutor.submit(() -> consumer.commitSync()); // 스레드 B\n\n// java.util.ConcurrentModificationException:\n//   KafkaConsumer is not safe for multi-threaded access\n```\n\n| 규칙 | |\n|---|---|\n| **한 컨슈머 = 한 스레드** | poll 루프를 도는 그 스레드에서만 |\n| 병렬성을 늘리려면 | **컨슈머 인스턴스를 늘린다**(7.2절) |\n| 예외 | **`wakeup()` 만 다른 스레드에서 불러도 된다**(종료용) |\n\n**종료는 `wakeup()` 으로**:\n\n```java\nRuntime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));\n\n// poll 루프 안\ntry { ... } catch (WakeupException e) { /* 정상 종료 */ }\nfinally { consumer.close(); }\n```\n\n> **`close()` 는 그룹에서 정상적으로 빠져나가게 해 준다** — **안 하면 세션 타임아웃까지 기다렸다 리밸런싱**이 난다(7.3절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "컨슈머를 띄우고 무슨 일이 일어나는지 본다",
+   "sql": "$ kt --create --topic orders --partitions 3 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 10); do echo \"order-$i\"; done | kcp --topic orders\n\n# --- auto.offset.reset 이 latest 면 과거를 안 읽는다 ---\n\n$ java -cp 'out:libs/*' SimpleConsumer --group g1 --reset latest --timeout 5000\n(아무것도 안 나옴)\nconsumed 0 records\n\n$ kcg --describe --group g1\nGROUP  TOPIC   PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\ng1     orders  0          4               4               0\ng1     orders  1          3               3               0\ng1     orders  2          3               3               0\n\n#   0건을 읽었는데 CURRENT-OFFSET 이 끝에 가 있다\n#   \"지금부터\" 로 시작해서 커밋한 것이다\n#   배포 후 \"지난 게 안 처리돼요\" 의 정체\n\n$ java -cp 'out:libs/*' SimpleConsumer --group g2 --reset earliest --timeout 5000\np=0 o=0 key=null value=order-1\np=0 o=1 key=null value=order-4\n...\nconsumed 10 records\n\n\n# --- 첫 poll 에서 무슨 일이 일어나나 ---\n\n$ java -Dorg.slf4j.simpleLogger.defaultLogLevel=info -cp 'out:libs/*' \\\n    SimpleConsumer --group g3 --reset earliest --timeout 5000 2>&1 | \\\n    grep -E 'Cluster ID|Discovered|Successfully joined|Notifying assignor|Adding newly'\n[main] INFO  Metadata - Cluster ID: 4L6g3nShT-eMCtK--X86sw\n[main] INFO  AbstractCoordinator - Discovered group coordinator kafka-2:19092 (id: 2)\n[main] INFO  AbstractCoordinator - (Re-)joining group\n[main] INFO  ConsumerCoordinator - Notifying assignor about the new Assignment(partitions=[orders-0, orders-1, orders-2])\n[main] INFO  ConsumerCoordinator - Adding newly assigned partitions: orders-0, orders-1, orders-2\n[main] INFO  ConsumerCoordinator - Setting offset for partition orders-0 to the committed offset ...\n\n#   코디네이터를 찾고 -> 그룹에 들어가고 -> 파티션을 받고 -> 오프셋을 정한다\n#   전부 첫 poll() 안에서 일어난다\n\n\n# --- poll(0) 은 아무것도 못 가져온다 ---\n\n$ java -cp 'out:libs/*' PollZeroConsumer --group g4\npoll(0) returned 0 records\npoll(0) returned 0 records\npoll(500) returned 4 records\n\n#   첫 poll 은 가입·할당에 시간이 걸린다\n\n\n# --- 스레드 안전하지 않다 ---\n\n$ java -cp 'out:libs/*' MultiThreadConsumer --group g5\nException in thread \"pool-1-thread-2\" java.util.ConcurrentModificationException:\n  KafkaConsumer is not safe for multi-threaded access.\n  currentThread(name: pool-1-thread-2, id: 21) otherThread(id: 20)\n\n\n# --- close() 를 하고 나가는 것과 안 하는 것 ---\n\n$ java -cp 'out:libs/*' SimpleConsumer --group g6 --reset earliest --timeout 3000 &\n$ sleep 2\n$ kcg --describe --group g6 --state | tail -1\ng6     kafka-2:19092 (2)  range  Stable  1\n\n$ kill -9 %1        # close() 없이 강제 종료\n$ sleep 1 && kcg --describe --group g6 --state | tail -1\ng6     kafka-2:19092 (2)  range  Stable  1\n\n#   아직 멤버로 남아 있다\n\n$ sleep 45 && kcg --describe --group g6 --state | tail -1\ng6     kafka-2:19092 (2)         Empty  0\n\n#   session.timeout.ms(45초) 가 지나서야 빠졌다\n#   그동안 그 파티션은 아무도 안 읽는다 (7.3절)\n\n#   close() 를 부르고 나가면 즉시 빠진다:\n$ java -cp 'out:libs/*' SimpleConsumer --group g7 --reset earliest --timeout 3000\nconsumed 10 records\n$ kcg --describe --group g7 --state | tail -1\ng7     kafka-1:19092 (1)         Empty  0\n\n#   바로 Empty 다\n\n$ kt --delete --topic orders >/dev/null\n$ for g in g1 g2 g3 g4 g5 g6 g7; do kcg --delete --group $g >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "컨슈머는 group.id 와 역직렬화기가 필수이고 poll 루프로 돈다.",
+  "auto.offset.reset 의 기본은 latest 다. 새 그룹이 과거를 안 읽는 이유다.",
+  "poll() 은 읽기 말고도 리밸런싱 처리·자동 커밋·그룹 유지까지 한다.",
+  "컨슈머는 스레드 안전하지 않다. 병렬성은 인스턴스를 늘려서 얻는다.",
+  "close() 없이 죽으면 세션 타임아웃까지 그 파티션을 아무도 안 읽는다."
+ ],
+ "drills": [
+  {
+   "task": "auto.offset.reset 을 latest 와 earliest 로 각각 새 그룹으로 실행해 결과를 비교한다.",
+   "done_when": "latest 가 0건인데 오프셋은 끝에 가 있는 것을 본다.",
+   "minutes": 6
+  },
+  {
+   "task": "INFO 로그로 첫 poll 에서 코디네이터 발견·그룹 가입·파티션 할당이 일어나는 것을 확인한다.",
+   "done_when": "네 줄의 순서를 읽는다.",
+   "minutes": 6
+  },
+  {
+   "task": "컨슈머를 kill -9 로 죽이고 그룹이 Empty 가 될 때까지 걸리는 시간을 잰다.",
+   "done_when": "세션 타임아웃만큼 걸리는 것을 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "새 그룹으로 컨슈머를 띄웠는데 과거 레코드를 안 읽는다면.",
+   "a": "auto.offset.reset 기본값이 latest 라서. earliest 로 바꾸거나 오프셋을 되감는다."
+  },
+  {
+   "q": "poll() 이 레코드 가져오기 말고 하는 일은.",
+   "a": "그룹 유지, 리밸런싱 처리, 자동 커밋, 코디네이터 탐색."
+  },
+  {
+   "q": "컨슈머 처리량을 늘리려면 스레드를 늘리면 되나.",
+   "a": "안 된다. 컨슈머는 스레드 안전하지 않다. 인스턴스(또는 파티션)를 늘린다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "poll 루프",
+   "what": "컨슈머가 반복해서 poll 하고 처리하는 구조."
+  },
+  {
+   "term": "코디네이터",
+   "what": "그룹의 멤버십과 오프셋을 담당하는 브로커."
+  },
+  {
+   "term": "wakeup()",
+   "what": "다른 스레드에서 불러 poll 을 깨우는 유일한 안전한 메서드."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Consumer API",
+   "url": "https://kafka.apache.org/documentation/#consumerapi",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Consumer configs",
+   "url": "https://kafka.apache.org/documentation/#consumerconfigs",
+   "publisher": "Apache"
+  }
+ ]
+}

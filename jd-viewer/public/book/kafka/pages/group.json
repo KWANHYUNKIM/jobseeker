@@ -1,0 +1,136 @@
+{
+ "book": "kafka",
+ "id": "group",
+ "no": "7.2",
+ "chapter": 7,
+ "title": "컨슈머 그룹",
+ "summary": "같은 그룹은 나눠 읽고 다른 그룹은 각자 읽는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "그룹의 규칙을 안다.",
+  "subscribe 와 assign 을 구분한다.",
+  "그룹 ID 를 어떻게 정할지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 두 그룹이 같은 데이터를 각자 읽었다.** **그 규칙을 정리**한다.\n\n> **같은 `group.id` = 나눠 읽는다.**\n> **다른 `group.id` = 각자 전부 읽는다.**"
+  },
+  {
+   "type": "figure",
+   "caption": "그룹의 규칙",
+   "ascii": "   topic orders (3 partitions)\n     p0  p1  p2\n      |   |   |\n   +--+---+---+------------------+     +---------------------------+\n   |  group \"inventory\"          |     |  group \"mail\"             |\n   |   c1 -> p0                  |     |   c1 -> p0, p1, p2        |\n   |   c2 -> p1, p2              |     |                           |\n   +-----------------------------+     +---------------------------+\n\n   within a group: each partition to exactly ONE consumer\n   across groups:  everyone reads everything\n\n   그룹 안에서 나누고, 그룹끼리는 독립이다",
+   "note": "**\"한 파티션은 그룹 안에서 한 컨슈머만\"** 이 유일한 규칙이다(2.4절)."
+  },
+  {
+   "type": "table",
+   "caption": "컨슈머 수와 파티션 수",
+   "columns": [
+    "관계",
+    "결과"
+   ],
+   "rows": [
+    [
+     "컨슈머 < 파티션",
+     "**한 컨슈머가 여러 파티션.** 정상"
+    ],
+    [
+     "**컨슈머 = 파티션**",
+     "**하나씩. 이상적**"
+    ],
+    [
+     "**컨슈머 > 파티션**",
+     "**남는 컨슈머는 논다**(2.5절)"
+    ],
+    [
+     "컨슈머 0",
+     "랙만 쌓인다(5.4절)"
+    ]
+   ],
+   "note": "**\"컨슈머를 늘렸는데 안 빨라져요\" 의 절반이 세 번째**다. **`--members` 로 `#PARTITIONS` 를 본다**(5.4절)."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "subscribe 와 assign",
+   "md": "| | `subscribe()` | `assign()` |\n|---|---|---|\n| 그룹 | **필요하다** | **없어도 된다** |\n| 파티션 할당 | **카프카가 나눠 준다** | **내가 지정한다** |\n| 리밸런싱 | **있다** | 없다 |\n| 오프셋 커밋 | 그룹에 커밋 | `group.id` 를 주면 가능 |\n| 토픽 패턴 | `subscribe(Pattern.compile(\"order\\\\..*\"))` | 안 된다 |\n\n```java\n// 일반적인 경우\nconsumer.subscribe(List.of(\"orders\"));\n\n// 특정 파티션만 읽고 싶을 때 (진단·특수 처리)\nconsumer.assign(List.of(new TopicPartition(\"orders\", 2)));\nconsumer.seek(new TopicPartition(\"orders\", 2), 1000);\n```\n\n> **`assign()` 은 리밸런싱이 없어서 안정적이지만 파티션이 늘면 내가 챙겨야** 한다.\n> **5.3절의 `--partition --offset` 이 이걸 쓴 것**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "그룹 ID 를 어떻게 정할까",
+   "md": "| 실수 | 결과 |\n|---|---|\n| **인스턴스마다 다른 그룹 ID** | **모든 인스턴스가 전부 읽는다.** 중복 처리 |\n| **다른 용도가 같은 그룹 ID** | 서로 레코드를 뺏어 간다 |\n| **환경(dev/prod)이 같은 그룹 ID** | 같은 클러스터면 섞인다 |\n| 배포마다 바뀌는 ID | 매번 처음부터 읽거나 안 읽는다 |\n\n**규칙**:\n\n```\n<서비스>.<용도>          inventory.order-consumer\n<서비스>.<용도>.<환경>   inventory.order-consumer.prod   (클러스터를 공유하면)\n```\n\n> **\"이 일을 하는 하나의 논리적 컨슈머\" 에 이름을 붙이는** 것이다.\n> **인스턴스가 몇 개든 그룹 ID 는 하나**다.\n\n**흔한 사고**: **`group.id = UUID.randomUUID()`** — **재시작할 때마다 새 그룹이라 `auto.offset.reset` 대로 시작한다**(7.1절)."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "그룹의 규칙을 실험한다",
+   "sql": "$ kt --create --topic grp --partitions 3 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 300); do echo \"m-$i\"; done | kcp --topic grp\n\n# --- 같은 그룹: 나눠 읽는다 ---\n\n$ for i in 1 2 3; do\n>   java -cp 'out:libs/*' CountingConsumer --group same --reset earliest \\\n>     --timeout 8000 --label \"c$i\" &\n> done\n$ wait\nc1 assigned=[grp-0] consumed=100\nc2 assigned=[grp-1] consumed=100\nc3 assigned=[grp-2] consumed=100\n\n#   300건을 셋이 100씩 나눠 읽었다\n\n\n# --- 다른 그룹: 각자 전부 ---\n\n$ for i in 1 2 3; do\n>   java -cp 'out:libs/*' CountingConsumer --group \"diff-$i\" --reset earliest \\\n>     --timeout 8000 --label \"c$i\" &\n> done\n$ wait\nc1 assigned=[grp-0, grp-1, grp-2] consumed=300\nc2 assigned=[grp-0, grp-1, grp-2] consumed=300\nc3 assigned=[grp-0, grp-1, grp-2] consumed=300\n\n#   각자 300건을 다 읽었다. 900건 처리\n\n$ kcg --list | grep diff\ndiff-1\ndiff-2\ndiff-3\n\n\n# --- 그룹 ID 를 UUID 로 하면 ---\n\n$ for i in 1 2; do\n>   java -cp 'out:libs/*' CountingConsumer --group \"$(uuidgen)\" --reset earliest \\\n>     --timeout 5000 --label \"run$i\" &\n>   sleep 6\n> done\nrun1 consumed=300\nrun2 consumed=300\n\n$ kcg --list | wc -l\n7\n\n#   실행할 때마다 그룹이 하나씩 늘고 매번 전부 다시 읽는다\n#   __consumer_offsets 에 쓰레기가 쌓인다\n\n\n# --- 컨슈머가 파티션보다 많으면 ---\n\n$ for i in 1 2 3 4 5; do\n>   java -cp 'out:libs/*' CountingConsumer --group over --reset earliest \\\n>     --timeout 8000 --label \"c$i\" &\n> done\n$ sleep 3\n$ kcg --describe --group over --members\nGROUP  CONSUMER-ID          HOST          CLIENT-ID  #PARTITIONS\nover   consumer-over-1-...  /172.20.0.12  c1         1\nover   consumer-over-2-...  /172.20.0.13  c2         1\nover   consumer-over-3-...  /172.20.0.14  c3         1\nover   consumer-over-4-...  /172.20.0.15  c4         0\nover   consumer-over-5-...  /172.20.0.16  c5         0\n\n$ wait\nc1 assigned=[grp-0] consumed=100\nc2 assigned=[grp-1] consumed=100\nc3 assigned=[grp-2] consumed=100\nc4 assigned=[] consumed=0\nc5 assigned=[] consumed=0\n\n#   둘은 아무것도 안 했다 (2.5절)\n\n\n# --- assign(): 그룹 없이 특정 파티션만 ---\n\n$ java -cp 'out:libs/*' AssignConsumer --topic grp --partition 1 --offset 50 --max 5\nassigned to grp-1 (no group)\np=1 o=50 m-152\np=1 o=51 m-155\np=1 o=52 m-158\np=1 o=53 m-161\np=1 o=54 m-164\n\n$ kcg --list | grep -c assign || echo 'no group created'\nno group created\n\n#   그룹이 안 생겼다. 리밸런싱도 없다\n#   운영 그룹을 안 건드리고 확인할 때 쓴다 (5.3절)\n\n\n# --- 토픽 패턴 구독 ---\n\n$ kt --create --topic order.placed --partitions 1 --replication-factor 3 >/dev/null\n$ kt --create --topic order.paid --partitions 1 --replication-factor 3 >/dev/null\n$ echo 'placed' | kcp --topic order.placed\n$ echo 'paid' | kcp --topic order.paid\n\n$ java -cp 'out:libs/*' PatternConsumer --pattern 'order\\..*' --group pat \\\n    --reset earliest --timeout 6000\nsubscribed to pattern: order\\..*\nmatched topics: [order.paid, order.placed]\np=0 o=0 placed\np=0 o=0 paid\nconsumed 2 records\n\n#   새 토픽이 생기면 metadata.max.age.ms 마다 자동으로 붙는다\n\n$ for t in grp order.placed order.paid; do kt --delete --topic $t >/dev/null; done\n$ for g in $(kcg --list); do kcg --delete --group \"$g\" >/dev/null 2>&1; done"
+  }
+ ],
+ "recap": [
+  "같은 group.id 는 파티션을 나눠 읽고 다른 group.id 는 각자 전부 읽는다.",
+  "한 파티션은 그룹 안에서 한 컨슈머만 읽는다. 컨슈머가 파티션보다 많으면 남는 것은 논다.",
+  "subscribe 는 그룹과 리밸런싱을 쓰고 assign 은 파티션을 직접 지정한다.",
+  "그룹 ID 는 '이 일을 하는 하나의 논리적 컨슈머' 의 이름이다. 인스턴스가 몇 개든 하나다.",
+  "group.id 를 UUID 로 만들면 재시작마다 새 그룹이 되어 전부 다시 읽거나 안 읽는다."
+ ],
+ "drills": [
+  {
+   "task": "같은 그룹 셋과 다른 그룹 셋으로 각각 실행해 읽은 건수를 비교한다.",
+   "done_when": "300 vs 900 의 차이를 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "파티션 3에 컨슈머 5를 붙이고 --members 로 #PARTITIONS 가 0인 멤버를 찾는다.",
+   "done_when": "노는 컨슈머를 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "assign() 으로 특정 파티션만 읽고 그룹이 안 생기는 것을 확인한다.",
+   "done_when": "kcg --list 에 안 나오는 것을 본다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "같은 토픽을 두 서비스가 각각 전부 읽게 하려면.",
+   "a": "서로 다른 group.id 를 준다."
+  },
+  {
+   "q": "인스턴스마다 다른 group.id 를 주면.",
+   "a": "각 인스턴스가 모든 파티션을 읽어 같은 레코드가 인스턴스 수만큼 중복 처리된다."
+  },
+  {
+   "q": "assign() 을 쓰면 무엇이 없어지나.",
+   "a": "그룹 기반 자동 할당과 리밸런싱. 파티션이 늘면 직접 챙겨야 한다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "group.id",
+   "what": "컨슈머 그룹의 이름. 오프셋과 할당의 단위."
+  },
+  {
+   "term": "subscribe / assign",
+   "what": "자동 할당과 수동 할당."
+  },
+  {
+   "term": "패턴 구독",
+   "what": "정규식으로 여러 토픽을 구독하는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Consumer groups",
+   "url": "https://kafka.apache.org/documentation/#intro_consumers",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — KafkaConsumer javadoc",
+   "url": "https://kafka.apache.org/38/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html",
+   "publisher": "Apache"
+  }
+ ]
+}

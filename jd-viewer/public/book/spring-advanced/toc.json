@@ -724,7 +724,7 @@
           "title": "자기 주입",
           "summary": "돌아서 프록시를 탄다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.3",
@@ -732,7 +732,7 @@
           "title": "구조를 나눈다",
           "summary": "제일 나은 답.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.4",

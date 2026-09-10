@@ -380,7 +380,7 @@
           "title": "첫 컨슈머",
           "summary": "poll 루프.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -388,7 +388,7 @@
           "title": "컨슈머 그룹",
           "summary": "같은 그룹은 나눠 읽고 다른 그룹은 각자 읽는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",

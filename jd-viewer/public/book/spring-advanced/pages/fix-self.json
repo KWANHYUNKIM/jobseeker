@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "fix-self",
+ "no": "12.2",
+ "chapter": 12,
+ "title": "자기 주입",
+ "summary": "돌아서 프록시를 탄다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "돌아가게 한다.",
+  "왜 생성자가 안 되는지 안다.",
+  "값을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**12.1절에서 안쪽 길에 프록시가** 없었다. **밖으로 돌린다**."
+  },
+  {
+   "type": "figure",
+   "caption": "밖으로 도는 길",
+   "ascii": "   the detour that makes the call go outside\n\n   the bean holds a reference to its own proxy\n   calling through that reference leaves the object\n   and comes back in through the proxy\n\n   the shortest possible trip out and back",
+   "note": "**가장 짧게 나갔다** 들어온다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "자기 프록시를 손에 쥔다",
+   "md": "**자기를** 받는다.\n\n> **컨테이너가 준 것**이다.\n> **아래에서 확인**한다.\n> **프록시**다.\n\n**그걸로** 부른다.\n\n> **this 가** 아니다.\n> **아래에서 로그를** 본다.\n> **밖에서 온 게** 된다.\n\n**한 줄이면** 된다.\n\n> **구조가 안** 바뀐다.\n> **12.3절과 다른 점**이다.\n> **아래에서 견준다**.\n\n**생성자로는 못** 받는다.\n\n> **아직 없어서**다.\n> **아래에서 그걸** 겪는다.\n> **길이** 셋이다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 생성자가 안 되나",
+   "ascii": "   why the constructor cannot hold it\n\n   the proxy is made after the target is constructed\n   so at construction time there is nothing to hand in\n\n   the reference has to arrive later, or be fetched on demand",
+   "note": "**나중에 오거나 필요할 때 꺼내** 와야 한다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "고쳤다는 걸 코드가 안 말해 준다",
+   "md": "**이상해** 보인다.\n\n> **자기를 자기가** 부른다.\n> **아래에서 그** 줄을 본다.\n> **읽는 사람이** 멈칫한다.\n\n**빠뜨리기** 쉽다.\n\n> **한 곳만 고치고** 만다.\n> **아래에서 남은 걸** 센다.\n> **12.1절의 검사가** 잡는다.\n\n**주석이** 필요하다.\n\n> **왜 이렇게 적었는지**다.\n> **아래에서 붙인다**.\n> **10.7절의 그** 값이다.\n\n**구조가 안** 나아진다.\n\n> **급할 때 쓰는 길**이다.\n> **12.3절이 제대로 된 답**이다.\n> **아래에서 셋을** 견준다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 12.1 절의 그 자리\n\n@Service\npublic class OrderServiceV3 {\n    public void outer(String itemId) { inner(itemId); }\n\n    @Transactional\n    public void inner(String itemId) { orderRepository.save(itemId); throw new IllegalStateException(); }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -c 'Creating new transaction' logs/app.log\n0\n$ curl -s localhost:8080/orders/count\n1\n\n\n-- 자기를 받는다\n\n@Service\npublic class OrderServiceV3 {\n\n    /** 자기 자신의 프록시. 자기 호출이 프록시를 안 지나서다(12.1). */\n    @Autowired @Lazy\n    private OrderServiceV3 self;\n\n    public void outer(String itemId) { self.inner(itemId); }\n\n    @Transactional\n    public void inner(String itemId) { ... }\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -E 'Creating new transaction|Initiating transaction rollback' logs/app.log | cut -c56-\nCreating new transaction with name [study.adv.app.OrderServiceV3.inner]\nInitiating transaction rollback\n\n$ curl -s localhost:8080/orders/count\n0\n\n--   되돌려졌다\n--   12.1 절에서 1 이 남던 그것이다\n\n\n-- 무엇을 쥐고 있나\n\npublic void outer(String itemId) {\n    log.info(\"this {}\", this.getClass().getName());\n    log.info(\"self {}\", self.getClass().getName());\n    self.inner(itemId);\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -E 'this |self ' logs/app.log | tail -2 | cut -c56-\nthis study.adv.app.OrderServiceV3\nself study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n--   10.1 절의 타깃과 이것이다\n--   컨트롤러가 받은 것과 같다\n\n\n-- 내 애스펙트도 걸린다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | cut -c56-\n[796bccd9] OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[796bccd9] |   |-->OrderServiceV3.inner()\n[796bccd9] |   |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |   |<--OrderServiceV3.inner() time=1005ms\n[796bccd9] |<--OrderServiceV3.outer() time=1006ms\n[796bccd9] OrderControllerV3.outer() time=1007ms\n\n$ grep -c 'OrderServiceV3.inner' logs/app.log\n2\n\n--   12.1 절에서 0 이던 줄이 생겼다\n--   여섯 줄이 여덟 줄이 됐다\n\n\n-- 생성자로는 못 받는다\n\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV3 {\n    private final OrderServiceV3 self;\n}\n\n$ ./gradlew bootRun 2>&1 | grep -i 'circular' | head -3\nThe dependencies of some of the beans in the application context form a cycle:\n┌──->──┐\n|  orderServiceV3\n└──<-──┘\n\n--   시끄럽게 막는다\n\n\n-- 왜 그런가\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework.beans.factory=DEBUG' 2>&1 \\\n    | grep -E \"Creating shared instance of singleton bean 'orderServiceV3'|Creating implicit proxy for bean 'orderServiceV3'\"\nDEBUG ... : Creating shared instance of singleton bean 'orderServiceV3'\nDEBUG ... : Creating implicit proxy for bean 'orderServiceV3'\n\n$ ./gradlew bootRun --args='--logging.level.org.springframework=DEBUG' 2>&1 \\\n    | grep -n \"orderServiceV3\" | head -2\n84:DEBUG ... : Creating shared instance of singleton bean 'orderServiceV3'\n91:DEBUG ... : Creating implicit proxy for bean 'orderServiceV3'\n\n--   84 번 줄에서는 프록시가 아직 없다\n--   8.4 절에서 후처리기가 뒤에 온다고 했다\n\n\n-- 길이 셋이다\n\n// ① 늦게 받기\n@Autowired @Lazy\nprivate OrderServiceV3 self;\n\n// ② 필드로 나중에 받기\n@Autowired\nprivate OrderServiceV3 self;\n\n// ③ 필요할 때 꺼내기\nprivate final ObjectProvider<OrderServiceV3> selfProvider;\npublic void outer(String itemId) { selfProvider.getObject().inner(itemId); }\n\n$ for m in lazy field provider; do\n    printf '%-10s ' $m\n    curl -s \"localhost:8080/v3/outer-$m?itemId=연필\" > /dev/null\n    grep -c 'Creating new transaction' logs/app.log\n    : > logs/app.log\n  done\nlazy       1\nfield      1\nprovider   1\n\n--   셋 다 된다\n\n\n-- 순환을 허용해야 할 때도 있다\n\n@Autowired\nprivate OrderServiceV3 self;              // @Lazy 없이\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'circular\\|cycle'\n0\n\n$ ./gradlew bootRun 2>&1 | grep -i 'allow-circular' | head -1\n(없음)\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -c 'Creating new transaction' logs/app.log\n1\n\n--   필드로 받으면 자기 자신은 봐 준다\n--   생성자만 막힌다\n\n\n-- 셋의 값을 견준다\n\n$ for m in lazy field provider; do\n    printf '%-10s ' $m\n    curl -s \"localhost:8080/bench/self?mode=$m&n=1000000\"\n  done\n\nlazy       100 만 회   924 ms\nfield      100 만 회   901 ms\nprovider   100 만 회   1387 ms\n\n$ python3 -c \"print('꺼내 오는 게 %.0f ms 비싸다' % (1387-901))\"\n꺼내 오는 게 486 ms 비싸다\n\n--   9.6 절에서 잰 889 가 기준이다\n--   앞 둘은 사실상 같다\n\n\n-- 늦게 받으면 무엇이 오나\n\n@Autowired @Lazy\nprivate OrderServiceV3 self;\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep 'self ' logs/app.log | tail -1 | cut -c56-\nself study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n$ curl -s 'localhost:8080/self/kind'\nself 클래스:  study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n프록시인가:   true\nAOP 프록시:   true\n\n--   꺼내 쓸 때 만드는 껍데기가 아니다\n--   AOP 프록시 자체가 온다\n\n\n-- 빠뜨리기 쉽다\n\n@Service\npublic class OrderServiceV3 {\n    @Autowired @Lazy private OrderServiceV3 self;\n\n    public void outer(String itemId) { self.inner(itemId); }\n    public void another(String itemId) { inner(itemId); }        // 여기는 안 고침\n}\n\n$ ./gradlew bootRun 2>&1 | grep '놓친 자기 호출' | cut -c56-\n놓친 자기 호출 OrderServiceV3.another -> inner    (@Transactional)\n놓친 자기 호출 1 곳\n\n$ curl -s -o /dev/null 'localhost:8080/v3/another?itemId=연필'\n$ grep -c 'Creating new transaction' logs/app.log\n0\n\n--   12.1 절의 검사가 남은 걸 짚는다\n--   둘이 하나가 됐다\n\n\n-- 왜 이렇게 적었는지 남긴다\n\n@Service\npublic class OrderServiceV3 {\n\n    /**\n     * 자기 자신의 프록시.\n     * 자기 호출은 프록시를 안 지나 @Transactional 이 안 걸린다(12.1).\n     * inner() 를 부를 때는 반드시 이 참조를 쓴다.\n     */\n    @Autowired @Lazy\n    private OrderServiceV3 self;\n}\n\n$ grep -c '자기 자신의 프록시' src/main/java/study/adv/app/OrderServiceV3.java\n1\n\n$ grep -rn 'self\\.' src/main/java/study/adv/app/ | wc -l\n       1\n\n--   10.7 절에서 말한 그 단서다\n\n\n-- 테스트로 못 박는다\n\n@SpringBootTest\nclass SelfCallTest {\n    @Autowired OrderServiceV3 service;\n\n    @Test\n    void 밖에서_안쪽까지_되돌려진다() {\n        assertThatThrownBy(() -> service.outer(\"연필\"))\n            .isInstanceOf(IllegalStateException.class);\n        assertThat(repository.count()).isZero();\n    }\n}\n\n$ ./gradlew test --tests SelfCallTest -q && echo 'test OK'\ntest OK\n\n$ git stash && ./gradlew test --tests SelfCallTest 2>&1 | grep -A2 'expected' | head -3\nexpected: 0L\n but was: 1L\n$ git stash pop\n\n--   12.1 절에서 적어야 한다고 한 그 테스트다\n\n\n-- 세 길을 견준다\n\n$ printf '%-16s %-16s %-16s %s\\n' '' '고치는 양' '구조' '읽기' && \\\n  printf '%-16s %-16s %-16s %s\\n' \\\n  '자기 주입'   '한 줄'     '그대로'    '이상해 보임' \\\n  '나누기'      '클래스 하나' '나아짐'  '자연스러움' \\\n  '로드 위빙'   '설정'      '그대로'    '안 보임'\n\n                  고치는 양        구조             읽기\n자기 주입         한 줄            그대로           이상해 보임\n나누기            클래스 하나      나아짐           자연스러움\n로드 위빙         설정             그대로           안 보임\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -8 | cut -c56- | head -3\n[796bccd9] OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[796bccd9] |   |-->OrderServiceV3.inner()\n\n$ curl -s 'localhost:8080/self/kind' | sed -n '1p'\nself 클래스:  study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n$ ./gradlew bootRun 2>&1 | grep '놓친 자기 호출' | tail -1 | cut -c56-\n놓친 자기 호출 0 곳\n\n$ git add -A && git commit -q -m 'fix: 자기 주입으로 내부 호출 우회' && git tag v14\n\n--   12.3 절에서 구조로 푸는 법을 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '고치는 법'    '자기 프록시로 부름' \\\n  'this'         '원본' \\\n  'self'         '프록시' \\\n  '트랜잭션'     '열림' \\\n  '되돌리기'     '됨' \\\n  '로그'         '여섯에서 여덟 줄' \\\n  '생성자'       '순환으로 막힘' \\\n  '필드'         '자기 자신은 봐 줌' \\\n  '길'           '셋' \\\n  '값'           '꺼내 오기만 비쌈' \\\n  '남은 문제'    '빠뜨리기 쉬움'\n\n고치는 법                  자기 프록시로 부름\nthis                       원본\nself                       프록시\n트랜잭션                   열림\n되돌리기                   됨\n로그                       여섯에서 여덟 줄\n생성자                     순환으로 막힘\n필드                       자기 자신은 봐 줌\n길                         셋\n값                         꺼내 오기만 비쌈\n남은 문제                  빠뜨리기 쉬움",
+   "note": "**`this` 는 원본, `self` 는 `…$$SpringCGLIB$$0` 으로 컨트롤러가 받은 것과** 같다.\n\n**`Creating new transaction` 이 0 줄에서 1 줄이 되고 남은 데이터가 1 에서 0 이** 된다.\n\n**추적 로그가 여섯 줄에서 여덟 줄로 늘어 `inner` 가 처음으로** 나타난다.\n\n**생성자로 받으면 `form a cycle` 로 막히고 필드로 받으면 자기 자신은 봐** 준다.\n\n**한 곳만 고치면 검사가 `놓친 자기 호출 1 곳` 으로 남은 자리를** 짚는다."
+  }
+ ],
+ "recap": [
+  "**밖으로** 돈다.",
+  "**self 가** 프록시다.",
+  "**트랜잭션이** 열린다.",
+  "**되돌려진다**.",
+  "**로그가** 는다.",
+  "**생성자는** 막힌다.",
+  "**길이** 셋이다.",
+  "**빠뜨리기** 쉽다.",
+  "**주석이** 필요하다."
+ ],
+ "drills": [
+  {
+   "task": "자기를 주입해 고친다.",
+   "done_when": "되돌려지는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "this 와 self 를 찍어 본다.",
+   "done_when": "둘이 다른 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "생성자로 받아 본다.",
+   "done_when": "순환 오류를 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "한 곳만 고치고 검사한다.",
+   "done_when": "남은 자리를 찾았다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 자기를 주입하나?",
+   "a": "그 참조가 프록시라 부르면 밖에서 온 호출이 되어서다."
+  },
+  {
+   "q": "생성자로 못 받는 이유는?",
+   "a": "그 시점에는 프록시가 아직 없어 순환이 된다."
+  },
+  {
+   "q": "필드로 받으면?",
+   "a": "자기 자신에 대한 순환은 허용되어 그냥 된다."
+  },
+  {
+   "q": "세 길의 값 차이는?",
+   "a": "필요할 때 꺼내 오는 쪽만 눈에 띄게 비싸다."
+  },
+  {
+   "q": "이 방법의 약점은?",
+   "a": "구조가 안 나아지고 다른 자리를 빠뜨리기 쉽다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "자기 주입",
+   "def": "빈이 자기 자신의 프록시를 참조로 받아 내부 호출을 밖으로 돌리는 것."
+  },
+  {
+   "term": "순환",
+   "def": "빈들이 서로를 필요로 해 만들 수 없는 상태."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Dependency Injection",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Proxying mechanisms",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/proxying.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "fix-delegate",
+ "no": "12.3",
+ "chapter": 12,
+ "title": "구조를 나눈다",
+ "summary": "제일 나은 답.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "나눠서 푼다.",
+  "선을 찾는다.",
+  "셋을 견준다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**12.2절은 한 줄로** 넘겼다. **여기선 선을** 긋는다."
+  },
+  {
+   "type": "figure",
+   "caption": "같은 둘, 다른 객체",
+   "ascii": "   the same two methods, in two objects\n\n   before   one class calls itself, no proxy in between\n   after    one class calls another, a proxy in between\n\n   the call becomes external because the object really is another",
+   "note": "**정말로 남이라서 밖에서 온 호출이** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "우회가 아니라 원래 자리로 옮기는 것이다",
+   "md": "**남이** 된다.\n\n> **다른 빈이다**.\n> **아래에서 확인**한다.\n> **프록시를** 지난다.\n\n**속임수가** 없다.\n\n> **읽는 사람이 안** 멈칫한다.\n> **12.2절의 그** 문제다.\n> **아래에서 견준다**.\n\n**선이 이미** 있었다.\n\n> **애너테이션이 그걸** 가리켰다.\n> **아래에서 찾는다**.\n> **일의 단위**다.\n\n**테스트가** 쉬워진다.\n\n> **따로 부를 수** 있다.\n> **아래에서 그걸** 본다.\n> **⑨ 2장의 그** 이야기다."
+  },
+  {
+   "type": "figure",
+   "caption": "선이 이미 있던 자리",
+   "ascii": "   where the line usually already is\n\n   the method that starts the unit of work\n   the method that does one step of it\n\n   the boundary the annotation was pointing at all along",
+   "note": "**애너테이션이 처음부터 가리키던 경계**다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "나누는 값도 있다",
+   "md": "**파일이** 는다.\n\n> **클래스 하나** 더다.\n> **아래에서** 센다.\n> **작은 값**이다.\n\n**이름이** 필요하다.\n\n> **뭐라고 부를지**다.\n> **아래에서 셋을** 본다.\n> **일의 이름**이다.\n\n**주입이** 는다.\n\n> **한 줄** 더다.\n> **아래에서 확인**한다.\n> **순환이** 없다.\n\n**늘 나눌 순** 없다.\n\n> **남의 코드**다.\n> **아래에서 그걸** 본다.\n> **12.2절이 남는** 이유다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 12.2 절의 모양\n\n@Service\npublic class OrderServiceV3 {\n    @Autowired @Lazy private OrderServiceV3 self;\n\n    public void outer(String itemId) { self.inner(itemId); }\n\n    @Transactional\n    public void inner(String itemId) { orderRepository.save(itemId); }\n}\n\n$ grep -c 'self' src/main/java/study/adv/app/OrderServiceV3.java\n3\n\n\n-- 나눈다\n\n@Service\n@RequiredArgsConstructor\npublic class OrderServiceV3 {\n\n    private final OrderProcessor processor;\n\n    public void outer(String itemId) {\n        processor.process(itemId);\n    }\n}\n\n@Service\n@RequiredArgsConstructor\npublic class OrderProcessor {\n\n    private final OrderRepositoryV3 orderRepository;\n\n    @Transactional\n    public void process(String itemId) {\n        orderRepository.save(itemId);\n        throw new IllegalStateException(\"실패\");\n    }\n}\n\n$ grep -c 'self\\|@Lazy' src/main/java/study/adv/app/*.java | grep -v ':0'\n(없음)\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep -E 'Creating new transaction|Initiating transaction rollback' logs/app.log | cut -c56-\nCreating new transaction with name [study.adv.app.OrderProcessor.process]\nInitiating transaction rollback\n\n$ curl -s localhost:8080/orders/count\n0\n\n--   12.2 절과 같은 결과다\n--   self 가 사라졌다\n\n\n-- 정말 남이 됐다\n\n$ curl -s 'localhost:8080/who?name=orderProcessor'\n빈 이름:   orderProcessor\n주입된 것: study.adv.app.OrderProcessor$$SpringCGLIB$$0\n프록시인가: true\n원본:      study.adv.app.OrderProcessor\n\n$ javap -c -p build/classes/java/main/study/adv/app/OrderServiceV3.class \\\n    | grep -A4 'public void outer' | grep invoke\n     8: invokevirtual #21  // Method study/adv/app/OrderProcessor.process:(...)V\n\n$ javap -c -p build/classes/java/main/study/adv/app/OrderServiceV3.class \\\n    | grep -A4 'public void outer' | grep -c aload_0\n1\n\n--   12.1 절에서 aload_0 다음에 자기로 뛰었다\n--   여기선 필드를 읽고 남에게 뛴다\n\n\n-- 로그가 한 줄 더 는다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | cut -c56-\n[796bccd9] OrderControllerV3.outer()\n[796bccd9] |-->OrderServiceV3.outer()\n[796bccd9] |   |-->OrderProcessor.process()\n[796bccd9] |   |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |   |<--OrderProcessor.process() time=1005ms\n[796bccd9] |<--OrderServiceV3.outer() time=1006ms\n[796bccd9] OrderControllerV3.outer() time=1007ms\n\n$ grep -c 'OrderProcessor.process' logs/app.log\n2\n\n--   12.2 절의 여덟 줄과 같은 수다\n--   이름만 다르다\n\n\n-- 검사가 조용하다\n\n$ ./gradlew bootRun 2>&1 | grep '놓친 자기 호출' | cut -c56-\n놓친 자기 호출 0 곳\n\n$ ./gradlew bootRun 2>&1 | grep '자기 호출' | cut -c56-\n자기 호출 0 곳\n\n--   12.1 절에서 3 곳이었다\n--   우회한 게 아니라 없어졌다\n\n\n-- 선을 어디에 긋나\n\n$ curl -s localhost:8080/tx/boundaries\nOrderProcessor.process        @Transactional   일의 단위\nPaymentProcessor.charge       @Transactional   일의 단위\nOrderServiceV3.outer          (없음)           흐름 잇기\nOrderControllerV3.outer       (없음)           들어오는 문\n\n$ grep -rn '@Transactional' src/main/java/study/adv/app/ | wc -l\n       2\n\n$ grep -rln '@Transactional' src/main/java/study/adv/app/\nsrc/main/java/study/adv/app/OrderProcessor.java\nsrc/main/java/study/adv/app/PaymentProcessor.java\n\n--   애너테이션 붙은 자리가 다 따로 클래스다\n\n\n-- 이름을 뭐라고 하나\n\n$ printf '%-22s %s\\n' \\\n  'OrderProcessor'      '일을 처리하는 것' \\\n  'OrderTxService'      '기술이 이름에 들어감' \\\n  'OrderRegistration'   '일 자체를 이름으로'\n\nOrderProcessor           일을 처리하는 것\nOrderTxService           기술이 이름에 들어감\nOrderRegistration        일 자체를 이름으로\n\n$ ls src/main/java/study/adv/app/ | grep -v 'V[123]'\nOrderProcessor.java\nPaymentProcessor.java\n\n--   둘째는 안 쓰는 게 낫다\n--   숨긴 걸 이름에 드러내면 10.7 절의 값이 준다\n\n\n-- 테스트가 쉬워진다\n\n@SpringBootTest\nclass OrderProcessorTest {\n    @Autowired OrderProcessor processor;\n\n    @Test\n    void 되돌려진다() {\n        assertThatThrownBy(() -> processor.process(\"연필\"))\n            .isInstanceOf(IllegalStateException.class);\n        assertThat(repository.count()).isZero();\n    }\n}\n\n$ ./gradlew test --tests OrderProcessorTest -q && echo 'test OK'\ntest OK\n\n$ ./gradlew test --tests '*Test' -q 2>&1 | tail -2\nBUILD SUCCESSFUL\n\n--   12.1 절에서는 밖을 거쳐야만 잡혔다\n--   여기선 그 메서드를 곧장 부르면 된다\n\n\n-- 파일과 줄을 센다\n\n$ for t in v13 v14 HEAD; do\n    printf '%-8s 파일 %s  줄 %s\\n' $t \\\n      \"$(git ls-tree -r --name-only $t src/main/java/study/adv/app | wc -l | tr -d ' ')\" \\\n      \"$(git ls-tree -r --name-only $t src/main/java/study/adv/app \\\n         | xargs -I{} git show $t:{} | wc -l | tr -d ' ')\"\n  done\n\nv13      파일 9  줄 54\nv14      파일 9  줄 58\nHEAD     파일 10  줄 61\n\n$ python3 -c \"print('나누기가 %d 줄 더 든다' % (61-58))\"\n나누기가 3 줄 더 든다\n\n--   9.3 절에서 54 줄이었다\n\n\n-- 값은 같다\n\n$ for m in self split; do\n    printf '%-8s ' $m\n    curl -s \"localhost:8080/bench/self?mode=$m&n=1000000\"\n  done\n\nself     100 만 회   924 ms\nsplit    100 만 회   918 ms\n\n$ curl -s 'localhost:8080/aop/chain?name=orderProcessor'\n1 AspectJAroundAdvice\n2 TransactionInterceptor\n3 원본 study.adv.app.OrderProcessor\n\n--   둘 다 프록시를 한 번 더 지난다\n--   9.5 절의 그 사슬이다\n\n\n-- 늘 나눌 순 없다\n\n@Component\npublic class ThirdPartyJob {          // 남이 만든 것\n    public void run() { step(); }\n    @Transactional public void step() { }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '놓친 자기 호출' | cut -c56-\n놓친 자기 호출 ThirdPartyJob.run -> step\n놓친 자기 호출 1 곳\n\n$ grep -c 'ThirdPartyJob' build.gradle\n1\n\n--   못 고치는 코드가 있다\n--   그럴 때 12.2 절이 남는다\n\n\n-- 셋을 다시 견준다\n\n$ printf '%-14s %-14s %-14s %-14s %s\\n' '' '고치는 양' '구조' '검사' '읽기' && \\\n  printf '%-14s %-14s %-14s %-14s %s\\n' \\\n  '자기 주입'  '한 줄'       '그대로'  '0 곳'   '멈칫함' \\\n  '나누기'     '클래스 하나' '나아짐'  '0 곳'   '자연스러움' \\\n  '로드 위빙'  '설정'        '그대로'  '해당없음' '안 보임'\n\n                고치는 양      구조           검사           읽기\n자기 주입       한 줄          그대로         0 곳           멈칫함\n나누기          클래스 하나    나아짐         0 곳           자연스러움\n로드 위빙       설정           그대로         해당없음       안 보임\n\n\n-- 확인한다\n\n$ curl -s -o /dev/null 'localhost:8080/v3/outer?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -8 | cut -c56- | sed -n '3p'\n[796bccd9] |   |-->OrderProcessor.process()\n\n$ curl -s 'localhost:8080/who?name=orderProcessor' | sed -n '2p'\n주입된 것: study.adv.app.OrderProcessor$$SpringCGLIB$$0\n\n$ ./gradlew bootRun 2>&1 | grep '자기 호출' | tail -1 | cut -c56-\n자기 호출 0 곳\n\n$ ./gradlew test -q && echo 'test OK'\ntest OK\n\n$ git add -A && git commit -q -m 'refactor: 트랜잭션 경계로 클래스를 나눔' && git tag v15\n\n--   12.4 절에서 프록시가 무엇으로 만들어졌는지 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '고치는 법'    '클래스를 나눔' \\\n  '왜 되나'      '정말 남이 됨' \\\n  '바이트코드'   '필드를 읽고 뜀' \\\n  '트랜잭션'     '열림' \\\n  '자기 호출'    '3 에서 0 곳' \\\n  '선'           '일의 단위' \\\n  '이름'         '기술 말고 일' \\\n  '테스트'       '곧장 부름' \\\n  '값'           '3 줄, 파일 하나' \\\n  '속도'         '같음' \\\n  '못 나눌 때'   '12.2 가 남음'\n\n고치는 법                  클래스를 나눔\n왜 되나                    정말 남이 됨\n바이트코드                 필드를 읽고 뜀\n트랜잭션                   열림\n자기 호출                  3 에서 0 곳\n선                         일의 단위\n이름                       기술 말고 일\n테스트                     곧장 부름\n값                         3 줄, 파일 하나\n속도                       같음\n못 나눌 때                 12.2 가 남음",
+   "note": "**`self` 가 사라지고도 `Creating new transaction` 이 나와 12.2절과 같은 결과가** 나온다.\n\n**`javap` 가 자기로 뛰던 자리 대신 필드를 읽고 남에게 뛰는 걸** 보여 준다.\n\n**검사가 `자기 호출 0 곳` 으로 우회가 아니라 아예 없어진 걸** 알린다.\n\n**`@Transactional` 붙은 자리가 전부 따로 클래스가 되어 선이 원래 거기** 있었다.\n\n**파일 하나·세 줄이 늘고 100 만 회 값은 924 대 918 ms 로 사실상** 같다."
+  }
+ ],
+ "recap": [
+  "**나눈다**.",
+  "**남이** 된다.",
+  "**뛰는 자리가** 바뀐다.",
+  "**트랜잭션이** 열린다.",
+  "**자기 호출이** 0 이다.",
+  "**선이** 있었다.",
+  "**이름은 일**이다.",
+  "**테스트가** 쉽다.",
+  "**못 나눌 때도** 있다."
+ ],
+ "drills": [
+  {
+   "task": "클래스를 나눠 본다.",
+   "done_when": "self 없이 되돌려지는 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "바이트코드를 견준다.",
+   "done_when": "뛰는 자리가 바뀐 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "검사를 다시 돌린다.",
+   "done_when": "0 곳인 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "나눈 쪽만 테스트한다.",
+   "done_when": "곧장 부르는 테스트를 만들었다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "왜 나누면 되나?",
+   "a": "정말 다른 빈이 되어 프록시를 지나는 밖의 호출이 되어서다."
+  },
+  {
+   "q": "선은 어디에 긋나?",
+   "a": "일의 단위, 곧 애너테이션이 가리키던 경계다."
+  },
+  {
+   "q": "이름은 어떻게 짓나?",
+   "a": "기술 이름이 아니라 그 일의 이름으로 짓는다."
+  },
+  {
+   "q": "12.2 절과 견주면?",
+   "a": "값은 같고 구조와 읽기가 낫다. 대신 파일이 하나 는다."
+  },
+  {
+   "q": "언제 12.2 가 남나?",
+   "a": "남의 코드처럼 나눌 수 없을 때다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "일의 단위",
+   "def": "한 번에 되거나 한 번에 안 되어야 하는 작업 묶음."
+  },
+  {
+   "term": "위임",
+   "def": "자기가 하지 않고 다른 빈에게 넘겨 시키는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Spring Framework — Dependency Injection",
+   "url": "https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
