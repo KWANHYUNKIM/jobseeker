@@ -278,7 +278,7 @@
           "title": "configs",
           "summary": "토픽별 설정을 바꾼다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -286,7 +286,7 @@
           "title": "오프셋을 옮긴다",
           "summary": "다시 읽기와 건너뛰기.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.7",
@@ -294,7 +294,7 @@
           "title": "무엇이 잘못됐는지 CLI 로 좁히기",
           "summary": "여섯 명령으로 원인을 찾는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
