@@ -8,170 +8,176 @@
  "minutes": 13,
  "updated_at": "2026-09-10",
  "goals": [
-  "호환성 규칙을 안다.",
-  "안전한 변경과 아닌 것을 구분한다.",
-  "배포 순서를 정한다."
+  "호환 방향을 가른다.",
+  "배포 순서를 정한다.",
+  "막는 자리를 만든다."
  ],
  "blocks": [
   {
    "type": "prose",
-   "md": "**2.2절에서 \"토픽이 계약\" 이라고** 했다. **그 계약을 바꿔야 할 때** 무슨 일이 일어나나.\n\n> **보관 기간 안에는 옛 레코드와 새 레코드가 같은 토픽에 섞여** 있다(3.4절).\n> **그리고 컨슈머는 한꺼번에 배포되지** 않는다."
+   "md": "**토픽의 레코드는 며칠씩 남아** 있다(11.2절). **필드를 하나 더하면 옛 컨슈머가 그걸** 만난다."
+  },
+  {
+   "type": "figure",
+   "caption": "누가 계속 돌아야 하나",
+   "ascii": "   who has to keep working\n\n   backward    a new reader can read what an old writer wrote\n   forward     an old reader can read what a new writer wrote\n   full        both, which is what you want when you cannot\n               control deployment order",
+   "note": "**배포 순서를 못 정하면 양쪽 다** 필요하다."
   },
   {
    "type": "table",
-   "caption": "호환성 종류",
+   "caption": "무엇이 안전한 변경인가",
    "columns": [
-    "종류",
-    "뜻",
-    "가능한 변경"
+    "변경",
+    "backward",
+    "forward"
    ],
    "rows": [
     [
-     "**BACKWARD**",
-     "**새 스키마로 옛 데이터를 읽을 수 있다**",
-     "**필드 삭제**, 기본값 있는 필드 추가"
+     "**기본값 있는 필드 추가**",
+     "**된다**",
+     "**된다**"
     ],
     [
-     "**FORWARD**",
-     "옛 스키마로 새 데이터를 읽을 수 있다",
-     "**필드 추가**, 기본값 있는 필드 삭제"
+     "**기본값 없는 필드 추가**",
+     "**안 된다**",
+     "된다"
     ],
     [
-     "**FULL**",
-     "둘 다",
-     "기본값 있는 필드 추가·삭제"
+     "**필드 삭제**",
+     "된다",
+     "**안 된다**"
     ],
     [
-     "NONE",
-     "검사 안 함",
-     "무엇이든(위험)"
+     "**필드 이름 변경**",
+     "**안 된다**",
+     "**안 된다**"
+    ],
+    [
+     "타입 좁히기(long→int)",
+     "**안 된다**",
+     "안 된다"
+    ],
+    [
+     "타입 넓히기(int→long)",
+     "**된다**",
+     "안 된다"
+    ],
+    [
+     "**enum 값 추가**",
+     "기본값 있으면",
+     "**안 된다**"
     ]
    ],
-   "note": "**기본값은 대개 BACKWARD** 다 — **컨슈머를 먼저 배포하는 순서를 전제**한다."
+   "note": "**이름 변경은 삭제 + 추가**다 — **양쪽 다 깨진다. `alias` 를 쓰거나 두 필드를 한동안 같이** 둔다."
+  },
+  {
+   "type": "figure",
+   "caption": "모드가 배포 순서를 정한다",
+   "ascii": "   deployment order follows the compatibility mode\n\n   backward   upgrade every consumer first, then producers\n   forward    upgrade producers first, then consumers\n\n   choosing the mode is choosing who you have to wait for",
+   "note": "**모드를 고르는 건 누구를 기다릴지** 고르는 것이다."
   },
   {
    "type": "callout",
    "tone": "why",
-   "title": "배포 순서가 호환성에 달렸다",
-   "md": "| 호환성 | 먼저 배포 | 왜 |\n|---|---|---|\n| **BACKWARD** | **컨슈머** | 새 컨슈머가 옛 레코드도 읽을 수 있으니 먼저 올려 둔다 |\n| **FORWARD** | **프로듀서** | 옛 컨슈머가 새 레코드를 읽을 수 있으니 먼저 보내도 된다 |\n| FULL | 아무 순서 | |\n\n**실무에서 자주 하는 실수**:\n\n```\n프로듀서를 먼저 배포 (새 필수 필드 추가)\n  -> 옛 컨슈머가 그 필드를 모른다\n  -> JSON 이면 무시하고 지나갈 수도 있고\n  -> 필수로 검증하면 전부 DLT 로 간다 (9.5절)\n```\n\n> **JSON 은 검사가 없어서 사고가 런타임에** 난다.\n> **스키마 레지스트리는 push 자체를 거부**한다 — **그게 이점**이다."
+   "title": "JSON 만 쓰면 이걸 검사할 자리가 없다",
+   "md": "**9.6절에서 봤듯 JSON 은 그냥 바이트**다.\n\n> **필드를 지워도 아무도 안** 막는다.\n> **옛 컨슈머는 `null` 을 받고 그때부터 이상해**진다.\n> **테스트는 새 코드끼리만 하니** 통과한다.\n\n**막는 자리는 셋 중** 하나다:\n\n| 자리 | |\n|---|---|\n| **레지스트리** | **등록할 때 거부한다** |\n| **CI 검사** | **스키마 파일 diff 를 검사한다** |\n| 컨슈머 방어 코드 | **모르는 필드 무시, 없는 필드 기본값** |\n\n> **마지막 것은 JSON 에서도 지금 당장 할 수** 있다.\n> **`FAIL_ON_UNKNOWN_PROPERTIES=false` 는 최소한의** 방어다."
   },
   {
-   "type": "table",
-   "caption": "안전한 변경과 아닌 것",
-   "columns": [
-    "변경",
-    "안전한가",
-    "비고"
-   ],
-   "rows": [
-    [
-     "**기본값 있는 선택 필드 추가**",
-     "**○**",
-     "가장 안전하다"
-    ],
-    [
-     "**선택 필드 삭제**",
-     "○(BACKWARD)",
-     "옛 컨슈머가 아직 읽으면 주의"
-    ],
-    [
-     "**필수 필드 추가**",
-     "**✗**",
-     "옛 레코드에 그 필드가 없다"
-    ],
-    [
-     "**필드 이름 변경**",
-     "**✗**",
-     "삭제 + 추가로 취급된다"
-    ],
-    [
-     "**타입 변경**",
-     "**✗**",
-     "int → long 정도만 일부 허용"
-    ],
-    [
-     "의미 변경",
-     "**✗✗**",
-     "스키마는 통과하고 로직이 깨진다"
-    ],
-    [
-     "새 토픽 v2",
-     "○",
-     "4.7절. 호환 안 되면 이 길"
-    ]
-   ],
-   "note": "**마지막 앞의 \"의미 변경\" 이 가장 위험**하다 — **`amount` 를 원에서 센트로 바꾸면 스키마는 그대로고 값이 100배가** 된다."
+   "type": "code",
+   "lang": "java",
+   "file": "OrderEvent.avsc",
+   "caption": "안전하게 필드를 더한다",
+   "code": "{\n  \"type\": \"record\",\n  \"name\": \"OrderPlaced\",\n  \"namespace\": \"com.acme.order\",\n  \"fields\": [\n    { \"name\": \"id\",       \"type\": \"string\" },\n    { \"name\": \"amount\",   \"type\": \"long\" },\n    { \"name\": \"placedAt\", \"type\": \"string\" },\n\n    { \"name\": \"channel\",  \"type\": [\"null\", \"string\"], \"default\": null },\n    { \"name\": \"couponId\", \"type\": [\"null\", \"string\"], \"default\": null,\n      \"aliases\": [\"promoId\"] }\n  ]\n}"
   },
   {
    "type": "callout",
-   "tone": "tip",
-   "title": "JSON 에서 할 수 있는 것",
-   "md": "**스키마 레지스트리 없이도 규율은 만들 수** 있다.\n\n| 방법 | |\n|---|---|\n| **버전 필드** | `{\"schemaVersion\": 2, ...}` — 컨슈머가 분기 |\n| **관대한 역직렬화** | `FAIL_ON_UNKNOWN_PROPERTIES=false` — 모르는 필드 무시 |\n| **필수 필드를 안 늘린다** | 새 필드는 항상 선택 + 기본값 |\n| **계약 테스트** | 프로듀서의 샘플로 컨슈머 테스트(9.7절) |\n| 토픽 버전 | 호환 안 되면 v2(4.7절) |\n\n```java\n// 컨슈머 쪽\nobjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);\n```\n\n> **이 한 줄이 없으면 프로듀서가 필드를 하나 추가하는 순간 컨슈머가 전부** 깨진다.\n> **JSON 을 쓴다면 반드시** 켠다."
+   "tone": "trap",
+   "title": "옛 레코드는 안 사라진다",
+   "md": "**스키마를 바꿔도 이미 쓰인 레코드는 옛 스키마**다.\n\n```\noffset 0 .. 812040   schema id 1\noffset 812041 ..     schema id 2\n```\n\n> **컨슈머가 처음부터 다시 읽으면 두 스키마를 다** 만난다(9.5절의 재투입, 11.2절의 보관 기간).\n> **그래서 \"새 컨슈머가 옛 레코드를 읽을 수 있나\" 는 배포 뒤에도 계속 필요한** 조건이다.\n\n**보관 기간이 길수록 뒤로 얼마나 호환해야 하는지가** 길어진다:\n\n| 보관 | 견뎌야 하는 스키마 |\n|---|---|\n| 1일 | 어제 것 |\n| **7일** | **지난주 배포 전 것** |\n| **무한 + 압축** | **처음부터 전부** |"
   },
   {
    "type": "sql",
    "lang": "text",
-   "caption": "스키마를 바꿔 가며 확인한다",
-   "sql": "$ kt --create --topic evo --partitions 3 --replication-factor 3 >/dev/null\n\n# --- v1 레코드 ---\n\n$ kcp --topic evo --property parse.key=true --property key.separator='|' <<'EOF'\n1|{\"orderId\":1,\"amount\":25000}\nEOF\n\n$ java -cp 'out:libs/*' EvoConsumer --group c-v1 --reset earliest --timeout 5000\n[c-v1] orderId=1 amount=25000\n\n\n# --- 프로듀서가 선택 필드를 추가한다 (안전) ---\n\n$ kcp --topic evo --property parse.key=true --property key.separator='|' <<'EOF'\n2|{\"orderId\":2,\"amount\":13000,\"currency\":\"KRW\"}\nEOF\n\n$ java -cp 'out:libs/*' EvoConsumer --group c-v1b --reset earliest --timeout 5000\n[c-v1b] orderId=1 amount=25000\n[c-v1b] orderId=2 amount=13000\n\n#   옛 컨슈머가 새 레코드를 읽었다 (모르는 필드를 무시)\n\n\n# --- FAIL_ON_UNKNOWN_PROPERTIES 를 켜 두면 ---\n\n$ java -cp 'out:libs/*' EvoConsumer --group c-strict --reset earliest \\\n    --fail-on-unknown --timeout 5000\n[c-strict] orderId=1 amount=25000\n[c-strict] ERROR UnrecognizedPropertyException: Unrecognized field \"currency\"\n[c-strict] -> DLT\n\n#   필드 하나 추가에 컨슈머가 깨졌다\n#   이 설정이 기본이 아니게 되어 있는지 확인한다\n\n\n# --- 필수 필드를 추가하면 (위험) ---\n\n#   새 컨슈머가 currency 를 필수로 본다\n$ java -cp 'out:libs/*' EvoConsumer --group c-v2 --reset earliest \\\n    --require-currency --timeout 5000\n[c-v2] ERROR orderId=1: currency is required\n[c-v2] -> DLT\n[c-v2] orderId=2 amount=13000 currency=KRW\n\n#   옛 레코드가 전부 DLT 로 간다\n#   보관 기간 안의 옛 레코드를 잊으면 이렇게 된다 (3.4절)\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic evo.DLT | \\\n    awk -F: '{s+=$3} END {print \"DLT =\", s}'\nDLT = 1\n\n#   기본값을 주면 해결된다:\n#     private String currency = \"KRW\";\n\n$ java -cp 'out:libs/*' EvoConsumer --group c-v2b --reset earliest \\\n    --default-currency KRW --timeout 5000\n[c-v2b] orderId=1 amount=25000 currency=KRW   (default)\n[c-v2b] orderId=2 amount=13000 currency=KRW\n\n\n# --- 이름을 바꾸면 ---\n\n$ kcp --topic evo --property parse.key=true --property key.separator='|' <<'EOF'\n3|{\"orderId\":3,\"totalAmount\":9000,\"currency\":\"KRW\"}\nEOF\n\n$ java -cp 'out:libs/*' EvoConsumer --group c-v2c --reset earliest \\\n    --default-currency KRW --timeout 5000\n[c-v2c] orderId=1 amount=25000\n[c-v2c] orderId=2 amount=13000\n[c-v2c] orderId=3 amount=0        <- 조용히 0 이 됐다\n\n#   예외도 안 나고 값이 0 이다. 가장 나쁜 종류의 사고다\n#   이름 변경은 새 토픽 v2 로 간다 (4.7절)\n\n\n# --- 스키마 레지스트리를 쓰면 push 가 막힌다 ---\n\n#   (Confluent Schema Registry 를 띄운 경우)\n\n$ curl -s -X POST -H 'Content-Type: application/vnd.schemaregistry.v1+json' \\\n    --data '{\"schema\": \"{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"Order\\\",\\\"fields\\\":[\n      {\\\"name\\\":\\\"orderId\\\",\\\"type\\\":\\\"long\\\"},\n      {\\\"name\\\":\\\"totalAmount\\\",\\\"type\\\":\\\"long\\\"}]}\"}' \\\n    http://localhost:8081/compatibility/subjects/evo-value/versions/latest\n{\"is_compatible\":false}\n\n#   호환되지 않는다고 알려 준다\n#   BACKWARD 설정이면 등록 자체가 거부된다\n\n$ curl -s http://localhost:8081/config/evo-value\n{\"compatibilityLevel\":\"BACKWARD\"}\n\n$ curl -s -X POST -H 'Content-Type: application/vnd.schemaregistry.v1+json' \\\n    --data '{\"schema\": \"{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"Order\\\",\\\"fields\\\":[\n      {\\\"name\\\":\\\"orderId\\\",\\\"type\\\":\\\"long\\\"},\n      {\\\"name\\\":\\\"amount\\\",\\\"type\\\":\\\"long\\\"},\n      {\\\"name\\\":\\\"currency\\\",\\\"type\\\":\\\"string\\\",\\\"default\\\":\\\"KRW\\\"}]}\"}' \\\n    http://localhost:8081/subjects/evo-value/versions\n{\"id\":2}\n\n#   기본값이 있는 선택 필드는 통과했다\n#   런타임이 아니라 등록 시점에 걸린다 -- 이게 레지스트리의 값어치다\n\n\n# --- 배포 순서 ---\n\n#   BACKWARD (기본):\n#     1. 컨슈머 배포 (새 스키마로 옛 레코드도 읽는다)\n#     2. 프로듀서 배포\n#\n#   순서를 바꾸면:\n#     1. 프로듀서 배포 -> 새 필드가 담긴 레코드가 나간다\n#     2. 옛 컨슈머가 그것을 읽는다 -> FAIL_ON_UNKNOWN 이면 깨진다\n\n$ kt --delete --topic evo >/dev/null; kt --delete --topic evo.DLT >/dev/null 2>&1"
+   "caption": "바꿔 보고 옛 컨슈머를 붙인다",
+   "sql": "$ curl -s localhost:8081/config | python3 -m json.tool\n{ \"compatibilityLevel\": \"BACKWARD\" }\n\n$ curl -s localhost:8081/subjects/events-value/versions\n[1]\n\n\n# --- 안전한 추가 ---\n\n$ cat v2-safe.avsc | python3 -c \"import json,sys; print([f['name'] for f in json.load(sys.stdin)['fields']])\"\n['id', 'amount', 'placedAt', 'channel']\n\n$ curl -s -X POST localhost:8081/compatibility/subjects/events-value/versions/latest \\\n    -H 'Content-Type: application/json' --data-binary @v2-safe-wrapped.json \\\n  | python3 -m json.tool\n{ \"is_compatible\": true }\n\n$ curl -s -X POST localhost:8081/subjects/events-value/versions \\\n    -H 'Content-Type: application/json' --data-binary @v2-safe-wrapped.json \\\n  | python3 -m json.tool\n{ \"id\": 2 }\n\n$ curl -s localhost:8081/subjects/events-value/versions\n[1, 2]\n\n\n# --- 옛 컨슈머가 새 레코드를 읽는다 ---\n\n$ java -jar producer.jar --schema v2-safe &\n$ curl -s -X POST localhost:8080/orders -d '{\"id\":\"B-1\",\"amount\":3000,\"channel\":\"app\"}' \\\n    -H 'Content-Type: application/json' >/dev/null\n\n$ java -jar consumer-v1.jar --group old-reader &\n$ sleep 8 && grep 'received' logs/consumer-v1.log | tail -1 | cut -c40-\nINFO  received id=B-1 amount=3000\n\n$ grep -c 'error\\|Exception' logs/consumer-v1.log\n0\n\n#   모르는 필드를 그냥 무시했다\n#   BACKWARD 는 새 리더를 보장하는데 이건 forward 쪽이다\n#   Avro 는 리더 스키마로 읽어 모르는 필드를 건너뛴다\n\n\n# --- 새 컨슈머가 옛 레코드를 읽는다 ---\n\n$ java -jar consumer-v2.jar --group new-reader --from-beginning &\n$ sleep 10 && grep 'received' logs/consumer-v2.log | head -2 | cut -c40-\nINFO  received id=A-1 amount=12000 channel=null\nINFO  received id=B-1 amount=3000 channel=app\n\n$ grep -c 'channel=null' logs/consumer-v2.log\n812041\n\n#   기본값 null 이 채워졌다\n#   BACKWARD 가 보장하는 게 이것이다\n\n\n# --- 기본값 없이 더하면 ---\n\n$ cat v3-nodefault.avsc | python3 -c \"\nimport json,sys\nfor f in json.load(sys.stdin)['fields']:\n    print(f['name'], f.get('default','(기본값 없음)'))\"\nid (기본값 없음)\namount (기본값 없음)\nplacedAt (기본값 없음)\nchannel None\ncouponId (기본값 없음)\n\n$ curl -s -X POST localhost:8081/compatibility/subjects/events-value/versions/latest \\\n    -H 'Content-Type: application/json' --data-binary @v3-nodefault-wrapped.json \\\n  | python3 -m json.tool\n{\n    \"is_compatible\": false,\n    \"messages\": [\n        \"READER_FIELD_MISSING_DEFAULT_VALUE: couponId\"\n    ]\n}\n\n$ curl -s -X POST localhost:8081/subjects/events-value/versions \\\n    -H 'Content-Type: application/json' --data-binary @v3-nodefault-wrapped.json \\\n  | python3 -c \"import json,sys; print(json.load(sys.stdin)['message'][:60])\"\nSchema being registered is incompatible with an earlier schema\n\n#   등록 자체가 막힌다\n#   9.6절에서 말한 그 값이다\n\n\n# --- 필드를 지우면 ---\n\n$ curl -s -X POST localhost:8081/compatibility/subjects/events-value/versions/latest \\\n    -H 'Content-Type: application/json' --data-binary @v4-drop-amount.json \\\n  | python3 -m json.tool\n{ \"is_compatible\": true }\n\n#   BACKWARD 에서는 삭제가 허용된다\n#   새 리더가 옛 레코드를 읽을 때 그 필드를 무시하면 되니까\n\n$ curl -s -X PUT localhost:8081/config/events-value \\\n    -H 'Content-Type: application/json' -d '{\"compatibility\":\"FULL\"}' | python3 -m json.tool\n{ \"compatibility\": \"FULL\" }\n\n$ curl -s -X POST localhost:8081/compatibility/subjects/events-value/versions/latest \\\n    -H 'Content-Type: application/json' --data-binary @v4-drop-amount.json \\\n  | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d['is_compatible'], d.get('messages'))\"\nFalse ['READER_FIELD_MISSING_DEFAULT_VALUE: amount']\n\n#   FULL 로 바꾸니 막힌다\n#   옛 컨슈머가 amount 를 못 받게 되기 때문이다\n\n\n# --- 이름을 바꾸면 ---\n\n$ curl -s -X POST localhost:8081/compatibility/subjects/events-value/versions/latest \\\n    -H 'Content-Type: application/json' --data-binary @v5-rename.json \\\n  | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d['is_compatible'], d.get('messages'))\"\nFalse ['READER_FIELD_MISSING_DEFAULT_VALUE: orderId']\n\n$ curl -s -X POST localhost:8081/compatibility/subjects/events-value/versions/latest \\\n    -H 'Content-Type: application/json' --data-binary @v5-rename-alias.json \\\n  | python3 -c \"import json,sys; print(json.load(sys.stdin)['is_compatible'])\"\nTrue\n\n$ grep -o '\"aliases\": \\[[^]]*\\]' v5-rename-alias.json\n\"aliases\": [\"id\"]\n\n#   별칭을 주면 통과한다\n\n\n# --- JSON 이면 아무도 안 막는다 ---\n\n$ java -jar producer-json.jar --drop-field amount &\n$ curl -s -X POST localhost:8080/orders -d '{\"id\":\"C-1\"}' \\\n    -H 'Content-Type: application/json' >/dev/null\n\n$ kcc --topic events-json --from-beginning --timeout-ms 3000 | tail -1\n{\"id\":\"C-1\",\"placedAt\":\"2026-09-10T23:47:04Z\"}\n\n$ java -jar consumer-json-v1.jar --group json-old &\n$ sleep 8 && grep 'received' logs/consumer-json-v1.log | tail -1 | cut -c40-\nINFO  received id=C-1 amount=0\n\n$ grep -c 'Exception' logs/consumer-json-v1.log\n0\n\n#   오류 없이 0 이 들어갔다\n#   금액이 0 인 주문이 조용히 흘러간다\n\n$ java -jar consumer-json-strict.jar --group json-strict &\n$ sleep 8 && grep 'Exception' logs/consumer-json-strict.log | head -1 | cut -c40-\nERROR MismatchedInputException: Missing required creator property 'amount'\n\n$ kcc --topic events-json.DLT --from-beginning --timeout-ms 3000 | wc -l\n1\n\n#   필수로 선언해 두면 DLT 로 간다\n#   9.5절의 그 경로다\n\n\n# --- CI 에서 막는다 ---\n\n$ cat .github/workflows/schema.yml | grep -A4 'schema-compat'\n      - name: schema-compat\n        run: |\n          for f in src/main/avro/*.avsc; do\n            curl -sf -X POST \"$SR/compatibility/subjects/$(basename $f .avsc)-value/versions/latest\" \\\n              -H 'Content-Type: application/json' --data-binary \"@$(./wrap.sh $f)\" \\\n            | jq -e '.is_compatible == true' || exit 1\n          done\n\n$ ./ci-schema-check.sh\nevents-value       compatible\nclickstream-value  compatible\naudit-value        INCOMPATIBLE (READER_FIELD_MISSING_DEFAULT_VALUE: userId)\nexit 1\n\n#   병합 전에 막힌다\n\n\n# --- 배포 순서를 확인한다 ---\n\n$ curl -s localhost:8081/config/events-value | python3 -m json.tool\n{ \"compatibilityLevel\": \"FULL\" }\n\n$ printf '%-14s %-28s %s\\n' \\\n  'BACKWARD'  '컨슈머 먼저'   '새 리더가 옛 것을 읽음' \\\n  'FORWARD'   '프로듀서 먼저' '옛 리더가 새 것을 읽음' \\\n  'FULL'      '아무 순서나'   '둘 다'\n\nBACKWARD       컨슈머 먼저                  새 리더가 옛 것을 읽음\nFORWARD        프로듀서 먼저                옛 리더가 새 것을 읽음\nFULL           아무 순서나                  둘 다\n\n$ curl -s localhost:8081/subjects/events-value/versions\n[1, 2]\n\n$ java -cp 'out:libs/*' SchemaSpread --topic events\n스키마 1 로 쓰인 레코드   812041\n스키마 2 로 쓰인 레코드    41204\n가장 오래된 레코드         6일 전\n\n#   보관 7일이라 최소 지난주 것까지 읽혀야 한다\n#   11.2절의 보관 기간이 여기서 조건이 된다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '방향'            'backward forward full' \\\n  '기본값 있는 추가' '양쪽 다 됨' \\\n  '기본값 없는 추가' 'READER_FIELD_MISSING' \\\n  '삭제'            'BACKWARD 는 허용' \\\n  'FULL 이면'       '삭제도 막힘' \\\n  '이름 변경'       '별칭으로 통과' \\\n  'JSON'            '아무도 안 막음' \\\n  '결과'            'amount 가 0' \\\n  '필수 선언'       'DLT 로 감' \\\n  'CI'              '병합 전에 막음' \\\n  '보관 기간'       '견딜 범위를 정함'\n\n방향                       backward forward full\n기본값 있는 추가           양쪽 다 됨\n기본값 없는 추가           READER_FIELD_MISSING\n삭제                       BACKWARD 는 허용\nFULL 이면                  삭제도 막힘\n이름 변경                  별칭으로 통과\nJSON                       아무도 안 막음\n결과                       amount 가 0\n필수 선언                  DLT 로 감\nCI                         병합 전에 막음\n보관 기간                  견딜 범위를 정함",
+   "note": "**기본값 없는 필드를 더하면 `READER_FIELD_MISSING_DEFAULT_VALUE` 로 등록 자체가** 막힌다.\n\n**BACKWARD 에서는 필드 삭제가 통과하는데 FULL 로 바꾸자 같은 스키마가** 거부된다.\n\n**이름 변경은 삭제+추가라 막히고 `aliases` 를 주면** 통과한다.\n\n**JSON 으로 같은 일을 하면 아무도 안 막고 옛 컨슈머가 `amount=0` 을 조용히** 받는다.\n\n**필수로 선언해 두면 그 레코드가 9.5절의 DLT 로 가고 CI 검사는 병합 전에** 막는다."
   }
  ],
  "recap": [
-  "보관 기간 안에는 옛 레코드와 새 레코드가 섞여 있고 컨슈머도 한꺼번에 배포되지 않는다.",
-  "BACKWARD 면 컨슈머를 먼저, FORWARD 면 프로듀서를 먼저 배포한다.",
-  "안전한 변경은 기본값 있는 선택 필드 추가다. 필수 필드 추가·이름 변경·타입 변경은 아니다.",
-  "이름 변경은 예외 없이 값이 0이 되는 식으로 조용히 깨진다. 새 토픽 v2 로 간다.",
-  "JSON 이면 FAIL_ON_UNKNOWN_PROPERTIES=false 를 반드시 켠다. 스키마 레지스트리는 등록 시점에 막아 준다."
+  "backward 는 새 컨슈머가 옛 레코드를, forward 는 옛 컨슈머가 새 레코드를 읽는 것이다.",
+  "기본값 있는 필드 추가만 양쪽 다 안전하다. 이름 변경은 별칭 없이는 양쪽 다 깨진다.",
+  "호환 모드를 고르는 것은 배포 순서를 고르는 것이다.",
+  "JSON 만 쓰면 이걸 검사할 자리가 없다 — 레지스트리나 CI 검사로 자리를 만든다.",
+  "이미 쓰인 레코드는 안 바뀌므로 보관 기간이 곧 견뎌야 하는 호환 범위다."
  ],
  "drills": [
   {
-   "task": "선택 필드를 추가한 레코드를 옛 컨슈머로 읽어 무시되는지 확인한다.",
-   "done_when": "에러 없이 읽히는 것을 본다.",
-   "minutes": 8
+   "task": "기본값 있는 필드와 없는 필드를 각각 더해 호환성 검사를 돌린다.",
+   "done_when": "한쪽만 통과하는 것을 확인한다.",
+   "minutes": 15
   },
   {
-   "task": "FAIL_ON_UNKNOWN_PROPERTIES 를 켜고 같은 실험을 해 깨지는 것을 확인한다.",
-   "done_when": "이 설정의 위험을 본다.",
-   "minutes": 6
+   "task": "모드를 BACKWARD 와 FULL 로 바꿔 가며 같은 삭제를 검사한다.",
+   "done_when": "결과가 갈리는 이유를 설명한다.",
+   "minutes": 12
   },
   {
-   "task": "필드 이름을 바꾼 레코드를 읽어 값이 조용히 기본값이 되는 것을 확인한다.",
-   "done_when": "예외 없이 잘못된 값이 되는 것을 본다.",
-   "minutes": 8
+   "task": "JSON 으로 필드를 지우고 옛 컨슈머가 무엇을 받는지 본다.",
+   "done_when": "조용히 흘러가는 것을 확인한다.",
+   "minutes": 15
+  },
+  {
+   "task": "CI 에서 스키마 호환성을 검사하는 단계를 만든다.",
+   "done_when": "깨지는 변경이 병합 전에 막히는 것을 확인한다.",
+   "minutes": 20
   }
  ],
  "quiz": [
   {
-   "q": "BACKWARD 호환일 때 배포 순서는.",
-   "a": "컨슈머 먼저. 새 컨슈머가 옛 레코드도 읽을 수 있기 때문이다."
+   "q": "backward 호환이 보장하는 것은.",
+   "a": "새 스키마의 컨슈머가 옛 스키마로 쓰인 레코드를 읽을 수 있다는 것이다."
   },
   {
-   "q": "가장 위험한 변경은.",
-   "a": "필드 이름·의미 변경. 예외 없이 값이 잘못된다."
+   "q": "양쪽 다 안전한 변경은.",
+   "a": "기본값이 있는 필드를 더하는 것이다."
   },
   {
-   "q": "JSON 을 쓸 때 반드시 켤 설정은.",
-   "a": "FAIL_ON_UNKNOWN_PROPERTIES=false. 모르는 필드를 무시하게 한다."
+   "q": "호환 모드가 정하는 실무적 결과는.",
+   "a": "프로듀서와 컨슈머 중 무엇을 먼저 배포해야 하는지다."
+  },
+  {
+   "q": "JSON 에서 필드를 지우면.",
+   "a": "아무도 안 막고 옛 컨슈머가 기본값이나 0 을 조용히 받는다."
   }
  ],
  "terms": [
   {
-   "term": "스키마 호환성",
-   "what": "옛/새 스키마로 서로의 데이터를 읽을 수 있는지의 규칙."
+   "term": "backward 호환",
+   "what": "새 스키마로 옛 데이터를 읽을 수 있는 것. 컨슈머 먼저 배포."
   },
   {
-   "term": "스키마 레지스트리",
-   "what": "스키마를 등록·검증하는 서비스. 호환 안 되는 변경을 등록 시점에 막는다."
+   "term": "forward 호환",
+   "what": "옛 스키마로 새 데이터를 읽을 수 있는 것. 프로듀서 먼저 배포."
+  },
+  {
+   "term": "별칭",
+   "what": "필드 이름이 바뀌었을 때 옛 이름을 같이 인정하게 하는 선언."
   }
  ],
  "sources": [
   {
-   "title": "Confluent — Schema Evolution and Compatibility",
-   "url": "https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html",
+   "title": "Confluent Schema Registry — Compatibility",
+   "url": "https://docs.confluent.io/platform/current/schema-registry/fundamentals/avro.html",
    "publisher": "Confluent"
   },
   {
-   "title": "Apache Avro — Schema Resolution",
-   "url": "https://avro.apache.org/docs/current/specification/#schema-resolution",
+   "title": "Apache Avro — Specification",
+   "url": "https://avro.apache.org/docs/current/specification/",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Operations",
+   "url": "https://kafka.apache.org/documentation/#operations",
    "publisher": "Apache"
   }
  ]

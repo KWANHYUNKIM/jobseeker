@@ -8,143 +8,181 @@
  "minutes": 11,
  "updated_at": "2026-09-10",
  "goals": [
-  "책의 요지를 한 줄씩 모은다.",
-  "다음에 볼 것을 정한다.",
-  "서가에서의 위치를 안다."
+  "열한 장을 잇는다.",
+  "안 다룬 것을 안다.",
+  "책을 닫는다."
  ],
  "blocks": [
   {
    "type": "prose",
-   "md": "**72절을 여기서** 닫는다.\n\n> **매 절이 오간 레코드와 오프셋·LAG 로 끝났다**(1.1절).\n> **그 습관이 이 책의 진짜 내용**이다 — **막히면 개념을 다시 읽기 전에 `--describe --group` 을 친다.**"
+   "md": "**1.1절에서 \"보냈다는 것과 처리됐다는 것 사이\" 라고** 적었다. **그 사이에 무엇이 있었는지** 센다."
+  },
+  {
+   "type": "figure",
+   "caption": "열한 장이 만든 것",
+   "ascii": "   what the eleven chapters actually built\n\n   1-2   why a log, and what a record is\n   3-5   brokers, partitions, and the command line\n   6-8   writing, reading, and what exactly once covers\n   9     the same thing from a spring application\n   10    when to stop writing the loop yourself\n   11    what to watch, size, and break on purpose",
+   "note": "**뒤로 갈수록 앞의 것을 안 쓰는 게 아니라 덜 쓰게** 된다."
   },
   {
    "type": "table",
-   "caption": "장마다 한 줄",
+   "caption": "이 책에서 숫자로 확인한 것들",
    "columns": [
-    "장",
-    "한 줄"
+    "",
+    "값",
+    "어디"
    ],
    "rows": [
     [
-     "2",
-     "읽어도 안 사라진다. 그게 큐와 갈라지는 자리다"
+     "**acks 별 유실**",
+     "**0 / 12건 / 0건**",
+     "6.3"
     ],
     [
-     "3",
-     "브로커는 받아서 파일 끝에 붙일 뿐이다. 덜 하는 만큼 빠르다"
+     "**압축**",
+     "**zstd 3.8배**",
+     "6.5"
     ],
     [
-     "4",
-     "**키가 파티션을 정하고 순서는 파티션 안에서만이다**"
+     "재처리 중복",
+     "**208건 (2.08%)**",
+     "8.4"
     ],
     [
-     "5",
-     "막히면 여섯 명령. 안 들어갔나와 안 읽었나를 먼저 가른다"
+     "**아웃박스**",
+     "**유실 0, 중복 47건**",
+     "8.5"
     ],
     [
-     "6",
-     "**보냈다는 것과 저장됐다는 것은 다르다.** acks 가 그 경계다"
+     "**재시도 제자리**",
+     "**15초에 812건 대기**",
+     "9.4"
     ],
     [
-     "7",
-     "**어디까지 읽었는지는 내가 적는다.** 언제 적느냐가 중복과 유실을 가른다"
+     "**DLT**",
+     "**1978 + 22 = 2000**",
+     "9.5"
     ],
     [
-     "8",
-     "정확히 한 번은 카프카 안에서만이다. 밖은 멱등 처리다"
+     "스트림즈",
+     "**214줄이 31줄**",
+     "10.6"
     ],
     [
-     "9",
-     "스프링이 루프를 대신 돌려 준다. 기본값이 조용한 유실인 자리가 있다"
+     "**상태 복원**",
+     "**6412ms → 218ms**",
+     "10.5"
     ],
     [
-     "10",
-     "옮기는 것은 커넥트, 바꾸는 것은 스트림즈, 나머지는 컨슈머"
+     "**협력적 리밸런싱**",
+     "**48초 → 3.1초**",
+     "11.4"
     ],
     [
-     "11",
-     "장애는 대개 랙에서 먼저 보인다"
+     "**unclean 선출**",
+     "**2162건 유실**",
+     "11.3"
     ]
    ],
-   "note": "**4장과 7장이 이 책의 축**이다. **나머지는 그 둘의 결과이거나 그 둘을 지키는 방법**이다."
+   "note": "**전부 같은 3대 클러스터에서 실제로 돌린 값**이다 — **절대값이 아니라 방향과 배수를** 본다."
   },
   {
    "type": "callout",
    "tone": "why",
-   "title": "실무에서 가장 자주 쓰게 될 것",
-   "md": "**72절 중에 매주 쓰는 것은 열 개쯤**이다.\n\n| 무엇 | 절 |\n|---|---|\n| `--describe --group` 으로 랙 보기 | 5.4 |\n| 키를 무엇으로 잡을지 | 4.4 |\n| 수동 커밋 + 멱등 처리 | 7.4·7.5 |\n| `max.poll.records` 조정 | 7.6 |\n| DLT 와 에러 핸들러 | 9.4·9.5 |\n| acks·min.isr 조합 | 3.6·6.3 |\n| 오프셋 되감기 | 5.6 |\n| 아웃박스 | 8.5 |\n| 파티션 수 정하기 | 4.6 |\n| 리밸런싱 줄이기 | 7.3·11.4 |\n\n> **나머지는 필요할 때 돌아와 찾는 것**이다.\n> **이 표를 노트 앞에 붙여** 둔다."
+   "title": "되풀이해서 나온 한 가지",
+   "md": "**조용히 잘못되는 자리가** 많았다.\n\n| 조용했던 것 | 시끄럽게 만든 법 |\n|---|---|\n| **재시도 소진 후 버림**(9.4) | **DLT 와 유입 알림**(9.5, 11.1) |\n| **역직렬화 실패**(9.6) | ErrorHandlingDeserializer |\n| **LAG 0 인데 사라짐**(11.1) | DLT 지표를 같이 본다 |\n| **열린 트랜잭션**(8.3) | **HW 와 LSO 차이** |\n| **스키마 파괴**(11.5) | **레지스트리 · CI 검사** |\n| 이중 쓰기(8.5) | 아웃박스 + 행 수 대조 |\n\n> **카프카는 대체로 안 죽고 대신 조용히** 어긋난다.\n> **그래서 이 책의 거의 모든 절이 \"세어 보는 명령\" 으로** 끝났다."
+  },
+  {
+   "type": "figure",
+   "caption": "일부러 안 다룬 것",
+   "ascii": "   what this book left out on purpose\n\n   security      tls, sasl, acls, quotas\n   multi cluster mirroring, disaster recovery, tiered storage\n   platform      multi tenancy, self service topic creation\n\n   each of these is a book, and each assumes this one",
+   "note": "**각각이 책 한 권이고 전부 이 책을 전제로** 한다."
   },
   {
    "type": "callout",
-   "tone": "note",
-   "title": "다음에 볼 것",
-   "md": "| 방향 | 무엇 |\n|---|---|\n| **운영을 깊이** | 클러스터 확장·재배치·업그레이드·보안(SASL·mTLS·ACL) |\n| **스트림 처리** | 스트림즈 조인·프로세서 API, 플링크 |\n| **아키텍처** | 이벤트 소싱, CQRS, 사가 패턴 |\n| **다른 도구** | Pulsar, Redpanda, NATS — **같은 문제를 다르게 푼다** |\n| **관리형** | MSK·Confluent Cloud — 운영을 돈으로 산다 |\n\n**서가 안에서 이어지는 자리**:\n\n| 책 | 어디 |\n|---|---|\n| **「도커」** | 1.3절 실습 클러스터, 8장 볼륨(10.5절의 상태) |\n| **「쿠버네티스 입문」** | **11.4절의 StatefulSet, 컨슈머 스케일링** |\n| 「스프링 부트와 JPA 활용 1편」 | 9장이 그 주문을 쪼갠다 |\n| 「스프링 DB 1편」 | 8.5절 아웃박스 |\n| 「Practical Testing」 | 9.7절 |\n| 「모든 개발자를 위한 HTTP」 | 2.1절의 결합 이야기가 같은 문제다 |"
+   "tone": "tip",
+   "title": "다음에 실제로 할 일 순서",
+   "md": "**새 클러스터를 맡았다면 이 순서로** 확인한다.\n\n1. **`kt --describe` 로 복제 계수와 `min.insync.replicas`**(11.2)\n2. **컨슈머 그룹 LAG 을 시간으로 바꿔 보기**(11.1)\n3. **DLT 가 있는지, 있다면 쌓여 있는지**(9.5)\n4. **프로듀서 `acks` 와 `enable.idempotence`**(6.3, 8.1)\n5. **컨슈머 오프셋 커밋 방식**(7.5)\n6. **리밸런싱 전략과 배포 방식**(11.4)\n7. **브로커 하나 내려 보기 — 스테이징에서**(11.3)\n\n> **일곱 번째를 안 해 보면 나머지 여섯이 맞는지 알 수** 없다."
   },
   {
    "type": "sql",
    "lang": "text",
-   "caption": "이 책을 덮으며 확인하는 것",
-   "sql": "# --- 클러스터가 건강한가 ---\n\n$ kt --describe --under-replicated-partitions | wc -l\n0\n$ kt --describe --under-min-isr-partitions | wc -l\n0\n$ kt --describe --unavailable-partitions | wc -l\n0\n\n#   셋 다 0. 11.1절의 알람 2번이 조용하다\n\n\n# --- 모든 그룹의 랙 ---\n\n$ for g in $(kcg --list); do\n>   printf '%-24s %s\\n' \"$g\" \"$(kcg --describe --group $g 2>/dev/null | \\\n>     awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\n> done\ninventory                0\nmail                     0\nanalytics                0\norder-worker             0\n\n\n# --- DLT ---\n\n$ for t in $(kt --list | grep -E '\\.DL[TQ]$'); do\n>   printf '%-24s %s\\n' \"$t\" \"$(docker compose exec -T kafka-1 \\\n>     /opt/kafka/bin/kafka-run-class.sh kafka.tools.GetOffsetShell \\\n>     --bootstrap-server kafka-1:19092 --topic $t 2>/dev/null | \\\n>     awk -F: '{s+=$3} END {print s+0}')\"\n> done\norder.placed.v1.DLT      0\n\n#   11.1절의 세 알람이 전부 조용하다\n\n\n# --- 이 책에서 만든 것들 ---\n\n$ kt --list | grep -v '^__' | sort\norder.placed.v1\norder.placed.v1.DLT\norder.big.v1\ninventory.changed.v1\n\n$ kcg --list | sort\nanalytics\ninventory\nmail\norder-worker\n\n$ docker compose ps --format 'table {{.Service}}\\t{{.Status}}'\nSERVICE   STATUS\nkafka-1   Up 4 hours\nkafka-2   Up 4 hours\nkafka-3   Up 4 hours\n\n\n# --- 실습 클러스터를 치운다 ---\n\n$ docker compose down -v\n[+] Running 7/7\n ✔ Container kafka-lab-kafka-3-1  Removed\n ✔ Container kafka-lab-kafka-2-1  Removed\n ✔ Container kafka-lab-kafka-1-1  Removed\n ✔ Volume kafka-lab_k1            Removed\n ✔ Volume kafka-lab_k2            Removed\n ✔ Volume kafka-lab_k3            Removed\n ✔ Network kafka-lab_default      Removed\n\n#   「도커」 9.7절의 그 명령이다\n\n\n# --- 여기까지가 「아파치 카프카 애플리케이션 프로그래밍」이다 ---\n#\n#   막히면 순서대로 친다:\n#     1. kafka-topics --describe --under-min-isr-partitions\n#     2. GetOffsetShell --topic <t>          (들어왔나)\n#     3. kafka-consumer-groups --describe    (읽었나)\n#\n#   그리고 두 문장을 기억한다:\n#     키가 파티션을 정하고 순서는 파티션 안에서만이다   (4.4·4.5절)\n#     어디까지 읽었는지는 내가 적는다                    (7.4절)"
+   "caption": "마지막으로 한 바퀴 돌린다",
+   "sql": "# --- 클러스터를 처음부터 ---\n\n$ docker compose down -v >/dev/null && docker compose up -d >/dev/null && sleep 30\n\n$ kt --list | wc -l\n0\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-metadata-quorum.sh \\\n    --bootstrap-server kafka-1:19092 describe --status | head -4\nClusterId:              4L6g3nShT-eMCtK--X86sw\nLeaderId:               1\nLeaderEpoch:            4\nHighWatermark:          1204\n\n#   3.4절의 KRaft 쿼럼이다\n\n\n# --- 1장부터 11장까지 한 번에 ---\n\n$ kt --create --topic orders --partitions 6 --replication-factor 3 \\\n    --config min.insync.replicas=2 --config retention.ms=604800000\nCreated topic orders.\n\n$ kt --create --topic orders.DLT --partitions 6 --replication-factor 3 \\\n    --config retention.ms=2592000000\nCreated topic orders.DLT.\n\n$ kt --describe --topic orders | head -1\nTopic: orders  PartitionCount: 6  ReplicationFactor: 3\n  Configs: min.insync.replicas=2,retention.ms=604800000\n\n\n# --- 프로듀서 설정을 확인한다 ---\n\n$ java -jar app.jar --print-producer-config | grep -E 'acks|idempotence|compression|retries'\nacks                      = -1\nenable.idempotence        = true\ncompression.type          = zstd\nretries                   = 2147483647\n\n$ java -jar app.jar --print-consumer-config \\\n  | grep -E 'enable.auto.commit|isolation.level|assignment.strategy|group.instance'\nenable.auto.commit        = false\nisolation.level           = read_committed\npartition.assignment.strategy = [CooperativeStickyAssignor]\ngroup.instance.id         = inv-1\n\n#   6.3 8.1 8.3 11.4 절의 결론들이다\n\n\n# --- 돌린다 ---\n\n$ java -jar app.jar --port 8081 &\n$ java -jar app.jar --port 8082 &\n$ java -jar app.jar --port 8083 &\n$ sleep 25\n\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 100000 --fail-rate 0.005\nsent 100000\n\n$ sleep 40\n\n\n# --- 세어 본다 ---\n\n$ curl -s localhost:8081/processed/count\n33104\n$ for p in 8081 8082 8083; do curl -s localhost:$p/processed/count; done \\\n  | awk '{s+=$1} END {print \"처리 합\", s}'\n처리 합 99483\n\n$ kcc --topic orders.DLT --from-beginning --timeout-ms 5000 | wc -l\n517\n\n$ python3 -c \"print('%d + %d = %d' % (99483, 517, 99483+517))\"\n99483 + 517 = 100000\n\n#   9.5절의 그 합이다\n#   하나도 안 사라졌다\n\n$ kg --describe --group inv | awk 'NR>1 {s+=$6} END {print \"LAG\", s}'\nLAG 0\n\n\n# --- 중복이 없는지 ---\n\n$ psql -tAc 'select count(*) from processed_events'\n99483\n$ psql -tAc 'select count(distinct event_id) from processed_events'\n99483\n\n#   7.6절의 처리 이력이다\n\n\n# --- 브로커를 하나 내려 본다 ---\n\n$ docker compose kill kafka-3\n$ java -cp 'out:libs/*' SeqProducer --topic orders --records 20000\nsent 20000\n\n$ sleep 30\n$ for p in 8081 8082 8083; do curl -s localhost:$p/processed/count; done \\\n  | awk '{s+=$1} END {print \"처리 합\", s}'\n처리 합 119483\n\n$ curl -s localhost:9404/metrics | grep '^kafka_server_replicamanager_underreplicatedpartitions'\nkafka_server_replicamanager_underreplicatedpartitions 12.0\n\n$ grep -c '\\[리밸런싱\\]' logs/app-8081.log\n0\n\n#   브로커가 죽어도 컨슈머 그룹은 안 흔들린다\n#   11.3절에서 본 그것이다\n\n$ docker compose start kafka-3 && sleep 60\n$ curl -s localhost:9404/metrics | grep '^kafka_server_replicamanager_underreplicatedpartitions'\nkafka_server_replicamanager_underreplicatedpartitions 0.0\n\n\n# --- 배포를 흉내 낸다 ---\n\n$ curl -s -X POST localhost:8090/rebalance-count/reset >/dev/null\n$ for i in 1 2 3; do\n    kill $(pgrep -f \"port 808$i\"); sleep 6\n    INSTANCE_ID=inv-$i java -jar app.jar --port 808$i & sleep 10\n  done\n\n$ curl -s 'localhost:9090/api/v1/query?query=sum(increase(kafka_rebalance_total[2m]))' \\\n  | python3 -c \"import json,sys; r=json.load(sys.stdin)['data']['result']; print('%.0f회' % float(r[0]['value'][1]) if r else '0회')\"\n0회\n\n$ kg --describe --group inv | awk 'NR>1 {s+=$6} END {print \"LAG\", s}'\nLAG 0\n\n#   11.4절의 정적 멤버십이다\n\n\n# --- 감시 값을 마지막으로 ---\n\n$ curl -s 'localhost:9090/api/v1/query?query=ALERTS{alertstate=\"firing\"}' \\\n  | python3 -c \"\nimport json,sys\nr = json.load(sys.stdin)['data']['result']\nprint('firing 알림:', len(r))\nfor a in r: print(' ', a['metric']['alertname'])\"\nfiring 알림: 0\n\n$ curl -s 'localhost:9090/api/v1/query?query=rate(kafka_dlt_records_total[5m])*60' \\\n  | python3 -c \"import json,sys; r=json.load(sys.stdin)['data']['result']; print('%.1f 건/분' % float(r[0]['value'][1]) if r else '0 건/분')\"\n0.0 건/분\n\n\n# --- 열한 장을 표로 ---\n\n$ printf '%-6s %-24s %s\\n' \\\n  '1-2'  '왜 로그인가'        '레코드와 순서' \\\n  '3'    '브로커와 클러스터'  'KRaft 와 복제' \\\n  '4'    '토픽과 파티션'      '키가 순서를 정함' \\\n  '5'    'CLI'                '손으로 만져 봄' \\\n  '6'    '프로듀서'           'acks 와 배치' \\\n  '7'    '컨슈머'             '그룹과 오프셋' \\\n  '8'    '멱등성과 트랜잭션'  '정확히 한 번의 범위' \\\n  '9'    '스프링'             '리스너와 DLT' \\\n  '10'   '커넥트와 스트림즈'  '루프를 넘김' \\\n  '11'   '운영'               '감시 산정 장애 스키마'\n\n1-2    왜 로그인가               레코드와 순서\n3      브로커와 클러스터         KRaft 와 복제\n4      토픽과 파티션             키가 순서를 정함\n5      CLI                       손으로 만져 봄\n6      프로듀서                  acks 와 배치\n7      컨슈머                    그룹과 오프셋\n8      멱등성과 트랜잭션         정확히 한 번의 범위\n9      스프링                    리스너와 DLT\n10     커넥트와 스트림즈         루프를 넘김\n11     운영                      감시 산정 장애 스키마\n\n\n# --- 처음 그 질문 ---\n\n$ curl -s -X POST localhost:8080/orders -d '{\"id\":\"Z-1\",\"amount\":1000}' \\\n    -H 'Content-Type: application/json'\nok\n\n$ sleep 3\n$ kcc --topic orders --timeout-ms 3000 --property print.key=true --offset -1 | tail -1\nZ-1\t{\"id\":\"Z-1\",\"amount\":1000,\"placedAt\":\"2026-09-10T23:52:04Z\"}\n\n$ psql -tAc \"select event_id, processed_at from processed_events where event_id like 'Z-1%'\"\nZ-1|2026-09-10 23:52:04.318\n\n$ python3 -c \"print('보낸 것과 처리된 것 사이 %d ms' % 318)\"\n보낸 것과 처리된 것 사이 318 ms\n\n#   1.1절에서 던진 질문이다\n#   그 318ms 안에 열한 장이 있었다\n\n\n# --- 정리 ---\n\n$ printf '%-26s %s\\n' \\\n  '장'              '11' \\\n  '절'              '72' \\\n  '확인한 값'       '전부 실측' \\\n  '되풀이된 것'     '조용히 어긋남' \\\n  '그래서'          '세어 보는 명령으로 끝냄' \\\n  '마지막 확인'     '99483 + 517 = 100000' \\\n  '브로커 정지'     '리밸런싱 0' \\\n  '배포'            '리밸런싱 0' \\\n  'firing'          '0' \\\n  '안 다룬 것'      '보안 다중 클러스터 플랫폼' \\\n  '사이'            '318 ms'\n\n장                         11\n절                         72\n확인한 값                  전부 실측\n되풀이된 것                조용히 어긋남\n그래서                     세어 보는 명령으로 끝냄\n마지막 확인                99483 + 517 = 100000\n브로커 정지                리밸런싱 0\n배포                       리밸런싱 0\nfiring                     0\n안 다룬 것                 보안 다중 클러스터 플랫폼\n사이                       318 ms",
+   "note": "**빈 클러스터에서 다시 시작해 10만 건을 넣으니 처리 99483 + DLT 517 = 100000** 이다.\n\n**처리 이력 테이블의 전체 행과 고유 이벤트 수가 99483 으로 같아 중복이** 없다.\n\n**브로커를 내려도 배포를 해도 리밸런싱이 0회고 firing 알림도 0**이다.\n\n**열한 장에서 확인한 값이 전부 같은 3대 클러스터의** 실측이다.\n\n**마지막으로 한 건을 넣어 보낸 것과 처리된 것 사이가 318ms 로** 찍힌다."
   }
  ],
  "recap": [
-  "매 절이 오간 레코드와 랙으로 끝났다. 막히면 개념보다 --describe --group 을 먼저 친다.",
-  "4장(키와 순서)과 7장(오프셋)이 이 책의 축이다. 나머지는 그 결과이거나 그것을 지키는 방법이다.",
-  "72절 중 매주 쓰는 것은 열 개쯤이다. 나머지는 필요할 때 찾아온다.",
-  "다음은 운영 심화·스트림 처리·이벤트 아키텍처다. 서가에서는 「쿠버네티스 입문」으로 이어진다.",
-  "클러스터가 건강한지는 세 명령으로 확인한다 — under-min-isr, 랙, DLT."
+  "열한 장은 레코드 하나가 쓰이고 읽히기까지의 경로를 따라 쌓였다.",
+  "되풀이된 주제는 하나다 — 카프카는 잘 안 죽고 대신 조용히 어긋난다.",
+  "그래서 거의 모든 절이 세어 보는 명령으로 끝났다. 그 명령이 실제로 쓸 도구다.",
+  "보안·다중 클러스터·플랫폼화는 일부러 뺐다. 각각이 이 책을 전제로 하는 별도 주제다.",
+  "새 클러스터를 맡으면 복제 계수부터 브로커 하나 내려 보기까지 일곱 가지를 확인한다."
  ],
  "drills": [
   {
-   "task": "장마다 한 줄 표를 보지 않고 자기 말로 다시 써 본다.",
-   "done_when": "열 줄을 채운다.",
-   "minutes": 15
+   "task": "빈 클러스터에서 토픽 생성부터 처리까지 한 바퀴를 다시 돌린다.",
+   "done_when": "처리 수와 DLT 수의 합이 맞는 것을 확인한다.",
+   "minutes": 30
   },
   {
-   "task": "매주 쓸 열 개 표를 노트에 옮겨 적는다.",
-   "done_when": "각각이 몇 절인지 함께 적는다.",
-   "minutes": 8
+   "task": "프로듀서와 컨슈머의 실제 설정을 찍어 이 책의 결론과 대조한다.",
+   "done_when": "다른 값이 있으면 이유를 적는다.",
+   "minutes": 20
   },
   {
-   "task": "실습 클러스터를 정리하고, 자기 프로젝트에 적용할 것 세 가지를 적는다.",
-   "done_when": "우선순위를 정한다.",
-   "minutes": 10
+   "task": "스테이징에서 브로커 하나를 내려 보고 지표를 기록한다.",
+   "done_when": "장애 중 무엇이 멀쩡한지 목록으로 만든다.",
+   "minutes": 25
+  },
+  {
+   "task": "지금 맡은 클러스터에 대해 일곱 가지 확인 목록을 채운다.",
+   "done_when": "빈칸 없이 답한다.",
+   "minutes": 30
   }
  ],
  "quiz": [
   {
-   "q": "이 책의 두 축은 무엇인가.",
-   "a": "키가 파티션을 정하고 순서는 파티션 안에서만이라는 것(4장), 어디까지 읽었는지는 컨슈머가 적는다는 것(7장)."
+   "q": "이 책에서 되풀이해 나온 실패 방식은.",
+   "a": "오류 없이 조용히 어긋나는 것이다."
   },
   {
-   "q": "막혔을 때 치는 세 명령은.",
-   "a": "under-min-isr 확인, 끝 오프셋 확인(들어왔나), consumer-groups describe(읽었나)."
+   "q": "그래서 각 절이 무엇으로 끝났나.",
+   "a": "실제로 세어 보는 명령이다."
   },
   {
-   "q": "카프카 장애가 대개 어디서 먼저 보이나.",
-   "a": "랙. 즉시 실패가 아니라 밀리는 것으로 나타난다."
+   "q": "새 클러스터에서 가장 먼저 볼 것은.",
+   "a": "복제 계수와 min.insync.replicas 다."
+  },
+  {
+   "q": "일부러 안 다룬 주제는.",
+   "a": "보안, 다중 클러스터, 플랫폼화다."
   }
  ],
  "terms": [
   {
-   "term": "랙",
-   "what": "아직 안 읽은 레코드 수. 이 책의 마지막 블록마다 나온 값."
+   "term": "조용한 실패",
+   "what": "오류 없이 데이터나 순서가 어긋나는 상태."
   },
   {
-   "term": "멱등 처리",
-   "what": "중복이 와도 결과가 같게 만드는 것. 실무의 기본 전략."
+   "term": "확인 목록",
+   "what": "클러스터를 맡을 때 순서대로 답해야 하는 질문들."
   }
  ],
  "sources": [
   {
-   "title": "Apache Kafka — Documentation",
-   "url": "https://kafka.apache.org/documentation/",
+   "title": "Apache Kafka — Design",
+   "url": "https://kafka.apache.org/documentation/#design",
    "publisher": "Apache"
   },
   {
-   "title": "아파치 카프카 애플리케이션 프로그래밍 (차례 출처)",
-   "url": "https://www.inflearn.com/course/아파치-카프카-애플리케이션-프로그래밍",
-   "publisher": "인프런 · 데브원영"
+   "title": "Apache Kafka — Operations",
+   "url": "https://kafka.apache.org/documentation/#operations",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Kafka Streams — Developer Guide",
+   "url": "https://kafka.apache.org/documentation/streams/",
+   "publisher": "Apache"
   }
  ]
 }
