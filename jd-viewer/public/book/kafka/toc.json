@@ -593,7 +593,7 @@
           "title": "카프카 스트림즈",
           "summary": "토픽에서 읽어 토픽으로 쓰는 애플리케이션.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",
@@ -601,7 +601,7 @@
           "title": "상태 기반 처리",
           "summary": "집계와 윈도우, 그리고 상태 저장소.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",
