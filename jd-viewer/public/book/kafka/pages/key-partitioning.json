@@ -1,0 +1,137 @@
+{
+ "book": "kafka",
+ "id": "key-partitioning",
+ "no": "4.4",
+ "chapter": 4,
+ "title": "키가 파티션을 정한다",
+ "summary": "같은 키는 같은 파티션으로.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "기본 파티셔너의 동작을 안다.",
+  "키 쏠림 문제를 안다.",
+  "파티션을 늘릴 때 무엇이 깨지는지 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.4절에서 키 없이 넣었더니 골고루** 나뉘었다. **키를 주면 달라진다.**\n\n```\npartition = murmur2(key) % numPartitions\n```\n\n> **같은 키는 항상 같은 파티션으로** 간다. **그래서 그 키 안에서는 순서가 지켜진다**(4.5절)."
+  },
+  {
+   "type": "table",
+   "caption": "키가 있고 없고",
+   "columns": [
+    "",
+    "키 있음",
+    "키 없음(null)"
+   ],
+   "rows": [
+    [
+     "파티션 결정",
+     "**`murmur2(key) % n`**",
+     "**스티키 파티셔닝** — 배치가 찰 때까지 한 파티션, 그다음 바꿈"
+    ],
+    [
+     "순서",
+     "**같은 키끼리 보장**",
+     "보장 없음"
+    ],
+    [
+     "compact",
+     "**대상**(3.4절)",
+     "대상 아님"
+    ],
+    [
+     "분포",
+     "**키 분포에 달렸다**",
+     "고르다"
+    ]
+   ],
+   "note": "**옛날에는 키 없으면 라운드로빈**이었다. **2.4+ 는 스티키** — **배치 효율이 좋아졌고 분포는 여전히 고르다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "키를 무엇으로 잡을 것인가",
+   "md": "**\"이 단위 안에서는 순서가 지켜져야 한다\" 는 그 단위**를 키로 잡는다.\n\n| 도메인 | 키 | 보장되는 것 |\n|---|---|---|\n| 주문 이벤트 | **주문 ID** | 한 주문의 생성→결제→취소 순서 |\n| 사용자 활동 | **사용자 ID** | 한 사용자의 행동 순서 |\n| 재고 변경 | **상품 ID** | 한 상품의 증감 순서 |\n| CDC | **PK** | 한 행의 변경 순서(10.3절) |\n\n**키를 잘못 잡으면**:\n\n```\n키 = 주문 상태(\"PLACED\", \"PAID\", \"CANCELLED\")\n  -> 파티션 3개에 상태별로 뭉친다\n  -> 한 주문의 이벤트가 서로 다른 파티션에 흩어진다\n  -> 순서가 안 지켜진다\n  -> 게다가 상태 분포가 고르지 않아 쏠린다\n```\n\n> **카디널리티가 높고(값이 많고) 분포가 고른 것**을 고른다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "파티션을 늘리면 키 매핑이 바뀐다",
+   "md": "**`% numPartitions` 이므로 파티션 수가 바뀌면 결과가** 바뀐다.\n\n```\nkey \"user-42\" -> murmur2 = 1234567\n\npartitions 3:  1234567 % 3 = 1     -> 파티션 1\npartitions 6:  1234567 % 6 = 4     -> 파티션 4\n```\n\n**그러면**:\n\n| 무슨 일 | |\n|---|---|\n| 옛 레코드는 파티션 1에 | 그대로 있다 |\n| 새 레코드는 파티션 4로 | 간다 |\n| **한 키의 순서가 깨진다** | **1과 4를 다른 컨슈머가 다른 속도로 읽는다** |\n\n> **그래서 \"파티션은 늘릴 수 있다\" 가 \"늘려도 안전하다\" 는 뜻이** 아니다.\n> **순서에 기대는 토픽이면 파티션을 늘리는 것 자체가 위험한 변경**이다.\n\n**대응**:\n\n| 방법 | |\n|---|---|\n| 처음부터 넉넉히 | 4.6절. 다만 파티션 비용이 있다 |\n| **새 토픽 v2 를 만들고 옮긴다** | 순서를 지키면서 넘길 수 있다 |\n| 커스텀 파티셔너 | 키→파티션 매핑을 직접 고정(6.6절) |\n| 잠깐 멈추고 랙을 0으로 만든 뒤 늘린다 | 흔한 현실적 타협 |"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "키가 파티션을 정하는 것을 확인한다",
+   "sql": "$ kt --create --topic keyed --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 같은 키는 항상 같은 파티션 ---\n\n$ kcp --topic keyed --property parse.key=true --property key.separator='|' <<'EOF'\nuser-1|a\nuser-2|b\nuser-1|c\nuser-3|d\nuser-1|e\nuser-2|f\nEOF\n\n$ kcc --topic keyed --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.partition=true --property print.offset=true\nPartition:0  Offset:0  user-2  b\nPartition:0  Offset:1  user-2  f\nPartition:1  Offset:0  user-3  d\nPartition:2  Offset:0  user-1  a\nPartition:2  Offset:1  user-1  c\nPartition:2  Offset:2  user-1  e\n\n#   user-1 은 전부 파티션 2, user-2 는 전부 파티션 0 이다\n#   그리고 각 키 안에서 a -> c -> e 순서가 지켜졌다\n\n\n# --- 키 없으면 고르게 흩어진다 ---\n\n$ kt --create --topic nokey --partitions 3 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 300); do echo \"m-$i\"; done | kcp --topic nokey\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic nokey\nnokey:0:100\nnokey:1:100\nnokey:2:100\n\n#   100/100/100. 고르다\n\n\n# --- 키가 쏠리면 파티션도 쏠린다 ---\n\n$ kt --create --topic skew --partitions 3 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 300); do\n>   if [ $((i % 10)) -eq 0 ]; then echo \"rare-$i|v\"; else echo \"vip-user|v\"; fi\n> done | kcp --topic skew --property parse.key=true --property key.separator='|'\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic skew\nskew:0:12\nskew:1:270\nskew:2:18\n\n#   270 / 12 / 18. vip-user 하나가 파티션 1을 다 차지했다\n#   컨슈머를 셋으로 늘려도 하나만 바쁘다 (4.2절의 함정)\n#   1.5절의 \"한 파티션만 LAG 이 크다\" 가 이 모양이다\n\n\n# --- 파티션을 늘리면 매핑이 바뀐다 ---\n\n$ kt --create --topic remap --partitions 3 --replication-factor 3 >/dev/null\n$ for k in user-1 user-2 user-3 user-4 user-5 user-6; do echo \"$k|before\"; done | \\\n    kcp --topic remap --property parse.key=true --property key.separator='|'\n\n$ kcc --topic remap --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.partition=true | sort\nPartition:0  user-2  before\nPartition:0  user-5  before\nPartition:1  user-3  before\nPartition:1  user-6  before\nPartition:2  user-1  before\nPartition:2  user-4  before\n\n$ kt --alter --topic remap --partitions 6\n\n$ for k in user-1 user-2 user-3 user-4 user-5 user-6; do echo \"$k|after\"; done | \\\n    kcp --topic remap --property parse.key=true --property key.separator='|'\n\n$ kcc --topic remap --from-beginning --timeout-ms 2000 \\\n    --property print.key=true --property print.partition=true | grep after | sort\nPartition:0  user-5  after\nPartition:1  user-3  after\nPartition:2  user-4  after\nPartition:3  user-2  after\nPartition:4  user-6  after\nPartition:5  user-1  after\n\n#   user-1: 파티션 2 -> 5, user-2: 0 -> 3 으로 옮겨 갔다\n#   옛 레코드는 그대로 옛 파티션에 있다\n#   한 키의 순서가 두 파티션에 걸쳐 깨졌다\n\n$ kt --delete --topic keyed >/dev/null; kt --delete --topic nokey >/dev/null\n$ kt --delete --topic skew >/dev/null; kt --delete --topic remap >/dev/null"
+  }
+ ],
+ "recap": [
+  "파티션은 murmur2(key) % 파티션수 로 정해진다. 같은 키는 항상 같은 파티션이다.",
+  "키가 없으면 스티키 파티셔닝으로 고르게 흩어지고 순서 보장이 없다.",
+  "'이 단위 안에서 순서가 지켜져야 한다' 는 단위를 키로 잡는다. 카디널리티가 높고 고른 것으로.",
+  "키가 쏠리면 파티션도 쏠려 컨슈머를 늘려도 한 쪽만 바쁘다.",
+  "파티션을 늘리면 키→파티션 매핑이 바뀌어 한 키의 순서가 깨진다."
+ ],
+ "drills": [
+  {
+   "task": "같은 키로 여러 건을 넣고 전부 같은 파티션에 순서대로 들어가는 것을 확인한다.",
+   "done_when": "파티션과 오프셋으로 확인한다.",
+   "minutes": 5
+  },
+  {
+   "task": "한 키가 90%인 데이터를 넣고 파티션별 건수를 세어 본다.",
+   "done_when": "쏠림을 숫자로 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "파티션을 3에서 6으로 늘리고 같은 키가 어느 파티션으로 가는지 전후를 비교한다.",
+   "done_when": "매핑이 바뀌는 것을 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "기본 파티셔너가 키로 파티션을 정하는 식은.",
+   "a": "murmur2(key) % 파티션 수."
+  },
+  {
+   "q": "키를 무엇으로 잡아야 하나.",
+   "a": "순서가 지켜져야 하는 단위. 카디널리티가 높고 분포가 고른 값."
+  },
+  {
+   "q": "파티션을 늘리면 왜 위험한가.",
+   "a": "% 연산이라 키→파티션 매핑이 바뀌고, 한 키의 옛 레코드와 새 레코드가 다른 파티션에 놓여 순서가 깨진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "murmur2",
+   "what": "카프카 기본 파티셔너가 쓰는 해시 함수."
+  },
+  {
+   "term": "스티키 파티셔닝",
+   "en": "sticky partitioning",
+   "what": "키가 없을 때 배치가 찰 때까지 한 파티션에 붙여 보내는 전략."
+  },
+  {
+   "term": "키 쏠림",
+   "en": "key skew",
+   "what": "특정 키에 레코드가 몰려 파티션 부하가 불균형해지는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Producer partitioning",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs_partitioner.class",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Confluent — Sticky partitioner",
+   "url": "https://www.confluent.io/blog/apache-kafka-producer-improvements-sticky-partitioner/",
+   "publisher": "Confluent"
+  }
+ ]
+}

@@ -637,7 +637,7 @@
           "title": "execution",
           "summary": "제일 많이 쓰는 것.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.2",
@@ -645,7 +645,7 @@
           "title": "패턴을 쪼갠다",
           "summary": "반환형·이름·인자.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.3",

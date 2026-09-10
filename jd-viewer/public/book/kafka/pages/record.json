@@ -1,0 +1,142 @@
+{
+ "book": "kafka",
+ "id": "record",
+ "no": "4.3",
+ "chapter": 4,
+ "title": "레코드",
+ "summary": "키 · 값 · 헤더 · 오프셋 · 타임스탬프.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "레코드의 구성을 안다.",
+  "타임스탬프 두 종류를 구분한다.",
+  "레코드 크기 제한을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "figure",
+   "caption": "레코드 하나",
+   "ascii": "   record\n   +-------------------------------------------------+\n   |  offset      1204          (브로커가 매긴다)     |\n   |  timestamp   1757497321004 (아래 참고)           |\n   |  key         bytes | null  -> 파티션 결정 (4.4)  |\n   |  value       bytes | null  -> 본문. null = 툼스톤 |\n   |  headers     [(k,v), ...]  -> 메타데이터         |\n   +-------------------------------------------------+\n\n   key and value are just bytes to the broker\n   serialization is the client's job (9.6)\n\n   브로커는 내용을 해석하지 않는다",
+   "note": "**브로커에게 키와 값은 바이트 배열**이다. **JSON 인지 Avro 인지는 클라이언트끼리의 약속**이다."
+  },
+  {
+   "type": "table",
+   "caption": "각 필드가 하는 일",
+   "columns": [
+    "필드",
+    "누가 정하나",
+    "쓰임"
+   ],
+   "rows": [
+    [
+     "**offset**",
+     "**브로커**",
+     "파티션 안의 위치. 컨슈머가 여기를 기억한다"
+    ],
+    [
+     "**key**",
+     "프로듀서",
+     "**파티션 결정**(4.4절)과 **compact 의 기준**(3.4절)"
+    ],
+    [
+     "**value**",
+     "프로듀서",
+     "본문. **null 이면 툼스톤**(compact 토픽에서)"
+    ],
+    [
+     "**headers**",
+     "프로듀서",
+     "이벤트 타입·추적 ID·스키마 버전 등"
+    ],
+    [
+     "**timestamp**",
+     "프로듀서 또는 브로커",
+     "아래"
+    ]
+   ],
+   "note": "**키를 안 주면 `null`** 이다 — **파티션이 라운드로빈으로 정해지고 compact 대상이 아니다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "타임스탬프가 둘이다",
+   "md": "```\nmessage.timestamp.type = CreateTime   (기본)\n                       = LogAppendTime\n```\n\n| 값 | 누가 찍나 | 문제 |\n|---|---|---|\n| **CreateTime** | **프로듀서**가 만든 시각 | **클라이언트 시계가 틀리면 이상한 값**이 들어온다 |\n| **LogAppendTime** | **브로커**가 받은 시각 | 정확하지만 **원래 발생 시각을 잃는다** |\n\n**여기에 걸리는 것들**:\n\n| 무엇 | 왜 |\n|---|---|\n| **시간으로 되감기**(5.6절) | `.timeindex` 가 이 값을 쓴다 |\n| **보관 기간**(3.4절) | 세그먼트의 최대 타임스탬프로 삭제를 판단한다 |\n| 스트림즈의 윈도우(10.5절) | 이벤트 시각으로 집계한다 |\n\n> **클라이언트 시계가 미래로 틀어져 있으면 그 세그먼트가 영영 안** 지워진다.\n> **반대로 과거면 만들자마자 지워질 수도** 있다.\n>\n> **그래서 도메인 시각은 `occurredAt` 처럼 값 안에 따로 넣는다**(2.2절)."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "레코드 크기 제한",
+   "md": "| 설정 | 기본 | 어디 |\n|---|---|---|\n| `max.request.size` | 1MB | **프로듀서** |\n| `message.max.bytes` | ~1MB | **브로커/토픽** |\n| `max.partition.fetch.bytes` | 1MB | **컨슈머** |\n| `fetch.max.bytes` | 50MB | 컨슈머 전체 |\n\n> **셋이 안 맞으면 이상한 곳에서** 막힌다.\n> **프로듀서만 늘리면 브로커가 거부하고, 브로커만 늘리면 컨슈머가 못 읽는다.**\n\n**큰 파일을 카프카로 보내지 않는다**:\n\n```\n큰 파일 -> S3 에 올리고\n카프카에는 -> {\"fileUrl\": \"s3://...\", \"size\": 12345678}\n```\n\n> **레코드가 크면 배치가 안 되고 복제가 밀리고 페이지 캐시가 무너진다.**\n> **1MB 를 넘기려 할 때는 대개 설계를 다시 볼 때**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "레코드의 각 부분을 직접 본다",
+   "sql": "$ kt --create --topic rec --partitions 3 --replication-factor 3 >/dev/null\n\n# --- 키·값·헤더를 붙여 넣는다 ---\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -P -t rec \\\n    -k 'user-42' -H 'eventType=UserUpdated' -H 'traceId=abc-123' \\\n    <<< '{\"userId\":42,\"name\":\"kim\",\"occurredAt\":\"2026-09-10T15:20:11Z\"}'\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t rec -o beginning -e \\\n    -f 'partition=%p offset=%o key=%k ts=%T headers=%h\\npayload=%s\\n\\n'\npartition=2 offset=0 key=user-42 ts=1757499611482 headers=eventType=UserUpdated,traceId=abc-123\npayload={\"userId\":42,\"name\":\"kim\",\"occurredAt\":\"2026-09-10T15:20:11Z\"}\n\n#   ts 는 레코드 타임스탬프(프로듀서가 찍은 것)\n#   occurredAt 은 값 안에 내가 넣은 도메인 시각. 둘은 다르다\n\n\n# --- 브로커는 바이트로만 본다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/rec-2/00000000000000000000.log --print-data-log | tail -3\n| offset: 0 CreateTime: 1757499611482 keySize: 7 valueSize: 62 sequence: -1\n  headerKeys: [eventType, traceId] key: user-42\n  payload: {\"userId\":42,\"name\":\"kim\",\"occurredAt\":\"2026-09-10T15:20:11Z\"}\n\n#   keySize 7, valueSize 62 -- 브로커에게는 길이만 의미가 있다\n\n\n# --- 키 없는 레코드 ---\n\n$ echo 'no-key' | kcp --topic rec\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t rec -o beginning -e \\\n    -f 'p%p o%o key=[%k] len=%K\\n' 2>/dev/null | tail -2\np2 o0 key=[user-42] len=7\np0 o0 key=[] len=-1\n\n#   len=-1 이 null 키다. 빈 문자열과 다르다\n\n\n# --- 타임스탬프 타입을 바꿔 본다 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name rec \\\n    --alter --add-config message.timestamp.type=LogAppendTime >/dev/null\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -P -t rec \\\n    -k 'k2' <<< 'append-time'\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t rec -o -1 -c 1 -e \\\n    -f 'ts=%T payload=%s\\n'\nts=1757499698311 payload=append-time\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-dump-log.sh \\\n    --files /var/lib/kafka/data/rec-*/00000000000000000000.log --print-data-log 2>/dev/null | \\\n    grep -o 'LogAppendTime: [0-9]*' | head -1\nLogAppendTime: 1757499698311\n\n#   브로커가 받은 시각으로 덮어썼다\n\n\n# --- 크기 제한 ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh \\\n    --bootstrap-server kafka-1:19092 --entity-type topics --entity-name rec \\\n    --describe --all 2>/dev/null | grep max.message.bytes\n  max.message.bytes=1048588 sensitive=false synonyms={DEFAULT_CONFIG:message.max.bytes=1048588}\n\n$ python3 -c \"print('x'*2000000)\" | kcp --topic rec 2>&1 | tail -2\n[2026-09-10 15:23:01,882] ERROR Error when sending message to topic rec with key: null,\n  value: 2000000 bytes with error:\norg.apache.kafka.common.errors.RecordTooLargeException: The message is 2000088 bytes\n  when serialized which is larger than 1048576, which is the value of the\n  max.request.size configuration.\n\n#   프로듀서 쪽에서 먼저 막혔다 (max.request.size)\n#   프로듀서만 늘리면 이번엔 브로커가 막는다 -- 셋을 같이 맞춰야 한다\n\n\n# --- 큰 파일은 참조만 보낸다 ---\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -P -t rec -k 'file-1' \\\n    <<< '{\"fileUrl\":\"s3://bucket/report-2026-09.csv\",\"size\":184320000,\"checksum\":\"sha256:...\"}'\n\n#   184MB 파일을 카프카로 보내지 않는다. 주소만 보낸다\n\n$ kt --delete --topic rec >/dev/null"
+  }
+ ],
+ "recap": [
+  "레코드는 offset·timestamp·key·value·headers 다. 오프셋만 브로커가 매긴다.",
+  "브로커에게 키와 값은 바이트다. 직렬화는 클라이언트끼리의 약속이다.",
+  "타임스탬프는 CreateTime(프로듀서)과 LogAppendTime(브로커) 두 종류다. 보관 삭제와 시간 되감기가 이 값을 쓴다.",
+  "도메인 시각은 값 안에 따로 넣는다. 클라이언트 시계에 기대지 않는다.",
+  "크기 제한은 프로듀서·브로커·컨슈머 셋을 같이 맞춰야 한다. 큰 파일은 참조만 보낸다."
+ ],
+ "drills": [
+  {
+   "task": "kcat 으로 키·헤더를 붙여 레코드를 넣고 `-f` 서식으로 전부 출력해 본다.",
+   "done_when": "partition·offset·key·ts·headers 를 한 줄에 볼 수 있다.",
+   "minutes": 6
+  },
+  {
+   "task": "키 없는 레코드와 있는 레코드의 키 길이(%K)를 비교한다.",
+   "done_when": "null 키가 -1 인 것을 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "2MB 짜리 레코드를 보내 RecordTooLargeException 을 확인한다.",
+   "done_when": "어느 설정에서 막혔는지 메시지에서 읽는다.",
+   "minutes": 5
+  }
+ ],
+ "quiz": [
+  {
+   "q": "레코드에서 브로커가 정하는 필드는.",
+   "a": "offset. (LogAppendTime 설정이면 timestamp 도)"
+  },
+  {
+   "q": "CreateTime 의 위험은.",
+   "a": "프로듀서 시계가 틀리면 보관 삭제와 시간 되감기가 이상해진다. 미래 시각이면 세그먼트가 안 지워진다."
+  },
+  {
+   "q": "1MB 넘는 데이터를 보내야 하면.",
+   "a": "대개 설계를 다시 본다. 파일은 오브젝트 스토리지에 두고 카프카에는 참조만 보낸다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "헤더",
+   "what": "레코드의 키-값 메타데이터. 이벤트 타입·추적 ID 에 쓴다."
+  },
+  {
+   "term": "CreateTime / LogAppendTime",
+   "what": "레코드 타임스탬프를 프로듀서가 찍느냐 브로커가 찍느냐."
+  },
+  {
+   "term": "RecordTooLargeException",
+   "what": "레코드가 크기 제한을 넘었을 때의 예외."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Message format",
+   "url": "https://kafka.apache.org/documentation/#messageformat",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Topic configs: message.timestamp.type",
+   "url": "https://kafka.apache.org/documentation/#topicconfigs",
+   "publisher": "Apache"
+  }
+ ]
+}

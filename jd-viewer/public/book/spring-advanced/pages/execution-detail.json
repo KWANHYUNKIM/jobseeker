@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "execution-detail",
+ "no": "11.2",
+ "chapter": 11,
+ "title": "패턴을 쪼갠다",
+ "summary": "반환형·이름·인자.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "칸마다 판다.",
+  "선언형임을 안다.",
+  "안 맞는 자리를 찾는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**11.1절에서 여섯 칸을** 봤다. **칸마다 안을** 연다."
+  },
+  {
+   "type": "figure",
+   "caption": "가운데 두 칸은 사실 하나다",
+   "ascii": "   how the middle two slots are really one\n\n   declaring type and method name are joined by a dot\n   leaving out the type means any type at all\n   the last dot before the paren always splits them",
+   "note": "**괄호 앞 마지막 점이 둘을** 가른다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "칸마다 규칙이 조금씩 다르다",
+   "md": "**반환형은** 하나다.\n\n> **별이나 타입 이름**이다.\n> **아래에서 기본형도** 본다.\n> **더하기가** 된다.\n\n**타입과 이름이** 붙어 있다.\n\n> **마지막 점이** 가른다.\n> **아래에서 빼** 본다.\n> **타입을 빼면 아무** 타입이다.\n\n**인자는** 선언형이다.\n\n> **넘어온 값이** 아니다.\n> **아래에서 겪는다**.\n> **11.4절에서 실제형을** 본다.\n\n**예외는 거의 안** 적는다.\n\n> **적으면 좁아진다**.\n> **11.1절에서 0 이** 됐다.\n> **아래에서 확인**한다."
+  },
+  {
+   "type": "figure",
+   "caption": "인자는 선언형으로 맞춘다",
+   "ascii": "   parameters are matched by declared type, not by value\n\n   a parameter declared as the interface matches the interface\n   even when the value passed in is a subclass\n\n   plus after the type is what widens it",
+   "note": "**넓히는 건 타입 뒤의 더하기**다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "기본형은 감싼 타입과 다르다",
+   "md": "**int 와 Integer 가** 다르다.\n\n> **자동 변환이 여기선 안** 먹는다.\n> **아래에서 0 을** 본다.\n> **흔한 실수**다.\n\n**배열은 대괄호가** 붙는다.\n\n> **타입 뒤에** 적는다.\n> **아래에서 확인**한다.\n> **가변 인자도 배열**이다.\n\n**void 와 별이** 다르다.\n\n> **별은 void 도** 포함한다.\n> **아래에서 수를** 본다.\n> **11.1절에서 6 과 16** 이었다.\n\n**제네릭은 지워진다**.\n\n> **컴파일에 사라진다**.\n> **아래에서 그걸** 겪는다.\n> **List 로만 맞춘다**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 실험용 클래스\n\n@Service\npublic class SlotService {\n    public void         a()                        { }\n    public String       b(String s)                { return s; }\n    public int          c(int i)                   { return i; }\n    public Integer      d(Integer i)               { return i; }\n    public List<String> e(List<String> l)          { return l; }\n    public String[]     f(String[] a)              { return a; }\n    public String       g(String... a)             { return \"\"; }\n    public Object       h(Repo r)                  { return r; }\n    public void         i() throws IOException     { }\n}\n\n$ javap -p build/classes/java/main/study/adv/slot/SlotService.class | wc -l\n      11\n\n\n-- 반환형 칸\n\n$ for e in '*' 'void' 'String' 'int' 'Integer' 'java.util.List' 'String[]' 'Object'; do\n    printf '%-16s ' \"$e\"\n    curl -s --get 'localhost:8080/pointcut/match' \\\n      --data-urlencode \"expr=execution($e study.adv.slot.SlotService.*(..))\" | head -1\n  done\n\n*                맞는 메서드 9 개\nvoid             맞는 메서드 2 개\nString           맞는 메서드 3 개\nint              맞는 메서드 1 개\nInteger          맞는 메서드 1 개\njava.util.List   맞는 메서드 1 개\nString[]         맞는 메서드 1 개\nObject           맞는 메서드 1 개\n\n--   별은 void 도 센다\n--   int 와 Integer 가 따로다\n\n\n-- Object 는 안 넓다\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(Object study.adv.slot.SlotService.*(..))'\n맞는 메서드 1 개\n  h\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(Object+ study.adv.slot.SlotService.*(..))'\n맞는 메서드 7 개\n\n--   반환형도 이름을 그대로 본다\n--   더하기를 붙여야 넓어진다\n--   기본형 둘은 여전히 빠진다\n\n\n-- 타입과 이름이 붙어 있다\n\n$ curl -s --get 'localhost:8080/pointcut/split' \\\n    --data-urlencode 'expr=execution(* study.adv.slot.SlotService.b(..))'\n반환형   *\n타입     study.adv.slot.SlotService\n이름     b\n인자     ..\n\n$ curl -s --get 'localhost:8080/pointcut/split' \\\n    --data-urlencode 'expr=execution(* b(..))'\n반환형   *\n타입     (없음)\n이름     b\n인자     ..\n\n--   괄호 앞 마지막 점이 가른다\n\n\n-- 타입을 빼면\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=execution(* save(..))'\n맞는 빈 3 개  맞는 메서드 3 개\n\n$ curl -s --get 'localhost:8080/pointcut/which' \\\n    --data-urlencode 'expr=execution(* save(..))'\n  OrderRepositoryV1\n  OrderRepositoryV2\n  OrderRepositoryV3\n\n--   꾸러미와 상관없이 이름으로만 찾는다\n--   짧아서 편하고 그래서 위험하다\n\n\n-- 이름에 별\n\n$ for e in 'order*' '*Item' '*rder*' 'o*m'; do\n    printf '%-10s ' \"$e\"\n    curl -s --get 'localhost:8080/pointcut/match' \\\n      --data-urlencode \"expr=execution(* study.adv.app..$e(..))\" | head -1\n  done\n\norder*     맞는 메서드 3 개\n*Item      맞는 메서드 2 개\n*rder*     맞는 메서드 3 개\no*m        맞는 메서드 1 개\n\n--   가운데에도 붙는다\n\n\n-- 인자는 선언형이다\n\n@Service\npublic class SlotService {\n    public Object h(Repo r) { return r; }\n}\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(study.adv.app.Repo))'\n맞는 메서드 1 개\n  h\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(study.adv.app.OrderRepositoryV3))'\n맞는 메서드 0 개\n\n$ curl -s -o /dev/null 'localhost:8080/slot/h'\n$ grep '넘어온 것' logs/app.log | tail -1 | cut -c56-\n넘어온 것 study.adv.app.OrderRepositoryV3\n\n--   넘어온 건 구현체인데 안 맞는다\n--   적힌 타입으로 맞춘다\n\n\n-- 넓히려면 더하기\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(study.adv.app.OrderRepositoryV3+))'\n맞는 메서드 0 개\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(study.adv.app.Repo+))'\n맞는 메서드 1 개\n\n--   더하기는 아래로 넓힌다\n--   위로는 안 넓힌다\n--   11.4 절에서 실제 타입으로 잡는 법을 본다\n\n\n-- 기본형과 감싼 타입\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(int))'\n맞는 메서드 1 개\n  c\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(Integer))'\n맞는 메서드 1 개\n  d\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(java.lang.Integer))'\n맞는 메서드 1 개\n  d\n\n--   자동 변환이 여기선 없다\n\n\n-- 배열과 가변 인자\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(String[]))'\n맞는 메서드 2 개\n  f\n  g\n\n$ javap -p build/classes/java/main/study/adv/slot/SlotService.class | grep ' g('\n  public java.lang.String g(java.lang.String...);\n\n$ javap -c -p build/classes/java/main/study/adv/slot/SlotService.class | grep -A1 'public java.lang.String g'\n  public java.lang.String g(java.lang.String...);\n    descriptor: ([Ljava/lang/String;)Ljava/lang/String;\n\n--   가변 인자도 바이트코드에선 배열이다\n\n\n-- 제네릭은 지워진다\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(java.util.List))'\n맞는 메서드 1 개\n  e\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(java.util.List<String>))'\n맞는 메서드 1 개\n  e\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(java.util.List<Integer>))'\n맞는 메서드 1 개\n  e\n\n$ javap -p build/classes/java/main/study/adv/slot/SlotService.class | grep ' e('\n  public java.util.List<java.lang.String> e(java.util.List<java.lang.String>);\n\n--   Integer 로 적어도 맞는다\n--   런타임에 그 정보가 없어서다\n\n\n-- 예외 칸\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(..) throws java.io.IOException)'\n맞는 메서드 1 개\n  i\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(* study.adv.slot..*(..))'\n맞는 메서드 9 개\n\n--   1 과 9 다\n--   11.1 절에서 0 이 됐던 이유다\n\n\n-- 접근 제어자 칸\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(public * study.adv.slot..*(..))'\n맞는 메서드 9 개\n\n$ curl -s --get 'localhost:8080/pointcut/match' \\\n    --data-urlencode 'expr=execution(!public * study.adv.slot..*(..))'\n맞는 메서드 0 개\n\n--   느낌표를 붙일 수 있다\n--   여기선 다 public 이라 0 이다\n\n\n-- 안 맞는 자리를 모은다\n\n$ curl -s localhost:8080/pointcut/pitfalls\n타입을 짧게 적음      OrderItem      0 개\n기본형과 감싼 타입    int Integer    따로\nObject 로 넓히려 함   Object         1 개\n점 하나로 하위        app.*.*        하위 빠짐\nthrows 적음           throws         1 개\n제네릭 적음           List<Integer>  지워짐\n\n$ curl -s localhost:8080/pointcut/pitfalls | wc -l\n       6\n\n--   전부 조용히 0 이 되거나 덜 걸린다\n--   10.7 절의 그 목록에 여섯이 더 붙는다\n\n\n-- 검사로 만든다\n\n@Component\nclass PointcutAudit implements InitializingBean {\n    @Override public void afterPropertiesSet() {\n        for (Advisor a : ctx.getBeansOfType(Advisor.class).values()) {\n            if (!(a instanceof PointcutAdvisor pa)) continue;\n            long n = count(pa.getPointcut());\n            log.info(\"[검사] {} 맞는 메서드 {}\", expr(pa), n);\n            if (n == 0) throw new IllegalStateException(\"0 개 매칭: \" + expr(pa));\n        }\n    }\n}\n\n$ ./gradlew bootRun 2>&1 | grep '\\[검사\\]' | cut -c56-\n[검사] execution(* study.adv.app..*(..)) 맞는 메서드 16\n[검사] execution(* study.adv.app..*Repository*.*(..)) 맞는 메서드 3\n\n@Around(\"execution(* study.adv.app..*(OrderItem))\")     // 짧게 적음\n\n$ ./gradlew bootRun 2>&1 | grep -i 'IllegalState' | head -1\nCaused by: java.lang.IllegalStateException: 0 개 매칭:\n  execution(* study.adv.app..*(OrderItem))\n\n--   11.9 절에서 이걸 다듬는다\n\n\n-- 확인한다\n\n$ git checkout -- src/main/java/\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ ./gradlew bootRun 2>&1 | grep '\\[검사\\]' | wc -l\n2\n\n--   11.3 절에서 타입으로 고르는 법을 본다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '반환형'      '이름 그대로' \\\n  '별'          'void 포함 9 개' \\\n  'Object'      '1 개' \\\n  'Object+'     '7 개' \\\n  '기본형'      '감싼 것과 따로' \\\n  '타입과 이름' '마지막 점이 가름' \\\n  '타입 생략'   '아무 타입' \\\n  '인자'        '선언형' \\\n  '가변 인자'   '배열' \\\n  '제네릭'      '지워짐' \\\n  'throws'      '1 과 9'\n\n반환형                     이름 그대로\n별                         void 포함 9 개\nObject                     1 개\nObject+                    7 개\n기본형                     감싼 것과 따로\n타입과 이름                마지막 점이 가름\n타입 생략                  아무 타입\n인자                       선언형\n가변 인자                  배열\n제네릭                     지워짐\nthrows                     1 과 9",
+   "note": "**반환형 `*` 은 9 개인데 `Object` 는 1 개, `Object+` 는 7 개로** 갈린다.\n\n**`int` 와 `Integer` 가 각각 1 개씩 따로 맞아 자동 변환이 안** 먹는다.\n\n**인자에 `Repo` 를 적으면 1 개, 넘어온 실제 타입 `OrderRepositoryV3` 을 적으면 0 개**다.\n\n**`List<Integer>` 를 적어도 1 개가 맞아 제네릭이 지워진 걸** 보여 준다.\n\n**0 개 매칭에서 기동을 멈추는 검사를 넣어 짧게 적은 타입이 `IllegalStateException` 으로** 잡힌다."
+  }
+ ],
+ "recap": [
+  "**칸마다 규칙이** 다르다.",
+  "**별은 void 도** 센다.",
+  "**Object 는 안** 넓다.",
+  "**기본형은** 따로다.",
+  "**마지막 점이** 가른다.",
+  "**타입은 빼도** 된다.",
+  "**인자는** 선언형이다.",
+  "**제네릭은** 지워진다.",
+  "**0 개면** 멈춘다."
+ ],
+ "drills": [
+  {
+   "task": "반환형 여덟을 다 세어 본다.",
+   "done_when": "별과 Object 가 다른 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "인자를 실제 타입으로 적어 본다.",
+   "done_when": "0 이 되는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "제네릭을 바꿔 적어 본다.",
+   "done_when": "그래도 맞는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "0 개 검사를 넣는다.",
+   "done_when": "기동에서 멈추는 걸 확인했다.",
+   "minutes": 25
+  }
+ ],
+ "quiz": [
+  {
+   "q": "반환형 별과 Object 의 차이는?",
+   "a": "별은 전부고 Object 는 그 타입만이다."
+  },
+  {
+   "q": "int 와 Integer 는?",
+   "a": "따로 맞는다. 자동 변환이 안 먹는다."
+  },
+  {
+   "q": "인자는 무엇으로 맞추나?",
+   "a": "선언된 타입이다. 넘어온 값의 타입이 아니다."
+  },
+  {
+   "q": "제네릭을 적으면?",
+   "a": "런타임에 지워져 어떤 타입 인자를 적어도 맞는다."
+  },
+  {
+   "q": "throws 를 적으면?",
+   "a": "그 예외를 선언한 메서드만 남아 크게 좁아진다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "선언형",
+   "def": "메서드 시그니처에 적힌 타입. 실제로 넘어온 값의 타입과 다를 수 있다."
+  },
+  {
+   "term": "지워짐",
+   "def": "제네릭 타입 인자가 컴파일 뒤 런타임에 남지 않는 것."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declaring a Pointcut",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "The AspectJ Programming Guide",
+   "url": "https://eclipse.dev/aspectj/doc/latest/progguide/index.html",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Framework — Aspect Oriented Programming with Spring",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

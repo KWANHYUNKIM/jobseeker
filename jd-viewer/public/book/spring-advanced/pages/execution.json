@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "execution",
+ "no": "11.1",
+ "chapter": 11,
+ "title": "execution",
+ "summary": "제일 많이 쓰는 것.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "여섯 칸을 안다.",
+  "별 셋을 안다.",
+  "직접 좁혀 본다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**아홉 장 동안 한 표현식만** 썼다. **그 안을** 연다."
+  },
+  {
+   "type": "figure",
+   "caption": "여섯 칸",
+   "ascii": "   the six slots of one expression\n\n   modifiers  return  declaring type  name  parameters  throws\n\n   only return, name and parameters are required\n   the rest may be left out entirely",
+   "note": "**나머지는 아예 안 적어도** 된다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "세 칸만 필수다",
+   "md": "**반환형이** 필수다.\n\n> **맨 앞** 칸이다.\n> **아래에서 빼** 본다.\n> **별이** 흔하다.\n\n**이름이** 필수다.\n\n> **타입과 붙여** 적는다.\n> **아래에서 나눠** 본다.\n> **11.2절에서 판다**.\n\n**인자가** 필수다.\n\n> **괄호가** 있어야 한다.\n> **아래에서 점 둘을** 본다.\n> **11.4절에서 판다**.\n\n**나머지는** 선택이다.\n\n> **접근 제어자와 예외**다.\n> **아래에서 확인**한다.\n> **거의 안** 적는다."
+  },
+  {
+   "type": "figure",
+   "caption": "별 셋",
+   "ascii": "   the three wildcards, and what each one spans\n\n   star        one whole part of a name\n   dot dot     any number of parameters, or any depth of package\n   plus        the type itself and everything below it",
+   "note": "**셋이 덮는 범위가 다** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "점 하나와 점 둘은 완전히 다르다",
+   "md": "**점 하나는 그** 꾸러미다.\n\n> **아래를 안** 본다.\n> **아래에서 세어** 본다.\n> **하위가** 빠진다.\n\n**점 둘은** 아래까지다.\n\n> **9.1절부터 이걸** 썼다.\n> **아래에서 견준다**.\n> **깊이가** 상관없다.\n\n**괄호 안의 점 둘은 인자**다.\n\n> **같은 글자, 다른** 뜻이다.\n> **아래에서 둘 다** 본다.\n> **헷갈리기** 쉽다.\n\n**넓으면** 위험하다.\n\n> **8.6절에서 무한이** 났다.\n> **아래에서 수를** 센다.\n> **11.3절에서 좁힌다**."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 여섯 칸을 다 적는다\n\n@Around(\"execution(public void study.adv.app.OrderServiceV3.orderItem(String) throws Exception)\")\npublic Object all(ProceedingJoinPoint jp) throws Throwable { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '걸림' logs/app.log\n0\n\n$ javap -p build/classes/java/main/study/adv/app/OrderServiceV3.class | grep orderItem\n  public void orderItem(java.lang.String);\n\n--   throws 를 안 던지는 메서드라 안 맞았다\n--   적은 만큼 안 맞을 자리가 는다\n\n\n-- 필수 셋만 남긴다\n\n@Around(\"execution(void orderItem(String))\")\n\n$ ./gradlew bootRun 2>&1 | grep -i 'well-formed' | head -1\n(없음)\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 OrderServiceV3.orderItem()\n\n--   타입을 안 적으면 아무 타입이나 본다\n--   이름 하나로 걸렸다\n\n\n-- 하나라도 빼면\n\n@Around(\"execution(orderItem(String))\")            // 반환형 없음\n\n$ ./gradlew bootRun 2>&1 | grep -i 'well-formed' | head -2\njava.lang.IllegalArgumentException: Pointcut is not well-formed: expecting\n  '(' at character position 22\n\n@Around(\"execution(* orderItem)\")                  // 괄호 없음\n\n$ ./gradlew bootRun 2>&1 | grep -i 'well-formed' | head -2\njava.lang.IllegalArgumentException: Pointcut is not well-formed: expecting\n  '(' at character position 20\n\n--   9.1 절에서 본 그 기동 실패다\n\n\n-- 별 하나\n\n@Around(\"execution(* study.adv.app.OrderServiceV3.*(..))\")\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20study.adv.app.OrderServiceV3.*(..))'\n맞는 메서드 2 개\n  orderItem\n  validate\n\n@Around(\"execution(* study.adv.app.OrderServiceV3.order*(..))\")\n\n$ curl -s 'localhost:8080/pointcut/match?expr=...order*(..)'\n맞는 메서드 1 개\n  orderItem\n\n--   이름의 일부에도 붙는다\n\n\n-- 반환형에 별\n\n@Around(\"execution(String study.adv.app..*(..))\")\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(String%20study.adv.app..*(..))'\n맞는 빈 3 개  맞는 메서드 4 개\n\n@Around(\"execution(void study.adv.app..*(..))\")\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(void%20study.adv.app..*(..))'\n맞는 빈 3 개  맞는 메서드 6 개\n\n@Around(\"execution(* study.adv.app..*(..))\")\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app..*(..))'\n맞는 빈 10 개  맞는 메서드 14 개\n\n--   반환형 하나로 열이 셋이 된다\n\n\n-- 점 하나와 점 둘\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app.*(..))'\n맞는 빈 0 개  맞는 메서드 0 개\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app.*.*(..))'\n맞는 빈 10 개  맞는 메서드 14 개\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app..*(..))'\n맞는 빈 10 개  맞는 메서드 14 개\n\n--   첫째는 app 이라는 이름의 메서드를 찾았다\n--   둘째는 app 바로 아래 클래스들이다\n--   셋째는 그 아래 전부다\n\n\n-- 깊이가 있으면 갈린다\n\nsrc/main/java/study/adv/app/\n├── OrderServiceV3.java\n└── inner/\n    └── DeepService.java\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app.*.*(..))'\n맞는 빈 10 개  맞는 메서드 14 개\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app..*(..))'\n맞는 빈 11 개  맞는 메서드 16 개\n\n$ curl -s 'localhost:8080/pointcut/which?expr=execution(*%20study.adv.app..*(..))' | tail -1\n  DeepService\n\n--   점 하나짜리는 하위 꾸러미를 못 본다\n\n\n-- 괄호 안의 점 둘\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20study.adv.app..*(..))'\n맞는 메서드 16 개\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20study.adv.app..*())'\n맞는 메서드 4 개\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20study.adv.app..*(*))'\n맞는 메서드 9 개\n\n$ printf '%-10s %s\\n' '(..)' '아무 개수' '()' '인자 없음' '(*)' '정확히 하나'\n(..)       아무 개수\n()         인자 없음\n(*)        정확히 하나\n\n--   같은 점 둘인데 자리에 따라 뜻이 다르다\n\n\n-- 인자 타입을 적는다\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20study.adv.app..*(String))'\n맞는 메서드 9 개\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20study.adv.app..*(String,%20..))'\n맞는 메서드 11 개\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20study.adv.app..*(java.lang.String))'\n맞는 메서드 9 개\n\n--   String 은 짧게 적어도 된다\n--   내 타입은 다 적어야 한다\n\n\n-- 내 타입은 다 적는다\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20*..save(OrderItem))'\n맞는 메서드 0 개\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20*..save(study.adv.app.OrderItem))'\n맞는 메서드 1 개\n\n--   java.lang 만 짧게 봐 준다\n--   조용히 0 이 되는 흔한 자리다\n\n\n-- 더하기\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app.OrderRepositoryV3.*(..))'\n맞는 빈 1 개\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app.Repo+.*(..))'\n맞는 빈 3 개\n\n$ curl -s 'localhost:8080/pointcut/which?expr=execution(*%20study.adv.app.Repo+.*(..))'\n  OrderRepositoryV1\n  OrderRepositoryV2\n  OrderRepositoryV3\n\n--   Repo 를 구현한 것 전부다\n--   5.3 절의 인터페이스가 여기서 쓰인다\n\n\n-- 접근 제어자\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(public%20*%20study.adv.app..*(..))'\n맞는 메서드 16 개\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(*%20study.adv.app..*(..))'\n맞는 메서드 16 개\n\n$ curl -s 'localhost:8080/pointcut/match?expr=execution(private%20*%20study.adv..*(..))'\n맞는 메서드 3 개\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '걸림' logs/app.log\n0\n\n--   private 은 세 개가 맞는다고 나온다\n--   그런데 한 번도 안 걸린다\n--   10.4 절의 그 자리다\n\n\n-- 넓게 잡아 본다\n\n@Around(\"execution(* *(..))\")\n\n$ ./gradlew bootRun 2>&1 | grep -c 'StackOverflowError'\n1\n\n$ ./gradlew bootRun 2>&1 | grep -A2 'StackOverflow' | head -3\njava.lang.StackOverflowError\n  at study.adv.aspect.LogTraceAspect.execute(LogTraceAspect.java:18)\n  at study.adv.aspect.LogTraceAspect.execute(LogTraceAspect.java:18)\n\n--   8.6 절에서 겪은 그것이다\n\n\n-- 조금 좁힌다\n\n@Around(\"execution(* study.adv..*(..))\")\n\n$ ./gradlew bootRun 2>&1 | grep -c 'StackOverflow'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n38\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv..*(..))'\n맞는 빈 14 개  맞는 메서드 41 개\n\n--   9.1 절에서 본 그 38 줄이다\n--   추적기까지 걸렸다\n\n\n-- 쓰는 표현식으로 돌아온다\n\n@Around(\"execution(* study.adv.app..*(..))\")\n\n$ curl -s 'localhost:8080/pointcut/count-beans?expr=execution(*%20study.adv.app..*(..))'\n맞는 빈 10 개  맞는 메서드 16 개\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s localhost:8080/proxy/census | sed -n '3p'\n  내 것:       10\n\n--   9.5 절의 그 10 개와 맞는다\n\n\n-- 넓이를 표로\n\n$ printf '%-42s %s\\n' \\\n  'execution(* *(..))'                        '무한' \\\n  'execution(* study.adv..*(..))'             '빈 14' \\\n  'execution(* study.adv.app..*(..))'         '빈 10' \\\n  'execution(* study.adv.app.*.*(..))'        '빈 10 (하위 빠짐)' \\\n  'execution(* study.adv.app.Repo+.*(..))'    '빈 3' \\\n  'execution(void study.adv.app..*(..))'      '메서드 6' \\\n  'execution(* study.adv.app..order*(..))'    '메서드 3'\n\nexecution(* *(..))                              무한\nexecution(* study.adv..*(..))                   빈 14\nexecution(* study.adv.app..*(..))               빈 10\nexecution(* study.adv.app.*.*(..))              빈 10 (하위 빠짐)\nexecution(* study.adv.app.Repo+.*(..))          빈 3\nexecution(void study.adv.app..*(..))            메서드 6\nexecution(* study.adv.app..order*(..))          메서드 3\n\n\n-- 확인한다\n\n$ curl -s 'localhost:8080/advisor/pointcut?name=orderServiceV3'\n표현식: execution(* study.adv.app..*(..))\n\n$ curl -s 'localhost:8080/who?name=orderServiceV3' | sed -n '2p'\n주입된 것: study.adv.app.OrderServiceV3$$SpringCGLIB$$0\n\n$ ./gradlew bootRun 2>&1 | grep -c '조용히 빠지는'\n1\n\n--   11.2 절에서 칸 하나씩을 판다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '칸'          '여섯' \\\n  '필수'        '반환형 이름 인자' \\\n  '별'          '이름 한 조각' \\\n  '점 둘'       '꾸러미 아래 전부' \\\n  '점 하나'     '그 꾸러미만' \\\n  '괄호 점 둘'  '인자 아무 개수' \\\n  '더하기'      '구현체까지' \\\n  'java.lang'   '짧게 됨' \\\n  '내 타입'     '다 적어야 함' \\\n  '너무 넓으면' '무한'\n\n칸                         여섯\n필수                       반환형 이름 인자\n별                         이름 한 조각\n점 둘                      꾸러미 아래 전부\n점 하나                    그 꾸러미만\n괄호 점 둘                 인자 아무 개수\n더하기                     구현체까지\njava.lang                  짧게 됨\n내 타입                    다 적어야 함\n너무 넓으면                무한",
+   "note": "**여섯 칸을 다 적으면 `throws` 때문에 0 회가 되고 필수 셋만 남기면** 걸린다.\n\n**`study.adv.app.*.*` 가 빈 10 개, `study.adv.app..*` 가 11 개로 하위 꾸러미에서** 갈린다.\n\n**괄호 안의 `(..)` 16 개, `()` 4 개, `(*)` 9 개로 같은 글자가 다른 뜻**이다.\n\n**`save(OrderItem)` 은 0 개고 `save(study.adv.app.OrderItem)` 은 1 개**다.\n\n**`execution(* *(..))` 은 `StackOverflowError` 로 8.6절의 그것이** 재현된다."
+  }
+ ],
+ "recap": [
+  "**칸이** 여섯이다.",
+  "**셋만** 필수다.",
+  "**별은 한** 조각이다.",
+  "**점 둘은** 아래까지다.",
+  "**점 하나는** 그것만이다.",
+  "**괄호 안은** 인자다.",
+  "**더하기는** 구현체다.",
+  "**내 타입은 다** 적는다.",
+  "**넓으면** 무한이다."
+ ],
+ "drills": [
+  {
+   "task": "여섯 칸을 다 적어 본다.",
+   "done_when": "안 맞는 자리를 찾았다.",
+   "minutes": 20
+  },
+  {
+   "task": "점 하나와 둘을 견준다.",
+   "done_when": "하위에서 갈리는 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "괄호 안 셋을 견준다.",
+   "done_when": "수가 다른 걸 확인했다.",
+   "minutes": 20
+  },
+  {
+   "task": "너무 넓게 잡아 본다.",
+   "done_when": "무한을 확인했다.",
+   "minutes": 15
+  }
+ ],
+ "quiz": [
+  {
+   "q": "여섯 칸 중 필수는?",
+   "a": "반환형, 이름, 인자 괄호다."
+  },
+  {
+   "q": "점 하나와 점 둘의 차이는?",
+   "a": "하위 꾸러미를 보느냐다."
+  },
+  {
+   "q": "괄호 안의 점 둘은?",
+   "a": "인자 개수가 아무래도 된다는 뜻이다."
+  },
+  {
+   "q": "내 타입은 어떻게 적나?",
+   "a": "꾸러미까지 다 적는다. java.lang 만 짧게 봐 준다."
+  },
+  {
+   "q": "너무 넓으면?",
+   "a": "애스펙트 자신이 걸려 무한 호출이 난다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "여섯 칸",
+   "def": "접근 제어자·반환형·타입·이름·인자·예외로 이루어진 표현식 구조."
+  },
+  {
+   "term": "더하기",
+   "def": "그 타입과 그것을 구현하거나 상속한 것까지 고르는 기호."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declaring a Pointcut",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "The AspectJ Programming Guide",
+   "url": "https://eclipse.dev/aspectj/doc/latest/progguide/index.html",
+   "publisher": "Eclipse Foundation"
+  },
+  {
+   "title": "Spring Framework — @AspectJ support",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}
