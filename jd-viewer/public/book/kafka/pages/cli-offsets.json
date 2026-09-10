@@ -1,0 +1,137 @@
+{
+ "book": "kafka",
+ "id": "cli-offsets",
+ "no": "5.6",
+ "chapter": 5,
+ "title": "오프셋을 옮긴다",
+ "summary": "다시 읽기와 건너뛰기.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "reset-offsets 의 옵션을 안다.",
+  "안전하게 되감는 절차를 안다.",
+  "건너뛰기가 필요한 상황을 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**2.3절에서 되감아 재처리를** 했다. **그 명령의 전체 모습**이다.\n\n```bash\nkafka-consumer-groups --group g --topic t --reset-offsets <어디로> <실행 여부>\n```\n\n> **`--dry-run` 이 기본**이 아니다. **`--dry-run` 이나 `--execute` 중 하나를 반드시 줘야** 한다."
+  },
+  {
+   "type": "table",
+   "caption": "어디로 옮길 것인가",
+   "columns": [
+    "옵션",
+    "어디로"
+   ],
+   "rows": [
+    [
+     "`--to-earliest`",
+     "**가장 이른 오프셋**(남아 있는 것 중, 3.4절)"
+    ],
+    [
+     "`--to-latest`",
+     "**끝으로.** 밀린 것을 전부 버린다"
+    ],
+    [
+     "`--to-offset N`",
+     "정확히 N"
+    ],
+    [
+     "**`--to-datetime 2026-09-10T13:00:00.000`**",
+     "**그 시각 이후 첫 레코드**"
+    ],
+    [
+     "`--by-duration PT1H`",
+     "1시간 전으로"
+    ],
+    [
+     "`--shift-by -100`",
+     "**현재에서 100 뒤로**(음수) 또는 앞으로"
+    ],
+    [
+     "`--from-file offsets.csv`",
+     "파티션별로 지정"
+    ]
+   ],
+   "note": "**`--to-datetime` 은 `.timeindex` 를 쓴다**(3.3절). **레코드 타임스탬프가 이상하면 이것도 이상해진다**(4.3절)."
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "그룹이 비어 있어야 한다",
+   "md": "```\nError: Assignments can only be reset if the group 'order-worker' is inactive,\n  but the current state is Stable.\n```\n\n**컨슈머가 붙어 있으면 못** 바꾼다. **순서가 정해져** 있다.\n\n```\n1. 컨슈머를 전부 내린다 (배포로 replicas=0 등)\n2. --dry-run 으로 확인한다\n3. --execute\n4. 컨슈머를 다시 띄운다\n```\n\n| 잊으면 | |\n|---|---|\n| 1번을 안 하면 | 명령이 거부된다 |\n| **2번을 안 하면** | **잘못된 위치로 옮기고 되돌릴 수 없다** |\n| 4번에서 여러 개를 한꺼번에 | 리밸런싱이 몰린다(11.4절) |\n\n> **되감기 전에 현재 오프셋을 어딘가 적어 둔다** — **`--describe` 출력을 파일로.**\n> **그게 유일한 되돌리는 길**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "건너뛰기(--to-latest)는 데이터를 버리는 것이다",
+   "md": "**랙이 수천만인데 급하면 이런 유혹이** 온다.\n\n```bash\nkafka-consumer-groups --group order-worker --topic orders \\\n  --reset-offsets --to-latest --execute\n```\n\n> **랙이 즉시 0이 된다.** **그 사이의 레코드는 영영 처리 안 된다.**\n\n| 물어야 할 것 | |\n|---|---|\n| 그 데이터가 없어도 되나 | 통계면 몰라도 주문이면 안 된다 |\n| **왜 밀렸나** | 원인을 안 고치면 또 밀린다(7.8절) |\n| **나중에 따로 처리할 수 있나** | 오프셋 범위를 적어 두면 재처리할 수 있다 |\n\n**적어 두는 습관**:\n\n```bash\nkafka-consumer-groups --describe --group order-worker > /tmp/before-skip.txt\n# 나중에 그 구간만 별도 그룹으로 재처리\n```"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "되감고 건너뛴다",
+   "sql": "$ kt --create --topic off --partitions 2 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 100); do echo \"m-$i\"; done | kcp --topic off\n$ kcc --topic off --group g --from-beginning --timeout-ms 3000 >/dev/null\n\n$ kcg --describe --group g\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\ng      off    0          50              50              0\ng      off    1          50              50              0\n\n\n# --- 되감기 전에 현재 상태를 적어 둔다 ---\n\n$ kcg --describe --group g > /tmp/g-before.txt\n$ cat /tmp/g-before.txt | tail -2\ng      off    0          50              50              0\ng      off    1          50              50              0\n\n\n# --- dry-run 이 먼저다 ---\n\n$ kcg --group g --topic off --reset-offsets --to-earliest --dry-run\nGROUP  TOPIC  PARTITION  NEW-OFFSET\ng      off    0          0\ng      off    1          0\n\n#   아직 안 바뀌었다\n\n$ kcg --describe --group g | tail -1\ng      off    1          50              50              0\n\n\n# --- execute ---\n\n$ kcg --group g --topic off --reset-offsets --to-earliest --execute\nGROUP  TOPIC  PARTITION  NEW-OFFSET\ng      off    0          0\ng      off    1          0\n\n$ kcg --describe --group g\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\ng      off    0          0               50              50\ng      off    1          0               50              50\n\n#   랙이 100으로 돌아왔다. 컨슈머를 띄우면 전부 다시 처리한다\n\n\n# --- 컨슈머가 붙어 있으면 거부된다 ---\n\n$ kcc --topic off --group g --timeout-ms 10000 >/dev/null 2>&1 &\n$ sleep 3\n$ kcg --group g --topic off --reset-offsets --to-latest --execute 2>&1 | tail -2\nError: Assignments can only be reset if the group 'g' is inactive, but the\n  current state is Stable.\n\n$ wait 2>/dev/null\n\n\n# --- 상대 이동 ---\n\n$ kcc --topic off --group g --timeout-ms 3000 >/dev/null\n$ kcg --describe --group g | tail -1\ng      off    1          50              50              0\n\n$ kcg --group g --topic off --reset-offsets --shift-by -10 --execute\nGROUP  TOPIC  PARTITION  NEW-OFFSET\ng      off    0          40\ng      off    1          40\n\n#   각 파티션에서 10씩 뒤로. 총 20건을 다시 읽는다\n\n\n# --- 시간으로 ---\n\n$ TS=$(date -u -v-2M +%Y-%m-%dT%H:%M:%S.000 2>/dev/null || date -u -d '2 minutes ago' +%Y-%m-%dT%H:%M:%S.000)\n$ kcg --group g --topic off --reset-offsets --to-datetime \"$TS\" --dry-run\nGROUP  TOPIC  PARTITION  NEW-OFFSET\ng      off    0          0\ng      off    1          0\n\n#   2분 전에는 아무것도 없었으므로 처음으로 간다\n#   .timeindex 를 쓴다 (3.3절)\n\n\n# --- 특정 파티션만 ---\n\n$ kcg --group g --topic off:1 --reset-offsets --to-offset 25 --execute\nGROUP  TOPIC  PARTITION  NEW-OFFSET\ng      off    1          25\n\n$ kcg --describe --group g\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\ng      off    0          40              50              10\ng      off    1          25              50              25\n\n#   topic:partition 문법으로 한 파티션만 옮겼다\n\n\n# --- 건너뛰기 ---\n\n$ kcg --describe --group g > /tmp/g-before-skip.txt\n$ kcg --group g --topic off --reset-offsets --to-latest --execute\nGROUP  TOPIC  PARTITION  NEW-OFFSET\ng      off    0          50\ng      off    1          50\n\n$ kcg --describe --group g | awk 'NR>1 {s+=$6} END {print \"lag =\", s+0}'\nlag = 0\n\n#   랙이 즉시 0. 35건을 버렸다\n#   /tmp/g-before-skip.txt 에 적어 뒀으므로 그 구간을 따로 처리할 수 있다\n\n$ cat /tmp/g-before-skip.txt | tail -2\ng      off    0          40              50              10\ng      off    1          25              50              25\n\n#   40~50, 25~50 구간이다\n\n\n# --- 별도 그룹으로 그 구간만 재처리 ---\n\n$ kcc --topic off --partition 0 --offset 40 --max-messages 10 | wc -l\n10\n$ kcc --topic off --partition 1 --offset 25 --max-messages 25 | wc -l\n25\n\n#   그룹을 안 건드리고 그 구간만 읽었다 (5.3절)\n\n$ kt --delete --topic off >/dev/null; kcg --delete --group g >/dev/null 2>&1\n$ rm -f /tmp/g-before.txt /tmp/g-before-skip.txt"
+  }
+ ],
+ "recap": [
+  "reset-offsets 는 --dry-run 이나 --execute 중 하나를 반드시 줘야 한다. 먼저 dry-run 을 친다.",
+  "그룹에 컨슈머가 붙어 있으면 거부된다. 내리고 → 확인하고 → 실행하고 → 다시 띄운다.",
+  "되감기 전에 --describe 출력을 파일로 남긴다. 그게 유일한 되돌리는 길이다.",
+  "--to-latest 는 밀린 데이터를 버리는 것이다. 원인을 안 고치면 또 밀린다.",
+  "버린 구간을 적어 두면 --partition/--offset 으로 따로 재처리할 수 있다."
+ ],
+ "drills": [
+  {
+   "task": "--dry-run 과 --execute 의 차이를 확인하고 --to-earliest 로 되감아 본다.",
+   "done_when": "랙이 다시 쌓이는 것을 확인한다.",
+   "minutes": 6
+  },
+  {
+   "task": "컨슈머가 붙어 있는 상태에서 reset 을 시도해 거부되는 것을 본다.",
+   "done_when": "Stable 상태라 안 된다는 메시지를 확인한다.",
+   "minutes": 4
+  },
+  {
+   "task": "--to-latest 로 건너뛰기 전에 현재 오프셋을 파일로 남기고, 그 구간을 --partition/--offset 으로 따로 읽어 본다.",
+   "done_when": "버린 데이터를 되찾을 수 있음을 확인한다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "reset-offsets 를 실행하려면 그룹이 어떤 상태여야 하나.",
+   "a": "컨슈머가 하나도 안 붙어 있는(Empty) 상태."
+  },
+  {
+   "q": "--to-latest 의 위험은.",
+   "a": "밀린 레코드를 처리하지 않고 버린다. 원인을 안 고치면 또 밀린다."
+  },
+  {
+   "q": "되감기를 되돌리려면.",
+   "a": "미리 적어 둔 --describe 출력의 오프셋으로 --to-offset 하는 수밖에 없다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "--dry-run",
+   "what": "실제로 바꾸지 않고 결과만 보여 주는 옵션."
+  },
+  {
+   "term": "--shift-by",
+   "what": "현재 오프셋에서 상대적으로 이동."
+  },
+  {
+   "term": "topic:partition 문법",
+   "what": "`off:1` 처럼 특정 파티션만 지정하는 표기."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Reset consumer group offsets",
+   "url": "https://kafka.apache.org/documentation/#basic_ops_consumer_group",
+   "publisher": "Apache"
+  }
+ ]
+}

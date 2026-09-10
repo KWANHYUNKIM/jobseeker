@@ -1,0 +1,145 @@
+{
+ "book": "kafka",
+ "id": "cli-groups",
+ "no": "5.4",
+ "chapter": 5,
+ "title": "consumer-groups 와 LAG",
+ "summary": "누가 어디까지 읽었나.",
+ "minutes": 14,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "describe 출력의 모든 열을 읽는다.",
+  "멤버와 상태를 확인한다.",
+  "랙을 모니터링 값으로 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.5절에서 \"이 책의 마지막 블록\" 이라고 한 그 명령**이다. **가장 많이 치게 된다.**"
+  },
+  {
+   "type": "code",
+   "lang": "bash",
+   "file": "kafka-consumer-groups",
+   "caption": "자주 쓰는 형태",
+   "code": "# 목록\nkafka-consumer-groups --list\n\n# 상세 (오프셋과 랙)\nkafka-consumer-groups --describe --group order-worker\n\n# 멤버 (누가 어느 파티션을 맡았나)\nkafka-consumer-groups --describe --group order-worker --members\nkafka-consumer-groups --describe --group order-worker --members --verbose\n\n# 상태 (리밸런싱 중인가)\nkafka-consumer-groups --describe --group order-worker --state\n\n# 전부\nkafka-consumer-groups --describe --all-groups\n\n# 지우기 (그룹이 비어 있어야 한다)\nkafka-consumer-groups --delete --group old-worker\n\n# 오프셋 되감기 (5.6절)\nkafka-consumer-groups --group g --topic t --reset-offsets --to-earliest --dry-run"
+  },
+  {
+   "type": "table",
+   "caption": "describe 출력의 열",
+   "columns": [
+    "열",
+    "뜻",
+    "이상하면"
+   ],
+   "rows": [
+    [
+     "`CURRENT-OFFSET`",
+     "**커밋된 위치**",
+     "`-` 면 커밋이 없다"
+    ],
+    [
+     "`LOG-END-OFFSET`",
+     "파티션의 끝",
+     "`-` 면 토픽이 없다(4.1절)"
+    ],
+    [
+     "**`LAG`**",
+     "**끝 - 현재**",
+     "늘어나면 못 따라가는 중(1.5절)"
+    ],
+    [
+     "`CONSUMER-ID`",
+     "지금 맡은 컨슈머",
+     "**`-` 면 붙어 있는 컨슈머가 없다**"
+    ],
+    [
+     "`HOST`",
+     "그 컨슈머의 주소",
+     "어느 인스턴스인지"
+    ],
+    [
+     "`CLIENT-ID`",
+     "클라이언트가 준 이름",
+     "**설정해 두면 추적이 쉽다**"
+    ]
+   ],
+   "note": "**`CONSUMER-ID` 가 `-` 인데 랙이 쌓이고 있으면 컨슈머가 죽어** 있는 것이다. **가장 먼저 확인할 조합**이다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "그룹 상태 다섯 가지",
+   "md": "```bash\nkafka-consumer-groups --describe --group order-worker --state\n```\n\n| 상태 | 뜻 |\n|---|---|\n| **`Stable`** | **정상.** 파티션 할당이 끝났다 |\n| `PreparingRebalance` | 멤버가 들거나 났다. **처리가 멈춘다** |\n| `CompletingRebalance` | 할당 중 |\n| **`Empty`** | **멤버가 없다.** 오프셋만 남아 있다 |\n| `Dead` | 그룹이 없어졌다 |\n\n> **배포할 때마다 `PreparingRebalance` 가 길면 7.3·11.4절을 본다.**\n> **`Empty` 인데 랙이 크면 컨슈머가 다 죽은** 것이다.\n\n**`--state` 는 코디네이터 브로커도 알려 준다** — **그룹마다 담당 브로커가 있다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "랙을 한 줄로 뽑기",
+   "md": "```bash\n# 그룹의 총 랙\nkafka-consumer-groups --describe --group order-worker \\\n  | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}'\n\n# 파티션별 랙 상위 5개\nkafka-consumer-groups --describe --group order-worker \\\n  | awk 'NR>1 && $6 ~ /^[0-9]+$/ {print $6, $2\"-\"$3}' | sort -rn | head -5\n\n# 모든 그룹의 총 랙\nfor g in $(kafka-consumer-groups --list); do\n  printf '%-24s %s\\n' \"$g\" \"$(kafka-consumer-groups --describe --group $g \\\n    | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\ndone\n```\n\n> **운영에서는 이걸 지표로 뽑아 알람을 건다**(11.1절).\n> **CLI 로 매번 치는 것보다 exporter 를 쓰는 게** 낫지만, **장애 때 손으로 확인하는 법을 알아 둔다.**"
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "랙이 쌓이고 줄어드는 것을 지켜본다",
+   "sql": "$ kt --create --topic grp --partitions 4 --replication-factor 3 >/dev/null\n\n# --- 컨슈머가 없는 상태에서 레코드를 넣는다 ---\n\n$ kcc --topic grp --group g1 --from-beginning --timeout-ms 2000 >/dev/null\n$ for i in $(seq 1 400); do echo \"m-$i\"; done | kcp --topic grp\n\n$ kcg --describe --group g1\nConsumer group 'g1' has no active members.\n\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG  CONSUMER-ID  HOST  CLIENT-ID\ng1     grp    0          0               100             100  -            -     -\ng1     grp    1          0               100             100  -            -     -\ng1     grp    2          0               100             100  -            -     -\ng1     grp    3          0               100             100  -            -     -\n\n#   CONSUMER-ID 가 '-' 이고 랙이 100씩 쌓였다\n#   \"컨슈머가 죽어 있다\" 의 전형적인 모양이다\n\n$ kcg --describe --group g1 --state\nGROUP  COORDINATOR (ID)  ASSIGNMENT-STRATEGY  STATE  #MEMBERS\ng1     kafka-2:19092 (2)                      Empty  0\n\n\n# --- 컨슈머를 붙인다 ---\n\n$ kcc --topic grp --group g1 --timeout-ms 20000 >/dev/null 2>&1 &\n$ sleep 3\n\n$ kcg --describe --group g1 --state\nGROUP  COORDINATOR (ID)  ASSIGNMENT-STRATEGY  STATE   #MEMBERS\ng1     kafka-2:19092 (2)  range               Stable  1\n\n$ kcg --describe --group g1 --members\nGROUP  CONSUMER-ID                          HOST          CLIENT-ID         #PARTITIONS\ng1     console-consumer-1a2b-3c4d-5e6f      /172.20.0.9   console-consumer  4\n\n#   컨슈머 하나가 파티션 넷을 다 맡았다\n\n$ kcg --describe --group g1 --members --verbose\nGROUP  CONSUMER-ID  HOST  CLIENT-ID  #PARTITIONS  ASSIGNMENT\ng1     console-...  ...   ...        4            grp(0,1,2,3)\n\n\n# --- 랙이 줄어드는 것을 지켜본다 ---\n\n$ for i in 1 2 3; do\n>   printf '%s total lag = %s\\n' \"$(date +%T)\" \\\n>     \"$(kcg --describe --group g1 | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\n>   sleep 2\n> done\n16:02:11 total lag = 213\n16:02:13 total lag = 0\n16:02:15 total lag = 0\n\n$ wait 2>/dev/null\n\n\n# --- 컨슈머 둘이면 나눠 맡는다 ---\n\n$ for i in 1 2; do kcc --topic grp --group g1 --timeout-ms 15000 >/dev/null 2>&1 & done\n$ sleep 4\n\n$ kcg --describe --group g1 --members\nGROUP  CONSUMER-ID                      HOST          CLIENT-ID         #PARTITIONS\ng1     console-consumer-9f8e-...        /172.20.0.10  console-consumer  2\ng1     console-consumer-7d6c-...        /172.20.0.11  console-consumer  2\n\n#   2개씩 나눠 맡았다 (7.3절)\n\n$ wait 2>/dev/null\n\n\n# --- 파티션별 랙 상위 ---\n\n$ for i in $(seq 401 900); do echo \"m-$i\"; done | kcp --topic grp\n$ kcg --describe --group g1 | awk 'NR>1 && $6 ~ /^[0-9]+$/ {print $6, $2\"-\"$3}' | sort -rn\n125 grp-1\n125 grp-3\n125 grp-0\n125 grp-2\n\n#   고르다. 한 줄만 크면 키 쏠림이나 그 컨슈머만 느린 것이다 (4.4·7.8절)\n\n\n# --- 모든 그룹의 랙 ---\n\n$ for g in $(kcg --list); do\n>   printf '%-28s %s\\n' \"$g\" \"$(kcg --describe --group $g 2>/dev/null | \\\n>     awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\n> done\ng1                           500\n\n\n# --- 그룹 삭제는 비어 있어야 한다 ---\n\n$ kcc --topic grp --group g1 --timeout-ms 8000 >/dev/null 2>&1 &\n$ sleep 2\n$ kcg --delete --group g1\nError: Deletion of some consumer groups failed:\n* Group 'g1' could not be deleted due to: GroupNotEmptyException\n\n$ wait 2>/dev/null\n$ sleep 2 && kcg --delete --group g1\nDeletion of requested consumer groups ('g1') was successful.\n\n$ kt --delete --topic grp >/dev/null"
+  }
+ ],
+ "recap": [
+  "describe 의 CONSUMER-ID 가 '-' 인데 랙이 쌓이면 컨슈머가 죽어 있는 것이다.",
+  "--state 로 Stable/PreparingRebalance/Empty 를 확인한다. 배포마다 리밸런싱이 길면 7.3절이다.",
+  "--members 로 누가 몇 개 파티션을 맡았는지 본다.",
+  "awk 한 줄로 총 랙과 파티션별 상위를 뽑아 둔다. 장애 때 바로 쓴다.",
+  "그룹 삭제는 멤버가 없을 때만 된다."
+ ],
+ "drills": [
+  {
+   "task": "컨슈머 없이 레코드를 넣고 CONSUMER-ID 가 '-' 인 상태를 확인한다.",
+   "done_when": "'컨슈머가 죽어 있다' 의 모양을 안다.",
+   "minutes": 5
+  },
+  {
+   "task": "컨슈머를 하나·둘 붙여 가며 --members 의 #PARTITIONS 변화를 본다.",
+   "done_when": "파티션이 나뉘는 것을 확인한다.",
+   "minutes": 7
+  },
+  {
+   "task": "총 랙을 한 줄로 뽑는 awk 명령을 만들어 별칭으로 저장한다.",
+   "done_when": "명령 하나로 숫자가 나오는 것을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "CONSUMER-ID 가 '-' 라는 것은.",
+   "a": "그 파티션을 맡고 있는 컨슈머가 지금 없다는 뜻. 랙이 쌓이면 컨슈머가 죽은 것이다."
+  },
+  {
+   "q": "그룹 상태가 PreparingRebalance 로 오래 머물면.",
+   "a": "리밸런싱이 길어지는 것. 파티션 수·세션 타임아웃·배포 방식을 본다(7.3·11.4절)."
+  },
+  {
+   "q": "그룹을 삭제하려는데 GroupNotEmptyException 이 나면.",
+   "a": "아직 붙어 있는 컨슈머가 있다. 전부 내린 뒤에 지운다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "코디네이터",
+   "en": "group coordinator",
+   "what": "그룹의 멤버십과 오프셋을 관리하는 브로커."
+  },
+  {
+   "term": "할당 전략",
+   "en": "assignment strategy",
+   "what": "파티션을 멤버에게 나누는 방식. range/roundrobin/sticky(7.3절)."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Managing consumer groups",
+   "url": "https://kafka.apache.org/documentation/#basic_ops_consumer_group",
+   "publisher": "Apache"
+  }
+ ]
+}

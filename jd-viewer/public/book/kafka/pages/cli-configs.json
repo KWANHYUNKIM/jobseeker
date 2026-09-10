@@ -1,0 +1,140 @@
+{
+ "book": "kafka",
+ "id": "cli-configs",
+ "no": "5.5",
+ "chapter": 5,
+ "title": "configs",
+ "summary": "토픽별 설정을 바꾼다.",
+ "minutes": 11,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "설정의 층위를 안다.",
+  "동적으로 바꿀 수 있는 것과 아닌 것을 안다.",
+  "쿼터를 안다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**같은 설정이 여러 곳에** 있다. **어느 것이 이기는지 알아야** 한다.\n\n```\n브로커 기본값(server.properties)\n  <- 동적 브로커 설정 (kafka-configs --entity-type brokers)\n     <- 토픽 설정 (kafka-configs --entity-type topics)\n```"
+  },
+  {
+   "type": "table",
+   "caption": "설정의 층위",
+   "columns": [
+    "층",
+    "예",
+    "바꾸는 법"
+   ],
+   "rows": [
+    [
+     "**정적 브로커**",
+     "`log.dirs`, `process.roles`",
+     "**설정 파일 + 재시작**"
+    ],
+    [
+     "**동적 브로커(클러스터 전체)**",
+     "`log.retention.ms`",
+     "`--entity-type brokers --entity-default`"
+    ],
+    [
+     "**동적 브로커(한 대)**",
+     "`num.replica.fetchers`",
+     "`--entity-type brokers --entity-name 1`"
+    ],
+    [
+     "**토픽**",
+     "`retention.ms`, `min.insync.replicas`",
+     "`--entity-type topics --entity-name t`"
+    ],
+    [
+     "**클라이언트 쿼터**",
+     "대역폭 제한",
+     "`--entity-type clients/users`"
+    ]
+   ],
+   "note": "**아래로 갈수록 이긴다.** **토픽 설정이 브로커 기본값을 덮는다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "synonyms 를 읽으면 어디서 온 값인지 보인다",
+   "md": "```bash\nkafka-configs --entity-type topics --entity-name orders --describe --all\n```\n\n```\nretention.ms=604800000 sensitive=false\n  synonyms={DYNAMIC_TOPIC_CONFIG:retention.ms=604800000,\n            DEFAULT_CONFIG:log.retention.hours=168}\n```\n\n| 표시 | 뜻 |\n|---|---|\n| `DYNAMIC_TOPIC_CONFIG` | **토픽에 직접 설정** |\n| `DYNAMIC_BROKER_CONFIG` | 그 브로커에 설정 |\n| `DYNAMIC_DEFAULT_BROKER_CONFIG` | 클러스터 기본값 |\n| `STATIC_BROKER_CONFIG` | server.properties |\n| `DEFAULT_CONFIG` | 카프카 기본값 |\n\n> **위에 있는 게 이긴다.** **\"설정을 바꿨는데 안 먹어요\" 는 대개 더 위 층에 값이** 있어서다."
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "쿼터로 폭주를 막는다",
+   "md": "**한 클라이언트가 클러스터를 다 먹는 것을** 막는다.\n\n```bash\n# 클라이언트 ID 별 대역폭 제한\nkafka-configs --alter --entity-type clients --entity-name batch-loader \\\n  --add-config 'producer_byte_rate=10485760,consumer_byte_rate=10485760'\n\n# 전체 기본값\nkafka-configs --alter --entity-type clients --entity-default \\\n  --add-config 'producer_byte_rate=52428800'\n\n# 요청 처리 비율 (CPU)\nkafka-configs --alter --entity-type clients --entity-name heavy \\\n  --add-config 'request_percentage=200'\n```\n\n| 쿼터 | 무엇 |\n|---|---|\n| `producer_byte_rate` | 초당 쓰기 바이트 |\n| `consumer_byte_rate` | 초당 읽기 바이트 |\n| `request_percentage` | 브로커 요청 처리 시간 비율 |\n\n> **넘으면 에러가 아니라 응답을 늦춘다(throttling)** — **클라이언트는 느려질 뿐** 실패하지 않는다.\n> **배치 잡이 실시간 트래픽을 죽이는 것을 막을 때** 쓴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "층위와 우선순위를 확인한다",
+   "sql": "$ kt --create --topic cfg --partitions 3 --replication-factor 3 >/dev/null\n\n$ alias kcfg='docker compose exec -T kafka-1 /opt/kafka/bin/kafka-configs.sh --bootstrap-server kafka-1:19092'\n\n\n# --- 기본값 확인 ---\n\n$ kcfg --entity-type topics --entity-name cfg --describe --all | grep '^  retention.ms'\n  retention.ms=604800000 sensitive=false synonyms={DEFAULT_CONFIG:log.retention.hours=168}\n\n#   DEFAULT_CONFIG 뿐이다 = 아무도 안 건드렸다\n\n\n# --- 클러스터 기본값을 바꾼다 ---\n\n$ kcfg --entity-type brokers --entity-default --alter --add-config log.retention.ms=86400000\nCompleted updating default config for brokers in the cluster.\n\n$ kcfg --entity-type topics --entity-name cfg --describe --all | grep '^  retention.ms'\n  retention.ms=86400000 sensitive=false\n    synonyms={DYNAMIC_DEFAULT_BROKER_CONFIG:log.retention.ms=86400000,\n              DEFAULT_CONFIG:log.retention.hours=168}\n\n#   DYNAMIC_DEFAULT_BROKER_CONFIG 가 위에 붙었다. 이게 이긴다\n\n\n# --- 토픽 설정이 더 이긴다 ---\n\n$ kcfg --entity-type topics --entity-name cfg --alter --add-config retention.ms=3600000\nCompleted updating config for topic cfg.\n\n$ kcfg --entity-type topics --entity-name cfg --describe --all | grep '^  retention.ms'\n  retention.ms=3600000 sensitive=false\n    synonyms={DYNAMIC_TOPIC_CONFIG:retention.ms=3600000,\n              DYNAMIC_DEFAULT_BROKER_CONFIG:log.retention.ms=86400000,\n              DEFAULT_CONFIG:log.retention.hours=168}\n\n#   세 층이 다 보인다. 맨 위가 적용된 값이다\n\n\n# --- 지우면 아래 층으로 내려간다 ---\n\n$ kcfg --entity-type topics --entity-name cfg --alter --delete-config retention.ms >/dev/null\n$ kcfg --entity-type topics --entity-name cfg --describe --all | grep '^  retention.ms' | head -1\n  retention.ms=86400000 sensitive=false\n\n\n# --- 동적으로 못 바꾸는 것도 있다 ---\n\n$ kcfg --entity-type brokers --entity-name 1 --alter --add-config log.dirs=/tmp/other 2>&1 | tail -2\nError while executing config command with args ...\njava.lang.IllegalArgumentException: Cannot update these configs dynamically: Set(log.dirs)\n\n#   재시작이 필요한 설정이다\n\n$ kcfg --entity-type brokers --entity-name 1 --alter --add-config num.replica.fetchers=4\nCompleted updating config for broker 1.\n\n$ kcfg --entity-type brokers --entity-name 1 --describe\nDynamic configs for broker 1 are:\n  num.replica.fetchers=4 sensitive=false synonyms={DYNAMIC_BROKER_CONFIG:num.replica.fetchers=4}\n\n#   이건 재시작 없이 바뀐다 (복제가 밀릴 때 늘린다 -- 3.6절)\n\n\n# --- 쿼터 ---\n\n$ kcfg --alter --entity-type clients --entity-name batch-loader \\\n    --add-config 'producer_byte_rate=1048576,consumer_byte_rate=2097152'\nCompleted updating config for client batch-loader.\n\n$ kcfg --entity-type clients --entity-name batch-loader --describe\nQuota configs for client-id 'batch-loader' are\n  consumer_byte_rate=2097152, producer_byte_rate=1048576\n\n#   초당 1MB 쓰기 제한을 걸었다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n    --topic cfg --num-records 20000 --record-size 500 --throughput -1 \\\n    --producer-props bootstrap.servers=kafka-1:19092 client.id=batch-loader | tail -1\n20000 records sent, 2074.688797 records/sec (0.99 MB/sec), 2412.31 ms avg latency,\n  4820.00 ms max latency.\n\n#   0.99 MB/sec 에서 멈췄다. 에러가 아니라 느려진 것이다\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-producer-perf-test.sh \\\n    --topic cfg --num-records 20000 --record-size 500 --throughput -1 \\\n    --producer-props bootstrap.servers=kafka-1:19092 client.id=normal | tail -1\n20000 records sent, 62893.081761 records/sec (29.99 MB/sec), 84.12 ms avg latency,\n  312.00 ms max latency.\n\n#   같은 클러스터인데 client.id 하나로 30배 차이다\n\n\n# --- 정리 ---\n\n$ kcfg --alter --entity-type clients --entity-name batch-loader \\\n    --delete-config 'producer_byte_rate,consumer_byte_rate' >/dev/null\n$ kcfg --entity-type brokers --entity-default --alter --delete-config log.retention.ms >/dev/null\n$ kcfg --entity-type brokers --entity-name 1 --alter --delete-config num.replica.fetchers >/dev/null\n$ kt --delete --topic cfg >/dev/null"
+  }
+ ],
+ "recap": [
+  "설정은 정적 브로커 < 동적 브로커 기본 < 동적 브로커 개별 < 토픽 순으로 아래가 이긴다.",
+  "--describe --all 의 synonyms 를 보면 값이 어느 층에서 왔는지 보인다.",
+  "log.dirs 처럼 동적으로 못 바꾸는 설정은 재시작이 필요하다.",
+  "쿼터는 에러가 아니라 응답을 늦춘다. 배치 잡이 실시간 트래픽을 죽이는 것을 막는다."
+ ],
+ "drills": [
+  {
+   "task": "같은 설정을 브로커 기본값과 토픽에 각각 주고 synonyms 순서를 확인한다.",
+   "done_when": "토픽 설정이 이기는 것을 본다.",
+   "minutes": 8
+  },
+  {
+   "task": "동적으로 못 바꾸는 설정(log.dirs)을 바꿔 보고 에러를 확인한다.",
+   "done_when": "Cannot update these configs dynamically 를 본다.",
+   "minutes": 4
+  },
+  {
+   "task": "client.id 별 쿼터를 걸고 perf-test 로 처리량 차이를 확인한다.",
+   "done_when": "제한이 에러가 아니라 지연으로 나타나는 것을 본다.",
+   "minutes": 8
+  }
+ ],
+ "quiz": [
+  {
+   "q": "토픽 설정과 브로커 기본값 중 이기는 쪽은.",
+   "a": "토픽 설정. synonyms 목록의 위쪽이 적용된 값이다."
+  },
+  {
+   "q": "'설정을 바꿨는데 안 먹는다' 면 무엇을 보나.",
+   "a": "--describe --all 의 synonyms. 더 우선하는 층에 값이 있는지 확인한다."
+  },
+  {
+   "q": "쿼터를 넘으면 어떻게 되나.",
+   "a": "에러가 아니라 응답이 늦춰진다(throttling). 클라이언트는 느려질 뿐 실패하지 않는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "synonyms",
+   "what": "한 설정값이 어느 층에서 왔는지 보여 주는 목록."
+  },
+  {
+   "term": "쿼터",
+   "en": "quota",
+   "what": "클라이언트별 대역폭·요청 비율 제한."
+  },
+  {
+   "term": "동적 설정",
+   "what": "브로커 재시작 없이 바꿀 수 있는 설정."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Dynamic broker configs",
+   "url": "https://kafka.apache.org/documentation/#dynamicbrokerconfigs",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Quotas",
+   "url": "https://kafka.apache.org/documentation/#design_quotas",
+   "publisher": "Apache"
+  }
+ ]
+}

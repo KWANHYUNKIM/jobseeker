@@ -1,0 +1,139 @@
+{
+ "book": "kafka",
+ "id": "cli-consume",
+ "no": "5.3",
+ "chapter": 5,
+ "title": "console-consumer",
+ "summary": "from-beginning 과 그냥의 차이.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "소비 옵션을 안다.",
+  "특정 위치만 읽는 법을 안다.",
+  "그룹을 쓸 때와 안 쓸 때를 구분한다."
+ ],
+ "blocks": [
+  {
+   "type": "code",
+   "lang": "bash",
+   "file": "kafka-console-consumer",
+   "caption": "자주 쓰는 형태",
+   "code": "# 지금부터 (기본)\nkafka-console-consumer --topic orders\n\n# 처음부터 (임시 그룹)\nkafka-console-consumer --topic orders --from-beginning\n\n# 그룹으로 (오프셋이 커밋된다)\nkafka-console-consumer --topic orders --group worker\n\n# 몇 건만\nkafka-console-consumer --topic orders --from-beginning --max-messages 10\n\n# 특정 파티션의 특정 오프셋부터\nkafka-console-consumer --topic orders --partition 1 --offset 500\nkafka-console-consumer --topic orders --partition 1 --offset earliest\n\n# 무엇을 같이 찍을지\nkafka-console-consumer --topic orders --from-beginning \\\n  --property print.key=true \\\n  --property print.offset=true \\\n  --property print.partition=true \\\n  --property print.timestamp=true \\\n  --property print.headers=true \\\n  --property key.separator=' | '\n\n# 안 끝나는 것을 끊기\nkafka-console-consumer --topic orders --from-beginning --timeout-ms 3000"
+  },
+  {
+   "type": "table",
+   "caption": "어디부터 읽나 — 네 경우",
+   "columns": [
+    "명령",
+    "시작 위치",
+    "오프셋 커밋"
+   ],
+   "rows": [
+    [
+     "`--topic t`",
+     "**지금부터**",
+     "임시 그룹. 끝나면 사라진다"
+    ],
+    [
+     "`--topic t --from-beginning`",
+     "**처음부터**",
+     "임시 그룹"
+    ],
+    [
+     "**`--topic t --group g`**",
+     "**g 의 커밋 위치.** 없으면 지금부터",
+     "**커밋된다**"
+    ],
+    [
+     "`--topic t --group g --from-beginning`",
+     "**커밋이 있으면 거기서**(from-beginning 무시)",
+     "커밋된다"
+    ],
+    [
+     "`--partition p --offset N`",
+     "**정확히 N 부터**",
+     "안 된다(그룹 없음)"
+    ]
+   ],
+   "note": "**네 번째가 헷갈리는 자리**다 — **`--from-beginning` 은 커밋된 오프셋이 없을 때만** 먹는다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "CLI 컨슈머가 그룹 오프셋을 건드린다",
+   "md": "**운영 그룹 이름으로 CLI 를 띄우면 그 그룹의 오프셋이 움직인다.**\n\n```bash\n# 이러면 안 된다 -- 운영 컨슈머의 오프셋이 앞으로 간다\nkafka-console-consumer --topic orders --group order-worker\n```\n\n| 무슨 일 | |\n|---|---|\n| 그룹에 새 멤버가 들어간다 | **리밸런싱이 일어난다**(7.3절) |\n| CLI 가 읽은 만큼 커밋한다 | **운영 컨슈머가 그 레코드를 건너뛴다** |\n| CLI 를 끄면 또 리밸런싱 | 두 번 멈춘다 |\n\n> **확인용으로 읽을 때는 그룹을 안 주거나 임시 이름을 준다.**\n>\n> ```bash\n> kafka-console-consumer --topic orders --from-beginning --max-messages 5\n> kafka-console-consumer --topic orders --group tmp-$(date +%s) --from-beginning\n> ```\n\n**더 안전한 건 파티션·오프셋 지정**이다 — **그룹을 아예 안 쓴다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "찾아 읽기",
+   "md": "```bash\n# 특정 키만 (kcat + jq)\nkcat -b localhost:9092 -C -t orders -o beginning -e -f '%k %s\\n' | grep '^order-1042'\n\n# 특정 시각 이후\nkcat -b localhost:9092 -C -t orders -o s@1757493600000 -e -f 'o%o %s\\n'\n\n# 마지막 5건\nkcat -b localhost:9092 -C -t orders -o -5 -e\n\n# 파티션별 마지막 오프셋\nkcat -b localhost:9092 -Q -t orders:0:-1 -t orders:1:-1\n```\n\n> **`-o s@<epoch ms>` 가 시간 기준 조회**다. **장애 시각 전후를 볼 때 편하다.**\n> **`-o -5` 처럼 음수를 주면 끝에서부터**다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "네 가지 읽기를 비교한다",
+   "sql": "$ kt --create --topic cons --partitions 2 --replication-factor 3 >/dev/null\n$ for i in $(seq 1 10); do echo \"m-$i\"; done | kcp --topic cons\n\n# --- 1. 그냥: 지금부터 ---\n\n$ kcc --topic cons --timeout-ms 2000\nProcessed a total of 0 messages\n\n# --- 2. from-beginning ---\n\n$ kcc --topic cons --from-beginning --timeout-ms 2000 | wc -l\n10\n\n$ kcg --list | grep -c console-consumer\n1\n\n$ kcg --list | grep console\nconsole-consumer-38472\n\n#   임시 그룹이 만들어졌다. 매번 이름이 다르다\n\n# --- 3. 그룹으로 ---\n\n$ kcc --topic cons --group worker --from-beginning --timeout-ms 2000 | wc -l\n10\n\n$ kcg --describe --group worker\nGROUP   TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nworker  cons   0          5               5               0\nworker  cons   1          5               5               0\n\n# --- 4. 같은 그룹 + from-beginning: 무시된다 ---\n\n$ kcc --topic cons --group worker --from-beginning --timeout-ms 2000\nProcessed a total of 0 messages\n\n#   --from-beginning 을 줬는데 0건이다\n#   커밋된 오프셋이 있으면 그쪽이 이긴다\n\n\n# --- 5. 파티션·오프셋 직접 지정: 그룹을 안 쓴다 ---\n\n$ kcc --topic cons --partition 0 --offset 2 --max-messages 3 --property print.offset=true\nOffset:2  m-5\nOffset:3  m-7\nOffset:4  m-9\nProcessed a total of 3 messages\n\n$ kcg --describe --group worker | head -2\nGROUP   TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG\nworker  cons   0          5               5               0\n\n#   worker 의 오프셋은 안 움직였다. 확인용으로 안전하다\n\n\n# --- CLI 가 운영 그룹을 건드리는 사고 ---\n\n$ for i in $(seq 11 20); do echo \"m-$i\"; done | kcp --topic cons\n$ kcg --describe --group worker | awk '/cons/ {s+=$6} END {print \"lag before =\", s}'\nlag before = 10\n\n$ kcc --topic cons --group worker --timeout-ms 3000 >/dev/null\nProcessed a total of 10 messages\n\n$ kcg --describe --group worker | awk '/cons/ {s+=$6} END {print \"lag after =\", s}'\nlag after = 0\n\n#   CLI 가 다 읽고 커밋해 버렸다\n#   운영 컨슈머는 이 10건을 영영 못 본다\n\n\n# --- 안전한 확인 방법 ---\n\n$ for i in $(seq 21 25); do echo \"m-$i\"; done | kcp --topic cons\n\n$ kcc --topic cons --group tmp-$(date +%s) --from-beginning --timeout-ms 2000 | tail -2\nm-24\nm-25\n\n$ kcg --describe --group worker | awk '/cons/ {s+=$6} END {print \"worker lag =\", s}'\nworker lag = 5\n\n#   임시 그룹으로 읽었으니 worker 의 랙은 그대로 5다\n\n\n# --- 시간으로 찾기 ---\n\n$ NOW=$(date +%s000)\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t cons \\\n    -o s@$((NOW - 60000)) -e -f 'p%p o%o %s\\n' 2>/dev/null | head -3\np0 o10 m-21\np0 o11 m-23\np1 o10 m-22\n\n#   최근 1분 안의 것만 나왔다. 장애 시각 전후를 볼 때 쓴다\n\n$ kt --delete --topic cons >/dev/null\n$ kcg --delete --group worker >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "기본은 '지금부터', --from-beginning 은 '처음부터', --group 은 '커밋된 위치부터' 다.",
+  "그룹에 커밋이 있으면 --from-beginning 은 무시된다.",
+  "운영 그룹 이름으로 CLI 를 띄우면 리밸런싱이 나고 오프셋이 앞으로 가 운영 컨슈머가 레코드를 건너뛴다.",
+  "확인용으로는 그룹을 안 주거나 임시 이름을 쓰고, 가장 안전한 건 --partition/--offset 지정이다.",
+  "kcat 의 -o s@<epoch ms> 로 시각 기준 조회를 한다."
+ ],
+ "drills": [
+  {
+   "task": "같은 그룹으로 --from-beginning 을 두 번 실행해 두 번째가 0건인 것을 확인한다.",
+   "done_when": "커밋이 우선인 것을 본다.",
+   "minutes": 5
+  },
+  {
+   "task": "운영 그룹 이름으로 CLI 를 띄워 랙이 0이 되는 것을 재현하고, 임시 그룹으로 다시 해 본다.",
+   "done_when": "둘의 차이를 확인한다.",
+   "minutes": 8
+  },
+  {
+   "task": "kcat 으로 최근 1분 이내의 레코드만 읽어 본다.",
+   "done_when": "-o s@ 로 시각 조회가 되는 것을 확인한다.",
+   "minutes": 6
+  }
+ ],
+ "quiz": [
+  {
+   "q": "--group 과 --from-beginning 을 같이 주면.",
+   "a": "그 그룹에 커밋된 오프셋이 있으면 그쪽이 이기고 --from-beginning 은 무시된다."
+  },
+  {
+   "q": "운영 그룹 이름으로 CLI 컨슈머를 띄우면 무슨 일이 생기나.",
+   "a": "리밸런싱이 일어나고 CLI 가 읽은 만큼 커밋되어 운영 컨슈머가 그 레코드를 건너뛴다."
+  },
+  {
+   "q": "그룹을 전혀 건드리지 않고 확인하려면.",
+   "a": "--partition 과 --offset 을 직접 지정하거나 kcat 으로 읽는다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "임시 그룹",
+   "what": "console-consumer 가 그룹을 안 주면 만드는 일회성 그룹."
+  },
+  {
+   "term": "-o s@",
+   "what": "kcat 의 시각 기준 오프셋 조회 문법."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Console consumer",
+   "url": "https://kafka.apache.org/quickstart",
+   "publisher": "Apache"
+  },
+  {
+   "title": "kcat — usage",
+   "url": "https://github.com/edenhill/kcat#examples",
+   "publisher": "edenhill"
+  }
+ ]
+}

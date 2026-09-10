@@ -669,7 +669,7 @@
           "title": "애너테이션으로",
           "summary": "붙은 것만 고른다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
@@ -677,7 +677,7 @@
           "title": "bean 이름으로",
           "summary": "스프링만 있는 것.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.7",

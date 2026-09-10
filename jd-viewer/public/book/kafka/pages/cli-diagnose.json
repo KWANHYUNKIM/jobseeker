@@ -1,0 +1,146 @@
+{
+ "book": "kafka",
+ "id": "cli-diagnose",
+ "no": "5.7",
+ "chapter": 5,
+ "title": "무엇이 잘못됐는지 CLI 로 좁히기",
+ "summary": "여섯 명령으로 원인을 찾는다.",
+ "minutes": 13,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "증상별 진단 순서를 안다.",
+  "재배치 명령을 안다.",
+  "5장을 체크리스트로 닫는다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**1.5절의 순서를 5장의 명령으로 채운다.** **이 절이 5장의 요약**이다."
+  },
+  {
+   "type": "table",
+   "caption": "증상 → 명령",
+   "columns": [
+    "증상",
+    "먼저 칠 명령",
+    "다음"
+   ],
+   "rows": [
+    [
+     "**데이터가 안 보인다**",
+     "`GetOffsetShell` / `kcat -Q`",
+     "0이면 프로듀서(6장), 아니면 아래"
+    ],
+    [
+     "**컨슈머가 안 읽는다**",
+     "`consumer-groups --describe`",
+     "CONSUMER-ID 가 `-` 면 컨슈머가 죽음"
+    ],
+    [
+     "**랙이 는다**",
+     "`--describe --members`",
+     "파티션 수 < 컨슈머 수인가(7.3절)"
+    ],
+    [
+     "**한 파티션만 랙**",
+     "`kcat -C -f '%k'` 로 키 분포",
+     "키 쏠림(4.4절)"
+    ],
+    [
+     "**쓰기가 실패한다**",
+     "`topics --describe --under-min-isr-partitions`",
+     "ISR 부족(3.6절)"
+    ],
+    [
+     "**배포마다 멈춘다**",
+     "`--describe --state` 를 반복",
+     "리밸런싱(7.3·11.4절)"
+    ],
+    [
+     "**디스크가 찬다**",
+     "`configs --describe` 로 retention",
+     "3.4·11.2절"
+    ]
+   ],
+   "note": "**첫 두 줄에서 \"안 들어갔다\" 와 \"안 읽는다\" 를 가르는 게 절반**이다(1.5절)."
+  },
+  {
+   "type": "callout",
+   "tone": "note",
+   "title": "파티션 재배치 — 브로커를 추가·제거할 때",
+   "md": "**브로커를 새로 넣어도 기존 파티션은 안 옮겨 간다.**\n\n```bash\n# 1. 옮길 토픽 목록\ncat > topics.json <<'EOF'\n{\"topics\":[{\"topic\":\"orders\"}],\"version\":1}\nEOF\n\n# 2. 계획을 만든다 (실행 안 함)\nkafka-reassign-partitions --bootstrap-server ... \\\n  --topics-to-move-json-file topics.json \\\n  --broker-list 1,2,3,4 --generate\n\n# 3. 출력의 'Proposed' 를 파일로 저장하고 실행\nkafka-reassign-partitions --bootstrap-server ... \\\n  --reassignment-json-file plan.json --execute \\\n  --throttle 50000000        # 50MB/s 로 제한한다\n\n# 4. 진행 확인\nkafka-reassign-partitions --bootstrap-server ... \\\n  --reassignment-json-file plan.json --verify\n```\n\n> **`--throttle` 을 안 주면 재배치가 클러스터 대역폭을 다 먹어** 서비스가 느려진다.\n> **`--verify` 가 스로틀을 걷어 주므로 반드시 마지막에** 친다.\n> **2번의 `--generate` 출력에는 \"현재 배치\" 도 같이 나온다** — **롤백용으로 저장해 둔다.**"
+  },
+  {
+   "type": "callout",
+   "tone": "tip",
+   "title": "손에 두는 여섯 줄",
+   "md": "```bash\n# 1. 클러스터가 온전한가\nkafka-topics --describe --under-replicated-partitions\n\n# 2. 지금 쓰기가 막히는 파티션이 있나\nkafka-topics --describe --under-min-isr-partitions\n\n# 3. 레코드가 들어오고 있나\nkafka-run-class kafka.tools.GetOffsetShell --topic orders\n\n# 4. 누가 밀려 있나\nfor g in $(kafka-consumer-groups --list); do\n  printf '%-24s %s\\n' \"$g\" \"$(kafka-consumer-groups --describe --group $g \\\n    | awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\ndone\n\n# 5. 그 그룹이 리밸런싱 중인가\nkafka-consumer-groups --describe --group order-worker --state\n\n# 6. 무엇이 들어 있나\nkcat -b localhost:9092 -C -t orders -o -3 -e -f 'p%p o%o %k %s\\n'\n```\n\n> **장애 때 이 여섯 줄을 순서대로 치면 대개 원인이** 좁혀진다.\n> **11.1절에서 이걸 지표와 알람으로** 옮긴다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "고장을 만들고 좁혀 간다",
+   "sql": "$ kt --create --topic diag --partitions 4 --replication-factor 3 \\\n    --config min.insync.replicas=2 >/dev/null\n\n# --- 시나리오 1: \"데이터가 안 보여요\" ---\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic diag\ndiag:0:0\ndiag:1:0\ndiag:2:0\ndiag:3:0\n\n#   전부 0 = 들어온 게 없다 -> 프로듀서 문제다 (6장)\n#   컨슈머를 아무리 봐도 소용없다\n\n$ for i in $(seq 1 400); do echo \"m-$i\"; done | kcp --topic diag\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic diag\ndiag:0:100\ndiag:1:100\ndiag:2:100\ndiag:3:100\n\n#   이제 들어왔다\n\n\n# --- 시나리오 2: \"컨슈머가 안 읽어요\" ---\n\n$ kcc --topic diag --group dg --from-beginning --timeout-ms 2000 >/dev/null\n$ for i in $(seq 401 800); do echo \"m-$i\"; done | kcp --topic diag\n\n$ kcg --describe --group dg\nGROUP  TOPIC  PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG  CONSUMER-ID\ndg     diag   0          100             200             100  -\ndg     diag   1          100             200             100  -\ndg     diag   2          100             200             100  -\ndg     diag   3          100             200             100  -\n\n#   CONSUMER-ID 가 전부 '-' 다 = 컨슈머가 안 떠 있다\n#   애플리케이션이 죽었거나 배포에 실패했다\n\n$ kcg --describe --group dg --state\nGROUP  COORDINATOR (ID)   ASSIGNMENT-STRATEGY  STATE  #MEMBERS\ndg     kafka-1:19092 (1)                       Empty  0\n\n\n# --- 시나리오 3: 한 파티션만 랙 ---\n\n$ for i in $(seq 1 300); do echo \"vip|v-$i\"; done | \\\n    kcp --topic diag --property parse.key=true --property key.separator='|'\n\n$ kcg --describe --group dg | awk 'NR>1 && $6 ~ /^[0-9]+$/ {print $6, $2\"-\"$3}' | sort -rn\n400 diag-1\n100 diag-0\n100 diag-2\n100 diag-3\n\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t diag \\\n    -p 1 -o beginning -e -f '%k\\n' 2>/dev/null | sort | uniq -c | sort -rn | head -2\n 300 vip\n 100 \n\n#   1번 파티션에 vip 키가 300건 몰려 있다 -> 키 쏠림 (4.4절)\n\n\n# --- 시나리오 4: 쓰기가 실패한다 ---\n\n$ docker compose stop kafka-2 kafka-3 >/dev/null && sleep 35\n\n$ kt --describe --under-min-isr-partitions | head -2\n  Topic: diag  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1\n  Topic: diag  Partition: 1  Leader: 1  Replicas: 2,3,1  Isr: 1\n\n$ echo 'x' | kcp --topic diag --request-required-acks -1 2>&1 | tail -1\norg.apache.kafka.common.errors.NotEnoughReplicasException: ...\n\n#   1,2번 명령으로 바로 원인이 나왔다 (3.6절)\n\n$ docker compose start kafka-2 kafka-3 >/dev/null && sleep 20\n\n\n# --- 시나리오 5: 브로커를 늘렸는데 부하가 안 나뉜다 ---\n\n$ kt --describe --topic diag | awk '/Replicas:/ {print $8}' | sort | uniq -c\n   4 1,2,3\n\n#   (예시) 모든 파티션이 같은 브로커 집합에 있다\n\n$ cat > /tmp/topics.json <<'EOF'\n{\"topics\":[{\"topic\":\"diag\"}],\"version\":1}\nEOF\n$ docker compose cp /tmp/topics.json kafka-1:/tmp/topics.json\n\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-reassign-partitions.sh \\\n    --bootstrap-server kafka-1:19092 --topics-to-move-json-file /tmp/topics.json \\\n    --broker-list 1,2,3 --generate | head -6\nCurrent partition replica assignment\n{\"version\":1,\"partitions\":[{\"topic\":\"diag\",\"partition\":0,\"replicas\":[1,2,3],...}]}\n\nProposed partition reassignment configuration\n{\"version\":1,\"partitions\":[{\"topic\":\"diag\",\"partition\":0,\"replicas\":[2,3,1],...}]}\n\n#   Current 를 파일로 저장해 두면 롤백할 수 있다\n\n\n# --- 여섯 줄 점검 ---\n\n$ kt --describe --under-replicated-partitions; echo \"[1] ok\"\n[1] ok\n$ kt --describe --under-min-isr-partitions; echo \"[2] ok\"\n[2] ok\n$ docker compose exec -T kafka-1 /opt/kafka/bin/kafka-run-class.sh \\\n    kafka.tools.GetOffsetShell --bootstrap-server kafka-1:19092 --topic diag | \\\n    awk -F: '{s+=$3} END {print \"[3] records =\", s}'\n[3] records = 1100\n$ for g in $(kcg --list); do\n>   printf '[4] %-10s lag=%s\\n' \"$g\" \"$(kcg --describe --group $g 2>/dev/null | \\\n>     awk 'NR>1 && $6 ~ /^[0-9]+$/ {s+=$6} END {print s+0}')\"\n> done\n[4] dg         lag=700\n$ kcg --describe --group dg --state | tail -1\ndg     kafka-1:19092 (1)                       Empty  0\n$ docker run --rm --network host edenhill/kcat:1.7.1 -b localhost:9092 -C -t diag \\\n    -o -2 -e -f '[6] p%p o%o %k %s\\n' 2>/dev/null | head -2\n[6] p1 o398 vip v-299\n[6] p1 o399 vip v-300\n\n#   클러스터는 정상, 레코드는 있고, dg 가 700 밀려 있고, 컨슈머가 안 떠 있다\n#   -> 애플리케이션을 띄우면 된다\n\n$ kt --delete --topic diag >/dev/null; kcg --delete --group dg >/dev/null 2>&1"
+  }
+ ],
+ "recap": [
+  "'안 들어갔다' 와 '안 읽는다' 를 GetOffsetShell 과 consumer-groups --describe 로 먼저 가른다.",
+  "CONSUMER-ID 가 '-' 면 컨슈머가 안 떠 있는 것이다. 랙만 보고 컨슈머 성능을 의심하지 않는다.",
+  "한 파티션만 랙이면 kcat 으로 키 분포를 세어 본다.",
+  "쓰기 실패는 --under-min-isr-partitions 한 줄로 확인된다.",
+  "재배치는 --generate 로 계획을 만들고 --throttle 을 주고 --verify 로 마무리한다."
+ ],
+ "drills": [
+  {
+   "task": "레코드를 안 넣은 토픽에서 GetOffsetShell 로 0을 확인하고, 컨슈머를 아무리 봐도 소용없다는 것을 확인한다.",
+   "done_when": "진단의 첫 갈래를 몸에 익힌다.",
+   "minutes": 5
+  },
+  {
+   "task": "한 키에 몰린 데이터를 넣고 kcat 으로 파티션별 키 분포를 세어 본다.",
+   "done_when": "쏠린 키를 찾아낸다.",
+   "minutes": 7
+  },
+  {
+   "task": "여섯 줄 점검 스크립트를 파일로 만들어 둔다.",
+   "done_when": "한 번 실행으로 [1]~[6] 이 다 나오는 것을 확인한다.",
+   "minutes": 10
+  }
+ ],
+ "quiz": [
+  {
+   "q": "'데이터가 안 보인다' 는 신고에 가장 먼저 칠 명령은.",
+   "a": "GetOffsetShell(또는 kcat -Q). 끝 오프셋이 0이면 프로듀서 문제다."
+  },
+  {
+   "q": "랙이 큰데 CONSUMER-ID 가 '-' 면.",
+   "a": "컨슈머가 안 떠 있다. 성능 문제가 아니라 배포·기동 문제다."
+  },
+  {
+   "q": "파티션 재배치에서 --throttle 을 주는 이유는.",
+   "a": "재배치가 클러스터 대역폭을 다 먹어 서비스가 느려지는 것을 막는다. --verify 가 스로틀을 걷어 준다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "reassign-partitions",
+   "what": "파티션을 다른 브로커로 옮기는 도구."
+  },
+  {
+   "term": "--throttle",
+   "what": "재배치 대역폭 제한. --verify 로 해제한다."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Apache Kafka — Expanding your cluster",
+   "url": "https://kafka.apache.org/documentation/#basic_ops_cluster_expansion",
+   "publisher": "Apache"
+  },
+  {
+   "title": "Apache Kafka — Operations",
+   "url": "https://kafka.apache.org/documentation/#operations",
+   "publisher": "Apache"
+  }
+ ]
+}

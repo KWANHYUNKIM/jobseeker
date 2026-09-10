@@ -1,0 +1,134 @@
+{
+ "book": "spring-advanced",
+ "id": "annotation",
+ "no": "11.5",
+ "chapter": 11,
+ "title": "애너테이션으로",
+ "summary": "붙은 것만 고른다.",
+ "minutes": 12,
+ "updated_at": "2026-09-10",
+ "goals": [
+  "네 자리를 안다.",
+  "보존을 안다.",
+  "직접 만든다."
+ ],
+ "blocks": [
+  {
+   "type": "prose",
+   "md": "**이름이나 꾸러미로 고르면 옮기면** 깨진다. **표시를 붙여** 고른다."
+  },
+  {
+   "type": "figure",
+   "caption": "붙을 수 있는 네 자리",
+   "ascii": "   four places an annotation can sit\n\n   on the method being called\n   on the class that declares it\n   on the class of the object underneath\n   on the classes of the arguments handed in\n\n   each place has its own keyword",
+   "note": "**자리마다 쓰는 말이** 다르다."
+  },
+  {
+   "type": "callout",
+   "tone": "why",
+   "title": "이름이 아니라 뜻으로 고른다",
+   "md": "**이름은** 바뀐다.\n\n> **꾸러미를 옮기면** 깨진다.\n> **아래에서 그걸** 겪는다.\n> **11.9절의 그** 문제다.\n\n**표시는** 따라온다.\n\n> **파일에 붙어** 있다.\n> **아래에서 옮겨** 본다.\n> **찾기도** 쉽다.\n\n**자리가** 넷이다.\n\n> **메서드·클래스·타깃·인자**다.\n> **아래에서 하나씩** 본다.\n> **말이 다** 다르다.\n\n**남들도 이걸** 쓴다.\n\n> **트랜잭션이** 그렇다.\n> **아래에서 그 표현식을** 본다.\n> **10.2절의 그 목록**이다."
+  },
+  {
+   "type": "figure",
+   "caption": "왜 안 보일 수 있나",
+   "ascii": "   why an annotation can be invisible at runtime\n\n   source     thrown away by the compiler\n   class      written into the file, not loaded\n   runtime    loaded and visible to reflection\n\n   only the last one can ever be matched",
+   "note": "**마지막 하나만 맞출 수** 있다."
+  },
+  {
+   "type": "callout",
+   "tone": "trap",
+   "title": "보존을 안 적으면 조용히 0 이 된다",
+   "md": "**기본이** 클래스다.\n\n> **안 적으면 그것**이다.\n> **아래에서 0 을** 본다.\n> **오류가** 없다.\n\n**런타임이어야** 한다.\n\n> **한 줄이면** 된다.\n> **아래에서 고친다**.\n> **잊기** 쉽다.\n\n**대상도** 적는다.\n\n> **엉뚱한 자리를** 막는다.\n> **아래에서 확인**한다.\n> **컴파일이** 잡아 준다.\n\n**물려받지** 않는다.\n\n> **부모에 붙여도 안** 보인다.\n> **아래에서 겪는다**.\n> **한 줄로** 켠다."
+  },
+  {
+   "type": "sql",
+   "lang": "text",
+   "caption": "찍힌 로그와 진짜 클래스 이름",
+   "sql": "-- 표시를 만든다\n\n@Target(ElementType.METHOD)\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface Traced { String value() default \"\"; }\n\n@Service\npublic class OrderServiceV3 {\n    @Traced\n    public void orderItem(String itemId) { orderRepository.save(itemId); }\n\n    public void validate(String itemId) { }\n}\n\n@Around(\"@annotation(study.adv.trace.Traced)\")\npublic Object t(ProceedingJoinPoint jp) throws Throwable {\n    log.info(\"걸림 {}\", jp.getSignature().toShortString());\n    return jp.proceed();\n}\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 OrderServiceV3.orderItem()\n\n$ grep -c '걸림 OrderServiceV3.validate' logs/app.log\n0\n\n--   붙은 것만 걸렸다\n\n\n-- 보존을 빼면\n\n@Target(ElementType.METHOD)\npublic @interface Traced { }              // Retention 없음\n\n$ ./gradlew compileJava -q && echo 'compile OK'\ncompile OK\n\n$ ./gradlew bootRun 2>&1 | grep -ci 'error\\|warn'\n0\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '걸림' logs/app.log\n0\n\n$ javap -v build/classes/java/main/study/adv/app/OrderServiceV3.class \\\n    | grep -c 'RuntimeVisibleAnnotations'\n1\n$ javap -v build/classes/java/main/study/adv/app/OrderServiceV3.class \\\n    | grep -c 'RuntimeInvisibleAnnotations'\n1\n\n--   파일에는 들어 있는데 안 보인다\n--   9.1 절부터 이어진 그 조용함이다\n\n\n-- 보이는지 물어본다\n\n@GetMapping(value = \"/anno/visible\", produces = \"text/plain\")\nString visible(String type) throws Exception {\n    Class<?> a = Class.forName(type);\n    Retention r = a.getAnnotation(Retention.class);\n    return \"보존 %s%n대상 %s%n\".formatted(\n        r == null ? \"CLASS (기본)\" : r.value(),\n        Arrays.toString(a.getAnnotation(Target.class).value()));\n}\n\n$ curl -s 'localhost:8080/anno/visible?type=study.adv.trace.Traced'\n보존 CLASS (기본)\n대상 [METHOD]\n\n$ curl -s 'localhost:8080/anno/visible?type=org.springframework.transaction.annotation.Transactional'\n보존 RUNTIME\n대상 [TYPE, METHOD]\n\n--   남의 것과 견주면 바로 보인다\n\n\n-- 고친다\n\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface Traced { String value() default \"\"; }\n\n$ curl -s 'localhost:8080/anno/visible?type=study.adv.trace.Traced'\n보존 RUNTIME\n대상 [METHOD]\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '걸림' logs/app.log\n1\n\n--   한 줄이었다\n\n\n-- 엉뚱한 자리를 막는다\n\n@Target(ElementType.METHOD)\npublic @interface Traced { }\n\n@Traced\n@Service\npublic class OrderServiceV3 { ... }        // 클래스에 붙임\n\n$ ./gradlew compileJava 2>&1 | grep -i 'error' | head -2\nerror: annotation type not applicable to this kind of declaration\n\n--   컴파일이 잡아 준다\n--   보존과 달리 이건 시끄럽다\n\n\n-- 클래스에 붙이려면\n\n@Target({ElementType.TYPE, ElementType.METHOD})\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface Traced { }\n\n@Traced\n@Service\npublic class OrderServiceV3 { ... }\n\n@Around(\"@annotation(study.adv.trace.Traced)\")\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c '걸림' logs/app.log\n0\n\n@Around(\"@within(study.adv.trace.Traced)\")\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '걸림' logs/app.log | cut -c56-\n걸림 OrderServiceV3.orderItem()\n걸림 OrderServiceV3.validate()\n\n--   말이 다르다\n--   11.3 절의 within 과 같은 자리다\n\n\n-- 네 말을 나란히\n\n$ printf '%-16s %-30s %s\\n' \\\n  '@annotation'  '불리는 메서드에 붙은 것'    '메서드' \\\n  '@within'      '선언한 클래스에 붙은 것'    '타입' \\\n  '@target'      '원본 객체의 클래스에 붙은 것' '타입' \\\n  '@args'        '넘어온 값의 클래스에 붙은 것' '실제형'\n\n@annotation      불리는 메서드에 붙은 것          메서드\n@within          선언한 클래스에 붙은 것          타입\n@target          원본 객체의 클래스에 붙은 것     타입\n@args            넘어온 값의 클래스에 붙은 것     실제형\n\n$ for e in '@annotation(study.adv.trace.Traced)' '@within(study.adv.trace.Traced)' \\\n           '@target(study.adv.trace.Traced)'; do\n    printf '%-42s ' \"$e\"\n    curl -s --get 'localhost:8080/pointcut/count-beans' --data-urlencode \"expr=$e\" | head -1\n  done\n\n@annotation(study.adv.trace.Traced)        맞는 빈 3 개\n@within(study.adv.trace.Traced)            맞는 빈 1 개\n@target(study.adv.trace.Traced)            맞는 빈 1 개\n\n\n-- within 과 target 의 차이\n\npublic class BaseService { }\n\n@Traced\npublic class MidService extends BaseService { public void work() { } }\n\n@Service\npublic class LeafService extends MidService { }\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=@within(study.adv.trace.Traced)'\n맞는 빈 1 개\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=@target(study.adv.trace.Traced)'\n맞는 빈 2 개\n\n$ curl -s --get 'localhost:8080/pointcut/which' \\\n    --data-urlencode 'expr=@target(study.adv.trace.Traced)'\n  MidService\n  LeafService\n\n--   하나는 선언한 자리를, 하나는 실제 객체를 본다\n--   11.4 절의 그 갈림과 같은 결이다\n\n\n-- 안 물려받는다\n\n@Traced\npublic class BaseService { public void ping() { } }\n\n@Service\npublic class ChildService extends BaseService { }\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=@target(study.adv.trace.Traced)'\n맞는 빈 1 개\n\n$ curl -s --get 'localhost:8080/pointcut/which' \\\n    --data-urlencode 'expr=@target(study.adv.trace.Traced)'\n  BaseService\n\n--   자식은 안 걸린다\n\n\n-- 물려받게 한다\n\n@Inherited\n@Target(ElementType.TYPE)\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface Traced { }\n\n$ curl -s --get 'localhost:8080/pointcut/count-beans' \\\n    --data-urlencode 'expr=@target(study.adv.trace.Traced)'\n맞는 빈 2 개\n\n$ curl -s 'localhost:8080/anno/visible?type=study.adv.trace.Traced'\n보존 RUNTIME\n대상 [TYPE]\n물려받음 예\n\n--   메서드에는 안 먹는 옵션이다\n\n\n-- 인자에 붙은 것\n\n@Target(ElementType.TYPE)\n@Retention(RetentionPolicy.RUNTIME)\npublic @interface Sensitive { }\n\n@Sensitive\npublic record Card(String number) { }\n\npublic void pay(Card card) { }\n\n@Around(\"@args(study.adv.trace.Sensitive)\")\npublic Object masked(ProceedingJoinPoint jp) throws Throwable { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/pay?number=1234'\n$ grep '걸림' logs/app.log | tail -1 | cut -c56-\n걸림 PayService.pay()\n\n$ curl -s localhost:8080/pointcut/count\n[물음] 3\n\n--   11.4 절의 args 처럼 호출마다 묻는다\n\n\n-- 값을 꺼낸다\n\n@Around(\"@annotation(traced)\")\npublic Object t(ProceedingJoinPoint jp, Traced traced) throws Throwable {\n    log.info(\"이름 {}\", traced.value().isEmpty()\n        ? jp.getSignature().toShortString() : traced.value());\n    return jp.proceed();\n}\n\n@Traced(\"주문 넣기\")\npublic void orderItem(String itemId) { ... }\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep '이름 ' logs/app.log | tail -1 | cut -c56-\n이름 주문 넣기\n\n$ curl -s -o /dev/null 'localhost:8080/v3/plain'\n$ grep '이름 ' logs/app.log | tail -1 | cut -c56-\n이름 OrderServiceV3.plain()\n\n--   표시 자체를 인자로 받았다\n--   11.8 절에서 이걸 판다\n\n\n-- 남들도 이걸 쓴다\n\n$ curl -s localhost:8080/aop/builtin-pointcuts\n@Transactional   TransactionAttributeSourcePointcut  (애너테이션 탐색)\n@Cacheable       CacheOperationSourcePointcut\n@Async           AnnotationMatchingPointcut(Async)\n@PreAuthorize    AuthorizationManagerBeforeMethodInterceptor\n\n$ curl -s 'localhost:8080/anno/visible?type=org.springframework.scheduling.annotation.Async'\n보존 RUNTIME\n대상 [TYPE, METHOD]\n\n--   ⑩ 4.2절의 보안 애너테이션도 같은 장치다\n\n\n-- 이름으로 고를 때와 견준다\n\n// 이름으로\n@Around(\"execution(* study.adv.app..*(..))\")\n\n$ git mv src/main/java/study/adv/app src/main/java/study/adv/domain\n$ ./gradlew bootRun >/dev/null 2>&1 & sleep 12\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n0\n\n// 표시로\n@Around(\"@within(study.adv.trace.Traced)\")\n\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep -c 'study.adv.trace' logs/app.log\n6\n\n--   꾸러미를 옮겨도 안 깨진다\n--   대신 클래스마다 한 줄을 적어야 한다\n\n\n-- 값을 잰다\n\n$ curl -s 'localhost:8080/bench/pointcut?expr=@within(study.adv.trace.Traced)&n=1000000'\n100 만 회   402 ms\n\n$ curl -s 'localhost:8080/bench/pointcut?expr=@annotation(study.adv.trace.Traced)&n=1000000'\n100 만 회   731 ms\n\n$ curl -s 'localhost:8080/bench/pointcut?expr=execution(*%20study.adv.app..*(..))&n=1000000'\n100 만 회   1412 ms\n\n$ curl -s 'localhost:8080/bench/pointcut?expr=within(study.adv.app..*)&n=1000000'\n100 만 회   319 ms\n\n--   11.3 절의 319 와 1412 사이다\n--   기동에만 드는 값이다\n\n\n-- 되돌리고 확인한다\n\n$ git checkout -- src/main/java/ && git checkout -- .\n$ curl -s -o /dev/null 'localhost:8080/v3/request?itemId=연필'\n$ grep 'study.adv.trace' logs/app.log | tail -6 | cut -c56-\n[796bccd9] OrderControllerV3.request()\n[796bccd9] |-->OrderServiceV3.orderItem()\n[796bccd9] |   |-->OrderRepositoryV3.save()\n[796bccd9] |   |<--OrderRepositoryV3.save() time=1004ms\n[796bccd9] |<--OrderServiceV3.orderItem() time=1006ms\n[796bccd9] OrderControllerV3.request() time=1007ms\n\n$ curl -s 'localhost:8080/advisor/pointcut?name=orderServiceV3'\n표현식: execution(* study.adv.app..*(..))\n\n--   11.6 절에서 빈 이름으로 고른다\n\n\n-- 정리\n\n$ printf '%-26s %s\\n' \\\n  '자리'         '넷' \\\n  '@annotation'  '메서드' \\\n  '@within'      '선언한 클래스' \\\n  '@target'      '실제 객체' \\\n  '@args'        '넘어온 값' \\\n  '보존 기본'    'CLASS, 안 보임' \\\n  '고치기'       '한 줄' \\\n  '대상'         '컴파일이 잡음' \\\n  '물려받음'     '기본은 안 함' \\\n  '옮기기'       '안 깨짐' \\\n  '값'           '402 와 731 ms'\n\n자리                       넷\n@annotation                메서드\n@within                    선언한 클래스\n@target                    실제 객체\n@args                      넘어온 값\n보존 기본                  CLASS, 안 보임\n고치기                     한 줄\n대상                       컴파일이 잡음\n물려받음                   기본은 안 함\n옮기기                     안 깨짐\n값                         402 와 731 ms",
+   "note": "**보존을 안 적으면 `RuntimeInvisibleAnnotations` 로 파일엔 있는데 0 회** 걸린다.\n\n**대상이 틀리면 컴파일이 `annotation type not applicable` 로 잡아 줘** 시끄럽다.\n\n**`@within` 은 1 개, `@target` 은 2 개로 선언한 자리와 실제 객체가** 갈린다.\n\n**꾸러미를 `app` 에서 `domain` 으로 옮기면 이름 표현식은 0 줄, 표시 표현식은 6 줄**이다.\n\n**100 만 회에 `@within` 402 ms, `@annotation` 731 ms 로 11.3절의 319 와 1412 사이**다."
+  }
+ ],
+ "recap": [
+  "**표시로** 고른다.",
+  "**자리가** 넷이다.",
+  "**보존이** 필요하다.",
+  "**기본은 안** 보인다.",
+  "**대상은** 시끄럽다.",
+  "**안 물려받는다**.",
+  "**값을 꺼낼 수** 있다.",
+  "**옮겨도 안** 깨진다.",
+  "**남들도** 쓴다."
+ ],
+ "drills": [
+  {
+   "task": "표시를 만들어 걸어 본다.",
+   "done_when": "붙은 것만 걸린 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "보존을 빼 본다.",
+   "done_when": "조용히 0 이 되는 걸 확인했다.",
+   "minutes": 15
+  },
+  {
+   "task": "네 말을 다 써 본다.",
+   "done_when": "수가 다른 걸 확인했다.",
+   "minutes": 25
+  },
+  {
+   "task": "꾸러미를 옮겨 본다.",
+   "done_when": "이름 쪽만 깨지는 걸 확인했다.",
+   "minutes": 20
+  }
+ ],
+ "quiz": [
+  {
+   "q": "네 자리는?",
+   "a": "불리는 메서드, 선언한 클래스, 실제 객체, 넘어온 값이다."
+  },
+  {
+   "q": "보존을 안 적으면?",
+   "a": "기본이 클래스라 런타임에 안 보이고 조용히 0 이 된다."
+  },
+  {
+   "q": "대상을 잘못 적으면?",
+   "a": "컴파일에서 막힌다. 보존과 달리 시끄럽다."
+  },
+  {
+   "q": "선언한 클래스와 실제 객체의 차이는?",
+   "a": "상속이 있을 때 갈린다. 실제 객체 쪽이 자식까지 본다."
+  },
+  {
+   "q": "표시로 고르는 값은?",
+   "a": "꾸러미를 옮겨도 안 깨진다는 것이다."
+  }
+ ],
+ "terms": [
+  {
+   "term": "보존",
+   "def": "애너테이션이 소스·클래스 파일·런타임 중 어디까지 남는지."
+  },
+  {
+   "term": "표시",
+   "def": "이름이 아니라 뜻으로 고르기 위해 코드에 직접 붙이는 애너테이션."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Spring Framework — Declaring a Pointcut",
+   "url": "https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html",
+   "publisher": "VMware Tanzu"
+  },
+  {
+   "title": "Java SE 21 — java.lang.annotation.Retention",
+   "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/Retention.html",
+   "publisher": "Oracle"
+  },
+  {
+   "title": "Spring Framework — Transaction Management",
+   "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+   "publisher": "VMware Tanzu"
+  }
+ ]
+}

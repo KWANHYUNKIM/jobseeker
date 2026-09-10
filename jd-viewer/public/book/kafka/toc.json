@@ -262,7 +262,7 @@
           "title": "console-consumer",
           "summary": "from-beginning 과 그냥의 차이.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
@@ -270,7 +270,7 @@
           "title": "consumer-groups 와 LAG",
           "summary": "누가 어디까지 읽었나.",
           "minutes": 14,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
