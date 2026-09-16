@@ -88,6 +88,14 @@ if [ -x ./deploy/setup-dashboards.sh ]; then
   ./deploy/setup-dashboards.sh --reschedule || warn "대시보드·검색 서비스 재등록 실패 — 수동 확인 필요"
 fi
 
+# 인스타 자동 발행 데몬. 등록 안 된 머신에서는 스스로 건너뛴다.
+# 뷰어 컨테이너가 design-lab/exposed 를 /ig 로 붙이므로 기동 전에 폴더가 있어야 한다
+# (없으면 docker 가 root 소유로 만들어 데몬이 이미지를 못 쓴다).
+mkdir -p ./design-lab/exposed
+if [ -x ./deploy/setup-publisher.sh ]; then
+  ./deploy/setup-publisher.sh --reschedule || warn "발행 데몬 재등록 실패 — 수동 확인 필요"
+fi
+
 # ── 빌드 & 기동 ────────────────────────────────────────────
 log "이미지 빌드 및 컨테이너 기동"
 docker compose -f "$COMPOSE_FILE" up -d --build --remove-orphans
