@@ -95,9 +95,17 @@ def ingest(log: list[str]) -> int:
             kept = APPROVED_DIR / f"{bundle['id']}_{s.name}"
             shutil.copyfile(s, kept)
             images.append(str(kept.relative_to(LAB_DIR).as_posix()))
-        queue.add_approved(bundle, images[0], images if slides else None)
+        # 릴스 묶음은 slide_*.jpg 대신 reel.mp4 하나가 온다. poster.jpg 는 두 형태
+        # 모두에 있어서(영상의 첫 장면이자 8770 의 미리보기) 여기 판단 기준이 된다.
+        video_rel = ""
+        if (mp4 := d / "reel.mp4").is_file():
+            kept = APPROVED_DIR / f"{bundle['id']}.mp4"
+            shutil.copyfile(mp4, kept)
+            video_rel = str(kept.relative_to(LAB_DIR).as_posix())
+        queue.add_approved(bundle, images[0], images if slides else None, video_rel=video_rel)
         _park(d, "_done")
-        log.append(f"받음 {bundle['id']} {bundle['job_key']}")
+        log.append(f"받음 {bundle['id']} {bundle['job_key']}"
+                   + (" (릴스)" if video_rel else ""))
         n += 1
     return n
 
@@ -221,8 +229,14 @@ def publish_due(now: datetime, cfg: dict, conf: dict, log: list[str], publishers
             results[platform] = {"platform": platform, "ok": False, "dry_run": False,
                                  "error": "이미 올라간 공고", "skipped": True}
             continue
-        res = pub.publish_many(images=images, caption=captions.get(platform) or item.get("caption", ""),
-                               dry_run=not live)
+        text = captions.get(platform) or item.get("caption", "")
+        # 한 묶음은 캐러셀이거나 릴스이거나 하나다 — 같은 내용을 두 형태로 올리면
+        # 중복 게시로 보인다. 어느 쪽인지는 승인할 때(`--as`) 정해져 원장에 박혀 있다.
+        if item.get("format") == "reel" and item.get("video"):
+            res = pub.publish_video(video=LAB_DIR / item["video"], caption=text,
+                                    cover=images[0] if images else None, dry_run=not live)
+        else:
+            res = pub.publish_many(images=images, caption=text, dry_run=not live)
         results[platform] = res.as_dict()
         if not res.ok:
             failures.append(f"{platform}: {res.error}")

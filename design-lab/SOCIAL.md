@@ -20,6 +20,7 @@
 |---|---|---|
 | 공고 한 건 | 그 회사 전용 판 한 장 | `approve <공고키>` |
 | **묶음(카테고리)** | 키워드 표지 + 차례 표지 + 공고 판 여러 장을 **한 게시물**로 (인스타 캐러셀 / 페이스북 사진 여러 장) | `approve-collection <카테고리>` |
+| **묶음 — 영상** | 같은 판을 넘기는 **릴스 한 편** (인스타 릴스 / 페이스북 페이지 동영상) | `approve-collection <카테고리> --as reel` |
 
 사람들이 저장하고 공유하는 건 공고 한 장보다 묶음이다. 카테고리는 여섯 가지다.
 
@@ -31,6 +32,48 @@
 | `size` | 회사 규모별 · 대기업 채용 | `company_meta.json` 의 회사 규모 |
 | `stack` | 기술별 채용 · React 쓰는 곳 | 기술 스택에 그 낱말이 있는 공고 |
 | `newgrad` | 신입 가능 | 경력 조건에 '신입' 이 있는 공고 |
+
+### 캐러셀이냐 릴스냐 — 한 묶음은 둘 중 하나다
+
+`--as reel` 이면 같은 묶음이 캐러셀 대신 **영상 한 편**으로 나간다. 둘 다 올리지 않는다 —
+같은 내용이 하루에 두 번 나가면 중복 게시로 보이고, "한 tick 에 한 판" 으로 공고 게시판처럼
+보이는 걸 피한 것과 같은 이유다. 형태는 승인할 때 정해져 원장의 `format` 에 박힌다.
+
+```
+approve-collection week              → 캐러셀 (판 10장까지)
+approve-collection week --as reel    → 릴스 한 편
+```
+
+| | 캐러셀 | 릴스 |
+|---|---|---|
+| 판 크기 | `ig_portrait` 1080×1350 | `ig_story` 1080×1920 |
+| 인스타 | `media_type=CAROUSEL` | `media_type=REELS` + `share_to_feed=true` |
+| 페이스북 | `/photos` 여러 장 + `/feed` | `/videos` 한 번 |
+| 공개 URL | 인스타만 필요 | 인스타만 필요(페북은 파일을 직접 받는다) |
+| 기다림 | 몇 초 | **몇 분** — 메타가 받아서 다시 인코딩한다 |
+
+영상은 `poster/video.py` 가 ffmpeg 으로 만든다. 판을 새로 그리지 않고 이미 찍은 장면을
+**장당 1.8초**씩 이어 붙이고 **0.4초**씩 겹친다(8장이면 14.8초). 값을 그렇게 고른 이유는
+그 파일 머리말에 적었다.
+
+세 가지가 걸리기 쉬워 올리기 전에 `video.check()` 가 본다 — h264 · yuv420p · 오디오 트랙.
+메타는 이 중 하나만 틀려도 **"처리 실패" 만 돌려주고 무엇이 틀렸는지 말해 주지 않는다.**
+
+- `yuv420p` — JPEG 은 full range(yuvj420p)로 들어온다. 필터에서 tv range 로 바꾸지 않으면
+  그대로 태깅돼 나가고, `-pix_fmt yuv420p` 를 줘도 같은 서브샘플링이라 ffmpeg 이 안 고친다.
+- **오디오 트랙** — API 로는 인기 음원을 못 붙이므로 영상은 무음이다. 그런데 트랙 자체가
+  없으면 인스타가 되돌려 보낸다. 무음 AAC 를 깔아서 올린다. 음악은 올린 뒤 앱에서 얹는다.
+- **9:16** — 표지 템플릿의 `.sheet` 가 1080×1350 으로 박혀 있어서 9:16 으로 찍어 달라고
+  해도 표지만 4:5 로 나왔다(영상 첫 두 장면에만 검은 띠). 이제 `collection.render` 가
+  크기를 CSS 변수로 넘기고, 표지는 `D.shape` 를 보고 문구도 바꾼다 — 릴스에서는
+  "넘겨서 보기" 가 거짓말이다(장면이 알아서 지나간다).
+
+**ffmpeg 이 필요하다.** 세 군데를 본다: `$FFMPEG` → PATH → imageio-ffmpeg.
+맥은 `brew install ffmpeg`, 없으면 `pip install imageio-ffmpeg` 로도 된다.
+
+**nginx 에 mp4 를 열어 둬야 한다.** `/ig/` 의 `types` 블록은 기본 mime.types 를
+**대체하므로** mp4 를 같이 적지 않으면 `application/octet-stream` 으로 나가고 메타가
+영상으로 안 받는다(`jd-viewer/nginx.conf`).
 
 ### 끝난 모집은 올리지 않는다
 
@@ -134,6 +177,8 @@ python -m publish.cli approve wanted-376128 -p instagram   # 한 곳만
 python -m poster.collection cats                       # 카테고리 목록
 python -m poster.collection pick week                  # 뭐가 들어가나 먼저 본다
 python -m publish.cli approve-collection week                      # 이번 주 채용
+python -m publish.cli approve-collection week --as reel            # 같은 묶음을 릴스 한 편으로
+python -m publish.cli approve-collection week --as reel --hold 2.2 # 한 장을 더 오래 보여준다
 python -m publish.cli approve-collection deadline --since 2026-09-21 --until 2026-09-27
 python -m publish.cli approve-collection role --value backend --limit 8
 python -m publish.cli approve-collection size --value 대기업

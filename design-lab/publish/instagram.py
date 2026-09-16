@@ -11,6 +11,10 @@
 
 image_url 은 메타 서버가 직접 받아 가는 주소라 반드시 공개 URL 이어야 하고 JPEG 만 된다.
 게시 한도는 24시간 이동 창에서 100건(content_publishing_limit 로 확인).
+
+**릴스**(`publish_video`)도 같은 세 단계인데, video_url 로 mp4 를 주고 기다리는 시간이
+훨씬 길다(메타가 받아서 다시 인코딩한다). `share_to_feed=true` 를 켜야 릴스 탭만이
+아니라 프로필 피드에도 남는다.
 """
 from __future__ import annotations
 
@@ -24,6 +28,9 @@ HOSTS = {"instagram": "https://graph.instagram.com", "facebook": "https://graph.
 
 # 문서 권장은 '1분에 한 번, 5분 이하'. 이미지는 대개 몇 초면 끝나서 앞쪽을 촘촘히 둔다.
 STATUS_WAITS = (3, 7, 20, 30, 60, 60, 60, 60)
+# 영상은 메타가 받아서 **다시 인코딩**한다. 이미지처럼 몇 초에 끝나지 않아
+# 따로 둔다(합 10분). 여기서 일찍 포기하면 멀쩡한 영상이 실패로 기록된다.
+VIDEO_WAITS = (10, 15, 20, 30, 45, 60, 60, 60, 60, 60, 60, 60)
 #: 캐러셀 한 게시물에 들어가는 장 수 상한
 CAROUSEL_MAX = 10
 
@@ -187,9 +194,77 @@ class InstagramPublisher(Publisher):
         return PublishResult(self.name, True, False, remote_id=media_id, url=permalink,
                              steps=steps, image_url=urls[0])
 
-    def _wait_container(self, creation_id: str) -> str:
+    def publish_video(self, *, video: Path, caption: str, cover: Path | None = None,
+                      link: str = "", dry_run: bool = True) -> PublishResult:
+        """릴스 — media_type=REELS + video_url 로 컨테이너를 만들고 처리가 끝나면 게시한다.
+
+        이미지와 다른 점이 셋이다.
+
+        1. **share_to_feed 를 켠다.** 안 켜면 릴스 탭에만 남고 프로필 피드(타임라인)에
+           안 보인다. 우리가 원하는 건 타임라인에 남는 것이다.
+        2. **훨씬 오래 걸린다.** 메타가 받아서 다시 인코딩한다 — VIDEO_WAITS 를 따로 둔 이유.
+        3. **음원을 못 붙인다.** API 로는 인기 음원 사용이 막혀 있어 영상은 무음으로
+           나간다(무음 AAC 트랙은 `poster.video` 가 깔아 둔다). 음악은 앱에서 얹는다.
+
+        표지(cover)는 넘기지 않는다. 릴스의 `cover_url` 도 공개 URL 을 요구하는데,
+        첫 장이 곧 표지가 되도록 판을 짜 두었으므로 한 장을 더 노출할 이유가 없다.
+        """
+        caption = caption[: self.caption_limit]
+        steps = [
+            {"step": "create_reel", "method": "POST", "url": f"{self._base}/media",
+             "params": {"media_type": "REELS", "video_url": f"<public>/{video.name}",
+                        "share_to_feed": "true", "caption": caption[:60] + "…"}},
+            {"step": "wait_container", "method": "GET", "url": f"{self._root}/<컨테이너>",
+             "params": {"fields": "status_code"}},
+            {"step": "publish_media", "method": "POST", "url": f"{self._base}/media_publish",
+             "params": {"creation_id": "<릴스 컨테이너>"}},
+        ]
+        if video.suffix.lower() not in (".mp4", ".mov"):
+            return PublishResult(self.name, False, dry_run, steps=steps,
+                                 error=f"릴스는 mp4/mov 만 받습니다: {video.name}")
+        try:
+            video_url = self.public_url_for(video) if not dry_run else f"<public>/{video.name}"
+        except RuntimeError as e:
+            return PublishResult(self.name, False, dry_run, error=str(e), steps=steps)
+        if dry_run:
+            return PublishResult(self.name, True, True, url=video_url, steps=steps)
+
+        missing = self.missing()
+        if missing:
+            return PublishResult(self.name, False, False, steps=steps,
+                                 error=f"자격 없음: {', '.join(missing)}")
+        token = self.creds["access_token"]
+        try:
+            made = self._request(f"{self._base}/media",
+                                 data={"media_type": "REELS", "video_url": video_url,
+                                       "share_to_feed": "true", "caption": caption,
+                                       "access_token": token})
+            cid = made.get("json", {}).get("id", "")
+            if not cid:
+                raise RuntimeError(f"릴스 컨테이너 id 없음: {made.get('json') or made.get('text')}")
+            if (st := self._wait_container(cid, waits=VIDEO_WAITS)) != "FINISHED":
+                raise RuntimeError(
+                    f"릴스 컨테이너 상태 {st} — 영상 주소를 메타가 못 받았거나 "
+                    f"규격에 걸렸습니다(h264/yuv420p/오디오 트랙): {video_url}")
+            done = self._request(f"{self._base}/media_publish",
+                                 data={"creation_id": cid, "access_token": token})
+            media_id = done.get("json", {}).get("id", "")
+            if not media_id:
+                raise RuntimeError(f"게시물 id 없음: {done.get('json') or done.get('text')}")
+        except RuntimeError as e:
+            return PublishResult(self.name, False, False, steps=steps, error=str(e))
+
+        permalink = ""
+        try:
+            permalink = self._get(f"{self._root}/{media_id}", fields="permalink").get("permalink", "")
+        except RuntimeError:
+            pass
+        return PublishResult(self.name, True, False, remote_id=media_id, url=permalink,
+                             steps=steps, image_url=video_url)
+
+    def _wait_container(self, creation_id: str, waits: tuple[int, ...] = STATUS_WAITS) -> str:
         status = "IN_PROGRESS"
-        for wait in STATUS_WAITS:
+        for wait in waits:
             self.sleep(wait)
             status = self._get(f"{self._root}/{creation_id}", fields="status_code").get("status_code", "")
             if status != "IN_PROGRESS":

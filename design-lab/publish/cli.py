@@ -158,10 +158,20 @@ def cmd_ls(args) -> int:
 INBOX = LAB_DIR / "inbox"
 # 인스타 피드가 받는 가로:세로 범위 — 4:5(0.8) 부터 1.91:1 까지
 RATIO_MIN, RATIO_MAX = 0.8, 1.91
+# 릴스는 세로다. 9:16(0.5625) 을 벗어나면 인스타가 위아래를 잘라 글자가 날아간다.
+# 여기 판은 그대로 올라가는 게 아니라 영상의 한 장면이 되므로 범위가 다르다.
+REEL_RATIO_MIN, REEL_RATIO_MAX = 0.5, 0.62
 
 
-def _check_image(path: Path) -> str:
-    """문제가 있으면 이유, 없으면 빈 문자열."""
+def _check_image(path: Path, *, reel: bool = False) -> str:
+    """문제가 있으면 이유, 없으면 빈 문자열.
+
+    비율 범위가 형태마다 다르다 — 피드에 그대로 올라가는 판(4:5~1.91:1)과
+    영상의 한 장면이 되는 판(9:16)은 지켜야 할 값이 아예 다르다. 한쪽 기준으로
+    둘 다 재면 멀쩡한 릴스 판이 전부 거절당한다.
+    """
+    lo, hi = (REEL_RATIO_MIN, REEL_RATIO_MAX) if reel else (RATIO_MIN, RATIO_MAX)
+    label = "릴스 세로(9:16)" if reel else "인스타 피드 범위(4:5 ~ 1.91:1)"
     if not path.is_file():
         return f"이미지가 없습니다: {path}"
     if path.read_bytes()[:3] != b"\xff\xd8\xff":
@@ -172,8 +182,8 @@ def _check_image(path: Path) -> str:
         return ""
     with Image.open(path) as im:
         w, h = im.size
-    if not RATIO_MIN - 0.01 <= w / h <= RATIO_MAX + 0.01:
-        return f"비율 {w}x{h} 는 인스타 피드 범위(4:5 ~ 1.91:1) 밖입니다"
+    if not lo - 0.01 <= w / h <= hi + 0.01:
+        return f"비율 {w}x{h} 는 {label} 밖입니다"
     return ""
 
 
@@ -273,11 +283,14 @@ def cmd_approve_collection(args) -> int:
             print(f"      {row['postings']:>3}건  {row['company']} {row['size']}")
         print("      BRAND_RESEARCH.md 절차로 만든 뒤 다시 묶으면 채워진다"
               " (급하면 --allow-generic 으로 기본 틀 판을 섞는다)")
+    # 릴스는 9:16 이다. 4:5 판으로 영상을 만들면 위아래에 검은 띠가 남거나
+    # 인스타가 잘라내 글자가 날아간다. 같은 템플릿을 크기만 바꿔 다시 찍는다.
+    reel = args.as_format == "reel"
     try:
-        paths = collection.render(col)
+        paths = collection.render(col, "ig_story" if reel else "ig_portrait")
     finally:
         shutdown()
-    problem = next((p for p in (_check_image(x) for x in paths) if p), "")
+    problem = next((p for p in (_check_image(x, reel=reel) for x in paths) if p), "")
     if problem:
         print(problem, file=sys.stderr)
         return 2
@@ -285,9 +298,34 @@ def cmd_approve_collection(args) -> int:
     item_id = uuid.uuid4().hex[:8]
     d = INBOX / item_id
     d.mkdir(parents=True)
+    # poster.jpg 는 두 형태 모두에 있다 — 데몬이 "묶음이 다 왔나" 를 이 파일로 판단하고,
+    # 8770 의 인스타 발행 칸이 미리보기로 쓴다. 릴스에서는 영상의 첫 장면이기도 하다.
     shutil.copyfile(paths[0], d / "poster.jpg")                 # 표지
-    for i, p in enumerate(paths[1:], 1):
-        shutil.copyfile(p, d / f"slide_{i:02d}.jpg")            # 공고 판 — 이름 순서가 캐러셀 순서
+    if reel:
+        from poster import video as video_mod
+        try:
+            mp4 = video_mod.build(paths, d / "reel.mp4",
+                                  hold=args.hold or video_mod.HOLD)
+        except video_mod.FFmpegMissing as e:
+            shutil.rmtree(d)
+            print(str(e), file=sys.stderr)
+            return 2
+        except (ValueError, RuntimeError) as e:
+            shutil.rmtree(d)
+            print(f"영상을 만들지 못했습니다: {e}", file=sys.stderr)
+            return 2
+        if (bad := video_mod.check(mp4)):
+            # 올려 놓고 "처리 실패" 를 받는 것보다 여기서 멈추는 쪽이 싸다.
+            shutil.rmtree(d)
+            print("릴스 규격에 안 맞습니다:\n  " + "\n  ".join(bad), file=sys.stderr)
+            return 2
+        info = video_mod.probe(mp4)
+        print(f"[video] reel.mp4  {info.get('seconds', '?')}초 "
+              f"{info.get('width')}×{info.get('height')}  {info.get('mb', '?')}MB  "
+              f"({len(paths)}장 × {args.hold or video_mod.HOLD}초)")
+    else:
+        for i, p in enumerate(paths[1:], 1):
+            shutil.copyfile(p, d / f"slide_{i:02d}.jpg")        # 공고 판 — 이름 순서가 캐러셀 순서
     by_platform = {p: captions.build_collection(col, p) for p in platforms}
     for p, text in by_platform.items():
         (d / f"caption_{p}.txt").write_text(text, encoding="utf-8")
@@ -297,11 +335,13 @@ def cmd_approve_collection(args) -> int:
         "platforms": platforms, "captions": by_platform,
         "caption": by_platform.get("instagram", ""), "note": args.note,
         "force": bool(args.force), "collection": col,
+        "format": "reel" if reel else "carousel",
         "approved_on": socket.gethostname(),
         "approved_at": datetime.now().isoformat(timespec="seconds"),
     }
     (d / "bundle.json").write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[approve] {item_id}  묶음 {len(paths)}장 → {', '.join(platforms)}")
+    shape = f"릴스 1편({len(paths)}장)" if reel else f"묶음 {len(paths)}장"
+    print(f"[approve] {item_id}  {shape} → {', '.join(platforms)}")
     print(f"          {d}")
     print(f"          caption_{platforms[0]}.txt 첫 줄: {by_platform[platforms[0]].splitlines()[0]}")
     return 0
@@ -419,6 +459,10 @@ def main() -> int:
     c.add_argument("-p", "--platforms", default="instagram,facebook")
     c.add_argument("--note", default="")
     c.add_argument("--force", action="store_true")
+    c.add_argument("--as", dest="as_format", default="carousel", choices=["carousel", "reel"],
+                   help="carousel(기본, 판 여러 장) | reel(같은 판을 넘기는 영상 한 편)")
+    c.add_argument("--hold", type=float, default=0.0,
+                   help="릴스: 한 장이 화면에 머무는 초(기본 1.8)")
     c.add_argument("--allow-generic", action="store_true",
                    help="전용 판 없는 회사도 기본 틀로 넣는다(기본은 전용 판만)")
     c.set_defaults(fn=cmd_approve_collection)

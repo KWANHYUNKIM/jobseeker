@@ -99,6 +99,19 @@ class Publisher(ABC):
         return PublishResult(self.name, False, dry_run,
                              error=f"{self.name} 은 여러 장 게시를 지원하지 않습니다({len(images)}장)")
 
+    def publish_video(self, *, video: Path, caption: str, cover: Path | None = None,
+                      link: str = "", dry_run: bool = True) -> PublishResult:
+        """묶음을 **영상 한 편**으로 올린다(인스타 릴스 / 페이스북 페이지 동영상).
+
+        같은 묶음을 캐러셀로도 영상으로도 낼 수 있지만 한 묶음은 둘 중 하나로만
+        나간다 — 같은 내용을 두 번 올리면 중복 게시로 보인다.
+
+        못 올리는 플랫폼은 그렇다고 말한다. 여기서 이미지로 조용히 물러나면, 영상을
+        기대한 자리에 정지 화면 한 장이 올라가고 아무도 그 사실을 모른다.
+        """
+        return PublishResult(self.name, False, dry_run,
+                             error=f"{self.name} 은 영상 게시를 지원하지 않습니다")
+
     # --- 공통 HTTP ----------------------------------------------------
     def _request(self, url: str, *, data=None, headers=None, method="POST",
                  json_body: dict | None = None, raw: bytes | None = None) -> dict:

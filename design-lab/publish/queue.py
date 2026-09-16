@@ -71,10 +71,13 @@ def add(job_key: str, *, template: str, formats: list[str], platforms: list[str]
     return item
 
 
-def add_approved(bundle: dict, image_rel: str, images: list[str] | None = None) -> dict:
+def add_approved(bundle: dict, image_rel: str, images: list[str] | None = None,
+                 video_rel: str = "") -> dict:
     """승인 묶음(inbox) 하나를 원장에 올린다. 같은 id 가 이미 있으면 그대로 돌려준다.
 
     images 가 있으면 묶음(카테고리) 게시물이다 — 표지 + 공고 판 여러 장이 한 게시물로 나간다.
+    video_rel 이 있으면 그 묶음은 **영상 한 편**으로 나간다(인스타 릴스 / 페이스북 동영상).
+    둘 중 하나다 — 같은 내용을 캐러셀로도 영상으로도 올리면 중복 게시로 보인다.
     """
     data = load()
     for item in data["items"]:
@@ -82,11 +85,18 @@ def add_approved(bundle: dict, image_rel: str, images: list[str] | None = None) 
             return item
     item = {
         "id": bundle["id"],
-        "kind": "collection" if images else "job",
+        # 묶음인지 공고 한 건인지. **판이 몇 장인지로 판단하지 않는다** — 릴스 묶음은
+        # 판 대신 mp4 한 개로 오므로 장 수로 재면 공고 한 건으로 오인되고, 그러면
+        # drop_closed 가 `collection:week-…` 를 공고 색인에서 찾다가 없으니 마감으로
+        # 보고 묶음을 통째로 버린다. 묶음의 표시는 카테고리 정보(collection)다.
+        "kind": "collection" if (bundle.get("collection") or images or video_rel) else "job",
         "job_key": bundle["job_key"],
         # 묶음일 때만: 카테고리 정보와 들어간 공고들
         "collection": bundle.get("collection") or {},
         "images": images or [],
+        # "carousel"(기본) | "reel". 발행 단계가 이 값으로 갈린다.
+        "format": "reel" if video_rel else (bundle.get("format") or "carousel"),
+        "video": video_rel,
         "company": bundle.get("company", ""),
         "role": bundle.get("role", ""),
         "template": bundle.get("template", "brand"),
