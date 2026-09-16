@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import json
 import mimetypes
 import uuid
 from pathlib import Path
@@ -40,7 +41,7 @@ class FacebookPublisher(Publisher):
     def publish(self, *, image: Path, caption: str, link: str = "",
                 dry_run: bool = True) -> PublishResult:
         ver = self.creds.get("graph_version", "v21.0")
-        url = f"{GRAPH}/{ver}/{self.creds.get('page_id', 'PAGE_ID')}/photos"
+        url = f"{GRAPH}/{ver}/{self.creds.get('page_id') or 'PAGE_ID'}/photos"
         message = caption[: self.caption_limit]
         if link and link not in message:
             message = f"{message}\n\n지원하기 → {link}"
@@ -58,3 +59,46 @@ class FacebookPublisher(Publisher):
         pid = resp.get("json", {}).get("post_id") or resp.get("json", {}).get("id", "")
         return PublishResult(self.name, bool(pid), False, remote_id=pid,
                              url=f"https://www.facebook.com/{pid}" if pid else "", steps=steps)
+
+    def publish_many(self, *, images: list[Path], caption: str, link: str = "",
+                     dry_run: bool = True) -> PublishResult:
+        """사진 여러 장 글 — 사진을 published=false 로 먼저 올려 id 를 받고, 글에 붙인다."""
+        if len(images) == 1:
+            return self.publish(image=images[0], caption=caption, link=link, dry_run=dry_run)
+        ver = self.creds.get("graph_version", "v21.0")
+        page = self.creds.get("page_id") or "PAGE_ID"   # dry-run 주소에 '//' 가 찍히지 않게
+        photos_url, feed_url = f"{GRAPH}/{ver}/{page}/photos", f"{GRAPH}/{ver}/{page}/feed"
+        message = caption[: self.caption_limit]
+        steps = [
+            {"step": "upload_photos", "method": "POST", "url": photos_url,
+             "params": {"published": "false", "source": f"<{len(images)}장>"}},
+            {"step": "create_post", "method": "POST", "url": feed_url,
+             "params": {"message": message[:80] + "…", "attached_media": "<사진 id 목록>"}},
+        ]
+        if dry_run:
+            return PublishResult(self.name, True, True, steps=steps)
+        missing = self.missing()
+        if missing:
+            return PublishResult(self.name, False, False, steps=steps,
+                                 error=f"자격 없음: {', '.join(missing)}")
+        token = self.creds["access_token"]
+        try:
+            ids = []
+            for img in images:
+                body, ctype = _multipart({"published": "false", "access_token": token}, "source", img)
+                r = self._request(photos_url, raw=body, headers={"Content-Type": ctype})
+                pid = r.get("json", {}).get("id", "")
+                if not pid:
+                    raise RuntimeError(f"사진 업로드 실패({img.name}): {r.get('json') or r.get('text')}")
+                ids.append(pid)
+            data = {"message": message, "access_token": token}
+            for i, pid in enumerate(ids):
+                data[f"attached_media[{i}]"] = json.dumps({"media_fbid": pid})
+            resp = self._request(feed_url, data=data)
+            post = resp.get("json", {}).get("id", "")
+            if not post:
+                raise RuntimeError(f"글 id 없음: {resp.get('json') or resp.get('text')}")
+        except RuntimeError as e:
+            return PublishResult(self.name, False, False, steps=steps, error=str(e))
+        return PublishResult(self.name, True, False, remote_id=post,
+                             url=f"https://www.facebook.com/{post}", steps=steps)

@@ -45,6 +45,7 @@ class PublishResult:
     url: str = ""
     error: str = ""
     steps: list[dict] = field(default_factory=list)   # 어떤 요청을 어떤 순서로 보냈는지
+    image_url: str = ""                                # 플랫폼에 넘긴 공개 이미지 주소
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -86,6 +87,18 @@ class Publisher(ABC):
                 dry_run: bool = True) -> PublishResult:
         """포스터 한 장을 올린다. dry_run 이면 요청을 만들기만 하고 안 보낸다."""
 
+    def publish_many(self, *, images: list[Path], caption: str, link: str = "",
+                     dry_run: bool = True) -> PublishResult:
+        """묶음(표지 + 공고 판 여러 장)을 게시물 하나로 올린다.
+
+        플랫폼마다 방식이 다르다(인스타는 캐러셀, 페이스북은 사진 여러 장 글). 여러 장을
+        못 올리는 플랫폼은 그렇다고 말한다 — 첫 장만 조용히 올리면 묶음이 반쪽이 된다.
+        """
+        if len(images) == 1:
+            return self.publish(image=images[0], caption=caption, link=link, dry_run=dry_run)
+        return PublishResult(self.name, False, dry_run,
+                             error=f"{self.name} 은 여러 장 게시를 지원하지 않습니다({len(images)}장)")
+
     # --- 공통 HTTP ----------------------------------------------------
     def _request(self, url: str, *, data=None, headers=None, method="POST",
                  json_body: dict | None = None, raw: bytes | None = None) -> dict:
@@ -99,6 +112,10 @@ class Publisher(ABC):
             headers.setdefault("Content-Type", "application/x-www-form-urlencoded")
         elif raw is not None:
             body = raw
+        if method == "GET" and data:
+            url = f"{url}{'&' if '?' in url else '?'}{urllib.parse.urlencode(data)}"
+            body = None
+            headers.pop("Content-Type", None)
         req = urllib.request.Request(url, data=body, headers=headers, method=method)
         try:
             with urllib.request.urlopen(req, timeout=60) as resp:
@@ -118,16 +135,37 @@ class Publisher(ABC):
     def public_url_for(self, image: Path) -> str:
         """인스타처럼 '공개 URL' 을 요구하는 곳에 쓸 주소.
 
-        out/ 을 그대로 웹에 노출하는 순간 남의 공고 이미지가 다 열린다. 그래서
-        base 는 설정에서만 온다 — 없으면 여기서 막는다.
+        out/ 을 그대로 웹에 노출하는 순간 승인 안 한 판·회사 원본 이미지까지 다 열린다.
+        그래서 올릴 한 장만 exposed/ 에 내용 해시 이름으로 복사하고, 뷰어 nginx 가
+        그 폴더만 /ig/ 로 내놓는다. base 는 설정에서만 온다 — 없으면 여기서 막는다.
         """
         base = (self.config.get("public_base_url") or "").rstrip("/")
         if not base:
             raise RuntimeError(
                 "public_base_url 이 없습니다. 인스타는 공개 URL 로만 받으므로 "
-                "config/accounts.json 에 out/ 을 노출할 주소를 적어야 합니다.")
-        rel = image.resolve().relative_to((LAB_DIR / "out").resolve())
-        return f"{base}/{rel.as_posix()}"
+                "config/accounts.json 에 exposed/ 를 내놓는 주소(https://<뷰어>/ig)를 적어야 합니다.")
+        return f"{base}/{expose(image)}"
+
+
+EXPOSED = LAB_DIR / "exposed"
+
+
+def expose(image: Path) -> str:
+    """이미지를 exposed/ 에 복사하고 파일 이름을 돌려준다.
+
+    이름은 내용 해시다 — 순번이나 공고키면 주소를 짐작해 아직 안 올린 판을 볼 수 있다.
+    같은 내용이면 같은 이름이라 재시도해도 쌓이지 않는다.
+    """
+    import hashlib
+    import shutil
+
+    data = image.read_bytes()
+    name = hashlib.sha256(data).hexdigest()[:24] + image.suffix.lower()
+    EXPOSED.mkdir(parents=True, exist_ok=True)
+    dest = EXPOSED / name
+    if not dest.is_file():
+        shutil.copyfile(image, dest)
+    return name
 
 
 def publisher_for(platform: str, config: dict | None = None) -> Publisher:

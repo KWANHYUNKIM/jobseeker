@@ -1,12 +1,23 @@
 {
-  "_설명": "이 파일을 accounts.json 으로 복사해 채운다. accounts.json 은 커밋하지 않는다.",
-  "public_base_url": "https://<내도메인>/design-lab-out",
+  "_설명": "이 파일을 accounts.json 으로 복사해 채운다. accounts.json 은 커밋하지 않는다. 계정 연결 절차는 SOCIAL.md",
+  "public_base_url": "https://<뷰어 고정 주소>/ig",
+
+  "autopublish": {
+    "_설명": "publish.daemon 이 읽는다. live 가 false 면 예약·연습 발행만 하고 실제로는 안 올린다",
+    "live": false,
+    "slots": ["12:30", "19:30"],
+    "max_attempts": 3,
+    "push_host": "jobseeker-mac",
+    "push_root": "jobseeker/design-lab"
+  },
 
   "instagram": {
-    "_필요": "인스타 프로 계정 + 연결된 페이스북 페이지 + Graph API 앱",
-    "_권한": "instagram_basic, instagram_content_publish, pages_read_engagement",
+    "_필요": "인스타 프로(비즈니스/크리에이터) 계정 + 메타 앱(Instagram API with Instagram Login)",
+    "_권한": "instagram_business_basic, instagram_business_content_publish",
+    "login": "instagram",
     "ig_user_id": "",
     "access_token": "",
+    "token_expires_at": "",
     "graph_version": "v21.0"
   },
   "facebook": {

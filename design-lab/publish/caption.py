@@ -58,7 +58,8 @@ def build(spec: dict, platform: str) -> str:
         head = f"{company} — {role}"
         sub = " / ".join(x for x in (meta, deadline) if x)
         body = "\n".join(_lines(spec)[:4])
-        tail = "지원 링크는 프로필에 있어요."
+        # 채용 사이트 주소는 캡션에도 적지 않는다(판과 같은 이유 — poster/carousel.py compose 주석).
+        tail = "지원 안내는 프로필 링크에서 볼 수 있어요."
         tagline = " ".join(f"#{t}" for t in tags)
         return "\n\n".join(x for x in (head, sub, body, tail, tagline) if x)
 
@@ -79,3 +80,46 @@ def build(spec: dict, platform: str) -> str:
 
 def preview(spec: dict) -> dict:
     return {p: build(spec, p) for p in ("instagram", "facebook", "linkedin")}
+
+
+#: 묶음 카테고리 → 캡션 해시태그에 얹을 말
+COLLECTION_TAGS = {
+    "week": ["이번주채용", "채용속보"], "deadline": ["마감임박", "지원마감"],
+    "role": ["직군별채용"], "size": ["대기업채용"], "stack": ["기술스택"],
+    "newgrad": ["신입채용", "신입개발자"],
+}
+
+
+def build_collection(col: dict, platform: str) -> str:
+    """묶음 캡션 — 표지에 있는 목록을 글로도 준다(검색·저장은 글에서 걸린다).
+
+    표지 이미지를 못 읽는 사람(스크린 리더·미리보기)도 어디가 들어 있는지 알게 회사 이름을
+    본문에 그대로 쓴다. 공고 주소는 넣지 않는다(판과 같은 규칙).
+    """
+    head = f"{col['kicker']} · {col['title']}"
+    lines = [f"{i:02d}. {j['company']} — {j['role']}"
+             + (f" ({j['career'].replace('경력 ', '')})" if j.get("career") else "")
+             for i, j in enumerate(col.get("jobs") or [], 1)]
+
+    stacks: list[str] = []
+    for j in col.get("jobs") or []:
+        for s in j.get("stack") or []:
+            t = _TAG_CLEAN.sub("", s)
+            if 1 < len(t) <= 18 and t not in stacks:
+                stacks.append(t)
+    tags = COLLECTION_TAGS.get(col.get("kind", ""), []) + stacks[:5] + BASE_TAGS
+    seen, out = set(), []
+    for t in tags:
+        if t.lower() not in seen:
+            seen.add(t.lower())
+            out.append(t)
+
+    if platform == "instagram":
+        tail = "각 회사 공고 전문은 넘겨서 보세요. 지원 안내는 프로필 링크에서."
+        return "\n\n".join([head, f"{col['count']}곳", "\n".join(lines), tail,
+                            " ".join(f"#{t}" for t in out[:12])])
+    if platform == "linkedin":
+        return "\n\n".join([f"{head} — {col['count']}곳", "\n".join(lines),
+                            " ".join(f"#{t}" for t in out[:4])])
+    return "\n\n".join([f"{head} — {col['count']}곳", "\n".join(lines),
+                        " ".join(f"#{t}" for t in out[:6])])
