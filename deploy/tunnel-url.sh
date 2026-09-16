@@ -21,7 +21,16 @@ found=0
 # 알려 준다(2026-09-17 에 ops·stats·뷰어 셋 다 그랬다 — 1.1.1.1 에서 NXDOMAIN).
 alive() {
   local code
-  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$1" 2>/dev/null || true)
+  # 이 맥의 로컬 DNS 는 갓 발급된 trycloudflare 이름을 한동안 못 찾는다. 그러면 살아 있는
+  # 터널을 죽었다고 판정한다(2026-09-17 교체 직후 실제로 그랬다 — 밖에서는 200 이었다).
+  # 공개 리졸버에 DoH 로 직접 묻는다. curl 이 --doh-url 을 모르면 그냥 간다.
+  # grep 에 -q 를 쓰지 않는다: 일찍 끝나면 curl 이 SIGPIPE 를 맞고, pipefail 아래서는
+  # 찾았는데도 못 찾은 것으로 나온다.
+  if curl --help all 2>/dev/null | grep -- '--doh-url' >/dev/null; then
+    code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 --doh-url https://1.1.1.1/dns-query "$1" 2>/dev/null || true)
+  else
+    code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$1" 2>/dev/null || true)
+  fi
   case "${code:-000}" in
     000) echo "끊김 — 이름이 없다, 재시작 필요" ;;
     530) echo "끊김 — 터널이 원본에 안 붙음, 재시작 필요" ;;
