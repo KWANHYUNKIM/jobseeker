@@ -143,6 +143,27 @@ class RatioCheckTest(unittest.TestCase):
         self.assertIn("밖입니다", cli._check_image(wide, reel=True))
 
 
+class CaptionTest(unittest.TestCase):
+    """캡션도 형태를 안다 — 판과 캡션이 서로 다른 말을 하면 안 된다."""
+
+    COL = {"id": "week-1", "kicker": "이번 주 채용", "title": "9월 14–20일",
+           "count": 2, "kind": "week",
+           "jobs": [{"company": "토스", "role": "Server Developer", "career": "5년 이상",
+                     "stack": ["Kotlin"], "until": ""},
+                    {"company": "쿠팡", "role": "Frontend Engineer", "career": "7년",
+                     "stack": ["React"], "until": ""}]}
+
+    def test_reel_caption_does_not_say_swipe(self):
+        from publish import caption
+        reel = caption.build_collection({**self.COL, "shape": "reel"}, "instagram")
+        carousel = caption.build_collection({**self.COL, "shape": "carousel"}, "instagram")
+        # 릴스는 넘기는 게 아니라 알아서 지나간다
+        self.assertNotIn("넘겨서", reel)
+        self.assertIn("이어서 나옵니다", reel)
+        # 캐러셀은 예전 말 그대로
+        self.assertIn("넘겨서", carousel)
+
+
 class FakePublisher:
     """캐러셀과 릴스 중 무엇으로 불렸는지 기록한다."""
     login = "instagram"

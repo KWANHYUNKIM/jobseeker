@@ -115,7 +115,12 @@ def build_collection(col: dict, platform: str) -> str:
             out.append(t)
 
     if platform == "instagram":
-        tail = "각 회사 공고 전문은 넘겨서 보세요. 지원 안내는 프로필 링크에서."
+        # 릴스에서는 넘기는 사람이 없다 — 장면이 알아서 지나간다. 표지 문구
+        # (collection_cover/hook)와 같은 규칙을 캡션에도 적용한다. 한쪽만 고치면
+        # 판은 "이어서 나옵니다" 라는데 캡션은 "넘겨서 보세요" 라고 말하게 된다.
+        tail = ("각 회사 공고 전문이 영상에 이어서 나옵니다. 지원 안내는 프로필 링크에서."
+                if col.get("shape") == "reel" else
+                "각 회사 공고 전문은 넘겨서 보세요. 지원 안내는 프로필 링크에서.")
         return "\n\n".join([head, f"{col['count']}곳", "\n".join(lines), tail,
                             " ".join(f"#{t}" for t in out[:12])])
     if platform == "linkedin":
