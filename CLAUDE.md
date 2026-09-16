@@ -8,7 +8,13 @@
     마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에
     다시 물어보는 재확인(`close_check` → `job_closures.json` 원장). 원장이 우선한다.
     크롤은 "지금 올라온 공고"만 알려주므로 재확인이 없으면 마감이 영영 안 닫힌다
-    (특히 마감일 표기가 아예 없는 wanted). auto_crawl 이 사이클마다 400건씩 돌린다.
+    (특히 목록에 마감일 표기가 없는 wanted). auto_crawl 이 사이클마다 400건씩 돌린다.
+    재확인은 **등록일도 같이 받아 온다** — 어느 크롤러도 수집하지 않던 값인데
+    원본이 이미 주고 있었다(JSON-LD `datePosted`, jumpit `publishedAt`).
+    wanted 는 chaos API 가 아니라 **공고 페이지 JSON-LD** 에 `datePosted`·
+    `validThrough` 가 둘 다 있다 — "wanted 는 마감일이 없다"는 API 얘기였다.
+    등록일이 없는 곳은 saramin 하나뿐이고 그 자리는 `first_seen_at` 이 대신한다
+    (추정값이라 화면이 구분해 보여준다). 출처표는 `db/README.md` 의 "3-1".
   - `monitoring/` : 헬스 기록·이상탐지(health)
   - `automation/` : 크롤 오케스트레이션(crawl_all) + 자동화 데몬(auto_crawl)
   - `dashboard/` : 통계 대시보드(serve.py, 8765)
@@ -32,6 +38,9 @@
     조용히 회전돼 버려지고 있었다. `build_trends`·`build_reposts`·`engagement.score`
     가 여기서 읽고, 씨앗 뿌리기는 `python -m store.ledgers seed`).
     **status 는 컬럼이 아니라 `job_state` 뷰다** — 저장하지 않으면 낡을 수 없다.
+    `posted_on`(등록일)은 close_check 만 쓴다 — `JOB_COLUMNS` 에 없어서 크롤이
+    NULL 로 덮지 못한다. 스키마를 고칠 때는 `db/migrations/` 에 번호순 ALTER 를
+    남긴다(돌고 있는 DB 는 `schema.sql` 을 다시 못 돌린다).
     이중 쓰기는 실패해도 사이클을 죽이지 않는다(`DB_DUAL_WRITE=0` 으로 끈다).
     목록에서 사라진 공고는 지우지 않고 `gone_at` 만 찍되, 그 사이트의 수집량이
     절반 아래로 떨어지면(`DB_GONE_MIN_RATIO`) 그 처리를 통째로 보류한다 —

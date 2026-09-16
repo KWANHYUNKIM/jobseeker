@@ -162,17 +162,25 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
             print(f"  [override] 수동 보정 {applied}건 적용", flush=True)
 
     # 모집중(active) / 마감(closed) 분리: job_status 의 마감일 파싱 기준
-    from pipeline.job_status import classify_status, today_date
+    from pipeline.job_status import classify_status, posted_for, today_date
     today = today_date()
     active_jobs: list[dict] = []
     closed_jobs: list[dict] = []
+    n_posted = 0
     for j in all_jobs:
         status, reason, dl_iso = classify_status(j, today)
         j["status"] = status
         j["closed_reason"] = reason
         j["deadline_date"] = dl_iso
+        # 등록일. 크롤은 이 값을 모르고, 마감 재확인(close_check)이 원본에서
+        # 받아다 원장에 넣어 둔 것을 여기서 꺼낸다. DB 경로에서는 store.export 가
+        # 같은 칸을 v_job.posted_on 으로 채운다.
+        if (posted := posted_for(j)):
+            j["posted_date"] = posted
+            n_posted += 1
         (active_jobs if status == "active" else closed_jobs).append(j)
-    print(f"  [status] 모집중 {len(active_jobs)}건 / 마감 {len(closed_jobs)}건", flush=True)
+    print(f"  [status] 모집중 {len(active_jobs)}건 / 마감 {len(closed_jobs)}건 "
+          f"(등록일 확보 {n_posted}건)", flush=True)
 
     # 누적 마감 아카이브(영구 보관): screenshots/closed_<label>.json
     archive_path = screens / f"closed_{out_label}.json"

@@ -233,7 +233,11 @@ def refresh_closures(limit: int = CLOSE_CHECK_LIMIT) -> int:
 
     크롤은 "지금 올라온 공고"만 가져오지, 어제 가져온 공고가 아직 살아 있는지는 말해
     주지 않는다. 누적 폴더는 한 번 수집한 공고를 계속 들고 있으므로 확인해 주는 쪽이
-    없으면 마감 공고가 영원히 모집중으로 남는다 — 특히 마감일 표기 자체가 없는 wanted.
+    없으면 마감 공고가 영원히 모집중으로 남는다 — 특히 목록에 마감 표기가 없는 wanted.
+
+    여기서 **등록일도 같이 받아 온다**(JSON-LD datePosted / jumpit publishedAt).
+    공고가 언제 올라왔는지는 어느 크롤러도 수집하지 않던 값이고, 재확인이 두드리는
+    페이지에 이미 들어 있다. 그래서 새 요청 없이 따라온다.
 
     회차당 상한을 두고 오래 방치된 것부터 돌아가며 확인한다. 몇 사이클에 걸쳐 전체를
     한 바퀴 돌게 되는데, 그래도 사이트마다 수천 건을 한 번에 두드리는 것보다 낫다
@@ -249,7 +253,8 @@ def refresh_closures(limit: int = CLOSE_CHECK_LIMIT) -> int:
     try:
         stats = close_check.run(limit=limit, verbose=False)
         detail = (f"확인 {stats['checked']}건 → 마감 {stats['closed']} / "
-                  f"모집중 {stats['active']} / 불명 {stats['unknown']}")
+                  f"모집중 {stats['active']} / 불명 {stats['unknown']} / "
+                  f"등록일 {stats.get('posted', 0)}")
         log(f"[close] {detail}")
         orch.builder_finished("마감 재확인", True, time.time() - t0, detail)
         return stats["closed"]

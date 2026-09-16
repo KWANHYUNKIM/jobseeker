@@ -14,6 +14,9 @@
   - 마감일 파싱 성공 & 오늘보다 과거 → closed
   - 그 외(파싱 실패/필드 없음) → active (정보없음)
 
+원장에는 마감일만이 아니라 **등록일**(`posted`)도 들어온다. 판정에는 안 쓰이므로
+`posted_for()` 로 따로 꺼낸다.
+
 텍스트만 보던 시절의 한계가 원장을 만든 이유다: wanted 는 마감일 필드 자체가 없어
 3천여 건이 영구 '모집중'이었고, 연도 없는 "06/14"는 몇 달만 지나면 어느 해인지로
 다시 흔들린다. 원장에는 연도까지 확정된 마감일과 사이트가 직접 말한 마감 여부가 들어온다.
@@ -80,6 +83,24 @@ def closure_for(job: dict) -> dict | None:
         return None
     entry = load_closures()["checked"].get(key)
     return entry if isinstance(entry, dict) else None
+
+
+def posted_for(job: dict) -> str | None:
+    """원장이 알아낸 **등록일**(ISO). 모르면 None.
+
+    마감 판정과는 상관이 없어서 classify_status 에 끼우지 않고 따로 뒀다.
+    `pipeline.close_check` 가 마감을 재확인하면서 같이 받아 온 값이고
+    (JSON-LD datePosted / jumpit publishedAt), 정본 DB 를 쓸 때는 `v_job.posted_on`
+    이 같은 답을 한다 — 이 함수는 DB 없이 JSON 만으로 도는 경로용이다.
+    """
+    entry = closure_for(job)
+    iso = (entry or {}).get("posted")
+    if not iso:
+        return None
+    try:
+        return date.fromisoformat(str(iso)[:10]).isoformat()
+    except ValueError:
+        return None
 
 
 def _collect_text(job: dict) -> str:

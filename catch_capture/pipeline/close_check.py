@@ -7,13 +7,24 @@
 
 그래서 여기서는 추측하지 않고 원본에 다시 묻는다. 사이트마다 답이 있는 자리가 다르다:
 
-  wanted   : chaos API 의 job.status / due_time      (status != active → 마감)
-  jumpit   : position API 의 closedAt / alwaysOpen   (연도 포함 마감일)
-  jobkorea : 상세 페이지 JSON-LD 의 validThrough     (연도 포함 마감일)
-  saramin  : 상세 페이지의 "마감일:YYYY-MM-DD"
-  dev      : catch 상세 JSON-LD 제목의 "[마감]" 접두
+  wanted   : chaos API 의 job.status / due_time + 공고 페이지 JSON-LD
+  jumpit   : position API 의 closedAt / alwaysOpen / publishedAt
+  jobkorea : 상세 페이지 JSON-LD 의 validThrough / datePosted
+  saramin  : 상세 페이지의 "마감일:YYYY-MM-DD" (등록일 표기는 없다)
+  dev      : catch 상세 JSON-LD 의 validThrough / datePosted, 제목의 "[마감]" 접두
   ats      : greenhouse/lever API 404, ashby 보드 목록에서 사라짐
   remote   : 원본 URL 이 404/410
+
+## 마감일만이 아니라 등록일도 받아 온다
+
+공고가 **언제 올라왔는지** 는 어느 크롤러도 수집하지 않았다. 그래서 목록을
+"최신순" 으로 줄 세울 수도, "올라온 지 3일" 을 보여줄 수도 없었다. 그런데 위
+엔드포인트 대부분이 그 값을 이미 함께 들고 온다(JSON-LD `datePosted`,
+jumpit `publishedAt`). 여기는 이미 그 페이지들을 두드리고 있으므로, 파서만
+늘리면 **새 요청 없이** 등록일이 따라온다. 판정 결과에 `posted` 로 실린다.
+
+없는 곳은 saramin 하나뿐이고, 그 자리는 `job.first_seen_at`(우리가 처음 본 날)이
+대신한다 — 추정값이므로 화면에서 구분해 보여준다.
 
 판정 결과는 `catch_capture/job_closures.json`(원장)에 쌓이고, 그걸 읽는 쪽은
 `job_status.classify_status` 하나다. 즉 aggregate 든 enrich 든 같은 답을 본다.
@@ -42,6 +53,7 @@ import urllib.error
 import urllib.request
 from datetime import date, datetime
 from pathlib import Path
+from typing import NamedTuple
 
 from pipeline.job_status import (
     CLOSURES_PATH,
@@ -63,11 +75,23 @@ RECHECK_DAYS = 7         # 모집중으로 확인된 공고를 다시 묻기까�
 SLEEP_MS = 450           # 요청 간 기본 간격(지터 적용)
 SAVE_EVERY = 25          # 중간 저장 간격 — 도중에 죽어도 확인분은 남는다
 
-# 판정 결과: (status, reason, deadline_iso)
-#   status "closed" | "active" | "unknown"
-#   unknown 은 "물어봤지만 답을 못 얻음" 이다. 원장에는 남기되(같은 공고를 매 회차
-#   다시 두드리지 않으려고) job_status 는 이를 무시하고 기존 텍스트 규칙으로 돌아간다.
-Verdict = tuple[str, str, str | None]
+class Verdict(NamedTuple):
+    """원본에 물어본 결과.
+
+    status  "closed" | "active" | "unknown". unknown 은 "물어봤지만 답을 못 얻음"
+            이다. 원장에는 남기되(같은 공고를 매 회차 다시 두드리지 않으려고)
+            job_status 는 이를 무시하고 기존 텍스트 규칙으로 돌아간다.
+    reason  사람이 읽는 근거. 화면의 마감 배지에 그대로 나간다.
+    deadline 연도까지 확정된 마감일(ISO). 크롤 텍스트의 "06/14" 와 달리 흔들리지 않는다.
+    posted  원본이 말한 등록일(ISO). 모르면 None — 그 자리는 first_seen_at 이 맡는다.
+
+    튜플이던 것을 이름 붙인 이유: 판정 결과가 3개에서 4개로 늘면서, 위치로
+    받는 쪽이 조용히 어긋날 자리가 생겼다.
+    """
+    status: str
+    reason: str
+    deadline: str | None = None
+    posted: str | None = None
 
 
 def _sleep() -> None:
@@ -102,39 +126,77 @@ def _iso(value: str | None) -> str | None:
         return None
 
 
-def _by_deadline(iso: str | None, today: date, open_reason: str) -> Verdict:
+def _by_deadline(iso: str | None, today: date, open_reason: str,
+                 posted: str | None = None) -> Verdict:
     """연도까지 확인된 마감일로 판정. 마감일이 없으면 모집중으로 둔다."""
     if iso:
         if date.fromisoformat(iso) < today:
-            return "closed", f"원본 확인: 마감일 경과({iso})", iso
-        return "active", f"원본 확인: 마감 {iso}", iso
-    return "active", open_reason, None
+            return Verdict("closed", f"원본 확인: 마감일 경과({iso})", iso, posted)
+        return Verdict("active", f"원본 확인: 마감 {iso}", iso, posted)
+    return Verdict("active", open_reason, None, posted)
+
+
+# ── schema.org JobPosting ────────────────────────────────────────────────
+# wanted·jobkorea·catch 세 곳이 같은 형식을 쓴다. 따옴표가 이스케이프된 채로
+# (\") 스크립트 문자열 안에 박혀 오는 경우가 있어 둘 다 받는다.
+_LD_POSTED = re.compile(r'\\?"datePosted\\?"\s*:\s*\\?"([^"\\]+)')
+_LD_VALID = re.compile(r'\\?"validThrough\\?"\s*:\s*\\?"([^"\\]+)')
+
+
+def jsonld_dates(html: str) -> tuple[str | None, str | None]:
+    """(등록일, 마감일) — 둘 다 ISO 날짜. 없으면 None."""
+    pm = _LD_POSTED.search(html)
+    vm = _LD_VALID.search(html)
+    return _iso(pm.group(1) if pm else None), _iso(vm.group(1) if vm else None)
+
+
+def merge_dates(v: Verdict, html: str, today: date) -> Verdict:
+    """이미 난 판정에 공고 페이지 JSON-LD 의 날짜를 얹는다.
+
+    **덮어쓰지 않는다.** API 가 답한 값이 있으면 그것이 우선이고, 비어 있던 칸만
+    채운다. 그리고 그렇게 채운 마감일이 이미 지났으면 그때 비로소 마감으로 돌린다 —
+    "마감일 필드가 없어서 모집중" 이던 공고가 닫히는 자리가 여기다.
+    """
+    posted, valid = jsonld_dates(html)
+    posted = v.posted or posted
+    if v.status == "closed":
+        return v._replace(deadline=v.deadline or valid, posted=posted)
+    deadline = v.deadline or valid
+    if deadline and date.fromisoformat(deadline) < today:
+        return Verdict("closed", f"원본 확인: 마감일 경과({deadline})", deadline, posted)
+    if deadline:
+        return Verdict("active", f"원본 확인: 마감 {deadline}", deadline, posted)
+    return v._replace(posted=posted)
 
 
 # ── 사이트별 판정(파싱만; 네트워크 없음 → selftest 가능) ─────────────────
 
 def verdict_wanted(payload: dict, today: date) -> Verdict:
+    """chaos details API 의 답. 등록일은 여기 없다 — check_wanted 가 페이지에서 채운다."""
     job = payload.get("job") or {}
     status = str(job.get("status") or "").lower()
     iso = _iso(job.get("due_time"))
     if status and status != "active":
         # close(마감) / draft(내림) / hidden — 어느 쪽이든 지원할 수 없다
-        return "closed", f"원본 상태 {status}" + (f"(마감 {iso})" if iso else ""), iso
+        return Verdict("closed", f"원본 상태 {status}" + (f"(마감 {iso})" if iso else ""), iso)
     if not status:
-        return "unknown", "원본 상태 필드 없음", iso
+        return Verdict("unknown", "원본 상태 필드 없음", iso)
     return _by_deadline(iso, today, "원본 확인: 모집중")
 
 
 def verdict_jumpit(payload: dict, today: date) -> Verdict:
     result = payload.get("result")
     if not result:
-        return "closed", "원본 조회 불가(내려간 공고)", None
+        return Verdict("closed", "원본 조회 불가(내려간 공고)")
+    # jumpit 만 등록일을 구조화된 필드로 준다. 지금까지 같은 응답을 받아 놓고
+    # closedAt 만 읽고 버리던 값이다.
+    posted = _iso(result.get("publishedAt"))
     if result.get("alwaysOpen"):
-        return "active", "원본 확인: 상시채용", None
+        return Verdict("active", "원본 확인: 상시채용", None, posted)
     iso = _iso(result.get("closedAt"))
     if not iso:
-        return "unknown", "마감일 필드 없음", None
-    return _by_deadline(iso, today, "원본 확인: 모집중")
+        return Verdict("unknown", "마감일 필드 없음", None, posted)
+    return _by_deadline(iso, today, "원본 확인: 모집중", posted)
 
 
 _JOBKOREA_VALID = re.compile(r'validThrough\\?"?\s*:\s*\\?"(\d{4}-\d{2}-\d{2})')
@@ -148,41 +210,58 @@ _ALWAYS_OPEN = re.compile(r"상시\s*채용|수시\s*채용|채용\s*시\s*마�
 
 
 def verdict_jobkorea(html: str, today: date) -> Verdict:
+    posted, valid = jsonld_dates(html)
     if _GONE.search(html):
-        return "closed", "원본 확인: 마감된 공고", None
-    m = _JOBKOREA_VALID.search(html)
-    iso = _iso(m.group(1)) if m else None
+        return Verdict("closed", "원본 확인: 마감된 공고", None, posted)
+    iso = valid
+    if not iso:
+        m = _JOBKOREA_VALID.search(html)
+        iso = _iso(m.group(1)) if m else None
     if not iso:
         m = _JOBKOREA_DEADLINE.search(html)
         iso = _iso(m.group(1)) if m else None
     if not iso:
         if _ALWAYS_OPEN.search(html):
-            return "active", "원본 확인: 상시채용", None
-        return "unknown", "마감일 표기를 찾지 못함", None
-    return _by_deadline(iso, today, "원본 확인: 모집중")
+            return Verdict("active", "원본 확인: 상시채용", None, posted)
+        return Verdict("unknown", "마감일 표기를 찾지 못함", None, posted)
+    return _by_deadline(iso, today, "원본 확인: 모집중", posted)
 
 
 def verdict_saramin(html: str, today: date) -> Verdict:
+    """saramin 은 JSON-LD 도 등록일 표기도 없다 — 마감일(meta description)만 답한다.
+
+    다섯 사이트 중 여기 하나만 등록일을 얻을 길이 없다. 그 자리는 `job.first_seen_at`
+    이 대신하고, 화면은 그것을 추정값으로 표시한다.
+    """
     if _GONE.search(html):
-        return "closed", "원본 확인: 마감된 공고", None
+        return Verdict("closed", "원본 확인: 마감된 공고")
     m = _SARAMIN_DEADLINE.search(html)
     iso = _iso(m.group(1)) if m else None
     if not iso:
         if _ALWAYS_OPEN.search(html):
-            return "active", "원본 확인: 상시채용", None
-        return "unknown", "마감일 표기를 찾지 못함", None
+            return Verdict("active", "원본 확인: 상시채용")
+        return Verdict("unknown", "마감일 표기를 찾지 못함")
     return _by_deadline(iso, today, "원본 확인: 모집중")
 
 
 def verdict_catch(html: str, today: date) -> Verdict:
     """catch(dev)는 마감돼도 페이지가 남고, 대신 JSON-LD 제목 앞에 [마감] 이 붙는다.
 
-    표기가 없다고 모집중으로 단정하지는 않는다 — catch 는 남의 공채를 모아 오는 자리라
-    원본이 닫혀도 여기 표기가 늦을 수 있다. 마감 쪽으로만 확정하고, 아니면 공고가
-    들고 온 마감일 텍스트("~06.14(일) 24시")에 판정을 돌려준다."""
+    그 표기만 보던 것을 JSON-LD 의 `validThrough` 까지 보도록 넓혔다 — 접수 마감이
+    지났는데 제목은 아직 안 바뀐 공고가 그동안 모집중으로 남았다.
+
+    둘 다 없으면 여전히 모집중으로 단정하지 않는다. catch 는 남의 공채를 모아 오는
+    자리라 원본이 닫혀도 여기 표기가 늦을 수 있다. 마감 쪽으로만 확정하고, 아니면
+    공고가 들고 온 마감일 텍스트("~06.14(일) 24시")에 판정을 돌려준다.
+    """
+    posted, valid = jsonld_dates(html)
     if _CATCH_CLOSED.search(html):
-        return "closed", "원본 확인: 제목 [마감]", None
-    return "unknown", "[마감] 표기 없음 — 텍스트 규칙 유지", None
+        return Verdict("closed", "원본 확인: 제목 [마감]", valid, posted)
+    if valid and date.fromisoformat(valid) < today:
+        return Verdict("closed", f"원본 확인: 마감일 경과({valid})", valid, posted)
+    if valid:
+        return Verdict("active", f"원본 확인: 마감 {valid}", valid, posted)
+    return Verdict("unknown", "[마감] 표기 없음 — 텍스트 규칙 유지", None, posted)
 
 
 # ── 사이트별 확인(네트워크) ──────────────────────────────────────────────
@@ -190,30 +269,50 @@ def verdict_catch(html: str, today: date) -> Verdict:
 def _json_verdict(url: str, parse, today: date, referer: str | None = None) -> Verdict:
     code, body = _fetch(url, referer=referer)
     if code in (404, 410):
-        return "closed", f"원본 삭제(HTTP {code})", None
+        return Verdict("closed", f"원본 삭제(HTTP {code})")
     if code != 200 or not body:
-        return "unknown", f"확인 실패(http={code})", None
+        return Verdict("unknown", f"확인 실패(http={code})")
     try:
         payload = json.loads(body)
     except Exception:                                               # noqa: BLE001
-        return "unknown", "응답 파싱 실패", None
+        return Verdict("unknown", "응답 파싱 실패")
     return parse(payload, today)
 
 
 def _html_verdict(url: str, parse, today: date) -> Verdict:
     code, body = _fetch(url)
     if code in (404, 410):
-        return "closed", f"원본 삭제(HTTP {code})", None
+        return Verdict("closed", f"원본 삭제(HTTP {code})")
     if code != 200 or not body:
-        return "unknown", f"확인 실패(http={code})", None
+        return Verdict("unknown", f"확인 실패(http={code})")
     return parse(body, today)
 
 
 def check_wanted(job: dict, today: date, cache: dict) -> Verdict:
+    """chaos API 로 상태를, 공고 페이지 JSON-LD 로 날짜를 받는다.
+
+    "wanted 는 마감일 필드가 없다" 는 **API 에만** 해당하는 말이었다. 공고 페이지
+    HTML 에는 schema.org JobPosting 이 들어 있고 거기에 `datePosted` 와
+    `validThrough` 가 둘 다 있다. 그걸 안 읽어서 3천여 건이 영구 모집중이었다.
+
+    요청이 두 번이므로 **이미 마감으로 확정된 공고에는 두 번째를 보내지 않는다** —
+    닫힌 공고의 등록일은 알아도 쓸 데가 없고, 회차당 상한이 정해진 예산을 나눠 쓰는
+    자리다. 그래서 늘어나는 요청은 "아직 열려 있는 wanted 공고" 수만큼이다.
+    """
     pid = str(job.get("pid") or job.get("position_id") or "")
-    return _json_verdict(
+    page = f"https://www.wanted.co.kr/wd/{pid}"
+    v = _json_verdict(
         f"https://www.wanted.co.kr/api/chaos/jobs/v1/{pid}/details",
-        verdict_wanted, today, referer=f"https://www.wanted.co.kr/wd/{pid}")
+        verdict_wanted, today, referer=page)
+    if v.status == "closed":
+        return v
+    _sleep()
+    code, html = _fetch(page)
+    if code in (404, 410):
+        return Verdict("closed", f"원본 삭제(HTTP {code})", v.deadline, v.posted)
+    if code != 200 or not html:
+        return v
+    return merge_dates(v, html, today)
 
 
 def check_jumpit(job: dict, today: date, cache: dict) -> Verdict:
@@ -238,7 +337,7 @@ def check_saramin(job: dict, today: date, cache: dict) -> Verdict:
 def check_dev(job: dict, today: date, cache: dict) -> Verdict:
     url = job.get("url") or ""
     if not url:
-        return "unknown", "URL 없음", None
+        return Verdict("unknown", "URL 없음")
     return _html_verdict(url, verdict_catch, today)
 
 
@@ -269,34 +368,34 @@ def check_board(job: dict, today: date, cache: dict) -> Verdict:
     if provider == "greenhouse" and len(parts) == 3:
         code, _ = _fetch(f"https://boards-api.greenhouse.io/v1/boards/{parts[1]}/jobs/{parts[2]}")
         if code in (404, 410):
-            return "closed", "greenhouse 보드에서 내려감", None
-        return ("active", "원본 확인: 모집중", None) if code == 200 else \
-               ("unknown", f"확인 실패(http={code})", None)
+            return Verdict("closed", "greenhouse 보드에서 내려감")
+        return Verdict("active", "원본 확인: 모집중") if code == 200 else \
+               Verdict("unknown", f"확인 실패(http={code})")
 
     if provider == "lever" and len(parts) == 3:
         code, _ = _fetch(f"https://api.lever.co/v0/postings/{parts[1]}/{parts[2]}")
         if code in (404, 410):
-            return "closed", "lever 보드에서 내려감", None
-        return ("active", "원본 확인: 모집중", None) if code == 200 else \
-               ("unknown", f"확인 실패(http={code})", None)
+            return Verdict("closed", "lever 보드에서 내려감")
+        return Verdict("active", "원본 확인: 모집중") if code == 200 else \
+               Verdict("unknown", f"확인 실패(http={code})")
 
     if provider == "ashby" and len(parts) == 3:
         ids = _ashby_board(parts[1], cache)
         if ids is None:
-            return "unknown", "ashby 보드 조회 실패", None
+            return Verdict("unknown", "ashby 보드 조회 실패")
         if parts[2] in ids:
-            return "active", "원본 확인: 모집중", None
-        return "closed", "ashby 보드에서 내려감", None
+            return Verdict("active", "원본 확인: 모집중")
+        return Verdict("closed", "ashby 보드에서 내려감")
 
     # 스크랩 보드(remoteok/wwr/himalayas): 페이지가 살아 있으면 모집중으로 단정할 수
     # 없으니 사라진 경우만 닫는다.
     url = job.get("url") or ""
     if not url:
-        return "unknown", "URL 없음", None
+        return Verdict("unknown", "URL 없음")
     code, _ = _fetch(url)
     if code in (404, 410):
-        return "closed", f"원본 삭제(HTTP {code})", None
-    return "unknown", f"페이지 생존(http={code}) — 마감 여부 불명", None
+        return Verdict("closed", f"원본 삭제(HTTP {code})")
+    return Verdict("unknown", f"페이지 생존(http={code}) — 마감 여부 불명")
 
 
 CHECKERS = {
@@ -317,6 +416,14 @@ def save_closures(ledger: dict, path: Path = CLOSURES_PATH) -> None:
     tmp = path.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(ledger, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp.replace(path)
+
+
+def _as_date(value: str | None):
+    """원장의 ISO 문자열 → date. 못 읽으면 None."""
+    try:
+        return datetime.fromisoformat(value).date() if value else None
+    except (ValueError, TypeError):
+        return None
 
 
 def record_to_db(verdicts: list[tuple[str, dict]]) -> int:
@@ -349,18 +456,24 @@ def record_to_db(verdicts: list[tuple[str, dict]]) -> int:
                     row = cur.fetchone()
                     if not row:
                         continue        # 아직 DB 에 안 들어온 공고 — 다음 회차에 잡힌다
-                    dl = e.get("deadline")
-                    try:
-                        dl_date = datetime.fromisoformat(dl).date() if dl else None
-                    except (ValueError, TypeError):
-                        dl_date = None
+                    dl_date = _as_date(e.get("deadline"))
+                    posted = _as_date(e.get("posted"))
                     cur.execute(
                         """INSERT INTO job_closure_check
-                               (job_id, checked_at, closed, deadline_on, evidence, checker)
-                           VALUES (%s,%s,%s,%s,%s,'close_check')""",
+                               (job_id, checked_at, closed, deadline_on, posted_on,
+                                evidence, checker)
+                           VALUES (%s,%s,%s,%s,%s,%s,'close_check')""",
                         (row["id"], e.get("checked_at"), e["status"] == "closed",
-                         dl_date, e.get("reason")),
+                         dl_date, posted, e.get("reason")),
                     )
+                    # 등록일은 공고의 속성이라 job 에도 올려 둔다(뷰가 매번 원장을
+                    # 뒤지지 않게). **덮어쓰지 않는다** — 한번 확정된 등록일은
+                    # 바뀌지 않고, 다음 확인이 못 읽어 온 NULL 로 지워지면 안 된다.
+                    if posted:
+                        cur.execute(
+                            "UPDATE job SET posted_on = COALESCE(posted_on, %s) WHERE id = %s",
+                            (posted, row["id"]),
+                        )
                     n += 1
             db.commit()
     except Exception as e:                                          # noqa: BLE001
@@ -490,7 +603,7 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
     jobs, src = _source_jobs(recheck_closed)
     if not jobs:
         print("[close_check] 확인할 공고 목록을 찾지 못했습니다.", flush=True)
-        return {"checked": 0, "closed": 0, "active": 0, "unknown": 0}
+        return {"checked": 0, "closed": 0, "active": 0, "unknown": 0, "posted": 0}
 
     ledger = load_closures(force=True)
     entries: dict = ledger.setdefault("checked", {})
@@ -503,28 +616,35 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
 
     cache: dict = {}
     fresh: list[tuple[str, dict]] = []       # 이번 회차 판정 — DB 에도 남긴다
-    stats = {"checked": 0, "closed": 0, "active": 0, "unknown": 0}
+    stats = {"checked": 0, "closed": 0, "active": 0, "unknown": 0, "posted": 0}
     per_site: dict[str, list[int]] = {}
     for job in targets[:limit]:
         site = job["site"]
         try:
-            status, reason, iso = CHECKERS[site](job, today, cache)
+            v = CHECKERS[site](job, today, cache)
         except Exception as e:                                      # noqa: BLE001
-            status, reason, iso = "unknown", f"예외: {e!r}", None
+            v = Verdict("unknown", f"예외: {e!r}")
         stats["checked"] += 1
-        stats[status] += 1
-        tally = per_site.setdefault(site, [0, 0, 0])
-        tally[{"closed": 0, "active": 1, "unknown": 2}[status]] += 1
+        stats[v.status] += 1
+        if v.posted:
+            stats["posted"] += 1
+        tally = per_site.setdefault(site, [0, 0, 0, 0])
+        tally[{"closed": 0, "active": 1, "unknown": 2}[v.status]] += 1
+        if v.posted:
+            tally[3] += 1
 
-        if verbose and status == "closed":
+        if verbose and v.status == "closed":
             print(f"  ✖ {site:<8} {str(job.get('company'))[:14]:<14} "
-                  f"{str(job.get('title'))[:34]:<34} {reason}", flush=True)
+                  f"{str(job.get('title'))[:34]:<34} {v.reason}", flush=True)
         if not dry_run:
             key = closure_key(job)
             entry = {
-                "status": status,
-                "reason": reason,
-                "deadline": iso,
+                "status": v.status,
+                "reason": v.reason,
+                "deadline": v.deadline,
+                # 원본이 말한 등록일. 없을 수도 있고(saramin), 마감 판정과는 무관하다 —
+                # 여기 실어 두는 이유는 이 페이지를 다시 두드리지 않기 위해서다.
+                "posted": v.posted,
                 "checked_at": now.isoformat(timespec="seconds"),
                 "url": job.get("url", ""),
                 "company": job.get("company", ""),
@@ -545,10 +665,11 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
             print(f"[close_check] 정본 DB 에 {n_db:,}건 기록", flush=True)
 
     print(f"[close_check] 확인 {stats['checked']:,}건 → 마감 {stats['closed']:,} / "
-          f"모집중 {stats['active']:,} / 판정불가 {stats['unknown']:,}"
+          f"모집중 {stats['active']:,} / 판정불가 {stats['unknown']:,} / "
+          f"등록일 확보 {stats['posted']:,}"
           f"{' (dry-run: 원장 미기록)' if dry_run else ''}", flush=True)
-    for site, (c, a, u) in sorted(per_site.items()):
-        print(f"    {site:<9} 마감 {c:>4} / 모집중 {a:>4} / 불명 {u:>4}", flush=True)
+    for site, (c, a, u, pd) in sorted(per_site.items()):
+        print(f"    {site:<9} 마감 {c:>4} / 모집중 {a:>4} / 불명 {u:>4} / 등록일 {pd:>4}", flush=True)
     return stats
 
 
@@ -585,13 +706,60 @@ def _selftest() -> int:
          verdict_catch('{"@type":"JobPosting","title":"[마감] 개발자 채용"}', t), "closed"),
         ("catch-표기없음",
          verdict_catch('{"@type":"JobPosting","title":"개발자 채용"}', t), "unknown"),
+        # validThrough 로도 닫는다 — 제목의 [마감] 표기가 늦는 공고가 있다
+        ("catch-validThrough-지남",
+         verdict_catch('"title":"개발자 채용","validThrough":"2026-06-14T23:59:59+09:00"', t), "closed"),
+        ("catch-validThrough-앞으로",
+         verdict_catch('"title":"개발자 채용","validThrough":"2026-09-30T23:59:59+09:00"', t), "active"),
+        # wanted: API 는 active 라는데 페이지 JSON-LD 의 마감일이 지났다 → 닫는다.
+        # 이 한 줄이 wanted 3천여 건을 영구 모집중으로 두던 구멍이다.
+        ("wanted-페이지마감일-지남",
+         merge_dates(verdict_wanted({"job": {"status": "active"}}, t),
+                     '"datePosted":"2026-06-11","validThrough":"2026-07-27"', t), "closed"),
+        ("wanted-페이지마감일-앞으로",
+         merge_dates(verdict_wanted({"job": {"status": "active"}}, t),
+                     '"datePosted":"2026-08-07","validThrough":"2026-09-30"', t), "active"),
     ]
     failed = 0
-    for name, (status, reason, _iso), want in cases:
-        if status != want:
+    for name, v, want in cases:
+        if v.status != want:
             failed += 1
-            print(f"FAIL {name} → {status} (기대 {want}, {reason})")
-    print(f"close_check selftest: {len(cases) - failed}/{len(cases)} 통과")
+            print(f"FAIL {name} → {v.status} (기대 {want}, {v.reason})")
+
+    # 등록일 수확 — 마감 판정과 별개로, 원본이 말한 등록일이 실려 나오는지.
+    posted_cases = [
+        ("jumpit-publishedAt",
+         verdict_jumpit({"result": {"publishedAt": "2026-08-01 09:00:00",
+                                    "closedAt": "2026-09-30 23:59:59"}}, t), "2026-08-01"),
+        ("jobkorea-datePosted",
+         verdict_jobkorea('"datePosted": "2026-06-29", "validThrough": "2026-09-28T23:59"', t),
+         "2026-06-29"),
+        ("jobkorea-이스케이프된-LD",
+         verdict_jobkorea(r'\"datePosted\": \"2026-06-29\", \"validThrough\": \"2026-09-28\"', t),
+         "2026-06-29"),
+        ("catch-datePosted",
+         verdict_catch('"title":"채용","datePosted":"2026-06-25T08:17:00.000Z",'
+                       '"validThrough":"2026-09-30T23:59:59+09:00"', t), "2026-06-25"),
+        ("wanted-페이지-datePosted",
+         merge_dates(verdict_wanted({"job": {"status": "active"}}, t),
+                     '"datePosted":"2026-08-07","validThrough":"2026-09-30"', t), "2026-08-07"),
+        # saramin 만 등록일을 얻을 길이 없다. 그 사실 자체를 고정해 둔다.
+        ("saramin-등록일없음", verdict_saramin("마감일:2026-09-30", t), None),
+    ]
+    for name, v, want in posted_cases:
+        if v.posted != want:
+            failed += 1
+            print(f"FAIL(등록일) {name} → {v.posted} (기대 {want})")
+
+    # merge_dates 는 API 가 답한 값을 덮지 않는다(빈 칸만 채운다).
+    api = Verdict("active", "원본 확인: 마감 2026-09-30", "2026-09-30", None)
+    merged = merge_dates(api, '"datePosted":"2026-08-07","validThrough":"2026-12-31"', t)
+    if merged.deadline != "2026-09-30" or merged.posted != "2026-08-07":
+        failed += 1
+        print(f"FAIL(merge) API 값을 덮어씀 → {merged}")
+
+    total = len(cases) + len(posted_cases) + 1
+    print(f"close_check selftest: {total - failed}/{total} 통과")
     return 1 if failed else 0
 
 
