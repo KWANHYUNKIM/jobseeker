@@ -4,3 +4,6 @@ config/accounts.json
 out/
 state/
 assets/companies/
+# 승인 묶음(윈도우 → 맥)과, 뷰어 nginx 가 /ig/ 로 내놓는 발행 이미지
+inbox/
+exposed/
