@@ -303,9 +303,14 @@ def cmd_approve_collection(args) -> int:
     shutil.copyfile(paths[0], d / "poster.jpg")                 # 표지
     if reel:
         from poster import video as video_mod
+        track = Path(args.audio).expanduser() if args.audio else None
+        if track and not track.is_file():
+            shutil.rmtree(d)
+            print(f"음원 파일이 없습니다: {track}", file=sys.stderr)
+            return 2
         try:
             mp4 = video_mod.build(paths, d / "reel.mp4",
-                                  hold=args.hold or video_mod.HOLD)
+                                  hold=args.hold or video_mod.HOLD, audio=track)
         except video_mod.FFmpegMissing as e:
             shutil.rmtree(d)
             print(str(e), file=sys.stderr)
@@ -322,11 +327,15 @@ def cmd_approve_collection(args) -> int:
         info = video_mod.probe(mp4)
         print(f"[video] reel.mp4  {info.get('seconds', '?')}초 "
               f"{info.get('width')}×{info.get('height')}  {info.get('mb', '?')}MB  "
-              f"({len(paths)}장 × {args.hold or video_mod.HOLD}초)")
+              f"({len(paths)}장 × {args.hold or video_mod.HOLD}초)  "
+              f"소리 {track.name if track else '무음'}")
     else:
         for i, p in enumerate(paths[1:], 1):
             shutil.copyfile(p, d / f"slide_{i:02d}.jpg")        # 공고 판 — 이름 순서가 캐러셀 순서
     by_platform = {p: captions.build_collection(col, p) for p in platforms}
+    if reel and args.audio_credit:
+        # CC-BY 계열은 표기가 **허락의 조건**이다. 판에는 자리가 없으니 캡션 끝에 둔다.
+        by_platform = {p: f"{t}\n\n♪ {args.audio_credit}" for p, t in by_platform.items()}
     for p, text in by_platform.items():
         (d / f"caption_{p}.txt").write_text(text, encoding="utf-8")
     bundle = {
@@ -463,6 +472,12 @@ def main() -> int:
                    help="carousel(기본, 판 여러 장) | reel(같은 판을 넘기는 영상 한 편)")
     c.add_argument("--hold", type=float, default=0.0,
                    help="릴스: 한 장이 화면에 머무는 초(기본 1.8)")
+    c.add_argument("--audio", default="",
+                   help="릴스에 깔 음원 파일. **권리를 확인한 것만** 쓴다 — "
+                        "인스타 음원 라이브러리는 API 로 못 쓰고, 저작권 있는 곡을 구워 넣으면 "
+                        "음소거되거나 계정에 경고가 붙는다")
+    c.add_argument("--audio-credit", default="",
+                   help="음원 출처 표기(CC-BY 등). 캡션 끝에 붙는다")
     c.add_argument("--allow-generic", action="store_true",
                    help="전용 판 없는 회사도 기본 틀로 넣는다(기본은 전용 판만)")
     c.set_defaults(fn=cmd_approve_collection)

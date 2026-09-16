@@ -112,6 +112,65 @@ class BuildTest(unittest.TestCase):
         self.assertIn("하한", str(e.exception))
 
 
+class AudioTest(unittest.TestCase):
+    """음원을 깔면 실제로 소리가 들어가고, 안 깔면 무음 트랙만 남는다."""
+
+    def setUp(self):
+        if not has_ffmpeg():
+            self.skipTest("ffmpeg 이 없어 건너뜁니다")
+        self.tmp = Path(tempfile.mkdtemp())
+        self.exe = video.ffmpeg_exe()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def _slides(self, n=4):
+        out = []
+        for i in range(n):
+            p = self.tmp / f"{i:02d}.jpg"
+            subprocess.run([self.exe, "-y", "-loglevel", "error", "-f", "lavfi",
+                            "-i", f"color=c=0x{(i * 40) % 256:02x}3355:s=1080x1920",
+                            "-frames:v", "1", str(p)], check=True)
+            out.append(p)
+        return out
+
+    def _tone(self, seconds: float) -> Path:
+        p = self.tmp / "tone.mp3"
+        subprocess.run([self.exe, "-y", "-loglevel", "error", "-f", "lavfi",
+                        "-i", f"sine=frequency=440:duration={seconds}",
+                        "-c:a", "libmp3lame", str(p)], check=True)
+        return p
+
+    def _mean_db(self, path: Path) -> float:
+        r = subprocess.run([self.exe, "-hide_banner", "-i", str(path),
+                            "-af", "volumedetect", "-f", "null", "-"],
+                           capture_output=True, text=True)
+        for line in (r.stderr or "").splitlines():
+            if "mean_volume:" in line:
+                return float(line.split("mean_volume:")[1].split("dB")[0])
+        return -99.0
+
+    def test_silent_by_default(self):
+        out = video.build(self._slides(), self.tmp / "silent.mp4")
+        self.assertLess(self._mean_db(out), -60, "음원을 안 주면 무음이어야 한다")
+
+    def test_audio_is_actually_audible(self):
+        out = video.build(self._slides(), self.tmp / "music.mp4", audio=self._tone(6))
+        self.assertGreater(self._mean_db(out), -40, "음원을 주면 소리가 들어가야 한다")
+        self.assertEqual(video.check(out), [])
+
+    def test_short_track_is_looped_to_fill(self):
+        # 곡이 영상보다 짧아도 중간부터 무음이 되면 안 된다 — 반복해서 채운다.
+        want = video.duration_for(4)
+        out = video.build(self._slides(), self.tmp / "loop.mp4", audio=self._tone(2.0))
+        self.assertAlmostEqual(video.probe(out)["seconds"], want, delta=0.3)
+        self.assertGreater(self._mean_db(out), -40)
+
+    def test_missing_track_is_refused(self):
+        with self.assertRaises(FileNotFoundError):
+            video.build(self._slides(), self.tmp / "x.mp4", audio=self.tmp / "none.mp3")
+
+
 class RatioCheckTest(unittest.TestCase):
     """릴스 판(9:16)과 피드 판(4:5)은 서로 다른 잣대로 잰다."""
 

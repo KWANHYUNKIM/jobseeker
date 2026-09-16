@@ -4,11 +4,24 @@
 않는다 — 이미 찍어 둔 장면(1080×1920)을 순서대로 이어 붙이고 사이를 짧게 겹쳐
 넘긴다. 그래서 여기서 하는 일은 사실상 ffmpeg 한 번 부르는 것뿐이다.
 
-## 왜 무음인가
+## 소리 — 기본은 무음, 원하면 우리 음원을 굽는다
 
-메타 API 로는 **인기 음원을 붙일 수 없다.** 그래서 이 영상에는 소리가 없다.
-그런데 오디오 트랙 자체가 없는 mp4 는 인스타가 종종 되돌려 보내므로,
-무음 AAC 트랙을 하나 깔아서 올린다(`anullsrc`). 음악은 올린 뒤 앱에서 얹는다.
+메타 API 로는 **인스타그램 음원 라이브러리를 못 쓴다.** 그리고 이미 올라간 릴스에는
+나중에 오디오를 붙일 수도 없다. 그러니 API 로 올릴 거면 길은 둘뿐이다 —
+무음으로 두거나, **우리가 권리를 가진 음원을 영상에 구워 넣거나.**
+
+`audio=` 를 주면 그 파일을 깐다. 안 주면 무음 AAC 트랙을 깐다(`anullsrc`) —
+트랙 자체가 없는 mp4 는 인스타가 종종 되돌려 보내기 때문에 무음이라도 있어야 한다.
+
+음원을 넣을 때 세 가지를 자동으로 한다.
+
+- **길이 맞추기** — 짧으면 반복하고 영상 길이에서 자른다.
+- **소리 크기 고르기**(`loudnorm` I=-16) — 트랙마다 녹음 레벨이 달라서, 안 맞추면
+  어떤 판은 안 들리고 어떤 판은 폰에서 찢어진다. -16 LUFS 는 소셜 영상의 통용값이다.
+- **처음·끝 페이드** — 뚝 시작하고 뚝 끊기는 소리는 그 자체로 아마추어 신호다.
+
+**권리는 우리가 확인한다.** 이 함수는 파일을 받을 뿐 출처를 묻지 않는다.
+저작권 있는 곡을 넣으면 인스타가 음소거하거나 계정에 경고가 붙는다.
 
 ## 값을 이렇게 고른 이유
 
@@ -118,9 +131,30 @@ def _filter_chain(n: int, hold: float, fade: float, size: tuple[int, int]) -> st
 REEL_SIZE = (1080, 1920)
 
 
+#: 음원 목표 라우드니스(LUFS). 소셜 영상의 통용값.
+AUDIO_LUFS = -16
+#: 음원 페이드 — 시작 0.8초, 끝 1.5초
+AUDIO_FADE_IN, AUDIO_FADE_OUT = 0.8, 1.5
+
+
+def _audio_chain(idx: int, seconds: float) -> str:
+    """음원 한 줄. 길이를 맞추고 크기를 고르고 양끝을 페이드한다."""
+    out_at = max(0.0, seconds - AUDIO_FADE_OUT)
+    return (f"[{idx}:a]atrim=0:{seconds:.3f},asetpts=N/SR/TB,"
+            f"afade=t=in:st=0:d={AUDIO_FADE_IN},"
+            f"afade=t=out:st={out_at:.3f}:d={AUDIO_FADE_OUT},"
+            f"loudnorm=I={AUDIO_LUFS}:TP=-1.5:LRA=11,"
+            f"aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[aout]")
+
+
 def build(slides: list[Path], dest: Path, *, hold: float = HOLD, fade: float = FADE,
-          fps: int = FPS, size: tuple[int, int] = REEL_SIZE, quiet: bool = True) -> Path:
-    """장면들을 이어 붙여 mp4 를 만든다. 완성본 경로를 돌려준다."""
+          fps: int = FPS, size: tuple[int, int] = REEL_SIZE, audio: Path | None = None,
+          quiet: bool = True) -> Path:
+    """장면들을 이어 붙여 mp4 를 만든다. 완성본 경로를 돌려준다.
+
+    audio 를 주면 그 음원을 깐다(길이 맞춤 · 크기 고름 · 양끝 페이드).
+    안 주면 무음 트랙을 깐다 — 권리 확인은 부르는 쪽 몫이다.
+    """
     if not slides:
         raise ValueError("장면이 없습니다")
     missing = [p for p in slides if not p.is_file()]
@@ -142,14 +176,24 @@ def build(slides: list[Path], dest: Path, *, hold: float = HOLD, fade: float = F
     for p in slides:
         # -loop 1 + -t 로 정지 이미지를 그 길이만큼의 영상으로 만든다.
         cmd += ["-loop", "1", "-t", f"{clip:.3f}", "-i", str(p)]
-    # 무음 트랙은 **맨 뒤**에 붙인다. 앞에 두면 위의 [k:v] 번호가 통째로 밀린다.
-    cmd += ["-f", "lavfi", "-t", f"{seconds:.3f}",
-            "-i", "anullsrc=channel_layout=stereo:sample_rate=44100"]
+    # 소리는 **맨 뒤**에 붙인다. 앞에 두면 위의 [k:v] 번호가 통째로 밀린다.
+    if audio is not None:
+        if not audio.is_file():
+            raise FileNotFoundError(f"음원 파일이 없습니다: {audio}")
+        # -stream_loop -1: 곡이 영상보다 짧으면 반복한다. 자르는 것은 atrim 이 한다.
+        cmd += ["-stream_loop", "-1", "-i", str(audio)]
+    else:
+        cmd += ["-f", "lavfi", "-t", f"{seconds:.3f}",
+                "-i", "anullsrc=channel_layout=stereo:sample_rate=44100"]
     chain = _filter_chain(len(slides), hold, fade, size)
+    audio_map = f"{len(slides)}:a"
+    if audio is not None:
+        chain += ";" + _audio_chain(len(slides), seconds)
+        audio_map = "[aout]"
     cmd += [
         "-filter_complex", chain,
         "-map", "[vout]",
-        "-map", f"{len(slides)}:a",
+        "-map", audio_map,
         "-r", str(fps),
         "-c:v", "libx264", "-preset", "medium", "-crf", "20",
         "-profile:v", "high", "-level", "4.1", "-pix_fmt", "yuv420p",
@@ -244,9 +288,11 @@ def main() -> int:
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--hold", type=float, default=HOLD)
     ap.add_argument("--fade", type=float, default=FADE)
+    ap.add_argument("--audio", default="", help="깔 음원 파일. 권리는 부르는 쪽이 확인한다")
     args = ap.parse_args()
     out = build([Path(p) for p in args.slides], Path(args.out),
-                hold=args.hold, fade=args.fade, quiet=False)
+                hold=args.hold, fade=args.fade,
+                audio=Path(args.audio) if args.audio else None, quiet=False)
     info = probe(out)
     print(f"[video] {out}  {info.get('seconds', '?')}초 "
           f"{info.get('width')}×{info.get('height')} {info.get('mb', '?')}MB")
