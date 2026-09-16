@@ -10,7 +10,11 @@
   * { box-sizing: border-box; margin: 0; }
   body { background: #222; }
   .sheet {
-    width: 1080px; height: 1350px; background: var(--paper); color: var(--ink);
+    /* 크기는 collection.render 가 넘기는 포맷에서 온다(--sheet-w/h). 값이 없으면
+       기본 4:5. 릴스(9:16)로 찍을 때 여기가 박혀 있으면 표지만 4:5로 나와
+       영상 첫 장면에 검은 띠가 남는다 — 넘길지 말지가 갈리는 바로 그 장면이다. */
+    width: var(--sheet-w, 1080px); height: var(--sheet-h, 1350px);
+    background: var(--paper); color: var(--ink);
     font-family: 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
     padding: 84px 76px 72px; display: flex; flex-direction: column;
     -webkit-font-smoothing: antialiased;
@@ -24,6 +28,10 @@
   .count b { font-size: 74px; font-weight: 800; letter-spacing: -.03em; }
   .count span { font-size: 26px; color: var(--sub); font-weight: 600; }
   ol { list-style: none; margin-top: 26px; flex: 1; display: flex; flex-direction: column; justify-content: flex-start; }
+  /* 릴스 판은 570px 더 길다. 목록을 가운데로 띄우면 머리글과 떨어져 레이아웃이
+     깨진 것처럼 보이므로, 자리는 그대로 두고 **줄 사이를 벌려** 채운다. */
+  .sheet.reel ol { margin-top: 44px; }
+  .sheet.reel li { padding: 34px 0; }
   li { display: grid; grid-template-columns: 62px 1fr auto; align-items: baseline;
        gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
   li .no { font-size: 22px; color: var(--sub); font-variant-numeric: tabular-nums; font-weight: 700; }
@@ -45,6 +53,10 @@ const D = JSON.parse(document.getElementById('data').textContent);
 (function () {
   const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
   const sheet = el('section', 'sheet');
+  // 릴스는 세로가 길어 목록 아래로 빈 자리가 크게 남는다. 그리고 '넘겨서' 가
+  // 거짓말이 된다 — 보는 사람은 넘기지 않고 장면이 알아서 지나간다.
+  const REEL = D.shape === 'reel';
+  if (REEL) sheet.classList.add('reel');
   sheet.append(el('div', 'kicker', D.kicker || ''));
 
   // 제목이 '9월 16일–22일' 처럼 기간이면 뒤쪽을 얇게 — 숫자가 주인공이 되게
@@ -77,7 +89,8 @@ const D = JSON.parse(document.getElementById('data').textContent);
   sheet.append(ol);
 
   const foot = el('footer');
-  foot.append(el('div', '', '넘겨서 공고 전문 보기 →'));
+  foot.append(el('div', '', REEL ? '공고 전문이 이어서 나옵니다'
+                                 : '넘겨서 공고 전문 보기 →'));
   const right = el('div'); right.append(el('b', '', '@devjobseeker'));
   foot.append(right);
   sheet.append(foot);

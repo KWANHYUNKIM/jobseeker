@@ -10,7 +10,11 @@
   * { box-sizing: border-box; margin: 0; }
   body { background: #222; }
   .sheet {
-    width: 1080px; height: 1350px; background: var(--paper); color: var(--ink);
+    /* 크기는 collection.render 가 넘기는 포맷에서 온다(--sheet-w/h). 값이 없으면
+       기본 4:5. 릴스(9:16)로 찍을 때 여기가 박혀 있으면 표지만 4:5로 나와
+       영상 첫 장면에 검은 띠가 남는다 — 넘길지 말지가 갈리는 바로 그 장면이다. */
+    width: var(--sheet-w, 1080px); height: var(--sheet-h, 1350px);
+    background: var(--paper); color: var(--ink);
     font-family: 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
     padding: 96px 78px 78px; display: flex; flex-direction: column;
     -webkit-font-smoothing: antialiased; position: relative; overflow: hidden;
@@ -36,6 +40,8 @@ const D = JSON.parse(document.getElementById('data').textContent);
 (function () {
   const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
   const sheet = el('section', 'sheet');
+  const REEL = D.shape === 'reel';   // 릴스에서는 넘기는 사람이 없다
+  if (REEL) sheet.classList.add('reel');
 
   const top = el('div', 'top', D.hook_top || '');
   top.append(el('span'));
@@ -50,7 +56,8 @@ const D = JSON.parse(document.getElementById('data').textContent);
   sheet.append(count);
 
   const foot = el('footer');
-  foot.append(el('div', '', '넘겨서 회사별 공고 전문 보기 →'));
+  foot.append(el('div', '', REEL ? '회사별 공고 전문이 이어서 나옵니다'
+                                 : '넘겨서 회사별 공고 전문 보기 →'));
   foot.append(el('div', 'who', '@devjobseeker'));
   sheet.append(foot);
   document.getElementById('root').append(sheet);

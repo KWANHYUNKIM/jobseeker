@@ -367,21 +367,42 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
 
 
 # --- 렌더 --------------------------------------------------------------
-def _html(template: Path, col: dict) -> str:
+def _html(template: Path, col: dict, fmt: dict | None = None) -> str:
+    """템플릿에 묶음 데이터와 **판 크기**를 박는다.
+
+    크기를 넘기는 이유: 표지 템플릿의 `.sheet` 가 1080×1350 으로 박혀 있어서
+    9:16 으로 찍어 달라고 해도 4:5 로 나왔다. 뷰포트만 키워 봐야 `.sheet` 를
+    찍으므로 소용이 없다. 그 표지로 영상을 만들면 첫 두 장면에만 검은 띠가 남는데,
+    하필 거기가 피드에서 넘길지 말지 갈리는 자리다.
+
+    CSS 변수로 넘겨 템플릿이 기본값(4:5)을 들고 있게 둔다 — 크기를 안 넘기는
+    호출부(미리보기 등)가 그대로 돌아간다.
+    """
     data = json.dumps(col, ensure_ascii=False).replace("</", "<\\/")
-    return template.read_text(encoding="utf-8").replace("/*__DATA__*/", data)
+    html = template.read_text(encoding="utf-8").replace("/*__DATA__*/", data)
+    if fmt:
+        html = html.replace(
+            "</head>", f"<style>:root{{--sheet-w:{fmt['w']}px;--sheet-h:{fmt['h']}px}}</style></head>", 1)
+    return html
 
 
-def cover_html(col: dict) -> str:
-    return _html(COVER, col)
+def cover_html(col: dict, fmt: dict | None = None) -> str:
+    return _html(COVER, col, fmt)
 
 
-def hook_html(col: dict) -> str:
-    return _html(HOOK, col)
+def hook_html(col: dict, fmt: dict | None = None) -> str:
+    return _html(HOOK, col, fmt)
 
 
-def render(col: dict, fmt_id: str = "ig_portrait", *, out_dir: Path | None = None) -> list[Path]:
-    """키워드 표지 → 차례 표지 → 공고 판 여러 장. 브랜드 전용 판이 있는 회사는 그 판으로."""
+def render(col: dict, fmt_id: str = "ig_portrait", *, out_dir: Path | None = None,
+           shape: str = "") -> list[Path]:
+    """키워드 표지 → 차례 표지 → 공고 판 여러 장. 브랜드 전용 판이 있는 회사는 그 판으로.
+
+    shape 는 "carousel" | "reel". 표지가 이 값을 보고 문구와 배치를 바꾼다 —
+    릴스에서는 "넘겨서 보기" 가 거짓말이 되고(장면이 알아서 지나간다), 세로가 길어
+    목록 아래로 빈 자리가 크게 남는다. 안 주면 포맷에서 짐작한다.
+    """
+    col["shape"] = shape or ("reel" if fmt_id == "ig_story" else "carousel")
     from .carousel import FORMATS, render_onepage
     from .render import _page_maker
 
@@ -422,7 +443,7 @@ def render(col: dict, fmt_id: str = "ig_portrait", *, out_dir: Path | None = Non
         dest = dest_dir / f"{name}_{fmt_id}.jpg"
         page = _page_maker().new_page(viewport={"width": fmt["w"], "height": fmt["h"]})
         try:
-            page.set_content(_html(template, col), wait_until="load")
+            page.set_content(_html(template, col, fmt), wait_until="load")
             page.wait_for_function("window.__ready === true", timeout=30000)
             page.query_selector(".sheet").screenshot(path=str(dest), type="jpeg", quality=95)
         finally:
