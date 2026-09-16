@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- 묶음 첫 장 — 키워드만 있는 판. 피드에서 넘길지 말지가 이 한 장에서 갈린다.
+     차례(collection_cover.html)는 이 다음 장이다. 여기에는 목록을 넣지 않는다.
+     poster/collection.py 가 /*__DATA__*/ 자리에 묶음 데이터를 박고 .sheet 를 찍는다. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --ink: #0e1116; --paper: #f2ef27; --sub: #3a3f46; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #222; }
+  .sheet {
+    width: 1080px; height: 1350px; background: var(--paper); color: var(--ink);
+    font-family: 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    padding: 96px 78px 78px; display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased; position: relative; overflow: hidden;
+  }
+  .top { font-size: 34px; font-weight: 800; letter-spacing: .01em; }
+  .top span { display: block; height: 8px; background: var(--ink); width: 168px; margin-top: 22px; }
+  h1 { margin-top: auto; font-weight: 800; letter-spacing: -.045em; line-height: .92; }
+  h1 div { font-size: 150px; }
+  h1 div + div { color: var(--ink); }
+  .count { margin-top: 36px; font-size: 44px; font-weight: 800; letter-spacing: -.02em; }
+  .count b { font-size: 60px; }
+  footer { margin-top: 30px; padding-top: 24px; border-top: 4px solid var(--ink);
+           display: flex; justify-content: space-between; align-items: baseline;
+           font-size: 25px; font-weight: 700; }
+  footer .who { font-size: 27px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+(function () {
+  const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
+  const sheet = el('section', 'sheet');
+
+  const top = el('div', 'top', D.hook_top || '');
+  top.append(el('span'));
+  sheet.append(top);
+
+  const h1 = el('h1');
+  (D.hook_big || []).forEach(line => h1.append(el('div', '', line)));
+  sheet.append(h1);
+
+  const count = el('div', 'count');
+  count.append(el('b', '', `${D.count}곳`), document.createTextNode(' 모집중'));
+  sheet.append(count);
+
+  const foot = el('footer');
+  foot.append(el('div', '', '넘겨서 회사별 공고 전문 보기 →'));
+  foot.append(el('div', 'who', '@devjobseeker'));
+  sheet.append(foot);
+  document.getElementById('root').append(sheet);
+
+  // 큰 글자가 폭을 넘으면 줄인다(제목 길이는 카테고리마다 다르다)
+  const lines = [...h1.querySelectorAll('div')];
+  let size = 150;
+  while (size > 74 && lines.some(l => l.scrollWidth > sheet.clientWidth - 156)) {
+    size -= 6;
+    lines.forEach(l => { l.style.fontSize = `${size}px`; });
+  }
+  window.__fit = size;
+  window.__ready = true;
+})();
+</script>
+</body>
+</html>
