@@ -487,6 +487,131 @@ function renderAutoguide(a) {
     `<td>${c.facts ? "O" : "—"}</td><td>${c.salary ? "O" : "—"}</td></tr>`).join("");
 }
 
+// ---- 인스타 발행 ------------------------------------------------------------
+const IG_STATE = {
+  approved: "승인됨", scheduled: "예약", published: "게시됨",
+  rehearsed: "연습 발행", failed: "실패", skipped: "뺌",
+};
+const PLATFORM_LABEL = { instagram: "인스타", facebook: "페이스북", linkedin: "링크드인" };
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function fmtWhen(iso) {
+  const d = parseLocal(iso);
+  if (!d) return "—";
+  const today = new Date();
+  const sameDay = d.toDateString() === today.toDateString();
+  const hm = d.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  return sameDay ? `오늘 ${hm}` : `${d.getMonth() + 1}/${d.getDate()} ${hm}`;
+}
+
+function renderPublish(p) {
+  const banner = $("igBanner");
+  if (!p || !p.exists) {
+    $("igSub").textContent = "아직 설치 안 됨";
+    banner.innerHTML = "";
+    $("igStats").innerHTML =
+      `<div class="muted">./deploy/setup-publisher.sh 로 데몬을 등록하고 publish.cli approve 로 포스터를 승인합니다.</div>`;
+    ["igScheduled", "igProblems"].forEach((id) => ($(id).querySelector("tbody").innerHTML = ""));
+    $("igRecent").innerHTML = "";
+    $("igLog").innerHTML = "";
+    return;
+  }
+  const s = p.status || {};
+  const c = p.counts || {};
+  // 데몬은 5분마다 돈다. 20분 넘게 상태 파일이 안 바뀌면 launchd 등록이 빠졌거나 죽은 것.
+  const stale = s.age_sec == null || s.age_sec > 1200;
+  const live = s.mode === "live";
+  $("igSub").textContent = `${live ? "실제 발행" : "연습 모드"} · 데몬 ${s.age_sec == null ? "기록 없음" : fmtAge(s.age_sec) + " 전"}` +
+    (s.slots && s.slots.length ? ` · 발행 시각 ${s.slots.join(", ")}` : "");
+
+  const warns = [];
+  if (stale) warns.push("데몬 상태가 20분 넘게 갱신되지 않았습니다 — launchd 등록(com.jobseeker.publisher) 확인");
+  if (!live) {
+    const lacking = Object.entries(s.missing_by || {}).map(([p, m]) => `${PLATFORM_LABEL[p] || p}: ${m.join(", ")}`);
+    const why = !s.live ? "autopublish.live 가 꺼져 있어" : `자격이 모자라(${lacking.join(" / ")})`;
+    warns.push(`${why} 실제로는 올라가지 않습니다. 시각이 된 항목은 '연습 발행'으로 남습니다`);
+  } else {
+    // 한쪽 자격만 있으면 그 한 곳으로만 나간다 — 조용히 한 군데만 올라가는 걸 눈에 보이게 한다
+    const off = Object.entries(s.ready || {}).filter(([, ok]) => !ok).map(([p]) => PLATFORM_LABEL[p] || p);
+    if (off.length) warns.push(`${off.join(", ")} 자격이 없어 그곳은 건너뜁니다`);
+  }
+  if (!s.public_base_url) warns.push("public_base_url 이 없습니다 — 인스타가 이미지를 받아 갈 공개 주소가 필요합니다");
+  if (s.token_days_left != null && s.token_days_left <= 7)
+    warns.push(`인스타 토큰이 ${s.token_days_left}일 뒤 만료됩니다 — 데몬이 갱신을 시도합니다. 실패하면 publish.cli token-refresh`);
+  banner.innerHTML = warns.length
+    ? `<div class="banner warn">확인 필요<ul>${warns.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div>`
+    : `<div class="banner ok">정상 — 예약대로 올라갑니다</div>`;
+
+  const quota = s.quota ? `${s.quota.used}/${s.quota.limit}` : "—";
+  const token = s.token_days_left == null ? "—" : `${s.token_days_left}일`;
+  const cards = [
+    ["예약", (c.scheduled ?? 0) + (c.approved ?? 0), "scheduled"],
+    ["게시됨", c.published ?? 0, "done"],
+    ["연습 발행", c.rehearsed ?? 0, "pending"],
+    ["실패", c.failed ?? 0, c.failed ? "failed" : "done"],
+    ["24시간 한도", quota, "done"],
+    ["토큰 남은 날", token, s.token_days_left != null && s.token_days_left <= 7 ? "failed" : "done"],
+  ];
+  $("igStats").innerHTML = cards.map(([label, n, cls]) =>
+    `<div class="site ${cls === "scheduled" ? "running" : cls}"><div class="site-name">${label}</div>` +
+    `<div class="site-count">${typeof n === "number" ? n.toLocaleString() : esc(n)}</div>` +
+    `<div class="site-status">&nbsp;</div></div>`).join("");
+
+  // 묶음이면 '이번 주 채용 · 9월 14–20일 · 묶음 6장' 처럼 보인다(company/role 자리에 카테고리가 온다)
+  const bundle = (r) => (r.kind === "collection" ? ` <span class="igtag">묶음 ${r.slides}장</span>` : "");
+  const who = (r) => `${esc(r.company || r.job_key)}${bundle(r)}` +
+    `<div class="muted" style="font-size:11px">${esc(r.role)}</div>`;
+  const where = (r) => (r.platforms || []).map((x) => PLATFORM_LABEL[x] || x).join("·");
+  const errText = (r) => Object.entries(r.errors || {})
+    .map(([pf, e]) => `${PLATFORM_LABEL[pf] || pf}: ${e}`).join(" / ") || r.last_event;
+
+  $("igScheduled").querySelector("tbody").innerHTML = (p.scheduled || []).length
+    ? p.scheduled.map((r) =>
+        `<tr><td>${who(r)}</td><td>${fmtWhen(r.scheduled_at)}` +
+        `<div class="muted" style="font-size:11px">${esc(where(r))}${r.attempts ? ` · 재시도 ${r.attempts}` : ""}</div></td></tr>`).join("")
+    : `<tr><td class="muted">예약된 포스터가 없습니다</td><td></td></tr>`;
+
+  $("igProblems").querySelector("tbody").innerHTML = (p.problems || []).length
+    ? p.problems.map((r) =>
+        `<tr><td>${who(r)}</td><td><span class="igtag ig-${r.status}">${IG_STATE[r.status] || r.status}</span>` +
+        ((r.posted || []).length ? ` <span class="muted">${esc(r.posted.map((x) => PLATFORM_LABEL[x] || x).join("·"))} 올라감</span>` : "") +
+        `<div class="muted" style="font-size:11px;text-align:left">${esc(errText(r))}</div></td></tr>`).join("")
+    : `<tr><td class="muted">없음</td><td></td></tr>`;
+
+  $("igRecent").innerHTML = (p.recent || []).length
+    ? p.recent.map((r) => {
+        const when = r.status === "published" ? fmtWhen(r.published_at) : fmtWhen(r.slot);
+        const thumb = r.image_url
+          ? `<img src="${esc(r.image_url)}" alt="" loading="lazy">`
+          : `<div class="igthumb-empty">${r.status === "rehearsed" ? "연습" : "—"}</div>`;
+        const react = r.likes != null ? `♥ ${r.likes} · 💬 ${r.comments ?? 0}` : "";
+        // 플랫폼마다 링크가 다르다. 게시된 곳만 링크로 걸고, 안 나간 곳은 회색으로 남긴다.
+        const links = (r.platforms || []).map((pf) => {
+          const label = PLATFORM_LABEL[pf] || pf;
+          const href = (r.links || {})[pf];
+          return href
+            ? `<a href="${esc(href)}" target="_blank" rel="noopener">${label} ↗</a>`
+            : `<span class="muted">${label}</span>`;
+        }).join(" · ");
+        return `<div class="igpost">${thumb}<div class="igmeta">` +
+          `<div class="igco">${esc(r.company || r.job_key)}${bundle(r)}</div>` +
+          `<div class="muted">${esc(r.role)}</div>` +
+          `<div><span class="igtag ig-${r.status}">${IG_STATE[r.status]}</span> ${when}</div>` +
+          `<div class="iglinks">${links}</div>` +
+          `<div class="muted">${react}</div></div></div>`;
+      }).join("")
+    : `<div class="muted">아직 올라간 포스터가 없습니다</div>`;
+
+  $("igLog").innerHTML = (s.log || []).map((e) =>
+    `<div class="ev"><span class="et">${fmtWhen(e.at)}</span><span class="em">${esc(e.msg)}</span></div>`).join("")
+    || `<div class="muted">기록 없음</div>`;
+}
+
+async function pollPublish() {
+  try { renderPublish(await fetchJSON("/api/publish")); } catch (_) { /* 연결 표시는 pollState 가 한다 */ }
+}
+
 async function pollAutoguide() {
   try { renderAutoguide(await fetchJSON("/api/autoguide")); } catch (e) {}
 }
@@ -501,8 +626,11 @@ pollState();
 pollEvents();
 pollHealth();
 pollAutoguide();
+pollPublish();
 setInterval(pollState, 2000);
 setInterval(pollEvents, 3000);
 setInterval(pollHealth, 10000);
 setInterval(pollAutoguide, 30000);
+// 데몬이 5분마다 도니 15초면 충분하다.
+setInterval(pollPublish, 15000);
 setInterval(tickCountdown, 1000);

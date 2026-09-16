@@ -9,6 +9,7 @@
   GET /api/events?n=N  → run_events.jsonl 최근 N줄 (기본 80)
   GET /api/health?n=N  → health_history.jsonl 최근 N줄 (기본 30)
   GET /api/engagement  → public/engagement.json (방문·유입·행동 점수)
+  GET /api/publish     → 인스타 자동 발행 원장 요약(design-lab/state/, 읽기 전용)
 
 사용법:
     python -m monitoring.ops_server            # 8770 포트
@@ -25,6 +26,7 @@ import argparse
 import http.server
 import json
 import os
+import re
 import socketserver
 import time
 import webbrowser
@@ -202,6 +204,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._send_json(_autoguide_summary())
             return
 
+        if path == "/api/publish":
+            self._send_json(_publish_summary())
+            return
+
         if path == "/api/health":
             n = self._query_int(qs, "n", 30)
             self._send_json(_tail_jsonl(HEALTH_HISTORY, n))
@@ -267,6 +273,83 @@ def _autoguide_summary() -> dict:
             "body": (c.get("counts") or {}).get("with_body", 0),
             "facts": bool(c.get("has_facts")), "salary": bool(c.get("has_salary")),
         } for c in cos[:AUTOGUIDE_TOP]],
+    }
+
+
+# 인스타 자동 발행(design-lab/publish/daemon.py). 크롤과 같은 머신에서 launchd 로 5분마다 돈다.
+# 이 대시보드는 인증 없이 터널로 열려 있다 — 그래서 여기는 **읽기만** 한다. 승인·발행 버튼과
+# 토큰은 두지 않고, 원장에서도 캡션 전문·내부 경로·오류 속 토큰 흔적은 빼고 내보낸다.
+PUBLISH_LEDGER = CATCH_DIR.parent / "design-lab" / "state" / "publish_queue.json"
+PUBLISH_STATUS = CATCH_DIR.parent / "design-lab" / "state" / "publish_status.json"
+PUBLISH_STATES = ("approved", "scheduled", "published", "rehearsed", "failed", "skipped")
+_TOKENISH = re.compile(r"(access_token=)[^&\s\"']+|\bIG[A-Za-z0-9_-]{40,}")
+
+
+def _scrub(text: str) -> str:
+    return _TOKENISH.sub(lambda m: (m.group(1) or "") + "…", text or "")[:240]
+
+
+def _publish_summary() -> dict:
+    if not PUBLISH_LEDGER.exists() and not PUBLISH_STATUS.exists():
+        return {"exists": False}
+    items = [i for i in _read_json(PUBLISH_LEDGER).get("items", [])
+             if i.get("status") in PUBLISH_STATES]
+    status = _read_json(PUBLISH_STATUS)
+
+    def row(i: dict) -> dict:
+        results = i.get("results") or {}
+        ig = results.get("instagram") or {}
+        hist = i.get("history") or []
+        published = i.get("status") == "published"
+        return {
+            "id": i.get("id"), "status": i.get("status"),
+            "company": i.get("company", ""), "role": i.get("role", ""), "job_key": i.get("job_key", ""),
+            "scheduled_at": i.get("scheduled_at", ""), "published_at": i.get("published_at", ""),
+            "slot": i.get("slot", ""), "approved_at": i.get("approved_at", ""),
+            "attempts": i.get("attempts", 0),
+            # 묶음(카테고리) 게시물은 표지+공고 판이 한 게시물로 나간다 — 몇 장인지 보여 준다
+            "kind": i.get("kind", "job"),
+            "slides": len(i.get("images") or []) or 1,
+            "platforms": i.get("platforms") or [],
+            "posted": i.get("posted") or [],
+            # 플랫폼마다 어디까지 갔나 — 한쪽만 올라간 판이 흔하다(권한이 갈릴 수 있다)
+            "links": {p: (results.get(p) or {}).get("url", "") for p in (i.get("posted") or [])},
+            "errors": {p: _scrub((r or {}).get("error", "")) for p, r in results.items()
+                       if (r or {}).get("error")},
+            # 이미 공개된 판만 썸네일을 준다 — 예약 중인 판의 주소를 미리 흘리지 않는다.
+            "image_url": ig.get("image_url", "") if published else "",
+            "last_event": _scrub((hist[-1] if hist else {}).get("detail", "")),
+            "likes": (i.get("stats") or {}).get("likes"),
+            "comments": (i.get("stats") or {}).get("comments"),
+        }
+
+    by = {s: [row(i) for i in items if i.get("status") == s] for s in PUBLISH_STATES}
+    by["scheduled"].sort(key=lambda r: r["scheduled_at"])
+    by["published"].sort(key=lambda r: r["published_at"], reverse=True)
+    by["rehearsed"].sort(key=lambda r: r["slot"], reverse=True)
+    age = None
+    if PUBLISH_STATUS.exists():
+        age = int(time.time() - PUBLISH_STATUS.stat().st_mtime)
+    return {
+        "exists": True,
+        "counts": {s: len(v) for s, v in by.items()},
+        "scheduled": by["scheduled"][:6],
+        "recent": (by["published"] + by["rehearsed"])[:8],
+        "problems": (by["failed"] + [r for r in by["scheduled"] if r["attempts"]] + by["skipped"])[:6],
+        "status": {
+            "age_sec": age,
+            "mode": status.get("mode", ""),
+            "live": status.get("live", False),
+            "ready": status.get("ready", {}),
+            "missing_by": status.get("missing_by", {}),
+            "missing": status.get("missing", []),
+            "slots": status.get("slots", []),
+            "token_days_left": status.get("token_days_left"),
+            "token_expires_at": status.get("token_expires_at", ""),
+            "quota": status.get("quota"),
+            "public_base_url": bool(status.get("public_base_url")),
+            "log": [{"at": r.get("at"), "msg": _scrub(r.get("msg", ""))} for r in (status.get("log") or [])[:12]],
+        },
     }
 
 
