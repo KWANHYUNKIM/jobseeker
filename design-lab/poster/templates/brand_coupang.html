@@ -1,0 +1,174 @@
+<!-- brand_coupang — 쿠팡 전용 판 v1. brands/쿠팡.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  rocket-waybill  로켓배송 운송장. 판 전체가 한 장의 운송장이다 —
+                                시안 테두리·위 띠('쿠팡은 로켓배송'), 칸마다 붙은 시안 탭('To.' 'From' 과 원문 섹션 이름),
+                                크게 찍힌 검정 분류 코드 자리에 경력 숫자, 아래 줄 큰 코드 자리에 지원 주소,
+                                바코드는 실제 공고 주소를 Code 128 로 인코딩(찍으면 주소가 나온다).
+     supporting rocket-phrase   운송장·트럭에 인쇄된 '쿠팡은 로켓배송'
+                real-label-photo 뉴스룸 자료실 사진 속 실물 운송장(잘라서 그대로)
+     안 쓰는 것: 로고·로켓 아이콘 다시 그리기, 로고 다섯 색, 운송장의 실제 전화번호·주소·★♥ 기호
+     서체: Pretendard(전용 CP Sans Text 대신) + Arimo(감열 인쇄 코드 글자) -->
+<meta charset="utf-8">
+<title>brand_coupang</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--package);padding:calc(2.2*var(--u));overflow:hidden;font-family:var(--font);color:var(--ink)}
+  .label{height:100%;background:var(--paper);border:calc(.55*var(--u)) solid var(--cy);display:flex;flex-direction:column;overflow:hidden}
+
+  /* 위 띠 */
+  .band{flex:none;background:var(--cy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:calc(.9*var(--u)) calc(2.4*var(--u)) calc(1*var(--u))}
+  .band .ph{font-size:calc(3.1*var(--u));font-weight:800;letter-spacing:-.02em}
+  .band .no{font-family:var(--code);font-weight:700;font-size:calc(3.1*var(--u));letter-spacing:.02em}
+  .band .no small{font-family:var(--font);font-size:calc(1.6*var(--u));font-weight:700;margin-right:calc(1*var(--u));letter-spacing:0;opacity:.9}
+
+  /* 머리 — 왼쪽 세로 바코드 줄 / 가운데 To·From·코드 / 오른쪽 실물 사진 */
+  .head{flex:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:calc(1.8*var(--u));padding:calc(1.4*var(--u)) calc(2.4*var(--u)) calc(.4*var(--u));align-items:stretch}
+  .strip{display:flex;flex-direction:column;gap:calc(.8*var(--u));width:calc(9.6*var(--u))}
+  .strip dl{font-size:calc(1.45*var(--u));line-height:1.35;color:var(--sub);font-weight:600}
+  .strip dd{font-family:var(--code);color:var(--ink);font-weight:700;font-size:calc(1.75*var(--u));margin-bottom:calc(.35*var(--u))}
+  .strip .bc{flex:1;min-height:calc(8*var(--u));position:relative}
+  .strip .bc svg{position:absolute;left:0;top:0;height:100%;width:calc(7.4*var(--u))}
+  .mid{display:flex;flex-direction:column;gap:calc(.9*var(--u));min-width:0}
+  .fld{position:relative;border:calc(.28*var(--u)) solid var(--cy);padding:calc(2.9*var(--u)) calc(1.5*var(--u)) calc(1*var(--u))}
+  .tab{position:absolute;left:calc(-.28*var(--u));top:calc(-.28*var(--u));background:var(--cy);color:#fff;font-weight:700;font-size:calc(1.7*var(--u));line-height:1;padding:calc(.55*var(--u)) calc(1.2*var(--u)) calc(.5*var(--u));letter-spacing:-.01em}
+  .tab.en{font-family:var(--code);font-weight:700}
+  h1{font-size:calc(4.9*var(--u));font-weight:800;letter-spacing:-.03em;line-height:1.02}
+  h1 span{display:block;font-size:.62em;font-weight:700;letter-spacing:-.01em;margin-top:calc(.5*var(--u))}
+  .row2{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:calc(1.1*var(--u))}
+  .code{background:var(--tint);border-color:var(--cy)}
+  .code .big{font-family:var(--code);font-weight:700;line-height:.86;letter-spacing:-.02em;font-size:calc(9.6*var(--u));white-space:nowrap}
+  .code .cap{margin-top:calc(.6*var(--u));font-size:calc(1.8*var(--u));font-weight:700}
+  .from{display:flex;flex-direction:column;justify-content:center;min-width:calc(15*var(--u))}
+  .from .co{font-size:calc(6*var(--u));font-weight:800;letter-spacing:-.04em;line-height:1}
+  .from .stk{margin-top:calc(.9*var(--u));font-family:var(--code);font-weight:700;font-size:calc(2*var(--u))}
+  .photo{width:calc(25*var(--u));display:flex;flex-direction:column}
+  .photo .pf{flex:1;position:relative;min-height:calc(10*var(--u));border:calc(.28*var(--u)) solid var(--ink)}
+  .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 40%;display:block}
+  .photo .cr{margin-top:calc(.5*var(--u));font-size:calc(1.35*var(--u));color:var(--sub);font-weight:600}
+
+  /* 본문 칸 */
+  main{flex:1;min-height:0;overflow:hidden;display:grid;column-gap:calc(1.6*var(--u));padding:calc(1.2*var(--u)) calc(2.4*var(--u)) 0;align-items:stretch}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*1.05);min-height:0}
+  .col>.sec:last-child{flex:1}
+  .sec{position:relative;border:calc(.28*var(--u)) solid var(--cy);padding:calc(var(--f)*2.05) calc(var(--f)*.8) calc(var(--f)*.55)}
+  .sec .tab{font-size:calc(var(--f)*1.02);padding:calc(var(--f)*.34) calc(var(--f)*.7) calc(var(--f)*.3)}
+  .sec .tab b{font-family:var(--code);margin-left:calc(var(--f)*.45)}
+  .it{display:grid;grid-template-columns:calc(var(--f)*1.55) minmax(0,1fr);font-size:var(--f);line-height:1.42;font-weight:500;color:var(--text);margin-bottom:calc(var(--f)*.34);text-wrap:pretty}
+  .it i{font-style:normal;font-family:var(--code);font-weight:700;color:var(--ink);font-size:.9em;padding-top:.08em}
+  .it.plain{grid-template-columns:calc(var(--f)*.9) minmax(0,1fr)}
+
+  /* 아래 줄 — 큰 코드 자리에 지원 주소 + 가로 바코드 */
+  footer{flex:none;margin:calc(.6*var(--u)) calc(2.4*var(--u)) 0;padding:calc(1*var(--u)) 0 calc(1.3*var(--u));border-top:calc(.28*var(--u)) solid var(--cy);display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:calc(2*var(--u));align-items:end}
+  .lab{font-size:calc(1.8*var(--u));font-weight:700;color:var(--sub)}
+  .url{font-family:var(--code);font-weight:700;font-size:calc(4*var(--u));letter-spacing:-.03em;line-height:1;margin-top:calc(.5*var(--u));white-space:nowrap}
+  .hbc{height:calc(6.6*var(--u));width:calc(42*var(--u))}
+  .hbc svg{width:100%;height:100%}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+// Code 128 (B) — 막대 폭 패턴은 표준 표(python-barcode charsets.code128.CODES 와 같은 값)
+const C128 = ["11011001100","11001101100","11001100110","10010011000","10010001100","10001001100","10011001000","10011000100","10001100100","11001001000","11001000100","11000100100","10110011100","10011011100","10011001110","10111001100","10011101100","10011100110","11001110010","11001011100","11001001110","11011100100","11001110100","11101101110","11101001100","11100101100","11100100110","11101100100","11100110100","11100110010","11011011000","11011000110","11000110110","10100011000","10001011000","10001000110","10110001000","10001101000","10001100010","11010001000","11000101000","11000100010","10110111000","10110001110","10001101110","10111011000","10111000110","10001110110","11101110110","11010001110","11000101110","11011101000","11011100010","11011101110","11101011000","11101000110","11100010110","11101101000","11101100010","11100011010","11101111010","11001000010","11110001010","10100110000","10100001100","10010110000","10010000110","10000101100","10000100110","10110010000","10110000100","10011010000","10011000010","10000110100","10000110010","11000010010","11001010000","11110111010","11000010100","10001111010","10100111100","10010111100","10010011110","10111100100","10011110100","10011110010","11110100100","11110010100","11110010010","11011011110","11011110110","11110110110","10101111000","10100011110","10001011110","10111101000","10111100010","11110101000","11110100010","10111011110","10111101110","11101011110","11110101110","11010000100","11010010000","11010011100"];
+function code128(text, vertical) {
+  const vals = [...text].map(ch => ch.charCodeAt(0) - 32);
+  let sum = 104; vals.forEach((v, i) => { sum += v * (i + 1); });
+  const bits = C128[104] + vals.map(v => C128[v]).join('') + C128[sum % 103] + '1100011101011';
+  const q = 10, n = bits.length + q * 2;
+  let rects = '';
+  for (let i = 0; i < bits.length; ) {
+    if (bits[i] === '1') { let j = i; while (bits[j] === '1') j++;
+      rects += vertical ? `<rect x="0" y="${q + i}" width="1" height="${j - i}"/>` : `<rect x="${q + i}" y="0" width="${j - i}" height="1"/>`; i = j; }
+    else i++;
+  }
+  const vb = vertical ? `0 0 1 ${n}` : `0 0 ${n} 1`;
+  return `<svg viewBox="${vb}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" fill="#111">${rects}</svg>`;
+}
+
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('cy', ui.accent || '#0090c0');
+  F.set('tint', ui.tint || 'rgba(0,144,192,.16)');
+  F.set('package', ui.package || '#e8ebea');
+  F.set('code', ui.code_font || ui.font);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+  const label = el('div', 'label'); sheet.append(label);
+
+  // 위 띠 — 운송장에 인쇄된 문장 + 공고 번호
+  const band = el('div', 'band');
+  band.append(el('div', 'ph', B.slogan || ''));
+  label.append(band);
+
+  // 머리
+  const head = el('div', 'head');
+  const strip = el('div', 'strip');
+  const dl = el('dl');
+  [['기술', D.stack.join(' · ')]].forEach(([k, v]) => { if (v) dl.append(el('dt', '', k), el('dd', '', v)); });
+  strip.append(dl);
+  const bctext = (D.role || '').replace(/[^\x20-\x7E]/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase() || 'OPEN POSITION';
+  const vbc = el('div', 'bc'); vbc.innerHTML = code128(bctext, true); strip.append(vbc);
+
+  const mid = el('div', 'mid');
+  const to = el('div', 'fld'); to.append(el('span', 'tab en', 'To.'));
+  const tm = (D.title || D.role).match(/^(.+?)\s*(\(.+\))$/);
+  const h1 = el('h1', '', tm ? tm[1] : (D.title || D.role)); if (tm) h1.append(el('span', '', tm[2]));
+  to.append(h1); mid.append(to);
+  const row2 = el('div', 'row2');
+  const code = el('div', 'fld code'); code.append(el('span', 'tab', '경력'));
+  const cm = F.career.match(/(\d+)\s*[-~–]\s*(\d+)/) || F.career.match(/(\d+)/);
+  code.append(el('div', 'big', cm ? (cm[2] ? `${cm[1]}–${cm[2]}` : cm[1]) : F.career));
+  code.append(el('div', 'cap', D.meta.join(' · ')));
+  const from = el('div', 'fld from'); from.append(el('span', 'tab en', 'From'), el('div', 'co', B.wordmark || D.company));
+  row2.append(code, from); mid.append(row2);
+
+  head.append(strip, mid);
+  if (IMG.waybill) {
+    const ph = el('div', 'photo'); const pf = el('div', 'pf'); const im = el('img'); im.src = IMG.waybill; im.alt = '';
+    pf.append(im); ph.append(pf); if (B.credit) ph.append(el('div', 'cr', B.credit)); head.append(ph);
+  }
+  label.append(head);
+
+  const main = el('main'); label.append(main);
+
+  const footer = el('footer');
+  const fl = el('div'); fl.append(el('div', 'lab', D.company));   // 경력은 운송장 큰 칸에 이미 있다
+  const hbc = el('div', 'hbc'); hbc.innerHTML = code128(bctext, false);
+  footer.append(fl, hbc); label.append(footer);
+
+  // 섹션 → 칸
+  const secs = [];
+  const tasks = S.tasks.flatMap(g => g.items);
+  if (tasks.length) secs.push({ title: '주요업무', items: tasks, num: true });
+  if (S.qualifications.length) secs.push({ title: '자격요건', items: S.qualifications, num: true });
+  if (S.preferences.length) secs.push({ title: '우대사항', items: S.preferences, num: true });
+  if (S.benefits.length) secs.push({ title: '복지 / 혜택', items: S.benefits, num: false });
+
+  const secEl = s => {
+    const d = el('div', 'sec');
+    const t = el('span', 'tab', s.title); t.append(el('b', '', String(s.items.length))); d.append(t);
+    s.items.forEach((it, i) => {
+      const txt = typeof it === 'string' ? it : (it.label ? `${it.label} ${it.text}` : it.text);
+      const row = el('div', s.num ? 'it' : 'it plain');
+      row.append(el('i', '', s.num ? String(i + 1).padStart(2, '0') : '-'), el('span', '', txt));
+      d.append(row);
+    });
+    return d;
+  };
+  const cands = [];
+  for (const ratio of [1, 1.15, 1.3, 0.87])
+    for (let k = 1; k < secs.length; k++) cands.push({ k, ratio, columns: 2 });
+  Frame.fit(F, cands, c => {
+    main.style.gridTemplateColumns = `minmax(0,${c.ratio}fr) minmax(0,1fr)`;
+    const L = el('div', 'col'), R = el('div', 'col');
+    secs.slice(0, c.k).forEach(x => L.append(secEl(x))); secs.slice(c.k).forEach(x => R.append(secEl(x)));
+    main.replaceChildren(L, R);
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 40 });
+})();
+</script>

@@ -1,0 +1,159 @@
+<!-- brand_lgcns — LG CNS 전용 판 v1. brands/LGCNS.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  ax-dx-rx-tracks  LG CNS 가 사업과 신입 채용을 부르는 세 글자 코드 AX · DX · RX.
+                                 이 공고 제목 끝의 '(RX)' 가 그 코드다 → 머리를 세 코드로 채우고
+                                 이 공고의 트랙만 검정, 나머지는 연한 회색으로 물린다.
+     supporting grad-underline    홈 카드 위 마젠타→파랑 강조 막대를 '지금 이 트랙' 밑줄로만
+                tagline           홈 최상단 문장 '새로운 세상을 기술합니다.' 를 꼬리에 인용
+     안 쓰는 것: LG 로고·빨강(#A50034, 로고 몫), 데이터센터·사옥 사진(공식 원본 없음)
+     서체: Pretendard — LG CNS 가 자기 사이트에 직접 얹어 쓰는 서체이고 OFL 이라 흉내가 아니라 원본
+     구조: 이 공고는 주요업무(tasks) 가 비어 있고 자격요건·우대사항만 있다. 원문 안의 '@ …' 줄이
+           소제목 노릇을 하므로 그 줄을 카드 제목으로 올린다(글자는 한 글자도 바꾸지 않는다). -->
+<meta charset="utf-8">
+<title>brand_lgcns</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    display:flex;flex-direction:column;overflow:hidden}
+
+  /* 머리 — AX · DX · RX 트랙 코드 */
+  header{flex:none;padding:calc(3*var(--u)) calc(5.2*var(--u)) 0}
+  .co{display:flex;align-items:center;justify-content:space-between;gap:calc(2*var(--u))}
+  .co .name{font-size:calc(2.5*var(--u));font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+  .co .due{font-size:calc(2.05*var(--u));font-weight:600;color:var(--sub);white-space:nowrap}
+
+  .band{margin-top:calc(1.6*var(--u));display:grid;grid-template-columns:auto minmax(0,1fr);
+    column-gap:calc(3.4*var(--u));align-items:end}
+  .tracks{display:flex;align-items:flex-end;gap:calc(2.2*var(--u))}
+  .tr{display:flex;flex-direction:column;gap:calc(.7*var(--u))}
+  .tr .code{font-size:calc(6.4*var(--u));font-weight:800;letter-spacing:-.045em;line-height:.92;color:var(--faint)}
+  .tr .full{font-size:calc(1.55*var(--u));font-weight:600;letter-spacing:.01em;color:var(--faint);white-space:nowrap}
+  .tr .bar{height:calc(.85*var(--u));border-radius:calc(.5*var(--u));background:transparent}
+  .tr.on .code{color:var(--ink)}
+  .tr.on .full{color:var(--sub)}
+  .tr.on .bar{background:linear-gradient(90deg,var(--gfrom),var(--gto))}
+
+  h1{font-size:calc(3.1*var(--u));font-weight:800;letter-spacing:-.03em;
+    line-height:1.14;color:var(--ink);text-wrap:pretty}
+  .metarow{margin-top:calc(1.1*var(--u));display:flex;flex-wrap:wrap;gap:calc(.9*var(--u))}
+  .chip{background:var(--chip-bg);color:var(--chip-ink);font-weight:700;font-size:calc(1.95*var(--u));
+    padding:calc(.5*var(--u)) calc(1.4*var(--u));border-radius:calc(.6*var(--u))}
+
+  main{flex:1;min-height:0;overflow:hidden;margin:calc(1.8*var(--u)) calc(5.2*var(--u)) 0;
+    padding-top:calc(1.5*var(--u));border-top:calc(.22*var(--u)) solid var(--ink);
+    column-count:2;column-gap:calc(var(--f)*1.35);column-fill:balance}
+  /* 소제목은 제 항목과 붙어 있어야 하고, 한 줄이 단 사이로 쪼개지면 안 된다 */
+  .card{margin-bottom:calc(var(--f)*.68);break-inside:auto}
+  .card h2{break-after:avoid}
+  .it,.kv{break-inside:avoid}
+  .card h2{font-size:calc(var(--f)*1.06);font-weight:800;letter-spacing:-.02em;line-height:1.3;
+    color:var(--ink);padding-bottom:calc(var(--f)*.3);margin-bottom:calc(var(--f)*.42);
+    border-bottom:calc(.16*var(--u)) solid var(--line)}
+  .card h2 sup{color:var(--accent);font-size:.6em;font-weight:800;margin-left:.22em;vertical-align:super;line-height:0}
+  .it{font-size:var(--f);line-height:1.46;color:var(--text);font-weight:500;
+    padding-left:calc(var(--f)*.95);text-indent:calc(var(--f)*-.95);margin-bottom:calc(var(--f)*.24)}
+  .it::before{content:'—';display:inline-block;width:calc(var(--f)*.95);text-indent:0;color:var(--sub);font-weight:700}
+  .kv{margin-bottom:calc(var(--f)*.5)}
+  .kv b{display:block;font-size:var(--f);font-weight:800;color:var(--ink);margin-bottom:calc(var(--f)*.12)}
+  .kv p{font-size:calc(var(--f)*.95);line-height:1.5;color:var(--text);font-weight:500}
+
+  footer{flex:none;margin:calc(1.4*var(--u)) calc(5.2*var(--u)) 0;padding:calc(1.4*var(--u)) 0 calc(2.2*var(--u));
+    border-top:calc(.22*var(--u)) solid var(--ink);display:flex;justify-content:space-between;align-items:flex-end;gap:calc(3*var(--u))}
+  .quote{font-size:calc(2.25*var(--u));font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+  .apply{text-align:right;white-space:nowrap}
+  .apply .lab{font-size:calc(1.95*var(--u));font-weight:600;color:var(--sub)}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  F.set('line', ui.line || '#e2e8f0');
+  F.set('faint', ui.line || '#e2e8f0');
+  F.set('gfrom', ui.grad_from || '#d90ce5');
+  F.set('gto', ui.grad_to || '#1b03c9');
+  F.set('chip-bg', ui.chip_bg || '#f0f1f3');
+  F.set('chip-ink', ui.chip_ink || ui.sub);
+
+  // 이 공고의 트랙 — 제목 끝 괄호의 코드(RX). 없으면 세 코드를 다 물린 채로 둔다
+  const TRACKS = [['AX', 'AI Transformation'], ['DX', 'Digital Transformation'], ['RX', 'Robot Transformation']];
+  const raw = D.title || D.role || '';
+  const hit = (raw.match(/\(([A-Z]{2})(?:\s*\/\s*[A-Z]{2})*\)/g) || []).join(' ');
+  const mine = new Set(TRACKS.map(t => t[0]).filter(code => hit.includes(code)));
+
+  // 원문 소제목 줄을 카드 제목으로. '@ …' 과 대괄호 줄만 제목으로 올린다(글자는 그대로)
+  const cards = [];
+  const isHead = t => /^@\s*/.test(t) || /^\[.+\]$/.test(t);
+  const split = (lines, fallback, kv = false) => {
+    let cur = null;
+    for (const raw of lines) {
+      const text = typeof raw === 'string' ? raw : raw.text;
+      if (!kv && isHead(text)) { cur = { title: text.replace(/^@\s*/, '').replace(/^\[(.+)\]$/, '$1'), items: [], kv }; cards.push(cur); continue; }
+      if (!cur) { cur = { title: fallback, items: [], kv }; cards.push(cur); }
+      cur.items.push(raw);
+    }
+  };
+  S.tasks.forEach(g => split(g.items, g.title || '주요업무'));
+  split(S.qualifications, '자격요건');
+  split(S.preferences, '우대사항');
+  split(S.benefits, '복지 / 혜택', true);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  const header = el('header');
+  const co = el('div', 'co');
+  co.append(el('div', 'name', B.wordmark || D.company));
+  if (D.until) co.append(el('div', 'due', D.until));
+  header.append(co);
+
+  const tracks = el('div', 'tracks');
+  TRACKS.forEach(([code, full]) => {
+    const t = el('div', 'tr' + (mine.has(code) ? ' on' : ''));
+    t.append(el('div', 'code', code), el('div', 'bar'), el('div', 'full', full));
+    tracks.append(t);
+  });
+
+  // 트랙 코드 | 제목·칩 — 한 줄에 나란히(머리를 한 층 줄인다)
+  const right = el('div');
+  right.append(el('h1', '', raw));
+  const metarow = el('div', 'metarow');
+  [...D.meta, ...D.stack.slice(0, 4)].forEach(m => metarow.append(el('span', 'chip', m)));
+  right.append(metarow);
+  const band = el('div', 'band');
+  band.append(tracks, right);
+  header.append(band);
+  sheet.append(header);
+
+  const main = el('main'); sheet.append(main);
+
+  const footer = el('footer');
+  footer.append(el('div', 'quote', B.slogan || ''));
+  const apply = el('div', 'apply');
+  apply.append(el('div', 'lab', D.company));
+  footer.append(apply); sheet.append(footer);
+
+  const cardEl = c => {
+    const d = el('div', 'card');
+    const h = el('h2', '', c.title);
+    h.append(el('sup', '', String(c.items.length)));
+    d.append(h);
+    c.items.forEach(it => {
+      if (c.kv && typeof it !== 'string' && it.label) {
+        const k = el('div', 'kv'); k.append(el('b', '', it.label), el('p', '', it.text)); d.append(k);
+      } else d.append(el('div', 'it', typeof it === 'string' ? it : it.text));
+    });
+    return d;
+  };
+
+  // 단은 CSS 칼럼이 스스로 균형을 잡는다 — 글자 크기만 키워 본다
+  Frame.fit(F, [{ columns: 2 }], () => {
+    main.replaceChildren(...cards.map(cardEl));
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 34 });
+})();
+</script>

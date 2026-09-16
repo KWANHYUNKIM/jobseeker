@@ -1,0 +1,195 @@
+<!-- onepage — 공고 전문을 한 장에. 폰에서 확대해 읽는 걸 전제로 한다.
+     캔버스는 인스타 피드 비율 그대로 두고, 들어갈 수 있는 가장 큰 글자 크기와
+     단 배치(1단 / 섹션 순서를 지킨 채 2단으로 가르는 모든 경우)를 스크립트가 찾는다.
+     데이터는 carousel.py 가 __DATA__ 자리에 박는다(캐러셀과 같은 원고). -->
+<meta charset="utf-8">
+<title>onepage</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Malgun Gothic',sans-serif;
+    -webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{position:relative;overflow:hidden;width:var(--w);height:var(--h);background:var(--bg);color:var(--ink);
+    padding:calc(5.2*var(--u)) calc(5.6*var(--u));display:flex;flex-direction:column;gap:calc(2.6*var(--u))}
+
+  header{flex:none;display:flex;flex-direction:column;gap:calc(1.6*var(--u))}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:calc(3*var(--u))}
+  .kicker{font-size:calc(2.1*var(--u));letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+  .kicker span{letter-spacing:.02em;color:color-mix(in srgb,var(--ink) 55%,transparent);text-transform:none;margin-left:calc(1.4*var(--u))}
+  .co{display:flex;align-items:center;gap:calc(1.4*var(--u));font-size:calc(2.6*var(--u));font-weight:700;flex:none}
+  .mark{display:grid;place-items:center;background:var(--soft);color:var(--accent);font-weight:800;overflow:hidden;font-style:normal;
+    width:calc(5*var(--u));height:calc(5*var(--u));border-radius:calc(1.2*var(--u));font-size:calc(2.5*var(--u))}
+  .mark img{width:100%;height:100%;object-fit:cover}
+  h1{font-size:calc(6*var(--u));font-weight:800;line-height:1.12;letter-spacing:-.03em;text-wrap:balance}
+  h1::after{content:'.';color:var(--accent)}
+  .meta{display:flex;flex-wrap:wrap;align-items:center;gap:calc(1*var(--u)) calc(1.4*var(--u))}
+  .meta span{border:1px solid color-mix(in srgb,var(--ink) 28%,transparent);border-radius:99px;
+    padding:calc(.6*var(--u)) calc(1.8*var(--u));font-size:calc(2*var(--u))}
+  .meta b{font-weight:500;font-size:calc(2*var(--u));color:var(--accent)}
+
+  /* 본문 — 글자 크기는 --f 하나로 다 따라 움직인다 */
+  .body{flex:1;min-height:0;overflow:hidden;display:grid;column-gap:calc(4.4*var(--u));align-items:start;
+    border-top:calc(.3*var(--u)) solid var(--accent);padding-top:calc(2.8*var(--u))}
+  .body.c1{grid-template-columns:1fr}
+  .body.c2{grid-template-columns:1fr 1fr}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*1.25)}
+  .blk h3{font-size:calc(var(--f)*1.3);font-weight:800;letter-spacing:-.02em;line-height:1.25;
+    display:flex;align-items:baseline;gap:calc(var(--f)*.5)}
+  .blk h3 small{font-size:calc(var(--f)*.72);font-weight:600;color:var(--accent);letter-spacing:.04em}
+  .blk h4{font-size:calc(var(--f)*1.02);font-weight:700;color:var(--accent);line-height:1.35;margin-top:calc(var(--f)*.35)}
+  .blk ul{list-style:none;margin-top:calc(var(--f)*.5);display:flex;flex-direction:column;gap:calc(var(--f)*.32)}
+  .blk li{position:relative;padding-left:calc(var(--f)*1);font-size:var(--f);line-height:1.45;
+    color:color-mix(in srgb,var(--ink) 90%,transparent)}
+  .blk li::before{content:'';position:absolute;left:0;top:calc(var(--f)*.58);width:calc(var(--f)*.36);height:calc(var(--f)*.36);background:var(--accent)}
+  .blk dl{margin-top:calc(var(--f)*.5);display:grid;grid-template-columns:auto 1fr;column-gap:calc(var(--f)*1);row-gap:calc(var(--f)*.4)}
+  .blk dt{font-size:calc(var(--f)*.92);font-weight:700;color:var(--accent);line-height:1.58;white-space:nowrap}
+  .blk dd{font-size:var(--f);line-height:1.45}
+
+  /* 회사 조사가 있을 때(brands/*.json) — 회사 색, 한 줄 소개, 공개 수치, 제품 모티프 */
+  .motif{position:absolute;pointer-events:none}
+  /* 본문 글자 크기를 지키는 게 먼저다 — 회사 정보는 머리 높이를 거의 늘리지 않게 접는다 */
+  .motif.disc{width:calc(34*var(--u));height:calc(34*var(--u));right:calc(-8*var(--u));top:calc(-9*var(--u))}
+  .motif svg{width:100%;height:100%;display:block}
+  .branded .sheet, .branded{gap:calc(2.2*var(--u))}
+  .branded header{position:relative;gap:calc(1.2*var(--u))}
+  .branded .top .co{display:none}
+  .branded h1{font-size:calc(5*var(--u));max-width:calc(100% - 17*var(--u))}
+  .about{font-size:calc(2.05*var(--u));line-height:1.5;max-width:calc(100% - 6*var(--u));color:color-mix(in srgb,var(--ink) 78%,transparent)}
+  .about b{color:var(--ink);font-weight:800;margin-right:calc(.8*var(--u))}
+  .about .wm{font-weight:700;color:var(--accent);margin-right:calc(1*var(--u))}
+  .about .facts{color:color-mix(in srgb,var(--ink) 52%,transparent);margin-left:calc(1*var(--u))}
+  .stats{display:flex;flex-wrap:wrap;align-items:baseline;gap:calc(.6*var(--u)) calc(2.6*var(--u))}
+  .stat{display:flex;align-items:baseline;gap:calc(.9*var(--u));padding-left:calc(1.4*var(--u));
+    border-left:calc(.45*var(--u)) solid var(--accent);line-height:1.2}
+  .stat b{font-size:calc(2.7*var(--u));font-weight:800;letter-spacing:-.02em}
+  .stat span{font-size:calc(1.8*var(--u));color:color-mix(in srgb,var(--ink) 60%,transparent)}
+  .stats .note{font-size:calc(1.5*var(--u));color:color-mix(in srgb,var(--ink) 42%,transparent);margin-left:auto}
+  .branded .blk h3, .branded .blk h4{color:var(--ink)}
+  .branded .body{padding-top:calc(2.2*var(--u));column-gap:calc(3.6*var(--u))}
+  .branded footer{padding-top:calc(1.6*var(--u))}
+  .branded footer .meta span, .branded footer .meta b{font-size:calc(1.8*var(--u))}
+  .branded footer .meta span{padding:calc(.4*var(--u)) calc(1.4*var(--u))}
+
+  footer{flex:none;display:flex;justify-content:space-between;align-items:center;gap:calc(3*var(--u));
+    border-top:1px solid color-mix(in srgb,var(--ink) 18%,transparent);padding-top:calc(2*var(--u));
+    font-size:calc(2.1*var(--u));color:color-mix(in srgb,var(--ink) 65%,transparent)}
+  footer .url{color:var(--accent);font-weight:600}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+(async () => {
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const st = document.documentElement.style;
+  st.setProperty('--w', D.fmt.w + 'px');
+  st.setProperty('--h', D.fmt.h + 'px');
+  st.setProperty('--u', Math.min(D.fmt.w, D.fmt.h) / 100 + 'px');
+  for (const [k, v] of Object.entries(D.palette)) st.setProperty('--' + k, v);
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+  // 6챔버 원심 디스크 — 제품 사진을 쓰지 않고 형태만 다시 그린다. 한 챔버만 샘플이 가득 찬 상태.
+  const discSvg = p => {
+    const ch = [...Array(6)].map((_, i) => `
+      <g transform="rotate(${i * 60})">
+        <path d="M0 -24 L0 -44" stroke="${p.ink}" stroke-opacity=".22" stroke-width="1.4"/>
+        <rect x="-17" y="-80" width="34" height="34" rx="9" fill="${p.accent}" fill-opacity="${i === 3 ? .34 : .16}"
+              stroke="${p.accent}" stroke-opacity=".45" stroke-width="1"/>
+        <circle cy="-63" r="9.5" fill="${p.accent}" fill-opacity="${i === 3 ? 1 : .55}"/>
+        <circle cy="-63" r="4" fill="${p.bg}" fill-opacity="${i === 3 ? .35 : .5}"/>
+        <circle cx="-12" cy="-51" r="1.8" fill="${p.ink}" fill-opacity=".3"/>
+        <circle cx="12" cy="-51" r="1.8" fill="${p.ink}" fill-opacity=".3"/>
+        <path d="M-10 -86 A86 86 0 0 1 10 -86" stroke="${p.ink}" stroke-opacity=".18" stroke-width="3" fill="none"/>
+      </g>`).join('');
+    return `<svg viewBox="-120 -120 240 240" xmlns="http://www.w3.org/2000/svg">
+      <circle r="117" fill="none" stroke="${p.accent}" stroke-opacity=".28" stroke-width="1" stroke-dasharray="46 22"/>
+      <circle r="97" fill="#ffffff" fill-opacity=".55" stroke="${p.ink}" stroke-opacity=".2" stroke-width="1.4"/>
+      <circle r="91" fill="none" stroke="${p.ink}" stroke-opacity=".08" stroke-width="1"/>
+      <g transform="rotate(-12)">${ch}</g>
+      <circle r="24" fill="none" stroke="${p.ink}" stroke-opacity=".25" stroke-width="1.4"/>
+      <circle r="12" fill="${p.bg}" stroke="${p.ink}" stroke-opacity=".3" stroke-width="1.4"/>
+    </svg>`;
+  };
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const mark = () => { const m = el('i', 'mark'); if (D.mark) { const i = el('img'); i.src = D.mark; m.append(i); } else m.textContent = D.initial; return m; };
+
+  const sheet = el('section', 'sheet');
+  const header = el('header');
+  const top = el('div', 'top');
+  const k = el('div', 'kicker', 'Open Position'); if (D.until) k.append(el('span', '', D.until));
+  const co = el('div', 'co'); co.append(mark(), D.company);
+  top.append(k, co);
+  const meta = el('div', 'meta');
+  D.meta.forEach(m => meta.append(el('span', '', m)));
+  D.stack.forEach(s => meta.append(el('b', '', '#' + s)));
+  header.append(top, el('h1', '', D.role));
+  const B = D.brand;
+  if (B) {
+    sheet.classList.add('branded');
+    if (B.motif === 'disc') {
+      const m = el('div', 'motif disc'); m.innerHTML = discSvg(D.palette); sheet.append(m);
+    }
+    const about = el('div', 'about');   // 회사 이름은 위(co)에 이미 있다 — 여기서 또 쓰지 않는다
+    if (B.wordmark) about.append(el('span', 'wm', B.wordmark));
+    about.append(B.about || '');
+    if (B.facts && B.facts.length) about.append(el('span', 'facts', B.facts.join(' · ')));
+    header.append(about);
+    if (B.stats && B.stats.length) {
+      const stats = el('div', 'stats');
+      B.stats.forEach(s => { const c = el('div', 'stat'); c.append(el('b', '', s.value), el('span', '', s.label)); stats.append(c); });
+      if (B.stats_note) stats.append(el('span', 'note', B.stats_note));
+      header.append(stats);
+    }
+  } else header.append(meta);
+  const body = el('div', 'body');
+  const footer = el('footer');
+  // 회사 정보가 머리를 차지하면 경력·기술 태그는 꼬리로 내린다
+  footer.append(B ? meta : el('span', '', D.company));   // 경력은 meta·머리에 이미 있다
+  sheet.append(header, body, footer);
+  document.getElementById('root').append(sheet);
+
+  // 섹션 → 블록. 주요업무 소제목은 '주요업무 01' 라벨 + 소제목 한 줄로 쓴다.
+  const block = sec => {
+    const b = el('div', 'blk');
+    const h3 = el('h3');
+    if (sec.kicker === 'Tasks') { h3.append('주요업무'); if (sec.no) h3.append(el('small', '', sec.no)); }
+    else h3.append(sec.title);
+    b.append(h3);
+    if (sec.kicker === 'Tasks' && sec.title !== '주요업무') b.append(el('h4', '', sec.title));
+    if (sec.kind === 'rows') {
+      const dl = el('dl');
+      sec.items.forEach(it => { dl.append(el('dt', '', it.label || '·'), el('dd', '', it.text)); });
+      b.append(dl);
+    } else {
+      const ul = el('ul'); sec.items.forEach(it => ul.append(el('li', '', it))); b.append(ul);
+    }
+    return b;
+  };
+  const secs = D.sections;
+
+  const layout = split => {           // split = 0 이면 1단, 아니면 그 자리에서 2단으로 가른다
+    body.replaceChildren();
+    body.className = 'body ' + (split ? 'c2' : 'c1');
+    const parts = split ? [secs.slice(0, split), secs.slice(split)] : [secs];
+    return parts.map(p => { const c = el('div', 'col'); p.forEach(s => c.append(block(s))); body.append(c); return c; });
+  };
+  const fits = cols => cols.every(c => c.offsetHeight <= body.clientHeight - parseFloat(getComputedStyle(body).paddingTop) + 1)
+    && cols.every(c => c.scrollWidth <= c.clientWidth + 1);
+  const best = split => {
+    let lo = 8, hi = 60, cols;
+    while (hi - lo > 0.25) {
+      const mid = (lo + hi) / 2;
+      st.setProperty('--f', mid + 'px');
+      cols = layout(split);
+      if (fits(cols)) lo = mid; else hi = mid;
+    }
+    return lo;
+  };
+  const tries = [0, ...Array.from({ length: Math.max(0, secs.length - 1) }, (_, i) => i + 1)]
+    .map(split => ({ split, f: best(split) }));
+  const win = tries.reduce((a, b) => (b.f > a.f ? b : a));
+  st.setProperty('--f', win.f + 'px');
+  layout(win.split);
+  window.__layout = { columns: win.split ? 2 : 1, split: win.split, font_px: Math.round(win.f * 10) / 10, tries };
+  window.__paged = true;
+})();
+</script>

@@ -1,0 +1,43 @@
+{
+  "names": ["랩스피너", "LabSpinner", "ExoDiscovery"],
+  "researched_at": "2026-09-15",
+  "wordmark": "LabSpinner",
+  "about": "원심력으로 도는 미세유체 디스크(ExoDisc)로 혈액·소변 속 엑소좀 분리를 자동화하는 분자진단 기업",
+  "facts": ["울산", "2018 설립", "UNIST 기술 기반"],
+  "stats": [
+    {"value": "30분 이내", "label": "엑소좀 분리 시간"},
+    {"value": "6샘플", "label": "디스크 1장에 동시 처리"},
+    {"value": "~95%", "label": "EV 회수율"}
+  ],
+  "stats_note": "수치: labspinner.com 공개 사양",
+  "motif": "disc",
+  "ui": {
+    "observed_at": "https://labspinner.com/en (2026-09-15, 브라우저에서 계산된 스타일로 확인)",
+    "font": "Arial,'Helvetica Neue','Noto Sans KR','Malgun Gothic',sans-serif",
+    "display": "sans",
+    "paper": "#f4f3f9",
+    "ink": "#0e2841",
+    "text": "#4b5563",
+    "sub": "#9ca3af",
+    "accent": "#d65a48",
+    "rules": [
+      "글꼴은 Arial 하나(국문은 Noto Sans KR). 세리프·장식 서체를 안 쓴다",
+      "제목은 700 굵기, 자간을 좁힌다(60px 에 -1.5px). 첫 줄 네이비, 둘째 줄만 코랄 — '~95% EV Recovery. / Unmatched by Any Method.'",
+      "코랄은 제목 둘째 줄과 버튼에만. 나머지는 네이비 제목 + 회색(#4b5563) 본문",
+      "스펙은 '작은 회색 라벨(12px 대문자 #9ca3af) → 굵은 값' 짝으로 보여 준다",
+      "섹션 바탕은 흰색과 #f4f3f9 를 번갈아. 그림자·그라디언트·아이콘 장식 없음, 제품 사진만"
+    ]
+  },
+  "palette": {"bg": "#f4f3f9", "ink": "#0e2841", "accent": "#d65a48", "soft": "#e5e2ee"},
+  "why": {
+    "palette": "사이트 CSS 의 주색 두 개 — 네이비 rgb(14,40,65), 코랄 rgb(214,90,72). 바탕은 사이트의 #f4f3f9. 코랄은 디스크 챔버에 담긴 붉은 샘플 색과 같다.",
+    "motif": "제품이 6챔버 원형 디스크다. 이 공고가 바로 그 장비를 제어하는 소프트웨어 자리라 제품 형태를 그대로 쓴다. 사진을 쓰지 않고 SVG 로 다시 그린다."
+  },
+  "sources": [
+    "https://labspinner.com/en",
+    "https://labspinner.com/en/about",
+    "https://tracxn.com/d/companies/labspinner/__2IRQIQokzDE4P-CDlAMN9J6veDO6XtxkNSassuPC-iQ",
+    "https://www.mt.co.kr/industry/2024/06/18/2024061717174599720",
+    "https://thevc.kr/labspinner"
+  ]
+}

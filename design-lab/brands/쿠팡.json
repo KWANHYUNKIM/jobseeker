@@ -1,0 +1,204 @@
+{
+  "names": [
+    "쿠팡",
+    "쿠팡(주)",
+    "(주)쿠팡",
+    "쿠팡 주식회사",
+    "Coupang",
+    "Coupang Corp."
+  ],
+  "researched_at": "2026-09-16",
+  "wordmark": "쿠팡",
+  "about": "로켓배송",
+  "facts": [],
+  "slogan": "쿠팡은 로켓배송",
+  "frame": "brand_coupang.html",
+  "version": 1,
+  "palette": {
+    "bg": "#ffffff",
+    "ink": "#111111",
+    "accent": "#0090c0",
+    "soft": "#ecefee"
+  },
+  "ui": {
+    "observed_at": "쿠팡 뉴스룸 자료실 원본 사진(친환경 포장 -03 운송장 클로즈업, 배송차량) 픽셀 · 로고 zip PNG 픽셀 · news.coupang.com / coupangeats.com / coupang.jobs 의 @font-face — 2026-09-16",
+    "font": "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "code_font": "'Arimo','Pretendard',sans-serif",
+    "embed_fonts": {
+      "Pretendard": [
+        {
+          "src": "assets/companies/쿠팡/fonts/Pretendard-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/쿠팡/fonts/Pretendard-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/쿠팡/fonts/Pretendard-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/쿠팡/fonts/Pretendard-ExtraBold.woff2",
+          "weight": 800
+        }
+      ],
+      "Arimo": "assets/companies/쿠팡/fonts/Arimo-VF.ttf"
+    },
+    "display": "sans",
+    "paper": "#ffffff",
+    "ink": "#111111",
+    "text": "#1c1c1c",
+    "sub": "#5b6166",
+    "accent": "#0090c0",
+    "line": "#0090c0",
+    "package": "#e8ebea",
+    "tint": "rgba(0,144,192,0.16)",
+    "palette_v1": [
+      {
+        "hex": "#0090C0",
+        "name": "운송장 시안",
+        "source": "뉴스룸 친환경 포장 -03.jpeg 운송장의 채도 높은 시안 잉크 픽셀 중앙값(#0088B8~#0094C3 무리). 그늘진 JPG 라 실물보다 약간 어둡다 — 미확인",
+        "use": "라벨 테두리·위 띠·칸 탭"
+      },
+      {
+        "hex": "#0090C0 @16%",
+        "name": "운송장 망점 칸",
+        "source": "같은 사진의 'To.' 칸 옅은 시안 망점(#6AA7BC, 그늘) — 흰 종이 위 시안 망점이라 시안 16% 로 옮김",
+        "use": "큰 경력 코드 칸 바탕"
+      },
+      {
+        "hex": "#111111",
+        "name": "감열 인쇄 검정",
+        "source": "운송장 '706 A01' '8844' 글자",
+        "use": "큰 코드·본문"
+      },
+      {
+        "hex": "#FFFFFF",
+        "name": "라벨 종이",
+        "source": "운송장 흰 칸",
+        "use": "판 바탕"
+      },
+      {
+        "hex": "#E8EBEA",
+        "name": "포장 비닐",
+        "source": "같은 사진의 흰 비닐 포장 그늘 톤(눈대중 — 픽셀 평균 아님)",
+        "use": "라벨 바깥 가장자리"
+      }
+    ],
+    "colors_not_used": [
+      {
+        "hex": "#935227 #F7552F #FFC400 #88CC2F #31B4DD",
+        "why": "로고 zip 'on light background.png' 의 다섯 글자 색. 로고의 색이라 판에 칠하지 않는다(가이드라인: 미디어 자산 색 변형 금지 — 떼어 쓰는 것도 로고 흉내)"
+      },
+      {
+        "hex": "로켓프레시 가방 남색·초록",
+        "why": "프레시백은 탈락 후보"
+      },
+      {
+        "hex": "쿠팡이츠 앱 하늘색",
+        "why": "앱 UI 색 — 브랜드 색 아님, 이 판의 얼굴도 아님"
+      }
+    ],
+    "rules": [
+      "로고·로켓 아이콘은 그리지 않는다. 운송장 사진 속 작은 'coupang' 글자와 로켓은 사진 원본 그대로일 뿐 초점이 아니다",
+      "운송장의 장치(시안 위 띠, 칸마다 붙은 'To.'·'From' 탭, 큰 검정 코드, 바코드, 아래 줄의 큰 구역 코드)를 판의 구조로 옮긴다",
+      "칸 이름은 원문 섹션 이름 그대로. 'To.' 'From' 은 운송장에 인쇄된 칸 이름 그대로 가져온다",
+      "바코드는 장식이 아니라 실제 공고 주소(wanted.co.kr/wd/376128)를 Code 128 로 인코딩한 것 — 찍으면 주소가 나온다"
+    ],
+    "fonts_research": {
+      "brand_font": "CP Sans Text (Copyright © 2022 Coupang Corp., 산돌 제작) — news.coupang.com 테마가 로드. Coupang Text (Typotheque 2020, Peter Bilak, 'CoupangText_beta6') — coupangeats.com · coupang.jobs 가 로드",
+      "license": "둘 다 쿠팡 전용 서체. 공개 이용허락을 찾지 못함 — 사이트가 웹폰트로 서빙할 뿐 라이선스 아님 → 판에 넣지 않음. 비교 캡처용 파일은 저장소가 아니라 작업 임시 폴더에만 받았다",
+      "label_print": "운송장 인쇄 글자는 감열 프린터의 평범한 그로테스크(라틴 '706 A01' 은 Arial Bold 계열 모양, 한글 '송파2 W2나' 는 굵은 돋움 계열) — 눈 대조, 서체명 미확인",
+      "compared": [
+        "Pretendard",
+        "Noto Sans KR",
+        "IBM Plex Sans KR",
+        "Wanted Sans",
+        "Arimo"
+      ],
+      "specimen": "out/wanted-376128/v1_font_specimen.jpg — 위 두 줄은 전용 서체로 같은 문장을 찍은 비교용 캡처, 오른쪽은 운송장 원본 사진",
+      "choice": {
+        "Pretendard": "SIL OFL 1.1 (github.com/orioncactus/pretendard) — 제목·본문. CP Sans Text·Coupang Text 와 한글 속공간·굵기 대비가 가장 가깝다(Noto 는 좁고 Plex 는 무겁고 Wanted Sans 는 라틴이 너무 둥글다)",
+        "Arimo": "SIL OFL 1.1 (github.com/googlefonts/arimo) — 경력 코드·공고번호·주소. Arial 과 글자 폭이 같은 그로테스크라 운송장 '706 A01' '8844' 의 감열 인쇄 모양과 같다"
+      },
+      "licenses_bundled": [
+        "assets/companies/쿠팡/fonts/LICENSE-Pretendard.txt",
+        "assets/companies/쿠팡/fonts/OFL-Arimo.txt"
+      ]
+    }
+  },
+  "signature": {
+    "id": "rocket-waybill",
+    "what": "로켓배송 운송장 — 흰 감열지에 시안 테두리·시안 위 띠('쿠팡은 로켓배송'), 칸마다 붙은 'To.'·'From' 탭, 크게 찍힌 검정 분류 코드('706 A01', '11번', 'W2나', '8844'), 세로·가로 바코드",
+    "evidence": [
+      "https://news.coupang.com/archives/5921/ — 쿠팡 뉴스룸 자료실 '친환경 포장' 공식 사진(-03.jpeg)이 비닐 포장 위 로켓배송 운송장 클로즈업이다. -05.jpeg 도 운송장 붙은 비닐백",
+      "https://news.coupang.com/archives/120/ — 자료실 '배송차량' 사진: 트럭 옆면에 같은 문구 '쿠팡은 로켓배송!'",
+      "https://www.ntoday.co.kr/news/articleView.html?idxno=113213 — 투데이신문 2025-02-14 '쿠팡 운송장에 적힌 ★의 비밀': ★ 새벽배송 / ♥ 주간 배송, 세 자리 '라우트' + 알파벳·두 자리 '서브라우트' 설명 (쿠팡 공식 설명인지는 기사에 명시 없음)"
+    ],
+    "why_recognizable": "로켓배송을 받는 사람은 누구나 문 앞에서 이 시안 라벨을 본다. 택배사 운송장은 회사마다 모양이 다르고, 시안 띠 + 크게 찍힌 라우트 코드 조합은 쿠팡 자체 배송(로켓배송)에만 있다. 운송장 코드의 뜻을 푸는 기사가 따로 나올 만큼 사람들이 들여다보는 물건이다",
+    "how_used": "판 전체가 한 장의 운송장이다. 위 띠에 운송장·트럭에 인쇄된 '쿠팡은 로켓배송', 'To.' 칸에 공고 제목, 'From' 칸에 회사, 라우트 코드 자리에 경력 '7–14', 섹션마다 시안 탭이 붙은 칸, 아래 줄 큰 코드 자리에 지원 주소, 바코드는 실제 주소를 인코딩. 옆에 공식 사진 속 실물 운송장을 증거처럼 붙인다",
+    "tie_to_job": "쿠팡이츠 웹 플랫폼 공고 — 주문이 문 앞까지 가는 회사. 운송장의 '분류 코드' 자리에 경력 '7–14' 를 찍으면 원문 숫자를 바꾸지 않고도 라벨처럼 읽힌다",
+    "not_used": "로켓 아이콘·'coupang' 로고타입은 다시 그리지 않는다(사진 속 원본만). 전화번호 1577-7011·주소·주문번호 같은 실제 운송장 값은 옮기지 않는다. 운송장 기호 ★♥ 는 배송 유형의 뜻이 있어 공고에 붙이면 거짓이 되므로 쓰지 않는다",
+    "alternatives": [
+      {
+        "what": "로켓배송 트럭(쿠팡카) 옆면 '쿠팡은 로켓배송!' + 로켓 그림",
+        "why_not": "가장 유명하지만 옆면의 절반이 로고·로켓 그래픽이라 자르면 트럭만 남는다. 그리고 컬리 판이 이미 '새벽 트럭 사진' 이 얼굴이라 여섯 판과 겹친다 — 문구만 운송장 위 띠로 가져감"
+      },
+      {
+        "what": "로켓프레시 프레시백(남색·초록 보냉 가방)",
+        "why_not": "알아보긴 하지만 신선식품 고객에 한정되고, 가방 무늬가 일러스트 + '로켓프레시' 로고라 판에 넣으면 로고가 초점이 된다. 쿠팡이츠 공고와도 이어지지 않는다"
+      },
+      {
+        "what": "쿠팡이츠 배달 장면/한집배달·치타배달 배지",
+        "why_not": "공고와 가장 가깝지만 뉴스룸 자료실에 쿠팡이츠 공식 이미지가 없다(쿠팡 자료실은 로고·앱·고객·쿠팡플레이·포장·쿠팡친구·배송차량·센터뿐). 치타 배지는 서비스 마크라 로고 흉내가 된다"
+      },
+      {
+        "what": "쿠팡 비닐 폴리백/박스 테이프의 컬러 로고",
+        "why_not": "결국 로고 다섯 색 — 로고 변형 금지"
+      },
+      {
+        "what": "쿠팡친구(배송 직원) 파란 조끼 사진",
+        "why_not": "실존 인물 사진이 중심이 된다"
+      }
+    ]
+  },
+  "points": [
+    {
+      "id": "rocket-phrase",
+      "what": "'쿠팡은 로켓배송' — 운송장 위 띠와 배송 트럭 옆면에 똑같이 인쇄된 문장",
+      "evidence": "뉴스룸 자료실 친환경 포장 -03(운송장), 배송차량 -03·-04·-10·-11(트럭 옆면 '쿠팡은 로켓배송!')",
+      "meaning": "회사가 스스로 붙인 한 줄 — 로켓배송이 곧 쿠팡",
+      "use": "위 띠 문구(운송장 표기 그대로, 느낌표 없는 판)",
+      "avoid": "로켓 그림을 옆에 그리지 않는다, 문장을 바꾸지 않는다"
+    },
+    {
+      "id": "real-label-photo",
+      "what": "공식 사진 속 실물 운송장",
+      "evidence": "https://news.coupang.com/wp-content/uploads/2023/01/coupang-rocket-delivery-rocket-fresh-Eco-friendly-Packaging-green-innovation-230109-03.jpeg",
+      "meaning": "판의 구조가 흉내가 아니라 이 물건에서 왔다는 증거",
+      "use": "머리 오른쪽에 잘라 붙임, 필터·색 덧칠 없음",
+      "avoid": "사진 위에 글을 얹지 않는다"
+    }
+  ],
+  "images": {
+    "waybill": "assets/companies/쿠팡/v1/waybill_photo.jpg"
+  },
+  "images_note": {
+    "waybill": "뉴스룸 자료실 '친환경 포장' -03.jpeg(1800x1200)에서 운송장 영역 (600,380)-(1500,1100) 을 잘라 900x720 으로. 사진 속 작은 'coupang' 글자·로켓·전화번호가 보이지만 원본 그대로이고 판의 초점은 아님. 권리: 뉴스룸 자료는 언론 보도용 — 인스타 공개 게시 전 쿠팡 사용 허락 확인 필요"
+  },
+  "credit": "사진: 쿠팡 뉴스룸 자료실",
+  "sources": [
+    "https://news.coupang.com/archives/category/reference/",
+    "https://news.coupang.com/archives/5921/",
+    "https://news.coupang.com/archives/120/",
+    "https://news.coupang.com/archives/1257/",
+    "https://news.coupang.com/media-assets-brand-guidelines-kr/",
+    "https://news.coupang.com/coupang-media-assets-brand-guidelines-eng/",
+    "https://www.ntoday.co.kr/news/articleView.html?idxno=113213",
+    "https://www.coupangeats.com/",
+    "https://www.coupang.jobs/kr/",
+    "https://github.com/orioncactus/pretendard",
+    "https://github.com/googlefonts/arimo"
+  ]
+}

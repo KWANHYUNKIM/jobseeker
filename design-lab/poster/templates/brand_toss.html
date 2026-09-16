@@ -1,0 +1,143 @@
+<!-- brand_toss — 토스(비바리퍼블리카) 전용 판 v3. brands/토스.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  10to100-lockup  토스 10주년 캠페인 '10 to 100' 의 검정 정사각·원·정사각 숫자 조합.
+                                경력 'A-B년' 을 [A] (to) [B] 로 — 이 공고의 '2-10년' 이 캠페인과 같은 모양이다.
+                                아래 캡션은 원문 경력 그대로. 흰 바탕 검정 한 색.
+     supporting tossface        토스페이스 원본 SVG 이모지를 해요체 카드 제목 앞에 하나씩(소개 페이지의 원칙 섹션 방식을 한 줄로 접음).
+                                꼬리에 저작권 표시.
+                haeyo-cards     원문 대괄호 해요체 소제목 + 연한 테두리 카드, 파란 위첨자 줄 수(v1·v2 에서 이어짐)
+     안 쓰는 것: 로고·심볼·영문 로고타입, 캠페인의 심볼 모양 입자 구름, v2 의 옅은 파랑 머리·팀 사진
+     서체: Wanted Sans(v2 조사 — TPS 와 비교해 가장 가까운 무료 서체) -->
+<meta charset="utf-8">
+<title>brand_toss</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;overflow:hidden}
+
+  /* 머리 — 10 to 100 숫자 조합 */
+  header{flex:none;padding:calc(4.2*var(--u)) calc(5.6*var(--u)) calc(1.8*var(--u));display:grid;grid-template-columns:auto 1fr;column-gap:calc(4*var(--u));align-items:end}
+  .tagrow{flex:none;padding:0 calc(5.6*var(--u)) calc(1.8*var(--u));font-size:calc(2.05*var(--u));font-weight:600;color:var(--sub);white-space:nowrap;overflow:hidden}
+  .lock{display:flex;align-items:center;gap:calc(.9*var(--u))}
+  .lock .sq,.lock .ci{height:var(--S);min-width:var(--S);background:var(--black);color:var(--paper);display:grid;place-items:center;
+    font-weight:500;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+  .lock .sq{padding:0 calc(var(--S)*.12);font-size:calc(var(--S)*.66)}
+  .lock .ci{width:var(--S);border-radius:50%;font-size:calc(var(--S)*.46);letter-spacing:-.02em}
+  .cap{margin-top:calc(1.2*var(--u));font-size:calc(2.8*var(--u));font-weight:700;letter-spacing:-.02em;color:var(--black)}
+  .info{padding-bottom:calc(.2*var(--u))}
+  .chip{display:inline-block;background:var(--chip-bg);color:var(--chip-ink);font-weight:700;font-size:calc(2.1*var(--u));padding:calc(.55*var(--u)) calc(1.5*var(--u));border-radius:100px}
+  h1{margin-top:calc(1.2*var(--u));font-size:calc(6.2*var(--u));font-weight:800;letter-spacing:-.03em;line-height:1.04;color:var(--black)}
+  .tags{margin-top:calc(1.3*var(--u));font-size:calc(2.05*var(--u));font-weight:600;color:var(--sub);line-height:1.45}
+
+  main{flex:1;min-height:0;overflow:hidden;padding:calc(1.6*var(--u)) calc(5.6*var(--u)) 0;display:grid;grid-template-columns:1fr 1fr;column-gap:calc(var(--f)*1.1);align-items:start;
+    border-top:calc(.3*var(--u)) solid var(--black);margin:0 calc(5.6*var(--u));padding-left:0;padding-right:0}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*.8)}
+  .card{border:calc(.22*var(--u)) solid var(--line);border-radius:calc(var(--f)*1.1);padding:calc(var(--f)*1) calc(var(--f)*1.1) calc(var(--f)*.7)}
+  .card .hd{display:flex;align-items:center;gap:calc(var(--f)*.55);margin-bottom:calc(var(--f)*.6)}
+  .card .emo{flex:none;width:calc(var(--f)*1.9);height:calc(var(--f)*1.9)}
+  .card h2{font-size:calc(var(--f)*1.14);font-weight:700;letter-spacing:-.02em;line-height:1.3;color:var(--strong)}
+  .card h2 sup{color:var(--accent);font-size:.62em;font-weight:800;margin-left:.18em;vertical-align:super;line-height:0}
+  .it{font-family:var(--body);font-size:var(--f);line-height:var(--body-lh,1.5);color:var(--body-ink,var(--text));font-weight:var(--body-w,500);padding-left:calc(var(--f)*.85);text-indent:calc(var(--f)*-.85);margin-bottom:calc(var(--f)*.4)}
+  .it::before{content:var(--bullet,'');display:inline-block;width:calc(var(--f)*.85);text-indent:0;color:var(--black)}
+  .kv{margin-bottom:calc(var(--f)*.7)}
+  .kv b{display:block;font-size:var(--f);font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:calc(var(--f)*.15)}
+  .kv p{font-family:var(--body);font-size:calc(var(--f)*.95);line-height:1.55;color:var(--body-ink,var(--text));font-weight:var(--body-w,500)}
+
+  footer{flex:none;margin:calc(1.4*var(--u)) calc(5.6*var(--u)) 0;padding:calc(1.8*var(--u)) 0 calc(2.8*var(--u));border-top:calc(.3*var(--u)) solid var(--black);
+    display:flex;justify-content:space-between;align-items:flex-end;gap:calc(4*var(--u))}
+  .quote{font-size:calc(2.35*var(--u));font-weight:700;letter-spacing:-.02em;line-height:1.35;white-space:pre-line;color:var(--black)}
+  .credit{margin-top:calc(.9*var(--u));font-size:calc(1.5*var(--u));font-weight:500;color:var(--sub)}
+  .apply{text-align:right;white-space:nowrap}
+  .apply .lab{font-size:calc(2.1*var(--u));font-weight:600;color:var(--sub)}
+  .apply .url{margin-top:calc(.3*var(--u));font-size:calc(2.6*var(--u));font-weight:700;color:var(--black)}
+  .apply .url i{font-style:normal;color:var(--accent);margin-left:calc(.8*var(--u))}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('line', ui.line || '#e5e8eb');
+  F.set('strong', ui.strong || ui.ink);
+  F.set('black', '#191f28');
+  // 모집 내용 본문 서체 — 제목·라벨·숫자 조합과 따로(brands/토스.json ui.body_font)
+  F.set('body', ui.body_font || ui.font);
+  if (ui.body_weight) F.set('body-w', ui.body_weight);
+  if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
+  if (ui.body_ink) F.set('body-ink', ui.body_ink);
+  F.set('bullet', ui.body_bullet ? JSON.stringify(ui.body_bullet) : "''");
+  F.set('chip-bg', ui.chip_bg || '#f2f4f6'); F.set('chip-ink', ui.chip_ink || ui.text);
+
+  // 원문을 대괄호 소제목 단위 카드로. 대괄호가 없는 섹션은 기본 이름을 붙인다
+  const cards = [];
+  const split = (lines, fallback, kv = false) => {
+    let cur = null;
+    for (const raw of lines) {
+      const head = (typeof raw === 'string' ? raw : raw.text).match(/^\[(.+)\]$/);
+      if (head && !(raw.label)) { cur = { title: head[1], items: [], kv }; cards.push(cur); continue; }
+      if (!cur) { cur = { title: fallback, items: [], kv }; cards.push(cur); }
+      cur.items.push(raw);
+    }
+  };
+  split(S.tasks.flatMap(g => g.items), '주요업무');
+  split(S.qualifications, '자격요건');
+  split(S.preferences, '우대사항');
+  split(S.benefits, '복지', true);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리 — [A] (to) [B] + 원문 경력 캡션
+  const header = el('header');
+  const lockBox = el('div');
+  const cm = F.career.match(/^(\d+)\s*[-~–]\s*(\d+)/) || F.career.match(/^(\d+)/);
+  if (cm) {
+    const lock = el('div', 'lock');
+    lock.append(el('div', 'sq', cm[1]));
+    if (cm[2]) lock.append(el('div', 'ci', 'to'), el('div', 'sq', cm[2]));
+    lockBox.append(lock);
+  }
+  lockBox.append(el('div', 'cap', D.meta.join(' · ')));
+  const info = el('div', 'info');
+  const tm = (D.title || D.role).match(/^\[([^\]]+)\]\s*(.+)$/);
+  info.append(el('span', 'chip', tm ? tm[1] : (B.wordmark || D.company)));
+  info.append(el('h1', '', tm ? tm[2] : (D.title || D.role)));
+  header.append(lockBox, info);
+  sheet.append(header);
+  if (D.stack.length) sheet.append(el('div', 'tagrow', [...new Set(D.stack)].join(' ・ ')));
+
+  const main = el('main'); sheet.append(main);
+
+  const footer = el('footer');
+  const left = el('div'); left.append(el('div', 'quote', B.slogan || ''));
+  if (B.credit) left.append(el('div', 'credit', B.credit));
+  const apply = el('div', 'apply');
+  footer.append(left, apply); sheet.append(footer);
+
+  const cardEl = c => {
+    const d = el('div', 'card');
+    const key = (B.emoji_map || {})[c.title]; const hd = el('div', 'hd');
+    if (key && IMG[key]) { const im = el('img', 'emo'); im.src = IMG[key]; im.alt = ''; hd.append(im); }
+    const h = el('h2', '', c.title); h.append(el('sup', '', String(c.items.length))); hd.append(h); d.append(hd);
+    c.items.forEach(it => {
+      if (c.kv && typeof it !== 'string' && it.label) { const k = el('div', 'kv'); k.append(el('b', '', it.label), el('p', '', it.text)); d.append(k); }
+      else d.append(el('div', 'it', typeof it === 'string' ? it : it.text));
+    });
+    return d;
+  };
+  const cands = [];
+  for (const S_ of [17, 15, 13])
+    for (let k = 1; k < cards.length; k++) cands.push({ k, S: S_, columns: 2 });
+  Frame.fit(F, cands, c => {
+    F.set('S', `calc(${c.S}*var(--u))`);
+    const L = el('div', 'col'), R = el('div', 'col');
+    cards.slice(0, c.k).forEach(x => L.append(cardEl(x))); cards.slice(c.k).forEach(x => R.append(cardEl(x)));
+    main.replaceChildren(L, R);
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 40 });
+})();
+</script>

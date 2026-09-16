@@ -1,0 +1,292 @@
+{
+  "names": [
+    "토스",
+    "비바리퍼블리카",
+    "(주)비바리퍼블리카",
+    "비바리퍼블리카(토스)",
+    "Toss",
+    "Viva Republica"
+  ],
+  "researched_at": "2026-09-15",
+  "wordmark": "토스",
+  "about": "금융을 넘어 삶을 바꾸는 여정",
+  "facts": [],
+  "slogan": "금융을 넘어 삶을 바꾸는 여정,\n이 유난한 도전에 함께할 동료를 찾습니다",
+  "frame": "brand_toss.html",
+  "palette": {
+    "bg": "#ffffff",
+    "ink": "#202632",
+    "accent": "#3182f6",
+    "soft": "#f2f4f6"
+  },
+  "ui": {
+    "observed_at": "brand.toss.im 브랜드 컬러 · 로고/심볼/앱 아이콘 PNG 픽셀 · toss.im/career CSS 변수(TDS adaptive 토큰)와 계산된 스타일 — 2026-09-15",
+    "font": "'Wanted Sans','Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "Wanted Sans": [
+        {
+          "src": "assets/companies/토스/fonts/WantedSans-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/토스/fonts/WantedSans-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/토스/fonts/WantedSans-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/토스/fonts/WantedSans-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/토스/fonts/WantedSans-ExtraBold.woff2",
+          "weight": 800
+        }
+      ],
+      "Ten to Sans": [
+        {
+          "src": "assets/companies/토스/fonts/TenToSans/TenToSans-Regular.woff2",
+          "weight": 400
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#ffffff",
+    "ink": "#202632",
+    "text": "#4e5968",
+    "sub": "#8b95a1",
+    "accent": "#3182f6",
+    "line": "#e5e8eb",
+    "rules": [
+      "공식 브랜드 색: Toss Blue #0064FF (PANTONE 2175 C), Toss Gray #202632 — 로고타입 픽셀도 #202632 로 일치. 브랜드 블루는 로고 몫이라 포스터에 칠하지 않는다",
+      "3D 심볼의 파랑은 #163CE9(그늘) → #2458EE(중간) → #50B1FF(빛) 로 흐른다 — 로고 그림자 색이라 역시 쓰지 않음",
+      "제품·채용 UI 의 파랑은 TDS Blue500 #3182F6 — 채용 목록 '279개' 개수, '전체 공고' 버튼. 포스터의 파랑(위첨자 개수·화살표)은 이 값",
+      "회색은 TDS adaptive 토큰 그대로: Grey900 #191F28 / 700 #4E5968 / 500 #8B95A1 / 200 #E5E8EB / 100 #F2F4F6",
+      "채용 사이트 머리는 #E6F7FE → #C8E4FE 로 옅게 흐르고, 칩은 rgba(78,89,104,.16) 바탕에 #4E5968 11px 700, 100px 둥근 모서리",
+      "로고는 형태·색·효과 변형, 다른 그래픽과 결합, 로고 안 텍스트, 로고타입만 쓰기가 전부 금지 — 포스터에 로고를 넣지 않는다"
+    ],
+    "strong": "#191f28",
+    "chip_bg": "rgba(78,89,104,0.16)",
+    "chip_ink": "#4e5968",
+    "hero": [
+      "#e6f7fe",
+      "#c8e4fe"
+    ],
+    "fonts_research": {
+      "brand_font": "Toss Product Sans (산돌 2020 → 이도타입 v2, 7굵기, 한글 11,172자) — toss.im 전 계열사·TDS 에 쓰는 전용 서체",
+      "license": "공개 배포·외부 이용허락 문서를 찾지 못했다. toss.im 이 웹폰트로 서빙하지만 그건 라이선스가 아니다 → 넣지 않음",
+      "latin_fallback_seen": "toss.im font-family 에 'Basier Square'(상용) 가 TPS 다음 순서로 있다",
+      "tossface": "토스페이스 라이선스(https://toss.im/tossface/copyright): 판매·부정 목적·허용 안 된 수정본만 아니면 자유 사용·재배포 가능. 다만 채용 공고·채용 사이트 화면에 이모지를 쓴 곳이 없어 이번 판에는 쓰지 않음",
+      "compared": [
+        "Pretendard",
+        "SUIT",
+        "Wanted Sans",
+        "Spoqa Han Sans Neo",
+        "IBM Plex Sans KR"
+      ],
+      "specimen": "out/wanted-335070/v2_font_specimen.jpg — TPS 는 toss.im 페이지에 로드된 웹폰트로 같은 문장을 찍은 비교용 캡처",
+      "choice": "Wanted Sans (SIL OFL 1.1, github.com/wanteddev/wanted-sans)",
+      "why": [
+        "라틴 O·G·g·e 가 둥글고 넓은 기하 그로테스크 — TPS 의 'DevOps Engineer' 와 가장 닮음(Pretendard=Inter 계열은 더 좁고 딱딱)",
+        "굵은 숫자 '2–10', '12,345' 의 폭과 둥근 0 이 TPS 와 가깝다 — TPS 는 숫자를 한글보다 두껍게 설계",
+        "가운뎃점 '·' 이 크고 굵다 — TPS 와 같고 Pretendard 는 작다",
+        "한글 700 굵기의 획 대비·속공간이 TPS 와 비슷. SUIT 는 라틴이 너무 기하(원형 O), Spoqa·Plex 는 한글이 좁고 무겁다"
+      ]
+    },
+    "body_font": "'Ten to Sans','Wanted Sans','Noto Sans KR',sans-serif",
+    "body_weight": 400,
+    "body_line_height": 1.55,
+    "body_ink": "#333d4b",
+    "body_bullet": "•",
+    "body_font_research": {
+      "why": "모집 내용 본문이 Wanted Sans(기본 고딕) 이면 판 대부분이 어느 앱 공고와 같아 보인다. v3 얼굴인 '10 to 100' 의 원·둥근 숫자와 같은 결의 본문으로. LOCA Batang(명조·세리프·별)과는 반대 성격",
+      "board": "out/wanted-335070/body_font_board.jpg — 17px·흰 카드·#4E5968 로 실제 자격요건·우대 줄",
+      "candidates": {
+        "Wanted Sans Medium": "OFL — 현재. 깔끔하지만 기본 고딕 인상",
+        "SUIT Medium": "OFL — 넓고 가볍다, Wanted Sans 와 거의 같은 인상",
+        "나눔스퀘어라운드 R": "OFL — 획 끝이 둥글고 속공간 넓은 네모꼴, '10 to 100' 원과 결이 같음 → 바탕으로 선택",
+        "나눔스퀘어라운드 B": "OFL — 17px 에서 무겁다",
+        "고운돋움": "OFL — 가늘고 손글씨 기운, 17px 에서 흐림",
+        "IBM Plex Sans KR Medium": "OFL — 단단하지만 기업 문서 인상",
+        "Spoqa Han Sans Neo Medium": "OFL — 무겁고 좁다",
+        "Pretendard Regular": "OFL — 가장 흔한 기본 고딕"
+      },
+      "custom": {
+        "name": "Ten to Sans (파생 서체)",
+        "build": "design-lab/typefaces/build_ten_to_sans.py",
+        "recipe": [
+          "한글·영문: 나눔스퀘어라운드 Regular 그대로 — R/B 섞기(Medium)는 자모 조각 절반이 점 구조가 달라 한 글자 안 굵기가 어긋나 버림",
+          "숫자 0–9: Bold 윤곽, 가장 넓은 숫자 폭(610)에 맞춘 고정폭 — 숫자를 한글보다 한 단계 굵게('숫자를 UI 처럼' 성격, TPS 윤곽은 쓰지 않음)",
+          "% + /: Bold 윤곽 1.12배, 한글 글자 몸 세로 중심(346)으로",
+          "새로 그림: · • ● → 속이 찬 원('10 to 100' 의 'to' 원), ■ → 속이 찬 정사각(숫자 상자)",
+          "레이아웃 기능 제거, 이름 'Ten to Sans'(OFL 예약 이름 '나눔'·토스 공식 서체로 오인될 이름 회피)"
+        ],
+        "poster": "본문 색 #333D4B(TDS Grey800) — Regular 가 가벼워 #4E5968 로는 폰에서 흐렸다. 목록 앞 불릿은 CSS 점 대신 서체의 원 글리프를 검정으로",
+        "license": "SIL OFL 1.1 — 원본 나눔스퀘어라운드(NAVER) OFL, 수정본은 새 이름으로 배포 가능, 서체 판매 금지. OFL.txt 동봉. 토스와 무관",
+        "specimen": "out/wanted-335070/ten_to_sans_specimen.jpg"
+      }
+    }
+  },
+  "points": [
+    {
+      "id": "white-black-blue",
+      "what": "흰 바탕에 검정 글씨, 파랑은 로고 한 점. 사람들이 토스를 이 조합으로 기억한다",
+      "evidence": "https://toss.tech/article/43061 — '흰 배경과 파란 로고의 조합으로 인식', 오프라인 캠페인·결제 화면에 흰 바탕·검정 글씨·파란 로고를 메인으로 씀",
+      "meaning": "색이 아니라 경험으로 기억되는 브랜드",
+      "use": "색 — 흰 바탕 + Toss Gray 글씨. 파랑은 TDS Blue500(#3182F6) 로 위첨자 개수·화살표에만",
+      "avoid": "파란 면을 넓게 깔지 않는다"
+    },
+    {
+      "id": "numbers-as-ui",
+      "what": "숫자와 기호를 UI 요소로 다룬다 — 숫자는 한글보다 두껍게, %·화살표·연산자는 크고 넓게. 서체 소개 이미지는 굵기 이름 옆에 위첨자 숫자(헤비⁷ … 라이트¹)와 파란 →, ✱",
+      "evidence": "https://toss.im/tossfeed/article/beginning-of-tps — '기호를 텍스트가 아니라 UI 요소처럼' / TPS 본문 이미지",
+      "meaning": "금융 앱 — 숫자가 주인공",
+      "use": "머리 — 경력 '2–10년' 을 앱 잔액처럼 큰 숫자 + 작은 단위로. 섹션 제목 옆에 항목 개수를 파란 위첨자로. 지원 줄에 파란 →",
+      "avoid": "없는 숫자를 만들지 않는다(개수는 실제 줄 수)"
+    },
+    {
+      "id": "haeyo-brackets",
+      "what": "공고 소제목이 해요체 문장이다 — [합류하면 함께 할 업무예요] [이런 분과 함께하고 싶어요] [이력서는 이렇게 작성하시는 걸 추천해요]",
+      "evidence": "원티드 335070 원문 / toss.im/career 공고 상세 '합류하게 될 팀에 대해 알려드려요', '합류하면 함께할 업무예요'",
+      "meaning": "지원자에게 말을 거는 공고",
+      "use": "카피 — 우리 섹션 이름(주요업무 등) 대신 원문 대괄호 문장을 그대로 제목으로",
+      "avoid": "대괄호 문장을 격식체로 바꾸지 않는다"
+    },
+    {
+      "id": "career-list-row",
+      "what": "채용 목록 한 줄 = 굵은 공고 제목 + 아래 회색 태그 줄('디자인 ・ UX ・ 제품') + 오른쪽 회색 알약 계열사 칩('토스')",
+      "evidence": "https://toss.im/career/jobs 화면 캡처(05_career/01)",
+      "meaning": "",
+      "use": "머리 — 계열사 칩 '토스' + 큰 공고 제목 + 기술 스택을 ' ・ ' 로 이은 회색 줄",
+      "avoid": ""
+    },
+    {
+      "id": "rounded-cards",
+      "what": "공고 상세는 흰 둥근 카드가 쌓인다 — 연한 테두리, 굵은 이름, 회색 한 줄 설명, 작은 칩",
+      "evidence": "https://toss.im/career/job-detail?job_id=4071151003 화면 캡처(05_career/02)",
+      "meaning": "",
+      "use": "구조 — 대괄호 소제목마다 둥근 테두리 카드 하나, 두 단으로 쌓는다",
+      "avoid": "그림자·색 카드로 바꾸지 않는다(테두리만)"
+    },
+    {
+      "id": "career-headline",
+      "what": "채용 사이트 첫 문장 '금융을 넘어 삶을 바꾸는 여정, 이 유난한 도전에 함께할 동료를 찾습니다'",
+      "evidence": "https://toss.im/career/jobs 머리",
+      "meaning": "'유난한 도전' — 토스의 일하는 태도",
+      "use": "꼬리 — 그대로 두 줄 인용",
+      "avoid": "문구를 바꾸지 않는다"
+    },
+    {
+      "id": "soft-blue-hero",
+      "what": "채용 사이트 머리와 이벤트 배너가 아주 옅은 파랑에서 흰색으로 풀린다",
+      "evidence": "toss.im/career 목록·상세 화면 캡처",
+      "meaning": "",
+      "use": "머리 배경 — 채용 사이트에서 뽑은 #E6F7FE → #C8E4FE 를 흰색으로 풀리게",
+      "avoid": "진한 파랑·보라 그라디언트 금지"
+    },
+    {
+      "id": "logo-rules",
+      "what": "로고 사용 규정 14개 — 회전·프레임·의인화·다른 서체 결합·라인·효과·색 변경·로고 안 텍스트·그라데이션·비율 변경·로고타입만 사용 금지",
+      "evidence": "https://brand.toss.im/ 로고 사용 유의사항",
+      "meaning": "",
+      "use": "금지 — 포스터에 로고·심볼을 그리지 않는다. 회사 표시는 국문 '토스' 칩 글자만",
+      "avoid": "'toss' 영문 로고타입을 글꼴로 흉내 내지 않는다"
+    },
+    {
+      "id": "team-photo",
+      "what": "브랜드 리소스 센터 미디어 키트의 '토스팀 일하는 모습' — 유리 너머로 찍은 밝은 사무실, 흰 셔츠·회색 톤, 뒤 모니터에 코드",
+      "evidence": "https://brand.toss.im/ 미디어 키트(img-press-work-4.jpg)",
+      "meaning": "언론·팀 커뮤니케이션용 공식 이미지",
+      "use": "이미지 — '이렇게 일해요' 카드 머리에 16:9 로. 사진 위에 글을 얹지 않는다",
+      "avoid": "필터·색 덧칠 금지, 로고와 한 화면에 합성 금지"
+    }
+  ],
+  "sources": [
+    "https://brand.toss.im/",
+    "https://toss.tech/article/43061",
+    "https://toss.im/tossfeed/article/toss-newlogo",
+    "https://toss.im/tossfeed/article/beginning-of-tps",
+    "https://toss.im/career/jobs",
+    "https://toss.im/career/job-detail?job_id=4071151003",
+    "https://github.com/toss/tossface",
+    "https://github.com/orioncactus/pretendard",
+    "https://toss.im/tossface/copyright",
+    "https://github.com/wanteddev/wanted-sans",
+    "https://toss.im/simplicity-21/sessions/3-3",
+    "https://toss.tech/article/tds-color-system-update",
+    "https://toss.im/10to100",
+    "https://toss.im/tossfeed/article/10to100",
+    "https://www.techm.kr/news/articleView.html?idxno=135275",
+    "https://toss.im/tossface",
+    "https://emojipedia.org/ko/toss-face",
+    "https://toss.tech/article/1st-graphic-designer"
+  ],
+  "version": 3,
+  "images": {
+    "e_tasks": "assets/companies/토스/v3/tossface/u1F6E0.svg",
+    "e_people": "assets/companies/토스/v3/tossface/u1F64C.svg",
+    "e_resume": "assets/companies/토스/v3/tossface/u1F4DD.svg",
+    "e_tech": "assets/companies/토스/v3/tossface/u2699.svg",
+    "e_work": "assets/companies/토스/v3/tossface/u1F91D.svg"
+  },
+  "images_note": {
+    "tossface": "토스페이스 v1.6.1 원본 SVG(무수정). 저작권 표시: 꼬리 '이모지: 토스페이스 © Toss'. 라이선스 전문 assets/companies/토스/v3/tossface/LICENSE-tossface.txt",
+    "team_work_v2": "v2 의 미디어 키트 사진(assets/companies/토스/v2/team_work.jpg)은 파일은 두고 v3 판에서 뺐다"
+  },
+  "signature": {
+    "id": "10to100-lockup",
+    "what": "토스 10주년 캠페인 '10 to 100' 의 숫자 조합 — 검정 정사각 안의 흰 숫자 '10', 검정 원 안의 'to', 검정 정사각 안의 '100' 을 한 줄로 붙이고, 아래 한 줄 캡션('토스 10주년, 새로운 출발선'). 흰 바탕 검정 한 색",
+    "evidence": [
+      "https://toss.im/10to100 캠페인 사이트 머리(헤드리스 캡처 sources/07_signature/01)",
+      "https://toss.im/tossfeed/article/10to100 — '10 to 100: 토스 10주년, 새로운 출발선' 캠페인, 성수동 '스퀘어 오브 토스' 오프라인 전시",
+      "https://www.techm.kr/news/articleView.html?idxno=135275 — 10주년 캠페인 보도",
+      "스퀘어 오브 토스 OG(sources/07_signature/02) — 같은 검정 상자 글자 체계"
+    ],
+    "why_recognizable": "토스가 10년을 숫자로 요약한 공식 캠페인의 얼굴이다. 앱 화면(흰 카드·파랑)은 핀테크 앱 누구나 비슷하지만, 정사각-원-정사각 숫자 상자는 토스만 쓴다. 그리고 이 공고의 경력 '2-10년' 이 캠페인과 같은 'A to B' 모양이라 억지 없이 옮겨진다",
+    "how_used": "머리 왼쪽을 '2 [to] 10' 검정 정사각·원·정사각으로, 아래 캡션은 원문 경력 '경력 2-10년' 그대로. 흰 바탕 검정 한 색, 파랑은 작은 기호에만",
+    "not_used": "캠페인 사이트의 입자 구름은 토스 심볼 모양이라(로고) 쓰지 않는다. '10 to 100' 문구·캡션 자체도 옮기지 않고 장치만 가져온다",
+    "supporting": [
+      {
+        "id": "tossface",
+        "what": "토스페이스 — 토스가 만든 이모지 서체 3,600자. 토스 앱에 적용(2022.04 PUA 코드포인트, Emojipedia), 소개 페이지는 원칙마다 이모지 하나를 굵은 제목 위에 올린다",
+        "evidence": "https://toss.im/tossface , https://toss.im/tossface/copyright , https://github.com/toss/tossface (v1.6.1 SVG), https://emojipedia.org/ko/toss-face",
+        "license": "판매·부정 목적·허용 안 된 수정본이 아니면 자유 사용. 인쇄물·광고 제작 가능(토스팀 프로모션 활용 동의 간주). 저작권 표시 필요 → 꼬리에 '이모지: 토스페이스 © Toss' 표기, 원본 SVG 무수정, 라이선스 전문 assets 에 동봉",
+        "how_used": "해요체 카드 제목 위에 원본 SVG 이모지 하나씩(🛠 업무 / 🙌 함께하고 싶어요 / 📝 이력서 / ⚙️ 기술 / 🤝 일해요). 어떤 이모지를 고른 건 우리 해석이다"
+      },
+      {
+        "id": "haeyo-cards",
+        "what": "원문 대괄호 해요체 소제목 + 연한 테두리 둥근 카드 (v1·v2 에서 이어짐, 웹 UI 유래 — 보조)",
+        "evidence": "원티드 335070 원문 / toss.im/career 공고 상세 화면",
+        "how_used": "카드 구조와 파란 위첨자 줄 수만 유지. 머리의 옅은 파랑 그라디언트와 팀 사진은 v3 에서 뺐다"
+      }
+    ],
+    "alternatives": [
+      {
+        "what": "토스 3D 그래픽(앱·마케팅 3D 오브제, 토스페이스 3D)",
+        "why_not": "가장 토스답지만 공개 이용허락이 없는 마케팅 렌더 이미지다. 3D 이모지 격자는 토스페이스 '서체' 라이선스 범위(2D 글리프)와 다르다"
+      },
+      {
+        "what": "토스피드·토스테크 표지 일러스트",
+        "why_not": "글마다 화풍이 제각각이라 하나의 얼굴이 아니다"
+      },
+      {
+        "what": "'유난한 도전' 책 표지, SLASH 컨퍼런스 키 비주얼",
+        "why_not": "표지·행사 이미지는 대외 인지도가 캠페인보다 약하고 개발자 행사에 한정된다(미조사 — 표지 이미지 확인 못 함)"
+      },
+      {
+        "what": "브랜드 센터 팀 사진(v2)",
+        "why_not": "사진은 어느 회사 채용 공고에나 있다 — v2 가 '거의 안 바뀌었다' 는 판정의 한 원인"
+      }
+    ]
+  },
+  "emoji_map": {
+    "합류하면 함께 할 업무예요": "e_tasks",
+    "이런 분과 함께하고 싶어요": "e_people",
+    "이력서는 이렇게 작성하시는 걸 추천해요": "e_resume",
+    "토스에서 사용하는 기술": "e_tech",
+    "이렇게 일해요": "e_work"
+  },
+  "credit": "이모지: 토스페이스 © Toss"
+}

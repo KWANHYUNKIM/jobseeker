@@ -1,0 +1,235 @@
+{
+  "names": [
+    "우아한형제들",
+    "(주)우아한형제들",
+    "우아한형제들(배달의민족)",
+    "배달의민족",
+    "배민",
+    "Woowa Brothers"
+  ],
+  "researched_at": "2026-09-15",
+  "wordmark": "우아한형제들",
+  "about": "배달의민족을 운영한다",
+  "facts": [
+    "배민 2.0 (2025)"
+  ],
+  "slogan": "세상 모든 것이 식지 않도록.",
+  "frame": "brand_baemin.html",
+  "strike": [
+    {
+      "when": "월요일 오전은 쉬고 1시부터 코웍",
+      "from": "월요일 오전",
+      "to": "1시부터 코웍"
+    }
+  ],
+  "palette": {
+    "bg": "#ffffff",
+    "ink": "#000000",
+    "accent": "#0cefd3",
+    "soft": "#e6fff8"
+  },
+  "ui": {
+    "observed_at": "앱 아이콘·민트 바탕 로고·사명 비주얼 PNG/JPG 픽셀 샘플, baemin.com 디자인 시스템 CSS 토큰, 11가지 방법 포스터 PDF 렌더 픽셀, woowahan.com 폰트 페이지 JS — 2026-09-15",
+    "font": "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "display_font": "'BM HANNA Pro','Noto Sans KR',sans-serif",
+    "hand_font": "'BM YeonSung',cursive",
+    "embed_fonts": {
+      "BM HANNA Pro": "assets/companies/우아한형제들/fonts/BMHANNAPro.ttf",
+      "BM YeonSung": "assets/companies/우아한형제들/fonts/BMYEONSUNG.ttf",
+      "Pretendard": [
+        {
+          "src": "assets/companies/우아한형제들/fonts/Pretendard-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/우아한형제들/fonts/Pretendard-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/우아한형제들/fonts/Pretendard-Bold.woff2",
+          "weight": 700
+        }
+      ],
+      "Woowa Lane": [
+        {
+          "src": "assets/companies/우아한형제들/fonts/WoowaLane/WoowaLane-Regular.woff2",
+          "weight": 400
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#ffffff",
+    "ink": "#000000",
+    "text": "#26282a",
+    "sub": "#646668",
+    "accent": "#0cefd3",
+    "rules": [
+      "민트는 #0CEFD3 하나 — 앱 아이콘(180px PNG)·민트 바탕 로고(og 이미지)·사명 비주얼 바탕을 픽셀로 찍으면 셋 다 정확히 (12,239,211). 디자인 시스템 토큰 --ref-color-mint5 와 같다",
+      "글자·아이콘 획은 순검정 #000000 (앱 아이콘·로고 픽셀). 인쇄물인 11가지 방법 포스터의 먹은 #2B2829",
+      "회색은 디자인 시스템 토큰 그대로: gray10 #26282A(본문) / gray6 #646668(보조) / gray3 #D5D7D9(선)",
+      "기존 민트(#2AC1BC 계열, 기사 비교 칩 JPG 에서는 #5FBDBC)는 쓰지 않는다. 기사 이미지 속 2.0 칩은 JPG 압축으로 #6DEBD5 로 보이지만 원본 에셋 값은 #0CEFD3",
+      "제목 = 배민 한나체 Pro. WORK체(2.0 전용)는 woowahan.com 폰트 목록 12종에 없어 쓸 수 없다",
+      "본문 = Pretendard (baemin.com 이 jsdelivr pretendardvariable 을 직접 로드)",
+      "배민 서체 12종은 로고·포스터·광고 포함 상업적 사용 무료, 폰트 파일 유료 판매만 금지(woowahan.com 폰트 라이선스 문구)"
+    ],
+    "print_ink": "#2b2829",
+    "line": "#d5d7d9",
+    "fonts_research": {
+      "official_list": "woowahan.com 폰트 페이지(JS 번들 static/fonts/*) — 한나체 Pro·한나체 Air·한나는11살체·주아체·도현체·연성체·기랑해랑체·을지로체·을지로10년후체·을지로오래오래체·꾸불림체·글림체(PNG 글리프 이미지 묶음, 텍스트 서체 아님)",
+      "license": "'자유롭게 수정·변경하여 영리적·비영리적 목적으로 개인 및 기업 사용자가 모두 사용' / 사용 가능: 인쇄물·포스터·광고·로고 등 / 불가: 폰트 파일(otf/ttf) 유료 판매",
+      "work": "WORK체 — 2025.07 배민 2.0 앱에 적용(디자인 나침반·비즈한국). 공식 폰트 목록·다운로드에 없음 → 배포 안 됨(2026-09-15 기준)",
+      "eleven_ways_pdf": "PDF 제목 '..._outline' — 글자가 윤곽선으로 변환돼 서체 이름이 남아 있지 않다(pymupdf get_fonts 결과 없음). 서체명은 확인 불가",
+      "specimen": "out/wanted-366409/v2_font_specimen.jpg — 11가지 방법 제목·WORK체 샘플·사명 붓글씨를 공식 11종으로 같은 문장 찍어 비교",
+      "choice": {
+        "display": "배민 한나체 Pro",
+        "hand": "배민 연성체",
+        "body": "Pretendard"
+      },
+      "why": [
+        "WORK체 샘플은 굵고 획 끝이 수평·수직으로 잘린 블록형 — 공식 11종 중 무게·네모난 속공간이 가장 가까운 건 한나체 Pro. 도현체는 ㅅ·ㅈ 빗침이 사선으로 남아 WORK체의 '빗침을 수직·수평으로 펼침'과 반대",
+        "11가지 방법 포스터 제목도 획 끝이 뭉툭하게 잘리고 ㅇ 이 둥근 한나 계열 형태(추정 — PDF 윤곽선이라 확정 불가). 도현체보다 한나체 Pro 쪽이 가깝다",
+        "사명 붓글씨는 서체가 아니라 손으로 쓴 레터링 — 비슷한 서체로 흉내 내지 않고 원본 이미지를 판에 넣는다",
+        "취소선 옆 손글씨 고침은 포스터에서 가는 펜 글씨 — 배민 손글씨 서체 중 가장 차분한 연성체"
+      ]
+    },
+    "body_font": "'Woowa Lane','Pretendard',sans-serif",
+    "body_weight": 400,
+    "body_line_height": 1.45,
+    "body_font_research": {
+      "why": "모집 내용 본문이 Pretendard 면 판 면적 대부분이 기본 고딕이라 AI 처럼 보인다(사용자 지적). 배민 서체 결로 바꾸되 17px 목록·13px 해설에서 읽혀야 한다",
+      "board": "out/wanted-366409/body_font_board.jpg — 목록 17px·해설 13px, 흰 바탕 #26282A",
+      "candidates": {
+        "배민 한나체 Air": "배민 무료 — 가늘어 13px 해설에서 흐림",
+        "배민 한나는11살체": "배민 무료 — 굵기·속공간이 17px/13px 모두 또렷, 제목 한나체 Pro 와 한 집안 → 바탕",
+        "배민 주아체": "배민 무료 — 둥글고 귀여워 본문이 동화책처럼 보임",
+        "배민 을지로체 / 을지로10년후체": "배민 무료 — 간판 인상은 가장 강하지만 13px 에서 획이 뭉개지고 너비가 넓어 줄이 넘침",
+        "배민 도현체": "배민 무료 — 본문으로는 너무 무겁고 크다(제목용)",
+        "Noto Sans KR 500": "OFL — 기본 고딕이라 지금과 같은 문제"
+      },
+      "custom": {
+        "name": "Woowa Lane (파생 서체)",
+        "build": "design-lab/typefaces/build_woowa_lane.py",
+        "recipe": [
+          "바탕: 배민 한나는11살체 그대로(숫자는 원래 한글보다 굵다 — 11가지 방법 포스터 굵은 번호와 같은 결, 영문도 한나 결 유지)",
+          "자간 +14/1000 — 13px 해설에서 글자가 붙지 않게",
+          "새로 그림: 가운뎃점·불릿 → 새 앱 아이콘의 검정 차선 토막(세로:가로≈2:1 네모, 한글 글자 몸 세로 중심). 원래 11살체의 가운뎃점은 빈 글리프였다",
+          "새로 그림: 느낌표 → 11가지 방법 포스터 '떠나거나!' 의 12° 기울어진 쐐기 + 네모 점",
+          "이름 Woowa Lane, 원본 저작권·라이선스 문구·수정 내역 LICENSE.txt 동봉, kern 외 레이아웃 기능 제거"
+        ],
+        "license": "배민 서체 라이선스(woowahan.com/fonts): 자유롭게 수정·변경해 영리·비영리 사용 가능, 폰트 파일 유료 판매 금지. 원본 이름(BM HANNA …) 쓰지 않음",
+        "specimen": "out/wanted-366409/woowa_lane_specimen.jpg",
+        "iteration": "첫 판 차선 막대(폭 96~106/1000)는 24px 에서 영문 'ı' 로 읽혔다 → 폭 170~220 으로 키움"
+      }
+    }
+  },
+  "points": [
+    {
+      "id": "eleven-ways-poster",
+      "what": "흰 바탕 검정 한 색. 굵은 한글 제목 세 줄, 그 아래 1~11 큰 번호 목록, 제목 옆 검정 딱지('몽촌토성역 편'), 아래 작은 글씨 해설 단, 오른쪽 아래 로고",
+      "evidence": "송파구에서 일을 더 잘하는 11가지 방법 공식 PDF https://woowahan-cdn.woowahan.com/_/_/src/static/download/poster_CMYK.pdf / B컷 https://story.baemin.com/3359/ — '2015년 처음 만들어져 우아한형제들 곳곳에 붙어 있다'",
+      "meaning": "일하는 방식을 벽에 붙이는 회사. 채용 문화의 얼굴",
+      "use": "구조 — 머리는 굵은 제목 + 검정 딱지(경력), 본문은 큰 번호 목록, 복지는 아래 작은 글씨 해설 단, 오른쪽 아래 워드마크",
+      "avoid": "11가지 문장 자체를 옮겨 싣지 않는다"
+    },
+    {
+      "id": "strike-and-handwrite",
+      "what": "첫 줄 '9시 1분은 9시가 아니다' 에 취소선을 긋고 옆에 손글씨로 '12시 1분은 12시가 아니다' 로 고쳐 썼다",
+      "evidence": "11가지 방법 포스터 1번 줄",
+      "meaning": "규칙을 바꾼 걸 숨기지 않고 고친 흔적째 보여 준다",
+      "use": "장치 — 공고 원문에 이미 있는 변화 하나만: '월요일 오전' 을 긋고 손글씨로 '1시부터 코웍!' (원문: 월요일 오전은 쉬고 1시부터 코웍)",
+      "avoid": "원문에 없는 비교·농담을 만들지 않는다"
+    },
+    {
+      "id": "mint-black",
+      "what": "밝은 민트 #0CEFD3 바탕에 검정 글자. 둘 말고 다른 색이 없다",
+      "evidence": "디자인 나침반 배민 2.0 기사 '2.0 민트 #0CEFD3' 비교 이미지 / baemin.com 앱 아이콘 픽셀 (12,239,211)",
+      "meaning": "디지털 화면에서 더 선명하게, 누구나 즉시 알아보게",
+      "use": "색 — 머리 영역만 민트 전면, 나머지는 흰 바탕 검정",
+      "avoid": "민트를 옅게 깔거나 그라디언트로 쓰지 않는다. 옛 민트 #2AC1BC 금지"
+    },
+    {
+      "id": "road-lanes",
+      "what": "새 앱 아이콘: 민트 둥근 사각 안의 검정 세로 막대 몇 개가 '배' 가 된다. 하늘에서 본 도로 차선처럼 끊긴 막대",
+      "evidence": "디자인 나침반 '상공에서 내려다본 도로의 형태처럼 보이도록 설계' https://designcompass.org/2025/11/25/the-unveiled-baemin-app-icon/",
+      "meaning": "배달 플랫폼 — 길",
+      "use": "구분선 — 본문 두 단 사이를 굵은 검정 세로 막대로, 중간이 끊긴 차선처럼",
+      "avoid": "'배' 아이콘 자체를 그리지 않는다"
+    },
+    {
+      "id": "signboard-type",
+      "what": "브랜드가 곧 한글 서체다. 한나체(삐뚤빼뚤한 손간판), 도현체(아크릴을 자로 잘라 만든 옛 간판), 2025년 WORK체(빗침획을 수직·수평 블록으로)",
+      "evidence": "font.woowahan.com/dohyeon — '작도 후 아크릴판에 자를 대고 컷팅해서 만든 옛 간판을 모티브' / 비즈한국 '한나체에서 워크체로' / woowahan.com 폰트 목록 12종 + 라이선스 문구",
+      "meaning": "창업자가 디자이너 — 서체로 페르소나를 만든다",
+      "use": "글꼴 — 제목·번호·딱지는 배민 한나체 Pro(WORK체 미배포, 가장 가까운 공식 서체), 본문은 baemin.com 과 같은 Pretendard",
+      "avoid": "제목을 세리프·가는 서체로 바꾸지 않는다"
+    },
+    {
+      "id": "mission-brush",
+      "what": "사명 '세상 모든 것이 식지 않도록.' 을 민트 바탕에 검정 붓글씨로, 마침표까지 크게",
+      "evidence": "디자인 나침반 배민 2.0 기사 이미지 / woowahan.com 메타 설명",
+      "meaning": "음식 배달을 넘어 실시간으로 전하는 모든 것",
+      "use": "이미지 — 사명 붓글씨 원본을 투명 처리해 머리 민트 영역에 그대로. 서체로 흉내 내지 않는다",
+      "avoid": "문구를 바꾸거나 줄이지 않는다"
+    },
+    {
+      "id": "hard-shadow-wordmark",
+      "what": "우아한형제들 워드마크 — 굵은 글자에 흐림 없는 검정 계단 그림자",
+      "evidence": "woowahan.com 공유 이미지 / 11가지 방법 포스터 오른쪽 아래",
+      "meaning": "",
+      "use": "이미지 — 꼬리 오른쪽에 우아한형제들 워드마크 원본(텍스트 그림자 흉내 대신)",
+      "avoid": "흐린 그림자(드롭섀도) 금지"
+    },
+    {
+      "id": "playful-copy",
+      "what": "공고 문장 자체가 말을 건다 — '푹~ 쉬는', '톡톡 쌓아가는', '살까 말까 망설이지 않아요', 느낌표, 끝에 해시태그 줄",
+      "evidence": "원티드 366409 원문 복지 문단",
+      "meaning": "배민다운 말투",
+      "use": "카피 — 원문 말투를 줄이거나 격식체로 바꾸지 않는다. 해시태그 줄은 꼬리에 그대로",
+      "avoid": "우리가 농담을 보태지 않는다"
+    }
+  ],
+  "sources": [
+    "https://www.baemin.com",
+    "https://www.woowahan.com",
+    "https://woowahan-cdn.woowahan.com/_/_/src/static/download/poster_CMYK.pdf",
+    "https://story.baemin.com/3359/",
+    "https://designcompass.org/2025/07/23/baemin-2-rebranding/",
+    "https://designcompass.org/2025/11/25/the-unveiled-baemin-app-icon/",
+    "http://bizhankook.com/articles/30076.html",
+    "http://font.woowahan.com/dohyeon/",
+    "https://www.woowahan.com/fonts",
+    "https://woowahan-cdn.woowahan.com/static/fonts/BMHANNAPro.ttf",
+    "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/"
+  ],
+  "version": 2,
+  "images": {
+    "mission": "assets/companies/우아한형제들/v2/mission_brush.png",
+    "wordmark": "assets/companies/우아한형제들/v2/woowahan_wordmark.png"
+  },
+  "images_note": {
+    "mission": "디자인 나침반 배민 2.0 기사의 사명 비주얼(05_designcompass_rebrand/02) — 민트 바탕을 #0CEFD3 기준으로 투명 처리한 붓글씨 원본. 머리 오른쪽 아래",
+    "wordmark": "woowahan.com 공유 이미지(02_woowahan/01) — 흰 바탕을 투명 처리한 우아한형제들 워드마크 원본. 꼬리 오른쪽(11가지 방법 포스터의 로고 자리). 공개 로고 사용 규정은 못 찾음 — 게시 전 확인"
+  },
+  "signature": {
+    "id": "eleven-ways-poster",
+    "what": "'송파구에서 일을 더 잘하는 11가지 방법' 사내 포스터(굵은 제목·큰 번호 목록·취소선 손글씨 고침·검정 딱지·해설 단) + 사명 '세상 모든 것이 식지 않도록.' 붓글씨 원본",
+    "evidence": [
+      "https://woowahan-cdn.woowahan.com/_/_/src/static/download/poster_CMYK.pdf",
+      "https://story.baemin.com/3359/",
+      "https://designcompass.org/2025/07/23/baemin-2-rebranding/"
+    ],
+    "why_recognizable": "2015년부터 사무실 곳곳에 붙은 우아한형제들 일 문화의 상징, 공개 당시 크게 회자",
+    "how_used": "머리 = 민트 + 굵은 제목 + 검정 딱지 '경력 3년 이상' + 원문 문장에서 뽑은 취소선 고침 + 사명 붓글씨 원본, 본문 = 번호 목록, 복지 = 해설 단, 꼬리 = 워드마크 원본",
+    "not_used": "11가지 문장 자체, 앱 아이콘('배' 로고)",
+    "alternatives": [
+      {
+        "what": "배민 신춘문예·치믈리에 같은 B급 캠페인",
+        "why_not": "채용과 연결이 약하다"
+      },
+      {
+        "what": "배달이 캐릭터",
+        "why_not": "캐릭터, 2.0 에서 아이콘에서도 빠짐"
+      }
+    ]
+  }
+}

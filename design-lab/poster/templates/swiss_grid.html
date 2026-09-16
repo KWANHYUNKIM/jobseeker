@@ -1,0 +1,79 @@
+<!-- swiss_grid — web-03(GREENERY CAVE 스튜디오 웹사이트)의 틀.
+     작은 글씨를 여러 단 텍스트 격자로. 단마다 작은 소제목 하나, 항목은 01. 02. 번호.
+     장식 없이 정렬만으로 버틴다. 아래쪽에 가로선 하나와 회사 소개 문단. -->
+<meta charset="utf-8">
+<title>swiss_grid</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    padding:calc(6*var(--u)) calc(6*var(--u)) calc(5*var(--u));display:flex;flex-direction:column}
+  header{display:grid;grid-template-columns:1fr 2fr;column-gap:calc(3*var(--u));align-items:start}
+  .who{font-size:calc(1.9*var(--u));font-weight:700;line-height:1.35}
+  .who span{display:block;font-weight:400;color:var(--text)}
+  h1{font-size:calc(4.6*var(--u));font-weight:700;letter-spacing:-.035em;line-height:1.14}
+  .kicker{font-size:calc(1.9*var(--u));color:var(--sub);margin-bottom:calc(1*var(--u))}
+
+  .grid{flex:1;min-height:0;overflow:hidden;margin-top:calc(4.4*var(--u));border-top:1px solid var(--ink);
+    padding-top:calc(2.4*var(--u));column-gap:calc(3*var(--u));column-fill:auto}
+  .blk{break-inside:avoid-column;margin-bottom:calc(var(--f)*1.5)}
+  .blk h2{font-size:calc(var(--f)*.92);font-weight:700;margin-bottom:calc(var(--f)*.6)}
+  .blk h2::before{content:'▪ ';color:var(--accent)}
+  .it{display:grid;grid-template-columns:calc(var(--f)*1.9) 1fr;font-size:var(--f);line-height:1.5;margin-bottom:calc(var(--f)*.35);break-inside:avoid}
+  .it i{font-style:normal;color:var(--ink);font-weight:600}
+  .it span{color:var(--text)}
+  .it .k{display:block;font-weight:600;color:var(--ink)}
+
+  footer{flex:none;margin-top:calc(2*var(--u));border-top:1px solid var(--ink);padding-top:calc(2.2*var(--u));
+    display:grid;grid-template-columns:2fr 1fr;column-gap:calc(3*var(--u));font-size:calc(1.85*var(--u));line-height:1.55;color:var(--text)}
+  footer b{color:var(--ink)}
+  footer .apply{text-align:right}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el } = F;
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  const header = el('header');
+  const who = el('div', 'who', F.brand && F.brand.wordmark ? F.brand.wordmark : D.company);
+  who.append(el('span', '', D.company + ' 채용'));
+  const right = el('div');
+  right.append(el('div', 'kicker', [F.career && '경력 ' + F.career, D.stack.join(' / ')].filter(Boolean).join('   ')), el('h1', '', D.role));
+  header.append(who, right);
+  const grid = el('div', 'grid');
+
+  const footer = el('footer');
+  const about = el('div');
+  if (F.brand && F.brand.about) { about.append(el('b', '', D.company + ' — '), F.brand.about + '. ' + (F.brand.facts || []).join(' · ')); }
+  const apply = el('div', 'apply'); apply.append(el('b', '', D.company), document.createElement('br'), D.career || '');
+  footer.append(about, apply);
+  sheet.append(header, grid, footer);
+
+  const blk = (title, items, kv) => {
+    const b = el('div', 'blk'); b.append(el('h2', '', title));
+    items.forEach((it, i) => {
+      const row = el('div', 'it'); const sp = el('span');
+      if (kv) { if (it.label) sp.append(el('span', 'k', it.label)); sp.append(it.text); } else sp.textContent = it;
+      row.append(el('i', '', String(i + 1).padStart(2, '0') + '.'), sp); b.append(row);
+    });
+    return b;
+  };
+  const blocks = () => [
+    ...S.tasks.map(g => blk(g.title ? `주요업무 ${g.no} — ${g.title}` : '주요업무', g.items)),
+    ...(S.qualifications.length ? [blk('자격요건', S.qualifications)] : []),
+    ...(S.preferences.length ? [blk('우대사항', S.preferences)] : []),
+    ...(S.benefits.length ? [blk('복지', S.benefits, true)] : []),
+  ];
+
+  Frame.fit(F, [3, 4, 2].map(columns => ({ columns })), c => {
+    grid.replaceChildren(...blocks());
+    grid.style.columnCount = c.columns;
+    return !Frame.overflows(grid);
+  });
+})();
+</script>

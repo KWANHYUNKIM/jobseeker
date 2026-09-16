@@ -1,0 +1,181 @@
+<!-- brand_hanabank v1 — 하나은행 전용 판. 중심은 서명 아이템 하나: 하나체 2.0(하나서체).
+     signature: hana2-typeface  판 전체를 전용 서체로 짜고, 머리 오른쪽에 공식 '하나2.0 M의 기본 골격'
+                                도해 원본을 그대로 얹는다. 심볼·로고타입은 그리지 않는다(라이선스: CI·BI 제작 불가).
+     specimen-bracket-label     공식 '굵기별 보기' 견본의 표기 — 초록 대괄호 라벨([ 하나2.0 H ], [ 자격 요건 ])과
+                                머리 바닥의 베이스라인 격자선. 대괄호 안에는 서체 이름과 원문 섹션 이름만 넣는다.
+     서체 굵기는 셋만 — H(제목·경력) / M(라벨) / R(본문). TTF 를 data URI 로 심으면 한 굵기당 10MB 라 더 못 늘린다.
+     머리 높이(head)는 fit 후보다 — 글이 긴 공고에서 본문 16px 을 지키려면 머리부터 줄인다. -->
+<meta charset="utf-8">
+<title>brand_hanabank</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    display:flex;flex-direction:column;overflow:hidden}
+
+  /* 머리 — 서체 견본판. 절대배치 없이 그리드로 — 글자와 도해가 겹치지 않게 */
+  header{flex:none;position:relative;height:calc(var(--head)*var(--u));padding:calc(3.2*var(--u)) calc(5*var(--u)) calc(2.2*var(--u));
+    overflow:hidden;display:flex;flex-direction:column}
+  /* 공식 견본의 베이스라인 격자 — 머리 아래쪽에만 깔린다 */
+  header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:calc(var(--head)*var(--u)*.46);
+    background:repeating-linear-gradient(to bottom,var(--grid) 0 1px,transparent 1px calc(2.6*var(--u)));z-index:0}
+  header > *{position:relative;z-index:1}
+  .kicker{display:flex;align-items:baseline;justify-content:space-between;gap:calc(2*var(--u));flex:none}
+  .kicker .co{font-family:var(--mid);font-weight:500;font-size:calc(2.3*var(--u));letter-spacing:-.01em}
+  .brk{font-family:var(--mid);font-weight:500;color:var(--accent);white-space:nowrap;letter-spacing:0}
+  .kicker .brk{font-size:calc(1.85*var(--u))}
+  .top{flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) auto;
+    column-gap:calc(2.4*var(--u));align-items:start;margin-top:calc(1.2*var(--u));padding-bottom:calc(1.2*var(--u))}
+  h1{font-family:var(--disp);font-weight:800;font-size:calc(var(--h1)*var(--u));line-height:1.04;letter-spacing:-.035em;
+    text-wrap:pretty}
+  /* 도해는 머리 한 칸 안에서만 — 아래 마감·근무지 줄을 덮으면 안 된다.
+     가로세로가 거의 같은 그림이라 높이를 주고 폭은 따라오게 한다(object-fit 은 칸 높이를 못 잡는다) */
+  .skeleton{height:calc(var(--skel)*var(--u));width:auto;justify-self:end;align-self:start}
+  .headfoot{flex:none;display:flex;align-items:flex-end;justify-content:space-between;gap:calc(3*var(--u))}
+  .career{display:flex;align-items:baseline;gap:calc(1.2*var(--u));min-width:0}
+  .career b{font-family:var(--disp);font-weight:800;font-size:calc(var(--h1)*.95*var(--u));line-height:.94;letter-spacing:-.04em;
+    white-space:nowrap}
+  .where{text-align:right;font-size:calc(1.8*var(--u));line-height:1.45;color:var(--text);max-width:calc(46*var(--u))}
+  .where .due{font-family:var(--mid);font-weight:500;color:var(--rose);font-size:calc(2.05*var(--u))}
+  .rule{flex:none;height:calc(.55*var(--u));background:var(--accent)}
+
+  /* 본문 — 두 단으로 흘린다(섹션 순서 유지) */
+  main{flex:1;min-height:0;overflow:hidden;padding:calc(2.6*var(--u)) calc(5*var(--u)) calc(1.4*var(--u));
+    column-count:2;column-gap:calc(4.4*var(--u));column-fill:auto}
+  .lab{break-inside:avoid;break-after:avoid;display:flex;align-items:baseline;gap:calc(1*var(--u));
+    font-size:calc(var(--f)*1.04);margin-bottom:calc(var(--f)*.52)}
+  .lab i{font-style:normal;font-family:var(--mid);font-weight:500;color:var(--sub);font-variant-numeric:tabular-nums;font-size:.86em}
+  .sec + .sec{margin-top:calc(var(--f)*1.15)}
+  .sec{break-inside:auto}
+  .sub{break-inside:avoid;break-after:avoid;font-family:var(--mid);font-weight:500;color:var(--accent);
+    font-size:calc(var(--f)*.98);margin:calc(var(--f)*.7) 0 calc(var(--f)*.3);padding-bottom:calc(var(--f)*.16);
+    border-bottom:1px solid var(--line)}
+  .it{font-family:var(--body);font-size:var(--f);line-height:var(--body-lh,1.4);color:var(--text);
+    padding:calc(var(--f)*.2) 0;break-inside:avoid}
+  .it.note{font-size:calc(var(--f)*.9);color:var(--sub);padding-left:calc(var(--f)*.2)}
+
+  /* 꼬리 */
+  footer{flex:none;background:var(--panel);border-top:1px solid var(--line);
+    padding:calc(2*var(--u)) calc(5*var(--u));display:flex;align-items:flex-end;justify-content:space-between;gap:calc(3*var(--u))}
+  footer .slogan{font-family:var(--mid);font-weight:500;font-size:calc(2.3*var(--u));letter-spacing:-.02em;color:var(--ink)}
+  footer .type{font-size:calc(1.62*var(--u));line-height:1.5;color:var(--sub);text-align:right;white-space:nowrap}
+  footer .type b{font-family:var(--mid);font-weight:500;color:var(--accent)}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('disp', "'Hana2 H','하나2.0 H'," + (ui.font || 'sans-serif'));
+  F.set('mid', "'Hana2 M','하나2.0 M'," + (ui.font || 'sans-serif'));
+  F.set('body', ui.body_font || ui.font);
+  F.set('grid', ui.grid || '#d7e6e2');
+  F.set('line', ui.line || '#c9d8d4');
+  F.set('panel', ui.panel || '#f2f5f4');
+  F.set('rose', ui.rose || '#dc231e');
+  if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+  const tasks = S.tasks.flatMap(g => g.items);
+  const sections = [
+    { ko: '주요 업무', items: tasks },
+    { ko: '자격 요건', items: S.qualifications },
+    { ko: '우대 사항', items: S.preferences },
+  ].filter(s => s.items.length);
+  const pad2 = n => String(n).padStart(2, '0');
+  const title = D.title || D.role;
+  // 원문 표의 부문 이름('부문', '종합금융', 'AI/ICT', '[어학성적 우수자]')은 불릿이 아니라 소제목이다.
+  // 글자는 그대로 두고 자리만 제 자리로 돌린다.
+  const isSub = t => /^\[.+\]$/.test(t) || (t.length <= 8 && !/[:,.)]/.test(t));
+
+  // 머리
+  const header = el('header');
+  const kicker = el('div', 'kicker');
+  kicker.append(el('div', 'co', B.recruit_label || D.company), el('div', 'brk', '[ 하나2.0 H ]'));
+  header.append(kicker);
+  const top = el('div', 'top');
+  top.append(el('h1', '', title));
+  if (IMG.skeleton) {
+    const i = el('img', 'skeleton'); i.src = IMG.skeleton;
+    i.alt = '하나2.0 M의 기본 골격 — 하나금융그룹 공식 도해';
+    top.append(i);
+  }
+  header.append(top);
+  const hf = el('div', 'headfoot');
+  const career = el('div', 'career');
+  // 경력은 meta 의 첫 칸만 크게(둘째 칸은 월급·근무지라 오른쪽으로 보낸다)
+  career.append(el('b', '', (D.meta[0] || '').replace(/^경력\s*/, '')));
+  const where = el('div', 'where');
+  // 마감일 한 곳에만 장미 레드(심볼 위쪽 색). 원문 표기를 그대로 쓴다
+  where.append(el('div', 'due', D.until || ''));
+  (D.meta.slice(1)).forEach(m => where.append(el('div', '', m)));
+  hf.append(career, where);
+  header.append(hf);
+  sheet.append(header);
+  sheet.append(el('div', 'rule'));
+
+  const main = el('main'); sheet.append(main);
+
+  const foot = el('footer');
+  foot.append(el('div', 'slogan', B.slogan || ''));
+  const ty = el('div', 'type');
+  ty.append(el('div', '', '이 판의 모든 글자는'));
+  const t2 = el('div'); t2.append(el('b', '', '하나체 2.0'), ' — 국내 은행권 최초 전용서체');
+  ty.append(t2);
+  foot.append(ty);
+  sheet.append(foot);
+
+  const build = () => {
+    main.replaceChildren();
+    sections.forEach(s => {
+      const box = el('div', 'sec');
+      const lab = el('div', 'lab');
+      lab.append(el('span', 'brk', `[ ${s.ko} ]`), el('i', '', pad2(s.items.length)));
+      box.append(lab);
+      s.items.forEach(t => {
+        if (isSub(t)) box.append(el('div', 'sub', t));
+        else box.append(el('div', 'it' + (/^[※*]/.test(t) ? ' note' : ''), t));
+      });
+      main.append(box);
+    });
+  };
+
+  // 다단은 넘칠 때 세로가 아니라 '가로'로 샌다(셋째 단이 생긴다) — 폭까지 봐야 한다
+  const draw = c => {
+    F.set('head', c.head); F.set('h1', c.h1); F.set('skel', c.skel);
+    build();
+    return !Frame.overflows(main) && !Frame.overflows(sheet);
+  };
+
+  // 머리 후보는 큰 것부터. Frame.fit 은 본문 글자 크기만 최대화하므로 그대로 맡기면 가장 작은
+  // 머리가 이긴다 — 시그니처(골격 도해)가 얼굴이어야 하니, 본문 기준선을 넘기는 '가장 큰 머리'를
+  // 여기서 먼저 고르고 그 하나만 fit 에 넘긴다.
+  const MIN_BODY = 16.5;          // collection.py 가 16px 아래 판을 묶음에서 뺀다 — 여유를 둔다
+  const heads = [
+    { head: 45, h1: 7.0, skel: 27, columns: 2 },
+    { head: 42, h1: 6.7, skel: 25, columns: 2 },
+    { head: 39, h1: 6.4, skel: 23, columns: 2 },
+    { head: 36, h1: 6.1, skel: 21, columns: 2 },
+    { head: 33, h1: 5.7, skel: 18, columns: 2 },
+    { head: 30, h1: 5.2, skel: 16, columns: 2 },
+  ];
+  const measure = c => {
+    let a = 9, b = 30;
+    while (b - a > 0.25) {
+      const f = (a + b) / 2;
+      F.set('f', f + 'px');
+      if (draw(c)) a = f; else b = f;
+    }
+    return a;
+  };
+  let pick = null;
+  for (const c of heads) { if (measure(c) >= MIN_BODY) { pick = c; break; } }
+  Frame.fit(F, [pick || heads[heads.length - 1]], draw, { lo: 9, hi: 30 });
+})();
+</script>

@@ -1,0 +1,151 @@
+{
+  "names": [
+    "네이버클라우드",
+    "네이버 클라우드",
+    "네이버클라우드(주)",
+    "NAVER Cloud",
+    "NAVER CLOUD PLATFORM",
+    "네이버 클라우드 플랫폼",
+    "ncloud",
+    "NCP"
+  ],
+  "researched_at": "2026-09-16",
+  "wordmark": "네이버클라우드",
+  "about": "Hyperscale AI 클라우드 플랫폼",
+  "facts": [],
+  "slogan": "클라우드를 '직접' 만듭시다.\n클라우드를 '함께' 만듭시다!",
+  "credit": "사진 · 데이터센터 각 세종 공식 갤러리 (datacenter.navercorp.com)",
+  "frame": "brand_navercloud.html",
+  "palette": {
+    "bg": "#ffffff",
+    "ink": "#1e232e",
+    "accent": "#117ce9",
+    "soft": "#f6f7f8"
+  },
+  "signature": {
+    "id": "gak-server-aisle",
+    "what": "데이터센터 '각' 서버실의 일점 투시 복도 — 양옆으로 서버랙이 소실점까지 도열하고, 랙 사이 유리 뒤로 청록 케이블 다발이 줄줄이 흐른다. 가운데 회색 바닥이 곧은 복도를 만들고 끝에 밝은 문이 하나 열려 있다",
+    "evidence": [
+      "https://www.navercloudcorp.com/img/gak_02.png — 네이버클라우드 회사 사이트가 '기술·서비스' 칸에 'Data Center GAK' 로 쓰는 서버실 복도 사진(같은 구도, 480×640 축소본)",
+      "https://datacenter.navercorp.com/img/dc/sejong/gallery-11.jpg — 각 세종 공식 갤러리 원본(2672×1320). 판에 넣은 사진",
+      "https://www.bloter.net/news/articleView.html?idxno=608037 — '네이버 10년 책임질 각 세종 데이터센터…하이퍼클로바X도 학습시킨다' (이 서버실이 초대규모 AI 를 학습시키는 곳이라는 근거)"
+    ],
+    "why_recognizable": "네이버클라우드가 자기를 설명할 때 내놓는 물건이 '각(GAK)' 이다 — 회사 사이트의 기술·서비스 세 칸 중 두 칸이 각 사진이고, 보도에서도 각 서버실·로봇 사진이 반복해 실린다. 클라우드 회사의 실물은 서버실이고, 각의 서버실은 청록 케이블과 곧은 복도로 사진이 늘 같은 구도다",
+    "how_used": "머리 전체 — 사진을 판 위쪽에 전폭으로 깔고, 소실점 위에 공고 제목을 얹는다. 본문도 복도 구조를 잇는다: 가운데 세로 선 하나를 두고 두 단이 양쪽 랙처럼 서고, 항목마다 랙 레일 같은 얇은 왼쪽 선",
+    "not_used": "사진 위에 원래 얹혀 있던 'Data Center GAK' 흰 글자(네이버클라우드 축소본에만 있다 — 원본 갤러리 사진에는 없어서 원본을 썼다), 각 건물 외관 항공사진, 관제실 모니터 벽",
+    "alternatives": [
+      {
+        "what": "Hyperscale AI 세 원 키 비주얼 (Cloud 초록 입자 / Hyperscale AI 보라 주름 / Business Software 파랑 유체)",
+        "why_not": "회사 사이트 메인의 공식 그래픽이고 이 공고(Audio Foundation Model)와 가장 곧게 이어지지만, 셋 다 스톡풍 그라디언트 렌더라 '로고를 가려도 네이버클라우드로 아는' 물건이 아니다. AI 스러운 판이 되는 위험이 크다. 사업 구조를 가리키는 말('Hyperscale AI 클라우드 플랫폼')만 글로 인용했다"
+      },
+      {
+        "what": "HyperCLOVA X 워드마크·키 비주얼 (핑크→보라→파랑 그라디언트 레터링, 뇌 모양 3D 구체)",
+        "why_not": "로고타입이다. 판에 로고를 다시 그리거나 얼굴로 쓰지 않는다는 규칙에 걸린다. 구체 이미지도 스톡풍"
+      },
+      {
+        "what": "자산관리 로봇 '세로' · 자율 운송로봇 '가로'",
+        "why_not": "각 세종의 가장 특이한 물건이고 보도 제목에도 반복 등장하지만(경향신문 '로봇이 서버 구축'), 만든 곳은 네이버랩스이고 네이버 본사 판과 겹칠 위험이 가장 큰 선택이다. 이번 판에서는 보조로도 넣지 않고 크롭만 남겨 뒀다(assets/companies/네이버클라우드/v1/robot_rack.jpg)"
+      },
+      {
+        "what": "ncloud 콘솔 화면 · 서비스 카드",
+        "why_not": "웹 UI 는 회사를 구별하지 못한다(절차서 0절). 보조로도 안 씀"
+      },
+      {
+        "what": "각 춘천·세종 건물 외관 항공사진",
+        "why_not": "산속 흰 건물 — 데이터센터 외관은 회사마다 비슷하고, 서버실 복도가 '클라우드' 를 더 곧게 말한다"
+      },
+      {
+        "what": "CLOVA 3D 청록 그래픽 (navercloudcorp.com/img/clova_01.png)",
+        "why_not": "음성 공고와는 이어지지만 클로바는 별 브랜드(회사 사이트 꼬리에 관계사로 따로 링크)이고, 이미지 자체가 로고 조형이다"
+      }
+    ]
+  },
+  "points": [
+    {
+      "id": "career-line",
+      "what": "채용 칸 문구 — \"클라우드를 '직접' 만듭시다. 클라우드를 '함께' 만듭시다!\"",
+      "evidence": "https://www.navercloudcorp.com/ko/ 'Career' 칸 문장",
+      "meaning": "쓰는 회사가 아니라 만드는 회사라는 자기 규정",
+      "use": "꼬리 — 두 줄 그대로 인용",
+      "avoid": "문구를 고치지 않는다"
+    },
+    {
+      "id": "hyperscale-ai-line",
+      "what": "회사 사이트 첫 문장 — '네이버클라우드가 더 큰 성장을 위한 Hyperscale AI 클라우드 플랫폼으로 변화합니다'",
+      "evidence": "https://www.navercloudcorp.com/ko/ 메인 슬라이드 / 사업 구조 세 칸 'Cloud · Hyperscale AI · Business Software'",
+      "meaning": "이 공고(Audio Foundation Model 연구)가 회사의 어느 칸에 있는지 알려 준다",
+      "use": "머리 사진 위 작은 줄 — 회사 이름 옆에 'Hyperscale AI 클라우드 플랫폼' 한 마디",
+      "avoid": "세 원 그래픽을 그려 넣지 않는다(스톡풍)"
+    }
+  ],
+  "ui": {
+    "observed_at": "www.navercloudcorp.com (css/main.css, /img/*.png) · www.ncloud.com (_nuxt/style.DrSdu7cl.css, HyperCLOVA X 솔루션 페이지) · datacenter.navercorp.com/gak-sejong 공식 갤러리 — 2026-09-16",
+    "font": "'Hanken Grotesk','NanumSquare','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "Hanken Grotesk": [
+        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-400.woff2", "weight": 400 },
+        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-500.woff2", "weight": 500 },
+        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-600.woff2", "weight": 600 },
+        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-700.woff2", "weight": 700 },
+        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-800.woff2", "weight": 800 }
+      ],
+      "NanumSquare": [
+        { "src": "assets/companies/네이버클라우드/fonts/NanumSquare_seR.woff2", "weight": 400 },
+        { "src": "assets/companies/네이버클라우드/fonts/NanumSquare_seB.woff2", "weight": 700 }
+      ],
+      "NanumSquare EB": "assets/companies/네이버클라우드/fonts/NanumSquareEB.woff"
+    },
+    "display": "sans",
+    "paper": "#ffffff",
+    "ink": "#1e232e",
+    "text": "#3d4553",
+    "sub": "#707070",
+    "accent": "#117ce9",
+    "cyan": "#14adea",
+    "deep": "#0f6dcd",
+    "line": "#dadada",
+    "soft": "#f6f7f8",
+    "body_font": "'NanumSquare','Hanken Grotesk','Noto Sans KR',sans-serif",
+    "body_weight": 400,
+    "body_line_height": 1.5,
+    "body_ink": "#3d4553",
+    "body_bullet": "",
+    "rules": [
+      "두 사이트 모두 흰 바탕 + 먹색 글씨 + 파랑 강조. 파랑을 넓게 칠하지 않는다 — 면은 사진이 맡는다",
+      "#14ADEA(ncloud 시안)는 선·작은 표시에, #117CE9(코퍼레이트 블루)는 글자 강조에",
+      "네이버 그린 #03C75A 는 모회사 워드마크 몫이라 판에 칠하지 않는다",
+      "HyperCLOVA X 의 핑크→보라 그라디언트는 로고타입 색이라 쓰지 않는다"
+    ],
+    "fonts_research": {
+      "brand_font": "Calibre (Klim Type Foundry, 상용) — navercloudcorp.com 과 ncloud.com 이 둘 다 /font/Calibre/*.woff2 로 직접 서빙한다. 라틴 제목·숫자 전부 이 서체",
+      "korean_seen": "navercloudcorp.com 은 Pretendard(본문) + 나눔스퀘어(NanumSquare_seR/seB, NanumSquareEB) 를 함께 로드한다. ncloud.com 은 Apple SD Gothic Neo 계열",
+      "license": "Calibre 는 이용허락이 없다 — 판에 넣지 않는다. sources/04_fonts_compare/Calibre-*.woff2 는 비교 견본을 찍기 위해서만 받았다(assets/.../fonts/OFL-NOTE.md)",
+      "compared": ["Figtree", "Hanken Grotesk", "Manrope", "Plus Jakarta Sans", "Inter", "Public Sans"],
+      "specimen": "out/dev-558642/v1_font_specimen.jpg — 맨 위가 실제 Calibre(그 사이트 웹폰트), 아래가 무료 후보 6종. 같은 문장 'Audio Foundation Model Research' 와 'HyperCLOVA X · gag 2026 · 3 months · 0123456789'",
+      "choice": "Hanken Grotesk (SIL OFL 1.1) — 라틴·숫자 / 나눔스퀘어(SIL OFL 1.1, NAVER) — 한글",
+      "why": [
+        "Calibre 는 폭이 좁고 x-height 가 높고 g 가 외층(single-storey) 이다. 후보 중 이 셋을 다 맞춘 건 Hanken Grotesk 뿐 — Inter·Public Sans 는 g 가 이층이고 더 넓다",
+        "Figtree 는 g 는 외층이지만 자획이 둥글고 넓어 Calibre 보다 부드럽다, Manrope·Plus Jakarta Sans 는 기하도가 높아 O 가 원에 가깝다",
+        "숫자 '2026' 폭과 중심선이 Calibre 와 가장 가깝다(견본 두 번째 줄)",
+        "한글은 그 사이트가 실제로 로드하는 나눔스퀘어를 그 사이트에서 받아 썼다 — 다른 회사 판(네이버 본사=나눔휴먼, 네이버웹툰=Gothic A1)과도 겹치지 않는다"
+      ]
+    },
+    "palette_v1": "out/dev-558642/v1_palette.jpg"
+  },
+  "images": {
+    "aisle": "assets/companies/네이버클라우드/v1/gak_corridor.jpg"
+  },
+  "images_note": {
+    "aisle": "datacenter.navercorp.com/img/dc/sejong/gallery-11.jpg (각 세종 공식 갤러리, 2672×1320) 의 가운데를 1080×620 으로 잘랐다 — 소실점이 가로 중앙에 오게 두고, 바닥이 넓게 남는 아래 8% 를 덜어냈다. 로고·사람·글자 없음. **권리: 네이버(각 세종) 자료 — 인스타 공개 게시 전 사용 허락 확인 필요**",
+    "robot_rack": "assets/companies/네이버클라우드/v1/robot_rack.jpg — 서버랙 사이 자산관리 로봇(gallery-8). 이번 판에는 안 씀(시그니처 대안에 기록)",
+    "robot_garo": "assets/companies/네이버클라우드/v1/robot_garo.jpg — 자율 운송로봇 '가로'(gallery-9). 이번 판에는 안 씀"
+  },
+  "sources": [
+    "https://www.navercloudcorp.com/ko/ — 회사 사이트(메인 문구·기술·서비스 이미지·Career 문구)",
+    "https://www.ncloud.com/ — 플랫폼 사이트(CSS 색·Calibre 서체 파일)",
+    "https://www.ncloud.com/solution/featured/hyperclovax — HyperCLOVA X 솔루션 페이지",
+    "https://datacenter.navercorp.com/gak-sejong — 각 세종 공식 갤러리(사진 원본)",
+    "https://www.khan.co.kr/article/202311081506001 — 각 세종 로봇 '가로'·'세로' 보도",
+    "https://www.bloter.net/news/articleView.html?idxno=608037 — 각 세종이 하이퍼클로바X를 학습시킨다는 보도"
+  ]
+}

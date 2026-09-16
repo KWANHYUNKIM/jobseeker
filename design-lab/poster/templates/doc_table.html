@@ -1,0 +1,110 @@
+<!-- doc_table — kr-19(한국여자축구연맹 채용공고)의 틀. 공문형.
+     이중 테두리 안에 가운데 '채용공고', 그 아래는 장식 없이 번호 계층(1. / 1) / (1))과 표 두 개.
+     '채용 분야' 를 표로 한눈에, 섹션 하나(여기서는 복지)를 또 표로. -->
+<meta charset="utf-8">
+<title>doc_table</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    padding:calc(3.4*var(--u));display:flex}
+  /* 이중 테두리 — 바깥 굵게, 안쪽 가늘게 */
+  .frame{flex:1;border:calc(.5*var(--u)) solid var(--ink);padding:calc(.9*var(--u));display:flex}
+  .inner{flex:1;border:1px solid var(--ink);padding:calc(3.6*var(--u)) calc(5*var(--u)) calc(3*var(--u));display:flex;flex-direction:column;min-height:0}
+  .org{text-align:center;font-size:calc(2*var(--u));font-weight:700;letter-spacing:.02em;color:var(--ink)}
+  h1{text-align:center;font-size:calc(7.2*var(--u));font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-top:calc(.8*var(--u))}
+  h1 span{display:inline-block;border-bottom:calc(.45*var(--u)) solid var(--accent);padding:0 calc(2*var(--u)) calc(.6*var(--u))}
+  .role{text-align:center;font-size:calc(2.5*var(--u));font-weight:600;margin-top:calc(1.6*var(--u));color:var(--text)}
+
+  .body{flex:1;min-height:0;overflow:hidden;margin-top:calc(3*var(--u));display:grid;column-gap:calc(4*var(--u));align-content:start}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*1)}
+  .full{grid-column:1/-1}
+  h2{font-size:calc(var(--f)*1.18);font-weight:800;margin-bottom:calc(var(--f)*.35)}
+  h3{font-size:var(--f);font-weight:700;margin:calc(var(--f)*.25) 0 calc(var(--f)*.1) calc(var(--f)*.8)}
+  ol{list-style:none;margin-left:calc(var(--f)*1.6)}
+  li{font-size:calc(var(--f)*.94);line-height:1.5;color:var(--text);padding-left:calc(var(--f)*1.9);text-indent:calc(var(--f)*-1.9)}
+  li b{font-weight:500;display:inline-block;width:calc(var(--f)*1.9);text-indent:0;color:var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:calc(var(--f)*.9);margin-top:calc(var(--f)*.2)}
+  th,td{border:1px solid color-mix(in srgb,var(--ink) 55%,transparent);padding:calc(var(--f)*.28) calc(var(--f)*.5);text-align:center;line-height:1.35}
+  th{background:color-mix(in srgb,var(--ink) 9%,var(--paper));font-weight:700}
+  td{color:var(--text)}
+  td.l{text-align:left}
+  .apply{font-size:calc(var(--f)*.94);margin-left:calc(var(--f)*.8);color:var(--text)}
+  .apply b{color:var(--ink)}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el } = F;
+  const sheet = el('section', 'sheet'); const frame = el('div', 'frame'); const inner = el('div', 'inner');
+  frame.append(inner); sheet.append(frame); document.getElementById('root').append(sheet);
+
+  inner.append(el('div', 'org', '▸ ' + (F.brand && F.brand.wordmark ? F.brand.wordmark : D.company)));
+  const h1 = el('h1'); h1.append(el('span', '', '채용공고')); inner.append(h1);
+  inner.append(el('div', 'role', `${D.company} · ${D.role}`));
+  const body = el('div', 'body'); inner.append(body);
+
+  let n = 0;
+  const sec = title => { const s = el('div', 'sec'); s.append(el('h2', '', `${++n}. ${title}`)); return s; };
+  const list = (items, fmt = i => `(${i + 1})`) => {
+    const ol = el('ol');
+    items.forEach((it, i) => { const li = el('li'); li.append(el('b', '', fmt(i)), it); ol.append(li); });
+    return ol;
+  };
+  const table = (head, rows, left = []) => {
+    const t = el('table'); const tr = el('tr'); head.forEach(h => tr.append(el('th', '', h))); t.append(tr);
+    rows.forEach(r => { const tr = el('tr'); r.forEach((c, i) => tr.append(el('td', left.includes(i) ? 'l' : '', c))); t.append(tr); });
+    return t;
+  };
+
+  const blocks = () => {
+    n = 0;
+    const out = [];
+    const s1 = sec('채용 분야');
+    s1.append(table(['구분', '경력사항', '기술'], [[D.role, F.career || '-', D.stack.join(', ')]], [0]));
+    s1.classList.add('full'); out.push(s1);
+    if (S.tasks.length) {
+      const s = sec('주요 업무');
+      S.tasks.forEach(g => { if (g.title) s.append(el('h3', '', `${g.no}) ${g.title}`)); s.append(list(g.items)); });
+      out.push(s);
+    }
+    if (S.qualifications.length || S.preferences.length) {
+      const s = sec('자격요건 및 우대사항');
+      if (S.qualifications.length) { s.append(el('h3', '', '1) 필수 자격요건')); s.append(list(S.qualifications)); }
+      if (S.preferences.length) { s.append(el('h3', '', `${S.qualifications.length ? 2 : 1}) 우대사항`)); s.append(list(S.preferences)); }
+      out.push(s);
+    }
+    if (S.benefits.length) {
+      const s = sec('복지');
+      // 분류가 있을 때만 표(kr-19 의 채용 일정 표 자리). 없으면 표 칸이 '-' 로만 찬다
+      if (S.benefits.some(b => b.label)) s.append(table(['구분', '내용'], S.benefits.map(b => [b.label || '-', b.text]), [1]));
+      else s.append(list(S.benefits.map(b => b.text)));
+      out.push(s);
+    }
+    const s = sec('접수 방법');
+    const a = el('div', 'apply'); a.append(el('b', '', D.company), ' ', D.career || '');
+    s.append(a); out.push(s);
+    return out;
+  };
+
+  // 1단(공문 원형) 또는 표 아래를 2단으로. split = 두 번째 단이 시작하는 블록 번호
+  const candidates = [{ columns: 1 }, ...[2, 3, 4].map(split => ({ columns: 2, split }))];
+  Frame.fit(F, candidates, c => {
+    body.replaceChildren();
+    const bs = blocks();
+    body.style.gridTemplateColumns = c.columns === 2 ? '1fr 1fr' : '1fr';
+    if (c.columns === 1) { const col = el('div', 'col full'); bs.forEach(b => col.append(b)); body.append(col); }
+    else {
+      body.append(bs[0]);
+      const L = el('div', 'col'), R = el('div', 'col');
+      bs.slice(1, c.split).forEach(b => L.append(b)); bs.slice(c.split).forEach(b => R.append(b));
+      body.append(L, R);
+    }
+    return !Frame.overflows(body);
+  });
+})();
+</script>

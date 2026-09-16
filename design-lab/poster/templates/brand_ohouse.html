@@ -1,0 +1,146 @@
+<!-- brand_ohouse — 오늘의집(버킷플레이스) 전용 판 v1. brands/오늘의집.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  photo-plus-tag   사진 속 물건 위 파란 + 태그, 누르면 뜨는 흰 상품 카드.
+                                 회사 소개 페이지의 주방 선반 사진에 새 Primary #00A1FF 태그를 물건 자리마다 찍고,
+                                 선택된 태그 하나가 띄운 카드가 곧 공고 카드다(회사명 파랑 → 제목 → 가격 자리에 경력 → 파란 버튼).
+     supporting content-card-feed  #F7FBFE 바탕 위 흰 둥근 카드 — 섹션 카드
+                authenticity       장치는 태그와 카드뿐. 꼬리(슬로건 줄)는 본문 16px 를 위해 뺐고 URL 은 공고 카드 버튼 아래로
+     안 쓰는 것: 로고·심볼·워드마크, 옛 하늘색 #48CCF4/#35C5F0, 해시태그 칩, 흐린 그림자
+     서체: Pretendard(공식 이미지 글자 비교 1위) -->
+<meta charset="utf-8">
+<title>brand_ohouse</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;overflow:hidden;
+    padding:0 calc(4.4*var(--u))}
+
+  /* 머리 — 사진 + 태그 + 공고 카드 */
+  header{flex:none;position:relative;height:var(--HH);margin-top:calc(4.2*var(--u))}
+  .ph{position:absolute;left:0;top:0;height:100%;aspect-ratio:730/634;border-radius:calc(1.8*var(--u));overflow:hidden;background:#ddd}
+  .ph img{display:block;width:100%;height:100%;object-fit:cover}
+  .tag{position:absolute;width:calc(2.9*var(--u));height:calc(2.9*var(--u));margin:calc(-1.45*var(--u)) 0 0 calc(-1.45*var(--u));border-radius:50%;
+    background:var(--accent);box-shadow:0 0 0 calc(.28*var(--u)) rgba(255,255,255,.9)}
+  .tag::before,.tag::after{content:'';position:absolute;left:50%;top:50%;background:#fff;border-radius:1px;transform:translate(-50%,-50%)}
+  .tag::before{width:44%;height:calc(.3*var(--u))}
+  .tag::after{width:calc(.3*var(--u));height:44%}
+  .tag.on{box-shadow:0 0 0 calc(.28*var(--u)) #fff,0 0 0 calc(1.1*var(--u)) rgba(0,161,255,.28)}
+
+  .pop{position:absolute;right:0;top:50%;transform:translateY(-50%);width:var(--PW);background:var(--card);border-radius:calc(2*var(--u));
+    border:calc(.15*var(--u)) solid var(--line);padding:calc(2.4*var(--u)) calc(2.9*var(--u)) calc(2.2*var(--u))}
+  .pop .co{font-size:calc(2*var(--u));font-weight:700;color:var(--accent);letter-spacing:-.01em}
+  .pop h1{margin-top:calc(.7*var(--u));font-size:calc(4.3*var(--u));font-weight:700;line-height:1.14;letter-spacing:-.03em;color:var(--ink)}
+  .pop .career{margin-top:calc(1.3*var(--u));display:flex;align-items:baseline;gap:calc(.6*var(--u));color:var(--ink);white-space:nowrap}
+  .pop .career .a{font-size:calc(2.6*var(--u));font-weight:600}
+  .pop .career .b{font-size:calc(6.2*var(--u));font-weight:800;letter-spacing:-.04em;line-height:1}
+  .pop .stack{margin-top:calc(.9*var(--u));font-size:calc(1.85*var(--u));font-weight:500;color:var(--sub)}
+  .pop .url{margin-top:calc(.8*var(--u));text-align:center;font-size:calc(1.75*var(--u));font-weight:600;color:var(--sub)}
+  .pop .btn{margin-top:calc(1.6*var(--u));background:var(--accent);color:#fff;border-radius:calc(1*var(--u));text-align:center;
+    font-size:calc(2.2*var(--u));font-weight:700;padding:calc(1.1*var(--u)) 0}
+
+  main{flex:1;min-height:0;overflow:hidden;margin:calc(2*var(--u)) 0 calc(3.8*var(--u));display:flex;flex-direction:column;gap:calc(var(--f)*.7)}
+  .cols{display:grid;grid-template-columns:minmax(0,var(--c1,1fr)) minmax(0,1fr);column-gap:calc(var(--f)*.7);align-items:start}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*.7)}
+  .card{background:var(--card);border:calc(.12*var(--u)) solid var(--line);border-radius:calc(var(--f)*.9);padding:calc(var(--f)*.85) calc(var(--f)*1) calc(var(--f)*.55)}
+  .card h2{font-size:calc(var(--f)*1.12);font-weight:700;letter-spacing:-.02em;color:var(--ink);margin-bottom:calc(var(--f)*.5);line-height:1.3}
+  .card h2 b{color:var(--accent);font-weight:700;margin-left:.3em}
+  .it{font-size:var(--f);line-height:1.43;color:var(--text);font-weight:500;padding-left:calc(var(--f)*.8);text-indent:calc(var(--f)*-.8);margin-bottom:calc(var(--f)*.26);letter-spacing:-.01em;text-wrap:pretty}
+  .it::before{content:'•';display:inline-block;width:calc(var(--f)*.8);text-indent:0;color:#b5bcc2}
+  .ben{column-count:var(--bc,4);column-gap:calc(var(--f)*1)}
+  .grp{break-inside:avoid-column}
+  .grp+.grp{margin-top:calc(var(--f)*.5)}
+  .grp.split{break-inside:auto}
+  .grp h3{break-after:avoid-column;font-size:var(--f);font-weight:700;color:var(--ink);line-height:1.35;margin-bottom:calc(var(--f)*.35);letter-spacing:-.02em}
+  .grp .it{margin-bottom:calc(var(--f)*.22)}
+
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  // Frame.init 의 fonts.ready 는 아직 아무 글자도 없을 때 풀린다 — 재기 전에 굵기별로 미리 불러 둔다(안 그러면 대체 서체로 잰다)
+  await Promise.all([400, 500, 600, 700, 800].map(w => document.fonts.load(`${w} 20px Pretendard`, '가A1'))).catch(() => {});
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('card', ui.card || '#fff');
+  F.set('line', ui.line || '#e3eaf0');
+  const T = B.section_titles || {};
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리 — 사진(물건 자리마다 + 태그) + 선택된 태그가 띄운 공고 카드
+  const header = el('header');
+  const ph = el('div', 'ph');
+  if (IMG.photo) { const im = el('img'); im.src = IMG.photo; im.alt = ''; ph.append(im); }
+  // 잘라 둔 주방 선반 사진(730×634) 속 실제 물건 위치(%). on = 카드를 띄운 태그
+  const TAGS = [[32, 19], [70.5, 23], [22.6, 71.6], [52, 81], [68.5, 57, 'on'], [91.5, 60.5]];
+  TAGS.forEach(([x, y, on]) => { const t = el('i', 'tag' + (on ? ' on' : '')); t.style.left = x + '%'; t.style.top = y + '%'; ph.append(t); });
+  const pop = el('div', 'pop');
+  pop.append(el('div', 'co', D.company));
+  pop.append(el('h1', '', D.title || D.role));
+  // 가격 자리에 경력 — 원문 '경력 2년 이상' 을 [경력] [2년] [이상] 으로 크기만 나눈다
+  const car = el('div', 'career');
+  const cm = (D.meta[0] || '').match(/^(\D*?)\s*(\d[\d\-~–]*\s*년)\s*(.*)$/);
+  if (cm) { if (cm[1]) car.append(el('span', 'a', cm[1])); car.append(el('span', 'b', cm[2])); if (cm[3]) car.append(el('span', 'a', cm[3])); }
+  else car.append(el('span', 'b', D.meta[0] || ''));
+  pop.append(car);
+  if (D.stack.length) pop.append(el('div', 'stack', [...new Set(D.stack)].join(' · ')));
+  pop.append(el('div', 'btn', '지원하기'));
+  header.append(ph, pop); sheet.append(header);
+
+  const main = el('main'); sheet.append(main);
+
+
+  // 섹션 — 원문 소제목 그대로
+  const taskItems = S.tasks.flatMap(g => g.items);
+  const cards = [
+    { title: T.tasks || '주요업무', items: taskItems },
+    { title: T.qualifications || '자격요건', items: S.qualifications },
+    { title: T.preferences || '우대사항', items: S.preferences },
+  ].filter(c => c.items.length);
+  // 복지 — 원문의 '• 묶음 제목 / - 항목' 구조를 되살린다(색인이 평평하게 펴 둔 것)
+  const heads = new Set(B.benefit_heads || []);
+  const groups = [];
+  for (const b of S.benefits) {
+    const t = typeof b === 'string' ? b : (b.label ? `${b.label}: ${b.text}` : b.text);
+    if (heads.has(t) || !groups.length) groups.push({ head: heads.has(t) ? t : '', items: heads.has(t) ? [] : [t] });
+    else groups[groups.length - 1].items.push(t);
+  }
+  const benTotal = groups.reduce((n, g) => n + g.items.length, 0);
+
+  const cardEl = c => {
+    const d = el('div', 'card'); const h = el('h2', '', c.title); h.append(el('b', '', String(c.items.length))); d.append(h);
+    c.items.forEach(t => d.append(el('div', 'it', t))); return d;
+  };
+  const benEl = (bc, split) => {
+    const d = el('div', 'card'); const h = el('h2', '', T.benefits || '혜택 및 복지'); h.append(el('b', '', String(benTotal))); d.append(h);
+    const g = el('div', 'ben'); g.style.setProperty('--bc', bc);
+    groups.forEach(x => { const gr = el('div', 'grp' + (split ? ' split' : '')); if (x.head) gr.append(el('h3', '', x.head)); x.items.forEach(t => gr.append(el('div', 'it', t))); g.append(gr); });
+    d.append(g); return d;
+  };
+
+  const cands = [];
+  for (const HH of [38, 36])
+    for (const c1 of ['1fr', '1.15fr', '0.87fr']) {
+      // A: [주요업무+자격요건 | 우대사항] 아래 복지 띠(4·3단)
+      for (const bc of [4, 3]) for (let k = 1; k < cards.length; k++) cands.push({ HH, kind: 'band', bc, c1, k, columns: 2 });
+      // B: [주요업무 | 자격요건] / [우대사항 | 복지(2단)] — 두 줄 짝
+      if (cards.length === 3) for (const c2 of ['1fr', '1.15fr', '1.3fr', '0.87fr']) for (const split of [false, true]) cands.push({ HH, kind: 'pairs', c1, c2, split, columns: 2 });
+    }
+  Frame.fit(F, cands, c => {
+    F.set('HH', `calc(${c.HH}*var(--u))`);
+    F.set('PW', `calc(${c.HH >= 36 ? 54 : 58}*var(--u))`);
+    const row = (a, b, w) => { const r = el('div', 'cols'); r.style.setProperty('--c1', w); const L = el('div', 'col'), R = el('div', 'col'); a.forEach(x => L.append(x)); b.forEach(x => R.append(x)); r.append(L, R); return r; };
+    if (c.kind === 'band') {
+      main.replaceChildren(row(cards.slice(0, c.k).map(cardEl), cards.slice(c.k).map(cardEl), c.c1), benEl(c.bc, false));
+    } else {
+      main.replaceChildren(row([cardEl(cards[0])], [cardEl(cards[1])], c.c1), row([cardEl(cards[2])], [benEl(2, c.split)], c.c2));
+    }
+    return !Frame.overflows(main) && pop.offsetHeight <= header.clientHeight;
+  }, { lo: 10, hi: 32 });
+})();
+</script>

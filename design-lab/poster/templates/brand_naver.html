@@ -1,0 +1,162 @@
+<!-- brand_naver — 네이버(주) 전용 판 v1. brands/네이버.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  1784-testbed-atrium  1784 아트리움 — 유리 보이드 아래로 사람과 서비스 로봇 Rookie 가
+                                     같은 바닥을 지난다. 네이버가 이 건물을 부르는 이름이 'THE TESTBED' 고,
+                                     이 공고가 '체험형 인턴 · 선행 연구' 라 같은 말이 된다.
+                                     사진은 원본 그대로 머리에 가득. 사진 위에 글자를 얹지 않는다.
+     supporting testbed-label        1784 사이트의 작은 회색 라벨 + 인증 캡션 방식. 라벨 앞에 초록 사각 하나.
+     안 쓰는 것: 네이버 로고·초록 N·검색창(브랜드 가이드 로고 변형 금지), 1784/THE/TEST/BED 네 줄 조합,
+                 넓은 초록 면(초록은 로고의 색 — 라벨 사각·번호·선에만)
+     서체: 나눔휴먼(navercorp.com 이 지금 쓰는 네이버 자체 서체, 네이버 글꼴 라이선스) -->
+<meta charset="utf-8">
+<title>brand_naver</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    display:flex;flex-direction:column;overflow:hidden}
+
+  /* 라벨 줄 — 건물 이름과 근무지. 1784 사이트의 작은 회색 라벨 방식 */
+  .label{flex:none;display:flex;justify-content:space-between;align-items:center;gap:calc(2*var(--u));
+    padding:calc(2.6*var(--u)) calc(5.4*var(--u)) calc(1.7*var(--u));
+    font-size:calc(1.9*var(--u));font-weight:700;letter-spacing:.06em;color:var(--glass);white-space:nowrap}
+  .label .l{display:flex;align-items:center;gap:calc(1.1*var(--u))}
+  .label .sq{width:calc(1.5*var(--u));height:calc(1.5*var(--u));background:var(--accent);flex:none}
+  .label .r{font-weight:500;letter-spacing:.01em;color:var(--sub)}
+
+  /* 시그니처 — 아트리움 사진(원본). 판 폭을 가득 채운다 */
+  figure{flex:none;height:calc(42*var(--u));position:relative;overflow:hidden;background:var(--concrete)}
+  figure img{width:100%;height:100%;object-fit:cover;display:block}
+  figure .rule{position:absolute;left:0;right:0;bottom:0;height:calc(.42*var(--u));background:var(--accent)}
+
+  /* 제목 — 원문 대괄호는 칩, 나머지가 제목. 경력은 크게 */
+  header{flex:none;padding:calc(2.1*var(--u)) calc(5.4*var(--u)) calc(1.7*var(--u));
+    display:grid;grid-template-columns:1fr auto;column-gap:calc(2.4*var(--u));align-items:end}
+  .chip{display:inline-block;font-size:calc(1.85*var(--u));font-weight:800;letter-spacing:.08em;
+    color:var(--ink);border:calc(.2*var(--u)) solid var(--ink);padding:calc(.35*var(--u)) calc(1.1*var(--u))}
+  h1{margin-top:calc(1.2*var(--u));font-size:var(--T);font-weight:800;letter-spacing:-.035em;line-height:1.08;
+    text-wrap:pretty}
+  h1 em{font-style:normal;font-weight:400;font-size:.62em;color:var(--text);letter-spacing:-.02em}
+  /* 경력은 제목 오른쪽에 — 줄을 하나 더 쓰지 않는다. 근무지는 위 라벨 줄에 이미 있다 */
+  .career{text-align:right;white-space:nowrap;padding-bottom:calc(.4*var(--u))}
+  .career b{display:block;font-size:calc(3.9*var(--u));font-weight:800;letter-spacing:-.03em;line-height:1}
+  .career span{display:block;margin-bottom:calc(.5*var(--u));font-size:calc(1.75*var(--u));font-weight:700;
+    letter-spacing:.06em;color:var(--glass)}
+
+  main{flex:1;min-height:0;overflow:hidden;margin:0 calc(5.4*var(--u));padding-top:calc(var(--f)*.9);
+    border-top:calc(.16*var(--u)) solid var(--line);
+    display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));column-gap:calc(var(--f)*1.4);align-items:start}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*1.15)}
+  .sec h2{font-size:calc(var(--f)*.92);font-weight:800;letter-spacing:.02em;color:var(--ink);
+    display:flex;align-items:baseline;gap:calc(var(--f)*.4);margin-bottom:calc(var(--f)*.62)}
+  .sec h2 i{font-style:normal;color:var(--accent);font-weight:800;font-size:calc(var(--f)*.8)}
+  .it{font-family:var(--body);font-weight:var(--body-w,400);font-size:var(--f);line-height:var(--body-lh,1.5);
+    color:var(--body-ink,var(--text));padding-left:calc(var(--f)*.95);text-indent:calc(var(--f)*-.95);
+    margin-bottom:calc(var(--f)*.44)}
+  .it::before{content:'–';display:inline-block;width:calc(var(--f)*.95);text-indent:0;color:var(--concrete)}
+
+  footer{flex:none;margin:calc(1.3*var(--u)) calc(5.4*var(--u)) 0;padding:calc(1.6*var(--u)) 0 calc(2.4*var(--u));
+    border-top:calc(.16*var(--u)) solid var(--line)}
+  .quote{font-size:calc(2.05*var(--u));font-weight:700;letter-spacing:-.02em;line-height:1.36;white-space:pre-line}
+  .quote s{text-decoration:none;color:var(--accent)}
+  .credit{margin-top:calc(.8*var(--u));font-size:calc(1.4*var(--u));font-weight:400;color:var(--sub)}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('line', ui.line || '#dcdcd7');
+  F.set('glass', ui.glass || ui.sub);
+  F.set('concrete', ui.concrete || ui.line);
+  F.set('body', ui.body_font || ui.font);
+  if (ui.body_weight) F.set('body-w', ui.body_weight);
+  if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
+  if (ui.body_ink) F.set('body-ink', ui.body_ink);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 라벨 — 건물 이름(공식) + 공고에 적힌 근무지
+  const label = el('div', 'label');
+  const left = el('div', 'l'); left.append(el('i', 'sq'), el('span', '', '1784 THE TESTBED'));
+  const where = (D.meta || []).find(m => !/^경력|^신입/.test(m)) || '';
+  label.append(left, el('div', 'r', where));
+  sheet.append(label);
+
+  // 시그니처 사진 — 원본 그대로, 글자를 얹지 않는다
+  const fig = el('figure');
+  if (IMG.atrium) { const im = el('img'); im.src = IMG.atrium; im.alt = ''; fig.append(im); }
+  fig.append(el('div', 'rule'));
+  sheet.append(fig);
+
+  // 제목 — 원문 '[NAVER] …' 의 대괄호는 칩으로, 괄호 설명은 얇게
+  const header = el('header');
+  const titleBox = el('div');
+  const raw = D.title || D.role;
+  const tm = raw.match(/^\[([^\]]+)\]\s*(.+)$/);
+  titleBox.append(el('span', 'chip', tm ? tm[1] : (B.wordmark || D.company)));
+  const rest = tm ? tm[2] : raw;
+  // 제목 끝의 괄호 설명('(체험형 인턴)')은 같은 줄에 얇고 작게 — 줄을 하나 더 쓰지 않는다
+  const pm = rest.match(/^(.+?)\s*(\([^)]+\))\s*$/);
+  const h1 = el('h1', '', pm ? pm[1] + ' ' : rest);
+  if (pm) h1.append(el('em', '', pm[2]));
+  titleBox.append(h1);
+  const car = el('div', 'career');
+  const careerRaw = (D.meta || [])[0] || '';
+  car.append(el('span', '', '경력'), el('b', '', careerRaw.replace(/^경력\s*/, '') || '—'));
+  header.append(titleBox, car);
+  sheet.append(header);
+
+  const main = el('main'); sheet.append(main);
+
+  const footer = el('footer');
+  const q = el('div', 'quote');
+  // 공식 문장 — 1784 사이트 그대로. 'TESTBED' 한 낱말만 초록
+  (B.slogan || '').split(/(TESTBED)/).forEach(part => {
+    if (part === 'TESTBED') q.append(el('s', '', part)); else q.append(document.createTextNode(part));
+  });
+  footer.append(q);
+  if (B.credit) footer.append(el('div', 'credit', B.credit));
+  sheet.append(footer);
+
+  // 섹션 — 원문 순서 그대로(주요업무 → 자격요건 → 우대사항 → 복지)
+  const secs = [];
+  S.tasks.forEach(g => secs.push({ title: g.title || '주요업무', items: g.items }));
+  if (S.qualifications.length) secs.push({ title: '자격요건', items: S.qualifications });
+  if (S.preferences.length) secs.push({ title: '우대사항', items: S.preferences });
+  if (S.benefits.length) secs.push({ title: '복지 · 혜택', items: S.benefits.map(b => b.label ? `${b.label} — ${b.text}` : b.text) });
+
+  const secEl = s => {
+    const d = el('div', 'sec');
+    const h = el('h2', '', s.title); h.append(el('i', '', String(s.items.length))); d.append(h);
+    s.items.forEach(t => d.append(el('div', 'it', typeof t === 'string' ? t : t.text)));
+    return d;
+  };
+
+  // 사진 높이(42u)는 CSS 에 고정했다 — 시그니처가 판의 얼굴이라 본문에 자리를 양보하지 않는다.
+  // 남은 자리 안에서 제목 크기·단 나누기만 맞춘다(본문은 상한 18.5px).
+  const cands = [];
+  for (const T of [5.2, 4.6])
+    for (const cols of [2, 1])
+      for (let k = 1; k <= Math.max(1, secs.length - 1); k++) cands.push({ T, cols, k, columns: cols });
+
+  Frame.fit(F, cands, c => {
+    F.set('T', `calc(${c.T}*var(--u))`);
+    F.set('cols', c.cols);
+    if (c.cols === 1) {
+      main.replaceChildren(...secs.map(secEl));
+    } else {
+      const L = el('div', 'col'), R = el('div', 'col');
+      secs.slice(0, c.k).forEach(s => L.append(secEl(s)));
+      secs.slice(c.k).forEach(s => R.append(secEl(s)));
+      main.replaceChildren(L, R);
+    }
+    return !Frame.overflows(main) && !Frame.overflows(sheet);
+  }, { lo: 10, hi: 18.5 });
+})();
+</script>

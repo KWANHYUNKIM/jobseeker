@@ -1,0 +1,184 @@
+<!-- brand_naverwebtoon — 네이버웹툰(유) 전용 판 v1. brands/네이버웹툰.json 의 signature 가 판의 얼굴.
+     signature  weekday-strip   네이버웹툰 첫 화면의 요일 띠 — '월 화 수 목 금 토 일 매일+' 여덟 글자 탭이
+                                한 줄로 서고 오늘 요일 한 글자만 초록 알약(#00D564, 흰 글자)이 된다.
+                                판에서는 **공고 마감 요일**에 알약을 올린다(이 공고 '~ 08/23(일)' → 일).
+                                띠 아래에 마감 원문을 그대로 적어 무슨 요일인지 밝힌다.
+     supporting vertical-scroll-cuts  본문을 흰 여백으로 끊긴 '컷' 카드로 쌓는다(컷 바탕 #F8F8F9, 사이 여백 흰색).
+                                원문이 이미 '컷 간 연결', '시퀀스·컷 단위' 로 말하는 공고다.
+     안 쓰는 것: 초록 WEBTOON 워드마크·로고, 작품 그림·캐릭터(작가 저작물), 말풍선, 다크 모드 색,
+                 알림용 주황·빨강·분홍, 컷 번호·스크롤바 같은 없는 장치
+     서체: Gothic A1 (OFL, 부분집합) — 웹툰 UI 는 시스템 고딕이라 흉내 낼 전용 서체가 없다(brands JSON fonts_research) -->
+<meta charset="utf-8">
+<title>brand_naverwebtoon</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    display:flex;flex-direction:column;overflow:hidden}
+
+  /* 머리 — 회사 글자 + 마감(같은 줄) + 요일 띠 */
+  header{flex:none;padding:calc(2.4*var(--u)) calc(5*var(--u)) 0}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:calc(2*var(--u))}
+  .co{font-size:calc(2.25*var(--u));font-weight:900;letter-spacing:-.02em;color:var(--ink)}
+  .dl{font-size:calc(2.05*var(--u));font-weight:600;color:var(--sub);white-space:nowrap}
+  .dl b{color:var(--ink);font-weight:900}
+
+  /* 요일 띠: ul.daylist 를 옮긴 것 — 여덟 칸, 오늘(=마감 요일) 한 글자만 초록 알약 */
+  .strip{margin-top:calc(1.5*var(--u));background:var(--soft);border-radius:calc(1.1*var(--u));
+    display:grid;grid-template-columns:repeat(8,1fr);align-items:center;height:calc(6.8*var(--u))}
+  .strip .day{display:grid;place-items:center;font-size:calc(2.75*var(--u));font-weight:600;color:var(--ink);line-height:1}
+  .strip .day.every{font-size:calc(2.25*var(--u));color:var(--sub);font-weight:600}
+  .strip .day.on{font-weight:900;color:#fff}
+  .strip .day.on span{display:grid;place-items:center;width:calc(5.1*var(--u));height:calc(5.1*var(--u));
+    border-radius:50%;background:var(--accent)}
+  .strip .day.every.on{color:#fff}
+  .strip .day.every.on span.wide{width:auto;height:calc(5.1*var(--u));padding:0 calc(1.5*var(--u));
+    border-radius:calc(2.6*var(--u));background:var(--accent)}
+
+  /* 제목 */
+  .chip{display:inline-block;margin-top:calc(1.6*var(--u));background:var(--soft);color:var(--text);
+    font-size:calc(1.95*var(--u));font-weight:600;padding:calc(.5*var(--u)) calc(1.3*var(--u));border-radius:calc(.7*var(--u))}
+  h1{margin-top:calc(.9*var(--u));font-size:calc(4.7*var(--u));font-weight:900;letter-spacing:-.035em;line-height:1.02;color:var(--ink)}
+  .who{margin-top:calc(1.1*var(--u));display:flex;align-items:baseline;gap:calc(1.5*var(--u))}
+  .who .career{font-size:calc(3.7*var(--u));font-weight:900;letter-spacing:-.03em;line-height:1;color:var(--accent)}
+  .who .where{font-size:calc(2.1*var(--u));font-weight:600;color:var(--sub)}
+
+  /* 본문 — 컷 카드가 흰 여백으로 끊겨 쌓인다 */
+  main{flex:1;min-height:0;overflow:hidden;margin:calc(1.5*var(--u)) calc(5*var(--u)) 0;
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:calc(var(--f)*.75);align-items:start}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*.38);min-width:0}
+  .cut{background:var(--cut);border-radius:calc(var(--f)*.55);padding:calc(var(--f)*.5) calc(var(--f)*.65) calc(var(--f)*.42)}
+  .cut .kick{font-size:calc(var(--f)*.76);font-weight:900;letter-spacing:.02em;color:var(--accent);margin-bottom:calc(var(--f)*.18)}
+  .cut h2{font-size:calc(var(--f)*.98);font-weight:900;letter-spacing:-.02em;line-height:1.32;color:var(--strong);
+    margin-bottom:calc(var(--f)*.3);text-wrap:pretty}
+  .it{font-family:var(--body);font-size:var(--f);line-height:var(--body-lh,1.5);color:var(--body-ink,var(--text));
+    font-weight:var(--body-w,500);margin-bottom:calc(var(--f)*.26);text-wrap:pretty;
+    padding-left:calc(var(--f)*.8);text-indent:calc(var(--f)*-.8)}
+  .it::before{content:'';display:inline-block;width:calc(var(--f)*.34);height:calc(var(--f)*.34);
+    border-radius:50%;background:var(--accent);vertical-align:calc(var(--f)*.24);margin-right:calc(var(--f)*.46);text-indent:0}
+  .it b{font-weight:900;color:var(--ink)}
+  .it:last-child{margin-bottom:0}
+
+  footer{flex:none;margin:calc(1.3*var(--u)) calc(5*var(--u)) 0;padding:calc(1.3*var(--u)) 0 calc(2.2*var(--u));
+    border-top:calc(.28*var(--u)) solid var(--line);display:flex;justify-content:space-between;align-items:flex-end;gap:calc(3*var(--u))}
+  .quote{font-size:calc(2.3*var(--u));font-weight:900;letter-spacing:-.025em;line-height:1.34;white-space:pre-line;color:var(--ink)}
+  .apply{text-align:right;white-space:nowrap}
+  .apply .lab{font-size:calc(2.1*var(--u));font-weight:600;color:var(--sub)}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  F.set('line', ui.line || '#e0e0e0');
+  F.set('strong', ui.strong || ui.ink);
+  F.set('soft', (B.palette && B.palette.soft) || '#f8f8f9');
+  F.set('cut', ui.cut || '#f8f8f9');
+  F.set('body', ui.body_font || ui.font);
+  if (ui.body_weight) F.set('body-w', ui.body_weight);
+  if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
+  if (ui.body_ink) F.set('body-ink', ui.body_ink);
+
+  // 원문을 '컷' 으로 나눈다. 원문 줄 자체가 소제목인 것을 컷 제목으로 쓴다 — 글은 한 글자도 안 고친다.
+  //   주요업무: 'AI 영상 생성 워크플로우 설계 및 운영 :' 처럼 콜론으로 끝나는 줄이 소제목
+  //   자격요건: '언어화 능력' 처럼 짧고 '분' 으로 끝나지 않는 줄이 소제목
+  const isHead = (t) => /[:：]\s*$/.test(t) || (t.length <= 24 && !/(분|요|다)$/.test(t) && !/[.,]$/.test(t));
+  const cuts = [];
+  const pushSection = (lines, name) => {
+    let cur = null, first = true;
+    for (const raw of lines) {
+      const t = (typeof raw === 'string' ? raw : raw.text).trim();
+      if (!t) continue;
+      if (isHead(t)) {
+        cur = { kick: first ? name : '', title: t.replace(/\s*[:：]\s*$/, ''), items: [] };
+        cuts.push(cur); first = false; continue;
+      }
+      if (!cur) { cur = { kick: name, title: name, items: [] }; cuts.push(cur); first = false; }
+      cur.items.push(t);
+    }
+  };
+  pushSection(S.tasks.flatMap(g => g.items), '주요업무');
+  pushSection(S.qualifications, '자격요건');
+  pushSection(S.preferences, '우대사항');
+  if (S.benefits.length) pushSection(S.benefits.map(b => (b.label ? `${b.label} : ${b.text}` : b.text)), '복지');
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리 — 요일 띠. 마감 원문에서 요일 한 글자를 뽑아 그 칸에 알약을 올린다.
+  const header = el('header');
+  const top = el('div', 'top');
+  top.append(el('div', 'co', B.wordmark || D.company));
+  // 알약을 올릴 칸: 마감 원문에 요일이 있으면 그 요일, 없으면 여덟째 탭 '매일+'.
+  // 렌더 기계의 시계로 '오늘' 을 칠하면 실제 요일과 하루 어긋날 수 있어(헤드리스 시간대) 쓰지 않는다.
+  const dm = (D.deadline || '').match(/\((월|화|수|목|금|토|일)\)/);
+  const onDay = dm ? dm[1] : null;
+  const strip = el('div', 'strip');   // 요일 칸은 아래에서 채운다
+  for (const d of ['월', '화', '수', '목', '금', '토', '일']) {
+    const cell = el('div', 'day');
+    if (onDay === d) { cell.classList.add('on'); cell.append(el('span', '', d)); }
+    else cell.textContent = d;
+    strip.append(cell);
+  }
+  if (D.deadline) {
+    const dl = el('div', 'dl');                       // 알약이 무슨 요일인지 밝히는 줄 — 원문 그대로
+    dl.append(document.createTextNode('마감 '));
+    dl.append(el('b', '', D.until));
+    top.append(dl);
+  }
+  header.append(top);
+  const every = el('div', 'day every');               // 요일 띠의 여덟째 탭(원본 그대로)
+  if (onDay) every.textContent = '매일+';
+  else { every.classList.add('on'); every.append(el('span', 'wide', '매일+')); }
+  strip.append(every);
+  header.append(strip);
+  const tm = (D.title || D.role).match(/^\[([^\]]+)\]\s*(.+)$/);
+  // 대괄호가 회사 이름이면 칩을 만들지 않는다 — 위 줄에 이미 회사 이름이 있다
+  if (tm && tm[1] !== (B.wordmark || D.company) && !(B.names || []).includes(tm[1]))
+    header.append(el('span', 'chip', tm[1]));
+  header.append(el('h1', '', tm ? tm[2] : (D.title || D.role)));
+  const who = el('div', 'who');
+  who.append(el('div', 'career', D.meta[0] || ''));
+  const rest = D.meta.slice(1).concat(D.stack.length ? [[...new Set(D.stack)].join(' · ')] : []);
+  if (rest.length) who.append(el('div', 'where', rest.join('  ·  ')));
+  header.append(who);
+  sheet.append(header);
+
+  const main = el('main'); sheet.append(main);
+
+  const footer = el('footer');
+  footer.append(el('div', 'quote', B.slogan || ''));
+  footer.append(el('div', 'apply'));
+  sheet.append(footer);
+
+  const cutEl = (c) => {
+    const d = el('div', 'cut');
+    // 원문에 소제목이 없는 섹션은 컷 제목이 섹션 이름이다 — 같은 말을 두 번 쓰지 않는다
+    if (c.kick && c.kick !== c.title) d.append(el('div', 'kick', c.kick));
+    d.append(el('h2', '', c.title));
+    c.items.forEach(t => {
+      const line = el('div', 'it');
+      const m = t.match(/^(.{1,18}?)\s*:\s*(.+)$/);      // '문제 해결 응용력 : …' 은 앞말을 굵게
+      if (m) { line.append(el('b', '', m[1]), document.createTextNode(' ' + m[2])); }
+      else line.textContent = t;
+      d.append(line);
+    });
+    return d;
+  };
+
+  // 두 단 나누기 — 컷 순서를 지킨 모든 갈림점을 후보로
+  const cands = [];
+  for (let k = 1; k < cuts.length; k++) cands.push({ k, columns: 2 });
+  Frame.fit(F, cands, c => {
+    const L = el('div', 'col'), R = el('div', 'col');
+    cuts.slice(0, c.k).forEach(x => L.append(cutEl(x)));
+    cuts.slice(c.k).forEach(x => R.append(cutEl(x)));
+    main.replaceChildren(L, R);
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 34 });
+})();
+</script>

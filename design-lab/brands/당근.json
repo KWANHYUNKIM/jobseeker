@@ -1,0 +1,249 @@
+{
+  "names": [
+    "당근",
+    "당근마켓",
+    "당근서비스",
+    "(주)당근서비스",
+    "주식회사 당근서비스",
+    "(주)당근마켓",
+    "Daangn",
+    "Karrot",
+    "Danggeun"
+  ],
+  "researched_at": "2026-09-16",
+  "wordmark": "당근서비스",
+  "about": "당근서비스는 당근(구 당근마켓)의 운영 자회사 — 당근 고객센터를 운영한다",
+  "facts": [],
+  "slogan": "가깝고 따뜻한 당신 근처의\n지역 생활 커뮤니티",
+  "credit": "당근 브랜드 사이트 brandnew.daangn.com 의 문장",
+  "frame": "brand_daangn.html",
+  "palette": {
+    "bg": "#fffbe1",
+    "ink": "#1a1c20",
+    "accent": "#ff6f0f",
+    "soft": "#e3f7d1"
+  },
+  "signature": {
+    "id": "carrot-heart-word",
+    "what": "당근 하트 — 로고의 초록 잎을 떼어 크게 키운 하트 모양 안에, 한 단어를 더 밝은 초록으로 기울여 꽉 차게(가장자리가 잘리게) 넣은 그래픽. 브랜드 사이트에서는 초록 하트 #3FBB68 안에 '함께'(#6DD270)",
+    "evidence": [
+      "https://careers.daangn.com/blog/post/당근-리브랜딩-서비스명-로고-리뉴얼/ — \"핀과 이파리, 두 가지 단순한 요소로 구성된 당근의 새 로고는 우리가 궁극적으로 추구하는 '함께 할 때 이로운 삶'을 상징합니다.\" / 초록 잎 = 이웃과 연결되는 순간의 감정을 표현한 '당근 하트'",
+      "https://careers.daangn.com/blog/post/당근-리브랜딩-프로세스-브랜드/ — 리브랜딩 과정 글. 하트가 사이트 인트로·BI 영상의 중심 그래픽(BI 영상 프레임: '나와' '이웃이' '함께' 가 하트·말풍선 안에 한 단어씩)",
+      "https://brandnew.daangn.com/ — 모바일 캡처 sources/02_brandnew_site/scroll_12.png: 초록 하트 안 '함께'. mobile.webp/ogimage.png: 파스텔 하트 구름",
+      "https://designcompass.org/2023/08/29/danggun/ — \"지역을 표현하는 주황색 '핀' 위에 초록 잎은 이웃과 연결되는 순간의 감정을 표현한 '당근 하트'\" (보도)"
+    ],
+    "why_recognizable": "2023-08 리브랜딩 이후 앱 아이콘·옥외광고·브랜드 필름 전부에서 주황 핀 위 초록 하트 잎이 반복된다. 로고를 가려도 초록 하트 + 파스텔 하트 구름 + 굵은 한 단어 조합은 당근 사이트·BI 영상 그대로다",
+    "how_used": "머리 오른쪽에 당근 하트(사이트 하트 실루엣을 원본 픽셀에서 뜬 마스크)를 크게 두고, 사이트의 '함께' 자리에 공고의 경력 '3년' 을 같은 방식(밝은 초록, 기울임, 가장자리 잘림)으로. 원문 경력 '경력 3년 이상' 은 제목 아래 읽을 수 있는 크기로 따로 적는다. 오른쪽 단은 하트 끝(뾰족한 곳)까지 다 보이도록 하트 아래에서 시작한다. 이 공고는 '담당자와 직접 대화하며', '여러 팀과 직접 대화하고' 가 핵심이고 회사가 운영(고객 응대) 자회사라 '연결되는 순간의 감정' 하트가 억지가 아니다",
+    "not_used": "주황 핀(로고 몸통)·로고타입 '당근'·캐릭터 당근이(3D 토끼 모양)·BI 영상 속 인물 — 하트는 잎 모양만, 핀과 결합하지 않는다",
+    "alternatives": [
+      {
+        "what": "매너온도 36.5℃ 온도계",
+        "why_not": "사람들이 가장 잘 아는 당근 개념이지만 앱 화면 UI 요소(웹·앱 UI 는 보조로만). 공고와 잇자면 'CX 상담 품질 평가' ↔ 온도인데 억지다. 2025 년 이후 Karrot Score 로 바뀌는 중이라는 글도 있음(미확인)"
+      },
+      {
+        "what": "'당근이세요?' 직거래 인사 (제일기획 캠페인·브랜드 사이트 첫 문장 '네! 당근이에요')",
+        "why_not": "공식이고 유명하지만 중고거래 장면의 말이다. 사내 ERP·CX 운영 시스템 공고에 붙이면 지어낸 카피가 된다"
+      },
+      {
+        "what": "'당신 근처' 동네 지도·동네 인증 반경",
+        "why_not": "지도는 핀과 붙어야 당근으로 읽힌다(핀=로고 몸통). 지도만으로는 다른 지역 서비스와 구별 안 됨"
+      },
+      {
+        "what": "당근 오브젝트(채소 당근, 🥕)",
+        "why_not": "리브랜딩이 '채소 당근 이미지를 넘어서' 하트로 옮겨 갔다고 스스로 적었다. 이모지·채소 그림은 옛 인상이고 흔하다"
+      },
+      {
+        "what": "브랜드 필름 '함께 사는 방법' 애니메이션 장면",
+        "why_not": "사람·캐릭터가 중심이라 쓸 수 없고, 한 장 공고에서는 본문 자리를 너무 먹는다"
+      }
+    ]
+  },
+  "points": [
+    {
+      "id": "pastel-heart-field",
+      "what": "파스텔 하트 구름 — 크림 바탕 #FFFBE1 위로 연두·주황빛 노랑·분홍·하늘 하트가 가장자리에서 잘려 들어오는 배경",
+      "evidence": [
+        "https://brandnew.daangn.com/ mobile.webp · ogimage.png (원본 에셋)",
+        "careers 블로그 last_12.png(색 팔레트 설명 이미지)"
+      ],
+      "meaning": "\"산책 나가기 딱 좋은 어느 오후의 기분 좋은 화창한 햇살, 우리가 살아가는 동네 곳곳에서 영감을 얻은 다양한 색감의 팔레트\"",
+      "use": "원본 mobile.webp 에서 연두·분홍 하트(오른쪽 위, 시그니처 하트 뒤)와 노랑 하트(왼쪽 아래)를 모양·색 그대로 알파로 떠서, 원본에서 잘린 쪽을 판 모서리 밖으로 내보낸다. 카드(본문) 뒤로 숨는다",
+      "avoid": "하트를 새로 그려 흩뿌리기, 본문 위 겹치기"
+    },
+    {
+      "id": "rounded-tint-cards",
+      "what": "브랜드 사이트 서비스 소개의 크게 둥근 파스텔 카드(노랑 '좋은 물건을 구하고 나누는 중고거래', 연두 '찐 이웃 추천 동네 가게')",
+      "evidence": [
+        "https://brandnew.daangn.com/ 모바일 캡처 scroll_10"
+      ],
+      "meaning": "섹션 하나 = 둥근 카드 하나, 카드마다 팔레트 한 색",
+      "use": "주요업무·자격요건·우대사항·복지를 둥근 카드로. 카드 색은 공식 이미지에서 뽑은 옅은 색",
+      "avoid": "알약 칩, 그림자, 테두리 선"
+    }
+  ],
+  "ui": {
+    "observed_at": "brandnew.daangn.com(모바일 캡처·원본 에셋 PNG/WebP 픽셀) · careers.daangn.com 리브랜딩 블로그 이미지 픽셀 · @seed-design/css 2.8.1 base.css 토큰 — 2026-09-16",
+    "font": "'Wanted Sans','Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "Wanted Sans": [
+        {
+          "src": "assets/companies/당근/fonts/WantedSans-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/당근/fonts/WantedSans-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/당근/fonts/WantedSans-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/당근/fonts/WantedSans-ExtraBold.woff2",
+          "weight": 800
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#fffbe1",
+    "ink": "#1a1c20",
+    "text": "#2a3038",
+    "sub": "#555d6d",
+    "accent": "#ff6f0f",
+    "heart": "#3fbb68",
+    "heart_word": "#6dd270",
+    "leaf": "#00a05b",
+    "card_tints": {
+      "주요업무": "#fff1aa",
+      "자격요건": "#e3f7d1",
+      "우대사항": "#ffe0f7",
+      "복지 / 혜택": "#daf5ff"
+    },
+    "palette_v1": [
+      {
+        "hex": "#FF6F0F",
+        "name": "당근 주황",
+        "source": "brandnew logoImage.webp·logoType.webp 픽셀 64~75%, careers 블로그 blogimg_01.png",
+        "use": "회사명 라벨, 지원 화살표 — 작게만"
+      },
+      {
+        "hex": "#00A05B",
+        "name": "잎 초록(로고)",
+        "source": "logoImage.webp 잎 픽셀",
+        "use": "✔ 소제목 글자"
+      },
+      {
+        "hex": "#3FBB68",
+        "name": "하트 초록",
+        "source": "brandnew 모바일 scroll_12 '함께' 하트 바탕 / img_03.jpg '나와' 말풍선 #40C06B",
+        "use": "시그니처 하트"
+      },
+      {
+        "hex": "#6DD270",
+        "name": "하트 속 글자 초록",
+        "source": "scroll_12 '함께' 글자",
+        "use": "하트 속 '3년'"
+      },
+      {
+        "hex": "#FFFBE1",
+        "name": "크림",
+        "source": "mobile.webp 바탕 58%, blogimg_01 #FFFAE0",
+        "use": "판 바탕"
+      },
+      {
+        "hex": "#FFF1AA",
+        "name": "노랑 파스텔",
+        "source": "ogimage.png·img_03.jpg",
+        "use": "주요업무 카드"
+      },
+      {
+        "hex": "#E3F7D1",
+        "name": "연두 옅은",
+        "source": "last_12.png 팔레트 이미지 16.8%",
+        "use": "자격요건 카드"
+      },
+      {
+        "hex": "#FFCAF2",
+        "name": "분홍 파스텔",
+        "source": "last_12.png / 사이트 #FFABEF",
+        "use": "우대사항 카드는 이 색을 흰색과 섞은 #FFE0F7 (본문 대비 때문에 옅게)"
+      },
+      {
+        "hex": "#DAF5FF",
+        "name": "하늘 옅은",
+        "source": "img_03.jpg 3.9%",
+        "use": "복지 카드"
+      },
+      {
+        "hex": "#1A1C20",
+        "name": "글자",
+        "source": "SEED fg-neutral = palette-gray-1000(라이트)",
+        "use": "제목·본문"
+      },
+      {
+        "hex": "#555D6D",
+        "name": "보조 글자",
+        "source": "SEED fg-neutral-muted = gray-800",
+        "use": "스택·크레딧"
+      }
+    ],
+    "colors_not_used": [
+      {
+        "hex": "#FF6600",
+        "why": "SEED 제품 UI brand solid(carrot-600) — 앱 버튼 색. BI 주황 #FF6F0F 와 다르다. 웹 버튼 색은 브랜드 색이 아니다"
+      },
+      {
+        "hex": "#FFC85B / #A5E999 / #FFABEE / #A3D8FF",
+        "why": "원색 파스텔은 하트 구름 원본 이미지 안에서만. 카드 바탕으로 칠하면 본문 대비가 떨어진다"
+      },
+      {
+        "hex": "#10AB7D",
+        "why": "SEED green-600 은 제품 성공 상태 색 — 브랜드 초록 아님"
+      }
+    ],
+    "fonts_research": {
+      "brand_font": "Karrot Sans (이도타입 협업 전용 서체, Regular/Bold/Heavy) — 로고타입·헤드라인·브랜드 사이트. 휴머니스트 산세리프, '살짝 올라간 획', '조금 큰 초성'",
+      "evidence": [
+        "careers.daangn.com 리브랜딩 프로세스 글(이도타입·Karrot Sans)",
+        "brandnew.daangn.com @font-face 'KarrotSans Regular/Bold/Heavy' /fonts/KarrotSans-*.woff2",
+        "about.daangn.com font-family: Karrot Sans"
+      ],
+      "product_font": "SEED 디자인 시스템 --seed-font-family: -apple-system, Apple SD Gothic Neo, Pretendard … (앱은 시스템 서체)",
+      "license": "공개 배포·외부 이용허락을 찾지 못했다. 사이트가 웹폰트로 서빙할 뿐 → 넣지 않음. 비교 캡처에만 사이트에 로드된 글꼴을 썼다(파일 저장 안 함)",
+      "compared": [
+        "Wanted Sans",
+        "SUIT",
+        "Pretendard",
+        "Paperlogy",
+        "LINE Seed Sans KR",
+        "NanumSquare Neo"
+      ],
+      "specimen": "out/wanted-356004/v1_font_specimen.jpg — Karrot Sans 는 brandnew.daangn.com 페이지에 로드된 웹폰트로 같은 문장을 찍은 비교용 캡처",
+      "choice": "Wanted Sans (SIL OFL 1.1, github.com/wanteddev/wanted-sans)",
+      "why": [
+        "라틴이 둥근 기하 그로테스크 — Karrot Sans 의 'Product Engineer(ERP)' 의 둥근 o·e·g 와 폭이 가장 가깝다",
+        "한글 굵기·속공간이 Karrot Sans Bold 와 비슷, 숫자 '3' '12,345' 모양도 가깝다",
+        "LINE Seed 는 라틴이 더 닮았지만 LINE 의 브랜드 서체라 다른 회사 인상이 섞인다. Paperlogy 는 한글이 더 좁고 무겁다, Pretendard 는 라틴이 Inter 계열로 딱딱하다"
+      ],
+      "note": "토스 판도 Wanted Sans 를 쓴다 — 판을 가르는 건 서체가 아니라 시그니처(BRAND_RESEARCH 배운 것 1)"
+    }
+  },
+  "images": {
+    "heart": "assets/companies/당근/v1/heart_shape.png",
+    "field_green_pink": "assets/companies/당근/v1/field_green_pink.png",
+    "field_yellow": "assets/companies/당근/v1/field_yellow.png"
+  },
+  "images_note": {
+    "heart": "brandnew.daangn.com 모바일 캡처(scroll_12.png, 2x) 의 '함께' 초록 하트 영역에서 #3FBB68·#6DD270 픽셀만 골라 실루엣 마스크로 뜸(손으로 그리지 않음). 판에서는 CSS mask 로 하트 모양 상자를 만든다. 당근 로고 구성요소(잎)에서 온 모양 — 공개 게시 전 사용 허락 확인",
+    "field_green_pink": "brandnew.daangn.com /static/.../mobile.webp (1312×1760) 의 (420,0)-(1312,640) 영역에서 연두 하트 #A5E999·겹침 그늘 #8DE086·분홍 #FFABEE 픽셀만 크림 바탕을 빼고 알파로 떠냄(모양·색 원본 그대로, 원본 가장자리에서 잘린 분홍은 판 모서리 밖으로 내보냄). 공개 게시 전 사용 허락 확인",
+    "field_yellow": "같은 mobile.webp (0,830)-(440,1560) 노랑 하트 #FFF2AB 를 같은 방법으로. 원본 왼쪽 가장자리에서 잘린 쪽을 판 왼쪽 밖으로. 공개 게시 전 사용 허락 확인"
+  },
+  "sources": [
+    "https://brandnew.daangn.com/",
+    "https://careers.daangn.com/blog/post/당근-리브랜딩-서비스명-로고-리뉴얼/",
+    "https://careers.daangn.com/blog/post/당근-리브랜딩-프로세스-브랜드/",
+    "https://designcompass.org/2023/08/29/danggun/",
+    "https://cdn.jsdelivr.net/npm/@seed-design/css@2.8.1/base.css",
+    "https://channel.io/kr/blog/articles/interview-daangnservice-6d58e831 (당근서비스 = 운영 자회사)"
+  ]
+}

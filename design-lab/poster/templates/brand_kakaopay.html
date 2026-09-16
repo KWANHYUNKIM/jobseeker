@@ -1,0 +1,183 @@
+<!-- brand_kakaopay — 카카오페이 전용 판 v1. brands/카카오페이.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  money-envelope  송금봉투. 판 전체가 봉투 한 장이다 —
+                                회색 앱 배경 위에 코랄 몸통, 위쪽에 흰 혀(가운데가 V 로 내려오는 접힘),
+                                봉투 문구 자리에 원문 경력('신입') 을 크게, 몸통 안에 흰 편지 카드로 공고 전문.
+     supporting envelope-picker  봉투 선택 화면의 카테고리 탭 → 편지 안 섹션 이름을 알약으로, 마감을 노란 칩으로
+                won-letter       공식 블로그 썸네일의 3D 봉투·₩ 편지 사진(캐릭터가 있던 자리에 원본 그대로)
+     안 쓰는 것: 카카오프렌즈 캐릭터, 봉투에 적힌 카카오페이 카피('여름도착' 등), 로고(옐로 배경 워드마크),
+                 노란 칩에 회사 이름 넣기(확장형 로고 흉내), '카카오 페이' 띄어쓰기
+     서체: 카카오 큰글씨(제목) + 카카오 작은글씨(본문) — 둘 다 카카오가 OFL 로 공개, 공식 가이드 PDF 가 이 서체로 조판 -->
+<meta charset="utf-8">
+<title>brand_kakaopay</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);padding:calc(2.6*var(--u));
+         overflow:hidden;font-family:var(--font);color:var(--ink)}
+
+  /* 봉투 — 둥근 네모 몸통 한 색 */
+  .env{position:relative;height:100%;background:var(--envelope);border-radius:calc(3.4*var(--u));
+       display:flex;flex-direction:column;overflow:hidden}
+  /* 흰 혀 — 가운데가 V 로 내려온다(실제 봉투 비율보다 얕게: 판에 글이 들어가야 한다) */
+  .flap{flex:none;height:var(--flaph);background:var(--flap);
+        clip-path:polygon(0 0,100% 0,100% 62%,50% 100%,0 62%);
+        padding:calc(2.4*var(--u)) calc(3.4*var(--u)) 0;display:flex;justify-content:space-between;align-items:flex-start}
+  .flap .co{font-size:calc(3.3*var(--u));font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+  .flap .sl{font-size:calc(1.9*var(--u));font-weight:500;color:var(--sub);padding-top:calc(.9*var(--u))}
+  /* 봉투 접힘선 — 혀 끝에서 아래로 */
+  .crease{position:absolute;left:50%;top:var(--flaph);bottom:0;width:1px;
+          background:rgba(255,255,255,.18);pointer-events:none}
+
+  /* 머리 — 라벨·제목·경력(봉투 문구 자리) */
+  .top{flex:none;padding:var(--toppad) calc(3.4*var(--u)) 0;color:#fff;position:relative;z-index:1}
+  .lab{display:inline-block;background:rgba(255,255,255,.22);border-radius:999px;
+       padding:calc(.7*var(--u)) calc(1.8*var(--u));font-size:calc(2*var(--u));font-weight:700;letter-spacing:-.02em}
+  h1{margin-top:calc(1.4*var(--u));font-size:var(--h1sz);font-weight:800;line-height:1.1;letter-spacing:-.035em;text-wrap:pretty}
+  .career{display:flex;align-items:flex-end;justify-content:space-between;gap:calc(2*var(--u));margin-top:var(--careergap)}
+  .career .big{font-size:var(--careersz);font-weight:800;line-height:.92;letter-spacing:-.05em}
+  .career .big em{font-style:normal;font-size:.42em;font-weight:700;letter-spacing:-.02em;margin-left:calc(.6*var(--u))}
+  .tile{flex:none;width:var(--tilesz);height:var(--tilesz);border-radius:calc(2.2*var(--u));overflow:hidden;
+        box-shadow:0 calc(.4*var(--u)) calc(1.6*var(--u)) rgba(0,0,0,.10)}
+  .tile img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* 흰 편지 — 공고 전문이 들어간다 */
+  .letter{margin:var(--lettergap) calc(3.4*var(--u)) 0;background:var(--letter);border-radius:calc(2.4*var(--u));
+          padding:calc(var(--f)*1.5) calc(var(--f)*1.5) calc(var(--f)*1.2);position:relative;z-index:1;
+          display:flex;flex-direction:column;gap:calc(var(--f)*1.05)}
+  .sec{display:block}
+  .sname{display:flex;align-items:center;gap:calc(var(--f)*.5);margin-bottom:calc(var(--f)*.55)}
+  .sname b{background:var(--envelope);color:#fff;border-radius:999px;font-weight:700;
+           font-size:calc(var(--f)*.94);padding:calc(var(--f)*.3) calc(var(--f)*.95) calc(var(--f)*.26);letter-spacing:-.02em}
+  .sname i{font-style:normal;font-size:calc(var(--f)*.86);font-weight:700;color:var(--sub);font-family:var(--font)}
+  .it{display:grid;grid-template-columns:calc(var(--f)*1.15) minmax(0,1fr);font-family:var(--bodyfont);
+      font-size:var(--f);line-height:1.5;font-weight:400;color:var(--text);margin-bottom:calc(var(--f)*.3);text-wrap:pretty}
+  .it s{text-decoration:none;color:var(--envelope);font-weight:700;padding-top:.06em;line-height:1.4}
+  .it:last-child{margin-bottom:0}
+  /* 복지 — 원문 라벨(ㆍ교육/생활)을 그대로 앞에 두고 우리 점은 쓰지 않는다 */
+  .it.kv{grid-template-columns:auto minmax(0,1fr);gap:calc(var(--f)*.5)}
+  .it.kv s.k{color:var(--sub);font-weight:700;white-space:nowrap}
+
+  /* 꼬리 — 근무지 + 노란 마감 칩 */
+  footer{flex:none;margin-top:auto;padding:var(--footpad) calc(3.4*var(--u)) calc(2.8*var(--u));
+         display:flex;align-items:center;justify-content:space-between;gap:calc(2*var(--u));color:#fff;position:relative;z-index:1}
+  footer .where{font-size:calc(2.3*var(--u));font-weight:700;letter-spacing:-.02em}
+  footer .chip{background:var(--yellow);color:var(--ink);border-radius:999px;font-weight:800;
+               font-size:calc(2.3*var(--u));padding:calc(1*var(--u)) calc(2.4*var(--u)) calc(.9*var(--u));letter-spacing:-.02em;white-space:nowrap}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('envelope', ui.envelope || '#ff6868');
+  F.set('flap', ui.flap || '#ffffff');
+  F.set('letter', ui.letter || '#ffffff');
+  F.set('yellow', ui.yellow || '#ffeb00');
+  F.set('bodyfont', ui.body_font || ui.font);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+  const env = el('div', 'env'); sheet.append(env);
+
+  // 흰 혀 — 왼쪽 회사 이름('카카오 페이' 로 띄우지 않는다), 오른쪽 공식 슬로건
+  const flap = el('div', 'flap');
+  flap.append(el('div', 'co', B.wordmark || D.company));
+  if (B.slogan) flap.append(el('div', 'sl', B.slogan));
+  env.append(flap, el('div', 'crease'));
+
+  // 머리 — 원문 제목의 [대괄호] 는 봉투 선택 화면의 카테고리 탭처럼 알약으로 떼어 낸다(글자는 그대로)
+  const top = el('div', 'top'); env.append(top);
+  const tm = (D.title || '').match(/^\s*\[([^\]]+)\]\s*(.+)$/);
+  if (tm) top.append(el('span', 'lab', tm[1]));
+  top.append(el('h1', '', tm ? tm[2] : (D.title || D.role)));
+
+  // 봉투 문구 자리 = 경력. 원문 그대로 쓰되 '경력' 은 작게 붙인다
+  const row = el('div', 'career');
+  const big = el('div', 'big');
+  const cm = (D.career || '').match(/^경력\s*(.+)$/);
+  big.append(cm ? cm[1] : (D.career || ''));
+  if (cm) big.append(el('em', '', '경력'));
+  row.append(big);
+  if (IMG.envelope3d) {
+    const t = el('div', 'tile'); const im = el('img'); im.src = IMG.envelope3d; im.alt = '';
+    t.append(im); row.append(t);
+  }
+  top.append(row);
+
+  const letter = el('div', 'letter'); env.append(letter);
+
+  const footer = el('footer');
+  footer.append(el('div', 'where', D.meta.slice(1).join(' · ')));
+  if (D.until) footer.append(el('div', 'chip', D.until));
+  env.append(footer);
+
+  // 섹션 → 편지 안의 묶음. 이름은 알약(탭 모양), 항목 앞은 코랄 점
+  const secs = [];
+  const tasks = S.tasks.flatMap(g => g.items);
+  if (tasks.length) secs.push({ title: '주요업무', items: tasks });
+  if (S.qualifications.length) secs.push({ title: '자격요건', items: S.qualifications });
+  if (S.preferences.length) secs.push({ title: '우대사항', items: S.preferences });
+  if (S.benefits.length) secs.push({ title: '복지 / 혜택', items: S.benefits });
+
+  const secEl = s => {
+    const d = el('div', 'sec');
+    const n = el('div', 'sname');
+    n.append(el('b', '', s.title), el('i', '', String(s.items.length)));
+    d.append(n);
+    s.items.forEach(it => {
+      const r = el('div', 'it');
+      if (typeof it !== 'string' && it.label) {
+        // 복지는 원문 라벨이 'ㆍ교육/생활' 처럼 이미 점으로 시작한다 — 우리 점을 겹쳐 찍지 않는다
+        r.classList.add('kv');
+        r.append(el('s', 'k', it.label), el('span', '', it.text));
+      } else {
+        const txt = typeof it === 'string' ? it : it.text;
+        r.append(el('s', '', '•'), el('span', '', txt));
+      }
+      d.append(r);
+    });
+    return d;
+  };
+
+  // 머리 크기 두 벌. 긴 공고에서 머리를 그대로 두면 본문이 13px 까지 떨어진다(절차서 Frame.fit 함정)
+  // — 그래서 '작은 머리' 후보를 같이 넣고, 본문이 가장 커지는 쪽을 Frame.fit 이 고르게 한다.
+  const HEADS = {
+    full:    { flaph: 12.6, h1: 5.9, career: 13.5, tile: 21, toppad: 2.6, careergap: 2.2, lettergap: 2.4, footpad: 2.2 },
+    compact: { flaph: 8.4,  h1: 4.3, career: 7.6,  tile: 12, toppad: 1.8, careergap: 1.2, lettergap: 1.6, footpad: 1.4 },
+  };
+  const head = name => {
+    const h = HEADS[name];
+    F.set('flaph', `calc(${h.flaph}*var(--u))`); F.set('h1sz', `calc(${h.h1}*var(--u))`);
+    F.set('careersz', `calc(${h.career}*var(--u))`); F.set('tilesz', `calc(${h.tile}*var(--u))`);
+    F.set('toppad', `calc(${h.toppad}*var(--u))`); F.set('careergap', `calc(${h.careergap}*var(--u))`);
+    F.set('lettergap', `calc(${h.lettergap}*var(--u))`); F.set('footpad', `calc(${h.footpad}*var(--u))`);
+  };
+
+  const cands = [];
+  for (const h of ['full', 'compact']) {
+    cands.push({ columns: 1, k: secs.length, head: h });
+    for (let k = 1; k < secs.length; k++) cands.push({ columns: 2, k, head: h });
+  }
+  Frame.fit(F, cands, c => {
+    head(c.head);
+    letter.style.display = 'flex';
+    if (c.columns === 1) {
+      letter.style.flexDirection = 'column';
+      letter.replaceChildren(...secs.map(secEl));
+    } else {
+      letter.style.flexDirection = 'row';
+      const L = el('div', 'sec'), R = el('div', 'sec');
+      L.style.flex = R.style.flex = '1 1 0'; L.style.minWidth = R.style.minWidth = '0';
+      secs.slice(0, c.k).forEach(x => L.append(secEl(x)));
+      secs.slice(c.k).forEach(x => R.append(secEl(x)));
+      letter.replaceChildren(L, R);
+    }
+    return !Frame.overflows(env) && !Frame.overflows(letter);
+  }, { lo: 10, hi: 27 });
+})();
+</script>

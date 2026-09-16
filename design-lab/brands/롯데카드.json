@@ -1,0 +1,339 @@
+{
+  "names": [
+    "롯데카드",
+    "롯데카드(주)",
+    "Lotte Card",
+    "LOTTE CARD",
+    "LOCA"
+  ],
+  "researched_at": "2026-09-15",
+  "version": 2,
+  "wordmark": "롯데카드",
+  "about": "2002년 12월 출범한 신용카드회사",
+  "facts": [
+    "2002 출범",
+    "서울 종로",
+    "BI LOCA"
+  ],
+  "slogan": "Essence of Credit Card",
+  "map_caption": "신용카드의 최초 발상지 뉴욕 맨해튼",
+  "frame": "brand_loca.html",
+  "palette": {
+    "bg": "#f2eee0",
+    "ink": "#3d3935",
+    "accent": "#6f6259",
+    "soft": "#e9e0d0"
+  },
+  "images": {
+    "map": "assets/companies/롯데카드/v2/map_manhattan_star.jpg",
+    "skyline": "assets/companies/롯데카드/v2/skyline_manhattan.jpg"
+  },
+  "images_note": {
+    "map": "회사소개 메인 비주얼 6(img_mainSlider6.jpg, 3001×1800)의 x600–1840·y0–390 — 검정 바탕 동판화 맨해튼 지도와 8방향 별. 메탈 카드가 들어가지 않게 잘랐다. 머리 배경",
+    "skyline": "회사소개 메인 비주얼 5(img_mainSlider5.jpg, 2048×1800)의 y560–920 — 해질녘 맨해튼 스카이라인. 'ESSENCE OF CREDIT CARD' 글자가 들어가지 않게 잘랐다. 꼬리 배경",
+    "rights": "둘 다 롯데카드 공식 사이트 이미지 — 인스타 공개 게시 전 사용 가능 여부 확인 필요"
+  },
+  "ui": {
+    "observed_at": "v2(2026-09-15) — BI 페이지 색 칩 픽셀, CI 페이지(LPCOIAF) 색 표기, 카드 플레이트·회사소개 비주얼 픽셀, lottecard.co.kr p_font.css / p_common.css / p_contents.css",
+    "font": "'Noto Sans KR','Malgun Gothic',sans-serif",
+    "latin": "'Montserrat','Noto Sans KR',sans-serif",
+    "serif": "'EB Garamond',Georgia,serif",
+    "embed_fonts": {
+      "Noto Sans KR": [
+        {
+          "src": "assets/companies/롯데카드/fonts/NotoSansKR-VF.ttf",
+          "weight": "100 900"
+        }
+      ],
+      "Montserrat": [
+        {
+          "src": "assets/companies/롯데카드/fonts/Montserrat-VF.ttf",
+          "weight": "100 900"
+        }
+      ],
+      "EB Garamond": [
+        {
+          "src": "assets/companies/롯데카드/fonts/EBGaramond-VF.ttf",
+          "weight": "400 800"
+        }
+      ],
+      "Hahmlet": [
+        {
+          "src": "assets/companies/롯데카드/fonts/body/Hahmlet[wght].ttf",
+          "weight": "100 900"
+        }
+      ],
+      "LOCA Batang": [
+        {
+          "src": "assets/companies/롯데카드/fonts/LOCABatang/LOCABatang-Regular.woff2",
+          "weight": 400
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#f2eee0",
+    "ink": "#3d3935",
+    "ink_strong": "#2c2a26",
+    "text": "#3d3935",
+    "sub": "#6f6259",
+    "accent": "#6f6259",
+    "line": "#54565a",
+    "on_dark": "#f2eee0",
+    "silver": "#a6a6a7",
+    "silver_light": "#d5d5d4",
+    "palette_v2": [
+      {
+        "hex": "#2C2A26",
+        "name": "LOCA BLACK (Pantone Black C)",
+        "source": "CI 페이지 LPCOIAF 표기 'LOCA BLACK Pantone Black C · C20 M20 Y20 K90 · R44 G42 B38' (현재 노출)",
+        "use": "가장 진한 먹 — 창문 테두리·머리글자 타일·별·카드 제목, 꼬리 사진 덮개"
+      },
+      {
+        "hex": "#3D3935",
+        "name": "Black 7C",
+        "source": "BI 페이지 색 칩 + LOCA 로고 PNG 픽셀의 77.7%",
+        "use": "본문 글자"
+      },
+      {
+        "hex": "#6F6259",
+        "name": "Warm Gray 11C",
+        "source": "BI 페이지 색 칩 픽셀",
+        "use": "영문 스몰캡 라벨"
+      },
+      {
+        "hex": "#54565A",
+        "name": "Cool Gray 11C",
+        "source": "BI 페이지 색 칩 픽셀",
+        "use": "칸 구분선"
+      },
+      {
+        "hex": "#F2EEE0",
+        "name": "플레이트 종이",
+        "source": "LOCA Professional 플레이트 픽셀(1순위 25.4%)",
+        "use": "본문 바탕, 어두운 면 위 글자"
+      },
+      {
+        "hex": "#E9E0D0",
+        "name": "플레이트 종이 그늘",
+        "source": "LOCA Professional 플레이트 픽셀(2순위 25.1%)",
+        "use": "palette.soft"
+      },
+      {
+        "hex": "#A6A6A7",
+        "name": "플래티넘 은색",
+        "source": "LOCA PLATINUM 플레이트 픽셀(2순위 23.0%)",
+        "use": "머리의 기술 줄·세로 글씨"
+      },
+      {
+        "hex": "#D5D5D4",
+        "name": "로고 밝은 획",
+        "source": "LOCA 로고 PNG 픽셀(7.0%)",
+        "use": "머리 슬로건·지도 설명·꼬리 라벨"
+      },
+      {
+        "hex": "#000000",
+        "name": "지도 바탕 검정",
+        "source": "회사소개 메인 비주얼 6 픽셀(44.8%)",
+        "use": "머리 배경(이미지 자체)"
+      }
+    ],
+    "palette_not_used": [
+      {
+        "hex": "#E21C24",
+        "name": "LOTTECARD Red (Pantone 485C)",
+        "why": "CI 페이지 HTML 에 주석 처리로만 남은 옛 롯데그룹 CI 색 — 지금 페이지에는 안 보인다"
+      },
+      {
+        "hex": "#806473",
+        "name": "LOTTECARD Warm Grey (Pantone 5205C)",
+        "why": "위와 같은 주석 속 옛 CI 색"
+      },
+      {
+        "hex": "#D87D3F",
+        "name": "LOCA 365 주황",
+        "why": "상품 한 종의 색 — 브랜드 색이 아니다"
+      },
+      {
+        "hex": "#98CFB9",
+        "name": "LOCA 나누기 민트",
+        "why": "상품 한 종의 색"
+      },
+      {
+        "hex": "#7451C0",
+        "name": "웹 로그인 버튼 보라",
+        "why": "개인 사이트 버튼 색 — BI 에 없다"
+      }
+    ],
+    "fonts_research": {
+      "found": [
+        "BI 'LOCA' 네 글자 — 공식 설명 '산세리프체를 볼드한 느낌으로 변형해 고전과 모던의 균형'(LPCOIAE 산세리프체 칩). 서체 이름이 아니라 손본 레터링이다 — 배포 서체 없음",
+        "국문 워드마크 '롯데카드' — CI 페이지 img_ci5.png·디지털투데이 BI 이미지. 역시 레터링, 서체명 공개 없음",
+        "회사소개 메인 비주얼 'ESSENCE OF CREDIT CARD' — 고전 로만 세리프 스몰캡(이미지 속 글자, 서체명 미공개)",
+        "lottecard.co.kr 웹 서체 — p_font.css 가 'notokr'(Noto Sans KR light/regular/medium woff)와 Roboto 를 자체 서빙, p_common/p_contents 에 'Spoqa Han Sans Neo' 일부",
+        "롯데그룹 공개 서체 — MyLOTTE체(롯데면세점), 더잠실체·통큰체(롯데마트), 자이언츠체는 무료지만 롯데카드가 쓰는 증거는 찾지 못했다(롯데면세점 다운로드 페이지는 접속 실패 — 미확인)",
+        "LOCA 광고 '카드에 미친 사람들' 에 태영화체(태시스템, 유료 광고 서체)가 쓰였다는 폰트사 공지 — thefont.kr 공지 120. 채용 포스터 성격과 달라 쓰지 않음"
+      ],
+      "licenses": {
+        "Noto Sans KR": "SIL OFL 1.1 — 롯데카드 웹이 쓰는 그 서체. Windows 설치본(NotoSansKR-VF.ttf)을 복사",
+        "Montserrat": "SIL OFL 1.1 (google/fonts)",
+        "EB Garamond": "SIL OFL 1.1 (google/fonts)",
+        "Spoqa Han Sans Neo": "SIL OFL 1.1 — 비교만",
+        "SUIT / Pretendard": "SIL OFL 1.1 — 비교만",
+        "Cinzel / Cormorant SC / Playfair Display SC / Marcellus SC / Josefin Sans / Jost / Poppins": "SIL OFL 1.1 — 비교만"
+      },
+      "specimen": "out/wanted-370751/v2_font_specimen.jpg — 공식 이미지에서 글자만 흑백으로 떠낸 원본 옆에 후보를 같은 글자로 찍고, 겹침(IoU)·폭 비율을 적었다",
+      "choice": {
+        "korean": "Noto Sans KR — 워드마크와 겹침 0.51~0.52 로 후보(Spoqa 0.52·SUIT 0.51·Pretendard 0.50)와 비슷하지만, 롯데카드 웹이 실제로 쓰는 서체라는 증거가 있어 이것으로. 제목 700, 본문 500",
+        "latin_caps": "Montserrat 800 — 'LO/CA' 칩과 폭 비율 0.90 으로 가장 가깝고 O 가 둥글고 넓으며 C 끝이 수평으로 잘린다. Josefin Sans 가 겹침 수치는 높았지만(0.52) 획이 가늘고 폭이 좁아 눈으로는 덜 닮았다",
+        "serif": "EB Garamond small-caps — 원본의 획 대비·굵기·스몰캡 비율이 가장 가깝다. v1 의 Cormorant Garamond 는 획이 가늘어 원본보다 약했고, Playfair SC 는 대비가 너무 크고(디도네) 폭이 넓다, Cinzel 은 스몰캡이 아니라 모두 대문자 인상"
+      }
+    },
+    "rules": [
+      "공식 먹색은 LOCA BLACK #2C2A26(CI 페이지) 와 Black 7C #3D3935(BI). 순검정은 지도 이미지 안에서만",
+      "BI 보조 회색 둘: Warm Gray 11C #6F6259(라벨), Cool Gray 11C #54565A(선)",
+      "종이·은색은 플레이트 픽셀에서: LOCA Professional #F2EEE0, PLATINUM #A6A6A7",
+      "빨강 #E21C24 은 CI 페이지 HTML 주석 속 옛 그룹 CI 색 — 쓰지 않는다. 웹 버튼 보라도 쓰지 않는다",
+      "국문은 롯데카드 웹과 같은 Noto Sans KR, BI 영문 머리글자는 Montserrat 800, 영문 슬로건·라벨은 EB Garamond small-caps"
+    ],
+    "body_font": "'LOCA Batang','Hahmlet','Noto Serif KR',serif",
+    "body_weight": 400,
+    "body_line_height": 1.56,
+    "body_font_research": {
+      "why": "모집 내용 본문이 Noto Sans KR 이면 판 면적 대부분이 기본 고딕이라 AI 처럼 보인다(사용자 지적). LOCA 의 아르누보·동판화 지도와 맞는 명조 계열로 본문만 바꾼다",
+      "board": "out/wanted-370751/v3_body_font_board.jpg — 포스터와 같은 17px·종이·먹색으로 실제 자격요건 6줄",
+      "candidates": {
+        "마루 부리 Regular": "OFL — 17px 에서 획이 가늘어 폰에서 흐림",
+        "리디바탕": "OFL — 읽기 좋지만 책 본문 인상, 2순위",
+        "나눔명조": "OFL — 가늘고 오래된 인상",
+        "고운바탕": "OFL — 가늘다",
+        "함렛 Hahmlet": "OFL — 굵기 충분, 획 끝이 날카로운 현대 명조, EB Garamond 스몰캡과 성격이 맞음 → 선택",
+        "Noto Serif KR": "OFL — 무난하지만 기본 명조 인상",
+        "송명": "OFL — 붓 느낌이 강하고 무거워 본문으로 과함"
+      },
+      "choice": "Hahmlet 460, 줄 간격 1.56 (제목·라벨은 v2 그대로 Noto Sans KR·Montserrat·EB Garamond)",
+      "custom": {
+        "name": "LOCA Batang (파생 서체)",
+        "build": "design-lab/typefaces/build_loca_batang.py",
+        "recipe": [
+          "한글: Hahmlet wght 460 고정",
+          "영문·숫자 98자: EB Garamond wght 480 ×1.2, lining 숫자 — 세로획 두께를 재서 한글과 맞춤",
+          "새로 그림: 가운뎃점·불릿 → LOCA 나침반 네 방향 별, 한글 글자 몸 세로 중심(346)",
+          "이름 LOCA Batang, 두 원본 저작권 + OFL 동봉, 레이아웃 기능 제거"
+        ],
+        "license": "SIL OFL 1.1 — 원본(Hahmlet, EB Garamond) 모두 OFL, 수정본은 새 이름으로 배포 가능, 판매 금지",
+        "specimen": "out/wanted-370751/loca_batang_specimen.jpg"
+      }
+    }
+  },
+  "points": [
+    {
+      "id": "four-windows",
+      "what": "둥근 사각 틀 하나를 2×2 창문으로 나누고, 칸마다 L·O·C·A 를 한 글자씩 넣는다. 틀의 네 변 가운데에 뾰족한 마름모 돌기",
+      "evidence": "https://www.lottecard.co.kr/app/LPCOIAE_V100.lc — '네 개의 틀은 네 개의 창문을 의미합니다. 중세 시대 성당 유리를 투과하는 빛처럼'",
+      "meaning": "새로운 빛과 혁신이 되려는 열망(스테인드글라스 창)",
+      "use": "구조 — 본문을 네 창문(주요업무 / 자격요건 / 우대사항 / 복지·조건)으로. 칸마다 L·O·C·A 한 글자를 머리글자로(Montserrat 800)",
+      "avoid": "넝쿨 장식이 들어간 로고 자체를 그리지 않는다. 틀·칸·글자 배치의 구조만"
+    },
+    {
+      "id": "compass-star",
+      "what": "네 창문이 만나는 한가운데를 가늘고 긴 네 방향 별(나침반)이 가른다",
+      "evidence": "같은 페이지 — '고객의 소비를 슬기로운 방향으로 인도하는 나침반'",
+      "meaning": "슬기로운 방향으로 인도하는 안내자",
+      "use": "구조 — 본문 네 칸의 교차점에 별 하나",
+      "avoid": "별을 여러 개 흩뿌리지 않는다. 교차점에 하나(지도 이미지 속 별은 원본 그대로)"
+    },
+    {
+      "id": "manhattan-map",
+      "what": "검정 바탕에 동판화 선으로 새긴 맨해튼 옛 지도, 미드타운 34번가 부근에 8방향 별 하나. 카드 플레이트(LOCA 365·나누기·PLATINUM·CLASSIC)와 회사소개 메인 비주얼에 반복",
+      "evidence": "회사소개 메인 비주얼 6 img_mainSlider6.jpg / 같은 슬라이드 설명 문장 '‘Back To Basic’ 카드의 본질로 돌아가다 · 신용카드의 최초 발상지 뉴욕 맨해튼'(img_mainSlider5.jpg 속 글자)",
+      "meaning": "신용카드의 본질 — 신용카드가 처음 생긴 곳",
+      "use": "이미지 — v2 는 손그림 SVG 를 버리고 원본 지도 이미지를 머리 배경으로, 별이 오른쪽에 오게 잘라 옆에 회사 설명 문장 그대로",
+      "avoid": "메탈 카드(LOCA 로고 포함)가 들어간 부분은 잘라낸다. 글이 올라가는 왼쪽은 검정 그라디언트로 눌러 읽기를 지킨다"
+    },
+    {
+      "id": "back-to-basic-skyline",
+      "what": "해질녘 맨해튼 스카이라인 사진 위에 'ESSENCE OF CREDIT CARD' 세리프 스몰캡 — 'Back To Basic' 캠페인 슬라이드",
+      "evidence": "회사소개 메인 비주얼 5 img_mainSlider5.jpg",
+      "meaning": "카드의 본질로 돌아가다",
+      "use": "이미지 — 꼬리 배경. LOCA BLACK 덮개로 눌러 흰 글자를 올린다",
+      "avoid": "사진 속 원래 글자 부분은 잘라내고 쓰지 않는다"
+    },
+    {
+      "id": "dotted-frame",
+      "what": "카드 가장자리를 점선 테두리로 두르고 네 모서리에 작은 장식",
+      "evidence": "디지로카 London · Las Vegas · Paris · Monaco 플레이트",
+      "meaning": "",
+      "use": "테두리 — 본문 종이 영역에 점선 한 줄, 모서리마다 작은 네 방향 별",
+      "avoid": "이중·삼중 테두리로 늘리지 않는다"
+    },
+    {
+      "id": "edge-vertical-name",
+      "what": "오른쪽 가장자리를 따라 도시 이름을 세로로 세운다(LONDON, PARIS, LAS VEGAS)",
+      "evidence": "디지로카 도시 시리즈 플레이트",
+      "meaning": "",
+      "use": "머리 — 지도 위 오른쪽 가장자리에 세로 'Lotte Card · Recruitment'",
+      "avoid": ""
+    },
+    {
+      "id": "dot-meter",
+      "what": "플레이트 아래쪽에 작은 원 한 줄이 차오르는 눈금과 숫자(99.9%)",
+      "evidence": "디지로카 도시 시리즈 플레이트 하단",
+      "meaning": "",
+      "use": "꼬리 — 경력 연차를 원 눈금으로(5년 이상 = 10칸 중 5칸)",
+      "avoid": "숫자가 없는 값을 눈금으로 만들지 않는다"
+    },
+    {
+      "id": "serif-caps",
+      "what": "영문 제목을 고전 로만 세리프 스몰캡으로 — 'ESSENCE OF CREDIT CARD', 'LOCA Professional'",
+      "evidence": "회사소개 메인 https://www.lottecard.co.kr/app/LPCOIMA_V100.lc 히어로 / LOCA Professional 플레이트",
+      "meaning": "고전과 모던의 균형(BI 설명: 아르누보 + 산세리프)",
+      "use": "글꼴 — 영문 슬로건·라벨은 EB Garamond small-caps, 국문은 Noto Sans KR",
+      "avoid": "국문까지 세리프로 바꾸지 않는다"
+    },
+    {
+      "id": "web-typeface",
+      "what": "롯데카드 웹은 Noto Sans KR 을 'notokr' 이름으로 자체 서빙하고 숫자·영문은 Roboto",
+      "evidence": "https://image.lottecard.co.kr/webapp/pc/css/p_font.css",
+      "meaning": "",
+      "use": "글꼴 — 국문 본문·제목",
+      "avoid": ""
+    }
+  ],
+  "sources": [
+    "https://www.lottecard.co.kr/app/LPCOIAE_V100.lc",
+    "https://www.lottecard.co.kr/app/LPCOIAF_V100.lc",
+    "https://www.lottecard.co.kr/app/LPCOIMA_V100.lc",
+    "https://www.lottecard.co.kr/app/LPCOIAC_V100.lc",
+    "https://www.lottecard.co.kr/app/LPCDARA_V100.lc",
+    "https://www.lottecard.co.kr/app/LPMAIAA_V100.lc",
+    "https://image.lottecard.co.kr/webapp/pc/css/p_font.css",
+    "https://design.co.kr/article/134235/",
+    "https://www.digitaltoday.co.kr/news/articleView.html?idxno=239562",
+    "https://www.card-gorilla.com/contents/detail/1502",
+    "https://thefont.kr/bbs/board.php?bo_table=notice&wr_id=120",
+    "https://kr.lottedfs.com/about/mylottefont/content.do",
+    "https://github.com/google/fonts/tree/main/ofl/montserrat",
+    "https://github.com/google/fonts/tree/main/ofl/ebgaramond"
+  ],
+  "signature": {
+    "id": "loca-windows-manhattan",
+    "what": "LOCA BI 의 둥근 사각 네 창문(칸마다 L·O·C·A, 가운데 나침반 별) + 회사소개 메인 비주얼의 검정 동판화 맨해튼 지도와 해질녘 스카이라인",
+    "evidence": [
+      "https://www.lottecard.co.kr/app/LPCOIAE_V100.lc — '네 개의 틀은 네 개의 창문'",
+      "https://www.lottecard.co.kr/app/LPCOIMA_V100.lc — 메인 비주얼 5·6, '신용카드의 최초 발상지 뉴욕 맨해튼'"
+    ],
+    "why_recognizable": "BI 자체의 구조이고, 맨해튼 지도는 카드 플레이트(LOCA 365·나누기·PLATINUM·CLASSIC)와 기업 비주얼에 반복된다",
+    "how_used": "본문 = 네 창문(주요업무 L / 자격요건 O / 우대사항 C / 복지·조건 A)과 교차점 별, 머리 = 원본 지도 이미지, 꼬리 = 원본 스카이라인",
+    "not_used": "넝쿨 장식 LOCA 로고 자체, 메탈 카드 부분",
+    "alternatives": [
+      {
+        "what": "개인 사이트 보라 UI",
+        "why_not": "BI 에 없는 버튼 색"
+      },
+      {
+        "what": "LOCA LIKIT 일러스트 지도",
+        "why_not": "하위 상품 한 계열의 그림"
+      }
+    ]
+  }
+}

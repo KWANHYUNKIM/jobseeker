@@ -1,0 +1,86 @@
+<!-- two_col — eu-08(Tout Y Est Lifestyle, MISSIONS / PROFIL RECHERCHÉ)의 틀.
+     굵은 제목 옆으로 가로선이 뻗고, 짧은 소개 문단, 가운데 직군명.
+     두 열의 번호 깊이가 다르다 — 업무는 깊게(대분류 번호 + 설명 줄), 사람은 얕게(1~n 한 줄씩, 우대는 꼬리표).
+     맨 아래 색 박스에 지원 방법. -->
+<meta charset="utf-8">
+<title>two_col</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    padding:calc(5.6*var(--u)) calc(6*var(--u)) calc(5*var(--u));display:flex;flex-direction:column}
+  .head{display:flex;align-items:center;gap:calc(2.4*var(--u))}
+  .head h1{font-size:calc(6.4*var(--u));font-weight:800;letter-spacing:-.035em;line-height:1;color:var(--accent);white-space:nowrap}
+  .head i{flex:1;height:calc(.4*var(--u));background:var(--ink)}
+  .head .wm{font-size:calc(2.4*var(--u));font-weight:700;letter-spacing:-.02em}
+  .intro{margin-top:calc(2.2*var(--u));font-size:calc(2.1*var(--u));line-height:1.55;font-weight:600;color:var(--text)}
+  .role{margin-top:calc(2.6*var(--u));text-align:center;font-size:calc(3.3*var(--u));font-weight:800;letter-spacing:-.02em;line-height:1.25}
+
+  .cols{flex:1;min-height:0;overflow:hidden;margin-top:calc(2.8*var(--u));display:grid;grid-template-columns:var(--split) 1fr;column-gap:calc(3.4*var(--u))}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*.5)}
+  h2{font-size:calc(var(--f)*1.3);font-weight:800;color:var(--accent);letter-spacing:-.01em;margin-bottom:calc(var(--f)*.2)}
+  h2.gap{margin-top:calc(var(--f)*.9)}
+  .m{font-size:var(--f);line-height:1.5}
+  .m .t{font-weight:800;color:var(--ink)}
+  .m .t em{font-style:normal;color:var(--accent);margin-right:calc(var(--f)*.3)}
+  .m .d{color:var(--text);margin-top:calc(var(--f)*.1)}
+  .m .d div{padding-left:calc(var(--f)*.9);text-indent:calc(var(--f)*-.9)}
+  .m .d div::before{content:'- ';}
+  .p{font-size:var(--f);line-height:1.45;display:grid;grid-template-columns:calc(var(--f)*2.2) 1fr;font-weight:600}
+  .p em{font-style:normal;color:var(--accent);font-weight:800}
+  .p small{font-size:calc(var(--f)*.86);font-weight:500;color:var(--sub)}
+  .b{font-size:var(--f);line-height:1.5;color:var(--text)}
+  .b strong{color:var(--ink);margin-right:calc(var(--f)*.35)}
+
+  .box{flex:none;margin-top:calc(2.4*var(--u));background:var(--accent);color:#fff;padding:calc(2*var(--u)) calc(2.8*var(--u));
+    display:flex;justify-content:space-between;align-items:center;gap:calc(2*var(--u));font-size:calc(2.2*var(--u));font-weight:700;line-height:1.4}
+  .box span{font-weight:500;opacity:.92}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el } = F;
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+  const head = el('div', 'head'); head.append(el('h1', '', '채용합니다'), el('i'));
+  if (F.brand && F.brand.wordmark) head.append(el('span', 'wm', F.brand.wordmark));
+  sheet.append(head);
+  if (F.brand && F.brand.about) sheet.append(el('div', 'intro', `${D.company} — ${F.brand.about}. ${(F.brand.facts || []).join(' · ')}`));
+  sheet.append(el('div', 'role', D.role));
+  const cols = el('div', 'cols'); sheet.append(cols);
+  const box = el('div', 'box');
+  const l = el('div'); l.append(D.company, ' ', el('span', '', D.career || ''));
+  const r = el('div'); r.append([F.career && '경력 ' + F.career, D.deadline && '마감 ' + D.deadline].filter(Boolean).join(' · '));
+  box.append(l, r); sheet.append(box);
+
+  const draw = c => {
+    cols.replaceChildren(); F.set('split', c.split);
+    const L = el('div', 'col'), R = el('div', 'col');
+    L.append(el('h2', '', '주요업무'));
+    S.tasks.forEach(g => {
+      const m = el('div', 'm');
+      if (g.title) { const t = el('div', 't'); t.append(el('em', '', g.no + '.'), g.title); m.append(t); }
+      const d = el('div', 'd'); g.items.forEach(it => d.append(el('div', '', it))); m.append(d); L.append(m);
+    });
+    if (S.benefits.length) {
+      L.append(el('h2', 'gap', '복지'));
+      S.benefits.forEach(b => { const x = el('div', 'b'); x.append(el('strong', '', b.label), b.text); L.append(x); });
+    }
+    R.append(el('h2', '', '찾는 사람'));
+    let i = 0;
+    const person = (t, pref) => {
+      const p = el('div', 'p'); const s = el('span', '', t);
+      if (pref) s.append(' ', el('small', '', '(우대)'));
+      p.append(el('em', '', ++i + '.'), s); R.append(p);
+    };
+    S.qualifications.forEach(t => person(t, false));
+    S.preferences.forEach(t => person(t, true));
+    cols.append(L, R);
+    return !Frame.overflows(cols) && L.scrollHeight <= cols.clientHeight + 1 && R.scrollHeight <= cols.clientHeight + 1;
+  };
+  Frame.fit(F, ['1fr', '1.15fr', '0.9fr'].map(split => ({ split, columns: 2 })), draw);
+})();
+</script>

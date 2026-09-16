@@ -1,0 +1,164 @@
+{
+  "names": [
+    "LG CNS",
+    "LGCNS",
+    "엘지씨엔에스",
+    "엘지 씨엔에스",
+    "(주)LG CNS",
+    "LG CNS(주)"
+  ],
+  "researched_at": "2026-09-16",
+  "wordmark": "LG CNS",
+  "about": "새로운 세상을 기술합니다",
+  "facts": [],
+  "slogan": "새로운 세상을 기술합니다.",
+  "frame": "brand_lgcns.html",
+  "palette": {
+    "bg": "#ffffff",
+    "ink": "#121212",
+    "accent": "#1b03c9",
+    "soft": "#f0f1f3"
+  },
+  "ui": {
+    "observed_at": "lgcns.com 홈 계산된 스타일(getComputedStyle)·@font-face·1440px 헤드리스 캡처 — 2026-09-16",
+    "font": "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "display": "sans",
+    "paper": "#ffffff",
+    "ink": "#121212",
+    "text": "#333333",
+    "sub": "#565656",
+    "accent": "#1b03c9",
+    "line": "#e2e8f0",
+    "soft": "#f0f1f3",
+    "grad_from": "#d90ce5",
+    "grad_to": "#1b03c9",
+    "strong": "#121212",
+    "chip_bg": "#f0f1f3",
+    "chip_ink": "#565656",
+    "rules": [
+      "사이트 전체가 흰 바탕 + #121212 잉크 + 차가운 회색 선(#E2E8F0) 의 거의 무채색 체계다. 강조색을 넓게 칠하지 않는다",
+      "LG 빨강 #A50034(로고 원 픽셀 (164,1,54) 로 확인)은 LG 그룹 로고 색이다 — 로고 몫이라 판에 칠하지 않는다",
+      "홈 카드 위 강조 막대만 마젠타→파랑 그라디언트다. 이 그라디언트는 '지금 이 자리' 를 가리키는 장치로만 쓴다(면으로 깔지 않는다)",
+      "본문 서체는 Pretendard — 회사가 직접 자기 사이트에 얹어 쓴다(OFL). 별도 전용 서체를 쓰지 않는다"
+    ],
+    "fonts_research": {
+      "brand_font": "없음 — lgcns.com 은 body font-family 가 Pretendard 이고, @font-face 로 Pretendard·Pretendard JP 9굵기를 자기 서버(etc.clientlibs/lgcns/.../resources/font/)에서 직접 서빙한다",
+      "lg_smart": "LG 그룹 전용 서체 'LG스마트체' 가 따로 있으나 lgcns.com 웹에서는 쓰이지 않았고(계산된 스타일에 없음) 외부 상업 이용허락도 확인하지 못했다 → 쓰지 않음",
+      "license": "Pretendard 는 SIL OFL 1.1(github.com/orioncactus/pretendard) — 회사가 실제로 쓰는 서체를 그대로 쓸 수 있는 흔치 않은 경우다. 대체·비교 견본이 필요 없다",
+      "compared": [],
+      "specimen": "필요 없음 — 실제 서체와 판의 서체가 같다",
+      "choice": "Pretendard",
+      "why": [
+        "회사가 자기 사이트에 직접 얹어 쓰는 서체이고 OFL 이라 그대로 쓸 수 있다 — 흉내가 아니라 원본",
+        "코드 이름(AX/DX/RX)의 라틴 대문자가 굵기 800~900 에서 폭이 넓고 단단해 머리 글자로 쓸 수 있다"
+      ]
+    },
+    "palette_research": {
+      "ink": {
+        "hex": "#121212",
+        "source": "lgcns.com 계산된 스타일에서 가장 많이 쓰인 색(1798회)",
+        "use": "글자·코드"
+      },
+      "line": {
+        "hex": "#e2e8f0",
+        "source": "계산된 스타일 2위(1727회) — 카드·구분선의 차가운 회색",
+        "use": "카드 테두리·구분선"
+      },
+      "sub": {
+        "hex": "#565656",
+        "source": "계산된 스타일(37회) — 보조 글자",
+        "use": "라벨·캡션"
+      },
+      "soft": {
+        "hex": "#f0f1f3",
+        "source": "계산된 스타일(51회) — 칩·연한 면",
+        "use": "칩 바탕"
+      },
+      "grad": {
+        "hex": "#d90ce5 → #1b03c9",
+        "source": "홈 첫 카드 위 강조 막대(y=678~679, x=115~203) 픽셀. **JPEG 캡처에서 뽑은 값이라 실물과 오차가 있을 수 있다** — CSS 에서는 이 막대의 gradient 를 못 찾았다(SVG/의사요소 추정, 미확인)",
+        "use": "이 공고가 어느 트랙인지 가리키는 밑줄 하나에만"
+      },
+      "not_used": {
+        "#a50034": "LG 빨강(Pantone 187C 계열). 로고 원 픽셀 (164,1,54) 로 확인했지만 로고 색이라 판에 칠하지 않는다",
+        "#828282": "사이트의 더 연한 회색 — 이미 sub·line 으로 층이 충분해서 뺐다"
+      }
+    }
+  },
+  "points": [
+    {
+      "id": "tagline",
+      "what": "홈 최상단 가운데에 작게 놓인 한 문장 '새로운 세상을 기술합니다.'",
+      "evidence": "https://www.lgcns.com/ 홈 머리(캡처 sources/01_site/home.jpg) — 회색 패널 맨 위 가운데",
+      "meaning": "'기술하다' 를 서술하다/기술(技術)하다 두 뜻으로 겹쳐 쓴 회사 문장",
+      "use": "꼬리에 그대로 한 줄 인용",
+      "avoid": "문구를 바꾸거나 영어로 옮기지 않는다"
+    },
+    {
+      "id": "grad-underline",
+      "what": "홈 카드 목록에서 지금 보고 있는 카드 위에만 마젠타→파랑 그라디언트 막대가 그어진다",
+      "evidence": "https://www.lgcns.com/ 홈 첫 카드 상단 막대 픽셀(x=115~203, y=678)",
+      "meaning": "여러 갈래 중 '지금 이것' 을 가리키는 장치",
+      "use": "머리의 세 트랙 코드 중 이 공고의 트랙(RX) 밑에만 같은 그라디언트 막대",
+      "avoid": "면으로 넓게 깔거나 글자에 칠하지 않는다"
+    }
+  ],
+  "sources": [
+    "https://www.lgcns.com/",
+    "https://consumer.snu.ac.kr/23768/",
+    "https://stat.snu.ac.kr/31654/",
+    "https://www.epnc.co.kr/news/articleView.html?idxno=406777",
+    "https://www.kdfnews.com/news/articleView.html?idxno=187789",
+    "https://www.catch.co.kr/NCS/RecruitInfoDetails/555004",
+    "https://github.com/orioncactus/pretendard"
+  ],
+  "version": 1,
+  "images": {},
+  "images_note": {
+    "none": "이 판에는 회사 이미지를 넣지 않았다. 시그니처가 글자(트랙 코드)라 원본 이미지가 필요 없고, 데이터센터·사옥 사진은 공식 고해상 원본을 구하지 못했다 → 권리 확인이 필요한 이미지가 판에 없다"
+  },
+  "signature": {
+    "id": "ax-dx-rx-tracks",
+    "what": "LG CNS 가 자기 사업과 신입 채용을 세 글자 코드로 나눈 것 — AX(AI Transformation) · DX(Digital Transformation) · RX(Robot Transformation). 이 공고 제목 끝의 '(RX)' 가 그 코드다",
+    "evidence": [
+      "공고 원문 제목 '[신입] 2026년 상반기 신입사원 수시채용(RX)' — catch.co.kr/NCS/RecruitInfoDetails/555004",
+      "https://consumer.snu.ac.kr/23768/ · https://stat.snu.ac.kr/31654/ — 대학 취업게시판 공지 제목이 'LG CNS 2026년 상반기 AX/DX & RX 분야 신입사원 채용'",
+      "https://www.lgcns.com/ 홈 섹션 제목이 'AX(AI Transformation)' 로 시작한다(DOM 텍스트로 확인)",
+      "https://www.epnc.co.kr/news/articleView.html?idxno=406777 — 'AX·로보틱스' 9개 직무 신입 채용 보도, AX(AI Transformation)·RX(Robot Transformation) 사업 확장 서술"
+    ],
+    "why_recognizable": "LG CNS 는 로고를 빼면 시각적으로 남는 게 거의 없는 회사다(흰 바탕·검정 글씨·회색 선). 반면 AX/DX/RX 는 회사가 사업과 채용 트랙을 스스로 부르는 이름이고, 신입 지원자가 보는 공고 제목·대학 공지·보도자료에 항상 이 세 글자로 나온다. **다만 '전 국민이 알아보는' 수준은 아니다 — 신입 채용을 보는 사람에게 통하는 코드다(인지도 조사 자료는 못 찾음)**",
+    "how_used": "머리를 'AX · DX · RX' 세 코드로 채우고, 이 공고의 트랙인 RX 만 검정으로 두고 나머지는 연한 회색으로 물린다. RX 밑에만 홈의 마젠타→파랑 그라디언트 막대를 그어 '지금 이 자리' 를 가리킨다. 코드 아래에 풀어쓴 이름(Robot Transformation)을 작게",
+    "not_used": "LG 로고(빨강 원 + 얼굴 심볼)와 LG 빨강은 쓰지 않는다 — 로고 변형 금지이고, '로고를 가려도 아는가' 라는 기준 자체를 위배한다",
+    "alternatives": [
+      {
+        "what": "부산 클라우드 데이터센터 (국내 최대 규모·국내 첫 면진 설계, 유리+루버 이중외피)",
+        "why_not": "건축 사진이 제3자(간삼건축·개인 블로그) 촬영이라 공식 고해상 원본을 구하지 못했고, 로고 없이 보면 어느 회사 데이터센터인지 알 수 없다 — '알아본다' 기준 미달"
+      },
+      {
+        "what": "마곡 LG사이언스파크 사옥",
+        "why_not": "LG 그룹 공용 연구단지다. LG CNS 고유의 물건이 아니다"
+      },
+      {
+        "what": "'DX 전문기업' 캠페인 키 비주얼",
+        "why_not": "회사가 지금은 AX 를 앞세운다(홈 첫 섹션이 AX). 지난 포지셔닝이라 현재 공고와 안 맞는다"
+      },
+      {
+        "what": "보도자료 사진(코어택스 감사패 수상 등)",
+        "why_not": "실존 인물이 화면 중심이다 — 쓸 수 없다"
+      },
+      {
+        "what": "AI·클라우드 전시 부스",
+        "why_not": "공식 원본 이미지를 찾지 못했다(미조사로 남김)"
+      },
+      {
+        "what": "LG 로고의 빨강 원·얼굴 심볼",
+        "why_not": "로고 변형 금지. 로고는 시그니처가 될 수 없다"
+      }
+    ]
+  },
+  "data_warning": {
+    "job": "dev-555004",
+    "ocr_broken": true,
+    "note": "이 공고의 본문은 원본 크롤 데이터가 OCR 로 깨져 있다(catch.co.kr 이 공고를 이미지로 싣는다). '무대사항'(우대사항) '삼세 내용'(상세 내용) '202614 SHE' 'SAS 수 있는' 'ALES' 'chet' 'ye' 'Aa A' 'Al'(AI) 등. 판은 원문을 한 글자도 바꾸지 않으므로 이 깨진 글이 그대로 실린다 → **공개 발행 불가**. 자세한 것은 out/dev-555004/RECORD_v1.md"
+  }
+}

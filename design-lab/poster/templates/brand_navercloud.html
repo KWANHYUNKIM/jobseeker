@@ -1,0 +1,183 @@
+<!-- brand_navercloud — 네이버클라우드 전용 판 v1. brands/네이버클라우드.json 의 signature 가 판의 얼굴.
+     signature  gak-server-aisle   데이터센터 '각' 서버실의 일점 투시 복도(각 세종 공식 갤러리 원본 사진).
+                                   머리 전폭에 깔고 그 위에 제목·경력을 얹는다 — 사진이 머리 자리를 대신하므로
+                                   본문 높이를 잡아먹지 않는다. 본문도 복도 구조를 잇는다: 가운데 세로 선 하나,
+                                   소제목마다 랙 레일 같은 얇은 세로선.
+     supporting hyperscale-ai-line 사진 위 한 줄 'Hyperscale AI 클라우드 플랫폼'(회사 사이트 자기 소개)
+                career-line        꼬리에 채용 칸 문구 두 줄 그대로
+     안 쓰는 것: 로고·워드마크, HyperCLOVA X 그라디언트 레터링, 세 원 스톡 그래픽, 로봇 사진(네이버 본사 판과 겹침), 네이버 그린
+     서체: Hanken Grotesk(라틴 — 실제 서체 Calibre 의 무료 대체, 견본 비교) + 나눔스퀘어(한글 — 그 사이트가 실제로 로드) -->
+<meta charset="utf-8">
+<title>brand_navercloud</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;overflow:hidden}
+
+  /* 머리 — 서버실 복도 사진. 제목·경력이 사진 위에 산다 */
+  header{flex:none;height:var(--ph);position:relative;overflow:hidden;background:#0d141c}
+  header .bg{position:absolute;inset:0;background-image:var(--aisle);background-size:cover;background-position:50% 42%}
+  /* 사진 가운데(소실점)는 밝고 위·아래는 어둡다 — 글자가 앉을 위아래만 더 눌러 준다 */
+  header .scrim{position:absolute;inset:0;background:
+    linear-gradient(180deg,rgba(8,16,24,.62) 0%,rgba(8,16,24,.10) 26%,rgba(8,16,24,.22) 50%,rgba(8,16,24,.80) 100%)}
+  header .in{position:absolute;inset:0;padding:calc(3.2*var(--u)) calc(5.4*var(--u)) calc(2.8*var(--u));display:flex;flex-direction:column;justify-content:space-between;color:#fff}
+  .top{display:flex;align-items:baseline;gap:calc(1.5*var(--u));min-width:0}
+  .co{font-family:var(--kr-display);font-size:calc(2.6*var(--u));font-weight:800;letter-spacing:-.01em}
+  .co i{font-style:normal;display:inline-block;width:calc(.9*var(--u));height:calc(.9*var(--u));background:var(--cyan);border-radius:50%;margin-right:calc(1.1*var(--u));vertical-align:calc(.35*var(--u))}
+  .about{font-size:calc(2.1*var(--u));font-weight:600;color:#cfe8fb;letter-spacing:-.005em;white-space:nowrap;overflow:hidden}
+  .bot{min-width:0}
+  h1{font-size:var(--h1);font-weight:800;letter-spacing:-.025em;line-height:1.06;text-wrap:pretty;max-width:calc(74*var(--u))}
+  h1 small{display:block;font-family:var(--kr-display);font-size:.44em;font-weight:800;color:#a8dcfb;margin-top:calc(.9*var(--u));letter-spacing:-.01em}
+  .career{position:absolute;top:calc(3.1*var(--u));right:calc(5.4*var(--u));text-align:right;white-space:nowrap;
+    border-right:calc(.34*var(--u)) solid var(--cyan);padding-right:calc(1.6*var(--u))}
+  .career .lab{font-family:var(--kr-display);font-size:calc(1.9*var(--u));font-weight:800;color:var(--cyan);letter-spacing:.02em}
+  .career .v{font-family:var(--kr-display);font-size:calc(3.8*var(--u));font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-top:calc(.3*var(--u))}
+
+  /* 사진 아래 한 줄 — 근무지·스택·마감 */
+  .metabar{flex:none;border-bottom:1px solid var(--line);padding:calc(1.5*var(--u)) calc(5.4*var(--u));display:flex;align-items:center;gap:calc(1.6*var(--u));
+    font-size:calc(1.95*var(--u));font-weight:600;color:var(--sub);white-space:nowrap;overflow:hidden}
+  .metabar b{color:var(--accent);font-weight:700}
+  .metabar span.sep{color:var(--line)}
+
+  /* 본문 — 복도처럼 두 단, 가운데 선 하나 */
+  main{flex:1;min-height:0;overflow:hidden;padding:calc(2*var(--u)) calc(5.4*var(--u)) 0;display:grid;grid-template-columns:var(--cols,1fr 1fr);column-gap:calc(var(--f)*1.5);align-items:start}
+  .col{min-width:0;display:flex;flex-direction:column;gap:calc(var(--f)*.85)}
+  .col+.col{border-left:1px solid var(--line);padding-left:calc(var(--f)*1.5)}
+  .sec{min-width:0}
+  .sec>h2{font-family:var(--kr-display);font-size:calc(var(--f)*1.18);font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.25;
+    margin-bottom:calc(var(--f)*.55);display:flex;align-items:center;gap:calc(var(--f)*.5)}
+  .sec>h2 em{font-style:normal;font-family:var(--font);font-size:.72em;font-weight:700;color:var(--accent)}
+  .grp{margin-bottom:calc(var(--f)*.6)}
+  .grp>h3{font-family:var(--kr-display);font-size:calc(var(--f)*1.02);font-weight:800;color:var(--ink);line-height:1.35;letter-spacing:-.015em;
+    border-left:calc(var(--f)*.2) solid var(--cyan);padding-left:calc(var(--f)*.6);margin-bottom:calc(var(--f)*.35);text-wrap:pretty}
+  .it{font-family:var(--body);font-size:var(--f);font-weight:var(--body-w,400);line-height:var(--body-lh,1.5);color:var(--body-ink,var(--text));
+    padding-left:calc(var(--f)*.8);text-indent:calc(var(--f)*-.8);margin-bottom:calc(var(--f)*.3);text-wrap:pretty}
+  .it::before{content:'·';display:inline-block;width:calc(var(--f)*.8);text-indent:0;color:var(--accent);font-weight:700}
+  .it.note{padding-left:0;text-indent:0;color:var(--sub);font-size:calc(var(--f)*.92)}
+  .it.note::before{content:''; width:0}
+  .it.para{padding-left:0;text-indent:0;font-size:calc(var(--f)*.92);line-height:1.48;color:var(--text)}
+  .it.para::before{content:'';width:0}
+  .it.lead{padding-left:0;text-indent:0;font-family:var(--kr-display);font-weight:800;color:var(--ink);
+    border-left:calc(var(--f)*.2) solid var(--cyan);padding-left:calc(var(--f)*.6);margin-bottom:calc(var(--f)*.35)}
+  .it.lead::before{content:'';width:0}
+
+  /* 꼬리 — 채용 칸 문구 그대로 */
+  footer{flex:none;margin:calc(1.8*var(--u)) calc(5.4*var(--u)) 0;padding:calc(1.8*var(--u)) 0 calc(2.6*var(--u));border-top:calc(.3*var(--u)) solid var(--ink);
+    display:grid;grid-template-columns:1fr auto;column-gap:calc(3*var(--u));align-items:end}
+  .quote{font-family:var(--kr-display);font-size:calc(2.5*var(--u));font-weight:800;letter-spacing:-.02em;line-height:1.35;white-space:pre-line;color:var(--ink)}
+  .credit{font-size:calc(1.45*var(--u));font-weight:500;color:var(--sub);text-align:right;line-height:1.5;max-width:calc(42*var(--u))}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('line', ui.line || '#dadada');
+  F.set('cyan', ui.cyan || '#14adea');
+  F.set('soft', ui.soft || '#f6f7f8');
+  F.set('kr-display', "'NanumSquare EB','NanumSquare'," + (ui.font || 'sans-serif'));
+  F.set('body', ui.body_font || ui.font);
+  if (ui.body_weight) F.set('body-w', ui.body_weight);
+  if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
+  if (ui.body_ink) F.set('body-ink', ui.body_ink);
+  if (IMG.aisle) F.set('aisle', `url(${IMG.aisle})`);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리 — 복도 사진 위에 회사·제목·경력
+  const header = el('header');
+  header.append(el('div', 'bg'), el('div', 'scrim'));
+  const hin = el('div', 'in');
+  const top = el('div', 'top');
+  const co = el('div', 'co'); co.append(el('i'), B.wordmark || D.company);
+  top.append(co);
+  if (B.about) top.append(el('div', 'about', B.about));
+  const bot = el('div', 'bot');
+  // 제목의 괄호 부분은 작은 줄로 내린다 — 원문 글자는 그대로
+  const tm = (D.title || D.role).match(/^(.+?)\s*[（(]([^)）]+)[)）]\s*$/);
+  const h1 = el('h1', '', tm ? tm[1] : (D.title || D.role));
+  if (tm) h1.append(el('small', '', tm[2]));
+  bot.append(h1);
+  const career = el('div', 'career');
+  career.append(el('div', 'lab', '경력'), el('div', 'v', D.career || F.career || '—'));
+  hin.append(top, bot, career);
+  header.append(hin);
+  sheet.append(header);
+
+  // 사진 아래 한 줄 — 근무지 · 스택 · 마감(원문 표기 그대로)
+  const bits = [];
+  (D.meta || []).filter(m => m !== D.career).forEach(m => bits.push(m));
+  if (D.stack && D.stack.length) bits.push([...new Set(D.stack)].join(' · '));
+  const meta = el('div', 'metabar');
+  bits.forEach((t, i) => { if (i) meta.append(el('span', 'sep', '|')); meta.append(el('span', '', t)); });
+  if (D.until) { if (bits.length) meta.append(el('span', 'sep', '|')); meta.append(el('b', '', D.until)); }
+  if (bits.length || D.until) sheet.append(meta);
+
+  const main = el('main'); sheet.append(main);
+
+  const footer = el('footer');
+  footer.append(el('div', 'quote', B.slogan || ''));
+  if (B.credit) footer.append(el('div', 'credit', B.credit));
+  sheet.append(footer);
+
+  // 섹션 — 주요업무(원문 소제목 묶음) / 자격요건 / 우대사항 / 복지
+  const secs = [];
+  if (S.tasks.length) secs.push({ name: '주요업무', groups: S.tasks });
+  if (S.qualifications.length) secs.push({ name: '자격요건', items: S.qualifications });
+  if (S.preferences.length) secs.push({ name: '우대사항', items: S.preferences });
+  if (S.benefits.length) secs.push({ name: '복지', items: S.benefits.map(b => (b.label ? `${b.label} ${b.text}` : b.text)) });
+
+  const LONG = 110;                       // 이보다 긴 줄은 문단으로 다룬다(팀 메시지 같은 긴 글)
+  const txt = t => (typeof t === 'string' ? t : (t.text || ''));
+  // '팀 메시지' 처럼 짧은 줄 바로 뒤에 긴 문단이 오면 그 줄을 소제목으로 세운다(글자는 원문 그대로)
+  const itemEl = (t, next) => {
+    const s = txt(t);
+    let cls = 'it';
+    if (s.length > LONG) cls += ' para';
+    else if (/^※/.test(s)) cls += ' note';
+    else if (s.length <= 14 && next && txt(next).length > LONG) cls += ' lead';
+    const d = el('div', cls);
+    d.textContent = s;
+    return d;
+  };
+  const secEl = s => {
+    const box = el('div', 'sec');
+    const h = el('h2', '', s.name);
+    const n = s.groups ? s.groups.reduce((k, g) => k + g.items.length, 0) : s.items.length;
+    h.append(el('em', '', String(n)));
+    box.append(h);
+    if (s.groups) s.groups.forEach(g => {
+      const grp = el('div', 'grp');
+      if (g.title) grp.append(el('h3', '', g.title));
+      g.items.forEach((t, i) => grp.append(itemEl(t, g.items[i + 1])));
+      box.append(grp);
+    });
+    else s.items.forEach((t, i) => box.append(itemEl(t, s.items[i + 1])));
+    return box;
+  };
+
+  // 사진 높이와 두 단 나누기를 함께 탐색한다 — 사진이 크면 본문이 작아진다
+  // 사진은 이 판의 얼굴이라 크게 고정한다. (사진 높이, 제목 크기) 짝을 앞에서부터 쓰고,
+  // 제목이 사진 안에 안 들어갈 때만 다음 짝으로 물러난다(머리 넘침도 판정에 넣는다).
+  const cands = [];
+  for (const [ph, h1s] of [[34, 4.7], [34, 4.1], [34, 3.6], [30, 3.4]])
+    for (let k = 1; k < secs.length; k++)
+      for (const cols of ['1fr 1fr', '1.15fr 1fr', '1fr 1.12fr']) cands.push({ ph, h1s, k, cols, columns: 2 });
+  Frame.fit(F, cands, c => {
+    F.set('ph', `calc(${c.ph}*var(--u))`);
+    F.set('h1', `calc(${c.h1s}*var(--u))`);
+    F.set('cols', c.cols);
+    const L = el('div', 'col'), R = el('div', 'col');
+    secs.slice(0, c.k).forEach(s => L.append(secEl(s)));
+    secs.slice(c.k).forEach(s => R.append(secEl(s)));
+    main.replaceChildren(L, R);
+    return !Frame.overflows(main) && !Frame.overflows(sheet) && !Frame.overflows(hin);
+  }, { lo: 9, hi: 30 });
+})();
+</script>

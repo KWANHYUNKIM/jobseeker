@@ -1,0 +1,145 @@
+<!-- brand_kurly v3 — 컬리 전용 판. 중심은 '샛별배송' 하나(brands/컬리.json 의 signature).
+     saetbyeol-dawn      머리 = 컬리 배송 안내 공식 메인 비주얼(새벽 하늘 + 고속도로의 보라 컬리 트럭 행렬) 실사진 전면.
+                          원본 이미지 속 글('컬리 샛별 & 하루배송…')이 있는 왼쪽은 잘라냈다(images.saetbyeol_dawn)
+     saetbyeol-copy      공식 문구 '샛별이 뜰 때가 가장 신선할 때' 를 머리 첫 줄에 그대로
+     delivery-modules    본문 = 같은 배송 안내 페이지의 모듈: 베이지 #E9E5E2 바탕 위 '색 띠 제목 + 흰 상자'.
+                          띠 색도 페이지 그대로 — 퍼플 #5F0080(샛별배송 소개) / 바이올렛 #875EB3(주 7일 샛별배송) / 크라프트 #C19978(주 6일 하루배송)
+     delivery-table      꼬리 = 배송 시간표 형식(퍼플 머리줄, 바이올렛 첫 칸 글자, 가는 회색 줄)으로 경력·지원
+     서체: Pretendard(kurly.com 실사용, SIL OFL) 하나 -->
+<meta charset="utf-8">
+<title>brand_kurly</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--page);color:var(--text);font-family:var(--font);display:flex;flex-direction:column;overflow:hidden}
+
+  /* 머리 — 새벽 하늘색 글 띠 + 샛별배송 사진 띠(사진 하늘 윗부분과 이어지게) */
+  header{flex:none;position:relative;background:var(--sky);color:var(--ink)}
+  .hin{position:relative;padding:calc(3.6*var(--u)) calc(6*var(--u)) calc(.6*var(--u));display:grid;grid-template-columns:1fr auto;column-gap:calc(3*var(--u));align-items:end}
+  .copy{font-size:calc(2.3*var(--u));font-weight:600;color:var(--purple);letter-spacing:-.01em}
+  .co{margin-top:calc(1.4*var(--u));font-size:calc(2.5*var(--u));font-weight:700;color:var(--ink)}
+  h1{margin-top:calc(.3*var(--u));font-size:calc(5.8*var(--u));font-weight:800;letter-spacing:-.035em;line-height:1.08;color:var(--ink)}
+  h1 small{display:block;font-size:.5em;font-weight:700;color:var(--violet);letter-spacing:-.01em;margin-top:calc(.4*var(--u))}
+  .career{text-align:right;padding-bottom:calc(.6*var(--u))}
+  .career .lab{font-size:calc(2.2*var(--u));font-weight:700;color:var(--violet)}
+  .career .v{white-space:nowrap;line-height:1;margin-top:calc(.5*var(--u));color:var(--purple)}
+  .career b{font-size:calc(8.2*var(--u));font-weight:800;letter-spacing:-.04em}
+  .career span{font-size:calc(3.4*var(--u));font-weight:700;margin-left:calc(.4*var(--u))}
+  .photo{position:relative;height:var(--ph);background:var(--dawn) no-repeat;background-size:100% auto;background-position:0 var(--py)}
+  .photo::before{content:'';position:absolute;left:0;right:0;top:0;height:22%;background:linear-gradient(180deg,var(--sky) 0%,rgba(246,226,219,0) 100%)}
+
+  /* 본문 — 배송 안내 모듈 */
+  main{flex:1;min-height:0;overflow:hidden;padding:calc(2.2*var(--u)) calc(6*var(--u)) 0;display:flex;flex-direction:column;justify-content:space-between;gap:calc(var(--f)*.8)}
+  .row{display:grid;column-gap:calc(var(--f)*.8)}
+  .mod{background:#fff;min-width:0;display:flex;flex-direction:column}
+  .bar{flex:none;color:#fff;text-align:center;font-weight:700;font-size:calc(var(--f)*1.02);line-height:1;padding:calc(var(--f)*.62) 0}
+  .box{flex:1;padding:calc(var(--f)*.9) calc(var(--f)*1.15) calc(var(--f)*.7);display:grid;column-gap:calc(var(--f)*1.4);align-content:start}
+  .it{font-family:var(--body);font-size:var(--f);line-height:var(--body-lh,1.5);font-weight:var(--body-w,500);letter-spacing:-.005em;color:var(--text);padding-left:calc(var(--f)*.9);text-indent:calc(var(--f)*-.9);margin-bottom:calc(var(--f)*.28);text-wrap:pretty}
+  .it::before{content:'·';display:inline-block;width:calc(var(--f)*.9);text-indent:0;font-weight:700;color:var(--purple)}
+  .it .pd{color:var(--purple);font-weight:800}
+  .sub{font-family:var(--body);font-size:var(--f);font-weight:700;color:var(--ink);margin-bottom:calc(var(--f)*.35);text-wrap:pretty}
+  .grp{min-width:0}
+
+  /* 꼬리 — 배송 시간표 형식 */
+  footer{flex:none;padding:calc(1.6*var(--u)) calc(6*var(--u)) calc(3*var(--u))}
+  table{width:100%;border-collapse:collapse;background:#fff;font-size:calc(1.95*var(--u))}
+  th{background:var(--purple);color:#fff;font-weight:700;padding:calc(.6*var(--u)) 0;text-align:center}
+  td{padding:calc(.75*var(--u)) calc(1.6*var(--u));border-bottom:1px solid #d9d9d9;text-align:center;color:var(--ink);font-weight:600}
+  td.k{color:var(--violet);font-weight:700;width:22%}
+  td.url{font-weight:800;color:var(--purple);font-size:calc(2.3*var(--u));letter-spacing:-.01em}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const SIG = B.signature || {};
+  const MOD = (ui.modules || {});
+  const IMG = D.brand_images || {};
+  F.set('page', MOD.page || '#e9e5e2');
+  F.set('purple', MOD.purple || '#5f0080');
+  F.set('violet', MOD.violet || '#875eb3');
+  F.set('kraft', MOD.kraft || '#c19978');
+  F.set('ink', ui.ink || '#222222');
+  F.set('body', ui.body_font || ui.font);   // 모집 내용 본문(모듈 목록·복지 줄) 서체 — 막대·제목·표와 따로
+  if (ui.body_weight) F.set('body-w', ui.body_weight);
+  if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
+  if (IMG.saetbyeol_dawn) F.set('dawn', `url(${IMG.saetbyeol_dawn})`);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리
+  F.set('sky', (ui.dawn && ui.dawn.sky) || '#f6e2db');
+  const header = el('header'); const hin = el('div', 'hin'); const left = el('div');
+  if (SIG.copy) left.append(el('div', 'copy', SIG.copy));
+  left.append(el('div', 'co', B.wordmark || D.company));
+  const m = (D.title || D.role).match(/^(.*?)\s*\((.+)\)\s*$/);
+  const h1 = el('h1', '', m ? m[1] : (D.title || D.role));
+  if (m) h1.append(el('small', '', '(' + m[2] + ')'));
+  left.append(h1); hin.append(left);
+  const cm = F.career.match(/^(\d+(?:\s*[-~–]\s*\d+)?)\s*(.*)$/);
+  if (cm) {
+    const c = el('div', 'career'); c.append(el('div', 'lab', '경력'));
+    const v = el('div', 'v'); v.append(el('b', '', cm[1].replace(/\s*[-~]\s*/, '–')), el('span', '', cm[2])); c.append(v);
+    hin.append(c);
+  }
+  header.append(hin, el('div', 'photo')); sheet.append(header);
+
+  // 복지: 원문의 글머리 줄('~요!' 로 끝남) / 줄
+  const benefitGroups = [];
+  for (const b of S.benefits) {
+    const t = (b.label ? b.label + ' ' : '') + b.text;
+    if (/요!$/.test(t)) benefitGroups.push({ title: t, items: [] });
+    else { if (!benefitGroups.length) benefitGroups.push({ title: '', items: [] }); benefitGroups[benefitGroups.length - 1].items.push(t); }
+  }
+  const item = t => {
+    const d = el('div', 'it'); const i = t.indexOf('퍼플데이');
+    if (i < 0) d.append(t); else d.append(t.slice(0, i), el('span', 'pd', '퍼플데이'), t.slice(i + 4));
+    return d;
+  };
+  const mod = (title, color, cols, fill) => {
+    const md = el('div', 'mod'); const bar = el('div', 'bar', title); bar.style.background = `var(--${color})`;
+    const box = el('div', 'box'); box.style.gridTemplateColumns = cols > 1 ? '1fr 1fr' : '1fr';
+    fill(box); md.append(bar, box); return md;
+  };
+  const listInto = (box, items, cols) => {
+    if (cols < 2) { items.forEach(t => box.append(item(t))); return; }
+    const half = Math.ceil(items.length / 2);
+    [items.slice(0, half), items.slice(half)].forEach(part => { const g = el('div', 'grp'); part.forEach(t => g.append(item(t))); box.append(g); });
+  };
+
+  const main = el('main'); sheet.append(main);
+
+  // 꼬리 — 배송 시간표처럼
+  const footer = el('footer'); const table = el('table');
+  const thr = el('tr'); ['구분', '내용'].forEach(h => thr.append(el('th', '', h))); table.append(thr);
+  const row = (k, v, cls = '') => { const tr = el('tr'); tr.append(el('td', 'k', k), el('td', cls, v)); table.append(tr); };
+  row('경력', F.career);
+  footer.append(table); sheet.append(footer);
+
+  const tasks = S.tasks.flatMap(g => g.items);
+  const cands = [];
+  for (const hh of [24, 21]) for (const tc of [2, 1]) for (const qp of ['side', 'stack']) for (const bc of [2, 1])
+    cands.push({ hh, tc, qp, bc, columns: 2 });
+  Frame.fit(F, cands, c => {
+    F.set('ph', `calc(${c.hh}*var(--u))`); F.set('py', `calc(${-(c.hh === 24 ? 20 : 22)}*var(--u))`);
+    const mods = [];
+    mods.push(mod('주요업무', 'purple', c.tc, box => listInto(box, tasks, c.tc)));
+    const q = mod('자격요건', 'violet', 1, box => listInto(box, S.qualifications, 1));
+    const p = mod('우대사항', 'violet', 1, box => listInto(box, S.preferences, 1));
+    if (c.qp === 'side') { const r = el('div', 'row'); r.style.gridTemplateColumns = '1fr 1fr'; r.append(q, p); mods.push(r); }
+    else { mods.push(q, p); }
+    mods.push(mod('복지', 'kraft', c.bc, box => {
+      const groups = c.bc > 1 ? benefitGroups : benefitGroups;
+      groups.forEach(g => { const gr = el('div', 'grp'); if (g.title) gr.append(el('div', 'sub', g.title)); g.items.forEach(t => gr.append(item(t))); box.append(gr); });
+    }));
+    main.replaceChildren(...mods);
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 36 });
+})();
+</script>

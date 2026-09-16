@@ -1,0 +1,159 @@
+<!-- brand_musinsa v3 — 무신사 전용 판. 중심은 brands/무신사.json 의 signature 하나:
+     '무진장 신발 사진이 많은 곳' — 무신사라는 이름이 나온 2001년 프리챌 커뮤니티 이름.
+     무신사가 2022 만우절에 이 시절을 픽셀 도시로 재현한 공식 키 비주얼('Back to the 2001')을 그대로 가져온다.
+       acrostic       머리 왼쪽: 세 줄 '무진장 / 신발 / 사진이 많은 곳' 에서 첫 글자 무·신·사만 흰색, 나머지는 윤곽 — 키 비주얼 제목 조판
+       kv-pixel-city  머리 오른쪽: 키 비주얼의 픽셀 도시(스냅 스튜디오·삼각대 카메라) 원본 crop, 픽셀 그대로 확대
+       kv-yellow      작은 라벨은 키 비주얼 'Back to the 2001' 의 노랑 #EEDF3E + 픽셀 서체(갈무리11, OFL)
+     보조 두 가지만:
+       careers-row    제목 위 채용 사이트 메타 줄(무신사 | Security Engineering | 경력 8년 이상 | 정규직 | 무신사 성수 오피스)
+       corp-statement 꼬리에 회사 사이트 문장 두 줄
+     로고(스토어 BI·회사 CI·키 비주얼 속 MUSINSA)는 그리지도 crop 에 넣지도 않는다 -->
+<meta charset="utf-8">
+<title>brand_musinsa</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:#fff;color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;overflow:hidden}
+  .px{font-family:var(--pixel);font-weight:700;-webkit-font-smoothing:none;font-smooth:never}
+
+  /* 머리 — 키 비주얼 */
+  .kv{flex:none;display:grid;grid-template-columns:minmax(0,1fr) calc(33*var(--u));background:var(--night);color:#fff}
+  .kv .txt{padding:calc(3*var(--u)) calc(3*var(--u)) calc(2.2*var(--u)) calc(5.2*var(--u));display:flex;flex-direction:column;min-width:0}
+  .kv .tag{font-size:calc(2.2*var(--u));color:var(--yellow);letter-spacing:.02em;line-height:1}
+  .acro{margin-top:calc(1.3*var(--u));font-weight:800;font-size:calc(4.3*var(--u));line-height:1.02;letter-spacing:-.04em}
+  .acro div{white-space:nowrap}
+  .acro b{color:#fff;font-weight:800}
+  .acro span{color:var(--night);-webkit-text-stroke:calc(.17*var(--u)) #fff;paint-order:stroke fill}
+  .kv .note{font-size:calc(1.75*var(--u));color:var(--road);line-height:1.35}
+  .kv .pic{position:relative;overflow:hidden;background:var(--road)}
+  .kv .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:40% 30%;image-rendering:pixelated}
+  .kv .pic .yrs{position:absolute;left:0;bottom:0}
+
+  /* 제목 — 머리 안: 채용 사이트 메타 줄 + 영문 직무명 */
+  .meta{margin-top:calc(1.9*var(--u));padding-top:calc(1.5*var(--u));border-top:1px solid #3a393d;display:flex;flex-wrap:wrap;font-size:calc(1.85*var(--u));color:#b4b4b6;font-weight:500;line-height:1.4}
+  .meta span+span::before{content:'';display:inline-block;width:1px;height:.9em;background:#55545a;margin:0 calc(.9*var(--u));vertical-align:-.1em}
+  h1{margin-top:calc(.6*var(--u));font-family:var(--display);font-size:calc(5.9*var(--u));font-weight:900;letter-spacing:-.025em;line-height:1;white-space:nowrap}
+  .sub{margin-top:calc(.5*var(--u));font-size:calc(2.5*var(--u));font-weight:700;letter-spacing:-.02em;line-height:1.2}
+  .stack{margin-top:calc(1*var(--u));font-size:calc(1.55*var(--u));white-space:nowrap;color:#b4b4b6;line-height:1.35}
+  .yrs{background:var(--night);color:#fff;padding:calc(1.2*var(--u)) calc(2.2*var(--u)) calc(1.4*var(--u)) calc(1.8*var(--u));display:flex;flex-direction:column;align-items:flex-start}
+  .yrs .lab{font-size:calc(1.9*var(--u));color:var(--yellow);line-height:1}
+  .yrs .val{display:flex;align-items:baseline;gap:calc(.8*var(--u));margin-top:calc(.6*var(--u));white-space:nowrap}
+  .yrs .val b{font-family:var(--display);font-size:calc(9*var(--u));font-weight:900;line-height:.82;letter-spacing:-.03em}
+  .yrs .val span{font-size:calc(2.8*var(--u));font-weight:800;letter-spacing:-.02em}
+
+  /* 본문 — 팀 소개 한 문단 + 2×2 [주요업무|자격요건]/[우대사항|복지] */
+  main{flex:1;min-height:0;overflow:hidden;padding:calc(1.8*var(--u)) calc(5.2*var(--u)) 0;display:grid;
+    grid-template-columns:minmax(0,var(--c1)) minmax(0,1fr);grid-auto-rows:auto;column-gap:calc(3*var(--u));row-gap:calc(var(--f)*.85);align-content:start}
+  .intro{grid-column:1/-1;font-family:var(--body);font-size:var(--f);font-weight:400;line-height:1.5;color:#000;padding-bottom:calc(var(--f)*.05)}
+  .sec{min-width:0;display:flex;flex-direction:column}
+  .sec h2{flex:none;display:flex;align-items:center;padding-bottom:calc(var(--f)*.35);border-bottom:2px solid #000}
+  .sec h2 span{background:var(--yellow);color:#000;font-size:calc(var(--f)*1.05);line-height:1;padding:calc(var(--f)*.32) calc(var(--f)*.5) calc(var(--f)*.26)}
+  .row{flex:none;display:grid;grid-template-columns:calc(var(--f)*1.35) minmax(0,1fr);padding:calc(var(--f)*.3) 0;border-bottom:1px solid var(--line)}
+  .row b{font-family:var(--body);font-size:calc(var(--f)*.95);font-weight:700;line-height:1.53}
+  .row span{font-family:var(--body);font-size:var(--f);font-weight:400;line-height:1.42}
+  .sec .city{flex:1 1 auto;min-height:calc(var(--f)*5);margin-top:calc(var(--f)*.7);position:relative;overflow:hidden;background:var(--road)}
+  .sec .city img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%;image-rendering:pixelated}
+
+  footer{flex:none;margin-top:calc(1*var(--u));background:var(--night);color:#fff;padding:calc(1.5*var(--u)) calc(5.2*var(--u)) calc(1.8*var(--u));
+    display:flex;justify-content:space-between;align-items:flex-end;gap:calc(3*var(--u))}
+  .stmt{font-size:calc(2.1*var(--u));font-weight:800;letter-spacing:-.03em;line-height:1.22;white-space:pre-line}
+  .apply{text-align:right;white-space:nowrap}
+  .apply .px{font-size:calc(2*var(--u));color:var(--yellow);line-height:1}
+  .apply .url{margin-top:calc(.6*var(--u));font-size:calc(2.1*var(--u));font-weight:700}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const P = ui.palette_v3 || {};
+  const G = B.signature || {};
+  const IMG = D.brand_images || {};
+  F.set('night', P.night || '#111111');
+  F.set('yellow', P.yellow || '#eedf3e');
+  F.set('road', P.road || '#656c76');
+  F.set('line', P.line || '#ebebeb');
+  F.set('sep', P.sep || '#d9d9d9');
+  F.set('ink', '#000');
+  F.set('display', ui.display_font || "'Pretendard',sans-serif");
+  F.set('pixel', ui.pixel_font || "'Galmuri11',monospace");
+  F.set('body', ui.body_font || ui.font);   // 모집 내용 본문(팀 소개·목록) 서체 — 제목·픽셀 라벨과 따로
+
+  // 공고 첫 줄이 팀 소개 문단이면(길다) 목록에서 떼어 본문 맨 위 한 문단으로
+  let tasks = S.tasks.flatMap(g => g.items);
+  let intro = '';
+  if (tasks.length > 1 && tasks[0].length > 90) { intro = tasks[0]; tasks = tasks.slice(1); }
+  const secs = [
+    { name: '주요업무', items: tasks },
+    { name: '자격요건', items: S.qualifications },
+    { name: '우대사항', items: S.preferences },
+    { name: '복지', items: S.benefits.map(b => (b.label ? b.label + ' : ' : '') + b.text) },
+  ].filter(s => s.items.length);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리 — 이름의 시작(2001) 키 비주얼 + 제목
+  const kv = el('div', 'kv'); const txt = el('div', 'txt');
+  txt.append(el('div', 'tag px', B.wordmark || D.company));
+  const acro = el('div', 'acro');
+  (G.acrostic || []).forEach(line => { const d = el('div'); d.append(el('b', '', line.slice(0, 1)), el('span', '', line.slice(1))); acro.append(d); });
+  txt.append(acro);
+  const metaVals = (B.careers_meta && B.careers_meta[D.key]) || [D.company, '경력 ' + F.career].filter(Boolean);
+  const meta = el('div', 'meta'); metaVals.forEach(v => meta.append(el('span', '', v))); txt.append(meta);
+  const m = (D.title || D.role).match(/^(.*?)\s*(\(.+\))\s*$/);
+  txt.append(el('h1', '', m ? m[1] : (D.title || D.role)));
+  if (m) txt.append(el('div', 'sub', m[2]));
+  if (D.stack.length) txt.append(el('div', 'stack px', D.stack.join(' · ')));
+  kv.append(txt);
+  const pic = el('div', 'pic'); if (IMG.kv) { const im = el('img'); im.src = IMG.kv; im.alt = ''; pic.append(im); }
+  const cm = F.career.match(/^(\d+(?:\s*[-~–]\s*\d+)?)\s*(.*)$/);
+  const yrs = el('div', 'yrs'); yrs.append(el('div', 'lab px', '경력'));
+  const val = el('div', 'val');
+  if (cm) val.append(el('b', '', cm[1].replace(/\s*[-~]\s*/, '–')), el('span', '', cm[2] || '년'));
+  else val.append(el('span', '', F.career));
+  yrs.append(val); pic.append(yrs); kv.append(pic);
+  sheet.append(kv);
+
+  const main = el('main'); sheet.append(main);
+
+  const footer = el('footer');
+  footer.append(el('div', 'stmt', B.slogan || ''));
+  const apply = el('div', 'apply');
+  footer.append(apply); sheet.append(footer);
+
+  const secEl = (s, withCity) => {
+    const d = el('div', 'sec'); const h = el('h2'); h.append(el('span', 'px', s.name)); d.append(h);
+    s.items.forEach((t, i) => { const r = el('div', 'row'); r.append(el('b', '', String(i + 1)), el('span', '', t)); d.append(r); });
+    if (withCity && IMG.street) { const c = el('div', 'city'); const im = el('img'); im.src = IMG.street; im.alt = ''; c.append(im); d.append(c); }
+    return d;
+  };
+  const build = cityAt => {
+    const nodes = [];
+    if (intro) nodes.push(el('div', 'intro', intro));
+    secs.forEach((s, i) => nodes.push(secEl(s, i === cityAt)));
+    main.replaceChildren(...nodes);
+  };
+  const shortest = secs.reduce((a, s, i) => (s.items.join('').length < secs[a].items.join('').length ? i : a), 0);
+  const cands = [1, 1.12, 1.25, 0.9].map(c1 => ({ c1, columns: 2 }));
+  Frame.fit(F, cands, c => {
+    F.set('c1', c.c1 + 'fr');
+    build(-1);
+    const ok = !Frame.overflows(main);
+    if (ok && IMG.street) {        // 글이 다 들어간 뒤, 짧은 칸 아래 남는 높이가 충분하면 픽셀 도시를 채운다
+      const off = intro ? 1 : 0;
+      const used = e => { const r = e.getBoundingClientRect(); return e.lastElementChild.getBoundingClientRect().bottom - r.top; };
+      const cell = main.children[shortest + off];
+      const partner = main.children[(shortest % 2 ? shortest - 1 : shortest + 1) + off];
+      const room = partner ? used(partner) - used(cell) : 0;
+      const f = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--f'));
+      if (room >= f * 5.7) build(shortest);
+    }
+    return ok && !Frame.overflows(main);
+  }, { lo: 10, hi: 40 });
+})();
+</script>

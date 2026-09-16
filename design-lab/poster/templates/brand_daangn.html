@@ -1,0 +1,161 @@
+<!-- brand_daangn — 당근(당근서비스) 전용 판 v1. brands/당근.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  carrot-heart-word  로고의 초록 잎을 떼어 키운 '당근 하트' 안에 한 단어를 밝은 초록으로 기울여 꽉 채운다.
+                                   브랜드 사이트의 '함께' 자리에 공고 경력의 '3년'. 원문 경력은 옆에 따로 읽히게.
+                                   하트 실루엣은 사이트 캡처 픽셀에서 뜬 마스크(D.brand_images.heart).
+     supporting pastel-heart-field 원본 mobile.webp 파스텔 하트 구름 — 머리 뒤 가장자리에만
+                rounded-tint-cards 사이트 서비스 소개의 크게 둥근 파스텔 카드 — 섹션마다 한 색
+     안 쓰는 것: 주황 핀·로고타입·캐릭터 당근이·매너온도 UI·'당근이세요?'
+     서체: Wanted Sans(Karrot Sans 전용 → 비교해 가장 가까운 OFL) -->
+<meta charset="utf-8">
+<title>brand_daangn</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{position:relative;width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;overflow:hidden}
+  .field{position:absolute;pointer-events:none;z-index:0;display:block}
+  .field.gp{top:calc(-9*var(--u));right:calc(-17*var(--u));width:calc(52*var(--u))}
+  .field.yl{left:calc(-5*var(--u));bottom:calc(-26*var(--u));width:calc(34*var(--u))}
+
+  /* 머리 — 정보 | 당근 하트 */
+  header{position:relative;z-index:3;flex:none;display:grid;grid-template-columns:minmax(0,1fr);
+    padding:calc(3.6*var(--u)) calc(4.4*var(--u)) calc(1.8*var(--u))}
+  .who{font-size:calc(2.3*var(--u));font-weight:800;color:var(--accent);letter-spacing:-.01em}
+  h1{margin-top:calc(.6*var(--u));font-size:calc(var(--T)*var(--u));font-weight:800;letter-spacing:-.035em;line-height:1.02;color:var(--ink)}
+  .line2{margin-top:calc(1.4*var(--u));display:flex;align-items:baseline;flex-wrap:wrap;column-gap:calc(2*var(--u))}
+  .career{font-size:calc(3*var(--u));font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+  .stack{font-size:calc(2.1*var(--u));font-weight:600;color:var(--sub)}
+  .heart{position:absolute;z-index:1;right:calc(var(--HR)*var(--u));top:calc(var(--HT)*var(--u));width:calc(var(--H)*1.149);height:var(--H);background:var(--heart);
+    -webkit-mask:var(--heart-mask) center/100% 100% no-repeat;mask:var(--heart-mask) center/100% 100% no-repeat;overflow:hidden}
+  .heart b{position:absolute;left:4%;top:50%;transform:translateY(-58%) rotate(-16deg);transform-origin:center;
+    font-size:calc(var(--H)*.66);font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--heart-word);white-space:nowrap}
+
+  main{position:relative;z-index:2;flex:1;min-height:0;overflow:hidden;margin:0 calc(4.4*var(--u));display:grid;column-gap:calc(var(--f)*.9);align-items:start}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*.55);min-width:0}
+  .card{background:var(--tint);border-radius:calc(var(--f)*1.4);padding:calc(var(--f)*.85) calc(var(--f)*1) calc(var(--f)*.6)}
+  .card.cont{padding-top:calc(var(--f)*.75)}
+  .card h2{font-size:calc(var(--f)*1.3);font-weight:800;letter-spacing:-.03em;line-height:1.2;color:var(--ink);margin-bottom:calc(var(--f)*.4)}
+  .card h3{font-size:calc(var(--f)*1.02);font-weight:700;line-height:1.35;color:var(--ink);margin:calc(var(--f)*.45) 0 calc(var(--f)*.22)}
+  .card h3.chk{color:var(--leaf)}
+  .card h3:first-child{margin-top:0}
+  .it{font-size:var(--f);line-height:1.4;color:var(--text);font-weight:500;padding-left:calc(var(--f)*.7);text-indent:calc(var(--f)*-.7);margin-bottom:calc(var(--f)*.2)}
+  .it::before{content:'•';display:inline-block;width:calc(var(--f)*.7);text-indent:0;color:var(--sub)}
+  .it.plain{padding-left:0;text-indent:0;font-weight:600;color:var(--ink)}
+  .it.plain::before{content:none}
+
+  footer{position:relative;z-index:2;flex:none;margin:calc(1.4*var(--u)) calc(4.4*var(--u)) 0;padding:calc(.4*var(--u)) 0 calc(2.6*var(--u));
+    display:flex;justify-content:space-between;align-items:flex-end;gap:calc(3*var(--u))}
+  .quote{font-size:calc(2.2*var(--u));font-weight:800;letter-spacing:-.025em;line-height:1.3;color:var(--ink)}
+  .credit{margin-top:calc(.6*var(--u));font-size:calc(1.45*var(--u));font-weight:500;color:var(--sub)}
+  .apply{text-align:right;white-space:nowrap}
+  .apply .lab{font-size:calc(2*var(--u));font-weight:600;color:var(--sub)}
+  .apply .url{margin-top:calc(.3*var(--u));font-size:calc(2.6*var(--u));font-weight:800;color:var(--ink)}
+  .apply .url i{font-style:normal;color:var(--accent);margin-left:calc(.7*var(--u))}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('heart', ui.heart || '#3fbb68');
+  F.set('heart-word', ui.heart_word || '#6dd270');
+  F.set('leaf', ui.leaf || '#00a05b');
+  if (IMG.heart) F.set('heart-mask', `url(${IMG.heart})`);
+  const tints = ui.card_tints || {};
+
+  // 섹션 → 카드. 카드 안은 조각(소제목 ✔ / [대괄호] 또는 줄) 단위로 나눠 두고, 단 나누기는 조각 사이 어디서든 한다
+  const cards = [];
+  const addCard = (title, lines) => {
+    const card = { title, tint: tints[title] || '#ffffff', rows: [] };
+    for (const raw of lines) {
+      const t = typeof raw === 'string' ? raw : raw.text;
+      const br = t.match(/^\[(.+)\]$/);
+      if (br) card.rows.push({ kind: 'h3', text: br[1] });
+      else if (/^✔/.test(t)) card.rows.push({ kind: 'chk', text: t });
+      else card.rows.push({ kind: 'it', text: t });
+    }
+    cards.push(card);
+  };
+  addCard('주요업무', S.tasks.flatMap(g => g.items));
+  addCard('자격요건', S.qualifications);
+  addCard('우대사항', S.preferences);
+  addCard('복지 / 혜택', S.benefits);
+  // 흐름 = [카드i, 줄j] 목록. 소제목 바로 뒤에서는 끊지 않는다
+  const flow = [];
+  cards.forEach((c, i) => c.rows.forEach((r, j) => flow.push({ i, j })));
+  const breaks = [];
+  for (let n = 1; n < flow.length; n++) {
+    const prev = flow[n - 1];
+    const pr = cards[prev.i].rows[prev.j];
+    if (pr.kind === 'h3' || pr.kind === 'chk') continue;
+    breaks.push(n);
+  }
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+  for (const [k, cls] of [['field_green_pink', 'gp'], ['field_yellow', 'yl']])
+    if (IMG[k]) { const im = el('img', 'field ' + cls); im.src = IMG[k]; im.alt = ''; sheet.append(im); }
+
+  const header = el('header');
+  const info = el('div', 'info');
+  info.append(el('div', 'who', B.wordmark || D.company));
+  const h1 = el('h1');
+  h1.textContent = D.title || D.role;
+  info.append(h1);
+  const l2 = el('div', 'line2'); l2.append(el('div', 'career', D.meta.join(' · ')));
+  if (D.stack.length) l2.append(el('div', 'stack', [...new Set(D.stack)].join(' · ')));
+  info.append(l2);
+  const heart = el('div', 'heart');
+  const num = (D.meta.join(' ').match(/(\d+)\s*년/) || [])[0];
+  heart.append(el('b', '', num ? num.replace(/\s+/g, '') : ''));
+  header.append(info);
+  sheet.append(heart, header);
+
+  const main = el('main'); sheet.append(main);
+
+  const footer = el('footer');
+  const left = el('div'); left.append(el('div', 'quote', (B.slogan || '').replace(/\n/g, ' ')));
+  if (B.credit) left.append(el('div', 'credit', B.credit));
+  const apply = el('div', 'apply');
+  footer.append(left, apply); sheet.append(footer);
+
+  const build = (from, to) => {
+    const col = el('div', 'col');
+    let cur = null, curI = -1;
+    for (let n = from; n < to; n++) {
+      const { i, j } = flow[n]; const c = cards[i]; const r = c.rows[j];
+      if (i !== curI) {
+        cur = el('div', 'card' + (j > 0 ? ' cont' : '')); cur.style.setProperty('--tint', c.tint);
+        if (j === 0) cur.append(el('h2', '', c.title));
+        col.append(cur); curI = i;
+      }
+      if (r.kind === 'h3') cur.append(el('h3', '', r.text));
+      else if (r.kind === 'chk') cur.append(el('h3', 'chk', r.text));
+      else cur.append(el('div', 'it', r.text));
+    }
+    return col;
+  };
+
+  const cands = [];
+  F.set('HR', -2); F.set('HT', 1.2);
+  for (const T of [5.2])
+    for (const H of [25, 23])
+      for (const ratio of [1, 1.12, 0.9])
+        for (const k of breaks.filter(n => n > flow.length * .3 && n < flow.length * .62)) cands.push({ T, H, ratio, k, columns: 2 });
+  Frame.fit(F, cands, c => {
+    F.set('T', c.T); F.set('H', `calc(${c.H}*var(--u))`);
+    main.style.gridTemplateColumns = `minmax(0,${c.ratio}fr) minmax(0,1fr)`;
+    const L = build(0, c.k), R = build(c.k, flow.length);
+    main.replaceChildren(L, R);
+    // 오른쪽 단은 하트 아래에서 시작한다 — 하트 모양(끝 뾰족한 곳까지)이 다 보이게
+    const u = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u'));
+    const drop = heart.offsetTop + heart.offsetHeight - main.offsetTop + u * 1.2;
+    R.style.paddingTop = Math.max(0, drop) + 'px';
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 26 });
+})();
+</script>

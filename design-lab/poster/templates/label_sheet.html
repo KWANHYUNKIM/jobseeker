@@ -1,0 +1,146 @@
+<!-- label_sheet — hire-17(엠쓰리디자인)의 틀. 공고 전문을 `라벨 – 값` 한 규칙으로 한 장에.
+     값이 여러 줄이면 라벨 자리를 비우고 들여 잇는다. 구분선 두 줄 사이에 모집 정보를 몰아 둔다.
+     불릿·칩·아이콘·장식 그림 없음. 색은 브랜드가 쓰는 방식 그대로 한 곳에만.
+     글꼴과 색은 brands/*.json 의 ui 를 따른다(없으면 흑백 종이).
+     데이터는 carousel.py 가 __DATA__ 자리에 박는다. -->
+<meta charset="utf-8">
+<title>label_sheet</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{position:relative;overflow:hidden;width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);
+    font-family:var(--font);padding:calc(7.4*var(--u)) calc(8.4*var(--u)) calc(6.4*var(--u));display:flex;flex-direction:column}
+
+  header{flex:none;position:relative}
+  .wordmark{position:absolute;right:0;top:calc(.4*var(--u));font-size:calc(2.5*var(--u));font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+  .display{font-size:calc(8.6*var(--u));font-weight:700;line-height:1;letter-spacing:-.045em;color:var(--ink)}
+  .display .l2{display:block;color:var(--accent)}
+  .display.serif{font-family:var(--display-font);font-weight:400;letter-spacing:-.02em}
+  .display.serif .l1{font-style:italic}
+  .display.serif .l2{color:var(--ink);font-style:italic}
+  .subtitle{margin-top:calc(3.2*var(--u));font-size:calc(2.9*var(--u));font-weight:700;letter-spacing:-.02em;line-height:1.35}
+
+  .body{flex:1;min-height:0;overflow:hidden;margin-top:calc(4*var(--u));display:grid;column-gap:calc(5*var(--u));align-items:start}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*.95)}
+  .row{display:grid;grid-template-columns:var(--lw) calc(var(--f)*1.6) 1fr;font-size:var(--f);line-height:1.58}
+  .row .label{font-weight:800;white-space:nowrap;color:var(--ink)}
+  .row .dash{color:var(--sub)}
+  .row .vals{color:var(--text)}
+  /* 넘어간 줄만 들여 쓴다(hire-17) — 불릿 없이도 항목 경계가 보인다 */
+  .row .v{padding-left:calc(var(--f)*1.1);text-indent:calc(var(--f)*-1.1)}
+  .row .v .k{text-indent:0}
+  .row .g{font-weight:700;color:var(--ink)}
+  .row .gap{height:calc(var(--f)*.45)}
+  .row .k{font-weight:700;color:var(--ink);margin-right:calc(var(--f)*.4)}
+  /* 좁은 단에서는 라벨을 값 위로 올린다 — 세로선은 값 쪽 들여쓰기로 지킨다 */
+  .stacked .row{grid-template-columns:1fr}
+  .stacked .row .dash{display:none}
+  .stacked .row .label{font-size:calc(var(--f)*1.12);margin-bottom:calc(var(--f)*.25)}
+  .stacked .row .vals{padding-left:calc(var(--f)*.9)}
+
+  .info{flex:none;margin-top:calc(2.6*var(--u));border-top:calc(.22*var(--u)) solid var(--ink);border-bottom:calc(.22*var(--u)) solid var(--ink);
+    padding:calc(1.8*var(--u)) 0;display:flex;flex-direction:column;gap:calc(.5*var(--u))}
+  .info div{display:grid;grid-template-columns:calc(7*var(--u)) 1fr;font-size:calc(2*var(--u));font-weight:700;line-height:1.45}
+  .info span{font-weight:500;color:var(--text)}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+(async () => {
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const ui = (D.brand && D.brand.ui) || {};
+  const st = document.documentElement.style;
+  const set = (k, v) => st.setProperty('--' + k, v);
+  set('w', D.fmt.w + 'px'); set('h', D.fmt.h + 'px'); set('u', Math.min(D.fmt.w, D.fmt.h) / 100 + 'px');
+  set('paper', ui.paper || '#f5f1ec');
+  set('ink', ui.ink || '#111111');
+  set('text', ui.text || '#2b2b2b');
+  set('sub', ui.sub || '#8a8a8a');
+  set('accent', ui.accent || ui.ink || '#111111');
+  set('font', ui.font || "'Noto Sans KR','Malgun Gothic',sans-serif");
+  set('display-font', ui.display_font || "'Times New Roman',serif");
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const sheet = el('section', 'sheet');
+
+  // 머리 — 큰 영문 두 줄 / 국문 제목 한 줄 / 오른쪽 위 워드마크
+  const header = el('header');
+  if (D.brand && D.brand.wordmark) header.append(el('div', 'wordmark', D.brand.wordmark));
+  const display = el('div', 'display' + (ui.display === 'serif' || !D.brand ? ' serif' : ''));
+  display.append(el('span', 'l1', 'We are'), el('span', 'l2', 'Hiring.'));
+  header.append(display, el('div', 'subtitle', `${D.company} ${D.role} 모집`));
+
+  // 본문 — 섹션을 라벨 행으로. 주요업무 소제목 묶음은 한 행 안에서 굵은 줄로 나눈다.
+  const rows = [];
+  for (const s of D.sections) {
+    if (s.kicker === 'Tasks') {
+      let r = rows.find(x => x.label === '주요업무');
+      if (!r) rows.push(r = { label: '주요업무', groups: [] });
+      r.groups.push({ title: s.title !== '주요업무' ? s.title : '', items: s.items, no: s.no });
+    } else {
+      rows.push({ label: s.title === '복지 / 혜택' ? '복지' : s.title, groups: [{ title: '', items: s.items }], kind: s.kind });
+    }
+  }
+  const rowEl = r => {
+    const row = el('div', 'row');
+    const vals = el('div', 'vals');
+    r.groups.forEach((g, i) => {
+      if (i) vals.append(el('div', 'gap'));
+      if (g.title) vals.append(el('div', 'g', (g.no ? Number(g.no) + '. ' : '') + g.title));
+      g.items.forEach(it => {
+        const v = el('div', 'v');
+        if (r.kind === 'rows') { if (it.label) v.append(el('span', 'k', it.label)); v.append(it.text); }
+        else v.textContent = it;
+        vals.append(v);
+      });
+    });
+    row.append(el('div', 'label', r.label), el('div', 'dash', '–'), vals);
+    return row;
+  };
+
+  const body = el('div', 'body');
+
+  // 꼬리 — 구분선 두 줄 사이. 없는 값은 줄째로 안 그린다.
+  const info = el('div', 'info');
+  const line = (k, v) => { if (!v) return; const d = el('div'); d.append(k, el('span', '', v)); info.append(d); };
+  line('경력', D.meta.map(m => m.replace(/^경력\s*/, '')).join(' · '));
+  line('기술', D.stack.join(', '));
+  if (D.deadline) line('마감', D.deadline);
+  sheet.append(header, body, info);
+  document.getElementById('root').append(sheet);
+
+  // 라벨 폭 — 가장 긴 라벨에 맞춘다
+  const probe = el('span', '', rows.map(r => r.label).sort((a, b) => b.length - a.length)[0]);
+  probe.style.cssText = 'position:absolute;visibility:hidden;font-weight:700;white-space:nowrap';
+
+  const layout = (split, stacked) => {
+    body.replaceChildren();
+    body.className = 'body' + (stacked ? ' stacked' : '');
+    body.style.gridTemplateColumns = split ? '1fr 1fr' : '1fr';
+    const parts = split ? [rows.slice(0, split), rows.slice(split)] : [rows];
+    return parts.map(p => { const c = el('div', 'col'); p.forEach(r => c.append(rowEl(r))); body.append(c); return c; });
+  };
+  const fits = cols => cols.every(c => c.offsetHeight <= body.clientHeight + 1);
+  const best = (split, stacked) => {
+    let lo = 8, hi = 48;
+    while (hi - lo > 0.25) {
+      const f = (lo + hi) / 2;
+      set('f', f + 'px');
+      sheet.append(probe); probe.style.fontSize = f + 'px'; set('lw', probe.offsetWidth + 'px'); probe.remove();
+      if (fits(layout(split, stacked))) lo = f; else hi = f;
+    }
+    return lo;
+  };
+  const tries = [];
+  for (const stacked of [false, true])
+    for (let split = 0; split < rows.length; split++) tries.push({ split, stacked, f: best(split, stacked) });
+  const win = tries.reduce((a, b) => (b.f > a.f + 0.3 ? b : a));   // 비슷하면 앞(1단·라벨 옆)을 고른다
+  set('f', win.f + 'px');
+  sheet.append(probe); probe.style.fontSize = win.f + 'px'; set('lw', probe.offsetWidth + 'px'); probe.remove();
+  layout(win.split, win.stacked);
+  window.__layout = { columns: win.split ? 2 : 1, stacked: win.stacked, font_px: Math.round(win.f * 10) / 10, tries };
+  window.__paged = true;
+})();
+</script>

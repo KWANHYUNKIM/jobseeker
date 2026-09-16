@@ -1,0 +1,147 @@
+<!-- brand_baemin — 우아한형제들(배달의민족) 전용 판. brands/우아한형제들.json 의 points 를 자리로 옮긴다.
+     eleven-ways-poster   머리 = 굵은 제목 + 검정 딱지, 본문 = 큰 번호 목록, 복지 = 아래 작은 글씨 해설 단, 오른쪽 아래 워드마크
+     strike-and-handwrite 원문에 있는 변화 하나를 취소선 + 손글씨로 (brand.strike, 원문에 그 문장이 있을 때만)
+     mint-black           머리만 민트 #0CEFD3 전면, 나머지 흰 바탕 검정
+     road-lanes           본문 두 단 사이 = 끊긴 차선 같은 굵은 검정 세로 막대
+     signboard-type       제목·번호·딱지 = 도현체, 본문 = Pretendard
+     mission-brush        사명 붓글씨 원본 이미지(D.brand_images.mission) — 없으면 손글씨 서체로
+     hard-shadow-wordmark 우아한형제들 워드마크 원본 이미지(D.brand_images.wordmark) — 없으면 글자 그림자
+     v2: 제목 = 배민 한나체 Pro, 본문 = Pretendard, 색 = 에셋 픽셀에서 뽑은 #0CEFD3 / #000 / 디자인 시스템 회색
+     playful-copy         원문 말투·해시태그를 그대로 -->
+<meta charset="utf-8">
+<title>brand_baemin</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{position:relative;width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;overflow:hidden}
+  .dh{font-family:var(--display);font-weight:400}
+  .hand{font-family:var(--hand);font-weight:400}
+
+  /* 머리 — 민트 전면 */
+  header{flex:none;background:var(--accent);padding:calc(4.2*var(--u)) calc(5.2*var(--u)) calc(2.8*var(--u));position:relative}
+  .who{font-size:calc(2.6*var(--u));letter-spacing:-.01em}
+  h1{margin-top:calc(1*var(--u));font-size:calc(9.2*var(--u));line-height:.98;letter-spacing:-.03em}
+  .line2{display:flex;align-items:center;flex-wrap:wrap;gap:calc(2*var(--u));margin-top:calc(.6*var(--u))}
+  .line2 .dh.big{font-size:calc(9.2*var(--u));line-height:.98;letter-spacing:-.02em}
+  .tag{display:inline-block;background:var(--ink);color:var(--paper);padding:calc(.7*var(--u)) calc(1.6*var(--u)) calc(.5*var(--u));line-height:1.05}
+  .line2 .tag{font-size:calc(3.6*var(--u))}
+  .strike{margin-top:calc(1.6*var(--u));display:flex;align-items:baseline;gap:calc(2*var(--u));flex-wrap:wrap}
+  .strike s{font-family:var(--display);font-size:calc(3.2*var(--u));text-decoration:none;position:relative}
+  .strike s::after{content:'';position:absolute;left:-2%;right:-2%;top:52%;height:calc(.55*var(--u));background:var(--ink)}
+  .strike .hand{font-size:calc(4.2*var(--u));transform:rotate(-3deg);display:inline-block}
+  .mission{position:absolute;right:calc(5.2*var(--u));bottom:calc(2.6*var(--u));font-size:calc(3.1*var(--u))}
+  .mission.img{width:calc(30*var(--u));bottom:calc(2*var(--u))}
+  .mission.img img{display:block;width:100%;height:auto}
+
+  /* 본문 — 번호 목록 두 단 + 차선 구분 */
+  main{flex:1;min-height:0;overflow:hidden;padding:calc(3*var(--u)) calc(5.2*var(--u)) 0;display:flex;flex-direction:column}
+  .lists{display:grid;grid-template-columns:1fr calc(var(--f)*.55) 1fr;column-gap:calc(var(--f)*1.5);flex:none}
+  .lane{background-image:linear-gradient(to bottom,var(--ink) 0 80.6%,transparent 80.6% 100%);background-size:100% calc(var(--f)*6.2);background-repeat:round}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*.9);min-width:0}
+  .sec .tag{font-family:var(--display);font-size:calc(var(--f)*1.2)}
+  .it{display:grid;grid-template-columns:calc(var(--f)*1.7) 1fr;align-items:baseline;margin-bottom:calc(var(--f)*.42)}
+  .it .no{font-family:var(--display);font-size:calc(var(--f)*1.35);line-height:1}
+  .it .tx{font-family:var(--body);font-size:var(--f);font-weight:var(--body-w,600);line-height:var(--body-lh,1.45);letter-spacing:-.01em;text-wrap:pretty}
+
+  /* 복지 — 11가지 방법 포스터 아래의 작은 해설 단 */
+  .fine{flex:none;margin-top:calc(var(--f)*1.3);border-top:calc(.35*var(--u)) solid var(--ink);padding-top:calc(var(--fs)*1);
+    column-gap:calc(var(--fs)*2);column-fill:balance}
+  .fine h3{font-family:var(--display);font-size:calc(var(--fs)*1.25);font-weight:400;margin:0 0 calc(var(--fs)*.45);break-after:avoid}
+  .fine h3:not(:first-child){margin-top:calc(var(--fs)*.9)}
+  .fine p{font-family:var(--body);font-weight:var(--body-w,400);font-size:var(--fs);line-height:1.5;text-wrap:pretty;color:var(--text);margin-bottom:calc(var(--fs)*.35);padding-left:calc(var(--fs)*.8);text-indent:calc(var(--fs)*-.8);break-inside:avoid}
+  .fine p::before{content:'· ';font-weight:var(--body-w,700);color:var(--ink)}
+
+  footer{flex:none;padding:calc(1.8*var(--u)) calc(5.2*var(--u)) calc(3*var(--u));display:flex;justify-content:space-between;align-items:flex-end;gap:calc(3*var(--u))}
+  .apply{font-size:calc(2*var(--u));line-height:1.45}
+  .apply b{font-family:var(--display);font-weight:400;font-size:calc(2.5*var(--u))}
+  .apply .hash{display:block;color:var(--sub);font-weight:600}
+  .wm.img{height:calc(5.4*var(--u))}
+  .wm.img img{display:block;height:100%;width:auto}
+  .wm{font-size:calc(4*var(--u));line-height:1;color:var(--ink);text-shadow:calc(.35*var(--u)) calc(.35*var(--u)) 0 var(--accent),calc(.7*var(--u)) calc(.7*var(--u)) 0 var(--ink)}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  F.set('display', ui.display_font || 'sans-serif');
+  F.set('hand', ui.hand_font || 'cursive');
+  F.set('body', ui.body_font || ui.font);   // 모집 내용 본문(목록·해설) 서체 — 제목·번호·딱지와 따로
+  if (ui.body_weight) F.set('body-w', ui.body_weight);
+  if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
+
+  // 원문 복지를 소제목([입사 후 혜택]) / 줄 / 해시태그로 가른다
+  const fineGroups = []; let hashtags = '';
+  for (const b of S.benefits) {
+    const t = ((b.label ? b.label + ' ' : '') + b.text).trim();
+    const head = t.match(/^\[(.+)\]$/);
+    if (head) fineGroups.push({ title: head[1], items: [] });
+    else if (/^#\S+(\s+#\S+)*$/.test(t)) hashtags = t;
+    else { if (!fineGroups.length) fineGroups.push({ title: '복지', items: [] }); fineGroups[fineGroups.length - 1].items.push(t); }
+  }
+  const allText = [D.title, ...S.tasks.flatMap(g => g.items), ...S.qualifications, ...S.preferences, ...S.benefits.map(b => b.text)].join('\n');
+  const strike = (B.strike || []).find(s => allText.includes(s.when));
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리
+  const header = el('header');
+  header.append(el('div', 'who dh', B.wordmark || D.company));
+  const m = (D.title || D.role).match(/^(.*?)\s*\((.+)\)\s*$/);
+  const main1 = m ? m[1] : (D.title || D.role), main2 = m ? m[2] : '';
+  header.append(el('h1', 'dh', main1));
+  const l2 = el('div', 'line2');
+  if (main2) l2.append(el('span', 'dh big', main2));
+  if (F.career) l2.append(el('span', 'tag dh', '경력 ' + F.career));
+  header.append(l2);
+  if (strike) {
+    const s = el('div', 'strike'); s.append(el('s', '', strike.from), el('span', 'hand', strike.to)); header.append(s);
+  }
+  const IMG = D.brand_images || {};
+  const pic = (cls, src, alt) => { const d = el('div', cls); const i = el('img'); i.src = src; i.alt = alt; d.append(i); return d; };
+  if (IMG.mission) header.append(pic('mission img', IMG.mission, B.slogan || ''));
+  else if (B.slogan) header.append(el('div', 'mission hand', B.slogan));
+  sheet.append(header);
+
+  // 본문
+  const main = el('main'); sheet.append(main);
+  const lists = el('div', 'lists'); const fine = el('div', 'fine');
+  main.append(lists, fine);
+
+  const sec = (title, items) => {
+    const d = el('div', 'sec'); d.append(el('span', 'tag', title));
+    const box = el('div'); box.style.marginTop = 'calc(var(--f)*.55)';
+    items.forEach((t, i) => { const r = el('div', 'it'); r.append(el('span', 'no', String(i + 1)), el('span', 'tx', t)); box.append(r); });
+    d.append(box); return d;
+  };
+  const tasks = S.tasks.flatMap(g => g.items);
+  const blocks = { tasks: tasks.length && sec('주요업무', tasks), qual: S.qualifications.length && sec('자격요건', S.qualifications), pref: S.preferences.length && sec('우대사항', S.preferences) };
+
+  // 꼬리
+  const footer = el('footer');
+  const apply = el('div', 'apply');
+  if (hashtags) apply.append(el('span', 'hash', hashtags));
+  footer.append(apply, IMG.wordmark ? pic('wm img', IMG.wordmark, B.wordmark || D.company) : el('div', 'wm dh', B.wordmark || D.company));
+  sheet.append(footer);
+
+  const cands = [];
+  for (const split of ['tasks|qual,pref', 'tasks,qual|pref'])
+    for (const cols of [3, 2]) for (const r of [0.9, 0.84, 0.78]) cands.push({ split, cols, r, columns: 2 });
+  Frame.fit(F, cands, c => {
+    F.set('fs', `calc(var(--f)*${c.r})`);
+    const [L, R] = c.split.split('|').map(k => k.split(','));
+    const cl = el('div', 'col'), cr = el('div', 'col');
+    L.forEach(k => blocks[k] && cl.append(blocks[k])); R.forEach(k => blocks[k] && cr.append(blocks[k]));
+    lists.replaceChildren(cl, el('div', 'lane'), cr);
+    fine.replaceChildren();
+    fine.style.columnCount = c.cols;
+    fineGroups.forEach(g => { fine.append(el('h3', '', g.title)); g.items.forEach(t => fine.append(el('p', '', t))); });
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 40 });
+})();
+</script>

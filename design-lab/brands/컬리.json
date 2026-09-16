@@ -1,0 +1,273 @@
+{
+  "names": [
+    "컬리",
+    "(주)컬리",
+    "㈜컬리",
+    "주식회사 컬리",
+    "마켓컬리",
+    "Kurly",
+    "Market Kurly"
+  ],
+  "researched_at": "2026-09-15",
+  "wordmark": "컬리",
+  "about": "마켓컬리·뷰티컬리를 운영한다",
+  "facts": [],
+  "frame": "brand_kurly.html",
+  "palette": {
+    "bg": "#ece6e2",
+    "ink": "#2e1a36",
+    "accent": "#5f0080",
+    "soft": "#bd987e"
+  },
+  "ui": {
+    "observed_at": "CFC 'Market Kurly' BI 리뉴얼 컬러 시스템 슬라이드(PMS·HEX 명시), kurly.com KPDS CSS 토큰, kurly.career.greetinghr.com·helloworld.kurly.com 계산된 스타일, CFC 사진 픽셀 샘플 — 2026-09-15",
+    "font": "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "Pretendard": [
+        {
+          "src": "assets/companies/컬리/fonts/Pretendard-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/컬리/fonts/Pretendard-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/컬리/fonts/Pretendard-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/컬리/fonts/Pretendard-ExtraBold.woff2",
+          "weight": 800
+        }
+      ],
+      "Saetbyeol Text": [
+        {
+          "src": "assets/companies/컬리/fonts/SaetbyeolText/SaetbyeolText-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/컬리/fonts/SaetbyeolText/SaetbyeolText-Bold.woff2",
+          "weight": 700
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#ece6e2",
+    "ink": "#222222",
+    "text": "#222222",
+    "sub": "#595959",
+    "accent": "#5f0080",
+    "kraft": "#bd987e",
+    "tints": {
+      "violet": "#875eb3",
+      "lavender": "#a775d6",
+      "white": "#ba99e1",
+      "friends": "#d2beff",
+      "beige": "#ece6e2"
+    },
+    "rules": [
+      "공식 컬러 시스템(CFC 2019): Kurly Purple #5F0080 (PMS 2084C) 하나에 틴트 4단 — Violet #875EB3, Lavender #A775D6, White #BA99E1, Friends #D2BEFF — 과 Kurly Beige #ECE6E2",
+      "kurly.com CSS 도 같은 #5F0080 (상단 띠·로고·주 버튼). 채용 사이트 글자는 #222 본문 / #595959 보조 — 판의 글자 회색은 이 두 값만",
+      "배송 박스는 크라프트 위 퍼플 1도 인쇄. 크라프트는 CFC 박스 시스템 슬라이드의 박스 면 #BD987E(벡터라 조명이 없는 값). 사진 값(#A59480·#CDA683)은 조명이 섞여 쓰지 않음",
+      "로고는 스크립트 'Kurly' 레터링이다. 공개 사용 규정은 찾지 못했다 → 로고를 흉내 내거나 그리지 않고, 로고가 찍힌 사진은 로고 없는 부분만 자른다",
+      "사진에서 뽑았지만 쓰지 않은 값: 명함 퍼플 #6C1A8B, 라벨 스티커 #67349A, 박스 인쇄 #7D5998, 퍼플박스 원단 #311D45, 채용 사이트 강조 #672091 (out/wanted-340803/v2_palette.jpg)",
+      "v3: 본문 모듈 색은 배송 안내 페이지 그대로 — 퍼플 #5F0080 / 바이올렛 #875EB3(공식 틴트 Violet 과 같은 값) / 크라프트 #C19978, 바탕 #E9E5E2(공식 Beige #ECE6E2 와 거의 같음)",
+      "v3: 머리 사진 위 글 가독성을 위해 왼쪽을 새벽 하늘색(#F8ECE6)으로 눌러 주고, 아래 도로 쪽은 어둡게 눌러 흰 경력 글자를 올린다 — 사진 자체의 색은 바꾸지 않는다",
+      "v3: 라틴 라벨(Montserrat)은 뺐다 — 배송 안내 모듈 제목은 국문뿐"
+    ],
+    "latin_font": "'Montserrat','Pretendard',sans-serif",
+    "fonts_research": {
+      "digital": "Pretendard — kurly.com 이 res.kurly.com/fonts/pretendard-variable/1.3.9 를 직접 호스팅하고 디자인 시스템 토큰 --kpds_ldmw170 = 'Pretendard, …'. 채용 사이트(kurly.career.greetinghr.com)와 기술 블로그(helloworld.kurly.com)도 Pretendard 로 계산됨",
+      "license": "Pretendard — SIL Open Font License 1.1 (res.kurly.com CSS 머리 주석에 라이선스 문구 그대로 있음) → 실제 서체를 그대로 넣음",
+      "print_bi": "CFC 박스 시스템·컬러 시스템 슬라이드의 라틴 라벨('Room Temperature', 'KURLY LAVENDER')은 넓은 기하 산세리프(이층 a·단층 g). 서체명은 CFC 케이스·기사 어디에도 공개돼 있지 않다 — Gotham 계열로 보이나 미확인",
+      "logotype": "'Kurly' 는 손글씨 스크립트 레터링 + 'MARKET' 기하 대문자 아치. 서체가 아니라 그린 로고 → 쓰지 않음",
+      "custom_font": "컬리 전용 서체는 찾지 못함(검색·kurly.com·채용·기술블로그 CSS 모두 Pretendard)",
+      "compared_latin": [
+        "Montserrat 600",
+        "Poppins 600",
+        "Pretendard 600"
+      ],
+      "specimen": "out/wanted-340803/v2_font_specimen.jpg — CFC 라벨 확대 원본과 같은 폭으로 맞춰 비교",
+      "choice": {
+        "korean": "Pretendard (실사용 서체)",
+        "latin_label": "Montserrat 600 (SIL OFL, @fontsource/montserrat)"
+      },
+      "why": [
+        "Montserrat: 이층 a·단층 g·넓은 원형·굵기가 원본 라벨과 가장 가깝다",
+        "Poppins: 원형이 더 커서 R·g·t 가 더 기하형 — 원본보다 부드럽다",
+        "Pretendard 라틴: 폭이 좁고 조밀해 원본의 넓은 인상이 안 난다"
+      ]
+    },
+    "modules": {
+      "page": "#e9e5e2",
+      "purple": "#5f0080",
+      "violet": "#875eb3",
+      "kraft": "#c19978",
+      "source": "배송 안내 페이지 이미지 픽셀 — img_delivery1 바탕 #E9E5E2·띠 #5F0080 / img_delivery5 띠 #875EB3 / img_delivery6 띠 #C19978 (정확값, 압축 없는 PNG·JPG 평면)"
+    },
+    "dawn": {
+      "sky": "#f6e2db",
+      "horizon": "#f3c5ad",
+      "truck": "#1e1c31",
+      "road": "#0c0c0a",
+      "source": "main.jpg 픽셀 샘플(y10 하늘 / y360 지평선 / 트럭 / y420 도로)"
+    },
+    "body_font": "'Saetbyeol Text','Pretendard','Noto Sans KR',sans-serif",
+    "body_weight": 400,
+    "body_line_height": 1.52,
+    "body_font_research": {
+      "why": "모집 내용 본문이 Pretendard 면 판 면적 대부분이 기본 고딕이라 AI 처럼 보인다. 식품·새벽 배송의 부드러움을 담되 LOCA Batang(날카로운 명조+나침반 별)과 성격이 반대가 되게",
+      "board": "out/wanted-340803/body_font_board.jpg — 포스터와 같은 16.5px, v3 모듈(흰 상자·보라/연보라/크래프트 막대)로 실제 자격요건·복지 줄",
+      "candidates": {
+        "Pretendard(현재)": "OFL — 기준. 웹 기본 고딕 인상",
+        "고운돋움": "OFL — 부드럽지만 17px 에서 획이 가늘고 글자가 작아 흐림",
+        "나눔스퀘어라운드 R/B": "OFL — 획 끝이 둥글고 속공간이 넓어 흰 상자에서 또렷, 굵은 글머리(B)와 짝이 있음 → 선택",
+        "SUIT": "OFL — Pretendard 와 거의 같은 인상",
+        "IBM Plex Sans KR": "OFL — 단단한 기술 문서 인상, 식품 브랜드와 반대",
+        "나눔고딕": "OFL — 오래된 기본 고딕 인상",
+        "마루 부리 SemiBold / 리디바탕": "OFL — 명조라 LOCA Batang 과 겹친다"
+      },
+      "custom": {
+        "name": "Saetbyeol Text (파생 서체, 컬리 공식 서체 아님)",
+        "build": "design-lab/typefaces/build_saetbyeol_text.py",
+        "recipe": [
+          "바탕: 나눔스퀘어라운드 R(Regular)·B(Bold), 영문·숫자도 같은 둥근 계열이라 그대로",
+          "글자 사이 +12/1000 전 글리프",
+          "새로 그림: 가운뎃점 · → 옆변이 안쪽으로 휜 네 갈래 샛별(세로 250 > 가로 175), 한글 글자 몸 세로 중심",
+          "새로 그림: * → 위쪽 샛별, ! 의 점 → 작은 샛별(복지 글머리 '…해요!' 끝)",
+          "원본에 불릿 • 없음 — 목록 머리는 CSS · 가 이 샛별로 찍힌다"
+        ],
+        "license": "나눔글꼴 SIL OFL 1.1 — 수정·재배포 가능, 글꼴 자체 판매 금지. 원 저작권(NAVER) + 수정 고지 + OFL 동봉",
+        "specimen": "out/wanted-340803/saetbyeol_text_specimen.jpg"
+      }
+    }
+  },
+  "points": [
+    {
+      "id": "saetbyeol-dawn",
+      "what": "새벽 하늘 아래 고속도로의 보라 컬리 트럭 행렬 + '샛별이 뜰 때가 가장 신선할 때'",
+      "evidence": "컬리 배송 안내 공식 페이지 https://www.kurly.com/m2/event/kurlyEvent.php?htmid=event%2Fdelivery_search%2Fdelivery_search — 메인 비주얼 res.kurly.com/images/event/2023/1107/delivery_search/pc/main.jpg, 문구 '샛별이 뜰 때가 가장 신선할 때 샛별배송', 표 '오늘 밤 11시 전 주문 · 내일 아침 7시 전 배송'",
+      "meaning": "밤에 주문하면 샛별이 뜰 때 도착 — 컬리의 약속",
+      "use": "머리 — 공식 사진 전면 + 공식 문구 한 줄 + 도로 쪽에 흰 경력",
+      "avoid": "원본 사진 속 안내 글은 잘라낸다. 사진 색·트럭을 바꾸거나 로고를 따로 키우지 않는다"
+    },
+    {
+      "id": "delivery-modules",
+      "what": "배송 안내 페이지는 베이지 바탕 위에 '색 띠 제목 + 흰 상자' 모듈을 쌓고, 띠 색으로 서비스를 가른다: 샛별배송 소개는 퍼플, 주 7일 샛별배송은 바이올렛, 주 6일 하루배송은 크라프트. 아래 시간표는 퍼플 머리줄 + 바이올렛 첫 칸 글자 + 가는 회색 줄",
+      "evidence": "https://www.kurly.com/m2/event/kurlyEvent.php?htmid=event%2Fdelivery_search%2Fdelivery_search 의 img_delivery1·5·6 (sources/05_saetbyeol_delivery)",
+      "meaning": "고객에게 배송 약속을 설명하는 컬리의 정보 양식",
+      "use": "구조 — 주요업무(퍼플) / 자격요건·우대사항(바이올렛) / 복지(크라프트) 모듈, 꼬리는 시간표 형식으로 경력·지원",
+      "avoid": "섹션에 배송 용어(샛별·하루·지역)를 붙이지 않는다"
+    },
+    {
+      "id": "box-temperature-bands",
+      "what": "박스 시스템: 같은 크라프트 박스를 상온·냉장·냉동 세 가지로 나누고, 로고 색만 바꿔 온도를 알린다(라벤더 / 퍼플 / 흰색). 옆에 'Room Temperature / 상온' 처럼 굵은 라벨 + 가는 밑줄 + 국문",
+      "evidence": "CFC https://contentformcontext.com/market-kurly — 'convey temperature information intuitively', BOX SYSTEM BEFORE/AFTER 슬라이드",
+      "meaning": "정보를 색 한 가지 차이로 직관적으로",
+      "use": "v3 에서는 쓰지 않음(v1·v2 의 중심) — 구조 — 본문을 크라프트 띠 세 장으로(주요업무 / 자격요건·우대사항 / 복지). 띠마다 CFC 라벨처럼 '굵은 라틴(Montserrat) → 가는 밑줄 → 국문', 크롭 글자 색을 라벤더 → 퍼플 → 흰색으로",
+      "avoid": "온도 이름(상온·냉장·냉동)을 공고 섹션에 붙이지 않는다 — 지어낸 말이 된다"
+    },
+    {
+      "id": "cropped-bi",
+      "what": "로고를 아주 크게 키워 박스·트럭·명함 가장자리에서 잘라 쓴다(크롭 BI 시스템)",
+      "evidence": "CFC 케이스 — 'cropped form functioning as a graphic motif… on shipping boxes and delivery trucks' / 디자인플러스 전채리 인터뷰 '크롭 시스템'",
+      "meaning": "일부만 보여도 컬리인 줄 안다",
+      "use": "v3 에서는 쓰지 않음(v1·v2 의 중심) — 장치 — 띠마다 오른쪽 가장자리에서 잘리는 아주 큰 '컬리' 글자(서체 글자). 본문과 겹치지 않는 오른쪽 여백에만",
+      "avoid": "스크립트 'Kurly' 로고를 흉내 내지 않는다"
+    },
+    {
+      "id": "kurly-purple",
+      "what": "Kurly Purple #5F0080 — 2019 리뉴얼에서 '채도와 명도를 높여' 새로 정립, 배송 박스·앱·웹·트럭·명함 전면",
+      "evidence": "CFC 컬러 시스템 슬라이드(PMS 2084C · R95 G0 B128 · #5F0080) / 아주경제·이코노믹리뷰 BI 교체 기사 / kurly.com rgb(95,0,128)",
+      "meaning": "시그니처 컬러를 브랜드 자산으로",
+      "use": "색 — 머리는 퍼플 전면에 흰 글자(명함처럼), 띠의 라벨·크롭 글자에 퍼플과 틴트",
+      "avoid": "틴트 4단과 베이지 밖의 색을 쓰지 않는다. kurly.com 의 주황 할인색 #FA622F 는 가격용이라 쓰지 않는다"
+    },
+    {
+      "id": "kraft-paper",
+      "what": "크라프트 박스·종이 테이프·종이 완충재 — 'ALL PAPER' 포장. 갈색 종이 위 퍼플 한 색 인쇄",
+      "evidence": "CFC 케이스 포장재 세트·박스 적재 사진 / kurly.com 지속가능한 포장재 소개",
+      "meaning": "친환경 포장을 브랜드 경험으로",
+      "use": "질감 — 띠 바탕 크라프트 #BD987E 단색(CFC 박스 시스템 슬라이드와 같은 처리), 띠 사이는 박스 이음매처럼 가는 베이지 선",
+      "avoid": "사진 결을 늘려 깔지 않는다 — 원본 해상도가 낮아 거울 타일 자국이 생긴다"
+    },
+    {
+      "id": "paper-packaging-photo",
+      "what": "'ALL PAPER' 포장 — 크라프트 박스·종이 테이프·주름 크라프트지 완충재·벌집 종이 완충재를 흰 바탕에 늘어놓은 제품 사진",
+      "evidence": "CFC 케이스 포장재 세트 사진 https://contentformcontext.com/market-kurly / kurly.com 지속가능한 포장재 소개",
+      "meaning": "종이로 바꾼 포장이 브랜드 경험",
+      "use": "v3 에서는 쓰지 않음(v1·v2 의 중심) — 이미지 — 꼬리 오른쪽에 로고 없는 완충재 부분(주름 크라프트지·벌집 완충지) 실사진",
+      "avoid": "로고가 찍힌 박스 부분은 자른다. 필터·색 덧칠 금지"
+    },
+    {
+      "id": "purple-business-card",
+      "what": "명함·리셉션·퍼플박스: 퍼플 바탕에 흰 로고 한 줄, 나머지는 비운다",
+      "evidence": "CFC 케이스 명함·리셉션 사인 사진 / ZDNet 컬리 퍼플 박스 기사 사진",
+      "meaning": "",
+      "use": "머리 — 퍼플 전면 + 흰 글자로 직군명, 오른쪽에 경력",
+      "avoid": ""
+    },
+    {
+      "id": "purple-day",
+      "what": "회사 제도 이름에도 퍼플을 붙인다 — 매월 유급 반차 '퍼플데이', 재사용 포장 '퍼플박스'",
+      "evidence": "원티드 340803 원문 '매월 유급 반차(0.5일) 퍼플데이 제공' / ZDNet·EBN 컬리 퍼플 박스 기사",
+      "meaning": "퍼플이 색을 넘어 이름이 됐다",
+      "use": "카피 — 원문의 '퍼플데이' 낱말만 퍼플 굵게",
+      "avoid": "원문에 없는 퍼플 이름을 만들지 않는다"
+    },
+    {
+      "id": "icon-tags",
+      "what": "배송 아이콘은 지붕 달린 태그(오각형) 틀 안에 픽토그램 — 당일배송·상하주의·취급주의·상온·냉장·냉동",
+      "evidence": "CFC 케이스 ICONS 슬라이드",
+      "meaning": "",
+      "use": "쓰지 않음 — 공고 섹션에 맞는 픽토그램이 없어 억지 아이콘이 된다. 기록만",
+      "avoid": "태그 모양에 공고 섹션 아이콘을 지어 넣지 않는다"
+    }
+  ],
+  "sources": [
+    "https://contentformcontext.com/market-kurly",
+    "https://www.behance.net/gallery/91820999/Market-Kurly",
+    "https://design.co.kr/article/107708",
+    "https://www.ajunews.com/view/20190920164115953",
+    "https://www.econovill.com/news/articleView.html?idxno=372600",
+    "https://zdnet.co.kr/view/?no=20211019172447",
+    "https://www.kurly.com/main",
+    "https://www.kurly.com/m2/introduce/sustainableDistribution/packaging_materials.php",
+    "https://byline.network/2022/11/03_982661/",
+    "https://github.com/orioncactus/pretendard",
+    "https://res.kurly.com/fonts/pretendard-variable/1.3.9/pretendardvariable-dynamic-subset.min.css",
+    "https://kurly.career.greetinghr.com/ko/home",
+    "https://helloworld.kurly.com/",
+    "https://fontsource.org/fonts/montserrat",
+    "https://www.kurly.com/m2/event/kurlyEvent.php?htmid=event%2Fdelivery_search%2Fdelivery_search",
+    "https://blog.cheil.com/34785",
+    "https://brunch.co.kr/@198012o8/4"
+  ],
+  "images": {
+    "saetbyeol_dawn": "assets/companies/컬리/v3/saetbyeol_dawn.jpg"
+  },
+  "images_note": {
+    "saetbyeol_dawn": "컬리 배송 안내 공식 페이지 메인 비주얼(main.jpg 1900×540)의 x820~1900 — 원본에 박힌 안내 글(x530~790)을 뺀 트럭·하늘 부분. 트럭 옆면에 스크립트 로고가 사진째 찍혀 있다(우리가 그린 것 아님). 인스타 공개 게시 전 사용 허락 확인 필요",
+    "dropped_v2": "v2 의 종이 포장재 사진(paper_packaging.jpg)은 v3 판에서 뺐다 — 파일은 assets/companies/컬리/v2 에 그대로"
+  },
+  "version": 3,
+  "signature": {
+    "id": "saetbyeol-delivery",
+    "what": "샛별배송 — '밤 11시 전 주문, 다음날 아침 7시 전 도착'. 공식 비주얼은 새벽 하늘(분홍·살구빛 구름) 아래 고속도로를 달리는 보라 컬리 냉장 트럭 행렬",
+    "copy": "샛별이 뜰 때가 가장 신선할 때",
+    "evidence": [
+      "컬리 배송 안내 공식 페이지 https://www.kurly.com/m2/event/kurlyEvent.php?htmid=event%2Fdelivery_search%2Fdelivery_search — 메인 비주얼 res.kurly.com/images/event/2023/1107/delivery_search/pc/main.jpg, 문구 '샛별이 뜰 때가 가장 신선할 때 샛별배송', 표 '오늘 밤 11시 전 주문 · 내일 아침 7시 전 배송'",
+      "제일기획 블로그 '내일의 장보기, 마켓컬리'(2018) https://blog.cheil.com/34785 — 캠페인 3편 중 '오늘 주문하면 내일 아침에 도착하는 샛별배송 편'",
+      "브런치 이용후기 https://brunch.co.kr/@198012o8/4 — '밤 11시까지 주문하면 다음날 오전 7시까지 집 앞에 배송한다는 샛별배송 서비스로 유명하다'"
+    ],
+    "why_recognizable": "컬리를 설명할 때 가장 먼저 붙는 말이 샛별배송이고(이용후기·광고·배송 안내 모두), 보라 트럭은 박스보다 넓게 노출되는 물건이다. v1·v2 의 박스 온도 띠·크롭 BI 는 디자인 업계 사례로는 유명하지만 일반인이 '컬리' 로 떠올리는 장면은 아니다",
+    "how_used": "머리 전면에 공식 새벽 트럭 사진(원본 속 글이 있는 왼쪽은 잘라냄) + 공식 문구 한 줄. 본문은 같은 배송 안내 페이지의 '색 띠 제목 + 흰 상자' 모듈, 꼬리는 배송 시간표 형식",
+    "alternatives_considered": [
+      "퍼플박스(재사용 보냉 가방) — 기사·상품 사진은 로고가 크게 찍힌 제품 컷뿐이고 채용과 이어지는 장면이 약함",
+      "크라프트 박스 온도 띠·크롭 BI(v1·v2) — 디자인 사례(CFC)로는 선명하지만 인지도가 샛별배송보다 낮고, 결과가 v1과 비슷하게 보였음",
+      "컬리 상품 사진·상품위원회 — 컬리만의 촬영 양식을 보여 주는 1차 자료를 찾지 못함(검색 결과가 일반 촬영 업체뿐). 미확인",
+      "제일기획 캠페인의 보라 나무 트럭 — 좋은 장면이지만 광고대행사 블로그 캡처(697px, 대행사 배지 합성)라 해상도·권리 모두 약함. 기록만"
+    ]
+  }
+}

@@ -1,0 +1,387 @@
+{
+  "names": [
+    "무신사",
+    "(주)무신사",
+    "㈜무신사",
+    "MUSINSA",
+    "무신사(MUSINSA)",
+    "TEAM MUSINSA"
+  ],
+  "researched_at": "2026-09-15",
+  "wordmark": "TEAM MUSINSA",
+  "about": "무신사는 쇼핑, 콘텐츠, 커뮤니티 등 패션의 모든 것을 한 곳에서 즐길 수 있는 대한민국 No.1 패션 플랫폼입니다.",
+  "facts": [],
+  "slogan": "온라인에서 오프라인으로.\n대한민국에서 전 세계로.",
+  "frame": "brand_musinsa.html",
+  "palette": {
+    "bg": "#ffffff",
+    "ink": "#000000",
+    "accent": "#000000",
+    "soft": "#ebebeb"
+  },
+  "ui": {
+    "observed_at": "v1(스토어·회사·채용 사이트 계산 스타일, BI 보도 이미지 픽셀) + v2(스토어·회사 사이트 @font-face 원문, 로고 대 후보 서체 대조, BI·스토어 화면·성수 오피스 사진 픽셀 샘플) — 2026-09-15",
+    "font": "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "Pretendard": [
+        {
+          "src": "assets/companies/무신사/fonts/Pretendard-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/무신사/fonts/Pretendard-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/무신사/fonts/Pretendard-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/무신사/fonts/Pretendard-ExtraBold.woff2",
+          "weight": 800
+        }
+      ],
+      "Inter Tight": [
+        {
+          "src": "assets/companies/무신사/fonts/InterTight-Black-latin.woff2",
+          "weight": 900
+        }
+      ],
+      "Galmuri11": [
+        {
+          "src": "assets/companies/무신사/fonts/Galmuri11-Bold.woff2",
+          "weight": 700
+        }
+      ],
+      "Snap 2001 Gothic": [
+        {
+          "src": "assets/companies/무신사/fonts/Snap2001Gothic/Snap2001Gothic-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/무신사/fonts/Snap2001Gothic/Snap2001Gothic-Bold.woff2",
+          "weight": 700
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#ffffff",
+    "ink": "#000000",
+    "text": "#000000",
+    "sub": "#666666",
+    "accent": "#000000",
+    "line": "#ebebeb",
+    "rules": [
+      "색은 검정 #000000 · 흰색 · 줄 #EBEBEB · 보조 회색 #666666. 공식 BI·CI 보도 이미지와 스토어 OG 로고가 순수 #000/#FFF 두 색이다",
+      "스토어 화면 계산 스타일: 가장 많은 색이 #000(2406) 과 #EBEBEB(2214). 빨강 #F31110 은 할인율, 파랑 #245EFF 는 광고·배송 라벨에만 — 포스터에서는 쓰지 않는다",
+      "모서리는 네모. 상품 사진·목록이 정사각이고 입력칸 반경 4px",
+      "로고(스토어 BI 굵은 MUSINSA, 회사 CI 가는 MUSINSA)는 그리지 않는다 — 공개된 사용 규정을 찾지 못했다",
+      "서체: 한글·본문·숫자는 무신사가 실제 싣는 Pretendard. 영문 직무명만 스토어 BI 레터링에 가장 가까운 Inter Tight 900(OFL) — 로고 글자는 쓰지 않는다",
+      "색(v2): BI 검정 #000, 스토어 GNB #1A1B1F, 성수 오피스 검정 벽 #171518 로 사진을 누름, 스토어 바탕 #F5F5F5·줄 #EBEBEB·보조 #666 — 사진이 콘크리트·스테인리스 회색을 낸다",
+      "v3: 머리·라벨은 2022 '무진장 신발 사진이 많은 곳' 키 비주얼 — 노랑 #EEDF3E 픽셀 글씨, 무·신·사 흰 글자, 픽셀 그림은 image-rendering: pixelated 로 확대"
+    ],
+    "display_font": "'Inter Tight','Pretendard',sans-serif",
+    "palette_v2": {
+      "bi_black": "#000000",
+      "white": "#ffffff",
+      "store_gnb": "#1a1b1f",
+      "office_black": "#171518",
+      "press": "rgba(23,21,24,.66)",
+      "office_concrete": "#555356",
+      "stainless": "#9b9b9c",
+      "concrete_light": "#b1b4b0",
+      "content_bg": "#f5f5f5",
+      "line": "#ebebeb",
+      "sep": "#d9d9d9",
+      "sub": "#666666"
+    },
+    "palette_v2_where": {
+      "#000000": "스토어 OG 로고·BI 보도 이미지 픽셀 최다색(727,020 / 721,994px) → 제목·섹션 밑줄·지원 버튼",
+      "#FFFFFF": "같은 이미지 글자색 → 바탕",
+      "#1A1B1F": "스토어 랭킹·스탠다드 화면 상단 GNB 픽셀 최다 어두운 색(174,672px) → 맨 위 띠",
+      "#171518": "TEAM MUSINSA Careers 복리후생 사진 '검정 복도' 벽 중앙값 → 경력 띠 사진을 누르는 색(66%)",
+      "#555356": "같은 사진 바닥·아트리움 바닥(#57585B) 중앙값 — 사진 속 색, 판에 따로 칠하지 않음",
+      "#9B9B9C": "라운지 스테인리스 벽 중앙값(카페 #9D9DA2) — 기록만, 판에 따로 칠하지 않음",
+      "#B1B4B0": "아트리움 콘크리트 기둥(BI 사이니지 벽 #A9ABA7) — 기록만",
+      "#F5F5F5": "스토어 CSS --layout-bg-contents-color + 화면 픽셀 최다색(352,456px) → 사진 자리 바탕",
+      "#EBEBEB": "스토어 CSS 줄 색 → 목록 1px 줄·꼬리 윗줄",
+      "#D9D9D9": "채용 사이트 메타 줄 세로 막대(v1 계산 스타일) → 메타·기술 줄 구분",
+      "#666666": "스토어 CSS 보조 글자 → 메타 줄·URL"
+    },
+    "fonts_research": {
+      "web_body": "Pretendard — musinsa.com 이 static.msscdn.net/platform/cached/fonts/Pretendard-{Regular,Medium,SemiBold,Bold}.woff2 를 @font-face 로 싣는다(mss-frontend-web CSS). corp.musinsa.com 계산 스타일도 전부 Pretendard(500 메뉴·418px 연표 숫자 / 700 연표 제목 / 800 64px 문장). musinsacareers.com 도 Pretendard. 라이선스 SIL OFL 1.1",
+      "corp_geist": "corp.musinsa.com CSS 가 Geist·Geist Mono(Vercel, OFL) @font-face 를 선언하지만 화면 글자의 계산 스타일에는 한 번도 안 나온다 — Next.js 기본 설정 흔적으로 보고 쓰지 않음(추정)",
+      "store_bi": "새 스토어 BI(2025-10-22)는 '영문 대문자 MUSINSA 를 더 두껍고 단단하게' 다듬은 레터링(뉴스룸). 서체 이름·디자인 에이전시는 뉴스룸·ZDNet·머니투데이·디자인 나침반·브랜드비 어디에도 없음 — 전용 서체가 배포된 흔적 없음",
+      "corp_ci": "회사 CI 는 가는 기하 산세리프 대문자 MUSINSA(뉴스룸 보도 이미지). 역시 서체명 미공개",
+      "custom_font_claim": "블로그(crediwork.co.kr/598) 검색 요약에 '무신사 기업 폰트 라이트·미디움·볼드' 가 나오지만 페이지가 404 — 공식 출처로 확인 못 함(미확인)",
+      "compared_store_bi": [
+        "Archivo Narrow 700",
+        "Barlow Condensed 800",
+        "Oswald 700",
+        "Anton",
+        "Roboto Condensed 900",
+        "Inter Tight 900",
+        "Archivo 800/900"
+      ],
+      "compared_corp_ci": [
+        "Outfit 500",
+        "Poppins 500",
+        "Urbanist 500",
+        "Figtree 500",
+        "Lexend 400",
+        "Geist 500",
+        "Montserrat 500"
+      ],
+      "specimen": "out/wanted-375793/v2_font_specimen.jpg — 머니투데이 보도 사진의 스토어 BI 확대본·뉴스룸 CI 이미지 옆에 후보로 같은 'MUSINSA' 를 찍음",
+      "choice": {
+        "korean_and_body": "Pretendard 400/500/700/800 (실사용 서체 그대로)",
+        "latin_display": "Inter Tight 900 (영문 직무명만)",
+        "ci_like": "Outfit 500 — 기록만, 판에 쓸 영문 CI 글자가 없어 안 씀"
+      },
+      "why": [
+        "스토어 BI 는 굵기 900 급, 폭은 보통~약간 좁음, 자간이 촘촘, S 끝이 수평에 가깝다. 후보 중 단어 폭/높이 비와 획 굵기가 가장 가까운 건 Inter Tight 900. Barlow Condensed·Oswald·Anton 은 너무 좁고 세로로 길다, Archivo 900 은 너무 넓다, Roboto Condensed 900 은 비슷하지만 더 좁고 S 곡선이 둥글다",
+        "Pretendard 의 라틴은 Inter 에서 왔다 — Inter Tight 는 같은 뼈대의 자간 좁힌 판이라 한글 Pretendard 옆에서 어긋나지 않는다",
+        "회사 CI 는 M 꼭지가 기준선까지 내려오는 둥근 기하형 — Outfit 이 가장 가깝다(Geist·Figtree 는 S 가 더 좁고 딱딱)",
+        "로고 글자 'MUSINSA' 는 어느 서체로도 다시 쓰지 않는다 — 비교는 서체 선택 근거일 뿐"
+      ],
+      "pixel_v3": "갈무리11 Bold(Galmuri, Lee Minseo, SIL OFL 1.1 — npm galmuri@2.40.3 ofl.md) — 키 비주얼의 픽셀 영문 글씨('Back to the 2001')와 같은 성격의 무료 픽셀 서체. 키 비주얼 원래 서체명은 공개되지 않음(미확인). 한글 제목 조판은 Pretendard 800 + 흰 윤곽"
+    },
+    "pixel_font": "'Galmuri11','Pretendard',monospace",
+    "palette_v3": {
+      "night": "#111111",
+      "yellow": "#eedf3e",
+      "road": "#656c76",
+      "building": "#36353a",
+      "ground": "#282627",
+      "studio_red": "#c63032",
+      "white": "#ffffff",
+      "line": "#ebebeb",
+      "sep": "#d9d9d9",
+      "sub": "#666666"
+    },
+    "palette_v3_where": {
+      "#111111": "키 비주얼 제목 검정(무·신·사 뒤 글자 채움, 11,720px) → 머리 바탕·경력 상자·꼬리 바탕",
+      "#EEDF3E": "키 비주얼 'Back to the 2001' 노랑 픽셀 글씨(1,282px) → 'TEAM MUSINSA' 라벨·섹션 이름 칩·경력 라벨·지원 줄",
+      "#FFFFFF": "키 비주얼 제목 첫 글자 무·신·사(11,904px) → 무·신·사·윤곽·경력 숫자",
+      "#656C76": "키 비주얼 도로 회색(18,363px) → 그림 칸 바탕",
+      "#36353A": "키 비주얼 검정 건물(70,904px) — 그림 속 색, 따로 칠하지 않음",
+      "#282627": "키 비주얼 가장 어두운 바닥 — 기록만",
+      "#C63032": "스냅 스튜디오 빨강(13,543px) — 그림 속 색, 따로 칠하지 않음",
+      "#EBEBEB / #D9D9D9 / #666666": "v2 그대로 — 스토어 CSS 줄·채용 사이트 메타 막대·보조 글자"
+    },
+    "body_font": "'Snap 2001 Gothic','Pretendard',sans-serif",
+    "body_font_research": {
+      "why": "모집 내용 본문이 Pretendard 면 판 면적 대부분이 기본 고딕이라 AI 처럼 보인다. v3 시그니처(2001 픽셀 도시 간판)와 스트리트 에디토리얼 성격을 본문에 입힌다. 롯데카드 LOCA Batang(명조·가라몬드·별)과 정반대 성격",
+      "board": "out/wanted-375793/body_font_board.jpg — 포스터 17px·흰 바탕·검정·#EBEBEB 줄로 실제 자격요건 5줄, 후보 8개(모두 OFL)",
+      "candidates": {
+        "Paperlogy 5 Medium": "좁고 단단하다 — 같은 폭에 글자가 더 들어가고 획 끝이 각져 간판 인상. 17px 에서도 속공간이 열려 있다 → 바탕으로 선택",
+        "나눔스퀘어 네오 Bold": "넓고 네모나 읽기 좋지만 폭이 넓어 줄이 넘친다. NAVER 서체 인상",
+        "IBM Plex Sans KR Medium": "단정한 기술 문서 인상 — 무신사보다 IBM",
+        "Gothic A1 SemiBold": "굵고 무겁다, 본문으로 답답",
+        "SUIT 600": "가늘고 기하 — 토스 계열 인상",
+        "Spoqa Han Sans Neo Medium": "굵고 넓다, Pretendard 와 차이가 작다",
+        "갈무리11": "픽셀 서체 — 한글 본문 17px 에서 읽기 힘들어 숫자·기호의 원본으로만"
+      },
+      "custom": {
+        "name": "Snap 2001 Gothic (파생 서체, 무신사 공식 서체 아님)",
+        "build": "design-lab/typefaces/build_snap2001_gothic.py",
+        "recipe": [
+          "한글·영문: Paperlogy — Regular ← 5 Medium, Bold ← 7 Bold",
+          "숫자 0–9 와 - : % ~ : Galmuri 픽셀 서체. Regular 은 Galmuri9 를 칸 비트맵으로 읽어 가로 1.3배로 다시 칠함(세로획 51 vs Paperlogy 49, 450px 기준), Bold 는 Galmuri11 Bold. 숫자 높이는 Paperlogy 숫자(710/900)에 맞춤",
+          "( ) / 는 첫 견본에서 계단선이 괄호로 안 읽혀 교체하지 않음",
+          "새로 그림: 가운뎃점 · 과 불릿 • → 꽉 찬 정사각 픽셀(한글 글자 몸 세로 중심)",
+          "옛 커닝(kern) 제거, 두 원본 저작권 + OFL 전문 동봉"
+        ],
+        "license": "SIL OFL 1.1 — Paperlogy(PT&), Galmuri(Lee Minseo) 모두 OFL, 수정본은 새 이름으로 배포 가능, 판매 금지. Galmuri 의 예약 이름은 쓰지 않았다",
+        "specimen": "out/wanted-375793/snap2001_gothic_specimen.jpg"
+      },
+      "choice": "본문(팀 소개·목록) Snap 2001 Gothic Regular, 목록 번호 Bold. 제목·세 줄 두음·픽셀 라벨·Inter Tight 직무명은 그대로"
+    }
+  },
+  "points": [
+    {
+      "id": "name-origin-2001",
+      "what": "'무진장 신발 사진이 많은 곳' — 2001년 프리챌 커뮤니티 이름. 무신사라는 이름이 여기 세 줄의 첫 글자(무·신·사)에서 나왔다. 무신사는 2022 만우절에 이 시절을 픽셀 도시 키 비주얼로 재현했다: 세 줄 제목에서 무·신·사만 흰 굵은 글자, 나머지는 검정에 흰 윤곽, 위에 노란 픽셀 글씨 'Back to the 2001', 배경은 무신사 서비스(snap 스튜디오·soldout·kids·beauty·BOUTIQUE 간판)가 들어선 아이소메트릭 도시",
+      "evidence": "https://newsroom.musinsa.com/newsroom-menu/2022-0401-01 — 공식 보도 '무신사, 2001년 커뮤니티 시절로 돌아가다… 만우절 이벤트 눈길'",
+      "meaning": "무신사 = 무진장 신발 사진이 많은 곳. 신발 사진 커뮤니티 → 스냅 → 스토어",
+      "use": "중심 — 머리 세 줄 조판 + 키 비주얼 원본 픽셀 그림 + 노란 픽셀 라벨",
+      "avoid": "키 비주얼 속 MUSINSA 로고·광고판 초상은 잘라낸다. 'Back to the 2001' 문구는 옮기지 않는다(우리 포스터는 2001 이벤트가 아니다)"
+    },
+    {
+      "id": "black-white-line",
+      "what": "흰 바탕 검정 글씨, 칸은 1px #EBEBEB 줄로만 가른다. 색은 사진이 낸다",
+      "evidence": "musinsa.com 추천·랭킹 화면 계산 스타일(#000 2406 / #EBEBEB 2214) · https://oh-my-design.kr/design-systems/musinsa '#ffffff canvas, #000000 text, #ebebeb lines'",
+      "meaning": "상품 사진과 브랜드가 주인공 — 인터페이스는 물러선다",
+      "use": "색·구조 — 흰 바탕 검정, 목록 줄 사이 1px #EBEBEB",
+      "avoid": "할인 빨강·광고 파랑을 강조색으로 가져오지 않는다"
+    },
+    {
+      "id": "black-bi-block",
+      "what": "새 스토어 BI 적용 예시가 전부 검정 덩어리 위 흰 굵은 글자다 — 검정 쇼핑백 아래쪽의 흰 MUSINSA, 검정 앱 아이콘, 매장 사이니지",
+      "evidence": "BI 리뉴얼 보도 사진(한국섬유신문·아시아경제·TIN뉴스) / 뉴스룸 https://newsroom.musinsa.com/newsroom-menu/2025-1022 '기존 영문 대문자 MUSINSA 로고를 더욱 두껍고 단단하게'",
+      "meaning": "'더 볼드하게' — 플랫폼을 넘어 오프라인·글로벌로",
+      "use": "구조 — 머리 위 검정 띠(스토어 상단 바)와 경력 검정 덩어리. 글자는 흰색 굵게",
+      "avoid": "MUSINSA 로고타입을 글꼴로 흉내 내지 않는다"
+    },
+    {
+      "id": "timeline-digits",
+      "what": "회사 사이트 연표가 검정 전면에 흰 숫자를 한 자씩 크게 띄워 세운다 — '2 0 0 1', '2 0 0 5', '2 0 0 9' (Pretendard 500, 418px)",
+      "evidence": "https://corp.musinsa.com/ 연표 섹션 캡처 · 계산 스타일 font-size 418px weight 500 color #fff",
+      "meaning": "커뮤니티(2001) → 웹 매거진(2005) → 스토어(2009)… 시간이 곧 이력",
+      "use": "경력 띠 — 성수 오피스 검정 복도 사진을 #171518 로 눌러 깔고 그 위에 흰 연차 숫자(Pretendard 500). 회사 연표 2005·2009 가 어두운 화면 위에 흰 숫자를 올리는 방식",
+      "avoid": "연표 연도 자체를 옮겨 싣지 않는다"
+    },
+    {
+      "id": "corp-statement",
+      "what": "회사 사이트가 마침표로 끝나는 짧은 문장을 크게 가운데 세운다 — '온라인에서 오프라인으로. 대한민국에서 전 세계로.' (Pretendard 800, 64px)",
+      "evidence": "https://corp.musinsa.com/ 캡처 · h2 계산 스타일 64px 800",
+      "meaning": "",
+      "use": "꼬리 — 회사 문장을 그대로 두 줄",
+      "avoid": "문장을 바꾸거나 우리 말을 붙이지 않는다"
+    },
+    {
+      "id": "careers-row",
+      "what": "채용 사이트 공고 한 줄 = 굵은 제목 + 아래 회색 메타가 세로 막대로 이어진다 — '무신사 | Security Engineering | 경력 8년 이상 | 정규직 | 무신사 성수 오피스'",
+      "evidence": "https://www.musinsacareers.com/ko/home 목록 캡처 · 이 공고의 줄이 그대로 있다",
+      "meaning": "",
+      "use": "머리 — 제목 위 메타 줄을 채용 사이트 값 그대로",
+      "avoid": "채용 사이트에 없는 값을 채우지 않는다"
+    },
+    {
+      "id": "store-gnb",
+      "what": "스토어 맨 위는 검정 띠에 흰 대문자 메뉴가 한 줄로 늘어선다 — MUSINSA BEAUTY SPORTS OUTLET BOUTIQUE KICKS KIDS USED SNAP",
+      "evidence": "musinsa.com 추천·랭킹·스탠다드 화면 캡처",
+      "meaning": "",
+      "use": "머리 — 포스터 맨 위 검정 띠에 'TEAM MUSINSA' 와 섹션 이름(주요업무·자격요건·우대사항·복지)을 메뉴처럼 — 띠 색은 스토어 화면 픽셀 #1A1B1F",
+      "avoid": "스토어 카테고리 이름을 옮기지 않는다"
+    },
+    {
+      "id": "ranking-numbers",
+      "what": "랭킹 목록은 칸마다 왼쪽 위에 작은 굵은 순위 숫자, 정사각 칸, 1px 줄, 14px 촘촘한 글",
+      "evidence": "https://www.musinsa.com/main/musinsa/ranking 캡처",
+      "meaning": "",
+      "use": "본문 — 2×2 격자 [주요업무|자격요건]/[우대사항|복지], 항목마다 굵은 번호, 줄 사이 1px #EBEBEB, 네모",
+      "avoid": "'급상승' 같은 빨간 딱지는 쓰지 않는다"
+    },
+    {
+      "id": "team-musinsa",
+      "what": "채용 사이트는 스스로를 'TEAM MUSINSA' 라 부르고, 공고 본문도 '팀 무신사' 로 시작한다",
+      "evidence": "musinsacareers.com h1 'TEAM MUSINSA Careers' / 원티드 375793 원문 첫 문장",
+      "meaning": "",
+      "use": "카피 — 맨 위 띠의 이름",
+      "avoid": ""
+    },
+    {
+      "id": "seongsu-office-photo",
+      "what": "채용 사이트 복리후생 페이지의 오피스 사진이 전부 검정 철판·콘크리트·스테인리스·유리 — 검정 복도 벽의 흰 'OFFICE' 사인, 스테인리스 라운지, 콘크리트 아트리움",
+      "evidence": "https://www.musinsacareers.com/ko/benefit 사진 7장(06_careers_benefit) — 벽 #171518, 바닥 #555356, 스테인리스 #9B9B9C, 기둥 #B1B4B0 (픽셀 중앙값)",
+      "meaning": "스토어 화면의 흑백·회색이 실제 공간 재료로도 같다",
+      "use": "이미지 — 검정 복도 사진을 경력 띠 배경으로, 벽 앞의 두 사람 사진을 복지 칸 남는 자리에",
+      "avoid": "MUSINSA 로고가 걸린 사진(라운지 바)은 쓰지 않는다. 필터로 색을 입히지 않는다(흑백만)"
+    },
+    {
+      "id": "bi-heavy-latin",
+      "what": "새 스토어 BI 는 굵고 촘촘한 대문자 레터링 — 쇼핑백·사이니지·앱 아이콘에 흰 글자로",
+      "evidence": "https://newsroom.musinsa.com/newsroom-menu/2025-1022 '더욱 두껍고 단단하게' / 머니투데이 보도 사진 브랜드 체계도",
+      "meaning": "더 볼드하게 — 플랫폼을 넘어 오프라인·글로벌로",
+      "use": "글꼴 — 영문 직무명 'Security Engineer' 를 Inter Tight 900 으로(서체 대조 근거 ui.fonts_research)",
+      "avoid": "'MUSINSA' 글자를 이 서체로 쓰지 않는다 — 로고 흉내"
+    }
+  ],
+  "unused": [
+    {
+      "what": "스토어 BI 캠페인 슬로건 '더 볼드하게, 새로워진 무신사' (Bolder Than Ever: The New MUSINSA)",
+      "why": "스토어 쿠폰 캠페인 문구라 채용 포스터에는 맞지 않다",
+      "evidence": "https://fashionbiz.co.kr/article/220673"
+    }
+  ],
+  "sources": [
+    "https://newsroom.musinsa.com/newsroom-menu/2025-1022",
+    "https://about.musinsa.com/newsroom/2025-1022",
+    "https://fashionbiz.co.kr/article/220673",
+    "https://www.ktnews.com/news/articleView.html?idxno=141742",
+    "https://view.asiae.co.kr/article/2025102208382576430",
+    "https://www.tinnews.co.kr/29636",
+    "https://www.musinsa.com/main/musinsa/recommend",
+    "https://www.musinsa.com/main/musinsa/ranking",
+    "https://corp.musinsa.com/",
+    "https://www.musinsacareers.com/ko/home",
+    "https://oh-my-design.kr/design-systems/musinsa",
+    "https://github.com/orioncactus/pretendard",
+    "https://www.musinsacareers.com/ko/benefit",
+    "https://static.msscdn.net/static/mss-frontend-web/_next/static/css/69a34681b8a245da.css",
+    "https://corp.musinsa.com/_next/static/chunks/767786fa90f40550.css",
+    "https://www.mt.co.kr/living/2025/10/22/2025102209372928471",
+    "https://zdnet.co.kr/view/?no=20251022101034",
+    "https://designcompass.org/2025/10/22/musinsas-first-rebranding-in-seven-years/",
+    "https://fonts.google.com/specimen/Inter+Tight",
+    "https://github.com/rsms/inter"
+  ],
+  "careers_meta": {
+    "wanted-375793": [
+      "무신사",
+      "Security Engineering",
+      "경력 8년 이상",
+      "정규직",
+      "무신사 성수 오피스"
+    ],
+    "wanted-366283": [
+      "무신사",
+      "Security Engineering",
+      "경력 5년 이상",
+      "정규직",
+      "무신사 성수 오피스"
+    ]
+  },
+  "version": 3,
+  "images": {
+    "kv": "assets/companies/무신사/v3/kv_snap_studio.png",
+    "street": "assets/companies/무신사/v3/kv_street_block.png"
+  },
+  "images_note": {
+    "kv": "뉴스룸 2022-04-01 만우절 키 비주얼 'Back to the 2001 — 무진장 신발 사진이 많은 곳'(뉴시스 게재본 720×1280)의 x296–580·y0–304 — 픽셀 도시의 스냅 스튜디오(빨간 'snap' 간판·삼각대 카메라·하트 말풍선). 오른쪽 광고판(실존 광고 모델 초상)은 잘라냄. 머리 오른쪽",
+    "street": "같은 키 비주얼의 x330–720·y560–1000 — 서비스 간판이 붙은 검정 건물·오락기·거리. 짧은 칸(복지) 아래 남는 자리. 제목 글자·MUSINSA 로고는 들어가지 않게 잘랐다",
+    "rights": "무신사 공식 보도자료 이미지(언론 배포) — 인스타 공개 게시 전 사용 가능 여부 확인 필요"
+  },
+  "images_v2": {
+    "band": "assets/companies/무신사/v2/office_corridor_band.jpg",
+    "team": "assets/companies/무신사/v2/team_wall.jpg"
+  },
+  "signature": {
+    "id": "name-origin-2001",
+    "what": "'무진장 신발 사진이 많은 곳' — 2001년 프리챌 커뮤니티 이름. 무신사라는 이름이 여기 세 줄의 첫 글자(무·신·사)에서 나왔다. 무신사는 2022 만우절에 이 시절을 픽셀 도시 키 비주얼로 재현했다: 세 줄 제목에서 무·신·사만 흰 굵은 글자, 나머지는 검정에 흰 윤곽, 위에 노란 픽셀 글씨 'Back to the 2001', 배경은 무신사 서비스(snap 스튜디오·soldout·kids·beauty·BOUTIQUE 간판)가 들어선 아이소메트릭 도시",
+    "evidence": [
+      "https://newsroom.musinsa.com/newsroom-menu/2022-0401-01 — 공식 보도 '무신사, 2001년 커뮤니티 시절로 돌아가다… 만우절 이벤트 눈길'",
+      "https://www.newsis.com/view/NISX20220401_0001817284 — 키 비주얼 이미지 게재('픽셀 그래픽으로 디자인된 무진장 신발 사진이 많은 곳 페이지')",
+      "https://magazine.hankyung.com/business/article/202309203029b — '2001년 조만호 의장이 프리챌에 무진장 신발 사진이 많은 곳을 만들었다. 지금의 무신사는 당시 이름을 줄인 것'",
+      "https://byline.network/2022/02/4-123/ — 스냅은 '패션 커뮤니티로 시작한 무신사를 상징하는 대표 콘텐츠'(2005 '거리 패션'으로 시작)",
+      "https://www.musinsa.com/snap — 스냅 누적 1,273,114개(2026-09-15 화면)"
+    ],
+    "why_recognizable": "회사 이름 그 자체의 풀이라 설명이 필요 없다 — 무·신·사 세 글자만 희게 세우면 이름이 읽힌다. 언론·회사가 반복해 쓴 창업 이야기이고, 무신사가 스스로 공식 비주얼로 만든 적이 있다. 스토어 화면(흑백 목록)과 달리 다른 회사가 흉내 낼 수 없다",
+    "how_used": "머리 = 세 줄 제목 조판(무·신·사 흰색, 나머지 윤곽) + 키 비주얼 픽셀 도시 원본(스냅 스튜디오 crop) + 노란 픽셀 라벨. 섹션 이름·경력 라벨·지원 줄도 같은 노랑·픽셀 서체. 짧은 칸 아래 남는 자리에 같은 키 비주얼의 거리 crop",
+    "acrostic": [
+      "무진장",
+      "신발",
+      "사진이 많은 곳"
+    ],
+    "note": "",
+    "alternatives": [
+      {
+        "id": "street-snap",
+        "why_not_main": "가장 오래된 대표 콘텐츠지만 지금 스냅 화면 사진이 실존 인물·AI 생성 모델이라 채용 포스터에 넣을 수 없고, 형식(세로 사진 격자)만으로는 인스타그램 피드와 구별되지 않는다. 키 비주얼 속 'snap' 스튜디오·삼각대로 흔적만 남김"
+      },
+      {
+        "id": "da-musinsarang-hae",
+        "why_not_main": "'다 무신사랑 해'(2021 TV 광고) — 카피는 유명하지만 광고 모델 얼굴에 기댄 캠페인이라 쓸 이미지가 없다. 키 비주얼 속 광고판도 잘라냄"
+      },
+      {
+        "id": "new-bi-2025",
+        "why_not_main": "2025-10 새 BI 는 로고 자체라 그릴 수 없다(v1·v2 가 검정 띠로 이미 우회)"
+      },
+      {
+        "id": "ranking-list",
+        "why_not_main": "스토어 화면 형식 — v2 에서 써 봤지만 흑백 목록 템플릿과 구별이 안 됐다"
+      }
+    ]
+  }
+}

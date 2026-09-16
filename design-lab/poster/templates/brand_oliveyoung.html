@@ -1,0 +1,159 @@
+<!-- brand_oliveyoung — CJ올리브영 전용 판 v1. brands/올리브영.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  hello-screen   매장 입구 연두 라이트박스 스크린. 흰 바탕에 13° 기울어진 2:3 타원(연두 셋·코럴 하나),
+                               13° 기울인 짙은 초록 인사 'HELLO WE ARE OLIVE YOUNG'. 머리 전체를 회색 매장 벽에 끼운 그 스크린으로.
+                               공고 제목은 스크린 글자 자리에, 경력은 코럴 타원 안에. 꼬리에 실제 매장 정면 사진.
+     supporting slant-13       굵은 글자(인사·제목·섹션 제목)만 13°. 본문은 세운다.
+                store-gray     스크린 둘레 벽·복지 칸의 매장 회색
+     안 쓰는 것: 올리브 심볼·로고타입·간판, 모델 사진, 협업 캐릭터, 스튜디오 제안 시안
+     서체: Paperlogy(제목·스크린, OY Greta Sans 대체) + Pretendard(본문) — 둘 다 OFL -->
+<meta charset="utf-8">
+<title>brand_oliveyoung</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;overflow:hidden}
+  .sl{display:inline-block;transform:skewX(calc(-1deg*var(--slant)));transform-origin:0 100%}
+
+  /* 머리 — 매장 벽에 끼운 스크린 */
+  .wall{flex:none;background:var(--wall);padding:calc(2.4*var(--u)) calc(2.4*var(--u)) calc(2.2*var(--u))}
+  .screen{position:relative;height:var(--SH);background:#fff;overflow:hidden;box-shadow:inset 0 0 0 calc(.35*var(--u)) #c9cdd1}
+  .ov{position:absolute;border-radius:50%;transform:rotate(calc(1deg*var(--slant)))}
+  .ov.g{background:var(--accent)} .ov.c{background:var(--coral)}
+  .say{position:absolute;left:calc(5*var(--u));top:calc(var(--SH)*.13);color:var(--ink);font-family:var(--display);font-weight:800;
+    font-size:calc(var(--SH)*.068);letter-spacing:-.01em;line-height:1.05;white-space:pre-line}
+  .ttl{position:absolute;left:calc(5*var(--u));top:calc(var(--SH)*.36);right:calc(30*var(--u));color:var(--ink);font-family:var(--display)}
+  .ttl .chip{font-weight:800;font-size:calc(var(--SH)*.062);letter-spacing:-.01em;margin-bottom:calc(var(--SH)*.02)}
+  .ttl h1{font-weight:900;font-size:calc(var(--SH)*.155);letter-spacing:-.035em;line-height:.98}
+  .car{position:absolute;display:grid;place-items:center;text-align:center;color:var(--ink);font-family:var(--display);pointer-events:none}
+  .car .k{font-weight:800;font-size:calc(var(--SH)*.07);line-height:1}
+  .car .v{font-weight:900;font-size:calc(var(--SH)*.16);letter-spacing:-.04em;line-height:.95;margin-top:calc(var(--SH)*.015)}
+  .tags{flex:none;padding:calc(1.5*var(--u)) calc(5*var(--u)) 0;font-size:calc(2.05*var(--u));font-weight:600;color:var(--sub);white-space:nowrap;overflow:hidden}
+
+  main{flex:1;min-height:0;overflow:hidden;margin:calc(1.4*var(--u)) calc(5*var(--u)) 0;display:flex;flex-direction:column;gap:calc(var(--f)*.9)}
+  .grid{display:grid;grid-template-columns:var(--cols);column-gap:calc(var(--f)*1.4);align-items:start}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*.9);min-width:0}
+  .sec h2{font-family:var(--display);font-weight:800;font-size:calc(var(--f)*1.3);color:var(--ink);letter-spacing:-.02em;line-height:1.15;
+    padding-bottom:calc(var(--f)*.35);margin-bottom:calc(var(--f)*.55);border-bottom:calc(.28*var(--u)) solid var(--ink)}
+  .sec h2 sup{font-size:.58em;color:var(--point);margin-left:.25em;vertical-align:super;line-height:0}
+  .it{position:relative;font-size:var(--f);line-height:var(--body-lh,1.5);color:var(--text);font-weight:var(--body-w,500);padding-left:calc(var(--f)*1.05);margin-bottom:calc(var(--f)*.26);text-wrap:pretty}
+  .it::before{content:'';position:absolute;left:calc(var(--f)*.15);top:calc(var(--f)*.42);width:calc(var(--f)*.42);height:calc(var(--f)*.62);border-radius:50%;background:var(--accent);transform:rotate(calc(1deg*var(--slant)))}
+  .sec.ben{background:var(--wall);padding:calc(var(--f)*.8) calc(var(--f)*.9) calc(var(--f)*.5)}
+  .sec.ben h2{border-bottom-color:var(--ink)}
+  .sec.ben .list{column-count:var(--bc);column-gap:calc(var(--f)*1.2)}
+  .sec.ben .it{font-size:calc(var(--f)*.96);margin-bottom:calc(var(--f)*.22);break-inside:avoid}
+
+  footer{flex:none;margin:calc(1.2*var(--u)) calc(5*var(--u)) 0;padding:calc(1.2*var(--u)) 0 calc(2.2*var(--u));border-top:calc(.28*var(--u)) solid var(--ink);
+    display:flex;align-items:flex-end;gap:calc(2.4*var(--u))}
+  .shot{display:block;width:100%;aspect-ratio:820/270;object-fit:cover}
+  .shot-cap{margin-top:calc(.5*var(--u));font-size:calc(1.45*var(--u));color:var(--sub);font-weight:500}
+  .photo{flex:none;height:calc(9*var(--u));aspect-ratio:820/270;object-fit:cover;display:block}
+  .cap{flex:1;min-width:0}
+  .cap .q{font-family:var(--display);font-weight:800;font-size:calc(2.2*var(--u));color:var(--ink);line-height:1.1}
+  .cap .c{margin-top:calc(.6*var(--u));font-size:calc(1.45*var(--u));color:var(--sub);font-weight:500;line-height:1.35}
+  .apply{flex:none;text-align:right;white-space:nowrap}
+  .apply .lab{font-size:calc(2*var(--u));font-weight:600;color:var(--sub)}
+  .apply .url{margin-top:calc(.3*var(--u));font-size:calc(2.5*var(--u));font-weight:700;color:var(--ink)}
+  .apply .url i{font-style:normal;color:var(--point);margin-left:calc(.7*var(--u))}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  F.set('display', ui.display_font || ui.font);
+  F.set('coral', ui.coral || '#ff7878');
+  F.set('point', ui.point || ui.accent);
+  F.set('wall', ui.wall || '#e5e7ea');
+  F.set('slant', ui.slant || 13);
+  if (ui.body_weight) F.set('body-w', ui.body_weight);
+  if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리 — 스크린. 타원 자리는 표준 매장 스크린 사진(연두 셋 · 코럴 하나 · 흰 틈)을 따른다. 단위는 스크린 높이 H
+  const wall = el('div', 'wall'); const scr = el('div', 'screen'); wall.append(scr);
+  const oval = (cls, x, y, h) => {           // x,y = 중심(스크린 폭 %, 높이 H 배수), h = 타원 높이(H 배수), 폭은 2:3
+    const o = el('div', 'ov ' + cls);
+    o.style.cssText = `left:calc(${x}% - var(--SH)*${h / 3});top:calc(var(--SH)*${y - h / 2});width:calc(var(--SH)*${h * 2 / 3});height:calc(var(--SH)*${h})`;
+    scr.append(o); return o;
+  };
+  oval('g', 12, 0.34, 1.12);
+  oval('g', 46, 0.80, 1.2);
+  oval('g', 64, -0.05, 0.9);
+  oval('g', 92, 0.30, 1.15);
+  oval('c', 80, 0.92, 1.04);
+  const say = el('div', 'say'); say.append(el('span', 'sl', 'HELLO WE ARE OLIVE YOUNG')); scr.append(say);
+  const ttl = el('div', 'ttl');
+  const tm = (D.title || D.role).match(/^(.*?)\s*(\([^)]*\))\s*$/);
+  const chip = el('div', 'chip'); chip.append(el('span', 'sl', B.wordmark || D.company)); ttl.append(chip);
+  const h1 = el('h1');
+  if (tm) { h1.append(el('span', 'sl', tm[1]), el('br'), el('span', 'sl', tm[2])); } else h1.append(el('span', 'sl', D.title || D.role));
+  ttl.append(h1); scr.append(ttl);
+  // 경력 — 코럴 타원 안. 원문 '경력 5년 이상' 을 '경력' / '5년 이상' 두 줄로만 나눈다
+  const cm = (D.meta[0] || '').match(/^(경력)\s*(.+)$/);
+  const car = el('div', 'car');
+  car.style.cssText = `left:calc(80% - var(--SH)*.36);top:calc(var(--SH)*.58);width:calc(var(--SH)*.72);height:calc(var(--SH)*.38)`;
+  if (cm) { car.append(el('div', 'k', cm[1]), el('div', 'v', cm[2])); } else car.append(el('div', 'v', D.meta.join(' · ')));
+  scr.append(car);
+  sheet.append(wall);
+  if (D.stack.length) sheet.append(el('div', 'tags', [...new Set(D.stack)].join('  ·  ')));
+
+  const main = el('main'); sheet.append(main);
+
+  const footer = el('footer');
+  const footPhoto = IMG.store ? el('img', 'photo') : null;
+  if (footPhoto) { footPhoto.src = IMG.store; footPhoto.alt = ''; footer.append(footPhoto); }
+  const cap = el('div', 'cap');
+  const q = el('div', 'q'); q.append(el('span', 'sl', 'ALL LIVE YOUNG')); cap.append(q);
+  const capC = el('div', 'c'); capC.style.whiteSpace = 'pre-line'; cap.append(capC);
+  const apply = el('div', 'apply');
+  footer.append(cap, apply); sheet.append(footer);
+
+  const secs = [];
+  if (S.tasks.length) secs.push({ t: '주요업무', items: S.tasks.flatMap(g => g.items) });
+  if (S.qualifications.length) secs.push({ t: '자격요건', items: S.qualifications });
+  if (S.preferences.length) secs.push({ t: '우대사항', items: S.preferences });
+  if (S.benefits.length) secs.push({ t: '복지', items: S.benefits.map(b => b.label ? `${b.label} ${b.text}` : b.text), ben: true });
+  const secEl = s => {
+    const d = el('div', 'sec' + (s.ben ? ' ben' : ''));
+    const h = el('h2'); const sp = el('span', 'sl', s.t); sp.append(el('sup', '', String(s.items.length))); h.append(sp); d.append(h);
+    const box = s.ben ? el('div', 'list') : d; if (s.ben) d.append(box);
+    s.items.forEach(x => box.append(el('div', 'it', x)));
+    return d;
+  };
+
+  // 위: 주요업무·자격요건·우대사항 두 단(순서 지킴) / 아래: 복지를 매장 회색 띠 한 칸에 여러 단으로
+  const top = secs.filter(s => !s.ben), ben = secs.find(s => s.ben);
+  const cands = [];
+  // band: 복지를 아래 띠로(bc 단) / 아니면 복지를 오른쪽 단 끝에(bc 1~2)
+  for (const SH of [32, 29])
+    for (const cols of ['minmax(0,1fr) minmax(0,1fr)', 'minmax(0,1.15fr) minmax(0,1fr)', 'minmax(0,1fr) minmax(0,1.15fr)', 'minmax(0,1.3fr) minmax(0,1fr)'])
+      for (let k = 1; k < top.length; k++) {
+        for (const bc of (ben ? [2, 3] : [1]))
+          for (const shot of (IMG.store ? [false, true] : [false])) cands.push({ SH, cols, k, bc, band: true, shot, columns: 2 });
+        if (ben) cands.push({ SH, cols, k, bc: 1, band: false, shot: false, columns: 2 });
+      }
+  Frame.fit(F, cands, c => {
+    F.set('SH', `calc(${c.SH}*var(--u))`); F.set('cols', c.cols); F.set('bc', c.bc);
+    const g = el('div', 'grid'), L = el('div', 'col'), R = el('div', 'col');
+    top.slice(0, c.k).forEach(s => L.append(secEl(s))); top.slice(c.k).forEach(s => R.append(secEl(s)));
+    if (ben && !c.band) R.append(secEl(ben));
+    // shot: 매장 사진을 꼬리 대신 오른쪽 단 끝 빈자리로 — 꼬리가 낮아진다
+    if (footPhoto) footPhoto.hidden = !!c.shot;
+    capC.textContent = c.shot ? '올리브영 브랜드 철학' : '올리브영 표준 매장 입구 스크린\n사진 corp.oliveyoung.com';
+    if (c.shot) {
+      const w = el('div'); const im = el('img', 'shot'); im.src = IMG.store; im.alt = '';
+      w.append(im, el('div', 'shot-cap', '올리브영 표준 매장 입구 스크린 · 사진 corp.oliveyoung.com')); R.append(w);
+    }
+    g.append(L, R); main.replaceChildren(g);
+    if (ben && c.band) main.append(secEl(ben));
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 32 });
+})();
+</script>

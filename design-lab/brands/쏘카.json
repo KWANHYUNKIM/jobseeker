@@ -1,0 +1,161 @@
+{
+  "names": [
+    "쏘카",
+    "(주)쏘카",
+    "쏘카(SOCAR)",
+    "SOCAR",
+    "socar"
+  ],
+  "researched_at": "2026-09-16",
+  "wordmark": "쏘카",
+  "about": "라이프타임 모빌리티",
+  "facts": [],
+  "slogan": "라이프타임 모빌리티 쏘카",
+  "frame": "brand_socar.html",
+  "palette": {
+    "bg": "#050a5a",
+    "ink": "#ffffff",
+    "accent": "#0078ff",
+    "soft": "#141a24"
+  },
+  "signature": {
+    "id": "expand-light-road",
+    "what": "2025 리브랜딩 그래픽 'Expand' — 잔상에서 영감을 받은 빛의 선들이 어두운 남색 하늘 아래 한 점(소실점)으로 모이는 도로. 리브랜딩 필름에서 '끊임없이 확장되는 / 모빌리티 경험' 자막 뒤로 달리다가 소실점 위에 'Lifetime Mobility' 가 얹힌다",
+    "evidence": [
+      "https://designcompass.org/project/socar-2/ — \"'Flexible', 'Clear & Bold', 'Expand'라는 세 가지 키워드 … 잔상에서 영감을 받은 다양한 선형 구성은 쏘카를 통한 이동의 연속성과 확장을 상징합니다.\" (크레딧: Motion Graphic & Rebranding Film — Cosmic Ray)",
+      "https://brand.socar.kr/ — 브랜드 센터 첫 화면 '쏘카가 새롭게 그려나가는 자유로운 이동' 이 같은 빛의 터널 위에 올라가고, 원본 영상 assets/video_rebrandingfilm_7-DkejW2zu.mp4 · video_expand-vertical-BPNymgJw.mp4 · img_mobilityBg-ScfiHdVZ.jpg 를 직접 서빙",
+      "https://brand.socar.kr/ 적용 사례 이미지 img_application_1(옥외 빌보드) · _4(카드) · _5(공항 스크린 '늦은 저녁에도 부담 없이 쏘카 공항 편도') · _6(명함·노트) 과 video_station(역사 PASSPORT 광고) · video_splash(앱 스플래시) · video_event(무대 'Lifetime Mobility') 에 모두 같은 빛의 선이 깔린다",
+      "https://www.socarcorp.kr/news/pr/619 (2025-08-20) — 7월 앱 업데이트 선적용, 8월부터 쏘카존 등 오프라인 거점에 순차 적용"
+    ],
+    "why_recognizable": "리브랜딩 뒤 앱 스플래시·옥외 빌보드·역사 광고·카드·행사 무대까지 같은 파랑 빛의 선으로 통일돼 있다. 로고를 가려도 '남색 바탕에 파랑·하늘·연보라 빛줄기' 조합은 쏘카 캠페인으로 읽힌다. [미확인] 회사 밖 인지도를 잰 조사 자료는 찾지 못했다 — 적용 범위(앱 첫 화면·옥외)로 판단",
+    "how_used": "머리 전체. 리브랜딩 필름 frame 334(소실점에 빛이 맺힌 순간, 자막 없음)를 원본 그대로 잘라 판 위쪽에 깔고, 필름이 'Lifetime Mobility' 를 얹은 자리(소실점 바로 위 수평선)에 직무명 'Platform Engineer' 를 같은 서체·같은 흰→파랑 그라디언트로 얹는다. 도로는 아래로 흐리며 본문 남색으로 이어진다",
+    "job_link": "원문 주요업무의 '셀프서비스로 직접 배포·스케일'(확장) · '사람이 당직을 서는 구조가 아니라 시스템이 스스로 복구'(끊기지 않음) 가 그래픽이 상징한다는 '이동의 연속성과 확장' 과 같은 말이다. 카피로 붙이지 않고 구도로만 잇는다",
+    "not_used": "심볼(길이 교차하는 s) · 로고타입 · 심볼 모션의 마지막 장면(frame 430~) — 로고 규정상 변형·결합 금지라 판에 넣지 않는다. 필름 자막 프레임(250~328)은 글자가 박혀 있어 뺐다",
+    "alternatives": [
+      {
+        "what": "쏘카존 사이니지(주차장 파란 라이트박스 기둥, 흰 '쏘카존' 표지)",
+        "why_not": "브랜드 센터 규정 '오프라인 사이니지에는 반드시 심볼과 로고타입이 결합된 형태' — 사인의 얼굴이 곧 로고라 판 중심에 두면 로고 판이 된다. 자르면 파란 기둥만 남아 쏘카로 안 읽힌다"
+      },
+      {
+        "what": "파란 쏘카 랩핑 차량",
+        "why_not": "브랜드 센터 '차량 포토'(img_socarphoto-pc_1~6)는 흰색·은색 차에 번호판 로고만 보이는 사진이다. 파란 스티커 랩핑은 [미확인] 옛 BI 시절 모습으로 보이며 규정 '이전 버전의 로고를 사용하지 마세요' 에 걸린다. 다른 제조사 엠블럼이 초점이 되기도 쉽다"
+      },
+      {
+        "what": "앱 스마트키(차 문 열기) 버튼",
+        "why_not": "앱 UI — 절차상 보조로만. 공식 에셋으로 배포된 이미지가 없고 화면 캡처는 로고·지도 타사 요소가 섞인다"
+      },
+      {
+        "what": "부름 서비스(차가 집 앞으로)",
+        "why_not": "서비스를 상징하는 공식 키 비주얼을 찾지 못했다. 대체할 브랜드 포토는 인물이 중심(규정상 정면 응시 금지 등) — 실존 인물 사진 중심은 탈락 기준"
+      },
+      {
+        "what": "쏘카일레클 자전거",
+        "why_not": "고유 서비스명(쏘카일레클)으로 BI 가 따로 있다(Behance 'SOCAR elecle Brand Identity Renewal 2024'). 이 공고는 쏘카 본체 플랫폼 조직"
+      },
+      {
+        "what": "쏘카핀(지도 POI 핀)",
+        "why_not": "핀 안에 심볼 s 가 들어간 로고 파생물 — '로고 변형' 기준에 걸린다. 색 확인용(#0078FF 픽셀 일치)으로만 썼다"
+      },
+      {
+        "what": "'Clear & Bold' 동심 둥근사각 고리(video_clear-bold-vertical, 스크린 무대)",
+        "why_not": "같은 그래픽 시스템의 공식 모티프지만 가운데에 로고를 얹는 틀로 쓰인다(video_screen). '이동' 을 직접 보여 주는 건 Expand 도로 쪽이라 하나만 고름"
+      }
+    ]
+  },
+  "points": [
+    {
+      "id": "film-type-gradient",
+      "what": "리브랜딩 필름·행사 무대의 'Lifetime Mobility' — IBM Plex Sans 굵은 글자가 왼쪽 옅은 하늘색에서 오른쪽 선명한 파랑으로 흐른다(픽셀: #C0DDFC → #6DAFF9 → #0B62F6 → #0955F6)",
+      "evidence": "brand.socar.kr assets/video_rebrandingfilm_7-DkejW2zu.mp4 frame 360~420, video_event-Z7zdHKOs.mp4 — out/wanted-366327/v1_font_specimen.jpg 에 원본 크롭",
+      "meaning": "브랜드가 제목 글자를 다루는 방식",
+      "use": "직무명 한 줄에만 같은 방향 그라디언트(Blue 01 → 05 → 07). 섹션 제목·본문은 단색",
+      "avoid": "본문·라벨에 그라디언트 금지, 글자에 광선·그림자 효과 금지"
+    },
+    {
+      "id": "dark-ground-blue-scale",
+      "what": "적용 사례(명함·노트·행사·앱 인포테인먼트)는 검정·남색 바탕 위에 Socar Blue 10단계를 층으로 쓴다. 흰 바탕 + 파랑 한 점인 토스와 반대",
+      "evidence": "https://brand.socar.kr/brandasset '다양한 Blue와 Gray 컬러 팔레트로 유연하게 확장 … 풍부한 그라디언트' + img_application_6 · video_infotainment",
+      "meaning": "밤길의 빛 — 어두운 바탕에서 파랑이 발광한다",
+      "use": "판 전체 남색(Blue 10) 바탕, 섹션 이름은 Blue 04, 목록 앞 짧은 빛줄기는 Blue 05, 본문은 Gray 02",
+      "avoid": "Blue 06 을 넓은 면으로 칠하지 않는다(쏘카존·핀·앱아이콘의 면 색이라 로고 인상)"
+    }
+  ],
+  "ui": {
+    "observed_at": "brand.socar.kr 브랜드 컬러 표기(Pantone/CMYK/RGB/HEX) · 쏘카핀/쏘카존 PNG 픽셀 · 리브랜딩 필름 프레임 픽셀 · 브랜드 센터/쏘카 서비스/채용 사이트 로드 폰트 — 2026-09-16 헤드리스 Playwright",
+    "font": "'IBM Plex Sans KR','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "IBM Plex Sans KR": [
+        {
+          "src": "assets/companies/쏘카/fonts/IBMPlexSansKR-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/쏘카/fonts/IBMPlexSansKR-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/쏘카/fonts/IBMPlexSansKR-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/쏘카/fonts/IBMPlexSansKR-Bold.woff2",
+          "weight": 700
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#050a5a",
+    "ink": "#ffffff",
+    "text": "#e5e8ef",
+    "sub": "#99a1b1",
+    "accent": "#66b0ff",
+    "line": "#262f3c",
+    "trail": "#3393ff",
+    "sky": "#020019",
+    "title_gradient": [
+      "#ebf5ff",
+      "#3393ff",
+      "#005aff"
+    ],
+    "rules": [
+      "브랜드 컬러 Socar Blue 06 (Primary) — Pantone 285 C / C90 M55 Y0 K0 / R0 G120 B255 / #0078FF. '컬러값은 임의로 변경하여 사용할 수 없습니다' (brand.socar.kr/brandasset). 쏘카핀 PNG 불투명 픽셀 최빈값 (0,120,255) 로 일치",
+      "Socar Blue 01~10: #EBF5FF #D6EBFF #A3D1FF #66B0FF #3393FF #0078FF #005AFF #0041E6 #0A1491 #050A5A",
+      "Socar Gray 01~10: #F2F3F8 #E5E8EF #CBD1DC #B4BBCB #99A1B1 #697387 #4A5667 #354153(사이트 RGB 표기는 'G265' 오타, HEX 기준) #262F3C #141A24",
+      "리브랜딩 필름 하늘 픽셀 중앙값 #020019, 도로 양자화 #0C147F #5B7DC2 #B5CAEB #77A6DE #3A419E — Blue 09·04·02 부근과 연보라. 배경 이미지 img_mobilityBg 는 #1F83FE #0A58E5 #07117D #B3D9FF #D1E8FF",
+      "판: 바탕 Blue 10 #050A5A (필름 하늘 #020019 에서 이어짐) / 본문 Gray 02 #E5E8EF / 보조 글자 Gray 05 #99A1B1 / 섹션 이름 Blue 04 #66B0FF / 목록 빛줄기 Blue 05 #3393FF / 구분선 Gray 09 #262F3C",
+      "안 쓴 색: 쏘카존 사인의 순검정 #000000(사인 판 색), 필름 도로의 연보라·주황·빨강 줄(이미지 안에서만), Blue 06 넓은 면(로고·핀·앱아이콘 면 색)",
+      "로고: 규정 12개(이전 버전 금지, 로고타입 단독 금지, 비율·요소 크기·회전·서체·색·그라디언트·라인화·효과·가시성 떨어지는 배경 금지) — 포스터에 로고·심볼을 넣지 않는다"
+    ],
+    "fonts_research": {
+      "seen": {
+        "brand.socar.kr (브랜드 센터)": "IBM Plex Sans KR 400/500/600/700 — assets/IBMPlexSansKR-*.woff2 자체 서빙",
+        "www.socar.kr (서비스)": "Pretendard v1.3.9 (jsdelivr dynamic subset)",
+        "www.socarcorp.kr / careers": "Pretendard + Campton Medium(/fonts/Campton/CamptonKit.css — 상용 서체, 영문 머리 몇 곳)",
+        "리브랜딩 필름 'Lifetime Mobility'": "글자 겹침 비교 IBM Plex Sans KR 700 IoU 0.835 > Plex 600 0.788 > Pretendard 700 0.715 > Pretendard 600 0.631. 't' 윗부분 사선 절단·'y' 곧은 꼬리·'M' 모양이 Plex 와 같다"
+      },
+      "specimen": "out/wanted-366327/v1_font_specimen.jpg — 빨강=필름 원본, 하늘=후보, 흰=겹침",
+      "choice": "IBM Plex Sans KR (SIL OFL 1.1, Copyright 2017 IBM Corp., Reserved Font Name 'Plex') — github.com/IBM/plex 에서 받은 원본 woff2, 수정 없이 사용. LICENSE 동봉",
+      "why": [
+        "브랜드 센터와 리브랜딩 필름이 같은 서체 — 쏘카가 브랜드를 설명할 때 쓰는 목소리",
+        "무료·수정 없이 사용 가능(OFL)",
+        "기존 여섯 판(Noto Sans KR·Pretendard·Wanted Sans·한나체 등)과 겹치지 않는다",
+        "Campton 은 상용이라 쓰지 않음 — CDN 서빙은 라이선스가 아니다"
+      ],
+      "not_used": "Campton(상용), Pretendard(서비스 웹 기본이지만 필름·브랜드 센터와 다르고 다른 판들과 겹침)"
+    }
+  },
+  "images": {
+    "road": "assets/companies/쏘카/v1/road_horizon_334.jpg"
+  },
+  "images_note": {
+    "road": "brand.socar.kr 가 서빙하는 리브랜딩 필름 video_rebrandingfilm_7-DkejW2zu.mp4 (1920×1080, 30fps) frame 334 를 cv2 로 무손실 추출 → y 241~899 (소실점 y 559 가 위에서 318px) 가로 전체를 잘랐다. 자막·로고 없음. 제작 Cosmic Ray / (C)쏘카. 권리: 쏘카 저작물 — 인스타 공개 게시 전 쏘카 브랜드팀 사용 허락 확인 필요(브랜드 센터 '기업 & 미디어 키트' 는 보도·채용 페이지 상시 활용이라 적혀 있으나 필름 프레임은 키트 목록에 없다)"
+  },
+  "sources": [
+    "https://brand.socar.kr/",
+    "https://brand.socar.kr/brandasset",
+    "https://brand.socar.kr/brandlogo",
+    "https://brand.socar.kr/brandrules",
+    "https://designcompass.org/project/socar-2/",
+    "https://www.socarcorp.kr/news/pr/619"
+  ]
+}

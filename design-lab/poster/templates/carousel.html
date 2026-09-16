@@ -1,0 +1,194 @@
+<!-- carousel — 공고 전문을 여러 장으로 접는다.
+     표지는 role_hero(hire-03), 본문 장은 info_grid(hire-05)의 '항목 이름 그대로' 원칙.
+     내용을 흘려 넣다가 넘치면 같은 제목으로 다음 장을 연다 — 한 줄도 자르지 않는다.
+     데이터는 carousel.py 가 아래 __DATA__ 자리에 JSON 으로 박는다. -->
+<meta charset="utf-8">
+<title>carousel</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Malgun Gothic',sans-serif;
+    -webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .slide{position:relative;overflow:hidden;width:var(--w);height:var(--h);
+    background:var(--bg);color:var(--ink);padding:calc(7*var(--u));display:flex;flex-direction:column}
+
+  /* 공통 머리·꼬리 — 몇 번째 장인지(detail-04 Point.01) */
+  .top{display:flex;justify-content:space-between;align-items:baseline;flex:none;
+    font-size:calc(2.3*var(--u));letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .top .count{color:var(--ink);opacity:.45;letter-spacing:.1em}
+  .foot{flex:none;display:flex;justify-content:space-between;align-items:center;gap:calc(3*var(--u));
+    border-top:1px solid color-mix(in srgb,var(--ink) 16%,transparent);padding-top:calc(2.6*var(--u));
+    font-size:calc(2.2*var(--u));color:color-mix(in srgb,var(--ink) 60%,transparent)}
+  .foot .co{display:flex;align-items:center;gap:calc(1.4*var(--u));color:var(--ink);font-weight:600;flex:none}
+  .mark{display:grid;place-items:center;background:var(--soft);color:var(--accent);font-weight:800;overflow:hidden;font-style:normal}
+  .mark img{width:100%;height:100%;object-fit:cover}
+  .foot .mark{width:calc(4.4*var(--u));height:calc(4.4*var(--u));border-radius:calc(1*var(--u));font-size:calc(2.1*var(--u))}
+  .foot .role{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+
+  /* 표지 */
+  .cover{justify-content:space-between}
+  .cover .ghost{position:absolute;right:calc(-3*var(--u));bottom:calc(-5*var(--u));font-size:calc(42*var(--u));
+    font-weight:800;color:var(--soft);line-height:.8;opacity:.65}
+  .cover .ghost img{width:calc(56*var(--u));opacity:.16;filter:grayscale(1)}
+  .cover .mid{position:relative}
+  .cover .kicker{font-size:calc(2.6*var(--u));letter-spacing:.04em;opacity:.5;margin-bottom:calc(3*var(--u))}
+  .cover h1{font-size:calc(8.6*var(--u));font-weight:800;line-height:1.08;letter-spacing:-.03em;text-wrap:balance}
+  .cover h1::after{content:'.';color:var(--accent)}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:calc(1.6*var(--u));margin-top:calc(4*var(--u))}
+  .cover .meta span{border:1px solid color-mix(in srgb,var(--ink) 28%,transparent);border-radius:99px;
+    padding:calc(1.1*var(--u)) calc(2.4*var(--u));font-size:calc(2.4*var(--u));opacity:.85}
+  .cover .toc{margin-top:calc(6*var(--u));display:flex;flex-wrap:wrap;align-items:center;gap:calc(1*var(--u)) calc(2.4*var(--u));
+    font-size:calc(2.5*var(--u));color:color-mix(in srgb,var(--ink) 70%,transparent)}
+  .cover .toc b{color:var(--accent);font-weight:600;margin-left:auto;white-space:nowrap}
+  .cover .bottom{position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:calc(4*var(--u))}
+  .cover .co{display:flex;align-items:center;gap:calc(2*var(--u));font-size:calc(3.4*var(--u));font-weight:600}
+  .cover .co .mark{width:calc(7*var(--u));height:calc(7*var(--u));border-radius:calc(1.6*var(--u));font-size:calc(3.4*var(--u))}
+  .cover .stack{display:flex;flex-wrap:wrap;gap:calc(1.2*var(--u));justify-content:flex-end;max-width:52%}
+  .cover .stack b{font-weight:500;font-size:calc(2.2*var(--u));color:var(--accent)}
+
+  /* 본문 장 — 제목은 섹션 이름을 그대로(hire-05), 강약은 타입 스케일로 */
+  .head{flex:none;margin:calc(5*var(--u)) 0 calc(4*var(--u))}
+  .head .sub{font-size:calc(2.5*var(--u));color:color-mix(in srgb,var(--ink) 55%,transparent);margin-bottom:calc(1.6*var(--u));
+    display:flex;align-items:center;gap:calc(1.6*var(--u))}
+  .head .sub .cont{font-size:calc(2*var(--u));border:1px solid color-mix(in srgb,var(--accent) 60%,transparent);color:var(--accent);
+    border-radius:99px;padding:calc(.4*var(--u)) calc(1.6*var(--u))}
+  .head h2{font-size:calc(5.8*var(--u));font-weight:800;line-height:1.18;letter-spacing:-.03em;text-wrap:balance}
+  .head h2 em{font-style:normal;color:var(--accent);margin-right:calc(1.8*var(--u))}
+  .body{flex:1;min-height:0;overflow:hidden;list-style:none;display:flex;flex-direction:column;gap:calc(2.1*var(--u))}
+  .body li{position:relative;padding-left:calc(3.4*var(--u));font-size:calc(3.15*var(--u));line-height:1.48}
+  .body li::before{content:'';position:absolute;left:0;top:calc(1.85*var(--u));width:calc(1.2*var(--u));height:calc(1.2*var(--u));background:var(--accent)}
+  .body.rows{gap:0}
+  .body.rows li{padding:calc(2.3*var(--u)) 0;display:grid;grid-template-columns:30% 1fr;gap:calc(3*var(--u));
+    border-top:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
+  .body.rows li:first-child{border-top:0;padding-top:0}
+  .body.rows li::before{display:none}
+  .body.rows .label{color:var(--accent);font-weight:600;font-size:calc(2.8*var(--u));line-height:1.66}
+
+  /* 끝 장 — 감성 끝내고 사무 한 덩어리(hire-02) */
+  .outro{justify-content:space-between}
+  .outro .mid h2{font-size:calc(8*var(--u));font-weight:800;line-height:1.1;letter-spacing:-.03em}
+  .outro .mid h2 span{color:var(--accent)}
+  .outro .mid p{margin-top:calc(4*var(--u));font-size:calc(3*var(--u));line-height:1.5;color:color-mix(in srgb,var(--ink) 72%,transparent)}
+  .outro .url{margin-top:calc(2.4*var(--u));display:inline-block;font-size:calc(2.6*var(--u));color:var(--accent);
+    border-bottom:1px solid var(--accent);padding-bottom:calc(.4*var(--u))}
+  .outro .card{background:var(--soft);border-radius:calc(2*var(--u));padding:calc(4*var(--u));display:flex;align-items:center;gap:calc(3*var(--u))}
+  .outro .card .mark{width:calc(9*var(--u));height:calc(9*var(--u));border-radius:calc(2*var(--u));font-size:calc(4.4*var(--u));background:var(--bg)}
+  .outro .card .who{min-width:0}
+  .outro .card .name{font-size:calc(3.6*var(--u));font-weight:700}
+  .outro .card .role{font-size:calc(2.5*var(--u));opacity:.7;margin-top:calc(.8*var(--u))}
+
+  #deck{display:flex;flex-direction:column;gap:0}
+</style>
+<div id="deck"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+(async () => {
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const root = document.documentElement.style;
+  root.setProperty('--w', D.fmt.w + 'px');
+  root.setProperty('--h', D.fmt.h + 'px');
+  root.setProperty('--u', Math.min(D.fmt.w, D.fmt.h) / 100 + 'px');
+  for (const [k, v] of Object.entries(D.palette)) root.setProperty('--' + k, v);
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+  const deck = document.getElementById('deck');
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const mark = () => {
+    const m = el('i', 'mark');
+    if (D.mark) { const img = el('img'); img.src = D.mark; m.append(img); } else m.textContent = D.initial;
+    return m;
+  };
+  const top = (label) => { const t = el('div', 'top'); t.append(el('span', '', label), el('span', 'count')); return t; };
+  const foot = () => {
+    const f = el('div', 'foot'); const co = el('span', 'co'); co.append(mark(), D.company);
+    f.append(co, el('span', 'role', D.role)); return f;
+  };
+
+  // 표지
+  const cover = el('section', 'slide cover');
+  const ghost = el('div', 'ghost'); if (D.mark) { const i = el('img'); i.src = D.mark; ghost.append(i); } else ghost.textContent = D.initial;
+  const mid = el('div', 'mid');
+  mid.append(el('div', 'kicker', '채용'), el('h1', '', D.role));
+  const meta = el('div', 'meta'); D.meta.forEach(m => meta.append(el('span', '', m))); mid.append(meta);
+  const toc = el('div', 'toc'); D.toc.forEach(t => toc.append(el('span', '', t))); toc.append(el('b', '', '넘겨서 보기 →'));
+  mid.append(toc);
+  const bottom = el('div', 'bottom'); const co = el('div', 'co'); co.append(mark(), D.company);
+  const stack = el('div', 'stack'); D.stack.forEach(s => stack.append(el('b', '', '#' + s)));
+  bottom.append(co, stack);
+  const coverTop = top('Open Position');
+  if (D.deadline) coverTop.querySelector('.count').dataset.deadline = D.deadline;
+  cover.append(ghost, coverTop, mid, bottom);
+  deck.append(cover);
+
+  // 본문 장: 섹션 하나를 넘치지 않게 여러 장으로 흘린다
+  const makePage = (sec, cont) => {
+    const s = el('section', 'slide page');
+    const head = el('div', 'head');
+    const sub = el('div', 'sub', sec.sub);
+    if (cont) sub.append(el('span', 'cont', '이어서'));
+    const h2 = el('h2'); if (sec.no) h2.append(el('em', '', sec.no)); h2.append(sec.title);
+    head.append(sub, h2);
+    const body = el('ul', 'body' + (sec.kind === 'rows' ? ' rows' : ''));
+    s.append(top(sec.kicker), head, body, foot());
+    deck.append(s);
+    return { s, body };
+  };
+  const item = (sec, it) => {
+    const li = el('li');
+    if (sec.kind === 'rows') { li.append(el('span', 'label', it.label || ''), el('span', '', it.text)); }
+    else li.textContent = it;
+    return li;
+  };
+  const overflows = body => body.scrollHeight > body.clientHeight + 1;
+
+  const fill = (sec, sizes) => {       // sizes 가 있으면 그 개수대로 나눠 담는다
+    const pages = []; let i = 0;
+    for (const n of sizes) {
+      const p = makePage(sec, pages.length > 0);
+      sec.items.slice(i, i + n).forEach(it => p.body.append(item(sec, it)));
+      i += n; pages.push(p);
+    }
+    return pages;
+  };
+  for (const sec of D.sections) {
+    // 1) 욕심껏 담아 몇 장이 필요한지 본다
+    const sizes = []; let p = makePage(sec, false), n = 0;
+    for (const it of sec.items) {
+      const li = item(sec, it); p.body.append(li);
+      if (overflows(p.body) && n > 0) {
+        li.remove(); sizes.push(n);
+        p = makePage(sec, true); p.body.append(item(sec, it)); n = 1;
+      } else n++;
+    }
+    sizes.push(n);
+    if (sizes.length < 2) continue;
+    // 2) 마지막 장에 한두 줄만 남으면 보기 싫다 — 고르게 다시 나눠 보고, 넘치면 1) 을 그대로 쓴다
+    const total = sec.items.length, k = sizes.length;
+    const even = Array.from({ length: k }, (_, j) => Math.floor(total / k) + (j < total % k ? 1 : 0));
+    const greedy = [...deck.querySelectorAll('.page')].slice(-k);
+    greedy.forEach(s => s.remove());
+    const trial = fill(sec, even);
+    if (trial.some(t => overflows(t.body))) { trial.forEach(t => t.s.remove()); fill(sec, sizes); }
+  }
+
+  // 끝 장
+  const outro = el('section', 'slide outro');
+  const om = el('div', 'mid');
+  const h2 = el('h2'); h2.append('지원 안내는', el('br'), '프로필 링크에서.');
+  om.append(h2, el('p', '', '공고 원문은 프로필 링크에서 볼 수 있습니다.'));
+  const card = el('div', 'card'); const who = el('div', 'who');
+  who.append(el('div', 'name', D.company), el('div', 'role', D.role));
+  card.append(mark(), who);
+  outro.append(top('Apply'), om, card);
+  deck.append(outro);
+
+  // 장 번호
+  const slides = [...deck.querySelectorAll('.slide')];
+  slides.forEach((s, i) => {
+    const c = s.querySelector('.top .count');
+    if (c) c.textContent = (c.dataset.deadline ? c.dataset.deadline + '   ' : '') + String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+  });
+  window.__slides = slides.length;
+  window.__paged = true;
+})();
+</script>

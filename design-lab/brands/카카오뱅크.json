@@ -1,0 +1,258 @@
+{
+  "names": [
+    "카카오뱅크",
+    "카카오뱅크(kakaobank)",
+    "(주)카카오뱅크",
+    "kakaobank",
+    "KakaoBank"
+  ],
+  "researched_at": "2026-09-15",
+  "wordmark": "카카오뱅크",
+  "about": "나의 첫 번째 AI 은행",
+  "facts": [],
+  "slogan": "세상을 또 한번 놀라게, 함께 해요.",
+  "recruit_label": "카카오뱅크 인재영입",
+  "frame": "brand_kakaobank.html",
+  "palette": {
+    "bg": "#ffffff",
+    "ink": "#1e1e1e",
+    "accent": "#ffe300",
+    "soft": "#f7f7f7"
+  },
+  "ui": {
+    "observed_at": "KakaoBank Brand Identity Guidelines V2.0 PDF(렌더·글리프 대조) · CI/앱 화면/가이드 쪽 이미지 픽셀 샘플 · kakaobank.com / recruit.kakaobank.com CSS — 2026-09-15 (v2)",
+    "font": "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "Pretendard": [
+        {
+          "src": "assets/companies/카카오뱅크/fonts/Pretendard-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/카카오뱅크/fonts/Pretendard-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/카카오뱅크/fonts/Pretendard-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/카카오뱅크/fonts/Pretendard-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/카카오뱅크/fonts/Pretendard-ExtraBold.woff2",
+          "weight": 800
+        }
+      ],
+      "Checkcard Sans": [
+        {
+          "src": "assets/companies/카카오뱅크/fonts/CheckcardSans/CheckcardSans-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/카카오뱅크/fonts/CheckcardSans/CheckcardSans-Bold.woff2",
+          "weight": 700
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#ffffff",
+    "ink": "#1e1e1e",
+    "text": "#1e1e1e",
+    "sub": "#a3a3a3",
+    "accent": "#ffe300",
+    "gray": "#a3a3a3",
+    "light_gray": "#cccccc",
+    "panel": "#f7f7f7",
+    "rules": [
+      "Yellow #FFE300 — 가이드 p25 값. CI 썸네일 픽셀 94% 가 #FFE401, 가이드 p25 렌더 #FFE200(JPEG 오차 ±1). '유사한 다른 값의 노란색' 금지",
+      "무채색은 가이드 p26 넷: White #FFFFFF / Black #1E1E1E(렌더 #1D1D1D) / Gray #A3A3A3 / Light Gray #CCCCCC — 픽셀 샘플도 정확히 같다",
+      "본문 면 #F7F7F7 은 추정이 아니라 앱 소개 화면(AI 금융 계산기) 바탕 픽셀 84.8% 값, 그 위 말풍선은 #FFFFFF. 앱 글자는 #000000 이지만 가이드 Black #1E1E1E 로 통일",
+      "가이드 본문 쪽의 시각 자료 캔버스는 #EDEDED(p5 렌더 픽셀) — 사진 칸 바탕에만",
+      "v1 의 #444444 / #888888(웹 회색)은 버림 — 가이드는 '지정되지 않은 회색은 사용하지 않는 것을 원칙'",
+      "서체 Pretendard — 가이드 PDF 글자와 겹침 비교에서 Pretendard Regular 가 0.78(목차)·0.51(본문)로 가장 높고 카카오 큰글씨·작은글씨는 0.22~0.32",
+      "가이드 조판: 표지·목차의 큰 글자는 Regular(400), 장 제목·라벨만 Bold. 영문은 국문과 같은 굵기·색으로 붙인다('로고 Logo')",
+      "로고는 Yellow·Black·White 로만, 톤온톤·아웃라인·마스크·패턴·임의 컬러·비율 변경 금지 — 포스터에 로고·심볼을 그리지 않는다(사진 속 카드의 심볼은 원본 그대로)"
+    ],
+    "canvas": "#ededed",
+    "fonts_research": {
+      "guide_pdf": "KakaoBank_BrandIdentityGuidelines_V2.0.pdf 의 서체는 이름 없는 Type3 윤곽 글리프(pymupdf get_fonts: basefont 빈칸) — 파일에서 서체명 확인 불가",
+      "web": "kakaobank.com(/view/font/pretendardvariable.css) · recruit.kakaobank.com(_next css) 모두 'Pretendard Variable'",
+      "kakao_corp": "카카오 큰글씨/작은글씨(Kakao Big Sans / Kakao Small Sans) — 2025-06-17 카카오 공개, SIL OFL 1.1(github.com/kakao/kakao-font). 카카오뱅크 적용 근거는 못 찾음",
+      "third_party": "oppadu 디자인시스템 요약의 'KakaoBank (자체) / Pretendard 폴백' — 1차 출처 없음, 미확인. 옛 웹폰트 YoonGothicPro(eond.com) 는 과거 사이트 흔적",
+      "specimen": "out/wanted-359731/v2_font_specimen.jpg — 가이드 p4 '워드마크 Wordmark'(48pt), p25 본문 줄을 300dpi 로 떠서 후보 6종과 폭비·겹침(IoU) 비교",
+      "scores": {
+        "p4 목차": {
+          "Pretendard Regular": 0.782,
+          "Pretendard Bold": 0.386,
+          "Kakao Big Sans Bold": 0.267,
+          "Kakao Big Sans Regular": 0.226,
+          "Kakao Small Sans Bold": 0.26,
+          "Kakao Small Sans Regular": 0.222
+        },
+        "p25 본문": {
+          "Pretendard Regular": 0.514,
+          "Kakao Big Sans Bold": 0.315,
+          "Kakao Big Sans Regular": 0.306,
+          "Pretendard Bold": 0.299,
+          "Kakao Small Sans Regular": 0.297,
+          "Kakao Small Sans Bold": 0.272
+        }
+      },
+      "choice": "Pretendard (SIL OFL) — 가이드 문서가 실제로 짜인 서체. 굵기는 가이드처럼 큰 글자 Regular, 제목·라벨 Bold",
+      "not_used": "Kakao Big/Small Sans 는 assets/companies/카카오뱅크/fonts/kakao/ 에 받아 비교만 했다(카카오 공동체 서체, 카카오뱅크 문서와 글자 모양이 다름)"
+    },
+    "body_font": "'Checkcard Sans','Pretendard','Noto Sans KR',sans-serif",
+    "body_line_height": 1.42,
+    "body_font_research": {
+      "why": "모집 내용 본문이 Pretendard 그대로면 판 면적 대부분이 기본 고딕이라 AI 처럼 보인다(사용자 지적). 체크카드 판에 맞게 카드 번호 각인 숫자와 IC 칩을 서체에 넣는다. LOCA Batang(명조·세리프·나침반 별)과 성격이 완전히 다른 방향",
+      "board": "out/wanted-359731/body_font_board.jpg — 포스터 17px 패널·15.5px 크레딧으로 실제 공고 줄",
+      "candidates": {
+        "Pretendard": "OFL — 현재. 가이드·웹 서체지만 기본 고딕 인상",
+        "카카오 작은글씨(Kakao Small Sans)": "OFL 1.1(github.com/kakao/kakao-font, RFN 없음) — 작은 화면용으로 자간·속공간이 넓어 17px 에서 또렷, 영문 괄호·슬래시가 둥글고 넓어 기본 고딕과 확실히 다름 → 선택",
+        "카카오 큰글씨": "OFL — 큰 제목용이라 본문에서 자간이 좁아 보임",
+        "IBM Plex Sans KR": "OFL — 휴머니스트지만 Pretendard 와 인상 차이 작음",
+        "Spoqa Han Sans Neo": "OFL — 17px 에서 영문이 뭉툭하고 무거움",
+        "SUIT": "OFL — 가늘어 회색 패널에서 약함",
+        "나눔스퀘어 네오": "OFL — 네모 인상이 강하지만 줄바꿈이 늘어남"
+      },
+      "custom": {
+        "name": "Checkcard Sans (파생 서체, 카카오뱅크 공식 서체 아님)",
+        "build": "design-lab/typefaces/build_checkcard_sans.py",
+        "recipe": [
+          "한글·영문: Kakao Small Sans Regular/Bold 그대로",
+          "숫자 0–9: Share Tech Mono(OFL, RFN 'Share' 미사용) — 각진 고정폭 OCR 계열 숫자로 교체, ×1.047(대문자 높이 733 맞춤), 고정폭 530, 세로획 35 vs 한글 'ㅣ' 34 로 굵기 맞춤. Bold 는 윤곽을 34 단위 겹쳐 굵힘",
+          "새로 그림: • · → IC 칩(둥근 세로 사각 테두리 = 한글 획 두께 + 안쪽 가로 홈선 + 끝이 떨어진 세로 홈선, 판 흰 카드 .chip 과 같은 구조). 처음엔 꽉 찬 사각에 홈을 팠더니 17px 에서 검은 네모로 뭉개져 테두리형으로",
+          "판에서는 본문 줄 앞에 칩(•)을 붙인다 — 공고 글자는 그대로"
+        ],
+        "license": "SIL OFL 1.1 — 원본 둘 다 OFL, 새 이름 'Checkcard Sans' 로 수정본 배포 가능, 판매 금지. OFL.txt 동봉",
+        "specimen": "out/wanted-359731/checkcard_sans_specimen.jpg"
+      }
+    },
+    "body_letter_spacing": "-0.035em"
+  },
+  "points": [
+    {
+      "id": "checkcard",
+      "what": "세로형 카카오뱅크 체크카드 — 왼쪽 위 B 심볼, 가운데 위 칩, 오른쪽 가장자리를 따라 세운 이름(KIM KABANG), 색은 반투명 옐로우·시크한 블랙·'원하는 문구를 새기는' 화이트 커스텀",
+      "evidence": "https://www.kakaobank.com/products/checkcard — 공식 이미지 alt '반투명의 영롱한 옐로우 체크카드' / '캐릭터 없이 시크한 블랙 체크카드' / '원하는 문구를 입력할 수 있는 깨끗한 화이트 체크카드', 머리 문구 '나만의 문구를 새기는 커스텀 카드까지'",
+      "meaning": "모든 가입자가 손에 쥐는 브랜드 물건",
+      "use": "구조(v3 중심) — 머리 오른쪽에 카드 석 장이 노랑 표지 아래 가장자리에서 솟는다 — 뒤 두 장은 실제 블랙·반투명 옐로우 카드 이미지(원본, 아래쪽 Mastercard 부분은 머리 경계에 가려짐), 앞 한 장은 화이트 커스텀 카드 형식을 우리가 그린 판: 칩 + 오른쪽 세로 이름 자리에 직무명(DEVOPS), 새긴 문구 자리에 경력(경력 5년 이상). B 심볼은 그리지 않는다",
+      "avoid": "B 심볼·Mastercard 를 그리거나 옮기지 않는다. 캐릭터 카드는 쓰지 않는다. 실제 카드 이미지에 글자를 얹지 않는다"
+    },
+    {
+      "id": "yellow-cover-index",
+      "what": "가이드의 장 표지: 화면 전체를 노랑 #FFE300 으로 채우고 왼쪽 위에 장 제목, 오른쪽에 목차 줄('심볼 Symbol … 05')을 쪽 번호 오른쪽 정렬로 세운다. 노랑 표지와 #1E1E1E 검정 쪽이 번갈아 나온다",
+      "evidence": "KakaoBank_BrandIdentityGuidelines_V2.0.pdf p1(표지)·p4(로고 목차)·p20(앱 아이콘 목차)·p24(색상 목차)·p2/p27(검정 쪽) https://www.kakaobank.com/static/etc/logo/KakaoBank_BrandIdentityGuidelines_V2.0.pdf",
+      "meaning": "노랑은 '브랜드를 명확하거나 상징적으로 전달할 때 최우선으로' 쓰는 색(p25)",
+      "use": "보조(v3) — 머리 노랑 바탕 + 왼쪽 굵은 제목 + Regular 목차",
+      "avoid": "노랑을 옅게(톤 다운) 쓰거나 비슷한 다른 노랑으로 바꾸지 않는다"
+    },
+    {
+      "id": "bilingual-content-page",
+      "what": "가이드 본문 쪽: 왼쪽 위에 '로고 Logo' / '심볼 Symbol' 처럼 국문+영문 짝 라벨, 왼쪽 좁은 설명 단 + 오른쪽 넓은 무채색 캔버스 면, 모서리 없는 사각",
+      "evidence": "가이드 V2.0 p5~p26 전 쪽 / kakaobank.com 브랜드 리소스 페이지(같은 구성)",
+      "meaning": "",
+      "use": "구조 — 가이드 본문 쪽(p5): 위 줄에 '주요 업무 Tasks' 라벨, 좁은 글 단 + 넓은 #EDEDED 캔버스(사진). 자격·우대는 #F7F7F7 면",
+      "avoid": "면에 둥근 모서리·그림자·색을 넣지 않는다"
+    },
+    {
+      "id": "official-palette",
+      "what": "Yellow #FFE300 하나 + 무채색 넷(White / Black #1E1E1E / Gray #A3A3A3 / Light Gray #CCCCCC). 로고 색은 Yellow·Black·White 세 개로만",
+      "evidence": "가이드 V2.0 p14(로고 색상)·p25(주요 색상)·p26(보조 색상)",
+      "meaning": "",
+      "use": "색 — 노랑은 머리 면에만, 검정 #1E1E1E 은 글과 복리후생 면, 선은 #CCCCCC",
+      "avoid": "파랑(인재영입 SNS '카뱅로그' 콘텐츠의 파랑) 등 가이드 밖 유채색 금지"
+    },
+    {
+      "id": "app-number-bubble",
+      "what": "앱 소개 화면: 굵은 두 줄 제목('어려운 계산은 제가 도와드릴게요') + 아래 흰 둥근 말풍선 카드에 금액을 굵게('예상 이자 42만원', '매월 20일 5만원씩', '300,000,000원')",
+      "evidence": "https://www.kakaobank.com/Corp/About/Identity 개인 금융 서비스 화면 5장(03_app_screens)",
+      "meaning": "숫자를 문장 속에 굵게 — 금융을 쉬운 말로",
+      "use": "색·굵기 — 앱 화면 바탕 #F7F7F7 을 본문 면에, 복리후생 속 금액·기간만 굵게",
+      "avoid": "원문에 없는 숫자를 만들지 않는다"
+    },
+    {
+      "id": "ending-credit",
+      "what": "첫 돌 광고 '같은 것을 다르게': 오르골이 도는 절제된 화면 한쪽에 작은 글씨로 고객 이름이 영화 엔딩 크레딧처럼 올라간다('Thanks to' 아래 줄 목록)",
+      "evidence": "더피알 https://www.the-pr.co.kr/news/articleView.html?idxno=40894 — '큼지막한 글자가 대세인 요즘 광고계 트렌드를 역행' / 카카오뱅크 블로그 https://blog.kakaobank.com/186",
+      "meaning": "겸손하지만 자신감 있게",
+      "use": "보조(v3) — 복리후생 검정 크레딧 띠(v2 그대로)",
+      "avoid": "'Thanks to' 같은 문구를 지어 넣지 않는다(원문 소제목 '대표 복리후생' 을 쓴다)"
+    },
+    {
+      "id": "recruit-voice",
+      "what": "인재영입 사이트는 흰 바탕 검정 글씨만, 굵은 두 줄 문장으로 말한다 — '낯선 길을 기꺼이 먼저 걷는 사람들', 서비스마다 질문('지루한 저축을 즐거운 도전으로 바꿀 수 있을까?' → 26주 적금), 공유 문구 '세상을 또 한번 놀라게, 함께 해요.'",
+      "evidence": "https://recruit.kakaobank.com (메타 설명·본문 h2/h3, Pretendard 700) / https://recruit.kakaobank.com/welfare",
+      "meaning": "",
+      "use": "카피 — 꼬리에 공식 문구 '세상을 또 한번 놀라게, 함께 해요.' 그대로. 머리 왼쪽 위 작은 라벨은 사이트 이름 '카카오뱅크 인재영입'",
+      "avoid": "질문형 카피를 우리가 새로 만들지 않는다"
+    },
+    {
+      "id": "pretendard",
+      "what": "가이드 PDF 글자 자체가 Pretendard 로 짜여 있다(글리프 겹침 비교) — 웹·인재영입 사이트도 Pretendard Variable. 큰 목차 글자는 Regular",
+      "evidence": "out/wanted-359731/v2_font_specimen.jpg (가이드 p4·p25 대조) + 두 사이트 CSS",
+      "meaning": "",
+      "use": "글꼴 — Pretendard. 표지 둘째 줄·목차는 400, 제목·라벨 700",
+      "avoid": "카카오 CI 서체(워드마크)를 흉내 내지 않는다"
+    },
+    {
+      "id": "symbol-b-i",
+      "what": "심볼은 은행의 'B' 와 그 중심에 선 'I(나)' 가 결합된 형태 — '내가 중심이 되는 은행'. 심볼은 프레임 상하좌우 중앙",
+      "evidence": "가이드 V2.0 p5·p21 / 브랜드 리소스 페이지 심볼 설명",
+      "meaning": "내가 중심이 되는 은행",
+      "use": "쓰지 않음 — 심볼·앱 아이콘을 포스터에 그리지 않는다(p18 금지: 복잡한 패턴 조합·임의 컬러·비율 변경·형태 변형·마스크·아웃라인)",
+      "avoid": "노랑 사각에 검정 B 같은 앱 아이콘 흉내 금지"
+    }
+  ],
+  "sources": [
+    "https://blog.kakaobank.com/186",
+    "https://event.kakaobank.com/p/brandfilm2021",
+    "https://github.com/kakao/kakao-font",
+    "https://github.com/orioncactus/pretendard",
+    "https://recruit.kakaobank.com",
+    "https://recruit.kakaobank.com/welfare",
+    "https://www.fntimes.com/html/view.php?ud=202110101834443489249a1ae63_18",
+    "https://www.kakaobank.com/Corp/About/Identity",
+    "https://www.kakaobank.com/products/26weeks",
+    "https://www.kakaobank.com/products/checkcard",
+    "https://www.kakaobank.com/static/etc/logo/KakaoBank_BrandIdentityGuidelines_V2.0.pdf",
+    "https://www.kakaobank.com/view/about/brand/resource",
+    "https://www.kakaocorp.com/page/detail/11594?lang=KOR",
+    "https://www.oppadu.com/tools/design-systems-site/brand/kakao-bank.html",
+    "https://www.straightnews.co.kr/news/articleView.html?idxno=116558",
+    "https://www.techm.kr/news/articleView.html?idxno=113119",
+    "https://www.the-pr.co.kr/news/articleView.html?idxno=40894"
+  ],
+  "images": {
+    "card_yellow": "assets/companies/카카오뱅크/v3/card_yellow.png",
+    "card_black": "assets/companies/카카오뱅크/v3/card_black.png"
+  },
+  "images_note": {
+    "card_yellow": "체크카드 상품 페이지 공식 이미지 '반투명의 영롱한 옐로우 체크카드'(og.kakaobank.io/view/d7323d9b…) — 원본 그대로, 글자 얹지 않음",
+    "card_black": "같은 페이지 '캐릭터 없이 시크한 블랙 체크카드'(og.kakaobank.io/view/3c750bcd…) — 원본 그대로. 아래 Mastercard 표시는 머리 경계 밖으로 가려진다",
+    "rights": "카카오뱅크 저작물(카드 이미지에 B 심볼 포함) — 인스타 공개 게시 전 사용 가능 여부 확인 필요"
+  },
+  "version": 3,
+  "images_v2": {
+    "employee": "assets/companies/카카오뱅크/v2/employee.jpg",
+    "card": "assets/companies/카카오뱅크/v2/card.jpg"
+  },
+  "signature": {
+    "what": "세로형 카카오뱅크 체크카드 — 왼쪽 위 B 심볼, 가운데 위 칩, 오른쪽 가장자리를 따라 세운 이름(KIM KABANG), 색은 반투명 옐로우·시크한 블랙·'원하는 문구를 새기는' 화이트 커스텀",
+    "evidence": [
+      "https://www.kakaobank.com/products/checkcard — 공식 이미지 alt '반투명의 영롱한 옐로우 체크카드' / '캐릭터 없이 시크한 블랙 체크카드' / '원하는 문구를 입력할 수 있는 깨끗한 화이트 체크카드', 머리 문구 '나만의 문구를 새기는 커스텀 카드까지'",
+      "https://www.straightnews.co.kr/news/articleView.html?idxno=116558 — 2017년 7월 출범 뒤 5년 만의 체크카드 디자인 변경, 브랜드 색 옐로우·화이트 2종, 화이트는 고객이 문구를 넣는 맞춤 제작",
+      "https://www.fntimes.com/html/view.php?ud=202110101834443489249a1ae63_18 · https://www.efnews.co.kr/news/articleView.html?idxno=92203 — 신규 디자인 공개 보도(같은 내용)"
+    ],
+    "why_recognizable": "은행 앱이 거의 유일하게 손에 쥐는 물건이고, 2017년 출범 때부터 모든 가입자 지갑에 들어간 노란 카드다. 브랜드 색(옐로우)이 가장 넓게 퍼진 매체",
+    "how_used": "머리 오른쪽에 카드 석 장이 노랑 표지 아래 가장자리에서 솟는다 — 뒤 두 장은 실제 블랙·반투명 옐로우 카드 이미지(원본, 아래쪽 Mastercard 부분은 머리 경계에 가려짐), 앞 한 장은 화이트 커스텀 카드 형식을 우리가 그린 판: 칩 + 오른쪽 세로 이름 자리에 직무명(DEVOPS), 새긴 문구 자리에 경력(경력 5년 이상). B 심볼은 그리지 않는다",
+    "alternatives_considered": [
+      "26주적금 도장판 — 인지도 높지만 도장이 카카오프렌즈 캐릭터라 쓸 수 없다(https://www.kakaobank.com/products/26weeks)",
+      "브랜드 필름 2021 '이미 모두의 은행 / 지금은 카뱅' — 라이언 캐릭터가 핵심 오브제(https://event.kakaobank.com/p/brandfilm2021)",
+      "'같은 것을 다르게' 광고의 오르골 — 영상 오브제라 정지 이미지 자료가 부족(https://blog.kakaobank.com/186)",
+      "저금통·한달적금 — 춘식이 캐릭터가 화면의 중심"
+    ]
+  }
+}

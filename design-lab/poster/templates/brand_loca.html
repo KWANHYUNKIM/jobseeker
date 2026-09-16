@@ -1,0 +1,183 @@
+<!-- brand_loca v2 — 롯데카드 전용 판. brands/롯데카드.json 의 points · ui(v2) · images 를 자리로 옮긴다.
+     v1 에서 바뀐 것: 손으로 그린 맨해튼 SVG → 회사소개 메인 비주얼의 실제 동판화 지도(별 포함),
+     꼬리에 같은 캠페인의 맨해튼 스카이라인 사진, 서체를 공식 자료와 비교해 다시 고름, 색을 BI·CI·플레이트 픽셀에서.
+     four-windows   본문 = 둥근 사각 틀을 2×2 창문으로. 칸마다 L·O·C·A 머리글자(Montserrat 800 — BI 산세리프체와 비교해 고름)
+     compass-star   네 칸이 만나는 곳에 네 방향 별 하나
+     manhattan-map  머리 배경 = 실제 지도 이미지(D.brand_images.map). 별 옆에 회사가 붙인 설명 문장 그대로
+     back-to-basic  꼬리 배경 = 실제 스카이라인 사진(D.brand_images.skyline)
+     dotted-frame   본문 종이 영역에 점선 테두리, 모서리 작은 별
+     edge-vertical  머리 오른쪽 가장자리 세로 글씨
+     dot-meter      꼬리 — 경력 연차를 원 눈금으로
+     serif-caps     영문은 EB Garamond small-caps('ESSENCE OF CREDIT CARD' 와 비교해 고름), 국문은 Noto Sans KR(롯데카드 웹 서체) -->
+<meta charset="utf-8">
+<title>brand_loca</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{position:relative;width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    display:flex;flex-direction:column;overflow:hidden}
+  .serif{font-family:var(--serif);font-variant:small-caps;font-weight:500;letter-spacing:.06em}
+
+  /* 머리 — 실제 지도 이미지 */
+  header{position:relative;flex:none;background:#000 var(--map) 78% 0/cover no-repeat;color:var(--on-dark);
+    padding:calc(4.6*var(--u)) calc(9*var(--u)) calc(3.6*var(--u)) calc(6*var(--u))}
+  header::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.86) 0%,rgba(0,0,0,.62) 52%,rgba(0,0,0,.12) 100%)}
+  header > *{position:relative}
+  .slogan{font-size:calc(2.6*var(--u));color:var(--silver-light)}
+  .wm{margin-top:calc(2.2*var(--u));font-size:calc(2.8*var(--u));font-weight:700;letter-spacing:.08em}
+  h1{margin-top:calc(.4*var(--u));font-size:calc(9.6*var(--u));font-weight:700;letter-spacing:-.02em;line-height:1.05}
+  .meta{margin-top:calc(1.8*var(--u));display:flex;flex-wrap:wrap;align-items:baseline;gap:calc(.6*var(--u)) calc(2.4*var(--u));max-width:70%}
+  .meta b{font-size:calc(2.7*var(--u));font-weight:700}
+  .meta .serif{font-size:calc(2.5*var(--u));color:var(--silver)}
+  /* 지도 속 별(오른쪽) 위에 회사가 붙인 설명 문장 — 제목·기술 줄과 겹치지 않게 오른쪽 위 */
+  .caption{position:absolute;right:calc(9*var(--u));top:calc(4.9*var(--u));text-align:right;font-size:calc(2*var(--u));font-weight:400;
+    line-height:1.5;color:var(--silver-light);max-width:30%}
+  .edge{position:absolute;right:calc(2.6*var(--u));top:0;bottom:0;display:flex;align-items:center}
+  .edge span{writing-mode:vertical-rl;font-size:calc(2*var(--u));color:var(--silver)}
+
+  /* 본문 — 플레이트 종이 + 점선 테두리 + 네 창문 */
+  main{position:relative;flex:1;min-height:0;padding:calc(2.6*var(--u)) calc(3.4*var(--u))}
+  .frame{position:relative;height:100%;border:calc(.28*var(--u)) dotted color-mix(in srgb,var(--ink) 65%,transparent);
+    padding:calc(2.8*var(--u)) calc(3.2*var(--u))}
+  .corner{position:absolute;width:calc(2.4*var(--u));height:calc(2.4*var(--u));background:var(--paper)}
+  .corner svg{width:100%;height:100%;display:block}
+  .corner.tl{left:calc(-1.2*var(--u));top:calc(-1.2*var(--u))} .corner.tr{right:calc(-1.2*var(--u));top:calc(-1.2*var(--u))}
+  .corner.bl{left:calc(-1.2*var(--u));bottom:calc(-1.2*var(--u))} .corner.br{right:calc(-1.2*var(--u));bottom:calc(-1.2*var(--u))}
+  .win{position:relative;height:100%;border:calc(.25*var(--u)) solid var(--ink-strong);border-radius:calc(2.4*var(--u))}
+  .notch{position:absolute;width:calc(1.8*var(--u));height:calc(1.8*var(--u));background:var(--paper);
+    border:calc(.25*var(--u)) solid var(--ink-strong);transform:rotate(45deg)}
+  .notch.t{left:calc(50% - .9*var(--u));top:calc(-1.05*var(--u));border-right:0;border-bottom:0}
+  .notch.b{left:calc(50% - .9*var(--u));bottom:calc(-1.05*var(--u));border-left:0;border-top:0}
+  .notch.l{top:calc(50% - .9*var(--u));left:calc(-1.05*var(--u));border-right:0;border-top:0}
+  .notch.r{top:calc(50% - .9*var(--u));right:calc(-1.05*var(--u));border-left:0;border-bottom:0}
+  .grid{position:absolute;inset:0;overflow:hidden;border-radius:calc(2.4*var(--u));display:grid;grid-template-columns:var(--cols);grid-template-rows:var(--rows)}
+  .cell{padding:calc(var(--f)*1.2) calc(var(--f)*1.25) calc(var(--f)*.9);min-width:0;overflow:hidden}
+  .cell.c1,.cell.c3{border-right:1px solid color-mix(in srgb,var(--line) 65%,transparent)}
+  .cell.c1,.cell.c2{border-bottom:1px solid color-mix(in srgb,var(--line) 65%,transparent)}
+  .star{position:absolute;width:calc(var(--f)*3.4);height:calc(var(--f)*3.4);transform:translate(-50%,-50%);pointer-events:none}
+  .star svg{width:100%;height:100%;display:block}
+  .hd{display:flex;align-items:center;gap:calc(var(--f)*.7);margin-bottom:calc(var(--f)*.75)}
+  .cap{flex:none;width:calc(var(--f)*2.3);height:calc(var(--f)*2.3);border-radius:calc(var(--f)*.35);background:var(--ink-strong);color:var(--paper);
+    display:grid;place-items:center;font-family:var(--latin);font-weight:800;font-size:calc(var(--f)*1.3);line-height:1}
+  .hd h2{font-size:calc(var(--f)*1.25);font-weight:700;letter-spacing:-.01em;line-height:1.1;color:var(--ink-strong)}
+  .hd .serif{display:block;font-size:calc(var(--f)*.84);color:var(--accent);margin-top:calc(var(--f)*.1)}
+  .it{font-family:var(--body);font-size:var(--f);font-weight:var(--body-w,500);line-height:var(--body-lh,1.5);color:var(--ink);padding-left:calc(var(--f)*.95);text-indent:calc(var(--f)*-.95);margin-bottom:calc(var(--f)*.3)}
+  .it::before{content:'·';display:inline-block;width:calc(var(--f)*.95);text-indent:0;color:var(--ink-strong);font-weight:900}
+  .kv{display:grid;grid-template-columns:max-content 1fr;column-gap:calc(var(--f)*.8);row-gap:calc(var(--f)*.3);font-size:var(--f);line-height:1.5;margin-top:calc(var(--f)*.7);
+    padding-top:calc(var(--f)*.7);border-top:1px dotted color-mix(in srgb,var(--line) 70%,transparent)}
+  .kv b{font-weight:700;color:var(--ink-strong)} .kv span{font-family:var(--body);font-weight:var(--body-w,500);color:var(--ink)}
+
+  /* 꼬리 — 실제 스카이라인 사진 */
+  footer{position:relative;flex:none;background:#000 var(--skyline) 50% 62%/cover no-repeat;color:var(--on-dark);
+    padding:calc(2.8*var(--u)) calc(6*var(--u)) calc(3.2*var(--u));display:flex;justify-content:space-between;align-items:flex-end;gap:calc(3*var(--u))}
+  footer::before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(44,42,38,.9) 0%,rgba(44,42,38,.72) 60%,rgba(44,42,38,.45) 100%)}
+  footer > *{position:relative}
+  .meter{display:flex;align-items:center;gap:calc(1.6*var(--u))}
+  .dots{display:flex;gap:calc(.7*var(--u))}
+  .dots i{width:calc(1.5*var(--u));height:calc(1.5*var(--u));border-radius:50%;border:1.5px solid var(--silver-light)}
+  .dots i.on{background:var(--on-dark);border-color:var(--on-dark)}
+  .meter b{font-size:calc(2.7*var(--u));font-weight:700}
+  .meter .serif{font-size:calc(2*var(--u));color:var(--silver-light)}
+  .apply{text-align:right;line-height:1.35}
+  .apply .serif{display:block;font-size:calc(2*var(--u));color:var(--silver-light)}
+  .apply b{font-size:calc(2.6*var(--u));font-weight:700}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const I = D.brand_images || {};
+  const set = F.set;
+  set('serif', ui.serif || 'Georgia,serif');
+  set('latin', ui.latin || ui.font);
+  set('body', ui.body_font || ui.font);   // 모집 내용 본문(목록·조건) 서체 — 제목·라벨과 따로
+  if (ui.body_weight) set('body-w', ui.body_weight);
+  if (ui.body_line_height) set('body-lh', ui.body_line_height);
+  set('line', ui.line || ui.ink);
+  set('ink-strong', ui.ink_strong || ui.ink);
+  set('on-dark', ui.on_dark || '#f2eee0');
+  set('silver', ui.silver || '#a6a6a7');
+  set('silver-light', ui.silver_light || '#d5d5d4');
+  if (I.map) set('map', `url("${I.map}")`);
+  if (I.skyline) set('skyline', `url("${I.skyline}")`);
+
+  const starPath = fill => `<path d="M0 -50 L7 -7 L50 0 L7 7 L0 50 L-7 7 L-50 0 L-7 -7 Z" fill="${fill}"/>`;
+  const star4 = fill => `<svg viewBox="-50 -50 100 100">${starPath(fill)}</svg>`;
+  const inkStrong = ui.ink_strong || ui.ink;
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 머리
+  const header = el('header');
+  if (B.slogan) header.append(el('div', 'slogan serif', B.slogan));
+  header.append(el('div', 'wm', B.wordmark || D.company), el('h1', '', D.role));
+  const meta = el('div', 'meta'); meta.append(el('b', '', F.career), el('span', 'serif', D.stack.join(' · '))); header.append(meta);
+  if (B.map_caption && I.map) header.append(el('div', 'caption', B.map_caption));
+  const edge = el('div', 'edge'); edge.append(el('span', 'serif', 'Lotte Card · Recruitment')); header.append(edge);
+  sheet.append(header);
+
+  // 본문
+  const main = el('main'); sheet.append(main);
+  const frame = el('div', 'frame'); main.append(frame);
+  for (const c of ['tl', 'tr', 'bl', 'br']) { const k = el('div', 'corner ' + c); k.innerHTML = star4(inkStrong); frame.append(k); }
+  const win = el('div', 'win'); frame.append(win);
+  for (const n of ['t', 'b', 'l', 'r']) win.append(el('div', 'notch ' + n));
+  const grid = el('div', 'grid'); win.append(grid);
+  const star = el('div', 'star'); star.innerHTML = star4(inkStrong); win.append(star);
+
+  const tasks = S.tasks.flatMap(g => g.items);
+  const cells = [
+    { cap: 'L', ko: '주요업무', en: 'What you do', items: tasks },
+    { cap: 'O', ko: '자격요건', en: 'Requirements', items: S.qualifications },
+    { cap: 'C', ko: '우대사항', en: 'Preferred', items: S.preferences },
+    { cap: 'A', ko: '복지 · 조건', en: 'Benefits', items: S.benefits.map(b => (b.label ? b.label + ' ' : '') + b.text), kv: true },
+  ];
+  const cellEl = (c, i) => {
+    const d = el('div', 'cell c' + (i + 1));
+    const hd = el('div', 'hd'); const t = el('div');
+    t.append(el('h2', '', c.ko), el('span', 'serif', c.en));
+    hd.append(el('div', 'cap', c.cap), t); d.append(hd);
+    c.items.forEach(x => d.append(el('div', 'it', x)));
+    if (c.kv) {
+      const kv = el('div', 'kv');
+      [['경력', F.career], ['기술', D.stack.join(', ')], ['모집', D.until]].forEach(([k, v]) => { if (v) kv.append(el('b', '', k), el('span', '', v)); });
+      d.append(kv);
+    }
+    return d;
+  };
+
+  // 꼬리
+  const footer = el('footer');
+  const years = parseInt((F.career.match(/(\d+)/) || [])[1] || '0', 10);
+  const meter = el('div', 'meter');
+  if (years) {
+    const dots = el('div', 'dots');
+    for (let k = 1; k <= 10; k++) dots.append(el('i', k <= years ? 'on' : ''));
+    const lab = el('div'); lab.append(el('b', '', `${years}년+`), document.createElement('br'), el('span', 'serif', 'Years of experience'));
+    meter.append(dots, lab);
+  }
+  const apply = el('div', 'apply');
+  footer.append(meter, apply); sheet.append(footer);
+
+  const cands = [];
+  for (const cols of ['1fr 1fr', '0.85fr 1.15fr', '1.15fr 0.85fr'])
+    for (const rows of ['auto auto', '0.8fr 1.2fr', '1fr 1fr', '1.2fr 0.8fr']) cands.push({ cols, rows, columns: 2 });
+  Frame.fit(F, cands, c => {
+    F.set('cols', c.cols); F.set('rows', c.rows);
+    grid.replaceChildren(...cells.map(cellEl));
+    const ok = [...grid.children].every(ch => ch.scrollHeight <= ch.clientHeight + 1 && ch.scrollWidth <= ch.clientWidth + 1)
+      && grid.scrollHeight <= grid.clientHeight + 1;
+    if (ok) {
+      const a = grid.children[0].getBoundingClientRect(), w = win.getBoundingClientRect();
+      star.style.left = (a.right - w.left) + 'px'; star.style.top = (a.bottom - w.top) + 'px';
+    }
+    return ok;
+  }, { lo: 10, hi: 40 });
+})();
+</script>
