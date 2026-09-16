@@ -95,11 +95,12 @@ export function CalendarView() {
   }
 
   const selItems = selected ? byDate.get(selected) ?? [] : null
+  const weekRows = cells.length / 7
 
   return (
     <div className="flex flex-col md:flex-row flex-1 min-h-0 min-w-0 overflow-y-auto md:overflow-hidden">
       {/* 캘린더 */}
-      <div className="flex-1 min-w-0 md:overflow-auto p-4 sm:p-5 flex flex-col gap-3">
+      <div className="flex-1 min-w-0 min-h-0 md:overflow-auto p-4 sm:p-5 flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-3 text-xs text-(--color-muted)">
           <SearchInput
             value={query}
@@ -143,7 +144,13 @@ export function CalendarView() {
           <span className="ml-auto text-xs text-(--color-muted)">이 달 마감 {monthClose}건</span>
         </div>
 
-        <div className="grid grid-cols-7 gap-1">
+        {/* 한 달은 한 화면에 들어가야 한다 — 칸을 정사각형으로 두면 넓은 화면에서
+            칸까지 같이 커져 월말이 접힌 곳 아래로 밀려난다. 남은 높이를 주(週) 수로
+            나눠 갖게 하고, 그래도 모자라면 칸이 2.75rem 아래로는 안 줄고 스크롤한다. */}
+        <div
+          className="grid grid-cols-7 gap-1 md:flex-1 md:min-h-0"
+          style={{ gridTemplateRows: `auto repeat(${weekRows}, minmax(2.75rem, 1fr))` }}
+        >
           {WEEKDAYS.map((w, i) => (
             <div key={w} className={`text-center text-xs py-1 ${i === 0 ? 'text-red-400' : i === 6 ? 'text-blue-400' : 'text-(--color-muted)'}`}>
               {w}
@@ -162,7 +169,7 @@ export function CalendarView() {
                 key={i}
                 onClick={() => n > 0 && setSelected(isSel ? null : ds)}
                 disabled={n === 0}
-                className={`relative aspect-square rounded border p-1.5 flex flex-col text-left transition ${heatClass(n)} ${
+                className={`relative min-h-0 overflow-hidden rounded border p-1.5 flex flex-col text-left transition ${heatClass(n)} ${
                   isSel ? 'border-(--color-accent)' : 'border-(--color-border)'
                 } ${n > 0 ? 'hover:border-(--color-accent) cursor-pointer' : 'cursor-default'} ${isPast ? 'opacity-50' : ''}`}
               >
