@@ -142,6 +142,23 @@ jobs:
             ./deploy/tunnel-url.sh 2>&1 | sed 's/^/   /' || true
           fi
 
+          if [ "$DO_ROTATE" = "true" ]; then
+            echo "-- 대시보드 터널 주소 교체"
+            docker compose -f docker-compose.prod.yml restart ops-tunnel stats-tunnel || true
+            # 새 이름이 등록돼 실제로 응답할 때까지 기다린다. 예전엔 8초만 쉬었는데,
+            # 그 사이 등록이 안 끝나면 tunnel-url.sh 의 tail -1 이 옛(죽은) 주소를
+            # 돌려준다. 로그가 아니라 응답으로 판단한다(alive).
+            live=0
+            for i in $(seq 1 18); do
+              sleep 5
+              out=$(./deploy/tunnel-url.sh 2>/dev/null || true)
+              live=$(printf '%s\n' "$out" | grep -E '^(ops|stats)' | grep -c '살아 있음' || true)
+              [ "${live:-0}" -ge 2 ] && break
+            done
+            echo "   교체됨 — 살아 있는 대시보드 ${live:-0}/2 (${i}회째 확인)"
+            [ "${live:-0}" -ge 2 ] || echo "::warning::90초 안에 대시보드 터널이 다 살아나지 않았다"
+          fi
+
           # 봉인된 주소. 이 레포는 public 이라 로그도 공개된다 — 그렇다고 주소를 알려면
           # 서버 앞에 앉아야 하는 것도 곤란하다(밖에서는 LAN 에 못 붙는다). 그래서 주소를
           # 암호화해서 찍는다. 로그에는 열쇠 없이 쓸모없는 암호문만 남고, 열쇠는
@@ -173,12 +190,6 @@ jobs:
             fi
           fi
 
-          if [ "$DO_ROTATE" = "true" ]; then
-            echo "-- 대시보드 터널 주소 교체"
-            docker compose -f docker-compose.prod.yml restart ops-tunnel stats-tunnel || true
-            sleep 8
-            echo "   교체됨. 새 주소는 urls=true 로 다시 확인 (또는 서버에서 tunnel-url.sh)"
-          fi
 
           echo "::group::서비스 진단"
           for name in ops stats search collect; do

@@ -16,10 +16,24 @@ COMPOSE_FILE="docker-compose.prod.yml"
 
 found=0
 
+# 로그에 찍힌 주소가 **지금도** 살아 있는지. quick 터널은 연결이 오래 끊기면 이름이
+# 회수되는데 컨테이너는 running 으로 남는다. 그래서 로그만 보면 죽은 주소를 산 것처럼
+# 알려 준다(2026-09-17 에 ops·stats·뷰어 셋 다 그랬다 — 1.1.1.1 에서 NXDOMAIN).
+alive() {
+  local code
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$1" 2>/dev/null || true)
+  case "${code:-000}" in
+    000) echo "끊김 — 이름이 없다, 재시작 필요" ;;
+    530) echo "끊김 — 터널이 원본에 안 붙음, 재시작 필요" ;;
+    5*)  echo "원본 오류 HTTP $code" ;;
+    *)   echo "살아 있음" ;;
+  esac
+}
+
 if docker ps --format '{{.Names}}' | grep -qx jobseeker-quicktunnel; then
   url=$(docker compose -f "$COMPOSE_FILE" logs quicktunnel 2>/dev/null \
         | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1)
-  [ -n "$url" ] && { echo "quick   : $url  (재시작하면 바뀜)"; found=1; }
+  [ -n "$url" ] && { echo "quick   : $url  (재시작하면 바뀜)  [$(alive "$url")]"; found=1; }
 fi
 
 if docker ps --format '{{.Names}}' | grep -qx jobseeker-ngrok; then
@@ -38,7 +52,7 @@ for svc in ops stats; do
   if docker ps --format '{{.Names}}' | grep -qx "$name"; then
     url=$(docker compose -f "$COMPOSE_FILE" logs "${svc}-tunnel" 2>/dev/null \
           | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1)
-    [ -n "$url" ] && { printf "%-8s: %s  (인증 없음, 재시작하면 바뀜)\n" "$svc" "$url"; found=1; }
+    [ -n "$url" ] && { printf "%-8s: %s  (인증 없음, 재시작하면 바뀜)  [%s]\n" "$svc" "$url" "$(alive "$url")"; found=1; }
   fi
 done
 
