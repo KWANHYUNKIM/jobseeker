@@ -23,7 +23,12 @@ on:
         default: false
         type: boolean
       urls:
-        description: "대시보드 터널 주소까지 출력한다 (공개 로그에 남는다 — 인증이 없다)"
+        description: "대시보드 터널 주소까지 출력한다 (공개 로그에 남는다 — 인증이 없다. 보통은 urls_sealed 를 쓴다)"
+        required: false
+        default: false
+        type: boolean
+      urls_sealed:
+        description: "대시보드 터널 주소를 봉인해서 출력한다 (로그엔 암호문만. DASHBOARD_URL_KEY 로 푼다)"
         required: false
         default: false
         type: boolean
@@ -48,6 +53,8 @@ jobs:
           DO_PIP: ${{ inputs.pip }}
           DO_SERVICES: ${{ inputs.services }}
           DO_URLS: ${{ inputs.urls }}
+          DO_URLS_SEALED: ${{ inputs.urls_sealed }}
+          URL_KEY: ${{ secrets.DASHBOARD_URL_KEY }}
           DO_ROTATE: ${{ inputs.rotate }}
         run: |
           set -euo pipefail
@@ -133,6 +140,37 @@ jobs:
             # 여기 찍는 순간 공개 로그에 남으므로, 보고 나면 rotate 로 갈아엎는 게 맞다.
             echo "-- 전체 주소 (인증 없음, 공개 로그에 남음)"
             ./deploy/tunnel-url.sh 2>&1 | sed 's/^/   /' || true
+          fi
+
+          # 봉인된 주소. 이 레포는 public 이라 로그도 공개된다 — 그렇다고 주소를 알려면
+          # 서버 앞에 앉아야 하는 것도 곤란하다(밖에서는 LAN 에 못 붙는다). 그래서 주소를
+          # 암호화해서 찍는다. 로그에는 열쇠 없이 쓸모없는 암호문만 남고, 열쇠는
+          # 저장소 시크릿과 운영자 PC(~/.jobseeker/dashboard-url.key)에만 있다.
+          #
+          #   echo '<암호문>' | openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -a -A -pass file:$HOME/.jobseeker/dashboard-url.key
+          #
+          # 봉인이 실제로 되는지 **먼저 왕복으로 확인한다.** macOS 기본 openssl 은
+          # LibreSSL 이라 옵션이 다를 수 있는데, 거기서 조용히 실패하면 평문이 새거나
+          # 빈 줄이 찍힌다. 왕복이 안 되면 아무것도 찍지 않는다.
+          if [ "$DO_URLS_SEALED" = "true" ]; then
+            echo "-- 전체 주소 (봉인됨 — 로그에는 암호문만 남는다)"
+            if [ -z "${URL_KEY:-}" ]; then
+              echo "::error::DASHBOARD_URL_KEY 시크릿이 없다 — 봉인할 수 없어 주소를 찍지 않는다"
+            else
+              OSSL=/opt/homebrew/opt/openssl@3/bin/openssl
+              [ -x "$OSSL" ] || OSSL="$(command -v openssl)"
+              seal()   { "$OSSL" enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -a -A -pass env:URL_KEY; }
+              unseal() { "$OSSL" enc -d -aes-256-cbc -pbkdf2 -iter 200000 -a -A -pass env:URL_KEY; }
+              if [ "$(printf 'probe' | seal 2>/dev/null | unseal 2>/dev/null)" = "probe" ]; then
+                echo "   봉인 도구: $("$OSSL" version)"
+                # tunnel-url.sh 는 떠 있는 게 없으면 exit 1 이다. set -e 아래라 그대로 두면
+                # 진단 전체가 여기서 끊긴다 — 위 urls 분기와 같이 막아 둔다.
+                sealed=$( (./deploy/tunnel-url.sh 2>&1 || true) | seal )
+                echo "   SEALED:$sealed"
+              else
+                echo "::error::$OSSL 로 봉인 왕복이 안 된다 — 평문이 샐 수 있어 주소를 찍지 않는다"
+              fi
+            fi
           fi
 
           if [ "$DO_ROTATE" = "true" ]; then
