@@ -48,8 +48,15 @@ MIN_READABLE_PX = 18
 
 
 def _until(job: dict) -> str:
-    """'언제부터 언제까지 / 어떻게 모집하나' — 규칙은 collection.period_label 한 곳에만 둔다."""
+    """'언제부터 언제까지 / 어떻게 모집하나' — 규칙은 collection.period_label 한 곳에만 둔다.
+
+    compose 는 공고를 색인에서 다시 읽는다. 그래서 묶음이 원본에서 찾아 붙여 둔 게시일
+    (`period_live`)이 여기까지 오지 않는다 — 캐시에서 다시 붙인다(네트워크는 쓰지 않는다).
+    """
     from .collection import period_label
+    if not job.get("period_live"):
+        from publish.postingdates import find
+        job["period_live"] = find(job, network=False)
     return period_label(job)
 
 
