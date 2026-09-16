@@ -43,6 +43,19 @@
   footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: flex-end;
            font-size: 21px; color: var(--sub); font-weight: 600; }
   footer b { color: var(--ink); font-size: 23px; }
+  /* 직군 껍질 — 목록의 성격만 바꾼다 */
+  .fam-data li { border-bottom: 1px solid var(--ink); }
+  .fam-data li .no { font-variant-numeric: tabular-nums; }
+  .fam-data ol { border-top: 3px solid var(--ink); }
+  .fam-data .tally { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                     font-size: 19px; letter-spacing: -.01em; }
+  .fam-backend li { grid-template-columns: 74px 1fr auto; }
+  .fam-backend li .no::before { content: ''; }
+  .fam-backend li .no { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .fam-backend li .co::before { content: 'co : '; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                                font-size: 17px; font-weight: 700; color: var(--sub); }
+  .fam-frontend ol { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+  .fam-frontend li { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
 </style>
 </head>
 <body>
@@ -57,6 +70,9 @@ const D = JSON.parse(document.getElementById('data').textContent);
   // 거짓말이 된다 — 보는 사람은 넘기지 않고 장면이 알아서 지나간다.
   const REEL = D.shape === 'reel';
   if (REEL) sheet.classList.add('reel');
+  // 직군 묶음이면 목록도 그 직군의 성격을 띤다 — 데이터는 표(집계 줄), 백엔드는 키:값,
+  // 프론트는 격자. 장식을 더하는 게 아니라 이미 있는 목록의 성격만 바꾼다(ROLE_DESIGN.md).
+  if (D.family) sheet.classList.add('fam-' + D.family);
   sheet.append(el('div', 'kicker', D.kicker || ''));
 
   // 제목이 '9월 16일–22일' 처럼 기간이면 뒤쪽을 얇게 — 숫자가 주인공이 되게
@@ -89,8 +105,14 @@ const D = JSON.parse(document.getElementById('data').textContent);
   sheet.append(ol);
 
   const foot = el('footer');
-  foot.append(el('div', '', REEL ? '공고 전문이 이어서 나옵니다'
-                                 : '넘겨서 공고 전문 보기 →'));
+  // 데이터 묶음의 차례는 표다 — 표는 집계 줄로 끝난다
+  if (D.family === 'data') {
+    const rows = (D.jobs || []).length;
+    foot.append(el('div', 'tally', `${rows} rows · total ${rows}`));
+  } else {
+    foot.append(el('div', '', REEL ? '공고 전문이 이어서 나옵니다'
+                                   : '넘겨서 공고 전문 보기 →'));
+  }
   const right = el('div'); right.append(el('b', '', '@devjobseeker'));
   foot.append(right);
   sheet.append(foot);

@@ -33,6 +33,11 @@ FRAMES = {
     "two_col": TEMPLATE.with_name("two_col.html"),           # eu-08 Tout Y Est: 업무는 깊게, 사람은 얕게
     # 회사 전용 판 — brands/<회사>.json 의 frame. 조사한 포인트를 자리로 옮긴 것(BRAND_RESEARCH.md)
     "brand": TEMPLATE.with_name("_brand"),
+    # 직군 틀 — 그 자리가 무슨 일인지 판이 말한다. 회사 색·서체·대표 물건은 brands 에서 오고
+    # 칸을 짜는 방식만 직군에서 온다(ROLE_DESIGN.md).
+    **{f"family_{fam}": TEMPLATE.with_name(f"family_{fam}.html")
+       for fam in ("data", "backend", "frontend", "infra", "mobile")
+       if TEMPLATE.with_name(f"family_{fam}.html").is_file()},
 }
 BRAND_FRAME = FRAMES["brand"]  # 표지 값. 실제 파일은 brands/*.json 의 frame
 FRAME_JS = TEMPLATE.with_name("_frame.js")   # 틀들이 같이 쓰는 스크립트. /*__FRAME_JS__*/ 자리에 박는다

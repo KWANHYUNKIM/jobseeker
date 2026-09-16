@@ -1,0 +1,305 @@
+<!-- family_backend — 백엔드 직군 틀 v2 (ROLE_DESIGN.md). '자리' 가 판의 모양을 정하고, '회사' 가 얼굴을 준다.
+
+     구조를 가져온 곳: 백엔드가 하루에 보는 두 화면
+       1) 번호 붙은 줄이 흐르는 화면(로그·쿼리 결과) → 왼쪽 등폭 번호 열 + 세로 구분선 + 한 줄 한 항목
+       2) 응답·설정의 키:값 블록            → 머리를 'role/stack/apply/where' 키:값으로 짠다
+     섹션 머리는 터미널의 구분선처럼 이름 ─── 개수. 등폭은 숫자·구분선·키 같은 ASCII 에만 쓴다.
+     지어낸 로그·가짜 시간·가짜 상태 코드는 없다 — 값은 전부 공고 원문과 회사·경력·모집 기간이다.
+
+     v2 에서 고친 것 (사용자 판정 "약간 특색이 없어지네"):
+       v1 은 대표 물건을 꼬리의 7u 정사각 칸에 넣고, 그마저 images.mark|logo 만 봤다. 회사가
+       색·서체로만 남아 판이 다 같아 보였다. v2 는 **얼굴 자리(.face)** 를 두고 판 높이의
+       20% 이상을 대표 물건에 준다. 이미지 비율을 재서 자리를 고른다:
+         정사각~가로(≤2.2)  → 머리의 셋째 칸(26u 정사각, 판의 26%)
+         가로 띠(2.2~4)     → 머리 아래 전폭 띠(20~26u, object-fit: cover 로 자름)
+         아주 얇은 띠(>4)   → 전폭 띠를 원래 크기로, 회사 색 바탕 위에(웹툰 요일 띠처럼 UI 조각)
+         아이콘(300px 미만) → 이미지로 안 본다(토스 이모지 SVG)
+       이미지가 없는 회사는 brands/<회사>.json 의 signature.id 를 보고 **그 구조**를 되살린다
+       (SIG_STRUCT). 지금 등록된 것: 10to100-lockup(토스) — 경력 숫자를 검정 정사각·원 조합으로.
+       등록 안 된 회사는 회사 이름 한 줄을 display 서체로 크게 세운다(지어낸 그림은 넣지 않는다). -->
+<meta charset="utf-8">
+<title>family_backend</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);font-family:var(--font);
+    display:flex;flex-direction:column;overflow:hidden}
+
+  /* 머리 — 키:값 블록. 응답 본문처럼 왼쪽 키 열을 맞춘다 */
+  header{flex:none;padding:calc(4*var(--u)) calc(4.6*var(--u)) calc(1.6*var(--u));
+    display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:calc(3*var(--u));align-items:start}
+  header.with-face{grid-template-columns:minmax(0,1fr) auto auto}
+  .kv{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:calc(1.6*var(--u));row-gap:calc(.75*var(--u));align-items:baseline}
+  .kv .k{font-family:var(--code);font-size:calc(1.72*var(--u));font-weight:700;color:var(--sub);
+    letter-spacing:.02em;white-space:nowrap}
+  .kv .k::after{content:':';margin-left:.25em;opacity:.55}
+  .kv .v{font-size:calc(2.2*var(--u));font-weight:700;color:var(--ink);line-height:1.25;letter-spacing:-.01em}
+  .kv .v.mono{font-family:var(--code);font-weight:700;font-size:calc(1.95*var(--u));letter-spacing:0}
+  .kv .v.title{font-size:calc(4.5*var(--u));font-weight:800;letter-spacing:-.032em;line-height:1.03}
+  .kv .v.title span{display:block;font-size:.56em;font-weight:700;letter-spacing:-.015em;margin-top:calc(.45*var(--u));color:var(--sub)}
+  /* 긴 공고 구제용 머리 — 키:값 구조는 그대로 두고 크기만 줄인다 */
+  .compact .kv .v.title{font-size:calc(3.35*var(--u))}
+  .compact .kv .v{font-size:calc(1.92*var(--u))}
+  .compact .kv .v.mono{font-size:calc(1.72*var(--u))}
+  .compact .kv .k{font-size:calc(1.52*var(--u))}
+  .compact .kv{row-gap:calc(.52*var(--u))}
+  .compact header{padding-top:calc(2.7*var(--u));padding-bottom:calc(1.1*var(--u))}
+
+  /* 경력 — 백엔드가 크게 보는 숫자 자리(상태 코드가 서던 자리). 값은 원문 경력이다 */
+  .yrs{justify-self:end;text-align:right;border-left:calc(.5*var(--u)) solid var(--accent);padding-left:calc(1.7*var(--u))}
+  .yrs .n{font-family:var(--code);font-size:calc(7.6*var(--u));font-weight:700;line-height:.86;letter-spacing:-.04em;color:var(--ink)}
+  .yrs .u{margin-top:calc(.5*var(--u));font-size:calc(1.66*var(--u));font-weight:700;color:var(--sub);white-space:nowrap}
+  .compact .yrs .n{font-size:calc(5.1*var(--u))}
+  .compact .yrs{padding-left:calc(1.3*var(--u))}
+
+  /* 얼굴 자리 — 회사의 대표 물건. 판 높이의 20% 이상(ROLE_DESIGN.md 규칙 둘) */
+  .face-sq{justify-self:end;width:var(--face);height:var(--face);overflow:hidden;
+    border:calc(.28*var(--u)) solid var(--rule)}
+  .face-sq img{width:100%;height:100%;object-fit:cover;display:block}
+  .face-band{flex:none;height:var(--face);overflow:hidden;margin:0 0 calc(.4*var(--u))}
+  .face-band img{width:100%;height:100%;object-fit:cover;display:block}
+  /* 아주 얇은 띠(요일 띠 같은 UI 조각) — 늘리지 않고 회사 색 바탕에 얹는다 */
+  .face-strip{flex:none;background:var(--tint);padding:calc(4.8*var(--u)) calc(4.6*var(--u));
+    display:grid;place-items:center;border-top:calc(.28*var(--u)) solid var(--rule);
+    border-bottom:calc(.28*var(--u)) solid var(--rule)}
+  .face-strip img{max-width:100%;display:block}
+  /* 이미지가 없는 회사 — brands 의 signature 구조를 되살린다 */
+  .face-struct{flex:none;padding:calc(2.6*var(--u)) calc(4.6*var(--u)) calc(2.2*var(--u));
+    border-top:calc(.28*var(--u)) solid var(--rule);display:flex;align-items:center;gap:calc(2.2*var(--u))}
+  /* 토스 '10 to 100' — 검정 정사각 안 흰 숫자 · 검정 원 안 to · 검정 정사각. 값은 원문 경력 */
+  .lockup{display:flex;align-items:center;gap:calc(1.1*var(--u))}
+  .lockup .box{background:var(--ink);color:var(--paper);font-family:var(--code);font-weight:700;
+    width:calc(13*var(--u));height:calc(13*var(--u));display:grid;place-items:center;
+    font-size:calc(6.4*var(--u));letter-spacing:-.03em}
+  .lockup .dot{background:var(--ink);color:var(--paper);border-radius:50%;
+    width:calc(7.2*var(--u));height:calc(7.2*var(--u));display:grid;place-items:center;
+    font-size:calc(2.5*var(--u));font-weight:700}
+  .lockup .cap{font-size:calc(1.9*var(--u));font-weight:700;color:var(--sub);margin-left:calc(.8*var(--u))}
+  .wordmark{font-family:var(--display,var(--font));font-size:calc(5.2*var(--u));font-weight:800;
+    letter-spacing:-.035em;line-height:1}
+  .wordmark + .wm-line{flex:1;height:calc(.42*var(--u));background:var(--accent)}
+  .tight .face-sq{--face:calc(20*var(--u))}
+  .tight .face-band{height:calc(20*var(--u))}
+  .tight .face-strip{padding-top:calc(2.2*var(--u));padding-bottom:calc(2.2*var(--u))}
+  .tight .lockup .box{width:calc(10*var(--u));height:calc(10*var(--u));font-size:calc(5*var(--u))}
+  .tight .lockup .dot{width:calc(5.8*var(--u));height:calc(5.8*var(--u))}
+  .tight .wordmark{font-size:calc(4*var(--u))}
+
+  /* 본문 — 번호 붙은 줄이 흐르는 화면 */
+  main{flex:1;min-height:0;overflow:hidden;column-count:var(--cols,2);column-gap:calc(var(--f)*1.45);column-fill:balance;
+    margin:calc(1.2*var(--u)) calc(4.6*var(--u)) 0;padding-top:calc(1.5*var(--u));border-top:calc(.28*var(--u)) solid var(--rule)}
+  .blk{min-width:0;margin-bottom:calc(var(--f)*1.15);break-inside:auto}
+  .blk:last-child{margin-bottom:0}
+  .blk .hd{break-after:avoid;display:grid;grid-template-columns:auto minmax(calc(var(--f)*1.2),1fr) auto;align-items:center;
+    column-gap:calc(var(--f)*.6);margin-bottom:calc(var(--f)*.6)}
+  .blk .hd b{font-size:calc(var(--f)*1.12);font-weight:800;letter-spacing:-.02em;color:var(--strong);white-space:nowrap}
+  .blk .hd .dash{height:calc(.16*var(--u));background:var(--rule);min-width:calc(var(--f)*1.2)}
+  .blk .hd .n{font-family:var(--code);font-size:calc(var(--f)*.92);font-weight:700;color:var(--accent);white-space:nowrap}
+  .ln{break-inside:avoid;display:grid;grid-template-columns:calc(var(--f)*1.9) calc(.14*var(--u)) minmax(0,1fr);
+    column-gap:calc(var(--f)*.62);align-items:start;margin-bottom:calc(var(--f)*.42)}
+  .ln .no{font-family:var(--code);font-size:calc(var(--f)*.86);font-weight:700;color:var(--sub);
+    text-align:right;padding-top:.22em;font-variant-numeric:tabular-nums}
+  .ln .bar{background:var(--rule);align-self:stretch;min-height:1.2em}
+  .ln .tx{font-size:var(--f);line-height:1.46;font-weight:500;color:var(--text);text-wrap:pretty}
+  .dense .ln{grid-template-columns:calc(var(--f)*1.55) calc(.12*var(--u)) minmax(0,1fr);
+    column-gap:calc(var(--f)*.5);margin-bottom:calc(var(--f)*.3)}
+  .dense .ln .tx{line-height:1.38}
+  .dense .blk{margin-bottom:calc(var(--f)*.85)}
+  .dense .blk .hd{margin-bottom:calc(var(--f)*.45)}
+  /* 세 단까지 가는 긴 공고 — 번호를 줄 안쪽으로 넣어 열 하나를 없앤다(로그 줄의 앞머리처럼) */
+  .c3.dense .ln{display:block;padding-left:calc(var(--f)*2.1);text-indent:calc(var(--f)*-2.1)}
+  .c3.dense .ln .no{display:inline;padding:0;margin-right:calc(var(--f)*.55);text-align:left}
+  .c3.dense .ln .bar{display:none}
+  .c3.dense .ln .tx{display:inline;text-indent:0}
+  .dense header{padding-top:calc(3*var(--u));padding-bottom:calc(1.1*var(--u))}
+  .dense footer{margin-top:calc(1.1*var(--u));padding:calc(1.1*var(--u)) 0 calc(1.9*var(--u))}
+  .ln .tx b{font-weight:700;color:var(--ink)}
+  /* 원문의 대괄호 소제목 — 줄 안의 중첩 표시로(원문 글자 그대로) */
+  .ln.sub{margin-top:calc(var(--f)*.5)}
+  .ln.sub .no{font-size:calc(var(--f)*.9);color:var(--accent)}
+  .ln.sub .tx{font-weight:700;color:var(--strong);font-size:calc(var(--f)*1.02)}
+
+  footer{flex:none;margin:calc(1.5*var(--u)) calc(4.6*var(--u)) 0;padding:calc(1.4*var(--u)) 0 calc(2.6*var(--u));
+    border-top:calc(.28*var(--u)) solid var(--rule);display:grid;grid-template-columns:minmax(0,1fr) auto;
+    column-gap:calc(2*var(--u));align-items:center}
+  footer .co{font-size:calc(2.35*var(--u));font-weight:800;letter-spacing:-.02em}
+  footer .tags{margin-top:calc(.4*var(--u));font-size:calc(1.62*var(--u));font-weight:600;color:var(--sub);letter-spacing:-.01em}
+  footer .mono{font-family:var(--code);font-size:calc(1.62*var(--u));font-weight:700;color:var(--sub)}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  // 회사 색이 있으면 그것, 없으면 직군 기본값(밝은 종이 + 파랑 한 점).
+  F.set('paper', ui.paper || '#f6f7f9');
+  F.set('ink', ui.ink || '#14171a');
+  F.set('text', ui.text || '#3a4149');
+  F.set('sub', ui.sub || '#7b848d');
+  F.set('strong', ui.strong || ui.ink || '#14171a');
+  F.set('accent', ui.accent || '#2f6feb');
+  F.set('rule', ui.line || 'rgba(20,23,26,.16)');
+  F.set('tint', ui.cut || ui.chip_bg || ui.kraft || 'rgba(20,23,26,.05)');
+  if (ui.display) F.set('display', ui.display);
+  // 등폭은 숫자·구분선·키에만. 회사가 코드 서체를 정해 두면 그것을 쓴다.
+  F.set('code', ui.code_font || ui.latin_font || ui.latin
+    || '"Cascadia Mono","Consolas","D2Coding","Nanum Gothic Coding",ui-monospace,monospace');
+  F.set('face', 'calc(26 * var(--u))');
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // --- 얼굴 자리: 어떤 대표 물건이 있나 ----------------------------------
+  // 이미지 비율을 실제로 재서 자리를 고른다. 아이콘(300px 미만)은 대표 물건으로 보지 않는다.
+  const measured = [];
+  for (const [name, src] of Object.entries(IMG)) {
+    const im = new Image();
+    im.src = src;
+    try { await im.decode(); } catch { continue; }
+    const w = im.naturalWidth, h = im.naturalHeight;
+    if (!w || !h || Math.max(w, h) < 300) continue;      // 이모지·아이콘
+    measured.push({ name, src, w, h, ratio: w / h });
+  }
+  // 정사각에 가까운 것을 먼저, 그다음 띠는 두꺼운 것부터(판에서 크게 보인다)
+  measured.sort((a, b) => (a.ratio <= 2.2 ? 0 : 1) - (b.ratio <= 2.2 ? 0 : 1) || a.ratio - b.ratio);
+  const hero = measured[0];
+
+  // 이미지가 없는 회사는 brands 의 signature.id 로 그 구조를 되살린다.
+  const SIG_STRUCT = {
+    // 토스 10주년 '10 to 100' — 검정 정사각 안 흰 숫자 / 검정 원 안 to / 검정 정사각.
+    // 값은 지어내지 않고 원문 경력 숫자를 쓴다(1–7년 → [1] (to) [7]).
+    '10to100-lockup': (career) => {
+      const m = career.match(/(\d+)\s*[-~–]\s*(\d+)/) || career.match(/(\d+)/);
+      if (!m) return null;
+      const lk = el('div', 'lockup');
+      lk.append(el('div', 'box', m[1]));
+      lk.append(el('div', 'dot', 'to'));
+      if (m[2]) lk.append(el('div', 'box', m[2]));
+      lk.append(el('div', 'cap', career));
+      return lk;
+    },
+  };
+
+  // --- 머리: 키:값 ------------------------------------------------------
+  const header = el('header');
+  const kv = el('div', 'kv');
+  const addRow = (k, node) => { kv.append(el('div', 'k', k), node); };
+  // 등폭은 ASCII 값에만. 한글에 걸면 대체 서체가 자간을 벌려 '채 용 시' 처럼 읽힌다.
+  const ascii = t => /^[ -~·–—\/]+$/.test(t);
+  const val = t => el('div', ascii(t) ? 'v mono' : 'v', t);
+  const titleRaw = D.title || D.role;
+  const tm = titleRaw.match(/^(.+?)\s*[(\[]([^)\]]+)[)\]]\s*$/);
+  const title = el('div', 'v title', tm ? tm[1] : titleRaw);
+  if (tm) title.append(el('span', '', tm[2]));
+  addRow('role', title);
+  if (D.stack.length) addRow('stack', val([...new Set(D.stack)].join(' · ')));
+  if (D.until) addRow('apply', val(D.until));                    // 모집 기간 — 판이 직접 그린다
+  const careerRaw = (D.meta.find(m => /^경력|^신입/.test(m)) || D.meta[0] || '').trim();
+  const where = D.meta.filter(m => m !== careerRaw).join(' · ');
+  if (where) addRow('where', val(where));
+
+  const structFn = SIG_STRUCT[(B.signature || {}).id];
+  const lockup = !hero && structFn ? structFn(careerRaw) : null;
+
+  // 경력 숫자 — 얼굴이 lockup 이면 그쪽이 경력을 이미 말한다(중복 금지)
+  if (!lockup) {
+    const yrs = el('div', 'yrs');
+    const cm = careerRaw.match(/(\d+)\s*[-~–]\s*(\d+)/) || careerRaw.match(/(\d+)/);
+    yrs.append(el('div', 'n', cm ? (cm[2] ? `${cm[1]}–${cm[2]}` : cm[1]) : (careerRaw || '—')));
+    yrs.append(el('div', 'u', careerRaw || '경력'));
+    header.append(kv, yrs);
+  } else header.append(kv);
+
+  // 정사각~가로(≤2.2)는 머리 셋째 칸으로 — 제목 옆에서 회사가 바로 보인다
+  let faceRow = null;
+  if (hero && hero.ratio <= 2.2) {
+    const box = el('div', 'face-sq');
+    const im = el('img'); im.src = hero.src; im.alt = ''; box.append(im);
+    header.classList.add('with-face');
+    header.append(box);
+  } else if (hero && hero.ratio <= 4) {
+    faceRow = el('div', 'face-band');
+    const im = el('img'); im.src = hero.src; im.alt = ''; faceRow.append(im);
+  } else if (hero) {
+    // 아주 얇은 띠는 늘리면 뭉개진다 — 원래 크기로 회사 색 바탕 위에
+    faceRow = el('div', 'face-strip');
+    const im = el('img'); im.src = hero.src; im.alt = ''; faceRow.append(im);
+  } else {
+    faceRow = el('div', 'face-struct');
+    if (lockup) faceRow.append(lockup);
+    else {
+      // 등록된 구조가 없는 회사 — 지어낸 그림 대신 회사 이름을 판의 서체로 세운다
+      faceRow.append(el('div', 'wordmark', B.wordmark || D.company));
+      faceRow.append(el('div', 'wm-line'));
+    }
+  }
+  sheet.append(header);
+  if (faceRow) sheet.append(faceRow);
+
+  const main = el('main'); sheet.append(main);
+
+  // --- 꼬리: 회사 한 줄 ------------------------------------------------
+  const footer = el('footer');
+  const fl = el('div');
+  fl.append(el('div', 'co', B.wordmark || D.company));
+  if (B.slogan) fl.append(el('div', 'tags', B.slogan));
+  footer.append(fl);
+  if (D.until) footer.append(el('div', ascii(D.until) ? 'mono' : 'tags', D.until));
+  sheet.append(footer);
+
+  // --- 섹션 → 블록 -----------------------------------------------------
+  const secs = [];
+  const tasks = S.tasks.flatMap(g => g.items);
+  if (tasks.length) secs.push({ title: '주요업무', items: tasks });
+  if (S.qualifications.length) secs.push({ title: '자격요건', items: S.qualifications });
+  if (S.preferences.length) secs.push({ title: '우대사항', items: S.preferences });
+  if (S.benefits.length) secs.push({ title: '복지 / 혜택', items: S.benefits });
+
+  const isSub = t => /^\[.+\]$/.test(t) || /^#/.test(t);
+  const blockEl = s => {
+    const d = el('div', 'blk');
+    const hd = el('div', 'hd');
+    // 개수는 번호가 붙는 줄만 센다 — 원문 소제목('[…]')까지 세면 실제보다 많아 보인다
+    const count = s.items.filter(it => !(typeof it === 'string' && isSub(it))).length;
+    hd.append(el('b', '', s.title), el('div', 'dash'), el('div', 'n', String(count).padStart(2, '0')));
+    d.append(hd);
+    let n = 0;
+    s.items.forEach(it => {
+      const txt = typeof it === 'string' ? it : (it.label ? `${it.label} ${it.text}` : it.text);
+      const sub = isSub(txt) && !(typeof it !== 'string' && it.label);
+      const row = el('div', sub ? 'ln sub' : 'ln');
+      row.append(el('div', 'no', sub ? '::' : String(++n).padStart(2, '0')), el('div', 'bar'));
+      const tx = el('div', 'tx');
+      if (typeof it !== 'string' && it.label) { tx.append(el('b', '', it.label), ' ' + it.text); }
+      else tx.textContent = txt;
+      row.append(tx);
+      d.append(row);
+    });
+    return d;
+  };
+
+  // 단은 흐름이 알아서 나눈다(column-count). 후보는 얼굴 크기 · 머리 크기 · 단 수 · 줄간이다.
+  // 얼굴은 'full'(26u = 판의 26%)과 'tight'(20u = 20%) 둘뿐이다 — 그 아래로는 줄이지 않는다
+  // (ROLE_DESIGN.md 규칙 둘: 대표 물건은 판 높이의 20% 이상).
+  const cands = [];
+  for (const face of ['full', 'tight'])
+    for (const cols of [2, 3])
+      for (const dense of [false, true])
+        for (const hd of ['full', 'compact'])
+          cands.push({ face, cols, dense, hd, columns: cols });
+  Frame.fit(F, cands, c => {
+    sheet.classList.toggle('compact', c.hd === 'compact');
+    sheet.classList.toggle('dense', c.dense);
+    sheet.classList.toggle('c3', c.cols === 3);
+    sheet.classList.toggle('tight', c.face === 'tight');
+    F.set('cols', String(c.cols));
+    main.replaceChildren(...secs.map(blockEl));
+    return !Frame.overflows(main);
+  }, { lo: 10, hi: 22 });
+})();
+</script>

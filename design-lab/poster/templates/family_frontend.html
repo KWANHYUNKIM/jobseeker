@@ -1,0 +1,330 @@
+<!-- family_frontend — 프론트엔드 직군 틀 v2 (ROLE_DESIGN.md). 회사가 아니라 **자리**가 판을 짠다.
+     구조: 판 전체가 렌더된 페이지 한 장이다 —
+           탭 줄(회사 + 뷰포트 치수 + 모집 기간)
+           → **히어로 섹션**(대표 물건 사진이 여기 산다. 제목·경력이 그 위/옆에 얹힌다)
+           → 12칼럼 격자에 앉은 컴포넌트 박스들(박스마다 제목줄 + 개수).
+     왜 이 구조인가: 프론트엔드 개발자가 하루에 보는 것이 창·탭·격자·컴포넌트 경계이고,
+           렌더된 페이지는 거의 언제나 히어로로 시작한다. 창도 히어로도 장식이 아니라
+           페이지의 실제 구조다(쿠팡 판이 판 전체를 운송장으로 쓴 것과 같은 방식).
+     v1 에서 고친 것 (사용자 판정 '약간 특색이 없어지네'):
+           대표 물건을 40px 파비콘에 넣어 회사가 사라졌다. 이제 대표 물건이 **판 높이의 22% 이상**
+           (히어로)을 차지한다. 가로로 긴 띠 사진은 전폭 히어로, 정사각에 가까운 사진은 제목 옆
+           히어로 칸. 쓸 만한 사진이 없으면 브랜드 토큰(기울기·띠 색)으로 히어로를 짠다.
+           파비콘 자리에는 사진 대신 회사 첫 글자를 둔다 — 40px 사진은 무엇인지 알아볼 수 없다.
+           `h1` 요소 라벨은 뺐다(일반 지원자에게는 모를 말). 뷰포트 치수는 남겼다 — 지금 보고 있는
+           이미지의 실제 치수이고, 탭 줄은 브라우저가 페이지 정보를 적는 자리다.
+     회사에서 오는 것: 색·서체(D.brand.ui), 대표 물건 사진(D.brand_images), 기울기·띠 색 토큰.
+     글자: 공고 원문 전부 + 회사·경력·모집 기간뿐. 가짜 코드·가짜 화면·없는 상태 표시는 없다.
+           모노로 찍는 것은 개수·뷰포트 치수처럼 실제 값뿐이다. -->
+<meta charset="utf-8">
+<title>family_frontend</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#222}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{width:var(--w);height:var(--h);background:var(--chrome);padding:var(--SP);
+    font-family:var(--font);color:var(--ink);overflow:hidden}
+
+  /* 창 */
+  .win{height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--page);
+    border:calc(.3*var(--u)) solid var(--line);border-radius:calc(1.4*var(--u))}
+
+  /* 탭 줄 — 회사, 오른쪽에 뷰포트 치수와 모집 기간 */
+  .tabs{flex:none;display:flex;align-items:flex-end;gap:calc(1.6*var(--u));background:var(--chrome);
+    border-bottom:calc(.3*var(--u)) solid var(--line);padding:calc(.9*var(--u)) calc(1.6*var(--u)) 0}
+  .tab{display:flex;align-items:center;gap:calc(1*var(--u));max-width:62%;background:var(--page);
+    border:calc(.3*var(--u)) solid var(--line);border-bottom:none;border-radius:calc(1*var(--u)) calc(1*var(--u)) 0 0;
+    padding:calc(.9*var(--u)) calc(1.8*var(--u)) calc(1.1*var(--u));margin-bottom:calc(-.3*var(--u))}
+  /* 파비콘 자리에는 사진을 넣지 않는다 — 40px 사진은 무엇인지 알아볼 수 없다(v1 의 문제) */
+  .fav{flex:none;width:calc(2.6*var(--u));height:calc(2.6*var(--u));border-radius:calc(.55*var(--u));
+    background:var(--accent);color:#fff;display:grid;place-items:center;font-size:calc(1.7*var(--u));font-weight:800}
+  .tab .co{font-size:calc(2*var(--u));font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .meta{margin-left:auto;display:flex;align-items:center;gap:calc(1.6*var(--u));padding-bottom:calc(1.2*var(--u));
+    font-family:var(--mono);font-size:calc(1.55*var(--u));font-weight:600;color:var(--sub);white-space:nowrap}
+  .meta .due{color:var(--accent);font-family:var(--font);font-weight:700}
+
+  /* 페이지 */
+  .page{flex:1;min-height:0;display:flex;flex-direction:column}
+
+  /* 히어로 — 대표 물건이 사는 자리. 판 높이의 22% 이상(ROLE_DESIGN 규칙 둘) */
+  .hero{flex:none;position:relative;height:var(--HERO);overflow:hidden;
+    border-bottom:calc(.3*var(--u)) solid var(--line)}
+  .hero.split{display:grid;grid-template-columns:minmax(0,1fr) var(--HERO)}
+  .hero img.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .hero.split img.shot{position:static;width:100%;height:100%}
+  .hero .scrim{position:absolute;inset:0;background:var(--SCRIM)}
+  /* 사진이 없을 때 — 브랜드 토큰(띠 색·기울기)으로 짠 히어로 */
+  .bands{position:absolute;inset:calc(-6*var(--u)) calc(-8*var(--u));display:flex;
+    transform:rotate(var(--SLANT));transform-origin:center}
+  .bands i{flex:1}
+  .hero .txt{position:relative;z-index:2;height:100%;display:grid;
+    grid-template-columns:minmax(0,1fr) auto;column-gap:calc(2*var(--u));align-items:end;
+    padding:calc(1.6*var(--u)) var(--PD) calc(1.5*var(--u))}
+  .hero.split .txt{padding-right:calc(1.8*var(--u))}
+  h1{font-size:var(--TT);font-weight:800;letter-spacing:-.035em;line-height:1.04;text-wrap:pretty;color:var(--HINK)}
+  h1 span{display:block;font-size:.56em;font-weight:700;letter-spacing:-.02em;margin-top:calc(.4*var(--u))}
+  .stack{margin-top:calc(.9*var(--u));font-family:var(--mono);font-size:calc(1.7*var(--u));
+    font-weight:600;color:var(--HSUB)}
+  .car{text-align:right;white-space:nowrap;color:var(--HINK)}
+  .car .k{font-size:calc(1.6*var(--u));font-weight:700;color:var(--HSUB)}
+  .car .v{display:flex;align-items:baseline;justify-content:flex-end;gap:calc(.5*var(--u));margin-top:calc(.2*var(--u))}
+  .car .n{font-size:var(--CAR);font-weight:800;letter-spacing:-.045em;line-height:.92}
+  .car .t{font-size:calc(2.1*var(--u));font-weight:700}
+
+  /* 본문 — 12칼럼 격자. 거터가 격자다(선을 따로 그리지 않는다) */
+  main{flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+    column-gap:var(--GUT);padding:calc(1.5*var(--u)) var(--PD) var(--PD)}
+  .col{display:flex;flex-direction:column;gap:calc(var(--f)*var(--GAP))}
+
+  /* 컴포넌트 박스 — 제목줄이 있는 칸 */
+  /* 박스는 자연 높이다 — 높이를 묶으면 안에서 넘쳐도 main 의 넘침 판정에 안 걸린다(Frame.fit 함정) */
+  .box{border:calc(.3*var(--u)) solid var(--line);border-radius:calc(var(--f)*.7);overflow:hidden}
+  .box>h2{display:flex;align-items:baseline;gap:calc(var(--f)*.5);background:var(--tint);
+    border-bottom:calc(.3*var(--u)) solid var(--line);padding:calc(var(--f)*.5) calc(var(--f)*.8) calc(var(--f)*.44);
+    font-size:calc(var(--f)*1.06);font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+  .box>h2 b{margin-left:auto;font-family:var(--mono);font-size:calc(var(--f)*.9);font-weight:700;color:var(--sub)}
+  .body{padding:calc(var(--f)*.6) calc(var(--f)*.8) calc(var(--f)*.5);min-height:0}
+  .it{display:grid;grid-template-columns:calc(var(--f)*1.5) minmax(0,1fr);font-size:var(--f);line-height:1.43;
+    font-weight:500;color:var(--text);margin-bottom:calc(var(--f)*.3);text-wrap:pretty;break-inside:avoid}
+  .it i{font-style:normal;font-family:var(--mono);font-weight:700;font-size:.88em;color:var(--accent);padding-top:.1em}
+  .it.plain{grid-template-columns:calc(var(--f)*.95) minmax(0,1fr)}
+  .it.plain i{color:var(--sub)}
+  .sub{font-size:var(--f);font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.35;
+    margin:calc(var(--f)*.35) 0 calc(var(--f)*.3)}
+  .sub:first-child{margin-top:0}
+  .cols{column-gap:calc(var(--f)*1.1)}
+  .grp{break-inside:avoid-column}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  const IMG = D.brand_images || {};
+  // 회사에서 오는 것 — 없으면 직군 기본값
+  F.set('page', ui.card || '#ffffff');
+  F.set('chrome', ui.paper || '#eef1f4');
+  F.set('line', ui.line || 'rgba(17,17,17,.16)');
+  F.set('tint', ui.tint || 'rgba(0,0,0,.035)');
+  F.set('mono', ui.code_font || ui.latin_font || "'Menlo','Consolas','DejaVu Sans Mono',monospace");
+  // 굵기별로 미리 불러 둔다 — 안 그러면 fit 이 대체 서체로 치수를 잰다
+  await Promise.all([500, 700, 800].map(w => document.fonts.load(`${w} 20px ${(ui.font || 'sans-serif').split(',')[0]}`, '가A1'))).catch(() => {});
+
+  // 히어로에 쓸 대표 물건 사진을 고른다. 실제 치수를 재서 가로형/정사각형/못 씀을 가른다 —
+  // 작은 아이콘(최대 변 480px 미만)을 히어로에 늘리면 뭉개진다.
+  const shots = [];
+  for (const [name, src] of Object.entries(IMG)) {
+    const im = new Image();
+    im.src = src;
+    try { await im.decode(); } catch { continue; }
+    const w = im.naturalWidth, h = im.naturalHeight;
+    if (Math.max(w, h) < 480) continue;
+    shots.push({ name, src, w, h, ratio: w / h, area: w * h });
+  }
+  shots.sort((a, b) => b.area - a.area);
+  const shot = shots[0] || null;
+  const wide = shot ? shot.ratio >= 1.7 : false;      // 띠 사진(쏘카 빛의 도로, 올리브영 매장 스크린)
+
+  const hex = (c, a) => {
+    const m = /^#?([0-9a-f]{6})$/i.exec((c || '').trim());
+    if (!m) return null;
+    const n = parseInt(m[1], 16);
+    return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+  };
+  // 사진 위에 글을 얹을 때 쓰는 가림막 — 브랜드 종이색을 흐리게 깐다(없으면 흰색).
+  const base = hex(ui.card, 1) ? ui.card : (hex(ui.paper, 1) ? ui.paper : '#ffffff');
+  const s0 = hex(base, .94) || 'rgba(255,255,255,.94)';
+  const s1 = hex(base, .72) || 'rgba(255,255,255,.72)';
+  const s2 = hex(base, 0) || 'rgba(255,255,255,0)';
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+  const win = el('div', 'win'); sheet.append(win);
+
+  // 탭 줄
+  const tabs = el('div', 'tabs');
+  const tab = el('div', 'tab');
+  const fav = el('i', 'fav', (D.company || '?').trim()[0]);
+  tab.append(fav, el('span', 'co', D.company));
+  const meta = el('div', 'meta');
+  meta.append(el('span', 'vp', `${D.fmt.w} × ${D.fmt.h}`));
+  if (D.until) meta.append(el('span', 'due', D.until));
+  tabs.append(tab, meta); win.append(tabs);
+
+  const page = el('div', 'page'); win.append(page);
+
+  // 히어로 — 제목·경력이 이 안에 산다(페이지의 히어로 섹션이 곧 머리다)
+  const hero = el('div', 'hero' + (shot && !wide ? ' split' : ''));
+  if (shot) {
+    const im = el('img'); im.className = 'shot'; im.src = shot.src; im.alt = '';
+    if (wide) {
+      hero.append(im);
+      const sc = el('div', 'scrim');
+      F.set('SCRIM', `linear-gradient(100deg, ${s0} 0%, ${s1} 44%, ${s2} 76%)`);
+      hero.append(sc);
+    } else {
+      hero.append(im);                                 // split: 오른쪽 칸(정사각에 가까운 사진)
+    }
+  } else {
+    // 사진이 없다 — 브랜드 토큰으로 띠를 짠다(기울기·띠 색). 회사가 색만으로 남지 않게.
+    const tints = [];
+    for (const k of ['tints', 'modules', 'bands']) {
+      const v = ui[k];
+      if (Array.isArray(v)) tints.push(...v.filter(x => typeof x === 'string'));
+      else if (v && typeof v === 'object') tints.push(...Object.values(v).filter(x => typeof x === 'string'));
+    }
+    for (const k of ['accent', 'point', 'coral', 'kraft', 'dawn', 'ink'])
+      if (typeof ui[k] === 'string') tints.push(ui[k]);
+    const uniq = [...new Set(tints.filter(c => hex(c, 1)))].slice(0, 4);
+    const bands = el('div', 'bands');
+    (uniq.length ? uniq : [ui.accent || '#1b6ef3', ui.ink || '#12141a']).forEach(c => {
+      const b = el('i'); b.style.background = c; bands.append(b);
+    });
+    F.set('SLANT', (ui.slant ? `${ui.slant}deg` : '-9deg'));
+    hero.append(bands);
+    const sc = el('div', 'scrim');
+    F.set('SCRIM', `linear-gradient(100deg, ${s0} 0%, ${s1} 50%, ${s2} 82%)`);
+    hero.append(sc);
+  }
+  // 사진 위/옆의 글자색 — 가림막이 종이색이므로 본문 잉크를 그대로 쓴다
+  F.set('HINK', ui.ink || '#12141a');
+  F.set('HSUB', ui.sub || 'rgba(18,20,26,.62)');
+
+  const txt = el('div', 'txt');
+  const left = el('div');
+  const tm = (D.title || D.role).match(/^(.+?)\s*([(\[].+)$/);   // 괄호 붙은 꼬리는 한 단 작게
+  const h1 = el('h1', '', tm ? tm[1] : (D.title || D.role));
+  if (tm) h1.append(el('span', '', tm[2]));
+  left.append(h1);
+  if (D.stack.length) left.append(el('div', 'stack', [...new Set(D.stack)].join('  ·  ')));
+  const car = el('div', 'car');
+  car.append(el('div', 'k', '경력'));
+  const v = el('div', 'v');
+  const cm = F.career.match(/^(\d[\d\-~–]*\s*년)\s*(.*)$/);
+  if (cm) { v.append(el('span', 'n', cm[1])); if (cm[2]) v.append(el('span', 't', cm[2])); }
+  else v.append(el('span', 't', F.career || ''));
+  car.append(v);
+  txt.append(left, car);
+  // split 일 때 글은 왼쪽 칸, 사진은 오른쪽 칸
+  if (shot && !wide) hero.prepend(txt); else hero.append(txt);
+  page.append(hero);
+
+  const main = el('main'); page.append(main);
+
+  // 섹션 → 컴포넌트 박스. 원문 소제목(주요업무 묶음·복지 묶음)은 소제목 줄로 살린다
+  const heads = new Set(B.benefit_heads || []);
+  const benGroups = [];
+  for (const b of S.benefits) {
+    const t = typeof b === 'string' ? b : (b.label ? `${b.label}: ${b.text}` : b.text);
+    if (heads.has(t) || !benGroups.length) benGroups.push({ head: heads.has(t) ? t : '', items: heads.has(t) ? [] : [t] });
+    else benGroups[benGroups.length - 1].items.push(t);
+  }
+  const T = B.section_titles || {};
+  const boxes = [];
+  const taskGroups = S.tasks.filter(g => g.items.length);
+  if (taskGroups.length) boxes.push({
+    title: T.tasks || '주요업무', num: true,
+    count: taskGroups.reduce((n, g) => n + g.items.length, 0),
+    groups: taskGroups.map(g => ({ head: g.title || '', items: g.items })),
+  });
+  if (S.qualifications.length) boxes.push({ title: T.qualifications || '자격요건', num: true, count: S.qualifications.length, groups: [{ head: '', items: S.qualifications }] });
+  if (S.preferences.length) boxes.push({ title: T.preferences || '우대사항', num: true, count: S.preferences.length, groups: [{ head: '', items: S.preferences }] });
+  if (benGroups.length) boxes.push({
+    title: T.benefits || '복지 / 혜택', num: false, ben: true,
+    count: benGroups.reduce((n, g) => n + g.items.length, 0), groups: benGroups,
+  });
+
+  // ic = 번호 박스 안의 단 수. 긴 목록(주요업무 12줄 같은 것)이 박스 하나의 높이를 통째로
+  // 정해 버리므로, 넓은 단에 놓인 박스는 안에서 두 단으로 흘린다 — 넓은 카드에 긴 목록을
+  // 담는 실제 방식이다. 히어로를 줄이는 대신 여기서 높이를 되찾는다.
+  const boxEl = (b, bc, ic) => {
+    const d = el('div', 'box');
+    const h = el('h2', '', b.title); h.append(el('b', '', String(b.count))); d.append(h);
+    const body = el('div', 'body' + (b.ben || ic > 1 ? ' cols' : ''));
+    if (b.ben && bc > 1) body.style.columnCount = bc;
+    else if (!b.ben && ic > 1 && b.count >= 6) body.style.columnCount = ic;
+    let n = 0;
+    for (const g of b.groups) {
+      const wrap = b.ben ? el('div', 'grp') : body;
+      if (g.head) wrap.append(el('div', 'sub', g.head));
+      g.items.forEach(t => {
+        const row = el('div', b.num ? 'it' : 'it plain');
+        row.append(el('i', '', b.num ? String(++n).padStart(2, '0') : '-'), el('span', '', t));
+        wrap.append(row);
+      });
+      if (b.ben) body.append(wrap);
+    }
+    d.append(body); return d;
+  };
+
+  // 그리기 — 섹션 순서를 지킨 단 나누기(12칼럼 격자) × 단 폭 × 복지 단 수 × 박스 사이 여백.
+  // 단은 둘 또는 셋이다. 셋은 3-up 카드 격자로, 글이 긴 공고에서 본문 크기를 되찾는다
+  // (히어로를 줄여 대표 물건을 다시 장식으로 만드는 대신 이쪽을 택한다 — ROLE_DESIGN 규칙 둘).
+  const draw = c => {
+    F.set('TT', `calc(${c.TT}*var(--u))`);
+    F.set('GAP', String(c.gap));
+    F.set('GUT', `calc(${c.gut}*var(--u))`);
+    const cols = c.spans.map(() => el('div', 'col'));
+    cols.forEach((col, i) => { col.style.gridColumn = `span ${c.spans[i]}`; });
+    let at = 0;
+    c.cut.concat([boxes.length]).forEach((end, i) => {
+      boxes.slice(at, end).forEach(b => cols[i].append(boxEl(b, c.bc, c.spans[i] >= 6 ? c.ic : 1)));
+      at = end;
+    });
+    main.replaceChildren(...cols);
+    return !Frame.overflows(main) && !Frame.overflows(txt);
+  };
+  const candsFor = ch => {
+    // 조합을 적게 유지한다 — 하나마다 이분 탐색을 돌리므로 수가 곱해지면 렌더가 30초를 넘는다.
+    // 세 단(3-up)은 넣어 보고 뺐다: 단이 좁아지면 줄 수가 그만큼 늘어 한 번도 이기지 못했다.
+    const out = [];
+    for (const TT of ch.TT)
+      for (const span of [7, 6, 5])
+        for (let k = 1; k < boxes.length; k++)
+          for (const bc of [1, 3])
+            for (const ic of [1, 2])
+              out.push({ spans: [span, 12 - span], cut: [k], columns: 2, gut: 1.8,
+                         TT, bc, ic, gap: 1.05 });
+    return out;
+  };
+  // 히어로 높이·제목·경력 크기를 세 단계로 둔다. 넉넉한 쪽으로 먼저 재고, 본문이 18px 을 못
+  // 넘기면 압축한 쪽으로 다시 잰다. **히어로는 25u(= 판 높이의 22%) 아래로 내려가지 않는다** —
+  // 그 아래로 줄이면 대표 물건이 다시 장식이 된다(ROLE_DESIGN 규칙 둘).
+  const CHROMES = [
+    { SP: 2.2, HERO: 33, PD: 2.5, CAR: 6.2, TT: [5.0, 4.2] },
+    { SP: 1.8, HERO: 29, PD: 2.0, CAR: 5.2, TT: [4.3, 3.6] },
+    { SP: 1.2, HERO: 25, PD: 1.6, CAR: 4.4, TT: [3.9, 3.2] },
+  ];
+  let best = null;
+  for (const ch of CHROMES) {
+    F.set('SP', `calc(${ch.SP}*var(--u))`);
+    F.set('HERO', `calc(${ch.HERO}*var(--u))`);
+    F.set('PD', `calc(${ch.PD}*var(--u))`);
+    F.set('CAR', `calc(${ch.CAR}*var(--u))`);
+    Frame.fit(F, candsFor(ch), draw, { lo: 10, hi: 34 });
+    const px = window.__layout.font_px;
+    if (!best || px > best.px) best = { ch, cand: window.__layout.candidate, px };
+    if (px >= 18) break;
+  }
+  // 가장 큰 본문이 나온 조합으로 마지막에 한 번 더 그린다(재는 동안 다른 조합이 남아 있을 수 있다)
+  F.set('SP', `calc(${best.ch.SP}*var(--u))`);
+  F.set('HERO', `calc(${best.ch.HERO}*var(--u))`);
+  F.set('PD', `calc(${best.ch.PD}*var(--u))`);
+  F.set('CAR', `calc(${best.ch.CAR}*var(--u))`);
+  F.set('f', (best.px - 0.05) + 'px');
+  draw(best.cand);
+  window.__layout = { candidate: best.cand, font_px: best.px, columns: 2, chrome: best.ch,
+                      hero: shot ? (wide ? 'band:' + shot.name : 'split:' + shot.name) : 'tokens' };
+
+  // 두 단 길이가 다르면 짧은 단 아래에 빈 자리가 남는다. fit 이 끝난 뒤(치수는 이미 정해졌다)
+  // 마지막 박스를 그 높이만큼 늘려 두 단이 같은 선에서 끝나게 한다 — 실제 레이아웃이 그렇다.
+  for (const col of main.children) {
+    const last = col.lastElementChild;
+    if (!last) continue;
+    if (main.clientHeight - col.scrollHeight > 2) last.style.flex = '1';
+  }
+})();
+</script>

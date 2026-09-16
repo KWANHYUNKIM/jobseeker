@@ -106,6 +106,28 @@ def _role(job: dict) -> str:
         or clean_role(job.get("title", ""))
 
 
+# 개발 자리가 아닌 공고를 걸러내는 말들. 제목에 이 말이 있으면 묶음에 넣지 않는다.
+#
+# 직군 판정은 제목의 낱말로 하는데, '데이터' 나 'AI' 가 들어가도 개발 자리가 아닌 공고가 있다 —
+# 쿠팡 'AI 데이터 라벨링 및 검수'(경력 무관·사무보조)가 데이터·AI 개발자 묶음에 들어왔다.
+# 표지에 '데이터·AI 개발자' 라고 써 놓고 라벨링 공고를 넣으면 그게 제일 먼저 눈에 띈다.
+# '마케팅 자동화 SaaS 백엔드 개발자' 는 개발 자리다(마케팅은 도메인일 뿐). 그래서 아래 말이
+# 제목에 있어도 **개발 신호가 같이 있으면 넣는다** — 개발 신호가 하나도 없을 때만 뺀다.
+_NOT_DEV = re.compile(
+    r"라벨링|레이블링|검수|사무\s*보조|보조\s*업무|데이터\s*입력|타이핑|전사\s*업무"
+    r"|상담|고객\s*응대|CS\s*운영|세일즈|마케터|홍보|번역|통역"
+    r"|아르바이트|단기\s*알바|파견|도급|청소|경비|배송\s*기사|생산직")
+_DEV_SIGNAL = re.compile(
+    r"개발|엔지니어|engineer|developer|programmer|프로그래머|devops|sre|아키텍|architect"
+    r"|데이터\s*(엔지니어|사이언|분석가|플랫폼)|analyst|scientist|research|연구|서버|백엔드|프론트"
+    r"|풀스택|full[\s-]?stack|android|ios|모바일|인프라|보안|qa|테스트\s*자동화", re.I)
+
+
+def _not_dev(job: dict) -> bool:
+    title = job.get("title") or ""
+    return bool(_NOT_DEV.search(title)) and not _DEV_SIGNAL.search(title)
+
+
 def _family(job: dict) -> str:
     """직군 판정 — **제목만 본다.**
 
@@ -249,6 +271,13 @@ def _verifier():
     return check
 
 
+def _family_frame(job: dict) -> str:
+    """이 공고의 직군 틀 이름. 그 직군 틀이 아직 없으면 빈 문자열(ROLE_DESIGN.md)."""
+    from .carousel import FRAMES
+    name = f"family_{_family({'title': job.get('role') or job.get('title', ''), 'stack': []})}"
+    return name if name in FRAMES else ""
+
+
 def _dates(job: dict) -> dict:
     """모집 시작·마감을 원본에서 찾아온다(사이트마다 적어 두는 자리가 다르다)."""
     from publish.postingdates import find
@@ -274,6 +303,8 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     # 원본 데이터가 깨진 공고를 뺀다 — 판은 원문을 한 글자도 바꾸지 않으므로 깨진 글이 그대로 실린다.
     # 회사 조사(brands/*.json)에서 발견하면 data_warning 에 적어 둔다(예: OCR 로 읽은 이미지 공고).
     rows = [j for j in rows if not _data_warning(j)]
+    # 개발 자리가 아닌 공고를 뺀다(제목 기준)
+    rows = [j for j in rows if not _not_dev(j)]
     sizes = _sizes()
     kicker, title, sub = "", "", ""
 
@@ -358,6 +389,9 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
         **_hook(kind, value, since, until),
         "id": f"{kind}{'-' + slug if slug else ''}-{stamp}",
         "kind": kind, "value": value,
+        # 표지도 카테고리 특색이 나야 한다 — 직군 묶음이면 그 직군을 실어 보낸다
+        # (collection_hook/cover 가 이걸 보고 껍질을 고른다).
+        "family": value if kind == "role" else "",
         "kicker": kicker, "title": title, "sub": sub,
         "count": len(picked),
         "size_label": {j["company"]: sizes.get(j["company"], "") for j in picked + spares},
@@ -417,15 +451,21 @@ def render(col: dict, fmt_id: str = "ig_portrait", *, out_dir: Path | None = Non
     for job in col["jobs"] + col.get("spares", []):
         if len(slides) >= col["count"]:
             break
-        frame = "brand" if job["brand"] else "onepage"
-        src, layout = render_onepage(job["key"], fmt_id, frame=frame)
+        # 어느 틀로 그릴까 — 직군 묶음이면 '무슨 일인지' 가 먼저다(직군 틀), 그 밖의 묶음은
+        # '누가 뽑는지' 가 먼저다(회사 전용 판). 첫 틀이 16px 을 못 넘기면 다음 틀로 물러난다
+        # (전용 판은 그 회사의 어떤 공고에 맞춰 만든 것이라 다른 공고를 넣으면 글이 넘친다).
+        order = [f for f in (_family_frame(job), "brand" if job["brand"] else "", "onepage") if f]
+        if col.get("kind") != "role":
+            order.sort(key=lambda f: 0 if f == "brand" else 1 if f.startswith("family_") else 2)
+        src = layout = None
+        for i, frame in enumerate(order):
+            src, layout = render_onepage(job["key"], fmt_id, frame=frame)
+            px = layout["font_px"] * 1080 / fmt["w"]
+            if px >= MIN_BODY_PX:
+                break
+            if i + 1 < len(order):
+                print(f"[collection] {job['company']} · {frame} 본문 {layout['font_px']}px → {order[i + 1]} 로")
         px = layout["font_px"] * 1080 / fmt["w"]
-        # 브랜드 전용 판은 그 회사의 '어떤 공고' 에 맞춰 만든 것이다. 다른 공고를 넣으면 글이
-        # 넘쳐 본문이 작아진다 — 폰에서 못 읽을 크기면 기본 틀로 물러난다.
-        if frame == "brand" and px < MIN_BODY_PX:
-            print(f"[collection] {job['company']} · 브랜드 판 본문 {layout['font_px']}px → 기본 틀로")
-            src, layout = render_onepage(job["key"], fmt_id, frame="onepage")
-            px, frame = layout["font_px"] * 1080 / fmt["w"], "onepage"
         if px < MIN_BODY_PX:
             # 기본 틀로도 못 읽는다 = 공고 글이 한 장에 안 들어간다. 묶음에서 뺀다.
             print(f"[collection] {job['company']} 빼기 — 본문 {layout['font_px']}px 로는 폰에서 못 읽는다")
