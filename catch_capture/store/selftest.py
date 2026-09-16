@@ -244,6 +244,16 @@ def run() -> int:
         check(s["status"] == "active" and s["status_source"] == "override",
               "수동 보정이 원장을 이긴다")
 
+        # 등록일은 크롤이 아니라 close_check 가 채우고, **덮이지 않는다.**
+        # 매 사이클 도는 크롤 이중 쓰기(upsert_job)가 이 칸을 NULL 로 되돌리면
+        # 애써 알아낸 값이 매번 지워진다 — JOB_COLUMNS 에서 뺀 이유가 그것이다.
+        cur.execute("UPDATE job SET posted_on = %s WHERE id = %s",
+                    (TODAY - timedelta(days=30), job_a))
+        upsert_job(cur, {**base, "content_hash": "h1b"})     # 같은 공고 재크롤
+        cur.execute("SELECT posted_on FROM job WHERE id = %s", (job_a,))
+        check(cur.fetchone()["posted_on"] == TODAY - timedelta(days=30),
+              "재크롤이 등록일을 지우지 않는다")
+
         # ── 5. v_job = 뷰어가 읽는 모양 ────────────────────────────
         print("\n[5] v_job / export 형식")
         set_job_techs(cur, job_a, ["Windows", "dev"])
@@ -255,7 +265,10 @@ def run() -> int:
         check(v["job_key"] == "wanted-1", "job_key 가 /jobs/<site>-<pid> 와 같다")
         need = {"site", "pid", "url", "company", "title", "career_text", "location_text",
                 "tech_stack", "main_tasks", "qualifications", "preferences", "benefits",
-                "full_jd", "status", "deadline_on", "dday", "employment", "education"}
+                "full_jd", "status", "deadline_on", "dday", "employment", "education",
+                # 등록일 두 칸. posted_on 은 원본이 말한 값(없을 수 있다),
+                # first_seen_at 은 그 자리를 메우는 추정값이다.
+                "posted_on", "first_seen_at"}
         check(need <= set(v.keys()), "뷰어가 쓰는 필드가 전부 있다",
               str(sorted(need - set(v.keys()))))
 

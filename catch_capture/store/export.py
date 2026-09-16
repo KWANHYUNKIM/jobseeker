@@ -1,5 +1,10 @@
 """정본 DB → 뷰어가 읽는 JSON. `jd-viewer/bin/enrich_jobs.py` 를 대체한다.
 
+`posted_date`(원본이 말한 등록일)와 `first_seen_at`(우리가 처음 본 날)을 **둘 다**
+내보낸다. 하나로 합쳐 보내면 화면이 확정값과 추정값을 구분할 수 없다 —
+saramin 은 원본에 등록일 표기가 없어 영영 앞칸이 비고, 그 공고에 "9월 2일 등록" 이라
+적으면 그건 우리가 처음 본 날일 뿐이다.
+
 이관 3단계. 뷰어는 지금까지처럼 `public/all_jobs_enriched.json` 을 fetch 하고,
 필드 이름도 그대로다 — 바뀌는 건 **그 값이 어디서 오는가**뿐이다.
 
@@ -48,7 +53,7 @@ def fetch_jobs() -> list[dict]:
                    main_tasks, qualifications, preferences, benefits, full_jd,
                    status, status_source, deadline_on, dday, last_verified_at,
                    region, source_board, overseas, deadline_text,
-                   employment, education
+                   employment, education, posted_on, first_seen_at
               FROM v_job
              ORDER BY site, pid
             """
@@ -84,6 +89,12 @@ def fetch_jobs() -> list[dict]:
             # 방법이 없어 열어둔 것"이다 — 화면이 그 둘을 구분해 보여줄 수 있다.
             "status_source": r["status_source"],
             "closed_reason": _reason(r),
+            # 공고가 올라온 날. 원본이 말한 값이라 없을 수 있다(saramin).
+            "posted_date": r["posted_on"].isoformat() if r["posted_on"] else "",
+            # 등록일이 없을 때 쓰는 대타 — "우리가 처음 본 날". 추정값이므로
+            # 화면은 둘을 구분해서 보여줘야 한다(같이 실어 보내는 이유가 그것이다).
+            # 날짜까지만 보낸다. 17,000건 × 시:분:초는 파일만 굵게 한다.
+            "first_seen_at": r["first_seen_at"].date().isoformat() if r["first_seen_at"] else "",
             # 회사 주소 슬러그. 지금까지 화면이 company_stacks 를 뒤져 찾던 값이다.
             "company_slug": r["company_slug"],
         }

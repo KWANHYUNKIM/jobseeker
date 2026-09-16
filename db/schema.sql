@@ -164,6 +164,17 @@ CREATE TABLE job (
     deadline_on     date,
     always_open     boolean  NOT NULL DEFAULT false,   -- 상시/수시 채용
 
+    -- ── 등록일 ──────────────────────────────────────────────────────
+    -- 공고가 **언제 올라왔는지**. 어느 크롤러도 수집하지 않던 값이라 목록을
+    -- 최신순으로 줄 세울 수도, "올라온 지 3일" 을 보여줄 수도 없었다.
+    -- `pipeline.close_check` 가 마감을 재확인하면서 같이 받아 온다(JSON-LD
+    -- datePosted / jumpit publishedAt). 크롤 경로는 이 칸을 건드리지 않는다 —
+    -- 매 사이클 NULL 로 덮이면 애써 알아낸 값이 지워진다.
+    --
+    -- saramin 은 원본에 등록일 표기가 없어 영영 NULL 이다. 그 자리는
+    -- first_seen_at(우리가 처음 본 날)이 대신하고, 화면이 추정값으로 표시한다.
+    posted_on       date,
+
     -- dday 는 저장하지 않는다. 지금까지 'D-4' 문자열을 크롤 시점 그대로 실어
     -- 보냈기 때문에 마감일 2026-08-23 인 공고가 며칠 뒤에도 D-4 로 보였다.
     -- 남은 일수는 v_job 이 CURRENT_DATE 로 계산한다.
@@ -199,6 +210,8 @@ CREATE TABLE job (
     -- 상한을 고정값으로 둔다. CHECK 에는 CURRENT_DATE 같은 비-immutable 함수를 못 쓴다.
     -- "몇 년 뒤 마감" 같은 파싱 사고(연도 없는 06/07 을 내년으로 읽던 옛 버그)를 잡는 그물이다.
     CONSTRAINT job_deadline_sane   CHECK (deadline_on IS NULL OR deadline_on BETWEEN DATE '2015-01-01' AND DATE '2100-01-01'),
+    -- 등록일도 같은 그물에 건다. 미래의 등록일은 파싱 사고다.
+    CONSTRAINT job_posted_sane     CHECK (posted_on IS NULL OR posted_on BETWEEN DATE '2015-01-01' AND DATE '2100-01-01'),
     CONSTRAINT job_region_known    CHECK (region IS NULL OR region IN ('kr','global')),
     CONSTRAINT job_seen_order      CHECK (last_seen_at >= first_seen_at)
 );
@@ -206,11 +219,14 @@ CREATE TABLE job (
 COMMENT ON TABLE  job IS '공고 1건. 정체성은 url — (회사명,제목) 이 아니다';
 COMMENT ON COLUMN job.gone_at IS '목록에서 사라진 시각. 사라짐≠마감이라 status 를 직접 바꾸지 않고 close_check 의 입력이 된다';
 COMMENT ON COLUMN job.dday_text_raw IS '표시에 쓰지 말 것. 크롤 시점 문자열이라 하루만 지나도 틀린다';
+COMMENT ON COLUMN job.posted_on IS '원본이 말한 등록일. close_check 만 쓴다(COALESCE 로 덮어쓰지 않는다). saramin 은 NULL';
 
 CREATE INDEX job_company_idx    ON job (company_id);
 CREATE INDEX job_site_idx       ON job (site);
 CREATE INDEX job_deadline_idx   ON job (deadline_on) WHERE deadline_on IS NOT NULL;
 CREATE INDEX job_last_seen_idx  ON job (last_seen_at DESC);
+-- 목록 "최신순" — 등록일이 없는 공고는 뒤로 민다
+CREATE INDEX job_posted_idx     ON job (posted_on DESC NULLS LAST);
 CREATE INDEX job_search_idx     ON job USING gin (search_tsv);
 -- 한글 부분일치("백엔드", "재택"). FTS 가 형태소를 모르는 자리를 메운다.
 CREATE INDEX job_title_trgm_idx ON job USING gin (title gin_trgm_ops);
@@ -238,15 +254,21 @@ CREATE TABLE job_closure_check (
     checked_at  timestamptz NOT NULL DEFAULT now(),
     closed      boolean     NOT NULL,       -- 사이트가 마감이라고 답했나
     deadline_on date,                       -- 연도까지 확정된 마감일(알아냈다면)
+    posted_on   date,                       -- 원본이 말한 등록일(알아냈다면)
     http_status smallint,
     evidence    text,                       -- 판단 근거가 된 페이지 문구
     checker     text        NOT NULL DEFAULT 'close_check'
 );
 CREATE INDEX job_closure_latest_idx ON job_closure_check (job_id, checked_at DESC);
 
--- 공고별 최신 재확인 1건
+-- 공고별 최신 재확인 1건.
+-- posted_on 이 컬럼 순서상 어색한 끝자리에 있는 이유: 이 뷰에는 job_state 와
+-- job_recheck_queue 가 매달려 있어 DROP 할 수 없고, CREATE OR REPLACE VIEW 는
+-- 기존 컬럼 이름을 밀어낼 수 없다(중간에 끼우면 "cannot change name of view
+-- column" 으로 거부한다). 그래서 새 컬럼은 늘 맨 끝에 붙인다 —
+-- db/migrations/ 가 만드는 모양과 여기가 글자 그대로 같아야 하기 때문이다.
 CREATE VIEW job_closure_latest AS
-SELECT DISTINCT ON (job_id) job_id, checked_at, closed, deadline_on, evidence, checker
+SELECT DISTINCT ON (job_id) job_id, checked_at, closed, deadline_on, evidence, checker, posted_on
   FROM job_closure_check
  ORDER BY job_id, checked_at DESC;
 
@@ -356,7 +378,11 @@ SELECT
     j.deadline_text,
     s.status, s.status_source, s.effective_deadline AS deadline_on, s.dday, s.last_verified_at,
     j.first_seen_at, j.last_seen_at,
-    COALESCE(t.techs, '{}'::text[]) AS tech_stack
+    COALESCE(t.techs, '{}'::text[]) AS tech_stack,
+    -- 새 컬럼은 **맨 끝에** 붙인다. CREATE OR REPLACE VIEW 는 기존 컬럼의
+    -- 순서·타입을 바꾸지 못하므로, 중간에 끼우면 운영 DB 에서 마이그레이션이
+    -- 뷰를 통째로 DROP 해야 한다(그 뷰에 매달린 것들까지 같이).
+    j.posted_on
 FROM job j
 JOIN company co ON co.id = j.company_id
 JOIN job_state s ON s.job_id = j.id

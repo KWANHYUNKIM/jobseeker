@@ -68,6 +68,32 @@ ELSE                                       'active'            -- 모름
 열어둔 것"** 이다. 지금 active 의 59%가 여기다. 화면에서 `모집중(확인 8/30)` 과 `모집중(미확인)`
 을 갈라 보여줄 수 있고, 이건 정합성이 아니라 정직함의 문제다.
 
+### 3-1. 등록일 — 원본은 주고 있었는데 안 받고 있었다
+
+공고가 **언제 올라왔는지**를 어디에도 저장하지 않았다. 그래서 목록을 최신순으로 줄
+세울 수도, "올라온 지 3일"을 보여줄 수도, 모집 캘린더의 시작일 칸을 채울 수도 없었다.
+크롤러가 수집하지 않는 값이라 없는 줄 알았는데, **원본이 이미 주고 있었다**(2026-09-16 실측):
+
+| 사이트 | 등록일 | 마감일 | 어디에 |
+|---|---|---|---|
+| wanted | `datePosted` | `validThrough` | 공고 페이지 HTML 의 JSON-LD. chaos API 에는 **없다** |
+| jumpit | `publishedAt` | `closedAt` · `alwaysOpen` | `/api/position/{pid}` — 이미 받아 놓고 버리던 값 |
+| jobkorea | `datePosted` | `validThrough` | 상세 HTML 의 JSON-LD |
+| dev(catch) | `datePosted` | `validThrough` | 상세 HTML 의 JSON-LD |
+| saramin | — | `마감일:YYYY-MM-DD` | meta description. 등록일 표기는 없다 |
+
+"wanted 는 마감일 필드가 없다"는 전제는 **API 에만** 해당하는 말이었고, 그 전제 위에서
+3,120건이 영구 모집중으로 남아 있었다. `pipeline.close_check` 가 이미 이 페이지들을
+두드리고 있으므로 파서만 늘리면 새 요청 없이 따라온다(wanted 만 아직 열려 있는 공고에
+한해 페이지를 한 번 더 받는다 — 마감 확정된 건에는 안 보낸다).
+
+`job.posted_on` 은 **close_check 만 쓴다.** `upsert.JOB_COLUMNS` 에 넣지 않은 이유가
+그것이다 — 넣으면 매 사이클 크롤 이중 쓰기가 NULL 로 덮어, 애써 알아낸 값이 지워진다.
+쓸 때도 `COALESCE(posted_on, %s)` 라 한 번 정해진 값은 다음 확인이 못 읽어 와도 남는다.
+
+saramin 은 영영 NULL 이다. 그 자리는 `first_seen_at`(우리가 처음 본 날)이 대신하고,
+`store.export` 가 둘을 **따로** 내보내 화면이 확정값과 추정값을 구분한다.
+
 ### 4. 이력은 덮어쓰지 않고 쌓는다 — `job_closure_check` / `job_event`
 
 원장을 "site:pid → 최신 결과" 맵으로 덮어쓰면 파서를 고쳤을 때 재해석할 재료가 없다.
@@ -362,6 +388,54 @@ DB 가 꺼져 있거나 느려도 사이클은 그대로 간다(`[db] 이중 쓰
 `job.url` 에 조인한다). `search.py` 를 `search_jobs()` 호출로 바꾸고 SQLite 를 내린다.
 
 되돌리기: 3단계까지는 JSON 이 계속 살아 있으므로 언제든 스크립트만 되돌리면 된다.
+
+## 스키마를 고칠 때 — `db/migrations/`
+
+`db/schema.sql` 은 **새로 까는 DB** 의 정본이다. 이미 돌고 있는 DB 에는 그 파일을 다시
+돌릴 수 없으므로(테이블이 이미 있다) 같은 결과를 내는 ALTER 를 번호순 파일로 남긴다.
+
+```bash
+psql "$JOBSEEKER_DSN" -f db/migrations/001_posted_on.sql
+```
+
+두 가지를 지킨다.
+
+- **두 번 돌려도 안전하게.** `ADD COLUMN IF NOT EXISTS`, `CREATE OR REPLACE VIEW`.
+- **뷰의 새 컬럼은 맨 끝에.** `CREATE OR REPLACE VIEW` 는 기존 컬럼의 순서·타입을
+  바꾸지 못한다. 중간에 끼우면 `v_job` 을 DROP 해야 하고, 그러면 거기 매달린 것들이
+  같이 내려간다. `schema.sql` 도 같은 자리에 둬서 두 경로가 **글자 그대로 같은 뷰**를
+  만들게 한다(그렇지 않으면 새 서버와 옛 서버가 다른 모양이 되고, 그 차이는 조용하다).
+
+| 번호 | 무엇 | 왜 |
+|---|---|---|
+| 001 | `job.posted_on` · `job_closure_check.posted_on` · `v_job.posted_on` | 공고 등록일. 위 "3-1" 참고 |
+
+### 마이그레이션을 검증하는 법
+
+두 경로가 같은 모양을 만드는지는 **눈으로 읽어서는 알 수 없다.** 빈 DB 두 개에
+각각 돌려 보고 비교한다(001 은 이렇게 해서 `job_closure_latest` 에 컬럼을 중간에
+끼운 실수를 잡았다 — `cannot change name of view column "evidence" to "posted_on"`).
+
+```bash
+docker run -d --name jsdbtest -e POSTGRES_DB=t -e POSTGRES_USER=t   -e POSTGRES_PASSWORD=t -e POSTGRES_INITDB_ARGS="--encoding=UTF8 --locale=C.UTF-8"   pgvector/pgvector:pg16
+docker exec jsdbtest psql -U t -d postgres -q -c "CREATE DATABASE dfresh"
+docker exec jsdbtest psql -U t -d postgres -q -c "CREATE DATABASE dold"
+
+# A: 새로 까는 경로            B: 돌고 있는 DB 에 마이그레이션하는 경로
+psql ... -d dfresh -f db/schema.sql
+psql ... -d dold   -f <이전 커밋의 schema.sql>   # git show HEAD~1:db/schema.sql
+psql ... -d dold   -f db/migrations/001_posted_on.sql
+psql ... -d dold   -f db/migrations/001_posted_on.sql   # 두 번 돌려도 되는지
+```
+
+그리고 `information_schema.columns` 로 **뷰**의 컬럼 이름·순서·타입과 `pg_constraint`
+· `pg_indexes` 를 뽑아 diff 한다. 전부 일치해야 한다.
+
+기반 테이블(`job`, `job_closure_check`)의 **물리적 컬럼 번호는 달라도 된다** —
+`ALTER TABLE ADD COLUMN` 은 맨 뒤에 붙이고 `CREATE TABLE` 은 적은 자리에 둔다.
+이 저장소에는 `SELECT *` 로 공고 테이블을 읽거나 컬럼 목록 없이 INSERT 하는 코드가
+없어서(전부 이름으로 읽는다) 그 차이는 아무 데도 닿지 않는다. 뷰가 다르면 그때는
+화면과 검색이 갈린다 — 그래서 뷰만 엄격히 본다.
 
 ## 띄우기
 
