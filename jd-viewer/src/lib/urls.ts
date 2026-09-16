@@ -81,7 +81,7 @@ export const TAB_SEO: Record<string, { title: string; desc: string }> = {
   },
   // 책은 색인시키지 않는다(BookView 가 전부 noindex 를 건다). 그래도 탭 제목은 필요하다.
   wiki: {
-    title: '내 책장',
+    title: '기술도서',
     desc: '혼자 읽으려고 쓰는 책.',
   },
   reveng: {

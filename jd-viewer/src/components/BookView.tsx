@@ -61,7 +61,7 @@ function Shelf() {
   const { data, loading, error } = useShelf()
   const [track, setTrack] = useState<string | null>(null)
 
-  useSeo({ title: '내 책장', description: '혼자 읽으려고 쓰는 책들', robots: NOINDEX, canonical: absUrl(paths.wiki()) })
+  useSeo({ title: '기술도서', description: '혼자 읽으려고 쓰는 책들', robots: NOINDEX, canonical: absUrl(paths.wiki()) })
 
   const groups = useMemo(() => shelfGroups(data), [data])
 
@@ -85,8 +85,8 @@ function Shelf() {
       <ShelfNav groups={groups} all={all} picked={picked} onPick={setTrack} />
 
       <div className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold text-(--color-text) tracking-tight">내 책장</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-(--color-text) tracking-tight">기술도서</h1>
           {data.note && <p className="text-sm text-(--color-muted) mt-1.5 leading-relaxed">{data.note}</p>}
           <div className="mt-2 text-xs text-(--color-muted) tabular-nums">
             {data.books.length}권 · {all.sections}절 · 본문 {all.written}절
@@ -119,7 +119,7 @@ function Shelf() {
                   </span>
                 </div>
                 {g.note && <p className="text-xs text-(--color-muted) mt-1 leading-relaxed">{g.note}</p>}
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
                   {g.books.map((b) => (
                     <BookCard key={b.id} book={b} />
                   ))}
@@ -364,94 +364,103 @@ function Cover({ bookId }: { bookId: string }) {
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto">
-      <div className="max-w-3xl mx-auto p-4 sm:p-8 pb-20">
+      <div className="p-4 sm:p-8 pb-20">
         <a href={paths.wiki()} onClick={onLinkClick(paths.wiki())} className="text-xs text-(--color-muted) hover:text-(--color-text)">
           ← 책장
         </a>
 
-        {/* 표지 */}
-        <header className="mt-4 rounded-lg border border-(--color-border) bg-(--color-panel) p-6 sm:p-8">
-          <h1 className="text-3xl font-bold text-(--color-text) tracking-tight leading-tight">{toc.title}</h1>
-          {toc.subtitle && <div className="mt-2 text-base text-(--color-muted)">{toc.subtitle}</div>}
-          {toc.blurb && <p className="mt-4 text-[15px] text-(--color-text) leading-relaxed">{toc.blurb}</p>}
+        {/* 넓은 화면은 두 칸 — 왼쪽은 소개(읽는 폭), 오른쪽은 차례. 소개 문단을 화면 끝까지
+            늘리면 한 줄이 안 읽히고, 차례를 격자로 놓으면 장 길이가 달라 구멍이 난다. */}
+        <div className="xl:grid xl:grid-cols-[minmax(0,440px)_minmax(0,1fr)] xl:gap-10 xl:items-start">
+          <div className="min-w-0">
+            {/* 표지 */}
+            <header className="mt-4 rounded-lg border border-(--color-border) bg-(--color-panel) p-6 sm:p-8">
+              <h1 className="text-3xl font-bold text-(--color-text) tracking-tight leading-tight">{toc.title}</h1>
+              {toc.subtitle && <div className="mt-2 text-base text-(--color-muted)">{toc.subtitle}</div>}
+              {toc.blurb && <p className="mt-4 text-[15px] text-(--color-text) leading-relaxed">{toc.blurb}</p>}
 
-          {startAt && (
-            <a
-              href={paths.bookPage(bookId, startAt)}
-              onClick={onLinkClick(paths.bookPage(bookId, startAt))}
-              className="mt-6 inline-block px-4 py-2 text-sm font-semibold rounded-md bg-(--color-accent) text-(--color-on-accent) hover:bg-(--color-accent-deep) transition"
-            >
-              {last ? '이어 읽기 →' : '처음부터 읽기 →'}
-            </a>
-          )}
-          <div className="mt-4 text-xs text-(--color-muted)">{toc.updated_at} 갱신</div>
-        </header>
+              {startAt && (
+                <a
+                  href={paths.bookPage(bookId, startAt)}
+                  onClick={onLinkClick(paths.bookPage(bookId, startAt))}
+                  className="mt-6 inline-block px-4 py-2 text-sm font-semibold rounded-md bg-(--color-accent) text-(--color-on-accent) hover:bg-(--color-accent-deep) transition"
+                >
+                  {last ? '이어 읽기 →' : '처음부터 읽기 →'}
+                </a>
+              )}
+              <div className="mt-4 text-xs text-(--color-muted)">{toc.updated_at} 갱신</div>
+            </header>
 
-        {toc.preface && (
-          <section className="mt-8">
-            <SectionTitle>머리말</SectionTitle>
-            <div className="book-md mt-3 text-(--color-text)">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{toc.preface}</ReactMarkdown>
-            </div>
-          </section>
-        )}
+            {toc.preface && (
+              <section className="mt-8">
+                <SectionTitle>머리말</SectionTitle>
+                <div className="book-md mt-3 text-(--color-text)">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{toc.preface}</ReactMarkdown>
+                </div>
+              </section>
+            )}
 
-        {howToRead.length > 0 && (
-          <section className="mt-8">
-            <SectionTitle>읽는 법</SectionTitle>
-            <ul className="mt-3 flex flex-col gap-2">
-              {howToRead.map((h, i) => (
-                <li key={i} className="text-sm text-(--color-text) leading-relaxed flex gap-2.5">
-                  <span className="text-(--color-accent) font-semibold tabular-nums shrink-0">{i + 1}</span>
-                  <span>
-                    <Md>{h}</Md>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {(prereq.length > 0 || env.length > 0) && (
-          <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {prereq.length > 0 && (
-              <div>
-                <SectionTitle>알고 있어야 하는 것</SectionTitle>
-                <ul className="mt-3 flex flex-col gap-1.5">
-                  {prereq.map((p, i) => (
-                    <li key={i} className="text-sm text-(--color-text) leading-relaxed">
-                      · <Md>{p}</Md>
+            {howToRead.length > 0 && (
+              <section className="mt-8">
+                <SectionTitle>읽는 법</SectionTitle>
+                <ul className="mt-3 flex flex-col gap-2">
+                  {howToRead.map((h, i) => (
+                    <li key={i} className="text-sm text-(--color-text) leading-relaxed flex gap-2.5">
+                      <span className="text-(--color-accent) font-semibold tabular-nums shrink-0">{i + 1}</span>
+                      <span>
+                        <Md>{h}</Md>
+                      </span>
                     </li>
                   ))}
                 </ul>
-              </div>
+              </section>
             )}
-            {env.length > 0 && (
-              <div>
-                <SectionTitle>실습 환경</SectionTitle>
-                <dl className="mt-3 flex flex-col gap-1.5">
-                  {env.map((e) => (
-                    <div key={e.name || e.value} className="text-sm">
-                      {e.name && <dt className="inline text-(--color-muted)">{e.name} </dt>}
-                      <dd className="inline text-(--color-text) font-medium">{e.value}</dd>
-                      {e.note && <div className="text-xs text-(--color-faint) leading-relaxed">{e.note}</div>}
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            )}
-          </section>
-        )}
 
-        {/* 차례 */}
-        <section className="mt-10">
-          <SectionTitle>차례</SectionTitle>
-          <div className="mt-4 flex flex-col gap-6">
-            {toc.chapters.map((c) => (
-              <ChapterBlock key={c.no} bookId={bookId} chapter={c} read={read} />
-            ))}
+            {(prereq.length > 0 || env.length > 0) && (
+              <section className="mt-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
+                {prereq.length > 0 && (
+                  <div>
+                    <SectionTitle>알고 있어야 하는 것</SectionTitle>
+                    <ul className="mt-3 flex flex-col gap-1.5">
+                      {prereq.map((p, i) => (
+                        <li key={i} className="text-sm text-(--color-text) leading-relaxed">
+                          · <Md>{p}</Md>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {env.length > 0 && (
+                  <div>
+                    <SectionTitle>실습 환경</SectionTitle>
+                    <dl className="mt-3 flex flex-col gap-1.5">
+                      {env.map((e) => (
+                        <div key={e.name || e.value} className="text-sm">
+                          {e.name && <dt className="inline text-(--color-muted)">{e.name} </dt>}
+                          <dd className="inline text-(--color-text) font-medium">{e.value}</dd>
+                          {e.note && <div className="text-xs text-(--color-faint) leading-relaxed">{e.note}</div>}
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                )}
+              </section>
+            )}
+
           </div>
-        </section>
+
+          {/* 차례 — 신문 단처럼 위에서 아래로 흘린다. 격자와 달리 1장 아래에 2장이 온다 */}
+          <section className="mt-10 xl:mt-4 min-w-0">
+            <SectionTitle>차례</SectionTitle>
+            <div className="mt-4 columns-1 min-[1700px]:columns-2 min-[2300px]:columns-3 gap-6">
+              {toc.chapters.map((c) => (
+                <div key={c.no} className="break-inside-avoid mb-6">
+                  <ChapterBlock bookId={bookId} chapter={c} read={read} />
+                </div>
+              ))}
+            </div>
+          </section>
+          </div>
 
         {toc.source && (
           <footer className="mt-12 pt-5 border-t border-(--color-border) text-xs text-(--color-muted) leading-relaxed">
@@ -588,35 +597,40 @@ function Reader({ bookId, pageId }: { bookId: string; pageId: string }) {
             }
           />
         ) : (
-          <article className="max-w-3xl mx-auto px-4 sm:px-8 py-6 sm:py-10 pb-24">
-            <PageBody page={page} bookId={bookId} />
+          // 본문을 화면 끝까지 늘리면 문단은 짧아서 오른쪽이 비고 코드 상자만 길어진다.
+          // 읽는 폭(1200px)은 지키고, 남는 자리에 이 절의 소제목 목차를 둔다.
+          <article className="px-4 sm:px-8 py-6 sm:py-10 pb-24 flex justify-center gap-10">
+            <div className="min-w-0 flex-1 max-w-[1200px]">
+              <PageBody page={page} bookId={bookId} />
 
-            {/* 읽음 표시 + 이전/다음 */}
-            <div className="mt-12 pt-6 border-t border-(--color-border)">
-              <button
-                onClick={() => toggle(pageId)}
-                className={`w-full py-2.5 text-sm font-medium rounded-md border transition ${
-                  read.has(pageId)
-                    ? 'border-(--color-accent) bg-(--color-accent-weak) text-(--color-accent-deep)'
-                    : 'border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-text)'
-                }`}
-              >
-                {read.has(pageId) ? '✓ 읽음' : '읽음으로 표시'}
-              </button>
+              {/* 읽음 표시 + 이전/다음 */}
+              <div className="mt-12 pt-6 border-t border-(--color-border)">
+                <button
+                  onClick={() => toggle(pageId)}
+                  className={`w-full py-2.5 text-sm font-medium rounded-md border transition ${
+                    read.has(pageId)
+                      ? 'border-(--color-accent) bg-(--color-accent-weak) text-(--color-accent-deep)'
+                      : 'border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-text)'
+                  }`}
+                >
+                  {read.has(pageId) ? '✓ 읽음' : '읽음으로 표시'}
+                </button>
 
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                {nav.prev ? (
-                  <NavLink book={bookId} to={nav.prev.id} dir="prev" no={nav.prev.no} title={nav.prev.title} />
-                ) : (
-                  <span />
-                )}
-                {nav.next ? (
-                  <NavLink book={bookId} to={nav.next.id} dir="next" no={nav.next.no} title={nav.next.title} />
-                ) : (
-                  <span />
-                )}
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  {nav.prev ? (
+                    <NavLink book={bookId} to={nav.prev.id} dir="prev" no={nav.prev.no} title={nav.prev.title} />
+                  ) : (
+                    <span />
+                  )}
+                  {nav.next ? (
+                    <NavLink book={bookId} to={nav.next.id} dir="next" no={nav.next.no} title={nav.next.title} />
+                  ) : (
+                    <span />
+                  )}
+                </div>
               </div>
             </div>
+            <PageOutline key={pageId} page={page} />
           </article>
         )}
       </main>
@@ -778,7 +792,7 @@ function PageBody({ page, bookId }: { page: Page; bookId: string }) {
 
       <div className="mt-2">
         {page.blocks.map((b, i) => (
-          <BlockView key={i} block={b} />
+          <BlockView key={i} block={b} anchor={anchorOf(b, i)} />
         ))}
       </div>
 
@@ -818,6 +832,61 @@ function PageBody({ page, bookId }: { page: Page; bookId: string }) {
         </section>
       )}
     </>
+  )
+}
+
+// 소제목 id 가 없는 절도 있다 — 순번으로 채운다
+function anchorOf(b: Block, i: number) {
+  return b.type === 'heading' ? (b.id ?? `sec-${i}`) : undefined
+}
+
+// 넓은 화면 오른쪽의 '이 절에서'. 지금 읽는 소제목을 따라 불이 옮겨 간다.
+function PageOutline({ page }: { page: Page }) {
+  const items = useMemo(
+    () =>
+      page.blocks.flatMap((b, i) => (b.type === 'heading' ? [{ id: anchorOf(b, i)!, text: b.text }] : [])),
+    [page],
+  )
+  const [active, setActive] = useState<string | null>(null)
+
+  useEffect(() => {
+    const box = document.querySelector('[data-book-scroll]')
+    if (!box || !items.length) return
+    const onScroll = () => {
+      const top = box.getBoundingClientRect().top + 120
+      let cur: string | null = null
+      for (const it of items) {
+        const el = document.getElementById(it.id)
+        if (el && el.getBoundingClientRect().top <= top) cur = it.id
+      }
+      setActive(cur)
+    }
+    onScroll()
+    box.addEventListener('scroll', onScroll, { passive: true })
+    return () => box.removeEventListener('scroll', onScroll)
+  }, [items])
+
+  if (items.length < 2) return null
+  return (
+    <nav className="hidden 2xl:block w-60 shrink-0 sticky top-6 self-start max-h-[calc(100vh-8rem)] overflow-y-auto">
+      <div className="text-[11px] font-bold text-(--color-muted) tracking-wide">이 절에서</div>
+      <ol className="mt-2 border-l border-(--color-border)">
+        {items.map((it) => (
+          <li key={it.id}>
+            <button
+              onClick={() => document.getElementById(it.id)?.scrollIntoView({ behavior: 'smooth' })}
+              className={`block w-full text-left -ml-px pl-3 py-1 text-[13px] leading-snug border-l-2 transition ${
+                active === it.id
+                  ? 'border-(--color-accent) text-(--color-accent) font-medium'
+                  : 'border-transparent text-(--color-muted) hover:text-(--color-text)'
+              }`}
+            >
+              {it.text}
+            </button>
+          </li>
+        ))}
+      </ol>
+    </nav>
   )
 }
 
@@ -910,11 +979,11 @@ const TONE: Record<string, { label: string; cls: string; bar: string }> = {
   interview: { label: '면접', cls: 'border-sky-400/45 bg-sky-400/8', bar: 'text-sky-400' },
 }
 
-function BlockView({ block: b }: { block: Block }) {
+function BlockView({ block: b, anchor }: { block: Block; anchor?: string }) {
   switch (b.type) {
     case 'heading':
       return (
-        <h2 id={b.id} className="mt-10 mb-1 text-xl font-bold text-(--color-text) tracking-tight scroll-mt-16">
+        <h2 id={anchor} className="mt-10 mb-1 text-xl font-bold text-(--color-text) tracking-tight scroll-mt-16">
           {b.text}
         </h2>
       )

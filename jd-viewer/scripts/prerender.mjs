@@ -240,7 +240,7 @@ const TAB_SEO = {
   // 빈 껍데기가 아니게) 색인은 막고 sitemap 에도 넣지 않는다. NOINDEX 목록이
   // 그 판단을 한 곳에서 한다.
   '/wiki': {
-    title: '내 책장',
+    title: '기술도서',
     desc: '혼자 읽으려고 쓰는 책.',
   },
 }

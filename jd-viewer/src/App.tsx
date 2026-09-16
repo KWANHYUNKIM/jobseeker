@@ -179,7 +179,7 @@ function App() {
             개발 트렌드
           </TabLink>
           <TabLink active={tab === 'book'} to={paths.wiki()}>
-            내 책장
+            기술도서
           </TabLink>
           <TabLink active={tab === 'reveng'} to={paths.reveng()}>
             기술 역설계
