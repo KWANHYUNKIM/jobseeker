@@ -4,6 +4,9 @@ config/accounts.json
 out/
 state/
 assets/companies/
+# 배경음 — poster.soundbed 가 한 줄로 다시 만든다. 우리가 만든 것이라 권리 문제는
+# 없지만, 1.7MB 짜리 wav 를 저장소에 둘 이유는 없다(코드가 원본이다).
+assets/audio/
 # 승인 묶음(윈도우 → 맥)과, 뷰어 nginx 가 /ig/ 로 내놓는 발행 이미지
 inbox/
 exposed/

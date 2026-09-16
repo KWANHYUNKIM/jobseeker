@@ -89,8 +89,34 @@ python -m publish.cli approve-collection week --as reel   --audio ~/music/uplift
 `--audio-credit` 은 캡션 끝에 `♪ …` 로 붙는다. **CC-BY 계열은 표기가 허락의 조건**이라
 넣어야 하고, 판에는 자리가 없으니 캡션이 그 자리다.
 
-**권리는 사람이 확인한다.** 코드는 파일을 받을 뿐 출처를 묻지 않는다. 저작권 있는 곡을
-구워 넣으면 인스타가 음소거하거나 계정에 경고가 붙는다. 쓸 만한 출처:
+#### 음원은 직접 만드는 쪽이 낫다 — `poster.soundbed`
+
+받아 온 곡은 "권리를 가졌나" 를 확인할 길이 마땅치 않다. '무료' 라고 적힌 곡도
+라이선스가 CC0 부터 CC-BY-NC 까지 제각각이고, 표기 조건을 놓치면 허락이 아닌 게 된다.
+게다가 인스타의 음원 지문 검사에 걸리면 소리만 조용히 사라지거나 계정에 경고가 붙는다.
+
+**만들면 그 질문이 통째로 없어진다.** 표기도, 기간도, 용도 제한도 없다.
+
+```bash
+python -m poster.soundbed -o assets/audio/bed_calm.wav      # 10초 한 바퀴
+python -m publish.cli approve-collection week --as reel --audio assets/audio/bed_calm.wav
+```
+
+96BPM Am–F–C–G 네 마디(= 10초)에 패드·아르페지오·킥 셋만 쓴다. 노래가 아니라 **바닥**이다 —
+귀를 끌면 판의 글자를 안 읽는다. 한 바퀴가 10초라 18.4초 릴스에 이어 붙여도 이음매가 안 들린다.
+
+#### 소리만 바꾸고 싶을 때
+
+판을 여덟 장 다시 찍는 데 몇 분이 걸린다. 음악만 갈아 보려고 그걸 다시 돌릴 이유가 없고,
+다시 인코딩하면 화질도 한 번 더 깎인다. 영상 스트림은 그대로 두고 소리만 간다.
+
+```bash
+python -m poster.video --from-video inbox/<id>/reel.mp4   --audio assets/audio/bed_calm.wav -o inbox/<id>/reel.mp4
+python -m poster.video --from-video reel.mp4 -o silent.mp4      # 무음으로 되돌리기
+```
+
+**받아 온 곡을 쓴다면 권리는 사람이 확인한다.** 코드는 파일을 받을 뿐 출처를 묻지 않는다.
+저작권 있는 곡을 구워 넣으면 인스타가 음소거하거나 계정에 경고가 붙는다. 쓸 만한 출처:
 
 | 출처 | 라이선스 | 표기 |
 |---|---|---|

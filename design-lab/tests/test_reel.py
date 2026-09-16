@@ -166,6 +166,26 @@ class AudioTest(unittest.TestCase):
         self.assertAlmostEqual(video.probe(out)["seconds"], want, delta=0.3)
         self.assertGreater(self._mean_db(out), -40)
 
+    def test_set_audio_swaps_sound_without_touching_video(self):
+        """판을 다시 찍지 않고 소리만 간다. 영상 스트림은 그대로여야 한다."""
+        silent = video.build(self._slides(), self.tmp / "silent2.mp4")
+        before = video.probe(silent)
+        with_music = video.set_audio(silent, self._tone(4), self.tmp / "swapped.mp4")
+        after = video.probe(with_music)
+        self.assertLess(self._mean_db(silent), -60)
+        self.assertGreater(self._mean_db(with_music), -40, "소리가 들어가야 한다")
+        # 길이·크기·코덱이 그대로 = 다시 인코딩하지 않았다
+        self.assertAlmostEqual(after["seconds"], before["seconds"], delta=0.2)
+        self.assertEqual((after["width"], after["height"]),
+                         (before["width"], before["height"]))
+        self.assertEqual(video.check(with_music), [])
+
+    def test_set_audio_can_go_back_to_silence(self):
+        loud = video.build(self._slides(), self.tmp / "loud.mp4", audio=self._tone(4))
+        back = video.set_audio(loud, None, self.tmp / "quiet.mp4")
+        self.assertLess(self._mean_db(back), -60, "무음으로 되돌릴 수 있어야 한다")
+        self.assertEqual(video.check(back), [], "무음이어도 트랙은 있어야 한다")
+
     def test_missing_track_is_refused(self):
         with self.assertRaises(FileNotFoundError):
             video.build(self._slides(), self.tmp / "x.mp4", audio=self.tmp / "none.mp3")

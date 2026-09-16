@@ -212,6 +212,41 @@ def build(slides: list[Path], dest: Path, *, hold: float = HOLD, fade: float = F
     return dest
 
 
+def set_audio(source: Path, audio: Path | None, dest: Path) -> Path:
+    """이미 만든 영상의 **소리만** 바꾼다. 영상은 다시 인코딩하지 않는다(`-c:v copy`).
+
+    판을 여덟 장 다시 찍는 데 몇 분이 걸린다. 음악만 바꿔 보려고 그걸 다시 돌릴
+    이유가 없고, 다시 인코딩하면 화질도 한 번 더 깎인다. 소리만 갈아 끼운다.
+
+    audio 가 None 이면 무음 트랙으로 되돌린다.
+    """
+    info = probe(source)
+    seconds = info.get("seconds") or 0.0
+    if not seconds:
+        raise RuntimeError(f"영상 길이를 못 읽었습니다: {source}")
+    exe = ffmpeg_exe()
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [exe, "-y", "-loglevel", "error", "-i", str(source)]
+    if audio is not None:
+        if not audio.is_file():
+            raise FileNotFoundError(f"음원 파일이 없습니다: {audio}")
+        cmd += ["-stream_loop", "-1", "-i", str(audio),
+                "-filter_complex", _audio_chain(1, seconds)]
+        amap = "[aout]"
+    else:
+        cmd += ["-f", "lavfi", "-t", f"{seconds:.3f}",
+                "-i", "anullsrc=channel_layout=stereo:sample_rate=44100"]
+        amap = "1:a"
+    cmd += ["-map", "0:v", "-c:v", "copy", "-map", amap,
+            "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
+            "-movflags", "+faststart", "-t", f"{seconds:.3f}", str(dest)]
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0 or not dest.is_file():
+        tail = (r.stderr or "").strip().splitlines()[-6:]
+        raise RuntimeError("ffmpeg 실패:\n  " + "\n  ".join(tail))
+    return dest
+
+
 def probe(path: Path) -> dict:
     """만든 영상의 코덱·길이·크기. 못 읽으면 빈 dict.
 
@@ -284,15 +319,22 @@ def check(path: Path) -> list[str]:
 def main() -> int:
     import argparse
     ap = argparse.ArgumentParser(description="판 여러 장 → 릴스용 mp4")
-    ap.add_argument("slides", nargs="+", help="장면 이미지들(순서대로)")
+    ap.add_argument("slides", nargs="*", help="장면 이미지들(순서대로)")
+    ap.add_argument("--from-video", default="",
+                    help="이미 만든 mp4 의 소리만 바꾼다(영상은 다시 인코딩하지 않는다)")
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--hold", type=float, default=HOLD)
     ap.add_argument("--fade", type=float, default=FADE)
     ap.add_argument("--audio", default="", help="깔 음원 파일. 권리는 부르는 쪽이 확인한다")
     args = ap.parse_args()
-    out = build([Path(p) for p in args.slides], Path(args.out),
-                hold=args.hold, fade=args.fade,
-                audio=Path(args.audio) if args.audio else None, quiet=False)
+    track = Path(args.audio) if args.audio else None
+    if args.from_video:
+        out = set_audio(Path(args.from_video), track, Path(args.out))
+    elif args.slides:
+        out = build([Path(p) for p in args.slides], Path(args.out),
+                    hold=args.hold, fade=args.fade, audio=track, quiet=False)
+    else:
+        ap.error("장면 이미지들 또는 --from-video 중 하나는 있어야 합니다")
     info = probe(out)
     print(f"[video] {out}  {info.get('seconds', '?')}초 "
           f"{info.get('width')}×{info.get('height')} {info.get('mb', '?')}MB")
