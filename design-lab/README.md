@@ -22,6 +22,9 @@ python design-lab/serve.py        # http://localhost:8780
 | 포스터 스튜디오 | 공고를 골라 템플릿·포맷·팔레트를 바꿔 가며 실제 크기로 미리 본다. 플랫폼별 캡션도 같이 나온다 |
 | 발행 큐 | 렌더 → DRY 발행 → 실제 발행. 어디에 무엇을 올렸는지의 원장 |
 
+포스터 한 장이 아니라 **카테고리 묶음**(이번 주 채용 · 백엔드 · 대기업 …)으로 묶어
+올리는 흐름은 `poster/collection.py` + [SOCIAL.md](SOCIAL.md).
+
 ## 흐름
 
 ```
@@ -74,6 +77,20 @@ $P -m publish.cli publish <item-id> --live    # 진짜로 올린다
 
 **없는 정보는 그리지 않는다.** 마감일이 없으면 '상시 채용'이라고 지어내지 않고 그 줄을 비운다.
 
+### 전문을 싣는 판 — 캐러셀 / 한 장
+
+위 넷은 불릿을 3개로 자른다. 공고 전문이 필요하면 `poster/carousel.py`:
+
+```bash
+python -m poster.carousel wanted-364849                              # 여러 장(carousel.html)
+python -m poster.carousel wanted-364849 --one --frame label_sheet    # 한 장, hire-17 틀
+```
+
+한 장짜리를 만드는 절차(내용 → 회사 UI 조사 → 레퍼런스 틀)와 'AI 티'로 판정해 뺀 목록,
+작업 기록은 **[ONEPAGE.md](ONEPAGE.md)**. 회사 조사는 `brands/<회사>.json` 에 남는다 —
+회사 전용 판 자동화 절차(대표 물건 → 실제 서체 → 공식 픽셀 색 → 원본 이미지 → 검증, 병렬 작업자 지시문 포함)는 **[BRAND_RESEARCH.md](BRAND_RESEARCH.md)**,
+포인트를 옮긴 회사 전용 판은 `--frame brand`. 그 판을 밑그림으로 나노바나나에게 다듬게 하는 법은 **[NANOBANANA.md](NANOBANANA.md)**.
+
 ## 회사 이미지
 
 ```
@@ -95,11 +112,15 @@ assets.put("토스", Path("~/Downloads/toss.png").expanduser())   # 보관소에
 `config/accounts.example.json` 을 `accounts.json` 으로 복사해 채운다(커밋 금지).
 환경변수(`DESIGN_LAB_IG_TOKEN` 등)가 있으면 파일보다 우선한다.
 
-- **인스타그램** — 프로 계정 + 연결된 페이스북 페이지 + `instagram_content_publish` 권한.
-  이미지를 **공개 URL** 로 줘야 해서 `public_base_url` 이 없으면 발행이 막힌다
-  (out/ 을 그대로 웹에 열지 말 것 — 노출용 경로를 따로 둔다).
-  본문에 링크가 안 걸리므로 캡션은 '프로필 링크' 로 유도한다.
-- **페이스북** — 페이지 액세스 토큰(사용자 토큰 아님) + `pages_manage_posts`.
+- **인스타그램** — 프로 계정 + 메타 앱(인스타 로그인 방식이면 페이스북 페이지 불필요).
+  이미지를 **공개 URL** 로 줘야 해서 `public_base_url` 이 없으면 발행이 막힌다.
+  올릴 한 장만 `exposed/` 에 해시 이름으로 복사하고 뷰어 nginx 가 `/ig/` 로 내놓는다.
+  본문 링크가 안 걸리므로 캡션 끝에 공고 주소를 글자로 적는다.
+  **승인한 포스터를 인스타·페이스북에 정해진 시각에 자동으로 올리는 흐름과 계정 연결 절차는
+  [SOCIAL.md](SOCIAL.md)**
+  — 결과는 크롤 운영 대시보드(8770)의 '인스타 발행' 칸.
+- **페이스북** — 페이지 액세스 토큰(사용자 토큰 아님) + `pages_manage_posts`. 개인 담벼락에는 API 로 못 올린다.
+  이미지는 파일을 그대로 올리므로 공개 URL 이 필요 없다.
 - **링크드인** — 앱 + 회사페이지 관리자, `w_organization_social`. 이미지를 먼저 업로드해
   URN 을 받고 그걸 글에 붙이는 3단계.
 
@@ -109,6 +130,7 @@ assets.put("토스", Path("~/Downloads/toss.png").expanduser())   # 보관소에
 ## 안전장치
 
 - 발행은 언제나 dry-run 이 기본. `--live` 를 줘야 실제로 나간다.
+  자동 발행 데몬은 `autopublish.live` 가 true 이고 자격이 있을 때만 나가고, 아니면 연습 발행(rehearsed)으로 남긴다.
 - 같은 공고가 이미 올라간 플랫폼은 건너뛴다(`--force` 로만 무시).
 - 무거운 일(크로미움, 실제 발행)은 서버가 아니라 자식 프로세스에서 돈다 — 8GB 머신.
 

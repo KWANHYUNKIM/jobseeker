@@ -110,6 +110,13 @@
   템플릿으로 옮겨 놨다. `poster/`(공고 색인 → 원고 → HTML → Playwright 렌더) →
   `publish/`(인스타·페북·링크드인 어댑터 + 발행 큐 원장). 발행은 언제나 dry-run 이
   기본이고 `--live` 를 줘야 실제로 나간다. 자세한 건 랩 README.
+  **소셜 자동 발행**(인스타·페이스북): 사람은 `publish.cli approve`(윈도우) → `push` 까지만, 맥의
+  `publish.daemon tick`(launchd 5분, `deploy/setup-publisher.sh`)이 12:30·19:30 슬롯에 한 건씩
+  올린다. 올리는 단위는 공고 한 건(`approve`)과 **카테고리 묶음**(`approve-collection` —
+  이번 주·마감임박·직군·회사규모·기술·신입, 키워드 표지 + 차례 표지 + 공고 판 8장까지를 한 게시물로;
+  `poster/collection.py`)이다. 원장은 맥에만 있고, 결과는 8770 '인스타 발행' 칸(읽기 전용 — 8770 은 무인증 공개라
+  버튼·토큰을 두지 않는다). `autopublish.live` 가 꺼져 있으면 연습 발행만 한다. 한 판이 인스타와 페이스북 페이지
+  양쪽에 나가고(캡션은 플랫폼별로 따로), 한쪽만 실패하면 실패한 쪽만 다시 시도한다. `design-lab/SOCIAL.md`.
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
 `python -m pipeline.aggregate 개발자`, `python -m pipeline.close_check --limit 300`, `python -m monitoring.health report`,
