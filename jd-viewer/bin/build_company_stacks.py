@@ -818,7 +818,8 @@ def build(jobs: list[dict], min_count: int) -> list[dict]:
             "domains": domains,
             "architecture": arch,
             "titles": titles[:8],
-            "postings": urls[:12],
+            # 전부 싣는다 — 화면이 쪽으로 나눠 보여 준다. 12건에서 자르면 큰 회사 공고가 안 보였다.
+            "postings": urls,
         }
         # 2차 보강 병합
         prof = profiles.get(nk)

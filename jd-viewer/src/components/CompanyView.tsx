@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useCompanies } from '../lib/useCompanies'
 import { useLearning, type LearningVideo } from '../lib/useLearning'
-import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon, CompanyMark } from './ui'
+import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon, CompanyMark, Pagination } from './ui'
+import { usePaged, PAGE_SIZE } from '../lib/usePaged'
 import { ROLE_COLORS } from '../lib/classify'
 import { navigate } from '../lib/router'
 import { paths } from '../lib/urls'
 import { absUrl, clip, useSeo } from '../lib/seo'
-import type { CompanyStack, CareerGuide } from '../types'
+import type { CompanyStack, CompanyPosting, CareerGuide } from '../types'
 
 const CAT_COLOR: Record<string, string> = {
   언어: '#03C75A',
@@ -180,7 +181,7 @@ function CompanyProfile({ c, onStudyTech }: { c: CompanyStack; onStudyTech?: (te
   const learning = useLearning()
   const maxRole = Math.max(1, ...Object.values(c.roles))
   return (
-    <div className="p-6 max-w-4xl">
+    <div className="p-6">
       {/* 헤더 */}
       <div className="flex items-center flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-(--color-text) flex items-center gap-2">
@@ -209,149 +210,173 @@ function CompanyProfile({ c, onStudyTech }: { c: CompanyStack; onStudyTech?: (te
         {c.summary}
       </p>
 
-      {/* 도메인 */}
-      <Section title="도메인 (사업 영역)">
-        {c.domains.length ? (
-          <div className="flex flex-wrap gap-2">
-            {c.domains.map((d) => (
-              <span
-                key={d.name}
-                title={d.evidence.length ? `근거 키워드: ${d.evidence.join(', ')}` : undefined}
-                className="text-sm px-3 py-1.5 rounded-lg bg-(--color-accent)/12 text-(--color-accent) border border-(--color-accent)/30"
-              >
-                {d.name}
-                {d.evidence.length > 0 && (
-                  <span className="text-[11px] text-(--color-muted) ml-1.5">{d.evidence.slice(0, 3).join(' · ')}</span>
-                )}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <span className="text-sm text-(--color-muted)">추론된 도메인 없음</span>
-        )}
-      </Section>
-
-      {/* 아키텍처 추론 */}
-      <Section title="아키텍처 추론 (기술 조합 기반 예측)">
-        {c.architecture.length ? (
-          <div className="grid sm:grid-cols-2 gap-2">
-            {c.architecture.map((a) => (
-              <div key={a.label} className="bg-(--color-panel) border border-(--color-border) rounded-lg p-3">
-                <div className="text-sm font-semibold text-(--color-text)">{a.label}</div>
-                <div className="text-[12px] text-(--color-muted) mt-1 leading-relaxed">{a.why}</div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <span className="text-sm text-(--color-muted)">추론된 아키텍처 없음</span>
-        )}
-      </Section>
-
-      {/* 취업 가이드 */}
-      {c.career_guide && (
-        <CareerGuideBlock
-          g={c.career_guide}
-          videos={learning.resources}
-          searchUrl={learning.searchUrl}
-        />
-      )}
-
-      {/* 기술스택 (카테고리별) — 기술 클릭 시 학습 탭으로 점프 */}
-      <Section title="기술스택 (채용공고 기반 · 기술 클릭 → 학습 커리큘럼)">
-        <div className="space-y-3">
-          {CAT_ORDER.filter((cat) => c.tech_categories[cat]?.length).map((cat) => (
-            <div key={cat}>
-              <div className="text-[11px] uppercase tracking-wider font-semibold mb-1.5" style={{ color: CAT_COLOR[cat] }}>
-                {cat}
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {c.tech_categories[cat].map((t) => {
-                  const hasCurr = !!learning.curricula[t.name]
-                  const hasVids = (learning.resources[t.name]?.length ?? 0) > 0
-                  const studiable = !!onStudyTech && (hasCurr || hasVids)
-                  return (
-                    <button
-                      key={t.name}
-                      disabled={!studiable}
-                      onClick={() => studiable && onStudyTech?.(t.name)}
-                      title={
-                        studiable
-                          ? `${t.name} 학습 ${hasCurr ? '커리큘럼' : '영상'} 보기`
-                          : `${t.name} (공고 ${t.count}건)`
-                      }
-                      className={`text-[13px] px-2.5 py-1 rounded-md border flex items-center gap-1.5 transition ${
-                        studiable ? 'hover:brightness-125 cursor-pointer' : 'cursor-default'
-                      }`}
-                      style={{ borderColor: (CAT_COLOR[cat] ?? '#6b7280') + '55', background: (CAT_COLOR[cat] ?? '#6b7280') + '12' }}
-                    >
-                      <TechIcon tech={t.name} size={14} />
-                      <span className="text-(--color-text)">{t.name}</span>
-                      <span className="text-[10px] text-(--color-muted)">{t.count}</span>
-                      {hasCurr ? (
-                        <span className="text-[10px] text-(--color-muted)" title="학습 커리큘럼 있음">커리큘럼</span>
-                      ) : hasVids ? (
-                        <span className="text-[10px] text-(--color-muted)" title="학습 영상 있음">영상</span>
-                      ) : null}
-                    </button>
-                  )
-                })}
-              </div>
+      {/* 넓은 화면은 두 칸 — 왼쪽은 읽을 거리(스택·아키텍처·가이드), 오른쪽은 한눈에 보는 것.
+          한 칸으로 화면 끝까지 늘리면 글줄이 너무 길어져 안 읽힌다. */}
+      <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(320px,420px)] xl:gap-x-8">
+        <div className="min-w-0">
+          {/* 기술스택 (카테고리별) — 기술 클릭 시 학습 탭으로 점프 */}
+          <Section title="기술스택 (채용공고 기반 · 기술 클릭 → 학습 커리큘럼)">
+            <div className="space-y-3">
+              {CAT_ORDER.filter((cat) => c.tech_categories[cat]?.length).map((cat) => (
+                <div key={cat}>
+                  <div className="text-[11px] uppercase tracking-wider font-semibold mb-1.5" style={{ color: CAT_COLOR[cat] }}>
+                    {cat}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {c.tech_categories[cat].map((t) => {
+                      const hasCurr = !!learning.curricula[t.name]
+                      const hasVids = (learning.resources[t.name]?.length ?? 0) > 0
+                      const studiable = !!onStudyTech && (hasCurr || hasVids)
+                      return (
+                        <button
+                          key={t.name}
+                          disabled={!studiable}
+                          onClick={() => studiable && onStudyTech?.(t.name)}
+                          title={
+                            studiable
+                              ? `${t.name} 학습 ${hasCurr ? '커리큘럼' : '영상'} 보기`
+                              : `${t.name} (공고 ${t.count}건)`
+                          }
+                          className={`text-[13px] px-2.5 py-1 rounded-md border flex items-center gap-1.5 transition ${
+                            studiable ? 'hover:brightness-125 cursor-pointer' : 'cursor-default'
+                          }`}
+                          style={{ borderColor: (CAT_COLOR[cat] ?? '#6b7280') + '55', background: (CAT_COLOR[cat] ?? '#6b7280') + '12' }}
+                        >
+                          <TechIcon tech={t.name} size={14} />
+                          <span className="text-(--color-text)">{t.name}</span>
+                          <span className="text-[10px] text-(--color-muted)">{t.count}</span>
+                          {hasCurr ? (
+                            <span className="text-[10px] text-(--color-muted)" title="학습 커리큘럼 있음">커리큘럼</span>
+                          ) : hasVids ? (
+                            <span className="text-[10px] text-(--color-muted)" title="학습 영상 있음">영상</span>
+                          ) : null}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </Section>
+          </Section>
 
-      {/* 직군 분포 */}
-      <Section title="채용 직군 분포">
-        <div className="space-y-1.5 max-w-md">
-          {Object.entries(c.roles).map(([role, n]) => (
-            <div key={role} className="flex items-center gap-2">
-              <span className="text-xs text-(--color-muted) w-24 shrink-0 text-right">{role}</span>
-              <div className="flex-1 h-4 bg-(--color-panel) rounded overflow-hidden">
-                <div
-                  className="h-full rounded"
-                  style={{ width: `${(n / maxRole) * 100}%`, background: ROLE_COLORS[role] ?? '#6b7280' }}
-                />
+          {/* 아키텍처 추론 */}
+          <Section title="아키텍처 추론 (기술 조합 기반 예측)">
+            {c.architecture.length ? (
+              <div className="grid sm:grid-cols-2 2xl:grid-cols-3 gap-2">
+                {c.architecture.map((a) => (
+                  <div key={a.label} className="bg-(--color-panel) border border-(--color-border) rounded-lg p-3">
+                    <div className="text-sm font-semibold text-(--color-text)">{a.label}</div>
+                    <div className="text-[12px] text-(--color-muted) mt-1 leading-relaxed">{a.why}</div>
+                  </div>
+                ))}
               </div>
-              <span className="text-xs text-(--color-muted) w-8">{n}</span>
-            </div>
-          ))}
-        </div>
-      </Section>
+            ) : (
+              <span className="text-sm text-(--color-muted)">추론된 아키텍처 없음</span>
+            )}
+          </Section>
 
-      {/* 홈페이지 조사 (2차 보강) */}
-      {(c.homepage_desc || (c.homepage_tech && c.homepage_tech.length > 0)) && (
-        <Section title="홈페이지 조사 (자동 수집)">
-          {c.homepage_desc && (
-            <p className="text-sm text-(--color-text) leading-relaxed mb-2">{c.homepage_desc}</p>
+          {/* 취업 가이드 */}
+          {c.career_guide && (
+            <CareerGuideBlock
+              g={c.career_guide}
+              videos={learning.resources}
+              searchUrl={learning.searchUrl}
+            />
           )}
-          {c.homepage_tech && c.homepage_tech.length > 0 && (
-            <div>
-              <span className="text-[11px] text-(--color-muted)">홈페이지에서 감지된 기술: </span>
-              <span className="text-[12px] text-(--color-muted)">{c.homepage_tech.join(', ')}</span>
-            </div>
-          )}
-        </Section>
-      )}
 
-      {/* 공고 목록 */}
-      <Section title="채용공고">
-        <ul className="space-y-1">
-          {c.postings.map((p, i) => (
-            <li key={i}>
-              <a
-                href={p.url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm text-(--color-accent) hover:underline"
-              >
-                {p.title || p.url}
-              </a>
-              <span className="text-[11px] text-(--color-muted) ml-2">{p.site}</span>
-            </li>
-          ))}
-        </ul>
+        </div>
+        <div className="min-w-0">
+          {/* 도메인 */}
+          <Section title="도메인 (사업 영역)">
+            {c.domains.length ? (
+              <div className="flex flex-wrap gap-2">
+                {c.domains.map((d) => (
+                  <span
+                    key={d.name}
+                    title={d.evidence.length ? `근거 키워드: ${d.evidence.join(', ')}` : undefined}
+                    className="text-sm px-3 py-1.5 rounded-lg bg-(--color-accent)/12 text-(--color-accent) border border-(--color-accent)/30"
+                  >
+                    {d.name}
+                    {d.evidence.length > 0 && (
+                      <span className="text-[11px] text-(--color-muted) ml-1.5">{d.evidence.slice(0, 3).join(' · ')}</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <span className="text-sm text-(--color-muted)">추론된 도메인 없음</span>
+            )}
+          </Section>
+
+          {/* 직군 분포 */}
+          <Section title="채용 직군 분포">
+            <div className="space-y-1.5">
+              {Object.entries(c.roles).map(([role, n]) => (
+                <div key={role} className="flex items-center gap-2">
+                  <span className="text-xs text-(--color-muted) w-24 shrink-0 text-right">{role}</span>
+                  <div className="flex-1 h-4 bg-(--color-panel) rounded overflow-hidden">
+                    <div
+                      className="h-full rounded"
+                      style={{ width: `${(n / maxRole) * 100}%`, background: ROLE_COLORS[role] ?? '#6b7280' }}
+                    />
+                  </div>
+                  <span className="text-xs text-(--color-muted) w-8">{n}</span>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          {/* 홈페이지 조사 (2차 보강) */}
+          {(c.homepage_desc || (c.homepage_tech && c.homepage_tech.length > 0)) && (
+            <Section title="홈페이지 조사 (자동 수집)">
+              {c.homepage_desc && (
+                <p className="text-sm text-(--color-text) leading-relaxed mb-2">{c.homepage_desc}</p>
+              )}
+              {c.homepage_tech && c.homepage_tech.length > 0 && (
+                <div>
+                  <span className="text-[11px] text-(--color-muted)">홈페이지에서 감지된 기술: </span>
+                  <span className="text-[12px] text-(--color-muted)">{c.homepage_tech.join(', ')}</span>
+                </div>
+              )}
+            </Section>
+          )}
+
+          {/* 공고 목록 */}
+      <Section title={`채용공고 (${c.postings.length}건)`}>
+        <PostingList key={c.name} postings={c.postings} />
       </Section>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// 큰 회사는 공고가 수십 건이라 한 번에 늘어놓으면 오른쪽 칸이 끝없이 길어진다 — 쪽으로 나눈다.
+function PostingList({ postings }: { postings: CompanyPosting[] }) {
+  const paged = usePaged(postings, PAGE_SIZE)
+  return (
+    <div>
+      <ul className="space-y-1">
+        {paged.slice.map((p, i) => (
+          <li key={`${paged.start}-${i}`}>
+            <a href={p.url} target="_blank" rel="noreferrer" className="text-sm text-(--color-accent) hover:underline">
+              {p.title || p.url}
+            </a>
+            <span className="text-[11px] text-(--color-muted) ml-2">{p.site}</span>
+          </li>
+        ))}
+      </ul>
+      <Pagination
+        page={paged.page}
+        totalPages={paged.totalPages}
+        total={postings.length}
+        pageSize={PAGE_SIZE}
+        compact
+        sticky={false}
+        resetScroll={false}
+        className="mt-3 rounded-md border"
+        onChange={paged.setPage}
+      />
     </div>
   )
 }
