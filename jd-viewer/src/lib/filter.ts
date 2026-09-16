@@ -20,13 +20,18 @@ export interface FilterState {
   // 클릭하게 된다. 'only' 는 지난 공고만, 'show' 는 함께 보되 배지로 구분한다.
   // 어느 쪽이든 데이터에서 지우지는 않는다(검색·색인은 그대로).
   closed: 'hide' | 'show' | 'only'
+  // 마감일을 **확인하지 못한** 공고를 어떻게 할 것인가. status_source === 'unknown'
+  // 이 그것이다 — 원본에 마감 표기가 없고 재확인도 아직 못 닿은 공고라 모집중으로
+  // 열어 뒀을 뿐, 열려 있다는 근거는 없다. 기본은 'show'(기존 동작 유지).
+  // 'hide' 를 고르면 근거 있는 공고만 남는다.
+  unverified: 'show' | 'hide'
 }
 
 export function emptyFilter(): FilterState {
   return {
     sites: new Set(), careers: new Set(), stacks: new Set(), roles: new Set(),
     regions: new Set(), districts: new Set(), sizes: new Set(),
-    query: '', closed: 'hide',
+    query: '', closed: 'hide', unverified: 'show',
   }
 }
 
@@ -85,6 +90,8 @@ function matchesBase(j: Job, f: FilterState, q: string): boolean {
   const isClosed = j.status === 'closed'
   if (f.closed === 'hide' && isClosed) return false
   if (f.closed === 'only' && !isClosed) return false
+  // 마감된 공고에는 적용하지 않는다 — 마감 여부가 이미 확정된 자리다.
+  if (f.unverified === 'hide' && !isClosed && j.status_source === 'unknown') return false
   if (q) {
     const hay = (j.company + '\n' + j.title + '\n' + j.full_jd).toLowerCase()
     if (!hay.includes(q)) return false

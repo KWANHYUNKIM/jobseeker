@@ -120,6 +120,25 @@ export function Sidebar({ filter, setFilter, facets, totalCount, filteredCount, 
         ))}
       </FilterGroup>
 
+      {/* 마감 확인. '모집중' 은 두 가지를 뭉뚱그린 말이다 — 마감일을 알고 아직 안
+          지난 것과, 마감을 알 방법이 없어 열어 둔 것. 후자가 모집중의 절반을 넘으므로
+          "근거 있는 것만" 을 고를 수 있어야 한다. 마감만 보는 중에는 의미가 없어 숨긴다. */}
+      {filter.closed !== 'only' && (
+        <FilterGroup title="마감 확인">
+          {([
+            ['show', '전체'],
+            ['hide', '확인된 공고만'],
+          ] as const).map(([v, label]) => (
+            <Chip
+              key={v}
+              label={label}
+              active={filter.unverified === v}
+              onClick={() => setFilter({ ...filter, unverified: v })}
+            />
+          ))}
+        </FilterGroup>
+      )}
+
       <FilterGroup title="사이트">
         {SITES.map((s) => (
           <Chip

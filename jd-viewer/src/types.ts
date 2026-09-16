@@ -18,8 +18,18 @@ export interface Job {
   // 마감 여부. all_jobs_enriched.json 은 모집중과 마감을 함께 담는다 — 마감을 파일에서
   // 빼면 색인·유사공고·과거 조회가 통째로 사라지므로, 숨기지 않고 구분해서 싣는다.
   status?: 'active' | 'closed'
+  // status 를 **무엇이 근거로** 정했나. 'unknown' 은 "모집중" 이 아니라 "마감을 알
+  // 방법이 없어 열어둔 것" 이다 — 모집중 공고의 절반 이상이 여기 속한다. 둘을 같은
+  // 얼굴로 보여주면, 두 달 전에 끝난 자리를 오늘 열린 자리와 나란히 놓게 된다.
+  status_source?: 'override' | 'ledger' | 'deadline' | 'always_open' | 'unknown'
   closed_reason?: string
   deadline_date?: string
+  // 원본이 말한 등록일(ISO). 크롤은 이 값을 모르고, 마감 재확인(close_check)이
+  // 원본 JSON-LD 에서 받아 온다. saramin 은 원본에 표기가 없어 늘 빈 값이다.
+  posted_date?: string
+  // 등록일이 없을 때 쓰는 대타 — 우리가 그 공고를 처음 본 날(ISO).
+  // **추정값이다.** 화면은 둘을 구분해서 보여줘야 한다.
+  first_seen_at?: string
   // 해외 보드(remote) / 회사 자체 채용페이지(ats) 전용 (그 외 사이트는 undefined)
   region?: string
   source_board?: string
@@ -168,6 +178,9 @@ export interface CalendarItem {
   career: string
   tech_stack: string[]
   start: string | null // 모집 시작일 ISO
+  // start 가 원본 등록일/접수기간이 아니라 '우리가 처음 본 날'에서 온 추정값인가.
+  // 추정값을 확정값처럼 보여주면 지원 시점을 잘못 짚게 된다.
+  start_estimated?: boolean
   deadline: string | null // 마감일 ISO
   always_open: boolean // 상시채용
 }
@@ -178,6 +191,9 @@ export interface CalendarFile {
   dated: number
   always_open: number
   no_info: number
+  // 모집중으로 남아 있지만 마감일이 이미 지나 캘린더에서 뺀 건수.
+  // 계속 크면 마감 재확인이 못 따라가고 있다는 신호다.
+  expired?: number
   items: CalendarItem[]
 }
 

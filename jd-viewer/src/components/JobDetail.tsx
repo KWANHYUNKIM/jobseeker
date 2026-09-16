@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
+import { postedOf, recruitBadge } from '../lib/recruit'
 import { blendByEngagement, useEngagement } from '../lib/useEngagement'
 import { useSimilarJobs } from '../lib/useSimilar'
 import { track, useDwell } from '../lib/track'
@@ -98,11 +99,27 @@ export function JobDetail({ job, onOpenUrl }: Props) {
               <span className="text-xs px-2 py-0.5 rounded bg-(--color-bg) text-(--color-muted) border border-(--color-border)">
                 {job.site}
               </span>
-              {job.status === 'closed' && (
-                <span className="text-xs px-2 py-0.5 rounded border border-(--color-red-400)/40 text-(--color-red-400)">
-                  마감
-                </span>
-              )}
+              {/* 모집 상태. 마감/D-N/상시/미확인 — 무엇을 근거로 그렇게 말하는지가
+                  title 에 붙는다. '미확인' 은 모집중이라는 뜻이 아니라 "마감을 알
+                  방법이 없어 열어 둔 것" 이라, 지원 전에 원본을 봐야 한다. */}
+              {(() => {
+                const b = recruitBadge(job)
+                if (!b) return null
+                const danger = b.tone === 'closed' || b.tone === 'urgent'
+                return (
+                  <span
+                    title={b.title}
+                    className={
+                      'text-xs px-2 py-0.5 rounded border ' +
+                      (danger
+                        ? 'border-(--color-red-400)/40 text-(--color-red-400)'
+                        : 'border-(--color-border) text-(--color-muted)')
+                    }
+                  >
+                    {b.label}
+                  </span>
+                )
+              })()}
               {roles.map((r) => (
                 <span
                   key={r}
@@ -114,6 +131,18 @@ export function JobDetail({ job, onOpenUrl }: Props) {
               ))}
               {job.career && <span className="text-xs text-(--color-muted)">· {job.career}</span>}
               {job.location && <span className="text-xs text-(--color-muted)">· {job.location}</span>}
+              {(() => {
+                const p = postedOf(job)
+                if (!p) return null
+                return (
+                  <span
+                    className="text-xs text-(--color-muted)"
+                    title={p.estimated ? '원본에 등록일이 없어 처음 수집한 날로 대신했습니다' : '원본이 밝힌 등록일'}
+                  >
+                    · {p.estimated ? '수집' : '등록'} {p.iso}
+                  </span>
+                )
+              })()}
             </div>
             <h2 className="text-(--color-text) text-lg sm:text-xl leading-snug">{job.title}</h2>
             <p className="text-(--color-muted) text-sm mt-0.5 flex items-center gap-1.5">

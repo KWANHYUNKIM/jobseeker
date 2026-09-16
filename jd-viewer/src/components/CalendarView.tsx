@@ -117,6 +117,14 @@ export function CalendarView() {
               마감일 표기 <b className="text-(--color-text)">{data?.dated ?? 0}</b>건 · 상시채용{' '}
               <b className="text-(--color-text)">{data?.always_open ?? 0}</b>건
               {' · '}전체 {data?.total ?? 0}건 중 기간 추출 {(data?.dated ?? 0) + (data?.always_open ?? 0)}건
+              {/* 목록에는 모집중인데 마감일이 이미 지난 공고. 캘린더에 그리면 없는
+                  일정이 되므로 뺐고, 뺐다는 사실은 밝힌다 — 이 숫자가 계속 크면
+                  마감 재확인이 못 따라가고 있다는 뜻이다. */}
+              {!!data?.expired && (
+                <span title="모집중으로 남아 있지만 마감일이 지나 캘린더에서 뺐습니다">
+                  {' · '}마감일 지남 {data.expired}건 제외
+                </span>
+              )}
             </span>
           )}
           {data?.generated_at && <span className="ml-auto">갱신 {data.generated_at.slice(0, 10)}</span>}
@@ -226,7 +234,11 @@ function JobList({ items }: { items: CalendarItem[] }) {
             {it.title} ↗
           </a>
           {it.start && (
-            <div className="mt-0.5 text-[11px] text-(--color-muted)">모집 {it.start} ~ {it.deadline ?? '채용시'}</div>
+            <div className="mt-0.5 text-[11px] text-(--color-muted)">
+              모집 {it.start}
+              {it.start_estimated && <span title="원본에 등록일이 없어 처음 수집한 날로 대신했습니다">(추정)</span>}
+              {' ~ '}{it.deadline ?? '채용시'}
+            </div>
           )}
         </li>
       ))}

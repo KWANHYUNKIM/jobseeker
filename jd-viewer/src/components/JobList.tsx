@@ -6,6 +6,7 @@ import { usePaged } from '../lib/usePaged'
 import { onLinkClick } from '../lib/router'
 import { paths } from '../lib/urls'
 import { EmptyState, TechTag, CompanyMark, Pagination } from './ui'
+import { postedOf, postedText, recruitBadge, type RecruitTone } from '../lib/recruit'
 
 interface Props {
   jobs: Job[]
@@ -56,12 +57,13 @@ export function JobList({ jobs }: Props) {
                 <span className="text-(--color-accent) truncate">{j.company}</span>
                 <SizeBadge size={j.company_size} />
                 <span className="ml-auto shrink-0 flex items-center gap-1.5">
+                  <PostedText job={j} />
                   {place && <span>{place}</span>}
                   {j.career && <span>{j.career}</span>}
                 </span>
               </div>
               <a href={to} onClick={onLinkClick(to)} className="block text-(--color-text) text-sm leading-snug line-clamp-2 mb-1.5">
-                {j.status === 'closed' && <ClosedBadge reason={j.closed_reason} />}
+                <StatusBadge job={j} />
                 {j.title}
               </a>
               {roles.length > 0 && (
@@ -103,6 +105,7 @@ export function JobList({ jobs }: Props) {
               <th className="px-3 py-2 font-medium w-44">분류 직군</th>
               <th className="px-3 py-2 font-medium w-28">지역</th>
               <th className="px-3 py-2 font-medium w-24">경력</th>
+              <th className="px-3 py-2 font-medium w-24">등록</th>
               <th className="px-3 py-2 font-medium w-80">기술스택</th>
               <th className="px-3 py-2 font-medium w-16">원본</th>
             </tr>
@@ -126,7 +129,7 @@ export function JobList({ jobs }: Props) {
                   </td>
                   <td className="px-3 py-2 text-(--color-text)">
                     <a href={to} onClick={onLinkClick(to)} className="line-clamp-2 leading-snug hover:text-(--color-accent)">
-                      {j.status === 'closed' && <ClosedBadge reason={j.closed_reason} />}
+                      <StatusBadge job={j} />
                       {j.title}
                     </a>
                   </td>
@@ -147,6 +150,7 @@ export function JobList({ jobs }: Props) {
                     {place || '-'}
                   </td>
                   <td className="px-3 py-2 text-(--color-muted) text-xs">{j.career || '-'}</td>
+                  <td className="px-3 py-2 text-(--color-muted) text-xs"><PostedText job={j} /></td>
                   <td className="px-3 py-2">
                     <div className="flex flex-wrap gap-1">
                       {(j.tech_stack || []).slice(0, 8).map((t) => (
@@ -190,17 +194,47 @@ export function JobList({ jobs }: Props) {
   )
 }
 
-// 마감 배지. 마감 공고를 목록에서 지우지 않고 표시로 구분하는 이유는, 지운 순간
+// 모집 상태 배지. 마감 공고를 목록에서 지우지 않고 표시로 구분하는 이유는, 지운 순간
 // "예전에 이런 자리가 있었다"가 사라지기 때문이다. 검색·색인·재공고 추적은 마감 공고를
 // 계속 필요로 한다. 대신 기본 필터는 모집중만 보여주므로, 지원할 수 없는 자리를 모르고
 // 클릭하는 일은 없다.
-function ClosedBadge({ reason }: { reason?: string }) {
+//
+// 배지가 '마감' 하나였을 때는 모집중이 전부 같은 얼굴이었다. 마감일까지 아는 공고와,
+// 원본에 마감 표기가 없어 그냥 열어 둔 공고가 구분되지 않았다 — 후자가 모집중의
+// 절반을 넘는다. 무엇을 근거로 열려 있다고 말하는지를 배지가 말한다.
+const TONE: Record<RecruitTone, string> = {
+  closed: 'bg-(--color-muted)/20 text-(--color-muted) border-(--color-border)',
+  urgent: 'bg-(--color-accent)/15 text-(--color-accent) border-(--color-accent)/40',
+  open: 'bg-transparent text-(--color-muted) border-(--color-border)',
+  always: 'bg-transparent text-(--color-muted) border-(--color-border)',
+  unverified: 'bg-transparent text-(--color-muted) border-dashed border-(--color-border)',
+}
+
+function StatusBadge({ job }: { job: Job }) {
+  const b = recruitBadge(job)
+  if (!b) return null
   return (
     <span
-      title={reason || '마감'}
-      className="mr-1.5 align-middle inline-block px-1.5 py-0.5 text-[10px] font-medium rounded bg-(--color-muted)/20 text-(--color-muted) border border-(--color-border)"
+      title={b.title}
+      className={`mr-1.5 align-middle inline-block px-1.5 py-0.5 text-[10px] font-medium rounded border tabular-nums ${TONE[b.tone]}`}
     >
-      마감
+      {b.label}
+    </span>
+  )
+}
+
+// 등록일. 원본이 말한 값이 없으면 '처음 본 날' 로 대신하고, 그 사실을 title 로 밝힌다.
+// 추정값을 확정값처럼 적으면 "9월 2일 등록" 이 사실은 "9월 2일에 우리가 처음 봤다" 가 된다.
+function PostedText({ job }: { job: Job }) {
+  const p = postedOf(job)
+  if (!p) return <span className="text-(--color-muted)">-</span>
+  return (
+    <span
+      className={p.estimated ? 'text-(--color-muted) opacity-70' : 'text-(--color-muted)'}
+      title={p.estimated ? `원본에 등록일이 없어 처음 수집한 날로 대신했습니다 (${p.iso})` : `등록 ${p.iso}`}
+    >
+      {postedText(p.iso)}
+      {p.estimated && '~'}
     </span>
   )
 }
