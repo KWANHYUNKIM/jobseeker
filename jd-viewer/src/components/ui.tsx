@@ -195,6 +195,9 @@ export function Pagination({
   pageSize,
   unit = '건',
   sticky = true,
+  compact = false,
+  resetScroll = true,
+  className = '',
   onChange,
 }: {
   page: number
@@ -203,6 +206,11 @@ export function Pagination({
   pageSize: number
   unit?: string
   sticky?: boolean
+  /** 좁은 칸(캘린더 오른쪽 등)용 — 번호 줄 대신 `3 / 12` 만 둔다. 번호 11개는 384px 에 안 들어간다 */
+  compact?: boolean
+  /** 쪽을 넘기면 스크롤을 맨 위로. 페이지 아래쪽 절에 붙은 목록은 끈다 — 읽던 자리가 날아간다 */
+  resetScroll?: boolean
+  className?: string
   onChange: (p: number) => void
 }) {
   // 페이지를 넘겼는데 스크롤이 그대로면 새 페이지의 중간부터 보인다. 스크롤 컨테이너는
@@ -212,7 +220,36 @@ export function Pagination({
     const next = Math.max(0, Math.min(totalPages - 1, p))
     if (next === page) return
     onChange(next)
-    el?.closest<HTMLElement>('[data-scroll]')?.scrollTo({ top: 0 })
+    if (resetScroll) el?.closest<HTMLElement>('[data-scroll]')?.scrollTo({ top: 0 })
+  }
+
+  if (totalPages <= 1) return null
+
+  const bar =
+    'flex flex-wrap items-center justify-between gap-2 border-t border-(--color-border) bg-(--color-panel) ' +
+    (sticky ? 'sticky bottom-0 z-10 ' : '') +
+    className
+
+  if (compact) {
+    const from = page * pageSize + 1
+    const to = Math.min(total, (page + 1) * pageSize)
+    return (
+      <div className={bar + ' px-3 py-2'}>
+        <span className="text-[11px] text-(--color-muted) tabular-nums">
+          {from}–{to} / {total.toLocaleString()}
+          {unit}
+        </span>
+        <div className="flex items-center gap-1">
+          <PgBtn onClick={(e) => go(0, e.currentTarget)} disabled={page === 0}>«</PgBtn>
+          <PgBtn onClick={(e) => go(page - 1, e.currentTarget)} disabled={page === 0}>‹</PgBtn>
+          <span className="px-1.5 text-xs text-(--color-text) tabular-nums">
+            {page + 1} / {totalPages}
+          </span>
+          <PgBtn onClick={(e) => go(page + 1, e.currentTarget)} disabled={page >= totalPages - 1}>›</PgBtn>
+          <PgBtn onClick={(e) => go(totalPages - 1, e.currentTarget)} disabled={page >= totalPages - 1}>»</PgBtn>
+        </div>
+      </div>
+    )
   }
 
   // 페이지 번호 윈도우: 현재 페이지 ±3
@@ -222,12 +259,7 @@ export function Pagination({
   for (let i = start; i < end; i++) nums.push(i)
 
   return (
-    <div
-      className={
-        'flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-t border-(--color-border) bg-(--color-panel) ' +
-        (sticky ? 'sticky bottom-0 z-10' : '')
-      }
-    >
+    <div className={bar + ' px-4 py-3'}>
       <div className="text-xs text-(--color-muted)">
         총 <span className="text-(--color-text)">{total.toLocaleString()}</span>
         {unit} · 페이지 <span className="text-(--color-text)">{page + 1}</span> / {totalPages} (

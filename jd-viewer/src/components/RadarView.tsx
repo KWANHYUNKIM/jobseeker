@@ -6,7 +6,8 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useRadar } from '../lib/useRadar'
 import { ArchitectureDiagram } from './ArchitectureDiagram'
-import { Loader, ErrorState, SidePanel, MobileBar } from './ui'
+import { Loader, ErrorState, SidePanel, MobileBar, Pagination } from './ui'
+import { usePaged, PAGE_SIZE } from '../lib/usePaged'
 import type {
   Debate,
   DeepDiveSection,
@@ -115,6 +116,7 @@ export function RadarView({ companyKey }: { companyKey?: string | null }) {
       list.sort((a, b) => a.country.localeCompare(b.country) || a.name.localeCompare(b.name))
     return list
   }, [companies, query, country, domain, langs, flags, sort])
+  const paged = usePaged(filtered, PAGE_SIZE)
 
   const toggleLang = (name: string) => {
     const next = new Set(langs)
@@ -253,7 +255,7 @@ export function RadarView({ companyKey }: { companyKey?: string | null }) {
       </SidePanel>
 
       {/* 본문: 회사 카드 목록 */}
-      <main className="flex-1 min-w-0 overflow-auto">
+      <main data-scroll className="flex-1 min-w-0 overflow-auto">
         <MobileBar onMenu={() => setNavOpen(true)} label="검색·필터">
           <span className="ml-auto text-xs text-(--color-muted)">{filtered.length}개사</span>
         </MobileBar>
@@ -291,13 +293,21 @@ export function RadarView({ companyKey }: { companyKey?: string | null }) {
           {data?.generated_at && <span>갱신 {data.generated_at.slice(0, 10)}</span>}
         </div>
         <ul className="divide-y divide-(--color-border)">
-          {filtered.map((c) => (
+          {paged.slice.map((c) => (
             <CompanyRow key={c.key} company={c} onPickLang={toggleLang} onOpen={openCompany} />
           ))}
           {filtered.length === 0 && (
             <li className="p-8 text-(--color-muted)">조건에 맞는 회사가 없습니다.</li>
           )}
         </ul>
+        <Pagination
+          page={paged.page}
+          totalPages={paged.totalPages}
+          total={filtered.length}
+          pageSize={PAGE_SIZE}
+          unit="곳"
+          onChange={paged.setPage}
+        />
       </main>
         </div>
       )}

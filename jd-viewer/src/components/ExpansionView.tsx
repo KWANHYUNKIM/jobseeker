@@ -11,8 +11,10 @@ import {
   CAT_ORDER,
   CAT_COLOR,
   type TechNode,
+  type CompanyRef,
 } from '../lib/expansion'
-import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon } from './ui'
+import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon, Pagination } from './ui'
+import { usePaged, PAGE_SIZE } from '../lib/usePaged'
 
 const SIZE_COLOR: Record<string, string> = {
   대기업: '#f472b6',
@@ -20,7 +22,10 @@ const SIZE_COLOR: Record<string, string> = {
   중소기업: '#60a5fa',
 }
 
-const COMPANY_LIMIT = 60
+// 회사 칸은 3열 격자의 작은 칩이라 10개면 세 줄 남짓이다 — 10줄이 되게 곱한다
+const COMPANY_PAGE = PAGE_SIZE * 3
+// usePaged 는 배열이 바뀌면 1쪽으로 되돌린다 — 렌더마다 새 [] 를 주면 끝없이 되돌린다
+const NO_COMPANIES: CompanyRef[] = []
 const COOC_LIMIT = 14
 
 export function ExpansionView({
@@ -188,10 +193,11 @@ function TechPanel({
   const cat = index.categoryOf[tech] ?? '기타'
   const color = CAT_COLOR[cat] ?? '#6b7280'
   const node = index.techs.find((t) => t.name === tech) as TechNode | undefined
-  const companies = index.companiesByTech[tech] ?? []
+  const companies = index.companiesByTech[tech] ?? NO_COMPANIES
   const cooc = (index.coocByTech[tech] ?? []).slice(0, COOC_LIMIT)
   const maxConf = Math.max(0.0001, ...cooc.map((c) => c.confidence))
-  const shown = companies.slice(0, COMPANY_LIMIT)
+  const paged = usePaged(companies, COMPANY_PAGE)
+  const shown = paged.slice
 
   return (
     <div className="p-6 max-w-5xl">
@@ -376,11 +382,17 @@ function TechPanel({
                 )
               })}
             </div>
-            {companies.length > COMPANY_LIMIT && (
-              <div className="text-[11px] text-(--color-muted) mt-2">
-                외 {companies.length - COMPANY_LIMIT}개 회사 (공고 많은 순 상위 {COMPANY_LIMIT}개 표시)
-              </div>
-            )}
+            <Pagination
+              page={paged.page}
+              totalPages={paged.totalPages}
+              total={companies.length}
+              pageSize={COMPANY_PAGE}
+              unit="곳"
+              sticky={false}
+              resetScroll={false}
+              className="mt-2 rounded-md border"
+              onChange={paged.setPage}
+            />
           </>
         ) : (
           <span className="text-sm text-(--color-muted)">해당 기술을 쓰는 회사가 없습니다.</span>

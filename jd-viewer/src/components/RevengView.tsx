@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useDomainDocs, useMarkdown, useRevengIndex, type IndexEntry } from '../lib/useReveng'
-import { usePaged } from '../lib/usePaged'
+import { usePaged, PAGE_SIZE_GRID as PAGE_SIZE } from '../lib/usePaged'
 import { CompanyTeardown } from './CompanyTeardown'
 import { goBack, onLinkClick } from '../lib/router'
 import { paths } from '../lib/urls'
@@ -10,7 +10,6 @@ import { absUrl, clip, useSeo } from '../lib/seo'
 import { Loader, ErrorState, EmptyState, Pagination, SearchInput, hits } from './ui'
 
 // 카드 3열 × 4줄. 회사가 계속 쌓이는 탭이라 한 화면에 다 밀어 넣으면 곧 통 스크롤이 된다.
-const PAGE_SIZE = 12
 
 // 기술 역설계 — 회사가 무엇으로 돈을 벌고, 그 돈이 어떤 도메인으로 쪼개지고,
 // 각 기능이 어떻게 구현되고 서로 어떻게 이어지는지.

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useBlogs } from '../lib/useBlogs'
-import { usePaged } from '../lib/usePaged'
+import { usePaged, PAGE_SIZE_DENSE as PAGE_SIZE } from '../lib/usePaged'
 import { BlogDetail } from './BlogDetail'
 import { goBack, navigate } from '../lib/router'
 import { blogKey, paths } from '../lib/urls'
@@ -8,7 +8,6 @@ import { absUrl, clip, useSeo } from '../lib/seo'
 import { Loader, ErrorState, SidePanel, MobileBar, TechIcon, CompanyMark, Pagination } from './ui'
 import type { BlogPost } from '../types'
 
-const PAGE_SIZE = 20
 
 const COUNTRY_LABEL: Record<string, string> = {
   KR: '🇰🇷 한국',

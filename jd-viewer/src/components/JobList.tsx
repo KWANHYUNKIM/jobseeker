@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
 import { placeOf, UNKNOWN_REGION } from '../lib/region'
-import { usePaged } from '../lib/usePaged'
+import { usePaged, PAGE_SIZE_DENSE as PAGE_SIZE } from '../lib/usePaged'
 import { onLinkClick } from '../lib/router'
 import { paths } from '../lib/urls'
 import { EmptyState, TechTag, CompanyMark, Pagination } from './ui'
@@ -12,7 +12,6 @@ interface Props {
   jobs: Job[]
 }
 
-const PAGE_SIZE = 20
 
 // 공고 제목은 목록 안에서 유일하게 '진짜 링크'다. 줄 전체를 <a> 로 감싸면 안에 든
 // 원본 링크와 앵커가 겹쳐 잘못된 마크업이 되므로, 제목만 링크로 두고 줄 클릭은

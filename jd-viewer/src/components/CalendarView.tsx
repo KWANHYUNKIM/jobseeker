@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useCalendar } from '../lib/useCalendar'
-import { Loader, ErrorState, SearchInput, hits } from './ui'
+import { Loader, ErrorState, SearchInput, Pagination, hits } from './ui'
+import { usePaged, PAGE_SIZE } from '../lib/usePaged'
 import type { CalendarItem } from '../types'
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
@@ -63,6 +64,19 @@ export function CalendarView() {
     return out
   }, [byDate]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // 오른쪽 칸은 고른 날이 있으면 그날, 없으면 임박 전체를 한 줄로 펴서 10건씩 넘긴다.
+  // 날짜마다 4건씩 끊던 때는 '+N건 더' 를 눌러야만 나머지가 보였다.
+  const panelRows = useMemo<PanelRow[]>(
+    () =>
+      selected
+        ? (byDate.get(selected) ?? []).map((it) => ({ date: selected, it }))
+        : upcoming.flatMap(({ date, items }) => items.map((it) => ({ date, it }))),
+    [selected, byDate, upcoming],
+  )
+  const dayCount = new Map(upcoming.map((u) => [u.date, u.items.length]))
+  const paged = usePaged(panelRows, PAGE_SIZE)
+  const listRef = useRef<HTMLDivElement>(null)
+
   if (loading) return <Loader label="모집 캘린더 불러오는 중…" />
   if (error)
     return (
@@ -94,7 +108,6 @@ export function CalendarView() {
     setCursor({ y: nd.getFullYear(), m: nd.getMonth() })
   }
 
-  const selItems = selected ? byDate.get(selected) ?? [] : null
   const weekRows = cells.length / 7
 
   return (
@@ -190,65 +203,88 @@ export function CalendarView() {
       </div>
 
       {/* 우측(모바일=하단): 선택일 또는 마감 임박 */}
-      <aside className="w-full md:w-96 shrink-0 md:overflow-auto border-t md:border-t-0 md:border-l border-(--color-border) bg-(--color-panel) p-4">
-        {selItems ? (
-          <>
+      {/* 머리말·목록·쪽 넘김 세 칸. 목록만 스크롤하고 쪽 넘김은 늘 바닥에 보인다 */}
+      <aside className="w-full md:w-96 shrink-0 md:min-h-0 flex flex-col border-t md:border-t-0 md:border-l border-(--color-border) bg-(--color-panel)">
+        <div className="shrink-0 px-4 pt-4">
+          {selected ? (
             <div className="flex items-center gap-2 mb-3">
-              <h3 className="text-sm font-semibold text-(--color-text)">{selected} 마감 ({selItems.length})</h3>
+              <h3 className="text-sm font-semibold text-(--color-text)">{selected} 마감 ({panelRows.length})</h3>
               <button onClick={() => setSelected(null)} className="ml-auto text-xs text-(--color-muted) hover:text-(--color-accent)">전체보기</button>
             </div>
-            <JobList items={selItems} />
-          </>
-        ) : (
-          <>
-            <h3 className="text-sm font-semibold text-(--color-text) mb-1">마감 임박</h3>
-            <p className="text-xs text-(--color-muted) mb-3">앞으로 3주 내 마감되는 공고. 날짜를 누르면 그날 마감만 봅니다.</p>
-            {upcoming.length === 0 && <p className="text-sm text-(--color-muted)">임박한 마감이 없습니다.</p>}
-            <div className="flex flex-col gap-3">
-              {upcoming.map(({ date, items }) => {
-                const dd = Math.round((new Date(date).getTime() - new Date(todayIso).getTime()) / 86400000)
-                return (
-                  <div key={date}>
-                    <button onClick={() => setSelected(date)} className="text-xs font-medium text-(--color-accent) hover:underline mb-1">
-                      {date} · {dd === 0 ? 'D-DAY' : `D-${dd}`} · {items.length}건
+          ) : (
+            <>
+              <h3 className="text-sm font-semibold text-(--color-text) mb-1">
+                마감 임박 <span className="font-normal text-(--color-muted)">({panelRows.length})</span>
+              </h3>
+              <p className="text-xs text-(--color-muted) mb-3">앞으로 3주 내 마감되는 공고. 날짜를 누르면 그날 마감만 봅니다.</p>
+              {upcoming.length === 0 && <p className="text-sm text-(--color-muted)">임박한 마감이 없습니다.</p>}
+            </>
+          )}
+        </div>
+        <div ref={listRef} className="flex-1 min-h-0 md:overflow-auto px-4 pb-4">
+          <ul className="flex flex-col gap-2">
+            {paged.slice.map(({ date, it }, i) => {
+              // 임박 목록에서는 쪽 안에서 날짜가 바뀌는 자리마다 머리줄을 단다(쪽의 첫 줄 포함)
+              const head = !selected && (i === 0 || paged.slice[i - 1].date !== date)
+              const dd = Math.round((new Date(date).getTime() - new Date(todayIso).getTime()) / 86400000)
+              return (
+                <li key={`${paged.start + i}-${it.url}`} className="flex flex-col gap-1">
+                  {head && (
+                    <button
+                      onClick={() => setSelected(date)}
+                      className={`self-start text-xs font-medium text-(--color-accent) hover:underline ${i > 0 ? 'mt-2' : ''}`}
+                    >
+                      {date} · {dd === 0 ? 'D-DAY' : `D-${dd}`} · {dayCount.get(date) ?? 0}건
                     </button>
-                    <JobList items={items.slice(0, 4)} />
-                    {items.length > 4 && (
-                      <button onClick={() => setSelected(date)} className="text-[11px] text-(--color-muted) hover:text-(--color-accent)">+{items.length - 4}건 더</button>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </>
-        )}
+                  )}
+                  <JobCard it={it} />
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+        <Pagination
+          page={paged.page}
+          totalPages={paged.totalPages}
+          total={panelRows.length}
+          pageSize={PAGE_SIZE}
+          compact
+          sticky={false}
+          resetScroll={false}
+          className="shrink-0"
+          onChange={(p) => {
+            paged.setPage(p)
+            listRef.current?.scrollTo({ top: 0 })
+          }}
+        />
       </aside>
     </div>
   )
 }
 
-function JobList({ items }: { items: CalendarItem[] }) {
+interface PanelRow {
+  date: string
+  it: CalendarItem
+}
+
+function JobCard({ it }: { it: CalendarItem }) {
   return (
-    <ul className="flex flex-col gap-2">
-      {items.map((it, i) => (
-        <li key={it.url + i} className="rounded border border-(--color-border) bg-(--color-bg) px-3 py-2">
-          <div className="flex items-center gap-2 text-[11px] text-(--color-muted) mb-0.5">
-            <span className="text-(--color-accent)">{it.company}</span>
-            <span>{SITE_LABEL[it.site] ?? it.site}</span>
-            {it.career && <span className="ml-auto">{it.career}</span>}
-          </div>
-          <a href={it.url} target="_blank" rel="noreferrer" className="text-sm text-(--color-text) hover:text-(--color-accent) hover:underline">
-            {it.title} ↗
-          </a>
-          {it.start && (
-            <div className="mt-0.5 text-[11px] text-(--color-muted)">
-              모집 {it.start}
-              {it.start_estimated && <span title="원본에 등록일이 없어 처음 수집한 날로 대신했습니다">(추정)</span>}
-              {' ~ '}{it.deadline ?? '채용시'}
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
+    <div className="rounded border border-(--color-border) bg-(--color-bg) px-3 py-2">
+      <div className="flex items-center gap-2 text-[11px] text-(--color-muted) mb-0.5">
+        <span className="text-(--color-accent)">{it.company}</span>
+        <span>{SITE_LABEL[it.site] ?? it.site}</span>
+        {it.career && <span className="ml-auto">{it.career}</span>}
+      </div>
+      <a href={it.url} target="_blank" rel="noreferrer" className="text-sm text-(--color-text) hover:text-(--color-accent) hover:underline">
+        {it.title} ↗
+      </a>
+      {it.start && (
+        <div className="mt-0.5 text-[11px] text-(--color-muted)">
+          모집 {it.start}
+          {it.start_estimated && <span title="원본에 등록일이 없어 처음 수집한 날로 대신했습니다">(추정)</span>}
+          {' ~ '}{it.deadline ?? '채용시'}
+        </div>
+      )}
+    </div>
   )
 }
