@@ -153,13 +153,14 @@ function AutoBrief({
   const flags = posting?.employment_flags || []
   const shared = posting?.shared_stack || []
   const onlyHere = posting?.only_here || []
-  const careers = countCareers(auto)
+  const careers = careerSpread(auto)
 
   // 담을 것이 하나도 없으면 패널을 그리지 않는다. 빈 상자를 놓아 두면 "이 회사는
   // 정보가 없다"가 아니라 "이 화면이 고장 났다"로 읽힌다.
   if (
     !facts.length && !salary.length && !dupOf && !flags.length &&
-    !shared.length && !onlyHere.length && careers.length < 2
+    !shared.length && !onlyHere.length &&
+    careers.bands.length + careers.unparsed.length + (careers.any ? 1 : 0) < 2
   ) {
     return null
   }
@@ -251,16 +252,9 @@ function AutoBrief({
         </Block>
       )}
 
-      {careers.length >= 2 && (
+      {careers.bands.length + careers.unparsed.length + (careers.any ? 1 : 0) >= 2 && (
         <Block title="이 회사가 뽑는 연차" icon="▤" hint="모집중 공고 전부">
-          <ul className="space-y-1">
-            {careers.map(([raw, n]) => (
-              <li key={raw} className="flex items-baseline gap-2 text-xs">
-                <span className="text-(--color-text)">{raw}</span>
-                <span className="text-[10px] text-(--color-faint) tabular-nums">×{n}</span>
-              </li>
-            ))}
-          </ul>
+          <CareerChart spread={careers} />
         </Block>
       )}
 
@@ -320,14 +314,188 @@ function AutoBrief({
   )
 }
 
-/** 모집중 공고의 경력 표기를 많은 순으로. 하나뿐이면 왼쪽 헤더에 이미 있는 값이다. */
-function countCareers(auto: AutoGuide): [string, number][] {
-  const c = new Map<string, number>()
+// ── 뽑는 연차 ───────────────────────────────────────────────────────────
+// 표기 문자열을 세면 `경력 3-10년` 과 `경력 3~10년` 이 남남이 되어 전부 ×1 로
+// 흩어진다. 데이터에는 이미 min_years·max_years 가 파싱돼 있으니 그걸 쓴다.
+// 세로로 늘어놓은 글자보다 공통 축 위의 막대가 '이 회사가 노리는 구간'을 바로
+// 보여준다 — 겹치는 자리가 곧 그 회사의 중심 연차다.
+
+interface CareerBand {
+  key: string
+  min: number
+  max: number | null // null = '이상' — 끝이 열려 있다
+  n: number
+  label: string
+  raws: string[]
+}
+
+interface CareerSpread {
+  bands: CareerBand[]
+  /** 연차를 안 따지는 공고(경력무관·신입·경력) — 축에 올리면 0→∞ 막대가 화면을 먹는다. */
+  any: number
+  /** 숫자로 못 읽은 표기. 그대로 적어 준다 — 조용히 버리지 않는다. */
+  unparsed: [string, number][]
+  domain: number
+  total: number
+}
+
+function careerSpread(auto: AutoGuide): CareerSpread {
+  const by = new Map<string, CareerBand>()
+  const un = new Map<string, number>()
+  let any = 0
+  let total = 0
+
   for (const p of auto.postings || []) {
-    if (p.closed || !p.career?.raw) continue
-    c.set(p.career.raw, (c.get(p.career.raw) || 0) + 1)
+    const c = p.career
+    if (p.closed || !c?.raw) continue
+    total++
+    if (c.kind === '경력무관' || c.kind === '신입포함') {
+      any++
+      continue
+    }
+    if (c.min_years === null || c.min_years === undefined) {
+      un.set(c.raw, (un.get(c.raw) || 0) + 1)
+      continue
+    }
+    const min = c.min_years
+    const max = c.max_years ?? null
+    const key = `${min}:${max ?? '+'}`
+    const hit = by.get(key)
+    if (hit) {
+      hit.n++
+      if (!hit.raws.includes(c.raw)) hit.raws.push(c.raw)
+    } else {
+      by.set(key, {
+        key,
+        min,
+        max,
+        n: 1,
+        label: max === null ? `${min}년↑` : min === max ? `${min}년` : `${min}–${max}년`,
+        raws: [c.raw],
+      })
+    }
   }
-  return [...c.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
+
+  const bands = [...by.values()].sort((a, b) => a.min - b.min || (a.max ?? 99) - (b.max ?? 99))
+  // 열린 막대는 화살표로 끝나므로 축이 그 min 보다는 넉넉해야 한다.
+  const need = bands.reduce((m, b) => Math.max(m, b.max ?? b.min + 3), 0)
+  const domain = Math.max(4, Math.ceil(need / 2) * 2)
+  return { bands, any, unparsed: [...un.entries()].sort((a, b) => b[1] - a[1]), domain, total }
+}
+
+// 축 눈금 — 폭이 좁아 5~6개를 넘기면 숫자가 서로 붙는다. 그래서 축 끝까지
+// 딱 나누어떨어지는 간격을 먼저 고른다. 남는 간격을 쓰면 마지막 눈금과 축 끝이
+// 나란히 서서 `9 10` 처럼 겹친다.
+function ticksFor(domain: number): number[] {
+  const step =
+    [1, 2, 3, 5, 10, 15, 20].find((s) => domain % s === 0 && domain / s <= 5) ??
+    [2, 3, 5, 10, 15, 20].find((s) => domain / s <= 5) ??
+    domain
+  const out: number[] = []
+  for (let v = 0; v <= domain; v += step) out.push(v)
+  // 나누어떨어지지 않아 끝이 빈 경우에만 축 끝을 더한다 — 너무 붙으면 앞을 뺀다.
+  if (out[out.length - 1] !== domain) {
+    if (domain - out[out.length - 1] < step * 0.6) out.pop()
+    out.push(domain)
+  }
+  return out
+}
+
+function CareerChart({ spread }: { spread: CareerSpread }) {
+  const { bands, any, unparsed, domain, total } = spread
+  const pct = (v: number) => (v / domain) * 100
+  const peak = Math.max(...bands.map((b) => b.n), 1)
+
+  return (
+    <div>
+      {bands.length > 0 && (
+        <>
+          {/* 눈금 — 막대와 같은 좌표계를 쓰도록 라벨 칸만큼 밀어 둔다 */}
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-14 shrink-0" />
+            <div className="relative flex-1 h-3">
+              {ticksFor(domain).map((t) => (
+                <span
+                  key={t}
+                  className="absolute top-0 text-[9px] text-(--color-faint) tabular-nums -translate-x-1/2"
+                  style={{ left: `${pct(t)}%` }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+            <span className="w-6 shrink-0 text-[9px] text-(--color-faint)">년</span>
+          </div>
+
+          <ul className="space-y-1">
+            {bands.map((b) => {
+              const left = pct(b.min)
+              const right = b.max === null ? 100 : pct(b.max)
+              // 한 점(min==max)도 눈에 보이게 최소 폭을 준다.
+              const w = Math.max(right - left, 2.5)
+              return (
+                <li
+                  key={b.key}
+                  className="flex items-center gap-2"
+                  title={`${b.raws.join(' · ')} — 공고 ${b.n}건`}
+                >
+                  <span className="w-14 shrink-0 text-[10px] text-(--color-text) tabular-nums text-right">
+                    {b.label}
+                  </span>
+                  <div className="relative flex-1 h-3.5">
+                    {/* 바탕 눈금선 — 막대가 없는 구간에서도 축이 읽히게 */}
+                    {ticksFor(domain).map((t) => (
+                      <span
+                        key={t}
+                        className="absolute inset-y-0 w-px bg-(--color-border)/50"
+                        style={{ left: `${pct(t)}%` }}
+                      />
+                    ))}
+                    <span
+                      className="absolute inset-y-0 rounded-[3px] bg-(--color-accent)"
+                      style={{
+                        left: `${left}%`,
+                        width: `${w}%`,
+                        // 건수가 곧 진하기다(같은 색조 한 가지 — 순서형)
+                        opacity: 0.35 + 0.65 * (b.n / peak),
+                        // 끝이 열린 막대는 오른쪽 모서리를 깎아 화살표처럼 뺀다
+                        ...(b.max === null
+                          ? { clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 50%, calc(100% - 5px) 100%, 0 100%)' }
+                          : null),
+                      }}
+                    />
+                  </div>
+                  <span className="w-6 shrink-0 text-[10px] text-(--color-faint) tabular-nums">
+                    {b.n > 1 ? `×${b.n}` : ''}
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+        </>
+      )}
+
+      {(any > 0 || unparsed.length > 0) && (
+        <div className="mt-2 pt-2 border-t border-(--color-border) space-y-0.5">
+          {any > 0 && (
+            <p className="text-[10px] text-(--color-muted)">
+              연차를 안 따지는 공고(경력무관·신입 포함){' '}
+              <span className="tabular-nums">{any}건</span>
+            </p>
+          )}
+          {/* 파서가 공고 제목을 통째로 집어 온 경우가 있어 줄이 길다. 한 줄로 자르되
+              지우지는 않는다 — 여기 남아 있어야 파서가 뭘 못 읽는지가 보인다. */}
+          {unparsed.map(([raw, n]) => (
+            <p key={raw} className="text-[10px] text-(--color-faint) truncate" title={raw}>
+              {raw} {n > 1 && <span className="tabular-nums">×{n}</span>}
+            </p>
+          ))}
+        </div>
+      )}
+
+      <p className="text-[10px] text-(--color-faint) mt-1.5 tabular-nums">모집중 {total}건</p>
+    </div>
+  )
 }
 
 // ── 헤더 ────────────────────────────────────────────────────────────────
