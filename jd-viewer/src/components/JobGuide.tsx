@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import {
   useJobGuide,
   sortStudy,
@@ -12,6 +12,7 @@ import {
   type Source,
   type StudyItem,
 } from '../lib/useGuide'
+import { Md } from './Md'
 
 interface Props {
   company: string
@@ -58,7 +59,7 @@ export function JobGuide({ company, url, activeQuote, onQuote }: Props) {
           <ul className="space-y-1">
             {guide.open_questions.map((q, i) => (
               <li key={i} className="text-xs text-(--color-muted) leading-relaxed">
-                · {q}
+                · <Md>{q}</Md>
               </li>
             ))}
           </ul>
@@ -272,7 +273,7 @@ function AutoBrief({
                   {f.label}
                 </dt>
                 <dd className="text-xs text-(--color-text)">
-                  {f.value}
+                  <Md>{f.value}</Md>
                   <span className="text-[10px] text-(--color-faint) ml-1.5 tabular-nums">
                     공고 {f.seen_in}/{f.of_postings}건에 반복
                   </span>
@@ -347,7 +348,7 @@ function GuideHeader({ guide, posting }: { guide: CompanyGuide; posting: GuidePo
           </span>
         )}
       </div>
-      <p className="text-sm text-(--color-text) leading-relaxed">{posting.verdict}</p>
+      <p className="text-sm text-(--color-text) leading-relaxed"><Md>{posting.verdict}</Md></p>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2.5 text-xs text-(--color-muted) tabular-nums">
         <span>
           학습 <span className="text-(--color-text) font-medium">{study.length}</span>개
@@ -386,7 +387,14 @@ function FitRow({ label, items, tone }: { label: string; items: string[]; tone: 
       >
         {label}
       </span>
-      <span className="text-xs text-(--color-muted) leading-relaxed">{items.join(' · ')}</span>
+      <span className="text-xs text-(--color-muted) leading-relaxed">
+        {items.map((it, i) => (
+          <Fragment key={i}>
+            {i > 0 && ' · '}
+            <Md>{it}</Md>
+          </Fragment>
+        ))}
+      </span>
     </div>
   )
 }
@@ -452,7 +460,7 @@ function StudySection({
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-[13px] text-(--color-text) leading-snug">
-                      {it.topic}
+                      <Md>{it.topic}</Md>
                     </span>
                     <span className="flex flex-wrap items-center gap-1.5 mt-1">
                       <span
@@ -482,10 +490,10 @@ function StudySection({
                 {isOpen && (
                   <div className="px-3 pb-3 pt-0 space-y-2.5 border-t border-(--color-border) mt-0.5">
                     <Quote text={it.quote} from={FROM_LABEL[it.from]} />
-                    <Field label="왜 필요한가">{it.why}</Field>
-                    <Field label="스스로 확인">{it.gap_check}</Field>
+                    <Field label="왜 필요한가"><Md>{it.why}</Md></Field>
+                    <Field label="스스로 확인"><Md>{it.gap_check}</Md></Field>
                     <Field label="만들어 볼 것" strong>
-                      {it.drill}
+                      <Md>{it.drill}</Md>
                     </Field>
                     {it.resources && it.resources.length > 0 && (
                       <div>
@@ -502,7 +510,7 @@ function StudySection({
                                 {r.title} ↗
                               </a>
                               {r.note && (
-                                <span className="text-[11px] text-(--color-faint)"> — {r.note}</span>
+                                <span className="text-[11px] text-(--color-faint)"> — <Md>{r.note}</Md></span>
                               )}
                             </li>
                           ))}
@@ -538,8 +546,8 @@ function EdgeSection({ posting }: { posting: GuidePosting }) {
       <ul className="space-y-2">
         {edge.map((e, i) => (
           <li key={i} className="border border-(--color-border) rounded-md px-3 py-2.5">
-            <p className="text-[13px] text-(--color-text) leading-snug">{e.idea}</p>
-            <p className="text-xs text-(--color-muted) leading-relaxed mt-1">{e.why}</p>
+            <p className="text-[13px] text-(--color-text) leading-snug"><Md>{e.idea}</Md></p>
+            <p className="text-xs text-(--color-muted) leading-relaxed mt-1"><Md>{e.why}</Md></p>
             {e.effort && <p className="text-[11px] text-(--color-faint) mt-1">{e.effort}</p>}
           </li>
         ))}
@@ -554,14 +562,14 @@ function InterviewSection({ posting }: { posting: GuidePosting }) {
   if (!iv || (!iv.process && !(iv.expect || []).length)) return null
   return (
     <Block title="전형" icon="◎">
-      {iv.process && <p className="text-[13px] text-(--color-text) mb-2">{iv.process}</p>}
+      {iv.process && <p className="text-[13px] text-(--color-text) mb-2"><Md>{iv.process}</Md></p>}
       {iv.expect && iv.expect.length > 0 && (
         <>
           <FieldLabel>예상되는 것</FieldLabel>
           <ul className="space-y-1">
             {iv.expect.map((q, i) => (
               <li key={i} className="text-xs text-(--color-muted) leading-relaxed">
-                · {q}
+                · <Md>{q}</Md>
               </li>
             ))}
           </ul>
@@ -609,7 +617,7 @@ function SalarySection({ guide }: { guide: CompanyGuide }) {
       </ul>
       {sal.equity && <p className="text-xs text-(--color-muted) mt-2">{sal.equity}</p>}
       {sal.note && (
-        <p className="text-[11px] text-(--color-faint) leading-relaxed mt-2">{sal.note}</p>
+        <p className="text-[11px] text-(--color-faint) leading-relaxed mt-2"><Md>{sal.note}</Md></p>
       )}
     </Block>
   )
@@ -630,20 +638,20 @@ function PeopleSection({ guide }: { guide: CompanyGuide }) {
               {p.confidence === 'inferred' && <Badge>추정</Badge>}
             </div>
             {p.why_public && (
-              <p className="text-[11px] text-(--color-faint) mt-0.5">{p.why_public}</p>
+              <p className="text-[11px] text-(--color-faint) mt-0.5"><Md>{p.why_public}</Md></p>
             )}
             {p.leanings && p.leanings.length > 0 && (
               <ul className="mt-2 space-y-1">
                 {p.leanings.map((t, k) => (
                   <li key={k} className="text-xs text-(--color-muted) leading-relaxed">
-                    · {t}
+                    · <Md>{t}</Md>
                   </li>
                 ))}
               </ul>
             )}
             {p.what_it_means && (
               <p className="text-xs text-(--color-text) leading-relaxed mt-2 pt-2 border-t border-(--color-border)">
-                {p.what_it_means}
+                <Md>{p.what_it_means}</Md>
               </p>
             )}
             {p.public_work && p.public_work.length > 0 && (
@@ -681,7 +689,7 @@ function CompanySection({ guide }: { guide: CompanyGuide }) {
     <Block title="회사와 도메인" icon="◆">
       {co.business && (
         <>
-          <p className="text-[13px] text-(--color-text) leading-relaxed">{co.business}</p>
+          <p className="text-[13px] text-(--color-text) leading-relaxed"><Md>{co.business}</Md></p>
           <div className="flex items-center gap-1.5 mt-1.5">
             {co.business_confidence === 'inferred' && <Badge>추정</Badge>}
             <Sources sources={co.business_sources} inline />
@@ -694,7 +702,7 @@ function CompanySection({ guide }: { guide: CompanyGuide }) {
           {co.scale.map((s, i) => (
             <span key={i} className="text-xs">
               <span className="text-(--color-faint)">{s.label} </span>
-              <span className="text-(--color-text) tabular-nums">{s.value}</span>
+              <span className="text-(--color-text) tabular-nums"><Md>{s.value}</Md></span>
             </span>
           ))}
         </div>
@@ -712,7 +720,7 @@ function CompanySection({ guide }: { guide: CompanyGuide }) {
                 )}
                 {rv.confidence === 'inferred' && <Badge>추정</Badge>}
               </div>
-              <p className="text-xs text-(--color-muted) leading-relaxed mt-1">{rv.how}</p>
+              <p className="text-xs text-(--color-muted) leading-relaxed mt-1"><Md>{rv.how}</Md></p>
               {rv.domains && rv.domains.length > 0 && (
                 <div className="flex flex-wrap items-center gap-1.5 mt-2">
                   <span className="text-[10px] text-(--color-faint) shrink-0">↳</span>
@@ -741,12 +749,12 @@ function CompanySection({ guide }: { guide: CompanyGuide }) {
                 {d.name}
                 {d.confidence === 'inferred' && <Badge className="ml-1.5">추정</Badge>}
               </p>
-              <p className="text-xs text-(--color-muted) leading-relaxed mt-0.5">{d.why}</p>
+              <p className="text-xs text-(--color-muted) leading-relaxed mt-0.5"><Md>{d.why}</Md></p>
               {d.what_to_know && d.what_to_know.length > 0 && (
                 <ul className="mt-1 space-y-0.5">
                   {d.what_to_know.map((k, m) => (
                     <li key={m} className="text-xs text-(--color-muted) leading-relaxed">
-                      · {k}
+                      · <Md>{k}</Md>
                     </li>
                   ))}
                 </ul>
@@ -761,12 +769,12 @@ function CompanySection({ guide }: { guide: CompanyGuide }) {
           <FieldLabel>공고에서 읽히는 것 (전부 추정)</FieldLabel>
           {co.signals.map((s, i) => (
             <div key={i}>
-              <p className="text-[13px] text-(--color-text) leading-snug">{s.reading}</p>
+              <p className="text-[13px] text-(--color-text) leading-snug"><Md>{s.reading}</Md></p>
               <p className="text-[11px] text-(--color-faint) leading-relaxed mt-0.5 italic">
-                근거: {s.evidence}
+                근거: <Md>{s.evidence}</Md>
               </p>
               {s.so_what && (
-                <p className="text-xs text-(--color-muted) leading-relaxed mt-1">→ {s.so_what}</p>
+                <p className="text-xs text-(--color-muted) leading-relaxed mt-1">→ <Md>{s.so_what}</Md></p>
               )}
             </div>
           ))}

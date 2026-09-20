@@ -49,16 +49,20 @@ export function Md({ children }: { children?: string | null }) {
     <>
       {toks.map((k, i) => {
         switch (k.t) {
+          // 강조 안에 또 마크다운이 들어 있는 경우가 흔하다 — `**… `Research` 가
+          // 있지만 …**` 처럼. 한 겹만 파싱하면 안쪽 백틱이 화면에 그대로 나오므로
+          // 강조·링크의 속은 다시 태운다. code 는 일부러 안 판다: 그 안의 `**` 는
+          // 파이썬 거듭제곱처럼 진짜 코드일 수 있다.
           case 'mark':
             return (
               <mark key={i} className="md-mark">
-                {k.v}
+                <Md>{k.v}</Md>
               </mark>
             )
           case 'em':
             return (
               <em key={i} className="not-italic font-medium text-(--color-text)">
-                {k.v}
+                <Md>{k.v}</Md>
               </em>
             )
           case 'code':
@@ -76,7 +80,7 @@ export function Md({ children }: { children?: string | null }) {
                 rel="noreferrer noopener"
                 className="text-(--color-accent) hover:underline"
               >
-                {k.v}
+                <Md>{k.v}</Md>
               </a>
             )
           default:
