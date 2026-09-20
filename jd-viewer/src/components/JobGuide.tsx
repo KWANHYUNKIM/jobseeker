@@ -507,7 +507,7 @@ function StudySection({
                                 rel="noopener noreferrer"
                                 className="text-xs text-(--color-sky-400) hover:underline break-words"
                               >
-                                {r.title} ↗
+                                <Md>{r.title}</Md> ↗
                               </a>
                               {r.note && (
                                 <span className="text-[11px] text-(--color-faint)"> — <Md>{r.note}</Md></span>
@@ -598,7 +598,7 @@ function SalarySection({ guide }: { guide: CompanyGuide }) {
         {bands.map((b, i) => (
           <li key={i} className="border border-(--color-border) rounded-md px-3 py-2.5">
             <div className="flex items-baseline gap-2 flex-wrap">
-              <span className="text-[13px] text-(--color-text)">{b.role}</span>
+              <span className="text-[13px] text-(--color-text)"><Md>{b.role}</Md></span>
               <span className="text-[11px] text-(--color-faint)">{b.level}</span>
               <span className="ml-auto text-sm text-(--color-text) tabular-nums font-medium">
                 {b.low.toLocaleString()}–{b.high.toLocaleString()}
@@ -615,7 +615,7 @@ function SalarySection({ guide }: { guide: CompanyGuide }) {
           </li>
         ))}
       </ul>
-      {sal.equity && <p className="text-xs text-(--color-muted) mt-2">{sal.equity}</p>}
+      {sal.equity && <p className="text-xs text-(--color-muted) mt-2"><Md>{sal.equity}</Md></p>}
       {sal.note && (
         <p className="text-[11px] text-(--color-faint) leading-relaxed mt-2"><Md>{sal.note}</Md></p>
       )}
