@@ -1,12 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   useCompany,
+  useRevengIndex,
   type Diagram,
   type Era,
   type Feature,
   type FeatureRevision,
   type Source,
 } from '../lib/useReveng'
+import { onLinkClick } from '../lib/router'
+import { paths } from '../lib/urls'
 import { ArchitectureDiagram } from './ArchitectureDiagram'
 import { CompanyLogo } from './RevengView'
 import { UiSketch } from './UiSketch'
@@ -14,25 +17,6 @@ import { ConfBadge, SourceLinks } from './RevengBits'
 import { RevenueSplit } from './RevenueSplit'
 import { Md, MdBlock } from './Md'
 import { Loader, ErrorState } from './ui'
-
-// 접힌 줄의 미리보기처럼 마크업이 방해가 되는 자리에서만 기호를 걷어낸다.
-const strip = (s: string) => s.replace(/\*\*|`|\*/g, '')
-
-// 접힌 기능 줄의 미리보기. 폭에 맞춰 글자 단위로 자르면 늘 문장이 반토막 나므로
-// 문장 경계에서만 끊는다 — 한 문장은 통째로 보이거나 아예 안 보이거나 둘 중 하나다.
-const PREVIEW_CHARS = 160
-function preview(s: string): string {
-  const text = strip(s).trim()
-  if (text.length <= PREVIEW_CHARS) return text
-  const parts = text.split(/(?<=[.!?。」』])\s+/)
-  let out = ''
-  for (const p of parts) {
-    if (out && (out + ' ' + p).length > PREVIEW_CHARS) break
-    out = out ? out + ' ' + p : p
-  }
-  // 첫 문장 하나가 이미 한도를 넘으면 그 문장은 그대로 둔다(반토막보다 낫다).
-  return out || parts[0]
-}
 
 // 엔티티는 스키마상 {name, what} 이지만 초기 사이클들이 "이름 — 설명" 한 문자열로
 // 적어 둔 것이 남아 있다. 객체만 읽으면 그쪽이 통째로 빈 줄이 되므로 둘 다 받는다.
@@ -47,17 +31,48 @@ function normEntity(e: { name: string; what: string } | string): { name: string;
 // 화면 순서가 곧 이해 순서다: 무엇으로 돈을 버는가 → 그 돈이 어떤 도메인으로 쪼개지는가
 // → 각 기능이 어떻게 구현됐는가 → 기능끼리 어떻게 이어지는가. 기술 스택을 맨 위에 두면
 // 또 하나의 '기술 나열'이 되므로 일부러 맨 아래에 둔다.
+//
+// 그 순서는 맞는데 읽히지가 않았다 — 기능이 아코디언이라 한 번에 하나만 열렸고,
+// 정작 이 화면의 본문인 '어떻게 만들었나'가 전부 클릭 뒤에 숨어 있었다. 위에서
+// 아래로 죽 읽히도록 전부 펼치고, 책처럼 오른쪽에 차례를 상주시키고 맨 아래에
+// 다음 회사를 뒀다(`BookView` 와 같은 뼈대다 — 저쪽이 먼저 이 문제를 풀었다).
 
 
 export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => void }) {
   const { data: c, loading, error } = useCompany(slug)
-  const [openKey, setOpenKey] = useState<string | null>(null)
+  const { data: index } = useRevengIndex()
   const [domain, setDomain] = useState<string | null>(null)
 
   const features = useMemo(
     () => (c?.features ?? []).filter((f) => !domain || f.domain === domain),
     [c, domain],
   )
+
+  // 차례 — 실제로 그려지는 절만 담는다. 없는 절을 차례에 남기면 눌러도 안 움직인다.
+  const outline = useMemo(() => {
+    if (!c) return []
+    const it: { id: string; text: string; sub?: boolean }[] = []
+    it.push({ id: 'biz', text: '비즈니스 모델' })
+    if (c.ui_map) it.push({ id: 'ui', text: '화면에서 시작하기' })
+    if (c.domain_map?.code && !c.ui_map) it.push({ id: 'map', text: '도메인 지도' })
+    if (c.domains?.length) it.push({ id: 'domains', text: '도메인' })
+    if (c.eras?.length) it.push({ id: 'eras', text: '연표' })
+    if (features.length) {
+      it.push({ id: 'features', text: domain ? `기능 — ${domain}` : '기능' })
+      for (const f of features) it.push({ id: `feat-${f.key}`, text: f.name, sub: true })
+    }
+    if (c.open_questions?.length) it.push({ id: 'unknown', text: '확인 못 한 것' })
+    if (c.sources?.length) it.push({ id: 'sources', text: '근거' })
+    return it
+  }, [c, features, domain])
+
+  // 이전/다음 회사 — 목록(index.json)의 차례를 그대로 따른다.
+  const nav = useMemo(() => {
+    const list = index?.companies ?? []
+    const i = list.findIndex((e) => e.slug === slug)
+    if (i < 0) return { prev: null, next: null }
+    return { prev: list[i - 1] ?? null, next: list[i + 1] ?? null }
+  }, [index, slug])
 
   if (loading) return <Loader label="회사 데이터 불러오는 중…" />
   if (error || !c)
@@ -70,7 +85,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
     )
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto">
+    <div data-reveng-scroll className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto">
       <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel) sticky top-0 z-10">
         <button
           onClick={onBack}
@@ -94,8 +109,9 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
 
       {/* 본문 줄길이는 .reveng-prose(74ch)가 잡는다. 바깥 폭까지 좁히면 그림이
           화면 절반만 쓰게 되므로, 컨테이너는 넓게 두고 글만 좁힌다. */}
-      <div className="p-4 flex flex-col gap-7 max-w-[1400px]">
-        <Section title="비즈니스 모델" sub="이 회사는 무엇을 팔아 돈을 버는가">
+      <div className="p-4 flex gap-8 max-w-[1600px]">
+       <div className="flex-1 min-w-0 flex flex-col gap-7">
+        <Section id="biz" title="비즈니스 모델" sub="이 회사는 무엇을 팔아 돈을 버는가">
           <MdBlock className="reveng-prose text-sm text-(--color-text)">{c.business_model}</MdBlock>
           {c.products?.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">
@@ -127,7 +143,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
             추상적인 네모에서 시작하는 것보다 붙들기 쉽다. 그때 mermaid 도메인 지도는
             같은 일을 두 번 하게 되므로 접어 둔다(지우지는 않는다 — 관계는 저쪽이 정확하다). */}
         {c.ui_map && (
-          <Section title="화면에서 시작하기" sub={c.ui_map.question ?? '사용자가 보는 이 부분이 어느 도메인인가'}>
+          <Section id="ui" title="화면에서 시작하기" sub={c.ui_map.question ?? '사용자가 보는 이 부분이 어느 도메인인가'}>
             <UiSketch ui={c.ui_map} idKey={`reveng-${c.slug}-uimap`} onPickDomain={setDomain} />
           </Section>
         )}
@@ -144,13 +160,13 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
               </div>
             </details>
           ) : (
-            <Section title="도메인 지도" sub={c.domain_map.question ?? '도메인들이 어떻게 맞물리는가'}>
+            <Section id="map" title="도메인 지도" sub={c.domain_map.question ?? '도메인들이 어떻게 맞물리는가'}>
               <DiagramBlock d={c.domain_map} idKey={`reveng-${c.slug}-map`} />
             </Section>
           ))}
 
         {c.domains && c.domains.length > 0 && (
-          <Section title="도메인" sub="조직도가 아니라 문제의 경계로 나눈 단위">
+          <Section id="domains" title="도메인" sub="조직도가 아니라 문제의 경계로 나눈 단위">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {c.domains.map((d) => {
                 const n = (c.features ?? []).filter((f) => f.domain === d.name).length
@@ -198,12 +214,13 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
         {/* 구조를 본 뒤에 온다 — 도메인 이름을 알고 나서 읽어야 "이 시기에 그게
             생겼다"가 붙들린다. 갈아엎은 적 없는 회사는 이 섹션이 아예 안 뜬다. */}
         {c.eras && c.eras.length > 0 && (
-          <Section title="연표" sub="지금 구조에 오기까지 무엇을 버렸는가 — 기술이 바뀐 지점으로 자른다">
+          <Section id="eras" title="연표" sub="지금 구조에 오기까지 무엇을 버렸는가 — 기술이 바뀐 지점으로 자른다">
             <EraTimeline eras={c.eras} />
           </Section>
         )}
 
         <Section
+          id="features"
           title={domain ? `기능 — ${domain}` : '기능'}
           sub="왜 존재하는가 → 도메인 규칙 → 구현과 트레이드오프 → 다른 시스템과의 연결"
         >
@@ -212,21 +229,16 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
               아직 채워진 기능이 없습니다. 엔진이 사이클을 돌면 하나씩 쌓입니다.
             </p>
           ) : (
-            <div className="flex flex-col gap-2">
-              {features.map((f) => (
-                <FeatureBlock
-                  key={f.key}
-                  f={f}
-                  open={openKey === f.key}
-                  onToggle={() => setOpenKey(openKey === f.key ? null : f.key)}
-                />
+            <div className="flex flex-col gap-8">
+              {features.map((f, i) => (
+                <FeatureBlock key={f.key} f={f} no={i + 1} />
               ))}
             </div>
           )}
         </Section>
 
         {c.open_questions && c.open_questions.length > 0 && (
-          <Section title="확인 못 한 것" sub="공개 자료로 닿지 못한 부분 — 그럴듯하게 채우지 않는다">
+          <Section id="unknown" title="확인 못 한 것" sub="공개 자료로 닿지 못한 부분 — 그럴듯하게 채우지 않는다">
             <ul className="list-disc pl-5 text-sm text-(--color-muted) flex flex-col gap-1">
               {c.open_questions.map((q) => (
                 <li key={q}><Md>{q}</Md></li>
@@ -236,39 +248,136 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
         )}
 
         {c.sources && c.sources.length > 0 && (
-          <Section title="근거" sub="회사가 공개한 자료. 요약은 한 줄까지만 옮긴다">
+          <Section id="sources" title="근거" sub="회사가 공개한 자료. 요약은 한 줄까지만 옮긴다">
             <SourceList sources={c.sources} />
           </Section>
         )}
+
+        <CompanyNav prev={nav.prev} next={nav.next} />
+       </div>
+
+       <TeardownOutline items={outline} />
       </div>
     </div>
   )
 }
 
-function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onToggle: () => void }) {
+// 다음 회사로 — 역설계는 한 회사만 읽고 끝나는 글이 아니다. 같은 문제를 다른
+// 회사가 어떻게 풀었는지 이어 보게 하려고 목록 차례대로 앞뒤를 건다.
+function CompanyNav({
+  prev,
+  next,
+}: {
+  prev: { slug: string; name: string; one_liner: string } | null
+  next: { slug: string; name: string; one_liner: string } | null
+}) {
+  if (!prev && !next) return null
+  return (
+    <nav className="grid grid-cols-2 gap-3 border-t border-(--color-border) pt-5 mt-2">
+      {prev ? <CompanyNavLink e={prev} dir="prev" /> : <span />}
+      {next ? <CompanyNavLink e={next} dir="next" /> : <span />}
+    </nav>
+  )
+}
+
+function CompanyNavLink({
+  e,
+  dir,
+}: {
+  e: { slug: string; name: string; one_liner: string }
+  dir: 'prev' | 'next'
+}) {
+  const href = paths.revengCompany(e.slug)
+  return (
+    <a
+      href={href}
+      onClick={onLinkClick(href)}
+      className={
+        'rounded-md border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition ' +
+        (dir === 'next' ? 'text-right col-start-2' : '')
+      }
+    >
+      <div className="text-[11px] text-(--color-muted)">{dir === 'prev' ? '← 이전' : '다음 →'}</div>
+      <div className="text-sm font-medium text-(--color-text) mt-0.5 leading-snug">{e.name}</div>
+      <div className="text-xs text-(--color-muted) mt-0.5 line-clamp-2 leading-relaxed">
+        {e.one_liner}
+      </div>
+    </a>
+  )
+}
+
+// 오른쪽 차례. 긴 글에서 '지금 어디쯤인가'가 안 보이면 읽다가 놓친다 —
+// `BookView` 의 PageOutline 과 같은 일을 하고, 같은 스크롤 상자를 듣는다.
+function TeardownOutline({ items }: { items: { id: string; text: string; sub?: boolean }[] }) {
+  const [active, setActive] = useState<string | null>(null)
+
+  useEffect(() => {
+    const box = document.querySelector('[data-reveng-scroll]')
+    if (!box || !items.length) return
+    const onScroll = () => {
+      const top = box.getBoundingClientRect().top + 140
+      let cur: string | null = null
+      for (const it of items) {
+        const el = document.getElementById(it.id)
+        if (el && el.getBoundingClientRect().top <= top) cur = it.id
+      }
+      setActive(cur)
+    }
+    onScroll()
+    box.addEventListener('scroll', onScroll, { passive: true })
+    return () => box.removeEventListener('scroll', onScroll)
+  }, [items])
+
+  if (items.length < 3) return null
+  return (
+    <nav className="hidden xl:block w-56 shrink-0 sticky top-24 self-start max-h-[calc(100vh-9rem)] overflow-y-auto">
+      <div className="text-[11px] font-bold text-(--color-muted) tracking-wide">이 회사에서</div>
+      <ol className="mt-2 border-l border-(--color-border)">
+        {items.map((it) => (
+          <li key={it.id}>
+            <a
+              href={`#${it.id}`}
+              onClick={(ev) => {
+                ev.preventDefault()
+                document.getElementById(it.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+              className={
+                'block py-1 border-l-2 -ml-px leading-snug transition-colors ' +
+                (it.sub ? 'pl-5 text-[11px] ' : 'pl-3 text-xs ') +
+                (active === it.id
+                  ? 'border-(--color-accent) text-(--color-accent)'
+                  : 'border-transparent text-(--color-muted) hover:text-(--color-text)')
+              }
+            >
+              {it.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+// 기능 하나 = 책의 한 절. 접지 않는다 — 이 화면에서 읽을 값이 있는 건 대부분
+// 이 안에 있고, 아코디언이던 시절에는 그게 전부 클릭 뒤에 숨어 있었다.
+function FeatureBlock({ f, no }: { f: Feature; no: number }) {
   const impl = f.implementation ?? {}
   return (
-    <div className="rounded border border-(--color-border) bg-(--color-panel)">
-      <button onClick={onToggle} className="w-full text-left px-3 py-2.5 flex flex-col gap-1">
-        <span className="flex items-center gap-2 w-full">
-          <span className="text-(--color-muted) text-xs">{open ? '▾' : '▸'}</span>
-          <span className="text-sm font-medium text-(--color-text)">{f.name}</span>
-          <span className="shrink-0 whitespace-nowrap text-xs px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
-            {f.domain}
-          </span>
-          <span className="ml-auto text-xs text-(--color-muted) tabular-nums shrink-0">
-            결정 {impl.decisions?.length ?? 0}
-          </span>
+    <div id={`feat-${f.key}`} className="scroll-mt-28">
+      <div className="flex items-baseline gap-2 flex-wrap border-b border-(--color-border) pb-2">
+        <span className="text-(--color-faint) text-sm tabular-nums">{no}</span>
+        <h4 className="text-[15px] font-semibold text-(--color-text)">
+          <span className="jd-head">{f.name}</span>
+        </h4>
+        <span className="shrink-0 whitespace-nowrap text-xs px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
+          {f.domain}
         </span>
-        {!open && (
-          <span className="block text-xs text-(--color-muted) leading-relaxed reveng-prose pl-5">
-            {preview(f.business.why)}
-          </span>
-        )}
-      </button>
+        <span className="ml-auto text-xs text-(--color-muted) tabular-nums shrink-0">
+          결정 {impl.decisions?.length ?? 0}
+        </span>
+      </div>
 
-      {open && (
-        <div className="px-3 pb-4 pt-1 flex flex-col gap-4 border-t border-(--color-border)">
+      <div className="pt-3 flex flex-col gap-4">
           {/* 글보다 화면이 먼저다. '이 기능' 이 앱의 어느 자리인지를 붙들고 나서
               왜 그렇게 만들었는지를 읽는 편이 순서가 맞다. */}
           {f.ui && (
@@ -518,7 +627,6 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
             </Sub>
           )}
         </div>
-      )}
     </div>
   )
 }
@@ -736,7 +844,13 @@ function SourceList({ sources }: { sources: Source[] }) {
             {s.publisher ? ` · ${s.publisher}` : ''}
             {s.date ? ` · ${s.date}` : ''}
           </span>
-          {s.summary && <div className="text-xs text-(--color-muted)"><Md>{s.summary}</Md></div>}
+          {/* 요약이 이 화면에서 제일 긴 글이다 — 줄길이를 안 잡으면 여기만
+              화면 끝까지 늘어나 한 줄이 안 읽힌다. */}
+          {s.summary && (
+            <div className="text-xs text-(--color-muted) reveng-prose leading-relaxed mt-0.5">
+              <Md>{s.summary}</Md>
+            </div>
+          )}
         </li>
       ))}
     </ul>
@@ -744,16 +858,19 @@ function SourceList({ sources }: { sources: Source[] }) {
 }
 
 function Section({
+  id,
   title,
   sub,
   children,
 }: {
+  id?: string
   title: string
   sub?: string
   children: React.ReactNode
 }) {
   return (
-    <section>
+    // scroll-mt 는 차례에서 눌러 왔을 때 제목이 sticky 머리말 밑에 숨지 않게 한다.
+    <section id={id} className="scroll-mt-28">
       <h3 className="text-base font-semibold text-(--color-text)">
         <span className="jd-head">{title}</span>
         {sub && <span className="ml-2 text-xs font-normal text-(--color-muted)">{sub}</span>}
