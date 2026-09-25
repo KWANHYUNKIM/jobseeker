@@ -8,11 +8,11 @@
 
 ## 지금 파는 중
 
-**없다 — Snap 재방문이 확장이 됐다.** DS Agent 글(2026-09-10)을 기능 `ds-agent-repo` 로 쓰고 새 도메인
-`데이터 분석가 곁에 에이전트를 둔다` 를 열었다(기능 6개째). 다음 사이클은 `--gaps` 대로.
+**없다 — Spotify 재방문이 확장이 됐다.** 베이지안 A/B 글(2026-09-08)을 기능 `no-bayesian-mode` 로 `실험 플랫폼` 에
+붙였다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
-Snap 블로그는 RSS 가 없고 목록에 날짜가 없다 — 글마다 `datePublished` 를 본다. 안 쓴 새 글 `specs_gnss`(09-10, 본문이 스크립트로 그려져 추출이 안 됐다 — WebFetch 로 다시).
+Spotify 에 안 쓴 새 글 — AI 시대 품질(09-16) · Portal 로 Claude Code 토큰 90% 절감(09-03).
 
 **비교 문서 재료가 모였다 — 'LLM Wiki' 세 회사.** 사이보즈 Ergon(RAG 를 물리고 Wiki, `logos-security-harness`) ·
 컬리 `2026-delivery-domain-rag`(Wiki + RAG 를 두 번 갈아엎음) · LY `ko/llm-wiki-code-driven-knowledge-ssot`(08-28, 코드 기준 자동 최신화).
