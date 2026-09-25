@@ -427,12 +427,175 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/386334",
+      "title": "AI 풀스택 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 5년 이상 웹 풀스택(그중 RAG 구축 또는 모델 파인튜닝 2년 이상). React/TypeScript 화면과 Go·Python 백엔드를 혼자 만들고, 네트워크 장비 관리 Web UI 안에 RAG·LLM 기능을 탑재해 모니터링·관리 자동화를 설계할 수 있는 사람.",
+      "fit": {
+        "must_have": [
+          "웹 풀스택 5년 이상",
+          "AI 기능(RAG 또는 파인튜닝) 2년 이상",
+          "GUI/Web 서비스에 AI 기능을 직접 통합한 경험",
+          "React+TypeScript, Go·Python"
+        ],
+        "can_learn": [
+          "네트워크 장비·프로토콜(우대)",
+          "온프레미스·엣지용 모델 경량화(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "RAG 파이프라인 설계와 평가",
+          "from": "qualification",
+          "quote": "- AI 기능 개발(RAG 구축 또는 모델 파인튜닝) 경험 2년 이상 포함",
+          "priority": "core",
+          "why": "주요업무가 '네트워크 장비 Web UI 내 RAG 또는 LLM 파인튜닝 모델 개발 및 탑재'다. 장비 매뉴얼·설정·로그 같은 자료를 근거로 답하게 만드는 일로 읽힌다(추론).",
+          "gap_check": "청크 크기·임베딩 모델·검색 개수(top-k)를 바꿨을 때 답이 좋아졌는지 무엇으로 재는가?",
+          "drill": "공개된 네트워크 장비 매뉴얼(PDF) 하나로 RAG 를 만들고, 질문 20개 정답표로 검색 적중률과 답변 정확도를 청크 설정별로 비교한다.",
+          "hours": 12,
+          "resources": []
+        },
+        {
+          "topic": "폐쇄망·장비 안에서 도는 LLM (경량화·온프레미스 서빙)",
+          "from": "preference",
+          "quote": "• AI 모델을 온프레미스(On-premise) 또는 엣지 환경에 맞게 최적화·경량화해 본 경험자",
+          "priority": "high",
+          "why": "회사 소개문에 POPCON 은 '외부에 데이터를 두지 않고도' 클라우드를 운영하게 하는 제품이라고 적혀 있다. 고객 환경에서 외부 LLM API 를 못 쓸 수 있다(추론).",
+          "gap_check": "7B 모델을 GPU 없는 서버에서 돌려야 한다면 양자화 방식과 추론 엔진을 무엇으로 고르고, 응답 지연은 얼마나 되는가?",
+          "drill": "llama.cpp 로 작은 모델을 4비트 양자화해 CPU 에서 띄우고, 위 RAG 의 생성 단계를 이 로컬 모델로 바꿔 지연·정확도를 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "llama.cpp",
+              "url": "https://github.com/ggml-org/llama.cpp",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "React + TypeScript 관리 화면",
+          "from": "qualification",
+          "quote": "• React + TypeScript 기반의 웹 애플리케이션 개발 능숙자",
+          "priority": "core",
+          "why": "주요업무에 'React(TypeScript) 기반 사용자 중심 Web Frontend 개발'이 있다. 소개문은 관리 플랫폼이 클러스터·VM·스토리지·장애 대응까지 담아 '정보 구조와 흐름 설계의 난이도가 높다'고 적었다.",
+          "gap_check": "기능이 수십 개인 관리 화면에서 목록·상세·작업(생성/삭제) 화면의 공통 구조를 어떻게 뽑는가?",
+          "drill": "VM 목록·상세·생성 마법사 세 화면을 React+TS 로 만들고, 목록 필터·정렬 상태를 URL 에 두어 새로고침해도 유지되게 한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "React — Documentation",
+              "url": "https://react.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Go·Python 백엔드 API",
+          "from": "qualification",
+          "quote": "• Golang 및 Python을 활용한 서비스 개발 경험자",
+          "priority": "core",
+          "why": "주요업무에 'Golang 및 Python을 활용한 Backend API 서버 및 관리용 서비스 구축'이 있다. 장비 제어는 Go, AI 는 Python 으로 나뉘는 구성으로 보인다(추론).",
+          "gap_check": "Go API 서버가 Python 의 RAG 서비스를 부를 때, 느린 LLM 응답을 화면까지 어떻게 흘려보내는가(스트리밍)?",
+          "drill": "Go API 가 Python(FastAPI) RAG 서비스의 스트리밍 응답을 받아 SSE 로 React 화면에 흘려보내는 3단 구성을 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Go — Documentation",
+              "url": "https://go.dev/doc/",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — Server-sent events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 기반 네트워크 모니터링·관리 자동화",
+          "from": "task",
+          "quote": "- AI 기반 네트워크 모니터링 및 관리 자동화 솔루션 설계",
+          "priority": "high",
+          "why": "장비 관리 화면에 AI 를 붙이는 목적이 모니터링과 관리 자동화로 적혀 있다.",
+          "gap_check": "LLM 이 설정 변경을 제안할 때, 실제 장비에 반영하기 전에 무엇으로 검증하고 누가 승인하게 하는가?",
+          "drill": "가짜 장비 지표(트래픽·에러율)를 넣고, 이상 구간을 LLM 이 설명하게 한 뒤 '제안 → 사람 승인 → 적용' 흐름을 화면으로 만든다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "대용량 데이터 시각화·실시간 제어 UI",
+          "from": "preference",
+          "quote": "• 대용량 데이터 시각화 및 실시간 제어 UI 개발 경험자",
+          "priority": "nice",
+          "why": "네트워크 장비 관리 화면은 트래픽 같은 시계열이 계속 들어온다(추론).",
+          "gap_check": "초당 수백 포인트가 들어오는 차트를 React 에서 다시 그릴 때 무엇을 줄여야 화면이 버티는가?",
+          "drill": "WebSocket 으로 초당 200포인트를 보내고, 캔버스 기반 차트로 5분 창을 그리며 프레임 저하를 측정한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "네트워크 장비·프로토콜 기본",
+          "from": "preference",
+          "quote": "• 네트워크 장비(스위치, 라우터, 방화벽 등) 및 관련 프로토콜에 대한 이해도가 높으신 분",
+          "priority": "nice",
+          "why": "AI 가 다룰 대상이 네트워크 장비라, 질문과 답의 용어를 이해해야 기능을 설계할 수 있다.",
+          "gap_check": "스위치·라우터·방화벽·L7 로드밸런서가 각각 OSI 몇 계층에서 무엇을 보고 결정하는지 말할 수 있는가?",
+          "drill": "각 장비가 패킷 하나를 보고 내리는 결정을 계층별 표 한 장으로 정리한다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "폐쇄망 RAG 데모 한 편",
+          "why": "외부에 데이터를 두지 않는 제품을 파는 회사다. 인터넷 없이 로컬 모델+로컬 벡터DB 로 도는 데모는 바로 제품 맥락에 붙는다.",
+          "effort": "2일"
+        },
+        {
+          "idea": "AI 답변의 근거 표시 UI",
+          "why": "장비 운영자는 AI 답을 그대로 믿기 어렵다(추론). 답마다 근거 문서 위치를 보여 주는 화면은 풀스택+AI 둘 다를 증명한다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1차면접 - 2차면접 - 최종합격(공고 기준).",
+        "expect": [
+          "RAG 품질을 어떻게 재고 개선했는가",
+          "온프레미스에서 LLM 을 어떻게 돌리는가",
+          "Go·Python·React 사이를 어떻게 나눴는가",
+          "AI 제안을 장비에 적용하기 전 어떤 안전장치를 두는가"
+        ],
+        "sources": [
+          {
+            "title": "AI 풀스택 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/386334",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55041435",
+      "title": "AI 풀스택 엔지니어 채용",
+      "site": "jumpit",
+      "duplicate_of": "https://www.wanted.co.kr/wd/386334",
+      "verdict": "원티드 'AI 풀스택 엔지니어'(wd/386334)와 주요업무·자격요건·우대사항이 같은 자리다(jumpit 게시, 경력 표기만 5~20년). 브리핑은 원티드 게시를 본다."
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55041435&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=50e46200-3637-4463-8f52-06d3b2fb085e",
+      "title": "AI 풀스택 엔지니어 채용",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/386334",
+      "verdict": "원티드 'AI 풀스택 엔지니어'(wd/386334)와 주요업무·자격요건·우대사항이 같은 자리다(saramin 게시, 경력 표기만 5~20년). 브리핑은 원티드 게시를 본다."
     }
   ],
   "open_questions": [
     "회사 홈페이지 회사소개(piolink.com/kr/company/overview.php)는 404 로 넘어가 읽지 못했다 — 회사 층위는 공고 소개문과 뉴시스 기사로만 썼다",
     "제품별·해외 매출 비중은 공개 자료에서 찾지 못했다",
     "연봉 근거는 이번 사이클에서 찾지 않았다 — salary 비움",
-    "'보안관제 경력(세종시 근무)'(saramin)은 본문이 비어 있다"
+    "'보안관제 경력(세종시 근무)'(saramin)은 본문이 비어 있다",
+    "AI 풀스택(wd/386334) 소개문의 '디자인이 제품 완성도에 직접 기여하는 영역' 문장은 디자이너 공고 문구로 보인다 — 개발 직무 내용은 주요업무·자격으로만 판단했다"
   ]
 }
