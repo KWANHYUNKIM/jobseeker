@@ -709,6 +709,121 @@
       "site": "wanted",
       "duplicate_of": "https://www.wanted.co.kr/wd/334857",
       "verdict": "로봇 제어 신입판(wd/334857)과 주요업무·자격요건·우대사항이 한 줄도 다르지 않다. 원티드 경력 표기(1~20년)와 소개문의 범부처 사업 규모(이쪽은 200억원, 신입판은 228억원)만 다르다 — 신입판 브리핑을 본다."
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/336839",
+      "title": "[전문연구요원 가능] GUI 소프트웨어 개발자",
+      "site": "wanted",
+      "verdict": "경력 1~12년(원티드 표기), Qt 로 의료 장비 제어·상태 모니터링 화면을 만들고, 의료진의 사용 흐름에 맞춰 화면과 워크플로우를 직접 설계할 사람. 개발자이면서 UX 설계(Figma)까지 걸친 자리다.",
+      "fit": {
+        "must_have": [
+          "Qt GUI 개발 경험",
+          "자료구조·알고리즘·OS 기초",
+          "사용자 관점 문제 분석"
+        ],
+        "can_learn": [
+          "의료 환경 사용자 흐름",
+          "Figma 협업",
+          "Python UI 도구"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Qt 로 장비 제어·상태 모니터링 화면 만들기",
+          "from": "qualification",
+          "quote": "• Qt 프레임워크를 활용한 GUI 개발 경험",
+          "priority": "core",
+          "why": "주요업무에 'Qt 기반 의료용 GUI 애플리케이션 개발'과 '의료 장비 제어 화면 및 상태 모니터링 UI 개발'이 있다.",
+          "gap_check": "장비 상태가 초당 수십 번 바뀔 때 Qt 화면을 어떻게 갱신해야 UI 스레드가 멈추지 않는가?",
+          "drill": "Qt(C++ 또는 PySide6)로 가짜 장비 상태(각도·온도·오류)를 워커 스레드에서 받아 30Hz 로 갱신하는 모니터링 화면과 제어 버튼을 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Qt — Signals & Slots",
+              "url": "https://doc.qt.io/qt-6/signalsandslots.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Qt — Threads and QObjects",
+              "url": "https://doc.qt.io/qt-6/threads-qobject.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의료진 사용 환경을 고려한 화면·워크플로우 설계",
+          "from": "task",
+          "quote": "• 의료진 사용 환경을 고려한 사용자 중심 화면 구성 및 워크플로우 설계",
+          "priority": "core",
+          "why": "내시경 시술 중 의사는 손이 묶여 있고 화면을 오래 볼 수 없다(추론). 버튼 수·순서·오조작 방지가 사용성의 핵심이다.",
+          "gap_check": "시술 중 실수로 누르면 위험한 버튼을 어떻게 설계하는가(확인 단계·위치·크기·상태 표시)?",
+          "drill": "'장비 준비 → 시술 → 종료' 흐름을 화면 3개로 설계하고, 위험 동작마다 오조작 방지 장치를 한 줄씩 적어 Qt 로 구현한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "Figma 디자인을 Qt 컴포넌트로 옮기기",
+          "from": "preference",
+          "quote": "• Figma를 활용한 UX/UI 설계 및 개발 협업 경험",
+          "priority": "high",
+          "why": "우대사항에 화면 설계·컴포넌트 구조 정의·프로토타입과 '디자인 산출물을 기반으로 실제 UI 구현'이 있다.",
+          "gap_check": "Figma 의 컴포넌트·변형(variant)을 Qt 의 재사용 위젯과 스타일시트(QSS)로 어떻게 대응시키는가?",
+          "drill": "Figma 로 버튼·상태 카드 컴포넌트를 만들고 같은 모양을 Qt 커스텀 위젯 + QSS 로 구현해 나란히 비교한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "전산 기초 (코딩테스트)",
+          "from": "qualification",
+          "quote": "• 소프트웨어 개발에 대한 기본 전산 지식 보유 (자료구조, 알고리즘, 운영체제 등)",
+          "priority": "core",
+          "why": "채용 프로세스에 코딩테스트(해당 직군 한정)가 있다.",
+          "gap_check": "이벤트 루프와 스레드의 관계, 그리고 GUI 가 멈추는(frozen) 이유를 OS 관점에서 설명할 수 있는가?",
+          "drill": "자료구조·알고리즘 문제 10개를 풀고, Qt 이벤트 루프를 막는 코드와 막지 않는 코드를 나란히 만들어 차이를 확인한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "Python 기반 UI 로직·도구",
+          "from": "preference",
+          "quote": "• Python 기반 UI 로직 또는 툴 개발 경험",
+          "priority": "nice",
+          "why": "장비 점검·로그 확인 같은 사내 도구는 Python 으로 빠르게 만드는 경우가 있다(추론).",
+          "gap_check": "PySide6 와 C++ Qt 로 만든 화면의 차이(배포·성능)는 무엇인가?",
+          "drill": "장비 로그 파일을 불러와 오류만 걸러 표로 보여 주는 PySide6 도구를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Qt for Python — Documentation",
+              "url": "https://doc.qt.io/qtforpython-6/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "사용성 테스트 한 번의 기록",
+          "why": "주요업무에 '사용성 개선 및 UI 고도화'와 의료 전문가 협업이 있다. 실제 사용자 3명에게 과제를 주고 걸린 곳을 고친 전후 기록이 드문 증거가 된다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형-코딩테스트 (해당 직군 한정)-1차 인터뷰-2차 인터뷰-최종합격. 1차는 직무 역량 및 문화 적합성, 2차는 업무 조율 및 근무 조건 협의(공고 기준).",
+        "expect": [
+          "Qt 에서 스레드와 UI 갱신",
+          "오조작을 막는 화면 설계",
+          "디자인 산출물을 코드로 옮긴 경험",
+          "사용자 피드백으로 화면을 바꾼 사례"
+        ],
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] GUI 소프트웨어 개발자",
+            "url": "https://www.wanted.co.kr/wd/336839",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
