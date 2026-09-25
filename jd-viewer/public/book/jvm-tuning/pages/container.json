@@ -1,0 +1,198 @@
+{
+  "book": "jvm-tuning",
+  "id": "container",
+  "no": "4.7",
+  "chapter": 4,
+  "title": "컨테이너 안에서",
+  "summary": "cgroup 이 정하는 기본값.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "JVM 이 cgroup 한도를 읽는다는 것을 확인한다.",
+    "기본 힙이 한도의 몇 퍼센트인지 잰다.",
+    "종료 코드 137 과 1 의 차이를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.6절에서 **`-Xmx256m` 짜리가 336MB 를 잡는 것**을 봤다. 그 프로세스를 **256MB 짜리 컨테이너에 넣으면** 어떻게 되나.\n\n여기서부터는 **한도를 정하는 쪽이 JVM 이 아니다.** 커널의 cgroup 이 정하고, **JVM 이 그것을 읽어서 자기 기본값을 맞춘다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## JVM 은 무엇을 읽는가\n\n`-XshowSettings:system` 을 주면 **JVM 이 읽은 cgroup 값을 그대로** 보여 준다. `--memory=512m --cpus=2` 로 띄운 컨테이너 안에서 찍은 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "프로세서는 8개로 보이는데 2개로 센다",
+      "md": "```\nEffective CPU Count: 2\nCPU Period: 100000us\nCPU Quota: 200000us\nList of Effective Processors, 8 total:  0 1 2 3 4 5 6 7\n```\n\n> **목록에는 8개가 다 보인다.** `Runtime.availableProcessors()` 가 8을 돌려주던 시절의 버그가 여기서 왔다.\n> 지금은 **쿼터를 나눠서**(200000 / 100000 = 2) 유효 개수를 센다.\n> 이 숫자가 **GC 스레드 수와 컴파일러 스레드 수를 정한다** — 아래 표."
+    },
+    {
+      "type": "table",
+      "caption": "한도가 기본값을 어떻게 정하는가",
+      "columns": [
+        "한도",
+        "MaxHeapSize",
+        "한도 대비"
+      ],
+      "rows": [
+        [
+          "`--memory=256m`",
+          "126 MB",
+          "**약 49%** (MinRAMPercentage 50)"
+        ],
+        [
+          "`--memory=512m`",
+          "128 MB",
+          "**25%** (MaxRAMPercentage 25)"
+        ],
+        [
+          "`--memory=1g`",
+          "256 MB",
+          "25%"
+        ],
+        [
+          "`--memory=2g`",
+          "512 MB",
+          "25%"
+        ]
+      ],
+      "note": "**작은 컨테이너에는 비율이 다르다.** 256MB 이하에서는 `MinRAMPercentage`(50) 가, 그 위로는 `MaxRAMPercentage`(25) 가 쓰인다."
+    },
+    {
+      "type": "table",
+      "caption": "CPU 한도가 정하는 스레드 수",
+      "columns": [
+        "`--cpus`",
+        "ParallelGCThreads",
+        "CICompilerCount"
+      ],
+      "rows": [
+        [
+          "0.5",
+          "0",
+          "2"
+        ],
+        [
+          "1",
+          "0",
+          "2"
+        ],
+        [
+          "2",
+          "**2**",
+          "2"
+        ],
+        [
+          "4",
+          "**4**",
+          "**3**"
+        ]
+      ],
+      "note": "**CPU 를 조이면 GC 스레드가 줄어든다.** 멈춤 시간이 길어지는 원인이 여기 있을 수 있다(7장)."
+    },
+    {
+      "type": "prose",
+      "md": "## 인식을 끄면 — 두 죽음의 차이\n\n`-XX:+UseContainerSupport` 는 **기본으로 켜져** 있다. 끄면 JVM 이 **호스트의 메모리**를 보고 힙을 잡는다. 같은 `--memory=512m` 컨테이너에서 **123MB 와 980MB** 로 갈린다.\n\n그 상태로 힙을 채우면 **죽는 방식이 다르다.**"
+    },
+    {
+      "type": "compare",
+      "caption": "같은 컨테이너, 같은 프로그램",
+      "left": {
+        "title": "인식 켬 (기본) — 종료 코드 1",
+        "lang": "text",
+        "code": "maxHeap=123MB\n\nException in thread \"main\"\n  java.lang.OutOfMemoryError: Java heap space\n\tat FillHeap.main(FillHeap.java:7)\n\n$ echo $?\n1"
+      },
+      "right": {
+        "title": "인식 끔 — 종료 코드 137",
+        "bad": true,
+        "lang": "text",
+        "code": "maxHeap=980MB\n  heap 720MB\n  heap 800MB\n                      <- 여기서 끊긴다\n\n$ echo $?\n137"
+      },
+      "note": "**137 = 128 + 9.** 9는 SIGKILL 이다 — 커널이 죽였다는 뜻이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "137 이 1 보다 나쁜 이유",
+      "md": "**아무 기록도 안 남는다.**\n\n> 왼쪽은 **자바 예외**다 — 스택 트레이스가 있고, 잡을 수 있고, 로그에 남고, 힙 덤프도 뜰 수 있다.\n> 오른쪽은 **문장 중간에서 프로세스가 사라진다.** `OutOfMemoryError` 도 없고 종료 훅도 안 돈다.\n> 쿠버네티스에서 `OOMKilled` 로 보이는 것이 이것이고, **애플리케이션 로그만 봐서는 원인을 못 찾는다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "그래서 4.6 의 합산이 필요하다",
+      "md": "**컨테이너 한도는 힙이 아니라 프로세스 전체를 본다.**\n\n> `-Xmx` 를 한도에 맞춰 놓으면 **스택·메타스페이스·코드 캐시가 그 위에 얹혀** 넘긴다.\n> 4.6 의 측정에서 `-Xmx256m` 짜리가 **336MB** 를 잡았다 — 컨테이너에 256MB 를 주면 137 이다.\n> JVM 기본값(25%)이 인색해 보이는 이유가 이것이다. **나머지 75%가 힙 밖 몫**이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ docker info --format '{{.ServerVersion}} · {{.OSType}}/{{.Architecture}}'\n28.3.2 · linux/aarch64\n\n# --- 1) JVM 이 읽은 cgroup ---\n\n$ docker run --rm --memory=512m --cpus=2 eclipse-temurin:17-jre \\\n      java -XshowSettings:system -version\nOperating System Metrics:\n    Provider: cgroupv2\n    Effective CPU Count: 2\n    CPU Period: 100000us\n    CPU Quota: 200000us\n    List of Effective Processors, 8 total: \n    0 1 2 3 4 5 6 7 \n    Memory Limit: 512.00M\n    Memory & Swap Limit: 1.00G\n\n# --- 2) 한도별 기본 힙 ---\n\n$ for M in 256m 512m 1g 2g; do\n    docker run --rm --memory=$M eclipse-temurin:17-jre \\\n      java -XX:+PrintFlagsFinal -version | grep ' MaxHeapSize '\n  done\n  --memory=256m  MaxHeapSize 126 MB\n  --memory=512m  MaxHeapSize 128 MB\n  --memory=1g    MaxHeapSize 256 MB\n  --memory=2g    MaxHeapSize 512 MB\n\n$ ... | grep -E 'RAMPercentage'\ndouble InitialRAMPercentage = 1.562500    {default}\ndouble MaxRAMPercentage     = 25.000000   {default}\ndouble MinRAMPercentage     = 50.000000   {default}\n\n# --- 3) CPU 가 정하는 스레드 수 ---\n\n  --cpus=0.5  ParallelGCThreads=0  CICompilerCount=2\n  --cpus=1    ParallelGCThreads=0  CICompilerCount=2\n  --cpus=2    ParallelGCThreads=2  CICompilerCount=2\n  --cpus=4    ParallelGCThreads=4  CICompilerCount=3\n\n# --- 4) 인식을 끄면 ---\n\n$ docker run --rm --memory=512m -v out:/app eclipse-temurin:17-jre \\\n      java -cp /app FillHeap\nmaxHeap=123MB\nException in thread \"main\" java.lang.OutOfMemoryError: Java heap space\n\tat FillHeap.main(FillHeap.java:7)\n  종료 코드: 1\n\n$ docker run --rm --memory=512m -v out:/app eclipse-temurin:17-jre \\\n      java -XX:-UseContainerSupport -cp /app FillHeap\nmaxHeap=980MB\n  heap 720MB\n  heap 800MB\n  종료 코드: 137",
+      "note": "**같은 컨테이너, 같은 프로그램, 플래그 하나.** 한쪽은 예외를 남기고 한쪽은 아무것도 안 남긴다."
+    }
+  ],
+  "recap": [
+    "JVM 은 cgroup 의 메모리·CPU 한도를 읽어 자기 기본값을 맞춘다.",
+    "기본 힙은 한도의 25%이고 256MB 이하 컨테이너에서는 50%다.",
+    "CPU 를 조이면 ParallelGCThreads 와 CICompilerCount 가 같이 줄어든다.",
+    "프로세서 목록에는 8개가 보여도 쿼터로 계산한 유효 개수는 2였다.",
+    "컨테이너 인식을 끄면 힙이 123MB 에서 980MB 가 되고 종료 코드가 1 에서 137 로 바뀐다."
+  ],
+  "drills": [
+    {
+      "task": "내 이미지에 -XshowSettings:system 을 붙여 cgroup 값을 찍는다.",
+      "done_when": "Memory Limit 과 Effective CPU Count 를 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "컨테이너 한도를 바꿔 가며 MaxHeapSize 를 잰다.",
+      "done_when": "25% 규칙이 맞는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "4.6 의 합산식으로 내 애플리케이션에 필요한 한도를 계산해 본다.",
+      "done_when": "지금 설정과 비교한다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "컨테이너에서 기본 힙은 한도의 몇 퍼센트인가.",
+      "a": "25%다. 256MB 이하 컨테이너에서는 MinRAMPercentage 인 50%가 쓰인다."
+    },
+    {
+      "q": "프로세서가 8개로 보이는데 2개로 세는 근거는.",
+      "a": "CPU Quota 를 CPU Period 로 나눈 값이다. 200000/100000 = 2."
+    },
+    {
+      "q": "종료 코드 137 은 무슨 뜻인가.",
+      "a": "128 + 9, 즉 SIGKILL 이다. 커널이 죽였다는 뜻이다."
+    },
+    {
+      "q": "137 과 1 중 진단하기 나쁜 쪽은.",
+      "a": "137 이다. 예외도 스택 트레이스도 종료 훅도 없이 프로세스가 사라진다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "UseContainerSupport",
+      "what": "JVM 이 cgroup 한도를 읽어 기본값을 맞추는 기능. 기본으로 켜져 있다."
+    },
+    {
+      "term": "OOMKilled",
+      "what": "cgroup 한도를 넘겨 커널이 프로세스를 SIGKILL 한 상태. 종료 코드 137 로 나타난다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command, -XX:+UseContainerSupport",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JDK-8146115: Improve docker container detection and resource configuration usage",
+      "url": "https://bugs.openjdk.org/browse/JDK-8146115",
+      "publisher": "OpenJDK"
+    }
+  ]
+}

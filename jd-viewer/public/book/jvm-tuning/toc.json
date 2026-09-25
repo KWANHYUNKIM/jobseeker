@@ -232,7 +232,7 @@
           "title": "컨테이너 안에서",
           "summary": "cgroup 이 정하는 기본값.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
