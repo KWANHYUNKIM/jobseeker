@@ -555,3 +555,7 @@ Medium RSS 최신 08-20(이미 반영). updated_at 만 올렸다. 1회째. 그 �
 ## instagram 재방문 (2026-09-26)
 
 Meta 엔지니어링 피드의 09-03 이후 글은 인스타그램 것이 아니다. IG Medium 은 2022 에 멈춤. updated_at 만 올렸다. 1회째.
+
+## kurly 재방문 (2026-09-26)
+
+RSS 최신 05-20. updated_at 만 올렸다. 1회째. LLM Wiki + RAG 글은 사이보즈 Ergon 과 비교할 보강 재료로 적었다.
