@@ -1,0 +1,130 @@
+{
+  "book": "jvm-tuning",
+  "id": "finalize",
+  "no": "5.6",
+  "chapter": 5,
+  "title": "정리 훅",
+  "summary": "finalize 와 Cleaner.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "finalize 가 왜 폐기됐는지 직접 본다.",
+    "Cleaner 로 바꾸는 법을 안다.",
+    "Cleaner 의 가장 흔한 실수를 피한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절의 **팬텀 참조**가 \"수거됐다\"는 통지를 받는 장치였다. 그 통지로 **뒷정리를 하는 방법**이 이 절이다.\n\n오래된 방법이 `finalize()` 이고, **자바 9 에서 폐기**됐다. 대체가 `Cleaner` 다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "가장 큰 문제는 안 돌 수 있다는 것",
+      "md": "**객체 5개를 버리고 그냥 종료했더니 한 번도 안 돌았다.**\n\n```\n$ java -cp . Never\n  5개를 버리고 그냥 끝낸다 (System.gc() 안 부름)\n```\n\n> `[finalize]` 출력이 **한 줄도 없다.**\n> 수집이 일어나야 도는데, **수집이 일어날 이유가 없으면 안 돈다.** 종료할 때도 안 돈다.\n> 파일 핸들이나 소켓을 여기서 닫게 해 두면 **영영 안 닫힌다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 컴파일만 해도 경고가 난다\n\n자바 17 에서 `finalize()` 를 재정의하면 **경고가 붙는다.** 쓰지 말라는 신호가 컴파일러에 들어와 있다."
+    },
+    {
+      "type": "compare",
+      "caption": "같은 일을 두 가지로",
+      "left": {
+        "title": "finalize — 폐기됨",
+        "bad": true,
+        "lang": "java",
+        "code": "static class OldWay {\n    @Override\n    protected void finalize() {\n        // 돌지 안 돌지 모른다\n        // 언제 돌지도 모른다\n        // 예외가 나도 조용히 묻힌다\n    }\n}"
+      },
+      "right": {
+        "title": "Cleaner — 대체",
+        "lang": "java",
+        "code": "static class NewWay implements AutoCloseable {\n    private static final Cleaner CLEANER = Cleaner.create();\n    private final Cleaner.Cleanable cleanable;\n    static class State implements Runnable {\n        public void run() { /* 정리 */ }\n    }\n    NewWay() { cleanable = CLEANER.register(this, new State()); }\n    public void close() { cleanable.clean(); }\n}"
+      },
+      "note": "**핵심은 `close()` 가 있다는 것**이다. 수집을 기다리지 않고 **직접 정리할 길**을 연다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "Cleaner 도 보험일 뿐이다",
+      "md": "**정상 경로는 try-with-resources 다.**\n\n> `Cleaner` 는 **닫는 것을 잊었을 때를 위한 그물**이지 주된 수단이 아니다.\n> `finalize` 와 똑같이 **언제 돌지 모르고, 안 돌 수도** 있다.\n> 다른 점은 **`clean()` 으로 즉시 돌릴 수 있고, 별도 스레드에서 돌며, 예외가 안 묻힌다**는 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "State 가 바깥 객체를 잡으면 영영 안 돈다",
+      "md": "**이것이 Cleaner 의 가장 흔한 실수**다.\n\n> 정리 동작을 **람다로 짧게 쓰면 `this` 가 딸려 들어간다.**\n> 그러면 **등록된 객체가 자기 정리 동작에 잡혀 영원히 도달 가능**해진다 — 수거가 안 되니 정리도 안 된다.\n> 아래 측정에서 `Bad` 는 **GC 를 세 번 불러도 안 나왔다.**\n> 그래서 **`State` 를 `static` 중첩 클래스로** 두는 것이 규칙이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 컴파일 경고 ---\n\n$ javac -Xlint:deprecation -d . Fin.java\nFin.java:4: warning: [deprecation] finalize() in Object has been deprecated\n        @Override protected void finalize() { ... }\n                                 ^\n1 warning\n\n# --- 2) 안 돌 수 있다 ---\n\n$ cat Never.java\npublic class Never {\n    static class F { @Override protected void finalize() {\n        System.out.println(\"    [finalize] \" + hashCode()); } }\n    public static void main(String[] a) {\n        for (int i = 0; i < 5; i++) new F();\n        System.out.println(\"  5개를 버리고 그냥 끝낸다 (System.gc() 안 부름)\");\n    }\n}\n\n$ java -cp . Never\n  5개를 버리고 그냥 끝낸다 (System.gc() 안 부름)\n                                      <- [finalize] 가 한 줄도 없다\n\n# --- 3) 둘 다 등록해 두고 버린다 ---\n\n$ java -cp . Fin\n  1) finalize 를 가진 객체를 버린다\n    [finalize] 돌았다\n  2) Cleaner 를 등록한 객체를 버린다\n    [Cleaner] 돌았다\n  3) try-with-resources 로 명시적으로 닫는다\n    [Cleaner] 돌았다\n  끝\n\n# 3) 은 GC 를 기다리지 않았다. close() 가 clean() 을 바로 불렀다.\n\n# --- 4) State 가 바깥을 잡으면 ---\n\n$ cat Trap.java\nstatic class Good {                       // State 가 바깥을 안 잡는다\n    Good() { CLEANER.register(this, () -> System.out.println(\"    [Good] 정리됨\")); }\n}\nstatic class Bad {                        // 람다가 payload 를, 따라서 this 를 잡는다\n    byte[] payload = new byte[1024];\n    Bad() { CLEANER.register(this, () -> System.out.println(\"    [Bad] 정리됨 \" + payload.length)); }\n}\n\n$ java -cp . Trap\n  Good 을 버린다\n    [Good] 정리됨\n  Bad 를 버린다\n  끝 (Bad 가 안 나왔으면 영영 안 나온다)\n\n# GC 를 세 번 불렀는데 [Bad] 가 없다.",
+      "note": "**`Good` 과 `Bad` 의 차이는 람다가 `payload` 를 읽느냐 하나**다. 그 한 글자가 정리를 영영 막는다."
+    }
+  ],
+  "recap": [
+    "finalize 는 자바 9 에서 폐기됐고 17 에서 재정의하면 경고가 난다.",
+    "객체 5개를 버리고 종료했더니 finalize 가 한 번도 안 돌았다.",
+    "Cleaner 가 대체이고 핵심은 close() 로 즉시 정리할 길이 있다는 것이다.",
+    "Cleaner 도 언제 돌지 모르므로 정상 경로는 try-with-resources 다.",
+    "State 가 바깥 객체를 잡으면 수거가 막혀 정리가 영영 안 된다."
+  ],
+  "drills": [
+    {
+      "task": "finalize 를 가진 클래스를 만들고 GC 없이 종료해 본다.",
+      "done_when": "안 도는 것을 직접 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "Cleaner 로 바꾸고 AutoCloseable 을 붙인다.",
+      "done_when": "try-with-resources 로 즉시 정리되는 것을 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "State 를 람다로 쓰고 바깥 필드를 읽게 해 본다.",
+      "done_when": "정리가 안 되는 것을 직접 낸다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "finalize 의 가장 큰 문제는.",
+      "a": "돌지 안 돌지 모른다는 것이다. 수집이 안 일어나면 안 돌고 종료할 때도 안 돈다."
+    },
+    {
+      "q": "Cleaner 가 finalize 보다 나은 점은.",
+      "a": "clean() 으로 즉시 정리할 수 있고 별도 스레드에서 돌며 예외가 묻히지 않는다."
+    },
+    {
+      "q": "그래도 Cleaner 가 주된 수단이 아닌 이유는.",
+      "a": "언제 돌지 모르는 것은 같기 때문이다. 정상 경로는 try-with-resources 다."
+    },
+    {
+      "q": "Cleaner 의 State 를 static 중첩 클래스로 두는 이유는.",
+      "a": "바깥 객체를 잡으면 수거가 막혀 정리가 영영 안 되기 때문이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "Cleaner",
+      "what": "팬텀 참조와 큐를 감싼 정리 장치. 등록한 객체가 수거되면 State 의 run 을 돌린다."
+    },
+    {
+      "term": "Cleanable",
+      "what": "Cleaner.register 가 돌려주는 손잡이. clean() 으로 즉시 정리를 돌릴 수 있다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JEP 421: Deprecate Finalization for Removal",
+      "url": "https://openjdk.org/jeps/421",
+      "publisher": "OpenJDK"
+    },
+    {
+      "title": "Java SE 17 — java.lang.ref.Cleaner",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ref/Cleaner.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

@@ -271,7 +271,7 @@
           "title": "도달 가능성",
           "summary": "산 것과 죽은 것의 기준.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -279,7 +279,7 @@
           "title": "참조 네 종류",
           "summary": "강 · 소프트 · 위크 · 팬텀.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -287,7 +287,7 @@
           "title": "정리 훅",
           "summary": "finalize 와 Cleaner.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
