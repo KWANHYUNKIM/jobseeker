@@ -639,6 +639,179 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/361794",
+      "title": "커머스 주니어 프론트엔드 개발자",
+      "site": "wanted",
+      "verdict": "제목은 '주니어'지만 자격요건은 프론트엔드 경력 4년 이상(또는 그에 준하는 실력)이다. 상품 탐색부터 구매까지의 커머스 화면을 Web·App 연동 환경에서 React/TypeScript 로 만들고, 요구사항을 이해관계자와 직접 정리해 코드로 옮길 수 있는 사람.",
+      "fit": {
+        "must_have": [
+          "프론트엔드 4년 이상 또는 그에 준하는 실력",
+          "React·TypeScript 개발",
+          "상태 관리 라이브러리 사용 경험",
+          "JavaScript·CSS·HTML 깊은 이해"
+        ],
+        "can_learn": [
+          "Next.js(개발환경에 명시)",
+          "Datadog·Sentry 모니터링",
+          "Web·App 연동(웹뷰) 방식"
+        ]
+      },
+      "study": [
+        {
+          "topic": "JavaScript·CSS·HTML 기본기 (렌더링·레이아웃)",
+          "from": "qualification",
+          "quote": "• Javascript, CSS, HTML에 대한 이해가 깊은 분",
+          "priority": "core",
+          "why": "상품 목록·상세·장바구니처럼 고객이 직접 보는 화면이 주력이라, 프레임워크 아래의 레이아웃·렌더링 문제가 곧 사용자 경험으로 드러난다.",
+          "gap_check": "리플로우를 일으키는 속성과 합성(composite)만 일으키는 속성을 구분해 말할 수 있는가?",
+          "drill": "상품 카드 목록을 프레임워크 없이 HTML·CSS·JS 로 만들고, 스크롤 애니메이션을 transform 으로 바꿔 Performance 패널에서 전후를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MDN — Rendering performance",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/Performance",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "상태 관리 라이브러리로 장바구니 상태 다루기",
+          "from": "qualification",
+          "quote": "• Zustand, Redux, React Query 등 상태 관리 라이브러리를 이용한 개발 경험이 있는 분",
+          "priority": "core",
+          "why": "개발환경에 Zustand·Redux·React Query 가 모두 적혀 있다. 장바구니처럼 서버와 화면에 동시에 있는 상태를 어디에 둘지가 핵심이다.",
+          "gap_check": "장바구니 수량을 바꿨는데 서버 응답이 실패하면 화면 상태를 어떻게 되돌리는가?",
+          "drill": "React Query 로 장바구니 목록을 받고 수량 변경을 optimistic update 로 처리하되, 실패 시 롤백되게 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "TanStack Query — Optimistic Updates",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "React·TypeScript 로 컴포넌트 설계",
+          "from": "qualification",
+          "quote": "• 시스템 및 컴포넌트 설계 능력을 기반으로, 문제를 이해하고 해결할 수 있는 분",
+          "priority": "core",
+          "why": "Web/App 서비스에 백오피스·운영 툴까지 폭넓은 제품을 만든다고 소개문에 적혀 있다. 같은 컴포넌트가 여러 화면에 재사용되도록 경계를 나누는 능력을 본다.",
+          "gap_check": "상품 카드 컴포넌트가 목록·검색·추천 세 곳에서 조금씩 다를 때 props 를 늘릴지 합성(composition)으로 풀지 무엇으로 정하는가?",
+          "drill": "상품 카드를 compound component 패턴으로 만들고 세 가지 변형을 Storybook 스토리로 보여 준다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Storybook — Docs",
+              "url": "https://storybook.js.org/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "요구사항을 도출해 코드로 옮기기",
+          "from": "qualification",
+          "quote": "• 다양한 이해 관계자와의 커뮤니케이션을 통해 요구사항을 도출하고 코드로 구현할 수 있는 분",
+          "priority": "core",
+          "why": "주요업무에 운영 프로세스 고도화와 사용자 피드백 기반 UI/UX 개선이 있다. 기획·운영 쪽 요청을 스스로 구체화해야 한다.",
+          "gap_check": "'쿠폰 적용이 헷갈린다'는 피드백을 받았을 때 무엇을 먼저 확인하고 어떤 질문을 되묻는가?",
+          "drill": "장바구니 쿠폰 적용 화면 하나를 골라 요구사항 정리 → 화면 설계 → 구현 → 변경 이유를 README 에 한 쪽으로 남긴다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "정량적 성능 측정과 최적화",
+          "from": "preference",
+          "quote": "• 웹서비스의 정량적 성능 평가 및 최적화 경험이 있으신 분",
+          "priority": "high",
+          "why": "상품 탐색부터 구매까지의 흐름이라 느린 화면은 이탈로 이어진다(추론). 개발환경에 Datadog·Sentry 가 있어 수치로 보는 문화로 읽힌다.",
+          "gap_check": "LCP·INP·CLS 가 각각 무엇을 재고, 상품 목록 페이지에서 어느 것이 가장 먼저 나빠지는가?",
+          "drill": "상품 목록 페이지에 이미지 지연 로딩·크기 지정을 적용하고 Lighthouse 로 Core Web Vitals 전후를 표로 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "web.dev — Web Vitals",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Next.js 렌더링 방식",
+          "from": "preference",
+          "quote": "•주요 기술 : React, TypeScript, Next.js, Zustand, Redux, React Query",
+          "priority": "high",
+          "why": "개발환경의 주요 기술에 Next.js 가 있다. 커머스 화면은 검색 노출과 첫 화면 속도 때문에 서버 렌더링 선택이 자주 나온다(추론).",
+          "gap_check": "상품 상세 페이지를 SSR·SSG·ISR 중 무엇으로 만들지, 재고·가격이 자주 바뀐다는 조건에서 고를 수 있는가?",
+          "drill": "Next.js 로 상품 상세 페이지를 만들고 가격은 요청 시, 설명은 정적으로 렌더링하도록 나눈다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Next.js — Docs",
+              "url": "https://nextjs.org/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "웹 접근성·반응형",
+          "from": "preference",
+          "quote": "• 반응형 디자인, 웹 접근성, 웹 표준을 고려한 개발 경험이 있으신 분",
+          "priority": "nice",
+          "why": "Web 과 App 연동 환경에서 같은 화면이 여러 크기로 보인다.",
+          "gap_check": "커스텀 드롭다운을 키보드만으로 쓸 수 있게 하려면 어떤 role·aria 속성과 키 처리가 필요한가?",
+          "drill": "옵션 선택 드롭다운을 WAI-ARIA 패턴대로 만들고 스크린리더로 읽어 본다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "WAI-ARIA APG — Listbox",
+              "url": "https://www.w3.org/WAI/ARIA/apg/patterns/listbox/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 코딩 도구 활용",
+          "from": "preference",
+          "quote": "• Claude, Copilot과 같은 AI 활용에 익숙한 분",
+          "priority": "nice",
+          "why": "우대사항과 개발환경(GitHub Copilot, Claude)에 모두 적혀 있고, 직무적합성 인터뷰에서 생성형 AI를 활용한 코딩테스트가 진행된다(공고 기준).",
+          "gap_check": "AI 가 만든 코드를 받았을 때 무엇을 기준으로 검증하고 고치는가?",
+          "drill": "위 drill 하나를 AI 도구와 함께 만들고, AI 제안 중 고친 부분과 이유를 커밋 메시지로 남긴다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Datadog RUM 이나 Sentry 로 실제 오류·성능을 수집해 본 작은 서비스",
+          "why": "개발환경의 모니터링에 Datadog·Sentry 가 적혀 있다. 배포 후 수치를 보고 고친 경험을 보여 줄 수 있다.",
+          "effort": "1일"
+        },
+        {
+          "idea": "웹뷰(Web·App 연동)에서 앱 브리지를 다뤄 본 예제",
+          "why": "주요업무에 'Web과 App 연동 환경에서의 서비스 개발'이 있다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "지원서 제출 ＞ 직무적합성 인터뷰 ＞ 종합 인터뷰 ＞ 처우 협의 ＞ 최종 합격. 직무적합성 인터뷰에서 생성형 AI를 활용한 코딩테스트, 종합 인터뷰에서 온라인 직무적합성 검사가 함께 진행된다(공고 기준).",
+        "expect": [
+          "장바구니 같은 서버·클라이언트 공유 상태를 어떻게 다뤘는가",
+          "성능을 무엇으로 재고 얼마나 줄였는가",
+          "컴포넌트 재사용 경계를 어떻게 나눴는가",
+          "AI 가 준 코드를 어떻게 검증하는가"
+        ],
+        "sources": [
+          {
+            "title": "커머스 주니어 프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/361794",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
