@@ -589,6 +589,157 @@
       "site": "saramin",
       "duplicate_of": "https://www.wanted.co.kr/wd/386334",
       "verdict": "원티드 'AI 풀스택 엔지니어'(wd/386334)와 주요업무·자격요건·우대사항이 같은 자리다(saramin 게시, 경력 표기만 5~20년). 브리핑은 원티드 게시를 본다."
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/269408",
+      "title": "[전문연구요원] 애플리케이션 및 클라우드Cloud 개발",
+      "site": "wanted",
+      "verdict": "신입, 석사 이상 전문연구요원 대상. C·Python 과 네트워크·소켓 프로그래밍으로 애플리케이션 전송 컨트롤러 PAS-K 의 L7 트래픽 기능, 장비 내부 API(Django), 클라우드 연동을 만들 사람.",
+      "fit": {
+        "must_have": [
+          "석사 이상(전문연구요원 대상자)",
+          "C·Python 개발 경험",
+          "네트워크·소켓 프로그래밍 경험"
+        ],
+        "can_learn": [
+          "Django REST API(우대)",
+          "커널 모듈 디버깅(우대)",
+          "빅데이터 처리(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "C 소켓 프로그래밍과 이벤트 기반 서버",
+          "from": "qualification",
+          "quote": "• 네트워크 및 소켓 프로그래밍에 대한 경험",
+          "priority": "core",
+          "why": "PAS-K 는 애플리케이션 전송 컨트롤러다. 수많은 연결을 받아 뒤쪽 서버로 넘기는 장비라 소켓과 이벤트 루프가 기본 재료다.",
+          "gap_check": "blocking accept/read 서버가 연결 1만 개에서 왜 버티지 못하고, epoll 은 무엇을 바꾸는가?",
+          "drill": "C 로 epoll 기반 TCP 에코 서버를 만들고, 동시 연결 수를 늘려 가며 스레드 방식 서버와 처리량을 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Linux man-pages — epoll(7)",
+              "url": "https://man7.org/linux/man-pages/man7/epoll.7.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Beej's Guide to Network Programming",
+              "url": "https://beej.us/guide/bgnet/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "L7 트래픽 처리 (HTTP 파싱·로드밸런싱)",
+          "from": "task",
+          "quote": "• L7 트래픽 및 네트워크 서비스 관련 개발",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다. L7 에서는 HTTP 헤더·경로를 읽고 어느 서버로 보낼지 정한다.",
+          "gap_check": "L4 로드밸런싱과 L7 로드밸런싱이 각각 무엇을 보고 서버를 고르며, L7 에서 세션을 한 서버로 붙이는(sticky) 방법은?",
+          "drill": "위 epoll 서버를 HTTP 요청의 Host·경로를 보고 두 백엔드 중 하나로 넘기는 작은 L7 프록시로 바꾼다(라운드로빈 + 경로 규칙).",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "RFC 9112 — HTTP/1.1",
+              "url": "https://www.rfc-editor.org/rfc/rfc9112",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Python·Django 로 장비 내부 API 만들기",
+          "from": "task",
+          "quote": "• Django 기반의 장비 내부 API 기반 개발",
+          "priority": "high",
+          "why": "장비 설정·상태를 관리 화면이나 외부 시스템에 내보내는 API 가 Django 로 되어 있다고 적혀 있다. 우대에 Django RESTful API 경험이 있다.",
+          "gap_check": "장비 설정 변경 API 가 실패 중간에 멈추면, 반쯤 바뀐 설정을 어떻게 되돌리는가?",
+          "drill": "Django REST framework 로 '가상 서버(VIP) 목록·생성·삭제' API 를 만들고, 설정 파일 쓰기가 실패하면 이전 설정으로 롤백하게 한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Django REST framework",
+              "url": "https://www.django-rest-framework.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "C·Python 을 함께 쓰는 구조",
+          "from": "qualification",
+          "quote": "• C 프로그래밍 및 Python프로그래밍을 활용한 개발 경험",
+          "priority": "core",
+          "why": "데이터 경로(트래픽)는 C, 관리·API 는 Python 으로 나뉘는 구성으로 보인다(추론, 주요업무 기준).",
+          "gap_check": "C 로 된 트래픽 엔진의 통계를 Python 관리 API 가 읽으려면 어떤 방식(공유 메모리·소켓·파일)을 쓰고 각각의 비용은?",
+          "drill": "C 프록시가 연결 수·처리량을 유닉스 도메인 소켓으로 내보내고, Python 이 읽어 JSON API 로 보여 주게 한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "퍼블릭/프라이빗 클라우드 연동",
+          "from": "task",
+          "quote": "• 퍼블릭/프라이빗 클라우드 연동 개발",
+          "priority": "high",
+          "why": "장비가 클라우드의 가상 서버 목록을 읽어 부하분산 대상을 자동으로 바꾸는 식의 연동이 필요할 수 있다(추론).",
+          "gap_check": "클라우드에서 서버가 자동으로 늘거나 줄 때 로드밸런서 대상 목록을 어떻게 따라가게 하는가?",
+          "drill": "AWS SDK(boto3)로 태그가 붙은 EC2 인스턴스 목록을 주기적으로 읽어 위 프록시의 백엔드 목록을 갱신하는 스크립트를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Boto3 — Documentation",
+              "url": "https://boto3.amazonaws.com/v1/documentation/api/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "커널 모듈·오픈소스 디버깅",
+          "from": "preference",
+          "quote": "• 커널 모듈 또는 오픈소스 개발 및 디버깅 경험",
+          "priority": "nice",
+          "why": "장비 성능을 위해 커널 수준 처리가 있을 수 있다(추론). 우대사항에 있다.",
+          "gap_check": "커널 모듈이 패닉을 내면 무엇으로 원인 위치를 찾는가?",
+          "drill": "netfilter 훅으로 특정 포트 패킷 수를 세는 커널 모듈을 만들어 적재·해제하고 dmesg 로 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "The Linux Kernel Module Programming Guide",
+              "url": "https://sysprog21.github.io/lkmpg/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "직접 만든 L7 프록시의 성능 측정표",
+          "why": "PAS-K 가 하는 일을 작게라도 직접 만들고 wrk 등으로 처리량·지연을 잰 표를 들고 가면, 석사 연구와 다른 실전 증거가 된다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1차면접 - 2차 면접 - 최종합격. 1차면접 대상자는 사전에 간단한 면접설문지 작성을 요청받는다(공고 기준).",
+        "expect": [
+          "epoll·소켓 서버 구조",
+          "L4/L7 로드밸런싱 차이",
+          "C 와 Python 을 함께 쓴 경험",
+          "석사 연구 내용과 네트워크의 연결"
+        ],
+        "sources": [
+          {
+            "title": "[전문연구요원] 애플리케이션 및 클라우드Cloud 개발",
+            "url": "https://www.wanted.co.kr/wd/269408",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55042969&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=0a0a5e87-e04b-4212-a02c-291e0b5e0b44",
+      "title": "프라이빗 클라우드(HCI) 가상화 전문연구요원",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/386829",
+      "verdict": "원티드 'HCI 가상화 개발자'(wd/386829)와 주요업무·자격·우대가 같은 자리다. 사람인 게시에만 '경력 무관'·'석사 이상 졸업자 또는 예정자 (병역특례 전문연구요원)'와 마감일(2026년 10월 14일)이 더 있다."
     }
   ],
   "open_questions": [
