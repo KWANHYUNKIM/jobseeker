@@ -643,3 +643,7 @@ DS Agent(09-10)를 기능 `ds-agent-repo` 와 새 도메인으로 썼다. 결정
 ## stripe 재방문 → 확장 (2026-09-26)
 
 stripe.com 피드는 사업 동향뿐이어서 헤매다가 엔지니어링 글이 stripe.dev 로 옮겨 간 것을 찾았다(접근 요령에 기록). 에이전트용 Checkout(WebMCP, 09-22)을 기능 `checkout-for-agents` 로 썼다. 결정 5 · 그림 3. 시험이 가상 매장 60회라는 점을 밝혔다.
+
+## target 재방문 (2026-09-26)
+
+첫 화면 목록 최신 05-06. updated_at 만 올렸다. 1회째.
