@@ -1280,9 +1280,9 @@
       "country": "JP",
       "category": "SaaS",
       "status": "done",
-      "features_done": 4,
+      "features_done": 5,
       "one_liner": "회계에서 시작해 백오피스 전체로 번진 일본 SaaS — 그 아래 인증 기반을 4년에 걸쳐 떼어냈다",
-      "updated_at": "2026-09-03",
+      "updated_at": "2026-09-26",
       "domain": "developers.freee.co.jp"
     },
     {
@@ -2858,7 +2858,8 @@
     "과거를 다시 쓰지 않으려 층을 가른다",
     "여러 제품을 한 팀이 떠받친다",
     "검색 인프라를 벡터까지 넓힌다",
-    "AI 가 찾은 취약점을 사람이 믿을 수 있게 한다"
+    "AI 가 찾은 취약점을 사람이 믿을 수 있게 한다",
+    "화면을 멈추지 않고 새 기반으로 옮긴다"
   ],
   "countries": {
     "KR": "한국",

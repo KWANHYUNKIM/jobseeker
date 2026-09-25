@@ -5,7 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "domain": "developers.freee.co.jp",
   "one_liner": "회계에서 시작해 백오피스 전체로 번진 일본 SaaS — 그 아래 인증 기반을 4년에 걸쳐 떼어냈다",
   "business_model": "중소기업의 백오피스를 클라우드 구독으로 판다. 2012년 회계 애플리케이션에서 시작해 지금은 여러 제품이 한 계정 위에 얹혀 있다. 2025년 6월기 유료 고객 60만 곳 이상, ARR 340억 엔 초과, 그리고 창업 이래 처음으로 흑자를 냈다.\n\n**그런데 이 회사의 기술 글에서 가장 값이 큰 것은 사업 수치가 아니라 후회다**(재구성). 제품이 여럿이 되자 모든 제품이 회계 DB 를 거쳐 인증 데이터를 읽는 구조가 발목을 잡았고, 회사는 그 위험을 회계 DB 가 고부하가 되어 freee 전체가 내려갈 위험이라 적는다. **한 제품의 데이터베이스가 회사 전체의 단일 실패점이 된 것이다.**\n\n그것을 떼어내는 데 4년이 걸렸고, 회사는 그것을 잘한 일로 적지 않는다 — 완료까지 시간이 오래 걸린 것을 생각하면 이것을 잘했다고 할 수는 없다. 이 엔진이 읽은 글 중 자기 프로젝트를 이렇게 적은 것은 드물다.\n\n도메인 둘을 제품(회계·인사노무·급여)으로 자르지 않고 **밑에 깔린 것을 어떻게 바꾸느냐**로 잘랐다. 하나는 모두가 기대던 인증을 떼어내는 이야기이고 다른 하나는 그 회계 데이터베이스 자체를 도는 채로 바꾸는 이야기인데, **둘 다 하나가 흔들리면 전부 흔들리는 구조에서 나온다**(재구성).",
@@ -39,7 +39,7 @@
   "domain_map": {
     "title": "한 제품의 데이터베이스가 회사 전체를 떠받치고 있었다",
     "question": "무엇으로 돈을 벌고, 그 아래에서 무엇을 떼어냈는가?",
-    "code": "flowchart TD\n  BIZ[\"<b>중소기업 백오피스를 구독으로 판다</b><br/>• 2025년 6월기 유료 고객 육십만 곳 이상<br/>• ARR 삼백사십억 엔 초과<br/>• 창업 이래 첫 흑자\"]:::accent\n  ACC[\"회계에서 시작했다 — 이천십이년\"]:::list\n  MANY[\"제품이 여럿이 됐다 — QA 기준 열네 개\"]:::list\n  DB[(\"모두가 회계 DB 를 거쳐 인증 데이터를 읽었다\")]\n  RISK[\"한 데이터베이스가 회사 전체의 단일 실패점이 됐다\"]:::list\n  SPLIT[\"연 자리 하나 — 모든 제품이 기대던 것을 떼어낸다\"]:::list\n  YEARS[\"사 년이 걸렸고 회사는 그것을 잘한 일로 적지 않는다\"]:::quiet\n  BLOG[\"블로그는 크고 살아 있다 — 기술 이백구십일 편\"]:::list\n  AI[\"<i>다만 최근 글의 결은 AI 쪽으로 기울어 있다 — 이 관찰은 이 사이트의 것</i>\"]:::quiet\n  BIZ --> ACC --> MANY --> DB --> RISK --> SPLIT\n  SPLIT --- YEARS\n  BIZ --> BLOG --- AI"
+    "code": "flowchart TD\n  BIZ[\"<b>중소기업 백오피스를 구독으로 판다</b><br/>• 2025년 6월기 유료 고객 육십만 곳 이상<br/>• ARR 삼백사십억 엔 초과<br/>• 창업 이래 첫 흑자\"]:::accent\n  ACC[\"회계에서 시작했다 — 이천십이년\"]:::list\n  MANY[\"제품이 여럿이 됐다 — QA 기준 열네 개\"]:::list\n  DB[(\"모두가 회계 DB 를 거쳐 인증 데이터를 읽었다\")]\n  RISK[\"한 데이터베이스가 회사 전체의 단일 실패점이 됐다\"]:::list\n  SPLIT[\"연 자리 하나 — 모든 제품이 기대던 것을 떼어낸다\"]:::list\n  YEARS[\"사 년이 걸렸고 회사는 그것을 잘한 일로 적지 않는다\"]:::quiet\n  BLOG[\"블로그는 크고 살아 있다 — 기술 이백구십일 편\"]:::list\n  AI[\"<i>다만 최근 글의 결은 AI 쪽으로 기울어 있다 — 이 관찰은 이 사이트의 것</i>\"]:::quiet\n  BIZ --> ACC --> MANY --> DB --> RISK --> SPLIT\n  SPLIT --- YEARS\n  BIZ --> BLOG --- AI\n  FE[\"세 번째 자리 — 화면을 멈추지 않고 새 기반으로 옮긴다\"]:::list\n  SPLIT --> FE"
   },
   "domains": [
     {
@@ -181,6 +181,45 @@
         "swap-the-floor-before-the-peak",
         "send-only-the-writes"
       ]
+    },
+    {
+      "name": "화면을 멈추지 않고 새 기반으로 옮긴다",
+      "why": "이 회사가 앞의 두 도메인에서 한 일은 돌아가는 채로 바닥을 갈아 끼우는 것이었다 — 모든 제품이 기대던 인증을 떼어 내고, 멈출 수 없는 데이터베이스를 바꿨다. 이 도메인은 같은 일을 화면에서 한다. 수십만 줄의 프런트엔드를 기능 개발을 멈추지 않고 새 기반으로 옮긴다. 인증·데이터베이스와 가르는 것은, 여기서 옮기는 것이 데이터가 아니라 사람이 매일 보는 화면이고, 그래서 한 번에 한 장씩 사용자 앞에서 바뀌기 때문이다.",
+      "tech": [
+        {
+          "tech": "URL 단위 SPA 분기 (Rails 컨트롤러 + 기능 플래그, 별도 빌드 두 벌)",
+          "solves": "같은 URL 에 대해 새 SPA 와 옛 SPA 중 하나를 돌려줘, 두 프런트엔드가 React 버전부터 스타일까지 서로 맞출 필요 없이 화면 한 장씩 옮겨 가게 한다.",
+          "limits": "경계를 넘는 이동은 전체 새로고침이라 상태가 끊긴다. URL 목록과 화면 간 메시지처럼 결국 나눠 가져야 하는 것이 생기고, 그것들은 옮기기가 끝날 때까지 이중으로 관리된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+              "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+              "publisher": "freee Developers Hub · shuchan (freee販売)",
+              "date": "2026-09-18",
+              "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "Feature-Sliced Design 간소판 (features 끼리 타입까지 import 금지)",
+          "solves": "한 화면의 변경이 한 디렉터리 안에서 끝나게 하고, 타입 공유를 통해 기능끼리 서로 기대는 것을 막는다.",
+          "limits": "층 사이 의존 방향은 lint 로 거의 막지 못한다 — 지켜지는 것은 이유가 납득된 규칙뿐이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+              "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+              "publisher": "freee Developers Hub · shuchan (freee販売)",
+              "date": "2026-09-18",
+              "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "two-spas-one-url"
+      ]
     }
   ],
   "open_questions": [
@@ -193,7 +232,8 @@
     "조사를 이어 가며 QA 축을 열었다가 접었다. 権限管理基盤マイクロサービスで行っているQA活動について(2023-12-21)와 権限管理基盤チームのCIの仕組みと課題(2024-12-20) 두 편을 실제로 열었는데 둘 다 수치가 하나도 없고 버린 대안도 적지 않는다. 대가는 적는다 — 테스트 단계가 병목이고, 테스트 구현 속도가 개발 속도를 못 따라가며, 시나리오가 비대해져 실행이 오래 걸리고, 실패가 구현 불비인지 도구 탓인지 버그인지 가르는 데 시간이 든다. QA 엔지니어에게 소프트웨어 엔지니어의 면이 필요하다고도 적는다. 재료로서는 기준 미달이라 안 썼다.",
     "조사를 이어 가며 安全なデータベース削除オペレーションの自動化事例(2023-12-20)도 열었으나 기준 미달이었다. 삭제가 여섯 단계이고 Aurora 와 RDS 의 절차가 달라 본 프로덕션에서는 두 사람이 짝을 지어 했다는 것, 그것을 Step Functions 와 Lambda 로 자동화하고 Slack 으로 알린다는 것까지는 적는다. 한계도 하나 적는다 — IAM 은 설정과 태그로만 대상을 좁힐 수 있어 그 데이터베이스가 실제로 어떤 상태인지는 판단하지 못한다. 그러나 버린 대안이 없고 수치가 하나도 없다.",
     "완주 시점에 안 읽은 채 남긴 것 — DB 도메인의 pt-online-schema-changeの導入時に検討したこと · AWSマネージドサービス+Terraformを活用してDBオペレーションをより安全&簡単に · 여러 검증 환경에서 DB 를 함께 쓰기 · Aurora 3.04.2 での DDL 의 예기치 않은 동작과 Rails での対策 · freee人事労務開発 〜 종업원 목록 화면의 성능 개선과 재설계, 그리고 Langfuse のバージョンアップに伴い ClickHouse を社内初導入した話 · 【連載 第4回】freeeカード Unlimited でのClean Architecture実践. 제목만 확인했다 — 재방문 사이클의 재료다.",
-    "데이터베이스 축(Aurora 이전 2021 · RDS Proxy 온라인 스위치오버 2023 · Local Write Forwarding 2024)은 시기로 세우지 않았다. 날짜는 다 분명하지만 인증 기반 분리와 축이 달라 한 줄에 넣지 못했다. 다만 이 회사는 두 축이 같은 뿌리에서 나온다는 점이 특이하다 — 둘 다 '회계 DB 하나에 전부 기대고 있었다'는 사실의 다른 얼굴이다."
+    "데이터베이스 축(Aurora 이전 2021 · RDS Proxy 온라인 스위치오버 2023 · Local Write Forwarding 2024)은 시기로 세우지 않았다. 날짜는 다 분명하지만 인증 기반 분리와 축이 달라 한 줄에 넣지 못했다. 다만 이 회사는 두 축이 같은 뿌리에서 나온다는 점이 특이하다 — 둘 다 '회계 DB 하나에 전부 기대고 있었다'는 사실의 다른 얼굴이다.",
+    "SPA 이관 글은 규모 수치를 필자가 둥글게 적었다(수십만 줄 · 화면 세 자릿수 · 과반). 전체 이관이 언제 끝날지, 두 SPA 를 함께 빌드·배포하는 비용이 얼마나 되는지는 나오지 않는다."
   ],
   "sources": [
     {
@@ -244,6 +284,13 @@
       "publisher": "freee Developers Hub",
       "date": "2024-09-19",
       "summary": "급여계산이 데이터베이스의 쓰기 쪽 인스턴스만 쓰던 것을, 읽기 쪽으로 옮긴 이야기다.\n\n출발점 — 급여계산 잡은 필요한 정보를 읽고, 계산하고, 결과를 저장하는 일을 한 트랜잭션 안에서 해야 한다. 그래서 모든 쿼리를 writer 로 보낼 수밖에 없었다. 급여계산이 대량으로 병렬 실행되면 writer 의 CPU 가 올라 알림이 잦았다.\n\n고른 것 — Aurora 3.04 이상의 Local Write Forwarding: Local Write Forwardingとは reader に向けて貼った transaction の中で、write の query だけを writer instance に転送してくれる仕組み. 읽기 정합성 수준은 EVENTUAL·SESSION·GLOBAL 중 SESSION 을 골랐다. 애플리케이션 쪽에서는 DatabaseSelector.connected_to_reader 에 enable_write_forwarding 인자를 받게 고쳤다.\n\n우려로 올린 것들과 처리 — 못 쓰는 SQL(SAVEPOINT · DDL · XA · LOAD DATA · 임시 테이블 쓰기)은 급여계산 잡이 안 쓰므로 문제없다고 봤다. 이 기능 고유의 버그는 검증 기간을 두어 대응했다. 레이턴시가 나빠지는 것은 writer 여유로 병렬도를 올려 상쇄 가능하다고 봤다. 장래에 Aurora Limitless 로 가면 이 작업이 헛수고가 될 수 있다는 것도 우려에 올렸고 장래를 검토할 필요는 없다고 판단했다.\n\n검증 — 본 프로덕션 급여계산의 5% 에 대해, LWF 를 켠 채 실행해 결과를 변수에 담고 롤백한 뒤 끈 채 다시 실행해 커밋하고 둘을 비교해 차분을 크래시 리포트에 알렸다. 차분이 나온 것들은 그 사이의 사용자 조작(출퇴근 기록 변경 · 인사 정보 갱신)으로 입력값이 바뀐 것임을 확인했다.\n\n단계 릴리스 — 5% → 50% → 100%(2024-09-04). 단계마다 안정성을 확인하고 넘어갔다.\n\n수치 — 50% 단계에서 급여계산 6,000건 실행 시 reader CPU 5% → 35%, writer CPU 20% → 40% 로 억제. 100% 뒤에는 대량 enqueue 때도 writer 가 30% 부근에서 안정되고 reader CPU 가 writer 를 넘는 때도 관측된다. 급여계산 1회 실행 시간은 3~4초로 약간 늘었다(예상대로).\n\n걸린 것 — 전달되는 쓰기의 접속 수에 별도 상한이 있다(aurora_fwd_writer_max_connections_pct, 초기값 10%). 스테이징에서 상한 도달 에러가 나서 본 프로덕션 설정을 미리 확인했다.\n\n다음 계획 — writer instance に生まれた余裕を給与計算 Job 用 replica を増やすことで利用し、ユーザーの給与計算待ち時間を短縮する予定."
+    },
+    {
+      "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+      "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+      "publisher": "freee Developers Hub · shuchan (freee販売)",
+      "date": "2026-09-18",
+      "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
     }
   ],
   "features": [
@@ -1984,6 +2031,344 @@
           "publisher": "freee Developers Hub",
           "date": "2024-09-19",
           "summary": "급여계산이 데이터베이스의 쓰기 쪽 인스턴스만 쓰던 것을, 읽기 쪽으로 옮긴 이야기다.\n\n출발점 — 급여계산 잡은 필요한 정보를 읽고, 계산하고, 결과를 저장하는 일을 한 트랜잭션 안에서 해야 한다. 그래서 모든 쿼리를 writer 로 보낼 수밖에 없었다. 급여계산이 대량으로 병렬 실행되면 writer 의 CPU 가 올라 알림이 잦았다.\n\n고른 것 — Aurora 3.04 이상의 Local Write Forwarding: Local Write Forwardingとは reader に向けて貼った transaction の中で、write の query だけを writer instance に転送してくれる仕組み. 읽기 정합성 수준은 EVENTUAL·SESSION·GLOBAL 중 SESSION 을 골랐다. 애플리케이션 쪽에서는 DatabaseSelector.connected_to_reader 에 enable_write_forwarding 인자를 받게 고쳤다.\n\n우려로 올린 것들과 처리 — 못 쓰는 SQL(SAVEPOINT · DDL · XA · LOAD DATA · 임시 테이블 쓰기)은 급여계산 잡이 안 쓰므로 문제없다고 봤다. 이 기능 고유의 버그는 검증 기간을 두어 대응했다. 레이턴시가 나빠지는 것은 writer 여유로 병렬도를 올려 상쇄 가능하다고 봤다. 장래에 Aurora Limitless 로 가면 이 작업이 헛수고가 될 수 있다는 것도 우려에 올렸고 장래를 검토할 필요는 없다고 판단했다.\n\n검증 — 본 프로덕션 급여계산의 5% 에 대해, LWF 를 켠 채 실행해 결과를 변수에 담고 롤백한 뒤 끈 채 다시 실행해 커밋하고 둘을 비교해 차분을 크래시 리포트에 알렸다. 차분이 나온 것들은 그 사이의 사용자 조작(출퇴근 기록 변경 · 인사 정보 갱신)으로 입력값이 바뀐 것임을 확인했다.\n\n단계 릴리스 — 5% → 50% → 100%(2024-09-04). 단계마다 안정성을 확인하고 넘어갔다.\n\n수치 — 50% 단계에서 급여계산 6,000건 실행 시 reader CPU 5% → 35%, writer CPU 20% → 40% 로 억제. 100% 뒤에는 대량 enqueue 때도 writer 가 30% 부근에서 안정되고 reader CPU 가 writer 를 넘는 때도 관측된다. 급여계산 1회 실행 시간은 3~4초로 약간 늘었다(예상대로).\n\n걸린 것 — 전달되는 쓰기의 접속 수에 별도 상한이 있다(aurora_fwd_writer_max_connections_pct, 초기값 10%). 스테이징에서 상한 도달 에러가 나서 본 프로덕션 설정을 미리 확인했다.\n\n다음 계획 — writer instance に生まれた余裕を給与計算 Job 用 replica を増やすことで利用し、ユーザーの給与計算待ち時間を短縮する予定."
+        }
+      ]
+    },
+    {
+      "key": "two-spas-one-url",
+      "name": "두 SPA 를 한 주소 뒤에 — 화면 한 장씩 옮기고, 옮긴 흔적은 지우기로 한다",
+      "domain": "화면을 멈추지 않고 새 기반으로 옮긴다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "freee 판매의 프런트엔드는 수십만 줄, 화면은 세 자릿수였다. React 17 에 묶여 사내 표준 라이브러리의 새 판을 못 따라갔고, 라우터는 v5 에 v6 호환 패키지를 끼운 채 몇 년째 멈춰 있었다. 디렉터리는 기능별과 종류별이 섞여 한 화면을 고치려면 저장소 전체의 파일을 건드려야 했고, 상태 관리·데이터 조회·스타일의 방식이 쓰인 시기마다 달랐다.\n\n가장 중요한 조건은 **그동안에도 기능 개발이 멈추지 않는다**는 것이었다. 버전만 올리는 일이 아니라 디렉터리·라우터·데이터 조회·스타일·테스트를 통째로 다른 것으로 바꾸는 사실상의 전면 재작성인데, 그것을 살아 있는 제품 위에서 해야 했다.\n\n이 회사가 이미 두 번 푼 문제와 모양이 같다. 모든 제품이 기대던 인증을 떼어 낼 때도, 멈출 수 없는 데이터베이스를 바꿀 때도 돌아가는 채로 바닥을 갈아 끼웠다. 이번에는 그 바닥이 화면이다.",
+        "metrics": [
+          {
+            "label": "옮기는 것",
+            "value": "손으로 쓴 코드 **수십만 줄**, 화면 **세 자릿수**(필자가 둥글게 적은 값)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "label": "새것과 옛것",
+            "value": "React 17 → 18(Compiler) · 라우터 v5+호환층 → v7 · SWR → TanStack Query(Suspense) · CSS-in-JS → CSS Modules",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "label": "진행",
+            "value": "주요 화면의 **과반**이 새 기반에. 시작 **약 3개월** 만에 커밋 수로 새 쪽이 옛 쪽을 처음 앞섰다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "label": "규칙이 지켜진 정도",
+            "value": "1년 가까이 운영해 features 끼리 import 위반 **십수 건**(거의 모두 빵부스러기 탐색), presentational 에서 위로 **수십 건**, pages 에서 횡단 층으로는 '많이'",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "옛것과 새것을 어떻게 한 제품에 둘지 정하며",
+          "thought": "브라우저에 도착한 순간 그 페이지에서는 새것이든 옛것이든 한쪽 SPA 만 돈다. 그렇다면 둘의 기술 구성을 맞출 이유가 애초에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "features 끼리 타입 공유를 두고",
+          "thought": "'타입 정도는 공유해도 되지 않나'라는 논의가 당연히 있었다. 그래도 막았다 — 타입을 공유하는 것이 사실상 사양을 공유하는 것이고, 거기서부터 기능끼리 서로 기대게 된 것이 옛 프런트엔드였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "옛 화면의 사양을 옮기며",
+          "thought": "몇 년 치 화면에는 '왜 이 조건에서 버튼이 안 눌리는지' 조사해야 설명되는 분기가 묻혀 있다. 그대로 옮기면 빚까지 옮기고, 빼면 퇴행이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "규칙이 왜 지켜지는지 세어 보고",
+          "thought": "규칙이 지켜지느냐는 강제 수단이 있느냐보다 이유가 납득되느냐로 정해지는 것 같다. 납득하지 않은 규칙을 강제하면 ignore 주석만 늘어난다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "옛 FE / 새 FE",
+            "what": "monorepo 안의 별도 패키지. 잠금 파일까지 따로 두고 각각 빌드해 HTML 두 개를 배포 디렉터리에 놓는다."
+          },
+          {
+            "name": "분기 컨트롤러",
+            "what": "Rails 쪽. 요청 경로와 기능 플래그를 보고 새 HTML 과 옛 HTML 중 하나를 돌려준다. 완전히 옮긴 경로는 플래그 없이, 단계 배포 중인 경로는 플래그로."
+          },
+          {
+            "name": "Feature 층 구조",
+            "what": "pages(URL 과 1:1) → features(업무 기능) → subSystems(횡단 장치) → presentational(겉모양). Feature-Sliced Design 을 필요한 만큼 줄인 것. features 끼리는 타입까지 import 금지."
+          },
+          {
+            "name": "5점 세트",
+            "what": "화면 하나를 옮길 때마다 함께 고쳐야 하는 다섯 곳 — 서버 라우팅, 분기 컨트롤러, 새 FE 라우트, 옛 FE 의 이동 표, 로컬 개발 프록시."
+          },
+          {
+            "name": "확인 필요 목록",
+            "what": "옛 구현에서 사양을 읽어 낼 수 없던 것들. 옮기는 도중 옛 동작 자체의 버그를 찾아냈다."
+          }
+        ],
+        "invariants": [
+          "한 페이지에서는 새것과 옛것 가운데 **하나의 SPA 만** 돈다.",
+          "새 FE 는 실제로 존재하는 URL 로만 이동할 수 있다 — 타입이 막는다.",
+          "features 는 다른 features 를 import 하지 않는다 — 빵부스러기 탐색만 모두가 아는 예외다.",
+          "옮기는 동안에만 필요한 장치는 옮기기가 끝나면 **전부 지운다** — 그것까지가 프로젝트의 목표다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "옛 FE 와 새 FE 를 별도 패키지로 **각자 빌드**해 HTML 두 개를 배포 디렉터리에 둔다",
+            "why": "React 메이저 버전도 라우터도 데이터 조회도 서로 맞출 필요가 없어진다."
+          },
+          {
+            "step": "요청이 오면 Rails 의 분기 컨트롤러가 **경로와 플래그**로 어느 HTML 을 줄지 정한다",
+            "why": "화면 한 장씩, 플래그로 단계 배포하며 옮길 수 있다."
+          },
+          {
+            "step": "화면을 옮길 때 **명령 하나**에 플래그 이름·경로·화면 ID 를 주면 5개 파일을 규칙대로 고친다",
+            "why": "다섯 곳을 손으로 맞추면 반드시 사고가 난다 — 경로 표기가 조금만 흔들려도 운영에 큰 영향을 준다."
+          },
+          {
+            "step": "새 FE 에서 옛 FE 화면으로 가는 이동은 **감싼 useNavigate** 를 거친다 — 메시지를 먼저 sessionStorage 에 두고, 목적지가 새 FE 면 SPA 이동, 아니면 전체 새로고침",
+            "why": "경계를 넘는 이동은 전체 새로고침이라 history state 가 사라진다."
+          },
+          {
+            "step": "옛 화면은 **읽는 공정과 쓰는 공정을 갈라** 옮긴다 — 앞 공정은 로직을 언급하지 않는 테스트 케이스와 확인 필요 목록을, 뒤 공정은 그것만 보고 새 규칙으로 구현한다",
+            "why": "옛 코드를 보며 쓰면 빚까지 옮긴다. 사양만 건너가게 한다."
+          },
+          {
+            "step": "모든 화면을 옮긴 뒤 옮기는 동안에만 필요했던 장치 — 분기 판정·이동 표·역류 방지·프록시 정의·URL 사본·sessionStorage 메시지 — 를 **전부 지운다**",
+            "why": "임시 장치가 남으면 그것이 다음 세대의 옛 코드가 된다(뒷문장은 이 사이트의 해석)."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "옛것과 새것을 한 제품에서 어떻게 함께 돌릴 것인가",
+            "chosen": "**별도 SPA 두 개를 따로 빌드하고, 같은 URL 에 대해 서버가 어느 HTML 을 줄지 가른다.**",
+            "alternatives": [
+              "한 SPA 안에서 옛 코드를 조금씩 새 방식으로 바꾼다"
+            ],
+            "tradeoff": "기술 선택의 자유가 크게 늘었다 — 두 SPA 가 React 버전부터 라우터·데이터 조회·스타일까지 전부 다르다. 대가는 두 SPA 의 경계를 넘을 때마다 전체 새로고침이 일어나고, 섞지 않겠다고 했는데도 결국 나눠 가져야 하는 것(URL 목록·화면 간 메시지·외부 서비스 설정값)이 생긴다는 것이다. 회사가 '공존시킨 줄 알았는데 공유하고 있던 것'이라는 절로 따로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "question": "새 FE 가 모르는 옛 화면으로 어떻게 안전하게 보낼 것인가",
+            "chosen": "**옛 FE 의 URL 트리를 손으로 옮긴 union 타입 파일**을 둔다. 파일 머리에 '모든 URL 이 라우트 정의에 들어가면 이 파일을 지운다'고 적고, 끝에 바꿔 끼울 판을 주석으로 둔다.",
+            "alternatives": [
+              "타입 없이 문자열 경로로 이동한다"
+            ],
+            "tradeoff": "필자가 솔직히 이중 관리라고 적는다. 그래도 존재하지 않는 URL 로 이동하는 버그를 타입으로 막는 값이 더 크다고 봤다. 지울 날을 코드 안에 적어 둔 것이 그나마의 방어책이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "question": "경계를 넘는 이동에서 '저장했습니다' 알림을 어떻게 넘길 것인가",
+            "chosen": "**sessionStorage 를 거쳐 넘긴다** — 감싼 useNavigate 가 목적지를 보고 SPA 이동과 전체 새로고침을 자동으로 가른다.",
+            "alternatives": [
+              "history state 에 싣는다(한 SPA 안에서 쓰던 방식)"
+            ],
+            "tradeoff": "전체 새로고침에서는 history state 가 이어지지 않는다. 필자가 이것을 응급처치 같은 장치라고 부른다. 구현자가 신경 쓰지 않게 감쌌지만, 그만큼 옮기기가 끝나면 지워야 할 장치가 하나 늘었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "question": "감싼 이동 함수를 어떻게 모두가 쓰게 할 것인가",
+            "chosen": "**원래 라우터의 useNavigate·Link 를 lint 로 import 금지**한다(감싼 함수 자신만 예외).",
+            "alternatives": [
+              "문서에 '감싼 것을 쓰라'고 적는다"
+            ],
+            "tradeoff": "문서만으로는 원래 것이 쓰이는 것을 막을 수 없다 — 감싼 것의 내용보다 우회할 수 없게 한 것이 더 중요했다고 적는다. 대가는 그 예외 자리에 ignore 주석이 붙는다는 것이고, 필자는 논의 끝에 붙인 ignore 와 건강하지 않은 ignore 가 구별되지 않게 되는 것이 무섭다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "question": "새 FE 의 디렉터리를 무엇으로 나눌 것인가",
+            "chosen": "**종류(components·hooks·utils) 대신 Feature 단위**로 — Feature-Sliced Design 을 간소화해, features 끼리의 import 를 **타입까지 전면 금지**한다.",
+            "alternatives": [
+              "옛 FE 처럼 종류별로 나눈다",
+              "features 끼리 타입 정도는 공유를 허용한다"
+            ],
+            "tradeoff": "공유하고 싶어지면 subSystems 나 presentational 로 올려야 한다는 부담이 생긴다. 빵부스러기 탐색처럼 본질적으로 가로지르는 것은 예외로 남았다. 얻은 것은 한 화면을 고칠 때 한 디렉터리 안에서 끝나는 구조이고, 회사는 엄격한 설계가 AI 에이전트가 코드를 쓸 때도 가드레일이 되어 구현 속도와 비용에 도움이 됐다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "question": "층 사이의 의존 규칙을 무엇으로 지킬 것인가",
+            "chosen": "**강제보다 이유를 적는다** — 가장 엄격한 규칙(features 끼리 금지)에는 실감이 드는 근거를 써 두었다.",
+            "alternatives": [
+              "모든 층 규칙을 lint 로 강제한다"
+            ],
+            "tradeoff": "층 사이 의존 방향은 lint 로 거의 막지 못하고 있다 — presentational 에서 위로 수십 건, pages 에서 횡단 층으로 '많이'. 그런데 가장 엄격하게 선언한 규칙이 가장 잘 지켜졌다(십수 건, 거의 모두 빵부스러기). 필자는 그 이유로 근거가 실감 나게 적혔다는 것과, 예외가 한 곳뿐이라 모두가 알고 있다는 것을 든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "question": "화면 하나를 옮길 때마다 고칠 다섯 곳을 누가 맞출 것인가",
+            "chosen": "**명령 하나가 규칙대로 다섯 파일을 고친다** — 이름 변환과 경로 일치 패턴(완전 일치·끝이 ID·중간에 ID·앞부분 일치)까지 명령 안에 규칙으로 적었다.",
+            "alternatives": [
+              "사람이 손으로 다섯 곳을 맞춘다"
+            ],
+            "tradeoff": "손으로 맞추면 반드시 사고가 난다고 적는다 — 경로 표기가 흔들리면 운영에 큰 영향을 줄 수 있다. 대가는 그 명령 자체를 유지해야 한다는 것, 그리고 명령이 모르는 새 패턴이 나오면 명령을 먼저 고쳐야 한다는 것이다(이 사이트의 해석).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          },
+          {
+            "question": "옛 화면의 숨은 사양을 어떻게 옮길 것인가",
+            "chosen": "**읽는 공정과 쓰는 공정을 가른다** — 앞은 옛 구현에서 로직 언급 없는 테스트 케이스를 쓰고(컴포넌트 이름·파일 경로·'~와 같이' 금지), 뒤는 그것만 보고 새 규칙으로 구현한다. 읽어 낼 수 없는 사양은 확인 필요 목록에 올린다.",
+            "alternatives": [
+              "옛 코드를 보며 그대로 다시 쓴다",
+              "사양서를 먼저 완성한다"
+            ],
+            "tradeoff": "그대로 옮기면 빚도 옮기고, 빼면 퇴행이다. 공정을 가르면 한 화면에 두 번 손이 간다(이 사이트의 해석). 얻은 것은 예상 밖이었다 — 확인 필요 목록에서 옛 FE 의 동작 자체가 이상한 경우가 여럿 나왔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+                "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+                "publisher": "freee Developers Hub · shuchan (freee販売)",
+                "date": "2026-09-18",
+                "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "swap-without-anyone-noticing",
+          "via": "같은 회사가 세 번째로 돌아가는 채로 바닥을 바꾼다",
+          "contract": "데이터베이스를 바꿀 때는 요청을 옮겨 가며 사용자가 모르게 했고, 여기서는 URL 마다 어느 SPA 를 줄지 옮겨 가며 화면을 바꾼다. 둘 다 새것과 옛것을 한동안 함께 두고, 되돌릴 길을 남긴다. 두 글은 서로를 언급하지 않는다 — 이 연결은 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "refactor-before-you-cut",
+          "via": "옛것을 정리하지 않고 떼어 냈을 때의 교훈을 반대로 쓴다",
+          "contract": "인증을 떼어 낼 때 회사는 옛것을 먼저 정리했어야 했다고 적었다. 이번에는 옛 코드를 정리하지 않는 대신 아예 읽지 않는다 — 사양만 테스트 케이스로 건너가게 하고 구현은 새 규칙으로 쓴다. 같은 문제(옛 구현에 묻힌 빚)에 대한 다른 답이다(이 대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "같은 주소, 두 개의 SPA",
+          "question": "요청 하나는 어느 프런트엔드를 받는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[\"브라우저 — URL 요청\"] --> CTRL{\"<b>Rails 분기 컨트롤러</b><br/>경로 · 기능 플래그\"}\n  CTRL -->|\"옮김 · 플래그 켜짐\"| NEW[\"<b>새 FE</b><br/>• React 18 · 라우터 v7<br/>• TanStack Query · CSS Modules<br/>• Feature 단위 디렉터리\"]:::accent\n  CTRL -->|\"아직\"| OLD[\"<b>옛 FE</b><br/>• React 17 · v5 + 호환층<br/>• SWR · CSS-in-JS\"]:::list\n  NEW -->|\"옛 화면으로 이동 — 전체 새로고침\"| REQ\n  OLD -->|\"새 화면으로 이동 — 전체 새로고침\"| REQ\n  NEW -.-> SS[(\"sessionStorage<br/>경계 넘는 알림\")]:::quiet\n  SS -.-> OLD\n  CMD[\"명령 하나 — 플래그 · 경로 · 화면 ID\"] -->|\"다섯 곳을 규칙대로\"| CTRL"
+        },
+        {
+          "title": "화면 한 장이 옮겨 가는 상태",
+          "question": "화면 하나는 언제 옛것이 아니게 되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Legacy: 옛 FE 에서 돈다\n  Legacy --> Spec: 앞 공정 — 테스트 케이스 · 확인 필요 목록\n  note right of Spec\n    컴포넌트 이름 · 파일 경로 ·\n    '~와 같이' 를 쓰지 않는다\n    옛 동작의 버그가 여기서 드러났다\n  end note\n  Spec --> Built: 뒤 공정 — 옛 코드를 안 보고 새 규칙으로\n  Built --> Flagged: 명령으로 5점 세트 갱신, 플래그 뒤에서 단계 배포\n  Flagged --> Legacy: 문제 — 플래그를 끈다\n  Flagged --> Moved: 플래그 없이 새 FE 로\n  Moved --> [*]: 모든 화면이 옮겨지면 임시 장치를 지운다"
+        },
+        {
+          "title": "실패 경로 — '섞지 않는다'가 새는 자리",
+          "question": "두 SPA 를 따로 두어도 무엇은 결국 나눠 가져야 하는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SEP[\"옛것과 새것을 섞지 않는다\"] --> URL[\"새 라우터는 새 화면의 URL 만 안다\"]\n  URL --> COPY[\"옛 URL 트리를 손으로 옮긴 타입<br/><b>이중 관리</b> · 지울 날을 적어 둔다\"]:::accent\n  SEP --> MSG[\"경계 이동은 전체 새로고침<br/>history state 가 사라진다\"]\n  MSG --> SSN[\"sessionStorage 응급처치\"]\n  SSN --> WRAP[\"감싼 useNavigate — 원래 것 import 금지\"]\n  WRAP --> IGN[\"예외 자리에 ignore<br/>건강한 것과 구별이 안 된다\"]:::quiet\n  HAND[\"5점 세트를 손으로\"] -->|\"경로 표기 흔들림\"| PROD[\"운영 사고\"]:::quiet\n  SPEC[\"옛 사양을 그대로 옮기기\"] --> DEBT[\"빚까지 옮긴다\"]\n  SPEC --> DROP[\"빼면 퇴행\"]\n  LINT[\"층 규칙을 lint 로\"] --> LEAK[\"수십 건 위반 — 거의 못 막는다\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "SPAを丸ごと差し替えながら、画面単位で新基盤へ引っ越した話",
+          "url": "https://developers.freee.co.jp/entry/spa_react_upgrade",
+          "publisher": "freee Developers Hub · shuchan (freee販売)",
+          "date": "2026-09-18",
+          "summary": "수십만 줄·화면 세 자릿수의 React 17 프런트엔드를, 기능 개발을 멈추지 않고 화면 단위로 새 기반에 옮기는 기록. 옛것과 새것을 별도 SPA 로 빌드하고 서버가 URL 과 플래그로 어느 HTML 을 줄지 가른다. 그래도 나눌 수 없던 것(URL 목록·화면 간 메시지)과 그 응급처치, 옛 사양을 읽는 공정과 새로 쓰는 공정을 가른 방법을 적는다. 수치는 필자가 둥글게 적었다."
         }
       ]
     }
