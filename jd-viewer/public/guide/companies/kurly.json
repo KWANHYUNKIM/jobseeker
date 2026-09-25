@@ -1235,6 +1235,167 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/334745",
+      "title": "핀테크 백엔드 개발자 (결제)",
+      "site": "wanted",
+      "verdict": "경력 5~7년, Java/Kotlin·Spring 백엔드. 컬리페이의 결제·빌링, 정산·회계 연동, 캐시·적립금(포인트), AML 을 설계·운영하고, 신규 프로젝트에서 PM/PL 까지 맡을 수 있는 사람.",
+      "fit": {
+        "must_have": [
+          "Java/Kotlin·Spring 백엔드 5년 이상",
+          "결제·정산·회계·선불 등 핀테크 실무",
+          "AWS·MSA 아키텍처 설계/운영",
+          "SAP·ERP 등 재무/회계 시스템 또는 외부 금융 API 연동"
+        ],
+        "can_learn": [
+          "AML 컴플라이언스 세부",
+          "선불·포인트 관련 법규(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "결제 승인·취소와 멱등성",
+          "from": "task",
+          "quote": "Payment 및 Billing 시스템 설계/개발/운영",
+          "priority": "core",
+          "why": "결제는 네트워크가 끊겨도 한 번만 일어나야 한다. 재시도·타임아웃이 이중 결제로 이어지지 않게 하는 것이 Payment 시스템 설계의 첫 문제다.",
+          "gap_check": "PG 승인 요청이 타임아웃 났을 때 재시도하면 이중 승인이 될 수 있다 — 무엇을 키로 멱등성을 보장하는가?",
+          "drill": "Spring Boot 로 결제 승인 API 를 만들고 Idempotency-Key 헤더를 DB 유니크 제약으로 막는다. 같은 키로 동시 요청 10개를 보내 한 건만 승인되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Stripe — Idempotent requests",
+              "url": "https://docs.stripe.com/api/idempotent_requests",
+              "kind": "docs",
+              "note": "결제 API 에서 멱등 키를 쓰는 방식의 공개 예"
+            }
+          ]
+        },
+        {
+          "topic": "정산 플랫폼과 회계 연동 (대사)",
+          "from": "task",
+          "quote": "정산 플랫폼 및 회계 연동 시스템 설계/개발/운영",
+          "priority": "core",
+          "why": "자격요건에 'SAP, ERP 등 재무/회계 시스템' 연동이 따로 있다. 결제 기록과 PG 정산 파일, 회계 전표가 서로 맞는지 확인하는 대사가 정산의 본체다.",
+          "gap_check": "PG 정산 파일 금액과 우리 결제 테이블 합계가 다를 때, 차이를 건 단위로 찾아내는 절차를 설명할 수 있는가?",
+          "drill": "결제 테이블과 가짜 PG 정산 CSV 를 거래 ID 로 맞대어 '우리만 있음/PG만 있음/금액 다름' 세 목록을 뽑는 배치(Spring Batch 등)를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spring Batch — Reference",
+              "url": "https://docs.spring.io/spring-batch/reference/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "캐시·적립금(포인트) 원장 설계",
+          "from": "task",
+          "quote": "캐시 및 적립금(포인트) 시스템 설계/개발/운영",
+          "priority": "core",
+          "why": "적립금은 돈처럼 쓰이므로 잔액 컬럼 하나를 고치는 방식으로는 이력을 증명할 수 없다. 우대사항에 '선불카드, 포인트 등 도메인 지식 및 관련 법규'가 있다.",
+          "gap_check": "포인트 잔액을 컬럼으로 두는 방식과 적립/사용 이력(원장)을 합산하는 방식의 장단점, 그리고 만료 처리는 어디에 두는가?",
+          "drill": "적립·사용·만료·취소를 모두 원장 행으로 남기는 포인트 서비스를 만들고, 동시에 사용 요청이 들어올 때 잔액이 음수가 되지 않게 잠금을 건다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "AML(자금세탁방지) 시스템과 컴플라이언스",
+          "from": "task",
+          "quote": "AML(Anti-Money Laundering,자금세탁방지) 시스템 개발/운영 및 컴플라이언스 대응",
+          "priority": "high",
+          "why": "결제 조직이 AML 시스템을 직접 개발·운영하고 컴플라이언스 대응까지 한다고 적혀 있다. 기능보다 '나중에 설명할 수 있는 기록'이 요구된다(추론).",
+          "gap_check": "의심거래로 표시된 건에 대해 누가 언제 무엇을 보고 어떤 결정을 했는지 나중에 재현하려면 무엇을 저장해야 하는가?",
+          "drill": "거래 이벤트에 간단한 규칙(단시간 고액 충전 등)을 걸어 의심 건을 만들고, 검토 결정 이력을 변경 불가 테이블로 남기는 모듈을 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "AWS·MSA 아키텍처에서의 결제 흐름 (분산 트랜잭션)",
+          "from": "qualification",
+          "quote": "AWS 클라우드 및 MSA 환경 아키텍처 설계/운영 경험을 보유한 분",
+          "priority": "core",
+          "why": "결제·포인트·주문이 다른 서비스로 나뉘면 '결제는 됐는데 포인트 차감은 실패' 같은 상태가 생긴다.",
+          "gap_check": "결제 성공 후 포인트 차감 서비스가 실패하면 보상 트랜잭션으로 어떻게 되돌리는가? 아웃박스 패턴은 무엇을 막는가?",
+          "drill": "결제·포인트 두 서비스를 만들고 트랜잭셔널 아웃박스 + 메시지 큐로 연결한 뒤, 포인트 서비스를 죽였다 살려 최종 일관성이 맞는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "microservices.io — Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            },
+            {
+              "title": "microservices.io — Saga",
+              "url": "https://microservices.io/patterns/data/saga.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "외부 금융 솔루션 API 연동",
+          "from": "qualification",
+          "quote": "SAP, ERP 등 재무/회계 시스템 및 외부 금융 솔루션 API 연동 경험을 보유한 분",
+          "priority": "core",
+          "why": "PG·회계 시스템 같은 외부 시스템은 느리거나 실패한다. 타임아웃·재시도·서킷 브레이커를 결제 경로에 어떻게 두는지가 운영 안정성이다.",
+          "gap_check": "외부 API 가 느려질 때 우리 결제 스레드가 다 묶이지 않게 하려면 무엇을 설정하는가?",
+          "drill": "가짜 외부 API(지연·실패 주입)를 두고 Resilience4j 로 타임아웃·재시도·서킷 브레이커를 걸어 동작을 로그로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Resilience4j — Documentation",
+              "url": "https://resilience4j.readme.io/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI Agent 와 'MCP' 서버 연동",
+          "from": "qualification",
+          "quote": "AI Agent, MCP (Multi-Party Computation) 서버 연동 및 활용 경험을 보유한 분",
+          "priority": "high",
+          "why": "자격요건에 있다. 공고는 MCP 를 'Multi-Party Computation' 으로 풀어 썼는데, AI Agent 와 함께 적힌 맥락이라 Model Context Protocol 을 뜻했을 가능성도 있다 — 공고로는 확정할 수 없다.",
+          "gap_check": "면접에서 이 줄이 나오면 어느 MCP 를 뜻하는지 되물을 수 있고, 두 뜻 모두에 대해 한 문장씩 설명할 수 있는가?",
+          "drill": "Model Context Protocol 서버 하나를 만들어 '결제 내역 조회' 도구를 AI Agent 에 노출해 본다(가짜 데이터).",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Model Context Protocol — Introduction",
+              "url": "https://modelcontextprotocol.io/introduction",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "결제·포인트 장애 시나리오 표",
+          "why": "결제·정산·포인트·AML 을 한 사람이 넓게 맡는다. 네트워크 단절·중복 요청·부분 실패마다 시스템이 어떻게 반응하는지 표로 가져가면 설계 경험을 증명한다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "PM/PL 경험을 결과 수치로",
+          "why": "주요업무에 '신규 프로젝트 PM/PL 역할 수행'이 있다. 일정·범위를 어떻게 조정했는지 한 사례를 준비한다.",
+          "effort": "경험 정리 반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 제출 ＞ 인터뷰 프로세스 ＞ 처우 협의 ＞ 최종 합격. 생성형 AI를 활용하는 과제전형(사전과제 또는 코딩테스트)과 온라인 직무적합성 검사가 전형 중에 진행된다(공고 기준).",
+        "expect": [
+          "결제 이중 승인을 어떻게 막는가",
+          "정산 대사에서 차이를 어떻게 찾는가",
+          "포인트 원장을 어떻게 설계하는가",
+          "MSA 에서 결제·포인트 부분 실패를 어떻게 복구하는가"
+        ],
+        "sources": [
+          {
+            "title": "핀테크 백엔드 개발자 (결제)",
+            "url": "https://www.wanted.co.kr/wd/334745",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -1242,6 +1403,7 @@
     "FBK·3P 의 수수료 구조는 공개 자료에서 찾지 못했다",
     "연봉 근거를 이번 사이클에서 찾지 않았다 — salary 는 비워 둔다",
     "보안·개인정보 담당 2건(saramin)은 개발 직군이 아니라 브리핑 대상에서 뺄 예정",
-    "시니어 데이터 엔지니어(wd/334058): 원티드 경력 표기는 7년 이상인데 자격요건 본문은 '8년 이상' — 어느 쪽이 맞는지 공고로는 알 수 없다"
+    "시니어 데이터 엔지니어(wd/334058): 원티드 경력 표기는 7년 이상인데 자격요건 본문은 '8년 이상' — 어느 쪽이 맞는지 공고로는 알 수 없다",
+    "핀테크 백엔드(wd/334745): 자격요건의 'MCP (Multi-Party Computation)' 가 AI Agent 와 함께 적혀 있어 Model Context Protocol 을 뜻한 것인지 공고로는 확정할 수 없다"
   ]
 }
