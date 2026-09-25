@@ -1,0 +1,145 @@
+{
+  "book": "jvm-tuning",
+  "id": "loaders",
+  "no": "3.2",
+  "chapter": 3,
+  "title": "로더 계층",
+  "summary": "부트스트랩부터 애플리케이션까지.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "로더가 셋으로 나뉜다는 것을 안다.",
+    "어떤 클래스를 누가 읽는지 직접 확인한다.",
+    "getClassLoader() 가 null 인 이유를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절은 **한 클래스가 어떤 단계를 거치는지**였다. 이 절은 **누가 읽어 오는지**다.\n\n**읽어 오는 주체가 하나가 아니다.** 셋으로 나뉘어 있고, **무엇을 읽을 권한이 있는지가 서로 다르다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "세 로더와 각자의 영역",
+      "ascii": "   bootstrap     java.lang, java.util ...        written in C++, no java object\n       ^          the core of java.base\n       |\n   platform      java.sql, javax.* ...           the rest of the JDK modules\n       ^\n       |\n   application   your classes, your jars         whatever -cp points at\n\n   the arrow points at the parent, and that is the direction questions travel",
+      "note": "**화살표가 부모 방향**이고, 다음 절에서 볼 '묻는 순서' 가 이 방향이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "String.class.getClassLoader() 는 null 이다",
+      "md": "**로더가 없다는 뜻이 아니다.**\n\n> 부트스트랩 로더는 **C++ 로 쓰여 있어 대응하는 자바 객체가 없다.**\n> 그래서 자바에서 물으면 **`null` 로 돌려준다.**\n> `getClassLoader()` 결과로 분기하는 코드는 **이 `null` 을 반드시 다뤄야** 한다."
+    },
+    {
+      "type": "table",
+      "caption": "실제로 물어본 결과",
+      "columns": [
+        "클래스",
+        "로더",
+        "왜"
+      ],
+      "rows": [
+        [
+          "`java.lang.String`",
+          "**null (부트스트랩)**",
+          "java.base 의 핵심"
+        ],
+        [
+          "`java.util.ArrayList`",
+          "**null (부트스트랩)**",
+          "java.base 의 핵심"
+        ],
+        [
+          "`javax.sql.DataSource`",
+          "**platform**",
+          "java.sql 모듈 — 핵심이 아니다"
+        ],
+        [
+          "`java.sql.Driver`",
+          "**platform**",
+          "이름이 `java.` 로 시작해도 부트스트랩이 아니다"
+        ],
+        [
+          "내가 쓴 클래스",
+          "**app**",
+          "`-cp` 가 가리키는 곳"
+        ]
+      ],
+      "note": "**`java.sql.Driver` 가 platform 인 것**이 이 표의 요점이다 — 패키지 이름으로는 못 가른다."
+    },
+    {
+      "type": "prose",
+      "md": "## 자바 8 과 다르다\n\n옛 글에는 **익스텐션 로더(extension)** 와 `ext` 디렉터리가 나온다. **9 의 모듈 시스템에서 없어졌고 플랫폼 로더가 그 자리**에 왔다. 2.6절에서 본 대로, **판을 확인하지 않으면 안 맞는 글을 읽게 된다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Loaders.java\npublic class Loaders {\n    static void show(String label, Class<?> c) {\n        ClassLoader cl = c.getClassLoader();\n        System.out.printf(\"  %-34s %s%n\", label,\n            cl == null ? \"null  (bootstrap)\"\n                       : cl.getName() + \"  (\" + cl.getClass().getSimpleName() + \")\");\n    }\n    public static void main(String[] a) {\n        show(\"java.lang.String\", String.class);\n        show(\"java.util.ArrayList\", java.util.ArrayList.class);\n        show(\"javax.sql.DataSource\", javax.sql.DataSource.class);\n        show(\"java.sql.Driver\", java.sql.Driver.class);\n        show(\"Loaders (my own)\", Loaders.class);\n        for (ClassLoader c = Loaders.class.getClassLoader(); ; c = c.getParent()) {\n            System.out.println(\"    \" + (c == null ? \"null  (bootstrap)\" : c.getName()));\n            if (c == null) break;\n        }\n    }\n}\n\n$ java -cp . Loaders\n\n  java.lang.String                   null  (bootstrap)\n  java.util.ArrayList                null  (bootstrap)\n  javax.sql.DataSource               platform  (PlatformClassLoader)\n  java.sql.Driver                    platform  (PlatformClassLoader)\n  Loaders (my own)                   app  (AppClassLoader)\n\n  부모를 따라 올라간다:\n    app\n    platform\n    null  (bootstrap)\n\n# 2.1절의 source: 표기와 맞춰 읽으면 더 선명하다.\n#   source: shared  -> CDS 아카이브, 부트스트랩이 읽는다\n#   source: jrt     -> 모듈 이미지\n#   source: file    -> -cp 의 디렉터리, app 이 읽는다",
+      "note": "**부모 사슬이 app → platform → null 로 끝난다.** 그 `null` 이 부트스트랩이다."
+    }
+  ],
+  "recap": [
+    "로더는 부트스트랩 · 플랫폼 · 애플리케이션 셋이다.",
+    "부트스트랩은 C++ 로 쓰여 있어 getClassLoader() 가 null 을 돌려준다.",
+    "java.sql.Driver 는 이름이 java. 로 시작해도 플랫폼 로더가 읽는다.",
+    "내 클래스는 app 로더가 -cp 에서 읽는다.",
+    "자바 9 부터 익스텐션 로더가 없어지고 플랫폼 로더가 그 자리에 왔다."
+  ],
+  "drills": [
+    {
+      "task": "내 프로젝트의 주요 클래스와 라이브러리 클래스의 로더를 출력한다.",
+      "done_when": "어느 것이 app 이고 어느 것이 platform 인지 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "부모 사슬을 끝까지 따라 올라가 null 이 나오는 것을 확인한다.",
+      "done_when": "계층이 셋인 것을 직접 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "-Xlog:class+load 의 source: 표기와 로더를 짝지어 본다.",
+      "done_when": "두 출력이 같은 이야기를 한다는 것을 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "String.class.getClassLoader() 가 null 인 이유는.",
+      "a": "부트스트랩 로더는 C++ 로 쓰여 대응하는 자바 객체가 없어서다."
+    },
+    {
+      "q": "java.sql.Driver 를 읽는 로더는.",
+      "a": "플랫폼 로더다. 패키지 이름이 java. 로 시작해도 부트스트랩이 아니다."
+    },
+    {
+      "q": "익스텐션 로더는 어디 갔나.",
+      "a": "자바 9 의 모듈 시스템에서 없어지고 플랫폼 로더가 그 자리에 왔다."
+    },
+    {
+      "q": "부모 사슬의 끝은.",
+      "a": "null 이다 — 그것이 부트스트랩이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "부트스트랩 로더",
+      "what": "java.base 의 핵심 클래스를 읽는 로더. C++ 로 구현돼 자바에서는 null 로 보인다."
+    },
+    {
+      "term": "플랫폼 로더",
+      "what": "JDK 의 나머지 모듈을 읽는 로더. 자바 9 에서 익스텐션 로더를 대체했다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — ClassLoader",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JEP 261: Module System",
+      "url": "https://openjdk.org/jeps/261",
+      "publisher": "OpenJDK"
+    }
+  ]
+}

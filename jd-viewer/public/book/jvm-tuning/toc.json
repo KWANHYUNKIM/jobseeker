@@ -129,7 +129,7 @@
           "title": "로딩 · 링킹 · 초기화",
           "summary": "세 단계로 나뉜다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -137,7 +137,7 @@
           "title": "로더 계층",
           "summary": "부트스트랩부터 애플리케이션까지.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -145,7 +145,7 @@
           "title": "위임 모델",
           "summary": "먼저 부모에게 묻는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
