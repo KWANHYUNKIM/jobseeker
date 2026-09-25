@@ -740,6 +740,98 @@
       "site": "saramin",
       "duplicate_of": "https://www.wanted.co.kr/wd/386829",
       "verdict": "원티드 'HCI 가상화 개발자'(wd/386829)와 주요업무·자격·우대가 같은 자리다. 사람인 게시에만 '경력 무관'·'석사 이상 졸업자 또는 예정자 (병역특례 전문연구요원)'와 마감일(2026년 10월 14일)이 더 있다."
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/242610",
+      "title": "애플리케이션 및 클라우드 개발",
+      "site": "wanted",
+      "verdict": "PAS-K 개발 경력직(원티드 표기 2~12년). 전문연구요원판(wd/269408)과 주요업무·자격·우대가 같고 '석사이상' 요건만 없다 — 공통 공부거리는 그 브리핑을 보고, 여기서는 경력자에게 물을 '운영 중인 장비' 관점만 준비한다.",
+      "fit": {
+        "must_have": [
+          "C·Python 개발 경험",
+          "네트워크·소켓 프로그래밍 경험"
+        ],
+        "can_learn": [
+          "PAS-K 제품 구조",
+          "Django 장비 API"
+        ]
+      },
+      "study": [
+        {
+          "topic": "대량 연결에서의 성능 병목 찾기",
+          "from": "task",
+          "quote": "• L7 트래픽 및 네트워크 서비스 관련 개발",
+          "priority": "core",
+          "why": "경력직이라면 L7 처리를 '만들 수 있는가'보다 '느려졌을 때 어디서 막히는지 찾을 수 있는가'를 물을 가능성이 크다(추론).",
+          "gap_check": "L7 프록시의 처리량이 떨어질 때 CPU(파싱)·시스템 콜·커널 소켓 버퍼 중 어디가 병목인지 무엇으로 가르는가?",
+          "drill": "직접 만든(또는 오픈소스) L7 프록시에 wrk 로 부하를 주고 perf top 과 ss -s 로 병목을 찾아 한 가지를 고친 전후를 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Brendan Gregg — Linux perf examples",
+              "url": "https://www.brendangregg.com/perf.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "운영 중 장비 API 의 하위 호환",
+          "from": "task",
+          "quote": "• Django 기반의 장비 내부 API 기반 개발",
+          "priority": "high",
+          "why": "이미 고객 사이트에 깔린 장비는 버전이 섞여 있다(추론). 내부 API 를 바꿀 때 기존 관리 도구가 깨지지 않게 해야 한다.",
+          "gap_check": "장비 펌웨어 두 버전이 공존할 때, 관리 API 에 필드를 추가·삭제하는 규칙을 어떻게 정하는가?",
+          "drill": "Django REST API 에 v1/v2 를 두고 v1 요청이 v2 모델로 변환돼 처리되게 한 뒤, 삭제 예정 필드에 경고 헤더를 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Django REST framework — Versioning",
+              "url": "https://www.django-rest-framework.org/api-guide/versioning/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "네트워크 장애 재현과 패킷 분석",
+          "from": "qualification",
+          "quote": "• 네트워크 및 소켓 프로그래밍에 대한 경험",
+          "priority": "core",
+          "why": "고객 환경에서 난 문제를 재현하려면 패킷 캡처를 읽을 줄 알아야 한다(추론).",
+          "gap_check": "클라이언트가 '가끔 연결이 끊긴다'고 할 때 tcpdump 에서 RST·재전송·윈도 0 중 무엇을 먼저 찾는가?",
+          "drill": "tc netem 으로 지연·손실을 넣고 프록시를 지나는 연결을 tcpdump/Wireshark 로 캡처해 재전송과 RST 원인을 표시한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Wireshark — User's Guide",
+              "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "장애 분석 사례 한 건을 패킷 캡처와 함께",
+          "why": "경력직이라면 네트워크 장비 문제를 캡처로 풀어 본 사례가 가장 강한 증거다.",
+          "effort": "경험 정리 반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1차면접 - 2차 면접 - 최종합격. 1차면접 대상자는 사전에 간단한 면접설문지 작성을 요청받는다(공고 기준).",
+        "expect": [
+          "L7 처리 병목을 찾은 경험",
+          "운영 중 장비 API 변경 방식",
+          "패킷 캡처로 푼 장애",
+          "전문연구요원판 브리핑의 공통 질문(소켓·L4/L7)"
+        ],
+        "sources": [
+          {
+            "title": "애플리케이션 및 클라우드 개발",
+            "url": "https://www.wanted.co.kr/wd/242610",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
