@@ -184,7 +184,7 @@
           "title": "힙의 구성",
           "summary": "영 · 올드, 그리고 그 안.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -192,7 +192,7 @@
           "title": "메타스페이스",
           "summary": "힙 밖의 클래스 데이터.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -200,7 +200,7 @@
           "title": "스택",
           "summary": "스레드마다, 넘치면 그 스레드만.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",

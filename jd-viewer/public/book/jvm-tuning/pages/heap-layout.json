@@ -1,0 +1,155 @@
+{
+  "book": "jvm-tuning",
+  "id": "heap-layout",
+  "no": "4.1",
+  "chapter": 4,
+  "title": "힙의 구성",
+  "summary": "영 · 올드, 그리고 그 안.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "G1 이 힙을 리전으로 쪼갠다는 것을 확인한다.",
+    "GC 한 번에 영역이 어떻게 움직이는지 읽는다.",
+    "humongous 가 무엇으로 정해지는지 재 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.2절에서 **힙은 모든 스레드가 같이 쓰는 칸**이라고만 했다. 그 안이 어떻게 생겼는지가 이 절이다.\n\n**옛 그림은 영역이 붙어 있다** — 에덴 옆에 생존자, 그 옆에 올드. **G1 은 다르다.** 힙을 **같은 크기의 리전으로 잘라 놓고, 리전마다 역할을 그때그때 준다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "G1 의 힙은 같은 크기 조각들이다",
+      "ascii": "   old   old   eden  free  eden  surv  old   free\n   eden  free  old   old   free  eden  free  surv\n   free  eden  surv  free  old   free  eden  old\n\n   every cell is one region, all the same size\n   a free region becomes eden or old depending on what is needed\n   they are not contiguous and they do not have to be",
+      "note": "**역할이 자리에 붙어 있지 않다.** 비어 있던 리전이 다음 순간 에덴이 된다."
+    },
+    {
+      "type": "table",
+      "caption": "갓 떴을 때와 256MB 를 살려 둔 뒤 (`jcmd GC.heap_info`)",
+      "columns": [
+        "",
+        "갓 떴을 때",
+        "256MB 뒤"
+      ],
+      "rows": [
+        [
+          "힙 total",
+          "133,120K",
+          "**462,848K**"
+        ],
+        [
+          "힙 used",
+          "1,952K",
+          "275,488K"
+        ],
+        [
+          "리전 크기",
+          "1024K",
+          "1024K"
+        ],
+        [
+          "young 리전",
+          "1 (1024K)",
+          "**20 (20480K)**"
+        ],
+        [
+          "survivors",
+          "0 (0K)",
+          "**4 (4096K)**"
+        ]
+      ],
+      "note": "**`-Xmx512m` 인데 시작은 133MB 다.** 힙은 필요한 만큼 늘어나지 처음부터 최대치를 잡지 않는다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "리전으로 자르면 무엇이 좋은가",
+      "md": "**전부 치우지 않고 일부만 치울 수 있다.**\n\n> 쓰레기가 많은 리전부터 골라 치우면 **같은 시간에 더 많이 회수**한다.\n> 이름의 Garbage-First 가 그 뜻이고, **멈춤 목표(`-XX:MaxGCPauseMillis`)를 지킬 수 있는** 근거다(7장).\n> 영역이 붙어 있으면 이 선택을 할 수가 없다."
+    },
+    {
+      "type": "prose",
+      "md": "## GC 한 번에 무엇이 움직이나\n\n`-Xlog:gc+heap=info` 를 켜면 **GC 마다 네 줄**이 나온다. 이 네 줄이 **객체의 일생**(5장)을 그대로 보여 준다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "화살표 뒤 괄호가 다음 목표다",
+      "md": "`Eden regions: 23->0(14)` 를 읽는 법.\n\n> **23** 개를 쓰고 있었고, **0** 개로 비웠고, **다음에는 14개**를 쓰겠다는 뜻이다.\n> 괄호 값은 **멈춤 목표를 맞추려고 G1 이 스스로 조정**한다 — 커졌다 작아졌다 한다.\n> 이 값이 계속 줄면 **에덴을 줄여서라도 멈춤을 맞추려 애쓰는 중**이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 리전보다 큰 객체 — humongous\n\n**리전 하나에 안 들어가는 객체**는 따로 다룬다. 기준이 어디인지 **재 보면 딱 나온다** — 리전 크기를 1MB 로 고정하고, 덩어리 크기만 바꿔 본다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 힙의 구성 ---\n\n$ java -Xmx512m -Xlog:gc -cp out Heap &\n$ jcmd <pid> GC.heap_info                      # 갓 떴을 때\n garbage-first heap   total 133120K, used 1952K\n  region size 1024K, 1 young (1024K), 0 survivors (0K)\n Metaspace       used 337K, committed 512K, reserved 1114112K\n  class space    used 21K, committed 128K, reserved 1048576K\n\n$ jcmd <pid> GC.heap_info                      # 256MB 를 살려 둔 뒤\n garbage-first heap   total 462848K, used 275488K\n  region size 1024K, 20 young (20480K), 4 survivors (4096K)\n\n# --- 2) GC 한 번에 영역이 어떻게 바뀌나 ---\n\n$ java -Xmx512m -Xlog:gc+heap=info -cp out Heap\n[2.628s][info][gc,heap] GC(0) Eden regions:      23->0(14)\n[2.628s][info][gc,heap] GC(0) Survivor regions:   0->3(3)\n[2.628s][info][gc,heap] GC(0) Old regions:        0->20\n[2.628s][info][gc,heap] GC(0) Humongous regions:  0->0\n[2.666s][info][gc,heap] GC(1) Eden regions:      14->0(23)\n[2.666s][info][gc,heap] GC(1) Survivor regions:   3->3(3)\n[2.666s][info][gc,heap] GC(1) Old regions:       20->34\n[2.672s][info][gc,heap] GC(2) Old regions:       34->56\n\n# 에덴은 매번 0 으로 비워지고, 올드는 0 -> 20 -> 34 -> 56 으로 쌓인다.\n\n# --- 3) humongous 의 경계 ---\n\n$ java -Xmx512m -XX:G1HeapRegionSize=1m -Xlog:gc+heap=info -cp out Humon 400\nGC(0) Humongous regions: 0->0            # 400KB = 리전의 0.39배\n\n$ java -Xmx512m -XX:G1HeapRegionSize=1m -Xlog:gc+heap=info -cp out Humon 600\nGC(0) Humongous regions: 56->56          # 600KB = 리전의 0.58배\nGC(2) Humongous regions: 76->76\nGC(4) Humongous regions: 91->91",
+      "note": "**경계는 리전의 절반**이다. 400KB 는 하나도 안 걸리고 600KB 는 전부 걸렸다."
+    }
+  ],
+  "recap": [
+    "G1 은 힙을 같은 크기 리전으로 자르고 역할을 그때그때 준다.",
+    "-Xmx512m 이어도 힙은 133MB 로 시작해 필요한 만큼 늘어난다.",
+    "Eden regions: 23->0(14) 에서 괄호는 다음에 쓸 목표다.",
+    "에덴은 매번 0 으로 비워지고 살아남은 것이 생존자와 올드로 간다.",
+    "리전의 절반을 넘는 객체는 humongous 로 따로 다뤄진다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션에 jcmd GC.heap_info 를 붙여 리전 크기와 young 수를 본다.",
+      "done_when": "리전 크기가 얼마인지 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "-Xlog:gc+heap=info 로 Old regions 의 증가 추세를 본다.",
+      "done_when": "라이브 셋이 오르는지 평평한지 가른다.",
+      "minutes": 12
+    },
+    {
+      "task": "G1HeapRegionSize 를 바꿔 가며 humongous 경계를 직접 찾는다.",
+      "done_when": "절반이 경계인 것을 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "G1 의 힙은 어떻게 나뉘나.",
+      "a": "같은 크기의 리전으로 잘리고 역할은 그때그때 정해진다."
+    },
+    {
+      "q": "Eden regions: 23->0(14) 의 괄호는.",
+      "a": "다음에 쓸 에덴 리전 수 목표다. G1 이 멈춤 목표에 맞춰 조정한다."
+    },
+    {
+      "q": "humongous 의 기준은.",
+      "a": "리전 크기의 절반을 넘는 객체다."
+    },
+    {
+      "q": "-Xmx 를 512m 로 줬는데 처음 힙이 133MB 인 이유는.",
+      "a": "-Xmx 는 최대치일 뿐이고 힙은 필요한 만큼 늘어난다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "리전",
+      "what": "G1 이 힙을 자른 같은 크기의 조각. 에덴·생존자·올드 역할이 그때그때 붙는다."
+    },
+    {
+      "term": "humongous",
+      "what": "리전 크기의 절반을 넘는 객체. 연속된 리전을 통째로 차지한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First (G1) Garbage Collector",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Garbage-First Garbage Collector Tuning",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-garbage-collector-tuning.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

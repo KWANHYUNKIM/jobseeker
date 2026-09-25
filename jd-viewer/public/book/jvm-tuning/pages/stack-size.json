@@ -1,0 +1,121 @@
+{
+  "book": "jvm-tuning",
+  "id": "stack-size",
+  "no": "4.3",
+  "chapter": 4,
+  "title": "스택",
+  "summary": "스레드마다, 넘치면 그 스레드만.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "스택이 스레드마다 따로인 결과를 확인한다.",
+    "StackOverflowError 가 프로세스를 죽이지 않는 것을 본다.",
+    "스택 총량을 스레드 수로 계산할 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.2절에서 **스택이 스레드마다 하나씩**이라고 했고, 2.3절에서 **그 안에 프레임이 쌓이는 것**을 봤다. 이 절은 **그래서 넘치면 어떻게 되는가**다.\n\n**답이 힙과 정반대**라서 따로 볼 값이 있다. 힙이 모자라면 **프로세스 전체가** 곤란해지지만, 스택이 모자라면 **그 스레드 하나만** 죽는다."
+    },
+    {
+      "type": "compare",
+      "caption": "모자랄 때 무슨 일이 일어나는가",
+      "left": {
+        "title": "힙 — 모두의 것",
+        "md": "`OutOfMemoryError: Java heap space`\n\n**아무 스레드에서나** 난다. 원인을 만든 스레드와 **에러를 받는 스레드가 다를 수** 있다.\n\n회수가 안 되면 **프로세스가 못 산다.**"
+      },
+      "right": {
+        "title": "스택 — 각자의 것",
+        "md": "`StackOverflowError`\n\n**깊이 들어간 그 스레드**에서만 난다. 다른 스레드는 **아무 영향이 없다.**\n\n그 스레드만 죽고 **프로세스는 계속 돈다.**"
+      },
+      "note": "**진단할 때 보는 곳이 다르다** — 힙은 전체를, 스택은 그 스레드의 트레이스를 본다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 그 스레드만인가",
+      "md": "**스택이 애초에 공유물이 아니어서**다.\n\n> 스레드를 만들 때 **그 스레드 몫의 스택을 따로 잡는다**(2.2절에서 잰 약 2MB).\n> 넘친 것은 **그 몫**이고, 옆 스레드의 몫은 **손대지 않았다.**\n> 그래서 **잡아서 계속 살 수도** 있다 — 아래 출력에서 워커가 잡고 메시지를 찍는다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "프로세스가 안 죽는 것이 더 나쁠 때가 있다",
+      "md": "**요청 하나만 실패하고 서버는 계속 뜬다.**\n\n> 헬스체크는 **통과**한다. 프로세스가 살아 있으니까.\n> 그래서 **로그를 안 보면 모른다** — 재귀가 깊어지는 입력이 들어올 때만 터지면 더 그렇다.\n> `-Xss` 를 올리는 것은 **끝나는 조건이 있을 때만** 답이다(2.3절의 면접 문답)."
+    },
+    {
+      "type": "prose",
+      "md": "## 총량은 곱셈이다\n\n스택은 **`-Xss` 곱하기 스레드 수**다. 2.2절에서 스레드 200개에 451MB 였다. **`-Xss` 를 올리면 그 곱이 같이 커진다** — 스레드가 많은 서버에서 `-Xss` 를 두 배로 하면 프로세스 메모리가 수백 MB 늘어난다. 4.6절에서 이 곱을 전체 사용량에 넣는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat StackPer.java\npublic class StackPer {\n    static int d = 0;\n    static void deep() { d++; deep(); }\n    public static void main(String[] a) throws Exception {\n        Thread t = new Thread(() -> {\n            try { deep(); }\n            catch (StackOverflowError so) {\n                System.out.println(\"  [worker] StackOverflowError, depth=\" + d);\n            }\n        }, \"worker\");\n        t.start(); t.join();\n        System.out.println(\"  [main] 워커가 죽었는데 나는 산다\");\n\n        Thread u = new Thread(() -> deep(), \"worker-2\");   // 안 잡는다\n        u.setUncaughtExceptionHandler((th, e) ->\n            System.out.println(\"  [handler] \" + th.getName() + \" -> \" + e.getClass().getName()));\n        u.start(); u.join();\n        System.out.println(\"  [main] 여전히 산다. 프로세스는 안 죽었다\");\n    }\n}\n\n$ java -Xss512k -cp out StackPer\n  [worker] StackOverflowError, depth=6340\n  [main] 워커가 죽었는데 나는 산다\n  [main] 남은 스레드로 계속 일한다: 2\n  [handler] worker-2 -> java.lang.StackOverflowError\n  [main] 여전히 산다. 프로세스는 안 죽었다\n\n$ echo $?\n0\n\n# 스레드 둘이 스택을 다 쓰고 죽었는데 종료 코드는 0 이다.\n# 잡든 안 잡든 프로세스는 정상 종료했다.",
+      "note": "**종료 코드 0** 이 이 절의 요점이다. 스택이 넘쳐도 프로세스는 아무 일 없다는 듯 끝난다."
+    }
+  ],
+  "recap": [
+    "스택은 스레드마다 따로라 넘쳐도 그 스레드만 죽는다.",
+    "StackOverflowError 를 잡으면 그 스레드도 계속 살 수 있다.",
+    "스레드 둘이 스택을 다 쓰고 죽었는데 종료 코드는 0 이었다.",
+    "프로세스가 안 죽으니 헬스체크는 통과하고 로그를 안 보면 모른다.",
+    "스택 총량은 -Xss 곱하기 스레드 수다."
+  ],
+  "drills": [
+    {
+      "task": "워커 스레드에서 StackOverflowError 를 내고 main 이 사는 것을 확인한다.",
+      "done_when": "종료 코드가 0 인 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "-Xss 를 바꿔 가며 워커의 depth 를 잰다.",
+      "done_when": "2.3절의 표와 같은 관계인지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "내 서버의 스레드 수에 -Xss 를 곱해 스택 총량을 계산한다.",
+      "done_when": "NMT Thread 칸과 맞는지 비교한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "StackOverflowError 가 프로세스를 죽이나.",
+      "a": "안 죽인다. 그 스레드만 죽고 프로세스는 계속 돈다."
+    },
+    {
+      "q": "왜 그 스레드만인가.",
+      "a": "스택은 스레드마다 따로 잡히는 몫이라 공유물이 아니기 때문이다."
+    },
+    {
+      "q": "프로세스가 안 죽는 것이 왜 위험할 수 있나.",
+      "a": "헬스체크는 통과하므로 로그를 안 보면 실패를 모른다."
+    },
+    {
+      "q": "스택 총량을 구하는 식은.",
+      "a": "-Xss 곱하기 스레드 수다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "StackOverflowError",
+      "what": "한 스레드의 스택에 프레임이 더 안 들어갈 때 나는 오류. 그 스레드에만 영향을 준다."
+    },
+    {
+      "term": "UncaughtExceptionHandler",
+      "what": "스레드에서 안 잡힌 예외를 받는 자리. 스레드가 조용히 죽는 것을 막는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — StackOverflowError",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StackOverflowError.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -Xss",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

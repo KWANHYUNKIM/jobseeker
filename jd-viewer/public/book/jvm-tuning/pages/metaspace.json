@@ -1,0 +1,143 @@
+{
+  "book": "jvm-tuning",
+  "id": "metaspace",
+  "no": "4.2",
+  "chapter": 4,
+  "title": "메타스페이스",
+  "summary": "힙 밖의 클래스 데이터.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "메타스페이스가 두 칸으로 나뉘는 것을 안다.",
+    "기본 한도가 사실상 없다는 것을 확인한다.",
+    "예약과 커밋의 차이를 숫자로 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "3.6절에서 **메타스페이스가 재배포마다 늘어나는 것**을 봤다. 그 칸이 정확히 무엇인지가 이 절이다.\n\n여기 담기는 것은 **객체가 아니라 클래스 자체**다 — 메서드 바이트코드, 필드 목록, 상수 풀, 애너테이션. **힙 밖이라 `-Xmx` 가 안 잡는다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "자바 8 에서 PermGen 을 대체했다",
+      "md": "옛 글의 **`-XX:MaxPermSize` 는 지금 없는 옵션**이다.\n\n> PermGen 은 **힙 안**에 있었고 크기가 고정이라 자주 터졌다.\n> 메타스페이스는 **힙 밖의 네이티브 메모리**를 쓰고 **기본 한도가 없다.**\n> 2.6절에서 본 대로, **판을 확인하지 않으면 없는 옵션을 붙들고 있게** 된다."
+    },
+    {
+      "type": "prose",
+      "md": "## 안이 두 칸이다\n\n`jcmd <pid> VM.metaspace` 를 뜨면 **Non-Class 와 Class 두 칸**으로 갈려 나온다. **클래스를 가리키는 포인터를 32비트로 줄여 쓰려고**(압축 클래스 포인터) 클래스 쪽만 따로 떼어 둔 것이다."
+    },
+    {
+      "type": "table",
+      "caption": "예약과 커밋 (`Virtual space`)",
+      "columns": [
+        "칸",
+        "예약(reserved)",
+        "커밋(committed)",
+        "무엇"
+      ],
+      "rows": [
+        [
+          "Non-class space",
+          "**64.00 MB**",
+          "384.00 KB",
+          "메서드·상수 풀 등"
+        ],
+        [
+          "Class space",
+          "**1.00 GB**",
+          "128.00 KB",
+          "클래스 메타데이터"
+        ],
+        [
+          "합",
+          "**1.06 GB**",
+          "**512.00 KB**",
+          ""
+        ]
+      ],
+      "note": "**1.06GB 를 예약해 뒀는데 실제로 받아 온 것은 512KB** 다 — 2.2절의 reserved 와 committed 차이가 여기서도 같다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "기본 한도는 사실상 없다",
+      "md": "```\n$ java -XX:+PrintFlagsFinal -version | grep MaxMetaspaceSize\nsize_t MaxMetaspaceSize = 18446744073709551615\n```\n\n> 2⁶⁴-1 이다 — **한도를 안 걸었다는 뜻**이다.\n> 그래서 **클래스로더 누수가 있어도 한참 뒤에야 드러난다**(3.6절). 그때는 이미 프로세스 메모리가 부어 있다.\n> **컨테이너에서는 이게 OOM Kill 로** 나타난다 — 자바 예외조차 못 보고 죽는다(4.7절)."
+    },
+    {
+      "type": "prose",
+      "md": "## CDS 가 대부분을 대신 들고 있다\n\n`656 classes (618 shared)` 에서 **618개가 공유된 것**이다. 2.1절에서 본 CDS 아카이브가 **메타스페이스를 안 쓰고 대신 들고 있는** 몫이다. 그래서 **읽은 클래스 수와 메타스페이스 사용량이 비례하지 않는다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ java -Xmx256m -cp out Heap &\n$ jcmd <pid> VM.metaspace\n\nTotal Usage - 14 loaders, 656 classes (618 shared):\n  Non-Class:   14 chunks,   4.03 MB capacity,  348.00 KB (8%) committed,\n                            317.52 KB (8%) used,   30.48 KB (<1%) free\n      Class:   14 chunks, 270.00 KB capacity,   78.00 KB (29%) committed,\n                             21.73 KB (8%) used,   56.27 KB (21%) free\n       Both:   28 chunks,   4.29 MB capacity,  426.00 KB (10%) committed,\n                            339.25 KB (8%) used,   86.75 KB (2%) free\n\nVirtual space:\n  Non-class space:      64.00 MB reserved,  384.00 KB (<1%) committed,  1 nodes.\n      Class space:       1.00 GB reserved,  128.00 KB (<1%) committed,  1 nodes.\n             Both:       1.06 GB reserved,  512.00 KB (<1%) committed.\n\n# --- 관련 기본값 ---\n\n$ java -XX:+PrintFlagsFinal -version | grep -E 'Metaspace|CompressedClass'\nsize_t CompressedClassSpaceSize = 1073741824              {default}   # 1GB\nsize_t MaxMetaspaceSize         = 18446744073709551615    {default}   # 사실상 무제한\nbool   UseCompressedClassPointers = true                  {ergonomic}\n\n# --- 4.1 의 GC.heap_info 에도 같은 값이 나온다 ---\n\n Metaspace       used 337K, committed 512K, reserved 1114112K\n  class space    used 21K, committed 128K, reserved 1048576K",
+      "note": "**`GC.heap_info` 와 `VM.metaspace` 가 같은 숫자를 다른 자리에서** 보여 준다. 힙을 볼 때 메타스페이스도 같이 눈에 들어오게 해 둔 것이다."
+    }
+  ],
+  "recap": [
+    "메타스페이스에는 객체가 아니라 클래스 자체가 담긴다.",
+    "힙 밖의 네이티브 메모리라 -Xmx 가 잡지 않는다.",
+    "안은 Non-Class 와 Class 두 칸으로 갈리고 압축 클래스 포인터 때문이다.",
+    "1.06GB 를 예약해 두고 실제로 받아 온 것은 512KB 였다.",
+    "MaxMetaspaceSize 기본값은 2^64-1 로 사실상 한도가 없다."
+  ],
+  "drills": [
+    {
+      "task": "jcmd VM.metaspace 로 내 애플리케이션의 loaders 와 classes 수를 센다.",
+      "done_when": "shared 비율을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "-XX:MaxMetaspaceSize 를 명시해 두고 기동한다.",
+      "done_when": "한도를 거는 것과 안 거는 것의 차이를 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "-Xshare:off 로 CDS 를 끄고 메타스페이스 사용량을 비교한다.",
+      "done_when": "shared 가 대신 들고 있던 몫을 숫자로 본다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "메타스페이스에 담기는 것은.",
+      "a": "클래스 메타데이터다. 메서드 바이트코드, 필드 목록, 상수 풀 등이다."
+    },
+    {
+      "q": "PermGen 과의 차이는.",
+      "a": "PermGen 은 힙 안이고 크기가 고정이었다. 메타스페이스는 힙 밖이고 기본 한도가 없다."
+    },
+    {
+      "q": "왜 Class 칸이 따로 있나.",
+      "a": "압축 클래스 포인터를 쓰려고 클래스 메타데이터만 따로 떼어 둔다."
+    },
+    {
+      "q": "MaxMetaspaceSize 기본값이 뜻하는 것은.",
+      "a": "2^64-1 로 한도를 안 걸었다는 뜻이다. 누수가 늦게 드러난다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "압축 클래스 포인터",
+      "what": "클래스 메타데이터 주소를 32비트로 줄여 쓰는 기법. Class space 가 따로 있는 이유다."
+    },
+    {
+      "term": "예약과 커밋",
+      "what": "예약은 주소 공간만 잡는 것, 커밋은 실제로 물리 메모리를 받아 오는 것이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JEP 122: Remove the Permanent Generation",
+      "url": "https://openjdk.org/jeps/122",
+      "publisher": "OpenJDK"
+    },
+    {
+      "title": "Java SE 17 — Other Considerations, Class Metadata",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/other-considerations.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
