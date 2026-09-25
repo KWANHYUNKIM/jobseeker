@@ -663,3 +663,7 @@ RSS 최신 08-12(QA 밋업 요약). 09-03 이후 새 글 없음. updated_at 만 
 ## vinted 재방문 (2026-09-26)
 
 atom.xml 최신 글 04-22. 09-03 이후 없음. updated_at 만. 1회째.
+
+## wayfair 재방문 → 확장 (2026-09-26)
+
+09-24 디자인 QA 스킬 글로 design-qa-skill 을 썼다. 결정 7개. 새 도메인 하나. 08-27 trigger-analysis 글은 미뤘다.
