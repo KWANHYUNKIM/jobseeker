@@ -507,3 +507,7 @@ Medium 두 계정 최신 2024-10(RSS 로 확인 — Medium RSS 가 열린다는 
 ## 사이보즈 재방문 → 확장 (2026-09-26)
 
 Mythos 대책 연재 넷(Logos 프로젝트)을 기능 `logos-security-harness` 와 새 도메인으로 썼다. 제품 대신 하네스를 만든 이유와 대가(원래 있던 PSIRT·텍스트 문화·AI 규정 팀 없이는 안 됐다), SAST 졸업 규칙, AI Slop 으로 공개 버그 바운티 일시 중지. 결정 8 · 생각 4 · 그림 3. 성과 수치는 회사가 흐려 적은 것이라 open_questions 에 밝혔다.
+
+## daangn 재방문 (2026-09-26)
+
+Medium RSS 최신 08-20(이미 반영). updated_at 만 올렸다. 1회째. 그 앞의 안 쓴 글 넷은 보강 재료로 STATE 에 적었다.
