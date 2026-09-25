@@ -1,0 +1,151 @@
+{
+  "book": "jvm-tuning",
+  "id": "frames",
+  "no": "2.3",
+  "chapter": 2,
+  "title": "스택 프레임",
+  "summary": "메서드 하나가 쓰는 공간.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "프레임 안에 무엇이 들어가는지 안다.",
+    "-Xss 와 호출 깊이의 관계를 직접 잰다.",
+    "같은 스택에서 깊이가 달라지는 이유를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절에서 **스레드 하나에 약 2MB** 가 붙는 것을 봤다. 그 2MB 가 **스택**이고, 스택은 **프레임을 쌓아 두는 곳**이다.\n\n**메서드를 하나 부를 때마다 프레임이 하나 쌓이고, 돌아오면 사라진다.** 그래서 **스택 크기가 곧 부를 수 있는 깊이**가 된다."
+    },
+    {
+      "type": "figure",
+      "caption": "프레임 하나가 담는 것",
+      "ascii": "   one frame\n   ---------\n   local variable array   parameters and locals, slot by slot\n   operand stack          scratch space the bytecode pushes and pops\n   frame data             constant pool ref, return address\n\n   size is fixed at compile time, written into the .class file",
+      "note": "**크기가 실행 중에 정해지지 않는다** — 컴파일할 때 이미 정해져 클래스 파일에 적힌다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "그 숫자는 클래스 파일에 있다",
+      "md": "`javap -v` 로 **프레임이 몇 칸을 쓰는지 직접** 볼 수 있다.\n\n```\n$ javap -v -p Depth | grep 'stack=.*locals='\n      stack=2, locals=0, args_size=0      <- plain()\n      stack=4, locals=16, args_size=0     <- withLocals()\n```\n\n> `stack=` 이 오퍼랜드 스택 깊이, `locals=` 가 지역변수 칸 수다.\n> **long 8개가 16칸**이다 — long 과 double 은 **두 칸을 쓴다.**\n> **이 16칸이 아래에서 깊이를 절반으로** 만든다."
+    },
+    {
+      "type": "prose",
+      "md": "## 재 본다 — 스택을 바꾸면 깊이가 바뀐다\n\n**자기를 계속 부르다 `StackOverflowError` 가 날 때까지 센다.** 그 깊이가 곧 **스택에 프레임이 몇 개 들어갔는지**다."
+    },
+    {
+      "type": "table",
+      "caption": "-Xss 만 바꿨을 때 들어간 프레임 수",
+      "columns": [
+        "-Xss",
+        "도달한 깊이",
+        "비고"
+      ],
+      "rows": [
+        [
+          "512k",
+          "4,210",
+          ""
+        ],
+        [
+          "1m",
+          "19,708",
+          "**두 배가 아니라 네 배가 넘는다**"
+        ],
+        [
+          "2m",
+          "44,965",
+          "이 머신의 기본값"
+        ]
+      ],
+      "note": "**깊이가 스택 크기에 비례하지 않는다.** 스택에는 프레임 말고도 고정 비용이 있고, 컴파일 여부에 따라 프레임 크기 자체가 달라진다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "같은 조건인데 깊이가 매번 다르다",
+      "md": "`-Xss1m` 으로 두 번 돌려 **19,708 과 20,704** 가 나왔다.\n\n> **JIT 가 언제 끼어드느냐에 따라 프레임 크기가 달라져서**다.\n> **깊이를 정확한 숫자로 믿으면 안 된다** — 자릿수로만 읽는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 같은 스택, 프레임만 키우면\n\n이번엔 **`-Xss` 를 고정하고 메서드 안의 지역변수만 늘린다.** 스택은 그대로인데 **프레임이 커지므로 들어가는 개수가 줄어야** 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Depth.java\npublic class Depth {\n    static int d = 0;\n    static void plain() { d++; plain(); }\n    static void withLocals() {\n        d++;\n        long a=1,b=2,c=3,e=4,f=5,g=6,h=7,i=8;\n        withLocals();\n        if (a+b+c+e+f+g+h+i == 0) System.out.print(\"\");\n    }\n    public static void main(String[] x) {\n        try { if (x[0].equals(\"plain\")) plain(); else withLocals(); }\n        catch (StackOverflowError so) { System.out.println(x[0] + \" depth=\" + d); }\n    }\n}\n\n# --- 1) 이 머신의 기본 스택 크기 ---\n\n$ java -XX:+PrintFlagsFinal -version | grep ThreadStackSize\nintx CompilerThreadStackSize    = 2048\nintx ThreadStackSize            = 2048\nintx VMThreadStackSize          = 2048\n\n# --- 2) 스택만 바꾼다 ---\n\n$ java -Xss512k -cp out Depth plain     ->  plain depth=4210\n$ java -Xss1m   -cp out Depth plain     ->  plain depth=19708\n$ java -Xss2m   -cp out Depth plain     ->  plain depth=44965\n\n# --- 3) 스택은 그대로, 프레임만 키운다 ---\n\n$ java -Xss1m -cp out Depth plain       ->  plain  depth=20704\n$ java -Xss1m -cp out Depth locals      ->  locals depth=11640\n\n# long 8개를 더 얹었더니 깊이가 절반이 됐다.\n# 스택 크기는 같다. 달라진 것은 프레임 하나의 크기뿐이다.",
+      "note": "**같은 `-Xss1m` 에서 20,704 대 11,640.** 스택이 아니라 **프레임이 깊이를 정한다**는 것이 이 절의 전부다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"StackOverflowError 가 났다. -Xss 를 올리면 되나.\"**\n\n> 재귀가 **끝나는 조건이 있으면** 올려서 될 수도 있다.\n> **끝나는 조건이 없으면 올려 봐야 더 늦게 날 뿐**이고, 그동안 스레드마다 그 크기를 곱해 문다(2.2절).\n> **먼저 볼 것은 스택 트레이스가 같은 프레임을 반복하는지**다."
+    }
+  ],
+  "recap": [
+    "프레임은 지역변수 배열·오퍼랜드 스택·프레임 데이터로 이루어진다.",
+    "프레임 크기는 실행 중이 아니라 컴파일 때 정해져 클래스 파일에 적힌다.",
+    "-Xss 를 512k·1m·2m 로 바꾸니 깊이가 4,210 · 19,708 · 44,965 였다.",
+    "깊이는 스택 크기에 비례하지 않는다 — 고정 비용과 JIT 가 끼어든다.",
+    "같은 -Xss1m 에서 지역변수만 늘렸더니 20,704 가 11,640 으로 줄었다."
+  ],
+  "drills": [
+    {
+      "task": "javap -v 로 내 메서드의 stack= 과 locals= 를 읽는다.",
+      "done_when": "지역변수를 늘리면 숫자가 어떻게 변하는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "-Xss 를 바꿔 가며 깊이를 세 번씩 재서 편차를 본다.",
+      "done_when": "같은 조건에서도 값이 흔들리는 것을 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "스레드 100개짜리 프로그램에서 -Xss 를 절반으로 줄이고 NMT 를 비교한다.",
+      "done_when": "2.2절의 Thread 칸이 줄어드는 것을 본다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "프레임 하나에 들어가는 셋은.",
+      "a": "지역변수 배열, 오퍼랜드 스택, 프레임 데이터다."
+    },
+    {
+      "q": "프레임 크기는 언제 정해지나.",
+      "a": "컴파일 시점이다. javap -v 로 보면 stack 과 locals 로 적혀 있다."
+    },
+    {
+      "q": "-Xss 를 두 배로 하면 깊이도 두 배인가.",
+      "a": "아니다. 고정 비용이 있고 JIT 여부로 프레임 크기가 달라져 비례하지 않는다."
+    },
+    {
+      "q": "같은 옵션에서 깊이가 매번 다른 이유는.",
+      "a": "JIT 가 언제 끼어드느냐에 따라 프레임 크기가 달라지기 때문이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "스택 프레임",
+      "what": "메서드 호출 하나가 쓰는 공간. 호출할 때 쌓이고 반환할 때 사라진다."
+    },
+    {
+      "term": "오퍼랜드 스택",
+      "what": "바이트코드가 값을 올렸다 내렸다 하는 작업 공간. 깊이가 클래스 파일에 적혀 있다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "The Java Virtual Machine Specification, Java SE 17 — 2.6 Frames",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html#jvms-2.6",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -Xss",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

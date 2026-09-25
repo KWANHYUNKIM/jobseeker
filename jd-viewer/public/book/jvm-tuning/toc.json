@@ -74,7 +74,7 @@
           "title": "전체 그림",
           "summary": "클래스 로더 · 실행 엔진 · 메모리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -82,7 +82,7 @@
           "title": "런타임 데이터 영역",
           "summary": "공유하는 것과 스레드마다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -90,7 +90,7 @@
           "title": "스택 프레임",
           "summary": "메서드 하나가 쓰는 공간.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",

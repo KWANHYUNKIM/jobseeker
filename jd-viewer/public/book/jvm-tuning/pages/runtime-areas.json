@@ -1,0 +1,157 @@
+{
+  "book": "jvm-tuning",
+  "id": "runtime-areas",
+  "no": "2.2",
+  "chapter": 2,
+  "title": "런타임 데이터 영역",
+  "summary": "공유하는 것과 스레드마다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "힙·메타스페이스와 스택·PC 를 가르는 기준을 안다.",
+    "스레드를 늘려 어느 칸이 커지는지 직접 본다.",
+    "힙만 재는 것으로는 왜 부족한지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절에서 **메모리를 한 덩어리처럼** 말했다. 실제로는 칸이 나뉘어 있고, **나누는 기준이 하나**다 — **여럿이 같이 쓰는가, 스레드마다 하나씩인가.**\n\n이 기준이 중요한 이유는 **비용이 붙는 방식이 다르기** 때문이다. 공유하는 칸은 스레드를 아무리 늘려도 그대로지만, **스레드마다인 칸은 스레드 수에 곱해진다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "무엇을 같이 쓰고 무엇을 각자 갖는가",
+      "ascii": "   shared by all threads              one per thread\n   ---------------------              --------------\n   heap        objects                pc register    where am i\n   metaspace   class metadata         jvm stack      frames\n   code cache  compiled methods       native stack   JNI frames\n\n   grows with what you load           grows with how many threads",
+      "note": "**왼쪽은 무엇을 담느냐로, 오른쪽은 몇 개냐로** 커진다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 이 선이 튜닝에서 중요한가",
+      "md": "**-Xmx 를 아무리 조여도 스레드가 많으면 프로세스 메모리는 안 줄어든다.**\n\n> 힙은 `-Xmx` 가 잡지만 **스택은 `-Xss` 곱하기 스레드 수**다.\n> 컨테이너가 OOM 으로 죽었는데 **힙 로그는 멀쩡한 경우가 이것**이다(9장)."
+    },
+    {
+      "type": "prose",
+      "md": "## 재 본다 — 같은 프로그램, 스레드만 바꿔서\n\n말로는 안 와닿으니 **Native Memory Tracking 으로 칸별 숫자를 꺼내** 본다. 프로그램은 그대로 두고 **스레드 개수만 1 에서 200 으로** 바꾼다."
+    },
+    {
+      "type": "table",
+      "caption": "스레드만 200배 늘렸을 때",
+      "columns": [
+        "칸",
+        "스레드 1개",
+        "스레드 200개",
+        "변했나"
+      ],
+      "rows": [
+        [
+          "Java Heap (committed)",
+          "133,120KB",
+          "133,120KB",
+          "**그대로**"
+        ],
+        [
+          "Class (classes #)",
+          "664",
+          "664",
+          "**그대로**"
+        ],
+        [
+          "Thread (committed)",
+          "41,250KB",
+          "**451,744KB**",
+          "**11배**"
+        ],
+        [
+          "Thread (thread #)",
+          "20",
+          "219",
+          "**199개 늘었다**"
+        ]
+      ],
+      "note": "**늘어난 199개 스레드가 410,494KB** 를 가져갔다 — **하나에 약 2MB** 다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "스레드 하나가 2MB 인 이유",
+      "md": "이 머신의 **기본 `ThreadStackSize` 가 2048KB** 다.\n\n```\n$ java -XX:+PrintFlagsFinal -version | grep ThreadStackSize\nintx ThreadStackSize = 2048\n```\n\n> **표의 2MB 와 이 기본값이 맞는다.** 다음 절에서 이 2MB 안에 무엇이 들어가는지 본다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "thread #20 — 내가 안 만든 스레드들",
+      "md": "스레드를 **1개만 만들었는데 20개**로 나온다.\n\n> GC 작업 스레드, JIT 컴파일러 스레드, VM 스레드, 시그널 처리 스레드가 **JVM 이 알아서 띄운** 것들이다.\n> **코어 수에 따라 개수가 달라지므로**, 작은 컨테이너와 큰 장비의 기본값이 다르다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 프로그램은 하나. 인자로 받은 수만큼 스레드를 띄우고 잠든다.\n\n$ cat Areas.java\npublic class Areas {\n    public static void main(String[] a) throws Exception {\n        int n = Integer.parseInt(a[0]);\n        Thread[] ts = new Thread[n];\n        for (int i = 0; i < n; i++) {\n            ts[i] = new Thread(() -> { try { Thread.sleep(20000); } catch (Exception e) {} });\n            ts[i].setDaemon(true);\n            ts[i].start();\n        }\n        System.out.println(\"pid=\" + ProcessHandle.current().pid());\n        Thread.sleep(20000);\n    }\n}\n\n# NMT 는 살아 있는 동안 jcmd 로 떠야 한다.\n# 종료 시점에 찍으면 스레드가 이미 정리돼 둘 다 같게 나온다.\n\n$ java -XX:NativeMemoryTracking=summary -cp out Areas 1 &\n$ jcmd <pid> VM.native_memory summary\n-                 Java Heap (reserved=2097152KB, committed=133120KB)\n-                     Class (reserved=1048671KB, committed=223KB)\n                            (classes #664)\n-                    Thread (reserved=41250KB, committed=41250KB)\n                            (thread #20)\n\n$ java -XX:NativeMemoryTracking=summary -cp out Areas 200 &\n$ jcmd <pid> VM.native_memory summary\n-                 Java Heap (reserved=2097152KB, committed=133120KB)   <- same\n-                     Class (reserved=1048723KB, committed=275KB)\n                            (classes #664)                            <- same\n-                    Thread (reserved=451744KB, committed=451744KB)   <- 11x\n                            (thread #219)",
+      "note": "**힙과 클래스는 글자까지 같고 스레드 칸만 움직인다.** 이것이 공유와 전용을 가르는 선이다."
+    }
+  ],
+  "recap": [
+    "힙·메타스페이스·코드 캐시는 모든 스레드가 같이 쓴다.",
+    "PC 레지스터·JVM 스택·네이티브 스택은 스레드마다 하나씩이다.",
+    "스레드를 200배 늘려도 힙과 클래스 수는 글자까지 같았다.",
+    "스레드 칸만 41MB 에서 451MB 로 늘었고 하나에 약 2MB 였다.",
+    "내가 1개를 만들어도 실제 스레드는 20개다 — GC·JIT·VM 스레드가 붙는다."
+  ],
+  "drills": [
+    {
+      "task": "-XX:NativeMemoryTracking=summary 를 켜고 내 애플리케이션을 jcmd 로 뜬다.",
+      "done_when": "Thread 칸이 전체에서 몇 퍼센트인지 말할 수 있다.",
+      "minutes": 12
+    },
+    {
+      "task": "-Xss 를 512k 로 줄이고 같은 스레드 수로 다시 뜬다.",
+      "done_when": "Thread 칸이 줄어드는 것을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "스레드를 안 만든 빈 프로그램의 thread # 를 센다.",
+      "done_when": "JVM 이 기본으로 띄우는 스레드를 안다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "스레드 수에 비례해 커지는 칸은.",
+      "a": "PC 레지스터, JVM 스택, 네이티브 스택이다."
+    },
+    {
+      "q": "-Xmx 를 줄였는데 프로세스 메모리가 안 줄었다면.",
+      "a": "스택처럼 힙 밖에 있는 칸을 의심한다. 스택은 -Xss 곱하기 스레드 수다."
+    },
+    {
+      "q": "NMT 를 종료 시점에 찍으면 안 되는 이유는.",
+      "a": "스레드가 이미 정리돼서 살아 있을 때의 값이 안 나온다."
+    },
+    {
+      "q": "스레드를 1개 만들었는데 20개로 나오는 이유는.",
+      "a": "GC·JIT·VM·시그널 처리 스레드를 JVM 이 스스로 띄우기 때문이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "NMT",
+      "what": "Native Memory Tracking. JVM 이 칸별로 예약·커밋한 메모리를 보여주는 기능."
+    },
+    {
+      "term": "committed",
+      "what": "실제로 운영체제에서 받아 온 양. reserved 는 주소만 잡아 둔 것이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "The Java Virtual Machine Specification, Java SE 17 — 2.5 Run-Time Data Areas",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html#jvms-2.5",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Native Memory Tracking",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/diagnostic-tools.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

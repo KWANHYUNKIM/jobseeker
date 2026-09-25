@@ -1,0 +1,128 @@
+{
+  "book": "jvm-tuning",
+  "id": "overview",
+  "no": "2.1",
+  "chapter": 2,
+  "title": "전체 그림",
+  "summary": "클래스 로더 · 실행 엔진 · 메모리.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "JVM 을 세 덩어리로 나눠 본다.",
+    "내가 쓴 코드가 전체에서 얼마나 되는지 센다.",
+    "해석과 컴파일의 차이를 시간으로 잰다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "1장에서 **볼 숫자 셋을 정했다**. 이제 그 숫자가 **어디서 나오는지**를 봐야 한다.\n\n멈춤은 메모리를 치우는 동안 생기고, 처리량은 코드를 어떻게 실행하느냐로 갈리고, 사용량은 무엇을 읽어 들였느냐로 정해진다. **셋 다 JVM 의 서로 다른 부분이 만든다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "JVM 을 세 덩어리로 자른다",
+      "ascii": "   class loader      reads .class files, links them, initializes\n        |\n        v\n     memory          heap, metaspace, stacks, code cache\n        |\n        v\n   execution engine  interpreter, JIT compiler, garbage collector\n\n   chapter 3 -> loader    chapter 4,5 -> memory    chapter 6,10 -> engine",
+      "note": "**이 책의 나머지가 이 셋을 하나씩** 파고든다."
+    },
+    {
+      "type": "prose",
+      "md": "## 클래스 로더 — 내가 쓴 것은 거의 없다\n\n`System.out.println` 한 줄짜리 프로그램을 돌려도 **JVM 은 수백 개의 클래스를 읽는다.** 세어 보면 그 비율이 눈에 들어온다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "490 대 1",
+      "md": "**내 클래스는 하나고 나머지 489개는 JDK** 다.\n\n> 그중 **480개는 `shared objects file`** 에서 온다 — 미리 구워 둔 CDS 아카이브다.\n> **읽는 비용을 줄이려고 JDK 가 미리 해 둔 일**이고, 3장에서 이걸 다시 본다."
+    },
+    {
+      "type": "prose",
+      "md": "## 실행 엔진 — 같은 코드를 두 가지 속도로 돌린다\n\nJVM 은 바이트코드를 **처음엔 한 줄씩 해석**하다가, **자주 도는 자리를 기계어로 컴파일**한다. 이 둘의 차이는 설명으로 들으면 추상적이고 **재 보면 구체적이다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "같은 루프, 컴파일을 끄고 켜고",
+      "ascii": "   300,000,000 iterations of  s += add(i, 1)\n\n   default (JIT on)      0.24 s\n   -Xint   (interpret)   6.72 s\n\n   28x -- and the source file is identical",
+      "note": "**코드를 한 글자도 안 바꾸고 28배**다. 10장에서 이 컴파일러를 연다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그래서 처음 몇 초는 느리다",
+      "md": "**컴파일은 공짜가 아니라 미뤄 둔 비용**이다.\n\n> 자주 도는 자리인지 **세어 본 뒤에야 컴파일**하므로, 기동 직후는 해석으로 돈다.\n> **벤치마크를 켜자마자 재면 인터프리터를 재는** 것이다 — 11장에서 다룬다."
+    },
+    {
+      "type": "prose",
+      "md": "## 메모리 — 나머지 전부\n\n읽어 들인 클래스도, 만든 객체도, 컴파일한 기계어도 **전부 메모리 어딘가에 놓인다.** 그런데 그 '어딘가' 가 한 덩어리가 아니다. **다음 절이 그 칸들을 연다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 클래스 로더가 무엇을 읽는가 ---\n\n$ cat Hello.java\npublic class Hello {\n    static int add(int a, int b) { return a + b; }\n    public static void main(String[] args) {\n        long s = 0;\n        for (int i = 0; i < 2_000_000; i++) s += add(i, 1);\n        System.out.println(\"sum=\" + s);\n    }\n}\n\n$ java -Xlog:class+load=info -cp out Hello | head -5\n[0.007s][info][class,load] java.lang.Object source: shared objects file\n[0.008s][info][class,load] java.io.Serializable source: shared objects file\n[0.008s][info][class,load] java.lang.Comparable source: shared objects file\n[0.008s][info][class,load] java.lang.CharSequence source: shared objects file\n[0.008s][info][class,load] java.lang.constant.Constable source: shared objects file\n\n$ java -Xlog:class+load=info -cp out Hello | grep 'source: file'\n[0.066s][info][class,load] Hello source: file:.../out/\n\n$ java -Xlog:class+load=info -cp out Hello | grep -c 'source:'\n490\n\n$ java -Xlog:class+load=info -cp out Hello | grep -oE 'source: [a-z]+' | sort | uniq -c\n   1 source: file      <- Hello\n   3 source: jrt       <- jimage\n 480 source: shared    <- CDS archive\n\n# --- 2) 실행 엔진: 해석과 컴파일 ---\n\n$ java -XX:+PrintCompilation -cp out Hello | grep Hello::add\n    330    4       3       Hello::add (4 bytes)\n    331    5       4       Hello::add (4 bytes)\n    334    4       3       Hello::add (4 bytes)   made not entrant\n\n# 같은 루프를 3억 번. 코드는 그대로 두고 -Xint 만 붙인다.\n\n$ time java       -cp out Hot      ->  real 0.24\n$ time java -Xint -cp out Hot      ->  real 6.72",
+      "note": "3 과 4 는 **컴파일 단계**다(C1, C2). `made not entrant` 는 **더 좋은 판으로 갈아탔다**는 뜻이고, 10장에서 읽는 법을 익힌다."
+    }
+  ],
+  "recap": [
+    "JVM 은 클래스 로더 · 메모리 · 실행 엔진 셋으로 나눠 보면 된다.",
+    "한 줄짜리 프로그램도 490개 클래스를 읽고 그중 내 것은 하나다.",
+    "읽은 클래스의 대부분은 CDS 아카이브에서 온다.",
+    "같은 코드가 해석이냐 컴파일이냐로 28배 차이 났다.",
+    "컴파일은 자주 도는 자리를 세어 본 뒤에 일어나므로 기동 직후는 느리다."
+  ],
+  "drills": [
+    {
+      "task": "내가 만든 프로그램에 -Xlog:class+load 를 붙여 클래스 수를 센다.",
+      "done_when": "내 클래스와 JDK 클래스의 비율을 말할 수 있다.",
+      "minutes": 10
+    },
+    {
+      "task": "-Xshare:off 로 CDS 를 끄고 기동 시간을 비교한다.",
+      "done_when": "공유 아카이브가 무엇을 아껴 주는지 숫자로 안다.",
+      "minutes": 12
+    },
+    {
+      "task": "루프 횟수를 바꿔 가며 -Xint 와의 차이를 잰다.",
+      "done_when": "몇 번부터 컴파일이 이득인지 감이 온다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JVM 을 크게 셋으로 나누면.",
+      "a": "클래스 로더, 메모리, 실행 엔진이다."
+    },
+    {
+      "q": "source: shared 는 무엇인가.",
+      "a": "미리 구워 둔 CDS 아카이브에서 읽었다는 뜻이다."
+    },
+    {
+      "q": "-Xint 를 붙이면 무엇이 달라지나.",
+      "a": "JIT 컴파일을 끄고 해석만 한다. 같은 코드가 크게 느려진다."
+    },
+    {
+      "q": "기동 직후 성능이 낮은 이유는.",
+      "a": "자주 도는 자리를 세어 본 뒤에야 컴파일하므로 그때까지는 해석으로 돈다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "CDS",
+      "what": "Class Data Sharing. JDK 클래스를 미리 구워 둔 아카이브. 읽는 비용을 줄인다."
+    },
+    {
+      "term": "JIT",
+      "what": "Just-In-Time. 실행 중에 자주 도는 바이트코드를 기계어로 컴파일하는 것."
+    }
+  ],
+  "sources": [
+    {
+      "title": "The Java Virtual Machine Specification, Java SE 17 — Chapter 2",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Class Data Sharing",
+      "url": "https://docs.oracle.com/en/java/javase/17/vm/class-data-sharing.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
