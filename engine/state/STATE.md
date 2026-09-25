@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — Cloudflare 재방문이 확장이 됐다.** `saving-100-tb-of-ram-with-math`(2026-09-18)를 기능 `pbr-hash-ring` 으로
+**없다 — 쿠팡 재방문(쓸 자료 없음)을 마쳤다. 그 앞은 Cloudflare 확장(`pbr-hash-ring`)이었다.** `saving-100-tb-of-ram-with-math`(2026-09-18)를 기능 `pbr-hash-ring` 으로
 `엣지 네트워크·트래픽 전달` 에 붙였다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
@@ -320,6 +320,9 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **coupang** — 2026-09-26 **1회째 없음.** Medium 두 계정(`coupang-engineering`·`@coupang-engineering-kr`) 최신이 2024-10-14.
+  뉴스룸 `테크 & 디자인` 에 새 글 하나(`archives/66188`, 쿠팡이츠 가게 좌표 보정, 2026-09-10)가 있으나 **특허 홍보 글이라**
+  버린 대안·대가·수치가 없다. 쿠팡은 기술 글이 **뉴스룸으로 옮겨 간 것으로 보인다**(추정) — 다음 재방문도 뉴스룸부터.
 - **careem** — 2026-09-26 **새 자료 있음, 보류.** `building-careems-integrity-feature-platform-part-1-the-foundation`(2026-09-07) —
   동기 사기 판정에 피처 50~100개 이상을 P95 한 자릿수 ms 로 댄다. 사전 계산(Hive 배치 일 단위 + Kafka 스트리밍 1초 이하) →
   갱신분만 Kafka 로 → 타입별 합성(스칼라 교체·집합 추가·시간 버킷) → DynamoDB. 레지스트리가 테이블을 자동으로 만들어
@@ -341,6 +344,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | 출처 | 접근 |
 |---|---|
 | `deliveroo.engineering` | ❌ **Cloudflare 오류 1009 — 한국(KR) 국가 차단.** WebFetch·브라우저 모두 같은 차단 페이지를 받는다. ✅ **`https://r.jina.ai/<주소>` 를 앞에 두면 전문이 온다**(WebFetch 로 부르면 요약이 오니 **브라우저 `get_page_text`** 로 받는다). ⚠️ GitHub Pages 라 목록은 **루트**이고 `/blog/` 는 404, 더 보기는 `/articles/pageN` (2026-09-06 확인) |
+| **`medium.com/feed/<출판물>`** · **`medium.com/feed/@<계정>`** | ✅ **Medium RSS 는 curl 로 200 이 온다**(2026-09-26, 쿠팡 두 계정). 최근 10편의 제목·날짜·주소가 나온다 — **재방문 때 새 글 유무는 이것으로 본다.** 본문 전문도 `content:encoded` 에 들어 있는 경우가 있다(확인 필요) |
 | `medium.com/pinterest-engineering` | ✅ **`r.jina.ai` 로 목록·본문이 온다** (2026-09-06 확인) |
 | `medium.com/airbnb-engineering` | ⚠️ **목록 페이지는 헤더만 온다** — **글 주소를 검색으로 받아 `r.jina.ai` 에 태운다** (2026-09-06 확인) |
 | `engineering.klarna.com` | ⛔ **판정 보류 확정(2026-09-06, 두 번째 시도)** — 목록은 `r.jina.ai` 로 열리나 **최신이 2025-06 이고 일반 주제가 섞였다.** **두 번 다 개별 글의 정확한 주소를 못 받았다**(해시 추측 금지). 새 단서 전에는 안 꺼낸다 |
