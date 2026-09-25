@@ -489,6 +489,21 @@ def run() -> int:
               "DB 가 모르는 판정만 들어가고, 다시 돌려도 그대로다(멱등)",
               f"1회 {n1} · 2회 {n2}")
 
+        # ── 10-d. 사이트 간 중복은 대표 한 건만 내보낸다(job_dup) ──────────
+        print("\n[10-d] 사이트 간 중복 접기 (job_dup → store.export)")
+        dup_feed = [
+            {"site": "wanted", "pid": "d1", "url": "https://w.test/d1", "company": "(주)중복사",
+             "title": "백엔드  개발자", "deadline_date": (TODAY - timedelta(days=3)).isoformat()},
+            {"site": "saramin", "pid": "d2", "url": "https://s.test/d2", "company": "중복사",
+             "title": "백엔드 개발자"},
+        ]
+        crawl_ingest(dup_feed, label="d0", site_counts={"wanted": 1, "saramin": 1})
+        from store.export import fetch_jobs
+        got = [j for j in fetch_jobs() if j["pid"] in ("d1", "d2")]
+        check(len(got) == 1 and got[0]["pid"] == "d2" and got[0]["status"] == "active",
+              "표기가 달라도 한 회사·같은 제목이면 한 건 — 모집중인 쪽이 대표",
+              str([(j["site"], j["pid"], j["status"]) for j in got]))
+
         # 검색 앞 몇 쪽만 보는 사이트: 안 보였다고 사라짐 처리하지 않는다
         j1 = crawl_ingest(feed, label="j1", site_counts={"jumpit": 6},
                           listing={"jumpit": {"pids": {"90"}, "complete_scopes": set()}})

@@ -54,7 +54,11 @@ def fetch_jobs() -> list[dict]:
                    status, status_source, deadline_on, dday, last_verified_at,
                    region, source_board, overseas, deadline_text,
                    employment, education, posted_on, first_seen_at
-              FROM v_job
+              FROM v_job v
+             -- 사이트 간 중복은 대표 한 건만(job_dup, migrations/004). 파일 파이프라인의
+             -- aggregate 가 (회사명+제목)으로 하던 일이다 — 안 거르면 목록에 같은 공고가
+             -- saramin·jobkorea 로 두세 번 뜬다.
+             WHERE NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = v.id)
              ORDER BY site, pid
             """
         )

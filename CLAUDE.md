@@ -41,6 +41,8 @@
     조용히 회전돼 버려지고 있었다. `build_trends`·`build_reposts`·`engagement.score`
     가 여기서 읽고, 씨앗 뿌리기는 `python -m store.ledgers seed`).
     **status 는 컬럼이 아니라 `job_state` 뷰다** — 저장하지 않으면 낡을 수 없다.
+    사이트 간 중복도 지우지 않고 `job_dup` 뷰가 대표를 가리킨다(모집중 → 사이트 순서).
+    `store.export` 가 사본을 걸러 뷰어·빌더에는 한 건만 간다.
     `posted_on`(등록일)은 close_check 만 쓴다 — `JOB_COLUMNS` 에 없어서 크롤이
     NULL 로 덮지 못한다. 스키마를 고칠 때는 `db/migrations/` 에 번호순 ALTER 를
     남긴다(돌고 있는 DB 는 `schema.sql` 을 다시 못 돌린다).

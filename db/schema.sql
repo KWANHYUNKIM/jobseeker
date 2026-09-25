@@ -403,6 +403,33 @@ LEFT JOIN LATERAL (
 
 COMMENT ON VIEW v_job IS '뷰어/검색 API 가 읽는 정본. all_jobs_enriched.json 은 이 뷰의 덤프로 강등된다';
 
+-- 사이트 간 중복 → 대표 공고. 지우지 않고 가리키기만 한다 — 사이트마다 마감 판정이
+-- 따로 오기 때문이다. store.export 가 사본을 걸러 뷰어·빌더에 한 건만 보낸다.
+-- 대표: 모집중 → aggregate 의 사이트 순서 → 먼저 본 것. 근거는 migrations/004.
+CREATE VIEW job_dup AS
+WITH k AS (
+    SELECT j.id, j.company_id,
+           regexp_replace(lower(j.title), '\s+', '', 'g') AS title_key,
+           s.status,
+           array_position(ARRAY['wanted','jumpit','jobkorea','saramin','dev','remote','ats'],
+                          j.site::text) AS site_rank,
+           j.first_seen_at
+      FROM job j
+      JOIN job_state s ON s.job_id = j.id
+), r AS (
+    SELECT id,
+           first_value(id) OVER w AS canonical_id,
+           row_number()    OVER w AS rn
+      FROM k
+    WINDOW w AS (PARTITION BY company_id, title_key
+                 ORDER BY (status = 'active') DESC, site_rank, first_seen_at, id)
+)
+SELECT id AS job_id, canonical_id
+  FROM r
+ WHERE rn > 1;
+
+COMMENT ON VIEW job_dup IS '사이트 간(또는 같은 사이트 안) 중복 공고 → 대표 공고. 사본만 담는다';
+
 -- ════════════════════════════════════════════════════════════════════
 -- 8. 운영 이력 — health/history.jsonl, reposts.json 의 자리
 -- ════════════════════════════════════════════════════════════════════
