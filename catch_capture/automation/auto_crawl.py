@@ -243,8 +243,14 @@ def refresh_closures(limit: int = CLOSE_CHECK_LIMIT) -> int:
     한 바퀴 돌게 되는데, 그래도 사이트마다 수천 건을 한 번에 두드리는 것보다 낫다
     (차단당하면 크롤 본체까지 같이 죽는다). 실패해도 사이클은 그대로 진행한다.
     """
+    # 매 회차 다시 적재한다. 데몬은 몇 주씩 떠 있고 import 는 처음 한 번만 파일을
+    # 읽는다 — 9/20 에 pull 한 판정 수정(wanted JSON-LD 마감일·등록일)이 9/17 에 뜬
+    # 데몬에는 끝내 안 들어가, 원장의 등록일이 0건인 채로 6일을 돌았다.
     try:
-        from pipeline import close_check
+        import importlib
+        from pipeline import close_check, job_status
+        importlib.reload(job_status)
+        close_check = importlib.reload(close_check)
     except ImportError as e:
         log(f"[close] 모듈 적재 실패 — 건너뜀: {e}")
         return 0
