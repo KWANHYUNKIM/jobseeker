@@ -890,6 +890,178 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/356194",
+      "title": "핀테크 프론트엔드 개발자 (결제)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상(또는 그에 준하는 실력). 컬리페이 결제 화면·결제 SDK·서드파티 연동 페이지·AML 시스템 화면을 만들고 운영하며, 결제 화면을 XSS·CSRF 등으로부터 지킬 수 있는 사람. 컬리 FE 공고 중 요구 연차가 가장 낮다.",
+      "fit": {
+        "must_have": [
+          "프론트엔드 3년 이상 또는 그에 준하는 실력",
+          "SPA 프레임워크 실무",
+          "외부 결제/금융 솔루션·API 연동",
+          "프론트엔드 보안(XSS·CSRF·CSP) 이해"
+        ],
+        "can_learn": [
+          "Nx/Turborepo 모노레포",
+          "NestJS BFF(우대)",
+          "AML 업무 용어"
+        ]
+      },
+      "study": [
+        {
+          "topic": "외부 결제 솔루션 연동 흐름 (요청→인증→승인→결과 통지)",
+          "from": "qualification",
+          "quote": "• 외부 결제/금융 솔루션 연동 및 API 통합 개발 능력",
+          "priority": "core",
+          "why": "주요업무에 '결제 SDK 및 서드파티 연동 페이지 개발/운영'이 있다. 결제창 호출, 인증 후 돌아오는 리다이렉트, 서버 승인 요청의 순서를 알아야 화면을 만든다.",
+          "gap_check": "결제창에서 인증이 끝났는데 사용자가 뒤로 가기를 누르면, 주문은 어떤 상태여야 하고 화면은 무엇을 보여 줘야 하는가?",
+          "drill": "공개 테스트 키를 주는 PG 샌드박스 하나로 결제 요청 → 성공/실패 리다이렉트 → 서버 승인 호출까지 붙이고, 새로고침·뒤로 가기·중복 클릭을 각각 시험한다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "프론트엔드 보안 (XSS, CSRF, CSP)",
+          "from": "qualification",
+          "quote": "• 프론트엔드 보안(XSS, CSRF, CSP, 시큐어 코딩 원칙)에 대한 깊이 있는 이해",
+          "priority": "core",
+          "why": "결제·금융 화면이라 스크립트 주입 하나가 곧 금전 사고다. 자격요건 '지식' 절에 '정보보안 관련 기본 지식'도 따로 있다.",
+          "gap_check": "React 가 자동으로 막아 주는 XSS 와 막아 주지 못하는 경우(dangerouslySetInnerHTML, href 의 javascript: 등)를 구분할 수 있는가?",
+          "drill": "작은 결제 확인 페이지에 CSP 헤더(script-src 'self' + 결제 SDK 도메인)를 걸고, 인라인 스크립트가 막히는 것을 콘솔로 확인한 뒤 nonce 방식으로 필요한 것만 연다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MDN — Content Security Policy (CSP)",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP — Cross Site Scripting Prevention Cheat Sheet",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "앱 내 웹뷰(WebView) 환경의 특성",
+          "from": "qualification",
+          "quote": "• 앱 내 웹뷰(WebView) 환경에서의 프론트엔드 개발 특성에 대한 이해",
+          "priority": "core",
+          "why": "컬리페이 화면은 앱 안에서 열리는 경우가 있어(추론) 웹뷰에서 쿠키·팝업·외부 앱 호출(카드사 앱 등)이 브라우저와 다르게 동작한다.",
+          "gap_check": "결제 중 카드사 앱으로 넘어갔다 돌아올 때 웹뷰가 받아야 하는 URL 스킴 처리를 누가(웹/앱) 맡는가?",
+          "drill": "안드로이드 에뮬레이터 WebView 나 iOS WKWebView 에 결제 테스트 페이지를 띄우고, window.open·외부 스킴 링크가 어떻게 동작하는지 기록한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "브라우저 렌더링 파이프라인과 Core Web Vitals",
+          "from": "qualification",
+          "quote": "• 웹 표준, 브라우저 렌더링 파이프라인, Core Web Vitals에 대한 깊이 있는 이해",
+          "priority": "core",
+          "why": "결제 단계의 지연은 결제 포기로 이어진다(추론). 자격요건이 '깊이 있는 이해'를 요구한다.",
+          "gap_check": "결제 SDK 스크립트가 늦게 로드될 때 INP·LCP 중 무엇이 나빠지고 어떻게 줄이는가?",
+          "drill": "결제 페이지에 서드파티 스크립트를 async/defer/동적 import 세 방식으로 넣어 Lighthouse 수치를 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "web.dev — Web Vitals",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "반복 업무를 구조로 해결한 경험",
+          "from": "qualification",
+          "quote": "• 반복되는 업무·코드·장애 요소를 스스로 인지하고, 자동화 도구·공통 모듈·개발 프로세스 개선 등으로 구조적으로 해결한 경험",
+          "priority": "core",
+          "why": "주요업무에 'AI를 활용한 신기술 및 업무효율을 위한 개발'이 있다. 자동화·공통 모듈로 반복을 없앤 경험을 '경험' 절의 필수로 본다.",
+          "gap_check": "최근 반복해서 손으로 한 일 하나를 스크립트나 공통 모듈로 바꾼 사례를 전후 비교로 말할 수 있는가?",
+          "drill": "결제 결과 화면 여러 개에서 반복되는 오류 처리 코드를 공통 훅/컴포넌트 하나로 모으고, 줄어든 코드 줄 수를 기록한다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "모노레포 빌드·의존성 관리 (Nx / Turborepo)",
+          "from": "qualification",
+          "quote": "• Nx / Turborepo 등 모노레포 환경에서의 빌드·의존성 관리 능력",
+          "priority": "high",
+          "why": "결제 SDK·서드파티 페이지·컬리페이 웹이 여러 패키지로 나뉘어 한 저장소에 있을 가능성이 크다(추론).",
+          "gap_check": "공통 패키지 버전을 올렸을 때 어떤 앱이 영향을 받는지 도구로 확인할 수 있는가?",
+          "drill": "Turborepo 로 sdk·web 두 패키지를 만들고 sdk 변경 시 web 만 다시 빌드되는지 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Turborepo — Docs",
+              "url": "https://turborepo.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "컨테이너·MSA 환경에서의 배포와 모니터링",
+          "from": "qualification",
+          "quote": "• MSA 환경에서의 서비스 개발, 배포 자동화, 모니터링 및 트러블슈팅 능력",
+          "priority": "high",
+          "why": "스킬 절에 Docker·Kubernetes 와 MSA 배포·모니터링·트러블슈팅이 적혀 있다. 프론트엔드도 컨테이너로 배포되는 구조로 읽힌다(추론).",
+          "gap_check": "프론트엔드 서버(SSR/BFF) 컨테이너가 재시작을 반복할 때 무엇부터 보는가?",
+          "drill": "React 앱을 멀티스테이지 Dockerfile 로 빌드해 nginx 이미지로 띄우고, 로컬 kind 클러스터에 배포해 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Docker — Multi-stage builds",
+              "url": "https://docs.docker.com/build/building/multi-stage/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "NestJS 기반 BFF",
+          "from": "preference",
+          "quote": "• NestJS 기반 BFF 개발 경험이 있으신 분",
+          "priority": "nice",
+          "why": "여러 결제·금융 API 를 화면 하나에 맞춰 묶는 층을 프론트엔드가 직접 만드는 구조로 보인다(추론).",
+          "gap_check": "BFF 에서 결제 API 키를 다루면 브라우저에 두는 것보다 무엇이 안전해지는가?",
+          "drill": "NestJS 로 결제 수단 목록 + 포인트 잔액을 한 응답으로 합쳐 주는 BFF 엔드포인트를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "NestJS — Documentation",
+              "url": "https://docs.nestjs.com/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "결제 페이지 보안 점검표",
+          "why": "보안이 자격요건 '지식' 절에 두 줄이나 있다. CSP·SRI·민감정보 마스킹을 스스로 점검한 표를 들고 가면 드물다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "AML 이 프론트엔드에 요구하는 것 정리",
+          "why": "주요업무에 AML(자금세탁방지) 시스템 프론트엔드가 있다. 운영자가 보는 의심거래 검토 화면에 무엇이 필요한지 미리 정리해 가면 대화가 된다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 제출 ＞ 직무적합성 인터뷰 ＞ 종합 인터뷰 ＞ 처우 협의 ＞ 최종 합격. 직무적합성 인터뷰에서 생성형 AI를 활용한 과제 전형(사전 과제 또는 코딩테스트), 종합 인터뷰에서 온라인 직무적합성 검사가 함께 진행된다(공고 기준).",
+        "expect": [
+          "결제 연동에서 중복 결제·뒤로 가기를 어떻게 막았는가",
+          "XSS·CSRF·CSP 를 실제로 어떻게 적용했는가",
+          "웹뷰에서 겪은 문제와 해결",
+          "반복 업무를 자동화한 사례"
+        ],
+        "sources": [
+          {
+            "title": "핀테크 프론트엔드 개발자 (결제)",
+            "url": "https://www.wanted.co.kr/wd/356194",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
