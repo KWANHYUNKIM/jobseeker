@@ -683,3 +683,7 @@ blog.youtube 는 제품 발표뿐, research.google 에 YouTube 글 없음. updat
 ## zalando 재방문 → 확장 (2026-09-26)
 
 09-25 에이전트 신원 브로커 글로 agent-identity-broker. 결정 7개, 새 도메인 하나. 도메인 지도에 근거 없는 선을 그었다가 뺐다. 이전의 안 읽은 글 셋(09-01·08-14·07-24)은 STATE 에.
+
+## zerodha 재방문 (2026-09-26)
+
+zerodha.tech 최신 2024-03. 블로그 멈춤. updated_at 만. 1회째. 09-03 재방문 묶음 끝.

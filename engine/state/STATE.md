@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — zalando 재방문에서 확장(`agent-identity-broker`)을 마쳤다.** 그 앞은 youtube(없음). uber 의 안 쓴 새 글 셋은 아래.
+**없다 — zerodha 재방문(블로그 멈춤)을 마쳤다. 09-03 에 본 회사의 재방문이 끝났다 — 다음은 09-04 묶음(adyen·baemin·canva …).** 그 앞은 zalando 확장. uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -322,6 +322,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **zerodha** — 2026-09-26 **1회째 없음.** `zerodha.tech/index.xml` 최신이 **2024-03-28** — 엔지니어링 블로그가 멈췄다. CTO 개인 블로그 `nadh.in` 최신 2026-01-30(에세이). 다음 재방문에서도 없으면 `재시도 안 함` 으로.
 - **zalando** — 2026-09-26 새 글 하나(에이전트 신원 브로커, 09-25) → `agent-identity-broker`. 09-01 ZMS 예산 분할(광고 실험)·08-14 에이전틱 엔지니어링 스냅숏·07-24 Flink 이관은 아직 안 읽었다. `engineering.zalando.com/atom.xml` 이 열린다.
 - **youtube** — 2026-09-26 없음. `blog.youtube/rss/` 는 09-23 Made on YouTube 발표 묶음·크리에이터 소식뿐, `research.google/blog/rss/` 최근 30편에 YouTube 글 없음. updated_at 만. 1회째. (남은 경고 `content-id` 엔티티 문자열은 보수 사이클 몫)
 - **yelp** — 2026-09-26 새 글 하나(Nrtsearch ML 랭킹, 09-16) → `rank-inside-search`. 수치 없는 글. `feed.xml` 이 열린다.
