@@ -1,0 +1,141 @@
+{
+  "book": "jvm-tuning",
+  "id": "mark-sweep",
+  "no": "6.1",
+  "chapter": 6,
+  "title": "표시하고 쓸기",
+  "summary": "가장 단순한 형태.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "표시 단계가 무엇을 하는지 안다.",
+    "JVM 이 찍는 네 단계를 읽는다.",
+    "비용이 무엇에 비례하는지 구분한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "5.4절에서 **루트에서 닿으면 산다**고 했다. 그 판정을 **실제로 수행하는 절차**가 이 장이다.\n\n가장 단순한 형태부터 본다. **루트에서 출발해 닿는 것에 표시를 하고(mark), 표시 안 된 것을 회수한다(sweep).** 이름 그대로다."
+    },
+    {
+      "type": "figure",
+      "caption": "표시하고 쓸기",
+      "ascii": "   mark                            sweep\n   ----                            -----\n   start from gc roots             walk the whole heap\n   follow every reference          free anything unmarked\n   set a bit on each object        clear the marks\n\n   cost: proportional to LIVE      cost: proportional to HEAP SIZE\n\n   this is the split that decides everything in this chapter",
+      "note": "**두 단계의 비용이 다른 것에 비례한다.** 6.2절이 이 비대칭을 이용한다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "쓸기만 하면 구멍이 남는다",
+      "md": "**회수한 자리가 흩어진 채로 남는다.**\n\n> 빈 공간이 총 10MB 여도 **연속된 2MB 가 없으면 2MB 배열을 못 만든다.**\n> 그러면 5.1절에서 본 **포인터 밀기를 못 쓴다** — 빈자리 목록을 뒤져야 한다.\n> 그래서 실제 수집기는 **쓸기 뒤에 압축을 붙인다.** 6.7절이 그 이야기다."
+    },
+    {
+      "type": "prose",
+      "md": "## JVM 이 직접 이름 붙여 찍어 준다\n\nSerial GC 의 풀 GC 는 **표시-쓸기-압축**이다. `-Xlog:gc+phases=debug` 를 켜면 **네 단계가 이름과 시간으로** 나온다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "2·3·4 단계가 압축이다",
+      "md": "```\nPhase 1: Mark live objects             0.418ms\nPhase 2: Compute new object addresses  0.399ms\nPhase 3: Adjust pointers               0.225ms\nPhase 4: Move objects                  0.446ms\n```\n\n> **1단계만 표시**이고 나머지 셋은 **옮기기 위한 일**이다.\n> 옮기면 **주소가 바뀌므로**(2단계) **그것을 가리키던 참조를 전부 고쳐야**(3단계) 한다.\n> 그다음에야 **실제로 옮긴다**(4단계). 압축이 싸지 않은 이유가 이 셋이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 비용은 살아 있는 양을 따라간다\n\n같은 프로그램에서 **살아남는 양만 바꿔** 보면 드러난다. 힙 크기를 `-Xmx40m` 으로 고정하고 오래 사는 객체의 비율만 올렸다."
+    },
+    {
+      "type": "table",
+      "caption": "풀 GC 가 언제 일어나는가 (`-XX:+UseSerialGC -Xmx40m`)",
+      "columns": [
+        "오래 사는 비율",
+        "풀 GC"
+      ],
+      "rows": [
+        [
+          "1/200",
+          "**한 번도 없음**"
+        ],
+        [
+          "1/40",
+          "**한 번도 없음**"
+        ],
+        [
+          "1/12",
+          "**104회 · 평균 0.649 ms · 합 67.5 ms**"
+        ]
+      ],
+      "note": "**쓰레기가 많아서 풀 GC 가 도는 것이 아니다.** 살아남는 것이 쌓여 올드가 찰 때 돈다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Live.java\npublic class Live {\n    public static void main(String[] a) throws Exception {\n        int liveEvery = Integer.parseInt(a[0]);   // 작을수록 오래 사는 것이 많다\n        List<byte[]> live = new ArrayList<>();\n        Deque<byte[]> churn = new ArrayDeque<>();\n        for (int i = 0; i < 60000; i++) {\n            churn.add(new byte[8 * 1024]);\n            if (churn.size() > 100) churn.poll();       // 금방 버린다\n            if (i % liveEvery == 0) live.add(new byte[8 * 1024]);\n        }\n    }\n}\n\n# --- 1) 풀 GC 의 네 단계 ---\n\n$ java -XX:+UseSerialGC -Xmx24m -Xlog:gc+phases=debug -cp out Old\nGC(12) Reference Processing 0.003ms\nGC(12) Weak Processing 0.005ms\nGC(12) Class Unloading 0.049ms\nGC(12) Phase 1: Mark live objects              0.418ms\nGC(12) Phase 2: Compute new object addresses   0.399ms\nGC(12) Phase 3: Adjust pointers                0.225ms\nGC(12) Phase 4: Move objects                   0.446ms\n\n# --- 2) 살아남는 양만 바꾼다 (힙은 40m 고정) ---\n\n$ java -XX:+UseSerialGC -Xmx40m -Xlog:gc -cp out Live 200\n  풀GC 없음\n$ java -XX:+UseSerialGC -Xmx40m -Xlog:gc -cp out Live 40\n  풀GC 없음\n$ java -XX:+UseSerialGC -Xmx40m -Xlog:gc -cp out Live 12\n  풀GC 104회  평균 0.649 ms  합 67.5 ms\n\n# 할당량은 셋 다 같다. 달라진 것은 살아남는 비율뿐이다.",
+      "note": "**표시는 살아 있는 것만 훑고, 쓸기는 힙 전체를 훑는다.** 이 비대칭이 다음 절의 출발점이다."
+    }
+  ],
+  "recap": [
+    "표시는 루트에서 닿는 것에 표시를 하고 쓸기는 표시 안 된 것을 회수한다.",
+    "표시 비용은 살아 있는 양에, 쓸기 비용은 힙 크기에 비례한다.",
+    "쓸기만 하면 빈자리가 흩어져 큰 객체를 못 넣는다.",
+    "Serial 의 풀 GC 는 네 단계로 찍히고 2·3·4 단계가 압축이다.",
+    "같은 할당량에서도 살아남는 비율이 높아야 풀 GC 가 일어났다."
+  ],
+  "drills": [
+    {
+      "task": "-Xlog:gc+phases=debug 로 내 애플리케이션의 풀 GC 단계를 본다.",
+      "done_when": "네 단계 중 어디가 오래 걸리는지 안다.",
+      "minutes": 12
+    },
+    {
+      "task": "힙 크기를 고정하고 살아남는 양을 바꿔 풀 GC 횟수를 비교한다.",
+      "done_when": "쓰레기가 아니라 생존이 원인인 것을 확인한다.",
+      "minutes": 15
+    },
+    {
+      "task": "풀 GC 총 시간이 전체 시간에서 차지하는 비율을 계산한다.",
+      "done_when": "1.5절의 GC 비율과 맞춰 본다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "표시 비용과 쓸기 비용은 각각 무엇에 비례하나.",
+      "a": "표시는 살아 있는 양, 쓸기는 힙 크기다."
+    },
+    {
+      "q": "쓸기만 하면 무엇이 문제인가.",
+      "a": "빈자리가 흩어져 연속 공간이 필요한 큰 객체를 못 넣는다."
+    },
+    {
+      "q": "Serial 풀 GC 의 네 단계는.",
+      "a": "표시, 새 주소 계산, 포인터 조정, 객체 이동이다."
+    },
+    {
+      "q": "풀 GC 를 부르는 것은 쓰레기인가 생존인가.",
+      "a": "생존이다. 같은 할당량에서 살아남는 비율이 높을 때만 일어났다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "표시",
+      "what": "GC 루트에서 참조를 따라가며 도달 가능한 객체에 표시를 남기는 단계."
+    },
+    {
+      "term": "쓸기",
+      "what": "힙을 훑어 표시가 없는 객체의 자리를 회수하는 단계."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Available Collectors",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/available-collectors.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — HotSpot Virtual Machine Garbage Collection Tuning Guide",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/",
+      "publisher": "Oracle"
+    }
+  ]
+}

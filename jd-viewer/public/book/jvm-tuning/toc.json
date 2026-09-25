@@ -302,7 +302,7 @@
           "title": "표시하고 쓸기",
           "summary": "가장 단순한 형태.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.2",
@@ -310,7 +310,7 @@
           "title": "복사",
           "summary": "영 영역이 쓰는 방식.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.3",
@@ -318,7 +318,7 @@
           "title": "세대 가설",
           "summary": "대부분은 금방 죽는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.4",
