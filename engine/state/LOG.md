@@ -471,3 +471,7 @@ GitHub 은 판 것의 값을 다른 데서 깎았다 — 샤드 하나가 코어
 **Picnic**(NL · 물류 — 창고 비전의 2D/3D·엣지/클라우드 갈림길). 비어 있던 제조·물류·한국 게임 축이 열렸다.
 Picnic 은 369 의 ❌ 를 정정했다(301 대상에 블로그가 있었다). 못 연 곳: Flexport·Hacobu·Ocado·Gopuff·Instacart·Delivery Hero·요기요.
 다음: CADDi 프로파일.
+
+## adevinta 재방문 (2026-09-26)
+
+2026-09-03 이후 새 공개 자료 없음(테크블로그 최신 2026-03-09). updated_at 만 올렸다. 1회째.
