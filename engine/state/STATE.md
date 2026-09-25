@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — yelp 재방문에서 확장(`rank-inside-search`)을 마쳤다.** 그 앞은 wix 확장. uber 의 안 쓴 새 글 셋은 아래.
+**없다 — youtube 재방문(엔지니어링 글 없음)을 마쳤다.** 그 앞은 yelp 확장. uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -320,6 +320,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **youtube** — 2026-09-26 없음. `blog.youtube/rss/` 는 09-23 Made on YouTube 발표 묶음·크리에이터 소식뿐, `research.google/blog/rss/` 최근 30편에 YouTube 글 없음. updated_at 만. 1회째. (남은 경고 `content-id` 엔티티 문자열은 보수 사이클 몫)
 - **yelp** — 2026-09-26 새 글 하나(Nrtsearch ML 랭킹, 09-16) → `rank-inside-search`. 수치 없는 글. `feed.xml` 이 열린다.
 - **wix** — 2026-09-26 새 글 둘. 미디어 플랫폼(09-08) → `media-on-the-fly`(팟캐스트 요약이라 대가 대부분 inferred). 09-15 「From Autocomplete to Intelligence」는 AI 일반론이라 안 씀. 09-02 데이터 이전 플레이북(50억 건·10TB·4주)은 아직 안 읽었다 — `read-first-then-write` 와 겹치는지 먼저 본다.
 - **wayfair** — 2026-09-26 새 글 하나(디자인 QA 스킬, 09-24) → `design-qa-skill`. 목록 `aboutwayfair.com/careers/tech-blog` (피드 없음, 목록에 날짜가 있다). 08-27 `trigger-analysis`(A/B 노출) 글은 아직 안 읽었다.

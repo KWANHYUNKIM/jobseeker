@@ -675,3 +675,7 @@ atom.xml 최신 글 04-22. 09-03 이후 없음. updated_at 만. 1회째.
 ## yelp 재방문 → 확장 (2026-09-26)
 
 09-16 Nrtsearch 추론 플러그인 글로 rank-inside-search. 결정 6개. 수치가 없어 metrics 는 쓰는 곳·지연 표현·운영 기간만.
+
+## youtube 재방문 (2026-09-26)
+
+blog.youtube 는 제품 발표뿐, research.google 에 YouTube 글 없음. updated_at 만. 1회째.
