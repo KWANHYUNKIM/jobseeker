@@ -8,26 +8,18 @@
 
 ## 지금 파는 중
 
-**없다 — 쿠팡 재방문(쓸 자료 없음)을 마쳤다. 그 앞은 Cloudflare 확장(`pbr-hash-ring`)이었다.** `saving-100-tb-of-ram-with-math`(2026-09-18)를 기능 `pbr-hash-ring` 으로
-`엣지 네트워크·트래픽 전달` 에 붙였다(기능 5개째). 다음 사이클은 `--gaps` 대로.
+**없다 — 사이버에이전트 재방문이 확장이 됐다.** `archives/65910`(2026-09-10, AJA DSP 분산 추적)을 기능 `tail-sampling` 으로
+`보는 일에 드는 값을 어떻게 치를 것인가` 에 붙였다(기능 6개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
 
-- **Cloudflare 에 아직 안 쓴 글이 넷 있다**(다음 재방문 재료). `dns-cache-memory-optimization-1111`(08-27, 1.1.1.1 캐시
-  항목 953B → 420B · 대가를 적는다 — 박싱의 할당자 낭비·지역성, 와이어 형식 통째 저장을 버린 이유) ·
-  `containers-cross-tenant-vulnerability`(09-24, `workers-isolation` 과 맞닿는다 — 정정 대상인지 먼저 본다) ·
-  `workers-module-registry-nodejs`(09-09) · `vary-support`(09-22).
+재방문에서 찾았지만 아직 안 쓴 재료(다음 재방문·보강 때 먼저 본다):
 
-**없다 — careem 재방문(새 글 있음, Part 2 대기로 보류)을 마쳤다. 그 앞은 바이트댄스 확장이었다.** `ByteX`(arXiv 2608.30607, 2026-09-01)를 기능 `bytex` 로
-쓰고 새 도메인 `검색 인프라를 벡터까지 넓힌다` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
-큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
-⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
-
-- **논문으로 쓰인 회사는 재방문 때 블로그가 아니라 arXiv 를 본다.** `export.arxiv.org/api/query?search_query=abs:<회사>+AND+(cat:cs.DC+OR+cat:cs.DB+OR+cat:cs.OS)&sortBy=submittedDate`
-  — 바이트댄스는 이 한 줄로 ByteX 가 걸렸다. 같은 목록에 아직 안 쓴 것이 더 있다
-  (StreamShield 2026-02 · ByteHouse 2026-02 · ABase 2025-05) — **재방문에서 확장 재료로 쓸 수 있다.**
-- **CADDi 는 `caddi.tech/archive?page=N`**, **데브시스터즈 본문은 `<article>`**, **Picnic 은 `jobs.picnic.app/en/blogs/<slug>`**.
-- **재방문은 WordPress 사이트면 `<종류>-sitemap.xml` 의 lastmod 로 새 글 유무를 한 번에 본다.**
+- **사이버에이전트** `archives/65476`(09-15, ABEMA 광고 서버 OOM · go-cache TTL) — `two-tier-cache` 정정 대상인지 먼저.
+- **Cloudflare** `dns-cache-memory-optimization-1111`(08-27, 대가를 적는다) · `containers-cross-tenant-vulnerability`(09-24,
+  `workers-isolation` 정정 여부) · `workers-module-registry-nodejs`(09-09) · `vary-support`(09-22).
+- **바이트댄스** arXiv 의 StreamShield(2026-02) · ByteHouse(2026-02) · ABase(2025-05). VLDB PDF 셋(LavaStore 등)도 이제 열린다.
+- **카림** Integrity 피처 플랫폼 — Part 2 를 기다린다.
 
 ## 지금의 진짜 상태
 
@@ -332,6 +324,13 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **bol** — 2026-09-26 **1회째 없음.** `techlab.bol.com/en/blog/` 최신이 여전히 2024-11-07 — **블로그가 멈춘 채다.** 2026 날짜는 팟캐스트(`/en/podcasts/techlab/`)뿐이다.
 - **allegro** — 2026-09-26 **1회째 없음.** `blog.allegro.tech/feed.xml` 최신이 2026-08-20(LLM-as-a-Judge, 이미 반영). 블로그가 한 달에 2~3편 나오니 다음 재방문에는 걸릴 확률이 높다.
 - **adevinta** — 2026-09-26 **1회째 없음.** `techblog-sitemap.xml` 최신이 2026-03-09(AI 도구 파일럿, 이미 반영). Medium(`adevinta-tech-blog`)은 여전히 못 연다.
+
+### 재방문 요령 (2026-09-26)
+
+- **새 글 유무는 목록이 아니라 기계용 색인으로 본다** — WordPress 는 `<종류>-sitemap.xml` 의 lastmod, Medium 은
+  `medium.com/feed/<출판물>`, 논문으로 쓰인 회사는 arXiv API(`search_query=abs:<회사>+AND+(cat:cs.DC+OR+cat:cs.DB+OR+cat:cs.OS)&sortBy=submittedDate`).
+- **새 글이 있어도 대가를 안 적으면 쓰지 않는다**(카림 Part 1). **홍보 글은 새 글로 치지 않는다**(쿠팡 뉴스룸).
+- 큐 후보의 입구 — **CADDi** `caddi.tech/archive?page=N` · **데브시스터즈** 본문은 `<article>` · **Picnic** `jobs.picnic.app/en/blogs/<slug>`.
 
 ### 자료 접근 지도
 
