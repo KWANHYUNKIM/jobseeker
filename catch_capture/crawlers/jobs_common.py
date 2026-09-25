@@ -401,6 +401,47 @@ def save_jobs_json(out_dir: Path, collected: list[dict]) -> None:
     tmp.replace(p)
 
 
+# ── 이번 회차에 목록에서 본 것 ─────────────────────────────────────────
+# jobs.json 은 **누적본**이다 — 한 번 수집한 공고는 원본에서 내려가도 남는다.
+# 그래서 jobs.json 만 보고는 "지금 올라와 있나"를 알 수 없고, 정본 DB 는 누적본의
+# 모든 공고를 매 사이클 "방금 봤다"로 찍어 gone_at 이 평소 사이클에서 한 번도
+# 찍히지 않았다(9/8·9/20 일괄 작업 때만 찍혔다). 목록 단계에서 본 pid 를 따로 남긴다.
+LISTING_FILE = "listed.json"
+
+
+def save_listing(out_dir: Path, pids, *, complete_scopes=None) -> None:
+    """이번 회차 목록에서 본 pid 들을 `listed.json` 에 남긴다(덮어쓰기).
+
+    `complete_scopes` 는 **목록을 끝까지 본 범위**다. ats 는 보드 API 가 그 회사의
+    공고 전부를 주므로 받아 온 보드마다 "여기 없으면 내려간 것" 이라고 말할 수 있다.
+    검색 결과 앞 몇 쪽만 보는 사이트는 None — 안 보인 건 뒤쪽 쪽에 있을 수도 있다.
+    중복 스킵한 공고도 pid 에 넣는다. 목록에 **있었다**는 사실이 중요하다.
+    """
+    from datetime import datetime as _dt
+    payload = {
+        "at": _dt.now().isoformat(timespec="seconds"),
+        "pids": sorted({str(p).strip() for p in pids if str(p or "").strip()}),
+    }
+    if complete_scopes is not None:
+        payload["complete_scopes"] = sorted(set(complete_scopes))
+    p = out_dir / LISTING_FILE
+    tmp = out_dir / (LISTING_FILE + ".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(p)
+
+
+def load_listing(out_dir: Path) -> dict | None:
+    """`listed.json` 을 읽는다. 없거나 깨졌으면 None."""
+    p = out_dir / LISTING_FILE
+    if not p.exists():
+        return None
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) and isinstance(data.get("pids"), list) else None
+    except Exception:
+        return None
+
+
 def load_seen_pids(
     base_dir: Path,
     site_prefix: str,

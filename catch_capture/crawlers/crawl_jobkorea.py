@@ -42,6 +42,7 @@ from crawlers.jobs_common import (
     ocr_images,
     sanitize_filename,
     save_jobs_json,
+    save_listing,
 )
 
 SEARCH_URL = (
@@ -312,6 +313,8 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
 
         candidates = await collect_search_cards(page, keyword=keyword, max_pages=max_pages)
         print(f"[*] 후보 공고 총 {len(candidates)}개 (목표 {target}개, 이미 보유 {len(collected)}개)", flush=True)
+        # 목록에서 본 것(중복 스킵 포함)을 남긴다 — 정본 DB 의 last_seen_at 이 이걸 본다
+        save_listing(out_dir, [c.get("gno") for c in candidates])
 
         scanned = skipped_nondev = skipped_dup = failed = 0
         for job in candidates:

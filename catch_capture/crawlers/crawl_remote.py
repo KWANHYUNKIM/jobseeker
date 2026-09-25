@@ -42,6 +42,7 @@ from crawlers.jobs_common import (
     load_seen_pids,
     sanitize_filename,
     save_jobs_json,
+    save_listing,
 )
 
 SITE = "remote"
@@ -180,6 +181,7 @@ def crawl(keyword: str, target: int, depth: int) -> None:
 
     blocked_any = False
     scanned = skipped_dup = skipped_nondev = 0
+    listed: list[str] = []   # 피드마다 최근 몇십 건만 주므로 완전한 목록이 아니다
     for name, fetch in SOURCES.items():
         if len(collected) - base_count >= target:
             break
@@ -196,6 +198,7 @@ def crawl(keyword: str, target: int, depth: int) -> None:
                 print(f"[!] {name} 실패: {exc}", flush=True)
             continue
         print(f"[*] {name} 후보 {len(candidates)}건", flush=True)
+        listed.extend(f"{c['source']}:{c['ext_id']}" for c in candidates if c.get("ext_id"))
 
         for c in candidates:
             if len(collected) - base_count >= target:
@@ -263,6 +266,7 @@ def crawl(keyword: str, target: int, depth: int) -> None:
         print(f"[*] {name} 완료 — 누적 {len(collected)}건 (이번 신규 {len(collected) - base_count})", flush=True)
 
     save_jobs_json(out_dir, collected)
+    save_listing(out_dir, listed)
     if not blocked_any:
         block_detect.note_success(SITE)
     print(

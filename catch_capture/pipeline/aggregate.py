@@ -34,6 +34,26 @@ SITES = ["wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats"]
 # 있어 키워드별로 반복 집계하지 않고 1회만 집계한다.
 KEYWORD_AGNOSTIC = {"remote", "ats"}
 
+# 목록 기록(listed.json)을 "이번 사이클 것"으로 쳐 주는 나이. 크롤이 20개 키워드를
+# 도는 데 40분 남짓이고 주기가 1시간이라, 이보다 오래된 기록은 지난 사이클이거나
+# 그 키워드의 크롤이 실패한 것이다 — 그걸로 "방금 봤다"고 찍지 않는다.
+LISTING_MAX_AGE_H = float(os.environ.get("LISTING_MAX_AGE_H", "3"))
+
+
+def _merge_listing(into: dict, listing: dict | None, now: datetime) -> bool:
+    """폴더 하나의 listed.json 을 사이트 단위 기록에 합친다. 합쳤으면 True."""
+    if not listing:
+        return False
+    try:
+        at = datetime.fromisoformat(listing.get("at", ""))
+    except ValueError:
+        return False
+    if (now - at).total_seconds() > LISTING_MAX_AGE_H * 3600:
+        return False
+    into.setdefault("pids", set()).update(str(p) for p in listing.get("pids", []))
+    into.setdefault("complete_scopes", set()).update(listing.get("complete_scopes") or [])
+    return True
+
 
 def _norm_key(value: str | None) -> str:
     """중복 판정용 정규화: 양끝 공백 제거 + 내부 공백 제거 + 소문자."""
@@ -70,6 +90,10 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
     all_jobs: list[dict] = []
     site_counts: dict[str, int] = {}
     site_sources: dict[str, str] = {}
+    # 사이트별 "이번 사이클에 목록에서 본 pid". jobs.json 은 누적본이라 이게 따로 있어야
+    # 정본 DB 가 "지금 올라와 있는 것"과 "예전에 수집해 둔 것"을 가른다.
+    listings: dict[str, dict] = {}
+    now = datetime.now()
 
     for site in SITES:
         srcs: list[str] = []
@@ -84,6 +108,8 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
                 continue
             srcs.append(src.name)
             site_out.mkdir(exist_ok=True)
+            from crawlers.jobs_common import load_listing
+            _merge_listing(listings.setdefault(site, {}), load_listing(src), now)
 
             # copy all txt files and jobs.json (if any)
             for f in src.iterdir():
@@ -244,8 +270,9 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
     if os.environ.get("DB_DUAL_WRITE", "1") != "0":
         try:
             from store.ingest_crawl import ingest as _db_ingest, summary as _db_summary
+            _listed = {s: v for s, v in listings.items() if v.get("pids")}
             _db_stats = _db_ingest(raw_jobs, label=out_label, keywords=kws,
-                                   site_counts=site_counts)
+                                   site_counts=site_counts, listing=_listed)
             print(f"  [db] {_db_summary(_db_stats)}", flush=True)
         except Exception as e:
             print(f"  [db] 이중 쓰기 건너뜀: {type(e).__name__}: {e}", flush=True)

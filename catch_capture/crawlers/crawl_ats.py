@@ -44,6 +44,7 @@ from crawlers.jobs_common import (
     load_seen_pids,
     sanitize_filename,
     save_jobs_json,
+    save_listing,
 )
 
 SITE = "ats"
@@ -165,6 +166,11 @@ def crawl(keyword: str, target: int, per_board: int) -> None:
     print(f"[*] 목표 신규 {target}건 (회사당 상한 {per_board})", flush=True)
 
     scanned = skipped_dup = skipped_nondev = failed_boards = 0
+    # 보드 API 는 그 회사의 공고를 **전부** 준다. 그래서 받아 온 보드는 "여기 없으면
+    # 내려간 것" 이라고 말할 수 있다 — 검색 앞 몇 쪽만 보는 다른 사이트와 다른 점이다.
+    # 신규 목표를 채워 중간에 멈추면 뒤쪽 보드는 이번 회차에 안 본 것이라 빠진다.
+    listed: list[str] = []
+    complete_boards: list[str] = []
     for bi, b in enumerate(boards, 1):
         if len(collected) - base_count >= target:
             break
@@ -177,6 +183,11 @@ def crawl(keyword: str, target: int, per_board: int) -> None:
             print(f"  [{bi}/{len(boards)}] {company:22s} ({provider}:{slug}) 실패: {note}", flush=True)
             failed_boards += 1
             continue
+        # 0건은 "공고가 다 내려갔다"보다 "응답이 이상했다"일 가능성이 크다 — 완전한
+        # 목록으로 치지 않는다(치면 그 회사 공고가 한꺼번에 사라짐 처리된다).
+        listed.extend(f"{provider}:{slug}:{c['ext_id']}" for c in candidates if c.get("ext_id"))
+        if candidates:
+            complete_boards.append(f"{provider}:{slug}")
 
         board_new = 0
         for c in candidates:
@@ -249,6 +260,7 @@ def crawl(keyword: str, target: int, per_board: int) -> None:
         time.sleep(jitter(600) / 1000)
 
     save_jobs_json(out_dir, collected)
+    save_listing(out_dir, listed, complete_scopes=complete_boards)
     if failed_boards < len(boards):
         block_detect.note_success(SITE)
     print(

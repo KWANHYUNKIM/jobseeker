@@ -373,6 +373,10 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
 
         candidates = await collect_search_anchors(page, max_pages=max_pages)
         print(f"[*] 후보 공고 총 {len(candidates)}개 (목표 개발자 직무 {target}개)", flush=True)
+        # 목록에서 본 것(이미 수집한 것 포함)을 남긴다 — 정본 DB 의 last_seen_at 이 이걸 본다
+        from crawlers.jobs_common import save_listing
+        save_listing(out_dir, [m.group(1) for c in candidates
+                               if (m := JOB_ID_RE.search(c.get("href") or ""))])
 
         before = len(candidates)
         candidates = [c for c in candidates if c["href"] not in seen_jobs]

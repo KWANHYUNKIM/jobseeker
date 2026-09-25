@@ -40,6 +40,7 @@ from crawlers.jobs_common import (
     ocr_images,
     sanitize_filename,
     save_jobs_json,
+    save_listing,
 )
 
 SARAMIN_BASE = "https://www.saramin.co.kr"
@@ -180,6 +181,8 @@ def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> None:
     print(f"[*] 검색 (HTTP) keyword={keyword!r}, max_pages={max_pages}", flush=True)
     candidates = collect_search_anchors(keyword=keyword, max_pages=max_pages)
     print(f"[*] 후보 공고 총 {len(candidates)}개 (목표 개발자 직무 {target}개, 이미 보유 {len(collected)}개)", flush=True)
+    # 목록에서 본 것(중복 스킵 포함)을 남긴다 — 정본 DB 의 last_seen_at 이 이걸 본다
+    save_listing(out_dir, [c.get("rec_idx") for c in candidates])
 
     if not candidates:
         print("[!] 후보 공고가 없습니다.", flush=True)

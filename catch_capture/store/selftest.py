@@ -416,6 +416,60 @@ def run() -> int:
               "회사명 없는 공고는 세어서 건너뛴다(사이클을 안 죽인다)",
               str({k: s6[k] for k in ("usable", "skipped")}))
 
+        # ── 10-b. 목록 기록(listing) — 누적본과 "지금 올라온 것" 가르기 ──────
+        # 크롤러 폴더의 jobs.json 은 누적본이다. 목록 기록 없이 넣으면 내려간 공고도
+        # 매번 "방금 봤다"가 되어 사라짐이 평소 사이클에 한 번도 안 찍혔다.
+        print("\n[10-b] 목록 기록으로 사라짐 판정 (ats 보드 = 완전한 목록)")
+        ats = [
+            {"site": "ats", "pid": f"greenhouse:acme:{i}", "url": f"https://gh.test/acme/{i}",
+             "company": "에이크미", "title": f"ATS 공고 {i}", "source_board": "greenhouse:acme"}
+            for i in range(4)
+        ] + [{"site": "ats", "pid": "lever:other:1", "url": "https://lv.test/other/1",
+              "company": "아더", "title": "레버 공고", "source_board": "lever:other"}]
+        crawl_ingest(ats, label="a0", site_counts={"ats": 5})
+
+        def ats_state():
+            cur.execute("SELECT pid, gone_at IS NOT NULL AS gone, last_seen_at FROM job"
+                        " WHERE site='ats' ORDER BY pid")
+            return {r["pid"]: r for r in cur.fetchall()}
+
+        before = ats_state()
+        acme3 = {f"greenhouse:acme:{i}" for i in range(3)}
+        lst = {"ats": {"pids": acme3, "complete_scopes": {"greenhouse:acme"}}}
+        a1 = crawl_ingest(ats, label="a1", site_counts={"ats": 5}, listing=lst)
+        st = ats_state()
+        check(a1["gone"] == 1 and st["greenhouse:acme:3"]["gone"]
+              and not st["lever:other:1"]["gone"],
+              "① 끝까지 본 보드에서 목록에 없던 1건만 사라짐(다른 보드는 그대로)",
+              f"사라짐 {a1['gone']}")
+        check(st["lever:other:1"]["last_seen_at"] == before["lever:other:1"]["last_seen_at"]
+              and st["greenhouse:acme:0"]["last_seen_at"] > before["greenhouse:acme:0"]["last_seen_at"],
+              "② 목록에 없던 공고는 last_seen_at 이 그대로, 있던 공고만 갱신된다")
+
+        a2 = crawl_ingest(ats, label="a2", site_counts={"ats": 5}, listing=lst)
+        check(a2["gone"] == 0 and a2["reopened"] == 0 and ats_state()["greenhouse:acme:3"]["gone"],
+              "③ 누적본에 남아 있어도 다음 사이클에 되살아나지 않는다",
+              str({k: a2[k] for k in ("gone", "reopened")}))
+
+        lst_all = {"ats": {"pids": acme3 | {"greenhouse:acme:3"},
+                           "complete_scopes": {"greenhouse:acme"}}}
+        a3 = crawl_ingest(ats, label="a3", site_counts={"ats": 5}, listing=lst_all)
+        check(a3["reopened"] == 1 and not ats_state()["greenhouse:acme:3"]["gone"],
+              "④ 목록에 다시 나오면 재등장", f"재등장 {a3['reopened']}")
+
+        lst_thin = {"ats": {"pids": {"greenhouse:acme:0"}, "complete_scopes": {"greenhouse:acme"}}}
+        a4 = crawl_ingest(ats, label="a4", site_counts={"ats": 5}, listing=lst_thin)
+        check(a4["gone"] == 0 and a4["gone_skipped_sites"],
+              "⑤ 받아 온 보드에서 절반 넘게 안 보이면 사이트째 보류",
+              f"보류 {a4['gone_skipped_sites']}")
+
+        # 검색 앞 몇 쪽만 보는 사이트: 안 보였다고 사라짐 처리하지 않는다
+        j1 = crawl_ingest(feed, label="j1", site_counts={"jumpit": 6},
+                          listing={"jumpit": {"pids": {"90"}, "complete_scopes": set()}})
+        check(j1["gone"] == 0 and alive_jumpit() == 6 and j1["seen"] == 1,
+              "⑥ 완전한 목록이 아닌 사이트는 목록 기록이 있어도 사라짐을 찍지 않는다",
+              str({k: j1[k] for k in ("gone", "seen")}))
+
         # ── 11. 임베딩 배치 ────────────────────────────────────────
         # Ollama 는 없으니 HTTP 호출만 가짜로 바꾼다. 그 바깥의 SQL·배치·저장
         # 경로는 실제 코드가 그대로 돈다.

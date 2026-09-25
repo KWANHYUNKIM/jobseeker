@@ -107,9 +107,26 @@ def record_tech_daily(cur) -> int:
     return cur.rowcount
 
 
+def _scope(site: str, pid: str) -> str | None:
+    """목록을 끝까지 본 범위의 이름. ats 는 보드(`provider:slug`)다."""
+    if site == "ats":
+        parts = pid.split(":")
+        return ":".join(parts[:2]) if len(parts) >= 3 else None
+    return None
+
+
 def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
-           site_counts: dict[str, int] | None = None) -> dict:
-    """공고 목록을 정본 DB 에 반영하고 요약을 돌려준다."""
+           site_counts: dict[str, int] | None = None,
+           listing: dict[str, dict] | None = None) -> dict:
+    """공고 목록을 정본 DB 에 반영하고 요약을 돌려준다.
+
+    `listing` 은 사이트별 "이번 회차 목록에서 본 것" — `{"pids": set, "complete_scopes": set}`.
+    `jobs` 는 크롤러 폴더의 누적본이라 원본에서 내려간 공고도 섞여 있다. listing 이
+    주어지면 목록에 있던 공고만 "봤다"(last_seen_at·gone_at 해제)로 치고, 사라짐은
+    **목록을 끝까지 본 범위**(ats 의 보드)에서만 찍는다. 검색 결과 앞 몇 쪽만 보는
+    사이트는 안 보였다고 사라진 게 아니다 — 거기는 close_check 가 원본에 물어 닫는다.
+    listing 이 None 이면 예전처럼 `jobs` 전체를 이번에 본 것으로 친다.
+    """
     today = today_date()
     overrides = _load_overrides()
     keywords = keywords or []
@@ -130,7 +147,7 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
     stats = {
         "input": len(jobs), "usable": len(usable), "skipped": skipped,
         "new": 0, "reopened": 0, "gone": 0, "techs": 0, "overrides": 0,
-        "unchanged": 0,
+        "unchanged": 0, "seen": 0,
         "gone_skipped_sites": [],
     }
 
@@ -176,6 +193,10 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
                 prev = known.get(j["url"].strip())
                 body_same = prev is not None and prev["content_hash"] == chash
 
+                if listing is None:
+                    seen = True
+                else:
+                    seen = str(j["pid"]).strip() in listing.get(j["site"], {}).get("pids", ())
                 job_id, inserted = upsert_job(cur, {
                     "site": j["site"], "pid": str(j["pid"]), "url": j["url"].strip(),
                     "company_id": cid, "title": j["title"].strip(),
@@ -196,8 +217,10 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
                     "deadline_on": deadline_on, "always_open": always_open,
                     "dday_text_raw": j.get("dday") or "",
                     "content_hash": chash,
-                })
-                seen_ids_by_site.setdefault(j["site"], []).append(job_id)
+                }, seen=seen)
+                if seen:
+                    stats["seen"] += 1
+                    seen_ids_by_site.setdefault(j["site"], []).append(job_id)
                 # 본문 해시가 그대로면 기술 목록도 그대로다(해시 입력에 tech_stack 이
                 # 들어 있다). 사이클마다 75,000건을 다시 맞출 이유가 없다.
                 if not body_same:
@@ -210,7 +233,7 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
                     stats["new"] += 1
                     log_event(cur, job_id, "appeared", run_id=run_id,
                               detail={"site": j["site"]})
-                elif j["url"] in was_gone:
+                elif seen and j["url"] in was_gone:
                     stats["reopened"] += 1
                     log_event(cur, job_id, "reopened", run_id=run_id)
 
@@ -229,7 +252,9 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
                         stats["overrides"] += 1
 
             # ── 사라진 공고 ────────────────────────────────────────────
-            for site, ids in seen_ids_by_site.items():
+            if listing is not None:
+                _mark_gone_listed(cur, listing, stats, run_id)
+            for site, ids in (seen_ids_by_site.items() if listing is None else ()):
                 cur.execute(
                     "SELECT count(*) AS n FROM job WHERE site = %s AND gone_at IS NULL",
                     (site,),
@@ -289,6 +314,38 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
         stats["mv_refreshed"] = False
 
     return stats
+
+
+def _mark_gone_listed(cur, listing: dict[str, dict], stats: dict, run_id: int) -> None:
+    """목록을 끝까지 본 범위에서, 목록에 없던 살아 있는 공고에 gone_at 을 찍는다.
+
+    보드 단위 비율 가드는 두지 않는다. greenhouse·lever·ashby API 는 한 번에 전체를
+    주고, 빈 응답은 크롤러가 이미 '완전한 목록' 에서 뺀다. 개발직 서너 건이 한꺼번에
+    내려가는 건 흔한 일이다(첫 모의 실행에서 22개 보드가 그랬다). 대신 **사이트 전체**
+    에 가드를 건다 — 받아 온 보드들에서 살아 있는 공고의 절반 넘게가 안 보이면 파서가
+    깨진 것이지 공고가 내려간 게 아니다.
+    """
+    for site, lst in listing.items():
+        scopes = set(lst.get("complete_scopes") or ())
+        if not scopes:
+            continue
+        listed = set(lst.get("pids") or ())
+        cur.execute("SELECT id, pid FROM job WHERE site = %s AND gone_at IS NULL", (site,))
+        in_scope = [(r["id"], r["pid"]) for r in cur.fetchall()
+                    if _scope(site, r["pid"]) in scopes]
+        missing = [jid for jid, pid in in_scope if pid not in listed]
+        if not missing:
+            continue
+        if len(in_scope) - len(missing) < len(in_scope) * GONE_MIN_RATIO:
+            stats["gone_skipped_sites"].append(
+                f"{site}({len(in_scope) - len(missing)}/{len(in_scope)})")
+            continue
+        cur.execute("UPDATE job SET gone_at = now() WHERE id = ANY(%s) AND gone_at IS NULL"
+                    " RETURNING id, pid", (missing,))
+        for r in cur.fetchall():
+            stats["gone"] += 1
+            log_event(cur, r["id"], "disappeared", run_id=run_id,
+                      detail={"scope": _scope(site, r["pid"])})
 
 
 def summary(s: dict) -> str:

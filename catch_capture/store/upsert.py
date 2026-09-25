@@ -287,8 +287,13 @@ JOB_COLUMNS = (
 _UPDATE_COLUMNS = tuple(c for c in JOB_COLUMNS if c not in ("site", "pid", "url"))
 
 
-def upsert_job(cur, row: dict) -> tuple[int, bool]:
+def upsert_job(cur, row: dict, *, seen: bool = True) -> tuple[int, bool]:
     """공고 1건. (job_id, 새로 생겼는가) 를 돌려준다.
+
+    `seen` 은 "이번 회차 목록에서 이 공고를 봤나"다. False 면 본문은 맞추되
+    last_seen_at 과 gone_at 은 건드리지 않는다 — 크롤러 폴더의 jobs.json 은 누적본이라
+    원본에서 내려간 공고도 거기 남아 있고, 그걸 "방금 봤다"로 찍으면 사라짐이
+    다음 사이클에 곧바로 지워진다. 백필처럼 목록 정보가 없는 호출은 기본값(True).
 
     `xmax = 0` 은 이번 문장이 INSERT 였다는 뜻이다 — UPDATE 였다면 갱신된 튜플의
     xmax 가 채워진다. 이 값으로 job_event('appeared') 를 남길지 판단한다.
@@ -321,13 +326,13 @@ def upsert_job(cur, row: dict) -> tuple[int, bool]:
             if take_url:
                 sets.append("url = %s")
                 args.append(row.get("url"))
-            args.append(hit["id"])
+            args.extend([seen, seen, hit["id"]])
             cur.execute(
                 f"""
                 UPDATE job SET {", ".join(sets)},
-                    last_seen_at = now(),
+                    last_seen_at = CASE WHEN %s THEN now() ELSE last_seen_at END,
                     last_crawled_at = now(),
-                    gone_at = NULL
+                    gone_at = CASE WHEN %s THEN NULL ELSE gone_at END
                  WHERE id = %s
                 RETURNING id
                 """,
@@ -343,12 +348,12 @@ def upsert_job(cur, row: dict) -> tuple[int, bool]:
         INSERT INTO job ({cols}) VALUES ({holes})
         ON CONFLICT (url) DO UPDATE SET
             {sets},
-            last_seen_at = now(),
+            last_seen_at = CASE WHEN %s THEN now() ELSE job.last_seen_at END,
             last_crawled_at = now(),
-            gone_at = NULL          -- 다시 나타났다
+            gone_at = CASE WHEN %s THEN NULL ELSE job.gone_at END   -- 다시 나타났다
         RETURNING id, (xmax = 0) AS inserted
         """,
-        tuple(row.get(c) for c in JOB_COLUMNS),
+        (*(row.get(c) for c in JOB_COLUMNS), seen, seen),
     )
     r = cur.fetchone()
     return r["id"], r["inserted"]
