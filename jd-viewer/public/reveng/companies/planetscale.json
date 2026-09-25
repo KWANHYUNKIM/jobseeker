@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "domain": "planetscale.com",
   "one_liner": "남의 데이터를 맡는 쪽 — 백업이 부가 기능이 아니라 제품이고, 고객의 실수까지 자기 문제로 받는다",
   "business_model": "**관리형 데이터베이스를 판다.** 제품은 두 갈래다 — **Postgres** 와 **Vitess(MySQL)**. Vitess 의 출처를 회사가 직접 적는다: **Vitess 는 대규모 데이터베이스 인스턴스 클러스터를 배포·확장·관리하기 위해 **YouTube 에서 발명된**, 실전에서 단련된 오픈소스 기술이다.** PlanetScale 은 그 **Operator 를 유지**하고 호스팅을 판다.\n\n**과금이 사용량이 아니라 인스턴스 크기(SKU)** 라는 점이 눈에 띈다. 요금은 **클러스터 크기 + 스토리지(EBS) + 백업 + 이그레스** 로 짜여 있고, AWS us-east-1 기준으로 Postgres **EBS HA(3노드)** 가 `PS-5` **월 $15** 부터 `PS-2560` **월 $5,599** 까지, **metal(3노드)** 이 `M-10` **$50** 부터 `M-7680` **$47,229** 까지다. Vitess 는 non-metal 3노드가 `PS-10` **$39** ~ `PS-2800` **$7,199**. 요금 페이지에 **무료 티어는 없다.**\n\n**metal 과 EBS 를 갈라 파는 것 자체가 이 회사의 성격을 보여 준다**(이 해석은 이 사이트의 것이다) — metal SKU 는 **스토리지가 값에 포함**되고(로컬 디스크), EBS 는 네트워크 스토리지를 따로 센다. **저장이 어디에 붙느냐를 상품 라인으로 만든 것**이다.\n\n**이 사이트의 다른 인프라 회사들과 자리가 다르다**(아래 비교는 이 사이트의 정리다).\n\n- **Cloudflare · Datadog · Grafana** 는 앞단이나 관측을 맡는다. 잘못되면 느려지거나 안 보인다. **PlanetScale 은 원본 데이터를 맡는다** — 잘못되면 없어진다.\n- **그래서 백업이 부가 기능이 아니라 제품이다.** **12시간마다** 백업하되 **프로덕션에 부담을 주지 않는 것**을 설계 목표로 두고, 샤드마다 임시 노드를 띄워 돌린다.\n- **고객의 실수까지 자기 문제로 받는다.** 연결 풀 오염 글은 원인이 **고객의 애플리케이션 코드**라고 분명히 적으면서도, `DISCARD ALL` 로 풀을 초기화해 주고 예방책까지 안내한다. **맡아 두는 쪽은 '누구 잘못인가'로 끝낼 수 없다**(이 정리는 이 사이트의 것이다).\n- **이 사이트의 두 회사가 각자 겪은 일을 이 회사는 제품으로 판다.** **Vinted** 는 Vitess 로 옮기며 질의 1만 단위를 고치고 2021년 한 해를 이관에 썼고, **Zerodha** 는 Citus 가 **수백 개의 질의를 다시 쓰게** 만든다는 이유로 거부하고 직접 샤딩했다. PlanetScale 은 **그 일을 대신 해 주겠다는 쪽**이다.\n\n**세 기능을 다 판 뒤에 보이는 것 — 남의 것을 맡으면 남의 실수도 맡는다**(이 해석은 이 사이트의 것이고, 셋 다에서 확인된다).\n\n- **동시성** 쪽에서는 **고객의 15분짜리 트랜잭션**이 시스템을 무너뜨렸다. 그 트랜잭션을 막을 권한이 없으니 **번지는 것만** vttablet 상한으로 막았다.\n- **연결 풀** 쪽에서는 **고객 코드가 남긴 세션 상태**가 아무 잘못 없는 다른 요청을 깨뜨렸다. 할 수 있는 것은 `DISCARD ALL` 로 **씻어내고 알려 주는 것**뿐이다.\n- **백업** 쪽에서는 아예 방향을 뒤집었다 — **고객이 실수해도 되돌릴 수 있게** 12시간마다 복원 가능한 상태를 만들어 둔다.\n\n**세 기능이 전부 '내가 통제할 수 없는 것이 내 시스템 안에서 벌어진다'를 다룬다.** 그리고 **고칠 권한이 없는 것은 고객 쪽만이 아니다** — 서브트랜잭션 오버플로의 근본 해법은 **10년 넘게 논의됐고** 패치도 있지만 **어느 것도 PostgreSQL 에 머지되지 않았다.** **이 회사는 Postgres 를 만들지 않는다.**\n\n**그래서 이 회사에서는 글을 쓰는 것 자체가 대응 수단이 된다** — 두 사고 글 모두 **막지 못한 일을 원인·재현·조치·예방까지 공개한 기록**이다.",
@@ -19,7 +19,7 @@
     "title": "PlanetScale 의 도메인 지도",
     "question": "남의 데이터를 맡으면 무엇을 짓게 되는가?",
     "kind": "flow",
-    "code": "flowchart TD\n  CUST[\"<b>고객의 애플리케이션</b><br/>• 코드도 질의도 남의 것<br/>• 실수도 여기서 온다\"]:::list\n  PB[\"PgBouncer / vtgate — 연결을 모은다\"]\n  DB[(\"<b>맡아 둔 데이터</b><br/>Postgres 또는 Vitess(MySQL)<br/>수십~수천 대에 분산\")]\n  subgraph TECH[\"<b>이 사이트가 연 기술 도메인</b>\"]\n    BK[\"<b>백업·복구</b><br/>• 12시간마다<br/>• 샤드마다 임시 노드<br/>• 50GB/s 이상\"]:::accent\n    CT[\"<b>동시성과 처리량</b><br/>• vttablet 트랜잭션 풀<br/>• 넘치면 대기열로<br/>• 한도를 올리면 더 나빠진다\"]:::list\n    PP[\"<b>고객의 실수를 감당하기</b><br/>• 오염된 커넥션 풀<br/>• 원인은 고객 코드인데<br/>  고쳐 주는 쪽이 우리다\"]:::list\n  end\n  PRICE[\"<b>파는 방식</b><br/>• 사용량이 아니라 <b>인스턴스 크기(SKU)</b><br/>• 클러스터 + 스토리지 + 백업 + 이그레스<br/>• <b>metal</b>(스토리지 포함) vs <b>EBS</b>(따로)\"]:::list\n  CUST --> PB --> DB\n  DB --> BK\n  PB --> PP\n  DB --> CT\n  DB --- PRICE\n  VIT[\"<b>Vitess — YouTube 에서 발명</b><br/>PlanetScale 이 Operator 를 유지한다\"]:::quiet\n  DB --- VIT\n  LOSS[\"다른 인프라와 다른 점 —<br/>앞단이 잘못되면 <b>느려지고</b><br/>여기가 잘못되면 <b>없어진다</b>\"]:::quiet\n  BK -.-> LOSS"
+    "code": "flowchart TD\n  CUST[\"<b>고객의 애플리케이션</b><br/>• 코드도 질의도 남의 것<br/>• 실수도 여기서 온다\"]:::list\n  PB[\"PgBouncer / vtgate — 연결을 모은다\"]\n  DB[(\"<b>맡아 둔 데이터</b><br/>Postgres 또는 Vitess(MySQL)<br/>수십~수천 대에 분산\")]\n  subgraph TECH[\"<b>이 사이트가 연 기술 도메인</b>\"]\n    BK[\"<b>백업·복구</b><br/>• 12시간마다<br/>• 샤드마다 임시 노드<br/>• 50GB/s 이상\"]:::accent\n    CT[\"<b>동시성과 처리량</b><br/>• vttablet 트랜잭션 풀<br/>• 넘치면 대기열로<br/>• 한도를 올리면 더 나빠진다\"]:::list\n    PP[\"<b>고객의 실수를 감당하기</b><br/>• 오염된 커넥션 풀<br/>• 원인은 고객 코드인데<br/>  고쳐 주는 쪽이 우리다\"]:::list\n  end\n  PRICE[\"<b>파는 방식</b><br/>• 사용량이 아니라 <b>인스턴스 크기(SKU)</b><br/>• 클러스터 + 스토리지 + 백업 + 이그레스<br/>• <b>metal</b>(스토리지 포함) vs <b>EBS</b>(따로)\"]:::list\n  CUST --> PB --> DB\n  DB --> BK\n  PB --> PP\n  DB --> CT\n  DB --- PRICE\n  VIT[\"<b>Vitess — YouTube 에서 발명</b><br/>PlanetScale 이 Operator 를 유지한다\"]:::quiet\n  DB --- VIT\n  LOSS[\"다른 인프라와 다른 점 —<br/>앞단이 잘못되면 <b>느려지고</b><br/>여기가 잘못되면 <b>없어진다</b>\"]:::quiet\n  BK -.-> LOSS\n  NEKI[\"<b>Neki</b> — 진짜 Postgres 를 샤드로<br/>512 샤드 초당 1억 1,850만(읽기 전용)\"]:::list\n  VIT -.->|\"같은 발상, 다른 엔진\"| NEKI"
   },
   "revenue_streams": [
     {
@@ -189,6 +189,44 @@
       "features": [
         "tenant-blast-radius"
       ]
+    },
+    {
+      "name": "Postgres 를 여러 대로 나눈다",
+      "why": "PlanetScale 은 MySQL 샤딩(Vitess)으로 컸고 Postgres 호스팅으로 넓혔다. 이 도메인은 그 Postgres 를 여러 대로 나누면서도 애플리케이션에는 한 데이터베이스로 보이게 하는 일이다. 백업·동시성·고객 실수 도메인과 가르는 것은, 저쪽이 한 데이터베이스를 지키는 일이라면 이쪽은 데이터베이스 하나로는 안 되는 규모를 여러 대로 받는 일이기 때문이다.",
+      "tech": [
+        {
+          "tech": "Neki (진짜 Postgres 샤드 + Sidecar 풀 + 권위 샤드 + Router + etcd 토폴로지 + Replicator)",
+          "solves": "평범한 Postgres 인스턴스를 샤드로 묶어 연결 문자열 하나로 내민다. 샤드 간 조인·집계는 Router 가 비용으로 계획하고, 장애 조치·컷오버 중 재시도 안전한 질의를 붙잡아 둔다. 벤치마크 512 샤드 초당 1억 1,850만.",
+          "limits": "샤드 간 조인은 라우터에서 비싸고 샤드 키를 질의 패턴에 맞춰야 한다. 커스텀 타입 OID 는 권위 샤드에 기댄다. 공개 벤치마크는 복제본 없이 읽기 전용 점 조회만 쟀다. 지금은 플랫폼 프리뷰다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The architecture of Neki",
+              "url": "https://planetscale.com/blog/the-architecture-of-neki",
+              "publisher": "PlanetScale Blog · Harshit Gangal",
+              "date": "2026-09-18",
+              "summary": "Postgres 샤딩 계층 Neki 의 구성 요소를 아래에서부터 설명한다 — 포크가 아닌 진짜 Postgres, 인스턴스마다 PostgresManager·Sidecar(연결 풀), 샤드(주 + 복제본), 커스텀 타입 OID 를 맞추는 권위 샤드, 장애 조치를 맡는 Admin, 쿠버네티스 Operator, 단일 접속점 Router, etcd 의 데이터 토폴로지, MoveTables·Reshard·OnlineDDL 을 돌리는 Replicator."
+            },
+            {
+              "title": "The lifecycle of a sharded Postgres query",
+              "url": "https://planetscale.com/blog/the-lifecycle-of-a-sharded-postgres-query",
+              "publisher": "PlanetScale Blog",
+              "date": "2026-09-10",
+              "summary": "조인·집계 질의 하나가 Neki Router 에서 파싱·계획되어 샤드로 흩어졌다 모이는 과정. 샤드 간 조인에서 중첩 루프(고객마다 네 샤드에 질의)와 해시 조인(라우터 메모리에 표를 쥠)의 비용을 견주고, 샤드 키를 맞추면 조인을 통째로 샤드에 내려보내 요청이 절반이 되는 것을 보인다. 평균은 합과 개수로 바꿔 샤드마다 계산한다."
+            },
+            {
+              "title": "118 million queries per second on Neki",
+              "url": "https://planetscale.com/blog/118-million-queries-per-second-on-neki",
+              "publisher": "PlanetScale Blog · Florent Poinsard, Hirad Pourtahmasbi",
+              "date": "2026-09-11",
+              "summary": "단일 샤드 기본키 조회만으로 5 → 50 → 512 샤드까지 늘려 초당 1억 1,850만 질의를 16분 유지한 벤치마크. 샤드당 처리량이 거의 그대로(5→50 에서 0.8% 이내). 복제본 없이 주 노드만, 읽기 전용, 측정 중 장애 조치 없음이라고 스스로 밝힌다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "neki-sharded-postgres"
+      ]
     }
   ],
   "open_questions": [
@@ -205,7 +243,8 @@
     "**`DISCARD ALL` 을 상시로 도는지 사고 때만 도는지 글에서 분명하지 않다.** 매 반환마다 돌리면 오염은 원천 차단되지만 왕복 비용이 생기는데, 그 균형을 어떻게 잡는지 나오지 않는다.",
     "**오염된 커넥션 풀 글에는 수치가 전혀 없다** — 얼마나 많은 요청이 영향을 받았는지, 얼마나 오래 갔는지 알 수 없다.",
     "**창업 시점과 관리형 MySQL 출시 시점을 1차 자료로 확인하지 못했다.** 검색 요약으로는 2018년 창업(Vitess 공동 창시자들), 2021년 5월 주요 릴리스로 나오지만 원문을 직접 읽지 못해 시기로 세우지 않았다. 그래서 이 연표는 2025년 3월에서 시작한다 — 회사의 시작이 아니라 확인된 자료의 시작이다.",
-    "**Metal 발표문은 무엇을 포기했는지 적지 않는다.** 이전 저장 방식이 무엇이었는지, 로컬 디스크로 가면서 내구성·용량 확장·페일오버에서 무엇이 달라지는지가 글에 없다. 성능과 비용 수치만 있다."
+    "**Metal 발표문은 무엇을 포기했는지 적지 않는다.** 이전 저장 방식이 무엇이었는지, 로컬 디스크로 가면서 내구성·용량 확장·페일오버에서 무엇이 달라지는지가 글에 없다. 성능과 비용 수치만 있다.",
+    "Neki 는 플랫폼 프리뷰 단계다. 공개 벤치마크는 복제본 없는 읽기 전용 점 조회라 쓰기·샤드 간 조인·장애 조치 중의 성능은 아직 수치가 없다. 회사가 '1억 QPS 에 이르기까지의 공학적 과제'를 다음 글로 예고했다."
   ],
   "sources": [
     {
@@ -263,6 +302,27 @@
       "publisher": "PlanetScale",
       "date": "2026-08-11",
       "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 **`EXCEPTION` 절이 있는 모든 블록** 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 **하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.** 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 **10년 넘게 논의됐고** 패치도 있지만 **어느 것도 PostgreSQL 에 머지되지 않았다.**"
+    },
+    {
+      "title": "The architecture of Neki",
+      "url": "https://planetscale.com/blog/the-architecture-of-neki",
+      "publisher": "PlanetScale Blog · Harshit Gangal",
+      "date": "2026-09-18",
+      "summary": "Postgres 샤딩 계층 Neki 의 구성 요소를 아래에서부터 설명한다 — 포크가 아닌 진짜 Postgres, 인스턴스마다 PostgresManager·Sidecar(연결 풀), 샤드(주 + 복제본), 커스텀 타입 OID 를 맞추는 권위 샤드, 장애 조치를 맡는 Admin, 쿠버네티스 Operator, 단일 접속점 Router, etcd 의 데이터 토폴로지, MoveTables·Reshard·OnlineDDL 을 돌리는 Replicator."
+    },
+    {
+      "title": "The lifecycle of a sharded Postgres query",
+      "url": "https://planetscale.com/blog/the-lifecycle-of-a-sharded-postgres-query",
+      "publisher": "PlanetScale Blog",
+      "date": "2026-09-10",
+      "summary": "조인·집계 질의 하나가 Neki Router 에서 파싱·계획되어 샤드로 흩어졌다 모이는 과정. 샤드 간 조인에서 중첩 루프(고객마다 네 샤드에 질의)와 해시 조인(라우터 메모리에 표를 쥠)의 비용을 견주고, 샤드 키를 맞추면 조인을 통째로 샤드에 내려보내 요청이 절반이 되는 것을 보인다. 평균은 합과 개수로 바꿔 샤드마다 계산한다."
+    },
+    {
+      "title": "118 million queries per second on Neki",
+      "url": "https://planetscale.com/blog/118-million-queries-per-second-on-neki",
+      "publisher": "PlanetScale Blog · Florent Poinsard, Hirad Pourtahmasbi",
+      "date": "2026-09-11",
+      "summary": "단일 샤드 기본키 조회만으로 5 → 50 → 512 샤드까지 늘려 초당 1억 1,850만 질의를 16분 유지한 벤치마크. 샤드당 처리량이 거의 그대로(5→50 에서 0.8% 이내). 복제본 없이 주 노드만, 읽기 전용, 측정 중 장애 조치 없음이라고 스스로 밝힌다."
     }
   ],
   "features": [
@@ -1712,6 +1772,359 @@
           "publisher": "PlanetScale",
           "date": "2026-08-11",
           "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 **`EXCEPTION` 절이 있는 모든 블록** 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 **하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.** 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 **10년 넘게 논의됐고** 패치도 있지만 **어느 것도 PostgreSQL 에 머지되지 않았다.**"
+        }
+      ]
+    },
+    {
+      "key": "neki-sharded-postgres",
+      "name": "Neki — 진짜 Postgres 를 샤드로 묶고 한 주소로 내민다",
+      "domain": "Postgres 를 여러 대로 나눈다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "PlanetScale 은 MySQL 을 샤딩하는 Vitess 위에서 컸고, 그 뒤 Postgres 호스팅을 시작했다. Neki 는 Postgres 쪽의 Vitess 다 — 거대한 샤딩 데이터베이스에 애플리케이션이 연결 문자열 하나로 붙게 한다.\n\n회사가 가장 먼저 못 박는 것은 무엇이 아닌지다. 포크도 아니고, 와이어 프로토콜만 흉내 낸 재구현도 아니고, Postgres 이름을 붙인 MySQL 샤딩도 아니다. 행을 Postgres 데이터 페이지에 MVCC 로 저장하는 **평범한 Postgres 인스턴스**를 그대로 쓰고, 그 둘레에 나누고 키우고 관리하는 층을 짓는다.\n\n그 선택이 나머지 설계를 정한다. 진짜 Postgres 는 연결마다 백엔드 프로세스를 하나씩 쓰니 연결 풀이 필요하고, 샤드마다 카탈로그가 따로라 같은 커스텀 타입이 샤드마다 다른 식별자(OID)를 가질 수 있고, 여러 샤드에 걸친 조인은 누군가 샤드 밖에서 해야 한다. 이 기능은 그 셋을 어떻게 풀었는지의 이야기다.",
+        "metrics": [
+          {
+            "label": "벤치마크 최고",
+            "value": "샤드 **512개**, 초당 **1억 1,850만** 질의를 16분 유지, 데이터 **1.22 PiB**. p99 라우터 6.06ms · 클라이언트 13.95ms, 오류 초당 67건(약 180만 건에 1건)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "118 million queries per second on Neki",
+                "url": "https://planetscale.com/blog/118-million-queries-per-second-on-neki",
+                "publisher": "PlanetScale Blog · Florent Poinsard, Hirad Pourtahmasbi",
+                "date": "2026-09-11",
+                "summary": "단일 샤드 기본키 조회만으로 5 → 50 → 512 샤드까지 늘려 초당 1억 1,850만 질의를 16분 유지한 벤치마크. 샤드당 처리량이 거의 그대로(5→50 에서 0.8% 이내). 복제본 없이 주 노드만, 읽기 전용, 측정 중 장애 조치 없음이라고 스스로 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "선형성",
+            "value": "샤드 5 → 50 에서 샤드당 처리량이 **0.8% 이내**로 유지, 512 에서는 여유가 남아 샤드당 23만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "118 million queries per second on Neki",
+                "url": "https://planetscale.com/blog/118-million-queries-per-second-on-neki",
+                "publisher": "PlanetScale Blog · Florent Poinsard, Hirad Pourtahmasbi",
+                "date": "2026-09-11",
+                "summary": "단일 샤드 기본키 조회만으로 5 → 50 → 512 샤드까지 늘려 초당 1억 1,850만 질의를 16분 유지한 벤치마크. 샤드당 처리량이 거의 그대로(5→50 에서 0.8% 이내). 복제본 없이 주 노드만, 읽기 전용, 측정 중 장애 조치 없음이라고 스스로 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "벤치마크의 조건",
+            "value": "**복제본 없이 주 노드만**, 단일 샤드 기본키 조회만(쓰기·조인·샤드 간 질의 없음), 측정 중 **장애 조치 없음** — 회사가 스스로 밝힌 조건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "118 million queries per second on Neki",
+                "url": "https://planetscale.com/blog/118-million-queries-per-second-on-neki",
+                "publisher": "PlanetScale Blog · Florent Poinsard, Hirad Pourtahmasbi",
+                "date": "2026-09-11",
+                "summary": "단일 샤드 기본키 조회만으로 5 → 50 → 512 샤드까지 늘려 초당 1억 1,850만 질의를 16분 유지한 벤치마크. 샤드당 처리량이 거의 그대로(5→50 에서 0.8% 이내). 복제본 없이 주 노드만, 읽기 전용, 측정 중 장애 조치 없음이라고 스스로 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "조인을 내려보내면",
+            "value": "샤드 키를 맞춰 조인을 통째로 샤드에 보내면 샤드 요청 **8 → 4**, 라우터가 해시 표를 만들 필요 없음(글의 예)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The lifecycle of a sharded Postgres query",
+                "url": "https://planetscale.com/blog/the-lifecycle-of-a-sharded-postgres-query",
+                "publisher": "PlanetScale Blog",
+                "date": "2026-09-10",
+                "summary": "조인·집계 질의 하나가 Neki Router 에서 파싱·계획되어 샤드로 흩어졌다 모이는 과정. 샤드 간 조인에서 중첩 루프(고객마다 네 샤드에 질의)와 해시 조인(라우터 메모리에 표를 쥠)의 비용을 견주고, 샤드 키를 맞추면 조인을 통째로 샤드에 내려보내 요청이 절반이 되는 것을 보인다. 평균은 합과 개수로 바꿔 샤드마다 계산한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 샤딩할지 정할 때",
+          "thought": "포크나 재구현은 Postgres 가 새 판을 낼 때마다 따라가야 하고, 사용자가 쓰던 드라이버·psql 과 어긋날 수 있다. 진짜 Postgres 를 그대로 두면 그런 일이 없는 대신, Postgres 가 한 대일 때는 없던 문제를 둘레에서 풀어야 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "커스텀 타입을 보고",
+          "thought": "클라이언트는 응답의 열 타입 OID 를 읽어 바이트를 해석하고 그 OID 를 캐시해 다시 쓴다. 그런데 독립된 샤드는 같은 커스텀 타입에 다른 OID 를 줄 수 있다. 어느 샤드가 답하든 같은 OID 여야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "샤드 간 조인을 계획하며",
+          "thought": "고객마다 모든 샤드에 주문을 물으면, 해당 주문이 없는 고객 하나를 확인하는 데도 샤드 질의가 넷 든다. 고객 표를 라우터 메모리에 쥐면 자원은 들지만 주문이 도착하는 대로 짝을 맞출 수 있다 — 둘의 추정 비용을 견줘 고른다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "장애 조치 중 들어오는 질의를 보며",
+          "thought": "주 노드가 바뀌는 동안 들어온 질의를 모두 실패시키면 애플리케이션이 그 순간을 다 느낀다. 다시 시도해도 안전한 질의라면 잠깐 붙잡아 두었다가 새 주 노드가 서면 풀면 된다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "샤드",
+            "what": "한 Postgres 클러스터 — 주 노드와 물리 복제본. 복제본은 카탈로그와 OID 를 공유한다. 주 + 복제본 2개 이상을 권한다."
+          },
+          {
+            "name": "Sidecar",
+            "what": "인스턴스마다 앞에 서는 연결 풀. 자동 커밋·열린 트랜잭션·세션 고정 세 가지로 연결을 다르게 빌려준다. 건강 상태와 주/복제 역할을 보고한다."
+          },
+          {
+            "name": "권위 샤드",
+            "what": "클러스터 전체에서 하나. 다른 샤드 응답의 커스텀 타입 OID 를 이 샤드 기준으로 번역하고, 스키마 변경을 Router 에 알린다."
+          },
+          {
+            "name": "Router",
+            "what": "클라이언트가 붙는 단일 Postgres 와이어 프로토콜 접속점. 권위 샤드의 카탈로그로 파싱하고 현재 샤딩 배치로 계획해 gRPC 로 Sidecar 에 보낸다. 샤드 간 조인·집계는 스스로 한다."
+          },
+          {
+            "name": "데이터 토폴로지",
+            "what": "샤드 그룹·라우팅 키 범위·샤드 인덱스(행 값 → 라우팅 키). etcd 에 권위 있는 사본 하나. 바뀌면 재시작 없이 반영된다."
+          }
+        ],
+        "invariants": [
+          "샤드마다 도는 것은 포크가 아닌 진짜 Postgres 다.",
+          "어느 샤드가 답하든 같은 커스텀 타입은 같은 OID 로 보인다.",
+          "장애 조치·컷오버 중에는 다시 시도해도 안전한 질의만 붙잡아 둔다 — 정해진 시간 동안.",
+          "샤딩 배치의 진실은 etcd 의 데이터 토폴로지 하나다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 **Router** 에 Postgres 드라이버로 붙는다 — 인증·역할 확인·확장 질의·준비된 문장 수명까지 Router 가 Postgres 처럼 한다",
+            "why": "애플리케이션은 샤드별 연결을 몰라도 된다."
+          },
+          {
+            "step": "Router 가 **권위 샤드의 카탈로그**로 파싱하고, etcd 의 **데이터 토폴로지**로 어느 샤드에 갈지 계획한다",
+            "why": "샤드마다 카탈로그가 따로라, 해석의 기준을 하나로 둔다."
+          },
+          {
+            "step": "한 샤드면 그대로 보내고, 조인 양쪽이 같은 샤드면 **조인째 내려보낸다**. 샤드를 가로지르면 Router 가 추정 비용으로 **중첩 루프·해시·머지 조인** 중 하나를 골라 직접 한다",
+            "why": "가능하면 일은 Postgres 에 맡긴다."
+          },
+          {
+            "step": "평균 같은 집계는 **합과 개수로 바꿔** 샤드마다 계산시키고 Router 가 합쳐 나눈다",
+            "why": "샤드 평균의 평균은 평균이 아니다 — 샤드마다 주문 수가 다르다."
+          },
+          {
+            "step": "각 샤드 요청에는 데이터베이스·인증된 역할·세션 설정을 함께 싣고, Sidecar 는 트랜잭션·세션 상태에 맞는 방식으로 연결을 빌려준다",
+            "why": "세션은 샤드가 아니라 Router 에 있다."
+          },
+          {
+            "step": "주 노드가 죽으면 **Admin** 이 복제본을 승격하고(pg_rewind 로 갈라진 인스턴스를 새 타임라인에), Router 는 재시도 안전한 질의를 **정해진 시간 붙잡았다가 점진적으로 푼다**. 샤드 분할(Reshard) 컷오버도 같은 버퍼를 쓴다",
+            "why": "애플리케이션이 전환 순간을 덜 느끼게 한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 샤딩할 것인가",
+            "chosen": "**진짜 Postgres** — 평범한 인스턴스를 그대로 두고 둘레에 층을 짓는다.",
+            "alternatives": [
+              "Postgres 포크",
+              "와이어 프로토콜만 맞춘 재구현",
+              "MySQL 샤딩(Vitess) 발상에 Postgres 이름만 붙이기"
+            ],
+            "tradeoff": "psql 과 Postgres 드라이버가 기대대로 돌고, MVCC·트랜잭션이 Postgres 그대로다. 대가는 Postgres 한 대일 때는 없던 문제를 전부 둘레에서 풀어야 한다는 것 — 연결마다 프로세스라 풀링 층(Sidecar)이, 샤드마다 카탈로그라 OID 번역(권위 샤드)이, 인스턴스를 직접 관리할 PostgresManager 가 필요해졌다(이 연결은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The architecture of Neki",
+                "url": "https://planetscale.com/blog/the-architecture-of-neki",
+                "publisher": "PlanetScale Blog · Harshit Gangal",
+                "date": "2026-09-18",
+                "summary": "Postgres 샤딩 계층 Neki 의 구성 요소를 아래에서부터 설명한다 — 포크가 아닌 진짜 Postgres, 인스턴스마다 PostgresManager·Sidecar(연결 풀), 샤드(주 + 복제본), 커스텀 타입 OID 를 맞추는 권위 샤드, 장애 조치를 맡는 Admin, 쿠버네티스 Operator, 단일 접속점 Router, etcd 의 데이터 토폴로지, MoveTables·Reshard·OnlineDDL 을 돌리는 Replicator."
+              }
+            ]
+          },
+          {
+            "question": "연결을 어떻게 나눠 쓸 것인가",
+            "chosen": "**Sidecar 풀이 세 방식으로 빌려준다** — 자동 커밋은 문장이 끝나면 반납, 여러 문장 트랜잭션은 커밋·롤백까지, 세션 범위 advisory lock 은 전용 연결.",
+            "alternatives": [
+              "모든 연결을 같은 방식(예: 트랜잭션 단위)으로 빌려준다"
+            ],
+            "tradeoff": "많은 클라이언트 연결이 적은 Postgres 백엔드를 나눠 쓴다. 대가는 Router 가 질의마다 지금이 자동 커밋인지·트랜잭션 중인지·세션에 묶였는지를 알려 줘야 한다는 것, 그리고 세션 락이 쓰이는 동안은 백엔드 하나가 통째로 묶인다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The architecture of Neki",
+                "url": "https://planetscale.com/blog/the-architecture-of-neki",
+                "publisher": "PlanetScale Blog · Harshit Gangal",
+                "date": "2026-09-18",
+                "summary": "Postgres 샤딩 계층 Neki 의 구성 요소를 아래에서부터 설명한다 — 포크가 아닌 진짜 Postgres, 인스턴스마다 PostgresManager·Sidecar(연결 풀), 샤드(주 + 복제본), 커스텀 타입 OID 를 맞추는 권위 샤드, 장애 조치를 맡는 Admin, 쿠버네티스 Operator, 단일 접속점 Router, etcd 의 데이터 토폴로지, MoveTables·Reshard·OnlineDDL 을 돌리는 Replicator."
+              }
+            ]
+          },
+          {
+            "question": "샤드마다 다른 커스텀 타입 OID 를 어떻게 맞출 것인가",
+            "chosen": "**권위 샤드 하나**를 정해 다른 샤드 응답의 OID 를 그 기준으로 번역한다. 스키마 변경 감시도 그 샤드의 Sidecar 가 한다.",
+            "alternatives": [
+              "샤드마다 OID 를 그대로 내보낸다"
+            ],
+            "tradeoff": "클라이언트가 OID 를 캐시해 써도 어느 샤드가 답하든 맞는다. 대가는 한 샤드가 특별한 역할을 떠안는다는 것 — 카탈로그 해석과 스키마 감시가 그 샤드에 기댄다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The architecture of Neki",
+                "url": "https://planetscale.com/blog/the-architecture-of-neki",
+                "publisher": "PlanetScale Blog · Harshit Gangal",
+                "date": "2026-09-18",
+                "summary": "Postgres 샤딩 계층 Neki 의 구성 요소를 아래에서부터 설명한다 — 포크가 아닌 진짜 Postgres, 인스턴스마다 PostgresManager·Sidecar(연결 풀), 샤드(주 + 복제본), 커스텀 타입 OID 를 맞추는 권위 샤드, 장애 조치를 맡는 Admin, 쿠버네티스 Operator, 단일 접속점 Router, etcd 의 데이터 토폴로지, MoveTables·Reshard·OnlineDDL 을 돌리는 Replicator."
+              }
+            ]
+          },
+          {
+            "question": "샤드를 가로지르는 조인을 어떻게 할 것인가",
+            "chosen": "**Router 가 추정 비용으로 중첩 루프·해시·머지 중 고른다** — 샤드 요청 수·전송 행·처리 행·메모리에 쥘 행을 견준다. 양쪽이 같은 샤드면 조인째 내려보낸다.",
+            "alternatives": [
+              "항상 중첩 루프로 샤드에 거듭 묻는다"
+            ],
+            "tradeoff": "중첩 루프는 고객마다 네 샤드에 물어 주문 없는 고객 하나를 확인하는 데도 넷이 든다. 해시 조인은 고객 표를 라우터 메모리에 쥐는 자원을 쓰지만 반복 요청이 없다. 대가는 라우터가 통계(구별 값 수 등)를 보고 비용을 추정하는 플래너를 갖춰야 한다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The lifecycle of a sharded Postgres query",
+                "url": "https://planetscale.com/blog/the-lifecycle-of-a-sharded-postgres-query",
+                "publisher": "PlanetScale Blog",
+                "date": "2026-09-10",
+                "summary": "조인·집계 질의 하나가 Neki Router 에서 파싱·계획되어 샤드로 흩어졌다 모이는 과정. 샤드 간 조인에서 중첩 루프(고객마다 네 샤드에 질의)와 해시 조인(라우터 메모리에 표를 쥠)의 비용을 견주고, 샤드 키를 맞추면 조인을 통째로 샤드에 내려보내 요청이 절반이 되는 것을 보인다. 평균은 합과 개수로 바꿔 샤드마다 계산한다."
+              }
+            ]
+          },
+          {
+            "question": "샤드 키를 무엇으로 할 것인가",
+            "chosen": "**함께 조인되는 표를 같은 키로 모은다** — 주문을 customer_id 로 나누면 고객과 주문이 같은 샤드에 선다.",
+            "alternatives": [
+              "표마다 제 기본키(orders.id)로 나눈다"
+            ],
+            "tradeoff": "조인을 샤드에 통째로 내려보내 요청이 여덟에서 넷이 되고 해시 표도 필요 없다. 대가는 샤드 키가 질의 패턴을 따라야 한다는 것 — 다른 방향의 조인은 여전히 샤드를 가로지른다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The lifecycle of a sharded Postgres query",
+                "url": "https://planetscale.com/blog/the-lifecycle-of-a-sharded-postgres-query",
+                "publisher": "PlanetScale Blog",
+                "date": "2026-09-10",
+                "summary": "조인·집계 질의 하나가 Neki Router 에서 파싱·계획되어 샤드로 흩어졌다 모이는 과정. 샤드 간 조인에서 중첩 루프(고객마다 네 샤드에 질의)와 해시 조인(라우터 메모리에 표를 쥠)의 비용을 견주고, 샤드 키를 맞추면 조인을 통째로 샤드에 내려보내 요청이 절반이 되는 것을 보인다. 평균은 합과 개수로 바꿔 샤드마다 계산한다."
+              }
+            ]
+          },
+          {
+            "question": "평균 같은 집계를 어떻게 할 것인가",
+            "chosen": "**합과 개수로 다시 써서** 샤드마다 계산하고 Router 가 합친 뒤 나눈다.",
+            "alternatives": [
+              "샤드별 평균을 받아 평균을 낸다"
+            ],
+            "tradeoff": "샤드마다 주문 수가 달라 평균의 평균은 틀린다. 대가는 샤드가 준 바이트를 그대로 복사해 넘기는 지름길을 못 쓰고, Router 의 평가 엔진이 값을 계산해야 한다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The lifecycle of a sharded Postgres query",
+                "url": "https://planetscale.com/blog/the-lifecycle-of-a-sharded-postgres-query",
+                "publisher": "PlanetScale Blog",
+                "date": "2026-09-10",
+                "summary": "조인·집계 질의 하나가 Neki Router 에서 파싱·계획되어 샤드로 흩어졌다 모이는 과정. 샤드 간 조인에서 중첩 루프(고객마다 네 샤드에 질의)와 해시 조인(라우터 메모리에 표를 쥠)의 비용을 견주고, 샤드 키를 맞추면 조인을 통째로 샤드에 내려보내 요청이 절반이 되는 것을 보인다. 평균은 합과 개수로 바꿔 샤드마다 계산한다."
+              }
+            ]
+          },
+          {
+            "question": "주 노드가 바뀌는 동안 들어온 질의를 어떻게 할 것인가",
+            "chosen": "**재시도해도 안전한 질의만** 정해진 시간 붙잡았다가 새 주 노드가 서면 점진적으로 푼다. 샤드 분할 컷오버에도 같은 장치.",
+            "alternatives": [
+              "전환 중 질의를 모두 실패시킨다"
+            ],
+            "tradeoff": "애플리케이션이 전환을 덜 느낀다. 대가는 안전하지 않은 질의는 여전히 실패하고, 붙잡힌 질의는 그만큼 늦는다는 것이다(이 사이트의 해석). 게다가 공개된 벤치마크는 측정 중 장애 조치가 없어 이 경로의 비용은 아직 수치로 나오지 않았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The architecture of Neki",
+                "url": "https://planetscale.com/blog/the-architecture-of-neki",
+                "publisher": "PlanetScale Blog · Harshit Gangal",
+                "date": "2026-09-18",
+                "summary": "Postgres 샤딩 계층 Neki 의 구성 요소를 아래에서부터 설명한다 — 포크가 아닌 진짜 Postgres, 인스턴스마다 PostgresManager·Sidecar(연결 풀), 샤드(주 + 복제본), 커스텀 타입 OID 를 맞추는 권위 샤드, 장애 조치를 맡는 Admin, 쿠버네티스 Operator, 단일 접속점 Router, etcd 의 데이터 토폴로지, MoveTables·Reshard·OnlineDDL 을 돌리는 Replicator."
+              },
+              {
+                "title": "118 million queries per second on Neki",
+                "url": "https://planetscale.com/blog/118-million-queries-per-second-on-neki",
+                "publisher": "PlanetScale Blog · Florent Poinsard, Hirad Pourtahmasbi",
+                "date": "2026-09-11",
+                "summary": "단일 샤드 기본키 조회만으로 5 → 50 → 512 샤드까지 늘려 초당 1억 1,850만 질의를 16분 유지한 벤치마크. 샤드당 처리량이 거의 그대로(5→50 에서 0.8% 이내). 복제본 없이 주 노드만, 읽기 전용, 측정 중 장애 조치 없음이라고 스스로 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "커밋을 언제 확인해 줄 것인가",
+            "chosen": "**샤드마다 내구성 정책을 고른다** — 비동기 · 동기(복제본 하나) · 교차 영역 동기(다른 가용 영역의 복제본).",
+            "alternatives": [
+              "클러스터 전체에 한 정책"
+            ],
+            "tradeoff": "잃어도 되는 범위(노드 하나 · 영역 하나)에 맞춰 고른다. Postgres 자체의 동기 복제로 강제하고, Admin 이 복제본이 들고 나거나 주 노드가 다른 영역으로 옮겨도 설정을 맞춘다. 대가는 동기일수록 커밋이 복제본을 기다리는 지연이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The architecture of Neki",
+                "url": "https://planetscale.com/blog/the-architecture-of-neki",
+                "publisher": "PlanetScale Blog · Harshit Gangal",
+                "date": "2026-09-18",
+                "summary": "Postgres 샤딩 계층 Neki 의 구성 요소를 아래에서부터 설명한다 — 포크가 아닌 진짜 Postgres, 인스턴스마다 PostgresManager·Sidecar(연결 풀), 샤드(주 + 복제본), 커스텀 타입 OID 를 맞추는 권위 샤드, 장애 조치를 맡는 Admin, 쿠버네티스 Operator, 단일 접속점 Router, etcd 의 데이터 토폴로지, MoveTables·Reshard·OnlineDDL 을 돌리는 Replicator."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "concurrency-limits",
+          "via": "MySQL 의 Vitess 와 Postgres 의 Neki",
+          "contract": "동시성 상한 기능은 Vitess·MySQL 에서 처리량이 무너지지 않게 하는 이야기였다. Neki 는 같은 회사가 같은 샤딩 발상을 Postgres 로 옮긴 것이지만, 회사는 'MySQL 샤딩 발상에 Postgres 이름만 붙인 것이 아니다'라고 못 박는다 — 연결마다 프로세스인 Postgres 의 성질이 Sidecar 풀을 요구한다(이 연결은 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "질의 하나가 샤드로 흩어졌다 모이기까지",
+          "question": "애플리케이션은 왜 샤드를 몰라도 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  APP[\"애플리케이션 — Postgres 드라이버\"] --> R[\"<b>Router</b><br/>• 인증 · 준비된 문장<br/>• 권위 샤드 카탈로그로 파싱<br/>• 비용으로 계획\"]:::accent\n  ETCD[(\"etcd — 데이터 토폴로지<br/>샤드 그룹 · 키 범위\")]:::quiet --> R\n  R -->|\"gRPC\"| S1[\"Sidecar — 풀\"] --> P1[(\"샤드 1<br/>주 + 복제본\")]\n  R -->|\"gRPC\"| S2[\"Sidecar — 풀\"] --> P2[(\"샤드 2\")]\n  R -->|\"gRPC\"| S3[\"Sidecar — 풀\"] --> P3[(\"샤드 N\")]\n  P1 -->|\"같은 샤드 조인은 여기서\"| S1\n  R --> JOIN{\"샤드를 가로지르나\"}\n  JOIN -->|\"예\"| RJ[\"Router 가 조인 · 집계<br/>중첩 루프 / 해시 / 머지<br/>평균 = 합 ÷ 개수\"]:::list\n  AUTH[\"권위 샤드<br/>OID 번역 · 스키마 감시\"]:::quiet -.-> R"
+        },
+        {
+          "title": "주 노드가 바뀌는 동안",
+          "question": "장애 조치 중 들어온 질의는 어떻게 되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Healthy: 주 노드가 답한다\n  Healthy --> PrimaryDown: 주 노드 장애\n  PrimaryDown --> Promoting: Admin 이 복제본 승격 · pg_rewind\n  state Promoting {\n    [*] --> Buffering: 재시도 안전한 질의 — 정해진 시간 붙잡는다\n    [*] --> Failing: 안전하지 않은 질의 — 실패\n  }\n  Promoting --> Healthy: 새 주 노드 — 붙잡은 질의를 점진적으로 푼다\n  Healthy --> Cutover: Reshard · MoveTables 전환\n  Cutover --> Healthy: 같은 버퍼로 전환"
+        },
+        {
+          "title": "실패 경로 — 샤딩이 값을 청구하는 자리",
+          "question": "진짜 Postgres 를 여러 대로 나누면 어디가 비싸지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  PROC[\"Postgres — 연결마다 프로세스\"] --> POOL[\"Sidecar 풀 · 세 방식\"]\n  POOL --> LOCK[\"세션 락은 백엔드 하나를 통째로\"]:::quiet\n  CAT[\"샤드마다 카탈로그\"] --> OID[\"같은 타입, 다른 OID\"]\n  OID --> AUTHS[\"권위 샤드에 기댄다\"]:::quiet\n  CROSS[\"샤드 가로지르는 조인\"] --> NL[\"중첩 루프 — 고객마다 네 샤드\"]:::accent\n  CROSS --> HASH[\"해시 — 라우터 메모리\"]\n  AVG[\"샤드 평균의 평균\"] --> WRONG[\"틀린 답 — 합 ÷ 개수로\"]\n  BENCH[\"1억 1,850만 QPS\"] -.->|\"조건\"| COND[\"복제본 없음 · 읽기 전용 점 조회 · 장애 조치 없음\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "The architecture of Neki",
+          "url": "https://planetscale.com/blog/the-architecture-of-neki",
+          "publisher": "PlanetScale Blog · Harshit Gangal",
+          "date": "2026-09-18",
+          "summary": "Postgres 샤딩 계층 Neki 의 구성 요소를 아래에서부터 설명한다 — 포크가 아닌 진짜 Postgres, 인스턴스마다 PostgresManager·Sidecar(연결 풀), 샤드(주 + 복제본), 커스텀 타입 OID 를 맞추는 권위 샤드, 장애 조치를 맡는 Admin, 쿠버네티스 Operator, 단일 접속점 Router, etcd 의 데이터 토폴로지, MoveTables·Reshard·OnlineDDL 을 돌리는 Replicator."
+        },
+        {
+          "title": "The lifecycle of a sharded Postgres query",
+          "url": "https://planetscale.com/blog/the-lifecycle-of-a-sharded-postgres-query",
+          "publisher": "PlanetScale Blog",
+          "date": "2026-09-10",
+          "summary": "조인·집계 질의 하나가 Neki Router 에서 파싱·계획되어 샤드로 흩어졌다 모이는 과정. 샤드 간 조인에서 중첩 루프(고객마다 네 샤드에 질의)와 해시 조인(라우터 메모리에 표를 쥠)의 비용을 견주고, 샤드 키를 맞추면 조인을 통째로 샤드에 내려보내 요청이 절반이 되는 것을 보인다. 평균은 합과 개수로 바꿔 샤드마다 계산한다."
+        },
+        {
+          "title": "118 million queries per second on Neki",
+          "url": "https://planetscale.com/blog/118-million-queries-per-second-on-neki",
+          "publisher": "PlanetScale Blog · Florent Poinsard, Hirad Pourtahmasbi",
+          "date": "2026-09-11",
+          "summary": "단일 샤드 기본키 조회만으로 5 → 50 → 512 샤드까지 늘려 초당 1억 1,850만 질의를 16분 유지한 벤치마크. 샤드당 처리량이 거의 그대로(5→50 에서 0.8% 이내). 복제본 없이 주 노드만, 읽기 전용, 측정 중 장애 조치 없음이라고 스스로 밝힌다."
         }
       ]
     }
