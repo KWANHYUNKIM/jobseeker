@@ -447,7 +447,7 @@ def load_health(label: str | None = None, limit: int = 0) -> list[dict]:
                                FILTER (WHERE s.site IS NOT NULL), '{}'::jsonb) AS sites
                  FROM crawl_run r
                  LEFT JOIN crawl_run_site s ON s.crawl_run_id = r.id
-                WHERE r.detail ? 'fill_rates' AND (%s IS NULL OR r.label = %s)
+                WHERE r.detail ? 'fill_rates' AND (%s::text IS NULL OR r.label = %s)
                 GROUP BY r.id
                 ORDER BY r.started_at""",
             (label, label),
