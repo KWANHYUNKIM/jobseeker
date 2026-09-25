@@ -1,0 +1,147 @@
+{
+  "book": "jvm-tuning",
+  "id": "init-order",
+  "no": "3.4",
+  "chapter": 3,
+  "title": "초기화 시점",
+  "summary": "언제 static 이 도나.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "초기화를 거는 것과 안 거는 것을 가른다.",
+    "부모의 static 을 자식 이름으로 읽을 때 무엇이 도는지 안다.",
+    "배열 생성이 초기화를 안 건다는 것을 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "3.1절에서 **초기화는 쓸 때가 되어야 일어난다**고 했다. 그 '쓸 때' 가 정확히 언제인지는 **규약에 목록으로 정해져** 있다.\n\n외우는 것보다 **거는 것과 안 거는 것을 갈라 놓고 한 번 돌려 보는** 편이 오래 남는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "세 클래스에 표시를 심는다",
+      "code": "class Parent { static { System.out.println(\"[Parent] init\"); }\n               static final String P_CONST = \"const\";\n               static String p_runtime = \"runtime\"; }\n\nclass Child extends Parent { static { System.out.println(\"[Child] init\"); } }\n\nclass Solo { static { System.out.println(\"[Solo] init\"); }\n             static void hello() {} }"
+    },
+    {
+      "type": "table",
+      "caption": "무엇이 초기화를 거는가",
+      "columns": [
+        "한 일",
+        "초기화된 것",
+        "왜"
+      ],
+      "rows": [
+        [
+          "`new Solo[3]`",
+          "**아무것도 안 됨**",
+          "배열 타입이 만들어질 뿐 원소 클래스는 안 건드린다"
+        ],
+        [
+          "`Child.p_runtime`",
+          "**Parent 만**",
+          "**그 필드를 선언한 클래스**가 초기화된다"
+        ],
+        [
+          "`Child.P_CONST`",
+          "**아무것도 안 됨**",
+          "상수는 복사돼 있다(3.1절)"
+        ],
+        [
+          "`new Child()`",
+          "**Child**",
+          "인스턴스를 만들면 건다 — Parent 는 이미 됐다"
+        ],
+        [
+          "`Solo.hello()`",
+          "**Solo**",
+          "static 메서드 호출이 건다"
+        ]
+      ],
+      "note": "**둘째 줄이 이 절의 핵심**이다 — `Child.p_runtime` 이라고 썼는데 Child 는 초기화되지 않는다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "이름으로 썼다고 그 클래스가 도는 게 아니다",
+      "md": "`Child.p_runtime` 은 **소스에 Child 라고 적혀 있지만 Parent 의 필드**다.\n\n> 규약은 **필드를 선언한 클래스**를 초기화한다고 정한다.\n> 그래서 **Child 의 static 블록은 4) 에 가서야** 돈다.\n> 초기화 순서에 기대는 코드를 쓰면 **이 자리에서 조용히 어긋난다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "기동 시간을 여기서 깎는다",
+      "md": "**안 쓰는 클래스는 초기화하지 않는 것이 기본 동작**이다.\n\n> 그래서 기동 직후에는 **아직 초기화 안 된 클래스가 잔뜩** 남아 있고, 첫 요청이 그것들을 건다.\n> 11장에서 기동 프로파일을 볼 때 **`-Xlog:class+init` 의 줄 수**가 이 비용의 대리 지표가 된다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ java -cp . Init\n\n  1) 배열만 만든다  new Solo[3]\n                                       <- 아무 출력이 없다\n  2) 부모의 static 을 자식 이름으로 읽는다  Child.p_runtime\n     [Parent] init                     <- Parent 만. Child 는 안 돈다\n     runtime\n  3) 부모의 상수를 읽는다  Child.P_CONST\n     const                             <- 초기화 없음\n  4) 자식을 new 한다  new Child()\n     [Child] init                      <- 여기서야 Child 가 돈다\n  5) static 메서드를 부른다  Solo.hello()\n     [Solo] init\n  (배열 3칸은 그대로 비어 있다)",
+      "note": "**1) 과 3) 에는 출력이 한 줄도 없다.** 안 거는 쪽이 이 절에서 더 중요하다."
+    }
+  ],
+  "recap": [
+    "배열을 만들어도 원소 클래스는 초기화되지 않는다.",
+    "부모의 static 을 자식 이름으로 읽으면 부모만 초기화된다.",
+    "상수를 읽으면 아무것도 초기화되지 않는다.",
+    "new · static 메서드 호출 · 상수 아닌 static 접근이 초기화를 건다.",
+    "초기화는 처음 쓸 때 한 번이라 기동 직후 첫 요청이 그 비용을 문다."
+  ],
+  "drills": [
+    {
+      "task": "내 프로젝트에서 static 블록을 가진 클래스를 찾아 언제 도는지 로그로 확인한다.",
+      "done_when": "기동 중인지 첫 요청 때인지 가른다.",
+      "minutes": 12
+    },
+    {
+      "task": "Child.p_runtime 예제를 직접 만들어 Parent 만 도는 것을 본다.",
+      "done_when": "규약의 문장과 출력을 맞춰 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "-Xlog:class+init 줄 수를 기동 전후로 센다.",
+      "done_when": "첫 요청이 거는 초기화 수를 안다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "new Solo[3] 은 Solo 를 초기화하나.",
+      "a": "안 한다. 배열 타입만 만들어진다."
+    },
+    {
+      "q": "Child.p_runtime 을 읽으면 무엇이 초기화되나.",
+      "a": "그 필드를 선언한 Parent 만이다. Child 는 안 된다."
+    },
+    {
+      "q": "초기화를 거는 대표적인 셋은.",
+      "a": "new, static 메서드 호출, 상수가 아닌 static 필드 접근이다."
+    },
+    {
+      "q": "왜 기동 직후 첫 요청이 느린가.",
+      "a": "아직 초기화 안 된 클래스들이 그때 초기화되기 때문이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "능동적 사용",
+      "what": "초기화를 거는 사용. 규약이 목록으로 정해 둔다."
+    },
+    {
+      "term": "수동적 사용",
+      "what": "초기화를 걸지 않는 사용. 배열 생성과 상수 읽기가 여기 든다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "The Java Virtual Machine Specification, Java SE 17 — 5.5 Initialization",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-5.html#jvms-5.5",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "The Java Language Specification, Java SE 17 — 12.4 Initialization of Classes and Interfaces",
+      "url": "https://docs.oracle.com/javase/specs/jls/se17/html/jls-12.html#jls-12.4",
+      "publisher": "Oracle"
+    }
+  ]
+}

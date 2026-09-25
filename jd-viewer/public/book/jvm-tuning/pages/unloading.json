@@ -1,0 +1,114 @@
+{
+  "book": "jvm-tuning",
+  "id": "unloading",
+  "no": "3.5",
+  "chapter": 3,
+  "title": "언로딩",
+  "summary": "클래스도 사라진다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "클래스가 언로드되는 조건을 안다.",
+    "언로드를 로그로 직접 확인한다.",
+    "무엇 하나만 붙잡아도 안 사라지는 것을 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "객체만 수집되는 것이 아니다. **클래스도 사라진다.** 다만 조건이 까다롭다.\n\n3.3절에서 **클래스의 정체가 (이름, 로더) 쌍**이라고 했다. 그 말은 곧 **클래스가 자기를 읽은 로더에 묶여 있다**는 뜻이고, 언로딩의 조건이 여기서 나온다."
+    },
+    {
+      "type": "figure",
+      "caption": "클래스 하나가 사라지려면 셋이 동시에 참이어야 한다",
+      "ascii": "   no live instance        of that class anywhere\n   no live Class object    nobody holds MyClass.class\n   loader unreachable      the loader itself is garbage\n\n   and then the collector has to actually run\n\n   bootstrap and platform loaders are never unreachable,\n   so their classes never unload",
+      "note": "**셋 중 하나만 살아 있어도 안 사라진다.** 3.6절의 누수가 이 셋째 줄에서 온다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 내 클래스는 보통 안 사라진다",
+      "md": "**app 로더는 프로세스가 끝날 때까지 산다.**\n\n> `-cp` 로 읽은 클래스는 **로더가 영영 살아 있으니 언로드 대상이 아니다.**\n> 언로딩이 실제로 일어나는 자리는 **직접 만든 로더** 쪽이다 — 플러그인, 웹 애플리케이션, 스크립트 엔진.\n> 그 말은 **언로딩이 안 되는 것이 문제가 되는 곳도 거기**라는 뜻이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 확인한다 — 끊으면 사라지고, 하나만 잡아도 안 사라진다\n\n로더를 하나 만들어 클래스를 읽고, **참조를 끊고 GC 를 부른다.** 그다음 **`Class` 객체 하나만 static 에 남겨 두고** 똑같이 해 본다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "Class 객체 하나가 로더 전체를 붙잡는다",
+      "md": "인스턴스도 아니고 **`Class` 객체 하나**다.\n\n> `Class` 는 **자기를 읽은 로더를 가리키고**, 로더는 **자기가 읽은 모든 클래스를 가리킨다.**\n> 그래서 **클래스 하나를 붙잡으면 그 로더가 읽은 것 전부가 산다.**\n> 3.6절의 메타스페이스 누수가 정확히 이 고리다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Unload.java\npublic class Unload {\n    static Object strongRef;          // 붙잡아 두는 자리\n    public static void main(String[] a) throws Exception {\n        Path dir = Paths.get(a[0]);\n        boolean leak = a.length > 1 && a[1].equals(\"leak\");\n\n        URLClassLoader cl = new URLClassLoader(\"tmp\",\n            new URL[]{ dir.toUri().toURL() }, null);\n        Class<?> c = cl.loadClass(\"Solo\");\n        if (leak) strongRef = c;      // Class 객체 하나만 붙잡는다\n\n        cl.close(); cl = null; c = null;\n        for (int i = 0; i < 3; i++) { System.gc(); Thread.sleep(200); }\n    }\n}\n\n# --- 1) 안 붙잡으면 ---\n\n$ java -Xlog:class+unload=info -cp . Unload .\n  로더로 Solo 를 읽었다: tmp\n  참조를 끊고 GC 를 부른다\n[0.025s][info][class,unload] unloading class Solo 0x0000000301000400\n  끝\n\n# --- 2) Class 객체 하나만 붙잡으면 ---\n\n$ java -Xlog:class+unload=info -cp . Unload . leak\n  로더로 Solo 를 읽었다: tmp\n  Class 객체를 static 에 붙잡아 둔다\n  참조를 끊고 GC 를 부른다\n  끝\n                                      <- unloading 줄이 아예 없다",
+      "note": "**`cl.close()` 를 불러도 소용없다.** close 는 열어 둔 jar 핸들을 닫을 뿐, **이미 읽은 클래스를 지우지 않는다.**"
+    }
+  ],
+  "recap": [
+    "클래스가 언로드되려면 인스턴스·Class 객체·로더가 모두 도달 불가능해야 한다.",
+    "app 로더는 프로세스와 함께 사니 -cp 로 읽은 클래스는 언로드되지 않는다.",
+    "언로딩은 직접 만든 로더에서만 실제로 일어난다.",
+    "Class 객체 하나만 붙잡아도 그 로더가 읽은 것 전부가 살아남는다.",
+    "ClassLoader.close() 는 이미 읽은 클래스를 지우지 않는다."
+  ],
+  "drills": [
+    {
+      "task": "URLClassLoader 로 클래스를 읽고 -Xlog:class+unload 로 언로드를 확인한다.",
+      "done_when": "unloading 줄을 직접 낸다.",
+      "minutes": 12
+    },
+    {
+      "task": "Class 객체를 static 에 남기고 같은 실험을 반복한다.",
+      "done_when": "언로드가 안 되는 것을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "내 애플리케이션에 -Xlog:class+unload 를 붙여 하루치 로그를 본다.",
+      "done_when": "언로드가 일어나는지 아닌지 안다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "클래스 언로딩의 세 조건은.",
+      "a": "인스턴스가 없고, Class 객체를 아무도 안 잡고, 로더가 도달 불가능해야 한다."
+    },
+    {
+      "q": "-cp 로 읽은 클래스가 언로드되지 않는 이유는.",
+      "a": "app 로더가 프로세스 끝까지 살아 있기 때문이다."
+    },
+    {
+      "q": "Class 객체 하나를 잡으면 무엇이 살아남나.",
+      "a": "그 로더와 그 로더가 읽은 모든 클래스다."
+    },
+    {
+      "q": "ClassLoader.close() 가 하는 일은.",
+      "a": "열어 둔 jar 핸들을 닫는다. 이미 읽은 클래스는 안 지운다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "클래스 언로딩",
+      "what": "메서드 영역에서 클래스 메타데이터를 걷어내는 것. 로더 단위로 일어난다."
+    },
+    {
+      "term": "도달 불가능",
+      "what": "GC 루트에서 참조를 따라가 닿지 않는 상태. 언로딩의 전제다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "The Java Virtual Machine Specification, Java SE 17 — 12.7 Unloading of Classes and Interfaces",
+      "url": "https://docs.oracle.com/javase/specs/jls/se17/html/jls-12.html#jls-12.7",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — URLClassLoader.close",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URLClassLoader.html#close()",
+      "publisher": "Oracle"
+    }
+  ]
+}

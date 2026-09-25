@@ -153,7 +153,7 @@
           "title": "초기화 시점",
           "summary": "언제 static 이 도나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -161,7 +161,7 @@
           "title": "언로딩",
           "summary": "클래스도 사라진다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -169,7 +169,7 @@
           "title": "클래스로더 누수",
           "summary": "재배포마다 늘어나는 메타스페이스.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

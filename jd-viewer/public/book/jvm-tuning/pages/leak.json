@@ -1,0 +1,158 @@
+{
+  "book": "jvm-tuning",
+  "id": "leak",
+  "no": "3.6",
+  "chapter": 3,
+  "title": "클래스로더 누수",
+  "summary": "재배포마다 늘어나는 메타스페이스.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "재배포 누수를 곡선으로 본다.",
+    "OutOfMemoryError: Metaspace 를 직접 낸다.",
+    "무엇이 로더를 붙잡는지 아는 자리를 갖는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절에서 **`Class` 객체 하나가 로더 전체를 붙잡는다**고 했다. 그 일이 **재배포마다 반복되면** 어떻게 되는지가 이 절이다.\n\n웹 애플리케이션을 다시 올릴 때마다 **새 로더가 하나 생긴다.** 옛 로더가 안 죽으면 **옛 클래스가 그대로 남은 채 새 클래스가 또 쌓인다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 재배포 1,000번을 흉내 낸다\n\n로더를 만들어 클래스를 읽는 것을 **1,000번 반복**한다. 한 번은 **참조를 끊고**, 한 번은 **`Class` 객체만 목록에 남긴다.** 메타스페이스 사용량을 200회마다 잰다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 1,000회, 붙잡느냐 아니냐",
+      "columns": [
+        "회차",
+        "안 붙잡을 때",
+        "붙잡을 때"
+      ],
+      "rows": [
+        [
+          "시작",
+          "723 KB",
+          "723 KB"
+        ],
+        [
+          "200",
+          "998 KB",
+          "1,257 KB"
+        ],
+        [
+          "400",
+          "1,071 KB",
+          "1,597 KB"
+        ],
+        [
+          "600",
+          "1,159 KB",
+          "1,951 KB"
+        ],
+        [
+          "800",
+          "1,171 KB",
+          "2,237 KB"
+        ],
+        [
+          "1,000",
+          "**1,173 KB**",
+          "**2,513 KB**"
+        ]
+      ],
+      "note": "**왼쪽은 600회쯤에서 평평해지고 오른쪽은 계속 오른다.** 평평해지는지 아닌지가 누수의 판별식이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "곡선의 모양이 답이다",
+      "md": "**절대값이 아니라 기울기**를 본다.\n\n> 정상은 **올라가다 평평해진다** — 쓸 클래스를 다 읽으면 더 안 읽는다.\n> 누수는 **평평해지지 않는다** — 재배포 수에 비례해 계속 오른다.\n> 1.5절에서 정한 세 숫자 중 **라이브 셋을 보는 법과 같다** — 평평한가 아닌가."
+    },
+    {
+      "type": "prose",
+      "md": "## 한도를 걸면 죽는다\n\n메타스페이스는 기본값이 사실상 무제한이라 **누수가 있어도 한참 뒤에 드러난다.** `-XX:MaxMetaspaceSize` 로 조여 두면 **언제 죽는지**가 분명해진다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "Java heap space 가 아니다",
+      "md": "```\njava.lang.OutOfMemoryError: Metaspace\n```\n\n> 2.5절에서 본 그 패턴이다 — **같은 예외 클래스, 다른 칸.**\n> **힙 덤프를 떠도 안 나온다.** 힙에 있는 문제가 아니다.\n> 여기서 봐야 하는 것은 **로더 개수**다 — `jcmd <pid> VM.classloader_stats`."
+    },
+    {
+      "type": "prose",
+      "md": "## 무엇이 로더를 붙잡는가\n\n실전에서 로더를 붙잡는 것은 대개 **애플리케이션 밖에 사는 무언가**다. 정적 레지스트리, 스레드풀의 `ThreadLocal`, JDBC 드라이버 등록, 종료되지 않은 스레드. **공통점은 로더보다 오래 사는 자리에 로더 쪽 객체가 담긴다는 것**이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Redeploy.java\npublic class Redeploy {\n    static final List<Object> LEAKED = new ArrayList<>();   // 재배포마다 남는 것\n    static long metaspaceKB() {\n        for (MemoryPoolMXBean p : ManagementFactory.getMemoryPoolMXBeans())\n            if (p.getName().equals(\"Metaspace\")) return p.getUsage().getUsed() >> 10;\n        return -1;\n    }\n    public static void main(String[] a) throws Exception {\n        for (int i = 1; i <= rounds; i++) {\n            URLClassLoader cl = new URLClassLoader(\"app-v\" + i,\n                new URL[]{ dir.toUri().toURL() }, null);\n            Class<?> c = cl.loadClass(\"Solo\");\n            if (leak) LEAKED.add(c);          // Class 하나만 남겨도 로더 전체가 산다\n            else cl.close();\n        }\n    }\n}\n\n# --- 1) 안 붙잡을 때 ---\n\n$ java -cp . Redeploy . clean 1000\n  시작    메타스페이스    723 KB\n   200회  메타스페이스    998 KB\n   400회  메타스페이스  1,071 KB\n   600회  메타스페이스  1,159 KB\n   800회  메타스페이스  1,171 KB\n  1000회  메타스페이스  1,175 KB      <- 평평해졌다\n\n# --- 2) Class 만 붙잡을 때 ---\n\n$ java -cp . Redeploy . leak 1000\n  시작    메타스페이스    723 KB\n   200회  메타스페이스  1,257 KB\n   400회  메타스페이스  1,597 KB\n   600회  메타스페이스  1,951 KB\n   800회  메타스페이스  2,237 KB\n  1000회  메타스페이스  2,513 KB      <- 계속 오른다\n\n# --- 3) 16m 로 조이고 20,000회 ---\n\n$ java -XX:MaxMetaspaceSize=16m -cp . Redeploy . leak 20000\n  2200회  메타스페이스  4,162 KB\n  2400회  메타스페이스  4,433 KB\nException in thread \"main\" java.lang.OutOfMemoryError: Metaspace\n\tat java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:420)\n\tat Redeploy.main(Redeploy.java:22)\n\n$ java -XX:MaxMetaspaceSize=16m -cp . Redeploy . clean 20000\n  20000회  메타스페이스  1,336 KB\n  끝       메타스페이스  1,335 KB     <- 같은 한도로 스무 배를 지나갔다",
+      "note": "**같은 16m 한도에서 하나는 2,400회에 죽고 하나는 20,000회를 평평하게 지난다.** 한도가 작은 것이 아니라 누수가 있는 것이다."
+    }
+  ],
+  "recap": [
+    "재배포마다 로더가 새로 생기고 옛 로더가 안 죽으면 클래스가 쌓인다.",
+    "Class 객체만 남겨도 1,000회에 메타스페이스가 723KB 에서 2,513KB 가 됐다.",
+    "정상은 600회쯤에서 평평해졌고 누수는 평평해지지 않았다.",
+    "판별식은 절대값이 아니라 곡선이 평평해지는가다.",
+    "16m 한도에서 누수는 2,400회에 OutOfMemoryError: Metaspace 로 죽었다."
+  ],
+  "drills": [
+    {
+      "task": "Redeploy 예제를 만들어 두 모드의 곡선을 직접 그린다.",
+      "done_when": "평평해지는 쪽과 아닌 쪽을 눈으로 가른다.",
+      "minutes": 15
+    },
+    {
+      "task": "jcmd <pid> VM.classloader_stats 로 로더 개수를 센다.",
+      "done_when": "재배포 수와 로더 수를 비교한다.",
+      "minutes": 12
+    },
+    {
+      "task": "-XX:MaxMetaspaceSize 를 작게 주고 OutOfMemoryError: Metaspace 를 직접 낸다.",
+      "done_when": "메시지를 눈으로 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "클래스로더 누수를 판별하는 기준은.",
+      "a": "메타스페이스 곡선이 평평해지는가다. 절대값이 아니다."
+    },
+    {
+      "q": "OutOfMemoryError: Metaspace 를 힙 덤프로 볼 수 있나.",
+      "a": "없다. 힙에 있는 문제가 아니다. 로더 개수를 봐야 한다."
+    },
+    {
+      "q": "실전에서 로더를 붙잡는 것들은.",
+      "a": "정적 레지스트리, ThreadLocal, 드라이버 등록, 종료 안 된 스레드처럼 로더보다 오래 사는 자리다."
+    },
+    {
+      "q": "메타스페이스 기본값이 사실상 무제한인 것이 왜 문제인가.",
+      "a": "누수가 있어도 한참 뒤에야 드러나기 때문이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "클래스로더 누수",
+      "what": "로더가 도달 가능한 채로 남아 그 로더의 클래스가 언로드되지 않는 것."
+    },
+    {
+      "term": "메타스페이스",
+      "what": "클래스 메타데이터를 담는 힙 밖의 영역. 자바 8 에서 PermGen 을 대체했다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Troubleshooting Guide, Understand the OutOfMemoryError Exception",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/troubleshooting-memory-leaks.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JEP 122: Remove the Permanent Generation",
+      "url": "https://openjdk.org/jeps/122",
+      "publisher": "OpenJDK"
+    }
+  ]
+}
