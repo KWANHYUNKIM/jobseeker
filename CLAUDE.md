@@ -8,7 +8,10 @@
     마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에
     다시 물어보는 재확인(`close_check` → `job_closures.json` 원장). 원장이 우선한다.
     크롤은 "지금 올라온 공고"만 알려주므로 재확인이 없으면 마감이 영영 안 닫힌다
-    (특히 목록에 마감일 표기가 없는 wanted). auto_crawl 이 사이클마다 400건씩 돌린다.
+    (특히 목록에 마감일 표기가 없는 wanted). auto_crawl 이 사이클마다 400건, 크롤 사이
+    대기 중에도 10분마다 100건씩 돌린다(`CLOSE_CHECK_EVERY`/`CLOSE_CHECK_BATCH`).
+    다시 묻는 주기는 공고마다 다르다 — 처음 보는 것·목록에서 사라진 것은 즉시,
+    마감일 모름 1일, 마감일 있음 3일(조기 마감), 지난번 답 못 얻음 7일.
     재확인은 **등록일도 같이 받아 온다** — 어느 크롤러도 수집하지 않던 값인데
     원본이 이미 주고 있었다(JSON-LD `datePosted`, jumpit `publishedAt`).
     wanted 는 chaos API 가 아니라 **공고 페이지 JSON-LD** 에 `datePosted`·

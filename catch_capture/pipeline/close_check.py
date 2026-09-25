@@ -71,7 +71,15 @@ UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 TIMEOUT = 20
 LIMIT_DEFAULT = 400      # 회차당 확인 건수 — 차단 방지용 상한
-RECHECK_DAYS = 7         # 모집중으로 확인된 공고를 다시 묻기까지의 간격
+RECHECK_DAYS = None      # 주기를 하나로 고정하려면 숫자로(--recheck-days). None 이면 아래 표를 따른다
+# 다시 묻기까지의 간격(일) — 공고가 어떤 상태로 확인됐는지에 따라 다르다.
+# 마감일을 아는 공고는 그 날짜가 되면 job_state 가 알아서 닫으므로 자주 물을 필요가
+# 없고(조기 마감만 잡으면 된다), 마감일이 없는 공고는 원본에 묻는 것 말고는 닫힐
+# 길이 없으므로 자주 묻는다. 원본이 답을 안 주는 곳(remote 페이지 생존)은 자주
+# 물어도 알게 되는 게 없다.
+RECHECK_NO_DEADLINE = 1.0   # 모집중인데 마감일을 모름(wanted 일부·ats·상시채용)
+RECHECK_HAS_DEADLINE = 3.0  # 마감일이 앞에 있음 — 조기 마감 대비
+RECHECK_UNKNOWN = 7.0       # 지난번에 답을 못 얻음
 SLEEP_MS = 450           # 요청 간 기본 간격(지터 적용)
 SAVE_EVERY = 25          # 중간 저장 간격 — 도중에 죽어도 확인분은 남는다
 
@@ -500,7 +508,8 @@ def _source_jobs_db(include_closed: bool) -> list[dict]:
         from store import conn as store_conn
         with store_conn.cursor(autocommit=True) as cur:
             cur.execute(
-                "SELECT site, pid, url, company, title, status, checked_at, ledger_closed"
+                "SELECT site, pid, url, company, title, status, checked_at, ledger_closed,"
+                "       gone_at, ledger_deadline"
                 "  FROM job_recheck_queue"
                 + ("" if include_closed else " WHERE status = 'active'")
             )
@@ -517,6 +526,10 @@ def _source_jobs_db(include_closed: bool) -> list[dict]:
             "status": r["status"],
             "_checked_at": r["checked_at"].isoformat() if r["checked_at"] else "",
             "_ledger_closed": r["ledger_closed"],
+            # 재확인 주기를 정하는 재료(_recheck_policy). 목록에서 사라진 공고는 먼저,
+            # 마감일을 아는 공고는 드물게 묻는다.
+            "_gone_at": r["gone_at"].isoformat() if r["gone_at"] else "",
+            "_ledger_deadline": r["ledger_deadline"].isoformat() if r["ledger_deadline"] else "",
         })
     return out
 
@@ -558,11 +571,42 @@ def _age_days(checked_at: str, now: datetime) -> float:
         return 1e9
 
 
+def _recheck_policy(job: dict, entry: dict | None, today: date) -> tuple[int, float]:
+    """(우선순위, 다시 묻기까지의 일수). 우선순위는 작을수록 먼저다.
+
+      0  한 번도 안 물어봤거나, 마지막으로 물어본 뒤 목록에서 사라졌다 → 지금 바로
+      1  모집중인데 마감일을 모른다 → 원본에 묻는 것 말고는 닫힐 길이 없다
+      2  마감일이 앞에 있다 → 그날이 되면 job_state 가 닫는다. 조기 마감만 잡는다
+      3  지난번에 답을 못 얻었다 → 자주 물어도 새로 알게 되는 게 없다
+    """
+    checked_at = job.get("_checked_at") if "_checked_at" in job else (entry or {}).get("checked_at")
+    if not checked_at:
+        return 0, 0.0
+    gone_at = job.get("_gone_at")
+    if gone_at and _age_days(checked_at, datetime.fromisoformat(gone_at)) > 0:
+        return 0, 0.0      # 마지막 확인보다 나중에 목록에서 빠졌다
+    if (entry or {}).get("status") == "unknown":
+        return 3, RECHECK_UNKNOWN
+    deadline = job.get("_ledger_deadline") or (entry or {}).get("deadline")
+    try:
+        future = bool(deadline) and date.fromisoformat(str(deadline)[:10]) >= today
+    except ValueError:
+        future = False
+    if future:
+        return 2, RECHECK_HAS_DEADLINE
+    return 1, RECHECK_NO_DEADLINE
+
+
 def due_jobs(jobs: list[dict], entries: dict, now: datetime, *,
-             sites: set[str] | None, recheck_days: float,
+             sites: set[str] | None, recheck_days: float | None,
              recheck_closed: bool) -> list[dict]:
-    """확인이 필요한 공고를 오래 방치된 순으로 정렬해 돌려준다."""
-    out: list[tuple[float, dict]] = []
+    """확인이 필요한 공고를 급한 순으로 정렬해 돌려준다.
+
+    `recheck_days` 가 None 이면 공고마다 `_recheck_policy` 가 주기를 정한다. 숫자를
+    주면 예전처럼 모두 같은 주기다(`--recheck-days 0` = 전부 다시).
+    """
+    today = now.date()
+    out: list[tuple[int, float, dict]] = []
     seen: set[str] = set()
     for job in jobs:
         site = job.get("site") or ""
@@ -572,32 +616,34 @@ def due_jobs(jobs: list[dict], entries: dict, now: datetime, *,
         if not key or key in seen:
             continue
         seen.add(key)
+        entry = entries.get(key)
         # DB 에서 온 행은 원장 상태를 직접 들고 온다(`_checked_at`). 파일에서 온
         # 행은 예전처럼 JSON 원장에서 찾는다. 둘을 섞지 않는다 — 같은 질문에
-        # 서로 다른 두 원장이 답하면 어느 쪽이 맞는지 알 수 없다.
+        # 서로 다른 두 원장이 답하면 어느 쪽이 맞는지 알 수 없다. 단 "지난번 답이
+        # unknown 이었나" 는 DB 가 모른다(closed=false 로만 남는다) — 그건 JSON 원장에서 본다.
         if "_checked_at" in job:
             if job.get("_ledger_closed") and not recheck_closed:
                 continue                # 마감은 되돌아오지 않는다 — 재공고는 새 pid 로 온다
             checked_at = job["_checked_at"]
-            age = _age_days(checked_at, now) if checked_at else 1e9
-            if checked_at and age < recheck_days:
-                continue
-        elif (entry := entries.get(key)):
-            if entry.get("status") == "closed" and not recheck_closed:
-                continue
-            age = _age_days(entry.get("checked_at", ""), now)
-            if age < recheck_days:
-                continue
         else:
-            age = 1e9   # 한 번도 확인 안 한 공고가 최우선
-        out.append((age, job))
-    out.sort(key=lambda t: t[0], reverse=True)
+            if (entry or {}).get("status") == "closed" and not recheck_closed:
+                continue
+            checked_at = (entry or {}).get("checked_at", "")
+        age = _age_days(checked_at, now) if checked_at else 1e9
+        if recheck_days is None:
+            prio, every = _recheck_policy(job, entry, today)
+        else:
+            prio, every = (0 if not checked_at else 1), recheck_days
+        if checked_at and prio > 0 and age < every:
+            continue
+        out.append((prio, -age, job))
+    out.sort(key=lambda t: (t[0], t[1]))
 
-    # 사이트별로 번갈아 내보낸다. 오래된 순서 그대로면 한 호스트에 수백 번을 연달아
+    # 사이트별로 번갈아 내보낸다. 급한 순서 그대로면 한 호스트에 수백 번을 연달아
     # 두드리게 되고(= 차단 유도), 건수가 많은 사이트가 앞을 다 차지해 뒤쪽 사이트는
-    # 며칠씩 확인을 못 받는다. 각 사이트 안에서는 오래 방치된 순서를 지킨다.
+    # 며칠씩 확인을 못 받는다. 각 사이트 안에서는 급한 순서를 지킨다.
     queues: dict[str, list[dict]] = {}
-    for _, job in out:
+    for _, _, job in out:
         queues.setdefault(job["site"], []).append(job)
     mixed: list[dict] = []
     while queues:
@@ -608,7 +654,7 @@ def due_jobs(jobs: list[dict], entries: dict, now: datetime, *,
     return mixed
 
 
-def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
+def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float | None = RECHECK_DAYS,
         sites: set[str] | None = None, dry_run: bool = False,
         recheck_closed: bool = False, verbose: bool = True) -> dict:
     today = today_date()
@@ -785,7 +831,33 @@ def _selftest() -> int:
             failed += 1
             print(f"FAIL(나이) {name} → {got} (기대 {want})")
 
-    total = len(cases) + len(posted_cases) + 1 + len(ages)
+    # 재확인 주기 — 공고 상태마다 다시 묻는 간격이 다르다.
+    d = lambda n: (now - timedelta(days=n)).isoformat()
+    base = {"site": "wanted", "_ledger_closed": False}
+    policy = [
+        ("주기-처음", {**base, "pid": "1", "_checked_at": ""}, None, True),
+        ("주기-사라짐", {**base, "pid": "2", "_checked_at": d(0.5), "_gone_at": d(0.1)}, None, True),
+        ("주기-사라진뒤확인", {**base, "pid": "3", "_checked_at": d(0.1), "_gone_at": d(0.5)}, None, False),
+        ("주기-마감일모름-2일", {**base, "pid": "4", "_checked_at": d(2)}, None, True),
+        ("주기-마감일모름-반나절", {**base, "pid": "5", "_checked_at": d(0.5)}, None, False),
+        ("주기-마감일앞-2일", {**base, "pid": "6", "_checked_at": d(2), "_ledger_deadline": "2026-10-30"}, None, False),
+        ("주기-마감일앞-4일", {**base, "pid": "7", "_checked_at": d(4), "_ledger_deadline": "2026-10-30"}, None, True),
+        ("주기-불명-4일", {**base, "pid": "8", "_checked_at": d(4)}, {"status": "unknown"}, False),
+        ("주기-마감확정", {**base, "pid": "9", "_checked_at": d(30), "_ledger_closed": True}, None, False),
+    ]
+    for name, job, entry, want in policy:
+        entries = {f"wanted:{job['pid']}": entry} if entry else {}
+        got = bool(due_jobs([job], entries, now, sites=None, recheck_days=None, recheck_closed=False))
+        if got != want:
+            failed += 1
+            print(f"FAIL(주기) {name} → {'대상' if got else '제외'} (기대 {'대상' if want else '제외'})")
+    order = [j["pid"] for j in due_jobs([p[1] for p in policy], {}, now, sites=None,
+                                         recheck_days=None, recheck_closed=False)]
+    if order[:2] != ["1", "2"]:
+        failed += 1
+        print(f"FAIL(주기) 처음 보는 것·사라진 것이 먼저가 아님 → {order}")
+
+    total = len(cases) + len(posted_cases) + 1 + len(ages) + len(policy) + 1
     print(f"close_check selftest: {total - failed}/{total} 통과")
     return 1 if failed else 0
 
@@ -800,7 +872,7 @@ def main() -> None:
 
     sites_raw = opt("--sites", "")
     run(limit=int(opt("--limit", str(LIMIT_DEFAULT))),
-        recheck_days=float(opt("--recheck-days", str(RECHECK_DAYS))),
+        recheck_days=float(opt("--recheck-days", "")) if "--recheck-days" in args else None,
         sites={s.strip() for s in sites_raw.split(",") if s.strip()} or None,
         dry_run="--dry-run" in args,
         recheck_closed="--recheck-closed" in args)

@@ -353,14 +353,17 @@ LEFT JOIN job_override o ON o.job_id = j.id AND o.field = 'status';
 -- 확인하려면 site·pid·url·회사·제목이 다 필요하다(사이트별 판정기가 쓴다).
 -- 지금까지 close_check 는 이걸 크롤 스냅샷 JSON 에서 읽었고, 그래서 **다른
 -- 머신이 모아 온 공고는 재확인 대상에 아예 들어오지 못했다.**
+--
+-- 목록에서 사라진 공고(gone_at)도 넣는다 — 사라졌다는 게 마감의 가장 강한 신호라
+-- close_check 가 그것부터 묻는다. 닫는 건 여전히 원본의 답이다(db/migrations/003).
 CREATE VIEW job_recheck_queue AS
 SELECT j.id, j.site, j.pid, j.url, co.display_name AS company, j.title,
-       s.status, c.checked_at, COALESCE(c.closed, false) AS ledger_closed
+       s.status, c.checked_at, COALESCE(c.closed, false) AS ledger_closed,
+       j.gone_at, c.deadline_on AS ledger_deadline
   FROM job j
   LEFT JOIN company co ON co.id = j.company_id
   LEFT JOIN job_state s ON s.job_id = j.id
   LEFT JOIN job_closure_latest c ON c.job_id = j.id
- WHERE j.gone_at IS NULL
  ORDER BY c.checked_at NULLS FIRST, j.last_seen_at DESC;
 
 -- ════════════════════════════════════════════════════════════════════

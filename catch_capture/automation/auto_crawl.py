@@ -48,6 +48,12 @@ LOG_FILE = BASE_DIR / "auto_crawl.log"
 REFRESH_SH = ROOT_DIR / "jd-viewer" / "bin" / "refresh-data.sh"
 # 사이클당 마감 재확인 건수(원본 사이트 조회). 올리면 한 바퀴가 빨라지지만 차단 위험도 오른다.
 CLOSE_CHECK_LIMIT = int(os.environ.get("CLOSE_CHECK_LIMIT", "400"))
+# 크롤과 크롤 사이 대기 시간에도 마감을 계속 확인한다. 사이클당 한 번(400건)만 물으면
+# 하루 5천 건 남짓이라, 마감일을 모르는 공고(ats·wanted 일부 등 7천여 건)를 매일
+# 한 번씩 볼 수가 없었다. 대기 1시간을 CLOSE_CHECK_EVERY 간격으로 쪼개 조금씩 묻는다.
+# 0 이면 끈다(예전처럼 사이클당 한 번만).
+CLOSE_CHECK_EVERY = int(os.environ.get("CLOSE_CHECK_EVERY", "600"))
+CLOSE_CHECK_BATCH = int(os.environ.get("CLOSE_CHECK_BATCH", "100"))
 
 # 키워드로 검색하는 국내 사이트. 사이클마다 키워드 수만큼 돈다.
 KEYWORD_SITES = ["dev", "jobkorea", "jumpit", "saramin", "wanted"]
@@ -228,7 +234,7 @@ def refresh_data(keyword: str) -> None:
     refresh_semantic()
 
 
-def refresh_closures(limit: int = CLOSE_CHECK_LIMIT) -> int:
+def refresh_closures(limit: int = CLOSE_CHECK_LIMIT, name: str = "마감 재확인") -> int:
     """공고 마감 재확인 — 원본 사이트에 다시 물어 끝난 공고를 닫는다. 닫은 건수 반환.
 
     크롤은 "지금 올라온 공고"만 가져오지, 어제 가져온 공고가 아직 살아 있는지는 말해
@@ -254,7 +260,7 @@ def refresh_closures(limit: int = CLOSE_CHECK_LIMIT) -> int:
     except ImportError as e:
         log(f"[close] 모듈 적재 실패 — 건너뜀: {e}")
         return 0
-    orch.builder_started("마감 재확인")
+    orch.builder_started(name)
     t0 = time.time()
     try:
         stats = close_check.run(limit=limit, verbose=False)
@@ -262,11 +268,11 @@ def refresh_closures(limit: int = CLOSE_CHECK_LIMIT) -> int:
                   f"모집중 {stats['active']} / 불명 {stats['unknown']} / "
                   f"등록일 {stats.get('posted', 0)}")
         log(f"[close] {detail}")
-        orch.builder_finished("마감 재확인", True, time.time() - t0, detail)
+        orch.builder_finished(name, True, time.time() - t0, detail)
         return stats["closed"]
     except Exception as e:                                          # noqa: BLE001
         log(f"[close] 실패: {e!r}")
-        orch.builder_finished("마감 재확인", False, time.time() - t0, repr(e))
+        orch.builder_finished(name, False, time.time() - t0, repr(e))
         return 0
 
 
@@ -555,6 +561,26 @@ def run_iteration(keyword: str, count: int) -> None:
         log(f"[err] 유지보수 예외: {e!r}")
 
 
+def wait_with_rechecks(interval: int) -> None:
+    """다음 크롤까지 기다리되, 그 사이 CLOSE_CHECK_EVERY 마다 마감을 조금씩 확인한다.
+
+    크롤이 도는 동안에는 부르지 않는다 — 원장(job_closures.json)은 통째로 다시 쓰는
+    파일이라 두 쪽이 동시에 쓰면 한쪽 판정이 사라진다. 대기 중에는 쓰는 쪽이 이것뿐이다.
+    여기서 닫힌 공고는 정본 DB(job_state)에는 바로, 뷰어 JSON 에는 다음 사이클에 반영된다.
+    """
+    end = time.time() + interval
+    if CLOSE_CHECK_EVERY <= 0 or CLOSE_CHECK_BATCH <= 0:
+        time.sleep(interval)
+        return
+    while True:
+        left = end - time.time()
+        if left <= CLOSE_CHECK_EVERY:
+            time.sleep(max(0.0, left))
+            return
+        time.sleep(CLOSE_CHECK_EVERY)
+        refresh_closures(CLOSE_CHECK_BATCH, name="마감 재확인(대기 중)")
+
+
 def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
     sys.path.insert(0, str(BASE_DIR))
     log(f"===== auto_crawl 데몬 시작 (keyword={keyword}, count={count}, "
@@ -565,13 +591,13 @@ def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
         next_at = (datetime.now() + timedelta(seconds=interval)).isoformat(timespec="seconds")
         orch.waiting(next_at, interval)
         log(f"[wait] 첫 크롤까지 {interval}s 대기 (--now 로 즉시 실행 가능)")
-        time.sleep(interval)
+        wait_with_rechecks(interval)
     while True:
         run_iteration(keyword, count)
         next_at = (datetime.now() + timedelta(seconds=interval)).isoformat(timespec="seconds")
         orch.waiting(next_at, interval)
         log(f"[wait] 다음 크롤까지 {interval}s 대기")
-        time.sleep(interval)
+        wait_with_rechecks(interval)
 
 
 def cmd_start(rest: list[str]) -> None:
