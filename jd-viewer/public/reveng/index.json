@@ -1232,9 +1232,9 @@
       "country": "JP",
       "category": "SaaS",
       "status": "done",
-      "features_done": 2,
+      "features_done": 3,
       "one_liner": "20년 넘은 그룹웨어를 팔면서 그것을 계속 옮겨 싣는 일본 SaaS",
-      "updated_at": "2026-09-03",
+      "updated_at": "2026-09-26",
       "domain": "blog.cybozu.io"
     },
     {
@@ -2857,7 +2857,8 @@
     "멈춰 있던 이유를 조직에서 찾는다",
     "과거를 다시 쓰지 않으려 층을 가른다",
     "여러 제품을 한 팀이 떠받친다",
-    "검색 인프라를 벡터까지 넓힌다"
+    "검색 인프라를 벡터까지 넓힌다",
+    "AI 가 찾은 취약점을 사람이 믿을 수 있게 한다"
   ],
   "countries": {
     "KR": "한국",

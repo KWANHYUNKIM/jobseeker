@@ -5,7 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "domain": "blog.cybozu.io",
   "one_liner": "20년 넘은 그룹웨어를 팔면서 그것을 계속 옮겨 싣는 일본 SaaS",
   "business_model": "회사 안에서 쓰는 업무 도구를 구독으로 판다. 주력은 kintone(코드 없이 업무 앱을 만드는 플랫폼)이고, 그 밖에 Cybozu Office(중소기업 그룹웨어)·Garoon(중대형 그룹웨어)·Mailwise(공유 메일)를 함께 판다. 도쿄증권거래소 프라임 상장사(4776)라 실적이 공개된다.\n\n2025년 12월기에 크게 뛰었다 — 매출 374억 3,000만 엔(+26.1%), 영업이익 101억 100만 엔(+106.4%)으로 영업이익이 두 배가 됐다. 그 절반 이상이 kintone 에서 나온다(216억 8,900만 엔, +33.9%). 다만 2026년 전망이 조심스럽다 — 매출은 421억 6,800만 엔(+12.7%)을 보는데 영업이익은 105억 1,400만 엔(+4.1%)이다. **매출이 두 자릿수로 느는데 이익 증가를 한 자릿수로 잡았다**는 뜻이고, 그 배경은 확인하지 못했다.\n\n**이 회사의 기술 이야기는 새로 만드는 이야기가 아니라 옛 가정을 지키면서 새 바닥에 올리는 이야기다.** 20년 넘은 제품을 아직 팔기 때문이다. Cybozu Office 와 Mailwise 는 C++ CGI 이고 테넌트마다 SQLite 파일을 쓰는데, 그 파일에 걸린 fcntl 잠금이 쿠버네티스의 스케줄링과 정면으로 부딪힌다(재구성).\n\n도메인 둘을 제품(kintone·Office·Garoon)으로 자르지 않고 **오래 판 것이 만든 벽의 종류**로 잘랐다. 하나는 옛 코드의 가정이 새 바닥과 부딪히는 벽이고 다른 하나는 테넌트 수가 만드는 벽인데, 둘 다 이 회사가 오래 SaaS 를 판 결과지만 부딪히는 자리가 다르다(재구성).",
@@ -183,7 +183,7 @@
   "domain_map": {
     "title": "오래된 것을 팔면서 그 아래를 갈아 끼운다",
     "question": "무엇을 팔고 무엇을 글로 쓰는가?",
-    "code": "flowchart TD\n BIZ[\"<b>회사가 쓰는 업무 도구를 구독으로 판다</b><br/>• 2025년 매출 374억 엔대, 26% 증가<br/>• 영업이익 101억 엔대, 106% 증가<br/>• 절반 이상이 업무 앱 플랫폼에서\"]:::accent\n KIN[\"코드 없이 만드는 업무 앱 플랫폼이 주력\"]:::list\n OLD[\"이십 년 넘은 그룹웨어도 계속 판다\"]:::list\n KEEP[\"오래된 제품을 멈추면 안 된다\"]:::list\n MOVE[\"그래서 아래를 갈아 끼운다\"]:::list\n BLOG[\"공개된 글의 성격\"]:::list\n SOFT[\"행사와 채용과 회고가 절반 넘는다\"]:::list\n HARD[\"그 사이에 무거운 기술 글이 드문드문 섞인다\"]:::list\n K8S[\"이번에 연 자리 — 이십 년 된 것을 멈추지 않고 옮기기\"]:::list\n N[\"<i>프론트엔드와 접근성, kintone 개발도 여러 편 있다 — 이 집계는 이 사이트의 것</i>\"]:::quiet\n BIZ --> KIN\n BIZ --> OLD --> KEEP --> MOVE\n BIZ --> BLOG\n BLOG --> SOFT\n BLOG --> HARD --> K8S\n HARD --- N"
+    "code": "flowchart TD\n BIZ[\"<b>회사가 쓰는 업무 도구를 구독으로 판다</b><br/>• 2025년 매출 374억 엔대, 26% 증가<br/>• 영업이익 101억 엔대, 106% 증가<br/>• 절반 이상이 업무 앱 플랫폼에서\"]:::accent\n KIN[\"코드 없이 만드는 업무 앱 플랫폼이 주력\"]:::list\n OLD[\"이십 년 넘은 그룹웨어도 계속 판다\"]:::list\n KEEP[\"오래된 제품을 멈추면 안 된다\"]:::list\n MOVE[\"그래서 아래를 갈아 끼운다\"]:::list\n BLOG[\"공개된 글의 성격\"]:::list\n SOFT[\"행사와 채용과 회고가 절반 넘는다\"]:::list\n HARD[\"그 사이에 무거운 기술 글이 드문드문 섞인다\"]:::list\n K8S[\"이번에 연 자리 — 이십 년 된 것을 멈추지 않고 옮기기\"]:::list\n N[\"<i>프론트엔드와 접근성, kintone 개발도 여러 편 있다 — 이 집계는 이 사이트의 것</i>\"]:::quiet\n BIZ --> KIN\n BIZ --> OLD --> KEEP --> MOVE\n BIZ --> BLOG\n BLOG --> SOFT\n BLOG --> HARD --> K8S\n HARD --- N\n SEC[\"이번에 연 자리 — AI 가 찾은 취약점을 사람이 믿게 하기\"]:::list\n HARD --> SEC"
   },
   "revenue_streams": [
     {
@@ -296,6 +296,67 @@
       "features": [
         "issuer-from-domain"
       ]
+    },
+    {
+      "name": "AI 가 찾은 취약점을 사람이 믿을 수 있게 한다",
+      "why": "이 회사는 오래 버그 바운티를 운영하며 바깥 헌터들의 보고로 제품을 다듬어 왔다. 그런데 코드에서 취약점을 찾는 AI 가 강해지자 같은 일을 공격자도 할 수 있게 됐고, 바깥에서 들어오는 보고도 AI 로 만든 부정확한 것이 섞이기 시작했다. 이 도메인은 AI 가 찾은 것을 사람이 믿을 수 있게 만드는 일이다 — 찾는 쪽보다 거르고 판정하는 쪽이 본체다. 인증 도메인(테넌트마다 문을 여는 법)과 가르는 것은, 저쪽이 경계를 세우는 일이고 이쪽은 그 경계에 구멍이 났는지 찾는 일이기 때문이다.",
+      "tech": [
+        {
+          "tech": "보안 스캔 하네스 Horos (샌드박스 · 단계 분할 · 되먹임 루프)",
+          "solves": "스캔을 여러 번 돌리며 이전 결과를 다음 맥락에 쌓아, 같은 모델로도 돌릴수록 정확해지게 한다. 모델은 갈아 끼울 수 있다.",
+          "limits": "토큰 값 때문에 늘 돌리지 못한다. DAST 는 부하·유지 부담이 커서 일부 제품에만 돈다. 찾는 속도를 고치는 속도가 못 따라간다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+              "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+              "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+              "date": "2026-09-02",
+              "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+            },
+            {
+              "title": "Mythos 対策プロジェクトの 2 ヶ月(まとめ編)",
+              "url": "https://blog.cybozu.io/entry/logos-retrospective",
+              "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+              "date": "2026-09-04",
+              "summary": "두 달의 회고. 버튼 하나로 도는 AI 보안 스캔 제품은 사내 맥락과 트리아지 결과를 받을 방법이 없어 같은 오탐을 되풀이했다. 이제는 모델 차이보다 하네스 차이가 크다고 적는다. 하네스는 원래 있던 팀과 문화를 이은 것뿐이라 말하고, AI Slop 때문에 공개 버그 바운티를 일시 중지했다."
+            }
+          ]
+        },
+        {
+          "tech": "LLM-Wiki Ergon (Markdown 저장소 · Ingest/Query)",
+          "solves": "코드에 없는 사양·결정 이력·과거 취약점 판정을 샌드박스 안의 AI 에게 건넨다. 물어볼수록 Wiki 가 용도에 맞게 다듬어진다.",
+          "limits": "텍스트로 남은 지식만 넣을 수 있다. 목적이 흩어지면 크고 비싼 Wiki 가 되어, 전사 통합으로 키우지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mythos 対策プロジェクトの 2 ヶ月(LLM-Wiki 編)",
+              "url": "https://blog.cybozu.io/entry/logos-llm-wiki-ergon",
+              "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+              "date": "2026-09-03",
+              "summary": "코드에 없는 사내 지식을 하네스에 건네는 LLM-Wiki Ergon. 도메인 fetch 허용과 RAG 를 물리고 Markdown 저장소를 골랐다. 버그 바운티 약 4,000건 기록, 회의 녹취, 개발 환경 문서를 넣었다. 전사 통합 Wiki 로 키우지 않는 이유도 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "PSIRT 트리아지 SKILL + 과거 보고서 MCP",
+          "solves": "사람에게 보고하기 전에 중복·재현 안 되는 것을 AI 가 스스로 걸러, PSIRT 가 볼 것에 집중하게 한다.",
+          "limits": "걸러 낸 것 가운데 진짜가 얼마나 섞였는지는 공개되지 않았다. 최종 판정은 여전히 사람이 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+              "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+              "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+              "date": "2026-09-02",
+              "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "logos-security-harness"
+      ]
     }
   ],
   "open_questions": [
@@ -307,7 +368,8 @@
     "이어진 조사에서 한 편을 더 열어 보고 닫았다(재구성). govulncheck の偽陽性を減らす(2026-08-05, /entry/2026/08/05/113000)는 한계가 상세하다 — 모듈 단위 스캐너(Trivy)와 심볼 단위 도달성 분석(govulncheck)을 OpenVEX 로 잇는 이야기인데, -ldflags '-s -w' 로 심볼 정보를 지우면 脆弱性ありと判定されたモジュール…全ての脆弱性の影響を受けうる(취약점이 있다고 판정된 모듈의 모든 취약점에 영향받을 수 있다)가 되고, 지금은 人が介入してバイナリを取り出し(사람이 개입해 바이너리를 꺼내야) 하며, 관련 GitHub 이슈는 進展は全くありません(진전이 전혀 없다). 그런데 수치가 0 이고(데모의 7→0 뿐) 결정 여섯 중 대부분이 도구 버그 우회다(PURL 식별자를 jq·sed 로 손보기, %2F 를 / 로 되돌리기 — govulncheck 이 아직 병합되지 않은 purl-spec 개정을 中途半端に則っています(어중간하게 따르고 있다)). 실제 설계 결정은 셋 남짓이라 기능으로 쓰지 않았다. 다만 이 사이트가 여러 회사에서 본 문지기 축의 반대 방향 재료다 — 다른 곳의 문지기는 못 잡는 것이 문제였는데 여기서는 너무 많이 잡는 것을 심볼 도달성으로 줄인다.",
     "이 애플리케이션이 정확히 언제 시작됐는지는 없다. 글이 '20년 이상'이라고만 해서 시작 연도를 세우지 못했고, 그래서 연표는 옮기기 시작한 2024년부터다. 그 앞의 20년은 '그전 상태'(VM 데몬과 SSH)로만 남겼다.",
     "이전이 언제 끝날지도 적혀 있지 않다. 2026년 8월 시점에 진행 중이라는 것만 확인된다.",
-    "테넌트 4만 개의 OIDC 인증을 한 대시보드로 다루는 축(2026-08-06)은 시기로 세우지 않았다. 그 글에도 언제 지었는지가 없고, 20년 된 것을 옮기는 축과 성격이 다르다."
+    "테넌트 4만 개의 OIDC 인증을 한 대시보드로 다루는 축(2026-08-06)은 시기로 세우지 않았다. 그 글에도 언제 지었는지가 없고, 20년 된 것을 옮기는 축과 성격이 다르다.",
+    "보안 스캔 하네스의 성과 수치(후보 약 260건 · 인정 약 50건)는 회사가 '분위기로 봐 달라'며 흐려 적은 값이다. 사전 트리아지가 버린 것 가운데 진짜 취약점이 얼마나 섞였는지, DAST 가 SAST 대비 무엇을 더 찾았는지는 나오지 않는다."
   ],
   "sources": [
     {
@@ -351,6 +413,34 @@
       "publisher": "サイボウズ (Cybozu Inside Out)",
       "date": "2026-08-06",
       "summary": "사내 쿠버네티스 기반(Neco)에서 자원이 늘자 지표 수집기 한 대가 주기를 못 지켰다. 그래서 Deployment 단위로 샤딩했다(--shard=0 --total-shards=3 처럼 샤드 번호를 명시).\n\n버린 대안 둘에 이유가 각각 있다 — DaemonSet 샤딩: ノード障害時にPodの状態変化を収集できない可能性がある(노드 장애 때 그 파드의 상태 변화를 못 모을 수 있다) · 자동 샤딩: 更新中は特定のシャードを担当する Pod が一時的に存在しなくなります。このタイミングでメトリクスの取得が行われると…メトリクスの欠損につながります(갱신 중에는 특정 샤드를 맡을 파드가 잠시 사라져서, 그때 수집이 돌면 지표가 빈다).\n\n대가를 적고 그것을 어떻게 감당하는지도 적는다 — 複数のDeployment間で、シャード構成の整合性を保つ必要がある(여러 Deployment 사이에서 샤드 구성의 일관성을 지켜야 한다). 다만 NecoではKSMのマニフェストをJsonnetから生成しており…許容できる範囲である(Jsonnet 으로 생성하므로 감당할 수 있는 범위다).\n\n고른 기준이 분명하다 — 갱신 중과 노드 장애 때의 가용성을 구성의 단순함보다 앞에 뒀다(재구성). 다만 수치가 거의 없다 — 샤드 구성 예시뿐이고 지연이나 자원 절감 숫자가 없다. 그래서 조사를 이어 가며 기능으로 쓰지 않았다."
+    },
+    {
+      "title": "Mythos 対策プロジェクトの 2 ヶ月(概要編)",
+      "url": "https://blog.cybozu.io/entry/logos-overview",
+      "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+      "date": "2026-09-01",
+      "summary": "더 강한 AI 가 공격자 손에 들어갈 위험에 대비해 두 달 동안 제품 보안 스캔 하네스를 만든 프로젝트(Logos)의 개요. 상담해야 할 팀(AI 규정·PSIRT·제품)을 멤버로 불러 즉석 횡단 팀을 꾸렸고, 주요 앱에서 후보 약 260건 중 약 50건을 취약점으로 인정했다."
+    },
+    {
+      "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+      "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+      "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+      "date": "2026-09-02",
+      "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+    },
+    {
+      "title": "Mythos 対策プロジェクトの 2 ヶ月(LLM-Wiki 編)",
+      "url": "https://blog.cybozu.io/entry/logos-llm-wiki-ergon",
+      "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+      "date": "2026-09-03",
+      "summary": "코드에 없는 사내 지식을 하네스에 건네는 LLM-Wiki Ergon. 도메인 fetch 허용과 RAG 를 물리고 Markdown 저장소를 골랐다. 버그 바운티 약 4,000건 기록, 회의 녹취, 개발 환경 문서를 넣었다. 전사 통합 Wiki 로 키우지 않는 이유도 적는다."
+    },
+    {
+      "title": "Mythos 対策プロジェクトの 2 ヶ月(まとめ編)",
+      "url": "https://blog.cybozu.io/entry/logos-retrospective",
+      "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+      "date": "2026-09-04",
+      "summary": "두 달의 회고. 버튼 하나로 도는 AI 보안 스캔 제품은 사내 맥락과 트리아지 결과를 받을 방법이 없어 같은 오탐을 되풀이했다. 이제는 모델 차이보다 하네스 차이가 크다고 적는다. 하네스는 원래 있던 팀과 문화를 이은 것뿐이라 말하고, AI Slop 때문에 공개 버그 바운티를 일시 중지했다."
     }
   ],
   "features": [
@@ -1710,6 +1800,379 @@
           "publisher": "サイボウズ (Cybozu Inside Out)",
           "date": "2026-08-06",
           "summary": "테넌트마다 인증 종점이 다른데 그 수가 4만 개를 넘는다. AWS 에 올린 대시보드 하나에서 kintone 테넌트들에 로그인시켜야 하는데, 각 테넌트가 자기 OIDC 종점을 갖는다.\n\n버린 대안에 이유가 수치로 붙는다 — テナントの数が限られる場合は個別のOIDC設定を持っておく方法もあるかもしれませんが、テナント数は4万件をこえていて動的に増減があるので、各テナントのOIDC設定を管理するのは現実的ではありませんでした(테넌트 수가 적으면 테넌트마다 OIDC 설정을 따로 두는 방법도 있겠지만, 4만 건이 넘고 동적으로 늘고 줄어서 각 테넌트의 설정을 관리하는 것은 현실적이지 않았다).\n\n그래서 설정을 저장하는 대신 조립한다 — 질의 문자열의 kintone_domain 으로 issuer URL 을 그때그때 만들고, OpenID Connect Discovery 로 종점을 받아 온다. 하드코딩할 것이 없어진다. kintone_domain 이 달라지면 강제로 다시 로그인시켜 여러 테넌트를 오가는 사용자가 섞이지 않게 한다.\n\n개발 환경은 떼어 놓았다 — Amazon Cognito 를 써서 대시보드 개발이 kintone 운영에 묶이지 않게 하고, issuer 해석 로직을 추상화해 인증 미들웨어 하나로 둘 다 다룬다. Pre Token Generation Lambda 로 Cognito 의 ID 토큰 구조를 운영 쪽과 맞춘다.\n\n남은 문제를 스스로 적는다 — この方式にも課題は残っています。issuerを組み立てるための kintone_domain は、未ログイン状態のユーザーに画面上で毎回入力してもらう形になっています。仕組み上は理にかなっていても、一般的なSSOの「ボタン一つでログイン」という体験に比べると、テナントのサブドメインを手入力する必要があり、スムーズではありません(이 방식에도 과제가 남는다. issuer 를 조립하려면 로그인 전 사용자가 화면에서 매번 kintone_domain 을 직접 입력해야 한다. 구조상 이치에 맞아도, 버튼 하나로 로그인하는 흔한 SSO 경험에 비하면 매끄럽지 않다)."
+        }
+      ]
+    },
+    {
+      "key": "logos-security-harness",
+      "name": "보안 스캔 하네스 — 모델보다 하네스를 키운다",
+      "domain": "AI 가 찾은 취약점을 사람이 믿을 수 있게 한다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "2026년 봄, 소스 코드에서 취약점을 찾아내는 능력이 크게 오른 AI 모델이 예고됐다. 공격자가 그것을 쓰면 많은 서비스가 당할 수 있다는 걱정이 돌았다. 결국 그 모델 자체는 공개되지 않았지만, 회사의 판단은 위험이 사라진 것이 아니라는 것이다 — 오픈 웨이트를 포함해 다른 모델도 같은 방향으로 자란다.\n\n처음에는 저장소를 넘기고 '취약점을 찾아 달라'고 해 봤다. 나오는 것은 일반적인 웹 취약점 패턴에 대한 오탐뿐이었다. kintone 같은 정보 공유 플랫폼에서는 'A 가 만든 레코드를 권한 없는 B 가 볼 수 있다'는 것만으로 취약점인데, 그것을 알아보려면 제품 사양을 알아야 한다. 모델은 공개된 지식만 안다.\n\n그래서 이 기능은 모델을 고르는 일이 아니라 **모델 둘레의 틀(하네스)을 만드는 일**이다. 사내 지식을 건네고, 스캔을 여러 번 돌리며 이전 결과를 쌓고, 사람에게 가기 전에 스스로 걸러 낸다. 더 좋은 모델이 나오면 모델만 바꿔 끼운다. 회고의 결론이 그 방향을 요약한다 — 지금은 모델의 차이보다 하네스의 차이가 더 크다.",
+        "metrics": [
+          {
+            "label": "두 달의 결과",
+            "value": "주요 앱에서 AI 가 취약점 후보 **약 260건**을 보고, 그중 **약 50건**을 취약점으로 인정해 중요한 것은 수정·릴리스. 회사가 '구체적인 숫자는 말하기 어렵다, 분위기로 봐 달라'고 덧붙인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(概要編)",
+                "url": "https://blog.cybozu.io/entry/logos-overview",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-01",
+                "summary": "더 강한 AI 가 공격자 손에 들어갈 위험에 대비해 두 달 동안 제품 보안 스캔 하네스를 만든 프로젝트(Logos)의 개요. 상담해야 할 팀(AI 규정·PSIRT·제품)을 멤버로 불러 즉석 횡단 팀을 꾸렸고, 주요 앱에서 후보 약 260건 중 약 50건을 취약점으로 인정했다."
+              }
+            ]
+          },
+          {
+            "label": "스캔 한 번",
+            "value": "kintone 을 SAST 로 훑고 평가하고 재현 방법을 붙여 보고하기까지 **약 100분**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+                "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-02",
+                "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+              }
+            ]
+          },
+          {
+            "label": "하네스에 넣은 지식",
+            "value": "버그 바운티 제도의 **약 4,000건** 기록(PSIRT 가 판정하고 등급을 매긴 것), 프로젝트 회의 녹취 전부, 개발 환경 구축 문서",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(LLM-Wiki 編)",
+                "url": "https://blog.cybozu.io/entry/logos-llm-wiki-ergon",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-03",
+                "summary": "코드에 없는 사내 지식을 하네스에 건네는 LLM-Wiki Ergon. 도메인 fetch 허용과 RAG 를 물리고 Markdown 저장소를 골랐다. 버그 바운티 약 4,000건 기록, 회의 녹취, 개발 환경 문서를 넣었다. 전사 통합 Wiki 로 키우지 않는 이유도 적는다."
+              }
+            ]
+          },
+          {
+            "label": "걸린 시간",
+            "value": "6월 시작 → **두 달** 만에 하네스 완성, 지금은 PSIRT 가 넘겨받아 운영",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(概要編)",
+                "url": "https://blog.cybozu.io/entry/logos-overview",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-01",
+                "summary": "더 강한 AI 가 공격자 손에 들어갈 위험에 대비해 두 달 동안 제품 보안 스캔 하네스를 만든 프로젝트(Logos)의 개요. 상담해야 할 팀(AI 규정·PSIRT·제품)을 멤버로 불러 즉석 횡단 팀을 꾸렸고, 주요 앱에서 후보 약 260건 중 약 50건을 취약점으로 인정했다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "저장소를 통째로 넘겨 본 뒤",
+          "thought": "오탐만 나온 것이 모델 성능 탓만은 아니었다. 모델은 모든 코드를 꼼꼼히 보지 않고 수상해 보이는 곳에 치우쳐 본다. 같은 정보로 여러 번 돌리면 같은 곳을 보고 같은 결과를 낸다. 이번에 어디를 봤고 무엇이 오탐이었는지를 다음 실행에 넘겨야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "혼자 검증하다가",
+          "thought": "AI 를 쓰려 해도 사내 규정·넘겨도 되는 정보·계정·샌드박스·예산을 하나하나 다른 부서에 물어야 움직일 수 있었다. 찾은 것이 진짜 취약점인지 판정하는 것도, 고쳐서 릴리스하는 것도 혼자 할 수 없다. 그래서 물어봐야 할 팀을 아예 멤버로 불렀다 — 경영진에게 설명하고 위에서 만든 팀이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "취약점 정보를 AI 에게 맡기며",
+          "thought": "취약점 정보는 AI 에게 넘기기도 망설여지는 기밀이다. 그런데 이번에는 그것을 AI 가 직접 찾게 한다. 모순이다. 학습에 쓰이지 않게 설정할 수는 있지만 그건 믿는 수밖에 없고, AI 가 무심코 밖으로 내보내면 그 자체가 사고다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "스캔 제품과 견주고 나서",
+          "thought": "버튼 하나로 도는 제품은 단순해서 좋다. 하지만 사내 정보·과거 취약점 이력·PSIRT 가 키운 판단 기준을 넘길 방법이 없고, 트리아지 결과를 '이건 다시 내지 마'라고 알려 줄 방법도 없다. 스캔할 때마다 같은 오탐이 돌아온다. 하네스를 이미 가진 입장에서는 들일 이유가 거의 남지 않았다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Horos",
+            "what": "스캔 하네스. 샌드박스를 세우고, 스캔을 단계로 나눠 돌리고, 결과를 걸러 재현을 확인하고, 다음 실행에 결과를 되먹인다. 모델은 갈아 끼울 수 있게 만들었다."
+          },
+          {
+            "name": "Ergon",
+            "what": "사내 제품 지식 LLM-Wiki. Markdown 저장소이고, 원자료를 넣고 정리(Ingest)시키면 쌓이며, 스캔 중인 AI 가 모르는 것을 묻고(Query) 그 결과가 다시 Wiki 를 다듬는다."
+          },
+          {
+            "name": "트리아지 SKILL",
+            "what": "PSIRT 가 자기들이 해 오던 판정을 글로 옮긴 것. AI 가 사람에게 보고하기 전에 '이미 보고됐나', '정말 재현되나'를 스스로 거른다."
+          },
+          {
+            "name": "SAST 졸업",
+            "what": "정적 스캔으로 찾는 양이 바닥에 닿았다고 PSIRT 가 본 제품만 동적 스캔(DAST)으로 넘어가는 규칙. 제품마다 노리는 지표 가운데 하나가 됐다."
+          },
+          {
+            "name": "PSIRT",
+            "what": "버그 바운티 운영과 트리아지를 해 온 제품 보안 전담 팀. 하네스가 낸 보고를 마지막에 사람 손으로 재현·등급 판정한다."
+          }
+        ],
+        "invariants": [
+          "AI 의 실행은 샌드박스(AWS 인스턴스) 안에 가두고 결과만 꺼낸다 — 밖으로 fetch 할 수 없다.",
+          "AI 가 낸 후보는 **사람(PSIRT)이 판정하기 전까지 취약점이 아니다.**",
+          "AI 에게 넘기면 안 되는 기밀이 없는지 확인한 텍스트만 Wiki 에 넣는다.",
+          "모델이 바뀌어도 하네스는 그대로 둔다 — 바꾸는 것은 모델뿐이다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사내에서 '스캔하는 게 좋겠다'고 본 사람이 명령 몇 줄로 제품 저장소를 지정한다",
+            "why": "스캔이 특정인의 일이 아니라 누구나 거는 절차가 되게 한다."
+          },
+          {
+            "step": "AWS 인스턴스를 띄워 소스 코드·Ergon·SKILL 을 들여오고 **뚜껑을 닫은 채** 루프를 돌린다",
+            "why": "기밀인 취약점 정보를 다루는 AI 가 밖으로 내보낼 길을 막는다."
+          },
+          {
+            "step": "SAST 로 코드를 훑고, 모르는 사양은 Ergon 에 묻는다. 긴 스캔은 **단계로 나눠 중간 결과를 남긴다**",
+            "why": "100분짜리 스캔이 중간에 죽으면 결과와 태운 토큰이 전부 사라진다. 잘게 남긴 결과는 다음 실행의 맥락으로도 더 쓸모 있다."
+          },
+          {
+            "step": "SAST 가 바닥에 닿은 제품은 **DAST** 로 — 샌드박스 안에 dev server 를 띄우고, 로그를 심고, 개발자 도구 출력을 보며 공격을 재현(PoC)한다",
+            "why": "사람이 따라 해도 재현되지 않는 SAST 보고가 많았다. 실제로 공격이 되는지까지 보여 주면 사람의 짐이 준다."
+          },
+          {
+            "step": "보고 전에 AI 가 **PSIRT 의 트리아지 SKILL** 로 스스로 거른다 — 과거 보고서는 MCP 로 조회해 중복을 뺀다",
+            "why": "오탐까지 쏟아지면 PSIRT 의 트리아지 비용이 오른다. 하네스가 AI Slop 의 원인이 되지 않게 한다."
+          },
+          {
+            "step": "남은 것을 PSIRT 가 재현·등급 판정하고, 제품 팀이 고쳐 릴리스한다. 판명된 사실은 Ergon 에 다시 쌓는다",
+            "why": "찾는 것으로 끝나지 않는다 — 고쳐서 내보내야 안전해진다. 쌓인 판정이 다음 스캔을 정확하게 만든다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "AI 보안 스캔을 사서 쓸 것인가, 만들 것인가",
+            "chosen": "**하네스를 직접 만든다.**",
+            "alternatives": [
+              "버튼 하나로 도는 AI 보안 스캔 제품(Claude Security 등)을 쓴다"
+            ],
+            "tradeoff": "제품은 사내 정보와 트리아지 결과를 받을 방법이 없어 같은 오탐을 되풀이했다 — 스캔 전용 저장소에 Wiki 를 함께 넣어 돌려 봤지만 맥락을 기대만큼 쓰지 않았다. 대가는 하네스를 만들고 유지하는 힘이다. 회사는 그런 힘이 없는 OSS 같은 프로젝트라면 제품이 손쉽고 좋다고 적는다. 그리고 이 선택이 두 달 만에 된 것은 원래 있던 PSIRT·텍스트 기록 문화·AI 규정 팀 덕이었다고 — 그것이 없는 곳은 거기서부터 일궈야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(まとめ編)",
+                "url": "https://blog.cybozu.io/entry/logos-retrospective",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-04",
+                "summary": "두 달의 회고. 버튼 하나로 도는 AI 보안 스캔 제품은 사내 맥락과 트리아지 결과를 받을 방법이 없어 같은 오탐을 되풀이했다. 이제는 모델 차이보다 하네스 차이가 크다고 적는다. 하네스는 원래 있던 팀과 문화를 이은 것뿐이라 말하고, AI Slop 때문에 공개 버그 바운티를 일시 중지했다."
+              }
+            ]
+          },
+          {
+            "question": "스캔을 한 번에 끝낼 것인가, 여러 번 돌릴 것인가",
+            "chosen": "**여러 번 돌리며 이전 결과를 다음 컨텍스트에 쌓는다.**",
+            "alternatives": [
+              "단순한 프롬프트를 한 번 돌린다"
+            ],
+            "tradeoff": "모델은 한쪽에 치우쳐 보기 때문에 같은 정보로는 같은 곳만 본다. 되먹임 없이 반복하면 같은 결과가 나온다. 대가는 토큰이다 — 24시간 365일 돌리고 싶지만 토큰 값 때문에 못 하고, 지금은 가끔 죽어도 곤란하지 않은 정도로 만족한다. 사내 로컬 LLM 으로 옮겨 토큰 값을 신경 쓰지 않는 루프를 만들 계획을 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+                "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-02",
+                "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+              },
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(まとめ編)",
+                "url": "https://blog.cybozu.io/entry/logos-retrospective",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-04",
+                "summary": "두 달의 회고. 버튼 하나로 도는 AI 보안 스캔 제품은 사내 맥락과 트리아지 결과를 받을 방법이 없어 같은 오탐을 되풀이했다. 이제는 모델 차이보다 하네스 차이가 크다고 적는다. 하네스는 원래 있던 팀과 문화를 이은 것뿐이라 말하고, AI Slop 때문에 공개 버그 바운티를 일시 중지했다."
+              }
+            ]
+          },
+          {
+            "question": "AI 를 어디서 돌릴 것인가",
+            "chosen": "**AWS 인스턴스 샌드박스에 가두고 결과만 꺼낸다.**",
+            "alternatives": [
+              "개발자 손 위의 환경에서 돌린다"
+            ],
+            "tradeoff": "취약점 정보가 밖으로 새는 것을 막는다. 대가로 외부 fetch 가 안 되니 사내 지식을 따로 들여와야 했고(→ Ergon), DAST 에서는 샌드박스라는 제약이 방해가 되기도 했다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+                "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-02",
+                "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+              },
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(LLM-Wiki 編)",
+                "url": "https://blog.cybozu.io/entry/logos-llm-wiki-ergon",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-03",
+                "summary": "코드에 없는 사내 지식을 하네스에 건네는 LLM-Wiki Ergon. 도메인 fetch 허용과 RAG 를 물리고 Markdown 저장소를 골랐다. 버그 바운티 약 4,000건 기록, 회의 녹취, 개발 환경 문서를 넣었다. 전사 통합 Wiki 로 키우지 않는 이유도 적는다."
+              }
+            ]
+          },
+          {
+            "question": "코드에 없는 사내 지식을 어떻게 건넬 것인가",
+            "chosen": "**LLM-Wiki** — 원자료를 넣고 정리시키는 Markdown 저장소. 스캔 중인 AI 가 묻고, 물은 결과가 Wiki 를 다시 다듬는다.",
+            "alternatives": [
+              "특정 도메인에 대한 fetch 를 허용한다",
+              "RAG 를 만들어 좁힌 접근만 준다"
+            ],
+            "tradeoff": "fetch 허용은 넘기면 안 되는 문서까지 닿을 위험이 너무 크고, 샌드박스라 애초에 밖으로 나갈 수 없다. RAG 는 미리 읽혀 두기는 좋지만 그 자리에서 고쳐 가는 용도에는 맞지 않는다. 대가는 정보가 텍스트로 남아 있어야 한다는 것 — 암묵지라면 받아 적는 것부터 해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(LLM-Wiki 編)",
+                "url": "https://blog.cybozu.io/entry/logos-llm-wiki-ergon",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-03",
+                "summary": "코드에 없는 사내 지식을 하네스에 건네는 LLM-Wiki Ergon. 도메인 fetch 허용과 RAG 를 물리고 Markdown 저장소를 골랐다. 버그 바운티 약 4,000건 기록, 회의 녹취, 개발 환경 문서를 넣었다. 전사 통합 Wiki 로 키우지 않는 이유도 적는다."
+              }
+            ]
+          },
+          {
+            "question": "그 Wiki 를 전사 통합 Wiki 로 키울 것인가",
+            "chosen": "**키우지 않는다.** 목적마다 따로 — 사내에서는 디자인 시스템 전용 Wiki 같은 것이 팀마다 생기고 있다.",
+            "alternatives": [
+              "Ergon 을 사내 무엇이든 아는 하나의 Wiki 로 넓힌다"
+            ],
+            "tradeoff": "Wiki 에 중요한 것은 무엇에 쓰려는가인데, 그것이 흩어지면 크기만 하고 토큰 값이 드는 무거운 Wiki 가 된다고 적는다. 대가는 지식이 여러 Wiki 로 나뉜다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(LLM-Wiki 編)",
+                "url": "https://blog.cybozu.io/entry/logos-llm-wiki-ergon",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-03",
+                "summary": "코드에 없는 사내 지식을 하네스에 건네는 LLM-Wiki Ergon. 도메인 fetch 허용과 RAG 를 물리고 Markdown 저장소를 골랐다. 버그 바운티 약 4,000건 기록, 회의 녹취, 개발 환경 문서를 넣었다. 전사 통합 Wiki 로 키우지 않는 이유도 적는다."
+              }
+            ]
+          },
+          {
+            "question": "정적 스캔과 동적 스캔을 어떻게 쓸 것인가",
+            "chosen": "**SAST 가 바닥에 닿았다고 PSIRT 가 본 제품만 DAST 로 넘긴다**('SAST 졸업').",
+            "alternatives": [
+              "모든 제품에 DAST 를 돌린다"
+            ],
+            "tradeoff": "오래 버그 헌터의 보고로 다듬어진 kintone 은 SAST 검출량이 일찍 바닥에 닿았다. 그런데 DAST 는 부하와 토큰 소모가 매우 크고, 샌드박스 제약에 걸리고, 앱이 바뀔 때마다 따라가기 힘들어서 기대만큼 정확도가 오르지 않았다. 지금은 일부 제품만 DAST 를 돈다 — 과제가 많이 남았다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+                "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-02",
+                "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+              }
+            ]
+          },
+          {
+            "question": "AI 의 보고를 누가 먼저 거를 것인가",
+            "chosen": "**AI 가 먼저 거른다** — PSIRT 가 자기 판정 방식을 SKILL 로 적어 넣고, 과거 보고서는 MCP 로 조회한다.",
+            "alternatives": [
+              "AI 가 낸 것을 전부 PSIRT 가 본다"
+            ],
+            "tradeoff": "오탐까지 전부 사람에게 가면 트리아지 비용이 오르고 하네스 자체가 AI Slop 의 원인이 된다. 대가는 PSIRT 가 판단을 글로 옮기는 수고, 그리고 그 SKILL 이 거른 것 가운데 진짜가 섞여 있을 가능성이다(뒤의 것은 이 사이트의 해석 — 글은 이 누락률을 말하지 않는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+                "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-02",
+                "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+              },
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(まとめ編)",
+                "url": "https://blog.cybozu.io/entry/logos-retrospective",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-04",
+                "summary": "두 달의 회고. 버튼 하나로 도는 AI 보안 스캔 제품은 사내 맥락과 트리아지 결과를 받을 방법이 없어 같은 오탐을 되풀이했다. 이제는 모델 차이보다 하네스 차이가 크다고 적는다. 하네스는 원래 있던 팀과 문화를 이은 것뿐이라 말하고, AI Slop 때문에 공개 버그 바운티를 일시 중지했다."
+              }
+            ]
+          },
+          {
+            "question": "외부 버그 바운티를 계속 받을 것인가",
+            "chosen": "**일시 중지한다.** 일부 헌터와는 계속 주고받지만 일반 접수는 멈추고, 하네스가 낸 것을 PSIRT 가 트리아지해 전개한다.",
+            "alternatives": [
+              "공개 버그 바운티를 그대로 운영한다"
+            ],
+            "tradeoff": "AI Slop — AI 로 만든 부정확한 보고 — 때문에 멈췄다. 회사가 적은 변화는 '밖에서 오던 보고가 손안의 AI 에서 오게 됐다'는 것이다. 대가는 바깥 사람들의 눈을 잃는다는 것이다(이 사이트의 해석). 그리고 찾는 속도를 고치는 속도가 못 따라가 그것이 다음 병목이라고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mythos 対策プロジェクトの 2 ヶ月(まとめ編)",
+                "url": "https://blog.cybozu.io/entry/logos-retrospective",
+                "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+                "date": "2026-09-04",
+                "summary": "두 달의 회고. 버튼 하나로 도는 AI 보안 스캔 제품은 사내 맥락과 트리아지 결과를 받을 방법이 없어 같은 오탐을 되풀이했다. 이제는 모델 차이보다 하네스 차이가 크다고 적는다. 하네스는 원래 있던 팀과 문화를 이은 것뿐이라 말하고, AI Slop 때문에 공개 버그 바운티를 일시 중지했다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "issuer-from-domain",
+          "via": "권한이 곧 취약점인 제품",
+          "contract": "kintone 에서는 권한 없는 사람이 남의 레코드를 볼 수 있다는 것만으로 취약점이고, 회사는 그런 권한 취약점에 바운티를 지급해 왔다고 적는다. 테넌트마다 인증 발급자를 주소에서 조립하는 기능은 바로 그 경계를 지키는 쪽이다. 두 글은 서로를 언급하지 않는다 — 이 연결은 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "스캔 한 번이 취약점 인정에 닿기까지",
+          "question": "AI 가 낸 후보는 어떻게 사람이 믿을 만한 것이 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[\"누구나 명령 몇 줄로 제품을 지정\"] --> SB\n  subgraph SB[\"<b>샌드박스</b> — AWS 인스턴스, 밖으로 fetch 못 함\"]\n    CODE[\"소스 코드\"]:::quiet\n    ERG[\"<b>Ergon</b> — LLM-Wiki<br/>• 바운티 기록 약 4,000건<br/>• 회의 녹취 · 환경 문서\"]:::list\n    HOR[\"<b>Horos</b> — 하네스<br/>• 단계로 나눠 중간 결과 보존<br/>• SAST, 졸업하면 DAST\"]:::accent\n    TRI[\"<b>사전 트리아지</b><br/>• PSIRT 의 SKILL<br/>• 과거 보고서 MCP\"]:::list\n    CODE --> HOR\n    HOR <-->|\"모르는 사양을 묻는다\"| ERG\n    HOR --> TRI\n  end\n  TRI -->|\"중복 · 재현 안 됨\"| DROP[\"버림\"]:::quiet\n  TRI --> PSIRT[\"<b>PSIRT</b> — 재현 · 등급 판정\"]\n  PSIRT --> FIX[\"제품 팀이 고쳐 릴리스\"]\n  PSIRT -->|\"판정 결과를 되먹인다\"| ERG\n  HOR -->|\"다음 실행의 맥락\"| HOR"
+        },
+        {
+          "title": "제품 하나가 스캔에서 거치는 단계",
+          "question": "어떤 제품이 동적 스캔까지 가는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> SAST: 스캔 시작\n  SAST --> SAST: 결과를 되먹이며 반복\n  note right of SAST\n    코드를 읽고 수상한 곳을 보고한다\n    재현 방법도 붙이지만\n    사람이 따라 하면 안 되는 것이 많았다\n  end note\n  SAST --> Graduated: PSIRT 가 검출이 바닥에 닿았다고 본다\n  Graduated --> DAST\n  note right of DAST\n    dev server 를 띄우고 로그를 심어\n    실제로 공격을 재현한다\n    토큰과 유지 부담이 크다\n  end note\n  DAST --> DAST: 앱이 바뀌면 따라간다\n  DAST --> [*]"
+        },
+        {
+          "title": "실패 경로 — 모델만 믿으면 어디서 무너지는가",
+          "question": "저장소를 넘기고 '찾아 줘'라고만 하면 무엇이 잘못되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  ONE[\"저장소를 넘기고 한 번 묻는다\"] --> GEN[\"일반 웹 취약점 패턴의 오탐뿐\"]\n  GEN -->|\"제품 사양을 모른다\"| PERM[\"'권한 없는 B 가 A 의 레코드를 본다'를<br/>취약점으로 알아보지 못한다\"]\n  ONE --> SAME[\"여러 번 돌려도 같은 곳을 본다\"]\n  PROD[\"버튼 하나 스캔 제품\"] --> NOCTX[\"사내 맥락 · 트리아지 결과를 못 받는다\"]\n  NOCTX --> REPEAT[\"같은 오탐이 매번 돌아온다\"]\n  SAME --> SLOP\n  REPEAT --> SLOP[\"<b>AI Slop</b><br/>사람의 트리아지가 잠긴다\"]:::accent\n  EXT[\"밖에서도 AI 로 만든 부정확한 보고가 온다\"] --> SLOP\n  SLOP --> PAUSE[\"공개 버그 바운티 일시 중지\"]:::quiet\n  FOUND[\"찾는 속도\"] -->|\"못 따라간다\"| NEXT[\"<b>다음 병목 — 고치는 속도</b>\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Mythos 対策プロジェクトの 2 ヶ月(概要編)",
+          "url": "https://blog.cybozu.io/entry/logos-overview",
+          "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+          "date": "2026-09-01",
+          "summary": "더 강한 AI 가 공격자 손에 들어갈 위험에 대비해 두 달 동안 제품 보안 스캔 하네스를 만든 프로젝트(Logos)의 개요. 상담해야 할 팀(AI 규정·PSIRT·제품)을 멤버로 불러 즉석 횡단 팀을 꾸렸고, 주요 앱에서 후보 약 260건 중 약 50건을 취약점으로 인정했다."
+        },
+        {
+          "title": "Mythos 対策プロジェクトの 2 ヶ月(ハーネス編)",
+          "url": "https://blog.cybozu.io/entry/logos-harness-horos",
+          "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+          "date": "2026-09-02",
+          "summary": "스캔 하네스 Horos 의 구조. 이전 결과를 다음 컨텍스트에 쌓는 피드백 루프, AWS 인스턴스 샌드박스, SAST 가 한계에 닿은 제품만 DAST 로 넘기는 규칙, PSIRT 의 판단을 SKILL 로 옮긴 사전 트리아지, 100분짜리 스캔의 단계 분할."
+        },
+        {
+          "title": "Mythos 対策プロジェクトの 2 ヶ月(LLM-Wiki 編)",
+          "url": "https://blog.cybozu.io/entry/logos-llm-wiki-ergon",
+          "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+          "date": "2026-09-03",
+          "summary": "코드에 없는 사내 지식을 하네스에 건네는 LLM-Wiki Ergon. 도메인 fetch 허용과 RAG 를 물리고 Markdown 저장소를 골랐다. 버그 바운티 약 4,000건 기록, 회의 녹취, 개발 환경 문서를 넣었다. 전사 통합 Wiki 로 키우지 않는 이유도 적는다."
+        },
+        {
+          "title": "Mythos 対策プロジェクトの 2 ヶ月(まとめ編)",
+          "url": "https://blog.cybozu.io/entry/logos-retrospective",
+          "publisher": "サイボウズ (Cybozu Inside Out) · yellow-sabotech",
+          "date": "2026-09-04",
+          "summary": "두 달의 회고. 버튼 하나로 도는 AI 보안 스캔 제품은 사내 맥락과 트리아지 결과를 받을 방법이 없어 같은 오탐을 되풀이했다. 이제는 모델 차이보다 하네스 차이가 크다고 적는다. 하네스는 원래 있던 팀과 문화를 이은 것뿐이라 말하고, AI Slop 때문에 공개 버그 바운티를 일시 중지했다."
         }
       ]
     }
