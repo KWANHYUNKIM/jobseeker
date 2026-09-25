@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — 무신사 재방문(새 글 없음)을 마쳤다. 메이퇀 확장(`one-model-many-scenes`) 뒤로 재방문 넷이 비었다.** `2026/09/22/Meituan-Foundation-Model-for-Recommendation`(MTFM)을 기능 `one-model-many-scenes` 로
+**없다 — 네이버 재방문(새 글 없음)을 마쳤다. 메이퇀 확장(`one-model-many-scenes`) 뒤로 재방문 다섯이 비었다.** `2026/09/22/Meituan-Foundation-Model-for-Recommendation`(MTFM)을 기능 `one-model-many-scenes` 로
 쓰고 새 도메인 `여러 업무의 추천을 한 모델로 묶는다` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
@@ -320,6 +320,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **naver** — 2026-09-26 **1회째 없음.** `d2.naver.com/d2.atom` 최신 09-03(FE News). 안 쓴 엔지니어링 글 — vLLM 플러그인 1·2편(08-10, 검색 AI 모델 서빙 — `colbert-matching` 과 맞닿는다) · VictoriaMetrics 운영기 2편(07-21, 증설 없이 리소스 위기) · Airflow 멀티프로세싱 1편(09-01) — 은 **보강 재료**다.
 - **musinsa** — 2026-09-26 **1회째 없음.** `medium.com/feed/musinsa-tech` 최신이 갱신일 당일(09-03, QA 자동화). 바로 앞의 안 쓴 글이 굵다 — 통합 임베딩 푸시 CTR +21.3%(08-31, `style-personalization` 보강감) · LLM 비용 64% 절감·캐시 히트 98%(07-07) · **도메인 지식 공유(08-25 — LLM Wiki 비교 문서의 네 번째 재료일 수 있다, 열어서 확인)**.
 - **moniepoint** — 2026-09-26 **1회째 없음.** `rss.xml` 최신 08-05. 안 쓴 글(Crossplane 함수 08-05 · 스케줄 잡 1·2부 07-16/20)은 **보강 재료**다.
 - **monday** — 2026-09-26 **새 글 하나, 쓰지 않음.** `building-a-robust-harness-for-agent-in-production-feed-agent-case-study`(09-09) — 피드 에이전트 하네스(PII 제거 전처리 · ID 별칭으로 지어낸 인용 잡기 · 스키마 강제 출력+재시도 · 두 겹 루프 한도 · 명시 규칙/추론 관찰 두 층 기억). **목록형이고 버린 대안·대가·수치가 없다.** 다른 회사의 하네스 글과 모아 비교 문서로 쓸 때 재료가 된다(사이보즈 `logos-security-harness`).
