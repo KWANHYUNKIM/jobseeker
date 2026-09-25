@@ -1,0 +1,141 @@
+{
+  "book": "jvm-tuning",
+  "id": "code-cache",
+  "no": "4.4",
+  "chapter": 4,
+  "title": "코드 캐시",
+  "summary": "JIT 이 만든 기계어가 사는 곳.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "코드 캐시가 세 칸으로 갈리는 것을 본다.",
+    "가득 찼을 때 무슨 일이 일어나는지 확인한다.",
+    "컴파일이 꺼진 JVM 이 어떤 상태인지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.1절에서 **JIT 이 자주 도는 코드를 기계어로 컴파일한다**고 했다. 그 기계어가 **어딘가에는 놓여야** 한다. 힙도 메타스페이스도 아닌 **코드 캐시**다.\n\n이 칸은 **다 차면 조용히 성능이 무너진다** — 예외도 안 나고 죽지도 않는다."
+    },
+    {
+      "type": "table",
+      "caption": "기본 상태 (`jcmd <pid> Compiler.codecache`)",
+      "columns": [
+        "칸",
+        "크기",
+        "무엇이 들어가나"
+      ],
+      "rows": [
+        [
+          "`non-profiled nmethods`",
+          "120,032Kb",
+          "**C2 가 만든 최종 기계어**"
+        ],
+        [
+          "`profiled nmethods`",
+          "120,016Kb",
+          "**C1 이 만든, 통계를 같이 세는 기계어**"
+        ],
+        [
+          "`non-nmethods`",
+          "5,712Kb",
+          "인터프리터·어댑터 등 JVM 자신의 코드"
+        ]
+      ],
+      "note": "셋을 더하면 약 245MB 이고, `ReservedCodeCacheSize` 기본값이 **251,658,240** 바이트(240MB)다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 세 칸으로 나눠 두나",
+      "md": "**수명이 다르기 때문**이다.\n\n> C1 코드는 **C2 코드가 나오면 버려진다** — 교체가 잦다.\n> C2 코드는 **오래 산다.** JVM 자신의 코드는 **영영 산다.**\n> 섞어 두면 **짧게 사는 것이 빠져나간 자리가 조각나** 긴 것을 못 넣는다. `SegmentedCodeCache` 가 기본으로 켜져 있는 이유다."
+    },
+    {
+      "type": "prose",
+      "md": "## 가득 차면\n\n코드 캐시를 **1MB 로 조이고** 뜨거운 메서드 600개짜리 프로그램을 돌려 본다. 경고가 두 줄 나오고, **그 뒤로 컴파일이 아예 멈춘다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "죽지 않는다 — 그래서 더 나쁘다",
+      "md": "```\ncompilation: disabled (not enough contiguous free space left)\ntotal_blobs=269  nmethods=0  adapters=191\n```\n\n> **`nmethods=0`** — 기계어로 컴파일된 메서드가 **하나도 없다.** 전부 해석으로 돈다.\n> 예외는 안 난다. **경고 두 줄이 전부**이고 프로세스는 계속 산다.\n> 2.1절에서 해석과 컴파일의 차이를 **28배**로 쟀다. 그 28배가 **조용히** 돌아온 상태다.\n> 11장에서 **기동 로그의 warning 줄을 읽는 것**을 점검표에 넣는 이유가 이것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "이 상태에서 잰 시간은 못 믿는다",
+      "md": "**같은 명령을 다섯 번 돌려 세 번만 결과를 냈다.**\n\n> 굶긴 JVM 은 `C2 initialization failed. Shutting down all compilers` 까지 찍고 **정상 상태가 아니다.**\n> 그래서 **이 절에는 시간 비교를 싣지 않았다** — 재현되지 않는 숫자는 숫자가 아니다.\n> 실을 수 있는 것은 **`nmethods` 개수와 경고 문구**까지다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 기본 상태 ---\n\n$ jcmd <pid> Compiler.codecache\nCodeHeap 'non-profiled nmethods': size=120032Kb used=44Kb  max_used=44Kb  free=119987Kb\nCodeHeap 'profiled nmethods':     size=120016Kb used=114Kb max_used=114Kb free=119901Kb\nCodeHeap 'non-nmethods':          size=5712Kb  used=1083Kb max_used=1093Kb free=4629Kb\n total_blobs=466 nmethods=99 adapters=284\n compilation: enabled\n full_count=0\n\n$ java -XX:+PrintFlagsFinal -version | grep -E 'ReservedCodeCacheSize|SegmentedCodeCache'\nuintx ReservedCodeCacheSize = 251658240   {ergonomic}     # 240MB\nbool  SegmentedCodeCache    = true        {ergonomic}\n\n# --- 2) 바닥이 있다 ---\n\n$ java -XX:ReservedCodeCacheSize=1536k ...\nInvalid ReservedCodeCacheSize: 1536K. Must be at least InitialCodeCacheSize=2496K.\nError: Could not create the Java Virtual Machine.\n\n# --- 3) 둘 다 낮춰 1MB 로 굶긴다 ---\n\n$ java -XX:InitialCodeCacheSize=512k -XX:ReservedCodeCacheSize=1m \\\n       -XX:-SegmentedCodeCache -cp out ManyHot\n[0.074s][warning][codecache] CodeCache is full. Compiler has been disabled.\n[0.074s][warning][codecache] Try increasing the code cache size using -XX:ReservedCodeCacheSize=\nCodeCache: size=1024Kb used=1023Kb max_used=1023Kb free=0Kb\n total_blobs=276 nmethods=1 adapters=195\n compilation: disabled (not enough contiguous free space left)\n\n# 같은 프로그램, 2496k 로 주면\n total_blobs=1378 nmethods=1047 adapters=249\n compilation: enabled\n full_count=0\n\n# nmethods 가 1 과 1047 이다.",
+      "note": "**1 대 1047.** 코드 캐시가 모자라면 JIT 이 있어도 없는 것과 같아진다."
+    }
+  ],
+  "recap": [
+    "JIT 이 만든 기계어는 힙이 아니라 코드 캐시에 놓인다.",
+    "기본은 세 칸으로 갈리고 이유는 코드마다 수명이 달라서다.",
+    "ReservedCodeCacheSize 기본값은 240MB 다.",
+    "가득 차면 경고 두 줄만 찍고 컴파일이 멈춘다 — 예외도 종료도 없다.",
+    "굶긴 JVM 은 컴파일러 초기화까지 실패해 상태가 불안정하다."
+  ],
+  "drills": [
+    {
+      "task": "jcmd Compiler.codecache 로 내 애플리케이션의 세 칸 사용률을 본다.",
+      "done_when": "full_count 가 0 인지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "기동 로그에서 codecache 경고를 찾는 grep 을 만든다.",
+      "done_when": "11장 점검표에 넣는다.",
+      "minutes": 8
+    },
+    {
+      "task": "ReservedCodeCacheSize 를 줄여 가며 nmethods 수를 센다.",
+      "done_when": "어디서부터 컴파일이 멈추는지 안다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JIT 이 만든 기계어는 어디에 놓이나.",
+      "a": "코드 캐시다. 힙도 메타스페이스도 아니다."
+    },
+    {
+      "q": "코드 캐시를 세 칸으로 나눈 이유는.",
+      "a": "C1 코드·C2 코드·JVM 자신의 코드가 수명이 달라 섞으면 조각나기 때문이다."
+    },
+    {
+      "q": "코드 캐시가 가득 차면 무슨 일이 일어나나.",
+      "a": "경고 두 줄을 찍고 컴파일이 멈춘다. 예외도 종료도 없이 해석으로만 돈다."
+    },
+    {
+      "q": "가득 찬 것을 어떻게 확인하나.",
+      "a": "Compiler.codecache 의 compilation 상태와 full_count, nmethods 수를 본다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "nmethod",
+      "what": "컴파일된 자바 메서드 하나에 해당하는 코드 캐시 항목."
+    },
+    {
+      "term": "SegmentedCodeCache",
+      "what": "코드 캐시를 수명별 세 칸으로 나누는 기능. 기본으로 켜져 있다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JEP 197: Segmented Code Cache",
+      "url": "https://openjdk.org/jeps/197",
+      "publisher": "OpenJDK"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:ReservedCodeCacheSize",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "book": "jvm-tuning",
+  "id": "direct",
+  "no": "4.5",
+  "chapter": 4,
+  "title": "다이렉트 버퍼",
+  "summary": "GC 가 늦게 아는 메모리.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "직접 버퍼가 언제 반납되는지 안다.",
+    "힙 압력이 없으면 반납이 안 되는 것을 재 본다.",
+    "작은 힙 객체가 큰 네이티브를 붙잡는 구조를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.5절에서 **직접 버퍼 300MB 를 잡아도 힙 사용량은 1MB** 였다. 그때는 계속 붙잡고 있었으니 당연했다. 이번 질문은 **버리면 언제 돌려주나**다.\n\n답이 곧 이 절의 제목이다 — **GC 가 늦게 안다.** 그리고 **늦는 정도가 힙 사정에 달려** 있다."
+    },
+    {
+      "type": "figure",
+      "caption": "1MB 짜리 버퍼가 실제로 차지하는 두 자리",
+      "ascii": "   heap                          native\n   ----                          ------\n   DirectByteBuffer  ~ 64 bytes  -->  1 MB block\n     + a Cleaner\n\n   the collector only sees the 64 bytes\n   the 1 MB is released when the Cleaner runs,\n   and the Cleaner runs only after the 64 bytes are collected",
+      "note": "**수집기가 보는 것은 64바이트**다. 1MB 는 그 뒤에 매달려 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 압력이 안 생긴다",
+      "md": "**힙이 안 차면 GC 가 안 돈다.**\n\n> 버퍼를 2,000개 버려도 힙에 쌓이는 것은 **64바이트 × 2,000 = 약 128KB** 뿐이다.\n> 힙 입장에서는 **아무 일도 일어나지 않은 것**이라 수집할 이유가 없다.\n> 그동안 네이티브 쪽에는 **1MB × 2,000 = 2GB** 가 쌓인다."
+    },
+    {
+      "type": "table",
+      "caption": "1MB 버퍼 2,000개를 잡고 바로 버린다 (`-Xmx2g`)",
+      "columns": [
+        "시점",
+        "GC 를 안 부를 때",
+        "500개마다 System.gc()"
+      ],
+      "rows": [
+        [
+          "시작",
+          "0 KB",
+          "0 KB"
+        ],
+        [
+          "500개 뒤",
+          "512,000 KB",
+          "**1,024 KB**"
+        ],
+        [
+          "1,000개 뒤",
+          "1,024,000 KB",
+          "**1,024 KB**"
+        ],
+        [
+          "1,500개 뒤",
+          "1,536,000 KB",
+          "**1,024 KB**"
+        ],
+        [
+          "2,000개 뒤",
+          "**2,048,000 KB**",
+          "**1,024 KB**"
+        ]
+      ],
+      "note": "**참조는 둘 다 즉시 버렸다.** 달라진 것은 GC 가 돌았는가뿐인데 2GB 와 1MB 다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그렇다고 System.gc() 를 부르면 안 된다",
+      "md": "**위 오른쪽 칸은 설명을 위한 것이지 처방이 아니다.**\n\n> `System.gc()` 는 **풀 GC 를 부른다** — 1.2절에서 본 그 멈춤이다.\n> 게다가 `-XX:+DisableExplicitGC` 가 걸린 환경에서는 **무시된다.**\n> 실제 처방은 **버퍼를 재사용하는 것**이다. 네티가 버퍼 풀을 두는 이유가 이것이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 진단할 때 보는 자리\n\n직접 버퍼 사용량은 **`BufferPoolMXBean`** 으로 읽는다(위 표가 그것으로 잰 값이다). NMT 에서는 2.5절에서 본 대로 **`Other` 칸**에 잡힌다. 둘 다 **힙 덤프에는 안 나온다** — 힙에 있는 것은 64바이트짜리 껍데기뿐이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Late.java\npublic class Late {\n    static long directKB() {\n        var beans = ManagementFactory.getPlatformMXBeans(BufferPoolMXBean.class);\n        for (var b : beans) if (b.getName().equals(\"direct\")) return b.getMemoryUsed() >> 10;\n        return -1;\n    }\n    public static void main(String[] a) throws Exception {\n        boolean gc = a[0].equals(\"gc\");\n        for (int i = 1; i <= 2000; i++) {\n            ByteBuffer b = ByteBuffer.allocateDirect(1 << 20);   // 잡고 바로 버린다\n            b.put(0, (byte) i);\n            if (i % 500 == 0) {\n                if (gc) { System.gc(); Thread.sleep(120); }\n                System.out.printf(\"  %4d개 뒤   직접버퍼 %,7d KB%n\", i, directKB());\n            }\n        }\n    }\n}\n\n# --- 1) GC 를 안 부를 때 ---\n\n$ java -Xmx2g -cp out Late nogc\n  시작        직접버퍼       0 KB\n   500개 뒤   직접버퍼 512,000 KB\n  1000개 뒤   직접버퍼 1,024,000 KB\n  1500개 뒤   직접버퍼 1,536,000 KB\n  2000개 뒤   직접버퍼 2,048,000 KB\n  끝          직접버퍼 2,048,000 KB     <- 2GB 가 그대로 남았다\n\n# --- 2) 500개마다 System.gc() ---\n\n$ java -Xmx2g -cp out Late gc\n  시작        직접버퍼       0 KB\n   500개 뒤   직접버퍼   1,024 KB\n  1000개 뒤   직접버퍼   1,024 KB\n  1500개 뒤   직접버퍼   1,024 KB\n  2000개 뒤   직접버퍼   1,024 KB\n  끝          직접버퍼   1,024 KB     <- 지금 들고 있는 하나뿐",
+      "note": "**소스는 한 글자도 안 다르다.** `System.gc()` 한 줄이 2GB 와 1MB 를 가른다."
+    }
+  ],
+  "recap": [
+    "직접 버퍼는 힙의 작은 껍데기와 네이티브의 큰 블록 둘로 되어 있다.",
+    "네이티브 블록은 껍데기가 수집된 뒤 Cleaner 가 돌아야 반납된다.",
+    "힙 압력이 없으면 GC 가 안 돌고 그래서 반납도 안 된다.",
+    "2,000개를 버렸는데 GC 를 안 부르면 2GB 가 그대로 남았다.",
+    "처방은 System.gc() 가 아니라 버퍼 재사용이다."
+  ],
+  "drills": [
+    {
+      "task": "BufferPoolMXBean 으로 내 애플리케이션의 직접 버퍼 사용량을 찍는다.",
+      "done_when": "값이 오르는지 평평한지 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "-XX:MaxDirectMemorySize 를 명시하고 한도를 건다.",
+      "done_when": "2.5절의 OOM 메시지를 다시 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "버퍼를 재사용하는 판으로 고쳐 사용량이 평평해지는 것을 본다.",
+      "done_when": "풀링의 효과를 숫자로 안다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "직접 버퍼의 네이티브 블록은 언제 반납되나.",
+      "a": "힙의 껍데기 객체가 수집되고 Cleaner 가 돈 뒤다."
+    },
+    {
+      "q": "왜 GC 가 늦게 아는가.",
+      "a": "힙에 쌓이는 것은 껍데기 몇십 바이트뿐이라 힙 압력이 안 생기기 때문이다."
+    },
+    {
+      "q": "직접 버퍼 사용량은 어디서 보나.",
+      "a": "BufferPoolMXBean 이나 NMT 의 Other 칸이다. 힙 덤프에는 안 나온다."
+    },
+    {
+      "q": "누적을 막는 제대로 된 처방은.",
+      "a": "버퍼 재사용이다. System.gc() 는 풀 GC 를 부르고 무시될 수도 있다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "Cleaner",
+      "what": "대상 객체가 수집된 뒤 정리 작업을 돌려 주는 장치. 직접 버퍼의 네이티브 해제가 여기 걸린다."
+    },
+    {
+      "term": "BufferPoolMXBean",
+      "what": "직접 버퍼와 매핑 버퍼의 개수·용량을 읽는 JMX 빈."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — BufferPoolMXBean",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.management/java/lang/management/BufferPoolMXBean.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — ByteBuffer.allocateDirect",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html#allocateDirect(int)",
+      "publisher": "Oracle"
+    }
+  ]
+}

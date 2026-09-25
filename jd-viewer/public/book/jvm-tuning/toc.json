@@ -208,7 +208,7 @@
           "title": "코드 캐시",
           "summary": "JIT 이 만든 기계어가 사는 곳.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -216,7 +216,7 @@
           "title": "다이렉트 버퍼",
           "summary": "GC 가 늦게 아는 메모리.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -224,7 +224,7 @@
           "title": "실제 사용량",
           "summary": "Xmx 가 전부가 아니다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.7",

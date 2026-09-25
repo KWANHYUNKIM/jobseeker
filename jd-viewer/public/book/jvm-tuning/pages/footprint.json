@@ -1,0 +1,161 @@
+{
+  "book": "jvm-tuning",
+  "id": "footprint",
+  "no": "4.6",
+  "chapter": 4,
+  "title": "실제 사용량",
+  "summary": "Xmx 가 전부가 아니다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "-Xmx 와 실제 커밋량의 차이를 숫자로 본다.",
+    "어느 칸이 힙만큼 큰지 확인한다.",
+    "어떤 도구로 재야 하는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4장을 여기까지 오면서 칸을 하나씩 쟀다. **이제 더한다.**\n\n`-Xmx` 를 256MB 로 주고 스레드 40개를 띄운 프로그램을 NMT 로 뜨면, **합이 `-Xmx` 를 넘는다.** 넘는 정도가 아니라 **힙만 한 칸이 하나 더** 있다."
+    },
+    {
+      "type": "table",
+      "caption": "`-Xmx256m` 짜리 프로세스의 NMT committed",
+      "columns": [
+        "칸",
+        "committed",
+        "비고"
+      ],
+      "rows": [
+        [
+          "Java Heap",
+          "133,120 KB",
+          "**-Xmx 는 262,144 KB 인데 절반만 썼다**"
+        ],
+        [
+          "Thread",
+          "**125,823 KB**",
+          "**스레드 61개** — 하나에 약 2.06MB"
+        ],
+        [
+          "GC",
+          "54,738 KB",
+          "힙을 관리하는 자료구조"
+        ],
+        [
+          "Shared class space",
+          "12,032 KB",
+          "CDS 아카이브"
+        ],
+        [
+          "Code",
+          "7,630 KB",
+          "4.4절의 코드 캐시"
+        ],
+        [
+          "그 밖",
+          "약 2,700 KB",
+          "Symbol · Internal · Compiler 등"
+        ],
+        [
+          "**합계**",
+          "**336,046 KB**",
+          "**-Xmx 보다 73,902 KB 많다**"
+        ]
+      ],
+      "note": "**힙은 절반만 쓰고 있는데 합계는 `-Xmx` 를 넘는다.** 이 표가 이 절의 전부다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "스레드가 힙만큼 크다",
+      "md": "**125,823 KB 대 133,120 KB** 다.\n\n> 내가 만든 스레드는 40개인데 **실제로는 61개**다 — GC·JIT·VM 스레드가 붙는다(2.2절).\n> 61 × 약 2.06MB 가 125MB 다. **`-Xss` 와 스레드 수의 곱**이 그대로 나온다(4.3절).\n> 그래서 **스레드풀 크기를 늘리는 것이 메모리 결정**이기도 하다."
+    },
+    {
+      "type": "prose",
+      "md": "## 합을 잡는 식\n\n컨테이너에 메모리를 얼마나 줄지 정할 때 쓰는 대략식이다. **각 항은 앞에서 다 재 봤다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "프로세스가 쓰는 대략의 합",
+      "ascii": "   -Xmx                        heap ceiling          4.1\n + MaxMetaspaceSize            class metadata        4.2\n + Xss * thread count          stacks                4.3\n + ReservedCodeCacheSize       jit output            4.4\n + MaxDirectMemorySize         direct buffers        4.5\n + gc structures               scales with heap      4.1\n + jvm overhead                symbols, internal\n ------------------------------------------------------\n = what the container must allow",
+      "note": "**전부 최대치로 잡으면 과하다.** 실제로는 커밋량을 재서 여유를 얹는다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "macOS 의 ps RSS 로는 못 잰다",
+      "md": "**이 절을 쓰면서 `ps -o rss` 로 재 보니 18MB 로 나왔다.**\n\n> NMT 가 336MB 를 커밋했다고 하는데 그렇다.\n> 손대지 않은 페이지를 안 세는 등 **플랫폼마다 세는 법이 다르다.**\n> 그래서 **이 절의 표는 전부 NMT 값**이다 — JVM 이 스스로 센 것이라 플랫폼을 안 탄다.\n> 리눅스 컨테이너에서는 `cgroup` 의 `memory.current` 를 같이 본다(4.7절)."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 스레드 40개를 띄우고 약 50MB 를 살려 두는 프로그램\n\n$ java -Xmx256m -XX:NativeMemoryTracking=summary -cp out Foot &\n$ jcmd <pid> VM.native_memory summary\n\nTotal: reserved=1827884KB, committed=336044KB\n-                 Java Heap (reserved=262144KB, committed=133120KB)\n-                     Class (reserved=1048685KB, committed=237KB)\n-                    Thread (reserved=125823KB, committed=125823KB)\n                            (thread #61)\n-                      Code (reserved=247744KB, committed=7632KB)\n-                        GC (reserved=59490KB, committed=54738KB)\n-                  Compiler (reserved=168KB, committed=168KB)\n-                  Internal (reserved=276KB, committed=276KB)\n-                    Symbol (reserved=1146KB, committed=1146KB)\n-        Shared class space (reserved=16384KB, committed=12032KB)\n\n# -Xmx256m        =  262,144 KB\n# NMT committed   =  336,046 KB    <- 73,902 KB 더 많다\n# 그런데 힙은 133,120 KB 만 썼다\n\n# --- 같은 시점의 ps ---\n\n$ ps -o rss= -p <pid>\n  18272            # 18MB. macOS 의 RSS 는 이 이야기를 못 한다.",
+      "note": "**`-Xmx` 를 256MB 로 줄여도 프로세스는 336MB 를 잡고 있다.** 컨테이너에 256MB 를 주면 죽는다 — 다음 절의 주제다."
+    }
+  ],
+  "recap": [
+    "-Xmx256m 짜리 프로세스가 NMT 기준 336MB 를 커밋했다.",
+    "힙은 그중 133MB 만 썼는데도 합계가 -Xmx 를 넘었다.",
+    "스레드 칸이 125MB 로 힙만큼 컸다 — 61개에 하나 약 2.06MB.",
+    "합은 힙·메타스페이스·스택·코드 캐시·직접 버퍼·GC 구조의 합으로 잡는다.",
+    "macOS 의 ps RSS 는 18MB 로 나와 쓸 수 없었다 — NMT 로 잰다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션의 NMT committed 합과 -Xmx 를 비교한다.",
+      "done_when": "차이를 KB 단위로 말할 수 있다.",
+      "minutes": 12
+    },
+    {
+      "task": "스레드풀 크기를 두 배로 하고 Thread 칸을 다시 잰다.",
+      "done_when": "곱셈이 맞는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "위 합산식의 각 항을 내 환경 값으로 채운다.",
+      "done_when": "컨테이너에 줄 메모리를 근거로 정한다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "-Xmx 가 프로세스 메모리의 전부인가.",
+      "a": "아니다. 이 측정에서 -Xmx 256MB 에 실제 커밋은 336MB 였다."
+    },
+    {
+      "q": "힙 다음으로 컸던 칸은.",
+      "a": "스레드다. 61개에 125MB 로 힙과 거의 같았다."
+    },
+    {
+      "q": "스레드 수를 늘리면 무엇이 같이 늘어나나.",
+      "a": "-Xss 곱하기 스레드 수만큼 스택 메모리가 늘어난다."
+    },
+    {
+      "q": "macOS 에서 프로세스 메모리를 무엇으로 재야 하나.",
+      "a": "NMT 다. ps 의 RSS 는 실제와 크게 어긋났다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "footprint",
+      "what": "프로세스가 실제로 쓰는 메모리 총량. 힙 밖의 칸을 모두 포함한다."
+    },
+    {
+      "term": "committed",
+      "what": "운영체제에서 실제로 받아 온 양. reserved 는 주소만 잡아 둔 것이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Native Memory Tracking",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/diagnostic-tools.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -Xmx",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
