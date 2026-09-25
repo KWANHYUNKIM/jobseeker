@@ -8,15 +8,15 @@
 
 ## 지금 파는 중
 
-**없다 — bol 재방문(새 자료 없음)을 마쳤다.** 다음 사이클도 `--gaps` 대로 재방문일 것이다.
-큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터, 먼저 팔 기능은
-**Control Plane**. 근거와 글 주소는 QUEUE 대기 표에 있다.
-⚠️ 재방문 대상이 192곳이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
+**없다 — 바이트댄스 재방문이 확장이 됐다.** `ByteX`(arXiv 2608.30607, 2026-09-01)를 기능 `bytex` 로
+쓰고 새 도메인 `검색 인프라를 벡터까지 넓힌다` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
+큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
+⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
 
-- **CADDi 는 하테나라 `caddi.tech/archive?page=N` 으로 제목 목록을 통째로 얻는다.** 본문은
-  `div.entry-content` 만 떼면 된다.
-- **데브시스터즈 본문은 `<article>` 안에 있다.** 엔지니어링 데이 정리 글은 발표 요약뿐이다.
-- **Picnic 은 `jobs.picnic.app/en/blogs/<slug>`** — 목록 페이지에 17편이 다 나온다.
+- **논문으로 쓰인 회사는 재방문 때 블로그가 아니라 arXiv 를 본다.** `export.arxiv.org/api/query?search_query=abs:<회사>+AND+(cat:cs.DC+OR+cat:cs.DB+OR+cat:cs.OS)&sortBy=submittedDate`
+  — 바이트댄스는 이 한 줄로 ByteX 가 걸렸다. 같은 목록에 아직 안 쓴 것이 더 있다
+  (StreamShield 2026-02 · ByteHouse 2026-02 · ABase 2025-05) — **재방문에서 확장 재료로 쓸 수 있다.**
+- **CADDi 는 `caddi.tech/archive?page=N`**, **데브시스터즈 본문은 `<article>`**, **Picnic 은 `jobs.picnic.app/en/blogs/<slug>`**.
 - **재방문은 WordPress 사이트면 `<종류>-sitemap.xml` 의 lastmod 로 새 글 유무를 한 번에 본다.**
 
 ## 지금의 진짜 상태
@@ -501,6 +501,11 @@ poppler·pypdf 없이 순수 파이썬으로 접근할 수 있다. Allegro IR �
 > ⚠️ **CMap 을 문서 전체에서 하나로 합치면 폰트가 섞여 글자가 밀린다**(TITLE 이 SHSKD 로 나온다).
 > 페이지 대부분이 멀쩡하면 그대로 쓰되, **밀린 페이지는 버린다.** 그리고 **자간이 낱글자로
 > 벌어져 나오는 경우가 있다**(`A l l e g r o`) — 수치는 붙어 나오므로 읽는 데는 지장이 없다.
+
+> **더 쉬운 길(2026-09-26).** 스크래치패드에 `python3 -m pip install --target <스크래치>/pylib pypdf` 로
+> 깔고 `PYTHONPATH=<스크래치>/pylib` 로 `pypdf.PdfReader(...).pages[i].extract_text()` — ByteX 논문
+> 19쪽이 통째로 나왔다. 레포에는 아무것도 안 깐다. **LavaStore·ByteGraph·ByteHTAP(VLDB PDF)도
+> 이 길로 다시 열 수 있다** — 바이트댄스의 비어 있는 도메인 둘(로컬 저장 엔진 · 그래프·분석 데이터)이 여기 걸려 있다.
 
 ### 한 편으로 도메인을 판단하지 않는다 (사이클 209·210, 212~214 에서 재확인)
 

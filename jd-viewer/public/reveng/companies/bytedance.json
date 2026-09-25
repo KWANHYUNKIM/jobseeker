@@ -5,7 +5,7 @@
   "country": "CN",
   "category": "소셜",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "domain": "bytedance.com",
   "one_liner": "검색하지 않는 사용자에게 다음 것을 계속 고르는 회사 — 그래서 모델이 '지금'을 따라잡아야 한다",
   "business_model": "**이 회사의 제품은 사용자가 무엇을 원하는지 말하지 않아도 되는 곳이다.** 검색창에 무엇을 치는 대신 앱을 열면 다음 것이 나온다. 그래서 **추천이 부가 기능이 아니라 제품 그 자체**이고, 다른 회사들과 순서가 반대다 — 넷플릭스·유튜브는 카탈로그와 검색이 먼저 있고 추천이 그 위에 얹히지만, 여기는 **피드가 먼저**다.\n\n그 구조가 기술적 요구를 정한다. 사용자가 방금 무엇을 보고 넘겼는지가 **지금 다음 영상**에 반영돼야 하므로, 모델이 하루 한 번 학습해서는 늦는다. 이 회사의 논문이 다루는 것도 정확히 그 자리다 — **어떻게 하면 학습을 멈추지 않고 계속 돌릴 수 있는가.**\n\n**재무는 공시되지 않는다.** 비상장이라 매출 구성을 회사가 밝힌 적이 없고, 아래 수익원은 전부 **언론 보도와 분석가 추정**이다(2024년 매출 약 1,550억 달러, 2025년 목표 약 1,860억 달러, 2025년 이익 약 500억 달러 추정, 기업가치 3,300억 달러 이상). Discord·Slack·GitHub 때와 같은 처지다.\n\n**그리고 이 회사는 이 엔진에 처음인 종류의 자료를 가졌다** — 기술블로그가 아니라 **동료 심사 논문**이다(RecSys·VLDB). 블로그는 '우리가 이렇게 했다'로 끝나지만 논문은 **버린 대안과 실험 수치를 함께 싣는다**(이 관찰은 이 사이트의 해석이다).\n\n**네 논문에 걸쳐 같은 습관이 반복된다.** 첫째, **하드웨어 지표를 믿지 않는다** — HeteroScale 은 decode 의 GPU 사용률이 부하가 낮아도 높게 남아 오해를 부른다는 것을 실측으로 밝히고, MegaScale 은 마이크로벤치마크에 안 잡히는 0.5%의 느린 기계를 실제 학습 안에서 찾아내며, MuxFlow 는 GPU 의 99%가 사용률 60% 미만인 것이 게으름이 아니라 구조라고 짚는다. 셋 다 **'바쁜 것'과 '일하는 것'을 구분하려는 시도**다. 둘째, **완벽 대신 감수할 손실을 숫자로 계산한다** — Monolith 는 10일마다 사용자 15,000명의 하루치, MuxFlow 는 온라인 감속 20% 미만(실측 10ms), HeteroScale 은 비수기에 일부러 남기는 여유. 셋째, **버린 대안을 표로 남긴다** — 논문이라는 형식이 강제하는 것이기도 하지만, 충돌 있는/없는 테이블, 지표 여덟 개, 시간 분할·MIG·CUDA 스트림처럼 **왜 그것이 아닌지가 늘 함께 있다.** 넷째, **경험적으로 고른 값을 경험적이라고 적는다** — 빈도 필터 임계값, MuxFlow 의 각종 임계값, HeteroScale 의 모델별 튜닝. **적절한 값을 어떻게 고를지는 열린 문제로 남겨 둔다.** (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
@@ -47,7 +47,7 @@
   "domain_map": {
     "title": "바이트댄스 도메인 지도",
     "question": "방금 넘긴 영상이 다음 추천에 닿기까지, 그리고 그 GPU 는 누가 쓰는가?",
-    "code": "flowchart TD\n  U[\"사용자 — 넘긴다 · 멈춘다 · 누른다\"]\n  subgraph REC[\"<b>추천 학습·서빙</b> — 멈추지 않는다\"]\n    KA[(\"Kafka — 사용자 행동\")]\n    KF[(\"Kafka — 피처\")]\n    FL[\"Flink 온라인 조이너<br/>행동과 피처를 붙여 학습 예제로\"]:::list\n    KE[(\"Kafka — 학습 예제\")]\n    TW[\"학습 워커\"]\n    TPS[(\"<b>학습 파라미터 서버</b><br/>충돌 없는 임베딩 테이블\")]:::accent\n    SPS[(\"<b>서빙 파라미터 서버</b>\")]\n    TPS -->|\"sparse 분 단위 · dense 하루 단위<br/>바뀐 키만\"| SPS\n  end\n  subgraph GPUD[\"<b>GPU 자원 배분·서빙</b> — 놀리지 않는다\"]\n    MX[\"MuxFlow — 남는 자리에 오프라인을 밀어 넣는다<br/>사용률 26% → 76%\"]:::list\n    HS[\"HeteroScale — 자리 자체를 늘렸다 줄인다<br/>decode TPS 를 신호로\"]:::list\n    MS[\"MegaScale — 만 대를 수 주 붙잡는다<br/>MFU 41.2% → 55.2%\"]:::list\n  end\n  subgraph DATA[\"<b>저장 계층</b> — 이 사이트가 읽지 못했다 (VLDB PDF)\"]\n    LV[\"LavaStore — 로컬 저장 엔진<br/>GC 를 컴팩션에서 분리\"]:::quiet\n    BG[\"ByteGraph — 분산 그래프 DB\"]:::quiet\n    HT[\"ByteHTAP — 신선도 + 일관성\"]:::quiet\n  end\n  U --> KA --> FL\n  KF --> FL\n  FL --> KE --> TW --> TPS\n  SPS -->|\"다음 것을 고른다\"| U\n  TW -.-> GPUD\n  SPS -.-> GPUD\n  REC -.-> DATA"
+    "code": "flowchart TD\n  U[\"사용자 — 넘긴다 · 멈춘다 · 누른다\"]\n  subgraph REC[\"<b>추천 학습·서빙</b> — 멈추지 않는다\"]\n    KA[(\"Kafka — 사용자 행동\")]\n    KF[(\"Kafka — 피처\")]\n    FL[\"Flink 온라인 조이너<br/>행동과 피처를 붙여 학습 예제로\"]:::list\n    KE[(\"Kafka — 학습 예제\")]\n    TW[\"학습 워커\"]\n    TPS[(\"<b>학습 파라미터 서버</b><br/>충돌 없는 임베딩 테이블\")]:::accent\n    SPS[(\"<b>서빙 파라미터 서버</b>\")]\n    TPS -->|\"sparse 분 단위 · dense 하루 단위<br/>바뀐 키만\"| SPS\n  end\n  subgraph GPUD[\"<b>GPU 자원 배분·서빙</b> — 놀리지 않는다\"]\n    MX[\"MuxFlow — 남는 자리에 오프라인을 밀어 넣는다<br/>사용률 26% → 76%\"]:::list\n    HS[\"HeteroScale — 자리 자체를 늘렸다 줄인다<br/>decode TPS 를 신호로\"]:::list\n    MS[\"MegaScale — 만 대를 수 주 붙잡는다<br/>MFU 41.2% → 55.2%\"]:::list\n  end\n  subgraph DATA[\"<b>저장 계층</b> — 이 사이트가 읽지 못했다 (VLDB PDF)\"]\n    LV[\"LavaStore — 로컬 저장 엔진<br/>GC 를 컴팩션에서 분리\"]:::quiet\n    BG[\"ByteGraph — 분산 그래프 DB\"]:::quiet\n    HT[\"ByteHTAP — 신선도 + 일관성\"]:::quiet\n  end\n  subgraph SRCH[\"<b>검색 인프라를 벡터까지 넓힌다</b> — 짓는 동안에도 압축본만\"]\n    BX[\"ByteX — OpenSearch 호환<br/>클러스터 7,000+ · 300PB · 약 1조 벡터\"]:::list\n  end\n  SRCH -.->|\"후보를 벡터로 찾는다 (추정)\"| REC\n  U --> KA --> FL\n  KF --> FL\n  FL --> KE --> TW --> TPS\n  SPS -->|\"다음 것을 고른다\"| U\n  TW -.-> GPUD\n  SPS -.-> GPUD\n  REC -.-> DATA"
   },
   "domains": [
     {
@@ -255,6 +255,60 @@
       "features": [
         "heteroscale",
         "muxflow"
+      ]
+    },
+    {
+      "name": "검색 인프라를 벡터까지 넓힌다",
+      "why": "이 회사의 검색은 2016년부터 한 엔진(ByteX)이 떠받쳤고, 처음에는 글자를 찾는 일이었다. 추천·RAG·대화형 비서가 벡터로 묻기 시작하면서 같은 엔진이 벡터를 1급 데이터로 받아야 했다. 벡터 저장을 추천 학습·서빙 도메인과 합치지 않고 따로 둔 것은, 이 엔진이 추천만이 아니라 자산 검색·규정 검토·학습 데이터 검색까지 여러 고객을 받는 **공용 플랫폼**이기 때문이다. 로컬 저장 엔진(LavaStore) 도메인과도 가른다 — 저쪽은 키-값의 쓰기 증폭을 다루고 이쪽은 벡터 색인의 메모리를 다룬다.",
+      "tech": [
+        {
+          "tech": "SymRaBitQ — 대칭 양자화 거리 추정",
+          "solves": "두 벡터를 모두 부호로 두고 거리를 추정해, 그래프 구축·병합·IVF 군집화까지 **압축본만으로** 돌린다. 구축 최고 메모리를 80% 줄였다.",
+          "limits": "추정값이라 손실이 0은 아니다 — 같은 설정에서 재현율 0.01 미만. 오차 상한은 차원이 높을수록 좁아지는 O(1/√D) 라 낮은 차원에서 얼마나 버티는지는 논문이 따로 보이지 않는다(뒷문장은 이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ByteX: A Unified AI Search Engine at ByteDance",
+              "url": "https://arxiv.org/abs/2608.30607",
+              "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+              "date": "2026-09-01",
+              "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+            }
+          ]
+        },
+        {
+          "tech": "레코드 단위 버퍼 풀 + 코루틴 비동기 탐색",
+          "solves": "SSD 에 놓인 그래프에서 탐색에 실제로 필요한 레코드만 메모리에 올리고, 놓친 읽기는 다른 질의의 계산과 겹친다. 버퍼 10%로 최고 처리량의 약 70%.",
+          "limits": "메모리를 SSD 로 바꾼 값 차이는 남는다 — 디스크 전용 배포는 63 QPS 에 그친다. 캐시와 상태 전이를 직접 관리해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ByteX: A Unified AI Search Engine at ByteDance",
+              "url": "https://arxiv.org/abs/2608.30607",
+              "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+              "date": "2026-09-01",
+              "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+            }
+          ]
+        },
+        {
+          "tech": "OpenSearch 호환 하이브리드 질의 엔진",
+          "solves": "BM25·벡터·조건·거리 범위·점수 융합(min-max·L2·z-score·RRF)·재순위를 한 분산 계획으로 돈다. 융합이 BM25 나 벡터 단독보다 NDCG@10 을 16.9~65.5% 올렸다.",
+          "limits": "어떤 정규화가 가장 좋은지는 데이터셋마다 달랐다(FIQA·Quora 는 z-score, NFCorpus 는 RRF) — 고르는 일은 사용자에게 남는다. 호환 경계를 지키느라 그 아래에서만 바꿀 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ByteX: A Unified AI Search Engine at ByteDance",
+              "url": "https://arxiv.org/abs/2608.30607",
+              "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+              "date": "2026-09-01",
+              "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "bytex"
       ]
     }
   ],
@@ -2288,6 +2342,428 @@
           "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
         }
       ]
+    },
+    {
+      "key": "bytex",
+      "name": "ByteX — 색인을 짓는 동안에도 압축본만 쥔다",
+      "domain": "검색 인프라를 벡터까지 넓힌다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "이 회사의 검색 엔진은 원래 글자를 찾는 물건이었다. 2016년부터 사내 검색의 바탕이었고, 초기 OpenSearch 분기에서 출발했다. 그런데 RAG·추천·대화형 비서가 붙으면서 질의가 바뀌었다 — 벡터 유사도에 키워드 일치, 테넌트·태그·시간 조건, 재순위까지 한 번에 묻는다.\n\n벡터는 곱으로 불어난다. 검색 단위는 장면에서 프레임으로 잘게 쪼개지고, 임베딩 차원은 128에서 2048로 넓어지고, AI 메모리 같은 용도는 보존 기간을 45일에서 365일로 늘렸다. 2048차원 FP32 벡터 하나가 8KB 이니 1억 개면 색인 전에 원본만 800GB 다.\n\n그래서 이 기능의 문제는 검색 속도가 아니라 **메모리를 누가 쓰느냐**다. 쉬지 않고 들어오는 벡터로 그래프 색인을 짓는 쪽과, 그 색인으로 질의에 답하려고 캐시를 쥐는 쪽이 같은 DRAM 을 놓고 다툰다. 한 고객(E)은 색인 구축의 최고점이 27TB 였는데 쓸 수 있는 DRAM 은 13.8TB 였다 — 서빙 캐시를 떼어 주기도 전에 이미 불가능했다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "클러스터 7,000개 이상 · 저장 300PB 이상 · 가장 큰 배포가 **약 1조 벡터**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "label": "쓰기 부하",
+            "value": "하루 100억 개 이상 유입, 최고 초당 70만 개 이상 (고객 D·E)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "label": "출발점 — 짓다가 넘친다",
+            "value": "고객 E 의 그래프 구축 최고점 **27TB** 대 DRAM 예산 **13.8TB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "label": "구축 비용",
+            "value": "최고 메모리 **80% 감소**(GIST 1M 3.75GB → 0.75GB, Cohere 100M 453GB → 90GB), 구축 시간 GIST 60%·Cohere 48% 감소. 같은 탐색 설정에서 재현율 손실 0.01 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "label": "같은 돈으로 얻은 처리량",
+            "value": "월 2,790달러 예산, 재현율 약 90%에서 ByteX **21,445 QPS** — Elasticsearch 9,342 · PostgreSQL 3,929 · Milvus 2,262",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "label": "SSD 로 내렸을 때",
+            "value": "디스크 전용 배포 월 **382달러**(메모리 배포의 약 1/7), 대신 **63 QPS**. 버퍼 풀을 10%만 줘도 최고 처리량의 약 70%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "label": "메모리와 SSD 의 값 차이",
+            "value": "바이트당 약 **61배** — VM 메모리 약 6.7달러/GiB·월 대 SSD 블록 장치 0.10달러/GiB·월",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "벡터 검색을 따로 떼어 낼지 정할 때",
+          "thought": "독립된 벡터 서비스가 더 깔끔해 보였다. 그러나 고객들은 OpenSearch 위에서 키워드 검색을 쓰다가 기존 질의에 벡터를 **덧붙이는** 식으로 옮겨 오고 있었다. 떼어 내면 API·대시보드·권한·경보·운영 절차를 7,000개 클러스터의 모든 팀이 두 벌로 들고 가야 한다. 깔끔함이 운영 복잡도를 응용 팀에 떠넘기는 셈이었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "메모리가 어디서 넘치는지 들여다보고",
+          "thought": "질의 경로는 이미 양자화로 줄이고 있었다. 넘치는 곳은 **짓는 경로**였다 — 그래프를 짓는 동안 원래 정밀도의 벡터와 후보 이웃·가지치기 상태를 세그먼트가 끝날 때까지 쥐고 있다. 쉬지 않고 쓰는 시스템에서 색인 구축은 한 번 하고 끝나는 일이 아니라 매일 도는 운영 경로다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "기존 양자화를 짓는 경로에 쓰려다",
+          "thought": "RaBitQ·BBQ 는 데이터만 줄이고 질의는 원래 정밀도로 둔다. 질의할 때는 그걸로 충분하다. 그런데 그래프를 지을 때 가지치기는 저장된 벡터끼리의 거리를 잰다 — 양쪽 다 데이터다. 비대칭 추정기로는 한쪽을 원본으로 되살려야 하고, 그러면 줄이려던 메모리를 도로 쓴다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "SSD 로 내리기로 하고",
+          "thought": "값만 보면 답은 SSD 다. 그러나 그래프 탐색은 포인터를 따라 여기저기 튀는 접근이라 페이지 단위 캐시와 맞지 않는다. 한 페이지를 올리면 탐색에 쓰이지 않는 바이트까지 같이 올라온다. 메모리를 얼마나 주느냐보다 **그 메모리에 무엇을 두느냐**가 지연을 정한다고 봤다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "세그먼트",
+            "what": "색인의 단위. 막 쓴 것은 원본 그대로 검색되게 하고, 병합되면서 IVF 로, 더 크게 병합되면 그래프로 올라간다. **어디에 둘지(메모리·혼합·SSD)도 세그먼트의 속성이다.**"
+          },
+          {
+            "name": "SymRaBitQ 레코드",
+            "what": "벡터 하나의 압축본 — B비트 부호, 1비트 부호, 잔차 크기 ρ, 자기 상관 γ. 구축·병합·검색이 모두 이것만 읽는다. B=5 에서 거리 추정 정확도 98% 이상."
+          },
+          {
+            "name": "레코드 매핑 배열",
+            "what": "정점 번호로 바로 찾는 64비트 논리 포인터 배열. 1비트가 메모리/디스크를, 2비트가 free·locked·occupied·marked 상태를, 61비트가 슬롯 또는 디스크 위치를 가리킨다."
+          },
+          {
+            "name": "ANN 코루틴",
+            "what": "질의 하나의 탐색. 후보 경계·방문 집합·현재 top-k 를 들고 다니다가 필요한 레코드가 디스크에 있으면 읽기를 걸고 양보한다."
+          },
+          {
+            "name": "하이브리드 질의 계획",
+            "what": "BM25·벡터·조건·거리 범위·점수 융합·재순위를 한 분산 계획으로 묶은 것. OpenSearch DSL 을 그대로 받는다."
+          }
+        ],
+        "invariants": [
+          "밖에서 보이는 모습은 OpenSearch 그대로다 — API·DSL·대시보드·색인 수명 주기 도구가 바뀌지 않는다.",
+          "그래프 세그먼트를 짓고 병합하는 동안 **원래 정밀도의 벡터를 메모리에 올리지 않는다.** 원본은 내구성과 오프라인 보수를 위해 원격 저장소에만 남는다.",
+          "같은 색인을 다시 짓지 않고도 메모리·혼합·SSD 배포 사이를 옮길 수 있다 — 버퍼 풀 크기만 바꾼다.",
+          "같은 레코드를 여러 질의가 동시에 놓쳐도 SSD 읽기는 한 번만 나간다(locked 상태를 본 쪽은 기다린다)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "쓰기가 들어오면 새로 고침 시점에 **가벼운 신선 세그먼트**로 바로 검색 가능하게 만든다",
+            "why": "쓰기 신선도와 서빙 효율을 떼어 놓는다. 비싼 색인은 뒤에서 짓는다."
+          },
+          {
+            "step": "백그라운드 병합이 세그먼트를 키우며 **원본 → IVF → 그래프** 순으로 색인을 올린다",
+            "why": "작은 세그먼트는 곧 다시 병합되니 싸게 짓고, 오래 살 큰 세그먼트에만 비싼 그래프를 짓는다. 병합은 질의가 흩어져야 할 세그먼트 수도 묶어 둔다."
+          },
+          {
+            "step": "그래프를 짓기 전에 모든 벡터를 **SymRaBitQ 레코드로 한 번 부호화**한다. 이후 후보 찾기·가지치기·역방향 간선 보수가 모두 압축본끼리의 거리만 쓴다",
+            "why": "DiskANN(Vamana) 식 그래프 모양은 그대로 두고 거리 계산의 재료만 바꾼다. 원본을 읽는 일이 병합 경로에서 사라진다."
+          },
+          {
+            "step": "질의는 파티션마다 한 번 부호화된다. 탐색은 **1비트 부호끼리 popcount** 로 넓히고, 남은 소수 후보만 5비트 부호로 다시 잰다",
+            "why": "거친 것부터 걸러 메모리 대역폭과 CPU 를 아낀다. 구축은 정밀한 쪽, 검색은 거친 것부터 — 같은 추정기의 두 쓰임이다."
+          },
+          {
+            "step": "SSD 에 놓인 그래프는 **레코드 단위 버퍼 풀**로 올린다. 매핑 배열에서 O(1)로 찾고, 없으면 잠그고 빈 슬롯을 얻거나 시계 방식으로 쫓아낸 뒤 비차단 읽기를 건다",
+            "why": "페이지 단위 캐시는 탐색에 쓰이지 않는 바이트까지 메모리에 올린다. 레코드에는 압축 벡터와 제한된 이웃 목록만 있다."
+          },
+          {
+            "step": "탐색 중 필요한 레코드가 디스크에 있으면 **코루틴이 읽기를 걸고 양보**한다. 작업자는 다른 준비된 질의를 돌리다 읽기가 끝나면 돌아온다",
+            "why": "캐시가 못 막은 SSD 지연을 다른 질의의 계산과 겹친다."
+          },
+          {
+            "step": "코디네이터가 DSL 을 해석해 샤드로 보내고, BM25·벡터·조건·융합·재순위를 **한 계획 안에서** 조합한다",
+            "why": "여러 서비스를 이어 붙이면 큰 중간 결과를 만들어 넘겨야 하고 끝에서 끝까지의 스케줄링을 할 수 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "벡터 검색을 어디에 둘 것인가",
+            "chosen": "**OpenSearch 호환 엔진 안에 넣는다.** 경계는 그대로 두고 그 아래의 양자화·저장·실행 경로만 갈아 끼운다.",
+            "alternatives": [
+              "독립된 벡터 서비스로 떼어 낸다",
+              "Milvus 같은 벡터 전용 DB 를 쓴다",
+              "Faiss 같은 ANN 라이브러리를 붙인다"
+            ],
+            "tradeoff": "저자들이 직접 적는다 — 독립 서비스가 **더 깔끔할 수는 있다.** 그 깔끔함을 버렸다. 대신 기존 엔진의 세그먼트·샤드·복제·복구 규칙 안에서 벡터를 다뤄야 한다. 버린 쪽의 이유도 적혀 있다: Faiss 는 분산 수집·내구성·운영 제어가 없고, Milvus 는 OpenSearch 의 키워드·랭킹 생태계를 따라가지 못하고, OpenSearch·Elasticsearch 자체는 생태계는 맞는데 1조 규모에서 메모리와 I/O 에 막힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "question": "양자화를 어느 경로까지 밀어 넣을 것인가",
+            "chosen": "**질의 경로만이 아니라 구축·병합 경로까지.** 저장된 벡터끼리의 거리도 압축본으로 잰다.",
+            "alternatives": [
+              "질의할 때만 양자화하고 구축은 원래 정밀도로 한다(RaBitQ·BBQ 의 방식)"
+            ],
+            "tradeoff": "압축본끼리의 거리는 추정값이다. B=5 에서 정확도 98% 이상, 같은 탐색 설정에서 재현율 손실 0.01 미만 — 손실이 0은 아니다. 얻은 것은 구축 최고 메모리 80% 감소다. 저자들은 수식으로 보면 RaBitQ 에서 작은 수정이지만 시스템에서는 의미가 크다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "question": "추정기를 대칭으로 만들 것인가",
+            "chosen": "**대칭.** 두 벡터를 모두 부호로 두고, 각자의 자기 상관(γ)으로 나눠 편향을 없앤다.",
+            "alternatives": [
+              "비대칭 추정기를 쓰고 구축 때만 원본을 되살린다"
+            ],
+            "tradeoff": "질의 벡터도 부호화해야 하니 질의 쪽 정밀도를 일부 내준다. 그래서 오차 상한을 이론으로 증명해 붙였다 — 불편 추정이고 오차가 O(1/√D) 다. 비대칭을 택하면 원본 사본이 하나 더 필요해 메모리가 도로 불어난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "question": "세그먼트마다 어떤 색인을 지을 것인가",
+            "chosen": "**크기에 따라 올린다** — 막 쓴 것은 원본 스캔, 중간 것은 IVF, 크게 병합된 것은 그래프.",
+            "alternatives": [
+              "모든 세그먼트에 그래프를 짓는다"
+            ],
+            "tradeoff": "그래프는 가장 빠르지만 100만 개 세그먼트 하나에 메모리 8GB 이상·한 시간 넘게 든다. 곧 다시 병합될 세그먼트에 그 값을 치르지 않는다. 대가는 질의가 서로 다른 색인 종류의 세그먼트를 모두 거쳐야 한다는 것이고, 그래서 병합 속도가 곧 읽기 성능이 된다 — 작은 세그먼트가 쌓이면 흩어지는 질의가 늘어난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "question": "SSD 위의 그래프를 무엇으로 캐시할 것인가",
+            "chosen": "**레코드 단위 버퍼 풀.** 압축 벡터와 이웃 목록만 담은 레코드를 슬롯에 올린다.",
+            "alternatives": [
+              "mmap·페이지 캐시에 맡긴다",
+              "계층 저장만 두고 캐시는 건드리지 않는다"
+            ],
+            "tradeoff": "직접 만든 캐시라 잠금 없는 상태 전이(free·locked·occupied·marked)와 시계 방식 축출을 스스로 관리해야 한다. 얻은 것은 GIST 에서 캐시 적중률 97.7%, 질의당 SSD 접근 51.9회(DiskANN 80.9회)다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "question": "캐시가 못 막은 SSD 읽기를 어떻게 기다릴 것인가",
+            "chosen": "**기다리지 않는다.** 질의 하나를 코루틴으로 돌리고 읽기를 건 뒤 다른 질의로 넘어간다.",
+            "alternatives": [
+              "놓치면 동기로 기다린다"
+            ],
+            "tradeoff": "탐색이 상태를 들고 멈췄다 이어져야 하니 실행 모델이 복잡해진다. 32스레드에서 약 15K QPS 로 동기 방식의 약 1.8배, 평균 지연 약 1.7ms(동기 3.5ms). 개별 질의가 빨라진 게 아니라 SSD 가 일하는 동안 CPU 가 놀지 않게 된 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "question": "메모리와 SSD 중 어디에 둘지를 누가 정하는가",
+            "chosen": "**세그먼트의 조절 가능한 속성으로 둔다.** 버퍼 풀 비율 0~100% 가 곧 배치다.",
+            "alternatives": [
+              "메모리 전용 경로와 디스크 전용 경로를 따로 만든다"
+            ],
+            "tradeoff": "하나의 저장 엔진이 양 끝을 다 감당해야 한다. 대신 지연에 민감하던 서비스가 보존 기간이 늘어 SSD 로 내려가야 할 때 이관이 아니라 설정 변경이 된다. 다만 양 끝의 값 차이는 그대로 남는다 — 디스크 전용은 월 382달러에 63 QPS, 메모리 전용은 월 2,790달러에 21,445 QPS 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          },
+          {
+            "question": "조건이 붙은 벡터 검색을 어느 순서로 돌릴 것인가",
+            "chosen": "**셋을 두고 고른다** — 걸러질 게 많으면 먼저 거르고, 적으면 나중에 거르고, 둘 다 안 맞으면 조건을 비트맵으로 만든 뒤 씨앗에서 넓혀 가며 그 자리에서 거른다.",
+            "alternatives": [
+              "한 방식으로 고정한다"
+            ],
+            "tradeoff": "어느 쪽으로 갈지 정하는 기준이 필요하다. 실험에서는 예상 후보가 1만 개 아래로 떨어지면 사전 필터로 넘어가게 했고, 그 값은 설정값이라고만 적혀 있다. 조건이 까다로울수록 탐색이 그래프를 더 넓게 돌아야 해 처리량은 모든 시스템에서 떨어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "monolith",
+          "via": "추천 후보를 벡터로 찾는다",
+          "contract": "ByteX 의 대표 워크로드 가운데 광고 추천(고객 C)은 영상으로 영상을 찾는 벡터 검색에 거리 범위 조건을 붙인다 — 비슷한 것은 가져오되 거의 같은 것은 빼는 radial 검색이 이 용도로 만들어졌다. Monolith 가 학습·서빙하는 추천 모델과 이 검색이 같은 파이프라인의 앞뒤인지는 논문이 말하지 않는다. 이 연결은 이 사이트의 추정이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "muxflow",
+          "via": "비싼 자원을 놀리지 않는 두 답",
+          "contract": "MuxFlow 가 GPU 의 빈자리를 다른 일로 메웠다면 ByteX 는 DRAM 의 쓰임을 다시 짰다 — 구축이 쓰던 메모리를 줄여 그만큼을 서빙 캐시로 돌린다. 둘 다 가장 비싼 자원이 무엇인지부터 정하고 출발한다. 두 논문은 서로를 인용하지 않는다 — 이 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "RaBitQ: Quantizing High-Dimensional Vectors with a Theoretical Error Bound for Approximate Nearest Neighbor Search",
+            "authors": "Jianyang Gao, Cheng Long",
+            "year": "2024",
+            "venue": "arXiv 2405.12497",
+            "url": "https://arxiv.org/abs/2405.12497",
+            "takeaway": "ByteX 가 직접 딛고 선 양자화다. RaBitQ 는 **질의를 빠르게 하려고** 만든 것이라 데이터만 줄이고 질의는 원래 정밀도로 둔다. ByteX 가 한 일은 그 부호 만드는 법은 그대로 두고 추정기를 대칭으로 바꾼 것이다. 같은 도구를 질의가 아니라 구축에 쓰려 하자 비대칭이라는 성질이 걸림돌이 됐다 — 도구의 한계는 그 도구가 만들어진 목적에서 나온다.",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "구축과 서빙이 같은 메모리를 나눠 쓸 때 몫을 어떻게 가를 것인가",
+            "why_hard": "저자들이 이 맞바꿈을 그대로 적는다 — 빠른 수집에 DRAM 을 주면 최고 메모리가 부풀고, 캐시에 너무 적게 남기면 질의가 느려진다. 쓰기와 읽기가 끊임없이 겹치는 시스템에서는 둘이 독립된 파이프라인이 아니라 하나의 결합된 문제다.",
+            "current_best": "ByteX 는 몫을 가르는 규칙을 만드는 대신 **구축 쪽이 쓰는 양 자체를 줄였다**(80%). 버퍼 풀 비율은 운영자가 정하는 손잡이로 남겨 두었고, 10%만 줘도 최고 처리량의 약 70%가 나온다는 곡선을 근거로 보여 준다. 워크로드마다 비율을 어떻게 고를지는 논문이 답하지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ByteX: A Unified AI Search Engine at ByteDance",
+                "url": "https://arxiv.org/abs/2608.30607",
+                "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+                "date": "2026-09-01",
+                "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쓰기가 검색이 되기까지",
+          "question": "막 들어온 벡터는 언제 검색되고, 비싼 그래프는 언제 지어지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  W[\"<b>쓰기</b><br/>• 하루 100억 개 이상<br/>• 최고 초당 70만 개\"]:::list\n  W --> FRESH[\"<b>신선 세그먼트</b><br/>새로 고침 즉시 검색 가능<br/>원본 스캔\"]:::list\n  FRESH -->|\"병합\"| IVF[\"<b>중간 세그먼트</b><br/>IVF — 싸게 짓는다<br/>곧 다시 병합될 수 있다\"]:::list\n  IVF -->|\"더 큰 병합\"| ENC[\"SymRaBitQ 로 한 번 부호화<br/>B=5 · 1비트 부호 · ρ · γ\"]\n  ENC --> G[\"<b>그래프 세그먼트</b><br/>• DiskANN 식 그래프<br/>• 가지치기도 압축본끼리<br/>• 원본을 메모리에 안 올린다\"]:::accent\n  ENC -.->|\"원본\"| REMOTE[(\"원격 저장소<br/>내구성 · 오프라인 보수용\")]:::quiet\n  G --> PLACE{\"버퍼 풀 비율\"}\n  PLACE -->|\"100%\"| MEM[\"메모리 상주\"]\n  PLACE -->|\"중간\"| HYB[\"혼합\"]\n  PLACE -->|\"0%\"| SSD[\"SSD 상주\"]\n  Q[\"<b>질의</b> — OpenSearch DSL\"] --> PLAN[\"<b>한 분산 계획</b><br/>• BM25 · 벡터 · 조건<br/>• 점수 융합 · 재순위\"]:::list\n  PLAN --> FRESH\n  PLAN --> IVF\n  PLAN --> G"
+        },
+        {
+          "title": "레코드 한 칸이 오가는 상태",
+          "question": "여러 질의가 같은 레코드를 동시에 놓치면 무슨 일이 일어나는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> OnDisk: 매핑 항목이 디스크 위치를 가리킨다\n  OnDisk --> Locked: 첫 요청자가 잠근다\n  note right of Locked\n    빈 슬롯을 얻거나 시계 방식으로 쫓아낸다\n    비차단 SSD 읽기를 건다\n    같은 칸을 본 다른 질의는 기다린다\n    — 읽기는 한 번만 나간다\n  end note\n  Locked --> Occupied: 읽기 완료, 슬롯 위치를 공개\n  Occupied --> Marked: 시계 바늘이 지나간다\n  Marked --> Occupied: 그사이 다시 쓰였다\n  Marked --> OnDisk: 안 쓰였다 — 슬롯 회수, 디스크 위치로 되돌림\n  Occupied --> [*]"
+        },
+        {
+          "title": "실패 경로 — 기존 경로로 1조 벡터를 받으면 어디서 막히는가",
+          "question": "왜 기존 엔진의 벡터 경로를 그대로 쓰지 못했는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  IN[\"1조 벡터 · 쉬지 않는 쓰기\"] --> NB[\"<b>원래 정밀도로 그래프를 짓는다</b>\"]\n  NB --> PEAK[\"원본 · 후보 이웃 · 가지치기 상태를<br/>세그먼트가 끝날 때까지 쥔다\"]\n  PEAK --> OOM[\"<b>고객 E — 최고점 27TB 대 DRAM 13.8TB</b><br/>서빙 캐시를 떼기도 전에 불가능\"]:::accent\n  IN --> BBQ[\"질의만 양자화 (BBQ · RaBitQ)\"]\n  BBQ -->|\"구축은 여전히 원본\"| OOM\n  IN --> MEMONLY[\"전부 메모리에 둔다\"]\n  MEMONLY -->|\"바이트당 61배\"| COST[\"경제적으로 불가능\"]\n  IN --> PAGE[\"SSD 에 두고 페이지 캐시에 맡긴다\"]\n  PAGE --> JUMP[\"그래프 탐색은 포인터를 따라 튄다<br/>한 번 뛸 때마다 임의 I/O\"]\n  JUMP --> TAIL[\"탐색에 안 쓰는 바이트가 캐시를 차지<br/>꼬리 지연 증가\"]:::quiet\n  Q[\"거리 범위 질의\"] --> KNN[\"큰 k 의 kNN 으로 흉내 낸다\"]\n  KNN -->|\"k = 1만 ~ 10만\"| TO[\"1분 안에 안 끝난다\"]:::quiet\n  SEG[\"병합이 느리다\"] --> MANY[\"작은 세그먼트가 쌓인다\"]\n  MANY -->|\"질의가 흩어질 곳이 늘어난다\"| SLOW[\"읽기 성능이 떨어진다\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "ByteX: A Unified AI Search Engine at ByteDance",
+          "url": "https://arxiv.org/abs/2608.30607",
+          "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+          "date": "2026-09-01",
+          "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
+        },
+        {
+          "title": "RaBitQ: Quantizing High-Dimensional Vectors with a Theoretical Error Bound for Approximate Nearest Neighbor Search",
+          "url": "https://arxiv.org/abs/2405.12497",
+          "publisher": "arXiv · Jianyang Gao, Cheng Long",
+          "date": "2024-05",
+          "summary": "고차원 벡터를 비트 부호로 줄이면서 거리 추정 오차의 이론적 상한을 주는 양자화. 데이터만 줄이고 질의는 원래 정밀도로 두는 비대칭 방식이다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -2305,7 +2781,9 @@
     "MuxFlow(2023)와 HeteroScale(2025) 사이에 **GPU 공유 방식이 어떻게 이어졌는지** — 두 논문이 서로를 언급하지 않아 이 사이트는 알 수 없다.",
     "P/D 목표 비율을 **얼마나 자주 다시 재는지** 논문이 밝히지 않는다.",
     "**'5년에 5번 반복'이라는 제목의 회고를 찾았지만 본문에 세대별 연도가 없다.** 특징 서비스의 변천 과정을 그림 한 장으로만 보이고 글로는 각 세대를 짚지 않는다. 그래서 세울 수 있었던 시기는 2020년 초 하나뿐이다. 데이터독·노션·쇼피파이에서 겪은 것과 같은 문제다 — 세대는 아는데 언제인지를 모른다.",
-    "**이 회사의 다른 자료는 전부 논문이다**(Monolith 2022-09 · ByteGraph 2022 · ByteHTAP 2022 · MuxFlow 2023-03 · MegaScale 2024-02 · LavaStore 2024). 논문은 시스템이 지금 어떻게 되어 있는지를 적지 **언제 무엇에서 무엇으로 옮겼는지는 적지 않는다.** 연표를 만들기에는 가장 어려운 형태의 자료다."
+    "**이 회사의 다른 자료는 전부 논문이다**(Monolith 2022-09 · ByteGraph 2022 · ByteHTAP 2022 · MuxFlow 2023-03 · MegaScale 2024-02 · LavaStore 2024). 논문은 시스템이 지금 어떻게 되어 있는지를 적지 **언제 무엇에서 무엇으로 옮겼는지는 적지 않는다.** 연표를 만들기에는 가장 어려운 형태의 자료다.",
+    "ByteX 논문 안에서 규모 수치가 갈린다 — 표 1 은 고객 D 를 **1조(1,000B)** 로, 실험 절은 같은 고객을 **3,270억 벡터 배포**로, 기여 요약은 평가 규모를 **최대 8,380억 벡터**로 적는다. 저장 비용 감소도 기여 요약은 7.3배, 본문은 7.5배다. 이 사이트는 표에 적힌 값을 옮기되 어느 쪽이 최신인지는 확인하지 못했다.",
+    "ByteX 의 성능 비교는 저자들이 직접 한 것이다. 경쟁 시스템은 '권장 설정에 따라 조정했다'고만 적혀 있고, 논문은 아직 arXiv 판(2026-09-01, v2)이다."
   ],
   "sources": [
     {
@@ -2370,6 +2848,13 @@
       "publisher": "arXiv · ByteDance",
       "date": "2023-03",
       "summary": "지연에 민감한 온라인 추론과 급하지 않은 오프라인 학습을 **같은 GPU 에 겹쳐 돌린** 기록. 클러스터의 99% 넘는 GPU 가 사용률 60% 미만이었다는 관찰에서 출발해, 온라인을 지키는 2단 보호와 SM 을 상호보완적으로 나누는 방식을 만들었다. 프로덕션 2만 GPU 에서 사용률 26% → 76%."
+    },
+    {
+      "title": "ByteX: A Unified AI Search Engine at ByteDance",
+      "url": "https://arxiv.org/abs/2608.30607",
+      "publisher": "arXiv · ByteDance · Yao Tian, Yuncheng Lu 외",
+      "date": "2026-09-01",
+      "summary": "2016년부터 쓰던 사내 검색 엔진(초기 OpenSearch 분기)을 벡터 검색까지 넓힌 기록. 색인을 짓는 경로까지 양자화한 SymRaBitQ 와, 메모리·SSD 사이를 레코드 단위 캐시로 잇는 저장 엔진이 두 축이다. 7,000개 넘는 클러스터 · 300PB · 최대 약 1조 벡터."
     }
   ],
   "eras": [
