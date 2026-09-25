@@ -59,7 +59,10 @@ def fetch_jobs() -> list[dict]:
              -- aggregate 가 (회사명+제목)으로 하던 일이다 — 안 거르면 목록에 같은 공고가
              -- saramin·jobkorea 로 두세 번 뜬다.
              WHERE NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = v.id)
-             ORDER BY site, pid
+             -- 잡 리스트의 첫 화면 순서다 — 방금 수집한 공고가 위로. first_seen_at 은
+             -- 날짜까지만 내보내므로 같은 날 안의 순서는 여기서 정해진다(뷰어는 날짜로
+             -- 안정 정렬만 한 번 더 한다).
+             ORDER BY v.first_seen_at DESC, v.id DESC
             """
         )
         rows = cur.fetchall()

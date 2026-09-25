@@ -101,9 +101,24 @@ function matchesBase(j: Job, f: FilterState, q: string): boolean {
 
 export function applyFilter(jobs: Job[], f: FilterState): Job[] {
   const q = f.query.trim().toLowerCase()
-  return jobs.filter(
-    (j) => matchesBase(j, f, q) && FACET_KEYS.every((k) => DIMENSIONS[k](j, f)),
+  return byNewest(
+    jobs.filter((j) => matchesBase(j, f, q) && FACET_KEYS.every((k) => DIMENSIONS[k](j, f))),
   )
+}
+
+/**
+ * 크롤로 처음 가져온 날(first_seen_at)이 최근인 공고가 위로.
+ *
+ * 날짜까지만 오므로 같은 날끼리는 들어온 순서를 지킨다 — store.export 가 정확한 수집
+ * 시각 순으로 내보낸다(Array.sort 는 안정 정렬이다). 날짜가 없는 공고(DB 가 꺼져
+ * 스냅샷 JSON 으로 물러선 사이클)는 뒤로 보내되 서로의 순서는 그대로 둔다.
+ */
+export function byNewest(jobs: Job[]): Job[] {
+  return [...jobs].sort((a, b) => {
+    const x = a.first_seen_at ?? ''
+    const y = b.first_seen_at ?? ''
+    return x === y ? 0 : x < y ? 1 : -1
+  })
 }
 
 export interface Facets {
