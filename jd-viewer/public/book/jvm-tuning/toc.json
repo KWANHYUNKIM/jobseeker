@@ -413,7 +413,7 @@
           "title": "풀 GC",
           "summary": "여기까지 오면 진 것이다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.8",
@@ -421,7 +421,7 @@
           "title": "손댈 만한 것",
           "summary": "대부분은 안 건드린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
