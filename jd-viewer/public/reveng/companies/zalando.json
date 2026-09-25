@@ -5,7 +5,7 @@
   "country": "EU",
   "category": "커머스",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "domain": "zalando.com",
   "one_liner": "거의 안 바뀌는 것과 시시각각 바뀌는 것을 한 파이프라인에 태웠던 회사 — 그걸 떼어내는 중이다",
   "business_model": "**유럽 패션 커머스**다. FY2025 기준 그룹 **GMV 176억 유로**(+14.7%), **매출 123억 유로**(+16.8%), 조정 EBIT **5.91억 유로**. **B2C 매출 113억 유로 · 활성 고객 6,200만**이고, **B2B 매출 11억 유로**(+14.6%)에 조정 EBIT 이 두 배 이상 뛰었다(ZEOS 물류와 SCAYLE 편입).\n\n**그런데 이 회사의 기술적 성격은 데이터의 두 성질이 섞여 있다는 데서 나온다.** 파는 것은 **상품(Product)** 과 **오퍼(Offer)** 두 가지인데 — 오퍼는 **어떤 판매자가 어떤 가격에 어느 재고 수준으로 파는 것** 이다 — **둘의 변화 속도가 완전히 다르다.** 상품 설명은 거의 그대로인데 재고와 가격은 시시각각 바뀐다. 그런데 예전 파이프라인은 둘을 **한 이벤트 구조로 합쳐** 흘려보냈고, 그 결과 **페이로드의 90% 이상이 바뀌지 않은 채 실려 다녔다.**\n\n**그래서 이 회사가 최근 몇 년 하고 있는 일은 대체로 '섞여 있던 것을 떼어내는 일'이다**(이 관찰은 이 사이트의 해석) — 상품과 오퍼를 갈라놓고(PODS), 내부 팬아웃 트래픽을 공유 인그레스에서 떼어내고(CSLB), 부하 신호에서 '빠른 것과 느린 것'을 갈라낸다.\n\n**그리고 이 회사 글의 미덕은 접은 실험도 적는다는 것이다** — 비용 이득이 보였던 가용영역 친화 라우팅을 **\"팀 지속가능성과 온콜 건강\"** 을 이유로 껐고, **\"그것이 비용을 회수하는지는 아직 답하지 못한 질문\"** 이라고 남겼다.\n\n**두 기능이 같은 동작을 한다 — 섞여 있던 것을 갈라낸다.** 상품·오퍼 서빙은 **변화 속도가 다른 두 데이터**를 갈랐고(거의 안 바뀌는 상품이 시시각각 바뀌는 재고를 붙잡고 있었다), 내부 트래픽 라우팅은 **엣지 트래픽과 내부 팬아웃**을 갈랐으며(공유 인그레스를 함께 쓰던 탓에 지연의 출처를 가릴 수 없었다), 부하 신호에서는 **'빠른 것과 느린 것'** 을 갈랐다(인플라이트 개수로는 캐시가 뜨거운 파드와 밀린 파드가 똑같아 보인다).\n\n**그리고 갈라낸 뒤에 남는 값이 매번 같은 자리로 온다 — 캐시.** 카탈로그를 쪼개면 파드마다 데울 범위가 줄고, 트래픽을 재배치하면 그 지역성이 깎이고, 가용영역으로 몰면 파드가 더 넓은 범위를 맡아 미스가 폭발한다. 회사가 남긴 경고가 그 요약이다 — **\"캐시 지역성과 트래픽 격리는 반대 방향으로 잡아당긴다. 둘 중 하나를 켜기 전에 각 파티션이 뜨거운 상품 집합을 덮을 만큼 노드가 있는지 확인하라. 아니면 한 비용을 다른 비용으로 바꾸는 것일 뿐이다.\"**\n\n**셋째로, 이 회사는 접은 것과 되돌린 것을 적는다.** 가용영역 친화 라우팅은 비용 이득이 보였는데도 **\"팀 지속가능성과 온콜 건강\"** 을 이유로 껐고 **\"비용을 회수하는지는 아직 답하지 못한 질문\"** 이라고 남겼으며, 2017년에 스스로 고른 이벤트 주도 구조를 2025년에 읽기 경로에서 되돌렸다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
@@ -54,7 +54,7 @@
   "domain_map": {
     "title": "잘란도 도메인 지도",
     "question": "거의 안 바뀌는 것과 시시각각 바뀌는 것이 어디서 갈라지는가?",
-    "code": "flowchart TD\n  M[\"판매자 — 가격 · 재고를 바꾼다\"]\n  C[\"고객 — 상품을 본다\"]\n  subgraph OLD[\"<b>옛 구조</b> — 한 스트림에 섞여 흐른다\"]\n    MERGE[\"Product + Price + Stock 을<br/><b>하나의 구조로 합친다</b><br/>중간 형식 셋(Alpha·Beta·Gamma)\"]:::quiet\n    WASTE[\"<b>페이로드의 90% 이상이<br/>바뀌지 않은 채 실려 다닌다</b>\"]:::quiet\n    CW[\"사이버위크에 재고·가격이<br/><b>최대 30분 지연</b>\"]:::quiet\n    MERGE --> WASTE --> CW\n  end\n  subgraph PODS[\"<b>상품·오퍼 서빙</b> — 갈라놓는다 (PODS)\"]\n    P1[\"/products/{id}\"]:::list\n    P2[\"/products/{id}/offers\"]:::list\n    P3[\"/product-offers/{id}\"]:::list\n  end\n  subgraph PRAPI[\"<b>내부 트래픽 라우팅</b> — PRAPI 팬아웃\"]\n    B[\"배치 요청 → <b>최대 100개 병렬 호출</b><br/>가장 느린 하나가 응답을 정한다\"]:::accent\n    CSLB[\"<b>인프로세스 로드밸런서</b><br/>xxHash64 링(엔드포인트당 100 위치)<br/>occupancy 기반 bounded load\"]:::accent\n    POD[(\"상품 파드 — Caffeine 캐시<br/>TTL 60초 · stale 15초\")]\n    B --> CSLB --> POD\n  end\n  M --> MERGE\n  M --> PODS\n  C --> B\n  PODS -.->|\"떼어냈다\"| OLD\n  SK[\"Skipper (공유 인그레스)<br/>파드 50+ → <b>8</b>\"]:::quiet\n  CSLB -.->|\"초당 100만 요청을 걷어냈다\"| SK\n  POD --> DDB[(\"DynamoDB\")]:::quiet"
+    "code": "flowchart TD\n  M[\"판매자 — 가격 · 재고를 바꾼다\"]\n  C[\"고객 — 상품을 본다\"]\n  subgraph OLD[\"<b>옛 구조</b> — 한 스트림에 섞여 흐른다\"]\n    MERGE[\"Product + Price + Stock 을<br/><b>하나의 구조로 합친다</b><br/>중간 형식 셋(Alpha·Beta·Gamma)\"]:::quiet\n    WASTE[\"<b>페이로드의 90% 이상이<br/>바뀌지 않은 채 실려 다닌다</b>\"]:::quiet\n    CW[\"사이버위크에 재고·가격이<br/><b>최대 30분 지연</b>\"]:::quiet\n    MERGE --> WASTE --> CW\n  end\n  subgraph PODS[\"<b>상품·오퍼 서빙</b> — 갈라놓는다 (PODS)\"]\n    P1[\"/products/{id}\"]:::list\n    P2[\"/products/{id}/offers\"]:::list\n    P3[\"/product-offers/{id}\"]:::list\n  end\n  subgraph PRAPI[\"<b>내부 트래픽 라우팅</b> — PRAPI 팬아웃\"]\n    B[\"배치 요청 → <b>최대 100개 병렬 호출</b><br/>가장 느린 하나가 응답을 정한다\"]:::accent\n    CSLB[\"<b>인프로세스 로드밸런서</b><br/>xxHash64 링(엔드포인트당 100 위치)<br/>occupancy 기반 bounded load\"]:::accent\n    POD[(\"상품 파드 — Caffeine 캐시<br/>TTL 60초 · stale 15초\")]\n    B --> CSLB --> POD\n  end\n  M --> MERGE\n  M --> PODS\n  C --> B\n  PODS -.->|\"떼어냈다\"| OLD\n  SK[\"Skipper (공유 인그레스)<br/>파드 50+ → <b>8</b>\"]:::quiet\n  CSLB -.->|\"초당 100만 요청을 걷어냈다\"| SK\n  POD --> DDB[(\"DynamoDB\")]:::quiet\n  AGT[\"<b>에이전트가 사람 대신 들어간다</b><br/>신원 브로커 · 토큰 교환\"]:::list"
   },
   "domains": [
     {
@@ -163,6 +163,45 @@
       ],
       "features": [
         "pods-prapi"
+      ]
+    },
+    {
+      "name": "에이전트가 사람 대신 들어간다",
+      "why": "사내 에이전트 플랫폼을 쿠버네티스 위에 지으면서, 에이전트가 사용자 대신 여러 제3자 시스템을 쓰게 하는 신원·위임·동의 문제를 한곳에서 푼다. 마이크로서비스 때 반쯤 외면했던 기계 신원 문제가 에이전트에서 커진 자리다.",
+      "tech": [
+        {
+          "tech": "Agentic Identity Broker(자체 · MIT 공개) + agentgateway + RFC 8693 토큰 교환",
+          "solves": "에이전트가 제공자 토큰을 끝내 받지 않고도 사용자 대신 제3자 도구를 쓴다. OAuth 절차를 에이전트·MCP 서버에서 빼내고 감사 지점을 하나로 모은다.",
+          "limits": "이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않는다. 모든 홉에서 부르는 중앙 STS 는 지연이 비싸질 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+              "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+              "publisher": "Zalando Engineering Blog",
+              "date": "2026-09-25",
+              "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "kagent · kro · 쿠버네티스 CRD",
+          "solves": "Agent·MCP 서버를 플랫폼에 내놓는 의도를 리소스로 받아 게이트웨이·에이전트 인스턴스·신원 설정까지 자동으로 풀어 낸다.",
+          "limits": "쿠버네티스에 크게 투자한 회사라서 고른 길이다 — 글은 다른 기반과 견주지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+              "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+              "publisher": "Zalando Engineering Blog",
+              "date": "2026-09-25",
+              "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "agent-identity-broker"
       ]
     }
   ],
@@ -1242,6 +1281,364 @@
           "summary": "2017년에 이 회사가 이벤트 주도를 고른 이유를 스스로 적은 글. 요청 시점에 가져오는 대신 **클라이언트가 자기 속도로 처리**하게 하고, 대가로 **클라이언트가 로컬 프로젝션을 만들어 운영하는 부담**을 진다고 밝힌다. 그러면서 **예외도 명시했다** — 요청 수가 적은 클라이언트와 외부 통합은 요청-응답이 나을 수 있다고."
         }
       ]
+    },
+    {
+      "key": "agent-identity-broker",
+      "name": "에이전트 신원 — 대신 일하되 열쇠는 쥐여 주지 않는다",
+      "domain": "에이전트가 사람 대신 들어간다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "사내 에이전트 플랫폼을 만들다가 두 질문에 정면으로 부딪혔다. **에이전트의 신원을 어떻게 다룰 것인가**, 그리고 **저마다 토큰을 따로 내주는 수많은 제3자 시스템에 에이전트를 어떻게 적당히 들여보낼 것인가.** 회사는 이 문제들이 새롭지 않다고 본다 — 마이크로서비스 때 이미 봤고 업계가 반쯤 외면해 왔다. 에이전트는 그 오래된 문제를 키울 뿐이다. 그리고 기업에서 값어치 있는 쪽은 완전 자율 에이전트보다 **사람을 대신해 일하는(on-behalf-of) 흐름**이라고 본다 — 이미 있는 접근 관리와 사용자 권한을 그대로 쓸 수 있어서다.",
+        "metrics": [
+          {
+            "label": "올라탄 기반",
+            "value": "이미 운영하는 **수백 개의 프로덕션 쿠버네티스 클러스터** 위에 플랫폼을 짓는다 — 에이전트 런타임은 kagent, AI 게이트웨이는 agentgateway(둘 다 오픈소스), 직접 만든 것은 신원 브로커 하나",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "공개",
+            "value": "브로커를 **MIT 라이선스**로 공개했고, 개발에 쓴 명세도 코드에 함께 넣었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "스스로 적은 한계",
+            "value": "위임을 거두거나 만료되면 **앞으로의 교환은 막히지만 이미 발급된 제공자 토큰은 회수하지 못한다.** 승인 창은 사람들이 피로해지면 도장만 찍는 '목발'이라고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "에이전트 신원 문제를 쪼갤 때",
+          "thought": "풀 것은 셋이다. (a) 에이전트를 **자기 기계 신원**으로 알아보기, (b) 저마다 토큰을 내주는 **여러 제3자 시스템**에 접근시키기, (c) **사용자 권한과 에이전트 권한을 함께 보고** 접근을 판정하기. 셋 다 마이크로서비스 때 본 문제다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어떤 에이전트부터 풀지 정할 때",
+          "thought": "주목은 완전 자율 에이전트가 받지만, 기업의 값어치는 사람이 직접 말을 걸거나 PR·채팅·티켓 댓글로 에이전트를 부르는 흐름에 있다. 여기서는 사용자 권한이 **이미 있다.** 거기에 에이전트 자기 권한을 얹고 **둘의 교집합**을 유효 권한으로 삼으면 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "에이전트와 MCP 서버가 해야 할 일을 줄일 때",
+          "thought": "에이전트마다, MCP 서버마다 OAuth 절차를 구현하게 하면 복잡도가 그 수만큼 곱해진다. **OAuth 의식은 둘 다에게서 빼낸다** — 그러려면 필요한 제3자 세션이 에이전트가 필요로 하기 전에 이미 있어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "동의 화면에 무엇을 보여 줄지 정할 때",
+          "thought": "제공자마다 scope 어휘가 제각각이고 사람이 판단하기엔 너무 굵다. 사람에게는 raw scope 문자열이 아니라 **'저장소 읽기' 같은 업무 능력**을 보여 줘야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "권한 묶음(permission set)",
+            "what": "관리자가 정의한, 사람이 읽을 수 있는 이름의 OAuth scope 묶음. 동의의 단위다."
+          },
+          {
+            "name": "위임(grant)",
+            "what": "사용자가 에이전트에게 준, 거둘 수 있고 선택적으로 기한이 있는 권한 위임."
+          },
+          {
+            "name": "사용자 세션",
+            "what": "한 사용자·한 제3자 서비스의 암호화된 제공자 토큰. 그 사용자가 위임한 모든 에이전트가 공유한다."
+          },
+          {
+            "name": "사용자-에이전트 토큰",
+            "what": "사용자와 에이전트의 신원을 함께 묶은 OAuth 2.0 접근 토큰. 에이전트가 받는 유일한 토큰이고 게이트웨이에만 보낸다."
+          },
+          {
+            "name": "Agent · MCP 서버 CRD",
+            "what": "플랫폼에 무언가를 내놓겠다는 의도를 담은 쿠버네티스 리소스. kro 가 kagent·agentgateway 리소스와 신원 설정으로 풀어 낸다."
+          }
+        ],
+        "invariants": [
+          "에이전트는 제공자 토큰을 받지 않는다.",
+          "유효 권한 = 사용자 권한 ∩ 에이전트 권한.",
+          "OAuth 절차는 에이전트와 MCP 서버 밖에서 끝난다.",
+          "위임을 거두면 앞으로의 교환이 막힌다 — 이미 발급된 제공자 토큰은 아니다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "브라우저 포털이 브로커와 표준 OAuth 2.0 흐름을 시작한다 — 브라우저가 없으면 채팅 브리지 같은 특권 클라이언트가 사용자를 대리(impersonation)한다",
+            "why": "사용자 존재를 먼저 확인한다"
+          },
+          {
+            "step": "브로커가 동의 화면을 띄우고 필요한 제3자 세션을 미리 만든 뒤, 토큰을 직접 발급하거나 상류 인가 서버에 맡긴다",
+            "why": "토큰 획득을 앞으로 당겨 에이전트가 OAuth 를 몰라도 되게"
+          },
+          {
+            "step": "에이전트는 그 사용자-에이전트 토큰을 도구 호출에 그대로 실어 agentgateway 로 보낸다",
+            "why": "에이전트의 MCP 엔드포인트는 게이트웨이 하나다"
+          },
+          {
+            "step": "게이트웨이가 토큰을 검증하고 브로커에 대상 시스템의 접근 토큰으로 교환을 요청한다(필요하면 갱신)",
+            "why": "위임과 동의가 허락할 때만 교환이 성공한다"
+          },
+          {
+            "step": "게이트웨이가 Authorization 헤더를 바꿔 끼워 대상에 전달한다 — 제공자 토큰은 게이트웨이까지만 온다",
+            "why": "에이전트는 끝내 열쇠를 보지 않는다"
+          },
+          {
+            "step": "게이트웨이의 ExtProc 에 붙인 OPA 가 도구 호출 단위 정책을 판정한다",
+            "why": "토큰 교환은 굵은 판정이라 한 번 더 거른다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 직접 만들 것인가",
+            "chosen": "**에이전트 런타임(kagent)과 AI 게이트웨이(agentgateway)는 오픈소스를 쓰고, 신원 브로커 하나만 직접 만든다.** 브로커는 신원 공급자를 대체하지 않고, 토큰을 직접 발급하거나 기존 상류 OAuth 서버를 대리하며, 인증은 앞단 역방향 프록시에 맡긴다",
+            "alternatives": [
+              "신원 공급자·벤더 제품이 에이전트 위임을 지원할 때까지 기다리기",
+              "플랫폼 전체를 직접 만들기"
+            ],
+            "tradeoff": "직접 만든 부품을 유지해야 하고, 표준(XAA 등)과 벤더 기능이 나오면 옮겨 타야 한다. 대신 이미 한 투자(신원 공급자·접근 관리)를 그대로 쓰고, 표준을 받아들일 때 **에이전트와 MCP 서버는 바뀌지 않는다** — 바뀌는 곳은 브로커와 게이트웨이뿐이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 에이전트부터 풀 것인가",
+            "chosen": "**사람을 대신해 일하는 흐름부터.** 유효 권한은 사용자 권한과 에이전트 자기 권한의 **교집합**. 사용자가 직접 없는 반자율 경우는 채팅 브리지·GitHub 앱·스케줄러 같은 특권 앱이 사용자를 대리하게 한다",
+            "alternatives": [
+              "완전 자율 에이전트(자기 이름으로 행동)부터"
+            ],
+            "tradeoff": "대리를 허락받은 특권 앱이 사용자 행세를 할 수 있게 된다 — 그 앱을 믿어야 한다(이 사이트의 해석). 대신 기업의 접근 관리와 사용자 권한이 **이미 있어서** 새 권한 체계를 만들 필요가 없고, 하위 MCP 서버는 여전히 사용자의 유효 권한을 적용한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "OAuth 절차를 누가 할 것인가",
+            "chosen": "**에이전트와 MCP 서버 둘 다에게서 빼낸다** — 토큰 획득을 앞으로 당겨, 에이전트가 필요로 하기 전에 필요한 제3자 세션을 모두 만들어 둔다",
+            "alternatives": [
+              "에이전트나 MCP 서버가 필요할 때마다 OAuth 흐름을 돈다"
+            ],
+            "tradeoff": "필요할지 모르는 세션까지 미리 만들어 쥐고 있어야 하고, 쥐고 있는 암호화된 토큰이 브로커에 모인다(이 사이트의 해석). 대신 에이전트·MCP 서버의 복잡도가 줄고 **감사 지점이 한 곳**이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트에게 제공자 토큰을 줄 것인가",
+            "chosen": "**주지 않는다.** 에이전트는 사용자-에이전트 토큰을 게이트웨이에만 보내고, 게이트웨이가 브로커를 통해 RFC 8693 토큰 교환으로 대상 토큰을 받아 헤더를 바꿔 끼운다",
+            "alternatives": [
+              "위임받은 제공자 토큰을 에이전트에게 넘기기"
+            ],
+            "tradeoff": "도구 호출마다 게이트웨이와 브로커를 거친다. 그리고 위임을 거둬도 **이미 발급된 제공자 토큰은 회수하지 못한다** — 막히는 것은 앞으로의 교환이다. 대신 에이전트가 새거나 속아도 들고 나갈 열쇠가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "동의를 무엇의 단위로 받을 것인가",
+            "chosen": "**OAuth scope 가 아니라 관리자가 정의한 이름 붙은 권한 묶음** — '저장소 읽기' 같은 업무 능력. 그리고 사용자-에이전트 사이의 **중앙 동의 화면**을 둔다",
+            "alternatives": [
+              "raw scope 문자열을 그대로 보여 주기",
+              "XAA 처럼 벤더별 동의 화면을 없애는 쪽만"
+            ],
+            "tradeoff": "관리자가 권한 묶음을 정의하고 유지해야 한다. 대신 제공자마다 제각각이고 너무 굵은 scope 어휘를 사람에게 떠넘기지 않고, 사용자가 에이전트가 달라는 것보다 **적게 줄 수 있다.** 사용자 세션은 위임한 에이전트들이 공유해 제3자 로그인을 한 번만 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "도구 호출 하나하나를 어떻게 막을 것인가",
+            "chosen": "**게이트웨이의 ExtProc 확장점에 OPA 를 붙인다** — 이미 사내 접근 관리와 연결된 OPA 투자를 재사용한다. 다음은 브로커 동의 화면에서 받는 중앙 도구 승인",
+            "alternatives": [
+              "토큰 교환의 판정만으로 충분하다고 보기",
+              "로컬 에이전트가 알아서 옳게 고르리라 믿기"
+            ],
+            "tradeoff": "정책 엔진을 요청 경로에 하나 더 둔다. 그리고 승인은 **목발**이다 — 승인 피로가 오면 사람들은 도장만 찍는다. 그래서 고위험 거래에는 CIBA(예: Okta Verify 로 받는 별도 승인)를 브로커에 넣으려 한다. 대신 에이전트가 로컬이든 이 플랫폼이든 다른 벤더 플랫폼이든 **같은 판정**이 걸린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "사용자와 에이전트의 신원을 계속 한 토큰에 묶을 것인가",
+            "chosen": "**지금은 묶는다**(평범한 OAuth 2.0 접근 토큰). 앞으로 SPIFFE 같은 표준으로 에이전트 신원의 증명과 사람 신원의 증명을 떼려 한다",
+            "alternatives": [
+              "처음부터 워크로드 신원(SPIFFE)과 사용자 위임을 분리"
+            ],
+            "tradeoff": "마이크로서비스 신원 인프라를 운영해 본 경험상, **모든 홉에서 불러야 하는 중앙 보안 토큰 서비스(STS)는 지연 때문에 비싸거나 감당이 안 될 수 있다** — 지금 구조가 그 길 위에 있다. 대신 지금 표준(RFC 8693·9728)과 기존 OAuth 인프라만으로 바로 돌린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "agentgateway (AI 게이트웨이)",
+          "via": "MCP 엔드포인트 · ExtProc",
+          "contract": "에이전트의 도구 호출을 받아 토큰을 검증하고 브로커에 교환을 요청한 뒤 헤더를 바꿔 전달한다. OPA 정책을 여기서 건다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "kagent · kro",
+          "via": "쿠버네티스 CRD",
+          "contract": "Agent·MCP 서버 CRD 를 kro 가 kagent·agentgateway 리소스와 신원 설정으로 풀어, 중앙 MCP 게이트웨이와 에이전트 인스턴스를 띄운다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "상류 OAuth 인가 서버 · 역방향 프록시",
+          "via": "OAuth 2.0 · 인증 위임",
+          "contract": "브로커는 토큰을 직접 발급하거나 상류 서버를 대리하고, 사용자 인증은 앞단 프록시에 맡긴다 — 자체 사용자 관리가 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "client-side-lb",
+          "via": "없음",
+          "contract": "같은 회사의 쿠버네티스 위 플랫폼 작업이지만 두 글은 서로를 언급하지 않는다.",
+          "confidence": "unknown"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "OAuth 2.0 Token Exchange",
+            "authors": "IETF",
+            "year": "2020",
+            "venue": "RFC 8693",
+            "url": "https://www.rfc-editor.org/rfc/rfc8693",
+            "takeaway": "게이트웨이가 사용자-에이전트 토큰을 대상 시스템의 접근 토큰으로 바꾸는 교환의 형식. 회사가 직접 이 RFC 를 든다.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "OAuth 2.0 Protected Resource Metadata",
+            "authors": "IETF",
+            "year": "2025",
+            "venue": "RFC 9728",
+            "url": "https://www.rfc-editor.org/rfc/rfc9728",
+            "takeaway": "MCP 를 안전하게 쓰려는 압력이 표준화를 빠르게 밀어붙인 예로 회사가 든다. 브로커 안에서 정확히 어디에 쓰이는지는 글에 없다.",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "사람이 준 권한을 기계가 대신 쓸 때 매 행동을 누가 승인하는가",
+            "why_hard": "토큰 교환은 굵은 판정이라 개별 도구 호출의 위험을 모른다. 그렇다고 매번 사람에게 물으면 승인 피로로 도장만 찍게 된다 — 승인을 많이 받을수록 승인의 의미가 줄어든다.",
+            "current_best": "게이트웨이의 정책 엔진(OPA)으로 거르고, 고위험 거래만 CIBA 같은 별도 채널로 묻는다. 의도 기반 접근 제어는 아직 조사 중이라고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+                "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2026-09-25",
+                "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 채팅에서 PR 요약을 부탁하면",
+          "question": "에이전트가 GitHub 토큰을 한 번도 보지 않고 어떻게 PR 을 읽는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[사용자 · Google Chat] --> BR[채팅 브리지<br/>사용자를 대리]\n  BR -->|대리 요청| IB[\"<b>신원 브로커</b><br/>• 위임 · 동의 기록<br/>• 제3자 세션 보관<br/>• 토큰 교환\"]:::accent\n  IB -->|사용자-에이전트 토큰| AG[에이전트]\n  AG -->|도구 호출 + 그 토큰| GW[agentgateway]\n  GW -->|교환 요청 · RFC 8693| IB\n  IB -->|GitHub 토큰 · 권한 묶음이 허락할 때만| GW\n  GW -->|헤더를 바꿔 끼워| MCP[GitHub MCP 서버]\n  MCP --> GH[(GitHub)]\n  GW -.-> OPA[OPA · ExtProc<br/>도구 호출 정책]:::quiet\n  AG -.->|요약만 돌려준다| U"
+        },
+        {
+          "title": "위임 하나가 사는 동안",
+          "question": "사용자가 준 권한은 언제 쓰이고 언제 막히는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 동의화면: 포털 또는 브리지가 OAuth 흐름 시작\n  동의화면 --> 위임됨: 권한 묶음을 고른다 · 요청보다 적게도\n  위임됨 --> 세션준비: 필요한 제3자 세션을 미리 만든다\n  세션준비 --> 교환가능\n  교환가능 --> 교환가능: 도구 호출마다 교환 · 필요하면 갱신\n  교환가능 --> 거둬짐: 사용자가 거둔다\n  교환가능 --> 만료됨: 기한이 지난다\n  거둬짐 --> [*]: 앞으로의 교환이 막힌다\n  만료됨 --> [*]\n  note right of 거둬짐\n    이미 발급된 제공자 토큰은\n    회수되지 않는다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 남는 구멍들",
+          "question": "이 구조가 아직 못 막는 것은?",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[위임을 거둔다] --> ISS[이미 발급된 제공자 토큰은 살아 있다]:::accent\n  AP[도구마다 승인 창] --> FAT[승인 피로 · 도장만 찍는다]\n  FAT -.->|그래서| CIBA[고위험은 CIBA 로 따로 묻는다]:::quiet\n  STS[모든 홉에서 중앙 STS 호출] --> LAT[지연 · 비용]\n  LAT -.->|그래서| SP[SPIFFE 로 에이전트 증명을 떼어 낸다]:::quiet\n  SC[제공자 scope 어휘] --> COARSE[제각각 · 너무 굵다]\n  COARSE -.->|그래서| PS[업무 능력 이름의 권한 묶음]:::quiet\n  IMP[특권 브리지의 대리] --> TRUST[그 앱을 믿어야 한다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+          "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+          "publisher": "Zalando Engineering Blog",
+          "date": "2026-09-25",
+          "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1253,7 +1650,8 @@
     "**2025년 글이 2017년 글을 인용하지 않는다** — 같은 회사의 두 시점을 엮은 것은 이 사이트의 해석이다.",
     "Caffeine 의 **TTL 60초·stale 15초가 재고·가격의 신선도 요구와 어떻게 맞물리는지** 글이 논하지 않는다.",
     "**내부 트래픽 라우팅 축은 세우지 못했다.** 클라이언트 사이드 로드밸런싱 글(2026년 6월, 초당 100만 요청)이 있지만 '지금 이렇게 되어 있다'로 쓰여 그전에 무엇을 썼고 언제 바꿨는지가 없다.",
-    "**2016년 이전이 비어 있다.** 2025년 글이 '2016년에 마이크로서비스 아키텍처를 세웠다'고 적으면서 그전에 무엇이었는지는 말하지 않는다. 그래서 첫 시기를 2016년에서 열었다 — 확인된 것은 거기까지다."
+    "**2016년 이전이 비어 있다.** 2025년 글이 '2016년에 마이크로서비스 아키텍처를 세웠다'고 적으면서 그전에 무엇이었는지는 말하지 않는다. 그래서 첫 시기를 2016년에서 열었다 — 확인된 것은 거기까지다.",
+    "신원 브로커를 거치는 도구 호출 수·지연, 권한 묶음이 몇 개인지, 대리를 허락받은 특권 앱이 몇 개인지는 밝히지 않는다."
   ],
   "sources": [
     {
@@ -1283,6 +1681,13 @@
       "publisher": "Zalando Engineering Blog",
       "date": "2017-11",
       "summary": "2017년에 이 회사가 이벤트 주도를 고른 이유를 스스로 적은 글. 요청 시점에 가져오는 대신 **클라이언트가 자기 속도로 처리**하게 하고, 대가로 **클라이언트가 로컬 프로젝션을 만들어 운영하는 부담**을 진다고 밝힌다. 그러면서 **예외도 명시했다** — 요청 수가 적은 클라이언트와 외부 통합은 요청-응답이 나을 수 있다고."
+    },
+    {
+      "title": "Agentic Platform: Open-Sourcing the Agentic Identity Broker",
+      "url": "https://engineering.zalando.com/posts/2026/09/agentic-platform-open-sourcing-agentic-identity-broker.html",
+      "publisher": "Zalando Engineering Blog",
+      "date": "2026-09-25",
+      "summary": "AI 에이전트가 사용자 대신 GitHub 같은 제3자 시스템을 쓰되 그 제공자 토큰을 끝내 받지 않게 하는 신원 브로커를 MIT 로 공개했다. 브로커는 누가 어느 에이전트에 무엇을 위임했는지를 기록하고, 제3자 세션을 쥐고, 도구 호출마다 게이트웨이(agentgateway)를 통해 토큰을 교환한다(RFC 8693). 유효 권한은 사용자 권한과 에이전트 권한의 교집합이고, 동의 단위는 OAuth scope 가 아니라 이름 붙은 업무 능력이다. 대가로 이미 발급된 제공자 토큰은 위임을 거둬도 회수되지 않고, 모든 홉에서 부르는 중앙 STS 는 지연이 비싸다고 스스로 적는다."
     }
   ],
   "eras": [
