@@ -8,11 +8,10 @@
 
 ## 지금 파는 중
 
-**없다 — LY Corporation 재방문이 확장이 됐다.** `ja/20260910a`(Yahoo!ニュース 광고 표시 고속화)를 기능 `prerender-ad-speed` 로
-쓰고 새 도메인 `광고를 빨리 보여 주면 더 눌리는가` 를 열었다(기능 4개째). 다음 사이클은 `--gaps` 대로.
+**없다 — 메이퇀 재방문이 확장이 됐다.** `2026/09/22/Meituan-Foundation-Model-for-Recommendation`(MTFM)을 기능 `one-model-many-scenes` 로
+쓰고 새 도메인 `여러 업무의 추천을 한 모델로 묶는다` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
-LY 블로그는 **ko·ja·en 피드가 서로 다른 글을 싣는다**(`/<lang>/feed/index.xml`) — 셋 다 본다.
 
 **비교 문서 재료가 모였다 — 'LLM Wiki' 세 회사.** 사이보즈 Ergon(RAG 를 물리고 Wiki, `logos-security-harness`) ·
 컬리 `2026-delivery-domain-rag`(Wiki + RAG 를 두 번 갈아엎음) · LY `ko/llm-wiki-code-driven-knowledge-ssot`(08-28, 코드 기준 자동 최신화).
