@@ -26,6 +26,7 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent.parent.resolve()
 HISTORY = BASE / "health_history.jsonl"
 LATEST = BASE / "health_latest.json"
+EVENTS = BASE / "run_events.jsonl"   # orchestration.emit 이 쓰는 단계 전이 스트림
 
 FIELDS = ("main_tasks", "qualifications", "preferences", "tech_stack")
 
@@ -76,8 +77,44 @@ def _recent_records(keyword: str, n: int) -> list[dict]:
     return out[-n:]
 
 
+def _crawled_ok_since(since: str | None, events_file: Path | None = None) -> set[str]:
+    """since 이후 site_done(ok) 이벤트가 한 번이라도 찍힌 사이트들.
+
+    건수가 그대로라는 것만으로는 "크롤이 안 돌았다"와 "돌았는데 새 공고가 없었다"를
+    못 가른다 — 캐치(dev)는 키워드당 후보가 몇 건뿐이라 반나절 신규 0건이 흔하다.
+    run_events.jsonl 은 최근 MAX_EVENTS 줄만 남으므로(몇 시간치) 창 전체가 아니라
+    "창 안에서 한 번이라도 정상 완료됐나"만 본다. 기록이 없으면 빈 집합 — 경고는 그대로 뜬다.
+    """
+    f = events_file or EVENTS
+    if not since or not f.exists():
+        return set()
+    # DB 판 기록은 timestamptz 라 오프셋이 붙어 온다. 이벤트는 로컬 naive 라 맞춰 준다.
+    try:
+        dt = datetime.fromisoformat(str(since))
+        if dt.tzinfo:
+            dt = dt.astimezone().replace(tzinfo=None)
+        since = dt.isoformat(timespec="seconds")
+    except ValueError:
+        return set()
+    out: set[str] = set()
+    try:
+        lines = f.read_text(encoding="utf-8").splitlines()
+    except Exception:
+        return set()
+    for line in lines:
+        try:
+            e = json.loads(line)
+        except Exception:
+            continue
+        if (e.get("type") == "site_done" and e.get("ok")
+                and e.get("site") and str(e.get("ts", "")) >= since):
+            out.add(e["site"])
+    return out
+
+
 def detect_anomalies(cur: dict, prev: dict | None,
-                     recent: list[dict] | None = None) -> list[str]:
+                     recent: list[dict] | None = None,
+                     events_file: Path | None = None) -> list[str]:
     out: list[str] = []
     cs = cur["site_counts"]
     for s, n in cs.items():
@@ -103,11 +140,13 @@ def detect_anomalies(cur: dict, prev: dict | None,
     # 얼어붙은 소스. 위의 검사는 전부 "줄었나"를 보므로, 크롤이 아예 안 돌아
     # 숫자가 그대로인 소스는 영영 안 걸린다 — remote·ats 가 이렇게 45일을 갔다.
     # 누적 수치라 정상이면 조금씩이라도 늘어난다. 안 늘면 그 소스는 죽은 것이다.
+    # 단, 그 창 안에서 크롤이 정상 완료된 기록이 있으면 "신규 없음"이지 죽은 게 아니다.
     if recent and len(recent) >= STALE_RECORDS:
         window = recent[-STALE_RECORDS:]
+        alive = _crawled_ok_since(window[0].get("ts"), events_file)
         for s, n in cs.items():
             past = [r.get("site_counts", {}).get(s) for r in window]
-            if all(p == n for p in past):
+            if all(p == n for p in past) and s not in alive:
                 out.append(f"[{s}] {STALE_RECORDS}회 기록 내내 {n}건 그대로 "
                            f"— 이 소스는 크롤이 안 돌고 있다")
     return out
