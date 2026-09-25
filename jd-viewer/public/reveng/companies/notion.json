@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "one_liner": "글자 한 줄도 페이지도 DB 행도 전부 같은 것으로 만든 회사",
   "business_model": "팀 단위 좌석 구독으로 판다. 2025년 비공개 테일 오퍼에서 **110억 달러** 밸류에이션이 매겨졌고(총 약 2억 7천만 달러 규모, Sequoia·Index 재참여 + GIC 신규), **ARR 의 50% 이상이 AI 를 쓰는 고객에서 나온다** — 그 비중이 1년 만에 두 배 넘게 늘었다. 성장은 특히 아시아태평양에서 나서 싱가포르에 사무실을 열었다(도쿄·서울·시드니에 이어).\n\n**이 회사의 기술적 정체성은 '무엇을 파는가'보다 '무엇으로 만들어졌는가'에 있다.** 글자 한 줄, 이미지, 목록 항목, 데이터베이스의 행, 그리고 페이지 자체까지 **전부 같은 것(블록)** 이다. 이 하나의 선택이 제품의 자유로움과 시스템의 어려움을 동시에 만든다.",
   "products": [
@@ -297,10 +297,26 @@
               "summary": "무엇을 미리 받아 둘지 정하는 방법과, 반쯤 있는 것을 일부러 만들지 않은 이유."
             }
           ]
+        },
+        {
+          "tech": "RGA 계열 시퀀스 CRDT + Peritext 서식 + 텍스트 슬라이스·인스턴스·검색 라벨",
+          "solves": "같은 블록의 동시 편집과 오프라인 편집을 아무 변경도 잃지 않고 합치고, 편집 중 블록이 나뉘어도 편집이 뜻한 블록을 찾아가게 한다. 분당 수백만 건.",
+          "limits": "합쳐도 각자의 의도가 늘 지켜지지는 않는다. 지운 글자는 묘비로 남는다. 나뉜 블록을 찾으려면 대응표 조회가 필요하고, 동시에 또 나뉘면 여러 블록을 불러온다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Notion handles concurrent editing with CRDTs",
+              "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+              "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+              "date": "2026-09-18",
+              "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+            }
+          ]
         }
       ],
       "features": [
-        "offline-sync"
+        "offline-sync",
+        "block-crdt"
       ]
     },
     {
@@ -2230,6 +2246,318 @@
           "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
         }
       ]
+    },
+    {
+      "key": "block-crdt",
+      "name": "블록 CRDT — 나뉘는 블록을 따라가는 글자",
+      "domain": "동시 편집·실시간",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "Notion 은 2025년까지 사실 협업 편집기가 아니었다고 스스로 적는다. 블록 하나가 데이터베이스 레코드 하나라서 서로 다른 블록을 동시에 고치는 것은 괜찮았지만, **같은 블록**을 동시에 고치면 서버는 늦게 도착한 쪽으로 레코드를 덮었다 — 마지막 쓰기 승리(LWW). 한 사람의 편집이 통째로 사라졌고, 함께 쓰는 사람이 늘수록 그 확률이 커졌다.\n\n오프라인 모드가 이 위험을 키웠다. 오프라인에서 페이지를 고친 사람은, 다시 연결되기 전에 다른 사람이 같은 블록을 고치면 변경을 전부 잃을 수 있었다.\n\n같은 문제를 Figma 는 반대로 풀었다. Figma 는 중앙 서버가 권위이니 CRDT 를 다 쓸 필요가 없다고 봤다 — 객체의 속성 단위로 마지막 쓰기가 이기면 충분했다. Notion 도 서버가 있지만 **텍스트**는 속성처럼 통째로 덮을 수 없고, 오프라인에서 오래 떨어져 있던 편집까지 합쳐야 해서 진짜 시퀀스 CRDT 로 갔다(이 대비는 이 사이트의 해석). 그리고 Notion 만의 문제 — 편집하는 동안 블록이 둘로 **나뉜다** — 를 위해 새 개념 셋을 만들었다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "2025년 7월 운영 배포 — 분당 CRDT 연산 **수백만 건**, 회사는 세계에서 가장 큰 CRDT 배포 가운데 하나라고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          },
+          {
+            "label": "검색 라벨의 저장",
+            "value": "라벨을 문자열 그대로 두지 않고 압축 부호화해 저장 효율 **다섯 배**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          },
+          {
+            "label": "라벨이 없으면",
+            "value": "한 블록을 99번 나누면 100개 블록이 모두 같은 텍스트 인스턴스의 조각을 가져, 글자 하나를 넣으려고 **100개 블록**을 불러와야 한다(글의 예)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "블록 단위 LWW 를 보며",
+          "thought": "페이지는 여러 블록으로 되어 있어서 협업이 되는 것처럼 느껴졌다. 하지만 같은 블록을 동시에 고치면 한 사람의 변경이 사라진다. 오프라인 모드를 내놓으면 그 손실이 훨씬 커진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "CRDT 로 가면서",
+          "thought": "CRDT 는 누구의 변경도 잃지 않게 합쳐 준다. 하지만 각자의 의도가 늘 완벽히 지켜지는 것은 아니다 — 한 사람이 정확히 어떤 문장을 원했다면 합친 결과는 그 문장이 아닐 수 있다. 긴 문서에서는 대개 서로 먼 곳을 고치니 그런 경우에는 잘 맞는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "엔터로 블록이 나뉠 때",
+          "thought": "한 사람이 블록 가운데서 엔터를 쳐 뒤쪽을 새 블록으로 옮기는 사이, 다른 사람이 원래 블록 끝에 글자를 붙였다. 그 글자는 새 블록에 가야 한다. 그런데 편집이 가리키는 기준 글자가 이제 원래 레코드에 없다 — 어느 블록을 고치는지 알아낼 방법이 필요하다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "텍스트 아이템",
+            "what": "넣은 적 있는 모든 글자(실제로는 같은 세션·같은 시계의 연속 글자 묶음)를 담는 RGA 트리의 노드. ID 는 세션 ID + 램포트 시계. 지운 글자는 묘비로 남는다."
+          },
+          {
+            "name": "서식 연산",
+            "what": "Peritext 식. 시작·끝을 글자 '앞' 또는 '뒤'의 닻으로 둬 굵게처럼 늘어나는 서식과 링크처럼 안 늘어나는 서식을 가른다. 범위의 첫 아이템에만 저장한다."
+          },
+          {
+            "name": "텍스트 슬라이스",
+            "what": "한 블록 안의 텍스트 조각. 블록을 나누면 슬라이스가 둘로 나뉘고 뒤쪽이 새 블록으로 옮겨 간다. 한 블록의 슬라이스들은 텍스트 슬라이스 트리를 이룬다."
+          },
+          {
+            "name": "텍스트 인스턴스",
+            "what": "같은 처음 슬라이스에서 갈라져 나온 슬라이스들의 묶음. 나뉘고 옮겨도 바뀌지 않는 식별자라, 연산은 블록 ID 대신 이것을 가리킨다."
+          },
+          {
+            "name": "검색 라벨",
+            "what": "텍스트 인스턴스 안에서 슬라이스를 가리키는 이름. 나뉠 때마다 L 또는 R 을 붙인다(R → RL·RR). 접두어 일치로 찾는다."
+          }
+        ],
+        "invariants": [
+          "누구의 편집도 잃지 않는다 — 동시 변경은 결정론적으로 합쳐진다.",
+          "지운 글자는 지우지 않고 묘비로 남긴다 — 그 ID 를 가리키는 연산이 아직 날아오는 중일 수 있다.",
+          "같은 기준 글자 뒤에 넣은 것들은 더 최근 논리 시각이 앞, 같으면 세션 ID 로 가른다.",
+          "블록이 나뉘어도 그 안 글자의 텍스트 인스턴스는 바뀌지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "글자를 넣을 때마다 **세션 ID + 램포트 시계**로 유일한 ID 를 주고, '어느 글자 뒤에'(origin)를 가리키는 연산으로 RGA 트리에 넣는다",
+            "why": "두 클라이언트가 같은 시계를 가져도 세션 ID 는 다르다."
+          },
+          {
+            "step": "같은 세션·같은 시계의 **연속 글자는 한 아이템**으로 묶고 길이만 적는다",
+            "why": "글자마다 ID 를 주면 저장이 커진다. 사람은 대개 낱말 단위로 친다."
+          },
+          {
+            "step": "지우기는 **묘비**로 표시만 한다",
+            "why": "오프라인이거나 날아오는 중인 연산이 지운 글자의 ID 를 기준으로 삼을 수 있다."
+          },
+          {
+            "step": "서식은 **Peritext 식 연산**으로 트리에 저장하고, 트리를 읽을 때 적용한다",
+            "why": "굵게와 기울임을 동시에 걸어도 둘 다 남아야 한다."
+          },
+          {
+            "step": "블록을 나누면 **슬라이스를 둘로 쪼개 뒤쪽을 새 블록으로 옮기고**, 텍스트 인스턴스 ↔ 블록 대응표를 갱신한다",
+            "why": "나뉜 뒤에 도착한 편집도 올바른 블록을 찾아가야 한다."
+          },
+          {
+            "step": "연산은 블록 ID 대신 **텍스트 인스턴스 + 검색 라벨**을 싣고, 서버는 그 인스턴스에서 **라벨이 그 접두어로 시작하는 블록만** 불러와 대상 슬라이스를 찾는다",
+            "why": "인스턴스만으로 찾으면 쪼개진 모든 블록을 불러와야 한다. 정확 일치가 아니라 접두어 일치인 것은, 대상이 동시에 또 나뉘었을 수 있어서다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "같은 블록의 동시 편집을 어떻게 합칠 것인가",
+            "chosen": "**CRDT** — RGA 계열 시퀀스 CRDT.",
+            "alternatives": [
+              "블록 레코드 단위 마지막 쓰기 승리(LWW, 2025년까지)"
+            ],
+            "tradeoff": "LWW 는 한 사람의 편집을 통째로 잃었고, 오프라인 모드에서는 그 손실이 더 컸다. CRDT 는 아무의 변경도 잃지 않지만, 회사가 적듯 각자의 의도가 늘 지켜지지는 않는다 — 합친 결과가 누구도 원한 문장이 아닐 수 있다. 같은 문제에 Figma 는 중앙 서버를 근거로 속성 단위 LWW 에 머물렀다 — 텍스트와 오프라인이 Notion 을 반대쪽으로 밀었다(이 대비는 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          },
+          {
+            "question": "지운 글자를 어떻게 할 것인가",
+            "chosen": "**묘비로 남긴다.**",
+            "alternatives": [
+              "트리에서 지운다"
+            ],
+            "tradeoff": "날아오는 중이거나 오프라인이던 연산이 지운 글자의 ID 를 가리킬 수 있어서, 지우면 그 연산을 어디에 적용할지 알 수 없다. 대가는 트리가 넣은 적 있는 모든 글자를 계속 쥔다는 것 — 문서가 오래 고쳐질수록 커진다(이 사이트의 해석 — 글은 묘비 정리를 말하지 않는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          },
+          {
+            "question": "글자마다 ID 를 줄 것인가",
+            "chosen": "**같은 세션·같은 시계의 연속 글자 묶음에 ID 하나 + 길이**.",
+            "alternatives": [
+              "글자 하나마다 ID 를 준다"
+            ],
+            "tradeoff": "저장 효율이 오른다. 대가는 묶음 가운데를 지우거나 그 사이에 넣으면 묶음을 쪼개야 한다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          },
+          {
+            "question": "서식 충돌을 어떻게 풀 것인가",
+            "chosen": "**Peritext 알고리즘을 바탕으로** — 서식의 시작·끝을 글자 앞/뒤 닻으로 둔다. 겹치는 서식은 아이템마다 배열로, 연산은 범위의 첫 아이템에만 저장.",
+            "alternatives": [
+              "서식을 글자 속성으로 두고 LWW 로 덮는다"
+            ],
+            "tradeoff": "굵게와 기울임을 동시에 걸어도 둘 다 남고, 굵게는 끝에 이어 치면 이어지고 링크는 이어지지 않는다. 대가는 서식을 읽을 때마다 트리를 해석해 적용해야 한다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          },
+          {
+            "question": "편집 중에 블록이 나뉘면 연산은 무엇을 가리킬 것인가",
+            "chosen": "**블록 ID 대신 텍스트 인스턴스** — 나뉘고 옮겨도 바뀌지 않는 식별자. 인스턴스 ↔ 블록 대응표로 블록을 찾는다.",
+            "alternatives": [
+              "블록 ID 를 가리킨다",
+              "ProseMirror + Yjs 처럼 나누기를 '앞 블록에서 지우고 뒤 블록에 넣기'로 모델링한다"
+            ],
+            "tradeoff": "동시 편집이 나누기를 건너 뜻한 자리를 지킨다 — 회사는 Yjs 식에서는 동시 편집이 원래 노드에 남는다고 비교하되, 검증하지는 않았다고 밝힌다. 대가를 회사가 직접 적는다 — 슬라이스로 블록을 바로 찾을 방법이 없어 그 인스턴스의 조각을 가진 블록을 전부 불러와야 한다. 99번 나누면 100개다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          },
+          {
+            "question": "불러올 블록을 어떻게 줄일 것인가",
+            "chosen": "**검색 라벨** — 나뉠 때마다 L/R 을 붙이고, 연산에 라벨을 실어 그 접두어로 시작하는 블록만 불러온다. 라벨은 압축 부호화(저장 다섯 배 효율).",
+            "alternatives": [
+              "인스턴스의 모든 블록을 불러와 슬라이스 트리를 다 뒤진다"
+            ],
+            "tradeoff": "정확 일치가 아니라 접두어 일치여야 한다 — 편집하는 사이 대상 슬라이스가 또 나뉘었을 수 있다(R 이 RR 이 됐을 수 있다). 그래서 여전히 둘 이상을 불러올 수 있다. 문자열 LIKE 검색 대신 압축 부호화를 따로 만들어야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "offline-sync",
+          "via": "오프라인이 동시 편집을 더 위험하게 만든다",
+          "contract": "오프라인 모드는 오래 떨어져 있던 편집을 다시 합쳐야 한다. LWW 에서는 다시 연결되기 전에 남이 같은 블록을 고치면 변경을 통째로 잃었다 — CRDT 가 그 합치기를 떠받친다고 회사가 적는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "block-model",
+          "via": "모든 것이 블록이라서 생긴 문제",
+          "contract": "블록 하나가 레코드 하나라서 다른 블록 동시 편집은 공짜였지만 같은 블록은 LWW 였고, 엔터 한 번이 레코드를 둘로 만든다. 텍스트 슬라이스·인스턴스는 블록 모델 위에 글자의 연속성을 다시 세운 장치다(이 연결은 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Peritext: A CRDT for Collaborative Rich Text Editing",
+            "authors": "Geoffrey Litt, Sarah Lim, Martin Kleppmann, Peter van Hardenberg",
+            "year": "2022",
+            "venue": "Ink & Switch",
+            "url": "https://www.inkandswitch.com/peritext/",
+            "takeaway": "Notion 이 서식(굵게·기울임·링크) 충돌을 푸는 데 빌린 알고리즘이다. 핵심은 서식의 경계를 글자 앞 또는 뒤의 닻으로 두어 '늘어나는' 서식(굵게 — 끝에 치면 이어서 굵다)과 '늘어나지 않는' 서식(링크)을 가르는 것 — Notion 은 이 구분을 그대로 가져왔다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "합쳐도 의도는 지켜지지 않을 수 있다",
+            "why_hard": "CRDT 는 모두의 변경을 잃지 않게 합칠 뿐, 각자가 원한 최종 문장을 보장하지 않는다. 두 사람이 같은 구절을 서로 다르게 고치면 결과는 둘 다 원하지 않은 문장일 수 있다. 회사는 긴 문서에서는 대개 먼 곳을 고쳐 잘 맞는다고 적는다 — 가까운 곳의 동시 편집은 여전히 남는 문제다.",
+            "current_best": "같은 기준 뒤의 삽입을 논리 시각과 세션 ID 로 결정론적으로 정렬해 모두가 같은 결과를 보게 한다. 나누기를 건너는 편집은 텍스트 인스턴스로 뜻한 자리를 지킨다. 실시간 존재 표시와 제안을 묶어 내는 것을 다음 과제로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Notion handles concurrent editing with CRDTs",
+                "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+                "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+                "date": "2026-09-18",
+                "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "엔터 한 번과 동시 편집이 만났을 때",
+          "question": "나뉜 뒤에 도착한 편집은 어떻게 올바른 블록을 찾는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"블록 A — 'Build things'\"] --> SPLIT[\"<b>Emma: 'Build' 뒤에서 엔터</b>\"]\n  SPLIT --> SA[\"블록 A — 슬라이스 L 'Build'\"]\n  SPLIT --> SB[\"블록 B — 슬라이스 R ' things'\"]\n  SPLIT --> MAP[(\"인스턴스 A ↔ 블록 대응표<br/>A: 블록 A(L) · 블록 B(R)\")]\n  EDIT[\"<b>Charlie: 끝에 ' quickly'</b><br/>연산 = 인스턴스 A + 라벨 R\"]:::accent --> Q{\"대응표에서<br/>인스턴스 A · 라벨이 R 로 시작\"}\n  MAP --> Q\n  Q --> SB\n  SB --> OUT[\"블록 B — ' things quickly'\"]\n  Q -.->|\"그사이 R 이 RL · RR 로 또 나뉘었다면\"| MANY[\"접두어 일치로 둘 다 후보\"]:::quiet"
+        },
+        {
+          "title": "글자 하나의 일생",
+          "question": "지운 글자는 왜 트리에 남는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Inserted: 세션 ID + 램포트 시계로 ID, origin 뒤에 삽입\n  Inserted --> Annotated: 서식 연산이 걸린다(닻: 앞/뒤)\n  Annotated --> Inserted: 서식 제거\n  Inserted --> Moved: 블록이 나뉘어 슬라이스째 새 블록으로\n  Moved --> Inserted\n  Inserted --> Tombstone: 삭제 — 표시만 한다\n  note right of Tombstone\n    오프라인 · 날아오는 중인 연산이\n    이 ID 를 기준으로 삼을 수 있다\n  end note\n  Tombstone --> Tombstone: 여전히 기준점으로 쓰인다"
+        },
+        {
+          "title": "실패 경로 — 동시 편집이 사라지거나 비싸지는 자리",
+          "question": "LWW 에서 CRDT 로 오면서 무엇을 고치고 무엇을 새로 떠안았는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  LWW[\"블록 레코드 LWW\"] --> LOST[\"<b>같은 블록 동시 편집 — 한 사람 변경 소실</b>\"]:::accent\n  OFF[\"오프라인 모드\"] --> LOST\n  LOST --> CRDT[\"시퀀스 CRDT\"]\n  CRDT --> INTENT[\"변경은 안 잃지만<br/>의도는 안 지켜질 수 있다\"]:::quiet\n  CRDT --> TOMB[\"묘비가 쌓인다\"]:::quiet\n  SPLIT[\"편집 중 블록 분할\"] --> ORPHAN[\"기준 글자가 다른 레코드로 옮겨 감\"]\n  ORPHAN --> INST[\"텍스트 인스턴스로 가리킨다\"]\n  INST --> FAN[\"99번 나누면 100개 블록을 불러온다\"]\n  FAN --> LABEL[\"검색 라벨 · 접두어 일치\"]\n  YJS[\"나누기 = 지우기 + 넣기(Yjs 식)\"] -.->|\"회사의 비교 · 검증 안 함\"| STAY[\"동시 편집이 원래 노드에 남는다\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Notion handles concurrent editing with CRDTs",
+          "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+          "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+          "date": "2026-09-18",
+          "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -2240,7 +2568,8 @@
     "**블록 구조가 왜 참조 추적을 어렵게 하는지** — 회사가 '블록 구조 때문에 어려운 문제를 풀어야 했다'고 적었지만 무엇이 어떻게 어려웠는지는 쓰지 않았다.",
     "오프라인으로 둘 수 있는 페이지 수의 현재 한계 — '계속 밀어 올리는 중'이라는 표현까지만 나온다.",
     "**질의 시점에 권한을 어떻게 거르는지** — 벡터 검색 글은 색인 효율만 다루고 접근 제어 구조는 밝히지 않는다. 권한이 회수됐을 때 이미 색인된 내용을 어떻게 하는지도 없다.",
-    "**벡터 검색은 2년에 걸쳐 네 번 갈아엎었다고 회사가 밝히지만(2026-02) 각 세대의 연도가 없어** 시기로 세우지 않았다. 데이터독에서와 같은 문제다 — 세대의 순서는 알아도 언제인지 모르면 연표가 되지 않는다."
+    "**벡터 검색은 2년에 걸쳐 네 번 갈아엎었다고 회사가 밝히지만(2026-02) 각 세대의 연도가 없어** 시기로 세우지 않았다. 데이터독에서와 같은 문제다 — 세대의 순서는 알아도 언제인지 모르면 연표가 되지 않는다.",
+    "블록 CRDT 글은 묘비를 언제 정리하는지, 문서당 트리 크기가 얼마나 되는지, CRDT 전환 뒤 편집 소실 신고가 얼마나 줄었는지를 적지 않는다. Yjs 와의 비교는 회사 스스로 검증하지 않았다고 밝힌다."
   ],
   "sources": [
     {
@@ -2284,6 +2613,13 @@
       "publisher": "Notion Blog",
       "date": "2026-02-19",
       "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+    },
+    {
+      "title": "How Notion handles concurrent editing with CRDTs",
+      "url": "https://www.notion.com/blog/how-notion-handles-concurrent-editing-with-crdts",
+      "publisher": "Notion Blog · Angelique Nehmzow, Emma Guo, Fabricio Pontes Harsich, Stephan Boyer",
+      "date": "2026-09-18",
+      "summary": "블록 단위 마지막 쓰기 승리(LWW)로 같은 블록의 동시 편집이 사라지던 것을, RGA 계열 시퀀스 CRDT 와 Peritext 식 서식 연산으로 바꾼 기록. 블록을 나누는(엔터) 동시 편집을 위해 텍스트 슬라이스·텍스트 인스턴스·검색 라벨을 새로 만들었다. 2025년 7월 운영 배포, 분당 CRDT 연산 수백만 건."
     }
   ],
   "domain": "notion.com",
