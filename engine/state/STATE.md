@@ -8,13 +8,14 @@
 
 ## 지금 파는 중
 
-**없다 — Freshworks 재방문(찾을 길 없음)을 마쳤다. 그 앞은 freee 확장(`two-spas-one-url`)이었다.** `spa_react_upgrade`(2026-09-18)를 기능 `two-spas-one-url` 로 쓰고 새 도메인
-`화면을 멈추지 않고 새 기반으로 옮긴다` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
+**없다 — GitHub 재방문이 확장이 됐다.** `improving-site-performance-by-shipping-more-css`(2026-09-25)를 기능
+`css-modules-replatform` 으로 쓰고 새 도메인 `화면 스타일` 을 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
 
 재방문에서 찾았지만 아직 안 쓴 재료(다음 재방문·보강 때 먼저 본다):
 
+- **GitHub** `rendering-huge-pull-requests-in-the-github-copilot-app`(09-23, 거대한 PR 렌더링 — 피드 본문에 전문이 있다).
 - **Doximity** `migrating-doximity-s-ios-newsfeed-to-swiftui-...`(09-04, iOS 뉴스피드 SwiftUI 이관 — 피드 본문에 전문이 있다).
 - **사이보즈** `entry/2026/09/04/113000`(kintone 레거시를 AI 로 재구현한 실험 — 50만 줄 Java 중 모듈 단위, 잘 된 것과 안 된 것).
 - **사이버에이전트** `archives/65476`(09-15, ABEMA 광고 서버 OOM · go-cache TTL) — `two-tier-cache` 정정 대상인지 먼저.

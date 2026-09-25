@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "business_model": "**개발자 도구를 구독으로 판다.** 개인·팀·엔터프라이즈 요금제가 바탕이고 그 위에 **Copilot**(AI 코딩 보조)이 얹혔다. **⚠️ 범위 주의 — Microsoft 산하라 GitHub 단독 재무가 공시되지 않는다.** Microsoft 가 밝힌 것은 **유료 Copilot 좌석 470만**(2026-01-28 FY26 Q2, 전년 대비 약 75% 증가)이고, **GitHub 전체 ARR 30억 달러 초과**는 회사 발표가 아니라 사정을 아는 사람을 인용한 보도다. 그래서 이 문서의 수익 항목은 대부분 `inferred` 로 둔다. 원가 쪽은 특이하다 — **남의 코드를 맡아 두고, 남의 코드를 실행해 주고, 남의 코드를 검색해 준다.** 저장·연산·색인이 전부 고객 수가 아니라 **고객이 밀어 넣는 양**에 비례한다.\n\n**사내에서 같은 모양이 네 도메인에 걸쳐 반복된다.** 첫째, **쪼개는 기준을 데이터의 성질에서 가져온다** — 코드 검색은 Git 블롭 ID 로(같은 내용이면 같은 블롭이라 중복이 저절로 사라진다), 데이터 계층은 함께 쓰이는 테이블로, 저장은 저장소 단위로 나눈다. 둘째, **옮기기 전에 선부터 긋는다** — 물리 이동보다 `schema-domains.yml` 과 린터가 먼저 왔고, 복제본이 같은 상태인지도 체크섬으로 먼저 증명한다. 셋째, **하나에 전부 걸지 않는다** — Vitess 도입이 초기라 자체 write-cutover 를 따로 만들었고, MySQL 8.0 업그레이드 내내 역방향 복제로 돌아갈 길을 열어 뒀다. 넷째, **물리 한계 앞에서는 병렬화로 물러선다** — 대륙 간 왕복은 줄일 수 없으니 복제본별 작업을 겹쳐 돌리고, 일회용 환경의 준비 시간은 없앨 수 없으니 캐시를 이미지 쪽으로 옮긴다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "GitHub (저장소 호스팅·PR·이슈)",
@@ -18,7 +18,7 @@
   "domain_map": {
     "title": "깃허브 도메인 지도",
     "question": "코드 한 줄이 올라가서 실행되고 검색되기까지 어디를 지나는가?",
-    "code": "flowchart TD\n  D[\"개발자\"]\n  subgraph GIT[\"<b>Git 저장·복제</b> — 맡아 둔다\"]\n    P[\"프록시 — 3단계 커밋\"]\n    R1[\"복제본 1\"]\n    R2[\"복제본 2\"]\n    R3[\"복제본 3\"]\n    H[\"치유 — 3벌 미만이면<br/>다른 서버에 새로 만든다\"]\n  end\n  subgraph DATA[\"<b>데이터 계층</b> — 주변을 기억한다\"]\n    SD[\"스키마 도메인<br/>(가상 파티션)\"]\n    L[\"린터 — 도메인을 넘는<br/>조인·트랜잭션을 막는다\"]\n    MC[\"여러 MySQL 클러스터\"]\n  end\n  subgraph CI[\"<b>CI 실행</b> — 남의 코드를 돌린다\"]\n    Q[\"큐\"]\n    RUN[\"러너 — 자동 확장\"]\n  end\n  subgraph SEARCH[\"<b>코드 검색</b> — 다시 찾는다\"]\n    IDX[\"Blackbird 색인<br/>Git 블롭 ID 로 샤딩\"]\n    NG[\"희소 n그램\"]\n  end\n  D -->|\"git push\"| P --> R1 & R2 & R3\n  R1 -.-> H\n  D -->|\"PR · 이슈\"| SD --> L --> MC\n  D -->|\"워크플로 트리거\"| Q --> RUN\n  RUN -.->|\"결과\"| SD\n  R1 -.->|\"부모와의 차이만\"| IDX --> NG\n  NG -.->|\"결과\"| D"
+    "code": "flowchart TD\n  D[\"개발자\"]\n  subgraph GIT[\"<b>Git 저장·복제</b> — 맡아 둔다\"]\n    P[\"프록시 — 3단계 커밋\"]\n    R1[\"복제본 1\"]\n    R2[\"복제본 2\"]\n    R3[\"복제본 3\"]\n    H[\"치유 — 3벌 미만이면<br/>다른 서버에 새로 만든다\"]\n  end\n  subgraph DATA[\"<b>데이터 계층</b> — 주변을 기억한다\"]\n    SD[\"스키마 도메인<br/>(가상 파티션)\"]\n    L[\"린터 — 도메인을 넘는<br/>조인·트랜잭션을 막는다\"]\n    MC[\"여러 MySQL 클러스터\"]\n  end\n  subgraph CI[\"<b>CI 실행</b> — 남의 코드를 돌린다\"]\n    Q[\"큐\"]\n    RUN[\"러너 — 자동 확장\"]\n  end\n  subgraph SEARCH[\"<b>코드 검색</b> — 다시 찾는다\"]\n    IDX[\"Blackbird 색인<br/>Git 블롭 ID 로 샤딩\"]\n    NG[\"희소 n그램\"]\n  end\n  D -->|\"git push\"| P --> R1 & R2 & R3\n  R1 -.-> H\n  D -->|\"PR · 이슈\"| SD --> L --> MC\n  D -->|\"워크플로 트리거\"| Q --> RUN\n  RUN -.->|\"결과\"| SD\n  R1 -.->|\"부모와의 차이만\"| IDX --> NG\n  NG -.->|\"결과\"| D\n  subgraph UI[\"<b>화면 스타일</b> — 계산하지 않고 보낸다\"]\n    CSSM[\"Primer · CSS Modules<br/>런타임 없음\"]\n  end\n  D -->|\"페이지를 연다\"| CSSM"
   },
   "revenue_streams": [
     {
@@ -346,6 +346,30 @@
       ],
       "features": [
         "actions-runners"
+      ]
+    },
+    {
+      "name": "화면 스타일",
+      "why": "GitHub 의 다른 도메인들은 저장소·검색·데이터·CI 처럼 화면 뒤에 있다. 이 도메인은 그 모든 것이 사용자에게 보이는 마지막 층 — 디자인 시스템 Primer 가 그리는 화면의 스타일이다. 따로 떼어 둔 이유는, 여기서의 비용이 서버 자원이 아니라 **페이지마다 스타일을 계산하는 시간**으로 청구되고, 그 계산이 서버 렌더링과 브라우저 양쪽에서 일어나기 때문이다.",
+      "tech": [
+        {
+          "tech": "CSS Modules (Primer · github.com 전체)",
+          "solves": "스타일을 빌드 때 스타일시트로 굳혀 HTML 과 함께 보내, 클라이언트 초기화와 서버의 스타일 수집 비용을 없앤다. 클래스 이름을 기본으로 지역화해 전역 선택자 충돌을 막는다.",
+          "limits": "CSS-in-JS 의 sx 가 주던 디자인 토큰 타입 지원과 한 곳에 모든 것이 있는 편리함을 일부 내려놓는다. 옮기려면 모든 컴포넌트를 바꿔야 해 3년이 걸렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Improving site performance by shipping more CSS",
+              "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+              "publisher": "The GitHub Blog",
+              "date": "2026-09-25",
+              "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "css-modules-replatform"
       ]
     }
   ],
@@ -2484,6 +2508,332 @@
           "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
         }
       ]
+    },
+    {
+      "key": "css-modules-replatform",
+      "name": "CSS Modules — 런타임을 걷어내고 CSS 를 더 보낸다",
+      "domain": "화면 스타일",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "GitHub 화면의 버튼·배너·빵부스러기 탐색은 디자인 시스템 Primer 가 그린다. 2023년 무렵 어떤 페이지에서 컴포넌트 수가 폭증하자, 스타일을 자바스크립트 안에서 만드는 CSS-in-JS 방식이 값을 청구하기 시작했다. 스타일을 브라우저에서 초기화하느라 첫 로딩이 늦어졌고, 서버 렌더링에서 스타일을 모으느라 서버도 느려졌고, 컴포넌트가 늘수록 스타일 갱신이 감당이 안 됐다.\n\n그래서 이 기능의 요점은 제목 그대로다 — **CSS 를 더 보내서 사이트를 빠르게 한다.** 스타일을 실행 중에 계산하지 않고, 빌드 때 CSS 파일로 굳혀 HTML 과 함께 보낸다. 클라이언트에도 서버에도 스타일 런타임이 없다.\n\n어려운 것은 방향이 아니라 조건이었다. 모든 컴포넌트를 바꿔야 하는데 옮기는 동안 GitHub 가 깨지면 안 되고, 아직 옛 방식을 쓰는 화면도 계속 돌아야 한다. 같은 달 freee 도 같은 이사(CSS-in-JS → CSS Modules)를 했는데, 그쪽은 SPA 를 통째로 둘로 갈랐고 이쪽은 **컴포넌트 하나씩 플래그로** 갈랐다 — 같은 목적지에 다른 칼질이다(이 대비는 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "Primer 를 옮긴 뒤",
+            "value": "페이지 서버 렌더링 시간 **55% 감소**, 컴포넌트 초기화 시간 **25% 감소**(2024년 12월 Primer 전체 이관 완료)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "label": "옮겨야 했던 sx",
+            "value": "최대 **약 7,760개**(2025년 4월 시작)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "label": "사람의 속도",
+            "value": "순번제 엔지니어 **8명**이 **6개월**에 sx **6,419개** — 페이지별 서버 렌더링 시간 1%~22% 개선",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "label": "에이전트와 함께",
+            "value": "2026년 4월 남은 **895개 → 0개**를 엔지니어 **2명**이 Copilot 코딩 에이전트 여럿과 **3주**에",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "label": "끝",
+            "value": "2026년 6월 github.com **100% CSS Modules** — sx·styled-components·styled-system 제거",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "컴포넌트 수가 폭증한 페이지를 보고",
+          "thought": "문제를 부분적으로 누그러뜨릴 게 아니라 뿌리에서 풀어야 했다. 클라이언트 비용도 서버 비용도 아예 피하는 대안이어야 하고, 무엇보다 옮기는 동안 GitHub 를 깨뜨리지 않는 방식이어야 했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "sx prop 을 걷어내려다",
+          "thought": "sx 는 CSS-in-JS 의 가장 좋은 점과 가장 나쁜 점을 함께 가졌다. 디자인 토큰과 이어진 타입 지원이 훌륭하고 컴포넌트 옆에 모든 것이 있었지만, 인라인 객체라서 실행 비용이 크고 한 페이지에 sx 쓰는 컴포넌트가 늘수록 버티지 못했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "sx 를 다 옮긴 날",
+          "thought": "드디어 의존성을 지우고 다른 일로 넘어갈 수 있다고 생각했다. 틀렸다. 일곱 가지 테마와 각각의 고대비 모드가 전부 styled-components 로 켜지고 있었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "남은 895개를 다시 집어 들었을 때",
+          "thought": "처음 이 일을 시작했을 때와 풍경이 달랐다. 그사이 Copilot 코딩 에이전트와 코드 리뷰가 나왔다. 여덟 명이 반년 하던 종류의 일을 두 명이 3주에 끝냈다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Primer",
+            "what": "GitHub 의 디자인 시스템. 버튼·배너·빵부스러기 같은 기초 컴포넌트를 제공하고, 접근성·유연성·성능을 요구받는다."
+          },
+          {
+            "name": "sx prop",
+            "what": "Primer 컴포넌트를 인라인 객체로 꾸미던 방식. 수년간 GitHub 의 사실상 스타일 표준이었다."
+          },
+          {
+            "name": "CSS Modules",
+            "what": "컴포넌트 옆 CSS 파일에 스타일을 쓰고, 클래스 이름은 기본으로 지역화한다. 빌드 때 스타일시트로 모여 HTML 과 함께 간다 — 런타임이 없다."
+          },
+          {
+            "name": "@primer/styled-react",
+            "what": "과도기 래퍼 패키지. 새로 옮긴 컴포넌트에 sx 를 계속 받게 해, sx 를 쓰는 화면은 이쪽에서 import 하고 안 쓰는 화면은 @primer/react 에서 바로 import 해 이득을 먼저 본다."
+          },
+          {
+            "name": "기능 플래그 + 시각 회귀 스냅샷",
+            "what": "컴포넌트마다 옛 스타일과 새 스타일을 켜고 끄는 스위치, 그리고 두 스타일의 스냅샷이 똑같은지 보는 기존 시각 회귀 테스트."
+          }
+        ],
+        "invariants": [
+          "옮기는 동안 GitHub 가 깨지지 않는다 — 옛 방식을 쓰는 컴포넌트도 계속 돈다.",
+          "컴포넌트 하나를 옮길 때 옛 스타일과 새 스타일의 **스냅샷이 똑같아야** 한다.",
+          "모든 변경은 팀 → GitHub 직원 → 전체 사용자 순서로 퍼진다.",
+          "의존성을 지우는 마지막 단계도 플래그 뒤에서 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "컴포넌트마다 기존 스타일을 **CSS Modules 파일로 옮겨 적은 새 파일**을 더한다",
+            "why": "옛 스타일을 지우지 않고 옆에 새것을 둔다."
+          },
+          {
+            "step": "그 컴포넌트를 **기능 플래그**에 걸어 옛 스타일과 새 스타일을 전환한다",
+            "why": "운영에서 시험하고, 문제가 나면 바로 되돌린다. 성능 이득도 플래그로 비교해 분명히 본다."
+          },
+          {
+            "step": "기존 **시각 회귀 테스트**로 두 스타일의 스냅샷이 똑같은지 확인한다",
+            "why": "옮긴 것이 겉모습을 바꾸지 않았다는 증거다."
+          },
+          {
+            "step": "플래그를 **팀 → GitHub 직원 → 전체 사용자**로 넓힌다",
+            "why": "문제를 가장 이른 단계에서 잡는다."
+          },
+          {
+            "step": "sx 를 쓰는 화면은 **래퍼 패키지(@primer/styled-react)** 로 import 하게 두고, 패키지 단위로 sx 를 CSS Modules 로 옮긴 뒤 import 를 @primer/react 로 바꾼다 — VS Code 플러그인과 codemod 가 대부분을 자동으로",
+            "why": "수천 개의 sx 를 한꺼번에 옮길 수 없다. sx 를 안 쓰는 곳부터 이득을 먼저 본다."
+          },
+          {
+            "step": "테마(일곱 가지 × 고대비)를 styled-components 의 자바스크립트 유틸에서 떼어 내고, 마지막으로 **의존성 제거 자체를 플래그로** 내보낸다",
+            "why": "sx 가 끝나도 테마가 옛 라이브러리에 묶여 있었다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "컴포넌트 스타일을 무엇으로 만들 것인가",
+            "chosen": "**CSS Modules** — 네이티브 CSS 를 쓰면서 지역 클래스 이름으로 캡슐화하고, 런타임 없이 스타일시트로 보낸다.",
+            "alternatives": [
+              "CSS-in-JS(styled-components)를 유지한다"
+            ],
+            "tradeoff": "클라이언트 초기화와 서버의 스타일 수집 비용이 사라진다. 대가는 방식이 근본적으로 달라서 **모든 Primer 컴포넌트와 그 기법으로 쓰인 GitHub 의 모든 컴포넌트**를 바꿔야 한다는 것, 그리고 sx 가 주던 것 — 디자인 토큰과 이어진 타입 지원, 컴포넌트 옆에 모든 것이 있는 편리함 — 을 일부 내려놓는다는 것이다. 회사는 CSS Modules 가 '어느 정도의' 공존과 캡슐화를 남긴다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "question": "한 번에 옮길 것인가",
+            "chosen": "**컴포넌트 하나씩** — 새 파일 · 기능 플래그 · 스냅샷 비교 · 단계 배포.",
+            "alternatives": [
+              "모든 컴포넌트를 한 번에 바꾼다"
+            ],
+            "tradeoff": "세상을 깨뜨리지 않고 안전하게 내보낼 수 있고, 플래그로 성능 이득을 분명히 비교할 수 있었다. 대가는 시간이다 — Primer 만 2024년 12월에 끝났고 github.com 전체는 2026년 6월에야 끝났다. 그동안 컴포넌트마다 두 벌의 스타일과 플래그가 함께 산다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "question": "sx 를 쓰는 수천 곳을 어떻게 기다리게 할 것인가",
+            "chosen": "**과도기 래퍼 패키지 @primer/styled-react** — 옮긴 컴포넌트에 sx 를 계속 받게 한다.",
+            "alternatives": [
+              "sx 를 모두 옮길 때까지 Primer 의 새 판 배포를 미룬다"
+            ],
+            "tradeoff": "sx 를 안 쓰는 곳은 곧바로 @primer/react 를 써서 이득을 보고, 쓰는 곳은 래퍼를 통해 그대로 돈다. 대가는 import 경로가 둘이 되고, 래퍼를 쓰는 곳은 이득을 늦게 본다는 것이다. 회사는 원래의 이관이 사실 '조금 더 미묘했다'며 이 이중성을 따로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "question": "약 7,760개의 sx 를 누가 옮길 것인가",
+            "chosen": "**반자동** — VS Code 플러그인과 codemod 로 파일 단위 변환, 순번제 엔지니어 8명이 감독.",
+            "alternatives": [
+              "손으로 하나씩 옮긴다"
+            ],
+            "tradeoff": "대부분 자동화됐지만 수동 감독과 꼼꼼한 검증이 조금은 필요했다고 적는다. 6개월에 6,419개를 옮겼고, 페이지별 서버 렌더링이 1%~22% 빨라졌다. 대가는 여덟 명의 반년이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "question": "마지막 895개를 어떻게 끝낼 것인가",
+            "chosen": "**엔지니어 2명 + Copilot 코딩 에이전트 여럿**, 3주.",
+            "alternatives": [
+              "앞의 순번제를 이어 간다"
+            ],
+            "tradeoff": "여덟 명이 반년 걸리던 종류의 일을 두 명이 3주에 끝냈다. 글은 에이전트가 만든 변경을 어떻게 검토했는지, 얼마나 되돌렸는지는 적지 않는다 — 속도의 대가가 검토 부담으로 옮겨 갔을 가능성은 이 사이트가 확인하지 못했다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "question": "sx 를 다 옮기면 의존성을 바로 지울 것인가",
+            "chosen": "**아니다 — 테마부터 떼어 낸다.** 일곱 가지 테마와 고대비 모드를 켜던 styled-components 의 자바스크립트 유틸을 먼저 걷어 낸다.",
+            "alternatives": [
+              "sx 가 0 이 된 날 styled-components 를 지운다"
+            ],
+            "tradeoff": "테마 변수는 원래 CSS(@primer/css)에 있었지만 그것을 쓰는 자바스크립트가 옛 라이브러리에 묶여 있었다. 대가는 두 달과 몇 번의 사고였다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          },
+          {
+            "question": "의존성 제거 자체도 플래그로 낼 것인가",
+            "chosen": "**그렇다** — '안전한 게 낫다'.",
+            "alternatives": [
+              "마지막 정리는 그냥 지운다"
+            ],
+            "tradeoff": "지우는 일조차 되돌릴 수 있게 한다. 대가는 한 단계 더 걸리는 것이다(이 사이트의 해석). 회사는 이렇게 둔 안전장치 덕분에 운영에서 부하 시험을 하고, 오류를 잡고, 방향을 틀고 고칠 수 있었다고 정리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving site performance by shipping more CSS",
+                "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+                "publisher": "The GitHub Blog",
+                "date": "2026-09-25",
+                "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "schema-domains",
+          "via": "옮기기 전에 경계부터 세운다",
+          "contract": "데이터 계층을 여러 클러스터로 나눌 때 먼저 스키마 도메인이라는 가상 경계를 긋고 린터로 넘는 것을 막았다. 화면 스타일에서는 과도기 래퍼 패키지가 그 경계 노릇을 했다 — 옛 방식을 쓰는 곳과 안 쓰는 곳을 import 경로로 갈랐다. 두 글은 서로를 언급하지 않는다 — 이 연결은 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "컴포넌트 하나가 CSS Modules 로 옮겨 가는 길",
+          "question": "옮기는 동안 GitHub 는 왜 깨지지 않았는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  OLD[\"<b>CSS-in-JS 컴포넌트</b><br/>• 클라이언트에서 스타일 초기화<br/>• 서버에서 스타일 수집\"]:::quiet\n  OLD --> NEWF[\"CSS Modules 파일을 옆에 더한다\"]\n  NEWF --> FLAG{\"기능 플래그\"}\n  FLAG --> SNAP[\"시각 회귀 — 두 스냅샷이 같은가\"]\n  SNAP -->|\"다르다\"| NEWF\n  SNAP -->|\"같다\"| ROLL[\"팀 → 직원 → 전체 사용자\"]\n  ROLL --> CSS[\"<b>CSS Modules</b><br/>• 빌드 때 스타일시트로<br/>• HTML 과 함께 전송<br/>• 런타임 없음\"]:::accent\n  USERS[\"sx 를 쓰는 화면\"] -->|\"과도기\"| WRAP[\"@primer/styled-react<br/>sx 를 계속 받는다\"]:::list\n  WRAP --> CSS\n  PLAIN[\"sx 를 안 쓰는 화면\"] -->|\"바로\"| CSS"
+        },
+        {
+          "title": "github.com 전체가 옛 방식을 벗어나는 단계",
+          "question": "sx 가 0 이 된 날 끝나지 않은 이유는?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> PrimerCSSinJS: 2023 — 컴포넌트 폭증, 느려짐\n  PrimerCSSinJS --> PrimerModules: 2024-12 — Primer 전체 이관\n  PrimerModules --> SxMigration: 2025-04 — sx 약 7,760개\n  note right of SxMigration\n    8명 순번제 · codemod\n    6개월에 6,419개\n  end note\n  SxMigration --> SxAgents: 2026-04 — 남은 895개\n  note right of SxAgents\n    2명 + Copilot 코딩 에이전트\n    3주에 0개\n  end note\n  SxAgents --> Themes: sx 는 끝났는데 테마가 묶여 있다\n  Themes --> Removed: 두 달 · 의존성 제거도 플래그로\n  Removed --> [*]: 2026-06 — 100% CSS Modules"
+        },
+        {
+          "title": "실패 경로 — 런타임 스타일이 값을 청구하는 자리",
+          "question": "CSS-in-JS 는 어디서부터 버티지 못했는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  MANY[\"한 페이지의 컴포넌트가 폭증\"] --> CLIENT[\"클라이언트에서 스타일 초기화<br/>첫 로딩이 늦어진다\"]\n  MANY --> SERVER[\"서버 렌더링이 스타일을 모은다<br/>서버가 느려진다\"]\n  MANY --> UPD[\"스타일 갱신이 감당이 안 된다\"]\n  SX[\"sx 인라인 객체\"] --> DYN[\"동적이라 실행 비용이 크다\"]:::accent\n  DYN --> MANY\n  DONE[\"sx 0 개\"] -->|\"그래도 못 지운다\"| THEME[\"일곱 테마 × 고대비가<br/>styled-components 에 묶여 있다\"]:::quiet\n  BIG[\"한 번에 바꾸기\"] -->|\"버림\"| BREAK[\"GitHub 가 깨질 위험\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Improving site performance by shipping more CSS",
+          "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+          "publisher": "The GitHub Blog",
+          "date": "2026-09-25",
+          "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -2494,7 +2844,8 @@
     "수평 샤딩(horizontal partitioning) — 회사가 계속 쓰고 있다고 밝히지만 별도 글로 미뤄 이 사이트에 내용이 없다.",
     "CI 테스트를 쪼개 나눠 돌리는 방식(샤딩·병렬 배분) — 재사용 워크플로만 언급하고 구체적인 방식은 밝히지 않는다.",
     "**2023년의 두 가지 — 코드 검색을 Blackbird 로 다시 지은 일과 MySQL 8.0 업그레이드 — 는 시기로 세우지 않았다.** 둘 다 날짜가 분명하지만(2023-02-06, 2023-12-07) 앞 시기들과 축이 달라, 회사 전체의 시대 구분에 넣는 것이 맞는지 판단하지 못했다. 기능 쪽 `blackbird` 에 이미 내용이 있다.",
-    "**RAID·DRBD 로 파일 서버를 쌍으로 묶던 시기가 언제 시작됐는지는 출처에 없다.** DGit 글이 그 구조를 설명하되 언제부터였는지는 적지 않는다. 그래서 그 시기를 따로 세우지 않고 2016년 시기의 '그 전 상태'로만 남겼다 — 연도를 모르면 시기로 만들지 않는다(STYLE.md 8번)."
+    "**RAID·DRBD 로 파일 서버를 쌍으로 묶던 시기가 언제 시작됐는지는 출처에 없다.** DGit 글이 그 구조를 설명하되 언제부터였는지는 적지 않는다. 그래서 그 시기를 따로 세우지 않고 2016년 시기의 '그 전 상태'로만 남겼다 — 연도를 모르면 시기로 만들지 않는다(STYLE.md 8번).",
+    "CSS Modules 이관 글은 Copilot 코딩 에이전트가 만든 sx 변환을 어떻게 검토했는지, 되돌린 것이 얼마였는지를 적지 않는다. 8명·6개월과 2명·3주를 그대로 견주기 어려운 이유다(남은 895개가 앞의 것보다 쉬웠는지 어려웠는지도 나오지 않는다)."
   ],
   "sources": [
     {
@@ -2566,6 +2917,13 @@
       "publisher": "GitHub Blog · Ben De St Paer-Gotch",
       "date": "2022-09-01",
       "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
+    },
+    {
+      "title": "Improving site performance by shipping more CSS",
+      "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/",
+      "publisher": "The GitHub Blog",
+      "date": "2026-09-25",
+      "summary": "디자인 시스템 Primer 와 github.com 전체를 CSS-in-JS(styled-components·sx prop)에서 CSS Modules 로 옮긴 3년의 기록. 컴포넌트마다 기능 플래그와 시각 회귀 스냅샷으로 옮기고, sx 를 계속 받는 과도기 래퍼 패키지를 두었다. 사람 여덟 명이 6개월에 sx 6,419개를, 남은 895개는 두 명이 Copilot 코딩 에이전트로 3주에 옮겼다. 2026년 6월 100% CSS Modules."
     }
   ],
   "domain": "github.com",
