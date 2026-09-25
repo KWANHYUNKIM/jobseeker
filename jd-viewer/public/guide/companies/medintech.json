@@ -1,0 +1,225 @@
+{
+  "slug": "medintech",
+  "name": "메디인테크",
+  "name_en": "MedInTech",
+  "aliases": [
+    "메디인테크"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "medintech.co.kr",
+  "one_liner": "의료 로봇 기술로 50% 경량화한 전동식 내시경과 AI 이상 부위 탐지 소프트웨어를 만드는 의료기기 스타트업",
+  "company": {
+    "business": "전동식 내시경(ME-470)과 AI 이상 부위 탐지 소프트웨어, 내시경 자율 제어를 통한 술기 보조 솔루션을 개발한다(공고 소개문). 2등급 의료기기 인허가를 완료했고 시리즈B 투자금은 양산화 개발과 해외 진출에 쓸 예정이라고 기사에 적혀 있다. 매출 규모는 공개 자료에서 찾지 못했다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[전문연구요원 가능] 영상처리 개발자 (신입)",
+        "url": "https://www.wanted.co.kr/wd/334853",
+        "publisher": "원티드"
+      },
+      {
+        "title": "'의료용 스마트 내시경 개발' 메디인테크, 200억 시리즈B 유치",
+        "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=54685",
+        "publisher": "히트뉴스",
+        "summary": "시리즈B 투자자, 2020년 한국전기연구원 출신 창업, 2등급 의료기기 인허가, 누적 투자 280억원 초과"
+      }
+    ],
+    "scale": [
+      {
+        "label": "시리즈B 투자",
+        "value": "200억원",
+        "as_of": "2024-05",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "'의료용 스마트 내시경 개발' 메디인테크, 200억 시리즈B 유치",
+            "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=54685",
+            "publisher": "히트뉴스",
+            "summary": "시리즈B 투자자, 2020년 한국전기연구원 출신 창업, 2등급 의료기기 인허가, 누적 투자 280억원 초과"
+          },
+          {
+            "title": "[전문연구요원 가능] 영상처리 개발자 (신입)",
+            "url": "https://www.wanted.co.kr/wd/334853",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "누적 투자",
+        "value": "280억원 초과",
+        "as_of": "2024",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "'의료용 스마트 내시경 개발' 메디인테크, 200억 시리즈B 유치",
+            "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=54685",
+            "publisher": "히트뉴스",
+            "summary": "시리즈B 투자자, 2020년 한국전기연구원 출신 창업, 2등급 의료기기 인허가, 누적 투자 280억원 초과"
+          }
+        ]
+      },
+      {
+        "label": "설립",
+        "value": "2020년 2월 법인 설립",
+        "as_of": "2020-02",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] 영상처리 개발자 (신입)",
+            "url": "https://www.wanted.co.kr/wd/334853",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "전동식 내시경 판매 (ME-470)",
+        "how": "병원에 전동식 내시경 장비를 판다(추론). 기사는 투자금을 양산화 개발과 해외 진출에 쓴다고 했다 — 판매 규모는 공개된 것을 못 찾았다.",
+        "domains": [
+          "내시경·매니퓰레이터 로봇 제어",
+          "실시간 내시경 영상처리",
+          "의료기기 소프트웨어 (C++·GUI)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "'의료용 스마트 내시경 개발' 메디인테크, 200억 시리즈B 유치",
+            "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=54685",
+            "publisher": "히트뉴스",
+            "summary": "시리즈B 투자자, 2020년 한국전기연구원 출신 창업, 2등급 의료기기 인허가, 누적 투자 280억원 초과"
+          },
+          {
+            "title": "[전문연구요원 가능] 영상처리 개발자 (신입)",
+            "url": "https://www.wanted.co.kr/wd/334853",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 진단 보조 소프트웨어",
+        "how": "이상 부위 탐지 소프트웨어를 장비와 함께 제공하는 것으로 보인다(추론). 별도 판매인지는 확인하지 못했다.",
+        "domains": [
+          "의료 영상 AI (탐지·엣지 추론)",
+          "실시간 내시경 영상처리"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] 영상처리 개발자 (신입)",
+            "url": "https://www.wanted.co.kr/wd/334853",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "실시간 내시경 영상처리",
+        "why": "내시경 영상은 의사가 실시간으로 보는 화면이라 지연 없이 처리해야 한다. 영상처리 공고가 CUDA 기반 내시경 영상처리 SDK 와 실시간 처리 최적화를 다룬다.",
+        "what_to_know": [
+          "CUDA 로 영상 파이프라인을 짜는 법",
+          "영상 품질의 정량화(노이즈·선명도 등)",
+          "프레임 지연 예산"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] 영상처리 개발자 (신입)",
+            "url": "https://www.wanted.co.kr/wd/334853",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "의료 영상 AI (탐지·엣지 추론)",
+        "why": "이상 부위 탐지 모델을 장비 안(엣지)에서 실시간으로 돌린다. Edge AI 공고가 Jetson·TensorRT·양자화를 명시한다.",
+        "what_to_know": [
+          "TensorRT·ONNX 추론 가속",
+          "FP16/INT8 양자화의 정확도-속도 트레이드오프",
+          "Python 연구 코드를 C++ 추론으로 옮기기"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Engineer (Edge AI 최적화)",
+            "url": "https://www.wanted.co.kr/wd/382770",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[전문연구요원 가능] AI Research Engineer",
+            "url": "https://www.wanted.co.kr/wd/334840",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "내시경·매니퓰레이터 로봇 제어",
+        "why": "전동식 내시경은 모터로 움직인다. 내시경 자율 제어를 통한 술기 보조가 회사 소개에 있다.",
+        "what_to_know": [
+          "매니퓰레이터 기구학과 제어",
+          "실시간 제어 루프"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] 전동식 내시경 및 의료 로봇 매니퓰레이터 제어",
+            "url": "https://www.wanted.co.kr/wd/334848",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "의료기기 소프트웨어 (C++·GUI)",
+        "why": "의사가 쓰는 장비 화면과 영상·제어를 묶는 애플리케이션을 C++·GUI 로 만든다.",
+        "what_to_know": [
+          "C++ 실시간 애플리케이션 구조",
+          "의료기기 소프트웨어의 검증 문서 부담(추론)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] GUI 소프트웨어 개발자",
+            "url": "https://www.wanted.co.kr/wd/336839",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[전문연구요원 가능] 소프트웨어 개발자 (C++ )",
+            "url": "https://www.wanted.co.kr/wd/334864",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "공고 대부분이 전문연구요원 가능이고 신입 자리가 따로 있다",
+        "evidence": "메디인테크와 함께 로보틱스 및 인공지능 기술을 바탕으로 의료기기 혁신에 함께할 소중한 인재를 모십니다.",
+        "so_what": "영상처리·C++·로봇 제어 세 분야에 신입 공고가 각각 있다(제목 기준). 석사 과정에서 한 영상·제어 연구를 그대로 들고 갈 수 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 모델을 클라우드가 아니라 장비 안에서 돌린다",
+        "evidence": "NVIDIA Jetson 등 엣지 디바이스 환경에서의 딥러닝 모델 배포 및 실시간 추론 구현",
+        "so_what": "모델 정확도만이 아니라 지연·메모리·전력 제약 안에서 돌리는 능력을 본다. TensorRT 경험이 큰 차이가 된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "정부 R&D 과제를 주관하며 자라는 회사다",
+        "evidence": "2026.04 200억원 규모 범부처 첨단 의료기기 연구개발사업 주관기관 선정",
+        "so_what": "과제 보고·성과 문서가 업무에 섞일 수 있다(추론). 연구 문서화 경험이 도움이 된다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "postings": [],
+  "open_questions": [
+    "공고 소개문의 범부처 사업 규모가 공고마다 다르다 — 대부분 '200억원', 로봇 제어 신입 공고(wd/334857)만 '228억원'",
+    "매출 규모와 판매 현황은 공개 자료에서 찾지 못했다",
+    "히트뉴스 기사 페이지에서 기사 날짜를 읽지 못했다 — 시리즈B 시점(2024.05)은 공고 History 기준",
+    "연봉 근거는 이번 사이클에서 확인하지 않았다 — salary 비움"
+  ]
+}

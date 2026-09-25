@@ -341,6 +341,17 @@
       "postings": 10,
       "study_items": 33,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "medintech",
+      "name": "메디인테크",
+      "aliases": [
+        "메디인테크"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }
