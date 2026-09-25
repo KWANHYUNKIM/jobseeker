@@ -51,7 +51,7 @@ import re
 import time
 import urllib.error
 import urllib.request
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import NamedTuple
 
@@ -538,9 +538,22 @@ def _source_jobs(include_closed: bool = False) -> tuple[list[dict], str]:
     return [], "(없음)"
 
 
+def _aware(dt: datetime) -> datetime:
+    """시간대 없는 시각은 이 머신의 지역 시각으로 읽는다(JSON 원장이 그렇게 써 왔다)."""
+    return dt if dt.tzinfo else dt.astimezone()
+
+
 def _age_days(checked_at: str, now: datetime) -> float:
+    """마지막 확인에서 지난 일수. 못 읽으면 '한 번도 안 봄'(1e9).
+
+    DB 에서 온 값은 시간대가 붙어 있고(`+00:00`) JSON 원장의 옛 값은 안 붙어 있다.
+    예전에는 둘을 그냥 뺐고, naive/aware 뺄셈이 TypeError 를 내면 아래 except 가
+    삼켜 **모든 공고가 1e9** 가 됐다 — 그래서 --recheck-days 도 "오래된 것부터" 도
+    전혀 먹지 않았고, 대기열 앞쪽만 매 회차 다시 두드리는 사이 3,892건이 7~30일째
+    재확인을 못 받았다. 양쪽을 시간대 있는 값으로 맞춘 뒤 뺀다.
+    """
     try:
-        return (now - datetime.fromisoformat(checked_at)).total_seconds() / 86400
+        return (_aware(now) - _aware(datetime.fromisoformat(checked_at))).total_seconds() / 86400
     except Exception:                                               # noqa: BLE001
         return 1e9
 
@@ -599,7 +612,9 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float = RECHECK_DAYS,
         sites: set[str] | None = None, dry_run: bool = False,
         recheck_closed: bool = False, verbose: bool = True) -> dict:
     today = today_date()
-    now = datetime.now()
+    # 시간대를 붙여 둔다. 원장·DB 에 naive 로 쓰면 DB(UTC 세션)가 한국 시각을 UTC 로
+    # 읽어 확인 시각이 9시간 미래로 저장된다(db/migrations/002).
+    now = datetime.now().astimezone()
     jobs, src = _source_jobs(recheck_closed)
     if not jobs:
         print("[close_check] 확인할 공고 목록을 찾지 못했습니다.", flush=True)
@@ -758,7 +773,19 @@ def _selftest() -> int:
         failed += 1
         print(f"FAIL(merge) API 값을 덮어씀 → {merged}")
 
-    total = len(cases) + len(posted_cases) + 1
+    # 확인 나이 — DB 의 aware 값과 JSON 원장의 naive 값이 섞여 들어와도 계산돼야 한다.
+    now = datetime(2026, 9, 26, 7, 0).astimezone()
+    ages = [
+        ("나이-aware", _age_days((now - timedelta(days=3)).isoformat(), now), 3.0),
+        ("나이-naive", _age_days((now - timedelta(days=3)).replace(tzinfo=None).isoformat(), now), 3.0),
+        ("나이-빈값", _age_days("", now), 1e9),
+    ]
+    for name, got, want in ages:
+        if abs(got - want) > 1e-6:
+            failed += 1
+            print(f"FAIL(나이) {name} → {got} (기대 {want})")
+
+    total = len(cases) + len(posted_cases) + 1 + len(ages)
     print(f"close_check selftest: {total - failed}/{total} 통과")
     return 1 if failed else 0
 

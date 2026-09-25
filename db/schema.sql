@@ -25,6 +25,12 @@ CREATE EXTENSION IF NOT EXISTS citext;    -- 대소문자 무시 비교 (기술�
 CREATE EXTENSION IF NOT EXISTS pg_trgm;   -- 한글 부분일치 / 유사 회사명 탐색
 CREATE EXTENSION IF NOT EXISTS vector;    -- pgvector — sqlite-vec 를 대체한다
 
+-- "오늘" 은 한국 날짜다. job_state 의 CURRENT_DATE 가 UTC 면 한국 시각 00~09시에
+-- 어제 마감된 공고가 모집중으로 남는다(db/migrations/002).
+DO $$ BEGIN
+    EXECUTE format('ALTER DATABASE %I SET "TimeZone" TO %L', current_database(), 'Asia/Seoul');
+END $$;
+
 -- ════════════════════════════════════════════════════════════════════
 -- 0. 도메인 타입
 -- ════════════════════════════════════════════════════════════════════
