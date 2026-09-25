@@ -8,12 +8,12 @@
 
 ## 지금 파는 중
 
-**없다 — Slack 재방문(새 글 없음)을 마쳤다. 그 앞은 Shopify 확장(`back-to-native`)이었다.** 네이티브 복귀 글 셋(09-10 · 09-10 · 09-21)을 기능 `back-to-native` 로 쓰고 새 도메인
-`모바일 앱을 무엇으로 만들 것인가` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
+**없다 — SmartHR 재방문이 확장이 됐다.** Claude Code 하네스 글(2026-09-16)을 기능 `one-task-one-agent` 로 쓰고 새 도메인
+`에이전트에게 기능 하나를 끝까지 맡긴다` 를 열었다(기능 4개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
-**'에이전트로 옮기기' 비교 문서 재료** — Shopify Helix(체크포인트 관문) · freee `two-spas-one-url`(읽는 공정/쓰는 공정 분리) ·
-GitHub `css-modules-replatform`(895개를 2명+에이전트 3주) · 사이보즈 kintone AI 재구현(안 씀).
+**'에이전트 하네스' 비교 문서 재료가 넷이 됐다** — Shopify Helix · 사이보즈 보안 하네스 · SmartHR 개발 하네스 · monday 피드 에이전트(안 씀).
+SmartHR 에 안 쓴 새 글 — AI 어시스턴트 레드티밍(09-18, 짧고 수치 없음) · 결합 테스트에 AI(09-08).
 
 **비교 문서 재료가 모였다 — 'LLM Wiki' 세 회사.** 사이보즈 Ergon(RAG 를 물리고 Wiki, `logos-security-harness`) ·
 컬리 `2026-delivery-domain-rag`(Wiki + RAG 를 두 번 갈아엎음) · LY `ko/llm-wiki-code-driven-knowledge-ssot`(08-28, 코드 기준 자동 최신화).

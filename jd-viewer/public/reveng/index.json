@@ -1292,9 +1292,9 @@
       "country": "JP",
       "category": "SaaS",
       "status": "done",
-      "features_done": 3,
+      "features_done": 4,
       "one_liner": "노무 관리 클라우드로 시작해 종업원 데이터를 축으로 번진 일본 SaaS — 새 영역은 한 덩어리 안에서 시작해 경계를 키운 뒤 떼어낸다",
-      "updated_at": "2026-09-03",
+      "updated_at": "2026-09-26",
       "domain": "tech.smarthr.jp"
     },
     {
@@ -2868,7 +2868,8 @@
     "Postgres 를 여러 대로 나눈다",
     "메시지 큐 플랫폼",
     "권한 검사가 모든 화면을 느리게 한다",
-    "모바일 앱을 무엇으로 만들 것인가"
+    "모바일 앱을 무엇으로 만들 것인가",
+    "에이전트에게 기능 하나를 끝까지 맡긴다"
   ],
   "countries": {
     "KR": "한국",
