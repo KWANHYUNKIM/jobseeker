@@ -348,6 +348,98 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/334854",
+      "title": "[전문연구요원 가능] 영상처리 개발자",
+      "site": "wanted",
+      "verdict": "경력판(원티드 표기 1~20년). 주요업무는 신입판(wd/334853)과 같지만, 신입판에서 우대였던 OpenCV 실시간 처리와 GPU 병렬 프로그래밍(CUDA·OpenCL)이 **자격**으로 올라왔다. 공통 공부거리는 신입판을 보고, 여기서는 차이 — GPU 필수, 지연·FPS 최적화, FPGA, 구체 알고리즘 — 만 준비한다.",
+      "fit": {
+        "must_have": [
+          "NVIDIA GPU 병렬처리 프로그래밍(CUDA·OpenCL 등)",
+          "OpenCV 등으로 실시간 영상처리 알고리즘 개발 경험",
+          "Linux C/C++·Python"
+        ],
+        "can_learn": [
+          "FPGA 영상처리(우대)",
+          "내시경 영상 특성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "GPU 병렬 프로그래밍을 '해 본 것'으로 보여 주기",
+          "from": "qualification",
+          "quote": "• NVIDIA(CUDA, OpenCL등) GPU 병렬처리 프로그래밍 개발",
+          "priority": "core",
+          "why": "신입판에는 없던 자격 줄이다. 경력자는 CUDA 를 배울 대상이 아니라 이미 쓴 도구로 본다.",
+          "gap_check": "직접 짠 CUDA 커널 하나를 두고 occupancy·메모리 병합(coalescing)·공유 메모리 뱅크 충돌을 어떻게 확인하고 고쳤는지 말할 수 있는가?",
+          "drill": "신입판 drill 의 CUDA 필터를 Nsight Compute 로 프로파일링해 메모리 병목 하나를 고치고 전후 수치를 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NVIDIA — CUDA Programming Guide",
+              "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "지연·FPS 시스템 최적화",
+          "from": "preference",
+          "quote": "• Latency, FPS등 시스템 최적화 및 개선 경험",
+          "priority": "high",
+          "why": "주요업무 '실시간 영상처리 로직 개발 및 최적화'를 경력자에게는 시스템 수준 수치로 묻는 것으로 보인다(추론).",
+          "gap_check": "영상 입력부터 화면 출력까지 지연을 단계별로 쪼개 재는 방법과, 가장 흔한 숨은 지연(버퍼링·동기화)은 무엇인가?",
+          "drill": "캡처→업로드→처리→다운로드→표시 단계에 타임스탬프를 찍어 단계별 지연 분포를 그리고, 가장 긴 단계 하나를 줄인다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "영상 향상 알고리즘 (노이즈 제거·대비/선명도·조명 보정·초해상도)",
+          "from": "preference",
+          "quote": "Noise Reduction, Contrast/Sharpness Enhancement, lllumination Correction, Super-Resolution",
+          "priority": "high",
+          "why": "우대사항이 알고리즘 이름을 콕 집어 나열했다. 내시경 영상에서 실제로 다루는 처리로 보인다(추론).",
+          "gap_check": "노이즈 제거와 선명도 향상은 서로 반대로 작용한다 — 둘을 함께 쓸 때 순서와 파라미터를 어떻게 정하는가?",
+          "drill": "CLAHE(대비)·bilateral(노이즈)·unsharp mask(선명도)를 순서를 바꿔 적용하고 PSNR/SSIM 과 눈으로 비교한 표를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "FPGA 영상처리",
+          "from": "preference",
+          "quote": "• FPGA 보드를 활용한 영상처리 개발 경험",
+          "priority": "nice",
+          "why": "장비 안에서 고정 지연으로 처리해야 하는 단계는 FPGA 로 가기도 한다(추론).",
+          "gap_check": "같은 필터를 GPU 와 FPGA 로 구현할 때 지연·전력·개발 비용이 어떻게 다른가?",
+          "drill": "HLS(고수준 합성) 예제로 3x3 필터를 FPGA 용으로 합성해 보고 GPU 구현과 지연 특성을 비교해 적는다.",
+          "hours": 10,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "GPU 커널 최적화 전후 프로파일 캡처",
+          "why": "경력판은 GPU 경험이 자격이다. Nsight 캡처와 함께 무엇을 고쳐 몇 배 빨라졌는지 보여 주면 바로 증명된다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형-코딩테스트 (해당 직군 한정)-1차 인터뷰-2차 인터뷰-최종합격. 1차는 직무 역량 및 문화 적합성, 2차는 업무 조율 및 근무 조건 협의(공고 기준).",
+        "expect": [
+          "직접 최적화한 CUDA 커널",
+          "영상 파이프라인 지연을 쪼개 잰 경험",
+          "노이즈 제거·선명도 향상 트레이드오프",
+          "신입판 공통 질문(PSNR·SSIM, SDK 설계)"
+        ],
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] 영상처리 개발자",
+            "url": "https://www.wanted.co.kr/wd/334854",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
