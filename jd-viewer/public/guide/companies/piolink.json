@@ -5,7 +5,7 @@
   "aliases": [
     "파이오링크"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "piolink.com",
   "one_liner": "애플리케이션 전송 컨트롤러(PAS-K)·웹방화벽(WEBFRONT-K)·클라우드 보안스위치(TiFRONT)와 프라이빗 클라우드 HCI(POPCON)를 만드는 네트워크·보안 장비 회사",
@@ -960,13 +960,146 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/269402",
+      "title": "WEBFRONT-K 웹 보안 기능 및 시그니처 개발",
+      "site": "wanted",
+      "verdict": "경력 3~10년, C·Python. 새로 공개되는 CVE 를 분석해 웹방화벽 WEBFRONT-K 가 막을 수 있는 웹/API 탐지 시그니처와 보안 기능으로 옮기는 사람. 개발과 취약점 분석이 반씩 섞인 자리다.",
+      "fit": {
+        "must_have": [
+          "C·Python 개발 경험",
+          "CVE 분석 및 웹/API 보안 분석 경험"
+        ],
+        "can_learn": [
+          "WEBFRONT-K 시그니처 형식",
+          "보안 장비 개발 방식(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "CVE 를 읽고 공격 요청을 재현하기",
+          "from": "qualification",
+          "quote": "• CVE 분석 및 웹/API 보안에 대한 분석 경험",
+          "priority": "core",
+          "why": "주요업무가 'CVE분석 및 웹/API 시그니처 분석 개발'이다. 공개된 취약점 설명에서 실제 공격 요청 모양을 뽑아내야 막을 규칙을 만들 수 있다.",
+          "gap_check": "CVE 설명과 공개 PoC 에서 '공격이 성립하는 최소 요청'과 '우연히 붙은 부분'을 어떻게 가르는가?",
+          "drill": "취약한 버전의 오픈소스 웹 앱을 도커로 띄우고 공개 CVE 하나를 재현한 뒤, 성립하는 최소 요청을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "CVE Program",
+              "url": "https://www.cve.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "탐지 시그니처 작성 — 오탐과 미탐",
+          "from": "task",
+          "quote": "• CVE분석 및 웹/API 시그니처 분석 개발",
+          "priority": "core",
+          "why": "시그니처가 느슨하면 공격이 지나가고, 빡빡하면 정상 요청이 막힌다. 고객 서비스를 막는 오탐은 장비 신뢰를 깎는다(추론).",
+          "gap_check": "URL 인코딩·대소문자·공백 변형으로 우회되는 규칙을 막으려면 매칭 전에 무엇을 정규화하는가?",
+          "drill": "위에서 재현한 공격을 막는 ModSecurity(OWASP CRS 형식) 규칙을 쓰고, 인코딩 변형 5가지와 정상 요청 20개로 미탐·오탐을 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWASP Core Rule Set — Documentation",
+              "url": "https://coreruleset.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "웹/API 공격 유형 (OWASP Top 10·API Security Top 10)",
+          "from": "task",
+          "quote": "• 웹/API 보안 개발",
+          "priority": "core",
+          "why": "웹과 API 를 함께 명시했다. API 는 본문이 JSON 이라 전통적 웹 공격 탐지와 다른 곳을 봐야 한다(추론).",
+          "gap_check": "SQL 인젝션이 폼 파라미터로 올 때와 JSON 본문 안 중첩 필드로 올 때, 탐지기는 무엇을 다르게 해야 하는가?",
+          "drill": "OWASP API Security Top 10 중 세 항목을 골라 각각 공격 요청 예시와 탐지 가능/불가능 이유를 표로 정리한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "OWASP API Security Top 10",
+              "url": "https://owasp.org/API-Security/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "C 로 빠른 패턴 매칭",
+          "from": "qualification",
+          "quote": "• C 프로그래밍 및 Python 프로그래밍을 활용한 개발 경험",
+          "priority": "high",
+          "why": "장비는 모든 요청에 시그니처 수백 개를 대야 하므로 매칭 속도가 곧 처리량이다(추론).",
+          "gap_check": "시그니처가 1,000개일 때 하나씩 정규식을 도는 것과 다중 패턴 알고리즘(Aho-Corasick)·Hyperscan 의 차이는?",
+          "drill": "C 로 Aho-Corasick 을 구현(또는 Hyperscan 사용)해 문자열 시그니처 1,000개를 요청 1만 건에 대고 정규식 순회와 시간을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Hyperscan — Developer Reference",
+              "url": "https://intel.github.io/hyperscan/dev-reference/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "웹/API 프로토콜 세부",
+          "from": "preference",
+          "quote": "• 웹/API 프로토콜에 대한 이해",
+          "priority": "high",
+          "why": "탐지 우회는 대개 프로토콜 세부(청크 인코딩, 중복 헤더, 멀티파트 경계)를 이용한다(추론).",
+          "gap_check": "Content-Length 와 Transfer-Encoding 이 함께 올 때 프록시와 서버가 다르게 해석하면 어떤 공격(요청 스머글링)이 되는가?",
+          "drill": "청크 인코딩과 멀티파트 본문을 손으로 만든 요청(nc/curl --raw)으로 보내 보고, 위 규칙이 본문을 제대로 보는지 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "RFC 9112 — HTTP/1.1",
+              "url": "https://www.rfc-editor.org/rfc/rfc9112",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "CVE 하나를 '재현 → 규칙 → 우회 시도 → 보강'까지 한 기록",
+          "why": "주요업무 전체를 한 사례로 보여 준다. 우대사항 'CVE 분석을 통한 보안 취약점 대응 경험'과 바로 맞닿는다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형, 1차면접, 2차면접, 최종합격(공고 기준).",
+        "expect": [
+          "최근 분석한 CVE 와 막는 방법",
+          "시그니처 오탐을 줄인 방법",
+          "탐지 우회 기법과 정규화",
+          "대량 시그니처 매칭 성능"
+        ],
+        "sources": [
+          {
+            "title": "WEBFRONT-K 웹 보안 기능 및 시그니처 개발",
+            "url": "https://www.wanted.co.kr/wd/269402",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55038036&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=7b8a168b-1281-4497-9167-693a1db57340",
+      "title": "WEBFRONT-K 웹보안기능 / 시그니처개발",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/269402",
+      "verdict": "원티드 'WEBFRONT-K 웹 보안 기능 및 시그니처 개발'(wd/269402)과 주요업무·자격·우대가 같은 자리다. 사람인 게시에만 '학사이상'과 마감일(2026년 10월 14일)이 더 있고 경력 표기가 3~13년이다."
     }
   ],
   "open_questions": [
     "회사 홈페이지 회사소개(piolink.com/kr/company/overview.php)는 404 로 넘어가 읽지 못했다 — 회사 층위는 공고 소개문과 뉴시스 기사로만 썼다",
     "제품별·해외 매출 비중은 공개 자료에서 찾지 못했다",
-    "연봉 근거는 이번 사이클에서 찾지 않았다 — salary 비움",
-    "'보안관제 경력(세종시 근무)'(saramin)은 본문이 비어 있다",
-    "AI 풀스택(wd/386334) 소개문의 '디자인이 제품 완성도에 직접 기여하는 영역' 문장은 디자이너 공고 문구로 보인다 — 개발 직무 내용은 주요업무·자격으로만 판단했다"
+    "AI 풀스택(wd/386334) 소개문의 '디자인이 제품 완성도에 직접 기여하는 영역' 문장은 디자이너 공고 문구로 보인다 — 개발 직무 내용은 주요업무·자격으로만 판단했다",
+    "브리핑에서 뺀 공고: '(주)파이오링크 보안관제 경력(세종시 근무)'(saramin) — 크롤한 본문이 비어 있어 공고 문장에서 뽑을 것이 없다. 나머지 모집중 개발 공고는 전부 postings 에 있다",
+    "salary: 공고 어디에도 금액이 없고, 이번 루프에서는 공개 연봉 자료를 확인하지 않았다 — 근거 없이 비워 둔다"
   ]
 }
