@@ -247,7 +247,7 @@
           "title": "할당",
           "summary": "TLAB 과 포인터 밀기.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -255,7 +255,7 @@
           "title": "탈출 분석",
           "summary": "안 만들어지는 객체.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -263,7 +263,7 @@
           "title": "승격",
           "summary": "영에서 올드로 가는 조건.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",

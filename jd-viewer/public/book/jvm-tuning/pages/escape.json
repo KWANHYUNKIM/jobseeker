@@ -1,0 +1,136 @@
+{
+  "book": "jvm-tuning",
+  "id": "escape",
+  "no": "5.2",
+  "chapter": 5,
+  "title": "탈출 분석",
+  "summary": "안 만들어지는 객체.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "탈출하지 않는 객체가 아예 안 만들어질 수 있다는 것을 본다.",
+    "GC 횟수로 그것을 확인한다.",
+    "왜 벤치마크가 거짓말을 하는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절에서 **할당이 싸다**고 했다. 그런데 **가장 싼 할당은 안 하는 할당**이다.\n\n메서드 안에서 만들어져 **밖으로 안 나가는 객체**는, JIT 이 그것을 알아채면 **힙에 안 만든다.** 필드를 스칼라로 쪼개 **레지스터나 스택에 올려** 버린다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "Point 는 밖으로 안 나간다",
+      "code": "static class Point {\n    final int x, y;\n    Point(int x, int y) { this.x=x; this.y=y; }\n    int sum() { return x + y; }\n}\n\nfor (int i = 0; i < n; i++) {\n    Point p = new Point(i, i + 1);   // 지역 변수이고\n    s += p.sum();                    // 여기서 끝난다\n}"
+    },
+    {
+      "type": "table",
+      "caption": "5억 번 돌린다 (`-Xmx256m`)",
+      "columns": [
+        "",
+        "GC 횟수",
+        "시간"
+      ],
+      "rows": [
+        [
+          "기본 (탈출 분석 켬)",
+          "**0회**",
+          "**311 ms**"
+        ],
+        [
+          "`-XX:-DoEscapeAnalysis`",
+          "**151회**",
+          "793 ms"
+        ]
+      ],
+      "note": "**GC 가 한 번도 안 일어났다.** 5억 개의 Point 가 힙에 만들어지지 않았다는 뜻이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "무엇을 보고 판단하나",
+      "md": "**그 참조가 메서드 밖으로 새는 길이 있는가**를 본다.\n\n> 필드에 저장하거나, 반환하거나, 다른 스레드가 볼 수 있게 되면 **탈출**이다.\n> 탈출하지 않으면 **스칼라 치환**(객체를 필드 단위로 쪼개기)과 **락 제거**가 가능해진다.\n> 판단은 **컴파일 시점이 아니라 JIT 이 실행 중에** 한다 — 인라인이 된 뒤라야 보이는 경우가 많다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그래서 마이크로벤치마크가 거짓말을 한다",
+      "md": "**측정하려던 할당이 사라진 채로 잰다.**\n\n> 위 왼쪽 칸은 `new` 를 5억 번 적었는데 **할당이 0** 이다.\n> 루프 안의 결과를 **밖에서 안 쓰면** 계산 자체가 통째로 없어지기도 한다.\n> JMH 의 `Blackhole` 이 존재하는 이유가 이것이다 — **일부러 탈출시켜** 없어지지 않게 한다.\n> 이 책의 측정에서 **결과를 `static` 에 넣거나 출력하는 것**도 같은 이유다."
+    },
+    {
+      "type": "prose",
+      "md": "## 튜닝에서 이것이 뜻하는 것\n\n**할당률을 줄이려고 객체를 없애는 리팩터링이 헛수고일 수 있다.** 이미 JIT 이 없애고 있을 수 있다. 반대로 **필드에 담거나 컬렉션에 넣는 순간** 탈출이라, 같은 코드가 갑자기 할당을 시작한다. **재 보고 고친다** — 11장의 할당 프로파일링이 그 도구다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Escape.java\npublic class Escape {\n    static class Point { final int x, y;\n                         Point(int x, int y) { this.x=x; this.y=y; }\n                         int sum() { return x + y; } }\n    static long total;\n    public static void main(String[] a) {\n        int n = Integer.parseInt(a[0]);\n        long t0 = System.nanoTime(), s = 0;\n        for (int i = 0; i < n; i++) {\n            Point p = new Point(i, i + 1);\n            s += p.sum();\n        }\n        total = s;                      // 결과를 밖으로 내보내 계산이 안 사라지게 한다\n        System.out.printf(\"%,d회  %,d ms  (s=%d)%n\", n, (System.nanoTime()-t0)/1_000_000, total);\n    }\n}\n\n# --- 1) 기본 ---\n\n$ java -Xmx256m -Xlog:gc -cp out Escape 500000000\n[0.004s][info][gc] Using G1\n500,000,000회  311 ms  (s=250000000000000000)\n\n$ java -Xmx256m -Xlog:gc -cp out Escape 500000000 | grep -c 'Pause Young'\n0                                  <- GC 가 한 번도 안 일어났다\n\n# --- 2) 탈출 분석을 끈다 ---\n\n$ java -Xmx256m -XX:-DoEscapeAnalysis -Xlog:gc -cp out Escape 500000000\n[0.807s][info][gc] GC(150) Pause Young (Normal) (G1 Evacuation Pause) 77M->1M(130M) 0.213ms\n500,000,000회  793 ms  (s=250000000000000000)\n\n$ ... | grep -c 'Pause Young'\n151                                <- 5억 개가 실제로 만들어지고 치워졌다\n\n# 두 실행의 s 값이 같다. 계산은 똑같이 했고 객체만 안 만들었다.",
+      "note": "**결과 `s` 가 양쪽 다 250000000000000000 이다.** 같은 답을 내면서 한쪽은 아무것도 할당하지 않았다."
+    }
+  ],
+  "recap": [
+    "메서드 밖으로 안 나가는 객체는 JIT 이 힙에 안 만들 수 있다.",
+    "5억 번 new 를 적었는데 GC 가 0회였다 — 할당이 없었다는 뜻이다.",
+    "탈출 분석을 끄면 같은 코드가 151회 GC 를 일으켰다.",
+    "판단은 JIT 이 실행 중에 하고 인라인 뒤라야 보이는 경우가 많다.",
+    "그래서 마이크로벤치마크는 측정하려던 할당을 잃기 쉽다."
+  ],
+  "drills": [
+    {
+      "task": "루프 안의 객체를 필드에 담도록 고치고 GC 횟수를 다시 센다.",
+      "done_when": "탈출시키면 할당이 생기는 것을 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "-XX:+PrintEscapeAnalysis 계열 옵션으로 판단 결과를 들여다본다.",
+      "done_when": "무엇이 탈출로 잡히는지 확인한다.",
+      "minutes": 15
+    },
+    {
+      "task": "내 벤치마크에서 결과를 버리고 있지 않은지 확인한다.",
+      "done_when": "결과를 밖으로 내보내게 고친다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "탈출 분석이 가능하게 하는 최적화 둘은.",
+      "a": "스칼라 치환과 락 제거다."
+    },
+    {
+      "q": "무엇을 보고 탈출로 판단하나.",
+      "a": "참조가 필드 저장·반환·다른 스레드 노출로 메서드 밖에 나가는지를 본다."
+    },
+    {
+      "q": "GC 가 0회였다는 것은 무슨 뜻인가.",
+      "a": "루프의 객체가 힙에 아예 만들어지지 않았다는 뜻이다."
+    },
+    {
+      "q": "JMH 의 Blackhole 이 필요한 이유는.",
+      "a": "결과를 일부러 탈출시켜 측정 대상이 최적화로 사라지지 않게 하려는 것이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "탈출 분석",
+      "what": "객체 참조가 메서드나 스레드 밖으로 나가는지 판단하는 JIT 분석."
+    },
+    {
+      "term": "스칼라 치환",
+      "what": "객체를 만들지 않고 필드 값만 레지스터나 스택에 두는 최적화."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command, -XX:+DoEscapeAnalysis",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Performance Enhancements, Escape Analysis",
+      "url": "https://docs.oracle.com/en/java/javase/17/vm/java-hotspot-virtual-machine-performance-enhancements.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

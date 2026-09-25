@@ -1,0 +1,149 @@
+{
+  "book": "jvm-tuning",
+  "id": "promotion",
+  "no": "5.3",
+  "chapter": 5,
+  "title": "승격",
+  "summary": "영에서 올드로 가는 조건.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "나이 표를 읽을 수 있다.",
+    "승격 임계값이 스스로 내려가는 것을 본다.",
+    "조기 승격이 왜 문제인지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.1절의 네 줄에서 **`Old regions: 0->20`** 을 봤다. 영에 있던 것이 **어떤 조건으로 올드에 가는지**가 이 절이다.\n\n규칙은 단순하다 — **수집을 몇 번 살아남았는가**를 세고, **정해진 나이를 넘으면** 올드로 보낸다. 그런데 **그 '정해진 나이' 가 고정이 아니다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 나이 표\n\n`-Xlog:gc+age=trace` 를 켜면 **GC 마다 생존자의 나이 분포**가 찍힌다. `age 1` 은 이번에 처음 살아남은 것, `age 2` 는 두 번 살아남은 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "기본값은 15인데 늘 15가 아니다",
+      "md": "```\nuintx MaxTenuringThreshold     = 15\nuintx InitialTenuringThreshold = 7\nuintx TargetSurvivorRatio      = 50\n```\n\n> `MaxTenuringThreshold` 는 **상한**이다. 실제로 쓰는 값은 **매 GC 마다 다시 정한다.**\n> 기준은 `TargetSurvivorRatio` — **생존 공간의 절반 안에 들어오는 나이까지만** 남긴다.\n> 넘치면 **임계값을 낮춰서** 나머지를 올드로 보낸다."
+    },
+    {
+      "type": "table",
+      "caption": "임계값이 스스로 내려간다",
+      "columns": [
+        "GC",
+        "Desired survivor size",
+        "new threshold",
+        "나이 분포"
+      ],
+      "rows": [
+        [
+          "GC(0)",
+          "1,572,864 B",
+          "**15**",
+          "age 1: 3,063,800 B"
+        ],
+        [
+          "GC(1)",
+          "3,670,016 B",
+          "**15**",
+          "age 1: 5,444,496 · age 2: 357,744"
+        ],
+        [
+          "GC(2)",
+          "5,242,880 B",
+          "**1**",
+          "age 1: 5,641,224 B"
+        ],
+        [
+          "GC(3)",
+          "5,242,880 B",
+          "**1**",
+          "age 1: 5,641,288 B"
+        ]
+      ],
+      "note": "**GC(2) 에서 15가 1로 떨어진다.** 생존자(약 5.6MB)가 목표 크기(5.2MB 의 절반)를 넘겼기 때문이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "임계값 1 은 한 번 살아남으면 올드라는 뜻이다",
+      "md": "**조기 승격**(premature promotion)이다.\n\n> 곧 죽을 객체가 **올드로 올라가 버린다.** 영 수집으로는 못 치우고 **올드 수집을 기다려야** 한다.\n> 올드가 차면 **더 비싼 수집**이 돌고, 그것이 1.5절에서 정한 **최악 멈춤**을 밀어 올린다.\n> 아래 로그에서 임계값이 1 로 떨어진 GC(2) 이후 **`Old regions` 가 매 GC 마다 늘어난다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 무엇을 건드려야 하나\n\n임계값 자체보다 **생존 공간이 좁은 것**이 원인이다. 같은 프로그램에 **영 영역을 넓게 주면**(`-XX:G1NewSizePercent=40`) 이 워크로드에서는 **수집 자체가 안 일어났다.** 다만 그것은 **이 크기의 워크로드에서 그렇다는** 뜻이지 일반 처방은 아니다 — 7장에서 다시 본다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Promote.java\npublic class Promote {\n    public static void main(String[] a) throws Exception {\n        Deque<byte[]> window = new ArrayDeque<>();   // 잠깐 살다 죽는 것들\n        List<byte[]> forever = new ArrayList<>();    // 끝까지 사는 것들\n        for (int i = 0; i < 40000; i++) {\n            window.add(new byte[16 * 1024]);\n            if (window.size() > 300) window.poll();\n            if (i % 400 == 0) forever.add(new byte[64 * 1024]);\n        }\n    }\n}\n\n# --- 나이 표와 올드 증가를 같이 본다 ---\n\n$ java -Xmx256m -Xlog:gc+age=debug -Xlog:gc+heap=info -cp out Promote\n\nGC(0) Desired survivor size 1572864 bytes, new threshold 15 (max threshold 15)\nGC(0) Survivor regions: 0->3(3)\nGC(0) Old regions: 0->3\nGC(1) Desired survivor size 3670016 bytes, new threshold 15 (max threshold 15)\nGC(1) Survivor regions: 3->6(7)\nGC(1) Old regions: 3->3\nGC(2) Desired survivor size 5242880 bytes, new threshold 1 (max threshold 15)\nGC(2) Survivor regions: 6->6(10)\nGC(2) Old regions: 3->3\nGC(3) Desired survivor size 5242880 bytes, new threshold 1 (max threshold 15)\nGC(3) Old regions: 3->4\nGC(4) Desired survivor size 5242880 bytes, new threshold 1 (max threshold 15)\nGC(4) Old regions: 4->5\n\n# 임계값이 1 로 떨어진 뒤부터 Old 가 매 GC 마다 하나씩 는다.\n\n# --- 나이 분포 원문 ---\n\nGC(1) Age table with threshold 15 (max threshold 15)\nGC(1) - age   1:    5444496 bytes,    5444496 total\nGC(1) - age   2:     357744 bytes,    5802240 total\nGC(2) Age table with threshold 1 (max threshold 15)\nGC(2) - age   1:    5641224 bytes,    5641224 total\n\n# --- 영 영역을 넓히면 ---\n\n$ java -Xmx256m -XX:G1NewSizePercent=40 -Xlog:gc -cp out Promote | grep -c 'Pause Young'\n0                                  # 이 워크로드에서는 수집 자체가 없었다",
+      "note": "**임계값은 결과이지 원인이 아니다.** 생존자가 목표 크기를 넘긴 것이 원인이고, 임계값은 JVM 이 그것에 맞춰 내린 값이다."
+    }
+  ],
+  "recap": [
+    "승격은 수집을 몇 번 살아남았는지로 정해진다.",
+    "MaxTenuringThreshold 15 는 상한이고 실제 값은 매 GC 마다 다시 정해진다.",
+    "생존자가 목표 크기를 넘기면 임계값을 낮춰 나머지를 올드로 보낸다.",
+    "이 측정에서 GC(2) 에 15가 1로 떨어졌고 그 뒤로 Old 가 매번 늘었다.",
+    "임계값 1 은 한 번만 살아남아도 올드로 간다는 뜻이다 — 조기 승격이다."
+  ],
+  "drills": [
+    {
+      "task": "-Xlog:gc+age=trace 로 내 애플리케이션의 나이 분포를 본다.",
+      "done_when": "threshold 가 15 인지 그보다 낮은지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "threshold 가 낮아지는 GC 를 찾아 그 시점의 생존자 크기를 본다.",
+      "done_when": "목표 크기와 비교한다.",
+      "minutes": 12
+    },
+    {
+      "task": "영 영역 크기를 바꿔 가며 Old regions 증가 추세를 비교한다.",
+      "done_when": "조기 승격이 줄어드는지 본다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "MaxTenuringThreshold 가 15 면 항상 15번 살아남아야 하나.",
+      "a": "아니다. 상한일 뿐이고 실제 값은 매 GC 마다 생존자 크기를 보고 다시 정해진다."
+    },
+    {
+      "q": "임계값이 낮아지는 이유는.",
+      "a": "생존자가 목표 생존 공간 크기를 넘겨서다. 넘친 만큼 올드로 보낸다."
+    },
+    {
+      "q": "조기 승격이 왜 나쁜가.",
+      "a": "곧 죽을 객체가 올드로 가서 영 수집으로 못 치우고 더 비싼 수집을 기다려야 한다."
+    },
+    {
+      "q": "임계값이 1 이면 무슨 뜻인가.",
+      "a": "한 번만 살아남아도 올드로 승격된다는 뜻이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "나이",
+      "what": "객체가 영 수집을 살아남은 횟수. 생존 공간을 옮겨 다닐 때마다 하나씩 는다."
+    },
+    {
+      "term": "조기 승격",
+      "what": "곧 죽을 객체가 생존 공간 부족으로 일찍 올드에 올라가는 것."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First Garbage Collector Tuning",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-garbage-collector-tuning.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:MaxTenuringThreshold",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
