@@ -1,0 +1,151 @@
+{
+  "book": "jvm-tuning",
+  "id": "mixed",
+  "no": "7.4",
+  "chapter": 7,
+  "title": "혼합 수집",
+  "summary": "올드를 조금씩 지운다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "동시 주기 뒤에 무슨 일이 이어지는지 안다.",
+    "혼합 수집의 멈춤이 보통 수집과 어떻게 다른지 잰다.",
+    "Cleanup 과 혼합 수집의 역할을 가른다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.3절의 동시 주기는 **표시만** 한다. 어느 올드 리전에 쓰레기가 많은지 **알아낼 뿐 치우지는 않는다.**\n\n치우는 것은 그다음이다. **영 리전에 올드 리전 몇 개를 얹어서** 같이 옮긴다 — 그래서 혼합이다."
+    },
+    {
+      "type": "figure",
+      "caption": "주기가 끝나면 이어지는 순서",
+      "ascii": "   Pause Young (Concurrent Start)      opens the cycle\n   Concurrent Mark Cycle               marks, app keeps running\n   Pause Remark / Pause Cleanup        short stops\n   Pause Young (Prepare Mixed)         next one will be mixed\n   Pause Young (Mixed)  x N            eden + a few old regions\n   Pause Young (Normal)                back to normal\n\n   one cycle of marking feeds several mixed collections",
+      "note": "**한 번 표시하고 여러 번 나눠 치운다.** 그 '여러 번' 이 멈춤을 짧게 유지하는 방법이다."
+    },
+    {
+      "type": "table",
+      "caption": "종류별 멈춤 (같은 실행, G1 `-Xmx320m`)",
+      "columns": [
+        "종류",
+        "횟수",
+        "평균",
+        "최대"
+      ],
+      "rows": [
+        [
+          "Normal",
+          "28회",
+          "6.20 ms",
+          "50.66 ms"
+        ],
+        [
+          "Concurrent Start",
+          "5회",
+          "4.31 ms",
+          "8.63 ms"
+        ],
+        [
+          "Prepare Mixed",
+          "3회",
+          "3.68 ms",
+          "4.51 ms"
+        ],
+        [
+          "**Mixed**",
+          "3회",
+          "**1.95 ms**",
+          "**2.28 ms**"
+        ]
+      ],
+      "note": "**혼합이 가장 짧다.** 올드를 치우는데 보통 수집보다 짧은 것이 이 절의 요점이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 혼합이 더 짧은가",
+      "md": "**얹는 올드 리전 수를 G1 이 정하기 때문**이다.\n\n> 멈춤 목표(7.5절)에 맞을 만큼만 얹는다 — 한 번에 다 치우지 않는다.\n> 그래서 **올드를 비우는 데 여러 번**이 걸리고, 대신 **한 번의 멈춤은 짧게** 유지된다.\n> 6.7절에서 본 \"한 번에 다 옮기면 이동 값이 폭발한다\"에 대한 G1 의 답이 이것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "Cleanup 은 치우는 단계가 아니다",
+      "md": "```\nGC(4) Pause Cleanup 100M->100M(206M) 0.003ms\nGC(8) Pause Cleanup  98M->98M(206M)  0.024ms\n```\n\n> **앞뒤 숫자가 같다.** 0.003ms 짜리 멈춤이 무엇을 회수했나 싶지만, **회수한 것은 완전히 빈 리전**이다.\n> 비어 있으니 **바이트 수가 안 줄어드는 것이 정상**이다. 리전 개수만 돌아온다.\n> **부분적으로 쓰레기인 리전**은 Cleanup 이 못 건드린다 — 살아남은 것을 옮겨야 하므로 **혼합 수집의 몫**이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 그래서 혼합이 안 나올 때가 있다\n\n**올드 리전이 통째로 비면 Cleanup 이 다 가져간다.** 이 절을 쓰면서 처음 만든 워크로드가 그랬다 — 쌓아 뒀다 통째로 버렸더니 **혼합 수집이 한 번도 안 나왔다.** 리전마다 살아남는 것이 **흩어져 있어야** 혼합이 일을 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Mixed.java\npublic class Mixed {\n    static List<byte[]> permanent = new ArrayList<>();   // 리전마다 흩어져 살아남는 것\n    public static void main(String[] a) throws Exception {\n        List<byte[]> gen = new ArrayList<>();\n        for (int round = 0; round < 20; round++) {\n            for (int i = 0; i < 5000; i++) {\n                byte[] b = new byte[16 * 1024];\n                gen.add(b);\n                if (i % 40 == 0) permanent.add(b);       // 40분의 1은 영구히 산다\n            }\n            gen.clear();                                  // 나머지는 쓰레기\n        }\n    }\n}\n\n# --- 1) 어떤 수집이 몇 번 ---\n\n$ java -XX:+UseG1GC -Xmx320m -Xlog:gc -cp out Mixed\n  48 Pause Young (Normal) (G1 Evacuation Pause)\n   9 Pause Young (Mixed) (G1 Evacuation Pause)\n   9 Pause Young (Concurrent Start) (G1 Evacuation Pause)\n   8 Pause Young (Prepare Mixed) (G1 Evacuation Pause)\n   4 Pause Young (Normal) (G1 Preventive Collection)\n\n# --- 2) 종류별 멈춤 ---\n\n  Normal              28회  평균  6.20 ms  최대 50.66 ms\n  Concurrent Start     5회  평균  4.31 ms  최대  8.63 ms\n  Prepare Mixed        3회  평균  3.68 ms  최대  4.51 ms\n  Mixed                3회  평균  1.95 ms  최대  2.28 ms\n\n# --- 3) 혼합 수집 한 줄 ---\n\nGC(16) Pause Young (Mixed) (G1 Evacuation Pause)  63M->57M(130M)  0.978ms\nGC(24) Pause Young (Mixed) (G1 Evacuation Pause) 124M->122M(252M) 1.370ms\nGC(30) Pause Young (Mixed) (G1 Evacuation Pause) 177M->161M(280M) 0.999ms\nGC(35) Pause Young (Mixed) (G1 Evacuation Pause) 123M->109M(296M) 1.476ms\n\n# 한 번에 6M, 2M, 16M, 14M 씩 줄인다. 조금씩이다.\n\n# --- 4) 처음 만든 워크로드는 혼합이 안 나왔다 ---\n\n# gen 을 통째로 버리기만 했을 때:\n  44 Pause Young (Normal) (G1 Evacuation Pause)\n  12 Pause Young (Concurrent Start) (G1 Evacuation Pause)\n                          <- Mixed 가 0회. 리전이 통째로 비어 Cleanup 이 다 가져갔다.",
+      "note": "**혼합 수집이 0회인 것이 나쁜 신호는 아니다.** 치울 것이 통째로 비어 있으면 더 싼 경로로 끝난 것이다."
+    }
+  ],
+  "recap": [
+    "동시 주기는 표시만 하고 치우는 것은 혼합 수집이다.",
+    "혼합은 영 리전에 올드 리전 몇 개를 얹어 같이 옮긴다.",
+    "측정에서 혼합 평균 1.95ms 로 보통 수집 6.20ms 보다 짧았다.",
+    "짧은 이유는 멈춤 목표에 맞을 만큼만 올드를 얹기 때문이다.",
+    "Cleanup 은 완전히 빈 리전만 회수하고 부분적으로 빈 리전은 혼합의 몫이다."
+  ],
+  "drills": [
+    {
+      "task": "내 로그에서 Prepare Mixed 와 Mixed 가 나오는지 센다.",
+      "done_when": "주기가 혼합까지 이어지는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "종류별 멈춤 평균을 내서 혼합이 더 긴지 짧은지 본다.",
+      "done_when": "내 환경의 값을 갖는다.",
+      "minutes": 12
+    },
+    {
+      "task": "Pause Cleanup 의 앞뒤 숫자를 확인한다.",
+      "done_when": "왜 같은지 설명할 수 있다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "동시 표시 주기가 치우기까지 하나.",
+      "a": "아니다. 표시만 하고 치우는 것은 이어지는 혼합 수집이다."
+    },
+    {
+      "q": "혼합 수집이 보통 수집보다 짧을 수 있는 이유는.",
+      "a": "멈춤 목표에 맞을 만큼만 올드 리전을 얹기 때문이다."
+    },
+    {
+      "q": "Pause Cleanup 의 앞뒤 숫자가 같은 이유는.",
+      "a": "회수한 것이 완전히 빈 리전이라 바이트 수가 안 줄기 때문이다."
+    },
+    {
+      "q": "혼합 수집이 한 번도 안 나오면 문제인가.",
+      "a": "아니다. 올드 리전이 통째로 비면 Cleanup 이 더 싸게 회수한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "혼합 수집",
+      "what": "영 리전에 올드 리전 몇 개를 얹어 함께 옮기는 수집. Pause Young (Mixed) 로 찍힌다."
+    },
+    {
+      "term": "Prepare Mixed",
+      "what": "다음 수집부터 혼합으로 가겠다고 알리는 전환 단계."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First (G1) Garbage Collector",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Garbage-First Garbage Collector Tuning",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-garbage-collector-tuning.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

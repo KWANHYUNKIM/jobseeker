@@ -389,7 +389,7 @@
           "title": "혼합 수집",
           "summary": "올드를 조금씩 지운다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -397,7 +397,7 @@
           "title": "목표 멈춤 시간",
           "summary": "지켜지는 약속이 아니다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -405,7 +405,7 @@
           "title": "거대 객체",
           "summary": "리전보다 큰 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.7",

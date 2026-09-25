@@ -1,0 +1,146 @@
+{
+  "book": "jvm-tuning",
+  "id": "humongous",
+  "no": "7.6",
+  "chapter": 7,
+  "title": "거대 객체",
+  "summary": "리전보다 큰 것.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "humongous 기준이 정확히 어디인지 확인한다.",
+    "그 경계를 넘으면 무엇이 달라지는지 잰다.",
+    "손댈 곳이 힙 크기가 아닌 것을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.1절에서 **리전 크기는 힙이 정한다**고 했고, 4.1절에서 **humongous 기준은 리전의 절반**이라고 쟀다. 이 절은 **그 경계를 실제로 넘어 보는** 절이다.\n\n경계를 넘으면 객체는 **에덴을 건너뛰고 연속된 리전을 통째로** 차지한다. 그래서 **금방 죽을 객체여도 영 수집으로 못 치운다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 20KB 차이로 갈린다\n\n리전을 1MB 로 고정하면 경계는 **512KB** 다. 덩어리 크기만 **500KB 와 520KB** 로 바꿔 같은 프로그램을 돌렸다. 둘 다 **20개만 들고 있다가 버리는**, 수명이 아주 짧은 객체다."
+    },
+    {
+      "type": "table",
+      "caption": "경계 앞뒤 (리전 1MB, `-Xmx256m`, 4,000개 할당)",
+      "columns": [
+        "덩어리",
+        "humongous 인가",
+        "수집 횟수",
+        "수집 원인",
+        "humongous 리전"
+      ],
+      "rows": [
+        [
+          "**500 KB**",
+          "아니다 (512 미만)",
+          "**20회**",
+          "G1 Evacuation Pause 20",
+          "**0**"
+        ],
+        [
+          "**520 KB**",
+          "**맞다** (512 초과)",
+          "**51회**",
+          "**G1 Humongous Allocation 51**",
+          "**최대 111**"
+        ]
+      ],
+      "note": "**20KB 차이로 수집이 2.5배**가 되고 원인이 통째로 바뀐다. 객체 수도 수명도 같다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 그렇게까지 달라지나",
+      "md": "**연속된 빈 리전을 찾아야 하기 때문**이다.\n\n> 520KB 는 1MB 리전 하나에 들어가지만 **humongous 로 분류되어 리전을 통째로** 쓴다 — 480KB 가 버려진다.\n> 그리고 **올드에 놓인다.** 금방 죽어도 **영 수집이 안 치운다** — 7.4절의 혼합이나 Cleanup 을 기다려야 한다.\n> 그러니 **빈 리전이 금방 마르고**, 마르면 수집이 돈다. 원인이 `G1 Humongous Allocation` 인 이유다."
+    },
+    {
+      "type": "figure",
+      "caption": "경계는 절반이고 낭비는 그 위에 쌓인다",
+      "ascii": "   region size 1 MB, threshold 512 KB\n\n   500 KB  ->  ordinary object, allocated in eden, dies there\n   520 KB  ->  humongous, takes a whole 1 MB region, 480 KB wasted\n   1.5 MB  ->  humongous, takes two consecutive regions\n   2.1 MB  ->  humongous, takes three consecutive regions\n\n   the waste is per object and it is invisible in heap used",
+      "note": "**낭비가 힙 사용량에는 안 보인다.** 리전은 찼는데 안에는 빈 데가 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "처방은 힙 증설이 아니다",
+      "md": "**`G1 Humongous Allocation` 이 원인이면 힙을 늘려도 잘 안 낫는다.**\n\n> 문제는 총량이 아니라 **연속된 리전**이다.\n> 손댈 곳은 둘이다 — **`-XX:G1HeapRegionSize` 를 키워 경계를 올리거나**, **객체를 쪼개는 것**.\n> 6.7절에서 같은 600KB 객체가 리전 1MB 에서 70회, 4MB 에서 21회로 갈렸다. **리전 한 줄이 그만큼이다.**\n> 다만 7.1절대로 리전을 키우면 **리전 개수가 줄어** 다른 값이 붙는다 — 재고 정한다."
+    },
+    {
+      "type": "prose",
+      "md": "## 어디서 나오나\n\n**큰 배열**이다 — 파일을 통째로 읽은 `byte[]`, 큰 이미지 버퍼, 한 번에 만든 큰 `ArrayList` 의 내부 배열, 직렬화 버퍼. **4.5절의 직접 버퍼를 쓰면 힙 밖으로 나가므로** 이 문제를 피하는 길이기도 하다. 다만 그쪽은 그쪽의 값이 있다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Huge.java\npublic class Huge {\n    public static void main(String[] a) {\n        int kb = Integer.parseInt(a[0]);\n        Deque<byte[]> q = new ArrayDeque<>();\n        for (int i = 0; i < 4000; i++) {\n            q.add(new byte[kb * 1024]);\n            if (q.size() > 20) q.poll();      // 금방 버린다\n        }\n    }\n}\n\n# 리전 1MB 이므로 경계는 512KB\n\n$ java -XX:+UseG1GC -XX:G1HeapRegionSize=1m -Xmx256m -Xlog:gc -Xlog:gc+heap=info \\\n       -cp out Huge 500\n  수집  20회   G1 Evacuation Pause 20      humongous 0\n\n$ java -XX:+UseG1GC -XX:G1HeapRegionSize=1m -Xmx256m -Xlog:gc -Xlog:gc+heap=info \\\n       -cp out Huge 520\n  수집  51회   G1 Humongous Allocation 51  humongous 최대 111 리전\n\n# 같은 개수, 같은 수명. 크기만 20KB 다르다.\n\n# --- 4.1 절에서 잰 경계 (같은 사실을 다른 쪽에서) ---\n\n$ java -Xmx512m -XX:G1HeapRegionSize=1m -Xlog:gc+heap=info -cp out Humon 400\nGC(0) Humongous regions: 0->0           # 400KB = 리전의 0.39배\n\n$ java -Xmx512m -XX:G1HeapRegionSize=1m -Xlog:gc+heap=info -cp out Humon 600\nGC(0) Humongous regions: 56->56         # 600KB = 리전의 0.58배",
+      "note": "**두 실험이 같은 경계를 가리킨다.** 400·500 은 안 걸리고 520·600 은 걸린다 — 512KB 다."
+    }
+  ],
+  "recap": [
+    "humongous 기준은 리전 크기의 절반이다.",
+    "리전 1MB 에서 500KB 는 보통 객체, 520KB 는 humongous 였다.",
+    "20KB 차이로 수집이 20회에서 51회가 되고 원인이 통째로 바뀌었다.",
+    "humongous 는 리전을 통째로 쓰므로 남는 자리가 버려지고 힙 사용량에는 안 보인다.",
+    "처방은 힙 증설이 아니라 리전 크기를 키우거나 객체를 쪼개는 것이다."
+  ],
+  "drills": [
+    {
+      "task": "내 코드에서 가장 큰 배열 할당을 찾아 리전 절반과 비교한다.",
+      "done_when": "humongous 가 생기는지 판단한다.",
+      "minutes": 12
+    },
+    {
+      "task": "로그에서 G1 Humongous Allocation 원인을 세어 본다.",
+      "done_when": "전체 수집에서 몇 퍼센트인지 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "G1HeapRegionSize 를 한 단계 키워 수집 횟수를 비교한다.",
+      "done_when": "리전 개수 감소와 함께 재 본다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "humongous 의 기준은.",
+      "a": "리전 크기의 절반을 넘는 객체다."
+    },
+    {
+      "q": "humongous 객체는 어디에 놓이나.",
+      "a": "에덴을 건너뛰고 연속된 리전에 놓이며 올드로 취급된다."
+    },
+    {
+      "q": "금방 죽는 humongous 객체도 문제가 되는 이유는.",
+      "a": "영 수집이 안 치우므로 혼합이나 Cleanup 을 기다려야 한다."
+    },
+    {
+      "q": "G1 Humongous Allocation 이 많을 때의 처방은.",
+      "a": "힙 증설이 아니라 리전 크기를 키우거나 객체를 쪼개는 것이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "humongous 객체",
+      "what": "리전 크기의 절반을 넘는 객체. 연속된 리전을 통째로 차지한다."
+    },
+    {
+      "term": "G1 Humongous Allocation",
+      "what": "연속된 리전을 확보하려고 수집이 일어났음을 가리키는 GC 원인."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First (G1) Garbage Collector",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:G1HeapRegionSize",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
