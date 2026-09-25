@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — monday 재방문(대가 없는 글, 쓰지 않음)을 마쳤다. 메이퇀 확장(`one-model-many-scenes`) 뒤로 재방문 둘이 비었다.** `2026/09/22/Meituan-Foundation-Model-for-Recommendation`(MTFM)을 기능 `one-model-many-scenes` 로
+**없다 — moniepoint 재방문(새 글 없음)을 마쳤다. 메이퇀 확장(`one-model-many-scenes`) 뒤로 재방문 셋이 비었다.** `2026/09/22/Meituan-Foundation-Model-for-Recommendation`(MTFM)을 기능 `one-model-many-scenes` 로
 쓰고 새 도메인 `여러 업무의 추천을 한 모델로 묶는다` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
@@ -320,6 +320,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **moniepoint** — 2026-09-26 **1회째 없음.** `rss.xml` 최신 08-05. 안 쓴 글(Crossplane 함수 08-05 · 스케줄 잡 1·2부 07-16/20)은 **보강 재료**다.
 - **monday** — 2026-09-26 **새 글 하나, 쓰지 않음.** `building-a-robust-harness-for-agent-in-production-feed-agent-case-study`(09-09) — 피드 에이전트 하네스(PII 제거 전처리 · ID 별칭으로 지어낸 인용 잡기 · 스키마 강제 출력+재시도 · 두 겹 루프 한도 · 명시 규칙/추론 관찰 두 층 기억). **목록형이고 버린 대안·대가·수치가 없다.** 다른 회사의 하네스 글과 모아 비교 문서로 쓸 때 재료가 된다(사이보즈 `logos-security-harness`).
 - **mercari** — 2026-09-26 **새 글 하나, 쓰지 않음.** `20260812-mptechtalk-report`(09-25)는 행사 요약 — Checkout Solution(Core/Flex) · Payment Provider Service 분리 · Balance V2 + Bookkeeper(복식부기), Apple/Google Pay 추가 약 1개월. **기존 `expand-without-forking`·`asset-exchange` 와 겹치고 버린 대안·대가가 없다.** 안 쓴 **TiDB 이관 연재 넷**(08-03 회고 · 08-17 IN 절 100만 건 · 08-19 리소스 제어 · 08-20 인덱스 비호환)은 **큰 보강 재료**다.
 - **kurly** — 2026-09-26 **1회째 없음.** 피드는 `helloworld.kurly.com/rss.xml`(feed.xml·atom·sitemap 은 403), 최신 **05-20**. 그 글 `2026-delivery-domain-rag`(LLM Wiki + RAG 를 두 번 갈아엎은 이야기)는 **사이보즈 Ergon 과 짝이 되는 보강 재료**다 — 저쪽은 RAG 를 물리고 Wiki 를 골랐다.
