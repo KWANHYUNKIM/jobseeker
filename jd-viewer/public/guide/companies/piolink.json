@@ -267,7 +267,168 @@
   },
   "salary": null,
   "people": [],
-  "postings": [],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/386829",
+      "title": "[전문연구요원] 프라이빗 클라우드(HCI) 가상화 개발자",
+      "site": "wanted",
+      "verdict": "신입(전문연구요원). Go 또는 Python 과 Linux·OS·네트워크 기본기로, POPCON HCI 의 OpenStack·KVM 가상화와 VM 관리·클러스터 관리·워크로드 마이그레이션 기능을 만들어 갈 사람. 자격은 '관심'과 기본기 수준이고, 인프라 기술 경험은 우대다.",
+      "fit": {
+        "must_have": [
+          "Go 또는 Python 개발",
+          "Linux·운영체제·네트워크 기본 개념",
+          "전문연구요원 요건(같은 자리의 사람인 게시에 '석사 이상 졸업자 또는 예정자' 명시)"
+        ],
+        "can_learn": [
+          "OpenStack·KVM·Ceph 실전 운영",
+          "VMware 연동·마이그레이션",
+          "gRPC"
+        ]
+      },
+      "study": [
+        {
+          "topic": "KVM/QEMU 와 libvirt 로 VM 을 직접 다루기",
+          "from": "task",
+          "quote": "• OpenStack·KVM 기반 가상화 및 VM 관리 기능 개발",
+          "priority": "core",
+          "why": "주요업무가 OpenStack·KVM 기반 가상화와 VM 관리 기능 개발이다. OpenStack Nova 도 결국 libvirt 로 KVM 을 부른다.",
+          "gap_check": "VM 하나를 만들 때 CPU·메모리·디스크 이미지·네트워크 인터페이스가 libvirt XML 의 어디에 적히는가?",
+          "drill": "Linux 에서 virt-install 로 VM 을 만들고, Python libvirt 바인딩으로 VM 목록 조회·시작·정지·스냅숏 스크립트를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "libvirt — Documentation",
+              "url": "https://libvirt.org/docs.html",
+              "kind": "docs"
+            },
+            {
+              "title": "libvirt — Python API bindings",
+              "url": "https://libvirt.org/python.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OpenStack 구조 (Nova·Neutron·Cinder·Glance)",
+          "from": "preference",
+          "quote": "• OpenStack, KVM, Ceph, Kubernetes 등 인프라 기술을 개발하거나 운영해 본 경험",
+          "priority": "high",
+          "why": "소개문에 'OpenStack, Ceph, Kubernetes 등 오픈소스 기술을 제품 환경에 맞게 통합'한다고 적혀 있다.",
+          "gap_check": "VM 생성 요청 하나가 Keystone → Nova → Neutron/Cinder/Glance 를 어떤 순서로 지나는지 그릴 수 있는가?",
+          "drill": "DevStack 을 한 대에 설치해 VM 을 만들고, 로그로 서비스 간 호출 순서를 따라가 그림 한 장으로 남긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "OpenStack — DevStack",
+              "url": "https://docs.openstack.org/devstack/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "VM 라이브 마이그레이션",
+          "from": "task",
+          "quote": "• 클러스터 통합 관리 및 워크로드 마이그레이션 기능 개발",
+          "priority": "core",
+          "why": "주요업무에 워크로드 마이그레이션 기능 개발이, 우대에 VMware 등 이기종 가상화 환경 연동·마이그레이션이 있다.",
+          "gap_check": "라이브 마이그레이션에서 메모리 페이지를 먼저 복사(pre-copy)하는 방식이 쓰기가 많은 VM 에서 왜 끝나지 않을 수 있는가?",
+          "drill": "KVM 호스트 두 대(또는 중첩 가상화)에서 공유 스토리지 없이 virsh migrate --live --copy-storage-all 을 해 보고 걸린 시간·중단 시간을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "QEMU — Migration",
+              "url": "https://www.qemu.org/docs/master/devel/migration/main.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Linux·운영체제·네트워크 기본기",
+          "from": "qualification",
+          "quote": "• Linux 환경에 익숙하고, 운영체제와 네트워크의 기본 개념을 이해하는 분",
+          "priority": "core",
+          "why": "가상화는 OS 위에 OS 를 올리는 일이라 프로세스·메모리·브리지·네트워크 네임스페이스 같은 기본 개념이 그대로 쓰인다.",
+          "gap_check": "VM 이 외부와 통신하는 경로를 tap 장치 → 리눅스 브리지 → 물리 NIC 순으로 설명할 수 있는가?",
+          "drill": "ip 명령으로 브리지와 tap 장치를 직접 만들어 VM 두 대를 연결하고 ping 이 통하는 것을 tcpdump 로 확인한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "Go 또는 Python 으로 인프라 관리 API 만들기",
+          "from": "qualification",
+          "quote": "• Go 또는 Python 개발이 가능한 분",
+          "priority": "core",
+          "why": "관리 플랫폼 기능을 직접 개발한다. 우대에 REST API 및 gRPC 기반 서비스 개발이 있다.",
+          "gap_check": "VM 생성처럼 오래 걸리는 작업을 API 로 받으면, 요청은 바로 돌려주고 진행 상태는 어떻게 알려 주는가?",
+          "drill": "Go(또는 Python)로 'VM 생성 요청 → 작업 ID 반환 → 상태 조회' REST API 를 만들고 뒤에서 libvirt 를 호출한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "gRPC — Documentation",
+              "url": "https://grpc.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Ceph 분산 스토리지",
+          "from": "preference",
+          "quote": "• OpenStack, KVM, Ceph, Kubernetes 등 인프라 기술을 개발하거나 운영해 본 경험",
+          "priority": "nice",
+          "why": "HCI 는 컴퓨팅과 스토리지를 한 플랫폼으로 통합한다(소개문). VM 디스크가 어디에 어떻게 복제되는지가 고가용성의 바탕이다.",
+          "gap_check": "Ceph 에서 복제본 3개인 풀에 노드 하나가 죽으면 무엇이 자동으로 일어나는가?",
+          "drill": "cephadm 으로 작은 Ceph 클러스터를 띄워 RBD 볼륨을 만들고 KVM VM 디스크로 붙여 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Ceph — Documentation",
+              "url": "https://docs.ceph.com/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "VM 백업·고가용성·재해복구",
+          "from": "preference",
+          "quote": "• VM 백업, 고가용성, 재해복구 등 클라우드 인프라 기능에 대한 이해 또는 경험",
+          "priority": "nice",
+          "why": "회사 소개(AI 풀스택 공고)에 POPCON 관리 플랫폼이 스토리지/백업 관리와 장애 대응까지 담는다고 적혀 있다.",
+          "gap_check": "실행 중인 VM 을 일관된 상태로 백업하려면 스냅숏 전에 게스트 안에서 무엇을 해야 하는가?",
+          "drill": "qemu-guest-agent 의 fsfreeze 를 써서 실행 중 VM 의 외부 스냅숏을 뜨고, 다른 호스트에서 복원해 부팅한다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "OpenStack 에 작은 기여나 버그 재현 기록",
+          "why": "제품이 오픈소스를 통합해 만든다. 업스트림 코드를 읽고 버그를 재현해 본 기록은 신입에게 드문 증거다.",
+          "effort": "2~3일"
+        },
+        {
+          "idea": "VMware → KVM 이미지 변환 실습",
+          "why": "우대에 이기종 가상화 연동·마이그레이션이 있고, 소개문이 VMware·Nutanix 를 경쟁자로 명시한다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1차면접 - 2차면접 - 최종합격. 신입은 성적증명서를 요청받을 수 있다(공고 기준).",
+        "expect": [
+          "VM 이 만들어지는 과정을 libvirt/KVM 수준에서 설명",
+          "라이브 마이그레이션 원리",
+          "리눅스 브리지·tap 네트워크",
+          "Go/Python 으로 만든 것"
+        ],
+        "sources": [
+          {
+            "title": "[전문연구요원] 프라이빗 클라우드(HCI) 가상화 개발자",
+            "url": "https://www.wanted.co.kr/wd/386829",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ],
   "open_questions": [
     "회사 홈페이지 회사소개(piolink.com/kr/company/overview.php)는 404 로 넘어가 읽지 못했다 — 회사 층위는 공고 소개문과 뉴시스 기사로만 썼다",
     "제품별·해외 매출 비중은 공개 자료에서 찾지 못했다",
