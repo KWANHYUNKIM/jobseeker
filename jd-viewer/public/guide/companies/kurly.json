@@ -1396,6 +1396,162 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/338214",
+      "title": "커머스 백엔드 개발자 (상품/주문/회원/파트너)",
+      "site": "wanted",
+      "verdict": "경력 5~10년, Java/JPA/Spring Boot + Kafka. 주문·상품·파트너(3P)/프로모션·회원/멤버십 중 한 도메인을 맡아(상세 도메인은 서류 검토 후 안내) 대규모 트래픽에서 직접 개발·배포·모니터링·장애 대응까지 끝낼 수 있는 사람.",
+      "fit": {
+        "must_have": [
+          "유관경력 5년 이상",
+          "Java·JPA·Spring Boot",
+          "Kafka 기반 비동기 처리",
+          "직접 배포·모니터링·트러블슈팅한 경험"
+        ],
+        "can_learn": [
+          "Datadog(우대)",
+          "AWS Serverless(우대)",
+          "컬리의 도메인 구분(주문/상품/3P/회원)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Kafka 기반 비동기 처리 (주문 이벤트)",
+          "from": "qualification",
+          "quote": "• Kafka 기반 비동기 처리 개발 역량 보유하신 분",
+          "priority": "core",
+          "why": "주문이 생기면 재고·결제·배송·포인트 등 여러 곳이 알아야 한다. 동기 호출로 묶으면 한 곳의 지연이 주문 전체를 막는다.",
+          "gap_check": "컨슈머가 같은 주문 이벤트를 두 번 받으면 어떻게 되는가? 파티션 키를 주문 ID 로 두는 이유는?",
+          "drill": "주문 생성 이벤트를 Kafka 로 발행하고 재고 차감 컨슈머를 만든 뒤, 컨슈머를 중간에 죽여 재처리 시 중복 차감이 안 되도록 처리 이력 테이블로 막는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apache Kafka — Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring for Apache Kafka — Reference",
+              "url": "https://docs.spring.io/spring-kafka/reference/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "JPA 성능 (N+1, 지연 로딩, 벌크 연산)",
+          "from": "qualification",
+          "quote": "• Java / JPA / Spring Boot 프레임워크 기반 개발 경험을 보유하신 분",
+          "priority": "core",
+          "why": "주요업무에 '프로덕트 별 성능 최적화'가 있다. 상품·주문처럼 연관이 많은 엔티티는 JPA 기본 동작 그대로 두면 쿼리가 폭증한다.",
+          "gap_check": "주문 목록 20건을 조회할 때 주문상품까지 가져오면 쿼리가 몇 번 나가고, fetch join 과 batch size 중 무엇으로 줄이는가?",
+          "drill": "주문-주문상품-상품 엔티티로 목록 API 를 만들고 SQL 로그로 쿼리 수를 센 뒤, fetch join / default_batch_fetch_size 적용 전후를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Hibernate ORM — User Guide",
+              "url": "https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html",
+              "kind": "docs",
+              "note": "Fetching 장"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 트래픽에서의 주문 프로세스 (재고 동시성)",
+          "from": "task",
+          "quote": "• 대용량 트래픽을 고려한 안정적이고 확장 가능한 시스템의 개발 및 운영",
+          "priority": "core",
+          "why": "포지션 상세에 '장바구니 관리부터 주문서 작성까지 … 대규모 트래픽을 견디는 안정적이고 편리한 주문 프로세스'라고 적혀 있다.",
+          "gap_check": "재고 1개 남은 상품에 동시 주문 100건이 오면 비관적 락·낙관적 락·Redis 원자 연산 중 무엇으로 막고, 각 방식의 비용은?",
+          "drill": "재고 차감을 세 방식(비관적 락, @Version 낙관적 락, Redis DECR)으로 구현하고 동시 요청 부하로 정확성과 처리량을 비교한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "상품 카탈로그 생애주기 설계",
+          "from": "task",
+          "quote": "• 커머스 도메인 핵심 기능 구현 및 고도화",
+          "priority": "high",
+          "why": "포지션 상세에 '상품 데이터의 생성부터 소멸까지(Life-cycle) 전 과정'을 관리한다고 적혀 있다. 판매 중지된 상품도 과거 주문에서는 보여야 한다.",
+          "gap_check": "상품 가격이 바뀌었을 때 과거 주문 내역의 가격은 어디에서 읽어야 하는가?",
+          "drill": "상품 상태(등록·판매중·품절·판매종료)를 상태 머신으로 만들고, 주문에는 주문 시점 상품 스냅숏을 저장한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "직접 배포·모니터링·트러블슈팅",
+          "from": "qualification",
+          "quote": "• 서버 구축 또는 기능 구현을 직접 개발, 배포, 모니터링, 트러블 슈팅한 경험을 보유하신 분",
+          "priority": "core",
+          "why": "'직접 개발, 배포, 모니터링, 트러블 슈팅'이 자격요건이다. 우대에 Datadog 모니터링이 있다.",
+          "gap_check": "주문 API 의 p99 지연이 갑자기 올랐을 때 무엇부터 보는가(애플리케이션 지표·DB·외부 호출)?",
+          "drill": "Spring Boot Actuator + Micrometer 로 지연 히스토그램을 내보내고, 느린 DB 쿼리를 일부러 넣어 대시보드에서 원인을 찾아본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Spring Boot — Actuator",
+              "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Redis 활용 (캐시·원자 연산)",
+          "from": "preference",
+          "quote": "• Redis, BigQuery 등의 다양한 데이터베이스 활용 경험이 있으신 분",
+          "priority": "high",
+          "why": "상품 조회처럼 읽기가 많은 곳은 캐시가 필수이고, 쿠폰·재고처럼 동시성이 필요한 곳에도 쓰인다(추론).",
+          "gap_check": "상품 정보가 수정됐을 때 캐시를 지우는 시점과 순서를 잘못 잡으면 어떤 낡은 값이 남는가?",
+          "drill": "상품 조회에 cache-aside 를 적용하고, 수정 시 DB 갱신 → 캐시 삭제 순서를 바꿔 가며 낡은 값이 남는 경우를 재현한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Redis — Documentation",
+              "url": "https://redis.io/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "타 조직과 협업",
+          "from": "qualification",
+          "quote": "• PM, 프론트엔드/앱 개발자, 품질 등 타 조직과 기민하게 소통하며 협업이 가능하신 분",
+          "priority": "core",
+          "why": "주문·상품 API 는 프론트엔드·앱이 바로 쓰는 계약이다. 필드 하나 바꾸는 것도 여러 팀과 맞춰야 한다.",
+          "gap_check": "이미 앱이 쓰고 있는 API 응답 필드를 바꿔야 할 때, 하위 호환을 지키며 어떻게 옮기는가?",
+          "drill": "주문 조회 API 에 v2 응답을 추가하고 v1 을 유지한 채 deprecation 기간을 두는 변경 계획서를 쓴다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "오픈소스 기여 한 건",
+          "why": "우대사항 첫 줄이 '오픈소스에 기여해서 문제를 해결해 본 경험'이다. 쓰는 라이브러리(Spring·Kafka 클라이언트 등)의 버그 리포트나 문서 수정이라도 링크로 보여 줄 수 있다.",
+          "effort": "1~2일"
+        },
+        {
+          "idea": "프로모션 엔진 설계 스케치",
+          "why": "포지션 상세에 '유연한 프로모션 엔진을 설계'가 있다. 쿠폰·할인 조건을 규칙으로 조합하는 모델을 그려 가면 3P/프로모션 도메인 대화가 된다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 제출 ＞ 직무적합성 인터뷰 ＞ 종합 인터뷰 ＞ 처우 협의 ＞ 최종 합격. 직무적합성 인터뷰에서 생성형 AI를 활용한 과제 전형(사전 과제 또는 코딩테스트), 종합 인터뷰에서 온라인 직무적합성 검사가 함께 진행된다. 상세 도메인은 서류 검토 후 개별 안내된다(공고 기준).",
+        "expect": [
+          "Kafka 컨슈머 중복 처리를 어떻게 막는가",
+          "JPA N+1 을 어떻게 찾고 줄였는가",
+          "재고 동시성을 어떻게 처리하는가",
+          "장애를 직접 추적한 사례"
+        ],
+        "sources": [
+          {
+            "title": "커머스 백엔드 개발자 (상품/주문/회원/파트너)",
+            "url": "https://www.wanted.co.kr/wd/338214",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
