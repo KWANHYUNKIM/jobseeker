@@ -5,7 +5,7 @@
   "country": "US",
   "category": "게임",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "one_liner": "남이 만든 세계를 남의 기계가 아니라 우리 기계에서 돌려 주는 회사",
   "business_model": "사용자가 **Robux** 를 사고, 그것을 남이 만든 게임 안에서 쓴다. 그 돈의 일부가 만든 사람에게 돌아간다 — FY2025 매출 **49억 달러**(+36%), 예약 **68억 달러**(+55%), 그리고 **창작자에게 나간 돈이 15억 300만 달러**(전년 9억 2,280만)다. 일 활성 사용자는 **1억 2,700만**(4분기 1억 4,400만), 하루 평균 2.7시간, 연 **1,239억 시간**.\n\n**이 회사의 원가 구조가 특이하다.** 일 유료 사용자는 약 180만 명뿐인데(DAU 의 1.4%) **1억 2,700만 명 전부의 게임을 우리 서버에서 돌려야 한다.** DAU 당 하루 예약이 **0.15달러**인 반면 유료 사용자 한 명은 **10.36달러**를 쓴다 — 소수가 다수의 서버 비용을 대는 구조라, **인프라 효율이 곧 손익**이다.",
   "revenue_total": "FY2025 매출 49억 달러 (+36%)",
@@ -18,7 +18,7 @@
   "domain_map": {
     "title": "Roblox 도메인 지도",
     "question": "남이 만든 세계가 1억 2,700만 명에게 닿기까지, 우리 기계에서 무엇이 움직이는가?",
-    "code": "flowchart TD\n  C[\"창작자 — Studio 로 만든다\"] --> UP[\"콘텐츠 업로드\"]\n  UP --> MOD[\"안전·모더레이션<br/>미성년 비중이 높다\"]\n  MOD --> STORE[\"콘텐츠 저장·전송\"]\n  U[\"플레이어 1억 2,700만\"] --> EDGE[\"엣지 · 접속\"]\n  EDGE --> GS[\"게임 서버<br/>남의 코드를 우리 기계에서 · 상태가 있다\"]\n  STORE --> GS\n  GS --> SD[\"서비스 발견·오케스트레이션<br/>1,000+ 서비스 · 14.5만 대\"]\n  SD -.->|\"여기가 무너지면<br/>전부 무너진다\"| GS\n  GS --> ECON[\"경제 — Robux 가 창작자에게\"]\n  ECON --> C\n  subgraph note[\"유료 사용자 1.4%가 전부의 서버 비용을 댄다\"]\n    GS\n    SD\n  end"
+    "code": "flowchart TD\n  C[\"창작자 — Studio 로 만든다\"] --> UP[\"콘텐츠 업로드\"]\n  UP --> MOD[\"안전·모더레이션<br/>미성년 비중이 높다\"]\n  MOD --> STORE[\"콘텐츠 저장·전송\"]\n  U[\"플레이어 1억 2,700만\"] --> EDGE[\"엣지 · 접속\"]\n  EDGE --> GS[\"게임 서버<br/>남의 코드를 우리 기계에서 · 상태가 있다\"]\n  STORE --> GS\n  GS --> SD[\"서비스 발견·오케스트레이션<br/>1,000+ 서비스 · 14.5만 대\"]\n  SD -.->|\"여기가 무너지면<br/>전부 무너진다\"| GS\n  GS --> ECON[\"경제 — Robux 가 창작자에게\"]\n  ECON --> C\n  subgraph note[\"유료 사용자 1.4%가 전부의 서버 비용을 댄다\"]\n    GS\n    SD\n  end\n  MQ[\"메시지 큐 — Kafka 하루 18조 건<br/>분석 · 모더레이션 · 매치메이킹이 기댄다\"]:::list\n  GS -.-> MQ"
   },
   "revenue_streams": [
     {
@@ -295,6 +295,30 @@
       ],
       "features": [
         "voice-safety-ml"
+      ]
+    },
+    {
+      "name": "메시지 큐 플랫폼",
+      "why": "Roblox 의 데이터는 사내 Kafka 플랫폼을 타고 회사를 가로지른다 — 분석, 모더레이션, 매치메이킹, AI 학습. 이 도메인은 그 길을 해마다 2.5배씩 넓히며 무너지지 않게 하는 일이다. 서비스 발견 도메인과 가르는 것은, 저쪽이 서비스가 서로를 찾는 길이라면 이쪽은 데이터가 흐르는 길이기 때문이다.",
+      "tech": [
+        {
+          "tech": "Apache Kafka (용도별 클러스터 · SSD/RAID0 · 대기 클러스터 · 제어 평면 장애 조치)",
+          "solves": "요구가 다른 트래픽을 클러스터별로 갈라 양이 큰 쪽이 중요한 쪽을 밀어내지 못하게 하고, 하루 18조 건을 99.995% 로 받는다.",
+          "limits": "용도마다 전용 클러스터는 못 둬서 같은 클러스터의 용도끼리 서버 설정을 공유한다. RAID0 은 디스크 하나 고장에 약해 acks·복제로 메워야 한다. 대기 클러스터는 평소 논다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+              "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+              "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+              "date": "2026-09-04",
+              "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "kafka-18-trillion"
       ]
     }
   ],
@@ -1883,6 +1907,306 @@
           ]
         }
       ]
+    },
+    {
+      "key": "kafka-18-trillion",
+      "name": "Kafka 하루 18조 건 — 모든 트래픽을 똑같이 다루지 않는다",
+      "domain": "메시지 큐 플랫폼",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "Roblox 에서 데이터가 회사를 가로질러 움직이는 길은 사내 Kafka 플랫폼이다. 분석 이벤트, 모더레이션 파이프라인, 매치메이킹, AI 학습 파이프라인, 스트림 처리, 텔레메트리가 모두 이 위에 있다. 두 해 동안 해마다 2.5배 넘게 늘어 하루 18조 건을 넘었다.\n\n회사가 먼저 뒤집는 통념은 '규모는 대개 하드웨어 문제'라는 것이다. 가장 큰 개선은 확장성을 끝에서 끝까지의 공학 문제로 다룰 때 나왔다고 적는다 — 그 위에 플랫폼을 지은 팀들과 함께 배치·압축을 켜게 하고, 층마다 다른 성공 지표를 맞추는 일이다. 서버 쪽은 적은 기계로 많은 양을 받는 것을, 사용자 쪽은 밀리초 단위 지연이나 배치 작업 완료 시간을 원한다.\n\n그리고 이 규모에서 가장 중요한 교훈은 **모든 트래픽을 똑같이 다루지 않는 것**이었다. 10ms 미만을 지켜야 하는 매치메이킹과 몇 초 늦어도 되는 거대한 분석 이벤트를 같게 다루면, 양이 가장 큰 쪽이 가장 중요한 쪽을 밀어낸다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "하루 **18조 건 이상**, 초당 **3억 건 이상**, 두 해 동안 해마다 **2.5배 넘게** 성장",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "label": "가용성",
+            "value": "**99.995%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "label": "요구가 다른 트래픽",
+            "value": "매치메이킹 끝에서 끝까지 **10ms 미만** · 분석 이벤트 수집은 **몇 초** 지연도 괜찮다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "label": "하드웨어",
+            "value": "HDD → SSD 로 디스크 I/O **10배**, RAID10 → RAID0 으로 디스크 I/O 약 **2배**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "label": "운영",
+            "value": "커지는 전체 함대의 OS 패치를 **30일 안에**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "규모를 어디서 키울지 생각하며",
+          "thought": "큰 시스템의 용량은 대개 하드웨어 문제라고들 한다. 우리 경험으로는 가장 큰 개선이 끝에서 끝까지의 공학에서 나왔다 — 우리 위에 플랫폼을 지은 팀과 함께 배치와 압축을 켜게 하면, 최종 사용자가 세부 설정을 몰라도 시스템이 효율적이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "트래픽이 몰리는 시간을 보며",
+          "thought": "양이 가장 큰 트래픽이 사업상 가장 중요한 트래픽을 밀어낸다 — 특히 정점에서. 둘을 똑같이 다루면 안 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "SSD 로 바꾼 뒤",
+          "thought": "디스크 I/O 가 병목이 아니게 되자 병목이 네트워크 처리량과 디스크 공간으로 옮겨 갔다 — 사들인 SSD 는 용량이 더 작았다. 병목은 없어지는 게 아니라 옮겨 간다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "용도별 클러스터",
+            "what": "지연·처리량 요구가 비슷한 트래픽을 묶은 Kafka 클러스터. 프로듀서·서버·컨슈머 설정과 하드웨어까지 그 용도에 맞춘다."
+          },
+          {
+            "name": "브로커 읽기·쓰기 스로틀",
+            "what": "하드웨어별 벤치마크로 정한 소프트웨어 상한. SSD 기계는 브로커당 처리량이 높고, HDD 기계는 오래 보관할 데이터에 맞다."
+          },
+          {
+            "name": "대기 클러스터",
+            "what": "평소 비워 두는 Kafka 클러스터. 한 클러스터가 통째로 무너지면 클라이언트를 이리로 옮긴다."
+          },
+          {
+            "name": "제어 평면",
+            "what": "클라이언트가 폴링해 다시 연결할지 알아내는 설정. 장애 조치·OS 패치·랙 비우기를 조율한다."
+          }
+        ],
+        "invariants": [
+          "트래픽은 요구(지연 · 처리량)별로 묶어 다룬다 — 양이 큰 쪽이 중요한 쪽을 밀어내지 못하게.",
+          "클러스터 하나가 통째로 무너져도 옮겨 갈 여유 용량이 늘 있다.",
+          "랙 하나를 통째로 내려도 데이터 가용성이 유지된다 — 랙을 인식해 복제한다.",
+          "자격증명은 자동으로 돌린다. 전송은 mTLS, 저장은 암호화."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "새 용도가 오면 **지연과 처리량의 맞바꿈**부터 정하고, 요구가 비슷한 트래픽끼리 묶은 클러스터에 둔다",
+            "why": "클라이언트 설정은 용도마다 맞출 수 있지만 서버 설정은 덜 유연하다 — 용도마다 전용 클러스터를 둘 수는 없다."
+          },
+          {
+            "step": "그 위에 플랫폼을 지은 팀들과 **배치·압축**을 기본으로 켠다",
+            "why": "최종 사용자가 세부 설정을 몰라도 효율적이 된다."
+          },
+          {
+            "step": "클러스터를 그 용도에 맞게 **하드웨어까지** 맞춘다 — SSD 는 높은 처리량, HDD 는 긴 보관. 벤치마크로 브로커 스로틀을 정한다",
+            "why": "하드웨어 한계를 알아야 소프트웨어 상한을 정할 수 있다."
+          },
+          {
+            "step": "메모리 할당과 페이지 캐시를 조정해 **최근 데이터는 메모리에서** 읽게 하고, 오래된 데이터를 읽을 때만 디스크를 친다",
+            "why": "귀한 IOPS 를 아낀다."
+          },
+          {
+            "step": "장애 때는 운영자가 범위를 정하면 **대기 클러스터**에 토픽·ACL 을 일괄 생성하고, 제어 평면 설정을 바꿔 클라이언트가 폴링으로 다시 붙게 한다",
+            "why": "살아 있는 클러스터끼리 옮기면 시끄러운 이웃 문제가 생긴다."
+          },
+          {
+            "step": "OS 패치 때는 **디스크의 데이터를 남긴 채** 재부팅해 빨리 회복시키고, Cruise Control 로 랙 인식 복제를 해 랙째 비운다",
+            "why": "커지는 함대를 30일 안에 패치한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "모든 트래픽을 한 방식으로 다룰 것인가",
+            "chosen": "**요구(지연 · 처리량)별로 묶어 클러스터를 나눈다** — 하드웨어까지 그 용도에 맞춘다.",
+            "alternatives": [
+              "모든 트래픽을 같은 클러스터·같은 설정으로",
+              "용도마다 전용 클러스터"
+            ],
+            "tradeoff": "같게 다루면 양이 가장 큰 트래픽이 정점에서 가장 중요한 트래픽을 밀어낸다. 용도마다 전용 클러스터는 유지할 수 없다고 적는다. 그래서 중간을 골랐다 — 같은 클러스터 안의 용도끼리는 서버 설정을 공유해야 한다는 대가가 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "question": "디스크 I/O 병목을 어떻게 풀 것인가",
+            "chosen": "**브로커를 가능한 한 SSD 로** 바꾼다.",
+            "alternatives": [
+              "HDD RAID10 을 그대로 늘린다"
+            ],
+            "tradeoff": "디스크 I/O 가 10배가 됐다. 대가는 병목이 네트워크 처리량과 디스크 공간으로 옮겨 간 것 — 사들인 SSD 는 용량이 더 작았다. 그래서 오래 보관할 데이터는 여전히 HDD 기계에 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "question": "남은 HDD 를 어떻게 쓸 것인가",
+            "chosen": "**RAID10 을 RAID0 으로** — 쓰기 한 번이 디스크 둘이 아니라 하나에.",
+            "alternatives": [
+              "RAID10 을 유지한다"
+            ],
+            "tradeoff": "디스크 I/O 가 약 두 배가 된다. 회사가 대가를 적는다 — 브로커마다 메시지 복제본이 디스크 하나에만 쓰이니 신뢰성 위험이 생긴다. 그래서 중요한 용도와 함께 acks 를 올리고 복제를 늘렸다 — 여러 리전으로의 복제까지.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "question": "장애 조치할 여유 용량을 어디에 둘 것인가",
+            "chosen": "**대기 Kafka 클러스터를 비워 둔다.**",
+            "alternatives": [
+              "살아 있는 다른 클러스터로 옮긴다"
+            ],
+            "tradeoff": "클러스터 하나가 통째로 무너져도 충분한 용량으로 옮길 수 있고, 살아 있는 클러스터끼리 트래픽을 옮길 때의 시끄러운 이웃 문제를 없앤다. 대가는 평소에는 아무 일도 하지 않는 클러스터 한 벌이다(이 사이트의 해석 — 글은 비용을 적지 않는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "question": "클라이언트를 어떻게 다른 클러스터로 옮길 것인가",
+            "chosen": "**제어 평면 설정을 바꾸고, 클라이언트가 그것을 폴링해** 다시 연결할지 판단한다. 토픽·ACL 은 대기 클러스터에 일괄 자동 생성.",
+            "alternatives": [
+              "애플리케이션마다 설정을 바꿔 다시 배포한다"
+            ],
+            "tradeoff": "운영자가 범위만 정하면 옮겨 간다. 대가는 모든 클라이언트가 제어 평면을 폴링해야 하고, 이 경로는 일반 실시간 용도용이라 다른 용도에는 MirrorMaker 2 미러링·데이터 백필 같은 별도 전략이 필요하다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          },
+          {
+            "question": "OS 패치 때 데이터를 어떻게 할 것인가",
+            "chosen": "**디스크의 데이터를 남긴 채** 패치하고 다시 합류시킨다. 랙 인식 복제로 랙째 비운다.",
+            "alternatives": [
+              "브로커를 비우고 새로 채운다"
+            ],
+            "tradeoff": "패치한 기계가 빨리 건강을 되찾아, 커지는 함대를 30일 안에 패치한다. 대가는 제어 평면에 이를 위한 맞춤 처리를 따로 지어야 했다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+                "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+                "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+                "date": "2026-09-04",
+                "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "consul-outage-cells",
+          "via": "회사 전체가 기대는 층",
+          "contract": "73시간 장애는 서비스 발견 한 층이 무너지면 전부 무너진다는 교훈이었다. 메시지 큐도 분석·모더레이션·매치메이킹이 모두 기대는 층이고, 이번에는 대기 클러스터와 정기적인 장애 연습으로 클러스터 하나가 통째로 무너지는 경우를 미리 대비한다. 두 글은 서로를 언급하지 않는다 — 이 연결은 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요구가 다른 트래픽이 각자의 클러스터로",
+          "question": "하루 18조 건을 어떻게 나눠 받는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  MM[\"매치메이킹<br/>10ms 미만\"]:::accent --> LOW[\"지연 우선 클러스터<br/>SSD · 지연 설정\"]\n  AN[\"분석 이벤트<br/>몇 초 괜찮다 · 양이 가장 크다\"] --> HIGH[\"처리량 우선 클러스터<br/>배치 · 압축\"]\n  HIST[\"오래 보관할 데이터\"] --> HDD[\"HDD 클러스터<br/>RAID0 + 높은 acks · 복제\"]\n  LOW --> CP[\"제어 평면 — 클라이언트가 폴링\"]\n  HIGH --> CP\n  HDD --> CP\n  CP -.->|\"클러스터가 무너지면\"| STBY[(\"대기 클러스터<br/>토픽 · ACL 일괄 생성\")]:::quiet"
+        },
+        {
+          "title": "클러스터 하나가 무너졌을 때",
+          "question": "클라이언트는 어떻게 다른 클러스터로 옮겨 가는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Serving: 용도별 클러스터에서 서비스\n  Serving --> ClusterDown: 클러스터 전체 장애\n  ClusterDown --> Scoped: 운영자가 범위를 정한다\n  Scoped --> Provisioned: 대기 클러스터에 토픽 · ACL 일괄 생성\n  Provisioned --> Switched: 제어 평면 설정 변경 — 클라이언트가 폴링해 재연결\n  Switched --> Serving\n  note right of Provisioned\n    살아 있는 클러스터로 옮기지 않는다\n    시끄러운 이웃을 피한다\n  end note"
+        },
+        {
+          "title": "실패 경로 — 병목은 옮겨 갈 뿐이다",
+          "question": "하드웨어를 바꿀 때마다 무엇을 새로 떠안았는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SAME[\"모든 트래픽을 똑같이\"] --> CROWD[\"<b>양이 큰 분석이<br/>매치메이킹을 밀어낸다</b>\"]:::accent\n  HDDB[\"HDD RAID10 — 디스크 I/O 병목\"] --> SSD[\"SSD — I/O 10배\"]\n  SSD --> MOVE[\"병목이 네트워크 · 디스크 공간으로\"]:::quiet\n  HDDB --> R0[\"RAID0 — I/O 약 2배\"]\n  R0 --> RISK[\"복제본이 디스크 하나에 — 신뢰성 위험\"]\n  RISK --> ACK[\"acks · 복제 · 다중 리전\"]\n  LIVE[\"살아 있는 클러스터로 장애 조치\"] --> NOISY[\"시끄러운 이웃\"]:::quiet\n  NOISY --> STBY[\"대기 클러스터\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+          "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+          "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+          "date": "2026-09-04",
+          "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1892,7 +2216,8 @@
     "Roblox 가 자기 호스트 환경에서 **메모리 한도를 실제로 어떻게 거는지** — Luau 문서는 '언어가 기본적으로 안 막는다'까지만 말한다.",
     "v1 에서 v3 사이(48M → 320M)에 무엇이 바뀌었는지 — 파라미터와 언어 수, 처리량은 나오지만 구조 변화는 밝히지 않는다.",
     "**⚠️ 311 에서 hold 를 유지한 채 `done` 으로 닫았다.** 도메인 4개 중 셋이 차 있고, 남은 `콘텐츠 저장·전송` 은 **공개 1차 자료가 없다**(2026-08-21 확인 — CDN 쪽은 커뮤니티 포럼 글뿐이고 2026-04 하이브리드 아키텍처 글은 회사 스스로 **아직 실시간으로 안 돈다** 고 밝히는 발표문이다). **290 의 판단을 적용했다**(이 판단은 이 사이트의 것이다). **새 자료가 나오면 `hold_reason` 을 지우고 다시 판다.**",
-    "**2021년 10월 이전이 언제부터 그 모양이었는지는 확인하지 못했다.** 사후분석이 장애 시점의 구조(단일 활성 데이터센터, HashiStack, 투표권 5+5 Consul 클러스터)는 적지만 그것을 언제 세웠는지는 적지 않는다. 그래서 첫 시기를 창업연도가 아니라 **장애가 난 2021년 10월**에서 시작했다 — 확인된 것은 '그때 그랬다'까지다."
+    "**2021년 10월 이전이 언제부터 그 모양이었는지는 확인하지 못했다.** 사후분석이 장애 시점의 구조(단일 활성 데이터센터, HashiStack, 투표권 5+5 Consul 클러스터)는 적지만 그것을 언제 세웠는지는 적지 않는다. 그래서 첫 시기를 창업연도가 아니라 **장애가 난 2021년 10월**에서 시작했다 — 확인된 것은 '그때 그랬다'까지다.",
+    "Kafka 글은 클러스터 수·브로커 수·대기 클러스터 크기를 적지 않는다. 앞으로 만들 컨슈머 프록시(경쟁 소비자 패턴으로 처리기 수를 파티션 수와 떼어 놓기)는 계획 단계다."
   ],
   "sources": [
     {
@@ -1936,6 +2261,13 @@
       "publisher": "Roblox Newsroom",
       "date": "2026-06",
       "summary": "v3 — 파라미터 94.6M→320M, 초당 1만 요청, 22개 언어 추가."
+    },
+    {
+      "title": "How Roblox Scaled Its Kafka Platform to Over 18 Trillion Messages a Day",
+      "url": "https://about.roblox.com/newsroom/2026/09/how-roblox-scaled-kafka-platform-over-18-trillion-messages-a-day",
+      "publisher": "Roblox Newsroom (Engineering) · Huizhi Lu, Julian Kudszus, Peter Yao, Jeffrey Zhong, Sen Li",
+      "date": "2026-09-04",
+      "summary": "사내 Kafka 메시지 큐 플랫폼을 두 해 동안 해마다 2.5배 넘게 키워 하루 18조 건(초당 3억 건 이상), 가용성 99.995% 로 운영한 기록. 트래픽을 지연·처리량 요구로 묶어 클러스터를 나누고, HDD 를 SSD 로, RAID10 을 RAID0 으로 바꾸며 생긴 신뢰성 위험을 acks·복제로 메웠다. 대기 클러스터로 장애 조치 여력을 남긴다."
     }
   ],
   "domain": "roblox.com",

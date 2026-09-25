@@ -824,9 +824,9 @@
       "country": "US",
       "category": "게임",
       "status": "done",
-      "features_done": 3,
+      "features_done": 4,
       "one_liner": "남이 만든 세계를 남의 기계가 아니라 우리 기계에서 돌려 주는 회사",
-      "updated_at": "2026-09-03",
+      "updated_at": "2026-09-26",
       "domain": "roblox.com"
     },
     {
@@ -2865,7 +2865,8 @@
     "광고를 빨리 보여 주면 더 눌리는가",
     "여러 업무의 추천을 한 모델로 묶는다",
     "내부 신원 — 남의 컴퓨트 위에서도 우리 인증서로",
-    "Postgres 를 여러 대로 나눈다"
+    "Postgres 를 여러 대로 나눈다",
+    "메시지 큐 플랫폼"
   ],
   "countries": {
     "KR": "한국",
