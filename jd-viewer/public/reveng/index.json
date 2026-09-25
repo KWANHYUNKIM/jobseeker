@@ -1268,9 +1268,9 @@
       "country": "JP",
       "category": "SaaS",
       "status": "done",
-      "features_done": 6,
+      "features_done": 7,
       "one_liner": "종이로 오는 것을 데이터로 바꿔 파는 일본 SaaS — 명함에서 시작해 청구서로 옮겨 갔다",
-      "updated_at": "2026-09-03",
+      "updated_at": "2026-09-26",
       "domain": "buildersbox.corp-sansan.com"
     },
     {
@@ -2866,7 +2866,8 @@
     "여러 업무의 추천을 한 모델로 묶는다",
     "내부 신원 — 남의 컴퓨트 위에서도 우리 인증서로",
     "Postgres 를 여러 대로 나눈다",
-    "메시지 큐 플랫폼"
+    "메시지 큐 플랫폼",
+    "권한 검사가 모든 화면을 느리게 한다"
   ],
   "countries": {
     "KR": "한국",

@@ -8,12 +8,11 @@
 
 ## 지금 파는 중
 
-**없다 — Roblox 재방문이 확장이 됐다.** Kafka 글(2026-09-04)을 기능 `kafka-18-trillion` 으로 쓰고 새 도메인 `메시지 큐 플랫폼` 을
-열었다(기능 4개째). 다음 사이클은 `--gaps` 대로.
+**없다 — Sansan 재방문이 확장이 됐다.** ACL 쿼리 튜닝 글(2026-09-09)을 기능 `acl-function-tradeoff` 로 쓰고 새 도메인
+`권한 검사가 모든 화면을 느리게 한다` 를 열었다(기능 7개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
-Roblox 뉴스룸은 RSS 가 없다 — `/newsroom` 목록에서 `/newsroom/YYYY/MM/<slug>` 를 뽑고, 날짜는 본문의 'Published' 로 본다.
-**Kafka 비교 문서 재료** — Roblox(하루 18조, 트래픽 요구별 클러스터) · Careem(Kafka 압축 벤치마크) · 데브시스터즈(KEDA lag 스케일링, 큐).
+Sansan 에 안 쓴 새 글 — 인증 기반 SDK 의 Rust 화(09-11) · Compose VRT 도입(09-18).
 
 **비교 문서 재료가 모였다 — 'LLM Wiki' 세 회사.** 사이보즈 Ergon(RAG 를 물리고 Wiki, `logos-security-harness`) ·
 컬리 `2026-delivery-domain-rag`(Wiki + RAG 를 두 번 갈아엎음) · LY `ko/llm-wiki-code-driven-knowledge-ssot`(08-28, 코드 기준 자동 최신화).
