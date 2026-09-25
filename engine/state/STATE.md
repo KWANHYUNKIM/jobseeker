@@ -8,10 +8,12 @@
 
 ## 지금 파는 중
 
-**없다 — zerodha 재방문(블로그 멈춤)을 마쳤다. 09-03 에 본 회사의 재방문이 끝났다 — 다음은 09-04 묶음(adyen·baemin·canva …).** 그 앞은 zalando 확장. uber 의 안 쓴 새 글 셋은 아래.
+**없다 — adyen 재방문에서 확장(`ai-in-sdlc`)을 마쳤다. 09-04 묶음 진행 중(다음 baemin·canva …).** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
+
+**비교 재료 — AI 로 개발하기.** Adyen `ai-in-sdlc`(모노레포·마켓플레이스·Architect·위험 태그·토큰 증액제)를 기존 '에이전트로 옮기기'(Shopify·freee·GitHub) 재료에 더한다.
 
 **비교 재료 — 에이전트·워크로드 신원.** Zalando `agent-identity-broker`(사용자→에이전트 위임, 토큰 교환, 에이전트는 제공자 토큰을 안 받는다) · Netflix 「Trading a Cloud Identity for Your Own」(Medium, 관리형 컴퓨트의 AWS 역할 → 사내 PKI 인증서, 두 주장을 맞대어 신뢰; 본문을 받아 둔 적 있으나 아직 기능으로 안 씀).
 
@@ -322,6 +324,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **adyen** — 2026-09-26 새 글 하나(AI in our development lifecycle, 게시 09-04·수정 09-11) → `ai-in-sdlc`. 새 글 찾기: `adyen.com/sitemap-en.xml` 의 knowledge-hub lastmod(대부분 마케팅 안내서 갱신이라 걸러야 한다), 글의 `datePublished`. `medium.com/feed/adyen` 최신 08-22(OpenRewrite). 본문이 링크한 Architect 설계 글은 아직 안 읽었다.
 - **zerodha** — 2026-09-26 **1회째 없음.** `zerodha.tech/index.xml` 최신이 **2024-03-28** — 엔지니어링 블로그가 멈췄다. CTO 개인 블로그 `nadh.in` 최신 2026-01-30(에세이). 다음 재방문에서도 없으면 `재시도 안 함` 으로.
 - **zalando** — 2026-09-26 새 글 하나(에이전트 신원 브로커, 09-25) → `agent-identity-broker`. 09-01 ZMS 예산 분할(광고 실험)·08-14 에이전틱 엔지니어링 스냅숏·07-24 Flink 이관은 아직 안 읽었다. `engineering.zalando.com/atom.xml` 이 열린다.
 - **youtube** — 2026-09-26 없음. `blog.youtube/rss/` 는 09-23 Made on YouTube 발표 묶음·크리에이터 소식뿐, `research.google/blog/rss/` 최근 30편에 YouTube 글 없음. updated_at 만. 1회째. (남은 경고 `content-id` 엔티티 문자열은 보수 사이클 몫)
