@@ -1,0 +1,277 @@
+{
+  "slug": "piolink",
+  "name": "파이오링크",
+  "name_en": "PIOLINK",
+  "aliases": [
+    "파이오링크"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "piolink.com",
+  "one_liner": "애플리케이션 전송 컨트롤러(PAS-K)·웹방화벽(WEBFRONT-K)·클라우드 보안스위치(TiFRONT)와 프라이빗 클라우드 HCI(POPCON)를 만드는 네트워크·보안 장비 회사",
+  "company": {
+    "business": "네트워크 및 보안 제품을 개발해 팔고, 보안관제·보안컨설팅·보안관리 솔루션 기반 정보보호 서비스를 제공한다(공고 회사 소개). 대표 제품은 애플리케이션 전송 컨트롤러 PAS-K, 웹방화벽 WEBFRONT-K, 클라우드 보안스위치 TiFRONT 이고, 프라이빗 클라우드용 HCI 제품 POPCON 을 개발한다. 2025년 기사 기준 네트워크 인프라 사업을 바탕으로 보안 부문과 일본 중심 해외 매출이 성장했다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "애플리케이션 및 클라우드 개발 (PAS-K)",
+        "url": "https://www.wanted.co.kr/wd/242610",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[전문연구요원] 프라이빗 클라우드(HCI) 가상화 개발자",
+        "url": "https://www.wanted.co.kr/wd/386829",
+        "publisher": "원티드"
+      },
+      {
+        "title": "파이오링크, 작년 매출 656억…전년比 12.6%↑",
+        "url": "https://www.newsis.com/view/NISX20260225_0003525852",
+        "publisher": "뉴시스",
+        "date": "2026-02-25",
+        "summary": "2025년 연결 매출·영업이익과 네트워크 인프라·보안·HCI·일본 중심 해외 매출 언급"
+      }
+    ],
+    "scale": [
+      {
+        "label": "2025 연결 매출",
+        "value": "656억원 (전년 대비 12.6% 증가)",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "파이오링크, 작년 매출 656억…전년比 12.6%↑",
+            "url": "https://www.newsis.com/view/NISX20260225_0003525852",
+            "publisher": "뉴시스",
+            "date": "2026-02-25",
+            "summary": "2025년 연결 매출·영업이익과 네트워크 인프라·보안·HCI·일본 중심 해외 매출 언급"
+          }
+        ]
+      },
+      {
+        "label": "2025 영업이익",
+        "value": "54억원 (전년 대비 108% 증가)",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "파이오링크, 작년 매출 656억…전년比 12.6%↑",
+            "url": "https://www.newsis.com/view/NISX20260225_0003525852",
+            "publisher": "뉴시스",
+            "date": "2026-02-25",
+            "summary": "2025년 연결 매출·영업이익과 네트워크 인프라·보안·HCI·일본 중심 해외 매출 언급"
+          }
+        ]
+      },
+      {
+        "label": "임직원",
+        "value": "430명 (전문연구요원 9명 포함 근무 중)",
+        "as_of": "2026-01",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원] 애플리케이션 및 클라우드Cloud 개발",
+            "url": "https://www.wanted.co.kr/wd/269408",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "네트워크 인프라 제품 (PAS-K·TiFRONT 등)",
+        "how": "애플리케이션 전송 컨트롤러·보안스위치 같은 장비를 기업·기관에 판다. 기사가 성장의 바탕으로 꼽은 사업이다.",
+        "domains": [
+          "애플리케이션 전송·L7 트래픽 (PAS-K)",
+          "장비 관리 Web UI·AI 기능"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "파이오링크, 작년 매출 656억…전년比 12.6%↑",
+            "url": "https://www.newsis.com/view/NISX20260225_0003525852",
+            "publisher": "뉴시스",
+            "date": "2026-02-25",
+            "summary": "2025년 연결 매출·영업이익과 네트워크 인프라·보안·HCI·일본 중심 해외 매출 언급"
+          },
+          {
+            "title": "애플리케이션 및 클라우드 개발 (PAS-K)",
+            "url": "https://www.wanted.co.kr/wd/242610",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "보안 (WEBFRONT-K·보안관제·컨설팅)",
+        "how": "웹방화벽 제품과 보안관제·컨설팅 서비스를 판다. 기사는 보안 사고 대응 수요로 보안 사업이 가파르게 성장했다고 썼다.",
+        "domains": [
+          "웹 애플리케이션 보안 (WEBFRONT-K)",
+          "장비 관리 Web UI·AI 기능"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "파이오링크, 작년 매출 656억…전년比 12.6%↑",
+            "url": "https://www.newsis.com/view/NISX20260225_0003525852",
+            "publisher": "뉴시스",
+            "date": "2026-02-25",
+            "summary": "2025년 연결 매출·영업이익과 네트워크 인프라·보안·HCI·일본 중심 해외 매출 언급"
+          },
+          {
+            "title": "WEBFRONT-K 웹 보안 기능 및 시그니처 개발",
+            "url": "https://www.wanted.co.kr/wd/269402",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "HCI (POPCON)",
+        "how": "공공기관·금융·제조 기업이 외부에 데이터를 두지 않고 클라우드를 운영하도록 프라이빗 클라우드 제품을 판다(공고 소개). 매출 비중은 공개된 것을 못 찾았다.",
+        "domains": [
+          "프라이빗 클라우드 HCI (POPCON)",
+          "장비 관리 Web UI·AI 기능"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "파이오링크, 작년 매출 656억…전년比 12.6%↑",
+            "url": "https://www.newsis.com/view/NISX20260225_0003525852",
+            "publisher": "뉴시스",
+            "date": "2026-02-25",
+            "summary": "2025년 연결 매출·영업이익과 네트워크 인프라·보안·HCI·일본 중심 해외 매출 언급"
+          },
+          {
+            "title": "AI 풀스택 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/386334",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "해외 (일본 중심)",
+        "how": "기사에 일본을 중심으로 해외 매출이 크게 늘었다고만 있다. 어느 제품이 팔렸는지는 확인하지 못했다.",
+        "domains": [
+          "애플리케이션 전송·L7 트래픽 (PAS-K)",
+          "웹 애플리케이션 보안 (WEBFRONT-K)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "파이오링크, 작년 매출 656억…전년比 12.6%↑",
+            "url": "https://www.newsis.com/view/NISX20260225_0003525852",
+            "publisher": "뉴시스",
+            "date": "2026-02-25",
+            "summary": "2025년 연결 매출·영업이익과 네트워크 인프라·보안·HCI·일본 중심 해외 매출 언급"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "애플리케이션 전송·L7 트래픽 (PAS-K)",
+        "why": "PAS-K 개발 공고가 L7 트래픽·네트워크 서비스, 장비 내부 API(Django), 클라우드 연동을 다룬다.",
+        "what_to_know": [
+          "L4/L7 로드밸런싱과 애플리케이션 전송 컨트롤러가 하는 일",
+          "C 소켓 프로그래밍과 네트워크 스택",
+          "장비 내부 관리 API 구조"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "애플리케이션 및 클라우드 개발 (PAS-K)",
+            "url": "https://www.wanted.co.kr/wd/242610",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "웹 애플리케이션 보안 (WEBFRONT-K)",
+        "why": "WEBFRONT-K 공고가 웹 보안 기능과 시그니처 개발, CVE 분석을 요구한다.",
+        "what_to_know": [
+          "OWASP Top 10 류 웹 공격과 탐지 방식",
+          "CVE 를 읽고 탐지 시그니처로 옮기는 과정",
+          "오탐과 미탐의 균형"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WEBFRONT-K 웹 보안 기능 및 시그니처 개발",
+            "url": "https://www.wanted.co.kr/wd/269402",
+            "publisher": "원티드"
+          },
+          {
+            "title": "웹방화벽 네트워크 및 클라우드 개발",
+            "url": "https://www.wanted.co.kr/wd/369638",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "프라이빗 클라우드 HCI (POPCON)",
+        "why": "POPCON HCI 는 컴퓨팅·스토리지·네트워크·가상화를 한 플랫폼으로 통합하고 OpenStack·Ceph·Kubernetes 를 제품에 맞게 통합한다(공고).",
+        "what_to_know": [
+          "KVM·OpenStack 가상화 구조",
+          "Ceph 분산 스토리지",
+          "가상머신 생성·마이그레이션·백업"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원] 프라이빗 클라우드(HCI) 가상화 개발자",
+            "url": "https://www.wanted.co.kr/wd/386829",
+            "publisher": "원티드"
+          },
+          {
+            "title": "AI 풀스택 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/386334",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "장비 관리 Web UI·AI 기능",
+        "why": "AI 풀스택 공고가 네트워크 장비 Web UI 안에 RAG 또는 파인튜닝 모델을 탑재하고 AI 기반 네트워크 모니터링·관리 자동화를 설계한다고 적었다.",
+        "what_to_know": [
+          "장비 관리 화면(React/TypeScript)과 Go·Python 백엔드",
+          "온프레미스 장비 안에서 도는 RAG/LLM 의 제약"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 풀스택 엔지니어 채용",
+            "url": "https://jumpit.saramin.co.kr/position/55041435",
+            "publisher": "점핏"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "전문연구요원(병역특례)을 꾸준히 뽑아 온 회사다",
+        "evidence": "2026년 1월 기준 430명의 임직원이 재직중에있으며, 현재 전문연구요원 9명이 근무중에 있습니다.",
+        "so_what": "석사 이상 병역 대상자라면 PAS-K·HCI 두 자리가 신입으로 열려 있다. 자격이 C·Python·네트워크(또는 Go·Linux)라 학부·대학원 때 한 시스템 프로그래밍이 곧 준비다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "HCI 는 글로벌 제품을 경쟁자로 명시한 신사업 쪽이다",
+        "evidence": "VMware, Nutanix 등 글로벌 HCI 제품과 경쟁하는 POPCON HCI를 함께 만들어갈 개발자를 찾습니다.",
+        "so_what": "면접에서 VMware·Nutanix 와 무엇이 다른지, OpenStack 기반의 장단점을 물을 수 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "장비 회사가 제품 안에 AI 기능을 넣기 시작했다",
+        "evidence": "- 네트워크 장비 Web UI 내 RAG(검색 증강 생성) 또는 LLM 파인튜닝 모델 개발 및 탑재",
+        "so_what": "클라우드 API 가 아니라 장비 안에서 돌아야 할 수 있다(추론). 폐쇄망·자원 제약에서 RAG 를 어떻게 돌릴지 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "postings": [],
+  "open_questions": [
+    "회사 홈페이지 회사소개(piolink.com/kr/company/overview.php)는 404 로 넘어가 읽지 못했다 — 회사 층위는 공고 소개문과 뉴시스 기사로만 썼다",
+    "제품별·해외 매출 비중은 공개 자료에서 찾지 못했다",
+    "연봉 근거는 이번 사이클에서 찾지 않았다 — salary 비움",
+    "'보안관제 경력(세종시 근무)'(saramin)은 본문이 비어 있다"
+  ]
+}

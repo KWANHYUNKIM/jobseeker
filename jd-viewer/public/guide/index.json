@@ -330,6 +330,17 @@
       "postings": 10,
       "study_items": 70,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "piolink",
+      "name": "파이오링크",
+      "aliases": [
+        "파이오링크"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }
