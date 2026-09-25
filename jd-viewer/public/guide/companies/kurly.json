@@ -266,8 +266,8 @@
     ],
     "signals": [
       {
-        "reading": "'주니어' 라는 제목의 프론트엔드 자리도 경력 4년 이상을 요구한다",
-        "evidence": "풀필먼트 주니어 프론트엔드 개발자 — 경력 4년 이상 (원티드 경력 표기)",
+        "reading": "'주니어' 라는 제목의 풀필먼트 프론트엔드 자리도 자격요건이 경력 4년 이상이다",
+        "evidence": "•프론트엔드 개발 경력 4년 이상이신 분",
         "so_what": "신입이 지원할 수 있는 자리로 보면 안 된다. 제목보다 경력 요건을 먼저 본다.",
         "confidence": "inferred"
       },
@@ -287,7 +287,176 @@
   },
   "salary": null,
   "people": [],
-  "postings": [],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/359779",
+      "title": "풀필먼트 주니어 프론트엔드 개발자",
+      "site": "wanted",
+      "verdict": "제목은 '주니어'지만 자격요건은 프론트엔드 경력 4년 이상이다. 입고·재고·출고·배송 운영 화면을 React/TypeScript 로 혼자 만들고, 운영 이슈를 스스로 분석해 대응할 수 있는 사람.",
+      "fit": {
+        "must_have": [
+          "프론트엔드 실무 4년 이상",
+          "React·TypeScript 서비스 개발·운영",
+          "상태 관리 라이브러리 실무(Zustand·Redux·React Query 중)",
+          "단위·컴포넌트 테스트 작성"
+        ],
+        "can_learn": [
+          "물류 용어(피킹·패킹·배차)",
+          "모노레포·Vite 설정",
+          "사내 디자인 시스템 기여 방식"
+        ]
+      },
+      "study": [
+        {
+          "topic": "서버 상태와 클라이언트 상태의 분리 (React Query + Zustand)",
+          "from": "qualification",
+          "quote": "•상태 관리 라이브러리 실무 경험이 있으신 분 (Zustand, Redux, React Query 등)",
+          "priority": "core",
+          "why": "재고·출고 현황처럼 서버에서 계속 바뀌는 데이터와, 작업자가 화면에서 고른 필터·선택 같은 로컬 상태가 한 화면에 섞인다. 둘을 한 저장소에 넣으면 갱신 시점이 꼬인다.",
+          "gap_check": "재고 목록을 React Query 로 받으면서 선택한 행을 Zustand 에 둘 때, 목록이 다시 받아지면 선택 상태는 어떻게 되는가?",
+          "drill": "가짜 재고 API(json-server 등)로 목록·상세·수량 수정 화면을 만들고, 수정 후 invalidate 로 목록이 갱신되게 한다. 선택 상태는 Zustand 에 둔다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "TanStack Query — Overview",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비동기 데이터 처리와 오류·로딩 상태",
+          "from": "qualification",
+          "quote": "•RESTful API 연동 및 비동기 데이터 처리 경험이 있으신 분",
+          "priority": "core",
+          "why": "현장 작업 화면은 요청이 실패해도 작업자가 무엇이 저장됐는지 알아야 한다. 로딩·실패·재시도 상태를 화면에 드러내는 것이 곧 운영 안정성이다.",
+          "gap_check": "같은 저장 요청을 두 번 눌렀을 때 서버에 두 번 가지 않게 하려면 프론트에서 무엇을 막는가?",
+          "drill": "수량 수정 버튼에 중복 클릭 방지, 실패 시 롤백(optimistic update + onError)을 넣고 네트워크를 끊어 동작을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "TanStack Query — Optimistic Updates",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "TypeScript 로 도메인 모델 타입 잡기",
+          "from": "qualification",
+          "quote": "•React, TypeScript 기반 서비스 개발 및 운영 경험이 있으신 분",
+          "priority": "core",
+          "why": "입고·재고·출고·배송은 같은 상품이 상태를 바꿔 가며 지나가는 흐름이다. 상태별로 가능한 필드가 달라서 타입으로 막아 두면 잘못된 화면 분기가 줄어든다.",
+          "gap_check": "출고 상태에 따라 보여 줄 버튼이 다를 때, 판별 유니온(discriminated union)으로 빠진 분기를 컴파일 단계에서 잡을 수 있는가?",
+          "drill": "주문 상태(입고대기·입고완료·피킹·패킹·출고·배송완료)를 판별 유니온으로 정의하고, switch 에서 never 체크로 누락 분기를 잡는 컴포넌트를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "TypeScript Handbook — Narrowing",
+              "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+              "kind": "docs",
+              "note": "Discriminated unions, never 를 이용한 exhaustiveness 체크"
+            }
+          ]
+        },
+        {
+          "topic": "컴포넌트 테스트 작성",
+          "from": "qualification",
+          "quote": "•단위 테스트 및 컴포넌트 테스트 작성 경험이 있으신 분",
+          "priority": "core",
+          "why": "주요업무에 '단위 테스트 및 통합 테스트 코드 작성'이 따로 적혀 있다. 운영 화면은 바뀐 곳이 많아 사람이 매번 눌러 보기 어렵다.",
+          "gap_check": "사용자가 보는 텍스트·역할로 요소를 찾는 테스트와, 구현 세부(클래스명·state)를 보는 테스트의 차이를 설명할 수 있는가?",
+          "drill": "위 재고 화면에 React Testing Library 로 '수량 수정 → 성공 메시지', '실패 → 원래 값 복구' 두 테스트를 쓴다(API 는 MSW 로 가짜 처리).",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "React Testing Library — Introduction",
+              "url": "https://testing-library.com/docs/react-testing-library/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Git 브랜치 전략과 코드 리뷰",
+          "from": "qualification",
+          "quote": "•Git 기반 브랜치 전략 및 코드 리뷰 경험이 있으신 분",
+          "priority": "core",
+          "why": "디자인 시스템과 공통 컴포넌트에 여러 팀이 기여하는 구조라 변경이 리뷰를 거쳐 합쳐진다.",
+          "gap_check": "자신이 써 본 브랜치 전략(Git Flow·trunk-based 등)을 고른 이유와 단점을 말할 수 있는가?",
+          "drill": "위 drill 저장소에서 기능 브랜치 → PR → 리뷰 코멘트 반영 → squash merge 까지 한 번 기록으로 남긴다.",
+          "hours": 2,
+          "resources": []
+        },
+        {
+          "topic": "Vite/Webpack 빌드 설정",
+          "from": "preference",
+          "quote": "•Webpack 또는 Vite 빌드 환경에 대한 이해 및 설정 경험이 있으신 분",
+          "priority": "high",
+          "why": "회사 소개문에 Micro-Frontend 아키텍처 기반의 모듈 설계가 나온다. 모듈을 따로 빌드하고 합치려면 빌드 설정을 읽을 수 있어야 한다.",
+          "gap_check": "Vite 의 개발 서버와 프로덕션 빌드가 각각 무엇으로 동작하는지 말할 수 있는가?",
+          "drill": "drill 저장소에 경로 별칭·환경 변수·청크 분리(manualChunks)를 설정하고 빌드 결과 크기를 전후로 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Vite — Guide",
+              "url": "https://vite.dev/guide/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모노레포에서 공통 컴포넌트 쓰기",
+          "from": "preference",
+          "quote": "•모노레포 환경에서의 개발 경험이 있으신 분",
+          "priority": "high",
+          "why": "주요업무에 '사내 디자인 시스템 및 공통 컴포넌트 활용 및 기여'가 있다. 공통 패키지를 여러 앱이 함께 쓰는 구조로 읽힌다(공고 기준 추론).",
+          "gap_check": "공통 버튼 컴포넌트를 고쳤을 때 그걸 쓰는 앱이 둘이면 어떤 순서로 확인하는가?",
+          "drill": "pnpm workspace 로 packages/ui 와 apps/wms 두 패키지를 만들고, ui 의 버튼을 앱에서 가져다 쓴다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "물류 운영 흐름 이해",
+          "from": "task",
+          "quote": "•피킹, 패킹, 배차, 포장재, 정산 등 도메인별 화면 개발 및 기능 개선",
+          "priority": "nice",
+          "why": "화면 사용자가 현장 작업자와 운영 관리자다. 피킹·패킹·배차가 무엇인지 모르면 요구사항을 옮기는 데서 막힌다.",
+          "gap_check": "피킹과 패킹의 차이, 그리고 배차가 그 뒤 어느 단계인지 순서대로 말할 수 있는가?",
+          "drill": "입고→재고→피킹→패킹→배차→배송을 한 장 흐름도로 그리고, 단계마다 작업자가 화면에서 누를 버튼 하나씩을 적는다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "현장 단말(태블릿·바코드 스캐너 입력)을 가정한 화면 하나",
+          "why": "공고 소개문이 현장 작업자가 활용할 UI 를 말한다. 키보드 대신 스캐너 입력이 들어오는 상황을 다뤄 본 포트폴리오는 드물다.",
+          "effort": "1~2일"
+        },
+        {
+          "idea": "수기 프로세스를 화면으로 옮긴 전후 비교",
+          "why": "주요업무에 '수기 운영 프로세스의 시스템화 및 자동화'가 있다. 엑셀로 하던 일을 화면으로 바꾼 예시를 전후 단계 수로 보여 준다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "지원서 제출 ＞ 1차 직무적합성 인터뷰 ＞ 2차 종합 인터뷰 ＞ 처우 협의 ＞ 최종 합격. 1차 직무적합성 인터뷰에서는 생성형 AI를 활용한 코딩테스트가 함께 진행되고, 2차 종합 인터뷰 전 온라인 직무적합성 검사가 있다(공고 기준).",
+        "expect": [
+          "서버 상태와 클라이언트 상태를 어떻게 나눴는가",
+          "요청 실패·중복 클릭을 화면에서 어떻게 막았는가",
+          "컴포넌트 테스트를 무엇 기준으로 썼는가",
+          "생성형 AI 를 쓰는 코딩테스트 — AI 가 준 코드를 어떻게 검증하는가"
+        ],
+        "sources": [
+          {
+            "title": "풀필먼트 주니어 프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/359779",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ],
   "open_questions": [
     "회사 공식 소개 페이지(kurly.com/shop/introduce/about_kurly.php)는 본문 없이 제목만 읽혔다 — 회사 층위는 기사와 공고로만 썼다",
     "FBK·3P 의 수수료 구조는 공개 자료에서 찾지 못했다",
