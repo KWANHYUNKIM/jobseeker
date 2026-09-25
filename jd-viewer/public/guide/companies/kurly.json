@@ -5,7 +5,7 @@
   "aliases": [
     "컬리"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "kurly.com",
   "one_liner": "마켓컬리·뷰티컬리를 직접 팔고 배송하며, 그 물류(FBK)와 결제(컬리페이)를 남에게도 여는 커머스 회사",
@@ -1708,14 +1708,146 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/325490",
+      "title": "커머스 시니어 백엔드 개발자(홈/전시/광고)",
+      "site": "wanted",
+      "verdict": "경력 8~14년, Java/Spring Boot. 컬리의 첫 화면(홈)·전시·광고 지면을 개인화해 설계·운영하고, 대용량 트래픽에서 캐싱·API 성능을 직접 책임질 수 있는 사람. 자격은 짧고, 이 자리의 색깔은 우대사항(개인화·A/B 테스트·광고 타게팅·지면 할당)에 있다.",
+      "fit": {
+        "must_have": [
+          "유관경력 8년 이상",
+          "Java·Spring Boot",
+          "서버 구축~배포·모니터링·트러블슈팅 직접 수행",
+          "여러 직군과 협업"
+        ],
+        "can_learn": [
+          "광고 도메인 핵심 로직",
+          "BigQuery 분석(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "대용량 트래픽 홈 API 의 캐싱 전략",
+          "from": "preference",
+          "quote": "- 대용량 트래픽 환경에서의 캐싱 전략 수립, API 성능 최적화 등 설계 및 운영 경험을 보유하신 분",
+          "priority": "high",
+          "why": "홈은 모든 고객이 가장 먼저 여는 화면이다. 개인화 영역과 공통 영역을 나눠 캐시하지 않으면 요청마다 전부 계산하게 된다.",
+          "gap_check": "홈 응답 중 모두에게 같은 부분과 사람마다 다른 부분을 어떻게 나눠 캐시하고, 캐시 만료가 한꺼번에 몰리는 것(stampede)은 어떻게 막는가?",
+          "drill": "홈 API 를 공통 섹션(Redis 캐시, TTL 에 난수 지터)과 개인화 섹션(요청 시 계산)으로 나눠 만들고, 부하 테스트로 캐시 적중률·p99 를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Redis — Documentation",
+              "url": "https://redis.io/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "개인화 전시와 A/B 테스트",
+          "from": "preference",
+          "quote": "- 홈/전시 개발 경험(개인화/추천 기반 서비스, A/B 테스트 등 실험 기반의 제품 개선 경험)이 있으신 분",
+          "priority": "high",
+          "why": "주요업무 첫 문장이 '고객의 니즈를 반영한 개인화된 홈 전시 및 광고 서비스'다. 전시를 바꿨을 때 좋아졌는지 판단하는 실험 구조가 함께 필요하다.",
+          "gap_check": "같은 사용자가 매번 같은 실험군에 들어가게 하려면 무엇으로 배정하고, 전시 변경의 효과를 어떤 지표로 판단하는가?",
+          "drill": "사용자 ID 해시로 실험군을 나누는 배정 모듈을 만들고, 홈 섹션 순서를 A/B 로 다르게 내려 준 뒤 노출·클릭 로그를 남긴다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "광고 노출 — 타게팅과 지면 할당",
+          "from": "preference",
+          "quote": "- 광고 노출 시스템 개발 경험(광고 타겟팅, 지면 할당 등)과 광고 도메인 핵심 로직에 대한 이해가 있는 분",
+          "priority": "high",
+          "why": "포지션 상세에 '타겟팅된 광고가 적재적소에 노출될 수 있도록 플랫폼 내 광고 지면 관리 및 노출 전반'을 설계한다고 적혀 있다. 회사 층위에서 이 도메인은 매출과 직접 이어진다.",
+          "gap_check": "지면 하나에 조건이 맞는 광고가 여럿일 때 무엇으로 고르고, 노출 수 상한(예산·빈도)은 어디서 세는가?",
+          "drill": "광고(타깃 조건·우선순위·일일 노출 상한)와 지면을 모델링하고, 요청이 오면 조건 필터 → 우선순위 → 상한 확인(Redis INCR) 순서로 광고 하나를 고르는 API 를 만든다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "직접 배포·모니터링·트러블슈팅",
+          "from": "qualification",
+          "quote": "- 서버 구축부터 배포, 모니터링, 트러블슈팅까지 직접 수행한 경험이 있으신 분",
+          "priority": "core",
+          "why": "주요업무에 '프로덕트별 성능 최적화 및 장애 대응'이 있다. 홈이 느려지면 전체 매출 경로가 느려진다(추론).",
+          "gap_check": "홈 API 가 특정 시간대에만 느려질 때 어떤 지표와 로그를 어떤 순서로 보는가?",
+          "drill": "홈 API 에 Micrometer 지표와 요청 추적 ID 를 넣고, 외부 호출 하나를 느리게 만들어 원인을 대시보드에서 찾는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Spring Boot — Actuator",
+              "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kafka·Elasticsearch·Kubernetes 운영",
+          "from": "preference",
+          "quote": "- Kafka, Redis, Kubernetes, Elasticsearch 등을 활용한 개발 및 운영 경험을 보유하신 분",
+          "priority": "nice",
+          "why": "전시·광고는 상품·재고 변화를 빠르게 반영해야 해서 이벤트와 검색 색인이 함께 쓰일 가능성이 크다(추론).",
+          "gap_check": "품절된 상품이 홈 전시에서 사라지기까지 어떤 경로로 몇 초가 걸리는지 설계할 수 있는가?",
+          "drill": "상품 품절 이벤트를 Kafka 로 받아 전시 캐시와 Elasticsearch 색인에서 제거하는 컨슈머를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Apache Kafka — Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Java·Spring Boot 설계 역량 (시니어)",
+          "from": "qualification",
+          "quote": "- Java / Spring Boot 기반 개발 경험을 보유하신 분",
+          "priority": "core",
+          "why": "자격이 짧은 대신 8년 이상을 요구한다. 전시 규칙이 계속 늘어나는 구조에서 코드를 확장 가능하게 나누는 능력을 볼 것으로 보인다(추론).",
+          "gap_check": "전시 섹션 종류가 20개로 늘어날 때 if 문 없이 섹션을 추가할 수 있는 구조를 설명할 수 있는가?",
+          "drill": "섹션 타입별 전략(Strategy) 빈을 등록하고, 섹션 추가가 클래스 하나 추가로 끝나도록 홈 조립기를 만든다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "실험 결과로 전시를 바꾼 사례",
+          "why": "우대사항이 'A/B 테스트 등 실험 기반의 제품 개선 경험'을 콕 집는다. 실험 설계·결과·결정까지 한 사례를 숫자로 준비한다.",
+          "effort": "경험 정리 반나절"
+        },
+        {
+          "idea": "BigQuery 로 노출·클릭 로그 분석",
+          "why": "우대에 BigQuery 가 있고, 컬리 데이터 플랫폼이 BigQuery 기반이다(데이터 엔지니어 공고). 전시 효과를 직접 쿼리로 확인할 수 있으면 분석 조직을 기다리지 않는다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "지원서 제출 → 직무적합성 인터뷰 → 종합 인터뷰 → 처우 협의 → 최종 합격. 직무적합성 인터뷰에서 생성형 AI 코딩테스트, 종합 인터뷰에서 온라인 직무적합성 검사가 함께 진행된다(공고 기준).",
+        "expect": [
+          "홈 API 를 어떻게 캐시하고 성능을 쟀는가",
+          "A/B 테스트를 어떻게 설계했는가",
+          "광고 지면 할당·노출 상한을 어떻게 구현하는가",
+          "장애를 직접 해결한 사례"
+        ],
+        "sources": [
+          {
+            "title": "커머스 시니어 백엔드 개발자(홈/전시/광고)",
+            "url": "https://www.wanted.co.kr/wd/325490",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
     "회사 공식 소개 페이지(kurly.com/shop/introduce/about_kurly.php)는 본문 없이 제목만 읽혔다 — 회사 층위는 기사와 공고로만 썼다",
     "FBK·3P 의 수수료 구조는 공개 자료에서 찾지 못했다",
-    "연봉 근거를 이번 사이클에서 찾지 않았다 — salary 는 비워 둔다",
-    "보안·개인정보 담당 2건(saramin)은 개발 직군이 아니라 브리핑 대상에서 뺄 예정",
     "시니어 데이터 엔지니어(wd/334058): 원티드 경력 표기는 7년 이상인데 자격요건 본문은 '8년 이상' — 어느 쪽이 맞는지 공고로는 알 수 없다",
-    "핀테크 백엔드(wd/334745): 자격요건의 'MCP (Multi-Party Computation)' 가 AI Agent 와 함께 적혀 있어 Model Context Protocol 을 뜻한 것인지 공고로는 확정할 수 없다"
+    "핀테크 백엔드(wd/334745): 자격요건의 'MCP (Multi-Party Computation)' 가 AI Agent 와 함께 적혀 있어 Model Context Protocol 을 뜻한 것인지 공고로는 확정할 수 없다",
+    "salary: 공고 10건 어디에도 금액이 없고, 이번 루프에서는 공개 연봉 자료를 확인하지 않았다 — 근거 없이 비워 둔다",
+    "브리핑에서 뺀 공고: '네트워크 보안 솔루션 운영 담당자'·'개인정보보호 담당자'(saramin) — 개발 직군이 아니다. 모집중 개발 공고 10건은 전부 postings 에 있다"
   ]
 }
