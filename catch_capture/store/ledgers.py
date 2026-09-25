@@ -42,6 +42,7 @@ EVENTS_ROTATED = BASE / "engagement" / "events.jsonl.1"
 
 KINDS = ("session", "view", "click", "dwell", "search", "filter")
 HEALTH_JSONL = BASE / "health_history.jsonl"
+CLOSURES_JSON = BASE / "job_closures.json"
 # crawl_run_site.site 는 ENUM 이다. 표에 없는 이름이 오면 그 줄만 버린다 —
 # 사이트 하나가 사이클 기록 전체를 죽이면 안 된다(ingest_crawl 과 같은 판단).
 HEALTH_SITES = ("wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats")
@@ -523,6 +524,73 @@ def seed_health(*paths: _Path) -> tuple[int, int]:
     return len(rows), n
 
 
+def _aware(value):
+    """원장 시각 → timezone 이 붙은 datetime. 옛 기록은 로컬(KST) naive 로 적혀 있다."""
+    from datetime import datetime
+    try:
+        dt = datetime.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return None
+    return dt if dt.tzinfo else dt.astimezone()
+
+
+def _date(value):
+    from datetime import datetime
+    try:
+        return datetime.fromisoformat(str(value)).date() if value else None
+    except (TypeError, ValueError):
+        return None
+
+
+def seed_closures(path: _Path = CLOSURES_JSON) -> tuple[int, int]:
+    """job_closures.json → job_closure_check. DB 가 모르는, 더 새 판정만 넣는다(멱등).
+
+    close_check 는 판정을 JSON 원장에 먼저 쓰고 DB 에 그 회차 판정만 옮긴다.
+    DB 가 꺼져 있던 회차의 판정은 거기서 끝이다 — 다음 회차는 **새로** 판정한 것만
+    옮기니까. 2026-09-13~18 에 컨테이너가 내려가 있는 동안 4,961건이 그렇게 파일에만
+    남았고, 그중 ats 166건은 "보드에서 내려감" 을 알고도 DB 에선 모집중이었다.
+    공고마다 DB 의 가장 최근 확인보다 늦은 판정만 넣으므로 몇 번을 돌려도 같다.
+    """
+    if not path.exists():
+        return 0, 0
+    try:
+        entries = json.loads(path.read_text(encoding="utf-8")).get("checked") or {}
+    except Exception:                                               # noqa: BLE001
+        return 0, 0
+
+    with store_conn.connect() as db:
+        with db.cursor() as cur:
+            cur.execute("SELECT id, site, pid FROM job")
+            ids = {(r["site"], r["pid"]): r["id"] for r in cur.fetchall()}
+            cur.execute("SELECT job_id, checked_at FROM job_closure_latest")
+            latest = {r["job_id"]: r["checked_at"] for r in cur.fetchall()}
+            n = 0
+            for key, e in entries.items():
+                site, _, pid = key.partition(":")
+                job_id = ids.get((site, pid))
+                at = _aware(e.get("checked_at"))
+                if job_id is None or at is None or not e.get("status"):
+                    continue
+                have = latest.get(job_id)
+                if have is not None and have >= at.replace(microsecond=0):
+                    continue
+                posted = _date(e.get("posted"))
+                cur.execute(
+                    """INSERT INTO job_closure_check
+                           (job_id, checked_at, closed, deadline_on, posted_on, evidence, checker)
+                       VALUES (%s,%s,%s,%s,%s,%s,'close_check')""",
+                    (job_id, at, e["status"] == "closed", _date(e.get("deadline")),
+                     posted, e.get("reason")),
+                )
+                if posted:
+                    cur.execute("UPDATE job SET posted_on = COALESCE(posted_on, %s) WHERE id = %s",
+                                (posted, job_id))
+                latest[job_id] = at
+                n += 1
+        db.commit()
+    return len(entries), n
+
+
 # ── CLI ─────────────────────────────────────────────────────────────
 def _status() -> None:
     with store_conn.cursor(autocommit=True) as cur:
@@ -567,6 +635,7 @@ def main() -> int:
     ap.add_argument("--history", action="store_true", help="공고 판본만")
     ap.add_argument("--events", action="store_true", help="행동 기록만")
     ap.add_argument("--health", action="store_true", help="크롤 헬스만")
+    ap.add_argument("--closures", action="store_true", help="마감 재확인 원장만")
     ap.add_argument("--also", action="append", default=[], metavar="JSONL",
                     help="다른 머신에서 가져온 원장 파일을 함께 넣는다 (여러 번 가능)")
     args = ap.parse_args()
@@ -581,7 +650,7 @@ def main() -> int:
         _status()
         return 0
 
-    both = not (args.trends or args.history or args.events or args.health)
+    both = not (args.trends or args.history or args.events or args.health or args.closures)
     if args.trends or both:
         srcs = [TRENDS_JSONL] + [x for x in extra if "trend" in x.name]
         d, m = seed_trends(*srcs)
@@ -597,6 +666,9 @@ def main() -> int:
         srcs = [HEALTH_JSONL] + [x for x in extra if "health" in x.name]
         n, added = seed_health(*srcs)
         print(f"크롤 헬스: 읽은 {n:,}줄 중 새로 {added:,}회차  ← {', '.join(x.name for x in srcs)}")
+    if args.closures or both:
+        n, added = seed_closures()
+        print(f"마감 원장: {n:,}건 중 DB 보다 새 판정 {added:,}건 적재  ← {CLOSURES_JSON.name}")
     return 0
 
 

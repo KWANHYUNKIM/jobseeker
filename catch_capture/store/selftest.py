@@ -463,6 +463,32 @@ def run() -> int:
               "⑤ 받아 온 보드에서 절반 넘게 안 보이면 사이트째 보류",
               f"보류 {a4['gone_skipped_sites']}")
 
+        # ── 10-c. 파일에만 남은 마감 판정 → DB (DB 가 꺼져 있던 회차) ──────
+        print("\n[10-c] 마감 원장 동기화 (store.ledgers.seed_closures)")
+        import tempfile
+        from store.ledgers import seed_closures
+        cur.execute("SELECT id FROM job WHERE site='ats' AND pid='lever:other:1'")
+        lever_id = cur.fetchone()["id"]
+        cur.execute("""INSERT INTO job_closure_check (job_id, checked_at, closed, evidence, checker)
+                       VALUES (%s, '2026-09-08 20:08:00+09', false, '원본 확인: 모집중', 'backfill')""",
+                    (lever_id,))
+        db.commit()
+        led = {"checked": {
+            "ats:lever:other:1": {"status": "closed", "reason": "lever 보드에서 내려감",
+                                  "checked_at": "2026-09-13T15:46:45"},       # DB 보다 새 판정
+            "ats:greenhouse:acme:0": {"status": "active", "reason": "옛 판정",
+                                      "checked_at": "2026-09-01T00:00:00"},
+            "ats:nobody:x:1": {"status": "closed", "checked_at": "2026-09-13T00:00:00"},
+        }}
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as fh:
+            json.dump(led, fh)
+        n1 = seed_closures(_Path(fh.name))
+        n2 = seed_closures(_Path(fh.name))
+        cur.execute("SELECT status FROM job_state WHERE job_id = %s", (lever_id,))
+        check(n1 == (3, 2) and n2 == (3, 0) and cur.fetchone()["status"] == "closed",
+              "DB 가 모르는 판정만 들어가고, 다시 돌려도 그대로다(멱등)",
+              f"1회 {n1} · 2회 {n2}")
+
         # 검색 앞 몇 쪽만 보는 사이트: 안 보였다고 사라짐 처리하지 않는다
         j1 = crawl_ingest(feed, label="j1", site_counts={"jumpit": 6},
                           listing={"jumpit": {"pids": {"90"}, "complete_scopes": set()}})

@@ -274,6 +274,12 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
             _db_stats = _db_ingest(raw_jobs, label=out_label, keywords=kws,
                                    site_counts=site_counts, listing=_listed)
             print(f"  [db] {_db_summary(_db_stats)}", flush=True)
+            # 마감 재확인이 DB 에 못 쓴 회차(DB 가 꺼져 있었다)는 파일 원장에만 남는다.
+            # close_check 는 다음 회차에 **새** 판정만 옮기므로 여기서 밀린 것을 채운다.
+            from store.ledgers import seed_closures as _seed_closures
+            _, _n_cl = _seed_closures()
+            if _n_cl:
+                print(f"  [db] 파일에만 있던 마감 판정 {_n_cl:,}건을 옮겼다", flush=True)
         except Exception as e:
             print(f"  [db] 이중 쓰기 건너뜀: {type(e).__name__}: {e}", flush=True)
 
