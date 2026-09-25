@@ -5,7 +5,7 @@
   "country": "US",
   "category": "핀테크",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "one_liner": "되돌릴 수 없는 일을 다시 시도해도 안전하게 만드는 일을 파는 회사",
   "business_model": "가맹점 대신 결제를 처리하고 거래액에 비례해 수수료를 받는다. 2025년 총 결제액 **1.9조 달러**(+34%)로 세계 GDP 의 약 1.6%가 이 위를 지나갔고, 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러다. 앞선 회사들과 결정적으로 다른 점은 **고객이 사용자가 아니라 개발자**라는 것이다 — 그래서 이 회사의 제품은 화면이 아니라 **API 의 계약**이고, '다시 시도해도 되는가' 같은 질문이 UX 문제가 아니라 상품의 핵심이 된다. 결제 위에 Billing·Invoicing·Tax 같은 매출 운영 제품(Revenue suite)을 얹어 수익원을 넓히고 있다.",
   "products": [
@@ -91,11 +91,27 @@
               "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
             }
           ]
+        },
+        {
+          "tech": "WebMCP(명령형 + 선언형 도구) + 점진적 도구 공개",
+          "solves": "브라우저로 결제하는 에이전트에게 사람용 Checkout 과 같은 로직 위의 도구를 상태별로 드러내, 토큰 42%·도구 호출 38% 를 줄이고 39% 빨리 끝나게 한다. 사업자는 연동을 바꾸지 않는다.",
+          "limits": "WebMCP 는 아직 자리 잡는 표준이다. 폼 도구의 모양이 렌더된 HTML 에 묶인다. 효과는 가상 매장 60회 시험으로만 쟀다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Stripe is designing Checkout for AI agents",
+              "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+              "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+              "date": "2026-09-22",
+              "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+            }
+          ]
         }
       ],
       "features": [
         "idempotent-payments",
-        "api-surface"
+        "api-surface",
+        "checkout-for-agents"
       ]
     },
     {
@@ -2635,6 +2651,271 @@
           "summary": "구독 지표를 평균 24시간 지연 배치에서 최소 15분 지연 스트리밍으로 옮긴 이야기. Flink state 로 증분 갱신하고, 초기 state 는 Spark 로 만들며, Pinot v2 의 윈도 집계로 예비집계를 없앴다. 고객이 지표 정의를 바꿔도 대시보드는 멈추지 않는다."
         }
       ]
+    },
+    {
+      "key": "checkout-for-agents",
+      "name": "에이전트용 Checkout — 할 수 있는 것만 보여 주고, 로직은 사람과 나눠 쓴다",
+      "domain": "결제 API·개발자 제품",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "Stripe Checkout 은 780만 개가 넘는 사업자가 쓰고 세계 GDP 의 약 0.45% 를 처리한다. 그 결제 화면에 사람이 아니라 **AI 에이전트**가 오기 시작했다 — 가상 머신과 브라우저를 든 쇼핑 에이전트들이 나오고, Stripe 는 에이전트가 처리하는 결제량이 늘어나는 것을 보고 있다.\n\n많은 회사(Stripe 도)가 에이전트용 MCP 서버를 따로 두지만, 에이전트가 기존 서비스를 쓰는 주된 길은 여전히 **브라우저**다. 그리고 웹사이트는 사람에게 맞춰져 있다. 결제를 끝내려면 에이전트가 화면과 DOM 을 해석하고, 무엇이 있고 무엇을 할 수 있는지 추론하고, 계획해 실행해야 한다. 기준을 재 보니 결제 한 번에 평균 토큰 **180만 개**, 도구 호출 **38.83번**, **2.5분 넘게** 걸렸다.\n\n사람의 구매 경험을 지연과 클릭 수로 다듬듯, 에이전트의 구매 경험은 **토큰(비용)과 도구 호출(수고, 많으면 헷갈림의 신호)**로 다듬어야 한다. 이 기능은 그것을 사업자가 연동을 바꾸지 않아도 되게, 그리고 사람용 화면과 따로 놀지 않게 해낸 방법이다.",
+        "metrics": [
+          {
+            "label": "기준(WebMCP 없음)",
+            "value": "결제 한 번에 토큰 평균 **180만**, 도구 호출 **38.83번**, **2.5분 초과**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          },
+          {
+            "label": "WebMCP 뒤",
+            "value": "토큰 **42% 감소**, 도구 호출 **38% 감소**, 결제 완료 **39% 빨라짐**(대기 약 **60초** 단축). 모든 시험에서 결제 성공",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          },
+          {
+            "label": "시험 조건",
+            "value": "가상의 아웃도어 매장에서 **6개 모델 · 60회**(절반 WebMCP, 절반 기준 브라우저 조작)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          },
+          {
+            "label": "적용 범위",
+            "value": "모든 Stripe Checkout 화면 — 사업자 **780만+**, 세계 GDP 약 **0.45%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기준을 재고 나서",
+          "thought": "지연을 어느 정도 예상하는 채팅형 앱에서조차 토큰 180만 개, 도구 호출 39번, 2.5분 넘게는 너무 많다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "도구 목록을 설계하며",
+          "thought": "도구 목록이 시각적 브라우저 자동화의 모호함을 덜어 주긴 한다. 하지만 목록이 크면 에이전트가 여전히 어느 행동이 유효한지 정해야 한다. 쓸 수 없거나 상관없는 도구와 인자까지 받으면 헤맨다. 도구 설명에 지시를 적어도, 애플리케이션이 이미 아는 제약을 에이전트가 추론하게 떠넘기는 것이다 — 나무의 가지를 쳐서 목표로 이끌어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "에이전트용 경로를 만들려다",
+          "thought": "사람이냐 에이전트냐에 따라 페이지 뒤의 사업 로직을 갈라놓고 싶지 않았다. 에이전트 전용 갈래는 어긋나기(drift) 쉽고 엔지니어의 잡일을 늘린다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "WebMCP",
+            "what": "웹사이트가 클라이언트 쪽에서 MCP 도구를 에이전트에 드러내게 하는 브라우저 기술. 에이전트는 DOM 을 헤매지 않고 get_order_summary · fill_payment_form 같은 도구를 부른다."
+          },
+          {
+            "name": "점진적 도구 공개",
+            "what": "페이지가 지금 상태에서 쓸 수 있는 도구와 인자만 드러낸다. 결제 버튼 도구(submit_payment)는 모든 칸이 채워지고 유효해야 나타난다."
+          },
+          {
+            "name": "명령형 도구",
+            "what": "기존 상태에서 답을 끌어내거나(get_order_summary) 기존 상태 전이를 일으키는(select_payment_method) 도구."
+          },
+          {
+            "name": "선언형 도구",
+            "what": "지금 보이는 입력 컨트롤에서 브라우저가 입력 스키마를 추론하는 폼 채우기 도구. 두 번째 폼 스키마를 손으로 유지하지 않는다."
+          }
+        ],
+        "invariants": [
+          "사업 로직은 사람용과 에이전트용으로 갈라지지 않는다 — 도구는 사람용 화면과 같은 기반에 위임한다.",
+          "지금 할 수 없는 행동의 도구는 드러내지 않는다 — 순서가 틀려 오류로 끝나는 호출을 줄인다.",
+          "결제 상태가 바뀌면 드러난 도구와 인자도 따라 바뀐다(카드가 아닌 수단을 고르면 카드 번호 인자가 빠진다).",
+          "사업자는 연동을 바꾸지 않아도 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "에이전트가 결제 세션과 쓸 수 있는 결제 수단을 살핀다(get_order_summary 등 명령형 도구)",
+            "why": "HTML 전체를 문맥에 넣고 버튼 위치를 추론하지 않게 한다."
+          },
+          {
+            "step": "결제 수단을 고르면(select_payment_method) 페이지가 **보이는 칸을 반영한 스키마의 폼 채우기 도구**를 드러낸다",
+            "why": "선언형 API 로 렌더된 HTML 에서 스키마를 추론해, 개발자가 칸을 더하면 도구에 저절로 반영된다."
+          },
+          {
+            "step": "에이전트가 그 도구로 필요한 정보를 한 번에 채운다",
+            "why": "칸마다 클릭하고 입력하던 탐색을 없앤다."
+          },
+          {
+            "step": "폼이 완성되고 유효해지면 그때 **submit_payment** 를 드러낸다",
+            "why": "순서가 틀린 호출로 오류가 나는 경우를 줄인다."
+          },
+          {
+            "step": "도구는 사람용 체크아웃과 같은 상태 관리·폼·접근성 기반에 위임한다",
+            "why": "사람용을 다듬으면 에이전트도 같이 이득을 본다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "에이전트가 결제에 닿는 길을 어디에 낼 것인가",
+            "chosen": "**브라우저 안의 Checkout 화면에 WebMCP 를 켠다** — 모든 Checkout UI 에.",
+            "alternatives": [
+              "에이전트용 MCP 서버(프로그램 인터페이스)만 둔다",
+              "에이전트가 화면과 DOM 을 해석하도록 둔다"
+            ],
+            "tradeoff": "MCP 서버가 있어도 에이전트가 기존 서비스를 쓰는 주된 길은 브라우저다. WebMCP 를 켜면 사업자 수백만이 연동을 바꾸지 않고 에이전트 구매자를 받는다. 대가는 WebMCP 가 아직 자리 잡는 중인 표준이라는 것 — 회사도 '브라우저-에이전트 행동의 진화하는 표준의 한 걸음'이라고 부른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          },
+          {
+            "question": "도구를 한꺼번에 내놓을 것인가",
+            "chosen": "**점진적 공개** — 지금 상태에서 쓸 수 있는 도구·인자만 드러낸다.",
+            "alternatives": [
+              "가능한 모든 행동을 처음부터 목록으로 준다",
+              "도구 설명에 제약을 적어 에이전트가 판단하게 한다"
+            ],
+            "tradeoff": "큰 목록은 쓸 수 없거나 상관없는 도구·인자를 문맥에 넣어 에이전트를 헤매게 하고, 설명에 적은 제약은 애플리케이션이 이미 아는 것을 에이전트에게 떠넘긴다. 점진적 공개는 도구 호출을 줄이고 신뢰성과 결제 성공을 높인다. 대가는 페이지가 상태마다 어떤 도구를 드러낼지를 계속 관리해야 한다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트용 로직을 따로 만들 것인가",
+            "chosen": "**만들지 않는다** — 도구는 사람용 화면의 상태 전이와 폼에 위임한다.",
+            "alternatives": [
+              "에이전트 전용 체크아웃 구현을 둔다"
+            ],
+            "tradeoff": "에이전트 전용 갈래는 어긋나고 엔지니어의 잡일을 늘린다. 공유하면 사람용 개선이 에이전트에게도 간다 — 그리고 사람과 에이전트가 가까워진 지금, 에이전트를 위한 개선이 사람 경험에 어떻게 돌아올지도 보고 있다고 적는다. 대가는 '에이전트 성능을 높이는 특화 인터페이스'와 '사람 화면과 맞춘 유지 보수성' 사이에서 균형을 잡아야 한다는 것이다 — 회사가 그렇게 표현한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          },
+          {
+            "question": "폼 채우기 도구의 스키마를 누가 유지할 것인가",
+            "chosen": "**선언형 API — 렌더된 HTML 에서 브라우저가 추론한다.**",
+            "alternatives": [
+              "손으로 두 번째 폼 스키마를 유지한다"
+            ],
+            "tradeoff": "개발자가 새 칸을 더하면 도구에 저절로 올라온다. 대가는 도구의 모양이 렌더된 HTML 에 묶인다는 것 — 화면 구조가 곧 에이전트 계약이 된다(이 사이트의 해석). 그래서 기존 접근성 패턴을 그대로 기대는 것이 도움이 됐다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 효과를 잴 것인가",
+            "chosen": "**결제 완료 · 실행 시간 · 도구 호출 · 토큰** — 6개 모델로 60회, 절반은 WebMCP·절반은 기준 브라우저 조작.",
+            "alternatives": [
+              "결제 성공 여부만 본다"
+            ],
+            "tradeoff": "모든 시험이 결제에 성공했으니 성공률만 봤다면 차이가 없었다. 토큰(비용)과 도구 호출(수고)을 재자 42%·38% 차이가 드러났다. 대가는 시험이 가상의 매장 하나, 60회라는 작은 표본이라는 것이다(이 사이트의 지적 — 실제 사업자 트래픽 수치는 아직 없다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Stripe is designing Checkout for AI agents",
+                "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+                "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+                "date": "2026-09-22",
+                "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "api-surface",
+          "via": "같은 계약을 사람·SDK·에이전트에게",
+          "contract": "API 표면 기능은 계약 하나가 문서·SDK·CLI 로 흘러가게 했다. 여기서는 사람용 Checkout 화면이 에이전트용 도구의 원천이 된다 — 둘 다 표면을 여러 벌로 갈라 유지하지 않으려는 같은 태도다(이 연결은 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "에이전트 하나가 결제를 끝내기까지",
+          "question": "도구는 언제 나타나고, 무엇에 위임하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  AG[\"브라우저를 든 쇼핑 에이전트\"] --> SUM[\"get_order_summary<br/>기존 상태에서 답\"]\n  SUM --> SEL[\"select_payment_method<br/>기존 상태 전이\"]\n  SEL --> FILL[\"<b>fill_payment_form</b><br/>보이는 칸에서 스키마 추론(선언형)\"]:::accent\n  FILL --> VALID{\"폼이 완성 · 유효한가\"}\n  VALID -->|\"아니다\"| FILL\n  VALID -->|\"그렇다\"| SUB[\"submit_payment — 이제야 드러남\"]\n  SUB --> DONE[\"결제 완료\"]\n  SHARED[(\"사람용 Checkout 과 같은 기반<br/>상태 관리 · 폼 · 접근성\")]:::quiet -.-> SUM\n  SHARED -.-> SEL\n  SHARED -.-> FILL"
+        },
+        {
+          "title": "결제 상태에 따라 드러나는 도구",
+          "question": "지금 할 수 없는 행동은 왜 목록에 없는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Inspect: 세션 · 결제 수단 확인 도구만\n  Inspect --> MethodChosen: 결제 수단 선택\n  MethodChosen --> Filling: 보이는 칸에 맞춘 폼 도구\n  Filling --> Filling: 카드 아닌 수단으로 바꾸면 카드 번호 인자 제거\n  Filling --> Ready: 모든 칸 유효\n  note right of Ready\n    submit_payment 는\n    이 상태에서만 드러난다\n  end note\n  Ready --> Paid: 결제\n  Paid --> [*]"
+        },
+        {
+          "title": "실패 경로 — 사람용 화면을 에이전트가 헤맬 때",
+          "question": "기준 측정에서 무엇이 토큰을 먹었나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  PAGE[\"사람에게 맞춘 결제 화면\"] --> DOM[\"화면 · DOM 을 해석해 할 일을 추론\"]\n  DOM --> COST[\"<b>토큰 180만 · 도구 호출 39 · 2.5분+</b>\"]:::accent\n  CATALOG[\"모든 도구를 한꺼번에\"] --> CONFUSE[\"쓸 수 없는 도구 · 인자로 헤맴\"]\n  CONFUSE --> ERR[\"순서가 틀린 호출 → 오류\"]:::quiet\n  FORK[\"에이전트 전용 구현\"] --> DRIFT[\"사람용과 어긋남 · 잡일 증가\"]:::quiet\n  SMALL[\"시험 — 가상 매장 · 60회\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Stripe is designing Checkout for AI agents",
+          "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+          "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+          "date": "2026-09-22",
+          "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -2655,7 +2936,8 @@
     "결제 처리·결제수단(카드망·은행·나라별 로컬 수단 연동)은 끝내 공개 엔지니어링 자료를 찾지 못해 도메인으로 세우지 않았다 — 135개 통화·185개국이라는 사실만 Ledger 글에 나온다.",
     "Billing 분석의 지연을 더 낮추는 방법은 '작업 중'이라고만 밝힌다.",
     "**stripe.dev 기술블로그 본문을 못 읽었다.** Ledger(자금 이동 추적·검증), Radar 구축기, 문서 데이터베이스 무중단 이전(2024년 6월 6일, Jimmy Morzaria·Suraj Narkhede), Billing 실시간 분석(2025년 9월 16일) 넷 다 제목과 날짜·저자까지만 오고 본문이 자바스크립트로 그려진다. 데이터 인프라와 자금 기록 축의 연표가 비어 있는 이유가 이것이다 — 회사가 안 쓴 게 아니라 이쪽이 못 읽었다.",
-    "**Charges API 가 언제부터였는지는 확인하지 못했다.** 문서가 그것이 무엇을 못 하는지는 적지만 언제 만들었는지는 적지 않는다. 그래서 첫 시기를 Charges 의 시작이 아니라 **그것을 버리게 만든 2019년**에서 열었고, Charges 시절의 모양은 `context` 에 남겼다."
+    "**Charges API 가 언제부터였는지는 확인하지 못했다.** 문서가 그것이 무엇을 못 하는지는 적지만 언제 만들었는지는 적지 않는다. 그래서 첫 시기를 Charges 의 시작이 아니라 **그것을 버리게 만든 2019년**에서 열었고, Charges 시절의 모양은 `context` 에 남겼다.",
+    "에이전트용 Checkout 의 효과는 가상의 매장에서 6개 모델·60회로 잰 것이다. 실제 사업자 트래픽에서 에이전트 결제가 얼마나 되는지, WebMCP 를 쓰는 에이전트가 얼마나 되는지는 그래프로만 보이고 수치가 없다."
   ],
   "sources": [
     {
@@ -2710,6 +2992,13 @@
       "publisher": "Stripe 엔지니어링 블로그 · Reed Trevelyan(Revenue Intelligence)",
       "date": "2025-09-16",
       "summary": "구독 지표를 평균 24시간 지연 배치에서 최소 15분 지연 스트리밍으로 옮긴 이야기. Flink state 로 증분 갱신하고, 초기 state 는 Spark 로 만들며, Pinot v2 의 윈도 집계로 예비집계를 없앴다. 고객이 지표 정의를 바꿔도 대시보드는 멈추지 않는다."
+    },
+    {
+      "title": "How Stripe is designing Checkout for AI agents",
+      "url": "https://stripe.dev/blog/how-stripe-is-designing-checkout-for-ai-agents",
+      "publisher": "Stripe Dot Dev Blog · Cara Mecozzi, Steve Kaliski",
+      "date": "2026-09-22",
+      "summary": "브라우저로 결제하는 AI 에이전트를 위해 모든 Stripe Checkout 화면에 WebMCP 를 켠 기록. 도구를 한꺼번에 내놓지 않고 지금 상태에서 할 수 있는 것만 드러내며(점진적 도구 공개), 사람용 화면의 상태·폼을 그대로 써서 사업 로직을 에이전트용으로 갈라놓지 않는다. 60회·6개 모델 시험에서 토큰 42%·도구 호출 38% 감소, 39% 빨라졌다."
     }
   ],
   "domain": "stripe.com",

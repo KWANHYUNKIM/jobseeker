@@ -8,11 +8,11 @@
 
 ## 지금 파는 중
 
-**없다 — Spotify 재방문이 확장이 됐다.** 베이지안 A/B 글(2026-09-08)을 기능 `no-bayesian-mode` 로 `실험 플랫폼` 에
-붙였다(기능 5개째). 다음 사이클은 `--gaps` 대로.
+**없다 — Stripe 재방문이 확장이 됐다.** 에이전트용 Checkout(WebMCP, 2026-09-22)을 기능 `checkout-for-agents` 로
+`결제 API·개발자 제품` 에 붙였다(기능 7개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
-Spotify 에 안 쓴 새 글 — AI 시대 품질(09-16) · Portal 로 Claude Code 토큰 90% 절감(09-03).
+Stripe 에 안 쓴 새 글 — Harbor(09-14) · 데이터 플레인 프록시(08-26) · DB 함대 자동 복구(07-16).
 
 **비교 문서 재료가 모였다 — 'LLM Wiki' 세 회사.** 사이보즈 Ergon(RAG 를 물리고 Wiki, `logos-security-harness`) ·
 컬리 `2026-delivery-domain-rag`(Wiki + RAG 를 두 번 갈아엎음) · LY `ko/llm-wiki-code-driven-knowledge-ssot`(08-28, 코드 기준 자동 최신화).
@@ -353,6 +353,8 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **adevinta** — 2026-09-26 **1회째 없음.** `techblog-sitemap.xml` 최신이 2026-03-09(AI 도구 파일럿, 이미 반영). Medium(`adevinta-tech-blog`)은 여전히 못 연다.
 
 ### 재방문 요령 (2026-09-26)
+
+- **Stripe 엔지니어링 글은 `stripe.com/blog` 이 아니라 `stripe.dev/blog` 로 옮겼다.** 피드는 `stripe.dev/blog/feed`(본문은 없고 날짜만). 본문은 페이지의 `__NEXT_DATA__` 에서 꺼낸다. stripe.com 쪽 RSS 는 사업·사기 동향 글뿐이다. WebFetch 는 404(봇 차단), curl 은 된다.
 
 - **새 글 유무는 목록이 아니라 기계용 색인으로 본다** — WordPress 는 `<종류>-sitemap.xml` 의 lastmod, Medium 은
   `medium.com/feed/<출판물>`, 논문으로 쓰인 회사는 arXiv API(`search_query=abs:<회사>+AND+(cat:cs.DC+OR+cat:cs.DB+OR+cat:cs.OS)&sortBy=submittedDate`).
