@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — 하이퍼커넥트 재방문(새 글 없음)을 마쳤다. GitHub 확장(`css-modules-replatform`) 뒤로 재방문 둘이 비었다.** `improving-site-performance-by-shipping-more-css`(2026-09-25)를 기능
+**없다 — 인스타그램 재방문(새 글 없음)을 마쳤다. GitHub 확장(`css-modules-replatform`) 뒤로 재방문 셋이 비었다.** `improving-site-performance-by-shipping-more-css`(2026-09-25)를 기능
 `css-modules-replatform` 으로 쓰고 새 도메인 `화면 스타일` 을 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
@@ -315,6 +315,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **instagram** — 2026-09-26 **1회째 없음.** 자료는 `engineering.fb.com/feed/` 에 섞여 나온다 — 09-03 이후 넷(AI 안경 · Rebalancer · 해저 케이블 · ZippyDB 프록시)은 인스타그램 글이 아니다. `medium.com/feed/instagram-engineering` 은 2022-07 에 멈췄다. **Meta 피드에서 제목·분류로 인스타그램 글을 골라야 한다.**
 - **hyperconnect** — 2026-09-26 **1회째 없음.** `feed.xml` 최신 **2026-04-22** — 다섯 달째 새 글이 없다. 안 쓴 글(LLM 설명 정책 1·2부 04-22 · 온디바이스 얼굴 식별 01-23 · 추천 실험 시스템 2025-08)은 **보강 재료**다.
 - **grab** — 2026-09-26 **1회째 없음.** `engineering.grab.com/feed.xml` 최신 08-28. 안 쓴 글(Data Mesh Part III 08-28 · Jarvis Pro 08-21 · Grab Bench 08-12 · Distroless 06-22)은 **보강 재료**다.
 - **freshworks** — 2026-09-26 **1회째 없음 — 단, 셀 수 없는 없음이다.** `eng-blogs` 는 목록 페이지가 404 이고 **사이트맵(`/sitemaps/index.xml` 아래 여덟 개)에도 안 실린다** — 새 글이 있어도 이 도구로는 찾을 길이 검색뿐이다. 검색에도 안 걸렸다. `medium.com/freshworks-developer-blog` 는 파트너 홍보이고 2024-08 에 멈췄다. **두 번째 없음이 나와도 `재시도 안 함` 으로 옮기기 전에 이 점을 적는다.**
