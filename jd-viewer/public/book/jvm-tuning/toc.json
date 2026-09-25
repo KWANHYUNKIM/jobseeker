@@ -326,7 +326,7 @@
           "title": "카드 테이블",
           "summary": "세대를 넘는 참조.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
@@ -334,7 +334,7 @@
           "title": "동시 표시",
           "summary": "애플리케이션과 같이 돈다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -342,7 +342,7 @@
           "title": "쓰기 장벽",
           "summary": "공짜가 아닌 추적.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.7",

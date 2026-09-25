@@ -1,0 +1,145 @@
+{
+  "book": "jvm-tuning",
+  "id": "card-table",
+  "no": "6.4",
+  "chapter": 6,
+  "title": "카드 테이블",
+  "summary": "세대를 넘는 참조.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "세대별 수집의 구멍이 무엇인지 안다.",
+    "카드 테이블이 그 구멍을 어떻게 막는지 안다.",
+    "그 비용을 로그에서 따로 읽는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.3절에서 **영 영역만 수집하면 싸다**고 했다. 그런데 **영 영역만 보고 판단할 수가 없다.**\n\n5.4절의 기준은 **루트에서 닿느냐**였다. 올드에 있는 객체가 영에 있는 객체를 가리키고 있으면, **그 영 객체는 살아 있다.** 그것을 알려면 **올드 전체를 훑어야** 한다 — 그러면 영만 수집하는 이득이 사라진다."
+    },
+    {
+      "type": "figure",
+      "caption": "영만 보면 놓치는 것",
+      "ascii": "   gc roots ---> old object O\n                     |\n                     v\n   young:  [ . . .  Y  . . . ]\n\n   Y is alive, but nothing in young points to it\n   scanning old to find O costs as much as collecting old\n\n   so the jvm writes down where such pointers were made",
+      "note": "**미리 적어 두면 훑지 않아도 된다.** 그 적어 두는 표가 카드 테이블이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "카드 한 장이 힙의 한 구간이다",
+      "md": "**힙을 일정 크기 구간으로 나누고 구간마다 한 바이트를 둔다.**\n\n> 올드의 어떤 필드에 참조를 쓰면 **그 구간의 카드를 더럽다고 표시**한다.\n> 젊은 수집은 **더러운 카드가 가리키는 구간만** 훑으면 된다.\n> 정확하지는 않다 — 카드 하나가 여러 객체를 덮으므로 **필요 없는 것도 같이 훑는다.** 대신 표가 작다."
+    },
+    {
+      "type": "prose",
+      "md": "## 비용을 따로 잰다\n\nG1 은 이 작업을 **`Scan Heap Roots`** 라는 이름으로 따로 찍어 준다. 그래서 **전체 멈춤에서 카드 스캔 몫만 떼어** 볼 수 있다.\n\n같은 개수의 객체를 만들고 **같은 개수의 참조를 쓰되, 쓰는 자리만** 바꿔 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "참조를 어디에 쓰느냐만 다르다 (`-Xmx1g`, G1)",
+      "columns": [
+        "",
+        "Scan Heap Roots 평균",
+        "젊은 수집 평균 멈춤"
+      ],
+      "rows": [
+        [
+          "영 배열에 쓴다",
+          "**1.97 ms**",
+          "6.79 ms"
+        ],
+        [
+          "올드 배열에 쓴다",
+          "**3.47 ms**",
+          "8.61 ms"
+        ],
+        [
+          "배수",
+          "**약 1.8배**",
+          "약 1.3배"
+        ]
+      ],
+      "note": "**전체 멈춤보다 카드 스캔 몫이 더 크게 움직인다.** 늘어난 멈춤이 어디서 왔는지가 이 표로 갈린다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "대조를 잡기가 쉽지 않았다",
+      "md": "**처음 두 번의 실험은 실패했다.**\n\n> 첫 판은 대조군이 참조를 다른 데 담아 두어 **둘 다 세대를 넘는 참조**를 만들었다(차이 17%).\n> 둘째 판은 대조군의 배열 자체가 커서 **그것이 승격되며** 오히려 대조군이 더 느렸다.\n> 전체 멈춤만 보면 이런 오염을 못 가른다. **`Scan Heap Roots` 라는 이름 붙은 항목**을 보고서야 분리됐다."
+    },
+    {
+      "type": "prose",
+      "md": "## 실무에서 이것이 보이는 자리\n\n**오래 사는 컬렉션에 새 객체를 계속 넣는 코드**가 이 비용을 만든다 — 캐시에 담기, 세션 맵 갱신, 올드에 자리 잡은 큰 배열의 원소 교체. **객체 수가 아니라 참조를 쓰는 횟수**가 비용이라는 점이 5.1절의 할당과 다르다. 그 값은 다음 절과 그다음 절에서 계속 나온다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Cross.java\npublic class Cross {\n    static Object[] oldArray;\n    public static void main(String[] a) throws Exception {\n        boolean cross = a[0].equals(\"cross\");\n        int N = 1_000_000;\n        oldArray = new Object[N];\n        for (int i = 0; i < N; i++) oldArray[i] = \"x\";\n        for (int i = 0; i < 15; i++) { System.gc(); Thread.sleep(30); }   // 올드로 보낸다\n\n        Object[] youngArray = new Object[N];        // 갓 만든 배열\n        for (int r = 0; r < 40; r++) {\n            Object[] target = cross ? oldArray : youngArray;\n            for (int i = 0; i < N; i++) target[i] = new byte[16];\n        }\n    }\n}\n\n# 만드는 객체 수도, 참조를 쓰는 횟수도 같다. 쓰는 자리만 다르다.\n\n$ java -Xmx1g -Xlog:gc+phases=debug -Xlog:gc -cp out Cross nocross\n  Scan Heap Roots 평균  1.97 ms (28회)   젊은수집 28회 평균 6.79 ms\n\n$ java -Xmx1g -Xlog:gc+phases=debug -Xlog:gc -cp out Cross cross\n  Scan Heap Roots 평균  3.47 ms (27회)   젊은수집 27회 평균 8.61 ms\n\n# --- 한 번의 GC 원문 ---\n\nGC(54)  Dirty Cards:            Sum: 7750, Workers: 5        # nocross\nGC(54)  Scan Heap Roots (ms):   Avg: 1.5, Sum: 7.3\n\nGC(48)  Dirty Cards:            Sum: 7749, Workers: 8        # cross\nGC(48)  Scan Heap Roots (ms):   Avg: 8.5, Sum: 67.8\n\n# 더러워진 카드 수는 거의 같은데 스캔 시간이 다르다.\n# 카드가 가리키는 구간에 무엇이 들어 있느냐가 값을 정한다.",
+      "note": "**더러운 카드 수가 같아도 비용은 다르다.** 카드는 '어디를 봐야 하나'만 알려 주고, 보는 값은 그 안의 내용이 정한다."
+    }
+  ],
+  "recap": [
+    "올드에서 영을 가리키는 참조 때문에 영만 보고는 판단할 수 없다.",
+    "올드를 다 훑으면 영만 수집하는 이득이 사라진다.",
+    "그래서 참조를 쓸 때 그 구간의 카드를 더럽다고 표시해 둔다.",
+    "카드는 정확하지 않고 필요 없는 것도 같이 훑지만 표가 작다.",
+    "쓰는 자리만 바꿨더니 Scan Heap Roots 가 1.97ms 에서 3.47ms 가 됐다."
+  ],
+  "drills": [
+    {
+      "task": "-Xlog:gc+phases=debug 로 Scan Heap Roots 몫을 전체 멈춤과 비교한다.",
+      "done_when": "카드 스캔이 몇 퍼센트인지 안다.",
+      "minutes": 12
+    },
+    {
+      "task": "오래 사는 컬렉션에 새 객체를 넣는 코드를 찾는다.",
+      "done_when": "후보를 목록으로 갖는다.",
+      "minutes": 12
+    },
+    {
+      "task": "Dirty Cards 수와 Scan Heap Roots 시간의 관계를 표로 만든다.",
+      "done_when": "둘이 비례하지 않는 것을 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "세대별 수집의 구멍은 무엇인가.",
+      "a": "올드에서 영을 가리키는 참조다. 그것을 찾으려면 올드를 다 훑어야 한다."
+    },
+    {
+      "q": "카드 테이블이 하는 일은.",
+      "a": "참조를 쓴 구간을 더럽다고 표시해 두어 그 구간만 훑게 한다."
+    },
+    {
+      "q": "카드 테이블이 정확하지 않다는 것은 무슨 뜻인가.",
+      "a": "카드 하나가 여러 객체를 덮어 필요 없는 것도 같이 훑는다는 뜻이다."
+    },
+    {
+      "q": "G1 에서 카드 스캔 비용은 어느 항목인가.",
+      "a": "Scan Heap Roots 다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "카드 테이블",
+      "what": "힙을 구간으로 나눠 구간마다 한 바이트를 두고 참조가 쓰인 구간을 표시하는 표."
+    },
+    {
+      "term": "Scan Heap Roots",
+      "what": "G1 로그에서 카드와 기억 집합을 훑는 데 든 시간을 가리키는 항목."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First (G1) Garbage Collector",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Garbage-First Garbage Collector Tuning",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-garbage-collector-tuning.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

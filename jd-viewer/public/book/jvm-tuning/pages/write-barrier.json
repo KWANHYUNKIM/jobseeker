@@ -1,0 +1,157 @@
+{
+  "book": "jvm-tuning",
+  "id": "write-barrier",
+  "no": "6.6",
+  "chapter": 6,
+  "title": "쓰기 장벽",
+  "summary": "공짜가 아닌 추적.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "장벽이 어디에 끼어드는지 안다.",
+    "수집기마다 다른 장벽 값을 잰다.",
+    "멈춤과 처리량의 거래를 숫자로 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.4절의 카드 표시도, 6.5절의 변경 따라잡기도 **누군가 해야 하는 일**이다. 그 일을 하는 것은 **수집기가 아니라 애플리케이션 스레드**다.\n\n참조를 쓰는 자리마다 JIT 이 **코드를 몇 줄 끼워 넣는다.** 그것이 쓰기 장벽이고, **내 코드가 대신 내는 세금**이다."
+    },
+    {
+      "type": "figure",
+      "caption": "obj.field = value 한 줄이 실제로 하는 일",
+      "ascii": "   what you wrote          what runs\n   --------------          ---------\n   obj.field = value       [pre-barrier]   remember the OLD value   (satb)\n                           obj.field = value\n                           [post-barrier]  mark the card dirty      (card)\n\n   serial and parallel     post only, and only across generations\n   g1                      pre and post, with region checks\n   zgc                     neither; the cost moves elsewhere",
+      "note": "**기본형 필드 쓰기에는 장벽이 없다.** 참조일 때만 붙는다 — 그래서 둘을 비교하면 값이 나온다."
+    },
+    {
+      "type": "prose",
+      "md": "## 재 본다 — 참조 쓰기와 기본형 쓰기\n\n같은 프로그램에서 **참조 배열에 3억 번, 기본형 배열에 3억 번** 쓴다. 기본형 쪽이 **장벽 없는 기준선**이고, 그 차이가 **장벽 값**이다."
+    },
+    {
+      "type": "table",
+      "caption": "3억 번 쓰기, 수집기만 바꿈 (`-Xmx1g`)",
+      "columns": [
+        "수집기",
+        "참조 쓰기",
+        "기본형 쓰기",
+        "차이(장벽)"
+      ],
+      "rows": [
+        [
+          "Serial",
+          "107 / 117 ms",
+          "46 / 62 ms",
+          "**61 / 55 ms**"
+        ],
+        [
+          "Parallel",
+          "139 / 197 ms",
+          "48 / 44 ms",
+          "**91 / 153 ms**"
+        ],
+        [
+          "G1",
+          "571 / 537 / 489 ms",
+          "43 / 52 / 46 ms",
+          "**528 / 485 / 443 ms**"
+        ],
+        [
+          "ZGC",
+          "51 ms",
+          "42 ms",
+          "**9 ms**"
+        ]
+      ],
+      "note": "**기본형 기준선은 넷 다 40~60ms 로 같다.** 달라지는 것은 참조 쓰기뿐이고, 그것이 곧 장벽 값이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "G1 이 비싼 이유",
+      "md": "**G1 은 앞뒤로 두 번 끼어든다.**\n\n> **앞**(SATB) — 덮어쓰기 전의 옛 값을 적어 둔다. 6.5절의 동시 표시가 그것을 읽는다.\n> **뒤**(카드) — 리전이 다른지 검사하고 카드를 더럽힌다. 6.4절이 그것을 읽는다.\n> 게다가 G1 은 **리전 구조**라 검사가 세대 비교보다 복잡하다. Serial 의 여덟 배 남짓이 그 값이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "이것이 '멈춤을 줄인 값'이다",
+      "md": "**G1 은 공짜로 멈춤을 줄이지 않았다.**\n\n> 6.5절에서 30ms 짜리 표시를 1.3ms 멈춤으로 바꿨다. 그 대가가 **여기 참조 쓰기마다** 붙어 있다.\n> 그래서 **참조 쓰기가 많은 애플리케이션에서는 G1 이 손해**일 수 있다 — 배치나 계산 작업이 그렇다.\n> 8장에서 수집기를 고를 때 **\"멈춤이 중요한가 처리량이 중요한가\"** 를 먼저 묻는 이유가 이 표다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "ZGC 는 확인하지 못했다",
+      "md": "**ZGC 의 참조 쓰기가 9ms 로 거의 공짜였다.**\n\n> ZGC 는 쓰기가 아니라 **읽기 쪽에 장벽**을 둔다고 알려져 있다. 그래서 읽기로 비용을 옮겼는지 확인하려 했다.\n> 그런데 **읽기 벤치마크가 실패했다** — 참조를 읽고 `hashCode()` 를 부르게 했더니 그 호출 비용이 지배해 **수집기 셋이 469·492·477ms 로 거의 같게** 나왔다.\n> **쓰기 값은 쟀고, 읽기 쪽으로 옮겨 갔는지는 이 책에서 확인하지 못했다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Barrier.java\npublic class Barrier {\n    static Object[] refs;\n    static long[]   prims;\n    public static void main(String[] a) {\n        int N = 1 << 20, R = 300;\n        refs  = new Object[N];\n        prims = new long[N];\n        Object v = new Object();\n        long t0 = System.nanoTime();\n        for (int r = 0; r < R; r++) for (int i = 0; i < N; i++) refs[i] = v;\n        long refMs = (System.nanoTime()-t0)/1_000_000;\n        t0 = System.nanoTime();\n        for (int r = 0; r < R; r++) for (int i = 0; i < N; i++) prims[i] = 7L;\n        long primMs = (System.nanoTime()-t0)/1_000_000;\n        System.out.printf(\"참조쓰기 %,5d ms   기본형쓰기 %,5d ms   차이 %,5d ms%n\",\n            refMs, primMs, refMs - primMs);\n    }\n}\n\n# --- 1회차 ---\n  UseSerialGC      참조쓰기   107 ms   기본형쓰기    46 ms   차이    61 ms\n  UseParallelGC    참조쓰기   139 ms   기본형쓰기    48 ms   차이    91 ms\n  UseG1GC          참조쓰기   571 ms   기본형쓰기    43 ms   차이   528 ms\n\n# --- 2회차 ---\n  UseSerialGC      참조쓰기   117 ms   기본형쓰기    62 ms   차이    55 ms\n  UseParallelGC    참조쓰기   197 ms   기본형쓰기    44 ms   차이   153 ms\n  UseG1GC          참조쓰기   537 ms   기본형쓰기    52 ms   차이   485 ms\n  UseZGC           참조쓰기    51 ms   기본형쓰기    42 ms   차이     9 ms\n\n# --- 3회차 (G1) ---\n  UseG1GC          참조쓰기   489 ms   기본형쓰기    46 ms   차이   443 ms\n\n# --- 확인 실패: 읽기 쪽 ---\n\n$ java -XX:+UseSerialGC -Xmx1g -cp out Read\n  참조읽기   567 ms   기본형읽기    98 ms   차이   469 ms\n$ java -XX:+UseG1GC    -Xmx1g -cp out Read\n  참조읽기   593 ms   기본형읽기   101 ms   차이   492 ms\n$ java -XX:+UseZGC     -Xmx1g -cp out Read\n  참조읽기   579 ms   기본형읽기   102 ms   차이   477 ms\n\n# hashCode() 호출 비용이 지배해 수집기 차이가 안 보인다.\n# 이 벤치마크로는 읽기 장벽을 분리하지 못했다.",
+      "note": "**G1 의 장벽 값이 Serial 의 여덟 배 남짓**이다. 세 번 재서 443~528ms 로 일관됐다."
+    }
+  ],
+  "recap": [
+    "카드 표시와 변경 추적은 수집기가 아니라 애플리케이션 스레드가 한다.",
+    "JIT 이 참조 쓰기마다 코드를 끼워 넣는다 — 기본형 쓰기에는 안 붙는다.",
+    "기본형 기준선은 수집기와 무관하게 40~60ms 로 같았다.",
+    "장벽 값은 Serial 55~61ms, Parallel 91~153ms, G1 443~528ms, ZGC 9ms 였다.",
+    "G1 의 짧은 멈춤은 이 장벽 값을 치르고 산 것이다."
+  ],
+  "drills": [
+    {
+      "task": "Barrier 예제를 돌려 내 환경의 장벽 값을 잰다.",
+      "done_when": "수집기별 차이를 숫자로 갖는다.",
+      "minutes": 12
+    },
+    {
+      "task": "참조 쓰기가 많은 내 코드를 찾아 본다.",
+      "done_when": "컬렉션 갱신이 잦은 자리를 목록으로 만든다.",
+      "minutes": 12
+    },
+    {
+      "task": "같은 워크로드를 Parallel 과 G1 로 돌려 총 처리 시간을 비교한다.",
+      "done_when": "멈춤과 처리량의 거래를 확인한다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "쓰기 장벽을 실행하는 것은 누구인가.",
+      "a": "애플리케이션 스레드다. JIT 이 참조 쓰기 자리에 코드를 끼워 넣는다."
+    },
+    {
+      "q": "기본형 쓰기에 장벽이 없는 이유는.",
+      "a": "참조가 아니므로 도달 가능성에 영향을 주지 않기 때문이다."
+    },
+    {
+      "q": "G1 의 장벽이 비싼 이유는.",
+      "a": "앞(SATB)과 뒤(카드) 두 번 끼어들고 리전 검사까지 하기 때문이다."
+    },
+    {
+      "q": "G1 의 짧은 멈춤은 무엇과 바꾼 것인가.",
+      "a": "참조 쓰기마다 붙는 장벽 비용, 즉 처리량이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "쓰기 장벽",
+      "what": "참조를 쓰는 자리에 JIT 이 끼워 넣는 코드. 카드 표시와 변경 기록을 한다."
+    },
+    {
+      "term": "SATB",
+      "what": "Snapshot At The Beginning. 덮어쓰기 전의 옛 값을 적어 두어 동시 표시가 놓치지 않게 하는 방식."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First (G1) Garbage Collector",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JEP 333: ZGC — A Scalable Low-Latency Garbage Collector",
+      "url": "https://openjdk.org/jeps/333",
+      "publisher": "OpenJDK"
+    }
+  ]
+}

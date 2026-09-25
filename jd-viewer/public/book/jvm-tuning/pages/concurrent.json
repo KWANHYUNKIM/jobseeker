@@ -1,0 +1,118 @@
+{
+  "book": "jvm-tuning",
+  "id": "concurrent",
+  "no": "6.5",
+  "chapter": 6,
+  "title": "동시 표시",
+  "summary": "애플리케이션과 같이 돈다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "동시 주기의 로그를 읽는다.",
+    "주기 전체 시간과 실제 멈춤을 가른다.",
+    "GC 번호가 뒤섞이는 이유를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.1절의 표시는 **멈춰 세우고** 했다. 힙이 커질수록 그 멈춤이 길어진다 — **표시 비용은 살아 있는 양에 비례**하니까.\n\n그래서 **애플리케이션을 돌리면서 표시**한다. 다만 표시하는 동안 애플리케이션이 참조를 바꾸므로 **그 변경을 따라잡는 장치**가 필요하다. 그것이 다음 절의 쓰기 장벽이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 로그에서 주기 한 바퀴를 본다\n\nG1 의 동시 표시 주기는 **`Concurrent Mark Cycle`** 로 열리고 닫힌다. 그 사이에 **짧은 멈춤 둘**(`Pause Remark`, `Pause Cleanup`)이 들어간다."
+    },
+    {
+      "type": "figure",
+      "caption": "30ms 중 멈춘 시간은 1.3ms",
+      "ascii": "   0.193s  GC(8)  Pause Young (Concurrent Start)      5.469ms   <- stop\n   0.193s  GC(9)  Concurrent Mark Cycle  begins\n   0.206s  GC(10) Pause Young (Normal)              3.631ms   <- stop, cuts in\n   0.219s  GC(11) Pause Young (Normal)              1.396ms   <- stop, cuts in\n   0.220s  GC(9)  Pause Remark                       1.239ms   <- stop\n   0.222s  GC(9)  Pause Cleanup                      0.047ms   <- stop\n   0.223s  GC(9)  Concurrent Mark Cycle  30.015ms\n\n   the cycle ran 30 ms; Remark + Cleanup stopped the app for 1.286 ms",
+      "note": "**나머지 28.7ms 는 애플리케이션이 돌고 있었다.** 그것이 동시라는 말의 뜻이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "GC 번호가 순서대로 안 나온다",
+      "md": "**GC(9) 가 시작한 뒤 GC(10)·GC(11) 이 먼저 끝난다.**\n\n> 동시 주기는 **오래 걸리므로 그 사이에 젊은 수집이 끼어든다.**\n> 그래서 로그를 시간순으로 읽으면 **번호가 9 → 10 → 11 → 9 → 9** 순으로 나온다.\n> 로그를 GC 번호로 정렬해서 읽으면 **이 겹침이 안 보인다** — 시간순으로 읽어야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 Remark 는 멈춰야 하나",
+      "md": "**동시에 표시하는 동안 애플리케이션이 참조를 바꿨기 때문**이다.\n\n> 표시가 끝난 뒤에 생긴 변경을 **한 번에 따라잡는 자리**가 `Remark` 다.\n> 그 변경 목록은 **쓰기 장벽이 모아 둔다**(다음 절).\n> 모아 둔 양이 많을수록 `Remark` 가 길어진다 — **쓰기가 많은 애플리케이션에서 이 멈춤이 자란다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 무엇이 줄고 무엇이 늘었나\n\n멈춤은 **1.286ms 로 줄었다.** 대신 **총 일의 양은 늘었다** — 같은 표시를 하면서 변경을 따라잡는 장치를 얹었으니까. **처리량을 멈춤과 바꾼 것**이고, 이 거래가 다음 절에서 숫자로 나온다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 6.1~6.3 과 같은 Live.java. 생존을 많게 해 올드를 채운다.\n\n$ java -Xmx160m -Xlog:gc -cp out Live 4\n\n[0.019s][info][gc] Using G1\n[0.108s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 23M->6M(130M) 3.975ms\n[0.120s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 43M->13M(130M) 3.709ms\n   ... 올드가 차 간다 ...\n[0.182s][info][gc] GC(7) Pause Young (Normal) (G1 Evacuation Pause) 104M->70M(142M) 6.163ms\n[0.193s][info][gc] GC(8) Pause Young (Concurrent Start) (G1 Evacuation Pause) 106M->77M(142M) 5.469ms\n[0.193s][info][gc] GC(9) Concurrent Mark Cycle\n[0.206s][info][gc] GC(10) Pause Young (Normal) (G1 Evacuation Pause) 108M->83M(150M) 3.631ms\n[0.219s][info][gc] GC(11) Pause Young (Normal) (G1 Evacuation Pause) 115M->90M(150M) 1.396ms\n[0.220s][info][gc] GC(9) Pause Remark 91M->91M(155M) 1.239ms\n[0.222s][info][gc] GC(9) Pause Cleanup 101M->101M(155M) 0.047ms\n[0.223s][info][gc] GC(9) Concurrent Mark Cycle 30.015ms\n[0.230s][info][gc] GC(12) Pause Young (Normal) (G1 Evacuation Pause) 118M->95M(155M) 3.959ms\n[0.234s][info][gc] GC(13) Pause Young (Concurrent Start) (G1 Evacuation Pause) 122M->101M(155M) 1.478ms\n[0.234s][info][gc] GC(14) Concurrent Mark Cycle\n[0.237s][info][gc] GC(14) Pause Remark 119M->119M(160M) 0.426ms\n[0.240s][info][gc] GC(15) Pause Young (Normal) (G1 Evacuation Pause) 124M->105M(160M) 1.861ms\n[0.241s][info][gc] GC(14) Pause Cleanup 106M->106M(160M) 0.035ms\n[0.241s][info][gc] GC(14) Concurrent Mark Cycle 6.585ms\n\n# GC(9): 주기 30.015ms 중 멈춤은 Remark 1.239 + Cleanup 0.047 = 1.286ms\n# GC(14): 주기 6.585ms 중 멈춤은 0.426 + 0.035 = 0.461ms\n# 그 사이사이에 GC(10)(11)(15) 가 끼어들어 있다.",
+      "note": "**GC(14) 는 GC(15) 를 사이에 끼고 끝난다.** 번호가 아니라 시각을 따라 읽어야 무슨 일이 있었는지 보인다."
+    }
+  ],
+  "recap": [
+    "동시 표시는 애플리케이션을 돌리면서 표시해 멈춤을 줄인다.",
+    "주기는 Concurrent Mark Cycle 로 열리고 닫히며 사이에 Remark 와 Cleanup 이 멈춘다.",
+    "측정에서 주기 30.015ms 중 실제 멈춤은 1.286ms 였다.",
+    "주기가 도는 동안 젊은 수집이 끼어들어 GC 번호가 뒤섞인다.",
+    "Remark 가 멈추는 이유는 동시 표시 중 바뀐 참조를 따라잡기 위해서다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션 로그에서 Concurrent Mark Cycle 한 바퀴를 찾는다.",
+      "done_when": "주기 시간과 Remark·Cleanup 합을 비교한다.",
+      "minutes": 12
+    },
+    {
+      "task": "GC 번호가 뒤섞인 구간을 시간순으로 다시 읽는다.",
+      "done_when": "어떤 수집이 끼어들었는지 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "Remark 시간이 긴 주기를 찾아 그때의 쓰기 양을 추정한다.",
+      "done_when": "다음 절과 이어 본다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "동시 표시가 줄이는 것은.",
+      "a": "표시하는 동안의 멈춤이다. 총 일의 양은 오히려 늘어난다."
+    },
+    {
+      "q": "동시 주기에서 멈추는 두 단계는.",
+      "a": "Pause Remark 와 Pause Cleanup 이다."
+    },
+    {
+      "q": "GC 번호가 순서대로 안 나오는 이유는.",
+      "a": "동시 주기가 도는 동안 젊은 수집이 끼어들기 때문이다."
+    },
+    {
+      "q": "Remark 가 길어지는 조건은.",
+      "a": "동시 표시 중 참조 변경이 많을수록 따라잡을 것이 많아 길어진다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "동시 표시",
+      "what": "애플리케이션 스레드를 돌리면서 표시 작업을 진행하는 것."
+    },
+    {
+      "term": "Remark",
+      "what": "동시 표시 중 생긴 참조 변경을 따라잡는 짧은 멈춤 단계."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First (G1) Garbage Collector",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Garbage Collection Tuning, Concurrent Cycle",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-garbage-collector-tuning.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
