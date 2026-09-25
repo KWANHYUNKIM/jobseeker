@@ -1,0 +1,156 @@
+{
+  "book": "jvm-tuning",
+  "id": "regions",
+  "no": "7.1",
+  "chapter": 7,
+  "title": "리전",
+  "summary": "힙을 격자로 나눈다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "리전 크기가 어떻게 정해지는지 안다.",
+    "리전 개수에 목표가 있다는 것을 확인한다.",
+    "리전이 왜 필요했는지 6장과 이어 읽는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.7절의 마지막 숫자가 **이동 4.6배**였다. 살아남는 것이 많아지면 **옮기는 값이 다른 단계를 앞지른다** — 힙이 커질수록 한 번에 다 옮기는 것이 불가능해진다.\n\nG1 의 답은 **나누는 것**이다. 힙을 같은 크기 조각으로 잘라 두고, **한 번에 몇 조각만** 옮긴다. 그 조각이 리전이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 크기는 힙이 정한다\n\n리전 크기는 손으로 정하지 않아도 된다. **`-Xmx` 를 보고 JVM 이 고른다.** 여러 힙 크기로 띄워 `G1HeapRegionSize` 를 읽어 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "힙 크기별 리전 (기본값)",
+      "columns": [
+        "-Xmx",
+        "리전 크기",
+        "리전 개수"
+      ],
+      "rows": [
+        [
+          "64m",
+          "1,024 KB",
+          "64"
+        ],
+        [
+          "256m",
+          "1,024 KB",
+          "256"
+        ],
+        [
+          "1g",
+          "1,024 KB",
+          "1,024"
+        ],
+        [
+          "4g",
+          "2,048 KB",
+          "**2,048**"
+        ],
+        [
+          "16g",
+          "8,192 KB",
+          "**2,048**"
+        ],
+        [
+          "64g",
+          "32,768 KB",
+          "**2,048**"
+        ]
+      ],
+      "note": "**개수가 2,048 에서 멈춘다.** 그 위로는 리전 크기를 키워 개수를 유지한다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 개수를 붙들어 두나",
+      "md": "**리전마다 관리 비용이 붙기 때문**이다.\n\n> 리전마다 **기억 집합**(어느 리전이 나를 가리키나)을 들고 있어야 한다 — 6.4절의 카드가 리전 단위로 정리된 것이다.\n> 개수가 늘면 그 표가 늘고, **매 수집마다 훑을 것이 늘어난다.**\n> 반대로 너무 적으면 **한 조각이 커져 한 번에 옮길 양이 커진다.** 2,048 은 그 사이의 타협값이다."
+    },
+    {
+      "type": "figure",
+      "caption": "역할은 자리에 고정돼 있지 않다",
+      "ascii": "   region 0   1   2   3   4   5   6   7   ...\n            E   O   F   S   O   E   F   O\n\n   E eden   S survivor   O old   F free   H humongous\n\n   after a collection the same slot can change letter\n   eden is emptied every time, so those regions go back to F",
+      "note": "**연속돼 있을 필요가 없다.** 에덴 리전들이 힙 여기저기 흩어져 있어도 된다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "손으로 키울 때 딸려 오는 것",
+      "md": "**`-XX:G1HeapRegionSize` 를 키우면 humongous 기준도 같이 움직인다.**\n\n> 기준은 **리전의 절반**이다(4.1절에서 쟀다). 1MB 리전이면 512KB 초과가 humongous 이고, 4MB 리전이면 2MB 초과다.\n> 6.7절에서 **같은 600KB 객체가 리전 크기 하나로 수집 70회와 21회**로 갈렸다.\n> 그래서 리전 크기는 **\"큰 객체를 쓰는가\"** 를 보고 정한다. 7.6절에서 다시 본다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ for M in 64m 256m 1g 4g 16g 64g; do\n    java -XX:+UseG1GC -Xmx$M -XX:+PrintFlagsFinal -version \\\n      | grep -E 'G1HeapRegionSize|MaxHeapSize'\n  done\n\n  -Xmx64m   리전 1024 KB   (힙 64 MB)\n  -Xmx256m  리전 1024 KB   (힙 256 MB)\n  -Xmx1g    리전 1024 KB   (힙 1024 MB)\n  -Xmx4g    리전 2048 KB   (힙 4096 MB)\n  -Xmx16g   리전 8192 KB   (힙 16384 MB)\n  -Xmx64g   리전 32768 KB   (힙 65536 MB)\n\n# 힙을 리전 크기로 나눠 보면\n  -Xmx256m  힙/리전 = 256 개\n  -Xmx4g    힙/리전 = 2048 개\n  -Xmx16g   16384MB / 8MB  = 2048 개\n  -Xmx64g   65536MB / 32MB = 2048 개\n\n# 4g 부터 개수가 2048 로 고정되고 크기만 두 배씩 오른다.\n\n# --- 실제 힙에서 확인 (4.1절과 같은 명령) ---\n\n$ jcmd <pid> GC.heap_info\n garbage-first heap   total 462848K, used 275488K\n  region size 1024K, 20 young (20480K), 4 survivors (4096K)",
+      "note": "**2,048 이 목표 개수**다. 힙이 그보다 작으면 리전은 1MB 로 두고 개수만 줄어든다."
+    }
+  ],
+  "recap": [
+    "G1 은 힙을 같은 크기 리전으로 자르고 한 번에 몇 조각만 옮긴다.",
+    "리전 크기는 -Xmx 를 보고 JVM 이 고른다.",
+    "리전 개수는 2,048 을 목표로 하고 그보다 큰 힙에서는 크기를 키운다.",
+    "개수를 붙들어 두는 이유는 리전마다 기억 집합 관리 비용이 붙기 때문이다.",
+    "리전 크기를 키우면 humongous 기준도 절반 규칙을 따라 같이 움직인다."
+  ],
+  "drills": [
+    {
+      "task": "내 운영 힙 크기로 G1HeapRegionSize 를 확인한다.",
+      "done_when": "리전 크기와 개수를 말할 수 있다.",
+      "minutes": 8
+    },
+    {
+      "task": "jcmd GC.heap_info 의 region size 와 위 값이 맞는지 본다.",
+      "done_when": "두 출처가 같은 말을 하는지 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "내 코드에서 가장 큰 배열 크기를 찾아 리전 절반과 비교한다.",
+      "done_when": "humongous 가 생기는지 판단한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "G1 이 힙을 리전으로 나누는 이유는.",
+      "a": "한 번에 다 옮기지 않고 몇 조각만 옮기기 위해서다."
+    },
+    {
+      "q": "리전 개수의 목표는.",
+      "a": "2,048 이다. 힙이 커지면 리전 크기를 키워 개수를 유지한다."
+    },
+    {
+      "q": "리전 개수를 붙들어 두는 이유는.",
+      "a": "리전마다 기억 집합을 들고 있어야 해서 개수가 늘면 관리 비용이 는다."
+    },
+    {
+      "q": "리전 크기를 키우면 무엇이 같이 바뀌나.",
+      "a": "humongous 기준이다. 리전의 절반이 기준이므로 같이 커진다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "리전",
+      "what": "G1 이 힙을 자른 같은 크기 조각. 에덴·생존자·올드·humongous 역할이 그때그때 붙는다."
+    },
+    {
+      "term": "기억 집합",
+      "what": "어느 리전이 이 리전을 가리키는지 모아 둔 표. 카드 테이블이 리전 단위로 정리된 것이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First (G1) Garbage Collector",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:G1HeapRegionSize",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "book": "jvm-tuning",
+  "id": "concurrent-cycle",
+  "no": "7.3",
+  "chapter": 7,
+  "title": "동시 표시 주기",
+  "summary": "언제 시작하나.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "주기를 여는 조건이 무엇인지 안다.",
+    "임계값을 바꿔 시작 시점이 움직이는 것을 본다.",
+    "적응형 IHOP 이 무엇을 대신해 주는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.5절에서 동시 표시 주기의 **로그를 읽었다.** 남은 질문은 하나다 — **누가 언제 그것을 시작하나.**\n\n영 수집은 **에덴이 차면** 일어난다. 주기는 다르다. **올드가 얼마나 찼는지**를 보고 연다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "기본값 셋",
+      "md": "```\nuintx InitiatingHeapOccupancyPercent = 45     # IHOP\nbool  G1UseAdaptiveIHOP              = true\nuintx G1ReservePercent               = 10\n```\n\n> **45%** 가 출발점이다 — 힙 점유가 그만큼 차면 주기를 연다.\n> 다만 **적응형이 기본으로 켜져** 있어서, G1 이 관찰한 값으로 이 45 를 **계속 고쳐 쓴다.**\n> `-XX:InitiatingHeapOccupancyPercent` 를 줘도 **적응형을 끄지 않으면 출발점만 바뀐다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 임계값을 바꿔 본다\n\n**적응형을 꺼 두고**(`-XX:-G1UseAdaptiveIHOP`) 임계값만 세 가지로 바꿨다. 같은 프로그램, 같은 힙이다."
+    },
+    {
+      "type": "table",
+      "caption": "IHOP 이 주기 시작을 정한다 (`-Xmx256m`, 적응형 끔)",
+      "columns": [
+        "IHOP",
+        "첫 주기 시작 시점",
+        "주기 횟수",
+        "젊은 수집"
+      ],
+      "rows": [
+        [
+          "15",
+          "**힙 82M**",
+          "**3회**",
+          "11회"
+        ],
+        [
+          "45 (기본값)",
+          "**힙 134M**",
+          "1~2회",
+          "11회"
+        ],
+        [
+          "90",
+          "**시작 안 함**",
+          "**0회**",
+          "12회"
+        ]
+      ],
+      "note": "**임계값이 낮을수록 일찍, 자주 연다.** 90 에서는 이 워크로드가 끝날 때까지 한 번도 안 열렸다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "일찍 여는 것과 늦게 여는 것의 거래",
+      "md": "**주기는 올드를 치울 준비 작업**이다(7.4절의 혼합 수집이 그 결과를 쓴다).\n\n> **늦게 열면** — 주기가 끝나기 전에 올드가 꽉 찰 수 있다. 그러면 풀 GC 로 간다(7.7절).\n> **일찍 열면** — 6.6절의 장벽 값과 6.5절의 Remark 멈춤을 더 자주 낸다.\n> 45 는 그 사이의 기본값이고, **적응형은 이것을 관찰값으로 계속 고친다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "적응형을 켜 두면 45%에서 안 열린다",
+      "md": "**기본 설정으로 돌린 같은 프로그램에서 첫 주기가 힙 135M/202M 에서 열렸다** — 약 67%다.\n\n```\nGC(9)  Pause Young (Concurrent Start) ... 135M->98M(202M) 2.114ms\nGC(12) Pause Young (Concurrent Start) ... 156M->118M(202M) 1.586ms\n```\n\n> 45 라는 숫자를 보고 **\"45%에서 열리겠구나\"** 하면 로그와 안 맞는다.\n> 적응형이 **할당 속도와 주기 소요 시간을 보고 여유를 계산**해 그만큼 앞당기거나 미룬다.\n> **재 보지 않고 IHOP 을 건드리면 적응형이 하던 일을 망친다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "확인하지 못한 것",
+      "md": "**IHOP=90 에서 풀 GC 가 날 것으로 보고 쟀는데 나지 않았다.**\n\n> 주기가 0회인 것은 확인했지만, 이 워크로드가 짧아 **올드가 꽉 차기 전에 끝났다.**\n> \"주기를 늦추면 풀 GC 로 간다\"는 **이 측정으로는 보이지 않았다.** 7.7절에서 풀 GC 를 따로 만들어 본다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 기본값 ---\n\n$ java -XX:+UseG1GC -XX:+PrintFlagsFinal -version | grep -E 'IHOP|Initiating|G1Reserve'\nuintx InitiatingHeapOccupancyPercent = 45     {default}\nbool  G1UseAdaptiveIHOP              = true   {default}\nuintx G1ReservePercent               = 10     {default}\n\n# --- 2) 적응형을 끄고 임계값만 바꾼다 ---\n\n$ for I in 15 45 90; do\n    java -XX:+UseG1GC -XX:-G1UseAdaptiveIHOP \\\n         -XX:InitiatingHeapOccupancyPercent=$I -Xmx256m -Xlog:gc -cp out Live 4\n  done\n\n  IHOP=15  첫 주기 시작 시점 힙  82M   Concurrent Start 3회   주기 완료 3회\n  IHOP=45  첫 주기 시작 시점 힙 134M   Concurrent Start 2회   주기 완료 2회\n  IHOP=90  첫 주기 시작 시점 없음      Concurrent Start 0회   주기 완료 0회\n\n  IHOP=15  젊은 11회  주기 3회  풀GC 0회\n  IHOP=45  젊은 11회  주기 1회  풀GC 0회\n  IHOP=90  젊은 12회  주기 0회  풀GC 0회\n\n# --- 3) 적응형을 켜 두면(기본) ---\n\n$ java -XX:+UseG1GC -Xmx256m -Xlog:gc -cp out Live 4 | grep 'Concurrent Start'\nGC(9)  Pause Young (Concurrent Start) (G1 Evacuation Pause) 135M->98M(202M) 2.114ms\nGC(12) Pause Young (Concurrent Start) (G1 Evacuation Pause) 156M->118M(202M) 1.586ms\n\n# 135/202 = 약 67%. 설정값 45 와 다르다.",
+      "note": "**설정값과 실제 시작 시점이 다르다.** 적응형이 켜져 있으면 45 는 출발점일 뿐이다."
+    }
+  ],
+  "recap": [
+    "영 수집은 에덴이 차면 일어나고 주기는 힙 점유가 임계값을 넘으면 열린다.",
+    "IHOP 기본값은 45 이고 적응형이 기본으로 켜져 있다.",
+    "적응형을 끄고 재면 15·45·90 에서 주기가 3회·1~2회·0회였다.",
+    "적응형을 켜 둔 기본 설정에서는 약 67%에서 처음 열렸다.",
+    "IHOP=90 에서 주기가 0회인 것은 봤지만 풀 GC 까지는 이 워크로드로 확인하지 못했다."
+  ],
+  "drills": [
+    {
+      "task": "내 로그에서 Concurrent Start 시점의 점유율을 계산한다.",
+      "done_when": "설정값과 실제가 얼마나 다른지 안다.",
+      "minutes": 12
+    },
+    {
+      "task": "-XX:-G1UseAdaptiveIHOP 로 껐다 켜며 시작 시점을 비교한다.",
+      "done_when": "적응형이 하는 일을 눈으로 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "주기 횟수와 Remark 총 시간을 세어 본다.",
+      "done_when": "일찍 여는 값을 숫자로 갖는다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "동시 표시 주기를 여는 조건은.",
+      "a": "힙 점유가 IHOP 임계값을 넘는 것이다. 에덴이 차는 것과는 다르다."
+    },
+    {
+      "q": "IHOP 기본값과 적응형 기본 상태는.",
+      "a": "45 이고 G1UseAdaptiveIHOP 은 true 다."
+    },
+    {
+      "q": "설정값 45 인데 67%에서 열린 이유는.",
+      "a": "적응형이 할당 속도와 주기 소요 시간을 보고 값을 고쳐 쓰기 때문이다."
+    },
+    {
+      "q": "주기를 너무 늦게 열면 무엇이 문제인가.",
+      "a": "주기가 끝나기 전에 올드가 차서 풀 GC 로 갈 수 있다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "IHOP",
+      "what": "Initiating Heap Occupancy Percent. 동시 표시 주기를 여는 힙 점유 임계값."
+    },
+    {
+      "term": "적응형 IHOP",
+      "what": "관찰한 할당 속도와 주기 소요 시간으로 임계값을 계속 고쳐 쓰는 기능."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First Garbage Collector Tuning",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-garbage-collector-tuning.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:InitiatingHeapOccupancyPercent",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

@@ -365,7 +365,7 @@
           "title": "리전",
           "summary": "힙을 격자로 나눈다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -373,7 +373,7 @@
           "title": "영 수집",
           "summary": "가장 자주 일어나는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -381,7 +381,7 @@
           "title": "동시 표시 주기",
           "summary": "언제 시작하나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",
