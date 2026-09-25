@@ -1,0 +1,182 @@
+{
+  "book": "jvm-tuning",
+  "id": "compaction",
+  "no": "6.7",
+  "chapter": 6,
+  "title": "압축",
+  "summary": "조각난 힙.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "압축이 무엇을 되찾아 주는지 안다.",
+    "네 단계 중 어디가 가장 빨리 자라는지 잰다.",
+    "연속 공간이 필요할 때 무슨 일이 벌어지는지 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.1절에서 **쓸기만 하면 구멍이 남는다**고 했고, Serial 풀 GC 의 **2·3·4 단계가 압축**이라고 적었다. 그 셋을 여기서 연다.\n\n압축이 되찾아 주는 것은 **연속된 빈 공간**이다. 그것이 있어야 5.1절의 **포인터 밀기**가 성립하고, 큰 배열 하나를 통째로 넣을 자리가 생긴다."
+    },
+    {
+      "type": "figure",
+      "caption": "옮기려면 주소가 바뀌고, 주소가 바뀌면 가리키던 것을 고쳐야 한다",
+      "ascii": "   phase 1   mark live objects            who survives\n   phase 2   compute new addresses        where each one will go\n   phase 3   adjust pointers              fix every reference to them\n   phase 4   move objects                 actually copy\n\n   phase 1 is collection; phases 2 3 4 are the price of moving\n\n   a non-moving collector skips 2 3 4 and keeps the holes instead",
+      "note": "**3단계가 있는 이유**가 압축의 본질이다 — 옮긴 객체를 가리키던 참조를 전부 찾아 고쳐야 한다."
+    },
+    {
+      "type": "prose",
+      "md": "## 어느 단계가 가장 빨리 자라나\n\n6.1~6.3 과 같은 프로그램에서 **살아남는 양만** 바꿔 네 단계를 각각 쟀다. 넷 다 생존량을 따라가지만 **자라는 속도가 다르다.**"
+    },
+    {
+      "type": "table",
+      "caption": "풀 GC 한 번의 단계별 평균 (`-XX:+UseSerialGC -Xmx40m`)",
+      "columns": [
+        "오래 사는 비율",
+        "표시",
+        "주소 계산",
+        "포인터 조정",
+        "이동"
+      ],
+      "rows": [
+        [
+          "1/12",
+          "0.273 ms",
+          "0.146 ms",
+          "0.249 ms",
+          "**0.086 ms**"
+        ],
+        [
+          "1/6",
+          "0.346 ms",
+          "0.179 ms",
+          "0.291 ms",
+          "**0.163 ms**"
+        ],
+        [
+          "1/3",
+          "0.553 ms",
+          "0.297 ms",
+          "0.351 ms",
+          "**0.393 ms**"
+        ],
+        [
+          "배수",
+          "2.0배",
+          "2.0배",
+          "1.4배",
+          "**4.6배**"
+        ]
+      ],
+      "note": "**이동만 4.6배**다. 표시는 두 배 느는데 옮기는 값은 그보다 훨씬 가파르게 오른다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 수집기들이 '안 옮기는 쪽'을 찾는다",
+      "md": "**옮기는 값이 가장 빨리 자라기 때문**이다.\n\n> 살아남는 것이 적을 때는 옮겨도 싸다 — 6.2절의 복사가 그 조건을 노린다.\n> 살아남는 것이 많아지면 **옮기는 값이 다른 단계를 앞지른다.**\n> 그래서 큰 힙에서는 **한 번에 다 옮기지 않고 리전 단위로 나눠** 옮긴다. 7장의 G1 이 그 답이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 연속 공간이 필요할 때\n\n압축을 안 하거나 덜 하면 **빈 공간의 총량은 충분한데 연속된 자리가 없는** 상태가 된다. G1 에서는 이것이 **humongous** 로 드러난다 — 4.1절에서 잰 대로 **리전 절반을 넘는 객체**는 **연속된 리전**을 통째로 차지해야 한다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 600KB 객체, 리전 크기만 바꿈 (`-Xmx256m`)",
+      "columns": [
+        "리전 크기",
+        "600KB 는",
+        "수집 횟수와 원인"
+      ],
+      "rows": [
+        [
+          "1 MB",
+          "**humongous**(절반 초과)",
+          "**44 G1 Humongous Allocation + 26 G1 Preventive Collection = 70회**"
+        ],
+        [
+          "4 MB",
+          "보통 객체",
+          "**21 G1 Evacuation Pause** (humongous 0회)"
+        ]
+      ],
+      "note": "**객체도 힙도 그대로다.** 리전 크기 한 줄로 수집이 70회에서 21회가 되고 원인이 통째로 바뀐다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "수집을 부르는 것이 '메모리 부족'이 아닐 수 있다",
+      "md": "**`G1 Humongous Allocation` 이 원인의 전부**인 구간이 있었다.\n\n> 여유가 없어서가 아니라 **연속된 리전을 못 찾아서** 수집을 돈 것이다.\n> 로그에서 **괄호 안의 원인**을 안 보면 \"힙이 모자라구나\"로 잘못 읽는다.\n> 처방도 다르다 — 힙을 늘리는 것이 아니라 **`-XX:G1HeapRegionSize` 를 키우거나 객체를 쪼개는** 쪽이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 단계별 비용이 생존량을 따라간다 ---\n\n$ for E in 12 6 3; do\n    java -XX:+UseSerialGC -Xmx40m -Xlog:gc+phases=debug -cp out Live $E\n  done\n\n  live 1/12  풀GC 104회  표시 0.273  주소계산 0.146  포인터조정 0.249  이동 0.086 ms\n  live 1/6   풀GC  56회  표시 0.346  주소계산 0.179  포인터조정 0.291  이동 0.163 ms\n  live 1/3   풀GC  31회  표시 0.553  주소계산 0.297  포인터조정 0.351  이동 0.393 ms\n\n# 원문 한 묶음은 이렇게 생겼다.\n\nGC(12) Phase 1: Mark live objects             0.418ms\nGC(12) Phase 2: Compute new object addresses  0.399ms\nGC(12) Phase 3: Adjust pointers               0.225ms\nGC(12) Phase 4: Move objects                  0.446ms\n\n# --- 2) 연속 공간이 필요할 때 ---\n\n$ cat Humon3.java\npublic class Humon3 {\n    public static void main(String[] a) {\n        List<byte[]> keep = new ArrayList<>();\n        for (int i = 0; i < 2000; i++) {\n            byte[] b = new byte[600 * 1024];   // 리전 1MB 면 humongous, 4MB 면 아니다\n            if (i % 8 == 0) keep.add(b);\n        }\n    }\n}\n\n$ java -XX:+UseG1GC -XX:G1HeapRegionSize=1m -Xmx256m -Xlog:gc -cp out Humon3\n     44 (G1 Humongous Allocation)\n     26 (G1 Preventive Collection)\n\n$ java -XX:+UseG1GC -XX:G1HeapRegionSize=4m -Xmx256m -Xlog:gc -cp out Humon3\n     21 (G1 Evacuation Pause)\n\n# 만드는 객체도 힙 크기도 같다. 바꾼 것은 리전 크기 하나다.",
+      "note": "**로그의 괄호를 읽어야 한다.** `(G1 Humongous Allocation)` 과 `(G1 Evacuation Pause)` 는 처방이 다르다."
+    }
+  ],
+  "recap": [
+    "압축이 되찾아 주는 것은 연속된 빈 공간이고 그래야 포인터 밀기가 성립한다.",
+    "옮기면 주소가 바뀌므로 가리키던 참조를 전부 고쳐야 한다 — 3단계가 그것이다.",
+    "네 단계 모두 생존량을 따라가지만 이동이 4.6배로 가장 빨리 자란다.",
+    "그래서 큰 힙에서는 한 번에 다 옮기지 않고 리전 단위로 나눈다.",
+    "같은 600KB 객체가 리전 1MB 에서는 humongous 라 수집이 70회, 4MB 에서는 21회였다."
+  ],
+  "drills": [
+    {
+      "task": "-Xlog:gc+phases=debug 로 내 풀 GC 의 네 단계 비율을 본다.",
+      "done_when": "이동이 차지하는 몫을 안다.",
+      "minutes": 12
+    },
+    {
+      "task": "GC 로그에서 괄호 안의 원인만 뽑아 세어 본다.",
+      "done_when": "무엇이 수집을 부르고 있는지 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "큰 배열을 쓰는 코드를 찾아 리전 크기와 비교한다.",
+      "done_when": "humongous 가 될 객체가 있는지 판단한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "압축이 되찾아 주는 것은.",
+      "a": "연속된 빈 공간이다. 그래야 포인터 밀기로 할당할 수 있다."
+    },
+    {
+      "q": "포인터 조정 단계가 필요한 이유는.",
+      "a": "객체를 옮기면 주소가 바뀌므로 그것을 가리키던 참조를 모두 고쳐야 한다."
+    },
+    {
+      "q": "네 단계 중 생존량에 가장 민감한 것은.",
+      "a": "이동이다. 이 측정에서 4.6배로 가장 가파르게 올랐다."
+    },
+    {
+      "q": "G1 Humongous Allocation 이 원인이면 무엇을 해야 하나.",
+      "a": "힙을 늘리는 것이 아니라 리전 크기를 키우거나 객체를 쪼갠다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "압축",
+      "what": "살아남은 객체를 한쪽으로 몰아 연속된 빈 공간을 만드는 것."
+    },
+    {
+      "term": "G1 Humongous Allocation",
+      "what": "연속된 리전이 필요해 수집이 일어났음을 가리키는 GC 원인."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Garbage-First (G1) Garbage Collector",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:G1HeapRegionSize",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
