@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — uber 재방문에서 확장(`retry-storm-ownership`, 새 도메인 `서비스 메시 신뢰성`)을 마쳤다.**
+**없다 — vinted 재방문(새 글 없음)을 마쳤다. 그 앞은 uber 확장(`retry-storm-ownership`).**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -320,6 +320,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **vinted** — 2026-09-26 없음. `vinted.engineering/atom.xml` 최신 글 04-22(피드 `updated` 09-21 은 사이트 재빌드). updated_at 만 올렸다. 1회째.
 - **uber** — 2026-09-26 새 글 5편. 재시도 폭주(09-17)+의존 분석(09-15)으로 기능 하나. 나머지 셋은 위 「지금 파는 중」.
 - **trivago** — 2026-09-26 없음. `tech.trivago.com/rss.xml` 최신 08-12(QA 밋업 요약), 그 앞 06-30 행사 요약. updated_at 만 올렸다. 1회째.
 - **tigerbeetle** — 2026-09-26 **새 글 하나, 기능으로 안 씀.** `2026-09-17-performant-use-of-tigerbeetle` 은 기존 `scaling-axis`(배치·뜨거운 행)와 대부분 겹친다. 새로운 것은 클라이언트 쪽 셋 — **요청 하나만 날아가게 하고 기다리는 동안 자동 배치**(인위적 지연 없음) · 클라이언트 하나를 공유(장애 대비 약 4개) · **UUID 대신 단조 증가 시간 기반 ID**(멱등성 검사가 싸진다). 수치: 한 클라이언트 초당 45만 거래 = 90만 이체. **`scaling-axis` 보강 재료**(결정 둘을 더할 수 있다).
