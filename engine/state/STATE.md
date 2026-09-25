@@ -8,13 +8,14 @@
 
 ## 지금 파는 중
 
-**없다 — Discord 재방문(새 글 없음)을 마쳤다. 사이보즈 확장 이후 재방문 셋이 연달아 비었다.** Mythos 대책 연재 넷(2026-09-01~04)을 기능 `logos-security-harness` 로 쓰고
-새 도메인 `AI 가 찾은 취약점을 사람이 믿을 수 있게 한다` 를 열었다(기능 3개째). 다음 사이클은 `--gaps` 대로.
+**없다 — Doximity 재방문이 확장이 됐다.** `bedside-bench`(2026-09-22, 공개 임상 벤치마크)를 `임상 현장의 AI` 에
+붙였다(기능 4개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
 
 재방문에서 찾았지만 아직 안 쓴 재료(다음 재방문·보강 때 먼저 본다):
 
+- **Doximity** `migrating-doximity-s-ios-newsfeed-to-swiftui-...`(09-04, iOS 뉴스피드 SwiftUI 이관 — 피드 본문에 전문이 있다).
 - **사이보즈** `entry/2026/09/04/113000`(kintone 레거시를 AI 로 재구현한 실험 — 50만 줄 Java 중 모듈 단위, 잘 된 것과 안 된 것).
 - **사이버에이전트** `archives/65476`(09-15, ABEMA 광고 서버 OOM · go-cache TTL) — `two-tier-cache` 정정 대상인지 먼저.
 - **Cloudflare** `dns-cache-memory-optimization-1111`(08-27) · `containers-cross-tenant-vulnerability`(09-24,

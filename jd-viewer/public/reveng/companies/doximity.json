@@ -5,7 +5,7 @@
   "country": "US",
   "category": "소셜",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "domain": "doximity.com",
   "one_liner": "미국 의사 85%가 모인 망 하나 — 파는 것은 그 망에 닿는 자리이고, 사용자는 개인이 아니라 면허다",
   "business_model": "**검증된 임상 전문가의 망을 만들고, 그 망에 닿으려는 쪽에 판다.** 회사가 스스로를 **미국 의료 전문가를 위한 선도적 디지털 플랫폼** 이라 적고, **네트워크 회원이 **전 진료과에 걸쳐 미국 의사의 85% 이상**** 이라고 밝힌다. **FY2026(2026-03-31 종료) 매출 $644.9M**(+13%), **조정 EBITDA $357.8M — 마진 55.5%**, **GAAP 총이익률 89.1%**.\n\n**이 회사의 지표 정의가 사업을 그대로 설명한다.** 회사가 세는 것은 방문자가 아니라 **분기 순 활성 provider** 이고, `provider` 는 **임상·처방 역할을 가진 의료 전문가 — 의사(MD/DO) · NP · CRNA · PA · 약사 · 의대생** 으로 못 박혀 있다. **세는 행위도 열거돼 있다** — Dialer 통화·보안 문자, 팩스, Doximity GPT 프롬프트, 처방약 리서치, PeerCheck 검토, Amion 온콜 스케줄링, Scribe 앰비언트 노트. **즉 '얼마나 봤나' 가 아니라 '진료 중에 무엇을 했나' 로 센다**(이 정리는 이 사이트의 것이다). Q4 에 **활성 처방자 80만 명 초과**로 새 기록을 냈고, **그 provider 의 거의 절반이 지난 분기에 clinical AI 를 썼다**.\n\n**돈은 구독에서 나오고, 고객은 큰 곳이다.** 회사가 쓰는 나머지 두 지표가 **순매출유지율(NRR)** 과 **TTM 구독 매출 $500,000 초과 고객 수** 다 — **개인 의사가 아니라 큰 조직이 돈을 낸다는 뜻**이다(이 해석은 이 사이트의 것이다). ⚠️ **매출을 제약 마케팅·인력채용·텔레헬스로 나눈 표는 이 실적 발표에 없다.**\n\n**이 사이트의 다른 회사들과 자리가 다르다**(아래 비교는 이 사이트의 정리다).\n\n- **사용자가 개인도 가맹점도 아니라 '면허' 다.** Instagram(소셜)은 누구나 계정을 만들 수 있고 Yelp 는 가게가 소유권을 주장하지만, 여기는 **검증된 임상 회원**이 전제다 — 그래서 **신원 확인이 가입의 부수 절차가 아니라 상품의 근거**가 된다.\n- **Yelp 와 구조가 닮았지만 반대편이다.** 둘 다 '자기 재고 없이 남에게 닿는 자리를 판다' 인데, Yelp 는 **840만 곳 중 51만 곳**이 돈을 내는 **넓고 얕은** 쪽이고, Doximity 는 **$500K 넘는 고객 수**를 세는 **좁고 깊은** 쪽이다.\n- **규제가 제품 안에 들어와 있다.** 임상 AI 를 **HIPAA 를 지키는** 것으로 소개하고, 답의 품질을 **의사 1만 1천 명이 5만 건 넘게 검토**하는 방식으로 관리한다. **정답 판정을 사용자에게 맡길 수 없는 도메인**이다.\n\n⚠️ **성장이 꺾인 자리도 그대로 적는다** — 연간은 +13% 인데 **Q4 매출은 +5%**($145.4M)이고, FY2027 가이던스의 조정 EBITDA($323~335M)는 FY2026 실적($357.8M)보다 낮다.",
@@ -251,10 +251,26 @@
               "summary": "LLM 출력을 어떻게 평가할지에 대한 글이다. **수치가 있다** — 평가 집합은 **프롬프트 157개**, 각각 **10회 반복**해 **총 1,570회**를 돌리고 지표마다 **95% 신뢰구간**을 낸다. **평가자를 바꾼 대목이 이 글의 핵심이다** — 처음에는 GPT-3.5-Turbo 를 골랐다가 버렸다: **평가 결과를 더 깊이 들여다보니 연쇄 사고에 기대는 평가 지표에서 환각 사례를 여러 건 금방 발견했다. 그래서 지금 시점에는 기준선을 만드는 데 가능한 최고의 모델을 쓰는 것이 중요하다고 판단했다.** 비용도 함께 적는다 — **평가를 돌리는 데는 오픈소스나 더 싼 모델을 쓰는 것이 비용 면에서 더 나을 때가 있다** 지만 정확성을 위해 비싼 쪽을 골랐다. **전통적 방법만으로는 안 되는 이유**도 적는다 — **LLM 이 복잡해질수록 출력의 양과 평가에 필요한 미묘한 이해 때문에 이런 방법(수동 검토·미리 정한 벤치마크)이 덜 실현 가능해진다.** 그리고 **모든 지표가 갈리지는 않았다** — GPT-3.5-Turbo 와 GPT-4 를 비교했을 때 **유일한 예외는 간결성으로, 표본 평균의 차이가 통계적으로 유의하지 않았다**."
             }
           ]
+        },
+        {
+          "tech": "공개 임상 벤치마크 Bedside Bench (공개 250 / 비공개 250 · 점수형 채점표 + 가중 F1)",
+          "solves": "사내 평가를 누구나 돌릴 수 있게 내놓아 임상 능력에 대한 주장을 재현·반박 가능하게 한다. 해로운 행동을 절반 섞은 가중 F1 로 과잉 포함을 막는다.",
+          "limits": "방향성 비교용 크기(묶음당 50건)이고, 실제 채점은 LLM 채점자라 그 편향이 들어온다. 영어·미국 지침 중심이며 공개 문항은 결국 학습 데이터에 섞인다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+              "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+              "publisher": "Doximity Technology Blog",
+              "date": "2026-09-22",
+              "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+            }
+          ]
         }
       ],
       "features": [
-        "clinical-ai-trust"
+        "clinical-ai-trust",
+        "bedside-bench"
       ]
     }
   ],
@@ -285,7 +301,8 @@
     "**PeerCheck 리뷰가 실제로 답을 어떻게 바꾸는지 나오지 않는다** — 검토가 쌓인다는 것까지만 확인했고, 그 결과가 모델·프롬프트·근거 중 무엇으로 되먹임되는지는 없다.",
     "**Clinical AI Suite 가 매출에서 차지하는 비중은 여전히 모른다.**",
     "**CDC 로 옮긴 시점이 자료에 없다.** 2026년 8월 글이 무엇을 어떻게 바꿨는지는 자세히 적지만 언제 지었는지는 적지 않아, 2020년 시기 안에 넣었다. 이 시기의 경계는 팬데믹(2020)이지 CDC 착수 시점이 아니다.",
-    "**모놀리스를 모듈로 쪼개는 작업(「Modularizing Rails Monoliths One Bite at a Time」)에 날짜가 없다.** 150명이 한 저장소에서 일하는 문제의 답일 가능성이 높은데 시점을 몰라 시기로 세우지 못했다."
+    "**모놀리스를 모듈로 쪼개는 작업(「Modularizing Rails Monoliths One Bite at a Time」)에 날짜가 없다.** 150명이 한 저장소에서 일하는 문제의 답일 가능성이 높은데 시점을 몰라 시기로 세우지 못했다.",
+    "Bedside Bench 글에는 'How Doximity Ask Performs' 절 제목만 있고 본문 수치가 텍스트로 나오지 않는다(그림으로만 실린 것으로 보인다). 그래서 Doximity Ask 의 점수를 이 사이트는 옮기지 않았다."
   ],
   "sources": [
     {
@@ -322,6 +339,13 @@
       "publisher": "Doximity Technology",
       "date": "2026-06-23",
       "summary": "**HIPAA 를 지키는 임상 참조 플랫폼**이다 — 검색 증강 생성(RAG) · 에이전트 도구 사용 · 추론 모델을 묶어 **진료 현장의 질문**에 답한다. **수치**: **150개 넘는 헬스 시스템이 Doximity Clinical AI Suite 를 구매했고 그중에는 미국 상위 20개 병원 중 8곳이 포함된다**, **PeerCheck** 에는 **전 진료과에 걸쳐 1만 1천 명 넘는 의사가 참여해 5만 건 넘는 리뷰** 를 남겼으며, 실제 임상 상호작용 **50건**을 블라인드 감사한 결과 **평균 4.6점(5점 만점)**, 평가 범위는 **임상 추론 · 약리 · 안전에 걸쳐 거의 2,000개 시나리오**, 근거는 **2,000개 넘는 주요 의학 저널의 전문(full-text)**. **한계를 스스로 적는다** — **어떤 임상 AI 시스템도 완벽에 이르지 못한다**, **환각 — 근거가 없거나 지어냈거나 근거와 어긋나는 응답 — 은 현재 모델 구조의 불가피한 결과다**, **표본 크기가 제한적이고 결과는 예비적이다**. ⚠️ **버린 대안은 명시되지 않는다.**"
+    },
+    {
+      "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+      "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+      "publisher": "Doximity Technology Blog",
+      "date": "2026-09-22",
+      "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
     }
   ],
   "features": [
@@ -2135,6 +2159,371 @@
           "publisher": "Doximity IR",
           "date": "2026-05-13",
           "summary": "FY2026(2026-03-31 종료) **매출 $644.9M**(+13%, 전년 $570.4M), **순이익 $196.1M**(마진 30.4%), **조정 EBITDA $357.8M**(마진 **55.5%**), **GAAP 총이익률 89.1%**, 영업현금흐름 $326.5M(+19%) · FCF $317.5M(+19%). Q4 는 매출 $145.4M(+5%)로 성장이 꺾였다. FY26 자사주 매입 **$431.7M**. FY2027 가이던스 매출 $664~676M. 회원 쪽 — **네트워크 회원이 전 진료과에 걸쳐 미국 의사의 85% 이상**, Q4 에 **워크플로 도구를 쓰는 활성 처방자 80만 명 초과** 라는 **새 참여 기록**, **그 provider 의 거의 절반이 지난 분기에 우리 clinical AI 를 썼고, 사용자당 프롬프트가 1월부터 4월 사이에만 거의 두 배**. **핵심 지표의 정의가 적혀 있다** — `provider` 는 **임상·처방 역할을 가진 의료 전문가, 구체적으로 의사(MD/DO) · NP · CRNA · PA · 약사 · 의대생** 이고, **분기 순 활성 provider** 는 다음 중 하나라도 한 사람을 센다: **Dialer**(10초 넘는 통화·영상통화, 음성메시지, 보안 문자) · **팩스 송수신** · **Doximity GPT 프롬프트 제출** · **처방약 리서치** · **PeerCheck AI 응답 검토** · **Amion 온콜 스케줄링** · **Scribe 앰비언트 노트**. 나머지 두 지표는 **순매출유지율(NRR)** 과 **TTM 구독 매출 $500,000 초과 고객 수** 다. ⚠️ **매출을 제약 마케팅·인력채용·텔레헬스로 나눈 표는 이 릴리스에 없다.**"
+        }
+      ]
+    },
+    {
+      "key": "bedside-bench",
+      "name": "평가를 공개한다 — 자기 시험지를 남에게 건네기",
+      "domain": "임상 현장의 AI",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "같은 도메인의 앞 기능은 임상 AI 가 완벽해지지 않는다는 것을 전제로, 틀림을 어떻게 다룰지를 적었다. 그 안에는 회사가 스스로를 재는 방법 — 누가 채점하고 몇 번 돌리는가 — 도 있었다. 그런데 그 평가는 회사 안에만 있었다. '우리 시스템이 안전하다'는 말을 바깥에서 확인할 길이 없었다.\n\n이 기능은 그 시험지를 공개하는 일이다. 사내 평가에 쓰던 의사 검증 문항 500건과 채점 기준을 그대로 내놓아, 누구든 어떤 모델에든 같은 평가를 돌려 결과를 직접 견줄 수 있게 했다. 회사가 적은 이유는 신뢰다 — 성능을 어떻게 정의하는지, 어디서 성공하고 어디서 아직 실패하는지가 보여야 한다.\n\n시험지를 공개하면 곧바로 풀어야 할 문제가 생긴다. 공개한 문항은 언젠가 모델의 학습 데이터에 섞이고, 그러면 점수는 실력이 아니라 암기를 재게 된다. 이 기능의 설계는 대부분 그 문제를 막는 쪽으로 짜여 있다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "문항 **500건** = 실패 유형별 **10개 묶음 × 50건**. 공개 개발용 **250** / 비공개 평가용 **250**, 그 밖에 더 큰 비공개 동반 풀",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "label": "채점 기준",
+            "value": "채점 항목 **6,085개** — 가점 2,943 · 감점 2,580 · 중립 562",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "label": "관리 계획 문항",
+            "value": "문항당 후보 행동 평균 **50.2개**(총 5,018), **절반이 부적절한 행동**. 가중치 +3(꼭 포함) 68개부터 −3(하면 심각한 해) 193개까지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "label": "질문의 모양",
+            "value": "평균 **71단어**. 계산 문항은 100단어 넘는 임상 설명, 환각 탐침은 평균 **9단어** — 의사가 실제로 칠 법한 짧은 질문",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "label": "외부 평가",
+            "value": "스탠퍼드·하버드 주도 NOHARM v2(시나리오 1,100개)에서 상용 제품 가운데 **최고점**(회사 발표)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 잴지 정하며",
+          "thought": "임상에서 쓸모 있으려면 질문을 이해하고, 근거를 찾고, 맥락을 추론하고, 도구를 쓰고, 정확히 계산하고, 불확실성을 말하고, 근거 없는 주장을 피하는 일이 함께 돌아야 한다. 하나를 잘한다고 전체가 된다는 보장은 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "평균 점수를 보다가",
+          "thought": "평균은 한곳에 몰린 위험을 숨긴다. 모델이 전체 점수를 올리면서 특정 과제나 특정 환자 집단에서의 심각한 약점은 그대로 둘 수 있다. 그래서 묶음을 실패 유형별로 짰다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "계산 문항을 넣으며",
+          "thought": "어떤 질문은 종합과 판단을 요구하고, 어떤 질문은 답이 정확히 계산된다. 정의된 함수로 답이 나오는 곳에서 유창한 근삿값은 쓸모가 없다. 시스템이 그 차이를 알아보고 도구를 쓰는지를 재야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "공개를 앞두고",
+          "thought": "모든 공개 벤치마크는 결국 학습 데이터에 나타난다. 그 순간을 알아챌 방법이 필요했다 — 공개 문항과 비공개 문항의 점수가 벌어지면 오염이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "문항",
+            "what": "의사가 평가용으로 쓰고 검증한 임상 질문. 환자 정보는 없고, 일부는 가짜 약·안전하지 않은 제안·틀린 전제를 일부러 심어 두었다."
+          },
+          {
+            "name": "점수형 채점표",
+            "what": "8개 묶음(400건). 의사가 쓴 기준마다 부호 있는 가중치 — 충족하면 가점, 특정 실패가 나오면 감점."
+          },
+          {
+            "name": "가중 F1 채점표",
+            "what": "관리 계획을 묻는 2개 묶음(100건). 문항마다 후보 행동 약 50개에 +3~−3 가중치, 답이 언급한 행동으로 가중 F1 을 낸다."
+          },
+          {
+            "name": "공개 세트 / 비공개 세트",
+            "what": "250 / 250. 공개 세트로 재현하고, 비공개 세트로 일반화를 본다. 더 큰 동반 풀은 오염 감지용으로 남긴다."
+          },
+          {
+            "name": "10개 차원",
+            "what": "약물 안전 · 지침 준수 · 대표 임상시험 · 의학 환각 · 건강 형평성 · 임상 계산 · 수치 계산기 · 조건부 계산기 · 진단 상황 안전 · 치료 상황 안전."
+          }
+        ],
+        "invariants": [
+          "한 묶음은 **한 실패 유형**을 잰다 — 평균이 약점을 덮지 못하게.",
+          "관리 계획 문항의 후보 행동 절반은 부적절하다 — 아무거나 많이 말하면 빠뜨린 것만큼 깎인다.",
+          "공개된 문항 수만큼의 문항이 비공개로 남는다.",
+          "모든 계산 문항의 답은 공개 전에 의사가 단계별로 다시 계산했다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사내 평가용으로 의사가 쓰고 검증한 **더 큰 문항 풀**에서 출발한다",
+            "why": "공개용으로 새로 만든 시험이 아니라 실제로 회사가 쓰던 시험을 내놓는다."
+          },
+          {
+            "step": "모든 문항이 **여러 단계 검증**을 거친다 — 형식 검증, 묶음 안팎의 유사 중복 탐지, 모델 보조 의학 검토(사실 오류·질문-채점표 불일치·답할 수 없는 질문 표시), 표시된 항목의 **의사 판정**",
+            "why": "공개하면 틀린 문항 하나가 모두의 비교를 흐린다."
+          },
+          {
+            "step": "작은 모델(gpt-5.4-mini)의 평균 정답률이 **약 70%** 가 되도록 차원마다 무작위로 뽑아 **난이도를 맞춘다**",
+            "why": "쉬운 쪽에서 점수가 포화되면 시스템끼리 구별이 안 된다."
+          },
+          {
+            "step": "뽑은 500건을 무작위로 **공개 250 / 비공개 250** 로 나누고, 나머지 풀은 비공개 동반 세트로 남긴다",
+            "why": "공개 세트로 재현하고, 비공개로 일반화를 보고, 동반 세트로 오염을 감지한다."
+          },
+          {
+            "step": "사실형 문항은 **점수형 채점표**로, 관리 계획은 **가중 F1** 로 채점한다 — 실제로는 LLM 채점자가 채점표를 적용한다",
+            "why": "사실 기준은 하나씩 확인할 수 있지만, 자유 서술 계획은 무엇을 넣고 무엇을 뺐는지 둘 다 봐야 한다."
+          },
+          {
+            "step": "데이터셋을 Hugging Face·GitHub 에 **CC BY-NC-SA 4.0** 으로 공개하고, 오류표를 공개로 갱신한다",
+            "why": "누구든 같은 평가를 돌리고, 기준 자체도 바깥에서 고칠 수 있게 한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "사내 평가를 공개할 것인가",
+            "chosen": "**공개한다** — 문항과 채점 기준을 모두.",
+            "alternatives": [
+              "사내에만 두고 결과만 발표한다"
+            ],
+            "tradeoff": "공개하면 누구나 재현하고 반박할 수 있다 — 회사는 그것이 임상 능력에 대한 주장을 검증 가능하게 만든다고 적는다. 대가는 시험지가 학습 데이터에 섞이는 것이다. 회사가 스스로 한계에 적는다 — 모든 공개 벤치마크처럼 언젠가 학습 데이터에 나타나고, 그래서 비공개 동반 풀이 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "question": "공개와 비공개를 어떻게 나눌 것인가",
+            "chosen": "**250 / 250 으로 반씩**, 그 밖에 더 큰 비공개 동반 풀.",
+            "alternatives": [
+              "500건을 모두 공개한다"
+            ],
+            "tradeoff": "공개 세트만으로는 최종 문항에 직접 맞춰 최적화하는 것을 막을 수 없다. 비공개 세트가 일반화의 더 강한 신호가 되고, 공개·비공개 점수가 벌어지면 오염을 알아챌 수 있다. 대가는 바깥 사람이 비공개 절반을 직접 볼 수 없다는 것이다 — 투명성을 절반만 준다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "question": "객관식으로 낼 것인가",
+            "chosen": "**자유 서술.** 선택지라는 비계 없이 임상 맥락에 맞는 답을 쓰게 한다.",
+            "alternatives": [
+              "객관식으로 정답을 고르게 한다"
+            ],
+            "tradeoff": "실제 진료 중 의사가 던질 질문의 모양에 가깝다. 대가는 채점이다 — 자유 서술은 채점표와 채점자가 필요하고, 실제로는 LLM 채점자에 기대게 되어 그 자체의 분산과 편향이 들어온다. 회사는 점수를 낼 때 채점 모델과 프롬프트를 함께 밝히라고 권한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "question": "관리 계획을 어떻게 채점할 것인가",
+            "chosen": "**후보 행동 약 50개에 +3~−3 가중치를 주고 가중 F1** — 그중 **절반은 부적절한 행동**.",
+            "alternatives": [
+              "해야 할 행동을 얼마나 언급했는지만 센다"
+            ],
+            "tradeoff": "언급만 세면 아무거나 많이 말할수록 점수가 오른다. 해로운 행동을 절반 섞으면 무차별한 과잉 포함이 핵심 단계 누락만큼 깎인다 — 높은 점수에는 절제와 완결성이 둘 다 필요하다. 대가는 채점표를 만드는 수고다 — 두 묶음 100건에 후보 행동이 5,018개다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "question": "점수를 하나로 낼 것인가",
+            "chosen": "**실패 유형별 10개 묶음**으로 나눠 낸다.",
+            "alternatives": [
+              "전체 평균 하나로 낸다"
+            ],
+            "tradeoff": "평균은 한곳에 몰린 위험을 숨긴다 — 건강 형평성처럼 평균에 묻히기 쉬운 차원을 핵심 축으로 둔 이유다. 대가는 묶음당 50건이라 통계적 힘이 약하다는 것이다. 회사가 적는다 — 이 세트는 시스템 사이의 방향성 비교에 맞춘 크기다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "question": "난이도를 어디에 맞출 것인가",
+            "chosen": "**작은 모델(gpt-5.4-mini)이 평균 약 70% 맞히도록** 차원마다 무작위로 뽑는다.",
+            "alternatives": [
+              "풀에서 그대로 뽑는다"
+            ],
+            "tradeoff": "쉬운 쪽이 포화되는 것을 막는다. 대가는 난이도의 기준이 특정 모델 하나에 묶인다는 것이다 — 그 모델이 약한 곳과 강한 곳이 문항 선택에 그대로 새겨질 수 있다(이 사이트의 해석).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "question": "환각을 어떤 질문으로 재는가",
+            "chosen": "**평균 9단어의 짧은 질문**에 가짜 약·가짜 임상시험·가짜 틀을 심는다. 적절히 거절하는지도 본다.",
+            "alternatives": [
+              "맥락이 충분한 긴 질문으로 잰다"
+            ],
+            "tradeoff": "의사가 실제로 치는 짧은 질문에는 지어낸 전제를 바로잡아 줄 주변 맥락이 없다 — 그 조건에서 재야 한다. 대가는 짧은 질문일수록 무엇이 '적절한 거절'인지 채점표가 더 정밀해야 한다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "clinical-ai-trust",
+          "via": "안에서 재던 것을 밖으로 내놓는다",
+          "contract": "앞 기능은 회사가 자기 시스템을 어떻게 재는지 — 채점자를 누구로 두고 몇 번 돌리는지 — 를 다뤘다. 이 기능은 그 평가를 공개해 바깥에서도 같은 자로 재게 한다. 회사는 이 벤치마크가 임상 행동의 좁은 단면만 잰다고 적고, 시스템 수준의 통제와 의사 검토는 앞 글에서 설명한 것이 따로 필요하다고 못 박는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "HealthBench: Evaluating large language models towards improved human health",
+            "authors": "Arora, Wei, Soskin Hicks 외",
+            "year": "2025",
+            "venue": "arXiv 2505.08775",
+            "url": "https://arxiv.org/abs/2505.08775",
+            "takeaway": "Bedside Bench 가 참고 문헌으로 드는 앞선 의료 벤치마크다. 두 벤치마크 모두 객관식 대신 채점 기준표로 자유 서술 답을 잰다. Bedside Bench 가 더한 것은 **해로운 선택지를 절반 섞어 넣은 행동 목록** — 많이 말할수록 점수가 오르는 길을 막는 장치다(이 비교는 이 사이트의 해석).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "First, do NOHARM: Towards clinically safe large language models",
+            "authors": "Wu 외",
+            "year": "2025",
+            "venue": "arXiv 2512.01241",
+            "url": "https://arxiv.org/abs/2512.01241",
+            "takeaway": "회사가 가중 F1 채점의 근거로 드는 연구다 — 임상 안전에서 **해야 할 것을 빠뜨리는 해(omission)** 를 강조한다. Doximity Ask 는 그 v2 평가(1,100개 시나리오)에서 상용 제품 가운데 최고점을 받았다고 회사가 적는다. 외부 평가에서 좋은 점수를 받은 뒤 자기 평가를 공개한 순서다.",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "공개한 시험지가 학습 데이터에 섞이는 것을 막을 수 없다",
+            "why_hard": "공개하는 순간 문항은 웹에 퍼지고, 언젠가 모델 학습 말뭉치에 들어간다. 그러면 점수는 임상 능력이 아니라 기억을 잰다. 투명성과 측정의 유효성이 정면으로 부딪힌다.",
+            "current_best": "막는 대신 **알아챈다**. 공개 문항과 같은 풀에서 나온 비공개 동반 세트를 남겨 두고, 두 점수가 벌어지면 오염으로 본다. 기준 자체도 시간이 지나면 낡는다 — 채점표는 특정 시점 의사들의 판단이라 지침이 바뀌면 뒤처지므로 오류표를 공개로 갱신한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+                "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+                "publisher": "Doximity Technology Blog",
+                "date": "2026-09-22",
+                "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "문항 하나가 공개되기까지",
+          "question": "공개한 문항을 왜 믿을 수 있고, 비공개 절반은 무엇을 지키는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  POOL[\"사내 평가용 문항 풀<br/>의사가 쓰고 검증\"] --> VAL[\"<b>여러 단계 검증</b><br/>• 형식 · 유사 중복<br/>• 모델 보조 의학 검토<br/>• 표시된 것은 의사 판정\"]:::list\n  VAL --> CAL[\"난이도 보정<br/>gpt-5.4-mini 약 70%\"]\n  CAL --> PICK[\"10개 차원 × 50건 = 500\"]\n  PICK --> PUB[\"<b>공개 250</b><br/>재현 · 검토 · 개발\"]:::accent\n  PICK --> PRIV[\"비공개 250<br/>일반화 신호\"]\n  POOL --> COMP[(\"비공개 동반 풀\")]:::quiet\n  PUB --> GRADE{\"채점\"}\n  PRIV --> GRADE\n  GRADE -->|\"사실형 8묶음\"| PTS[\"점수형 채점표<br/>가점 · 감점\"]\n  GRADE -->|\"관리 계획 2묶음\"| F1[\"가중 F1<br/>후보 행동 약 50개, 절반은 해로움\"]\n  PUB -.->|\"점수가 벌어지면 오염\"| COMP"
+        },
+        {
+          "title": "관리 계획 답 하나가 채점되는 방식",
+          "question": "많이 말하면 왜 점수가 오르지 않는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Answer: 자유 서술 관리 계획\n  Answer --> Match: 언급한 행동을 후보 약 50개와 대조\n  state Match {\n    [*] --> Critical: +3 꼭 포함\n    [*] --> Helpful: +1 ~ +2\n    [*] --> Neutral: 0\n    [*] --> Harmful: −1 ~ −3 하면 해롭다\n  }\n  note right of Match\n    후보의 절반이 부적절한 행동이다\n    빠뜨리면 재현율이 떨어지고\n    아무거나 넣으면 정밀도가 떨어진다\n  end note\n  Match --> Score: 가중 F1\n  Score --> [*]"
+        },
+        {
+          "title": "실패 경로 — 공개 벤치마크가 무너지는 자리",
+          "question": "공개한 평가는 어떻게 쓸모를 잃는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  OPEN[\"문항 공개\"] --> TRAIN[\"언젠가 학습 데이터에 섞인다\"]\n  TRAIN --> MEM[\"점수가 실력이 아니라 기억을 잰다\"]:::accent\n  MEM -->|\"감지\"| GAP[\"공개 · 비공개 점수 차\"]\n  AVG[\"평균 점수 하나\"] --> HIDE[\"특정 과제 · 환자 집단의 약점이 묻힌다\"]\n  HIDE -->|\"막는다\"| DIMS[\"실패 유형별 10개 묶음\"]\n  COUNT[\"언급한 행동만 센다\"] --> OVER[\"아무거나 많이 말하면 점수가 오른다\"]\n  OVER -->|\"막는다\"| HALF[\"후보 절반을 해로운 행동으로\"]\n  JUDGE[\"LLM 채점자\"] --> BIAS[\"채점자 자체의 분산 · 편향\"]:::quiet\n  BIAS --> REPORT[\"채점 모델 · 프롬프트를 함께 밝히라고 권한다\"]:::quiet\n  TIME[\"지침이 바뀐다\"] --> STALE[\"채점표가 뒤처진다 → 오류표 공개\"]:::quiet\n  US[\"영어 · 미국 지침 중심\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Bedside Bench: Expanding Our Commitment to Transparency & Safety",
+          "url": "https://technology.doximity.com/articles/bedside-bench-expanding-our-commitment-to-transparency-safety",
+          "publisher": "Doximity Technology Blog",
+          "date": "2026-09-22",
+          "summary": "사내 평가에 쓰던 의사 검증 임상 질의응답 500건과 채점 기준을 통째로 공개한 기록. 실패 유형별 10개 묶음 × 50건, 공개 250 / 비공개 250 으로 나누고, 관리 계획 문제는 후보 행동 약 50개 중 절반을 해로운 것으로 채워 과잉 포함도 깎는 가중 F1 로 채점한다. 한계(방향성 비교용 크기 · LLM 채점자의 편향 · 미국 지침 중심 · 언젠가 학습 데이터에 섞인다)를 함께 적는다."
         }
       ]
     }
