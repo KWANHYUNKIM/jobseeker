@@ -5,7 +5,7 @@
   "country": "기타",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "domain": "웹사이트 빌더 SaaS",
   "one_liner": "남이 웹사이트를 만들게 해 주는 회사 — 그리고 자기 장애 조사도 에이전트에게 맡기되 열쇠는 안 준다",
   "business_model": "웹사이트 빌더 SaaS 다. 사람들이 코드 없이 사이트를 만들고 운영하게 해 주고 구독과 거래 수수료로 판다(요금 구조의 세부는 확인하지 않았다). 나스닥 상장사라 실적이 공개된다 — 2026년 2분기 매출 5억 6,300만 달러(+15%), 부킹 5억 6,900만 달러(+12%). 회사는 성장 동력으로 Base44 를 든다.\n\n**그리고 Base44 가 자체 LLM 을 냈다** — 앱 제작 플랫폼 중 처음이라고 적고, 하반기 비GAAP 총이익률을 약 60%로 본다. 모델을 사서 쓰는 쪽에서 만드는 쪽으로 한 발 옮긴 셈이다(재구성).\n\n**기술블로그의 무게중심도 거기에 있다**(재구성). 읽을 만한 글 열 편 중 일곱 편이 에이전트에게 일을 맡기는 이야기이고(자율 버그 수정·당번 봇·자가 치유·코드 이관 자동화), 나머지 셋은 멈추지 않고 갈아 끼우는 이야기다.\n\n그래서 도메인 셋을 제품(사이트 빌더·앱 스토어·결제)으로 자르지 않고 **에이전트를 어디까지 들이느냐**로 잘랐다. 일을 맡기되 열쇠는 안 주는 자리, 멈추지 않고 갈아 끼우는 자리, 그리고 에이전트가 들어올 수 있게 집을 고치는 자리. 제품으로 가르면 이 회사가 실제로 쓴 것이 흩어진다(재구성).",
@@ -121,7 +121,7 @@
   "domain_map": {
     "title": "남의 사이트를 돌리는 회사의 두 자리",
     "question": "맡기는 쪽과 옮기는 쪽에서 각각 무엇이 걸리는가?",
-    "code": "flowchart TD\n  BIZ[\"<b>분기마다 숫자를 내는 상장사</b><br/>• 이분기 매출 오억 육천삼백만 달러<br/>• 전년 대비 십오 퍼센트 성장<br/>• 앱 생성 플랫폼이 자체 모델을 냈다\"]:::accent\n  MANY[\"남의 사이트를 아주 많이 돌린다\"]:::list\n  PIPE[\"파이프라인 삼천오백 개 · 하루 사십억 건\"]:::list\n  ONCALL[\"경보가 오면 사람이 로그를 잇는다\"]:::list\n  AGENT[\"에이전트에게 조사를 맡긴다\"]:::list\n  KEY[\"대신 열쇠는 안 준다\"]:::list\n  OLD[\"데이터베이스가 이백 개쯤 쌓인다\"]:::list\n  MOVE[\"멈추지 않고 갈아 끼워야 한다\"]:::list\n  N[\"<i>읽을 만한 글 열 편 중 일곱 편이 에이전트 이야기다</i>\"]:::quiet\n  BIZ --> MANY --> PIPE --> ONCALL --> AGENT --> KEY\n  BIZ --> OLD --> MOVE\n  AGENT --- N"
+    "code": "flowchart TD\n  BIZ[\"<b>분기마다 숫자를 내는 상장사</b><br/>• 이분기 매출 오억 육천삼백만 달러<br/>• 전년 대비 십오 퍼센트 성장<br/>• 앱 생성 플랫폼이 자체 모델을 냈다\"]:::accent\n  MANY[\"남의 사이트를 아주 많이 돌린다\"]:::list\n  PIPE[\"파이프라인 삼천오백 개 · 하루 사십억 건\"]:::list\n  ONCALL[\"경보가 오면 사람이 로그를 잇는다\"]:::list\n  AGENT[\"에이전트에게 조사를 맡긴다\"]:::list\n  KEY[\"대신 열쇠는 안 준다\"]:::list\n  OLD[\"데이터베이스가 이백 개쯤 쌓인다\"]:::list\n  MOVE[\"멈추지 않고 갈아 끼워야 한다\"]:::list\n  N[\"<i>읽을 만한 글 열 편 중 일곱 편이 에이전트 이야기다</i>\"]:::quiet\n  BIZ --> MANY --> PIPE --> ONCALL --> AGENT --> KEY\n  BIZ --> OLD --> MOVE\n  AGENT --- N\n  MEDIA[\"사이트 삼억 개의 미디어 · 하루 육십억 요청\"]:::list\n  MANY --> MEDIA"
   },
   "revenue_streams": [
     {
@@ -272,6 +272,60 @@
         "agent-ready-org",
         "compile-then-publish"
       ]
+    },
+    {
+      "name": "사진 한 장을 요청마다 다시 그린다",
+      "why": "사이트 3억 개가 저마다 다른 크기·자르기·포맷을 URL 로 요구한다. 미리 만들어 두지 않고 요청마다 그리는 대신, 그 CPU 비용과 캐시 적중률을 누르는 것이 이 도메인의 일이다.",
+      "tech": [
+        {
+          "tech": "AVIF + Go 의 unsafe 포인터로 C 라이브러리 잇기",
+          "solves": "같은 화질에 압축 50% 개선을 실시간 경로에서 쓸 수 있게 한다 — Go/C 경계의 복사를 없앤다.",
+          "limits": "라이브러리 래퍼를 우회해 다시 써야 했고, 메모리 안전을 코드가 스스로 책임진다(뒤쪽은 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+              "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+              "publisher": "Wix Engineering",
+              "date": "2026-09-08",
+              "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+            }
+          ]
+        },
+        {
+          "tech": "Masters(중간 크기 캐시) + URL 정규화",
+          "solves": "축소할 픽셀 거리를 줄이고, 같은 결과를 같은 캐시 키로 모은다.",
+          "limits": "중간본을 캐시에 둬야 하고 등가 판정 규칙을 유지해야 한다(해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+              "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+              "publisher": "Wix Engineering",
+              "date": "2026-09-08",
+              "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+            }
+          ]
+        },
+        {
+          "tech": "골든 테스트 + SSIM·PSNR·VMAF",
+          "solves": "인코더를 올릴 때 바이트가 바뀌어도 눈에 같은 결과는 통과시킨다.",
+          "limits": "임계값 아래의 조금씩 나빠짐은 걸러 내지 못한다(해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+              "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+              "publisher": "Wix Engineering",
+              "date": "2026-09-08",
+              "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "media-on-the-fly"
+      ]
     }
   ],
   "open_questions": [
@@ -285,7 +339,8 @@
     "이 회사에서 '모델을 손대지 않는다' 가 네 번째로 확인됐다(재구성). AirBot 은 접근을 제한했고(Socket Mode·God Mode 금지·Pydantic 타입 강제), 자가치유 두뇌는 행동을 제한했고(도구를 부르려면 이유를 대야 한다), Agent Ready Repositories 는 환경을 정비했고(준비되지 않은 코드베이스에 던져진 에이전트는 못 믿을 결과를 낸다) 코드 샘플 일괄 수정은 통과 조건을 만들었다(컴파일러가 문지기). 넷 다 모델의 정확도를 올리는 쪽이 아니라 모델 바깥을 손보는 쪽이다. 그리고 넷의 대가가 같은 방향으로 남는다 — 검사할 수 있는 것만 검사된다.",
     "297 에서 두 편을 열고 얇다고 판단해 닫았다(재구성). Auto Scaling CI Agents At Wix 는 AI 에이전트가 아니라 빌드 워커 이야기이고 — 컨테이너화 · 쿠버네티스 Job · KEDA · 큐별 SLO · hour() 를 쓴 시간대별 배율 공식(1.15 로 시작하기를 권한다) · 유휴 시간 초과 시 정리 — 버린 대안이 하나도 없고 한계도 CI 인프라가 효율적이리라는 보장이 없다 한 줄이다. 수치는 있다(마이크로서비스 2,000개 이상 · 하루 600 버전 배포 · 하루 1만 잡). From Chaos to Control 은 수치가 하나도 없고 대가도 마이크로서비스는 조직 규모의 문제를 풀지만 운영 위험이라는 새 병목을 들여온다 한 줄뿐이며 기술 이름이 거의 안 나온다. 두 편 다 버린 대안·대가·수치 중 둘을 못 넘겨 기능으로 쓰지 않았다.",
     "Flash 시기가 언제 시작됐는지는 못 찾았다. 2012년 기사가 '원래 Flash 로 지었다'고만 하고 연도를 붙이지 않는다. 그래서 이 연표는 갈아탄 날부터 시작한다.",
-    "지금 기술블로그를 채운 AI 에이전트 시기(AirBot·자가 치유·에이전트가 읽을 수 있게 저장소 고치기)의 시작 연도를 확인하지 못했다. 글에 발행일이 잡혀 있지 않아 별도 시기로 세우지 않았고, 그래서 2013년 시기가 지금까지 열린 채로 남아 있다."
+    "지금 기술블로그를 채운 AI 에이전트 시기(AirBot·자가 치유·에이전트가 읽을 수 있게 저장소 고치기)의 시작 연도를 확인하지 못했다. 글에 발행일이 잡혀 있지 않아 별도 시기로 세우지 않았고, 그래서 2013년 시기가 지금까지 열린 채로 남아 있다.",
+    "미디어 플랫폼의 CDN 적중률, Masters 의 실제 크기 계단, 정규화로 줄어든 미스 비율은 밝히지 않는다."
   ],
   "sources": [
     {
@@ -350,6 +405,13 @@
       "publisher": "Wix Engineering",
       "date": "2026-08-29",
       "summary": "앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다(재구성). 문법이 바뀌어 Velo API 레퍼런스의 코드 샘플 2,000여 개가 한꺼번에 낡았다. 어려운 이유가 셋이고 셋 다 '모른다' 다 — 어느 샘플이 대상인지 We had no programmatic way of knowing which specific samples we needed to change · 형식이 제각각이라 We couldn't expect them all to have the same structure · 파일이 여러 저장소에 흩어져 There was no straightforward way (that we could find) to identify the source file for any given code sample.\n\n그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다. 분류는 GPT-4 로 하는데 근거가 솔직하다 — We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set. 변환은 실험해서 GPT-3.5 turbo 를 골랐다(produced the best results out of the models we had available at the time). 그리고 검증 — Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference 라서, Velo API 의 타입 정의를 받아 TypeScript 컴파일러로 컴파일해 confirm that the new code was valid JavaScript and used the Velo APIs correctly 했다.\n\n결과가 뜻밖이다 — In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample. 거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다. 즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다(재구성).\n\n흩어진 파일은 규칙으로 찾는다 — Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo 라 GitHub 검색으로 모으고 매핑 파일에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. 다섯 단계 — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. 수치 — 샘플 2,000개 이상 · 검증 오류 처리에 작성자 6명이 한나절. 분류 정확도와 변환 건수의 실제 숫자는 없다."
+    },
+    {
+      "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+      "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+      "publisher": "Wix Engineering",
+      "date": "2026-09-08",
+      "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
     }
   ],
   "features": [
@@ -3845,6 +3907,300 @@
           "publisher": "Wix Engineering",
           "date": "2026-08-29",
           "summary": "앞의 두 글이 에이전트를 만드는 이야기라면 이 글은 회사를 고치는 이야기다. 문제를 첫 줄에 적는다 — When you have over 2,500 microservices and thousands of engineers working across a massive multi-product platform, 'just use AI coding tools' is not a strategy.\n\n도구를 세 층으로 갈라 놓고 둘을 버린다 — 클라우드 에이전트는 Stateless per task… no codebase awareness, no iteration loop, no project context 이고, 컴퓨터를 통째로 주는 에이전트는 The action space is unbounded. More capability, more autonomy, more risk 다. 가운데인 하네스를 고르며 The industry is converging on the harness tier as the practical sweet spot 라고 적는다.\n\n그리고 에이전트가 아니라 저장소를 고친다 — Agent Ready Repositories 는 a standard for structuring a codebase so that an AI agent can contribute to it reliably 이고, AGENTS.md(always-loaded minimal context) · Progressive disclosure through linked domain-specific markdown files · Markdown Design Logs that keep agents aligned with architectural decisions 로 이뤄진다. 근거가 분명하다 — An agent dropped into an unprepared codebase will produce unreliable results.\n\n하네스를 팀에 맡기지 않는다 — Treat the harness as a platform responsibility, not a team decision 이고 이유는 having every team independently configure their agent setup creates inconsistency and drift 다. 그리고 순서를 못 박는다 — Invest in the review layer before pushing for higher automation rates upstream.\n\n개발 주기 다섯 단계에 각각 심는다 — 트리거(Reduce the distance between 'something needs to happen' and 'an agent starts working on it', Fix My Bug 는 routes bug reports directly into an automated coding flow) · 코드(Agent Ready Repositories) · 리뷰(automated line-by-line review on every PR, 구글 코드 리뷰 기준) · 빌드(Fix My Build 가 실패 출력을 분석해 원인 가설을 낸다) · 관측(모니터링 도구에 MCP 를 붙였다). 사람 쪽도 바꾼다 — xEngineer 는 an AI native engineer that has at least one domain expertise who owns an entire feature end-to-end 다.\n\n한계를 유난히 솔직하게 적는다 — The most honest thing we can say is that this is still in motion. We don't have a tidy case study with a before/after graph. 그리고 AI-generated code tends to over-engineer… An unused abstraction that passes all tests is still a liability · Fix My Build 는 It's not always right, but it's right enough often enough · 도입 현황도 Most of our engineers are somewhere in the first two stages 다. 수치 — 마이크로서비스 2,500개 이상 · 원인 지목 정확도 85%(WildMoose 연동) · 경보 P90 평균 복구 시간 17% 개선. 스택 — Claude Code · Cursor · GitHub Copilot · Codex · N8N · MCP · GitHub Actions · WildMoose."
+        }
+      ]
+    },
+    {
+      "key": "media-on-the-fly",
+      "name": "미디어 — 파일을 쌓지 않고 요청마다 만든다",
+      "domain": "사진 한 장을 요청마다 다시 그린다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "Wix 는 **사이트 3억 개 넘게**를 호스팅하고 **하루 미디어 요청 60억 건 넘게**를 낸다. 데이터는 수십 페타바이트다. 사이트마다 원하는 크기·자르기·포맷이 다르니 미리 만들어 두기보다 **URL 파라미터로 요청이 올 때 그려 낸다** — 그러면 매 요청이 CPU 비용이 되고, 그 비용과 지연을 누르는 것이 이 플랫폼의 일이 된다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "사이트 **3억 개 이상**, 하루 미디어 요청 **60억 건 이상**, 데이터 **수십 페타바이트**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "포맷 전환의 이득",
+            "value": "WebP 에서 **AVIF** 로 옮겨 같은 화질에 **압축 50% 개선** — 대신 인코딩이 CPU 를 많이 먹는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "글의 성격",
+            "value": "팟캐스트를 요약한 짧은 글이다. 문제와 답은 분명하지만 **각 답의 대가와 수치는 거의 적지 않는다** — 아래 대가 중 일부는 이 사이트의 해석이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "AVIF 인코딩이 느릴 때",
+          "thought": "느린 건 인코더가 아니라 **경계를 넘는 비용**이었다. Go 서비스가 C 라이브러리 둘(조작용·인코딩용) 사이에서 데이터를 넘길 때마다 Cgo 가 메모리를 복사하고 안전 검사를 한다. Go 는 데이터를 건드리지도 않는데.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "썸네일 하나에 CPU 가 많이 들 때",
+          "thought": "4,000px 을 200px 로 줄이려면 엄청난 픽셀을 평균 내야 한다. 비용은 **줄이는 거리**에 비례한다 — 그러면 매번 원본에서 출발하지 말고 가까운 곳에서 출발하면 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "CDN 적중률이 낮을 때",
+          "thought": "개발자가 조작을 URL 로 정의하니 **순서만 다르고 결과는 같은 URL** 이 생긴다. CDN 에게 URL 이 다르면 다른 물건이다. 결과가 같으면 키도 같아야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "인코더를 올렸더니 테스트가 깨질 때",
+          "thought": "사람 눈에는 똑같은데 바이트가 조금 달라졌다. 바이트 동일성만 믿으면 **최적화 하나 넣을 때마다 테스트가 거짓 경보를 낸다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "조작 URL",
+            "what": "미디어 ID 와 자르기·크기·포맷 같은 조작을 파라미터로 담은 주소. CDN 캐시 키가 된다."
+          },
+          {
+            "name": "Masters",
+            "what": "원본과 요청 사이에 두는 고정된 중간 크기(예: 1000×1000, 500×500). 캐시에 두고 가장 가까운 큰 것에서 줄인다."
+          },
+          {
+            "name": "정규 URL",
+            "what": "논리적으로 같은 조작 요청들을 하나로 모은 표준 형태."
+          },
+          {
+            "name": "골든 이미지",
+            "what": "'맞는' 결과로 보관해 둔 기준 이미지. 먼저 바이트로, 실패하면 지각 지표로 비교한다."
+          },
+          {
+            "name": "서명 토큰",
+            "what": "허용된 조작을 담은 토큰. 무료 토큰은 흐리거나 낮은 해상도만, 유료 토큰은 원본 해상도를 그리게 한다."
+          }
+        ],
+        "invariants": [
+          "결과 픽셀이 같으면 캐시 키도 같아야 한다.",
+          "축소는 요청 크기보다 크면서 가장 가까운 Master 에서 시작한다.",
+          "같은 자산의 미리보기와 원본은 파일 두 벌이 아니라 토큰 두 종류로 나뉜다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 CDN 에 닿는다 — 조작 URL 이 캐시 키다",
+            "why": "대부분은 여기서 끝나야 한다"
+          },
+          {
+            "step": "놓치면 정규화 계층이 조작을 분석해 정규 URL 로 바꾼다",
+            "why": "같은 결과가 다른 키로 흩어지지 않게"
+          },
+          {
+            "step": "서명 토큰을 검사해 허용된 조작(흐림·저해상도·원본)만 남긴다",
+            "why": "접근 제어를 조작 파이프라인 안에서 한다"
+          },
+          {
+            "step": "요청 크기보다 크면서 가장 가까운 Master 를 캐시에서 가져와 줄인다",
+            "why": "CPU 가 처리할 픽셀 거리를 줄인다"
+          },
+          {
+            "step": "조작 라이브러리의 C 포인터를 Go 를 거쳐 그대로 인코딩 라이브러리(libavif)에 넘겨 AVIF 로 굽는다",
+            "why": "Go/C 경계의 복사를 없앤다"
+          },
+          {
+            "step": "인코더를 올릴 때는 골든 이미지와 바이트 비교, 실패하면 SSIM·PSNR·VMAF 로 대신 확인한다",
+            "why": "눈에 같은 변화는 통과시킨다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "어떤 포맷으로 내보낼 것인가",
+            "chosen": "**WebP 에서 AVIF(AV1 기반)로 옮긴다**",
+            "alternatives": [
+              "WebP 유지"
+            ],
+            "tradeoff": "같은 화질에 압축이 50% 좋아진다. 대가는 **인코딩이 CPU 를 많이 먹는다**는 것 — 요청마다 그리는 구조라 이 비용이 실시간 경로에 그대로 얹힌다. 아래 결정들이 이 비용을 다시 줄이는 일이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "Go 와 C 라이브러리 사이를 어떻게 잇는가",
+            "chosen": "**Go 의 unsafe 패키지로 C 포인터를 그대로 넘긴다** — 첫 C 라이브러리의 결과를 Go 가 손대지 않고 두 번째 C 라이브러리로 흘려보낸다",
+            "alternatives": [
+              "표준 Cgo 로 데이터를 넘기기(경계마다 복사·안전 검사)"
+            ],
+            "tradeoff": "기존 라이브러리 래퍼를 우회하도록 코드 흐름을 다시 써야 했고, **Go 의 메모리 안전을 스스로 포기한다**(뒤쪽은 이 사이트의 해석). 대신 복사 비용이 사라져 AVIF 인코딩을 실제 트래픽에 쓸 수 있게 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "축소를 어디서 출발할 것인가",
+            "chosen": "**고정 중간 크기 'Masters' 를 캐시에 두고, 요청보다 크면서 가장 가까운 것에서 줄인다** — 450px 요청이면 500px Master 에서",
+            "alternatives": [
+              "매번 원본에서 줄이기",
+              "요청 크기마다 미리 만들어 두기"
+            ],
+            "tradeoff": "원본 말고도 중간본을 캐시에 둬야 하고, 원본에서 한 번에 줄인 것과 화질이 조금 다를 수 있다(둘 다 이 사이트의 해석 — 글은 '높은 화질을 유지한다'고만 적는다). 대신 CPU 가 평균 낼 픽셀 거리가 짧아져 부하와 지연이 크게 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "같은 결과의 다른 URL 을 어떻게 할 것인가",
+            "chosen": "**처리 전에 조작을 분석해 논리적으로 같은 요청을 하나의 정규 URL 로 모은다**",
+            "alternatives": [
+              "URL 그대로 캐시 키로 쓰기",
+              "개발자에게 파라미터 순서를 강제"
+            ],
+            "tradeoff": "조작끼리의 등가를 판정하는 계층을 유지해야 한다 — 조작이 늘 때마다 규칙도 는다(이 사이트의 해석). 대신 개발자가 URL 을 어떻게 짜든 결과가 같으면 같은 캐시를 맞힌다. '의견 없는(unopinionated)' 플랫폼이라는 약속을 깨지 않고 적중률을 되찾는 방법이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "인코더를 올릴 때 무엇으로 회귀를 잡을 것인가",
+            "chosen": "**골든 이미지와 바이트 비교를 먼저, 깨지면 SSIM·PSNR·VMAF 같은 지각 지표로 물러선다**",
+            "alternatives": [
+              "바이트 동일성만",
+              "사람이 눈으로 확인"
+            ],
+            "tradeoff": "지각 지표의 임계값 아래로 조금씩 나빠지는 것은 통과한다(이 사이트의 해석). 대신 라이브러리를 올릴 때마다 바이트가 달라져 거짓 경보가 나는 일을 멈추고 최적화를 안전하게 넣는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "유료 원본과 공개 미리보기를 어떻게 나눌 것인가",
+            "chosen": "**권한을 조작 파이프라인에 넣는다** — 허용된 조작을 담은 서명 토큰으로, 무료는 흐리거나 낮은 해상도만, 유료는 원본 해상도",
+            "alternatives": [
+              "미리보기 파일과 원본 파일 두 벌을 관리"
+            ],
+            "tradeoff": "미디어 요청마다 토큰 검증이 붙고, 조작 파이프라인이 곧 접근 제어 경계가 된다(이 사이트의 해석). 대신 파일 두 벌의 비효율과 어긋남이 사라지고, 같은 자산에서 맥락에 맞는 판을 그때그때 그린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+                "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+                "publisher": "Wix Engineering",
+                "date": "2026-09-08",
+                "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "CDN",
+          "via": "조작 URL 이 곧 캐시 키",
+          "contract": "정규화된 URL 로 요청이 오면 같은 결과를 한 번만 그린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "libaom / libavif",
+          "via": "Go 의 unsafe 포인터",
+          "contract": "조작 라이브러리가 만든 C 메모리를 복사 없이 넘겨받아 AVIF 로 인코딩한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "디지털 상품 판매(사이트 주인)",
+          "via": "서명 토큰",
+          "contract": "토큰에 담긴 허용 조작만 렌더한다 — 어느 서비스가 토큰을 발급하는지는 밝히지 않는다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 요청이 이미지가 되기까지",
+          "question": "한 요청이 CPU 를 최대한 덜 쓰고 지나가는 길은?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[조작 URL 요청] --> CDN{CDN 캐시}\n  CDN -->|맞힘| OUT[응답]\n  CDN -->|놓침| NORM[정규화<br/>같은 결과 → 같은 URL]\n  NORM --> TOK{서명 토큰<br/>허용 조작}\n  TOK --> MAS[가장 가까운 큰 Master<br/>1000 · 500 …]:::accent\n  MAS --> RES[줄이기 · 자르기<br/>C 라이브러리]\n  RES -->|unsafe 포인터 · 복사 없음| ENC[AVIF 인코딩<br/>libavif]\n  ENC --> OUT\n  SRC[(원본)]:::quiet -.->|Master 가 없을 때만| MAS"
+        },
+        {
+          "title": "인코더를 올릴 때의 판정",
+          "question": "바이트가 달라진 결과를 통과시킬 것인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 바이트비교: 새 인코더로 골든 세트를 다시 굽는다\n  바이트비교 --> 통과: 골든과 바이트가 같다\n  바이트비교 --> 지각비교: 다르다\n  지각비교 --> 통과: SSIM · PSNR · VMAF 기준 안\n  지각비교 --> 실패: 기준 밖\n  통과 --> [*]: 최적화를 내보낸다\n  실패 --> [*]: 되돌린다\n  note right of 지각비교\n    사람 눈을 수학으로 흉내 낸다.\n    바이트가 달라도 눈에 같으면 된다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 요청마다 그리는 구조의 비용",
+          "question": "무엇이 CPU 를 태우고 캐시를 흩뜨리는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  AV[AVIF 로 전환<br/>압축 50% 개선]:::accent --> CPU[인코딩이 CPU 를 먹는다]\n  CGO[Cgo 경계] --> COPY[경계마다 복사 · 안전 검사]\n  COPY --> CPU\n  BIG[4,000px 원본에서 200px 로] --> CPU\n  ORD[순서만 다른 URL] --> MISS[CDN 미스]\n  MISS --> CPU\n  UPG[인코더 업그레이드] --> BYTE[바이트가 조금 바뀐다]\n  BYTE --> FALSE[거짓 경보]\n  TWO[미리보기 · 원본 두 벌] --> DRIFT[어긋남 · 낭비]\n  COPY -.->|그래서| UNSAFE[unsafe 포인터]:::quiet\n  BIG -.->|그래서| MASTERS[Masters]:::quiet\n  MISS -.->|그래서| NORM2[정규화]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Architecting for 6 Billion Daily Requests: Inside Wix's Media Platform",
+          "url": "https://www.wix.engineering/post/architecting-for-6-billion-daily-requests-inside-wix-s-media-platform",
+          "publisher": "Wix Engineering",
+          "date": "2026-09-08",
+          "summary": "사이트 3억 개, 하루 미디어 요청 60억 건을 수십 페타바이트 위에서 처리하는 미디어 플랫폼의 다섯 문제와 답. WebP→AVIF 전환의 Cgo 복사 비용을 unsafe 포인터로 우회, 원본 대신 중간 크기 'Masters' 에서 축소, 같은 결과의 URL 을 정규화해 CDN 캐시 키를 하나로, 인코더 교체 때 바이트 비교가 깨지면 SSIM·VMAF 로 대신 확인, 서명 토큰으로 같은 파일의 미리보기·원본을 나눈다. 팟캐스트를 요약한 짧은 글이라 대가는 거의 적지 않는다."
         }
       ]
     }

@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — wayfair 재방문에서 확장(`design-qa-skill`)을 마쳤다.** 그 앞 vinted 는 새 글 없음. uber 의 안 쓴 새 글 셋은 아래.
+**없다 — wix 재방문에서 확장(`media-on-the-fly`)을 마쳤다.** 그 앞은 wayfair 확장. uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -320,6 +320,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **wix** — 2026-09-26 새 글 둘. 미디어 플랫폼(09-08) → `media-on-the-fly`(팟캐스트 요약이라 대가 대부분 inferred). 09-15 「From Autocomplete to Intelligence」는 AI 일반론이라 안 씀. 09-02 데이터 이전 플레이북(50억 건·10TB·4주)은 아직 안 읽었다 — `read-first-then-write` 와 겹치는지 먼저 본다.
 - **wayfair** — 2026-09-26 새 글 하나(디자인 QA 스킬, 09-24) → `design-qa-skill`. 목록 `aboutwayfair.com/careers/tech-blog` (피드 없음, 목록에 날짜가 있다). 08-27 `trigger-analysis`(A/B 노출) 글은 아직 안 읽었다.
 - **vinted** — 2026-09-26 없음. `vinted.engineering/atom.xml` 최신 글 04-22(피드 `updated` 09-21 은 사이트 재빌드). updated_at 만 올렸다. 1회째.
 - **uber** — 2026-09-26 새 글 5편. 재시도 폭주(09-17)+의존 분석(09-15)으로 기능 하나. 나머지 셋은 위 「지금 파는 중」.
