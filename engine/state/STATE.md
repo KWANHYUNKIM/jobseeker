@@ -8,6 +8,16 @@
 
 ## 지금 파는 중
 
+**없다 — Cloudflare 재방문이 확장이 됐다.** `saving-100-tb-of-ram-with-math`(2026-09-18)를 기능 `pbr-hash-ring` 으로
+`엣지 네트워크·트래픽 전달` 에 붙였다(기능 5개째). 다음 사이클은 `--gaps` 대로.
+큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
+⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
+
+- **Cloudflare 에 아직 안 쓴 글이 넷 있다**(다음 재방문 재료). `dns-cache-memory-optimization-1111`(08-27, 1.1.1.1 캐시
+  항목 953B → 420B · 대가를 적는다 — 박싱의 할당자 낭비·지역성, 와이어 형식 통째 저장을 버린 이유) ·
+  `containers-cross-tenant-vulnerability`(09-24, `workers-isolation` 과 맞닿는다 — 정정 대상인지 먼저 본다) ·
+  `workers-module-registry-nodejs`(09-09) · `vary-support`(09-22).
+
 **없다 — careem 재방문(새 글 있음, Part 2 대기로 보류)을 마쳤다. 그 앞은 바이트댄스 확장이었다.** `ByteX`(arXiv 2608.30607, 2026-09-01)를 기능 `bytex` 로
 쓰고 새 도메인 `검색 인프라를 벡터까지 넓힌다` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
