@@ -8,11 +8,12 @@
 
 ## 지금 파는 중
 
-**없다 — Sansan 재방문이 확장이 됐다.** ACL 쿼리 튜닝 글(2026-09-09)을 기능 `acl-function-tradeoff` 로 쓰고 새 도메인
-`권한 검사가 모든 화면을 느리게 한다` 를 열었다(기능 7개째). 다음 사이클은 `--gaps` 대로.
+**없다 — Shopify 재방문이 확장이 됐다.** 네이티브 복귀 글 셋(09-10 · 09-10 · 09-21)을 기능 `back-to-native` 로 쓰고 새 도메인
+`모바일 앱을 무엇으로 만들 것인가` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
-Sansan 에 안 쓴 새 글 — 인증 기반 SDK 의 Rust 화(09-11) · Compose VRT 도입(09-18).
+**'에이전트로 옮기기' 비교 문서 재료** — Shopify Helix(체크포인트 관문) · freee `two-spas-one-url`(읽는 공정/쓰는 공정 분리) ·
+GitHub `css-modules-replatform`(895개를 2명+에이전트 3주) · 사이보즈 kintone AI 재구현(안 씀).
 
 **비교 문서 재료가 모였다 — 'LLM Wiki' 세 회사.** 사이보즈 Ergon(RAG 를 물리고 Wiki, `logos-security-harness`) ·
 컬리 `2026-delivery-domain-rag`(Wiki + RAG 를 두 번 갈아엎음) · LY `ko/llm-wiki-code-driven-knowledge-ssot`(08-28, 코드 기준 자동 최신화).
