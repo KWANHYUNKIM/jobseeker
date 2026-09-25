@@ -8,10 +8,11 @@
 
 ## 지금 파는 중
 
-**없다 — 컬리 재방문(새 글 없음)을 마쳤다. GitHub 확장(`css-modules-replatform`) 뒤로 재방문 넷이 비었다.** `improving-site-performance-by-shipping-more-css`(2026-09-25)를 기능
-`css-modules-replatform` 으로 쓰고 새 도메인 `화면 스타일` 을 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
+**없다 — LinkedIn 재방문이 확장이 됐다.** 용량 여유분 글(2026-09-14)을 기능 `newsvendor-headroom` 으로 쓰고 새 도메인
+`여유분을 감이 아니라 분위수로 잡는다` 를 열었다(기능 3개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
+LinkedIn 블로그는 `/blog/engineering` 목록에 날짜가 없다 — 글마다 열어 날짜를 본다(`/feed` 는 HTML 이다).
 
 재방문에서 찾았지만 아직 안 쓴 재료(다음 재방문·보강 때 먼저 본다):
 
