@@ -98,7 +98,7 @@
           "title": "바이트코드",
           "summary": "실행 엔진이 읽는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.5",
@@ -106,7 +106,7 @@
           "title": "네이티브 경계",
           "summary": "JNI 너머의 메모리.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.6",

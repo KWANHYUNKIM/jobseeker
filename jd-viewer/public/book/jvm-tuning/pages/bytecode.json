@@ -1,0 +1,129 @@
+{
+  "book": "jvm-tuning",
+  "id": "bytecode",
+  "no": "2.4",
+  "chapter": 2,
+  "title": "바이트코드",
+  "summary": "실행 엔진이 읽는 것.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "스택 기반 명령이 무엇인지 눈으로 본다.",
+    "내가 쓴 소스와 엔진이 읽는 것이 다르다는 것을 확인한다.",
+    "javap 로 직접 꺼내 읽을 수 있다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절에서 **프레임 안에 오퍼랜드 스택이 있다**고 했다. 그 스택에 값을 올렸다 내렸다 하는 것이 **바이트코드**다.\n\n**JVM 에는 레지스터가 없다.** x86 처럼 `add rax, rbx` 하지 않고, **값을 스택에 올리고 연산자를 부르면 스택에서 꺼내 쓴다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "add(a, b) 가 하는 일",
+      "ascii": "   source            bytecode          operand stack after\n   ------            --------          -------------------\n                     iload_0           [ a ]\n   return a + b      iload_1           [ a, b ]\n                     iadd              [ a+b ]\n                     ireturn           [ ]\n\n   four instructions, no registers named anywhere",
+      "note": "**i 로 시작하는 것은 int** 다. `lload` 는 long, `aload` 는 참조다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 스택 기반인가",
+      "md": "**레지스터 개수는 CPU 마다 다르다.**\n\n> 스택으로 적어 두면 **어느 기계에서나 같은 클래스 파일이 돈다.**\n> 레지스터에 실제로 맞추는 일은 **JIT 가 실행 시점에** 한다(10장).\n> 그래서 바이트코드는 **느린 대신 어디서나 도는** 형식이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 내가 쓴 것과 엔진이 읽는 것은 다르다\n\n`\"x\" + s + \"y\"` 를 컴파일해 보면 **소스에 없던 것이 나온다.** 그리고 **같은 소스가 컴파일 방식에 따라 전혀 다른 바이트코드**가 된다."
+    },
+    {
+      "type": "compare",
+      "caption": "같은 한 줄, 두 가지 컴파일",
+      "left": {
+        "title": "기본 (JDK 9 이상) — 명령 3개",
+        "lang": "text",
+        "code": "0: aload_0\n1: invokedynamic #7\n   // makeConcatWithConstants\n6: areturn"
+      },
+      "right": {
+        "title": "-XDstringConcat=inline — 명령 11개",
+        "lang": "text",
+        "code": "0: new           StringBuilder\n3: dup\n4: invokespecial <init>\n7: ldc           \"x\"\n9: invokevirtual append\n12: aload_0\n13: invokevirtual append\n16: ldc           \"y\"\n18: invokevirtual append\n21: invokevirtual toString\n24: areturn"
+      },
+      "note": "**소스 파일은 글자까지 같다.** 달라진 것은 javac 플래그 하나다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그래서 '문자열 + 는 StringBuilder 다' 는 이제 반만 맞다",
+      "md": "**JDK 9 부터 기본은 `invokedynamic`** 이다.\n\n> 무엇으로 이어 붙일지를 **런타임이 고른다**(`StringConcatFactory`).\n> **루프 안의 `+` 가 여전히 나쁜 것은 맞지만**, 이유는 StringBuilder 가 아니라 **매번 새 문자열을 만들기** 때문이다.\n> 확인하는 법은 하나다 — **`javap -c` 로 직접 열어 본다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Bytes.java\npublic class Bytes {\n    static int add(int a, int b) { return a + b; }\n    static String concat(String s) { return \"x\" + s + \"y\"; }\n    public static void main(String[] a) { System.out.println(add(1,2) + concat(\"z\")); }\n}\n\n# --- 1) 산술은 스택으로 ---\n\n$ javac -d out Bytes.java\n$ javap -c -p -cp out Bytes\n  static int add(int, int);\n    Code:\n       0: iload_0\n       1: iload_1\n       2: iadd\n       3: ireturn\n\n# --- 2) 문자열 + 는 무엇이 되나 (기본) ---\n\n  static java.lang.String concat(java.lang.String);\n    Code:\n       0: aload_0\n       1: invokedynamic #7,  0   // InvokeDynamic #0:makeConcatWithConstants:\n                                 //   (Ljava/lang/String;)Ljava/lang/String;\n       6: areturn\n\n# --- 3) 같은 소스를 옛 방식으로 컴파일하면 ---\n\n$ javac -XDstringConcat=inline -d out2 Bytes.java\n$ javap -c -p -cp out2 Bytes\n  static java.lang.String concat(java.lang.String);\n    Code:\n       0: new           #7    // class java/lang/StringBuilder\n       3: dup\n       4: invokespecial #9    // StringBuilder.\"<init>\":()V\n       7: ldc           #10   // String x\n       9: invokevirtual #12   // StringBuilder.append\n      12: aload_0\n      13: invokevirtual #12   // StringBuilder.append\n      16: ldc           #16   // String y\n      18: invokevirtual #12   // StringBuilder.append\n      21: invokevirtual #18   // StringBuilder.toString\n      24: areturn\n\n# 명령 3개와 11개. 소스 파일은 글자까지 같다.",
+      "note": "**같은 자바 코드가 두 가지 바이트코드**가 된다. 엔진이 읽는 것은 소스가 아니라 이것이다."
+    }
+  ],
+  "recap": [
+    "JVM 에는 레지스터가 없고 오퍼랜드 스택에 값을 올렸다 내린다.",
+    "add(a,b) 는 iload_0 · iload_1 · iadd · ireturn 네 명령이다.",
+    "명령 앞 글자가 타입이다 — i 는 int, l 은 long, a 는 참조다.",
+    "문자열 + 는 JDK 9 부터 기본이 invokedynamic 이고 StringBuilder 가 아니다.",
+    "같은 소스가 javac 플래그 하나로 명령 3개와 11개로 갈렸다."
+  ],
+  "drills": [
+    {
+      "task": "내 프로젝트의 메서드 하나를 javap -c 로 열어 읽는다.",
+      "done_when": "소스에 없던 호출이 있는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "루프 안에서 문자열을 + 로 잇는 메서드를 컴파일해 바이트코드를 본다.",
+      "done_when": "루프 안에서 무엇이 반복되는지 눈으로 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "-XDstringConcat=inline 로 같은 파일을 두 번 컴파일해 비교한다.",
+      "done_when": "두 출력의 명령 수를 센다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JVM 이 스택 기반인 이유는.",
+      "a": "레지스터 개수가 기계마다 달라서다. 레지스터 배정은 JIT 가 실행 시점에 한다."
+    },
+    {
+      "q": "iload 와 aload 의 차이는.",
+      "a": "앞 글자가 타입이다. i 는 int, a 는 참조다."
+    },
+    {
+      "q": "JDK 9 이상에서 문자열 + 는 무엇이 되나.",
+      "a": "invokedynamic makeConcatWithConstants 다. 무엇으로 이을지는 런타임이 고른다."
+    },
+    {
+      "q": "바이트코드를 직접 보려면.",
+      "a": "javap -c 로 연다. 칸 수까지 보려면 javap -v 다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "오퍼랜드 스택",
+      "what": "바이트코드가 값을 올렸다 내렸다 하는 작업 공간. 프레임마다 하나씩."
+    },
+    {
+      "term": "invokedynamic",
+      "what": "무엇을 부를지 첫 실행 때 정하는 명령. 람다와 문자열 이어 붙이기가 이걸 쓴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "The Java Virtual Machine Specification, Java SE 17 — Chapter 6 The Java Virtual Machine Instruction Set",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-6.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — StringConcatFactory",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/StringConcatFactory.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

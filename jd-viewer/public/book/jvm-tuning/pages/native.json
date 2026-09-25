@@ -1,0 +1,150 @@
+{
+  "book": "jvm-tuning",
+  "id": "native",
+  "no": "2.5",
+  "chapter": 2,
+  "title": "네이티브 경계",
+  "summary": "JNI 너머의 메모리.",
+  "minutes": 11,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "힙 밖에도 자바가 쓰는 메모리가 있다는 것을 안다.",
+    "-Xmx 가 잡지 못하는 영역을 직접 만들어 본다.",
+    "힙이 아닌 OutOfMemoryError 를 구분한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.2절에서 **스레드 스택이 힙 밖에** 있는 것을 봤다. 힙 밖은 거기서 끝이 아니다.\n\n**`-Xmx` 는 힙만 잡는다.** 그런데 자바 프로그램이 쓰는 메모리에는 **힙이 아닌 것이 여럿** 있고, 그중에는 **자바 코드가 직접 늘리는 것**도 있다."
+    },
+    {
+      "type": "figure",
+      "caption": "프로세스 메모리에서 -Xmx 가 잡는 범위",
+      "ascii": "   process memory\n   --------------\n   java heap        <- -Xmx caps this, and only this\n   metaspace           -XX:MaxMetaspaceSize\n   thread stacks       -Xss times thread count\n   code cache          -XX:ReservedCodeCacheSize\n   direct buffers      -XX:MaxDirectMemorySize\n   gc structures       scales with heap size\n   native libs         whatever JNI mallocs\n\n   a container OOM kill looks at the whole column",
+      "note": "**컨테이너는 이 칸 전부를 합쳐서** 본다. 9장이 이 표를 하나씩 연다."
+    },
+    {
+      "type": "prose",
+      "md": "## 직접 버퍼 — 자바 코드로 힙 밖에 할당한다\n\n`ByteBuffer.allocate` 는 **힙 안에** 배열을 만들고, `ByteBuffer.allocateDirect` 는 **힙 밖에** 만든다. **같은 300MB 를 두 방식으로 잡아 보면** 차이가 바로 나온다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 300MB, 두 가지 방식",
+      "columns": [
+        "",
+        "allocate (힙 안)",
+        "allocateDirect (힙 밖)"
+      ],
+      "rows": [
+        [
+          "힙 사용량 (Runtime)",
+          "**601MB**",
+          "**1MB**"
+        ],
+        [
+          "NMT Java Heap committed",
+          "커진다",
+          "133,120KB **그대로**"
+        ],
+        [
+          "NMT Other committed",
+          "-",
+          "**307,200KB**"
+        ],
+        [
+          "누가 잡나",
+          "`-Xmx`",
+          "`-XX:MaxDirectMemorySize`"
+        ]
+      ],
+      "note": "**힙 사용량 1MB.** 300MB 를 잡았는데 힙에서는 보이지 않는다 — **힙 덤프를 떠도 안 나온다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 이런 것을 쓰나",
+      "md": "**복사를 한 번 줄이려고** 쓴다.\n\n> 소켓이나 파일에 쓸 때, 힙 안의 배열은 **커널로 넘기기 전에 힙 밖으로 한 번 복사**해야 한다.\n> GC 가 객체를 옮기기 때문에 **주소가 고정돼 있지 않아서**다.\n> 그래서 네티 같은 네트워크 라이브러리가 **직접 버퍼를 기본으로** 쓴다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "힙이 텅 비었는데 OutOfMemoryError 가 난다",
+      "md": "**`-Xmx1g` 에 힙은 거의 안 썼는데** 죽는다.\n\n```\njava.lang.OutOfMemoryError: Cannot reserve 1048576 bytes of direct buffer memory\n    (allocated: 67108864, limit: 67108864)\n\tat java.base/java.nio.Bits.reserveMemory\n```\n\n> **`Java heap space` 가 아니다.** 메시지 뒷부분이 어느 칸인지를 말해 준다.\n> **힙 덤프를 떠 봐야 아무것도 안 나온다** — 힙에 없으니까.\n> OutOfMemoryError 를 볼 때 **첫 줄의 뒷부분부터 읽는** 습관이 9장에서 계속 쓰인다."
+    },
+    {
+      "type": "prose",
+      "md": "## 직접 버퍼는 GC 가 치우지 않는다\n\n정확히는 **참조가 끊기면 언젠가 정리되지만**, 그 시점이 **GC 에 얹혀 있다.** 힙을 거의 안 쓰면 GC 가 안 돌고, GC 가 안 돌면 **힙 밖의 300MB 가 그대로 남는다.** 9장에서 이 고리를 다시 본다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Direct.java\nimport java.nio.ByteBuffer;\nimport java.util.*;\npublic class Direct {\n    public static void main(String[] a) throws Exception {\n        boolean direct = a[0].equals(\"direct\");\n        int mb = Integer.parseInt(a[1]);\n        List<ByteBuffer> keep = new ArrayList<>();\n        for (int i = 0; i < mb; i++)\n            keep.add(direct ? ByteBuffer.allocateDirect(1<<20) : ByteBuffer.allocate(1<<20));\n        Runtime r = Runtime.getRuntime();\n        System.out.printf(\"%s %dMB  heapUsed=%dMB%n\", a[0], mb,\n            (r.totalMemory()-r.freeMemory())>>20);\n    }\n}\n\n# --- 1) 같은 300MB, 힙 안과 힙 밖 ---\n\n$ java -Xmx1g -cp out Direct heap 300\nheap 300MB  heapUsed=601MB\n\n$ java -Xmx1g -cp out Direct direct 300\ndirect 300MB  heapUsed=1MB          <- 300MB 를 잡았는데 힙은 1MB\n\n# --- 2) 그러면 그 300MB 는 어디 있나 ---\n\n$ java -Xmx1g -XX:NativeMemoryTracking=summary -cp out Direct direct 300 &\n$ jcmd <pid> VM.native_memory summary\nTotal: reserved=2866232KB, committed=558904KB\n-                 Java Heap (reserved=1048576KB, committed=133120KB)\n-                     Other (reserved=307200KB, committed=307200KB)\n                                                      ^^^^^^^^^ 정확히 300MB\n\n# --- 3) 힙은 1GB 남았는데 직접 메모리만 조이면 ---\n\n$ java -Xmx1g -XX:MaxDirectMemorySize=64m -cp out Direct direct 300\nException in thread \"main\" java.lang.OutOfMemoryError:\n    Cannot reserve 1048576 bytes of direct buffer memory\n    (allocated: 67108864, limit: 67108864)\n\tat java.base/java.nio.Bits.reserveMemory(Bits.java:178)\n\tat java.base/java.nio.DirectByteBuffer.<init>(DirectByteBuffer.java:121)\n\tat java.base/java.nio.ByteBuffer.allocateDirect(ByteBuffer.java:332)",
+      "note": "**`Java heap space` 가 아니라 `direct buffer memory`** 다. 같은 예외 클래스인데 **가리키는 칸이 다르다.**"
+    }
+  ],
+  "recap": [
+    "-Xmx 는 힙만 잡는다. 메타스페이스·스택·코드 캐시·직접 버퍼는 밖에 있다.",
+    "allocateDirect 로 300MB 를 잡아도 힙 사용량은 1MB 였다.",
+    "그 300MB 는 NMT 의 Other 칸에 307,200KB 로 잡혔다.",
+    "직접 버퍼는 커널로 넘길 때의 복사를 줄이려고 쓴다.",
+    "OutOfMemoryError 는 첫 줄 뒷부분이 어느 칸인지를 말해 준다."
+  ],
+  "drills": [
+    {
+      "task": "allocateDirect 로 힙 밖 메모리를 잡고 힙 덤프를 떠서 안 나오는 것을 확인한다.",
+      "done_when": "힙 덤프의 한계를 직접 본다.",
+      "minutes": 15
+    },
+    {
+      "task": "-XX:MaxDirectMemorySize 를 안 주면 기본값이 얼마인지 확인한다.",
+      "done_when": "-Xmx 와의 관계를 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "내 애플리케이션의 NMT Total committed 와 -Xmx 를 비교한다.",
+      "done_when": "힙 밖이 전체의 몇 퍼센트인지 말할 수 있다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "-Xmx 가 잡는 것은.",
+      "a": "자바 힙뿐이다. 메타스페이스·스택·코드 캐시·직접 버퍼는 밖에 있다."
+    },
+    {
+      "q": "allocateDirect 로 잡은 메모리는 NMT 어디에 잡히나.",
+      "a": "Other 칸이다. Java Heap 은 변하지 않는다."
+    },
+    {
+      "q": "직접 버퍼를 쓰는 이유는.",
+      "a": "커널로 넘길 때 힙 밖으로 복사하는 단계를 줄이려고 쓴다."
+    },
+    {
+      "q": "OutOfMemoryError 를 볼 때 먼저 볼 곳은.",
+      "a": "첫 줄 뒷부분이다. Java heap space 인지 direct buffer memory 인지가 거기 있다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "직접 버퍼",
+      "what": "ByteBuffer.allocateDirect 로 힙 밖에 잡는 버퍼. -XX:MaxDirectMemorySize 가 한도다."
+    },
+    {
+      "term": "Other",
+      "what": "NMT 에서 분류되지 않은 네이티브 할당. 직접 버퍼가 여기 잡힌다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — ByteBuffer.allocateDirect",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/ByteBuffer.html#allocateDirect(int)",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Troubleshooting Guide, Native Memory Tracking",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/diagnostic-tools.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
