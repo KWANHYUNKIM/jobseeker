@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — Dropbox 재방문(쓸 글 없음)을 마쳤다. 그 앞은 Doximity 확장(`bedside-bench`)이었다.** `bedside-bench`(2026-09-22, 공개 임상 벤치마크)를 `임상 현장의 AI` 에
+**없다 — Figma 재방문(쓸 글 없음)을 마쳤다. Doximity 확장(`bedside-bench`) 뒤로 재방문 둘이 비었다.** `bedside-bench`(2026-09-22, 공개 임상 벤치마크)를 `임상 현장의 AI` 에
 붙였다(기능 4개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
@@ -314,6 +314,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **figma** — 2026-09-26 **1회째 없음.** 블로그 피드(`/blog/feed/atom.xml`)의 09-03 이후는 디자인·문화 글과 일본 데이터 레지던시 출시 공지(기술 내용 없음)뿐. 안 쓴 글 `how-we-built-generative-plugins-and-shaders`(09-01)는 **보강 재료**다.
 - **dropbox** — 2026-09-26 **1회째 없음.** `dropbox.tech/feed` 의 09-03 이후는 CTO 인터뷰(AI 도입, 문화 분류)·API 문서 공지뿐. 그 앞의 안 쓴 글(Riviera 07-20 · AI 시대 인프라 효율 08-18 · 쿠키 감사기 08-31 · Nova 05-21 · Magic Pocket 저장 효율 04-02 — 기존 `magic-pocket` 보강감)은 **보강 재료**다.
 - **discord** — 2026-09-26 **1회째 없음.** `blog/rss.xml` 의 09-03 이후는 제품 공지·패치 노트뿐. 엔지니어링 분류(`/category/engineering`)에 안 쓴 글 넷(음성을 엣지로 · ScyllaDB 자동화 · 3-25-26 음성 장애 · API 비용 귀속)은 **보강 재료**다.
 - **datadog** — 2026-09-26 **1회째 없음.** `blog/engineering/index.xml` 최신이 09-01. 그 앞의 안 쓴 글(GitRetriever 08-19 — CI 트래픽 20배 · Rust OTel 09-01 · PostgreSQL HA 06-04 · 데이터 완결성 07-01)은 **보강 재료**다.
