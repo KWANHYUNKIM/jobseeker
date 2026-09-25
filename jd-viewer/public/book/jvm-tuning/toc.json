@@ -112,9 +112,9 @@
           "no": "2.6",
           "id": "versions",
           "title": "판마다 다른 것",
-          "summary": "8 · 11 · 17 · 21.",
+          "summary": "11 · 17 · 24 에서 실제로 돌려 본 것.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

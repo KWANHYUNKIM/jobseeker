@@ -1,0 +1,164 @@
+{
+  "book": "jvm-tuning",
+  "id": "versions",
+  "no": "2.6",
+  "chapter": 2,
+  "title": "판마다 다른 것",
+  "summary": "11 · 17 · 24 에서 실제로 돌려 본 것.",
+  "minutes": 11,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "튜닝 옵션이 판마다 사라진다는 것을 안다.",
+    "어떤 옵션이 무시되고 어떤 것이 기동을 막는지 구분한다.",
+    "글을 읽기 전에 판부터 확인하는 습관을 갖는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "지금까지 다섯 절이 **이 머신의 자바 하나**로 재 본 것이다. 그런데 **JVM 튜닝 글은 판을 안 적고 쓰인 것이 많다.**\n\n여기서는 **같은 명령을 세 판에 그대로 던져** 본다. 무엇이 갈리는지 보면, **남의 글을 읽을 때 무엇부터 확인해야 하는지**가 정해진다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "이 절에서 실제로 돌린 판",
+      "md": "**11.0.28 · 17.0.16 · 24.0.1** 셋이다.\n\n> **자바 8 과 21 은 이 머신에 없어서 돌리지 못했다.** 그래서 그 둘에 대한 표는 없다.\n> 아래 숫자는 전부 **직접 돌린 출력**이고, 안 돌린 판은 적지 않았다."
+    },
+    {
+      "type": "prose",
+      "md": "## 옵션은 늘지 않고 줄어든다\n\n튜닝이라고 하면 **켤 것이 늘어날 것 같지만 반대**다. `-XX:+PrintFlagsFinal` 로 **VM 플래그 개수를 세어** 보면 판이 올라갈수록 줄어든다."
+    },
+    {
+      "type": "table",
+      "caption": "VM 플래그 개수와 사라진 것들",
+      "columns": [
+        "판",
+        "플래그 수",
+        "앞 판 대비 사라진 수",
+        "사라진 것의 예"
+      ],
+      "rows": [
+        [
+          "11.0.28",
+          "**654**",
+          "-",
+          ""
+        ],
+        [
+          "17.0.16",
+          "**542**",
+          "**145개**",
+          "`CMS_FLSWeight` `CMSAbortablePreclean…` — CMS 일가"
+        ],
+        [
+          "24.0.1",
+          "**505**",
+          "**56개**",
+          "`BiasedLockingBulkRebiasThreshold` — 편향 잠금"
+        ]
+      ],
+      "note": "**24 에서 새로 생긴 것도 있다** — `AOTCache` `AOTMode` 처럼 미리 컴파일해 두는 쪽이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 줄어드는가",
+      "md": "**손으로 맞추던 것을 JVM 이 스스로 정하는 쪽으로** 간다.\n\n> 수집기 하나가 통째로 없어지면(CMS) **그 수집기의 옵션 145개가 같이** 없어진다.\n> 그래서 **오래된 튜닝 글의 옵션이 지금 기동조차 안 되는** 일이 생긴다.\n> 12장에서 \"옵션을 적게 준다\"를 원칙으로 두는 이유가 여기 있다."
+    },
+    {
+      "type": "prose",
+      "md": "## 없는 옵션을 주면 — 두 가지로 갈린다\n\n**무시하고 계속 도는 것**과 **아예 안 뜨는 것**이 있다. 이 차이가 운영에서 크다. 앞의 것은 **옵션을 줬는데 안 먹은 채로 조용히 돌고**, 뒤의 것은 **배포가 그 자리에서 실패**한다."
+    },
+    {
+      "type": "figure",
+      "caption": "같은 옵션, 세 판의 반응",
+      "ascii": "   -XX:+UseConcMarkSweepGC\n   11    warning: deprecated in 9.0, will likely be removed\n   17    Unrecognized VM option -- jvm does not start\n   24    Unrecognized VM option -- jvm does not start\n\n   -XX:+UseZGC\n   11    Error: experimental, needs -XX:+UnlockExperimentalVMOptions\n   17    Using The Z Garbage Collector\n   24    Using The Z Garbage Collector\n\n   -XX:+ZGenerational\n   17    Unrecognized VM option -- did not exist yet\n   24    warning: Ignoring option ZGenerational; support was removed in 24.0",
+      "note": "**같은 플래그가 없었다가 생겼다가 없어진다.** 아래 셋째 칸이 그 일생이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "무시되는 쪽이 더 위험하다",
+      "md": "**기동이 안 되면 바로 안다. 무시되면 모른다.**\n\n> `Ignoring option ZGenerational` 은 **경고 한 줄 찍고 그냥 뜬다.**\n> 옵션을 걸어 둔 사람은 **그게 먹고 있다고 믿은 채로 운영**한다.\n> 그래서 11장에서 **기동 로그의 경고 줄을 반드시 읽는** 것을 점검표에 넣는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 기본값도 말없이 바뀐다\n\n옵션을 안 줘도 달라진다. **24 의 ZGC 는 세대별이 기본**이라, 같은 `-XX:+UseZGC` 한 줄이 **17 과 24 에서 다른 수집기**를 띄운다. 로그에 `Young Generation` 이 나오는지로 갈린다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 세 판을 나란히 둔다.\n$ /opt/homebrew/opt/openjdk@11/bin/java -version   -> 11.0.28\n$ /opt/homebrew/opt/openjdk@17/bin/java -version   -> 17.0.16\n$ /opt/homebrew/opt/openjdk@24/bin/java -version   -> 24.0.1\n\n# --- 1) 기본 수집기는 셋 다 같다 ---\n\n$ java -Xlog:gc -version | grep Using\n  11  [0.009s][info][gc] Using G1\n  17  [0.003s][info][gc] Using G1\n  24  [0.003s][info][gc] Using G1\n\n# --- 2) 제거된 수집기를 달라고 하면 ---\n\n$ java -XX:+UseConcMarkSweepGC -version\n  11  OpenJDK 64-Bit Server VM warning: Option UseConcMarkSweepGC was deprecated\n      in version 9.0 and will likely be removed in a future release.\n  17  Unrecognized VM option 'UseConcMarkSweepGC'\n  24  Unrecognized VM option 'UseConcMarkSweepGC'\n\n# --- 3) 실험 단계였던 것이 정식이 된다 ---\n\n$ java -XX:+UseZGC -Xlog:gc -version\n  11  Error: VM option 'UseZGC' is experimental and must be enabled via\n      -XX:+UnlockExperimentalVMOptions.\n  17  [0.013s][info][gc] Using The Z Garbage Collector\n  24  [0.008s][info][gc] Using The Z Garbage Collector\n\n# --- 4) 한 플래그의 일생 ---\n\n$ java -XX:+UseZGC -XX:+ZGenerational -Xlog:gc -version\n  17  Unrecognized VM option 'ZGenerational'\n  24  OpenJDK 64-Bit Server VM warning: Ignoring option ZGenerational;\n      support was removed in 24.0\n      [0.025s][info][gc] Using The Z Garbage Collector\n\n# 24 에서는 세대별이 기본이라 플래그 자체가 없어졌다.\n\n$ /opt/homebrew/opt/openjdk@24/bin/java -XX:+UseZGC -Xlog:gc,gc+init -version\n[0.004s][info][gc,init] GC Workers for Old Generation: 2 (dynamic)\n[0.004s][info][gc,init] GC Workers for Young Generation: 2 (dynamic)\n[0.004s][info][gc     ] Using The Z Garbage Collector\n\n# --- 5) 플래그 개수 ---\n\n$ java -XX:+PrintFlagsFinal -version | grep -c '='\n  11  654\n  17  542      <- 145개가 사라졌다 (CMS 일가)\n  24  505      <- 56개가 더 사라졌다 (편향 잠금 등)",
+      "note": "**판을 안 적은 튜닝 글은 절반만 읽는다.** 이 책은 위 세 판에서 돌린 것만 싣는다."
+    }
+  ],
+  "recap": [
+    "VM 플래그는 늘지 않고 줄어든다 — 654 · 542 · 505 였다.",
+    "수집기 하나가 없어지면 그 수집기의 옵션이 통째로 같이 없어진다.",
+    "없는 옵션은 무시되거나 기동을 막는다. 무시되는 쪽이 더 위험하다.",
+    "-XX:+UseZGC 는 11 에서 실험, 17 부터 그냥 된다.",
+    "같은 -XX:+UseZGC 가 24 에서는 세대별 ZGC 를 띄운다 — 기본값도 말없이 바뀐다."
+  ],
+  "drills": [
+    {
+      "task": "내 운영 자바와 로컬 자바의 PrintFlagsFinal 을 diff 한다.",
+      "done_when": "두 환경의 차이를 목록으로 갖는다.",
+      "minutes": 15
+    },
+    {
+      "task": "지금 쓰는 기동 옵션을 한 판 위 JDK 에 그대로 넣어 본다.",
+      "done_when": "무시되는 것과 막는 것을 가려낸다.",
+      "minutes": 12
+    },
+    {
+      "task": "기동 로그에서 VM warning 줄만 뽑는 grep 을 만들어 둔다.",
+      "done_when": "11장 점검표에 넣는다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "판이 올라가면 VM 플래그는 늘어나나.",
+      "a": "줄어든다. 11 에서 654, 17 에서 542, 24 에서 505 였다."
+    },
+    {
+      "q": "없는 옵션을 줬을 때 두 가지 반응은.",
+      "a": "경고만 찍고 무시하거나, Unrecognized VM option 으로 기동을 막는다."
+    },
+    {
+      "q": "둘 중 운영에서 더 위험한 쪽은.",
+      "a": "무시되는 쪽이다. 옵션이 먹고 있다고 믿은 채로 돌게 된다."
+    },
+    {
+      "q": "같은 -XX:+UseZGC 가 17 과 24 에서 다른 이유는.",
+      "a": "24 는 세대별 ZGC 가 기본이다. 로그에 Young Generation 이 나온다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "실험 옵션",
+      "what": "UnlockExperimentalVMOptions 없이는 못 켜는 옵션. 판이 오르면서 정식이 되기도 한다."
+    },
+    {
+      "term": "세대별 ZGC",
+      "what": "젊은 객체와 늙은 객체를 나눠 수집하는 ZGC. 21 에서 도입되고 24 에서 기본이 됐다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JEP 363: Remove the Concurrent Mark Sweep (CMS) Garbage Collector",
+      "url": "https://openjdk.org/jeps/363",
+      "publisher": "OpenJDK"
+    },
+    {
+      "title": "JEP 377: ZGC — A Scalable Low-Latency Garbage Collector (Production)",
+      "url": "https://openjdk.org/jeps/377",
+      "publisher": "OpenJDK"
+    },
+    {
+      "title": "JEP 439: Generational ZGC",
+      "url": "https://openjdk.org/jeps/439",
+      "publisher": "OpenJDK"
+    }
+  ]
+}
