@@ -511,3 +511,7 @@ Mythos 대책 연재 넷(Logos 프로젝트)을 기능 `logos-security-harness` 
 ## daangn 재방문 (2026-09-26)
 
 Medium RSS 최신 08-20(이미 반영). updated_at 만 올렸다. 1회째. 그 앞의 안 쓴 글 넷은 보강 재료로 STATE 에 적었다.
+
+## datadog 재방문 (2026-09-26)
+
+엔지니어링 피드 최신 09-01(갱신일 전). updated_at 만 올렸다. 1회째. 안 쓴 글 넷은 보강 재료로 STATE 에 적었다.
