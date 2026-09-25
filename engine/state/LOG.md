@@ -583,3 +583,7 @@ RSS 최신 05-20. updated_at 만 올렸다. 1회째. LLM Wiki + RAG 글은 사�
 ## moniepoint 재방문 (2026-09-26)
 
 RSS 최신 08-05. updated_at 만 올렸다. 1회째.
+
+## musinsa 재방문 (2026-09-26)
+
+Medium RSS 최신이 갱신일 당일. updated_at 만 올렸다. 1회째. 바로 앞의 굵은 글 셋을 보강 재료로 적었다.

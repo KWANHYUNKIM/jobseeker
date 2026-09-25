@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — moniepoint 재방문(새 글 없음)을 마쳤다. 메이퇀 확장(`one-model-many-scenes`) 뒤로 재방문 셋이 비었다.** `2026/09/22/Meituan-Foundation-Model-for-Recommendation`(MTFM)을 기능 `one-model-many-scenes` 로
+**없다 — 무신사 재방문(새 글 없음)을 마쳤다. 메이퇀 확장(`one-model-many-scenes`) 뒤로 재방문 넷이 비었다.** `2026/09/22/Meituan-Foundation-Model-for-Recommendation`(MTFM)을 기능 `one-model-many-scenes` 로
 쓰고 새 도메인 `여러 업무의 추천을 한 모델로 묶는다` 를 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
@@ -320,6 +320,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **musinsa** — 2026-09-26 **1회째 없음.** `medium.com/feed/musinsa-tech` 최신이 갱신일 당일(09-03, QA 자동화). 바로 앞의 안 쓴 글이 굵다 — 통합 임베딩 푸시 CTR +21.3%(08-31, `style-personalization` 보강감) · LLM 비용 64% 절감·캐시 히트 98%(07-07) · **도메인 지식 공유(08-25 — LLM Wiki 비교 문서의 네 번째 재료일 수 있다, 열어서 확인)**.
 - **moniepoint** — 2026-09-26 **1회째 없음.** `rss.xml` 최신 08-05. 안 쓴 글(Crossplane 함수 08-05 · 스케줄 잡 1·2부 07-16/20)은 **보강 재료**다.
 - **monday** — 2026-09-26 **새 글 하나, 쓰지 않음.** `building-a-robust-harness-for-agent-in-production-feed-agent-case-study`(09-09) — 피드 에이전트 하네스(PII 제거 전처리 · ID 별칭으로 지어낸 인용 잡기 · 스키마 강제 출력+재시도 · 두 겹 루프 한도 · 명시 규칙/추론 관찰 두 층 기억). **목록형이고 버린 대안·대가·수치가 없다.** 다른 회사의 하네스 글과 모아 비교 문서로 쓸 때 재료가 된다(사이보즈 `logos-security-harness`).
 - **mercari** — 2026-09-26 **새 글 하나, 쓰지 않음.** `20260812-mptechtalk-report`(09-25)는 행사 요약 — Checkout Solution(Core/Flex) · Payment Provider Service 분리 · Balance V2 + Bookkeeper(복식부기), Apple/Google Pay 추가 약 1개월. **기존 `expand-without-forking`·`asset-exchange` 와 겹치고 버린 대안·대가가 없다.** 안 쓴 **TiDB 이관 연재 넷**(08-03 회고 · 08-17 IN 절 100만 건 · 08-19 리소스 제어 · 08-20 인덱스 비호환)은 **큰 보강 재료**다.
