@@ -1,0 +1,155 @@
+{
+  "book": "jvm-tuning",
+  "id": "zgc",
+  "no": "8.2",
+  "chapter": 8,
+  "title": "ZGC",
+  "summary": "힙 크기와 무관한 멈춤.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "ZGC 의 멈춤이 어느 정도인지 직접 잰다.",
+    "기본 GC 로그에 멈춤이 안 찍히는 이유를 안다.",
+    "그 멈춤을 무엇과 바꿨는지 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.5절에서 G1 에게 **5ms 를 요구했다가 19.38ms 를 받았다.** 멈춤을 더 줄이려면 **접근이 달라야** 한다.\n\nZGC 의 답은 **옮기는 일까지 애플리케이션과 같이 하는 것**이다. 6.5절의 동시 표시가 표시만 동시에 했다면, ZGC 는 **재배치도 동시에** 한다. 멈추는 자리는 **세 군데뿐**이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "기본 GC 로그에 멈춤이 안 나온다",
+      "md": "**`-Xlog:gc` 만 켜면 시간이 한 줄도 안 보인다.**\n\n```\n[0.238s][info][gc] GC(0) Garbage Collection (Warmup) 222M(22%)->98M(10%)\n[0.734s][info][gc] GC(3) Garbage Collection (Allocation Rate) 626M(61%)->168M(16%)\n```\n\n> G1 처럼 `Pause Young ... 3.975ms` 가 아니라 **회수량만** 적는다.\n> 멈춤은 `-Xlog:gc+phases` 에 있다 — **다른 수집기와 같은 명령으로 재면 ZGC 만 0회로 나온다.**\n> 이 절을 쓰면서 실제로 그렇게 나왔고, 로그 형식을 확인하고 나서야 값을 얻었다."
+    },
+    {
+      "type": "figure",
+      "caption": "멈추는 자리는 셋뿐이다",
+      "ascii": "   GC(0) Pause Mark Start       0.007ms\n   GC(0) Pause Mark End         0.009ms\n   GC(0) Pause Relocate Start   0.004ms\n\n   marking runs concurrently, relocation runs concurrently\n   the three stops only hand work over; they do no copying\n\n   that is why the numbers do not grow with the heap",
+      "note": "**세 멈춤이 하는 일은 넘겨주기**다. 옮기는 양과 무관하므로 힙이 커져도 안 늘어난다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 부하, 같은 `-Xmx1g` (8.1 과 같은 프로그램)",
+      "columns": [
+        "수집기",
+        "멈춤 수",
+        "평균",
+        "최대",
+        "GC 합(비율)"
+      ],
+      "rows": [
+        [
+          "G1",
+          "31회",
+          "3.756 ms",
+          "23.778 ms",
+          "116.4 ms (19.0%)"
+        ],
+        [
+          "**ZGC**",
+          "63회",
+          "**0.014 ms**",
+          "**0.233 ms**",
+          "**0.9 ms (0.0%)**"
+        ],
+        [
+          "배수",
+          "2배",
+          "**268분의 1**",
+          "**102분의 1**",
+          "**129분의 1**"
+        ]
+      ],
+      "note": "**평균 멈춤이 G1 의 268분의 1**이다. 14마이크로초다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "대가는 전체 시간",
+      "md": "**ZGC 의 전체 실행 시간은 2,135 · 2,185 · 2,243 ms 였다.** 같은 프로그램이 Parallel 로 **580~619ms** 다.\n\n> **3.5배 남짓 느리다.** 동시에 옮기려면 **애플리케이션이 읽는 참조마다 검사**가 붙는다(읽기 장벽).\n> 6.6절에서 **쓰기 쪽은 9ms 로 거의 공짜**인 것을 쟀다 — ZGC 는 쓰기가 아니라 읽기에 값을 붙인다.\n> 그 읽기 값을 이 책에서 분리해 재지는 못했지만(6.6절의 확인 실패), **전체 시간 차이로는 분명히 보인다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 그래서 어디에 쓰나\n\n**멈춤이 요구 조건인 곳**이다 — 사용자가 기다리는 응답, 거래 체결, 실시간 처리. **힙이 클수록 유리**해진다. G1 은 힙이 커지면 옮길 양이 늘어 멈춤이 자라지만, ZGC 의 세 멈춤은 **넘겨주기만 하므로 안 자란다.**\n\n반대로 **처리량이 요구 조건이면 손해**다. 위 측정에서 3.5배다. 이 부하가 작아서 차이가 과장됐을 수 있지만 **방향은 분명하다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "2.6절에서 본 판 문제",
+      "md": "**`-XX:+UseZGC` 는 자바 11 에서 실험 옵션**이었다.\n\n```\n11  Error: VM option 'UseZGC' is experimental and must be enabled via\n    -XX:+UnlockExperimentalVMOptions.\n17  Using The Z Garbage Collector\n24  Using The Z Garbage Collector\n```\n\n> 그리고 **24 에서는 세대별이 기본**이라 같은 한 줄이 다른 수집기를 띄운다 — `Young Generation` 워커가 로그에 나온다.\n> **ZGC 를 쓴다고 할 때 판을 같이 말해야** 하는 이유다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 기본 로그에는 멈춤이 없다 ---\n\n$ java -XX:+UseZGC -Xmx1g -Xlog:gc -cp out Bench | head -6\n[0.021s][info][gc] Using The Z Garbage Collector\n[0.238s][info][gc] GC(0) Garbage Collection (Warmup) 222M(22%)->98M(10%)\n[0.498s][info][gc] GC(1) Garbage Collection (Warmup) 240M(23%)->112M(11%)\n[0.606s][info][gc] GC(2) Garbage Collection (Warmup) 418M(41%)->84M(8%)\n[0.734s][info][gc] GC(3) Garbage Collection (Allocation Rate) 626M(61%)->168M(16%)\n[0.820s][info][gc] GC(4) Garbage Collection (Allocation Rate) 318M(31%)->124M(12%)\n\n# 시간이 한 줄도 없다.\n\n# --- 2) 멈춤은 gc+phases 에 있다 ---\n\n$ java -XX:+UseZGC -Xmx1g -Xlog:gc+phases=info -cp out Bench | grep -i pause | head -6\n[0.119s][info][gc,phases] GC(0) Pause Mark Start 0.007ms\n[0.139s][info][gc,phases] GC(0) Pause Mark End 0.009ms\n[0.146s][info][gc,phases] GC(0) Pause Relocate Start 0.004ms\n[0.221s][info][gc,phases] GC(1) Pause Mark Start 0.005ms\n[0.227s][info][gc,phases] GC(1) Pause Mark End 0.015ms\n[0.242s][info][gc,phases] GC(1) Pause Relocate Start 0.006ms\n\n# --- 3) G1 과 나란히 ---\n\n  G1GC     멈춤  31회  평균 3.756 ms  최대 23.778 ms  합 116.4 ms (19.0%)\n  ZGC      멈춤  63회  평균 0.014 ms  최대  0.233 ms  합   0.9 ms ( 0.0%)\n\n# --- 4) 전체 시간 (세 번) ---\n\n  ZGC        2135 ms / 2185 ms / 2243 ms\n  ParallelGC  580 ms /  619 ms /  461 ms\n  G1GC        858 ms /  614 ms /  791 ms",
+      "note": "**멈춤은 268분의 1, 전체 시간은 3.5배**다. 이 한 줄이 ZGC 를 고르는 기준의 전부다."
+    }
+  ],
+  "recap": [
+    "ZGC 는 표시뿐 아니라 재배치도 애플리케이션과 같이 한다.",
+    "멈추는 자리는 Mark Start · Mark End · Relocate Start 셋뿐이다.",
+    "기본 -Xlog:gc 에는 멈춤 시간이 안 찍히고 gc+phases 에 있다.",
+    "같은 부하에서 평균 멈춤이 G1 의 268분의 1인 0.014ms 였다.",
+    "대신 전체 실행 시간이 Parallel 의 3.5배였다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션을 ZGC 로 띄우고 gc+phases 로 멈춤을 잰다.",
+      "done_when": "세 멈춤의 값을 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "같은 부하의 전체 처리 시간을 G1 과 비교한다.",
+      "done_when": "멈춤과 처리량의 거래를 숫자로 갖는다.",
+      "minutes": 15
+    },
+    {
+      "task": "힙 크기를 두 배로 하고 ZGC 멈춤이 자라는지 본다.",
+      "done_when": "힙과 무관하다는 말을 확인한다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "ZGC 가 멈추는 세 자리는.",
+      "a": "Pause Mark Start, Pause Mark End, Pause Relocate Start 다."
+    },
+    {
+      "q": "ZGC 의 멈춤이 힙 크기와 무관한 이유는.",
+      "a": "세 멈춤은 작업을 넘겨줄 뿐 옮기는 일을 하지 않기 때문이다."
+    },
+    {
+      "q": "-Xlog:gc 로 ZGC 멈춤을 못 보는 이유는.",
+      "a": "기본 로그에 시간을 안 찍는다. gc+phases 를 켜야 한다."
+    },
+    {
+      "q": "ZGC 의 대가는.",
+      "a": "처리량이다. 이 측정에서 전체 시간이 Parallel 의 3.5배였다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "ZGC",
+      "what": "재배치까지 동시에 하는 저지연 수집기. 멈춤이 힙 크기에 비례하지 않는다."
+    },
+    {
+      "term": "읽기 장벽",
+      "what": "참조를 읽을 때 끼어드는 검사. ZGC 가 동시 재배치를 하는 방법이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JEP 333: ZGC — A Scalable Low-Latency Garbage Collector",
+      "url": "https://openjdk.org/jeps/333",
+      "publisher": "OpenJDK"
+    },
+    {
+      "title": "JEP 377: ZGC — A Scalable Low-Latency Garbage Collector (Production)",
+      "url": "https://openjdk.org/jeps/377",
+      "publisher": "OpenJDK"
+    }
+  ]
+}

@@ -436,7 +436,7 @@
           "title": "직렬과 병렬",
           "summary": "작고 단순할 때.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -444,7 +444,7 @@
           "title": "ZGC",
           "summary": "힙 크기와 무관한 멈춤.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -452,7 +452,7 @@
           "title": "셰넌도어",
           "summary": "동시 압축.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",
