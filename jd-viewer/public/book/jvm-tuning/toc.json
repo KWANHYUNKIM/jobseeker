@@ -460,7 +460,7 @@
           "title": "무수집기",
           "summary": "아무것도 안 지운다.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
@@ -468,7 +468,7 @@
           "title": "무엇을 언제 쓰나",
           "summary": "기본값을 안 바꾸는 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -476,7 +476,7 @@
           "title": "직접 견준다",
           "summary": "같은 부하, 다른 수집기.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

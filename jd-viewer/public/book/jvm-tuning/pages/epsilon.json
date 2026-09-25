@@ -1,0 +1,161 @@
+{
+  "book": "jvm-tuning",
+  "id": "epsilon",
+  "no": "8.4",
+  "chapter": 8,
+  "title": "무수집기",
+  "summary": "아무것도 안 지운다.",
+  "minutes": 11,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "Epsilon 이 무엇을 하는지(안 하는지) 안다.",
+    "수집을 없애면 빨라지는지 직접 잰다.",
+    "어디에 쓰는 물건인지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "**아무것도 회수하지 않는 수집기**가 있다. 할당은 해 주고, 힙이 차면 **JVM 을 끝낸다.**\n\n쓸모없어 보이지만 쓰임이 분명하다 — **기준선**이다. \"수집이 없으면 얼마나 빠른가\"를 재는 자리이고, \"이 프로그램이 정말 그만큼만 할당하나\"를 확인하는 자리다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "플래그 순서가 틀리면 안 뜬다",
+      "md": "```\n$ java -XX:+UseEpsilonGC -version\nError: VM option 'UseEpsilonGC' is experimental and must be enabled via\n       -XX:+UnlockExperimentalVMOptions.\nError: The unlock option must precede 'UseEpsilonGC'.\n```\n\n> **\"먼저 와야 한다\"**까지 알려 준다. 2.6절의 `-XX:+UseZGC` 가 자바 11 에서 냈던 것과 같은 메시지다.\n> 풀어 주면 뜬다 — 그리고 **`-Xms` 를 `-Xmx` 와 같게 하라는 경고**가 붙는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 차면 끝난다\n\n`-Xmx64m` 으로 계속 할당해 봤다. 힙 사용률이 **한 방향으로만** 오른다 — 되돌아오는 구간이 없다."
+    },
+    {
+      "type": "figure",
+      "caption": "되돌아오지 않는다",
+      "ascii": "   Heap: 65536K reserved, 65536K committed, 54286K (82.84%) used\n   Heap: 65536K reserved, 65536K committed, 58221K (88.84%) used\n   Heap: 65536K reserved, 65536K committed, 62157K (94.84%) used\n   Heap: 65536K reserved, 65536K committed, 65437K (99.85%) used\n   Terminating due to java.lang.OutOfMemoryError: Java heap space\n\n   82.84 -> 88.84 -> 94.84 -> 99.85, and then the jvm is gone",
+      "note": "**`Terminating due to`** 다. 던지는 것이 아니라 **끝내는** 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "catch 로 못 잡는다",
+      "md": "**`catch (OutOfMemoryError e)` 를 걸어 뒀는데 한 줄도 안 찍혔다.**\n\n```\n  종료 코드: 3\n  catch 가 찍은 줄: 0\n```\n\n> 다른 수집기에서는 `OutOfMemoryError` 가 **던져지고 잡힌다**(4.5·7.7절에서 그렇게 썼다).\n> Epsilon 은 **JVM 을 종료한다.** 종료 훅도 `finally` 도 돌지 않는다.\n> 그래서 **운영에 쓰는 물건이 아니다** — 애초에 그럴 의도로 만들어지지 않았다."
+    },
+    {
+      "type": "prose",
+      "md": "## 수집을 없애면 빨라지나\n\n이 절에서 확인하고 싶었던 것이 이것이다. **수집 비용이 0이면 상한**일 테니까. 5.1절의 할당 프로그램을 같은 `-Xmx2g` 에서 돌렸다."
+    },
+    {
+      "type": "table",
+      "caption": "int[4] 를 4천만 개 (`-Xmx2g`, 3회)",
+      "columns": [
+        "수집기",
+        "1회",
+        "2회",
+        "3회"
+      ],
+      "rows": [
+        [
+          "**Epsilon** (수집 없음)",
+          "**296 ms**",
+          "**459 ms**",
+          "**303 ms**"
+        ],
+        [
+          "Serial",
+          "**174 ms**",
+          "**201 ms**",
+          "**179 ms**"
+        ],
+        [
+          "Parallel",
+          "258 ms",
+          "-",
+          "-"
+        ],
+        [
+          "G1",
+          "193 ms",
+          "-",
+          "-"
+        ]
+      ],
+      "note": "**수집을 없앴는데 가장 느리다.** 세 번 다 Serial 의 1.7~2.3배였다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 더 느린가",
+      "md": "**캐시**다.\n\n> 수집기가 있으면 **에덴을 비우고 같은 자리를 다시 쓴다**(6.2절). 그 자리는 **캐시에 남아 있다.**\n> Epsilon 은 회수가 없으니 **할당이 계속 새 메모리로 나아간다** — 매번 캐시 밖이다.\n> 페이지를 미리 잡는 `-XX:+AlwaysPreTouch` 를 줘도 **524ms 로 더 느렸다.** 페이지 확보 비용이 아니라는 뜻이다.\n> **\"GC 가 없으면 빠르다\"가 늘 맞지 않는다** — 수집기는 비용이면서 동시에 지역성을 만들어 준다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 켜는 법 ---\n\n$ java -XX:+UseEpsilonGC -version\nError: VM option 'UseEpsilonGC' is experimental and must be enabled via\n       -XX:+UnlockExperimentalVMOptions.\nError: The unlock option must precede 'UseEpsilonGC'.\n\n$ java -XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC -Xlog:gc -version\n[0.008s][info][gc] Using Epsilon\n[0.008s][warning][gc,init] Consider setting -Xms equal to -Xmx to avoid resizing hiccups\n\n# --- 2) 차면 끝난다 ---\n\n$ cat Eps.java\npublic class Eps {\n    static Object sink;\n    public static void main(String[] a) {\n        long n = 0;\n        try { for (;;) { sink = new byte[1024]; n++; } }\n        catch (OutOfMemoryError e) {\n            System.out.printf(\"  %,d 개 할당 뒤 OOM%n\", n);\n        }\n    }\n}\n\n$ java -XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC -Xmx64m -Xlog:gc -cp out Eps\n[0.027s] Heap: 65536K reserved, 65536K (100.00%) committed, 54286K (82.84%) used\n[0.028s] Heap: 65536K reserved, 65536K (100.00%) committed, 58221K (88.84%) used\n[0.028s] Heap: 65536K reserved, 65536K (100.00%) committed, 62157K (94.84%) used\n[0.029s] Heap: 65536K reserved, 65536K (100.00%) committed, 65437K (99.85%) used\nTerminating due to java.lang.OutOfMemoryError: Java heap space\n\n$ echo $?\n3\n$ grep -c '개 할당 뒤 OOM' out.txt\n0                            <- catch 가 안 돌았다\n\n# --- 3) 수집을 없애면 빨라지나 ---\n\n$ java -XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC -Xmx2g -Xms2g -cp out Alloc 40000000\n40,000,000개 할당  296 ms   /  459 ms  /  303 ms\n$ java -XX:+UseSerialGC   -Xmx2g -cp out Alloc 40000000\n40,000,000개 할당  174 ms   /  201 ms  /  179 ms\n$ java -XX:+UseParallelGC -Xmx2g -cp out Alloc 40000000   ->  258 ms\n$ java -XX:+UseG1GC       -Xmx2g -cp out Alloc 40000000   ->  193 ms\n\n$ java ... -XX:+UseEpsilonGC -XX:+AlwaysPreTouch ...       ->  524 ms",
+      "note": "**세 번 다 Epsilon 이 느렸다.** 수집 비용을 0으로 만들었는데 전체가 느려지는 것이 이 절의 결과다."
+    }
+  ],
+  "recap": [
+    "Epsilon 은 할당만 해 주고 아무것도 회수하지 않는다.",
+    "실험 옵션이라 -XX:+UnlockExperimentalVMOptions 가 앞에 와야 한다.",
+    "힙이 차면 OutOfMemoryError 를 던지는 것이 아니라 JVM 을 종료한다 — catch 가 안 돈다.",
+    "같은 할당량에서 Epsilon 이 Serial 의 1.7~2.3배 느렸다.",
+    "수집기는 비용이면서 동시에 에덴을 재사용해 캐시 지역성을 만들어 준다."
+  ],
+  "drills": [
+    {
+      "task": "Epsilon 으로 내 짧은 배치를 돌려 실제 할당 총량을 잰다.",
+      "done_when": "OOM 이 날 때까지의 양을 안다.",
+      "minutes": 12
+    },
+    {
+      "task": "같은 프로그램을 Epsilon 과 Serial 로 돌려 비교한다.",
+      "done_when": "수집 없는 쪽이 빠른지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "catch (OutOfMemoryError) 가 도는지 수집기별로 확인한다.",
+      "done_when": "Epsilon 만 다른 것을 본다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Epsilon 이 하는 일은.",
+      "a": "할당만 해 주고 회수는 하지 않는다. 힙이 차면 JVM 을 종료한다."
+    },
+    {
+      "q": "Epsilon 의 OOM 을 catch 로 잡을 수 있나.",
+      "a": "없다. 던지는 것이 아니라 종료한다. 종료 코드 3 이었다."
+    },
+    {
+      "q": "수집을 없앴는데 왜 더 느렸나.",
+      "a": "에덴 재사용이 없어져 할당이 계속 캐시 밖의 새 메모리로 나아가기 때문이다."
+    },
+    {
+      "q": "Epsilon 의 쓰임은.",
+      "a": "기준선 측정과 실제 할당 총량 확인이다. 운영용이 아니다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "Epsilon GC",
+      "what": "회수를 하지 않는 실험용 수집기. 할당 상한과 실제 할당량을 재는 데 쓴다."
+    },
+    {
+      "term": "AlwaysPreTouch",
+      "what": "기동할 때 힙 페이지를 미리 건드려 두는 옵션. 이 측정에서는 도움이 안 됐다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JEP 318: Epsilon — A No-Op Garbage Collector",
+      "url": "https://openjdk.org/jeps/318",
+      "publisher": "OpenJDK"
+    },
+    {
+      "title": "Java SE 17 — Available Collectors",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/available-collectors.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
