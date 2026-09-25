@@ -543,3 +543,7 @@ Medium RSS 최신 08-20(이미 반영). updated_at 만 올렸다. 1회째. 그 �
 ## github 재방문 → 확장 (2026-09-26)
 
 새 글 둘 중 CSS Modules 재플랫폼(09-25)을 기능 `css-modules-replatform` 과 새 도메인 `화면 스타일` 로 썼다. 결정 7 · 그림 3. 같은 달 freee 의 같은 이사와 칼질이 다르다는 대비를 business.why 에 넣었다. 8명·6개월 대 2명+에이전트·3주는 검토 비용이 안 나와 inferred 로 두었다.
+
+## grab 재방문 (2026-09-26)
+
+피드 최신 08-28. updated_at 만 올렸다. 1회째. 안 쓴 글 넷은 보강 재료로 STATE 에 적었다.

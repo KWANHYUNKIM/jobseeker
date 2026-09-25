@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — GitHub 재방문이 확장이 됐다.** `improving-site-performance-by-shipping-more-css`(2026-09-25)를 기능
+**없다 — Grab 재방문(새 글 없음)을 마쳤다. 그 앞은 GitHub 확장(`css-modules-replatform`)이었다.** `improving-site-performance-by-shipping-more-css`(2026-09-25)를 기능
 `css-modules-replatform` 으로 쓰고 새 도메인 `화면 스타일` 을 열었다(기능 5개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
@@ -315,6 +315,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **grab** — 2026-09-26 **1회째 없음.** `engineering.grab.com/feed.xml` 최신 08-28. 안 쓴 글(Data Mesh Part III 08-28 · Jarvis Pro 08-21 · Grab Bench 08-12 · Distroless 06-22)은 **보강 재료**다.
 - **freshworks** — 2026-09-26 **1회째 없음 — 단, 셀 수 없는 없음이다.** `eng-blogs` 는 목록 페이지가 404 이고 **사이트맵(`/sitemaps/index.xml` 아래 여덟 개)에도 안 실린다** — 새 글이 있어도 이 도구로는 찾을 길이 검색뿐이다. 검색에도 안 걸렸다. `medium.com/freshworks-developer-blog` 는 파트너 홍보이고 2024-08 에 멈췄다. **두 번째 없음이 나와도 `재시도 안 함` 으로 옮기기 전에 이 점을 적는다.**
 - **figma** — 2026-09-26 **1회째 없음.** 블로그 피드(`/blog/feed/atom.xml`)의 09-03 이후는 디자인·문화 글과 일본 데이터 레지던시 출시 공지(기술 내용 없음)뿐. 안 쓴 글 `how-we-built-generative-plugins-and-shaders`(09-01)는 **보강 재료**다.
 - **dropbox** — 2026-09-26 **1회째 없음.** `dropbox.tech/feed` 의 09-03 이후는 CTO 인터뷰(AI 도입, 문화 분류)·API 문서 공지뿐. 그 앞의 안 쓴 글(Riviera 07-20 · AI 시대 인프라 효율 08-18 · 쿠키 감사기 08-31 · Nova 05-21 · Magic Pocket 저장 효율 04-02 — 기존 `magic-pocket` 보강감)은 **보강 재료**다.
