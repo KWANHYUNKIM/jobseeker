@@ -8,14 +8,19 @@
 
 ## 지금 파는 중
 
-**없다 — LinkedIn 재방문이 확장이 됐다.** 용량 여유분 글(2026-09-14)을 기능 `newsvendor-headroom` 으로 쓰고 새 도메인
-`여유분을 감이 아니라 분위수로 잡는다` 를 열었다(기능 3개째). 다음 사이클은 `--gaps` 대로.
+**없다 — LY Corporation 재방문이 확장이 됐다.** `ja/20260910a`(Yahoo!ニュース 광고 표시 고속화)를 기능 `prerender-ad-speed` 로
+쓰고 새 도메인 `광고를 빨리 보여 주면 더 눌리는가` 를 열었다(기능 4개째). 다음 사이클은 `--gaps` 대로.
 큐는 3/3(CADDi · 데브시스터즈 · Picnic) — 신규 차례가 오면 **CADDi** 프로파일부터(Control Plane).
 ⚠️ 재방문 대상이 190곳 남짓이라 신규가 한참 안 올 수 있다 — PROMPT 가 경고한 "바깥을 보는 단이 굶는" 모양이다.
-LinkedIn 블로그는 `/blog/engineering` 목록에 날짜가 없다 — 글마다 열어 날짜를 본다(`/feed` 는 HTML 이다).
+LY 블로그는 **ko·ja·en 피드가 서로 다른 글을 싣는다**(`/<lang>/feed/index.xml`) — 셋 다 본다.
+
+**비교 문서 재료가 모였다 — 'LLM Wiki' 세 회사.** 사이보즈 Ergon(RAG 를 물리고 Wiki, `logos-security-harness`) ·
+컬리 `2026-delivery-domain-rag`(Wiki + RAG 를 두 번 갈아엎음) · LY `ko/llm-wiki-code-driven-knowledge-ssot`(08-28, 코드 기준 자동 최신화).
+사다리가 비교 문서(9순위)까지 내려오면 이것부터.
 
 재방문에서 찾았지만 아직 안 쓴 재료(다음 재방문·보강 때 먼저 본다):
 
+- **LY** `ko/building-sre-observer-for-alert-root-cause-analysis`(09-04) · `ko/ai-agent-ad-report-automation`(09-18) · `ja/20260826a`(Agent i 기반, 08-26).
 - **GitHub** `rendering-huge-pull-requests-in-the-github-copilot-app`(09-23, 거대한 PR 렌더링 — 피드 본문에 전문이 있다).
 - **Doximity** `migrating-doximity-s-ios-newsfeed-to-swiftui-...`(09-04, iOS 뉴스피드 SwiftUI 이관 — 피드 본문에 전문이 있다).
 - **사이보즈** `entry/2026/09/04/113000`(kintone 레거시를 AI 로 재구현한 실험 — 50만 줄 Java 중 모듈 단위, 잘 된 것과 안 된 것).
