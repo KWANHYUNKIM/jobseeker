@@ -353,7 +353,7 @@
       "url": "https://www.wanted.co.kr/wd/334854",
       "title": "[전문연구요원 가능] 영상처리 개발자",
       "site": "wanted",
-      "verdict": "경력판(원티드 표기 1~20년). 주요업무는 신입판(wd/334853)과 같지만, 신입판에서 우대였던 OpenCV 실시간 처리와 GPU 병렬 프로그래밍(CUDA·OpenCL)이 **자격**으로 올라왔다. 공통 공부거리는 신입판을 보고, 여기서는 차이 — GPU 필수, 지연·FPS 최적화, FPGA, 구체 알고리즘 — 만 준비한다.",
+      "verdict": "경력판(원티드 표기 1~20년). 주요업무는 신입판(wd/334853)과 같지만, 신입판에서 우대였던 OpenCV 실시간 처리와 GPU 병렬 프로그래밍(CUDA·OpenCL)이 자격으로 올라왔다. 공통 공부거리는 신입판을 보고, 여기서는 차이 — GPU 필수, 지연·FPS 최적화, FPGA, 구체 알고리즘 — 만 준비한다.",
       "fit": {
         "must_have": [
           "NVIDIA GPU 병렬처리 프로그래밍(CUDA·OpenCL 등)",
@@ -436,6 +436,134 @@
           {
             "title": "[전문연구요원 가능] 영상처리 개발자",
             "url": "https://www.wanted.co.kr/wd/334854",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/334858",
+      "title": "[전문연구요원 가능] 소프트웨어 개발자 (C++ ) (신입)",
+      "site": "wanted",
+      "verdict": "신입(전문연구요원 가능). Linux 에서 모던 C++(11/14/17)로 의료용 내시경 제어 시스템과 의료용 소프트웨어를 만들고, 성능·안정성·신뢰성을 챙길 사람. 우대사항에 하드웨어 통신(SPI·I2C·CAN·UART)·멀티스레딩·Qt 가 몰려 있어 장비 소프트웨어 성격이 강하다.",
+      "fit": {
+        "must_have": [
+          "Linux C/C++ 11/14/17",
+          "자료구조·알고리즘·OS·DB 기초",
+          "OOP 이해",
+          "해외여행 결격사유 없음"
+        ],
+        "can_learn": [
+          "하드웨어 통신 프로토콜",
+          "Qt GUI",
+          "로봇 제어 소프트웨어"
+        ]
+      },
+      "study": [
+        {
+          "topic": "모던 C++ (RAII·스마트 포인터·move)",
+          "from": "qualification",
+          "quote": "• Linux 환경 C/C++ 11/14/17 프로그래밍 경험",
+          "priority": "core",
+          "why": "자격에 C++ 표준 버전이 11/14/17 로 적혀 있다. 장비 소프트웨어는 오래 켜져 있으므로 자원 누수가 곧 장애다(추론).",
+          "gap_check": "unique_ptr·shared_ptr·raw pointer 를 각각 언제 쓰고, move 가 복사를 어떻게 없애는지 설명할 수 있는가?",
+          "drill": "장치 핸들(파일 디스크립터)을 RAII 클래스로 감싸 복사 금지·이동 허용으로 만들고, 예외가 나도 닫히는지 테스트한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "C++ Core Guidelines",
+              "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티스레딩과 IPC",
+          "from": "preference",
+          "quote": "• 멀티스레딩, IPC를 활용한 SW개발 경험",
+          "priority": "high",
+          "why": "내시경 제어와 영상·GUI 가 한 장비에서 동시에 돈다(추론). 스레드·프로세스 사이 데이터 교환이 기본 구조다.",
+          "gap_check": "제어 스레드가 GUI 스레드 때문에 늦어지면 안 될 때, 두 스레드 사이를 무엇으로 잇고 우선순위를 어떻게 두는가?",
+          "drill": "C++ std::thread 로 제어 루프(1kHz 가정)와 표시 루프(30Hz)를 만들고 lock-free 링 버퍼나 조건변수 큐로 잇고, 제어 주기 흔들림(jitter)을 잰다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "하드웨어 인터페이스 (SPI·I2C·CAN·UART)",
+          "from": "preference",
+          "quote": "• SPI, I2C, CAN, UART 등 하드웨어 인터페이스 및 통신 프로토콜에 대한 이해",
+          "priority": "high",
+          "why": "주요업무가 '의료용 내시경 제어 시스템 개발'이다. 모터·센서와 통신하는 계층이 이 프로토콜들이다.",
+          "gap_check": "UART·SPI·I2C·CAN 을 동기/비동기, 배선 수, 다중 장치 지원, 오류 검출 기준으로 비교할 수 있는가?",
+          "drill": "Raspberry Pi 에서 Linux SocketCAN(vcan 가상 인터페이스로도 가능)으로 CAN 프레임을 보내고 받는 C++ 프로그램을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Linux kernel — SocketCAN",
+              "url": "https://docs.kernel.org/networking/can.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Linux 시스템 성능·안정성",
+          "from": "task",
+          "quote": "• Linux 기반 시스템의 성능 최적화 및 안정성, 신뢰성 확보",
+          "priority": "core",
+          "why": "의료기기라 오래 켜 두어도 멈추지 않아야 한다(추론). 주요업무에 성능·안정성·신뢰성이 함께 적혀 있다.",
+          "gap_check": "프로세스가 며칠 뒤에 느려진다면 메모리 누수·파일 디스크립터 누수·스레드 누적 중 무엇을 어떤 도구로 확인하는가?",
+          "drill": "위 프로그램을 24시간 돌리며 RSS·열린 fd 수를 기록하는 스크립트를 붙이고, 일부러 누수를 넣어 그래프로 잡히는지 본다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "전산 기초 (코딩테스트)",
+          "from": "qualification",
+          "quote": "• 자료구조, 알고리즘, OS, 데이터베이스 등 전산 기초 지식 보유",
+          "priority": "core",
+          "why": "채용 프로세스에 코딩테스트(해당 직군 한정)가 있다.",
+          "gap_check": "C++ STL 컨테이너(vector·deque·map·unordered_map)의 연산 복잡도와 반복자 무효화 규칙을 말할 수 있는가?",
+          "drill": "C++ 로 알고리즘 문제 10개(정렬·그래프·DP)를 풀고, 같은 문제를 다른 컨테이너로 바꿔 시간 차를 본다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "Qt GUI",
+          "from": "preference",
+          "quote": "• Qt 프레임워크 기반 GUI 개발 경험",
+          "priority": "nice",
+          "why": "장비 화면을 C++ 와 같은 언어로 만든다면 Qt 가 흔한 선택이다(추론). 별도 GUI 공고도 있다.",
+          "gap_check": "Qt 의 시그널/슬롯이 다른 스레드 사이에서 호출될 때 어떻게 안전하게 전달되는가?",
+          "drill": "Qt 로 제어 상태(모터 위치·온도)를 보여 주는 창을 만들고, 워커 스레드에서 시그널로 값을 갱신한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Qt — Signals & Slots",
+              "url": "https://doc.qt.io/qt-6/signalsandslots.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Raspberry Pi 로 모터 하나를 제어하는 작은 장비",
+          "why": "우대사항의 임베디드 보드·하드웨어 인터페이스·로봇 제어를 한 번에 보여 준다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형-코딩테스트 (해당 직군 한정)-1차 인터뷰-2차 인터뷰-최종합격. 1차는 직무 역량 및 문화 적합성, 2차는 업무 조율 및 근무 조건 협의(공고 기준).",
+        "expect": [
+          "RAII 와 스마트 포인터",
+          "제어 스레드와 GUI 스레드 분리",
+          "하드웨어 통신 프로토콜 비교",
+          "장시간 운영 안정성 확인 방법"
+        ],
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] 소프트웨어 개발자 (C++ ) (신입)",
+            "url": "https://www.wanted.co.kr/wd/334858",
             "publisher": "원티드"
           }
         ]
