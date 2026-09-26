@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**캔리 회사 프로파일(2026-09-26) — 도메인 둘: 한 테넌트에 몰리는 스파이크를 캐시 헤더로 받아 낸다(`058d2d2ce8625f`) · 개인정보를 LLM 에 안 넘기고 문의 대응을 자동화한다(`3ebef2d4f7e3d4`). 회사 사이트는 jina 가 도메인을 못 풀어(can.ly·canly.co.jp) Zenn Publication 소개를 1차 자료로. 다음은 확장: `--gaps` 순서대로 기능 하나씩, 수익원 둘 다 도메인 있어 두 기능이면 **완주**. 대기 2/3(에어클로젯·Rehab for Japan). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + **개인정보와 LLM**(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**캔리 확장 1/2(2026-09-26) — `store-page-swr-cache` 완료. 다음은 확장: '개인정보를 LLM 에 안 넘기고 문의 대응을 자동화한다' — `3ebef2d4f7e3d4`(Tayori→Slack 5단계를 대신하는 에이전트 · LLM 은 분류·문면 틀만 · 코드가 검색·진단·갱신 · 값 나중 치환 · 기지값/패턴/Bedrock Guardrails 3층 마스킹 · 송신·갱신은 CS 승인 · 판단 불가 시 멈춤). 그 뒤 수익원 둘 다 기능이면 **완주 → done**. 대기 2/3(에어클로젯·Rehab for Japan). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

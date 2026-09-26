@@ -94,7 +94,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "store-page-swr-cache"
+      ]
     },
     {
       "name": "개인정보를 LLM 에 안 넘기고 문의 대응을 자동화한다",
@@ -119,7 +121,393 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "store-page-swr-cache",
+      "name": "매장 검색 페이지의 캐시 헤더를 한 줄 바꾼다 — 전체 평균 대신 경로별로 쪼개 원인을 찾고, 선택지 여섯을 가역성·스파이크 효과·전 테넌트 횡전개로 줄 세워, 신선도는 5분·가용성은 하루로 시간축에서 가른다",
+      "domain": "한 테넌트에 몰리는 스파이크를 캐시 헤더로 받아 낸다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "**매장 검색 페이지**는 체인점의 전 매장 정보를 검색·열람하는 멀티테넌트 제품으로, 프런트 구현 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포한다. TV 방영 같은 계기로 특정 테넌트에 **몇 분간만** 요청이 몰린다. 구성은 CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR, 한 페이지에 API 4~5개) → CMS API(ECS, 태스크 수 고정 운용 — 오토스케일 제약) → Aurora MySQL 이라, 스파이크가 오면 CMS API 요청 증가 → Aurora CPU 상승 → 쿼리 미응답으로 부하가 연쇄한다.\n\nAPI 레이트 리밋(429 전용 에러 페이지)·DB 커넥션 상한·근처 매장 사전 계산 캐시 테이블·슬로 쿼리 개선·읽히는 날의 Aurora 일시 증강까지 할 수 있는 건 했지만 **'읽을 수 없는 스파이크'** 는 못 이긴다 — 용량을 늘리는 방향과 별개로 **오리진에 닿게 하지 않는 방향**을 두껍게 해야 했다. 제약은 하나: 테넌트가 관리 화면에서 고친 영업시간·임시 휴업·게시물이 **5분 안에** 공개 페이지에 반영돼야 한다.",
+        "metrics": [
+          {
+            "label": "배포 대상",
+            "value": "CloudFront 디스트리뷰션 100+",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "label": "경로별 적중률(2026-04, 1배포 샘플 1,000 요청 중 200 응답)",
+            "value": "톱 93.7% · 정적 96.3% · 게시물 7.3% · 매장 상세 28.6% · 전체 57.4%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "label": "Miss 대 Hit 응답",
+            "value": "약 4.1배(1.011s 대 0.249s)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "label": "캐시율 변화",
+            "value": "57.4%(4월 · 1배포 샘플) → 68.7%(8월 · 전 배포 로그) — 모수·기간이 달라 엄밀한 전후 비교는 아님",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "숫자를 다시 볼 때",
+          "thought": "'프런트 캐시 적중률 9할 가깝다' 는 틀리지 않았지만 **어느 경로가 그 9할을 만드나**까지는 안 봤다 — SEO 로 가장 많이 밟히고 가장 무거운 매장 상세·게시물이 거의 매번 오리진에 닿고 있었고, 전체 평균이 그 차이를 지웠다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+              "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+              "publisher": "Canly Tech Blog (Zenn)",
+              "date": "2026-09-24",
+              "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+            }
+          ]
+        },
+        {
+          "at": "원인을 짚을 때",
+          "thought": "적중률이 낮았던 건 캐시가 안 듣는 성질의 페이지여서가 아니라, **캐시에 머물 수 있는 시간이 그 페이지의 접근 간격에 비해 너무 짧아서**였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+              "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+              "publisher": "Canly Tech Blog (Zenn)",
+              "date": "2026-09-24",
+              "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+            }
+          ]
+        },
+        {
+          "at": "우선순위를 정할 때",
+          "thought": "같은 '효과가 높다' 라도 되돌리는 방법이 배포 한 번인지 전 배포의 설정 되감기인지 차이가 있다 — 그 차이로 순서를 정했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+              "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+              "publisher": "Canly Tech Blog (Zenn)",
+              "date": "2026-09-24",
+              "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+            }
+          ]
+        },
+        {
+          "at": "이 헤더를 다시 볼 때",
+          "thought": "이 헤더는 성능 개선이 아니라 **가용성 시책**이었다 — 그래서 우선순위 1위가 됐다. 효과 범위도 분명했다: CDN 이 지킬 수 있는 건 HTML 배포이고, 브라우저가 직접 데이터를 가지러 가는 목록계 경로는 이 헤더로 안 준다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+              "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+              "publisher": "Canly Tech Blog (Zenn)",
+              "date": "2026-09-24",
+              "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+            }
+          ]
+        },
+        {
+          "at": "성과를 볼 때",
+          "thought": "요건·신선도·가용성이 **각각 다른 디렉티브로 읽히는 상태**가 된 것이 수수하지만 본질적인 성과다. '적중률이 낮다 = 헤더가 나쁘다' 는 아니다(정적 자산의 RefreshHit 은 CloudFront Max TTL 탓).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+              "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+              "publisher": "Canly Tech Blog (Zenn)",
+              "date": "2026-09-24",
+              "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "테넌트",
+            "what": "체인 하나. 관리 화면에서 매장 정보를 직접 고치고, 자기 배포(CloudFront 디스트리뷰션)를 가진다."
+          },
+          {
+            "name": "경로 종류",
+            "what": "톱 · 정적 자산 · 매장 상세 · 게시물 · 목록계(브라우저가 검색 API 를 직접 호출) · 예약 흐름 · API."
+          },
+          {
+            "name": "s-maxage=300",
+            "what": "CDN 이 5분 동안 신선하게 배포 — '관리 화면 변경 5분 안 반영' 요건을 그대로 설정값으로 옮긴 것."
+          },
+          {
+            "name": "stale-while-revalidate=86400",
+            "what": "만료 뒤에도 최대 1일 낡은 판을 즉시 돌려주며 뒤에서 한 번만 재생성."
+          },
+          {
+            "name": "stale-if-error=86400",
+            "what": "오리진이 5xx 를 내도 최대 1일 낡은 판을 배포 — 504 대신."
+          },
+          {
+            "name": "제외 규칙",
+            "what": "Next.js headers() 의 후승 덮어쓰기로 기본(공개 캐시)에서 정적 자산(1년 immutable)·예약 흐름·API(private, no-store)를 뺀다."
+          }
+        ],
+        "invariants": [
+          "관리 화면 변경은 CDN 에서 **5분 안에** 반영된다(s-maxage=300).",
+          "5분 이후는 가용성 우선 — 오리진이 흔들려도 최대 1일 낡은 판을 낸다.",
+          "사용자 고유·동적 경로(예약 흐름·API)는 캐시되지 않는다.",
+          "브라우저에는 캐시를 맡기지 않는다 — 캐시 관리점은 CDN 하나, 긴급하면 Invalidation 으로 즉시 반영.",
+          "캐시 전략은 한 파일에서 템플릿으로 100+ 배포에 똑같이, 전 환경(스테이징 포함)에 같게."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Athena 로 한 배포의 액세스 로그를 경로별로 쪼개 적중률·평균 응답을 본다",
+            "why": "전체 평균이 차이를 지운다."
+          },
+          {
+            "step": "원인을 헤더에서 찾는다 — 전 경로 `public, max-age=300, immutable` 한 줄",
+            "why": "캐시 체류 시간 = 5분 = 접근 간격보다 짧다."
+          },
+          {
+            "step": "선택지 여섯을 가역성 · 스파이크 때 효과 · 전 테넌트 횡전개 기준으로 줄 세운다",
+            "why": "전 테넌트에 영향 가는 변경."
+          },
+          {
+            "step": "next.config.js headers() 에서 기본을 `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` 으로 두고, 정적 자산·예약 흐름·API 를 후승으로 덮어써 뺀다",
+            "why": "한 파일, 템플릿 배포."
+          },
+          {
+            "step": "템플릿을 통해 100+ 배포와 전 환경에 같은 전략을 퍼뜨린다",
+            "why": "스테이징에서도 캐시 거동을 확인."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "용량을 더 늘릴까?",
+            "chosen": "**용량 증강과 별개로 '오리진에 닿게 하지 않는' 방향을 두껍게 한다.**",
+            "alternatives": [
+              "Aurora·CMS API 증강을 계속"
+            ],
+            "tradeoff": "읽을 수 없는 스파이크에도 대응한다. 대가 — 브라우저가 직접 부르는 목록계 데이터 경로는 CDN 밖이라 따로 손을 써야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "question": "여섯 선택지 중 무엇부터?",
+            "chosen": "**Cache-Control 수정(SWR 도입)을 먼저 — 가역성(배포 한 번으로 되돌림)·스파이크 효과·전 테넌트 횡전개가 모두 가장 좋다.**",
+            "alternatives": [
+              "CloudFront 쿼리 문자열 화이트리스트(효과 높음)",
+              "Cache Behavior 분리",
+              "페이지 종류별 TTL",
+              "Origin Shield(추가 비용)",
+              "CSRF 미들웨어 재검토"
+            ],
+            "tradeoff": "Terraform 으로 100+ 배포의 캐시 키를 바꾸는 변경보다 영향을 읽기 쉽다. 대가 — 효과가 큰 화이트리스트·Behavior 분리는 뒤로 밀린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "question": "낡은 판을 얼마나 버티나?",
+            "chosen": "**처음 안(SWR=60, max-age=0)에서 SWR 을 86400초(1일)로 늘리고 stale-if-error=86400 을 더한다 — 상한은 CloudFront Max TTL(1일).**",
+            "alternatives": [
+              "SWR 60초(평상시 재생성 대기만 없앰)"
+            ],
+            "tradeoff": "오리진이 몇 분 제대로 응답 못 하는 상황을 일 단위로 버틴다 — 504 가 낡은 정보보다 고객 영향이 크다. 대가 — 낡은 정보가 최대 하루 보일 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "question": "브라우저 캐시는?",
+            "chosen": "**max-age 를 쓰지 않는다 — 브라우저 캐시를 버리고 CDN 에만 s-maxage.**",
+            "alternatives": [
+              "브라우저에도 300초"
+            ],
+            "tradeoff": "고쳤을 때 'CDN 은 새것, 사용자 손은 낡은 것' 이 최대 5분 남아 지울 수 없는 상태를 없앤다 — Invalidation 으로 즉시 반영. 대가 — 브라우저 쪽 캐시 이득을 포기한다(의도한 트레이드오프).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "question": "immutable 은?",
+            "chosen": "**HTML 에서 뺀다 — 콘텐츠 해시가 붙은 정적 자산에만 1년 immutable.**",
+            "alternatives": [
+              "전 경로 immutable 유지"
+            ],
+            "tradeoff": "관리 화면에서 바뀔 수 있는 SSR HTML 에 '절대 안 바뀐다' 는 틀린 선언을 없앤다. 대가 — 없음에 가깝다(요건은 이미 5분이었다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "question": "기본값은 캐시인가 no-store 인가?",
+            "chosen": "**기본을 공개 캐시로 두고 예약 흐름·API 를 제외 목록에 적는다.**",
+            "alternatives": [
+              "기본 no-store + 캐시할 경로 나열"
+            ],
+            "tradeoff": "제외 경로를 '예약 흐름과 API' 로 한정해 페이지 추가 때 리뷰 관점으로 명문화한다. 대가 — 제외를 빠뜨리면 **캐시되는 쪽으로 넘어진다** — 새 페이지를 추가하면 캐시 가부를 반드시 판단하는 운용이 전제.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "question": "Next.js 가 이미 붙이는 정적 헤더도 쓰나?",
+            "chosen": "**효과가 같아도 `/_next/static` 을 제외 목록 첫 줄에 명시한다.**",
+            "alternatives": [
+              "프레임워크 기본값에 맡김"
+            ],
+            "tradeoff": "설정 파일만 읽어도 어디까지가 자기 설정이고 어디부터 프레임워크 기본인지 경계를 안다. 대가 — 중복된 한 줄.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          },
+          {
+            "question": "에러 응답만 no-store 로?",
+            "chosen": "**Cache-Control 은 경로로만 분기되니, 동적으로 에러를 낼 수 있는 특정 경로만 제외에 더하고 나머지는 렌더링 층의 별도 과제로 뗀다.**",
+            "alternatives": [
+              "상태 코드별 헤더를 이 층에서"
+            ],
+            "tradeoff": "한 파일 변경을 지킨다. 대가 — 4xx/5xx 가 캐시될 여지는 렌더링 층 과제로 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+                "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+                "publisher": "Canly Tech Blog (Zenn)",
+                "date": "2026-09-24",
+                "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "개인정보를 LLM 에 안 넘기고 문의 대응을 자동화한다(같은 회사의 다른 도메인)",
+          "via": "넘어지는 쪽을 고르기",
+          "contract": "캐시 설계는 제외를 빠뜨리면 '캐시되는 쪽' 으로 넘어지는 구조를 리뷰 운용과 짝지어 골랐고, CS 에이전트는 판단 못 하면 멈추고 사람에게 넘기며 송신·갱신은 반드시 승인을 거친다 — 두 쪽 다 실패가 어느 쪽으로 넘어지는지를 먼저 정한다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "한 페이지의 신선도와 가용성",
+          "question": "한 매장 페이지는 시간이 지나며 어떤 상태를 지나나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Fresh: 오리진 생성 · 0~300초\n  Fresh --> Stale: 300초 경과\n  Stale --> Fresh: 낡은 판 즉시 반환 + 뒤에서 1본 재생성(SWR)\n  Stale --> StaleServe: 오리진 5xx → 낡은 판(stale-if-error)\n  StaleServe --> Fresh: 오리진 회복\n  Stale --> [*]: 1일 경과 · Max TTL\n  Fresh --> [*]: 관리 화면 긴급 변경 → Invalidation"
+        },
+        {
+          "title": "스파이크가 오리진에 닿는 길",
+          "question": "헤더를 바꾸기 전과 뒤에 스파이크는 어디서 멈추나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  TV[\"TV 방영 · 한 테넌트\"] --> CF[\"CloudFront\"]\n  CF -->|전: 5분마다 첫 요청 전부 Miss| NX[\"Next.js SSR\"]\n  CF -->|후: 낡은 판 반환 · 재생성 1본| NX\n  NX --> API[\"CMS API · 태스크 고정\"] --> DB[\"Aurora\"]\n  BR[\"브라우저 목록 검색\"] -->|CDN 밖 — 이 헤더로 안 줌| API"
+        },
+        {
+          "title": "캐시 헤더가 새는 자리",
+          "question": "어디서 캐시가 틀리거나 안 듣나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"전체 평균 적중률만 봄\"] --> B[\"무거운 경로의 Miss 가 안 보임\"]\n  C[\"max-age=300 immutable\"] --> D[\"체류 5분 < 접근 간격 → 매번 Miss\"]\n  E[\"제외 목록 누락\"] --> F[\"사용자 고유 페이지가 캐시됨 — 리뷰 전제\"]\n  G[\"브라우저 max-age\"] --> H[\"지울 수 없는 낡은 판 최대 5분\"]\n  I[\"4xx/5xx 응답\"] --> J[\"경로로만 분기 — 렌더링 층 과제\"]\n  K[\"목록계 검색 API\"] --> L[\"CDN 밖 — 별도 대책\"]\n  M2[\"SWR 1일\"] --> N[\"낡은 정보가 하루까지\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "max-age=300, immutable から stale-while-revalidate へ — 1行のヘッダを変えるまでの意思決定",
+          "url": "https://zenn.dev/canly/articles/058d2d2ce8625f",
+          "publisher": "Canly Tech Blog (Zenn)",
+          "date": "2026-09-24",
+          "summary": "**매장 검색 페이지** — 체인점 전 매장 정보를 검색·열람하는 멀티테넌트 제품, 프런트 하나를 **100개 넘는 CloudFront 디스트리뷰션**으로 배포, TV 방영 등으로 특정 테넌트에 몇 분간 요청이 몰린다. 구성: CloudFront → Next.js(ECS Fargate, 콘텐츠 페이지 전부 SSR) → CMS API(ECS, 태스크 수 고정 — 오토스케일 제약) → Aurora MySQL, 한 페이지에 API 4~5개; 스파이크가 CMS API → Aurora CPU → 쿼리 미응답으로 연쇄. 제약: **관리 화면 변경이 공개 페이지에 5분 안에** 반영(s-maxage=300 의 근거). 전체 평균이 아니라 **경로별 적중률**로 보니 캐시 체류 시간이 접근 간격보다 짧았다. 선택지 6개를 **가역성**·**스파이크 때 효과**(평상시 속도가 아니라)·**전 테넌트 횡전개** 기준으로 줄 세움(Origin Shield 등). `public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400` — 0~300초는 요구대로 신선도, 그 뒤는 가용성 우선으로 자동 전환(**성능이 아니라 가용성 시책**), 504 대신 낡은 판; SWR 을 60초 → 1일(오리진이 몇 분 제대로 응답 못 하는 상황을 지키려면 분이 아니라 일 단위 — 낡은 정보 위험 대 504 위험). max-age 를 오리진 헤더로 명시한 판단(CDN 설정에 기대지 않음)은 유지. 차분은 next.config.js 사실상 한 파일."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "과금 구조·매출 비중을 1차 자료로 확인하지 못했다(회사 사이트 can.ly·canly.co.jp 를 jina 가 해석하지 못했다).",
     "중심 제품 '칸리 매장 집객'(매장 계정 일괄 관리·분석)의 기술 글은 아직 못 봤다.",
