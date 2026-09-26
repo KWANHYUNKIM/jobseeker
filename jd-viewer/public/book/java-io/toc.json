@@ -263,7 +263,7 @@
           "title": "transient 와 상속",
           "summary": "안 담기는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.5",
@@ -271,7 +271,7 @@
           "title": "직렬화를 쓰지 않는 이유",
           "summary": "버전과 보안.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.6",
@@ -279,7 +279,7 @@
           "title": "손으로 쓰는 형식",
           "summary": "내가 정한 바이트.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

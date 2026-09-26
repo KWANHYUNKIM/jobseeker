@@ -1,0 +1,231 @@
+{
+  "book": "java-io",
+  "id": "transient",
+  "no": "5.4",
+  "chapter": 5,
+  "title": "transient 와 상속",
+  "summary": "안 담기는 것.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "transient 필드가 무엇이 되는지 확인한다.",
+    "생성자가 불리지 않는 것을 세어 본다.",
+    "부모가 Serializable 이 아닐 때 부모 필드가 어떻게 되는지 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "5.3절에서 **UID 를 고정하면 없던 필드가 `null` 이 된다**고 했다. 그것 말고도 `null` 이 되는 자리가 있다.\n\n**담고 싶지 않은 필드**다 — 비밀번호, 캐시, 연결 객체. 그것을 빼는 표시가 **`transient`** 다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "세 가지 필드를 섞어 놨다",
+      "code": "static class Account implements Serializable {\n    private static final long serialVersionUID = 1L;\n    String id;\n    transient String password;         // 안 담긴다\n    static String realm = \"prod\";      // static 도 안 담긴다\n    int balance;\n    transient int computed = 999;      // transient 인데 초기자가 있다\n    transient String tag = \"초기자가 넣은 값\";\n}"
+    },
+    {
+      "type": "table",
+      "caption": "쓰고 읽은 뒤의 값",
+      "columns": [
+        "필드",
+        "쓰기 전",
+        "읽은 뒤"
+      ],
+      "rows": [
+        [
+          "`id`",
+          "`kim`",
+          "`kim`"
+        ],
+        [
+          "`password`",
+          "`secret123`",
+          "**`null`**"
+        ],
+        [
+          "`balance`",
+          "5000",
+          "5000"
+        ],
+        [
+          "`computed`",
+          "999",
+          "**0**"
+        ],
+        [
+          "`tag`",
+          "`초기자가 넣은 값`",
+          "**`null`**"
+        ]
+      ],
+      "note": "**`computed` 와 `tag` 를 보라.** 초기자에 값을 적어 뒀는데도 `0` 과 `null` 이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "필드 초기자도 안 돈다",
+      "md": "\"`transient` 니까 초기자로 채워 두면 되겠지\" 가 **안 통한다.**\n\n> `transient int computed = 999` 인데 읽은 뒤 **0** 이다. `transient String tag = \"...\"` 은 **`null`** 이다.\n> 필드 초기자는 **생성자 안으로 컴파일되는 코드**다. 그리고 역직렬화는 생성자를 부르지 않는다(아래 표).\n> 그래서 `transient` 필드를 되살리려면 **`readObject` 를 직접 쓰거나** 처음 쓸 때 늦게 채우는(lazy) 방식이어야 한다.\n> 캐시 필드에 `transient Map<K,V> cache = new HashMap<>()` 를 두는 코드가 이것에 걸린다 — 역직렬화한 객체에서 `cache` 가 `null` 이고 첫 접근에 `NullPointerException` 이 난다."
+    },
+    {
+      "type": "prose",
+      "md": "## 생성자가 불리지 않는다\n\n생성자 호출 횟수를 세는 클래스를 만들어 확인했다."
+    },
+    {
+      "type": "table",
+      "caption": "생성자 호출 횟수",
+      "columns": [
+        "한 일",
+        "`ctorCalls`"
+      ],
+      "rows": [
+        [
+          "`new Counted(\"first\")`",
+          "1"
+        ],
+        [
+          "그 객체를 쓰고 `readObject`",
+          "**1 (안 늘었다)**"
+        ],
+        [
+          "그래도 읽은 객체의 `name`",
+          "`first`"
+        ]
+      ],
+      "note": "**생성자를 안 부르고 필드에 값을 직접 넣는다.** JVM 이 객체 껍데기만 만들고 바이트에서 읽은 값을 필드에 꽂는다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이것이 불변식을 깨는 자리다",
+      "md": "생성자는 **값이 맞는지 검사하는 자리**다. 그것을 건너뛴다.\n\n> `Account(String id, ...) { if (id == null) throw ...; }` 같은 검사가 **역직렬화에는 없다.**\n> 그래서 파일을 손으로 고쳐 `id` 를 `null` 로 만든 바이트를 넣으면 **`id == null` 인 `Account` 가 만들어진다.** 생성자로는 못 만드는 객체다.\n> `final` 필드도 이 경로로는 바뀐다 — 언어 규칙 밖이다.\n> 검사를 되살리려면 `readObject` 에서 직접 하거나 `ObjectInputValidation` 을 쓴다. **아무도 안 한다** — 그것이 5.5절의 이유 중 하나다."
+    },
+    {
+      "type": "prose",
+      "md": "## `static` 은 담기지 않는다 — 확인하는 방법\n\n`static` 은 객체의 값이 아니라 클래스의 값이라 담기지 않는다. 그런데 **담기지 않았다는 것을 어떻게 보이나.** 읽은 뒤에도 값이 있으니까."
+    },
+    {
+      "type": "steps",
+      "steps": [
+        "`realm = \"prod\"` 인 상태로 객체를 파일에 쓴다.",
+        "쓴 뒤에 `Account.realm = \"staging\"` 으로 바꾼다.",
+        "그 파일을 읽어 `realm` 을 본다.",
+        "**`staging` 이 나온다** — 파일의 `prod` 가 아니라 지금 클래스의 값이다."
+      ],
+      "note": "파일에 `prod` 가 담겼다면 읽은 뒤 `prod` 여야 한다. `staging` 이 나왔으니 **파일에는 없었다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 부모가 `Serializable` 이 아니면\n\n자식만 `Serializable` 인 경우다. 자식 필드는 담기고 **부모 필드는 담기지 않는다** — 대신 부모의 **기본 생성자가 불린다.**"
+    },
+    {
+      "type": "compare",
+      "title": "부모 필드는 사라진다",
+      "left": {
+        "title": "쓰기 전",
+        "md": "```\nChild{base=내가 넣은 값,\n      child=자식 값}\n```\n\n`super(\"내가 넣은 값\")` 으로 넣었다."
+      },
+      "right": {
+        "title": "읽은 뒤",
+        "bad": true,
+        "md": "```\nChild{base=기본 생성자가 넣은 값,\n      child=자식 값}\n```\n\n**내가 넣은 값이 사라졌다.**"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "그 기본 생성자가 없으면 예외다",
+      "md": "부모에 인수 없는 생성자가 없으면 **쓸 때부터 안 된다.**\n\n```\nInvalidClassException: Tr$BadChild; no valid constructor\n```\n\n> 5.3절의 `InvalidClassException` 과 같은 예외인데 메시지가 다르다 — `local class incompatible` 이 아니라 **`no valid constructor`** 다.\n> 그래서 `Serializable` 을 붙일 때 **부모까지 봐야 한다.** 부모가 라이브러리 클래스면 내가 고칠 수도 없다.\n> 5.2절의 `NotSerializableException` 은 필드가 안 붙어 있을 때고, 이건 **상속 사슬**이 문제일 때다. 둘을 헷갈리면 엉뚱한 클래스를 고친다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"역직렬화는 생성자를 부릅니까.\"**\n\n> **안 부른다.** 그래서 생성자의 검증 로직이 건너뛰어지고 `final` 필드도 바뀐다.\n> 이어서 \"`transient` 필드에 초기값을 주면요\" 에는 — **그것도 안 돈다.** 초기자가 생성자로 컴파일되니까. `0`·`null` 이 된다.\n> `transient Map cache = new HashMap<>()` 가 왜 위험한지까지 말하면 충분하다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 안 담기는 것들",
+      "sql": "$ java -cp out Tr\n--- transient 와 static ---\n  쓰기 전 = Account{id=kim, pw=secret123, balance=5000,\n                   computed=999, tag=초기자가 넣은 값, realm=prod}\n  읽은 뒤 = Account{id=kim, pw=null, balance=5000,\n                   computed=0, tag=null, realm=prod}\n  파일 크기 = 77바이트\n  password 는 transient -> null\n  computed 는 transient + 초기자 999 였는데 -> 0\n  tag 도 transient + 초기자 였는데 -> null\n\n--- static 은 '담기지 않았다' 를 어떻게 확인하나 ---\n  쓰기 전 realm 을 staging 으로 바꿨다\n  읽은 객체의 realm = staging  (파일이 아니라 지금 클래스 값이다)\n\n--- 생성자가 불리나 ---\n  new 한 뒤 ctorCalls = 1\n  readObject 뒤 ctorCalls = 1  (안 늘었다)\n  그래도 값은 있다 = first\n\n--- 부모가 Serializable 이 아니면 ---\n  쓰기 전 = Child{base=내가 넣은 값, child=자식 값}\n  읽은 뒤 = Child{base=기본 생성자가 넣은 값, child=자식 값}\n\n--- 그 부모에 기본 생성자가 없으면 ---\n  InvalidClassException: Tr$BadChild; no valid constructor\n\n# computed=0 과 tag=null 이 이 절의 함정이다.\n# 초기자에 값을 적어 뒀는데 안 돈다 — 생성자가 안 불리니까.\n#\n# ctorCalls 가 1 에서 안 늘어난 것이 그 증거고,\n# 그래서 생성자의 검증이 전부 건너뛰어진다.",
+      "note": "**`ctorCalls` 가 1 에서 1 로 그대로다.** 객체가 하나 더 생겼는데 생성자는 한 번만 불렸다 — 두 번째 객체는 껍데기에 값을 꽂아 만든 것이다."
+    }
+  ],
+  "recap": [
+    "transient 필드는 담기지 않고 읽은 뒤 기본값(null·0)이 된다.",
+    "transient 필드의 초기자도 안 돈다 — 999 가 0 이 되고 문자열이 null 이 됐다.",
+    "초기자는 생성자로 컴파일되는 코드인데 역직렬화는 생성자를 안 부른다.",
+    "ctorCalls 가 1 에서 안 늘었다 — 객체를 껍데기로 만들고 필드에 값을 꽂는다.",
+    "그래서 생성자의 검증이 건너뛰어지고 final 필드도 바뀐다.",
+    "static 은 담기지 않는다 — 쓴 뒤 값을 바꿔 보면 읽은 객체가 지금 클래스 값을 쓴다.",
+    "부모가 Serializable 이 아니면 부모 필드는 사라지고 부모 기본 생성자가 불린다.",
+    "그 기본 생성자가 없으면 InvalidClassException: no valid constructor 다.",
+    "transient Map cache = new HashMap<>() 는 역직렬화 뒤 null 이라 첫 접근에 NPE 가 난다."
+  ],
+  "drills": [
+    {
+      "task": "transient 필드에 초기값을 주고 왕복시킨다.",
+      "done_when": "초기값이 아니라 기본값인 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "생성자에 카운터를 넣고 역직렬화해 본다.",
+      "done_when": "안 늘어나는 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "static 필드를 쓴 뒤 바꾸고 읽어 본다.",
+      "done_when": "파일 값이 아닌 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "부모가 Serializable 아닌 자식을 왕복시킨다.",
+      "done_when": "부모 필드가 기본 생성자 값이 되는 것을 본다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "transient 필드의 초기자는 역직렬화 때 도나.",
+      "a": "안 돈다. 초기자는 생성자로 컴파일되고 생성자가 불리지 않는다."
+    },
+    {
+      "q": "역직렬화가 생성자를 부르지 않아서 생기는 문제는.",
+      "a": "생성자의 검증이 건너뛰어지고 final 필드도 바뀐다 — 불변식이 깨진다."
+    },
+    {
+      "q": "static 이 담기지 않는 것을 어떻게 확인하나.",
+      "a": "쓴 뒤 값을 바꾸고 읽는다. 파일 값이 아니라 지금 클래스 값이 나온다."
+    },
+    {
+      "q": "부모가 Serializable 이 아니고 기본 생성자도 없으면.",
+      "a": "InvalidClassException: no valid constructor 다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "transient",
+      "what": "직렬화에서 뺄 필드에 붙이는 수정자. 읽은 뒤 기본값이 되고 초기자도 안 돈다."
+    },
+    {
+      "term": "불변식",
+      "what": "객체가 항상 지켜야 하는 조건. 생성자에서 검사하는데 역직렬화는 그 생성자를 건너뛴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java Object Serialization Specification — Object Creation",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/serialization/input.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JLS 17 — 8.3.3. Forward References During Field Initialization",
+      "url": "https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — ObjectInputValidation",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/ObjectInputValidation.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
