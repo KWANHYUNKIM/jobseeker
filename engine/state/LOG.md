@@ -1084,3 +1084,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 polar-signals 재방문
 
 - 마지막 글이 08-17(Dash0 합류). 09-07 이후 새 글 없음. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 posthog 재방문 → 확장
+
+- 09-10 "Multimodal models need video, we froze time" 에서 결정 5개로 `freeze-time-to-rasterize-replays` 를 새 도메인에 추가(features 3→4). 굽기 비용·실험적 API·가상 시계 어긋남은 해석 표시.
