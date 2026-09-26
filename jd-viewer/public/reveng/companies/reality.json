@@ -99,7 +99,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "gogc-from-measured-live-heap"
+      ]
     },
     {
       "name": "여러 서비스가 나눠 쓰는 캐시를 한 키씩 멈추지 않고 옮긴다",
@@ -146,7 +148,367 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "gogc-from-measured-live-heap",
+      "name": "라이브 힙은 99MiB 인데 1.8GiB 를 쥐고 있었다 — GOGC=off 를 걷어내고 실측으로 다시 정하기",
+      "domain": "수십 대의 Go 서비스를 정해진 메모리 · CPU 안에서 떨어지지 않게 돌린다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "REALITY 의 백엔드는 GKE 위 Go 마이크로서비스 십수 종이고, 모두 같은 규칙 — memory limit 의 90% 에 GOMEMLIMIT, Guaranteed QoS, **GOGC=off** — 으로 설정돼 있었다. GOGC=off 는 2024 년 초 GC 횟수를 줄여 CPU · 비용 · 지연을 낮추려고 근거를 갖고 넣은 설정이다.\n\n2026 년 8 월 그중 한 서비스의 Pod 가 심야에 여러 번 OOMKill 됐다. 데이터(라이브 힙)는 한도의 5% 정도인데 메모리는 늘 한도 가까이 붙어 있었다. 방아쇠는 메모리가 아니라 같은 노드의 **CPU 쟁탈**이었다. 설정 하나로 여유와 관측이 동시에 사라져 있던 것을 되돌리는 일이다.",
+        "metrics": [
+          {
+            "label": "평상시 점유 vs 라이브 힙",
+            "value": "cgroup 1793MiB(limit 2048MiB 의 87%) vs 라이브 힙 중앙값 99MiB · 최악 280MiB",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          },
+          {
+            "label": "떨어진 순서 = CPU 스로틀 순서",
+            "value": "A 15.3% OOMKill · B 6.2% 직전 · C 0.0% 무사",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          },
+          {
+            "label": "GOGC=300 예상 효과",
+            "value": "limit 까지 여유 217MiB → 약 780MiB, GC CPU 0.0035 → 0.019 core/Pod",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "조사를 시작했을 때",
+          "thought": "메모리가 모자랐겠지 하고 봤는데 답은 달랐다 — 각각 근거가 있던 설정 둘(GOMEMLIMIT · GOGC=off)의 조합이 원인이었고, 방아쇠는 CPU 였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+              "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+              "publisher": "REALITY",
+              "date": "2026-09-01",
+              "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+            }
+          ]
+        },
+        {
+          "at": "GOGC 값을 고를 때",
+          "thought": "GOGC=off 를 끄면 기본값 100 이 정답처럼 보이지만 목적을 착각한 것이다 — 메모리를 줄이는 게 아니라 힙 목표를 GOMEMLIMIT 에서 떼어 초과분을 흡수할 여유를 만드는 것이 목적이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+              "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+              "publisher": "REALITY",
+              "date": "2026-09-01",
+              "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "라이브 힙을 볼 수 없는 환경에서 GOGC=off 를 고른 것은 위험했다 — 2 년 반을 그렇게 운영했다. 다만 off 에서 유한값으로 가는 변경은 원리적으로 메모리가 늘 수 없어 안전한 쪽이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+              "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+              "publisher": "REALITY",
+              "date": "2026-09-01",
+              "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "라이브 힙",
+            "what": "직전 GC 에서 살아남은 데이터 — 애플리케이션이 실제로 쥐고 있는 양(go_gc_heap_live_bytes)."
+          },
+          {
+            "name": "힙 목표",
+            "what": "다음 GC 를 시작할 크기 — min(라이브 힙 × (1+GOGC/100), GOMEMLIMIT 상당). GOGC=off 면 늘 GOMEMLIMIT 상당."
+          },
+          {
+            "name": "GOMEMLIMIT",
+            "what": "소프트 리밋 — GC 를 돌릴 CPU 가 있어야 지켜진다. GC CPU limiter 가 GC 의 CPU 를 50% 로 묶으면 넘어간다."
+          },
+          {
+            "name": "CFS 스로틀",
+            "what": "cpu limit 을 주기(100ms) 안의 CPU 시간으로 다 쓰면 다음 주기까지 멈춘다 — 그동안 GC 도 멈춘다."
+          },
+          {
+            "name": "서비스별 GOGC",
+            "what": "라이브 힙 최악값 × (1+GOGC/100) ≤ limit − 실측 초과분 − 힙 밖 메모리 로 서비스마다 정한다."
+          }
+        ],
+        "invariants": [
+          "힙 목표와 memory limit 사이에는 실측 초과분(+186MiB)을 흡수할 여유가 있어야 한다.",
+          "GOGC 는 라이브 힙의 p90 이 아니라 Pod 별 피크의 **최악값**으로 정한다.",
+          "같은 설정으로 늘어선 서비스라도 값을 그대로 옮기지 않는다 — 서비스마다 대입한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Go 런타임 메트릭을 운영 환경에서 내보낸다(고른 약 80 샘플)",
+            "why": "라이브 힙을 모르면 GOGC 를 정할 수 없다 — 사고 당시엔 없었다."
+          },
+          {
+            "step": "Pod 별 피크 3 시간 최대 → Pod 횡단 중앙값 · 최악값",
+            "why": "전체 평균은 가장 위험한 한 대를 지운다."
+          },
+          {
+            "step": "힙 목표 허용 상한 = limit − 초과분 실측 − 힙 밖 메모리(약 150MiB)",
+            "why": "여유를 숫자로 만든다 — 이번 서비스는 약 1712MiB."
+          },
+          {
+            "step": "최악 라이브 힙 × (1+GOGC/100) 가 상한 안에 드는 GOGC 를 고른다(A: 280 × 4 = 1120MiB → 300)",
+            "why": "여유를 남기면서 GC CPU 증가를 줄인다."
+          },
+          {
+            "step": "GC 주기 예측(16.0 초)과 실측(15.9 초)으로 모델을 검산",
+            "why": "모델이 맞으면 GC CPU 예측(5.4 배)도 믿을 수 있다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "GC 횟수를 줄여 CPU 를 아끼려면?(2024 년 초)",
+            "chosen": "**GOMEMLIMIT(limit 의 90%) + GOGC=off** — 힙 증가율 대신 메모리 절대량으로만 GC 를 돌린다.",
+            "alternatives": [
+              "기본 GOGC=100 + GOMEMLIMIT",
+              "GOGC 를 크게만 올린다"
+            ],
+            "tradeoff": "GC 가 줄어 CPU · 비용 · 지연이 준다는 기대 — 개발 환경에서 GC 타이밍까지 확인하고 리뷰도 통과했다. 대가는 힙 목표가 늘 한도에 붙어 **여유가 사라지고**, GC 스래싱으로 OOMKill 없이 느린 채 살 수 있고, **메모리 사용량이 관측 불가**가 된다는 것 — 라이브 힙을 볼 메트릭이 없어 이 대가가 2 년 반 보이지 않았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          },
+          {
+            "question": "GOGC=off 를 끄면 어디로 가나?",
+            "chosen": "**기본값 100 이 아니라 실측 최악 라이브 힙에서 식으로 정한 값(A 는 300).**",
+            "alternatives": [
+              "GOGC=100 으로 되돌린다 — 메모리가 가장 준다"
+            ],
+            "tradeoff": "목적은 메모리 절감이 아니라 초과분을 흡수할 여유 — 300 이면 여유가 3.5 배 이상. GC CPU 는 GOGC 에 반비례해(라이브 힙 크기와 무관하다는 유도) 5 배 넘게 늘지만 Pod 당 +0.016 core, CPU 요청의 1.6% 라 치를 만하다고 봤다. 100 은 300 보다 GC 에 CPU 를 3 배 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 라이브 힙 값으로 정하나?",
+            "chosen": "**Pod 별 피크의 Pod 횡단 최악값.**",
+            "alternatives": [
+              "p90 · 중앙값"
+            ],
+            "tradeoff": "p90(168MiB)으로 하면 GOGC=900 까지 통과해 최악 Pod 가 피크일 때 상한을 크게 넘는다. 대가는 가장 보수적인 값이라 메모리를 덜 아낀다는 것 — 그리고 피크 관측은 아직 n=1(고부하일 미관측).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          },
+          {
+            "question": "같은 규칙으로 설정된 십수 서비스에 같은 값을 쓰나?",
+            "chosen": "**서비스마다 식에 대입한다.**",
+            "alternatives": [
+              "한 서비스에서 정한 값을 횡전개"
+            ],
+            "tradeoff": "B 는 405 × 4 = 1620MiB 라 300 이 겨우 통과(여유 92MiB), C 는 A 만큼 여유 — 같은 설정이어도 라이브 힙 피크가 두 배 가까이 다르다. 대가는 서비스마다 메트릭을 보고 계산하는 수고.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          },
+          {
+            "question": "런타임 메트릭을 얼마나 내보내나?",
+            "chosen": "**운영 판단에 쓰는 것만 골라 1 스크레이프당 약 80 샘플** — 특히 GC CPU limiter 발동 흔적.",
+            "alternatives": [
+              "collectors.MetricsAll · MetricsGC 같은 넓은 규칙"
+            ],
+            "tradeoff": "관리형 Prometheus(GMP)는 수집 샘플 수 과금이라 안 쓰는 메트릭에 돈을 내지 않는다. 대가는 나중에 필요한 메트릭이 빠져 있을 수 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          },
+          {
+            "question": "가장 쉬운 대처 — memory limit 을 2Gi → 3Gi 로 올리나?",
+            "chosen": "**보류(차선책).**",
+            "alternatives": [
+              "limit 을 올린다"
+            ],
+            "tradeoff": "막고 싶은 건 연속 OOM 이고 드문 단발 OOM 은 재시작으로 복구된다. 근본은 GOGC=off 가 여유를 없앤 것이라 limit 을 올리면 원인을 남긴 채 비용만 치르는 대증 요법이다. 대가는 GOGC 조정으로도 문제가 나면 다시 판단해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          },
+          {
+            "question": "HPA 에 memory 지표를 더하나? GOMAXPROCS=1 로 묶나?",
+            "chosen": "**둘 다 안 한다** — HPA 는 CPU 사용률만, GOMAXPROCS 는 Go 1.25 자동값(최소 2) 그대로.",
+            "alternatives": [
+              "HPA memory target",
+              "GOMAXPROCS=1 명시"
+            ],
+            "tradeoff": "GOMEMLIMIT 를 둔 Go 는 메모리를 OS 에 잘 돌려주지 않아 memory target 이 늘 넘겨져 최대치까지 스케일아웃한다(사내 전례). GOMAXPROCS 는 병렬도 한도이고 cpu limit 은 처리량 한도라 1 로 묶으면 마크 창이 두 배로 늘고 병렬 실행을 잃는다. 대가는 cpu limit 1 인데 스레드 2 개라 낮은 수준의 스로틀이 늘 생길 수 있다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+                "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+                "publisher": "REALITY",
+                "date": "2026-09-01",
+                "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "라이브 배신 기프팅(수익원)",
+          "via": "GKE 위 Go 백엔드",
+          "contract": "REALITY 앱의 백엔드 서비스가 떨어지지 않게 하는 일 — 떨어진 서비스가 기프팅 경로였는지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+              "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+              "publisher": "REALITY",
+              "date": "2026-09-01",
+              "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+            },
+            {
+              "title": "PRODUCT - REALITY株式会社",
+              "url": "https://reality.inc/products/",
+              "publisher": "REALITY",
+              "summary": "스마트폰용 메타버스 'REALITY' 개발 · 운영 — 누구나 스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신 · 게임을 즐기는 커뮤니케이션 플랫폼, 전 세계 다운로드 2,000 만 돌파. 모회사는 GREE Holdings."
+            }
+          ]
+        },
+        {
+          "to": "아바타 · 룸 아이템 과금(수익원)",
+          "via": "GKE 위 Go 백엔드",
+          "contract": "같은 백엔드 군이 앱 전체를 떠받친다 — 어느 서비스가 과금을 맡는지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+              "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+              "publisher": "REALITY",
+              "date": "2026-09-01",
+              "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+            },
+            {
+              "title": "PRODUCT - REALITY株式会社",
+              "url": "https://reality.inc/products/",
+              "publisher": "REALITY",
+              "summary": "스마트폰용 메타버스 'REALITY' 개발 · 운영 — 누구나 스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신 · 게임을 즐기는 커뮤니케이션 플랫폼, 전 세계 다운로드 2,000 만 돌파. 모회사는 GREE Holdings."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "GOGC 를 정하는 길",
+          "question": "실측에서 GOGC 한 값이 나오기까지 무엇을 거치나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  M[\"런타임 메트릭 약 80 샘플\"] --> P[\"Pod 별 3 시간 피크\"]\n  P --> W[\"Pod 횡단 최악값\\nA: 280MiB\"]\n  L[\"limit 2048\\n− 초과분 186\\n− 힙 밖 150\"] --> U[\"허용 상한 1712MiB\"]\n  W --> Q{\"280 × (1+G) ≤ 1712?\"}\n  U --> Q\n  Q --> G[\"GOGC=300 → 1120MiB\"]\n  G --> V[\"검산: GC 주기 예측 16.0s / 실측 15.9s\"]"
+        },
+        {
+          "title": "힙 목표가 한도에 붙은 상태와 뗀 상태",
+          "question": "GOGC=off 에서 300 으로 바꾸면 메모리는 어떤 상태를 오가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  state \"GOGC=off\" as OFF {\n    [*] --> 붙음: 힙 목표 = GOMEMLIMIT 상당(1710MiB)\n    붙음 --> 붙음: GC 해도 곧 다시 목표까지\n    붙음 --> OOMKill: CPU 스로틀로 GC 지연 +186MiB\n    붙음 --> 스래싱: 라이브 힙이 한도 근처 · CPU 절반을 GC 가\n  }\n  OFF --> 여유: GOGC=300 적용\n  여유 --> 여유: 힙 목표 약 1120MiB · 여유 약 780MiB"
+        },
+        {
+          "title": "CPU 가 모자라 메모리로 죽는 길",
+          "question": "CPU 만 모자랐는데 왜 OOMKill 이 나나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"노드 CPU 포화\"] --> B[\"CFS 스로틀: 주기 도중 실행 정지\"]\n  B --> C[\"정지 중 GC 마크도 멈춤\"]\n  C --> D[\"재개 후에도 할당은 계속(밀린 처리로 더 늘기도)\"]\n  D --> E[\"힙이 GOMEMLIMIT 를 넘어 +186MiB\"]\n  E --> F{\"limit 까지 여유?\"}\n  F -- \"GOGC=off: 217MiB\" --> G[\"OOMKill (스로틀 15.3% 인 A)\"]\n  F -- \"GOGC=300: 약 780MiB\" --> H[\"흡수\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+          "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+          "publisher": "REALITY",
+          "date": "2026-09-01",
+          "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+        },
+        {
+          "title": "PRODUCT - REALITY株式会社",
+          "url": "https://reality.inc/products/",
+          "publisher": "REALITY",
+          "summary": "스마트폰용 메타버스 'REALITY' 개발 · 운영 — 누구나 스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신 · 게임을 즐기는 커뮤니케이션 플랫폼, 전 세계 다운로드 2,000 만 돌파. 모회사는 GREE Holdings."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**기프팅 · 아이템 과금이 어느 서비스 · 테이블 · 캐시 키인지** 글에 없다 — 그래서 수익원 연결은 inferred.",
     "**VTuber 사업(REALITY Studios)이 REALITY 주식회사의 매출인지** 확인하지 못했다.",

@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "스트리밍",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신하는 앱 'REALITY' 의 회사(그리 그룹) — 메모리 장애를 쫓다 CPU 스로틀이 범인임을 찾아 GOGC 를 실측으로 다시 정했고, 자체 샤딩 Redis 는 키 하나씩 Valkey 클러스터로, 출시 때의 MySQL 테이블은 CDC 로 Spanner 로 옮긴다",
       "updated_at": "2026-09-27",
       "domain": "reality.inc"
