@@ -824,6 +824,134 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/334840",
+      "title": "[전문연구요원 가능] AI Research Engineer",
+      "site": "wanted",
+      "verdict": "석사 이상(또는 2년 이상 AI 연구·개발 실무). 내시경 영상의 병변 탐지·분할·분류 모델을 연구하고, 전동식 내시경 자율 주행·술기 보조 AI, 경량화·실시간 추론, 데이터 불균형을 다루는 데이터 전략까지 걸친 연구 개발자.",
+      "fit": {
+        "must_have": [
+          "관련 석사 이상 또는 2년 이상 AI 연구·개발 실무",
+          "PyTorch/TensorFlow + Python 클린 코드",
+          "선형대수·통계·최적화·CV 이론",
+          "논문을 코드로 구현·커스텀",
+          "한국어 능통"
+        ],
+        "can_learn": [
+          "TensorRT·ONNX 배포(우대)",
+          "의료 데이터 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "내시경 병변 탐지·분할·분류 모델",
+          "from": "task",
+          "quote": "• 내시경 영상 내 병변 탐지(Detection), 분할(Segmentation), 분류(Classification)를 위한 최신 딥러닝 모델 연구",
+          "priority": "core",
+          "why": "주요업무 첫 묶음이다. 회사 소개의 '이상 부위 탐지 소프트웨어'가 이 모델들 위에 선다.",
+          "gap_check": "용종처럼 작은 병변에서 탐지와 분할 모델의 평가 지표(mAP, Dice, IoU)가 각각 무엇을 놓치는가?",
+          "drill": "공개 대장 내시경 용종 분할 데이터셋(Kvasir-SEG 등)으로 U-Net 계열 모델을 학습해 Dice·IoU 를 보고하고, 작은 병변에서 실패한 사례를 모아 본다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "데이터 불균형과 도메인 특화 증강",
+          "from": "task",
+          "quote": "• 데이터 불균형 해소를 위한 도메인 특화 데이터 증강(Augmentation) 및 합성 전략 수립",
+          "priority": "core",
+          "why": "병변 영상은 정상 영상보다 훨씬 적다(추론). 주요업무에 Data-centric AI 와 증강·합성 전략이 따로 있다.",
+          "gap_check": "클래스 불균형에서 가중 손실·오버샘플링·증강·합성 데이터 중 무엇을 먼저 시도하고, 효과를 어떻게 검증하는가?",
+          "drill": "위 실험에 내시경 특유의 변형(반사광, 흐림, 색 변화) 증강을 넣고 병변이 적은 조건에서 증강 전후 성능을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Albumentations — Documentation",
+              "url": "https://albumentations.ai/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "논문 구현·커스텀 능력",
+          "from": "qualification",
+          "quote": "• 최신 AI 논문을 깊이 있게 이해하고, 이를 코드로 직접 구현 및 커스텀할 수 있는 능력이 있으신 분",
+          "priority": "core",
+          "why": "자격요건에 명시돼 있고, 우대에 Top-tier 학회 1저자가 있다. 연구 자리라 재현 능력을 직접 볼 가능성이 크다(추론).",
+          "gap_check": "최근 의료 영상 분할 논문 하나의 핵심 기여를 한 문장으로 말하고, 그 부분만 기존 코드에 끼워 넣을 수 있는가?",
+          "drill": "MICCAI 최근 논문 하나를 골라 핵심 모듈만 구현해 위 베이스라인에 붙이고, 논문 수치와의 차이를 기록한다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "ML 수학 기초",
+          "from": "qualification",
+          "quote": "• Machine learning 및 deep learning의 핵심 수학적 기초(선형대수, 통계, 최적화 이론 등)와 Computer Vision 이론에 대한 탄탄한 이해를 보유하신 분",
+          "priority": "core",
+          "why": "자격요건 한 줄로 명시됐다.",
+          "gap_check": "배치 정규화가 학습을 안정시키는 이유, Adam 과 SGD 의 차이, 교차 엔트로피가 최대우도와 같아지는 이유를 설명할 수 있는가?",
+          "drill": "NumPy 만으로 로지스틱 회귀와 2층 MLP 의 역전파를 구현해 PyTorch autograd 결과와 기울기를 비교한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "모델 경량화와 TensorRT 추론",
+          "from": "task",
+          "quote": "• TensorRT 등을 활용한 추론 가속화 및 하드웨어 타겟별 성능 최적화",
+          "priority": "high",
+          "why": "실시간 의료 환경 대응이 주요업무에 있다. 연구 모델이 장비에서 돌아야 제품이 된다.",
+          "gap_check": "FP16·INT8 양자화에서 정확도가 떨어질 때 보정(calibration) 데이터는 어떻게 골라야 하는가?",
+          "drill": "위 분할 모델을 ONNX 로 내보내 TensorRT FP16·INT8 엔진으로 만들고 지연·Dice 변화를 표로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NVIDIA TensorRT — Documentation",
+              "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "로봇 제어와 AI 결합 (자율 주행·술기 보조)",
+          "from": "task",
+          "quote": "• 전동식 내시경의 지능형 자율 주행 및 술기 보조 솔루션 구현을 위한 AI 모델 연구",
+          "priority": "high",
+          "why": "영상 인식 결과가 내시경의 움직임으로 이어져야 한다. 로봇 제어 팀과 함께 푸는 문제다.",
+          "gap_check": "영상에서 찾은 관강(lumen) 중심 방향을 내시경 굽힘 명령으로 바꿀 때 지연과 오탐이 제어에 어떤 위험을 주는가?",
+          "drill": "영상에서 가장 어두운 영역(관강 후보)의 중심을 찾아 화면 중앙으로 보내는 방향 벡터를 출력하는 간단한 시각 서보 루프를 시뮬레이션한다.",
+          "hours": 8,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공개 내시경 데이터셋 베이스라인 + 실패 사례 분석 리포트",
+          "why": "주요업무가 연구 고도화와 데이터 전략이다. 수치보다 '어디서 왜 틀리는가'를 정리한 리포트가 연구 역량을 보여 준다.",
+          "effort": "2~3일"
+        },
+        {
+          "idea": "Kaggle·DACON 의료 영상 대회 참가 기록",
+          "why": "우대사항에 AI 경진대회 상위 입상이 있다.",
+          "effort": "대회 일정에 따름"
+        }
+      ],
+      "interview": {
+        "process": "서류전형-코딩테스트 (해당 직군 한정)-1차 인터뷰-2차 인터뷰-최종합격. 1차는 직무 역량 및 문화 적합성, 2차는 업무 조율 및 근무 조건 협의(공고 기준).",
+        "expect": [
+          "병변 탐지·분할 지표와 한계",
+          "데이터 불균형 대응",
+          "최근 논문 하나의 구현 경험",
+          "양자화 후 정확도 저하 대응",
+          "ML 수학 기초"
+        ],
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] AI Research Engineer",
+            "url": "https://www.wanted.co.kr/wd/334840",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
