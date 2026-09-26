@@ -25,7 +25,7 @@
 
 | **LayerX** | JP · 법인 지출 관리 SaaS·LLM 솔루션 | 프로파일(2026-09-26). 도메인 셋 — 테넌트 데이터는 하류에서도 잠근다 · LLM 호출을 한 관문에 모은다 · API 스키마를 먼저 쓴다. 기능 3(`rap-reconcile-and-check` · `residency-by-virtual-key` · `typespec-schema-first`). **Fintech·Security 수익원에 도메인이 없어 완주 기준 셋째 미달** — Fintech事業部 카테고리(22편) 확인이 남았다. |
 
-| **유자베이스(Uzabase)** | JP · 경제 정보 플랫폼 | 프로파일(2026-09-26). 도메인 둘 — 고객사 AWS 로 데이터를 흘려보낸다(Datafeed) · AI 에이전트의 실패를 두 칸에 나눠 담는다(ADK). 기능 0. 다음 — Datafeed. NewsPicks 수익원은 도메인 없음. |
+| **유자베이스(Uzabase)** | JP · 경제 정보 플랫폼 | 프로파일(2026-09-26). 도메인 둘 — 고객사 AWS 로 데이터를 흘려보낸다 · AI 에이전트의 실패를 두 칸에 나눠 담는다. 기능 1(`stage-guard-then-deliver`). 다음 — 에이전트. NewsPicks 수익원은 도메인 없음. |
 
 ## 대기
 

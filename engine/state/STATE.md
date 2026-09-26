@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**유자베이스 — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '고객사 AWS 로 데이터를 흘려보낸다' 를 Datafeed 글(`entry/2026/09/05/154644`, scratchpad `uz_df.txt` — 버킷 정책 예 이후 끝까지)로. 그 뒤 에이전트(`uz_ag.txt`, 200/422 등 나머지 응답 규칙 마저). NewsPicks 수익원은 도메인이 없다 — 완주 판정 때 NewsPicks 기술 글을 찾고 없으면 두 번 뒤 hold. 대기 2/3(머니포워드·stmn). LayerX 는 in_progress.**
+**유자베이스 — 기능 1(`stage-guard-then-deliver`, 2026-09-26). 다음은 확장: 'AI 에이전트의 실패를 두 칸에 나눠 담는다' 를 에이전트 글(`entry/2026/09/16/082055`, scratchpad `uz_ag.txt` — '例外で停止した場合は500' 이후 200 응답의 status 값들·마무리를 마저). 그 뒤 완주 판정: NewsPicks 수익원에 도메인이 없다 — NewsPicks 기술 글을 찾고 없으면 두 번 뒤 hold. 대기 2/3(머니포워드·stmn). LayerX 는 in_progress.**
+
 
 
 
