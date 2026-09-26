@@ -1032,3 +1032,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 inngest 재방문 → 확장
 
 - 09-18 장애 보고서(삭제 CASCADE → PgBouncer 고갈)에서 결정 7개로 `deletion-that-stopped-the-platform` 을 새 도메인에 추가(features 3→4). 소프트 삭제·풀 분리·배포 순서의 대가는 해석 표시.
+
+## 2026-09-26 jane-street 재방문 → 확장
+
+- 09-14 "A study of sequence weighting at scale" 에서 방법 결정 5개로 `scaling-laws-that-bend` 를 새 도메인에 추가(features 3→4). 연구 글이라 결정은 방법론 층이고, 믹스로의 전이·정규화 의존·비용은 해석 표시.
