@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "in_progress",
+  "hold_reason": "수익원 'Hacobu Strategy(물류 DX 컨설팅)'·'Hacobu Solution Studio(SI·AI 도입)'·'Hacobu Career(인재 소개)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 20편 / Zenn 검색 API 'Hacobu'·'ハコブ'·'MOVO'·'Solution Studio'·'物流DX' — hacobu 글 9편 제목에 없음). 셋 다 사람이 하는 서비스라 기술 글이 안 나올 수도 있다. 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 그쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "hacobu.jp",
   "one_liner": "물류 DX 의 Hacobu(MOVO) — 로그인 화면의 장애 배너는 자작 대신 Datadog 폼으로 비개발자에게 넘기고 S3 파일 하나를 최후의 수단으로 남기며, 트럭 예약 화면의 프런트엔드는 기능 간 의존을 규약 문서가 아니라 CI 가 막는다",
@@ -825,9 +826,10 @@
   "open_questions": [
     "과금 구조·매출 비중을 1차 자료로 확인하지 못했다.",
     "트럭 예약 접수(MOVO Berth)의 예약 슬롯·동태 관리(MOVO Fleet)의 위치 데이터 같은 물류 도메인 로직 글은 아직 못 찾았다.",
-    "컨설팅·SI·인재 소개 수익원의 기술 글은 아직 못 찾았다.",
     "두 도메인의 MOVO 수익원 연결은 inferred.",
-    "사내 AI 글이 많다 — 지불 신청 초안 AI(`f88df0929d285d`)·Managed Agents 데이터 분석(`3e16e7d1ae3b9a`)·사람 리뷰 3단계(`2ebef85abb40b7`)·AI 비용(`af3f6f10198ac4`)."
+    "사내 AI 글이 많다 — 지불 신청 초안 AI(`f88df0929d285d`)·Managed Agents 데이터 분석(`3e16e7d1ae3b9a`)·사람 리뷰 3단계(`2ebef85abb40b7`)·AI 비용(`af3f6f10198ac4`).",
+    "컨설팅·SI·인재 소개 수익원의 기술 글은 두 번 찾아 없음(2026-09-26 — hold_reason).",
+    "MOVO 쪽 보강 재료: MOVO Vista SLI/SLO(`10604ab75c4232`)·유저의 목소리 수집(`f76852fb857f0a`)·프로덕트 보안(`40630df404dab0`)·리드타임 목표(`36e2bb395fdb17`)."
   ],
   "sources": [
     {

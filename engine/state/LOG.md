@@ -1640,3 +1640,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Hacobu 프런트 템플릿 의존 CI
 
 - 결정 7 — CI 0-tolerance·후방 참조 1 규칙·엣지+존재 2층·getRouteApi 순환 회피·세 도피로·공존 강제·네이티브 이식. 두 도메인 다 기능 참. 다음 완주 검사.
+
+## 2026-09-26 Hacobu 컨설팅·SI·인재 소개 수익원 보류
+
+- 완주 검사: Zenn RSS 20편(1회) · Zenn 검색 API 5낱말(2회) — hacobu 글 9편은 조직·QA·보안·MOVO Vista SLO. 세 수익원 글 없음 → hold_reason. MOVO Vista SLO 는 보강 재료로 남김.

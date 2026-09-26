@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Hacobu 확장 2/2(2026-09-26) — `frontend-template-dependency-ci` 완료, 빈 도메인 없음. 다음은 완주 검사: 컨설팅(Strategy)·SI(Solution Studio)·인재 소개(Career) 수익원에 도메인이 없다 — 1회차는 Zenn RSS 20편(없음)으로 셈, 2회차는 Zenn 검색 API('Hacobu'·'ハコブ'·'MOVO' 로 publication hacobu 필터)·hacobu.jp/solution-studio. 있으면 도메인 추가, 없으면 hold_reason. MOVO 물류 로직(Berth 예약 슬롯·Fleet 위치) 글이 검색에서 나오면 도메인 후보로 STATE 에 적기만. 대기 1/3(estie) — Hacobu 를 닫으면 **후보 조사** 먼저. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX ↔ Hacobu CI 가드레일). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스(hold)·LayerX 는 in_progress.**
+**Hacobu hold(2026-09-26) — 도메인 둘·기능 둘, 컨설팅·SI·인재 소개 수익원은 두 번 찾아 없음 → hold_reason. MOVO 보강 재료는 open_questions 에(MOVO Vista SLI/SLO `10604ab75c4232` 등). 다음은 **후보 조사**(대기 1/3 — estie 뿐, `--gaps` 가 신규를 가리켜도 먼저 버퍼를 채울 것: 물류 축·Zenn Publication RSS 입구가 유효). 그다음 대기 맨 위 신규. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX ↔ Hacobu CI 가드레일). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu(hold)·LayerX 는 in_progress.**
 
 
 
@@ -377,6 +377,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **Sumzap IP·이벤트(GCRESTUDIO) 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 37편 제목 · 홍보 note). IP·이벤트 구조 글이 새로 나오면 다시.
 - **Yappli CRM 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 224편 제목 · speakerdeck 404). CRM 구조 글이 새로 나오면 다시.
 - **로그라스 석세스 파트너·설비투자·IT 투자 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편·note 36편 · Zenn 검색 API 4낱말 · speakerdeck 404). 그쪽 구조 글이 새로 나오면 다시.
+- **Hacobu Strategy·Solution Studio·Career 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 5낱말, hacobu 글 9편). 그쪽 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
