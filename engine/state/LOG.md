@@ -2235,3 +2235,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 ChillStack 검지 파이프라인
 
 - `2026-04-20-detection-architecture-stena-expense` 로 기능 `expense-detection-pipeline`, 결정 7.
+
+## 2026-09-27 ChillStack RLS 와 실시간 집계
+
+- `f2bb12fe37482f` + `2025-12-25-real-time-analysis-background` 를 끝까지 읽어 기능 `tenant-rls-and-realtime-aggregation`, 결정 8. 출처 요약에 뒤쪽 절(WHERE 병존 · CI · Feature Flag · 입도 측정 · custom_field)을 보탰다.

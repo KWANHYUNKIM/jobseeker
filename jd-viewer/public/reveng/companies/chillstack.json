@@ -175,7 +175,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "tenant-rls-and-realtime-aggregation"
+      ]
     }
   ],
   "features": [
@@ -567,6 +569,442 @@
           "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지)."
         }
       ]
+    },
+    {
+      "key": "tenant-rls-and-realtime-aggregation",
+      "name": "빠뜨린 WHERE 를 DB 가 막고, 조건을 바꾸면 수백 밀리초에 답한다",
+      "domain": "여러 회사의 경비를 한 DB 에서 섞이지 않게 즉시 모아 본다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "Stena Expense 가 맡는 것은 **회사의 경비** — 누가 어디서 누구와 얼마를 썼는지다. 여러 회사가 한 소프트웨어 · 한 DB 를 쓰는 멀티테넌트 SaaS 에서 **다른 회사의 경비가 보이는 것은 보안 컴퍼니로서 가장 피해야 할 사고**다. 그런데 지금까지는 쿼리마다 `WHERE tenant_id` 를 사람이 붙여 왔고, **하나만 빠뜨려도** 새어 나간다 — 사내 취약성 진단에서도 지적됐다.\n\n동시에 새 **분석 기능**은 경리 담당이 조건을 바꾸면 **그 자리에서** 결과가 와야 한다 — 비동기 집계로는 조건마다 기다리게 돼 '짧은 시간에 의미 있는 분석'이 안 된다. 수십만 건 경비와 청구서 · 동석자 · 카드 · 출퇴근 데이터를, 조직마다 다른 축으로.\n\n그래서 **행 단위 RLS** 로 WHERE 누락을 DB 가 막게 하고, **사전 집계 · 비정규화 · 필요한 JOIN 만**으로 수백 밀리초에 답하게 했다.",
+        "metrics": [
+          {
+            "label": "분석 응답",
+            "value": "상정 유스케이스에서 수백 밀리초 이내",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+                "publisher": "ChillStack",
+                "date": "2025-12-25",
+                "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+              }
+            ]
+          },
+          {
+            "label": "분석 대상",
+            "value": "수십만 건 경비 + 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+                "publisher": "ChillStack",
+                "date": "2025-12-25",
+                "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+              }
+            ]
+          },
+          {
+            "label": "RLS 성능 영향",
+            "value": "무거운 쿼리 전후 비교에서 거의 없음 — 인덱스 추가 불필요",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Row Level Security導入のためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+                "publisher": "ChillStack",
+                "date": "2025-02-18",
+                "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+              }
+            ]
+          },
+          {
+            "label": "본번 전 검증",
+            "value": "Feature Flag 로 개발 환경만 · 1주일 로그 감시",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Row Level Security導入のためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+                "publisher": "ChillStack",
+                "date": "2025-02-18",
+                "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "WHERE tenant_id 누락이 진단에서 지적될 때",
+          "thought": "**리뷰로 사람이 막는 데엔 한계가 있다.** 빠뜨려도 사고가 나지 않게 구조로 막아야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Row Level Security導入のためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+              "publisher": "ChillStack",
+              "date": "2025-02-18",
+              "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+            }
+          ]
+        },
+        {
+          "at": "분리 수준 다섯을 견줄 때",
+          "thought": "**이미 운영 중인 앱이다.** 스키마 · DB · 실행 환경까지 가르면 이전 · 운영 비용이 너무 크다 — 행 단위가 현실적이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Row Level Security導入のためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+              "publisher": "ChillStack",
+              "date": "2025-02-18",
+              "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+            }
+          ]
+        },
+        {
+          "at": "사전 집계 입도를 고민할 때",
+          "thought": "**잘게 할수록 유연해 보이지만 너무 잘면 원본과 같아진다.** 고민만 하지 말고 신청자 단위 평균 명세 수를 재 본다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+              "publisher": "ChillStack",
+              "date": "2025-12-25",
+              "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+            }
+          ]
+        },
+        {
+          "at": "비정규화를 망설일 때",
+          "thought": "**이름이 바뀌면 어떡하나?** — 사전 집계는 검지 때마다 다시 만들어지고, 연계된 데이터는 제품에서 편집되지 않는다. 그러면 비정규화의 단점이 거의 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+              "publisher": "ChillStack",
+              "date": "2025-12-25",
+              "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "테넌트",
+            "what": "Stena Expense 를 쓰는 고객 조직. tenant_id 로 식별."
+          },
+          {
+            "name": "RLS 정책",
+            "what": "tenant_id 를 가진 테이블(자식 테이블 포함)에 건다. 세션의 current_setting 에 실린 tenant_id 와 행을 맞춘다."
+          },
+          {
+            "name": "DB 롤",
+            "what": "NOBYPASSRLS(일반 API · 배치) / BYPASSRLS(여러 테넌트를 다루는 관리 화면 · 배치)."
+          },
+          {
+            "name": "사전 집계 테이블",
+            "what": "집계 단위(신청자 등)마다의 요약. 부서명 · 계정과목명 · 신청자명을 직접 가진다. 검지 실행 때마다 재집계."
+          },
+          {
+            "name": "커스텀 항목",
+            "what": "조직마다 다른 집계 축. custom_field_1, 2 … 범용 컬럼과 조직별 매핑 테이블."
+          },
+          {
+            "name": "집계 조건",
+            "what": "쿼리 빌더의 객체. 검증된 뒤에만 SQL 로 조립된다."
+          }
+        ],
+        "invariants": [
+          "**RLS 대상 쿼리는 WithContext 없이 나가지 않는다**(CI 정적 해석이 막는다).",
+          "**WHERE tenant_id 는 RLS 와 함께 남긴다** — 이중 방어.",
+          "**tenant_id 가 있는 테이블엔 RLS 가 걸려 있다**(CI 스키마 검사).",
+          "**사전 집계는 검지 실행 때 새로 만든다** — 비정규화 값이 그때 맞춰진다.",
+          "**화면 입력은 그대로 SQL 에 들어가지 않는다.**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청의 context 에 tenant_id 를 싣는다",
+            "why": "테넌트는 앱이 아니라 세션이 들고 DB 에 간다."
+          },
+          {
+            "step": "GORM 호출은 모두 WithContext — 자체 Connector · SessionResetter 가 current_setting 에 tenant_id 를 설정한다",
+            "why": "테넌트마다 롤을 두지 않아 커넥션 수 문제가 없다."
+          },
+          {
+            "step": "PostgreSQL RLS 가 tenant_id 가 맞는 행만 돌려준다 — WHERE tenant_id 도 그대로 남아 있다",
+            "why": "한쪽이 빠져도 다른 쪽이 막는다."
+          },
+          {
+            "step": "관리 화면 · 여러 테넌트 배치는 BYPASSRLS 롤로 접속한다",
+            "why": "CS 공지 배신처럼 테넌트를 가로지르는 기능."
+          },
+          {
+            "step": "검지가 끝날 때 사전 집계 테이블을 다시 만든다(이름 등 비정규화 포함)",
+            "why": "분석은 요약 테이블만 읽는다."
+          },
+          {
+            "step": "분석 화면이 조건을 바꾸면 쿼리 빌더가 필요한 테이블만 JOIN 해 SQL 을 조립한다",
+            "why": "커스텀 항목은 범용 컬럼 매핑으로, 입력은 검증 뒤에만."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "테넌트 분리를 어느 수준에서 할 것인가?",
+            "chosen": "**앱 · DB 테이블은 공유하고 행 단위로 가르는 PostgreSQL RLS.**",
+            "alternatives": [
+              "분리 없음 — 쿼리마다 WHERE tenant_id(이전)",
+              "스키마 단위 분리",
+              "DB 실행 환경 단위 분리",
+              "앱 + DB 실행 환경 모두 분리"
+            ],
+            "tradeoff": "WHERE 누락이 **사고로 이어지지 않는다.** 운영 중인 앱이라 스키마 이상의 분리는 **이전 · 운영 비용**이 너무 컸다. 대가는 자식 테이블에도 tenant_id 를 추가해야 했고, 격리 강도는 스키마 · DB 분리보다 약하다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Row Level Security導入のためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+                "publisher": "ChillStack",
+                "date": "2025-02-18",
+                "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+              }
+            ]
+          },
+          {
+            "question": "어느 테넌트인지 DB 에 어떻게 알릴 것인가?",
+            "chosen": "**세션의 current_setting 에 tenant_id 를 싣는다 — Go database/sql 의 Connector · SessionResetter 를 직접 구현.**",
+            "alternatives": [
+              "테넌트마다 PostgreSQL 롤을 만들어 current_user 로(inferred 대안 — 글이 비교한다)"
+            ],
+            "tradeoff": "롤을 테넌트 수만큼 만들 필요가 없고 **커넥션 수 문제**가 없다. 대가는 커넥션 풀에서 세션 값이 **남거나 섞이지 않게** SessionResetter 를 정확히 짜야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Row Level Security導入のためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+                "publisher": "ChillStack",
+                "date": "2025-02-18",
+                "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+              }
+            ]
+          },
+          {
+            "question": "RLS 를 넣었으니 WHERE tenant_id 를 지울 것인가?",
+            "chosen": "**지우지 않는다 — 그리고 모든 GORM 호출에 WithContext 를 붙인다.**",
+            "alternatives": [
+              "WHERE 를 지우고 RLS 만 믿는다",
+              "RLS 대상 테이블만 WithContext 를 붙인다"
+            ],
+            "tradeoff": "RLS 가 뜻밖에 안 걸려도 **이중으로 지킨다.** 테이블별로 WithContext 여부를 가르면 **인지 비용**이 커서 일괄로 했다. 대가는 코드에 같은 조건이 두 번 있다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Row Level Security導入のためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+                "publisher": "ChillStack",
+                "date": "2025-02-18",
+                "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+              }
+            ]
+          },
+          {
+            "question": "여러 테넌트를 다뤄야 하는 기능은?",
+            "chosen": "**API · 배치를 RLS 대상 / 대상 외로 나눠, 대상 외는 BYPASSRLS 롤로 접속한다.**",
+            "alternatives": [
+              "모든 처리를 RLS 대상으로"
+            ],
+            "tradeoff": "CS 공지 배신 같은 관리 화면이 돈다. 대가는 **BYPASSRLS 경로는 여전히 코드가 지킨다**는 것 — 그리고 로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정이 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Row Level Security導入のためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+                "publisher": "ChillStack",
+                "date": "2025-02-18",
+                "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+              }
+            ]
+          },
+          {
+            "question": "설정 누락을 어떻게 막을 것인가?",
+            "chosen": "**CI 에서 막는다 — Go analysis 정적 해석으로 WithContext 누락, Python 스키마 해석으로 RLS 설정 · tenant_id 누락.**",
+            "alternatives": [
+              "리뷰 · 진단으로 찾는다"
+            ],
+            "tradeoff": "사람이 빠뜨리는 것을 다시 사람에게 맡기지 않는다 — RLS 를 들인 이유 그대로. 대가는 정적 해석 도구를 **스스로 만들고 유지**해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Row Level Security導入のためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+                "publisher": "ChillStack",
+                "date": "2025-02-18",
+                "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+              }
+            ]
+          },
+          {
+            "question": "운영 중인 서비스에 어떻게 켤 것인가?",
+            "chosen": "**Feature Flag 로 본번과 같은 구성의 개발 환경에서만 켜고, 무거운 쿼리(AlloyDB Query Insight)를 전후 비교 · 중요 기능 수동 테스트 · 1주일 로그 감시.**",
+            "alternatives": [
+              "한 번에 본번에 켠다"
+            ],
+            "tradeoff": "성능 영향이 거의 없음을 확인해 인덱스 추가 없이 **사고 없이** 넣었다. 대가는 검증 기간과 플래그 분기 코드 — 앞으로 데이터가 늘면 인덱스 · 파티셔닝을 다시 봐야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Row Level Security導入のためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+                "publisher": "ChillStack",
+                "date": "2025-02-18",
+                "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+              }
+            ]
+          },
+          {
+            "question": "분석을 비동기로 할 것인가, 실시간으로 할 것인가?",
+            "chosen": "**실시간 — 사전 집계 테이블(입도는 신청자 단위 평균 명세 수를 재어 결정) + 조직별 축은 custom_field 범용 컬럼과 매핑 테이블.**",
+            "alternatives": [
+              "요청마다 원본 경비 데이터를 집계",
+              "비동기 집계(결과를 기다린다)"
+            ],
+            "tradeoff": "조건을 바꿀 때마다 기다리지 않아 **시행착오의 속도**가 산다 — 수백 밀리초. 너무 잘게 잡으면 원본과 같아져 의미가 없어 **재서 정했다.** 대가는 범용 컬럼이 몇 개인지가 **조직이 고를 수 있는 축의 상한**이 되고(이 사이트의 해석), 전월비 같은 설정이 늘면 복잡도가 는다고 스스로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+                "publisher": "ChillStack",
+                "date": "2025-12-25",
+                "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+              }
+            ]
+          },
+          {
+            "question": "JOIN 과 정규화를 어떻게 할 것인가?",
+            "chosen": "**부서명 · 계정과목명 · 신청자명을 사전 집계에 비정규화하고, 집계 단위에 필요한 테이블만 동적으로 JOIN — 조건은 쿼리 빌더가 검증 뒤 조립한다.**",
+            "alternatives": [
+              "정규화 그대로, 모든 관련 테이블을 JOIN 한 뒤 WHERE 로 거른다"
+            ],
+            "tradeoff": "JOIN 이 줄어 빨라지고, 커스텀 항목은 **코드 수정 없이** 관리 화면 설정만으로 는다. 비정규화의 이름 변경 문제는 **검지 때마다 재집계**와 '연계 데이터는 제품에서 편집되지 않는다'는 성질로 거의 없다. 대가는 **코드가 복잡해진다**는 것 — 스스로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+                "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+                "publisher": "ChillStack",
+                "date": "2025-12-25",
+                "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "회사마다 다른 경비 데이터에서 부정을 찾는다(같은 회사의 다른 도메인)",
+          "via": "검지 파이프라인의 집계 단계",
+          "contract": "검지(`expense-detection-pipeline`)의 마지막 단계가 끝날 때 사전 집계 테이블이 다시 만들어진다 — 분석 화면은 그 요약만 읽는다. 검지 결과도 같은 RLS 경계 안의 DB 에 영속화된다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+              "publisher": "ChillStack",
+              "date": "2025-12-25",
+              "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+            },
+            {
+              "title": "Stena Expenseの検知アーキテクチャ ── Go × Python × gRPCで不正検知を実現する仕組み",
+              "url": "https://zenn.dev/chillstack/articles/2026-04-20-detection-architecture-stena-expense",
+              "publisher": "ChillStack",
+              "date": "2026-04-23",
+              "summary": "**Stena Expense** 는 기업의 경비 데이터를 받아 **AI 로 부정 · 이상을 검지**하는 SaaS. 매달 수만~수십만 건 명세를 사람이 다 볼 수는 없고, '생성 AI 에 맡기면'도 안 된다 — **조직마다 경비 정산 서비스가 달라 컬럼 뜻 · 입도가 다르고**, 중복 신청 · 금액의 통계적 이상 · 부풀리기 등 **패턴이 다양**하고, 취득 → 추출 · 변환 → 여러 검지 모델 → 집계의 **단계가 많다.** 구성: Manager(Next.js) · **Controller(Go, 인증 · 권한 · 워크플로 · 영속화를 맡는 모놀리스)** · **Google Cloud Workflows**(YAML, 네 단계를 try/except 로 감싸 실패 시 Controller 에 PATCH — Controller 가 **자기 현재 상태로 실패 단계를 판정**) · Cloud Run Job(Controller 와 같은 Go 코드를 CLI 로) · **Predictor(Python, 전처리 · 검지)**. 마이크로서비스가 아니라 **Predictor 만** 떼어 낸 이유는 Go(빠른 API · 형 안전한 도메인)와 Python(pandas · 검지 로직)의 장점, 그리고 **독립 스케일링**. Cloud Run Job 이 PredictService 로 의뢰하면 Predictor 가 결과를 **모델마다 Controller 의 PredictionHandler 로 gRPC 콜백**(재시도 3회) — 일시 배치가 수천~수만 건 결과를 중계하지 않고 Predictor 는 모델마다 보내고 메모리를 푼다. 검지 상태는 Go 값 객체로 **허용된 전이만** 하고, 의뢰 전 Pending → Predicting 을 **먼저 영속화**해 재기동 뒤에도 멈춘 검지를 찾는다. 모델은 **preprocessor · detector 를 pickle 로 GCS 에** — 모델 갱신에 앱 배포가 필요 없다. preprocessor 와 detector 를 나눈 것은 **수명 주기가 달라서** — 데이터 형식이 바뀌면 preprocessor 만, 알고리즘을 고치면 detector 만 바꾼다."
+            }
+          ]
+        },
+        {
+          "to": "사내 취약성 진단 · 관리 화면(CS)",
+          "via": "BYPASSRLS 롤",
+          "contract": "여러 테넌트에 걸친 CS 기능은 RLS 밖으로 나가고, 그 경로는 코드와 CI 가 지킨다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Row Level Security導入のためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+              "publisher": "ChillStack",
+              "date": "2025-02-18",
+              "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+            }
+          ]
+        },
+        {
+          "to": "Stena Expense(수익원)",
+          "via": "분석 기능 · 테넌트 격리",
+          "contract": "경리 담당이 비용을 즉시 나눠 보는 분석과, 다른 회사의 경비가 새지 않는다는 보증이 곧 제품이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+              "publisher": "ChillStack",
+              "date": "2025-12-25",
+              "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+            },
+            {
+              "title": "Row Level Security導入のためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+              "publisher": "ChillStack",
+              "date": "2025-02-18",
+              "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "쿼리 하나가 테넌트 경계를 지나는 길",
+          "question": "앱이 WHERE 를 빠뜨려도 왜 다른 회사의 경비가 안 보이나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"요청 · context 에 tenant_id\"] --> B[\"GORM WithContext\\n(CI 정적 해석이 누락을 막음)\"]\n  B --> C[\"Connector · SessionResetter\\ncurrent_setting = tenant_id\"]\n  C --> D[\"SQL · WHERE tenant_id 도 남김\"]\n  D --> E[\"PostgreSQL RLS\\nNOBYPASSRLS 롤\"]\n  E --> F[\"그 테넌트의 행만\"]\n  G[\"관리 화면 · 여러 테넌트 배치\"] --> H[\"BYPASSRLS 롤\"]"
+        },
+        {
+          "title": "RLS 를 운영 중에 켜는 순서",
+          "question": "사고 없이 본번에 넣기까지 무엇을 거쳤나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 설계: 대상 테이블 · 자식 tenant_id · API/배치 분류 · 롤\n  설계 --> CI: WithContext 정적 해석 · 스키마 검사\n  CI --> 개발환경: Feature Flag ON\n  개발환경 --> 검증: 무거운 쿼리 전후 비교 · 수동 테스트\n  검증 --> 감시: 1주일 로그\n  감시 --> 본번: 성능 영향 거의 없음\n  본번 --> [*]"
+        },
+        {
+          "title": "사람이 WHERE 를 붙이던 때 무너지던 길",
+          "question": "왜 리뷰로는 부족했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"새 쿼리 작성\"] --> B[\"WHERE tenant_id 누락\"]\n  B --> C[\"리뷰에서 못 봄\"]\n  C --> D[\"테넌트 A 가 B 의 경비를 봄\"]\n  D --> E[\"취약성 진단에서 지적 · 최악이면 사고\"]\n  B --> F[\"RLS: DB 가 행을 거른다\"]\n  F --> G[\"누락이 사고로 이어지지 않음\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Row Level Security導入のためにやったこと",
+          "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+          "publisher": "ChillStack",
+          "date": "2025-02-18",
+          "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
+        },
+        {
+          "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+          "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+          "publisher": "ChillStack",
+          "date": "2025-12-25",
+          "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -601,14 +1039,14 @@
       "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
       "publisher": "ChillStack",
       "date": "2025-12-25",
-      "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지)."
+      "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
     },
     {
       "title": "Row Level Security導入のためにやったこと",
       "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
       "publisher": "ChillStack",
       "date": "2025-02-18",
-      "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM)."
+      "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM). 뒤쪽 절: GORM 호출은 **모두 WithContext** 로(테이블별로 가리면 인지 비용이 커서), 그리고 **WHERE tenant_id 도 지우지 않고 남긴다**(RLS 가 뜻밖에 안 걸려도 지키려고). CI 에서 **Go analysis 정적 해석**으로 WithContext 누락을, **Python 스키마 해석**으로 RLS 설정 · tenant_id 누락을 막는다. 본번 전에 **Feature Flag** 로 개발 환경에서만 켜고, AlloyDB Query Insight 로 고른 무거운 쿼리를 전후 비교(영향 거의 없음 — 인덱스 추가 불필요), 중요 기능 수동 테스트와 **1주일 로그 감시**."
     },
     {
       "title": "Cloud SQLからAlloyDBへ移行した時にやったこと",
