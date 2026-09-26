@@ -2476,3 +2476,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 助太刀 검색 자동 전환
 
 - `20241207-a4859735b8b546` 로 기능 `search-failover-opensearch-rds`, 결정 6(되돌림 방향은 inferred). OpenSearch 이행 글은 공개 글 목록 · Zenn 검색에 없음.
+
+## 2026-09-27 助太刀 Flutter 재작성
+
+- `20260729-b6b211dbe7ef` 전문 + `e5c9cdd085bb40` 후반으로 기능 `flutter-rewrite-ai-architecture`, 결정 8. 검색 기능과 connections(inferred).
