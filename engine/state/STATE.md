@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Nature — 완주(2026-09-26, 도메인 3 · 기능 3). 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(ABEJA — `tech-blog.abeja.asia`, 의료 LLM JLAC11 매핑 `entry/medical-llm-jlac11-mapping-202608`, scratchpad `c84_*.txt` 중 하나). 대기 1/3 — ABEJA 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
+**ABEJA — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '병원마다 다른 검사 이름을 표준 코드에 잇는다' 를 JLAC11 글(`entry/medical-llm-jlac11-mapping-202608`, scratchpad `ab_jlac.txt`). 그 뒤 증류(`geniac2-distillation-pipeline-parallel`, `ab_distill.txt` — 실험·まとめ·追記). 완주 판정 때 컨설팅·Insight for Retail 수익원은 도메인이 없다 — 사이트맵 전 제목은 `ab_titles.txt`(2025~2026, 114편, Platform·Retail 글 0). 대기 0/3 — ABEJA 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
 
 
 

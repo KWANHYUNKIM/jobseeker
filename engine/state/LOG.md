@@ -1544,3 +1544,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Nature V2H — 완주
 
 - V2H 개발 일기 전문으로 `remo-e-v2h-echonet-emulator`(결정 7 — 실기 찾아가기·Rust 에뮬레이터·최소 UI·테스트 먼저·플러거블·사양화 테스트·접속 UI). 도메인 3 모두 기능 · 수익원 3 연결 → done, QUEUE 완료로.
+
+## 2026-09-26 ABEJA 회사 프로파일
+
+- 대기 맨 위. 코퍼레이트 페이지 + 기술 글 둘(NEDO 의료 LLM JLAC11 매핑 · GENIAC 증류 pipeline parallel)로 도메인 둘. 블로그 2025~2026 114편에 Platform·Retail 글 0 — 제품 운용 글이 드물다는 한계를 business_model 에 적음. category '기타'.

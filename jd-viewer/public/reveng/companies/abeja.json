@@ -1,0 +1,163 @@
+{
+  "slug": "abeja",
+  "name": "ABEJA",
+  "name_en": "ABEJA",
+  "country": "JP",
+  "category": "기타",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "abejainc.com",
+  "one_liner": "엔터프라이즈 AI 플랫폼 ABEJA — 국책 사업으로 자체 LLM 을 만들며 파이프라인 병렬 증류를 직접 구현하고, 병원마다 제각각인 검사 마스터를 표준 코드 JLAC11 에 잇는 의료 LLM 유스케이스를 검증한다",
+  "business_model": "**엔터프라이즈 플랫폼 사업**이 중심이다 — ABEJA Platform 을 기반으로 고객 기업의 기간 업무 프로세스를 바꾸고 운용까지 동반한다. 그 밖에 자체 LLM(**ABEJA LLM Series**), AI 거버넌스 컨설팅, DX 인재 육성, 점포 해석(**Insight for Retail**). 경제산업성·NEDO 의 **GENIAC**(생성 AI 개발력 강화)와 NEDO 의료 특화 LLM 실증 같은 **국책 프로젝트**에도 참여한다. 과금 방식·매출 비중은 1차 자료로 확인하지 못했다.\n\n기술 블로그는 LLM 연구·실험 글이 많고 **자사 제품의 운용 결정** 글은 드물다 — 이 파일은 그 한계 안에서 쓴다(이 사이트의 해석).",
+  "products": [
+    "ABEJA Platform",
+    "ABEJA LLM Series(ABEJA Qwen2.5 · QwQ32b-Reasoning 등)",
+    "AI 거버넌스 컨설테이션",
+    "DX 인재 육성 지원",
+    "ABEJA Insight for Retail"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다(도쿄증권거래소 상장 — IR 에서 확인 가능할 것)",
+  "revenue_streams": [
+    {
+      "name": "엔터프라이즈 플랫폼(ABEJA Platform)",
+      "how": "고객 기업의 기간 업무 프로세스 변혁과 운용을 ABEJA Platform 을 기반으로 동반한다.",
+      "weight": "주력(비중 확인 못 함)",
+      "domains": [
+        "병원마다 다른 검사 이름을 표준 코드에 잇는다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社ABEJA｜ゆたかな世界を、実装する",
+          "url": "https://www.abejainc.com/",
+          "publisher": "株式会社ABEJA",
+          "date": "2026-09-26",
+          "summary": "'풍요로운 세계를 구현한다'. **엔터프라이즈 플랫폼 사업** — **ABEJA Platform**(DX 실행에 필요한 프로세스를 제공하고 계속적·안정적으로 운용하는 소프트웨어 군)을 기반으로 고객 기업의 기간 업무 프로세스를 바꾸고 수익 성장에 동반. **ABEJA LLM Series**, AI 거버넌스 컨설테이션, DX 인재 육성 지원, **ABEJA Insight for Retail**(고객 행동 데이터 취득·분석 기반 점포 해석)."
+        }
+      ]
+    },
+    {
+      "name": "ABEJA LLM Series",
+      "how": "자체 개발 LLM. GENIAC 채택 과제로 모델을 만들어 공개한다.",
+      "weight": "공개 없음",
+      "domains": [
+        "큰 모델의 지식을 작은 모델로 증류한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社ABEJA｜ゆたかな世界を、実装する",
+          "url": "https://www.abejainc.com/",
+          "publisher": "株式会社ABEJA",
+          "date": "2026-09-26",
+          "summary": "'풍요로운 세계를 구현한다'. **엔터프라이즈 플랫폼 사업** — **ABEJA Platform**(DX 실행에 필요한 프로세스를 제공하고 계속적·안정적으로 운용하는 소프트웨어 군)을 기반으로 고객 기업의 기간 업무 프로세스를 바꾸고 수익 성장에 동반. **ABEJA LLM Series**, AI 거버넌스 컨설테이션, DX 인재 육성 지원, **ABEJA Insight for Retail**(고객 행동 데이터 취득·분석 기반 점포 해석)."
+        },
+        {
+          "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+          "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+          "publisher": "ABEJA Tech Blog",
+          "date": "2025-05-19",
+          "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작)."
+        }
+      ]
+    },
+    {
+      "name": "컨설팅 · 인재 육성 · Insight for Retail",
+      "how": "AI 거버넌스 컨설팅, DX 인재 육성, 점포 해석.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社ABEJA｜ゆたかな世界を、実装する",
+          "url": "https://www.abejainc.com/",
+          "publisher": "株式会社ABEJA",
+          "date": "2026-09-26",
+          "summary": "'풍요로운 세계를 구현한다'. **엔터프라이즈 플랫폼 사업** — **ABEJA Platform**(DX 실행에 필요한 프로세스를 제공하고 계속적·안정적으로 운용하는 소프트웨어 군)을 기반으로 고객 기업의 기간 업무 프로세스를 바꾸고 수익 성장에 동반. **ABEJA LLM Series**, AI 거버넌스 컨설테이션, DX 인재 육성 지원, **ABEJA Insight for Retail**(고객 행동 데이터 취득·분석 기반 점포 해석)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "모델을 만들고, 현장 코드에 잇는다",
+    "question": "AI 플랫폼 회사는 LLM 을 어떻게 만들고 어디에 쓰나?",
+    "code": "flowchart LR\n  T[\"교사 모델(대형)\"] -->|최종층 soft target| S[\"학생 모델\\nABEJA Qwen2.5-7B\"]\n  PP[\"자체 구현\\npipeline parallel 증류\"] --> S\n  H[\"원내 검사 마스터\\n검사 명칭 · 시약 · 장치\"] --> APP[\"매핑 앱\\n검사 명칭 선택 먼저\"] --> J[\"JLAC11 코드\"]",
+    "_note": "위는 GENIAC 에서 소형 LLM 을 증류하는 일, 아래는 NEDO 의료 LLM 실증의 검사 코드 매핑이다. 의료 매핑을 엔터프라이즈 플랫폼 수익원에 이은 것은 이 사이트의 해석(국책 실증 과제라 매출과의 관계는 글에 없다). 컨설팅·Insight for Retail 쪽 기술 글은 아직 못 찾았다."
+  },
+  "domains": [
+    {
+      "name": "병원마다 다른 검사 이름을 표준 코드에 잇는다",
+      "why": "병원마다 원내 검사 마스터(검사 명칭·시약명·장치명)가 제각각이라 표준 코드 **JLAC11** 로 잇기 어렵다. 시약명과 검사 명칭이 서로 다른 시스템에 있고 둘을 잇는 정보가 없는 경우도 있다. ABEJA 는 NEDO 의료 특화 LLM 실증에서 이 유스케이스를 맡았다.",
+      "tech": [
+        {
+          "tech": "의료 특화 LLM 을 쓴 JLAC11 매핑 애플리케이션 — 검사 명칭 선택을 먼저 하는 처리 흐름",
+          "solves": "병원 고유의 검사 표기를 표준 코드 후보로 좁혀 사람이 고르게 한다.",
+          "limits": "국책 **실증** 단계다 — 운용 규모·정확도 수치는 기능 사이클에서 본다. 시약·검사 연결이 없는 병원 데이터에서는 좁히기가 어렵다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "院内検査マスターをJLAC11へマッピング — NEDO医療LLMプロジェクトでのユースケース検証",
+              "url": "https://tech-blog.abeja.asia/entry/medical-llm-jlac11-mapping-202608",
+              "publisher": "ABEJA Tech Blog",
+              "date": "2026-08",
+              "summary": "사쿠라 인터넷 등 10개 기관과 함께 NEDO 의 '일본어판 의료 특화형 LLM 사회 구현을 위한 안전성 검증·실증' 사업에 참여 — ABEJA 는 학습 데이터 조달·유스케이스 구체화·애플리케이션 개발을 맡았다. 유스케이스: 병원마다 제각각인 **원내 검사 마스터**(검사 명칭·시약명·장치명)를 표준 코드 **JLAC11** 로 매핑. 시약명과 검사 명칭이 다른 시스템에 있고 연결이 없는 경우도 있다. 채택한 처리 흐름을 그림으로 두고, 정확도 검증은 시약·기기 정보를 기점으로 좁히는 흐름이었지만 **실제 앱에서는 검사 명칭 선택을 먼저** 하는 이유 둘을 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "큰 모델의 지식을 작은 모델로 증류한다",
+      "why": "GENIAC 2기에서 소형 LLM(ABEJA Qwen2.5-7B)을 만들려면 대형 교사 모델의 지식을 증류해야 했다. 그런데 2025년 2월 시점 NeMo 의 증류 구현은 **pipeline parallel 을 지원하지 않아** 대규모 모델에 쓸 수 없었다.",
+      "tech": [
+        {
+          "tech": "NeMo · Megatron-Core 위 자체 증류 구현 — 최종층 soft target(LogitsKLLoss) + pipeline parallel 대응",
+          "solves": "교사·학생 베이스가 다른 대규모 모델에서도 증류를 돌린다.",
+          "limits": "Megatron-Core 의 pipeline 처리와 교사 중간층 캐시가 **global batch 단위로 어긋나** 구현이 어렵다. 본가(NeMo)도 비슷한 시기에 대응을 시작해 자체 구현의 수명이 짧을 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+              "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+              "publisher": "ABEJA Tech Blog",
+              "date": "2025-05-19",
+              "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 방식·매출 비중을 1차 자료로 확인하지 못했다.",
+    "ABEJA Platform·Insight for Retail·컨설팅의 기술 글은 아직 못 찾았다 — 블로그가 LLM 연구 중심이다.",
+    "의료 매핑을 엔터프라이즈 플랫폼 수익원에 이은 것은 inferred.",
+    "Reasoning 모델 공개(`geniac2-qwen25-32b-reasoning-v1.0`)·μP 하이퍼파라미터(`mup-qwen2_5-202505`)·Agentic RL(`geniac3-agentic-rl-process`)·Cloud Composer Redis OOM 대응(`managed-airflow-recovery-202608`)이 있다."
+  ],
+  "sources": [
+    {
+      "title": "株式会社ABEJA｜ゆたかな世界を、実装する",
+      "url": "https://www.abejainc.com/",
+      "publisher": "株式会社ABEJA",
+      "date": "2026-09-26",
+      "summary": "'풍요로운 세계를 구현한다'. **엔터프라이즈 플랫폼 사업** — **ABEJA Platform**(DX 실행에 필요한 프로세스를 제공하고 계속적·안정적으로 운용하는 소프트웨어 군)을 기반으로 고객 기업의 기간 업무 프로세스를 바꾸고 수익 성장에 동반. **ABEJA LLM Series**, AI 거버넌스 컨설테이션, DX 인재 육성 지원, **ABEJA Insight for Retail**(고객 행동 데이터 취득·분석 기반 점포 해석)."
+    },
+    {
+      "title": "院内検査マスターをJLAC11へマッピング — NEDO医療LLMプロジェクトでのユースケース検証",
+      "url": "https://tech-blog.abeja.asia/entry/medical-llm-jlac11-mapping-202608",
+      "publisher": "ABEJA Tech Blog",
+      "date": "2026-08",
+      "summary": "사쿠라 인터넷 등 10개 기관과 함께 NEDO 의 '일본어판 의료 특화형 LLM 사회 구현을 위한 안전성 검증·실증' 사업에 참여 — ABEJA 는 학습 데이터 조달·유스케이스 구체화·애플리케이션 개발을 맡았다. 유스케이스: 병원마다 제각각인 **원내 검사 마스터**(검사 명칭·시약명·장치명)를 표준 코드 **JLAC11** 로 매핑. 시약명과 검사 명칭이 다른 시스템에 있고 연결이 없는 경우도 있다. 채택한 처리 흐름을 그림으로 두고, 정확도 검증은 시약·기기 정보를 기점으로 좁히는 흐름이었지만 **실제 앱에서는 검사 명칭 선택을 먼저** 하는 이유 둘을 적는다."
+    },
+    {
+      "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+      "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+      "publisher": "ABEJA Tech Blog",
+      "date": "2025-05-19",
+      "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작)."
+    }
+  ]
+}

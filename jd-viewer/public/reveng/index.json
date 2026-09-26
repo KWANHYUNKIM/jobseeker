@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "abeja",
+      "name": "ABEJA",
+      "name_en": "ABEJA",
+      "country": "JP",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "엔터프라이즈 AI 플랫폼 ABEJA — 국책 사업으로 자체 LLM 을 만들며 파이프라인 병렬 증류를 직접 구현하고, 병원마다 제각각인 검사 마스터를 표준 코드 JLAC11 에 잇는 의료 LLM 유스케이스를 검증한다",
+      "updated_at": "2026-09-26",
+      "domain": "abejainc.com"
+    },
+    {
       "slug": "nature",
       "name": "Nature",
       "name_en": "Nature",
@@ -3193,7 +3205,9 @@
     "서비스를 넘나들고 첫날부터 추천한다",
     "자물쇠를 기존 디바이스 모델에 끼워 넣는다",
     "동작을 안 바꾸는 PR 은 AI 가 증명하고 스스로 머지한다",
-    "집의 전기를 기기 규격으로 잇고 요금을 계산한다"
+    "집의 전기를 기기 규격으로 잇고 요금을 계산한다",
+    "병원마다 다른 검사 이름을 표준 코드에 잇는다",
+    "큰 모델의 지식을 작은 모델로 증류한다"
   ],
   "countries": {
     "KR": "한국",
