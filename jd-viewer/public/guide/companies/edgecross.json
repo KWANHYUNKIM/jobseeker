@@ -5,7 +5,7 @@
   "aliases": [
     "엣지크로스"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "edgecross.ai",
   "one_liner": "공장 설비에 붙는 산업용 AIoT 단말 MODLINK 로 기계 데이터를 모아 예지 보전·Physical AI 로 넓히는 스마트팩토리 회사",
@@ -469,6 +469,110 @@
             {
               "title": "Introduction | Kubeflow",
               "url": "https://www.kubeflow.org/docs/started/introduction/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55030332",
+      "title": "AI SW Engineer (Agentic AI)",
+      "site": "jumpit",
+      "verdict": "경력 3~10년, 서울 금천구. 회사 소개의 'AI Agentic Developer' 자리로, 기계가 산업의 언어를 배우고 스스로 판단해 사람과 협력하는 '자율 지능형 에이전트' 를 만든다고 적는다 — 산업용 LLM 기반 AI Agent, Multi-AI Agent Orchestration 기반 기계 지능화(AX) 플랫폼, RAG 파이프라인, Prompt Engineering·멀티모달 데이터 처리, **기계와 현장이 실시간으로 상호작용하는 Agentic AI 아키텍처**. 필수는 컴퓨터·전자·AI 학사 또는 준하는 경력, AI Agent 또는 AI 모델 개발 3년, 산업 현장·IoT 에 AI 를 잇는 일에 대한 열정, 새 분야를 두려워하지 않음, 'Researcher가 아닌 Engineer 관점'. 우대는 AI 석·박사, LLM Agent 서비스 운영, MLOps/LLMOps, RAG·Vector DB·Prompt Engineering, **예지 보전·시계열·신호 처리 지식**, 산업 AI·OT/IT 융합·Smart Factory 프로젝트. 같은 회사 Algorithmic AI 공고(55030576)가 만드는 이상 탐지 모델이 이 에이전트의 도구가 될 수 있는 구조로 읽힌다(공고에 명시는 없다).",
+      "fit": {
+        "must_have": [
+          "AI Agent 또는 AI 모델 개발 3년 이상",
+          "컴퓨터·전자·AI 학사 또는 준하는 경력"
+        ],
+        "can_learn": [
+          "LLM Agent 서비스 운영",
+          "MLOps/LLMOps",
+          "RAG·Vector DB",
+          "예지 보전·시계열·신호 처리",
+          "OT/IT 융합·Smart Factory"
+        ]
+      },
+      "study": [
+        {
+          "topic": "설비 데이터를 도구로 쓰는 Multi-Agent 오케스트레이션",
+          "from": "task",
+          "quote": "• Multi-AI Agent Orchestration 기반의 기계 지능화(AX, AI Transformation) 플랫폼 개발",
+          "priority": "core",
+          "why": "주요업무이고 앞 줄이 산업용 LLM 기반 AI Agent 시스템 설계·개발이다. 회사 데이터는 MODLINK 가 모으는 설비 시계열이다(회사 브리핑).",
+          "gap_check": "'3호기 진동이 왜 올랐나?' 라는 질문에 답하려면 에이전트가 어떤 도구(최근 센서 조회·이상 탐지 결과 조회·정비 이력 검색·매뉴얼 검색)를 어떤 순서로 부르고, 역할을 에이전트 여럿으로 나누면(데이터 조회·진단·보고) 서로 무엇을 넘겨야 하는가?",
+          "drill": "가짜 센서 DB(설비 3대, 1주일치)와 정비 이력 CSV 를 도구로 붙인 LangGraph 에이전트를 만들어 위 질문에 답하게 하고, 단일 에이전트와 '조회·진단' 두 에이전트 구성의 도구 호출 로그를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Building Effective AI Agents",
+              "url": "https://www.anthropic.com/engineering/building-effective-agents",
+              "kind": "docs"
+            },
+            {
+              "title": "LangGraph overview",
+              "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Multi-agent",
+              "url": "https://docs.langchain.com/oss/python/langchain/multi-agent",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "설비 매뉴얼·정비 문서 RAG",
+          "from": "task",
+          "quote": "• RAG(Retrieval-Augmented Generation) 파이프라인 설계 및 최적화",
+          "priority": "core",
+          "why": "주요업무이고 우대에 RAG·Vector DB·Prompt Engineering 이 있다.",
+          "gap_check": "설비 매뉴얼에는 표·도면·경고 문구가 섞여 있는데 청크를 어떻게 나눠야 '알람 코드 E-203 조치 방법' 같은 질문이 정확히 걸리고, 모델 번호가 비슷한 설비 두 종의 매뉴얼이 섞여 틀린 답이 나오지 않게 하려면 무엇(메타데이터 필터)을 거는가?",
+          "drill": "공개 산업 설비 매뉴얼 PDF 두 개를 청크 크기 두 가지로 넣은 벡터 검색을 만들고, 알람 코드·정비 절차 질문 20개로 정답 청크 적중률을 비교한 뒤 설비 모델 필터를 붙여 다시 잰다. RAG 평가는 Ragas 로 한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+              "url": "https://arxiv.org/abs/2005.11401",
+              "kind": "paper"
+            },
+            {
+              "title": "Ragas",
+              "url": "https://docs.ragas.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "기계와 상호작용하는 에이전트의 안전장치",
+          "from": "task",
+          "quote": "• 기계와 현장이 실시간으로 상호작용할 수 있는 Agentic AI 아키텍처 구현",
+          "priority": "high",
+          "why": "주요업무다. 회사가 기계에 '자율 지능과 협력 지능을 부여하는 Physical AI' 를 비전으로 적는다(회사 브리핑). 실제 기계에 영향을 주는 행동은 되돌리기 어렵다.",
+          "gap_check": "에이전트가 설비 설정 변경이나 정지 같은 행동을 제안할 때 무엇은 자동 실행하고 무엇은 반드시 현장 담당자 승인을 받게 하며, 에이전트 도구가 실제 제어 명령을 보낼 수 없도록(읽기 전용) 권한을 어디서 막는가?",
+          "drill": "위 에이전트에 '설비 점검 요청 생성' 도구를 추가하고 호출 직전 interrupt 로 사람 승인을 받게 한 뒤, 제어 명령 도구는 아예 노출하지 않은 구성과 승인 로그 테이블을 설계서 한 장으로 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Human-in-the-loop",
+              "url": "https://docs.langchain.com/oss/python/langchain/human-in-the-loop",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "도구 표준화 — MCP 로 설비 데이터 노출",
+          "from": "task",
+          "quote": "• 산업용 LLM 기반 AI Agent 시스템 설계 및 개발",
+          "priority": "nice",
+          "why": "주요업무이고, AX 플랫폼으로 여러 에이전트가 같은 설비 데이터 도구를 써야 한다(주요업무의 기계 지능화 플랫폼).",
+          "gap_check": "센서 조회·정비 이력·이상 탐지 결과를 에이전트마다 따로 연동하지 않고 한 번 감싸 여러 에이전트가 쓰게 하려면 도구 스키마를 어떻게 설계하고, 조회 범위(기간·설비 수)를 제한하지 않으면 무엇이 터지는가?",
+          "drill": "가짜 센서 DB 를 MCP 서버로 감싸 '설비 목록', '기간별 센서 조회(최대 7일)', '최근 이상 이벤트' 세 도구를 노출하고, 에이전트가 범위를 넘는 요청을 할 때 오류 메시지로 스스로 다시 요청하는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "What is the Model Context Protocol (MCP)?",
+              "url": "https://modelcontextprotocol.io/introduction",
               "kind": "docs"
             }
           ]
