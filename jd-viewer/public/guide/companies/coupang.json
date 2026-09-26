@@ -13362,6 +13362,106 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55005782&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e4d75dec-0ba0-4530-badf-b4bb922fd60f",
+      "title": "[쿠팡] 카탈로그 품질 검수 및 운영 프로세스 개선 (2년 이상)",
+      "site": "saramin",
+      "verdict": "서울 송파구, 정규직(수습 12주), 경력 2년 이상. 개발 직무가 아니라 카탈로그(상품명·메인 이미지·카테고리·브랜드·사이즈·색상) 품질 검수 운영 직무다 — 검수 프로세스 운영, 에러의 근본 원인 분석과 재발 방지, SOP 개선, 검수·라벨링 사내 툴 기능 제안을 하며 PM·엔지니어·데이터 사이언티스트 등 글로벌 이해관계자와 일한다. 공고 FAQ 는 엑셀 기본 함수 수준이면 충분하고 SQL 은 필수가 아니라고 적는다. 검수 대상은 외부 판매자가 직접 등록하는 3P 카탈로그다(FAQ).",
+      "fit": {
+        "must_have": [
+          "데이터 품질·카탈로그 관리·운영 프로세스 개선 2년 이상",
+          "데이터 분석으로 품질 저하 원인 추적·해결 적용",
+          "명확한 커뮤니케이션·이해관계자 관리"
+        ],
+        "can_learn": [
+          "AI 학습 데이터 가이드라인·LLM/데이터 QA(우대)",
+          "RCA 문서화·데이터 기반 PM(우대)",
+          "SQL 기초(FAQ: 필수 아님)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "근본 원인 분석(RCA)과 재발 방지 문서",
+          "from": "task",
+          "quote": "- 검수 과정에서 발생하는 에러 및 운영 결함의 근본 원인(Root Cause) 분석 및 재발 방지 대책 수립",
+          "priority": "core",
+          "why": "검수 과정의 에러·운영 결함의 근본 원인 분석과 재발 방지 대책 수립이 주요업무이고, 우대사항에 RCA 문서화가 있다.",
+          "gap_check": "'사이즈 정보 오류가 이번 달 두 배로 늘었다'는 현상에서 셀러 입력·등록 양식·검수 기준·툴 중 어디가 원인인지 어떤 순서로 좁히는가?",
+          "drill": "가상의 오류 로그 200건을 유형별로 분류해 파레토 표를 만들고, 상위 유형 하나에 5 Whys 와 대책·담당·확인 지표를 적은 RCA 문서 한 장을 쓴다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "검수 품질 지표와 엑셀 현황 파악",
+          "from": "qualification",
+          "quote": "- 데이터 분석 결과를 기반으로 품질 저하 원인을 추적하고, 이를 해결하기 위한 인사이트 도출 및 실제 적용 경험이 있으신 분",
+          "priority": "core",
+          "why": "데이터 분석으로 품질 저하 원인을 추적하는 경험이 자격요건이고, FAQ 가 VLOOKUP·COUNTIF·SUMIF 수준의 엑셀을 기준으로 든다.",
+          "gap_check": "검수 품질을 무엇(오류율·재작업률·검수 소요 시간·검수자 간 일치율)으로 재고, 카테고리별로 나눠 보면 무엇이 달라지는가?",
+          "drill": "가상 검수 결과 시트에서 COUNTIF·SUMIF 로 카테고리별 오류율과 검수자별 일치율을 계산하는 현황판을 만든다.",
+          "hours": 2,
+          "resources": [
+            {
+              "title": "Microsoft Support — COUNTIF function",
+              "url": "https://support.microsoft.com/en-us/office/countif-function-e0de10c6-f885-4e71-abb4-1f464816df34",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SOP 와 라벨링 가이드라인 작성",
+          "from": "preference",
+          "quote": "- AI 학습 데이터 가이드라인 제정, LLM 또는 데이터 QA 관련 프로젝트 경험이 있으신 분",
+          "priority": "high",
+          "why": "SOP 개선·최적화가 주요업무이고, 우대사항에 AI 학습 데이터 가이드라인 제정·LLM 또는 데이터 QA 프로젝트 경험이 있다.",
+          "gap_check": "검수자마다 판정이 갈리는 항목(예: '메인 이미지 적합성')을 가이드라인에서 어떻게 정의하고, 경계 사례는 어떻게 싣는가?",
+          "drill": "상품 메인 이미지 검수 기준 한 장(허용·불허 예시, 경계 사례, 판정 순서)을 쓰고, 두 사람이 같은 20건을 판정해 일치율을 재 본다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "대량 데이터용 SQL 기초",
+          "from": "task",
+          "quote": "- 검수 및 라벨링 효율성을 극대화하기 위한 사내 운영 툴 기능 제안 및 개선",
+          "priority": "nice",
+          "why": "검수·라벨링 효율을 높이는 사내 툴 기능 제안이 주요업무다. FAQ 는 SQL 이 필수는 아니지만 SELECT·WHERE·GROUP BY 를 쓰면 대량 데이터 업무 효율이 크게 오른다고 적는다.",
+          "gap_check": "'카테고리별로 반려율이 가장 높은 셀러 상위 10명'을 SQL 한 문장으로 쓸 수 있는가?",
+          "drill": "SQLBolt 기초 레슨을 마치고, 앞 검수 데이터로 카테고리별 오류율·상위 셀러 쿼리를 작성한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "SQLBolt — interactive SQL lessons",
+              "url": "https://sqlbolt.com/",
+              "kind": "course"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "오류 유형 분류표와 RCA 사례 한 편",
+          "why": "주요업무의 핵심이 근본 원인 분석과 재발 방지다. 실제 쇼핑몰 상품 페이지에서 관찰한 카탈로그 오류를 유형화하고 원인·대책을 적은 문서는 이 직무의 사고방식을 보여 준다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 전화면접 - 대면(화상)면접 – 최종 합격 (공고 원문. 직무별로 다를 수 있다고 적혀 있다)",
+        "expect": [
+          "품질 저하 원인 추적 사례",
+          "RCA 와 재발 방지",
+          "SOP·가이드라인 작성",
+          "검수 품질 지표",
+          "글로벌 이해관계자 소통"
+        ],
+        "sources": [
+          {
+            "title": "[쿠팡] 카탈로그 품질 검수 및 운영 프로세스 개선 (2년 이상)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55005782&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e4d75dec-0ba0-4530-badf-b4bb922fd60f",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [

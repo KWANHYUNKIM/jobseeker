@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **128건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **129건**.
+직전 회차: ✅ `[쿠팡] 카탈로그 품질 검수 및 운영 프로세스 개선 (2년 이상)`(사람인 55005782) 4항목 — 비개발(3P 카탈로그 검수 운영). 전형 절차 원문에 있음. ASQ 자료 403 이라 뺌.
 직전 회차: ✅ `[쿠팡] 이츠 데이터 분석 어시스턴트 (계약직/신입가능)`(사람인 54939508) 3항목 — 비개발(데이터 운영 보조, 엑셀). 근무지 칸 '216 만원' 정체 불명(open_questions).
 직전 회차: ✅ `Staff, AI Security Architect`(greenhouse 8224844, 6년↑) 5항목 — LLM 위협·AI 파이프라인 위협 모델·AI RMF 지표·차등 프라이버시·Zero Trust. 한국어 요약 한 줄 글머리표 깨짐(원문 그대로).
 직전 회차: ✅ `Senior Staff, Data Scientist (Incrementality and Attribution)`(8029811, 석·박사+10년↑) 5항목 — MMM·지역 실험·인과추론(DML)·MTA·예산 배분. 크롤러가 본문 전체를 주요업무 칸에 넣어 자격 칸이 빔. GeoLift 저장소 404 라 뺌.
@@ -34,7 +35,7 @@
 ⚠️ 그사이 마감·삭제: `Staff, Back-end (Traffic Management)`(8104792, closed), `Staff, ML Engineer - Coupang Play`(7927865, 데이터에 없음).
 
 **남은 서울 목록은 다 썼다**(8222455 는 이미 dup 로 있음). 이제 `--gaps` 목록 순서대로 간다.
-⚠️ 다음 회차: `--gaps` 첫 줄 — 사람인 `카탈로그 품질 검수 및 운영 프로세스 개선`(55005782) 예상. 건너뛴 두 건(Pen Tester·Mobile Security)은 사람 판단 대기. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
+⚠️ 다음 회차: `--gaps` 첫 줄 — 사람인 `고객 경험을 혁신할 CS 전문가 공개채용`(55110254) 예상. 건너뛴 두 건(Pen Tester·Mobile Security)은 사람 판단 대기. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
