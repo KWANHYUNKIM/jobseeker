@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**ENECHANGE — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '청구 금액 재작성의 합부를 기존 시스템의 출력이 가른다' 를 검산 하네스 글(`entry/2026/09/13/003945`, scratchpad `en_kenzan.txt` — '差分が出たら、何を疑うか'·'機械が弁別しない選択は、人に渡す' 후반 미독). 그 뒤 Step Functions(`2026/07/12/132216`, `en_sfn.txt`). 완주 판정 때 비교·전환·EV 수익원은 도메인이 없다 — 사이트맵 전 제목(병렬 grep)으로 두 번. 대기 1/3(드왕고 교육) — ENECHANGE 뒤 후보 조사. 머니포워드·라쿠스(hold)·LayerX 는 in_progress.**
+**ENECHANGE — 확장 1(2026-09-26): 검산 하네스 도메인에 `golden-master-exact-match-harness`(결정 8). 다음은 확장: '워크플로 테스트를 배선과 내용으로 가른다' 를 Step Functions 글(`entry/2026/07/12/132216`, scratchpad `en_sfn.txt` — mock 판단표·Lambda invoke 출력 검증·TestState API 제약). 완주 판정 때 비교·전환·EV 수익원은 도메인이 없다 — 사이트맵 전 제목(병렬 grep, `awk 'length<400'` 로 긴 URL 거르기)으로 두 번. 대기 1/3(드왕고 교육) — ENECHANGE 뒤 후보 조사. 머니포워드·라쿠스(hold)·LayerX 는 in_progress.**
 
 
 
