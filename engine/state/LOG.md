@@ -1812,3 +1812,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 PIVOT 미션 Pull 형 재설계
 
 - 결정 6 — Push 대신 Pull·정기 잡·통째 재집계+멱등 3층·미션 정의 코드(DB 대신)·MetricResolver·mission/mile 경계. GW 한정 미션이 클라이언트 수정 없이 나간 실례.
+
+## 2026-09-26 PIVOT 시청 로그 큐잉 — 완주
+
+- 결정 6 — 10초 세그먼트·OS 별 시크 검출+패리티·로컬 DB 먼저+30초 50건·event_id 중복 제거·DispatchSourceTimer·재시도는 저장소 층 타이머에. 수익원 둘(inferred) 다 기능 → done.
