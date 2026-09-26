@@ -1552,6 +1552,138 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385520",
+      "title": "[Tech] Service Security Engineer - Security Analyst (보안 위협 분석/ 글로벌 사이버 위협 대응 체계 고도화)",
+      "site": "wanted",
+      "verdict": "경력 3~8년(서울 강남, 해외 권역 출장 가능자). 현대차그룹 사이버보안을 맡는 Blue팀(CERT·심화분석 파트)에서 해외 법인의 침해 의심 이벤트를 EDR/XDR·SIEM 으로 분석·대응하고, 글로벌 보안 대응 운영 프로세스를 안정화할 사람. 자격요건의 기술 문턱은 '기본적인 이해와 역량' 으로 낮은 편이고, 대신 영어 커뮤니케이션과 북미·유럽·인도 등 출장 가능이 자격요건이다. MITRE ATT&CK, SentinelOne·CrowdStrike·Chronicle 같은 도구 경험은 우대다. 전형의 직무역량테스트는 '과제' 다.",
+      "fit": {
+        "must_have": [
+          "정보보호 또는 IT 전공(또는 이에 준하는 지식)",
+          "보안 위협 분석·문제 해결 기본 역량",
+          "글로벌 협업용 기본 영어",
+          "해외 주요 권역(북미, 유럽, 인도 등) 출장 가능"
+        ],
+        "can_learn": [
+          "MITRE ATT&CK 기반 분석",
+          "SentinelOne·CrowdStrike·Chronicle 등 EDR/XDR",
+          "SIEM·EDR·NDR 실탐지",
+          "위협 분석 보고서 작성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "EDR/XDR·SIEM 으로 침해 의심 이벤트 분석하기",
+          "from": "task",
+          "quote": "• EDR/XDR, SIEM 기반 위협 탐지 및 침해사고 대응 수행",
+          "priority": "core",
+          "why": "주요업무의 기술 중심 줄이다. 우대사항에 SentinelOne, CrowdStrike, Chronicle 과 'SIEM, EDR, NDR 기반 실제 위협 탐지 및 분석 경험' 이 있다. 팀 리더는 '단순 모니터링이 아닌, 위협을 직접 분석' 한다고 적는다.",
+          "gap_check": "EDR 경보 하나(예: 오피스 문서가 PowerShell 을 띄움)를 받았을 때 프로세스 트리·네트워크 연결·파일 생성 중 무엇부터 보고, 오탐인지 판단한 근거를 어떻게 남기며, SIEM 에서 같은 호스트의 전후 로그를 어떤 질의로 묶는가?",
+          "drill": "실습용 윈도우 VM 에 Sysmon 을 깔고 로그를 무료 SIEM(예: Elastic) 으로 보낸 뒤, Atomic Red Team 테스트 몇 개를 실행해 생긴 이벤트로 탐지 규칙을 쓰고 경보 하나를 처음부터 끝까지 분석한 기록을 남긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Elastic Security — Documentation",
+              "url": "https://www.elastic.co/docs/solutions/security",
+              "kind": "docs"
+            },
+            {
+              "title": "Atomic Red Team (GitHub)",
+              "url": "https://github.com/redcanaryco/atomic-red-team",
+              "kind": "repo"
+            },
+            {
+              "title": "Google SecOps (Chronicle) — YARA-L 2.0 overview",
+              "url": "https://cloud.google.com/chronicle/docs/detection/yara-l-2-0-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MITRE ATT&CK 으로 분석을 말하기",
+          "from": "preference",
+          "quote": "• MITRE ATT&CK 기반 위협 분석 경험",
+          "priority": "high",
+          "why": "우대사항이다. 해외 법인·유관 조직에 결과를 보고해야 하므로 공통 언어로 쓰는 틀이 필요하다(추론).",
+          "gap_check": "위 실습 경보들을 전술(Tactic)·기법(Technique) ID 로 분류하고, 탐지하지 못한 기법이 무엇인지 커버리지 표로 말할 수 있는가?",
+          "drill": "실행한 Atomic 테스트와 탐지 여부를 ATT&CK 기법 ID 별로 표로 만들고, 빈칸 두 개에 대한 탐지 규칙을 Sigma 로 추가한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "MITRE ATT&CK",
+              "url": "https://attack.mitre.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "MITRE ATT&CK — Getting Started",
+              "url": "https://attack.mitre.org/resources/getting-started/",
+              "kind": "docs"
+            },
+            {
+              "title": "Sigma (GitHub)",
+              "url": "https://github.com/SigmaHQ/sigma",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "침해사고 대응 절차와 운영 프로세스",
+          "from": "task",
+          "quote": "• 글로벌 보안 대응 체계 관점에서 운영 프로세스 개선 및 체계 안정화",
+          "priority": "high",
+          "why": "주요업무이고 팀 리더가 이번 포지션을 '글로벌 지역 보안 대응 체계를 안정화하고 고도화하는 역할' 이라고 적는다. 우대에 '글로벌 또는 다수 조직 대상 보안 대응 체계 구축 및 개선 경험' 이 있다.",
+          "gap_check": "시간대가 다른 해외 법인에서 사고가 났을 때 탐지 → 격리 결정 → 현지 조치 → 보고의 책임을 누가 지게 나누고, 어느 단계의 지연을 먼저 줄이겠는가?",
+          "drill": "NIST SP 800-61 Rev.3 를 읽고 가상의 해외 법인 랜섬웨어 의심 사고에 대한 대응 절차서(역할·연락 경로·격리 기준·보고 양식)를 한 장으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "NIST SP 800-61 Rev. 3 — Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+              "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "영어로 쓰는 위협 분석 보고서",
+          "from": "task",
+          "quote": "• 위협 분석 결과 보고 및 해외 법인 및 유관 조직과의 커뮤니케이션",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 '글로벌 환경에서 협업 가능한 기본적인 영어 커뮤니케이션 능력' 이 있다. 우대에도 '보안 위협 분석 보고서 작성 및 커뮤니케이션 경험' 이 있다.",
+          "gap_check": "비전문가인 현지 법인 담당자에게 무엇이 일어났고, 지금 무엇을 해야 하며, 무엇은 아직 모르는지를 영어 반 쪽으로 쓸 수 있는가?",
+          "drill": "위 실습 경보 분석을 영어 보고서(요약·타임라인·영향·조치 요청·IoC)로 쓰고, 같은 내용을 3줄 경영진 요약으로 줄인다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Sysmon + SIEM + Atomic Red Team 홈랩 분석 기록(ATT&CK 커버리지 표 포함)",
+          "why": "자격요건이 '기본적인 이해' 수준이라, 우대 세 줄(ATT&CK·EDR/SIEM 실탐지·보고서)을 직접 해 본 기록이 차이를 만든다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "영어 사고 보고서 샘플",
+          "why": "해외 법인 대응이 이 자리의 핵심이고, 전형의 직무역량테스트가 '과제' 다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(과제) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "EDR 경보 분석 절차",
+          "ATT&CK 으로 분류한 사례",
+          "해외 조직과의 사고 대응 커뮤니케이션",
+          "대응 프로세스를 개선한 경험"
+        ],
+        "sources": [
+          {
+            "title": "[Tech] Service Security Engineer - Security Analyst (보안 위협 분석/ 글로벌 사이버 위협 대응 체계 고도화)",
+            "url": "https://www.wanted.co.kr/wd/385520",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
