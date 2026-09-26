@@ -188,5 +188,133 @@
     "캐치 '글로벌 사업 및 AX 전략 인턴(글로벌 AI 더빙)' 은 본문 칸이 비어 있다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/356357",
+      "title": "[ESTsecurity] Windows C++ 어플리케이션 개발자",
+      "site": "wanted",
+      "verdict": "경력 1-5년(원티드 표기; 자격요건 문장은 'Windows 환경에서 C++ 어플리케이션 개발 경력 5년 내외'). **이스트시큐리티 알약윈도우개발팀** 자리로, 윈도우용 알약 공개용/기업용 제품, 알약 내PC지키미, 윈도우 제품군을 관리하는 통합 에이전트를 개발한다. 필수는 Modern C++(C++11 이상), 멀티쓰레드·네트워크·파일 시스템 등 OS 내부 구조 이해. 우대는 윈도우 시스템 프로그래밍(드라이버, Hooking/Injection, 커널), 리버스 엔지니어링·악성코드 분석, Windows·Linux·macOS 멀티 플랫폼, 배포 관점의 Dependency 이해, C#·Python. 전형: 서류 심사 → 실무진 인터뷰 → 인성 검사 → 최종 인터뷰 → 처우 협의 → 최종 합격, 수시 채용이라 조기 마감될 수 있다. 같은 팀의 5~10년 공고(356356)가 따로 있다.",
+      "fit": {
+        "must_have": [
+          "Windows C++ 어플리케이션 개발 경력",
+          "Modern C++(C++11 이상)",
+          "멀티쓰레드·네트워크·파일 시스템 등 OS 내부 구조"
+        ],
+        "can_learn": [
+          "윈도우 드라이버·Hooking/Injection·커널",
+          "리버스 엔지니어링·악성코드 분석",
+          "멀티 플랫폼(Windows·Linux·macOS)",
+          "배포 관점의 Dependency",
+          "C#·Python"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Modern C++ 로 짜는 윈도우 클라이언트",
+          "from": "qualification",
+          "quote": "- Modern C++(C++11 이상) 문법 및 라이브러리 활용 능력",
+          "priority": "core",
+          "why": "필수 요건이고 주요업무 셋이 모두 윈도우용 알약 클라이언트 개발이다.",
+          "gap_check": "Win32 핸들(HANDLE)을 스마트 포인터나 RAII 래퍼로 감싸지 않으면 예외 경로에서 무엇이 새고, unique_ptr 에 CloseHandle 을 삭제자로 붙이는 코드는 어떻게 쓰는가?",
+          "drill": "CreateFile·CreateEvent 로 얻은 핸들을 RAII 래퍼로 감싼 작은 콘솔 도구를 C++17 로 만들고, 중간에 예외를 던져도 핸들 수가 늘지 않는지 작업 관리자의 핸들 열로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Welcome Back to C++ - Modern C++",
+              "url": "https://learn.microsoft.com/en-us/cpp/cpp/welcome-back-to-cpp-modern-cpp",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "윈도우 OS 내부 구조 — 스레드·파일·소켓",
+          "from": "qualification",
+          "quote": "- 멀티쓰레드, 네트워크, 파일 시스템 등 OS 내부 구조에 대한 이해",
+          "priority": "core",
+          "why": "필수 요건이다. 통합 에이전트는 제품군을 관리한다고 적혀 있어(주요업무) 상주하면서 파일·네트워크를 다룬다.",
+          "gap_check": "에이전트가 서버와 통신하는 스레드와 파일을 검사하는 스레드를 따로 둘 때, 둘이 같은 설정 객체를 읽고 쓰면 무엇으로 보호하고(critical section·SRW lock), 서비스 종료 요청이 왔을 때 두 스레드를 어떻게 멈추는가?",
+          "drill": "윈도우 서비스로 등록되는 에이전트 뼈대를 만든다 — 한 스레드는 Winsock 으로 서버에 하트비트를 보내고, 한 스레드는 폴더를 감시한다. sc stop 으로 멈췄을 때 두 스레드가 정리되는지 로그로 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Processes and Threads",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/processes-and-threads",
+              "kind": "docs"
+            },
+            {
+              "title": "Services",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/services/services",
+              "kind": "docs"
+            },
+            {
+              "title": "File Management (Local File Systems)",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/fileio/file-management",
+              "kind": "docs"
+            },
+            {
+              "title": "Windows Sockets 2",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-start-page-2",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "윈도우 드라이버·파일 시스템 필터",
+          "from": "preference",
+          "quote": "- 윈도우 시스템 프로그래밍(드라이버, Hooking/Injection, 커널 프로그래밍 등) 경험",
+          "priority": "high",
+          "why": "우대 첫 줄이다. 공고가 보안 제품(알약) 개발 자리라 사용자 모드 앱 너머의 커널 쪽 경험을 우대로 둔다.",
+          "gap_check": "백신이 파일 열기를 가로채 검사하려면 사용자 모드 훅과 파일 시스템 미니필터 중 무엇이 더 확실하고, 미니필터의 pre-operation 콜백에서 오래 걸리는 검사를 하면 무엇이 멈추는가?",
+          "drill": "Filter Manager 개념 문서를 읽고 WDK 샘플 미니필터를 테스트 서명 모드의 가상 머신에 올려 파일 열기 이벤트를 로그로 찍어 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Filter Manager Concepts",
+              "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/filter-manager-concepts",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "리버스 엔지니어링·악성코드 분석 기초",
+          "from": "preference",
+          "quote": "- 리버스 엔지니어링 및 악성코드 분석 경험",
+          "priority": "nice",
+          "why": "우대사항이다. 팀이 만드는 것이 백신 클라이언트다.",
+          "gap_check": "PE 파일의 임포트 테이블만 보고 이 실행 파일이 무엇을 할 수 있는지(파일·레지스트리·네트워크) 어느 정도 짐작할 수 있고, 패킹된 파일에서는 왜 그게 안 되는가?",
+          "drill": "직접 빌드한 작은 exe 를 Ghidra 로 열어 임포트 함수와 main 의 흐름을 소스와 대조하고, PE Format 문서로 헤더의 섹션 테이블을 손으로 읽어 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "PE Format",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format",
+              "kind": "docs"
+            },
+            {
+              "title": "NationalSecurityAgency/ghidra",
+              "url": "https://github.com/NationalSecurityAgency/ghidra",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "배포 관점의 Dependency — DLL 로딩",
+          "from": "preference",
+          "quote": "- 소프트웨어 개발 및 배포 관점에서 Dependency에 대한 이해",
+          "priority": "nice",
+          "why": "우대사항이다. 공개용·기업용 제품과 통합 에이전트를 사용자 PC 에 배포하는 팀이다(주요업무).",
+          "gap_check": "설치한 프로그램이 다른 PC 에서 'VCRUNTIME140.dll 이 없다' 로 뜨지 않게 하려면 무엇을 같이 배포하고, DLL 검색 순서 때문에 생기는 DLL 하이재킹은 어떻게 막는가?",
+          "drill": "동적 CRT 로 빌드한 exe 를 런타임이 없는 깨끗한 VM 에서 실행해 오류를 재현한 뒤, 정적 링크와 재배포 패키지 두 방법으로 고치고 DLL 검색 순서 문서와 대조한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Dynamic-link library search order",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
