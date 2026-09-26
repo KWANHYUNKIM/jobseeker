@@ -8817,6 +8817,130 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078331",
+      "title": "Senior DevOps Engineer (SPIR/OC)",
+      "site": "ats",
+      "verdict": "보안 운영 성격의 DevOps 자리다(제품 개발 아님). 정보 보안 5년 이상 또는 사이버보안 관심을 바탕으로 한 DevOps 5년 이상. 취약점 관리·데이터 스캐닝·IAM·보안 설계/코드 리뷰 같은 사내 보안·프라이버시 서비스를 SLO/SLI 기준으로 운영하고, 임직원 지원 요청을 해결하며, 대시보드·플레이북·자동화로 운영 품질을 올리는 사람. 우대에 영어·한국어·중국어가 있다.",
+      "fit": {
+        "must_have": [
+          "정보 보안 5년 또는 보안 관심 기반 DevOps 5년",
+          "보안 서비스(취약점 스캔·데이터 보안·IAM) 운영 지원",
+          "대용량 데이터·로그 분석",
+          "Bash·Python·PowerShell 자동화",
+          "기술 지원 문서 작성"
+        ],
+        "can_learn": [
+          "쿠팡 사내 보안 서비스 구성",
+          "CISSP(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보안 서비스의 SLO/SLI 설계와 알림",
+          "from": "task",
+          "quote": "보안 및 프라이버시 서비스의 SLO/SLI 목표를 충족하기 위해 필요한 작업 진단",
+          "priority": "core",
+          "why": "주요업무 여러 줄이 SLO/SLI 목표 진단·임계치 설정·미달 알림 대응이다. 직무 소개도 데이터 중심 운영 문화를 적는다.",
+          "gap_check": "취약점 스캔 서비스의 SLI 로 무엇을 고르고(스캔 완료율·지연·오탐 처리 시간), 에러 버짓이 소진되면 무엇을 멈추는가?",
+          "drill": "가짜 스캔 작업 로그로 '24시간 내 스캔 완료율' SLI 를 계산해 Grafana 대시보드와 번 레이트 알림 규칙을 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Google SRE Book — Service Level Objectives",
+              "url": "https://sre.google/sre-book/service-level-objectives/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "취약점 스캔·데이터 보안·IAM 서비스의 운영 지원",
+          "from": "qualification",
+          "quote": "보안 서비스 (취약점 스캔, 데이터 보안, IAM 등) 운영 지원 경험",
+          "priority": "core",
+          "why": "직무 소개가 운영 대상 서비스로 취약점 관리·데이터 스캐닝·IAM·보안 설계 및 코드 리뷰를 든다.",
+          "gap_check": "임직원이 '권한 요청이 며칠째 승인 안 된다'고 할 때, IAM 요청 흐름의 어느 지점(정책·승인자·동기화)을 어떤 순서로 확인하는가?",
+          "drill": "오픈소스 스캐너(Trivy 등)로 컨테이너 이미지 취약점을 스캔해 결과를 심각도·소유 팀별로 집계하고, 중복·오탐을 거르는 스크립트를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Trivy — Documentation",
+              "url": "https://trivy.dev/latest/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "운영 플레이북 작성",
+          "from": "task",
+          "quote": "엔드 유저 지원을 위한 운영 플레이북 작성 참여",
+          "priority": "high",
+          "why": "직무 소개가 지원 사례를 바탕으로 플레이북을 구축·관리하고 운영 조직과 공유한다고 적는다.",
+          "gap_check": "자주 들어오는 지원 요청 하나에 대해, 신입 운영자가 혼자 끝낼 수 있게 하는 플레이북의 필수 항목(증상·확인 명령·판단 기준·에스컬레이션)은?",
+          "drill": "위 스캐너 운영에서 생길 문의 3가지(오탐 이의, 스캔 실패, 예외 요청)에 대한 플레이북을 쓴다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "대용량 로그 분석으로 의사결정",
+          "from": "qualification",
+          "quote": "의사 결정을 위한 대용량 데이터 또는 로그 분석 기술",
+          "priority": "core",
+          "why": "운영 지표를 수집·분석해 개선 방안을 도출하는 것이 역할의 절반이다(직무 소개).",
+          "gap_check": "지원 티켓 수만 건에서 반복 원인 상위 3개를 찾으려면 무엇을 기준으로 분류하고, 그 결과로 어떤 자동화를 먼저 만드는가?",
+          "drill": "가짜 지원 티켓 CSV 를 pandas(또는 SQL)로 카테고리·처리 시간별로 집계해 가장 시간이 많이 드는 유형을 찾고 자동화 제안서를 한 장 쓴다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "Bash·Python·PowerShell 자동화",
+          "from": "qualification",
+          "quote": "Bash, Python, PowerShell 등을 이용한 자동화 및 스크립트 작업 경험",
+          "priority": "core",
+          "why": "자격과 우대에 모두 있다. 반복 지원 업무를 줄이는 1차 수단이다.",
+          "gap_check": "사용자 계정 상태를 여러 시스템(AD·클라우드 IAM)에서 한 번에 조회하는 스크립트를 만들 때 자격 증명은 어떻게 안전하게 다루는가?",
+          "drill": "Python 으로 AWS IAM 사용자 중 90일 넘게 쓰지 않은 액세스 키를 찾아 보고하는 스크립트를 만든다(boto3).",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Boto3 — Documentation",
+              "url": "https://boto3.amazonaws.com/v1/documentation/api/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "보안 서비스 운영 대시보드 + 플레이북 세트",
+          "why": "주요업무의 대시보드·플레이북·SLO 세 가지를 한 번에 보여 준다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "보안 서비스 SLO 설계",
+          "IAM·스캐너 지원 요청 진단",
+          "반복 업무 자동화 사례",
+          "로그로 개선 방향을 찾은 경험"
+        ],
+        "sources": [
+          {
+            "title": "Senior DevOps Engineer (SPIR/OC)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078331",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078329",
+      "title": "Staff Security DevOps Engineer (SPIR/OC)",
+      "site": "ats",
+      "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=8078331",
+      "verdict": "'Senior DevOps Engineer (SPIR/OC)'(gh_jid=8078331)와 세 절 18줄 중 17줄이 같다. 다른 한 줄은 연차뿐이다 — 이쪽은 '10 년 이상의 정보 보안 경험 또는 사이버보안에 대한 높은 관심을 기반으로 한 8년 이상의 DevOps 경험'. 공부할 문장이 같으므로 Senior 판 브리핑을 본다."
     }
   ],
   "open_questions": [

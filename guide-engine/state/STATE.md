@@ -4,13 +4,13 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **77건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **79건**.
+직전 회차: SPIR/OC Senior DevOps(8078331, 5항목) + Staff(8078329) dup — 연차 줄 하나(5/5 ↔ 10/8)만 다름.
 직전 회차: `Senior Back-end Engineer (Developer Experience)`(ats 8146685, 서울, **한국어 본문**) — 개발자 플랫폼 팀, 6항목.
 자격이 연차가 아니라 **'최근 3년 이내 대규모 분산 시스템'** 이다.
 
 **원티드·사람인에 남은 쿠팡 미작성 공고는 전부 비개발**(CS 전문가·카탈로그 검수·AI 콘텐츠 평가자·Data Analyst·데이터 분석 어시스턴트) — 건너뛴다.
-⚠️ 다음 회차: ats 서울 공고 중 겹침 <0.5 — `Senior, Back-end Engineer(CX) - Coupang Play`(8186132), `Senior DevOps Engineer (SPIR/OC)`(8078331)
-→ Staff 판(8078329)과 쌍일 수 있다, 보안 계열 여러 건(Attack Surface·Forensics·Pen Tester·Threat Detection·CTEM…)은 같은 팀 템플릿일 수 있어 **서로 겹침을 먼저 센다**.
+⚠️ 다음 회차: ats 서울 공고 중 겹침 <0.5 — `Senior, Back-end Engineer(CX) - Coupang Play`(8186132), ✅ SPIR/OC 쌍 정리, 보안 계열 여러 건(Attack Surface·Forensics·Pen Tester·Threat Detection·CTEM…)은 같은 팀 템플릿일 수 있어 **서로 겹침을 먼저 센다**.
 ⚠️ 경고 80(마감·url 못 찾음)은 크롤 쪽 원인, 미확인. **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
