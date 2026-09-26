@@ -2404,3 +2404,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 iCARE Datadog 리전 이전
 
 - `27491180a1d9ba` 전문으로 기능 `datadog-domestic-site-migration`, 결정 8.
+
+## 2026-09-27 iCARE 제출 규칙 도메인 분리
+
+- `adbb881e18522d` 전문으로 기능 `submission-rule-domain-entity`, 결정 5. 글이 짧아 대안 · 대가 몇은 '이 사이트의 해석'.
