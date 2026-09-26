@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — fastmail 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — feldera 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **feldera** — 2026-09-26 없음 1회째. RSS 없음(`/blog/rss.xml` 404) — r.jina.ai 로 `/blog` 목록, 날짜는 글마다 `Published Time`. 09-07 이후 2편: 09-21 시리즈 A 발표, 09-18 Auth0 FGA 권한 색인 사례(쓰기 때로 지연을 옮기는 결정은 Auth0 의 것 — 고객 사례라 제외, Auth0/Okta 를 다룰 때 재료).
 - **fastmail** — 2026-09-26 없음 1회째. 피드는 `fastmail.com/blog/feed.xml`(`/blog/rss/` 는 404). 마지막 글이 08-19(이미 출처인 데이터 복원력 글).
 - **ente** — 2026-09-26 확장. `ente.io/blog/rss.xml`. 09-09 GPU ML 글로 기기 위 계산 도메인에 추가(기존 기능은 결정 8개로 꽉 참). 남은 후보: 09-09 Library Sharing(종단간 암호화 공유 설계일 수 있다), 09-08 얼굴 지문 글.
 - **electric** — 2026-09-26 없음 1회째. RSS 없음(electric.ax·electric-sql.com 모두 404) — r.jina.ai 로 `electric.ax/blog` 목록. 마지막 글이 08-11 Databricks 합류. 이전 글 후보: 04-15 durable streams 포크 분기, 06-04 서버리스 에이전트.
