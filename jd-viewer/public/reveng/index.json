@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "클라우드 카메라 점유율 1위 Safie — 기동 직후의 썸네일 서버만 카메라 서버에 연결을 못 열던 2년 묵은 장애를 Linux ARP 캐시까지 파 내려가 풀었고, 점포용 녹화기 Trail Station AI 는 8대를 기대했다 4대에 그친 엣지 AI 처리의 병목을 데이터 전달에서 찾았다",
       "updated_at": "2026-09-26",
       "domain": "safie.co.jp"

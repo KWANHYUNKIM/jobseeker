@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Safie 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '수많은 카메라 서버에 요청 때마다 연결을 연다' — `97cdd15308a818`(EC2 카메라 서버 ↔ Fargate 썸네일 서버 · 기동 직후만 SYN-ACK 타임아웃 · 기각 가설 · ARP 캐시 11.2초 · 대책 · Amazon Linux 는 10년 전부터; 본문 뒤쪽 아직). 그다음 '녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다' — `e86e52f0215054`(8대 예상 → 4대 · 데이터 전달 병목 · 개선 셋). 수익원 둘(구독 · 기기) 다 도메인 있음(inferred) → 두 기능이면 완주. 대기 0/3 — --gaps 가 후보 조사를 부르면 그쪽이 먼저. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Safie 확장 1/2(2026-09-26) — `stale-arp-syn-ack` 완료. 다음은 확장: '녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다' — `e86e52f0215054`(8대 예상 → 4대 · 데이터 전달 병목 · 개선 셋). 그러면 **완주**. 수익원 둘(구독 · 기기) 다 도메인 있음(inferred) → 두 기능이면 완주. 대기 0/3 — --gaps 가 후보 조사를 부르면 그쪽이 먼저. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

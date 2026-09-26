@@ -87,8 +87,8 @@
       "tech": [
         {
           "tech": "같은 서브넷의 EC2 카메라 서버 ↔ Fargate 썸네일 서버 요청 시 TCP · 원인 추적(기각된 가설 → 실기 → 재현 → Linux ARP 캐시 11.2초) · AI 가 실데이터에 닿는 조사 환경",
-          "solves": "기동 직후의 연결 실패를 없앤다.",
-          "limits": "Fargate 쪽 커널 동작은 손대기 어렵다(이 사이트의 해석 — 대책 절을 다음 사이클에 읽는다).",
+          "solves": "기동 직후 썸네일 서버의 연결 실패(거의 매일 수백 건)가 사라졌다 — 카메라 서버의 ARP 캐시에 남던 옛 MAC 을 빨리 지우고, 남아도 2.1초에 복구한다.",
+          "limits": "IP 가 해제 뒤 75초 안에 재사용되는 경우는 여전히 남는다 — 복구 시간을 줄여 클라이언트 재시도로 받는다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -101,7 +101,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "stale-arp-syn-ack"
+      ]
     },
     {
       "name": "녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다",
@@ -126,10 +128,318 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "stale-arp-syn-ack",
+      "name": "기동 직후 썸네일 서버만 카메라 서버에 연결을 못 열던 '사라진 SYN-ACK' 를 끝낸다 — 끝난 Fargate 태스크의 IP 가 재사용될 때 카메라 서버 ARP 캐시에 남은 옛 MAC 으로 응답이 가던 것을 sysctl 세 줄로 수명을 줄이고 복구를 11.2초에서 2.1초로",
+      "domain": "수많은 카메라 서버에 요청 때마다 연결을 연다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 썸네일을 만드는 **썸네일 서버**(Fargate)가 같은 서브넷에 있고, 썸네일 서버의 각 태스크는 사용자 요청이 오면 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 연다. 장애는 **기동 직후의 썸네일 서버 태스크에서 SYN → SYN-ACK 가 타임아웃**하는 것 — 문제가 난 태스크는 거의 모든 카메라 서버로의 연결에 실패하는데, 같은 시각에 뜬 다른 태스크와 기존 태스크는 같은 곳에 몇 ms 로 붙는다. 몇 분~몇십 분이면 저절로 낫고, 태스크 기동의 **약 4%** 에서, 배포나 아침 스케일아웃처럼 기동이 몰릴 때 난다. 한 번 나면 사용자 요청 여럿이 5xx.\n\n첫 티켓은 2024년 6월 — 담당이 바뀌며 간헐적으로 조사가 이어졌고, AWS 서포트도 '기반 쪽 이상 기록 없음'. 손을 놓은 느낌이었다.",
+        "metrics": [
+          {
+            "label": "발생률",
+            "value": "태스크 기동의 약 4% — 대책 전 거의 매일 수백 건의 연결 실패, 대책 뒤 1주 관찰 동안 0건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          },
+          {
+            "label": "카메라 서버 ARP 엔트리",
+            "value": "93개 중 78개(84%)가 이미 없는 ENI 의 MAC 을 가리키는 STALE — 엔트리 수는 90~127, gc_thresh1 기본값 128 바로 아래",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          },
+          {
+            "label": "독 엔트리 수명 · 복구 시간",
+            "value": "사실상 무기한 → 60~75초 정도 · 11.2초 → 2.1초(실측)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          },
+          {
+            "label": "조사 기간",
+            "value": "2024-06 첫 티켓 → 약 2년 → AI 에이전트와 재조사 이틀 만에 인위 재현",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "패킷 캡처를 다시 볼 때",
+          "thought": "SYN-ACK 가 오기까지의 시간이 1·3·7·15초에 몰려 있었다 — 첫 RTO 1초의 지수 백오프 누적 시각과 같다. 관측된 SYN-ACK 는 **재전송**이다. 서버엔 request_sock(핸드셰이크 도중 정보)이 있어 SYN 을 받는 길은 멀쩡하고 SYN-ACK 가 돌아가는 길만 문제였다. **지연이 특정 값으로 양자화돼 있으면 커널 재전송 타이머를 의심하라.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+              "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+              "publisher": "Safie Engineers' Blog (Zenn)",
+              "date": "2026-09-09",
+              "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+            }
+          ]
+        },
+        {
+          "at": "실마리를 바꿨을 때",
+          "thought": "'태스크 단위로 나고 기존 태스크는 무사하다' 에 주목해 태스크 고유의 것, IP(ENI)를 봤다. CloudTrail 로 실패 태스크 IP 의 사용 이력을 거슬러 가니 조사한 세 건 모두 **1.6~4.6일 전에 끝난 옛 썸네일 서버 태스크의 IP** 였다. '저절로 낫는다·특정 주체만 실패한다' 는 장애는 **어딘가의 캐시**를 의심하라.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+              "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+              "publisher": "Safie Engineers' Blog (Zenn)",
+              "date": "2026-09-09",
+              "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+            }
+          ]
+        },
+        {
+          "at": "조사가 빨라진 이유",
+          "thought": "AI 의 추론력만이 아니다. AI 에이전트가 과거 티켓·앱 로그·메트릭·AWS API 에 직접 닿는 환경을 만들어, 가설 → 실데이터 검증 → 수정의 고리를 전과 자릿수가 다른 속도로 돌렸다 — 2년 동안 결정타가 없던 문제를 이틀 만에 재현했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+              "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+              "publisher": "Safie Engineers' Blog (Zenn)",
+              "date": "2026-09-09",
+              "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "카메라 서버",
+            "what": "EC2 다수, Ubuntu 계열 AMI — gc_thresh1 이 Linux 표준값 128 그대로."
+          },
+          {
+            "name": "썸네일 서버 태스크",
+            "what": "Fargate. 끝나고 뜨기를 반복하며 IP 가 재사용된다."
+          },
+          {
+            "name": "ARP(neighbor) 엔트리",
+            "what": "IP → MAC. 끝난 태스크의 'IP → 옛 MAC' 이 STALE 로 남으면 새 태스크가 같은 IP 를 받았을 때 SYN-ACK 가 지워진 ENI 의 MAC 으로 나간다."
+          },
+          {
+            "name": "gc_thresh1",
+            "what": "엔트리 수가 이 값 미만이면 정기 GC 가 회수를 통째로 건너뛴다(net/core/neighbour.c). 기본 128."
+          },
+          {
+            "name": "NUD 상태 기계",
+            "what": "엔트리가 쓰이는 순간에만 움직인다 — DELAY 대기 5초 + 죽은 MAC 으로의 유니캐스트 probe 3초 + 다음 TCP 재전송 2~3초 = 11.2초."
+          }
+        ],
+        "invariants": [
+          "같은 서브넷에서 IP 가 자주 재사용되는 상대(Fargate 태스크·Pod·스팟)와 통신하는 EC2 는 STALE 엔트리가 오래 남게 두지 않는다.",
+          "대책은 AMI 에 구워 전 카메라 서버에 같이 편다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "썸네일 서버 태스크가 끝나 IP 가 풀리고, 그 IP 가 새 태스크에 재사용된다",
+            "why": "Fargate 는 태스크가 뜨고 질 때마다 ENI 가 바뀐다."
+          },
+          {
+            "step": "새 태스크가 카메라 서버에 SYN 을 보내면, 카메라 서버는 ARP 캐시의 옛 MAC(지워진 ENI)으로 SYN-ACK 를 보낸다 — 프레임은 AWS 안에서 버려진다",
+            "why": "엔트리 수가 gc_thresh1(128) 바로 아래라 정기 GC 가 옛 엔트리를 회수하지 않았다."
+          },
+          {
+            "step": "대책 뒤엔 `gc_thresh1 = 0` 으로 STALE 엔트리가 정기 GC 대상이 되어 60~75초 정도면 사라진다",
+            "why": "발생 확률을 크게 낮춘다."
+          },
+          {
+            "step": "그래도 75초 안에 재사용되면 `delay_first_probe_time = 1`·`ucast_solicit = 0` 으로 죽은 MAC 대신 곧장 브로드캐스트 ARP 를 물어 2.1초에 바른 MAC 을 얻는다",
+            "why": "복구를 클라이언트 재시도로 구할 수 있는 범위에 넣는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "'AWS 기반 이상 없음' 뒤에 무엇을 할까?",
+            "chosen": "**과거 티켓·패킷 캡처 관측 메모를 정리해 AI 에이전트에 넘기고, 로그·메트릭·AWS API 에 직접 닿는 환경에서 재조사.**",
+            "alternatives": [
+              "기각된 가설(SYN 큐 넘침·클라이언트 버그·보안 그룹·ENI SG 전파 지연·커널 버그)을 계속 파기"
+            ],
+            "tradeoff": "가설 → 검증 → 수정을 실데이터로 바로 돌려 이틀 만에 재현까지 갔다. 대가 — AI 가 운영 데이터와 API 에 닿게 권한을 열어야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          },
+          {
+            "question": "원인을 어떻게 확정할까?",
+            "chosen": "**검증 환경에서 `ip neigh replace` 로 카메라 서버 ARP 에 없는 MAC 을 넣어 인위 재현 — tcpdump 로 SYN-ACK 가 그 MAC 으로 나가는 순간을 찍는다.**",
+            "alternatives": [
+              "본번 관측만으로 추정"
+            ],
+            "tradeoff": "11.2초라는 값이 커널 NUD 사양에서 미리 예측한 값과 맞아 결정타가 됐다. 대가 — 재현 환경을 따로 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          },
+          {
+            "question": "STALE 엔트리를 어떻게 없앨까?",
+            "chosen": "**`net.ipv4.neigh.default.gc_thresh1 = 0` — 캐시가 차지 않아도 정기 GC 가 회수하게.**",
+            "alternatives": [
+              "gc_thresh1 기본값(128) 유지",
+              "엔트리를 수동·주기적으로 비움(inferred)"
+            ],
+            "tradeoff": "사실상 무기한 남던 독 엔트리의 수명이 60~75초 정도로 준다 — Amazon Linux 는 2014.09 AMI 부터 이 값이 기본이었다. 대가 — IP 해제 뒤 75초 안에 재사용되면 여전히 한 번은 틀린 MAC 으로 간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          },
+          {
+            "question": "그래도 틀린 MAC 으로 갔을 때의 복구는?",
+            "chosen": "**`delay_first_probe_time = 1` · `ucast_solicit = 0` — 죽은 MAC 으로의 유니캐스트 probe 를 건너뛰고 곧장 브로드캐스트 ARP 로.**",
+            "alternatives": [
+              "기본 NUD(DELAY 5초 + 유니캐스트 probe 3회)"
+            ],
+            "tradeoff": "복구가 11.2초에서 2.1초로 줄어 클라이언트 재시도로 구할 수 있다. IP 재사용 환경에선 없는 MAC 에 유니캐스트를 보내도 대답이 없다. 대가 — 브로드캐스트 ARP 가 는다(VPC 는 브로드캐스트를 지원하지 않고 ARP 는 가상화 기반의 매핑 서비스가 받는다 — 카메라 서버 CPU·네트워크 부하는 변하지 않았다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          },
+          {
+            "question": "세 줄을 어떻게 펼까?",
+            "chosen": "**세 줄을 다층 방어로 함께 — 확률을 낮추고(gc_thresh1) 나도 짧게(probe). AMI 에 구워 전 카메라 서버에 전개.**",
+            "alternatives": [
+              "한 가지 설정만"
+            ],
+            "tradeoff": "1주 관찰에서 거의 매일 수백 건이던 연결 실패가 0 이 됐다. 대가 — 이미지 교체로 펼쳐야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          },
+          {
+            "question": "다른 환경에도 같은 위험이 있나?",
+            "chosen": "**'Ubuntu 계열 AMI × VPC × IP 가 자주 재사용되는 상대와 같은 서브넷' 이면 같은 문제가 숨어 있을 수 있다고 기록한다.**",
+            "alternatives": [
+              "이번 서버만 고치고 끝(inferred)"
+            ],
+            "tradeoff": "클라우드의 L2 는 물리 네트워크 상식과 다르고(GARP 같은 동작을 전제할 수 없다) OS 기본값이 그 전제로 맞춰져 있지 않을 수 있다는 교훈을 남긴다. 대가 — 없음(점검 비용뿐, 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+                "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+                "publisher": "Safie Engineers' Blog (Zenn)",
+                "date": "2026-09-09",
+                "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다(같은 회사의 다른 도메인)",
+          "via": "부분이 아니라 전체를 재야 보인다",
+          "contract": "SYN-ACK 장애는 SYN 수신 경로·보안 그룹·커널 버그 같은 부분 가설을 하나씩 기각한 끝에 서버 ARP 와 클라이언트 IP 재사용의 조합에서 원인을 찾았고, Trail Station AI 는 모델·가속기 단독 벤치마크(8대)가 조립한 시스템(4대)과 달랐다 — 둘 다 조합에서 문제가 났다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "사라진 SYN-ACK 의 길",
+          "question": "응답은 어디로 갔나?",
+          "kind": "failure",
+          "code": "flowchart LR\n  OLD[옛 썸네일 태스크<br/>IP 10.0.1.243 · MAC A<br/>종료] -.ARP 캐시에 남음.-> CS[카메라 서버<br/>ARP: .243 → MAC A · STALE]\n  NEW[새 썸네일 태스크<br/>같은 IP · MAC B] -->|SYN| CS\n  CS -->|SYN-ACK → MAC A| DROP[지워진 ENI · 폐기]\n  CS -.11.2초 뒤 브로드캐스트 ARP.-> NEW"
+        },
+        {
+          "title": "ARP 엔트리의 상태와 대책",
+          "question": "옛 엔트리는 언제 사라지나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> REACHABLE\n  REACHABLE --> STALE: 쓰지 않음\n  STALE --> STALE: 엔트리 수 < gc_thresh1(128) → GC 건너뜀 · 사실상 무기한\n  STALE --> 회수: gc_thresh1 = 0 → 60~75초\n  STALE --> DELAY: 새 태스크 SYN · 엔트리 사용\n  DELAY --> PROBE: 기본 5초 → 대책 1초\n  PROBE --> REACHABLE: 기본 유니캐스트 3회 뒤 브로드캐스트(11.2초) → 대책 곧장 브로드캐스트(2.1초)\n  회수 --> [*]"
+        },
+        {
+          "title": "2년 동안 기각된 가설",
+          "question": "무엇을 지우고 무엇에 닿았나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  T[1·3·7·15초에 몰린 SYN-ACK] --> R[재전송 · SYN-ACK 귀로만 문제]\n  R --> H1[SYN 큐 넘침 ✗ request_sock 있음]\n  R --> H2[클라이언트 버그 ✗ 고쳐도 계속]\n  R --> H3[보안 그룹 ✗ 설정 정상]\n  R --> H4[SG 전파 지연 ✗ SYN 이 떨어져야 함]\n  R --> H5[커널 버그 ✗ 메이저 버전 넘어 계속]\n  R --> K[태스크 단위 · IP 이력 → 옛 태스크 IP 재사용]\n  K --> A[카메라 서버 ARP 84% STALE · gc_thresh1 바로 아래]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "2年越しの障害「消えたSYN-ACK」をAIとの2日間の調査で解決した話",
+          "url": "https://zenn.dev/safie_inc/articles/97cdd15308a818",
+          "publisher": "Safie Engineers' Blog (Zenn)",
+          "date": "2026-09-09",
+          "summary": "카메라 영상을 늘 받는 **카메라 서버**(EC2, 다수)와 요청 때 지정 카메라가 붙은 카메라 서버 한 대로 TCP 를 여는 **썸네일 서버**(Fargate)가 같은 서브넷. 약 2년 동안 **기동 직후의 썸네일 서버 태스크에서만** SYN → SYN-ACK 가 타임아웃하는 장애가 간헐적으로 — 기각된 가설들 → 실기에서 판명 → 검증 환경 재현 → 원인은 Linux 커널 **ARP 캐시**(11.2초) → 대책 → Amazon Linux 에선 10년 넘게 전부터 대책돼 있었다 → 전개 결과. AI 가 실데이터에 접근할 수 있는 환경이 조사를 가속했다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "요금 구조(카메라당 월정액 여부)와 매출 비중을 확인하지 않았다.",
-    "두 글 모두 본문 뒤쪽(대책·개선 셋)은 다음 사이클에 읽는다.",
+    "Trail Station AI 글의 개선 셋은 다음 사이클에 읽는다.",
     "다른 글: 생성 AI 안전 5층(`109c96218ef66d` — 사내 이용)·'Enter 로 전송' 폐지(`ee72b837e4a5f1`)·Flipt 피처 플래그(`30a119c04300bf`)·BFF 없는 TypeScript 3층 API 클라이언트(`25cfae598a8ee6`)."
   ],
   "sources": [

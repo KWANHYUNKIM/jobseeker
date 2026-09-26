@@ -44,7 +44,7 @@
 | **WWWAVE(ウェイブ)** | JP · 전자 코믹·아니메 제작·배신 | 프로파일(2026-09-26). 도메인 둘 — 전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다 · 이상 때만 알리는 감시에서 침묵을 해석한다. 기능 2(`access-vba-delivery-retirement` · `batch-silence-monitoring`). **hold** — 신규 사업 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 신규 사업은 도메인 없음. 입구 `zenn.dev/p/wwwave/feed`. |
 | **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 2(`cheap-model-prescreening` · `scanned-pdf-ocr-triage`). **hold** — Stock 제품 수익원 자료 두 번 없음(2026-09-26). 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
 | **ウェザーニューズ(Weathernews)** | JP · 기상 정보 | 프로파일(2026-09-26). 도메인 둘 — 기상과 실적으로 소매·제조의 반년 수요를 예측한다 · 수십만 개의 사용자 기상 조건을 10분마다 판정한다. 기능 2(`batch-gpu-demand-inference` · `my-solution-decision-tree`). **hold** — 방송 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 방송은 도메인 없음. 입구 `zenn.dev/p/weathernews/feed`. |
-| **Safie(セーフィー)** | JP · 클라우드 카메라 영상 플랫폼 | 프로파일(2026-09-26). 도메인 둘 — 수많은 카메라 서버에 요청 때마다 연결을 연다 · 녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다. 기능 0. 수익원 둘(구독 · 기기) 다 도메인 있음(inferred). 입구 `zenn.dev/p/safie_inc/feed`. |
+| **Safie(セーフィー)** | JP · 클라우드 카메라 영상 플랫폼 | 프로파일(2026-09-26). 도메인 둘 — 수많은 카메라 서버에 요청 때마다 연결을 연다 · 녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다. 기능 1(`stale-arp-syn-ack`). 수익원 둘(구독 · 기기) 다 도메인 있음(inferred). 입구 `zenn.dev/p/safie_inc/feed`. |
 
 
 ## 대기
