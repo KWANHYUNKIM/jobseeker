@@ -1,0 +1,185 @@
+{
+  "slug": "gakken-leap",
+  "name": "Gakken LEAP",
+  "name_en": "Gakken LEAP",
+  "country": "JP",
+  "category": "기타",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "gakken-leap.co.jp",
+  "one_liner": "학연 그룹의 에드테크 · DX 회사 — 온라인 자격 강좌 ShikakuPass 의 학습 행동 로그를 Kinesis 와 BigQuery 로 모아 B2B 관리자 화면으로 되돌리고, 여러 세대의 프런트 기술이 겹친 화면은 일괄 대신 Strangler Fig 로 React 에 옮긴다",
+  "business_model": "자사 서비스는 **ShikakuPass** — 보육사 · 개호복지사 · FP · 宅建 · IT 자격 등을 '1 회 5 분, 스마트폰으로' 배우는 온라인 자격 강좌다. 개인(B2C)은 무료 체험 뒤 강좌를 사고, **법인(B2B)** 은 조직의 학습자를 관리하는 화면과 함께 쓴다.\n\n동시에 Gakken LEAP 은 **학연 그룹 각사와 그룹 밖 기업의 IT 사업 · 서비스를 기획 · 개발 · 도입 지원 · 운용**하는 회사이기도 하다 — 서비스 페이지에 그룹 각사가 운영하는 학습 서비스들이 함께 실려 있다. 벤처 투자 · 육성도 한다. 요금 · 매출은 공개 자료에서 찾지 못했다.",
+  "products": [
+    "ShikakuPass(온라인 자격 강좌 — B2C · 법인)",
+    "학연 그룹 각사 서비스의 개발 · 운용 지원",
+    "벤처 투자 · 육성"
+  ],
+  "revenue_total": "확인하지 못했다. 회사 · 서비스 페이지에 매출 · 요금이 없다.",
+  "revenue_streams": [
+    {
+      "name": "ShikakuPass(B2C · 법인)",
+      "how": "개인에게 온라인 자격 강좌를 판다(무료 체험 뒤 구입), 법인에게는 조직의 학습 관리와 함께 제공한다. 가격은 공개 페이지에서 확인하지 못했다.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "학습자의 행동 로그를 모아 분석하고 다시 서비스로 되돌린다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "ShikakuPass｜オンライン資格講座",
+          "url": "https://shikakupass.com/",
+          "publisher": "Gakken LEAP",
+          "summary": "온라인 자격 강좌 — 보육사 · 개호복지사 · 등록판매자 · FP · 宅建 · 社労士 · 기본정보 · IT 패스포트 · AWS · 프로그래밍 · 英検 등. 짧은 동영상으로 요점을 좁혀 가르친다. **무료 체험**(무료 등록으로 자동 과금은 없다), 강좌 선택 후 구입. **법인용 서비스**(biz.shikakupass.com)가 따로 있다."
+        },
+        {
+          "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+          "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+          "publisher": "Gakken LEAP",
+          "date": "2026-07-06",
+          "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+        }
+      ]
+    },
+    {
+      "name": "그룹 · 그룹 밖 IT 사업 개발 · 운용 지원",
+      "how": "학연 그룹 각사와 그룹 밖 기업의 IT 서비스를 기획 · 개발 · 도입 지원 · 운용 · 컨설팅한다.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社Gakken LEAP",
+          "url": "https://gakken-leap.co.jp/",
+          "publisher": "Gakken LEAP",
+          "summary": "학연(Gakken) 그룹 — '교육 · 의료복지에 임팩트를, 한 사람이라도 더 많은 사람에게 돌파를.' 자사 서비스로 **ShikakuPass**(1 회 5 분 스마트폰으로 자격 합격 — 프로 감수 오리지널 동영상 교재 · 해설)를 내건다. 서비스 페이지는 마나미루 · 코토바파크 · Gakken ON AIR · G-PAPILS · 학연 프라임 제미 · kimini · 학연 도서 라이브러리 · hugmo · 뉴코스 학습 시스템 등 **그룹 각사가 운영하는 서비스**를 함께 싣는다. Zenn Publication 소개: Ed-Tech 사업의 개발 · 컨설팅, **학연 그룹 각사와 그룹 밖 기업의 IT 사업 · 서비스의 기획 · 개발 · 도입 지원 · 운용 · 컨설팅**, 벤처 투자 · 육성."
+        },
+        {
+          "title": "『全部作り直し』の誘惑を捨てた。Strangler Fig Patternで挑むフロントエンドモダン化作戦",
+          "url": "https://zenn.dev/gakken_leap/articles/bd8167a771d2d5",
+          "publisher": "Gakken LEAP",
+          "date": "2026-06-11",
+          "summary": "PM 으로 전향 중인 프런트엔드 엔지니어가 쓴 결정의 무대 뒤. 프로덕트(이름은 밝히지 않음)는 **FreeMarker**(빈 셸 HTML) · **Vue 2**(API JSON 으로 화면을 그리는 실질 엔진) · **jQuery**(전역 $ 유틸)가 겹친 구조 — 화면 하나를 고치려면 여러 스택과 전역 의존을 풀어야 해 인지 부하가 컸다. 비교: 안 A **Next.js 로 완전 SPA 화(일괄)** vs 안 B **Strangler Fig 로 단계적 리팩터링** → **B**: ① 효과 큰 컴포넌트부터 React 화해 첫날부터 개선(검증 등)을 낸다 ② 빅뱅의 '옛 사양 재발견'에 의한 공수 팽창을 피하고 문제 시 영향이 작고 빠르게 롤백 ③ 기존 **Java 기반**을 살려 인프라 · 대규모 데이터 이행 공수를 줄이고 프런트 개선에 집중. A 는 이상형이지만 새 시스템 완성까지 개선이 멈추고 신구 이중 개발로 자원이 흩어진다. Next.js 이행을 위한 **'저금'** — jQuery 전역 의존을 순수 TS/Hooks 로, FreeMarker · Vue 문맥에서 떨어진 **포터블한 React 컴포넌트**. 기존 Java 기반 위에서 **Vite** 로 React 를 돌려 Java 엔지니어도 기여 · 자동 테스트 · 리드타임 단축(실시간 검증). 목표는 '특정인만 만지는 코드' 졸업."
+        }
+      ]
+    },
+    {
+      "name": "벤처 투자 · 육성",
+      "how": "벤처 기업 · 벤처 캐피털에 투자하고 육성한다.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社Gakken LEAP",
+          "url": "https://gakken-leap.co.jp/",
+          "publisher": "Gakken LEAP",
+          "summary": "학연(Gakken) 그룹 — '교육 · 의료복지에 임팩트를, 한 사람이라도 더 많은 사람에게 돌파를.' 자사 서비스로 **ShikakuPass**(1 회 5 분 스마트폰으로 자격 합격 — 프로 감수 오리지널 동영상 교재 · 해설)를 내건다. 서비스 페이지는 마나미루 · 코토바파크 · Gakken ON AIR · G-PAPILS · 학연 프라임 제미 · kimini · 학연 도서 라이브러리 · hugmo · 뉴코스 학습 시스템 등 **그룹 각사가 운영하는 서비스**를 함께 싣는다. Zenn Publication 소개: Ed-Tech 사업의 개발 · 컨설팅, **학연 그룹 각사와 그룹 밖 기업의 IT 사업 · 서비스의 기획 · 개발 · 도입 지원 · 운용 · 컨설팅**, 벤처 투자 · 육성."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "한 번의 5 분 학습이 관리자 화면에 닿기까지",
+    "question": "학습자의 동영상 시청 한 번은 어떤 길로 분석과 법인 관리자의 진척 화면이 되나?",
+    "code": "flowchart LR\n  U[\"학습자(B2C · B2B)\\n시청 · 열람 · 풀이\"] --> SVC[\"ShikakuPass\"]\n  SVC -- \"행동 로그\" --> K[\"Kinesis → Firehose\"] --> RAW[\"Raw S3\"] --> L[\"Lambda 검증 · 분배\"] --> CLEAN[\"Clean S3\"]\n  CLEAN -- \"S3 이벤트 + 크로스 계정 SQS\" --> LMS[\"LMS 기반\\n학습 이력\"]\n  CLEAN -- \"Data Transfer\" --> BQ[(\"BigQuery\\nDataform · Terraform\")]\n  SVC -- \"RDB · Fivetran\" --> BQ\n  BQ --> RD[\"Redash\"]\n  BQ -- \"일차 GCS → S3\" --> LMS --> ADM[\"법인 관리자\\n학습 진척\"]\n  FE[\"FreeMarker · Vue 2 · jQuery 화면\"] -. \"Strangler Fig\" .-> RE[\"React 컴포넌트\\n(Java 기반 + Vite)\"]",
+    "_note": "이 사이트의 해석 — 글 둘의 구성을 한 장에 모았다. Strangler Fig 글의 프로덕트가 ShikakuPass 인지는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "학습자의 행동 로그를 모아 분석하고 다시 서비스로 되돌린다",
+      "why": "ShikakuPass 는 '5 분 학습'을 쌓게 하는 서비스다 — 학습자가 동영상을 보고, 텍스트를 읽고, 문제를 푼 기록이 곧 제품이다. 그 기록은 학습 이력으로 서비스에 다시 보여야 하고, 법인 고객의 관리자는 **조직의 학습자마다 진척**을 봐야 하며, 회사는 상품별 매출과 기능 이용 현황으로 판단해야 한다.\n\n그래서 시스템 로그와 따로 **행동 로그 · 감사 로그**를 공통 로그 기반에 모으고, 한쪽은 LMS 로 되돌리고 다른 쪽은 분석으로 보낸다.",
+      "tech": [
+        {
+          "tech": "Kinesis Data Streams → Firehose → S3(Raw) → Lambda 검증 · 경로 분배 → S3(Clean) → S3 이벤트 + 크로스 계정 SQS → LMS",
+          "solves": "서비스 계정과 로그 계정을 나눈 채 행동 로그를 모으고, 이벤트 종류에 따라 LMS 로 집계 · 환류한다.",
+          "limits": "서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조한다 — LMS API 화가 과제다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+              "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+              "publisher": "Gakken LEAP",
+              "date": "2026-07-06",
+              "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+            }
+          ]
+        },
+        {
+          "tech": "BigQuery(Data Transfer · Fivetran) + Dataform · Terraform + Redash, B2B 진척은 일차 GCS → S3 → LMS",
+          "solves": "로그와 RDB · GA4 를 한곳에 모아 매출 · 이용 현황을 보고, 법인 관리자 화면에 학습 진척을 준다.",
+          "limits": "전송이 전부 배치라 데이터 신선도에 한계가 있고, Dataform 의 테스트 · CI/CD 가 아직 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+              "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+              "publisher": "Gakken LEAP",
+              "date": "2026-07-06",
+              "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다",
+      "why": "한 프로덕트의 화면이 **FreeMarker**(빈 셸 HTML) · **Vue 2**(실질 엔진) · **jQuery**(전역 유틸)로 겹쳐 있었다. 당시엔 빨리 가치를 내려는 선택이었겠지만, 시간이 지나 화면 하나를 고치려면 여러 스택과 전역 의존을 풀어야 하는 **인지 부하**가 됐다 — '특정인만 만지는 코드'다.\n\n그렇다고 새 시스템 완성까지 개선을 멈출 수는 없다. 그래서 일괄 SPA 대신 **Strangler Fig** 로, 기존 Java 기반 위에서 컴포넌트 단위로 React 를 넣는다.",
+      "tech": [
+        {
+          "tech": "Strangler Fig — 기존 Java 기반 위에서 Vite 로 React 컴포넌트를 컴포넌트 · 페이지 단위로, jQuery 전역 의존은 순수 TS · Hooks 로",
+          "solves": "첫날부터 개선(실시간 검증 등)을 내고, 문제 시 영향이 작고 롤백이 빠르며, 인프라 · 데이터 이행 없이 프런트에 집중한다.",
+          "limits": "끝날 때까지 세 세대의 스택이 공존한다. 완전 SPA(Next.js)는 나중으로 미뤘다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "『全部作り直し』の誘惑を捨てた。Strangler Fig Patternで挑むフロントエンドモダン化作戦",
+              "url": "https://zenn.dev/gakken_leap/articles/bd8167a771d2d5",
+              "publisher": "Gakken LEAP",
+              "date": "2026-06-11",
+              "summary": "PM 으로 전향 중인 프런트엔드 엔지니어가 쓴 결정의 무대 뒤. 프로덕트(이름은 밝히지 않음)는 **FreeMarker**(빈 셸 HTML) · **Vue 2**(API JSON 으로 화면을 그리는 실질 엔진) · **jQuery**(전역 $ 유틸)가 겹친 구조 — 화면 하나를 고치려면 여러 스택과 전역 의존을 풀어야 해 인지 부하가 컸다. 비교: 안 A **Next.js 로 완전 SPA 화(일괄)** vs 안 B **Strangler Fig 로 단계적 리팩터링** → **B**: ① 효과 큰 컴포넌트부터 React 화해 첫날부터 개선(검증 등)을 낸다 ② 빅뱅의 '옛 사양 재발견'에 의한 공수 팽창을 피하고 문제 시 영향이 작고 빠르게 롤백 ③ 기존 **Java 기반**을 살려 인프라 · 대규모 데이터 이행 공수를 줄이고 프런트 개선에 집중. A 는 이상형이지만 새 시스템 완성까지 개선이 멈추고 신구 이중 개발로 자원이 흩어진다. Next.js 이행을 위한 **'저금'** — jQuery 전역 의존을 순수 TS/Hooks 로, FreeMarker · Vue 문맥에서 떨어진 **포터블한 React 컴포넌트**. 기존 Java 기반 위에서 **Vite** 로 React 를 돌려 Java 엔지니어도 기여 · 자동 테스트 · 리드타임 단축(실시간 검증). 목표는 '특정인만 만지는 코드' 졸업."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**매출 · ShikakuPass 가격 · 법인 고객 수**가 공개 자료에 없다.",
+    "**Strangler Fig 글의 프로덕트가 무엇인지**(ShikakuPass 인지 그룹사 서비스인지) 글에 없다 — 그룹 개발 지원 수익원에 잇는 건 이 사이트의 추론이다.",
+    "**벤처 투자** 는 시스템 글이 없다 — 도메인이 없다.",
+    "**아직 안 읽은 것** — Sentry 월간 에러 87% 삭감(sentry-cli AI 트리아지) · Java 8→21 · Spring Boot 3 이행 · CloudFront 정액 플랜 · Cloud Run Functions + Eventarc 동시 실행 함정 · SEO 데이터 분석."
+  ],
+  "sources": [
+    {
+      "title": "株式会社Gakken LEAP",
+      "url": "https://gakken-leap.co.jp/",
+      "publisher": "Gakken LEAP",
+      "summary": "학연(Gakken) 그룹 — '교육 · 의료복지에 임팩트를, 한 사람이라도 더 많은 사람에게 돌파를.' 자사 서비스로 **ShikakuPass**(1 회 5 분 스마트폰으로 자격 합격 — 프로 감수 오리지널 동영상 교재 · 해설)를 내건다. 서비스 페이지는 마나미루 · 코토바파크 · Gakken ON AIR · G-PAPILS · 학연 프라임 제미 · kimini · 학연 도서 라이브러리 · hugmo · 뉴코스 학습 시스템 등 **그룹 각사가 운영하는 서비스**를 함께 싣는다. Zenn Publication 소개: Ed-Tech 사업의 개발 · 컨설팅, **학연 그룹 각사와 그룹 밖 기업의 IT 사업 · 서비스의 기획 · 개발 · 도입 지원 · 운용 · 컨설팅**, 벤처 투자 · 육성."
+    },
+    {
+      "title": "ShikakuPass｜オンライン資格講座",
+      "url": "https://shikakupass.com/",
+      "publisher": "Gakken LEAP",
+      "summary": "온라인 자격 강좌 — 보육사 · 개호복지사 · 등록판매자 · FP · 宅建 · 社労士 · 기본정보 · IT 패스포트 · AWS · 프로그래밍 · 英検 등. 짧은 동영상으로 요점을 좁혀 가르친다. **무료 체험**(무료 등록으로 자동 과금은 없다), 강좌 선택 후 구입. **법인용 서비스**(biz.shikakupass.com)가 따로 있다."
+    },
+    {
+      "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+      "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+      "publisher": "Gakken LEAP",
+      "date": "2026-07-06",
+      "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+    },
+    {
+      "title": "『全部作り直し』の誘惑を捨てた。Strangler Fig Patternで挑むフロントエンドモダン化作戦",
+      "url": "https://zenn.dev/gakken_leap/articles/bd8167a771d2d5",
+      "publisher": "Gakken LEAP",
+      "date": "2026-06-11",
+      "summary": "PM 으로 전향 중인 프런트엔드 엔지니어가 쓴 결정의 무대 뒤. 프로덕트(이름은 밝히지 않음)는 **FreeMarker**(빈 셸 HTML) · **Vue 2**(API JSON 으로 화면을 그리는 실질 엔진) · **jQuery**(전역 $ 유틸)가 겹친 구조 — 화면 하나를 고치려면 여러 스택과 전역 의존을 풀어야 해 인지 부하가 컸다. 비교: 안 A **Next.js 로 완전 SPA 화(일괄)** vs 안 B **Strangler Fig 로 단계적 리팩터링** → **B**: ① 효과 큰 컴포넌트부터 React 화해 첫날부터 개선(검증 등)을 낸다 ② 빅뱅의 '옛 사양 재발견'에 의한 공수 팽창을 피하고 문제 시 영향이 작고 빠르게 롤백 ③ 기존 **Java 기반**을 살려 인프라 · 대규모 데이터 이행 공수를 줄이고 프런트 개선에 집중. A 는 이상형이지만 새 시스템 완성까지 개선이 멈추고 신구 이중 개발로 자원이 흩어진다. Next.js 이행을 위한 **'저금'** — jQuery 전역 의존을 순수 TS/Hooks 로, FreeMarker · Vue 문맥에서 떨어진 **포터블한 React 컴포넌트**. 기존 Java 기반 위에서 **Vite** 로 React 를 돌려 Java 엔지니어도 기여 · 자동 테스트 · 리드타임 단축(실시간 검증). 목표는 '특정인만 만지는 코드' 졸업."
+    }
+  ]
+}

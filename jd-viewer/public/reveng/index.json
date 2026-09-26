@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "gakken-leap",
+      "name": "Gakken LEAP",
+      "name_en": "Gakken LEAP",
+      "country": "JP",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "학연 그룹의 에드테크 · DX 회사 — 온라인 자격 강좌 ShikakuPass 의 학습 행동 로그를 Kinesis 와 BigQuery 로 모아 B2B 관리자 화면으로 되돌리고, 여러 세대의 프런트 기술이 겹친 화면은 일괄 대신 Strangler Fig 로 React 에 옮긴다",
+      "updated_at": "2026-09-27",
+      "domain": "gakken-leap.co.jp"
+    },
+    {
       "slug": "ga-technologies",
       "name": "GA technologies",
       "name_en": "GA technologies",
@@ -3860,7 +3872,9 @@
     "쓰고 있는 사정 화면을 멈추지 않고 새 틀로 옮긴다",
     "흩어진 정기 처리를 데이터 자산의 계보로 묶는다",
     "늘어나는 ML 모델을 한 틀로 굴린다",
-    "관리회사마다 다른 CSV 로 오는 물건을 한 DB 로 받고 여러 곳에 다시 낸다"
+    "관리회사마다 다른 CSV 로 오는 물건을 한 DB 로 받고 여러 곳에 다시 낸다",
+    "학습자의 행동 로그를 모아 분석하고 다시 서비스로 되돌린다",
+    "여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다"
   ],
   "countries": {
     "KR": "한국",
