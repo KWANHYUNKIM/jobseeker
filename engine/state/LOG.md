@@ -2147,3 +2147,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 mixtend 균등 배정 Cache Lock
 
 - `a7f2907594c2fa` 로 기능 `even-assignment-cache-lock`, 결정 7. 글이 '샘플 코드는 실제와 다르다'고 적어 잠금 키(캘린더)·만료(30초)는 inferred 로 내리고, 도메인 tech 의 표기도 그에 맞춰 고쳤다.
+
+## 2026-09-27 mixtend 調整さん 톱 고속화
+
+- `001d1a7f1c3cce` + `f3627bc47121dd` 로 기능 `chouseisan-top-page-speed`, 결정 8(MPA · 측정 · LCP · 웹폰트 · 광고 높이 · jQuery 보류 · INP 미대응 · Flutter 출결표). 접속 분포는 글쓴이의 '예상'이라 inferred.
