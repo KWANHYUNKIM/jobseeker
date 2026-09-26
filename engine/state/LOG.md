@@ -2416,3 +2416,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 e-dash 회사 프로파일
 
 - e-dash.co.jp 403 · WebFetch 도 403 → 三井物産 설립 토픽(1차) · e-dash.io 서비스 페이지 · THE BRIDGE 조달 보도(2차, 출처 명시)로 수익원 둘. 글 셋(OCR · 배출계수 · ALB 11KB)으로 도메인 셋.
+
+## 2026-09-27 e-dash 청구서 OCR
+
+- `a3497b5e0ce357` 전문으로 기능 `invoice-ocr-llm-roles`, 결정 8.
