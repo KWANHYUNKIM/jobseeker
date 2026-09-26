@@ -4,18 +4,19 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **97건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **99건**.
+직전 회차: ✅ `Staff, ML Engineer (Search & Discovery)`(8130043, 추천) 5항목 + Sr. Staff(8130040) dup. 기존 브리핑과의 0.52 겹침은 **채용 절차·서류 반환 같은 공통 문구** 탓이었다.
 직전 회차: ✅ `Staff, Back-end Engineer (Gateway Services)`(8027677) 5항목 + Senior Staff(8027678) dup(연차 8↔12).
 직전 회차: ✅ `[Coupang Pay] Sr. Back-end Engineer (Pay Test Operations)`(8212748) 4항목 + Staff(8212656) dup.
 ⚠️ **제목(Test Operations)과 본문(플랫폼·HA/DR·CI/CD)이 어긋난다** — verdict 첫 줄과 `open_questions` 에 적었다.
 ⚠️ 새 크롤부터 쿠팡 공고 URL 일부가 `job-boards.greenhouse.io/coupang/jobs/<id>` 형식 — 번호로 찾는다.
 
 **남은 서울 ats 개발 공고**(보안 제외):
-- 쌍: `Staff / Sr. Staff, ML Engineer (Search & Discovery)`(8130043 / 8130040)
+- 쌍: (쌍 모두 정리)
 - 단독: `Staff Backend Engineer (Coupang Pay)`(8073876), `Staff, SRE (Tech Infra)`(8018258), `Staff iOS`(8146512),
   `[Coupang Pay Tech] Staff Mobile`(8194393), `Staff, ML Engineer - Coupang Play`(7927865), `Staff, Back-end (Traffic Management)`(8104792) 등
 - 보안 계열 남은 것: Cyber Threat Hunting·Control Assurance·Vendor Security·Pen Tester·Forensics·Attack Surface·Email Detection·Mobile Security 등
-⚠️ 다음 회차: `Staff, ML Engineer (Search & Discovery)`(8130043) → 같은 회차에 Sr. Staff 판(8130040)과 비교. 둘 다 이미 쓴 ML 공고와 겹침 0.52 — 먼저 기존 브리핑과도 비교.
+⚠️ 다음 회차: 단독 공고 — `Staff Backend Engineer (Coupang Pay)`(8073876)부터. ⚠️ 겹침을 셀 때 **채용 절차·Privacy·Document Return 공통 문구를 빼고** 센다(안 빼면 무관한 공고가 0.5 로 보인다).
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
@@ -37,6 +38,10 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **(쿠팡 ats, 2026-09-26) 겹침 비율은 공통 꼬리 문구를 빼고 센다.** 쿠팡 채용 사이트 공고는 채용 절차·Details to Consider·
+  Privacy Notice·Document Return Policy 가 20줄 넘게 똑같이 붙는다. 이걸 넣고 세면 전혀 다른 공고(추천 ML ↔ 데이터 보안 Director)도
+  0.5 로 보인다. **판정은 주요업무·자격 줄만으로** 한다.
 
 - **(메디인테크, 2026-09-26) 연차가 달라도 세 절이 같으면 duplicate 로 묶는다.** 앞서 '연차가 다르면 duplicate 가 아니다'로
   적었지만, 그건 **자격 줄이 달라질 때**(PAS-K: `석사이상`, 영상처리: CUDA 가 우대→자격)에만 맞다. 경력 표기 말고는
