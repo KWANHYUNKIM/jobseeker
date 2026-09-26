@@ -5,7 +5,7 @@
   "aliases": [
     "네이버웹툰"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "webtoonscorp.com",
   "one_liner": "네이버웹툰·웹툰 글로벌·라인망가·네이버시리즈·왓패드를 운영하는 웹툰·웹소설 플랫폼 회사 — 광고와 IP 제휴(영상·게임·출판)로 사업을 넓힌다",
@@ -165,7 +165,6 @@
     "매출·임직원 수를 읽지 않았다",
     "Disney 디지털 코믹스 플랫폼의 계약·수익 구조는 공고에 없다",
     "jobkorea 3건(인재 Pool·iOS·Data Product Engineer)은 본문 칸이 비어 있다 — iOS·Data Product 는 캐치·사람인과 같은 자리로 보인다",
-    "사람인·캐치의 'AI 서비스 기획 (체험형 인턴)' 이 같은 자리인지 본문 비교 필요",
     "salary: 공고 급여가 '면접 후 결정' — 비워 둔다"
   ],
   "postings": [
@@ -746,6 +745,13 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55008360&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=b50d6f48-667a-4c6a-8522-7ae6d0da1458",
+      "title": "[네이버웹툰] AI 서비스 기획 (체험형 인턴)",
+      "site": "saramin",
+      "duplicate_of": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571972?ReturnUrl=RecruitInfo",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 주요업무 다섯 줄과 자격요건 네 줄이 캐치 `AI 서비스 기획 (체험형 인턴) 채용`(571972)과 같다. 브리핑은 그쪽을 본다. 차이는 사람인 게시의 **우대사항 칸이 비어 있다**는 것(캐치에는 AI 생성 도구·영상 편집·서브컬처·팬 창작·커뮤니티 밈 여덟 줄이 있다)과, 사람인은 급여를 '면접 후 결정' 으로, 출퇴근을 '재택근무' 로 적는다는 것이다. 접수(2026년 09월 09일 ~ 09월 27일 23시 59분)·전형(지원서 리뷰 → 실무 인터뷰)·근무지(정자동 그린팩토리, 원격근무 병행 가능)는 같다. 두 자리가 아니므로 한 번만 지원한다."
     }
   ]
 }
