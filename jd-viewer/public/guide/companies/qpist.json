@@ -1,0 +1,181 @@
+{
+  "slug": "qpist",
+  "name": "큐피스트",
+  "name_en": "Qpist",
+  "aliases": [
+    "큐피스트"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "one_liner": "데이팅 앱 글램·케밋·알파스테이트를 운영하고, 미국에서 매출을 내는 AI 채팅 서비스(dotdotdot)를 만든 '러브테크' 회사",
+  "company": {
+    "business": "원티드 공고 머리말은 큐피스트를 '기술로 사람과 사람, 사람과 AI를 연결하는 러브테크 기업' 으로 소개하고, 국내 대표 데이팅 앱 글램, MBTI 기반 궁합 데이팅 앱 케밋, 인증 기반 하이엔드 데이팅 앱 알파스테이트, 미국 시장에서 성과를 내는 AI 채팅 서비스, 20대 여성만을 위한 하이엔드 결정사를 꼽는다. 흑자기업이라고 적고, 2024년 매출 150억 원, 올해 전년 대비 30% 이상 성장, 미국·일본 글로벌 확장과 상장 준비를 적는다. 사람인 백엔드 공고는 팀이 만든 AI 채팅 서비스 dotdotdot 이 출시 1년여 만에 140개국에서 누적 매출 70억 원을 넘었고, 지금은 캐릭터 대화에 이미지·비디오를 결합한 새 글로벌 AI 챗봇을 만든다고 적는다. 플랫폼 공고는 여러 브랜드 프로덕트를 하나의 공통 플랫폼 위에서 개발·운영한다고 적는다. 회사 홈페이지는 찾지 못했다(qpist.com·qpist.co.kr 응답 없음).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "소프트웨어 엔지니어(플랫폼 · 풀스택 / Senior)",
+        "url": "https://www.wanted.co.kr/wd/377278",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[글로벌 AI Chat] 백엔드 개발자",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54409733&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a6c027e-c6a1-4d84-8ee9-c0b3cdc647f4",
+        "publisher": "사람인"
+      },
+      {
+        "title": "글램 | 탈퇴하세요, 함께",
+        "url": "https://glam.am",
+        "publisher": "큐피스트(글램)",
+        "summary": "글램 소개 페이지. 메타 설명이 '무제한 이성 추천, 취향과 관심사가 딱 맞는 이성, 주변 5분 거리의 동네 친구' 를 적는다."
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출(회사 주장)",
+        "value": "2024년 150억 원",
+        "as_of": "2024",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "소프트웨어 엔지니어(플랫폼 · 풀스택 / Senior)",
+            "url": "https://www.wanted.co.kr/wd/377278",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "AI 채팅 서비스 dotdotdot 누적 매출(회사 주장)",
+        "value": "70억 원 돌파, 140개국",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[글로벌 AI Chat] 백엔드 개발자",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54409733&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a6c027e-c6a1-4d84-8ee9-c0b3cdc647f4",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "데이팅 앱(글램·케밋·알파스테이트)",
+        "how": "공고가 세 앱을 브랜드로 꼽고, 사람인 공고는 AI·빅데이터 기반 알고리즘으로 관계 니즈별 브랜드를 만든다고 적는다. 과금 방식(구독·아이템 등)은 읽지 않았다.",
+        "domains": [
+          "멀티 브랜드 공통 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "소프트웨어 엔지니어(플랫폼 · 풀스택 / Senior)",
+            "url": "https://www.wanted.co.kr/wd/377278",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[글로벌 AI Chat] 백엔드 개발자",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54409733&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a6c027e-c6a1-4d84-8ee9-c0b3cdc647f4",
+            "publisher": "사람인"
+          },
+          {
+            "title": "글램 | 탈퇴하세요, 함께",
+            "url": "https://glam.am",
+            "publisher": "큐피스트(글램)",
+            "summary": "글램 소개 페이지. 메타 설명이 '무제한 이성 추천, 취향과 관심사가 딱 맞는 이성, 주변 5분 거리의 동네 친구' 를 적는다."
+          }
+        ]
+      },
+      {
+        "name": "글로벌 AI 채팅(dotdotdot·새 AI 챗봇)",
+        "how": "사람인 공고가 dotdotdot 의 140개국 누적 매출 70억 원을 적는다. 과금 방식은 읽지 않았다.",
+        "domains": [
+          "AI 캐릭터 채팅·미디어 생성",
+          "AI 채팅 콘텐츠 제작"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[글로벌 AI Chat] 백엔드 개발자",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54409733&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a6c027e-c6a1-4d84-8ee9-c0b3cdc647f4",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "멀티 브랜드 공통 플랫폼",
+        "why": "플랫폼 공고가 특정 앱에 종속되지 않고 모든 브랜드를 지원하는 공통 플랫폼 — React·Next.js 웹, Python·Node.js 백엔드, AWS(ECS Fargate·Lambda·API Gateway), Expo·React Native 앱 — 을 적는다.",
+        "what_to_know": [
+          "Next.js·React Native(Expo)",
+          "Python(FastAPI)·Node.js",
+          "AWS 서버리스·컨테이너"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "소프트웨어 엔지니어(플랫폼 · 풀스택 / Senior)",
+            "url": "https://www.wanted.co.kr/wd/377278",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 캐릭터 채팅·미디어 생성",
+        "why": "사람인 백엔드 공고가 LLM 기반 인터랙티브 스토리 생성·프롬프트 파이프라인, 캐릭터 일관성, 이미지에서 비디오까지의 AI 미디어 생성 파이프라인, Kafka 이벤트 기반 마이크로서비스와 한국·미국·일본 멀티리전을 적는다.",
+        "what_to_know": [
+          "LLM 프롬프트 파이프라인",
+          "이미지·비디오 생성 비용·지연",
+          "Kafka 이벤트 구조"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[글로벌 AI Chat] 백엔드 개발자",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54409733&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a6c027e-c6a1-4d84-8ee9-c0b3cdc647f4",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "AI 채팅 콘텐츠 제작",
+        "why": "모집중 공고에 AI 캐릭터 스토리 작가·AI Chat 콘텐츠 작가(프리랜서, 재택), 글로벌 데이팅 AI PD, 글로벌 AI Chat Content Marketer 가 있고, 백엔드 공고가 크리에이터 저작 도구(스토리 구조를 그래프로 설계)를 적는다.",
+        "what_to_know": [
+          "캐릭터·스토리 설계",
+          "크리에이터 저작 도구"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[글로벌 AI Chat] 백엔드 개발자",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54409733&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a6c027e-c6a1-4d84-8ee9-c0b3cdc647f4",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "AI 채팅이 데이팅 다음 축으로 커지고 있다",
+        "evidence": "한국에서 드물게 AI로 미국에서 실제 매출을 내고 있습니다.",
+        "so_what": "모집중 6건 중 4건이 AI 채팅 쪽(백엔드·작가 2·Content Marketer)이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "상장을 준비한다",
+        "evidence": "미국과 일본을 포함해 글로벌 확장, 그리고 상장 준비도 한창입니다.",
+        "so_what": "회사 스스로 적은 계획이다. 시점은 공고에 없다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "회사 홈페이지 주소를 찾지 못했다 — 글램(glam.am)만 열었다",
+    "데이팅 앱·AI 채팅의 과금 방식과 매출 비중은 읽지 않았다",
+    "성장률이 공고마다 다르다 — 원티드 '올해 전년 대비 30% 이상', 사람인 '2024년 전년 대비 120% 성장'(기준 연도가 다르다)",
+    "사람인 AI 작가 2건은 프리랜서·재택 계약이다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
