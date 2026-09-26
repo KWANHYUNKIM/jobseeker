@@ -454,6 +454,13 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571967?ReturnUrl=RecruitInfo",
+      "title": "서버 개발자 채용",
+      "site": "dev",
+      "duplicate_of": "https://www.jobkorea.co.kr/Recruit/GI_Read/50004680?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=99&sc=630",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 우대사항 여섯 줄이 잡코리아 `[골프존] 서버 개발자 경력직 채용`(50004680)과 글자 그대로 같다('MS Devops CI/CD Popeline' 오타까지). 잡코리아 크롤은 담당업무·필수사항 칸이 비어 있어서, 그쪽 브리핑이 이 캐치 게시의 담당업무 세 줄(C++ 게임 서버 개발, 서버 프로그램 설계·구현·유지보수, 성능 최적화·안정화)과 필수사항 여섯 줄(C++ 20, 자료구조·알고리즘, 멀티 스레드, 네트워크 프로그래밍, Visual Studio·MS-SQL, 형상 관리)을 이미 옮겨 적었다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 마감일 10.30(금) 24시다. 두 자리가 아니므로 한 곳으로만 지원한다."
     }
   ]
 }
