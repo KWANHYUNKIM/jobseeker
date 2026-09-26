@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**없다 — 80번째 후보 조사(2026-09-26)로 대기 3/3: 유자베이스(경제 정보·데이터 배포) · 머니포워드(가계부·백오피스 SaaS) · stmn(TUNAG, 글이 드묾). 다음은 신규 — 대기 맨 위 유자베이스 프로파일(입구 `tech.uzabase.com/sitemap_periodical.xml?year=&month=`, 첫 글 `entry/2026/09/05/154644`). LayerX 는 Fintech·Security 수익원 때문에 in_progress(Fintech事業部 카테고리 확인이 남음).**
+**유자베이스 — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '고객사 AWS 로 데이터를 흘려보낸다' 를 Datafeed 글(`entry/2026/09/05/154644`, scratchpad `uz_df.txt` — 버킷 정책 예 이후 끝까지)로. 그 뒤 에이전트(`uz_ag.txt`, 200/422 등 나머지 응답 규칙 마저). NewsPicks 수익원은 도메인이 없다 — 완주 판정 때 NewsPicks 기술 글을 찾고 없으면 두 번 뒤 hold. 대기 2/3(머니포워드·stmn). LayerX 는 in_progress.**
+
 
 
 
