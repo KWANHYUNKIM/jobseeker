@@ -1808,3 +1808,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 PIVOT 회사 프로파일
 
 - 회사 페이지·요금 페이지를 jina 로 못 찾음(corp. 서브도메인 없음, /company·/premium 은 빈 SPA). 서비스 페이지의 무료 회원·마일과 시청 로그 글의 '광고 재생 중 제외' 로 수익원 둘을 inferred 로. 도메인 둘(미션 Pull 형·시청 로그 큐잉).
+
+## 2026-09-26 PIVOT 미션 Pull 형 재설계
+
+- 결정 6 — Push 대신 Pull·정기 잡·통째 재집계+멱등 3층·미션 정의 코드(DB 대신)·MetricResolver·mission/mile 경계. GW 한정 미션이 클라이언트 수정 없이 나간 실례.

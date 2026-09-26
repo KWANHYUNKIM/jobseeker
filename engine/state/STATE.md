@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**PIVOT 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '시청 습관을 만드는 미션과 마일을 서버가 판정한다' — `pivot-mission-pull-architecture`(옛 데일리 액션의 괴로움 · Push 형 이벤트 구동 → Pull 형 정기 잡 · 미션 정의를 DB 대신 코드로 · GW 한정 미션 · 의도적 트레이드오프 · 모듈러 모놀리스; 본문 뒤쪽은 아직). 그다음 '흔들리는 모바일 네트워크에서 시청 로그를 빠짐없이 보낸다' — `viewing-log-queuing-system`(10초 세그먼트·로컬 DB 큐·30초 동기·백그라운드 보호). 과금 구조는 공개 자료에 없다 — 수익원 둘 다 inferred 이지만 도메인은 있다. 대기 2/3(Stock·1D).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**PIVOT 확장 1/2(2026-09-26) — `mission-pull-architecture` 완료. 다음은 확장: '흔들리는 모바일 네트워크에서 시청 로그를 빠짐없이 보낸다' — `viewing-log-queuing-system`(10초 세그먼트·로컬 DB 큐·30초 동기·백그라운드 보호). 그 뒤 수익원 둘 다 도메인·기능이면 **완주 → done**. 과금 구조는 공개 자료에 없다 — 수익원 둘 다 inferred 이지만 도메인은 있다. 대기 2/3(Stock·1D).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

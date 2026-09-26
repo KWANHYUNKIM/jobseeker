@@ -42,7 +42,7 @@
 | **Finatext** | JP · 핀테크 인프라·금융 데이터 | 프로파일(2026-09-26). 도메인 둘 — 수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다 · BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다. 기능 2(`snowflake-pipeline-cost-cut` · `crest-dwh-layer-exposure`). **hold** — 증권·보험·지원 수익원 자료 두 번 없음(2026-09-26). 수익원 다섯 중 BaaS·Insurtech·Fintech SHIFT 는 도메인 없음. 입구 `zenn.dev/p/finatext/feed`. |
 | **KENCOPA** | JP · 건설 AI 에이전트 | 프로파일(2026-09-26). 도메인 둘 — 설계 도서로 공정표의 일수를 세운다 · 제각각인 PDF 표를 구조화 데이터로 뽑는다. 기능 2(`activity-rate-quantity-linking` · `sds-pdf-table-extraction`). **hold** — 적산 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 적산 AI 에이전트는 도메인 없음. 입구 `zenn.dev/p/kencopa/feed`(8편). |
 | **WWWAVE(ウェイブ)** | JP · 전자 코믹·아니메 제작·배신 | 프로파일(2026-09-26). 도메인 둘 — 전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다 · 이상 때만 알리는 감시에서 침묵을 해석한다. 기능 2(`access-vba-delivery-retirement` · `batch-silence-monitoring`). **hold** — 신규 사업 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 신규 사업은 도메인 없음. 입구 `zenn.dev/p/wwwave/feed`. |
-| **PIVOT** | JP · 비즈니스 영상 미디어 | 프로파일(2026-09-26). 도메인 둘 — 시청 습관을 만드는 미션과 마일을 서버가 판정한다 · 흔들리는 모바일 네트워크에서 시청 로그를 빠짐없이 보낸다. 기능 0. 과금 구조 미공개 — 수익원(영상 광고 · 회원 기반) 둘 다 inferred. 입구 `zenn.dev/p/pivotmedia/feed`. |
+| **PIVOT** | JP · 비즈니스 영상 미디어 | 프로파일(2026-09-26). 도메인 둘 — 시청 습관을 만드는 미션과 마일을 서버가 판정한다 · 흔들리는 모바일 네트워크에서 시청 로그를 빠짐없이 보낸다. 기능 1(`mission-pull-architecture`). 과금 구조 미공개 — 수익원(영상 광고 · 회원 기반) 둘 다 inferred. 입구 `zenn.dev/p/pivotmedia/feed`. |
 
 
 ## 대기
