@@ -1,0 +1,220 @@
+{
+  "slug": "cjenm",
+  "name": "씨제이이엔엠",
+  "name_en": "CJ ENM",
+  "aliases": [
+    "씨제이이엔엠",
+    "CJENM"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "cjenm.com",
+  "one_liner": "방송·영화·음악·공연을 하는 CJ ENM — 개발 공고는 대부분 글로벌 K-POP 팬덤 플랫폼 'Mnet Plus'(투표·라이브·포토카드, 250여 개국) 자리다",
+  "company": {
+    "business": "CJ ENM 엔터테인먼트부문 사이트는 사업을 TV Shows·Film·Music·Digital Business·Performing Arts·Animation 으로 나누고 스스로를 '대한민국 최대 콘텐츠 사업자' 라 적으며, 음악에서 '엠넷 유니버스' 를 전 세계로 확장한다고 쓴다. 모집중 개발 공고 대부분은 **Mnet Plus** 조직이다 — 공고 머리말은 Mnet Plus 를 'CJ ENM의 글로벌 K-POP OTT & 팬덤 플랫폼' 으로, 방송·공연·아티스트 IP 기반 팬 경험을 디지털로 확장한다고 소개하고, 투표·라이브·영상·포토카드 핵심 기능과 **유료 영상·디지털 굿즈·광고** 등 수익 모델, '다국어와 다지역 환경에 최적화된 글로벌 확장' 을 적는다. 앱 공고는 '250여 개국에서 사용' 과 MAMA AWARDS·KCON 같은 대형 실시간 이벤트, 멤버십·인앱결제를 적는다. mnetplus.world 첫 화면은 Mnet Plus Premium 과 라이브·M COUNTDOWN 등 프로그램을 보여준다. 이 밖에 사람인에 AI Studio Lab 의 AI 영상 제작(AI Producer)과 커머스부문 2026 신입사원(마케팅·MD·디자인, 서초구) 공고가 있다. CJ ENM 전체 매출·사업부별 비중은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "CJ ENM 엔터테인먼트부문 | 글로벌 종합 콘텐츠 기업",
+        "url": "https://www.cjenm.com/ko/",
+        "publisher": "CJ ENM",
+        "summary": "첫 화면: 사업을 TV Shows·Film·Music·Digital Business·Performing Arts·Animation 으로 나누고, '대한민국 최대 콘텐츠 사업자', 음악에서 '엠넷 유니버스' 확장, 영화 '아카데미 4관왕' 등을 적는다. 상단에 TVING·STUDIO DRAGON·CJ ONSTYLE 링크."
+      },
+      {
+        "title": "[Mnet Plus] 앱 개발(React Native)",
+        "url": "https://www.wanted.co.kr/wd/380140",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[Mnet Plus] Backend Engineer",
+        "url": "https://www.wanted.co.kr/wd/321958",
+        "publisher": "원티드"
+      },
+      {
+        "title": "Mnet Plus - Home",
+        "url": "https://www.mnetplus.world/en",
+        "publisher": "CJ ENM",
+        "summary": "메타: 'Global K-POP content platform' — 아티스트 영상·프로그램·라이브 스트리밍. 첫 화면에 Mnet Plus Premium(첫 구매 포인트 100% 페이백), Live·Stage·Mple Points 메뉴, M COUNTDOWN 등 프로그램."
+      }
+    ],
+    "scale": [
+      {
+        "label": "Mnet Plus 앱 사용 국가(공고 주장)",
+        "value": "250여 개국",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Mnet Plus] 앱 개발(React Native)",
+            "url": "https://www.wanted.co.kr/wd/380140",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "Mnet Plus 유료 상품(멤버십·유료 영상·디지털 굿즈)",
+        "how": "Mnet Plus 공고가 유료 영상·디지털 굿즈를 새 수익 모델로, 앱 공고가 멤버십·인앱결제를 핵심 기능으로 적는다. mnetplus.world 첫 화면에 Mnet Plus Premium 이 있다. 가격·가입자 수는 읽지 않았다.",
+        "domains": [
+          "Mnet Plus 앱(React Native)",
+          "Mnet Plus 백엔드·인프라"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Mnet Plus] Backend Engineer",
+            "url": "https://www.wanted.co.kr/wd/321958",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[Mnet Plus] 앱 개발(React Native)",
+            "url": "https://www.wanted.co.kr/wd/380140",
+            "publisher": "원티드"
+          },
+          {
+            "title": "Mnet Plus - Home",
+            "url": "https://www.mnetplus.world/en",
+            "publisher": "CJ ENM",
+            "summary": "메타: 'Global K-POP content platform' — 아티스트 영상·프로그램·라이브 스트리밍. 첫 화면에 Mnet Plus Premium(첫 구매 포인트 100% 페이백), Live·Stage·Mple Points 메뉴, M COUNTDOWN 등 프로그램."
+          }
+        ]
+      },
+      {
+        "name": "Mnet Plus 광고",
+        "how": "Backend 공고 주요업무에 '광고 수익 개선을 위한 기능 개발' 이 있다. 광고 형태·매출은 읽지 않았다.",
+        "domains": [
+          "Mnet Plus 백엔드·인프라",
+          "팬덤 데이터 분석"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Mnet Plus] Backend Engineer",
+            "url": "https://www.wanted.co.kr/wd/321958",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "방송·영화·음악·공연 콘텐츠(CJ ENM 본업)",
+        "how": "사이트가 TV Shows·Film·Music·Performing Arts·Animation·Digital Business 를 사업으로 적는다. 사업부별 매출은 읽지 않았다. AI Producer 공고의 AI Studio Lab 이 차세대 영상 콘텐츠 제작 기술을 연구한다.",
+        "domains": [
+          "AI 영상 제작"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "CJ ENM 엔터테인먼트부문 | 글로벌 종합 콘텐츠 기업",
+            "url": "https://www.cjenm.com/ko/",
+            "publisher": "CJ ENM",
+            "summary": "첫 화면: 사업을 TV Shows·Film·Music·Digital Business·Performing Arts·Animation 으로 나누고, '대한민국 최대 콘텐츠 사업자', 음악에서 '엠넷 유니버스' 확장, 영화 '아카데미 4관왕' 등을 적는다. 상단에 TVING·STUDIO DRAGON·CJ ONSTYLE 링크."
+          },
+          {
+            "title": "[CJ ENM] AI Producer",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55097586",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "Mnet Plus 앱(React Native)",
+        "why": "앱 공고가 TypeScript·React Native iOS/Android 앱, 투표·라이브·VOD·실시간 채팅·포토카드·멤버십·인앱결제, MAMA·KCON 같은 대형 실시간 이벤트에서의 안정성, 크래시·ANR·렌더링·메모리 지표, 디자인 시스템과 React Native 버전 업그레이드를 적는다.",
+        "what_to_know": [
+          "React Native",
+          "인앱결제",
+          "실시간 이벤트 트래픽"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Mnet Plus] 앱 개발(React Native)",
+            "url": "https://www.wanted.co.kr/wd/380140",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "Mnet Plus 백엔드·인프라",
+        "why": "Backend 공고가 확장 가능한 서비스 아키텍처, 방송 이벤트·콘서트·투표, 광고 수익 기능을, DevOps 공고가 AWS EKS/ECS 컨테이너 운영·CI/CD·모니터링·백업을 적는다.",
+        "what_to_know": [
+          "투표 트래픽 처리",
+          "AWS EKS/ECS",
+          "CI/CD"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Mnet Plus] Backend Engineer",
+            "url": "https://www.wanted.co.kr/wd/321958",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[Mnet Plus] DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/373347",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "팬덤 데이터 분석",
+        "why": "사람인 Data Analyst 공고가 dbt·BigQuery 데이터 마트, KPI 정의와 Superset 대시보드, 글로벌 유저 행동·팬덤·콘텐츠·마케팅 성과 분석을 적는다.",
+        "what_to_know": [
+          "dbt",
+          "BigQuery",
+          "지표 체계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[CJ ENM] Mnet Plus Data Analyst",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55097589",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "AI 영상 제작",
+        "why": "사람인 AI Producer 공고가 AI Studio Lab 의 생성형 AI 기반 영상 콘텐츠 제작 방식 연구, AI 제작 파이프라인 고도화, 실제작 적용 기술 검증을 적는다. 방송·영화 본업의 제작 방식을 바꾸는 연구 조직으로 읽힌다.",
+        "what_to_know": [
+          "생성형 영상 모델",
+          "제작 파이프라인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[CJ ENM] AI Producer",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55097586",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "Mnet Plus 는 팬 참여형 기능으로 수익원을 늘리는 중이다",
+        "evidence": "상품 포트폴리오의 다각화를 통해 지속적인 매출 성장을 실현하고자 합니다.",
+        "so_what": "공고가 유료 영상·디지털 굿즈·광고를 '새로운 수익 모델' 로 적는다 — 인앱결제·멤버십 같은 결제 기능이 개발 업무에 자주 등장한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "트래픽이 행사 날에 몰린다",
+        "evidence": "MAMA AWARDS, KCON 등 대형 실시간 이벤트 구간에서도 안정적으로 동작하는 앱 구현",
+        "so_what": "Backend 공고도 방송 이벤트·콘서트·투표를 적는다. 평소 트래픽이 아니라 시상식·투표 마감 같은 순간 급증을 어떻게 버티는지가 면접 소재가 될 수 있다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "CJ ENM 전체·Mnet Plus 매출과 유료 가입자 수는 읽지 않았다",
+    "Mnet Plus 멤버십·유료 영상 가격은 읽지 않았다",
+    "임직원 수(전체·Mnet Plus 조직)는 읽지 않았다",
+    "커머스부문 2026 신입사원 공고는 개발 직무가 아니다(마케팅·MD·디자인)",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
