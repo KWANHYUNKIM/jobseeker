@@ -1,0 +1,206 @@
+{
+  "book": "java-io",
+  "id": "close-order",
+  "no": "7.4",
+  "chapter": 7,
+  "title": "끝내는 순서",
+  "summary": "누가 먼저 닫나.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "쓰기만 닫는 것과 통째로 닫는 것을 가른다.",
+    "먼저 닫은 쪽이 답을 못 받는 것을 본다.",
+    "닫힌 소켓에 쓰면 첫 번째가 성공하는 것을 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.3절에서 **`flush()` 를 빼서 교착을 만들었다.** 반대쪽 문제가 하나 더 있다 — **너무 일찍 닫는 것**이다.\n\n\"다 보냈으니 닫는다\" 가 자연스러워 보이는데, 상대는 아직 답을 보내려 한다. 세 가지로 끝내 보고 로그를 비교했다."
+    },
+    {
+      "type": "prose",
+      "md": "## `shutdownOutput()` — 쓰기만 닫는다\n\n클라이언트가 두 줄 보내고 **쓰기 방향만** 닫았다. 서버는 `readLine()` 이 `null` 을 받으면 \"다 왔다\" 로 알고 답을 보낸다."
+    },
+    {
+      "type": "compare",
+      "title": "반만 닫았을 때",
+      "left": {
+        "title": "클라이언트",
+        "md": "```\n두 줄 보냈다\nshutdownOutput() — 쓰기만 닫았다\nisOutputShutdown=true\nisClosed=false\nisConnected=true\n아직 읽을 수 있나:\n  답 = [총 2줄 받았다]\n```"
+      },
+      "right": {
+        "title": "서버",
+        "md": "```\n받았다 = [첫 줄]\n받았다 = [둘째 줄]\nreadLine() 이 null 을 줬다. 2줄\n이제 답을 보낸다\n보냈다. checkError=false\n소켓을 닫았다\n```"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "한 연결에 방향이 둘 있다",
+      "md": "TCP 연결은 **양방향 두 개를 묶은 것**이라 따로 닫을 수 있다.\n\n> `shutdownOutput()` 은 **내 쪽 쓰기만** 닫고 FIN 을 보낸다. 상대의 `readLine()` 이 `null` 을 받는다.\n> 읽기는 살아 있으니 **상대의 답을 받을 수 있다.** 위에서 `총 2줄 받았다` 를 받았다.\n> `isClosed` 가 `false` 인 것이 그 상태를 말한다 — 소켓은 안 닫혔고 한 방향만 막혔다.\n> 이 방식이 필요한 프로토콜이 있다 — **\"요청 끝\" 을 길이나 구분자 없이 알리는** 경우다. `nc -N` 이나 옛 HTTP/1.0 이 그렇게 했다."
+    },
+    {
+      "type": "prose",
+      "md": "## `close()` — 통째로 닫으면 답을 못 받는다\n\n같은 실험에서 `shutdownOutput()` 을 `close()` 로만 바꿨다. **서버 로그는 똑같다.**"
+    },
+    {
+      "type": "compare",
+      "title": "통째로 닫았을 때",
+      "left": {
+        "title": "클라이언트",
+        "bad": true,
+        "md": "```\n두 줄 보내고 close() 한다\n닫았다. isClosed=true\n읽으려 하면 ->\n  SocketException: Socket closed\n```\n\n**답을 못 받는다.**"
+      },
+      "right": {
+        "title": "서버 (똑같다)",
+        "md": "```\n받았다 = [첫 줄]\n받았다 = [둘째 줄]\nreadLine() 이 null 을 줬다. 2줄\n이제 답을 보낸다\n보냈다. checkError=false\n```\n\n**성공한 줄 안다.**"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "서버는 자기가 허공에 보낸 것을 모른다",
+      "md": "서버 로그의 `checkError=false` 가 이 절에서 가장 중요한 줄이다.\n\n> 서버는 **답을 잘 보냈다고 생각한다.** 4.4절의 그 `checkError` 이고 `false` 니까 실패 표시조차 없다.\n> 실제로는 클라이언트가 이미 소켓을 닫았고 그 바이트는 버려졌다. 커널이 받아 줬으니 자바 쪽에서는 성공이다.\n> **로그만 보면 응답을 보낸 것으로 보인다.** \"서버 로그에는 응답을 보냈다고 나오는데 클라이언트는 못 받았다\" 는 신고가 이 모양이다.\n> `Socket closed` 는 **내가 닫은 소켓을 내가 읽으려 한 것**이다 — 상대 때문이 아니다. 7.5절에서 `Connection reset` 과 구분한다."
+    },
+    {
+      "type": "table",
+      "caption": "그래서 어느 쪽을 쓰나",
+      "columns": [
+        "상황",
+        "쓸 것"
+      ],
+      "rows": [
+        [
+          "답을 받아야 한다 (요청·응답)",
+          "**받고 나서** `close()`"
+        ],
+        [
+          "\"보낼 것 끝\" 을 알려야 한다",
+          "`shutdownOutput()` 뒤에 계속 읽는다"
+        ],
+        [
+          "길이나 구분자로 끝을 안다",
+          "그냥 `close()` — 반만 닫을 필요가 없다"
+        ],
+        [
+          "더 할 말이 없다",
+          "`close()` — 9장의 `Connection: close` 가 이것이다"
+        ]
+      ],
+      "note": "**9장의 HTTP 는 세 번째다.** `Content-Length` 로 본문 끝을 알기 때문에 반만 닫을 필요가 없다 — 그것이 헤더에 길이를 적는 이유 중 하나다."
+    },
+    {
+      "type": "prose",
+      "md": "## 닫힌 소켓에 쓰면 — 첫 번째는 성공한다\n\n서버가 한 줄만 읽고 바로 닫게 했다. 클라이언트는 `null` 을 받은 뒤 **계속 써 봤다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "세 번 쓰고 raw 로 세 번 더",
+      "sql": "[클라] readLine() = null (상대가 닫았다)\n[클라] 이제 닫힌 소켓에 써 본다\n[클라]   PrintWriter 0번: checkError=false\n[클라]   PrintWriter 1번: checkError=true\n[클라]   PrintWriter 2번: checkError=true\n[클라]   raw write -> SocketException: Broken pipe"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "실패를 한 번 늦게 안다",
+      "md": "**0번 쓰기는 성공한 것으로 나온다.** 1번부터 `true` 다.\n\n> 첫 쓰기는 **커널 송신 버퍼에 들어가서** 자바 쪽에서는 성공이다. 그 바이트가 상대에게 갔을 때 상대는 이미 닫혀 있으니 **RST 가 돌아온다.**\n> 그 RST 가 도착한 뒤의 **두 번째** 쓰기부터 실패한다. 곧 TCP 에서는 \"보냈다\" 가 \"도착했다\" 가 아니다.\n> 그래서 **한 번만 쓰고 끝나는 코드는 실패를 영영 모른다.** 응답을 한 줄 보내고 닫는 서버가 그렇다.\n> `PrintWriter` 는 `checkError` 로만 말하고 원시 스트림은 `SocketException: Broken pipe` 를 던진다 — 4.4절에서 파일로 봤던 그 차이다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`TIME_WAIT` 은 먼저 닫은 쪽에 남는다",
+      "md": "`close()` 뒤에도 그 포트 조합은 한동안 쓸 수 없다.\n\n> 먼저 `close()` 를 부른 쪽이 **`TIME_WAIT`** 상태로 보통 30초~2분 남는다. 늦게 온 패킷을 처리하려는 것이다.\n> 서버가 먼저 닫으면 **서버 쪽에 `TIME_WAIT` 이 쌓인다** — 초당 수천 연결이면 포트가 마른다. 그래서 HTTP 서버는 보통 클라이언트가 먼저 닫게 두거나 연결을 재사용한다(9.6절).\n> 7.1절의 `BindException: Address already in use` 도 이것 때문에 날 수 있다 — 프로세스는 죽었는데 소켓이 아직 정리 중이다.\n> `lsof -nP -iTCP:12345` 로 `TIME_WAIT` 을 볼 수 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"서버 로그에는 응답을 보냈다고 나오는데 클라이언트는 못 받았습니다.\"**\n\n> **클라이언트가 먼저 닫았을 가능성**이 크다. 서버 쪽 `checkError` 는 `false` 이고 예외도 없다 — 커널이 받아 줬으니까.\n> 이 실험으로 말할 수 있다 — 클라이언트가 `close()` 한 뒤에도 서버는 `보냈다. checkError=false` 를 찍었다.\n> 고치는 법은 **클라이언트가 답을 받고 나서 닫는 것**, 또는 \"보낼 것 끝\" 만 알리려면 `shutdownOutput()`.\n> `Broken pipe` 가 왜 한 번 늦게 오냐고 물으면 — **첫 쓰기는 커널 버퍼에 들어가고** RST 를 받은 뒤부터 실패한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 세 가지 끝내기",
+      "sql": "=== 1) 반만 닫기 (shutdownOutput) ===\n[클라] 두 줄 보냈다\n[클라] shutdownOutput() — 쓰기만 닫았다\n[클라] isOutputShutdown=true isClosed=false isConnected=true\n[클라] 아직 읽을 수 있나: 답 = [총 2줄 받았다]\n  [서버] 받았다 = [첫 줄]\n  [서버] 받았다 = [둘째 줄]\n  [서버] readLine() 이 null 을 줬다. 2줄 받았다\n  [서버] 보냈다. checkError=false\n\n=== 2) 통째로 닫기 (close) ===\n[클라] 두 줄 보내고 close() 한다\n[클라] 닫았다. isClosed=true\n[클라] 읽으려 하면 -> SocketException: Socket closed\n  [서버] 받았다 = [첫 줄]\n  [서버] 받았다 = [둘째 줄]\n  [서버] readLine() 이 null 을 줬다. 2줄 받았다\n  [서버] 이제 답을 보낸다 (상대는 아직 읽고 있을까)\n  [서버] 보냈다. checkError=false\n\n=== 3) 상대가 먼저 닫은 뒤 쓰기 ===\n[클라] readLine() = null (상대가 닫았다)\n[클라]   PrintWriter 0번: checkError=false\n[클라]   PrintWriter 1번: checkError=true\n[클라]   PrintWriter 2번: checkError=true\n[클라]   raw write -> SocketException: Broken pipe\n  [서버] 한 줄만 읽고 바로 닫는다\n  [서버] 받았다 = [첫 줄]\n  [서버] 소켓을 닫았다\n\n# 1) 과 2) 의 서버 로그가 같다 — 둘 다 checkError=false 다.\n# 클라이언트만 다르다: 한쪽은 답을 받고 한쪽은 Socket closed 다.\n# 서버는 어느 쪽인지 알 방법이 없다.\n#\n# 3) 의 0번과 1번 사이에서 RST 가 도착했다.\n# 첫 쓰기가 성공으로 보이는 것이 이 함정의 전부다.",
+      "note": "**1번과 2번의 서버 로그가 한 글자도 다르지 않다.** 같은 로그가 한 번은 응답 전달이고 한 번은 허공에 쓴 것이다 — 서버 로그만으로는 구분할 수 없다."
+    }
+  ],
+  "recap": [
+    "TCP 연결은 방향이 둘이라 따로 닫을 수 있다.",
+    "shutdownOutput() 은 쓰기만 닫고 FIN 을 보낸다 — 상대의 readLine 이 null 을 받는다.",
+    "그때 isClosed 는 false 이고 읽기는 살아 있어 상대의 답을 받을 수 있다.",
+    "close() 로 통째로 닫으면 상대가 보낸 답을 못 받고 Socket closed 가 난다.",
+    "서버 로그는 두 경우가 똑같다 — checkError 가 false 라 허공에 쓴 것을 모른다.",
+    "Socket closed 는 내가 닫은 소켓을 내가 읽으려 한 것이다 — 상대 탓이 아니다.",
+    "닫힌 소켓에 쓰면 0번은 checkError=false 이고 1번부터 true 다 — 첫 쓰기는 커널 버퍼에 들어간다.",
+    "원시 스트림으로 쓰면 SocketException: Broken pipe 를 던진다.",
+    "TIME_WAIT 은 먼저 닫은 쪽에 남는다 — 서버가 먼저 닫으면 서버 포트가 마른다."
+  ],
+  "drills": [
+    {
+      "task": "shutdownOutput 뒤에 읽어 답을 받아 본다.",
+      "done_when": "isClosed 가 false 인 것을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "같은 코드에서 close() 로 바꿔 본다.",
+      "done_when": "Socket closed 를 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "상대가 닫은 소켓에 여러 번 써 checkError 를 찍는다.",
+      "done_when": "첫 번째만 false 인 것을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "lsof 로 TIME_WAIT 이 어느 쪽에 남는지 본다.",
+      "done_when": "먼저 닫은 쪽인지 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "shutdownOutput() 과 close() 의 차이는.",
+      "a": "앞은 쓰기만 닫아 상대의 답을 받을 수 있고, 뒤는 양방향을 닫아 못 받는다."
+    },
+    {
+      "q": "상대가 먼저 닫았을 때 서버는 어떻게 아나.",
+      "a": "PrintWriter 로는 모른다. checkError 가 false 이고 예외도 없다."
+    },
+    {
+      "q": "Broken pipe 가 첫 쓰기에 안 나는 이유는.",
+      "a": "첫 쓰기는 커널 송신 버퍼에 들어가고, RST 가 도착한 뒤부터 실패한다."
+    },
+    {
+      "q": "TIME_WAIT 은 어느 쪽에 남나.",
+      "a": "먼저 close() 를 부른 쪽이다. 서버가 먼저 닫으면 서버 포트가 마른다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "shutdownOutput",
+      "what": "쓰기 방향만 닫고 FIN 을 보내는 것. 읽기는 살아 있어 상대의 답을 받을 수 있다."
+    },
+    {
+      "term": "TIME_WAIT",
+      "what": "먼저 닫은 쪽에 남는 상태. 늦게 온 패킷을 처리하려는 것이고 그동안 그 포트 조합을 못 쓴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Socket.shutdownOutput",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/Socket.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "RFC 9293 — TCP Connection Termination",
+      "url": "https://datatracker.ietf.org/doc/html/rfc9293",
+      "publisher": "IETF"
+    },
+    {
+      "title": "Java SE 17 API — Socket.setSoLinger",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/Socket.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

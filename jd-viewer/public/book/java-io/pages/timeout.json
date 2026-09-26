@@ -1,0 +1,194 @@
+{
+  "book": "java-io",
+  "id": "timeout",
+  "no": "7.6",
+  "chapter": 7,
+  "title": "타임아웃",
+  "summary": "안 오는 응답을 기다리는 시간.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "타임아웃 뒤에 소켓이 살아 있는 것을 확인한다.",
+    "7.3절의 교착을 이것으로 고친다.",
+    "타임아웃이 세 군데 따로 있는 것을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.3절의 교착은 **영원히** 멈춰 있었다. 강제 종료로 끝냈다. 7.5절의 표에 `SocketTimeoutException` 이 있었는데 아직 안 만들어 봤다.\n\n이 절이 그 실험이고, 그것으로 7.3절의 문제가 닫힌다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "한 줄이다",
+      "code": "s.setSoTimeout(1500);      // 읽기 하나에 1.5초\n\n// 이 소켓의 모든 read 가 1.5초 안에 돌아온다.\n// 안 오면 SocketTimeoutException 이다.\n// 0 이 기본값이고 '무한' 을 뜻한다 — 7.3절이 그 상태였다."
+    },
+    {
+      "type": "prose",
+      "md": "서버가 한 줄 받고 **답을 안 보내고 30초 기다리게** 했다. 클라이언트는 `setSoTimeout(1500)` 을 걸고 두 번 읽어 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "두 번 타임아웃",
+      "sql": "[클라] setSoTimeout(1500) 을 걸었다\n[클라] 1회: SocketTimeoutException: Read timed out  (1,502 ms 뒤)\n[클라]   그런데 소켓은? isClosed=false isConnected=true isInputShutdown=false\n[클라]   다시 쓸 수 있나:\n[클라]   checkError=false  (쓸 수 있다)\n[클라] 2회: SocketTimeoutException: Read timed out  (1,502 ms 뒤)\n[클라]   그런데 소켓은? isClosed=false isConnected=true isInputShutdown=false\n[클라]   checkError=false  (쓸 수 있다)"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "다른 예외와 결정적으로 다르다 — 소켓이 멀쩡하다",
+      "md": "7.5절의 다른 예외는 다 **연결이 끝난 뒤**의 일이었다. 이것만 다르다.\n\n> `isClosed=false`·`isConnected=true` 이고 **쓰기도 된다**(`checkError=false`). 두 번째 읽기도 정상으로 1,502ms 를 기다렸다.\n> 곧 **타임아웃은 \"이번 읽기를 포기한다\" 일 뿐 연결을 끊지 않는다.** 다시 읽으면 또 1.5초를 기다린다.\n> 그래서 **`catch (SocketTimeoutException e)` 에서 재시도할 수 있다** — 같은 소켓으로. `Connection reset` 을 잡았을 때와 정반대다.\n> 반대로 말하면 **포기할 때 내가 닫아야 한다.** 예외만 잡고 루프를 계속 돌면 영원히 1.5초씩 쓴다.\n> 1,500 을 걸었는데 1,502 가 나왔다 — 그 2ms 가 측정과 스케줄링 오차다. 정확한 상한이 아니라 **최소 그만큼은 기다린다**는 뜻이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 7.3절의 교착을 고친다\n\n그 실험에서 클라이언트가 `flush()` 를 빼서 양쪽이 멈췄다. 코드를 안 고치고 **타임아웃만 걸면** 어떻게 되나."
+    },
+    {
+      "type": "compare",
+      "title": "같은 버그, 타임아웃이 있을 때와 없을 때",
+      "left": {
+        "title": "타임아웃 없음 (7.3절)",
+        "bad": true,
+        "md": "```\n[서버] 로컬 12345 / 원격 60943\n(여기서 끝. 영원히.)\n```\n\n강제 종료로 끝냈다. **로그에 아무 단서가 없다.**"
+      },
+      "right": {
+        "title": "`setSoTimeout(1500)`",
+        "md": "```\nSocketTimeoutException: Read timed out\n  (1,502 ms 뒤)\n```\n\n**1.5초에 알려 준다.** 어느 줄에서 멈췄는지 스택에 남는다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "버그를 고치는 게 아니라 보이게 하는 것이다",
+      "md": "타임아웃이 `flush()` 누락을 고쳐 주지는 않는다.\n\n> 고치는 것은 **증상이 드러나는 방식**이다. 영원한 멈춤이 1.5초 뒤의 예외가 된다.\n> 멈춘 프로세스는 디버깅이 어렵다 — 로그가 없고 CPU 도 0이라 죽었는지 일하는지 모른다. 예외는 **스택 트레이스**를 준다.\n> 그래서 규칙은 하나다 — **운영에 나가는 소켓에는 반드시 타임아웃을 건다.** 값이 맞는지는 나중 문제고, 무한이 아닌 것이 먼저다.\n> 8장의 스레드 풀에서 이것이 더 중요해진다 — 타임아웃 없는 읽기 하나가 **스레드를 영구히 붙잡는다.**"
+    },
+    {
+      "type": "table",
+      "caption": "타임아웃이 세 군데 따로 있다",
+      "columns": [
+        "무엇을 기다리나",
+        "거는 법",
+        "안 걸면"
+      ],
+      "rows": [
+        [
+          "**붙기**를 기다린다",
+          "`new Socket()` + `connect(addr, ms)`",
+          "OS 기본값 (보통 수십 초~2분)"
+        ],
+        [
+          "**읽기**를 기다린다",
+          "`setSoTimeout(ms)`",
+          "**무한** — 7.3절의 그 상태"
+        ],
+        [
+          "**이름 풀이**를 기다린다",
+          "자바 소켓 API 에 없다",
+          "OS·JVM 설정에 달렸다"
+        ]
+      ],
+      "note": "**둘째 줄만 기본값이 무한이다.** 그래서 잊으면 반드시 사고가 되고, 첫째 줄은 잊어도 언젠가는 끝난다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`new Socket(host, port)` 에는 타임아웃을 줄 수 없다",
+      "md": "7.2절에서 쓴 그 생성자다.\n\n```java\n// 타임아웃을 줄 자리가 없다 — OS 기본값을 쓴다\nSocket s = new Socket(\"127.0.0.1\", 12345);\n\n// 이렇게 나눠야 준다\nSocket s = new Socket();\ns.connect(new InetSocketAddress(host, port), 3000);   // 붙기 3초\ns.setSoTimeout(5000);                                  // 읽기 5초\n```\n\n> 7.1절에서 `connect(addr, 2000)` 을 쓴 것이 이 형태다. 그때 **2ms 에 돌아왔으니** 타임아웃이 안 쓰였다 — `Connection refused` 는 즉시 온다.\n> 붙기 타임아웃이 쓰이는 것은 **답이 아예 없을 때**다. 방화벽이 패킷을 조용히 버리면 OS 기본값(리눅스는 보통 2분 넘게)까지 기다린다.\n> 곧 **두 타임아웃은 다른 일을 한다.** 둘 다 걸어야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "값을 어떻게 고르나",
+      "md": "정답은 없지만 기준은 있다.\n\n> **붙기**는 짧게 — 같은 데이터센터면 수백 ms, 인터넷 넘으면 3~5초. 붙는 데 오래 걸리면 대개 안 붙는다.\n> **읽기**는 상대가 일하는 시간 + 여유. 상대의 처리 시간을 모르면 그것부터 재야 한다.\n> **타임아웃이 상대의 처리 시간보다 짧으면 최악이다** — 상대는 계속 일하고 나는 계속 재시도해서 부하가 늘어난다. 7.5절의 멱등성 문제가 여기서 겹친다.\n> 그리고 **연쇄를 생각한다** — A가 B를 부르고 B가 C를 부르면, A의 타임아웃은 B+C 보다 커야 하고 그만큼 A의 스레드가 묶인다."
+    },
+    {
+      "type": "prose",
+      "md": "## 7장이 남긴 것\n\n여섯 절로 **연결하고 주고받고 끝내는 것**을 다 봤다. 놀라운 것은 3·4장이 그대로 쓰인다는 것이고, 새로 배운 것은 **기다림과 실패**였다.\n\n그런데 이 장의 서버는 손님을 **한 명만** 받는다. `accept()` 를 한 번 부르고 그 손님이 끝나야 다음으로 간다. 8장이 그 이야기다 — 두 번째 손님이 언제까지 기다리는지 재 본다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 살아 있는 소켓",
+      "sql": "$ java -cp out Rst server silent 12405 &\n$ java -cp out Rst client timeout 12405\n[클라] setSoTimeout(1500) 을 걸었다\n[클라] 1회: SocketTimeoutException: Read timed out  (1,502 ms 뒤)\n[클라]   그런데 소켓은? isClosed=false isConnected=true isInputShutdown=false\n[클라]   다시 쓸 수 있나:\n[클라]   checkError=false  (쓸 수 있다)\n[클라] 2회: SocketTimeoutException: Read timed out  (1,502 ms 뒤)\n[클라]   그런데 소켓은? isClosed=false isConnected=true isInputShutdown=false\n[클라]   checkError=false  (쓸 수 있다)\n[클라] 두 번 타임아웃 뒤에도 소켓을 내가 닫는다\n[클라] 끝\n  [서버] 듣는다 12405  모드=silent\n  [서버] 받았다 = [첫 줄]\n  [서버] 답을 안 보내고 30초 기다린다 (클라의 타임아웃을 보려고)\n\n# 1,500 을 걸었는데 1,502 가 나왔다 — 상한이 아니라 최소치다.\n#\n# isClosed=false 가 이 절의 핵심이다.\n# 7.5절의 다른 예외들은 다 연결이 끝난 뒤였는데\n# 타임아웃만 소켓이 멀쩡하고 쓰기도 된다.\n#\n# 그래서 재시도할 수 있고, 포기할 때는 내가 닫아야 한다.",
+      "note": "**두 번 타임아웃이 똑같이 1,502ms 다.** 첫 번째가 특별한 것이 아니라 읽기마다 새로 재는 값이다 — 누적이 아니다."
+    }
+  ],
+  "recap": [
+    "setSoTimeout(1500) 한 줄로 읽기에 상한을 건다. 기본값 0 은 무한이다.",
+    "1,500 을 걸었는데 1,502ms 가 나왔다 — 정확한 상한이 아니라 최소치다.",
+    "타임아웃 뒤에도 isClosed=false·isConnected=true 이고 쓰기도 된다.",
+    "7.5절의 다른 예외와 결정적으로 다르다 — 연결이 살아 있어 재시도할 수 있다.",
+    "포기할 때는 내가 닫아야 한다. 잡고 루프를 돌면 영원히 1.5초씩 쓴다.",
+    "7.3절의 영원한 교착이 1.5초 뒤의 예외로 바뀐다 — 버그를 고치는 게 아니라 보이게 하는 것이다.",
+    "타임아웃이 세 군데 따로 있고 읽기만 기본값이 무한이다.",
+    "new Socket(host, port) 에는 붙기 타임아웃을 줄 수 없다 — new Socket() + connect(addr, ms) 로 나눈다.",
+    "타임아웃이 상대의 처리 시간보다 짧으면 재시도가 부하를 늘린다."
+  ],
+  "drills": [
+    {
+      "task": "답을 안 보내는 서버를 만들고 타임아웃을 걸어 본다.",
+      "done_when": "설정값과 실제 시간을 비교한다.",
+      "minutes": 10
+    },
+    {
+      "task": "타임아웃 뒤에 같은 소켓으로 다시 읽어 본다.",
+      "done_when": "또 기다리는 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "7.3절의 flush 누락 코드에 타임아웃만 걸어 본다.",
+      "done_when": "예외로 드러나는 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "내 코드에서 setSoTimeout 이 없는 소켓을 찾는다.",
+      "done_when": "값을 정해 넣는다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "setSoTimeout 의 기본값은.",
+      "a": "0 이고 무한을 뜻한다. 걸지 않으면 영원히 기다린다."
+    },
+    {
+      "q": "타임아웃 뒤 소켓은 어떤 상태인가.",
+      "a": "살아 있다. isClosed=false 이고 쓰기도 된다 — 재시도할 수 있다."
+    },
+    {
+      "q": "new Socket(host, port) 에 붙기 타임아웃을 주려면.",
+      "a": "new Socket() 으로 만들고 connect(addr, ms) 를 따로 부른다."
+    },
+    {
+      "q": "타임아웃이 상대의 처리 시간보다 짧으면.",
+      "a": "상대는 계속 일하고 나는 계속 재시도해서 부하가 늘어난다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "setSoTimeout",
+      "what": "읽기 하나의 상한. 기본값 0 은 무한이고, 예외가 나도 소켓은 살아 있다."
+    },
+    {
+      "term": "붙기 타임아웃",
+      "what": "connect(addr, ms) 로 주는 값. 읽기 타임아웃과 다른 일을 하므로 둘 다 걸어야 한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Socket.setSoTimeout",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/Socket.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Socket.connect(SocketAddress, int)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/Socket.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "김영한의 실전 자바 - 고급 2편, I/O, 네트워크, 리플렉션",
+      "url": "https://www.inflearn.com/course/김영한의-실전-자바-고급-2",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

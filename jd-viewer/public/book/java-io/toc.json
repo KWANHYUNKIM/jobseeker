@@ -373,7 +373,7 @@
           "title": "끝내는 순서",
           "summary": "누가 먼저 닫나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.5",
@@ -381,7 +381,7 @@
           "title": "네트워크 예외",
           "summary": "Connection refused 부터 reset 까지.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.6",
@@ -389,7 +389,7 @@
           "title": "타임아웃",
           "summary": "안 오는 응답을 기다리는 시간.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

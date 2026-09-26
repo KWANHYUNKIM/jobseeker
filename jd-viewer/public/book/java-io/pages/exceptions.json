@@ -1,0 +1,242 @@
+{
+  "book": "java-io",
+  "id": "exceptions",
+  "no": "7.5",
+  "chapter": 7,
+  "title": "네트워크 예외",
+  "summary": "Connection refused 부터 reset 까지.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "여섯 예외를 실제로 만들어 메시지를 모은다.",
+    "Connection reset 과 Broken pipe 를 구분한다.",
+    "예외 이름으로 볼 곳을 정한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.1절부터 7.4절까지 예외 여섯 개를 **만들면서** 왔다. 흩어져 있으니 한자리에 모은다.\n\n이 표가 이 장의 실용적인 소득이다 — **예외 이름 하나로 어디를 봐야 하는지가 정해진다.** 전부 실제로 돌려서 얻은 메시지다."
+    },
+    {
+      "type": "table",
+      "caption": "여섯 예외와 그 뜻",
+      "columns": [
+        "예외 · 메시지",
+        "무슨 일",
+        "볼 곳"
+      ],
+      "rows": [
+        [
+          "`UnknownHostException: ...invalid: nodename nor servname provided`",
+          "이름을 주소로 못 바꿨다",
+          "DNS · `/etc/hosts`"
+        ],
+        [
+          "`BindException: Address already in use`",
+          "**내** 포트를 못 잡았다",
+          "앞 프로세스 · `TIME_WAIT`"
+        ],
+        [
+          "`ConnectException: Connection refused`",
+          "**상대**가 그 포트에서 안 듣는다",
+          "서버가 떴나 · 포트 번호"
+        ],
+        [
+          "`SocketTimeoutException: Read timed out`",
+          "답이 안 온다",
+          "상대가 느린가 · 방화벽"
+        ],
+        [
+          "`SocketException: Connection reset`",
+          "상대가 **RST** 로 끊었다",
+          "상대가 죽었나 · 프로토콜 어긋남"
+        ],
+        [
+          "`SocketException: Broken pipe`",
+          "이미 끊긴 데로 **내가** 썼다",
+          "내 쪽 순서 · 상대의 조기 종료"
+        ],
+        [
+          "`SocketException: Socket closed`",
+          "**내가** 닫은 소켓을 내가 썼다",
+          "내 코드의 `close` 위치"
+        ]
+      ],
+      "note": "**세 번째 열이 이 표의 목적이다.** 예외 이름이 \"내 쪽인가 상대 쪽인가\" 를 먼저 갈라 준다 — `Bind`·`Broken pipe`·`Socket closed` 는 내 쪽이고 나머지는 상대 쪽이다."
+    },
+    {
+      "type": "prose",
+      "md": "## `Connection reset` 을 만들어 봤다\n\n이것만 아직 안 만들었다. `SO_LINGER` 를 0으로 주고 닫으면 FIN 대신 **RST** 가 간다 — 상대 프로세스가 갑자기 죽는 것과 같은 모양이다."
+    },
+    {
+      "type": "compare",
+      "title": "서버가 RST 로 끊으면",
+      "left": {
+        "title": "서버",
+        "md": "```\n받았다 = [첫 줄]\nSO_LINGER 0 으로 닫는다\n  — FIN 대신 RST 가 간다\n```"
+      },
+      "right": {
+        "title": "클라이언트",
+        "bad": true,
+        "md": "```\n보냈다. 상대가 RST 로\n  끊기를 기다린다\n읽으려 하면 ->\n  SocketException: Connection reset\n```"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "`null` 과 `Connection reset` 의 차이",
+      "md": "7.4절에서 서버가 **정상으로** 닫았을 때 클라이언트는 `null` 을 받았다. 여기서는 **예외**다.\n\n> **FIN** — \"할 말 다 했다\" 는 정상 종료 인사다. 받는 쪽은 `readLine()` 이 `null` 이고 예외가 없다.\n> **RST** — \"이 연결 몰라\" 다. 받는 쪽은 `Connection reset` 예외다.\n> RST 가 오는 경우는 셋이다 — 상대 프로세스가 **갑자기 죽었다**, 상대가 **아직 안 읽은 데이터를 두고 닫았다**, 또는 방화벽이 끊었다.\n> 그래서 `Connection reset` 은 **상대가 정상 절차를 안 밟았다**는 신호다. `null` 이 정상이고 이것이 사고다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`Connection reset` 과 `Broken pipe` 를 헷갈리지 않는다",
+      "md": "둘 다 `SocketException` 이고 둘 다 \"끊겼다\" 인데 **내가 하려던 일이 다르다.**\n\n> **`Connection reset`** — 내가 **읽으려** 했고 RST 를 받았다. 7.4절의 실험 4번.\n> **`Broken pipe`** — 내가 **쓰려** 했고 이미 끊긴 연결이었다. 7.4절의 실험 3번.\n> 로그에서 이 둘을 구분하면 **내 프로그램이 읽는 중이었나 쓰는 중이었나** 가 나온다. 서버 로그에 `Broken pipe` 가 많으면 클라이언트들이 응답을 안 기다리고 떠나는 것이다(사용자가 새로고침을 누른 경우).\n> 그리고 `Broken pipe` 는 7.4절에서 본 대로 **한 번 늦게** 온다 — 첫 쓰기는 성공으로 보인다."
+    },
+    {
+      "type": "figure",
+      "caption": "예외가 나는 자리",
+      "ascii": "   name -> address        UnknownHostException\n        |\n   bind my port           BindException\n        |\n   connect to peer        ConnectException\n        |\n   ==== connected ====\n        |\n   read, nothing comes    SocketTimeoutException\n   read, RST arrives      SocketException: Connection reset\n   write to a dead peer   SocketException: Broken pipe\n   use what I closed      SocketException: Socket closed",
+      "note": "**연결 전과 후로 갈린다.** 위 셋은 연결이 안 됐고, 아래 넷은 연결이 됐다가 무슨 일이 난 것이다 — 연결 자체를 의심할지 그 위의 대화를 의심할지가 여기서 갈린다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`IOException` 하나로 잡으면 이 정보를 버린다",
+      "md": "이 예외들은 전부 `IOException` 의 자손이다.\n\n```java\n// 흔한 코드 — 위 표의 구분이 전부 사라진다\ncatch (IOException e) {\n    log.error(\"통신 실패\", e);\n}\n```\n\n> 스택 트레이스에는 남지만 **분류가 안 된다.** 재시도할 것(`Connection reset`·타임아웃)과 재시도해도 소용없는 것(`UnknownHostException`·`ConnectException`)이 같은 로그가 된다.\n> 적어도 이렇게 가른다 — **재시도 가치가 있나.** `ConnectException` 은 서버가 뜨기를 기다려야 하고, `UnknownHostException` 은 설정을 고쳐야 하고, `Connection reset` 은 즉시 재시도가 먹을 수 있다.\n> `catch (SocketTimeoutException e)` 를 앞에 두는 것이 특히 중요하다 — **그 소켓은 아직 쓸 수 있다**(7.6절)."
+    },
+    {
+      "type": "table",
+      "caption": "재시도할 것과 안 할 것",
+      "columns": [
+        "예외",
+        "재시도",
+        "왜"
+      ],
+      "rows": [
+        [
+          "`UnknownHostException`",
+          "**아니다**",
+          "설정·DNS 문제다. 같은 요청을 다시 해도 같다"
+        ],
+        [
+          "`ConnectException`",
+          "**간격을 두고**",
+          "서버가 재시작 중일 수 있다"
+        ],
+        [
+          "`SocketTimeoutException`",
+          "**상황에 따라**",
+          "상대가 이미 처리했을 수 있다 — 멱등한 요청만"
+        ],
+        [
+          "`Connection reset`",
+          "**대개 그렇다**",
+          "일시적 끊김이 많다"
+        ],
+        [
+          "`Broken pipe`",
+          "**아니다**",
+          "상대가 떠났다. 다시 써도 같다"
+        ],
+        [
+          "`Socket closed`",
+          "**아니다**",
+          "내 코드 버그다"
+        ]
+      ],
+      "note": "**타임아웃의 재시도가 가장 위험하다.** 답이 안 온 것이 \"처리를 안 했다\" 가 아니다 — 처리하고 답만 늦었을 수 있다. 결제 요청을 타임아웃에 재시도하면 두 번 결제된다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"Connection refused 와 Connection reset 의 차이가 뭡니까.\"**\n\n> **`refused` 는 붙기 전, `reset` 은 붙은 뒤**다. 전자는 그 포트에 아무도 없다는 것이고 후자는 있던 연결이 RST 로 끊긴 것이다.\n> 이어서 \"`reset` 과 `Broken pipe` 는요\" — **읽다가 났나 쓰다가 났나**의 차이다. 같은 끊김을 다른 쪽에서 본다.\n> 타임아웃 재시도를 물으면 **멱등성**을 말한다 — 답이 안 온 것과 처리가 안 된 것은 다르다.\n> `IOException` 하나로 잡으면 안 되는 이유도 말할 수 있다 — 재시도 가치가 정반대인 것들이 섞인다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 여섯 예외의 메시지",
+      "sql": "# 7.1절에서\n  UnknownHostException: 이런호스트없다.invalid:\n    nodename nor servname provided, or not known\n  BindException: Address already in use\n  ConnectException: Connection refused  (2 ms)\n\n# 7.4절에서\n  SocketException: Socket closed          (내가 닫은 것을 내가 읽었다)\n  SocketException: Broken pipe            (raw write, 0번은 성공했다)\n\n# 이 절에서 — SO_LINGER 0 으로 RST 를 만들었다\n$ java -cp out Rst server rst 12404 &\n$ java -cp out Rst client readAfterRst 12404\n[클라] 보냈다. 상대가 RST 로 끊기를 기다린다\n[클라] 읽으려 하면 -> SocketException: Connection reset\n  [서버] 듣는다 12404  모드=rst\n  [서버] 받았다 = [첫 줄]\n  [서버] SO_LINGER 0 으로 닫는다 — FIN 대신 RST 가 간다\n\n# 7.6절에서\n  SocketTimeoutException: Read timed out  (1,502 ms 뒤)\n\n# 같은 '끊겼다' 를 두 이름으로 부른다:\n#   읽다가 RST 를 받으면  Connection reset\n#   끊긴 데로 쓰면        Broken pipe\n#\n# 그리고 정상 종료(FIN)는 예외가 아니라 null 이다 — 7.4절.",
+      "note": "**일곱 줄의 메시지가 이 장의 정리다.** 새 프로토콜을 만들 때 이 중 무엇이 날 수 있는지를 먼저 적어 두면 9장의 서버가 훨씬 조용해진다."
+    }
+  ],
+  "recap": [
+    "예외 이름이 내 쪽 문제인지 상대 쪽 문제인지를 먼저 갈라 준다.",
+    "내 쪽 — BindException · Broken pipe · Socket closed.",
+    "상대 쪽 — ConnectException · SocketTimeoutException · Connection reset.",
+    "연결 전(UnknownHost·Bind·Connect)과 연결 후(나머지)로도 갈린다.",
+    "정상 종료(FIN)는 예외가 아니라 readLine 의 null 이다 — Connection reset 은 사고다.",
+    "SO_LINGER 0 으로 닫으면 RST 가 가고 상대는 Connection reset 을 본다.",
+    "Connection reset 은 읽다가, Broken pipe 는 쓰다가 난다 — 같은 끊김의 두 이름이다.",
+    "IOException 하나로 잡으면 재시도 가치가 정반대인 것들이 섞인다.",
+    "타임아웃 재시도가 가장 위험하다 — 답이 안 온 것이 처리가 안 된 것은 아니다."
+  ],
+  "drills": [
+    {
+      "task": "SO_LINGER 0 으로 끊는 서버를 만들어 Connection reset 을 받아 본다.",
+      "done_when": "메시지를 직접 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "서버를 kill -9 해서 클라이언트가 무엇을 보는지 확인한다.",
+      "done_when": "reset 인지 null 인지 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "내 코드에서 catch (IOException) 을 쓰는 자리를 찾는다.",
+      "done_when": "재시도 정책이 필요한지 판단한다.",
+      "minutes": 12
+    },
+    {
+      "task": "타임아웃에 재시도하는 코드가 있는지 본다.",
+      "done_when": "그 요청이 멱등한지 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Connection refused 와 Connection reset 의 차이는.",
+      "a": "refused 는 붙기 전(그 포트에 아무도 없다), reset 은 붙은 뒤 RST 로 끊긴 것이다."
+    },
+    {
+      "q": "Connection reset 과 Broken pipe 의 차이는.",
+      "a": "읽다가 났나 쓰다가 났나다. 같은 끊김을 다른 동작에서 본다."
+    },
+    {
+      "q": "정상 종료는 어떤 예외인가.",
+      "a": "예외가 아니다. readLine 이 null 을 돌려준다."
+    },
+    {
+      "q": "타임아웃 재시도가 위험한 이유는.",
+      "a": "답이 안 온 것과 처리가 안 된 것은 다르다. 멱등하지 않으면 두 번 실행된다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "RST",
+      "what": "\"이 연결 모른다\" 는 TCP 패킷. 받는 쪽은 Connection reset 예외를 본다."
+    },
+    {
+      "term": "멱등",
+      "what": "여러 번 해도 결과가 같은 성질. 타임아웃 재시도가 안전한지를 이것이 정한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — SocketException",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/SocketException.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — SocketTimeoutException",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/SocketTimeoutException.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "RFC 9293 — Reset Generation",
+      "url": "https://datatracker.ietf.org/doc/html/rfc9293",
+      "publisher": "IETF"
+    }
+  ]
+}
