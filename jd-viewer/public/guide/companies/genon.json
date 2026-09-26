@@ -212,7 +212,8 @@
     "salary: 공고에 금액이 없다 — 비워 둔다",
     "catch(dev) 게시 3건(Senior AI Engineer, AI Project Manager, AI Engineer)은 원티드와 제목이 겹친다 — 본문 비교로 duplicate_of 판단할 것",
     "wd/377638: 공고 경력 표기는 5-10년인데 자격요건 첫 줄은 '경력 7년 이상' 이다 — 어느 쪽이 실제 기준인지 공고로 확인되지 않는다",
-    "wd/374750: 공고 경력 표기는 1-5년인데 자격요건 첫 줄은 '유관 경력 3년 이상' 이다"
+    "wd/374750: 공고 경력 표기는 1-5년인데 자격요건 첫 줄은 '유관 경력 3년 이상' 이다",
+    "wd/215978: 공고 경력 표기는 3-10년인데 자격요건 첫 줄은 '석사 이상 혹은 학사+1년 이상의 경력' 이다. 도구 목록의 'Langraph' 는 원문 표기 그대로다"
   ],
   "postings": [
     {
@@ -935,6 +936,131 @@
           {
             "title": "[인공지능솔루션] Delivery Security Engineer",
             "url": "https://www.wanted.co.kr/wd/374750",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/215978",
+      "title": "AI Engineer_생성형 AI Agent개발",
+      "site": "wanted",
+      "verdict": "경력 표기는 3~10년이지만 자격요건 첫 줄은 '컴퓨터공학 및 관련학과 석사 이상 혹은 학사+1년 이상의 경력' 이다(서울 강남). 고객사 요구에 맞춘 LLM·멀티모달·임베딩 기반 솔루션과 에이전트(데이터 분석·보고서 생성·개인화)를 만들고, LangChain·LangGraph 로 검색·개인화를 최적화하며, 고객사 문제에 맞춘 RAG 를 설계하는 구축형 AI 엔지니어. 고객사와 함께 기획하는 일이 주요업무에 두 번 나온다. 자격요건이 도구 이름을 적는다 — Python, PyTorch, TensorFlow, Langchain, Langraph, Rasa, Flowise, Langfuse(원문 표기). 석·박사, 벡터 검색, 컨테이너, 데이터셋 생성·학습 경험은 우대다. 전형은 서류 → 1/2차 기술역량면접(사전 과제가 있을 수 있음) → Culture Fit 면접 → 처우협의.",
+      "fit": {
+        "must_have": [
+          "석사 이상 또는 학사+1년 이상 경력",
+          "LLM·RAG 기본 지식과 실무 경험",
+          "LangChain·LangGraph 솔루션 개발",
+          "LLM 에이전트(데이터 분석·보고서·개인화) 개발 또는 이해",
+          "Python·PyTorch·TensorFlow·Langfuse 등 프레임워크",
+          "고객 맞춤형 솔루션 설계"
+        ],
+        "can_learn": [
+          "석·박사",
+          "벡터 검색·RAG 운영",
+          "대규모 모델·데이터 최적화",
+          "Docker·Kubernetes",
+          "학습용 데이터셋 생성·학습·배포"
+        ]
+      },
+      "study": [
+        {
+          "topic": "고객사 맞춤 RAG 설계",
+          "from": "task",
+          "quote": "• 고객사 문제 분석을 통한 맞춤형 RAG 기반 솔루션 설계, 데이터 검색과 생성형 응답을 결합한 고성능 AI 서비스 제공",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 'LLM과 RAG 관련 기술에 대한 기본 지식과 실무 경험' 이 있다. 구축형 회사라 고객사마다 문서 형태·보안 조건이 다르다(추론).",
+          "gap_check": "고객사 문서(PDF·표·스캔)에 맞춰 청킹·임베딩·검색(BM25+벡터)·리랭킹을 어떻게 고르고, 답이 틀렸을 때 검색 실패인지 생성 실패인지 무엇으로 가르는가?",
+          "drill": "공개 문서 묶음으로 RAG 를 만들고 청킹 두 가지·검색 두 가지 조합을 질문 30개로 비교한 뒤, 검색 적중률과 답의 근거 포함률을 따로 기록한다. RAG 서베이 논문의 분류(Naive·Advanced·Modular)를 요약한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Retrieval-Augmented Generation for Large Language Models: A Survey (arXiv:2312.10997)",
+              "url": "https://arxiv.org/abs/2312.10997",
+              "kind": "paper"
+            },
+            {
+              "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (arXiv:2005.11401)",
+              "url": "https://arxiv.org/abs/2005.11401",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "LangGraph 로 보고서 생성 에이전트",
+          "from": "qualification",
+          "quote": "• LLM 기반 에이전트(데이터 분석, 보고서 생성, 개인화) 개발 경험이나 이에 높은 이해도 보유",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '분석과 보고서 생성을 자동화할 수 있는 AI 모델 설계' 와 'LangChain, LangGraph와 같은 오픈소스 프레임워크' 가 있다.",
+          "gap_check": "'지난달 매출 데이터를 분석해 보고서를 써라' 를 LangGraph 상태 그래프로 나누면 어떤 노드(질의 생성·SQL 실행·검증·작성)가 되고, SQL 오류나 빈 결과에서 어느 노드로 되돌아가야 하는가?",
+          "drill": "샘플 매출 DB 에 대해 질문 → SQL 생성 → 실행 → 결과 검증 → 보고서 작성 흐름을 LangGraph 로 만들고, 오류 시 재시도 경로와 사람 확인 단계를 넣는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LangGraph",
+              "url": "https://langchain-ai.github.io/langgraph/",
+              "kind": "docs"
+            },
+            {
+              "title": "LangChain — Introduction",
+              "url": "https://python.langchain.com/docs/introduction/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Langfuse 로 LLM 앱 추적·평가",
+          "from": "qualification",
+          "quote": "ㄴ Python, PyTorch, TensorFlow, Langchain, Langraph, Rasa, Flowise, Langfuse",
+          "priority": "high",
+          "why": "자격요건의 도구 목록에 Langfuse 가 들어 있다. 고객사 납품 뒤 어떤 질문에서 틀리는지 추적해야 개선할 수 있다(추론).",
+          "gap_check": "한 요청의 프롬프트·검색 결과·모델 응답·토큰·지연을 트레이스로 남기고, 사용자 피드백과 자동 평가 점수를 붙여 프롬프트 버전 간 비교를 어떻게 하는가?",
+          "drill": "위 RAG·에이전트에 Langfuse 트레이싱을 붙이고, 프롬프트 두 버전에 대해 평가 점수와 비용을 비교한 화면을 캡처한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Langfuse — Documentation",
+              "url": "https://langfuse.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객사와 함께 문제 정의하기",
+          "from": "task",
+          "quote": "• 고객사와 협업하여 비즈니스에 직접적인 가치를 제공할 수 있는 AI 솔루션 기획/개발",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 '비즈니스 문제를 해결하기 위한 고객 맞춤형 솔루션 설계 및 개발 역량' 이 있다. 회사가 AI 컨설팅펌에서 출발했다.",
+          "gap_check": "고객사가 '챗봇을 만들어 달라' 고 할 때 실제로 줄이려는 업무 시간·오류가 무엇인지 어떻게 캐묻고, PoC 성공 기준을 숫자로 어떻게 합의하는가?",
+          "drill": "가상의 고객사(보험사 약관 문의) 요구를 문제 정의서 한 장(현재 업무·병목·목표 지표·PoC 범위·성공 기준)으로 바꿔 쓴다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "RAG + LangGraph 보고서 에이전트 + Langfuse 평가 한 저장소",
+          "why": "자격요건의 LLM·RAG·LangGraph·에이전트·Langfuse 를 한 번에 보여 준다. 기술역량면접 전 사전 과제가 있을 수 있다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "고객사 프로젝트를 '문제→해결→지표' 로 정리",
+          "why": "주요업무 두 줄이 고객사 협업이다. 구축형 회사 면접에서 가장 먼저 묻는 경험이다(추론).",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1/2차 기술역량면접 - Culture Fit 면접 - 처우협의 - 입사확정. 기술역량 면접 전 사전 과제가 부여될 수 있다(공고 기준).",
+        "expect": [
+          "RAG 품질 개선 방법",
+          "LangGraph 에이전트 설계",
+          "LLM 앱 평가·추적",
+          "고객사 요구를 기술 설계로 바꾼 사례"
+        ],
+        "sources": [
+          {
+            "title": "AI Engineer_생성형 AI Agent개발",
+            "url": "https://www.wanted.co.kr/wd/215978",
             "publisher": "원티드"
           }
         ]
