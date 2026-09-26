@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "clickhouse.com",
   "one_liner": "분석용 데이터베이스를 오픈소스로 뿌리고 운영을 파는 회사 — 자기 창고도 자기 제품으로 짓는다",
   "business_model": "엔진은 오픈소스로 열어 두고 관리형 운영을 판다. 회사가 직접 밝힌 것은 관리형 서비스 고객 3,000곳 이상과 ARR 전년 대비 250% 이상 성장, 그리고 4억 달러 시리즈 D(Dragoneer 주도)다.\n\n**요금의 축이 하나 있다 — 저장과 컴퓨트를 따로 판다.** 회사는 그것이 유연한 아키텍처 덕분이라고 설명하고, 고객은 컴퓨트를 예약하거나 오토스케일 상한을 걸어 비용을 잡는다. 이 분리가 요금표의 편의가 아니라 아키텍처의 결과라는 점이 중요하다 — 저장과 컴퓨트가 붙어 있으면 늘리는 쪽이 늘 함께 늘어난다(재구성).\n\n회사가 넓히려는 방향도 자기 말로 적는다 — 트랜잭션과 분석을 함께 다루는 쪽(네이티브 Postgres 서비스로 트랜잭션 데이터를 동기화해 최대 100배 빠른 분석), 데이터 레이크 호환(Iceberg·Delta Lake), 그리고 LLM 관측(Langfuse 인수). 인수 이유를 인수된 쪽 대표의 말로 싣는다 — LLM 관측과 평가는 근본적으로 데이터 문제다. 전략을 한 문장으로 요약한 것은 이쪽이다 — 모델이 유능해질수록 병목은 데이터 인프라로 옮겨 간다.\n\n도메인 셋을 제품(오픈소스 엔진·클라우드·통합)으로 자르지 않고 **자기 제품과 어떤 관계에 서 있느냐**로 잘랐다. 하나는 파는 엔진 안의 결정이고, 하나는 그 엔진을 자기가 써서 먼저 벽에 부딪힌 이야기이고, 하나는 그 위에 자기 팀을 위해 얹은 것이다. 제품으로 가르면 이 회사의 특징 — 파는 것과 쓰는 것이 같다는 사실 — 이 사라진다(재구성).",
@@ -19,7 +19,7 @@
   "domain_map": {
     "title": "ClickHouse 도메인 지도",
     "question": "분석 엔진을 파는 회사가 자기 데이터로는 무엇을 하고, 그 경험이 제품으로 어떻게 돌아오는가?",
-    "code": "flowchart TD\n  OSS[\"<b>오픈소스 엔진</b>\"]:::accent --> CLOUD[\"<b>ClickHouse Cloud</b><br/>• 고객 3,000곳 이상<br/>• 저장과 컴퓨트를 따로\"]:::accent\n  ENG[\"<b>갱신을 미뤄 두고 나중에 합친다</b><br/>• 제자리 수정 대신 새로 쓰기<br/>• 백그라운드 머지\"]:::accent --> OSS\n  OWN[\"<b>사내 데이터 창고 2.1PB</b><br/>• 자기 제품으로 짓는다\"]:::accent --> DW[\"⚠️ <b>한계를 먼저 만난다</b><br/>• 시간당 적재 DAG 하나가<br/>  확장되지 않았다\"]:::gone\n  DW -.->|\"겪은 것이 제품으로\"| OSS\n  OWN --> AI[\"<b>DWAINE</b><br/>• 분석 워크로드의 70%<br/>• 사용자 250명 이상\"]:::accent\n  AI --> KEEP[\"⚠️ <b>남긴 30%</b><br/>• 공인 재무 지표<br/>• 실시간 운영 모니터링<br/>• 반복 표준 보고\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+    "code": "flowchart TD\n  OSS[\"<b>오픈소스 엔진</b>\"]:::accent --> CLOUD[\"<b>ClickHouse Cloud</b><br/>• 고객 3,000곳 이상<br/>• 저장과 컴퓨트를 따로\"]:::accent\n  ENG[\"<b>갱신을 미뤄 두고 나중에 합친다</b><br/>• 제자리 수정 대신 새로 쓰기<br/>• 백그라운드 머지\"]:::accent --> OSS\n  OWN[\"<b>사내 데이터 창고 2.1PB</b><br/>• 자기 제품으로 짓는다\"]:::accent --> DW[\"⚠️ <b>한계를 먼저 만난다</b><br/>• 시간당 적재 DAG 하나가<br/>  확장되지 않았다\"]:::gone\n  DW -.->|\"겪은 것이 제품으로\"| OSS\n  OWN --> AI[\"<b>DWAINE</b><br/>• 분석 워크로드의 70%<br/>• 사용자 250명 이상\"]:::accent\n  AI --> KEEP[\"⚠️ <b>남긴 30%</b><br/>• 공인 재무 지표<br/>• 실시간 운영 모니터링<br/>• 반복 표준 보고\"]:::list\n  PGX[\"<b>트랜잭션과 분석을 한 스택으로</b><br/>• 물리 WAL 복제 · 약 200ms<br/>• 관리형 Postgres\"]:::list --> CLOUD\n  classDef gone stroke-dasharray: 4 3"
   },
   "revenue_streams": [
     {
@@ -239,6 +239,30 @@
       ],
       "features": [
         "seventy-percent-to-ai-thirty-percent-kept"
+      ]
+    },
+    {
+      "name": "트랜잭션과 분석을 한 스택으로 잇는다",
+      "why": "PeerDB 인수, ClickPipes 의 Postgres CDC, 관리형 Postgres 까지 — 트랜잭션은 Postgres, 분석은 ClickHouse 로 두고 그 사이의 복제를 없는 것처럼 만드는 것이 회사의 방향이다.",
+      "tech": [
+        {
+          "tech": "WalShadow(물리 WAL · 그림자 Postgres · Rust 병렬 디코더 · 네이티브 블록 · _lsn)",
+          "solves": "논리 복제 없이 원본 부하를 물리 대기 서버 수준으로 두고, 커밋이 약 200ms 에 분석에 보이며 원본 속도를 따라잡는다.",
+          "limits": "대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않아 자사 관리형에서만 관리형으로 쓸 수 있다. 벤치마크는 단일 테이블이고 아직 비공개 프리뷰다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+              "url": "https://clickhouse.com/blog/introducing-walshadow",
+              "publisher": "ClickHouse Blog",
+              "date": "2026-09-10",
+              "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "physical-wal-replica"
       ]
     }
   ],
@@ -1786,6 +1810,289 @@
           "summary": "Dragoneer 주도 4억 달러 시리즈 D. 관리형 서비스 고객 3,000곳 이상, ARR 전년 대비 250% 이상 성장. Langfuse 인수(LLM 관측)와 네이티브 Postgres 서비스 출시, Iceberg·Delta Lake 호환."
         }
       ]
+    },
+    {
+      "key": "physical-wal-replica",
+      "name": "Postgres → ClickHouse 복제 — 논리 복제를 버리고 물리 WAL 을 읽는다",
+      "domain": "트랜잭션과 분석을 한 스택으로 잇는다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "ClickHouse 는 PeerDB 를 인수하고, ClickPipes 로 Postgres CDC 를 내고, 로컬 NVMe 위의 관리형 Postgres 까지 내놓으며 한 방향으로 가고 있다 — **트랜잭션은 Postgres, 분석은 ClickHouse, 그 사이는 복잡하지 않게.** 그 사이를 잇던 것이 논리 복제 기반 CDC(PeerDB)였다. 수천 고객이 쓰지만, 원본 DB 가 변경을 논리 이벤트로 풀어 주는 방식은 원본에 부하를 주고 복제 슬롯이라는 운영 짐이 따르며, 커밋이 분석에 보이기까지 **초 단위**가 걸렸다. 회사는 이 비교를 '씁쓸하다'고 적는다 — 자기들이 만든 도구를 스스로 넘어서는 글이라서다.",
+        "metrics": [
+          {
+            "label": "커밋 → 조회 가능",
+            "value": "Postgres 물리 복제본의 기준선 약 **50ms**, WalShadow 약 **200ms**, PeerDB 약 **10초** — 이 벤치마크에서 약 **50배** 낮다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "지속 처리량",
+            "value": "원본이 초당 약 **29만** 행을 넣을 때 WalShadow **28.9만** 행 — 병목이 되지 않는다. PeerDB 약 **12만**(원본의 약 40%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "벤치마크 조건",
+            "value": "**단일 테이블**의 연속 변경, 같은 리전, 8 vCPU(c8i.2xlarge) 인스턴스. 워크로드마다 다르다고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "단계",
+            "value": "오픈소스로 공개, 관리형 Postgres 에서는 **비공개 프리뷰**. 앞으로 몇 달 동안 실제 워크로드에서 다지겠다고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "논리 복제의 비용을 볼 때",
+          "thought": "논리 복제는 **원본 DB 에게 변경을 논리 이벤트로 풀어 달라고** 한다. 그 해독이 원본의 자원을 쓰고, 논리 복제 슬롯을 관리해야 한다. 그런데 Postgres 는 이미 복제본과 복구를 위해 **물리 WAL 을 내보내고 있다.** 그걸 받아서 원본 밖에서 풀면 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "ClickHouse 를 무엇으로 볼지",
+          "thought": "ClickHouse 를 CDC 의 목적지가 아니라 **분석용 물리 대기 서버(standby)**로 본다. 원본이 보기엔 복제본 하나가 더 붙은 것과 비슷한 부하다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "병렬로 넣다 순서가 어긋날 때",
+          "thought": "블록을 병렬로 넣으면 ClickHouse 에 순서 없이 도착한다. 모든 행에 **원본 WAL 위치(_lsn)** 를 붙이면 ClickHouse 가 키마다 최신 판을 남긴다. 스키마 변경이나 truncate 처럼 순서가 꼭 필요한 것만 **장벽**을 세워 앞선 데이터가 내구화될 때까지 기다린다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "물리 WAL",
+            "what": "Postgres 가 물리 복제와 복구를 위해 내보내는 로그. 논리 이벤트가 아니라 페이지·힙 레코드 수준이다."
+          },
+          {
+            "name": "그림자 Postgres",
+            "what": "카탈로그 WAL 레코드만 재생하는 스키마 전용 Postgres. 테이블·열·타입의 최신 카탈로그를 유지해 힙 레코드를 해석할 수 있게 한다."
+          },
+          {
+            "name": "디코더 풀 · 배처 · 인서터 풀",
+            "what": "Rust 디코더가 힙 레코드를 병렬로 풀고, 배처가 테이블별로 ClickHouse 네이티브 블록을 묶고, 별도의 인서터 풀이 여러 블록을 동시에 쓴다. 해독과 삽입이 따로 늘어난다."
+          },
+          {
+            "name": "_lsn",
+            "what": "모든 행에 붙는 원본 WAL 위치. 순서 없이 도착해도 ClickHouse 가 키마다 최신 판을 고르는 기준."
+          },
+          {
+            "name": "장벽(barrier)",
+            "what": "스키마 변경·truncate 처럼 엄격한 순서가 필요한 작업 앞에서 앞선 데이터가 모두 내구화될 때까지 기다리는 지점."
+          }
+        ],
+        "invariants": [
+          "원본은 물리 WAL 만 보낸다 — 해독은 원본 밖에서 한다.",
+          "행의 최신성은 도착 순서가 아니라 _lsn 이 정한다.",
+          "순서가 필요한 작업은 장벽 뒤에서만 적용된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "원본 Postgres 가 복제본에 보내는 것과 같은 물리 WAL 스트림을 받는다",
+            "why": "논리 해독을 원본에 시키지 않는다"
+          },
+          {
+            "step": "카탈로그 WAL 레코드를 걸러 스키마 전용 그림자 Postgres 에 재생한다",
+            "why": "스키마가 바뀌어도 힙 레코드를 해석할 수 있게"
+          },
+          {
+            "step": "힙 레코드를 Rust 디코더 풀에 나눠 병렬로 푼다 — 그림자 Postgres 를 거치지 않는다",
+            "why": "해독이 병목이 되지 않게"
+          },
+          {
+            "step": "배처가 테이블별로 행을 묶어 완전한 ClickHouse 네이티브 블록을 만든다",
+            "why": "중간 형식 변환 없이 충실도를 지킨다"
+          },
+          {
+            "step": "인서터 풀이 여러 블록을 동시에 ClickHouse 에 쓴다 — 행마다 _lsn 을 달고",
+            "why": "삽입도 해독과 따로 늘린다"
+          },
+          {
+            "step": "스키마 변경·truncate 는 장벽을 세워 앞선 데이터가 내구화된 뒤에 적용한다",
+            "why": "순서가 필요한 것만 순서를 지킨다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Postgres 의 변경을 어디서 얻을 것인가",
+            "chosen": "**논리 복제가 아니라 물리 WAL** — 복제본이 받는 것과 같은 스트림을 원본 밖에서 해독한다",
+            "alternatives": [
+              "논리 복제 기반 CDC(자사 PeerDB · ClickPipes)"
+            ],
+            "tradeoff": "**대부분의 관리형 Postgres 는 물리 WAL 을 고객에게 내주지 않는다** — 그래서 WalShadow 를 쓸 수 없다. 관리형으로는 양쪽을 다 운영하는 ClickHouse Managed Postgres 에서만 된다(자사 스택으로 끌어들이는 효과는 이 사이트의 해석). 대신 논리 복제 슬롯이 없어지고, 원본의 부하가 물리 대기 서버와 비슷해지며, ADD·RENAME·DROP COLUMN·CREATE TABLE 같은 복잡한 스키마 변경을 다룬다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "물리 WAL 을 해석하는 데 필요한 스키마를 어떻게 알 것인가",
+            "chosen": "**카탈로그 WAL 만 스키마 전용 그림자 Postgres 에 재생한다**",
+            "alternatives": [
+              "원본에 스키마를 물어보기",
+              "물리 레코드 해석을 직접 다시 구현하기"
+            ],
+            "tradeoff": "그림자 Postgres 라는 부품을 하나 더 운영한다. 대신 원본에 묻지 않고도 스키마가 바뀌는 시점을 WAL 순서 그대로 따라간다 — 데이터 레코드는 그림자를 거치지 않아 병목이 되지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "원본과 ClickHouse 사이에 무엇을 둘 것인가",
+            "chosen": "**아무것도 — 디코더가 ClickHouse 네이티브 블록을 만들어 곧장 쓴다.** 논리 해독 출력 플러그인도, Kafka 도, JSON 직렬화나 별도 정규화 단계도 없다",
+            "alternatives": [
+              "논리 해독 → Kafka → JSON → 정규화 → 적재 같은 흔한 CDC 파이프라인"
+            ],
+            "tradeoff": "ClickHouse 전용 경로가 된다 — 다른 목적지로 뻗을 중간 버스가 없다(이 사이트의 해석). 대신 중간 형식 변환이 없어 충실도를 지키고 지연이 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "병렬화를 하면 순서를 어떻게 지킬 것인가",
+            "chosen": "**순서를 지키지 않고 행마다 _lsn 을 달아 ClickHouse 가 키마다 최신 판을 고르게 한다.** 엄격한 순서가 필요한 스키마 변경·truncate 만 장벽",
+            "alternatives": [
+              "한 줄로 순서대로 적용"
+            ],
+            "tradeoff": "ClickHouse 쪽 테이블이 키마다 최신 판을 고르는 방식(버전 기준 병합)에 기대게 되고, 장벽마다 앞선 데이터가 내구화될 때까지 멈춘다(앞쪽은 이 사이트의 해석). 대신 해독과 삽입을 따로 늘려 원본 속도를 따라잡는다 — 28.9만 행/초로 원본과 거의 같다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "자사 도구 PeerDB 를 계속 앞세울 것인가",
+            "chosen": "**PeerDB 를 넘어서는 새 엔진을 내고 오픈소스로 푼다** — 비교를 스스로 공개한다",
+            "alternatives": [
+              "PeerDB 를 계속 다듬는다"
+            ],
+            "tradeoff": "수천 고객이 쓰는 자사 도구의 약점(지연 약 10초, 처리량 원본의 약 40%)을 스스로 드러낸다 — 회사도 '씁쓸하다'고 적는다. 벤치마크는 단일 테이블·같은 리전이라 실제 워크로드에서의 결과는 아직이다. 대신 트랜잭션과 분석을 한 스택으로 잇는다는 방향에 가장 가까운 길을 연다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+                "url": "https://clickhouse.com/blog/introducing-walshadow",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-09-10",
+                "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "ClickHouse Managed Postgres",
+          "via": "물리 WAL 복제 계층 통합",
+          "contract": "양쪽을 다 운영하므로 WalShadow 를 Postgres 복제 계층에 직접 넣는다. 대부분의 다른 관리형 Postgres 에서는 물리 WAL 이 없어 쓸 수 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "PeerDB · ClickPipes",
+          "via": "논리 복제 CDC(비교 대상)",
+          "contract": "같은 문제를 논리 복제로 푸는 자사 도구. 벤치마크의 기준선이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "updates-as-patches-not-rewrites",
+          "via": "키마다 최신 판 유지",
+          "contract": "순서 없이 도착한 행을 _lsn 으로 최신 판만 남기는 방식은 ClickHouse 의 갱신 처리와 이어질 것이다(이 사이트의 해석 — 글은 어떤 테이블 엔진을 쓰는지 말하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 물리 WAL 에서 네이티브 블록까지",
+          "question": "원본에 해독을 시키지 않고 어떻게 1초 안에 분석에 닿는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  PG[(원본 Postgres)] -->|물리 WAL · 복제본과 같은 스트림| WS[WalShadow]\n  WS -->|카탈로그 레코드| SH[(스키마 전용 그림자 Postgres)]\n  SH -.->|최신 카탈로그| DEC\n  WS -->|힙 레코드| DEC[\"<b>Rust 디코더 풀</b><br/>병렬 해독\"]:::accent\n  DEC --> BAT[배처 · 테이블별 네이티브 블록]\n  BAT --> INS[인서터 풀 · 동시 삽입<br/>행마다 _lsn]\n  INS --> CH[(ClickHouse)]\n  DDL[스키마 변경 · truncate]:::quiet -.->|장벽 · 앞선 데이터 내구화 뒤| CH"
+        },
+        {
+          "title": "한 행의 여정",
+          "question": "순서 없이 도착해도 어떻게 맞는 값이 남는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 커밋: Postgres 트랜잭션\n  커밋 --> WAL: 물리 WAL 기록\n  WAL --> 해독: 원본 밖 디코더\n  해독 --> 블록: _lsn 을 단 채 묶인다\n  블록 --> 도착: 다른 블록보다 먼저일 수도 늦을 수도\n  도착 --> 최신판: 키마다 _lsn 이 큰 판이 남는다\n  최신판 --> [*]: 약 200ms\n  note right of 도착\n    스키마 변경과 truncate 만\n    장벽 뒤에서 순서대로.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 논리 복제와 새 제약",
+          "question": "무엇을 피했고, 무엇을 새로 떠안았나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  LOG[논리 복제 CDC]:::accent --> SRC[원본이 해독 · 자원 소모]\n  LOG --> SLOT[복제 슬롯 운영 짐]\n  LOG --> LAT[커밋 → 조회 약 10초]\n  LOG --> THR[처리량 원본의 약 40%]\n  LOG --> DDLH[복잡한 스키마 변경이 어렵다]\n  PHY[물리 WAL] --> MGD[대부분의 관리형 Postgres 가 내주지 않는다]\n  PAR[병렬 삽입] --> OOO[순서 없이 도착]\n  OOO -.->|그래서| LSN[_lsn · 장벽]:::quiet\n  BENCH[단일 테이블 벤치마크] --> REAL[실제 워크로드 결과는 아직]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+          "url": "https://clickhouse.com/blog/introducing-walshadow",
+          "publisher": "ClickHouse Blog",
+          "date": "2026-09-10",
+          "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1797,7 +2104,8 @@
     "Langfuse 인수 뒤 통합이 어떻게 되는지 모른다 — 발표문의 한 문장(LLM 관측과 평가는 근본적으로 데이터 문제다)뿐이다.",
     "연표(eras)를 세울 자료를 못 찾았다 — 다만 사내 창고 글이 1편과 A year later 로 나뉘어 있어 두 편을 나란히 놓으면 시간축이 나올 수 있다.",
     "1편의 발행일을 확인하지 못했다 — 2편이 A year later 라 부르므로 약 1년 전이지만 정확한 연도를 못 찾아 연표(history)를 세우지 않았다.",
-    "적재를 왜 아홉으로 갈랐는지 모른다 — 원천별인지 도메인별인지, 아홉이 맞는 수인지가 글에 없다."
+    "적재를 왜 아홉으로 갈랐는지 모른다 — 원천별인지 도메인별인지, 아홉이 맞는 수인지가 글에 없다.",
+    "WalShadow 가 ClickHouse 쪽에 어떤 테이블 엔진(버전 기준 병합 등)을 쓰는지, 다중 테이블·대형 트랜잭션에서의 지연은 공개되지 않았다."
   ],
   "sources": [
     {
@@ -1854,6 +2162,13 @@
       "publisher": "ClickHouse Blog",
       "date": "2026",
       "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+    },
+    {
+      "title": "Introducing WalShadow: Sub-second Postgres replication to ClickHouse from physical WAL",
+      "url": "https://clickhouse.com/blog/introducing-walshadow",
+      "publisher": "ClickHouse Blog",
+      "date": "2026-09-10",
+      "summary": "Postgres 를 ClickHouse 로 복제할 때 논리 복제(자사 PeerDB·ClickPipes)를 쓰지 않고, Postgres 복제본이 받는 물리 WAL 을 원본 밖에서 해독해 ClickHouse 네이티브 블록으로 곧장 쓰는 오픈소스 엔진. 카탈로그 WAL 은 스키마만 가진 그림자 Postgres 에 재생해 스키마를 따라가고, 힙 레코드는 Rust 디코더 풀이 병렬로 풀며, 순서가 어긋난 도착은 행마다 붙인 LSN 과 스키마 변경·truncate 의 장벽으로 바로잡는다. 단일 테이블 벤치마크에서 커밋→조회 가능 약 200ms(PeerDB 약 10초), 초당 28.9만 행(PeerDB 약 12만). 대가: 대부분의 관리형 Postgres 는 물리 WAL 을 내주지 않는다."
     }
   ]
 }

@@ -763,3 +763,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## bookingcom 재방문 → 확장 (2026-09-26)
 
 09-14 Kafka 컨슈머 용량 시험 글로 partition-ratio-load. 결정 6개, 새 도메인 사내 인프라의 한계를 미리 잰다. Kafka 비교 재료에 더했다.
+
+## clickhouse 재방문 → 확장 (2026-09-26)
+
+09-10 WalShadow 글로 physical-wal-replica. 결정 5개, 새 도메인 트랜잭션과 분석을 한 스택으로 잇는다. 나머지 후보 넷은 STATE 에.
