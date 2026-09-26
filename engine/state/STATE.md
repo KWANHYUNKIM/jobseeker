@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — grafana-labs 재방문은 새 자료 없음(1회째). 09-06 묶음 진행 중.**
+**없다 — honeycomb 재방문에서 확장(`drop-but-keep-the-count`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **honeycomb** — 2026-09-26 적응형 테일 샘플링(09-21) → `drop-but-keep-the-count`, 새 도메인. `/blog/feed` 는 404 — 목록은 r.jina.ai 로 `/blog`. 나머지 새 글(Canvas·AI 규범 3·wide events·relational query)은 안 봄.
 - **grafana-labs** — 2026-09-26 없음 1회째. `/blog/index.xml` 로 09-06 이후 5건 — 에이전트 SLO(09-24)는 개념·제품 안내(95% 는 예시), 나머지는 기능 소개·사용법. 본문은 curl 직접이 엉뚱한 글을 주니 r.jina.ai 로.
 - **flipkart** — 2026-09-26 없음 1회째. `blog.flipkart.tech/feed` 가 curl 로 바로 온다(r.jina.ai 불필요). 최신이 08-03 관련성 라벨링(이미 출처).
 - **fastly** — 2026-09-26 없음 1회째. `/blog_rss.xml` 로 09-06 이후 10건 — 전부 제품 발표·보안 권고. 행사 대비 Challenge 동작(09-17)도 제품 소개라 안 씀.

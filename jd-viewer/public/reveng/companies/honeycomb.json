@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "honeycomb.io",
   "one_liner": "관측 도구를 파는 회사 — 좌석이 아니라 이벤트로 값을 매기고 쿼리는 무제한으로 연다",
   "business_model": "월 이벤트 수로만 값을 매긴다. Free 는 월 2,000만 이벤트, Pro 는 월 150달러부터 7.5억 이벤트, Enterprise 는 연 100억 이벤트 기본에 별도 협의다. **핵심은 안 받는 쪽에 있다** — 좌석 무제한, 쿼리 무제한이고 사용자당 과금이 없다. 관측 도구를 좌석으로 팔면 볼 사람을 줄이게 되고, 그러면 관측이 안 된다(재구성). 대신 아무나 아무 때나 물어봐도 되는 구조의 값을 회사가 떠안는다.\n\n그래서 이 문서의 도메인 둘은 파는 것이 아니라 그 약속을 떠받치는 것으로 잡았다. 하나는 그 질의를 감당할 저장 엔진이고, 다른 하나는 그 엔진에 이벤트를 밀어 넣는 파이프라인이다. 제품 기능(트레이스 화면, SLO, 경보)을 도메인으로 세우지 않은 것은 회사가 공개한 시스템 글이 이 둘에 몰려 있어서다.\n\n이 엔진에는 관측을 파는 회사가 이미 둘 있는데 값을 매기는 자리가 서로 다르다. Datadog 은 제품을 여러 갈래로 나눠 팔고, VictoriaMetrics 는 비용을 짓누르는 것이 샘플 양이 아니라 카디널리티라고 말한다. Honeycomb 은 그 카디널리티를 상품 쪽에 놓았다 — 고카디널리티 필드를 아무 조합으로나 훑는 것이 곧 제품이라, 남들이 비용이라 부르는 것을 여기서는 무제한으로 연다(재구성).",
@@ -38,7 +38,7 @@
   "domain_map": {
     "title": "Honeycomb 도메인 지도",
     "question": "쿼리를 무제한으로 팔면 무엇을 직접 만들어야 하는가?",
-    "code": "flowchart TD\n  U[\"<b>고객</b><br/>• 월 이벤트 수로 낸다<br/>• 좌석 · 쿼리는 무제한\"]:::list --> I\n  I[\"<b>수집 서비스</b><br/>• 데이터셋을 Kafka 파티션에 매핑\"]:::list --> K\n  K[\"<b>Kafka</b><br/>• 관측 파이프라인의 등뼈\"]:::accent\n  K --> R[\"<b>Retriever 노드 (이중)</b><br/>• NVMe 로컬 디스크<br/>• 열별 파일로 기록\"]:::accent\n  R --> D1[\"<b>아무나 아무 때나<br/>물어봐도 되게 만든다</b><br/>• 자체 컬럼 저장소<br/>• writer / reader 분리\"]:::list\n  K --> D2[\"<b>도는 채로 파이프라인<br/>밑을 갈아 끼운다</b><br/>• Confluent → 오픈소스 Kafka<br/>• ZooKeeper → KRaft\"]:::list"
+    "code": "flowchart TD\n  U[\"<b>고객</b><br/>• 월 이벤트 수로 낸다<br/>• 좌석 · 쿼리는 무제한\"]:::list --> I\n  I[\"<b>수집 서비스</b><br/>• 데이터셋을 Kafka 파티션에 매핑\"]:::list --> K\n  U -.->|\"보내기 전에 줄인다\"| SMP[\"<b>버리되 셈은 맞게 버린다</b><br/>• 적응형 테일 샘플링 · ot=th<br/>• 목표 10% → 9.4~10.3%\"]:::accent\n  SMP -.-> I\n  K[\"<b>Kafka</b><br/>• 관측 파이프라인의 등뼈\"]:::accent\n  K --> R[\"<b>Retriever 노드 (이중)</b><br/>• NVMe 로컬 디스크<br/>• 열별 파일로 기록\"]:::accent\n  R --> D1[\"<b>아무나 아무 때나<br/>물어봐도 되게 만든다</b><br/>• 자체 컬럼 저장소<br/>• writer / reader 분리\"]:::list\n  K --> D2[\"<b>도는 채로 파이프라인<br/>밑을 갈아 끼운다</b><br/>• Confluent → 오픈소스 Kafka<br/>• ZooKeeper → KRaft\"]:::list"
   },
   "domains": [
     {
@@ -174,6 +174,45 @@
       "features": [
         "swap-kafka-under-load"
       ]
+    },
+    {
+      "name": "버리되 셈은 맞게 버린다",
+      "why": "이 회사는 이벤트 수로 돈을 받고 고객은 그 수를 줄이려 샘플링한다. 고정 비율은 싸지만 사고 때 필요한 트레이스부터 사라지고, 기존 테일 샘플링은 남긴 것이 얼마를 대표하는지 잃는다. 본문 확인함(2026-09-21). 저장·질의 도메인이 '들어온 것을 다 물어볼 수 있게'라면 여기는 '들어오기 전에 무엇을 얼마로 줄이나'라 따로 세웠다(이 사이트의 해석).",
+      "tech": [
+        {
+          "tech": "adaptive_tail_sampling (OpenTelemetry Collector 프로세서)",
+          "solves": "트레이스 단위로 모아 첫 일치 규칙과 핑거프린트별 적응형 비율로 판정하고, 결정을 ot=th 임계값으로 실어 하류가 재가중하게 한다. 복제본 하나가 약 0.3 코어로 초당 10만 스팬.",
+          "limits": "결정이 인스턴스별이라 트레이스 ID 라우팅 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만 다룬다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+              "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+              "publisher": "Honeycomb Blog",
+              "date": "2026-09-21",
+              "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "Refinery",
+          "solves": "같은 알고리즘 계열을 클러스터로 운영한다 — 피어 간 트레이스 소유 공유, 무중단 규칙 교체, 과부하 시 결정적 샘플링 전환.",
+          "limits": "Collector 파이프라인 밖의 별도 시스템이라 따로 운영해야 한다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+              "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+              "publisher": "Honeycomb Blog",
+              "date": "2026-09-21",
+              "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "drop-but-keep-the-count"
+      ]
     }
   ],
   "eras": [],
@@ -182,7 +221,8 @@
     "Kafka 이전 글에 빠진 수치가 있다 — 총 기간은 몇 분기 로만 적고 처리량·비용·브로커 수가 없다.",
     "아직 안 읽은 글이 많다 — virtualizing-storage-engine(저장 엔진 가상화) · solving-murder-mystery-columnar-datastore(자체 컬럼 저장소의 버그 추적 회고) · incident-report-exercises-cleanups-and-evacuations(장애 보고서) · scaling-kafka-observability-pipelines(예전 Kafka 글) · why-observability-requires-distributed-column-store. 이 중 앞의 셋은 결이 좋아 보인다.",
     "Retriever 의 세부를 회사 자료 한 편으로만 봤다 — 세그먼트 규칙과 writer/reader 분리는 확인했지만 질의 실행·분산 방식은 확인하지 못했다.",
-    "연표(eras)를 세울 자료를 아직 못 찾았다 — 다만 scaling-kafka-observability-pipelines(예전 글)와 2026년 이전 글을 나란히 놓으면 시간축이 나올 수 있다."
+    "연표(eras)를 세울 자료를 아직 못 찾았다 — 다만 scaling-kafka-observability-pipelines(예전 글)와 2026년 이전 글을 나란히 놓으면 시간축이 나올 수 있다.",
+    "적응형 테일 샘플링을 Honeycomb 자기 수집 경로(또는 Refinery as a Service)에서 얼마나 쓰는지, 고객이 샘플링으로 줄인 이벤트 비율이 매출에 어떤 영향인지 글에 없다. 같은 달 공지 글(bringing-most-advanced-sampling-opentelemetry-collector)은 아직 안 읽었다."
   ],
   "features": [
     {
@@ -1060,6 +1100,342 @@
           "summary": "월 이벤트 수로만 값을 매긴다. 좌석과 쿼리는 무제한."
         }
       ]
+    },
+    {
+      "key": "drop-but-keep-the-count",
+      "name": "샘플링 결정에 확률을 달아 보낸다",
+      "domain": "버리되 셈은 맞게 버린다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "이 회사는 이벤트 수로 돈을 받는다. 고객이 트레이스를 다 보내면 비싸고, 고정 비율로 줄이면 싸지만 눈이 먼다 — 1-in-100 은 오류도, 드문 라우트도, 헬스체크도 똑같이 1% 만 남겨 사고 때 필요한 트레이스가 가장 먼저 사라진다.\n\n회사는 이 문제를 오래 자기 제품 Refinery 로 풀어 왔다. 이번에는 그 알고리즘을 OpenTelemetry Collector 에 기여했다. 그런데 기존 tail_sampling 에 정책 몇 개를 얹는 식으로는 안 됐다 — 거기서는 결정이 확률 없는 keep/drop 이라 샘플링 뒤의 숫자가 실제 트래픽을 대변하지 못한다.\n\n**그래서 핵심 설계는 '무엇을 남기나'보다 '남긴 것이 얼마를 대표하나'를 같이 보내는 것이다.** 결정마다 표준 임계값(ot=th)을 달아 두면 하류 어느 백엔드든 원래 양을 되살릴 수 있다. 자기 과금의 근거(이벤트 수)를 줄이는 도구를 벤더 중립으로 내놓은 셈이다(이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "목표 비율 추종",
+            "value": "목표 10% 에 모든 부하 수준에서 9.4~10.3%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "하류 복원 오차",
+            "value": "상류 50% 와 합성해도 원래 전송량을 1.5% 안으로 복원",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "처리량",
+            "value": "복제본 하나가 약 0.3 코어로 초당 약 10만 스팬 (카디널리티 시험 17만 이상)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "과부하",
+            "value": "70배 과부하에서도 메모리 한도로 죽지 않음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "span_limit 의 값",
+            "value": "거대 트레이스에서 메모리 약 36% 감소, CPU 약 34% 증가 (같은 처리량)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "헤드 샘플링의 한계를 셀 때",
+          "thought": "1/1000 로 나는 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다. 결정할 때 아직 아무것도 실패하지 않았으니 샘플러가 실패를 편애할 수 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "기존 tail_sampling 에 정책을 더할지 볼 때",
+          "thought": "거기서 정책은 OR 로 합쳐져, 한 정책이 안 남긴 트레이스도 다음 정책이 남길 수 있다. 그러면 적응형 샘플러가 자기가 강제한다는 확률을 통제하지 못한다. 그리고 정책 계약에 확률을 실을 자리가 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Refinery 와의 관계를 정할 때",
+          "thought": "알고리즘은 같아도 운영은 다르다. 규모에서의 샘플링은 설정하는 부품이 아니라 운영하는 시스템이고, 그 운영 깊이(피어 간 소유 공유·무중단 규칙 교체·과부하 전환)는 아직 Refinery 에만 있다고 회사가 직접 선을 긋는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "트레이스 버퍼",
+            "what": "트레이스 ID 로 모은 스팬. 트레이스 수(num_traces, 기본 5만)와 트레이스당 스팬 수(span_limit, 기본 1만)로 묶인다."
+          },
+          {
+            "name": "판정 트리거",
+            "what": "루트 스팬 도착, trace_timeout(기본 30초), span_limit 도달 중 먼저 오는 것. 앞의 둘은 decision_delay(기본 2초)만큼 늦게 온 스팬을 더 기다린다."
+          },
+          {
+            "name": "규칙",
+            "what": "OTTL 조건과 샘플러의 짝. 순서대로 보고 처음 일치한 것이 이긴다. 조건 없는 규칙이 나머지를 받는다."
+          },
+          {
+            "name": "핑거프린트",
+            "what": "서비스·라우트·메서드처럼 트래픽을 분류하는 속성 묶음. 샘플러가 이 단위로 비율을 정한다."
+          },
+          {
+            "name": "임계값(ot=th)",
+            "what": "트레이스의 56비트 무작위값과 비교하는 기준. 남긴 스팬에 실려 가서 하류가 생존 확률을 되찾는다."
+          },
+          {
+            "name": "결정 캐시",
+            "what": "최근 결정을 기억해 늦게 온 스팬을 같은 트레이스와 똑같이 처리한다."
+          }
+        ],
+        "invariants": [
+          "샘플러는 비율만 낸다 — 결정은 언제나 임계값과 트레이스 무작위값의 비교다.",
+          "남긴 스팬은 자신이 살아남은 확률을 들고 간다.",
+          "여러 샘플링 단계가 겹치면 더 엄격한 쪽이 이기고, 남는 임계값은 끝에서 끝까지의 실제 확률이다.",
+          "버퍼가 넘칠 때도 그냥 버리지 않는다 — 규칙으로 실제 판정해 내보낸다.",
+          "한 트레이스의 스팬은 모두 같은 Collector 로 가야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "스팬을 트레이스 ID 로 메모리에 모은다",
+            "why": "트레이스 전체를 봐야 오류가 있었는지 안다 — 헤드 샘플링이 못 하는 일이다."
+          },
+          {
+            "step": "루트 스팬·30초 시한·1만 스팬 한도 중 먼저 오는 것으로 판정 준비. 앞의 둘은 2초 더 기다린다",
+            "why": "거대한 트레이스는 기다릴수록 메모리를 더 먹으니 한도에 닿으면 바로 판정한다."
+          },
+          {
+            "step": "규칙을 순서대로 보고 처음 일치한 규칙의 샘플러를 쓴다 — 예: 오류는 모두, 나머지는 적응형 10%",
+            "why": "OR 합성과 달리 한 트레이스의 운명을 한 샘플러가 정해 확률 계산이 맞는다."
+          },
+          {
+            "step": "적응형 샘플러가 핑거프린트별 EMA 로 비율을 정하고, 그 비율을 임계값으로 바꿔 트레이스 무작위값과 비교한다",
+            "why": "드문 핑거프린트는 많이, 시끄러운 핑거프린트는 적게 남기면서 전체가 목표에 수렴한다."
+          },
+          {
+            "step": "남긴 스팬에 ot=th 와 일치 규칙·트리거 속성을 달아 내보내고, 결정 캐시로 늦게 온 스팬을 같게 처리한다",
+            "why": "하류가 재가중할 수 있고, 어느 규칙이 무엇을 남겼는지 대시보드에서 보인다."
+          },
+          {
+            "step": "버퍼가 차면 가장 오래된 트레이스를 지금까지 본 스팬으로 규칙 판정해 내보낸다. 종료 때는 버퍼를 비우고 끝낸다",
+            "why": "과부하에서도 오류 보존 규칙이 계속 작동하고, 재시작이 데이터를 잃지 않는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "언제 결정하나 — 시작에서, 끝에서",
+            "chosen": "끝에서. 트레이스 전체를 메모리에 모은 뒤 결정한다.",
+            "alternatives": [
+              "헤드 샘플링 — 트레이스 시작에서 고정 확률로 정한다"
+            ],
+            "tradeoff": "오류와 드문 트래픽을 편애할 수 있다. 헤드 샘플링은 버퍼가 없어 가장 싸지만, 1/1000 결제 실패를 1% 로 줄이면 하루 50건 중 이틀에 한 건만 남는다. 값은 메모리와 지연이다 — 스팬 속도 x 버퍼 창만큼 메모리가 커지고, 판정이 최대 30초+2초 늦는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "기존 tail_sampling 에 정책을 더할 것인가",
+            "chosen": "따로 새 프로세서를 만든다.",
+            "alternatives": [
+              "tail_sampling 에 적응형 정책을 추가한다",
+              "Refinery 를 그대로 Collector 로 옮긴다"
+            ],
+            "tradeoff": "tail_sampling 은 정책이 OR 로 합쳐지고 정책 계약에 확률을 실을 자리가 없어 적응형 샘플러의 셈이 깨진다. 따로 만든 대가는 비슷한 이름의 처리기가 둘 생겨 사용자가 골라야 한다는 것이다 — 회사는 tail_sampling 사용자가 잃는 것은 없다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "결정을 무엇으로 표현하나",
+            "chosen": "keep/drop 대신 OpenTelemetry 일관 확률 샘플링 규격의 임계값(W3C TraceState ot=th). 벤더 필드를 쓰지 않는다.",
+            "alternatives": [
+              "확률 없는 keep/drop",
+              "Honeycomb 전용 샘플 레이트 필드"
+            ],
+            "tradeoff": "하류 어느 백엔드든 원래 양을 되찾는다 — 상류 50% 와 겹쳐도 1.5% 안으로 복원했고, spanmetrics 가 샘플링된 데이터로 제대로 가중된 요청률·오류율을 낸다. 대신 회사가 쓰던 1-in-N 표현을 임계값으로 바꾸는 변환 층이 생기고, 과금 근거인 이벤트 수를 줄이는 도구를 경쟁 백엔드도 똑같이 쓸 수 있게 된다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "규칙을 어떻게 합치나",
+            "chosen": "순서대로 보고 처음 일치한 것이 이긴다.",
+            "alternatives": [
+              "OR 합성 — 어느 정책이든 남기면 남긴다"
+            ],
+            "tradeoff": "한 트레이스의 확률을 한 샘플러가 책임지니 계산이 맞는다. 대신 규칙의 순서가 곧 의미가 되어, 순서를 잘못 두면 뒤의 규칙이 영영 안 걸린다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "비율을 어떤 단위로 적응시키나",
+            "chosen": "핑거프린트(서비스·라우트처럼 트래픽을 분류하는 속성)별로. 목표 비율형은 EMA, 목표 처리량형은 EMA 또는 슬라이딩 창.",
+            "alternatives": [
+              "전체에 한 비율",
+              "요청을 식별하는 속성으로 쪼갠다"
+            ],
+            "tradeoff": "드문 것은 많이, 시끄러운 것은 적게 남기면서 전체가 목표에 붙는다(10% 목표에 9.4~10.3%). 핑거프린트를 잘못 고르면(요청 ID 같은 것) 모든 트레이스가 제 핑거프린트를 가져 적응이 무너진다. 슬라이딩 창은 트래픽 변화에 빨리 반응하는 대신 짧은 급증에 더 흔들린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "버퍼가 넘치면 무엇을 하나",
+            "chosen": "가장 오래된 트레이스를 지금까지 본 스팬으로 규칙 판정해 내보낸다. 진짜 과부하용으로는 상수 시간 확률 정책도 둔다. 트레이스당 span_limit 로 거대 트레이스를 막는다.",
+            "alternatives": [
+              "넘친 트레이스를 그냥 버린다",
+              "메모리 한도 없이 버틴다"
+            ],
+            "tradeoff": "70배 과부하에서도 메모리가 묶여 죽지 않았고, 과부하 중에도 오류 보존이 작동한다. 대신 덜 모인 트레이스로 판정하니 뒤늦은 오류 스팬을 놓칠 수 있다(이 사이트의 해석). span_limit 는 메모리 약 36% 를 줄이는 대신 CPU 를 약 34% 더 쓴다. 메모리 한도가 바이트가 아니라 개수라 스팬 크기가 크면 예측이 어긋난다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "Collector 판으로 Refinery 를 대신할 것인가",
+            "chosen": "대신하지 않는다. 알고리즘은 Collector 에 내놓되 규모 운영은 여전히 Refinery 가 앞선 도구라고 선을 긋는다.",
+            "alternatives": [
+              "Refinery 를 접고 Collector 프로세서로 모은다"
+            ],
+            "tradeoff": "Collector 판은 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 각 인스턴스가 자기 조각의 트래픽만 보고 비율을 배우며, 규칙을 바꾸려면 재시작해야 하고, 과부하 때 결정적 샘플링으로 넘어가는 장치가 없다. Refinery 는 피어 간 소유 공유·무중단 규칙 교체·과부하 전환을 가졌다. 그 대가로 같은 알고리즘을 두 곳에서 유지한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+                "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-09-21",
+                "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "아무나 아무 때나 물어봐도 되게 만든다 (같은 회사 도메인)",
+          "via": "이벤트 수 과금",
+          "contract": "질의는 무제한으로 열고 이벤트 수로만 받는 요금 구조에서, 샘플링은 고객이 청구서를 줄이는 손잡이다. 남긴 이벤트가 얼마를 대표하는지 실려 와야 그 위의 질의가 틀리지 않는다(이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Refinery (자사 샘플링 프록시)",
+          "via": "같은 알고리즘 계열(dynsampler-go)",
+          "contract": "Refinery 의 샘플러 종류를 프로세서로 옮기는 대응표가 README 에 있다. 운영 깊이는 Refinery 에 남긴다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "OpenTelemetry Collector (collector-contrib)",
+          "via": "adaptive_tail_sampling 프로세서",
+          "contract": "상류 기여. 알파 안정화를 향하고 있고, 회사 배포판에서 베타로 먼저 제공한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "스팬이 모여 확률 달린 결정이 되기까지",
+          "question": "적응형 테일 샘플링은 한 트레이스를 어떻게 판정하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  SP[\"<b>스팬 도착</b>\"]:::quiet --> BUF[\"<b>트레이스 ID 로 버퍼</b><br/>• num_traces 5만 · span_limit 1만\"]:::list\n  BUF --> T{\"루트 스팬 · 30초 · 1만 스팬<br/>중 먼저\"}\n  T -->|\"루트·시한\"| W[\"<b>2초 더 기다린다</b>\"]:::quiet\n  T -->|\"span_limit\"| RULE\n  W --> RULE{\"규칙을 순서대로<br/>처음 일치\"}\n  RULE -->|\"오류\"| ALL[\"<b>always_sample</b>\"]:::list\n  RULE -->|\"나머지\"| AD[\"<b>adaptive_percentage</b><br/>• 핑거프린트별 EMA\"]:::accent\n  ALL --> TH[\"<b>비율 → 임계값 ot=th</b><br/>• 트레이스 무작위값과 비교\"]:::accent\n  AD --> TH\n  TH --> OUT[\"<b>남긴 스팬 + ot=th</b><br/>• 하류가 1.5% 안으로 양을 복원\"]:::accent"
+        },
+        {
+          "title": "샘플링이 숫자를 망가뜨리는 경로",
+          "question": "왜 keep/drop 과 OR 합성으로는 안 되나",
+          "kind": "failure",
+          "code": "flowchart TD\n  H{\"헤드 샘플링 1%\"} -->|\"결정 때 실패 전\"| H1[\"<b>1/1000 실패 50건 중<br/>이틀에 한 건만 남는다</b>\"]:::quiet\n  TS{\"tail_sampling\"} -->|\"OR 합성\"| T1[\"<b>안 남긴 트레이스를<br/>다음 정책이 남긴다</b><br/>• 적응형 확률이 통제 밖\"]:::quiet\n  TS -->|\"keep/drop 만\"| T2[\"<b>하류가 재가중 못 한다</b><br/>• 샘플 뒤 개수가 실제와 다르다\"]:::quiet\n  OV{\"버퍼가 넘친다\"} -->|\"그냥 버리면\"| O1[\"<b>오류 트레이스도 사라진다</b>\"]:::quiet\n  OV -->|\"규칙으로 판정해 내보낸다\"| OK[\"<b>70배 과부하에도 메모리 한도 안</b>\"]:::accent\n  T2 --> FIX[\"<b>첫 일치 규칙 + ot=th 임계값</b>\"]:::accent\n  T1 --> FIX"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+          "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+          "publisher": "Honeycomb Blog",
+          "date": "2026-09-21",
+          "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
+        }
+      ]
     }
   ],
   "sources": [
@@ -1093,6 +1469,13 @@
       "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
       "publisher": "Honeycomb Blog",
       "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
+    },
+    {
+      "title": "How Adaptive Tail Sampling Works in the OpenTelemetry Collector",
+      "url": "https://www.honeycomb.io/blog/how-adaptive-tail-sampling-works",
+      "publisher": "Honeycomb Blog",
+      "date": "2026-09-21",
+      "summary": "Refinery 와 dynsampler-go 의 적응형 샘플링 알고리즘을 OpenTelemetry Collector 의 adaptive_tail_sampling 프로세서로 기여했다. 포팅이 아니라 OTel 식으로 다시 표현했다 — 규칙은 시작 때 검증되는 OTTL 식, 결정은 벤더 필드가 아니라 W3C TraceState 의 임계값(ot=th). 헤드 샘플링은 가장 싸지만 결정 시점에 아무것도 실패하지 않아 오류를 편애할 수 없고(1/1000 결제 실패를 1% 로 헤드 샘플링하면 하루 5만 요청에서 실패 50건 중 이틀에 한 건만 남는다), 기존 tail_sampling 은 정책이 OR 로 합쳐지고 확률 없이 keep/drop 만 내서 하류에서 재가중이 안 되고 적응형 샘플러가 확률을 통제하지 못한다. 새 프로세서는 트레이스를 메모리에 모아(루트 스팬 도착·trace_timeout 30초·span_limit 1만 중 먼저) decision_delay 2초 뒤 첫 일치 규칙으로 판정한다. 핑거프린트(서비스·라우트 등) 별 EMA 로 비율을 정해 드문 것은 많이, 시끄러운 것은 적게 남긴다 — 목표 10% 에 9.4~10.3% 를 지켰다. 상류 50% 와 합쳐도 더 엄격한 쪽이 이기고 원래 전송량을 1.5% 안으로 복원했다. 버퍼(num_traces 5만)가 차면 가장 오래된 트레이스를 규칙으로 실제 판정해 내보낸다. 복제본 하나(7 vCPU·13GiB, 2티어)가 약 0.3 코어로 초당 10만 스팬, 카디널리티 시험은 17만 이상. 70배 과부하에서도 메모리 한도로 죽지 않았고 span_limit 가 거대 트레이스에서 메모리 약 36% 를 줄이는 대신 CPU 약 34% 를 더 썼다. 한계 — 결정이 인스턴스별이라 트레이스 ID 로 라우팅하는 2티어가 필요하고, 규칙 변경은 재시작, 트레이스만. Refinery 는 피어 간 트레이스 소유 공유·무중단 규칙 교체·과부하 시 결정적 샘플링 전환 때문에 여전히 앞선 도구라고 적는다."
     }
   ]
 }
