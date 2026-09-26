@@ -631,6 +631,21 @@
       "postings": 6,
       "study_items": 9,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "dreamus",
+      "name": "드림어스컴퍼니",
+      "aliases": [
+        "드림어스컴퍼니",
+        "드림어스",
+        "㈜드림어스컴퍼니",
+        "DreamusCompany",
+        "FLO"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
