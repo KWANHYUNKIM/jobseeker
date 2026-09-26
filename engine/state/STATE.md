@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — turso 재방문은 새 자료 없음(1회째). 09-06 묶음 진행 중.**
+**없다 — twilio 재방문은 새 자료 없음(1회째). 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **twilio** — 2026-09-26 없음 1회째. 검색으로 9월 글은 SIGNAL 2026 제품 발표·밋업 후기·튜토리얼뿐, 사내 시스템 글 없음. `/blog/developers` 는 튜토리얼 목록.
 - **turso** — 2026-09-26 없음 1회째. 09-06 이후 글은 Accident Protection(09-16, 제품 발표) 하나. 블로그 목록은 날짜순이 아니다(맨 위 Postgres-in-Rust 는 07-16 고정 글) — 글마다 `Published Time` 을 봐야 한다. Postgres-in-Rust 는 이전 글 쓰기 답을 받으면 후보.
 - **trendyol** — 2026-09-26 이미지 임베딩 3배 절감(09-09) → `encode-the-input-not-the-product`, 기존 "찾게 한다". 안 읽은 새 글 둘(보안 리뷰 1.5만·NoSQL→PG). `medium.com/feed/trendyol-tech` 에 본문이 실려 온다.
 - **trainline** — 2026-09-26 DynamoDB 이전(09-25, Tech Summit 발표 정리) → `access-patterns-before-databases`, 새 도메인. `medium.com/feed/trainline` RSS 에 본문이 실려 온다(Medium 403 우회).
