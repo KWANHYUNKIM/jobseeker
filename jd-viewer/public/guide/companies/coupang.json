@@ -11732,6 +11732,93 @@
       "site": "ats",
       "duplicate_of": "https://www.wanted.co.kr/wd/382275",
       "verdict": "원티드 'ML Lead (Coupang Eats Search)'(wd/382275)의 쿠팡 채용 사이트 영문판이다. 주요업무 7개 항목(고객·비즈니스 성과, 쿼리·상품 이해, Retrieval, 연관성 측정·실험, ML·LLM 혁신, 다중 시장, 조직 리더십), 자격(검색·IR·NLP 10년 이상, 석·박사), 우대 목록이 한국어판과 같은 순서·내용이다. 직함 표기만 'Senior Staff' 로 다르다. 한국어판 브리핑을 본다. 전형은 Application Review - 1st Interview - Virtual Onsite Interviews - Offer."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7994883",
+      "title": "Sr. Staff - AI Data Center Architect",
+      "site": "ats",
+      "verdict": "소프트웨어 개발 직군이 아니다 — 데이터센터 시설 아키텍트다. 서울 근무. 코로케이션 중심 데이터센터를 고밀도 'AI Factory' 로 바꾸는 물리·논리 청사진(부지·건물·모듈 pod, 액체 냉각 전환, 홀당 50MW+ 전력 이중화, InfiniBand/RoCE 물리 배선, 모듈 건설, 탄소·물 효율)을 책임진다. 우대가 하이퍼스케일러·Tier-1 사업자에서 미션 크리티컬 시설 설계 10년 이상이다.",
+      "fit": {
+        "must_have": [
+          "랙 밀도(15kW→100kW+)·버스웨이·바닥 하중",
+          "최신 서버 폼팩터·NVIDIA Blackwell/Rubin 랙 기계 요건",
+          "물리 계층(OSFP/QSFP-DD)·광섬유·시설 규모 OSPF/BGP",
+          "Revit·AutoCAD·디지털 트윈"
+        ],
+        "can_learn": [
+          "쿠팡 데이터센터 현황"
+        ]
+      },
+      "study": [
+        {
+          "topic": "공랭에서 하이브리드 액체 냉각으로의 전환",
+          "from": "task",
+          "quote": "Thermal Management: Architect the transition from air-cooled data halls to Hybrid Cooling environments (Direct-to-Chip, Rear Door Heat Exchangers, and Immersion Cooling) to support high-TDP AI chips.",
+          "priority": "core",
+          "why": "고발열(high-TDP) AI 칩을 받치려면 Direct-to-Chip·후면 도어 열교환기·침지 냉각 같은 액체 냉각이 필요하다고 주요업무가 적는다.",
+          "gap_check": "랙당 100kW 를 공랭으로 감당하기 어려운 이유와, Direct-to-Chip 도입 시 CDU·배관·누수 감지·바닥 하중에서 무엇이 새로 필요한가?",
+          "drill": "랙당 15kW·40kW·100kW 세 시나리오에서 필요한 냉각 방식과 설비(CDU 용량·유량)를 표로 정리하는 계산표를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "AI 클러스터의 물리 네트워크 (OSFP·InfiniBand·RoCE)",
+          "from": "task",
+          "quote": "Network & Fabric Topology: Define the physical layout for OSFP-based high-radix fabrics. Optimize cabling pathways and \"meet-me-room\" designs to minimize signal degradation for InfiniBand and RoCE v2 compute planes.",
+          "priority": "core",
+          "why": "GPU 클러스터는 고기수(high-radix) 패브릭과 대량 광배선이 필요하고, 배선 경로가 신호 품질에 영향을 준다고 주요업무가 적는다.",
+          "gap_check": "GPU 수천 개를 잇는 fat-tree 패브릭에서 스위치 계층·광케이블 수·케이블 길이 제약이 홀 배치를 어떻게 결정하는가?",
+          "drill": "GPU 1,024개 클러스터를 2계층 fat-tree 로 구성할 때 필요한 스위치·포트·광모듈 수를 계산하는 스크립트를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "전력 이중화 (N+1/2N) 와 홀당 50MW+",
+          "from": "task",
+          "quote": "Power & Energy: Partner with electrical engineers to design high-availability power chains (N+1/2N) capable of supporting 50MW+ of IT load per hall. Evaluate the integration of Small Modular Reactors (SMRs) or hydrogen fuel cells for onsite power.",
+          "priority": "high",
+          "why": "고가용 전력 체계와 대용량 IT 부하, 소형 모듈 원자로·수소 연료전지 같은 대안 에너지 평가까지 주요업무에 있다.",
+          "gap_check": "N+1 과 2N 전력 구성의 가용성·비용 차이, 그리고 Uptime Tier 등급과의 관계를 설명할 수 있는가?",
+          "drill": "N, N+1, 2N 구성별로 장비 수·단일 장애점·유지보수 중 가용성을 비교하는 표를 만든다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "BIM·디지털 트윈으로 착공 전 검증",
+          "from": "qualification",
+          "quote": "BIM & Digital Twin: Proficiency in Revit, AutoCAD, and Digital Twin platforms to simulate airflow, power distribution, and maintenance accessibility before breaking ground",
+          "priority": "high",
+          "why": "자격요건에 Revit·AutoCAD·디지털 트윈으로 기류·전력 분배·유지보수 접근성을 착공 전에 시뮬레이션하는 능력이 있다.",
+          "gap_check": "디지털 트윈에서 기류(CFD) 시뮬레이션으로 핫스팟을 찾았을 때, 랙 배치·차폐·냉각 용량 중 무엇부터 바꾸는가?",
+          "drill": "작은 데이터 홀을 BIM 도구로 모델링하고 핫/콜드 아일 배치 두 가지를 비교한 결과를 한 장으로 정리한다.",
+          "hours": 8,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공랭→액체 냉각 전환 사례 연구",
+          "why": "주요업무의 핵심 전환 과제와 직접 닿는다. PUE·WUE 변화까지 수치로 보여 주면 좋다.",
+          "effort": "경험 정리 1일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "고밀도 랙 냉각 설계",
+          "GPU 패브릭 물리 배치",
+          "전력 이중화 등급",
+          "착공 전 시뮬레이션",
+          "탄소·물 효율 목표"
+        ],
+        "sources": [
+          {
+            "title": "Sr. Staff - AI Data Center Architect",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7994883",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
