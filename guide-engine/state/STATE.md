@@ -4,13 +4,13 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **61건**.
-직전 회차: `Staff Back-end Engineer (Rocket Pay)`(ats gh_jid=8138624) → **`duplicate_of` wd/381767**
-(원티드판의 영문본 — 자격 줄 단위 일치, 주요업무는 원티드판의 영문 문장과 같음, 차이는 채용 절차 안내뿐).
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **62건**.
+직전 회차: `Staff Backend Engineer (Orchestration Platform)`(ats gh_jid=8168878) → **`duplicate_of` wd/383861**
+(세 절 모든 줄이 원티드판에 있음). ⚠️ 원티드 경력 표기 5~20년 vs 본문 **10년 이상** — verdict 에 본문 기준으로 적었다.
 
-⚠️ 다음 회차: `--gaps` 먼저. 개발 직군이 아닌 공고(Data Analyst 등)가 먼저 나오면 목록에서 개발 공고를 고른다.
-남은 "차이만" 후보: `Staff Backend Engineer (Orchestration Platform)`, `Staff, Back-end Engineer (GOEX)` —
-**먼저 이미 쓴 쿠팡 공고와 정규화 겹침을 센다**(ats 판은 원티드판의 영문본인 경우가 많다 → duplicate).
+⚠️ 다음 회차: `--gaps` 먼저. 남은 "차이만" 후보 1개: `Staff, Back-end Engineer (GOEX)` — 제목에 GOEX 가 든
+공고가 이번 조회에 안 걸렸다(모집중 목록에 없거나 제목 표기가 다름). **없으면 후보에서 지운다.**
+그다음은 `--gaps` 가 주는 목록에서 **개발 직군이고 아직 안 쓴 것** 을 고른다(비개발은 건너뛰고 이유를 적지 않아도 된다 — 완주 판단 때 한 줄로).
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
