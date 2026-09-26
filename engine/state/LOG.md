@@ -1884,3 +1884,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Safie 사라진 SYN-ACK
 
 - 결정 6 — AI 에 실데이터 환경·인위 재현·gc_thresh1=0·probe 줄이기(11.2→2.1초)·세 줄 다층+AMI 전개·같은 조건 환경 경고. Amazon Linux 는 2014.09 부터 기본.
+
+## 2026-09-26 Safie Trail Station AI 데이터 경로 — 완주
+
+- 결정 5 — 모델 대신 데이터 전달·복사 제거·공유 메모리·YUV420P 통일·AI 팀 협업. 수익원 둘 다 기능 → done.

@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Safie 확장 1/2(2026-09-26) — `stale-arp-syn-ack` 완료. 다음은 확장: '녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다' — `e86e52f0215054`(8대 예상 → 4대 · 데이터 전달 병목 · 개선 셋). 그러면 **완주**. 수익원 둘(구독 · 기기) 다 도메인 있음(inferred) → 두 기능이면 완주. 대기 0/3 — --gaps 가 후보 조사를 부르면 그쪽이 먼저. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Safie 완주(2026-09-26) — `trail-station-ai-data-path` 로 도메인 둘 다 기능, 수익원 둘(inferred) 다 기능 → done. 큐 0/3 — 다음은 --gaps 를 따른다(후보 조사일 것 — 입구: Zenn 최신 글 API 91쪽 이후, 또는 note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
