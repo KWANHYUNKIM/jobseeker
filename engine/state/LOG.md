@@ -1408,3 +1408,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 라쿠스 楽楽精算 전표 작성 AI
 
 - 세 벽 글 + LLMOps 글로 `expense-agent-imitate-past-slip`(결정 8 — 과거 전표 few-shot·룰 하이브리드·SQS 비동기·KEDA·EKS vs AgentCore·LLM 게이트웨이·샘플링·더미 데이터셋). 비용 수십분의 일·공수 약 40% 절감.
+
+## 2026-09-26 라쿠스 楽楽明細 장애 대응
+
+- 장애 대응 글 전문으로 `incident-triage-by-reach-and-cutoff`(결정 8 — 닿는 곳 순·먼저 떠든다·영향 먼저·폴백 먼저·우편 마감 역산 데드라인·데이터 발생원 추적·가설 2~3·AI 분업(코드만)). 한 개발자의 동작 방식 글이라 조직 온콜 체계는 없다.

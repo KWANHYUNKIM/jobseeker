@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**라쿠스 — 확장 1(2026-09-26): 楽楽精算 도메인에 `expense-agent-imitate-past-slip`(결정 8). 다음은 확장: '청구서가 거래처에 닿는 제품의 장애를 영향으로 줄 세운다' 를 楽楽明細 장애 대응 글(`entry/20260917/incident`, scratchpad `rk_incident.txt` — '顧客への影響を見極める' 이후 후반을 마저). 완주 판정 때 BlastMail·웹 미디어 수익원은 도메인이 없다 — 두 번 찾고 없으면 hold. 대기 2/3(ENECHANGE·드왕고 교육). 머니포워드(hold)·LayerX 는 in_progress.**
+**라쿠스 — 확장 2(2026-09-26): 楽楽明細 도메인에 `incident-triage-by-reach-and-cutoff`(결정 8). 두 도메인 모두 기능 있음. 다음은 완주 판정 — BlastMail·BlastEngine(메일 발송)·웹 미디어 수익원은 도메인이 없다: tech-blog.rakus.co.jp 사이트맵 2024~2026 제목에서 'メール配信'·'Blast'·'配信' 을 찾고(Findy 때처럼 전 제목을 병렬로 받아 grep), blastmail/blastengine 공식 블로그도 한 번. 두 번 없으면 회사 hold_reason + '재시도 안 함'. `--gaps` 는 신규(ENECHANGE)를 가리키지만 라쿠스를 먼저 닫는다. 대기 2/3(ENECHANGE·드왕고 교육). 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 
