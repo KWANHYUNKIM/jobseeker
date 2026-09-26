@@ -13,8 +13,8 @@
 **제논 — `done`(모집중 9건: 원티드 6 + catch 3, 그중 1건은 원티드 215978 의 중복).** catch 본문이 비면 genon.ninehire.site 원문으로 읽었다.
 **넥스트증권(`nextsecurities`) — `done`, 공고 8건(Data Engineer AI Content 388893 · DAE 388908 · Data Platform 388957 · 금융 데이터 분석가 378015 · AI Agent 386039 · DevOps 355991 · Cloud Architect 378758 · Security DevSecOps 378530).** 원티드 모집중은 다 했다. 출처: nextsecurities.com 첫 화면 + 원티드 공고 6건의 직무 Summary.
 넥스트증권 jobkorea 모집중 8건(Frontend 3·QA·Security 인프라 + 원티드와 같은 제목 3건)은 `--gaps` 가 이 회사 모집중으로 세지 않는다 — 원티드 8건을 채우자 '다 채웠다'고 했다. 대상은 `--gaps` 가 정하므로 보강(4순위)에서 다시 본다.
-**에비드넷(`evidnet`) — `in_progress`, 공고 3건(NLP·AI 에이전트 375155 · 데이터 엔지니어 359557 · 의료데이터 분석가 379411).** 출처: evidnet.com/en 첫 화면(제품 목록) + 원티드 공고 머리말. feedernet.com 은 JS 렌더라 본문이 안 읽힌다.
-⚠️ 다음 회차: 에비드넷 원티드 나머지 1건 — CDM 연구지원(354548). 그다음 사람인 Medical AI 2건, 제목 겹치는 jobkorea·사람인 3건은 본문 비교 후 `duplicate_of`.
+**에비드넷(`evidnet`) — `in_progress`, 공고 4건(NLP·AI 에이전트 375155 · 데이터 엔지니어 359557 · 의료데이터 분석가 379411 · CDM 연구지원 354548).** 원티드 모집중은 다 했다. 출처: evidnet.com/en 첫 화면(제품 목록) + 원티드 공고 머리말. feedernet.com 은 JS 렌더라 본문이 안 읽힌다.
+⚠️ 다음 회차: 에비드넷 사람인 Medical AI 2건, 제목 겹치는 jobkorea·사람인 3건은 본문 비교 후 `duplicate_of`.
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 ⚠️ **공고 본문은 `jd-viewer/public/all_jobs_enriched.json` 에서 읽는다 — `jd-viewer/dist/` 는 빌드 사본이라 낡는다.** 2026-09-26 피에프씨 Backend(388360)를 dist 에서 읽고 썼다가 public·검증기 데이터에 없어(내려간 공고) 되돌렸다. 대상은 `--gaps` 목록에 있는 url 만 쓴다.
