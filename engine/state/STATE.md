@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**88번째 후보 조사(2026-09-26) — 대기 3/3(캔리·에어클로젯·Rehab for Japan). 새 입구: Zenn 최신 글 API(`zenn.dev/api/articles?order=latest&page=N`)의 publication 이름으로 활성 회사를 뽑고 RSS 확인. 다음은 `--gaps` 대로 신규: 대기 맨 위 **캔리**(`zenn.dev/p/canly` — SWR 한 줄 `058d2d2ce8625f`, 포스트모템 5공정). 예비 후보: Finatext·WWWAVE·TOKIUM·Aldagram. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진(IVRy Durable ↔ PKSHA Saga ↔ ENECHANGE Step Functions ↔ Rehab Cloud Run Jobs). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**캔리 회사 프로파일(2026-09-26) — 도메인 둘: 한 테넌트에 몰리는 스파이크를 캐시 헤더로 받아 낸다(`058d2d2ce8625f`) · 개인정보를 LLM 에 안 넘기고 문의 대응을 자동화한다(`3ebef2d4f7e3d4`). 회사 사이트는 jina 가 도메인을 못 풀어(can.ly·canly.co.jp) Zenn Publication 소개를 1차 자료로. 다음은 확장: `--gaps` 순서대로 기능 하나씩, 수익원 둘 다 도메인 있어 두 기능이면 **완주**. 대기 2/3(에어클로젯·Rehab for Japan). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + **개인정보와 LLM**(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

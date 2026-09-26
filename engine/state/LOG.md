@@ -1704,3 +1704,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 여든여덟 번째 후보 조사
 
 - 추측한 Publication 이름 28곳은 대부분 피드 0. Zenn 최신 글 API 15쪽에서 활성 Publication 80곳을 뽑아 18곳 RSS 확인 → 캔리(SWR 캐시)·에어클로젯(PII 관측)·Rehab for Japan(Composer → Cloud Run Jobs) 3/3. 예비: Finatext·WWWAVE·TOKIUM·Aldagram.
+
+## 2026-09-26 캔리 회사 프로파일
+
+- 회사 사이트 도메인이 안 풀려 Zenn Publication 소개를 1차 자료로. Zenn 두 편(매장 검색 페이지 SWR · 복리후생 CS 에이전트). 수익원 둘에 도메인 하나씩, 기능 0.
