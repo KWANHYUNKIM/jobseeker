@@ -466,7 +466,7 @@
       "status": "done",
       "features_done": 3,
       "one_liner": "디스크를 아예 없애고 객체 저장소만으로 도는 Kafka — 저장 계층이 아니라 네트워킹 계층으로 쓴다",
-      "updated_at": "2026-09-06",
+      "updated_at": "2026-09-26",
       "domain": "warpstream.com"
     },
     {
