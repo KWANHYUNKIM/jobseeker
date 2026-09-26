@@ -4,18 +4,17 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **68건**.
-직전 회차: `Staff Front-end Engineer (Eats Web)`(ats gh_jid=8093378) → **`duplicate_of` wd/376128**
-(ats 에서 읽힌 8줄 전부 원티드판에 있음. ats 판은 주요업무 칸이 비어 있다).
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **69건**.
+이번 루프에서 정리한 겹침(전부 ✅): Rocket Pay Senior Staff(차이만) · Rocket Pay Staff 영문(dup) · Orchestration 영문(dup) ·
+Eats Web FE(dup) · Eats Merchant 재게시(dup) · ML Staff 3건(dup) · Infrastructure 싱가포르 IC(차이만) ·
+**Cloud Infra Automation 원티드(wd/382712 → dup gh_jid=8107804)**.
 
-**미작성 개발 공고 중 이미 쓴 공고와 겹침이 큰 것**(다음 회차들이 먼저 정리할 것, 정규화 줄 겹침 비율):
-- ✅ `Senior Backend Engineer (Eats Merchant)`(ats 8107806) → dup wd/255060 (gh_jid=8127112 와 37줄 완전 일치 — 같은 자리 재게시)
-- ✅ ML Staff 3건(ats 8076145·7931249·8204842) → dup gh_jid=7977000 (같은 템플릿, 차이 = 4년 vs 7년+ · 과업 한 줄)
-- ✅ `Staff Backend Engineer(Infrastructure)`(ats 8047677) — **싱가포르·시민/영주권자만**, Director 판(TLM)의 IC 판. 관리 요건이 빠져 duplicate 아님 → 차이만 3항목
-- 0.89 `[쿠팡] 백엔드 개발자 (Cloud Infrastructure Automation)`(wd/382712) ↔ `Senior Back-end Engineer (Cloud Infra…)`
-⚠️ **겹침 1.00 이어도 제목의 직급이 다르면**(Staff ↔ Senior Staff, Staff ↔ Director) 세 절을 양방향으로 보고,
-자격 줄이 다르면 차이만 쓴다(`배운 것` 의 판단 순서). 같은 직급·같은 팀이면 duplicate.
-`Staff, Back-end Engineer (GOEX)` 는 공고 데이터에 있지만 회사명 표기가 달라 쿠팡 필터에 안 걸린다 — 회사명을 확인해 aliases 문제인지 본다.
+⚠️ 다음 회차: 겹침 0.9↑ 후보가 바닥났다. 다음 겹침 후보(0.5~0.8, 직급·팀이 다를 수 있어 **양방향 비교 필수**):
+`Staff Data Engineer`(ats 8063701 ↔ Director, Data Engineering 0.77), `Staff ML Engineer – Search & Discovery Relevance`(8202824),
+`Senior Staff / Staff Back-End Engineer`(7981493 ↔ Pricing 0.67), `Sr. Staff Back-end Engineer (Coupang Pay)`(7936538).
+겹침이 낮으면(<0.5) 새 공고로 **전부** 쓴다. 비개발 공고는 건너뛴다.
+`Staff, Back-end Engineer (GOEX)` — 회사명 표기가 달라 쿠팡 필터에 안 걸린다(미확인).
+**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.
