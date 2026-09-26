@@ -367,6 +367,113 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/355845",
+      "title": "[CVS] 서버 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-10년(공고는 '경력 3년 이상을 기본으로 하나, 위 경험을 충분히 갖추신 분이라면 연차와 관계없이' 라고 적는다), 서울 강남구, 정규직(수습 3개월). **CVS 서버팀** — 'Club Vegas' 를 비롯한 소셜카지노 게임의 백엔드 전반을 맡고, **10년 이상 운영한 라이브 서비스**의 안정성을 지키면서 새 장르 신규 프로젝트의 백엔드를 설계한다. 팀의 가장 중요한 미션은 **스튜디오 전체(약 40명: 서버·클라이언트·TA·기획·BA·QA·CS·CRM·아트)의 워크플로우를 AI Agent 기반으로 전환**하는 것이라고 적는다. 업무는 TypeScript(Node.js·NestJS) 게임 백엔드 API, 장애 대응·배포·모니터링 Live Ops, React·Next.js Admin 툴, EKS·Docker DevOps, GitHub Actions, 신규 백엔드 아키텍처, AI 코딩 에이전트와 스튜디오 업무 자동화 파이프라인, 'AI 하네스 설계'. 필수는 라이브 서비스 운영과 독립적 아키텍처·기술 결정, TypeScript 백엔드, AWS 인프라, CS 기초, AI 코딩 에이전트 활용 의지. 우대는 소셜카지노·F2P 도메인, 대규모 트래픽, 결제(IAP·웹 결제), Kubernetes·Terraform, MCP·Agent SDK, 자동화 파이프라인, 주니어 멘토링, 영어. 스택에 MySQL·PostgreSQL·Redis 가 있다. 전형: 서류접수 - 코딩테스트 - 기술/현업면접 - 임원면접 - 처우협의 - 서류제출.",
+      "fit": {
+        "must_have": [
+          "라이브 서비스 운영·독립적 아키텍처 결정",
+          "TypeScript 백엔드",
+          "AWS 인프라 운영",
+          "CS 기초",
+          "AI 코딩 에이전트 활용 의지"
+        ],
+        "can_learn": [
+          "소셜카지노·F2P 도메인",
+          "결제(IAP·웹 결제)",
+          "Kubernetes·Terraform",
+          "MCP·Agent SDK",
+          "영어"
+        ]
+      },
+      "study": [
+        {
+          "topic": "게임 재화 지갑 — 동시 요청에도 잔액이 맞게",
+          "from": "preference",
+          "quote": "• 게임 업계 경험, 특히 소셜카지노 또는 F2P 모바일 게임 도메인 이해",
+          "priority": "core",
+          "why": "우대사항이다. 팀이 소셜카지노 게임 백엔드 전반을 맡고, 스택에 MySQL·Redis 가 있다.",
+          "gap_check": "슬롯 스핀 한 번은 '칩 차감 → 결과 계산 → 당첨금 지급' 인데, 같은 유저가 두 기기에서 동시에 스핀하거나 요청이 재전송되면 잔액이 틀어지지 않게 하려면 무엇(행 잠금·낙관적 버전·요청 ID 멱등)을 쓰고, 모든 증감을 원장으로 남겨야 하는 이유는 무엇인가?",
+          "drill": "NestJS + MySQL 로 칩 잔액 테이블과 증감 원장 테이블을 만들고, 스핀 API 를 락 없이·SELECT FOR UPDATE 로·요청 ID 유니크 제약으로 세 벌 구현한 뒤 동시 요청 50개와 재전송을 보내 잔액과 원장 합계가 맞는 버전을 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Documentation | NestJS",
+              "url": "https://docs.nestjs.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Transactions | Redis Docs",
+              "url": "https://redis.io/docs/latest/develop/using-commands/transactions/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "10년 된 라이브 서비스 안정 운영",
+          "from": "task",
+          "quote": "• 장애 대응, 배포, 모니터링 등 Live Ops의 안정성 강화",
+          "priority": "core",
+          "why": "주요업무이고 팀 소개가 '10년 이상 운영된 레거시 서비스의 안정적인 라이브 운영' 을 첫째로 적는다. 필수에 라이브 서비스 운영 경험이 있다.",
+          "gap_check": "테스트가 거의 없는 오래된 서버 코드를 고쳐야 할 때 먼저 무엇(현재 동작을 고정하는 특성 테스트)을 만들고, 이벤트 기간 같은 고트래픽 시점을 피해 배포하려면 무엇(점진 배포·기능 플래그·즉시 롤백)을 준비하는가?",
+          "drill": "테스트 없는 작은 레거시 API 하나를 골라 현재 응답을 그대로 기록하는 특성 테스트를 NestJS 테스트로 먼저 만들고, 내부 구현을 고친 뒤 테스트가 동작 변화를 잡는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Documentation | NestJS — Testing",
+              "url": "https://docs.nestjs.com/fundamentals/testing",
+              "kind": "docs"
+            },
+            {
+              "title": "Strangler Fig",
+              "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스튜디오 업무 자동화 — MCP·에이전트",
+          "from": "task",
+          "quote": "• 스튜디오 전체(QA, CS, CRM, 기획 등) 업무 자동화 파이프라인 설계 및 구현",
+          "priority": "high",
+          "why": "주요업무이고 팀 소개가 스튜디오 전체 워크플로우의 AI Agent 전환을 가장 중요한 미션으로 적는다. 우대에 MCP·Agent SDK·자동화 파이프라인이 있다.",
+          "gap_check": "CS 팀이 '이 유저 결제가 왜 지급 안 됐나' 를 개발자에게 묻는 반복 문의를 에이전트로 풀려면 무엇(결제·지급 로그 조회 도구)을 에이전트에게 열어 주고, 유저 개인정보와 재화 지급 같은 쓰기 권한은 어디서 막는가?",
+          "drill": "결제 기록·지급 원장을 읽기 전용으로 조회하는 도구 두 개를 MCP 서버로 감싸고, 에이전트가 '유저 ID + 주문 ID' 로 지급 여부와 원인을 요약해 답하게 한 뒤, 쓰기 도구는 노출하지 않은 구성을 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "What is the Model Context Protocol (MCP)?",
+              "url": "https://modelcontextprotocol.io/introduction",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 코딩 에이전트를 개발 파이프라인에",
+          "from": "task",
+          "quote": "• AI 하네스 설계를 통한 개발 프로세스 생산성 향상 및 자동화 확산 리드",
+          "priority": "nice",
+          "why": "주요업무이고 필수에 'AI 코딩 에이전트를 실무에 활용하고 있거나, 적극적으로 도입하고 활용할 의지' 가 있다.",
+          "gap_check": "AI 코딩 에이전트가 PR 을 만들게 할 때 사람이 리뷰하기 전에 자동으로 걸러야 할 것(빌드·테스트·린트·금지 경로 변경)은 무엇이고, 에이전트가 따라야 할 팀 규칙은 어디에 두는가?",
+          "drill": "Claude Code GitHub Actions 문서를 읽고, 이슈에 라벨을 달면 에이전트가 PR 을 만들고 CI(빌드·테스트)가 통과해야만 리뷰 요청이 가게 하는 흐름을 저장소 하나에 구성한다. 훅으로 금지 경로(결제 설정 등) 수정을 막아 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Claude Code GitHub Actions",
+              "url": "https://docs.claude.com/en/docs/claude-code/github-actions",
+              "kind": "docs"
+            },
+            {
+              "title": "Hooks reference - Claude Code Docs",
+              "url": "https://docs.anthropic.com/en/docs/claude-code/hooks",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
