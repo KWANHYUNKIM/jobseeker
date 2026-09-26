@@ -18021,6 +18021,101 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8200033",
+      "title": "Staff Data Scientist (Catalog)",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 대만 타이베이 근무다. 정량 분야 학·석사·8년 이상의 스태프 데이터 사이언티스트로, 카탈로그 기술 팀에서 AI·AI 에이전트로 상품 정보·이미지·동영상·리뷰·과거 고객 응대 기록을 보강해 고객이 빠르고 확신 있게 구매 결정을 하도록 한다 — 추출·질의 기반 보강·상품 하이라이트 같은 동적 정보·결함 감소를 에이전트형·자동화 워크플로로 수천만 개 상품에 걸쳐 하는 차세대 카탈로그 시스템을 설계하고, 품질·완결성·가독성·접근성 지표 정의에 관여한다. 평가와 일관되지 않은/더러운 라벨 문제를 조직 차원에서 이끄는 것도 역할에 적혀 있다. 같은 타이베이 `Staff Data Scientist (SCM)`(8124212)과 자격요건 문장 틀이 같지만(이쪽은 8년) 업무는 다르다.",
+      "fit": {
+        "must_have": [
+          "정량 분야 학·석사·8년 이상",
+          "통계·ML 기초를 운영 시스템에 적용한 실적",
+          "모호한 비즈니스 문제의 데이터 사이언스 설계",
+          "가설·실험 설계·통계 분석 독립 수행"
+        ],
+        "can_learn": [
+          "운영 LLM·에이전트 시스템(우대)",
+          "LLM 내장 워크플로·Human In The Loop(우대)",
+          "이커머스 도메인(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "멀티모달 LLM 으로 상품 정보 추출·보강",
+          "from": "task",
+          "quote": "Design the next generation of Catalog systems that work at scale across extraction, query-based enrichment, dynamic product info like product highlights, defect reduction, etc. using agentic and automated workflows. You will influence metric definition and will raise the bar on quality, completeness, readability and accessibility.",
+          "priority": "core",
+          "why": "추출·질의 기반 보강·상품 하이라이트·결함 감소를 에이전트형·자동화 워크플로로 대규모로 하는 차세대 카탈로그 시스템 설계가 주요업무이고, 멀티모달 LLM 과 고전 통계·ML 을 함께 쓴다고 공고가 적는다.",
+          "gap_check": "상품 이미지와 설명이 서로 다른 속성을 말할 때(이미지는 파랑, 설명은 남색) 무엇을 정답으로 삼고, 수천만 상품에 LLM 을 돌리는 비용을 줄이려면 어떤 상품만 LLM 에 보내는가?",
+          "drill": "CLIP 논문을 참고해, 가상 상품(이미지·설명) 일부에서 이미지 기반 속성과 텍스트 기반 속성을 각각 뽑아 불일치를 찾는 검사를 만들고, 규칙으로 확실한 상품은 LLM 을 건너뛰게 해 호출 비율과 정확도를 함께 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Radford et al. — Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+              "url": "https://arxiv.org/abs/2103.00020",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "평가와 더러운 라벨",
+          "from": "task",
+          "quote": "Be a cross-organization thought leader on both AI as a technology as well as on the next generation of challenges such as evaluations, inconsistent/ dirty labels.",
+          "priority": "core",
+          "why": "AI 기술과 평가·일관되지 않은/더러운 라벨 같은 차세대 과제에서 조직을 넘는 리더가 되는 것이 주요업무다. 품질·완결성 지표 정의에 관여하는 것도 적혀 있다.",
+          "gap_check": "검수자마다 판정이 갈린 라벨로 모델을 평가하면 정확도 숫자가 무엇을 뜻하게 되고, 틀린 라벨을 찾아 고치는 것과 평가 기준 자체를 고치는 것은 어떻게 구분하는가?",
+          "drill": "Confident Learning 논문을 읽고, cleanlab 으로 가상 상품 카테고리 라벨(일부러 오류를 섞은)에서 의심 라벨을 찾아 실제 주입한 오류와 비교한 뒤, 라벨 정정 전후 모델 평가 수치가 어떻게 달라지는지 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Northcutt et al. — Confident Learning: Estimating Uncertainty in Dataset Labels",
+              "url": "https://arxiv.org/abs/1911.00068",
+              "kind": "paper"
+            },
+            {
+              "title": "cleanlab/cleanlab",
+              "url": "https://github.com/cleanlab/cleanlab",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 내장 워크플로와 사람 검토(HITL)",
+          "from": "preference",
+          "quote": "Ability to think in systems that scale: pipelines, LLM-embedded workflows, Human In The Loop workflows, hybrid pipelines with context-specific agentic capabilities, etc.",
+          "priority": "high",
+          "why": "파이프라인·LLM 내장 워크플로·Human In The Loop·상황별 에이전트 기능을 가진 하이브리드 파이프라인으로 확장 가능한 시스템을 생각하는 능력이 우대사항이다.",
+          "gap_check": "LLM 이 생성한 상품 하이라이트를 사람 검토 없이 바로 내보낼 기준(신뢰도·카테고리 위험도)은 무엇이고, 사람 검토 결과를 다시 모델 개선에 쓰려면 무엇을 기록해야 하는가?",
+          "drill": "가상 하이라이트 생성 결과에 신뢰도 점수를 붙여 '자동 게시 / 표본 검토 / 전수 검토' 세 경로로 나누는 규칙과, 검토 결과(수정 내용·사유)를 학습 데이터로 쌓는 스키마를 설계한다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "이미지·텍스트 속성 불일치 탐지 + 라벨 정정 노트",
+          "why": "카탈로그 품질과 더러운 라벨이 이 자리의 두 축이다. 불일치 탐지와 라벨 오류 추정을 한 노트에 담으면 면접의 대화 재료가 된다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "멀티모달 속성 충돌",
+          "LLM 호출 비용 줄이기",
+          "라벨 노이즈와 평가",
+          "HITL 경로 설계",
+          "출시 후 성과 측정"
+        ],
+        "sources": [
+          {
+            "title": "Staff Data Scientist (Catalog)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8200033",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
