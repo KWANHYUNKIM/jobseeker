@@ -1,0 +1,177 @@
+{
+  "book": "java-io",
+  "id": "stream-io",
+  "no": "3.1",
+  "chapter": 3,
+  "title": "InputStream 과 OutputStream",
+  "summary": "바이트 하나를 옮기는 계약.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "메서드 하나만 구현하면 나머지가 따라오는 것을 확인한다.",
+    "read(byte[]) 가 요청보다 적게 줄 수 있음을 본다.",
+    "얇은 계약의 값과 대가를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2장은 **바이트가 무엇인지**였고 3장은 **그 바이트를 옮기는 법**이다.\n\n자바의 모든 바이트 입력은 `InputStream` 하나를 상속한다. 그 클래스가 요구하는 것은 **메서드 하나**뿐이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "구현해야 하는 것은 이것 하나다",
+      "code": "public abstract class InputStream implements Closeable {\n    public abstract int read() throws IOException;   // 이것만 추상\n\n    // 아래는 다 기본 구현이 있다\n    public int read(byte[] b) { ... }\n    public int read(byte[] b, int off, int len) { ... }\n    public byte[] readAllBytes() { ... }\n    public long transferTo(OutputStream out) { ... }\n    public long skip(long n) { ... }\n    public int available() { return 0; }\n    public void close() { }\n}"
+    },
+    {
+      "type": "prose",
+      "md": "## 정말 하나만 구현해 봤다\n\n11바이트를 하나씩 내주는 스트림을 만들었다. `read()` 만 오버라이드하고 **`read()` 가 몇 번 불리는지 셌다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "read() 만 구현한 스트림",
+      "code": "static class Src extends InputStream {\n    private final byte[] data;\n    private int pos = 0;\n    int readCalls = 0;\n    Src(byte[] data) { this.data = data; }\n\n    @Override public int read() {\n        readCalls++;\n        return pos < data.length ? (data[pos++] & 0xFF) : -1;\n    }\n}\n\n// & 0xFF 가 여기 있다 — 1.4절의 그것이다. 없으면 0x80 이상 바이트가 -1 이 된다."
+    },
+    {
+      "type": "table",
+      "caption": "구현하지 않은 메서드들이 동작한다 (데이터 11바이트)",
+      "columns": [
+        "부른 메서드",
+        "결과",
+        "안에서 `read()` 를 부른 횟수"
+      ],
+      "rows": [
+        [
+          "`read(byte[100])`",
+          "11",
+          "**12**"
+        ],
+        [
+          "`readAllBytes()`",
+          "11바이트",
+          "**13**"
+        ],
+        [
+          "`transferTo(out)`",
+          "11바이트",
+          "**13**"
+        ]
+      ],
+      "note": "**기본 구현이 `read()` 를 반복 호출해 만들어진다.** 11바이트를 받으려고 12번 부른다 — 마지막 한 번은 `-1` 을 받는 호출이다(1.5절)."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "얇은 계약의 값과 대가",
+      "md": "`read()` 하나만 요구하니 **무엇이든 스트림이 될 수 있다.**\n\n> 파일·소켓·메모리 배열·암호화 계층·압축 계층이 전부 같은 타입이 된다. 7장에서 소켓을 열면 **3장의 코드가 그대로 돌아간다.**\n> 대가는 **기본 구현이 느리다는 것**이다. `read(byte[])` 의 기본 구현은 `read()` 를 그만큼 부른다.\n> 그래서 진짜 구현체들은 `read(byte[])` 를 **직접 오버라이드**한다 — `FileInputStream` 은 그 안에서 한 번의 시스템 콜로 처리한다. 3.2절에서 그 차이를 잰다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`read(byte[])` 는 요청한 만큼 안 줄 수 있다",
+      "md": "100칸 배열로 물었는데 **11** 이 왔다.\n\n```\n첫 read(100칸) = 11     (요청은 100인데 11만 왔다)\n둘째 read(100칸) = -1   (-1 은 끝)\n```\n\n> 파일은 대개 꽉 채워 주지만 **마지막 조각은 짧다.** 그리고 **소켓은 언제든 짧게 준다**(7장).\n> 그래서 **반환값을 반드시 써야** 한다 — `out.write(buf, 0, n)`. `out.write(buf)` 로 쓰면 3.3절의 버그가 된다.\n> 꽉 채워 받고 싶으면 `readNBytes(byte[], int, int)` 를 쓴다 — 끝이 아니면 채울 때까지 반복해 준다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`available()` 은 남은 바이트 수가 아니다",
+      "md": "내 스트림의 `available()` 이 **0** 을 돌려줬다. 11바이트가 남아 있는데도.\n\n> 기본 구현이 `return 0` 이다. 오버라이드하지 않으면 늘 0 이다.\n> 오버라이드한 구현체에서도 뜻은 **\"블록되지 않고 지금 읽을 수 있는 양\"** 이다 — 파일 크기도 아니고 남은 바이트 수도 아니다.\n> `available()` 크기로 배열을 만들어 한 번에 읽는 코드는 **틀린다.** 파일 크기를 알고 싶으면 `Files.size()` 를, 다 읽고 싶으면 `readAllBytes()` 를 쓴다."
+    },
+    {
+      "type": "figure",
+      "caption": "이 책이 쓰는 스트림들",
+      "ascii": "   InputStream (abstract)\n     |\n     +-- FileInputStream          bytes from a file        (3장)\n     +-- ByteArrayInputStream     bytes from a byte[]      (3.2)\n     +-- FilterInputStream        wraps another stream\n     |     +-- BufferedInputStream    adds a buffer        (3.4)\n     |     +-- DataInputStream        adds readInt etc.    (5.1)\n     |     +-- CountingIn             our own              (1.5)\n     +-- (socket input stream)    bytes from a socket      (7장)\n\n   OutputStream mirrors this exactly.",
+      "note": "**`FilterInputStream` 아래가 감싸는 것들이다.** 1.5절에서 만든 세는 스트림이 그 자리에 있고, 3.4절의 `Buffered` 도 같은 자리다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"InputStream 을 직접 구현한다면 무엇을 만들어야 합니까.\"**\n\n> **`read()` 하나**다. 나머지는 기본 구현이 있다.\n> 이어서 \"그럼 왜 실제 구현체들은 `read(byte[])` 도 오버라이드합니까\" — **기본 구현이 `read()` 를 바이트마다 부르기 때문**이다.\n> `read(byte[])` 의 반환값을 왜 확인해야 하는지까지 말하면 충분하다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — read() 하나로 다 된다",
+      "sql": "$ java -cp out MyStream\n데이터 = 11바이트\n\n--- read(byte[]) 를 구현하지 않았는데 쓸 수 있다 ---\nread(buf) 반환값 = 11\n그 안에서 read() 가 불린 횟수 = 12\n읽은 내용 = [안녕 java]\n\n--- readAllBytes 도 공짜로 따라온다 ---\nreadAllBytes().length = 11, read() 호출 13\n\n--- transferTo 도 ---\ntransferTo = 11바이트, read() 호출 13\n\n--- 요청보다 적게 줄 수 있다 ---\n첫 read(100칸) = 11  (요청은 100인데 11만 왔다)\n둘째 read(100칸) = -1  (-1 은 끝)\n\navailable() = 0  (기본 구현은 0 을 준다)\n\n# 11바이트를 읽으려고 read() 를 12번 불렀다.\n# 이 12 가 3.2절의 2초를 만드는 숫자다 — 1MB 면 1,048,577 번이다.",
+      "note": "**읽은 내용이 `[안녕 java]` 로 제대로 나왔다** — `& 0xFF` 를 넣었기 때문이다. 빼면 UTF-8 의 `ec`(236) 가 `-1` 이 되어 첫 바이트에서 끝난 것으로 읽힌다."
+    }
+  ],
+  "recap": [
+    "InputStream 이 요구하는 것은 추상 메서드 read() 하나다.",
+    "read(byte[])·readAllBytes()·transferTo() 는 기본 구현이 read() 를 반복 호출해 만든다.",
+    "11바이트를 read(byte[]) 로 받으니 read() 가 12번 불렸다 — 마지막은 -1 을 받는 호출이다.",
+    "그래서 실제 구현체들은 read(byte[]) 를 직접 오버라이드한다.",
+    "read(byte[]) 는 요청보다 적게 줄 수 있다. 반환값을 반드시 써야 한다.",
+    "available() 은 남은 바이트 수가 아니다. 기본 구현은 0 을 돌려준다.",
+    "얇은 계약 덕에 파일·메모리·소켓이 같은 타입이 된다 — 7장의 소켓에서 3장 코드가 그대로 돈다."
+  ],
+  "drills": [
+    {
+      "task": "read() 만 구현한 InputStream 을 만들어 readAllBytes() 를 불러 본다.",
+      "done_when": "동작하는 것을 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "& 0xFF 를 빼고 돌려 본다.",
+      "done_when": "0x80 이상 바이트에서 끊기는 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "available() 을 파일 스트림에서 찍어 본다.",
+      "done_when": "파일 크기와 같은지 다른지 확인한다.",
+      "minutes": 6
+    },
+    {
+      "task": "readNBytes 와 read(byte[]) 의 반환값을 비교한다.",
+      "done_when": "채워 주는 쪽을 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "InputStream 을 상속할 때 반드시 구현할 메서드는.",
+      "a": "int read() 하나다."
+    },
+    {
+      "q": "read(byte[]) 의 기본 구현은 어떻게 동작하나.",
+      "a": "read() 를 필요한 만큼 반복 호출한다. 그래서 느리다."
+    },
+    {
+      "q": "read(byte[]) 가 요청보다 적게 줄 수 있는 이유는.",
+      "a": "마지막 조각이거나, 소켓처럼 아직 다 오지 않았을 수 있다. 반환값을 써야 한다."
+    },
+    {
+      "q": "available() 의 뜻은.",
+      "a": "블록되지 않고 지금 읽을 수 있는 양이다. 남은 바이트 수나 파일 크기가 아니다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "InputStream",
+      "what": "바이트 입력의 부모. 추상 메서드는 read() 하나뿐이고 나머지는 기본 구현이 있다."
+    },
+    {
+      "term": "readNBytes",
+      "what": "요청한 만큼 채울 때까지 반복해 읽어 주는 메서드. 짧은 읽기를 신경 쓰지 않아도 된다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — InputStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/InputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — OutputStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/OutputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — InputStream.available()",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/InputStream.html#available()",
+      "publisher": "Oracle"
+    }
+  ]
+}

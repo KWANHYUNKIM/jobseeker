@@ -129,7 +129,7 @@
           "title": "InputStream 과 OutputStream",
           "summary": "바이트 하나를 옮기는 계약.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.2",
@@ -137,7 +137,7 @@
           "title": "한 바이트씩",
           "summary": "20초가 어디로 갔나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.3",
@@ -145,7 +145,7 @@
           "title": "버퍼 배열",
           "summary": "read(byte[]) 한 줄의 값.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.4",
