@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "in_progress",
+  "hold_reason": "수익원 '건설 AI×BPO(옵션)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-27 — Zenn Publication RSS 19편: Android·AI 개발 방식·해커톤 작품 글뿐 / Zenn 검색 API '建設BPO'·'フォトラクション'·'Photoruction' — 걸린 것은 2021~2025 년의 사내 행사·Android 글뿐). 완주 기준 셋째를 못 채워 in_progress 로 두고 더 파지 않는다. BPO 업무 처리 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-27",
   "domain": "photoruction.com",
   "one_liner": "건설 생산 클라우드 Photoruction — 현장이 올린 도면을 뒤에서 가공하는 두 경로, 5년 손대지 못한 Windows·C# 변환 서버를 사내 표준 ECS Fargate 로 옮기며 '구현보다 현상 파악이 무겁다' 를 배웠고, 도면 잘라내기는 기존 SQS 를 유용해 Lambda 를 API 에서 직접 부르고 결과만 큐로 돌려받는다",

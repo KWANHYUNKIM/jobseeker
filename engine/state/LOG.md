@@ -2097,3 +2097,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Photoruction drawing-converter-fargate
 
 - 변환 서버 이전 글 끝까지. 결정 8, 그림 3(flow·failure·state). ZIP 기능이 이번 범위에서 빠진 것을 도메인 limits 에 바로잡음.
+
+## 2026-09-27 Photoruction AI×BPO 수익원 보류
+
+- 검색 1: RSS 19편(Android·AI 개발 방식·해커톤). 검색 2: Zenn 검색 API '建設BPO'·'フォトラクション'·'Photoruction' — 옛 행사·Android 글뿐. hold_reason, in_progress 유지.
