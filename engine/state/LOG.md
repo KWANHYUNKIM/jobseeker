@@ -767,3 +767,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## clickhouse 재방문 → 확장 (2026-09-26)
 
 09-10 WalShadow 글로 physical-wal-replica. 결정 5개, 새 도메인 트랜잭션과 분석을 한 스택으로 잇는다. 나머지 후보 넷은 STATE 에.
+
+## coinbase 재방문 → 확장 (2026-09-26)
+
+09-21 Autopilot 글로 support-procedure-autopilot. 결정 7개, 기존 도메인 AI 에이전트를 기업 규모로 쓴다에 더함. curl 403 이라 브라우저로 읽었다.

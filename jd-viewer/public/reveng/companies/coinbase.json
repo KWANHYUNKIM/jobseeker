@@ -5,7 +5,7 @@
   "country": "US",
   "category": "핀테크",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "coinbase.com",
   "one_liner": "암호자산 거래소이자 보관소 — 거래 수수료만큼을 구독·서비스에서 번다",
   "business_model": "거래로 벌지만 그것만은 아니다. 2026년 2분기 순매출 11억 5,000만 달러 가운데 거래가 5억 9,900만, 구독과 서비스가 5억 5,500만 달러였다. **둘이 거의 같아졌다.** 구독과 서비스는 블록체인 보상과 수탁 수수료, 이자 수익, 구독 라이선스 같은 것들이고 유료 구독자가 100만 명을 넘어 월간 거래 사용자의 약 12%다. 거래 쪽은 시장에 그대로 흔들린다. 월간 거래 사용자가 760만 명으로 1년 전 870만에서 줄었고, 플랫폼 자산도 2,459억 달러로 1년 전 4,250억에서 줄었다. 주로 가격이 내려간 탓이다. 2분기에는 투자 목적으로 들고 있는 암호자산의 손실 때문에 순손실 3억 5,900만 달러를 냈다. 구독과 서비스를 키우는 이유가 여기 있는 것으로 보인다(재구성). 이 엔진의 다른 금융 회사들과 규제라는 조건은 같은데 다루는 자산이 다르다. Toss 나 Monzo 는 원화나 파운드를 옮기고, 여기는 가격이 하루에 크게 흔들리는 자산을 맡아 둔다(재구성).",
@@ -227,10 +227,26 @@
               "summary": "흩어진 내부 관리 도구들을 중앙 인가·감사 계층을 가진 우산 서비스로 모았다. 너무 조금 모으면 난립이 남고 너무 많이 모으면 플랫폼 팀이 병목이 된다는 긴장을 명시하고, 한 서비스로 라우팅하면 지연이 늘고 위험이 집중된다는 것도 받아들인 값으로 적는다. 인가는 확신에 이르지 못하면 언제나 거부한다."
             }
           ]
+        },
+        {
+          "tech": "Autopilot(절차 DSL · 정규 의도 분류 · 헤드리스 러너 · 적대 CI · LLM 채점관 + 사람 승인)",
+          "solves": "고객지원 에이전트의 절차를 코드처럼 작성·시험·레드팀·채점해 90건 UAT 를 1~2주에서 30~45분으로, 사내 봇과 외부 봇을 같은 기준으로 비교한다.",
+          "limits": "공유 스키마를 세우는 분류 작업이 먼저 들고, LLM 채점관은 틀릴 수 있으며, 루프의 완전 자율은 아직이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Autopilot: engineering an agentic quality loop for support automation",
+              "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+              "publisher": "Coinbase",
+              "date": "2026-09-21",
+              "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+            }
+          ]
         }
       ],
       "features": [
-        "agents-are-a-software-discipline"
+        "agents-are-a-software-discipline",
+        "support-procedure-autopilot"
       ]
     }
   ],
@@ -1275,6 +1291,320 @@
           "summary": "2026년 2분기 순매출 11억 5,000만 달러(거래 5억 9,900만 · 구독과 서비스 5억 5,500만), 순손실 3억 5,900만 달러. 월간 거래 사용자 760만 명(1년 전 870만), 플랫폼 자산 2,459억 달러(1년 전 4,250억)."
         }
       ]
+    },
+    {
+      "key": "support-procedure-autopilot",
+      "name": "고객지원 봇의 품질 — 대화를 더 해 보는 게 아니라 절차를 코드처럼 다룬다",
+      "domain": "AI 에이전트를 기업 규모로 쓴다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "코인베이스의 고객지원 자동화는 이제 계정 상태를 조회하고, 정해진 범위의 행동을 하고, 판단이 더 필요하면 사람에게 넘기는 **에이전트 무리**다. 각 에이전트는 이체 확인·보류 설명·계정 제한 해제 같은 문제마다 버전이 붙은 **절차**를 따른다. 그런데 절차는 바뀌고, 모델은 표류하고, 외부 벤더 봇은 같은 절차를 다르게 돌리고, 악의적인 사람은 틈을 찔러 본다. 오랫동안 검증은 누군가 도움말 센터 채팅창에 테스트 계정으로 들어가 행복한 경로를 쳐 보고 적대 질문 몇 개를 던진 뒤 '끝'이라고 하는 것이었다. 절차 몇 개면 되지만, 돈이 걸린 주제에 절차가 수십 개면 무너진다.",
+        "metrics": [
+          {
+            "label": "UAT 한 바퀴",
+            "value": "약 **90건** 전체 사용자 인수 시험이 수작업 **1~2주 → 30~45분**. 절차 하나는 며칠의 목업 준비·대화 진행 대신 **수십 분** 안에 채점된 결과가 나온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "적대 시험의 범주",
+            "value": "악의적 사용자 · 혼란스러운 사용자 · 경계 사례 · 프롬프트 주입 · 데이터 유출 · 정책 우회 · 신뢰 악용 — 많은 경우가 **일부러 다중 턴**이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "스스로 적은 미완",
+            "value": "발견·작성·시험·분석은 있지만, **지표의 빈틈에서 승격된 절차까지 완전 자율로 도는 것은 아직 다지는 중**이다. 요약 계약도 '다지는 기반이지 완성된 기능이 아니다'",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "LLM 하나에 다 맡기고 싶을 때",
+          "thought": "모든 것을 영리한 에이전트 하나로 돌리려는 유혹은 **운영 품질 시스템엔 대개 틀린 구조**다. 에이전트는 혼란스러운 사용자·나쁜 사용자의 긴 꼬리를 정적 체크리스트보다 잘 탐색한다. 같은 절차를 봇끼리, 날짜끼리 **비교 가능하게** 만드는 건 결정적인 하네스다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "봇마다 라벨이 다를 때",
+          "thought": "봇마다 같은 고객 목표에 자기 라벨을 붙이면 다음에 무엇을 자동화할지, CSAT 가 왜 떨어졌는지, 런타임끼리 어떻게 다른지 정직하게 말할 수 없다. 'No Intent'·절차 이름·라우팅 흔적은 **고객의 목표가 아니다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "안전 장치를 어디에 둘지",
+          "thought": "의도 탐지 단계에만 있는 가드레일로는 부족하다 — **사회적인 틀짓기**가 위쪽 필터를 넘어간다. 출력 계층의 통제가 필요하다. 단일 턴 안전 검사는 서서히 신뢰를 쌓은 뒤 위험한 걸 요구하는 **'끓는 개구리'** 패턴을 놓친다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "절차(procedure)",
+            "what": "특정 고객 문제를 풀려고 에이전트가 따르는 버전이 붙은 플레이북. 데이터 조회·분기 조건·종단 결과로 이루어진 결정 트리이고, 작은 DSL 로 쓴다."
+          },
+          {
+            "name": "시험 계약",
+            "what": "발화·시나리오 입력, 필요한 목업 상태, 기대 행동·종단 결과, 대상 봇, 평가 초점. 절차와 같은 구조를 공유해 한 계획을 모든 봇에 돌린다."
+          },
+          {
+            "name": "정규 의도 분류",
+            "what": "도움말 센터·채팅·음성에 걸친 고객 목표 분류. 실행한 절차 라벨·제품 테마와 따로 둔다."
+          },
+          {
+            "name": "공유 요약 계약",
+            "what": "고객 목표 · 시도한 행동 · 풀리지 않은 문제 · 에스컬레이션 이유 · 안전 플래그. 발견·채점·사후 분석이 같은 대화 사실을 읽게 한다."
+          },
+          {
+            "name": "헤드리스 러너",
+            "what": "시험 계획을 불러 격리된 테스트 사용자와 목업 계정 상태를 만들고, 각 봇과 다중 턴 대화를 흉내 내고, 기록하고, 채점하는 서비스."
+          }
+        ],
+        "invariants": [
+          "에이전트는 초안을 쓰고 제안할 뿐, 모든 운영 쓰기는 사람이 승인한다.",
+          "기억과 지표는 모델 밖에 있다 — 시험 결과·분류 버전·절차 버전은 평범한 내구 산출물이다.",
+          "원래 라벨은 지우지 않고 정규 필드를 더한다.",
+          "LLM 점수는 사람과 릴리스 게이트에 보탤 뿐 혼자 결정하지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "정규 의도별 볼륨을 해결률·CSAT 와 맞대어, 트래픽 많고 약한 흐름을 먼저 고른다",
+            "why": "감이 아니라 측정으로 무엇을 고칠지 정한다"
+          },
+          {
+            "step": "에이전트가 DSL 로 된 절차 변경과 시험 계획·발화 변형의 초안을 쓴다",
+            "why": "언어와 탐색은 에이전트가 잘한다"
+          },
+          {
+            "step": "헤드리스 러너가 격리된 사용자·목업 상태를 만들고 사내 봇과 외부 봇 모두와 다중 턴 대화를 돌린다",
+            "why": "같은 입력 · 같은 채점 틀로 비교"
+          },
+          {
+            "step": "적대 스위트가 같은 절차를 매번 같은 압력으로 찌르고, LLM 이 턴마다와 대화 전체로 두 번 채점한다",
+            "why": "일관된 레드팀 · 끓는 개구리 잡기"
+          },
+          {
+            "step": "GitHub Actions 가 PR 과 릴리스를 게이트하고, 얇은 UI 로 대화 설계·QA 팀도 실행을 낸다",
+            "why": "실행 경로는 하나, 입구는 둘"
+          },
+          {
+            "step": "사람이 승인해야 절차가 운영에 쓰이고, 결과·버전은 모델 밖 저장소에 남는다",
+            "why": "나쁜 쓰기가 고객에게 닿지 않게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "절차를 무엇으로 쓸 것인가",
+            "chosen": "**자유 서술이 아니라 단계·분기·데이터 조회·종단 결과의 작은 DSL** — 시험도 같은 구조의 계약을 공유한다",
+            "alternatives": [
+              "자유 서술 프롬프트로 된 절차",
+              "일회성 프롬프트"
+            ],
+            "tradeoff": "공유 스키마(의도·요약·시험)를 먼저 세우는 **단기 분류 작업**이 든다 — 회사가 '의도적으로 고른 대가'로 적는다. 대신 한 시험 계획을 사내 봇과 외부 벤더 봇에 똑같이 돌려 결과를 비교할 수 있고, 절차를 코드처럼 버전 관리·CI 로 다뤄 모든 변경이 검토·시험·되돌릴 수 있게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "분류를 몇 겹으로 둘 것인가",
+            "chosen": "**셋으로 가른다** — 정규 의도(고객이 하려던 것) · 절차/워크플로 라벨(시스템이 실행한 것) · 제품 테마(그 문의량을 줄일 책임이 있는 제품 영역). 원래 라벨은 지우지 않고 정규 필드를 더한다",
+            "alternatives": [
+              "봇마다 자기 라벨",
+              "하나의 라벨로 합치기",
+              "원래 라벨을 정규 라벨로 덮어쓰기"
+            ],
+            "tradeoff": "라벨 층이 늘고 분류 체계를 관리해야 한다. 합치면 **깨끗해 보이지만 엉뚱한 것을 재는 대시보드**가 된다. 덮어쓰면 봇이 실제로 낸 것이 사라져 표준화가 실패한다. 셋을 함께 읽으면 문의가 책임 팀으로 간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트를 루프의 어디에 둘 것인가",
+            "chosen": "**언어와 탐색은 에이전트, 재현성이 필요한 실행·저장·게이트는 결정적인 서비스**",
+            "alternatives": [
+              "영리한 에이전트 하나에 전부",
+              "정적 체크리스트만"
+            ],
+            "tradeoff": "두 종류의 부품을 함께 운영한다. 대신 에이전트는 체크리스트가 못 잡는 긴 꼬리를 탐색하고, 하네스는 같은 절차를 봇끼리·날짜끼리 비교 가능하게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "시험을 어디서 돌릴 것인가",
+            "chosen": "**하이브리드** — 공유 시험 서비스가 실행과 결과를 갖고, GitHub Actions 가 주기·PR 트리거·릴리스 게이트를, 얇은 UI 가 비엔지니어의 제출을 맡는다",
+            "alternatives": [
+              "워크플로 도구",
+              "IDE 에이전트",
+              "CI 만",
+              "브라우저 에이전트"
+            ],
+            "tradeoff": "서비스·CI·UI 셋을 함께 유지한다. **CI 만으로는 너무 엔지니어 중심**이고, **브라우저 에이전트만으로는 너무 깨지기 쉽다.** 임시 실행과 예약 실행이 한 실행 경로를 써야 결과가 비교 가능하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "안전을 어떻게 시험할 것인가",
+            "chosen": "**다중 턴 적대 스위트를 CI 에 넣고, 턴마다와 대화 전체로 두 번 채점한다.** 같은 스위트를 여러 런타임에 돌린다",
+            "alternatives": [
+              "의도 탐지 단계의 가드레일만",
+              "단일 턴 안전 검사"
+            ],
+            "tradeoff": "시험이 길고 무거워진다(이 사이트의 해석). 초기 실행에서 배운 것 — 사회적 틀짓기는 위쪽 필터를 넘으니 **출력 계층 통제가 필요**하고, 같은 스위트를 여러 런타임에 돌려야 서로 다른 실패 모드가 드러나 모든 봇을 같은 기준에 세운다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "채점을 누가 할 것인가",
+            "chosen": "**LLM 채점관 + 감독** — 매번 같은 방식으로 적용해 비교 가능하게 하되, 점수는 사람 검토자와 릴리스 게이트에 보탤 뿐 혼자 결정하지 않는다. 심각·높음 발견은 여전히 사람이 본다",
+            "alternatives": [
+              "사람만 채점",
+              "LLM 점수로 자동 결정"
+            ],
+            "tradeoff": "LLM 채점관도 **틀릴 수 있다**고 스스로 적는다. 대신 검토 규모를 키우고 같은 절차가 바뀔 때마다 같은 레드팀 압력을 받는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "루프를 얼마나 자율로 닫을 것인가",
+            "chosen": "**아직 다 닫지 않는다** — 에이전트는 초안을 쓰고, 모든 운영 쓰기는 사람이 승인하며, 기억과 지표는 모델 밖에 둔다. 킬 스위치가 있다",
+            "alternatives": [
+              "지표 빈틈에서 승격까지 완전 자율 오케스트레이션"
+            ],
+            "tradeoff": "사람의 승인이 병목으로 남는다(이 사이트의 해석). 회사는 완전 자율이 아직 다지는 중이라는 **빈틈을 이름 붙여 말하는 것이 정직한 운영의 일부**라고 적는다. 대신 모델이 기록 체계를 소유하지 않고, 나쁜 쓰기가 고객에게 닿지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autopilot: engineering an agentic quality loop for support automation",
+                "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+                "publisher": "Coinbase",
+                "date": "2026-09-21",
+                "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "agents-are-a-software-discipline",
+          "via": "에이전트를 소프트웨어로 다루는 원칙",
+          "contract": "버전·관측·킬 스위치를 가진 서비스로 에이전트를 다룬다는 같은 원칙을 고객지원 절차에 적용한다(연결은 이 사이트의 해석 — 글은 앞 글을 언급하지 않는다).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "외부 벤더 봇",
+          "via": "같은 절차 · 같은 시험 계약",
+          "contract": "같은 원천 절차를 돌리지만 결과가 다를 수 있어, 같은 적대 스위트와 채점 틀로 비교한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "GitHub Actions",
+          "via": "PR 트리거 · 릴리스 게이트",
+          "contract": "공유 시험 서비스의 실행 결과로 절차 변경을 게이트한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 약한 흐름에서 승인된 절차까지",
+          "question": "절차 변경 하나가 운영에 닿기까지 무엇을 거치는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  DISC[발견<br/>정규 의도 볼륨 × 해결률 · CSAT] --> AUTH[에이전트가 초안<br/>DSL 절차 · 시험 계획 · 발화 변형]\n  AUTH --> RUN[\"<b>헤드리스 러너</b><br/>• 격리 사용자 · 목업 상태<br/>• 사내 봇 · 외부 봇 다중 턴\"]:::accent\n  RUN --> ADV[적대 스위트<br/>턴마다 · 대화 전체 채점]\n  ADV --> GATE[GitHub Actions 게이트]\n  GATE --> HUMAN{사람 승인}\n  HUMAN -->|승인| PROD[운영 절차]\n  HUMAN -->|반려| AUTH\n  PROD --> ANA[분석 · 공유 요약 계약]\n  ANA --> DISC\n  STORE[(결과 · 분류 · 절차 버전<br/>모델 밖)]:::quiet -.-> GATE"
+        },
+        {
+          "title": "절차 하나의 수명",
+          "question": "절차는 어떤 상태를 거쳐 고객 앞에 서는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 약한흐름: 높은 볼륨 · 낮은 해결률\n  약한흐름 --> 초안: 에이전트가 쓴다\n  초안 --> 적합성시험: 헤드리스 러너\n  적합성시험 --> 적대시험: 통과\n  적합성시험 --> 초안: 실패\n  적대시험 --> 검토대기: 점수는 참고\n  적대시험 --> 초안: 심각 · 높음 발견\n  검토대기 --> 운영: 사람 승인\n  운영 --> 약한흐름: 모델 표류 · 벤더 차이 · 새 공격"
+        },
+        {
+          "title": "실패 경로 — 채팅창에서 쳐 보던 시절",
+          "question": "예전 검증은 어디서 무너졌나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  MANUAL[채팅창에 테스트 계정으로 행복한 경로]:::accent --> SLOW[90건 UAT 에 1~2주]\n  MANUAL --> FEW[적대 질문 몇 개뿐]\n  LABEL[봇마다 다른 라벨] --> BLIND[무엇을 먼저 고칠지 모른다]\n  INTENT[의도 탐지 가드레일만] --> SOCIAL[사회적 틀짓기에 뚫린다]\n  SINGLE[단일 턴 안전 검사] --> FROG[끓는 개구리 패턴을 놓친다]\n  JUDGE[LLM 채점관] --> WRONG[틀릴 수 있다]\n  WRONG -.->|그래서| HUMAN2[사람 · 게이트에 보탤 뿐]:::quiet\n  SOCIAL -.->|그래서| OUT[출력 계층 통제]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Autopilot: engineering an agentic quality loop for support automation",
+          "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+          "publisher": "Coinbase",
+          "date": "2026-09-21",
+          "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1284,7 +1614,8 @@
     "보안 이야기가 없다 — 거래소에서 가장 중요한 축인데 공개 기술 글에 안 보인다. 블로그 분류가 engineering-and-security 인데도 그렇다.",
     "규모 수치가 사업 지표뿐이다 — 초당 거래량·지연·가용성 같은 시스템 수치를 하나도 못 찾았다.",
     "수치가 서른 개 도구 하나뿐이다 — 얼마나 많은 연산이 우산을 지나는지, 지연이 얼마나 늘었는지, 이전에 얼마나 걸렸는지가 없다. 대가를 문장으로는 아주 정직하게 적으면서 숫자로는 대지 않는다(재구성).",
-    "CEEcil(2026-08-28)을 못 읽었다 — r.jina.ai 로도 403 이 온다(같은 도메인의 다른 글은 열리는데). 회사 사정이 아니라 도구 한계다 — 사람 같은 기억 이 무엇을 뜻하는지, 기억을 어떻게 저장하고 꺼내는지가 비어 있다."
+    "CEEcil(2026-08-28)을 못 읽었다 — r.jina.ai 로도 403 이 온다(같은 도메인의 다른 글은 열리는데). 회사 사정이 아니라 도구 한계다 — 사람 같은 기억 이 무엇을 뜻하는지, 기억을 어떻게 저장하고 꺼내는지가 비어 있다.",
+    "Autopilot 도입 뒤 고객지원 자동 해결률·CSAT 변화, 절차 수, 적대 시험으로 막은 발견의 건수는 밝히지 않는다."
   ],
   "sources": [
     {
@@ -1314,6 +1645,13 @@
       "publisher": "StockTitan (10-Q)",
       "date": "2026-08",
       "summary": "2026년 2분기 순매출 11억 5,000만 달러(거래 5억 9,900만 · 구독과 서비스 5억 5,500만), 순손실 3억 5,900만 달러. 월간 거래 사용자 760만 명(1년 전 870만), 플랫폼 자산 2,459억 달러(1년 전 4,250억)."
+    },
+    {
+      "title": "Autopilot: engineering an agentic quality loop for support automation",
+      "url": "https://www.coinbase.com/blog/autopilot-engineering-an-agentic-quality-loop-for-support-automation",
+      "publisher": "Coinbase",
+      "date": "2026-09-21",
+      "summary": "고객지원을 맡은 AI 에이전트 무리(사내 봇과 외부 벤더 봇)가 따르는 '절차(procedure)'를 소프트웨어처럼 작성·시험·레드팀·채점·분석하는 파이프라인 Autopilot. 절차를 자유 서술이 아니라 작은 DSL 로 쓰고 시험과 같은 계약을 공유해 한 시험 계획을 모든 봇에 돌린다. 고객 의도·실행한 절차·제품 테마를 따로 분류한다. 헤드리스 러너로 약 90건 UAT 가 1~2주에서 30~45분으로. 다중 턴 적대 시험을 CI 에 넣고 LLM 채점은 사람과 릴리스 게이트에 보탠다. 에이전트는 초안만 쓰고 모든 운영 쓰기는 사람이 승인한다. '의도적으로 고른 대가'를 절로 적는다."
     }
   ]
 }
