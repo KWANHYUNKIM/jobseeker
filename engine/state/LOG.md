@@ -1356,3 +1356,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 LegalOn 회사 프로파일
 
 - 대기 맨 위. 창립 9주년 발표(유상 도입 8,500 사·APAC·On Technologies) + 기술 글 둘(거버넌스 AI·지원 Codex+Datadog)로 도메인 둘·수익원 둘(On Tech 은 도메인 없음), 기능 0. 계약 검토 AI 본체 글은 아직 못 찾았다.
+
+## 2026-09-26 LegalOn 거버넌스 Skill
+
+- 거버넌스 글 후반(챗봇의 한계 → Skill 둘 → 결과)으로 `governance-skills-not-chatbot`(결정 8 — Skill vs Gems·68 규칙+11 질문·통제×접근 분류·읽기 전용 Live 체크·매트릭스 중요도·GitHub URL/CSV·세 관점+되묻기·DWG 팩트 체크). 정량 효과는 글이 '아직 없다' 고 밝힘. 지원 로그 도메인과의 연결은 inferred.

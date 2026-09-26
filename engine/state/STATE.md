@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**LegalOn — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '데이터 거버넌스 상담을 AI 가 먼저 받는다' 를 거버넌스 글(`entry/ai-data-governance-google-cloud`, scratchpad `lo_ai-data-governance-google-cloud.txt` — 'Custom GPT/Gemini Gems だけでは足りなかった' 이후 설계·결과를 마저). 그 뒤 지원 로그(`lo_support-team-datadog-analysis-with-codex.txt`). On Technologies 수익원은 도메인이 없다 — 완주 판정 때 확인. 대기 1/3(Findy). 머니포워드(hold)·LayerX 는 in_progress.**
+**LegalOn — 확장 1(2026-09-26): 거버넌스 도메인에 `governance-skills-not-chatbot`(결정 8). 다음은 확장: '비엔지니어가 자연어로 로그를 판다' 를 지원 로그 글(`entry/support-team-datadog-analysis-with-codex`, scratchpad `lo_support-team-datadog-analysis-with-codex.txt`)로. 그 뒤 완주 판정 — On Technologies 수익원은 도메인이 없다(두 번 찾고 없으면 hold). 대기 1/3(Findy). 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 
