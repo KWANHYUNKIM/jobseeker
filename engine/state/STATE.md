@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — protomaps 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — proton 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **proton** — 2026-09-26 없음 1회째. `proton.me/blog/feed` 는 소비자 블로그(제휴·설문·개인정보 안내)라 엔지니어링 글이 드물다. 기술 글은 장애 보고처럼 드물게 나온다 — 다음에는 `proton.me/blog/*incident*`·엔지니어링 태그를 따로 볼 것.
 - **protomaps** — 2026-09-26 없음 1회째. RSS 없음 — r.jina.ai 로 `/blog/` 목록(날짜가 붙어 있다). 마지막 글이 **2025-12-16**(이미 출처) — 9개월째 멈춤. 다음에도 없으면 재시도 안 함. 이전 글 후보: 2025-09-02 Mapterhorn 지형, 2024-02-16 오픈 코어에서 오픈 소스로(사업 결정).
 - **prisma** — 2026-09-26 없음 1회째. `prisma.io/blog/rss.xml`. 09-07 이후 4편 — NestJS 사용법, Netlify·Vercel 비교, "Prisma 8 은 장기 운영에 준비됐나" 모두 마케팅·튜토리얼. 이전 글 후보: 07-30 AI 에이전트의 운영 DB 삭제 막기, 07-28 Object Store Buckets.
 - **posthog** — 2026-09-26 확장. `posthog.com/rss.xml`. 09-10 리플레이 래스터라이저 글로 새 도메인 "아무도 안 보는 녹화를 모델이 보게 한다". 남은 후보: 09-16 기능 플래그 만들까 살까, 09-15 self-driving 루프, 08-19 시맨틱 레이어, 07-28 월 1만 PR 개발자 경험. **예고된 후속 글**(모델에게 무엇을 보여 주나)이 나오면 이 기능에 보탠다.
