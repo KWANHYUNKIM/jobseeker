@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**TRIBEAU 기능 2(2026-09-26) — `shared-mcp-auth`. 두 도메인 featured, connections 서로 이어짐, 수익원(클리닉 게재) 하나가 두 도메인과 연결 → 다음 사이클은 완주(done) 확인만. 그 뒤 신규 Macbee Planet(대기 2/3 · USEN ICT 가 그다음). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**TRIBEAU done(2026-09-26). 다음은 --gaps 의 신규: 큐 맨 위 Macbee Planet — 회사 사이트에서 수익원(성과 보수형 마케팅)부터, 글은 `3c9957ef9d6e42`(Fluentd → BigQuery Subscription) · `d41ccae942c10b`(Pub/Sub × Valkey) · `85c8ef4aeb063b`(dbt 재구축 스캔 90%↓) · `5cc43b5eefb4ae`(Vertex AI 배치 추론). 대기 2/3 → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

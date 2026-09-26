@@ -2017,3 +2017,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 TRIBEAU shared-mcp-auth
 
 - 사내 MCP 공통 기반 글 끝까지. 결정 9, 그림 3(flow·failure·state).
+
+## 2026-09-26 TRIBEAU 완주
+
+- 완주 기준 셋 확인 → done, QUEUE 완료로. (--gaps 는 이미 신규를 가리켰지만 in_progress 로 남긴 채 다음 회사로 가지 않으려고 먼저 닫음.)
