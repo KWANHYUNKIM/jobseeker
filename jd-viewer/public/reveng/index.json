@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "aldagram",
+      "name": "알다그램",
+      "name_en": "Aldagram",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "건설·부동산·제조 현장의 정보를 모으는 'KANNA'(10만 사 · 100개국)를 현장 AI 플랫폼으로 키우는 회사 — AI 기능마다 Bedrock 비용을 따로 쥐려다 생긴 모델 교체·비용 추정의 틈을 메우고, 행은 많고 가벼운 현장 DB 를 GB 과금 CDC 로 BigQuery 에 옮긴다",
+      "updated_at": "2026-09-27",
+      "domain": "aldagram.com"
+    },
+    {
       "slug": "jinjer",
       "name": "진저",
       "name_en": "jinjer",
@@ -3714,7 +3726,9 @@
     "여러 담당자에게 예약을 고르게 나눈다",
     "몰리는 두 페이지를 가장 빨리 띄운다",
     "10년 된 인사 시스템을 멈추지 않고 갈아 끼운다",
-    "가끔 불리는 함수의 첫 응답을 돈을 덜 들여 당긴다"
+    "가끔 불리는 함수의 첫 응답을 돈을 덜 들여 당긴다",
+    "현장 AI 기능마다 비용과 모델을 따로 쥔다",
+    "현장 데이터를 거의 실시간으로 분석 기반에 옮긴다"
   ],
   "countries": {
     "KR": "한국",
