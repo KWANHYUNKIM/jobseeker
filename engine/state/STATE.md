@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**アルダグラム 기능 1(2026-09-27) — `bedrock-cost-per-feature`(내역을 보이게 하자 무엇이 멈췄나, 결정 8). 다음은 --gaps 의 확장: 도메인 '현장 데이터를 거의 실시간으로 분석 기반에 옮긴다' — `ab35100d97ffa4` 를 끝까지(Raw/Sanitized/Mart · 컬럼 접근 제어 · Append-only 이력). 그 뒤 수익원(inferred) 판정 — 도입 사례 · 뉴스 · Zenn 검색 'KANNA 料金'. 대기 1/3(ギークプラス) — 이 회사 뒤 후보 조사. 비교 문서 재료 +1: LLM 비용을 무엇의 단위로 쥐나(アルダグラム 기능별 AIP ↔ 다른 회사의 모델 라우팅·비용 글). 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**アルダグラム 기능 2(2026-09-27) — `aurora-datastream-bigquery-cdc`(행은 많고 가볍다 — GB 로 사고 기존 터널로 옮긴다, 결정 8). 도메인 둘 다 찼다. 다음은 수익원 판정(지금 inferred — 요금 페이지 로그인 벽): 회사 뉴스 · 도입 사례(aldagram.com/news · kanna4u.com 의 공개 페이지) · Zenn 검색 'KANNA 料金'·'アルダグラム'. 과금 구조가 나오면 confirmed 로 올리고 done, 아니면 hold. 대기 1/3(ギークプラス) — 그 뒤 후보 조사. 비교 문서 재료 +1: LLM 비용을 무엇의 단위로 쥐나(アルダグラム 기능별 AIP ↔ 다른 회사의 모델 라우팅·비용 글). 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

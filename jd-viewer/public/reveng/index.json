@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "건설·부동산·제조 현장의 정보를 모으는 'KANNA'(10만 사 · 100개국)를 현장 AI 플랫폼으로 키우는 회사 — AI 기능마다 Bedrock 비용을 따로 쥐려다 생긴 모델 교체·비용 추정의 틈을 메우고, 행은 많고 가벼운 현장 DB 를 GB 과금 CDC 로 BigQuery 에 옮긴다",
       "updated_at": "2026-09-27",
       "domain": "aldagram.com"

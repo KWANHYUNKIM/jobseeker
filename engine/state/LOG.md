@@ -2183,3 +2183,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 アルダグラム 기능별 Bedrock profile
 
 - `ee846ade880fcc` 로 기능 `bedrock-cost-per-feature`, 결정 8(AIP + 태그 · unit 분리 · 교체 4걸음 · model_alias 불변 조건 · 기능 이름 output 경유 · 관측 이름 분리 · 한 기능 여러 profile · 글의 교훈).
+
+## 2026-09-27 アルダグラム Datastream CDC
+
+- `ab35100d97ffa4` 를 끝까지(backfill · DDL · Append-only · 3층) 읽어 기능 `aurora-datastream-bigquery-cdc`, 결정 8. 출처 요약에 뒤쪽 절을 보탰다.
