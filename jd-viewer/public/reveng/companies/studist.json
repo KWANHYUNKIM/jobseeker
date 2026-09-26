@@ -50,12 +50,12 @@
     },
     {
       "name": "Teachme 시리즈 신규 프로덕트",
-      "how": "린 오퍼레이션의 9 Steps 실행을 돕는 AI 중심 프로덕트군 — 일부는 2026 년 여름 출시 예정.",
+      "how": "린 오퍼레이션의 9 Steps 실행을 돕는 AI 중심 프로덕트군 — Teachme Process · MySkill · Communication 출시, Knowledge 는 곧. 각 프로덕트는 독립 AWS 계정에서 돌고 Teachme Biz 의 테넌트 · 사용자 · 계약 플랜을 이벤트로 받는다. 요금은 이번 자료에 없다.",
       "weight": "공개 안 됨",
       "domains": [
         "적은 플랫폼 인원으로 새 프로덕트를 여럿 띄운다"
       ],
-      "confidence": "inferred",
+      "confidence": "confirmed",
       "sources": [
         {
           "title": "Teachmeシリーズ - 株式会社スタディスト",
@@ -69,6 +69,13 @@
           "publisher": "スタディスト",
           "date": "2026-06-08",
           "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+        },
+        {
+          "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+          "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+          "publisher": "スタディスト",
+          "date": "2026-06-12",
+          "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
         }
       ]
     },
@@ -164,7 +171,8 @@
         }
       ],
       "features": [
-        "shared-eks-cross-account-subnets"
+        "shared-eks-cross-account-subnets",
+        "cross-account-tenant-event-fanout"
       ]
     }
   ],
@@ -1189,6 +1197,344 @@
           "summary": "'린 오퍼레이션'(가시화 → 표준화 → 단순화 → 철저화 → 가치 강화의 순환) 실현을 위한 프레임워크 '9 Steps' 의 실행을 돕는 **AI 중심 신규 프로덕트군 'Teachme 시리즈'**. 이유로 인구 감소 · 대량 채용 모델의 한계 · **현장의 다양화 · 다국적화**(말이나 경험에 기대지 않고 누구나 즉전력이 되는 구조)를 든다. Teachme Player 옵션 기능 등 2026 년 여름 출시 예정."
         }
       ]
+    },
+    {
+      "key": "cross-account-tenant-event-fanout",
+      "name": "Biz 에서 사용자를 지우면 Process 에서도 지워져야 한다 — 프로덕트 계정 사이의 SNS+SQS 팬아웃",
+      "domain": "적은 플랫폼 인원으로 새 프로덕트를 여럿 띄운다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "Teachme 시리즈로 Teachme Process · MySkill · Communication 이 나왔고 Knowledge 가 뒤따른다. 각 프로덕트는 **자기 AWS 계정**에서 돈다. 그런데 테넌트 · 사용자 · 계약 플랜은 Teachme Biz 가 관리한다 — Biz 에서 사용자가 지워지면 Process 에서도 지워져야 한다.\n\n각 프로덕트가 Biz 를 직접 들여다보면 서로 묶여 버린다. 그래서 Biz 가 변경을 **이벤트로 밀어 주고** 각 프로덕트가 구독하는 Pub/Sub 을 택했다.",
+        "metrics": [
+          {
+            "label": "구독하는 프로덕트",
+            "value": "Process · MySkill · Communication (+ Knowledge 예정)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+                "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+                "publisher": "スタディスト",
+                "date": "2026-06-12",
+                "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+              }
+            ]
+          },
+          {
+            "label": "메시지 보관 한계",
+            "value": "SNS+SQS 는 최대 14 일",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+                "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+                "publisher": "スタディスト",
+                "date": "2026-06-12",
+                "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "요건을 세울 때",
+          "thought": "Biz 의 테넌트 · 사용자 · 계약 변경을 각 프로덕트가 실시간으로 알아야 한다 — 그러면서 프로덕트끼리 밀결합은 피하고 싶다. 둘을 함께 채우는 게 푸시형 Pub/Sub 이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+              "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+              "publisher": "スタディスト",
+              "date": "2026-06-12",
+              "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+            }
+          ]
+        },
+        {
+          "at": "도구를 고를 때",
+          "thought": "복잡한 라우팅도, 스키마 레지스트리로 관리할 만큼 많은 이벤트 종류도 예상하지 않는다 — 단순하게 시작하고 요건이 생기면 EventBridge 로 옮긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+              "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+              "publisher": "スタディスト",
+              "date": "2026-06-12",
+              "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "잘 알려진 SNS+SQS 로 시작해 짧은 기간에 구현을 끝내면서 확장성도 챙겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+              "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+              "publisher": "スタディスト",
+              "date": "2026-06-12",
+              "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Teachme Biz(발행자)",
+            "what": "테넌트 · 사용자 · 계약 플랜의 원본 — 바뀌면 SNS 토픽에 이벤트를 낸다."
+          },
+          {
+            "name": "SNS 스탠더드 토픽",
+            "what": "Biz 계정에 있다. 구독할 수 있는 계정을 접근 정책으로 제한한다."
+          },
+          {
+            "name": "프로덕트별 SQS 큐",
+            "what": "각 프로덕트 계정에 있다. 이 토픽만 보낼 수 있게 접근 정책으로 제한한다."
+          },
+          {
+            "name": "DLQ 둘",
+            "what": "SNS 쪽(큐로 배달 실패)과 SQS 쪽(maxReceiveCount 만큼 처리 실패). 둘 다 SQS 큐이고 Datadog 이 감시한다."
+          },
+          {
+            "name": "구독",
+            "what": "SNS 쪽에서 만든다 — SNS DLQ 를 쓰기 위해. 처음에 SubscribeURL 확인이 필요하다."
+          }
+        ],
+        "invariants": [
+          "Biz 에서 지워진 사용자는 모든 구독 프로덕트에서도 지워진다(요건).",
+          "허락된 계정만 토픽을 구독하고, 허락된 토픽만 큐에 보낸다.",
+          "순서는 보장하지 않는다 — 현재 순서 보장 요건이 없다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Biz 에서 테넌트 · 사용자 · 계약 플랜이 바뀐다",
+            "why": "원본은 Biz 하나."
+          },
+          {
+            "step": "Biz 가 SNS 토픽에 변경 이벤트를 낸다",
+            "why": "프로덕트가 Biz 를 조회하지 않게 — 푸시."
+          },
+          {
+            "step": "SNS 가 각 프로덕트 계정의 SQS 로 팬아웃, 실패하면 SNS DLQ",
+            "why": "프로덕트가 늘어도 구독만 추가."
+          },
+          {
+            "step": "각 프로덕트가 큐를 소비해 자기 데이터에 반영, 반복 실패하면 SQS DLQ",
+            "why": "프로덕트가 자기 속도로 처리한다."
+          },
+          {
+            "step": "DLQ 를 Datadog 이 감시",
+            "why": "배달 · 처리 실패를 알아채고 추적한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "프로덕트가 Biz 의 사용자 · 테넌트 변경을 어떻게 아나?",
+            "chosen": "**Biz 가 변경 이벤트를 밀어 주는 Pub/Sub.**",
+            "alternatives": [
+              "CDC(변경 데이터 캡처)",
+              "각 프로덕트가 Biz 의 DB 에 직접 접근"
+            ],
+            "tradeoff": "실시간으로 알면서 프로덕트끼리 밀결합을 피한다. 대가는 비동기라 프로덕트 쪽 반영이 늦거나 실패할 수 있어 DLQ 와 감시가 필요하다는 것. CDC · DB 직접 접근을 버린 이유는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+                "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+                "publisher": "スタディスト",
+                "date": "2026-06-12",
+                "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+              }
+            ]
+          },
+          {
+            "question": "Pub/Sub 을 무엇으로?",
+            "chosen": "**SNS + SQS.**",
+            "alternatives": [
+              "EventBridge + SQS(규칙 라우팅 · 스키마 레지스트리 · 아카이브와 재생)",
+              "Amazon MSK(고처리량 · 장기 보관 · 순서 보장)",
+              "자체 운영"
+            ],
+            "tradeoff": "관리형 · 종량 과금 · 설정이 단순하다. MSK 는 비싸고 사내 운영 경험이 없어 과하다고 봤다. 대가는 메시지 보관이 최대 14 일, 순서 보장 제한, 고급 라우팅에 약하다는 것 — 필요해지면 EventBridge 로 옮기기 어렵지 않다고 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+                "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+                "publisher": "スタディスト",
+                "date": "2026-06-12",
+                "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+              }
+            ]
+          },
+          {
+            "question": "FIFO 인가 스탠더드인가?",
+            "chosen": "**SNS 토픽도 SQS 큐도 스탠더드.**",
+            "alternatives": [
+              "FIFO 토픽 · 큐"
+            ],
+            "tradeoff": "더 싸고 메시지 그룹화가 필요 없다. 지금은 순서 보장 요건이 없고 처리량을 걱정할 만큼 이벤트가 많지 않다. SNS 가 순서를 보장하지 않는데 SQS 만 FIFO 로 할 이유는 없다. 대가는 같은 사용자의 변경 두 건이 뒤바뀌어 도착할 수 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+                "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+                "publisher": "スタディスト",
+                "date": "2026-06-12",
+                "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+              }
+            ]
+          },
+          {
+            "question": "실패한 메시지는?",
+            "chosen": "**SNS 쪽과 SQS 쪽 모두 DLQ, 둘 다 Datadog 감시.**",
+            "alternatives": [
+              "SQS 쪽 DLQ 만"
+            ],
+            "tradeoff": "배달 실패와 처리 실패를 따로 잡아 장애 때 추적할 수 있다. 대가는 SNS DLQ 때문에 구독 위치가 정해진다는 것(다음 결정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+                "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+                "publisher": "スタディスト",
+                "date": "2026-06-12",
+                "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+              }
+            ]
+          },
+          {
+            "question": "크로스 계정 구독을 어느 쪽에서 만드나?",
+            "chosen": "**SNS 쪽(발행 계정)에서.**",
+            "alternatives": [
+              "SQS 쪽(큐 소유 계정)에서 — AWS 문서가 권하는 방식, 확인이 자동"
+            ],
+            "tradeoff": "SNS DLQ 를 설정할 수 있다. 대가는 처음에 SQS 로 오는 확인 메시지의 SubscribeURL 에 접근해야 수신이 시작된다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+                "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+                "publisher": "スタディスト",
+                "date": "2026-06-12",
+                "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+              }
+            ]
+          },
+          {
+            "question": "아무 계정이나 구독하지 못하게 하려면?",
+            "chosen": "**SNS 정책은 구독 가능 계정을, SQS 정책은 보낼 수 있는 토픽(SourceArn)을 제한 — 최소 권한, AWS 서포트에 설정 확인.**",
+            "alternatives": [
+              "넓은 정책으로 두고 나중에 좁힌다"
+            ],
+            "tradeoff": "잘못하면 무관한 계정이 테넌트 · 사용자 변경을 구독할 수 있다. 대가는 프로덕트를 더할 때마다 양쪽 정책을 고쳐야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+                "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+                "publisher": "スタディスト",
+                "date": "2026-06-12",
+                "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Teachme 시리즈 신규 프로덕트(수익원)",
+          "via": "Biz 의 테넌트 · 사용자 · 계약 플랜 이벤트",
+          "contract": "Process · MySkill · Communication 이 Biz 에서 테넌트 · 사용자 · 계약 플랜 변경을 받는다 — 새 프로덕트가 Biz 고객 계정 위에서 돈다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+              "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+              "publisher": "スタディスト",
+              "date": "2026-06-12",
+              "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+            }
+          ]
+        },
+        {
+          "to": "Teachme Biz 구독(수익원)",
+          "via": "계약 플랜의 원본",
+          "contract": "테넌트 · 사용자 · 계약 플랜의 원본은 Teachme Biz 다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+              "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+              "publisher": "スタディスト",
+              "date": "2026-06-12",
+              "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+            }
+          ]
+        },
+        {
+          "to": "shared-eks-cross-account-subnets",
+          "via": "프로덕트별 AWS 계정",
+          "contract": "프로덕트마다 AWS 계정을 나눴기 때문에 데이터 동기화도 계정을 넘는 이벤트가 된다 — 두 글 모두 이 구성을 전제한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+              "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+              "publisher": "スタディスト",
+              "date": "2026-06-12",
+              "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+            },
+            {
+              "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+              "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+              "publisher": "スタディスト",
+              "date": "2026-06-08",
+              "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "한 번의 사용자 삭제",
+          "question": "Biz 에서 사용자를 지우면 어디로 퍼지나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  B[\"Teachme Biz: 사용자 삭제\"] --> T[\"SNS 스탠더드 토픽(Biz 계정)\"]\n  T --> Q1[\"SQS(Process 계정)\"]\n  T --> Q2[\"SQS(MySkill 계정)\"]\n  T --> Q3[\"SQS(Communication 계정)\"]\n  Q1 --> P1[\"Process 가 사용자 삭제\"]\n  Q2 --> P2[\"MySkill 이 사용자 삭제\"]\n  Q3 --> P3[\"Communication 이 사용자 삭제\"]\n  T -. \"배달 실패\" .-> D1[\"SNS DLQ\"]\n  Q1 -. \"반복 실패\" .-> D2[\"SQS DLQ\"]\n  D1 --> M[\"Datadog\"]\n  D2 --> M"
+        },
+        {
+          "title": "구독 하나의 상태",
+          "question": "프로덕트 큐 하나가 토픽을 받기까지 어떤 상태를 거치나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 정책설정: SNS 구독 계정 · SQS SourceArn\n  정책설정 --> 구독생성: SNS 쪽에서(DLQ 위해)\n  구독생성 --> 확인대기: SubscribeURL 메시지 도착\n  확인대기 --> 수신중: URL 확인\n  수신중 --> 수신중: 이벤트 소비\n  수신중 --> DLQ: 배달 · 처리 실패"
+        },
+        {
+          "title": "확인을 잊으면",
+          "question": "구독을 만들었는데 왜 아무것도 안 오나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"SNS 쪽에서 크로스 계정 구독 생성\"] --> B[\"SQS 로 SubscriptionConfirmation 도착\"]\n  B --> C{\"SubscribeURL 접근?\"}\n  C -- 아니오 --> D[\"큐가 이벤트를 받지 않음\"]\n  D --> E[\"Biz 에서 지운 사용자가 프로덕트에 남음\"]\n  C -- 예 --> F[\"수신 시작\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+          "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+          "publisher": "スタディスト",
+          "date": "2026-06-12",
+          "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
+        },
+        {
+          "title": "Teachmeシリーズ - 株式会社スタディスト",
+          "url": "https://studist.jp/business/strategy/teachme-series",
+          "publisher": "スタディスト",
+          "summary": "'린 오퍼레이션'(가시화 → 표준화 → 단순화 → 철저화 → 가치 강화의 순환) 실현을 위한 프레임워크 '9 Steps' 의 실행을 돕는 **AI 중심 신규 프로덕트군 'Teachme 시리즈'**. 이유로 인구 감소 · 대량 채용 모델의 한계 · **현장의 다양화 · 다국적화**(말이나 경험에 기대지 않고 누구나 즉전력이 되는 구조)를 든다. Teachme Player 옵션 기능 등 2026 년 여름 출시 예정."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1229,6 +1575,13 @@
       "publisher": "スタディスト",
       "date": "2026-06-08",
       "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+    },
+    {
+      "title": "AWSのクロスアカウントにおけるイベント連携をSNS + SQSで実現する",
+      "url": "https://zenn.dev/studist/articles/20260612_pub_sub",
+      "publisher": "スタディスト",
+      "date": "2026-06-12",
+      "summary": "Teachme 시리즈로 **Teachme Process · MySkill · Communication** 을 출시(Knowledge 는 곧) — 각각 독립 AWS 계정. Teachme Biz 의 테넌트 · 사용자 · 계약 플랜 변경을 각 프로덕트가 실시간으로 알아야 하지만 밀결합은 피하고 싶어 **푸시형 Pub/Sub**(CDC · DB 직접 접근도 검토). SNS+SQS / EventBridge+SQS / MSK 중 **SNS+SQS** — MSK 는 과하고 복잡한 라우팅 · 스키마 레지스트리가 필요 없다, 나중에 EventBridge 로 옮기기 어렵지 않다. 스탠더드 토픽 · 큐(순서 보장 요건 없음 · 싸다), SNS · SQS 양쪽 DLQ 를 Datadog 감시. 크로스 계정 접근 정책을 최소 권한으로. SNS DLQ 를 쓰려면 구독을 송신 쪽에 만들어야 하고, 그러면 SubscribeURL 확인이 필요."
     }
   ]
 }

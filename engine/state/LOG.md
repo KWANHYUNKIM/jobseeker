@@ -2564,3 +2564,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 スタディスト EKS 합승
 
 - `924fc12fd8f425` 전문으로 기능 `shared-eks-cross-account-subnets`, 결정 6. 신규 프로덕트 수익원 연결은 여전히 inferred(프로덕트명 없음).
+
+## 2026-09-27 スタディスト 계정 간 이벤트 · 신규 프로덕트 수익원 판정 1 차
+
+- 수익원 판정 1 차: publication 전체 목록(75 편) 제목을 훑음. `20260612_pub_sub` 이 Teachme Process · MySkill · Communication 을 명시 → '신규 프로덕트' confirmed, 기능 `cross-account-tenant-event-fanout`(결정 6). 린 오퍼레이션 지원 프로그램 관련 제목은 없음.
