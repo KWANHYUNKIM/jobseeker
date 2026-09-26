@@ -464,6 +464,132 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/379411",
+      "title": "의료데이터 분석가 (Medical Data Analyst)",
+      "site": "wanted",
+      "verdict": "경력 2-7년. 개발 자리가 아니라 연구 자리다 — OMOP-CDM 등 CDM 기반 의료 데이터로 연구를 수행하고, 연구계획서(Protocol)·통계분석계획서(SAP)를 쓰고, CDM 데이터를 추출·정제해 통계 분석하고, 결과 보고서를 쓴다. 연구 기획부터 보고까지 End-to-End 이고, 임상·통계·IT 부서와 병원 등 외부 기관과 협업한다. 자격은 보건통계·의료정보·통계·생물통계·보건학·컴퓨터공학 등 학사 이상, HIRA 표본 데이터·CDW·CDM 같은 의료데이터 분석 경험, 실무 2년 이상, R·Python·SQL 중 하나 이상, 연구 문서 작성. SCI(E)급 논문, 병원 데이터분석 연구원 근무, 다기관 공동연구 참여는 우대다. 전형은 지원 → 서류 평가 → 1차(실무진) 면접 → 2차(임원) 면접 → 처우 협의 → 합격.",
+      "fit": {
+        "must_have": [
+          "관련 전공 학사 이상",
+          "HIRA 표본·CDW·CDM 의료데이터 분석 경험",
+          "실무 2년 이상",
+          "R·Python·SQL 중 하나 이상",
+          "연구계획서·SAP·결과보고서 작성"
+        ],
+        "can_learn": [
+          "의료 데이터 SCI(E) 논문",
+          "병원 데이터분석 연구원 경험",
+          "다기관 공동연구"
+        ]
+      },
+      "study": [
+        {
+          "topic": "CDM 에서 코호트 정의와 추출",
+          "from": "task",
+          "quote": "CDM 데이터 추출·정제 및 통계 분석 수행",
+          "priority": "core",
+          "why": "주요업무이고 자격요건이 HIRA 표본·CDW·CDM 같은 의료데이터 분석 경험과 R·Python·PostgreSQL/SQL 이다. 회사가 50여 개 병원 데이터를 OMOP-CDM 으로 구축한다.",
+          "gap_check": "'2형 당뇨로 메트포르민을 처음 처방받은 환자' 코호트를 CDM 에서 정의할 때 진입 사건·관찰 기간·포함/제외 기준·종료 조건을 각각 어느 테이블로 잡는가?",
+          "drill": "The Book of OHDSI 의 코호트 장을 읽고 ATLAS 데모에서 위 코호트를 정의해 본 뒤, 같은 정의를 CONDITION_OCCURRENCE·DRUG_EXPOSURE·OBSERVATION_PERIOD 에 대한 SQL 로 직접 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "The Book of OHDSI — Defining Cohorts",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/Cohorts.html",
+              "kind": "docs"
+            },
+            {
+              "title": "ATLAS demo",
+              "url": "https://atlas-demo.ohdsi.org/",
+              "kind": "tool"
+            },
+            {
+              "title": "The Book of OHDSI — SQL and R",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/SqlAndR.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "연구계획서·SAP 작성",
+          "from": "task",
+          "quote": "연구계획서(Protocol), 통계분석계획서(SAP) 등 연구 관련 문서 작성",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 '연구계획서, SAP, 결과보고서 등 문서 작성 역량 보유' 가 따로 있다.",
+          "gap_check": "관찰연구 SAP 에 분석 전에 못 박아야 하는 것(1차 결과변수, 교란변수와 보정 방법, 결측 처리, 민감도 분석)은 무엇이고, 결과 보고서는 어떤 체크리스트에 맞추는가?",
+          "drill": "앞 드릴의 코호트로 '약제 A 와 B 의 1년 내 입원 위험 비교' 연구계획서·SAP 요약본을 쓰고, STROBE 체크리스트로 결과 보고서 목차를 짠다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "The Book of OHDSI — Study steps",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/StudySteps.html",
+              "kind": "docs"
+            },
+            {
+              "title": "STROBE Statement",
+              "url": "https://www.strobe-statement.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "CDM 기반 비교 효과 분석",
+          "from": "task",
+          "quote": "CDM(Common Data Model, 예: OMOP-CDM 등) 기반 의료 데이터 분석 및 연구 수행",
+          "priority": "high",
+          "why": "주요업무이고 우대에 '다기관 공동연구 참여 경험자' 와 SCI(E)급 논문 경험이 있다. 회사 FeederNet 이 다기관 연구를 한다고 공고 머리말이 적는다.",
+          "gap_check": "두 약제 사용군을 비교할 때 성향점수 매칭과 층화는 무엇이 다르고, 다기관 결과를 합칠 때 병원별 차이는 어떻게 다루는가?",
+          "drill": "The Book of OHDSI 의 인구 수준 추정 장과 CohortMethod 문서를 읽고, 성향점수 매칭 전후 공변량 균형표와 Cox 모형 결과표를 가상 데이터로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "The Book of OHDSI — Population-Level Estimation",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/PopulationLevelEstimation.html",
+              "kind": "docs"
+            },
+            {
+              "title": "OHDSI CohortMethod",
+              "url": "https://ohdsi.github.io/CohortMethod/",
+              "kind": "docs"
+            },
+            {
+              "title": "OHDSI HADES",
+              "url": "https://ohdsi.github.io/Hades/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "ATLAS 데모 코호트 + SAP + STROBE 결과 보고서 샘플 한 벌",
+          "why": "주요업무가 기획→추출→분석→보고 End-to-End 다. 문서 작성 역량이 자격요건에 따로 있다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "의료 데이터 논문·다기관 연구 참여 이력 정리",
+          "why": "우대사항 세 줄이 모두 연구 이력(논문·병원 연구원·다기관)이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원 → 서류 평가 → 1차(실무진) 면접 → 2차(임원) 면접 → 처우 협의 → 합격(공고 기준).",
+        "expect": [
+          "수행한 의료 데이터 연구의 설계와 한계",
+          "코호트 정의",
+          "통계 방법 선택",
+          "외부 기관 협업"
+        ],
+        "sources": [
+          {
+            "title": "의료데이터 분석가 (Medical Data Analyst)",
+            "url": "https://www.wanted.co.kr/wd/379411",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
