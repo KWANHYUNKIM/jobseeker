@@ -434,6 +434,105 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/363748",
+      "title": "AI Agent 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3-8년, 서울 중구. **자연어 AI 챗봇으로 항공 검색·예약·발권까지 잇는 서비스**를 만드는 자리다. 주요업무가 열 줄이다 — LLM 에이전트가 **실제 항공 예약 업무를 수행**하는 backend·workflow, 복잡한 **운임·예약 정책 데이터를 AI 가 이해할 구조로 가공**하고 API 개발, GDS/NDC/API 글로벌 항공 시스템 연동과 실시간 데이터 처리, LangChain·LangGraph, OpenAI·Claude 등 상용 LLM API, 프롬프트·워크플로우 설계로 응답 품질 개선, **Terraform** 인프라와 운영 자동화, 아키텍처·성능 최적화, 새 AI 기술 검증. 필수는 **백엔드 개발·운영 3년 이상**과 주력 언어 숙련(C++·Python·Java·Go·Javascript 등 언어 무관) 두 줄뿐이다 — ML 연구 경력이 아니라 백엔드 경력을 묻는다. 우대는 Python 웹 프레임워크, 클라우드·네트워크, '왜 이 기술을 사용하는가' 를 설명하는 태도. 전형: 서류전형 ＞ 1차 면접 ＞ 2차 면접 ＞ 최종합격, 서류에서 급여내역 삭제, 3개월 수습 뒤 정규직 계약. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 개발·운영 3년 이상",
+          "주력 언어 숙련(언어 무관)"
+        ],
+        "can_learn": [
+          "LangGraph·LangChain",
+          "LLM 도구 호출",
+          "GDS/NDC 연동",
+          "Terraform",
+          "Python 웹 프레임워크"
+        ]
+      },
+      "study": [
+        {
+          "topic": "LLM 이 발권 버튼을 누르기 전에 — 사람 확인 단계",
+          "from": "task",
+          "quote": "• LLM 기반 AI Agent가 실제 항공 예약 업무를 수행할 수 있는 backend 및 workflow 구축",
+          "priority": "core",
+          "why": "주요업무다. 에이전트가 '실제 항공 예약 업무' 를 하면 발권은 돈이 나가고 되돌리기 어렵다(환불 규정·수수료).",
+          "gap_check": "에이전트가 검색·운임 비교까지는 스스로 하되 발권·결제 직전에는 반드시 멈춰 사용자 확인을 받게 하려면 그래프의 어디에 중단점을 두고, 확인을 기다리는 동안 상태는 어디에 저장하며, 사용자가 '아니, 다른 편' 이라고 답하면 어느 노드로 되돌아가는가?",
+          "drill": "LangGraph 로 '검색 → 후보 제시 → (중단) 사용자 확인 → 가짜 발권 API' 그래프를 만들고 interrupt 로 발권 직전에 멈춘 뒤, 체크포인터로 상태를 저장해 '승인' 과 '다른 편으로' 두 응답에 각각 다시 이어지는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "LangGraph overview — Docs by LangChain",
+              "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Interrupts — Docs by LangChain",
+              "url": "https://docs.langchain.com/oss/python/langgraph/interrupts",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "운임 규정을 LLM 이 쓸 수 있는 도구로",
+          "from": "task",
+          "quote": "• 복잡한 항공권 운임·예약 정책 데이터를 AI가 이해할 수 있는 구조로 가공 및 API 개발",
+          "priority": "core",
+          "why": "주요업무다. 회사 브리핑대로 누아 오피스가 자동화하는 것이 바로 취소·환불 등 규정 처리다.",
+          "gap_check": "'출발 3일 전 취소하면 얼마를 돌려받나' 에 LLM 이 운임 규정 원문을 읽고 직접 계산하게 두면 무엇이 위험하고(숫자 환각), 대신 규정을 구조화한 데이터와 '환불액 계산' 도구를 주면 LLM 에게 남는 일은 무엇(질문 해석·결과 설명)인가? 도구 입력 스키마는 무엇으로 검증하는가?",
+          "drill": "가짜 운임 규정(출발 전 기간별 취소 수수료, 노쇼 수수료)을 JSON 으로 구조화하고 calculate_refund(booking_id, cancel_at) 도구를 만든다. Claude 또는 OpenAI 도구 호출로 자연어 질문 열 개를 넣어 도구 인자가 맞게 채워지는지, 최종 답의 금액이 도구 결과와 같은지 대조한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Tool use with Claude — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Function calling — OpenAI API",
+              "url": "https://developers.openai.com/api/docs/guides/function-calling",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "에이전트 응답 품질을 숫자로 — 평가 세트",
+          "from": "task",
+          "quote": "• AI 응답 품질 향상을 위한 프롬프트·워크플로우 설계 및 운영 개선",
+          "priority": "high",
+          "why": "주요업무이고 '새로운 AI 기술 트렌드를 빠르게 검증' 하는 일도 적는다 — 모델·프롬프트를 바꿀 때 나아졌는지 알아야 한다.",
+          "gap_check": "프롬프트를 고친 뒤 '더 좋아진 것 같다' 가 아니라 확인하려면 어떤 평가 세트(질문·기대 도구 호출·기대 금액)를 두고, 정답이 하나인 항목(환불액)과 판단이 필요한 항목(설명의 친절함)은 각각 무엇으로 채점하는가?",
+          "drill": "위 환불 도구 실습의 질문을 30개로 늘려 기대 도구 인자와 기대 금액을 적은 평가 세트를 만들고, 프롬프트 두 버전을 돌려 정확도를 표로 비교한다. 설명 품질은 채점 기준표를 적어 LLM 채점을 붙이고 몇 개를 사람이 다시 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Define success criteria and build evaluations — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Terraform 으로 AI 서비스 인프라",
+          "from": "task",
+          "quote": "• Terraform 기반 클라우드 인프라 구축 및 서비스 운영 자동화",
+          "priority": "nice",
+          "why": "주요업무다. 같은 회사 DevOps 공고도 IaC(Terraform·AWS CDK) 를 요구한다.",
+          "gap_check": "에이전트 API 서버·벡터 DB·비밀키 저장소를 Terraform 으로 만들 때 state 파일은 어디에 두고 여럿이 동시에 apply 하지 못하게 무엇을 거는가? LLM API 키를 Terraform 코드나 state 에 평문으로 남기지 않으려면 어떻게 하는가?",
+          "drill": "HashiCorp AWS 튜토리얼로 인스턴스 하나를 만들고 지운 뒤, state 를 원격 백엔드로 옮기고 비밀값을 Secrets Manager 참조로 바꿔 plan 출력과 state 파일에 키가 보이지 않는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "AWS — Terraform Tutorials",
+              "url": "https://developer.hashicorp.com/terraform/tutorials/aws-get-started",
+              "kind": "course"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
