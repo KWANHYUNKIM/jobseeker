@@ -2556,3 +2556,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 スタディスト AI 번역
 
 - `multi-product-translation` 전문으로 기능 `llm-translation-stream-service`, 결정 6(범용 번역 서비스는 검토 단계 · 책임 결정 inferred).
+
+## 2026-09-27 スタディスト PDF 정밀도 평가
+
+- `pdf-convert-quality-assurance` 전문으로 기능 `pdf-draft-accuracy-evaluation`, 결정 7. 번역 기능과의 연결은 inferred.
