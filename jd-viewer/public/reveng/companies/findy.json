@@ -22,7 +22,9 @@
       "name": "Findy · Findy Freelance(엔지니어 매칭)",
       "how": "하이스킬 엔지니어와 기업의 구인·업무 위탁 안건을 매칭한다. 자체 AI 가 스킬과 구인표를 해석. 과금 방식은 확인 못 함.",
       "weight": "공개 없음",
-      "domains": [],
+      "domains": [
+        "GitHub 활동으로 엔지니어 스킬을 순위 매긴다"
+      ],
       "confidence": "confirmed",
       "sources": [
         {
@@ -31,6 +33,13 @@
           "publisher": "ファインディ株式会社",
           "date": "2026-09-26",
           "summary": "2014년 창업. 서비스 넷과 행사 하나 — **Findy**(하이스킬 엔지니어 전직 매칭, 자체 AI 가 엔지니어 스킬과 구인표를 해석), **Findy Freelance**(프리랜서·부업 엔지니어와 업무 위탁 안건 매칭), **Findy Team+**(GitHub·Jira 를 연동해 엔지니어링 조직의 퍼포먼스를 가시화, 일·영·한 사이트), **Findy Tools**(개발 도구 리뷰 사이트), 테크 컨퍼런스 사업."
+        },
+        {
+          "title": "GitHubからエンジニアスキルを可視化する「スキル偏差値」を大幅リニューアルした話",
+          "url": "https://tech.findy.co.jp/entry/skill-deviation-v3-ml",
+          "publisher": "Findy Tech Blog",
+          "date": "2024-12-16",
+          "summary": "Findy 가 GitHub 를 머신러닝으로 해석해 엔지니어 스킬을 보여 주는 **스킬 편차치** ver.3 — 2017년 출시 뒤 가장 큰 개편으로 알고리즘과 학습 데이터 만드는 법 자체를 바꿨다. 배경은 **언어별 점수** 정확도 요구와, LLM·AI 에이전트 이후 '서비스 개발·운영에 직결하는 능력' 을 평가할 필요. 리포지토리를 **Python·JavaScript·TypeScript·Go·Ruby·PHP** 로 나누고, GitHub 사용자 둘을 **무작위로 짝지은 페어와이즈** 데이터에 사람이 **승패 어노테이션**(라벨 기준을 명확히 해 교차 리뷰)을 붙여 **랭킹 학습**. 특징은 언어마다 다르다(예: 어떤 언어는 README 길이가 중요, 보일러플레이트에 README 가 충실한 언어는 아님) → **언어별 모델** — 그래서 6개 언어로 한정. 더 복잡한 모델도 검토했지만 언어별 개별 모델이라는 제약과 특징 설계로 **단순한 모델**로 충분. 평가는 '여러 사람의 판단과 같은 승패를 내는가' — 6개 언어 모두 **사람 판단을 80% 이상** 모방. 특징 상세·모델 정확도는 사외비."
         }
       ]
     },
@@ -63,7 +72,9 @@
       "name": "Findy Tools · 컨퍼런스",
       "how": "개발 도구 리뷰 사이트와 해외 기술 리더를 부르는 대형 컨퍼런스.",
       "weight": "공개 없음",
-      "domains": [],
+      "domains": [
+        "도구 리뷰 사이트의 데이터 기반을 실적 있는 도구로 빨리 짓는다"
+      ],
       "confidence": "confirmed",
       "sources": [
         {
@@ -72,6 +83,13 @@
           "publisher": "ファインディ株式会社",
           "date": "2026-09-26",
           "summary": "2014년 창업. 서비스 넷과 행사 하나 — **Findy**(하이스킬 엔지니어 전직 매칭, 자체 AI 가 엔지니어 스킬과 구인표를 해석), **Findy Freelance**(프리랜서·부업 엔지니어와 업무 위탁 안건 매칭), **Findy Team+**(GitHub·Jira 를 연동해 엔지니어링 조직의 퍼포먼스를 가시화, 일·영·한 사이트), **Findy Tools**(개발 도구 리뷰 사이트), 테크 컨퍼런스 사업."
+        },
+        {
+          "title": "Findy Toolsのデータ基盤を1ヶ月前倒しで新規構築した話",
+          "url": "https://tech.findy.co.jp/entry/findy_tools_data_infrastructure_introduction",
+          "publisher": "Findy Tech Blog",
+          "date": "2024-12-21",
+          "summary": "개발 도구 리뷰 사이트 **Findy Tools** 의 데이터 기반을 새로 지어 한 달 앞당겨 냈다. 로그는 **fluentbit** 로 BigQuery 에(공수 적고 추가 비용이 BigQuery API 뿐). Aurora MySQL 의 전송은 **Private Link(난이도 高·혜택 小)·서드파티 ETL(비용 高)** 을 버리고 **Private Subnet 의 ECS + 사내 실적 있는 Embulk**. 가공은 GUI 가 있는 Dataform 대신 Git 에 익숙한 멤버를 고려해 **dbt**. 에러 알림은 Lambda→SNS 대신 **전부 Terraform 으로** 관리되는 방식. Python 관리는 Docker(Dockerfile 유지 부담) 대신 **uv**. 로컬에서 Embulk Docker 가 어렵고 uv+dbt 명령이 길어 래퍼를 만들었다."
         }
       ]
     }
@@ -79,8 +97,8 @@
   "domain_map": {
     "title": "엔지니어를 재는 회사",
     "question": "엔지니어 플랫폼은 어디에 기술을 쓰나?",
-    "code": "flowchart LR\n  GH[\"고객사 GitHub · Jira\"] --> TP[\"Findy Team+\\n코드 품질 분석(네 지표 → 스코어)\"]\n  TP --> ORG[\"개발 조직 · 경영층\\n리팩터링 판단 · AI 코드 품질 비교\"]\n  SL[\"사내 Slack 문의\"] --> GA[\"GitHub Actions\\n기동 판정 · 세션 생성\"]\n  GA --> MA[\"Managed Agent\\nGitHub · Slack MCP\"]\n  MA --> ISS[\"Issue 답 · Slack 요약\"]",
-    "_note": "위는 파는 제품(Team+)이 고객 코드를 재는 일, 아래는 사내 문의 조사를 에이전트에 맡기는 일이다. 매칭(Findy·Freelance) 쪽 기술 글은 아직 못 찾았다."
+    "code": "flowchart LR\n  GH[\"고객사 GitHub · Jira\"] --> TP[\"Findy Team+\\n코드 품질 분석(네 지표 → 스코어)\"]\n  TP --> ORG[\"개발 조직 · 경영층\\n리팩터링 판단 · AI 코드 품질 비교\"]\n  SL[\"사내 Slack 문의\"] --> GA[\"GitHub Actions\\n기동 판정 · 세션 생성\"]\n  GA --> MA[\"Managed Agent\\nGitHub · Slack MCP\"]\n  MA --> ISS[\"Issue 답 · Slack 요약\"]\n  GHU[\"엔지니어 GitHub\"] --> SKL[\"스킬 편차치\\n페어와이즈 · 언어별 랭킹 모델\"] --> MT[\"Findy · Freelance 매칭\"]\n  TL[\"Findy Tools\\n로그 · Aurora\"] -->|fluentbit · Embulk| BQ[\"BigQuery + dbt\"]",
+    "_note": "위 둘은 Team+ 와 사내 문의 조사, 아래는 매칭의 스킬 순위와 Findy Tools 의 데이터 기반이다."
   },
   "domains": [
     {
@@ -130,6 +148,50 @@
       "features": [
         "inquiry-agent-session-per-issue"
       ]
+    },
+    {
+      "name": "GitHub 활동으로 엔지니어 스킬을 순위 매긴다",
+      "why": "Findy 는 엔지니어와 기업을 잇는 매칭 서비스다 — 스킬을 **이력서 문장이 아니라 GitHub 에 남은 것**으로 보여 주는 것이 2017년부터의 핵심이다. 사용자는 **언어별** 점수가 더 정확하길 원했고, AI 가 코딩을 하게 되면서 '스킬' 의 정의 자체가 바뀌고 있었다.",
+      "tech": [
+        {
+          "tech": "스킬 편차치 ver.3 — 무작위 페어와이즈 승패 어노테이션 + 랭킹 학습, 언어별 모델(6개 언어)",
+          "solves": "GitHub 사용자끼리의 상대 비교를 사람의 판단에 맞춰 배워, 언어별로 순위를 매긴다(사람 판단 모방 80% 이상).",
+          "limits": "언어마다 모델을 따로 만들어야 해서 **6개 언어로 한정**된다. 특징·정확도는 사외비라 밖에서 검증할 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "GitHubからエンジニアスキルを可視化する「スキル偏差値」を大幅リニューアルした話",
+              "url": "https://tech.findy.co.jp/entry/skill-deviation-v3-ml",
+              "publisher": "Findy Tech Blog",
+              "date": "2024-12-16",
+              "summary": "Findy 가 GitHub 를 머신러닝으로 해석해 엔지니어 스킬을 보여 주는 **스킬 편차치** ver.3 — 2017년 출시 뒤 가장 큰 개편으로 알고리즘과 학습 데이터 만드는 법 자체를 바꿨다. 배경은 **언어별 점수** 정확도 요구와, LLM·AI 에이전트 이후 '서비스 개발·운영에 직결하는 능력' 을 평가할 필요. 리포지토리를 **Python·JavaScript·TypeScript·Go·Ruby·PHP** 로 나누고, GitHub 사용자 둘을 **무작위로 짝지은 페어와이즈** 데이터에 사람이 **승패 어노테이션**(라벨 기준을 명확히 해 교차 리뷰)을 붙여 **랭킹 학습**. 특징은 언어마다 다르다(예: 어떤 언어는 README 길이가 중요, 보일러플레이트에 README 가 충실한 언어는 아님) → **언어별 모델** — 그래서 6개 언어로 한정. 더 복잡한 모델도 검토했지만 언어별 개별 모델이라는 제약과 특징 설계로 **단순한 모델**로 충분. 평가는 '여러 사람의 판단과 같은 승패를 내는가' — 6개 언어 모두 **사람 판단을 80% 이상** 모방. 특징 상세·모델 정확도는 사외비."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "도구 리뷰 사이트의 데이터 기반을 실적 있는 도구로 빨리 짓는다",
+      "why": "Findy Tools 는 개발 도구 리뷰 사이트다. 로그와 DB 를 분석에 쓰려면 데이터 기반이 필요했는데, **빨리** 내야 했다 — 결과적으로 한 달 앞당겼다.",
+      "tech": [
+        {
+          "tech": "fluentbit(로그) · ECS+Embulk(Aurora 전송) → BigQuery · dbt 가공 · Terraform · uv",
+          "solves": "새로 배울 것 없이 사내 실적 있는 도구로 로그·DB 를 BigQuery 에 모으고 SQL 로 가공한다.",
+          "limits": "Private Link 같은 보안 강화는 '혜택이 작다' 며 보류했다. 로컬에서 Embulk Docker 를 돌리기 어렵다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Findy Toolsのデータ基盤を1ヶ月前倒しで新規構築した話",
+              "url": "https://tech.findy.co.jp/entry/findy_tools_data_infrastructure_introduction",
+              "publisher": "Findy Tech Blog",
+              "date": "2024-12-21",
+              "summary": "개발 도구 리뷰 사이트 **Findy Tools** 의 데이터 기반을 새로 지어 한 달 앞당겨 냈다. 로그는 **fluentbit** 로 BigQuery 에(공수 적고 추가 비용이 BigQuery API 뿐). Aurora MySQL 의 전송은 **Private Link(난이도 高·혜택 小)·서드파티 ETL(비용 高)** 을 버리고 **Private Subnet 의 ECS + 사내 실적 있는 Embulk**. 가공은 GUI 가 있는 Dataform 대신 Git 에 익숙한 멤버를 고려해 **dbt**. 에러 알림은 Lambda→SNS 대신 **전부 Terraform 으로** 관리되는 방식. Python 관리는 Docker(Dockerfile 유지 부담) 대신 **uv**. 로컬에서 Embulk Docker 가 어렵고 uv+dbt 명령이 길어 래퍼를 만들었다."
+            }
+          ]
+        }
+      ],
+      "features": []
     }
   ],
   "features": [
@@ -824,10 +886,9 @@
     }
   ],
   "open_questions": [
-    "**매칭(Findy·Findy Freelance)** 의 기술 글 — 스킬 해석 AI·매칭 — 을 아직 못 찾았다. 매출의 중심일 가능성이 크다.",
-    "Findy Tools·컨퍼런스 수익원의 기술 글은 없을 수 있다 — 두 번 찾고 없으면 hold.",
     "과금 방식과 매출 비중을 1차 자료로 확인하지 못했다.",
-    "스택 PR(`2026/08/05`)·디자인 시스템(`2026/09/14`)·컨퍼런스 앱 UI 검증(`2026/08/17`) 글은 도메인 후보다."
+    "스택 PR(`2026/08/05`)·디자인 시스템(`2026/09/14`)·컨퍼런스 앱 UI 검증(`2026/08/17`) 글은 도메인 후보다.",
+    "스킬 편차치의 특징·모델 정확도는 사외비다 — 기능 사이클은 공개된 결정(페어와이즈·언어별 모델·단순 모델)만 쓴다."
   ],
   "sources": [
     {
@@ -850,6 +911,20 @@
       "publisher": "Findy Tech Blog",
       "date": "2026-07-10",
       "summary": "Findy Team+ 의 **코드 품질 분석** — 리포지토리·파일 단위로 **순환 복잡도·인지 복잡도·유지보수성 지수·최대 중첩 깊이** 네 지표를 조합해 자체 품질 스코어로. ISO/IEC 25010 '유지보수성' 에 대응. AI 가 코드를 쓰는 속도가 사람의 물리적 상한을 넘으면서 품질 문제 코드가 쌓이는 속도에 브레이크가 없어졌다 — 가시화가 '있으면 편한 것' 에서 **전제 조건**으로. 개발 자본(Speed·Quality·Control) 프레임워크의 Quality·Control 축. 활용: 리팩터링 투자 판단·효과 측정, **AI 생성 코드와 사람 코드의 품질 비교**, OSS 공개 판단. 개선 우선순위는 중첩 → 큰 파일 분할 → 남은 분기. **우선순위**: 최대 중첩 깊이(가드 절 — 동작을 안 바꾸는 가장 안전한 개선) → 유지보수성 지수(파일을 **의미의 묶음**으로 분할, 기계적 분할은 역효과) → 순환 복잡도(업무 규칙 자체의 분기는 줄이지 말고 **조건에 이름**을) — 인지 복잡도는 '어디부터' 가 아니라 **개선 결과를 보는 잣대**로 마지막에 확인. FAQ: 순환 복잡도에는 **업무의 복잡함**, 인지 복잡도에는 **쓰는 방식의 복잡함**이 드러난다; Good 목안은 **노르마가 아니라 우선순위 신호**; 시작은 점수 나쁜 순이 아니라 **앞으로 바꿀 예정인 파일**부터."
+    },
+    {
+      "title": "GitHubからエンジニアスキルを可視化する「スキル偏差値」を大幅リニューアルした話",
+      "url": "https://tech.findy.co.jp/entry/skill-deviation-v3-ml",
+      "publisher": "Findy Tech Blog",
+      "date": "2024-12-16",
+      "summary": "Findy 가 GitHub 를 머신러닝으로 해석해 엔지니어 스킬을 보여 주는 **스킬 편차치** ver.3 — 2017년 출시 뒤 가장 큰 개편으로 알고리즘과 학습 데이터 만드는 법 자체를 바꿨다. 배경은 **언어별 점수** 정확도 요구와, LLM·AI 에이전트 이후 '서비스 개발·운영에 직결하는 능력' 을 평가할 필요. 리포지토리를 **Python·JavaScript·TypeScript·Go·Ruby·PHP** 로 나누고, GitHub 사용자 둘을 **무작위로 짝지은 페어와이즈** 데이터에 사람이 **승패 어노테이션**(라벨 기준을 명확히 해 교차 리뷰)을 붙여 **랭킹 학습**. 특징은 언어마다 다르다(예: 어떤 언어는 README 길이가 중요, 보일러플레이트에 README 가 충실한 언어는 아님) → **언어별 모델** — 그래서 6개 언어로 한정. 더 복잡한 모델도 검토했지만 언어별 개별 모델이라는 제약과 특징 설계로 **단순한 모델**로 충분. 평가는 '여러 사람의 판단과 같은 승패를 내는가' — 6개 언어 모두 **사람 판단을 80% 이상** 모방. 특징 상세·모델 정확도는 사외비."
+    },
+    {
+      "title": "Findy Toolsのデータ基盤を1ヶ月前倒しで新規構築した話",
+      "url": "https://tech.findy.co.jp/entry/findy_tools_data_infrastructure_introduction",
+      "publisher": "Findy Tech Blog",
+      "date": "2024-12-21",
+      "summary": "개발 도구 리뷰 사이트 **Findy Tools** 의 데이터 기반을 새로 지어 한 달 앞당겨 냈다. 로그는 **fluentbit** 로 BigQuery 에(공수 적고 추가 비용이 BigQuery API 뿐). Aurora MySQL 의 전송은 **Private Link(난이도 高·혜택 小)·서드파티 ETL(비용 高)** 을 버리고 **Private Subnet 의 ECS + 사내 실적 있는 Embulk**. 가공은 GUI 가 있는 Dataform 대신 Git 에 익숙한 멤버를 고려해 **dbt**. 에러 알림은 Lambda→SNS 대신 **전부 Terraform 으로** 관리되는 방식. Python 관리는 Docker(Dockerfile 유지 부담) 대신 **uv**. 로컬에서 Embulk Docker 가 어렵고 uv+dbt 명령이 길어 래퍼를 만들었다."
     }
   ]
 }

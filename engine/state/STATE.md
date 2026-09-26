@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Findy — 두 도메인 모두 기능 있음(2026-09-26). 82번째 후보 조사로 대기 3/3(라쿠스·ENECHANGE·드왕고 교육). 다음은 Findy 완주 판정 — 매칭(Findy·Freelance)·Tools/컨퍼런스 수익원에 도메인이 없다: tech.findy.co.jp 사이트맵 2025~2026 에서 '転職'·'マッチング'·'スカウト'·'Freelance' 제목을 찾고, 두 번 없으면 회사 hold_reason + '재시도 안 함'. `--gaps` 는 이 빈칸을 안 잡고 신규(라쿠스)를 가리킬 것이다 — Findy 를 먼저 닫는다. 머니포워드(hold)·LayerX 는 in_progress.**
+**Findy — 완주 판정 중(2026-09-26): 블로그 2024~2026 사이트맵 222편 제목을 훑어 매칭·Tools 글을 찾음 → 도메인 둘 추가('GitHub 활동으로 엔지니어 스킬을 순위 매긴다' ← `entry/skill-deviation-v3-ml`, scratchpad `fd_skill.txt` / '도구 리뷰 사이트의 데이터 기반을 실적 있는 도구로 빨리 짓는다' ← `entry/findy_tools_data_infrastructure_introduction`, `fd_tools_data.txt`). 이제 수익원 셋 모두 도메인 연결. 다음은 확장: 스킬 편차치 기능, 그 뒤 Tools 데이터 기반 기능 → done. 전 제목 목록은 `fd_titles.txt`. 대기 3/3(라쿠스·ENECHANGE·드왕고 교육). 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 
