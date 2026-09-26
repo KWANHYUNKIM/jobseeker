@@ -466,6 +466,134 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570935?ReturnUrl=RecruitInfo",
+      "title": "[신입/경력] SW개발(Cloud) 채용",
+      "site": "dev",
+      "verdict": "신입/경력. 담당 업무는 한 줄 — 'XDR 클라우드 DevOps/SRE'. 안랩의 확장형 탐지·대응(XDR) 제품을 돌리는 클라우드 인프라 자리다. 자격은 Kubernetes 배포·운영, IaC(Terraform·Ansible 등), CI/CD 구축·운영, Linux 시스템·네트워크 기본 이해 — 신입/경력 공고지만 자격 네 줄이 모두 '경험' 을 요구한다. AWS(EKS·EC2·S3·RDS), 다른 클러스터/클라우드에서 신규 Kubernetes 클러스터로 이전, Prometheus·Grafana 모니터링, DB·Storage·SRE(백대 단위 이상 서버 운영), Go·Python·Java 자동화, 영어 업무 소통은 우대다. 전형은 서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사, 접수 ~2026.12.31 안랩 홈페이지.",
+      "fit": {
+        "must_have": [
+          "Kubernetes 배포·운영",
+          "IaC(Terraform·Ansible)",
+          "CI/CD 구축·운영",
+          "Linux 시스템·네트워크 기본"
+        ],
+        "can_learn": [
+          "AWS EKS·EC2·S3·RDS",
+          "클러스터 이전",
+          "Prometheus·Grafana",
+          "백대 단위 서버·DB·Storage 운영",
+          "Go·Python·Java 자동화",
+          "영어 소통"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Kubernetes 배포·운영과 클러스터 이전",
+          "from": "qualification",
+          "quote": "Kubernetes 기반 환경에서의 서비스 배포·운영 경험",
+          "priority": "core",
+          "why": "첫 자격요건이고 우대에 '서로 다른 클러스터/클라우드 환경에서 신규 Kubernetes 클러스터로 이전한 경험' 과 AWS EKS 가 있다.",
+          "gap_check": "상태 있는 서비스(DB·큐)를 포함한 워크로드를 다른 클러스터로 옮길 때 매니페스트·시크릿·볼륨은 각각 어떻게 옮기고, 트래픽은 어떤 순서로 넘기는가?",
+          "drill": "kind 로 클러스터 두 개를 만들고 상태 있는 앱(볼륨 포함)을 Velero 로 백업·복원해 옮긴 뒤, Argo CD 로 같은 선언을 새 클러스터에 동기화한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Kubernetes — Overview",
+              "url": "https://kubernetes.io/docs/concepts/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Velero docs",
+              "url": "https://velero.io/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Argo CD",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "Amazon EKS — What is Amazon EKS",
+              "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Terraform 으로 인프라 코드화",
+          "from": "qualification",
+          "quote": "IaC(Terraform, Ansible 등) 도구를 활용한 인프라 구축·관리 경험",
+          "priority": "core",
+          "why": "자격요건이고 우대에 AWS(EKS·EC2·S3·RDS) 사용 경험이 있다.",
+          "gap_check": "여러 사람이 같은 Terraform 상태를 만질 때 원격 상태·잠금은 어떻게 두고, 이미 손으로 만든 리소스는 어떻게 코드로 가져오는가?",
+          "drill": "Terraform 으로 VPC·EKS(또는 로컬 대체)·S3 를 모듈로 나눠 만들고 원격 상태·잠금을 설정한 뒤, 콘솔에서 손으로 만든 리소스 하나를 import 해 plan 에 차이가 없게 맞춘다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Terraform — Introduction",
+              "url": "https://developer.hashicorp.com/terraform/intro",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Prometheus·Grafana 모니터링과 SLO",
+          "from": "preference",
+          "quote": "모니터링·로깅 체계(Prometheus, Grafana 등) 구축 및 운영 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이고 다른 우대 줄이 'SRE 관련 경험이 있는 분 (백대 단위 이상 서버 운영 경험 포함)' 이다. 담당 업무가 XDR 클라우드 SRE 다.",
+          "gap_check": "보안 이벤트를 받아 처리하는 XDR 수집 서비스의 SLO 를 무엇(수집 지연·유실률)으로 잡고, 알람은 원인 지표가 아니라 증상 지표에 거는 이유는 무엇인가?",
+          "drill": "앞 드릴 클러스터에 kube-prometheus 계열 스택을 올려 가상 수집 서비스의 처리 지연·실패율을 지표로 노출하고, SLO 와 번 레이트 알람, Grafana 대시보드를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Prometheus — Overview",
+              "url": "https://prometheus.io/docs/introduction/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Grafana docs",
+              "url": "https://grafana.com/docs/grafana/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE Workbook — Implementing SLOs",
+              "url": "https://sre.google/workbook/implementing-slos/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Terraform + kind 두 클러스터 + Velero/Argo CD 이전 + Prometheus SLO 를 묶은 저장소",
+          "why": "자격요건 네 줄과 우대 셋(클러스터 이전·모니터링·AWS)을 한 번에 보여 준다. 신입이면 이것이 '경험' 을 대신한다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "운영 규모(서버 수·트래픽)와 이전·장애 경험을 수치로 정리",
+          "why": "우대에 '백대 단위 이상 서버 운영 경험' 과 클러스터 이전 경험이 적혀 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사(공고 기준, 직무에 따라 전형이 추가·변동될 수 있다). 접수는 ~2026.12.31 안랩 홈페이지.",
+        "expect": [
+          "Kubernetes 운영·장애 대응",
+          "IaC 설계",
+          "클러스터 이전",
+          "모니터링·SLO"
+        ],
+        "sources": [
+          {
+            "title": "[신입/경력] SW개발(Cloud) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570935?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }
