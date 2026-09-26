@@ -572,6 +572,106 @@
           "resources": []
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/372425",
+      "title": "[DATA&AI] LLM Ops Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 강남구, 정규직(수습 3개월). Data & AI 팀의 **LLM 인프라** 자리로, 팀 소개가 'LLM 추론 서빙과 게이트웨이를 비롯한 LLM 인프라를 설계하고 구축하며 운영하실 분' 을 찾는다고 적는다. 업무는 넷이다 — **온프레미스 GPU 클러스터에서 자체 LLM 추론 서빙**(vLLM, 멀티 GPU·멀티노드 텐서 병렬)과 처리량·지연 최적화, 모델 온보딩·버저닝·롤백 배포 라이프사이클과 CI/CD·IaC, LLM 사용량·비용·성능 관측, **OpenAI·Anthropic·Google 멀티 프로바이더 LLM 게이트웨이**(라우팅·rate limit·failover). 필수는 컨테이너·AWS 등 클라우드 개발·운영, 모니터링·로깅·장애 대응, LLM 또는 ML 서비스 구축·운영, CS 기초, 학습 의지. 우대는 vLLM·SGLang·TensorRT-LLM, 텐서·파이프라인 병렬 서빙, 양자화·KV 캐시·continuous batching·speculative decoding, 토큰·비용 관측, 쿠버네티스·Helm·Terraform, FastAPI·NestJS 대규모 백엔드. 전형: 서류접수 - 기술면접 - 임원면접 – 처우협의 – 입사(다른 공고와 달리 코딩테스트가 적혀 있지 않다).",
+      "fit": {
+        "must_have": [
+          "컨테이너·클라우드 개발·운영",
+          "모니터링·로깅·장애 대응",
+          "LLM 또는 ML 서비스 구축·운영",
+          "CS 기초"
+        ],
+        "can_learn": [
+          "vLLM·SGLang·TensorRT-LLM",
+          "텐서·파이프라인 병렬",
+          "양자화·KV 캐시·speculative decoding",
+          "쿠버네티스·Helm·Terraform"
+        ]
+      },
+      "study": [
+        {
+          "topic": "자체 LLM 추론 서빙 — vLLM 과 처리량·지연",
+          "from": "task",
+          "quote": "• 온프레미스 GPU 클러스터 기반 자체 LLM 추론 서빙(vLLM, 멀티 GPU·멀티노드 텐서 병렬 등) 구축 및 처리량·지연(latency) 최적화",
+          "priority": "core",
+          "why": "첫 주요업무이고 우대에 vLLM·SGLang·TensorRT-LLM 운영과 KV 캐시·continuous batching 최적화가 있다.",
+          "gap_check": "vLLM 이 PagedAttention 으로 KV 캐시를 블록 단위로 관리하면 무엇이 좋아지고, 동시 요청을 늘릴 때 처리량(토큰/초)과 첫 토큰 지연(TTFT)이 어떻게 맞바뀌는가? 모델이 GPU 한 장에 안 들어가면 텐서 병렬을 몇으로 잡는가?",
+          "drill": "PagedAttention 논문 초록·그림을 읽고, GPU 한 장에서 작은 오픈 모델을 vLLM 으로 띄워 동시 요청 수 1·8·32 에서 TTFT·토큰당 지연·처리량을 재 표로 남긴다. max-num-seqs 와 gpu-memory-utilization 을 바꿔 차이를 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "vLLM",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+              "url": "https://arxiv.org/abs/2309.06180",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "멀티 프로바이더 LLM 게이트웨이",
+          "from": "task",
+          "quote": "• 멀티 프로바이더(OpenAI, Anthropic, Google 등) LLM 게이트웨이의 통합 및 운영(라우팅·rate limit·failover)",
+          "priority": "core",
+          "why": "주요업무다. 같은 회사 Platform 팀이 사내 AI API 와 사용량·비용 모니터링을 운영한다고 적는다(회사 브리핑).",
+          "gap_check": "사내 여러 팀이 OpenAI·Anthropic·Google·자체 모델을 한 엔드포인트로 쓰게 할 때 팀별 rate limit·예산은 어디서 걸고, 한 프로바이더가 장애일 때 자동으로 다른 모델로 넘기면(failover) 응답 품질·형식 차이는 어떻게 다루는가?",
+          "drill": "LiteLLM 프록시로 두 프로바이더(또는 자체 vLLM + 하나)를 묶고 팀별 가상 키·분당 한도를 건 뒤, 한 쪽 엔드포인트를 일부러 막아 폴백이 동작하는지와 팀별 토큰 사용량 기록을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Getting Started | liteLLM",
+              "url": "https://docs.litellm.ai/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Router - Load Balancing | liteLLM",
+              "url": "https://docs.litellm.ai/docs/routing",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 관측성 — 사용량·비용·성능",
+          "from": "task",
+          "quote": "• LLM 사용량·비용·성능에 대한 관측(observability) 및 모니터링 체계 구축",
+          "priority": "high",
+          "why": "주요업무이고 우대에 'LLM 사용량·비용·토큰 분석 등 LLM 관측성(observability) 체계' 가 있다.",
+          "gap_check": "자체 서빙은 GPU 시간이, 외부 API 는 토큰이 비용 단위인데 둘을 한 대시보드에서 '요청 한 건당 비용' 으로 비교하려면 무엇을 기록하고, vLLM 이 내보내는 지표 중 대기열 적체를 알려 주는 것은 무엇인가?",
+          "drill": "vLLM Production Metrics 문서를 보고 Prometheus 로 대기 요청 수·TTFT·토큰 처리량을 수집하고, 게이트웨이 로그의 팀·모델·입출력 토큰으로 팀별 일일 비용 표를 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Production Metrics - vLLM",
+              "url": "https://docs.vllm.ai/en/latest/usage/metrics.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "추론 효율 — 양자화와 speculative decoding",
+          "from": "preference",
+          "quote": "• 모델 양자화(quantization), KV 캐시, continuous batching, speculative decoding 등 LLM 추론 성능·효율 최적화 경험이 있으신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 온프레미스 GPU 자원으로 처리량을 늘려야 한다(주요업무).",
+          "gap_check": "가중치를 4비트로 양자화하면 무엇(메모리·처리량)을 얻고 무엇(정확도)을 잃는지 어떻게 재고, speculative decoding 은 어떤 경우(작은 초안 모델과 큰 모델의 일치율이 높을 때)에만 빨라지는가?",
+          "drill": "같은 모델의 FP16 과 양자화 버전을 vLLM 으로 띄워 처리량·메모리를 비교하고, 작은 평가셋 20문항으로 답변 품질 차이를 표시한다. Speculative decoding 논문 초록을 읽고 초안 모델 설정을 켜 속도 변화를 잰다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Fast Inference from Transformers via Speculative Decoding",
+              "url": "https://arxiv.org/abs/2211.17192",
+              "kind": "paper"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
