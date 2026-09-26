@@ -209,7 +209,8 @@
     "salary: 공고에 금액이 없고 공개 연봉 자료를 확인하지 않았다 — 비워 둔다",
     "회사 소개 페이지에 경영진 명단은 있으나 공개 작업물(발표·서명 글)을 확인하지 않아 people 에 넣지 않았다",
     "원티드·사람인에 같은 직무가 겹쳐 올라와 있다(Data Engineer, GCP Engineer, Okta, Senior AI Infrastructure) — 공고를 쓸 때 본문 비교로 duplicate_of 를 판단할 것",
-    "wd/381976: 자격요건이 'ReAct 기반의 고급 수준 Front-end' 로 적혀 있다 — 기술 스택 표기에는 React 가 있어 React 의 오기로 보이지만 공고에서 확인되지 않는다"
+    "wd/381976: 자격요건이 'ReAct 기반의 고급 수준 Front-end' 로 적혀 있다 — 기술 스택 표기에는 React 가 있어 React 의 오기로 보이지만 공고에서 확인되지 않는다",
+    "wd/381967: 공고 제목은 '(Vertical Solution1팀)' 인데 본문 첫 문단은 'AI Expert실 … Helpnow AI Foundry' 소개다. 같은 문단이 Okta 공고(381969, 제목 'SECaaS팀')에도 붙어 있다 — 어느 조직 소속인지 공고로 확인되지 않는다"
   ],
   "postings": [
     {
@@ -673,6 +674,181 @@
           {
             "title": "LLM Engineer (과장급)",
             "url": "https://www.wanted.co.kr/wd/381976",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/381967",
+      "title": "Senior AI Infrastructure Engineer (Vertical Solution1팀)",
+      "site": "wanted",
+      "verdict": "경력 7년 이상(백엔드·인프라·SRE·MLOps, 서울 서초). 자사 AI 플랫폼 Helpnow AI Foundry 를 고객사 온프레미스·클라우드에 까는 조직에서 vLLM 추론 서버와 K8s 플랫폼 클러스터를 설계·구축하고, 금융권 망분리 에어갭 설치까지 맡는 시니어. 주요업무가 열 줄로 구체적이다 — vLLM 튜닝(TP/DP, KV cache, quantization, prefix caching), SLM 선정, kubeadm/RKE2/EKS, HA, RAG 파이프라인·Milvus, Harbor·ArgoCD, 아키텍처 표준 수립, 주니어 멘토링. 추론 엔진 튜닝과 GPU(H100/H200/B200)는 우대다. 공고 제목은 'Vertical Solution1팀' 인데 본문 첫 문단은 'AI Expert실' 소개다(open_questions). 전형은 서류 → 인터뷰(통상 1회) → 처우 협의다.",
+      "fit": {
+        "must_have": [
+          "백엔드·인프라·SRE·MLOps 7년 이상",
+          "Kubernetes 프로덕션 구축·운영(설계·트러블슈팅)",
+          "SLM/LLM 아키텍처·규모별 특성·서빙 요구사항 이해",
+          "Docker·CI/CD 구축",
+          "Linux·네트워크 깊은 이해",
+          "Python 실무",
+          "AWS 실무"
+        ],
+        "can_learn": [
+          "vLLM·SGLang 튜닝",
+          "GPU(H100/H200/B200)·CUDA 스택",
+          "금융권 망분리 프로젝트",
+          "Milvus·Qdrant 운영",
+          "Terraform·Prometheus/Grafana",
+          "클라우드 자격증"
+        ]
+      },
+      "study": [
+        {
+          "topic": "vLLM 추론 서버 튜닝 — TP/DP·KV cache·양자화·prefix caching",
+          "from": "task",
+          "quote": "• vLLM 기반 추론 서버 구축·운영 및 성능 튜닝(TP/DP, KV cache, quantization, prefix caching)",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 튜닝 항목 넷을 괄호로 적어 두었다. 우대 첫 줄도 'vLLM, SGLang 등 LLM 추론 엔진 튜닝' 이다.",
+          "gap_check": "GPU 두 장에 모델을 올릴 때 텐서 병렬(TP=2)과 데이터 병렬(DP=2)은 처리량·지연·메모리 면에서 어떻게 다르고, KV cache 가 모자라면 vLLM 은 어떤 일을 하며(선점·재계산) gpu_memory_utilization·max_num_seqs 는 무엇을 바꾸는가? 시스템 프롬프트가 긴 RAG 에서 prefix caching 은 무엇을 아끼는가?",
+          "drill": "작은 오픈 모델을 vLLM 으로 띄우고 부하 도구로 동시 요청을 올리며 TTFT·처리량을 잰다. prefix caching on/off, 양자화 모델 vs 원본, max_num_seqs 값 세 가지를 바꿔 표로 남긴다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "vLLM — Documentation",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "vLLM — Automatic Prefix Caching",
+              "url": "https://docs.vllm.ai/en/latest/features/automatic_prefix_caching.html",
+              "kind": "docs"
+            },
+            {
+              "title": "vLLM — Parallelism and Scaling",
+              "url": "https://docs.vllm.ai/en/latest/serving/parallelism_scaling.html",
+              "kind": "docs"
+            },
+            {
+              "title": "vLLM — Quantization",
+              "url": "https://docs.vllm.ai/en/latest/features/quantization/",
+              "kind": "docs"
+            },
+            {
+              "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention (arXiv:2309.06180)",
+              "url": "https://arxiv.org/abs/2309.06180",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "금융권 망분리 에어갭 설치",
+          "from": "task",
+          "quote": "• 금융권 망분리 에어갭(Air-gapped) 환경 설치 수행",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '온프레미스 구축 및 금융권 망분리 프로젝트 경험' 이 있다. 팀 소개가 금융·공공 고객을 적는다. 인터넷이 없는 곳에 K8s·이미지·모델 가중치를 모두 들고 들어가야 한다.",
+          "gap_check": "인터넷 없는 망에 RKE2 클러스터와 vLLM·Milvus 이미지, 모델 가중치를 설치하려면 무엇을 미리 묶어 가고(이미지 tarball·헬름 차트·OS 패키지·CA 인증서), 설치 후 업데이트는 어떤 경로로 반입하는가?",
+          "drill": "VM 세 대를 외부 네트워크 없이 묶고, RKE2 에어갭 설치 문서대로 이미지 묶음을 옮겨 클러스터를 세운다. 로컬 Harbor 에 이미지를 올려 앱 하나를 배포하고 반입 목록 체크리스트를 쓴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "RKE2 — Air-Gap Install",
+              "url": "https://docs.rke2.io/install/airgap",
+              "kind": "docs"
+            },
+            {
+              "title": "Harbor — Documentation",
+              "url": "https://goharbor.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객사에 까는 K8s 플랫폼 — HA 와 GitOps",
+          "from": "task",
+          "quote": "• K8s(kubeadm/RKE2/EKS) 기반 플랫폼 클러스터 설계·구축",
+          "priority": "core",
+          "why": "주요업무이고 자격요건이 'Kubernetes 프로덕션 환경 구축 및 운영 경험(설계 및 트러블슈팅 포함)' 이다. 같은 공고에 HA 구성과 Harbor·ArgoCD 배포 자동화가 있다.",
+          "gap_check": "kubeadm 으로 컨트롤 플레인 3대 HA 를 만들 때 etcd 를 쌓는(stacked) 방식과 외부로 빼는 방식은 무엇이 다르고, GPU 노드에 추론 파드만 가게 하려면 무엇(taint·toleration·GPU Operator)을 설정하는가? ArgoCD 로 고객사마다 다른 값을 어떻게 나누는가?",
+          "drill": "kubeadm 으로 HA 클러스터를 VM 에 세우고 컨트롤 플레인 한 대를 꺼서 동작을 확인한다. ArgoCD 로 앱을 배포하고 고객사 두 곳을 흉내 낸 values 파일을 나눈다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Kubernetes — Creating Highly Available Clusters with kubeadm",
+              "url": "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/",
+              "kind": "docs"
+            },
+            {
+              "title": "Argo CD — Documentation",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "NVIDIA GPU Operator",
+              "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "RKE2 — Documentation",
+              "url": "https://docs.rke2.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RAG 파이프라인과 Milvus 운영",
+          "from": "task",
+          "quote": "• Vector DB(Milvus) 관리 및 최적화",
+          "priority": "high",
+          "why": "주요업무 두 줄(문서 수집·파싱·청킹·임베딩·벡터검색 파이프라인, Milvus 관리)이 RAG 인프라다. 우대에 'RAG 및 Vector DB(Milvus, Qdrant 등) 운영 경험' 이 있다.",
+          "gap_check": "Milvus 에서 인덱스(HNSW·IVF) 선택이 재현율·지연·메모리에 어떻게 영향을 주고, 문서가 계속 늘 때 재색인·컬렉션 분리는 어떻게 하는가?",
+          "drill": "Milvus 를 K8s 에 올려 문서 10만 청크를 넣고, HNSW 와 IVF_FLAT 인덱스의 recall@10·p95 지연·메모리를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Milvus (GitHub)",
+              "url": "https://github.com/milvus-io/milvus",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "SLM 선정 — 고객 워크로드에 맞는 모델 고르기",
+          "from": "qualification",
+          "quote": "• SLM/LLM 모델에 대한 전반적인 이해(아키텍처, 파라미터 규모별 특성, 서빙 요구사항 등)가 깊으신 분",
+          "priority": "high",
+          "why": "자격요건이고 주요업무에 '고객 워크로드에 최적화된 SLM 모델 선정 및 최적화' 가 있다. 온프레미스 고객은 GPU 가 한정돼 모델 크기가 곧 비용이다(추론).",
+          "gap_check": "7B 모델을 FP16 으로 올릴 때 가중치에 드는 GPU 메모리를 계산하고, 같은 GPU 에서 동시 사용자를 늘리려면 모델 크기·양자화·컨텍스트 길이 중 무엇을 줄이는 게 효과적인가?",
+          "drill": "크기가 다른 오픈 모델 세 개(예: 1B·3B·8B)를 같은 GPU 에서 vLLM 으로 띄워 고객 과제형 질문 30개의 품질과 처리량·메모리를 표로 비교하고, 선정 기준 한 장을 쓴다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "에어갭 RKE2 + Harbor + vLLM + Milvus 설치 스크립트와 반입 목록",
+          "why": "주요업무의 가장 드문 조합(금융권 망분리 설치, K8s, vLLM, Milvus)을 한 저장소로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "vLLM 튜닝 벤치마크 표",
+          "why": "주요업무 첫 줄의 괄호 속 네 항목(TP/DP, KV cache, quantization, prefix caching)을 숫자로 답할 수 있게 된다.",
+          "effort": "3~4일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 > 인터뷰 > 처우 협의 > 최종 합격 > 채용검진 > 입사. 인터뷰는 통상 1회이나 추가될 수 있고, 필요 시 레퍼런스 체크가 있다(공고 기준).",
+        "expect": [
+          "vLLM 튜닝 경험과 수치",
+          "에어갭 설치 절차",
+          "K8s HA 설계와 장애 사례",
+          "SLM 선정 기준",
+          "주니어 멘토링 경험"
+        ],
+        "sources": [
+          {
+            "title": "Senior AI Infrastructure Engineer (Vertical Solution1팀)",
+            "url": "https://www.wanted.co.kr/wd/381967",
             "publisher": "원티드"
           }
         ]
