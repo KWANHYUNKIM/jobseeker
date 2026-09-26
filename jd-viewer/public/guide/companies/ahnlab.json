@@ -852,6 +852,149 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572252?ReturnUrl=RecruitInfo",
+      "title": "[신입/경력] SW개발(Linux) 채용",
+      "site": "dev",
+      "verdict": "신입/경력. 공통 자격은 C·C++·Python·Go, C/C++ 개발, Linux OS 디버깅·분석, Linux 개발 경험이다. 공고 안에 **모집부문이 여덟 개** 있고 지원서에 관심 분야를 고르지만 '실제 배치는 선택 분야와 상이할 수 있는 점' 을 적는다 — 네트워크 보안 제품(Netfilter·네트워크 스택·DPDK·L7 프록시), ASD 엔진(eBPF·커널 모드 시스템 필터·행위 탐지), V3 리눅스·EXDR Linux Agent(엔드포인트 센서·gRPC/REST), 어플라이언스 플랫폼 SW(커널·디바이스 드라이버), 백엔드·데이터 분석(OpenSearch·이상탐지), 백엔드·OT 프로토콜 분석(Wireshark·ICS/SCADA), DDoS 대응(DPDK·TCP/IP), AIPS 보안 기능. **이 데이터의 필드에는 부문별 업무·추가 자격이 우대사항 칸에 섞여 들어가 있다**(인용은 그 칸에서 한다). 전형은 서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사, '상시 채용 진행으로, 채용 시 마감될 수 있는 점', 접수 ~2026.10.25 23:59 안랩 홈페이지.",
+      "fit": {
+        "must_have": [
+          "C/C++(C·Python·Go 가능)",
+          "Linux OS 디버깅·분석",
+          "Linux 개발 경험",
+          "git/svn·cmake·make"
+        ],
+        "can_learn": [
+          "Linux 커널 모듈·eBPF",
+          "Netfilter·DPDK 네트워크",
+          "OT 프로토콜·패킷 분석",
+          "OpenSearch·이상탐지"
+        ]
+      },
+      "study": [
+        {
+          "topic": "eBPF 로 행위 탐지 센서 만들기",
+          "from": "preference",
+          "quote": "Linux eBPF 기반 시스템 필터 모듈 개발",
+          "priority": "core",
+          "why": "ASD 엔진 개발(Linux) 부문의 업무이고 같은 묶음에 '커널 모드 시스템 필터', '커널, 유저모드 이벤트 기반 행위 탐지 모듈' 이 있다. 공통 우대에 리눅스용 보안 프로그램·시스템 프로그래밍이 있다.",
+          "gap_check": "프로세스 실행·파일 열기·네트워크 연결을 감시할 때 커널 모듈 대신 eBPF 를 쓰면 무엇이 안전해지고, eBPF 로는 '관찰' 은 되지만 '차단' 이 어려운 경우는 어디이며 그때 무엇(LSM BPF·fanotify)을 쓰는가?",
+          "drill": "libbpf-bootstrap 으로 execve·openat 트레이스포인트에 붙는 eBPF 프로그램을 만들어 링 버퍼로 사용자 공간에 이벤트를 보내고, 특정 경로 실행을 경고로 남긴다. 같은 감시를 fanotify 로도 해 차이를 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "What is eBPF?",
+              "url": "https://ebpf.io/what-is-ebpf/",
+              "kind": "docs"
+            },
+            {
+              "title": "Linux kernel — BPF documentation",
+              "url": "https://docs.kernel.org/bpf/",
+              "kind": "docs"
+            },
+            {
+              "title": "libbpf-bootstrap",
+              "url": "https://github.com/libbpf/libbpf-bootstrap",
+              "kind": "repo"
+            },
+            {
+              "title": "Linux man-pages — fanotify_init(2)",
+              "url": "https://man7.org/linux/man-pages/man2/fanotify_init.2.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Netfilter·DPDK 로 네트워크 보안 기능",
+          "from": "preference",
+          "quote": "DPDK 기반 네트워크 기능개발",
+          "priority": "core",
+          "why": "네트워크 보안 제품 부문의 업무이고 같은 묶음에 'Linux 커널영역 Netfilter / 네트워크 스택개발', L7 프록시가 있다. DDoS 대응·AIPS 부문 우대에도 DPDK 와 대용량 트래픽 처리가 있다.",
+          "gap_check": "초당 수백만 패킷을 걸러야 할 때 커널 Netfilter 경로 대신 DPDK 로 커널을 우회하면 무엇을 얻고 무엇(커널 스택 기능·CPU 전용 점유)을 잃는가?",
+          "drill": "Netfilter 훅을 쓰는 간단한 커널 모듈(또는 nftables 규칙)로 특정 포트 SYN 을 세고, DPDK 샘플 앱(l2fwd 등)을 가상 NIC 에서 돌려 패킷 처리 경로와 CPU 사용을 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "netfilter.org — Documentation",
+              "url": "https://www.netfilter.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "DPDK — Programmer's Guide",
+              "url": "https://doc.dpdk.org/guides/prog_guide/",
+              "kind": "docs"
+            },
+            {
+              "title": "Linux kernel — Networking",
+              "url": "https://docs.kernel.org/networking/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Linux 멀티프로세스·소켓 프로그래밍과 디버깅",
+          "from": "qualification",
+          "quote": "Linux OS 디버깅 및 분석 경험자",
+          "priority": "core",
+          "why": "공통 자격요건이고 부문 업무에 'Linux 멀티프로세싱/스레딩 모듈 개발', '리눅스기반 시스템/소켓 프로그래밍 개발', 'Linux Multi Process/Thread 개발' 이 반복된다.",
+          "gap_check": "수천 개 연결을 받는 프록시를 스레드-연결 1:1 대신 epoll 이벤트 루프로 만들면 무엇이 달라지고, 운영 중 멈춘 프로세스는 gdb·strace·코어 덤프 중 무엇부터 보는가?",
+          "drill": "epoll 기반 TCP 에코 프록시를 C 로 만들고 부하를 걸어 스레드 방식과 비교한 뒤, 일부러 교착을 넣어 gdb 로 스레드 스택을 뜨고 strace 로 막힌 시스템 호출을 찾는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Linux man-pages — epoll(7)",
+              "url": "https://man7.org/linux/man-pages/man7/epoll.7.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IT/OT 프로토콜 패킷 분석",
+          "from": "preference",
+          "quote": "IT/OT 프로토콜 패킷 분석",
+          "priority": "high",
+          "why": "백엔드·OT 프로토콜 분석 부문의 업무이고 추가 자격이 'WireShark 또는 TCPDump 기반 패킷 분석 가능' 과 IT/OT 프로토콜 분석 경험, 우대가 ICS/SCADA 보안·패킷 파서·프로토콜 퍼징이다. 회사는 CPS(OT) 보안 제품을 판다(회사 브리핑).",
+          "gap_check": "Modbus/TCP 같은 OT 프로토콜 패킷에서 기능 코드와 레지스터 주소를 읽어 '정상 운전 명령' 과 '위험한 쓰기' 를 가르려면 파서가 무엇을 해석해야 하는가?",
+          "drill": "공개 Modbus pcap 을 Wireshark 로 열어 필드 구조를 정리하고, 같은 필드를 뽑는 작은 파서를 C 나 Python 으로 만들어 쓰기 명령만 경고하는 탐지 규칙을 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Wireshark documentation",
+              "url": "https://www.wireshark.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "eBPF 실행 감시 센서 + epoll 프록시 + gdb/strace 디버깅 기록",
+          "why": "공통 자격(C/C++·Linux 디버깅)과 가장 큰 두 부문(ASD 엔진·네트워크 보안)을 함께 보여 준다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "지원 부문 선택 근거를 부문별 업무에 맞춰 정리",
+          "why": "부문이 여덟 개이고 배치는 선택과 다를 수 있다고 적혀 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사(공고 기준, 직무에 따라 전형이 추가·변동될 수 있다). 상시 채용이라 채용 시 마감될 수 있다. 접수는 ~2026.10.25 23:59 안랩 홈페이지.",
+        "expect": [
+          "Linux 시스템 프로그래밍·디버깅",
+          "커널·eBPF",
+          "네트워크 스택·DPDK",
+          "지원 부문 관련 경험"
+        ],
+        "sources": [
+          {
+            "title": "[신입/경력] SW개발(Linux) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572252?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }
