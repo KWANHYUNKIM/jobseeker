@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Lincwell 클리닉 DX 수익원 보류(2026-09-27) — RSS 20편 · Zenn 검색 7낱말 모두 없음. hold_reason 달고 in_progress 유지(기능 2 · 도메인 둘 다 참). 다음은 --gaps 의 신규: 큐 맨 위 WED — `20260424-cache-matching-results`(영수증 상품명 → JAN 연결 캐시) · `vector_search_category_classification`(BigQuery 벡터 검색 JICFS 추정 +35%) · `20251205-grounding-for-product-names`(Gemini 그라운딩) · 회사 사이트에서 수익원부터. 그다음 mixtend, 큐가 2/3 이라 WED 뒤 후보 조사 한 번. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**WED 프로파일(2026-09-27, slug `wed`) — 도메인 둘: 흔들리는 영수증 표기를 상품 코드에 잇는다(JAN 캐시·그라운딩·JICFS 벡터 검색) · 올라온 영수증이 받을 만한지, 어느 가게 것인지 가린다(브라우저 NG 판정·체인 모델). 다음은 --gaps 의 확장: 첫 기능은 JAN 부여 — `20260424-cache-matching-results` + `20251205-grounding-for-product-names`(+ 안 읽은 `20240731-indexing-product-names`), 둘째는 PMN 영수증 판정 — `judge_receipt_wasm` + `c36a134798cb85`. JICFS(`vector_search_category_classification`)는 첫 기능의 결정으로 넣을지 따로 기능으로 뺄지 판단. 수익원 둘 다 도메인 있음(데이터 이활용 연결은 inferred). 대기 1/3(mixtend) — 후보 조사 필요. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

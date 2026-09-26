@@ -2122,3 +2122,8 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Lincwell 클리닉 DX 수익원 보류
 
 - 검색 1: RSS 20편 — 클리닉 운영 시스템 글 없음(`2bd5d09f35e79b` 는 RubyKaigi 노벨티 퍼즐). 검색 2: Zenn 검색 API 7낱말 — 이 회사 글 0. hold_reason, in_progress 유지.
+
+## 2026-09-27 WED 회사 프로파일
+
+- 회사 페이지(business)·PMN 뉴스 둘로 수익원 둘(데이터 이활용 / 판촉·PMN 성과 보수형). 매출 없음. 영수증 누적 매수가 자료마다 다름(10억·16억·19억) — open_questions 에.
+- 글 다섯(JAN 캐시 · 그라운딩 · JICFS 벡터 검색 · WASM NG 판정 · 체인 예측)으로 도메인 둘.
