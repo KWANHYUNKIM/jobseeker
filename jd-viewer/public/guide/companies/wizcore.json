@@ -276,6 +276,106 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/386516",
+      "title": "도메인 ML 엔지니어 (시니어)",
+      "site": "wanted",
+      "verdict": "경력 7-15년, 서울 성동구(성수). **설비 센서·시계열·비전 데이터**로 현장 모델을 만드는 **시니어 도메인 ML 엔지니어**다. 업무는 피처 엔지니어링, **이상탐지·마모 예측·RUL(잔여 수명)** 모델, **정비 이력 기반 라벨 정합성**(onset 시점 보정·예방정비/실고장 구분·고장 코드 정규화), 엣지·클라우드 서빙(**MLflow·Triton·Ray**), **예측 근거 제시(시계열 attribution·SHAP·Grad-CAM)**, 모델 드리프트 기준과 재학습 루프, **재학습 검증 게이트(골든 데이터셋 성능 하한선·자동 승격 차단)**, **제한된 GPU 에서 실험 — Kueue 큐 제출·선점 대응 체크포인트·DataLoader 최적화**. 필수는 ML/MLOps 7~15년, PyTorch(CNN·Detection 포함), 시계열·이상탐지·비전 중 하나 이상, 노이즈·결측 실데이터 전처리. 우대는 제조·설비·에너지 현장 데이터, **생존분석**, 준지도·자기지도 이상탐지, XAI 실무, 공유 GPU 클러스터. 같은 회사 ML 데이터 엔지니어 공고(380091)가 Ground Truth·Feature Store·스냅샷 버저닝을 맡는다. 전형은 같은 회사 원티드 공고 기준 서류 – 1차 – 2차 면접(및 레퍼런스) – 최종, 3개월 시용. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "ML/MLOps 7~15년",
+          "PyTorch(CNN·Detection)",
+          "시계열·이상탐지·비전 중 하나",
+          "노이즈·결측 실데이터 전처리"
+        ],
+        "can_learn": [
+          "생존분석·RUL",
+          "XAI(SHAP·Grad-CAM)",
+          "MLflow·Triton·Ray",
+          "Kueue 공유 GPU"
+        ]
+      },
+      "study": [
+        {
+          "topic": "잔여 수명(RUL) 예측 — 생존분석으로 보기",
+          "from": "task",
+          "quote": "• 이상탐지 / 마모 예측 / RUL 등 도메인 특화 모델 개발 및 성능 개선",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '생존분석' 이 있다. 설비 데이터에는 아직 고장 나지 않은 장비(중도 절단)가 많다.",
+          "gap_check": "관측 기간 안에 고장 나지 않은 설비를 학습에서 빼거나 '고장 없음' 으로 두면 RUL 추정이 어느 쪽으로 치우치고, 생존분석(Kaplan-Meier·Cox)은 중도 절단을 어떻게 다루며, 예방정비로 교체된 장비는 고장으로 볼지 절단으로 볼지 무엇으로 정하는가(공고의 '예방정비 / 실고장 구분')?",
+          "drill": "가짜 설비 수명 데이터(일부 중도 절단·일부 예방정비 교체)로 lifelines 의 Kaplan-Meier 곡선과 Cox 모델(가동 조건 공변량)을 맞추고, 절단을 무시한 단순 회귀와 중앙 수명 추정을 비교한다. 예방정비를 고장·절단으로 다르게 처리했을 때 결과 차이를 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "lifelines documentation",
+              "url": "https://lifelines.readthedocs.io/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "현장 판정 근거 — SHAP 과 Grad-CAM",
+          "from": "task",
+          "quote": "• 예측 근거 제시 체계 구축 — 시계열 attribution, SHAP, Grad-CAM 등 현장 판정 근거 설계",
+          "priority": "core",
+          "why": "주요업무이고 우대에 XAI 실무가 있다. 현장 정비 담당자는 '왜 이 설비가 위험한가' 를 납득해야 설비를 멈춘다.",
+          "gap_check": "센서 피처 기반 이상 점수에서 SHAP 값이 '진동 RMS 가 기여 +0.3' 이라고 말할 때 그것이 인과가 아닌 이유는 무엇이고, 비전 결함 검출에서 Grad-CAM 히트맵이 결함이 아닌 배경을 가리키면 무엇을 의심하며(데이터 누수·지름길 학습), 현장 화면에는 어느 수준까지 보여줘야 하는가?",
+          "drill": "가짜 센서 피처로 트리 모델을 학습해 SHAP 으로 개별 예측 근거를 그리고, 작은 CNN 결함 분류기에 Grad-CAM 을 적용해 히트맵을 확인한다. 배경에 표식을 일부러 넣은 데이터로 모델이 지름길을 배우는지 Grad-CAM 으로 잡아낸다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "SHAP documentation",
+              "url": "https://shap.readthedocs.io/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Grad-CAM — arXiv 1610.02391",
+              "url": "https://arxiv.org/abs/1610.02391",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "재학습 검증 게이트 — 나쁜 모델을 자동으로 막기",
+          "from": "task",
+          "quote": "• 재학습 검증 게이트 설계 — 골든 데이터셋 기반 성능 하한선, 자동 승격 차단 기준",
+          "priority": "high",
+          "why": "주요업무이고 바로 위 줄이 드리프트 감지와 재학습 루프다.",
+          "gap_check": "재학습된 모델을 운영에 올리기 전에 골든 데이터셋에서 무엇(재현율 하한·오경보 상한·설비군별 성능)을 확인하고, 평균은 좋아졌는데 특정 설비군에서 나빠졌다면 승격을 막을지 무엇으로 정하며, 게이트 결과와 모델 버전을 어디에 기록하는가?",
+          "drill": "MLflow 모델 레지스트리 문서를 읽고, 후보 모델을 등록한 뒤 골든 셋 평가 스크립트가 기준(전체·설비군별 하한)을 통과할 때만 별칭(champion)을 옮기는 게이트를 만든다. 일부러 한 설비군에서 나빠진 모델을 넣어 차단되는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "ML Model Registry — MLflow",
+              "url": "https://mlflow.org/docs/latest/ml/model-registry/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공유 GPU 에서 학습 — Kueue 와 선점 대비 체크포인트",
+          "from": "task",
+          "quote": "• 제한된 GPU 자원 하의 실험 설계 — Kueue 큐 제출, 선점 대응 체크포인트, DataLoader 최적화",
+          "priority": "nice",
+          "why": "주요업무이고 우대에 '공유 GPU 클러스터 환경 학습 경험' 이 있다.",
+          "gap_check": "Kueue 로 제출한 학습 잡이 우선순위 높은 잡에 밀려 선점되면 무엇을 잃고, 몇 분마다 무엇(모델·옵티마이저·스케줄러 상태·에폭·데이터 위치)을 체크포인트해야 재시작 후 이어서 학습하며, GPU 가 데이터 로딩을 기다리며 놀고 있는지는 무엇으로 확인하는가?",
+          "drill": "Kueue 개요를 읽고 큐·우선순위 개념을 정리한 뒤, PyTorch 학습 루프에 N 스텝마다 전체 상태 체크포인트와 재시작 시 복원을 넣는다. 학습 도중 프로세스를 죽였다 살려 손실 곡선이 이어지는지 확인하고, DataLoader num_workers·pin_memory 를 바꿔 GPU 사용률을 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Overview — Kueue",
+              "url": "https://kueue.sigs.k8s.io/docs/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Saving and Loading Models — PyTorch",
+              "url": "https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
