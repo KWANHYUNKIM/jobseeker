@@ -6,7 +6,7 @@
     "한화시스템",
     "한화그룹"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "hanwhasystems.com",
   "one_liner": "방산전자(무인체계·전술 통신·지휘통제·국방 클라우드)와 ICT(금융 SI·스마트팩토리 운영·데이터) 두 부문을 가진 한화 계열사",
@@ -866,6 +866,76 @@
               "kind": "docs"
             }
           ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55098479&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=8f276a03-7000-4aeb-89f7-cc2d83378531",
+      "title": "스마트팩토리 운영 경력사원 채용 (스마트팩토리 MCS)",
+      "site": "saramin",
+      "verdict": "경력 3년 이상, **충북 보은군** 근무. 같은 날 올라온 MES·지능화 운영과 한 묶음인 **MCS(자재 제어 시스템) 운영·유지보수** 자리이고, 셋 중 유일하게 근무지가 서울이 아닌 현장이다. 주요업무는 제조 라인의 **자재 이송 설비(OHT 등)** 실시간 상태 관리와 제어 시스템 유지보수, **설비–MCS–MES 상하위 통신 상태 점검·안정화**, 웹·DB 프로그램 분석·설계·개발(Java·Oracle·PL/SQL / Java·React), 고객사 요청·공정 이슈 개선, 자동화 장비 인터페이스 관리·고도화 — **신규 자동화 설비 도입 시 인터페이스 연동 개발과 현장 시운전 지원**, 자재 제어 로직 분석과 DB 연동 프로그램 성능 개선. 자격은 웹·DB 유지보수 3년, **공정 간 자재 흐름(Flow Control)·물류 자동화 로직 이해**, 방산 보안 신원조회 결격 없음. 우대 칸은 비어 있다. 보은 현장이 어느 사업장인지는 공고에 없다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java·React·Oracle PL/SQL 유지보수 3년",
+          "자재 흐름·물류 자동화 로직 이해",
+          "보은 현장 근무 가능",
+          "신원조회 결격 없음"
+        ],
+        "can_learn": [
+          "OHT·반송 설비 제어",
+          "설비 통신(SECS/GEM 등)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MCS — 자재가 공정 사이를 어떻게 옮겨 다니나",
+          "from": "qualification",
+          "quote": "○ 공정 간 자재 흐름(Flow Control) 및 물류 자동화 로직에 대한 이해",
+          "priority": "core",
+          "why": "자격요건이다. MCS 는 MES 가 '어디로 보내라' 한 것을 반송 설비 명령으로 바꾼다.",
+          "gap_check": "MES 의 이송 요청이 MCS 에서 반송 명령(출발지·목적지·우선순위)이 되고, 반송 설비가 명령을 수행·완료 보고하기까지 상태가 어떻게 바뀌는가? 목적지 설비가 가득 차 있거나 반송 장비가 멈췄을 때 MCS 는 대기·우회·재할당 중 무엇을 하는가?",
+          "drill": "Material handling·AGV 문서를 읽고, 이송 요청→명령 생성→장비 할당→이동→완료 보고 상태 머신을 설계한 뒤, 목적지 만재·장비 고장 시나리오에서 명령 상태가 어떻게 끝나는지 Oracle 테이블과 PL/SQL 로 재현한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Material handling — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Material_handling",
+              "kind": "docs"
+            },
+            {
+              "title": "Automated guided vehicle — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Automated_guided_vehicle",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "설비–MCS–MES 통신 점검",
+          "from": "task",
+          "quote": "- 설비-MCS-MES 간의 상하위 통신 상태 점검 및 안정화",
+          "priority": "high",
+          "why": "주요업무다. 상하위 통신이 끊기면 자재가 서거나 엉뚱한 곳으로 간다.",
+          "gap_check": "설비 쪽 표준 통신(SECS/GEM 같은 이벤트·명령 메시지)과 상위 시스템 연동은 무엇이 다르고, 통신 단절 뒤 재연결될 때 그동안 놓친 이벤트는 어떻게 다시 맞추는가? 통신 상태를 점검할 때 로그에서 무엇(타임아웃·재시도·순서 뒤바뀜)을 찾는가?",
+          "drill": "SECS/GEM 문서를 읽고 이벤트 보고·원격 명령·알람의 흐름을 정리한 뒤, 모의 설비·MCS 두 프로세스 사이 메시지를 주고받게 해 연결을 끊었다 붙였을 때 누락 이벤트를 재동기화하는 로직을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "SECS/GEM — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/SECS/GEM",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "신규 설비 인터페이스 연동과 현장 시운전",
+          "from": "task",
+          "quote": "- 신규 자동화 설비 도입 시 인터페이스 연동 개발 및 현장 시운전 지원",
+          "priority": "high",
+          "why": "주요업무다. 새 자동화 설비가 들어올 때마다 연동 개발과 현장 시운전이 뒤따른다.",
+          "gap_check": "새 설비를 붙이기 전에 인터페이스 명세(메시지·상태·오류 코드)에서 무엇을 확정해야 하고, 운영 라인을 멈추지 않고 시운전하려면 어떤 순서(시뮬레이터→단독 시험→부분 연결→전환)로 가는가? 시운전 중 문제가 나면 무엇으로 원복하는가?",
+          "drill": "가상의 신규 반송 장비에 대한 인터페이스 명세서(메시지 목록·상태 전이·오류 코드)와 시운전 체크리스트(사전 점검·단계별 합격 기준·원복 절차)를 한 장씩 작성한다.",
+          "hours": 4,
+          "resources": []
         }
       ]
     }
