@@ -656,6 +656,122 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387783",
+      "title": "[비알피커넥트] 데이터 분석가 (Data Analyst)",
+      "site": "wanted",
+      "verdict": "경력 3-12년(자격요건은 '3년 이상의 데이터 분석 혹은 관련 경력'). 바로팜 계열사 비알피커넥트 자리다. 같은 회사 데이터 사이언티스트(373736)가 예측 모델·알고리즘 쪽이라면 이쪽은 **Tableau 대시보드와 사업부 요청 분석** 쪽이다 — 의약품 유통 데이터 시각화·대시보드 구축, 사업부 요청 분석·시각화, 유통 데이터 분석·보고서, 내부 개발자와의 플랫폼 개발 프로젝트 관리. 자격요건에 'Tablue 활용 능숙자 (실무 활용 경험 필수)' 가 있고(공고 표기 그대로 — Tableau 로 읽힌다), 제약/의약품 산업 이해, 가설 검증으로 이슈를 계량화한 경험이 있다. 제약사 등 업계 경력, 약사 면허 또는 약사 출신, 심평원 빅데이터·처방 데이터 분석, 통계·IT 전공은 우대다. 전형은 서류전형 → 1차면접(실무진) → 2차면접(임원진) → 입사.",
+      "fit": {
+        "must_have": [
+          "데이터 분석 3년 이상",
+          "Tableau 실무 활용(필수)",
+          "제약/의약품 산업 이해",
+          "가설 검증으로 이슈 계량화"
+        ],
+        "can_learn": [
+          "제약사 등 업계 경력",
+          "약사 면허·약사 출신",
+          "심평원 빅데이터·처방 데이터",
+          "통계·IT 전공"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Tableau 로 유통 데이터 대시보드",
+          "from": "task",
+          "quote": "• Tablue 기반의 의약품 유통 데이터 시각화 및 대시보드 구축",
+          "priority": "core",
+          "why": "첫 주요업무이고 자격요건에 Tableau 실무 활용 경험이 '필수' 로 적혀 있다. 비알피커넥트가 수급·처방·매출 데이터 대시보드(비알피인사이트)를 운영한다고 공고가 적는다.",
+          "gap_check": "제약사용 대시보드에서 '지역별 약국당 평균 주문량' 과 '전국 대비 점유율' 을 한 화면에 낼 때 LOD 식(FIXED·INCLUDE)은 어디에 쓰고, 필터가 그 값에 먹히게/안 먹히게 하려면 무엇을 바꾸는가?",
+          "drill": "가상 의약품 유통 데이터(약국·지역·품목·제약사·월)로 Tableau 대시보드 한 장(점유율 추이, 지역 지도, 상위 품목)을 만들고 LOD 식 두 개를 넣은 뒤, 성능 기록으로 느린 시트를 찾아 추출(extract)로 바꿔 전후를 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Tableau — Level of Detail Expressions",
+              "url": "https://help.tableau.com/current/pro/desktop/en-us/calculations_calculatedfields_lod.htm",
+              "kind": "docs"
+            },
+            {
+              "title": "Tableau — Record and Analyze Workbook Performance",
+              "url": "https://help.tableau.com/current/pro/desktop/en-us/perf_record_create_desktop.htm",
+              "kind": "docs"
+            },
+            {
+              "title": "Tableau — Extract Your Data",
+              "url": "https://help.tableau.com/current/pro/desktop/en-us/extracting_data.htm",
+              "kind": "docs"
+            },
+            {
+              "title": "Tableau — Best Practices for Effective Dashboards",
+              "url": "https://help.tableau.com/current/pro/desktop/en-us/dashboards_best_practices.htm",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "사업부 요청 분석을 가설 검증으로",
+          "from": "qualification",
+          "quote": "• 가설 검증을 통해 잠재적 이슈를 계량화하고 해결 방안을 도출한 경험이 있는 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '각 사업부 요청에 따른 데이터 분석 및 시각화 결과물 제공' 이 있다.",
+          "gap_check": "영업팀이 '이 제품 프로모션이 효과가 있었냐' 고 물을 때 비교 대상(기간·약국군)을 어떻게 잡고, 계절성이나 경쟁 품목 품절 같은 다른 원인은 어떻게 걸러내는가?",
+          "drill": "가상 데이터에 프로모션 기간을 넣고, 전후 비교·대조 약국군 비교·이중차분 세 방법의 결론이 어떻게 달라지는지 한 장 보고서로 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "statsmodels",
+              "url": "https://www.statsmodels.org/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의약품 유통 데이터 이해",
+          "from": "qualification",
+          "quote": "• 제약/의약품 관련 산업군에 대한 이해도 보유",
+          "priority": "high",
+          "why": "자격요건이고 우대에 제약사 등 업계 경력, 약사 면허·약사 출신, 심평원 빅데이터·처방 데이터 분석이 있다. 회사는 약국 주문 플랫폼 데이터 위에서 제약 데이터 사업을 한다(회사 브리핑).",
+          "gap_check": "약국의 '구매(도매상에서 들여옴)' 와 '판매·조제(환자에게 나감)' 는 데이터에서 어떻게 다르고, 제약사가 비알피인사이트 같은 수급·처방·매출 데이터에서 알고 싶은 것은 무엇이겠는가?",
+          "drill": "공공데이터포털에서 의약품 관련 공개 데이터셋 하나를 골라 구조를 정리하고, 약국 주문 데이터와 결합하면 답할 수 있는 제약사 질문 5개를 적는다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "공공데이터포털",
+              "url": "https://www.data.go.kr/",
+              "kind": "tool"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "의약품 유통 Tableau 대시보드 + 프로모션 효과 분석 보고서",
+          "why": "주요업무의 대시보드 구축과 사업부 요청 분석, 자격요건의 Tableau 필수·가설 검증을 한 번에 보여 준다. Tableau Public 에 올리면 링크로 낼 수 있다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "제약·의약품 업계 경험 정리",
+          "why": "우대 넷 중 셋이 업계 경력·약사 배경·심평원/처방 데이터다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 1차면접(실무진) → 2차면접(임원진) → 입사(공고 기준).",
+        "expect": [
+          "Tableau 대시보드 설계",
+          "사업부 요청 분석 사례",
+          "가설 검증 방법",
+          "제약·의약품 산업 이해"
+        ],
+        "sources": [
+          {
+            "title": "[비알피커넥트] 데이터 분석가 (Data Analyst)",
+            "url": "https://www.wanted.co.kr/wd/387783",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
