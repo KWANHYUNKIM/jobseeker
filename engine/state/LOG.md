@@ -723,3 +723,7 @@ zerodha.tech 최신 2024-03. 블로그 멈춤. updated_at 만. 1회째. 09-03 �
 ## kraken-tech 재방문 (2026-09-26)
 
 최신 03-09. 새 글 없음. updated_at 만. 1회째.
+
+## mercadolibre 재방문 (2026-09-26)
+
+Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
