@@ -365,6 +365,95 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/373234",
+      "title": "개발기획실장",
+      "site": "wanted",
+      "verdict": "경력 8-20년, 서울 강남구. 개발 직군이 아니라 **기획·디자인 조직의 장**이다 — 개발기획실은 제품의 '무엇을, 왜, 어떻게 만들 것인가' 를 책임지고, 이 자리가 **SP·UX 두 팀**을 이끈다. 업무는 두 갈래 — ① 조직: OKR/KPI, 팀 리더 코칭·1:1·평가·보상·커리어 패스, 채용 계획과 직접 채용, 두 직군의 협업 프로세스·R&R·핸드오프, 실행력 있는 문화, ② 프로덕트: PM/PP 와 비전·로드맵 경영진 정렬, 시장·사용자·데이터로 기회 발굴과 우선순위, 현장 조직과 VOC 리뷰, 요구사항 정의서·디자인·문서 **품질 기준**, 출시 리딩, **디자인 시스템·문서 표준 자산화**, 제품 지표 정의와 출시 후 개선 루프. 필수는 제품 기획·PO·프로덕트 디자인 8년 이상, 기획 또는 디자인 조직 리딩(5인 이상 권장), 전략부터 출시·개선까지 라이프사이클, 기획·디자인 양쪽 이해, 다기능 정렬, 데이터·리서치 기반 결정. 우대는 **헬스케어·의료 AI 등 규제 산업 또는 B2B**, 0→1 과 1→N, 디자인 시스템·Technical Writing, 기획·디자인 멀티 디서플린, 영문·글로벌. 회사 브리핑대로 제품은 병원용 AITRICS-VC 이고 해외 허가가 늘고 있다. 전형: 서류 ＞ 1차 인터뷰 ＞ 2차 인터뷰 ＞ 처우 협의(포트폴리오 발표 가능). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "제품 기획·PO·프로덕트 디자인 8년 이상",
+          "기획·디자인 조직 리딩(5인 이상)",
+          "제품 라이프사이클 주도",
+          "데이터·리서치 기반 결정"
+        ],
+        "can_learn": [
+          "의료 규제 제품",
+          "디자인 시스템·문서 표준",
+          "글로벌 제품"
+        ]
+      },
+      "study": [
+        {
+          "topic": "두 직군의 R&R 과 핸드오프 — RACI 로 그리기",
+          "from": "task",
+          "quote": "• 두 직군의 협업 프로세스·R&R·핸드오프 체계 설계 및 개선",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '기획과 디자인 양쪽 직군을 이해하고 함께 일해 본 경험' 이 있다.",
+          "gap_check": "요구사항 정의서 작성·화면 설계·디자인 QA·의료진 검수·출시 승인 같은 단계마다 누가 실행하고(R) 누가 최종 책임지며(A) 누구와 상의하고(C) 누구에게 알리는가(I)? 기획이 끝나기 전에 디자인이 시작되면 무엇이 되돌아오고, 핸드오프 '완료' 의 기준은 무엇으로 정하는가?",
+          "drill": "Atlassian RACI 글을 읽고, 병원용 기능 하나(예: 악화 예측 알림 화면 개편)의 단계별 RACI 표를 SP·UX·개발·QA·임상 자문 기준으로 만든다. 핸드오프 체크리스트(요구사항 확정 조건·디자인 산출물 목록)를 붙인다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "RACI Chart: What is it & How to Use — Atlassian",
+              "url": "https://www.atlassian.com/work-management/project-management/raci-chart",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "제품 지표와 출시 후 개선 루프 — HEART",
+          "from": "task",
+          "quote": "•제품 지표 정의 및 출시 후 성과 측정·개선 루프 운영",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '데이터·사용자 리서치 기반의 의사결정 역량' 이 있다. 같은 회사 TPM 공고가 Business/Clinical KPI 를 적는다.",
+          "gap_check": "병원 의료진이 쓰는 악화 예측 알림 제품에서 '사용자 행복·참여·채택·유지·과업 성공' 을 각각 무엇으로 재고(예: 알림 확인률·조치까지 시간·경보 피로 설문), 클릭 수 같은 소비자 앱 지표가 여기서는 왜 맞지 않으며, 출시 후 어떤 신호가 오면 기능을 되돌리는가?",
+          "drill": "Google HEART 논문을 읽고 위 제품의 목표-신호-지표 표를 만든다. 출시 전후 비교를 위한 기준값·관측 기간·의사결정 규칙(개선·유지·롤백)을 한 장으로 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Measuring the User Experience on a Large Scale (HEART) — Google Research",
+              "url": "https://research.google/pubs/measuring-the-user-experience-on-a-large-scale-user-centered-metrics-for-web-applications/",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "조직 목표 — 두 팀의 OKR 세우기",
+          "from": "task",
+          "quote": "• 개발기획실 운영 총괄 및 SP·UX 두 팀의 목표·성과 관리(OKR/KPI)",
+          "priority": "high",
+          "why": "주요업무 첫 줄이다.",
+          "gap_check": "SP 팀과 UX 팀의 OKR 을 따로 세우면 무엇이 어긋나고(각자 산출물 수로 성과를 재기), 제품 목표에 묶인 공동 Key Result 는 어떻게 쓰며, 산출물(문서 N건) 대신 결과(병원 도입 기간 단축)를 KR 로 쓰려면 무엇을 측정할 수 있어야 하는가?",
+          "drill": "OKR 소개 글을 읽고 개발기획실의 분기 OKR 초안(목표 1개·공동 KR 3개·팀별 KR 2개씩)을 쓴다. KR 마다 측정 방법과 현재 기준값을 적고, 산출물형 KR 을 결과형으로 고친 전후를 나란히 둔다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "What is an OKR? — What Matters",
+              "url": "https://www.whatmatters.com/faqs/okr-meaning-definition-example",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "디자인 시스템·문서 표준 자산화",
+          "from": "task",
+          "quote": "•디자인 시스템·문서 표준 등 제품 조직의 자산화 추진",
+          "priority": "nice",
+          "why": "주요업무이고 우대에 '디자인 시스템 또는 제품 문서(Technical Writing) 체계' 가 있다. 여러 나라 병원에 같은 제품을 설치하므로(회사 브리핑) 화면·문서 표준이 곧 확장성이다.",
+          "gap_check": "디자인 시스템을 '컴포넌트 모음' 이 아니라 조직 자산으로 만들려면 무엇(사용 원칙·예시·금지 사례·기여 절차·버전)이 필요하고, 의료 화면에서 경고색·수치 표기 같은 규칙을 컴포넌트에 박아 두면 무엇을 막을 수 있으며, 도입률은 무엇으로 재는가?",
+          "drill": "Storybook 문서로 '위험도 배지' 컴포넌트 하나를 상태별(정상·주의·위험) 스토리와 사용 가이드(언제 쓰고 언제 쓰지 않는가)까지 붙여 만든다. 디자인 시스템 운영 원칙 한 장(기여·리뷰·버전)을 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Get started with Storybook",
+              "url": "https://storybook.js.org/docs",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
