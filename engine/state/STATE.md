@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**92번째 후보 조사(2026-09-26) — 큐 3/3(Kanmu·dely·みてね). 다음은 --gaps 의 신규: 큐 맨 위 Kanmu — `16789ef1f4283a`(pistachio · sqldef 에서 옮긴 경위 · DROP·트랜잭션 기본 무효) · `6d8496039c7a75`(마이그레이션 위험 어림) · `d9db4fd4f543db`(비동기 잡 스케일링) · 회사 사이트에서 수익원부터. **Zenn 최신 글 API 는 100쪽 상한 — 다음 후보 조사는 note·Speaker Deck·하테나로.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Kanmu 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다' — `16789ef1f4283a` + `6d8496039c7a75`(pistachio · sqldef 에서 옮긴 경위 · DROP/트랜잭션 기본 무효 · concurrently · --explain). 그다음 '월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다' — `d9db4fd4f543db`(qg · 캘린더 → Datadog Monitor+SNS+Lambda). 수익원 Pool·법인 금융은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 2/3(dely·みてね). **Zenn 최신 글 API 는 100쪽 상한 — 다음 후보 조사는 note·Speaker Deck·하테나로.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

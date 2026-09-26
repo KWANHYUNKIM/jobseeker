@@ -1,0 +1,175 @@
+{
+  "slug": "kanmu",
+  "name": "カンム",
+  "name_en": "Kanmu",
+  "country": "JP",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "kanmu.co.jp",
+  "one_liner": "프리페이드 카드 밴들카드의 카무 — 결제 DB 의 스키마는 PostgreSQL 파서를 그대로 쓰는 자작 선언적 도구 pistachio 로 DROP·트랜잭션을 기본 무효로 두고 DDL 의 무게를 미리 어림하며, 월말 월초·일제 통지로 몰리는 PostgreSQL 큐 잡은 Datadog 모니터로 Worker 를 늘린다",
+  "business_model": "개인과 법인에게 **소프트웨어로 된 금융 선택지**를 판다. 개인용은 앱에서 곧장 발행하는 프리페이드 카드 **밴들카드**(후불 충전 기능, Visa 가맹점 어디서나)와 자산 형성용 신용카드 **Pool**(투자 수익 + 결제 캐시백). 법인용은 장래 매출을 곧장 자금화하는 **사쿳토 자금 조달**과 법인 거래에 분할 지불을 붙이는 **사쿳토 분할**. 전불식 지불 수단 발행자·제2종 금융상품거래업·전자결제등대행업으로 등록돼 있다. 과금 구조(수수료율 등)와 비중은 이번에 확인하지 않았다.",
+  "products": [
+    "バンドルカード(프리페이드 카드 · 후불 충전)",
+    "Pool(자산 형성 신용카드)",
+    "サクっと資金調達(장래 매출 자금화)",
+    "サクっと分割(법인 분할 지불)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "밴들카드(프리페이드 · 후불 충전)",
+      "how": "앱에서 발행하는 Visa 프리페이드 카드와 후불 충전. 수수료 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함",
+      "domains": [
+        "결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다",
+        "월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社カンム",
+          "url": "https://kanmu.co.jp/",
+          "publisher": "株式会社カンム",
+          "date": "2026-09-26",
+          "summary": "'돈의 새로운 선택지를 만든다'. 프로덕트 넷 — 앱에서 누구나 곧장 발행하는 **프리페이드 카드**(후불 충전 기능, Visa 가맹점 어디서나 — 밴들카드) · 자산 형성에 쓰는 **신용카드**(투자 수익 + 카드 결제 캐시백 — Pool) · **사쿳토 자금 조달**(장래 매출을 곧장 자금화, 온라인 완결·최단 4영업일) · **사쿳토 분할**(법인 거래에 분할 지불 선택지 추가). 전불식 지불 수단(제3자형) 발행자·제2종 금융상품거래업·전자결제등대행업 등록, 2011년 1월 설립, 자본금 약 32.9억 엔(자본잉여금 포함)."
+        },
+        {
+          "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+          "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+          "publisher": "Kanmu Tech Blog (Zenn)",
+          "date": "2026-02-16",
+          "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+        }
+      ]
+    },
+    {
+      "name": "Pool(자산 형성 신용카드)",
+      "how": "투자 수익과 카드 결제 캐시백을 묶은 신용카드. 과금 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社カンム",
+          "url": "https://kanmu.co.jp/",
+          "publisher": "株式会社カンム",
+          "date": "2026-09-26",
+          "summary": "'돈의 새로운 선택지를 만든다'. 프로덕트 넷 — 앱에서 누구나 곧장 발행하는 **프리페이드 카드**(후불 충전 기능, Visa 가맹점 어디서나 — 밴들카드) · 자산 형성에 쓰는 **신용카드**(투자 수익 + 카드 결제 캐시백 — Pool) · **사쿳토 자금 조달**(장래 매출을 곧장 자금화, 온라인 완결·최단 4영업일) · **사쿳토 분할**(법인 거래에 분할 지불 선택지 추가). 전불식 지불 수단(제3자형) 발행자·제2종 금융상품거래업·전자결제등대행업 등록, 2011년 1월 설립, 자본금 약 32.9억 엔(자본잉여금 포함)."
+        }
+      ]
+    },
+    {
+      "name": "법인 금융(사쿳토 자금 조달 · 사쿳토 분할)",
+      "how": "장래 매출을 자금화하고, 법인 거래에 분할 지불을 붙인다. 과금 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社カンム",
+          "url": "https://kanmu.co.jp/",
+          "publisher": "株式会社カンム",
+          "date": "2026-09-26",
+          "summary": "'돈의 새로운 선택지를 만든다'. 프로덕트 넷 — 앱에서 누구나 곧장 발행하는 **프리페이드 카드**(후불 충전 기능, Visa 가맹점 어디서나 — 밴들카드) · 자산 형성에 쓰는 **신용카드**(투자 수익 + 카드 결제 캐시백 — Pool) · **사쿳토 자금 조달**(장래 매출을 곧장 자금화, 온라인 완결·최단 4영업일) · **사쿳토 분할**(법인 거래에 분할 지불 선택지 추가). 전불식 지불 수단(제3자형) 발행자·제2종 금융상품거래업·전자결제등대행업 등록, 2011년 1월 설립, 자본금 약 32.9억 엔(자본잉여금 포함)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "결제의 뒷단을 멈추지 않고 바꾼다",
+    "question": "결제 서비스는 본번 DB 스키마를 어떻게 안전하게 바꾸고, 월말 월초에 몰리는 비동기 잡을 어떻게 받나?",
+    "code": "flowchart LR\n  SCH[\"있어야 할 스키마\\n선언\"] --> PIS[\"pistachio\\npg_query_go · --explain\"]\n  PIS -->|DROP·트랜잭션 기본 무효| PG[(\"PostgreSQL\")]\n  API[\"API 서버\"] -->|SMS · 메일 잡| Q[(\"qg 큐 · PostgreSQL\")]\n  Q --> W[\"Worker 서버 · ECS\"]\n  DD[\"Datadog Monitor\"] -->|SNS · Lambda| W",
+    "_note": "두 도메인은 전 프로덕트가 함께 쓰는 플랫폼 쪽이다 — 밴들카드 수익원에 이은 것은 이 사이트의 해석(SMS·메일 같은 B2C 통지와 월말 월초 처리). Pool·법인 금융의 기술 글은 아직 못 봤다."
+  },
+  "domains": [
+    {
+      "name": "결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다",
+      "why": "결제·카드 서비스의 본번 PostgreSQL 스키마를 바꾸는 일은 테이블 락 하나로 서비스를 멈출 수 있다. 기존 선언적 도구(sqldef 등)로는 PostgreSQL 문법을 정확히 다루기 어려웠고, plan 은 DDL 이 얼마나 무거운지 알려 주지 않았다.",
+      "tech": [
+        {
+          "tech": "자작 선언적 스키마 도구 pistachio — PostgreSQL 본체와 같은 파서(pg_query_go) · 대상 스키마 명시 · 의존 순서 · DROP 기본 무효 · 트랜잭션 기본 무효 · `-- pista:concurrently` · `--explain` 으로 DDL 무게(rewrite/scan · 막는 것) 표시",
+          "solves": "본번 마이그레이션 전에 위험을 어림하고, 실수로 지우거나 오래 잠그는 일을 기본값으로 막는다.",
+          "limits": "도구 자체를 스스로 유지한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "宣言的スキーマ管理ツール pistachio を作成しました",
+              "url": "https://zenn.dev/kanmu_dev/articles/16789ef1f4283a",
+              "publisher": "Kanmu Tech Blog (Zenn)",
+              "date": "2026-04-30",
+              "summary": "플랫폼 팀이 PostgreSQL 용 선언적 스키마 관리 도구 **pistachio** 를 만들어 **본번 DB 마이그레이션**에 도입 — Terraform 처럼 '있어야 할 스키마' 를 쓰고 차분 DDL 을 실행. 비슷한 도구 atlas·sqldef·Ridgepole·pgschema. sqldef → pistachio 경위, PostgreSQL 본체와 같은 파서(pg_query_go), 대상 스키마 명시, 의존 관계를 고려한 실행 순서, 스키마 이름 생략·매핑, **DROP 기본 무효**, **트랜잭션 기본 무효**, `-- pista:concurrently` 로 본번 테이블 락을 피하는 인덱스 조작. AI 도입으로 작업이 한꺼번에 나아갔다."
+            },
+            {
+              "title": "スキーマ管理ツールでマイグレーション前にリスクを見積もる",
+              "url": "https://zenn.dev/kanmu_dev/articles/6d8496039c7a75",
+              "publisher": "Kanmu Tech Blog (Zenn)",
+              "date": "2026-09-11",
+              "summary": "pistachio 에 각 DDL 이 얼마나 무거운지를 plan 에 보이는 `--explain` 을 더했다 — plan 은 무게를 알려 주지 않는다. 코멘트 읽는 법(rewrite 와 scan · 락이 막는 것 · 테이블 크기와 날짜 · 락에 휘말리는 테이블)과 패턴별 대책(rewrite·읽기/쓰기 차단 / scan·읽기/쓰기 차단 / scan·쓰기 차단 / scan·차단 없음)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다",
+      "why": "SMS·메일 발송 같은 비동기 잡은 API 요청보다 월말 월초 처리와 마케팅 일제 통지로 늘어나는 일이 많다. 시간·캘린더 기반으로 Worker 를 늘려 왔다.",
+      "tech": [
+        {
+          "tech": "qg(PostgreSQL 큐) + 별도 Worker 서버 · 캘린더 기반 스케일 → Datadog Monitor + SNS + Lambda 스케일",
+          "solves": "예정에 없는 몰림에도 Worker 를 늘린다(이 사이트의 해석 — 본문을 다음에 읽는다).",
+          "limits": "큐가 PostgreSQL 이라 DB 부하와 함께 본다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+              "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+              "publisher": "Kanmu Tech Blog (Zenn)",
+              "date": "2026-02-16",
+              "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "수수료 구조·매출 비중을 확인하지 않았다.",
+    "Pool·법인 금융(사쿳토 자금 조달·분할)의 기술 결정 글을 아직 못 봤다.",
+    "스케일링 글의 왜 캘린더 기반에서 모니터 기반으로 옮겼나는 다음 사이클에 읽는다.",
+    "다른 글: 선언적 스키마 관리의 데이터 마이그레이션(`fadd12ece9fbac`)·terraform plan 으로 IAM 정책 점검(`83fa84175b3ae6`)·S3 버킷별 Client 형(Go 제네릭)."
+  ],
+  "sources": [
+    {
+      "title": "株式会社カンム",
+      "url": "https://kanmu.co.jp/",
+      "publisher": "株式会社カンム",
+      "date": "2026-09-26",
+      "summary": "'돈의 새로운 선택지를 만든다'. 프로덕트 넷 — 앱에서 누구나 곧장 발행하는 **프리페이드 카드**(후불 충전 기능, Visa 가맹점 어디서나 — 밴들카드) · 자산 형성에 쓰는 **신용카드**(투자 수익 + 카드 결제 캐시백 — Pool) · **사쿳토 자금 조달**(장래 매출을 곧장 자금화, 온라인 완결·최단 4영업일) · **사쿳토 분할**(법인 거래에 분할 지불 선택지 추가). 전불식 지불 수단(제3자형) 발행자·제2종 금융상품거래업·전자결제등대행업 등록, 2011년 1월 설립, 자본금 약 32.9억 엔(자본잉여금 포함)."
+    },
+    {
+      "title": "宣言的スキーマ管理ツール pistachio を作成しました",
+      "url": "https://zenn.dev/kanmu_dev/articles/16789ef1f4283a",
+      "publisher": "Kanmu Tech Blog (Zenn)",
+      "date": "2026-04-30",
+      "summary": "플랫폼 팀이 PostgreSQL 용 선언적 스키마 관리 도구 **pistachio** 를 만들어 **본번 DB 마이그레이션**에 도입 — Terraform 처럼 '있어야 할 스키마' 를 쓰고 차분 DDL 을 실행. 비슷한 도구 atlas·sqldef·Ridgepole·pgschema. sqldef → pistachio 경위, PostgreSQL 본체와 같은 파서(pg_query_go), 대상 스키마 명시, 의존 관계를 고려한 실행 순서, 스키마 이름 생략·매핑, **DROP 기본 무효**, **트랜잭션 기본 무효**, `-- pista:concurrently` 로 본번 테이블 락을 피하는 인덱스 조작. AI 도입으로 작업이 한꺼번에 나아갔다."
+    },
+    {
+      "title": "スキーマ管理ツールでマイグレーション前にリスクを見積もる",
+      "url": "https://zenn.dev/kanmu_dev/articles/6d8496039c7a75",
+      "publisher": "Kanmu Tech Blog (Zenn)",
+      "date": "2026-09-11",
+      "summary": "pistachio 에 각 DDL 이 얼마나 무거운지를 plan 에 보이는 `--explain` 을 더했다 — plan 은 무게를 알려 주지 않는다. 코멘트 읽는 법(rewrite 와 scan · 락이 막는 것 · 테이블 크기와 날짜 · 락에 휘말리는 테이블)과 패턴별 대책(rewrite·읽기/쓰기 차단 / scan·읽기/쓰기 차단 / scan·쓰기 차단 / scan·차단 없음)."
+    },
+    {
+      "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+      "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+      "publisher": "Kanmu Tech Blog (Zenn)",
+      "date": "2026-02-16",
+      "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+    }
+  ]
+}

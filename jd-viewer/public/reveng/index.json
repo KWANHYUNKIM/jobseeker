@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "kanmu",
+      "name": "カンム",
+      "name_en": "Kanmu",
+      "country": "JP",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "프리페이드 카드 밴들카드의 카무 — 결제 DB 의 스키마는 PostgreSQL 파서를 그대로 쓰는 자작 선언적 도구 pistachio 로 DROP·트랜잭션을 기본 무효로 두고 DDL 의 무게를 미리 어림하며, 월말 월초·일제 통지로 몰리는 PostgreSQL 큐 잡은 Datadog 모니터로 Worker 를 늘린다",
+      "updated_at": "2026-09-26",
+      "domain": "kanmu.co.jp"
+    },
+    {
       "slug": "safie",
       "name": "セーフィー",
       "name_en": "Safie",
@@ -3489,7 +3501,9 @@
     "기상과 실적으로 소매·제조의 반년 수요를 예측한다",
     "수십만 개의 사용자 기상 조건을 10분마다 판정한다",
     "수많은 카메라 서버에 요청 때마다 연결을 연다",
-    "녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다"
+    "녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다",
+    "결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다",
+    "월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다"
   ],
   "countries": {
     "KR": "한국",
