@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**Picnic — 기능 2(`coarse-as-you-can` · `count-stock-with-mllm`, 2026-09-26). 다음은 확장: '자동화 물류센터 관제' 를 control center 글(scratchpad `pk_our-vision-of-building-an-intelligent-control-center-for-fulfilment.txt` — dbt/RabbitMQ 까지 읽음, 뒷부분의 결과·장기 비전은 마저)로. 그러면 세 도메인이 다 차고 수익원은 하나(식료품 판매, 세 도메인 연결)라 완주 판정. 대기가 비어 큐 0/3 — 그 뒤 후보 조사.**
+**없다 — Picnic 완주(2026-09-26, 도메인 3 · 기능 3). 진행 중 회사는 전부 done 이거나 hold. 대기 0/3 — 다음은 후보 조사(79번째). QUEUE '확인해 둔 후보' 와 78번째 조사의 못 연 곳(Flexport·Hacobu·Ocado·Gopuff)부터, 그리고 369 에서 떨어진 Riot Games(리디렉션 대상을 안 열어 봤던 것).**
+
 
 
 
