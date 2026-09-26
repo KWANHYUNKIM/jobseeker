@@ -27,6 +27,7 @@
 | **Yappli(ヤプリ)** | JP · 노코드 앱 플랫폼 SaaS | 프로파일(2026-09-26). 도메인 둘 — 한 줄 SDK 상향 뒤의 1년 4개월을 버틴다 · 문의 조사와 수정을 다른 줄에 세운다. 기능 2(targetSdk 36 · 문의 대응). **hold** — CRM 수익원 자료 두 번 없음(2026-09-26). CRM 수익원은 도메인 없음, Yappli 연결은 inferred. |
 
 | **CADDi(キャディ)** | JP · 제조(조달·도면 SaaS) | 프로파일(2026-09-26). 도메인 둘 — 여러 제품이 한 문으로 들어온다(Control Plane) · 쌓인 제조 데이터를 싸게 꺼낸다(BigQuery). 기능 2(인증 게이트웨이 · BigQuery 비용). **hold** — 수발주 수익원 자료 2회 없음(완주 기준 셋째 미충족)(`CADDi の Control Plane`·`RFC 8707`·`Auth0 で SSO`), 그다음 Go 채택·JSON 컬럼 비용. |
+| **Lincwell(リンクウェル)** | JP · 온라인 진료·클리닉 DX·헬스케어 EC | 프로파일(2026-09-27, slug `lincwell`). 도메인 둘 — 예약 완료가 외부 통지를 기다리지 않는다 · 운영이 고른 순간에 수만 명에게 푸시를 보낸다. 기능 0. Smart Clinics 수익원은 도메인 없음. |
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
 
@@ -57,7 +58,6 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Lincwell(リンクウェル)** | JP · 온라인 진료 클리닉 앱 | Zenn Publication `zenn.dev/p/lincwell_inc`(RSS 19편, 최신 2026-09). 푸시 배신 내재화의 아키텍처 변천 `c2e73de75af524` · SLI/SLO 로 예약 레이턴시와 마주해 UI/UX 개선 `2c0befff862461` · 앱 팀 SLO 운용 `d4a4e58eeef06d` · ECS 네이티브 Blue/Green lifecycle hook 스모크 테스트 · ecspresso 이전. **의료 예약·알림 축.** |
 | **WED** | JP · 영수증 매입 앱(ONE) · 구매 데이터 | Zenn Publication `zenn.dev/p/wed_engineering`(RSS 19편, 최신 2026-08). 영수증 상품명 → JAN 코드 연결 처리 효율화 `20260424-cache-matching-results` · BigQuery 벡터 검색으로 JICFS 카테고리 추정 +35% `vector_search_category_classification` · Gemini 그라운딩으로 영수증 표기 ↔ 정식 상품명 `20251205-grounding-for-product-names` · 영수증 체인 예측 · iOS 27 OCRTool. **영수증 데이터 정규화 축(처음).** |
 | **mixtend(調整さん)** | JP · 일정 조정 서비스 | Zenn Publication `zenn.dev/p/mixtend`(RSS 15편, 최신 2026-06). 코드 리뷰를 계기로 배타 제어를 lockForUpdate 에서 Cache Lock 으로 `a7f2907594c2fa` · 調整さん PC 톱 고속화 `001d1a7f1c3cce` · Webpack Mix → Vite 단계 이행 `6d1b6be6a6cc84` · Flutter 거대 출결표 가로 스크롤 동기. **일정 조정 축.** 결정 글이 작은 편 — 프로파일 때 다시 판정. |
 

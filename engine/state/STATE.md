@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**아흔여섯 번째 후보 조사(2026-09-27) — 대기 3/3: Lincwell · WED · mixtend. 다음은 --gaps 의 신규: 큐 맨 위 Lincwell — `c2e73de75af524`(푸시 내재화 변천) · `2c0befff862461`(예약 레이턴시 SLO) · `d4a4e58eeef06d`(앱 팀 SLO) · 회사 사이트에서 수익원부터. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Lincwell 프로파일(2026-09-27, slug `lincwell`) — 도메인 둘: 예약 완료가 외부 통지를 기다리지 않는다(LINE 비동기·스낵바 삭제) · 운영이 고른 순간에 수만 명에게 푸시를 보낸다(내재화 3단 변천). 다음은 --gaps 의 확장: 첫 기능은 `2c0befff862461`(예약 레이턴시 — Sidekiq 비동기·재시도, SLO 가 못 잡은 꼬리), 둘째는 `c2e73de75af524`(푸시 배치). Smart Clinics 수익원은 도메인 없음 — 두 기능 뒤 RSS·검색 두 번으로 판정. 대기 2/3(WED · mixtend). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

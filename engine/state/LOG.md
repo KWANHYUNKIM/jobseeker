@@ -2105,3 +2105,8 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 아흔여섯 번째 후보 조사
 
 - Zenn 검색 API 두 묶음(성질어 15 · 결과어 15). Lincwell · WED · mixtend 를 대기로. 슬러그는 전부 RSS 에서 직접 확인.
+
+## 2026-09-27 Lincwell 회사 프로파일
+
+- 회사 사이트(service·company)와 クリフォア 앱 페이지로 수익원 셋(Telehealth · Smart Clinics · Healthcare EC). 매출·비중 없음.
+- 글 셋(푸시 내재화 · 예약 레이턴시 SLO · 앱 SLO)으로 도메인 둘. 예약 글이 온라인/대면을 가르지 않아 Telehealth 연결은 inferred. Smart Clinics 는 도메인 없음.
