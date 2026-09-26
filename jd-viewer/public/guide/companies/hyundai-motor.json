@@ -528,6 +528,122 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022364&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=7c23aa86-4e28-4a19-baa3-ead4ed6b44e9",
+      "title": "차량 사이버보안 기술",
+      "site": "saramin",
+      "verdict": "경력 3년 이상(보안), 학사 이상(보안·컴퓨터·전자공학). 차량에서 생길 수 있는 사이버보안 위협에 대응하는 기술을 연구·개발하고, 보안성 검토와 모의해킹으로 취약점을 미리 찾는다 — 보안 신기술 연구·개발, 차량 적용을 위한 사양 관리·양산 지원, 모의해킹 시나리오 수립·이슈 대응·보고서 검토, 긴급 취약점 보고·조치 지원, 해킹 동향과 당사 영향도 분석, 사고 대응, **펌웨어 취약점 자동 점검 스크립트·툴 개발**. 필수는 보안 취약점 분석 또는 보안 신기술 연구·개발 경험, C/C++·리눅스, 비즈니스 영어. 우대사항 칸은 비어 있다. 공고 접수가 6월 15일부터 열려 있다. 전형: 지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격('필요 시 전형단계에서 과제가 진행 될 수 있습니다'). 접수 2026년 06월 15일 ~ 09월 30일 23시 59분(채용 시 마감), 이력서·자기소개서. 급여 '면접 후 결정', 근무지 판교.",
+      "fit": {
+        "must_have": [
+          "보안 경력 3년 이상, 학사 이상",
+          "보안 취약점 분석 또는 보안 신기술 연구·개발",
+          "C/C++·리눅스",
+          "비즈니스 영어"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "차량 네트워크(CAN) 보안과 모의해킹 시나리오",
+          "from": "task",
+          "quote": "　· 모의해킹 시나리오 수립",
+          "priority": "core",
+          "why": "주요업무이고 부서 소개가 보안성 검토 및 모의해킹으로 취약점을 사전에 식별한다고 적는다.",
+          "gap_check": "CAN 메시지에는 발신자 인증이 없다는 점이 어떤 공격(스푸핑·재전송)을 가능하게 하고, 이를 막는 보안 온보드 통신(SecOC)은 메시지에 무엇(MAC·신선도 값)을 덧붙이는가? 모의해킹 시나리오는 어떤 진입점(진단 포트·텔레매틱스·인포테인먼트)부터 세우는가?",
+          "drill": "리눅스 가상 CAN(vcan)과 can-utils, ICSim 으로 계기판 시뮬레이터를 띄워 메시지를 관찰·재전송해 보고, AUTOSAR SecOC 명세로 MAC·신선도 값을 붙였을 때 같은 재전송이 어떻게 막히는지 정리한다. 진입점별 모의해킹 시나리오 표를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Linux kernel — SocketCAN",
+              "url": "https://docs.kernel.org/networking/can.html",
+              "kind": "docs"
+            },
+            {
+              "title": "can-utils",
+              "url": "https://github.com/linux-can/can-utils",
+              "kind": "repo"
+            },
+            {
+              "title": "ICSim — Instrument Cluster Simulator",
+              "url": "https://github.com/zombieCraig/ICSim",
+              "kind": "repo"
+            },
+            {
+              "title": "AUTOSAR — Secure Onboard Communication",
+              "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_SecureOnboardCommunication.pdf",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "펌웨어 취약점 자동 점검 도구",
+          "from": "task",
+          "quote": "　　- 도출된 펌웨어 취약점 자동 점검 스크립트ㆍ툴 개발",
+          "priority": "core",
+          "why": "주요업무이고 필수에 'C/C++ 언어 및 리눅스 OS 사용 경험' 과 보안 취약점 분석 경험이 있다.",
+          "gap_check": "제어기 펌웨어 이미지를 받았을 때 파일시스템·하드코딩된 키·취약한 오픈소스 버전을 자동으로 찾으려면 어떤 순서로 풀고(추출 → 식별 → 패턴 검사), 오탐은 무엇으로 줄이는가?",
+          "drill": "공개 라우터 펌웨어 이미지를 binwalk 로 풀고, 하드코딩 비밀번호·개인키·오래된 라이브러리 버전을 찾는 Python 점검 스크립트를 만든 뒤, 의심 바이너리 하나를 Ghidra 로 열어 위험 함수(strcpy 등) 사용 위치를 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "binwalk",
+              "url": "https://github.com/ReFirmLabs/binwalk",
+              "kind": "repo"
+            },
+            {
+              "title": "Ghidra",
+              "url": "https://ghidra-sre.org/",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "보안 신기술의 차량 양산 적용",
+          "from": "task",
+          "quote": "　· 사이버보안 기술이 차량에 적용될 수 있도록 사양 관리 및 양산 지원",
+          "priority": "high",
+          "why": "주요업무다. 같은 묶음이 차량 사이버보안 신기술 연구·개발이고, 필수에 보안 신기술 연구·개발 경험이 있다.",
+          "gap_check": "연구한 보안 기능(예: 메시지 인증)을 실제 차량 제어기에 넣을 때 연산·지연·메모리 여유가 적은 제어기에서 무엇을 양보하고, 그 요구사항을 협력사에 어떤 사양 문서로 전달하는가?",
+          "drill": "앞 드릴의 SecOC 식 메시지 인증을 두고 'MAC 길이·신선도 값 방식·키 관리' 선택지를 제어기 제약(주기·버스 부하)과 함께 비교한 사양 초안 한 장을 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Wikipedia — CAN bus",
+              "url": "https://en.wikipedia.org/wiki/CAN_bus",
+              "kind": "article"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "vcan·ICSim 모의해킹 기록 + 펌웨어 자동 점검 스크립트",
+          "why": "주요업무의 모의해킹과 펌웨어 취약점 자동 점검 도구 개발을 그대로 보여 준다. 전형에 필요 시 과제가 있다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "분석한 취약점과 조치 과정을 영어 보고서로 정리",
+          "why": "주요업무에 보고서 검토·긴급 보고가, 필수에 비즈니스 영어·문서 작성이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격('필요 시 전형단계에서 과제가 진행 될 수 있습니다'). 접수 2026년 06월 15일 ~ 09월 30일 23시 59분(채용 시 마감), 이력서·자기소개서. 급여 '면접 후 결정', 근무지 판교.",
+        "expect": [
+          "취약점 분석 사례",
+          "차량 네트워크 보안",
+          "펌웨어 분석 자동화",
+          "영어 보고"
+        ],
+        "sources": [
+          {
+            "title": "차량 사이버보안 기술",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022364&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=7c23aa86-4e28-4a19-baa3-ead4ed6b44e9",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ]
 }
