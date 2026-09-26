@@ -1060,3 +1060,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 m3 재방문 → 확장
 
 - 09-08 "ETL 基盤を Embulk から dlt + dbt に乗り換えた 2 つの理由" 에서 결정 8개로 `embulk-to-dlt-dbt` 추가(features 3→4). 두 도구 운용·Batch 기능 대체는 해석 표시.
+
+## 2026-09-26 mapbox 재방문
+
+- 09-07 이후 4편 모두 제품 발표. updated_at 만 올림(없음 1회째).

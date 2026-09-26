@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — m3 재방문 → 확장(`embulk-to-dlt-dbt`). 09-07 묶음 진행 중.**
+**없다 — mapbox 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **mapbox** — 2026-09-26 없음 1회째. `blog.mapbox.com/feed` 는 2020년에 멈춘 Medium 피드 — r.jina.ai 로 `mapbox.com/blog` 목록. 9월 4편(Standard 새 판·3D 차선·지오코딩 45개국·대화형 지도) 모두 제품 발표. 이전 글 후보: 08-21 MTS 증분 업데이트, 08-13 Atlas v3 자체 호스팅, "From answers to addresses: grounding an LLM for location".
 - **m3** — 2026-09-26 확장. `m3tech.blog/rss`. 09-08 Embulk → dlt+dbt 글로 기존 도메인 "몇 년 뒤에 또 하지 않도록 지운다" 에 추가. 남은 후보: 09-18 BigQuery 슬롯 fluid scaling(비용), 09-16 공통 데이터셋과 마트 숫자, 09-17 AI 분석의 가짜 숫자 가드레일(dbt·Lightdash·MCP), 08-28 Testcontainers 병렬 테스트.
 - **linear** — 2026-09-26 확장. `linear.app/rss/blog.xml`. 09-21 CI 병목 글로 새 도메인 "에이전트가 늘린 코드를 CI 가 따라잡게 한다". 남은 후보: 08-26 StyleX 이전, 08-10 Linear Agent 구축, 06-12 버그 자동 수정 에이전트.
 - **letsencrypt** — 2026-09-26 확장. `letsencrypt.org/feed.xml`. 09-17 ClickHouse 웨어하우스 글로 새 도메인 "발급 기록을 운영 DB 밖에서 센다". 이전 글 후보: 06-03 양자 내성 인증서, 03-17 ARI(갱신 정보), 02-18 DNS-PERSIST-01, 04-10 일부러 깨진 시험 사이트.
