@@ -1396,6 +1396,162 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385555",
+      "title": "[Tech] AI Engineer - AI Agent 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 5~11년(서울 강남). AI Researcher 공고(385554)와 같은 인공지능기술실이지만 연구가 아니라 구현 자리다 — AI Agent/Agentic AI 아키텍처와 Orchestration, MCP 기반 채널 연동, AI API·마이크로서비스, 에이전트로 사내 업무 자동화를 만든다. 자격요건에 MLOps 파이프라인과 서비스 연계가 있고, 해시태그와 우대사항이 A2A·MCP 프로토콜과 지식그래프·온톨로지를 적는다. 석/박사는 우대다. 전형에 직무역량테스트(코딩)가 있다.",
+      "fit": {
+        "must_have": [
+          "유관주제 실무 경험",
+          "AI Agent 아키텍처 설계·Orchestration",
+          "Agentic AI 라이브러리·서비스·플랫폼 경험",
+          "에이전트 도구·리소스·시스템 연계",
+          "MLOps 파이프라인과 서비스 연계"
+        ],
+        "can_learn": [
+          "A2A·MCP 에이전트 프로토콜",
+          "지식그래프·온톨로지",
+          "클라우드 AI/ML 배포",
+          "시스템 발표·문서 작성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MCP 서버로 사내 시스템을 에이전트에 잇기",
+          "from": "task",
+          "quote": "• MCP 기반 채널 연동 아키텍처 설계 및 구현",
+          "priority": "core",
+          "why": "주요업무에 MCP 가 이름으로 나오고, 우대사항 첫 줄도 'A2A, MCP 등의 에이전트 프로토콜' 이다. 자격요건의 '도구, 리소스 및 시스템 연계' 가 MCP 의 tools·resources 개념과 겹친다.",
+          "gap_check": "MCP 의 tools·resources·prompts 는 각각 무엇이고, stdio 와 Streamable HTTP 전송은 언제 고르는가? 사내 시스템을 MCP 서버로 열 때 사용자 권한은 어디서 확인해야 하는가?",
+          "drill": "사내 게시판·일정 같은 가짜 API 두 개를 MCP 서버로 감싸 tools 와 resources 로 노출하고, MCP 클라이언트에서 호출해 본 뒤 사용자별 권한 검사를 서버 쪽에 넣는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Model Context Protocol — Introduction",
+              "url": "https://modelcontextprotocol.io/docs/getting-started/intro",
+              "kind": "docs"
+            },
+            {
+              "title": "Model Context Protocol — Specification",
+              "url": "https://modelcontextprotocol.io/specification/latest",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Agentic AI 오케스트레이션 설계",
+          "from": "task",
+          "quote": "• AI Agent/Agentic AI 아키텍처 설계 및 Orchestration 구현",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 자격요건에 같은 말이 그대로 다시 나온다.",
+          "gap_check": "여러 에이전트를 감독자(supervisor) 하나가 나눠 부르는 구조와 그래프로 흐름을 고정하는 구조는 실패 처리·추적 면에서 어떻게 다르고, 사람이 승인해야 하는 단계를 어디에 끼우는가?",
+          "drill": "'문서 검색 → 초안 작성 → 검토' 세 에이전트를 LangGraph 같은 상태 그래프로 잇고, 검토 단계 앞에 사람 승인 중단점을 넣은 뒤 실패 시 재시도·로그를 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LangGraph",
+              "url": "https://langchain-ai.github.io/langgraph/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "A2A — 에이전트끼리 부르는 프로토콜",
+          "from": "preference",
+          "quote": "• A2A, MCP 등의 에이전트 프로토콜을 활용한 에이전트 개발 경험",
+          "priority": "high",
+          "why": "우대사항이고 해시태그가 #MCP_A2A_에이전트 다. MCP 가 에이전트와 도구 사이라면 A2A 는 에이전트와 에이전트 사이다.",
+          "gap_check": "A2A 에서 Agent Card 는 무엇을 알리고, 오래 걸리는 작업(task)의 상태는 어떻게 주고받는가? 같은 일을 MCP 도구 하나로 만들 때와 무엇이 다른가?",
+          "drill": "위 '검토' 에이전트를 A2A 서버로 분리해 Agent Card 를 공개하고, 오케스트레이터가 A2A 로 작업을 맡긴 뒤 상태를 조회하게 바꾼다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "A2A Protocol",
+              "url": "https://a2a-protocol.org/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "A2A (GitHub)",
+              "url": "https://github.com/a2aproject/A2A",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "AI API 마이크로서비스와 MLOps 연계",
+          "from": "qualification",
+          "quote": "• MLOps 파이프라인과 서비스 연계 경험",
+          "priority": "high",
+          "why": "자격요건이고 주요업무에 'AI API 및 마이크로서비스 개발, 성능 튜닝' 이 있다. 팀 리더는 AI 인프라부터 공통 서비스 개발까지 다룬다고 적는다.",
+          "gap_check": "모델 버전을 바꿀 때 API 를 멈추지 않으려면 레지스트리·배포·트래픽 전환을 어떻게 잇고, LLM 호출 API 의 지연 대부분이 어디서 나는지(토큰 생성·외부 호출) 어떻게 재는가?",
+          "drill": "FastAPI 로 에이전트 API 를 만들고 MLflow 에 모델(또는 프롬프트) 버전을 등록해 API 가 지정 버전을 읽게 한 뒤, 요청별 단계 지연을 로그로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "MLflow — Documentation",
+              "url": "https://mlflow.org/docs/latest/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "지식그래프·온톨로지",
+          "from": "preference",
+          "quote": "• 지식그래프, 온톨로지 관련 개발 경험",
+          "priority": "nice",
+          "why": "우대사항이다. 업무 자동화 에이전트가 사내 조직·시스템 관계를 따라가야 할 때 쓰인다(추론).",
+          "gap_check": "RDF 트리플과 OWL 클래스·속성은 무엇을 표현하고, 에이전트가 벡터 검색 대신 그래프 질의를 써야 하는 질문은 어떤 것인가?",
+          "drill": "작은 조직도(부서·사람·시스템 담당)를 RDF 로 만들고 '이 시스템 담당 부서의 책임자는?' 을 그래프 질의로 답하는 도구를 에이전트에 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "W3C — RDF 1.1 Primer",
+              "url": "https://www.w3.org/TR/rdf11-primer/",
+              "kind": "docs"
+            },
+            {
+              "title": "W3C — OWL 2 Overview",
+              "url": "https://www.w3.org/TR/owl2-overview/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "MCP 서버 + A2A 로 나눈 사내 업무 자동화 에이전트 데모",
+          "why": "주요업무 네 줄(오케스트레이션, MCP 연동, AI API, 업무 자동화)과 우대 A2A 를 한 결과물로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "설계 문서·발표 자료",
+          "why": "우대사항에 '시스템 및 ML 시스템 관련 발표 또는 문서/논문 작성 경험' 이 있다. 위 데모의 아키텍처 결정 기록을 문서로 남기면 그대로 증거가 된다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "에이전트 오케스트레이션 구조 선택 이유",
+          "MCP·A2A 차이",
+          "에이전트 API 성능 튜닝",
+          "MLOps 와 서비스 연계 경험"
+        ],
+        "sources": [
+          {
+            "title": "[Tech] AI Engineer - AI Agent 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/385555",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
