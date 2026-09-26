@@ -5,7 +5,7 @@
   "aliases": [
     "한진정보통신"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "hist.co.kr",
   "one_liner": "한진 계열 IT 서비스 기업 — ITO·IT 솔루션·항공(공항/항공사)·물류·헬스 부문, 지금은 AX(데이터 플랫폼)와 보안을 뽑는다",
@@ -461,6 +461,89 @@
               "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/",
               "kind": "docs"
             },
+            {
+              "title": "Service control policies (SCPs) — AWS Organizations",
+              "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571198?ReturnUrl=RecruitInfo",
+      "title": "[보안] 보안 솔루션 운영 및 위협 분석 담당자 (3년 이상) 채용",
+      "site": "dev",
+      "verdict": "경력 3년 이상, 4년대졸, 서울 강서구, **계약직 1년, 정규직 전환 가능(계약 종료 시점 전환 검토)**. 접수 2026-09-11~10-11. 정보보호실 보안운영팀의 **클라우드 보안 운영·위협 분석** 담당이다. 주요업무는 두 줄 — **클라우드(Native·SaaS) 보안 솔루션 정책 설정·최적화 운영**, **보안 위협 분석·대응**. 자격이 AWS 에 구체적이다 — 클라우드·인프라 보안 3년, **GuardDuty·Security Hub·CloudTrail 운영**, **AWS WAF 룰 작성과 오탐 튜닝**, **인프라 취약점 점검(OS·DB·네트워크 진단과 결과보고서)**, **IAM 권한 설계·점검과 멀티 계정(Organizations·Control Tower) 이해**. 우대는 AWS·GCP 보안 자격증, Terraform·CloudFormation 보안 자동화, GCP 멀티클라우드, **주요정보통신기반시설 취약점 분석·평가**(컨설팅사 진단 경력 포함), 모의해킹·웹 취약점 진단. 같은 실의 총괄 팀장급(569334) 공고와 짝이다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "클라우드·인프라 보안 3년",
+          "GuardDuty·Security Hub·CloudTrail",
+          "WAF 룰·오탐 튜닝",
+          "인프라 취약점 점검 보고서",
+          "IAM·멀티 계정"
+        ],
+        "can_learn": [
+          "IaC 보안 자동화",
+          "GCP 보안",
+          "주요정보통신기반시설 평가"
+        ]
+      },
+      "study": [
+        {
+          "topic": "탐지 결과를 모으고 분석하기 — GuardDuty·Security Hub·CloudTrail",
+          "from": "qualification",
+          "quote": "AWS 보안 서비스(GuardDuty, Security Hub, CloudTrail) 운영 경험",
+          "priority": "core",
+          "why": "자격요건이고 주요업무가 보안 위협 분석·대응이다.",
+          "gap_check": "CloudTrail(누가 무엇을 했나), GuardDuty(이상 행위 탐지), Security Hub(결과 집계·기준 점검)는 각각 어떤 질문에 답하는가? GuardDuty 의 '비정상 위치에서 API 호출' 경보를 받으면 CloudTrail 에서 무엇을 순서대로 확인하고, 오탐이면 어떻게 억제 규칙을 남기는가?",
+          "drill": "세 서비스 문서를 읽고, 개인 AWS 계정에서 CloudTrail 조직 트레일·GuardDuty·Security Hub 를 켠 뒤 GuardDuty 샘플 결과를 생성해 한 건을 CloudTrail 로 추적하는 대응 절차서(판별·격리·보고)를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "What is Amazon GuardDuty?",
+              "url": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction to AWS Security Hub CSPM",
+              "url": "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html",
+              "kind": "docs"
+            },
+            {
+              "title": "What Is AWS CloudTrail?",
+              "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "WAF 룰 작성과 오탐 튜닝",
+          "from": "qualification",
+          "quote": "AWS WAF 룰 작성 및 오탐 튜닝 경험",
+          "priority": "core",
+          "why": "자격요건이다.",
+          "gap_check": "관리형 룰 그룹과 직접 작성한 룰(속도 제한·지역·패턴)은 어떤 순서로 평가되고, 새 룰을 차단(Block) 대신 집계(Count) 모드로 먼저 켜는 이유는? 정상 요청이 SQL 인젝션 룰에 걸리는 오탐을 좁히려면 로그의 어떤 필드를 보고 어떤 예외(범위 축소)를 거는가?",
+          "drill": "AWS WAF 문서를 읽고, 테스트 웹 앱 앞에 관리형 룰 그룹 + 속도 제한 룰을 Count 모드로 걸어 정상·공격 요청을 섞어 보낸 뒤, 로그에서 오탐 요청을 찾아 경로 한정 예외를 만들고 Block 으로 전환한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS WAF — Developer Guide",
+              "url": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IAM 권한 점검과 멀티 계정 가드레일",
+          "from": "qualification",
+          "quote": "IAM 권한 설계·점검, 멀티 계정(Organizations, Control Tower) 환경 이해",
+          "priority": "high",
+          "why": "자격요건이다.",
+          "gap_check": "최소 권한 원칙으로 역할을 설계할 때 와일드카드 권한·장기 액세스 키·교차 계정 신뢰 정책에서 흔히 무엇이 새는가? Organizations 의 서비스 제어 정책(SCP)은 IAM 정책과 어떻게 겹쳐 최종 권한을 정하는가?",
+          "drill": "SCP 문서를 읽고, 가상 조직의 워크로드 계정에 적용할 SCP(루트 사용 차단·로그 삭제 금지·허용 리전 제한)를 작성해 테스트 계정에서 IAM 관리자 권한으로도 막히는지 확인한다. 기존 IAM 정책 3개를 점검해 과다 권한 항목을 보고서로 정리한다.",
+          "hours": 5,
+          "resources": [
             {
               "title": "Service control policies (SCPs) — AWS Organizations",
               "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
