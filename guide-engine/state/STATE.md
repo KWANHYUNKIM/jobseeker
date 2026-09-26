@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **121건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **122건**.
+직전 회차: ✅ `Staff Security Engineer (Information Security CFS, CLS, CES and DDnayo)`(8158581, 10년↑) 5항목 — 정보보호 거버넌스(비개발): ISMS-P·리스크·경영진 대시보드·위치정보법·OT. 제목 약어 풀이 없음(open_questions).
 직전 회차: ✅ `Staff Security Engineer (Vendor Security Assurance)`(8163760, 8년↑) 4항목 — 서드파티 리스크(비개발). 원문 오타 '3rd-prary' 그대로 인용.
 직전 회차: ✅ `Staff Security Engineer (Control Assurance)`(8163764, 8년↑, GRC) 4항목 — 주요업무 칸 비어 자격으로 읽음.
 직전 회차: ✅ `Staff Security Engineer (Cyber Threat Hunting)`(8163723, 8년↑) 5항목.
@@ -27,9 +28,9 @@
 **남은 서울 공고(미작성, 모집중)** — 번호로 찾는다:
 - 개발: Senior QA (Advertiser Platform)(8222455)
 - 보안: Attack Surface(8160905), Forensics(8052967), Pen Tester(8163504), Email Detection(7813854),
-  Info Sec CFS(8158581), Mobile Security(8203471), AI Security Architect(8224844)
+  Mobile Security(8203471), AI Security Architect(8224844)
 - 데이터 사이언스: Sr. Staff DS Incrementality(8029811)
-⚠️ 다음 회차: 보안 계열 — `Staff Security Engineer (Information Security CFS, CLS, CES and DDnayo)`(8158581).
+⚠️ 다음 회차: 보안 계열 — `Attack Surface`(8160905). ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중

@@ -12562,6 +12562,134 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8158581",
+      "title": "Staff Security Engineer (Information Security CFS, CLS, CES and DDnayo)",
+      "site": "ats",
+      "verdict": "서울 근무, 정보보안 10년 이상·관련 학사. 소프트웨어 개발이 아니라 정보보호 거버넌스(관리체계·위원회·리스크·경영진 보고) 직군이다 — 정보보호 정책과 관리체계를 운영하고, 과제·리스크 조치 경과를 관리하며, 보안 지표와 경영진용 대시보드를 만들어 보고하고, 침해 사고 뒤 개선 과제의 이행을 관리한다. 제목의 CFS·CLS·CES·DDnayo 가 무엇인지는 공고에 풀이가 없다.",
+      "fit": {
+        "must_have": [
+          "정보보안 10년 이상",
+          "관련 학사 학위",
+          "정보보안·IT·인프라·네트워크 기반 기술 이해",
+          "정보통신망법·개인정보보호법·개인위치정보보호법 이해",
+          "전자상거래·물류/배송/배달 비즈니스 이해"
+        ],
+        "can_learn": [
+          "ISMS-P·ISO/IEC 27001 자격(우대)",
+          "OT 보안(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "정보보호 관리체계(ISMS-P) 운영",
+          "from": "preference",
+          "quote": "ISMS-P, ISO/IEC 27001 등 정보보호 관리체계 관련 자격증을 보유하신 분",
+          "priority": "core",
+          "why": "주요업무 첫 줄이 정보보호 정책·위원회·관리체계 운영 관리다. 우대에 ISMS-P·ISO/IEC 27001 자격이 이름으로 나온다.",
+          "gap_check": "ISMS-P 인증 기준의 '관리체계 수립 및 운영' 영역에서 정보보호 위원회가 해야 하는 일은 무엇이고, 그 운영 증적으로 무엇을 남기는가?",
+          "drill": "ISMS-P 인증 고시의 관리체계 기준을 읽고, 가상의 물류 자회사 하나에 대해 정책 체계도(정책-지침-절차)와 연간 위원회 안건표를 한 장씩 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 정보보호 및 개인정보보호 관리체계 인증 등에 관한 고시",
+              "url": "https://www.law.go.kr/행정규칙/정보보호및개인정보보호관리체계인증등에관한고시",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보안 리스크 현황과 조치 계획 추적",
+          "from": "task",
+          "quote": "정보보호 Risk 현황 및 조치 계획 진행 경과 관리",
+          "priority": "core",
+          "why": "리스크 현황과 조치 계획의 진행 경과 관리, 과제·프로젝트 현행 관리가 주요업무에 따로 적혀 있다.",
+          "gap_check": "식별된 리스크마다 무엇(자산·위협·영향·가능성·담당·기한·수용 여부)을 기록해야 경영진이 '조치 지연'을 한눈에 볼 수 있는가?",
+          "drill": "리스크 등록부 스프레드시트(점수 산정식·조치 계획·기한·상태)를 만들고, 가상 리스크 10건으로 기한 초과·위험 수용 건을 걸러내는 보기를 만든다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "보안 지표와 경영진용 대시보드",
+          "from": "task",
+          "quote": "보안 지표 및 경영진용 대쉬보드 관리, 개발 및 보고",
+          "priority": "high",
+          "why": "보안 지표와 경영진용 대시보드의 관리·개발·보고가 주요업무다.",
+          "gap_check": "경영진 대시보드에 올릴 지표와 실무 팀용 지표는 어떻게 다르고, '패치율 95%' 같은 수치가 오해를 부르는 경우는 언제인가?",
+          "drill": "리스크 등록부 데이터로 경영진용 한 장(상위 리스크·추세·기한 초과 건수)과 실무용 한 장을 따로 그려 본다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "국내 개인정보·위치정보 규제",
+          "from": "qualification",
+          "quote": "정보통신망법, 개인정보보호법, 개인위치정보보호법 등 Compliance에 대한 이해도를 갖추신 분",
+          "priority": "high",
+          "why": "자격요건에 정보통신망법·개인정보보호법·개인위치정보보호법이 나열돼 있다. 배송·배달 사업은 위치정보를 다룬다(자격요건의 물류/배송/배달 이해 요구).",
+          "gap_check": "배달 기사 위치를 실시간으로 수집·제공할 때 위치정보법상 사업자가 갖춰야 할 것(신고·동의·보관·파기)은 무엇인가?",
+          "drill": "위치정보법과 개인정보 보호법에서 수집·제공·파기 관련 조항을 골라, 배달 서비스 기준 준수 점검표 한 장을 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 위치정보의 보호 및 이용 등에 관한 법률",
+              "url": "https://www.law.go.kr/법령/위치정보의보호및이용등에관한법률",
+              "kind": "docs"
+            },
+            {
+              "title": "국가법령정보센터 — 정보통신망 이용촉진 및 정보보호 등에 관한 법률",
+              "url": "https://www.law.go.kr/법령/정보통신망이용촉진및정보보호등에관한법률",
+              "kind": "docs"
+            },
+            {
+              "title": "국가법령정보센터 — 개인정보 보호법",
+              "url": "https://www.law.go.kr/법령/개인정보보호법",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OT(운영기술) 보안",
+          "from": "preference",
+          "quote": "OT 보안 업무 경험을 갖추신 분",
+          "priority": "nice",
+          "why": "우대사항에 OT 보안 경험이 있다. 공고는 이유를 적지 않는다 — 풀필먼트·물류 설비와 관련될 수 있으나 추정이다.",
+          "gap_check": "IT 네트워크와 OT 네트워크의 보안 우선순위(가용성 vs 기밀성)가 어떻게 다르고, 망 분리를 어떤 구조로 하는가?",
+          "drill": "NIST SP 800-82 r3 의 OT 개요와 네트워크 구조 장을 읽고, 가상의 물류센터 설비망 분리도를 그려 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "NIST SP 800-82 Rev. 3 — Guide to Operational Technology (OT) Security",
+              "url": "https://csrc.nist.gov/pubs/sp/800/82/r3/final",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "물류·배달 사업 기준 규제 매핑표",
+          "why": "자격요건이 세 법과 물류/배송/배달 이해를 같이 요구한다. 사업 흐름(주문→보관→배송→위치 추적)마다 걸리는 조항을 짝지은 표는 이 직무의 일을 그대로 보여 준다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "관리체계 운영과 위원회",
+          "리스크 조치 경과 관리",
+          "경영진 보고 지표",
+          "위치정보법 준수",
+          "침해 사고 후 개선 과제"
+        ],
+        "sources": [
+          {
+            "title": "Staff Security Engineer (Information Security CFS, CLS, CES and DDnayo)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8158581",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -12588,6 +12716,7 @@
     "⚠️ `[쿠팡페이] Senior Back-end Engineer (계약직)`(ats)는 **본문이 `[쿠팡페이] Senior QA Engineer (계약직)`(saramin)와 16줄 전부 같은데 제목만 백엔드**다. 표기 실수인지 두 직무를 함께 뽑는 것인지 확인하지 못했다 — **제목과 본문이 어긋난 세 번째 사례**이고(앞의 둘은 `Sr. Director`=Head of SRE, `SCMA Senior Staff`=Principal), **이번은 직무 자체가 달라 보여 위험이 크다.**",
     "'[Coupang Pay] Sr./Staff Back-end Engineer (Pay Test Operations)'(gh 8212748·8212656)는 제목에 Test Operations 가 있지만 본문은 플랫폼·HA/DR·CI/CD 다 — 제목과 본문 중 어느 쪽이 맞는지 공고로는 알 수 없다",
     "'Staff Backend Engineer (Streaming & AI Infrastructure)'(gh 7919211)의 근무지 표기가 'Seoul, South Korea; z-Test & Templates Only' 다 — 템플릿용 표기가 섞인 것으로 보이며 실제 근무지는 서울로만 읽었다",
-    "greenhouse 8222455 는 제목이 'Senior QA Engineer (Advertiser Platform)' 인데 본문이 내부 감사 데이터 분석(wd/385087)과 같다 — 크롤 시 제목·본문이 섞였는지, 채용 사이트 자체가 잘못 게시했는지 공고로는 알 수 없다"
+    "greenhouse 8222455 는 제목이 'Senior QA Engineer (Advertiser Platform)' 인데 본문이 내부 감사 데이터 분석(wd/385087)과 같다 — 크롤 시 제목·본문이 섞였는지, 채용 사이트 자체가 잘못 게시했는지 공고로는 알 수 없다",
+    "gh 8158581 제목의 CFS·CLS·CES·DDnayo 가 각각 어느 법인·서비스를 가리키는지 공고에 풀이가 없다."
   ]
 }
