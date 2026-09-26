@@ -122,7 +122,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "offerwall-api-replace"
+      ]
     },
     {
       "name": "광고 클릭에서 성과까지를 빠짐없이 정확하게 센다",
@@ -147,7 +149,329 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "offerwall-api-replace",
+      "name": "수익을 내 온 API 를 존중하며 은퇴시킨다 — 오퍼월 API 를 C# 에서 Node.js 로",
+      "domain": "리워드 광고를 사용자 관심에 맞게 빨리 보여 준다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "SKYFLAG 의 오퍼월은 매체의 앱 · 게임 안에서 사용자 관심에 맞는 광고 안건을 늘어놓는다. 이 API 가 느리면 목록이 늦게 뜨고, 사용자가 떠나면 매체 수익과 광고주 성과가 함께 준다.\n\n그 API 는 옛 시스템 위에 단기간에 쌓아 올린 C# 코드였다 — 한 엔드포인트가 여러 리소스를 돌려주고, DB 를 사치스럽게 썼다. 게다가 팀에 C# 을 잘 아는 사람이 없고, 서버사이드 C# 인재는 뽑기도 어려웠다. 동시에 그 API 는 **지금까지 수익을 벌어 온** 코드라 함부로 버릴 수도 없었다.",
+        "metrics": [
+          {
+            "label": "가장 느린 API 평균 응답",
+            "value": "300ms → 80ms",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          },
+          {
+            "label": "결과",
+            "value": "응답 1/3 이하 · DB 접근 대폭 감소 · 서버 · DB 스펙 축소 · 트래픽 감소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "리플레이스를 정할 때",
+          "thought": "지금 API 는 제대로 수익을 내 왔다 — **경의를 표하고, 감사하며 제대로 은퇴시킨다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+              "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+              "publisher": "Skyfall",
+              "date": "2026-02-25",
+              "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+            }
+          ]
+        },
+        {
+          "at": "튜닝을 시작할 때",
+          "thought": "'추측하지 말고 계측하라' — 본번 레플리카에 부하를 걸어 병목부터 찾는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+              "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+              "publisher": "Skyfall",
+              "date": "2026-02-25",
+              "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "C# 로 같은 관점에서 다시 썼다면 더 빨랐을 수도 있다. 하지만 시간이 더 걸리고, 이후 유지보수가 어려운 상태였을 것이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+              "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+              "publisher": "Skyfall",
+              "date": "2026-02-25",
+              "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "오퍼월 API",
+            "what": "매체 앱 · 게임 안에 광고 안건 목록과 상세를 돌려주는 API."
+          },
+          {
+            "name": "TypeSpec 스펙 · openapi.yaml",
+            "what": "API 인터페이스의 원본. 새 API 는 TypeSpec 을 먼저 쓰고 리뷰한다."
+          },
+          {
+            "name": "생성된 Zod 스키마",
+            "what": "openapi.yaml 에서 Orval 로 만든 요청 검증 · 타입(.gen 으로 자동 생성 표시)."
+          },
+          {
+            "name": "로컬 Redis 캐시",
+            "what": "각 앱 컨테이너 옆에 둔, 수 초만 사는 MySQL 결과 캐시."
+          }
+        ],
+        "invariants": [
+          "외부 인터페이스(OpenAPI 3.1)는 리플레이스 전과 같게 둔다.",
+          "캐시는 자주 안 바뀌고 히트율이 높은 데이터에만, 수 초만 — 무효화를 따로 하지 않는다.",
+          "튜닝은 부하 시험과 계측으로 확인한 병목에만 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "TypeSpec 으로 API 스펙을 쓰고 리뷰 → openapi.yaml 생성",
+            "why": "스펙을 문서로 남기고 구현 전에 합의한다."
+          },
+          {
+            "step": "Orval 로 openapi.yaml 에서 Zod 스키마 · 모델 타입 생성",
+            "why": "스펙과 검증 코드를 어긋나지 않게."
+          },
+          {
+            "step": "Hono 라우트에서 Zod 로 검증, Kysely 로 타입 안전 SQL",
+            "why": "컴파일 시점에 쿼리 타입을 잡는다."
+          },
+          {
+            "step": "독립 쿼리는 Promise.all 로 병렬, 자주 읽는 결과는 로컬 Redis 에 수 초",
+            "why": "대기 시간을 가장 느린 쿼리로 모으고 스파이크를 흡수."
+          },
+          {
+            "step": "본번 레플리카 + k6 로 부하, Datadog · Performance Insight 로 병목 → 인덱스 · 루프 · 불필요 필드 정리",
+            "why": "계측으로 확인한 곳만 고친다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수익을 내는 C# API 를 계속 고칠까, 다시 쓸까?",
+            "chosen": "**다시 쓴다 — 단, 외부 인터페이스(OpenAPI 3.1)는 그대로 두고 인프라(CloudFront · ALB · ECS Fargate · Aurora)도 거의 그대로.**",
+            "alternatives": [
+              "C# 코드를 조금씩 리팩터한다"
+            ],
+            "tradeoff": "팀에 C# 전문가가 없고 채용도 어려워, 고쳐 나가는 것 자체가 병목이었다. 인터페이스와 인프라를 유지해 바꾸는 범위를 앱에 한정했다. 대가는 한 번에 갈아 끼우는 **리플레이스 공수와 위험**(이 사이트의 해석 — 글은 이행 절차를 적지 않는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          },
+          {
+            "question": "새 API 를 무엇으로 쓰나?",
+            "chosen": "**Node.js + TypeScript + Hono** — 프런트 · 관리 화면이 이미 React + TypeScript 라 팀과 맞는다.",
+            "alternatives": [
+              "C# 을 유지",
+              "Bun · Deno 같은 다른 런타임"
+            ],
+            "tradeoff": "엔지니어가 프런트와 백엔드를 둘 다 하는 팀이라 언어를 하나로 모은다. 대가는 C# 이었다면 더 빨랐을 수도 있는 **성능 여지**를 내려놓은 것 — 글이 스스로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          },
+          {
+            "question": "런타임은 Bun 인가 Node.js 인가?",
+            "chosen": "**Node.js** — 처음엔 Bun 으로 개발했지만 Datadog 트레이스가 제대로 안 돼서 바꿨다.",
+            "alternatives": [
+              "Bun 을 계속 쓴다"
+            ],
+            "tradeoff": "관측이 되는 쪽이 가장 '枯れた(검증된)' Node.js 였다. Hono 라 거의 안 고치고 옮겼다(Deno 였다면 꽤 힘들었을 것). 대가는 Bun 의 속도 이점을 포기한 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          },
+          {
+            "question": "쿼리는 ORM 인가 SQL 에 가까운 빌더인가?",
+            "chosen": "**Kysely + mysql2** — SQL 에 가까운 작성감, kysely-codegen 으로 스키마 타입 생성.",
+            "alternatives": [
+              "무거운 ORM",
+              "생 SQL 문자열"
+            ],
+            "tradeoff": "컴파일 시점에 타입 검사로 런타임 오류를 줄이고, mysql2 가 커넥션 풀링을 한다. 대가는 마이그레이션을 다른 제품에서 따로 관리해야 한다는 것 — 스키마 원본이 이 API 밖에 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          },
+          {
+            "question": "API 스펙을 코드에서 뽑나, 스펙을 먼저 쓰나?",
+            "chosen": "**TypeSpec 으로 스펙을 먼저 쓰고 리뷰한다** — 처음엔 @hono/zod-openapi 로 코드에서 뽑았다.",
+            "alternatives": [
+              "코드에서 OpenAPI 를 생성(@hono/zod-openapi · hono-openapi)"
+            ],
+            "tradeoff": "스펙을 문서로 남겨 새 API 를 리뷰하기 쉽다. 대가는 '도전 枠' 이라 아직 모색 중이라는 것과, 스펙에서 코드 타입을 만드는 단계가 따로 필요하다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          },
+          {
+            "question": "TypeSpec 에서 Zod 타입을 어떻게 만드나?",
+            "chosen": "**TypeSpec → openapi.yaml → Orval 로 Zod 생성.**",
+            "alternatives": [
+              "TypeSpec emitter 로 Zod 를 직접 출력(typespec-zod · emitter-zod)"
+            ],
+            "tradeoff": "emitter framework 가 아직 실험적이고 라이브러리가 가려운 데를 못 긁었다 — 필요한 정보는 openapi.yaml 에 다 있다. 대가는 생성 단계가 하나 늘었다는 것(Orval 이 Hono 보일러플레이트도 만든다는 건 구현 뒤에 알았다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 어디에, 얼마나 두나?",
+            "chosen": "**앱 컨테이너 로컬에 Redis 를 동거시키고, 히트율 높은 데이터만 수 초 캐시.**",
+            "alternatives": [
+              "별도 캐시 서버(Valkey 등)",
+              "긴 TTL + 명시적 무효화"
+            ],
+            "tradeoff": "네트워크 왕복(RTT)이 무시 못 할 만큼이라 로컬에 두니 RTT 가 거의 0 이 됐고, 짧은 TTL 로 무효화 수고를 없앴다. 대가는 컨테이너마다 캐시가 따로라 **적중이 나뉘고**, 효과가 스파이크 흡수에 한정된다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+                "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+                "publisher": "Skyfall",
+                "date": "2026-02-25",
+                "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "SKYFLAG 리워드 광고(마네타이즈 · 프로모션 · 리서치)(수익원)",
+          "via": "오퍼월 화면의 속도",
+          "contract": "매체 앱 안의 오퍼월이 이 API 로 안건을 보인다 — 수익을 벌어 온 API 라서 은퇴시키는 방식까지 신경 썼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+              "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+              "publisher": "Skyfall",
+              "date": "2026-02-25",
+              "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+            },
+            {
+              "title": "SKYFLAG",
+              "url": "https://skyflag.info/",
+              "publisher": "Skyfall",
+              "summary": "리워드를 활용한 독자 수법으로 **마네타이즈 · 프로모션 · 리서치**의 종합 마케팅 지원. 도입 사례(Paddle 'BitWalk' 다음날 잔존율 20% 향상 등)와 웨비나."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "스펙에서 응답까지",
+          "question": "새 오퍼월 API 는 요청 하나를 어떤 길로 처리하나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  TS[\"TypeSpec 스펙 · 리뷰\"] --> OA[\"openapi.yaml\"]\n  OA --> OR[\"Orval → Zod · 모델 타입\"]\n  REQ[\"요청(CloudFront → ALB)\"] --> H[\"Hono 라우트\\nZod 검증\"]\n  OR -.-> H\n  H --> P[\"Promise.all 로 병렬 쿼리\"]\n  P --> C{\"로컬 Redis 에 있나\\n(수 초 TTL)\"}\n  C -- 예 --> RES[\"응답\"]\n  C -- 아니오 --> K[\"Kysely → Aurora MySQL\"]\n  K --> RES"
+        },
+        {
+          "title": "리플레이스의 단계",
+          "question": "오퍼월 API 는 어떤 상태를 거쳐 바뀌었나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> CSharp: 급하게 쌓은 C# · 수익은 냄\n  CSharp --> Bun개발: Hono + TS 로 재작성 시작\n  Bun개발 --> Node: Datadog 트레이스 문제\n  Node --> 부하시험: 본번 레플리카 + k6\n  부하시험 --> 튜닝: 인덱스 · 병렬 · 로컬 캐시 · 필드 정리\n  튜닝 --> 운영: 300ms → 80ms · 스펙 축소\n  운영 --> 튜닝: 계속 개선"
+        },
+        {
+          "title": "예전 구조가 느렸던 이유",
+          "question": "C# 시절 오퍼월 API 는 어디서 시간을 썼나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"요청 하나\"] --> B[\"엔드포인트 하나가 여러 리소스를 반환\"]\n  B --> C[\"SQL 을 전부 직렬 실행\"]\n  C --> D[\"인덱스가 안 타는 쿼리 · 데이터가 늘며 점점 느려짐\"]\n  B --> E[\"큰 텍스트(주의 문구)까지 목록에 실어 JSON 화\"]\n  E --> F[\"CPU 소모\"]\n  D & F --> G[\"가장 느린 API 평균 300ms · 큰 서버 · DB 스펙\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+          "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+          "publisher": "Skyfall",
+          "date": "2026-02-25",
+          "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+        },
+        {
+          "title": "SKYFLAG",
+          "url": "https://skyflag.info/",
+          "publisher": "Skyfall",
+          "summary": "리워드를 활용한 독자 수법으로 **마네타이즈 · 프로모션 · 리서치**의 종합 마케팅 지원. 도입 사례(Paddle 'BitWalk' 다음날 잔존율 20% 향상 등)와 웨비나."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**SKYFLAG 수수료 체계 · 매출 비중**이 공개 자료에 없다(회사 IR 페이지는 아직 안 읽었다).",
     "**ポーカーチェイス · ポケットプレイ · SKYORDER** 의 기술 글이 Zenn 에 없다 — 수익원 판정 때 RSS · Zenn 검색 · 회사 페이지로 두 번 찾는다.",

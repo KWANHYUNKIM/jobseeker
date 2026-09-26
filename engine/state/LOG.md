@@ -2456,3 +2456,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Skyfall 회사 프로파일
 
 - 회사 사이트 사업 페이지 · SKYFLAG 사이트로 수익원 셋, 글 둘(오퍼월 API 리플레이스 · 계측 API 리팩터)로 도메인 둘. 포커 · 포인트 앱 · SKYORDER 는 기술 글이 없어 도메인 없이.
+
+## 2026-09-27 Skyfall 오퍼월 API 리플레이스
+
+- `58f71aa4f25bfa` 전문으로 기능 `offerwall-api-replace`, 결정 7.
