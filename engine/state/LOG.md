@@ -2284,3 +2284,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Seibii 부품 분류
 
 - `20260728_car_parts_related_feature_updates` 로 기능 `phase-fixed-part-category`, 결정 6. '발주 시 카테고리 정보'를 따로 둔 이유는 글에 없어 그 결정만 inferred.
+
+## 2026-09-27 Seibii 법인 수익원 보류
+
+- --gaps 는 신규였지만 이 회사의 보류 판정이 먼저(앞 사이클에 약속). 검색 1: RSS 15편 — 해당 없음. 검색 2: Zenn 검색 4낱말 — 이 회사 글은 읽은 것뿐. hold_reason, in_progress 유지.
