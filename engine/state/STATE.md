@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**데브시스터즈 — 기능 2(`metric-view-over-silver`, 2026-09-26). 두 도메인 모두 기능이 있다. 남은 완주 조건은 수익원 '애니메이션·라이선싱'(domains 비어 있음) 하나 — 다음 사이클에 tech.devsisters.com·뉴스룸에서 라이선싱 쪽 기술 자료를 찾고, 두 번 없으면 CADDi 처럼 hold_reason. `--gaps` 는 '신규(Picnic)' 를 찍지만 이 회사를 먼저 닫는다. 큐 1/3 이라 그 뒤 후보 조사.**
+**데브시스터즈 — 기능 2개, 남은 완주 조건은 수익원 '애니메이션·라이선싱' 하나. 조사 1회째(2026-09-26): 기술 블로그 RSS 전체(2019-02 ~ 2026-09, 약 70편)에 라이선싱·애니메이션 사업의 기술 글 없음(`page-navigation-animation` 은 웹 UI 애니메이션이라 무관). 다음 사이클은 2회째 — 웹 검색(뉴스룸·채용 공고·IR 에서 라이선싱 시스템 단서). 또 없으면 hold_reason + '재시도 안 함'. 그 뒤 큐 1/3 이라 후보 조사.**
+
 
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
