@@ -13813,6 +13813,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7988272",
+      "title": "Senior Software Development Manager - ECommerce Engineering",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 벵갈루루 근무다(하이브리드, 주 3일 이상 출근). 소프트웨어 10~13년·관리 3년 이상의 매니저 자리로, 쿠팡 구매·재고 운영을 자동화하는 SCMA(Supply Chain Management & Automation) 조직에서 '무엇을·얼마나·언제 주문할지'를 정하는 수백만 SKU·수천 공급사 규모 시스템 팀을 이끈다. 대만 등 새 지역으로 공급망 시스템을 넓히는 과제가 명시돼 있다. 핵심 문제에 직접 손을 대는(hands-on) 관리자다. 크롤러가 본문 전체를 주요업무 칸에 넣었다.",
+      "fit": {
+        "must_have": [
+          "소프트웨어 10~13년·엔지니어링 관리 3년 이상",
+          "Java 백엔드·분산 마이크로서비스",
+          "배치·스트림 대규모 데이터 시스템(Spark·Kafka·Airflow 등)",
+          "확장성·내결함성·데이터 일관성 설계",
+          "Redshift·MySQL·Redis 등 데이터 생태계"
+        ],
+        "can_learn": [
+          "공급망·물류·구매·재고 도메인(우대)",
+          "SKU 관리·공급망 의사결정 플랫폼(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "발주 결정 시스템 — 무엇을·얼마나·언제",
+          "from": "task",
+          "quote": "SCMA powers critical supply chain decisions such as what to order, how much to order, and when to procure, operating at massive scale across millions of SKUs and thousands of suppliers.",
+          "priority": "core",
+          "why": "SCMA 가 무엇을·얼마나·언제 주문할지를 정하는 시스템을 만들고, 수요 예측·재고 계획·공급사 연동·실행까지 주문 생애주기 전체를 맡는다고 공고가 적는다.",
+          "gap_check": "수요 예측값과 리드타임·안전재고·공급사 최소 발주량이 주어졌을 때 발주량을 어떻게 계산하고, 예측이 틀렸을 때 어느 입력을 먼저 의심하는가?",
+          "drill": "예측 교재의 기초 장을 읽고, 가상 SKU 20개의 일별 판매 데이터로 간단한 예측과 재주문점(ROP)·발주량 계산 배치를 만든다. 공급사 최소 발주량 제약을 넣었을 때 결과가 어떻게 바뀌는지 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Forecasting: Principles and Practice (3rd ed)",
+              "url": "https://otexts.com/fpp3/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 배치·스트림 파이프라인 — Spark·Kafka·Airflow",
+          "from": "qualification",
+          "quote": "Proven experience designing and operating large-scale, data-intensive systems involving batch and stream processing (e.g., Spark, Kafka, Airflow or similar)",
+          "priority": "core",
+          "why": "배치·스트림 처리를 포함한 대규모 데이터 집약 시스템 설계·운영 경험이 기본 자격이다.",
+          "gap_check": "하루 한 번 도는 발주 계산 배치와 실시간 재고 변동 이벤트가 같은 SKU 를 다룰 때, 어느 시점의 재고를 기준으로 삼고 늦게 도착한 이벤트는 어떻게 반영하는가?",
+          "drill": "Airflow DAG 로 '판매 집계(Spark) → 발주 계산 → 공급사 전송' 을 묶고, 재고 변동은 Kafka 로 흘려 배치 입력 스냅숏 시점을 기록하는 구조를 그림과 코드로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apache Airflow Documentation",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Spark Documentation",
+              "url": "https://spark.apache.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "마이크로서비스 간 데이터 일관성",
+          "from": "qualification",
+          "quote": "Deep understanding of system design fundamentals including scalability, fault tolerance, data consistency, and performance optimization",
+          "priority": "high",
+          "why": "확장성·내결함성·데이터 일관성·성능 최적화 등 시스템 설계 기초의 깊은 이해가 기본 자격이고, 주문·재고·구매 플랫폼이 마이크로서비스·이벤트 기반으로 나뉘어 있다.",
+          "gap_check": "발주 생성·공급사 확정·입고 예정 재고 반영이 서로 다른 서비스에 있을 때, 중간에 하나가 실패하면 무엇으로 되돌리거나 보정하는가?",
+          "drill": "발주 흐름을 사가(saga)로 설계해 단계별 보상 트랜잭션을 적고, 캐시(Redis)에 둔 재고 값이 원본과 어긋날 때의 무효화 규칙을 함께 정한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "microservices.io — Saga",
+              "url": "https://microservices.io/patterns/data/saga.html",
+              "kind": "article"
+            },
+            {
+              "title": "Redis Documentation",
+              "url": "https://redis.io/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "새 지역 확장과 작은 팀 운영",
+          "from": "task",
+          "quote": "Drive key initiatives to expand and scale Coupang’s supply chain systems to new regions such as Taiwan.",
+          "priority": "high",
+          "why": "대만 등 새 지역으로 공급망 시스템을 넓히는 과제와, 작은 팀에서 높은 주인의식으로 일하며 백엔드 엔지니어를 채용·육성하는 것이 주요업무다.",
+          "gap_check": "한 나라용 발주 시스템을 대만에 적용할 때 공급사·통화·리드타임·휴일 달력 중 무엇을 설정으로 빼고, 두 지역을 같은 배포로 운영할지 어떻게 정하는가?",
+          "drill": "지역 확장 설계 한 장(지역별로 달라지는 입력 목록·공통 코어·단계별 출시·위험)과, 작은 팀의 분기 실행 계획(과제·의존 팀·일정 위험)을 쓴다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "SKU 발주 계산 파이프라인 미니 프로젝트",
+          "why": "예측→재주문점→발주량을 Airflow 배치로 묶은 작은 저장소는 도메인(우대)과 배치·스트림 처리(기본 자격)를 한 번에 보여 준다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "발주량 계산 입력",
+          "배치와 실시간 재고의 기준 시점",
+          "서비스 간 일관성 보정",
+          "지역 확장 설계",
+          "작은 팀 채용·실행"
+        ],
+        "sources": [
+          {
+            "title": "Senior Software Development Manager - ECommerce Engineering",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7988272",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [

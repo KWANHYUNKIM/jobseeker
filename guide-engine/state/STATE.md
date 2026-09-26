@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **132건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **133건**.
+직전 회차: ✅ `Senior Software Development Manager - ECommerce Engineering`(7988272) 4항목 — **벵갈루루**, SCMA(발주·재고 자동화), 대만 확장, 10~13년·관리 3년↑.
 직전 회차: ✅ `Senior Manager, Back-End Engineering`(7923645) 4항목 — **하이데라바드**, 관리자의 관리자(12년↑·관리 5년↑). 8076295 와는 공통 문구 외 겹침 0 — 별개 자리.
 직전 회차: ✅ `Senior Manager - Backend Engineering`(8076295) 4항목 — **벵갈루루** 근무(하이브리드 주3일), 관리자(관리 3년↑), 운송 플랫폼 글로벌 재설계·이벤트 기반 3~4천만 건/일.
 직전 회차: ✅ `[쿠팡] 고객 경험을 혁신할 CS 전문가 공개채용`(사람인 55110254) 4항목 — 비개발(CS), 한 공고에 세 자리(기술 상담·CS 정책·대외 민원), 크롤에서 자리별 요건이 섞임(open_questions).
@@ -38,7 +39,7 @@
 ⚠️ 그사이 마감·삭제: `Staff, Back-end (Traffic Management)`(8104792, closed), `Staff, ML Engineer - Coupang Play`(7927865, 데이터에 없음).
 
 **남은 서울 목록은 다 썼다**(8222455 는 이미 dup 로 있음). 이제 `--gaps` 목록 순서대로 간다.
-⚠️ 다음 회차: `--gaps` 첫 줄을 그대로 따른다. 건너뛴 두 건(Pen Tester·Mobile Security)은 사람 판단 대기. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
+⚠️ 다음 회차: `--gaps` 첫 줄을 따르되 **Pen Tester(8163504)가 맨 위에 나오면 건너뛰고 다음 줄**(사람 판단 대기). 다음은 `Senior Staff Backend Engineer`(7953042) 예상. 건너뛴 두 건(Pen Tester·Mobile Security)은 사람 판단 대기. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
