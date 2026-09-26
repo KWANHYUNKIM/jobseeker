@@ -7400,6 +7400,126 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55090863&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=d49dcec9-4098-428f-b34d-31c2a168cc8e",
+      "title": "Back-end / Full-Stack Developer 채용",
+      "site": "saramin",
+      "verdict": "**한 공고에 두 자리**다 — **Back-end Developer(경력 10~20년)** 와 **Full-Stack Developer(경력 5~20년)**. 이 데이터에서는 담당업무·자격요건이 모두 자격요건 칸에 섞여 있다(인용은 그 칸에서 한다). 두 자리 모두 메가존클라우드의 **자사 IoT 솔루션** 쪽이다. Back-end 는 Node.js/TypeScript(NestJS) 콘솔 백엔드와 Python 서버리스 데이터 파이프라인, LLM API·비전 AI 파이프라인 백엔드 통합, 고객사 구축 프로젝트 개발 PL(모듈 오너십·일정·품질), MQTT·AWS IoT Core 디바이스 연동과 대용량 실시간 처리, 코드 리뷰·개발 표준 — 필수는 10년 이상, Node.js 또는 Python, Kubernetes/EKS·ECS, AWS(Lambda 포함), REST·RDB·NoSQL, PL 경험. Full-Stack 은 Node.js·TypeScript 앱 서버·API, 현장 장비 연동·관제·배포 서비스, 장비 대용량 실시간 데이터 처리, AWS, Next.js 또는 Vue.js — 필수는 5년 이상, Java/Spring·Node.js·TypeScript, REST·DB 설계, 실시간·대용량 트래픽. 우대는 LLM·비전 AI 연동, AWS IoT Core·Greengrass, Terraform·Istio, Kinesis·Glue·Athena, 제조·산업 도메인. 주 근무지는 과천 본사(사업부서에 따라 달라질 수 있음). 필요 시 레퍼런스 체크·인성검사. 급여·접수 기간·전형 단계는 본문에서 찾지 못했다.",
+      "fit": {
+        "must_have": [
+          "Back-end: 10년 이상, Node.js 또는 Python, K8s/EKS·ECS, AWS·Lambda, PL 경험",
+          "Full-Stack: 5년 이상, Java/Spring·Node.js·TS, REST·DB 설계, 실시간·대용량"
+        ],
+        "can_learn": [
+          "LLM·비전 AI 연동",
+          "AWS IoT Core·Greengrass",
+          "Terraform·Istio",
+          "Kinesis·Glue·Athena",
+          "제조·산업 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MQTT·AWS IoT Core 디바이스 연동과 실시간 처리",
+          "from": "qualification",
+          "quote": "ㆍ디바이스 연동(MQTT·AWS IoT Core) 및 대용량 실시간 데이터 처리 로직을 개발",
+          "priority": "core",
+          "why": "Back-end 자리의 담당업무 줄이고, Full-Stack 자리에도 '장비에서 발생하는 대용량 실시간 데이터의 수집, 처리 로직' 이 있다. 우대에 AWS IoT Core·Greengrass 와 Kinesis 가 있다.",
+          "gap_check": "현장 장비 수천 대가 MQTT 로 상태를 보낼 때 토픽 구조와 QoS 를 어떻게 정하고, IoT Core 규칙으로 메시지를 Kinesis·Lambda·DB 로 보내는 경로에서 장비가 끊겼다 다시 붙으면 밀린 데이터와 장비 상태(Device Shadow)는 어떻게 맞추는가?",
+          "drill": "가상 장비 스크립트 여러 개가 AWS IoT Core 에 MQTT 로 센서 값을 보내고, IoT 규칙 → Kinesis → Lambda 로 이상값을 걸러 저장하는 흐름을 만든다(무료 범위). 장비 연결을 끊었다 붙여 누락·중복을 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "AWS IoT Core — What is AWS IoT",
+              "url": "https://docs.aws.amazon.com/iot/latest/developerguide/what-is-aws-iot.html",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS IoT — Rules",
+              "url": "https://docs.aws.amazon.com/iot/latest/developerguide/iot-rules.html",
+              "kind": "docs"
+            },
+            {
+              "title": "MQTT",
+              "url": "https://mqtt.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Amazon Kinesis Data Streams",
+              "url": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "NestJS 콘솔 백엔드와 서버리스 파이프라인",
+          "from": "qualification",
+          "quote": "ㆍ자사 IoT 솔루션 백엔드 모듈 설계·개발 : Node.js/TypeScript(NestJS) 기반 콘솔 백엔드, Python 기반 서버리스 데이터 파이프라인",
+          "priority": "core",
+          "why": "Back-end 자리의 첫 담당업무이고 필수에 'AWS 클라우드 환경 개발·운영 경험 (Lambda 등 서버리스 포함)' 과 Kubernetes/EKS·ECS 가 있다.",
+          "gap_check": "관리 콘솔 API 는 컨테이너(NestJS on EKS/ECS)로, 장비 데이터 가공은 서버리스(Python Lambda)로 나눌 때 기준은 무엇이고, 둘이 같은 데이터를 다룰 때 권한과 스키마는 어떻게 맞추는가?",
+          "drill": "NestJS 로 장비 목록·상태 조회 API 를 만들어 컨테이너로 올리고, 앞 드릴의 Lambda 가 쓰는 테이블을 읽게 한다. 인증·권한(테넌트별 장비 분리)을 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NestJS documentation",
+              "url": "https://docs.nestjs.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS Lambda — What is Lambda",
+              "url": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IoT 백엔드에 LLM·비전 AI 붙이기",
+          "from": "qualification",
+          "quote": "LLM API 연동, 비전 AI 분석 파이프라인 연계 등 AI 기능의 백엔드 통합 개발과 데이터 흐름을 설계",
+          "priority": "high",
+          "why": "Back-end 자리의 담당업무이고 우대에 'LLM·비전 AI 등 AI 모델/API 연동 개발 경험' 이 있다.",
+          "gap_check": "현장 카메라 이미지를 비전 AI 로 분석하고 LLM 으로 관제 요약을 만들 때, 느린 AI 호출이 실시간 장비 데이터 처리를 막지 않게 하려면 흐름을 어떻게 나누고, AI 결과를 장비·시각과 어떻게 묶어 저장하는가?",
+          "drill": "앞 드릴 흐름에 '이상 이벤트 발생 시 이미지 → 비전 분석 → LLM 요약 → 관제 알림' 비동기 분기를 붙이고, 원래 실시간 처리 지연이 늘지 않는지 잰다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS IoT Greengrass",
+              "url": "https://docs.aws.amazon.com/greengrass/v2/developerguide/what-is-iot-greengrass.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "가상 장비 → IoT Core → Kinesis/Lambda → NestJS 콘솔 + AI 분기 저장소",
+          "why": "두 자리 공통 핵심(장비 연동·실시간 처리·AWS)과 Back-end 의 AI 연동을 한 번에 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "지원할 자리(Back-end/Full-Stack)에 맞춘 경력 정리",
+          "why": "두 자리의 경력 기준(10년/5년)과 필수 스택이 다르다. Back-end 는 PL·모듈 오너십 경험이 필수다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "본문에 단계별 전형이 없다. '필요 시 레퍼런스 체크, 인성검사가 진행 될 수 있습니다' 만 적혀 있다. 주 근무지 과천 본사.",
+        "expect": [
+          "IoT 장비 연동·실시간 처리",
+          "AWS 서버리스·컨테이너 운영",
+          "AI 연동",
+          "PL 경험(Back-end)"
+        ],
+        "sources": [
+          {
+            "title": "Back-end / Full-Stack Developer 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55090863&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=d49dcec9-4098-428f-b34d-31c2a168cc8e",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
