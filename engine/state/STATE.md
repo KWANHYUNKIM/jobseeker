@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**로그라스 확장 3/4(2026-09-26) — `headcount-cost-simulation` 완료(제품 글이라 결정 대가 대부분이 '이 사이트의 해석'). 다음은 확장: 'AI IR' 도메인(`신규 AI 사업의 병목을 따라 만드는 법을 옮긴다`) — Zenn `3f8a2c91d4e7b5`(병목 딜리버리→리뷰→디스커버리, coded prototype), 보조로 note `ne17cf1352880`(PdM)·`n00f2be8cdf5b`(AI 솔루션 독립 조직). 그다음 완주 검사 2회차 — 설비투자 계획·IT 투자 관리·석세스 파트너는 1회차(Zenn RSS 20편·note 36편)에 없음 → speakerdeck·loglass.jp 제품 사이트로 한 번 더, 없으면 hold_reason. 대기 2/3(Hacobu·estie). 비교 문서 재료 다섯 묶음. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
+**로그라스 확장 4/4(2026-09-26) — `ai-ir-bottleneck-driven-delivery` 완료, 빈 도메인 없음. 다음은 완주 검사 2회차: 설비투자 계획·IT 투자 관리·석세스 파트너 수익원에 도메인이 없다(1회차 Zenn RSS 20편·note 36편 없음) → speakerdeck(`speakerdeck.com/loglass`)·loglass.jp 제품 사이트로 한 번 더, 없으면 `hold_reason` 넣고 hold(QUEUE 진행 중 행에 **hold** 표시, 재시도 안 함에 한 줄). 대기 2/3(Hacobu·estie) — 로그라스를 닫으면 후보 조사 한 번 끼울 것. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX AI 리뷰). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
 
 
 
