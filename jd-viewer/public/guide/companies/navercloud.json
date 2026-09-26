@@ -832,6 +832,137 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572649?ReturnUrl=RecruitInfo",
+      "title": "[NAVER Cloud] HyperCLOVA X 학습 데이터 설계 및 합성 (체험형 인턴) 채용",
+      "site": "dev",
+      "verdict": "**체험형 인턴(약 3개월, 2026년 10월 ~ 2027년 1월 중, 채용전제형 아님).** 부서 소개는 'HyperCLOVA X가 무엇을 알고 어떻게 답하는지는 결국 어떤 데이터를 학습했는지에 따라 결정' 된다며 원천 데이터 소싱·정제·가공부터 ablation 학습으로 효과 검증까지 팀 안에서 직접 한다고 적는다. 업무는 LLM 학습 데이터셋 설계·구축, 합성 데이터(Synthetic Data Generation)로 대규모 데이터 제작, 목표 성능을 위한 데이터 전략과 타겟 데이터셋, 품질 검증과 ablation 으로 성능 기여도 측정, 전문 도메인 후공정(Post-training) 데이터. 자격은 학사 재학·졸업, LLM 동작 방식 기본 이해, Python 전처리·정제·통계 분석, DB 또는 Backend 개발 경험, Linux. SFT·Preference·Instruction 데이터 구축, 합성 데이터·프롬프트 엔지니어링, LLM 평가·벤치마크 설계는 우대다. 전형은 서류전형 → 필기전형(코딩테스트) → 인터뷰 전형 → 인턴십 입과, **접수 2026.09.21 ~ 2026.09.30 (18:00)**, 근무지 분당 그린팩토리.",
+      "fit": {
+        "must_have": [
+          "학사 재학 또는 졸업",
+          "LLM 동작 방식 기본 이해",
+          "Python 전처리·정제·통계",
+          "DB 또는 Backend 개발 경험",
+          "Linux"
+        ],
+        "can_learn": [
+          "SFT·Preference·Instruction 데이터",
+          "합성 데이터·프롬프트 엔지니어링",
+          "LLM 평가·벤치마크 설계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "합성 데이터 생성과 필터링",
+          "from": "task",
+          "quote": "데이터 합성(Synthetic Data Generation)을 활용한 대규모 학습 데이터 제작",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '합성 데이터(Synthetic Data) 생성 경험 또는 프롬프트 엔지니어링 역량' 이 있다.",
+          "gap_check": "LLM 으로 지시문-응답 쌍을 대량 생성할 때 비슷한 지시문만 쏟아지는 문제(다양성 붕괴)와 틀린 응답은 각각 무엇으로 걸러내는가?",
+          "drill": "Self-Instruct 방식으로 공개 모델에 시드 지시문 수십 개를 주고 수천 개를 생성한 뒤, ROUGE 유사도 중복 제거·길이/형식 필터·LLM 판정 필터를 차례로 적용해 단계별 남은 수와 샘플을 기록한다. distilabel 로 같은 파이프라인을 재구성해 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Self-Instruct: Aligning Language Models with Self-Generated Instructions",
+              "url": "https://arxiv.org/abs/2212.10560",
+              "kind": "paper"
+            },
+            {
+              "title": "Magpie: Alignment Data Synthesis from Scratch by Prompting Aligned LLMs with Nothing",
+              "url": "https://arxiv.org/abs/2406.08464",
+              "kind": "paper"
+            },
+            {
+              "title": "WizardLM: Empowering large pre-trained language models to follow complex instructions",
+              "url": "https://arxiv.org/abs/2304.12244",
+              "kind": "paper"
+            },
+            {
+              "title": "distilabel",
+              "url": "https://github.com/argilla-io/distilabel",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "ablation 으로 데이터 기여도 측정",
+          "from": "task",
+          "quote": "구축 데이터의 품질 검증 및 ablation 실험을 통한 성능 기여도 측정",
+          "priority": "core",
+          "why": "주요업무이고 팀 메시지가 'ablation 학습을 통한 효과 검증까지 한 사이클' 을 경험한다고 적는다. 우대에 LLM 평가 및 벤치마크 설계가 있다.",
+          "gap_check": "새로 만든 데이터 1만 건이 도움이 됐는지 보려면 무엇을 고정하고(기준 모델·다른 데이터·하이퍼파라미터·평가 셋) 무엇만 바꾸며, 차이가 작을 때 우연인지 어떻게 판단하는가?",
+          "drill": "작은 모델로 SFT 를 '기준 데이터' 와 '기준 + 합성 데이터' 두 조건으로 돌려(시드 여러 개) 관련 과제와 무관한 과제 점수를 함께 표로 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Hugging Face TRL — SFT Trainer",
+              "url": "https://huggingface.co/docs/trl/sft_trainer",
+              "kind": "docs"
+            },
+            {
+              "title": "lm-evaluation-harness",
+              "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "후공정 데이터 형식(SFT·Preference)",
+          "from": "preference",
+          "quote": "LLM 학습 데이터(SFT, Preference, Instruction 등) 구축 경험을 보유하신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 '전문 도메인 기반의 후공정(Post-training) 데이터 제작' 이 있다.",
+          "gap_check": "SFT 데이터(지시문-응답)와 Preference 데이터(선택/거절 쌍)는 모델에 무엇을 다르게 가르치고, 전문 도메인(법·의료 등) 데이터에서 '거절' 응답은 어떻게 만드는가?",
+          "drill": "InstructGPT 와 DPO 논문에서 데이터 형식을 정리하고, 한 전문 분야를 골라 SFT 20쌍과 Preference 20쌍을 직접 만든 뒤 datasets 형식으로 저장해 DPO 학습 스크립트에 넣어 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Training language models to follow instructions with human feedback",
+              "url": "https://arxiv.org/abs/2203.02155",
+              "kind": "paper"
+            },
+            {
+              "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+              "url": "https://arxiv.org/abs/2305.18290",
+              "kind": "paper"
+            },
+            {
+              "title": "Hugging Face Datasets",
+              "url": "https://huggingface.co/docs/datasets/index",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "합성 → 필터 → ablation 한 사이클을 기록한 저장소",
+          "why": "팀 메시지가 말하는 한 사이클(합성·품질 검증·ablation)을 작게 재현한다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "코딩테스트 대비",
+          "why": "전형에 필기전형(코딩테스트)이 있다. 자격에 DB 또는 Backend 개발 경험이 있다.",
+          "effort": "꾸준히"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 필기전형(코딩테스트) → 인터뷰 전형 → 인턴십 입과(공고 기준). 접수 2026.09.21 ~ 2026.09.30 18:00. 체험형 인턴으로 기간 종료 시 계약 종료.",
+        "expect": [
+          "LLM 학습 데이터 이해",
+          "합성 데이터 품질 관리",
+          "ablation 설계",
+          "Python 데이터 처리"
+        ],
+        "sources": [
+          {
+            "title": "[NAVER Cloud] HyperCLOVA X 학습 데이터 설계 및 합성 (체험형 인턴) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572649?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }
