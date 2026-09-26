@@ -546,6 +546,116 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/373736",
+      "title": "[비알피커넥트] 데이터 사이언티스트",
+      "site": "wanted",
+      "verdict": "경력 5-12년(자격요건은 '5년 이상의 데이터 분석 혹은 관련 경력'). 바로팜 계열사 **비알피커넥트** 자리다 — 공고는 비알피커넥트를 제약 산업 데이터 분석 전문 기업으로, 수급·처방·매출 데이터 대시보드 비알피인사이트와 맞춤형 분석 플랫폼 비알피인뎁스를 운영한다고 소개한다. 일은 의약품 유통 데이터 기반 통계 분석·알고리즘 개발, 약국 구매·판매·사용 패턴 기반 예측 모델, 유통 데이터 분석·보고서, 의약품 시장 분석 보고서의 설계·자동화, 그리고 내부 개발자와의 플랫폼 개발 프로젝트 관리. 자격은 SQL·Python·통계 툴, 제약/헬스케어 데이터 분석 경험(필수), 가설 검증으로 이슈를 계량화한 경험. 심평원 빅데이터·처방 데이터 분석, Tableau·Power BI, 통계·IT 전공, 관련 자격증은 우대다. 전형은 서류전형 → 1차면접(실무진) → 2차면접(임원진) → 입사.",
+      "fit": {
+        "must_have": [
+          "데이터 분석 5년 이상",
+          "SQL·Python·통계 툴",
+          "제약/헬스케어 데이터 분석 경험",
+          "가설 검증으로 이슈 계량화"
+        ],
+        "can_learn": [
+          "심평원 빅데이터·처방 데이터",
+          "Tableau·Power BI",
+          "통계·IT 전공, 자격증"
+        ]
+      },
+      "study": [
+        {
+          "topic": "약국 구매·판매 패턴 수요 예측",
+          "from": "task",
+          "quote": "• 약국 구매, 판매, 사용 패턴 분석 기반 예측 모델 개발",
+          "priority": "core",
+          "why": "주요업무다. 전국 약국 90% 이상이 쓰는 주문 플랫폼 데이터(회사 주장)가 재료다. 회사 소개가 약국 경영 플랫폼의 'AI 기반 주문 최적화' 를 사업 축으로 적는다.",
+          "gap_check": "약국×품목 단위 주간 수요를 예측할 때 판매가 0 인 주가 대부분인 품목은 어떤 방법으로 다루고, 품절로 판매가 막힌 주는 수요 0 으로 봐도 되는가?",
+          "drill": "가상 약국 주문 데이터(계절성 있는 감기약·희소 품목 섞음)를 만들어 계절 나이브·ETS·Croston 계열을 시계열 교차검증으로 비교하고, 품목 유형별로 어떤 모델이 이기는지 표로 정리한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Forecasting: Principles and Practice (3rd ed)",
+              "url": "https://otexts.com/fpp3/",
+              "kind": "book"
+            },
+            {
+              "title": "StatsForecast",
+              "url": "https://nixtlaverse.nixtla.io/statsforecast/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "scikit-learn — TimeSeriesSplit",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "가설 검증으로 이슈 계량화",
+          "from": "qualification",
+          "quote": "• 가설 검증을 통해 잠재적 이슈를 계량화하고 해결 방안을 도출한 경험이 있는 분",
+          "priority": "core",
+          "why": "자격요건이고 다음 줄이 '데이터 기반 사고와 비판적 의사결정 능력' 이다. 주요업무 첫 줄이 유통 데이터 기반 통계 분석이다.",
+          "gap_check": "'특정 제약사 품목의 약국 주문이 지난달 줄었다' 는 관찰을 시장 전체 감소·경쟁 품목 대체·품절 중 무엇 때문인지 어떤 비교와 검정으로 가려내는가?",
+          "drill": "가상 주문 데이터에서 위 질문을 풀어 본다 — 대조군(같은 효능군 다른 품목) 대비 이중차분, 품절 기간 제외 여부에 따른 결과 차이를 보고서 한 장으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "statsmodels",
+              "url": "https://www.statsmodels.org/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의약품 시장 보고서 자동화",
+          "from": "task",
+          "quote": "• 의약품 시장 전반에 대한 분석, 보고서 설계 및 자동화",
+          "priority": "high",
+          "why": "주요업무이고 우대에 Tableau·Power BI 가 있다. 비알피커넥트가 수급·처방·매출 데이터 대시보드(비알피인사이트)를 운영한다고 공고가 적는다.",
+          "gap_check": "매달 같은 형식으로 나가는 제약사용 시장 보고서에서 사람이 손으로 하던 단계(추출·집계·해석 문장)를 어디까지 자동화하고, 숫자가 틀렸을 때 무엇으로 먼저 잡아내는가?",
+          "drill": "SQL 추출 → Python 집계 → 차트·표 생성 → 전월 대비 이상치 경고까지 한 번에 도는 월간 보고서 스크립트를 만들고, 같은 지표를 Tableau 대시보드로도 띄운다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Tableau Desktop Help",
+              "url": "https://help.tableau.com/current/pro/desktop/en-us/default.htm",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "약국 수요 예측 비교 + 월간 시장 보고서 자동화 저장소",
+          "why": "주요업무의 예측 모델과 보고서 자동화를 함께 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "제약/헬스케어 데이터 분석 사례 정리",
+          "why": "자격요건에 제약/헬스케어 업계 데이터 분석 경험이 필수로, 심평원 빅데이터·처방 데이터가 우대로 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 1차면접(실무진) → 2차면접(임원진) → 입사(공고 기준).",
+        "expect": [
+          "제약/헬스케어 데이터 분석 사례",
+          "예측 모델 설계와 검증",
+          "가설 검증 방법",
+          "개발자와의 프로젝트 관리"
+        ],
+        "sources": [
+          {
+            "title": "[비알피커넥트] 데이터 사이언티스트",
+            "url": "https://www.wanted.co.kr/wd/373736",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
