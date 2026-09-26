@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**PKSHA 완주(2026-09-26) — `llm-replacer` 로 도메인 둘·기능 둘, 수익원 둘 다 연결 → done, QUEUE 완료로. 다음은 `--gaps` 대로 — 대기 0/3 이라 **후보 조사**(88번째). 입구는 Zenn Publication RSS(`zenn.dev/p/<id>/feed`) — 87번째에 못 본 곳을 시험(예: hacomono·ubie 재확인·smarthr 재확인·kaonavi·sansan 재확인·money_forward·layerx 는 판 곳), 7~9월 글 중 **결정과 대가가 적힌 제품 글** 하나씩 확인해 3곳. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경(estie · PKSHA shadow) + 결제 대장 + 첫 대응 봇 + LLM 평가(IVRy HITL ↔ PKSHA judge) + 워크플로 엔진(IVRy Durable ↔ PKSHA Saga ↔ ENECHANGE Step Functions). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**88번째 후보 조사(2026-09-26) — 대기 3/3(캔리·에어클로젯·Rehab for Japan). 새 입구: Zenn 최신 글 API(`zenn.dev/api/articles?order=latest&page=N`)의 publication 이름으로 활성 회사를 뽑고 RSS 확인. 다음은 `--gaps` 대로 신규: 대기 맨 위 **캔리**(`zenn.dev/p/canly` — SWR 한 줄 `058d2d2ce8625f`, 포스트모템 5공정). 예비 후보: Finatext·WWWAVE·TOKIUM·Aldagram. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진(IVRy Durable ↔ PKSHA Saga ↔ ENECHANGE Step Functions ↔ Rehab Cloud Run Jobs). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -356,7 +356,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 ## 배운 것
 
-- **Zenn 기업 Publication 은 `zenn.dev/p/<id>/feed` RSS 로 목록을 얻는다** — `zenn.dev/api/articles?publication_name=` 는 필터가 안 먹어 전체 최신이 돌아온다(2026-09-26). 하테나 사이트맵이 바닥일 때의 다음 입구.
+- **Zenn 기업 Publication 은 `zenn.dev/p/<id>/feed` RSS 로 목록을 얻는다** — `zenn.dev/api/articles?publication_name=` 는 필터가 안 먹어 전체 최신이 돌아온다(2026-09-26). 하테나 사이트맵이 바닥일 때의 다음 입구. 어느 회사가 Publication 을 가졌는지는 `zenn.dev/api/articles?order=latest&page=1..15` 의 `publication.name` 을 세어 찾는다 — 이름을 추측해 두드리는 것보다 적중률이 높다(88번째).
 
 *(다음 사이클이 모르면 헛수고할 것만. 사이클 요약을 쌓는 곳이 아니다.)*
 

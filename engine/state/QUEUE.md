@@ -44,8 +44,19 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **カンリー(Canly)** | JP · 다점포 매장 정보 관리 SaaS | Zenn Publication `zenn.dev/p/canly`(RSS, 7~9월 20편). **`max-age=300, immutable` 에서 `stale-while-revalidate` 로 — 한 줄**(`058d2d2ce8625f`, 2026-09-24) — 전체 적중률이 아니라 **경로별**로 쪼개 보니 캐시에 머무는 시간이 접근 간격보다 짧았다; 선택지 6개를 가역성·스파이크 시 효과·전 테넌트 횡전개 기준으로 줄 세움, `stale-if-error=86400` 으로 504 대신 낡은 판(**성능이 아니라 가용성 시책**), SWR 60초→1일(낡은 정보 위험 대 504 위험). 포스트모템 5공정화(`2026-08`). **다점포 SaaS 축(처음)** — 결정과 대가가 표로 있다. |
+| **エアークローゼット(airCloset)** | JP · 패션 렌털 구독 | Zenn Publication `zenn.dev/p/aircloset`(RSS, 7~9월 5편, CTO 집필). **AI 시대 Observability — PII 와 AI 검색성을 양립시키고 자동 수복**(`3b8e60fcaab4b7`, 2026-07-13) — 관측 스택은 PII 의 통로가 되기 쉽다 → 6층 PII 설계, **해시를 쓰기·검색 양 끝에서 같은 로직으로**(12자 prefix 48bit — 충돌해도 평문은 안 샌다), 사람 = Web 포털 · AI = MCP 로 같은 뒤를 공유, 관측 스택을 '감시' 가 아니라 **AI 를 움직이는 입력**으로 재정의; 남은 과제는 무엇을 error 로 다룰지·stacktrace. 전편(전 계층 감시)·AI 비용 게이트·GitHub Actions 비용(Namespace). **구독 커머스 축**. |
+| **Rehab for Japan** | JP · 개호(돌봄) 재활 SaaS | Zenn Publication `zenn.dev/p/rehabforjapan`(RSS, 7~9월 8편). **멈출 수 없는 본번 데이터 기반을 혼자 옮긴 이야기**(`composer-to-cloud-run-jobs`, 2026-07-09) — 하루 몇 시간 도는 Source 계 ETL(프로덕트 DB(AWS) → BigQuery)에 **24시간 상시 가동 Cloud Composer**(dev/prod 월 $600~1,000) → 인시던트로 Worker 메모리 증강(항구적 비용 증가)을 시산하다 '상시 가동 자체를 그만두자' → **Cloud Run Jobs + Cloud Scheduler**(월 $10~20), 전부 Python·직렬이라 **Cloud Workflows 불채용**(스텝 과금) · 시각차 기동의 소결합; 신기능과의 우선순위 경쟁에서 늘 지던 부채를 Claude Code 와 약 2개월. **헬스케어 SaaS 축**. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 여든여덟 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API 에서 활성 Publication 을 뽑아 RSS 확인(새 방식).**
+  - **입구를 넓혔다.** `zenn.dev/api/articles?order=latest&page=1..15` 의 publication 이름을 세면 지금 쓰는 회사가 나온다 — 이름을 추측해 RSS 를 두드리던 것보다 적중률이 높다.
+  - **캔리** — **다점포 SaaS 축.** 캐시 헤더 한 줄의 결정 근거를 표로 적는다.
+  - **에어클로젯** — **구독 커머스 축.** PII 를 지키며 AI 가 관측 데이터를 검색하는 설계.
+  - **Rehab for Japan** — **헬스케어 축.** 상시 가동 오케스트레이터를 버린 비용 계산이 분명하다.
+  - **보류(다음 후보).** **Finatext**(Snowflake 파이프라인 비용 39% 삭감 — 영어 글, 결정 있음) · **WWWAVE**(코믹 페스타 마스터 데이터 갱신 흐름 — 회고 위주) · **TOKIUM**(AI 개발 과정 글 위주) · **Aldagram**(Bedrock 기능별 비용).
+  - **통과 못 한 곳.** hacomono·karte·plaid·visional·bizreach·kanmu·spiderplus·yumemi 등 — Zenn Publication 없음(피드 0). kaonavi·socialdog·sre_holdings·ncdc·collabostyle·gemcook·peoplex·explaza — 행사·도구 시험·AI 개발 과정 글.
 
 - **2026-09-26 여든일곱 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn Publication RSS(계속).**
   - **다이니** — **결제 대장 축.** 입금원이 늘 때의 대장 설계, 결정 다섯에 대가(알림 운영)까지 적는다.

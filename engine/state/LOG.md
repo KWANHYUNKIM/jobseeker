@@ -1700,3 +1700,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 PKSHA llm-replacer · 완주
 
 - 결정 8 — 인증 EC2+Issue 인터페이스·명령 복합체·shadow·E2E A/B(위치 랜덤)·임계 메트릭·게이트 넷·Draft PR 고정·opt-out Bedrock+prod 차단. 수익원 둘 다 연결 → done.
+
+## 2026-09-26 여든여덟 번째 후보 조사
+
+- 추측한 Publication 이름 28곳은 대부분 피드 0. Zenn 최신 글 API 15쪽에서 활성 Publication 80곳을 뽑아 18곳 RSS 확인 → 캔리(SWR 캐시)·에어클로젯(PII 관측)·Rehab for Japan(Composer → Cloud Run Jobs) 3/3. 예비: Finatext·WWWAVE·TOKIUM·Aldagram.
