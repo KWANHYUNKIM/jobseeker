@@ -595,6 +595,133 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/373760",
+      "title": "콘텐츠 플랫폼 백엔드 개발(신입)",
+      "site": "wanted",
+      "verdict": "**신입**, 서울 강남구. 경력 공고(376669)와 같은 **MCP개발팀** 자리이고 주요업무 네 줄(미디어 자동 입수 파이프라인, 트랜스코딩 고도화, 스트리밍 서비스 연동, 유통망·콘텐츠 관리·운영 포털 백오피스)이 글자까지 같다. 다른 것은 자격요건과 우대다. 필수는 Java·Kotlin·Golang 중 하나로 **프로젝트를 완성해 본 경험(학교 과제·개인/팀 프로젝트·인턴 등 형태 무관)**, HTTP·REST 원리와 간단한 API 서버, RDBMS·SQL 기본, 자료구조·운영체제·네트워크 **CS 기초**. 우대는 전공, Spring 프로젝트, 음악/미디어 관심, AWS, 그리고 '빠른 결과보다 정확하고 안정적인 시스템', '왜 이렇게 만들어야 하는지 질문' 하는 태도. 경력 공고의 FFmpeg·코덱·DDEX·메시지 브로커 우대는 여기 없다. 팀 소개가 '커리어 초기부터' 대규모 미디어 데이터 시스템을 함께 만든다고 적는다. 전형: 서류전형 ＞ **오프라인 실시간 코딩테스트**&1차면접(같은 날, JAVA/GO 중 택 1, IntelliJ/Eclipse, 개인 장비 불가) ＞ 2차면접&CEO 커피챗 ＞ 처우협의. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java·Kotlin·Golang 중 하나로 프로젝트 완성",
+          "HTTP·REST 와 간단한 API 서버",
+          "RDBMS·SQL 기본",
+          "자료구조·운영체제·네트워크"
+        ],
+        "can_learn": [
+          "Spring",
+          "AWS",
+          "미디어 처리(FFmpeg)",
+          "메시지 큐"
+        ]
+      },
+      "study": [
+        {
+          "topic": "오프라인 코딩테스트 — Java 또는 Go",
+          "from": "qualification",
+          "quote": "• Java, Kotlin, Golang 중 하나의 언어로 프로젝트를 완성해 본 경험",
+          "priority": "core",
+          "why": "전형 둘째 단계가 오프라인 실시간 코딩테스트이고 언어는 JAVA/GO 중 택 1이다 — Kotlin 으로 프로젝트를 했어도 시험은 둘 중 하나로 본다. 개인 장비 없이 사내 맥북·윈도우에서 본다.",
+          "gap_check": "기본 설정의 IntelliJ 에서 표준 입력을 읽고 ArrayList·HashMap·정렬(Comparator)을 막힘없이 쓸 수 있는가? Go 를 고른다면 슬라이스·맵·sort.Slice 와 bufio 입력을 손에 익혔는가?",
+          "drill": "프로그래머스 레벨 1~2 문제 여덟 개를 문제당 30분 제한으로, 개인 플러그인 없이 고른 언어로 푼다. 맥과 윈도우 단축키가 다르므로 둘 중 안 쓰던 쪽에서도 한 번 풀어 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "코딩테스트 연습 — 프로그래머스",
+              "url": "https://school.programmers.co.kr/learn/challenges",
+              "kind": "course"
+            },
+            {
+              "title": "A Tour of Go",
+              "url": "https://go.dev/tour/",
+              "kind": "course"
+            }
+          ]
+        },
+        {
+          "topic": "HTTP·REST — 앨범/트랙 API 서버 만들기",
+          "from": "qualification",
+          "quote": "• HTTP와 REST의 기본 동작 원리를 이해하고, 간단한 API 서버를 만들어 본 경험",
+          "priority": "core",
+          "why": "필수 자격요건이고 우대에 Spring 프로젝트 경험이 있다. 주요업무의 백오피스가 음원/음반 유통망·콘텐츠 관리 시스템이다.",
+          "gap_check": "트랙 하나를 수정할 때 PUT 과 PATCH 는 무엇이 다르고, 같은 요청을 두 번 보내도 결과가 같아야 하는(멱등) 메서드는 어느 것이며, 없는 트랙·잘못된 입력·중복 등록에 각각 어떤 상태 코드를 돌려주는가?",
+          "drill": "Spring 가이드를 따라 앨범–트랙 두 리소스의 CRUD API 를 만들고, curl 로 성공·404·400·409 응답을 하나씩 받아 요청·응답 원문을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Overview of HTTP — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Building a RESTful Web Service — Spring",
+              "url": "https://spring.io/guides/gs/rest-service",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RDBMS·SQL 기본 — 음원 메타데이터 테이블",
+          "from": "qualification",
+          "quote": "• 관계형 데이터베이스(RDBMS)와 SQL에 대한 기본 이해",
+          "priority": "high",
+          "why": "필수 자격요건이고 팀 기술에 MySQL 이 있다. 공고가 '국내 최대 규모의 음원 메타데이터' 를 다룬다고 적는다.",
+          "gap_check": "한 곡에 가수가 여럿, 한 가수에 곡이 여럿이면 테이블을 어떻게 나누고(다대다 연결 테이블), '아티스트 이름으로 곡 찾기' 를 JOIN 으로 쓸 때 인덱스가 없으면 무엇이 느려지는가?",
+          "drill": "MySQL 에 album·track·artist·track_artist 테이블을 만들고 가짜 데이터 수만 건을 넣은 뒤, 아티스트별 곡 목록 쿼리를 인덱스 전후로 EXPLAIN 해 type·rows 열이 어떻게 바뀌는지 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "MySQL 8.4 Reference Manual — Tutorial",
+              "url": "https://dev.mysql.com/doc/refman/8.4/en/tutorial.html",
+              "kind": "docs"
+            },
+            {
+              "title": "MySQL 8.4 — Optimization and Indexes",
+              "url": "https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "CS 기초 — 프로세스·스레드와 TCP",
+          "from": "qualification",
+          "quote": "• 자료구조, 운영체제, 네트워크 등 CS 기초 지식",
+          "priority": "high",
+          "why": "필수 자격요건이다. 신입 1차 면접은 코딩테스트 직후 실무 면접으로 이어진다.",
+          "gap_check": "트랜스코딩 작업 100개를 한 서버에서 돌릴 때 프로세스를 여러 개 띄우는 것과 스레드를 여러 개 쓰는 것은 메모리·장애 격리 면에서 어떻게 다르고, 큰 음원 파일을 내려받을 때 TCP 가 패킷 손실을 어떻게 복구하는가?",
+          "drill": "OSTEP 의 프로세스·스레드 장과 HPBN 의 TCP 장을 읽고, Java 로 파일 해시 계산 작업 100개를 스레드 풀 크기 1·4·16 으로 돌려 걸린 시간을 비교한 뒤 CPU 코어 수와 연결해 설명을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Operating Systems: Three Easy Pieces",
+              "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
+              "kind": "book"
+            },
+            {
+              "title": "High Performance Browser Networking",
+              "url": "https://hpbn.co/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "미디어 파일 들여다보기 — ffprobe",
+          "from": "task",
+          "quote": "• 미디어 트랜스코딩 고도화: 수집된 다양한 원본 미디어 데이터를 표준 규격으로 통합(Unification)하고, 다양한 디바이스와 네트워크 환경에 맞춰 최적화하는 트랜스코딩 시스템을 고도화 합니다.",
+          "priority": "nice",
+          "why": "주요업무다. 신입 우대에는 미디어 처리가 없지만 팀 기술에 MediaConvert·FFmpeg 가 있고, 우대에 '음악/미디어 서비스에 대한 관심과 애정' 이 있다.",
+          "gap_check": "같은 노래의 MP3·FLAC·M4A 파일은 코덱·비트레이트·샘플레이트가 어떻게 다르고, '표준 규격으로 통합' 하려면 그중 무엇을 맞춰야 하는가?",
+          "drill": "가지고 있는 음원 파일(또는 무료 음원) 세 형식을 ffprobe 로 열어 코덱·비트레이트·샘플레이트·길이를 표로 정리하고, ffmpeg 로 하나를 AAC 로 바꿔 전후를 비교한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "ffprobe Documentation",
+              "url": "https://ffmpeg.org/ffprobe.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
