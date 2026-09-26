@@ -2219,3 +2219,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 DMM LambdaMART 실시간 리랭크
 
 - `2e8a0c127caa1d` + `1e2bc59c66f158` 로 기능 `lambdamart-realtime-rerank`, 결정 8.
+
+## 2026-09-27 DMM TV 추천 지표 해킹 탈피
+
+- `strategic-search-rec-3` 으로 기능 `dmmtv-u2i-without-metric-hack`, 결정 8. `cd39329518990d`(네거티브 A/B)는 검색 팀 글이라 결정이 아니라 connections 의 근거로 붙였다.
