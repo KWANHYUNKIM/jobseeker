@@ -12467,6 +12467,101 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163760",
+      "title": "Staff Security Engineer (Vendor Security Assurance)",
+      "site": "ats",
+      "verdict": "서울 근무, 정보보안 8년 이상. 소프트웨어 개발이 아니라 서드파티(외부 벤더) 보안 리스크 관리 직군이다 — SaaS·생성형 AI·아웃소싱·개인정보 수탁사의 보안 수준을 평가하고, 인증/인가·설정·로깅·내부 연동 같은 보안 요구사항 이행을 관리하며, 벤더 수명주기 전반의 위험을 모니터링한다. 주요업무 칸은 비어 공고 전문(역할 및 책임)에서 읽었다.",
+      "fit": {
+        "must_have": [
+          "정보보안 8년 이상",
+          "애플리케이션 인증·인가·로깅·API 연동 이해",
+          "인프라·네트워크 기반 기술 이해",
+          "개인정보처리 시스템 보안 관리",
+          "보안 시스템 기획·구축·운영·모니터링"
+        ],
+        "can_learn": [
+          "SSPM(우대)",
+          "국내 규제 세부(정보통신망법·전자금융거래법)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "서드파티(벤더) 보안 리스크 식별·관리",
+          "from": "preference",
+          "quote": "3rd-prary vendor 보안 Risk 식별 및 관리 업무 경험",
+          "priority": "high",
+          "why": "직무 소개가 외부 벤더·서비스·솔루션에서 오는 보안 리스크의 식별·평가·관리와 Third-Party Security Risk Management 체계 강화를 팀의 역할로 적는다(원문 표기 '3rd-prary' 그대로 인용).",
+          "gap_check": "새 SaaS 도입 요청이 왔을 때 어떤 정보(데이터 분류·접근 범위·인증 방식·SOC2 보고서·하위 수탁사)로 위험 등급을 매기고, 등급별로 검토 깊이를 어떻게 달리하는가?",
+          "drill": "벤더 보안 평가 질문지(데이터·인증·로깅·사고 대응·하위 수탁사)와 점수 기반 위험 등급표를 만들고, 가상의 SaaS 두 곳을 평가해 본다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "연동 앱의 인증·인가·로깅 요구사항",
+          "from": "qualification",
+          "quote": "어플리케이션 인증, 인가, 로깅, API 연동에 대한 충분한 이해",
+          "priority": "core",
+          "why": "벤더 서비스를 사내에 붙일 때 보안요구사항 이행 관리 항목(인증/인가·구성·로깅·내부 연동)이 공고 전문에 나열돼 있다.",
+          "gap_check": "벤더 SaaS 에 SSO(SAML/OIDC)·SCIM·감사 로그 내보내기가 없으면 어떤 위험이 남고, 어떤 보완 통제를 요구하는가?",
+          "drill": "'SaaS 보안 요구사항 체크리스트'(SSO 강제·MFA·SCIM 퇴사 연동·API 토큰 범위·감사 로그 보관·데이터 위치)를 만들고 항목별 미충족 시 보완 통제를 적는다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "SaaS 보안 태세 관리 (SSPM)",
+          "from": "preference",
+          "quote": "SSPM (SaaS security posture management) 경험",
+          "priority": "high",
+          "why": "도입 후에도 SaaS 설정이 바뀌며 위험이 생긴다. 공고 전문에 '지속적인 모니터링과 거버넌스 운영'이 있다.",
+          "gap_check": "도입 심사 때 안전했던 SaaS 가 이후 '외부 공유 링크 허용'으로 설정이 바뀌면 무엇으로 감지하는가?",
+          "drill": "Google Workspace·GitHub 같은 SaaS 하나의 관리 API 로 공개 공유·2FA 미적용 사용자·외부 앱 권한을 주기적으로 조회해 보고하는 스크립트를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "개인정보 수탁사 관리와 국내 규제",
+          "from": "preference",
+          "quote": "정보통신망법, 전자금융거래법, 개인정보보호법 등 Compliance에 대한 이해",
+          "priority": "high",
+          "why": "평가 대상에 개인정보 수탁사가 명시돼 있고, 쿠팡은 금융 서비스(쿠팡페이)도 운영한다(회사 브리핑).",
+          "gap_check": "개인정보 처리를 위탁할 때 위탁자가 수탁사에 대해 해야 하는 관리·감독 의무는 무엇이고, 이를 점검 항목으로 어떻게 옮기는가?",
+          "drill": "개인정보 보호법의 위탁 관련 조항을 읽고 수탁사 점검 체크리스트(교육·접근 통제·재위탁·파기) 한 장을 만든다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 개인정보 보호법",
+              "url": "https://www.law.go.kr/법령/개인정보보호법",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "생성형 AI 벤더 평가 기준",
+          "why": "평가 대상에 Generative AI 가 명시돼 있다. 학습 데이터 사용·프롬프트 보관·데이터 위치를 다룬 평가 기준표는 새롭고 쓸모 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "벤더 위험 등급 기준",
+          "SaaS 연동 보안 요구",
+          "도입 후 설정 변화 감지",
+          "수탁사 관리 의무",
+          "생성형 AI 벤더 평가"
+        ],
+        "sources": [
+          {
+            "title": "Staff Security Engineer (Vendor Security Assurance)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163760",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
