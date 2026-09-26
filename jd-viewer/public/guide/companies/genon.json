@@ -492,6 +492,153 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/376327",
+      "title": "Agentic AI Engineer",
+      "site": "wanted",
+      "verdict": "경력 1~10년(서울 강남). 제논의 데스크톱 AI 에이전트 OneAgent 의 에이전트 엔진을 만드는 자리 — 실행 루프(추론→도구 선택→실행→관찰→재계획), Tool Calling 신뢰성·재시도·에러 복구, MCP 커넥터와 OAuth, 브라우저(CDP)·데스크톱 조작 자동화, 성공률·개입률 eval 체계, Electron 앱과 백엔드 에이전트 서버. 문턱은 Physical AI 공고와 같은 방식으로 열려 있다 — 학사 이상, TS/JS 또는 Python, 그리고 Tool Calling/MCP, 브라우저 자동화(Playwright·Puppeteer·CDP), Computer Use/RPA/스크래핑 중 '하나 이상' 의 학습·프로젝트·논문·실무 경험. 석사·주요 학회 논문·프로덕션 운영·eval 파이프라인·Electron 은 우대다. 전형은 서류 → 1차/2차 면접 → CEO면접 → 처우협의.",
+      "fit": {
+        "must_have": [
+          "관련 전공 학사 이상",
+          "TypeScript/JavaScript 또는 Python",
+          "Tool Calling/MCP·브라우저 자동화·Computer Use/RPA 중 하나 이상 경험",
+          "실험 설계·결론 도출",
+          "협업"
+        ],
+        "can_learn": [
+          "석사·학회 논문",
+          "프로덕션 서비스 운영",
+          "에이전트·MCP 오픈소스 기여",
+          "에이전트 eval 파이프라인",
+          "Electron·실시간 스트리밍"
+        ]
+      },
+      "study": [
+        {
+          "topic": "에이전트 실행 루프와 Tool Calling 신뢰성",
+          "from": "task",
+          "quote": "• Tool Calling 파이프라인 구축 — 도구 스키마 정의, 호출 신뢰성·재시도·에러 복구",
+          "priority": "core",
+          "why": "주요업무이고 첫 줄이 '실행 루프(추론 도구 선택 실행 관찰 재계획)' 설계다. 회사 소개가 OneAgent 를 'LLM의 추론을 신뢰할 수 있는 실제 동작으로 연결' 하는 제품으로 적는다.",
+          "gap_check": "모델이 스키마에 맞지 않는 인자를 만들거나 도구가 타임아웃될 때 루프는 무엇을 관찰로 돌려주고 몇 번까지 재시도하며, 같은 실패가 반복되면 어떻게 재계획하거나 사람에게 넘기는가? 부작용 있는 도구(메일 발송·결제)는 재시도에서 어떻게 보호하는가?",
+          "drill": "도구 5개(검색·파일 읽기·파일 쓰기·메일 초안·계산)를 쓰는 에이전트 루프를 직접 짜고, 도구 오류를 무작위로 주입해 재시도·재계획·사람 인계가 동작하는지와 실패 로그를 기록한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Model Context Protocol — Specification",
+              "url": "https://modelcontextprotocol.io/specification/latest",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Browser Use — CDP 로 브라우저 조작",
+          "from": "task",
+          "quote": "• Browser Use / Computer Use 자동화 — 브라우저(CDP)·데스크톱 조작 및 액션 정확도 개선",
+          "priority": "core",
+          "why": "주요업무이고 자격요건 영역 둘(브라우저 자동화, Computer Use/RPA)이 여기에 해당한다. 회사 소개는 OneAgent 가 '실제 브라우저(CDP)를 제어해 페이지를 탐색·클릭·입력' 한다고 적는다.",
+          "gap_check": "LLM 에게 페이지를 무엇(스크린샷·DOM·접근성 트리)으로 보여 주고, 클릭 대상 요소를 좌표와 셀렉터 중 무엇으로 지정할 때 정확도가 높은가? 페이지 로딩·팝업·로그인 벽에서 액션이 빗나갈 때 어떻게 검증하고 되돌리는가?",
+          "drill": "Playwright 로 브라우저를 열고 접근성 트리를 텍스트로 뽑아 LLM 에 넘겨 '검색해서 결과 3개 요약' 과제를 수행시키고, 스크린샷 입력 방식과 성공률을 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Chrome DevTools Protocol",
+              "url": "https://chromedevtools.github.io/devtools-protocol/",
+              "kind": "docs"
+            },
+            {
+              "title": "Playwright — Getting started",
+              "url": "https://playwright.dev/docs/intro",
+              "kind": "docs"
+            },
+            {
+              "title": "Anthropic — Computer use tool",
+              "url": "https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/computer-use-tool",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "에이전트 평가(eval) — 성공률·개입률",
+          "from": "task",
+          "quote": "• 에이전트 동작의 평가(eval) 체계 구축 — 성공률·개입률 측정, 리그레션 방지",
+          "priority": "high",
+          "why": "주요업무이고 우대에 'LLM 에이전트의 평가·벤치마크(eval) 파이프라인 설계·운영 경험' 이 있다. 모델·프롬프트를 바꿀 때마다 과제 성공률이 떨어지지 않았는지 알아야 한다(추론).",
+          "gap_check": "웹 과제의 성공을 무엇(최종 페이지 상태·결과값 비교)으로 자동 판정하고, 사람이 끼어든 비율(개입률)은 어떻게 기록하며, 비결정적인 LLM 출력에서 리그레션을 어떻게 가려내는가?",
+          "drill": "위 브라우저 에이전트에 과제 20개와 자동 판정 스크립트를 붙이고, 프롬프트 두 버전을 3회씩 돌려 성공률·평균 단계 수를 비교한다. WebArena 논문의 평가 방식을 요약한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "WebArena: A Realistic Web Environment for Building Autonomous Agents (arXiv:2307.13854)",
+              "url": "https://arxiv.org/abs/2307.13854",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "MCP 커넥터와 OAuth",
+          "from": "task",
+          "quote": "• MCP 커넥터 통합 — 외부 서비스·데이터 소스 연결 및 OAuth 등 인증 처리",
+          "priority": "high",
+          "why": "주요업무이고 자격요건 영역 하나가 'Tool Calling / MCP 등 LLM 도구 연동' 이다.",
+          "gap_check": "MCP 서버가 사용자 대신 외부 서비스(메일·캘린더)에 접근할 때 OAuth 토큰은 어디에 두고 범위(scope)는 어떻게 줄이며, 토큰 만료 중에 에이전트가 도구를 부르면 어떻게 처리하는가?",
+          "drill": "OAuth 가 필요한 공개 API 하나를 MCP 서버로 감싸 도구로 노출하고, 토큰 갱신·권한 부족 오류가 에이전트에게 어떻게 보이는지 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Model Context Protocol — Introduction",
+              "url": "https://modelcontextprotocol.io/docs/getting-started/intro",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Electron 데스크톱 앱과 에이전트 서버",
+          "from": "task",
+          "quote": "• 데스크톱 앱(Electron) 및 백엔드 에이전트 서버 개발·운영",
+          "priority": "nice",
+          "why": "주요업무이고 우대에 'Electron 등 데스크톱 앱 또는 실시간 스트리밍 서비스 개발 경험' 이 있다. OneAgent 가 데스크톱 에이전트다.",
+          "gap_check": "Electron 의 main·renderer 프로세스는 무엇을 나눠 맡고, 로컬 브라우저를 조작하는 권한을 앱에 줄 때 보안상 무엇(contextIsolation·IPC 범위)을 막아야 하는가?",
+          "drill": "Electron 앱에서 사용자가 입력한 과제를 백엔드 에이전트 서버로 보내고, 에이전트 단계별 진행을 스트리밍으로 화면에 보여 주는 최소 앱을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Electron — Documentation",
+              "url": "https://www.electronjs.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "브라우저 에이전트 + eval 과제 20개 저장소",
+          "why": "자격요건 영역 둘(Tool Calling, 브라우저 자동화)과 우대 eval 파이프라인을 한 번에 증명한다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "MCP 서버 오픈소스 기여 또는 공개 프로젝트",
+          "why": "우대사항에 'AI 에이전트 / Tool Calling / MCP 관련 오픈소스 기여 또는 개인 프로젝트 경험' 이 있다.",
+          "effort": "3~5일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1차/2차 면접 - CEO면접 - 처우협의(공고 기준).",
+        "expect": [
+          "에이전트 루프 실패 처리",
+          "브라우저 조작 정확도 개선 방법",
+          "에이전트 평가 설계",
+          "MCP·OAuth"
+        ],
+        "sources": [
+          {
+            "title": "Agentic AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/376327",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
