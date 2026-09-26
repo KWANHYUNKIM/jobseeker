@@ -1016,3 +1016,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 godot 재방문 → 확장
 
 - 09-15 "Optimizing CPU-side Rendering Code" 에서 결정 6개로 `do-less-only-where-measured` 를 새 도메인에 추가(features 1→2). D3D12 트랜스파일 경로 결정은 inferred, 반대 병목 장면·스레드별 힙의 메모리는 해석 표시.
+
+## 2026-09-26 gunosy 재방문
+
+- 기술 블로그 마지막 글이 04-16. 09-07 이후 새 글 없음. updated_at 만 올림(없음 1회째).
