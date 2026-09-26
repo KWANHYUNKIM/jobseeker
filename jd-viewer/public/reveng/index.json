@@ -7,9 +7,9 @@
       "name_en": "Nature",
       "country": "JP",
       "category": "기타",
-      "status": "in_progress",
-      "features_done": 2,
-      "one_liner": "스마트 리모컨 Nature Remo 와 스마트폰 HEMS Remo E — 서버와 말도 못 하는 열쇠까지 '디바이스' 로 부르도록 정의를 넓히고, 동작을 안 바꾸는 PR 은 AI 가 증명해 스스로 머지한다",
+      "status": "done",
+      "features_done": 3,
+      "one_liner": "스마트 리모컨 Nature Remo 와 스마트폰 HEMS Remo E — 서버와 말도 못 하는 열쇠까지 '디바이스' 로 부르도록 정의를 넓히고, V2H 는 현장에서 떠 온 데이터로 에뮬레이터를 만들어 잇고, 동작을 안 바꾸는 PR 은 AI 가 증명해 스스로 머지한다",
       "updated_at": "2026-09-26",
       "domain": "nature.global"
     },

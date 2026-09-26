@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Nature — 완주 판정 중(2026-09-26): 사이트맵 2021~2026 103편 제목에서 에너지 글을 찾아 도메인 '집의 전기를 기기 규격으로 잇고 요금을 계산한다' 추가(← `entry/evps-dev-diary` V2H 개발 일기 2022-02, scratchpad `nt_evps-dev-diary.txt` + `entry/electricity-plan` 요금 플랜 2022-12 `nt_electricity-plan.txt`). 에너지 관리 수익원 연결. 다음은 확장: 그 도메인 기능(V2H 글 후반 '湯河原ラボで再挑戦'·'アプリ' 부분). 전 제목은 `nt_titles.txt`. 대기 1/3(ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
+**Nature — 완주(2026-09-26, 도메인 3 · 기능 3). 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(ABEJA — `tech-blog.abeja.asia`, 의료 LLM JLAC11 매핑 `entry/medical-llm-jlac11-mapping-202608`, scratchpad `c84_*.txt` 중 하나). 대기 1/3 — ABEJA 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
 
 
 
