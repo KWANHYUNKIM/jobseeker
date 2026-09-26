@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "oned",
+      "name": "ワンディー",
+      "name_en": "1D",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "치과 세미나 동영상 구독 1D — 치과의사·위생사·국시 앱으로 늘어난 프로덕트를 Cognito 대신 Ory Hydra 로 자체 구축한 공통 계정으로 묶으며 기존 사용자를 안은 채 강제 업데이트 한 번에 전환했고, 표시에 10초 넘게 걸리던 Laravel 은 Go·GraphQL·Next.js 로 갈아 끼우는 중이다",
+      "updated_at": "2026-09-26",
+      "domain": "oned.jp"
+    },
+    {
       "slug": "stock",
       "name": "株式会社Stock",
       "name_en": "Stock",
@@ -3433,7 +3445,9 @@
     "시청 습관을 만드는 미션과 마일을 서버가 판정한다",
     "흔들리는 모바일 네트워크에서 시청 로그를 빠짐없이 보낸다",
     "검색에 LLM 을 끼우되 호출마다의 비용을 누른다",
-    "스캔 PDF 를 OCR 로 빠짐없이 읽는다"
+    "스캔 PDF 를 OCR 로 빠짐없이 읽는다",
+    "여러 앱이 하나의 계정으로 로그인하게 한다",
+    "느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다"
   ],
   "countries": {
     "KR": "한국",

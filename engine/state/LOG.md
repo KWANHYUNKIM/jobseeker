@@ -1832,3 +1832,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Stock hold
 
 - 검색 1 RSS 6편 전부 · 검색 2 Zenn 검색 API 4낱말 0건. hold_reason·'재시도 안 함'·QUEUE hold.
+
+## 2026-09-26 1D 회사 프로파일
+
+- oned.jp 첫 화면에 1D 프리미엄 요금(월 11,760엔~)이 있다. 기술 글 2편을 도메인 둘로 — 공통 IdP(Hydra)·Laravel → Go 스택. 이행 연도가 없어 eras 비움.

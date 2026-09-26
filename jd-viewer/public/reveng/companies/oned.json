@@ -1,0 +1,146 @@
+{
+  "slug": "oned",
+  "name": "ワンディー",
+  "name_en": "1D",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "oned.jp",
+  "one_liner": "치과 세미나 동영상 구독 1D — 치과의사·위생사·국시 앱으로 늘어난 프로덕트를 Cognito 대신 Ory Hydra 로 자체 구축한 공통 계정으로 묶으며 기존 사용자를 안은 채 강제 업데이트 한 번에 전환했고, 표시에 10초 넘게 걸리던 Laravel 은 Go·GraphQL·Next.js 로 갈아 끼우는 중이다",
+  "business_model": "치과의사에게 **1D 프리미엄**(치과 세미나 동영상 1,600편 이상 무제한 시청 + 임상 도구 다운로드)을 월 11,760엔(세금 포함)~ 구독으로 판다 — 의원 경비로 처리할 수 있게 영수증을 발행한다. 곁에 **치과위생사용 앱·Web**, **국가시험 대책 앱** 같은 프로덕트가 있다. 이들의 과금 구조와 매출 비중은 확인하지 못했다.",
+  "products": [
+    "1D 프리미엄(치과의사용 Web·앱 — 세미나 동영상 구독)",
+    "치과위생사용 앱·Web",
+    "국가시험 대책 앱",
+    "1D 계정(공통 IdP)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "1D 프리미엄(치과의사 구독)",
+      "how": "월 11,760엔(세금 포함)~ 구독으로 세미나 동영상 무제한 시청과 임상 도구를 준다. 실질 1개월 무료, 언제든 해지.",
+      "weight": "주력(비중 수치는 확인 못 함)",
+      "domains": [
+        "느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다",
+        "여러 앱이 하나의 계정으로 로그인하게 한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "1D（ワンディー） - 日本最大級の歯科医療メディア",
+          "url": "https://oned.jp/",
+          "publisher": "ワンディー株式会社",
+          "date": "2026-09-26",
+          "summary": "치과 진료를 돕는 동영상 미디어 **1D 프리미엄** — 월 11,760엔(세금 포함)~, 치과 세미나 1,600편 이상 무제한 시청(매달 신규 50편 이상), 임상부터 경영까지 전 분야, 14분야 마스터 코스, 배속 재생·마이리스트·슬라이드 검색, 환자 설명 자료·임상 조견표·경영 시스템 같은 실천 도구 다운로드. 언제든 해지, 영수증 발행(의원 경비 가능), 실질 1개월 무료."
+        },
+        {
+          "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+          "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+          "publisher": "ワンディー Techブログ (Zenn)",
+          "date": "2024-12-09",
+          "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+        }
+      ]
+    },
+    {
+      "name": "위생사·국시 대책 등 곁 프로덕트",
+      "how": "치과위생사용 앱·Web, 국가시험 대책 앱. 과금 구조는 확인 못 함.",
+      "weight": "공개 없음",
+      "domains": [
+        "여러 앱이 하나의 계정으로 로그인하게 한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+          "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+          "publisher": "ワンディー Techブログ (Zenn)",
+          "date": "2026-09-20",
+          "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "한 계정으로 배우고, 빨리 보인다",
+    "question": "치과 교육 플랫폼은 늘어난 앱을 한 계정으로 묶고, 느린 레거시를 어떻게 갈아 끼우나?",
+    "code": "flowchart LR\n  DR[\"치과의사 1D Web · 앱\"] --> IDP[\"1D 계정\\nOry Hydra + 자체 IDM\"]\n  DH[\"위생사 앱 · Web\"] --> IDP\n  NE[\"국시 대책 앱\"] --> IDP\n  DR --> GQL[\"Go · GraphQL(gqlgen) · ent\"]\n  LAR[\"Laravel 레거시\\n일부 잔존\"] -.교체 중.-> GQL\n  FE[\"Next.js · Apollo\"] --> GQL",
+    "_note": "곁 프로덕트(위생사·국시)의 수익원 연결은 공통 계정이 그 앱들의 로그인을 받친다는 데서 이은 이 사이트의 해석이다 — 그 앱들의 과금 구조는 확인하지 못했다."
+  },
+  "domains": [
+    {
+      "name": "여러 앱이 하나의 계정으로 로그인하게 한다",
+      "why": "동영상 구독으로 시작한 1D 가 치과의사 Web·앱, 위생사 앱·Web, 국시 대책 앱으로 늘자 계정이 문제가 됐다 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 검증하던 구조로는 1D Web 에서 만든 계정으로 위생사 앱에 로그인하는 경험을 만들 수 없었다.",
+      "tech": [
+        {
+          "tech": "Ory Hydra(OAuth2/OIDC 인가 서버 — 사용자 DB·로그인 화면을 갖지 않는다) + 자체 IDM · Cognito·Kratos 대신 · DMS 복제 · users.sub 백필 · JIT 프로비저닝 · 이중 인증 미들웨어 · 강제 업데이트 컷오버",
+          "solves": "프로덕트 사이 SSO, 가동 중인 서비스를 기존 사용자를 안은 채 OIDC RP 로 전환(약 4개월).",
+          "limits": "인증 기반을 스스로 운영해야 한다. 앱 심사 시간차 동안 옛·새 방식을 함께 받아야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+              "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+              "publisher": "ワンディー Techブログ (Zenn)",
+              "date": "2026-09-20",
+              "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다",
+      "why": "Laravel 로 지은 1D 는 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, Blade 템플릿으로 UI 와 백엔드가 강하게 얽혀 새 기능 추가·수정이 어려웠다.",
+      "tech": [
+        {
+          "tech": "Go · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client",
+          "solves": "컴파일 언어의 속도와 동시성, 프런트와 백엔드의 분리.",
+          "limits": "아직 Go 와 Laravel 이 섞인 하이브리드 — 두 스택을 함께 운영한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+              "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+              "publisher": "ワンディー Techブログ (Zenn)",
+              "date": "2024-12-09",
+              "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "1D 프리미엄 외 프로덕트의 과금 구조와 매출 비중을 확인하지 못했다.",
+    "기술 블로그가 2편뿐이다 — 동영상 배신(HLS·DRM)·검색(슬라이드 검색) 같은 제품 기능의 결정 글은 없다.",
+    "Laravel → Go 이행을 언제 시작했는지 연도가 글에 없다(eras 비움)."
+  ],
+  "sources": [
+    {
+      "title": "1D（ワンディー） - 日本最大級の歯科医療メディア",
+      "url": "https://oned.jp/",
+      "publisher": "ワンディー株式会社",
+      "date": "2026-09-26",
+      "summary": "치과 진료를 돕는 동영상 미디어 **1D 프리미엄** — 월 11,760엔(세금 포함)~, 치과 세미나 1,600편 이상 무제한 시청(매달 신규 50편 이상), 임상부터 경영까지 전 분야, 14분야 마스터 코스, 배속 재생·마이리스트·슬라이드 검색, 환자 설명 자료·임상 조견표·경영 시스템 같은 실천 도구 다운로드. 언제든 해지, 영수증 발행(의원 경비 가능), 실질 1개월 무료."
+    },
+    {
+      "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+      "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+      "publisher": "ワンディー Techブログ (Zenn)",
+      "date": "2026-09-20",
+      "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+    },
+    {
+      "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+      "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+      "publisher": "ワンディー Techブログ (Zenn)",
+      "date": "2024-12-09",
+      "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+    }
+  ]
+}
