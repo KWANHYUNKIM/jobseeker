@@ -1004,3 +1004,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 fireworks-ai 재방문 → 확장
 
 - 09-23 "Every byte counts: ARCv3" 에서 결정 6개로 `ship-the-delta-not-the-checkpoint` 를 새 도메인에 추가(features 1→2). 손실 압축 비교·S3 경유 지연·비대칭 약한 워크로드는 해석 표시.
+
+## 2026-09-26 framework 재방문 → 확장
+
+- 09-08 갱신된 "Navigating the volatile silicon market" 에서 결정 7개로 `price-at-cost-in-a-shortage` 를 새 도메인에 추가(features 1→2). 공급난 이익 포기·부품 매출 포기·LPCAMM2 연결은 해석 표시.

@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — fireworks-ai 재방문 → 확장(`ship-the-delta-not-the-checkpoint`). 09-07 묶음 진행 중.**
+**없다 — framework 재방문 → 확장(`price-at-cost-in-a-shortage`). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **framework** — 2026-09-26 확장. 피드는 408(막힘) — r.jina.ai 로 `frame.work/blog` 목록(날짜가 카드에 있다). 09-08 갱신된 메모리 가격 공지(2025-12 부터 누적)로 새 도메인 "부품값이 뛸 때 가격을 매기는 규칙을 공개한다". 남은 후보: 09-10 One Key Module 개발자 프로그램, 이전 글 2025 관세 가격 공지.
 - **fireworks-ai** — 2026-09-26 확장. RSS 없음(모두 404) — r.jina.ai 로 `/blog` 목록, 날짜는 글마다. 09-23 ARCv3 델타 압축 글로 새 도메인 "학습한 가중치를 대륙 너머로 싸게 나른다". 남은 후보: 앞 글 "Frontier RL is cheaper than you think"(교차 리전 RL 원리), "The frontier isn't a model, it's a router".
 - **ferrous-systems** — 2026-09-26 없음 1회째. 피드 `ferrous-systems.com/blog/feed.xml`. 마지막 글이 08-26 채용 공고. 이전 글 후보: 03-17 러스트로 하드웨어 접근.
 - **feldera** — 2026-09-26 없음 1회째. RSS 없음(`/blog/rss.xml` 404) — r.jina.ai 로 `/blog` 목록, 날짜는 글마다 `Published Time`. 09-07 이후 2편: 09-21 시리즈 A 발표, 09-18 Auth0 FGA 권한 색인 사례(쓰기 때로 지연을 옮기는 결정은 Auth0 의 것 — 고객 사례라 제외, Auth0/Okta 를 다룰 때 재료).
