@@ -89,7 +89,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "hydra-idp-migration"
+      ]
     },
     {
       "name": "느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다",
@@ -114,7 +116,361 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "hydra-idp-migration",
+      "name": "전 프로덕트 공통 계정 '1D 계정' 을 Ory Hydra 와 자체 IDM 으로 세우고 가동 중인 서비스를 옮긴다 — 주키를 그대로 복제해 id = sub 를 만들고, 앱 심사 동안은 iss 로 옛·새 토큰을 둘 다 받다가, 강제 업데이트 한 번에 넘어간 뒤 옛 서명 키를 돌려 한꺼번에 끊는다",
+      "domain": "여러 앱이 하나의 계정으로 로그인하게 한다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "1D 백엔드는 Laravel 에서 Go 로 옮겨 오며, 인증도 Laravel Passport 유래의 자체 서명 JWT 를 Go 가 계속 검증하는 형태로 물려받았다. 프로덕트가 치과의사 Web·앱, 위생사 앱·Web, 국시 대책 앱으로 늘자 한계가 넷 드러났다 — ① 프로덕트를 넘는 SSO 가 안 된다 ② 프로덕트마다 users 테이블이 늘어 같은 사람의 대조가 운영 일이 된다 ③ 비밀번호 재설정·메일 검증을 제품마다 쓰는 중복 ④ **계약·결제가 프로덕트 단위에 갇힌다**.\n\n사업 쪽 요구로는 ④ 가 가장 컸다 — 한 사용자가 여러 프로덕트를 가로질러 쓰는 전제로 플랜·계약을 설계하려면 '누가' 를 한 계정으로 나타내고 결제 정보도 거기 묶여야 한다. 엔지니어링 쪽은 ①~③. '인증은 한곳에 모으고 각 프로덕트는 OIDC RP 로' 는 일찍 정해졌고, 문제는 **무엇을 IdP 로 할까** 였다.",
+        "metrics": [
+          {
+            "label": "일정",
+            "value": "5월 PoC → 7월 초 ADR Accepted → 8월 초 1D API 에 OIDC 검증 → 8월 중순 컷오버 → 8월 말 옛 서명 키 로테이트·옛 토큰 일괄 실효 → 9월 초 이중 인증 철거 — PoC 부터 옛 방식 철거까지 약 4개월",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "label": "컷오버",
+            "value": "심야 점검 1회 · 모바일 앱 3개 동시 공개 + 강제 업데이트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "label": "users.sub 백필",
+            "value": "3회(심사 제출 전 전원 · 컷오버 점검 중 차분 · 강제 업데이트 뒤 남은 것) — 멱등",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "Cognito 로 정했던 ADR 을 다시 볼 때",
+          "thought": "처음 ADR 은 Amazon Cognito 였다 — 관리형이라 운영 부담이 적고 AWS 쪽 인프라와 맞는다. 설계를 파고들자 둘이 걸렸다. 로그인·회원 가입 동선은 사업 쪽과 계속 세밀하게 고칠 전제(유입 경로별 문구·단계 표시·캠페인)라 Hosted UI 로는 못 받고, SDK 로 화면을 직접 만들면 인증 흐름 제어를 Cognito 의 구조에 계속 맞춰야 해 관리형의 이점이 옅어진다. 그리고 비밀번호 해시·속성·결제 고객 ID 를 가진 기존 사용자를 관리형이 준비한 이행 경로가 아니라 우리가 검증 절차와 되돌리기를 설계하는 형태로 옮기고 싶었다. Cognito ADR 을 Superseded 로 바꾸고 새 ADR 을 세웠다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+              "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+              "publisher": "ワンディー Techブログ (Zenn)",
+              "date": "2026-09-20",
+              "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+            }
+          ]
+        },
+        {
+          "at": "PoC 를 먼저 한 이유",
+          "thought": "작은 검증용 리포지토리에 docker compose 로 Hydra·최소 ID 관리 API·로그인 화면·'1D 인 척하는 RP' 를 세워 인가 코드 흐름이 끝에서 끝까지 도는지, login / consent challenge 의 손맛을 확인했다. 'Hydra 는 화면도 사용자 DB 도 안 가진다' 가 실제로 얼마의 구현량인지 체감한 것이 ADR 방향 전환에 자신을 줬다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+              "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+              "publisher": "ワンディー Techブログ (Zenn)",
+              "date": "2026-09-20",
+              "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+            }
+          ]
+        },
+        {
+          "at": "잘 된 요인을 돌아볼 때",
+          "thought": "PoC 로 손맛을 보고 ADR 을 다시 쓴 것, 이중 인증으로 **앱 심사와 전환 시점을 떼어 놓은** 것, 컷오버의 '돌아올 수 없는 지점' 을 미리 모두와 공유한 것.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+              "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+              "publisher": "ワンディー Techブログ (Zenn)",
+              "date": "2026-09-20",
+              "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Hydra",
+            "what": "OAuth2/OIDC 인가 서버 — 인가 코드·토큰 발행·JWKS 공개·로그인 세션. 사용자 DB·로그인 화면을 갖지 않고 `login_challenge` 로 외부 로그인 화면에 넘긴다."
+          },
+          {
+            "name": "idm-backend",
+            "what": "자체 ID 관리 API(Go·connect-rpc·ent·클린 아키텍처). challenge 처리·사용자 CRUD·클레임 조립. Hydra Admin API 는 인터페이스 뒤에 숨기고 이것만 내부 통신으로 닿는다."
+          },
+          {
+            "name": "sub",
+            "what": "사용자의 불변 ID = IdP 쪽 users 주키. 액세스 토큰의 `sub` 로 각 프로덕트에 간다. 기존 사용자는 1D users.id 와 같다."
+          },
+          {
+            "name": "JIT 프로비저닝",
+            "what": "그 토큰으로 처음 1D API 에 올 때 1D 쪽 users 행이 생긴다. RP 에 '회원 가입' API 는 더 없다."
+          },
+          {
+            "name": "이중 인증 미들웨어",
+            "what": "토큰 `iss` 가 자사 IdP 면 OIDC 로, 아니면 옛 방식으로 검증 — 앱 심사 기간용, 9월 초 철거."
+          }
+        ],
+        "invariants": [
+          "인증(누구인가)은 IdP 에 모으고 인가(무엇을 할 수 있나)는 각 프로덕트에 남긴다.",
+          "Hydra Admin API 는 밖에 공개하지 않는다.",
+          "모든 OAuth2 클라이언트에 PKCE 를 강제하고, 클라이언트 정의는 JSON 파일을 원본으로 선언적으로 동기한다.",
+          "users.sub 백필은 `WHERE sub IS NULL` 을 절대 빼지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "AWS DMS 로 1D users 를 IdP users 로 **주키 그대로** 복제하고 CDC 로 이행 기간 동안 계속 흘린다",
+            "why": "기존 사용자는 처음부터 1D users.id = IdP users.id = 토큰 sub 가 된다. 옛 경로 쓰기가 멈출 때까지 IdP 데이터가 낡지 않는다."
+          },
+          {
+            "step": "1D users 에 nullable `sub` 열을 더하고 `UPDATE users SET sub = id WHERE sub IS NULL` 로 세 번 백필한다",
+            "why": "이행 중 IdP 로 새로 가입한 사람은 JIT 행의 id(1D 채번)와 sub(IdP 채번)가 달라, 조건 없이 돌리면 남의 IdP 계정으로 바꿔 쓴다."
+          },
+          {
+            "step": "1D API 인증 미들웨어를 `iss` 로 가르는 이중 인증으로 바꿔 백엔드만 먼저 배포한다",
+            "why": "심사에 내는 바이너리가 곧 출시 바이너리라 심사 시점에 본번이 새 토큰을 받아야 하고, 기존 사용자는 옛 토큰으로 계속 쓴다."
+          },
+          {
+            "step": "앱 3개가 '심사 승인·수동 공개 대기' 로 모이면 심야에 점검 모드 → 옛 가입 무효화 → Web 전환·스모크 → 앱 공개·스모크 → 강제 업데이트 → 점검 해제",
+            "why": "강제 업데이트가 돌아올 수 없는 지점 — 공정마다 되돌리기 표를 미리 둔다."
+          },
+          {
+            "step": "옛 토큰 잔존 이용을 로그로 재고, 충분히 작아지면 옛 서명 키를 로테이트해 옛 토큰을 한꺼번에 실효시킨 뒤 이중 인증을 철거한다",
+            "why": "자연 실효를 기다리면 이행 기간이 몇 달 늘어난다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "IdP 를 무엇으로 할까?",
+            "chosen": "**Ory Hydra + 자체 IDM — 프로토콜(토큰·JWKS·PKCE·리프레시 토큰 로테이션)은 Hydra, 사용자 데이터 모델·로그인·가입 화면·비밀번호 정책은 자체.**",
+            "alternatives": [
+              "Amazon Cognito(처음 ADR)"
+            ],
+            "tradeoff": "사업과 계속 고칠 로그인 동선을 마음대로 만들고, 사용자 데이터를 손에 둔다. 대가 — IdP 의 가용성·보안 패치·감시가 전부 우리 책임이 되고, Cognito 라면 설정으로 켜는 기능도 스스로 얹어야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "question": "Ory 일식(Kratos)으로 ID 관리까지 맡길까?",
+            "chosen": "**맡기지 않는다 — Kratos 가 표준으로 주는 비밀번호 정책·계정 복구는 자체로 가진다.**",
+            "alternatives": [
+              "Ory Kratos"
+            ],
+            "tradeoff": "Kratos 는 속성(traits)을 JSON 으로 둬 이행 기간에 옛 DB 에서 테이블 단위로 계속 동기할 대상 스키마를 우리가 쥘 수 없고, 비밀번호 정책을 조정할 확장점이 없어 기존 사용자가 비밀번호를 바꾸는 순간 규칙이 달라진다 — '기존 사용자의 체험을 바꾸지 않는다' 와 맞지 않았다. 대가 — 그 기능들을 직접 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "question": "기존 사용자를 어떻게 옮길까?",
+            "chosen": "**AWS DMS 로 주키를 그대로 복제(초기 로드 + CDC)하고, 비밀번호 해시도 그대로 — 옛 기반과 같은 해시 방식.**",
+            "alternatives": [
+              "관리형 IdP 의 이행 경로에 태움",
+              "새 해시 형식 + 로그인 때 재해시"
+            ],
+            "tradeoff": "기존 사용자는 id = sub 가 처음부터 성립하고 비밀번호 재설정이 필요 없다. 대가 — CDC 같은 이행 기간 한정 장치를 운영하고 철거해야 한다(넣을 때 철거 조건을 코드 주석에 적는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "question": "각 프로덕트의 사용자 행은 언제 만들까?",
+            "chosen": "**JIT — 그 토큰으로 처음 올 때. 경로는 둘(콜백 직후 명시적 프로비저닝 API + 본인 정보 조회에서 자기 복구), 그 API 만은 '회원일 것' 가드를 걸지 않는다.**",
+            "alternatives": [
+              "IdP 가입 때 전 프로덕트에 미리 생성(inferred)"
+            ],
+            "tradeoff": "콜백에서 실패해도 다음 화면에서 복구되어 '로그인했는데 회원이 아닌' 상태가 남지 않는다. 가드를 걸면 '행이 없어 튕기고, 튕겨서 행을 못 만드는' 순환이 된다. 대가 — 가드가 없는 API 가 하나 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "question": "모바일 앱 심사를 어떻게 넘길까?",
+            "chosen": "**토큰 `iss` 로 가르는 이중 인증 미들웨어를 백엔드에 먼저 배포한다.**",
+            "alternatives": [
+              "심사와 전환을 동시에(inferred)"
+            ],
+            "tradeoff": "심사 중인 앱은 새 방식으로 확인되고 기존 사용자는 옛 토큰으로 계속 쓴다 — '공개했지만 이행 중지' 라는 중간 상태에서도 버틴다. 대가 — 두 방식을 함께 검증하는 기간이 생기고 나중에 철거해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "question": "심사 동안 IdP 가입 화면을 닫아 둘까?",
+            "chosen": "**닫지 않는다 — 부작용은 백필 SQL 의 WHERE 절과 사전 건수 확인으로 흡수.**",
+            "alternatives": [
+              "가입 화면 폐쇄"
+            ],
+            "tradeoff": "닫으면 이행 중 JIT 행이 안 생기지만 심사원이 가입을 못 끝내 리젝트될 위험이 있다. 대가 — id ≠ sub 인 행이 생길 수 있어 실행 전에 SELECT 로 세어야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "question": "컷오버를 어떻게 한 번에 넘길까?",
+            "chosen": "**심야 점검 + 모바일 앱 3개 동시 공개 + 강제 업데이트. 공정마다 '되돌릴 수 있나·어떻게' 표, NO-GO 퇴피형, GO 조건은 스토어 반영 확인과 본번 로그인·시청·과금 스모크 둘.**",
+            "alternatives": [
+              "단계적 전환(inferred)"
+            ],
+            "tradeoff": "당일은 절차를 따르기만 하면 됐다. 대가 — 강제 업데이트가 돌아올 수 없는 지점(플래그는 몇 분에 되돌려도 새 판으로 올린 사람은 못 내린다), Web·앱 모두 한 번 다시 로그인.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "question": "옛 토큰은 언제 끝낼까?",
+            "chosen": "**자연 실효를 기다리지 않고 옛 서명 키를 로테이트해 한꺼번에 검증 불가로 — 메일 고지 + 로그로 잔존 이용이 충분히 작은지 확인한 뒤.**",
+            "alternatives": [
+              "옛 토큰 만료를 기다림"
+            ],
+            "tradeoff": "이행 기간이 몇 달 늘지 않는다. 대가 — 업데이트 안 한 앱 사용자는 그 순간 업데이트·재로그인이 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          },
+          {
+            "question": "Web RP 의 인증 입구를 어떻게 둘까?",
+            "chosen": "**`/login`·`/register` 는 302 만 돌려주는 Route Handler — 인증 입구 경로는 허용 목록으로 관리해 `<Link>` 가 아니라 맨 `<a>` 로. better-auth `nextCookies()` 는 빼고 필요한 곳만 응답 헤더를 명시적으로 옮긴다.**",
+            "alternatives": [
+              "Next.js `<Link>` 그대로 · `nextCookies()` 플러그인"
+            ],
+            "tradeoff": "`<Link>` prefetch 가 뷰포트에 들어오기만 해도 Route Handler 의 GET 을 서버에서 실행해 인증 부작용이 났고, `nextCookies()` 는 RSC 재렌더링을 불러 컷오버 직후 1D API 요청과 Vercel Function 호출이 몇 배로 뛰었다. 대가 — 인증 입구마다 규칙을 지켜야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+                "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2026-09-20",
+                "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다(같은 회사의 다른 도메인)",
+          "via": "Laravel 이 남긴 것을 걷어 내기",
+          "contract": "공통 계정 이행이 걷어 낸 것은 Laravel Passport 유래 자체 서명 JWT 로, Go 이행이 물려받은 마지막 Laravel 흔적 중 하나였다. idm-backend 도 1D API 와 같은 Go·ent·클린 아키텍처로 짰다(두 글 모두 같은 저자 — 이 연결의 표현은 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "누가 무엇을 쥐나",
+          "question": "로그인 한 번에 누가 무엇을 하나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  APP[RP · Next.js / Flutter] -->|인가 코드 + PKCE| HY[Ory Hydra<br/>토큰 · JWKS · 세션]\n  HY -->|login_challenge| FE[idm-frontend<br/>로그인 · 가입 화면]\n  FE --> BE[idm-backend<br/>ID 관리 · 클레임]\n  BE -->|Admin API · 내부만| HY\n  APP -->|access token sub| API[1D API<br/>go-oidc 검증 · JIT]\n  API --> U[(1D users<br/>sub)]"
+        },
+        {
+          "title": "컷오버의 되돌릴 수 있는 지점",
+          "question": "어디까지 돌아갈 수 있나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 이중인증: 백엔드 먼저 · iss 로 분기\n  이중인증 --> 심사: 앱 3개 승인 · 공개 대기\n  심사 --> 점검: 심야 점검 · 옛 가입 무효화\n  점검 --> Web전환: 스모크 · Vercel 로 즉시 되돌림 가능\n  Web전환 --> 앱공개: 공개 취소 불가 · 이중 인증이라 옛 앱 무사\n  앱공개 --> 강제업데이트: 돌아올 수 없는 지점\n  강제업데이트 --> 키로테이트: 옛 토큰 일괄 실효\n  키로테이트 --> OIDC전용: 이중 인증 철거\n  OIDC전용 --> [*]"
+        },
+        {
+          "title": "이행 중 무너질 뻔한 자리",
+          "question": "어디서 사용자 데이터가 섞이거나 요청이 터질 뻔했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  J[이행 중 IdP 신규 가입<br/>JIT 행: id ≠ sub] --> B[조건 없는 sub = id 백필]\n  B --> X[남의 IdP 계정으로 덮어씀]\n  J --> W[WHERE sub IS NULL + 사전 SELECT 로 막음]\n  L[Link prefetch] --> R[인증 Route Handler 가 서버에서 실행]\n  R --> A1[맨 a 태그로]\n  N[better-auth nextCookies] --> M[RSC 재렌더 · API·Function 호출 몇 배]\n  M --> A2[필요한 곳만 헤더 전사]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Ory Hydra で自前の共通認証基盤を作り、既存ユーザーを抱えたまま認証方式を切り替えた話",
+          "url": "https://zenn.dev/oned_tech/articles/oned-idp-hydra-migration",
+          "publisher": "ワンディー Techブログ (Zenn)",
+          "date": "2026-09-20",
+          "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "1D 프리미엄 외 프로덕트의 과금 구조와 매출 비중을 확인하지 못했다.",
     "기술 블로그가 2편뿐이다 — 동영상 배신(HLS·DRM)·검색(슬라이드 검색) 같은 제품 기능의 결정 글은 없다.",

@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**1D 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '여러 앱이 하나의 계정으로 로그인하게 한다' — `oned-idp-hydra-migration`(한계 넷 · Cognito 대신 Hydra+자체 IDM · Kratos 아닌 이유 · DMS 복제 · users.sub 백필 · JIT · 이중 인증 미들웨어 · 강제 업데이트 컷오버 · 약 4개월; 본문 뒤쪽은 아직). 그다음 '느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다' — `oned-tech-select`(Go·클린 아키텍처·gqlgen·ent·Next.js·Apollo). 수익원 둘 다 도메인 있음 → 두 기능이면 완주. 대기 0/3 — **--gaps 가 후보 조사를 부르면 그쪽이 먼저.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**1D 확장 1/2(2026-09-26) — `hydra-idp-migration` 완료. 다음은 확장: '느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다' — `oned-tech-select`(Go·클린 아키텍처·gqlgen·ent·Next.js·Apollo). 그러면 수익원 둘 다 기능 → **완주**. 수익원 둘 다 도메인 있음 → 두 기능이면 완주. 대기 0/3 — **--gaps 가 후보 조사를 부르면 그쪽이 먼저.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

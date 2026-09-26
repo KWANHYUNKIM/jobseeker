@@ -1836,3 +1836,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 1D 회사 프로파일
 
 - oned.jp 첫 화면에 1D 프리미엄 요금(월 11,760엔~)이 있다. 기술 글 2편을 도메인 둘로 — 공통 IdP(Hydra)·Laravel → Go 스택. 이행 연도가 없어 eras 비움.
+
+## 2026-09-26 1D Hydra 공통 계정 이행
+
+- 결정 9 — Hydra+자체 IDM(Cognito ADR Superseded)·Kratos 아님·DMS 주키 복제+같은 해시·JIT 두 경로·iss 이중 인증·심사 중 가입 열어 둠·강제 업데이트 컷오버·옛 키 로테이트·Web RP 의 Link/nextCookies 함정.

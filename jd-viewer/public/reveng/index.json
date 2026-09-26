@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "치과 세미나 동영상 구독 1D — 치과의사·위생사·국시 앱으로 늘어난 프로덕트를 Cognito 대신 Ory Hydra 로 자체 구축한 공통 계정으로 묶으며 기존 사용자를 안은 채 강제 업데이트 한 번에 전환했고, 표시에 10초 넘게 걸리던 Laravel 은 Go·GraphQL·Next.js 로 갈아 끼우는 중이다",
       "updated_at": "2026-09-26",
       "domain": "oned.jp"
