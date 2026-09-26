@@ -10215,6 +10215,129 @@
       "site": "ats",
       "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=8212748",
       "verdict": "같은 팀의 Staff 판이다. 세 절 17줄 중 15줄이 Sr. 판과 같고, 다른 두 줄은 연차뿐이다 — 'Unix/Linux 기반의 8년 이상의 소프트웨어 엔지니어링 경력', '5년 이상의 backend architecture 설계 및 구현 경험'(Sr. 판은 5년·3년). 제목과 본문이 어긋나는 점도 같다. Sr. 판 브리핑을 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8027677",
+      "title": "Staff, Back-end Engineer (Gateway Services)",
+      "site": "ats",
+      "verdict": "서울 근무, 소프트웨어 개발 8년 이상(그중 Technical Lead 2년 이상) + 최근 3년 이내 대규모 분산 시스템. 쿠팡 전사 서비스 간 통신을 받치는 트래픽 인프라 계층을 Service Mesh(Istio·Envoy)로 설계하고, Go·Rust·C++ 로 고성능 컴포넌트를 만드는 사람.",
+      "fit": {
+        "must_have": [
+          "소프트웨어 8년 + Tech Lead 2년",
+          "최근 3년 이내 대규모 분산 시스템",
+          "대규모 트래픽 관리 솔루션 설계·구현",
+          "Istio·Envoy Service Mesh 깊은 경험",
+          "Go·Rust·C++ 중 하나 + 미션 크리티컬 시스템"
+        ],
+        "can_learn": [
+          "ArgoCD·SPIFFE(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Envoy 데이터 플레인과 Istio 컨트롤 플레인",
+          "from": "qualification",
+          "quote": "Service Mesh(Istio, Envoy 등) 설계 및 구현 경험을 깊이 있게 보유하신 분",
+          "priority": "core",
+          "why": "자격의 중심 줄이다. 주요업무에 데이터/컨트롤 플레인 컴포넌트 개발·운영이 명시돼 있다.",
+          "gap_check": "Istio 에서 VirtualService·DestinationRule 설정이 xDS 를 통해 Envoy 의 어떤 설정(리스너·라우트·클러스터·엔드포인트)으로 바뀌는가?",
+          "drill": "kind 에 Istio 를 설치해 VirtualService 로 가중치 라우팅을 걸고, istioctl proxy-config 로 Envoy 에 내려간 라우트·클러스터 설정을 직접 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Envoy — Architecture overview",
+              "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/arch_overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Istio — Documentation",
+              "url": "https://istio.io/latest/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "트래픽 관리 — 서비스 디스커버리·로드밸런싱·복원력",
+          "from": "task",
+          "quote": "Develop and enhance core infrastructure components related to traffic management, including service discovery, load balancing, and resiliency mechanisms",
+          "priority": "core",
+          "why": "주요업무가 서비스 디스커버리, 로드 밸런싱, 복원력(resiliency) 메커니즘을 핵심 컴포넌트로 적는다.",
+          "gap_check": "서킷 브레이커(outlier detection)·재시도·타임아웃이 서로 겹칠 때 재시도 폭풍(retry storm)이 생기는 조건과 막는 방법은?",
+          "drill": "Envoy 앞에 느린 백엔드를 두고 재시도·타임아웃·outlier detection 조합을 바꿔 가며 부하를 줘서 재시도 폭증과 차단 동작을 관찰한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "Go·Rust·C++ 로 고성능 인프라 컴포넌트",
+          "from": "task",
+          "quote": "Design and implement high-performance infrastructure components using Go, Rust, or C++",
+          "priority": "core",
+          "why": "모든 요청이 지나는 경로라 GC 정지·메모리 할당이 곧 지연이 된다(추론). 자격에도 언어가 명시돼 있다.",
+          "gap_check": "요청 경로에 있는 컴포넌트를 Go 로 쓸 때 GC 영향을 줄이는 방법(할당 줄이기·sync.Pool)과, Rust/C++ 를 택하는 기준은?",
+          "drill": "Envoy 외부 처리용 작은 gRPC 서비스(ext_authz 등)를 Go 로 만들고 pprof 로 할당을 줄여 p99 를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Envoy — External Authorization filter",
+              "url": "https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_authz_filter",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "네트워킹 기본 (VPC·서브넷·라우팅·게이트웨이)",
+          "from": "preference",
+          "quote": "Deep understanding of networking fundamentals including VPCs, subnets, routing, gateways, and service networking",
+          "priority": "high",
+          "why": "메시 문제의 상당수는 그 아래 네트워크에서 온다(추론). 우대 첫 줄이다.",
+          "gap_check": "쿠버네티스 파드에서 나간 요청이 사이드카 → 노드 → VPC 라우팅 → 대상 파드까지 가는 경로에서 지연이나 끊김이 생길 수 있는 곳을 짚을 수 있는가?",
+          "drill": "kind 클러스터에서 파드 간 요청을 tcpdump 로 사이드카 앞뒤에서 캡처해 iptables 리다이렉션 경로를 확인한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "조직 전반의 기술 리더십과 전파",
+          "from": "task",
+          "quote": "Act as a technical leader and evangelist, promoting Service Mesh and traffic management best practices across the organization",
+          "priority": "high",
+          "why": "Service Mesh 는 모든 서비스 팀이 받아들여야 효과가 난다. Tech Lead 2년이 자격이다.",
+          "gap_check": "사이드카 도입을 꺼리는 팀(지연·리소스 비용 우려)을 설득할 때 무엇을 측정해 보여 주는가?",
+          "drill": "사이드카 유무에 따른 지연·CPU·메모리 오버헤드를 측정해 한 장짜리 도입 가이드로 정리한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Envoy 필터 하나를 직접 작성",
+          "why": "메시를 '쓰는' 사람과 '만드는' 사람을 가르는 증거다. Wasm 이나 외부 처리 필터로 헤더 기반 라우팅을 구현해 보면 좋다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "Istio 설정이 Envoy 로 내려가는 경로",
+          "재시도 폭풍 방지",
+          "요청 경로 컴포넌트의 언어·GC",
+          "파드 간 네트워크 경로",
+          "메시 도입 설득"
+        ],
+        "sources": [
+          {
+            "title": "Staff, Back-end Engineer (Gateway Services)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8027677",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8027678",
+      "title": "Senior Staff, Back-end Engineer (Gateway Services)",
+      "site": "ats",
+      "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=8027677",
+      "verdict": "같은 팀(Gateway Services)의 Senior Staff 판이다. 역할·자격 문장이 Staff 판과 같고(한국어 줄바꿈만 다르다), 다른 것은 연차뿐이다 — '12+ years of software development experience with at least 2+ years in a Technical Lead role'(Staff 판은 8+). Staff 판 브리핑을 본다."
     }
   ],
   "open_questions": [

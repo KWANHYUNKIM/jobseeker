@@ -4,17 +4,18 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **95건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **97건**.
+직전 회차: ✅ `Staff, Back-end Engineer (Gateway Services)`(8027677) 5항목 + Senior Staff(8027678) dup(연차 8↔12).
 직전 회차: ✅ `[Coupang Pay] Sr. Back-end Engineer (Pay Test Operations)`(8212748) 4항목 + Staff(8212656) dup.
 ⚠️ **제목(Test Operations)과 본문(플랫폼·HA/DR·CI/CD)이 어긋난다** — verdict 첫 줄과 `open_questions` 에 적었다.
 ⚠️ 새 크롤부터 쿠팡 공고 URL 일부가 `job-boards.greenhouse.io/coupang/jobs/<id>` 형식 — 번호로 찾는다.
 
 **남은 서울 ats 개발 공고**(보안 제외):
-- 쌍: `Staff / Senior Staff, Back-end Engineer (Gateway Services)`(8027677 / 8027678), `Staff / Sr. Staff, ML Engineer (Search & Discovery)`(8130043 / 8130040)
+- 쌍: `Staff / Sr. Staff, ML Engineer (Search & Discovery)`(8130043 / 8130040)
 - 단독: `Staff Backend Engineer (Coupang Pay)`(8073876), `Staff, SRE (Tech Infra)`(8018258), `Staff iOS`(8146512),
   `[Coupang Pay Tech] Staff Mobile`(8194393), `Staff, ML Engineer - Coupang Play`(7927865), `Staff, Back-end (Traffic Management)`(8104792) 등
 - 보안 계열 남은 것: Cyber Threat Hunting·Control Assurance·Vendor Security·Pen Tester·Forensics·Attack Surface·Email Detection·Mobile Security 등
-⚠️ 다음 회차: `Staff, Back-end Engineer (Gateway Services)`(8027677) → 같은 회차에 Senior Staff 판(8027678)과 비교.
+⚠️ 다음 회차: `Staff, ML Engineer (Search & Discovery)`(8130043) → 같은 회차에 Sr. Staff 판(8130040)과 비교. 둘 다 이미 쓴 ML 공고와 겹침 0.52 — 먼저 기존 브리핑과도 비교.
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
