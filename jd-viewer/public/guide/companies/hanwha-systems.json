@@ -222,5 +222,104 @@
     "alias '한화그룹' 은 원티드의 그룹 표기를 잡기 위한 것이다 — 한화시스템이 아닌 계열사 공고가 이 표기로 올라오면 여기 잘못 붙는다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/387677",
+      "title": "[한화시스템/ICT] 온톨로지(Ontology) 전문가",
+      "site": "wanted",
+      "verdict": "경력 학사 5년/석사 3년 이상, 서울 중구(ICT 부문). 공고 머리말은 두 줄이다 — **시맨틱웹 기반 온톨로지 구축**, **온톨로지를 기반으로 한 데이터 분석**. 주요업무는 산업 도메인 분석으로 클래스·속성 정의, **RDF/OWL 온톨로지 모델링**, **SPARQL 쿼리·추론 규칙 설계**, Protege·GraphDB 활용, 데이터 품질·일관성 검증, 온톨로지로 데이터 통합·표준화, 추론으로 관계·패턴 발견, SPARQL 기반 분석 리포트, 그래프 네트워크 분석·시각화, 의사결정 인사이트 도출. 자격은 CS·AI·통계·수학 전공, Semantic Web 또는 데이터 분석 경험, Python·SQL, RDF/OWL 이해, 그래프 DB 경험. 우대는 **제조 도메인 AI 프로젝트**, **온프레미스·폐쇄망**에서의 모델 개발·운영, SI 개발 협업, API 백엔드, 프로젝트 리딩. '여러 산업 도메인' 과 SI 협업이 함께 나오니 고객 프로젝트형 자리로 읽히지만 고객은 공고에 없다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "RDF/OWL 이해",
+          "그래프 DB 경험",
+          "Python·SQL"
+        ],
+        "can_learn": [
+          "SHACL 품질 검증",
+          "관계형 데이터의 RDF 매핑",
+          "제조 도메인 온톨로지"
+        ]
+      },
+      "study": [
+        {
+          "topic": "OWL 로 클래스·속성을 정의하고 추론시키기",
+          "from": "task",
+          "quote": "• RDF/OWL 등 표준 Semantic Web 기술 기반 온톨로지 모델링 수행",
+          "priority": "core",
+          "why": "주요업무 핵심 줄이고 자격요건이 RDF/OWL 이해를 요구한다.",
+          "gap_check": "subClassOf·도메인/레인지·역관계·전이 속성·동치 클래스를 정의하면 추론기가 어떤 새 사실을 만들어 내는가? OWL 의 열린 세계 가정 때문에 '값이 없다' 가 '거짓' 이 아닌 이유와, 그래서 품질 검사를 OWL 로 하기 어려운 이유를 설명할 수 있는가?",
+          "drill": "OWL 2 Primer 를 읽고 Protege 에서 작은 제조 온톨로지(설비·공정·부품·불량유형, '공정은 설비를 사용한다' 등)를 만든 뒤 추론기를 돌려 추론된 클래스 소속과 관계를 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWL 2 Web Ontology Language Primer — W3C",
+              "url": "https://www.w3.org/TR/owl2-primer/",
+              "kind": "docs"
+            },
+            {
+              "title": "Protégé",
+              "url": "https://protege.stanford.edu/",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "SPARQL — 그래프에 묻고 분석 리포트로",
+          "from": "task",
+          "quote": "• SPARQL 쿼리 및 추론 규칙 설계 · 적용",
+          "priority": "core",
+          "why": "주요업무 두 줄(쿼리·추론 규칙 설계, SPARQL 기반 분석 리포트)이 SPARQL 이다.",
+          "gap_check": "트리플 패턴·OPTIONAL·FILTER·집계·속성 경로(부품의 부품의 …)를 쓸 수 있는가? 같은 질문을 SQL 재귀 조인으로 쓸 때와 비교해 무엇이 쉬워지고, 대형 그래프에서 느린 쿼리는 어떻게 줄이는가?",
+          "drill": "SPARQL 1.1 명세의 예제를 따라 위 온톨로지를 GraphDB 에 올리고, '불량유형 X 가 가장 많이 나온 설비와 그 설비를 쓰는 공정' 같은 질의를 속성 경로·집계로 작성해 결과를 표 리포트로 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "SPARQL 1.1 Query Language — W3C",
+              "url": "https://www.w3.org/TR/sparql11-query/",
+              "kind": "docs"
+            },
+            {
+              "title": "What is GraphDB? — GraphDB documentation",
+              "url": "https://graphdb.ontotext.com/documentation/11.5/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 품질·일관성 검증 — SHACL",
+          "from": "task",
+          "quote": "• 데이터 품질 · 일관성 검증",
+          "priority": "high",
+          "why": "주요업무다. 여러 원천을 합친 그래프는 빠진 값·잘못된 형식이 섞인다.",
+          "gap_check": "OWL 추론이 아니라 SHACL 셰이프로 '모든 설비는 설치 공정을 정확히 하나 가진다' 같은 닫힌 규칙을 검사하는 이유는? 검증 보고서의 위반 항목을 원천 데이터 수정으로 어떻게 되돌리는가?",
+          "drill": "SHACL 명세를 읽고 설비·부품 셰이프(필수 속성·개수·자료형)를 작성해 일부러 오류를 넣은 데이터에 돌리고, 위반 보고서를 원천별로 집계한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Shapes Constraint Language (SHACL) — W3C",
+              "url": "https://www.w3.org/TR/shacl/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "관계형 데이터를 온톨로지로 통합하기",
+          "from": "task",
+          "quote": "• 온톨로지 모델을 활용한 데이터 통합 · 표준화",
+          "priority": "high",
+          "why": "주요업무다. 고객사 데이터는 대부분 관계형 DB 에 있고, 우대사항에 SI 개발 협업이 있다.",
+          "gap_check": "서로 다른 두 시스템의 '설비' 테이블을 하나의 클래스로 합칠 때 IRI 는 어떻게 짓고 같은 대상임은 어떻게 표시하는가? 원천 DB 를 통째로 복사해 RDF 로 적재하는 방식과 질의 시점에 매핑하는 방식(가상화)은 무엇을 맞바꾸는가?",
+          "drill": "R2RML 명세를 읽고, SQLite 두 개(공장 A·B 설비 테이블, 컬럼명·코드 다름)를 위 온톨로지로 매핑하는 R2RML 을 작성해 RDF 로 변환하고, 한 SPARQL 로 두 공장 설비를 함께 조회한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "R2RML: RDB to RDF Mapping Language — W3C",
+              "url": "https://www.w3.org/TR/r2rml/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
