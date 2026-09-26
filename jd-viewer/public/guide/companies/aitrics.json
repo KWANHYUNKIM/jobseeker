@@ -1,0 +1,185 @@
+{
+  "slug": "aitrics",
+  "name": "에이아이트릭스",
+  "name_en": "AITRICS",
+  "aliases": [
+    "에이아이트릭스",
+    "AITRICS"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "aitrics.com",
+  "one_liner": "병원 EMR 을 실시간으로 분석해 환자 상태 악화를 예측하는 의료 AI 'AITRICS-VC(바이탈케어)' 를 만드는 회사 — 동남아·일본으로 허가·연구를 넓히는 중",
+  "company": {
+    "business": "원티드 공고 머리말은 에이아이트릭스를 '인공지능 기술로 사람의 생명을 살릴 수 있을까?' 라는 질문에서 시작한 의료 AI 회사로 소개한다. 회사 사이트 첫 화면의 제품은 **AITRICS-VC(바이탈케어)** — '병원 내 축적되는 실시간 EMR 정보를 인공지능이 분석하여 환자 상태 악화를 예측' 한다 — 이고, 메뉴에 AITRICS Business Service·Virtual Doctor 가 있다. 사이트의 인증·보도자료는 2026-04 인도네시아·2026-05 말레이시아 의료기기 허가(보도자료 '총 6개국 허가 기반 확보'), 2026-06 일본 법인의 요코하마시립대학교 공동연구 MOU, 2026-07 npj Digital Medicine 급성신부전 예측 논문을 적고, 출판물에 ICLR 'EMR-AGENT' 가 있다. 모집중 공고는 병원 EMR·레거시 데이터를 표준 스키마로 정규화하는 데이터 엔지니어(정규직 HAX Infra·계약직 Healthcare, OMOP-CDM·SNOMED CT·LOINC 매핑), 병원 대상 솔루션 **구축(설치) PM**, Sr. Technical PM, 개발기획실장이다. 매출·과금 방식(병원 계약 형태)과 임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "에이아이트릭스 AITRICS",
+        "url": "https://aitrics.com/kr/",
+        "publisher": "에이아이트릭스",
+        "summary": "첫 화면: 제품 AITRICS-VC — '병원 내 축적되는 실시간 EMR 정보를 인공지능이 분석하여 환자 상태 악화를 예측'. 메뉴에 AITRICS Business Service·Virtual Doctor. 2026-04 인도네시아·2026-05 말레이시아 의료기기 허가, 보도자료 '바이탈케어 말레이시아 허가 — 총 6개국 허가 기반', 2026-06 요코하마시립대학교와 공동연구 MOU(일본 법인), 2026-07 npj Digital Medicine 급성신부전 예측 논문. 출판물에 ICLR 'EMR-AGENT'. 주소 서울 강남구 테헤란로98길 8."
+      },
+      {
+        "title": "HAX Infra Data Engineer",
+        "url": "https://www.wanted.co.kr/wd/379809",
+        "publisher": "원티드"
+      },
+      {
+        "title": "Installation Project Manager",
+        "url": "https://www.wanted.co.kr/wd/365304",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "의료기기 허가 국가(회사 보도자료)",
+        "value": "6개국",
+        "as_of": "2026-05",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "에이아이트릭스 AITRICS",
+            "url": "https://aitrics.com/kr/",
+            "publisher": "에이아이트릭스",
+            "summary": "첫 화면: 제품 AITRICS-VC — '병원 내 축적되는 실시간 EMR 정보를 인공지능이 분석하여 환자 상태 악화를 예측'. 메뉴에 AITRICS Business Service·Virtual Doctor. 2026-04 인도네시아·2026-05 말레이시아 의료기기 허가, 보도자료 '바이탈케어 말레이시아 허가 — 총 6개국 허가 기반', 2026-06 요코하마시립대학교와 공동연구 MOU(일본 법인), 2026-07 npj Digital Medicine 급성신부전 예측 논문. 출판물에 ICLR 'EMR-AGENT'. 주소 서울 강남구 테헤란로98길 8."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "AITRICS-VC(환자 상태 악화 예측) 병원 공급",
+        "how": "사이트 첫 화면 제품이고 제품문의 메뉴가 있다. 구축 PM 공고가 병원 대상 솔루션 구축(데이터 연동·서버 설치·검수확인서)을 적는다. 병원과의 계약·과금 구조는 읽지 않았다.",
+        "domains": [
+          "병원 데이터 표준화·파이프라인",
+          "병원 구축·연동 프로젝트",
+          "의료 AI 제품 기획"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "에이아이트릭스 AITRICS",
+            "url": "https://aitrics.com/kr/",
+            "publisher": "에이아이트릭스",
+            "summary": "첫 화면: 제품 AITRICS-VC — '병원 내 축적되는 실시간 EMR 정보를 인공지능이 분석하여 환자 상태 악화를 예측'. 메뉴에 AITRICS Business Service·Virtual Doctor. 2026-04 인도네시아·2026-05 말레이시아 의료기기 허가, 보도자료 '바이탈케어 말레이시아 허가 — 총 6개국 허가 기반', 2026-06 요코하마시립대학교와 공동연구 MOU(일본 법인), 2026-07 npj Digital Medicine 급성신부전 예측 논문. 출판물에 ICLR 'EMR-AGENT'. 주소 서울 강남구 테헤란로98길 8."
+          },
+          {
+            "title": "Installation Project Manager",
+            "url": "https://www.wanted.co.kr/wd/365304",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "해외 사업(동남아·일본)",
+        "how": "사이트가 인도네시아·말레이시아 허가와 일본 법인의 공동연구를 적고, 데이터 엔지니어 공고가 '국내 병원 연동에서 정립한 데이터 규격을 해외 사업과 제품군, 플랫폼으로 이식' 한다고 쓴다. 해외 매출은 읽지 않았다.",
+        "domains": [
+          "병원 데이터 표준화·파이프라인",
+          "병원 구축·연동 프로젝트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "에이아이트릭스 AITRICS",
+            "url": "https://aitrics.com/kr/",
+            "publisher": "에이아이트릭스",
+            "summary": "첫 화면: 제품 AITRICS-VC — '병원 내 축적되는 실시간 EMR 정보를 인공지능이 분석하여 환자 상태 악화를 예측'. 메뉴에 AITRICS Business Service·Virtual Doctor. 2026-04 인도네시아·2026-05 말레이시아 의료기기 허가, 보도자료 '바이탈케어 말레이시아 허가 — 총 6개국 허가 기반', 2026-06 요코하마시립대학교와 공동연구 MOU(일본 법인), 2026-07 npj Digital Medicine 급성신부전 예측 논문. 출판물에 ICLR 'EMR-AGENT'. 주소 서울 강남구 테헤란로98길 8."
+          },
+          {
+            "title": "HAX Infra Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/379809",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "병원 데이터 표준화·파이프라인",
+        "why": "HAX Infra 공고가 병원마다 흩어진 EMR·레거시 데이터를 표준 스키마로 정규화하고 재사용 가능한 병원 DW 를 만드는 수집·통제·연동 계층, 온톨로지·지식그래프 규격을, 계약직 공고가 OMOP-CDM 변환과 SNOMED CT·LOINC·RxNorm·ICD-10 용어 매핑, 품질 규칙, Data Lakehouse ETL 을 적는다.",
+        "what_to_know": [
+          "OMOP-CDM",
+          "의료 용어 표준",
+          "ETL 멱등성"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "HAX Infra Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/379809",
+            "publisher": "원티드"
+          },
+          {
+            "title": "Healthcare Data Engineer (계약직)",
+            "url": "https://www.wanted.co.kr/wd/380610",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "병원 구축·연동 프로젝트",
+        "why": "구축 PM 공고가 병원 전산팀·의료진·협력사 조율, 병원 시스템별 데이터 연동 방식, 서버·네트워크·방화벽 사전 준비, 설치·검수 문서, 해외 병원 구축 지원을 적는다.",
+        "what_to_know": [
+          "병원 전산 환경",
+          "데이터 연동 방식",
+          "구축 체크리스트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Installation Project Manager",
+            "url": "https://www.wanted.co.kr/wd/365304",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "의료 AI 제품 기획",
+        "why": "Sr. TPM 공고가 로드맵·릴리즈, 의료진·고객 요구를 SRS 등 요구사항으로 정의, Business/Clinical KPI, 여러 엔지니어링 팀에 걸친 E2E 딜리버리를, 개발기획실장 공고가 SP·UX 두 팀 운영과 제품 전략을 적는다.",
+        "what_to_know": [
+          "의료기기 SW 요구사항(SRS)",
+          "Clinical KPI",
+          "기술 프로그램 관리"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Sr. Technical Product Manager",
+            "url": "https://www.wanted.co.kr/wd/355585",
+            "publisher": "원티드"
+          },
+          {
+            "title": "개발기획실장",
+            "url": "https://www.wanted.co.kr/wd/373234",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "한 병원씩 맞춤 구축하던 방식에서 공통 표준으로 옮기는 중이다",
+        "evidence": "국내 병원 연동에서 정립한 데이터 규격을 해외 사업과 제품군, 플랫폼으로 이식하며, 사업마다 새로 만들지 않는 공통 기반을 만들어갑니다.",
+        "so_what": "데이터 엔지니어 공고가 '고객사별 개별 대응이 아니라 공통 영역과 개별 영역을 구분' 하는 지향을 자격으로 적는다 — 면접에서 표준화 설계 경험을 물을 가능성이 크다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "해외 인허가·연구가 빠르게 늘고 있다",
+        "evidence": "총 6개국 허가 기반 확보",
+        "so_what": "사이트가 2026년 인도네시아·말레이시아 허가와 일본 공동연구를 연달아 적고, 구축 PM·TPM 공고가 해외 병원·글로벌 고객 요구를 업무로 적는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "병원 계약·과금 구조와 매출은 읽지 않았다",
+    "6개국 허가의 국가 목록 전체는 읽지 않았다(보도자료 요약만)",
+    "임직원 수는 읽지 않았다",
+    "사이트에 대표 이름(김광준)이 보도자료로 있으나 공개 발언을 읽지 않아 people 에 넣지 않았다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

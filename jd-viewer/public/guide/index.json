@@ -771,6 +771,18 @@
       "postings": 5,
       "study_items": 20,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "aitrics",
+      "name": "에이아이트릭스",
+      "aliases": [
+        "에이아이트릭스",
+        "AITRICS"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
