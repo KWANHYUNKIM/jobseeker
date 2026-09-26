@@ -99,12 +99,14 @@
               "url": "https://tech.connehito.com/entry/2026/07/02/093925",
               "publisher": "コネヒト開発者ブログ",
               "date": "2026-07-02",
-              "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터."
+              "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "graviton-canary-migration"
+      ]
     }
   ],
   "features": [
@@ -424,6 +426,327 @@
           "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
         }
       ]
+    },
+    {
+      "key": "graviton-canary-migration",
+      "name": "가장 많이 줄일 곳부터, 이미지 → 용량 → arm-only 순으로 — 과도기엔 멀티아키로 안전하게, 끝나면 네이티브로 빠르게",
+      "domain": "메인 API 를 ARM 으로 옮겨 비용을 줄인다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "마마리의 뒤에서 도는 **메인 API** 는 ECS 위에서 Fargate 와 EC2 로 돈다. AWS 공칭으로 Graviton 판 Fargate 는 x86 대비 **약 20% 싸고** 가격 대비 성능은 최대 40% 낫다. 가장 크게 줄일 수 있는 서비스로 메인 API 를 골랐고 월 **최소 수만 엔** 절감을 예측해 해 볼 가치가 있다고 봤다.\n\n마침 메인 API 에 **카나리아 릴리스** 구조를 들인 참이라, 카나리아가 제대로 도는지의 시운전으로도 때가 좋았다.",
+        "metrics": [
+          {
+            "label": "기대 절감",
+            "value": "Fargate x86 대비 약 20%(AWS 공칭) · 월 최소 수만 엔(예측)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "label": "CI 이미지 빌드",
+            "value": "QEMU 멀티아키 약 17분 → ARM 네이티브 약 3분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "label": "카나리아",
+            "value": "약 하루 가동 뒤 본번",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "label": "실측 절감",
+            "value": "아직 — 측정 방법만 정했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "과도기 빌드를 정할 때",
+          "thought": "'과도기에는 멀티아키로 안전하게, 이행이 끝나면 네이티브로 빠르게' — 이 순서가 요점이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+              "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+              "publisher": "コネヒト開発者ブログ",
+              "date": "2026-07-02",
+              "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+            }
+          ]
+        },
+        {
+          "at": "batch-ec2 를 옮길 때",
+          "thought": "① 이미지 arm 대응 → ② 용량 arm 화 → ③ arm-only 화의 **순서를 지키지 않으면** 기동할 수 없는 태스크가 생긴다 — 이 순서가 이행 설계의 핵심이었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+              "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+              "publisher": "コネヒト開発者ブログ",
+              "date": "2026-07-02",
+              "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "webapp · batch-fargate",
+            "what": "Fargate 워크로드. 태스크 정의에 runtimePlatform ARM64."
+          },
+          {
+            "name": "batch-ec2",
+            "what": "EC2 launch type 배치. 인스턴스 자체를 t3 → t4g, AMI 를 ECS-optimized arm64 로."
+          },
+          {
+            "name": "컨테이너 이미지",
+            "what": "과도기 amd64+arm64 멀티아키(QEMU) → 이행 뒤 arm-only(ARM 네이티브 러너)."
+          },
+          {
+            "name": "카나리아",
+            "what": "arm 으로 먼저 도는 일부. 전용 CloudWatch 알람(5xx·지연)과 전용 로그 그룹."
+          },
+          {
+            "name": "용량 공급자 전략",
+            "what": "FARGATE_SPOT 에 on-demand FARGATE 를 더하고 base 로 최소 태스크 확보."
+          }
+        ],
+        "invariants": [
+          "태스크 정의의 아키텍처와 **이미지의 아키텍처를 맞춘다** — 어긋나면 exec format error.",
+          "**이미지 → 용량 → arm-only** 순서를 지킨다.",
+          "이행은 dev → 카나리아 → 본번, **무정지·즉시 롤백** 가능하게.",
+          "카나리아 이상은 **통상 베이스라인과 갈라** 본다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "가장 크게 줄일 서비스(메인 API)를 고르고, 네이티브 확장(imagick 등)을 코드에서 찾아 '빌드만 되면 된다' 를 확인한다",
+            "why": "조사 범위를 정한다."
+          },
+          {
+            "step": "이미지를 QEMU + buildx 로 amd64·arm64 멀티아키로 빌드한다",
+            "why": "과도기에는 x86·arm 이 섞인다."
+          },
+          {
+            "step": "Fargate 태스크 정의에 ARM64 를 달고, batch-ec2 의 인스턴스를 t4g·arm64 AMI 로 바꾼다",
+            "why": "용량을 arm 으로."
+          },
+          {
+            "step": "dev 에서 몽키 테스트 → 카나리아 전용 알람·로그를 켠 채 카나리아 약 하루 → 본번 전체",
+            "why": "무정지·즉시 롤백."
+          },
+          {
+            "step": "모든 워크로드가 arm64 가 되면 x86 빌드를 폐지하고 ARM 네이티브 러너로 arm-only 빌드",
+            "why": "CI 17분 → 3분."
+          },
+          {
+            "step": "직전 7일 x86 베이스라인과 같은 요일·트래픽대로 정규화해 성능·비용을 비교한다",
+            "why": "효과 측정(진행 중)."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇부터 옮기나?",
+            "chosen": "**가장 크게 줄일 수 있는 서비스(메인 API) 하나 — 월 최소 수만 엔이면 할 가치가 있다.**",
+            "alternatives": [
+              "전 서비스를 한꺼번에"
+            ],
+            "tradeoff": "조사할 네이티브 확장이 적어 '빌드만 되면 된다' 로 판단할 수 있었다; 더 큰 서비스를 한꺼번에 옮기면 **조사할 것이 매우 많아진다**. 대가 — 나머지 서비스는 여전히 x86 이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "question": "과도기 이미지를 어떻게 빌드하나?",
+            "chosen": "**x86·arm 이 섞이는 동안은 QEMU + buildx 멀티아키로 안전하게, 전부 옮긴 뒤 ARM 네이티브 러너 + arm-only.**",
+            "alternatives": [
+              "처음부터 arm-only",
+              "멀티아키를 계속 유지"
+            ],
+            "tradeoff": "어느 쪽 워크로드에서도 뜨게 하면서, 끝나면 에뮬레이션을 없애 빌드가 **약 17분 → 약 3분**. 대가 — 과도기에는 QEMU 에뮬레이션으로 **빌드가 매우 느리다**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "question": "batch-ec2 는 어떻게?",
+            "chosen": "**Fargate 처럼 태스크만 바꾸지 않고 EC2 인스턴스 자체를 t3 → t4g, AMI 를 ECS-optimized arm64 로 — ASG/Launch Template 은 전용 IaC 리포지토리에서.**",
+            "alternatives": [
+              "batch-ec2 는 x86 에 남긴다"
+            ],
+            "tradeoff": "arm64 컨테이너 인스턴스가 클러스터에 등록돼야 비로소 arm64 태스크를 둘 수 있다. 대가 — 왜 EC2 로 도는지 **역사적 경위**부터 파악해야 했고 기능 장애 판단이 어려웠다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 먼저 바꾸나?",
+            "chosen": "**① 이미지 arm 대응 → ② 용량(EC2·Fargate) arm 화 → ③ arm-only 화.**",
+            "alternatives": [
+              "용량부터 arm 으로"
+            ],
+            "tradeoff": "이 순서를 어기면 **기동할 수 없는 태스크**가 생긴다. 대가 — 단계가 셋으로 늘어 이행 기간이 길어진다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "question": "본번에 어떻게 내보내나?",
+            "chosen": "**dev 몽키 테스트 → 카나리아 약 하루(전용 알람 5xx·응답 지연, 전용 로그 그룹) → 본번 전체. 되돌리는 법은 미리 정리.**",
+            "alternatives": [
+              "한 번에 전체 전환"
+            ],
+            "tradeoff": "아키텍처 기인 불량은 **응답 시간 악화·에러율 상승**으로 나타나기 쉬워 그 둘을 카나리아만 따로 본다; 무정지·즉시 롤백. 대가 — 카나리아 전용 알람·로그를 **따로 만들고 유지**해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "question": "ARM Spot 이 모자라면?",
+            "chosen": "**FARGATE_SPOT 만 쓰던 것에 on-demand FARGATE 를 더하고 base 로 최소 태스크를 확보.**",
+            "alternatives": [
+              "Spot 만 유지"
+            ],
+            "tradeoff": "ARM 용량 풀은 x86 보다 작아 dev 에서 **Spot 이 고갈돼 배포가 실패**했다. 대가 — on-demand 비율만큼 **절감 폭이 줄어든다**(그래서 실측은 Spot/on-demand 비율로 본다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          },
+          {
+            "question": "효과를 어떻게 재나?",
+            "chosen": "**직전 7일 x86 베이스라인과, 같은 요일·트래픽대로 RequestCount 정규화한 ALB 응답 시간·ECS CPU·Mem 비교. 비용은 실청구 전후.**",
+            "alternatives": [
+              "단가 기준 시산만"
+            ],
+            "tradeoff": "공칭 20% 가 **실제로** 나오는지 확인한다. 대가 — 결과는 **아직 없다** — 글 시점에 측정 전이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+                "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-07-02",
+                "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "약관 동의를 덮어쓰지 않고 이력으로 쌓는다(같은 회사의 다른 도메인)",
+          "via": "되돌릴 수 있게",
+          "contract": "ARM 이행은 카나리아로 즉시 롤백할 수 있게, 약관은 덮어쓰지 않고 쌓아 과거로 돌아갈 수 있게 — 둘 다 **되돌릴 수 있는 형태**를 먼저 만든다(이 사이트의 해석 — 글끼리 서로 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "세 워크로드의 이행",
+          "question": "메인 API 의 무엇이 어떻게 ARM 으로 바뀌었나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph 이전\n    W1[\"webapp · Fargate · x86\"]\n    B1[\"batch-fargate · Fargate · x86\"]\n    E1[\"batch-ec2 · EC2 t3\"]\n    C1[\"CI: QEMU 멀티아키 약 17분\"]\n  end\n  subgraph 이후\n    W2[\"webapp · ARM64\"]\n    B2[\"batch-fargate · ARM64\"]\n    E2[\"batch-ec2 · EC2 t4g\"]\n    C2[\"CI: ARM 네이티브 arm-only 약 3분\"]\n  end\n  W1 --> W2\n  B1 --> B2\n  E1 --> E2\n  C1 --> C2"
+        },
+        {
+          "title": "순서를 지키는 이행",
+          "question": "어떤 순서로 바꿔야 태스크가 뜨나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 이미지멀티아키: ① amd64 + arm64\n  이미지멀티아키 --> 용량ARM: ② Fargate ARM64 · EC2 t4g\n  용량ARM --> dev검증\n  dev검증 --> 카나리아: 전용 알람 · 로그\n  카나리아 --> 본번전체: 약 하루 이상 없음\n  카나리아 --> 롤백: 5xx · 지연\n  본번전체 --> arm전용: ③ x86 빌드 폐지\n  arm전용 --> [*]"
+        },
+        {
+          "title": "ARM 에서 막히는 자리",
+          "question": "x86 → ARM 이행은 어디서 태스크를 못 띄우나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"태스크 ARM · 이미지 x86\"] --> B[\"exec format error\"]\n  C[\"FARGATE_SPOT 만\"] --> D[\"ARM Spot 고갈 → 배포 실패\\n→ on-demand + base\"]\n  E[\"사이드카 태그가 arm64 없음\"] --> F[\"pull 실패 → 태스크 미기동\"]\n  G[\"musl + pecl imagick\"] --> H[\"arm 빌드 막힘\\n→ arm 러너에서 실제 빌드\"]\n  I[\"용량보다 arm-only 먼저\"] --> J[\"batch-ec2 기동 불가\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",
+          "url": "https://tech.connehito.com/entry/2026/07/02/093925",
+          "publisher": "コネヒト開発者ブログ",
+          "date": "2026-07-02",
+          "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -451,7 +774,7 @@
       "url": "https://tech.connehito.com/entry/2026/07/02/093925",
       "publisher": "コネヒト開発者ブログ",
       "date": "2026-07-02",
-      "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터."
+      "summary": "마마리 **메인 API** 의 ECS(Fargate + EC2)를 x86_64 에서 **ARM64(Graviton)** 로 — AWS 공칭 Fargate **x86 대비 약 20% 저렴**. 가장 크게 줄일 수 있는 서비스를 골랐고 월 **최소 수만 엔** 절감 예측. webapp·batch-fargate 는 쉬웠지만 **batch-ec2**(EC2 launch type, t3 → **t4g**, ECS-optimized arm64 AMI)는 왜 EC2 인지 이력 파악과 기능 장애 판단이 어려웠다; 네이티브 확장(imagick 등)을 코드로 찾아 '빌드만 되면 문제없다' 로 결론. 과도기엔 **QEMU + buildx 멀티아키**(약 17분) — 모든 워크로드가 arm64 로 옮긴 뒤 **ARM 네이티브 러너 + arm-only 빌드**(약 3분). 이행은 **dev → 본번 카나리아 → 본번 전체**, 카나리아 전용 CloudWatch 알람(5xx·응답 지연), 무정지·즉시 롤백. 효과 측정은 이제부터. 카나리아 전용 CloudWatch 알람(5xx·응답 지연)과 **전용 로그 그룹** — 통상 베이스라인과 갈라 'arm 카나리아에서만 일어나는 이상' 을 바로 잡으려고. dev 에서 몽키 테스트 → 카나리아 **약 하루** → 본번. **주의점**: ARM **Spot 용량 고갈**(dev 가 FARGATE_SPOT 만이라 CD 실패 → on-demand FARGATE 를 더하고 base 로 최소 태스크), 사이드카(Datadog Agent 등)의 **arm64 태그** 확인, Alpine(musl)+pecl imagick 같은 네이티브 확장은 arm 러너에서 실제 빌드·기동까지, **순서 의존** — ① 이미지 arm 대응 → ② 용량(EC2/Fargate) arm 화 → ③ arm-only 화. 효과 측정은 ALB 응답 시간·ECS CPU·Mem 을 같은 요일·트래픽대로 정규화해 직전 7일 x86 베이스라인과 비교, 비용은 실청구 전후·Spot/on-demand 비율로."
     }
   ]
 }

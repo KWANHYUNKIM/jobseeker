@@ -1496,3 +1496,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 코네히토 약관 동의 이력
 
 - 약관 글 전문으로 `terms-consent-append-only`(결정 7 — 두 테이블·UNIQUE active_key·INSERT 개정·append-only·version 비교·md 본문(git 은 증적 아님)·TERMS_REVISION.md).
+
+## 2026-09-26 코네히토 Graviton 이행
+
+- Graviton 글 전문으로 `graviton-canary-migration`(결정 7 — 가장 큰 곳부터·멀티아키→네이티브·batch-ec2 t4g·이미지→용량→arm-only 순서·카나리아 전용 알람·Spot+on-demand·베이스라인 측정). 실측 절감은 아직.
