@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다.",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다. `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(Mountain View)는 `The base pay for this position ranges from $187,000/year in our lowest geographic market to $322,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -14842,6 +14842,123 @@
           {
             "title": "Senior Staff ll, AI Engineer (L7-2)",
             "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7834206",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7816155",
+      "title": "Senior Staff ll, Machine Learning Engineer (Tech Lead)",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 미국 마운틴뷰 근무다. 검색·정보검색·추천·ML·DL·NLP 10년 이상과 석사를 요구하는 테크 리드 자리로, 현재 검색·추천 시스템의 병목 원인을 찾아 결함을 정량화하고, ML·DL·LLM 을 쓴 해결책을 제안·구현해 A/B 로 검증한다. 예시 과제로 개인화 랭킹 모델의 검색 랭킹 스택 통합, 개인화 검색(retrieval), 모든 Discovery 화면의 추천 모델, 사용자 이해·모델링이 적혀 있다. 연봉 범위가 원문에 있다(기본급 $187,000~$322,000) — 원화로 환산하지 않는다.",
+      "fit": {
+        "must_have": [
+          "검색·IR·추천·ML·DL·NLP 10년 이상",
+          "Java·C++·Python",
+          "CS 등 석사",
+          "분산 환경 대용량 데이터 처리"
+        ],
+        "can_learn": [
+          "박사(우대)",
+          "이커머스·소셜·검색 회사 경험(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "검색·추천 병목 진단과 결함 정량화",
+          "from": "task",
+          "quote": "Root causes the bottle neck of the current search and recommendation systems and quantifies the defects.",
+          "priority": "core",
+          "why": "현재 검색·추천 시스템의 병목 원인을 찾고 결함을 정량화하는 것이 주요업무 첫 줄이다(원문 'bottle neck' 표기 그대로).",
+          "gap_check": "'검색 결과가 별로다'는 불만을 후보 생성(retrieval)·랭킹·필터링·질의 이해 중 어느 단계 결함인지 가르려면 단계별로 무엇을 재는가?",
+          "drill": "가상 검색 파이프라인 로그로 단계별 재현율(정답 상품이 후보에 들어왔는가 → 상위 k 안에 들었는가)을 계산해, 손실이 가장 큰 단계를 찾는 결함 분석표를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Introduction to Information Retrieval — Evaluation in information retrieval",
+              "url": "https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-in-information-retrieval-1.html",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "개인화 검색 — 투타워 후보 생성",
+          "from": "task",
+          "quote": "Personalized retrieval",
+          "priority": "core",
+          "why": "예시 과제에 개인화 검색(retrieval)과 사용자 이해·모델링이 있다.",
+          "gap_check": "사용자 타워와 상품 타워로 후보를 뽑을 때 인기 상품 쏠림(샘플링 편향)을 어떻게 보정하고, 새 상품(콜드 스타트)은 어떤 특성으로 후보에 들어오게 하는가?",
+          "drill": "샘플링 편향 보정 투타워 논문을 읽고, 공개 상호작용 데이터로 작은 투타워 모델을 학습해 FAISS 로 후보를 뽑은 뒤, 보정 유무에 따른 recall@100 을 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Yi et al. — Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations",
+              "url": "https://research.google/pubs/sampling-bias-corrected-neural-modeling-for-large-corpus-item-recommendations/",
+              "kind": "paper"
+            },
+            {
+              "title": "facebookresearch/faiss",
+              "url": "https://github.com/facebookresearch/faiss",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "개인화 랭킹의 검색 랭킹 스택 통합",
+          "from": "task",
+          "quote": "Personalization ranking model and its integration to Search ranking stack.",
+          "priority": "high",
+          "why": "개인화 랭킹 모델을 검색 랭킹 스택에 통합하는 것이 예시 과제로 적혀 있다.",
+          "gap_check": "검색어 관련성이 우선인 검색 랭킹에 개인화 점수를 넣을 때, 관련성 낮은 '취향 상품'이 위로 올라오는 부작용을 어떻게 막는가(단계 분리·가중치·제약)?",
+          "drill": "후보 생성·랭킹 두 단계 구조를 다룬 추천 논문을 읽고, 관련성 점수와 개인화 점수를 결합하는 세 방식(선형 결합·관련성 문턱 후 재정렬·특성으로 투입)을 가상 데이터로 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Covington et al. — Deep Neural Networks for YouTube Recommendations",
+              "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "랭킹 변경의 A/B 검증",
+          "from": "task",
+          "quote": "Implement the solutions and conduct AB tests.",
+          "priority": "high",
+          "why": "해결책을 구현하고 A/B 테스트를 수행하는 것이 주요업무다.",
+          "gap_check": "개인화 랭킹 실험에서 짧은 기간 클릭은 오르지만 다양성·신상품 노출이 줄어드는 장기 효과는 무엇으로 감시하는가?",
+          "drill": "실험 설계 한 장(가설·주 지표·가드레일·기간·표본 크기 계산)을 개인화 랭킹 변경에 대해 쓴다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Trustworthy Online Controlled Experiments (book site)",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "단계별 재현율 결함 분석 노트북",
+          "why": "주요업무 첫 줄이 병목 원인과 결함 정량화다. 파이프라인 단계별 손실을 숫자로 보여 주는 분석은 테크 리드 면접에서 문제 정의 능력을 드러낸다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "단계별 결함 진단",
+          "투타워 편향 보정·콜드 스타트",
+          "관련성과 개인화 결합",
+          "랭킹 실험 가드레일",
+          "조직 합의 이끌기"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff ll, Machine Learning Engineer (Tech Lead)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7816155",
             "publisher": "Coupang Careers"
           }
         ]
