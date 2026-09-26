@@ -507,7 +507,7 @@
           "title": "서블릿 흉내",
           "summary": "주소와 코드를 잇는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.8",
@@ -515,7 +515,7 @@
           "title": "동시에 여러 요청",
           "summary": "8장을 여기에 붙인다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

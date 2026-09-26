@@ -1,0 +1,210 @@
+{
+  "book": "java-io",
+  "id": "servlet",
+  "no": "9.7",
+  "chapter": 9,
+  "title": "서블릿 흉내",
+  "summary": "주소와 코드를 잇는다.",
+  "minutes": 13,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "주소와 코드를 표로 잇는다.",
+    "핸들러가 터졌을 때 연결이 죽지 않게 한다.",
+    "쿼리의 한글이 깨지는 자리를 찾아 고친다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.4절의 `switch` 는 주소가 늘면 못 쓴다. 주소마다 `case` 를 더하는 대신 **표에 담는다.**\n\n이것이 서블릿 컨테이너가 하는 일의 뼈대다 — 주소와 코드를 잇는 표 하나, 그리고 요청·응답을 감싼 객체 둘."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "필요한 것은 세 가지다",
+      "code": "interface Handler { void handle(Req q, Res s) throws Exception; }\n\nstatic final Map<String, Handler> ROUTES = new LinkedHashMap<>();\nstatic void get (String path, Handler h) { ROUTES.put(\"GET \"  + path, h); }\nstatic void post(String path, Handler h) { ROUTES.put(\"POST \" + path, h); }"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "주소를 잇는다 — 이것이 전부다",
+      "code": "get(\"/\",      (q, s) -> s.text(\"첫 화면\\n\"));\nget(\"/hello\", (q, s) -> {\n    String name = q.param(\"name\");\n    s.text(\"안녕하세요 \" + (name == null ? \"손님\" : name) + \"\\n\");\n});\nget(\"/boom\",  (q, s) -> { throw new IllegalStateException(\"일부러 터뜨린다\"); });\npost(\"/echo\", (q, s) -> {\n    s.type = \"application/json; charset=UTF-8\";\n    s.text(\"{\\\"받은바이트\\\":\" + q.body.length + \"}\\n\");\n});"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "일곱 요청을 넣어 봤다",
+      "sql": "  [서버] 라우트 6개: [GET /, GET /hello, GET /count, GET /slow, GET /boom, POST /echo]\n\n  GET  /                  -> http=200  첫 화면\n  GET  /hello             -> http=200  안녕하세요 손님\n  GET  /hello?name=홍길동  -> http=200  안녕하세요 홍길동\n  GET  /nope              -> http=404  없는 주소: /nope\n  POST /echo (-d 이름=홍길동) -> http=200  {\"받은바이트\":16,\"본문\":\"이름=홍길동\"}\n  POST /hello             -> http=405  안 되는 메서드\n  GET  /boom              -> http=500  서버 오류\n\n  [서버] POST /hello -> 405 (핸들러 없음)\n  [서버] GET /boom -> 500  (IllegalStateException: 일부러 터뜨린다)",
+      "note": "**405 가 저절로 나온다.** `GET /hello` 키는 있고 `POST /hello` 키가 없으니, 경로만 같은 키가 있는지 보면 404 와 405 가 갈린다(9.4절의 그 기준)."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "404 와 405 를 표에서 가른다",
+      "code": "Handler h = ROUTES.get(q.method + \" \" + q.path);\nif (h == null) {\n    boolean other = ROUTES.keySet().stream()\n        .anyMatch(k -> k.endsWith(\" \" + q.path));   // 경로만 같은 키가 있나\n    if (other) { r.status(405, \"Method Not Allowed\"); }\n    else       { r.status(404, \"Not Found\"); }\n}"
+    },
+    {
+      "type": "prose",
+      "md": "## 핸들러가 터져도 연결은 살려 둔다\n\n`/boom` 은 일부러 예외를 던진다. 그것을 안 잡으면 9.4절에서 말한 대로 응답이 아예 안 나가고 `Connection reset` 이 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "예외를 응답으로 바꾼다",
+      "code": "try {\n    h.handle(q, r);\n} catch (Exception e) {\n    r.status(500, \"Internal Server Error\");\n    r.text(\"서버 오류\\n\");      // 예외 내용을 밖으로 보내지 않는다\n    log(q, 500, e);              // 로그에만 남긴다\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "예외 내용을 응답에 담지 않는 이유",
+      "md": "`e.getMessage()` 나 스택 트레이스를 본문에 넣으면 편하지만, 그것이 곧 정보 유출이다.\n\n> 스택 트레이스는 **쓰는 프레임워크·버전·패키지 구조·파일 경로**를 한 번에 알려 준다. 공격의 첫 단계가 그것이다.\n> 그래서 밖으로는 `서버 오류` 만, 로그에는 전부 남긴다 — 우리 로그에는 `IllegalStateException: 일부러 터뜨린다` 가 그대로 찍혔다.\n> 스프링의 `server.error.include-stacktrace` 기본값이 `never` 인 이유이고, 개발 중에 `always` 로 켜 두고 그대로 배포하는 것이 흔한 사고다."
+    },
+    {
+      "type": "prose",
+      "md": "## 쿼리의 한글이 깨졌다\n\n여기까지 잘 되는 것 같았는데 `?name=홍길동` 을 처음 보냈을 때 이렇게 나왔다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "고치기 전",
+      "sql": "$ curl \"http://localhost:12910/hello?name=홍길동\"\n  안녕하세요 íê¸¸ë\n\n# 그런데 퍼센트로 직접 인코딩해 보내면 잘 나온다\n$ curl \"http://localhost:12912/hello?name=%ED%99%8D%EA%B8%B8%EB%8F%99\"\n  안녕하세요 홍길동",
+      "note": "**둘의 차이가 원인을 가리킨다.** 퍼센트로 오면 되고 날것으로 오면 깨진다 — 즉 `URLDecoder` 는 잘 돌고 있고, **퍼센트가 아닌 바이트**가 문제다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "요청 줄을 `od` 로 찍어 보니",
+      "sql": "$ od -c q.bin | head -3\n  0000000    G   E   T       /   h   e   l   l   o   ?   n   a   m   e   =\n  0000020   홍  **  **  길  **  **  동  **  **       H   T   T   P   /   1\n  0000040    .   1  \\r  \\n",
+      "note": "**요청 줄에 UTF-8 바이트가 날것으로 들어 있다.** 9.1절에서 `/한글` 이 `%ed%95%9c...` 로 온 것과 다르다 — curl 은 **경로는 인코딩하고 쿼리는 안 한다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "9.2절의 결정이 여기서 버그가 됐다",
+      "md": "머리를 `ISO-8859-1` 로 읽은 것이 원인이다.\n\n> 그 인코딩은 **바이트 하나 = 글자 하나**라서 길이가 안 어긋난다(9.2절에서 그래서 골랐다).\n> 그런데 `ed 99 8d` 가 각각 `í`·`™`·`\\u008d` 라는 **세 글자**가 된다. 그 문자열을 UTF-8 로 다시 내보내면 화면의 그 깨짐이다.\n> 즉 **틀린 결정이 아니라 미완의 결정**이었다 — ISO-8859-1 로 읽는 것은 맞고, 그 뒤에 **바이트로 되돌려 UTF-8 로 다시 읽는 단계**가 빠져 있었다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "바이트로 되돌린 뒤 UTF-8 로 다시 읽는다",
+      "code": "// 머리를 ISO-8859-1 로 읽었으므로 바이트로 되돌려 UTF-8 로 다시 읽는다.\n// 퍼센트 인코딩은 그 뒤에 푼다 — curl 은 경로만 인코딩하고 쿼리는 날것으로 보낸다.\nString line1 = new String(p[1].getBytes(ISO_8859_1), UTF_8);\nString target = URLDecoder.decode(line1, UTF_8);"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "고친 뒤 — 세 가지 다 맞는다",
+      "sql": "  raw      : 안녕하세요 홍길동\n  %encoded : 안녕하세요 홍길동\n  한글 경로 : 없는 주소: /한글        <- 경로도 제대로 디코딩됐다\n\n  [서버] GET /한글 -> 404 (핸들러 없음)",
+      "note": "`ISO_8859_1` 로 `getBytes` 하면 **아까 읽은 바이트가 그대로 돌아온다** — 그 인코딩만이 왕복에서 손실이 없다. 그래서 머리 읽기에 그것을 쓴 것이 결국 옳았다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "톰캣에도 같은 설정이 있다",
+      "md": "이 문제는 우리가 처음 만난 것이 아니다.\n\n> 톰캣의 `URIEncoding`(8.0 이후 기본 `UTF-8`)이 바로 이 단계를 정하는 값이다. 그 전에는 기본이 `ISO-8859-1` 이라 한글 쿼리가 깨졌고, `new String(s.getBytes(\"8859_1\"), \"UTF-8\")` 이라는 코드가 온 프로젝트에 퍼져 있었다.\n> **`useBodyEncodingForURI`** 라는 설정도 있다 — 본문 인코딩을 주소에도 쓰겠다는 뜻이고, 이 절의 혼란이 표준화된 흔적이다.\n> 정리: **머리와 본문의 인코딩은 따로 정해야 하고, 주소는 머리에 속한다.**"
+    },
+    {
+      "type": "compare",
+      "title": "우리가 만든 것과 서블릿",
+      "left": {
+        "title": "우리 코드",
+        "md": "`ROUTES` 라는 `Map`\n\n`get(\"/hello\", h)` 로 등록\n\n`Req` / `Res`\n\n`h.handle(q, r)` 로 호출\n\n`try/catch` 로 500"
+      },
+      "right": {
+        "title": "서블릿 컨테이너",
+        "md": "`web.xml` 또는 `@WebServlet` 이 만든 매핑 표\n\n`<url-pattern>` 으로 등록\n\n`HttpServletRequest` / `HttpServletResponse`\n\n`service()` 가 `doGet`·`doPost` 로 나눠 호출\n\n`<error-page>` 또는 `@ExceptionHandler`"
+      },
+      "note": "**구조가 같다.** 서블릿이 특별한 기술이 아니라 이 표와 두 객체를 표준으로 못 박은 것이다 — 그래서 톰캣·제티·언더토우가 같은 코드를 돌릴 수 있다."
+    },
+    {
+      "type": "figure",
+      "caption": "one request, from bytes to a lambda",
+      "ascii": "        bytes on the socket\n              |\n              v\n        readRequest()          <- 9.1 request line, 9.2 headers + body\n              |  Req { method, path, query, headers, body }\n              v\n        ROUTES.get(\"GET /hello\")\n              |\n        +-----+------------------+\n        | found            null  |\n        v                   v    |\n        handler         404 / 405|\n        |    \\                   |\n        | throws -> 500          |\n        v                        v\n        Res { code, type, body } |\n              |------------------+\n              v\n        write()                <- 9.3 status line + Content-Length"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"서블릿 컨테이너는 무슨 일을 합니까.\"**\n\n> 소켓에서 읽은 바이트를 `HttpServletRequest` 로 만들고, **주소와 코드를 잇는 표**에서 서블릿을 찾아 호출하고, `HttpServletResponse` 를 바이트로 되돌린다. 직접 만들면 `Map` 하나와 객체 둘이다.\n> \"핸들러에서 예외가 나면\" 에는 — 안 잡으면 응답이 안 나가고 `Connection reset` 이다. 잡아서 500 으로 바꾸고 **예외 내용은 로그에만** 남긴다.\n> 한글 쿼리가 깨지는 이유를 물으면 — 요청 줄을 `ISO-8859-1` 로 읽었고 curl 은 **쿼리를 인코딩하지 않는다.** 바이트로 되돌려 UTF-8 로 다시 읽어야 한다. 톰캣의 `URIEncoding` 이 그 설정이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 오간 것 — 라우팅과 인코딩",
+      "sql": "$ java -cp out Mini 12913 4\n  [서버] 라우트 6개: [GET /, GET /hello, GET /count, GET /slow, GET /boom, POST /echo]\n\n# 고치기 전\n$ curl \"...?name=홍길동\"                       -> 안녕하세요 íê¸¸ë\n$ curl \"...?name=%ED%99%8D%EA%B8%B8%EB%8F%99\"  -> 안녕하세요 홍길동\n\n$ od -c q.bin | head -3\n  0000000    G   E   T       /   h   e   l   l   o   ?   n   a   m   e   =\n  0000020   홍  **  **  길  **  **  동  **  **       H   T   T   P   /   1\n\n# 고친 뒤\n  raw      : 안녕하세요 홍길동\n  %encoded : 안녕하세요 홍길동\n  한글 경로 : 없는 주소: /한글\n\n# 라우팅이 만든 응답들\n  POST /hello -> 405 (핸들러 없음)        <- 경로만 같은 키가 있다\n  GET /boom   -> 500  (IllegalStateException: 일부러 터뜨린다)\n  본문은 \"서버 오류\" 만 — 예외 내용은 로그에만 있다\n\n# 같은 요청이 퍼센트로 오면 되고 날것으로 오면 깨진 것이 원인을 가리켰다.\n# curl 은 경로를 인코딩하고 쿼리는 안 한다 — 9.1절의 관찰에는 이 경계가 없었다.",
+      "note": "**두 줄이 이 절의 전부다** — `ROUTES.get(method + \" \" + path)` 한 줄이 라우팅이고, `new String(bytes(ISO_8859_1), UTF_8)` 한 줄이 인코딩이다. 다음 절에서 이 서버에 8장을 붙인다 — 손님이 한꺼번에 오면 라우팅 말고 **다른 것**이 깨진다."
+    }
+  ],
+  "recap": [
+    "라우팅은 Map<String, Handler> 하나다 — 키를 \"GET /hello\" 로 두면 메서드까지 함께 걸린다.",
+    "경로만 같은 키가 있는지 보면 404 와 405 가 저절로 갈린다.",
+    "핸들러 예외를 안 잡으면 응답이 안 나가고 클라이언트는 Connection reset 을 본다.",
+    "500 의 본문에는 예외 내용을 넣지 않는다 — 스택 트레이스는 프레임워크·경로·버전을 알려 준다.",
+    "curl 은 경로는 퍼센트 인코딩하고 쿼리는 날것으로 보낸다 — od 로 확인했다.",
+    "머리를 ISO-8859-1 로 읽은 뒤 바이트로 되돌려 UTF-8 로 다시 읽어야 한다.",
+    "ISO-8859-1 은 왕복에서 바이트가 손실되지 않는다 — 그래서 머리 읽기에 맞다.",
+    "톰캣의 URIEncoding 이 정확히 이 단계를 정하는 설정이다.",
+    "우리 ROUTES 는 web.xml·@WebServlet 의 매핑 표이고, Req/Res 는 HttpServletRequest/Response 다.",
+    "서블릿은 특별한 기술이 아니라 이 구조를 표준으로 못 박은 것이다."
+  ],
+  "drills": [
+    {
+      "task": "Map 으로 라우팅을 만들고 주소 넷을 등록한다.",
+      "done_when": "404 와 405 가 갈리는지 확인한다.",
+      "minutes": 13
+    },
+    {
+      "task": "핸들러에서 예외를 던져 본다.",
+      "done_when": "500 이 나가고 본문에 예외 내용이 없는지 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "쿼리에 한글을 날것으로 보내 본다.",
+      "done_when": "깨지는 것을 확인하고 od 로 요청 줄을 찍는다.",
+      "minutes": 12
+    },
+    {
+      "task": "ISO-8859-1 왕복으로 고친다.",
+      "done_when": "날것과 퍼센트 둘 다 맞는지 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "404 와 405 를 표에서 어떻게 가르나.",
+      "a": "경로만 같은 키가 ROUTES 에 있으면 405, 없으면 404 다."
+    },
+    {
+      "q": "500 응답에 스택 트레이스를 넣으면 안 되는 이유는.",
+      "a": "프레임워크·버전·경로 구조가 노출된다. 로그에만 남긴다."
+    },
+    {
+      "q": "?name=홍길동 이 깨진 원인은.",
+      "a": "요청 줄을 ISO-8859-1 로 읽었고 curl 은 쿼리를 인코딩하지 않는다."
+    },
+    {
+      "q": "고치는 한 줄은.",
+      "a": "new String(s.getBytes(ISO_8859_1), UTF_8) — 바이트로 되돌려 UTF-8 로 다시 읽는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "라우팅 표",
+      "what": "요청의 메서드와 경로를 코드에 잇는 Map. 서블릿에서는 web.xml 이나 @WebServlet 이 만든다."
+    },
+    {
+      "term": "URIEncoding",
+      "what": "톰캣이 요청 줄을 어떤 인코딩으로 해석할지 정하는 설정. 8.0 부터 기본 UTF-8 이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Servlet Specification",
+      "url": "https://jakarta.ee/specifications/servlet/",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Apache Tomcat — HTTP Connector: URIEncoding",
+      "url": "https://tomcat.apache.org/tomcat-10.1-doc/config/http.html",
+      "publisher": "Apache"
+    }
+  ]
+}
