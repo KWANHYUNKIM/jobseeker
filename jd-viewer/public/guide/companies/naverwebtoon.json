@@ -411,6 +411,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55008796&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=eaca9380-cca6-4f8a-8354-233d74f6855d",
+      "title": "[네이버웹툰] Data Product Engineer (경력)",
+      "site": "saramin",
+      "verdict": "경력 5년 이상(데이터 또는 소프트웨어 엔지니어링). 파이프라인을 새로 까는 자리가 아니라 **기존 데이터 플랫폼 위에서 사업·기획의 문제를 푸는 '데이터 프로덕트' 자리**다 — 이해관계자 문제를 정의해 재사용 가능한 데이터 자산·지표·서비스형 기능을 설계·개발하고, 현업 의사결정을 돕는 기능·자동화·도구를 만들며, 모델링·파이프라인·분석·LLM/AI·사내 도구를 폭넓게 쓰고, **AI Agent·LLM 도구로 데이터 지원 업무의 워크플로우를 재설계**하며, 확장성·운영 효율·재사용성 관점의 설계 trade-off 를 판단하고, 비기술 이해관계자에게 문서화·전파한다. 필수는 SQL·Python 과 테스트 가능한 코드, 파이프라인·분석·자동화 중 하나를 설계부터 운영까지, 데이터 프로덕트 설계, 문제를 재정의하는 역량, 비기술 소통, 자율 추진. 우대사항 칸은 비어 있다. jobkorea 에도 같은 제목(본문 없음)이 있다. 전형: 지원서 리뷰 → 프리 인터뷰 → 실무 인터뷰(코딩 테스트 포함) → Culture-Fit 인터뷰(기업문화 적합도 검사 포함). **접수 2026년 09월 07일 ~ 09월 27일 23시 59분**(채용 시 마감), 이력서·자기소개서. 급여 '면접 후 결정', 근무지 정자동 그린팩토리.",
+      "fit": {
+        "must_have": [
+          "데이터·SW 엔지니어링 5년 이상",
+          "SQL·Python, 테스트 가능한 코드",
+          "파이프라인·분석·자동화 중 하나를 설계~운영",
+          "데이터 프로덕트 설계",
+          "비기술 이해관계자 소통"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "재사용 가능한 지표·데이터 자산 설계",
+          "from": "qualification",
+          "quote": "- 사용자의 문제를 정의하고 재사용 가능한 형태로 풀어내는 데이터 프로덕트(데이터 자산·지표·서비스형 기능 등) 설계 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수이고 첫 주요업무가 '재사용 가능한 데이터 자산·지표·서비스형 기능' 을 설계·개발하는 일이다.",
+          "gap_check": "사업팀마다 '활성 독자' 를 다르게 세고 있을 때 정의를 한 곳에 모으려면 지표를 어디(시맨틱 레이어·공용 테이블)에 두고, 정의가 바뀌면 과거 대시보드는 어떻게 처리하는가?",
+          "drill": "가상 웹툰 열람·결제 로그로 dbt 시맨틱 모델에 '활성 독자·회차 완독률·유료 전환율' 을 정의하고, 같은 지표를 두 개의 서로 다른 화면(대시보드·API)에서 같은 값으로 쓰게 만든 뒤 테스트를 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "dbt — Semantic models",
+              "url": "https://docs.getdbt.com/docs/build/semantic-models",
+              "kind": "docs"
+            },
+            {
+              "title": "dbt — Semantic Layer",
+              "url": "https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl",
+              "kind": "docs"
+            },
+            {
+              "title": "Martin Fowler — Data Mesh Principles",
+              "url": "https://martinfowler.com/articles/data-mesh-principles.html",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "AI Agent 로 데이터 지원 업무 재설계",
+          "from": "task",
+          "quote": "- AI Agent·LLM 도구로 데이터 지원 업무의 워크플로우를 근본적으로 재설계하고, 반복 업무를 자동화하며 ",
+          "priority": "core",
+          "why": "주요업무다. 같은 목록에 'LLM/AI 활용·사내 도구 개발' 과 반복 업무 자동화가 있다.",
+          "gap_check": "현업의 '지난달 장르별 매출 뽑아 주세요' 같은 요청을 에이전트가 처리하게 하려면 무엇(허용된 테이블·지표 정의·읽기 전용 쿼리 도구)을 열어 주고, 틀린 숫자를 내지 않았는지는 무엇으로 검증하는가?",
+          "drill": "앞 드릴의 지표 정의를 도구로 여는 MCP 서버(읽기 전용)를 만들고, 에이전트가 정의된 지표만으로 답하게 한 뒤, 질문 20개에 대해 사람이 뽑은 정답과 비교하는 평가를 promptfoo 로 돌린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Model Context Protocol",
+              "url": "https://modelcontextprotocol.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "promptfoo — Intro",
+              "url": "https://www.promptfoo.dev/docs/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "테스트 가능한 코드와 설계 trade-off",
+          "from": "qualification",
+          "quote": "- SQL·Python 기반의 실무 개발 경험이 있으며, 테스트 가능하고 유지보수하기 쉬운 코드를 작성할 수 있으신 분",
+          "priority": "high",
+          "why": "필수이고 주요업무에 '확장성·운영 효율·재사용성 관점에서 더 나은 구조로 설계하고 trade-off 판단' 이 있다. 전형 실무 인터뷰에 코딩 테스트가 포함된다.",
+          "gap_check": "현업용 자동화 스크립트를 '한 번 쓰고 버릴 것' 과 '제품처럼 유지할 것' 으로 나누는 기준은 무엇이고, 후자라면 어떤 테스트(단위·데이터 계약)를 반드시 붙이는가?",
+          "drill": "앞 드릴의 지표 계산 로직을 pytest 단위 테스트와 입력 데이터 계약 검사로 감싸고, 설계 결정 두 건(저장 위치·갱신 주기)을 ADR 로 남긴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "pytest documentation",
+              "url": "https://docs.pytest.org/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "ADR — Architectural Decision Records",
+              "url": "https://adr.github.io/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공용 지표 정의 + 지표만 쓰는 데이터 에이전트 + 정확도 평가 저장소",
+          "why": "주요업무의 데이터 프로덕트·AI Agent 워크플로우와 필수(테스트 가능한 코드)를 함께 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "현업 문제를 재정의해 데이터 제품으로 만든 사례 정리",
+          "why": "필수에 '요구사항을 단순 구현하는 데 그치지 않고, 문제의 본질을 정의하여 더 나은 구조로 재설계' 가 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 리뷰 → 프리 인터뷰 → 실무 인터뷰(코딩 테스트 포함) → Culture-Fit 인터뷰(기업문화 적합도 검사 포함). **접수 2026년 09월 07일 ~ 09월 27일 23시 59분**(채용 시 마감), 이력서·자기소개서. 급여 '면접 후 결정', 근무지 정자동 그린팩토리.",
+        "expect": [
+          "데이터 프로덕트 사례",
+          "문제 재정의",
+          "AI 로 업무 자동화",
+          "코딩 테스트"
+        ],
+        "sources": [
+          {
+            "title": "[네이버웹툰] Data Product Engineer (경력)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55008796&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=eaca9380-cca6-4f8a-8354-233d74f6855d",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ]
 }
