@@ -1436,3 +1436,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 드왕고 교육 회사 프로파일
 
 - 대기 맨 위. 교재 기반 10년 회고 + Android 재설계 글로 도메인 둘. 수익원은 1차 자료가 없어 inferred. slug `dwango-edu`(드왕고 본체와 구분). category '기타'(enum 에 교육 없음).
+
+## 2026-09-26 드왕고 교육 교재 기반 대학 우선 이행
+
+- 교재 기반 10년 회고로 `materials-platform-university-first`(결정 8 — 새 학교는 새 시스템·이행 순서·대학 비최적화·Kotlin+gRPC·TS 통일·미정 사양 선착수·workflow job 입고·내보내기 재입고). 대가 서술이 얕을 거라 우려했지만 결정 8 이 나왔다.
