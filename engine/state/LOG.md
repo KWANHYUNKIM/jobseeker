@@ -1969,3 +1969,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 COUNTERWORKS 회사 프로파일
 
 - counterworks.jp 로 서비스 둘(ショップカウンター 마켓·SCE SaaS). 기술 글 둘 다 SCE — 멀티테넌트화 연재·SolidQueue 이행을 도메인 둘로.
+
+## 2026-09-26 COUNTERWORKS tenant-double-defense
+
+- 연재 제1회(俯瞰)·제3회(二重防御) 로 기능 하나. 결정 8, 그림 3(flow·failure·state). 제2회(PG 이행)는 안 읽음 — 필요하면 Phase 1 보강 재료.

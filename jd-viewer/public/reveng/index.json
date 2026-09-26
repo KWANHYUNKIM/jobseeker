@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "팝업 스토어 공간 플랫폼 ショップカウンター 와 상업 시설 리싱 SaaS SCE 의 카운터워크스 — 도입 기업마다 따로 서던 Rails 앱을 10개월에 걸쳐 PostgreSQL 공유 DB·RLS·이중 방어의 멀티테넌트 한 환경으로 합치고, 60개 넘는 잡은 유료판 대신 Rails 8 의 SolidQueue 로 Phase 를 나눠 옮겨 Redis 를 걷어 냈다",
       "updated_at": "2026-09-26",
       "domain": "counterworks.jp"

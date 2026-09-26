@@ -92,7 +92,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "tenant-double-defense"
+      ]
     },
     {
       "name": "60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다",
@@ -117,11 +119,405 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "tenant-double-defense",
+      "name": "도입 기업 경계를 앱과 DB 두 겹으로 지킨다 — 공유 DB 로 합치면서 WHERE 자동 부여(앱 층)와 PostgreSQL RLS(DB 층)를 한 concern 으로 같이 켜고, 요청·잡·VIEW 마다 새는 자리를 막고, 정책 누락은 CI 가 떨어뜨린다",
+      "domain": "도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "SCE 는 상업 시설의 리싱 업무(구획 대여·출점자 모집·계약·청구·매출 집계)를 돕는 B2B SaaS 인데, 도입 기업마다 **AWS 계정 하나에 Rails 앱·RDS·S3 를 따로** 세웠다. 1사 = Terraform 환경 한 벌 — 인프라비가 선형으로 늘고, 신규 도입에 며칠~1주, 배포·심야 릴리스·감시 대시보드가 기업 수만큼 늘고, 전사 합계 쿼리 하나를 못 썼다. '몇 곳 더 늘면 못 돌린다' 는 공기 속에 2024년 5월 통합을 정했다.\n\n처음 기업마다 나눴던 이유는 계약 수를 못 읽었고, 상업 시설 고객이 **'다른 회사 데이터와 같은 DB 에 들어가는 건 피하고 싶다'** 고 불안해했기 때문이다. 그래서 공유 DB 로 합치는 순간 가장 중요한 것은 **기업 사이로 데이터가 새지 않는 것**이 된다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "약 10개월(2024-05 ~ 2025-03) · Jira 티켓 약 50 · 대상 테이블 약 200 · 대상 API 거의 전부 · 주요 멤버 2명(+인프라 2명 겸무, 막판 프런트 1명)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+                "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-05-27",
+                "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+              }
+            ]
+          },
+          {
+            "label": "결과",
+            "value": "'한 곳 더 늘어도 몇 시간이면 도입' — 본번 통합은 1사당 몇 시간의 점검 창, 여러 라인 병렬, 약 35 단계",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+                "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-05-27",
+                "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "분리 방식을 고를 때",
+          "thought": "Silo(기업별 DB·인프라 — 지금 상태) / Bridge(공유 DB·기업별 스키마 — 스키마가 늘면 마이그레이션 운영이 무너진다) / Pool(공유 DB·공유 스키마·행 단위 분리) 중 Pool. 인프라·운영·횡단 분석을 한꺼번에 노리는 목적에 가장 곧게 맞는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+              "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-05-27",
+              "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+            }
+          ]
+        },
+        {
+          "at": "어느 층에서 지킬지 정할 때",
+          "thought": "앱 층만이면 gem 을 안 거치는 raw SQL·VIEW·ApplicationRecord 밖 접속에서 샌다 — 사람의 주의력에 기댄 방어다. DB 층만이면 세션 변수를 깜빡했을 때 전부 안 보여(fail-safe) 개발자가 원인을 모르고 막힌다. **한쪽 사고를 다른 쪽이 막는다** — 비용은 들지만 '사고 방지 보험' 으로 싸다고 봤다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+              "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-05-27",
+              "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+            },
+            {
+              "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+              "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-06-12",
+              "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+            }
+          ]
+        },
+        {
+          "at": "이름을 정할 때",
+          "thought": "상업 시설에서 '테넌트' 는 **출점자**다. 도메인 모델에 이미 있었다. SaaS 의 테넌트 = 도입 기업을 같은 말로 들이면 코드에서 한 낱말이 두 뜻이 된다 — 업무어를 우선하고 SaaS 쪽이 이름을 양보해 `enterprise_id`. 서비스 이름(SCE)과도 맞았다. 칼럼 이름은 구현이 진행된 뒤 바꾸면 영향 범위가 넓으니 설계 첫머리에 끝낸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+              "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-06-12",
+              "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+            }
+          ]
+        },
+        {
+          "at": "VIEW 가 다른 기업 행을 돌려줬을 때",
+          "thought": "두 층이 다 켜져 있는데 VIEW 로 읽으면 섞였다. PostgreSQL VIEW 는 기본적으로 **VIEW 소유자 권한으로 평가**되고, scenic 으로 마이그레이션 때 만든 VIEW 의 소유자는 BYPASSRLS 를 가진 마이그레이션용 사용자였다. 테이블·VIEW·머티리얼라이즈드 뷰·함수·트리거마다 RLS 평가 규칙을 따로 확인해야 한다 — 설계 초기에 검증 항목으로 넣었어야 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+              "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-06-12",
+              "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+            }
+          ]
+        },
+        {
+          "at": "되돌아볼 때",
+          "thought": "'DB 만 멀티테넌트로 바꾸면 끝' 이 아니라 S3·인증·캐시·Webhook·감시까지 전 층을 손봐야 한다 — 여길 얕보면 막힌다. 돌고 있는 서비스를 바꾸는 것은 처음부터 멀티테넌트로 짓는 것보다 훨씬 힘들다. 개발 멤버에게 이중 방어 설명회를 초기에 했어야 했다 — 이행 뒤 꽤 혼란을 불렀다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+              "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-05-27",
+              "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+            },
+            {
+              "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+              "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-06-12",
+              "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Enterprise(도입 기업 = SaaS 의 테넌트)",
+            "what": "RLS 대상 밖 — 테넌트 개념의 부모라 테넌트 미설정 상태에서도 전부 보인다. 요청은 호스트명으로 이것을 찾는다."
+          },
+          {
+            "name": "업무 테넌트(출점자)",
+            "what": "상업 시설에 출점한 점포. SaaS 의 테넌트와 다른 말 — 그래서 식별자는 `enterprise_id`."
+          },
+          {
+            "name": "enterprise_id 식별 칼럼",
+            "what": "약 200 테이블에 추가. 외래 키·유니크 제약도 `(업무 키, enterprise_id)` 복합으로."
+          },
+          {
+            "name": "RLS 정책(tenant_policy)",
+            "what": "세션 변수 `tenant_level_security.tenant_id` 와 행의 `enterprise_id` 가 같은 행만 돌려준다. 기본값은 'dummy' — 없는 키라 전부 못 읽는다."
+          },
+          {
+            "name": "SeparatedByEnterprise concern",
+            "what": "include 하나로 앱 층(multi_tenant)과 DB 층을 같이 켠다."
+          },
+          {
+            "name": "DB 사용자 셋",
+            "what": "앱용(RLS 가 걸린다) · 마이그레이션용(BYPASSRLS) · 리포팅 도구용. database.yml 은 하나, 환경 변수로 갈아 끼운다."
+          },
+          {
+            "name": "MultiTenantJob",
+            "what": "ApplicationJob 에 include — enqueue 때의 테넌트를 잡과 함께 직렬화하고 실행 때 두 층을 다시 전환한다."
+          }
+        ],
+        "invariants": [
+          "앱 프로세스는 BYPASSRLS 없는 사용자로만 DB 에 붙는다 — 그 권한을 가진 사용자가 SELECT 하면 정책이 있어도 전 기업 행이 나온다.",
+          "테넌트가 설정되지 않은 쿼리는 아무것도 못 읽는다(전부 새는 쪽이 아니라 전부 막히는 쪽으로 넘어진다).",
+          "제외 목록에 없는 모든 테이블에는 RLS 정책이 있고 RLS 가 켜져 있다 — CI 가 확인한다.",
+          "유니크 제약은 `enterprise_id` 를 포함한 복합이다 — 단일 칼럼이면 다른 기업 행과 부딪혀 INSERT 가 실패한다.",
+          "VIEW 는 스스로 세션 변수로 기업을 거른다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Phase 0(2024년 5~8월) 스파이크 — activerecord-multi-tenant 동작 확인, RLS 검증, AWS SA 상담으로 Pool + 이중 방어 + UUIDv7 주키 + 기존 환경 통합까지 큰 그림",
+            "why": "'도중에 순서를 바꾸면 큰 되돌림' 이 되는 Phase 의존을 여기서 정리한 것이 뒤의 일정에 효과가 있었다. 첫 한 달을 조사·검증·계획에 꽉 썼다."
+          },
+          {
+            "step": "Phase 1(2024년 7~9월) MySQL → PostgreSQL",
+            "why": "당시 MySQL 에는 RLS 에 해당하는 기능이 없었다. DBMS 교체는 멀티테넌트와 무관한 변경이 많아 독립 Phase 로 잘랐다."
+          },
+          {
+            "step": "Phase 2(2024년 8~11월) 약 200 테이블에 enterprise_id + 제약 복합화 + 두 gem + concern 을 전 모델에",
+            "why": "본체. 베이스 브랜치 위에 기능 PR 을 쌓고 마지막에 한꺼번에 머지 — 긴 브랜치를 develop 에 따라붙이는 비용이 컸다. 작업 브랜치에서는 앱 층(2024년 9월)·DB 층(2024년 10월) 두 단계로 나눠 원인 분리를 쉽게 했고, 본번에는 일괄 릴리스."
+          },
+          {
+            "step": "요청마다 before_action `set_enterprise` — request.host 로 Enterprise 를 찾아 앱 층(set_current_tenant)과 DB 층(TenantLevelSecurity.switch!)을 같이 전환",
+            "why": "두 층을 동시에 켜야 이중 방어다. 헬스 체크처럼 테넌트가 필요 없는 곳만 skip."
+          },
+          {
+            "step": "잡은 MultiTenantJob 이 enqueue 때 테넌트를 잡아 직렬화하고 around_perform 에서 with_enterprise 로 감싼다. 정시 처리는 부모 잡이 Enterprise 를 돌며 기업마다 자식 잡을 쌓는다",
+            "why": "워커는 다른 프로세스라 요청의 테넌트가 넘어가지 않는다 — 안 넘기면 두 층이 모두 꺼진 채로 돈다. 호출하는 쪽은 평소처럼 perform_later 만."
+          },
+          {
+            "step": "CI 스펙 — `pg_policies` 에 정책이 있는지·`relrowsecurity` 가 켜졌는지, `pg_index` 에서 enterprise_id 없는 유니크 인덱스가 0 건인지, 전 VIEW 의 테넌트 필터",
+            "why": "새 멤버가 규칙을 모르고 마이그레이션을 써도, 리뷰어가 놓쳐도, 제외 목록에 안 올리는 한 CI 가 떨어진다. 사람의 주의력이 아니라 구조로."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "기업마다 따로 선 환경을 어떤 분리 방식으로 합치나",
+            "chosen": "Pool — 공유 DB·공유 스키마·행 단위 분리",
+            "alternatives": [
+              "Silo 유지(기업별 계정·DB)",
+              "Bridge — 공유 DB·기업별 스키마"
+            ],
+            "tradeoff": "인프라·운영·횡단 분석을 한 번에 얻는 대신, 모든 행에 경계를 넣어야 하고(약 200 테이블) 그 경계가 새면 곧 기업 간 누출이다. '다른 회사와 같은 DB' 를 꺼리던 고객 불안을 기술로 갚아야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+                "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-05-27",
+                "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+              }
+            ]
+          },
+          {
+            "question": "경계를 어느 층에서 지키나",
+            "chosen": "앱 층 + DB 층 이중 방어",
+            "alternatives": [
+              "앱 층만(default_scope 식 WHERE 자동 부여)",
+              "DB 층만(RLS)"
+            ],
+            "tradeoff": "raw SQL·VIEW 에서 새는 앱 층의 구멍과 설정을 깜빡하면 막히는 DB 층의 불편을 서로 덮는다. 대가는 두 구조를 늘 같이 켜고 전환해야 하는 비용 — concern 과 헬퍼로 한 번에 켜게 해서 '한쪽만 켠' 사고를 줄였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+                "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-05-27",
+                "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+              },
+              {
+                "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+                "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-06-12",
+                "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+              }
+            ]
+          },
+          {
+            "question": "RLS 를 쓰려면 DB 를 바꿔야 하나",
+            "chosen": "돌고 있는 본번 MySQL 을 PostgreSQL 로 완전 이행 — 독립 Phase 로",
+            "alternatives": [
+              "MySQL 을 두고 앱 층만으로 지킨다(inferred)"
+            ],
+            "tradeoff": "당시 MySQL 에 RLS 상당 기능이 없어 피할 수 없었다. 대가는 멀티테넌트와 무관한 사양 차이를 전부 떠안는 것 — 그래서 Phase 를 분리했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+                "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-05-27",
+                "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+              }
+            ]
+          },
+          {
+            "question": "SaaS 테넌트 식별자를 뭐라 부르나",
+            "chosen": "`enterprise_id` — gem 이 `tenant_id` 만 받던 것은 본가에 PR 을 보내 partition_key 로 지정 가능하게",
+            "alternatives": [
+              "tenant_id",
+              "customer_id",
+              "organization_id"
+            ],
+            "tradeoff": "업무어 '테넌트(출점자)' 와의 충돌을 없앤다. 대가는 gem 의 관례에서 벗어나 상류에 손을 대야 했던 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+                "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-06-12",
+                "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+              }
+            ]
+          },
+          {
+            "question": "마이그레이션은 RLS 를 넘어야 하는데 앱은 넘으면 안 된다",
+            "chosen": "DB 사용자를 앱용 / 마이그레이션용(BYPASSRLS) / 리포팅용으로 나누고, database.yml 하나에서 환경 변수로 갈아 끼운다",
+            "alternatives": [
+              "한 사용자로 모두(inferred)"
+            ],
+            "tradeoff": "앱 접속에는 RLS 가 반드시 걸린다. 대가는 BYPASSRLS 사용자가 **만든 객체**가 그 권한을 들고 다닌다는 것 — VIEW 사고가 여기서 났다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+                "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-06-12",
+                "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+              }
+            ]
+          },
+          {
+            "question": "VIEW 가 소유자(BYPASSRLS) 권한으로 평가돼 전 기업 행을 돌려줄 때",
+            "chosen": "모든 VIEW 정의 SQL 에 세션 변수로 거르는 WHERE 를 직접 쓰고, 스펙으로 전 VIEW 를 검사",
+            "alternatives": [
+              "`security_invoker = true`(PostgreSQL 15+, 호출자 권한으로 평가해 원 테이블 RLS 가 그대로 걸린다)"
+            ],
+            "tradeoff": "당장 전 VIEW 를 한꺼번에 막았다. 대가는 거르는 정의가 정책과 VIEW 두 곳에 흩어지는 것 — 글쓴이도 새로 설계한다면 security_invoker 가 맞다고 본다. 이미 WHERE 방식으로 맞춰져 있고 CI 가 누락을 잡으니 일괄 이행할 동기는 없어 유지, 새 VIEW 에선 선택지로 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+                "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-06-12",
+                "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+              }
+            ]
+          },
+          {
+            "question": "테넌트를 안 정했을 때 기본값을 무엇으로",
+            "chosen": "initializer 에서 세션 변수를 'dummy' — 없는 키라 전부 못 읽는다(UUID 캐스트 실패로 오류가 나지만 실패하면 그만이라 둔다)",
+            "alternatives": [
+              "미설정 그대로(당시 Rails 가 잘 안 떴다)"
+            ],
+            "tradeoff": "새는 쪽이 아니라 막히는 쪽으로 넘어진다. 대가는 로컬에서 테넌트를 깜빡한 개발자가 빈 화면·오류에 막히는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+                "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-06-12",
+                "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+              }
+            ]
+          },
+          {
+            "question": "정시 처리처럼 요청이 없는 일은 어떻게 기업을 정하나",
+            "chosen": "부모 잡이 전 Enterprise 를 돌며 with_enterprise 안에서 자식 잡을 쌓는다 — 전 기업 병렬",
+            "alternatives": [
+              "기업 수에 맞춘 병렬도 제어(글이 스스로 적은 다음 과제)"
+            ],
+            "tradeoff": "테넌트를 인자로 넘기지 않아도 자식 잡에 이어진다. 대가는 기업이 늘면 DB·워커 부하가 한꺼번에 몰릴 수 있는 것 — 지금의 최적해가 아니라 확장 때 다시 볼 과제로 적었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+                "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-06-12",
+                "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다(같은 회사의 다른 도메인)",
+          "via": "MultiTenantJob — 잡 직렬화에 테넌트를 싣는다",
+          "contract": "큐 백엔드를 Sidekiq 에서 SolidQueue 로 바꿔도 잡은 enqueue 때의 기업을 들고 가야 하고, `solid_queue_*` 테이블은 RLS 제외 목록에 있다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 두 겹을 지나는 길",
+          "question": "공유 DB 에서 A 사 화면은 어떻게 A 사 행만 읽나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  R[\"요청\\nhost = a사 도메인\"] --> SE[\"set_enterprise\\nEnterprise 찾기\"]\n  SE --> APP[\"앱 층\\nWHERE enterprise_id = A 자동\"]\n  SE --> SV[\"DB 층\\n세션 변수 = A\"]\n  APP --> Q[\"SQL\"]\n  RAW[\"raw SQL\\ngem 을 안 거침\"] --> Q\n  Q --> PG[(\"PostgreSQL\\nappuser · RLS\")]\n  SV --> PG\n  PG --> OUT[\"A 사 행만\"]"
+        },
+        {
+          "title": "VIEW 로 새던 자리",
+          "question": "두 층이 다 켜졌는데 왜 VIEW 는 다른 기업 행을 돌려줬나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"appuser 가 VIEW SELECT\"] --> B{\"VIEW 는 누구 권한으로?\"}\n  B -->|기본: 소유자| C[\"소유자 = 마이그레이션용\\nBYPASSRLS\"]\n  C --> D[\"RLS 건너뜀 → 전 기업 행\"]\n  D --> E[\"대응: 모든 VIEW 정의에\\n세션 변수 WHERE\"]\n  E --> F[\"CI 가 전 VIEW 필터 검사\"]\n  B -->|security_invoker = true| G[\"호출자 권한 → 원 테이블 RLS 적용\\n(새 VIEW 의 선택지)\"]"
+        },
+        {
+          "title": "세션의 테넌트 상태",
+          "question": "테넌트를 정하지 않으면 무엇이 보이나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Dummy: initializer\n  Dummy --> Dummy: 쿼리 → 0행 또는 오류\n  Dummy --> Set: set_enterprise / with_enterprise\n  Set --> Set: 그 기업 행만\n  Set --> Dummy: 블록 종료\n  Set --> Job: perform_later\n  Job --> Set: 워커에서 복원"
+        }
+      ],
+      "sources": [
+        {
+          "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+          "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+          "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+          "date": "2026-05-27",
+          "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+        },
+        {
+          "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+          "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+          "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+          "date": "2026-06-12",
+          "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "요금·수수료 구조와 매출 비중을 확인하지 못했다.",
     "ショップカウンター(공간 마켓플레이스)의 기술 결정 글을 아직 못 봤다.",
-    "연재 제2회(PostgreSQL 이행 `0eb98271af2991`)·제3회(이중 방어 `1887cb36a1b701`)·SolidQueue 실장편은 다음 사이클에 읽는다."
+    "연재 제2회(PostgreSQL 이행 `0eb98271af2991`)·SolidQueue 실장편은 아직 안 읽었다."
   ],
   "sources": [
     {
@@ -144,6 +540,13 @@
       "publisher": "COUNTERWORKS Tech Blog (Zenn)",
       "date": "2026-07-01",
       "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+    },
+    {
+      "title": "アプリ層とDB層の二重防御でテナント分離を担保する（マルチテナント化連載 第3回・二重防御編）",
+      "url": "https://zenn.dev/counterworks/articles/1887cb36a1b701",
+      "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+      "date": "2026-06-12",
+      "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
     }
   ]
 }

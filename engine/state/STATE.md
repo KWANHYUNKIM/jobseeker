@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**COUNTERWORKS 프로파일(2026-09-26) — 도메인 둘(둘 다 SCE), 기능 0. 다음은 확장: '도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다' — `3e0df3b62f55f9`(5 Phase · 공유 DB+RLS+이중 방어) + `0eb98271af2991` + `1887cb36a1b701`(본문 아직; Phase 연월이 있어 feature history 후보). 그다음 '60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다' — `sidekiq-to-solidqueue-strategy` + 실장편. 수익원 ショップカウンター 는 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(Luup) — --gaps 가 후보 조사를 부를 수 있다(입구: Zenn 검색 API 주제어). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**COUNTERWORKS 기능 1(2026-09-26) — 멀티테넌트 도메인에 `tenant-double-defense`(Pool · 앱+DB 이중 방어 · enterprise_id · BYPASSRLS VIEW 함정 · CI 스펙). 다음은 확장: '60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다' — `sidekiq-to-solidqueue-strategy` + `sidekiq-to-solidqueue-implementation`. 그 뒤 수익원 ショップカウンター 에 도메인 없음 → 두 번 찾고 없으면 hold. 대기 1/3(Luup). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
