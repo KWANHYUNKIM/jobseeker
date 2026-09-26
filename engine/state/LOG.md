@@ -2131,3 +2131,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 WED JAN 부여
 
 - `20240731-indexing-product-names`(레벤슈타인 → 서브워드 벡터 → Faiss → Vertex AI) + 캐시 글 + 그라운딩 글 + JICFS 글로 기능 `receipt-name-to-jan`, 결정 8. 세대 교체는 연도가 없어 history 로 쓰지 않고 결정의 대안으로 남겼다.
+
+## 2026-09-27 WED 영수증 관문
+
+- `creating_ng_model`(2024-08, CoreML 3 클래스) + `judge_receipt_wasm`(PMN 브라우저 5 클래스) + `c36a134798cb85`(체인 2단 모델) + PMN 뉴스로 기능 `receipt-gatekeeping`, 결정 8. ONE(CoreML)과 PMN(WASM)은 교체가 아니라 채널별 공존이라 history 로 쓰지 않았다.

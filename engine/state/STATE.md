@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**WED 기능 1(2026-09-27) — `receipt-name-to-jan`(줄여 찍힌 상품명에 JAN 을 붙이고 한 번 붙인 건 다시 찾지 않는다, 결정 8 — JICFS 카테고리는 결정 하나로 넣었다). 다음은 --gaps 의 확장: 도메인 '올라온 영수증이 받을 만한지, 어느 가게 것인지 가린다' — `judge_receipt_wasm`(PMN 브라우저 NG 판정·영역 검출, ONNX Runtime Web) + `c36a134798cb85`(OCR 없는 체인 예측) + PMN 뉴스(중복·하루 매수 제한, 판정 결과로 과금). 안 읽은 `creating_ng_model` 도 열어 볼 것. 두 도메인이 차면 수익원 둘 다 연결 — done 판정. 대기 1/3(mixtend) — 후보 조사 필요. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**WED 기능 2(2026-09-27) — `receipt-gatekeeping`(영수증은 올리기 전에 단말에서 거르고 가게는 사진으로 맞힌다, 결정 8). 도메인 둘 다 찼고 수익원 둘 다 도메인이 있다(데이터 이활용 연결은 inferred) · 두 기능이 체인으로 서로 이어진다 — 다음 사이클에 완주 기준 셋을 확인하고 done(--gaps 가 신규·후보 조사를 가리켜도 done 이 먼저라고 LOG 에 남긴다). 그다음 큐 1/3 이라 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

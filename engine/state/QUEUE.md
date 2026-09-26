@@ -28,7 +28,7 @@
 
 | **CADDi(キャディ)** | JP · 제조(조달·도면 SaaS) | 프로파일(2026-09-26). 도메인 둘 — 여러 제품이 한 문으로 들어온다(Control Plane) · 쌓인 제조 데이터를 싸게 꺼낸다(BigQuery). 기능 2(인증 게이트웨이 · BigQuery 비용). **hold** — 수발주 수익원 자료 2회 없음(완주 기준 셋째 미충족)(`CADDi の Control Plane`·`RFC 8707`·`Auth0 で SSO`), 그다음 Go 채택·JSON 컬럼 비용. |
 | **Lincwell(リンクウェル)** | JP · 온라인 진료·클리닉 DX·헬스케어 EC | 프로파일(2026-09-27, slug `lincwell`). 도메인 둘 — 예약 완료가 외부 통지를 기다리지 않는다 · 운영이 고른 순간에 수만 명에게 푸시를 보낸다. 기능 2(예약 LINE 비동기화 · 푸시 내재화). 입구 `zenn.dev/p/lincwell_inc/feed`. **hold(2026-09-27)** — Smart Clinics 수익원 자료 두 번 없음. Smart Clinics 수익원은 도메인 없음. |
-| **WED** | JP · 영수증 매입 앱(ONE) · 구매 데이터 · 판촉(PMN) | 프로파일(2026-09-27, slug `wed`). 도메인 둘 — 흔들리는 영수증 표기를 상품 코드에 잇는다 · 올라온 영수증이 받을 만한지, 어느 가게 것인지 가린다. 기능 1(JAN 부여). 입구 `zenn.dev/p/wed_engineering/feed`. |
+| **WED** | JP · 영수증 매입 앱(ONE) · 구매 데이터 · 판촉(PMN) | 프로파일(2026-09-27, slug `wed`). 도메인 둘 — 흔들리는 영수증 표기를 상품 코드에 잇는다 · 올라온 영수증이 받을 만한지, 어느 가게 것인지 가린다. 기능 2(JAN 부여 · 영수증 관문). 입구 `zenn.dev/p/wed_engineering/feed`. |
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
 
