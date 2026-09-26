@@ -235,5 +235,106 @@
     "AI 여행 에이전트가 출시됐는지는 공고로 알 수 없다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/367207",
+      "title": "프론트엔드 개발자 팀장",
+      "site": "wanted",
+      "verdict": "경력 8-16년, 서울 중구. 항공 등 여행 **B2B·B2C 시스템 프론트엔드**를 개발하면서 **프론트 개발 구성원과 팀을 이끄는** 팀장급 자리다. 회사 브리핑대로 B2B 는 여행사가 쓰는 항공 백오피스 '누아 오피스', B2C 는 우리카드와 만든 '우리WON트래블' 같은 예약 화면이다 — 공고가 어느 화면을 맡는지 따로 적지는 않는다. 필수는 웹 프론트엔드 8년 이상(또는 준하는 경력), React(Next) 등 SPA 에 대한 깊은 이해, **프론트엔드 아키텍처 설계와 기술 표준 수립**, 여러 직군 협업, 구조적 문제 분석, 기술 방향 제안. 우대는 디자인 시스템 구축·운영, 성능 최적화, TypeScript 코드 품질, 반응형 웹, **다국어·글로벌 서비스**(회사가 일본·중화권·동남아 확장을 준비 중이라고 적는다), 기술 조직·프로젝트 리딩. 같은 회사 '프론트엔드 개발자'(118906, 3년 이상) 공고의 주요업무에도 '(팀장급의 경우)' 팀 리드가 있다. 전형: 서류 심사 → 면접(직군에 따라 1~2차) → 처우 협의(추가 면접 요청 가능) → 최종 합격. 서류에서 **급여내역은 삭제**해 달라고 적는다. 3개월 수습 뒤 정규직 계약을 따로 한다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "웹 프론트엔드 8년 이상",
+          "React(Next) 깊은 이해",
+          "프론트엔드 아키텍처·기술 표준 수립",
+          "여러 직군 협업·기술 방향 제안"
+        ],
+        "can_learn": [
+          "디자인 시스템",
+          "성능 최적화",
+          "다국어·글로벌 서비스",
+          "TypeScript 코드 품질"
+        ]
+      },
+      "study": [
+        {
+          "topic": "B2B·B2C 를 함께 받치는 프론트엔드 구조",
+          "from": "qualification",
+          "quote": "• 프론트엔드 아키텍처 설계 및 기술 표준 수립 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격요건이고 주요업무가 B2B·B2C 두 갈래 시스템이다. 회사 브리핑대로 같은 항공 유통 소프트웨어가 여행사 백오피스와 카드사 예약 플랫폼을 함께 받친다.",
+          "gap_check": "여행사 백오피스(누아 오피스)와 카드사 제휴 예약 화면이 운임 표시·환불 규정·탑승객 입력 폼을 같이 쓴다면, 공통 코드를 패키지로 뽑아 모노레포로 둘지 각 앱에 복사할지 무엇으로 정하고, 제휴사마다 브랜딩·약관이 다를 때 공통 컴포넌트는 어디까지 설정으로 열어 두는가?",
+          "drill": "Turborepo 로 apps/office·apps/partner 와 packages/ui·packages/fare(운임·환불 계산) 를 만들고, 한쪽 앱의 테마만 바꿔도 다른 앱이 영향받지 않는지와 fare 패키지를 고쳤을 때 두 앱이 함께 빌드되는지 확인한다. 기술 표준(폴더 구조·린트·상태 관리 원칙)을 한 장 문서로 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Introduction — Turborepo",
+              "url": "https://turborepo.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "디자인 시스템 — Storybook 으로 공통 컴포넌트 운영",
+          "from": "preference",
+          "quote": "• 디자인 시스템 구축 및 운영 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이다. 팀장이 기술 표준을 세우는 자리라 공통 UI 의 기준을 정하는 일이 따라온다.",
+          "gap_check": "항공편 카드(출발·도착·경유·수하물·운임) 컴포넌트를 디자인 시스템에 넣을 때 어떤 상태(직항/경유, 매진, 운임 규정 펼침, 로딩)를 스토리로 모두 남겨야 하고, 디자이너·기획자가 개발 없이 그 상태를 확인하게 하려면 무엇이 필요한가?",
+          "drill": "Storybook 에 항공편 카드 컴포넌트를 올리고 상태별 스토리 다섯 개와 접근성 검사를 붙인 뒤, props 를 바꿔도 깨지지 않는지 시각 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Get started with Storybook",
+              "url": "https://storybook.js.org/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "항공 검색 결과 화면의 성능",
+          "from": "preference",
+          "quote": "• 프론트엔드 성능 최적화 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이다. 웹 백엔드 공고가 '항공권 검색 엔진' 을 개발한다고 적는다 — 검색 결과가 많은 화면이 핵심이다.",
+          "gap_check": "왕복 검색 결과 수백 건을 한 번에 그리면 무엇(INP·렌더 시간)이 나빠지고, 가상 스크롤·필터를 서버로 넘기기·결과를 받는 대로 흘려보내기 중 무엇을 고르며, Core Web Vitals 가운데 이 화면에서 가장 먼저 볼 지표는 무엇인가?",
+          "drill": "가짜 항공편 1,000건 목록을 React 로 그대로 그린 화면과 TanStack Virtual 로 그린 화면을 만들고, 필터 체크박스를 누를 때 Chrome 성능 패널로 INP·스크립트 시간을 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Web Vitals — web.dev",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "docs"
+            },
+            {
+              "title": "TanStack Virtual",
+              "url": "https://tanstack.com/virtual/latest",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "다국어·글로벌 — 시간대와 통화",
+          "from": "preference",
+          "quote": "• 다국어 및 글로벌 서비스 개발 및 운영 경험이 있으신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 공고 머리말이 일본·중화권·동남아 중심 글로벌 확장 준비를 적는다.",
+          "gap_check": "인천 23:40 출발, 도쿄 다음날 01:55 도착 항공편을 일본어·중국어 화면에 보일 때 시각은 어느 시간대로 표시하고(현지 공항 기준), '+1일' 표기와 운임 통화 표기(JPY 는 소수점 없음)는 무엇으로 만들며, Next.js 에서 언어별 경로를 어떻게 나누는가?",
+          "drill": "Next.js 국제화 가이드로 /ko·/ja·/zh 경로를 만들고, 한 항공편의 출발·도착 시각을 Intl.DateTimeFormat 의 timeZone 으로 공항 현지 시각에, 운임을 Intl.NumberFormat 으로 KRW·JPY·TWD 로 표시해 세 언어 화면을 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Guides: Internationalization — Next.js",
+              "url": "https://nextjs.org/docs/app/guides/internationalization",
+              "kind": "docs"
+            },
+            {
+              "title": "Intl.DateTimeFormat — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
