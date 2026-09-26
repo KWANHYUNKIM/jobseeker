@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**アルダグラム 프로파일(2026-09-27, slug `aldagram`) — 도메인 둘: 현장 AI 기능마다 비용과 모델을 따로 쥔다(Bedrock AIP · unit 분리 · 관측 이름 분리) · 현장 데이터를 거의 실시간으로 분석 기반에 옮긴다(Datastream CDC · Bastion SSH · GTID/슬롯). 요금 페이지가 로그인으로 넘어가 수익원 하나를 inferred 로 — 두 기능 뒤 한 번 더(회사 뉴스 · 도입 사례 · Zenn 검색 'KANNA 料金'). 다음은 --gaps 의 확장: 첫 기능 `ee846ade880fcc`, 둘째 `ab35100d97ffa4`(Raw/Sanitized/Mart 뒤쪽 절을 끝까지). 대기 1/3(ギークプラス) — 이 회사 뒤 후보 조사. 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**アルダグラム 기능 1(2026-09-27) — `bedrock-cost-per-feature`(내역을 보이게 하자 무엇이 멈췄나, 결정 8). 다음은 --gaps 의 확장: 도메인 '현장 데이터를 거의 실시간으로 분석 기반에 옮긴다' — `ab35100d97ffa4` 를 끝까지(Raw/Sanitized/Mart · 컬럼 접근 제어 · Append-only 이력). 그 뒤 수익원(inferred) 판정 — 도입 사례 · 뉴스 · Zenn 검색 'KANNA 料金'. 대기 1/3(ギークプラス) — 이 회사 뒤 후보 조사. 비교 문서 재료 +1: LLM 비용을 무엇의 단위로 쥐나(アルダグラム 기능별 AIP ↔ 다른 회사의 모델 라우팅·비용 글). 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

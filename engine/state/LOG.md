@@ -2179,3 +2179,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 アルダグラム 회사 프로파일
 
 - 회사 페이지 · 회사 개요 · 시리즈 B 발표로 사업(KANNA, 10만 사 · 100개국). 요금 페이지 kanna4u.com/price·plan 이 로그인 화면 — 수익원은 inferred. 글 둘(AIP · Datastream)로 도메인 둘. 임포트 · 모달 글은 아직 안 읽음.
+
+## 2026-09-27 アルダグラム 기능별 Bedrock profile
+
+- `ee846ade880fcc` 로 기능 `bedrock-cost-per-feature`, 결정 8(AIP + 태그 · unit 분리 · 교체 4걸음 · model_alias 불변 조건 · 기능 이름 output 경유 · 관측 이름 분리 · 한 기능 여러 profile · 글의 교훈).
