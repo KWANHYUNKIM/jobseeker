@@ -1,0 +1,158 @@
+{
+  "slug": "kakaopaysec",
+  "name": "카카오페이증권",
+  "name_en": "Kakao Pay Securities",
+  "aliases": [
+    "카카오페이증권"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "kakaopaysec.com",
+  "one_liner": "해외·국내주식·연금저축·ETF·펀드를 파는 '국내최초 테크핀 증권사' — 모집중 공고는 전부 시니어 개발·데이터 자리다",
+  "company": {
+    "business": "공고 머리말은 카카오페이증권을 '어렵고 복잡한 투자의 문턱을 낮추고, 생활 속 가장 가까운 금융투자 회사' 이자 '국내최초 테크핀 증권사' 로 소개한다. 회사 사이트는 해외주식·국내주식·연금저축·ETF·펀드 투자를 내세운다. 프론트엔드 공고는 MTS 서비스로 주식 모으기·펀드·주식 선물하기·프로모션을 꼽고, 웹뷰 기반(React·Next.js) 프론트엔드라고 적는다. 데이터 플랫폼 공고는 고객자산·계좌수익률·투자리포트 데이터와 원장 시스템에 집중되는 조회 트래픽, 분산 데이터베이스 기반 구조를 적는다. 매출·고객 수·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "카카오페이증권",
+        "url": "https://www.kakaopaysec.com",
+        "publisher": "카카오페이증권",
+        "summary": "메타 설명이 '제대로 투자하다 | 해외주식, 국내주식, 연금저축, ETF, 펀드 투자를 제대로' 라고 적는다."
+      },
+      {
+        "title": "프론트엔드 개발자(시니어)",
+        "url": "https://www.wanted.co.kr/wd/311372",
+        "publisher": "원티드"
+      },
+      {
+        "title": "대용량 데이터 플랫폼 백엔드 개발자(시니어)",
+        "url": "https://www.wanted.co.kr/wd/377076",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "주식·펀드 등 투자 중개(MTS)",
+        "how": "회사 사이트가 해외주식·국내주식·연금저축·ETF·펀드 투자를, 프론트엔드 공고가 주식 모으기·펀드·주식 선물하기를 MTS 서비스로 적는다. 수수료 구조·매출 비중은 읽지 않았다.",
+        "domains": [
+          "MTS 웹뷰 프론트엔드",
+          "고객 금융 데이터 플랫폼",
+          "그로스 데이터·실험"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "카카오페이증권",
+            "url": "https://www.kakaopaysec.com",
+            "publisher": "카카오페이증권",
+            "summary": "메타 설명이 '제대로 투자하다 | 해외주식, 국내주식, 연금저축, ETF, 펀드 투자를 제대로' 라고 적는다."
+          },
+          {
+            "title": "프론트엔드 개발자(시니어)",
+            "url": "https://www.wanted.co.kr/wd/311372",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "MTS 웹뷰 프론트엔드",
+        "why": "프론트엔드 공고 두 건이 React·Next.js·TypeScript·Tanstack Query·웹소켓 기반 웹뷰 서비스, SSR/CSR, 대규모 트래픽, OpenTelemetry·Grafana·OpenSearch·Sentry 관측성을 적고, FE코어팀은 공통 모듈·Design System·빌드/배포를 맡는다.",
+        "what_to_know": [
+          "웹뷰 기반 React/Next.js",
+          "웹소켓 시세",
+          "관측성"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자(시니어)",
+            "url": "https://www.wanted.co.kr/wd/311372",
+            "publisher": "원티드"
+          },
+          {
+            "title": "FE코어팀 프론트엔드 개발자(시니어)",
+            "url": "https://www.wanted.co.kr/wd/340473",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "고객 금융 데이터 플랫폼",
+        "why": "데이터 플랫폼 공고가 고객자산·계좌수익률·투자리포트 데이터의 정합성, 원장 시스템 조회 트래픽 분산, 분산 데이터베이스 기반 데이터 모델링·파이프라인을 적는다.",
+        "what_to_know": [
+          "분산 DB 데이터 모델링",
+          "정합성",
+          "데이터 파이프라인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "대용량 데이터 플랫폼 백엔드 개발자(시니어)",
+            "url": "https://www.wanted.co.kr/wd/377076",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "그로스 데이터·실험",
+        "why": "그로스 애널리틱스 공고가 DW/Lakehouse·Medallion 모델링, Metric Layer, 코호트·리텐션·퍼널·A/B 테스트, 실험 플랫폼·마케팅 자동화 데이터 파이프라인을 적는다.",
+        "what_to_know": [
+          "Lakehouse·Medallion",
+          "지표 체계",
+          "A/B 테스트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "그로스 애널리틱스 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/375035",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "사내 플랫폼·SRE(AI Native)",
+        "why": "AI Native Engineering팀 공고가 Platform Engineering·SRE·Productivity Engineering 세 영역과 AI Agent 를 SDLC 전반과 전사 업무에 넣는 내부 플랫폼을 적는다. 수익원이 아니라 사내 공통 기반이다.",
+        "what_to_know": [
+          "SRE",
+          "플랫폼 엔지니어링",
+          "AI Agent 업무 자동화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Native Engineering팀 AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/339967",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "개발 조직 전반에 AI 도구 활용을 요구한다",
+        "evidence": "AI Agent를 SDLC 전반(기획–개발–QA–배포–운영)과 전사 업무에 녹여",
+        "so_what": "그로스 애널리틱스 공고 자격요건도 AI 도구(Claude/Copilot 등)를 일상 워크플로우의 핵심으로 쓰라고 적는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "원장 조회 부하를 분산 DB 로 옮기는 중이다",
+        "evidence": "원장 시스템에 집중되는 조회 트래픽과 지속적인 데이터 증가에 대응하기 위해 분산 데이터베이스 기반의 확장 가능한 구조가 필요합니다.",
+        "so_what": "데이터 플랫폼 자리가 이 전환을 맡는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·고객 수·임직원 수는 읽지 않았다",
+    "수수료 구조와 상품별 매출 비중은 읽지 않았다",
+    "모집중 6건이 모두 경력 4~14년 시니어다 — 신입 공고는 없다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

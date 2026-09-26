@@ -550,6 +550,17 @@
       "postings": 6,
       "study_items": 29,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "kakaopaysec",
+      "name": "카카오페이증권",
+      "aliases": [
+        "카카오페이증권"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
