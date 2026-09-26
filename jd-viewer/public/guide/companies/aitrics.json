@@ -181,5 +181,101 @@
     "사이트에 대표 이름(김광준)이 보도자료로 있으나 공개 발언을 읽지 않아 people 에 넣지 않았다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/379809",
+      "title": "HAX Infra Data Engineer",
+      "site": "wanted",
+      "verdict": "경력 3-10년, 서울 강남구. 헬스케어 AI 솔루션의 기반인 **병원 데이터 표준화와 파이프라인**을 맡는 데이터 엔지니어다 — 병원마다 흩어진 EMR·레거시 데이터를 표준 스키마로 정규화하고 재사용 가능한 병원 DW 를 만드는 수집·통제·연동 계층, 국내 규격을 해외 사업·제품군으로 이식, 온톨로지·지식그래프로 제품 조직과 협업. ⚠️ 원문 공고의 '주요업무' 칸이 자격요건처럼 쓰여 있다 — SQL·데이터 모델링·ETL 3년, 대용량 파이프라인, **RDBMS 인덱싱·멱등성 잡 설계**, 스키마 정의서·매핑 문서, 공통·개별 영역을 가르는 표준 설계 지향. '자격요건' 칸은 **인프라 운영**이다 — 온프레미스·클라우드 혼합 환경 3년, Linux·네트워크·방화벽, Docker, **TLS·저장 데이터 암호화·계정 권한**, 설치 절차서. 제목의 'HAX Infra' 와 맞게 데이터와 인프라를 함께 보는 자리로 읽힌다. 우대는 **Kafka·Debezium CDC**, **OMOP CDM/OHDSI(ATLAS·WhiteRabbit·Usagi·DQD)**, EMR/HIS 연동, 병원 온프레미스, 의료 데이터 규제(개인정보보호법·IRB), 표준 어휘 라이선싱, 해외 이식·영어. 전형: 서류 ＞ 1차 인터뷰 ＞ 2차 인터뷰 ＞ 처우 협의(포지션에 따라 포트폴리오 발표, 필요 시 직무 테스트). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "SQL·모델링·ETL 3년",
+          "멱등 잡·인덱싱",
+          "온프레미스·클라우드 인프라 운영",
+          "Linux·네트워크·Docker",
+          "TLS·암호화·권한"
+        ],
+        "can_learn": [
+          "OMOP CDM/OHDSI",
+          "Kafka·Debezium CDC",
+          "의료 데이터 규제"
+        ]
+      },
+      "study": [
+        {
+          "topic": "멱등한 ETL 잡 — 다시 돌려도 같은 결과",
+          "from": "task",
+          "quote": "• RDBMS(Oracle, MySQL 등)에 대한 이해와 인덱싱·멱등성 잡 설계 등 운영 성능 관리 경험이 있으신 분",
+          "priority": "core",
+          "why": "원문 '주요업무' 칸의 문장이다. 병원 연동 배치는 네트워크·병원 시스템 문제로 중간 실패와 재실행이 잦다.",
+          "gap_check": "병원 EMR 에서 하루치 검사 결과를 옮기는 잡이 절반쯤 적재한 뒤 실패해 다시 돌리면 무엇이 중복되고, (병원ID·원천키) 유니크 키와 upsert 로 멱등하게 만들면 무엇이 해결되며, 원천에서 수정·삭제된 행은 어떻게 반영하는가? 대량 upsert 가 느릴 때 인덱스는 무엇을 도와주고 무엇을 늦추는가?",
+          "drill": "MySQL 에 (hospital_id, source_key) 유니크 키를 둔 검사 결과 테이블을 만들고, INSERT ... ON DUPLICATE KEY UPDATE 로 적재하는 잡을 짠다. 중간에 강제로 죽인 뒤 재실행해 행 수가 같은지, 원천 값이 바뀐 행만 갱신되는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "INSERT ... ON DUPLICATE KEY UPDATE — MySQL 8.4",
+              "url": "https://dev.mysql.com/doc/refman/8.4/en/insert-on-duplicate.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OMOP CDM 으로 병원 데이터 표준화",
+          "from": "preference",
+          "quote": "• OMOP CDM/OHDSI 생태계(ATLAS, WhiteRabbit, Usagi, DQD) 활용 경험이 있으신 분",
+          "priority": "core",
+          "why": "우대사항이고 같은 회사 계약직 데이터 엔지니어 공고가 OMOP-CDM 변환과 SNOMED CT·LOINC 매핑을 주요업무로 적는다. 회사 브리핑대로 여러 나라 병원으로 넓히고 있다.",
+          "gap_check": "병원 A 의 검사 코드 'GLU01' 과 병원 B 의 'BST' 를 같은 혈당 검사로 다루려면 OMOP 의 어느 테이블(MEASUREMENT)과 어떤 표준 개념(LOINC 기반 concept)으로 옮기고, 원천 코드는 무엇(source_concept_id)으로 남기며, 매핑 안 된 코드는 무엇(concept_id 0)이 되어 분석에서 어떻게 드러나는가?",
+          "drill": "The Book of OHDSI 의 CDM 장을 읽고, 가짜 두 병원의 환자·검사 CSV 를 PERSON·MEASUREMENT 테이블로 옮기는 매핑 문서(원천 컬럼 → CDM 컬럼, 코드 매핑표)를 쓴다. 매핑되지 않은 코드 비율을 병원별로 뽑는 쿼리를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "The Common Data Model — The Book of OHDSI",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "CDC 실시간 복제 — Debezium 으로 병원 DB 변경 받기",
+          "from": "preference",
+          "quote": "• Kafka, Debezium 등 CDC 기반 실시간 복제 파이프라인 구축 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이다. 회사 브리핑대로 AITRICS-VC 는 '실시간 EMR 정보' 를 분석한다 — 하루 한 번 배치로는 부족하다.",
+          "gap_check": "병원 운영 DB 에 매분 SELECT 폴링을 걸면 무엇이 부담되고, 트랜잭션 로그를 읽는 CDC 는 무엇을 줄이며, 병원 DBA 에게 무엇(로그 보존·복제 권한·계정)을 요청해야 하는가? 커넥터가 멈췄다 재시작하면 어디서부터 다시 읽는가?",
+          "drill": "Debezium 문서의 튜토리얼대로 로컬 MySQL → Kafka CDC 를 구성하고, INSERT·UPDATE·DELETE 이벤트의 before/after 형태를 확인한다. 커넥터를 멈춘 사이 변경을 넣고 재시작해 누락 없이 따라잡는지 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Debezium Documentation",
+              "url": "https://debezium.io/documentation/reference/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "병원 온프레미스 보안 — TLS 와 저장 데이터 암호화",
+          "from": "qualification",
+          "quote": "• 보안 설정(TLS, 저장 데이터 암호화, 계정·권한 관리) 실무 경험이 있으신 분",
+          "priority": "high",
+          "why": "자격요건이다. 환자 데이터를 병원 안 서버에서 다루므로 전송·저장 모두 암호화와 최소 권한이 기본이다(우대의 개인정보보호법·IRB 와 연결).",
+          "gap_check": "병원 DB → 수집 서버 → 분석 DW 구간에서 각각 무엇(TLS 버전·인증서 검증)을 켜야 하고, 디스크를 통째로 가져가도 읽지 못하게 하려면 무엇(저장 데이터 암호화·키 보관 위치)을 하며, 수집 계정에는 어떤 권한만 줘야 하는가?",
+          "drill": "Mozilla SSL 설정 생성기로 수집 서버(nginx 등)의 TLS 설정을 만들어 적용하고, MySQL InnoDB 저장 데이터 암호화를 테스트 DB 에 켜 본다. 수집 계정은 필요한 테이블 SELECT 만 주고, 설치 절차서 형식으로 보안 체크리스트를 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Mozilla SSL Configuration Generator",
+              "url": "https://ssl-config.mozilla.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "InnoDB Data-at-Rest Encryption — MySQL 8.4",
+              "url": "https://dev.mysql.com/doc/refman/8.4/en/innodb-data-encryption.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
