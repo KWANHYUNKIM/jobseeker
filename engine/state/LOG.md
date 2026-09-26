@@ -1993,3 +1993,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Luup zero-diff-benefit-migration
 
 - 레거시 이행 글 하나로 기능. 결정 9, 그림 3(state·failure·flow).
+
+## 2026-09-26 Luup admin-frontend-layers
+
+- 사내 관리 화면 아키텍처 글 끝까지 읽고 기능. 결정 8, 그림 3(flow·state·failure).

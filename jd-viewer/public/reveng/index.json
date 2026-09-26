@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "모빌리티",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "전동 킥보드·자전거 셰어 LUUP — 지불 금액에 닿는 특전 도메인을 'main 과 미승인 동작 차 제로' 를 원칙으로 AI 에이전트와 7개 Stacked PR 로 DDD 구조에 옮기고, 프런트가 Firestore 를 직접 읽던 사내 관리 화면은 도메인 단위 폴더와 API 경유로 층을 세우는 중",
       "updated_at": "2026-09-26",
       "domain": "luup.sc"

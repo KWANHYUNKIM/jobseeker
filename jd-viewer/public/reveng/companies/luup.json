@@ -94,7 +94,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "admin-frontend-layers"
+      ]
     }
   ],
   "features": [
@@ -482,6 +484,334 @@
           "publisher": "Luup Developers Blog (Zenn)",
           "date": "2026-07-17",
           "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+        }
+      ]
+    },
+    {
+      "key": "admin-frontend-layers",
+      "name": "여러 사업부가 쓰는 사내 관리 화면을 멈추지 않고 층으로 나눈다 — Firestore 쿼리·라이브러리·UI 가 SFC 에 섞여 있던 것을 features/{domain}·repository·infrastructure·core 로 한 단계씩 밀어내고, 의존은 바깥 → 안쪽 한 방향, 새것은 새 규칙·기존은 만질 때 옮긴다",
+      "domain": "여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "창업 초기엔 '다음 달에 이 회사가 있을까' 하는 때도 있어 설계보다 **돌아가는 것을 빨리 내는 것**이 먼저였고, 사내 관리 화면의 코드는 Vue SFC 의 `<script>` 에 몰아넣었다. Firebase 는 클라이언트가 DB 에 직접 붙을 수 있어 API 가 맡을 처리까지 프런트가 떠안았다. 그러다 관리 화면이 여러 사업부에서 쓰이며 기능·화면·개발자가 늘자 **지금 동작을 깨지 않고 기능을 더하고, 사양 변경을 겁내지 않고 화면을 고치고, 새로 온 사람이 헤매지 않는 것**이 화면을 늘리는 속도만큼 무거워졌다.",
+        "metrics": [
+          {
+            "label": "구성",
+            "value": "Vue 3 + Nuxt 4(SPA, SSR 없음) · Firebase(Firestore / Cloud Storage / Cloud Functions / Hosting) · Firestore 직접 참조 → Hono + Zod OpenAPI Hono REST API 경유로 바꿔 가는 방침",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          },
+          {
+            "label": "단계",
+            "value": "① features + repository ② domains / models ③ infrastructure ④ core + 공통 UI 를 NuxtUI v4 로 — ④ 는 진행 중",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "어떻게 옮길지 정할 때",
+          "thought": "관리 화면은 사업 안에서 계속 돌고 있어 '전부 멈추고 전면 리팩터' 는 애초에 선택지가 아니다. **새로 더하는 것은 새 규칙으로, 기존은 만질 때 조금씩** — 결국 그게 가장 좋았다. 처음부터 완성형을 노리지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "フロントエンドもアーキテクチャに向き合う！",
+              "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-05-25",
+              "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+            }
+          ]
+        },
+        {
+          "at": "공유 개념의 자리를 정할 때",
+          "thought": "위경도·지도 경계·ID 계 branded type 은 여러 feature 와 infrastructure 에 나온다 — DDD 의 Shared Kernel. `features/shared/` 가 먼저 떠올랐지만 features 와 나란한 shared 는 심리적으로 '일단 둘 수 있는 곳' 이 되어 공통 타입이 쉽게 불어난다. 한 단 위의 독립 층으로 두면 core 로 올리는 판단이 의식적인 리뷰를 거친다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "フロントエンドもアーキテクチャに向き合う！",
+              "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-05-25",
+              "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+            }
+          ]
+        },
+        {
+          "at": "추상을 더할지 망설일 때",
+          "thought": "층의 수나 `use` 접두사의 많음은 품질과 무관하다. `getUser(id)` 만 부르는 `useGetUser` 는 **지워도 복잡성이 흩어지지 않는** pass-through 라 새로 만들지 않는다. '이걸 지우면 복잡성이 흩어진다' 고 말할 수 있는 추상만 고른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "フロントエンドもアーキテクチャに向き合う！",
+              "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-05-25",
+              "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "features/{domain}",
+            "what": "도메인 단위 모듈 — apis · components · composables · domains · models · services."
+          },
+          {
+            "name": "domains / models",
+            "what": "domains 는 타입 + 한 도메인에 닫힌 순수 함수(불변 조건, 예: 쿠폰 유효 기한 판정). models 는 form 의 zod schema + UI 표현(드롭다운 선택지·라벨 맵)."
+          },
+          {
+            "name": "repository",
+            "what": "Firestore / Storage 와의 직접 교환. 지금 어떤 쿼리가 나가는지 한곳에서 본다."
+          },
+          {
+            "name": "infrastructure",
+            "what": "npm 라이브러리(dayjs·지도 SDK·geojson·infinite-scroll) 래퍼 — 용도별 함수, 재익스포트 금지, 라이브러리 타입은 앱 타입으로 바꿔 돌려준다."
+          },
+          {
+            "name": "core",
+            "what": "feature·infrastructure 를 가로지르는 가장 안쪽 타입(Core 접두사)과 범용 zod(위도 -90~90 등)."
+          },
+          {
+            "name": "ui",
+            "what": "비즈니스 로직 없는 공통 UI — NuxtUI 로 바꿔 간다."
+          }
+        ],
+        "invariants": [
+          "의존은 바깥 → 안쪽 한 방향 — core 는 아무것도 import 하지 않고, domains 는 core 만.",
+          "features 는 npm 라이브러리를 직접 import 하지 않는다.",
+          "규칙의 본체는 domains 에만 — models 의 refine 은 domains 의 순수 함수를 부른다(이중 구현 금지).",
+          "SDK 의 날 타입은 infrastructure 에서 core 타입으로 한 번만 바뀐다.",
+          "auto import 는 전부 끈다 — import 는 다 적는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "① `composables/`·`domains/` 를 `features/{domain}/` 로 모으고, 로직 있는 컴포넌트도 그 아래로, Firestore 접근은 `repository/` 로",
+            "why": "DB 접근은 원래 API 의 책임 — 나중에 API 화할 때 갈아 끼우기 쉽게. 도메인 층에서 Firestore `Timestamp` 같은 외부 타입을 걷어 냈다."
+          },
+          {
+            "step": "② 한 파일에 같이 살던 도메인 규칙과 form/UI 표현을 domains / models 로 가른다",
+            "why": "규칙을 고치는 사람과 form 을 고치는 사람이 같은 파일을 만지지 않고, `isExpired` 같은 순수 함수에 유닛 테스트가 붙는다. 오래 사는 규칙과 화면 따라 자주 바뀌는 form 의 변경 빈도 차이에도 맞는다."
+          },
+          {
+            "step": "③ `infrastructure/` 를 두고 features 에서 라이브러리 직접 import 를 금지",
+            "why": "'지도 표시 영역의 중심 좌표' 를 원하는 쪽이 산식이나 SDK 메서드 이름을 몰라도 된다. 래퍼 단위 테스트, 날짜 포맷 중복 감소, dayjs → date-fns 같은 교체의 영향 범위가 안에 갇힌다."
+          },
+          {
+            "step": "④ `core/` 로 가로지르는 타입을 올리고, 로직 없는 공통 UI 를 NuxtUI 로 바꾼다",
+            "why": "③ 에서 infrastructure 여기저기에 비슷하지만 다른 위경도 타입이 생기고 변환 코드가 퍼졌다. NuxtUI 로 바꾸려면 로직 든 컴포넌트는 그대로 못 바꾸니 로직이 저절로 features 로 밀려난다 — 반쯤 강제한 관심사 분리."
+          },
+          {
+            "step": "다음 — TanStack Query 같은 캐시 층, 테스트 확충, CI 의 E2E",
+            "why": "화면마다 같은 데이터를 따로 다시 가져오는 것을 멈추고 싶다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "한 번에 갈아엎나",
+            "chosen": "단계 이행 — 새 추가분은 새 규칙, 기존은 만질 때 옮긴다",
+            "alternatives": [
+              "전부 멈추고 전면 리팩터"
+            ],
+            "tradeoff": "사업에서 계속 쓰이는 화면을 멈추지 않는다. 대가는 옛 구조와 새 구조가 오래 섞여 있고, 경계(repository 로 뺄까, 필터 조건은 유스케이스인가) 판단이 처음엔 사람마다 흔들린 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          },
+          {
+            "question": "프런트가 Firestore 를 직접 읽는 것을 어떻게 다루나",
+            "chosen": "당장은 `repository/` 에 가두고, Hono + Zod OpenAPI REST API 경유로 바꿔 가는 방침",
+            "alternatives": [
+              "직접 참조를 화면 곳곳에 그대로",
+              "당장 전부 API 화(inferred)"
+            ],
+            "tradeoff": "지금 나가는 쿼리를 한곳에서 보고 나중에 갈아 끼울 자리를 만든다. 대가는 과도기 동안 DB 접근이 여전히 프런트에 있는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          },
+          {
+            "question": "도메인 규칙과 form 표현을 한 파일에 두나",
+            "chosen": "domains(규칙) / models(form·UI) 로 가르고 규칙 본체는 domains 에만",
+            "alternatives": [
+              "한 파일에 동거(기존)",
+              "models 의 zod refine 에 규칙을 따로 구현"
+            ],
+            "tradeoff": "규칙에 유닛 테스트가 붙고 두 번 구현되지 않는다. 대가는 새 화면을 만들 때 두 곳을 열어야 하는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          },
+          {
+            "question": "라이브러리를 어떻게 감싸나",
+            "chosen": "용도별 함수로 감싸고, 재익스포트 금지, 라이브러리 타입은 앱 타입으로 바꿔 돌려준다",
+            "alternatives": [
+              "라이브러리를 재익스포트만",
+              "features 에서 직접 import"
+            ],
+            "tradeoff": "호출 쪽은 '무엇이 필요한가' 만 말한다. 대가는 ③ 에서 드러난 것 — infrastructure 여기저기에 비슷하지만 다른 앱 타입이 생겨 변환 코드가 퍼졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          },
+          {
+            "question": "여러 곳이 쓰는 개념을 어디에 두나",
+            "chosen": "features 보다 한 단 위의 독립 층 `src/core/`, 새 타입에 Core 접두사",
+            "alternatives": [
+              "`features/shared/` — DDD Shared Kernel 을 그대로"
+            ],
+            "tradeoff": "core 로 올리는 판단이 의식적인 리뷰를 거쳐 공통 타입이 함부로 불지 않는다. 대가는 올리는 데 드는 마찰 자체.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          },
+          {
+            "question": "비대해진 공통 컴포넌트를 어떻게 푸나",
+            "chosen": "로직 있는 것은 features/{domain}/components 로, 로직 없는 공통 UI 는 Nuxt UI v4 로 교체",
+            "alternatives": [
+              "자가제 공통 컴포넌트를 계속 다듬는다"
+            ],
+            "tradeoff": "한 도메인 사정으로 늘어난 분기가 다른 도메인 화면을 바꾸는 신(神) 컴포넌트를 해체한다. 대가는 UI 라이브러리 의존과 아직 끝나지 않은 교체 작업.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          },
+          {
+            "question": "Nuxt 의 auto import 를 쓰나",
+            "chosen": "config 에서 전부 끈다",
+            "alternatives": [
+              "기본값(components·composables auto import)"
+            ],
+            "tradeoff": "파일 첫머리 import 만 봐도 의존이 보이고 복잡성을 가늠할 수 있다. AI 가 의존을 정확히 잡아 'import 가 모자란다' 는 착각으로 코드를 깨지 않는다. 대가는 import 를 전부 손으로 적는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          },
+          {
+            "question": "언제 composable/service 로 떼어 내나",
+            "chosen": "상태 관리 · 여러 의존 묶기 · 여러 곳 재사용 · 부수 효과 중 하나라도 있을 때만 — 아니면 SFC `<script>` 에 직접",
+            "alternatives": [
+              "호출마다 `useXxx` 를 만든다"
+            ],
+            "tradeoff": "지워도 복잡성이 흩어지지 않는 pass-through 를 만들지 않는다. SFC 의 `<script>` 를 '유스케이스와 표현의 하이브리드' 로 인정한 대가로, 짧은 로직은 화면 안에 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "フロントエンドもアーキテクチャに向き合う！",
+                "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-05-25",
+                "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "돈에 닿는 특전 로직을 동작 차이 없이 새 구조로 옮긴다(같은 회사의 다른 도메인)",
+          "via": "같은 Firestore — 관리 화면의 domains 에 쿠폰 유효 기한 판정 같은 특전 규칙이 있다",
+          "contract": "백엔드가 DDD Modules 로 옮겨도 Firestore 문서 형식은 그대로라 repository 의 쿼리가 계속 읽히고, REST API 경유로 바뀌면 그 계약이 Zod OpenAPI 로 적힌다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "한 방향 의존",
+          "question": "어느 층이 어느 층을 import 해도 되나?",
+          "kind": "flow",
+          "code": "flowchart RL\n  PG[\"pages / components\\n유스케이스+표현\"] --> CS[\"composables / services\"]\n  CS --> AP[\"apis\"]\n  CS --> INF[\"infrastructure / repository\"]\n  CS --> MO[\"models\\nform · UI 표현\"]\n  MO --> DO[\"domains\\n규칙 · 순수 함수\"]\n  DO --> CO[\"core\\n가장 안쪽 타입\"]\n  INF --> CO\n  AP --> CO\n  UI[\"ui · NuxtUI\"] --> CO"
+        },
+        {
+          "title": "네 단계가 남긴 숙제",
+          "question": "한 단계를 끝낼 때마다 무엇이 다음 단계를 불렀나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> SFC: 초기 · script 에 쿼리·라이브러리\n  SFC --> P1: ① features + repository\n  P1 --> P2: 규칙과 form 이 한 파일 → ② domains/models\n  P2 --> P3: 라이브러리 직접 import → ③ infrastructure\n  P3 --> P4: 비슷하지만 다른 타입 · 변환 코드 → ④ core + NuxtUI\n  P4 --> [*]: 진행 중 · 다음은 캐시 층"
+        },
+        {
+          "title": "신(神) 컴포넌트가 깨뜨리는 것",
+          "question": "공통 부품이 로직을 품으면 무엇이 새나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  C[\"공통 컴포넌트\"] --> A[\"A 도메인 사정으로 분기 추가\"]\n  A --> B[\"B 도메인 화면 동작이 바뀜\"]\n  B --> F[\"대응: 로직 있는 것 → features/{domain}/components\\n로직 없는 것 → NuxtUI\"]\n  F --> P[\"NuxtUI 로 못 바꾸는 부품 = 로직이 든 부품\\n→ 저절로 features 로 밀려남\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "フロントエンドもアーキテクチャに向き合う！",
+          "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+          "publisher": "Luup Developers Blog (Zenn)",
+          "date": "2026-05-25",
+          "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
         }
       ]
     }
