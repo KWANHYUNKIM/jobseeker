@@ -181,5 +181,101 @@
     "jobkorea 풀스택 공고는 본문이 이미지라 비교하지 못했다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/365991",
+      "title": "서버 프로그래머",
+      "site": "wanted",
+      "verdict": "경력 3-5년, 서울 성동구. 게임 서버팀으로 업무 범위가 넓다 — **인증·결제·채팅·게임 로직·TCP 소켓 서버** 등 모든 서버 기능, 내부 운영 플랫폼 설계·구현, **프론트엔드(React)와 백엔드 모두**, 트래픽 테스트·기술 리서치·코드 리뷰로 대용량 트래픽 대응, **TDD**. 팀 기술은 C#·.NET Core·EF Core 와 Kotlin·Spring, MySQL·MongoDB·Redis·Kafka·Elasticsearch, Docker·K8s·EKS·Terraform·Jenkins, ELK·Grafana·Prometheus, React·TypeScript. 필수는 태도 세 줄(끈질긴 개선·성장·지식 전파)과 **대용량 트래픽 운영**, 성능 최적화·운영 자동화, **데이터 모델·API 설계**. 우대는 라이브 서비스, React·UX 감각, **C#·.NET Core**, K8s·Docker, 클라우드, **Unity C#**. 회사 브리핑대로 서비스 게임은 방치형 RPG '슬레이어 키우기' 이고 공고가 '초기 코어 멤버' 를 찾는다. 전형: 서류(이력서·경력기술서·**포트폴리오**) ＞ 사전 질문 ＞ 대면 인터뷰(실무·컬처핏 30분~1시간, 필요 시 2차) ＞ 최종 합격. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "대용량 트래픽 운영",
+          "성능 최적화·운영 자동화",
+          "데이터 모델·API 설계"
+        ],
+        "can_learn": [
+          "C#/.NET Core",
+          "TCP 소켓 서버",
+          "React",
+          "Unity C#",
+          "라이브 게임 운영"
+        ]
+      },
+      "study": [
+        {
+          "topic": "TCP 소켓 서버 — 메시지 경계와 파이프라인",
+          "from": "task",
+          "quote": "• 기어세컨드 내에서 사용되는 모든 서버 기능(인증, 결제, 채팅, 게임 로직, TCP 소켓 서버 등)을 함께 구축하고 개선해요.",
+          "priority": "core",
+          "why": "주요업무 첫 줄이 인증·결제·채팅·게임 로직과 함께 'TCP 소켓 서버' 를 적고, 우대에 C#·.NET Core 가 있다.",
+          "gap_check": "TCP 는 메시지 경계가 없는 바이트 스트림인데, 클라이언트가 보낸 패킷 두 개가 한 번에 오거나 한 패킷이 둘로 쪼개져 올 때 무엇(길이 헤더 프레이밍)으로 잘라내고, 접속자 수천 명을 스레드 하나씩으로 처리하면 무엇이 문제이며, .NET 의 System.IO.Pipelines 는 버퍼 복사와 경계 처리를 어떻게 줄이는가?",
+          "drill": "MS Learn 파이프라인 문서를 따라 .NET 으로 '4바이트 길이 헤더 + 본문' 프레이밍 에코 서버를 만든다. 테스트 클라이언트가 메시지를 일부러 쪼개 보내거나 여러 개를 붙여 보내도 서버가 정확히 나눠 읽는지 확인하고, 동시 접속 1천 개에서 메모리·스레드 수를 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "System.IO.Pipelines — .NET",
+              "url": "https://learn.microsoft.com/en-us/dotnet/standard/io/pipelines",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인앱 결제 서버 검증 — 게임 재화 지급",
+          "from": "task",
+          "quote": "• 기어세컨드 내에서 사용되는 모든 서버 기능(인증, 결제, 채팅, 게임 로직, TCP 소켓 서버 등)을 함께 구축하고 개선해요.",
+          "priority": "core",
+          "why": "같은 주요업무 줄이 결제를 적는다. 회사 브리핑대로 슬레이어 키우기의 매출 원천이 결제·광고다.",
+          "gap_check": "클라이언트가 '결제 완료, 다이아 1000개 지급해 줘' 라고 보내면 서버는 무엇(스토어 영수증·구매 토큰 검증)을 확인한 뒤 지급하고, 같은 구매 토큰이 두 번 오면 무엇으로 한 번만 지급하며, 환불된 구매는 어떤 경로(스토어 서버 알림)로 알고 재화를 어떻게 회수하는가?",
+          "drill": "Google Play 결제 보안 문서와 App Store Server Notifications 문서를 읽고, '구매 토큰 검증 → 중복 확인(유니크 키) → 재화 지급 → 구매 확인(acknowledge)' 흐름을 C#(또는 Kotlin) 서버로 가짜 스토어 응답과 함께 구현한다. 같은 토큰 재요청과 환불 알림 처리 테스트를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Fight fraud and abuse — Play Billing",
+              "url": "https://developer.android.com/google/play/billing/security",
+              "kind": "docs"
+            },
+            {
+              "title": "App Store Server Notifications — Apple",
+              "url": "https://developer.apple.com/documentation/appstoreservernotifications",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "트래픽 테스트 — 이벤트 시작 순간을 재현하기",
+          "from": "task",
+          "quote": "• 대용량 트래픽을 빠르고 안정적으로 처리할 수 있도록 트래픽 테스트, 기술 리서치, 상시 코드 리뷰 등을 적극 활용하여 튼튼한 시스템을 함께 개발해요.",
+          "priority": "high",
+          "why": "주요업무이고 필수에 '대용량 트래픽을 안정적으로 운영해 본 경험' 이 있다.",
+          "gap_check": "게임 이벤트가 정각에 열리면 접속·보상 수령 요청이 몇 초 안에 몰리는데, 부하 테스트를 평균 부하로만 하면 무엇을 놓치고, 순간 급증(spike) 시나리오와 지속 부하(soak) 시나리오는 각각 어떤 문제(커넥션 풀 고갈·메모리 누수)를 드러내는가?",
+          "drill": "k6 로 가짜 '보상 수령' API 에 램프업·스파이크·소크 세 시나리오를 만들고 p95 지연·오류율 임계값을 건다. DB 커넥션 풀 크기를 줄여 스파이크에서 먼저 무너지는 지점을 찾아 기록한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Grafana k6 documentation",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "TDD 로 게임 로직 짜기 — xUnit",
+          "from": "task",
+          "quote": "• 높은 품질의 코드를 지향하여 TDD 및 코드 리뷰를 적극 활용하고 있어요! 끊임없이 좋은 코드를 위한 고민을 하고 아이디어를 제안해요.",
+          "priority": "high",
+          "why": "주요업무이고 팀 소개가 'TDD 방법론을 적극 도입' 한다고 적는다. 전형에 포트폴리오 제출이 있다.",
+          "gap_check": "방치형 게임의 '오프라인 보상 계산(최대 12시간, 레벨별 배율)' 을 TDD 로 짠다면 첫 실패 테스트를 무엇으로 쓰고, 현재 시각에 의존하는 로직을 테스트 가능하게 하려면 무엇(시계 주입)을 하며, 경계값(0분·12시간 초과·레벨 변경 중)은 어떻게 고르는가?",
+          "drill": "xUnit 으로 오프라인 보상 계산기를 빨강→초록→리팩터 순서로 만들고, 시계를 인터페이스로 주입해 시간 경계 테스트를 작성한다. 커밋 이력을 테스트 단위로 남겨 포트폴리오에 넣을 수 있게 한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Unit testing C# code in .NET using dotnet test and xUnit",
+              "url": "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-csharp-with-xunit",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
