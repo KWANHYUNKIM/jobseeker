@@ -15068,6 +15068,107 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8047690",
+      "title": "Senior Staff / Staff Backend Engineer (Security Infrastructure)",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 싱가포르 근무다. 전문 개발 8년 이상(석박사면 6년)·기술 프로젝트 리딩 2년 이상의 Staff/Senior Staff 로, Security Infrastructure 팀의 동적 인가 엔진(dynamic authorization engine)을 맡는다 — 모든 고객 상호작용에서 비정상적이거나 악의적일 수 있는 활동의 신호를 찾아 보안 위험을 관리하는 핵심 시스템이라고 공고가 적는다. 고객 인증·인가 플랫폼을 Java·Go 로 개발한다. 마운틴뷰의 `Senior Staff Backend Engineer, Security`(7342961)와 팀·문장 틀이 같고 9줄이 겹치지만, 이쪽은 동적 인가 엔진이 중심이라 별개 자리로 본다.",
+      "fit": {
+        "must_have": [
+          "전문 개발 8년 이상(석박사 6년)",
+          "기술 프로젝트 리딩 2년 이상",
+          "C++·Java·Go",
+          "대규모 분산 시스템 설계·개발",
+          "클라우드(AWS·Azure·GCP)"
+        ],
+        "can_learn": [
+          "OIDC·OAuth2(우대)",
+          "IdP·역할 기반 인가(우대)",
+          "Kubernetes·gRPC·Istio(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "위험 기반 동적 인가 엔진 설계",
+          "from": "task",
+          "quote": "As a Senior Staff / Staff Engineer on the Security Infrastructure team, you will build the platform that enables Coupang to win and grow our customers’ confidence while rapidly expanding and scaling our services. Specifically, you will work on our dynamic authorization engine, which manages the security risks of all our customer interactions by looking for signs of unusual or potentially malicious activity. This is a critical system which protects both our customers and our company against damage from malicious activity.",
+          "priority": "core",
+          "why": "모든 고객 상호작용의 보안 위험을 비정상·악의적 활동 신호로 관리하는 동적 인가 엔진이 이 자리의 중심이라고 공고가 적는다.",
+          "gap_check": "같은 로그인·결제 요청이라도 기기·위치·속도 신호에 따라 허용·추가 인증 요구·차단으로 달리 판정하려면, 신호 수집·점수화·정책 판정을 어떤 구성요소로 나누고 판정 이유를 어떻게 남기는가?",
+          "drill": "NIST SP 800-162(속성 기반 접근 제어) 의 구성요소(PDP·PIP·PEP)를 읽고, 가상 신호 세 개(새 기기·짧은 시간 다수 시도·이례적 위치)로 허용/추가 인증/차단을 판정하는 작은 정책 서비스와 판정 로그를 만든다. OWASP 자동화 위협 목록으로 어떤 공격 유형을 막으려는지 대응표를 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NIST SP 800-162 — Guide to Attribute Based Access Control (ABAC)",
+              "url": "https://csrc.nist.gov/pubs/sp/800/162/upd2/final",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP Automated Threats to Web Applications",
+              "url": "https://owasp.org/www-project-automated-threats-to-web-applications/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객 인증 — 추가 인증 단계와 인증 강도",
+          "from": "preference",
+          "quote": "Working knowledge of security protocols such as OIDC and OAuth2.",
+          "priority": "high",
+          "why": "고객 인증·인가 플랫폼 개발이 주요업무이고, OIDC·OAuth2 실무 지식이 우대사항이다.",
+          "gap_check": "위험 점수가 높을 때 요구하는 추가 인증(step-up)을 OIDC 흐름 안에서 어떻게 표현하고, 서비스는 '방금 강한 인증을 거쳤다'는 사실을 토큰의 무엇으로 확인하는가?",
+          "drill": "NIST SP 800-63B 의 인증 강도 개념을 읽고, OIDC 의 acr/amr 클레임으로 추가 인증 여부를 표시해 결제 API 가 이를 요구하도록 하는 흐름을 설계 문서로 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "NIST SP 800-63B-4 — Authentication and Authenticator Management",
+              "url": "https://pages.nist.gov/800-63-4/sp800-63b.html",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenID Connect Core 1.0",
+              "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "요청 경로의 저지연 판정",
+          "from": "preference",
+          "quote": "Experience building high-reliability and low-latency systems in the Cloud.",
+          "priority": "high",
+          "why": "인가 엔진은 모든 고객 요청 경로에 놓인다. 공고는 수천 개 마이크로서비스를 지원한다고 적고, 클라우드 고신뢰·저지연 시스템 경험이 우대사항이다.",
+          "gap_check": "판정 엔진이 느려지거나 내려가면 전 서비스가 멈춘다. 장애 시 기본값(허용 vs 차단)을 요청 종류별로 어떻게 정하고, 판정 지연 예산은 어떻게 나누는가?",
+          "drill": "앞 정책 서비스에 타임아웃과 요청 종류별 장애 기본값(조회는 허용, 결제는 추가 인증)을 넣고, 신호 저장소가 느려질 때 p99 지연과 판정 결과가 어떻게 바뀌는지 부하 테스트로 기록한다.",
+          "hours": 5,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "위험 기반 판정 서비스 데모와 판정 로그",
+          "why": "이 자리의 중심이 동적 인가 엔진이다. 신호→점수→판정→이유 기록을 갖춘 작은 서비스는 설계 면접의 대화를 바로 끌어낸다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "신호·점수·정책 분리",
+          "step-up 인증 표현",
+          "장애 시 기본값",
+          "판정 지연 예산",
+          "플랫폼 채택 이끌기"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff / Staff Backend Engineer (Security Infrastructure)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8047690",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
