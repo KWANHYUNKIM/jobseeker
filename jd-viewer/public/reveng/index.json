@@ -7,9 +7,9 @@
       "name_en": "LegalOn Technologies",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
-      "one_liner": "법무 특화 AI 에이전트 LegalOn — 사내에서도 AI 에 일을 맡긴다: 데이터 거버넌스 상담은 AI 가 먼저 진단하고, 비엔지니어도 자연어로 로그를 판다",
+      "status": "done",
+      "features_done": 3,
+      "one_liner": "법무 특화 AI 에이전트 LegalOn — 사내에서도 AI 에 일을 맡긴다: 거버넌스 상담은 AI 가 먼저 진단하고, 비엔지니어도 자연어로 로그를 파며, 영업은 제품 여럿을 한 잣대로 점친 점수와 이유를 아침마다 받는다",
       "updated_at": "2026-09-26",
       "domain": "legalontech.jp"
     },

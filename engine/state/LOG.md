@@ -1368,3 +1368,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 LegalOn 도메인 추가 — 제품 공통 잠재 고객 예측
 
 - 완주 판정: On Technologies 수익원 검색. 블로그 검색은 결과가 사이드바 최신 글뿐이었지만 그중 입사 엔트리 둘을 열어 봄 — 플랫폼 엔지니어(DealOn 팀 파견·통합 ID PoC, 얕음)와 데이터 팀 EM(잠재 고객 예측을 LegalOn·DealOn·WorkOn·GovernOn 공통 2값 분류 모델로). 후자로 도메인 '제품 여럿 중 이 고객에게 무엇을 팔지 한 잣대로 점친다' 추가, On Technologies·LegalOn 두 수익원에 연결. hold 불필요.
+
+## 2026-09-26 LegalOn MQL 점수·이유 — 완주
+
+- 앞선 글 `ai-sales-dataanalysis`(2025-11, 예측 AI+Gemini 팩터, BigQuery ML·Cloud Run, DID 효과)와 입사 엔트리 전반부(제품 공통 2값 분류)로 `mql-score-and-factor-one-model`(결정 8). 도메인 3 모두 기능 · 수익원 둘 연결 → done, QUEUE 완료로.

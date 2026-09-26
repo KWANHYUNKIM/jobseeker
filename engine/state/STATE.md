@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**LegalOn — 완주 판정 중(2026-09-26): On Technologies 수익원을 블로그 검색으로 찾다가 입사 엔트리 `entry/data-team-lead-prediction-dashboard`(2026-09-07, scratchpad `lo_data-team-lead-prediction-dashboard.txt`)에서 제품 공통 잠재 고객 예측 모델을 찾아 도메인 '제품 여럿 중 이 고객에게 무엇을 팔지 한 잣대로 점친다' 추가(두 수익원 모두 연결). 다음은 확장: 이 도메인 기능 — 글 전반부(2값 분류 하나 vs 제품별 모델, 하루 MQL 수·정확도 비교, CASE WHEN 어노테이션) + 앞선 글 `entry/ai-sales-dataanalysis`(예측 AI+생성 AI 설명)를 읽어 보탠다. 그러면 완주 기준 충족 → done. 참고: 블로그 `/search?q=` 는 jina 로 사이드바 최신 글만 돌려준다 — 검색어가 안 먹는다. 대기 1/3(Findy). 머니포워드(hold)·LayerX 는 in_progress.**
+**LegalOn — 완주(2026-09-26, 도메인 3 · 기능 3). 다음은 `--gaps` 가 가리키는 신규: QUEUE 대기 맨 위(Findy — 대기 1/3). 대기가 3 아래라 신규 전에 후보 조사가 먼저 걸리는지 PROMPT 사다리로 확인. 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 
