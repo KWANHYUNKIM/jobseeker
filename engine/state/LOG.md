@@ -2300,3 +2300,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 EVERSTEEL AnalytiX 테넌트 분리
 
 - `0f818de50ea46c` 전문으로 기능 `tenant-split-scrap-analytics`, 결정 8. 글 요약에 인프라(Aurora Serverless v2 · 사내 실적)와 보안 보충을 보탰다.
+
+## 2026-09-27 EVERSTEEL LLM 화상 해석
+
+- `c046afa79617c1` 전문으로 기능 `llm-first-image-detection`, 결정 8. 오프라인 로컬 큐 · 안건 화면이 SanPa Navi(스마트폰 앱)와 맞아 보이지만 글이 제품명을 밝히지 않아 수익원 연결은 inferred 유지.
