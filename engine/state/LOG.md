@@ -2272,3 +2272,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Seibii 회사 프로파일
 
 - 회사 페이지 · 법인 페이지로 수익원 셋(출장 정비 개인 · 법인 · 스폿 공장 바이트). 글 넷(ID 기반 · Lambda 공존 · PDF Lambda · 부품 분류)으로 도메인 셋. Fluent Bit 글은 아직.
+
+## 2026-09-27 Seibii ID 기반
+
+- `b6a5bf468c95a4` 로 기능 `shared-identity-foundation`, 결정 7. 글이 대가를 적지 않은 곳(인터페이스 두 벌 · 동기 경로 둘 · HubSpot 두 곳)은 '이 사이트의 해석'.
