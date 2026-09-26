@@ -2127,3 +2127,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - 회사 페이지(business)·PMN 뉴스 둘로 수익원 둘(데이터 이활용 / 판촉·PMN 성과 보수형). 매출 없음. 영수증 누적 매수가 자료마다 다름(10억·16억·19억) — open_questions 에.
 - 글 다섯(JAN 캐시 · 그라운딩 · JICFS 벡터 검색 · WASM NG 판정 · 체인 예측)으로 도메인 둘.
+
+## 2026-09-27 WED JAN 부여
+
+- `20240731-indexing-product-names`(레벤슈타인 → 서브워드 벡터 → Faiss → Vertex AI) + 캐시 글 + 그라운딩 글 + JICFS 글로 기능 `receipt-name-to-jan`, 결정 8. 세대 교체는 연도가 없어 history 로 쓰지 않고 결정의 대안으로 남겼다.
