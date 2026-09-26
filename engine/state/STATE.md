@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — neon 재방문에서 확장(`memory-is-only-a-cache`, 기존 도메인)을 마쳤다. 09-06 묶음 진행 중.**
+**없다 — onepassword 재방문에서 확장(`swap-the-provider-not-the-code`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **onepassword** — 2026-09-26 PQ-TLS(09-21) → `swap-the-provider-not-the-code`, 새 도메인. `/blog/index.xml` 이 curl 로 온다. 나머지는 제품·인터뷰.
 - **neon** — 2026-09-26 컴퓨트 캐시 1편(09-09) → `memory-is-only-a-cache`, 기존 도메인 "저장을 계산과 떼어 놓는다". 2편(동적 공유 버퍼)·실시간 백엔드(09-24)는 다음. `/blog/rss.xml` 이 curl 로 온다.
 - **monzo** — 2026-09-26 없음 1회째. 09-06 이후 둘 — FCA AI 라이브 테스트(09-21, 원칙뿐)·인턴 후기. 출처에 없는 Agent Chip(08-13)·Ops Agent(06-04)는 이전 글 쓰기 답을 받으면 후보. 목록은 r.jina.ai 로 `/blog/technology`.
 - **modal** — 2026-09-26 코딩 에이전트 추론(09-23) → `small-replicas-warm-caches`, 새 도메인. 09-14 제품 업데이트는 안 씀. 목록은 r.jina.ai 로 `/blog`. 예고된 평가 플랫폼·라우팅 글이 나오면 보강.

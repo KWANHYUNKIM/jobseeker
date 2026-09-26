@@ -822,3 +822,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 neon 재방문 → 확장
 - 컴퓨트 캐시 1편(2026-09-09) 으로 `memory-is-only-a-cache` 추가(기존 도메인). 결정 5개, 그림 2장. 수치: huge page 꼬리 지연 -40%·CPU -30%, GetPage 8K→1.5K, CPU 20→4코어.
+
+## 2026-09-26 onepassword 재방문 → 확장
+- 양자내성 TLS(2026-09-21) 로 `swap-the-provider-not-the-code` 추가. 새 도메인, 결정 5개, 그림 2장. 서버 ALB 정책 1건 + Cargo.toml 1줄, 코드 변경 0. 성능 수치는 AWS 발표라 metrics 에 안 넣고 결정 대가에만 인용.
