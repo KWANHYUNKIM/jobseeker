@@ -2151,3 +2151,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 mixtend 調整さん 톱 고속화
 
 - `001d1a7f1c3cce` + `f3627bc47121dd` 로 기능 `chouseisan-top-page-speed`, 결정 8(MPA · 측정 · LCP · 웹폰트 · 광고 높이 · jQuery 보류 · INP 미대응 · Flutter 출결표). 접속 분포는 글쓴이의 '예상'이라 inferred.
+
+## 2026-09-27 mixtend 調整さん 광고 수익원 보류
+
+- --gaps 는 후보 조사를 가리켰지만 이 회사의 완주/보류 판정이 먼저(앞 사이클에 약속). 검색 1: mixtend.co.jp 직접 curl — NXDOMAIN. 검색 2: Zenn 검색 API 3낱말 + RSS 16편 — 광고 매출 자료 없음. hold_reason, in_progress 유지.

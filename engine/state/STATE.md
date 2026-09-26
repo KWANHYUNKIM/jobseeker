@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**mixtend 기능 2(2026-09-27) — `chouseisan-top-page-speed`(필요한 것만 읽고 광고 자리는 미리 비워 둔다, 결정 8 — Flutter 출결표 포함). 도메인 둘 다 찼다. 다음은 調整さん 광고 수익원 판정(지금 inferred): 먼저 mixtend.co.jp 를 WebFetch 로 한 번 더(r.jina.ai 도메인 해석 실패), 그리고 RSS · Zenn 검색('調整さん 広告'·'ミクステンド'). 광고 매출이 확인되면 confirmed 로 올리고 done, 아니면 hold. 큐 0/3 — 그 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**mixtend 調整さん 광고 수익원 보류(2026-09-27) — mixtend.co.jp 는 NXDOMAIN, Zenn 검색 3낱말 · RSS 16편에 광고 매출 자료 없음. hold_reason 달고 in_progress 유지(기능 2 · 도메인 둘 다 참). 다음은 --gaps 의 후보 조사(큐 0/3) — 아흔일곱 번째. 걸렀던 Social PLUS(인프라 이행 위주)부터 다시 보고, Zenn 검색 '결과' 주제어 묶음(爆速·レイテンシ·コスト 半減·通知 基盤·SLO)이 잘 먹혔다. 목표 3곳. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -393,6 +393,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **TELLER 출판·미디어믹스 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 19편 · Zenn 검색 API 3낱말, 옛 Next.js·사명 변경 글뿐). 출판·코미컬라이즈·콘테스트 운영 구조 글이 새로 나오면 다시.
 - **Photoruction AI×BPO 수익원** — 2026-09-27 두 번 찾아 없음(Zenn RSS 19편 · Zenn 검색 API 3낱말, 옛 사내 행사·Android 글뿐). BPO 업무 처리 구조 글이 새로 나오면 다시.
 - **Lincwell 클리닉 DX(Smart Clinics) 수익원** — 2026-09-27 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 7낱말, 이 회사 글이 안 걸린다). 클리닉 예약판·진료 기록·접수 시스템 글이 새로 나오면 다시.
+- **mixtend 調整さん 광고 수익원** — 2026-09-27 두 번 찾아 확인 못 함(mixtend.co.jp NXDOMAIN · Zenn 검색 3낱말 · RSS 16편). 광고가 실린다는 것까지만 사실. 회사 개요·IR 이 새 도메인에서 보이면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
