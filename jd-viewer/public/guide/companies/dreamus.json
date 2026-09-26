@@ -367,6 +367,134 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/376669",
+      "title": "콘텐츠 플랫폼 백엔드 개발(3년 이상)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 강남구. **MCP개발팀**(음원 유통망 플랫폼 → 음원 플랫폼 파이프라인 → 최종 스트리밍 서비스까지 미디어 서비스 플랫폼 전체 사이클) 백엔드 자리다. 업무가 넷이다 — 대용량 **미디어 자동 입수 파이프라인**, 원본을 표준 규격으로 통합하고 디바이스·네트워크별로 최적화하는 **트랜스코딩 고도화**, 스트리밍 서비스 연동, 음원/음반 유통망·콘텐츠 관리·운영 포털 **백오피스**. 팀 사용 기술은 Java·Kotlin·Golang, MySQL·MongoDB·Elasticache·Elasticsearch, RabbitMQ·SQS·Kafka·Zookeeper, AWS·Docker·EKS·MWAA, MediaConvert·FFmpeg 이고, 공고가 '국내 최대 규모의 음원 메타데이터와 페타바이트(PB) 규모의 미디어 파일' 을 적는다. 필수는 유관 3년, Java·Golang·Kotlin 중 하나, OOP·함수형 이해, Spring RESTful API, RDBMS·NoSQL·ORM 데이터 모델링. 우대는 전공, FFmpeg·MediaCodec, 코덱·컨테이너·스트리밍 프로토콜, **DDEX(음원 유통 표준)** 메타데이터, 메시지 브로커 EDA, AWS. 전형: 서류전형 ＞ **오프라인 실시간 코딩테스트**&1차면접(같은 날, JAVA/GO 중 택 1, IntelliJ/Eclipse, 개인 장비 불가) ＞ 2차면접&CEO 커피챗 ＞ 처우협의. 같은 팀 신입 공고(373760)가 따로 있다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "유관 경력 3년 이상",
+          "Java·Golang·Kotlin 중 하나",
+          "OOP·함수형 이해",
+          "Spring RESTful API",
+          "RDBMS·NoSQL·ORM 모델링"
+        ],
+        "can_learn": [
+          "FFmpeg·코덱·컨테이너",
+          "HLS 등 스트리밍 프로토콜",
+          "DDEX",
+          "메시지 브로커 EDA"
+        ]
+      },
+      "study": [
+        {
+          "topic": "미디어 입수 파이프라인 — 재시도와 멱등성",
+          "from": "task",
+          "quote": "• 미디어 자동 입수 파이프라인 시스템 구축: 미디어 데이터가 유입되는 첫 단계인 대용량 자동 수집(입수) 파이프라인 시스템을 설계하고 개발합니다.",
+          "priority": "core",
+          "why": "첫 번째 주요업무다. 팀 기술에 SQS·RabbitMQ·Kafka 가 있고, 매일 10만 곡이 나온다고 공고 머리말이 적는다.",
+          "gap_check": "유통사가 올린 음원 파일이 S3 에 들어오면 이벤트 → 큐 → 작업자로 처리할 때, 같은 파일 이벤트가 두 번 오거나 작업자가 처리 중 죽으면 무엇이 생기고(중복 등록·반쯤 된 등록), 몇 번 실패한 메시지는 어디로 빼서(DLQ) 사람이 보게 하는가?",
+          "drill": "로컬(LocalStack 또는 실제 AWS 무료 범위)에서 S3 업로드 이벤트 → SQS → 작업자(Java 또는 Go)를 만들고, 작업자가 파일 해시로 중복을 걸러 같은 파일을 두 번 올려도 한 번만 등록되는지, 일부러 실패시킨 메시지가 3회 뒤 DLQ 로 가는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Amazon S3 Event Notifications",
+              "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Using dead-letter queues in Amazon SQS",
+              "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "트랜스코딩 — 코덱·컨테이너·비트레이트",
+          "from": "task",
+          "quote": "• 미디어 트랜스코딩 고도화: 수집된 다양한 원본 미디어 데이터를 표준 규격으로 통합(Unification)하고, 다양한 디바이스와 네트워크 환경에 맞춰 최적화하는 트랜스코딩 시스템을 고도화 합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 FFmpeg·MediaCodec, 코덱·컨테이너 포맷이 있다. 팀 기술이 MediaConvert·FFmpeg 이다.",
+          "gap_check": "원본 WAV/FLAC 음원을 스트리밍용으로 바꿀 때 코덱(AAC)과 컨테이너(M4A·MPEG-TS·fMP4)는 각각 무엇을 정하고, 무손실·고음질·저대역 여러 비트레이트를 만드는 이유와 원본의 라우드니스·샘플레이트가 제각각일 때 '표준 규격으로 통합' 하려면 무엇을 맞춰야 하는가?",
+          "drill": "FLAC 음원 하나를 FFmpeg 로 AAC 96k·256k 와 FLAC 사본으로 변환하고 ffprobe 로 코덱·샘플레이트·비트레이트·길이를 확인한다. 같은 작업을 MediaConvert 작업 설정(JSON)으로 쓰면 어떤 필드에 대응하는지 문서를 보고 짝지어 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ffmpeg Documentation",
+              "url": "https://ffmpeg.org/ffmpeg.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Encode/AAC — FFmpeg Wiki",
+              "url": "https://trac.ffmpeg.org/wiki/Encode/AAC",
+              "kind": "docs"
+            },
+            {
+              "title": "What is AWS Elemental MediaConvert?",
+              "url": "https://docs.aws.amazon.com/mediaconvert/latest/ug/what-is.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스트리밍 프로토콜 — HLS 로 나눠 보내기",
+          "from": "preference",
+          "quote": "• 비디오/오디오 코덱, 컨테이너 포맷, 스트리밍 프로토콜에 대한 이해도가 높으신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 '스트리밍 서비스 연동' 이 있다.",
+          "gap_check": "HLS 에서 마스터 플레이리스트와 미디어 플레이리스트는 각각 무엇을 담고, 네트워크가 느려졌을 때 플레이어가 어떻게 낮은 비트레이트로 갈아타며, 세그먼트 길이를 짧게/길게 하면 시작 지연과 요청 수가 어떻게 바뀌는가?",
+          "drill": "위 두 비트레이트 AAC 를 FFmpeg 의 hls 출력으로 6초 세그먼트로 자르고 마스터 플레이리스트를 손으로 써서, 브라우저 플레이어(hls.js 데모 등)에서 재생되는지와 .m3u8 내용이 RFC 8216 의 태그와 어떻게 대응하는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "RFC 8216: HTTP Live Streaming",
+              "url": "https://www.rfc-editor.org/rfc/rfc8216",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DDEX — 음원 유통 메타데이터",
+          "from": "preference",
+          "quote": "• DDEX(음원 유통 표준) 메타데이터 처리 경험이 있으신 분",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무 백오피스에 '음원/음반 유통망 시스템' 이 있다. 회사 연혁에 SM·JYP·빅히트 3사 유통권 양수가 있다(회사 브리핑).",
+          "gap_check": "DDEX ERN 메시지 하나에 앨범·트랙·권리 정보가 어떻게 나뉘어 들어오고(Release·SoundRecording·Deal), 같은 트랙이 나중에 수정 메시지로 다시 오면 무엇을 기준으로 덮어쓸지 판단하는가?",
+          "drill": "DDEX 사이트의 ERN 문서에서 메시지 구조를 읽고, 앨범 1장·트랙 3곡짜리 가상 ERN XML 을 파싱해 앨범·트랙·권리 테이블로 저장하는 코드를 쓴 뒤, 트랙 제목만 바뀐 수정 메시지를 넣어 갱신되는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Electronic Release Notification Message Suite — DDEX",
+              "url": "https://ddex.net/standards/electronic-release-notification-message-suite/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "오프라인 실시간 코딩테스트 — Java 또는 Go",
+          "from": "qualification",
+          "quote": "• Java, Golang, Kotlin 중 1개 이상의 주요 언어 활용이 능숙하신 분",
+          "priority": "high",
+          "why": "전형 둘째 단계가 오프라인 실시간 코딩테스트이고 언어는 JAVA/GO 중 택 1, 개인 장비 없이 사내 맥북·윈도우에서 IntelliJ/Eclipse 로 본다.",
+          "gap_check": "자동완성·개인 설정 없이 IntelliJ 에서 입력 파싱·컬렉션·정렬·해시맵을 막힘없이 쓸 수 있는가? Go 를 고른다면 슬라이스·맵·정렬(sort.Slice)과 에러 처리를 손에 익혔는가?",
+          "drill": "프로그래머스 레벨 2 문제 다섯 개를 시간 제한을 두고 기본 설정의 IDE 에서 고른 언어로 푼다. Go 를 고르면 A Tour of Go 를 먼저 끝낸다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "코딩테스트 연습 — 프로그래머스",
+              "url": "https://school.programmers.co.kr/learn/challenges",
+              "kind": "course"
+            },
+            {
+              "title": "A Tour of Go",
+              "url": "https://go.dev/tour/",
+              "kind": "course"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
