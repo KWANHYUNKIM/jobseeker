@@ -825,3 +825,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 onepassword 재방문 → 확장
 - 양자내성 TLS(2026-09-21) 로 `swap-the-provider-not-the-code` 추가. 새 도메인, 결정 5개, 그림 2장. 서버 ALB 정책 1건 + Cargo.toml 1줄, 코드 변경 0. 성능 수치는 AWS 발표라 metrics 에 안 넣고 결정 대가에만 인용.
+
+## 2026-09-26 paystack 재방문
+- 새 자료 없음(1회째). engineering-design 최신 2026-02-28. updated_at 만 올림.
