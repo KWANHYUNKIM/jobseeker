@@ -1,0 +1,150 @@
+{
+  "slug": "picnic",
+  "name": "Picnic",
+  "name_en": "Picnic",
+  "country": "EU",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "picnic.app",
+  "one_liner": "앱으로만 파는 네덜란드 온라인 슈퍼마켓 — 발주량을 예측하고, 50km 컨베이어 위 토트를 들여다보고, 관제실의 다음 할 일을 시스템이 먼저 꺼낸다",
+  "business_model": "**앱으로만 주문받는 온라인 슈퍼마켓**이다. 식료품을 자체 물류센터에서 골라 담아 **전기 배송차**로 집 앞까지 가져간다. **네덜란드·독일·프랑스 690개 도시**, 고객 **360만 명**(2025).\n\n돈은 **식료품 판매**에서 번다. 2025년 매출 **19억 유로 이상**(약 4분의 1 성장), 대부분이 네덜란드다. 그러나 **순손실 2억 7,200만 유로 이상** — 독일·프랑스 확장과 **자동화 물류센터**에 계속 투자하고 있고, 센터를 여는 시점의 단기 비용이 크다고 회사가 말한다.\n\n그래서 기술이 붙는 자리는 **마진을 지키는 곳**이다 — 얼마를 발주할지(재고·폐기), 자동화 센터가 사람 없이 얼마나 정확히 도는지(오배송·재집계), 관제실이 사람 한 명에 얼마나 기대는지.",
+  "products": [
+    "Picnic 앱(온라인 슈퍼마켓)",
+    "전기 배송차 집 앞 배송",
+    "레시피 추천(앱 안)"
+  ],
+  "revenue_total": "2025년 매출 19억 유로 이상, 순손실 2억 7,200만 유로 이상 — NL Times 의 연차 보고서 기사",
+  "revenue_streams": [
+    {
+      "name": "식료품 판매",
+      "how": "앱에서 주문받은 식료품을 물류센터에서 담아 전기 배송차로 배달한다. 매출 대부분이 **네덜란드**에서 나오고 독일·프랑스가 빠르게 는다.",
+      "weight": "사실상 전부(다른 수익원 공개 없음)",
+      "domains": [
+        "수요 예측과 발주",
+        "토트 속을 보는 비전 검수",
+        "자동화 물류센터 관제"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Online supermarket Picnic growing fast, but still suffering losses due to investments",
+          "url": "https://nltimes.nl/2026/07/20/online-supermarket-picnic-growing-fast-still-suffering-losses-due-investments",
+          "publisher": "NL Times",
+          "date": "2026-07-20",
+          "summary": "Picnic 연차 보고서 기사. 2025년 **매출 19억 유로 이상**(전년 대비 약 4분의 1 증가), 대부분 네덜란드. **네덜란드·독일·프랑스 690개 도시**, 고객 **70만 명 늘어 360만 명**. 순손실 **2억 7,200만 유로 이상**(2024년보다 조금 큼) — 독일·프랑스 확장과 **자동화 물류센터**(독일 오버하우젠 등) 투자 때문이며 여는 시점에 단기 비용이 크다고 회사가 말한다. 전기 배송차를 늘렸다. 2026년 매출은 **23억 유로 초과**를 예상한다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "주문 한 건이 문 앞에 가기까지",
+    "question": "예측·물류센터·관제는 어떤 순서로 이어지나?",
+    "code": "flowchart LR\n  F[\"수요 예측\\n상품 × 날짜 × 허브\"] --> O[\"공급사 발주\"]\n  O --> FC[\"자동화 물류센터\\n위트레흐트 · 컨베이어 50km+\"]\n  C[\"고객 앱 주문\"] --> FC\n  FC --> V[\"비전 검수\\n토트 속 개수 · 파손\"]\n  V --> FC\n  RTI[\"RTI(ClickHouse)\\n실시간 데이터\"] --> CR[\"관제실 추천\\n수락 · 거절\"]\n  FC --> RTI\n  CR --> FC\n  FC --> H[\"배송 허브\"] --> EV[\"전기 배송차 → 집 앞\"]",
+    "_note": "왼쪽은 무엇을 얼마나 들일지, 가운데는 사람 없이 도는 센터가 스스로 보고 판단하게 하는 일, 오른쪽 끝이 배송이다."
+  },
+  "domains": [
+    {
+      "name": "수요 예측과 발주",
+      "why": "상품마다 공급사에 얼마를 주문할지가 여기서 나온다. 극고회전 상품은 하루에 여러 번, 저회전 상품은 주 1회 이하로 발주하고 **배송 허브별로 수요가 달라** 예측 단위가 하나로 안 모인다. 많이 들이면 폐기, 적게 들이면 품절이다(이 사이트의 해석).",
+      "tech": [
+        {
+          "tech": "상향식 예측(가는 입도로 예측해 필요한 단위로 합산) + 집계 수준 평가(MASE)",
+          "solves": "발주 주기·지역이 제각각이어도 한 번의 예측을 필요한 단위로 합쳐 쓴다. 쓰이는 집계 수준에서 평가하면 포아송 잡음에 속지 않는다.",
+          "limits": "가는 입도에서는 **예측 불가능한 잡음**이 지표를 지배하고, **상관된 모델 오차**는 합쳐도 안 줄어 가는 입도만 보면 안 보인다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Signal vs Noise: Choosing the right granularity for demand forecasting",
+              "url": "https://jobs.picnic.app/en/blogs/signal-vs-noise-choosing-the-right-granularity-for-demand-forecasting",
+              "publisher": "Picnic Engineering",
+              "date": "2026-01-27",
+              "summary": "모든 상품의 판매 예측으로 **공급사 발주량**을 정한다. 하루에 여러 번 발주하는 **극고회전** 상품부터 주 1회 이하인 **저회전**(건전지·치즈 칼)까지 필요한 시간 입도가 다르고, **배송 허브별 지역 수요**로도 갈라야 한다. 지금까지 **상향식**(가는 입도로 예측해 필요한 단위로 합산)이라 유연하지만 함정이 있다. 가는 입도일수록 **예측 불가능한 포아송 잡음**이 커서(일 평균 10개면 약 32%, 100개면 10%) 일 단위 WAPE 24% 가 2주 합산으로는 전혀 다른 그림이 된다 — 잡음은 서로 상관이 없어 합치면 상쇄된다. 대책은 기준 예측 대비 **MASE** 같은 지표, 그리고 유일한 진짜 해법으로 **쓰이는 집계 수준에서 평가**하기. 반대로 **모델 오차는 상관돼 있으면 합쳐도 안 줄어** 가는 입도만 보면 안 보인다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "토트 속을 보는 비전 검수",
+      "why": "자동화 센터의 제어 소프트웨어는 토트의 행선지는 알지만 **안을 보지 못한다.** 상품이 튀어나가거나 눌리거나 잘못 담긴 것을 피킹 스테이션·배송 기사·고객이 발견한다. 재고 토트를 사람이 다시 세는 일은 피킹 흐름을 끊는다.",
+      "tech": [
+        {
+          "tech": "컨베이어 위 2D 카메라 + 바코드 짝짓기, 추론은 엣지(Jetson·YOLO·CountGD) 또는 클라우드 VLM(Gemini)",
+          "solves": "1.5m/s 벨트에서 토트마다 이미지를 재고 기록과 짝지어 개수·잘못 든 상품·파손을 본다. 토트가 이동하는 몇 초 동안 기다릴 수 있어 느린 모델도 후보가 된다.",
+          "limits": "2D 는 **겹친 상품**에 약하다(3D 는 2~3배 비싸다). VLM 은 **3~4초**·환각·물량 비례 비용·미세 조정 어려움, 엣지는 창고에 하드웨어를 더 둬야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Adding Eyes to Picnic’s Automated Warehouses",
+              "url": "https://jobs.picnic.app/en/blogs/adding-eyes-to-picnics-automated-warehouses",
+              "publisher": "Picnic Engineering",
+              "date": "2025-06-11",
+              "summary": "위트레흐트 **완전 자동화 물류센터**에서 토트 수천 개가 **50km 넘는 컨베이어**를 매일 돈다. 사내 제어 소프트웨어가 토트의 행선지를 정하지만 **상자 안을 보지 못해** 상품이 튀어나가거나 눌리거나 잘못 담긴 것을 피킹 스테이션·배송 기사·최악엔 고객이 발견한다. 비전으로 **주문 토트**(개수·잘못 든 봉투·다른 맛)와 **재고 토트**(자동 재고 세기 — 수동 재집계가 피킹 흐름을 끊는다, 파손·유통기한)를 본다. **1.5m/s** 벨트에서 흐림 없는 이미지와 **바코드를 짝지어야** 한다. **2D 대신 3D** 는 겹친 상품을 가르지만 **2~3배 비싸고 대역폭·보정 부담** — 파일럿은 2D. **엣지 추론**(Jetson)은 지연·대역폭을 줄이지만 창고에 하드웨어를 더 둬야 한다. YOLO 는 지연이 빠듯할 때 빛나는데 **토트가 이동하는 몇 초를 기다려도 된다.** CountGD 는 세기만 잘해 모델을 여럿 병렬로 돌려야 한다. 클라우드 **VLM**(Gemini 2.5 Flash)은 한 번의 호출로 개수·박스·불량 설명을 내지만 **3~4초**, 환각, 물량이 늘면 비용, 미세 조정이 어렵다. 2부에서 CountGD 와 Gemini 를 같은 데이터로 겨룬다고 예고한다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "자동화 물류센터 관제",
+      "why": "자동화 센터의 흐름은 관제실의 **컨트롤러**가 대시보드를 보며 챙긴다. 반복 작업과 판단이 한 사람의 집중력과 기억에 걸려 있어 **30분 넘게 자리를 비우면** 그날 늦게 문제가 되고, 사람마다 결정이 달라 결과가 날마다 달랐다.",
+      "tech": [
+        {
+          "tech": "RTI(ClickHouse) + dbt 모델(30~60초) → ClickHouse RabbitMQ Engine → Recommendation Service → WS Admin",
+          "solves": "여러 마이크로서비스에 흩어진 데이터를 **새 집계 서비스 없이** 이미 실시간으로 모으는 분석 플랫폼에서 SQL 로 판단하고, 수락되면 기존 백엔드 엔드포인트를 그대로 부른다.",
+          "limits": "판단이 **30~60초 주기**로만 돈다. 분석 플랫폼이 운영을 움직이게 되어 RTI 가 멈추면 추천도 멈춘다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Our vision of building an Intelligent Control Center for Fulfilment",
+              "url": "https://jobs.picnic.app/en/blogs/our-vision-of-building-an-intelligent-control-center-for-fulfilment",
+              "publisher": "Picnic Engineering",
+              "date": "2026-07-30",
+              "summary": "자동화 물류센터의 **컨트롤러**(관제실)가 Grafana 대시보드·하드웨어 지표·사내 관리 화면 **WS Admin** 을 보며 흐름을 챙긴다. UX 리서치로 찾은 문제 셋 — **'X 면 Y' 반복 작업**, **결정의 결과가 불분명**(재고 보충을 기다려 출차를 늦출까, 상품을 취소하고 제시간에 보낼까), **열린 일의 큐가 없다.** 컨트롤러가 **30분 넘게 자리를 비우면** 그날 늦게 문제가 되고 사람마다 결정이 달라 결과가 날마다 달랐다. 위트레흐트 가동 **약 5년**. 순수 반복은 소프트웨어로 자동화하고, 나머지는 시스템이 **무엇을 언제** 할지 추천하고 컨트롤러가 수락·거절(거절 사유는 정해진 목록)한다 — 늘 수락되는 것은 다음에 자동화, 늘 거절되는 것은 로직을 고친다. 구성은 추천 유형·트리거·수락 시 부를 **기존 백엔드 엔드포인트**·쿼리 엔진. 데이터가 여러 마이크로서비스에 흩어져 셋을 견줬다(한 서비스만 조회 / 한 서비스에 데이터 덧붙이기 / 새 집계 서비스) — 새 집계 서비스 대신 이미 모든 데이터를 실시간으로 모으는 **RTI(ClickHouse)** 를 썼다: **dbt 모델 SQL 을 30~60초마다** 돌려 테이블을 채우면 ClickHouse 의 **RabbitMQ Engine** 이 메시지로 내보내고 가벼운 **Recommendation Service** 가 저장·우선순위·라우팅해 WS Admin 에 띄운다. 수락하면 UI 가 핵심 백엔드를 직접 부른다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**비전 2부**(`adding-eyes-to-picnics-automated-warehouses-part-2`, 2025-10-09)에서 CountGD 와 Gemini 의 비교 결과를 아직 안 읽었다.",
+    "**독일 오버하우젠 등 새 자동화 센터**가 위트레흐트와 같은 소프트웨어를 쓰는지 없다.",
+    "**결제**(`why-and-how-we-built-a-flexible-payments-system`)·**레시피 추천**·**실시간 분석(Iceberg)**·**워크스테이션 관측성** 글도 도메인 후보다. 예전 Medium 아카이브는 안 열어 봤다."
+  ],
+  "sources": [
+    {
+      "title": "Online supermarket Picnic growing fast, but still suffering losses due to investments",
+      "url": "https://nltimes.nl/2026/07/20/online-supermarket-picnic-growing-fast-still-suffering-losses-due-investments",
+      "publisher": "NL Times",
+      "date": "2026-07-20",
+      "summary": "Picnic 연차 보고서 기사. 2025년 **매출 19억 유로 이상**(전년 대비 약 4분의 1 증가), 대부분 네덜란드. **네덜란드·독일·프랑스 690개 도시**, 고객 **70만 명 늘어 360만 명**. 순손실 **2억 7,200만 유로 이상**(2024년보다 조금 큼) — 독일·프랑스 확장과 **자동화 물류센터**(독일 오버하우젠 등) 투자 때문이며 여는 시점에 단기 비용이 크다고 회사가 말한다. 전기 배송차를 늘렸다. 2026년 매출은 **23억 유로 초과**를 예상한다."
+    },
+    {
+      "title": "Adding Eyes to Picnic’s Automated Warehouses",
+      "url": "https://jobs.picnic.app/en/blogs/adding-eyes-to-picnics-automated-warehouses",
+      "publisher": "Picnic Engineering",
+      "date": "2025-06-11",
+      "summary": "위트레흐트 **완전 자동화 물류센터**에서 토트 수천 개가 **50km 넘는 컨베이어**를 매일 돈다. 사내 제어 소프트웨어가 토트의 행선지를 정하지만 **상자 안을 보지 못해** 상품이 튀어나가거나 눌리거나 잘못 담긴 것을 피킹 스테이션·배송 기사·최악엔 고객이 발견한다. 비전으로 **주문 토트**(개수·잘못 든 봉투·다른 맛)와 **재고 토트**(자동 재고 세기 — 수동 재집계가 피킹 흐름을 끊는다, 파손·유통기한)를 본다. **1.5m/s** 벨트에서 흐림 없는 이미지와 **바코드를 짝지어야** 한다. **2D 대신 3D** 는 겹친 상품을 가르지만 **2~3배 비싸고 대역폭·보정 부담** — 파일럿은 2D. **엣지 추론**(Jetson)은 지연·대역폭을 줄이지만 창고에 하드웨어를 더 둬야 한다. YOLO 는 지연이 빠듯할 때 빛나는데 **토트가 이동하는 몇 초를 기다려도 된다.** CountGD 는 세기만 잘해 모델을 여럿 병렬로 돌려야 한다. 클라우드 **VLM**(Gemini 2.5 Flash)은 한 번의 호출로 개수·박스·불량 설명을 내지만 **3~4초**, 환각, 물량이 늘면 비용, 미세 조정이 어렵다. 2부에서 CountGD 와 Gemini 를 같은 데이터로 겨룬다고 예고한다."
+    },
+    {
+      "title": "Our vision of building an Intelligent Control Center for Fulfilment",
+      "url": "https://jobs.picnic.app/en/blogs/our-vision-of-building-an-intelligent-control-center-for-fulfilment",
+      "publisher": "Picnic Engineering",
+      "date": "2026-07-30",
+      "summary": "자동화 물류센터의 **컨트롤러**(관제실)가 Grafana 대시보드·하드웨어 지표·사내 관리 화면 **WS Admin** 을 보며 흐름을 챙긴다. UX 리서치로 찾은 문제 셋 — **'X 면 Y' 반복 작업**, **결정의 결과가 불분명**(재고 보충을 기다려 출차를 늦출까, 상품을 취소하고 제시간에 보낼까), **열린 일의 큐가 없다.** 컨트롤러가 **30분 넘게 자리를 비우면** 그날 늦게 문제가 되고 사람마다 결정이 달라 결과가 날마다 달랐다. 위트레흐트 가동 **약 5년**. 순수 반복은 소프트웨어로 자동화하고, 나머지는 시스템이 **무엇을 언제** 할지 추천하고 컨트롤러가 수락·거절(거절 사유는 정해진 목록)한다 — 늘 수락되는 것은 다음에 자동화, 늘 거절되는 것은 로직을 고친다. 구성은 추천 유형·트리거·수락 시 부를 **기존 백엔드 엔드포인트**·쿼리 엔진. 데이터가 여러 마이크로서비스에 흩어져 셋을 견줬다(한 서비스만 조회 / 한 서비스에 데이터 덧붙이기 / 새 집계 서비스) — 새 집계 서비스 대신 이미 모든 데이터를 실시간으로 모으는 **RTI(ClickHouse)** 를 썼다: **dbt 모델 SQL 을 30~60초마다** 돌려 테이블을 채우면 ClickHouse 의 **RabbitMQ Engine** 이 메시지로 내보내고 가벼운 **Recommendation Service** 가 저장·우선순위·라우팅해 WS Admin 에 띄운다. 수락하면 UI 가 핵심 백엔드를 직접 부른다."
+    },
+    {
+      "title": "Signal vs Noise: Choosing the right granularity for demand forecasting",
+      "url": "https://jobs.picnic.app/en/blogs/signal-vs-noise-choosing-the-right-granularity-for-demand-forecasting",
+      "publisher": "Picnic Engineering",
+      "date": "2026-01-27",
+      "summary": "모든 상품의 판매 예측으로 **공급사 발주량**을 정한다. 하루에 여러 번 발주하는 **극고회전** 상품부터 주 1회 이하인 **저회전**(건전지·치즈 칼)까지 필요한 시간 입도가 다르고, **배송 허브별 지역 수요**로도 갈라야 한다. 지금까지 **상향식**(가는 입도로 예측해 필요한 단위로 합산)이라 유연하지만 함정이 있다. 가는 입도일수록 **예측 불가능한 포아송 잡음**이 커서(일 평균 10개면 약 32%, 100개면 10%) 일 단위 WAPE 24% 가 2주 합산으로는 전혀 다른 그림이 된다 — 잡음은 서로 상관이 없어 합치면 상쇄된다. 대책은 기준 예측 대비 **MASE** 같은 지표, 그리고 유일한 진짜 해법으로 **쓰이는 집계 수준에서 평가**하기. 반대로 **모델 오차는 상관돼 있으면 합쳐도 안 줄어** 가는 입도만 보면 안 보인다."
+    }
+  ]
+}

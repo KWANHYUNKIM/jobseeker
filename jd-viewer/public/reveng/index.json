@@ -1,6 +1,18 @@
 {
-  "updated_at": "2026-09-07",
+  "updated_at": "2026-09-26",
   "companies": [
+    {
+      "slug": "picnic",
+      "name": "Picnic",
+      "name_en": "Picnic",
+      "country": "EU",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "앱으로만 파는 네덜란드 온라인 슈퍼마켓 — 발주량을 예측하고, 50km 컨베이어 위 토트를 들여다보고, 관제실의 다음 할 일을 시스템이 먼저 꺼낸다",
+      "updated_at": "2026-09-26",
+      "domain": "picnic.app"
+    },
     {
       "slug": "devsisters",
       "name": "데브시스터즈",
@@ -2945,7 +2957,10 @@
     "여러 제품이 한 문으로 들어온다",
     "쌓인 제조 데이터를 싸게 꺼낸다",
     "게임 로그를 게임별로 갈라 흘려보낸다",
-    "지표 정의를 한곳에 둔다"
+    "지표 정의를 한곳에 둔다",
+    "수요 예측과 발주",
+    "토트 속을 보는 비전 검수",
+    "자동화 물류센터 관제"
   ],
   "countries": {
     "KR": "한국",
