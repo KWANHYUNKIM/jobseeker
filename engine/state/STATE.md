@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**WealthNavi 완주(2026-09-26) — `genai-comment-qa-layers` 로 도메인 둘 다 기능, 수익원 하나 → done. 다음은 --gaps 의 신규: 큐 맨 위 Weathernews — `c40be230faccbf`(AWS Batch GPU 온디맨드 · AutoGluon TimeSeries · 이벤트 × 분위점 · Step Functions · 구성 선정 배경) · `dc7de23c12665e`(마이 솔루션 결정 트리) · 회사 사이트에서 수익원부터. 큐 2/3 → 이 회사 뒤 후보 조사. 대기 2/3(Weathernews·Safie). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Weathernews 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '기상과 실적으로 소매·제조의 반년 수요를 예측한다' — `c40be230faccbf`(구성 선정 배경 · Batch GPU 온디맨드 · AutoGluon · 이벤트 × 분위점 · Step Functions; 본문 아직). 그다음 '수십만 개의 사용자 기상 조건을 10분마다 판정한다' — `dc7de23c12665e`(결정 트리 · 단락 평가 · jq Leaf · 병렬화). 수익원 방송은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(Safie) — --gaps 가 후보 조사를 부를 수 있다. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

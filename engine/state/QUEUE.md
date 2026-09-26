@@ -43,13 +43,13 @@
 | **KENCOPA** | JP · 건설 AI 에이전트 | 프로파일(2026-09-26). 도메인 둘 — 설계 도서로 공정표의 일수를 세운다 · 제각각인 PDF 표를 구조화 데이터로 뽑는다. 기능 2(`activity-rate-quantity-linking` · `sds-pdf-table-extraction`). **hold** — 적산 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 적산 AI 에이전트는 도메인 없음. 입구 `zenn.dev/p/kencopa/feed`(8편). |
 | **WWWAVE(ウェイブ)** | JP · 전자 코믹·아니메 제작·배신 | 프로파일(2026-09-26). 도메인 둘 — 전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다 · 이상 때만 알리는 감시에서 침묵을 해석한다. 기능 2(`access-vba-delivery-retirement` · `batch-silence-monitoring`). **hold** — 신규 사업 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 신규 사업은 도메인 없음. 입구 `zenn.dev/p/wwwave/feed`. |
 | **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 2(`cheap-model-prescreening` · `scanned-pdf-ocr-triage`). **hold** — Stock 제품 수익원 자료 두 번 없음(2026-09-26). 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
+| **ウェザーニューズ(Weathernews)** | JP · 기상 정보 | 프로파일(2026-09-26). 도메인 둘 — 기상과 실적으로 소매·제조의 반년 수요를 예측한다 · 수십만 개의 사용자 기상 조건을 10분마다 판정한다. 기능 0. 수익원 셋 중 방송은 도메인 없음. 입구 `zenn.dev/p/weathernews/feed`. |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **ウェザーニューズ(Weathernews)** | JP · 기상 정보·예측 | Zenn Publication `zenn.dev/p/weathernews`(RSS 18편). **AWS Batch × GPU 로 한 장기 수요 예측 추론 기반**(`c40be230faccbf`, 2026-07-17) — GPU 인스턴스를 온디맨드로 띄워 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 연계, 구성 선정 배경 절 있음. 곁글 — 조건이 복잡한 '마이 솔루션' 을 결정 트리로 고속 판정(`dc7de23c12665e`) · Lambda Web Adapter + Echo 에 Datadog APM · 운영용 벡터 검색 도구. **기상 데이터 축(처음)**. |
 | **Safie(セーフィー)** | JP · 클라우드 카메라 영상 플랫폼 | Zenn Publication `zenn.dev/p/safie_inc`(RSS 20편). **2년 묵은 장애 '사라진 SYN-ACK' 를 AI 와 이틀 조사해 푼 이야기**(`97cdd15308a818`, 2026-09-09) — 카메라 영상을 늘 받는 카메라 서버(EC2 다수)와 요청 때 그 서버로 TCP 를 여는 썸네일 서버(Fargate)가 같은 서브넷, 기동 직후 태스크만 SYN → SYN-ACK 타임아웃 → 기각된 가설들 → 원인은 Linux 커널 ARP 캐시(11.2초), Amazon Linux 는 10년 넘게 대책. 곁글 — 생성 AI 안전을 5층으로(`109c96218ef66d`) · 'Enter 로 전송' 폐지(IME 오폭). **영상 IoT 축**. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
