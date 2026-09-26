@@ -7,7 +7,7 @@
     "㈜기어세컨드",
     "GEAR2"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": null,
   "one_liner": "방치형 RPG '슬레이어 키우기'(2023년 연매출 200억+, 누적 800만 다운로드 — 공고)를 자체 개발·퍼블리싱한 모바일 게임사",
@@ -545,6 +545,101 @@
             {
               "title": "Overview — Kubeflow Pipelines",
               "url": "https://www.kubeflow.org/docs/components/pipelines/overview/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387053",
+      "title": "데이터 분석가",
+      "site": "wanted",
+      "verdict": "**신입 지원 가능(신입-경력 8년)**, 서울 성동구. 슬레이어 키우기(회사 브리핑)의 **데이터 분석가**로, 업무는 의사결정용 대시보드·리포트, **유저 액션 기반 로그 설계**와 로직 구상·파이프라인, 게임 라이프타임 전반의 데이터 수집·분석과 인사이트, **지표·가설 설정과 A/B 테스트**, 마케팅·기획·사업과 KPI 문제 정의. 필수는 SQL 로 직접 추출·정제, Python·SQL·BI 툴(Superset·Looker Studio·Tableau), 가설 기반 A/B 설계·진행, 패턴 발견·모델링, **게임 내 여러 상황이 연결된 현상을 Deep Dive 해 액션까지 도출**. 우대는 빠른 실행, 모바일 게임 데이터, 데이터 인프라 개선 관심, AWS·GCP·Snowflake. 기술 스택은 Python·R, Tableau·Looker Studio·Metabase, DynamoDB·RDS, MySQL·**Athena**. 공고가 '데이터 분석으로 서비스 이용 유저를 깊이 이해하고 임팩트 있는 액션을 제시한 경험' 을 **포트폴리오**로 첨부해 달라고 적는다. 전형: 서류(포트폴리오) ＞ 사전 질문 ＞ 대면 인터뷰 ＞ 최종 합격. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "SQL 추출·정제",
+          "Python·BI 툴",
+          "A/B 설계·진행",
+          "게임 현상 Deep Dive"
+        ],
+        "can_learn": [
+          "로그 설계",
+          "Athena",
+          "게임 재화 경제 분석",
+          "모바일 게임 데이터"
+        ]
+      },
+      "study": [
+        {
+          "topic": "게임 로그 설계 — 무엇을 어떤 이름으로 남기나",
+          "from": "task",
+          "quote": "• 유저 액션을 기반으로 로그를 설계하고 로직을 구상하여 데이터 파이프라인을 구축합니다.",
+          "priority": "core",
+          "why": "주요업무다. 로그가 잘못 설계되면 나중에 어떤 분석도 할 수 없다.",
+          "gap_check": "방치형 RPG 에서 '스테이지 클리어', '재화 획득·소비', '상점 노출·구매' 로그를 남길 때 공통 속성(유저 레벨·서버·앱 버전·세션)과 이벤트별 속성(재화 종류·수량·획득처)은 무엇으로 두고, 재화 소비 이벤트에 '어디서 썼는지' 를 빠뜨리면 나중에 어떤 질문에 답할 수 없는가?",
+          "drill": "GA4 권장 이벤트의 게임 항목(level_up·earn_virtual_currency·spend_virtual_currency 등)을 참고해 슬레이어 키우기 가정의 로그 명세표(이벤트명·발생 시점·공통/개별 속성·예시 값) 15개를 작성하고, 그 명세로 답할 수 있는 분석 질문 목록을 붙인다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Recommended events — Google Analytics",
+              "url": "https://developers.google.com/analytics/devguides/collection/ga4/reference/events",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "게임 재화 흐름 Deep Dive — SQL 로 원인 좁히기",
+          "from": "qualification",
+          "quote": "• 게임 내 여러 상황이 연결되어 있는 현상을 Deep Dive하여, 현상에 대한 이해와 액션 아이템까지 도출해내는 과정을 즐기시는 분",
+          "priority": "core",
+          "why": "필수 자격요건이다. 방치형 게임은 재화 획득·소비 균형이 성장 속도와 과금에 직결된다.",
+          "gap_check": "업데이트 뒤 '다이아 구매 매출이 줄었다' 는 현상을 볼 때 재화 획득처(이벤트 보상 증가)·소비처(새 콘텐츠 부재)·유저군(레벨 구간·신규/복귀) 중 무엇부터 쪼개고, 전후 비교에서 계절성·이벤트 기간 같은 다른 원인은 어떻게 걸러내는가?",
+          "drill": "가짜 재화 획득·소비 로그로 업데이트 전후 2주의 레벨 구간별 '획득량 − 소비량' 을 윈도 함수로 계산하는 SQL 을 쓰고, 어느 구간에서 재화가 쌓이기 시작했는지 찾아 액션 아이템 한 줄까지 적는다 — 포트폴리오 형식으로.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Window Function Concepts and Syntax — MySQL 8.4",
+              "url": "https://dev.mysql.com/doc/refman/8.4/en/window-functions-usage.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "A/B 테스트 설계 — 상점 가격 실험",
+          "from": "qualification",
+          "quote": "• 논리적인 사고를 바탕으로 문제를 정의하고 가설을 세워 A/B 테스트를 설계하고 진행해 보신 분",
+          "priority": "high",
+          "why": "필수 자격요건이고 주요업무에 '목표 달성에 필요한 지표와 가설을 설정하고, 이를 검증할 수 있는 A/B 테스트' 가 있다.",
+          "gap_check": "상점 패키지 가격을 바꾸는 실험에서 구매 전환율만 보면 무엇을 놓치고(ARPPU·총매출), 한 유저가 여러 번 사는 구조에서 분석 단위를 구매 건이 아니라 유저로 둬야 하는 이유는 무엇이며, 실험 도중 결과를 매일 보고 멈추면 어떤 문제가 생기는가?",
+          "drill": "Evan Miller 계산기로 구매 전환율 3% 에서 0.5%p 개선을 잡는 표본을 구하고, 실험 설계서(가설·단위·주 지표·가드레일·기간)를 쓴다. 가짜 결과로 유저 단위 전환율과 ARPPU 를 함께 판정한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Sample Size Calculator — Evan Miller",
+              "url": "https://www.evanmiller.org/ab-testing/sample-size.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Trustworthy Online Controlled Experiments — Experiment Guide",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "의사결정용 대시보드 — 한 장에 무엇을",
+          "from": "task",
+          "quote": "• 데이터 기반의 의사결정에 필요한 직관적인 대시보드와 리포트를 만듭니다.",
+          "priority": "nice",
+          "why": "첫 번째 주요업무이고 기술 스택에 Tableau·Looker Studio·Metabase 가 있다.",
+          "gap_check": "운영팀이 매일 아침 보는 게임 대시보드 한 장에 DAU·매출·ARPDAU·신규 유입·리텐션 가운데 무엇을 맨 위에 두고, 숫자가 튀었을 때 바로 원인을 쪼개 볼 수 있게 무엇(필터·드릴다운)을 넣으며, 지표 정의를 대시보드 안에 적어 두는 이유는 무엇인가?",
+          "drill": "Metabase 를 로컬로 띄워 가짜 게임 지표 테이블로 '일간 운영 대시보드' 를 만들고, 각 카드에 지표 정의 설명을 붙인다. 서버·레벨 구간 필터로 매출 급변 원인을 쪼개 보는 흐름을 확인한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Introduction to dashboards — Metabase",
+              "url": "https://www.metabase.com/docs/latest/dashboards/introduction",
               "kind": "docs"
             }
           ]
