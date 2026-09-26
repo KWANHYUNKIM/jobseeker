@@ -2187,3 +2187,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 アルダグラム Datastream CDC
 
 - `ab35100d97ffa4` 를 끝까지(backfill · DDL · Append-only · 3층) 읽어 기능 `aurora-datastream-bigquery-cdc`, 결정 8. 출처 요약에 뒤쪽 절을 보탰다.
+
+## 2026-09-27 アルダグラム 완주
+
+- 수익원 판정: 검색 1 — 회사 뉴스 두 편의 각주 '무료 플랜 협력사 포함' 으로 유료 + 무료 구조 확인. 검색 2 — Zenn 'KANNA 料金'·'アルダグラム' 는 인프라·행사 글뿐. 구조가 회사 발표로 확인돼 confirmed, 과금 단위는 open_questions 에. 완주 기준 셋 충족으로 done.

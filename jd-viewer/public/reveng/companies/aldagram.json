@@ -4,11 +4,11 @@
   "name_en": "Aldagram",
   "country": "JP",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "domain": "aldagram.com",
   "one_liner": "건설·부동산·제조 현장의 정보를 모으는 'KANNA'(10만 사 · 100개국)를 현장 AI 플랫폼으로 키우는 회사 — AI 기능마다 Bedrock 비용을 따로 쥐려다 생긴 모델 교체·비용 추정의 틈을 메우고, 행은 많고 가벼운 현장 DB 를 GB 과금 CDC 로 BigQuery 에 옮긴다",
-  "business_model": "**2019년 설립**, 사원 74명(2026-09), 도쿄와 방콕. 제품은 **KANNA** 하나 — 건설·부동산·제조 같은 **논데스크 워크 현장**의 사진·보고·장표·태스크를 데이터로 쌓고 사내외 시스템과 잇는다. **2020-07 제공 시작, 100개국 이상 · 10만 사**(2026-07), 6개 언어.\n\n2026-09 시리즈 B(20억 엔, 누적 약 51.3억 엔)와 함께 '**현장 AI 플랫폼**'으로 간다고 밝혔다 — 報告 音声AI · 帳票 AI OCR 로 현장 정보를 디지털화하고, **KANNA MCP 서버**로 외부 AI 와 잇고, KANNA エージェント로 업무를 자동화한다.\n\n**요금 체계 · 매출은 공개 자료에서 확인하지 못했다**(요금 페이지가 로그인 화면으로 넘어간다) — 법인 대상 구독이라는 것은 추정이다.",
+  "business_model": "**2019년 설립**, 사원 74명(2026-09), 도쿄와 방콕. 제품은 **KANNA** 하나 — 건설·부동산·제조 같은 **논데스크 워크 현장**의 사진·보고·장표·태스크를 데이터로 쌓고 사내외 시스템과 잇는다. **2020-07 제공 시작, 100개국 이상 · 10만 사**(2026-07), 6개 언어.\n\n2026-09 시리즈 B(20억 엔, 누적 약 51.3억 엔)와 함께 '**현장 AI 플랫폼**'으로 간다고 밝혔다 — 報告 音声AI · 帳票 AI OCR 로 현장 정보를 디지털화하고, **KANNA MCP 서버**로 외부 AI 와 잇고, KANNA エージェント로 업무를 자동화한다.\n\n**유료 기업과 무료 플랜 협력사**가 같이 쓴다 — 10만 사에는 무료 플랜 협력사가 포함된다고 회사가 각주로 적는다. **과금 단위 · 매출은 공개 자료에서 확인하지 못했다**(요금 페이지가 로그인 화면으로 넘어간다).",
   "products": [
     "KANNA(현장 관리 · 현장 AI 플랫폼)",
     "KANNA AI 기능(AI 어시스턴트 · 帳票 AI OCR · 報告 音声AI · タスク 音声AI)",
@@ -18,15 +18,21 @@
   "revenue_total": "확인하지 못했다. 누적 조달(약 51.3억 엔)과 이용사 수(10만 사)만 공개 자료에 있다.",
   "revenue_streams": [
     {
-      "name": "KANNA 법인 이용료(요금 체계 미확인)",
-      "how": "건설·부동산·제조 기업이 현장 관리와 AI 기능을 쓰는 대가. 10만 사가 쓴다. 요금 페이지가 로그인 화면으로 넘어가 과금 단위(ID 수·현장 수·옵션)는 확인하지 못했다.",
+      "name": "KANNA 법인 이용료(유료 기업 + 무료 플랜 협력사)",
+      "how": "안건(현장 프로젝트)마다 자료·사진·일정·채팅·장표를 모으는 KANNA 를 기업이 쓴다. 이용사 10만 사에는 **무료 플랜으로 쓰는 협력 회사가 포함**된다 — 원청·발주 쪽 기업이 쓰는 기능(AI 어시스턴트 · AI OCR · 음성 AI 등)과 함께 협력사를 무료로 불러들이는 구조다. 과금 단위(ID 수 · 옵션 · AI 기능 별도 여부)는 요금 페이지가 로그인 화면으로 넘어가 확인하지 못했다.",
       "weight": "공개 안 됨",
       "domains": [
         "현장 AI 기능마다 비용과 모델을 따로 쥔다",
         "현장 데이터를 거의 실시간으로 분석 기반에 옮긴다"
       ],
-      "confidence": "inferred",
+      "confidence": "confirmed",
       "sources": [
+        {
+          "title": "現場DXサービス「KANNA」、国内外の利用社数が10万社を突破",
+          "url": "https://aldagram.com/news/py0cvgvps/",
+          "publisher": "アルダグラム",
+          "summary": "KANNA 이용사가 국내외 **10만 사 돌파** — 각주에 '**무료 플랜으로 이용하는 협력 회사 등을 포함**'. 기능은 자료·사진 공유 · 일정 관리 · 채팅 · 장표 작성, **안건(프로젝트)마다** 연락과 자료를 정리한다. 중소기업부터 대기업 · 지자체까지, **노코드로 자사 업무 흐름에 맞춘다.** 해외 전개는 **2023-06** 시작, 동남아 · 영국 · 호주 · 스페인 등 100개국 이상, 6개 언어."
+        },
         {
           "title": "株式会社アルダグラム",
           "url": "https://aldagram.com/",
@@ -46,13 +52,6 @@
           "publisher": "アルダグラム",
           "date": "2026-09-24",
           "summary": "KANNA 의 여러 기능(AI 어시스턴트 · 帳票 AI OCR · 報告 音声AI · タスク 音声AI)이 **Amazon Bedrock** 을 쓰는데 청구서로는 **어느 기능이 얼마인지** 몰랐다 — AWS 가 준비한 system-defined inference profile 에는 **태그를 못 단다.** 그래서 기능마다 **Application Inference Profile(AIP)** 을 만들어 `Service` 태그를 달고 경유시켰다(태그는 호출마다의 과금 레코드에 붙어 비율 배분이 아니다). 넣고 나서 문제 둘. ① AIP 는 **갱신 API 가 없어** copy_from(참조 모델)이나 설명 한 글자만 바꿔도 **destroy/create** — ARN 이 바뀌어 호출 쪽이 옛 ARN 으로 계속 실패한다. → **profile 본체(모델 세대마다)와 ARN 배포(SSM, 기능마다 하나)를 다른 Terragrunt unit 으로** 나누고, 새 세대를 **병행 생성 → 참조 1줄 교체(plan 은 '0 add, 1 change, 0 destroy' 여야 한다) → 재배포 → 옛 세대 삭제**. 규칙: 참조 모델을 바꾸면 model_alias 도 반드시 바꾼다. ② 태그 집계는 **일 단위**가 최소라 배포 직후 비용 변화를 못 보는데, 호출 쪽 토큰 × 단가 추정은 **AIP ARN 으로는 어느 모델인지 몰라** 성립하지 않게 됐다. → **호출에 쓰는 ID 와 관측에 싣는 이름을 나눠** 참조 모델 ID 를 환경 변수로 배포하고 OpenTelemetry `gen_ai.request.model` 에 싣는다. 교훈: '내역을 보이게 하면 무엇이 안 움직이게 되는지' 미리 몰랐다."
-        },
-        {
-          "title": "Aurora → Datastream → BigQuery で社内分析基盤を作り直してる話",
-          "url": "https://zenn.dev/aldagram_tech/articles/ab35100d97ffa4",
-          "publisher": "アルダグラム",
-          "date": "2026-05-28",
-          "summary": "사내 분석은 MySQL 클라이언트를 비엔지니어에게 깔아 주던 시절 → **Redash**(PdM · 마케터 · CS 가 씀)로 왔는데, 자동화 · 감사 로그, 여러 DB 를 가로지른 장기 분석, **컬럼 단위 접근 제어**, 공통 지표 정의에서 한계. Looker Studio · Connected Sheets · GAS · IAM 범위 배포 요구도 늘어 **BigQuery 중심**으로. Aurora MySQL/PostgreSQL 의 변경을 **CDC** 로 거의 실시간 동기한다. 방식 비교 — **Datastream**(월 수만 엔 추정, GB 과금) · **Fivetran**(가장 쉽지만 **MAR 과금이라 월 수십만 엔** 될 수 있다) · **DMS → S3 → BQ DTS**(자유롭지만 3 컴포넌트 운영, 지연 수십 분~수 시간). KANNA DB 는 '**행은 많고 한 행은 가볍다**'라 GB 과금이 유리 → Datastream. 경로는 GCP↔AWS VPN(유지비 · 공수 과하다) 대신 **기존 Bastion EC2 경유 SSH 터널**(Datastream IP 만 허용) — 대가는 **Bastion 단일 SPOF** 와 IP 목록 추종. MySQL 은 binlog ROW/FULL · enhanced binlog · **GTID ON**(페일오버 뒤에도 재개) · 보존 14일, PostgreSQL 은 논리 복제 슬롯 — 슬롯이 WAL 을 붙잡아 **Datastream 이 오래 멈추면 스토리지를 압박**해 max_slot_wal_keep_size · Datadog 슬롯 지연 감시 · Runbook 3단. BigQuery 안은 Raw → Sanitized → Mart 3층."
         }
       ]
     }
@@ -1026,7 +1025,7 @@
     }
   ],
   "open_questions": [
-    "**요금 체계 · 매출을 확인하지 못했다** — KANNA 요금 페이지(kanna4u.com)가 로그인 화면으로 넘어간다. 그래서 수익원 연결을 inferred 로 뒀다.",
+    "**과금 단위 · 매출을 확인하지 못했다** — KANNA 요금 페이지(kanna4u.com)가 로그인 화면으로 넘어간다. 유료 기업 + 무료 플랜 협력사 구조까지만 회사 발표로 확인했다(2026-09-27).",
     "**사내 분석 기반이 제품(KANNA)의 수익과 어떻게 이어지는지** — 글은 사내 분석(PdM · 마케터 · CS)만 적는다. 현장 AI 플랫폼의 '데이터 기반'과 같은 것인지는 없다.",
     "**AI 기능별 비용이 얼마인지**(기능 수 · profile 수의 규모 표는 있으나 금액은 없다), 비용을 보고 무엇을 바꿨는지 없다.",
     "**아직 안 읽은 것** — `rails-bulk-import-memory-improvement`(Rails 일괄 임포트 메모리 개선) · `f95ec27d51176b`(DatePicker·TextField 100개 모달 지연 마운트로 94% 단축) · `saml-authentication-with-firebase-in-mobile-apps`(모바일 Firebase + SAML) · `3318a924758852`(S3 Vectors 이미지 검색 PoC) · `nextjs-bundle-size-reduction`(번들 절반) · `e3f8d39f6eb5a1`(QA 풀제)."
@@ -1064,6 +1063,12 @@
       "publisher": "アルダグラム",
       "date": "2026-05-28",
       "summary": "사내 분석은 MySQL 클라이언트를 비엔지니어에게 깔아 주던 시절 → **Redash**(PdM · 마케터 · CS 가 씀)로 왔는데, 자동화 · 감사 로그, 여러 DB 를 가로지른 장기 분석, **컬럼 단위 접근 제어**, 공통 지표 정의에서 한계. Looker Studio · Connected Sheets · GAS · IAM 범위 배포 요구도 늘어 **BigQuery 중심**으로. Aurora MySQL/PostgreSQL 의 변경을 **CDC** 로 거의 실시간 동기한다. 방식 비교 — **Datastream**(월 수만 엔 추정, GB 과금) · **Fivetran**(가장 쉽지만 **MAR 과금이라 월 수십만 엔** 될 수 있다) · **DMS → S3 → BQ DTS**(자유롭지만 3 컴포넌트 운영, 지연 수십 분~수 시간). KANNA DB 는 '**행은 많고 한 행은 가볍다**'라 GB 과금이 유리 → Datastream. 경로는 GCP↔AWS VPN(유지비 · 공수 과하다) 대신 **기존 Bastion EC2 경유 SSH 터널**(Datastream IP 만 허용) — 대가는 **Bastion 단일 SPOF** 와 IP 목록 추종. MySQL 은 binlog ROW/FULL · enhanced binlog · **GTID ON**(페일오버 뒤에도 재개) · 보존 14일, PostgreSQL 은 논리 복제 슬롯 — 슬롯이 WAL 을 붙잡아 **Datastream 이 오래 멈추면 스토리지를 압박**해 max_slot_wal_keep_size · Datadog 슬롯 지연 감시 · Runbook 3단. BigQuery 안은 Raw → Sanitized → Mart 3층. 뒤쪽 절: **첫 backfill** 은 전 건 읽기에 가까워 Aurora 에 오래 부하 — **대상 테이블을 하나씩 늘리며** 완료를 확인하고 다음을 더했다(max_concurrent_backfill_tasks 는 테이블 단위라 무거운 한 테이블의 시간은 못 줄여 기본값). **DDL** 은 규칙으로 다 막을 수 없어 SRE 가 BigQuery 쪽을 손본다 — 말단 ADD COLUMN 은 대체로 괜찮고, RENAME 은 DROP+ADD 처럼, **비호환 형 변경은 Stream 이 멈춘다**(보통 새 컬럼 → 이행 → 옛 컬럼 삭제로 가니 드물다고 본다), TRUNCATE 는 반영 안 될 수 있다. 쓰기 모드는 **Append-only**(deleted_at·status 변천 추적과 감사 — Merge 는 덮어써 감사 입력이 못 된다), 데이터셋은 **source schema 마다**, 층은 **Raw(PII 포함 · 관리자만) → Sanitized(PII 삭제·해시·일반화 · 분석자) → Mart(부문별 집계)** 로 IAM 을 가른다. Sanitized·Mart 와 변환 수단(Scheduled Query · Dataform · dbt)은 아직 미정."
+    },
+    {
+      "title": "現場DXサービス「KANNA」、国内外の利用社数が10万社を突破",
+      "url": "https://aldagram.com/news/py0cvgvps/",
+      "publisher": "アルダグラム",
+      "summary": "KANNA 이용사가 국내외 **10만 사 돌파** — 각주에 '**무료 플랜으로 이용하는 협력 회사 등을 포함**'. 기능은 자료·사진 공유 · 일정 관리 · 채팅 · 장표 작성, **안건(프로젝트)마다** 연락과 자료를 정리한다. 중소기업부터 대기업 · 지자체까지, **노코드로 자사 업무 흐름에 맞춘다.** 해외 전개는 **2023-06** 시작, 동남아 · 영국 · 호주 · 스페인 등 100개국 이상, 6개 언어."
     }
   ]
 }

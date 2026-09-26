@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**アルダグラム 기능 2(2026-09-27) — `aurora-datastream-bigquery-cdc`(행은 많고 가볍다 — GB 로 사고 기존 터널로 옮긴다, 결정 8). 도메인 둘 다 찼다. 다음은 수익원 판정(지금 inferred — 요금 페이지 로그인 벽): 회사 뉴스 · 도입 사례(aldagram.com/news · kanna4u.com 의 공개 페이지) · Zenn 검색 'KANNA 料金'·'アルダグラム'. 과금 구조가 나오면 confirmed 로 올리고 done, 아니면 hold. 대기 1/3(ギークプラス) — 그 뒤 후보 조사. 비교 문서 재료 +1: LLM 비용을 무엇의 단위로 쥐나(アルダグラム 기능별 AIP ↔ 다른 회사의 모델 라우팅·비용 글). 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**アルダグラム 완주(2026-09-27) — 수익원 판정: 회사 발표 '10만 사(무료 플랜 협력사 포함)' 로 유료 기업 + 무료 협력사 구조를 확인해 confirmed 로 올렸다(과금 단위는 여전히 로그인 벽). 다음은 --gaps 의 신규: 큐 맨 위 ギークプラス — `9238a967bf0509`(200MB Java 배치 ECS → Lambda, 비용 1/4 · 시간 1/6) · `e9ea7d8e183eb5`(멀티테넌트 SaaS 의 AI 에이전트 테넌트 분리) · `a9be3b8c162e45`(공급망 정합성을 타입에) · 회사 사이트에서 소프트웨어 사업부의 수익원부터(로봇 하드웨어 본업과 가를 것). 대기 0/3 — 그 뒤 후보 조사. 비교 문서 재료 +1: LLM 비용을 무엇의 단위로 쥐나(アルダグラム 기능별 AIP ↔ 다른 회사의 모델 라우팅·비용 글). 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
