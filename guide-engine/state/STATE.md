@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **179건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **180건**.
+직전 회차: ✅ `Sr. Staff Back-end engineer [Promise Platform]`(8187816) 3항목 — **시애틀**, 재고·Promise 플랫폼 재설계(약속일·재고 스트림·캐시). 주요업무는 full_jd 에서.
 직전 회차: ✅ `Staff, Full-Stack Engineer [Rocket Growth Engineering]`(8200007) 3항목 — **시애틀**, 로켓그로스 판매자(등록·풀필먼트·정산), '$164,00' 오타. `--gaps` 미완 13건.
 직전 회차: ✅ `Staff Data Scientist (Catalog)`(8200033) 3항목 — **타이베이**, 카탈로그 AI(멀티모달 추출·더러운 라벨·HITL), 8년↑.
 직전 회차: ✅ `Manager, Security Engineering _ DART Taiwan`(8188073) 3항목 — **타이베이**, 신설 DART TW 사고 대응 매니저(대응 절차·SIEM 헌팅·호스트 로그), 15년↑.
