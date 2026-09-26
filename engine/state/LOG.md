@@ -2612,3 +2612,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 フェズ BigQuery Editions · Fluid Scaling
 
 - `037c3bd6e80390` 전문(결과 · 주의점 · 시뮬레이션까지)으로 기능 `bigquery-editions-fluid-scaling`, 결정 7. 수익원 연결은 inferred(글에 Urumo 이름 없음).
+
+## 2026-09-27 フェズ Urumo BI
+
+- dbt 1 편 끝까지 읽음(macro 화 하나뿐, 이유는 2 편으로 미룸) · 작성자 글 목록에 2 · 3 편 없음 → dbt 만으론 결정 5 개 불가. fez_tech 전체 47편에서 Urumo BI 개발 글 · 개인정보 글을 찾음. 도메인 둘째의 why · tech 를 두 글로 넓히고 기능 `urumo-bi-semantic-layer-ai`(결정 8, AI 를 Semantic Layer 위에 둔 결정은 대안이 이 사이트의 것이라 inferred).
