@@ -521,6 +521,130 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/162049",
+      "title": "[채널톡] DevOps Engineer",
+      "site": "wanted",
+      "verdict": "경력 3-10년, 병역특례(산업기능요원·전문연구요원) 가능. DevOps 팀은 특정 팀 운영을 대신하는 조직이 아니라 **모든 제품팀이 스스로 개발·배포·관측할 수 있는 셀프서비스 플랫폼**을 만든다고 적는다(팀 소개). 업무는 사용량 증가에 맞춘 구조 개선, 내부 개발자 플랫폼(배포·에러 설정), GitHub Actions 테스트·빌드·배포, ArgoCD 로 개발환경 배포 자동화, AWS·Kubernetes 운영, 비용 최적화, Terraform IaC, Helm chart·manifest 로 쿠버네티스 코드화, Datadog·CloudWatch·Sentry 모니터링·알람, 글로벌 서비스 인프라, **ISMS 인증 대비**. 필수는 분산 시스템 문제 해결, 프로덕션 Kubernetes 운영·트러블슈팅, Terraform 등 IaC, 한 언어 이상 능숙, 학부 수준 CS. 우대는 대규모 트래픽, FinOps(클라우드 비용 30% 이상 절감 사례), ArgoCD·Flux GitOps, DevSecOps·컴플라이언스 자동화, 클라우드 네이티브 마이그레이션, Istio, IDP, 인프라 오픈소스 기여. 전형: 서류 > 1차 인터뷰(온라인) > 2차 > 3차 > 최종 합격, 인터뷰에서 학부 수준 CS 와 DevOps 질문을 이해도·접근 방식 중심으로 묻는다.",
+      "fit": {
+        "must_have": [
+          "프로덕션 Kubernetes 운영·트러블슈팅",
+          "Terraform 등 IaC",
+          "분산 시스템 문제 해결",
+          "한 언어 이상 능숙",
+          "학부 수준 CS"
+        ],
+        "can_learn": [
+          "FinOps",
+          "ArgoCD·Flux GitOps",
+          "DevSecOps·컴플라이언스 자동화",
+          "Istio",
+          "IDP"
+        ]
+      },
+      "study": [
+        {
+          "topic": "프로덕션 Kubernetes 트러블슈팅",
+          "from": "qualification",
+          "quote": "• Kubernetes 실무: 프로덕션 환경에서 Kubernetes 클러스터 운영 및 트러블슈팅 경험",
+          "priority": "core",
+          "why": "필수 요건이고 주요업무가 AWS 전반 관리와 Kubernetes 운영이다. 인터뷰가 이해도와 문제 접근 방식을 본다고 적는다.",
+          "gap_check": "파드가 CrashLoopBackOff 일 때, Pending 일 때, Running 인데 요청이 안 들어올 때 각각 어떤 명령과 어떤 필드(이벤트·이전 컨테이너 로그·리소스 요청·readiness·Service 셀렉터)를 순서대로 보는가?",
+          "drill": "kind 클러스터에 일부러 망가뜨린 배포 세 개(잘못된 이미지 태그·과도한 메모리 요청·셀렉터 불일치)를 올리고, 각각 원인을 kubectl 만으로 찾아 고친 과정을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Debug Pods | Kubernetes",
+              "url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Terraform IaC — 모듈과 state",
+          "from": "qualification",
+          "quote": "• Infrastructure as Code: Terraform 등을 활용한 인프라 자동화 구현 경험",
+          "priority": "core",
+          "why": "필수 요건이고 주요업무가 Terraform 기반 운영 자동화다. 글로벌 서비스용 인프라를 다룬다(주요업무).",
+          "gap_check": "리전(한국·일본·미국)별로 거의 같은 인프라를 만들 때 모듈과 변수로 어떻게 나누고, 여러 사람이 같은 state 를 건드릴 때 잠금은 무엇으로 하며, 콘솔에서 누가 손으로 바꾼 리소스(드리프트)는 어떻게 알아채는가?",
+          "drill": "VPC·EKS 노드그룹을 모듈로 만들어 두 리전 환경을 변수만 바꿔 plan 하고, S3 원격 state + 잠금을 설정한 뒤 콘솔에서 태그 하나를 바꿔 plan 이 드리프트를 보여 주는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Modules overview | Terraform",
+              "url": "https://developer.hashicorp.com/terraform/language/modules",
+              "kind": "docs"
+            },
+            {
+              "title": "State | Terraform",
+              "url": "https://developer.hashicorp.com/terraform/language/state",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "GitOps 셀프서비스 배포 — ArgoCD·Helm",
+          "from": "task",
+          "quote": "• ArgoCD를 이용해 기능 개발환경의 배포를 자동화하고 있습니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 ArgoCD·Flux GitOps 와 내부 개발자 플랫폼(IDP) 구축이 있다. 팀 소개가 모든 제품팀이 스스로 배포할 수 있는 기반을 만든다고 적는다.",
+          "gap_check": "기능 브랜치마다 개발환경을 자동으로 띄웠다 지우려면 ArgoCD 의 무엇(ApplicationSet 과 PR 제너레이터)을 쓰고, 제품팀이 Helm values 만 고쳐 배포하도록 할 때 플랫폼팀이 막아 둬야 할 것(리소스 한도·권한)은 무엇인가?",
+          "drill": "Helm chart 하나를 만들고 ArgoCD 로 배포한 뒤, values 파일의 이미지 태그만 바꾼 커밋이 자동 동기화되는지 보고, 개발 네임스페이스에 ResourceQuota 를 걸어 과한 요청이 막히는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Argo CD - Declarative GitOps CD for Kubernetes",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "Charts | Helm",
+              "url": "https://helm.sh/docs/topics/charts/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드 비용 최적화 — FinOps",
+          "from": "preference",
+          "quote": "• 비용 최적화: FinOps 실무 경험 및 클라우드 비용 30% 이상 절감 사례",
+          "priority": "high",
+          "why": "우대사항이 '클라우드 비용 30% 이상 절감 사례' 를 구체적으로 적고, 주요업무가 비효율적인 인프라 개선으로 비용을 최적화한다.",
+          "gap_check": "EKS 비용이 늘었을 때 노드 과다 할당·파드 요청값 부풀림·유휴 개발환경·데이터 전송비 중 어디서 새는지 무엇으로 나눠 보고, 스팟 인스턴스로 옮겨도 되는 워크로드와 안 되는 워크로드는 무엇인가?",
+          "drill": "EKS 비용 최적화 모범사례를 읽고, 위 클러스터 파드들의 요청값과 실제 사용량을 비교한 표를 만들어 줄일 수 있는 요청값과 스팟 후보 워크로드를 절감 추정치와 함께 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "FinOps Foundation - What is FinOps?",
+              "url": "https://www.finops.org/introduction/what-is-finops/",
+              "kind": "docs"
+            },
+            {
+              "title": "Best Practices for Cost Optimization - Amazon EKS",
+              "url": "https://docs.aws.amazon.com/eks/latest/best-practices/cost-opt.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Istio 서비스 메쉬 트래픽 관리",
+          "from": "preference",
+          "quote": "• Istio 서비스 메쉬 운영: Istio 운영 하면서 트러블 슈팅 경험",
+          "priority": "nice",
+          "why": "우대사항이 Istio 운영 중 트러블슈팅 경험을 적는다.",
+          "gap_check": "Istio 사이드카가 붙은 뒤 서비스 간 호출이 503 으로 실패하면 무엇(DestinationRule·mTLS 모드·사이드카 준비 순서)부터 의심하는가?",
+          "drill": "kind 에 Istio 를 설치하고 서비스 두 개 사이에 VirtualService 로 90/10 트래픽 분할과 재시도를 건 뒤, mTLS STRICT 로 바꿨을 때 사이드카 없는 파드의 호출이 막히는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Istio / Traffic Management",
+              "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
