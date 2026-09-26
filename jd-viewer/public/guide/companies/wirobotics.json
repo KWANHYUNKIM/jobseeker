@@ -210,7 +210,8 @@
     "사람인 '2026년 하반기 각 부문 수시채용'(경력무관)은 본문 칸이 비어 있다",
     "salary: 공고에 금액이 없다 — 비워 둔다",
     "모바일 앱 공고(386374)는 제목이 'Jr. 개발자' 인데 헤더·자격요건은 '모바일 앱 개발 경력 3년 이상' 이다",
-    "Inference System(328621)은 헤더가 '경력 1년 이상' 인데 우대 첫 줄이 'Senior/Staff 수준의 시스템 엔지니어링 경험' 이다"
+    "Inference System(328621)은 헤더가 '경력 1년 이상' 인데 우대 첫 줄이 'Senior/Staff 수준의 시스템 엔지니어링 경험' 이다",
+    "휴머노이드 SW(328617) 자격요건 마지막 줄이 'Git, Docker, CI/CD 활용 능력로봇/자동화 장비 전장 설계 경험' 으로 붙어 있다 — 전장 설계 경험이 필수인지 편집 오류인지 알 수 없다"
   ],
   "postings": [
     {
@@ -637,6 +638,155 @@
           {
             "title": "휴머노이드 로봇 AI 엔지니어 (Inference System)",
             "url": "https://www.wanted.co.kr/wd/328621",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/328617",
+      "title": "휴머노이드 로봇 소프트웨어 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 1년 이상. 부서 소개는 '초 고자유도 휴머노이드 로봇의 실시간 제어 및 데이터 인프라 소프트웨어' 를 Linux 실시간 OS 와 ROS2 로 만든다고 적는다. 일은 실시간 Linux 미들웨어와 ROS2/DDS 기반 제어·운영 소프트웨어, 실시간 로깅·모니터링·시각화·업데이트 시스템, 센서 데이터 스트리밍·로깅·전처리 자동화, Gazebo/Isaac Sim 시뮬레이션과 CI 통합 테스트, 제어·AI·하드웨어 팀 협업. 필수는 Python/C++ 대규모 시스템, Realtime Linux·멀티스레드·네트워크 프로그래밍, Git·Docker·CI/CD. (자격요건 마지막 줄이 'CI/CD 활용 능력로봇/자동화 장비 전장 설계 경험' 으로 붙어 있어, '로봇/자동화 장비 전장 설계 경험' 이 필수인지 편집 오류인지 공고로는 알 수 없다.) ROS2·RTOS·DDS·Xenomai, 로봇·자율주행 SW 경력, C++/Rust 고성능 최적화는 우대다. 같은 회사 Framework S/W 공고(385302)가 Xenomai·EtherCAT 쪽 저수준이라면 이쪽은 ROS2 위 운영·데이터·시뮬레이션 쪽이다. 공고 본문에 전형 안내가 없다.",
+      "fit": {
+        "must_have": [
+          "Python/C++ 대규모 시스템 개발",
+          "Realtime Linux·멀티스레드·네트워크 프로그래밍",
+          "Git·Docker·CI/CD"
+        ],
+        "can_learn": [
+          "ROS2·RTOS·DDS·Xenomai",
+          "로봇·자율주행 SW 경력",
+          "C++/Rust 고성능 최적화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ROS2/DDS 와 실시간 Linux",
+          "from": "task",
+          "quote": "• 실시간 Linux기반 Middleware 구축 및 ROS2/DDS 기반 제어 및 운영 소프트웨어 개발",
+          "priority": "core",
+          "why": "첫 주요업무이고 필수 역량에 'Realtime Linux, 멀티스레드, 네트워크 프로그래밍 이해' 가, 우대에 ROS2·DDS·Xenomai 가 있다.",
+          "gap_check": "관절 명령 토픽과 카메라 이미지 토픽의 QoS(신뢰성·히스토리 깊이·데드라인)는 각각 어떻게 두고, ROS2 실시간 노드에서 동적 메모리 할당과 스케줄링 정책(SCHED_FIFO)은 왜 문제가 되는가?",
+          "drill": "PREEMPT_RT 커널(또는 VM)에서 rt-tests 의 cyclictest 로 지연 분포를 재고, ROS2 1 kHz 퍼블리셔/서브스크라이버를 SCHED_FIFO·메모리 잠금 유무로 돌려 주기 지터를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "ROS 2 — Quality of Service settings",
+              "url": "https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Quality-of-Service-Settings.html",
+              "kind": "docs"
+            },
+            {
+              "title": "ROS 2 — Real-time programming demo",
+              "url": "https://docs.ros.org/en/jazzy/Tutorials/Demos/Real-Time-Programming.html",
+              "kind": "docs"
+            },
+            {
+              "title": "ROS 2 — Middleware vendors (DDS)",
+              "url": "https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Different-Middleware-Vendors.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Linux man-pages — sched(7)",
+              "url": "https://man7.org/linux/man-pages/man7/sched.7.html",
+              "kind": "docs"
+            },
+            {
+              "title": "rt-tests (cyclictest)",
+              "url": "https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git/",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "센서 스트리밍·로깅과 모니터링",
+          "from": "task",
+          "quote": "• 센서 데이터 스트리밍, 데이터 로깅, 전처리 자동화",
+          "priority": "core",
+          "why": "주요업무이고 바로 위 줄이 '실시간 로깅·모니터링·시각화·업데이트 시스템 구축' 이다. 같은 회사 Robot Learning 공고가 로봇 데이터 수집 파이프라인을 적는다 — 이 데이터가 학습 재료가 된다(추론).",
+          "gap_check": "수십 개 관절·IMU·카메라 데이터를 제어 루프를 방해하지 않고 기록하려면 로깅을 어느 스레드·프로세스에 두고, 기록 파일 형식(rosbag2/MCAP)과 압축은 어떻게 고르는가?",
+          "drill": "가짜 관절·IMU·이미지 토픽을 발행하는 노드를 만들고 rosbag2(MCAP)로 기록·재생한 뒤 Foxglove 로 시각화한다. 기록 켜고 끌 때 제어 토픽 주기 지터를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ROS 2 — Recording and playing back data",
+              "url": "https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html",
+              "kind": "docs"
+            },
+            {
+              "title": "MCAP",
+              "url": "https://mcap.dev/",
+              "kind": "docs"
+            },
+            {
+              "title": "Foxglove docs",
+              "url": "https://docs.foxglove.dev/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "ros2_tracing",
+              "url": "https://github.com/ros2/ros2_tracing",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "시뮬레이션 기반 CI 통합 테스트",
+          "from": "task",
+          "quote": "• Gazebo/Isaac Sim 기반 시뮬레이션 및 CI 통합 테스트",
+          "priority": "high",
+          "why": "주요업무이고 필수 역량에 Git·Docker·CI/CD 가 있다.",
+          "gap_check": "로봇 제어 코드 변경마다 시뮬레이터를 CI 에서 돌릴 때 GPU·화면 없이 어떻게 띄우고, '넘어지지 않았다' 같은 통과 기준은 무엇으로 코드화하는가?",
+          "drill": "Docker 이미지에 ROS2 + Gazebo 를 넣고 헤드리스로 간단한 로봇 모델을 띄우는 launch_testing 테스트(몇 초 뒤 자세·위치 확인)를 GitHub Actions 에서 돌린다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Gazebo — Getting started",
+              "url": "https://gazebosim.org/docs/latest/getstarted/",
+              "kind": "docs"
+            },
+            {
+              "title": "ROS 2 — Testing",
+              "url": "https://docs.ros.org/en/jazzy/Tutorials/Intermediate/Testing/Testing-Main.html",
+              "kind": "docs"
+            },
+            {
+              "title": "GitHub Actions",
+              "url": "https://docs.github.com/en/actions",
+              "kind": "docs"
+            },
+            {
+              "title": "Isaac Sim Documentation",
+              "url": "https://docs.isaacsim.omniverse.nvidia.com/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "ROS2 실시간 노드 지터 측정 + rosbag2/MCAP 로깅 + 헤드리스 Gazebo CI 저장소",
+          "why": "주요업무 다섯 줄 중 넷(미들웨어·로깅·스트리밍·시뮬레이션 CI)을 한 저장소로 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "실시간·멀티스레드 문제를 잡은 사례 정리",
+          "why": "필수 역량이 Realtime Linux·멀티스레드·네트워크 프로그래밍 이해다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 안내가 없다.",
+        "expect": [
+          "ROS2/DDS QoS 설계",
+          "실시간 Linux 지터 대응",
+          "대용량 센서 로깅",
+          "시뮬레이션 CI"
+        ],
+        "sources": [
+          {
+            "title": "휴머노이드 로봇 소프트웨어 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/328617",
             "publisher": "원티드"
           }
         ]
