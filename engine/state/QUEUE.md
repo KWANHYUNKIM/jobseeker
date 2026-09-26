@@ -49,8 +49,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **WealthNavi(ウェルスナビ)** | JP · 로보어드바이저(자산 운용) | Zenn Publication `zenn.dev/p/wn_engineering`(RSS 20편, 8~9월 매주). **이벤트 구동 아키텍처 도입의 설계 판단**(`dc809eed504f90`, 2026-06-29, 사내 기획 '선택의 이야기: 금융 서비스의 시스템 설계 판단' 특집) — 마이크로서비스 사이 연계를 ① API 연계 대 이벤트 구동 ② 어느 AWS 서비스 ③ DB 갱신과 SNS publish 의 불일치를 어떻게 막나 — 판단마다 선택지 비교·기준·채택. 곁글 — 생성 AI 품질 보증을 기계·AI·사람으로 나눔(`95911ca28a7b1f`) · 푸시 알림을 억지로 허락시키지 않기(`4f914e97053eac`) · 대규모 iOS 빌드 분할 계획(`a1c7e3d92f8b04`) · Astro 이행. **자산 운용 축**. |
+| **ウェザーニューズ(Weathernews)** | JP · 기상 정보·예측 | Zenn Publication `zenn.dev/p/weathernews`(RSS 18편). **AWS Batch × GPU 로 한 장기 수요 예측 추론 기반**(`c40be230faccbf`, 2026-07-17) — GPU 인스턴스를 온디맨드로 띄워 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 연계, 구성 선정 배경 절 있음. 곁글 — 조건이 복잡한 '마이 솔루션' 을 결정 트리로 고속 판정(`dc7de23c12665e`) · Lambda Web Adapter + Echo 에 Datadog APM · 운영용 벡터 검색 도구. **기상 데이터 축(처음)**. |
+| **Safie(セーフィー)** | JP · 클라우드 카메라 영상 플랫폼 | Zenn Publication `zenn.dev/p/safie_inc`(RSS 20편). **2년 묵은 장애 '사라진 SYN-ACK' 를 AI 와 이틀 조사해 푼 이야기**(`97cdd15308a818`, 2026-09-09) — 카메라 영상을 늘 받는 카메라 서버(EC2 다수)와 요청 때 그 서버로 TCP 를 여는 썸네일 서버(Fargate)가 같은 서브넷, 기동 직후 태스크만 SYN → SYN-ACK 타임아웃 → 기각된 가설들 → 원인은 Linux 커널 ARP 캐시(11.2초), Amazon Linux 는 10년 넘게 대책. 곁글 — 생성 AI 안전을 5층으로(`109c96218ef66d`) · 'Enter 로 전송' 폐지(IME 오폭). **영상 IoT 축**. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 아흔한 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API 51~90쪽 publication 집계 → RSS.**
+  - **WealthNavi** — **자산 운용 축.** '금융 서비스 설계 판단' 기획 특집이라 판단마다 선택지·기준이 적혀 있다.
+  - **Weathernews** — **기상 데이터 축(처음).** ML 추론 기반 구성의 선정 이유가 있다. 제품 쪽 글(마이 솔루션 판정)도 있다.
+  - **Safie** — **영상 IoT 축.** 장애 조사 글이지만 카메라 서버·썸네일 서버 구성과 대책의 대가가 드러난다. 두 번째 기능은 약할 수 있다.
+  - **통과 못 한 곳.** クロジカ(`kurojica`) — 수탁 개발(案件) 글. FORCIA — 언어 실험·행사 글. FLINTERS — AI 개발 과정 글 위주(데이터 마트 글 하나). nonejp·sun_asterisk·scalar_sol_blog·softbank 등 — 도구 시험·SIer.
 
 - **2026-09-26 아흔 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API 21~50쪽 publication 집계 → RSS.**
   - **PIVOT** — **미디어 축.** 미션 기능 재설계에 '처음엔 Push 형으로 생각했다' 와 '의도적 트레이드오프' 가 있다.

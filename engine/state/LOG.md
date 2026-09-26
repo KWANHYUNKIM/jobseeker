@@ -1844,3 +1844,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 1D Laravel → Go·GraphQL — 완주
 
 - 결정 6 — Go(호기심과 합리성)·GraphQL(2명이라)·ent(N+1)·Entity 래퍼로 클린 아키텍처 타협·Next.js/Vercel·ECS+Terraform. 수익원 둘 다 기능 → done.
+
+## 2026-09-26 91번째 후보 조사
+
+- Zenn 최신 글 API 51~90쪽 → 제품 회사 6곳 RSS → 3편 본문 확인. 올림: WealthNavi(이벤트 구동 설계 판단)·Weathernews(Batch GPU 수요 예측)·Safie(SYN-ACK 장애).

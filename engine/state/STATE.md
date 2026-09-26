@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**1D 완주(2026-09-26) — `laravel-to-go-graphql` 로 도메인 둘 다 기능, 수익원 둘 다 기능 → done. 다음은 --gaps 를 따른다 — 큐 0/3 이라 후보 조사일 것(입구: Zenn 최신 글 API 51쪽 이후, 또는 note·Speaker Deck). 대기 0/3 — **--gaps 가 후보 조사를 부르면 그쪽이 먼저.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**91번째 후보 조사(2026-09-26) — 큐 3/3(WealthNavi·Weathernews·Safie). 다음은 --gaps 의 신규: 큐 맨 위 WealthNavi — `dc809eed504f90`(API 연계 대 이벤트 구동 · AWS 서비스 선택 · DB 갱신과 SNS publish 불일치) · `95911ca28a7b1f` · `4f914e97053eac` · 회사 사이트에서 수익원부터. **. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
