@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — gunosy 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — hatena 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **hatena** — 2026-09-26 없음 1회째. `developer.hatenastaff.com/rss` 마지막 글이 09-04(iOSDC 공지). 이전 글 후보: 08-12 Jetpack Navigation 3 이전, 08-26 Glance 위젯.
 - **gunosy** — 2026-09-26 없음 1회째. `tech.gunosy.io/rss` 마지막 글이 04-16(행사 참가기) — 블로그가 사실상 멈췄다. 이전 글 후보: 2025-12 LLM 기사 선정(dripman), Text-to-SQL 평가.
 - **godot** — 2026-09-26 확장. `godotengine.org/rss.xml`. 09-15 CPU 쪽 렌더링 최적화 글로 새 도메인 "CPU 와 GPU 중 느린 쪽에 맞춰 일을 덜어 낸다". 이전 글 후보: "D3D12 adventures in shaderland"(셰이더 경로 결정의 원문).
 - **ghostty** — 2026-09-26 없음 1회째. 작성자 블로그 `mitchellh.com/feed.xml` 마지막 글 07-29, 릴리스 노트 마지막이 1.3.1(03-13). 이전 글 후보: 04-28 "Ghostty Is Leaving GitHub"(결정·대가가 있을 수 있다, 1순위), 07-22 SIMD, 01-21 tripwire 오류 복구 시험.
