@@ -168,5 +168,123 @@
     "사람인·캐치의 'AI 서비스 기획 (체험형 인턴)' 이 같은 자리인지 본문 비교 필요",
     "salary: 공고 급여가 '면접 후 결정' — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570887?ReturnUrl=RecruitInfo",
+      "title": "Disney 디지털 코믹스 플랫폼 서버 개발 (경력)",
+      "site": "dev",
+      "verdict": "경력 3년 이상. 조직 소개가 '신규 Disney 디지털 코믹스 플랫폼의 핵심 기능을 설계·개발하고, 안정적이며 확장 가능한 시스템 아키텍처를 구축' 한다고 적는 **출시 전 신규 서비스** 서버 자리다. 담당 업무 칸은 업무라기보다 방향을 적는다 — 국가별 법령·규제와 지역 컴플라이언스를 사전 검토해 반영, 프리미엄 콘텐츠 기반 비즈니스 모델을 단계적으로 전개, 새 기술로 확장 가능한 아키텍처, 준비부터 출시까지 주도. 필수는 Kotlin·Spring Boot 웹 서버, Nginx·Redis·RDB·Batch·Kafka·Object Storage 인프라 이해, **'자신만의 AI Harness를 구축하여 실무에 적용'** 하고 AI 로 개발 프로세스를 자동화하려는 열정. 현지화·글로벌 서비스, 모듈화, 동시성·대용량 트래픽, 병목·장애 개선, NoSQL·대용량·**결제 연동**, Docker·Kubernetes, 프론트엔드는 우대다. 전형: 지원서 리뷰 → 프리 인터뷰 → 실무 인터뷰 → Culture-Fit 인터뷰(기업문화 적합도 검사 포함). 결과에 따라 레퍼런스 체크·추가 인터뷰가 붙을 수 있다. 접수 2026.09.10 ~ 2026.10.02 23:59, 근무지 정자동 그린팩토리. '남자의 경우, 군필자 또는 면제자에 한해 지원 가능', 해외여행 결격 사유 없는 분.",
+      "fit": {
+        "must_have": [
+          "유관 경력 3년 이상",
+          "Kotlin·Spring Boot 웹 서버",
+          "Nginx·Redis·RDB·Batch·Kafka·Object Storage",
+          "AI Harness 를 직접 만들어 쓰는 개발 방식"
+        ],
+        "can_learn": [
+          "현지화·글로벌 서비스",
+          "동시성·대용량 트래픽",
+          "결제 연동",
+          "Docker·Kubernetes",
+          "프론트엔드"
+        ]
+      },
+      "study": [
+        {
+          "topic": "국가별 규제·컴플라이언스를 서비스에 반영",
+          "from": "task",
+          "quote": "다양한 국가의 법령·규제를 철저히 준수하고, 각 지역별 컴플라이언스 요구사항을 사전에 검토하여 서비스에 반영합니다.",
+          "priority": "core",
+          "why": "첫 담당 업무이고 우대에 '다양한 국가, 문화권 사용자를 대상으로 서비스 개발에 참여해 현지화와 글로벌 시장 특성을 고려한 개발 경험' 과 '글로벌 환경을 고려한 인프라, 개발 설계' 가 있다.",
+          "gap_check": "같은 코믹스 서비스를 여러 나라에 낼 때 연령 제한·개인정보 동의·결제 수단·콘텐츠 노출 가능 지역이 나라마다 다르면, 서버에서 그 규칙을 코드에 흩뿌리지 않고 어떤 구조(지역 정책 설정·기능 플래그)로 관리하는가?",
+          "drill": "Spring Boot 로 콘텐츠 조회 API 를 만들고 사용자 지역·나이에 따라 노출·결제 가능 여부를 정하는 정책 모듈을 설정 파일 기반으로 분리한다. 지역별 날짜·통화 표기를 국제화 라이브러리로 처리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "W3C Internationalization",
+              "url": "https://www.w3.org/International/",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring Boot reference",
+              "url": "https://docs.spring.io/spring-boot/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kotlin·Spring Boot 와 웹 인프라",
+          "from": "qualification",
+          "quote": "웹 서비스 인프라에 대한 전반적인 이해가 있으신 분 (Nginx, Redis, RDB, Batch, Kafka, Object Storage 등)",
+          "priority": "core",
+          "why": "필수 두 줄이 Kotlin·Spring Boot 웹 서버와 웹 서비스 인프라 이해이고, 우대에 동시성·대용량 트래픽 설계와 병목·장애 개선이 있다.",
+          "gap_check": "신작 공개 시각에 조회가 몰릴 때 Redis 캐시·Kafka 비동기 처리·Batch 집계를 각각 어디에 두고, 인기 작품 캐시가 동시에 만료돼 DB 로 요청이 쏟아지는 현상은 어떻게 막는가?",
+          "drill": "Kotlin + Spring Boot 로 에피소드 조회·조회수 집계 서버를 만들고, Redis 캐시(만료 분산)·Kafka 로 조회 이벤트 비동기 적재·Batch 로 일 집계를 붙인 뒤 부하 테스트로 병목을 찾는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Kotlin — Coroutines",
+              "url": "https://kotlinlang.org/docs/coroutines-overview.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring for Apache Kafka",
+              "url": "https://docs.spring.io/spring-kafka/reference/",
+              "kind": "docs"
+            },
+            {
+              "title": "Redis — Distributed locks",
+              "url": "https://redis.io/docs/latest/develop/use/patterns/distributed-locks/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI Harness 로 개발 과정 자동화",
+          "from": "qualification",
+          "quote": "AI 기술 활용에 두려움이 없고, 자신만의 AI Harness를 구축하여 실무에 적용하고, AI를 활용한 개발 프로세스 자동화 및 생산성 향상에 열정이 있으신 분",
+          "priority": "high",
+          "why": "필수 요건이고 조직 소개가 '자체 AI Harness를 구축해 설계·구현·리뷰·운영을 자동화' 한다고 적는다.",
+          "gap_check": "AI 코딩 에이전트에게 기능 구현을 맡길 때 무엇(프로젝트 규칙 문서·테스트·린트·리뷰 체크리스트)을 먼저 깔아야 결과를 믿을 수 있고, 에이전트가 만든 변경은 어떤 자동 검증을 통과해야 병합하는가?",
+          "drill": "앞 드릴 저장소에 코딩 에이전트용 규칙 문서와 테스트·린트·보안 검사가 도는 CI 를 깔고, 에이전트에게 기능 하나를 맡겨 PR → 자동 검증 → 사람 리뷰까지의 흐름과 걸린 시간·수정 횟수를 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Claude Code — Overview",
+              "url": "https://docs.claude.com/en/docs/claude-code/overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "지역 정책 모듈 + 캐시/Kafka/Batch 조회 서버 + AI Harness CI 저장소",
+          "why": "필수 셋(Kotlin·Spring·인프라·AI Harness)과 첫 담당 업무(컴플라이언스)를 한 번에 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "직접 만든 AI 개발 도구·자동화 사례 정리",
+          "why": "필수에 '자신만의 AI Harness를 구축하여 실무에 적용' 이 있다. 면접에서 구체적으로 물을 가능성이 크다(추론).",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 리뷰 → 프리 인터뷰 → 실무 인터뷰 → Culture-Fit 인터뷰(기업문화 적합도 검사 포함). 결과에 따라 레퍼런스 체크·추가 인터뷰가 붙을 수 있다. 접수 2026.09.10 ~ 2026.10.02 23:59, 근무지 정자동 그린팩토리. '남자의 경우, 군필자 또는 면제자에 한해 지원 가능', 해외여행 결격 사유 없는 분.",
+        "expect": [
+          "Kotlin·Spring 설계",
+          "글로벌 서비스 규제 대응",
+          "대용량 트래픽",
+          "AI Harness 활용"
+        ],
+        "sources": [
+          {
+            "title": "Disney 디지털 코믹스 플랫폼 서버 개발 (경력)",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570887?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    }
+  ]
 }
