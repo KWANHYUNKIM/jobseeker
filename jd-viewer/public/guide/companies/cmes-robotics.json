@@ -572,6 +572,93 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55000797",
+      "title": "시스템 소프트웨어 엔지니어",
+      "site": "jumpit",
+      "verdict": "경력 5~15년, 서울 강남구(점핏 회사명 '씨메스'). 회사의 **비전·로봇 설비를 돌리는 제어 애플리케이션**의 아키텍트급 SW 엔지니어다. 주요업무는 비전·로봇 설비 제어 Application SW 아키텍처 설계·개발, **멀티프로세스 시스템 구조와 프로세스 간 통신(IPC)**, **카메라·센서·로봇·PLC 연동 통신 프로토콜** 설계·구현, 공통 프레임워크와 SW 모듈 표준화, 성능 최적화·안정성·장애 분석. 자격은 전문학사 이상, SW 5년, 복잡한 시스템 아키텍처 설계, 멀티프로세스/멀티스레드, **IPC(공유메모리·메시지 큐·소켓·파이프)**, TCP/IP·UDP 프로토콜 설계, C++·Python, Linux. 우대는 산업용 비전·로봇·자동화 SW, **실시간 시스템**, **PLC 연동**, MQTT·Kafka·Redis 같은 메시지 브로커. 현장별로 흩어진 설비 SW 를 '공통 프레임워크' 로 묶는 일이 주제로 읽힌다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "C++·Python·Linux 5년",
+          "멀티프로세스·IPC",
+          "TCP/UDP 프로토콜 설계"
+        ],
+        "can_learn": [
+          "PLC 연동",
+          "실시간 시스템",
+          "메시지 브로커"
+        ]
+      },
+      "study": [
+        {
+          "topic": "IPC 고르기 — 공유메모리·메시지 큐·소켓",
+          "from": "qualification",
+          "quote": "• IPC(공유메모리, 메시지 큐, 소켓, 파이프 등) 구현 경험이 있는 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 멀티프로세스 구조와 IPC 구현이 있다.",
+          "gap_check": "카메라 프레임(수 MB, 초당 수십 장)을 비전 프로세스에서 판정 프로세스로 넘길 때 소켓 복사와 공유메모리 중 무엇을 쓰고, 공유메모리에서는 읽는 쪽·쓰는 쪽 동기화(세마포어·링 버퍼)를 어떻게 하는가? 한 프로세스가 죽었을 때 공유메모리·큐에 남은 자원은 누가 정리하는가?",
+          "drill": "shm_overview·mq_overview 매뉴얼을 읽고, C++ 로 4MB 프레임을 초당 30장 넘기는 생산자·소비자를 (1) 유닉스 소켓 (2) POSIX 공유메모리+세마포어 링 버퍼 (3) POSIX 메시지 큐(작은 메타데이터만)로 만들어 지연·CPU 사용률을 비교한다. 소비자를 강제 종료했다 재시작해 복구를 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "shm_overview(7) — Linux manual page",
+              "url": "https://man7.org/linux/man-pages/man7/shm_overview.7.html",
+              "kind": "docs"
+            },
+            {
+              "title": "mq_overview(7) — Linux manual page",
+              "url": "https://man7.org/linux/man-pages/man7/mq_overview.7.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "설비 통신 프로토콜 설계 — 카메라·로봇·PLC",
+          "from": "task",
+          "quote": "• 카메라·센서·로봇·PLC 등 장비 연동을 위한 통신 프로토콜 설계 및 구현",
+          "priority": "core",
+          "why": "주요업무이고 우대사항에 PLC 연동이 있다.",
+          "gap_check": "TCP 위에 자체 프로토콜을 설계할 때 메시지 경계(길이 헤더)·순번·응답 타임아웃·재전송·하트비트를 어떻게 정하는가? PLC 쪽이 Modbus 같은 레지스터 방식이면 '로봇 픽 완료' 같은 이벤트를 어떻게 핸드셰이크로 주고받는가(요청 비트–완료 비트)?",
+          "drill": "Modbus 설명을 읽고, 비전 PC–PLC 사이 '촬영 요청→결과 좌표 기록→완료 비트' 핸드셰이크를 모의 Modbus TCP 서버로 구현한다. 비전 PC–로봇 사이에는 길이 헤더·순번·하트비트가 있는 TCP 프로토콜 명세서를 쓰고 구현한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Modbus — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Modbus",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공통 프레임워크와 장애 분석",
+          "from": "task",
+          "quote": "• 공통 프레임워크 구축 및 SW 모듈 표준화",
+          "priority": "high",
+          "why": "주요업무이고 다음 줄이 성능 최적화·안정성·장애 분석이다.",
+          "gap_check": "현장마다 다른 카메라·로봇·PLC 를 붙이려면 장치 드라이버 계층을 어떤 인터페이스로 추상화하고, 설정(현장별 차이)과 코드(공통)를 어떻게 나누는가? 현장 장애를 원격으로 분석하려면 로그·메트릭에 무엇을 표준으로 남기는가? 프로세스 감시·자동 재시작은 어디서 하는가?",
+          "drill": "카메라·로봇·PLC 세 장치를 인터페이스로 추상화한 C++ 뼈대와 모의 구현을 만들고, 현장 설정 파일 하나로 조합이 바뀌게 한다. 모든 프로세스가 같은 형식(시각·프로세스·상관 ID)으로 로그를 남기게 하고 systemd 로 감시·재시작을 건다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "메시지 브로커로 설비 이벤트 모으기",
+          "from": "preference",
+          "quote": "• 분산 시스템/메시지 브로커(MQTT, Kafka, Redis 등) 경험이 있으신 분",
+          "priority": "nice",
+          "why": "우대사항이다.",
+          "gap_check": "설비 상태·이벤트를 MQTT 로 발행할 때 QoS 0/1/2 는 무엇을 보장하고, 로봇 셀 여러 대의 이벤트를 모니터링 서버에 모을 때 토픽 구조는 어떻게 짜는가? 제어 루프 자체를 브로커 경유로 돌리면 안 되는 이유는?",
+          "drill": "MQTT 사이트의 개념 설명을 읽고, 로컬 브로커에 로봇 셀 3대 상태를 QoS 0·1 로 발행해 브로커 재시작 때 유실 차이를 확인한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "MQTT — The Standard for IoT Messaging",
+              "url": "https://mqtt.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
