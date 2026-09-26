@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Yappli — hold(2026-09-26, 도메인 2 · 기능 2). CRM 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 후보 조사(큐 0/3 — 3순위). **하테나 사이트맵 입구가 바닥** — 이번엔 Zenn Publication(zenn.dev/p/<id>, API `zenn.dev/api/articles?publication_name=`)·note 기업 계정(`note.com/api/v2/creators/<id>/contents`)을 시험한다. 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증, Findy ↔ YOUTRUST 추천, Nature ↔ LayerX AI 리뷰, LegalOn·Yappli·RAKUS 첫 대응, SMS·Career Portal·Sumzap 검증 환경. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
+**86번째 후보 조사(2026-09-26) — 대기 3/3(로그라스·Hacobu·estie). 새 입구 Zenn Publication RSS(`zenn.dev/p/<id>/feed`)가 먹힌다 — API 의 publication_name 필터는 안 먹는다. 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(로그라스 — `zenn.dev/p/loglass`, OLAP DB·장애 이력 모델부터). 비교 문서 재료 다섯 묶음(STATE 이전 줄 참고: 청구 검증·추천·AI 리뷰·첫 대응·검증 환경). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
 
 
 
@@ -355,6 +355,8 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 5. **보강 — 문자열 엔티티 14건 정규화.** 기계적인 작업이라 몰아서 해도 된다.
 
 ## 배운 것
+
+- **Zenn 기업 Publication 은 `zenn.dev/p/<id>/feed` RSS 로 목록을 얻는다** — `zenn.dev/api/articles?publication_name=` 는 필터가 안 먹어 전체 최신이 돌아온다(2026-09-26). 하테나 사이트맵이 바닥일 때의 다음 입구.
 
 *(다음 사이클이 모르면 헛수고할 것만. 사이클 요약을 쌓는 곳이 아니다.)*
 

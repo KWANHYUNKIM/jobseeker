@@ -1596,3 +1596,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Yappli 완주 판정 — CRM hold
 
 - 사이트맵 2024~2026 224편 제목에 CRM 제품 구조 글 0(푸시·앱 분석 인턴 글뿐), speakerdeck 404. hold_reason 추가. 비교 문서 재료가 다섯 묶음으로 쌓였다.
+
+## 2026-09-26 여든여섯 번째 후보 조사
+
+- Zenn Publication RSS 로 21곳 탐색(API 필터는 안 먹음). 로그라스(OLAP·장애 이력·인가)·Hacobu(물류, 전에 연결 실패)·estie(부동산 데이터) 등록 → 3/3. KnowledgeWork 탈락.

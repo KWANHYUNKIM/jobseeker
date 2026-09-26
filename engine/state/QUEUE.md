@@ -41,8 +41,18 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **ログラス(Loglass)** | JP · 경영 관리(FP&A) SaaS | Zenn Publication `zenn.dev/p/loglass`(RSS `…/feed` 로 목록, jina 로 본문, 최신 2026-09-23, 7~9월 14편 이상). **'AI 만으로 만든 OLAP DB — 아키텍처와 규율'**(2026-09-18) · 메모리에 안 올라가는 GROUP BY 를 DuckDB 가 어떻게 처리하나(`2026-09-10`) · **장애의 영향 조사·보고를 위한 이력 데이터 모델**(`2026-07-31`) · **AI 시대의 인가 하네스**(`2026-08-14`) · 인덱스가 안 쓰이는 네 관문(`2026-09-03`). 경영 수치를 다루는 SaaS 라 **집계·이력·인가**가 도메인 후보. **Tech Blog Sprint 159주 연속**이라 글이 끊기지 않는다. |
+| **Hacobu(ハコブ)** | JP · 물류 SaaS(MOVO) | Zenn Publication `zenn.dev/p/hacobu`(RSS, 최신 2026-09-24, 7~9월 14편). 369·78·79번째에 **연결 실패**했던 곳이 Zenn 입구로 열렸다. **지불 신청 초안을 AI 에 맡긴 4개월 — 쓴 것은 절차가 아니라 완료 조건**(`2026-08-26`) · **Claude Managed Agents 로 Slack 에서 쓰는 업무 데이터 분석 기반**(`2026-08-31`) · Datadog Forms·Workflow Automation 으로 로그인 화면 점검 배너 ON/OFF(`2026-07-19`) · AI 리뷰·CI 뒤 사람 리뷰 3단계(`2026-09-09`). **물류 축은 Picnic 하나뿐** — 물류 제품(트럭 예약·동태 관리) 자체의 글은 아직 못 봤다; 사내 업무 AI 글이 많다. |
+| **estie** | JP · 상업용 부동산 데이터 | Zenn Publication `zenn.dev/p/estie`(RSS, 최신 2026-08-28, 7~8월 14편). **Rust 백엔드**(crate 선정·clippy·mangling)·**에이전트 도구 출력을 줄여 토큰 1/14**(`2026-08-26`)·**리포 리뷰 이력으로 AI 코드 리뷰어**(`2026-07-21`)·**AI 로 릴리스 전 체크하는 하네스**(`2026-07-30`)·GraphQL 계측과 OpenTelemetry. **부동산 축**은 처음. 제품(오피스 데이터) 자체의 결정 글은 약할 수 있다 — Rust·도구 글이 많다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 여든여섯 번째 후보 조사 — 목표 3곳 중 3곳. 새 입구: Zenn Publication RSS.**
+  - **입구를 바꿨다.** 하테나 사이트맵이 바닥이라 `zenn.dev/p/<id>/feed`(RSS)를 시험 — `zenn.dev/api/articles?publication_name=` 은 **필터가 안 먹는다**(전체 최신 목록이 돌아온다). RSS 는 된다. 21곳 중 8~9월 글이 있는 곳 11곳.
+  - **로그라스** — **경영 관리 SaaS 축.** OLAP DB·장애 영향 이력 모델·인가 — 수치를 다루는 SaaS 의 결정이 많다.
+  - **Hacobu** — **물류 축(두 번째).** 전에 연결조차 안 되던 곳이 Zenn 으로 열렸다. 제품 글은 약하다.
+  - **estie** — **부동산 데이터 축(처음).** Rust·AI 도구 글이 많아 제품 결정은 약할 수 있다.
+  - **통과 못 한 곳.** **KnowledgeWork** — QA·행사 글. **carenet**(15편)·**pksha**(7)·**cybozu_frontend**·**sakura_internet**·**mixi**·**medley**·**layerx** — 미판정(이미 판 곳 포함). ubie·cadding·dena·smarthr·timee·sansan·primenumbers·kanmu·openlogi·stmn — 8~9월 글 없음.
 
 - **2026-09-26 여든다섯 번째 후보 조사 — 목표 3곳 중 2곳.**
   - **Sumzap** — **게임 축.** 메모리 최적화의 로드 시간 대가, 동적 개발 환경의 OAuth callback 집약.
