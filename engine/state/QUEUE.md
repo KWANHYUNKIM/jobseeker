@@ -32,6 +32,7 @@
 | **HERP** | JP · 채용 관리 SaaS(ATS) · 매칭 | 프로파일(2026-09-27, slug `herp`). 도메인 둘 — 쌓여 가는 채용 데이터를 한 번에 들지 않고 흘려 내보낸다 · 언제 부채를 갚고, 갚은 부채가 돌아오지 않게 한다. 기능 2(CSV 스트림 · 부채 시점과 래칫). 입구 `zenn.dev/p/herp_inc/feed`. 컨설팅 수익원은 도메인 없음. **hold(2026-09-27)** — 컨설팅 · 재취직 지원 수익원 자료 두 번 없음. |
 | **Seibii** | JP · 출장 차량 정비 마켓플레이스 | 프로파일(2026-09-27, slug `seibii`). 도메인 셋 — 여러 서비스가 같은 정비사를 같은 사람으로 본다 · 무거운 일은 밖에서 돌리되, 판단과 상태는 모놀리스가 쥔다 · 부품이 거친 단계마다 그때의 분류를 남긴다. 기능 3(ID 기반 · Lambda 요청/응답 · 부품 분류). 입구 `zenn.dev/p/seibii_blog/feed`. 법인 수익원은 inferred. **hold(2026-09-27)** — 법인 수익원 자료 두 번 없음. |
 | **EVERSTEEL** | JP · 철 스크랩 AI 검수(鉄ナビ) · 산업 AI | 프로파일(2026-09-27, slug `eversteel`). 도메인 셋 — 공장마다 다른 기간 시스템과 카메라를, 공장을 고치지 않고 잇는다 · 쌓인 검수 데이터를 철강사마다 갈라서 보여 준다 · 데이터셋 없이 화상 해석부터 띄운다. 기능 3(변환 · 온프레 릴리스 · AnalytiX 테넌트 분리 · LLM 화상 해석). 입구 `zenn.dev/p/eversteel_tech/feed`. 신규 사업 수익원은 inferred. **hold(2026-09-27)** — SanPa Navi 자료 두 번 없음. |
+| **スマサテ** | JP · 부동산 임대료 AI 사정 SaaS | 프로파일(2026-09-27, slug `sumasate`). 도메인 둘 — 출처마다 다르게 적힌 부동산 데이터를 한 물건으로 맞춘다 · 쓰고 있는 사정 화면을 멈추지 않고 새 틀로 옮긴다. 기능 0. 입구 `zenn.dev/p/sumasate_tec/feed`. 타운나비 수익원은 도메인 없음. |
 | **ギークプラス(Geekplus)** | JP · 물류 로봇 · 오픈 SCM(skylaa) · 풀필먼트 | 프로파일(2026-09-27, slug `geekplus`). 도메인 둘 — 흩어진 창고·주문 데이터를 싸게 들여오고 내보낸다 · 계획 데이터의 사실과 경계를 서버가 쥔다. 기능 2(Java 배치 Lambda 이사 · 흐름 트리와 테넌트 경계). 입구 `zenn.dev/p/geekplus/feed`. 로봇 · 풀필먼트 수익원은 도메인 없음. **hold(2026-09-27)** — 로봇 · 풀필먼트 수익원 자료 두 번 없음. |
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
@@ -63,7 +64,6 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **スマサテ(SumaSate)** | JP · 부동산 임대료 AI 사정 · 부동산 데이터 | Zenn Publication `zenn.dev/p/sumasate_tec`(RSS 20편, 최신 2026-09). 대량 부동산 데이터를 어떻게 집계 · 정규화하나 — 주소 · 수치 · 건물명 표기 흔들림, 명기(名寄せ) · 정규화, 운용해 보고 안 함정 `2aad29ab70c76a` · '스마사테 for Owners'를 앱으로 만든다면 — **선택지 넷 비교**와 PWA 부터의 로드맵 `smasate-owners-mobile-app` · Rails 6→8 업그레이드로 API 응답이 96 초로 열화한 이야기 · Sorbet 단계 도입 · E2E 도구 비교와 비용 시산. **부동산 데이터 축.** 글이 짧은 편 — 프로파일 때 결정 수 재판정. |
 | **GA technologies(RENOSY)** | JP · 부동산 거래 플랫폼 · 데이터/ML | Zenn Publication `zenn.dev/p/gatechnologies`(RSS 20편, 최신 2026-08). 데이터 기반에 **Dagster 를 고른 경위**(사상의 일치 · dbt · dlt 연계 · 인증 인가) `76b3f400c26d1a` · **SageMaker 중심 ML 파이프라인** — Snowflake 연계 · 단일 컨테이너 설계 · 경량 감시 `sagemaker-ml-pipeline` · SHAP 과 모델 편향. **부동산 데이터 · ML 기반 축.** RSS 절반이 행사 · 학회 참가기 — 제품 수익원(RENOSY)과 데이터 팀 글을 잇는 게 관건. |
 | **Gakken LEAP** | JP · 교육(자격 학습 ShikakuPass 등) | Zenn Publication `zenn.dev/p/gakken_leap`(RSS 20편, 최신 2026-09). '전부 다시 만들기'를 버린 **Strangler Fig 프런트엔드 현대화** — 일괄이 아니라 단계로, Next.js 이행을 위한 '저금' `bd8167a771d2d5` · ShikakuPass 의 **로그 기반 · 데이터 분석 기반**(이벤트 로그 집계를 서비스로 환류) `010b927ba62ce7` · Sentry 월간 에러 87% 삭감(sentry-cli 저비용 AI 트리아지) · Java 8→21 · Spring Boot 3 이행 · CloudFront 정액 플랜. **교육 서비스 축.** 도구 · 입문 글이 섞였다. |
 

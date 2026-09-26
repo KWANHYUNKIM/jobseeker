@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "sumasate",
+      "name": "スマサテ",
+      "name_en": "SumaSate",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "임대 부동산 회사가 몇 초 만에 임대료를 사정하는 SaaS '스마사테'의 회사 — 20 억 건의 부동산 데이터를 출처마다 다른 표기에서 한 물건으로 맞추고, jQuery 사정 화면은 폼을 그대로 둔 채 필드 하나씩 React 로 옮긴다",
+      "updated_at": "2026-09-27",
+      "domain": "sumasate.jp"
+    },
+    {
       "slug": "neoai",
       "name": "neoAI",
       "name_en": "neoAI",
@@ -3831,7 +3843,9 @@
     "가벼운 요청과 무거운 LLM 을 한 프로세스에 두지 않되, 배포 벌 수는 늘리지 않는다",
     "테넌트 경계는 DB 가 지키고, 업무 규칙은 코드가 지킨다",
     "외부에서 끌어오는 데이터가 커져도 동기화가 무너지지 않게 한다",
-    "RAG 에 넣을 생성 모델을 현장의 실패 방식으로 고른다"
+    "RAG 에 넣을 생성 모델을 현장의 실패 방식으로 고른다",
+    "출처마다 다르게 적힌 부동산 데이터를 한 물건으로 맞춘다",
+    "쓰고 있는 사정 화면을 멈추지 않고 새 틀로 옮긴다"
   ],
   "countries": {
     "KR": "한국",
