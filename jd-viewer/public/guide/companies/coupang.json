@@ -17508,6 +17508,13 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8176234",
+      "title": "Staff Site Reliability Engineer",
+      "site": "ats",
+      "verdict": "⚠️ 제목과 본문이 어긋나는 게시다 — 제목은 'Staff Site Reliability Engineer'(인도 벵갈루루)인데, 본문 첫 문장은 'Staff Software Engineer, Security Engineering' 을 뽑는다고 적고, 주요업무 다섯 줄(민감 데이터 탐지·검토 워크플로·접근 거버넌스·리스크 추적 플랫폼, 백엔드·API·파이프라인, 대규모 데이터 시스템 연계)이 서울 `Staff Security Engineer (Data Security Engineering)`(gh 7938018)와 글자 그대로 같다. 학습 브리핑은 그쪽을 본다. 다른 점만 적는다: 자격요건이 SRE 쪽으로 쓰여 있다 — 소프트웨어·시스템·SRE 8년 이상, 네트워킹·OS·관측성·성능 공학, 배포·모니터링·인시던트 대응 자동화, 우대에 SLO/SLI 정의·Kubernetes·IaC·CI/CD(서울 공고는 연차 표기 없음). 어느 쪽이 실제 직무인지는 공고로 알 수 없다.",
+      "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=7938018"
     }
   ],
   "open_questions": [
@@ -17546,6 +17553,7 @@
     "gh 5868936(Sr. Staff Front-end, GOT)은 크롤 데이터에 우대 세 줄만 들어왔다 — 주요업무·자격은 공고 전문(full_jd)에서만 읽힌다.",
     "gh 8122290 제목의 'Gowri' 가 무엇(팀·시스템·사람)인지 공고 본문에 설명이 없다.",
     "gh 8171556(벵갈루루)은 제목이 'Staff Engineer - Cloud Backend Engineering' 인데 본문은 'Senior Staff Backend Engineer - Cloud Infrastructure' 라고 적는다 — 실제 직급을 공고로 알 수 없다.",
-    "gh 8187428(Staff Robotics System Engineer)은 크롤 데이터 세 칸에 우대사항만 들어왔다 — 주요업무·기본 자격은 공고 전문(full_jd)에서만 읽힌다."
+    "gh 8187428(Staff Robotics System Engineer)은 크롤 데이터 세 칸에 우대사항만 들어왔다 — 주요업무·기본 자격은 공고 전문(full_jd)에서만 읽힌다.",
+    "gh 8176234(벵갈루루)는 제목이 'Staff Site Reliability Engineer' 인데 본문은 보안 엔지니어링(민감 데이터 플랫폼) 직무를 설명하고 자격요건은 SRE 로 쓰여 있다 — 실제 직무를 공고로 알 수 없다."
   ]
 }

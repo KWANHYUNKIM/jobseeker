@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **171건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **172건**.
+직전 회차: ✅ `Staff Site Reliability Engineer`(8176234, **벵갈루루**) → dup 7938018 — 주요업무가 서울 데이터 보안 공고와 동일, 제목(SRE)·자격(SRE 8년↑)만 다름. 제목/본문 어긋남 open_questions.
 직전 회차: ✅ `Staff Robotics System Engineer`(8187428) 3항목 — **마운틴뷰**, GO ART 로보틱스(엣지 추론·인식 계약·로봇 CI/CD), $164K~$282K. 세 칸엔 우대만, 맥락은 full_jd.
 직전 회차: ✅ `Staff ML Infra Engineer, Search & Discovery`(8025195) 3항목 — **마운틴뷰**, 검색 ML 인프라(로그→학습·데이터 품질·온라인 서빙), 급여 'K' 중복 표기.
 직전 회차: ✅ `Staff, Machine Learning Engineer - Coupang Play`(7962916) 3항목 — **싱가포르**, OTT 콘텐츠 추천·광고 개인화. `--gaps` 미완 23건.
