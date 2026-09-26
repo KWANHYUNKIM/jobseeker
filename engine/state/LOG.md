@@ -2231,3 +2231,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 ChillStack 회사 프로파일
 
 - 회사 톱 · 회사 페이지로 수익원 둘(Stena Expense · AI 보안). 제품 결정 글 셋(검지 · 집계 · RLS)으로 도메인 둘. AlloyDB 글은 첫머리만 — 출처 요약에 그렇게 적었다.
+
+## 2026-09-27 ChillStack 검지 파이프라인
+
+- `2026-04-20-detection-architecture-stena-expense` 로 기능 `expense-detection-pipeline`, 결정 7.
