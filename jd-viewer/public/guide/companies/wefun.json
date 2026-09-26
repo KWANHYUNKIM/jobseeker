@@ -1,0 +1,216 @@
+{
+  "slug": "wefun",
+  "name": "위펀",
+  "name_en": "WEFUN",
+  "aliases": [
+    "위펀",
+    "㈜위펀",
+    "스낵24",
+    "WEFUN"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "wefuncorp.com",
+  "one_liner": "기업 간식 구독 '스낵24' 로 시작해 조식·커피·선물 SaaS·사무공간까지 회사의 본업 외 업무를 대신하는 B2B 플랫폼 — 2024년 매출 1,430억 원(공고)",
+  "company": {
+    "business": "원티드 공고 머리말은 위펀을 2018년 설립한 'B2B Platform' 으로, 9,400개 이상 고객사에 '기업의 본업 외 모든 업무 솔루션' 을 제공하는 '토탈 케어 플랫폼' 이라 소개한다. 회사 사이트(wefuncorp.com) 첫 화면은 스낵24(간식 구독)·선물24(SaaS)·커피24(커피머신 렌탈)·조식24(새벽배송·풀콜드체인)를 앞세우고, 서비스를 식음료 구독, 공간(사내카페·인테리어·건물관리·청소), 디지털 경험(자체 개발 SaaS·앱 — 생일·선물·명절·복지몰·스마트오피스), 업무 대행(에듀·법인차량·굿즈·채용·파견·구매)으로 나눈다. 원티드 풀스택 공고는 2021년 시리즈B(누적 130억), 2023년 시리즈C 200억(누적 330억), **2024년 매출 1,430억 원**을 적고, 프론트엔드 공고는 2023년 흑자 전환과 2025년 영업이익 100억 원 목표를 적는다. 모집중 공고는 웹 프론트엔드(신청–주문–결제 전환·기업용 관리자 페이지), CEO Staff 풀스택(신규 사업 PoC·MVP 검증), DevOps 리더(운영 자동화 백오피스·권한·감사·ERP/WMS/TMS 연동)와 jobkorea·사람인의 백엔드·QA 게시다. 사람인·jobkorea 게시 본문은 대부분 이미지라 OCR 로 일부만 읽혀 숫자는 쓰지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "WEFUN | NO.1 B2B 플랫폼",
+        "url": "https://wefuncorp.com/",
+        "publisher": "위펀",
+        "summary": "첫 화면: 스낵24(간식 구독)·선물24(SaaS)·커피24(커피머신 렌탈)·조식24(새벽배송·풀콜드체인). 솔루션을 Food & Beverage(간식·조식·커피·간편식을 '구독' 형태로), Space Design(사내카페·인테리어·건물관리·청소), Digital Experience(자체 개발 SaaS·앱 — 생일·선물·명절·복지몰·스마트오피스), Simplify Task(에듀·법인차량·굿즈·채용·파견·구매)로 나눈다. '서비스 수수료 0원 + 무료배송' 문구."
+      },
+      {
+        "title": "[CEO Staff] 풀스택 개발자 (JavaScript/TypeScript)",
+        "url": "https://www.wanted.co.kr/wd/382965",
+        "publisher": "원티드"
+      },
+      {
+        "title": "프론트엔드 개발자 (React)",
+        "url": "https://www.wanted.co.kr/wd/382962",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출(공고 주장)",
+        "value": "1,430억 원",
+        "as_of": "2024",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[CEO Staff] 풀스택 개발자 (JavaScript/TypeScript)",
+            "url": "https://www.wanted.co.kr/wd/382965",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "누적 투자",
+        "value": "330억 원(2023 시리즈C 200억 포함)",
+        "as_of": "2023",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[CEO Staff] 풀스택 개발자 (JavaScript/TypeScript)",
+            "url": "https://www.wanted.co.kr/wd/382965",
+            "publisher": "원티드"
+          },
+          {
+            "title": "프론트엔드 개발자 (React)",
+            "url": "https://www.wanted.co.kr/wd/382962",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "고객사(공고 주장)",
+        "value": "9,400개 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자 (React)",
+            "url": "https://www.wanted.co.kr/wd/382962",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "기업 식음료 구독(스낵24·조식24·커피24)",
+        "how": "사이트가 간식·아침·간편식·커피를 '구독' 형태로 제공한다고 적고 커피머신 렌탈, 새벽배송·풀콜드체인을 내세운다. DevOps 리더 공고가 운영팀·CS·물류 내부 사용자와 WMS·TMS 연동을 적는다. 가격·마진 구조는 읽지 않았다.",
+        "domains": [
+          "주문·결제 웹 서비스",
+          "운영 백오피스·보안"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WEFUN | NO.1 B2B 플랫폼",
+            "url": "https://wefuncorp.com/",
+            "publisher": "위펀",
+            "summary": "첫 화면: 스낵24(간식 구독)·선물24(SaaS)·커피24(커피머신 렌탈)·조식24(새벽배송·풀콜드체인). 솔루션을 Food & Beverage(간식·조식·커피·간편식을 '구독' 형태로), Space Design(사내카페·인테리어·건물관리·청소), Digital Experience(자체 개발 SaaS·앱 — 생일·선물·명절·복지몰·스마트오피스), Simplify Task(에듀·법인차량·굿즈·채용·파견·구매)로 나눈다. '서비스 수수료 0원 + 무료배송' 문구."
+          },
+          {
+            "title": "DevOps 리더 (Operations&Security)",
+            "url": "https://www.wanted.co.kr/wd/385835",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "복지 SaaS·앱(선물24 등)",
+        "how": "사이트가 '위펀이 자체 개발한 SaaS와 APP' 으로 생일·선물·명절·복지몰·스마트오피스를 적고 선물24 에 #SaaS 를 붙인다. 과금 방식은 읽지 않았다.",
+        "domains": [
+          "주문·결제 웹 서비스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WEFUN | NO.1 B2B 플랫폼",
+            "url": "https://wefuncorp.com/",
+            "publisher": "위펀",
+            "summary": "첫 화면: 스낵24(간식 구독)·선물24(SaaS)·커피24(커피머신 렌탈)·조식24(새벽배송·풀콜드체인). 솔루션을 Food & Beverage(간식·조식·커피·간편식을 '구독' 형태로), Space Design(사내카페·인테리어·건물관리·청소), Digital Experience(자체 개발 SaaS·앱 — 생일·선물·명절·복지몰·스마트오피스), Simplify Task(에듀·법인차량·굿즈·채용·파견·구매)로 나눈다. '서비스 수수료 0원 + 무료배송' 문구."
+          }
+        ]
+      },
+      {
+        "name": "공간·업무 대행 서비스",
+        "how": "사이트가 사내카페·인테리어·건물관리·청소와 에듀·법인차량·굿즈·채용·파견·구매를 나열한다. 매출 비중은 읽지 않았다.",
+        "domains": [
+          "신규 사업 검증(PoC·MVP)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WEFUN | NO.1 B2B 플랫폼",
+            "url": "https://wefuncorp.com/",
+            "publisher": "위펀",
+            "summary": "첫 화면: 스낵24(간식 구독)·선물24(SaaS)·커피24(커피머신 렌탈)·조식24(새벽배송·풀콜드체인). 솔루션을 Food & Beverage(간식·조식·커피·간편식을 '구독' 형태로), Space Design(사내카페·인테리어·건물관리·청소), Digital Experience(자체 개발 SaaS·앱 — 생일·선물·명절·복지몰·스마트오피스), Simplify Task(에듀·법인차량·굿즈·채용·파견·구매)로 나눈다. '서비스 수수료 0원 + 무료배송' 문구."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "주문·결제 웹 서비스",
+        "why": "프론트엔드 공고가 랜딩 페이지부터 기업용 관리자 페이지까지의 웹 서비스, 서비스 신청–주문–결제 전환 구간 UX 와 데이터 기반 실험, 디자인 시스템을 적는다. React·Next.js·TypeScript.",
+        "what_to_know": [
+          "React·Next.js",
+          "전환 퍼널 실험",
+          "디자인 시스템"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자 (React)",
+            "url": "https://www.wanted.co.kr/wd/382962",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "운영 백오피스·보안",
+        "why": "DevOps 리더 공고가 운영팀·CS·물류의 수작업 시스템화, 백오피스 개발, 데이터 일괄 변경 요청 처리, 변경 이력·감사, 권한 인가·접근 통제, Observability, 개인정보 보호, ERP·CRM·WMS·TMS·Slack·Notion 연동을 적는다.",
+        "what_to_know": [
+          "감사 로그",
+          "접근 통제",
+          "사내 시스템 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps 리더 (Operations&Security)",
+            "url": "https://www.wanted.co.kr/wd/385835",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "신규 사업 검증(PoC·MVP)",
+        "why": "CEO Staff 풀스택 공고가 CEO 와 신규 사업 아이디어를 가설로 정리하고 PoC·MVP·파일럿을 혼자 끝까지 만들어 수요를 확인한 뒤, 사업성이 확인되면 개발부문에 인계한다고 적는다. AI 코딩 에이전트와 LLM 을 기본 도구로 쓴다.",
+        "what_to_know": [
+          "빠른 MVP",
+          "지표로 판단",
+          "AI 코딩 에이전트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[CEO Staff] 풀스택 개발자 (JavaScript/TypeScript)",
+            "url": "https://www.wanted.co.kr/wd/382965",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "서비스 가짓수를 계속 늘리는 중이고, 그 검증을 CEO 직속 개발자가 한다",
+        "evidence": "PoC, MVP, 파일럿 웹 서비스를 직접 만들어 실제 사용자 앞에 내놓고 수요를 확인해요.",
+        "so_what": "사이트의 서비스 목록이 식음료에서 공간·채용·파견까지 넓다. 풀스택 자리는 '아니라고 확인되면 빠르게 접어요' 라고 적는다 — 만든 것을 버리는 일이 일상인 자리다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "운영(물류·CS) 비중이 큰 회사라 개발이 운영 자동화에 많이 쓰인다",
+        "evidence": "반복적이고 수작업이 많은 운영 업무를 시스템화하고, 내부  사용자(운영팀/CS/물류 등)의 생산성을 높이는 일을 함께 고민",
+        "so_what": "DevOps 리더가 인프라보다 백오피스·데이터 수정 요청·감사 대응을 먼저 적는다. 면접에서 '운영팀 요청을 어떻게 시스템으로 바꿨나' 를 물을 수 있다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "서비스별 가격·매출 비중은 읽지 않았다",
+    "2025년 이후 매출·영업이익 실적은 공고에 목표만 있다(OCR 이미지의 숫자는 깨져 쓰지 않았다)",
+    "임직원 수는 읽지 않았다",
+    "jobkorea·사람인 백엔드·QA 게시는 본문이 이미지라 OCR 로 일부만 읽힌다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

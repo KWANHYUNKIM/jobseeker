@@ -658,6 +658,20 @@
       "postings": 6,
       "study_items": 24,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "wefun",
+      "name": "위펀",
+      "aliases": [
+        "위펀",
+        "㈜위펀",
+        "스낵24",
+        "WEFUN"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
