@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**LayerX — 기능 1(`rap-reconcile-and-check`, 2026-09-26). 다음은 확장: 'LLM 호출을 한 관문에 모은다' 를 Bifrost 글(`entry/2026/08/28/180027`, scratchpad `lx_2026_08_28_180027.txt` — 세 과제는 읽음, '技術選定：ADR と4つの選択肢' 이후를 마저). 그 뒤 TypeSpec(`lx_typespec-in-aiworkforce.txt`). Fintech·Security 수익원은 도메인이 없다 — 완주 판정 때 'Fintech事業部' 카테고리(22편) 확인. 대기 0/3 — LayerX 뒤 후보 조사.**
+**LayerX — 기능 2(`rap-reconcile-and-check` · `residency-by-virtual-key`, 2026-09-26). 다음은 확장: 'API 스키마를 먼저 쓴다' 를 TypeSpec 글(`entry/typespec-in-aiworkforce`, scratchpad `lx_typespec-in-aiworkforce.txt` — 비교 표·CI 검사·'今後の課題' 를 읽을 것). 그 뒤 완주 판정: Fintech·Security 수익원에 도메인이 없다 — 'Fintech事業部' 카테고리(22편)를 보고, 없으면 두 번 찾아 hold. 대기 0/3 — LayerX 뒤 후보 조사.**
+
 
 
 

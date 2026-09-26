@@ -1284,3 +1284,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 LayerX 확장 — 정의대로 매번 수렴시키고, 하류가 보호를 끊으면 실행을 멈춘다
 
 - RAP 글(08-14)로 `rap-reconcile-and-check`(결정 8). 내장 config 의 세 빈틈·apply 수렴·authoritative 단계 도입·check 실패·passthrough·예외·tag 기반 보류. 선택 범위 밖 수렴·passthrough 오설정 위험은 해석 표시.
+
+## 2026-09-26 LayerX 확장 — 처리 지역은 키가 정하고, 앱은 키만 고른다
+
+- Bifrost 글(08-28)로 `residency-by-virtual-key`(결정 8). 선택지 넷(앱·APIM·LiteLLM·Bifrost)·Virtual Key 레지던시·Key Vault·OTel 본문 마스크·본번 상당 리허설. 틀린 키 선택·이행 중 혼재는 해석 표시.
