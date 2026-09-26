@@ -5,7 +5,7 @@
   "aliases": [
     "코딧"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "thecodit.com",
   "one_liner": "한국·미국·일본 등의 입법·규제 데이터를 모아 기업에 맞춤형 정책 모니터링과 AI 분석(ChatCODIT)을 파는 GovTech 플랫폼",
@@ -936,6 +936,127 @@
           {
             "title": "프론트엔드 개발자 (리더, React.js 5년 이상)",
             "url": "https://www.wanted.co.kr/wd/93806",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/135520",
+      "title": "앱 개발자 (React Native,  2년 이상)",
+      "site": "wanted",
+      "verdict": "경력 2-4년('신입지원 불가'). 코딧 앱을 React Native·Expo 로, 모바일 웹을 React 로 만들고, Framer·Storybook 으로 Codit Design System 을 만든다. 필수는 React Native 앱 개발 2년 이상, JavaScript(ES6+)·CSS·HTML, JavaScript·TypeScript·React·Webpack·Babel·Recoil 실무, Git 협업. **Expo 로 빌드·론칭한 경험**, TypeScript·테스트 코드, 최적화·리팩토링, 성능·크로스브라우징, 영어 문서 독해는 우대다. 코딧은 입법 동향을 기업 맞춤형으로 알려 주는 서비스다(회사 브리핑) — 앱에서는 알림·딥링크가 핵심 흐름일 것으로 보인다(추론). 전형: 서류 전형 → 코딩 과제 테스트 → 온라인 면접 → 대면 면접 → 처우 협의 → 최종 합격(필요 시 레퍼런스 체크). 자기소개서는 '성장 배경보다 경험했던 업무에 대해' 쓰라고 한다.",
+      "fit": {
+        "must_have": [
+          "React Native 2년 이상(신입 불가)",
+          "JavaScript·CSS·HTML",
+          "TypeScript·React·Webpack·Babel·Recoil",
+          "Git 협업"
+        ],
+        "can_learn": [
+          "Expo 빌드·론칭",
+          "테스트 코드",
+          "성능 최적화",
+          "영어 문서 독해"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Expo 로 빌드·배포·업데이트",
+          "from": "preference",
+          "quote": "• Expo를 이용해서 React Native 앱을 빌드하고 론칭한 경험이 있는 분이면 좋습니다.",
+          "priority": "core",
+          "why": "우대사항이고 첫 주요업무가 '코딧 앱을 React Native, Expo로 개발' 이다.",
+          "gap_check": "EAS Build 로 스토어용 바이너리를 만드는 것과 EAS Update 로 JS 번들만 바꾸는 것은 무엇을 바꿀 수 있고 없는지(네이티브 모듈 변경 여부)가 어떻게 다르며, 잘못된 업데이트를 내보냈을 때 어떻게 되돌리는가?",
+          "drill": "Expo 앱을 만들어 EAS Build 로 개발·프리뷰 빌드를 뽑고, EAS Update 채널(preview/production)로 JS 변경을 배포한 뒤 이전 업데이트로 롤백해 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Expo — EAS Build",
+              "url": "https://docs.expo.dev/build/introduction/",
+              "kind": "docs"
+            },
+            {
+              "title": "Expo — EAS Update",
+              "url": "https://docs.expo.dev/eas-update/introduction/",
+              "kind": "docs"
+            },
+            {
+              "title": "Expo documentation",
+              "url": "https://docs.expo.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "푸시 알림과 딥링크",
+          "from": "task",
+          "quote": "• 코딧 앱을 React Native, Expo로 개발",
+          "priority": "core",
+          "why": "주요업무이고, 코딧은 실시간 입법 동향을 기업 맞춤형으로 제공한다(회사 브리핑). 같은 회사 백엔드 공고가 알림 서버를 만든다고 적는다.",
+          "gap_check": "'관심 키워드 법안 발의' 푸시를 눌렀을 때 앱이 꺼져 있든 켜져 있든 해당 법안 상세 화면으로 바로 가려면 알림 데이터와 딥링크를 어떻게 설계하고, 로그인 전이면 어떻게 처리하는가?",
+          "drill": "Expo 푸시 알림을 받아 data 의 법안 ID 로 상세 화면을 여는 딥링크를 구현하고, 앱 종료·백그라운드·포그라운드 세 상태와 비로그인 상태에서 동작을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Expo — Push notifications overview",
+              "url": "https://docs.expo.dev/push-notifications/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Expo — Linking overview",
+              "url": "https://docs.expo.dev/linking/overview/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Storybook 으로 디자인 시스템",
+          "from": "task",
+          "quote": "• Framer, Storybook 등의 최신 플랫폼을 이용한 Codit Design System 개발",
+          "priority": "high",
+          "why": "주요업무다. 앱(React Native)과 모바일 웹(React)을 함께 만든다고 적혀 있어 두 쪽에서 쓰는 컴포넌트 규칙이 필요하다(추론).",
+          "gap_check": "버튼·태그·카드 같은 컴포넌트를 앱과 웹에서 같은 이름·같은 토큰(색·간격·타이포)으로 쓰려면 무엇을 공유하고 무엇을 플랫폼별로 두며, 디자이너와의 합의는 Storybook 에서 무엇으로 확인하는가?",
+          "drill": "색·간격·타이포 토큰을 한 파일로 정의하고 버튼·태그 컴포넌트를 React(웹)와 React Native 로 각각 만들어 Storybook 에 상태별 스토리를 올린다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Storybook docs",
+              "url": "https://storybook.js.org/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "React Native — Getting started",
+              "url": "https://reactnative.dev/docs/getting-started",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "법안 알림 → 딥링크 상세 화면까지 되는 Expo 앱 + EAS Update 배포 기록",
+          "why": "주요업무(Expo 앱)와 우대(Expo 빌드·론칭)를 한 번에 보여 준다. 전형에 코딩 과제 테스트가 있다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "출시한 앱과 맡은 부분 정리",
+          "why": "필수가 React Native 앱 개발 2년 이상이고 우대가 Expo 로 론칭한 경험이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 코딩 과제 테스트 → 온라인 면접 → 대면 면접 → 처우 협의 → 최종 합격(필요 시 레퍼런스 체크). 자기소개서는 '성장 배경보다 경험했던 업무에 대해' 쓰라고 한다.",
+        "expect": [
+          "React Native·Expo 경험",
+          "알림·딥링크",
+          "디자인 시스템",
+          "코딩 과제"
+        ],
+        "sources": [
+          {
+            "title": "앱 개발자 (React Native,  2년 이상)",
+            "url": "https://www.wanted.co.kr/wd/135520",
             "publisher": "원티드"
           }
         ]
