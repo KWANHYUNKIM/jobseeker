@@ -15879,6 +15879,105 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=5868936",
+      "title": "Sr. Staff Front-end Engineer  (Global Operations Technology)",
+      "site": "ats",
+      "verdict": "한국 근무(근무지 'South Korea'). 크롤 데이터에는 우대 세 줄만 들어왔고 나머지는 공고 전문에서 읽었다 — Global Operations Technology 안의 Fulfillment Transportation Systems 조직, 라스트마일 배송을 맡아 배송 인력·관리자가 쓰는 시스템과 단말, 쿠팡친구·쿠팡플렉스의 물량 배정·업무·메타 정보·정산을 관리하는 Admin 과 모바일 WebView 를 만든다. 시니어 스태프 프런트엔드로서 GOT 웹 플랫폼의 개선점을 찾아 아키텍처 수준 해법과 로드맵을 제시하고, 대량 데이터 처리·시각화가 필요한 화면을 다룬다. 공고 전문의 자격은 알고리즘·시스템 설계·대규모 분산 10년 이상, JavaScript·TypeScript 등 전문 코딩 12년 이상이다. 전형은 '서류전형 - 전화면접 - 대면면접 – 최종 합격'(공고 전문). gh 번호가 다른 쿠팡 공고들보다 훨씬 낮다(5868936) — 오래 열려 있는 공고로 보이나 게시일은 확인하지 않았다.",
+      "fit": {
+        "must_have": [
+          "알고리즘·시스템 설계·대규모 분산 10년 이상(공고 전문)",
+          "JavaScript·TypeScript 등 전문 코딩 12년 이상(공고 전문)",
+          "CS 등 학사(공고 전문)"
+        ],
+        "can_learn": [
+          "사용자·기술팀·경영진과 요구사항 수집·설계 설명(우대)",
+          "프런트엔드부터 전 영역 실무(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "대량 데이터를 다루는 운영 Admin 화면",
+          "from": "preference",
+          "quote": "Hands-on expertise in many disparate technologies, ranging from front-end user interfaces and all points in between",
+          "priority": "core",
+          "why": "공고 전문이 대량 데이터 처리·시각화가 필요한 화면을 적고, 쿠팡친구·쿠팡플렉스 물량 배정·업무·정산 정보를 관리하는 Admin 을 만든다고 적는다. 우대사항에 프런트엔드부터 전 영역의 실무 전문성이 있다.",
+          "gap_check": "배송 건 수만 행을 한 화면에서 보고 필터·정렬해야 할 때, 서버 페이지네이션·가상 스크롤·클라이언트 집계 중 무엇을 어디에 쓰고, 화면이 멈추지 않는 기준은 무엇으로 재는가?",
+          "drill": "가상 배송 데이터 5만 행으로 가상 스크롤 목록과 필터를 만들고, 가상화 전후의 렌더 시간·메모리를 브라우저 성능 도구로 기록한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "web.dev — Virtualize large lists with react-window",
+              "url": "https://web.dev/articles/virtualize-long-lists-react-window",
+              "kind": "article"
+            },
+            {
+              "title": "web.dev — Web Vitals",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "배송 인력용 모바일 WebView",
+          "from": "preference",
+          "quote": "Experience working backward from the customer and delivering innovative, simple solutions",
+          "priority": "high",
+          "why": "공고 전문이 쿠팡친구·쿠팡플렉스를 위한 모바일 WebView 와 배송 인력이 쓰는 단말용 솔루션 개발·운영을 적는다. 우대사항에 고객에서 거꾸로 일해 단순한 해법을 내는 경험이 있다.",
+          "gap_check": "배송 중 기사가 한 손으로 쓰는 WebView 화면에서, 약한 네트워크·앱과 웹 사이의 데이터 전달(브리지)·화면 전환 지연을 각각 어떻게 다루는가?",
+          "drill": "Android WebView 문서를 읽고, 네이티브 앱에 WebView 로 '오늘 배송 목록' 화면을 띄워 자바스크립트 브리지로 위치 정보를 주고받고, 오프라인일 때 마지막 목록을 보여 주는 동작을 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Android Developers — Build web apps in WebView",
+              "url": "https://developer.android.com/develop/ui/views/layout/webapps/webview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "웹 플랫폼 개선의 아키텍처 제안과 로드맵",
+          "from": "preference",
+          "quote": "collect requirements, and describe software product features, technical designs, and product strategy",
+          "priority": "high",
+          "why": "공고 전문이 GOT 웹 플랫폼 전체를 이해하고 개선점을 찾아 아키텍처 수준 해법을 제시하며 다른 엔지니어와 로드맵을 만들어 단계적으로 개선한다고 적는다. 우대사항에 요구사항 수집과 기술 설계·제품 전략 설명 경험이 있다.",
+          "gap_check": "여러 팀이 한 웹 플랫폼에 화면을 붙이며 빌드·배포가 서로 막을 때, 모노레포 정리·모듈 경계·마이크로 프런트엔드 중 무엇을 제안하고 그 비용은 무엇인가?",
+          "drill": "마이크로 프런트엔드 글을 읽고, 가상 운영 Admin(배정·정산·메타 관리) 을 현재 구조·목표 구조·단계별 이전 계획으로 나눈 아키텍처 제안서 한 편을 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Martin Fowler — Micro Frontends",
+              "url": "https://martinfowler.com/articles/micro-frontends.html",
+              "kind": "article"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "배송 목록 WebView + 대량 데이터 Admin 데모",
+          "why": "공고 전문이 말하는 두 화면(배송 인력 WebView·운영 Admin)을 작게 재현하면 라스트마일 도메인 이해와 프런트엔드 성능 감각을 함께 보여 준다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 전화면접 - 대면면접 – 최종 합격 (공고 전문. 직무별로 다를 수 있다고 적혀 있다)",
+        "expect": [
+          "대량 데이터 화면 성능",
+          "WebView 브리지·오프라인",
+          "플랫폼 아키텍처 제안",
+          "요구사항 단순화",
+          "멘토링"
+        ],
+        "sources": [
+          {
+            "title": "Sr. Staff Front-end Engineer  (Global Operations Technology)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=5868936",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -15913,6 +16012,7 @@
     "gh 7962133(Cloud Infrastructure, Mountain View)은 우대 칸의 연차 요건(15년·10년)과 'Basic Qualifications'(학사+7년)가 크게 어긋난다 — 어느 쪽이 실제 기준인지 공고로 알 수 없다.",
     "gh 7834206 'Senior Staff ll, AI Engineer (L7-2)'는 직급 표기와 달리 필수 자격이 소프트웨어 3년이다 — 어느 쪽이 실제 기준인지 공고로 알 수 없다.",
     "gh 7774291(Coupang AI Foundations, Seattle)은 구체적 업무 목록 없이 팀 소개 한 문단과 과제 예시 세 개뿐이다.",
-    "gh 7965062(Sr. Staff Backend Software Engineer, Seattle)는 팀·업무 설명이 없고, 10년 요건과 'Minimum Qualifications'(학사+7년)가 어긋난다."
+    "gh 7965062(Sr. Staff Backend Software Engineer, Seattle)는 팀·업무 설명이 없고, 10년 요건과 'Minimum Qualifications'(학사+7년)가 어긋난다.",
+    "gh 5868936(Sr. Staff Front-end, GOT)은 크롤 데이터에 우대 세 줄만 들어왔다 — 주요업무·자격은 공고 전문(full_jd)에서만 읽힌다."
   ]
 }
