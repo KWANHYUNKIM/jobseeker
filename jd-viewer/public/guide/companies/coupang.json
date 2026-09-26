@@ -18506,6 +18506,95 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8210358",
+      "title": "Sr. Software Engineer - Rocket Growth Inbound & Global Logistics",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 중국 상하이 근무다. 소프트웨어 4년의 시니어로, 로켓그로스 입고·물류 엔지니어링 팀에서 판매자가 입고(inbound)를 만들고·관리하고·이행하는 전 단계(pre-ship 부터 센터 적치 stow 까지)를 받치는 도구·서비스·플랫폼·풀필먼트 센터 연동을 만든다 — 판매자용 WING 화면부터 출고 물류·창고 작업을 조율하는 백엔드 처리까지다. 백엔드 또는 풀스택, 확장 가능한 데이터 시스템 경험을 이상적 후보로 적는다. 우대에 Java·Spring·AWS·Kafka·Elasticsearch 와 'AI 를 활용한 프런트엔드 개발'이 있다.",
+      "fit": {
+        "must_have": [
+          "CS·EE·수학 등 학사",
+          "소프트웨어 4년",
+          "클라우드 환경",
+          "고가용 분산 시스템"
+        ],
+        "can_learn": [
+          "Java·Spring·AWS·Kafka·Elasticsearch(우대)",
+          "자료구조·알고리즘·성능 최적화(우대)",
+          "AI 활용 프런트엔드(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "판매자 입고 흐름 — 사전 출고부터 적치까지",
+          "from": "task",
+          "quote": "supply chain. Our mission is to build the scalable, reliable, and intelligent systems that power every step from pre-ship to stow—enabling sellers to create, manage, and fulfill inbounds with confidence and speed. We create the tools, services, platforms, and FC integrations that form the backbone of the seller experience, from intuitive WING interfaces to high-performance backend processing that orchestrates shipment logistics and warehouse operations at scale.",
+          "priority": "core",
+          "why": "판매자가 입고를 만들고·관리하고·이행하도록 pre-ship 부터 stow 까지 모든 단계를 받치는 시스템을 만드는 것이 팀의 임무라고 공고가 적는다.",
+          "gap_check": "판매자가 신고한 입고 수량과 센터에서 실제로 받은 수량이 다를 때(누락·초과·파손) 입고 건의 상태는 어떻게 바뀌고, 판매자 화면·재고·정산 중 무엇을 언제 갱신하는가?",
+          "drill": "입고 건 상태 기계(생성→출고 예정→도착→검수→적치 완료, 예외: 수량 불일치·파손)를 설계하고, 검수 이벤트로 신고 수량과 실수량 차이를 기록해 판매자 알림과 가용 재고 반영을 분리하는 작은 서비스를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "입고 데이터 파이프라인과 검색",
+          "from": "preference",
+          "quote": "Strong expertise in Java, Spring, AWS, APIs and Big Data technologies such as Kafka, Elasticsearch.",
+          "priority": "high",
+          "why": "확장 가능한 데이터 인프라·파이프라인 구축이 주요업무이고, Java·Spring·AWS·Kafka·Elasticsearch 전문성이 우대사항이다.",
+          "gap_check": "판매자가 입고 건 수만 개를 상태·기간·상품으로 검색할 때, 원본 DB 대신 Elasticsearch 색인을 쓰면 무엇이 빨라지고, 입고 상태 변경이 색인에 반영되기까지의 지연은 판매자 화면에서 어떻게 드러나는가?",
+          "drill": "입고 상태 변경 이벤트를 Kafka 로 흘려 Elasticsearch 색인을 갱신하는 소비자를 만들고, 상태·기간 필터 검색 API 를 붙인 뒤 이벤트 발생에서 검색 반영까지의 지연을 측정한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Apache Kafka Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Elasticsearch Guide",
+              "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 고성능 시스템 소유와 자동화",
+          "from": "task",
+          "quote": "Design, develop, and automate large-scale, high-performance systems to drive business growth and enhance product experiences.",
+          "priority": "high",
+          "why": "사업 성장과 제품 경험을 위한 대규모 고성능 시스템의 설계·개발·자동화와, 프로젝트의 품질·운영 건전성까지 온전히 맡는 것이 주요업무다.",
+          "gap_check": "판매자 일괄 입고 등록처럼 요청이 몰리는 작업을 비동기로 돌릴 때, 실패한 행을 판매자에게 어떻게 돌려주고 재시도가 중복 입고를 만들지 않게 하려면 무엇을 멱등 키로 삼는가?",
+          "drill": "일괄 입고 등록 API 를 작업 ID 기반 비동기 처리로 만들고, 판매자·외부 참조 번호를 멱등 키로 써서 재시도 시 중복이 생기지 않는지 테스트한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "입고 상태 기계 + 수량 불일치 처리 데모",
+          "why": "pre-ship 부터 stow 까지가 팀의 범위다. 신고·실수량 차이를 다루는 상태 기계는 로켓그로스 입고 도메인을 이해했다는 증거가 된다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "입고 수량 불일치",
+          "색인 반영 지연",
+          "일괄 작업 멱등성",
+          "자료구조·알고리즘",
+          "제품팀 요구사항 수집"
+        ],
+        "sources": [
+          {
+            "title": "Sr. Software Engineer - Rocket Growth Inbound & Global Logistics",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8210358",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
