@@ -6,7 +6,7 @@
     "에이블리코퍼레이션",
     "에이블리"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "ably.team",
   "one_liner": "패션 커머스 앱 에이블리(과 남성 앱 4910, 일본 아무드)를 운영하는 회사 — 2025년 매출 3,697억·거래액 약 2.8조, 기업가치 3조 유니콘에서 중견기업으로",
@@ -710,6 +710,106 @@
             {
               "title": "Cohort analysis (Mixpanel)",
               "url": "https://mixpanel.com/blog/cohort-analysis/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/388727",
+      "title": "머신러닝 엔지니어 (추천)",
+      "site": "wanted",
+      "verdict": "경력 5-11년, 서울 서초구. '에이블리 앱의 탄탄한 기반' 을 맡는 [파운데이션 스쿼드]의 **[추천 셀]** 자리로, 공고는 개인화 추천을 '에이블리 비즈니스의 핵심 동력' 이라고 적는다. 업무는 유저 행동·상품·맥락 데이터로 추천이 풀 고객 문제 정의, 모델 개발·추천 품질 고도화, 대규모 피처 발굴과 학습·평가 파이프라인·서빙 구조·안정성, **오프라인 지표와 온라인 실험으로 추천 개선이 실제 고객 경험·비즈니스 지표로 이어지는지 확인**. 필수는 ML 5년 이상, 실서비스에서 문제 정의→개발→실험→배포→운영→개선, 대규모 트래픽 환경의 추천·검색·광고 랭킹·개인화 경험, 데이터 흐름·응답 속도·안정성까지 고려한 추천 시스템 구조 설계, 논문·신기술 적용. 우대는 후보 추출부터 최종 순서 결정까지 파이프라인 각 단계 직접 개발, 추천 개선으로 지표 변화, 대규모 ETL, 서빙·분산 학습·GPU, 이커머스 이해. 스택은 학습 Python·PyTorch·Kubeflow, 서빙 Python·Kotlin·PyTorch·FastAPI·Scylla·Elasticsearch, 전처리 Spark·Ray·Airflow, GitHub Actions·Docker·EKS. 전형: 서류전형 > 직무 인터뷰(화상) > 심층 직무 인터뷰(화상) > 최종 인터뷰(화상) > 최종합격.",
+      "fit": {
+        "must_have": [
+          "ML 업무 5년 이상",
+          "실서비스 ML 전 과정(문제 정의→운영·개선)",
+          "대규모 트래픽 추천·검색·광고 랭킹·개인화",
+          "추천 시스템 구조 설계(데이터 흐름·지연·안정성)",
+          "논문·신기술 적용"
+        ],
+        "can_learn": [
+          "후보 추출→랭킹 전 단계",
+          "대규모 ETL",
+          "분산 학습·GPU 서빙",
+          "이커머스 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "추천 파이프라인 — 후보 추출에서 순위까지",
+          "from": "preference",
+          "quote": "• 후보 추출부터 최종 순서 결정까지 추천 파이프라인의 각 단계를 직접 개발해 본 경험이 있으면 더 좋아요.",
+          "priority": "core",
+          "why": "우대사항이고 필수에 '대규모 트래픽 환경에서 추천, 검색, 광고 등 랭킹·개인화' 경험이 있다. 서빙 스택에 Elasticsearch·Scylla 가 있다.",
+          "gap_check": "상품 수백만 개에서 한 유저에게 보여 줄 50개를 수십 ms 안에 고르려면 후보 추출(임베딩 근사 최근접·인기·최근 본 상품과 비슷한 것)과 랭킹 모델을 왜 나누고, 각 단계의 평가 지표(재현율 vs 순위 지표)는 무엇이 다른가?",
+          "drill": "YouTube 추천 논문의 두 단계 구조를 읽고, 공개 커머스 데이터(또는 가짜 클릭 로그)로 아이템 임베딩을 학습해 FAISS 로 후보 200개를 뽑은 뒤, 간단한 랭킹 모델로 상위 50개를 정렬해 후보 단계 재현율@200 과 최종 NDCG@10 을 따로 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Deep Neural Networks for YouTube Recommendations",
+              "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+              "kind": "paper"
+            },
+            {
+              "title": "facebookresearch/faiss",
+              "url": "https://github.com/facebookresearch/faiss",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "랭킹 모델과 피처",
+          "from": "task",
+          "quote": "• 대규모 데이터에서 피처를 발굴하고, 학습·평가 파이프라인, 서빙 구조와 안정성까지 설계하고 개선해요.",
+          "priority": "core",
+          "why": "주요업무이고 다음 업무가 모델 성능·추천 품질 고도화다. 전처리 스택에 Spark·Ray·Airflow 가 있다.",
+          "gap_check": "패션 추천에서 유저 피처(최근 본 카테고리·가격대), 상품 피처(신상 여부·찜 수), 맥락 피처(시간·요일·진입 화면) 중 무엇이 학습과 서빙에서 다르게 계산되기 쉬운가(학습-서빙 불일치), 그리고 그것을 무엇으로 막는가?",
+          "drill": "Wide & Deep 논문을 읽고, 위 후보에 유저·상품·맥락 피처를 붙인 랭킹 모델을 PyTorch 로 학습한 뒤, 같은 피처 계산 함수를 학습 배치와 서빙 API 에서 공유하게 만들어 두 쪽 피처 값이 같은지 샘플로 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Wide & Deep Learning for Recommender Systems",
+              "url": "https://arxiv.org/abs/1606.07792",
+              "kind": "paper"
+            },
+            {
+              "title": "Ray Data",
+              "url": "https://docs.ray.io/en/latest/data/data.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "오프라인 지표와 온라인 실험 잇기",
+          "from": "task",
+          "quote": "• 오프라인 지표와 온라인 실험을 통해 가설을 검증하고, 추천 품질의 개선이 실제 고객 경험과 비즈니스 지표의 변화로 이어지는지 확인해요.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 '추천 시스템 개선을 통해 고객 경험이나 비즈니스 지표에 유의미한 변화를 만들어 본 경험' 이 있다.",
+          "gap_check": "오프라인 NDCG 가 올랐는데 온라인 A/B 에서 구매 전환이 안 오르는 이유로 무엇(과거 노출 편향·인기 편중·다양성 저하)을 의심하고, 추천 실험의 가드레일 지표로 무엇(신상품 노출 비율·셀러 분산)을 함께 보는가?",
+          "drill": "위 모델의 오프라인 지표와 함께 추천 결과의 카테고리 다양성·인기 상품 집중도를 계산하고, 두 모델 버전을 A/B 로 비교한다고 가정해 주 지표·가드레일 지표·판정 기준을 실험 설계서 한 장으로 쓴다.",
+          "hours": 5,
+          "resources": []
+        },
+        {
+          "topic": "추천 서빙 — 지연과 안정성",
+          "from": "qualification",
+          "quote": "• 모델의 성능뿐 아니라 데이터 흐름, 응답 속도, 시스템 안정성 등을 고려해 추천 시스템 구조를 설계할 수 있는 분을 찾아요.",
+          "priority": "nice",
+          "why": "필수 요건이고 서빙 스택에 FastAPI·Kotlin·Scylla·Elasticsearch 가 있다. 우대에 모델 서빙·GPU 경험이 있다.",
+          "gap_check": "추천 API 가 p99 100ms 를 넘기면 앱 첫 화면이 늦어지는데, 모델 추론·피처 조회·후보 검색 중 무엇이 지연을 먹는지 어떻게 나눠 재고, 추천 서버가 죽으면 앱에는 무엇(인기 상품 대체 목록)을 보여 주는가?",
+          "drill": "FastAPI 추천 서버에 피처 조회(Scylla 또는 Redis 대체)·후보 검색·랭킹 단계별 타이머를 달고 부하를 준 뒤 단계별 p99 를 표로 남기고, 랭킹 단계 타임아웃 시 인기 목록으로 대체되게 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ScyllaDB Architecture",
+              "url": "https://docs.scylladb.com/manual/stable/architecture/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction | Kubeflow",
+              "url": "https://www.kubeflow.org/docs/started/introduction/",
               "kind": "docs"
             }
           ]
