@@ -2440,3 +2440,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 atama plus AI 스텝 해설
 
 - `6b64c407d11c8c` 전문으로 기능 `ai-step-explanation-choices`, 결정 7. 기반 세부(AWS Summit 2025 슬라이드)는 못 읽어 Bedrock 은 이름만.
+
+## 2026-09-27 atama plus 레디니스 리뷰
+
+- 전 · 중 · 후편 전문으로 기능 `readiness-review-roadmap`, 결정 7.
