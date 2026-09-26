@@ -7,7 +7,7 @@
       "name_en": "ChillStack",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 3,
       "one_liner": "'AI 보안 컴퍼니' — 기업의 경비 데이터에서 부정 · 이상을 찾는 SaaS 'Stena Expense' 를 Go 모놀리스 + Python 검지 서비스(gRPC 콜백)로 돌리고, 여러 회사의 경비를 한 DB 에서 RLS 로 가르며 사전 집계로 수백 밀리초에 모아 보인다",
       "updated_at": "2026-09-27",

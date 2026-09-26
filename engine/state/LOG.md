@@ -2243,3 +2243,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 ChillStack 자체 Web 스캐너
 
 - AI 보안 수익원 판정의 검색 1(RSS)에서 보안 진단 서비스의 시스템 글(`2025-02-27-security-webscanner`)을 찾아 보류 대신 도메인 셋째 + 기능 `inhouse-web-vuln-scanner`. 글이 얇아 결정 5, 대가 여럿은 '이 사이트의 해석'. 수익원 how 에 진단 서비스를 넣고 confirmed.
+
+## 2026-09-27 ChillStack 완주
+
+- --gaps 는 신규를 가리켰지만 완주 판정이 먼저. 완주 기준 셋 — 도메인 셋 다 기능 1 · 기능이 서로 connections · 수익원 둘 다 confirmed.
