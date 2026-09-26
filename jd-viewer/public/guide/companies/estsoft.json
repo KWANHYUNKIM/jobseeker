@@ -583,6 +583,117 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/374871",
+      "title": "[ESTsecurity] 보안 솔루션 S/W PM 및 기술지원 5년 이상",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 서초구. **이스트시큐리티 ECM기술지원팀** 자리로, 여러 보안 제품 중 문서중앙화 솔루션(인터넷디스크/시큐어디스크/ECM)을 맡는다 — 고객사 인프라 환경에 맞춰 서버를 구축하고 운영 교육을 하며 기술지원(유선/메일/원격/방문)을 한다. 개발직이 아니라 **구축 PM·기술지원**이다: 필수에 PM 업무 경험(프로젝트 경력 지원서 제출), IT기술지원 지식, 컴퓨터 관련 학과 졸업 또는 보안·IT 교육 이수, 그리고 '장기 출장 및 외근에 결격 사유가 없는 분' 이 있다. 우대는 Linux(REDHAT / RockyOS), MariaDB / MySQL, PHP, 정보처리기사/산업기사·PMP·IT-PMP. 전형: 서류심사 → 실무진 인터뷰 → 인성검사 → 최종 인터뷰 → 처우협의 → 채용검진 → 최종합격(다른 이스트 공고에 없는 채용검진 단계가 있다), 수시 채용.",
+      "fit": {
+        "must_have": [
+          "유관 경력 5년 이상",
+          "PM 업무 경험(프로젝트 경력 지원서 제출)",
+          "IT기술지원 지식",
+          "장기 출장·외근 가능"
+        ],
+        "can_learn": [
+          "Linux(REDHAT / RockyOS)",
+          "MariaDB / MySQL",
+          "PHP",
+          "정보처리기사·PMP·IT-PMP"
+        ]
+      },
+      "study": [
+        {
+          "topic": "고객사 서버에 솔루션 구축하기 — RHEL·Rocky",
+          "from": "task",
+          "quote": "- 시큐어디스크/인터넷디스크/ECM 제품의 솔루션 프로젝트 수행",
+          "priority": "core",
+          "why": "주요업무이고 팀 소개가 '고객사의 인프라 환경을 고려한 서버룰 구축' 을 적는다. 우대에 Linux(REDHAT / RockyOS)가 있다.",
+          "gap_check": "고객사 서버가 인터넷이 막힌 망에 있을 때 RPM 의존성을 어떻게 챙겨 설치하고, SELinux·방화벽(firewalld) 때문에 서비스가 안 뜰 때 어느 로그부터 보는가?",
+          "drill": "Rocky Linux VM 을 네트워크를 끊은 상태로 두고, 다른 VM 에서 받은 RPM 묶음(dnf download --resolve)으로 웹서버와 MariaDB 를 설치한 뒤 firewalld 포트를 열고 SELinux 거부를 audit.log 에서 찾아 해결한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Red Hat Enterprise Linux 9 Documentation",
+              "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9",
+              "kind": "docs"
+            },
+            {
+              "title": "Rocky Linux Documentation",
+              "url": "https://docs.rockylinux.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "원격·방문 기술지원의 장애 분석",
+          "from": "task",
+          "quote": "- 시큐어디스크 / 인터넷디스크 / ECM 제품의 솔루션 기술지원 (유선/메일/원격/방문 기술지원)",
+          "priority": "core",
+          "why": "첫 주요업무이고 필수에 IT기술지원 지식이 있다.",
+          "gap_check": "고객이 '파일 업로드가 가끔 실패한다' 고만 말할 때 처음 묻는 세 가지(언제부터·누구에게·어떤 파일)와, 서버에서 확인할 것(디스크 용량·웹서버 오류 로그·DB 연결 수)을 순서대로 말할 수 있는가?",
+          "drill": "웹서버+DB VM 에서 디스크를 가득 채우거나 DB max_connections 를 낮춰 업로드 실패를 일부러 만들고, journalctl·웹서버 오류 로그·df 로 원인을 찾아 고객에게 보낼 장애 보고 한 장을 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Red Hat Enterprise Linux 9 Documentation",
+              "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MariaDB / MySQL 운영 — 백업과 복제",
+          "from": "preference",
+          "quote": "- MariaDB / MySQL 유경험자",
+          "priority": "high",
+          "why": "우대사항이다. 구축·기술지원하는 솔루션 서버를 고객사에서 운영한다(주요업무).",
+          "gap_check": "고객사 서버의 DB 를 옮기거나 복구할 때 mysqldump 와 파일 복사 중 무엇을 쓰고, 복제(replication)를 걸어 둔 상태에서 원본이 죽으면 무엇을 확인한 뒤 복제본을 원본으로 바꾸는가?",
+          "drill": "MariaDB 두 대로 복제를 구성하고 원본에 쓴 행이 복제본에 오는지 확인한 뒤, 원본을 멈추고 복제본을 승격해 애플리케이션 접속 주소를 바꾸는 절차를 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Replication Overview | MariaDB Documentation",
+              "url": "https://mariadb.com/kb/en/replication-overview/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객사 구축 프로젝트 PM",
+          "from": "qualification",
+          "quote": "- Project Manager(PM) 업무 경험이 있으신 분 (프로젝트 경력 지원서 제출)",
+          "priority": "high",
+          "why": "필수 요건이고 프로젝트 경력 지원서를 따로 내라고 적는다. 우대에 PMP, IT-PMP 가 있다.",
+          "gap_check": "문서중앙화 구축 프로젝트에서 고객사가 요구하는 설치·연동·교육·검수를 일정표로 나눴을 때, 검수 기준을 누구와 언제 합의해 두어야 끝이 나는가?",
+          "drill": "가상의 '300명 규모 기업 문서중앙화 구축' 을 사전 조사·설치·연동·파일 이관·교육·검수 여섯 단계로 나눈 일정표와, 단계마다 고객 서명을 받을 산출물을 적은 프로젝트 경력서 형식의 한 장을 만든다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "PHP 웹 애플리케이션 읽기",
+          "from": "preference",
+          "quote": "- PHP 유경험자",
+          "priority": "nice",
+          "why": "우대사항이다. 기술지원 중 서버 쪽 코드를 읽어야 할 때 쓰인다고 읽힌다(제품이 PHP 인지는 공고에 없다).",
+          "gap_check": "PHP 오류가 화면에 안 보이고 흰 화면만 뜰 때 어디(php.ini 의 로그 설정·웹서버 오류 로그)를 보고, 업로드 크기 제한은 어떤 설정 두 개가 함께 정하는가?",
+          "drill": "Apache + PHP 로 파일 업로드 페이지를 만들고 upload_max_filesize·post_max_size 를 작게 잡아 실패를 재현한 뒤 로그에서 원인을 찾는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "PHP: Getting Started - Manual",
+              "url": "https://www.php.net/manual/en/getting-started.php",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache HTTP Server Version 2.4 Documentation",
+              "url": "https://httpd.apache.org/docs/2.4/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
