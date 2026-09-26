@@ -364,6 +364,137 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570849?ReturnUrl=RecruitInfo",
+      "title": "피지컬 AI 부문 신입 엔지니어 채용",
+      "site": "dev",
+      "verdict": "신입이지만 **석사 이상(로보틱스/피지컬 AI 전공자)** 이 조건이다. 서울 캠퍼스(서초), 정규직(수습 3개월), 08:30~17:30. 주요업무는 **피지컬 AI 데이터 수집·학습 방법 연구와 PoC**, 제조분야 파운데이션 모델(자율주행·휴머노이드), **Isaac Sim·Mujoco 합성데이터 생성과 학습 파이프라인**, 현장 요구사항 정의와 PoC, 로봇 운영 개발 — **ROS/ROS2 로봇 제어(비전·액션 모델 연계)**, **경량 객체탐지와 강화학습**, **SLAM·Navigation 실구현**, 그리고 정부 국책과제 실무 연구. 필수는 로봇 자동화 제어·시스템 운영 경험, Isaac Sim·Mujoco 데이터 합성·수집 경험, **VL·VLA 모델 이해**, Python·C/C++·Linux. 우대는 제조/로보틱스 제어·모델 운영, Isaac Sim·ROS2 시뮬레이션, **온디바이스 AI(NPU/GPU/가속기)**. 같은 서울 캠퍼스의 하드웨어 경력 공고(570848)가 로봇·보드를 만들고 이 자리가 그 위의 학습·제어를 맡는 구조로 읽힌다. 급여는 '회사 내규에 따름'. 전형은 서류→인성검사→1차→2차 면접.",
+      "fit": {
+        "must_have": [
+          "로보틱스/피지컬 AI 석사",
+          "Isaac Sim·MuJoCo 데이터 합성",
+          "VLA 모델 이해",
+          "Python·C++·Linux"
+        ],
+        "can_learn": [
+          "ROS2·Nav2",
+          "경량 객체탐지",
+          "온디바이스 추론"
+        ]
+      },
+      "study": [
+        {
+          "topic": "시뮬레이터로 합성 데이터 만들기 — Isaac Sim·MuJoCo",
+          "from": "qualification",
+          "quote": "피지컬 AI 분야, 데이터 합성 & 수집 개발 경험 (Isaac Sim & Mujoco)",
+          "priority": "core",
+          "why": "필수사항이고 주요업무에 합성데이터 생성 및 학습 파이프라인 구축(Isaac Sim & Mujoco)이 있다. 우대사항에도 Isaac Sim 시뮬레이션이 있다.",
+          "gap_check": "Isaac Sim 과 MuJoCo 는 무엇을 잘하는가(사실적 렌더링·센서 합성 vs 빠르고 정확한 접촉 동역학)? 시뮬레이션에서 학습한 모델이 현실에서 떨어지는 이유(sim-to-real 격차)와, 조명·질감·물성 값을 무작위로 바꾸는 것(도메인 무작위화)이 그 격차를 어떻게 줄이는가?",
+          "drill": "MuJoCo Overview 와 Isaac Sim 문서를 읽고, MuJoCo 로 테이블 위 물체를 로봇팔이 집는 장면을 만들어 물체 질량·마찰을 무작위로 바꾸며 궤적 데이터를 1,000개 모은다. Synthetic data 문서를 참고해 각 샘플에 어떤 라벨(물체 자세·성공 여부)을 붙였는지 데이터 명세서를 쓴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "What Is Isaac Sim? — Isaac Sim Documentation",
+              "url": "https://docs.isaacsim.omniverse.nvidia.com/latest/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Overview — MuJoCo Documentation",
+              "url": "https://mujoco.readthedocs.io/en/stable/overview.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Synthetic data — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Synthetic_data",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "VL·VLA(비전-언어-액션) 모델",
+          "from": "qualification",
+          "quote": "VL(비젼-액션) 모델 및 VLA(비젼-랭기지-액션) 모델 지식 & 이해",
+          "priority": "core",
+          "why": "필수사항이고 주요업무에 제조분야 파운데이션 모델 연구와 ROS 로봇 제어의 비전·액션 모델 연계가 있다.",
+          "gap_check": "VLA 모델은 카메라 영상과 언어 지시를 받아 무엇을 출력하고(관절 명령·말단 궤적), 행동을 토큰으로 바꾸는 방식은 어떻게 동작하는가? 제조 현장 PoC 에서 이런 모델을 쓰려면 데이터(시연 궤적)를 얼마나, 어떻게 모아야 하는가?",
+          "drill": "Vision–language–action model 문서를 읽고, 공개된 VLA 모델 하나의 입력·출력 형식과 학습 데이터 구성을 한 쪽으로 요약한다. 앞 과제의 합성 궤적 데이터를 그 모델의 입력 형식(영상·지시문·행동)에 맞게 변환하는 스크립트를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Vision–language–action model — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Vision-language-action_model",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ROS2 로 비전·행동 모델을 로봇 제어에 잇기",
+          "from": "task",
+          "quote": "ROS/ROS2 운영을 통한 로봇 제안 개발 (비젼 & 액션 모델 연계)",
+          "priority": "core",
+          "why": "주요업무이고 우대사항에 ROS2 기반 시뮬레이션 개발이, 필수에 로봇 자동화 제어·시스템 운영 경험이 있다.",
+          "gap_check": "카메라 노드 → 추론 노드 → 제어 노드를 토픽·서비스·액션 중 무엇으로 잇고, 추론이 느려 제어 주기를 못 맞출 때 어떻게 하는가? 같은 코드를 시뮬레이터와 실제 로봇에서 돌리려면 무엇을 바꿔야 하는가?",
+          "drill": "Robot Operating System 문서를 읽고, ROS2 로 카메라 이미지 토픽을 받아 (더미) 모델이 목표 자세를 내면 제어 노드가 로봇팔 관절 명령을 발행하는 세 노드 파이프라인을 만든다. 추론 노드에 지연을 넣어 제어 주기가 어떻게 깨지는지 로그로 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Robot Operating System — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Robot_Operating_System",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "경량 객체탐지와 강화학습",
+          "from": "task",
+          "quote": "경량 객체탐지 모델 개발 및 강화학습 연구",
+          "priority": "high",
+          "why": "주요업무이고 우대사항에 온디바이스 AI(NPU/GPU/가속기)가 있다 — 로봇에 올릴 모델이라 가벼워야 한다.",
+          "gap_check": "탐지 모델을 작게 만들 때 입력 해상도·모델 크기·양자화가 정확도와 지연을 각각 어떻게 바꾸는가? 강화학습에서 보상을 잘못 설계하면 로봇이 어떤 편법을 배우고, 시뮬레이터 병렬 환경이 학습 속도에 왜 중요한가?",
+          "drill": "Ultralytics 문서로 작은 YOLO 모델을 합성 이미지(앞 과제)로 파인튜닝해 크기별 mAP·추론 시간을 표로 비교한다. Gymnasium 문서를 따라 간단한 연속 제어 환경에서 정책을 학습하고, 보상 항목 하나를 빼면 행동이 어떻게 바뀌는지 기록한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "YOLO Object Detection & Segmentation — Ultralytics",
+              "url": "https://docs.ultralytics.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Gymnasium Documentation",
+              "url": "https://gymnasium.farama.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Reinforcement learning — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Reinforcement_learning",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SLAM 과 Navigation 실구현",
+          "from": "task",
+          "quote": "자율주행 기술 (SLAM, Navigation) 활용 실 구현 개발",
+          "priority": "high",
+          "why": "주요업무이고 파운데이션 모델 연구 대상에 자율주행이 있다.",
+          "gap_check": "SLAM 에서 루프 클로저가 없으면 지도가 어떻게 틀어지고, 라이다 SLAM 과 비주얼 SLAM 은 공장 바닥처럼 반복 패턴이 많은 곳에서 각각 무엇에 약한가? Nav2 에서 전역 경로 계획과 지역 제어기는 어떻게 나뉘는가?",
+          "drill": "SLAM 문서와 Nav2 문서를 읽고, 시뮬레이터 속 창고 맵에서 이동 로봇으로 지도를 만든 뒤 Nav2 로 두 지점을 왕복시킨다. 경로 중간에 장애물을 놓아 재계획이 일어나는지, 실패하면 어느 단계(위치 추정·계획·제어)에서 막혔는지 로그로 가른다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Simultaneous localization and mapping — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping",
+              "kind": "docs"
+            },
+            {
+              "title": "NAV2 — Nav2 Docs",
+              "url": "https://docs.nav2.org/rolling/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
