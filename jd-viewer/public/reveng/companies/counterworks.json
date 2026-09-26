@@ -7,7 +7,7 @@
   "status": "in_progress",
   "updated_at": "2026-09-26",
   "domain": "counterworks.jp",
-  "one_liner": "팝업 스토어 공간 플랫폼 ショップカウンター 와 상업 시설 리싱 SaaS SCE 의 카운터워크스 — 도입 기업마다 따로 서던 Rails 앱을 10개월에 걸쳐 PostgreSQL 공유 DB·RLS·이중 방어의 멀티테넌트 한 환경으로 합치고, 60개 넘는 잡은 유료판 대신 Rails 8 의 SolidQueue 로 Phase 를 나눠 옮겨 Redis 를 걷어 냈다",
+  "one_liner": "팝업 스토어 공간 플랫폼 ショップカウンター 와 상업 시설 리싱 SaaS SCE 의 카운터워크스 — 도입 기업마다 따로 서던 Rails 앱을 10개월에 걸쳐 PostgreSQL 공유 DB·RLS·이중 방어의 멀티테넌트 한 환경으로 합치고, 60개 넘는 잡은 유료판 대신 Rails 8 의 SolidQueue 로 Phase 를 나눠 옮겨 Redis 를 걷어 냈다 — 공간 마켓 SHOPCOUNTER 쪽에서는 매칭 뒤 멈춘 대화를 RAG 로 골라 사람이 거든다",
   "business_model": "상업 공간을 둘로 판다. **ショップカウンター** 는 팝업 스토어·이벤트용 상업 공간(상업 시설·노면점·역 안·오피스 빌딩·전시장)을 찾고 예약·지불하는 온라인 플랫폼으로, 빌려주는 쪽은 빈 구획을 게재해 수익화한다. **ショップカウンター エンタープライズ(SCE)** 는 상업 시설이 새 테넌트와 연결되고 리싱 흐름을 효율화하는 클라우드 관리 시스템(SaaS)이다. 수수료·요금 구조와 비중은 공개 자료에서 확인하지 못했다.",
   "products": [
     "ショップカウンター(상업 공간 검색·예약·지불 플랫폼)",
@@ -52,7 +52,9 @@
       "name": "ショップカウンター(공간 마켓플레이스)",
       "how": "상업 공간의 검색·예약·지불을 중개한다. 수수료 구조는 확인 못 함.",
       "weight": "비중 확인 못 함",
-      "domains": [],
+      "domains": [
+        "매칭 뒤 멈춘 대화를 찾아 사람이 거든다"
+      ],
       "confidence": "inferred",
       "sources": [
         {
@@ -61,15 +63,22 @@
           "publisher": "株式会社カウンターワークス",
           "date": "2026-09-26",
           "summary": "서비스 둘 — **ショップカウンター**: 팝업 스토어·이벤트 같은 상업 공간을 쉽게 찾고 쓰는 일본 최대급 온라인 플랫폼(상업 시설·노면점·역 안·오피스 빌딩·전시장의 검색·예약·지불을 원스톱, 전문 컨시어지). 공간을 빌려주는 쪽은 빈 구획·유휴 공간을 게재해 수익화. **商業施設向けリーシングDXシステム**: 영업으로 못 만나던 새 테넌트와의 연결과 효율적인 리싱 흐름. ISO/IEC 27001 취득(2026-09)."
+        },
+        {
+          "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+          "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+          "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+          "date": "2025-12-20",
+          "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
         }
       ]
     }
   ],
   "domain_map": {
     "title": "기업마다의 앱을 하나로, 잡 기반을 DB 로",
-    "question": "리싱 SaaS 는 도입 기업마다 따로 선 앱을 어떻게 하나로 합치고, 수십 개 잡의 기반을 어떻게 멈추지 않고 바꾸나?",
-    "code": "flowchart LR\n  A1[\"A 사 Rails 앱 · MySQL\"] -.통합.-> ONE[\"SCE 한 환경\\nRails 8\"]\n  A2[\"B 사 Rails 앱\"] -.-> ONE\n  ONE --> PG[(\"PostgreSQL 공유 DB\\nRLS · 테넌트 식별 열 · UUIDv7\")]\n  ONE -->|60+ 잡| SQ[\"SolidQueue\\nPostgreSQL\"]\n  SK[\"Sidekiq OSS · Redis\"] -.Phase 이행 · 철수.-> SQ",
-    "_note": "두 도메인 모두 SCE 의 글이다. ショップカウンター(공간 마켓플레이스)의 기술 글은 아직 못 봤다."
+    "question": "리싱 SaaS 는 도입 기업마다 따로 선 앱을 어떻게 하나로 합치고 잡 기반을 어떻게 바꾸나 — 그리고 공간 마켓은 멈춘 거래를 어떻게 찾나?",
+    "code": "flowchart LR\n  A1[\"A 사 Rails 앱 · MySQL\"] -.통합.-> ONE[\"SCE 한 환경\\nRails 8\"]\n  A2[\"B 사 Rails 앱\"] -.-> ONE\n  ONE --> PG[(\"PostgreSQL 공유 DB\\nRLS · 테넌트 식별 열 · UUIDv7\")]\n  ONE -->|60+ 잡| SQ[\"SolidQueue\\nPostgreSQL\"]\n  SK[\"Sidekiq OSS · Redis\"] -.Phase 이행 · 철수.-> SQ\n  SC[\"SHOPCOUNTER\\n공간 매칭\"] --> CH[\"출점자 ↔ 공간 채팅\"] --> RAG[\"RAG 3관점 점수\"] --> H[\"사람이 지원\"]",
+    "_note": "앞의 두 도메인은 SCE, 세 번째는 SHOPCOUNTER(공간 마켓플레이스)의 글이다."
   },
   "domains": [
     {
@@ -118,6 +127,30 @@
       ],
       "features": [
         "sidekiq-to-solidqueue"
+      ]
+    },
+    {
+      "name": "매칭 뒤 멈춘 대화를 찾아 사람이 거든다",
+      "why": "SHOPCOUNTER 는 공간을 빌려주는 쪽과 출점자를 매칭한다. 매칭 뒤 두 사람의 대화가 멈추면 거래가 성사되지 않는데, 어느 대화가 멈췄는지 사람이 전부 읽을 수는 없다.",
+      "tech": [
+        {
+          "tech": "RAG — multilingual-e5-large · FAISS · ParentDocumentRetriever · 코사인 재점수 · few-shot · o4-mini 3관점 점수 · OpenAI Batch API",
+          "solves": "채팅 약 2,500건에서 지원이 필요한 약 60건을 골라 사람에게 넘긴다.",
+          "limits": "인턴이 만든 시스템이고 월차 정기 실행은 '상정' — 운영 여부는 글에서 확인 못 함. 평가 데이터는 26건.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+              "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2025-12-20",
+              "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "stalled-deal-rag"
       ]
     }
   ],
@@ -902,12 +935,317 @@
           "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
         }
       ]
+    },
+    {
+      "key": "stalled-deal-rag",
+      "name": "매칭 뒤 멈춘 거래를 채팅 로그에서 찾는다 — 과거 '순조' 와 '지원 필요' 사례를 RAG 로 꺼내 few-shot 으로 주고 LLM 이 3관점으로 점수를 매겨, 놓치지 않는 쪽으로 기울인 플래그를 사람이 최종 확인한다",
+      "domain": "매칭 뒤 멈춘 대화를 찾아 사람이 거든다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "SHOPCOUNTER 는 상업 공간을 빌려주는 쪽과 출점자를 매칭한다. 매칭 뒤 대화가 정체되거나 지원을 줄 적절한 때를 놓치는 거래가 있었다. 사람이 모든 채팅을 확인하는 것은 시간·분량으로 현실적이지 않았다 — 그래서 AI 가 먼저 골라 준다.",
+        "metrics": [
+          {
+            "label": "분석 규모와 결과",
+            "value": "채팅 약 2,500건 → AI 가 지원 권장으로 판단 약 60건 → 적절한 지원으로 촉진할 수 있는 거래 상정액 연 약 200만 엔",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          },
+          {
+            "label": "정확도",
+            "value": "Precision 73.33% · Recall 84.62% (평가 26건 — TP 11 · FP 4 · FN 2 · TN 9)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "Batch API 로 50% 절감 — 1건 약 1.3엔, 2,500건 약 3,000엔, 월차 정기 실행 상정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "채팅 로그를 쪼갤 때",
+          "thought": "채팅 로그는 길어서 단순히 청크로 자르면 문맥이 사라진다. 찾기는 잘게, 읽히기는 대화 전체로 — ParentDocumentRetriever.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+              "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2025-12-20",
+              "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+            }
+          ]
+        },
+        {
+          "at": "판정을 어떻게 낼지 정할 때",
+          "thought": "'지원 필요/불필요' 이진 분류 대신 3관점(대화 활성도·의사 결정 진척도·플랫폼 활용도) 0~100 점수 — 어느 관점 때문에 걸렸는지 해석할 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+              "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2025-12-20",
+              "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+            }
+          ]
+        },
+        {
+          "at": "정확도를 저울질할 때",
+          "thought": "놓침을 줄이는 쪽(Recall)을 택했다. 실운용에서는 사람이 최종 확인하므로 Precision 이 조금 낮아도 허용 범위.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+              "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2025-12-20",
+              "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "채팅 로그",
+            "what": "공간 대여자와 출점자가 플랫폼 위에서 나눈 대화 한 건. 부모 문서."
+          },
+          {
+            "name": "과거 사례(순조 / 지원 필요)",
+            "what": "`needs_support` 필터로 나눠 검색하는 벡터 색인(FAISS)."
+          },
+          {
+            "name": "3관점 점수",
+            "what": "대화 활성도(답장 빈도 저하·짧은 응답) · 의사 결정 진척도(조건 교섭 정체·질문 무응답) · 플랫폼 활용도(예약 기능·계약서 기능 미사용). 각 0~100."
+          },
+          {
+            "name": "지원 권장 플래그",
+            "what": "어느 하나라도 임계값 20 이상이면. 판정 근거와 함께 사람에게."
+          }
+        ],
+        "invariants": [
+          "최종 판단은 사람이 한다 — 플래그는 후보다.",
+          "임계는 관점마다가 아니라 '어느 하나라도' — 놓침을 줄이는 쪽."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "채팅 로그를 넣는다",
+            "why": "월차 정기 실행을 상정한 배치 처리."
+          },
+          {
+            "step": "multilingual-e5-large 로 임베딩, 작은 청크로 검색하되 부모 문서(대화 전체)를 가져온다 — 순조 사례·지원 필요 사례를 따로 k=6",
+            "why": "구어체 일본어가 많아 JMTEB 리더보드에서 검색 정확도가 높은 OSS 다국어 모델을 골랐다."
+          },
+          {
+            "step": "가져온 사례를 분석 대상과의 코사인 유사도로 다시 매겨 상위만",
+            "why": "더 관련 높은 사례만 컨텍스트에 넣는다."
+          },
+          {
+            "step": "두 묶음의 사례를 프롬프트에 나눠 넣고 o4-mini(reasoning_effort high)가 3관점 점수",
+            "why": "판정 기준을 LLM 에게 사례로 보여 준다."
+          },
+          {
+            "step": "Batch API 로 돌리고, 판정과 근거를 내보낸다",
+            "why": "실시간이 필요 없는 대량 처리라 비용 절반."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "일본어 구어체 채팅을 어떤 임베딩으로",
+            "chosen": "intfloat/multilingual-e5-large — JMTEB 에서 검색 정확도가 높은 일반 다국어 OSS",
+            "alternatives": [
+              "일본어 전용 모델(inferred)",
+              "상용 임베딩 API(inferred)"
+            ],
+            "tradeoff": "OSS 라 로컬에서 돌리고 일본어 검색이 잘 된다. 대가는 모델을 직접 띄우는 부담(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          },
+          {
+            "question": "긴 대화를 어떻게 검색 단위로",
+            "chosen": "ParentDocumentRetriever — 작은 청크로 찾고 대화 전체를 돌려준다",
+            "alternatives": [
+              "단순 청크 분할"
+            ],
+            "tradeoff": "문맥을 지킨다. 대가는 LLM 에 들어가는 컨텍스트가 길어지는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          },
+          {
+            "question": "검색 결과를 그대로 쓰나",
+            "chosen": "분석 대상과 코사인 유사도로 다시 매겨 상위 k 만",
+            "alternatives": [
+              "벡터 검색 순위 그대로"
+            ],
+            "tradeoff": "관련 높은 사례만 남긴다. 대가는 문서마다 임베딩을 다시 계산하는 비용 — 예시 코드는 문서마다 aembed_query 를 부른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          },
+          {
+            "question": "LLM 에게 기준을 어떻게 알려 주나",
+            "chosen": "'순조' 사례와 '지원 필요' 사례를 나눠 few-shot 으로",
+            "alternatives": [
+              "지시문만(zero-shot)(inferred)"
+            ],
+            "tradeoff": "도메인 고유의 판단 기준을 사례로 주입한다. 대가는 과거 사례에 '지원 필요' 라벨이 먼저 있어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          },
+          {
+            "question": "판정 형태",
+            "chosen": "3관점 0~100 점수 + 어느 하나라도 20 이상이면 플래그",
+            "alternatives": [
+              "지원 필요/불필요 이진 분류"
+            ],
+            "tradeoff": "왜 걸렸는지 해석할 수 있다. 대가는 관점마다 점수를 내는 긴 출력과 임계값 튜닝.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          },
+          {
+            "question": "Precision 과 Recall 중 무엇을",
+            "chosen": "Recall 84.62% 쪽 — 놓침을 줄인다",
+            "alternatives": [
+              "Precision 우선"
+            ],
+            "tradeoff": "지원이 필요한 거래를 덜 놓친다. 대가는 오탐(평가 26건 중 FP 4) — 사람이 최종 확인하므로 허용.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          },
+          {
+            "question": "비용",
+            "chosen": "OpenAI Batch API(24시간 창)",
+            "alternatives": [
+              "실시간 호출"
+            ],
+            "tradeoff": "비용 50% 절감(1건 약 1.3엔). 대가는 실시간성 — Webhook 과 묶은 실시간 분석은 앞으로의 과제로 적었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+                "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2025-12-20",
+                "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다(같은 회사의 다른 도메인)",
+          "via": "회사가 두 서비스를 함께 판다 — SHOPCOUNTER 는 공간을 찾는 쪽, SCE 는 상업 시설의 리싱 운영",
+          "contract": "공개 자료에서 두 시스템이 데이터를 주고받는 계약은 확인하지 못했다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "채팅 한 건이 플래그가 되기까지",
+          "question": "멈춘 거래를 어떻게 골라내나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  C[\"채팅 로그\"] --> E[\"e5-large 임베딩\"]\n  E --> S1[\"순조 사례 k=6\"]\n  E --> S2[\"지원 필요 사례 k=6\"]\n  S1 --> RS[\"코사인 재점수\"]\n  S2 --> RS\n  RS --> L[\"o4-mini\\n3관점 0~100\"]\n  L --> T{\"하나라도 ≥ 20?\"}\n  T -->|예| H[\"지원 권장 → 사람 확인\"]\n  T -->|아니오| N[\"그대로\"]"
+        },
+        {
+          "title": "놓침과 오탐",
+          "question": "재현율을 택한 대가는 어디에 떨어지나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"평가 26건\"] --> TP[\"TP 11 · 잡음\"]\n  A --> FN[\"FN 2 · 놓침\\n거래가 멈춘 채로\"]\n  A --> FP[\"FP 4 · 오탐\\n사람 확인 비용\"]\n  A --> TN[\"TN 9\"]\n  FP --> H[\"사람이 최종 확인에서 거른다\"]\n  FN --> R[\"임계 20 · '어느 하나라도' 로 줄인다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+          "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+          "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+          "date": "2025-12-20",
+          "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
+        }
+      ]
     }
   ],
   "open_questions": [
     "요금·수수료 구조와 매출 비중을 확인하지 못했다.",
-    "ショップカウンター(공간 마켓플레이스)의 기술 결정 글을 아직 못 봤다.",
-    "연재 제2회(PostgreSQL 이행 `0eb98271af2991`)는 아직 안 읽었다."
+    "연재 제2회(PostgreSQL 이행 `0eb98271af2991`)는 아직 안 읽었다.",
+    "SHOPCOUNTER 의 RAG 는 인턴 작이고 월차 실행은 '상정' — 운영에 올랐는지 확인 못 함."
   ],
   "sources": [
     {
@@ -944,6 +1282,13 @@
       "publisher": "COUNTERWORKS Tech Blog (Zenn)",
       "date": "2026-07-02",
       "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
+    },
+    {
+      "title": "年間200万円の取引を発見する：インターンが作ったRAGの取引発見システム",
+      "url": "https://zenn.dev/counterworks/articles/e952d3532bc108",
+      "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+      "date": "2025-12-20",
+      "summary": "공간 매칭 서비스 **SHOPCOUNTER** 에서 매칭 뒤 대화가 멈추는 거래를 찾는 RAG 시스템(인턴 작). 채팅 약 2,500건 → 지원 권장 약 60건 → 촉진 가능 거래 상정액 연 약 200만 엔. multilingual-e5-large(JMTEB) · FAISS · LangChain ParentDocumentRetriever · 코사인 재점수 · 순조/지원 필요 사례를 나눈 few-shot · o4-mini 로 3관점 0~100 점수(하나라도 20 이상이면 플래그) · Precision 73.33% / Recall 84.62%(재현율 우선, 사람이 최종 확인) · Batch API 로 비용 50% 절감(1건 약 1.3엔, 월차 정기 실행 상정)."
     }
   ]
 }

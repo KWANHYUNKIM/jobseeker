@@ -8,8 +8,8 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 2,
-      "one_liner": "팝업 스토어 공간 플랫폼 ショップカウンター 와 상업 시설 리싱 SaaS SCE 의 카운터워크스 — 도입 기업마다 따로 서던 Rails 앱을 10개월에 걸쳐 PostgreSQL 공유 DB·RLS·이중 방어의 멀티테넌트 한 환경으로 합치고, 60개 넘는 잡은 유료판 대신 Rails 8 의 SolidQueue 로 Phase 를 나눠 옮겨 Redis 를 걷어 냈다",
+      "features_done": 3,
+      "one_liner": "팝업 스토어 공간 플랫폼 ショップカウンター 와 상업 시설 리싱 SaaS SCE 의 카운터워크스 — 도입 기업마다 따로 서던 Rails 앱을 10개월에 걸쳐 PostgreSQL 공유 DB·RLS·이중 방어의 멀티테넌트 한 환경으로 합치고, 60개 넘는 잡은 유료판 대신 Rails 8 의 SolidQueue 로 Phase 를 나눠 옮겨 Redis 를 걷어 냈다 — 공간 마켓 SHOPCOUNTER 쪽에서는 매칭 뒤 멈춘 대화를 RAG 로 골라 사람이 거든다",
       "updated_at": "2026-09-26",
       "domain": "counterworks.jp"
     },
@@ -3560,7 +3560,8 @@
     "구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다",
     "상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다",
     "도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다",
-    "60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다"
+    "60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다",
+    "매칭 뒤 멈춘 대화를 찾아 사람이 거든다"
   ],
   "countries": {
     "KR": "한국",
