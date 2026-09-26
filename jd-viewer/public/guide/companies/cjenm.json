@@ -216,5 +216,128 @@
     "커머스부문 2026 신입사원 공고는 개발 직무가 아니다(마케팅·MD·디자인)",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/380140",
+      "title": "[Mnet Plus] 앱 개발(React Native)",
+      "site": "wanted",
+      "verdict": "경력 5-11년, 서울 마포구 상암동 CJ ENM센터. **Mnet Plus Client Team** 의 React Native 앱 자리다 — 250여 개국에서 쓰는 iOS/Android 앱에서 투표·라이브·VOD·실시간 채팅·포토카드·멤버십·인앱결제를 만들고, **MAMA AWARDS·KCON 같은 대형 실시간 이벤트** 구간의 안정성, React Native 로 안 풀리는 문제의 **네이티브 영역** 확인, 크래시·ANR·렌더링·메모리 지표와 관측 체계, 디자인 시스템·테마 토큰, **React Native 버전 업그레이드**를 맡는다. 기술 환경 소개가 구체적이다 — TypeScript·RN 최신 버전 추종, 선언적 데이터 페칭·스키마 검증, 리스트 가상화, 캠페인별 테마 오버라이드, 실시간 메시징 기반 라이브 채팅·투표, 번역 파이프라인, 자동화된 스토어 배포, PR 리뷰 필수·AI 코드 리뷰. 필수는 RN·네이티브·React 웹 중 하나를 주력으로 5년 이상, RN 서비스 개발·운영, 네이티브 레이어까지 원인 파악, 상태 관리·렌더링·메모리 진단, 근본 원인 해결, **AI 도구를 쓰되 결과의 동작과 근거를 설명**. 우대는 네이티브 모듈 작성, RN 업그레이드 주도, 테스트·CI, 성능 지표 개선, 실시간 통신·애니메이션, **인앱결제·구독**, 아키텍처, 다국어, 코드 리뷰·문서. 전형: 서류전형 ＞ **1차 면접(라이브 코딩)** ＞ CJ CFT(온라인 컬처핏 테스트) ＞ 2차 면접 ＞ 평판조회·채용검진·처우협의 ＞ 합격자 발표. 자기소개서 없이 경력기술서 첨부 필수. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "RN·네이티브·React 웹 중 주력 5년 이상",
+          "RN 서비스 개발·운영",
+          "네이티브 레이어 원인 파악",
+          "상태 관리·렌더링·메모리 진단"
+        ],
+        "can_learn": [
+          "네이티브 모듈 작성",
+          "RN 버전 업그레이드",
+          "인앱결제·구독",
+          "실시간 채팅·투표"
+        ]
+      },
+      "study": [
+        {
+          "topic": "React Native 와 네이티브의 경계 — 네이티브 모듈",
+          "from": "qualification",
+          "quote": "• React Native만으로 해결되지 않는 문제를 네이티브 레이어까지 확인하며 원인을 파악해 본 경험",
+          "priority": "core",
+          "why": "필수 자격요건이고 '합류하시면 함께 풀게 될 문제' 에 'React Native로 풀 수 있는 문제와 네이티브로 내려가야 하는 문제를 구분하고, 그 판단 기준을 팀의 자산으로' 가 있다.",
+          "gap_check": "라이브 시청 중 화면 꺼짐 방지나 백그라운드 오디오처럼 JS 만으로 안 되는 기능을 만날 때 서드파티 라이브러리를 고칠지 네이티브 모듈을 직접 쓸지 무엇으로 정하고, 새 아키텍처(Turbo Native Module)에서는 JS 와 네이티브가 어떻게 타입 있는 인터페이스로 연결되며, 크래시가 네이티브 쪽에서 났을 때 JS 스택만 보면 무엇을 놓치는가?",
+          "drill": "React Native 문서를 따라 '화면 켜짐 유지' 를 켜고 끄는 Turbo Native Module 을 iOS·Android 양쪽으로 만들고, 스펙 파일에서 타입을 바꿨을 때 어디서 오류가 나는지 확인한다. 'RN 으로 할지 네이티브로 내려갈지' 판단 기준을 한 장으로 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Native Modules: Introduction — React Native",
+              "url": "https://reactnative.dev/docs/turbo-native-modules-introduction",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "렌더링 성능 — 투표 순위·채팅 목록을 버벅임 없이",
+          "from": "qualification",
+          "quote": "• 모바일 앱의 상태 관리, 렌더링 성능, 메모리·리소스 사용을 직접 진단하고 개선한 경험",
+          "priority": "core",
+          "why": "필수 자격요건이고 첫 번째 '함께 풀게 될 문제' 가 '시상식·콘서트처럼 트래픽이 순간적으로 몰리는 구간을 안정적으로 감당하는 앱 성능' 이다. 기술 환경에 리스트 가상화가 있다.",
+          "gap_check": "라이브 채팅 메시지가 초당 수십 개 들어올 때 상태를 매 메시지마다 갱신하면 JS 스레드와 UI 스레드에 무엇이 생기고, 묶어서 갱신(배치)·리스트 가상화·메모이제이션 중 무엇이 효과가 크며, 프레임 드랍은 무엇으로 측정하는가?",
+          "drill": "초당 50개 메시지를 흘려 보내는 가짜 채팅 화면을 FlatList 와 FlashList 로 각각 만들고, 메시지마다 setState 하는 버전과 100ms 단위로 묶어 갱신하는 버전을 성능 모니터(JS·UI FPS)로 비교해 표로 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Performance Overview — React Native",
+              "url": "https://reactnative.dev/docs/performance",
+              "kind": "docs"
+            },
+            {
+              "title": "FlashList",
+              "url": "https://shopify.github.io/flash-list/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "실시간 채팅·투표 — 끊기고 다시 붙을 때",
+          "from": "preference",
+          "quote": "• 실시간 통신 기반 기능이나 애니메이션 인터랙션 구현 경험",
+          "priority": "high",
+          "why": "우대사항이고 기술 환경에 '실시간 메시징 기반으로 라이브 채팅·투표를 구현' 이 있다. 해외 팬은 모바일 네트워크가 불안정한 곳에서도 접속한다(250여 개국).",
+          "gap_check": "앱이 백그라운드에 갔다 오거나 네트워크가 바뀌어 웹소켓이 끊겼을 때 재연결 간격을 어떻게 늘려 가고(지수 백오프·지터), 끊긴 사이의 투표 결과·채팅은 무엇(마지막 메시지 ID 로 다시 받기)으로 메우며, 투표 버튼을 여러 번 누르는 중복 제출은 앱과 서버 중 어디서 막는가?",
+          "drill": "간단한 웹소켓 서버와 RN 클라이언트를 만들어 지수 백오프 재연결, 마지막 수신 ID 로 빠진 메시지 다시 받기, AppState 로 백그라운드 전환 처리를 구현한다. 서버를 껐다 켜고 네트워크를 끊었다 붙여 메시지가 빠지거나 중복되지 않는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "WebSocket API — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인앱결제·구독의 신뢰성 — 서버 검증과 알림",
+          "from": "preference",
+          "quote": "• 인앱결제·구독 등 수익화 기능 개발 경험",
+          "priority": "high",
+          "why": "우대사항이고 '함께 풀게 될 문제' 에 '멤버십, 인앱결제, 광고, 디지털 굿즈 등 수익화 기능의 신뢰성을 높이는 일' 이 있다. 회사 브리핑대로 Mnet Plus Premium 이 수익원이다.",
+          "gap_check": "앱이 결제 완료 콜백을 받은 직후 크래시로 서버에 알리지 못하면 사용자는 돈을 내고 혜택을 못 받는데, 이를 무엇(앱 재시작 시 미처리 구매 재확인, 서버의 구매 토큰 검증, 스토어 서버 알림)으로 복구하고, 환불·구독 해지는 앱이 아닌 어디서 알게 되는가?",
+          "drill": "Google Play 결제 보안 문서와 App Store Server Notifications 문서를 읽고, '구매 → 서버 검증 → 권한 부여 → 소비/확인' 흐름과 실패 지점마다의 복구 방법을 순서도로 그린다. 환불 알림이 왔을 때 권한을 회수하는 서버 처리까지 표에 넣는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Fight fraud and abuse — Play Billing",
+              "url": "https://developer.android.com/google/play/billing/security",
+              "kind": "docs"
+            },
+            {
+              "title": "App Store Server Notifications — Apple",
+              "url": "https://developer.apple.com/documentation/appstoreservernotifications",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "React Native 버전 업그레이드 주도",
+          "from": "preference",
+          "quote": "• React Native 버전 업그레이드나 대규모 마이그레이션을 주도해 본 경험",
+          "priority": "nice",
+          "why": "우대사항이고 기술 환경이 '대규모 버전 업그레이드를 팀이 직접 수행하고, 그 과정의 회귀와 판단 근거를 문서로 남깁니다' 라고 적는다.",
+          "gap_check": "RN 버전을 여러 단계 건너뛰어 올릴 때 한 번에 올릴지 단계별로 올릴지 무엇으로 정하고, 네이티브 템플릿(ios·android 폴더) 변경은 어떻게 옮기며, 업그레이드 뒤 회귀를 무엇(스모크 테스트·성능 지표 비교·크래시율)으로 확인하는가?",
+          "drill": "작은 RN 앱을 한 단계 아래 버전으로 만든 뒤 Upgrade Helper 로 템플릿 차이를 보고 업그레이드한다. 막힌 지점·바꾼 파일·확인한 회귀를 '업그레이드 기록' 문서로 남긴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Upgrading to New Versions — React Native",
+              "url": "https://reactnative.dev/docs/upgrading",
+              "kind": "docs"
+            },
+            {
+              "title": "Upgrade Helper — React Native Community",
+              "url": "https://react-native-community.github.io/upgrade-helper/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
