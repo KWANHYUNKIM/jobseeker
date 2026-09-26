@@ -29,6 +29,7 @@
 | **CADDi(キャディ)** | JP · 제조(조달·도면 SaaS) | 프로파일(2026-09-26). 도메인 둘 — 여러 제품이 한 문으로 들어온다(Control Plane) · 쌓인 제조 데이터를 싸게 꺼낸다(BigQuery). 기능 2(인증 게이트웨이 · BigQuery 비용). **hold** — 수발주 수익원 자료 2회 없음(완주 기준 셋째 미충족)(`CADDi の Control Plane`·`RFC 8707`·`Auth0 で SSO`), 그다음 Go 채택·JSON 컬럼 비용. |
 | **Lincwell(リンクウェル)** | JP · 온라인 진료·클리닉 DX·헬스케어 EC | 프로파일(2026-09-27, slug `lincwell`). 도메인 둘 — 예약 완료가 외부 통지를 기다리지 않는다 · 운영이 고른 순간에 수만 명에게 푸시를 보낸다. 기능 2(예약 LINE 비동기화 · 푸시 내재화). 입구 `zenn.dev/p/lincwell_inc/feed`. **hold(2026-09-27)** — Smart Clinics 수익원 자료 두 번 없음. Smart Clinics 수익원은 도메인 없음. |
 | **mixtend(調整さん · TimeRex)** | JP · 일정 조정(무료 대중 서비스 + B2B SaaS) | 프로파일(2026-09-27, slug `mixtend`). 도메인 둘 — 여러 담당자에게 예약을 고르게 나눈다 · 몰리는 두 페이지를 가장 빨리 띄운다. 기능 2(균등 배정 Cache Lock · 調整さん 톱 고속화). 입구 `zenn.dev/p/mixtend/feed`. 회사 사이트 NXDOMAIN. **hold(2026-09-27)** — 調整さん 광고 수익원 연결이 inferred, 두 번 찾아 확인 못 함. |
+| **ジンジャー(jinjer)** | JP · 인사·근태·급여 통합 SaaS | 프로파일(2026-09-27, slug `jinjer`). 도메인 둘 — 10년 된 인사 시스템을 멈추지 않고 갈아 끼운다 · 가끔 불리는 함수의 첫 응답을 돈을 덜 들여 당긴다. 기능 0. 입구 `zenn.dev/p/jinjer_techblog/feed`. |
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
 
@@ -59,7 +60,6 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **ジンジャー(jinjer)** | JP · 인사·근태·급여 백오피스 SaaS | Zenn Publication `zenn.dev/p/jinjer_techblog`(RSS 20편, 최신 2026-09). 10년 레거시를 **스트랭글러로 무정지 이행** `c5213a5f2767a2` · Go 단일 리포 CI 9분 → 4분(병목은 코드가 아니라 환경) `c96e280f2ebc51` · Python Lambda SnapStart × New Relic 본번 운용 `227da4949ce143` · New Relic MCP 로 SLO 설정 자동화. **레거시 무정지 이행 축.** 조직 글이 반쯤 — 프로파일 때 결정 글 수를 다시 판정. |
 | **アルダグラム(KANNA)** | JP · 현장 관리 SaaS(건설·제조) | Zenn Publication `zenn.dev/p/aldagram_tech`(RSS 20편, 최신 2026-09). Bedrock 비용을 Application Inference Profile 로 **기능별로 분해** `ee846ade880fcc` · Aurora → Datastream → BigQuery 로 사내 분석 기반 재구축 `ab35100d97ffa4` · Rails 일괄 임포트 메모리 개선 `rails-bulk-import-memory-improvement` · 입력 100개 모달 초기 표시 지연 마운트로 94% 단축 `f95ec27d51176b` · 모바일 Firebase + SAML 인증. **현장 기록·AI 비용 축.** 96번째에서 '다음 후보'로 보류했던 곳. |
 | **ギークプラス(GeekPlus · 소프트웨어 사업부)** | JP · 물류·공급망 SaaS | Zenn Publication `zenn.dev/p/geekplus`(RSS 20편, 최신 2026-09). 200MB 넘는 Java 배치를 **ECS 에서 Lambda 로** 옮겨 비용 1/4 · 처리 시간 1/6 `9238a967bf0509` · 멀티테넌트 SaaS 에 AI 에이전트를 넣을 때의 **테넌트 분리 설계** `e9ea7d8e183eb5` · 공급망 정합성을 TypeScript 타입에 가둔다 `a9be3b8c162e45` · OR-Tools 트럭 적재 최적화 `bba23d37db4f2d`. **물류 배치·테넌트 분리 축.** 예전 후보 조사에서 'AI 개발 과정 글'로 걸렀으나 새 단서(배치 이전 · 테넌트 분리)가 생겼다. |
 

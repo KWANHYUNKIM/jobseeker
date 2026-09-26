@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**아흔일곱 번째 후보 조사(2026-09-27) — 대기 3/3: jinjer · アルダグラム · ギークプラス. 다음은 --gaps 의 신규: 큐 맨 위 jinjer — `c5213a5f2767a2`(10년 레거시 스트랭글러 무정지 이행) · `c96e280f2ebc51`(CI 9분 → 4분) · `227da4949ce143`(Lambda SnapStart) · 회사 사이트(jinjer.co.jp)에서 수익원부터. 조직 글이 반쯤이라 결정 글 수를 프로파일 때 다시 판정. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**jinjer 프로파일(2026-09-27, slug `jinjer`) — 판정: 결정 글 셋이 대가를 적어 두 도메인이 선다. 도메인 둘: 10년 된 인사 시스템을 멈추지 않고 갈아 끼운다(스트랭글러 파사드 · BFF + 마이크로 캐시 · Go 모듈러 모놀리스 · CI) · 가끔 불리는 함수의 첫 응답을 돈을 덜 들여 당긴다(SnapStart vs PC · New Relic). 수익원 하나(종업원 수 × 월 300엔~) — 두 도메인 다 연결. 다음은 --gaps 의 확장: 첫 기능 `c5213a5f2767a2`(+ 전편 `603d910e79308f` 로그 기반을 열어 볼 것), 둘째 `227da4949ce143`(SnapStart · New Relic 의 함정까지 끝까지 읽기). 대기 2/3(アルダグラム · ギークプラス). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

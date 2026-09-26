@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "jinjer",
+      "name": "진저",
+      "name_en": "jinjer",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "근태·급여·인사 노무를 하나의 인사 DB 에 담는 백오피스 SaaS 'ジンジャー' — 10년 된 PHP 모놀리스를 멈추지 않고 경로 단위로 React + Go 로 갈아 끼우고, 가끔 불리는 Lambda 의 첫 응답은 상시 과금 대신 스냅숏으로 당긴다",
+      "updated_at": "2026-09-27",
+      "domain": "jinjer.co.jp"
+    },
+    {
       "slug": "mixtend",
       "name": "믹스텐드",
       "name_en": "mixtend",
@@ -3700,7 +3712,9 @@
     "흔들리는 영수증 표기를 상품 코드에 잇는다",
     "올라온 영수증이 받을 만한지, 어느 가게 것인지 가린다",
     "여러 담당자에게 예약을 고르게 나눈다",
-    "몰리는 두 페이지를 가장 빨리 띄운다"
+    "몰리는 두 페이지를 가장 빨리 띄운다",
+    "10년 된 인사 시스템을 멈추지 않고 갈아 끼운다",
+    "가끔 불리는 함수의 첫 응답을 돈을 덜 들여 당긴다"
   ],
   "countries": {
     "KR": "한국",
