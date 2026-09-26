@@ -711,6 +711,147 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553161?ReturnUrl=RecruitInfo",
+      "title": "2026 AhnLab 연구소 집중 채용",
+      "site": "dev",
+      "verdict": "**한 공고에 여러 직군을 묶은 연구소 집중 채용**이다(신입/경력). 담당업무 칸에 어플라이언스 보안 모듈, ASD 엔진(Linux), V3Net for Linux, EXDR Linux/Windows Agent, 네트워크 보안제품, EPS Server·EPP Management·EXDR 백엔드, AI SOC 웹, 모바일 악성코드 분석, EDR·XDR 룰 작성, ASTx 윈도우, 대용량 데이터 검색, EDR Mac, AI/ML 위협 탐지 모델, AI 웹 서비스가 한꺼번에 나열돼 있고, 자격·우대도 직군별로 섞여 있다(Web·보안 분석은 신입/경력 무관, Windows·Server·Mac·ML/MLOps·AI Agent 프론트엔드는 경력). 이 브리핑은 **따로 올라온 공고가 없는 직군**(SW 개발(Server)·보안 분석·ML/MLOps)에 공부 항목을 모은다 — Mac·Windows·Cloud·AI 플랫폼은 같은 회사 개별 공고 브리핑을 본다. 공통 요건으로 '4년제 정규 대학교 졸업자(학사) 이상', '남성의 경우 병역필 또는 면제자', '해외여행에 결격사유가 없는 자' 가 적혀 있다. 전형은 서류 접수 → 1/2차 면접 → 처우협의/채용검진 → 최종 입사, '일부 개발 직군의 경우, 코딩테스트가 진행될 수 있습니다', '상시 채용 진행으로 채용 시 마감될 수 있는 점' 을 적는다. 접수 ~12월 31일 23:59 안랩 홈페이지.",
+      "fit": {
+        "must_have": [
+          "학사 이상(4년제)",
+          "직군별 언어(C/C++·Python·Go·Java/Spring·React)",
+          "SW 개발(Server): 백엔드·데이터 엔지니어링 2년 이상, SQL·DB 튜닝, Linux API 서버",
+          "ML: 데이터 처리·ML/DL 개발·운영 3년 이상, PyTorch, Spark"
+        ],
+        "can_learn": [
+          "SIEM·보안 이벤트 모델(ECS/OCSF)",
+          "ClickHouse/OpenSearch 튜닝·Kafka/Flink",
+          "악성코드 분석·IDA",
+          "MLOps"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보안 이벤트 스키마와 대용량 검색(ECS/OCSF·OpenSearch·ClickHouse)",
+          "from": "preference",
+          "quote": "SIEM, 로그 분석 솔루션, 보안 이벤트 모델(ECS/OCSF)에 대한 이해",
+          "priority": "core",
+          "why": "SW 개발(Server) 직군 우대사항이고 같은 묶음에 'ClickHosue/OpenSearch 상세 튜닝, 스트리밍 처리(Kafka, Flink)' 가, 담당업무에 '대용량 데이터 검색 개발' 과 EXDR 백엔드 서버 개발이 있다.",
+          "gap_check": "EDR 에이전트·방화벽·클라우드 로그처럼 형식이 다른 이벤트를 한 스키마(ECS 또는 OCSF)로 정규화할 때 무엇을 공통 필드로 두고, 같은 데이터를 OpenSearch(전문 검색)와 ClickHouse(집계) 중 어디에 두는 게 맞는가?",
+          "drill": "가상의 프로세스 실행·네트워크 연결 이벤트를 OCSF 클래스에 맞춰 정규화하는 변환기를 만들고, Kafka 로 흘려 OpenSearch 와 ClickHouse 에 각각 넣은 뒤 '특정 해시가 실행된 호스트' 검색과 '시간대별 이벤트 집계' 쿼리 지연을 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "OCSF Schema",
+              "url": "https://schema.ocsf.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "Elastic Common Schema (ECS)",
+              "url": "https://www.elastic.co/docs/reference/ecs",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenSearch Documentation",
+              "url": "https://docs.opensearch.org/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "ClickHouse docs",
+              "url": "https://clickhouse.com/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Kafka documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "악성코드 분석과 EDR·XDR 탐지 룰",
+          "from": "task",
+          "quote": "악성코드 분석 / EDR, XDR 룰 작성",
+          "priority": "core",
+          "why": "담당업무이고 보안 분석 직군(신입/경력 무관) 자격이 '악성코드 분석에 대한 기본 지식' 과 C·C++·Python, 우대가 악성코드 분석 경험과 IDA 등 분석도구다.",
+          "gap_check": "분석한 악성코드의 특징을 탐지 룰로 옮길 때 파일 해시·문자열 같은 정적 지표와 프로세스 행위 같은 동적 지표 중 무엇이 우회에 강하고, 오탐은 어떻게 줄이는가?",
+          "drill": "무해한 테스트 프로그램(예약 작업 등록·PowerShell 인코딩 명령 실행)을 만들어 Ghidra 로 정적 분석하고, 그 행위를 MITRE ATT&CK 기법에 매핑한 뒤 Sigma 룰로 작성해 정상 로그 표본에서 오탐을 센다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "SigmaHQ — Sigma rules",
+              "url": "https://github.com/SigmaHQ/sigma",
+              "kind": "repo"
+            },
+            {
+              "title": "MITRE ATT&CK",
+              "url": "https://attack.mitre.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Ghidra",
+              "url": "https://github.com/NationalSecurityAgency/ghidra",
+              "kind": "tool"
+            },
+            {
+              "title": "IDA Free",
+              "url": "https://hex-rays.com/ida-free",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "보안 데이터로 위협 탐지 ML 모델",
+          "from": "task",
+          "quote": "위협 탐지, 분석, 대응 등을 위한 AI/ML 데이터 구성 및 모델 구축",
+          "priority": "high",
+          "why": "담당업무이고 ML/MLOps 직군 자격이 3년 이상 ML/DL 개발·운영, PyTorch, Spark 와 '보안 데이터에 대한 이해', 우대가 악성코드 분석·침입 탐지 지식과 MLOps 다. 다음 담당업무 줄이 'AI/ML 모델의 성능 모니터링 및 지속적인 개선' 이다.",
+          "gap_check": "악성/정상 비율이 극단적으로 치우친 보안 데이터에서 정확도 대신 어떤 지표를 보고, 공격자가 바뀌어 데이터 분포가 흔들릴 때(드리프트) 무엇으로 알아채 재학습하는가?",
+          "drill": "공개 로그나 가상 프로세스 이벤트로 이상 탐지 모델을 학습해 정밀도-재현율 곡선과 고정 오탐률에서의 탐지율을 보고, MLflow 로 실험·모델 버전을 기록한 뒤 분포를 바꾼 데이터로 성능 하락을 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "MLflow docs",
+              "url": "https://mlflow.org/docs/latest/ml/",
+              "kind": "docs"
+            },
+            {
+              "title": "MITRE ATT&CK",
+              "url": "https://attack.mitre.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "OCSF 정규화 → Kafka → OpenSearch/ClickHouse 파이프라인 + Sigma 룰 저장소",
+          "why": "따로 공고가 없는 SW 개발(Server)·보안 분석 직군의 우대·담당업무를 한 번에 보여 준다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "코딩테스트 대비",
+          "why": "전형절차에 '일부 개발 직군의 경우, 코딩테스트가 진행될 수 있습니다' 가 적혀 있다.",
+          "effort": "꾸준히"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 → 1/2차 면접 → 처우협의/채용검진 → 최종 입사(공고 기준). 일부 개발 직군은 코딩테스트가 있을 수 있고, 상시 채용이라 채용 시 마감될 수 있다. 접수는 ~12월 31일 23:59 안랩 홈페이지.",
+        "expect": [
+          "지원 직군의 핵심 기술",
+          "보안 도메인 이해",
+          "대용량 데이터 처리",
+          "악성코드·탐지 룰"
+        ],
+        "sources": [
+          {
+            "title": "2026 AhnLab 연구소 집중 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553161?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }
