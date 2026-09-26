@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**HERP 기능 2(2026-09-27) — `debt-timing-and-ratchet`(세 조건 · 점진 React 이행 · 미커버 목록 래칫, 결정 8). 두 도메인 다 기능이 있다. 다음은 컨설팅 · 재취직 지원(Re-start) 수익원 판정 — RSS · Zenn 검색 두 번, 없으면 보류(`fix(reveng): HERP 컨설팅 수익원 보류`) 뒤 완주 판정. 대기 0/3 — 그 뒤 후보 조사. 비교 문서 재료 +1: 멀티테넌트 경계 — ChillStack RLS(current_setting) ↔ ギークプラス AI 에이전트 A/B/C ↔ COUNTERWORKS RLS + BYPASSRLS VIEW. 비교 문서 재료 +1: 'A/B 에서 한 경로의 숫자가 오른 것이 빼앗은 것인가' — DMM 검색 · 추천 카니발 ↔ Lincwell · TRIBEAU 의 활성 지표. 비교 문서 재료 +1: Lambda SnapStart 두 회사(jinjer Python — 재시드 함정 · 함수별 PC/SnapStart ↔ ギークプラス Java — 무료 · 함수 하나로 모아 재사용률). 비교 문서 재료 +1: LLM 비용을 무엇의 단위로 쥐나(アルダグラム 기능별 AIP ↔ 다른 회사의 모델 라우팅·비용 글). 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**HERP 컨설팅 수익원 보류(2026-09-27) — RSS 20편 · Zenn 검색 3낱말 모두 없음. hold_reason 달고 in_progress 유지(기능 2 · 도메인 둘 다 참). 다음은 --gaps 의 후보 조사(큐 0/3) — 아흔아홉 번째. 입구: Zenn 검색 '결과·구조' 주제어 15개 × 2쪽을 Publication 별로 묶기. 목표 3곳. 비교 문서 재료 +1: 멀티테넌트 경계 — ChillStack RLS(current_setting) ↔ ギークプラス AI 에이전트 A/B/C ↔ COUNTERWORKS RLS + BYPASSRLS VIEW. 비교 문서 재료 +1: 'A/B 에서 한 경로의 숫자가 오른 것이 빼앗은 것인가' — DMM 검색 · 추천 카니발 ↔ Lincwell · TRIBEAU 의 활성 지표. 비교 문서 재료 +1: Lambda SnapStart 두 회사(jinjer Python — 재시드 함정 · 함수별 PC/SnapStart ↔ ギークプラス Java — 무료 · 함수 하나로 모아 재사용률). 비교 문서 재료 +1: LLM 비용을 무엇의 단위로 쥐나(アルダグラム 기능별 AIP ↔ 다른 회사의 모델 라우팅·비용 글). 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -395,6 +395,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **Lincwell 클리닉 DX(Smart Clinics) 수익원** — 2026-09-27 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 7낱말, 이 회사 글이 안 걸린다). 클리닉 예약판·진료 기록·접수 시스템 글이 새로 나오면 다시.
 - **mixtend 調整さん 광고 수익원** — 2026-09-27 두 번 찾아 확인 못 함(mixtend.co.jp NXDOMAIN · Zenn 검색 3낱말 · RSS 16편). 광고가 실린다는 것까지만 사실. 회사 개요·IR 이 새 도메인에서 보이면 다시.
 - **ギークプラス 로봇(EVE) · 풀필먼트(LaaS) 수익원** — 2026-09-27 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 4낱말). 블로그가 소프트웨어 사업부 것이라 구조적으로 없다. 로봇 제어 · 창고 운영 글이 새로 나오면 다시.
+- **HERP 채용 컨설팅 · 재취직 지원(Re-start) 수익원** — 2026-09-27 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 3낱말 0건). 사람이 하는 지원 사업이라 시스템 글이 없다. 두 서비스의 시스템 글이 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

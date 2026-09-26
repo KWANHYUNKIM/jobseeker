@@ -2260,3 +2260,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 HERP 부채 시점과 래칫
 
 - `when-to-resolve-technical-debt` 뒷부분(수제 SSR · Playwright · LaunchDarkly · 점진) + `ratcheting-technical-debt` 전문으로 기능 `debt-timing-and-ratchet`, 결정 8. 두 글 요약을 갱신(Ratcheting 요약의 '리뷰에서 부채가 되살아났다'를 '테스트 누락을 리뷰에서 지적받았다'로 바로잡음). 도메인 tech 에 이행 방식 하나 추가.
+
+## 2026-09-27 HERP 컨설팅 수익원 보류
+
+- --gaps 는 후보 조사였지만 이 회사의 보류 판정이 먼저(앞 사이클에 약속). 검색 1: RSS 20편 — 해당 없음. 검색 2: Zenn 검색 3낱말 — 0건. 회사 페이지는 두 서비스를 사람이 하는 지원으로 소개. hold_reason, in_progress 유지.
