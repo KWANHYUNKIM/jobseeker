@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — triggerdev 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — turbopuffer 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **turbopuffer** — 2026-09-26 없음 1회째. r.jina.ai 로 `/blog` 목록(날짜는 글마다). 마지막 글이 09-04. 이전 글 후보(출처에 없음, **엔지니어링 결정 있을 가능성 높음**): 09-04 대규모 코드 검색, 08-14 컨트롤 플레인, 02-18 객체 저장소 큐, 02-12 ANN v3.
 - **triggerdev** — 2026-09-26 없음 1회째. `trigger.dev/blog/rss.xml` 마지막 글이 07-01(이미 출처인 장애 보고). 이전 글 후보: 03-05 공유 ClickHouse 에 사용자별 SQL(TRQL) — 멀티테넌트 격리 결정.
 - **tigris** — 2026-09-26 **정정**. `tigrisdata.com/blog/rss.xml`. 09-22 "DB 를 큐로 쓰다 Kafka 로" 가 기존 서술(모든 작업이 FDB 큐·한 트랜잭션)과 어긋나 `fdb-metadata` 에 결정 2개·불변식 수정·open_questions 에 정정 기록. 남은 후보: 09-15 객체 저장소 위 git(packfile 재구성), 09-01 충돌 해결, 08-11 soft delete 심층.
 - **tigerdata** — 2026-09-26 없음 1회째. `/blog/rss.xml` 은 HTML, `/blog/feed` 는 최신 1편만 — r.jina.ai 로 `/blog` 목록 + 글마다 `Published Time`. 09-07 이후는 09-25 IIoT 테이블 크기 가이드(사용법). 이전 글 후보: 08-21 "느린 건 계획인가 실행인가"(기존 LIMIT 계획 기능 보강 재료).
