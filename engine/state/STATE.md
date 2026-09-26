@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**SMS(`sms`) — 확장 1(2026-09-26): 보수 산정 도메인에 `care-fee-tests-in-qa-sheets`(결정 8, 2024-02 6년 회고 글을 소스로 보탬). 다음은 확장: 'PR 마다 쓰고 버리는 검증 환경으로 릴리스 트레인을 푼다' 를 preview 환경 글(`entry/2026/07/21/110000`, scratchpad `sms_preview.txt` — 인터페이스 설계·아키텍처·설계 시 고려·운용 교훈을 마저). 완주 판정 때 커리어·헬스케어 등 수익원은 도메인이 없다 — 사이트맵 전 제목은 `sms_titles.txt`(156편). 대기 1/3(코네히토 `cand_f36525.txt`). ENECHANGE 검산 하네스와 SMS 산정 테스트는 비교 문서 재료. 머니포워드·라쿠스·ENECHANGE·엔니고모(hold)·LayerX 는 in_progress.**
+**SMS(`sms`) — 확장 2(2026-09-26): preview 도메인에 `preview-env-per-pr-shift-left`(결정 8). 두 도메인 모두 기능 있음. 다음은 완주 판정 — 커리어(인재)·헬스케어·시니어 라이프·해외 수익원에 도메인이 없다: 사이트맵 전 제목 `sms_titles.txt`(156편)을 'キャリア·求人·転職·ナース·ジョブメドレー·カイゴジョブ·ヘルスケア·シニア·海外·MIMS' 로 거르고, 두 번 없으면 hold. 대기 1/3(코네히토 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모(hold)·LayerX 는 in_progress.**
 
 
 
