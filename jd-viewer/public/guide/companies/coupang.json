@@ -13986,6 +13986,23 @@
               "kind": "docs"
             }
           ]
+        },
+        {
+          "topic": "Spring 기반 대규모 서비스 운영 준비 — 관측 지점",
+          "from": "qualification",
+          "quote": "Experience with Java / IntelliJ / Spring environment.",
+          "priority": "high",
+          "why": "Java/IntelliJ/Spring 환경 경험과 대규모 시스템 아키텍처 설계·개발 경험이 자격요건이다. 공고에 업무 설명이 없어 어느 서비스인지는 알 수 없고, 요건에 적힌 스택만 근거로 삼았다.",
+          "gap_check": "Spring Boot 서비스를 운영에 올릴 때 상태 확인(liveness/readiness)·지표·스레드 덤프를 어떤 엔드포인트로 노출하고, 무엇을 외부에 막아 두는가?",
+          "drill": "Spring Boot Actuator 로 health·metrics 엔드포인트를 켜고, readiness 가 DB 연결 실패를 반영하도록 설정한 뒤, 노출 범위를 관리 포트로 제한해 본다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Spring Boot Reference — Production-ready Features (Actuator)",
+              "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+              "kind": "docs"
+            }
+          ]
         }
       ],
       "edge": [
@@ -14000,7 +14017,8 @@
         "expect": [
           "다중 AZ 고가용성 설계",
           "대규모 아키텍처 경험",
-          "컨테이너 기반 통합 테스트"
+          "컨테이너 기반 통합 테스트",
+          "Spring 서비스 운영 준비"
         ],
         "sources": [
           {
