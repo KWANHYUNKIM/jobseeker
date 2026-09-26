@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**stmn — 기능 1(`split-the-vendor-code`, 2026-09-26). 다음은 확장: '돌아가는 모바일 자산을 새 기기로 옮긴다' 를 KMP 글(`entry/2026/06/26/152302`, scratchpad `st_kmp.txt` — 전체를 읽고 SKIE 연결·iPad 레이아웃·Xcode Cloud/CircleCI 비교를). FANTS 수익원은 도메인이 없다 — 완주 판정 때 FANTS 기술 글 조사. 대기 0/3 — stmn 뒤 후보 조사. 머니포워드(hold)·LayerX 는 in_progress.**
+**stmn — 기능 2(`split-the-vendor-code` · `kmp-add-swiftui-only`, 2026-09-26). 두 도메인 채움. FANTS 수익원에 도메인이 없어 완주 기준 셋째 미달 — 다음 stmn 사이클에 FANTS 기술 글 조사(tech.stmn.co.jp 검색 'FANTS'). 다만 `--gaps` 는 큐가 비어 **후보 조사(81번째)** 를 찍는다 — 사다리대로 그것을 먼저. 머니포워드(hold)·LayerX 는 in_progress.**
+
 
 
 

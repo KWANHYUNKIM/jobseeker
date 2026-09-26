@@ -38,7 +38,7 @@
           "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
           "publisher": "stmn tech blog",
           "date": "2026-06-26",
-          "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**."
+          "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
         }
       ]
     },
@@ -105,12 +105,14 @@
               "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
               "publisher": "stmn tech blog",
               "date": "2026-06-26",
-              "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**."
+              "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "kmp-add-swiftui-only"
+      ]
     }
   ],
   "features": [
@@ -387,6 +389,340 @@
           "summary": "메인 레포에서 **GitHub CodeQL** 이 평균 **약 20분** 걸려 PR 피드백이 늦고, **PR 필수 품질 게이트**로 둘 수 없었다. Datadog CI/CD Optimization 으로 실행 시간을 분석하고, 도입자가 이미 없는 블랙박스 코드를 **git 이력·blame** 으로 거슬러 **약 8년 전 서드파티에서 사 온 거대한 라이브러리**를 찾았다. 모놀리식으로 유지하지 않고 **라이프사이클이 다른 소프트웨어로 별 레포에 떼어** 독립 관리했다(메인 레포에서 **235MB** 제거). CodeQL 평균 **20분 → 3분**, **PR 필수 게이트**로 정식 설정해 보안 위험이 있는 코드의 머지를 CI 에서 막는다. **원인 세부**: git blame 으로 찾은 것은 약 8년 전 서드파티에서 산 **관리 화면용 UI 라이브러리** — 사내가 짠 JS 나 비즈니스 로직이 아니라 정적 파일로 레포에 놓여 있던 벤더 코드였고, CodeQL 은 그 구석구석을 충실히 스캔하고 있었다. 라이브러리 자체는 **약 100MB**(메인 레포에서 지운 레거시 코드는 235MB). **빌드**: 창업(2016년 7월)부터 Rails Sprockets 기반 에셋 빌드를 7년 넘게 쓰다 2023년 가을 **Yarn + esbuild** 로 바꿨다. 벤더 라이브러리는 원래 gulp 설정이었지만 도입 때부터 webpack 빌드로 개발돼 현대화에 도움이 됐다. 떼어 낸 라이브러리는 **Bootstrap 4.0.0(alpha)** 기반이라 꽤 레거시 — Tailwind CSS v4.3 로 바꾸는 프로젝트는 **아직 손대지 않았다**(그 페이지들을 쓰는 사용자는 TUNAG 전체보다 적다). 교훈: **CI 시간 단축은 보안 관문화의 절대 조건**(느리면 필수 체크로 못 두어 형식화된다), **라이프사이클이 다른 거대 코드는 별 레포로**, **git 이력은 사람이 떠난 지식을 구하는 가장 강한 문서**."
         }
       ]
+    },
+    {
+      "key": "kmp-add-swiftui-only",
+      "name": "3년 전의 복선을 회수한다 — 로직은 그대로, SwiftUI 화면만 얹었다",
+      "domain": "돌아가는 모바일 자산을 새 기기로 옮긴다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "**TUNAG 수부 앱**은 방문자가 태블릿에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림이 가는 접수 앱이다(2022년 7월 출시, 당시 Android 태블릿). 이번에 **iPad** 로 넓혔다.\n\n2022년 Android 엔지니어가 '장래 iOS 확장을 생각해' 데이터·도메인 층을 **KMM** 으로 만들어 두었다. 지금은 iOS 인원도 늘어 **네이티브로 처음부터 다시 만드는** 선택지가 기술적으로 충분했다.\n\n그래도 KMP 위에 얹었다 — 돌아가는 로직을 다시 짜도 기능은 늘지 않으니 **버리는 비용에 맞는 리턴이 없다.** 인증·목록·ViewModel·쿠키가 모두 재구현 없이 돌았고, iPad 대응은 **SwiftUI UI 층을 더하는 것**으로 끝났다.",
+        "metrics": [
+          {
+            "label": "재구현한 로직",
+            "value": "0 — 인증 · 그룹 조회 · ViewModel · 쿠키 관리 모두 shared 그대로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "label": "출시",
+            "value": "2022년 7월 Android 태블릿 → 이번에 iPad",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "label": "SKIE 버전",
+            "value": "0.10.11",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "iOS 인원이 늘어 다시 만들 수 있을 때",
+          "thought": "'체제가 갖춰졌으니 처음부터' 는 매력적으로 보이지만, 돌아가는 자산을 버리는 비용과 얻을 가치를 **냉정하게 저울질**하면 KMP 계속 사용이 최선이었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "KMPで作った受付アプリをiPadに対応させた話",
+              "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+              "publisher": "stmn tech blog",
+              "date": "2026-06-26",
+              "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+            }
+          ]
+        },
+        {
+          "at": "2022년의 판단을 돌아볼 때",
+          "thought": "기술 선정은 당시의 최적해를 고르는 것만이 아니라 **장래의 선택지를 넓히는** 의미도 있다 — 3년 전 판단이 이번 결정을 쉽게 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "KMPで作った受付アプリをiPadに対応させた話",
+              "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+              "publisher": "stmn tech blog",
+              "date": "2026-06-26",
+              "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+            }
+          ]
+        },
+        {
+          "at": "CI 를 하나로 모을지 볼 때",
+          "thought": "테스트 대부분이 shared 에 있고 기존 CircleCI 잡이 이미 덮는다 — iOS 빌드·배포까지 CircleCI 로 옮길 **필연성이 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "KMPで作った受付アプリをiPadに対応させた話",
+              "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+              "publisher": "stmn tech blog",
+              "date": "2026-06-26",
+              "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "shared 모듈(commonMain)",
+            "what": "도메인(entity·repository 인터페이스)·애플리케이션(유스케이스·DTO·DI 컨테이너)·인프라(Ktor·쿠키·repository 구현)·표현(ViewModel)."
+          },
+          {
+            "name": "플랫폼 UI 층",
+            "what": "androidApp(Jetpack Compose)과 iosApp(SwiftUI). View 만 둔다."
+          },
+          {
+            "name": "expect/actual",
+            "what": "플랫폼 차이를 국소화하는 선언 — ApiClient 는 iOS Darwin · Android OkHttp."
+          },
+          {
+            "name": "PersistentCookieStorage",
+            "what": "재시작 뒤에도 로그인을 유지하는 세션 쿠키 저장소. Multiplatform Settings 로 저장처를 숨긴다."
+          },
+          {
+            "name": "SKIE",
+            "what": "Kotlin Flow·sealed 를 Swift 에서 자연스럽게 쓰게 하는 컴파일러 플러그인."
+          }
+        ],
+        "invariants": [
+          "**ViewModel·Repository·Entity 는 반드시 shared** 에 있다 — 플랫폼 모듈엔 View 만.",
+          "플랫폼 차이는 expect/actual 에 **국소화**한다 — 호출 쪽은 플랫폼을 모른다.",
+          "`max-age <= 0` 인 쿠키는 **삭제**한다(RFC 6265).",
+          "공통 로직 테스트는 **shared 에서 한 번** 돈다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "iosApp 에 SwiftUI 화면을 더하고, shared 의 ViewModel 을 얇은 Swift Wrapper(ObservableObject)로 감싼다",
+            "why": "로직은 그대로 두고 UI 만 새로."
+          },
+          {
+            "step": "SKIE 가 Kotlin StateFlow 를 AsyncSequence 로, sealed interface 를 Swift 패턴 매치로 바꿔 준다",
+            "why": "Kotlin 쪽 iOS 전용 래퍼를 없앤다."
+          },
+          {
+            "step": "API 호출은 expect ApiClient 의 iOS actual(Darwin 엔진, UserAgent Tunag-iOS … Reception)로 나간다",
+            "why": "같은 호출 코드로 플랫폼별 HTTP 엔진."
+          },
+          {
+            "step": "세션 쿠키는 PersistentCookieStorage 가 Multiplatform Settings 에 저장한다",
+            "why": "재시작 뒤에도 로그인 유지."
+          },
+          {
+            "step": "Android 는 CircleCI → Play Store 내부 테스트, iOS 는 Xcode Cloud(ci_post_clone.sh 로 JDK 17) → App Store",
+            "why": "플랫폼마다 가장 싼 배포 길."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "(2022) 처음 만들 때 공통화할까?",
+            "chosen": "**데이터·도메인 층을 KMM 으로 — '장래 iOS 확장을 고려해'.**",
+            "alternatives": [
+              "Android 네이티브만으로 만든다"
+            ],
+            "tradeoff": "당시엔 Android 태블릿만 있었지만 복선을 깔았다. 대가 — 처음부터 **멀티플랫폼 구조의 비용**을 치렀다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "question": "iPad 는 네이티브로 다시 만드나?",
+            "chosen": "**아니다 — KMP 공통 로직 위에 SwiftUI UI 층만 더한다.**",
+            "alternatives": [
+              "iOS 네이티브로 처음부터 다시 만든다"
+            ],
+            "tradeoff": "iOS 인원이 늘어 기술적으로는 가능했지만, 다시 짜도 **기능은 늘지 않는다** — 엔지니어를 새 비즈니스 가치에 쓰는 편이 합리적. 대가 — iOS 팀이 **Kotlin 공통 모듈**을 함께 다뤄야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 shared 에 두나?",
+            "chosen": "**ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만.**",
+            "alternatives": [
+              "플랫폼마다 ViewModel 을 따로 둔다"
+            ],
+            "tradeoff": "로직의 **이중 유지가 구조적으로 생기지 않는다.** 대가 — 플랫폼 특유의 상태 처리도 shared 규칙 안에서 풀어야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "question": "플랫폼 차이를 어떻게 다루나?",
+            "chosen": "**2022 설계 그대로 `expect class`(ApiClient 등).**",
+            "alternatives": [
+              "지금 권장되는 interface + DI 로 고친다"
+            ],
+            "tradeoff": "당시 설계 자산을 그대로 살린다. 대가 — 최근 권장 방식과 **다른 구조**를 안고 간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "question": "세션 쿠키를 어떻게 지키나?",
+            "chosen": "**Multiplatform Settings 로 저장처를 숨긴 PersistentCookieStorage 를 commonMain 에.** Ktor 3 의 `max-age=0` 변화는 RFC 6265 대로 `maxAge <= 0` 을 삭제로 처리.",
+            "alternatives": [
+              "플랫폼마다 쿠키 저장을 따로 구현한다"
+            ],
+            "tradeoff": "공통 코드는 저장소를 모른다. 대가 — 라이브러리(Ktor 3)의 동작 변화가 **로그아웃 직후 재로그인에서 쿠키가 사라지는** 버그로 드러났다 — 표준으로 돌아가 고쳤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "question": "Kotlin 상태를 Swift 에서 어떻게 받나?",
+            "chosen": "**SKIE 로 Flow·sealed 를 Swift 답게 쓰고, Swift 쪽엔 얇은 Wrapper 만.**",
+            "alternatives": [
+              "Kotlin 쪽에 iOS 전용 콜백 래퍼(*ViewModelIos.kt)를 둔다"
+            ],
+            "tradeoff": "Android 용으로 쓴 Kotlin 을 Swift 에서 **바로** 쓰는 경험이 크게 좋아졌다. 대가 — **SKIE 버전**에 따라 Swift 쪽 코드 모양이 달라진다(새 버전은 onEnum 없이 native switch).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "question": "iOS 빌드·배포를 어디서 하나?",
+            "chosen": "**CircleCI 로 통일하지 않고 Xcode Cloud.**",
+            "alternatives": [
+              "Android 와 같은 CircleCI 로 통일"
+            ],
+            "tradeoff": "CircleCI 로 하려면 App Store Connect 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **압도적으로 비싸다.** 테스트는 대부분 shared 라 기존 CircleCI 잡이 덮는다. 대가 — CI 가 **둘로 갈린다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          },
+          {
+            "question": "Xcode Cloud 에 없는 JDK 를 어떻게 하나?",
+            "chosen": "**`ci_post_clone.sh` 로 Adoptium 에서 JDK 17 을 받아 설치하고 JAVA_HOME 을 지정한다(uname 으로 아키텍처 판별).**",
+            "alternatives": [
+              "미리 JDK 가 있는 다른 CI 를 쓴다"
+            ],
+            "tradeoff": "shared 프레임워크 빌드에 JDK 17 이 필요하다. 아키텍처를 자동 판별해 Xcode 인프라가 바뀌어도 돈다. 대가 — **빌드마다 JDK 를 내려받는** 시간과 외부 의존이 붙는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "KMPで作った受付アプリをiPadに対応させた話",
+                "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+                "publisher": "stmn tech blog",
+                "date": "2026-06-26",
+                "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "split-the-vendor-code",
+          "via": "있는 것을 어떻게 다루나",
+          "contract": "모바일은 돌아가는 공통 로직을 **버리지 않았고**, 웹은 오래된 벤더 코드를 **떼어 냈다** — 둘 다 이미 있는 것의 비용과 가치를 저울질한 판단이다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "공통 로직 하나, UI 둘",
+          "question": "iPad 대응에서 무엇을 새로 쓰고 무엇을 그대로 뒀나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph SH[\"shared(commonMain) — 그대로\"]\n    VM[\"ViewModel · UI State\"] --> SV[\"Service\"]\n    SV --> RP[\"Repository\"]\n    RP --> API[\"ApiClient(expect)\\nKtor · 쿠키\"]\n  end\n  AND[\"androidApp\\nJetpack Compose\"] --> VM\n  IOS[\"iosApp(새로)\\nSwiftUI + 얇은 Wrapper\"] -->|SKIE| VM\n  API -->|actual| OK[\"OkHttp\"]\n  API -->|actual| DW[\"Darwin\"]"
+        },
+        {
+          "title": "두 갈래 배포",
+          "question": "같은 코드가 어떻게 두 스토어로 나가나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  R[\"레포 push · 태그\"] --> C[\"CircleCI\\nshared 테스트 · Android 빌드\"]\n  C --> PS[\"Play Store 내부 테스트\"]\n  R --> X[\"Xcode Cloud\\nci_post_clone.sh → JDK 17\"]\n  X --> AS[\"App Store 제출\"]"
+        },
+        {
+          "title": "공통 코드가 흔들리는 자리",
+          "question": "KMP 로 나눠 가져도 어디서 깨지나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"Ktor 3 업그레이드\"] --> B[\"max-age=0 이 '즉시 삭제' 로\"]\n  B --> C[\"로그아웃 직후 재로그인 때 쿠키 소실\"]\n  C --> D[\"RFC 6265 대로 maxAge <= 0 삭제\"]\n  E[\"SKIE 버전 변경\"] --> F[\"Swift 쪽 분기 코드 모양이 바뀜\"]\n  G[\"Xcode Cloud 인프라 변경\"] --> H[\"JDK 설치 스크립트가 깨질 수 있음\\n→ uname 판별로 대비\"]\n  I[\"CircleCI 와 Xcode Cloud 이원화\"] --> J[\"한쪽만 초록일 수 있음\\n(이 사이트의 해석)\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "KMPで作った受付アプリをiPadに対応させた話",
+          "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+          "publisher": "stmn tech blog",
+          "date": "2026-06-26",
+          "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -414,7 +750,7 @@
       "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
       "publisher": "stmn tech blog",
       "date": "2026-06-26",
-      "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**."
+      "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
     }
   ]
 }

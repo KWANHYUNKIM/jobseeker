@@ -1340,3 +1340,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 stmn 확장 — 스캔을 필수로 만들려면 먼저 빨라야 한다
 
 - CodeQL 글(08-26)로 `split-the-vendor-code`(결정 5). 필수 관문 전제·git blame 추적·별 레포 분리(235MB, 20분→3분)·레거시 UI 보류·에셋 빌드 이력. 별 레포 보안 검사 여부는 해석 표시.
+
+## 2026-09-26 stmn 확장 — 로직은 그대로, SwiftUI 화면만 얹었다
+
+- KMP 수부 앱 글(06-26)로 `kmp-add-swiftui-only`(결정 8). 2022 KMM 복선·네이티브 재작성 기각·shared 규칙·expect class 유지·Ktor 3 쿠키 버그·SKIE·Xcode Cloud·JDK 17 스크립트. 두 도메인 채움, FANTS 미연결.
