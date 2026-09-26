@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**IVRy 회사 프로파일(2026-09-26) — 도메인 둘: 가게가 만든 문의 항목을 공개 전에 시험한다(`71376f575ccd9c` + 앞 글 `2c298614d0ee85` '5가지 함정') · 보존 기한이 지난 데이터를 리플레이에 흔들리지 않게 지운다(`ff7d2e939b3e61`). 다음은 확장: `--gaps` 순서대로 기능 하나씩. 수익원이 하나뿐이라 두 기능이면 **완주(done)**. 대기 1/3(PKSHA) — 목표 미달, IVRy 를 닫으면 후보 조사. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + **LLM 평가**(IVRy HITL ↔ 로그라스 OLAP 오라클 · ENECHANGE 검산). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**IVRy 확장 1/2(2026-09-26) — `hitl-intent-routing-evaluation` 완료(HITL 글 + 5가지 함정 글). 다음은 확장: '보존 기한이 지난 데이터를 리플레이에 흔들리지 않게 지운다' — `ff7d2e939b3e61`(Step Functions waitForTaskToken 대신 Durable · 내보내기 → wait/wait_for_condition → 페이지 map · EventBridge 기동 시각으로 결정적 대상 · 3,000 오퍼레이션 · 보존 14일 · $LATEST 금지). 그 뒤 수익원 하나뿐이라 **완주 → done**. 대기 1/3(PKSHA) — IVRy 를 닫으면 후보 조사. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가(IVRy HITL ↔ 로그라스 OLAP 오라클 · ENECHANGE 검산). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

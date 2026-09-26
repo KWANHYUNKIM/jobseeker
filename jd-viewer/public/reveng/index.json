@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "AI 전화 아이브리 — 가게가 직접 만든 문의 항목을 공개 전에 정답을 고정한 오프라인 발화로 시험하고 세 회사 LLM 이 갈린 10% 만 사람이 보며, 보존 기한 지난 데이터는 리플레이되는 Lambda 워크플로로 대상을 결정적으로 정해 지운다",
       "updated_at": "2026-09-26",
       "domain": "ivry.jp"
