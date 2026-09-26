@@ -1,0 +1,180 @@
+{
+  "book": "java-io",
+  "id": "socket",
+  "no": "7.2",
+  "chapter": 7,
+  "title": "첫 소켓",
+  "summary": "서버와 클라이언트 두 프로그램.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "accept() 가 멈춰 있는 것을 시간으로 확인한다.",
+    "한 연결을 양쪽에서 보고 번호를 맞춘다.",
+    "ServerSocket 과 Socket 이 다른 것인 이유를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.1절에서 `ServerSocket` 을 열었다 닫기만 했다. 이 절에서 **누가 붙는다.**\n\n여기서부터 프로그램이 둘이다 — `Server1` 을 백그라운드로 띄우고 `Client1` 을 따로 돌렸다. **두 로그를 나란히 놓는 것이 이 장의 방식이다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "서버 쪽 — 여섯 줄이다",
+      "code": "try (ServerSocket ss = new ServerSocket(12345)) {\n    System.out.println(\"[서버] 듣는다 \" + ss.getLocalSocketAddress());\n    try (Socket s = ss.accept()) {              // 여기서 멈춘다\n        System.out.println(\"[서버] 상대  = \" + s.getRemoteSocketAddress());\n        // s.getInputStream() / s.getOutputStream() 으로 주고받는다 (7.3절)\n    }\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "클라이언트 쪽 — 세 줄이다",
+      "code": "try (Socket s = new Socket(\"127.0.0.1\", 12345)) {\n    System.out.println(\"[클라] 붙었다. 내 쪽 = \" + s.getLocalSocketAddress());\n    System.out.println(\"[클라] 상대   = \" + s.getRemoteSocketAddress());\n}\n\n// new Socket(host, port) 이 곧 connect 다 — 생성자에서 붙는다.\n// 타임아웃을 주려면 new Socket() 뒤에 connect(addr, ms) 를 부른다(7.6절)."
+    },
+    {
+      "type": "prose",
+      "md": "## `accept()` 는 멈춰 있는다\n\n서버를 띄우고 **아무도 안 붙는 동안** 무엇이 찍히는지 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "클라이언트를 띄우기 전의 서버 로그",
+      "sql": "[서버] 듣는다 0.0.0.0/0.0.0.0:12345\n[서버] accept() 를 부른다 — 여기서 멈춘다\n\n(여기서 더 안 찍힌다. 프로세스는 살아 있다.)"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "블로킹은 스레드가 잠드는 것이다",
+      "md": "`accept()` 가 멈춰 있는 동안 그 스레드는 **CPU 를 안 쓴다.**\n\n> OS 가 그 스레드를 대기 상태로 내려놓고, 연결이 오면 깨운다. 바쁜 대기(busy wait)가 아니다.\n> 그래서 서버 하나가 `accept()` 에서 며칠 멈춰 있어도 부하가 0 이다. **대신 그 스레드는 다른 일을 못 한다** — 8장의 주제가 이것이다.\n> 3장의 `read()` 도 같은 블로킹이었다. 파일은 금방 돌아오니 눈에 안 보였고, 소켓은 **상대가 보낼 때까지** 안 돌아온다.\n> 곧 3장에서 배운 스트림이 여기서 성질이 달라진다 — 코드는 같고 **기다리는 시간이 다르다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 클라이언트가 붙자 양쪽이 같은 번호를 말한다\n\n클라이언트를 띄웠다. 두 로그를 나란히 놓으면 **같은 연결을 반대에서 보고 있다.**"
+    },
+    {
+      "type": "compare",
+      "title": "한 연결, 두 시점",
+      "left": {
+        "title": "서버가 본 것",
+        "md": "```\naccept() 가 63 ms 만에 돌아왔다\n상대  = /127.0.0.1:60940\n내 쪽 = /127.0.0.1:12345\n로컬 12345 / 원격 60940\n```"
+      },
+      "right": {
+        "title": "클라이언트가 본 것",
+        "md": "```\n붙었다. 내 쪽 = /127.0.0.1:60940\n상대   = /127.0.0.1:12345\n```\n\n**같은 60940 이다.**"
+      }
+    },
+    {
+      "type": "figure",
+      "caption": "연결은 네 값으로 정해진다",
+      "ascii": "   client                                    server\n   127.0.0.1:60940  <-------------------->  127.0.0.1:12345\n\n   the same connection, named from both ends:\n     server sees  local 12345 / remote 60940\n     client sees  local 60940 / remote 12345\n\n   a TCP connection is identified by all four:\n     (src ip, src port, dst ip, dst port)",
+      "note": "**60940 은 클라이언트가 고른 것이 아니다** — OS 가 붙을 때 자동으로 준다(7.1절의 포트 0 과 같은 방식). 그래서 클라이언트는 포트를 정할 필요가 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "네 값이 연결을 정한다는 것의 뜻",
+      "md": "서버의 포트 12345 **하나로 여러 연결을 받을 수 있다.**\n\n> 클라이언트가 둘이면 포트가 60940·60941 로 갈리고, 서버 쪽에서는 `(12345, 60940)` 과 `(12345, 60941)` 두 연결이 된다.\n> 그래서 8장에서 손님을 여럿 받을 때 **포트를 더 열 필요가 없다.** `accept()` 를 여러 번 부르면 될 뿐이다.\n> 클라이언트 쪽 포트는 **1024~65535 중 OS 가 남는 것**을 주고, 연결이 끝나도 한동안(TIME_WAIT) 재사용하지 않는다. 짧은 연결을 초당 수천 개 만들면 그 범위가 마르는 일이 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "`ServerSocket` 과 `Socket` 은 다른 타입이다",
+      "md": "이름이 닮았지만 **하는 일이 전혀 다르다.**\n\n> **`ServerSocket`** 은 문지기다. 포트에 묶여서 `accept()` 로 연결을 받아낸다. **스트림이 없다** — `getInputStream()` 이 아예 없다.\n> **`Socket`** 은 연결 하나다. 스트림이 있고 상대 주소가 있다.\n> `accept()` 가 돌려주는 것이 `Socket` 이고, 그것을 닫아도 **`ServerSocket` 은 계속 듣는다.** 위 실험에서 `[서버] 소켓을 닫았다` 뒤에도 프로세스가 살아 있었다.\n> 두 개를 헷갈리면 `try-with-resources` 를 잘못 쓴다 — `ServerSocket` 을 손님마다 닫으면 두 번째 손님을 못 받는다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "두 프로그램을 돌리는 법",
+      "md": "터미널 두 개가 정석이지만 한 셸에서도 된다.\n\n```bash\njava -cp out Server1 12345 > srv.log 2>&1 &   # 백그라운드로\njava -cp out Client1 12345                    # 앞에서\ncat srv.log                                   # 서버 로그를 본다\n```\n\n> 서버 출력을 파일로 보내는 것이 핵심이다 — 안 그러면 두 로그가 섞여서 **누가 무엇을 했는지** 안 보인다.\n> 이 책의 모든 7·8·9장 실험이 이 모양이다. 출력에 `[서버]`·`[클라]` 를 붙인 것도 같은 이유다.\n> 서버가 뜨기 전에 클라이언트가 붙으면 7.1절의 `Connection refused` 다 — 로그에 `accept` 가 찍히는 것을 보고 붙인다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"서버 포트가 하나인데 손님을 여럿 받을 수 있습니까.\"**\n\n> **받을 수 있다.** 연결은 `(내 IP, 내 포트, 상대 IP, 상대 포트)` 네 값으로 구분되고, 서버 포트만 같고 클라이언트 포트가 다르다.\n> 이 실험으로 말할 수 있다 — 서버는 `로컬 12345 / 원격 60940` 으로 봤고 클라이언트는 그 반대로 봤다.\n> `accept()` 가 무엇을 돌려주는지 물으면 — **`Socket`** 이고, 그것을 닫아도 `ServerSocket` 은 계속 듣는다.\n> `accept()` 가 멈춰 있을 때 CPU 를 쓰냐고 물으면 **안 쓴다** — OS 가 스레드를 재워 둔다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 두 프로그램의 로그",
+      "sql": "$ java -cp out Server1 12345 > srv.log 2>&1 &\n$ cat srv.log\n[서버] 듣는다 0.0.0.0/0.0.0.0:12345\n[서버] accept() 를 부른다 — 여기서 멈춘다\n\n$ java -cp out Client1 12345\n[클라] 붙는다 127.0.0.1:12345\n[클라] 붙었다. 내 쪽 = /127.0.0.1:60940\n[클라] 상대   = /127.0.0.1:12345\n[클라] 보냈다 = [안녕]\n[클라] readLine() 을 부른다\n[클라] 받았다 = [echo: 안녕]  (14 ms 기다렸다)\n[클라] 보냈다 = [두 번째]\n[클라] readLine() 을 부른다\n[클라] 받았다 = [echo: 두 번째]  (0 ms 기다렸다)\n[클라] bye 를 보냈다, 답 = [bye]\n[클라] 끝\n\n$ cat srv.log      # 클라이언트가 끝난 뒤\n[서버] 듣는다 0.0.0.0/0.0.0.0:12345\n[서버] accept() 를 부른다 — 여기서 멈춘다\n[서버] accept() 가 63 ms 만에 돌아왔다\n[서버] 상대  = /127.0.0.1:60940\n[서버] 내 쪽 = /127.0.0.1:12345\n[서버] 이 소켓의 포트: 로컬 12345 / 원격 60940\n[서버] 받았다 = [안녕]\n[서버] 보냈다 = [echo: 안녕]\n[서버] 받았다 = [두 번째]\n[서버] 보냈다 = [echo: 두 번째]\n[서버] 받았다 = [bye]\n[서버] readLine 이 null 을 줬거나 bye 를 받았다\n[서버] 소켓을 닫았다\n\n# 60940 이 양쪽 로그에 다 있다 — 서버는 원격으로, 클라이언트는 자기 것으로.\n# accept() 는 63ms 만에 돌아왔다. 그 63ms 는 클라이언트 JVM 이 뜬 시간이다.\n# 첫 응답이 14ms, 둘째가 0ms 인 것도 같은 이유다(JIT 워밍업).",
+      "note": "**두 로그에 `60940` 이 한 번씩 있다.** 한쪽은 `상대`, 한쪽은 `내 쪽` 으로 적혀 있고 그것이 같은 연결이다."
+    }
+  ],
+  "recap": [
+    "서버는 ServerSocket 을 열고 accept() 로 받고, 클라이언트는 new Socket(host, port) 로 붙는다.",
+    "accept() 는 멈춰 있고 그동안 CPU 를 안 쓴다 — OS 가 스레드를 재운다.",
+    "3장의 read() 와 같은 블로킹인데, 소켓은 상대가 보낼 때까지 안 돌아온다.",
+    "연결은 (내 IP, 내 포트, 상대 IP, 상대 포트) 네 값으로 정해진다.",
+    "서버는 로컬 12345 / 원격 60940 으로 보고 클라이언트는 그 반대로 본다 — 같은 연결이다.",
+    "클라이언트 포트 60940 은 OS 가 준 것이다. 클라이언트는 포트를 정하지 않는다.",
+    "그래서 서버 포트 하나로 여러 연결을 받는다 — 8장에서 포트를 더 열 필요가 없다.",
+    "ServerSocket 은 스트림이 없고 Socket 에만 있다. accept 가 돌려준 Socket 을 닫아도 계속 듣는다.",
+    "두 프로그램을 돌릴 때는 서버 출력을 파일로 보내야 로그가 안 섞인다."
+  ],
+  "drills": [
+    {
+      "task": "서버를 띄워 두고 클라이언트 없이 로그를 본다.",
+      "done_when": "accept 뒤에 안 찍히는 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "클라이언트를 두 번 돌려 포트가 달라지는지 본다.",
+      "done_when": "서버 로그의 원격 포트를 비교한다.",
+      "minutes": 8
+    },
+    {
+      "task": "accept 로 받은 Socket 만 닫고 다시 accept 를 부른다.",
+      "done_when": "두 번째 손님이 받아지는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "lsof -nP -iTCP:12345 로 연결 상태를 본다.",
+      "done_when": "LISTEN 과 ESTABLISHED 를 구분한다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "accept() 가 멈춰 있을 때 CPU 를 쓰나.",
+      "a": "안 쓴다. OS 가 스레드를 대기 상태로 내려놓고 연결이 오면 깨운다."
+    },
+    {
+      "q": "연결을 구분하는 값은 몇 개인가.",
+      "a": "네 개다 — 내 IP·내 포트·상대 IP·상대 포트."
+    },
+    {
+      "q": "클라이언트 포트는 누가 정하나.",
+      "a": "OS 다. 1024~65535 중 남는 것을 준다."
+    },
+    {
+      "q": "accept 가 돌려준 Socket 을 닫으면 서버가 멈추나.",
+      "a": "아니다. ServerSocket 은 계속 듣는다. 둘은 다른 타입이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "블로킹",
+      "what": "결과가 올 때까지 스레드가 멈추는 것. CPU 는 안 쓰지만 그 스레드는 다른 일을 못 한다."
+    },
+    {
+      "term": "ServerSocket",
+      "what": "포트에 묶여 연결을 받아내는 것. 스트림이 없고 accept() 가 Socket 을 돌려준다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — ServerSocket.accept",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/ServerSocket.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Socket",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/Socket.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "RFC 9293 — Transmission Control Protocol",
+      "url": "https://datatracker.ietf.org/doc/html/rfc9293",
+      "publisher": "IETF"
+    }
+  ]
+}

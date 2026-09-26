@@ -1,0 +1,201 @@
+{
+  "book": "java-io",
+  "id": "exchange",
+  "no": "7.3",
+  "chapter": 7,
+  "title": "주고받기",
+  "summary": "소켓 스트림은 파일과 같다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "3·4장의 코드가 소켓에서 그대로 도는 것을 확인한다.",
+    "flush 를 빼고 교착을 직접 만든다.",
+    "파일에서는 안 보였던 대가를 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7.2절에서 연결까지 했다. 그 위에서 주고받는 코드는 **새로울 것이 없다.**\n\n4.2절의 `InputStreamReader`, 4.3절의 `BufferedReader.readLine()`, 4.4절의 `PrintWriter` 를 그대로 쓴다. 바뀌는 것은 스트림을 어디서 얻느냐다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "4장의 코드에 소켓만 끼웠다",
+      "code": "BufferedReader in = new BufferedReader(\n    new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8));\nPrintWriter out = new PrintWriter(\n    new OutputStreamWriter(s.getOutputStream(), StandardCharsets.UTF_8), false);\n\nString line;\nwhile ((line = in.readLine()) != null) {      // 4.3절 그대로\n    if (line.equals(\"bye\")) { out.println(\"bye\"); out.flush(); break; }\n    out.println(\"echo: \" + line);\n    out.flush();                              // 이 줄이 이 절의 주제다\n}\n\n// FileInputStream 이 s.getInputStream() 으로 바뀐 것뿐이다.\n// charset 을 적는 것도 4.2절과 같다 — 안 적으면 상대와 다를 수 있다."
+    },
+    {
+      "type": "table",
+      "caption": "4장의 규칙이 그대로 적용된다",
+      "columns": [
+        "4장에서 배운 것",
+        "소켓에서도"
+      ],
+      "rows": [
+        [
+          "charset 은 `InputStreamReader` 에 적는다(4.2)",
+          "**같다.** 안 적으면 상대와 어긋난다"
+        ],
+        [
+          "`readLine()` 은 `null` 로 끝난다(4.3)",
+          "**같다.** 상대가 닫으면 `null` 이다"
+        ],
+        [
+          "`readLine()` 이 줄바꿈 세 가지를 뗀다(4.3)",
+          "**같다.** HTTP 의 `\\r\\n` 도 떼 준다(9장)"
+        ],
+        [
+          "`PrintWriter` 는 예외를 삼킨다(4.4)",
+          "**같다.** 상대가 끊겨도 조용하다"
+        ],
+        [
+          "디코더가 쪼개진 바이트를 조립한다(4.2)",
+          "**여기서 더 중요하다** — 네트워크는 아무 크기로 쪼갠다"
+        ]
+      ],
+      "note": "**마지막 줄이 4.2절에서 예고한 자리다.** 1바이트씩 주는 스트림으로 `안` 을 조립하는 실험을 했는데, 소켓에서는 그 상황이 실제로 일어난다."
+    },
+    {
+      "type": "prose",
+      "md": "## 잘 돌아간 로그\n\n먼저 `flush()` 가 있는 판이다. 두 로그를 시간 순으로 엮으면 이렇게 된다."
+    },
+    {
+      "type": "figure",
+      "caption": "오간 순서",
+      "ascii": "   client                          server\n     println(\"안녕\") + flush  ---->  readLine() returns\n     readLine() blocks        <----  println(\"echo: 안녕\") + flush\n     (14 ms)\n     println(\"두 번째\") + flush ---->  readLine() returns\n     readLine() blocks        <----  println(\"echo: 두 번째\") + flush\n     (0 ms)\n     println(\"bye\") + flush   ---->  readLine() returns \"bye\"\n                              <----  println(\"bye\") + flush, then break\n     close                    ---->  readLine() would return null",
+      "note": "**첫 왕복이 14ms, 둘째가 0ms 다.** 네트워크는 같은데 첫 번째만 느리다 — JIT 가 그 경로를 처음 도는 값이다(3.2절에서 본 워밍업)."
+    },
+    {
+      "type": "prose",
+      "md": "## `flush()` 를 빼면 멈춘다\n\n클라이언트에서 `out.flush()` 한 줄만 빼고 다시 돌렸다. 10초쯤 기다린 뒤 강제 종료했다."
+    },
+    {
+      "type": "compare",
+      "title": "`flush()` 를 뺀 뒤의 두 로그",
+      "left": {
+        "title": "클라이언트",
+        "bad": true,
+        "md": "```\n붙었다. 내 쪽 = /127.0.0.1:60943\n상대   = /127.0.0.1:12345\n보냈다 = [안녕]  (버퍼에만)\nreadLine() 을 부른다\n```\n\n**여기서 끝. 아직 살아 있다.**"
+      },
+      "right": {
+        "title": "서버",
+        "bad": true,
+        "md": "```\naccept() 가 58 ms 만에 돌아왔다\n상대  = /127.0.0.1:60943\n내 쪽 = /127.0.0.1:12345\n로컬 12345 / 원격 60943\n```\n\n**`받았다` 가 없다. 살아 있다.**"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "연결은 살아 있다 — 그것이 더 나쁘다",
+      "md": "끊긴 것이 아니다. `lsof` 로 확인했다.\n\n```\njava 96119  TCP *:12345 (LISTEN)\njava 96119  TCP 127.0.0.1:12345->127.0.0.1:60943 (ESTABLISHED)\njava 96126  TCP 127.0.0.1:60943->127.0.0.1:12345 (ESTABLISHED)\n```\n\n> **양쪽 다 `ESTABLISHED`** 다. TCP 는 아무 문제가 없다고 본다 — 실제로 문제가 없다. 보낼 데이터가 없을 뿐이다.\n> 클라이언트의 `\"안녕\\n\"` 은 **자바 버퍼 안**에 있다. 커널로도 안 갔다. 서버의 `readLine()` 은 영원히 기다린다.\n> 그리고 클라이언트도 `readLine()` 에서 기다린다 — 답을 기다리는데 자기가 질문을 안 보냈다.\n> **서로를 기다리는 교착이다.** 타임아웃을 안 걸어 두면 끝나지 않는다 — 7.6절이 그 이야기다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "3.6절과 같은 원인, 다른 결과",
+      "md": "3.6절에서 `BufferedOutputStream` 에 쓰고 닫지 않으니 **파일이 0바이트**였다.\n\n> 원인은 같다 — 바이트가 자바 버퍼에만 있다. `PrintWriter` 의 `autoFlush` 를 `false` 로 만든 것도 그 절에서 본 그것이다(4.4절).\n> **결과가 다르다.** 파일은 조용히 비고 프로그램은 정상 종료한다. 소켓은 **아무 일도 일어나지 않고 멈춘다.**\n> 어느 쪽이 나쁜가는 말하기 어렵다 — 파일은 나중에 발견하고, 소켓은 지금 멈추지만 원인이 안 보인다. 로그에 예외도 없고 CPU 도 0이다.\n> 그래서 소켓 코드에서는 **`flush()` 를 규칙으로 만든다.** 보낼 것을 다 쓴 다음 반드시 부른다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`autoFlush = true` 로 만들 수도 있다",
+      "md": "`PrintWriter` 의 두 번째 인수다.\n\n```java\nPrintWriter out = new PrintWriter(\n    new OutputStreamWriter(s.getOutputStream(), UTF_8), true);   // autoFlush\n```\n\n> 그러면 `println` 마다 자동으로 내보낸다 — 4.4절에서 확인한 대로 **`println` 에서만** 돌고 `print` 는 안 된다.\n> 요청·응답이 줄 단위인 프로토콜(HTTP 헤더, SMTP, Redis)에서는 이게 편하다.\n> 다만 **여러 줄을 보내고 한 번에 flush** 하는 것이 효율적이다 — 줄마다 시스템 콜이면 3.2절의 그 비용이 든다. HTTP 응답 헤더를 열 줄 쓴다면 열 번이 아니라 한 번이다.\n> 9장에서는 명시적 `flush()` 를 쓴다 — 어디서 나가는지 코드에 보이는 쪽을 골랐다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`PrintWriter` 는 끊긴 것도 안 알려 준다",
+      "md": "4.4절의 그 성질이 여기서 더 나쁘게 나온다.\n\n> 상대가 이미 닫은 소켓에 `println` 을 해도 **예외가 없다.** `checkError()` 만 `true` 가 된다.\n> 파일에서는 \"쓰기가 실패했다\" 였는데, 소켓에서는 **\"상대가 떠났다\"** 를 놓치는 것이다. 그러고도 루프를 계속 돈다.\n> `BufferedWriter` 를 쓰면 `IOException: Broken pipe` 가 온다 — 4.4절에서 `Stream closed` 를 받은 것과 같은 자리다.\n> 9장의 서버에서는 `PrintWriter` 를 쓰되 **읽기 쪽의 `null`** 로 끊김을 판단한다. 쓰기 쪽 실패는 다음 읽기에서 드러난다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"클라이언트와 서버가 둘 다 멈췄습니다. CPU 는 0입니다.\"**\n\n> **교착**이다. 양쪽이 읽기에서 기다리고 있고 아무도 안 보냈다.\n> 가장 흔한 원인이 **`flush()` 누락**이다 — 데이터가 자바 버퍼에 남아 커널에 도달조차 안 했다. 이 실험이 그것이다.\n> 확인 방법을 물으면 — **`lsof` 로 `ESTABLISHED` 인지 본다.** 연결이 살아 있으면 네트워크 문제가 아니다. 스레드 덤프로 양쪽이 `socketRead` 에 있는지도 본다.\n> 막는 법은 **`setSoTimeout`** 이다(7.6절). 영원히 기다리는 코드는 운영에 두지 않는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — flush 를 뺐을 때",
+      "sql": "$ java -cp out Server1 12345 > srv2.log 2>&1 &\n$ java -cp out Client1 12345 noflush > cli2.log 2>&1 &\n$ (10초쯤 기다린 뒤)\n\n--- 클라이언트 로그 (아직 살아 있나: yes) ---\n[클라] 붙는다 127.0.0.1:12345  (flush 를 안 한다)\n[클라] 붙었다. 내 쪽 = /127.0.0.1:60943\n[클라] 상대   = /127.0.0.1:12345\n[클라] 보냈다 = [안녕]  (버퍼에만)\n[클라] readLine() 을 부른다\n\n--- 서버 로그 (아직 살아 있나: yes) ---\n[서버] 듣는다 0.0.0.0/0.0.0.0:12345\n[서버] accept() 를 부른다 — 여기서 멈춘다\n[서버] accept() 가 58 ms 만에 돌아왔다\n[서버] 상대  = /127.0.0.1:60943\n[서버] 내 쪽 = /127.0.0.1:12345\n[서버] 이 소켓의 포트: 로컬 12345 / 원격 60943\n\n--- 둘이 무엇을 기다리나 ---\njava 96119 kwanhyun  4u  IPv6  TCP *:12345 (LISTEN)\njava 96119 kwanhyun  5u  IPv6  TCP 127.0.0.1:12345->127.0.0.1:60943 (ESTABLISHED)\njava 96126 kwanhyun  4u  IPv6  TCP 127.0.0.1:60943->127.0.0.1:12345 (ESTABLISHED)\n(강제 종료했다)\n\n# 서버 로그에 '받았다' 가 없다 — readLine() 에서 기다린다.\n# 클라 로그도 'readLine() 을 부른다' 에서 끝났다.\n# 둘 다 살아 있고 연결도 ESTABLISHED 다. 예외도 없고 CPU 도 0이다.\n#\n# 빠진 것은 out.flush() 한 줄이고,\n# 그 한 줄이 3.6절에서는 0바이트 파일을 만들었다.",
+      "note": "**`ESTABLISHED` 가 세 줄 있다.** TCP 는 정상이라고 말하고 있다 — 고장난 것은 프로토콜이 아니라 **누가 먼저 말하나** 에 대한 두 프로그램의 합의다."
+    }
+  ],
+  "recap": [
+    "소켓의 주고받기는 4장의 코드를 그대로 쓴다 — 스트림을 소켓에서 얻는 것만 다르다.",
+    "charset 명시·readLine 의 null·줄바꿈 떼기·PrintWriter 의 침묵이 다 그대로 적용된다.",
+    "디코더가 쪼개진 바이트를 조립하는 것(4.2절)은 소켓에서 더 중요하다 — 네트워크는 아무 크기로 쪼갠다.",
+    "잘 돌면 첫 왕복이 14ms, 둘째가 0ms 다 — JIT 워밍업이고 네트워크 탓이 아니다.",
+    "클라이언트에서 flush() 한 줄을 빼니 양쪽이 멈췄다.",
+    "연결은 ESTABLISHED 로 살아 있다 — 예외도 없고 CPU 도 0이다.",
+    "3.6절과 원인이 같고 결과가 다르다 — 파일은 조용히 비고 소켓은 멈춘다.",
+    "autoFlush = true 로 println 마다 내보낼 수 있지만 여러 줄을 모아 한 번 flush 하는 것이 싸다.",
+    "PrintWriter 는 상대가 끊긴 것도 안 알려 준다 — 읽기 쪽 null 로 판단한다."
+  ],
+  "drills": [
+    {
+      "task": "에코 서버와 클라이언트를 돌려 두 로그를 나란히 본다.",
+      "done_when": "주고받은 순서를 맞춰 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "flush() 를 빼고 돌려 본다.",
+      "done_when": "양쪽이 멈추는 것을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "그 상태에서 lsof 로 연결 상태를 본다.",
+      "done_when": "ESTABLISHED 인 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "autoFlush = true 로 바꿔 flush 없이 돌려 본다.",
+      "done_when": "println 에서만 도는지 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "소켓에서 주고받는 코드가 4장과 같은 이유는.",
+      "a": "TCP 가 바이트 흐름을 주므로 스트림 타입이 같다. 얻는 곳만 다르다."
+    },
+    {
+      "q": "flush() 를 빼면 무슨 일이 나나.",
+      "a": "데이터가 자바 버퍼에 남아 상대가 못 받고 양쪽이 읽기에서 멈춘다."
+    },
+    {
+      "q": "그때 연결 상태는.",
+      "a": "ESTABLISHED 다. TCP 는 정상이고 보낼 데이터가 없을 뿐이다."
+    },
+    {
+      "q": "3.6절과 결과가 어떻게 다른가.",
+      "a": "파일은 0바이트로 조용히 끝나고 소켓은 예외 없이 영원히 멈춘다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "교착",
+      "what": "서로가 상대를 기다려 아무도 진행하지 못하는 상태. 소켓에서는 flush 누락이 가장 흔한 원인이다."
+    },
+    {
+      "term": "ESTABLISHED",
+      "what": "TCP 연결이 정상으로 열려 있는 상태. 데이터가 안 오는 것과 연결이 끊긴 것은 다르다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Socket.getOutputStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/Socket.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — PrintWriter(Writer, boolean)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/PrintWriter.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "lsof(8) macOS man page",
+      "url": "https://keith.github.io/xcode-man-pages/lsof.8.html",
+      "publisher": "Apple"
+    }
+  ]
+}

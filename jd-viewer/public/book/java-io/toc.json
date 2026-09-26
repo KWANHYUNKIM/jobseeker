@@ -349,7 +349,7 @@
           "title": "네트워크의 층",
           "summary": "IP 와 포트, 그리고 스트림.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.2",
@@ -357,7 +357,7 @@
           "title": "첫 소켓",
           "summary": "서버와 클라이언트 두 프로그램.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.3",
@@ -365,7 +365,7 @@
           "title": "주고받기",
           "summary": "소켓 스트림은 파일과 같다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "7.4",

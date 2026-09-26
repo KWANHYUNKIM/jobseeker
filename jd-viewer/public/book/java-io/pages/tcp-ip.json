@@ -1,0 +1,216 @@
+{
+  "book": "java-io",
+  "id": "tcp-ip",
+  "no": "7.1",
+  "chapter": 7,
+  "title": "네트워크의 층",
+  "summary": "IP 와 포트, 그리고 스트림.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "이름 하나가 주소 여러 개인 것을 확인한다.",
+    "포트를 OS 에 맡기는 방법과 겹칠 때의 예외를 본다.",
+    "붙을 상대가 없을 때 얼마나 빨리 아는지 잰다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6장까지는 프로그램이 **하나**였다. 7장부터 둘이 된다 — 서버와 클라이언트를 따로 띄우고 그 사이에 오간 것을 본다.\n\n그런데 좋은 소식이 하나 있다. **소켓의 입출력은 3장의 스트림과 같은 타입이다.** 새로 배울 것은 \"어디에 붙느냐\" 뿐이고, 이 절이 그것이다."
+    },
+    {
+      "type": "figure",
+      "caption": "세 층만 알면 된다",
+      "ascii": "   who          -> IP address      203.0.113.7  or  ::1\n   which door   -> port            12345\n   what flows   -> InputStream / OutputStream     <- chapter 3\n\n   TCP gives the third line for free: an ordered, reliable byte stream.\n   that is why Socket.getInputStream() is just an InputStream.",
+      "note": "**세 번째 줄이 이 책에 3장이 있는 이유다.** TCP 가 \"순서대로 빠짐없이 오는 바이트 흐름\" 을 만들어 주므로 파일과 같은 타입으로 다룰 수 있다."
+    },
+    {
+      "type": "prose",
+      "md": "## 이름 하나에 주소가 여럿이다\n\n`InetAddress.getAllByName` 으로 물어봤다."
+    },
+    {
+      "type": "table",
+      "caption": "두 이름을 물어본 결과",
+      "columns": [
+        "이름",
+        "개수",
+        "주소"
+      ],
+      "rows": [
+        [
+          "`localhost`",
+          "2",
+          "`127.0.0.1`(IPv4) · `0:0:0:0:0:0:0:1`(IPv6)"
+        ],
+        [
+          "`example.com`",
+          "4",
+          "IPv4 두 개 · IPv6 두 개"
+        ],
+        [
+          "`이런호스트없다.invalid`",
+          "-",
+          "**`UnknownHostException`**"
+        ]
+      ],
+      "note": "**`localhost` 도 두 개다.** 그래서 `127.0.0.1` 에 붙는 것과 `localhost` 에 붙는 것이 다를 수 있다 — 서버가 IPv4 에만 묶여 있으면 `localhost` 로 붙다가 IPv6 를 먼저 시도해 느려진다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`UnknownHostException` 은 연결 실패가 아니다",
+      "md": "메시지를 보면 어느 단계에서 막혔는지 알 수 있다.\n\n```\nUnknownHostException: 이런호스트없다.invalid:\n  nodename nor servname provided, or not known\n```\n\n> 이것은 **이름을 주소로 바꾸는 데** 실패한 것이다. DNS 문제이고 네트워크 연결은 시도조차 안 했다.\n> 연결 실패는 `ConnectException` 이다(아래). **두 예외를 구분하면 어디를 봐야 하는지가 정해진다** — DNS 설정인가 방화벽인가.\n> `.invalid` 는 표준이 \"절대 존재하지 않는다\" 고 정해 둔 최상위 도메인이다(RFC 2606). 테스트에 쓰면 실수로 진짜 도메인을 때리지 않는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 포트는 OS 에 맡길 수 있다\n\n`new ServerSocket(0)` 은 \"아무 빈 포트나 주세요\" 다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "돌려 본 것",
+      "sql": "  요청한 포트 = 0\n  받은 포트   = 60736\n  묶인 주소   = 0.0.0.0/0.0.0.0:60736"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "`0.0.0.0` 은 \"모든 인터페이스\" 다",
+      "md": "포트만 주면 **모든 네트워크 인터페이스**에 묶인다.\n\n> 이 머신의 IPv4 주소는 두 개였다 — `en1` 의 `192.168.45.15` 와 `lo0` 의 `127.0.0.1`. `0.0.0.0` 은 그 둘 다에서 받는다.\n> 곧 **같은 네트워크의 다른 기기가 내 서버에 붙을 수 있다.** 개발 중에 의도치 않게 열리는 자리다.\n> 127.0.0.1 로만 받으려면 주소를 명시한다 — `new ServerSocket(port, 50, InetAddress.getByName(\"127.0.0.1\"))`.\n> 테스트 코드에서 포트 0 이 특히 유용하다 — 고정 포트를 쓰면 **테스트를 병렬로 돌릴 때 충돌한다.** `getLocalPort()` 로 받아서 클라이언트에 넘긴다."
+    },
+    {
+      "type": "prose",
+      "md": "## 겹치면 즉시 알려 준다\n\n같은 포트를 두 번 열어 봤다."
+    },
+    {
+      "type": "compare",
+      "title": "포트 12345 를 두 번",
+      "left": {
+        "title": "첫 번째",
+        "md": "```\n열렸다 (12345)\n```"
+      },
+      "right": {
+        "title": "두 번째",
+        "bad": true,
+        "md": "```\nBindException:\n  Address already in use\n```"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`BindException` 은 내 쪽 문제다",
+      "md": "이름이 비슷한 예외가 셋 있고 **가리키는 곳이 다르다.**\n\n> **`BindException`** — 내가 포트를 잡지 못했다. 이미 다른 프로세스가 쓰거나, 방금 죽은 프로세스의 소켓이 정리되기를 기다리는 중이다.\n> **`ConnectException`** — 상대가 그 포트에서 듣고 있지 않다.\n> **`UnknownHostException`** — 이름을 주소로 못 바꿨다.\n> 서버를 다시 띄울 때 `Address already in use` 가 나면 앞 프로세스가 아직 살아 있는 것이다 — `lsof -nP -iTCP:12345` 로 확인한다."
+    },
+    {
+      "type": "prose",
+      "md": "## 안 듣는 포트에는 2밀리초에 거절당한다\n\n12346 번에는 아무도 없다. 타임아웃을 2초로 주고 붙어 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "돌려 본 것",
+      "sql": "  ConnectException: Connection refused  (2 ms)"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "2초를 기다리지 않았다 — 거절이 왔기 때문이다",
+      "md": "타임아웃 2초를 줬는데 **2밀리초**에 돌아왔다.\n\n> 아무도 안 듣는 포트에 붙으려 하면 상대 OS 가 **RST 를 즉시 되보낸다.** 기다릴 것이 없다.\n> 타임아웃이 쓰이는 경우는 다르다 — **아무 답도 안 올 때**다. 방화벽이 조용히 버리거나 그 호스트가 아예 없으면 2초를 다 기다리고 `SocketTimeoutException` 이 난다.\n> 곧 **`Connection refused` 는 빠른 실패이고 타임아웃은 느린 실패다.** 같은 \"못 붙었다\" 인데 원인이 정반대다 — 전자는 상대가 살아서 거절했고 후자는 상대의 답이 없다.\n> 로컬(127.0.0.1)이라 2ms 였고, 원격이면 왕복 시간만큼 걸린다. 7.6절에서 타임아웃을 다시 다룬다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "돌려 봤는데 설명할 수 없었던 것",
+      "md": "이 절에 **넣으려다 뺀 실험**이 하나 있다.\n\n> \"1024 아래 포트는 관리자 권한이 필요하다\" 를 보이려 했다. 그런데 일반 사용자(uid 501)로 **80·443·1 번이 다 열렸다.** macOS 15.5 다.\n> 같은 자리에서 파이썬은 80·443 에 `EADDRINUSE` 를 냈고, `lsof` 로는 그 포트를 듣는 프로세스가 없었다. `SO_REUSEADDR` 을 껐다 켰다 해 봤지만 자바는 양쪽 다 열렸고 파이썬은 양쪽 다 실패했다.\n> **왜 갈리는지 알아내지 못했다.** 그래서 그 실험은 이 책에 싣지 않는다 — 설명 못 하는 관찰을 규칙처럼 적으면 읽는 사람이 잘못 배운다.\n> 확실한 것만 적는다 — **플랫폼과 설정에 따라 다르므로, 서비스 포트는 1024 이상에서 고르고 낮은 포트는 리버스 프록시에 맡긴다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"서버에 접속이 안 됩니다. 어디부터 봅니까.\"**\n\n> **예외 이름**이 첫 단서다. `UnknownHostException` 이면 DNS, `ConnectException: Connection refused` 면 그 포트에 아무도 없다, **타임아웃**이면 패킷이 조용히 버려진다(방화벽).\n> 셋을 구분하면 볼 곳이 정해진다 — `/etc/hosts`·DNS / 프로세스가 떴는지 / 보안 그룹·방화벽.\n> 서버가 떴는데 `Connection refused` 면 **묶인 주소**를 본다 — `127.0.0.1` 에만 묶여 있으면 외부에서 못 붙는다. `0.0.0.0` 인지 확인한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 주소와 포트",
+      "sql": "$ java -cp out Net1\n--- 이름을 주소로 ---\n  localhost      2개\n      127.0.0.1  Inet4Address  loopback=true\n      0:0:0:0:0:0:0:1  Inet6Address  loopback=true\n  example.com    4개\n      104.20.23.154  Inet4Address  loopback=false\n      172.66.147.243  Inet4Address  loopback=false\n      2606:4700:10:0:0:0:ac42:93f3  Inet6Address  loopback=false\n      2606:4700:10:0:0:0:6814:179a  Inet6Address  loopback=false\n  없는 이름 -> UnknownHostException: 이런호스트없다.invalid:\n               nodename nor servname provided, or not known\n\n--- 포트 0 을 주면 OS 가 골라 준다 ---\n  요청한 포트 = 0\n  받은 포트   = 60736\n  묶인 주소   = 0.0.0.0/0.0.0.0:60736\n\n--- 같은 포트를 두 번 열면 ---\n  첫 번째 = 열렸다 (12345)\n  두 번째 -> BindException: Address already in use\n\n--- 아무도 안 듣는 포트에 붙으면 ---\n  ConnectException: Connection refused  (2 ms)\n\n--- 내 인터페이스들 ---\n  en1      192.168.45.15    loopback=false\n  lo0      127.0.0.1        loopback=true\n  IPv4 주소 2개\n\n# 타임아웃을 2,000ms 로 주고 붙었는데 2ms 에 돌아왔다.\n# 안 듣는 포트는 RST 를 즉시 되보내므로 기다릴 것이 없다.\n#\n# 그리고 0.0.0.0 은 위 인터페이스 둘 다에서 받는다 —\n# 개발 중에 192.168.45.15 로도 열려 있다는 뜻이다.",
+      "note": "**세 예외 이름이 이 절의 소득이다** — `UnknownHostException`·`BindException`·`ConnectException`. 각각 DNS·내 포트·상대 포트를 가리킨다."
+    }
+  ],
+  "recap": [
+    "소켓의 입출력은 3장의 InputStream·OutputStream 과 같은 타입이다 — TCP 가 바이트 흐름을 만들어 준다.",
+    "이름 하나에 주소가 여럿이다 — localhost 도 IPv4·IPv6 두 개다.",
+    "UnknownHostException 은 DNS 실패이고 연결을 시도조차 안 한 것이다.",
+    "포트 0 을 주면 OS 가 골라 준다(60736) — 테스트를 병렬로 돌릴 때 필요하다.",
+    "포트만 주면 0.0.0.0 에 묶여 모든 인터페이스에서 받는다 — 같은 망의 기기가 붙을 수 있다.",
+    "같은 포트를 두 번 열면 BindException: Address already in use 다.",
+    "안 듣는 포트에 붙으면 타임아웃 2초를 줬는데 2ms 에 ConnectException 이 왔다.",
+    "Connection refused 는 빠른 실패(RST)이고 타임아웃은 느린 실패(무응답)다.",
+    "1024 아래 포트 실험은 결과를 설명할 수 없어 책에서 뺐다."
+  ],
+  "drills": [
+    {
+      "task": "내 머신의 localhost 주소 개수를 확인한다.",
+      "done_when": "IPv6 가 있는지 본다.",
+      "minutes": 5
+    },
+    {
+      "task": "ServerSocket(0) 으로 받은 포트를 찍어 본다.",
+      "done_when": "매번 달라지는지 확인한다.",
+      "minutes": 5
+    },
+    {
+      "task": "서버를 띄워 두고 같은 포트를 또 열어 본다.",
+      "done_when": "BindException 메시지를 본다.",
+      "minutes": 6
+    },
+    {
+      "task": "안 듣는 포트에 타임아웃 5초로 붙어 본다.",
+      "done_when": "얼마나 걸리는지 잰다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Socket.getInputStream() 이 InputStream 인 이유는.",
+      "a": "TCP 가 순서대로 빠짐없이 오는 바이트 흐름을 보장하므로 파일과 같은 타입으로 다룰 수 있다."
+    },
+    {
+      "q": "포트 0 을 주면.",
+      "a": "OS 가 빈 포트를 골라 준다. getLocalPort() 로 받아 쓴다."
+    },
+    {
+      "q": "UnknownHostException 과 ConnectException 의 차이는.",
+      "a": "앞은 이름을 주소로 못 바꾼 것(DNS), 뒤는 그 포트에 아무도 듣고 있지 않은 것이다."
+    },
+    {
+      "q": "타임아웃 2초를 줬는데 2ms 에 실패한 이유는.",
+      "a": "안 듣는 포트는 RST 를 즉시 되보낸다. 타임아웃은 답이 아예 없을 때 쓰인다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "0.0.0.0",
+      "what": "모든 인터페이스를 뜻하는 주소. 포트만 주고 ServerSocket 을 만들면 여기에 묶인다."
+    },
+    {
+      "term": "Connection refused",
+      "what": "상대 OS 가 RST 로 즉시 거절한 것. 빠른 실패라서 타임아웃과 원인이 정반대다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — InetAddress",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/InetAddress.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — ServerSocket",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/ServerSocket.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "RFC 2606 — Reserved Top Level DNS Names",
+      "url": "https://datatracker.ietf.org/doc/html/rfc2606",
+      "publisher": "IETF"
+    }
+  ]
+}
