@@ -2356,3 +2356,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GA technologies 회사 프로파일
 
 - 회사 · RENOSY · ITANDI 페이지로 수익원 셋. 글 둘(Dagster 선정 · SageMaker 파이프라인)로 도메인 둘 — SageMaker 글이 'RENOSY 를 비롯한 그룹 서비스' 데이터라고 적어 RENOSY 에 confirmed. IR 재무 하이라이트는 본문이 비어 매출 미확인.
+
+## 2026-09-27 GA technologies Dagster
+
+- `76b3f400c26d1a` 전문으로 기능 `dagster-asset-lineage-platform`, 결정 8.

@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "기타",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "부동산 투자 'RENOSY' 와 부동산 회사용 'ITANDI' 를 가진 부동산 테크 그룹 — 여러 도구에 흩어진 정기 처리를 dbt 와 사상이 맞는 Dagster 의 애셋 계보로 묶고, 늘어나는 ML 모델은 Snowflake 가 주도하는 단일 컨테이너 SageMaker 파이프라인 하나로 굴린다",
       "updated_at": "2026-09-27",
       "domain": "ga-tech.co.jp"

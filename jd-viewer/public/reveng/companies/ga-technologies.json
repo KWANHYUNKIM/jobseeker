@@ -102,7 +102,7 @@
               "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
               "publisher": "GA technologies",
               "date": "2026-06-15",
-              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다."
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
             }
           ]
         },
@@ -117,12 +117,14 @@
               "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
               "publisher": "GA technologies",
               "date": "2026-06-15",
-              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다."
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "dagster-asset-lineage-platform"
+      ]
     },
     {
       "name": "늘어나는 ML 모델을 한 틀로 굴린다",
@@ -162,7 +164,371 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "dagster-asset-lineage-platform",
+      "name": "태스크가 아니라 성과물로 — dbt 와 같은 말을 하는 오케스트레이터",
+      "domain": "흩어진 정기 처리를 데이터 자산의 계보로 묶는다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "GA technologies 의 데이터는 외부 서비스와 자사 프로덕트(RENOSY 등)의 DB 에서 S3 로, Snowflake 로, BI 로 흐른다. 가공의 중심은 dbt 다. 그런데 정기 실행 처리가 **여러 도구에 흩어져** 있었다. 작을 땐 버텼지만 회사와 분석 기반이 커지자 무엇이 어디서 도는지, 어떤 처리가 어느 처리에 기대는지 보이지 않게 됐다 — 데이터 품질도 처리 효율도 담보하기 어려웠다.\n\n운용하다 보면 날짜를 지정해 다시 돌릴 일이 반드시 생긴다. '이 데이터는 어디서 와서 어디로 가나'를 한눈에 봐야 개발 효율도, 데이터 거버넌스도 선다.",
+        "metrics": [
+          {
+            "label": "비교한 후보",
+            "value": "4 — Dagster · Kestra · Airflow · Airflow + Cosmos(모두 OSS 기반이라 비용 차이 없음)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          },
+          {
+            "label": "데이터 흐름",
+            "value": "외부 서비스 · 자사 프로덕트 → S3(Iceberg) → Snowflake(dbt) → BI",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "후보를 비교할 때",
+          "thought": "dbt 연계가 **가장 우선인 관점**이다 — 데이터 관리를 dbt 중심으로 하고 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+            }
+          ]
+        },
+        {
+          "at": "Dagster 를 파고들며",
+          "thought": "설계 사상을 의식하는 게 중요하다 — 사상을 알면 도구의 설계 의도가 직관적으로 잡히고, 같은 사상의 도구끼리는 억지로 잇지 않아도 자연스럽게 붙는다. Dagster 도 dbt 도 **애셋 지향**이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+            }
+          ]
+        },
+        {
+          "at": "인프라를 고를 때",
+          "thought": "**기존 환경에 맞는** 구성(ECS Fargate · Google Workspace · Terraform)을 고른 게 본번 도입 속도를 올렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "애셋(Asset)",
+            "what": "테이블 · 파일 같은 성과물. 파이프라인은 이것을 중심으로 적고, 실행은 'Materialize' 라 부른다."
+          },
+          {
+            "name": "dbt 모델",
+            "what": "'어떤 테이블을 어떻게 만드나'의 선언. @dbt_assets 가 manifest 를 읽어 모델 하나하나를 애셋으로 만든다."
+          },
+          {
+            "name": "Asset Check",
+            "what": "dbt 에 정의한 테스트가 자동으로 들어온 것. 결과를 UI 에서 본다."
+          },
+          {
+            "name": "파티션 · Backfill",
+            "what": "시간(시간별 · 일별) 파티션과 연동된 스케줄, 그리고 날짜를 지정한 재실행."
+          },
+          {
+            "name": "Lineage Graph",
+            "what": "S3 → Snowflake → BI 와 dbt 모델까지 애셋 간 의존을 한 장으로 보인 그림."
+          }
+        ],
+        "invariants": [
+          "dbt 모델은 한 태스크 안에 숨지 않는다 — 모델 하나가 애셋 하나다.",
+          "의존은 애셋 정의(deps)로 적고, 그대로 Lineage Graph 에 나타난다.",
+          "Dagster 계정은 따로 두지 않는다 — 사원의 Google 계정으로 인증한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "외부 서비스 · 자사 DB 에서 dlt 로 S3 에 적재하고 Iceberg 테이블로 만든다",
+            "why": "흔한 적재 패턴이 라이브러리에 있어 Dagster 에서 돌릴 코드가 짧다."
+          },
+          {
+            "step": "Iceberg 테이블을 Glue Catalog 에 등록하고 Snowflake 카탈로그 통합으로 DWH 에서 읽는다",
+            "why": "레이크의 테이블을 DWH 에 복사하지 않고 인식시킨다."
+          },
+          {
+            "step": "dbt manifest 를 @dbt_assets 로 읽어 모델을 애셋으로, dbt 테스트를 Asset Checks 로",
+            "why": "개별 모델이 보이고 테스트 결과도 같은 UI 에."
+          },
+          {
+            "step": "@asset 의 deps 로 적재 · 가공의 의존을 선언 — Lineage Graph 가 된다",
+            "why": "'어디서 와서 어디로 가나'를 한눈에."
+          },
+          {
+            "step": "파티션 정의에서 스케줄을 한 줄로 만들고, 재실행은 Backfill 로",
+            "why": "운용에서 반드시 생기는 날짜 지정 재실행을 쉽게."
+          },
+          {
+            "step": "webserver · daemon · user code 를 ECS Fargate 에 나눠 띄우고 Terraform 으로 관리, Google Workspace 로 인증",
+            "why": "EC2 관리 없이, 기존 AWS · 계정 체계에 붙인다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "흩어진 정기 처리를 어떻게 하나?",
+            "chosen": "**워크플로 엔진(데이터 오케스트레이션 도구)을 하나 들인다.**",
+            "alternatives": [
+              "여러 도구에 흩어진 채 둔다(이전)"
+            ],
+            "tradeoff": "무엇이 어디서 도는지 · 의존이 어떤지를 한곳에서 보고 품질 · 효율을 담보한다. 대가는 새 도구의 도입 · 운용과, 기존 처리를 옮기는 기간 — 글 시점에도 이행 중인 시스템이 남아 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          },
+          {
+            "question": "어느 엔진인가?",
+            "chosen": "**Dagster(OSS)** — 결정 요인은 dbt 와의 매끄러운 통합.",
+            "alternatives": [
+              "Airflow",
+              "Airflow + Cosmos",
+              "Kestra"
+            ],
+            "tradeoff": "Airflow 는 커뮤니티 · 확장성이 강한 성숙 기술이지만 이 회사 맥락에선 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어진다**(범용 태스크 비중이 큰 단계라면 유력). Kestra 는 급성장 중이지만 당시 국내 사례가 적어 미지의 오류 대응 위험. 비용은 모두 OSS 라 같았다. 대가는 **애셋 지향 개념에 익숙해지는 시간** — dbt 를 쓰는 팀이면 직관적이라고 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          },
+          {
+            "question": "파이프라인을 무엇 중심으로 적나?",
+            "chosen": "**애셋 지향** — 성과물(테이블 · 파일)을 중심으로, 실행은 Materialize.",
+            "alternatives": [
+              "태스크 지향 — `dbt build` 같은 태스크를 정의한다"
+            ],
+            "tradeoff": "dbt 도 애셋 지향이라 **사상이 일치**해 통합이 자연스럽고, 모델이 블랙박스에 숨지 않는다. `deps` 한 줄이 곧 Lineage 가 된다. 대가는 애셋의 틀에 안 맞는 처리는 Sensor · Dynamic Mapping 같은 다른 장치로 다뤄야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          },
+          {
+            "question": "어디서 돌리나?",
+            "chosen": "**Amazon ECS on Fargate** — webserver · daemon · user code 를 나눠, Terraform 으로.",
+            "alternatives": [
+              "EC2 에 직접 올린다(이 사이트의 해석 — 글은 EC2 관리 불요를 이점으로 든다)"
+            ],
+            "tradeoff": "AWS 가 주 클라우드라 기존 인프라와 맞고, Dagster 의 컴포넌트 분리 구성이 ECS 와 잘 맞으며 **EC2 인스턴스 관리가 없다**. IaC 로 팀원 간 협업이 쉽다. 대가는 컨테이너 여러 개와 Terraform 구성을 들고 있어야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          },
+          {
+            "question": "인증 · 인가는?",
+            "chosen": "**Google Workspace 연계** — 사원의 Google 계정을 그대로.",
+            "alternatives": [
+              "Dagster 용 계정을 따로 관리한다"
+            ],
+            "tradeoff": "새 도구마다 계정을 따로 두지 않아 관리가 단순하다. 대가는 **Dagster OSS 의 역할 기반 접근 제어가 빈약**하다는 것 — 세밀한 인가는 webserver 앞단에 Proxy 를 두는 방식 등으로 계속 검토 중이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          },
+          {
+            "question": "dbt 를 어떻게 싣나?",
+            "chosen": "**@dbt_assets 로 manifest 를 읽어 모델마다 애셋 · 테스트는 Asset Checks 로.** dbt project 는 project 별 git 레포 그대로.",
+            "alternatives": [
+              "dbt 전체를 한 태스크로 돌린다"
+            ],
+            "tradeoff": "코드 몇 줄로 모든 모델이 애셋이 되고 테스트 결과도 같은 UI 에서 본다. 대가는 dbt manifest 를 Dagster 쪽에서 읽을 수 있게 **빌드 · 배포를 맞춰야** 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          },
+          {
+            "question": "레이크 적재와 DWH 연결은?",
+            "chosen": "**dlt 로 S3 에 적재 · Iceberg 테이블화 → Glue Catalog 에 등록 → Snowflake 카탈로그 통합.** 일부는 boto3 로 Glue 에 직접 등록.",
+            "alternatives": [
+              "적재 스크립트를 직접 짠다"
+            ],
+            "tradeoff": "흔한 적재 패턴이 dlt 에 있어 코드가 짧고, `table_format=\"iceberg\"` 한 줄로 Iceberg 가 된다. 레이크의 테이블을 DWH 가 바로 읽는다. 대가는 S3 · Glue · Snowflake 세 곳의 설정을 함께 맞춰야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          },
+          {
+            "question": "재실행 · 스케줄을 무엇으로 쥐나?",
+            "chosen": "**시간 파티션에서 스케줄을 한 줄로 만들고, 재실행은 Backfill 로** — 선정 때 Backfill 의 충실도를 크게 봤다.",
+            "alternatives": [
+              "cron 과 수동 재실행"
+            ],
+            "tradeoff": "날짜를 지정한 재실행은 운용에서 반드시 생긴다 — 파티션 단위로 UI 에서 골라 돌린다. 대가는 처리를 **파티션으로 적어야** 한다는 설계 제약(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤にDagsterを導入した話",
+                "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+                "publisher": "GA technologies",
+                "date": "2026-06-15",
+                "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "RENOSY(부동산 투자 · 매매)(수익원)",
+          "via": "자사 프로덕트 DB → S3 → Snowflake",
+          "contract": "Dagster 는 외부 서비스와 자사 프로덕트의 데이터를 Snowflake 로 나르는 흐름을 오케스트레이션하고, Applied ML 부는 RENOSY 를 비롯한 그룹 서비스의 데이터를 Snowflake 에서 쓴다. 어느 프로덕트가 이 파이프라인에 실려 있는지 Dagster 글 자체는 이름을 대지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+            },
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+            }
+          ]
+        },
+        {
+          "to": "늘어나는 ML 모델을 한 틀로 굴린다(같은 회사의 다른 도메인)",
+          "via": "Snowflake",
+          "contract": "Dagster 가 dbt 로 정리한 Snowflake 의 데이터를 SageMaker 파이프라인이 Snowflake Tasks → S3 로 받아 학습 · 추론한다 — 두 글이 같은 Snowflake 를 쓰는지는 명시돼 있지 않다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+            },
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "애셋 계보 한 장",
+          "question": "데이터는 어떤 애셋을 지나 BI 에 닿고, Dagster 는 어디를 쥐나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  EXT[\"외부 서비스\"] -- dlt --> S3[\"S3 · Iceberg\"]\n  PDB[\"자사 프로덕트 DB\"] -- dlt --> S3\n  S3 -- \"Glue Catalog\\n카탈로그 통합\" --> SF[(\"Snowflake\")]\n  SF --> M1[\"dbt 모델 A\"] --> M2[\"dbt 모델 B\"] --> BI[\"BI\"]\n  DG[\"Dagster\\n@dbt_assets · deps · Asset Checks\"] -. \"Lineage Graph\" .-> S3\n  DG -. \"Materialize\" .-> M1"
+        },
+        {
+          "title": "애셋 한 파티션의 상태",
+          "question": "시간 파티션 하나는 어떤 상태를 거치고, 다시 돌릴 땐 어디로 가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 미생성\n  미생성 --> Materialize중: 스케줄(파티션 연동) · Sensor\n  Materialize중 --> 검사: Asset Checks(dbt 테스트)\n  검사 --> 최신: 통과\n  검사 --> 실패: 테스트 실패\n  실패 --> Materialize중: Backfill(날짜 지정)\n  최신 --> Materialize중: 상류 갱신 · Backfill"
+        },
+        {
+          "title": "태스크 지향이었다면 안 보였을 것",
+          "question": "dbt 를 한 태스크로 돌리면 무엇이 가려지나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"Airflow BashOperator: dbt build\"] --> B[\"태스크 하나 = 모델 전체\"]\n  B --> C[\"어느 모델이 실패했나 · 무엇이 무엇에 기대나 안 보임\"]\n  C --> D[\"재실행도 통째로\"]\n  A2[\"Dagster @dbt_assets\"] --> E[\"모델 하나 = 애셋 하나\"]\n  E --> F[\"실패 모델 · 계보 · 테스트가 UI 에\\n그 파티션만 Backfill\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "データ基盤にDagsterを導入した話",
+          "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+          "publisher": "GA technologies",
+          "date": "2026-06-15",
+          "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**매출 · 사업별 비중**을 이번에 확인하지 못했다(IR 페이지 본문이 비어 보였다).",
     "**RENOSY 의 물건 가치 추정 모델** 자체와, SageMaker 파이프라인이 어느 판단(마케팅 · 영업 · CS)에 쓰이는지 구체 사례가 글에 없다.",
@@ -193,7 +559,7 @@
       "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
       "publisher": "GA technologies",
       "date": "2026-06-15",
-      "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다."
+      "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
     },
     {
       "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
