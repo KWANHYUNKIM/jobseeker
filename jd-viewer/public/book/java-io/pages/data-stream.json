@@ -1,0 +1,232 @@
+{
+  "book": "java-io",
+  "id": "data-stream",
+  "no": "5.1",
+  "chapter": 5,
+  "title": "DataOutputStream",
+  "summary": "숫자를 바이트로 적는다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "값마다 몇 바이트를 쓰는지 센다.",
+    "읽는 순서를 틀리면 무슨 일이 나는지 본다.",
+    "writeUTF 가 진짜 UTF-8 이 아닌 것을 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4장은 **문자**를 바이트로 옮겼다. 5장은 **문자가 아닌 것** — 숫자와 객체다.\n\n2.1절에서 `DataOutputStream` 으로 여섯 값을 쓰니 28바이트가 나오는 것을 잠깐 봤다. 그 자리로 돌아간다."
+    },
+    {
+      "type": "table",
+      "caption": "값마다 몇 바이트인가 (누적)",
+      "columns": [
+        "쓴 것",
+        "누적",
+        "이 값이 쓴 바이트"
+      ],
+      "rows": [
+        [
+          "`writeInt(1)`",
+          "4",
+          "**4**"
+        ],
+        [
+          "`writeLong(1L)`",
+          "12",
+          "**8**"
+        ],
+        [
+          "`writeDouble(1.0)`",
+          "20",
+          "**8**"
+        ],
+        [
+          "`writeBoolean(true)`",
+          "21",
+          "**1**"
+        ],
+        [
+          "`writeChar('가')`",
+          "23",
+          "**2**"
+        ],
+        [
+          "`writeUTF(\"한글\")`",
+          "31",
+          "**8**"
+        ]
+      ],
+      "note": "**마지막 줄만 예측이 안 된다.** `\"한글\"` 의 UTF-8 은 6바이트인데 8을 썼다 — 그 2바이트가 이 절의 주제다."
+    },
+    {
+      "type": "figure",
+      "caption": "31바이트를 쪼개면",
+      "ascii": "   00 00 00 01                       writeInt(1)         4\n   00 00 00 00 00 00 00 01           writeLong(1)        8\n   3f f0 00 00 00 00 00 00           writeDouble(1.0)    8\n   01                                writeBoolean(true)  1\n   ac 00                             writeChar           2\n   00 06 ed 95 9c ea b8 80           writeUTF            8\n   ^^^^^\n   two bytes of length, then six bytes of text\n\n   every number is big-endian: high byte first (2.1)",
+      "note": "**`ac 00` 이 2.1절의 그 바이트다** — `char` 는 코드포인트를 2바이트에 그대로 담는다(UTF-8 의 `ea b0 80` 과 다르다)."
+    },
+    {
+      "type": "prose",
+      "md": "## 쓴 순서대로 읽어야 한다\n\n파일에는 **경계가 없다.** 31바이트가 한 줄로 있을 뿐이고 \"여기까지가 `int`\" 라는 표시가 없다(2.1절). 그래서 읽는 쪽이 순서를 알고 있어야 한다."
+    },
+    {
+      "type": "compare",
+      "title": "순서를 맞췄을 때와 틀렸을 때",
+      "left": {
+        "title": "맞춰서 읽으면",
+        "md": "```\nreadInt     = 1\nreadLong    = 1\nreadDouble  = 1.0\nreadBoolean = true\nreadChar    = 가\nreadUTF     = 한글\n```\n\n다 맞는다."
+      },
+      "right": {
+        "title": "`readLong` 부터 읽으면",
+        "bad": true,
+        "md": "```\nreadLong = 4294967296\n```\n\n**예외가 안 난다.** 엉뚱한 값이 그냥 나온다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "4,294,967,296 이 어디서 나왔나",
+      "md": "그 수는 **2의 32승**이다. 우연이 아니다.\n\n> `readLong` 이 앞 8바이트를 가져갔다 — `00 00 00 01` + `00 00 00 00`.\n> 앞의 `int 1` 이 상위 4바이트 자리에 들어가서 `1 × 2³²` 가 된 것이다.\n> **예외가 없다는 것이 이 방식의 위험이다.** 형식이 어긋나면 값이 조용히 바뀐다 — 2.6절의 A 형 망가짐과 같은 성질이다.\n> 그래서 손으로 만드는 이진 형식에는 **버전 번호를 맨 앞에 넣는다.** 5.6절에서 그것을 만든다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "끝은 `-1` 이 아니라 예외다",
+      "md": "1.4절의 `-1` 규칙이 여기서는 안 통한다.\n\n```\n8바이트 파일에서 readUTF 로 다 읽고 한 번 더 readInt 하면\nEOFException (메시지 없음)\n```\n\n> `readInt()` 는 `int` 를 돌려주므로 **`-1` 을 끝으로 쓸 수 없다** — `-1` 도 정상적인 `int` 값이다.\n> 그래서 `EOFException` 을 던진다. `readLine()` 이 `null` 을 쓴 것과 같은 이유다(4.3절).\n> 메시지가 비어 있어서 로그에 `java.io.EOFException` 한 줄만 남는다 — **어느 필드에서 끊겼는지 알 수 없다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`& 0xFF` 를 대신해 준다",
+      "md": "1.4절의 그 연산이 메서드로 있다.\n\n```\nwriteByte(255) 한 파일을\n  readUnsignedByte() = 255\n  readByte()         = -1\n```\n\n> `readUnsignedByte()` 가 **`& 0xFF` 를 미리 해 준다.** `readUnsignedShort()` 도 있다.\n> 1.4절에서 손으로 하던 것을 여기서는 메서드 이름으로 고른다. 바이트를 수로 다룰 때 `Data` 계열을 쓰는 이유 중 하나다."
+    },
+    {
+      "type": "prose",
+      "md": "## `writeUTF` 는 진짜 UTF-8 이 아니다\n\n위 표의 8바이트가 `00 06` + 6바이트였다. 접두사만이 문제가 아니다 — **인코딩 자체가 조금 다르다.**"
+    },
+    {
+      "type": "table",
+      "caption": "`\"a\"` + `U+0000` + `\"b\"` 를 쓰면",
+      "columns": [
+        "",
+        "값"
+      ],
+      "rows": [
+        [
+          "문자열 길이",
+          "3"
+        ],
+        [
+          "그것의 UTF-8 바이트 수",
+          "**3**"
+        ],
+        [
+          "`writeUTF` 가 쓴 것",
+          "`00 04 61 c0 80 62` — **6바이트**"
+        ],
+        [
+          "길이 접두사가 말하는 길이",
+          "**4** (3이 아니다)"
+        ]
+      ],
+      "note": "**널 문자를 `00` 이 아니라 `c0 80` 두 바이트로 쓴다.** 그래서 길이가 3이 아니라 4다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이 방식에 이름이 있다 — modified UTF-8",
+      "md": "표준 UTF-8 이 아니라 **자바만의 변형**이다. 두 군데가 다르다.\n\n> **`U+0000` 을 `c0 80` 으로 쓴다** — 표준 UTF-8 은 `00` 이다. 바이트 열 안에 `00` 이 없게 만들려는 것이다(C 문자열과 섞어 쓰기 위해).\n> **보조 문자를 4바이트가 아니라 서로게이트 두 개(3+3=6바이트)로 쓴다** — 이모지가 6바이트가 된다. 2.3절의 `f0 9f 98 80` 이 여기서는 다르게 나온다.\n> 그래서 **`writeUTF` 가 쓴 파일을 다른 언어에서 UTF-8 로 읽으면 어긋난다.** 자바끼리 주고받을 때만 쓸 것이다.\n> 그리고 길이가 **`unsigned short`** 라 **65,535바이트까지만** 쓴다. 긴 문자열은 `UTFDataFormatException` 이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"이진 파일 형식을 직접 설계한다면 무엇을 먼저 넣습니까.\"**\n\n> **버전 번호**다. 형식이 어긋나도 예외가 안 나기 때문이다 — 이 실험의 `4294967296` 이 그 증거다.\n> 이어서 \"문자열은 어떻게 담습니까\" 에는 **길이 접두사**. `writeUTF` 가 그렇게 하고 있고, 그래서 구분자를 찾지 않아도 된다.\n> `writeUTF` 를 쓸 거냐고 물으면 **자바끼리면 쓰고 다른 언어와 주고받으면 안 쓴다** — modified UTF-8 이라서."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 31바이트와 c0 80",
+      "sql": "$ java -cp out Ds\n--- 값마다 몇 바이트인가 ---\n  writeInt(1)        누적 4\n  writeLong(1)       누적 12\n  writeDouble(1.0)   누적 20\n  writeBoolean(true) 누적 21\n  writeChar(ga)      누적 23\n  writeUTF(hangul)   누적 31\n  d1.bin         31바이트\n           00 00 00 01 00 00 00 00 00 00 00 01 3f f0 00 00\n           00 00 00 00 01 ac 00 00 06 ed 95 9c ea b8 80\n\n--- 쓴 순서대로 읽어야 한다 ---\n  readInt     = 1\n  readLong    = 1\n  readDouble  = 1.0\n  readBoolean = true\n  readChar    = 가\n  readUTF     = 한글\n\n--- 순서를 틀리면 ---\n  readLong 부터 = 4294967296  (예외 없이 엉뚱한 값)\n\n--- writeUTF 의 길이 접두사 ---\n  d2.bin          8바이트\n           00 06 ed 95 9c ea b8 80\n  UTF-8 바이트는 6개인데 파일은 8바이트다\n\n--- 끝은 -1 이 아니라 예외다 ---\n  EOFException (메시지 없음)\n\n--- 1.4절의 & 0xFF 를 대신해 준다 ---\n  readUnsignedByte() = 255\n  readByte()         = -1\n\n--- writeUTF 는 진짜 UTF-8 이 아니다 ---\n  문자열 길이 = 3 (가운데가 U+0000)\n  그것의 UTF-8 바이트 수 = 3\n  d4.bin          6바이트\n           00 04 61 c0 80 62\n\n# 4294967296 = 2^32 다. int 1 의 4바이트가 long 의 상위 자리에 들어갔다.\n# 00 04 61 c0 80 62 에서 널 문자가 c0 80 두 바이트이고\n# 그래서 길이 접두사가 3 이 아니라 4 다 — modified UTF-8.",
+      "note": "**`00 04 61 c0 80 62` 여섯 바이트가 이 절의 결론이다.** UTF-8 로 3바이트인 문자열이 6바이트가 됐고, 길이도 3이 아니라 4로 적혀 있다."
+    }
+  ],
+  "recap": [
+    "값마다 바이트 수가 정해져 있다 — int 4, long·double 8, boolean 1, char 2.",
+    "모든 수는 빅 엔디언이다(2.1절). char 는 코드포인트를 2바이트에 담아 ac 00 이다.",
+    "파일에 경계 표시가 없어 읽는 순서를 쓴 쪽과 맞춰야 한다.",
+    "순서를 틀려도 예외가 안 난다 — readLong 부터 읽으니 4294967296(=2^32)이 나왔다.",
+    "끝은 -1 이 아니라 EOFException 이고 메시지가 비어 있다.",
+    "readUnsignedByte() 가 1.4절의 & 0xFF 를 대신해 준다.",
+    "writeUTF 는 길이 2바이트 + 본문이고, 인코딩이 modified UTF-8 이다.",
+    "U+0000 을 c0 80 으로 쓰고 보조 문자를 6바이트로 쓴다 — 다른 언어와 어긋난다.",
+    "길이가 unsigned short 라 65,535바이트를 넘으면 UTFDataFormatException 이다."
+  ],
+  "drills": [
+    {
+      "task": "writeInt·writeLong 을 섞어 쓰고 순서를 바꿔 읽어 본다.",
+      "done_when": "예외 없이 엉뚱한 값이 나오는 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "writeUTF 로 쓴 파일을 od 로 찍어 길이 접두사를 확인한다.",
+      "done_when": "앞 2바이트가 길이인 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "이모지를 writeUTF 로 쓰고 바이트 수를 센다.",
+      "done_when": "UTF-8 의 4바이트와 다른지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "파일 끝까지 읽고 한 번 더 readInt 를 부른다.",
+      "done_when": "EOFException 을 직접 본다.",
+      "minutes": 5
+    }
+  ],
+  "quiz": [
+    {
+      "q": "DataOutputStream 의 바이트 순서는.",
+      "a": "항상 빅 엔디언이다. 플랫폼과 무관하다."
+    },
+    {
+      "q": "읽는 순서를 틀리면 어떻게 되나.",
+      "a": "예외가 아니라 엉뚱한 값이 나온다. int 1 다음 long 을 읽으면 2^32 가 된다."
+    },
+    {
+      "q": "Data 계열의 끝은 무엇으로 알리나.",
+      "a": "EOFException 이다. int 를 돌려주므로 -1 을 끝으로 쓸 수 없다."
+    },
+    {
+      "q": "writeUTF 가 표준 UTF-8 과 다른 점은.",
+      "a": "U+0000 을 c0 80 으로 쓰고 보조 문자를 서로게이트 두 개(6바이트)로 쓴다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "modified UTF-8",
+      "what": "자바의 writeUTF·클래스 파일이 쓰는 변형. U+0000 을 c0 80 으로, 보조 문자를 6바이트로 쓴다."
+    },
+    {
+      "term": "길이 접두사",
+      "what": "본문 앞에 길이를 적는 방식. 구분자를 찾지 않아도 되고 본문에 어떤 바이트가 와도 된다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — DataOutputStream.writeUTF",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/DataOutputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — DataInput (Modified UTF-8)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/DataInput.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — EOFException",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/EOFException.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

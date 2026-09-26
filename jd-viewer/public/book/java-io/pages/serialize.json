@@ -1,0 +1,181 @@
+{
+  "book": "java-io",
+  "id": "serialize",
+  "no": "5.2",
+  "chapter": 5,
+  "title": "직렬화",
+  "summary": "객체가 파일이 된다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "객체 하나가 몇 바이트가 되는지 센다.",
+    "그 바이트 안에 무엇이 들어 있는지 읽는다.",
+    "손으로 적은 것과 크기를 비교한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "5.1절에서 **필드를 하나씩 적었다.** 필드가 세 개면 세 번, 열 개면 열 번이다. 그리고 읽는 쪽에서 같은 순서로 열 번 읽는다.\n\n**그걸 자바가 대신 해 준다** — `Serializable` 을 붙이고 `writeObject` 를 부르면 된다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "필드를 한 번도 안 적는다",
+      "code": "static class Member implements Serializable {   // 메서드가 없는 표시 인터페이스\n    String name; int age; String email;\n    ...\n}\n\n// 쓰기\ntry (ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(\"ser1.bin\"))) {\n    o.writeObject(m);\n}\n\n// 읽기 — 캐스팅이 필요하다\ntry (ObjectInputStream i = new ObjectInputStream(new FileInputStream(\"ser1.bin\"))) {\n    Member back = (Member) i.readObject();\n}"
+    },
+    {
+      "type": "table",
+      "caption": "되읽은 결과",
+      "columns": [
+        "",
+        "값"
+      ],
+      "rows": [
+        [
+          "`readObject()`",
+          "`Member{김관현, 33, kim@example.com}`"
+        ],
+        [
+          "같은 객체인가",
+          "**false** — 새로 만든 것이다"
+        ],
+        [
+          "값은 같은가",
+          "**true**"
+        ]
+      ],
+      "note": "**같은 객체가 아니라 같은 값을 가진 새 객체다.** 그래서 직렬화는 깊은 복사를 만드는 데도 쓰인다 — 다만 느리다."
+    },
+    {
+      "type": "prose",
+      "md": "## 112바이트 안에 무엇이 들어 있나\n\n필드는 이름 3글자(UTF-8 9바이트)·나이 4바이트·이메일 15바이트 — 합쳐 30바이트 정도다. 그런데 파일은 **112바이트**다. 나머지 80바이트를 읽어 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "바이트 안에 클래스 정보가 들어 있다",
+      "sql": "  ser1.bin       112바이트\n           ac ed 00 05 73 72 00 0a 53 65 72 24 4d 65 6d 62\n           65 72 bb 75 4b 86 2f 3a 3b 9f 02 00 03 49 00 03\n           61 67 65 4c 00 05 65 6d 61 69 6c 74 00 12 4c 6a\n           61 76 61 2f 6c 61 6e 67 2f 53 74 72 69 6e 67 3b\n           4c 00 04 6e 61 6d 65 71 00 7e 00 01 78 70 00 00\n           00 21 74 00 0f 6b 69 6d 40 65 78 61 6d 70 6c 65\n           ...\n\n  읽을 수 있는 부분:\n  ....sr..Ser$Member.uK./:;....I..ageL..emailt..Ljava/lang/String;L..nameq.~..xp...!t..kim@example"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "클래스 이름과 필드 이름이 그대로 들어 있다",
+      "md": "위 출력에서 읽히는 것을 세어 보면 이렇다.\n\n> **`Ser$Member`** — 클래스 이름. 읽는 쪽에서 이 이름으로 클래스를 찾는다.\n> **`age`** · **`email`** · **`name`** — 필드 이름 세 개.\n> **`I`** 와 **`Ljava/lang/String;`** — 타입 시그니처. `I` 는 `int` 다.\n> **`bb 75 4b 86 2f 3a 3b 9f`** — 클래스 지문 8바이트. 5.3절의 주제다.\n> 곧 **값보다 스키마가 더 크다.** 필드 세 개짜리 객체에서 값이 30바이트, 스키마가 80바이트다.\n> 그리고 이 스키마가 있어서 **읽는 쪽이 순서를 몰라도 된다** — 5.1절의 `4294967296` 이 안 일어난다."
+    },
+    {
+      "type": "compare",
+      "title": "같은 값, 두 가지로 적으면",
+      "left": {
+        "title": "`writeObject`",
+        "md": "**112바이트**\n\n클래스 이름·필드 이름·타입·지문이 다 들어간다.\n\n읽는 쪽이 순서를 몰라도 된다."
+      },
+      "right": {
+        "title": "`writeUTF`·`writeInt` 로 손으로",
+        "md": "**32바이트**\n\n```\n00 09 ea b9 80 ea b4 80 ed 98 84\n00 00 00 21\n00 0f 6b 69 6d 40 ...\n```\n\n**3.5배 작다.** 대신 순서를 맞춰야 한다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "건수가 늘면 비율이 좋아진다",
+      "md": "스키마는 **한 번만** 들어간다.\n\n```\nMember 1건        112바이트\nArrayList 10건    436바이트  ->  1건당 약 43바이트\n```\n\n> 두 번째 `Member` 부터는 클래스 정보를 다시 안 쓰고 **참조(`q 00 7e 00 01`)로 가리킨다.** 위 덤프의 `q.~..` 가 그것이다.\n> 그래서 1건 112바이트가 10건에서는 1건당 43바이트로 내려간다. 손으로 적은 32바이트에 가까워진다.\n> 곧 **한 건만 보내는 데는 아주 불리하고 많이 보내면 덜 불리하다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "앞 네 바이트는 늘 같다",
+      "md": "`ac ed 00 05` 로 시작한다.\n\n```\n매직 = ac ed      (STREAM_MAGIC)\n판   = 00 05      (STREAM_VERSION = 5)\n```\n\n> 파일 앞 두 바이트가 `ac ed` 면 **자바 직렬화 파일**이다. `od` 로 찍어 바로 알 수 있다.\n> 5.5절에서 이것이 보안 문제의 시작점이 된다 — 네트워크로 들어온 바이트가 `ac ed` 로 시작하면 그 뒤를 `readObject` 에 넣으면 안 된다.\n> Base64 로 감싸면 `rO0AB` 로 시작한다 — 로그나 쿠키에서 이 다섯 글자를 보면 직렬화 데이터다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`Serializable` 이 없으면 쓸 때 터진다",
+      "md": "컴파일은 되고 **실행할 때** 터진다.\n\n```\nNotSerializableException: Ser$1\n```\n\n> `Serializable` 은 메서드가 없는 **표시 인터페이스**다. 컴파일러가 확인해 주지 않는다.\n> 더 나쁜 것은 **필드 하나가 안 붙어 있어도 터진다는 것**이다 — 객체 그래프를 따라가다 중간에서 만난다. 그때는 `NotSerializableException` 에 그 클래스 이름만 나오고 **어느 필드에서 왔는지는 안 나온다.**\n> 5.4절에서 그 경우를 다룬다 — 안 담기게 하려면 `transient` 다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 112 대 32",
+      "sql": "$ java -cp out Ser\n--- 객체 하나를 파일로 ---\n  ser1.bin       112바이트\n  읽을 수 있는 부분 = ....sr..Ser$Member.uK./:;....I..ageL..emailt..\n                     Ljava/lang/String;L..nameq.~..xp...!t..kim@example\n\n--- 다시 객체로 ---\n  readObject() = Member{김관현, 33, kim@example.com}\n  같은 객체인가 = false\n  값은 같은가   = true\n\n--- 같은 값을 손으로 적으면 ---\n  ser2.bin        32바이트\n           00 09 ea b9 80 ea b4 80 ed 98 84 00 00 00 21 00\n           0f 6b 69 6d 40 65 78 61 6d 70 6c 65 2e 63 6f 6d\n  직렬화 112바이트 / 손으로 32바이트 -> 3.5배\n\n--- 앞 네 바이트는 늘 같다 ---\n  매직 = ac ed, 판 = 00 05\n\n--- 열 명을 담으면 ---\n  ArrayList 10건 = 436바이트\n  1건당 약 43바이트\n  되읽은 개수 = 10, 첫 건 = Member{이름0, 20, a0@x.com}\n\n--- Serializable 을 안 붙이면 ---\n  NotSerializableException: Ser$1\n\n# 손으로 적은 32바이트에는 값만 있다 — 클래스 이름도 필드 이름도 없다.\n# 그 80바이트 차이가 스키마이고, 그것 덕에 순서를 몰라도 읽힌다.\n# 10건이면 스키마를 한 번만 써서 1건당 43바이트로 내려간다.",
+      "note": "**32바이트 덤프에 사람이 읽을 수 있는 것은 `kim@example.com` 뿐이다.** 112바이트 쪽에는 `Ser$Member`·`age`·`email`·`name`·`Ljava/lang/String;` 이 다 보인다 — 그 차이가 80바이트다."
+    }
+  ],
+  "recap": [
+    "Serializable 을 붙이고 writeObject 를 부르면 필드를 한 번도 안 적는다.",
+    "되읽으면 같은 값을 가진 새 객체다 — 같은 객체가 아니다.",
+    "필드 세 개짜리 객체가 112바이트고 값은 30바이트 정도다. 나머지가 스키마다.",
+    "바이트 안에 클래스 이름·필드 이름·타입 시그니처·클래스 지문이 들어 있다.",
+    "그 스키마 덕에 읽는 쪽이 순서를 몰라도 되고 5.1절의 2^32 사고가 안 난다.",
+    "같은 값을 손으로 적으면 32바이트로 3.5배 작다.",
+    "10건을 담으면 스키마를 한 번만 써서 1건당 43바이트로 내려간다.",
+    "앞 네 바이트는 늘 ac ed 00 05 다. Base64 로는 rO0AB 로 시작한다.",
+    "Serializable 은 표시 인터페이스라 컴파일러가 확인하지 않고 실행할 때 NotSerializableException 이 난다."
+  ],
+  "drills": [
+    {
+      "task": "필드 두 개짜리 클래스를 직렬화해 바이트 수를 센다.",
+      "done_when": "값보다 스키마가 큰 것을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "그 파일을 od -c 로 찍어 필드 이름을 찾는다.",
+      "done_when": "클래스 이름과 필드 이름을 눈으로 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "같은 객체 100건을 리스트로 담아 1건당 바이트를 계산한다.",
+      "done_when": "1건일 때보다 줄어드는 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "Serializable 없는 필드를 하나 넣어 본다.",
+      "done_when": "NotSerializableException 메시지를 확인한다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "직렬화 바이트에 값 말고 무엇이 들어 있나.",
+      "a": "클래스 이름·필드 이름·타입 시그니처·클래스 지문이다."
+    },
+    {
+      "q": "그것이 있어서 좋은 점은.",
+      "a": "읽는 쪽이 필드 순서를 몰라도 된다. 5.1절의 순서 어긋남 사고가 안 난다."
+    },
+    {
+      "q": "자바 직렬화 파일을 어떻게 알아보나.",
+      "a": "앞 두 바이트가 ac ed 다. Base64 면 rO0AB 로 시작한다."
+    },
+    {
+      "q": "Serializable 을 안 붙이면 언제 알게 되나.",
+      "a": "실행할 때다. 표시 인터페이스라 컴파일러가 확인하지 않는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "표시 인터페이스",
+      "what": "메서드가 없이 '이 타입이다' 만 표시하는 인터페이스. Serializable 이 그렇고 컴파일 검사를 못 받는다."
+    },
+    {
+      "term": "STREAM_MAGIC",
+      "what": "직렬화 파일의 첫 두 바이트 ac ed. 뒤이어 판 번호 00 05 가 온다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Serializable",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java Object Serialization Specification",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/serialization/index.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — ObjectOutputStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/ObjectOutputStream.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

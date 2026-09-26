@@ -239,7 +239,7 @@
           "title": "DataOutputStream",
           "summary": "숫자를 바이트로 적는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.2",
@@ -247,7 +247,7 @@
           "title": "직렬화",
           "summary": "객체가 파일이 된다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.3",
@@ -255,7 +255,7 @@
           "title": "serialVersionUID",
           "summary": "클래스를 고치면 못 읽는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "5.4",
