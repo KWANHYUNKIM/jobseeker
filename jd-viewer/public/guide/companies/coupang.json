@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.**",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -7944,6 +7944,27 @@
       "site": "ats",
       "duplicate_of": "https://www.wanted.co.kr/wd/255060",
       "verdict": "이미 묶여 있는 쿠팡 채용 사이트 게시 'Sr Backend Engineer (Eats Merchant)'(gh_jid=8127112)와 세 절 37줄이 양방향으로 모두 같다 — 같은 자리가 새 번호로 다시 올라온 것으로 보인다. 브리핑은 원본 'Senior Back-end Engineer(Eats Merchant)'(wd/255060)을 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8076145",
+      "title": "Staff Machine Learning Engineer, Personalization",
+      "site": "ats",
+      "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=7977000",
+      "verdict": "'Senior Staff Ranking Engineer, Personalization'(gh_jid=7977000)과 세 절 55줄 중 52줄 이상이 같은 템플릿 공고다. 다른 곳은 경력 줄이 '4+ years of professional experience in applied machine learning'뿐이다(원문은 7+ years). 공부할 문장이 같으므로 그 브리핑을 본다 — 이 자리는 요구 연차가 더 낮다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7931249",
+      "title": "Staff Machine Learning Engineer, Search & Discovery",
+      "site": "ats",
+      "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=7977000",
+      "verdict": "'Senior Staff Ranking Engineer, Personalization'(gh_jid=7977000)과 세 절 55줄 중 52줄 이상이 같은 템플릿 공고다. 다른 곳은 경력 줄이 '4 years of professional experience in applied machine learning'이고, 과업 한 줄이 ad targeting 대신 personalization 을 적는다뿐이다(원문은 7+ years). 공부할 문장이 같으므로 그 브리핑을 본다 — 이 자리는 요구 연차가 더 낮다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8204842",
+      "title": "Staff Machine Learning Engineer - Search Ranking",
+      "site": "ats",
+      "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=7977000",
+      "verdict": "'Senior Staff Ranking Engineer, Personalization'(gh_jid=7977000)과 세 절 55줄 중 52줄 이상이 같은 템플릿 공고다. 다른 곳은 경력 줄이 '4 years of professional experience in applied machine learning'이고, 과업 한 줄이 ad targeting 대신 personalization 을 적는다뿐이다(원문은 7+ years). 공부할 문장이 같으므로 그 브리핑을 본다 — 이 자리는 요구 연차가 더 낮다."
     }
   ],
   "open_questions": [

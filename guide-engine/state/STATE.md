@@ -4,14 +4,13 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **64건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **67건**.
 직전 회차: `Staff Front-end Engineer (Eats Web)`(ats gh_jid=8093378) → **`duplicate_of` wd/376128**
 (ats 에서 읽힌 8줄 전부 원티드판에 있음. ats 판은 주요업무 칸이 비어 있다).
 
 **미작성 개발 공고 중 이미 쓴 공고와 겹침이 큰 것**(다음 회차들이 먼저 정리할 것, 정규화 줄 겹침 비율):
 - ✅ `Senior Backend Engineer (Eats Merchant)`(ats 8107806) → dup wd/255060 (gh_jid=8127112 와 37줄 완전 일치 — 같은 자리 재게시)
-- 0.96 `Staff ML Engineer, Personalization`(ats 8076145) ↔ `Senior Staff Ranking Engineer, Personalization…`
-- 0.95 `Staff ML Engineer, Search & Discovery`(ats 7931249), `Staff ML Engineer - Search Ranking`(ats 8204842) ↔ 같은 Ranking 공고
+- ✅ ML Staff 3건(ats 8076145·7931249·8204842) → dup gh_jid=7977000 (같은 템플릿, 차이 = 4년 vs 7년+ · 과업 한 줄)
 - 0.91 `Staff Backend Engineer(Infrastructure)`(ats 8047677) ↔ `Director - Backend Engineering (Infrastructure)`
 - 0.89 `[쿠팡] 백엔드 개발자 (Cloud Infrastructure Automation)`(wd/382712) ↔ `Senior Back-end Engineer (Cloud Infra…)`
 ⚠️ **겹침 1.00 이어도 제목의 직급이 다르면**(Staff ↔ Senior Staff, Staff ↔ Director) 세 절을 양방향으로 보고,
