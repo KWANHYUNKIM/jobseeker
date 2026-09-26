@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "물류 로봇(EVE) 판매·보수와 풀필먼트를 하던 회사가 만든 제조업용 오픈 SCM 'skylaa' — 창고 간 데이터를 들이는 Java 배치를 상시 EC2 에서 Lambda 로 옮겨 비용 99% 를 덜고, 계획 데이터는 '흐름' 하나만 저장하고 AI 에이전트의 테넌트 경계는 프롬프트가 아니라 서버가 쥔다",
       "updated_at": "2026-09-27",
       "domain": "geekplus.jp"

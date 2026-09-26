@@ -2195,3 +2195,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 ギークプラス 회사 프로파일
 
 - geekplus.co.jp · skylaa.jp 는 해석 실패, geekplus.co.jp 는 401 — WebSearch 로 geekplus.jp · service.geekplus.jp 를 찾아 회사 개요 · skylaa 발표 · 서비스 페이지로 수익원 셋. 글 셋(배치 · 흐름 트리 · 테넌트 분리)으로 도메인 둘, 모두 skylaa.
+
+## 2026-09-27 ギークプラス Java 배치 Lambda 이사
+
+- `9238a967bf0509` 로 기능 `java-batch-ecs-to-lambda`, 결정 7. jinjer 의 Python SnapStart 와 대조되는 재료(Java 는 무료 · 함수 집약)를 STATE 비교 문서 재료에 올렸다.

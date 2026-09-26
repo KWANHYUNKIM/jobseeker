@@ -157,7 +157,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "java-batch-ecs-to-lambda"
+      ]
     },
     {
       "name": "계획 데이터의 사실과 경계를 서버가 쥔다",
@@ -197,7 +199,424 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "java-batch-ecs-to-lambda",
+      "name": "속은 그대로, 바닥만 갈았다 — 200MB Java 배치의 Lambda 이사",
+      "domain": "흩어진 창고·주문 데이터를 싸게 들여오고 내보낸다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "skylaa 의 약속은 '**기존 ERP · OMS · WMS 를 바꾸지 않고** 짧은 기간에 데이터를 모은다'이다. 그 약속을 떠받치는 것이 **창고 간 오케스트레이션**의 배치 — 각종 마스터와 입출하 정보를 고객 시스템에서 들여오고 내보낸다.\n\n이 **Spring Boot Java 배치**(200MB 넘는 이미지)는 매번 이미지를 받는 부담을 피하려 **ECS on EC2 에 떠서 이미지를 캐시**했다. 그런데 배치가 안 도는 시간에도 EC2 요금이 나갔고, 비용을 아끼려 Fargate 로 돌리던 개발 · 검증 환경에서는 매번 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**가 걸렸다.\n\n본번에서 돌고 있으니 언어 · 아키텍처는 건드리지 않고 **인프라만** Lambda 로 옮겼다. 결과는 EC2 비용 **약 99% 감소**, 몇 건 처리 **3분 → 20~30초**, 1000건 E2E 테스트 **1시간 → 15분**.",
+        "metrics": [
+          {
+            "label": "EC2 비용",
+            "value": "약 621달러에서 약 99% 감소(Lambda 수 달러 · Fargate 수십 달러 증가)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "label": "몇 건 처리 시간",
+            "value": "3분 전후 → 20~30초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "label": "1000건 E2E 테스트",
+            "value": "약 1시간 → 약 15분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "label": "사전 시산",
+            "value": "1시간당 처리 기준 약 1/4",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "label": "skylaa 도입 기간",
+            "value": "최단 40 영업일",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ソフトウェア（skylaa）| ギークプラス",
+                "url": "https://service.geekplus.jp/service/skylaa",
+                "publisher": "ギークプラス",
+                "summary": "**최단 40 영업일**에 SCM 업무의 디지털화 기반을 세운다 — 무거운 개수·교체 없이 ERP · WMS · OMS 에 흩어진 데이터를 모아 실시간으로 보고, 배송 · 재고 계획의 Excel 계산 · 대조를 자동화한다. Sales Planning · **Demand Planning(통계 · AI 24개 수요 예측 모델을 자동 비교 · 선정)** · Supply Chain Planning(제약을 고려한 재고 · 발주 계획, 적재 효율을 반영한 배송 계획). 도입은 **히어링 → 환경 구축 · 트라이얼(PoC) → 검증 · 개선.** 요금은 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "EC2 청구를 들여다볼 때",
+          "thought": "**이미지를 캐시하려고 서버를 늘 켜 뒀는데, 배치는 대부분의 시간 쉬고 있다.** 쉬는 시간에도 돈을 내고 있었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+              "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+              "publisher": "ギークプラス",
+              "date": "2025-12-23",
+              "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+            }
+          ]
+        },
+        {
+          "at": "무엇을 바꿀지 정할 때",
+          "thought": "**이미 본번에서 도는 배치다.** 언어나 아키텍처부터 갈아엎는 대공사는 하지 않는다 — 바닥(인프라)만 바꿔도 비용과 시간이 풀린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+              "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+              "publisher": "ギークプラス",
+              "date": "2025-12-23",
+              "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+            }
+          ]
+        },
+        {
+          "at": "Lambda 의 15분 제한을 볼 때",
+          "thought": "**본번을 돌려 봤으니 어떤 파일이 얼마나 걸리는지 안다.** 앞에서 크기로 갈라 큰 것만 컨테이너로 보내면 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+              "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+              "publisher": "ギークプラス",
+              "date": "2025-12-23",
+              "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "창고 간 오케스트레이션 배치",
+            "what": "마스터 · 입출하 정보를 고객 시스템에서 들이고 내보내는 Spring Boot Java 배치. Step Functions 의 한 State 에서 돈다."
+          },
+          {
+            "name": "파일 크기 기준",
+            "what": "앞단 State 가 보는 값. 넘으면 ECS on Fargate, 아니면 Lambda."
+          },
+          {
+            "name": "Lambda 함수(하나)",
+            "what": "모든 배치 로직을 담은 단일 함수. SnapStart 로 Java 기동을 줄인다."
+          },
+          {
+            "name": "핸들러 층",
+            "what": "Spring Cloud Function + 전략 패턴. Step Functions 가 넘긴 문자열 키로 실행할 로직을 가른다."
+          },
+          {
+            "name": "RDS Proxy 플래그",
+            "what": "CDK 에 둔 스위치. DB 접속이 폭주하면 켠다."
+          }
+        ],
+        "invariants": [
+          "**15분을 넘을 수 있는 입력은 Lambda 로 보내지 않는다** — 앞단에서 크기로 가른다.",
+          "**배치의 업무 로직은 바꾸지 않는다** — 이번 변경은 인프라만.",
+          "실행할 로직은 **Step Functions 가 넘긴 키 하나**로 정해진다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Step Functions 가 배치 앞의 State 에서 입력 파일 크기를 본다",
+            "why": "Lambda 는 한 번에 15분까지다."
+          },
+          {
+            "step": "기준 이하면 Lambda, 넘으면 ECS on Fargate 로 보낸다",
+            "why": "큰 파일만 컨테이너 기동 부담을 진다."
+          },
+          {
+            "step": "Lambda 는 SnapStart 스냅숏에서 복원돼 기동한다",
+            "why": "Spring Boot 의 기동 부담을 줄인다 — Java 는 SnapStart 가 무료."
+          },
+          {
+            "step": "핸들러 층이 Step Functions 가 넘긴 문자열 키로 실행할 Function 클래스를 고른다",
+            "why": "배치를 한 함수에 모아도 로직을 가를 수 있다."
+          },
+          {
+            "step": "업무 로직(기존 Java 배치)이 마스터 · 입출하 정보를 들이고 내보낸다",
+            "why": "코드는 거의 그대로다."
+          },
+          {
+            "step": "(대비) DB 접속이 늘면 CDK 플래그로 RDS Proxy 를 켠다",
+            "why": "Lambda 병렬 기동의 접속 폭주."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "배치를 어디서 돌릴 것인가?",
+            "chosen": "**상시 기동 ECS on EC2 에서 필요할 때만 도는 AWS Lambda 로.**",
+            "alternatives": [
+              "ECS on EC2 에 이미지를 캐시해 상시 기동(이전)",
+              "ECS on Fargate(매번 기동 — 개발 · 검증 환경에서 쓰던 방식)"
+            ],
+            "tradeoff": "쉬는 시간의 요금이 사라져 EC2 비용이 **약 99% 줄었다**(Lambda 수 달러 · Fargate 수십 달러 증가). 대가는 **15분 실행 제한**과 **매번 기동하는 Java 의 부담** — 둘 다 따로 풀어야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "question": "무엇까지 바꿀 것인가?",
+            "chosen": "**인프라만 — 언어 · 아키텍처는 그대로.**",
+            "alternatives": [
+              "언어 · 아키텍처부터 재구축한다(예: 기동이 빠른 프레임워크로)"
+            ],
+            "tradeoff": "이미 본번에서 도는 배치라 위험이 작고 짧게 끝났다 — '인프라를 다시 보는 것도 중요하다'는 결론. 대가는 **Spring Boot 의 무거운 기동**을 안고 간다는 것 — 그래서 SnapStart 와 함수 집약이 필요했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "question": "15분이 넘을 입력은 어떻게 할 것인가?",
+            "chosen": "**Step Functions 앞단 State 에서 파일 크기로 분기 — 넘으면 ECS on Fargate, 아니면 Lambda.**",
+            "alternatives": [
+              "모든 입력을 Fargate 로",
+              "입력을 잘게 나눠 Lambda 로만(inferred)"
+            ],
+            "tradeoff": "대부분은 싸고 빠른 Lambda 로, 드문 큰 파일만 Fargate 로. 대가는 **기준값을 정하려면 본번의 크기 · 시간 경향을 알아야** 했다는 것 — 본번 운용이 있었기에 가능했다고 스스로 적는다. 실행 기반이 둘이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "question": "매번 기동하는 Java 의 부담을 어떻게 줄일 것인가?",
+            "chosen": "**Lambda SnapStart — 초기화가 끝난 스냅숏에서 복원.**",
+            "alternatives": [
+              "Quarkus 등 기동이 빠른 프레임워크로 바꾼다",
+              "Provisioned Concurrency(inferred)"
+            ],
+            "tradeoff": "콜드 스타트를 크게 줄이고, **Java 는 SnapStart 가 무료**라 들이기 쉬웠다. 대가는 스냅숏의 효과가 **같은 함수가 자주 불릴수록** 커진다는 것 — 그래서 함수를 하나로 모았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "question": "여러 배치를 함수 하나로 모을 것인가, 나눌 것인가?",
+            "chosen": "**하나의 Lambda 함수로 모았다.**",
+            "alternatives": [
+              "배치마다 별도 Lambda 함수"
+            ],
+            "tradeoff": "관리가 한 곳이고, 같은 함수가 되풀이 불려 **SnapStart 스냅숏 재사용률**이 오른다 — 나누면 호출이 흩어져 전체 재사용률이 떨어진다. 대가는 모든 것을 한 앱에 담아 **Lambda 배포 파일 크기 상한**에 닿기 쉽다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "question": "함수 하나 안에서 어느 로직을 돌릴지 어떻게 가를 것인가?",
+            "chosen": "**Spring Cloud Function 핸들러 층 + 전략 패턴 — Step Functions → Lambda → 배치로 문자열 키를 넘겨 로직을 고른다.**",
+            "alternatives": [
+              "배치마다 별도 진입점(함수 분리)"
+            ],
+            "tradeoff": "워크플로 정의(Step Functions)만 보고 어떤 로직이 도는지 바꿀 수 있다. 대가는 **문자열 키의 오타 · 누락이 실행 때에야 드러난다**는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          },
+          {
+            "question": "Lambda 병렬 기동의 DB 접속 폭주에 어떻게 대비할 것인가?",
+            "chosen": "**RDS Proxy 를 쓰는 구현을 해 두고 CDK 플래그로 언제든 켤 수 있게 대기시켰다.**",
+            "alternatives": [
+              "지금 바로 RDS Proxy 를 켠다",
+              "대비하지 않는다"
+            ],
+            "tradeoff": "함수가 하나라 지금은 문제가 없어 **쓰지 않는 비용을 내지 않는다.** 대가는 켜야 할 순간을 알아채는 감시가 필요하다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+                "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+                "publisher": "ギークプラス",
+                "date": "2025-12-23",
+                "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "계획 데이터의 사실과 경계를 서버가 쥔다(같은 회사의 다른 도메인)",
+          "via": "들여온 마스터 · 입출하 정보",
+          "contract": "이 배치가 들인 데이터가 skylaa 의 계획(발주 · 전송 '흐름')의 재료가 된다. 배치가 흐름 트리를 직접 쓰는지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+              "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+              "publisher": "ギークプラス",
+              "date": "2025-12-23",
+              "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+            },
+            {
+              "title": "TypeScriptでサプライチェーンの整合性を型に閉じ込める",
+              "url": "https://zenn.dev/geekplus/articles/a9be3b8c162e45",
+              "publisher": "ギークプラス",
+              "date": "2026-07-10",
+              "summary": "skylaa 의 백엔드 설계(TSKaigi 발표). 같은 사실을 여러 표에 따로 두면 어긋난다 — '메이커 발주 리스트' · '매장 전송 리스트' · '전체 흐름'을 각각 저장하면 수량을 고칠 때 한 곳만 고쳐 **어느 것이 정인지 모르게** 된다. 그래서 **'흐름' 하나만 저장**하고 리스트는 **계산으로** 낸다(React 의 '파생 state 는 계산한다'와 같은 발상). 흐름은 **발주(외부 → 창고) · 전송(내부 이동)** 을 **판별 가능 유니온**으로 가진 **이동의 트리**, 리스트는 kind 로 노드를 모으는 **순수 함수** 하나. 수량을 고치면 트리 한 노드만 바뀌고 모든 리스트가 같이 바뀐다 — **구조상 어긋날 수 없다.** 외부 도매 '출하'도 유니온에 한 종류 더하면 된다. 날씨 · 계절로 수량 수정이 잦은 상품에서 특히 효과가 있다."
+            }
+          ]
+        },
+        {
+          "to": "고객의 ERP · OMS · WMS(외부)",
+          "via": "파일 기반 들이기 · 내보내기",
+          "contract": "기존 시스템을 바꾸지 않고 잇는 것이 skylaa 의 약속이다 — 배치가 그 창구다. 파일 형식 · 전송 수단은 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+              "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+              "publisher": "ギークプラス",
+              "date": "2025-12-23",
+              "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+            },
+            {
+              "title": "オープンSCMソリューション「skylaa」提供開始",
+              "url": "https://www.geekplus.jp/news/skylaa/",
+              "publisher": "ギークプラス",
+              "date": "2025-08-21",
+              "summary": "제조업용 **오픈 SCM 솔루션 skylaa** 제공 시작 — 사내에 흩어진 **ERP · OMS · WMS 데이터를 짧은 기간에 통합**하고 AI 가 수요 예측부터 배송 계획 · 물류 실행까지 한 줄로 최적화한다. 기능: 수급 균형 시뮬레이션 · **MOQ · 납품처 · 리드타임 제약을 고려한 최적 발주량 자동 계산** · 대시보드. 배경: 로봇과 풀필먼트로 **현장 실행**을 받쳐 왔는데 병목은 경영 전략을 현장으로 잇는 **계획 단계**였다 — SKU × 판매 채널 × 창고 조합으로 흐름이 복잡해지고 데이터가 업무 흐름마다 부분 최적화돼 있다. **기존 시스템을 바꾸지 않고** 저비용 · 단기간에 잇는다. 회사는 **자동화 로봇 판매 · 소프트웨어 · 풀필먼트** 세 사업, 국내 로봇 판매 **4,000대 남짓**."
+            }
+          ]
+        },
+        {
+          "to": "skylaa(소프트웨어 수익원)",
+          "via": "창고 간 오케스트레이션",
+          "contract": "배치는 skylaa 의 창고 간 오케스트레이션 안에서 돈다 — 비용 99% 감소가 곧 제품 원가다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+              "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+              "publisher": "ギークプラス",
+              "date": "2025-12-23",
+              "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "배치 하나가 실행 기반을 고르는 길",
+          "question": "같은 Java 배치가 언제 Lambda 로, 언제 Fargate 로 가나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"Step Functions\"] --> C{\"입력 파일 크기 > 기준?\"}\n  C -->|아니오| L[\"Lambda(하나)\\nSnapStart 복원\"]\n  C -->|예 · 15분 초과 예상| F[\"ECS on Fargate\"]\n  L --> H[\"핸들러 층\\nSpring Cloud Function · 전략 패턴\"]\n  H --> B[\"기존 Java 배치 로직\\n마스터 · 입출하 들이기 / 내보내기\"]\n  F --> B\n  B --> DB[\"DB\\n(RDS Proxy 는 CDK 플래그로 대기)\"]"
+        },
+        {
+          "title": "실행 기반의 세대",
+          "question": "배치의 바닥은 무엇에서 무엇으로 바뀌었나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> EC2상시: 본번 · 이미지 캐시\n  [*] --> Fargate매번: 개발 · 검증\n  EC2상시 --> Lambda: 쉬는 시간 요금 · 99% 감소\n  Fargate매번 --> Lambda: 몇 건 3분 → 20~30초\n  Lambda --> Fargate큰파일: 15분 초과 예상분만\n  note right of Lambda: 언어 · 아키텍처는 그대로"
+        },
+        {
+          "title": "옮기며 피한 함정들",
+          "question": "Lambda 로 옮길 때 무엇이 무너질 수 있었나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"큰 파일\"] --> A1[\"15분 초과 · 타임아웃\"]\n  A1 --> A2[\"앞단 크기 분기 → Fargate\"]\n  B[\"Spring Boot 기동\"] --> B1[\"매 호출 콜드 스타트\"]\n  B1 --> B2[\"SnapStart + 함수 하나로 재사용률↑\"]\n  B2 --> B3[\"대가: 배포 파일 크기 상한\"]\n  C[\"Lambda 병렬 기동\"] --> C1[\"DB 접속 폭주\"]\n  C1 --> C2[\"RDS Proxy 를 플래그로 대기\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "200MB超えのJavaバッチを中身はほぼ変えず ECS から Lambda に移してコスト 1/4 & 処理時間 1/6 になった話",
+          "url": "https://zenn.dev/geekplus/articles/9238a967bf0509",
+          "publisher": "ギークプラス",
+          "date": "2025-12-23",
+          "summary": "skylaa 의 **창고 간 오케스트레이션**에서 각종 마스터 · 입출하 정보를 들여오고 내보내는 **Spring Boot Java 배치**. 매번 이미지를 받는 부담을 피하려 **ECS on EC2 로 이미지를 캐시**했는데 컨테이너가 안 도는 시간에도 요금이 나갔고, 개발 · 검증의 **Fargate** 에서는 이미지 다운로드 + Java 기동으로 **몇 건에도 3분 전후**. 언어 · 아키텍처는 그대로 두고 **인프라만** Lambda 로(시산 약 1/4). **15분 제한** 때문에 Step Functions 앞단에서 **파일 크기가 기준을 넘으면 Fargate, 아니면 Lambda** — 본번 운용으로 크기와 시간의 경향을 알아서 가능했다. Java 기동 부담은 **SnapStart**(Java 는 무료), 스냅숏 재사용률을 올리려 **배치를 한 Lambda 함수에 모으고** Spring Cloud Function + 전략 패턴 핸들러가 문자열 키로 로직을 가른다(대가는 배포 파일 크기 상한에 가까워짐). DB 접속 폭주는 지금은 문제없지만 **RDS Proxy 를 CDK 플래그로 언제든 켜게** 대비. 결과: Lambda 수 달러 · Fargate 수십 달러 증가, **EC2 약 621달러에서 약 99% 감소**, 몇 건 3분 → **20~30초**, 1000건 E2E 테스트 1시간 → 15분."
+        },
+        {
+          "title": "オープンSCMソリューション「skylaa」提供開始",
+          "url": "https://www.geekplus.jp/news/skylaa/",
+          "publisher": "ギークプラス",
+          "date": "2025-08-21",
+          "summary": "제조업용 **오픈 SCM 솔루션 skylaa** 제공 시작 — 사내에 흩어진 **ERP · OMS · WMS 데이터를 짧은 기간에 통합**하고 AI 가 수요 예측부터 배송 계획 · 물류 실행까지 한 줄로 최적화한다. 기능: 수급 균형 시뮬레이션 · **MOQ · 납품처 · 리드타임 제약을 고려한 최적 발주량 자동 계산** · 대시보드. 배경: 로봇과 풀필먼트로 **현장 실행**을 받쳐 왔는데 병목은 경영 전략을 현장으로 잇는 **계획 단계**였다 — SKU × 판매 채널 × 창고 조합으로 흐름이 복잡해지고 데이터가 업무 흐름마다 부분 최적화돼 있다. **기존 시스템을 바꾸지 않고** 저비용 · 단기간에 잇는다. 회사는 **자동화 로봇 판매 · 소프트웨어 · 풀필먼트** 세 사업, 국내 로봇 판매 **4,000대 남짓**."
+        },
+        {
+          "title": "ソフトウェア（skylaa）| ギークプラス",
+          "url": "https://service.geekplus.jp/service/skylaa",
+          "publisher": "ギークプラス",
+          "summary": "**최단 40 영업일**에 SCM 업무의 디지털화 기반을 세운다 — 무거운 개수·교체 없이 ERP · WMS · OMS 에 흩어진 데이터를 모아 실시간으로 보고, 배송 · 재고 계획의 Excel 계산 · 대조를 자동화한다. Sales Planning · **Demand Planning(통계 · AI 24개 수요 예측 모델을 자동 비교 · 선정)** · Supply Chain Planning(제약을 고려한 재고 · 발주 계획, 적재 효율을 반영한 배송 계획). 도입은 **히어링 → 환경 구축 · 트라이얼(PoC) → 검증 · 개선.** 요금은 없다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**매출 · 사업별 비중 · skylaa 요금**이 공개 자료에 없다.",
     "**로봇(EVE) 판매 · 보수와 풀필먼트(LaaS 센터) 쪽 시스템**의 기술 글을 아직 못 봤다 — 블로그는 소프트웨어 사업부(skylaa)의 글이다. 두 수익원은 도메인이 없다.",
