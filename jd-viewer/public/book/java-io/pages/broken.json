@@ -1,0 +1,221 @@
+{
+  "book": "java-io",
+  "id": "broken",
+  "no": "2.6",
+  "chapter": 2,
+  "title": "깨진 글자",
+  "summary": "물음표가 되는 자리와 되돌릴 수 없는 자리.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "두 가지 망가짐을 가른다.",
+    "되돌릴 수 있는 경우와 없는 경우를 실제로 확인한다.",
+    "ISO-8859-1 이 왜 구조선이 되는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2장을 닫는 절이다. 글자가 망가지는 방식이 **두 가지**이고, 둘 중 하나만 **되돌릴 수 있다.**\n\n구분하는 질문은 하나다 — **바이트가 남아 있나.**"
+    },
+    {
+      "type": "figure",
+      "caption": "두 가지 망가짐",
+      "ascii": "   A. cannot hold it        write \"cafe\" with e-acute in EUC-KR\n      -> the byte becomes 3f  ('?')\n      -> the original code point is GONE from the file\n      -> not recoverable, ever\n\n   B. read with the wrong promise    MS949 bytes read as UTF-8\n      -> you get U+FFFD in the string\n      -> but the FILE still holds c7 d1 b1 db\n      -> recoverable, if you go back to the bytes\n\n   A loses data at write time.  B only at read time.",
+      "note": "**A 는 파일이 이미 망가진 것이고 B 는 읽는 코드만 틀린 것이다.** 신고가 들어왔을 때 먼저 가려야 하는 것이 이것이다."
+    },
+    {
+      "type": "prose",
+      "md": "## A — 담을 수 없으면 물음표가 된다\n\n`\"café 가격 😀\"` 를 EUC-KR 로 썼다. `é` 와 `😀` 는 EUC-KR 에 없다(2.2절)."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "물음표가 되는 자리",
+      "sql": "EUC-KR 로 쓴 바이트 = 63 61 66 3f 20 b0 a1 b0 dd 20 3f\n                      c  a  f  ?     가    격     sp ?\n다시 EUC-KR 로 읽으면 = [caf? 가격 ?]\n0x3f('?') 개수 = 2\n\n# é 가 3f 가 됐고 😀 도 3f 하나가 됐다.\n# 파일 어디에도 é 와 😀 의 정보가 없다. 예외도 안 났다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "예외가 안 나는 것이 이 문제의 전부다",
+      "md": "`getBytes(Charset)` 은 담을 수 없는 글자를 만나도 **조용히 `?` 로 바꾼다.**\n\n> 로그도 없고 반환값도 정상이다. **몇 달 뒤에 사용자가 발견한다.**\n> 막으려면 `CharsetEncoder` 를 직접 쓰고 `onUnmappableCharacter(CodingErrorAction.REPORT)` 를 지정해야 한다 — 그러면 예외가 난다.\n> 아니면 애초에 **담을 수 있는 집합을 쓰는 것**이다. UTF-8 은 유니코드 전체를 담으므로 A 가 일어나지 않는다(2.2절 표).\n> `😀` 가 `char` 둘인데 `?` **하나**가 된 것도 봐 둘 만하다 — 코드포인트 단위로 처리한다."
+    },
+    {
+      "type": "prose",
+      "md": "## B — 잘못 읽으면 U+FFFD 가 된다\n\n`\"한글\"` 을 MS949 로 써서 `c7 d1 b1 db` 네 바이트를 만들고, **UTF-8 로 읽었다.**"
+    },
+    {
+      "type": "table",
+      "caption": "네 바이트를 UTF-8 로 읽은 결과",
+      "columns": [
+        "",
+        "값"
+      ],
+      "rows": [
+        [
+          "파일 바이트",
+          "`c7 d1 b1 db`"
+        ],
+        [
+          "UTF-8 로 읽은 문자열",
+          "`[�ѱ�]` — 길이 **3**"
+        ],
+        [
+          "그 문자열의 코드포인트",
+          "`U+FFFD` **`U+471`** `U+FFFD`"
+        ],
+        [
+          "`U+FFFD` 개수",
+          "2"
+        ]
+      ],
+      "note": "**가운데 `U+471` 을 보라.** `d1 b1` 이 **우연히 올바른 UTF-8 2바이트 자리**여서 진짜 글자(`ѱ`)가 나왔다. 망가진 티도 안 난다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "다시 인코딩하면 그때 진짜로 잃는다",
+      "md": "깨진 문자열을 **다시 바이트로** 만들면 되돌릴 수 없게 된다.\n\n```\n깨진 문자열 [�ѱ�] 을 MS949 로 다시 쓰면 = 3f 3f 3f\n원래(c7 d1 b1 db)와 같은가? false\n```\n\n> `U+FFFD` 는 **어느 집합에도 없는 글자**라 `?`(0x3F)가 된다 — A 가 여기서 일어난다.\n> 곧 **B 를 방치하면 A 로 굳는다.** 깨진 문자열을 DB 에 저장하는 순간 원본은 사라진다.\n> 그래서 \"화면이 깨져요\" 는 급한 신고다 — **저장되기 전에 잡아야** 한다."
+    },
+    {
+      "type": "prose",
+      "md": "## ISO-8859-1 은 바이트를 잃지 않는다\n\nB 를 되돌리는 방법이 있다. **ISO-8859-1 은 0~255 바이트를 코드포인트 0~255 에 일대일로 대응**시킨다 — 그래서 어떤 바이트든 문자열에 담고 그대로 꺼낼 수 있다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "되돌리는 길",
+      "sql": "원래 바이트                 = c7 d1 b1 db\nISO-8859-1 로 읽은 문자열   = [ÇÑ±Û]  길이 4\n다시 ISO-8859-1 바이트로    = c7 d1 b1 db\n원래와 같은가? true\n그래서 제대로 읽으면        = [한글]"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "언제 이 방법을 쓰나",
+      "md": "**바이트를 다룰 수 없는 API 를 지나가야 할 때**다.\n\n> 예를 들어 `String` 만 받는 옛 라이브러리를 거쳐 원본 바이트를 살려 보내야 할 때 `new String(b, ISO_8859_1)` 로 싣고 나중에 `getBytes(ISO_8859_1)` 로 꺼낸다.\n> **정상적인 해법이 아니다** — 가능하면 `byte[]` 를 그대로 들고 다닌다. 구조선이고 배는 아니다.\n> 그리고 **깨진 화면을 보고 인코딩을 맞히는 데도** 쓴다. `ÇÑ±Û` 처럼 보이면 UTF-8 이어야 할 자리에서 MS949 바이트를 ISO-8859-1 로 읽은 것이다."
+    },
+    {
+      "type": "table",
+      "caption": "망가짐을 가르는 표",
+      "columns": [
+        "증상",
+        "무엇이 일어났나",
+        "되돌릴 수 있나"
+      ],
+      "rows": [
+        [
+          "`caf?` — 물음표",
+          "쓸 때 담을 수 없었다 (A)",
+          "**안 된다**"
+        ],
+        [
+          "`�` — 마름모 물음표",
+          "읽을 때 약속이 틀렸다 (B)",
+          "된다 — 파일 바이트가 남아 있다"
+        ],
+        [
+          "`ÇÑ±Û` — 라틴 글자",
+          "바이트를 ISO-8859-1 로 읽었다 (B)",
+          "된다 — 그대로 다시 인코딩"
+        ],
+        [
+          "`ѱ` 같은 엉뚱한 글자",
+          "우연히 유효한 자리였다 (B)",
+          "된다, 다만 **알아채기 어렵다**"
+        ]
+      ],
+      "note": "**첫 줄만 파일이 망가진 것이다.** 나머지는 읽는 코드를 고치면 된다 — 저장하기 전에."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"한글이 `????` 로 저장됐습니다. 복구할 수 있습니까.\"**\n\n> **\"물음표라면 못 합니다\"** 가 정직한 답이다. `0x3F` 에는 원래 글자의 정보가 없다.\n> 되물을 것은 **\"화면만 깨진 건가요, 저장된 값이 물음표인가요\"** 다 — 전자면 읽는 코드를, 후자면 백업을 본다.\n> 그리고 **왜 예외가 안 났는지**까지 말할 수 있으면 좋다. `getBytes` 의 기본 동작이 REPLACE 다."
+    },
+    {
+      "type": "prose",
+      "md": "## 2장이 남긴 것\n\n여섯 절로 **문자 → 수 → 바이트** 를 봤다. 이제 그 바이트를 **옮기는** 쪽으로 간다.\n\n3장은 1.2절에서 본 2,000배 차이를 네 절에 걸쳐 분해한다. 그리고 4장에서 **이 장의 charset 을 스트림에 붙이는 자리**(`InputStreamReader`)로 돌아온다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 두 망가짐과 한 구조선",
+      "sql": "$ java -cp out Broken\n--- 1) charset 을 적으면 바뀐다 (2.5 의 해법) ---\nnew FileWriter(f, MS949) = c7 d1 b1 db\n\n--- 2) MS949 바이트를 UTF-8 로 읽으면 ---\n원래 바이트       = c7 d1 b1 db\nUTF-8 로 읽은 문자열 = [�ѱ�]  길이 3\n그 문자열의 코드포인트 = U+FFFD U+471 U+FFFD\nU+FFFD 개수 = 2\n\n--- 3) 되돌릴 수 있나 ---\n다시 MS949 바이트로 = 3f 3f 3f\n원래와 같은가? false\n\n--- 4) ISO-8859-1 은 바이트를 잃지 않는다 ---\nISO-8859-1 로 읽은 문자열 = [ÇÑ±Û]  길이 4\n다시 바이트로            = c7 d1 b1 db\n원래와 같은가? true\n그래서 제대로 읽으면     = [한글]\n\n--- 5) 담을 수 없는 글자는 물음표가 된다 ---\nEUC-KR 로 쓴 바이트 = 63 61 66 3f 20 b0 a1 b0 dd 20 3f\n다시 EUC-KR 로 읽으면 = [caf? 가격 ?]\n0x3f('?') 개수 = 2\n\n# 3) 과 4) 가 이 절의 핵심이다.\n# 같은 c7 d1 b1 db 를 UTF-8 로 지나가면 3f 3f 3f 가 되어 끝나고,\n# ISO-8859-1 로 지나가면 c7 d1 b1 db 가 그대로 나와 [한글] 로 살아난다.",
+      "note": "**같은 네 바이트가 어느 약속을 지나가느냐로 살거나 죽는다.** 이것이 2장 전체의 요점이다."
+    }
+  ],
+  "recap": [
+    "망가짐은 두 가지다 — 쓸 때 담을 수 없었던 것(A)과 읽을 때 약속이 틀린 것(B).",
+    "A 는 0x3F(?)가 되고 원래 코드포인트가 파일에 남지 않는다. 되돌릴 수 없다.",
+    "getBytes 는 담을 수 없는 글자를 만나도 예외 없이 ? 로 바꾼다. 😀 는 ? 하나가 됐다.",
+    "B 는 U+FFFD 가 되지만 파일 바이트는 남아 있어 되돌릴 수 있다.",
+    "깨진 문자열을 다시 인코딩하면 3f 3f 3f 가 되어 B 가 A 로 굳는다 — 저장 전에 잡아야 한다.",
+    "우연히 유효한 자리가 되면 U+471 처럼 엉뚱한 진짜 글자가 나와 알아채기 어렵다.",
+    "ISO-8859-1 은 바이트를 일대일로 담아 c7 d1 b1 db 를 그대로 되돌려 [한글] 을 살렸다."
+  ],
+  "drills": [
+    {
+      "task": "UTF-8 로 쓴 한글 파일을 MS949 로 읽어 본다.",
+      "done_when": "U+FFFD 개수를 센다.",
+      "minutes": 8
+    },
+    {
+      "task": "그 깨진 문자열을 다시 인코딩해 3f 가 되는지 본다.",
+      "done_when": "되돌릴 수 없게 된 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "ISO-8859-1 왕복으로 원본 바이트가 살아나는지 확인한다.",
+      "done_when": "Arrays.equals 가 true 인 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "CharsetEncoder 에 REPORT 를 지정해 예외를 받아 본다.",
+      "done_when": "조용한 ? 대신 예외가 나는 것을 본다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "0x3F 로 바뀐 글자를 복구할 수 있나.",
+      "a": "없다. 원래 코드포인트 정보가 파일에 남지 않는다."
+    },
+    {
+      "q": "U+FFFD 가 된 경우는 복구할 수 있나.",
+      "a": "된다. 파일 바이트가 그대로 남아 있으므로 읽는 charset 을 고치면 된다."
+    },
+    {
+      "q": "왜 깨진 문자열을 저장하면 안 되나.",
+      "a": "다시 인코딩할 때 U+FFFD 가 ? 로 바뀌어 B 가 A 로 굳는다."
+    },
+    {
+      "q": "ISO-8859-1 이 구조선이 되는 이유는.",
+      "a": "0~255 바이트를 코드포인트 0~255 에 일대일로 대응시켜 어떤 바이트든 잃지 않고 담는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "U+FFFD",
+      "what": "대체 문자. 읽을 수 없는 바이트 자리에 들어간다. 어느 집합에도 없어 다시 쓰면 ? 가 된다."
+    },
+    {
+      "term": "REPLACE 와 REPORT",
+      "what": "CodingErrorAction 의 두 값. 기본은 REPLACE(조용히 바꾼다), REPORT 는 예외를 던진다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — CharsetEncoder",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/CharsetEncoder.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — CodingErrorAction",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/CodingErrorAction.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "The Unicode Standard — FAQ: U+FFFD REPLACEMENT CHARACTER",
+      "url": "https://www.unicode.org/faq/utf_bom.html",
+      "publisher": "Unicode Consortium"
+    }
+  ]
+}
