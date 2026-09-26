@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **163건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **164건**.
+직전 회차: ✅ `Staff Data Scientist - Search and Discovery`(8037655, **상하이**, 대만 검색 조직) → dup 7997383 — 주요업무 동일, 자격(7년+팀 리딩 3년·영어/중국어)만 달라 verdict 에 차이만 적음.
 직전 회차: ✅ `Staff Data Scientist (SCM)`(8124212) 3항목 — **타이베이**, 공급망 예측·대규모 최적화·성과 측정.
 직전 회차: ✅ `Staff, Data Scientist (Ads Analytics)`(7901538) 3항목 — **마운틴뷰**, 광고 수익화 시뮬레이션·예측·A/B, $152K~$261K. `--gaps` 미완 30건.
 직전 회차: ✅ `Staff Back-end Engineer (Gowri/Picking)`(8122290) 3항목 — **시애틀**, GOT 피킹(재고·Promise·메시지 지향), 급여 '$164,00' 오타. 'Gowri' 설명 없음.
