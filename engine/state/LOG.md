@@ -2552,3 +2552,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 スタディスト 회사 프로파일
 
 - studist.jp(Teachme 시리즈 페이지)와 글 셋(AI 번역 · 정밀도 평가 · EKS 합승)으로 수익원 셋 · 도메인 셋.
+
+## 2026-09-27 スタディスト AI 번역
+
+- `multi-product-translation` 전문으로 기능 `llm-translation-stream-service`, 결정 6(범용 번역 서비스는 검토 단계 · 책임 결정 inferred).
