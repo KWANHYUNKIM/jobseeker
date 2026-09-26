@@ -1104,3 +1104,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 qdrant 재방문 → 확장
 
 - 09-08 "Hyperbolic Embeddings in Qdrant" 에서 결정 5개로 `hyperbolic-by-rescoring` 을 새 도메인에 추가(features 2→3). 엔진 내장 거리와의 비교는 해석 표시.
+
+## 2026-09-26 questdb 재방문
+
+- 09-07 이후 2편 모두 가이드·연동 사용법. updated_at 만 올림(없음 1회째).
