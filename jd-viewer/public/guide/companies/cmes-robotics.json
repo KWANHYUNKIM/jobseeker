@@ -1,0 +1,223 @@
+{
+  "slug": "cmes-robotics",
+  "name": "씨메스로보틱스",
+  "name_en": "CMES Robotics",
+  "aliases": [
+    "씨메스로보틱스",
+    "씨메스로보틱스㈜",
+    "씨메스"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "cmesrobotics.ai",
+  "one_liner": "3D 비전 + AI + 로봇으로 물류(디팔레타이징·팔레타이징·피스 피킹)와 제조 공정을 자동화하는 로봇 솔루션·SI 기업 — 지금은 Physical AI(VLA·모방학습) 조직을 키우는 중",
+  "company": {
+    "business": "회사 사이트(cmesrobotics.ai)는 3D 비전·AI·로보틱스를 합친 Physical AI 솔루션으로 물류·제조 워크플로를 자동화한다고 소개하고, 솔루션으로 **디팔레타이징·팔레타이징·피스 피킹·Void Fill**, 제품으로 **Mixed-Case Palletizer·CubiMeazure®** 를 둔다. 'See. Think. Move.' — 카메라가 대상을 보고, 자체 AI 코어가 인식해 로봇 경로를 정하고, 로봇이 수행한다. 적용 산업으로 물류·자동차·신발·중공업·이차전지·식품 제조를 적고, 사례로 포대 디팔레타이징·리팔레타이징·Void Fill·피스 피킹을 든다. 잡코리아 공고의 회사 소개는 AI 알고리즘·3D 비전·로봇 제어·**SI** 까지 전 과정을 자체 기술로 구현하며 서울 본사와 미국·베트남 거점이 있다고 적는다. 공고는 두 갈래다 — **Physical AI**(싱글암·양팔·휴머노이드용 VLA·모방학습 모델, 텔레오퍼레이션 데이터 플랫폼, 사내 Physical AI Center 기획) / **자동화 SI·현장**(WMS/WCS, 3D 비전 검사 설비 엔지니어(청주), 비전·로봇 설비 제어 SW, AI 로봇 시스템 현장 최적화). 매출·인원은 읽은 자료에 없다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "CMES Robotics | Intelligent Industrial Automation Powered by Physical AI",
+        "url": "https://www.cmesrobotics.ai/en/",
+        "publisher": "씨메스로보틱스",
+        "summary": "솔루션 메뉴: Depalletizing·Palletizing·Piece Picking·Void Fill, 제품: Mixed-Case Palletizer·CubiMeazure®. 'See. Think. Move.' — 카메라 검사·AI 코어의 대상 인식과 경로 결정·로봇 수행. 적용 산업: 물류, 자동차, 신발, 중공업, 이차전지, 식품 제조. 사례: 포대 디팔레타이징·리팔레타이징·Void Fill·피스 피킹"
+      },
+      {
+        "title": "Physical AI 플랫폼 개발",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49837113?Oem_Code=C1&logpath=1&stext=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=88&sc=630",
+        "publisher": "잡코리아",
+        "summary": "회사 소개: 'See. Think. Move.' AI 기반 3D 로봇 비전 기술로 물류·제조·자동차 등 산업의 스마트 자동화를 이끄는 로봇 솔루션 기업. AI 알고리즘·3D 비전·로봇 제어·SI 까지 자체 기술로 구현, 서울 본사와 미국·베트남 거점"
+      },
+      {
+        "title": "Physical AI 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/384049",
+        "publisher": "원티드"
+      },
+      {
+        "title": "WMS/WCS 개발",
+        "url": "https://jumpit.saramin.co.kr/position/54943871",
+        "publisher": "점핏"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "물류 로봇 자동화 솔루션",
+        "how": "사이트 솔루션 — 디팔레타이징·팔레타이징·피스 피킹·Void Fill, 제품 Mixed-Case Palletizer·CubiMeazure®. 판매·구축 방식(장비 판매, SI 턴키 등)과 가격은 읽지 않았다.",
+        "domains": [
+          "3D 비전 로봇 피킹",
+          "물류센터 제어(WMS/WCS)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "CMES Robotics | Intelligent Industrial Automation Powered by Physical AI",
+            "url": "https://www.cmesrobotics.ai/en/",
+            "publisher": "씨메스로보틱스",
+            "summary": "솔루션 메뉴: Depalletizing·Palletizing·Piece Picking·Void Fill, 제품: Mixed-Case Palletizer·CubiMeazure®. 'See. Think. Move.' — 카메라 검사·AI 코어의 대상 인식과 경로 결정·로봇 수행. 적용 산업: 물류, 자동차, 신발, 중공업, 이차전지, 식품 제조. 사례: 포대 디팔레타이징·리팔레타이징·Void Fill·피스 피킹"
+          },
+          {
+            "title": "WMS/WCS 개발",
+            "url": "https://jumpit.saramin.co.kr/position/54943871",
+            "publisher": "점핏"
+          }
+        ]
+      },
+      {
+        "name": "제조 공정 비전·로봇 자동화",
+        "how": "사이트가 자동차·신발·중공업·이차전지·식품 제조 적용을 적고, 청주 시스템 엔지니어 공고가 3D 비전 검사 시스템 설계·원가 산출·고객사 현장 유지보수를 적는다.",
+        "domains": [
+          "3D 비전 로봇 피킹",
+          "설비 제어 SW"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "CMES Robotics | Intelligent Industrial Automation Powered by Physical AI",
+            "url": "https://www.cmesrobotics.ai/en/",
+            "publisher": "씨메스로보틱스",
+            "summary": "솔루션 메뉴: Depalletizing·Palletizing·Piece Picking·Void Fill, 제품: Mixed-Case Palletizer·CubiMeazure®. 'See. Think. Move.' — 카메라 검사·AI 코어의 대상 인식과 경로 결정·로봇 수행. 적용 산업: 물류, 자동차, 신발, 중공업, 이차전지, 식품 제조. 사례: 포대 디팔레타이징·리팔레타이징·Void Fill·피스 피킹"
+          },
+          {
+            "title": "[청주] 시스템 엔지니어",
+            "url": "https://jumpit.saramin.co.kr/position/54912157",
+            "publisher": "점핏"
+          },
+          {
+            "title": "시스템 소프트웨어 엔지니어",
+            "url": "https://jumpit.saramin.co.kr/position/55000797",
+            "publisher": "점핏"
+          }
+        ]
+      },
+      {
+        "name": "Physical AI(학습 기반 로봇 지능)",
+        "how": "Physical AI 공고들이 물류·제조 시나리오용 VLA·모방학습 모델과 데이터 플랫폼을 개발해 PoC·현장 양산 적용을 목표로 한다고 적는다. 제품화·매출 여부는 공고에 없다 — 개발 중인 사업으로 읽었다.",
+        "domains": [
+          "Physical AI 로봇 행동 모델"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Physical AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/384049",
+            "publisher": "원티드"
+          },
+          {
+            "title": "Physical AI 플랫폼 개발",
+            "url": "https://www.wanted.co.kr/wd/382421",
+            "publisher": "원티드"
+          },
+          {
+            "title": "Physical AI 기획 및 PM",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54912572&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ffd55b11-c9d5-4d65-92a9-3c252be56981",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "3D 비전 로봇 피킹",
+        "why": "사이트의 See·Think·Move 와 솔루션 목록, AI Robot System 최적화 공고의 객체 인식·포즈 추정·3D 매칭·캘리브레이션 현장 배포.",
+        "what_to_know": [
+          "3D 포즈 추정",
+          "핸드-아이 캘리브레이션",
+          "피킹 경로 계획"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "CMES Robotics | Intelligent Industrial Automation Powered by Physical AI",
+            "url": "https://www.cmesrobotics.ai/en/",
+            "publisher": "씨메스로보틱스",
+            "summary": "솔루션 메뉴: Depalletizing·Palletizing·Piece Picking·Void Fill, 제품: Mixed-Case Palletizer·CubiMeazure®. 'See. Think. Move.' — 카메라 검사·AI 코어의 대상 인식과 경로 결정·로봇 수행. 적용 산업: 물류, 자동차, 신발, 중공업, 이차전지, 식품 제조. 사례: 포대 디팔레타이징·리팔레타이징·Void Fill·피스 피킹"
+          },
+          {
+            "title": "AI Robot System 최적화 엔지니어(계약직)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55000895&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=db025c1d-cada-440c-a358-1c778f5ed1c8",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "Physical AI 로봇 행동 모델",
+        "why": "Physical AI 엔지니어 공고가 VLA·Imitation Learning·Diffusion Policy 기반 싱글암/양팔 모델과 Sim-to-Real 을, 플랫폼 공고가 텔레오퍼레이션·Retargeting 데이터 취득과 학습·배포 플랫폼을 적는다.",
+        "what_to_know": [
+          "VLA·모방학습",
+          "텔레오퍼레이션 데이터",
+          "Sim-to-Real"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Physical AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/384049",
+            "publisher": "원티드"
+          },
+          {
+            "title": "Physical AI 플랫폼 개발",
+            "url": "https://www.wanted.co.kr/wd/382421",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "물류센터 제어(WMS/WCS)",
+        "why": "WMS/WCS 공고가 설계·개발·시운전, 자동창고(AS/RS)·소터 연동, 대규모 트랜잭션·실시간 제어를 적는다.",
+        "what_to_know": [
+          "WMS/WCS",
+          "AS/RS·소터 연동",
+          "물류 시뮬레이션"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WMS/WCS 개발",
+            "url": "https://jumpit.saramin.co.kr/position/54943871",
+            "publisher": "점핏"
+          }
+        ]
+      },
+      {
+        "name": "설비 제어 SW",
+        "why": "시스템 SW 엔지니어 공고가 비전·로봇 설비 제어 Application SW 아키텍처, 멀티프로세스 IPC, 카메라·센서·로봇·PLC 통신 프로토콜을 적는다.",
+        "what_to_know": [
+          "C++ 멀티프로세스·IPC",
+          "TCP/UDP 프로토콜",
+          "PLC 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "시스템 소프트웨어 엔지니어",
+            "url": "https://jumpit.saramin.co.kr/position/55000797",
+            "publisher": "점핏"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "SI 회사가 학습 기반 로봇으로 넘어가려 한다",
+        "evidence": "사내 Physical AI Center 구축 및 운영 전략 수립",
+        "so_what": "PM 공고가 Single Arm·Dual-Arm·Humanoid Cell 도입 로드맵과 Real-to-Sim-to-Real 프로세스를 기획하고, 엔지니어·플랫폼 공고가 석사 이상(또는 경력)을 뽑는다. 기존 3D 비전 피킹 SI 매출 위에 새 조직을 쌓는 단계로 읽힌다 — 면접에서 Physical AI 조직의 규모와 현장 적용 사례를 묻는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "현장 근무·출장이 많은 자리가 섞여 있다",
+        "evidence": "운전면허 소지자 및 운전 가능자",
+        "so_what": "청주 시스템 엔지니어·WMS/WCS 는 시운전·고객 현장 유지보수·출장(주말·출장수당 명시)이 업무에 있다. 연구직과 현장직의 근무 형태가 크게 다르다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "점핏 공고 3건은 회사명이 '씨메스' 로만 표기돼 있다. 주소(도산대로318)·복지 문구가 씨메스로보틱스 사람인 공고와 같아 같은 회사로 묶었지만 법인명을 확인하지 못했다",
+    "매출·임직원 수·고객사는 읽지 않았다",
+    "Physical AI 모델이 실제 제품·현장에 들어갔는지는 공고로 알 수 없다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

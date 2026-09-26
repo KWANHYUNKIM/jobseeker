@@ -809,6 +809,19 @@
       "postings": 8,
       "study_items": 30,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "cmes-robotics",
+      "name": "씨메스로보틱스",
+      "aliases": [
+        "씨메스로보틱스",
+        "씨메스로보틱스㈜",
+        "씨메스"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
