@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**캔리 완주(2026-09-26) — `cs-agent-no-pii-to-llm` 로 수익원 둘 다 기능 → done. 다음은 --gaps 를 따른다 — 큐 대기 에어클로젯(`3b8e60fcaab4b7` PII 관측성)·Rehab for Japan(`composer-to-cloud-run-jobs`). 대기 2/3(에어클로젯·Rehab for Japan). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**에어클로젯 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '고객 PII 를 관측 스택에 흘리지 않고 AI 가 조사하게 한다' — `3b8e60fcaab4b7`(6층 PII · 쓰기·검색 양 끝 같은 hashEmail · 사원 email 별도 · MCP 도 같은 익명화 · 사람 Web / AI MCP). 그다음 'AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다' — `7760060d03216c`(AI 는 수량만·스크립트가 금액 · 하루 2회 전주 같은 요일 대비 · 쿼터 1.5배 · cpuIdle 기본값 역전). 수익원 '주변 서비스·법인' 은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(Rehab for Japan). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

@@ -38,13 +38,13 @@
 | **ログラス(Loglass)** | JP · 경영관리(FP&A) SaaS | 프로파일(2026-09-26). 도메인 둘 — 계층을 엔진이 알게 해 읽지 않는다(OLAP 엔진 실험) · 장애 때 '당시 구조' 를 다시 세운다(이력 데이터 모델). 기능 3(`hierarchy-aware-olap-engine` — 실험 · `incident-history-data-model` · `headcount-cost-simulation` · `ai-ir-bottleneck-driven-delivery`). 완주 검사 1회차에 도메인 둘 추가(인원 계획 · AI IR). **hold** — 석세스 파트너·설비투자·IT 투자 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 인원 계획·설비투자·IT 투자·AI IR·석세스 파트너는 도메인 없음. 입구 `zenn.dev/p/loglass/feed`. |
 | **Hacobu(ハコブ)** | JP · 물류 SaaS(MOVO) | 프로파일(2026-09-26). 도메인 둘 — 장애 공지 스위치를 비개발자 손에 쥐여 준다(Datadog Forms 배너) · 기능 패키지의 경계를 규약 대신 CI 가 지킨다(MOVO Berth 프런트 템플릿). 기능 2(`maintenance-banner-datadog-forms` · `frontend-template-dependency-ci`). **hold** — 컨설팅·SI·인재 소개 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 컨설팅·SI·인재 소개는 도메인 없음. 입구 `zenn.dev/p/hacobu/feed`. |
 | **estie** | JP · 상업용 부동산 데이터 | 프로파일(2026-09-26). 도메인 둘 — 고객이 맡긴 데이터를 여러 서비스가 한 곳에 둔다(프라이빗 데이터 기반) · PR 마다 운영에 가까운 DB 를 빌려 쓰고 버린다(Aurora copy-on-write Preview). 기능 2(`private-data-platform` · `preview-with-db-aurora-clone`). **hold** — 스마트 리폼·DX 컨설팅 수익원 자료 두 번 없음(2026-09-26). 스마트 리폼·DX 컨설팅은 도메인 없음. 입구 `zenn.dev/p/estie/feed`. |
+| **エアークローゼット(airCloset)** | JP · 옷 렌털 구독 | 프로파일(2026-09-26). 도메인 둘 — 고객 PII 를 관측 스택에 흘리지 않고 AI 가 조사하게 한다 · AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다. 기능 0. 수익원 '주변 서비스·법인' 은 도메인 없음. 입구 `zenn.dev/p/aircloset/feed`, IR `corp.air-closet.com/ir/individual/`. |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **エアークローゼット(airCloset)** | JP · 패션 렌털 구독 | Zenn Publication `zenn.dev/p/aircloset`(RSS, 7~9월 5편, CTO 집필). **AI 시대 Observability — PII 와 AI 검색성을 양립시키고 자동 수복**(`3b8e60fcaab4b7`, 2026-07-13) — 관측 스택은 PII 의 통로가 되기 쉽다 → 6층 PII 설계, **해시를 쓰기·검색 양 끝에서 같은 로직으로**(12자 prefix 48bit — 충돌해도 평문은 안 샌다), 사람 = Web 포털 · AI = MCP 로 같은 뒤를 공유, 관측 스택을 '감시' 가 아니라 **AI 를 움직이는 입력**으로 재정의; 남은 과제는 무엇을 error 로 다룰지·stacktrace. 전편(전 계층 감시)·AI 비용 게이트·GitHub Actions 비용(Namespace). **구독 커머스 축**. |
 | **Rehab for Japan** | JP · 개호(돌봄) 재활 SaaS | Zenn Publication `zenn.dev/p/rehabforjapan`(RSS, 7~9월 8편). **멈출 수 없는 본번 데이터 기반을 혼자 옮긴 이야기**(`composer-to-cloud-run-jobs`, 2026-07-09) — 하루 몇 시간 도는 Source 계 ETL(프로덕트 DB(AWS) → BigQuery)에 **24시간 상시 가동 Cloud Composer**(dev/prod 월 $600~1,000) → 인시던트로 Worker 메모리 증강(항구적 비용 증가)을 시산하다 '상시 가동 자체를 그만두자' → **Cloud Run Jobs + Cloud Scheduler**(월 $10~20), 전부 Python·직렬이라 **Cloud Workflows 불채용**(스텝 과금) · 시각차 기동의 소결합; 신기능과의 우선순위 경쟁에서 늘 지던 부채를 Claude Code 와 약 2개월. **헬스케어 SaaS 축**. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
