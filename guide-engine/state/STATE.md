@@ -4,22 +4,20 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **103건**.
-직전 회차: ✅ `[Coupang Pay Tech] Staff Mobile Engineer`(8194393) 4항목 — **제목은 Mobile, 자격은 Android 6년↑**. iOS 공고와 겹침 0.
-직전 회차: ✅ `Staff iOS Engineer`(8146512, 쿠팡페이·로켓페이 iOS, 6년↑) 5항목.
-직전 회차: ✅ `Staff, SRE (Tech Infra)`(8018258, 선릉, 5년↑) 6항목.
-직전 회차: ✅ `Staff Backend Engineer (Coupang Pay)`(8073876) 4항목 — FDS·컴플라이언스. 우대 칸만 들어와 quote 는 우대에서만.
-직전 회차: ✅ `Staff, ML Engineer (Search & Discovery)`(8130043, 추천) 5항목 + Sr. Staff(8130040) dup. 기존 브리핑과의 0.52 겹침은 **채용 절차·서류 반환 같은 공통 문구** 탓이었다.
-직전 회차: ✅ `Staff, Back-end Engineer (Gateway Services)`(8027677) 5항목 + Senior Staff(8027678) dup(연차 8↔12).
-직전 회차: ✅ `[Coupang Pay] Sr. Back-end Engineer (Pay Test Operations)`(8212748) 4항목 + Staff(8212656) dup.
-⚠️ **제목(Test Operations)과 본문(플랫폼·HA/DR·CI/CD)이 어긋난다** — verdict 첫 줄과 `open_questions` 에 적었다.
-⚠️ 새 크롤부터 쿠팡 공고 URL 일부가 `job-boards.greenhouse.io/coupang/jobs/<id>` 형식 — 번호로 찾는다.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **104건**.
+직전 회차: ✅ `Staff, Backend Engineer (Core Member & Infra Platform Team)`(8081147, 선릉) 5항목 — **Staff 인데 3년↑**, 비자 지원 없음.
+⚠️ 그사이 마감·삭제: `Staff, Back-end (Traffic Management)`(8104792, closed), `Staff, ML Engineer - Coupang Play`(7927865, 데이터에 없음).
 
-**남은 서울 ats 개발 공고**(보안 제외):
-- 쌍: (쌍 모두 정리)
-- 단독: `Staff, ML Engineer - Coupang Play`(7927865), `Staff, Back-end (Traffic Management)`(8104792) 등
-- 보안 계열 남은 것: Cyber Threat Hunting·Control Assurance·Vendor Security·Pen Tester·Forensics·Attack Surface·Email Detection·Mobile Security 등
-⚠️ 다음 회차: `Staff, ML Engineer - Coupang Play`(7927865) 또는 `Staff, Back-end (Traffic Management)`(8104792). ⚠️ 겹침을 셀 때 **채용 절차·Privacy·Document Return 공통 문구를 빼고** 센다(안 빼면 무관한 공고가 0.5 로 보인다).
+**남은 서울 공고(미작성, 모집중)** — 번호로 찾는다:
+- 개발: Streaming & AI Infra Backend(7919211), TW Pre-Purchase Backend(8090538), Global Ops Tech Backend(7230867),
+  Staff Android (Rocket Pay)(8034909), Detection Platform(8188124), Security SW - Coupang Play(7956945),
+  ML Ads(8012236), Sr. Staff ML Eats Search(8146344), Sr. Staff AI Data Center Architect(7994883),
+  System Eng(8040801), Network Eng(8171509), IAM Eng(8172668), Senior QA (Advertiser Platform)(8222455)
+- 보안: Attack Surface(8160905), Forensics(8052967), Pen Tester(8163504), Email Detection(7813854),
+  Control Assurance(8163764), Threat Hunting(8163723), Info Sec CFS(8158581), Vendor Security(8163760),
+  Mobile Security(8203471), AI Security Architect(8224844)
+- 데이터 사이언스: Sr. Staff DS Incrementality(8029811)
+⚠️ 다음 회차: `Staff Backend Engineer (Streaming & AI Infrastructure)`(7919211).
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중

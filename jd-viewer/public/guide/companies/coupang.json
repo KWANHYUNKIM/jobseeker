@@ -10923,6 +10923,112 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8081147",
+      "title": "Staff, Backend Engineer (Core Member & Infra Platform Team)",
+      "site": "ats",
+      "verdict": "선릉 오피스 근무. 직함은 Staff 지만 자격은 '전문 소프트웨어 개발 3년 이상 + Java/Kotlin 3년 + 설계·아키텍처 리딩 3년'이다. 쿠팡의 모든 서비스가 기대는 회원(Member) 도메인·인증·데이터 서빙 플랫폼을 한국·대만·일본 글로벌로 확장하는 팀에서 기술 방향을 세우고 엔지니어를 이끄는 사람. 비자 지원은 없다고 공고에 적혀 있다.",
+      "fit": {
+        "must_have": [
+          "전문 소프트웨어 개발 3년 이상(인턴 제외)",
+          "Java·Kotlin 3년",
+          "설계·아키텍처 리딩 3년",
+          "멘토·테크 리드 경험",
+          "마이크로서비스를 웹 스케일로 확장한 경험"
+        ],
+        "can_learn": [
+          "회원·인증·PII 데이터 플랫폼(우대)",
+          "Spark·Cassandra·Kafka 파이프라인(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "회원·인증·PII 를 다루는 백엔드 플랫폼",
+          "from": "preference",
+          "quote": "회원 정보, 인증 및 개인정보(PII) 관련 데이터를 처리하는 백엔드 플랫폼 또는 서비스 개발 경험",
+          "priority": "high",
+          "why": "팀 소개가 '쿠팡의 모든 서비스가 기반으로 하는 회원 도메인과 인증 및 데이터 플랫폼'이다. 모든 요청이 거치는 곳이라 가용성과 개인정보 보호가 동시에 걸린다(추론).",
+          "gap_check": "모든 서비스가 매 요청 회원 정보를 조회할 때, 캐시로 부하를 줄이면서도 회원 탈퇴·정보 변경이 즉시 반영돼야 하는 요구는 어떻게 맞추는가?",
+          "drill": "회원 조회 API 에 Redis 캐시를 두고 변경 이벤트(Kafka)로 캐시를 무효화하는 구조를 만든 뒤, 탈퇴 직후 조회가 캐시로 새지 않는지 테스트한다. PII 필드는 로그에 남지 않게 마스킹한다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "마이크로서비스를 웹 스케일로 확장",
+          "from": "qualification",
+          "quote": "마이크로서비스 아키텍처를 다루고 이를 웹 스케일로 확장한 경험",
+          "priority": "core",
+          "why": "팀 소개가 '전세계 수백만 건에 달하는 쿠팡 사용자의 요청을 처리할 차세대 데이터 서빙 플랫폼'이다.",
+          "gap_check": "회원 서비스가 한국·대만·일본을 함께 지원할 때 데이터를 지역별로 나눌지(샤딩·리전) 하나로 둘지, 규제와 지연을 기준으로 어떻게 정하는가?",
+          "drill": "회원 테이블을 국가 코드 기준으로 샤딩하는 라우팅 계층을 만들고, 국가 간 조회가 필요한 기능(글로벌 로그인) 하나를 설계해 본다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "설계·아키텍처 리딩 (신뢰성·확장성)",
+          "from": "qualification",
+          "quote": "신규 및 기존 시스템의 설계 또는 아키텍처(소프트웨어 설계 패턴, 안정성 및 확장성) 리딩 경험 3년 이상",
+          "priority": "core",
+          "why": "3년이라는 짧은 연차에 '리딩'을 요구하는 자리다. 설계 문서와 리뷰로 방향을 정한 경험을 본다(추론).",
+          "gap_check": "자신이 설계를 이끈 시스템 하나를 요구사항 → 대안 → 선택 이유 → 운영 결과로 설명할 수 있는가?",
+          "drill": "회원 인증 토큰 발급 서비스의 설계 문서(RFC)를 한 편 쓴다 — 세션 vs JWT, 키 교체, 폐기 목록, 장애 시 동작을 비교한다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "Java·Spring·쿠버네티스 기반 개발",
+          "from": "preference",
+          "quote": "Java / IntelliJ / Spring 환경에서의 업무 경험",
+          "priority": "high",
+          "why": "우대에 Java·Spring, Kubernetes, AWS 가 함께 적혀 있다.",
+          "gap_check": "Spring Boot 서비스를 쿠버네티스에 올릴 때 readiness/liveness 프로브와 graceful shutdown 을 잘못 설정하면 배포 중 어떤 오류가 나는가?",
+          "drill": "Spring Boot 서비스를 kind 에 배포하고 graceful shutdown·프로브를 설정한 전후로 롤링 배포 중 오류율을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Spring Boot — Graceful Shutdown",
+              "url": "https://docs.spring.io/spring-boot/reference/web/graceful-shutdown.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 파이프라인 (Spark·Cassandra·Kafka·Airflow)",
+          "from": "preference",
+          "quote": "Spark, Hadoop, Cassandra, Kafka, Airflow를 사용한 데이터 파이프라인 개발 경험",
+          "priority": "nice",
+          "why": "팀이 회원 도메인과 함께 데이터 플랫폼을 맡는다고 적혀 있다.",
+          "gap_check": "회원 변경 이벤트를 Kafka 로 받아 Cassandra 조회용 테이블을 갱신할 때 순서 뒤바뀜과 재처리를 어떻게 다루는가?",
+          "drill": "회원 변경 이벤트를 Kafka 로 흘려 Cassandra(도커)에 최신 상태를 쓰는 소비자를 만들고, 이벤트 순서를 섞어 넣어도 최종 상태가 맞는지 확인한다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "회원 서비스 설계 문서 + 부하 테스트",
+          "why": "3년 차에게 '리딩'을 요구하는 자리라, 설계를 문서로 이끌고 수치로 검증한 결과물이 가장 강한 증거다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 자세히 들어오지 않았다.",
+        "expect": [
+          "회원 캐시와 즉시 반영",
+          "글로벌 샤딩 판단",
+          "인증 토큰 설계",
+          "쿠버네티스 배포 안정성",
+          "설계를 이끈 경험"
+        ],
+        "sources": [
+          {
+            "title": "Staff, Backend Engineer (Core Member & Infra Platform Team)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8081147",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
