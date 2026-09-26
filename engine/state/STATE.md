@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**stmn — 기능 2(`split-the-vendor-code` · `kmp-add-swiftui-only`, 2026-09-26). 두 도메인 채움. FANTS 수익원에 도메인이 없어 완주 기준 셋째 미달 — 다음 stmn 사이클에 FANTS 기술 글 조사(tech.stmn.co.jp 검색 'FANTS'). 다만 `--gaps` 는 큐가 비어 **후보 조사(81번째)** 를 찍는다 — 사다리대로 그것을 먼저. 머니포워드(hold)·LayerX 는 in_progress.**
+**없다(stmn 은 FANTS 미연결로 in_progress) — 81번째 후보 조사(2026-09-26)로 대기 2/3: LegalOn(리걸테크) · Findy(엔지니어 플랫폼). 다음 사이클: `--gaps` 가 찍는 대로 — 확장이 없으면 stmn FANTS 조사 1회째(tech.stmn.co.jp 검색 'FANTS'), 그다음 신규 LegalOn(`tech.legalforce.co.jp`, 하테나). 머니포워드(hold)·LayerX 는 in_progress.**
+
 
 
 

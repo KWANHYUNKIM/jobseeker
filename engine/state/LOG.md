@@ -1344,3 +1344,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 stmn 확장 — 로직은 그대로, SwiftUI 화면만 얹었다
 
 - KMP 수부 앱 글(06-26)로 `kmp-add-swiftui-only`(결정 8). 2022 KMM 복선·네이티브 재작성 기각·shared 규칙·expect class 유지·Ktor 3 쿠키 버그·SKIE·Xcode Cloud·JDK 17 스크립트. 두 도메인 채움, FANTS 미연결.
+
+## 2026-09-26 여든한 번째 후보 조사
+
+- 2/3 — LegalOn · Findy(하테나). every 는 사용법 위주로 통과 못 함, dely·Visional·JX·pixiv·Mercari·kaonavi 는 9월 사이트맵이 비어 미판정.
