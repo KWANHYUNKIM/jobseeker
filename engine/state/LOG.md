@@ -1965,3 +1965,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 SODA hold
 
 - 검색 1 RSS 20편 · 검색 2 Zenn 검색 API 3낱말(톱 리뉴얼 글만). hold_reason·'재시도 안 함'·QUEUE hold.
+
+## 2026-09-26 COUNTERWORKS 회사 프로파일
+
+- counterworks.jp 로 서비스 둘(ショップカウンター 마켓·SCE SaaS). 기술 글 둘 다 SCE — 멀티테넌트화 연재·SolidQueue 이행을 도메인 둘로.

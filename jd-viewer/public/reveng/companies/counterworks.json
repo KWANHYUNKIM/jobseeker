@@ -1,0 +1,149 @@
+{
+  "slug": "counterworks",
+  "name": "カウンターワークス",
+  "name_en": "COUNTERWORKS",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "counterworks.jp",
+  "one_liner": "팝업 스토어 공간 플랫폼 ショップカウンター 와 상업 시설 리싱 SaaS SCE 의 카운터워크스 — 도입 기업마다 따로 서던 Rails 앱을 10개월에 걸쳐 PostgreSQL 공유 DB·RLS·이중 방어의 멀티테넌트 한 환경으로 합치고, 60개 넘는 잡은 유료판 대신 Rails 8 의 SolidQueue 로 Phase 를 나눠 옮겨 Redis 를 걷어 냈다",
+  "business_model": "상업 공간을 둘로 판다. **ショップカウンター** 는 팝업 스토어·이벤트용 상업 공간(상업 시설·노면점·역 안·오피스 빌딩·전시장)을 찾고 예약·지불하는 온라인 플랫폼으로, 빌려주는 쪽은 빈 구획을 게재해 수익화한다. **ショップカウンター エンタープライズ(SCE)** 는 상업 시설이 새 테넌트와 연결되고 리싱 흐름을 효율화하는 클라우드 관리 시스템(SaaS)이다. 수수료·요금 구조와 비중은 공개 자료에서 확인하지 못했다.",
+  "products": [
+    "ショップカウンター(상업 공간 검색·예약·지불 플랫폼)",
+    "ショップカウンター エンタープライズ(SCE — 상업 시설 리싱 DX SaaS)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "SCE(상업 시설 리싱 DX SaaS)",
+      "how": "상업 시설에 리싱 관리 클라우드를 제공한다. 요금 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함",
+      "domains": [
+        "도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다",
+        "60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "トップページ | 株式会社カウンターワークス（COUNTERWORKS）",
+          "url": "https://www.counterworks.jp/",
+          "publisher": "株式会社カウンターワークス",
+          "date": "2026-09-26",
+          "summary": "서비스 둘 — **ショップカウンター**: 팝업 스토어·이벤트 같은 상업 공간을 쉽게 찾고 쓰는 일본 최대급 온라인 플랫폼(상업 시설·노면점·역 안·오피스 빌딩·전시장의 검색·예약·지불을 원스톱, 전문 컨시어지). 공간을 빌려주는 쪽은 빈 구획·유휴 공간을 게재해 수익화. **商業施設向けリーシングDXシステム**: 영업으로 못 만나던 새 테넌트와의 연결과 효율적인 리싱 흐름. ISO/IEC 27001 취득(2026-09)."
+        },
+        {
+          "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+          "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+          "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+          "date": "2026-05-27",
+          "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+        },
+        {
+          "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+          "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+          "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+          "date": "2026-07-01",
+          "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+        }
+      ]
+    },
+    {
+      "name": "ショップカウンター(공간 마켓플레이스)",
+      "how": "상업 공간의 검색·예약·지불을 중개한다. 수수료 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "トップページ | 株式会社カウンターワークス（COUNTERWORKS）",
+          "url": "https://www.counterworks.jp/",
+          "publisher": "株式会社カウンターワークス",
+          "date": "2026-09-26",
+          "summary": "서비스 둘 — **ショップカウンター**: 팝업 스토어·이벤트 같은 상업 공간을 쉽게 찾고 쓰는 일본 최대급 온라인 플랫폼(상업 시설·노면점·역 안·오피스 빌딩·전시장의 검색·예약·지불을 원스톱, 전문 컨시어지). 공간을 빌려주는 쪽은 빈 구획·유휴 공간을 게재해 수익화. **商業施設向けリーシングDXシステム**: 영업으로 못 만나던 새 테넌트와의 연결과 효율적인 리싱 흐름. ISO/IEC 27001 취득(2026-09)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "기업마다의 앱을 하나로, 잡 기반을 DB 로",
+    "question": "리싱 SaaS 는 도입 기업마다 따로 선 앱을 어떻게 하나로 합치고, 수십 개 잡의 기반을 어떻게 멈추지 않고 바꾸나?",
+    "code": "flowchart LR\n  A1[\"A 사 Rails 앱 · MySQL\"] -.통합.-> ONE[\"SCE 한 환경\\nRails 8\"]\n  A2[\"B 사 Rails 앱\"] -.-> ONE\n  ONE --> PG[(\"PostgreSQL 공유 DB\\nRLS · 테넌트 식별 열 · UUIDv7\")]\n  ONE -->|60+ 잡| SQ[\"SolidQueue\\nPostgreSQL\"]\n  SK[\"Sidekiq OSS · Redis\"] -.Phase 이행 · 철수.-> SQ",
+    "_note": "두 도메인 모두 SCE 의 글이다. ショップカウンター(공간 마켓플레이스)의 기술 글은 아직 못 봤다."
+  },
+  "domains": [
+    {
+      "name": "도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다",
+      "why": "SCE 는 도입 기업마다 Rails 앱이 따로 서 있었다 — '한 곳 더 늘면 못 돌린다'. 공유 환경으로 합치려면 DB 를 바꾸고 모든 테이블에 테넌트 경계를 넣어야 했다.",
+      "tech": [
+        {
+          "tech": "공유 DB + RLS + 이중 방어(앱 층·DB 층) · MySQL → PostgreSQL · 200 테이블 테넌트 식별 열 · UUIDv7 주키 + 대리 키·URL 대응 · 5 Phase 약 10개월",
+          "solves": "도입 기업이 늘어도 한 환경에서 돌린다.",
+          "limits": "일반 개발 팀과 별도의 최정예로 약 10개월이 들었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+              "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-05-27",
+              "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다",
+      "why": "SCE 는 60개 넘는 비동기 잡을 Sidekiq OSS(무료판)로 돌렸는데, 운영 규모에서 기능 제한이 아팠고 잡 상태가 블랙박스였다.",
+      "tech": [
+        {
+          "tech": "SolidQueue(PostgreSQL) · Phase 분할 단계 이행(Phase 사이 병행 금지) · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 삭제) · Sentry 트레이싱 대응",
+          "solves": "유료판 없이 기능 제한을 풀고 Redis 인프라를 걷어 낸다.",
+          "limits": "Sidekiq 고유 기능은 대체를 스스로 만든다(실장편).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+              "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "요금·수수료 구조와 매출 비중을 확인하지 못했다.",
+    "ショップカウンター(공간 마켓플레이스)의 기술 결정 글을 아직 못 봤다.",
+    "연재 제2회(PostgreSQL 이행 `0eb98271af2991`)·제3회(이중 방어 `1887cb36a1b701`)·SolidQueue 실장편은 다음 사이클에 읽는다."
+  ],
+  "sources": [
+    {
+      "title": "トップページ | 株式会社カウンターワークス（COUNTERWORKS）",
+      "url": "https://www.counterworks.jp/",
+      "publisher": "株式会社カウンターワークス",
+      "date": "2026-09-26",
+      "summary": "서비스 둘 — **ショップカウンター**: 팝업 스토어·이벤트 같은 상업 공간을 쉽게 찾고 쓰는 일본 최대급 온라인 플랫폼(상업 시설·노면점·역 안·오피스 빌딩·전시장의 검색·예약·지불을 원스톱, 전문 컨시어지). 공간을 빌려주는 쪽은 빈 구획·유휴 공간을 게재해 수익화. **商業施設向けリーシングDXシステム**: 영업으로 못 만나던 새 테넌트와의 연결과 효율적인 리싱 흐름. ISO/IEC 27001 취득(2026-09)."
+    },
+    {
+      "title": "導入企業ごとにRailsアプリが生えていたのを10ヶ月かけて1つの環境に統合した全記録（マルチテナント化連載 第1回・俯瞰編）",
+      "url": "https://zenn.dev/counterworks/articles/3e0df3b62f55f9",
+      "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+      "date": "2026-05-27",
+      "summary": "리싱 DX 클라우드 관리 시스템 **ショップカウンター エンタープライズ(SCE)** — 도입 기업마다 Rails 앱이 따로 서 있었고 '한 곳 더 늘면 못 돌린다'. **공유 DB + RLS + 이중 방어**로 정하기까지. 약 10개월, 일반 개발 팀과 별도로 최정예를 모아 — Phase 0 스파이크·기술 검증(2024년 5~8월) → Phase 1 MySQL → PostgreSQL 완전 이행(2024년 7~9월) → Phase 2 200 테이블에 테넌트 식별 열 추가 + RLS(2024년 8~11월) → Phase 3 UUIDv7 주키 이행 + 대리 키·URL 대응(2024년 12월~2025년 1월) → Phase 4 통합 환경 구축과 본번 통합(2025년 2~3월). 해서 좋았던 것·했으면 좋았을 것."
+    },
+    {
+      "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+      "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+      "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+      "date": "2026-07-01",
+      "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+    }
+  ]
+}

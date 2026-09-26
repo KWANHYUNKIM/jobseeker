@@ -48,13 +48,13 @@
 | **dely(クラシル)** | JP · 레시피·절약 앱·리테일 AI | 프로파일(2026-09-26). 도메인 둘(레시챌) — 수억 장의 영수증 화상을 싸게 쌓아 둔다 · 쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다. 기능 3(`receipt-image-storage-tiering` · `braze-personalization-four-ways` · `serving-size-adjustment`) — 셋째 도메인 '레시피의 분량을 사람 수에 맞춰 바꾼다'(클라시루). **hold** — AI OS·TRILL/LIVEwith 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음. 입구 `zenn.dev/p/dely_jp/feed`. |
 | **みてね(MIXI · 家族アルバム)** | JP · 가족 사진·영상 공유 앱 | 프로파일(2026-09-26). 도메인 둘 — 가족당 수백만 장에서 말로 사진을 찾는다 · 내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다. 기능 2(`natural-language-photo-search` · `ingress-nginx-to-envoy-gateway`). **hold** — 프린트·포토북 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 사진 프린트·포토북은 도메인 없음. 입구 `zenn.dev/p/mitene/feed`. |
 | **SODA(スニーカーダンク)** | JP · 감정 붙은 스니커·트레카 마켓 | 프로파일(2026-09-26). 도메인 둘 — 구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다 · 상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다. 기능 2(`purchase-payment-idempotency` · `purchase-flow-tla-audit`). **hold** — 실매장 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 실매장은 도메인 없음. 입구 `zenn.dev/p/team_soda/feed`. |
+| **COUNTERWORKS** | JP · 상업 공간 플랫폼·리싱 SaaS | 프로파일(2026-09-26). 도메인 둘(SCE) — 도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다 · 60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다. 기능 0. 수익원 둘 중 ショップカウンター 는 도메인 없음. 입구 `zenn.dev/p/counterworks/feed`. |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **COUNTERWORKS** | JP · 상업 시설·팝업 스토어 B2B SaaS | Zenn Publication `zenn.dev/p/counterworks`(RSS 20편). **멀티테넌트화 연재** — 도입 기업마다 Rails 앱이 따로 생기던 것을 10개월에 걸쳐 한 환경으로 통합(`3e0df3b62f55f9`, 2026-05-27) · 본번 가동 중 MySQL → PostgreSQL 이행(`0eb98271af2991`) · 앱 층과 DB 층의 이중 방어로 테넌트 분리(`1887cb36a1b701`). 곁글 — Sidekiq OSS → Solid Queue 60개 넘는 잡 단계 이행·대체·운용. **상업 부동산 SaaS 축**. |
 | **Luup** | JP · 전동 킥보드·자전거 셰어링 | Zenn Publication `zenn.dev/p/luup_developers`(RSS 20편). **Claude Code 와 함께한 대규모 레거시 이행 기록**(`server-jang-20260716`) · 프런트엔드도 아키텍처와 마주한다(`server-isamu-20260520`) · Android 기술 부채. **모빌리티 축**. 제품 결정 글이 약할 수 있어 프로파일 때 다시 판정. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
