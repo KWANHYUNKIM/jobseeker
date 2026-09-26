@@ -1436,9 +1436,9 @@
       "country": "EU",
       "category": "커머스",
       "status": "done",
-      "features_done": 2,
+      "features_done": 3,
       "one_liner": "세계 최대의 숙박 예약 플랫폼",
-      "updated_at": "2026-09-06",
+      "updated_at": "2026-09-26",
       "domain": "booking.com"
     },
     {
@@ -2884,7 +2884,8 @@
     "디자인에서 제품 코드까지",
     "고객에게 알린다",
     "검색 개인화",
-    "클라우드로 옮기는 고객을 미리 시험한다"
+    "클라우드로 옮기는 고객을 미리 시험한다",
+    "사내 인프라의 한계를 미리 잰다"
   ],
   "countries": {
     "KR": "한국",

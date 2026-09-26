@@ -5,7 +5,7 @@
   "country": "EU",
   "category": "커머스",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "booking.com",
   "one_liner": "세계 최대의 숙박 예약 플랫폼 — 그리고 자기 백업이 자기 자신에게 묶여 있던 것을 글로 적어 낸 회사",
   "business_model": "묵을 곳을 중개하고 그 거래에서 몫을 뗀다. 공개 수치는 모회사 Booking Holdings 기준이다 — 2025년 총 여행 예약액 1,861억 달러(+12%), 객실 밤 12억(+8%), 조정 EBITDA 99억 달러 초과(+20%), 순이익률 20.1%. 220개국 이상에서 소비자 브랜드 다섯(Booking.com·Priceline·Agoda·KAYAK·OpenTable)으로 판다. Booking.com 단독의 매출·수수료율은 이 자료에 없다. 확실한 것은 규모다 — 숙소 약 440만 곳(대체 숙박 390만), 직원 24,000명 이상.\n\n**이 문서의 도메인 둘은 예약이 아니라 예약을 받치는 것들의 규율이다.** 하나는 백업이 자기 자신에게 묶여 있던 것을 끊는 이야기이고 다른 하나는 웨어하우스의 품질을 앞단으로 옮기는 이야기인데, 둘 다 회사가 스스로 흠을 밝히며 시작한다. 예약·검색·가격 같은 본체 도메인을 안 세운 것은 그쪽 시스템 글을 아직 못 읽어서지 없다고 판단해서가 아니다(재구성).\n\n그래도 이 둘이 사업과 무관하지 않다. 숙소 440만 곳과 사업부 여덟이 같은 창고를 쓰는 회사에서 **작은 어긋남은 국소적으로 끝나지 않는다** — 한쪽은 복구 못 하는 재해로, 다른 쪽은 아무도 못 믿는 숫자로 돌아온다(재구성).",
@@ -39,7 +39,7 @@
   "domain_map": {
     "title": "Booking.com 도메인 지도",
     "question": "여덟 사업부가 함께 쓰는 바닥에서, 작은 결함은 어디까지 번지는가?",
-    "code": "flowchart TD\n  B[\"<b>숙박 예약</b><br/>• 숙소 약 440만 곳<br/>• 객실 밤 12억 (모회사 기준)\"]:::list --> I\n  I[\"<b>사내 인프라</b><br/>• MySQL 클러스터 250개 이상<br/>• 사업부 여덟이 쓰는 DWH\"]:::list\n  I --> D1[\"<b>지키는 것 안에<br/>지킬 수단을 두지 않는다</b><br/>• 백업 카탈로그의 순환 의존성<br/>• 실패 도메인을 밖으로\"]:::list\n  I --> D2[\"<b>품질을 마지막 관문이 아니라<br/>생애주기로 옮긴다</b><br/>• 코드가 있기 전부터 검토<br/>• 작은 결함이 번지는 것을 막는다\"]:::list\n  D2 -.->|작은 결함이 쌓이면<br/>믿음이 무너진다| D1"
+    "code": "flowchart TD\n  B[\"<b>숙박 예약</b><br/>• 숙소 약 440만 곳<br/>• 객실 밤 12억 (모회사 기준)\"]:::list --> I\n  I[\"<b>사내 인프라</b><br/>• MySQL 클러스터 250개 이상<br/>• 사업부 여덟이 쓰는 DWH\"]:::list\n  I --> D1[\"<b>지키는 것 안에<br/>지킬 수단을 두지 않는다</b><br/>• 백업 카탈로그의 순환 의존성<br/>• 실패 도메인을 밖으로\"]:::list\n  I --> D2[\"<b>품질을 마지막 관문이 아니라<br/>생애주기로 옮긴다</b><br/>• 코드가 있기 전부터 검토<br/>• 작은 결함이 번지는 것을 막는다\"]:::list\n  I --> D3[\"<b>사내 인프라의 한계를<br/>미리 잰다</b><br/>• Kafka 파티션 비율로 부하<br/>• N-1 복원력\"]:::list\n  D2 -.->|작은 결함이 쌓이면<br/>믿음이 무너진다| D1"
   },
   "domains": [
     {
@@ -164,6 +164,30 @@
       "features": [
         "shift-left-dwh-quality"
       ]
+    },
+    {
+      "name": "사내 인프라의 한계를 미리 잰다",
+      "why": "예약 시스템 뒤의 서비스와 Kafka 컨슈머가 인스턴스 하나를 잃어도 버티는지, 과잉 할당하고 있지는 않은지를 진짜 장애 없이 되풀이해 잰다. 추측 대신 서비스 주인이 쓸 수 있는 용량 결과를 내는 것이 이 도메인의 일이다.",
+      "tech": [
+        {
+          "tech": "자동 용량 시험 플랫폼 + Kafka 층(용량 API · 우선순위 assignor · 합성 건강 판정 · TTL 임대)",
+          "solves": "파티션 할당을 부하 조절 장치로 삼아, 건강한 컨슈머를 죽이지 않고 한 인스턴스의 지속 가능한 처리량과 N-1 복원력을 재고 스스로 되돌아온다.",
+          "limits": "부하 곡선이 약 1/P 로 이산적이고, 리밸런스가 그룹 전체에 걸려 한 번에 하나만 시험하며, 맞춤 assignor 는 그룹 전체의 조율된 배포가 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+              "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+              "publisher": "Booking.com Engineering",
+              "date": "2026-09-14",
+              "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "partition-ratio-load"
+      ]
     }
   ],
   "eras": [],
@@ -173,7 +197,8 @@
     "아직 안 읽은 글이 많다 — A Migration Adventure(저장소 수천 개를 SaaS 형상관리로) · Kotlin Multiplatform in Production · Stability in Jetpack Compose · The Causality Gap(자발적 채택의 진짜 효과 측정) · Progressive Web Applications.",
     "연표(eras)를 세울 자료를 아직 못 찾았다 — 읽은 두 편은 특정 프로젝트의 기록이다.",
     "본문은 브라우저(get_page_text)로만 온다 — medium.com/booking-com-development. 목록은 blog.booking.com 에서 WebFetch 로.",
-    "온프렘 카탈로그 구조가 언제부터였는지 모른다 — 글은 Bacula 를 도입하던 무렵이라고만 한다. 그래서 이 기능의 history 를 세우지 않았다. 이전 자체의 연도(2024 Q2 계획 · Q3 착수 · 2025 완료)만 본문에 담았다."
+    "온프렘 카탈로그 구조가 언제부터였는지 모른다 — 글은 Bacula 를 도입하던 무렵이라고만 한다. 그래서 이 기능의 history 를 세우지 않았다. 이전 자체의 연도(2024 Q2 계획 · Q3 착수 · 2025 완료)만 본문에 담았다.",
+    "Kafka 용량 시험으로 줄인 과잉 할당의 크기, 온보딩한 컨슈머 그룹 수, TTL 임대 길이는 밝히지 않는다."
   ],
   "features": [
     {
@@ -1121,6 +1146,300 @@
           "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
         }
       ]
+    },
+    {
+      "key": "partition-ratio-load",
+      "name": "Kafka 용량 시험 — 트래픽 대신 파티션을 옮겨 부하를 건다",
+      "domain": "사내 인프라의 한계를 미리 잰다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "Kafka 는 컨슈머 인스턴스 사이에 일을 나누기 쉽게 해 준다. 어려운 건 **분배가 바뀌어 한 인스턴스가 평소보다 많이 떠안을 때** 어떻게 되는지를 안전하게, 되풀이해 증명하는 것이다. HTTP 서비스에는 자동 용량 시험이 있었지만 Kafka 컨슈머는 **수동 훈련**이었다 — 인스턴스나 장애 도메인 하나를 통째로 내리고 나머지를 지켜봤다. 맞는 실패 모드를 재현하긴 했지만 **진짜 장애를 일으켜서** 재현했다. 완만한 오르막도, 일관된 멈춤 규칙도, 제어기가 죽었을 때의 자동 복구도 없었다.",
+        "metrics": [
+          {
+            "label": "답하려던 질문 셋",
+            "value": "컨슈머 인스턴스 하나가 **지속할 수 있는 최대 처리량**은? 인스턴스나 장애 도메인 하나가 사라지면 **나머지가 넘겨받은 일을 감당**하나? 진짜 한계를 몰라 **과잉 할당**하고 있지는 않나?",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "부하의 해상도",
+            "value": "파티션이 P 개면 가장 작은 단계는 토픽의 약 **1/P** — 5개면 20% 단위, 10개면 10% 단위. 파티션 하나짜리 토픽은 '가졌다/안 가졌다'밖에 못 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "정책",
+            "value": "**N-1 복원력** — N 대 중 한 대가 사라져도 남은 N-1 대가 건강 한계를 넘지 않고 감당하는가를 측정된 파티션 비율로 시험하고, 여유를 보고 조심스레 크기를 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "HTTP 시험을 그대로 옮기려다",
+          "thought": "HTTP 는 로드밸런서 뒤에서 한 인스턴스로 가는 트래픽 비율을 조금씩 올리면 된다. Kafka 엔 그런 손잡이가 없다 — 컨슈머가 **당겨 가고**, 병렬의 단위는 **파티션**이다. 한 인스턴스가 사라지면 리밸런스가 남은 쪽에 파티션을 더 주고, 추가 일은 완만한 증가가 아니라 **계단**으로 온다. 그러니 번역은 이것이다 — 트래픽 비율 대신 **파티션 비율**을 바꾼다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "장애 없이 장애를 재현하려면",
+          "thought": "건강한 컨슈머를 죽이지 않고도 한 인스턴스에 부하가 몰리는 상황을 만들 수 있다. 할당기가 **대상 인스턴스에 우선순위를 주면** 그 인스턴스가 동료보다 파티션을 더 받는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "되돌리기를 설계할 때",
+          "thought": "건강한 제어기가 있어야 변경을 되돌릴 수 있는 부하 시험은 **안전하지 않다.** 되돌리기는 제어기에 기대지 않고 스스로 일어나야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "용량을 하나의 숫자로 말하려다",
+          "thought": "용량은 지표 하나가 아니다. CPU 는 멀쩡한데 메모리·랙·처리 시간·오류 중 하나가 **먼저 묶일** 수 있다. 100% 에 닿는 건 쓸모 있는 성공 조건이 아니다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "스케줄러",
+            "what": "언제 돌지, 어느 인스턴스를 대상으로 할지, 요청 부하를 얼마나 올릴지 정하고 마지막 건강한 결과를 기록·보고한다. Kafka 를 모르고 비율로만 생각한다."
+          },
+          {
+            "name": "Kafka 용량 API",
+            "what": "추상적인 부하 비율을 실제 파티션 할당으로 옮기고, 확대·리셋 명령을 조율하고, 건강 신호를 모은다."
+          },
+          {
+            "name": "클라이언트 라이브러리 · 맞춤 assignor",
+            "what": "컨슈머와 함께 돈다. 평소엔 파티션을 관례대로 나누고, 시험 중엔 대상 인스턴스에 우선순위를 줘 파티션을 더 준다."
+          },
+          {
+            "name": "합성 건강 판정",
+            "what": "생존 · CPU/메모리 여유(서비스별 안전 한계) · 컨슈머 랙(레코드 나이 백분위) · 처리량과 오류. 필요한 것이 모두 통과해야 한 단계가 통과."
+          },
+          {
+            "name": "임대(TTL)",
+            "what": "모든 확대 명령에 붙는 유효 시간. 라이브러리는 임대가 살아 있는 동안만 임시 할당을 적용한다."
+          }
+        ],
+        "invariants": [
+          "한 번에 하나의 대상만 시험한다 — 리밸런스는 그룹 전체에 영향을 준다.",
+          "어떤 신호든 나빠지면 멈추고, 마지막으로 성공한 단계가 측정된 용량이다.",
+          "결과는 요청한 비율이 아니라 실제로 걸린 비율(파티션 수로 반올림된)을 보고한다.",
+          "제어기가 사라져도 임대가 끝나면 원래 할당으로 돌아온다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "현재 할당을 읽고 건강한 기준선을 잡는다",
+            "why": "비교할 출발점"
+          },
+          {
+            "step": "대상 인스턴스 하나를 고르고 다음 부하 단계를 요청한다",
+            "why": "결과를 한 인스턴스에 귀속시킨다"
+          },
+          {
+            "step": "Kafka 용량 API 가 요청 비율을 토픽이 실제로 받쳐 주는 가장 가까운 파티션 할당으로 바꾸고 리밸런스를 일으킨다 — 명령엔 TTL 이 붙는다",
+            "why": "비율 → 파티션 번역"
+          },
+          {
+            "step": "할당이 가라앉기를 기다린 뒤 합성 건강 판정을 본다",
+            "why": "빠른 신호와 늦게 오는 신호를 모두 잡는다"
+          },
+          {
+            "step": "대상이 건강하고 설정한 최대에 닿지 않았으면 반복한다",
+            "why": "계단식 오르막"
+          },
+          {
+            "step": "마지막 건강한 할당을 기록하고 원래 전략·배치로 명시적으로 리셋한다",
+            "why": "끝나면 제자리로"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Kafka 컨슈머의 부하를 무엇으로 조절할 것인가",
+            "chosen": "**트래픽 비율이 아니라 파티션 비율로** — 파티션 할당 자체를 안전하고 잴 수 있는 부하 조절 장치로 쓴다",
+            "alternatives": [
+              "인스턴스·장애 도메인을 내려 남은 쪽을 지켜보는 수동 훈련(이전)",
+              "격리 환경에서 생산자 속도를 올리는 시험"
+            ],
+            "tradeoff": "부하 곡선이 **이산적**이다 — 가장 작은 단계가 약 1/P 라 파티션이 적으면 곡선이 거칠고, 파티션 하나짜리 토픽은 오르막이 아예 없다. 더 촘촘한 곡선이 필요하면 파티션을 늘리거나 생산자 속도 시험 같은 다른 장치를 써야 한다. 대신 운영 중인 컨슈머의 진짜 실패 모드(리밸런스로 파티션이 몰리는 것)를 진짜 장애 없이 재현한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "한 인스턴스에 부하를 어떻게 몰 것인가",
+            "chosen": "**컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 준다**",
+            "alternatives": [
+              "건강한 컨슈머를 죽여 리밸런스를 일으키기"
+            ],
+            "tradeoff": "그룹의 모든 멤버가 할당 전략에 합의해야 해서, 맞춤 assignor 는 **계획된 배포와 시험한 롤백**이 필요하다 — 온보딩이 조율 작업이 된다. 대신 건강한 인스턴스를 하나도 죽이지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "일반 스케줄러에 Kafka 를 얼마나 알릴 것인가",
+            "chosen": "**셋으로 가른다** — 스케줄러는 비율만, Kafka 용량 API 가 번역·조율·건강 집계, 클라이언트 라이브러리가 할당 훅",
+            "alternatives": [
+              "범용 스케줄러를 Kafka 전용으로 고치기"
+            ],
+            "tradeoff": "계층이 하나 더 생긴다. 대신 HTTP 용으로 만든 범용 스케줄러가 **Kafka 세부를 몰라도 된다** — 작은 번역 계층 하나로 두 세계를 잇는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "한 단계가 안전하다는 것을 무엇으로 판단할 것인가",
+            "chosen": "**합성 건강 판정** — 생존, CPU·메모리 여유(한계에 여유를 둔 값), 컨슈머 랙 백분위, 가능하면 처리량·오류. 필요한 것이 모두 통과해야 통과",
+            "alternatives": [
+              "200 OK 같은 생존 확인만",
+              "CPU 100% 까지 올리기"
+            ],
+            "tradeoff": "빠른 지역 신호와 늦게 오는 랙·처리량 원격 측정을 함께 보려면 **충분히 오래 지켜봐야** 하고, 그동안 나쁜 할당이 걸려 있다. 대신 CPU 는 멀쩡한데 메모리나 랙이 먼저 묶이는 경우를 놓치지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "시험을 어떻게 되돌릴 것인가",
+            "chosen": "**모든 확대 명령에 TTL 임대를 붙인다** — 성공하면 명시적 리셋, 스케줄러나 API 가 시험 중에 사라지면 임대가 끝나 라이브러리가 스스로 원래 할당으로",
+            "alternatives": [
+              "제어기가 끝에 리셋을 보내는 것에만 기대기"
+            ],
+            "tradeoff": "임대 시간을 정해야 하고, 너무 짧으면 느린 신호를 보기 전에 풀린다(이 사이트의 해석). 대신 **한계를 찾을 만큼 공격적으로 올리면서도** 정상 상태로 돌아가는 길이 늘 유한하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "여러 대상을 동시에 시험할 것인가",
+            "chosen": "**한 컨슈머 그룹에 한 번에 한 대상만, 순차로**",
+            "alternatives": [
+              "여러 인스턴스를 병렬로"
+            ],
+            "tradeoff": "그룹이 크면 전부 재는 데 오래 걸린다(이 사이트의 해석). 리밸런스는 그룹 전체에 영향을 주므로, 겹치면 **결과를 어느 실험 탓으로 돌릴지** 알 수 없다. 할당이 가라앉는 시간도 실험의 일부로 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+                "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-09-14",
+                "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "HTTP 용량 시험 플랫폼",
+          "via": "범용 스케줄러",
+          "contract": "로드밸런서 뒤 한 인스턴스로 가는 트래픽 비율을 올리던 스케줄러를 그대로 쓰고, Kafka 층이 비율을 파티션으로 번역한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Kafka 컨슈머 그룹",
+          "via": "맞춤 assignor · 리밸런스",
+          "contract": "시험 중 대상 인스턴스에 우선순위를 줘 파티션을 더 주고, TTL 이 끝나거나 리셋되면 관례적 분배로 돌아간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "break-the-backup-loop",
+          "via": "없음",
+          "contract": "같은 회사의 인프라 글이지만 둘은 서로를 언급하지 않는다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 비율이 파티션이 되기까지",
+          "question": "건강한 컨슈머를 죽이지 않고 어떻게 한 인스턴스에 부하를 모는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  SCH[스케줄러<br/>비율로만 생각한다] -->|다음 단계 비율| API[Kafka 용량 API<br/>비율 → 파티션 · TTL 명령]\n  API --> LIB[\"<b>클라이언트 라이브러리</b><br/>맞춤 assignor · 대상에 우선순위\"]:::accent\n  LIB -->|리밸런스| GRP[컨슈머 그룹<br/>대상이 파티션을 더 가진다]\n  GRP --> HC{합성 건강 판정<br/>생존 · CPU/메모리 · 랙 · 처리량/오류}\n  HC -->|통과| SCH\n  HC -->|실패| STOP[멈춤 · 마지막 성공 단계 = 용량]\n  STOP --> RESET[원래 할당으로 리셋]\n  TTL[임대 만료]:::quiet -.->|제어기가 사라져도| RESET"
+        },
+        {
+          "title": "파티션 6개 · 인스턴스 3대의 시험",
+          "question": "부하는 어떤 계단으로 오르는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 균등: 인스턴스마다 파티션 2개\n  균등 --> P3: 대상이 3개 · 토픽의 50%\n  P3 --> P4: 건강하면\n  P4 --> P5: 건강하면\n  P5 --> P6: 건강하면 · 토픽 전부\n  P3 --> 기록: 어느 신호든 나빠지면\n  P4 --> 기록\n  P5 --> 기록\n  P6 --> 기록: 최대 도달\n  기록 --> [*]: 원래 배치로\n  note right of P3\n    가장 작은 단계는 약 1/P.\n    요청 비율이 아니라 실제 비율을 보고한다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 수동 훈련과 남는 한계",
+          "question": "예전 방식과 지금 방식은 각각 어디서 막히는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  DRILL[수동 훈련<br/>인스턴스 · 장애 도메인을 내린다]:::accent --> REAL[진짜 장애로 재현]\n  DRILL --> NOREP[재현 어려움 · 멈춤 규칙 없음]\n  DRILL --> NOREC[제어기가 죽으면 복구 없음]\n  FEWP[파티션이 적다] --> COARSE[단계가 거칠다 · 1개면 오르막 없음]\n  SLOWSIG[랙 · 처리량 신호가 늦다] --> HOLD[나쁜 할당을 오래 걸어 둔다]\n  GROUP[리밸런스는 그룹 전체] --> SERIAL[한 번에 한 대상만]\n  ONB[맞춤 assignor] --> COORD[그룹 전체가 전략에 합의 · 롤백 시험]\n  REAL -.->|그래서| PRIO[우선순위 할당]:::quiet\n  NOREC -.->|그래서| LEASE[TTL 임대]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+          "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+          "publisher": "Booking.com Engineering",
+          "date": "2026-09-14",
+          "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
+        }
+      ]
     }
   ],
   "sources": [
@@ -1143,6 +1462,13 @@
       "url": "https://www.bookingholdings.com/about/factsheet/",
       "publisher": "Booking Holdings",
       "summary": "모회사의 공개 지표. 2025년 총 여행 예약액·객실 밤 수·EBITDA 와 브랜드 구성을 담고 있다."
+    },
+    {
+      "title": "How We Built Automated Capacity Testing for Kafka Consumers",
+      "url": "https://medium.com/booking-com-development/how-we-built-automated-capacity-testing-for-kafka-consumers-1853623bce78",
+      "publisher": "Booking.com Engineering",
+      "date": "2026-09-14",
+      "summary": "HTTP 서비스용 자동 용량 시험 플랫폼을 Kafka 컨슈머로 넓힌 이야기. 로드밸런서처럼 트래픽 비율을 돌릴 손잡이가 Kafka 엔 없어, 부하를 '파티션 비율'로 바꿨다. 스케줄러는 비율로 생각하고, Kafka 용량 API 가 비율을 실제 파티션 할당으로 옮기고, 컨슈머와 함께 도는 클라이언트 라이브러리의 맞춤 assignor 가 대상 인스턴스에 우선순위를 줘 파티션을 더 가져가게 한다. 건강 판정은 생존·CPU/메모리 여유·컨슈머 랙·처리량/오류의 합성, 모든 명령에 TTL 을 달아 제어기가 죽어도 원래 할당으로 돌아온다. 부하 곡선이 약 1/P 단위로 이산적이라는 한계를 적는다."
     }
   ]
 }

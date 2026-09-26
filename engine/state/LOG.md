@@ -759,3 +759,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## block 재방문 (2026-09-26)
 
 09-22 Buzz 전후 비교 글 — 수치뿐, meshllm 보강 재료로. 09-01 Microfilm 안 읽은 재료. updated_at 만.
+
+## bookingcom 재방문 → 확장 (2026-09-26)
+
+09-14 Kafka 컨슈머 용량 시험 글로 partition-ratio-load. 결정 6개, 새 도메인 사내 인프라의 한계를 미리 잰다. Kafka 비교 재료에 더했다.

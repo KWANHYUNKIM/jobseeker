@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — block 재방문(새 글 하나, 기능 없음)을 마쳤다. 09-06 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
+**없다 — bookingcom 재방문에서 확장(`partition-ratio-load`)을 마쳤다. 09-06 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **bookingcom** — 2026-09-26 새 글 하나(Kafka 컨슈머 자동 용량 시험, 09-14) → `partition-ratio-load`. 08-27 실시간 인텔리전스 글은 09-06 전이고 출처에 없다. 피드 `medium.com/feed/booking-com-development`(본문 전문).
 - **block** — 2026-09-26 **새 글 하나, 기능으로 안 씀.** 「Shifting a project to buzz」(09-22)는 MeshLLM(자원봉사 OSS) 개발을 Buzz 로 옮긴 전후 2주 비교 — PR 병합 62→97(+56%), 병합 중앙값 약 7h→약 4h, 줄 변화 +66%(삭제도 함께). 결정·대가 없음, **`meshllm` 보강 재료**. 09-01 「Microfilm」은 출처에 없다 — 안 읽은 재료. 피드 `engineering.block.xyz/blog/rss.xml`.
 - **atlassian** — 2026-09-26 새 글 넷. 합성 데이터 엔진(09-21) → `rows-first-links-later`. Contagious Interview 차단(09-21, 보안 위협 분석)·Teamoji(09-16)·영상은 안 씀. 피드는 `atlassian.com/blog/how-we-build/feed`(엔지니어링 전용 `atlassian-engineering/feed` 는 비어 있다). 도메인 지도의 ⚠️·✅·⏳ 표시는 STYLE 위반 — 문체 보수 때 걷어낼 것.
 - **anthropic** — 2026-09-26 없음. `anthropic.com/engineering` 최신은 **05-25 「How we contain Claude across products」**(목록 맨 위, 날짜 표시 없음 — 본문에서 확인) — 09-06 전이지만 **출처에 없다. 안 읽은 재료**(격리·샌드박스, `claude-code-sandboxing` 과 이어질 것). updated_at 만. 1회째.
