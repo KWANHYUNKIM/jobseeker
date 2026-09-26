@@ -2424,3 +2424,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 e-dash 배출계수 갱신
 
 - `ea26d90415120f` 전문으로 기능 `emission-factor-update-agent`, 결정 8.
+
+## 2026-09-27 e-dash 권한 상한
+
+- `e6445bcba75e7c` 전문으로 기능 `alb-claim-size-permission-cap`, 결정 7.

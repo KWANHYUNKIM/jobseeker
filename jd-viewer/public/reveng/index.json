@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 2,
+      "features_done": 3,
       "one_liner": "청구서를 올리기만 하면 CO2 배출량이 나오는 탈탄소 SaaS 'e-dash' 의 회사 — 100 가지 넘는 청구서 포맷은 OCR 과 LLM 에 나눠 읽히되 계산은 서버가 하고, 해마다 바뀌는 배출계수는 AI 가 조사 · 초안까지 사람은 판단만, 거점마다 붙는 권한은 ALB 의 11KB 를 재어 상한을 정한다",
       "updated_at": "2026-09-27",
       "domain": "e-dash.io"

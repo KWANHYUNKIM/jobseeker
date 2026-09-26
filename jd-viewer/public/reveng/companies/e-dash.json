@@ -171,12 +171,14 @@
               "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
               "publisher": "e-dash",
               "date": "2026-08-31",
-              "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을."
+              "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "alb-claim-size-permission-cap"
+      ]
     }
   ],
   "features": [
@@ -1003,6 +1005,412 @@
           "summary": "**클라우드 서비스 × 컨설팅 지원**으로 탈탄소 경영을 — CO2 배출량의 가시화 · 보고 · 삭감을 한 플랫폼에서 전문가가 동행. **청구서 화상 데이터를 올리기만 하면 가시화**. 고객의 배출량 데이터에 기반한 삭감 액션 플랜을 맞춤 설계. 자치단체와의 협업. 국내 기업의 환경 관련 정보에 **등록 없이 무료로** 접근하는 데이터베이스도 연다."
         }
       ]
+    },
+    {
+      "key": "alb-claim-size-permission-cap",
+      "name": "'1 년 걸린다'던 상한을 반나절에 — 권한 50 건의 진짜 천장은 ALB 의 11KB 였다",
+      "domain": "거점이 많은 사용자의 권한을 인증 경로가 버티게 한다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "e-dash 는 기업의 CO2 배출량을 **거점(공장 · 사업소)** 단위로 모은다 — 三井物産 발표 때 이미 β 가 약 1,400 거점에서 쓰였다. 권한도 거점마다 1 건이라, 담당 범위가 넓은 사용자일수록 권한이 늘어난다. 한 안건에서 **사용자 1 명에게 50 건 넘는 권한**이 필요해졌다.\n\n사내 티켓엔 '권한 상한은 50 건, 100 건으로 올리려면 1 년 — IdP 에 500 자 제한이 있어서'라고 적혀 있었다. 그 문장이 1 년 넘게 이어지며 요구를 막고 있었다. 상한을 올릴 수 있는지, 있다면 어디까지인지를 **실제로 재야** 했다.",
+        "metrics": [
+          {
+            "label": "이전 상한",
+            "value": "50 건(사내 티켓: 100 건까지 1 년)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "label": "층별 여유",
+            "value": "IdP 사용자 속성 16MB · JWT custom claim 100KB · ALB OIDC userinfo 11KB",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "label": "ALB 기준 이론 상한",
+            "value": "5 자리 ID 배열로 1,500~1,700 건 — 안전선 1,000 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "label": "새 상한",
+            "value": "200 건(요건 기준)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "label": "걸린 시간",
+            "value": "원인 분리 반나절 · 상수 인상은 그날 안에",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "'500 자' 를 봤을 때",
+          "thought": "권한을 배열로 들면 500 자에 50 건 전후라는 계산은 맞는다. 확인할 건 **그 500 자가 어디에 걸리는 제한인가**였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+              "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+              "publisher": "e-dash",
+              "date": "2026-08-31",
+              "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+            }
+          ]
+        },
+        {
+          "at": "Auth0 문서를 읽고",
+          "thought": "500 자는 **가입 시(Signup) 엔드포인트 고유**의 제한이다 — 권한 부여는 가입 때 하지 않는다. 가입 시 제한을 전체 제한으로 바꿔 읽은 문장이 1 년 넘게 이어졌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+              "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+              "publisher": "e-dash",
+              "date": "2026-08-31",
+              "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+            }
+          ]
+        },
+        {
+          "at": "11KB 의 정체를 알았을 때",
+          "thought": "11KB 는 ALB 의 내부 사정이 아니라 **브라우저 쿠키 상한에서 내려온 숫자**다 — 앱에서 아무리 궁리해도 못 올린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+              "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+              "publisher": "e-dash",
+              "date": "2026-08-31",
+              "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+            }
+          ]
+        },
+        {
+          "at": "상한을 정하며",
+          "thought": "50 건은 기술적 근거가 있던 게 아니라 요건에 비해 **지나치게 낮은 채 남아 있었을 뿐**이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+              "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+              "publisher": "e-dash",
+              "date": "2026-08-31",
+              "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "거점 권한",
+            "what": "사용자가 볼 수 있는 거점(공장 · 사업소) 하나당 1 건. ID 배열로 IdP 의 claim 에 실린다."
+          },
+          {
+            "name": "user claims",
+            "what": "Auth0 가 userinfo 로 돌려주는 사용자 정보 — 권한 배열을 담는다."
+          },
+          {
+            "name": "AWSELBAuthSessionCookie",
+            "what": "ALB 가 user claims + access token 을 암호화해 담는 세션 쿠키. 4KB 씩 최대 4 개로 나뉜다(16KB)."
+          },
+          {
+            "name": "ELBAuthUserClaimsSizeExceeded",
+            "what": "claims + token 이 11KB 를 넘어 ALB 가 500 을 돌려줄 때 올라가는 CloudWatch 메트릭."
+          },
+          {
+            "name": "천장과 요건",
+            "what": "기술적으로 갈 수 있는 곳(1,000 건)과 실제로 필요한 곳(200 건)을 티켓에 따로 적는다."
+          }
+        ],
+        "invariants": [
+          "한 사용자의 권한 수는 요건 상한(200)을 넘지 않는다.",
+          "요건 상한은 안전선(1,000) 아래, 안전선은 ALB 이론 상한(1,500~1,700) 아래에 둔다.",
+          "claims 크기 초과는 앱 로그가 아니라 ALB 메트릭으로 본다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사내 티켓의 '500 자 제한'이 어디에 걸리는지 Auth0 문서로 확인 — Signup 엔드포인트 고유, Management API 갱신엔 해당 없음",
+            "why": "적힌 이유가 이번 경로와 관계있는지부터."
+          },
+          {
+            "step": "dev 환경에서 한 사용자의 권한 수를 올려 가며 로그인 — 5,000 건에서 실패, ALB 액세스 로그에 AuthUserinfoResponseSizeExceeded",
+            "why": "실제로 어디서 무엇이 떨어지는지 본다."
+          },
+          {
+            "step": "Auth0 쪽 로그(Management API 갱신 · userinfo 응답 성공)와 비교해 ALB 가 원인임을 분리 — 문서 정독과 로그 분석은 Claude Code",
+            "why": "IdP 탓으로 시간을 녹이지 않는다."
+          },
+          {
+            "step": "층별 여유를 다시 잰다 — IdP 16MB · JWT 100KB · ALB 11KB",
+            "why": "묶는 층이 하나뿐인지 확인."
+          },
+          {
+            "step": "11KB 에서 역산(1,500~1,700 건) → 안전선 1,000 → 요건 200 으로 상수 인상",
+            "why": "천장까지 쓰지 않는다."
+          },
+          {
+            "step": "티켓에 '천장 1,000 · 요건 200 · 그래서 200'을 적고, ELBAuthUserClaimsSizeExceeded 에 알림",
+            "why": "다음에 같은 논의가 나와도 다시 조사하지 않고, 앱 로그에 안 남는 실패를 잡는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "'100 건까지 1 년'이라는 티켓을 믿나?",
+            "chosen": "**믿지 않고 적힌 제한이 어디에 걸리는지 확인한다.**",
+            "alternatives": [
+              "티켓대로 50 건을 유지하고 요구를 거절한다"
+            ],
+            "tradeoff": "500 자는 Auth0 Signup 엔드포인트 고유 제한이라 이번 경로와 무관했다 — 1 년 넘게 이어진 잘못된 전제를 걷어 냈다. 대가는 조사에 드는 시간(반나절).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "question": "어디서 막히는지 무엇으로 찾나?",
+            "chosen": "**dev 에서 권한 수를 실제로 올려 가며 로그인하고, ALB 액세스 로그와 Auth0 로그를 맞대 본다.**",
+            "alternatives": [
+              "문서만 읽고 추정한다"
+            ],
+            "tradeoff": "5,000 건에서 ALB 가 AuthUserinfoResponseSizeExceeded 를 남기고, Auth0 쪽은 성공 — 원인이 IdP 가 아니라 **받는 쪽 ALB** 임이 드러났다. 문서 정독과 로그 분석은 Claude Code 에 맡겨 반나절에 끝났다. 대가는 dev 에 권한 수천 건짜리 사용자를 만드는 준비.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "question": "권한은 계속 claim 에 싣나?",
+            "chosen": "**싣는다 — ALB OIDC 인증(authenticate-oidc) + claim 의 권한 배열 구성을 유지하고, 상한만 다시 정한다.**",
+            "alternatives": [
+              "권한을 claim 에서 빼 앱이 따로 조회한다(이 사이트의 해석 — 글은 구성 변경을 논하지 않는다)"
+            ],
+            "tradeoff": "ALB 가 세션을 서버 대신 **브라우저 쿠키**에 들고 앱은 claim 으로 권한을 받는 구성을 그대로 쓴다. 대가는 claims + access token 합계 **11KB**(쿠키 4KB × 최대 4 개에서 오는 숫자)라는 천장이 권한 수에 비례해 다가온다는 것 — 앱에서 못 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "question": "천장이 정말 ALB 하나뿐인가?",
+            "chosen": "**관계된 층을 늘어놓고 재 본다 — IdP 사용자 속성 16MB · JWT custom claim 100KB · ALB 11KB.**",
+            "alternatives": [
+              "처음 찾은 제한을 천장으로 삼는다"
+            ],
+            "tradeoff": "자릿수가 셋이나 달라, 묶는 건 ALB 뿐이고 Auth0 는 처음부터 상관없었다는 게 확정된다. 대가는 없음에 가깝다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "question": "새 상한을 몇으로 하나?",
+            "chosen": "**요건대로 200 건** — 이론 상한 1,500~1,700, 안전선 1,000 건 아래에서.",
+            "alternatives": [
+              "안전선 1,000 건까지 올린다"
+            ],
+            "tradeoff": "access token 길이 · 다른 claim 의 증감으로 한도가 흔들리니 여유를 크게 둔다. 대가는 200 을 넘는 요구가 오면 **다시 올려야** 한다는 것 — 그때도 1,000 까진 재조사 없이 간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "question": "이 판단을 어떻게 남기나?",
+            "chosen": "**티켓에 천장과 요건을 나눠 적는다 — '천장 1,000, 요건 200, 그래서 200'.**",
+            "alternatives": [
+              "최종 숫자만 적는다"
+            ],
+            "tradeoff": "50 건처럼 근거 없는 숫자가 남아 전제가 되는 일을 막고, 다음에 같은 논의가 나와도 다시 조사하지 않는다. 대가는 없음에 가깝다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          },
+          {
+            "question": "같은 실패를 어떻게 알아채나?",
+            "chosen": "**CloudWatch 의 ELBAuthUserClaimsSizeExceeded 에 알림, 검증은 권한이 가장 많은 사용자로.**",
+            "alternatives": [
+              "앱 로그 · 에러 감시에 맡긴다"
+            ],
+            "tradeoff": "ALB 가 500 을 돌려주고 끝나 **앱 로그엔 아무것도 없이 특정 사용자만** 로그인하지 못한다 — 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 보이지 않는다. 대가는 ALB 쪽 메트릭 · 알림을 따로 들고 있어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+                "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+                "publisher": "e-dash",
+                "date": "2026-08-31",
+                "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "e-dash 클라우드(수익원)",
+          "via": "거점 단위의 배출량 관리",
+          "contract": "e-dash 는 거점(공장 · 사업소) 단위로 배출량을 모은다 — β 때 이미 약 1,400 거점. 넓은 범위를 맡는 사용자가 많은 거점 권한을 가져야 하는 안건이 이 상한을 올리게 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+              "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+              "publisher": "e-dash",
+              "date": "2026-08-31",
+              "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+            },
+            {
+              "title": "CO2排出量可視化・削減クラウドサービスを提供する「e-dash株式会社」を設立 ～4月1日に正式版として提供開始～",
+              "url": "https://www.mitsui.com/jp/ja/topics/2022/1242915_13393.html",
+              "publisher": "三井物産",
+              "date": "2022",
+              "summary": "三井物産이 기업 · 자치단체의 CO2 배출량 가시화부터 삭감 방법까지 돕는 **e-dash 주식회사를 설립**(2022-02). 전년 10 월 공개한 β 판이 이미 **약 50 사 · 약 1,400 거점**에서 쓰였고 4 월 1 일 정식판. **전기 · 가스 요금 청구서를 업로드하기만 하면** 사업의 CO2 배출량을 자동 산출해 집계 · 계산 수고를 줄인다. β 뒤 원단위 산출 · 목표 관리를 더했고, 정식판에서 **서플라이 체인 배출량(Scope 3)** 도 산출 · 가시화."
+            }
+          ]
+        },
+        {
+          "to": "emission-factor-update-agent",
+          "via": "'검증할 수 있게 적어 둔다'",
+          "contract": "계수 갱신은 판정 근거를 PR 에 붙여 리뷰를 판정 확인으로 바꿨고, 권한 상한은 '천장과 요건'을 티켓에 나눠 적어 재조사를 없앴다 — 같은 회사가 판단의 근거를 남기는 방식이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+              "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+              "publisher": "e-dash",
+              "date": "2026-08-31",
+              "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+            },
+            {
+              "title": "環境省の排出係数更新、依頼起票からPR作成までをAIで自動化した話",
+              "url": "https://zenn.dev/edash_tech_blog/articles/ea26d90415120f",
+              "publisher": "e-dash",
+              "date": "2026-08-21",
+              "summary": "환경성이 매년 공표하는 **전기 사업자별 배출계수**(연도 정기 + 부정기 개정)를 DB 에 넣어 배출량 계산에 반영하는 업무. 계수는 '전기 사업자 × 메뉴'로 정해지는데 고객이 고르는 건 '계약 플랜' — **플랜과 메뉴의 매핑**(중간 테이블)에 외래 키로 표현 못 하는 업무 규칙이 있어 **DB 검증으로 막을 수 없다**. 공표 데이터 전량은 BigQuery 뷰에 따로 두어 계수 값을 대조. 한 건의 의뢰 = 신규 등록 여부 판정 → 기존 데이터 대조 → 매핑 추가 판정 → 마이그레이션(매번 조합이 달라 템플릿 복사로 안 됨, 전기 오류 · 확인 누락, 많으면 1~2 시간). AI 에 맡긴 근거 셋: 정형성 · 입출력 명확 · **검증 가능성**(공표 데이터와 기계적으로 대조). Slack 워크플로 → 티켓에 어떤 Agent Skill 을 어떤 순서로 쓸지 자동 기재, 각 Skill 결과는 티켓 코멘트로. **'AI 는 조사와 초안까지, 본번에 닿는 판단은 사람'** — 매핑 규칙 문서를 참조해 AI 도 1 차 검증, 사람 리뷰의 이중 체크. 흐름 6 단계(기존 데이터 확인 → 공표값 취득(사업자명 불일치는 보고) → 매핑 존재 확인(신규면 생략) → 마이그레이션 SQL → 업무 규칙 검증(특례면 코멘트) → 템플릿으로 PR), 사람이 하던 순서를 그대로 문서화. Skill 을 단계별로 나눠 유지보수 · 작성을 쉽게. **'알아서 잘' 대신 조사 관점 · 참조 데이터 · 출력 형식까지 정의해 AI 재량을 일부러 좁힌다** — 흔들림을 시행착오가 아니라 설계로 막는다. PR 은 CI 로 코드 정합성도 확인. PR 설명에 '판정 요약과 근거'. 효과: 의뢰 1 건당 사람 손 **약 1 시간 → 거의 0**, 본번 반영 리드타임 단축 · 편차 축소, 속인성 저하(판정 흐름이 프롬프트로 문서화), 리뷰가 'SQL 베끼기 확인'에서 '판정 타당성 확인'으로, 전기 오류 같은 찾기 힘든 실수가 사라지고 틀려도 기계 체크에 걸림. **자동화하지 않은 것**: 매핑 업무 규칙의 최종 판단 · 복잡하거나 모호한 의뢰(AI 가 '사람 판단 필요'에서 멈춤) — '남은' 게 아니라 '남기기로 한' 것. 검증 수단이 없는 업무라면 AI 출력을 초안까지로 제한하는 게 안전."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "권한 배열이 쿠키가 되기까지",
+          "question": "사용자의 거점 권한은 어떤 길을 지나 어디서 11KB 에 막히나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  A0[\"Auth0\\n사용자 속성 16MB\"] -- \"userinfo · claims\" --> ALB[\"ALB authenticate-oidc\"]\n  ALB -- \"claims + access token 암호화\" --> CK[\"AWSELBAuthSessionCookie\\n4KB × 최대 4\"]\n  CK --> BR[\"브라우저\"]\n  ALB -- \"합계 > 11KB\" --> E500[\"HTTP 500\\nELBAuthUserClaimsSizeExceeded\"]\n  ALB -- \"≤ 11KB\" --> APP[\"e-dash 앱\\n거점 권한 적용\"]"
+        },
+        {
+          "title": "상한이 정해지는 과정",
+          "question": "'50 건 · 1 년'은 어떤 확인을 거쳐 '200 건 · 그날 안'이 됐나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 티켓의전제: 50 건 · IdP 500 자 · 1 년\n  티켓의전제 --> 문서확인: 500 자는 Signup 고유\n  문서확인 --> 실측: dev 에서 권한 수 증가\n  실측 --> 원인분리: 5,000 건 실패 · ALB 로그\n  원인분리 --> 층별측정: 16MB · 100KB · 11KB\n  층별측정 --> 상한결정: 천장 1,000 · 요건 200\n  상한결정 --> 기록과알림: 티켓 · CloudWatch\n  기록과알림 --> [*]"
+        },
+        {
+          "title": "아무도 모르게 막히는 사용자",
+          "question": "claims 가 11KB 를 넘으면 누가, 어떻게 모른 채 막히나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"담당 거점이 가장 많은 관리자\"] --> B[\"claims + token > 11KB\"]\n  B --> C[\"ALB 가 브라우저에 500\"]\n  C --> D[\"앱 로그에 아무 기록 없음\"]\n  D --> E[\"'IdP 문제'로 오진 · 시간 소모\"]\n  C -.-> F[\"ELBAuthUserClaimsSizeExceeded 알림\\n권한 최다 사용자로 검증\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "権限件数の上限は Auth0 ではなく ALB の 11KB にあった",
+          "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
+          "publisher": "e-dash",
+          "date": "2026-08-31",
+          "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
+        },
+        {
+          "title": "CO2排出量可視化・削減クラウドサービスを提供する「e-dash株式会社」を設立 ～4月1日に正式版として提供開始～",
+          "url": "https://www.mitsui.com/jp/ja/topics/2022/1242915_13393.html",
+          "publisher": "三井物産",
+          "date": "2022",
+          "summary": "三井物産이 기업 · 자치단체의 CO2 배출량 가시화부터 삭감 방법까지 돕는 **e-dash 주식회사를 설립**(2022-02). 전년 10 월 공개한 β 판이 이미 **약 50 사 · 약 1,400 거점**에서 쓰였고 4 월 1 일 정식판. **전기 · 가스 요금 청구서를 업로드하기만 하면** 사업의 CO2 배출량을 자동 산출해 집계 · 계산 수고를 줄인다. β 뒤 원단위 산출 · 목표 관리를 더했고, 정식판에서 **서플라이 체인 배출량(Scope 3)** 도 산출 · 가시화."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1051,7 +1459,7 @@
       "url": "https://zenn.dev/edash_tech_blog/articles/e6445bcba75e7c",
       "publisher": "e-dash",
       "date": "2026-08-31",
-      "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을."
+      "summary": "한 안건에서 사용자 1 명에게 **권한 50 건 이상**(권한은 **거점 — 공장 · 사업소 — 마다 1 건**) 요구. 사내 티켓엔 'IdP 의 500 자 제한 때문에 상한 50 건, 100 건으로 올리려면 1 년'. 확인하니 500 자는 **Auth0 Authentication API 의 Signup 엔드포인트 고유**로 Management API 갱신엔 해당 없음 — 가입 시 제한을 전체 제한으로 읽은 기술이 1 년 넘게 이어졌다. dev 에서 늘려 보니 5,000 건에서 로그인 실패, ALB 액세스 로그에 `AuthUserinfoResponseSizeExceeded`. **ALB 의 OIDC 인증은 세션을 브라우저 쿠키에** — user claims + access token 을 암호화해 4KB 씩 최대 4 개로 나눠(16KB) 담고, **합계 11KB 를 넘으면 HTTP 500**(`ELBAuthUserClaimsSizeExceeded`). 층별 여유: IdP 사용자 속성 16MB · JWT custom claim 100KB · **ALB 11KB**. 5 자리 ID 배열이면 1,500~1,700 건 → 안전선 **1,000 건**, 요건이 200 건이라 **200 건으로** — '천장은 1,000, 요건은 200' 을 티켓에. 1 년 걸린다던 일이 반나절(문서 · 로그 분석은 Claude Code). 권한 많은 관리자일수록 먼저 벽에 닿아 평균 사용자로는 안 보인다 — CloudWatch 메트릭에 알림을. ALB 가 500 을 브라우저에 돌려주고 끝나 **앱 로그에는 안 남고 특정 사용자만 로그인하지 못한다** — 검증은 권한이 가장 많은 사용자로. `AuthUserinfoResponseSizeExceeded` 는 검색해도 정보가 거의 없어, 모르면 IdP 탓으로 시간을 녹인다."
     }
   ]
 }
