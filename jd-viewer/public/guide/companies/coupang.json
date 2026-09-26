@@ -13462,6 +13462,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55110254&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=e1786664-c2bf-4563-b8ae-3a262e000db3",
+      "title": "[쿠팡] 고객 경험을 혁신할 CS 전문가 공개채용",
+      "site": "saramin",
+      "verdict": "서울 송파구, 경력 2년 이상. 개발 직무가 아니라 고객센터(CS) 직군 공개채용이고, 한 공고에 여러 자리가 묶여 있다 — 가전/랩탑 기술 상담(트러블슈팅·영상·원격 상담), 'CS 정책 운영관리 담당자'(3P 판매자 배송상품 고객 관점 정책·CSAT·VOC), '본사 대외 민원 담당자'(최상위 민원 중재, 소비자 중재·규제기관 민원 대응). 크롤 데이터에서 자리별 자격요건·근무일시가 세 칸에 뒤섞여 들어와 어느 요건이 어느 자리의 것인지 칸 이름만으로는 가를 수 없다. 기술 상담 쪽은 주말·공휴일 포함 스케줄 근무(09:00~18:00 / 14:00~23:00)라고 적혀 있다.",
+      "fit": {
+        "must_have": [
+          "가전/랩탑 제조·유통사 CS 상담 2년 이상 또는 A/S 수리 기사 2년 이상(기술 상담)",
+          "전자 제품 이해",
+          "Excel·Word",
+          "고객 중심 커뮤니케이션"
+        ],
+        "can_learn": [
+          "Zendesk(Trigger·Workato)(우대)",
+          "비즈니스 영어(우대)",
+          "전자상거래법·소비자 관련 법률(대외 민원)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "가전/랩탑 기술 상담 — 원격·영상 트러블슈팅",
+          "from": "task",
+          "quote": "ㆍ고객 대상 가전/랩탑 기술 상담 (Trouble Shooting)",
+          "priority": "core",
+          "why": "주요업무 첫 세 줄이 가전/랩탑 기술 상담·일반 상담·영상 및 원격 상담이고, 자격요건이 제조·유통사 CS 또는 A/S 기사 경력 2년 이상이다.",
+          "gap_check": "'노트북이 켜지지 않는다'는 전화에서 전원·배터리·디스플레이·OS 문제를 원격으로 어떤 질문 순서로 가르고, 어디서 방문 A/S 로 넘기는가?",
+          "drill": "랩탑 부팅 불가·Wi-Fi 끊김·TV 화면 무신호 세 증상에 대해 질문 순서와 판정 분기(원격 해결/교환/수리 접수)를 적은 상담 흐름도를 만든다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "VOC 분석과 지식 관리",
+          "from": "task",
+          "quote": "ㆍ고객 VOC 분석을 통한 고객 경험 향상",
+          "priority": "high",
+          "why": "VOC 분석을 통한 고객 경험 향상과 문의 해결의 신속성·일관성을 위한 지식 관리가 주요업무다. CS 정책 운영관리 자리는 CSAT·VOC 분석과 Power BI·엑셀 활용 능력을 적는다.",
+          "gap_check": "한 달치 문의 기록에서 반복 문의 상위 유형을 뽑고, 그중 무엇을 FAQ·매크로로 줄이고 무엇을 정책·프로세스 개선으로 넘기는가?",
+          "drill": "가상 문의 로그 300건을 유형·채널·해결 시간으로 정리해 엑셀(또는 Power BI)로 상위 유형과 CSAT 을 보여 주는 한 장짜리 보고서를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Microsoft Learn — Get started with Power BI Desktop",
+              "url": "https://learn.microsoft.com/en-us/power-bi/fundamentals/desktop-getting-started",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "소비자 관련 법률과 규제기관 민원 대응",
+          "from": "preference",
+          "quote": "ㆍ전자상거래법 및 소비자 관련 법률에 대한 지식이 있으신 분",
+          "priority": "high",
+          "why": "본사 대외 민원 담당자 자리는 소비자 중재기관·규제기관 민원 대응, 소비자기관 CS 공문 문서 답변, 전자상거래법·소비자 관련 법률 지식을 요구한다.",
+          "gap_check": "통신판매중개자로서 판매자와 고객의 분쟁이 올라왔을 때 플랫폼이 지는 책임과, 청약철회(환불) 기한·예외는 법에 어떻게 적혀 있는가?",
+          "drill": "전자상거래소비자보호법의 청약철회 조항과 통신판매중개 관련 조항을 읽고, 가상의 소비자원 공문에 대한 답변서(사실관계·조치·재발 방지)를 한 장 써 본다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 전자상거래 등에서의 소비자보호에 관한 법률",
+              "url": "https://www.law.go.kr/법령/전자상거래등에서의소비자보호에관한법률",
+              "kind": "docs"
+            },
+            {
+              "title": "국가법령정보센터 — 소비자기본법",
+              "url": "https://www.law.go.kr/법령/소비자기본법",
+              "kind": "docs"
+            },
+            {
+              "title": "한국소비자원",
+              "url": "https://www.kca.go.kr/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Zendesk 트리거로 티켓 흐름 자동화",
+          "from": "preference",
+          "quote": "ㆍZendesk 시스템에 능통하신 분 (Trigger, Workato 관련 이해도)",
+          "priority": "nice",
+          "why": "우대사항에 Zendesk(Trigger·Workato) 능통이 있고, 주요업무에 FEM 티켓으로 이슈를 확인·해결하는 일이 있다.",
+          "gap_check": "'민원기관 접수' 태그가 붙은 티켓을 자동으로 전담 그룹에 배정하고 우선순위를 올리려면 트리거의 조건과 동작을 어떻게 짜는가?",
+          "drill": "Zendesk 트리거 문서를 읽고, 에스컬레이션 티켓 세 종류(고위험 민원·기관 공문·반복 문의)에 대한 트리거 조건·동작 표를 설계한다.",
+          "hours": 2,
+          "resources": [
+            {
+              "title": "Zendesk help — About Zendesk triggers and how they work",
+              "url": "https://support.zendesk.com/hc/en-us/articles/4408822236058",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "가전/랩탑 증상별 상담 흐름도 세트",
+          "why": "기술 상담 자리의 핵심이 원격 트러블슈팅이다. 증상별 질문 순서와 판정 분기를 문서로 보여 주면 A/S·상담 경력을 구체적으로 설명할 수 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "원격 트러블슈팅 순서",
+          "VOC 분석과 지식 관리",
+          "청약철회·중개자 책임",
+          "기관 공문 답변",
+          "고위험 민원 중재"
+        ],
+        "sources": [
+          {
+            "title": "[쿠팡] 고객 경험을 혁신할 CS 전문가 공개채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55110254&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=e1786664-c2bf-4563-b8ae-3a262e000db3",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -13490,6 +13607,7 @@
     "'Staff Backend Engineer (Streaming & AI Infrastructure)'(gh 7919211)의 근무지 표기가 'Seoul, South Korea; z-Test & Templates Only' 다 — 템플릿용 표기가 섞인 것으로 보이며 실제 근무지는 서울로만 읽었다",
     "greenhouse 8222455 는 제목이 'Senior QA Engineer (Advertiser Platform)' 인데 본문이 내부 감사 데이터 분석(wd/385087)과 같다 — 크롤 시 제목·본문이 섞였는지, 채용 사이트 자체가 잘못 게시했는지 공고로는 알 수 없다",
     "gh 8158581 제목의 CFS·CLS·CES·DDnayo 가 각각 어느 법인·서비스를 가리키는지 공고에 풀이가 없다.",
-    "사람인 '이츠 데이터 분석 어시스턴트'(rec_idx=54939508) 크롤 근무지 칸의 '216 만원' 이 무엇의 금액인지 공고 세 절에 설명이 없다."
+    "사람인 '이츠 데이터 분석 어시스턴트'(rec_idx=54939508) 크롤 근무지 칸의 '216 만원' 이 무엇의 금액인지 공고 세 절에 설명이 없다.",
+    "사람인 'CS 전문가 공개채용'(rec_idx=55110254)은 한 공고에 기술 상담·CS 정책 운영관리·본사 대외 민원 자리가 묶여 있고, 크롤 데이터에서 자리별 자격요건이 섞여 어느 요건이 어느 자리의 것인지 가를 수 없다."
   ]
 }
