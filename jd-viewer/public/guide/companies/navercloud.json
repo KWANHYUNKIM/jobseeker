@@ -5,7 +5,7 @@
   "aliases": [
     "네이버클라우드"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "navercloudcorp.com",
   "one_liner": "네이버 클라우드 플랫폼(NCP)을 팔고 HyperCLOVA X 파운데이션 모델을 만드는 네이버 계열 클라우드·AI 회사",
@@ -178,9 +178,9 @@
   "open_questions": [
     "매출·임직원 수를 읽지 않았다",
     "navercloudcorp.com 첫 화면 소식이 2021년 것에서 멈춰 있다 — 최신 회사 소개는 읽지 못했다",
-    "특화 AI 모델 개발 엔지니어는 캐치·사람인·잡코리아에 같은 제목으로 올라와 있다 — 본문 비교 필요(잡코리아는 본문 칸이 비어 있다)",
     "salary: 공고에 금액이 없다 — 비워 둔다",
-    "Audio FM 인턴(571470)·Multimodal MLOps 인턴(571463)의 접수기간은 2026.09.23 18:00 까지였는데 크롤 데이터에는 모집중으로 남아 있다 — 마감 재확인(close_check) 대상"
+    "Audio FM 인턴(571470)·Multimodal MLOps 인턴(571463)의 접수기간은 2026.09.23 18:00 까지였는데 크롤 데이터에는 모집중으로 남아 있다 — 마감 재확인(close_check) 대상",
+    "특화 AI 모델 개발 엔지니어는 잡코리아(50002891)에도 올라와 있지만 본문 칸이 비어 비교하지 못했다"
   ],
   "postings": [
     {
@@ -963,6 +963,13 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55052448&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=6ee11b59-3544-4bc8-a127-9a2b5522f087",
+      "title": "[NAVER Cloud] 특화 AI 모델 개발 엔지니어 (경력)",
+      "site": "saramin",
+      "duplicate_of": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572487?ReturnUrl=RecruitInfo",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 주요업무(다섯 묶음)와 자격요건 여섯 줄이 캐치 `[NAVER Cloud] 특화 AI 모델 개발 엔지니어 (경력) 채용`(572487)과 같다. 브리핑은 그쪽을 본다. 차이는 둘이다 — 사람인 게시에는 **우대사항이 없다**(캐치에는 도메인 특화 모델·Sandbox/Verifier·mixture·LLM 평가·보안 도메인·오픈소스 공개 여섯 줄이 있다), 경력 표기가 '경력5년↑'. 전형(서류 전형(기업문화적합도 검사 및 직무 테스트 포함) → 1차 인터뷰 → 레퍼런스체크 및 2차 인터뷰 → 처우협의 → 최종합격)과 접수 2026년 09월 14일 ~ 09월 30일 17시, 근무지 분당 그린팩토리는 같고, 사람인은 제출서류를 '이력서, 자기소개서' 로 적는다. 접수는 두 곳 모두 네이버클라우드 홈페이지로 한다. 두 자리가 아니므로 한 번만 지원한다."
     }
   ]
 }
