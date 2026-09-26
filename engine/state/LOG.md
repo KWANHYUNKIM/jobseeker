@@ -2460,3 +2460,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Skyfall 오퍼월 API 리플레이스
 
 - `58f71aa4f25bfa` 전문으로 기능 `offerwall-api-replace`, 결정 7.
+
+## 2026-09-27 Skyfall 계측 API
+
+- `c268501b030fae` 전문으로 기능 `measurement-api-testable`, 결정 7. 오퍼월 기능과 connections 로 이음.
