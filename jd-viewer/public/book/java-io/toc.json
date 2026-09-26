@@ -404,7 +404,7 @@
           "title": "한 번에 하나",
           "summary": "두 번째 손님은 기다린다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.2",
@@ -412,7 +412,7 @@
           "title": "연결마다 스레드",
           "summary": "받자마자 넘긴다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.3",
@@ -420,7 +420,7 @@
           "title": "스레드 풀",
           "summary": "몇 개까지 받나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.4",

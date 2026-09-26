@@ -1,0 +1,269 @@
+{
+  "book": "java-io",
+  "id": "thread-pool",
+  "no": "8.3",
+  "chapter": 8,
+  "title": "스레드 풀",
+  "summary": "몇 개까지 받나.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "풀 크기 2와 6을 같은 손님에게 돌려 비교한다.",
+    "두 명씩 세 묶음으로 갈리는 것을 확인한다.",
+    "큐가 어디에 생기는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "8.2절의 문제는 **개수를 손님이 정한다**는 것이었다. 스레드 풀은 그 반대다 — **개수를 내가 정하고 넘치면 줄을 세운다.**\n\n같은 손님 여섯 명에 풀 크기를 2와 6으로 바꿔 돌렸다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "또 한 줄이다",
+      "code": "ExecutorService es = Executors.newFixedThreadPool(poolSize);\n\nwhile (true) {\n    Socket s = ss.accept();\n    es.submit(() -> handle(s, id));      // new Thread 대신\n}\n\n// 끝낼 때\nes.shutdown();\nes.awaitTermination(60, TimeUnit.SECONDS);"
+    },
+    {
+      "type": "table",
+      "caption": "풀 2개 — 손님 6명 · 한 명당 500ms",
+      "columns": [
+        "손님",
+        "응답까지",
+        "스레드"
+      ],
+      "rows": [
+        [
+          "client-1",
+          "**521 ms**",
+          "`pool-1-thread-1`"
+        ],
+        [
+          "client-2",
+          "**522 ms**",
+          "`pool-1-thread-2`"
+        ],
+        [
+          "client-4",
+          "**1,032 ms**",
+          "`pool-1-thread-1`"
+        ],
+        [
+          "client-5",
+          "**1,033 ms**",
+          "`pool-1-thread-2`"
+        ],
+        [
+          "client-3",
+          "**1,538 ms**",
+          "`pool-1-thread-1`"
+        ],
+        [
+          "client-0",
+          "**1,538 ms**",
+          "`pool-1-thread-2`"
+        ]
+      ],
+      "note": "**두 명씩 세 묶음이다.** 520 · 1,030 · 1,540 — 500ms 간격으로 두 명씩 나온다. 전체 1,546ms 이고, 8.1절의 3,077ms 와 8.2절의 550ms 의 **딱 중간**이다."
+    },
+    {
+      "type": "figure",
+      "caption": "풀 2개가 여섯을 처리하는 모양",
+      "ascii": "   thread-1  |--500--|--500--|--500--|\n               #1      #3      #5\n   thread-2  |--500--|--500--|--500--|\n               #2      #4      #6\n             0      500     1000    1500 ms\n\n   six jobs / two workers = three rounds\n   total 1,546 ms = 3 x 500 + overhead",
+      "note": "**계산이 맞는다** — 손님 수 ÷ 풀 크기 = 라운드 수. 6 ÷ 2 = 3 이고 3 × 500 = 1,500ms 다."
+    },
+    {
+      "type": "table",
+      "caption": "풀 6개 — 같은 손님 6명",
+      "columns": [
+        "손님",
+        "응답까지",
+        "스레드"
+      ],
+      "rows": [
+        [
+          "client-5",
+          "527 ms",
+          "`pool-1-thread-1`"
+        ],
+        [
+          "client-3",
+          "527 ms",
+          "`pool-1-thread-2`"
+        ],
+        [
+          "client-0",
+          "528 ms",
+          "`pool-1-thread-3`"
+        ],
+        [
+          "client-4",
+          "528 ms",
+          "`pool-1-thread-4`"
+        ],
+        [
+          "client-2",
+          "527 ms",
+          "`pool-1-thread-5`"
+        ],
+        [
+          "client-1",
+          "528 ms",
+          "`pool-1-thread-6`"
+        ]
+      ],
+      "note": "**전체 537ms.** 8.2절의 550ms 와 같다 — 손님 수와 풀 크기가 같으면 연결마다 스레드와 구별이 안 된다."
+    },
+    {
+      "type": "table",
+      "caption": "세 방식을 한 표에",
+      "columns": [
+        "방식",
+        "전체",
+        "마지막 손님",
+        "스레드 수"
+      ],
+      "rows": [
+        [
+          "단일 스레드 (8.1)",
+          "3,077 ms",
+          "3,068 ms",
+          "1"
+        ],
+        [
+          "풀 2개",
+          "1,546 ms",
+          "1,538 ms",
+          "2"
+        ],
+        [
+          "풀 6개",
+          "**537 ms**",
+          "528 ms",
+          "6"
+        ],
+        [
+          "연결마다 스레드 (8.2)",
+          "550 ms",
+          "541 ms",
+          "6"
+        ]
+      ],
+      "note": "**마지막 두 줄이 같다.** 이 실험에서는 그렇다 — 손님이 6명뿐이기 때문이다. 600명이면 풀은 여전히 6개이고 연결마다 스레드는 600개다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "큐는 여기서 두 겹이 된다",
+      "md": "8.1절에서 **커널의 backlog 큐**를 봤다. 풀에는 **자바 쪽 큐**가 하나 더 있다.\n\n> `newFixedThreadPool` 은 내부에 `LinkedBlockingQueue` 를 쓴다 — **크기 제한이 없다.**\n> 곧 `accept` 는 계속 성공하고 `submit` 도 계속 성공한다. 처리가 안 될 뿐 **큐가 끝없이 자란다.**\n> 8.1절에서는 큐가 차면 `Connection refused` 로 **증상이 갈아탔는데**, 여기서는 그런 선이 없다. 대신 **응답이 계속 느려지고 메모리가 찬다.**\n> 어느 쪽이 나은지는 상황이 정한다. 다만 **한계가 보이지 않는 쪽이 더 위험하다** — 8.4절에서 이 큐를 제한하는 이야기로 돌아온다."
+    },
+    {
+      "type": "figure",
+      "caption": "큐가 두 개다",
+      "ascii": "   clients -> kernel backlog -> accept() -> pool queue -> workers\n                (50 by default)             (unbounded!)   (fixed N)\n\n   8.1: only the first queue existed, and it filled up loudly.\n   8.3: the second queue never fills, so nothing looks wrong\n        until memory or latency gives out.",
+      "note": "**첫 큐는 시끄럽게 차고 둘째 큐는 조용히 자란다.** 그래서 풀을 쓰면 문제가 늦게 드러난다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "풀 크기를 무엇으로 정하나",
+      "md": "\"CPU 개수\" 는 **이 경우에 틀린 답이다.**\n\n> CPU 개수는 **계산이 병목일 때**의 기준이다. 이 서버는 500ms 를 **기다리는** 데 쓴다(8.1절에서 CPU 를 거의 안 썼다).\n> 기다리는 일이면 스레드를 CPU 보다 훨씬 많이 둘 수 있다 — 대기 중에는 CPU 를 안 쓰니까.\n> 대략의 기준은 **동시에 처리하고 싶은 수**이고, 그 상한은 **뒤에 있는 것**이 정한다. DB 커넥션 풀이 10개면 스레드를 100개 둬도 10개만 일한다.\n> 그래서 실무에서는 **뒤쪽 자원의 한도에 맞춘다.** 앞을 넓히면 뒤에서 막히고, 그 막힘이 더 찾기 어렵다.\n> 이 머신은 8코어인데 위 실험의 풀 6개가 잘 돈 것도 같은 이유다 — 여섯 스레드가 다 `sleep` 중이었다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`Executors` 의 편의 메서드는 함정이 있다",
+      "md": "이름이 편해 보이는 셋 중 둘이 위험하다.\n\n> **`newFixedThreadPool(n)`** — 큐가 무제한이다. 위에서 본 그 문제.\n> **`newCachedThreadPool()`** — **스레드 수가 무제한**이다. 8.2절의 문제를 그대로 가진다. 이름이 \"캐시\" 라 안전해 보이는데 아니다.\n> **`newSingleThreadExecutor()`** — 8.1절과 같다.\n> 운영 코드에서는 `ThreadPoolExecutor` 를 직접 만든다 — 큐 크기와 **거부 정책**(`RejectedExecutionHandler`)을 정할 수 있다. 8.4절에서 종료와 함께 다룬다.\n> 그리고 스레드 이름이 `pool-1-thread-1` 이라 **어느 풀인지 모른다.** `ThreadFactory` 로 이름을 준다 — 8.2절에서 `conn-N` 을 준 것과 같은 이유다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"스레드 풀 크기를 어떻게 정합니까.\"**\n\n> **CPU 바운드인지 I/O 바운드인지**부터 가른다. 이 서버는 기다리는 일이라 CPU 개수와 무관하다.\n> 그리고 **뒤쪽 자원의 한도**를 본다 — DB 커넥션이 10개면 스레드 100개는 의미가 없다.\n> 이 실험으로 말할 수 있다 — 풀 2개면 6명이 1,546ms, 풀 6개면 537ms 다. 손님 수 ÷ 풀 크기가 라운드 수다.\n> `newFixedThreadPool` 의 문제를 물으면 — **큐가 무제한**이라 한계가 안 보인다. 부하가 늘면 메모리와 지연이 조용히 자란다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 풀 2개와 6개",
+      "sql": "$ java -cp out MServer pool 12503 500 2 &\n$ java -cp out MClients 12503 6\n\n  손님              붙기     응답까지   받은 것\n  client-0      11 ms  1,538 ms   응답 #6 (스레드 pool-1-thread-2)\n  client-1      11 ms    521 ms   응답 #1 (스레드 pool-1-thread-1)\n  client-2      11 ms    522 ms   응답 #2 (스레드 pool-1-thread-2)\n  client-3      11 ms  1,538 ms   응답 #5 (스레드 pool-1-thread-1)\n  client-4      11 ms  1,032 ms   응답 #3 (스레드 pool-1-thread-1)\n  client-5      11 ms  1,033 ms   응답 #4 (스레드 pool-1-thread-2)\n  전체 1,546 ms\n\n$ java -cp out MServer pool 12504 500 6 &\n$ java -cp out MClients 12504 6\n\n  client-0       9 ms    528 ms   응답 #3 (스레드 pool-1-thread-3)\n  client-1       9 ms    528 ms   응답 #6 (스레드 pool-1-thread-6)\n  client-2       9 ms    527 ms   응답 #5 (스레드 pool-1-thread-5)\n  client-3       9 ms    527 ms   응답 #2 (스레드 pool-1-thread-2)\n  client-4       9 ms    528 ms   응답 #4 (스레드 pool-1-thread-4)\n  client-5       9 ms    528 ms   응답 #1 (스레드 pool-1-thread-1)\n  전체 537 ms\n\n# 풀 2개의 응답을 정렬하면 521·522 / 1,032·1,033 / 1,538·1,538 이다.\n# 두 명씩 세 묶음 — 6 ÷ 2 = 3 라운드이고 3 x 500 = 1,500ms 다.\n#\n# 스레드 이름을 보면 thread-1 이 #1 #3 #5 를, thread-2 가 #2 #4 #6 를 맡았다.\n#\n# 풀 6개는 537ms 로 8.2절의 550ms 와 같다 — 손님이 6명뿐이라 구별이 안 된다.",
+      "note": "**풀 2개의 응답 시간에 500ms 간격이 세 번 있다.** 8.1절의 계단이 여섯 칸이었고 여기서는 세 칸이다 — 그 칸 수가 정확히 손님 수 ÷ 풀 크기다."
+    }
+  ],
+  "recap": [
+    "es.submit 으로 넘기면 개수를 내가 정하고 넘치면 줄을 세운다.",
+    "풀 2개로 6명을 처리하니 521·1,032·1,538ms 로 두 명씩 세 묶음이었다.",
+    "전체 1,546ms 이고 손님 수 ÷ 풀 크기 = 라운드 수라는 계산이 맞는다.",
+    "풀 6개는 537ms 로 8.2절의 550ms 와 같다 — 손님이 6명뿐이라 구별이 안 된다.",
+    "600명이면 풀은 여전히 6개이고 연결마다 스레드는 600개다.",
+    "큐가 두 겹이 된다 — 커널 backlog 와 풀의 작업 큐.",
+    "newFixedThreadPool 의 큐는 무제한이라 조용히 자란다 — 8.1절처럼 증상이 갈아타지 않는다.",
+    "풀 크기는 CPU 개수가 아니라 뒤쪽 자원의 한도에 맞춘다.",
+    "newCachedThreadPool 은 스레드 수가 무제한이라 8.2절의 문제를 그대로 가진다."
+  ],
+  "drills": [
+    {
+      "task": "풀 크기를 1·2·3·6 으로 바꿔 가며 6명을 처리한다.",
+      "done_when": "라운드 수 계산과 맞는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "풀 2개에 손님 100명을 붙여 본다.",
+      "done_when": "마지막 응답 시간을 계산과 비교한다.",
+      "minutes": 12
+    },
+    {
+      "task": "ThreadFactory 로 스레드 이름을 바꿔 본다.",
+      "done_when": "로그에 내 이름이 찍히는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "newCachedThreadPool 로 바꿔 스레드 수를 세어 본다.",
+      "done_when": "손님 수만큼 늘어나는지 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "풀 2개로 손님 6명을 처리하면 몇 라운드인가.",
+      "a": "3라운드다. 6 ÷ 2 이고 실제로 521·1,032·1,538ms 였다."
+    },
+    {
+      "q": "newFixedThreadPool 의 큐 크기는.",
+      "a": "무제한이다. 그래서 한계가 안 보이고 지연과 메모리가 조용히 자란다."
+    },
+    {
+      "q": "풀 크기를 CPU 개수로 정하면 되나.",
+      "a": "계산이 병목일 때만이다. 기다리는 일이면 뒤쪽 자원의 한도에 맞춘다."
+    },
+    {
+      "q": "newCachedThreadPool 이 안전한가.",
+      "a": "아니다. 스레드 수가 무제한이라 연결마다 스레드와 같은 문제를 가진다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "고정 스레드 풀",
+      "what": "스레드 수를 정해 두고 넘치는 작업을 큐에 쌓는 방식. 개수를 내가 정한다."
+    },
+    {
+      "term": "작업 큐",
+      "what": "풀의 스레드가 모두 바쁠 때 작업이 쌓이는 곳. newFixedThreadPool 은 무제한이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Executors.newFixedThreadPool",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Executors.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — ThreadPoolExecutor",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "실전 자바 — 멀티스레드와 동시성",
+      "url": "https://www.inflearn.com/course/김영한의-실전-자바-고급-1",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

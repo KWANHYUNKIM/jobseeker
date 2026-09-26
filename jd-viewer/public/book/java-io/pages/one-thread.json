@@ -1,0 +1,201 @@
+{
+  "book": "java-io",
+  "id": "one-thread",
+  "no": "8.1",
+  "chapter": 8,
+  "title": "한 번에 하나",
+  "summary": "두 번째 손님은 기다린다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "여섯 명을 동시에 붙여 응답 시간을 잰다.",
+    "붙기는 성공하는데 응답이 늦는 이유를 안다.",
+    "backlog 큐가 무엇을 숨기는지 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "7장의 서버는 `accept()` 를 **한 번** 부르고 끝났다. 손님 한 명용이다.\n\n이 장은 그것을 `while (true)` 로 감싸는 데서 시작한다. 그러면 여러 명을 받는다 — **차례로.** 얼마나 기다리는지 재 봤다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "가장 단순한 서버",
+      "code": "try (ServerSocket ss = new ServerSocket(port)) {\n    while (true) {\n        Socket s = ss.accept();\n        handle(s, ++n);            // 여기서 500ms 가 걸린다\n    }\n}\n\nstatic void handle(Socket s, int id) {\n    // 한 줄 읽고, 500ms 일하고, 한 줄 답한다\n    String line = in.readLine();\n    Thread.sleep(500);             // 일하는 척\n    out.println(\"응답 #\" + id + \" (스레드 \" + Thread.currentThread().getName() + \")\");\n}"
+    },
+    {
+      "type": "prose",
+      "md": "손님 여섯 명을 **동시에** 붙였다. 각자 스레드를 하나 받고 `CountDownLatch` 로 출발선을 맞췄다."
+    },
+    {
+      "type": "table",
+      "caption": "손님 6명 · 한 명당 500ms · 단일 스레드",
+      "columns": [
+        "손님",
+        "붙기",
+        "응답까지",
+        "받은 것"
+      ],
+      "rows": [
+        [
+          "client-2",
+          "9 ms",
+          "**523 ms**",
+          "응답 #1 (스레드 main)"
+        ],
+        [
+          "client-5",
+          "9 ms",
+          "**1,035 ms**",
+          "응답 #2 (스레드 main)"
+        ],
+        [
+          "client-4",
+          "9 ms",
+          "**1,545 ms**",
+          "응답 #3 (스레드 main)"
+        ],
+        [
+          "client-1",
+          "9 ms",
+          "**2,056 ms**",
+          "응답 #4 (스레드 main)"
+        ],
+        [
+          "client-0",
+          "9 ms",
+          "**2,557 ms**",
+          "응답 #5 (스레드 main)"
+        ],
+        [
+          "client-3",
+          "9 ms",
+          "**3,068 ms**",
+          "응답 #6 (스레드 main)"
+        ]
+      ],
+      "note": "**500ms 계단이다.** 그리고 전체가 3,077ms — 6 × 500 에 오버헤드를 더한 값이다. 손님이 열 명이면 마지막 사람은 5초를 기다린다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "붙기는 다 9밀리초였다 — 그것이 함정이다",
+      "md": "왼쪽 칼럼을 보라. **여섯 명이 다 9ms 에 붙었다.**\n\n> 마지막 손님도 **연결은 즉시** 됐다. 서버가 `accept()` 를 아직 안 불렀는데도 그렇다.\n> OS 가 **backlog 큐**에 완성된 연결을 쌓아 두기 때문이다. TCP 3-way 핸드셰이크는 커널이 처리하고, `accept()` 는 그 큐에서 하나를 꺼내는 것일 뿐이다.\n> 곧 **클라이언트는 \"서버가 받았다\" 고 믿는다.** 실제로는 줄을 서 있다.\n> 7.1절에서 `Connection refused` 가 2ms 에 왔던 것과 나란히 보면 뜻이 분명하다 — **붙었다는 것은 프로세스가 나를 봤다는 뜻이 아니다.** 커널이 봤다는 뜻이다."
+    },
+    {
+      "type": "figure",
+      "caption": "accept 가 큐에서 꺼낸다",
+      "ascii": "   clients                kernel                     my process\n                          +-------------------+\n   c0 --- handshake ----> | backlog queue     |\n   c1 --- handshake ----> |  [c0][c1][c2]...  | --accept()--> handle()  500ms\n   c2 --- handshake ----> |                   |               (busy)\n                          +-------------------+\n\n   handshake finishes in 9 ms for everyone.\n   accept() pulls one per 500 ms.  the queue is the wait.",
+      "note": "**큐의 길이가 `ServerSocket(port, backlog)` 의 두 번째 인수다.** 안 주면 기본 50이고, 그보다 많이 몰리면 그때부터 `Connection refused` 나 타임아웃이 된다 — 갑자기 증상이 바뀐다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "큐가 차면 증상이 갈아탄다",
+      "md": "이것이 단일 스레드 서버의 가장 나쁜 성질이다.\n\n> 큐에 여유가 있으면 **응답이 느려진다** — 위 표의 3초.\n> 큐가 차면 **붙지 못한다** — `Connection refused`(리눅스는 SYN 을 버려서 타임아웃이 되기도 한다).\n> 곧 부하가 조금 늘 때는 \"느리다\" 는 신고가 오고, 선을 넘으면 갑자기 \"접속이 안 된다\" 가 된다. **같은 원인인데 증상이 달라서** 다른 문제로 보인다.\n> 그리고 이 서버는 **CPU 를 거의 안 쓴다.** `sleep` 이든 DB 대기든 스레드가 블로킹되어 있을 뿐이다 — 8.5절의 주제다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "처리 순서는 붙은 순서가 아니다",
+      "md": "서버 로그의 순서와 손님 번호가 안 맞는다.\n\n```\naccept #1  포트=62418   ->  [손님 2]\naccept #2  포트=62420   ->  [손님 5]\naccept #3  포트=62419   ->  [손님 4]\n```\n\n> `client-2` 가 첫 번째로 처리됐다. 여섯 스레드가 동시에 출발했으니 **누가 먼저 핸드셰이크를 끝내는지는 정해지지 않는다.**\n> 포트 번호도 62418·62420·62419 로 순서가 섞였다 — OS 가 준 순서와 큐에 들어간 순서가 다르다.\n> ⑲ 「실전 자바 — 멀티스레드와 동시성」의 실행 순서 이야기가 여기서도 그대로다. **동시에 시작한 것의 순서를 기대하면 안 된다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "그래도 이 서버가 맞는 자리가 있다",
+      "md": "단일 스레드가 항상 틀린 것은 아니다.\n\n> **손님이 한 명뿐인 것이 확실할 때** — 개발용 도구, 로컬 디버그 포트, 단일 사용자 CLI.\n> **처리가 아주 짧을 때** — 1ms 면 여섯 명이 6ms 다. 위 실험의 500ms 가 문제를 만든 것이다.\n> **순서가 중요할 때** — 동시 처리를 하면 순서 보장에 따로 잠금이 필요하다.\n> 9장의 서버는 처음에 이 모양으로 만들고 9.8절에서 바꾼다 — **먼저 동작하게 하고 나중에 동시에 하게** 하는 순서다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"서버에 연결은 되는데 응답이 느립니다.\"**\n\n> **`accept()` 뒤가 막혀 있을 가능성**이 크다. 연결은 커널이 받아 큐에 쌓고, 응답은 프로세스가 해야 한다.\n> 이 실험으로 말할 수 있다 — 여섯 명이 다 9ms 에 붙었는데 마지막 응답은 3,068ms 였다.\n> 확인 방법은 **`netstat`·`ss` 의 `Recv-Q`** 다. 리스닝 소켓의 큐에 값이 쌓여 있으면 `accept` 가 못 따라가는 것이다.\n> \"그럼 backlog 를 늘리면 되나요\" 에는 — **아니다.** 큐를 늘리면 기다리는 사람이 더 오래 기다릴 뿐이다. 처리를 병렬로 해야 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 500ms 계단",
+      "sql": "$ java -cp out MServer single 12501 500 &\n$ java -cp out MClients 12501 6\n\n  손님              붙기     응답까지   받은 것\n  client-0       9 ms  2,557 ms   응답 #5 (스레드 main)\n  client-1       9 ms  2,056 ms   응답 #4 (스레드 main)\n  client-2       9 ms    523 ms   응답 #1 (스레드 main)\n  client-3       9 ms  3,068 ms   응답 #6 (스레드 main)\n  client-4       9 ms  1,545 ms   응답 #3 (스레드 main)\n  client-5       9 ms  1,035 ms   응답 #2 (스레드 main)\n  전체 3,077 ms\n\n  --- 서버 로그 ---\n  [서버] 모드=single 포트=12501 일=500ms\n  [서버] accept #1  포트=62418  (main)\n  [서버] #1 받았다 [손님 2]  스레드=main\n  [서버] #1 답했다        스레드=main\n  [서버] accept #2  포트=62420  (main)\n  [서버] #2 받았다 [손님 5]  스레드=main\n  [서버] #2 답했다        스레드=main\n  [서버] accept #3  포트=62419  (main)\n  [서버] #3 받았다 [손님 4]  스레드=main\n  ... (#4 #5 #6 도 같은 모양)\n  [서버] 여섯 손님을 다 받았다\n\n# 붙기 칼럼이 전부 9ms 다 — 여섯 명이 다 즉시 붙었다.\n# 응답은 523 / 1,035 / 1,545 / 2,056 / 2,557 / 3,068 로 500ms 계단이다.\n#\n# 서버 로그를 보면 accept #2 가 #1 을 다 처리한 뒤에 찍힌다.\n# 그 사이 손님 다섯은 커널의 backlog 큐에서 기다렸다.\n#\n# 스레드는 전부 main 이다. CPU 는 거의 안 썼다 — 기다렸을 뿐이다.",
+      "note": "**`붙기 9ms` 와 `응답까지 3,068ms` 가 같은 줄에 있다.** 이 두 숫자의 거리가 단일 스레드 서버의 전부다 — 커널은 즉시 받고 프로세스는 차례로 처리한다."
+    }
+  ],
+  "recap": [
+    "accept() 를 while 로 감싸면 여러 명을 받는다 — 차례로.",
+    "손님 6명에 한 명당 500ms 면 응답이 523·1,035·1,545·2,056·2,557·3,068ms 로 계단이 된다.",
+    "붙기는 여섯 명이 다 9ms 였다 — 커널의 backlog 큐가 핸드셰이크를 먼저 끝낸다.",
+    "그래서 클라이언트는 서버가 받았다고 믿는데 실제로는 줄을 서 있다.",
+    "큐 길이는 ServerSocket(port, backlog) 의 두 번째 인수이고 기본 50이다.",
+    "큐에 여유가 있으면 느려지고 차면 못 붙는다 — 같은 원인인데 증상이 갈아탄다.",
+    "처리 순서는 붙은 순서가 아니다 — 포트 번호도 62418·62420·62419 로 섞였다.",
+    "이 서버는 CPU 를 거의 안 쓴다. 스레드가 블로킹되어 있을 뿐이다.",
+    "backlog 를 늘리는 것은 답이 아니다 — 기다리는 사람이 더 오래 기다린다."
+  ],
+  "drills": [
+    {
+      "task": "단일 스레드 서버에 손님 10명을 붙여 본다.",
+      "done_when": "마지막 응답이 5초쯤인지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "backlog 를 1 로 주고 손님을 여러 명 붙인다.",
+      "done_when": "붙기가 실패하는지 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "처리 시간을 1ms 로 줄여 본다.",
+      "done_when": "계단이 안 보이는지 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "netstat -an 으로 리스닝 소켓의 큐를 본다.",
+      "done_when": "값이 쌓이는지 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "여섯 명이 다 9ms 에 붙은 이유는.",
+      "a": "커널이 핸드셰이크를 처리해 backlog 큐에 쌓는다. accept 는 그 큐에서 꺼내는 것이다."
+    },
+    {
+      "q": "부하가 늘면 증상이 어떻게 바뀌나.",
+      "a": "큐에 여유가 있으면 느려지고 차면 못 붙는다 — 같은 원인인데 달라 보인다."
+    },
+    {
+      "q": "backlog 를 늘리면 해결되나.",
+      "a": "아니다. 기다리는 사람이 더 오래 기다릴 뿐이다. 처리를 병렬로 해야 한다."
+    },
+    {
+      "q": "이 서버가 CPU 를 많이 쓰나.",
+      "a": "거의 안 쓴다. 스레드가 블로킹되어 기다릴 뿐이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "backlog 큐",
+      "what": "핸드셰이크가 끝났지만 아직 accept 되지 않은 연결이 쌓이는 커널 큐. 기본 길이 50이다."
+    },
+    {
+      "term": "Recv-Q",
+      "what": "netstat 에서 리스닝 소켓에 붙은 값. accept 를 기다리는 연결 수다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — ServerSocket(int, int)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/ServerSocket.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "RFC 9293 — TCP Connection Establishment",
+      "url": "https://datatracker.ietf.org/doc/html/rfc9293",
+      "publisher": "IETF"
+    },
+    {
+      "title": "실전 자바 — 멀티스레드와 동시성",
+      "url": "https://www.inflearn.com/course/김영한의-실전-자바-고급-1",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
