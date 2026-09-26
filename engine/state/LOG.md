@@ -1372,3 +1372,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 LegalOn MQL 점수·이유 — 완주
 
 - 앞선 글 `ai-sales-dataanalysis`(2025-11, 예측 AI+Gemini 팩터, BigQuery ML·Cloud Run, DID 효과)와 입사 엔트리 전반부(제품 공통 2값 분류)로 `mql-score-and-factor-one-model`(결정 8). 도메인 3 모두 기능 · 수익원 둘 연결 → done, QUEUE 완료로.
+
+## 2026-09-26 Findy 회사 프로파일
+
+- 대기 맨 위. 서비스 페이지(매칭 둘·Team+·Tools·컨퍼런스) + 기술 글 둘(Team+ 코드 품질 분석 · Managed Agents 문의 조사)로 도메인 둘 · 수익원 셋(Team+ 만 도메인 연결). category 는 enum 이라 'SaaS'. 사이트맵 7~9월 12편 중 절반이 행사·인턴 글.

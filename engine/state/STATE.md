@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**LegalOn — 완주(2026-09-26, 도메인 3 · 기능 3). 다음은 `--gaps` 가 가리키는 신규: QUEUE 대기 맨 위(Findy — 대기 1/3). 대기가 3 아래라 신규 전에 후보 조사가 먼저 걸리는지 PROMPT 사다리로 확인. 머니포워드(hold)·LayerX 는 in_progress.**
+**Findy — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: 'AI 가 쓴 코드의 품질을 점수로 읽힌다' 를 Team+ 코드 품질 글(`entry/2026/07/10/110000`, scratchpad `fd_0710.txt` — 네 지표·우선순위·FAQ). 그 뒤 문의 조사 에이전트(`entry/2026/08/21/070000`, `fd_0821.txt` — diff/apply·버전 적층). 완주 판정 때 매칭(Findy·Freelance)·Tools 수익원은 도메인이 없다 — 두 번 찾고 없으면 hold. 사이트맵 2026-07~09 12편 목록은 `fd_urls.txt`. 대기 0/3 — Findy 뒤 후보 조사. 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 

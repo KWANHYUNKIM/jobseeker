@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "findy",
+      "name": "ファインディ",
+      "name_en": "Findy",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "엔지니어 채용 매칭 Findy 와 개발 생산성 SaaS Findy Team+ — AI 가 쓰는 코드의 품질을 점수로 읽히고, 사내 문의 조사는 부를 때만 뜨는 에이전트에 맡긴다",
+      "updated_at": "2026-09-26",
+      "domain": "findy.co.jp"
+    },
+    {
       "slug": "legalon",
       "name": "LegalOn Technologies",
       "name_en": "LegalOn Technologies",
@@ -3063,7 +3075,9 @@
     "살롱 운영 화면을 TUNAG 에서 떼어 낸다",
     "데이터 거버넌스 상담을 AI 가 먼저 받는다",
     "비엔지니어가 자연어로 로그를 판다",
-    "제품 여럿 중 이 고객에게 무엇을 팔지 한 잣대로 점친다"
+    "제품 여럿 중 이 고객에게 무엇을 팔지 한 잣대로 점친다",
+    "AI 가 쓴 코드의 품질을 점수로 읽힌다",
+    "사내 문의 조사를 부를 때만 뜨는 에이전트에 맡긴다"
   ],
   "countries": {
     "KR": "한국",
