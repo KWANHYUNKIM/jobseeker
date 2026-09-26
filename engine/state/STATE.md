@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**엔니고모 — 확장 1(2026-09-26): 이미지 검색 도메인에 `image-search-scope-vs-cost`(결정 6). 다음은 확장: '산 뒤에 되사 주는 약속을 단계로 나눠 붙인다' 를 매입 보증 글(`entry/2026/09/24/070000`, scratchpad `eg_buyback.txt` — 배송비 상한 이후 · 페이즈 2 스냅숏 3단 · 페이즈 3 신청). 완주 판정 때 TRAVEL·STYLE HAUS 수익원은 도메인이 없다 — 사이트맵 전 제목으로 두 번. 대기 2/3(SMS `cand_27912a.txt` · 코네히토 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
+**엔니고모 — 확장 2(2026-09-26): 매입 보증 도메인에 `buyback-guarantee-three-phases`(결정 8). 두 도메인 모두 기능 있음. 다음은 완주 판정 — BUYMA TRAVEL·STYLE HAUS 수익원에 도메인이 없다: tech.enigmo.co.jp 사이트맵 2023~2026 전 제목(병렬, `awk 'length<400'`, 블로그명 접미사 떼기)을 'TRAVEL·旅行·ツアー·STYLE HAUS·メディア' 로, 두 번 없으면 hold. 대기 2/3(SMS `cand_27912a.txt` · 코네히토 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
 
 
 
