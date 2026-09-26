@@ -6,7 +6,7 @@
     "스캐터랩",
     "Scatterlab"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "scatterlab.co.kr",
   "one_liner": "'이루다' 를 만든 AI 스타트업 — 지금은 사용자가 캐릭터·세계관을 만들어 AI 와 이야기를 쓰는 '제타'(2024년 4월 출시, 글로벌 누적 가입자 1,000만 — 공고)에 집중한다",
@@ -584,6 +584,99 @@
             {
               "title": "Introduction — OpenFeature",
               "url": "https://openfeature.dev/docs/reference/intro/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/347683",
+      "title": "Mobile Engineer (React Native) 모바일 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 성동구. 제타 **모바일(React Native)** 엔지니어로, 업무는 '수백만 명이 매일 사용하는' 모바일 서비스, **채팅**을 포함한 이벤트·유입·어드민 등 모든 모바일 접점, 디바이스별 퍼포먼스, **필요 시 Kotlin·Swift 네이티브 모듈**, 목표 지표 아젠다, A/B 테스트 환경·로그 설계, 행동 데이터 기반 UX 개선, 짧은 배포 주기의 빌드·배포 환경, 컴포넌트·품질·테스트 자동화, 성능 모니터링. 필수는 모바일 3년 이상(React Native 또는 iOS/Android), 프론트·백엔드 구조 이해, **Kotlin 또는 Swift 네이티브 모듈 개발**, 모바일 성능 최적화, 협업. 우대사항 칸은 비어 있다. 같은 회사 Frontend Engineer(347680)와 업무 문장이 많이 겹치지만 네이티브 모듈이 필수로 들어간 점이 다르다. 전형은 같은 회사 Frontend 공고 기준 지원 접수 ＞ 직무 과제&컬처 에세이 ＞ 직무 면접 ＞ 자기소개PT&티타임 ＞ 컬처핏 면접 ＞ 최종 합격으로 보인다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "모바일 3년 이상(RN 또는 네이티브)",
+          "Kotlin 또는 Swift 네이티브 모듈",
+          "모바일 성능 최적화"
+        ],
+        "can_learn": [
+          "OTA 업데이트",
+          "Sentry 모니터링",
+          "채팅 목록 성능"
+        ]
+      },
+      "study": [
+        {
+          "topic": "네이티브 모듈 — RN 이 못 하는 것을 Kotlin·Swift 로",
+          "from": "qualification",
+          "quote": "• Kotlin 또는 Swift 기반 Native 모듈 개발 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격요건이고 주요업무에 '필요 시 Kotlin, Swift 기반 Native 모듈을 개발하여 성능과 기능을 확장' 이 있다.",
+          "gap_check": "긴 AI 대화 중 앱이 백그라운드로 가면 스트리밍 연결이 끊기는 문제를 풀기 위해 네이티브 쪽에서 할 수 있는 것은 무엇이고(백그라운드 작업 제한·재연결 트리거), Turbo Native Module 로 만들 때 JS 스펙과 Kotlin·Swift 구현이 어떻게 타입으로 맞물리며, 네이티브 크래시는 JS 오류와 어떻게 다르게 추적되는가?",
+          "drill": "React Native 문서를 따라 앱 상태(포그라운드·백그라운드) 전환과 네트워크 종류를 알려주는 Turbo Native Module 을 Kotlin·Swift 로 만들고, JS 에서 이벤트를 구독해 백그라운드 복귀 시 스트림을 재연결하는 흐름을 구현한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Native Modules: Introduction — React Native",
+              "url": "https://reactnative.dev/docs/turbo-native-modules-introduction",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "채팅 목록 성능 — 저사양 기기에서",
+          "from": "qualification",
+          "quote": "• 모바일 환경의 특성을 이해하고 다양한 디바이스에서 성능 최적화 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격요건이고 주요업무의 핵심이 채팅이다. 회사 브리핑대로 유저가 하루 몇 시간씩 대화한다.",
+          "gap_check": "메시지가 수천 개인 대화방에서 FlatList 가 스크롤 중 빈칸을 보이는 이유는 무엇이고(렌더 창·셀 재사용 부재), FlashList 의 셀 재사용은 무엇을 바꾸며, 긴 AI 응답 말풍선처럼 높이가 제각각인 항목의 크기 추정이 틀리면 무엇이 생기는가? 저사양 안드로이드에서 JS 스레드와 UI 스레드 중 어디가 막히는지 무엇으로 보는가?",
+          "drill": "높이가 다른 메시지 3천 개 대화 화면을 FlatList·FlashList 로 만들어 저사양 안드로이드 에뮬레이터(또는 실기기)에서 빠른 스크롤 시 빈 영역과 JS·UI FPS 를 비교한다. React Native 성능 문서의 항목으로 체크리스트를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "FlashList",
+              "url": "https://shopify.github.io/flash-list/",
+              "kind": "docs"
+            },
+            {
+              "title": "Performance Overview — React Native",
+              "url": "https://reactnative.dev/docs/performance",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "짧은 배포 주기 — OTA 업데이트의 범위와 위험",
+          "from": "task",
+          "quote": "• 짧은 배포 주기로 안정적으로 서비스를 배포할 수 있는 빌드 및 배포 환경을 개선합니다.",
+          "priority": "high",
+          "why": "주요업무다. 실험을 빠르게 돌리는 조직이라(회사 브리핑) 스토어 심사를 기다리지 않는 JS 번들 업데이트가 유용하지만 위험도 있다.",
+          "gap_check": "OTA(JS 번들) 업데이트로 고칠 수 있는 것과 없는 것(네이티브 코드 변경)은 무엇이고, 네이티브 버전과 맞지 않는 번들이 내려가면 무엇이 생기며(런타임 버전 불일치), 잘못된 업데이트를 되돌리려면 무엇(채널·롤백)을 준비해야 하는가? 스토어 정책상 주의점은?",
+          "drill": "EAS Update 소개 문서를 읽고 런타임 버전·채널·롤백 개념을 정리한 뒤, 샘플 앱에서 JS 만 바꾼 업데이트와 네이티브 모듈을 추가한 변경을 구분해 어느 쪽이 OTA 로 가능한지 표로 만든다. 배포 체크리스트(런타임 버전 확인·단계적 배포·롤백 조건)를 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "EAS Update — Expo documentation",
+              "url": "https://docs.expo.dev/eas-update/introduction/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모바일 성능·오류 모니터링 — Sentry",
+          "from": "task",
+          "quote": "• 서비스 성능을 추적하고 최적화하기 위한 모니터링 환경을 개선합니다.",
+          "priority": "nice",
+          "why": "주요업무다. 네이티브 모듈을 쓰는 앱은 JS 오류와 네이티브 크래시를 함께 봐야 한다.",
+          "gap_check": "릴리즈 빌드의 JS 스택이 난독화돼 읽을 수 없을 때 무엇(소스맵·디버그 심볼 업로드)이 필요하고, 크래시율·ANR·앱 시작 시간 가운데 무엇을 릴리즈 판단 기준으로 삼으며, 대화 내용 같은 민감 정보가 오류 리포트에 섞이지 않게 무엇을 거르는가?",
+          "drill": "Sentry React Native 문서로 샘플 앱에 SDK 를 붙이고 JS 오류·네이티브 크래시를 각각 일으켜 소스맵·dSYM/매핑 파일 업로드 전후 스택을 비교한다. beforeSend 로 메시지 본문을 지우는 처리를 넣는다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "React Native — Sentry",
+              "url": "https://docs.sentry.io/platforms/react-native/",
               "kind": "docs"
             }
           ]
