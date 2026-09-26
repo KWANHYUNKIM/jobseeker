@@ -5,7 +5,7 @@
   "aliases": [
     "씨앤유글로벌"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": null,
   "one_liner": "자체 고속 PLC(전력선통신) 칩 기반 원격검침·에너지 관리 시스템을 만드는 전력 IT 기업",
@@ -286,6 +286,13 @@
       "site": "jumpit",
       "duplicate_of": "https://jumpit.saramin.co.kr/position/55100008",
       "verdict": "⚠️ **연차만 바꿔 같은 업무로 따로 올린 게시다** — 학습 항목은 점핏 '백엔드 개발자 채용(5~10년)'(55100008) 브리핑을 본다. 주요업무 네 줄(자사 솔루션 기반 프로젝트 수행, Java, Spring, Oracle·Maria 등)과 우대사항 두 줄(컴퓨터/시스템공학, Kafka·Spark·Redis 중 1개 이상), 자격요건 둘째 줄(Java·Spring 경험)이 같다. 다른 점은 하나다 — 자격요건 첫 줄이 **'백엔드 개발 경력 10년이상'** 이다(경력 칸 11~20년, 5~10년 공고는 '5~10년'). 마감일 2026-10-22. 같은 공고가 사람인(rec_idx 55100024)에도 올라와 있다."
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55100024&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5bdb4a13-6f1a-469d-8f6c-9b27fb77d388",
+      "title": "백엔드 개발자 채용(10년이상)",
+      "site": "saramin",
+      "duplicate_of": "https://jumpit.saramin.co.kr/position/55100008",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 점핏 '백엔드 개발자 채용(10년이상)'(55100024)과 같은 공고이고, 그 공고는 다시 5~10년 공고(55100008)와 연차만 다르므로 학습 항목은 **55100008** 브리핑을 본다. 주요업무 네 줄·자격요건 두 줄('백엔드 개발 경력 10년이상', Java·Spring)·우대사항 두 줄이 점핏과 같다. 다른 점은 사람인 본문에만 있는 것이다 — 머리말의 **서비스 소개**(자체 개발 고속 PLC칩 기반 원격검침시스템·에너지 관리 시스템 등 HW·SW 공급, '전력 IT 전문 기업')와 마감일·근무지 안내(2026-10-22, 성남시 분당구 판교역로 230). 회사 브리핑의 사업 설명은 이 머리말에서 나왔다."
     }
   ]
 }
