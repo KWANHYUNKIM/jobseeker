@@ -849,3 +849,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 scylladb 재방문 → 확장
 - Seastar QUIC(2026-09-14) 으로 `a-stream-per-call` 추가(기존 도메인). 결정 5개, 그림 2장. 운영 전 실험이라 metrics 에 상태를 명시. 손실 5% TCP 4.0 vs QUIC-Aware 10.4 MB/s, 호출당 +130µs.
+
+## 2026-09-26 sentry 재방문
+- 새 자료 없음(1회째). 09-06 이후 3건 모두 제품 사용기·안내. updated_at 만 올림.
