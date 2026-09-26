@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**없다 — Picnic 완주(2026-09-26, 도메인 3 · 기능 3). 진행 중 회사는 전부 done 이거나 hold. 대기 0/3 — 다음은 후보 조사(79번째). QUEUE '확인해 둔 후보' 와 78번째 조사의 못 연 곳(Flexport·Hacobu·Ocado·Gopuff)부터, 그리고 369 에서 떨어진 Riot Games(리디렉션 대상을 안 열어 봤던 것).**
+**없다 — 79번째 후보 조사(2026-09-26)로 대기 3/3: ANDPAD(건설 SaaS) · 타이미(스폿 근로 매칭) · LayerX(지출 관리 SaaS). 다음은 신규 — 대기 맨 위 ANDPAD 의 프로파일(입구 `tech.andpad.co.jp/sitemap_periodical.xml?year=&month=`, 첫 글 `entry/2026/08/06/100000`).**
+
 
 
 

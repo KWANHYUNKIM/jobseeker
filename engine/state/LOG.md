@@ -1240,3 +1240,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Picnic 확장 — 분석 플랫폼이 관제실의 다음 할 일을 꺼낸다 → 완주
 
 - control center 글(07-30)로 `recommend-from-analytics`(결정 7·state 그림 포함). RabbitMQ Engine 결정은 대안이 이 사이트의 것이라 inferred. 세 도메인 모두 기능, 연결 고아 없음, 수익원 하나가 세 도메인에 연결 → done.
+
+## 2026-09-26 일흔아홉 번째 후보 조사
+
+- 3/3 — ANDPAD · 타이미 · LayerX(모두 하테나). Riot 은 최신 기술 글 2025-10-16 그대로라 접은 판정 유지, 물류 후보(Ocado·Flexport·Hacobu·Gopuff·Instacart·Oda) 전부 못 엶.
