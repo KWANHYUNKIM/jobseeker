@@ -1444,3 +1444,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 드왕고 교육 Android Legacy 격리 — 완주
 
 - Android 재설계 글 전문으로 `android-legacy-module-one-way`(결정 8 — Legacy 격리·한 방향 의존·클린 MVVM·Hilt·데이터 층부터·Domain/Data 모델·얇은 껍질 UseCase·PR 지표). 도메인 2 모두 기능 · 수익원 2 연결 → done(수익원 자체는 inferred).
+
+## 2026-09-26 여든세 번째 후보 조사
+
+- 하테나 사이트맵 30곳을 8~9월로 세고 글 있는 곳만 6~9월 제목을 봄. 엔니고모(이미지 검색·매입 보증)·SMS(개호 보수 산정 테스트 자산화)·코네히토(약관 동의 이력) 대기 등록 → 3/3. STORES·스터디사프리 탈락, MNTSQ 는 LegalOn 과 겹쳐 보류.
