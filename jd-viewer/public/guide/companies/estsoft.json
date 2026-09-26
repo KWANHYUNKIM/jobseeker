@@ -5,7 +5,7 @@
   "aliases": [
     "이스트소프트"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "estsoft.ai",
   "one_liner": "알툴즈·알약으로 알려진 SW 회사가 AI 아바타·대화형 AI·AI 더빙(Perso)·AI 검색(Alan)으로 옮겨 가는 중 — 모집중 공고 다수는 보안 자회사 이스트시큐리티 자리다",
@@ -131,7 +131,7 @@
       },
       {
         "name": "그룹 IT 인프라",
-        "why": "시스템 엔지니어 공고가 이스트그룹사 서비스의 퍼블릭 클라우드·온프레미스 인프라, Linux, Kubernetes·Docker, Jenkins·Argo CI/CD, 로그·메트릭 데이터레이크를 적는다. 매출 제품을 떠받치는 공통 기반이다.",
+        "why": "시스템 엔지니어 공고가 이스트그룹사 서비스의 퍼블릭 클라우드·온프레미스 인프라, Linux, Kubernetes·Docker, Jenkins·Argo CI/CD, 로그·메트릭 데이터레이크를 적는다. 매출 제품을 떠받치는 공통 기반이다. 수익원이 아니라 계열사 공통 기반이다 — 같은 공고가 대상을 '이스트그룹사 서비스' 로 적고, 정보보안 기술 담당자 공고도 담당 범위를 ESTGroup 의 서비스(알툴즈, 페르소, 알약, Zum 등) 전체로 적는다.",
         "what_to_know": [
           "Linux·K8s 운영",
           "CI/CD",
@@ -142,6 +142,11 @@
           {
             "title": "[ESTsecurity] 시스템 엔지니어 10년 이상",
             "url": "https://www.wanted.co.kr/wd/353123",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[ESTsecurity] 정보보안 기술 담당자 5년 이상",
+            "url": "https://www.wanted.co.kr/wd/376849",
             "publisher": "원티드"
           }
         ]
@@ -689,6 +694,121 @@
             {
               "title": "Apache HTTP Server Version 2.4 Documentation",
               "url": "https://httpd.apache.org/docs/2.4/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/376849",
+      "title": "[ESTsecurity] 정보보안 기술 담당자 5년 이상",
+      "site": "wanted",
+      "verdict": "경력 5-10년, 서울 서초구. **이스트시큐리티 정보보안팀** 자리인데 범위는 이스트시큐리티 한 곳이 아니다 — 팀이 'ESTGroup(EST Games 제외)사의 보안 정책, 기술, 개인정보 업무' 를 맡아 여러 법인의 보안 거버넌스·리스크와 법인 간 서비스·인프라 연결의 법적 준거성을 확인하고, 담당 서비스가 알툴즈, 페르소, 알약, Zum 과 사내 임직원 업무 환경이다. 제품 개발이 아니라 **사내 보안 운영**이다: IPS/WAF/유해사이트 차단/백신/CloudFlare/망연계/DB접근제어/ABM/MDM 운영과 트러블 슈팅, 인프라·네트워크·개인정보 보안성 검토, ISMS 인증심사 대응(보호대책 요구사항 항목), IPS/WAF 로그의 악성 트래픽 분석, 보안솔루션 계약, 보안관제 일일/월간 보고 1차 검토, 클린데스크·정보보안의 날 행사. 필수는 WAF·IPS 등 사내 보안 솔루션 운영 5년 이상, 인프라·네트워크 보안성 검토, 학사 이상. 우대는 CISA·CISSP, 다수 법인(계열사) 보안 지원, AI Tool(Gemini, Claude Code 등). 전형: 서류심사 > 실무진인터뷰 > 인성검사 > 최종인터뷰 > 처우협의 > 최종합격, 수시 채용.",
+      "fit": {
+        "must_have": [
+          "WAF·IPS 등 사내 보안 솔루션 운영 5년 이상",
+          "인프라·네트워크 보안성 검토",
+          "학사 이상"
+        ],
+        "can_learn": [
+          "CISA·CISSP",
+          "다수 법인(계열사) 보안 지원",
+          "AI Tool(Gemini, Claude Code 등)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "WAF 운영과 오탐 조정",
+          "from": "task",
+          "quote": "- IPS/WAF/유해사이트 차단 솔루션/백신/CloudFlare/망연계/ DB접근제어/ABM/ MDM 솔루션 운영 및 트러블 슈팅",
+          "priority": "core",
+          "why": "첫 주요업무이고 필수가 'WAF, IPS 등 사내 보안 솔루션 운영 경력이 5년 이상' 이다. 목록에 CloudFlare 가 따로 있다.",
+          "gap_check": "WAF 가 정상 요청(예: 게시판에 SQL 예제를 올린 글)을 막았을 때 룰을 통째로 끄지 않고 그 경로·파라미터만 예외 처리하려면 무엇을 보고 어떻게 거는가? 탐지 모드와 차단 모드는 언제 바꾸는가?",
+          "drill": "ModSecurity + OWASP CRS 를 도커 nginx 앞에 탐지 모드로 붙이고, SQL 예제 문자열이 든 정상 POST 가 어떤 룰 ID 로 걸리는지 감사 로그에서 찾은 뒤 그 파라미터만 예외로 빼고 차단 모드로 바꿔 공격 문자열은 여전히 막히는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "CRS Documentation",
+              "url": "https://coreruleset.org/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Cloudflare Web Application Firewall (WAF) docs",
+              "url": "https://developers.cloudflare.com/waf/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IPS/WAF 로그로 악성 트래픽 분석",
+          "from": "task",
+          "quote": "- IPS/WAF 장비의 로그에서 악성 트래픽 분석",
+          "priority": "core",
+          "why": "주요업무이고 다음 업무가 보안관제 일일/월간 보고 1차 검토다.",
+          "gap_check": "하룻밤 사이 같은 IP 대역에서 로그인 페이지로 수천 건이 들어온 로그를 봤을 때 무차별 대입인지 정상 트래픽 급증인지 무엇(응답 코드 분포·계정 다양성·User-Agent)으로 가르고, 결론을 보고에 어떤 숫자로 적는가?",
+          "drill": "Suricata 를 pcap 파일에 오프라인으로 돌려 eve.json 경보를 만들고, jq 로 출발지 IP·시그니처별 건수를 세어 일일 보고 형식의 표 한 장으로 요약한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Suricata User Guide",
+              "url": "https://docs.suricata.io/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ISMS 인증심사 대응 — 보호대책 요구사항",
+          "from": "task",
+          "quote": "- ISMS인증심사 대응 (보호대책 요구사항 항목)",
+          "priority": "core",
+          "why": "주요업무다. 담당 범위가 알툴즈·페르소·알약·Zum 등 여러 법인의 서비스다.",
+          "gap_check": "ISMS 의무 대상 근거가 어느 법 몇 조에 있고, 보호대책 요구사항 항목(예: 접근통제) 하나에 대해 심사원에게 내놓을 증적은 정책 문서 말고 무엇(설정 화면·로그·검토 기록)인가?",
+          "drill": "정보통신망법에서 정보보호 관리체계 인증 조문을 찾아 의무 대상 요건을 표로 옮기고, 'DB접근제어' 운영을 예로 증적 목록(정책·계정 목록·접근 로그·분기 검토 기록)을 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "정보통신망이용촉진및정보보호등에관한법률",
+              "url": "https://www.law.go.kr/법령/정보통신망이용촉진및정보보호등에관한법률",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인프라·네트워크·개인정보 보안성 검토",
+          "from": "task",
+          "quote": "- 인프라, 네트워크, 개인정보 보안성 검토",
+          "priority": "high",
+          "why": "주요업무이고 필수에 '인프라 및 네트워크 전반에 대한 이해를 바탕으로 보안성 검토가 가능한 분' 이 있다. 팀이 법인 간 서비스·인프라 연결의 법적 준거성을 확인한다.",
+          "gap_check": "계열사 A 의 서비스가 계열사 B 의 회원 DB 를 조회하게 해 달라는 요청이 오면, 네트워크(구간·방화벽 정책) 말고 개인정보 쪽에서 무엇(제3자 제공인지 처리위탁인지, 동의 근거)을 먼저 확인하는가?",
+          "drill": "개인정보보호법에서 제3자 제공과 처리위탁 조문을 찾아 차이를 한 표로 정리하고, 위 요청 사례에 대한 보안성 검토서(구성도·통신 구간·개인정보 항목·판단 근거·조건부 승인 사항) 한 장을 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "개인정보보호법",
+              "url": "https://www.law.go.kr/법령/개인정보보호법",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "CISA·CISSP",
+          "from": "preference",
+          "quote": "- CISA, CISSP 등 보안 관련 전문 자격증을 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항이다.",
+          "gap_check": "두 자격의 응시 경력 요건을 확인했고, 감사(CISA)와 보안 관리(CISSP) 중 이 자리의 ISMS 심사 대응에 더 가까운 쪽이 무엇인지 말할 수 있는가?",
+          "drill": "두 자격 공식 페이지에서 경력 요건과 시험 영역을 표로 옮기고, 이 공고 주요업무 일곱 줄을 각 시험 영역에 짝지어 본다.",
+          "hours": 2,
+          "resources": [
+            {
+              "title": "CISA Certification",
+              "url": "https://www.isaca.org/credentialing/cisa",
+              "kind": "docs"
+            },
+            {
+              "title": "CISSP Certified Information Systems Security Professional",
+              "url": "https://www.isc2.org/certifications/cissp",
               "kind": "docs"
             }
           ]
