@@ -276,6 +276,95 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/380610",
+      "title": "Healthcare Data Engineer (계약직)",
+      "site": "wanted",
+      "verdict": "⚠️ **계약직**, 경력 3-8년, 서울 강남구. **AITRICS 연구실 응용연구팀** 소속으로 의료 AI 모델 개발에 필요한 데이터 자산을 만드는 자리다 — 공고가 '의료 AI의 성능은 결국 데이터 품질에서 시작됩니다' 라고 적는다. 업무는 국내외 병원 **EMR/CDW raw data 를 사내 표준 스키마 또는 OMOP-CDM 으로 정제·변환**, 병원별 로컬 코드의 **표준 용어 매핑(SNOMED CT·LOINC·RxNorm·ICD-10)**, **데이터 품질 규칙**(정합성·결측·이상값·단위 변환·매핑 오류) 설계·관리, 병원별 데이터 명세서·사전·매핑 테이블 작성, Data Lakehouse ETL 참여. 필수는 관련 전공 학사 또는 데이터 엔지니어링 3년 이상, 고급 SQL·Python/Scala, 연구자·임상의·병원 데이터 담당자 협업, 의료에 대한 관심. 우대는 의료데이터 표준화·용어 매핑, SNOMED CT·**HL7 FHIR**, Spark·Airflow·dbt, 클라우드 DW/레이크하우스(AWS·GCP·Azure·Databricks). 같은 회사 정규직 HAX Infra Data Engineer(379809)는 수집·인프라 계층, 이 자리는 연구용 표준화·품질 쪽이다. 전형: 서류 ＞ 1차 인터뷰 ＞ 2차 인터뷰 ＞ 처우 협의, **1·2차 인터뷰 모두 PT 발표**. 계약 기간·연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "관련 전공 학사 또는 데이터 엔지니어링 3년",
+          "고급 SQL·Python/Scala",
+          "임상·연구자 협업"
+        ],
+        "can_learn": [
+          "표준 용어 매핑",
+          "OMOP CDM",
+          "HL7 FHIR",
+          "데이터 품질 규칙"
+        ]
+      },
+      "study": [
+        {
+          "topic": "로컬 코드를 표준 용어로 — 매핑의 원칙",
+          "from": "task",
+          "quote": "• 병원별 로컬 코드/용어의 표준 용어 매핑 업무 (예: SNOMED CT, LOINC, RxNorm, ICD-10 등)",
+          "priority": "core",
+          "why": "주요업무다. 여러 나라 병원 데이터를 한 모델에 쓰려면(회사 브리핑: 동남아·일본) 코드가 같은 뜻으로 맞아야 한다.",
+          "gap_check": "검사 코드는 LOINC, 진단은 SNOMED CT·ICD-10, 약물은 RxNorm 으로 매핑하는 이유는 무엇이고, 병원 코드 하나가 표준 개념 둘에 걸치거나(1:N) 딱 맞는 개념이 없을 때 어떻게 기록하며, 매핑이 맞는지 누가(임상의) 무엇을 근거로 검수하는가?",
+          "drill": "The Book of OHDSI 의 표준 어휘 장을 읽고, 가짜 병원 검사 코드 30개(한글 명칭·단위 포함)를 표준 개념 후보와 짝지은 매핑 테이블(원천 코드·원천 명칭·표준 개념·매핑 신뢰도·검수자)을 만든다. 매핑 불가·모호 사례를 따로 모아 판단 근거를 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Standardized Vocabularies — The Book of OHDSI",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/StandardizedVocabularies.html",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "의료 데이터 품질 규칙 — 단위와 이상값",
+          "from": "task",
+          "quote": "• 데이터 품질 관리 업무 (데이터 정합성, 결측, 이상값, 단위 변환, 코드 매핑 오류 등에 대한 품질 검증 규칙 설계 및 관리)",
+          "priority": "core",
+          "why": "주요업무이고 공고가 품질을 의료 AI 성능의 출발점으로 적는다.",
+          "gap_check": "같은 크레아티닌 검사가 병원 A 는 mg/dL, 병원 B 는 µmol/L 로 들어오면 모델에 무엇이 생기고(값 척도 차이), 단위 변환 규칙과 생리적으로 불가능한 값(음수 체온·혈압 0)을 거르는 범위 규칙을 어디에 두며, 규칙 위반을 버릴지 표시만 할지 무엇으로 정하는가?",
+          "drill": "OHDSI 책의 데이터 품질 장을 읽고, 가짜 두 병원 검사 데이터에 단위 통일·범위 검사·결측률·코드 매핑 실패율 규칙을 적용하는 SQL(또는 Python) 검사 세트를 만든다. 병원별 위반 건수 리포트를 뽑는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Data Quality — The Book of OHDSI",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/DataQuality.html",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "HL7 FHIR — 병원 데이터 교환 표준 읽기",
+          "from": "preference",
+          "quote": "• SNOMED CT 등 의료 표준 온톨로지 혹은 HL7 FHIR 등 데이터 교환 표준에 대한 이해 또는 학습 경험",
+          "priority": "high",
+          "why": "우대사항이다. 해외 병원은 데이터를 FHIR 리소스로 주는 경우가 있어, 받은 형식을 표준 모델(OMOP)로 옮길 줄 알아야 한다.",
+          "gap_check": "FHIR 의 Patient·Observation 리소스는 무엇을 담고, Observation 의 code(LOINC)·value(단위 포함)·effective(측정 시각)는 OMOP MEASUREMENT 의 어느 컬럼에 대응하며, FHIR 는 '교환' 표준이고 OMOP 은 '분석' 모델이라는 차이는 어디서 드러나는가?",
+          "drill": "FHIR 개요 문서를 읽고 공개 예제 Observation JSON 몇 개를 MEASUREMENT 행으로 바꾸는 파이썬 변환기를 만든다. 대응표(FHIR 경로 → OMOP 컬럼)를 함께 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Overview — FHIR v5.0.0",
+              "url": "https://hl7.org/fhir/overview.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "레이크하우스에서 표준화 ETL — Spark SQL",
+          "from": "preference",
+          "quote": "• 대규모 데이터 처리 프레임워크 경험 (예: Spark, Airflow, dbt 등)",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무에 'Data Lakehouse 환경 내 의료데이터 ETL, 표준화 파이프라인 구축 및 운영에 참여' 가 있다.",
+          "gap_check": "병원 여러 곳의 수억 행 검사 데이터를 매핑 테이블과 조인해 표준화할 때 매핑 테이블이 작다면 무엇(브로드캐스트 조인)이 빨라지고, 병원·연월로 나눠 저장하면 무엇이 쉬워지며, 매핑 테이블이 바뀌면 과거 데이터를 다시 계산할지 무엇으로 정하는가?",
+          "drill": "Spark SQL 가이드를 따라 가짜 검사 데이터와 매핑 테이블을 조인해 표준화하는 잡을 만들고, 브로드캐스트 조인 유무의 실행 계획을 비교한다. 병원·연월 파티션으로 저장해 특정 병원만 재처리해 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Spark SQL and DataFrames",
+              "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
