@@ -8,7 +8,7 @@
     "스낵24",
     "WEFUN"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "wefuncorp.com",
   "one_liner": "기업 간식 구독 '스낵24' 로 시작해 조식·커피·선물 SaaS·사무공간까지 회사의 본업 외 업무를 대신하는 B2B 플랫폼 — 2024년 매출 1,430억 원(공고)",
@@ -644,6 +644,13 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54830151&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2b54d336-1394-4fa4-bcb0-736724a0b02a",
+      "title": "시니어 백엔드 개발자 (경력 8년 이상)",
+      "site": "saramin",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54814455&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2b54d336-1394-4fa4-bcb0-736724a0b02a",
+      "verdict": "⚠️ **같은 본문을 연차만 바꿔 사람인에 따로 올린 게시다** — 학습 항목은 사람인 '백엔드 개발자 (경력 5년 이상)'(54814455) 브리핑을 본다. 두 게시 모두 본문이 이미지라 OCR 텍스트로 비교했고, 업무 설명(Java·Spring Boot, JPA·Querydsl, MySQL/MariaDB, RESTful API·GraphQL, Docker·Kubernetes·CI/CD, 애자일 협업)과 복지·채용 안내가 같다(OCR 오독 글자만 다르다). 다른 점은 둘이다. ① 자격요건 첫 줄이 **'8년 이상 백엔드 경력'** 이다(5년 게시는 5년 이상). ② 자격요건에 **'MySQL/MariaDB 또는 하나 이상의'** 로 시작하는 줄이 하나 더 있다 — 뒷부분은 OCR 로 잘렸다. 제목은 '시니어 백엔드 개발자'. 연봉은 공고에 없다."
     }
   ]
 }
