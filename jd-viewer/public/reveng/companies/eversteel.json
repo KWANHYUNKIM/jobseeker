@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "기타",
   "status": "in_progress",
+  "hold_reason": "수익원 '신규 사업(SanPa Navi 등)' 의 연결이 inferred 에 머물러 두 번 찾았고 두 번 다 확인하지 못했다(2026-09-27 — Zenn Publication RSS 18편: 제목에 SanPa Navi · 산업폐기물 · 신규 사업이 없다 / Zenn 검색 API 'SanPa Navi'·'EVERSTEEL 産廃'·'産業廃棄物 アプリ 画像解析'·'EVERSTEEL 新規事業' — 이 회사 글은 어노테이션 팀 글 하나(검수 AI 쪽) / 회사 뉴스 목록도 공동 연구 계약 소식뿐). 화상 해석 글은 '신규 사업 개발 담당'의 BtoB 업무 시스템이라고만 하고 제품 이름을 밝히지 않는다 — SanPa Navi 는 개인정보 방침으로만 존재가 확인된다. 완주 기준 셋째를 못 채워 in_progress 로 두고 더 파지 않는다. SanPa Navi 의 발표 · 시스템 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-27",
   "domain": "eversteel.co.jp",
   "one_liner": "철 스크랩 검수를 카메라와 AI 로 하는 '鉄ナビ検収AI' 의 회사 — 공장마다 다른 기간 시스템은 코드가 아니라 설정으로 변환해 잇고, 거점마다 놓인 온프레 서버는 정의 파일로 릴리스하고, 쌓인 검수 데이터는 철강사마다 RLS 로 갈라 보여 준다",

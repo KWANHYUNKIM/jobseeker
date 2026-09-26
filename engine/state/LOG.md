@@ -2304,3 +2304,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 EVERSTEEL LLM 화상 해석
 
 - `c046afa79617c1` 전문으로 기능 `llm-first-image-detection`, 결정 8. 오프라인 로컬 큐 · 안건 화면이 SanPa Navi(스마트폰 앱)와 맞아 보이지만 글이 제품명을 밝히지 않아 수익원 연결은 inferred 유지.
+
+## 2026-09-27 EVERSTEEL 신규 사업 수익원 보류
+
+- 검색 1: RSS 18편 · 회사 뉴스 — 해당 없음. 검색 2: Zenn 검색 4낱말 — 검수 AI 쪽 글 하나뿐. hold_reason, in_progress 유지.
