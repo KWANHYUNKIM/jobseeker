@@ -8,7 +8,7 @@
     "메가존클라우드",
     "메가존클라우드㈜"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "megazone.com",
   "one_liner": "남의 클라우드를 대신 설계·운영해 주고 그 위에 자기 플랫폼과 AI를 얹는 국내 최대 MSP — 2025년 매출 1조 7,496억원에 영업이익 2억 3천만원으로 창사 첫 흑자를 냈다",
@@ -7516,6 +7516,118 @@
           {
             "title": "Back-end / Full-Stack Developer 채용",
             "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55090863&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=d49dcec9-4098-428f-b34d-31c2a168cc8e",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54609742&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=86ffdb45-47e5-46a2-bb61-f6de0d54dbc9",
+      "title": "[메가존클라우드] Dell / Nvidia 여신 및 외환 담당자 채용",
+      "site": "saramin",
+      "verdict": "**개발 자리가 아니라 재무(자금·외환·무역금융) 자리**다. 경력 5~10년(기업 자금·외환·무역 금융). 메가존클라우드의 Dell/Nvidia 사업을 전담해 은행 여신 한도(Credit Line) 설정·증액, L/C·Usance·D/A·D/P 무역 금융 실행, 매출채권 회수·신용 리스크·담보 관리, Dell/Nvidia 거래로 생기는 대규모 외화(USD 등) 포지션 분석과 선물환 등 FX 헤지, 외국환거래법에 따른 은행 정산·한국은행/외국환은행 신고, 구매·판매 플랜 연계 외화 자금 수지 예측과 유동성 확보를 맡는다. 필수는 수출입 무역 금융·외국환거래법 이해와 FX 헤지·선물환 실무, 비즈니스 영어(Fluent), 대규모 숫자를 다루는 꼼꼼함. IT 하드웨어·반도체·총판·무역상사, Dell·Nvidia 직접 거래, 대규모 외화 Treasury, SAP 자금 모듈, CFA·FRM·외환전문역·국제무역사는 우대다. 이 자리가 있다는 것 자체가 메가존클라우드가 Dell·Nvidia 하드웨어 거래를 크게 한다는 신호로 읽힌다(추론). 주 근무지 과천 본사. 급여·접수 기간·전형 단계는 본문에 없다.",
+      "fit": {
+        "must_have": [
+          "기업 자금·외환·무역 금융 5~10년",
+          "무역 금융·외국환거래법, FX 헤지·선물환 실무",
+          "비즈니스 영어(Fluent)",
+          "숫자 꼼꼼함·유관 부서 소통"
+        ],
+        "can_learn": [
+          "IT 하드웨어·반도체·총판 경험",
+          "Dell·Nvidia 직접 거래",
+          "대규모 Treasury",
+          "SAP 자금 모듈",
+          "CFA·FRM·외환전문역·국제무역사"
+        ]
+      },
+      "study": [
+        {
+          "topic": "무역 금융(L/C·Usance·D/A·D/P)",
+          "from": "qualification",
+          "quote": "- 무역 금융 실행: L/C(신용장), Usance, D/A, D/P 등 다양한 무역 금융 프로세스 설계 및 실행",
+          "priority": "core",
+          "why": "담당업무 줄이다(데이터상 자격요건 칸). 필수에 '수출입 무역 금융 프로세스 및 외국환거래법에 대한 높은 이해도' 가 있다.",
+          "gap_check": "해외 벤더에서 GPU 서버를 수입할 때 일람불 L/C 와 Usance L/C 는 대금 지급 시점과 은행 여신 사용이 어떻게 다르고, D/A·D/P 는 L/C 와 비교해 누가 어떤 위험을 지는가?",
+          "drill": "가상의 서버 수입 건(금액·결제 조건 세 가지)으로 L/C·Usance·D/A 각각의 서류 흐름, 대금 지급일, 여신 한도 사용량을 표로 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Wikipedia — Letter of credit",
+              "url": "https://en.wikipedia.org/wiki/Letter_of_credit",
+              "kind": "article"
+            },
+            {
+              "title": "국가법령정보센터 — 외국환거래법",
+              "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EC%99%B8%EA%B5%AD%ED%99%98%EA%B1%B0%EB%9E%98%EB%B2%95",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "외화 포지션과 FX 헤지",
+          "from": "qualification",
+          "quote": "- FX 헤지(Hedging) 실행: 환율 변동 리스크 최소화를 위한 선물환(Forward) 등 파생상품 거래 실행 및 관리",
+          "priority": "core",
+          "why": "담당업무 줄이고 필수에 'FX 헤지 메커니즘 및 파생상품(선물환 등) 실무 경험' 이 있다.",
+          "gap_check": "3개월 뒤 USD 1,000만 달러를 지급해야 할 때 선물환으로 헤지하면 환율이 오르거나 내릴 때 각각 결과가 어떻게 되고, 매출(USD 수취)과 매입(USD 지급)이 섞인 순포지션은 어떻게 계산하는가?",
+          "drill": "월별 USD 수취·지급 예정표를 만들어 순포지션을 계산하고, 선물환 헤지 비율 0%·50%·100% 에서 환율 ±10% 시나리오 손익을 표로 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Wikipedia — Foreign exchange hedge",
+              "url": "https://en.wikipedia.org/wiki/Foreign_exchange_hedge",
+              "kind": "article"
+            },
+            {
+              "title": "Wikipedia — Forward contract",
+              "url": "https://en.wikipedia.org/wiki/Forward_contract",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "외화 자금 수지 예측과 유동성",
+          "from": "qualification",
+          "quote": "- Dell/Nvidia 사업부의 구매 및 판매 플랜과 연계된 단기/중장기 외화 자금 수지 예측(Cash",
+          "priority": "high",
+          "why": "담당업무 줄이고 다음 줄이 '대규모 결제 대금 적기 지급을 위한 유동성 확보 및 자금 조달 지원' 이다. 우대에 SAP 자금 모듈과 대규모 Treasury 운영이 있다.",
+          "gap_check": "사업부의 분기 구매·판매 계획을 외화 자금 수지 예측으로 바꿀 때 무엇(결제 조건·수금 지연·환율 가정)을 입력으로 두고, 예측이 빗나가 지급일에 외화가 모자라면 어떤 수단(여신 한도·환전·조달)을 먼저 쓰는가?",
+          "drill": "가상 사업부 판매·구매 계획으로 13주 외화 현금흐름 예측표를 만들고, 수금 2주 지연 시나리오에서 부족액과 대응 수단을 정리한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Wikipedia — Cash flow forecasting",
+              "url": "https://en.wikipedia.org/wiki/Cash_flow_forecasting",
+              "kind": "article"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "무역 금융 조건 비교표 + FX 헤지 시나리오 + 13주 외화 자금 예측 샘플",
+          "why": "담당업무 세 묶음(무역 금융·FX·자금 수지)을 결과물로 보여 준다.",
+          "effort": "2~3일"
+        },
+        {
+          "idea": "외환전문역·국제무역사 등 자격증",
+          "why": "우대에 'CFA, FRM, 외환전문역, 국제무역사 등' 이 이름으로 적혀 있다.",
+          "effort": "수 주~수 개월"
+        }
+      ],
+      "interview": {
+        "process": "본문에 단계별 전형이 없다. '필요 시 레퍼런스 체크, 인성검사가 진행 될 수 있습니다' 만 적혀 있다. 주 근무지 과천 본사.",
+        "expect": [
+          "무역 금융 실무",
+          "FX 헤지 경험",
+          "외환 신고·정산",
+          "영어로 해외 은행·벤더와 소통"
+        ],
+        "sources": [
+          {
+            "title": "[메가존클라우드] Dell / Nvidia 여신 및 외환 담당자 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54609742&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=86ffdb45-47e5-46a2-bb61-f6de0d54dbc9",
             "publisher": "사람인"
           }
         ]
