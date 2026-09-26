@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**みてね 확장 2/2(2026-09-26) — `ingress-nginx-to-envoy-gateway` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 '사진 프린트·포토북' 에 도메인 없음 — 검색 1 RSS 20편(프린트·포토북 글 없음) 이어 검색 2(Zenn 검색 API 'フォトブック'·'写真プリント'·'mitene'), 없으면 hold. 단 --gaps 가 후보 조사(큐 0/3)를 먼저 부르면 그쪽. 대기 0/3 — --gaps 가 후보 조사를 부르면 그쪽(입구: note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**93번째 후보 조사(2026-09-26) — 큐 3/3(SODA·COUNTERWORKS·Luup). 다음은 みてね 완주 판정(진행 중이므로 신규보다 먼저): 수익원 사진 프린트·포토북 도메인 없음 — 검색 1 RSS 20편 · 검색 2 Zenn 검색 'フォトブック'·'写真プリント'·'mitene' 0건(2026-09-26) → 다음 사이클은 hold 만. 그 뒤 신규 SODA(`26f39f5e3b09f3` 멱등성 · `4f20b4b63e9be8` DDD · `a52d51d7600121` 형식 검증). **후보 조사 입구: Zenn 검색 API 에 주제어.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

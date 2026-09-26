@@ -1940,3 +1940,8 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 みてね ingress-nginx → Envoy Gateway
 
 - 결정 5 — Gateway API(다른 Ingress 대신)·Envoy Gateway(NGF·Traefik 대신)·인증은 범위부터·리소스 위치·ALB 명시 조건 전환.
+
+## 2026-09-26 93번째 후보 조사
+
+- 새 입구: Zenn 검색 API 주제어 10개 × 3쪽 → 2026년 글의 publication 집계 → RSS 3곳. 올림: SODA·COUNTERWORKS·Luup. 보류: USEN ICT·TRIBEAU.
+- 겸사: みてね 완주 판정 검색 2 — 프린트·포토북 글 0.
