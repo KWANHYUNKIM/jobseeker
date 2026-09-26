@@ -1,0 +1,186 @@
+{
+  "book": "java-io",
+  "id": "what-to-watch",
+  "no": "1.5",
+  "chapter": 1,
+  "title": "무엇을 볼 것인가",
+  "summary": "바이트 수 · 호출 횟수 · 걸린 시간.",
+  "minutes": 11,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "이 책이 매 절 세는 세 숫자를 정한다.",
+    "호출 횟수를 직접 세는 도구를 만든다.",
+    "1.2절의 추측을 숫자로 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "1.2절에서 `BufferedOutputStream` 이 버퍼 배열보다 느린 것을 보고 **\"커널 왕복은 줄었지만 자바 메서드 호출이 남았을 것\"** 이라고 적었다.\n\n**추측이었다.** 이 절에서 센다. 세고 나면 이 책이 계속 쓸 숫자 셋이 정해진다."
+    },
+    {
+      "type": "figure",
+      "caption": "이 책이 매 절 보는 세 숫자",
+      "ascii": "   1. bytes    how many bytes actually moved\n                -> od, ls -l, sha256\n\n   2. calls    how many times we asked\n                -> count it yourself (below)\n\n   3. time     how long it took\n                -> System.nanoTime, several runs, print the range\n\n   1 says it is correct.  2 says why.  3 says how much.",
+      "note": "**세 개가 다 있어야 한다.** 바이트만 맞으면 2,000배 느린 코드가 정답처럼 보이고(1.2절), 시간만 보면 왜 느린지 모른다."
+    },
+    {
+      "type": "prose",
+      "md": "## 호출 횟수는 직접 센다\n\nJDK 가 세 주지 않는다. 그런데 `FilterInputStream` 을 상속하면 **열 줄로 만들 수 있다.** 이 책은 이 도구를 계속 쓴다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "세는 스트림",
+      "code": "static class CountingIn extends FilterInputStream {\n    long calls, bytes;\n    CountingIn(InputStream in) { super(in); }\n\n    @Override public int read() throws IOException {\n        calls++; int b = in.read(); if (b != -1) bytes++; return b;\n    }\n    @Override public int read(byte[] b, int off, int len) throws IOException {\n        calls++; int r = in.read(b, off, len); if (r > 0) bytes += r; return r;\n    }\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "어디에 끼우느냐가 무엇을 세는지를 정한다",
+      "md": "`Buffered` 를 잴 때 **세는 스트림을 파일 바로 위에** 뒀다.\n\n```java\n// 파일 -> 세기 -> Buffered -> 내 코드\nInputStream bin = new BufferedInputStream(new CountingIn(new FileInputStream(src)));\n```\n\n> 이러면 **`Buffered` 가 파일에 몇 번 부탁하는지**가 세어진다.\n> 순서를 뒤집어 `new CountingIn(new BufferedInputStream(...))` 으로 두면 **내 코드가 몇 번 불렀는지**가 세어진다 — 다른 숫자다.\n> 3장에서 이 두 자리를 다 잰다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 1MB, 파일 바로 위에서 센 호출 횟수",
+      "columns": [
+        "방법",
+        "`read` 호출",
+        "`write` 호출",
+        "옮긴 바이트",
+        "시간"
+      ],
+      "rows": [
+        [
+          "1바이트씩",
+          "**1,048,577**",
+          "**1,048,576**",
+          "1,048,576",
+          "2,107 ms"
+        ],
+        [
+          "8KB 버퍼",
+          "129",
+          "128",
+          "1,048,576",
+          "**1 ms**"
+        ],
+        [
+          "Buffered 스트림",
+          "**129**",
+          "**128**",
+          "1,048,576",
+          "**17 ms**"
+        ],
+        [
+          "readAllBytes",
+          "257",
+          "**1**",
+          "1,048,576",
+          "1 ms"
+        ]
+      ],
+      "note": "**둘째 줄과 셋째 줄이 호출 횟수가 똑같은데 17배 차이다.** 1.2절의 추측이 여기서 확인된다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "129 와 129 가 같은데 1ms 와 17ms 인 이유",
+      "md": "파일에 부탁한 횟수가 같으면 **커널 왕복은 같다.** 남은 16ms 는 자바 안에 있다.\n\n> `Buffered` 판은 내 코드가 `read()` 를 **1,048,576번** 부르고, 그 호출이 `BufferedInputStream` 을 지나 버퍼에서 한 바이트를 꺼내 온다.\n> 버퍼 배열 판은 내 코드가 `read(buf)` 를 **128번** 부른다.\n> 곧 **커널 왕복 256번은 같고, 자바 메서드 호출이 210만 번 대 256번**이다. 16ms ÷ 2,097,152 ≈ **8나노초** — 메서드 호출 하나의 값이 그 정도다.\n> 1.2절에서 \"자바 메서드 호출 210만 번이 남는다\" 고 쓴 것이 맞았다. **다만 그때는 세지 않고 말한 것이었다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "1,048,577 과 129 의 마지막 1",
+      "md": "읽기 호출이 바이트 수보다 **하나 더** 많다.\n\n> 마지막 `read()` 가 **-1 을 돌려주는 호출**이다. 파일 끝을 알려면 한 번 더 물어야 한다(1.4절).\n> 그래서 `while ((b = in.read()) != -1)` 은 **바이트 수 + 1번** 돈다.\n> `readAllBytes` 의 257 도 같은 이유다 — 내부에서 버퍼를 늘려 가며 읽고 마지막에 끝을 확인한다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "시간은 한 번 재지 않는다",
+      "md": "이 책의 시간은 **여러 번 재고 범위를 싣는다.**\n\n> 1.2절의 1MB 세 번 — 1바이트씩 `2,147 / 2,242 / 2,070ms`, 버퍼 `2 / 1 / 1ms`.\n> 두 묶음이 겹치지 않으면 결론이 산다. 겹치면 **그 비교는 싣지 않는다.**\n> 그리고 같은 시점에 번갈아 잰다 — 머신이 바쁜 정도가 1분 안에도 바뀐다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 호출을 센다",
+      "sql": "$ cat Count.java\nstatic class CountingOut extends FilterOutputStream {\n    long calls, bytes;\n    CountingOut(OutputStream out) { super(out); }\n    @Override public void write(int b) throws IOException {\n        calls++; bytes++; out.write(b);\n    }\n    @Override public void write(byte[] b, int off, int len) throws IOException {\n        calls++; bytes += len; out.write(b, off, len);\n    }\n}\n\n$ for m in one buf bufferedStream all; do java -cp out Count $m src1m.bin dstc.bin; done\n\none            read 호출 1,048,577   write 호출 1,048,576   바이트  1,048,576    2,107 ms\nbuf            read 호출       129   write 호출       128   바이트  1,048,576        1 ms\nbufferedStream read 호출       129   write 호출       128   바이트  1,048,576       17 ms\nall            read 호출       257   write 호출         1   바이트  1,048,576        1 ms\n\n# buf 와 bufferedStream 의 호출 횟수가 완전히 같다 (129 / 128).\n# 그런데 1ms 와 17ms 다. 차이는 커널이 아니라 자바 안에 있다.\n#\n# 16ms / 2,097,152 번의 자바 메서드 호출 = 호출 하나에 약 8나노초.\n#\n# read 호출이 바이트 수보다 1 많은 것은 마지막에 -1 을 받는 호출이다.",
+      "note": "**바이트 수는 네 줄이 다 같다.** 정답은 하나고 값은 네 가지다 — 이 책이 세 숫자를 같이 싣는 이유다."
+    }
+  ],
+  "recap": [
+    "이 책은 매 절 세 숫자를 본다 — 옮긴 바이트 · 호출 횟수 · 걸린 시간.",
+    "호출 횟수는 FilterInputStream 을 상속해 열 줄로 직접 센다.",
+    "세는 스트림을 어디에 끼우느냐가 무엇을 세는지를 정한다.",
+    "Buffered 스트림과 버퍼 배열의 파일 호출 횟수는 129/128 로 같은데 17배 느렸다.",
+    "남은 시간은 자바 메서드 호출 210만 번이고 하나에 약 8나노초였다.",
+    "읽기 호출이 바이트 수보다 하나 많은 것은 -1 을 받는 마지막 호출이다.",
+    "시간은 여러 번 재고 범위를 싣는다. 겹치면 그 비교는 싣지 않는다."
+  ],
+  "drills": [
+    {
+      "task": "CountingIn 을 만들어 내 코드의 read 호출을 센다.",
+      "done_when": "바이트 수와 호출 수를 비교한다.",
+      "minutes": 12
+    },
+    {
+      "task": "세는 스트림을 Buffered 위와 아래에 각각 끼워 본다.",
+      "done_when": "두 숫자가 다른 것을 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "버퍼 크기를 바꿔 호출 횟수가 어떻게 변하는지 본다.",
+      "done_when": "바이트 수 ÷ 버퍼 크기 + 1 과 맞는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "같은 측정을 세 번 해서 범위를 적는다.",
+      "done_when": "겹치는지 아닌지 판단한다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "이 책이 매 절 보는 세 숫자는.",
+      "a": "옮긴 바이트 수, 호출 횟수, 걸린 시간이다."
+    },
+    {
+      "q": "Buffered 스트림과 버퍼 배열의 파일 호출 횟수가 같은데 시간이 다른 이유는.",
+      "a": "커널 왕복은 같고 자바 메서드 호출 횟수가 210만 번 대 256번이기 때문이다."
+    },
+    {
+      "q": "읽기 호출이 바이트 수보다 하나 많은 이유는.",
+      "a": "파일 끝을 알려면 -1 을 돌려주는 호출을 한 번 더 해야 한다."
+    },
+    {
+      "q": "측정을 한 번만 하지 않는 이유는.",
+      "a": "시간은 머신 상태에 흔들린다. 여러 번 재서 범위가 겹치는지 봐야 결론이 선다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "호출 횟수",
+      "what": "read·write 를 몇 번 불렀는지. 이 책에서 시간을 설명하는 숫자다."
+    },
+    {
+      "term": "FilterInputStream",
+      "what": "다른 스트림을 감싸 기능을 덧붙이는 부모 클래스. 세거나 기록하거나 바꿀 때 쓴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — FilterInputStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/FilterInputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — BufferedInputStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/BufferedInputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "김영한의 실전 자바 - 고급 2편, I/O, 네트워크, 리플렉션",
+      "url": "https://www.inflearn.com/course/김영한의-실전-자바-고급-2",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}

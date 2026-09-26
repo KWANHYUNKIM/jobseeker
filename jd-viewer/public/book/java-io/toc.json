@@ -43,15 +43,15 @@
           "title": "실습 환경",
           "summary": "자바 17, od 와 hexdump, 외부 라이브러리 없음.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.4",
           "id": "first-bytes",
           "title": "첫 바이트",
-          "summary": "일곱 글자가 파일에서 몇 바이트인가.",
+          "summary": "read() 는 왜 int 를 돌려주나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "1.5",
@@ -59,7 +59,7 @@
           "title": "무엇을 볼 것인가",
           "summary": "바이트 수 · 호출 횟수 · 걸린 시간.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
