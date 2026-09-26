@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "기타",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "학연 그룹의 에드테크 · DX 회사 — 온라인 자격 강좌 ShikakuPass 의 학습 행동 로그를 Kinesis 와 BigQuery 로 모아 B2B 관리자 화면으로 되돌리고, 여러 세대의 프런트 기술이 겹친 화면은 일괄 대신 Strangler Fig 로 React 에 옮긴다",
       "updated_at": "2026-09-27",
       "domain": "gakken-leap.co.jp"

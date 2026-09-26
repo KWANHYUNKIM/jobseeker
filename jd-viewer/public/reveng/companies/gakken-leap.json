@@ -122,7 +122,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "learning-log-loop"
+      ]
     },
     {
       "name": "여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다",
@@ -147,7 +149,392 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "learning-log-loop",
+      "name": "5 분 학습의 흔적을 두 갈래로 — LMS 로 되돌리고 BigQuery 로 보낸다",
+      "domain": "학습자의 행동 로그를 모아 분석하고 다시 서비스로 되돌린다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "ShikakuPass 는 '1 회 5 분, 스마트폰으로' 자격 공부를 쌓게 한다. 학습자가 동영상을 보고 텍스트를 읽고 문제를 푼 기록이 쌓여야 **학습 이력**이 서비스에 다시 보이고, 법인(B2B) 고객의 관리자는 **조직의 학습자마다 학습 상황 · 진척**을 확인한다. 회사는 B2C 상품별 매출과 학습 기능의 이용 현황으로 판단한다.\n\n시스템 로그와 섞인 채로는 이걸 할 수 없다. 행동 로그와 감사 로그를 **서비스와 떨어진 공통 로그 기반**에 모아, 한쪽은 LMS(학습 관리 시스템)로 되돌리고 다른 쪽은 분석으로 보내야 했다.",
+        "metrics": [
+          {
+            "label": "모으는 로그",
+            "value": "행동 로그(동영상 시청 · 텍스트 열람 · 문제 풀이) · 감사 로그 — 시스템 로그와 별도",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "label": "분석으로 가는 출처",
+            "value": "로그 기반(Data Transfer) · 서비스 RDB(Fivetran) · GA4",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "label": "B2B 진척 반영 주기",
+            "value": "일차(BigQuery 집계 → Cloud Storage → LMS 의 S3 → LMS)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "로그의 쓰임을 가를 때",
+          "thought": "같은 행동 로그가 두 곳에 필요하다 — 학습 이력으로 **서비스에 되돌리는** 쪽과, 매출 · 이용 현황을 **분석하는** 쪽.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+              "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+              "publisher": "Gakken LEAP",
+              "date": "2026-07-06",
+              "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+            }
+          ]
+        },
+        {
+          "at": "B2B 요건을 볼 때",
+          "thought": "법인 관리자는 조직의 학습자별 진척 목록을 본다 — 분석 기반에서 만든 집계를 **다시 서비스 안으로** 넣어야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+              "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+              "publisher": "Gakken LEAP",
+              "date": "2026-07-06",
+              "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+            }
+          ]
+        },
+        {
+          "at": "지금을 돌아보며",
+          "thought": "서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 본다 — **LMS 를 API 로** 만들어 접근을 하나로 해야 한다. 그리고 전송이 전부 배치라 신선도에 한계가 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+              "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+              "publisher": "Gakken LEAP",
+              "date": "2026-07-06",
+              "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "행동 로그 · 감사 로그",
+            "what": "동영상 시청 · 텍스트 열람 · 문제 풀이 등 학습자 이벤트와 감사 기록. 시스템 로그와 따로 다룬다."
+          },
+          {
+            "name": "Raw Log S3 / Clean Log S3",
+            "what": "로그 기반 AWS 계정의 두 층. Firehose 가 Raw 에 넣고, Lambda 가 검증 · 분배한 결과가 Clean 에 간다."
+          },
+          {
+            "name": "LMS 기반",
+            "what": "학습 관리 시스템 — 동영상 시청 · 텍스트 열람 · 문제 풀이 이력을 관리하고 서비스에 되돌린다."
+          },
+          {
+            "name": "분석 기반(BigQuery)",
+            "what": "로그 · RDB · GA4 를 모은 Google Cloud 의 DWH. 뷰 · 스케줄 쿼리는 Dataform, 데이터셋 · 권한은 Terraform."
+          },
+          {
+            "name": "학습 진척 집계",
+            "what": "B2B 조직 관리자용 학습자별 진척. BigQuery 에서 일차로 만들어 LMS 로 보낸다."
+          }
+        ],
+        "invariants": [
+          "서비스 계정은 로그를 스트림에 보내기만 한다 — 저장 · 가공은 로그 기반 계정에서.",
+          "검증을 통과한 로그만 Clean 층으로 간다.",
+          "분석용 SQL 변환은 Dataform(GitHub 동기), BigQuery 자원은 Terraform — 역할이 겹치지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "서비스(B2C/B2B)의 AWS 계정이 행동 · 감사 로그를 Kinesis Data Streams 로 보낸다",
+            "why": "시스템 로그와 떨어진 공통 로그 기반으로."
+          },
+          {
+            "step": "Kinesis Data Firehose 가 로그 기반 AWS 계정의 Raw Log S3 로 옮긴다",
+            "why": "서비스와 로그 저장소를 계정으로 가른다."
+          },
+          {
+            "step": "Lambda 가 검증하고 이벤트 속성에 따라 S3 저장 경로를 나눠 Clean Log S3 로",
+            "why": "뒤의 소비자가 경로만 보고 필요한 로그를 받게."
+          },
+          {
+            "step": "S3 이벤트 + 크로스 계정 SQS 로 집계 & LMS 기반이 받아 서비스로 되돌린다",
+            "why": "학습 이력을 서비스에 보인다."
+          },
+          {
+            "step": "분석용 로그는 BigQuery Data Transfer Service 로, 서비스 RDB 는 Fivetran 으로, GA4 도 BigQuery 로",
+            "why": "분석을 한곳에서."
+          },
+          {
+            "step": "Dataform 으로 뷰 · 스케줄 쿼리를 만들고 Redash 로 매출 · 이용 현황을 본다",
+            "why": "사업 판단에 필요한 데이터를 대시보드로."
+          },
+          {
+            "step": "B2B 진척은 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 로",
+            "why": "법인 관리자 화면에 학습자별 진척을 준다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "학습 행동 로그를 어디에 모으나?",
+            "chosen": "**시스템 로그와 따로, 공통 로그 기반에** — 행동 로그와 감사 로그.",
+            "alternatives": [
+              "시스템 로그와 같은 곳에서 뽑아 쓴다(이 사이트의 해석 — 글에 없는 일반적 대안)"
+            ],
+            "tradeoff": "집계 · 분석 · 환류라는 쓰임에 맞춰 로그를 다룬다. 대가는 로그 기반이라는 **별도 시스템**을 들고 있어야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "question": "로그를 어떻게 옮기나?",
+            "chosen": "**서비스 계정의 Kinesis Data Streams → Firehose → 로그 기반 계정의 Raw S3** — 계정을 가른다.",
+            "alternatives": [
+              "서비스가 같은 계정의 S3 · DB 에 직접 쓴다(이 사이트의 해석)"
+            ],
+            "tradeoff": "서비스(B2C/B2B)와 로그 저장을 계정 단위로 분리한다. 대가는 **크로스 계정** 권한 · 큐 설정이 늘어난다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "question": "들어온 로그를 바로 쓰나?",
+            "chosen": "**Raw 와 Clean 두 층 — Lambda 가 검증하고 이벤트 속성으로 저장 경로를 나눈다.**",
+            "alternatives": [
+              "Raw 를 그대로 소비자가 읽는다"
+            ],
+            "tradeoff": "검증된 로그만 뒤로 가고, 경로가 곧 분배라 소비자가 필요한 것만 받는다. 대가는 원본과 정제본을 **두 벌** 보관한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "question": "학습 이력을 서비스로 어떻게 되돌리나?",
+            "chosen": "**Clean S3 의 이벤트 + 크로스 계정 SQS 로 집계 & LMS 기반이 받아 서비스에 되돌린다.**",
+            "alternatives": [
+              "서비스가 로그 저장소를 직접 조회한다(이 사이트의 해석)"
+            ],
+            "tradeoff": "경로 분배와 큐로 로그 기반과 LMS 가 느슨하게 이어진다. 대가는 지금 서비스 앱이 서비스 · LMS **양쪽 RDB 를 직접 참조**한다는 것 — LMS 를 API 로 만들어 한 길로 모으는 게 과제다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "question": "분석은 어디서 하나?",
+            "chosen": "**Google Cloud 의 BigQuery** — 로그는 BigQuery Data Transfer Service 로 정기 전송, RDB 는 Fivetran, GA4 도.",
+            "alternatives": [
+              "서비스와 같은 AWS 안에서 분석한다(이 사이트의 해석 — 글은 비교하지 않는다)"
+            ],
+            "tradeoff": "로그 · RDB · GA4 를 한곳에 모은다. Fivetran 은 스키마 변경 자동 추종 · 차분 동기로 설정만으로 붙는다. 대가는 **AWS 와 Google Cloud 두 클라우드**를 오가고, 전송이 전부 배치라 **신선도에 한계**가 있다는 것 — 짧은 간격 · 스트리밍을 검토 중이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "question": "분석용 변환과 자원을 어떻게 관리하나?",
+            "chosen": "**Dataform 은 SQL 변환(GitHub 동기), Terraform 은 데이터셋 · 권한** — 역할 분담.",
+            "alternatives": [
+              "BigQuery 콘솔에서 뷰 · 스케줄 쿼리를 손으로 관리한다"
+            ],
+            "tradeoff": "변환 로직의 변경을 GitHub 에서 관리하고 자원은 IaC 로. 대가는 Dataform 의 **테스트(assertion) · CI/CD 가 아직 없다**는 것 — NULL 체크 · 참조 무결성 검증과 GitHub Actions 연계가 과제.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "question": "법인 관리자의 학습 진척은 어떻게 만드나?",
+            "chosen": "**BigQuery 에서 집계해 일차로 Cloud Storage → LMS 의 S3 → LMS 로 넣는다.**",
+            "alternatives": [
+              "LMS 가 실시간으로 직접 집계한다(이 사이트의 해석)"
+            ],
+            "tradeoff": "무거운 조직 단위 집계를 분석 기반이 맡는다. 대가는 관리자가 보는 진척이 **하루 단위로 늦는다**는 것과, 클라우드를 두 번 건너는 경로(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          },
+          {
+            "question": "분석 결과는 누가 보나?",
+            "chosen": "**Redash 대시보드** — B2C 상품별 매출 · 특정 학습 기능의 이용 현황.",
+            "alternatives": [
+              "요청마다 SQL 로 뽑아 준다"
+            ],
+            "tradeoff": "사업 판단에 필요한 숫자를 대시보드로 늘 본다. 대가는 대시보드가 기대는 뷰 · 쿼리를 테스트 없이 유지하고 있다는 것(위 결정과 같은 과제 — 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+                "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+                "publisher": "Gakken LEAP",
+                "date": "2026-07-06",
+                "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "ShikakuPass(B2C · 법인)(수익원)",
+          "via": "학습 이력 · 법인 관리자 진척 · 상품별 매출",
+          "contract": "B2C 학습자의 이력이 LMS 로 되돌아가고, 법인 고객의 관리자는 BigQuery 에서 만든 학습자별 진척을 보며, 회사는 상품별 매출을 Redash 로 본다 — 두 판매 형태가 같은 로그 기반을 쓴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+              "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+              "publisher": "Gakken LEAP",
+              "date": "2026-07-06",
+              "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+            },
+            {
+              "title": "ShikakuPass｜オンライン資格講座",
+              "url": "https://shikakupass.com/",
+              "publisher": "Gakken LEAP",
+              "summary": "온라인 자격 강좌 — 보육사 · 개호복지사 · 등록판매자 · FP · 宅建 · 社労士 · 기본정보 · IT 패스포트 · AWS · 프로그래밍 · 英検 등. 짧은 동영상으로 요점을 좁혀 가르친다. **무료 체험**(무료 등록으로 자동 과금은 없다), 강좌 선택 후 구입. **법인용 서비스**(biz.shikakupass.com)가 따로 있다."
+            }
+          ]
+        },
+        {
+          "to": "여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다(같은 회사의 다른 도메인)",
+          "via": "같은 회사의 서비스 화면",
+          "contract": "로그를 내는 화면과 Strangler Fig 로 옮기는 화면이 같은 프로덕트인지는 글에 없다 — 둘 다 Gakken LEAP 개발 조직의 글이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+              "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+              "publisher": "Gakken LEAP",
+              "date": "2026-07-06",
+              "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+            },
+            {
+              "title": "『全部作り直し』の誘惑を捨てた。Strangler Fig Patternで挑むフロントエンドモダン化作戦",
+              "url": "https://zenn.dev/gakken_leap/articles/bd8167a771d2d5",
+              "publisher": "Gakken LEAP",
+              "date": "2026-06-11",
+              "summary": "PM 으로 전향 중인 프런트엔드 엔지니어가 쓴 결정의 무대 뒤. 프로덕트(이름은 밝히지 않음)는 **FreeMarker**(빈 셸 HTML) · **Vue 2**(API JSON 으로 화면을 그리는 실질 엔진) · **jQuery**(전역 $ 유틸)가 겹친 구조 — 화면 하나를 고치려면 여러 스택과 전역 의존을 풀어야 해 인지 부하가 컸다. 비교: 안 A **Next.js 로 완전 SPA 화(일괄)** vs 안 B **Strangler Fig 로 단계적 리팩터링** → **B**: ① 효과 큰 컴포넌트부터 React 화해 첫날부터 개선(검증 등)을 낸다 ② 빅뱅의 '옛 사양 재발견'에 의한 공수 팽창을 피하고 문제 시 영향이 작고 빠르게 롤백 ③ 기존 **Java 기반**을 살려 인프라 · 대규모 데이터 이행 공수를 줄이고 프런트 개선에 집중. A 는 이상형이지만 새 시스템 완성까지 개선이 멈추고 신구 이중 개발로 자원이 흩어진다. Next.js 이행을 위한 **'저금'** — jQuery 전역 의존을 순수 TS/Hooks 로, FreeMarker · Vue 문맥에서 떨어진 **포터블한 React 컴포넌트**. 기존 Java 기반 위에서 **Vite** 로 React 를 돌려 Java 엔지니어도 기여 · 자동 테스트 · 리드타임 단축(실시간 검증). 목표는 '특정인만 만지는 코드' 졸업."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "로그 한 건의 두 갈래",
+          "question": "학습자의 풀이 한 번은 어떤 길로 LMS 와 분석 기반에 닿나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  SVC[\"ShikakuPass\\n서비스 계정\"] --> KDS[\"Kinesis Data Streams\"] --> FH[\"Firehose\"]\n  FH --> RAW[\"Raw S3\\n로그 기반 계정\"] --> LB[\"Lambda\\n검증 · 경로 분배\"] --> CL[\"Clean S3\"]\n  CL -- \"S3 이벤트 + 크로스 계정 SQS\" --> LMS[\"LMS 기반\"] --> SVC\n  CL -- \"Data Transfer\" --> BQ[(\"BigQuery\")]\n  DB[(\"서비스 RDB\")] -- Fivetran --> BQ\n  BQ --> RD[\"Redash\"]\n  BQ -- \"일차 GCS → S3\" --> LMS"
+        },
+        {
+          "title": "로그 한 건의 상태",
+          "question": "행동 로그는 어떤 상태를 거쳐 이력과 분석이 되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 스트림: Kinesis\n  스트림 --> Raw: Firehose\n  Raw --> 검증실패: Lambda 검증\n  Raw --> Clean: 검증 · 경로 분배\n  Clean --> LMS반영: S3 이벤트 · SQS\n  Clean --> BigQuery: 정기 전송(배치)\n  BigQuery --> 진척집계: 일차\n  진척집계 --> LMS반영\n  LMS반영 --> [*]"
+        },
+        {
+          "title": "아직 남은 두 개의 틈",
+          "question": "지금 구성에서 어디가 어긋나거나 늦나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"서비스 앱\"] --> B[\"서비스 RDB 직접 참조\"]\n  A --> C[\"LMS RDB 도 직접 참조\"]\n  C --> D[\"LMS 스키마 변경이 서비스에 번짐\\n→ LMS API 화가 과제\"]\n  E[\"법인 관리자\"] --> F[\"진척 = 어제 집계\"]\n  F --> G[\"전송이 전부 배치\\n→ 짧은 간격 · 스트리밍 검토\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "ShikakuPassのログ基盤・データ分析基盤の紹介",
+          "url": "https://zenn.dev/gakken_leap/articles/010b927ba62ce7",
+          "publisher": "Gakken LEAP",
+          "date": "2026-07-06",
+          "summary": "ShikakuPass(온라인 자격 강좌)의 **로그 기반 · 데이터 분석 기반**(2026-05 시점). 시스템 로그와 따로 **사용자 행동 로그**(동영상 시청 · 텍스트 열람 · 문제 풀이)와 감사 로그를 공통 로그 기반으로: 서비스(B2C/B2B) AWS 계정 → **Kinesis Data Streams → Firehose** → 로그 기반 계정의 Raw S3 → **Lambda** 검증 · 경로 분배 → Clean S3. 이벤트 속성에 따라 경로를 나눠 **S3 이벤트 + 크로스 계정 SQS** 로 집계 & **LMS 기반**(학습 관리 — 시청 · 열람 · 풀이 이력)을 거쳐 서비스로 환류. 분석용은 **BigQuery Data Transfer Service** 로 정기 전송, RDB 는 **Fivetran**(스키마 변경 자동 추종 · 차분 동기), GA4 도. 가공은 뷰 · 스케줄 쿼리를 **Dataform**(SQL 변환 · GitHub 동기) + **Terraform**(데이터셋 · 권한)로 역할 분담. **Redash** 로 B2C 상품별 매출 · 학습 기능 이용 현황. **B2B 는 조직 관리자에게 학습자별 학습 상황 · 진척**을 보여 주려고 BigQuery 집계를 일차로 Cloud Storage → LMS 의 S3 → LMS 경유로 서비스에 넣는다. 과제: 서비스 앱이 서비스 · LMS 양쪽 RDB 를 직접 참조 → **LMS API 화**로 일원화, 데이터 전송이 전부 배치라 신선도 한계 → 짧은 간격 · 스트리밍 검토, Dataform 의 테스트(assertion) · CI/CD 미정비."
+        },
+        {
+          "title": "ShikakuPass｜オンライン資格講座",
+          "url": "https://shikakupass.com/",
+          "publisher": "Gakken LEAP",
+          "summary": "온라인 자격 강좌 — 보육사 · 개호복지사 · 등록판매자 · FP · 宅建 · 社労士 · 기본정보 · IT 패스포트 · AWS · 프로그래밍 · 英検 등. 짧은 동영상으로 요점을 좁혀 가르친다. **무료 체험**(무료 등록으로 자동 과금은 없다), 강좌 선택 후 구입. **법인용 서비스**(biz.shikakupass.com)가 따로 있다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**매출 · ShikakuPass 가격 · 법인 고객 수**가 공개 자료에 없다.",
     "**Strangler Fig 글의 프로덕트가 무엇인지**(ShikakuPass 인지 그룹사 서비스인지) 글에 없다 — 그룹 개발 지원 수익원에 잇는 건 이 사이트의 추론이다.",

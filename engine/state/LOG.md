@@ -2376,3 +2376,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Gakken LEAP 회사 프로파일
 
 - 회사 · 서비스 · ShikakuPass 페이지와 Publication 소개문으로 수익원 셋. 글 둘(ShikakuPass 로그 기반 · Strangler Fig)로 도메인 둘. Strangler Fig 글이 프로덕트명을 밝히지 않아 그룹 개발 지원 수익원 연결은 inferred.
+
+## 2026-09-27 Gakken LEAP 학습 로그
+
+- `010b927ba62ce7` 전문으로 기능 `learning-log-loop`, 결정 8. 글이 비교안을 거의 적지 않아 대안 · 대가 여럿은 '이 사이트의 해석'.
