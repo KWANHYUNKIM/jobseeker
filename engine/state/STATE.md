@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Yappli — 확장 1(2026-09-26): targetSdk 도메인에 `targetsdk36-edge-to-edge-16kb`(결정 6). 다음은 확장: '문의 조사와 수정을 다른 줄에 세운다' 를 문의 대응 글(`entry/handling-customer-inquiries`, scratchpad `yp_inq.txt` — 전문 읽음). 완주 판정 때 CRM 수익원은 도메인이 없다. 대기 0/3 — Yappli 뒤 후보 조사(Zenn Publication·note 기업 계정 시험). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap(hold)·LayerX 는 in_progress.**
+**Yappli — 확장 2(2026-09-26): 문의 대응 도메인에 `inquiry-triage-cause-only`(결정 7). 두 도메인 모두 기능. 다음은 완주 판정 — Yappli CRM 수익원은 도메인이 없다: tech.yappli.io 사이트맵 2024~2026 전 제목(병렬, 접미사 ' - Yappli Tech Blog' 떼기)을 'CRM·会員·ポイント·セグメント·プッシュ配信·MA' 로, 두 번 없으면 hold. 대기 0/3 — 그 뒤 후보 조사(Zenn Publication·note 기업 계정). 비교 문서 재료: LegalOn 지원·Yappli 문의·RAKUS 장애 대응(문의·장애의 첫 대응). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap(hold)·LayerX 는 in_progress.**
 
 
 

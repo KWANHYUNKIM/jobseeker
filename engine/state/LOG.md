@@ -1588,3 +1588,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Yappli targetSdk 36
 
 - targetSdk 글 전문으로 `targetsdk36-edge-to-edge-16kb`(결정 6 — 옵트아웃 불가 본대응·배치 패턴 관리·AR 상속 고정·CameraX(inferred)·연례 루틴·병행 체제). 글이 짧아 결정 6.
+
+## 2026-09-26 Yappli 문의 대응
+
+- 문의 대응 글 전문으로 `inquiry-triage-cause-only`(결정 7 — 원인 특정까지·작은 수정 예외·손을 드는 운용·인시던트 첫 보고·새 멤버 계단·전임 CRE·AI 1차 회답/자연어 안전 쿼리).
