@@ -2215,3 +2215,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 DMM 회사 프로파일
 
 - dmm-corp.com company · business · figures 가 404(r.jina.ai · WebFetch 둘 다). WebSearch 결과의 회원 수 · 매출은 2차 자료라 넣지 않고, DMM TV 는 PR TIMES 1차 발표(150만 명 · 월 550엔)로. 수익원은 블로그 조직 범위 둘로 한정. 글 셋(리랭크 · DMM TV 추천 · 카니발)으로 도메인 둘.
+
+## 2026-09-27 DMM LambdaMART 실시간 리랭크
+
+- `2e8a0c127caa1d` + `1e2bc59c66f158` 로 기능 `lambdamart-realtime-rerank`, 결정 8.
