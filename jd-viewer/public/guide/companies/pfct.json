@@ -1090,6 +1090,133 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/338869",
+      "title": "B2B AI Product Owner(PO, 프로덕트 오너)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상(서울 서초). Enterprise Unit(사내 독립 조직)에서 국내외 금융사 대상 신용 리스크 관리·여신 효율화 AX 솔루션(On-premise/SaaS)의 기획부터 출시·사업화까지를 이끄는 PO — 가설·MVP 로 시장에 없는 제품을 만들고, B2B 고객의 복잡한 요구를 로드맵으로 바꾸며, 엔지니어·분석가와 함께 AI·신용 리스크 기술을 사업 가치로 옮긴다. 자격요건은 역량 셋(Problem Solver, Tech-Savvy — 개발팀과 '기술 언어' 로 소통, Growth Mindset)이고 연차 외 구체적 기술 요건은 없다. 우대에 B2B AI 사업화, 영어·인도네시아어·베트남어 등 비즈니스 외국어, 금융권 실무나 신용평가 모델(CSS) 이해가 있다. 공고는 '2026년, 이제 우리는 AI Agent 와 글로벌 시장' 으로 간다고 적는다. 전형은 서류 → 1차(Job-Fit) → 2차(Culture Fit) → 3차(Final) → 처우 협의.",
+      "fit": {
+        "must_have": [
+          "B2B 고객과 소통하며 모호한 요구에서 문제 정의",
+          "데이터 분석·AI 기술 이해(개발팀과 기술 언어로 소통)",
+          "가설 검증으로 제품을 만든 경험 또는 의지"
+        ],
+        "can_learn": [
+          "B2B AI 제품 사업화",
+          "비즈니스 외국어(영어·인도네시아어·베트남어 등)",
+          "금융권 실무·신용평가 모델(CSS)",
+          "팀 프로젝트 주도 성과"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Zero to One — 가설과 MVP 로 B2B 제품 만들기",
+          "from": "task",
+          "quote": "시장에 없는 제품을 만들기 위해 가설을 설정하고, MVP를 기획하며, 시장의 피드백을 통해 제품을 완성해 나가요.",
+          "priority": "core",
+          "why": "주요업무의 첫 묶음이다. 자격요건 Growth Mindset 이 '가설 검증과 실패를 통해 배우고 성장하며' 를 요구한다.",
+          "gap_check": "금융사 고객이 소수·계약 단위라 사용자 수로 검증할 수 없을 때, MVP 의 성공 기준을 무엇(PoC 에서의 심사 시간 단축, 승인율·연체율 변화, 고객 담당자의 재계약 의사)으로 정하고 가설 하나를 어떻게 버리는가?",
+          "drill": "가상의 저축은행 대상 'AI 심사 보조' MVP 기획서 한 장을 쓴다 — 문제 가설, 대상 사용자(심사역), 최소 기능 3개, 성공 지표, 버릴 조건.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "SVPG — The Most Important Thing",
+              "url": "https://www.svpg.com/the-most-important-thing/",
+              "kind": "article"
+            },
+            {
+              "title": "ProductPlan — Minimum Viable Product",
+              "url": "https://www.productplan.com/glossary/minimum-viable-product/",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "신용 리스크·여신 도메인 기초",
+          "from": "preference",
+          "quote": "• Domain Expertise: 금융권 실무(데이터 분석, IT 기획, 대출 심사 프로세스, 리스크 관리 등)를 경험했거나, 신용 평가 모델(CSS) 개발에 대한 이해도가 있는 분",
+          "priority": "core",
+          "why": "우대사항이지만 제품 자체가 '신용 리스크 관리 및 여신 효율화를 위한 AX 솔루션' 이다. 고객(금융사)과 같은 말을 쓰려면 도메인이 먼저다(추론).",
+          "gap_check": "대출 심사 흐름(신청 → CSS 점수 → 한도·금리 결정 → 사후 관리)에서 AI 가 끼어들 수 있는 지점은 어디이고, 모델 점수 하나가 바뀌면 승인율·연체율·수익이 어떻게 맞물려 움직이는가?",
+          "drill": "대출 심사 흐름도를 그리고 각 단계의 담당자·사용 데이터·결정 지표를 적은 뒤, AI 솔루션이 바꿀 수 있는 지점 3개와 각 지점의 성과 지표를 표로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "BIS — Basel II: International Convergence of Capital Measurement and Capital Standards",
+              "url": "https://www.bis.org/publ/bcbs128.htm",
+              "kind": "docs"
+            },
+            {
+              "title": "금융감독원",
+              "url": "https://www.fss.or.kr/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "B2B 요구사항을 로드맵으로",
+          "from": "task",
+          "quote": "B2B 고객의 복잡한 요구 사항을 명확히 분석하여, 우리 기술로 해결 가능한 Product Roadmap을 수립해요.",
+          "priority": "high",
+          "why": "주요업무이고 자격요건 Problem Solver 가 '모호한 요구 사항 속에서 핵심 문제를 정의' 를 요구한다. Scope 가 On-premise/SaaS 두 형태라 고객별 맞춤 요구가 쌓이기 쉽다(추론).",
+          "gap_check": "고객 A 는 온프레미스 설치, 고객 B 는 SaaS 에 특정 리포트 추가를 원할 때 무엇을 공통 제품에 넣고 무엇을 거절하거나 유료 커스터마이징으로 돌리는가? 그 판단 기준을 로드맵에 어떻게 드러내는가?",
+          "drill": "가상의 고객 요구 10개를 모아 영향도·요청 고객 수·개발 비용으로 점수를 매기고, 분기 로드맵(Now/Next/Later)과 거절 사유 목록을 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Atlassian — Product roadmaps",
+              "url": "https://www.atlassian.com/agile/product-management/product-roadmaps",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "개발팀과 '기술 언어' 로 말하기 — 모델 지표",
+          "from": "qualification",
+          "quote": "• Tech-Savvy: 데이터 분석 및 AI 기술에 대한 이해도가 높거나 관련 전공을 이수하여, 개발팀과 '기술 언어'로 소통이 가능한 분",
+          "priority": "high",
+          "why": "자격요건이다. 신용 리스크 모델 제품을 파는 PO 라면 모델 지표를 고객 언어로 옮길 줄 알아야 한다(추론).",
+          "gap_check": "AUC 가 0.02 올랐다는 개발팀 보고를 고객사 리스크 담당자에게 '같은 승인율에서 연체율이 얼마 줄어드는가' 로 바꿔 말할 수 있는가? 점수 보정(calibration)이 틀리면 고객에게 어떤 문제가 생기는가?",
+          "drill": "공개 신용 데이터로 만든(또는 가상의) 모델 두 개의 AUC·승인율별 연체율 표를 만들고, 고객 제안용 한 장짜리 비교 자료로 바꾼다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "scikit-learn — Probability calibration",
+              "url": "https://scikit-learn.org/stable/modules/calibration.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "여신 심사 흐름에 AI 를 넣는 MVP 기획서 + 로드맵",
+          "why": "주요업무 세 묶음(Zero to One, 요구사항의 제품화, 협업)을 문서 한 벌로 보여 준다. 포트폴리오는 선택이지만 PO 자리라 이 문서가 가장 강한 증거다(추론).",
+          "effort": "3~4일"
+        },
+        {
+          "idea": "동남아 언어 역량 또는 해외 B2B 경험 정리",
+          "why": "우대사항에 인도네시아어·베트남어가 이름으로 있고, 회사가 B2B 솔루션을 9개국에서 한다고 적는다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 > 1차 인터뷰(Job-Fit) > 2차 인터뷰(Culture Fit) > 3차 인터뷰(Final) > 처우 협의 > 최종 합류(공고 기준).",
+        "expect": [
+          "모호한 B2B 요구에서 문제를 정의한 사례",
+          "가설을 검증하고 버린 경험",
+          "신용 리스크 도메인 이해",
+          "모델 지표를 사업 언어로 설명"
+        ],
+        "sources": [
+          {
+            "title": "B2B AI Product Owner(PO, 프로덕트 오너)",
+            "url": "https://www.wanted.co.kr/wd/338869",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
