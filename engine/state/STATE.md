@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**SODA 확장 1/2(2026-09-26) — `purchase-payment-idempotency` 완료. 다음은 확장: '상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다' — `a52d51d7600121`. 수익원 실매장은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 2/3(COUNTERWORKS·Luup). **후보 조사 입구: Zenn 검색 API 에 주제어.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**SODA 확장 2/2(2026-09-26) — `purchase-flow-tla-audit` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 '실매장' 에 도메인 없음 — 검색 1 RSS 20편(실매장·감정 글 없음) 이어 검색 2(Zenn 검색 API '店舗 スニダン'·'鑑定'·'team_soda'), 없으면 hold. 대기 2/3(COUNTERWORKS·Luup). **후보 조사 입구: Zenn 검색 API 에 주제어.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
