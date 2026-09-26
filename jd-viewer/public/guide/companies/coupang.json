@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다. `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(Mountain View)는 `The base pay for this position ranges from $187,000/year in our lowest geographic market to $322,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(Seattle)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 원화로 환산하지 않는다. `Sr. Director, AI Infrastructure`(Mountain View/Seattle)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Sr.Director, Data Science & Data Engineering`(Mountain View)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — `Sr. Director, AI Infrastructure` 와 같은 범위다. 원화로 환산하지 않는다. `Sr. Director, Search AI - Production Engineering`(Mountain View)도 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 같은 직급 공고 세 건이 같은 범위다. 원화로 환산하지 않는다. `Principal Engineer, ML`(Seattle, Ads Serving & ML Platform)은 `The base pay for this position ranges from $207,900/year in our lowest geographic market to $386,100/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 하단·상단 모두 가장 높다. 원화로 환산하지 않는다. `Sr. Staff Backend Software Engineer`(Seattle)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 원화로 환산하지 않는다. `Sr. Staff Observability Software Engineer`(Mountain View/Seattle)도 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 같은 '$174,00' 오타가 두 공고에 있다. 원화로 환산하지 않는다. `Staff, Back-end engineer`(Seattle)는 `The base pay for this position ranges from $164,000/year to $282,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다 — 본문이 같은 Sr. Staff 게시(7965062, $174K~$299K)보다 범위가 낮다. 같은 본문에서 직급만 다를 때 범위가 어떻게 달라지는지 보여 주는 한 쌍이다. 원화로 환산하지 않는다. `Staff Backend Engineer (Application Infra)`(Mountain View/Seattle)는 `The base pay for this position ranges from $164,000/year to $282,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다. 원화로 환산하지 않는다.",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다. `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(Mountain View)는 `The base pay for this position ranges from $187,000/year in our lowest geographic market to $322,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(Seattle)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 원화로 환산하지 않는다. `Sr. Director, AI Infrastructure`(Mountain View/Seattle)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Sr.Director, Data Science & Data Engineering`(Mountain View)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — `Sr. Director, AI Infrastructure` 와 같은 범위다. 원화로 환산하지 않는다. `Sr. Director, Search AI - Production Engineering`(Mountain View)도 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 같은 직급 공고 세 건이 같은 범위다. 원화로 환산하지 않는다. `Principal Engineer, ML`(Seattle, Ads Serving & ML Platform)은 `The base pay for this position ranges from $207,900/year in our lowest geographic market to $386,100/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 하단·상단 모두 가장 높다. 원화로 환산하지 않는다. `Sr. Staff Backend Software Engineer`(Seattle)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 원화로 환산하지 않는다. `Sr. Staff Observability Software Engineer`(Mountain View/Seattle)도 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 같은 '$174,00' 오타가 두 공고에 있다. 원화로 환산하지 않는다. `Staff, Back-end engineer`(Seattle)는 `The base pay for this position ranges from $164,000/year to $282,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다 — 본문이 같은 Sr. Staff 게시(7965062, $174K~$299K)보다 범위가 낮다. 같은 본문에서 직급만 다를 때 범위가 어떻게 달라지는지 보여 주는 한 쌍이다. 원화로 환산하지 않는다. `Staff Backend Engineer (Application Infra)`(Mountain View/Seattle)는 `The base pay for this position ranges from $164,000/year to $282,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다. 원화로 환산하지 않는다. `Staff Backend Engineer – Search and Discovery Product Engineering`(Mountain View)는 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — `Manager, Mobile Engineering — Search AI Product & Mobile` 과 같은 범위다. 원화로 환산하지 않는다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -16207,6 +16207,106 @@
           {
             "title": "Staff Backend Engineer (Application Infra)",
             "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7849021",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8140987",
+      "title": "Staff Backend Engineer – Search and Discovery Product Engineering",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 미국 마운틴뷰 근무다. 분산 시스템·백엔드 5년 이상의 스태프 백엔드로, Search & Discovery AI Product Engineering 팀에서 전체 고객 거래의 60% 이상이 지나는 검색·발견 화면의 백엔드를 맡는다 — 기존 검색 시스템의 구조적 제약을 찾아 풀고, 성능 병목을 없애고, 핵심 서비스를 확장·최적화한다. 필수 자격에 React Web 경험이 '큰 이점'으로 적혀 있고, 주요업무에 소비자 대상 모바일 솔루션이 있다. 연봉 범위가 원문에 있다(기본급 $194,000~$243,000 — 같은 검색 조직의 `Manager, Mobile Engineering` 과 같은 범위) — 원화로 환산하지 않는다.",
+      "fit": {
+        "must_have": [
+          "분산 시스템·시스템 프로그래밍·백엔드 5년 이상",
+          "핵심 알고리즘·시스템 아키텍처·대규모 분산 5년 이상",
+          "Java·Go 등 5년 이상",
+          "CS 등 학위",
+          "고트래픽 고가용 API 플랫폼의 확장·지연·성능 문제 해결"
+        ],
+        "can_learn": [
+          "React Web(필수 칸에 '큰 이점'으로 표기)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "검색 API 의 꼬리 지연 줄이기",
+          "from": "task",
+          "quote": "Design and implement cutting-edge solutions utilizing advanced system technologies to eliminate performance bottlenecks.",
+          "priority": "core",
+          "why": "기존 검색 시스템의 구조적 제약을 찾아 풀고 성능 병목을 없애는 것이 주요업무이고, 고트래픽 환경의 확장·지연·성능 문제 해결 실적이 필수 자격이다.",
+          "gap_check": "검색 요청 하나가 수십 개 샤드·하위 서비스로 퍼질 때, 각 하위 호출의 p99 가 작아도 전체 요청의 지연이 커지는 이유는 무엇이고, 헤지 요청·부분 결과 반환은 각각 무엇을 대가로 지연을 줄이는가?",
+          "drill": "'The Tail at Scale' 을 읽고, 하위 서비스 20개로 퍼지는 요청을 흉내 내는 작은 부하 실험에서 헤지 요청(일정 시간 뒤 중복 요청)을 켰을 때 전체 p99 와 하위 서비스 부하가 어떻게 바뀌는지 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Dean & Barroso — The Tail at Scale",
+              "url": "https://research.google/pubs/the-tail-at-scale/",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "고가용 API 플랫폼의 확장과 과부하",
+          "from": "qualification",
+          "quote": "Proven track record of managing high-availability API platforms and resolving intricate scaling, latency, and performance hurdles in high-traffic environments.",
+          "priority": "core",
+          "why": "고트래픽 환경에서 고가용 API 플랫폼을 관리하고 확장·지연·성능 문제를 풀어 온 실적이 필수 자격이다. 공고는 이 화면을 전체 거래의 60% 이상이 지나는 곳으로 적는다.",
+          "gap_check": "대형 할인 행사로 검색 트래픽이 몇 배로 늘 때 어떤 요청을 먼저 버리고(부하 차단), 캐시·축소된 응답으로 어떻게 버티며, 재시도 폭풍은 무엇으로 막는가?",
+          "drill": "SRE 책 과부하 장을 읽고, 검색 API 에 우선순위별 부하 차단과 재시도 예산을 넣은 뒤 트래픽을 단계적으로 올려 성공률·지연 곡선을 그린다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Google SRE Book — Handling Overload",
+              "url": "https://sre.google/sre-book/handling-overload/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "검색 화면 프런트엔드 — React Web",
+          "from": "qualification",
+          "quote": "Prior React Web experience is a significant advantage.",
+          "priority": "high",
+          "why": "필수 자격 칸에 React Web 경험이 큰 이점으로 적혀 있고, 사용자 중심 검색·발견 제품과 소비자 대상 모바일 솔루션 개발이 주요업무다.",
+          "gap_check": "검색 결과 화면에서 사용자가 체감하는 속도는 백엔드 응답 시간만으로 결정되지 않는다 — 첫 결과가 보이는 시점(LCP)·입력 반응(INP)을 백엔드와 프런트엔드가 각각 어떻게 나눠 책임지는가?",
+          "drill": "React 문서의 기본 장을 따라 검색창·결과 목록 화면을 만들고, 백엔드 지연을 인위로 늘렸을 때 Web Vitals 지표가 어떻게 바뀌는지, 스트리밍·스켈레톤 표시가 체감을 얼마나 바꾸는지 기록한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "React — Learn",
+              "url": "https://react.dev/learn",
+              "kind": "docs"
+            },
+            {
+              "title": "web.dev — Web Vitals",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "article"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "팬아웃 검색 요청의 헤지 실험 리포트",
+          "why": "필수 자격이 고트래픽 지연·성능 문제 해결이다. 꼬리 지연을 직접 재고 줄인 실험 리포트는 검색 백엔드 면접의 대화 재료가 된다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "팬아웃 꼬리 지연",
+          "행사 트래픽 대응",
+          "검색 시스템 구조 제약",
+          "백엔드·프런트 체감 속도",
+          "PM·디자이너 협업"
+        ],
+        "sources": [
+          {
+            "title": "Staff Backend Engineer – Search and Discovery Product Engineering",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8140987",
             "publisher": "Coupang Careers"
           }
         ]
