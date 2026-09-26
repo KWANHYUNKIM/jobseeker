@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**dely 확장 1/2(2026-09-26) — `receipt-image-storage-tiering` 완료. 다음은 확장: '쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다' — `462bd6dfaffa89`(Braze 4방식). 수익원 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(みてね) — --gaps 가 후보 조사를 부를 수 있다(입구: note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**dely 확장 2/2(2026-09-26) — `braze-personalization-four-ways` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 클라시루·Kurashiru AI OS·TRILL/LIVEwith 에 도메인 없음 — 검색 1 RSS 20편(레시챌·인프라 글 위주) 이어 검색 2(Zenn 검색 API 'クラシル'·'Kurashiru AI'·'TRILL'·'dely'), 없으면 hold. 단 --gaps 가 후보 조사를 먼저 부르면 그쪽. 대기 1/3(みてね) — --gaps 가 후보 조사를 부를 수 있다(입구: note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

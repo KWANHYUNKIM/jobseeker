@@ -138,7 +138,7 @@
         {
           "tech": "Braze — 개인화 데이터의 자리 넷(베타 입력 · API-Triggered + trigger_properties · CDI 동기 custom attribute · 데이터 카탈로그 참조)",
           "solves": "2주에 시책 10개를 개발 구현 없이 돌린다.",
-          "limits": "CDI 동기는 반영 대기가 길다.",
+          "limits": "CDI 동기는 dbt 모델 PR 리뷰와 약 1시간 동기 잡을 거쳐 '지금 10분 안에' 가 안 되고, API-Triggered 는 빠르지만 로컬 스크립트 실수가 곧장 오배신이 된다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -151,7 +151,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "braze-personalization-four-ways"
+      ]
     }
   ],
   "features": [
@@ -420,6 +422,267 @@
           "publisher": "dely Tech Blog (Zenn)",
           "date": "2026-08-31",
           "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+        }
+      ]
+    },
+    {
+      "key": "braze-personalization-four-ways",
+      "name": "레시챌의 개인화 시책을 규모와 기간에 따라 네 가지 자리에 데이터를 둬 돌린다 — 몇 명은 캠페인에 직접, 오늘 안의 수백 명은 API 요청에 실어, 매일 계속은 dbt·Snowflake 에서 CDI 로 속성 동기, 상품 추천은 ID 만 속성에 두고 본체는 데이터 카탈로그에",
+      "domain": "쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "클라시루의 프로덕트 매니지먼트엔 '**구현 전에 최소 공수로 가설을 검증한다**' 문화가 있고, 그러려면 PdM 과 CRM 담당이 CRM 도구를 철저히 써야 한다. 필자가 맡은 **레시챌**은 쇼핑을 받치는 앱이라 **자주 가는 점포·자주 사는 것**에 맞춰 밀어 줄 콘텐츠를 개인화해야 한다 — 그래서 레시챌은 **Braze** 를 쓴다.\n\n개인화는 결국 '사용자마다 다른 값을 배신에 끼워 넣는 것' 인데, **그 값을 언제·어디에 둘지**에 몇 가지 길이 있다. 최근 2주 동안 시책 10개를 몰아 돌리며 그 자리를 두고 시행착오를 겪었다.",
+        "metrics": [
+          {
+            "label": "시책 속도",
+            "value": "PdM 이 2주에 시책 10개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+                "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-13",
+                "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+              }
+            ]
+          },
+          {
+            "label": "방식별 대상·시작",
+            "value": "직접 입력 ~10명·오늘 / API-Triggered ~수천 명·오늘 / 커스텀 속성·데이터 카탈로그 무제한·다음 날부터·계속 배신",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+                "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-13",
+                "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+              }
+            ]
+          },
+          {
+            "label": "CDI 제약",
+            "value": "속성 동기 잡 약 1시간 · Snowflake → Braze 한 행(사용자 1명)당 1 MB — 상품 마스터(카탈로그) 동기는 몇 분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+                "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-13",
+                "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "네 방식을 줄 세울 때",
+          "thought": "아래로 갈수록 구조가 무거워지지만 계속 운영과 규모를 견딘다. 고르는 축은 대상 인원·시책을 하고 싶은 날·계속 배신 여부. 커스텀 속성과 데이터 카탈로그는 조건이 거의 같아 보여도 값의 성질로 갈린다 — 나이·지역·남은 일수처럼 **사용자 고유 값**이면 속성, '사용자별 추천 상품 × 공통 상품 정보' 처럼 **사용자 고유 정보와 메타 정보가 둘 다** 필요하면 카탈로그.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+              "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+              "publisher": "dely Tech Blog (Zenn)",
+              "date": "2026-08-13",
+              "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+            }
+          ]
+        },
+        {
+          "at": "직접 입력을 먼저 권할 때",
+          "thought": "직접 입력은 **개인화 구조를 만들지 말지를 정하기 위한 최소 PoC** 다. 반응이 없으면 구조째 안 만들어도 된다 — 개인화의 첫걸음은 여기서.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+              "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+              "publisher": "dely Tech Blog (Zenn)",
+              "date": "2026-08-13",
+              "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "캠페인",
+            "what": "Braze 에는 캠페인을 만드는 API·편집하는 API 가 없다(2026-08) — `POST /campaigns/duplicate` 로 비슷한 것을 복제 → 관리 화면에서 편집(BrazeAI Operator 에 트리거·대상·문구·배신 설정을 적은 프롬프트) → `GET /campaigns/details` 로 재확인. 이 흐름을 Claude 스킬로 둔다."
+          },
+          {
+            "name": "trigger_properties",
+            "what": "API-Triggered 캠페인의 트리거 요청에 실어 보내는 1회용 값. Liquid `api_trigger_properties` 로 받는다. Braze 에 쌓이지 않는다."
+          },
+          {
+            "name": "커스텀 속성",
+            "what": "사용자 속성으로 Braze 에 두는 값. dbt + Snowflake 에서 계산해 CDI 가 매일 아침 동기. 배신 문구와 세그먼트 조건 둘 다에 쓴다."
+          },
+          {
+            "name": "데이터 카탈로그",
+            "what": "Braze 의 상품 마스터. 사용자 속성엔 상품 ID 배열만 두고 이름·가격·화상·URL 은 카탈로그에서 Liquid 로 참조한다."
+          }
+        ],
+        "invariants": [
+          "한 번 쓰고 버릴 시책은 Braze 에 데이터를 쌓지 않는다.",
+          "사용자 속성 추가는 데이터 기반 리포지토리의 dbt 모델 PR 을 한 명 이상이 리뷰·승인해야 한다.",
+          "API-Triggered 는 개발 멤버에게만 먼저 보내 변수를 확인하고, 본번 전에 인원을 센다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "가설이 생기면 방식을 고른다 — 대상 인원·언제 하고 싶나·계속 보내나",
+            "why": "아래 방식일수록 무겁지만 계속 운영에 견딘다."
+          },
+          {
+            "step": "몇 명이면 캠페인을 인원수만큼 복제해 문구·사용자 ID 를 직접 쓴다",
+            "why": "떠올리고 몇 분 안에 시작한다."
+          },
+          {
+            "step": "오늘 안 수백~수천 명이면 API-Triggered 로, 자사 데이터 기반에서 뽑은 '사용자별 점포명' 을 트리거 요청에 실어 보낸다",
+            "why": "한 번 쓰는 값을 Braze 에 동기하지 않는다."
+          },
+          {
+            "step": "매일 계속이면 dbt + Snowflake 에서 값을 계산해 CDI 가 아침마다 사용자 속성으로 동기하고, Braze 정시 배신에 맡긴다",
+            "why": "사람도 스크립트도 송신에 관여하지 않는다."
+          },
+          {
+            "step": "상품 추천이면 속성엔 상품 ID 배열만, 상품 정보는 데이터 카탈로그에 몇 분 단위로 동기해 Liquid 로 잇는다",
+            "why": "가격·화상이 바뀌어도 사용자 속성을 다시 동기하지 않는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "개인화 구조부터 만들까?",
+            "chosen": "**아니다 — 몇 명에게 캠페인을 직접 써서 먼저 반응을 본다.**",
+            "alternatives": [
+              "추천 구조를 먼저 구축"
+            ],
+            "tradeoff": "반응이 없으면 구조째 안 만들어도 된다 — 떠올리고 몇 분 안에 시작. 대가 — 사람이 캠페인을 인원수만큼 복제하고 다뤄 10명 정도가 한계.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+                "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-13",
+                "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+              }
+            ]
+          },
+          {
+            "question": "오늘 안에 수백 명에게 한 번 보낼 개인화 값은?",
+            "chosen": "**API-Triggered 트리거 요청의 trigger_properties 에 실어 보낸다.**",
+            "alternatives": [
+              "Braze 에 속성으로 동기(방식 3)"
+            ],
+            "tradeoff": "한 번 쓰는 값을 동기하지 않아 매우 빠르다. 대가 — Braze 에 남지 않아 계속 배신엔 안 맞고, 로컬 스크립트 실수가 곧장 오배신이 된다 — 개발 멤버에게만 먼저 보내고 본번 전 인원을 센다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+                "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-13",
+                "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+              }
+            ]
+          },
+          {
+            "question": "매일 계속할 시책의 값은?",
+            "chosen": "**데이터 기반(dbt + Snowflake)에서 계산해 CDI 로 매일 아침 사용자 속성에 동기.**",
+            "alternatives": [
+              "날마다 스크립트로 API-Triggered 실행"
+            ],
+            "tradeoff": "한 번 설정하면 매일 갱신과 배신이 전자동이고, 속성을 세그먼트 조건에도 쓴다. 대가 — dbt 모델 PR 리뷰·승인과 동기 잡 시간 때문에 '지금 10분 안에' 는 안 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+                "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-13",
+                "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+              }
+            ]
+          },
+          {
+            "question": "사용자별 추천 상품의 정보를 어디에 둘까?",
+            "chosen": "**사용자 속성엔 상품 ID 배열만, 상품 정보는 Braze 데이터 카탈로그(상품 마스터)에.**",
+            "alternatives": [
+              "상품명·가격·화상·URL 을 모두 사용자 속성에"
+            ],
+            "tradeoff": "열이 늘지 않고, 추천이 안 바뀌어도 가격·화상 변경 때문에 다시 동기할 일이 없으며, 행당 1 MB 제한을 한 시책이 차지하지 않는다 — 카탈로그 동기는 몇 분. 대가 — 카탈로그라는 동기 대상이 하나 더 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+                "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-13",
+                "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+              }
+            ]
+          },
+          {
+            "question": "API 가 없는 캠페인 생성을 어떻게 빨리 할까?",
+            "chosen": "**duplicate API 로 복제 → BrazeAI Operator 에 프롬프트로 편집 → details API 로 재확인 — 이 흐름을 Claude 스킬로.**",
+            "alternatives": [
+              "관리 화면에서 손으로 하나씩"
+            ],
+            "tradeoff": "PdM 이 2주에 시책 10개를 돌린다. 대가 — 관리 화면 AI 편집 결과를 API 로 다시 확인해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+                "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-13",
+                "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "수억 장의 영수증 화상을 싸게 쌓아 둔다(같은 회사의 다른 도메인)",
+          "via": "같은 레시챌 사용자 행동",
+          "contract": "개인화의 재료인 자주 가는 점포·사는 것은 데이터 기반(dbt + Snowflake)에서 계산되고, 영수증 화상은 올린 직후 심사·분석에 쓰인 뒤 Glacier IR 로 잠든다 — 화상은 싸게 두고 거기서 뽑은 행동만 빠르게 돌린다(이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "네 방식의 자리",
+          "question": "개인화 값은 어디에 두나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  H[가설] -->|~10명 · 오늘| M1[캠페인에 직접 입력]\n  H -->|~수천 명 · 오늘 · 1회| M2[API-Triggered<br/>trigger_properties]\n  H -->|무제한 · 매일| M3[커스텀 속성]\n  H -->|무제한 · 매일 · 상품| M4[속성엔 ID 배열<br/>데이터 카탈로그]\n  DW[(dbt + Snowflake)] -->|CDI 매일 아침 · 약 1시간| M3\n  DW -->|CDI 몇 분| M4\n  M1 & M2 & M3 & M4 --> BZ[Braze 배신 · Liquid]"
+        },
+        {
+          "title": "방식마다의 함정",
+          "question": "각 방식은 어디서 무너지나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  M1[직접 입력] --> F1[10명 넘으면 복제·편집이 감당 안 됨]\n  M2[API-Triggered] --> F2[스크립트 실수 = 즉시 오배신<br/>→ 개발 멤버에게 먼저 · 인원 확인]\n  M3[커스텀 속성] --> F3[PR 리뷰 + 동기 1시간 · 급한 단발엔 늦음]\n  M3 --> F4[상품 정보까지 넣으면 열·재동기·1MB 제한]\n  F4 --> M4[카탈로그로]"
+        },
+        {
+          "title": "시책이 자라는 길",
+          "question": "한 시책은 어떻게 무거워지나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 최소PoC: 몇 명에게 직접\n  최소PoC --> 폐기: 반응 없음 · 구조 안 만듦\n  최소PoC --> 단발배신: 반응 있음 · 오늘 수백 명\n  단발배신 --> 계속배신: 매일 할 가치 · dbt PR · CDI\n  계속배신 --> 카탈로그: 상품 정보가 붙음\n  폐기 --> [*]\n  카탈로그 --> [*]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+          "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+          "publisher": "dely Tech Blog (Zenn)",
+          "date": "2026-08-13",
+          "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
         }
       ]
     }

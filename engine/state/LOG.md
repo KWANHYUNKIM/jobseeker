@@ -1916,3 +1916,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 dely 영수증 화상 스토리지 클래스
 
 - 결정 5 — 일괄 IT 대신 폴더 패턴·Glacier IR·IT(Archive Access 끔)·Deep Archive 안 씀·이행 요청 비용 놓침(Cost Anomaly Detection). 100→45.
+
+## 2026-09-26 dely Braze 개인화 네 방식
+
+- 결정 5 — 직접 입력 PoC·API-Triggered 단발·CDI 속성 계속·카탈로그 ID 참조·duplicate+AI 편집 스킬.
