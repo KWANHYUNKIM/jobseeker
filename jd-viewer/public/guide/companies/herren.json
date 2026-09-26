@@ -420,6 +420,102 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/373691",
+      "title": "[헤렌/공비서] 백엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 7-12년, 서울 성동구. 공비서 **시니어 백엔드**로, 공고가 '관리자로서 팀을 이끄는 자리는 아니지만' 매니징 경험에서 나오는 판단을 기대한다고 적는다 — 필수에 **매니징 3년 이상(또는 준하는 경험)** 이 들어가 있다. 업무는 예약·결제·고객관리·마케팅 백엔드 설계·개발, **월 80만 건 이상 예약 트래픽**, 핵심 도메인 기술 결정과 기술 부채 개선, 리뷰·멘토링, **Claude Code·Cursor·MCP 를 팀 프로세스에 도입·정착**, Sentry·Prometheus 모니터링·장애 대응. 필수는 **JVM 내부(GC·JIT·메모리 모델)**, **Spring 내부(DI·AOP·트랜잭션 전파)**, Java/Kotlin + Spring Boot 운영, **쿼리 튜닝·실행 계획·인덱스**, 대규모 트래픽 문제 해결, 분산 시스템 일관성·가용성·복구, 트레이드오프 설명, AI 도구 활용. 기술 스택은 Java·Kotlin, Spring Boot 2.7/3.3, MariaDB·Redis·JPA·QueryDSL·Liquibase, AWS(ECS·RDS·S3·SQS)·Kafka, Sentry·Prometheus, JUnit 5·MockK·TestContainers, Gradle Kotlin DSL. 우대는 **결제·정산·주문 정합성**, MSA 전환·모듈 분리, Redis 캐싱, 이벤트 기반(SQS/Kafka), 멘토링, MCP 서버, 'AI 시대에 백엔드는 어떻게 달라져야 하는가'. 전형: 서류 ＞ 대면 인터뷰 ＞ 최종 컬쳐핏(CEO·CTO) ＞ 최종 합격(프론트엔드 공고의 컬쳐핏 설문 단계는 없다), 수습 3개월(급여 100%). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 7~12년",
+          "매니징 3년 이상(또는 준하는)",
+          "JVM 내부",
+          "Spring 내부(트랜잭션 전파)",
+          "쿼리 튜닝·실행 계획",
+          "분산 시스템 일관성·복구"
+        ],
+        "can_learn": [
+          "결제·정산 정합성",
+          "MSA·모듈 분리",
+          "MCP 서버"
+        ]
+      },
+      "study": [
+        {
+          "topic": "같은 시간 중복 예약 막기 — 락과 제약",
+          "from": "task",
+          "quote": "• 대규모 예약 트래픽(월 80만 건 이상)을 안정적으로 처리하는 시스템 설계·운영",
+          "priority": "core",
+          "why": "주요업무다. 회사 브리핑대로 공비서는 뷰티샵 예약을 월 80만 건 이상 처리한다 — 같은 디자이너의 같은 시간대에 두 예약이 들어오면 매장 운영이 멈춘다.",
+          "gap_check": "고객 앱과 원장님 앱에서 같은 디자이너·같은 시각에 동시에 예약을 넣을 때 '빈자리 확인 후 INSERT' 가 왜 둘 다 성공할 수 있고, SELECT ... FOR UPDATE·유니크 제약(디자이너·시작 시각)·Redis 분산 락 중 무엇을 고르며, 30분 시술처럼 시간 '구간' 이 겹치는 경우는 유니크 제약만으로 왜 못 막는가?",
+          "drill": "Spring Boot + MariaDB(TestContainers)로 예약 API 를 만들고 같은 디자이너·겹치는 시간 구간 요청 50개를 동시에 보내는 테스트를 쓴다. 락 없음·FOR UPDATE(디자이너 행 잠금)·시간 슬롯 테이블 유니크 제약 세 방식의 중복 건수와 처리 시간을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "FOR UPDATE — MariaDB Documentation",
+              "url": "https://mariadb.com/docs/server/reference/sql-statements/data-manipulation/selecting-data/for-update",
+              "kind": "docs"
+            },
+            {
+              "title": "Getting started with Testcontainers for Java",
+              "url": "https://testcontainers.com/guides/getting-started-with-testcontainers-for-java/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Spring 트랜잭션 전파 — REQUIRES_NEW 의 함정",
+          "from": "qualification",
+          "quote": "• Spring Framework 내부 구조 및 동작 원리 이해 (DI/AOP/트랜잭션 전파)",
+          "priority": "core",
+          "why": "필수 자격요건이다. 예약 확정·결제·알림 발송이 한 흐름에 엮이는 도메인이다.",
+          "gap_check": "예약 저장 트랜잭션 안에서 '알림 로그 저장' 을 REQUIRES_NEW 로 분리하면 예약이 롤백돼도 로그는 남는데, 이것이 의도일 때와 아닐 때는 무엇이고, 같은 클래스 안에서 @Transactional 메서드를 호출하면 전파 설정이 왜 무시되며(프록시), 체크 예외는 기본적으로 롤백되지 않는다는 규칙이 어떤 사고를 만드는가?",
+          "drill": "Spring 트랜잭션 전파 문서를 읽고, 예약 서비스에서 REQUIRED·REQUIRES_NEW·자기 호출 세 경우를 만들어 예외를 던졌을 때 어떤 행이 남는지 테스트로 확인한다. 자기 호출 문제를 빈 분리로 고친다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Transaction Propagation — Spring Framework",
+              "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "실행 계획과 인덱스 — 원장님 매출 조회",
+          "from": "qualification",
+          "quote": "• RDBMS 쿼리 튜닝·실행 계획 분석·인덱스 설계 경험",
+          "priority": "high",
+          "why": "필수 자격요건이다. 기술 스택이 MariaDB·JPA·QueryDSL 이고, 회사가 '매출 등록 화면의 오류가 원장님의 하루를 멈추게 한다' 고 적는다.",
+          "gap_check": "'매장별 월 매출을 시술·디자이너별로 집계' 쿼리가 느릴 때 EXPLAIN 의 type(ALL·ref·range)·rows·Extra(Using filesort·Using temporary)를 어떻게 읽고, (매장ID, 결제일) 복합 인덱스에서 범위 조건 뒤의 열이 왜 인덱스를 못 타며, 커버링 인덱스는 언제 효과가 큰가?",
+          "drill": "MariaDB 에 매장 100곳 × 1년치 가짜 결제 데이터를 넣고 월 매출 집계 쿼리를 EXPLAIN 한다. 인덱스 없음·(매장ID, 결제일)·(매장ID, 결제일, 디자이너ID, 금액) 커버링 세 경우의 EXPLAIN 과 실행 시간을 표로 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "EXPLAIN — MariaDB Documentation",
+              "url": "https://mariadb.com/docs/server/reference/sql-statements/administrative-sql-statements/analyze-and-explain-statements/explain",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "JVM GC — 지연이 튈 때 로그로 확인하기",
+          "from": "qualification",
+          "quote": "• JVM 내부 동작 원리(GC, JIT, 메모리 모델)에 대한 깊은 이해",
+          "priority": "high",
+          "why": "필수 자격요건이고 회사가 'JVM 동작 원리, 동시성, 트랜잭션, 데이터베이스 등 \"왜 이렇게 동작하는가\"를 설명' 하기를 기대한다고 적는다.",
+          "gap_check": "API p99 지연이 주기적으로 튈 때 GC 가 원인인지 무엇(GC 로그의 정지 시간·빈도)으로 확인하고, G1 에서 Young·Mixed·Full GC 는 각각 언제 일어나며, 힙을 무작정 키우면 정지 시간이 왜 오히려 길어질 수 있는가? 컨테이너(ECS) 메모리 한도와 JVM 힙 설정은 어떻게 맞추는가?",
+          "drill": "Oracle GC 튜닝 가이드 도입부와 G1 장을 읽고, 큰 객체를 계속 만드는 Spring 앱을 -Xlog:gc 로 띄워 부하를 준 뒤 정지 시간 분포를 뽑는다. 힙 크기·MaxGCPauseMillis 를 바꿔 비교하고, 컨테이너 메모리 제한 아래에서 MaxRAMPercentage 를 설정해 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Introduction to Garbage Collection Tuning — Java SE 21",
+              "url": "https://docs.oracle.com/en/java/javase/21/gctuning/introduction-garbage-collection-tuning.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
