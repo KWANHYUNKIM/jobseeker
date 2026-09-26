@@ -116,7 +116,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "sidekiq-to-solidqueue"
+      ]
     }
   ],
   "features": [
@@ -512,12 +514,400 @@
           "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
         }
       ]
+    },
+    {
+      "key": "sidekiq-to-solidqueue",
+      "name": "60개 넘는 잡을 Sidekiq OSS 에서 SolidQueue 로 — 유료판 대신 Rails 8 기본 큐를 골라 잡을 기능 도메인·위험도별 Phase 로 나눠 한 번에 하나씩 옮기고, 되돌리기 쉬운 순서로 Worker·코드·Redis 를 걷어 냈다",
+      "domain": "60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)는 CSV 가져오기·내보내기, 월차 매출 보고, 결제 상태 동기화·외부 연계, 메일, 정기 청소 등 60개 넘는 비동기 잡과 sidekiq-scheduler 로 돌던 정기 잡 23개를 Sidekiq OSS(무료판)로 돌렸다. 운영 규모에서 무료판의 제한이 아팠고 — 한 프로세스 안의 다중 Worker 관리는 Enterprise, Batches·Rate Limiting 은 Pro/Enterprise — 잡 상태는 Redis 안에 갇혀 SQL 로 횡단 조회를 못 했다. 결제·고객 통지 같은 잡이 섞여 있어 **본번 서비스를 멈추지 않고** 옮겨야 했다.",
+        "metrics": [
+          {
+            "label": "대상",
+            "value": "비동기 잡 60개 이상(가져오기/내보내기 8 · 매출 보고 4 · 외부 연계 5 · 메일 6 · 정기 청소 8 · 기타 30+) + 정기 잡 23개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+              }
+            ]
+          },
+          {
+            "label": "기간·결과",
+            "value": "2025년 말 ~ 2026년 전반, Phase -1 부터 Worker 정지까지 몇 달 · Phase 6 배포 과도기에 신구 Worker 혼재로 메일 일부 송신 실패 1건(당일 수습), 그 밖에는 무중단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "유료판과 갈림길에서",
+          "thought": "Pro/Enterprise 로 올리면 제한은 풀린다. 그런데 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택했다 — OSS 그대로 제한을 풀 길이 생겼다. 덤으로 잡 상태가 RDBMS 테이블에 있으니 기존 BI(Redash 등)로 그대로 보고, DB 하나라 트랜잭션 일관성(enqueue_after_transaction_commit)도 얻는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+              "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+            },
+            {
+              "title": "Sidekiq OSSからSolidQueueへ——Sidekiq固有機能の代替と運用の実際",
+              "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-implementation",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-07-02",
+              "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
+            }
+          ]
+        },
+        {
+          "at": "한꺼번에 옮기지 않기로 할 때",
+          "thought": "60개를 한 번에 바꾸면 사고가 났을 때 원인 잡을 못 좁히고, 되돌리려면 전부를 Sidekiq 으로 돌려야 하고, STG 에서 전부를 한 번에 확인할 수도 없다. 한꺼번에였다면 몇 주면 끝났을지 모른다 — 그래도 **'확실히 앞으로 가고 있음을 증명하며 가는'** 쪽. 도중에 문제가 나도 끝난 Phase 의 성과는 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+              "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+            }
+          ]
+        },
+        {
+          "at": "Phase 를 나눌 기준을 정할 때",
+          "thought": "기준은 **업무 위험의 동질성**. 위험이 낮은 잡으로 이행 절차 자체를 먼저 검증하고 위험을 조금씩 올린다 — 같은 Phase 의 잡은 위험 성격이 같아 STG 검증 관점도, 롤백 판단도 한결같다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+              "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+            }
+          ]
+        },
+        {
+          "at": "철수를 설계할 때",
+          "thought": "Phase 99 의 3단 철수는 이행을 시작하기 **전에** 설계했다. '언제 Sidekiq 을 멈출 수 있나·무엇을 확인하면 Redis 를 지울 수 있나' 가 처음부터 분명하니 프로젝트의 끝이 보였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+              "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+            }
+          ]
+        },
+        {
+          "at": "돌아볼 때",
+          "thought": "Sentry 통합을 빼면 기술 난이도는 예상보다 낮았다 — Unique Jobs·정기 실행은 선언 교체·식 변환뿐. 옮기려는 쪽에 두 가지를 먼저 물으라: 잡이 ActiveJob 을 거치나(`include Sidekiq::Worker` 가 남았으면 그것부터), Pro/Enterprise 고유 기능을 쓰나.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq OSSからSolidQueueへ——Sidekiq固有機能の代替と運用の実際",
+              "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-implementation",
+              "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+              "date": "2026-07-02",
+              "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Phase",
+            "what": "기능 도메인·위험도가 같은 잡 묶음. -1(ActiveJob 통일) → 0(SolidQueue Worker 설치) → 1 로그·모니터링 → 2 점수 계산·리마인더 → 3 매출 보고 → 4 가져오기/내보내기+외부 연계 → 5 외부 연계 → 6 결제+메일 → 99 철수."
+          },
+          {
+            "name": "queue_adapter",
+            "what": "잡 클래스마다 백엔드를 고르는 스위치 — Phase 가 옮기는 단위."
+          },
+          {
+            "name": "limits_concurrency",
+            "what": "sidekiq-unique-jobs 를 대신하는 선언. key 에 람다를 줘 인자별 배타(예: 공간 id 하나에 1개, 10분)."
+          },
+          {
+            "name": "config/recurring.yml",
+            "what": "sidekiq-scheduler 를 대신하는 정기 실행 정의. 정기 잡 23개. `command:` 로 잡 클래스 없는 유지 보수 작업도."
+          },
+          {
+            "name": "solid_queue_* 테이블",
+            "what": "잡·실패 실행·준비 실행·프로세스 heartbeat 가 행으로 있다 — 감시는 SQL."
+          },
+          {
+            "name": "sentry-solid_queue(자사 fork)",
+            "what": "enqueue 에 queue.publish, perform 에 queue.process span. 부모 트레이스가 없으면 독립 transaction."
+          }
+        ],
+        "invariants": [
+          "Phase 는 동시에 둘을 진행하지 않는다 — 롤백 범위는 늘 1 Phase.",
+          "한 Phase 를 본번에 내고 안정 가동을 확인한 뒤에야 다음 Phase.",
+          "철수는 되돌리기 쉬운 것부터: Worker 정지 → 코드 제거 → Redis 인프라 삭제.",
+          "트랜잭션 안에서 enqueue 한 잡은 COMMIT 뒤에 큐에 들어간다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Phase -1: `include Sidekiq::Worker` 로 Sidekiq 을 직접 부르던 잡을 ActiveJob(ApplicationJob) 경유로 통일",
+            "why": "그 뒤 Phase 에서 코드 변경이 queue_adapter 교체와 limits_concurrency 추가 정도로 줄었다. ActiveJob 화와 큐 교체를 한꺼번에 했다면 문제가 어느 쪽 탓인지 못 가렸다."
+          },
+          {
+            "step": "Phase 0: SolidQueue Worker 를 세우고 초기 설정",
+            "why": "잡을 옮기기 전에 받을 자리부터."
+          },
+          {
+            "step": "Phase 1 → 6: 위험 낮은 로그·모니터링(파일럿)부터 결제·메일(최고 위험)까지, Phase 마다 본번 릴리스 → 안정 확인 → 다음",
+            "why": "절차를 싼 곳에서 먼저 검증하고, 업무 영향이 큰 가져오기/내보내기·결제·메일은 따로 확인할 수 있었다."
+          },
+          {
+            "step": "Sidekiq 고유 기능 대체 — Unique Jobs → limits_concurrency · scheduler → recurring.yml(cron: → schedule:, 끝에 Asia/Tokyo) · sentry-sidekiq → 자사 fork",
+            "why": "공식 sentry-ruby 에 SolidQueue 대응이 없다(2025년 3월 issue, 2026년 6월 시점 open)."
+          },
+          {
+            "step": "Phase 99-1 Worker 정지: ECS desired_count 0, Terraform 으로 비본번부터 · Sentry 에서 Sidekiq 경유 span 0건 확인",
+            "why": "코드와 Redis 가 남아 있어 Worker 만 다시 띄우면 곧 복구된다."
+          },
+          {
+            "step": "Phase 99-2 Gemfile 에서 sidekiq·scheduler·unique-jobs·sentry-sidekiq·rspec-sidekiq 제거 → 99-3 Terraform 으로 Redis 관련 리소스 삭제",
+            "why": "가장 되돌리기 어려운 것을 마지막에."
+          },
+          {
+            "step": "운영: finished 잡을 매시간 배치 삭제(sleep_between_batches 0.3) · SQL 로 실패·30분 넘게 체류·5분 넘게 heartbeat 없는 Worker 를 감시",
+            "why": "SolidQueue 는 끝난 잡 행을 남겨 테이블이 부푼다. 감시는 새 도구 없이 기존 BI 로."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무료판 제한을 어떻게 푸나",
+            "chosen": "SolidQueue(PostgreSQL) — Rails 8.0 의 기본 ActiveJob 백엔드",
+            "alternatives": [
+              "Sidekiq Pro/Enterprise 로 업그레이드"
+            ],
+            "tradeoff": "라이선스 없이 제한을 풀고 Redis 를 없애 잡 상태를 SQL 로 본다. 대가는 Sidekiq 생태계의 도구(Web UI·sentry-sidekiq·unique-jobs)를 대체물로 갈아야 하는 것, 그리고 잡 부하가 업무 DB(RDS)에 얹히는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+              },
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——Sidekiq固有機能の代替と運用の実際",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-implementation",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-02",
+                "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
+              }
+            ]
+          },
+          {
+            "question": "60개를 한 번에 옮기나",
+            "chosen": "기능 도메인별 Phase 로 나눠 한 Phase 씩 본번 → 안정 확인",
+            "alternatives": [
+              "일괄 이행 — 몇 주면 끝났을지 모른다"
+            ],
+            "tradeoff": "원인 분리·롤백 범위·STG 검증이 1 Phase 로 줄어든다. 대가는 기간 — Phase -1 부터 Worker 정지까지 몇 달.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+              }
+            ]
+          },
+          {
+            "question": "Phase 를 겹쳐 기간을 줄이나",
+            "chosen": "Phase 사이 병행 금지",
+            "alternatives": [
+              "Phase 5·6 동시 진행"
+            ],
+            "tradeoff": "두 Phase 를 같이 냈다 사고가 나면 조사 동안 둘 다 되돌려야 한다 — 롤백 범위를 늘 1 Phase 로 묶는다. 대가는 줄일 수 있던 기간을 포기한 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+              }
+            ]
+          },
+          {
+            "question": "Phase 순서를 무엇으로 정하나",
+            "chosen": "업무 위험의 동질성 — 낮은 위험(로그·모니터링)을 파일럿으로, 결제·메일을 마지막에",
+            "alternatives": [
+              "잡 수·코드 구조 순서(inferred)"
+            ],
+            "tradeoff": "이행 절차가 싼 잡에서 먼저 다듬어진다. 대가는 가장 아픈 잡이 가장 늦게 이점을 누리는 것 — 그리고 그 마지막 Phase 6 에서 신구 Worker 혼재로 메일 일부 실패 1건이 났다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+              }
+            ]
+          },
+          {
+            "question": "큐 교체 전에 무엇을 먼저 하나",
+            "chosen": "Phase -1 로 ActiveJob 통일을 따로 끝낸다",
+            "alternatives": [
+              "ActiveJob 화와 SolidQueue 이행을 같은 Phase 에서"
+            ],
+            "tradeoff": "이후 변경이 adapter 교체 수준으로 줄고, 테넌트를 싣는 MultiTenantJob 도 adapter 와 무관해 손댈 필요가 없었다. 대가는 이행이 시작되기 전 준비 한 바퀴.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+              },
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——Sidekiq固有機能の代替と運用の実際",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-implementation",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-02",
+                "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
+              }
+            ]
+          },
+          {
+            "question": "Sidekiq 을 어떻게 걷어 내나",
+            "chosen": "Worker 정지 → 코드 제거 → Redis 삭제, 되돌리기 쉬운 순서 · 이행 시작 전에 설계",
+            "alternatives": [
+              "마지막 Phase 와 함께 한 번에 제거(inferred)"
+            ],
+            "tradeoff": "각 단계에서 복구 비용이 '다시 띄우기' → 'gem 되돌려 배포' → 인프라 재구축으로 점점 커진다는 걸 알고 간다. 대가는 쓰지 않는 Redis 를 한동안 더 유지하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+              }
+            ]
+          },
+          {
+            "question": "Sentry 트레이싱을 어떻게 잇나",
+            "chosen": "sentry-ruby 를 fork 해 sentry-solid_queue — around_enqueue/perform 에 span, 부모 트레이스가 있으면 자식 span 없으면 독립 transaction, 전파 헤더를 직렬화에 싣는다",
+            "alternatives": [
+              "공식 대응을 기다린다(issue open)"
+            ],
+            "tradeoff": "웹 요청 → 잡 실행까지 한 줄 트레이스와 Queue Insights 를 지킨다. 대가는 fork 의 유지 보수 — 글이 꼽은 유일한 '난이도 높음'.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——Sidekiq固有機能の代替と運用の実際",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-implementation",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-02",
+                "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
+              }
+            ]
+          },
+          {
+            "question": "Worker 배포 직후 CPU 알람이 쏟아질 때",
+            "chosen": "CloudWatch 평가를 1회 중 1회 → 3회 중 2회로 완화",
+            "alternatives": [
+              "Worker 리소스 증설(inferred)"
+            ],
+            "tradeoff": "전부 기동 0~2분 안의 일시 스파이크라 자원 부족이 아니었다. 대가는 진짜 짧은 과부하도 알람에서 빠지는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq OSSからSolidQueueへ——Sidekiq固有機能の代替と運用の実際",
+                "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-implementation",
+                "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+                "date": "2026-07-02",
+                "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다(같은 회사의 다른 도메인)",
+          "via": "MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡)",
+          "contract": "잡 페이로드에 기업을 싣고 실행 때 앱·DB 두 층을 다시 전환한다 — `|| []` 로 이행 중 Sidekiq 에 남은 테넌트 없는 잡도 안전하게 복원",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "Phase 사다리",
+          "question": "60개를 어떤 순서로, 무엇을 확인하며 옮겼나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  P0m[\"Phase -1\\nActiveJob 통일\"] --> P0[\"Phase 0\\nSolidQueue Worker\"]\n  P0 --> P1[\"1 로그·모니터링\\n파일럿\"] --> P2[\"2 점수·리마인더\"] --> P3[\"3 매출 보고\\nlimits_concurrency\"] --> P4[\"4 가져오기/내보내기\\n+ 외부 연계\"] --> P5[\"5 외부 연계\"] --> P6[\"6 결제 + 메일\\n최고 위험\"] --> P99[\"99 철수\"]\n  P1 -.각 단계마다 본번 안정 확인 · 병행 금지.-> P2"
+        },
+        {
+          "title": "철수 3단과 되돌리는 값",
+          "question": "Sidekiq 을 지울 때 어디까지가 쉽게 되돌려지나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Running: 모든 잡 SolidQueue\n  Running --> WorkerStopped: 99-1 desired_count 0\\nSidekiq span 0건 확인\n  WorkerStopped --> Running: Worker 재기동(즉시)\n  WorkerStopped --> CodeRemoved: 99-2 gem 제거\n  CodeRemoved --> WorkerStopped: gem 되돌려 배포\n  CodeRemoved --> RedisGone: 99-3 Terraform 삭제\n  RedisGone --> [*]"
+        },
+        {
+          "title": "Phase 6 과도기에 난 것",
+          "question": "무중단 이행에서 유일하게 샌 한 건은 어디서 났나?",
+          "kind": "failure",
+          "code": "flowchart LR\n  D[\"Phase 6 배포\\n결제 + 메일\"] --> M{\"신구 Worker 혼재\"}\n  M --> F[\"메일 일부 송신 실패\\n1건\"]\n  F --> R[\"당일 수습\"]\n  M --> OK[\"그 밖의 잡은 무중단\"]\n  R -.롤백 범위는 Phase 6 하나.-> D"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Sidekiq OSSからSolidQueueへ——60以上のジョブを段階的に移行した戦略",
+          "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-strategy",
+          "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+          "date": "2026-07-01",
+          "summary": "SCE 백엔드(Rails 8.0 / Ruby 3.4.3)의 비동기 잡 60개 넘게를 2025년 말~2026년 전반에 Sidekiq OSS 에서 **SolidQueue(PostgreSQL)** 로 단계 이행. 동기 — Sidekiq OSS(무료판)의 기능 제한과 잡 상태가 블랙박스 · 유료판 업그레이드도 선택지였지만 Rails 8.0 이 SolidQueue 를 기본 ActiveJob 백엔드로 채택해 OSS 그대로 제한을 풀 길이 열렸다. 일괄 이행하지 않은 이유 · Phase 분할 설계와 기준 · Phase 사이 병행 금지 · Sidekiq 철수 3단계(Worker 정지 → 코드 제거 → Redis 인프라 삭제) · 결과. Sentry 분산 트레이싱 대응."
+        },
+        {
+          "title": "Sidekiq OSSからSolidQueueへ——Sidekiq固有機能の代替と運用の実際",
+          "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-implementation",
+          "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+          "date": "2026-07-02",
+          "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
+        }
+      ]
     }
   ],
   "open_questions": [
     "요금·수수료 구조와 매출 비중을 확인하지 못했다.",
     "ショップカウンター(공간 마켓플레이스)의 기술 결정 글을 아직 못 봤다.",
-    "연재 제2회(PostgreSQL 이행 `0eb98271af2991`)·SolidQueue 실장편은 아직 안 읽었다."
+    "연재 제2회(PostgreSQL 이행 `0eb98271af2991`)는 아직 안 읽었다."
   ],
   "sources": [
     {
@@ -547,6 +937,13 @@
       "publisher": "COUNTERWORKS Tech Blog (Zenn)",
       "date": "2026-06-12",
       "summary": "SCE 의 테넌트 분리는 앱 층(`activerecord-multi-tenant` 가 WHERE 를 자동 부여)과 DB 층(PostgreSQL RLS + SmartHR 의 `activerecord-tenant-level-security`)의 이중 방어. 업무어 '테넌트(출점자)' 와 충돌해 식별자를 `enterprise_id` 로 · 두 층을 한 번에 켜는 concern · 앱용/마이그레이션용(BYPASSRLS) DB 사용자 분리 · 요청은 호스트명으로 기업을 찾아 두 층을 전환 · 잡은 enqueue 때 테넌트를 붙여 운반 · BYPASSRLS 소유 VIEW 가 전 테넌트를 돌려준 함정과 WHERE 절 대응(security_invoker 비교) · RLS 정책과 복합 유니크 제약을 CI 스펙으로 강제."
+    },
+    {
+      "title": "Sidekiq OSSからSolidQueueへ——Sidekiq固有機能の代替と運用の実際",
+      "url": "https://zenn.dev/counterworks/articles/sidekiq-to-solidqueue-implementation",
+      "publisher": "COUNTERWORKS Tech Blog (Zenn)",
+      "date": "2026-07-02",
+      "summary": "전략편의 짝. Sidekiq 고유 기능의 대체 — Unique Jobs → `limits_concurrency`, sidekiq-scheduler → `config/recurring.yml`(정기 잡 23개), sentry-sidekiq → 자사 fork `sentry-solid_queue`(queue.publish/process 분리·부모 트레이스 유무 분기·trace propagation) · 기반 클래스(`enqueue_after_transaction_commit`)·MultiTenantJob · 정시 처리 2단(Enqueue 잡 → 기업마다 실행 잡) · 외부 API 는 `set(wait:)` 로 간격 · 이행 중 CloudWatch 오발화·finished 잡 비대화 · SQL 로 감시(실패·체류·죽은 워커)."
     }
   ]
 }

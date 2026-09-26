@@ -1973,3 +1973,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 COUNTERWORKS tenant-double-defense
 
 - 연재 제1회(俯瞰)·제3회(二重防御) 로 기능 하나. 결정 8, 그림 3(flow·failure·state). 제2회(PG 이행)는 안 읽음 — 필요하면 Phase 1 보강 재료.
+
+## 2026-09-26 COUNTERWORKS sidekiq-to-solidqueue
+
+- 전략편·실장편으로 기능 하나. 결정 8, 그림 3(flow·state·failure). 두 도메인 featured — 다음은 ショップカウンター 수익원 완주 점검.
