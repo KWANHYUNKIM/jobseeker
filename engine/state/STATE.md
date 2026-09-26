@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — plaid 재방문에서 확장(`agent-acts-as-the-person`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
+**없다 — ramp 재방문에서 확장(`detours-not-gates`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **ramp** — 2026-09-26 OCA 당직 에이전트(09-09) → `detours-not-gates`, 새 도메인. `builders.ramp.com/rss.xml` 이 curl 로 온다. 09-06 이후 새 글은 이것 하나.
 - **plaid** — 2026-09-26 토큰 페더레이션(09-15) → `agent-acts-as-the-person`, 새 도메인. **목록·본문 모두 `medium.com/feed/plaid-engineering` RSS 로 온다**(plaid.com/blog 는 보안 확인, engineering.plaid.com 은 브라우저로도 빈 목록).
 - **pinterest** — 2026-09-26 임베딩 검색 플랫폼(09-11) → `recall-for-memory`, 새 도메인. 안 읽은 새 글 셋(VLM 서빙·3-타워 2편·파티션 확정). Medium RSS 에 본문이 실려 온다(`content:encoded`).
 - **perplexity** — 2026-09-26 CobbleDB(09-14) → `cobbledb-hot-store`, 새 도메인. 안 읽은 새 글 넷 — Photon(09-24, 1순위)·Escaping SPACE·실사용 경험 학습·Q2D-Web. 목록은 r.jina.ai 로 research.perplexity.ai.
