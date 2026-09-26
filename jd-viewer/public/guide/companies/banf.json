@@ -163,5 +163,122 @@
     "풀스택 공고의 웹 애플리케이션이 어떤 서비스인지 공고에 없다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/379543",
+      "title": "AI Engineer 전문연구요원 [병역특례]",
+      "site": "wanted",
+      "verdict": "신입, 서울 강남구 역삼로, **전문연구요원(병역특례)** 자리다. 타이어 센서 기업의 AI 엔지니어로 업무가 넷이다 — CAN·IMU·TPMS 타이어 센서 **신호 처리 알고리즘** 설계·최적화, 신호 처리와 머신러닝으로 **동적 차량/노면 상태 추정 모델**, 타이어/차량 데이터셋 구축과 분석으로 모델 개선, **Edge Computing 환경용 모델 경량화·배포**와 학습-평가-배포 파이프라인. 필수는 전자전기·컴퓨터·기계공학 등 관련 전공 **석사 이상**, ML/DL 로 실제 문제를 푼 경험, Python, 데이터 분석부터 성능 개선까지 혼자 해 본 경험. 우대는 CVPR·NeurIPS·ICRA 등 제1저자 논문, 차량 동역학·타이어 역학 지식, CarSim·CarMaker 시뮬레이터, ChatGPT·Claude·Cursor 등 생성형 AI 도구 활용. 전형: 서류전형 ＞비대면면접 ＞ 대면면접 ＞ 채용. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "관련 전공 석사 이상",
+          "ML/DL 실제 문제 해결 경험",
+          "Python",
+          "분석~성능 개선 단독 수행"
+        ],
+        "can_learn": [
+          "차량 동역학·타이어 역학",
+          "CarSim·CarMaker",
+          "엣지 모델 경량화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "타이어 센서 신호 처리 — 필터와 주파수 영역",
+          "from": "task",
+          "quote": "• CAN, IMU, TPMS 등 핵심 타이어 센서 신호 처리 알고리즘 설계 및 최적화",
+          "priority": "core",
+          "why": "첫 번째 주요업무다. 회사 사이트가 시간 영역 신호 필터링과 타이어 접촉면 정보를 뽑는 주파수 영역 알고리즘을 핵심 기술로 적는다(회사 브리핑).",
+          "gap_check": "타이어 안쪽에 붙은 3축 가속도 센서는 바퀴가 한 바퀴 돌 때마다 노면에 닿는 구간에서 큰 변화를 보인다. 샘플링 주파수가 얼마여야 이 구간을 놓치지 않고, 속도가 두 배가 되면 한 바퀴당 샘플 수와 필터 차단 주파수는 어떻게 바뀌어야 하는가?",
+          "drill": "scipy.signal 로 가짜 가속도 신호(바퀴 회전 주기 + 접지 구간 펄스 + 백색 잡음)를 만들고, 버터워스 저역/대역 통과 필터와 FFT·스펙트로그램으로 회전 주파수를 찾은 뒤, 속도를 바꿔 회전 주파수 추정이 따라오는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Signal Processing (scipy.signal) — SciPy Manual",
+              "url": "https://docs.scipy.org/doc/scipy/tutorial/signal.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "CAN 데이터 읽기 — 센서와 차량 신호를 한 시간축에",
+          "from": "task",
+          "quote": "• CAN, IMU, TPMS 등 핵심 타이어 센서 신호 처리 알고리즘 설계 및 최적화",
+          "priority": "high",
+          "why": "같은 주요업무가 CAN 을 IMU·TPMS 와 나란히 적는다. 타이어 센서(BLE)와 차량 CAN 은 따로 들어오므로 둘을 맞춰야 한다.",
+          "gap_check": "CAN 프레임의 차속·조향각(수십 Hz)과 타이어 센서 가속도(수 kHz)를 함께 학습 데이터로 쓰려면 타임스탬프를 어떻게 맞추고(시계 차이·지연), 주기가 다른 신호를 어느 쪽으로 리샘플링하는가?",
+          "drill": "python-can 의 가상 버스로 차속 메시지를 보내고 받아 로그로 저장한 뒤, 별도로 만든 고속 가속도 신호와 pandas 로 시간축을 맞춰(merge_asof) 한 표로 만들고 일부러 넣은 50ms 지연을 교차상관으로 찾아낸다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "python-can documentation",
+              "url": "https://python-can.readthedocs.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "노면·차량 상태 추정 — 필터와 학습 모델",
+          "from": "task",
+          "quote": "• 신호 처리 및 머신러닝 기반의 동적 차량/노면 상태 추정 모델 개발",
+          "priority": "core",
+          "why": "주요업무다. 사이트가 블랙아이스·포트홀 깊이 같은 노면 정보를 제품으로 내세운다(회사 브리핑).",
+          "gap_check": "마른 노면과 젖은·빙판 노면을 구분하는 분류기를 만들 때, 같은 주행에서 잘라낸 구간이 학습·검증에 섞이면 왜 점수가 부풀고, 그래서 무엇(주행·차량 단위 그룹) 기준으로 나눠야 하는가? 칼만 필터 같은 상태 추정은 학습 모델과 어떻게 역할을 나누는가?",
+          "drill": "가짜 주행 데이터(주행 ID별 노면 라벨)에서 구간 특징(RMS·주파수 대역 에너지)을 뽑아 분류기를 학습하고, 무작위 분할과 GroupKFold(주행 단위) 점수를 비교한다. 칼만 필터 책 1~4장으로 잡음 섞인 속도 측정을 필터링해 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "GroupKFold — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GroupKFold.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Kalman and Bayesian Filters in Python",
+              "url": "https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "엣지 배포 — 모델 양자화와 경량화",
+          "from": "task",
+          "quote": "• Edge Computing 환경을 위한 모델 경량화/배포 및 학습-평가-배포 파이프라인 구축",
+          "priority": "high",
+          "why": "주요업무다. 사이트의 Smart Profiler 는 센서 데이터 분석 허브로 차량에 달린다(회사 브리핑) — 추론이 차량 안 작은 기기에서 돈다.",
+          "gap_check": "float32 모델을 int8 로 양자화하면 크기·지연은 얼마나 줄고 정확도는 어디서 떨어지며, 정적 양자화에 필요한 보정(calibration) 데이터는 왜 실제 주행 분포를 닮아야 하는가?",
+          "drill": "위 노면 분류 모델(작은 1D CNN 또는 MLP)을 ONNX 로 내보내 ONNX Runtime 의 동적·정적 양자화를 적용하고, 원본과 모델 크기·CPU 추론 시간·정확도를 표로 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Quantize ONNX models — onnxruntime",
+              "url": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Post-training quantization — Google AI Edge",
+              "url": "https://ai.google.dev/edge/litert/models/post_training_quantization",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "타이어 역학 — 슬립과 마찰의 기초",
+          "from": "preference",
+          "quote": "• 차량 동역학(Vehicle Dynamics), 타이어 역학 등 도메인 관련 물리적 지식 보유자",
+          "priority": "nice",
+          "why": "우대사항이다. 노면 미끄럼·휠 정렬·하중 측정이 회사 제품이라(회사 브리핑) 물리 모델을 알면 특징과 라벨을 설계할 수 있다.",
+          "gap_check": "타이어가 내는 힘이 슬립률(종방향)·슬립각(횡방향)에 따라 어떻게 커지다 꺾이는지, 그리고 노면 마찰계수가 낮아지면 그 곡선이 어떻게 바뀌어 센서 신호에서 '미끄러움'을 읽을 단서가 되는가?",
+          "drill": "Pacejka 의 Magic Formula 를 파이썬으로 그려 마찰계수 두 값(마른·젖은 노면)의 힘-슬립 곡선을 비교하고, 같은 슬립에서 힘 차이가 어느 구간부터 벌어지는지 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Hans B. Pacejka — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Hans_B._Pacejka",
+              "kind": "article"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
