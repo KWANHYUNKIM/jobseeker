@@ -5,7 +5,7 @@
   "country": "기타",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "victoriametrics.com",
   "one_liner": "메트릭을 더 싸게 오래 두는 시계열 DB — 비용을 짓누르는 것이 샘플 양이 아니라 카디널리티라고 말한다",
   "business_model": "세 갈래로 판다. 영원히 무료인 오픈소스(단일 노드와 클러스터), 재해 복구와 멀티테넌시와 이상 탐지를 얹은 상용 엔터프라이즈, 그리고 완전 관리형 SaaS 인 VictoriaMetrics Cloud 다. Prometheus 와 관리형 시계열 DB 의 더 싼 대안을 자처하고 Prometheus·Graphite·OpenTSDB·InfluxDB·CSV 수집 프로토콜을 받는다. **파는 것은 결국 압축이다.** 더 나은 압축으로 같은 디스크와 RAM 에 훨씬 많은 데이터를 담게 하는 것이 곧 비용 절감이고 그게 제품 설명의 첫 줄에 온다(재구성). 이 엔진에서 이 회사는 양쪽으로 이어진다. Airbnb 와 Razorpay 가 둘 다 vmagent 를 골랐다는 이야기가 그 회사들의 관측 비용 절감 글에 나오니 사는 쪽을 이미 봤고, Databricks 는 자기 카디널리티에 깔려 시계열 DB 를 직접 포크했다. **같은 문제를 파는 쪽과 깔린 쪽에서 다 보게 됐다**(재구성).",
