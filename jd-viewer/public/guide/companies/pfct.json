@@ -525,6 +525,137 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/377655",
+      "title": "ML Engineer(ML 엔지니어)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상(데이터 분석·ML·모델링, 서울 서초). AI R&D Team 에서 여신 시장 실데이터로 신용 평가·리스크 관리 모델을 연구·고도화하고, 금융권 모델링/분석 툴 Airpack 의 기초 모듈(모델·알고리즘)을 만들며, 국내외 기관 컨설팅 프로젝트의 모델 개발과 서빙·모니터링까지 맡는다. 자격요건은 넓고 가볍다(3년 실무, Python 분석 라이브러리와 ML/DL 이해, 빠른 학습, 협업) — 차이는 우대의 '금융/커머스 정형 데이터로 의미 있는 결과' 와 'End-to-End ML 파이프라인' 에서 난다. ICPC·Codejam·SCPC 입상도 우대이고, 전형에 온라인 코딩 테스트가 있다. 전형은 서류 → 온라인 코딩 테스트 및 사전 인터뷰 설문 → 1차(Job-Fit) → 2차(Culture Fit) → 3차(Final) → 처우 협의.",
+      "fit": {
+        "must_have": [
+          "데이터 분석·ML·모델링 실무 3년 이상",
+          "Python 분석 라이브러리와 ML/DL 알고리즘 이해",
+          "새 영역을 빠르게 학습해 실행",
+          "협업"
+        ],
+        "can_learn": [
+          "금융/커머스 정형 데이터 성과",
+          "End-to-End ML 파이프라인(기획·검증·서빙)",
+          "프로그래밍 경진 대회"
+        ]
+      },
+      "study": [
+        {
+          "topic": "신용평가 모델 — 부도 예측과 검증 지표",
+          "from": "task",
+          "quote": "• 여신 시장의 실제 데이터를 분석하여 신용 평가 및 리스크 관리 모델을 연구·고도화해요.",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다. 회사가 온투금융 크플을 운영하고 B2B 로 금융사에 신용평가·여신 운영 솔루션을 판다.",
+          "gap_check": "부도(default) 레이블을 정의할 때 관측 기간·성과 기간을 어떻게 나누고, 신용평가 모델을 AUC 외에 KS 통계량·PSI(분포 안정성)·보정(calibration)으로 왜 따로 보는가? 승인된 사람만 결과를 아는 문제(거절 추론)는 무엇인가?",
+          "drill": "공개 신용 데이터셋으로 로지스틱 회귀와 LightGBM 부도 예측 모델을 만들고, 시간 기준으로 나눈 검증 세트에서 AUC·KS·보정 곡선을 비교한 뒤 두 기간의 점수 분포로 PSI 를 계산한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "scikit-learn — Probability calibration",
+              "url": "https://scikit-learn.org/stable/modules/calibration.html",
+              "kind": "docs"
+            },
+            {
+              "title": "LightGBM — Documentation",
+              "url": "https://lightgbm.readthedocs.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "BIS — Basel II: International Convergence of Capital Measurement and Capital Standards",
+              "url": "https://www.bis.org/publ/bcbs128.htm",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "금융 모델의 설명 가능성",
+          "from": "task",
+          "quote": "• 국내외 기관과의 컨설팅 프로젝트에서 모델 개발, 데이터 분석, 기술 컨설팅을 수행해요.",
+          "priority": "high",
+          "why": "주요업무다. 금융기관 고객에게 모델을 팔고 컨설팅하려면 '왜 이 사람을 거절했는지' 를 설명할 수 있어야 한다(추론).",
+          "gap_check": "트리 앙상블 모델의 특정 거절 건에 대해 SHAP 값으로 거절 사유 상위 3개를 뽑을 수 있고, 변수 간 상관이 높을 때 그 해석이 왜 흔들리는가?",
+          "drill": "위 LightGBM 모델에 SHAP 을 붙여 전체 변수 중요도와 개별 거절 건 설명을 뽑고, 비전문가 고객용 한 장짜리 설명서로 바꾼다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "SHAP — Documentation",
+              "url": "https://shap.readthedocs.io/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "XGBoost — Documentation",
+              "url": "https://xgboost.readthedocs.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모델 서빙과 성능 모니터링",
+          "from": "task",
+          "quote": "• 개발한 모델이 실제 서비스에 적용될 수 있도록 서빙 파이프라인 구축 및 운영에 참여하고, 모델의 성능을 지속적으로 모니터링하여 개선점을 제안해요.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 '모델의 기획부터 검증, 서빙까지 End-to-End ML 파이프라인을 주도적으로 운영해 본 경험' 이 있다.",
+          "gap_check": "대출 결과(부도 여부)는 몇 달 뒤에야 알 수 있는데 그 사이 모델이 나빠지는지 무엇으로 먼저 감지하고(입력 분포·점수 분포 드리프트), 재학습 기준을 어떻게 정하는가?",
+          "drill": "위 모델을 MLflow 로 기록·등록하고 간단한 API 로 서빙한 뒤, 기간별 입력으로 드리프트 리포트를 만들어 재학습 기준(PSI 임계값)을 정한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "MLflow — Documentation",
+              "url": "https://mlflow.org/docs/latest/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Evidently — Documentation",
+              "url": "https://docs.evidentlyai.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Python ML 기본기와 코딩 테스트",
+          "from": "qualification",
+          "quote": "• Python 기반의 데이터 분석 라이브러리와 머신러닝/딥러닝 알고리즘에 대해 이해도가 높은 분",
+          "priority": "high",
+          "why": "자격요건이고 전형에 '온라인 코딩 테스트' 가 있으며 우대에 ICPC·Codejam·SCPC 가 있다 — 알고리즘 실력을 따로 본다.",
+          "gap_check": "그라디언트 부스팅이 잔차를 어떻게 줄여 가는지, 불균형 데이터(부도율 3%)에서 클래스 가중치와 임계값 조정은 각각 무엇을 바꾸는지 설명할 수 있는가?",
+          "drill": "pandas 로 대출 거래 원장을 차주별 월간 특성으로 집계하는 코드를 짜고, 코딩 테스트 대비로 그래프·DP 문제 10개를 Python 으로 푼다.",
+          "hours": 8,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공개 신용 데이터로 만든 부도 예측 + 설명 + 드리프트 모니터링 한 벌",
+          "why": "주요업무 네 줄(신용 모델, 컨설팅, 서빙·모니터링)과 우대 두 줄(정형 데이터 성과, End-to-End)을 한 저장소로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "경진 대회 이력",
+          "why": "우대사항에 이름이 적혀 있고 전형에 온라인 코딩 테스트가 있다.",
+          "effort": "이미 있으면 첫 장에"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 > 온라인 코딩 테스트 및 사전 인터뷰 설문 > 1차 인터뷰(Job-Fit) > 2차 인터뷰(Culture Fit) > 3차 인터뷰(Final) > 처우 협의 > 최종 합류(공고 기준).",
+        "expect": [
+          "신용평가 지표(AUC·KS·PSI)",
+          "불균형 데이터 처리",
+          "모델 설명 가능성",
+          "모델 모니터링과 재학습 기준"
+        ],
+        "sources": [
+          {
+            "title": "ML Engineer(ML 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/377655",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
