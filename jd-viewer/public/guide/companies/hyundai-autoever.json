@@ -1250,6 +1250,152 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385554",
+      "title": "[Tech] AI Engineer - AI Researcher",
+      "site": "wanted",
+      "verdict": "경력 5~11년(서울 강남). 인공지능기술실에서 Vision·NLP·멀티모달 딥러닝과 생성형 AI 로 사내·그룹 서비스용 응용 모델을 연구개발할 사람. 주요업무 범위가 넓다 — 신기술 대응, 업무생산성·상품성 개선, AI coding assistant 활용 탐색, 분석 도구, 실 서비스 모델 적용까지 한 공고에 있다. 자격요건은 확률·통계·선형대수·해석학 기반 수학적 모델링, 영상-언어·영상-센서 융합 모델 설계, 실험 설계·검증이다. 논문 저술·챌린지 입상은 우대다. 팀 리더는 주로 Python 을 쓴다고 적는다. 전형에 직무역량테스트(코딩)가 있다.",
+      "fit": {
+        "must_have": [
+          "생성형 AI·딥러닝·기계학습 이론과 기술",
+          "확률·통계, 선형대수, 해석학 기반 수학적 모델링",
+          "영상-언어·영상-센서 융합 모델(CNN·RNN·Transformer) 설계",
+          "AI 신기술 평가를 위한 실험 설계·수행",
+          "협업 소프트스킬"
+        ],
+        "can_learn": [
+          "임베디드 환경",
+          "강화학습·Human-Robot Interaction",
+          "최신 논문 재구현",
+          "학회 논문·챌린지"
+        ]
+      },
+      "study": [
+        {
+          "topic": "영상-언어 멀티모달 모델 구조",
+          "from": "qualification",
+          "quote": "• 영상-언어, 영상-센서 융합 딥러닝 모델(CNNs, RNNs, Transformer 등) 설계/개발 역량",
+          "priority": "core",
+          "why": "자격요건 중 가장 구체적인 기술 줄이고, 주요업무 첫 줄이 Vision, NLP, Multimodal 이다. 팀 리더는 '멀티모달 기반의 궁극적 AI 개발을 지향' 한다고 적는다.",
+          "gap_check": "CLIP 처럼 두 인코더를 대조 학습으로 맞추는 방식과, LLaVA 처럼 비전 인코더 출력을 LLM 입력 토큰으로 투영하는 방식은 무엇을 잘하고 무엇을 못하는가? 센서(예: LiDAR) 를 세 번째 모달리티로 넣으려면 어느 쪽 구조가 쉬운가?",
+          "drill": "공개 이미지-캡션 데이터 일부로 작은 CLIP 식 대조 학습을 돌려 zero-shot 분류 정확도를 재고, 같은 데이터로 사전학습 VLM 에 캡션을 생성시켜 두 방식의 결과를 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Learning Transferable Visual Models From Natural Language Supervision (arXiv:2103.00020)",
+              "url": "https://arxiv.org/abs/2103.00020",
+              "kind": "paper"
+            },
+            {
+              "title": "Visual Instruction Tuning (arXiv:2304.08485)",
+              "url": "https://arxiv.org/abs/2304.08485",
+              "kind": "paper"
+            },
+            {
+              "title": "Attention Is All You Need (arXiv:1706.03762)",
+              "url": "https://arxiv.org/abs/1706.03762",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "AI 신기술 평가를 위한 실험 설계",
+          "from": "qualification",
+          "quote": "• AI 신기술 평가 및 검증을 위한 실험 설계 및 실험 수행 역량",
+          "priority": "core",
+          "why": "자격요건이고 해시태그에 #모델_실험설계_검증 이 있다. 주요업무의 '신기술 대응' 은 새 모델을 사내 과제에 쓸지 판단하는 일로 보인다(추론).",
+          "gap_check": "새 모델이 기존 모델보다 낫다고 말하려면 평가 세트·지표·시드 반복·유의성 검정을 어떻게 설계하고, 사내 데이터가 적을 때 데이터 누수를 어떻게 막는가?",
+          "drill": "같은 과제에 모델 두 개를 시드 5개로 학습·평가해 평균과 신뢰구간을 내고, 부트스트랩으로 차이가 유의한지 확인한 실험 보고서 한 장을 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Dive into Deep Learning",
+              "url": "https://d2l.ai/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "수학적 모델링 기초 — 확률·선형대수·해석학",
+          "from": "qualification",
+          "quote": "• 확률 및 통계, 선형대수, 해석학 기반의 수학적 모델링에 대한 이해",
+          "priority": "high",
+          "why": "자격요건에 과목 이름까지 적혀 있다. 연구직이라 면접에서 유도를 물을 수 있다(추론).",
+          "gap_check": "교차 엔트로피 손실이 최대우도 추정과 같다는 것을 유도하고, 어텐션의 softmax(QKᵀ/√d) 에서 √d 로 나누는 이유를 분산으로 설명할 수 있는가?",
+          "drill": "Mathematics for Machine Learning 의 확률·벡터 미적분 장 연습문제를 풀고, 로지스틱 회귀의 경사를 손으로 유도한 뒤 PyTorch autograd 결과와 대조한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Mathematics for Machine Learning",
+              "url": "https://mml-book.github.io/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "생성형 AI 응용 — 사내 서비스에 붙이기",
+          "from": "task",
+          "quote": "• AI 융합기술, 생성형 AI 응용 기술 연구개발",
+          "priority": "high",
+          "why": "주요업무 여러 줄이 생성형 AI 응용이고, 팀 소개가 개발 결과가 '회사 및 그룹의 중요 서비스에 적용' 된다고 적는다. 회사 홈페이지 사업 목록에 엔터프라이즈 AI 비서 H Chat 이 있다 — 이 팀의 결과물인지는 공고에 적혀 있지 않다.",
+          "gap_check": "사내 문서 기반 질의응답을 만들 때 검색 증강(RAG)과 파인튜닝 중 무엇을 먼저 쓰고, 환각을 어떻게 측정하는가?",
+          "drill": "공개 차량 매뉴얼류 문서로 RAG 질의응답을 만들고, 질문 30개에 대해 정답 근거 포함률과 환각률을 직접 채점한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Hugging Face Transformers",
+              "url": "https://huggingface.co/docs/transformers/index",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "최신 논문 재구현",
+          "from": "preference",
+          "quote": "• 기계학습(딥러닝, 생성형AI), 이동체(차량, 비행체, 로봇), 인공지능 관련 최신 논문 이해 및 기법 재 구현 능력",
+          "priority": "nice",
+          "why": "우대사항이다. 동료 한 마디는 연구 결과를 학회·행사에서 발표하기도 한다고 적는다.",
+          "gap_check": "논문 재구현 결과가 논문 수치에 못 미칠 때 어떤 순서로 원인(데이터 전처리·하이퍼파라미터·평가 방식)을 좁히는가?",
+          "drill": "위 멀티모달 논문 중 하나의 핵심 실험 하나를 작은 규모로 재현해 논문 표와 나란히 적고 차이의 원인을 기록한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "PyTorch Tutorials",
+              "url": "https://docs.pytorch.org/tutorials/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "영상-언어(또는 영상-센서) 융합 소형 모델 + 실험 보고서",
+          "why": "자격요건 두 줄(융합 모델 설계, 실험 설계·검증)을 한 결과물로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "논문·챌린지 이력 정리",
+          "why": "우대사항 두 줄이 학회·저널 논문 저술과 국내외 챌린지 입상이다. 있으면 첫 장에 둔다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "멀티모달 모델 구조 설명",
+          "실험 설계와 유의성 판단",
+          "수학적 유도(확률·선형대수)",
+          "연구 결과를 서비스에 적용한 경험"
+        ],
+        "sources": [
+          {
+            "title": "[Tech] AI Engineer - AI Researcher",
+            "url": "https://www.wanted.co.kr/wd/385554",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
