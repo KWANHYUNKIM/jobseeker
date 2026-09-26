@@ -15788,6 +15788,97 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8022893",
+      "title": "Sr. Staff Engineer, Rocket Growth",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 벵갈루루 근무다. 소프트웨어 12년 이상·공급망 분야 대규모 분산 시스템 실적을 요구하는 시니어 스태프 백엔드로, 쿠팡의 2P 마켓플레이스인 로켓그로스(Rocket Growth) 공급망 팀에서 기술 북극성(technical north star)을 잡는 테크 리드다 — 판매자가 재고를 쿠팡에 보내면 풀필먼트·고객 반품·중고 재판매·벤더 반품을 쿠팡이 처리하게 하는 시스템이다. 시니어 디렉터에게 보고하고 제품팀과 함께 무엇을 만들지 정한다고 공고가 적는다. 자격요건 뒷부분 네 줄은 하이데라바드 `Senior Staff Backend Engineer`(7953042)의 요건 줄과 같다.",
+      "fit": {
+        "must_have": [
+          "Java·Python 설계·개발 12년 이상",
+          "공급망 분야 대규모 분산 시스템 설계·구축",
+          "대규모 아키텍처",
+          "AWS",
+          "컨테이너 기반 테스트 환경",
+          "Java/Spring"
+        ],
+        "can_learn": [
+          "공급망 도메인 깊은 이해(우대)",
+          "AWS 생태계 깊은 전문성(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "판매자 재고 흐름 — 입고·풀필먼트·반품·재판매 상태 모델",
+          "from": "task",
+          "quote": "Rocket Growth is the 2P marketplace at Coupang. The Supply Chain team within Rocket Growth has the mission to simplify and reduce cost of doing business for Sellers. Our technological solutions enable sellers to ship their inventory to Coupang and let Coupang handle the rest - fulfilment, customer returns, used reselling, vendor returns, etc.",
+          "priority": "core",
+          "why": "판매자가 재고를 쿠팡에 보내면 풀필먼트·고객 반품·중고 재판매·벤더 반품을 쿠팡이 처리하게 하는 것이 팀의 기술이고, 공급망 분야 대규모 분산 시스템 실적이 기본 자격, 공급망 도메인 이해가 우대사항이다.",
+          "gap_check": "판매자 재고 한 단위가 '입고 예정 → 입고 완료 → 판매 가능 → 출고 → 고객 반품 → 재판매 가능/벤더 반품'으로 움직일 때, 상태 전이를 어떤 이벤트로 기록하고 수량이 서로 다른 시스템에서 어긋나는 것을 어떻게 찾아내는가?",
+          "drill": "판매자 재고 상태 기계(상태·전이 이벤트·금지 전이)를 그리고, 이벤트 로그로부터 상태별 수량을 재계산해 재고 시스템 스냅숏과 대조하는 정합성 검사 스크립트를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "여러 시스템에 걸친 공급망 처리의 일관성",
+          "from": "task",
+          "quote": "Collaborate with other engineering teams to make the platform open and extensible to unlock innumerable opportunities for innovations.",
+          "priority": "high",
+          "why": "다른 엔지니어링 팀과 협업해 플랫폼을 열린·확장 가능한 구조로 만드는 것이 주요업무이고, 공급망은 여러 시스템이 한 흐름을 나눠 맡는다고 공고가 적는다.",
+          "gap_check": "고객 반품 접수 → 창고 검수 → 환불 → 재판매 등록이 서로 다른 서비스에 있을 때, 검수에서 '재판매 불가'로 판정되면 이미 진행된 단계는 어떻게 되돌리거나 보정하는가?",
+          "drill": "반품 흐름을 사가(saga)로 설계해 단계별 보상 동작을 적고, 새 처리 경로(예: 중고 재판매 채널 추가)를 기존 흐름을 고치지 않고 붙일 수 있는 확장 지점을 표시한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "microservices.io — Saga",
+              "url": "https://microservices.io/patterns/data/saga.html",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "컨테이너 기반 테스트 환경",
+          "from": "qualification",
+          "quote": "Experience of developing container-based testing environment.",
+          "priority": "high",
+          "why": "컨테이너 기반 테스트 환경 개발 경험과 Java/Spring 환경이 기본 자격이다.",
+          "gap_check": "창고·재고·주문 등 여러 의존 서비스가 엮인 흐름을 통합 테스트할 때, 무엇을 실제 컨테이너로 띄우고 무엇을 가짜(stub)로 두는가?",
+          "drill": "Spring Boot 반품 서비스에 Testcontainers 로 DB·메시지 큐를 붙이고, 외부 창고 API 는 스텁으로 둔 통합 테스트를 작성해 실패 경로(검수 불합격)까지 검증한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Testcontainers for Java",
+              "url": "https://java.testcontainers.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "판매자 재고 상태 기계와 정합성 검사",
+          "why": "공급망 도메인 이해가 우대사항이고, 입고·반품·재판매가 이 팀의 대상이다. 상태 모델과 수량 대조 도구는 도메인과 분산 일관성을 함께 보여 준다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "재고 상태 전이 설계",
+          "반품 흐름 보상",
+          "확장 가능한 플랫폼",
+          "통합 테스트 전략",
+          "제품팀과 무엇을 만들지 정하기"
+        ],
+        "sources": [
+          {
+            "title": "Sr. Staff Engineer, Rocket Growth",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8022893",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
