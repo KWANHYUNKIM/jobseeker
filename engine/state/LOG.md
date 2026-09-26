@@ -1524,3 +1524,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 YOUTRUST 완주 판정 — SALES·INSIGHT hold
 
 - 사이트맵 2023~2026 193편 제목 0건, speakerdeck youtrust 에도 없음. hold_reason 추가.
+
+## 2026-09-26 Nature 회사 프로파일
+
+- 대기 맨 위. 코퍼레이트 페이지 + 기술 글 둘(스마트록 도메인 모델링 · 순수 리팩터링 AI 자동 머지)로 도메인 둘 · 수익원 셋(스마트록 confirmed, 리모컨 inferred). category '기타'(IoT 없음).

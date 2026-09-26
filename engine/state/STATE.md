@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**YOUTRUST — hold(2026-09-26, 도메인 2 · 기능 2). SALES·INSIGHT 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(Nature — `engineering.nature.global`, 스마트록 도메인 모델링 `entry/smartlock-domain-models`, scratchpad `c84_*.txt` 중 하나). 대기 2/3(Nature·ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
+**Nature — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '자물쇠를 기존 디바이스 모델에 끼워 넣는다' 를 스마트록 글(`entry/smartlock-domain-models`, scratchpad `nt_lock.txt` — '最初のモデル' 이후 모델 변천·가상 디바이스). 그 뒤 리팩터링 자동 머지(`2026/07/prove-pure-refactoring-with-ai-and-auto-merge`, `nt_refactor.txt`). 완주 판정 때 에너지 관리(Remo E·EV Switch) 수익원은 도메인이 없다 — 사이트맵 2023~2026 전 제목으로 두 번. 대기 1/3(ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
 
 
 
