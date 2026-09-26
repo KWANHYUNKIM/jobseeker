@@ -6,7 +6,7 @@
     "헤렌",
     "HERREN"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "herrencorp.com",
   "one_liner": "미용실·네일샵 원장님용 예약·매출·고객관리 앱 '공비서'(월 80만 건 예약)와 SNS 자동화 '브랜다즈' 를 만드는 회사 — 외부 투자 없이 매년 50% 이상 성장(공고)",
@@ -603,6 +603,96 @@
             {
               "title": "CXCallDirectoryProvider — Apple",
               "url": "https://developer.apple.com/documentation/callkit/cxcalldirectoryprovider",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/383221",
+      "title": "[헤렌/공비서] iOS 리드 엔지니어 (7년차~)",
+      "site": "wanted",
+      "verdict": "경력 7-15년, 서울 성동구. 공비서 원장님 앱·고객 앱의 **iOS 아키텍처를 직접 리드하는 플레잉 코치** 자리다. iOS 개발자 공고(372618)와 업무·기술 스택이 대부분 같고, 더해진 것은 **네이티브 셀의 기술 방향·컨벤션·리뷰 문화와 기술 표준 정립**, **AI 에이전트·스킬·MCP 로 iOS·Android 간 아키텍처·컨벤션·검증된 패턴을 상호 전파**, 기획·정책 리뷰 단계부터 참여다. 필수는 iOS 7년 이상, **기술 의사결정·팀 방향 리딩(테크 리드·파트 리드·멘토링)**, B2C 앱 출시 후 **2년 이상 운영**, **뷰티·헬스케어·예약·O2O 등 도메인 운영 경험**(iOS 개발자 공고에서는 우대였던 항목이 필수로 올라왔다), 기획 참여, 그리고 iOS 개발자 공고와 같은 기술 요건(UIKit·SwiftUI, 아키텍처 둘 이상, RxSwift+Concurrency, Instruments, AI 워크플로우). 우대는 주니어 멘토링, **iOS·Android 컨벤션 통합**, MCP 서버, DAU 1만+, A/B, B2B 예약·결제, Tuist/SPM 멀티 모듈, UIKit·SwiftUI 점진 마이그레이션, CI/CD 등. 회사 공고가 '직군은 지금 가장 잘하는 영역일 뿐, 역할의 경계가 아닙니다' 를 이 공고에만 추가로 적는다. 전형: 서류 ＞ 컬쳐핏 설문조사 ＞ 대면 인터뷰 ＞ 최종 컬쳐핏(CEO·CTO) ＞ 최종 합격, 수습 3개월(급여 100%). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "iOS 7년 이상",
+          "테크 리드·파트 리드 경험",
+          "B2C 앱 2년 이상 운영",
+          "뷰티·예약·O2O 등 도메인 운영",
+          "iOS 개발자 공고와 같은 기술 요건"
+        ],
+        "can_learn": [
+          "iOS·Android 컨벤션 통합",
+          "MCP·AI 스킬로 패턴 전파",
+          "멀티 모듈"
+        ]
+      },
+      "study": [
+        {
+          "topic": "네이티브 셀의 기술 표준 — 컨벤션을 문서가 아닌 기준으로",
+          "from": "task",
+          "quote": "• 네이티브 셀의 기술 방향·컨벤션·코드/설계 리뷰 문화를 이끌고, 기술 표준을 팀 공통 기준으로 정립",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '기술 의사결정을 주도하고 팀의 기술 방향을 이끈 경험' 이 있다. 같은 회사 iOS 공고가 'UIKit 진영과 SwiftUI 진영의 컨벤션을 함께 정리' 한다고 적는다.",
+          "gap_check": "두 앱·두 UI 프레임워크가 섞인 코드베이스에서 이름 짓기·비동기 방식(Rx vs async)·의존성 주입 규칙을 정할 때 무엇을 '규칙(린트로 강제)' 으로, 무엇을 '가이드(리뷰에서 판단)' 로 두고, 기존 코드를 한꺼번에 고칠지 새 코드부터 적용할지 무엇으로 정하는가?",
+          "drill": "Swift API Design Guidelines 를 읽고 공비서 iOS 컨벤션 초안(이름·비동기·DI·에러 처리)을 쓴다. 그중 기계로 검사할 항목은 SwiftLint 규칙으로 옮기고, 나머지는 PR 체크리스트로 만든다. '새 코드부터 적용' 전환 계획을 한 단락으로 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "API Design Guidelines — Swift.org",
+              "url": "https://www.swift.org/documentation/api-design-guidelines/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 스킬·MCP 로 iOS·Android 패턴 전파",
+          "from": "task",
+          "quote": "• AI 에이전트·스킬·MCP를 활용해 iOS·Android 간 아키텍처·컨벤션·검증된 패턴을 상호 전파",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'iOS·Android 등 이종 모바일 플랫폼 간 지식 공유·컨벤션 통합', 'MCP 서버 구축·활용' 이 있다. 회사가 기획·구현·테스트를 사내 에이전트·스킬 파이프라인으로 묶었다고 적는다(회사 브리핑).",
+          "gap_check": "'딥링크 처리 패턴' 을 iOS 에서 검증한 뒤 Android 에도 같게 적용시키려면 무엇(패턴 설명·예시 코드·금지 사항)을 스킬 문서로 남기고, AI 가 이 스킬을 따라 만든 Android 코드를 사람이 무엇으로 검증하며, 스킬이 낡으면 누가 어떻게 갱신하는가?",
+          "drill": "Claude Code 스킬 문서를 읽고 '공비서 딥링크 처리' 스킬(규칙·iOS 예시·Android 예시·체크리스트)을 작성한다. 스킬을 켠 상태·끈 상태로 같은 요청을 해 결과 코드가 규칙을 지키는지 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Extend Claude with skills — Claude Code Docs",
+              "url": "https://code.claude.com/docs/en/skills",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "App Store 정책 변화 대응 — 운영 리드의 일",
+          "from": "task",
+          "quote": "• App Store 정책 변화 대응 (Deployment Target 강제 업데이트, 외부 정책 종료 대응 등)",
+          "priority": "high",
+          "why": "주요업무다. 필수가 'B2C 앱 App Store 출시 후 2년 이상 운영 경험' 이다.",
+          "gap_check": "Apple 이 최소 지원 OS·SDK 요구를 올리면 Deployment Target 을 올릴 때 얼마나 많은 사용자가 업데이트를 못 받는지를 무엇(Analytics 의 OS 버전 분포)으로 판단하고, 결제·개인정보 관련 심사 가이드 변경은 어떤 기능에 영향이 있는지 어떻게 점검하며, 강제 업데이트 안내는 Remote Config 로 어떻게 켜는가?",
+          "drill": "App Review Guidelines 에서 결제(3.1)와 개인정보(5.1) 절을 읽고 공비서 두 앱 기능 중 영향받을 항목 점검표를 만든다. Deployment Target 상향 의사결정 문서(영향 사용자 비율 가정·대체 안내·일정) 한 장을 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "App Review Guidelines — Apple",
+              "url": "https://developer.apple.com/app-store/review/guidelines/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "배포 자동화 — Fastlane 으로 두 앱 릴리즈",
+          "from": "preference",
+          "quote": "• CI/CD 파이프라인 구축 및 배포 자동화 경험 (Fastlane·Xcode Cloud·GitHub Actions)",
+          "priority": "nice",
+          "why": "우대사항이고 회사가 '앱 배포는 Fastlane·GitHub Actions·App Distribution 으로 자동화' 한다고 적는다(회사 브리핑).",
+          "gap_check": "원장님 앱·고객 앱 두 타깃을 한 저장소에서 릴리즈할 때 인증서·프로비저닝을 팀원마다 따로 관리하지 않고 무엇(match)으로 공유하며, 빌드 번호 증가·스크린샷·TestFlight 업로드를 lane 으로 묶으면 무엇이 사람 손에서 빠지는가?",
+          "drill": "fastlane 문서를 따라 샘플 앱에 build·test·beta lane 을 만들고, 두 타깃을 파라미터로 받게 한다. GitHub Actions 에서 태그를 달면 beta lane 이 도는 워크플로를 설계해 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "fastlane docs",
+              "url": "https://docs.fastlane.tools/",
               "kind": "docs"
             }
           ]
