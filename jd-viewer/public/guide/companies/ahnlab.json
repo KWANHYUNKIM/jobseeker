@@ -209,7 +209,8 @@
     "매출·임직원 수·제품별 매출 비중을 읽지 않았다(투자정보 사이트 ir.ahnlab.com 은 응답이 없었다)",
     "캐치 Web 개발(570940)·SW개발(Linux)(572252)·전문연구요원(570603)은 담당업무·자격 칸이 비어 있다 — 본문(full_jd)은 있는 것도 있다",
     "안랩클라우드메이트·안랩블록체인컴퍼니 공고는 자회사 이름으로 올라와 있어 여기서 다루지 않는다",
-    "salary: 공고에 금액이 없다 — 비워 둔다"
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "AI 서비스/플랫폼(564869)은 제목이 '[신입/경력]' 인데 경력 3년 이상을 요구하고, 'Python, Scale', 'Confluent 및 Gira' 표기가 있다(Scala·Confluence·Jira 오기로 보임). 어느 AI 제품 팀인지는 공고에 없다"
   ],
   "postings": [
     {
@@ -590,6 +591,122 @@
           {
             "title": "[신입/경력] SW개발(Cloud) 채용",
             "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570935?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/564869?ReturnUrl=RecruitInfo",
+      "title": "[신입/경력] AI 서비스/플랫폼 엔지니어 채용",
+      "site": "dev",
+      "verdict": "제목은 '[신입/경력]' 인데 경력 표기와 자격요건은 '3년 이상의 웹 서비스 또는 플랫폼 개발 및 운영 경험' 이다(학사 이상, 컴퓨터·소프트웨어공학 등). 담당업무는 한 줄 — 'AI 플랫폼 및 서비스 개발'. 홈페이지가 내세우는 AI 네이티브 플랫폼 AhnLab AI PLUS·AI Portal 과 이어지는 자리로 읽히지만 공고는 어느 제품인지 적지 않는다(추론). 자격은 Python 등 언어 능숙, REST API 설계·개발, Cassandra 등 DB 설계·관리, Git 협업. 공고 표기에 'Python, Scale 등', 'Confluent 및 Gira 기반' 이 있다 — 각각 Scala, Confluence·Jira 의 오기로 보이지만 공고 표기 그대로 둔다. 대규모 트래픽·성능 최적화, 마이크로서비스, CI/CD 는 우대다. 전형은 서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사, 접수 '12월 31일(목) 23:59 까지' 안랩 홈페이지.",
+      "fit": {
+        "must_have": [
+          "웹 서비스·플랫폼 개발·운영 3년 이상, 학사 이상",
+          "Python 등 언어 능숙",
+          "REST API 설계·개발",
+          "Cassandra 등 DB 설계·관리",
+          "Git 협업"
+        ],
+        "can_learn": [
+          "대규모 트래픽·성능 최적화",
+          "마이크로서비스",
+          "CI/CD"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Cassandra 데이터 모델링",
+          "from": "qualification",
+          "quote": "Cassandra 등 데이터베이스 설계 및 관리 경험 보유자",
+          "priority": "core",
+          "why": "자격요건에 DB 이름으로 적혀 있다. 우대에 대규모 트래픽 처리가 있다.",
+          "gap_check": "'고객별 최근 보안 이벤트 100건' 을 자주 읽는다면 파티션 키와 클러스터링 키를 어떻게 잡고, 한 고객의 이벤트가 너무 많아 파티션이 커지면 어떻게 나누는가?",
+          "drill": "Cassandra 데이터 모델링 문서를 따라 '쿼리부터 설계' 로 이벤트 테이블 두 개(고객별 최신순·유형별)를 만들고, 수백만 건을 넣어 파티션 크기와 읽기 지연을 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apache Cassandra — Data modeling",
+              "url": "https://cassandra.apache.org/doc/latest/cassandra/developing/data-modeling/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Cassandra documentation",
+              "url": "https://cassandra.apache.org/doc/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "REST API 설계",
+          "from": "qualification",
+          "quote": "REST API 설계 및 개발 경험 보유자",
+          "priority": "core",
+          "why": "자격요건이고 담당업무가 AI 플랫폼 및 서비스 개발이다.",
+          "gap_check": "오래 걸리는 AI 분석 요청을 REST 로 받을 때 동기 응답 대신 무엇(202 Accepted + 작업 리소스 조회)을 쓰고, 버전·페이지네이션·오류 형식은 어떻게 정하는가?",
+          "drill": "Python(FastAPI 등)으로 '분석 작업 생성 → 상태 조회 → 결과 조회' API 를 만들고 OpenAPI 명세를 뽑는다. 오류 응답 형식과 버전 경로를 정해 문서화한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OpenAPI Specification",
+              "url": "https://swagger.io/specification/",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 9110 — HTTP Semantics",
+              "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 트래픽과 마이크로서비스",
+          "from": "preference",
+          "quote": "대규모 트래픽 처리 경험 및 성능 최적화 경험",
+          "priority": "high",
+          "why": "우대사항이고 다른 우대 줄이 마이크로서비스 아키텍처와 CI/CD 다.",
+          "gap_check": "AI 추론처럼 느리고 비싼 호출이 섞인 서비스에서 트래픽이 몰리면 무엇(큐·백프레셔·캐시·타임아웃)으로 버티고, 서비스를 쪼갤 경계는 무엇으로 정하는가?",
+          "drill": "앞 드릴 API 뒤에 느린 가짜 추론 워커를 큐로 붙이고 부하 테스트로 처리량·지연을 잰 뒤, 워커 수·타임아웃·캐시를 바꿔 개선 전후를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "microservices.io — Microservice architecture",
+              "url": "https://microservices.io/patterns/microservices.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "비동기 AI 분석 API + Cassandra 이벤트 저장 + 부하 테스트 결과 저장소",
+          "why": "자격요건(REST·Cassandra)과 우대(대규모 트래픽)를 한 번에 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "운영한 서비스의 트래픽·장애 경험을 수치로 정리",
+          "why": "자격요건이 3년 이상 웹 서비스·플랫폼 '개발 및 운영' 이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사(공고 기준, 직무에 따라 전형이 추가·변동될 수 있다). 접수는 12월 31일 23:59 까지 안랩 홈페이지.",
+        "expect": [
+          "운영한 서비스와 트래픽 규모",
+          "Cassandra 모델링",
+          "API 설계",
+          "AI 서비스 이해"
+        ],
+        "sources": [
+          {
+            "title": "[신입/경력] AI 서비스/플랫폼 엔지니어 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/564869?ReturnUrl=RecruitInfo",
             "publisher": "캐치"
           }
         ]
