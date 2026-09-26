@@ -475,6 +475,100 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/294187",
+      "title": "[제품 본부] AI Engineer(전문연구요원 가능)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 강남구, **전문연구요원 가능**. 제품 본부 AI Engineer 로, 같은 본부 시니어 AI Engineer(294189, 석사+5년)보다 문턱이 낮고 **백엔드 경력**을 기본으로 묻는다. 업무는 **LLM·멀티모달 모델로 생성형 AI 와 추천 서비스** 개발, 최신 연구·상용 foundation model 을 실제 기능으로 제품화, 모델 선택·튜닝부터 서빙·운영·모니터링까지 E2E, **마이크로서비스 아키텍처와 파이프라인**, **데이터 레이블 관리와 모델 평가 시스템**. 필수는 **Python 백엔드 3년 이상**, PyTorch·TensorFlow 로 공개 모델 활용, OpenAI·Anthropic·Gemini 등 LLM 서비스와 pre-trained 모델 프로젝트, 모델·프레임워크 선정부터 E2E 를 해 보고 싶은 의지. 우대는 ML 프레임워크 실무, ML 서비스 운영·배포, 디지털마케팅·온라인광고 도메인, 프롬프트 최적화·RAG·LangChain·CoT, Docker·K8s. 회사 브리핑대로 제품은 LEVER Xpert(소재 분석·생성 포함)이다. 전형: 서류 ＞ 리크루터 콜 ＞ **과제 테스트** ＞ 1차 인터뷰(**PT 발표**) ＞ 2차 인터뷰 ＞ 처우협의. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python 백엔드 3년 이상",
+          "PyTorch/TF 로 공개 모델 활용",
+          "상용 LLM·pre-trained 모델 프로젝트"
+        ],
+        "can_learn": [
+          "모델 서빙 마이크로서비스",
+          "멀티모달 소재 분석",
+          "레이블·평가 시스템",
+          "광고 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "모델을 마이크로서비스로 서빙하기",
+          "from": "task",
+          "quote": "•Microservice 기반의 서비스 아키텍처와 파이프라인을 설계하고 구현합니다.",
+          "priority": "core",
+          "why": "주요업무이고 필수가 Python 백엔드 3년 이상이다. 같은 회사 기술 스택이 FastAPI 와 마이크로서비스 서빙을 적는다.",
+          "gap_check": "PyTorch 모델을 FastAPI 로 서빙할 때 모델을 요청마다 불러오면 무엇이 느려지고(애플리케이션 시작 시 한 번 로드), CPU 무거운 추론이 비동기 이벤트 루프를 막지 않게 하려면 무엇(스레드 풀·별도 워커·배치)을 쓰며, 모델 버전을 바꿀 때 무중단으로 넘기려면 무엇이 필요한가?",
+          "drill": "작은 이미지 분류 모델(torchvision 사전학습)을 FastAPI lifespan 에서 한 번 로드해 /predict 로 서빙하고, 요청마다 로드하는 버전과 지연을 비교한다. async 핸들러 안에서 그대로 추론한 버전과 run_in_threadpool 버전의 동시 요청 처리량을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Lifespan Events — FastAPI",
+              "url": "https://fastapi.tiangolo.com/advanced/events/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티모달 LLM 으로 광고 소재 분석",
+          "from": "task",
+          "quote": "• LLM 및 Multi-modal model을 활용한 생성형 AI 및 추천 서비스를 개발합니다.",
+          "priority": "core",
+          "why": "주요업무다. 회사 브리핑대로 LEVER Xpert 소재 센터가 이미지·영상 소재를 수집·분석한다.",
+          "gap_check": "광고 이미지에서 '제품컷/모델컷, 할인 문구 유무, 주요 색' 같은 속성을 멀티모달 LLM 으로 뽑을 때 자유 서술 대신 무엇(정해진 스키마의 구조화 출력)으로 받아야 성과 데이터와 조인할 수 있고, 모델이 틀리게 뽑은 속성은 무엇(사람이 검수한 소규모 정답 세트)으로 측정하는가?",
+          "drill": "무료 광고 이미지 20장으로 Claude Vision(또는 다른 멀티모달 API)에 속성 JSON 스키마를 주고 추출한 뒤, 직접 단 정답과 비교해 속성별 정확도를 계산한다. 틀린 사례의 공통점을 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Vision — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/build-with-claude/vision",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "레이블 관리와 모델 평가 시스템",
+          "from": "task",
+          "quote": "•데이터 레이블 관리 및 모델 평가 시스템을 구축합니다.",
+          "priority": "high",
+          "why": "주요업무다. 같은 본부 PO 공고도 'AI 서비스 성능 평가를 위한 데이터셋을 정의' 한다고 적는다.",
+          "gap_check": "여러 사람이 소재에 레이블을 달 때 가이드가 모호하면 무엇이 생기고(작업자 간 불일치), 이를 무엇(작업자 간 일치도·검수 단계)으로 재며, 레이블 버전과 모델 평가 결과를 함께 기록하지 않으면 '모델이 좋아졌다' 는 말이 왜 믿기 어려워지는가?",
+          "drill": "Label Studio 를 로컬로 띄워 광고 이미지 30장에 3개 클래스 레이블링 프로젝트를 만들고 두 번(서로 다른 가이드로) 레이블해 일치도를 계산한다. 레이블 세트 버전별로 위 멀티모달 추출의 정확도를 다시 재 표로 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Label Studio Documentation",
+              "url": "https://labelstud.io/guide/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "임베딩으로 소재 추천 — 비슷한 고성과 소재 찾기",
+          "from": "task",
+          "quote": "• LLM 및 Multi-modal model을 활용한 생성형 AI 및 추천 서비스를 개발합니다.",
+          "priority": "high",
+          "why": "같은 주요업무 줄이 '생성형 AI 및 추천 서비스' 를 적는다. lever.me 가 소재 라이브러리와 클러스터링으로 소재 아이디어를 제시한다고 적는다(회사 브리핑).",
+          "gap_check": "소재 문구·이미지를 임베딩으로 바꿔 '지금 소재와 비슷하면서 성과가 좋았던 소재' 를 찾을 때 유사도만으로 고르면 무엇이 문제이고(성과와 무관한 닮음), 성과 가중치와 다양성을 어떻게 섞으며, 소재가 수십만 개로 늘면 무엇(근사 최근접 탐색 인덱스)이 필요한가?",
+          "drill": "광고 문구 200개(가짜 CTR 포함)를 sentence-transformers 로 임베딩해 FAISS 인덱스에 넣고, 질의 문구에 대해 '유사도 순' 과 '유사도×성과 가중' 추천 상위 5개를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "SentenceTransformers Documentation",
+              "url": "https://sbert.net/",
+              "kind": "docs"
+            },
+            {
+              "title": "faiss — GitHub",
+              "url": "https://github.com/facebookresearch/faiss",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
