@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**코네히토 — hold(2026-09-26, 도메인 2 · 기능 2). 관공서 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 후보 조사(큐 0/3 — 3순위). 83번째에서 미판정: coincheck·feedforce(글 있음), kurashiru·KINTO·sakura·tabelog·GMO·visasq·lunch·nature(Remo)·fusic·JMDC·UUUM·macloud·smartcamp·medirom(9월 비었음). 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토(hold)·LayerX 는 in_progress.**
+**84번째 후보 조사(2026-09-26) — 대기 3/3(YOUTRUST·Nature·ABEJA). 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(YOUTRUST — `tech.youtrust.co.jp`, Redis 이행 `entry/redis_performance_optimization` 부터, scratchpad `c84_*.txt` 중 하나). 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증, Findy 스킬 편차치 ↔ YOUTRUST 추천. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토(hold)·LayerX 는 in_progress.**
 
 
 

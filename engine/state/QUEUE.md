@@ -37,8 +37,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **YOUTRUST** | JP · 커리어 SNS | `tech.youtrust.co.jp`(하테나, jina 로 읽힘, 최신 2026-09, 7~9월 14편). `entry/redis_performance_optimization`(2026-07) 은 가장 무거운 **'연결(つながり)' 계산을 MySQL 에서 Redis 로** 옮겨 응답 시간 **77% 감소** — **Redis 안과 그래프 DB 안을 비교 평가**해 학습·도입 비용이 낮은 Redis, MySQL 과의 정합은 비동기 Job 순서가 보장되지 않아 **차분 대신 전건 동기**. 협조 필터링 **콜드 스타트 해소 + 크로스 도메인화**(`2026/09/14`)·BigQuery 데이터를 프로덕트로 되돌리기(`2026/09/09`)·앱 멈춤 없이 RDS 비밀번호 월간 로테이션(`2026/08/28`)·Rails 멀티스레드 도입(`2026/08/21`). **커리어 SNS 축**(Findy 매칭과 비교 재료). |
+| **Nature(Nature Remo)** | JP · 스마트홈 IoT | `engineering.nature.global`(하테나, jina 로 읽힘, 최신 2026-07). `entry/smartlock-domain-models`(2026-06) 은 **'스마트록이란 무엇인가' 를 도메인 모델링** — 용어를 정의·통일해 팀 안팎 소통, 한때 채택하려던 **'가상 디바이스' 라는 존재하지 않는 개념을 버린** 과정까지 적는다. '순수 리팩터링' 을 AI 에 증명시켜 자동 머지(`2026/07/prove-pure-refactoring-with-ai-and-auto-merge`). **IoT·하드웨어 연동 축**은 처음. 글 빈도가 월 1~2편으로 낮다 — 도메인 둘이 안 나올 수 있다. |
+| **ABEJA** | JP · AI 솔루션 · Physical AI | `tech-blog.abeja.asia`(하테나, jina 로 읽힘, 최신 2026-09, 7~9월 13편). `entry/medical-llm-jlac11-mapping-202608` 은 NEDO 의료 LLM 프로젝트에서 **원내 검사 마스터를 JLAC11 코드로 매핑** — 채택한 처리 흐름과 '실제 앱에서는 검사 명칭 선택을 먼저' 인 이유 둘. 센서×LLM 이상 검지·Cloud Composer Redis OOM 대응 기록. **실험·체험 글이 절반**이라 자사 제품 결정 글을 골라야 한다 — 수익원(컨설팅·플랫폼) 연결이 약할 수 있다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 여든네 번째 후보 조사 — 목표 3곳 중 3곳.**
+  - **YOUTRUST** — **커리어 SNS 축.** Redis vs 그래프 DB 비교·전건 동기 선택이 분명하다. 가장 튼튼한 후보.
+  - **Nature** — **IoT 축(처음).** 도메인 모델링에서 버린 개념까지 적는다. 글이 드물다.
+  - **ABEJA** — AI 솔루션. 실험 글이 많아 약하다 — 3곳을 채우려 넣은 것을 숨기지 않는다.
+  - **통과 못 한 곳.** **Feedforce** — 도구 도입·행사 글(mise·CodeRabbit·OCaml). **VISASQ** — AI 도구 이용 글. **Monex** — iDeCo 글은 직무 소개, 패스키 E2E 는 결정·대가가 얇다. **Coincheck·kurashiru·KINTO·sakura·lunch·fusic·UUUM** — 2026-06~09 사이트맵이 비었다(83번째에 coincheck 는 글이 있었다 — 경로 변경 의심). cybozu(31편)·findy 는 이미 판 회사.
 
 - **2026-09-26 여든세 번째 후보 조사 — 목표 3곳 중 3곳. 하테나 30곳을 더 두드렸다.**
   - **엔니고모(BUYMA)** — **개인 바이어 C2C 커머스 축(처음).** 수천만 장 이미지 검색의 범위·비용 균형, 매입 보증의 3 페이즈 분할.
