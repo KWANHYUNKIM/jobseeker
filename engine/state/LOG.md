@@ -1380,3 +1380,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Findy Team+ 코드 품질 분석
 
 - 코드 품질 글 전문으로 `code-quality-four-metrics-score`(결정 7 — 지표 넷 조합·ISO 25010·파일 단위·개선 순서·목안은 신호·바꿀 파일부터·AI 코드 비교(inferred)). 조합식은 비공개.
+
+## 2026-09-26 Findy 문의 조사 에이전트
+
+- Managed Agents 글 전문으로 `inquiry-agent-session-per-issue`(결정 8 — Managed Agents vs 자체 기반·Actions 는 판정과 POST 만·Issue 번호만 넘김·라벨 기동·시스템마다 Agent·정의 IaC·전송 전 검사·버전 번호 낙관적 갱신). vault 누락의 '에러 없는 실패' 를 failure 그림에.
