@@ -495,6 +495,127 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569840?ReturnUrl=RecruitInfo",
+      "title": "AI정보화파트 신입 채용",
+      "site": "dev",
+      "verdict": "신입, 대졸(4년제) 이상·컴퓨터/정보통신 유관 전공, 근무지 충북 청주시 청원구(청주 1캠퍼스). **반도체 후공정 공장의 제조 IT** 자리다. 담당업무는 **웹 기반 MES 개발**, 스마트팩토리 웹 플랫폼 구축·운영, 파이썬 AI/ML·데이터 분석, **전사 Datalake·데이터 웨어하우징 설계**, **AWS 데이터레이크 구축과 Factory 마이그레이션**, Tableau BI, **Docker·AWS ECS CI/CD**. 크롤된 담당업무 칸이 비어 있어 이 문장들은 공고 본문에서 읽었다. 지원 자격이 신입치고 넓다 — Vue.js·next.js, GitHub CI/CD, 제조·스마트팩토리 도메인, C#·C++·VB·Java, **Python·PySpark**, **Oracle·MS SQL·PL/SQL**, AWS·Docker, **MES 개발·운영 경험**. 우대는 Snowflake·Informatica, AI/ML, 애자일, DevOps, AWS 마이그레이션, Tableau·QuickSight, MS Project·TFS·Mantis. 목록 전부를 갖추라는 뜻이라기보다 팀이 쓰는 스택 목록으로 읽힌다 — 면접에서 신입에게 실제로 기대하는 범위를 묻는다. 급여는 '회사 내규에 따름'.",
+      "fit": {
+        "must_have": [
+          "웹 프론트(Vue·Next)",
+          "SQL(Oracle·MS SQL)",
+          "Python·PySpark",
+          "컴퓨터/정보통신 전공"
+        ],
+        "can_learn": [
+          "MES",
+          "AWS 데이터레이크",
+          "Docker·ECS 배포"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MES — 공장에서 무엇을 기록하고 무엇을 막는가",
+          "from": "qualification",
+          "quote": "MES 시스템 개발 또는 운영 경험",
+          "priority": "core",
+          "why": "지원 자격이고 담당업무 첫 줄이 웹 기반 MES 개발이다. 같은 자격에 제조공정·스마트팩토리 도메인 지식이 있다.",
+          "gap_check": "MES 가 추적하는 단위(로트·웨이퍼·설비·공정 단계)는 무엇이고, 작업자가 다음 공정으로 넘길 때 MES 가 막아야 하는 경우(순서 위반·설비 이상·레시피 불일치)는 무엇인가? ERP 와 MES 는 어디서 경계가 갈리는가?",
+          "drill": "Manufacturing execution system 문서를 읽고, 로트가 공정 A→B→C 를 지나가는 이력 테이블과 '트랙인/트랙아웃' API 를 만든다. 순서를 건너뛰거나 설비가 정지 상태일 때 트랙인을 거부하는 규칙을 넣고, 로트 한 개의 전체 이력을 조회하는 화면을 붙인다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Manufacturing execution system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Manufacturing_execution_system",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "PySpark 로 공장 데이터 처리",
+          "from": "qualification",
+          "quote": "Python, PySpark 활용한 데이터 처리 경험",
+          "priority": "core",
+          "why": "지원 자격이고 담당업무에 전사 Datalake 구축과 데이터 웨어하우징, 파이썬 기반 데이터 분석이 있다.",
+          "gap_check": "PySpark 에서 변환(transformation)과 액션(action)은 무엇이 다르고, 셔플이 일어나는 연산은 왜 비싼가? 설비 로그처럼 날짜별로 쌓이는 데이터를 파티션으로 나눠 저장하면 조회가 어떻게 빨라지는가?",
+          "drill": "PySpark Getting Started 와 Spark SQL 가이드를 따라 가상 설비 로그(설비·시각·센서값 수백만 행)를 만들어 설비·시간 단위 평균·이상치 개수를 집계한다. 날짜 파티션 Parquet 으로 저장한 뒤 하루치만 읽을 때와 전체를 읽을 때의 시간을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Getting Started — PySpark documentation",
+              "url": "https://spark.apache.org/docs/latest/api/python/getting_started/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spark SQL and DataFrames — Spark Documentation",
+              "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Oracle·MS SQL 과 PL/SQL",
+          "from": "qualification",
+          "quote": "SQL(Oracle, MS SQL, PL/SQL) 및 데이터베이스 설계/관리 역량",
+          "priority": "high",
+          "why": "지원 자격이고 MES·데이터 웨어하우징이 둘 다 이 데이터베이스 위에 있다.",
+          "gap_check": "MES 처럼 쓰기가 잦은 트랜잭션 DB 와 분석용 웨어하우스는 테이블 설계(정규화 vs 스타 스키마)가 왜 다른가? PL/SQL 프로시저로 로직을 DB 에 두면 무엇이 편하고 무엇이 어려워지는가(배포·테스트)?",
+          "drill": "PL/SQL·Data warehouse 문서를 읽고, 앞 과제의 로트 이력 테이블(정규화)에서 일자·설비·제품별 수율 팩트 테이블(스타 스키마)을 채우는 프로시저를 쓴다. 같은 집계를 원본 테이블에 직접 날렸을 때와 실행 계획을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "PL/SQL — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/PL/SQL",
+              "kind": "docs"
+            },
+            {
+              "title": "Data warehouse — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Data_warehouse",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 데이터레이크 계층 설계",
+          "from": "preference",
+          "quote": "AWS 아키텍처 설계 및 마이그레이션 경험",
+          "priority": "high",
+          "why": "우대사항이고 담당업무에 AWS 클라우드 데이터레이크 구축과 Factory 마이그레이션이 있다. 우대에 Snowflake·Informatica 가 함께 있다.",
+          "gap_check": "원본(raw)·정제(stage)·분석(analytics) 계층을 나누는 이유는 무엇이고, 원본을 지우지 않고 남겨야 하는 까닭은? 공장 온프레미스 DB 에서 클라우드로 옮길 때 한 번에 옮기는 것과 증분으로 옮기는 것은 무엇이 다른가?",
+          "drill": "Data lake 문서와 AWS Recommended data layers 를 읽고, 앞 과제의 설비 로그를 raw/stage/analytics 세 경로(로컬 폴더로 흉내)에 나눠 쌓는 파이프라인을 만든다. 각 계층의 형식·보존 기간·누가 읽는지 표를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Data lake — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Data_lake",
+              "kind": "docs"
+            },
+            {
+              "title": "Recommended data layers — AWS Prescriptive Guidance",
+              "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/defining-bucket-names-data-lakes/data-layer-definitions.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Vue 로 스마트팩토리 웹 화면",
+          "from": "qualification",
+          "quote": "Vue.js, next.js 등 웹 프론트엔드 프레임워크 활용 경험",
+          "priority": "high",
+          "why": "지원 자격이고 담당업무에 웹 기술 MES 와 스마트팩토리 웹 플랫폼 구축이 있다.",
+          "gap_check": "설비 상태를 몇 초마다 갱신하는 화면에서 폴링과 서버 푸시(WebSocket)는 부하·지연에서 무엇이 다른가? 컴포넌트가 수백 개 설비 카드를 그릴 때 반응성(reactivity)이 성능에 어떤 영향을 주는가?",
+          "drill": "Vue 공식 Introduction 을 따라 앞 과제의 로트 이력 API 를 읽는 화면을 만든다 — 로트 검색, 공정 진행 타임라인, 설비 상태 카드(5초 갱신). 설비 카드를 500개로 늘려 갱신 시 화면이 버벅이는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Introduction — Vue.js",
+              "url": "https://vuejs.org/guide/introduction.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
