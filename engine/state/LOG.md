@@ -2199,3 +2199,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 ギークプラス Java 배치 Lambda 이사
 
 - `9238a967bf0509` 로 기능 `java-batch-ecs-to-lambda`, 결정 7. jinjer 의 Python SnapStart 와 대조되는 재료(Java 는 무료 · 함수 집약)를 STATE 비교 문서 재료에 올렸다.
+
+## 2026-09-27 ギークプラス 흐름 트리와 테넌트 경계
+
+- `a9be3b8c162e45` + `e9ea7d8e183eb5` 로 기능 `single-flow-and-tenant-boundary`, 결정 8. 테넌트 글은 비교 · 권고라 '지금 운용 중인 안은 밝히지 않는다'를 결정 tradeoff 에 적었다.
