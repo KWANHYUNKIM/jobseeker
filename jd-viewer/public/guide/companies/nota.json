@@ -563,6 +563,137 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/368136",
+      "title": "[Solution] AI Engineer",
+      "site": "wanted",
+      "verdict": "경력 2년 이상(AI·CV·ML 실무 또는 연구). 노타의 솔루션 사업(영상 관제·산업 안전·ITS 등, 회사 브리핑) 쪽 자리다 — VLM 으로 산업 현장 비전 문제를 풀고, 멀티모달 학습 데이터셋을 만들고, 실험을 설계·평가하며, Detection·Segmentation·Anomaly Detection 모델을 개발·개선하고, 비즈니스 요구에 맞는 모델을 고른다. **포트폴리오 제출이 필수**다. 필수는 Python·PyTorch, VLM 또는 CV 모델 개발·검증, 데이터 기반 문제 정의·실험 설계·결과 분석, 협업·기술 소통, 해외 여행 결격 사유 없음. VLM 파인튜닝·프롬프트 설계, 평가 파이프라인·벤치마크 설계, 상용 서비스 경험은 우대다. 전형: 서류 검토 → 1차 인터뷰 → 2차 인터뷰 & 현장/사전 과제 → 3차 인터뷰 → 처우 협의 → 최종 선발('절차 간에 추가적인 과제가 있을 수 있습니다'). 주요업무 칸 끝에 '포트폴리오 제출 필수!' 가 적혀 있다.",
+      "fit": {
+        "must_have": [
+          "AI·CV·ML 실무/연구 2년 이상",
+          "Python·PyTorch",
+          "VLM 또는 CV 모델 개발·검증",
+          "실험 설계·결과 분석",
+          "포트폴리오(필수)"
+        ],
+        "can_learn": [
+          "VLM 파인튜닝·프롬프트",
+          "평가 파이프라인·벤치마크",
+          "상용 서비스"
+        ]
+      },
+      "study": [
+        {
+          "topic": "VLM 으로 산업 현장 영상 이해",
+          "from": "task",
+          "quote": "• VLM(Vision-Language Model)을 활용한 산업 현장 비전 문제 해결 및 AI 솔루션 개발",
+          "priority": "core",
+          "why": "첫 주요업무이고 우대에 'VLM 모델 Fine-tuning, 프롬프트 설계 및 성능 최적화 경험' 이 있다. 회사가 산업 안전·영상 관제 솔루션을 판다(회사 브리핑).",
+          "gap_check": "'작업자가 안전모를 쓰지 않았는가' 같은 질문을 VLM 에 물을 때 프롬프트만으로 안 되는 경우는 언제이고, 파인튜닝용 데이터는 이미지-질문-답 형식으로 어떻게 만들며, 오탐(안전모처럼 보이는 모자)은 어떻게 줄이는가?",
+          "drill": "공개 안전모 데이터셋 이미지 수백 장으로 질문-답 쌍을 만들어 작은 공개 VLM 을 PEFT(LoRA)로 파인튜닝하고, 프롬프트만 쓴 경우와 정밀도·재현율을 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Visual Instruction Tuning",
+              "url": "https://arxiv.org/abs/2304.08485",
+              "kind": "paper"
+            },
+            {
+              "title": "InternVL: Scaling up Vision Foundation Models and Aligning for Generic Visual-Linguistic Tasks",
+              "url": "https://arxiv.org/abs/2312.14238",
+              "kind": "paper"
+            },
+            {
+              "title": "Hugging Face PEFT",
+              "url": "https://huggingface.co/docs/peft/index",
+              "kind": "docs"
+            },
+            {
+              "title": "Hugging Face TRL — SFT Trainer",
+              "url": "https://huggingface.co/docs/trl/sft_trainer",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Detection·Segmentation·Anomaly Detection",
+          "from": "task",
+          "quote": "• Detection, Segmentation, Anomaly Detection 등 Computer Vision 모델 개발 및 성능 개선",
+          "priority": "core",
+          "why": "주요업무이고 필수에 'VLM 또는 Computer Vision 모델 개발 및 검증 경험' 이 있다.",
+          "gap_check": "결함 이미지가 거의 없는 공장 검사에서 지도 학습 검출 대신 이상 탐지(정상만 학습)를 고르는 이유는 무엇이고, 검출 모델 평가에서 mAP 외에 현장에서는 무엇(오탐/시간·놓친 건수)을 보는가?",
+          "drill": "Ultralytics 로 공개 데이터 검출 모델을 학습해 mAP 를 재고, anomalib 으로 MVTec AD 한 범주에 이상 탐지 모델을 돌려 AUROC 와 '정상 100장당 오탐 수' 를 함께 보고한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Ultralytics docs",
+              "url": "https://docs.ultralytics.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Anomalib",
+              "url": "https://github.com/open-edge-platform/anomalib",
+              "kind": "repo"
+            },
+            {
+              "title": "MVTec AD dataset",
+              "url": "https://www.mvtec.com/company/research/datasets/mvtec-ad",
+              "kind": "dataset"
+            },
+            {
+              "title": "COCO — Detection evaluation",
+              "url": "https://cocodataset.org/#detection-eval",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모델 평가 파이프라인",
+          "from": "task",
+          "quote": "• 모델 성능 검증을 위한 실험 설계, 평가 및 결과 분석",
+          "priority": "high",
+          "why": "주요업무이고 우대에 'AI 모델 평가(Evaluation) 파이프라인 구축 또는 벤치마크 설계 경험' 이 있다.",
+          "gap_check": "고객 현장 영상으로 '이 모델이 쓸 만한가' 를 판정하려면 평가셋을 어떻게 뽑고(조명·각도·시간대), 모델을 바꿀 때마다 같은 조건으로 비교하려면 무엇을 고정하는가?",
+          "drill": "앞 두 드릴 모델을 같은 평가셋·같은 지표로 돌리는 평가 스크립트를 만들고, 조건별(낮/밤 등) 성능 표와 실패 사례 모음을 자동 생성하게 한다. VLMEvalKit 구조를 참고한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "VLMEvalKit",
+              "url": "https://github.com/open-compass/VLMEvalKit",
+              "kind": "repo"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "산업 안전 VLM 파인튜닝 + 이상 탐지 + 조건별 평가 리포트 포트폴리오",
+          "why": "포트폴리오가 필수이고 주요업무 다섯 줄 중 넷(VLM·데이터셋·평가·CV 모델)을 보여 준다. 전형에 현장/사전 과제가 있다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "현장 문제를 정의하고 모델을 고른 과정 정리",
+          "why": "주요업무에 '비즈니스 요구사항에 적합한 모델 선정·적용' 이, 필수에 데이터 기반 문제 정의가 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 검토 → 1차 인터뷰 → 2차 인터뷰 & 현장/사전 과제 → 3차 인터뷰 → 처우 협의 → 최종 선발('절차 간에 추가적인 과제가 있을 수 있습니다'). 주요업무 칸 끝에 '포트폴리오 제출 필수!' 가 적혀 있다.",
+        "expect": [
+          "포트폴리오 설명",
+          "VLM·CV 모델 선택 근거",
+          "평가 설계",
+          "현장/사전 과제"
+        ],
+        "sources": [
+          {
+            "title": "[Solution] AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/368136",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }

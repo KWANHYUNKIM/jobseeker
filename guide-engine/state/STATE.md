@@ -22,8 +22,8 @@ jobkorea 에비드넷 데이터 엔지니어(49968005)는 본문 세 칸이 비�
 **핀다(`finda`) — `done`, 공고 7건(Data Engineer 355267 · Team Lead 382480 · DevOps 387464 · 점핏 안드로이드 55000479 · 사람인·점핏 DevOps 55063354 = 원티드 387464 중복 · 점핏 Data Engineer 54933925(원티드와 본문 다름, 별도 작성)).** 출처: finda.co.kr 첫 화면(하단 대출모집법인 고지 포함) + 원티드 공고.
 **코딧(`codit`) — `done`, 공고 7건(머신러닝 94542 · 백엔드 199386 · 시니어 백엔드 46260 · 웹 크롤링 94220 · 프론트엔드 216514 · 프론트엔드 리더 93806 · 앱 135520).** 원티드 7건 전부. 출처: thecodit.com 메타 설명 + 원티드 공고 머리말. codit.co.kr 은 다른 기관이다(혼동 주의).
 **취팡(`chwipang`) — `done`, 공고 7건(AI 381953 · 백엔드 382000 · 프론트엔드 381999 · 풀스택 382001 · 데이터 엔지니어 382004 · 데이터 분석가 382003 · 사람인 UI/UX·프론트엔드 54465335).** salary 는 사람인 공고의 '신입·저연차 3,600만 원 부터' 하나. 출처: 원티드 공고 머리말뿐(홈페이지 주소 못 찾음).
-**노타(`nota`) — `in_progress`, 공고 3건(NetsPresso AI Engineer 368178 · Senior 368177 · AI Compiler 338178).** 출처: nota.ai 첫 화면 + 원티드 공고 머리말.
-⚠️ 다음 회차: 노타 공고를 한 사이클 한 건씩 — Solution AI Engineer(368136) · Solution Senior(354744) · GmbH ML Researcher(384789) · 사람인 Edge AI 인턴.
+**노타(`nota`) — `in_progress`, 공고 4건(NetsPresso AI Engineer 368178 · Senior 368177 · AI Compiler 338178 · Solution AI Engineer 368136).** 출처: nota.ai 첫 화면 + 원티드 공고 머리말.
+⚠️ 다음 회차: 노타 공고를 한 사이클 한 건씩 — Solution Senior(354744) · GmbH ML Researcher(384789) · 사람인 Edge AI 인턴.
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 ⚠️ **공고 본문은 `jd-viewer/public/all_jobs_enriched.json` 에서 읽는다 — `jd-viewer/dist/` 는 빌드 사본이라 낡는다.** 2026-09-26 피에프씨 Backend(388360)를 dist 에서 읽고 썼다가 public·검증기 데이터에 없어(내려간 공고) 되돌렸다. 대상은 `--gaps` 목록에 있는 url 만 쓴다.
