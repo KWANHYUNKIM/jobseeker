@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **165건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **166건**.
+직전 회차: ✅ `Staff, Front-end Engineer (Global Operations Technology)`(6412588) 3항목 — 한국, 웹 성능·MVC/Node·MSA. 주요업무 칸 비어 full_jd 직무 소개로 맥락.
 직전 회차: ✅ `Staff Engineer - Cloud Backend Engineering`(8171556) 3항목 — **벵갈루루**, 클라우드 인프라(99.999%·셀프서비스 IaC·네트워크). 제목 Staff vs 본문 Senior Staff 어긋남(open_questions).
 직전 회차: ✅ `Staff Data Scientist - Search and Discovery`(8037655, **상하이**, 대만 검색 조직) → dup 7997383 — 주요업무 동일, 자격(7년+팀 리딩 3년·영어/중국어)만 달라 verdict 에 차이만 적음.
 직전 회차: ✅ `Staff Data Scientist (SCM)`(8124212) 3항목 — **타이베이**, 공급망 예측·대규모 최적화·성과 측정.
