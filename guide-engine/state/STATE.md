@@ -15,7 +15,7 @@
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 ⚠️ **공고 본문은 `jd-viewer/public/all_jobs_enriched.json` 에서 읽는다 — `jd-viewer/dist/` 는 빌드 사본이라 낡는다.** 2026-09-26 피에프씨 Backend(388360)를 dist 에서 읽고 썼다가 public·검증기 데이터에 없어(내려간 공고) 되돌렸다. 대상은 `--gaps` 목록에 있는 url 만 쓴다.
 ⚠️ 이 저장소는 다른 세션(book·reveng)이 동시에 커밋한다. 스테이징한 채로 두면 남의 커밋에 쓸려 들어간다(9987323 에 388360 이 섞였다 → 이 커밋에서 걷어냈다). `git add` 와 `git commit -- <파일>` 을 한 명령에 붙여 쓴다.
-주의: 원문에 zero-width space(U+200B)가 섞여 있다 — quote 는 main_tasks/qualifications/preferences 에서 그대로 복사한다.
+주의: 원문에 zero-width space(U+200B)·BOM(U+FEFF)이 섞여 있다(피에프씨 주요업무 첫 줄 '• \ufeff투자/대출…'). 커밋 명령은 `validate && git commit` 으로 묶어 오류가 나면 커밋되지 않게 한다 — quote 는 main_tasks/qualifications/preferences 에서 그대로 복사한다.
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.
