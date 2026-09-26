@@ -1400,3 +1400,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Findy Tools 데이터 기반 — 완주
 
 - Tools 데이터 기반 글 전문으로 `tools-data-platform-boring-choices`(결정 8 — fluentbit·ECS vs Private Link/ETL·Embulk·dbt vs Dataform·하루 배치·Terraform 알림 vs Lambda·감시 범위 분담·uv vs Docker). 도메인 4 모두 기능 · 수익원 3 연결 → done, QUEUE 완료로.
+
+## 2026-09-26 라쿠스 회사 프로파일
+
+- 대기 맨 위. 서비스 페이지 + 기술 글 셋(楽楽精算 AI 세 벽·LLMOps 인프라·楽楽明細 장애 대응)으로 도메인 둘 · 수익원 셋(楽楽クラウド 만 연결).

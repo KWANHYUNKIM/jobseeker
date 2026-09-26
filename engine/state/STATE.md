@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Findy — 완주(2026-09-26, 도메인 4 · 기능 4). 다음은 `--gaps` 가 가리키는 신규: QUEUE 대기 맨 위(라쿠스 — `tech-blog.rakus.co.jp`, 楽楽精算 AI 에이전트 `entry/20260703/aiagent` 부터). 대기 3/3(라쿠스·ENECHANGE·드왕고 교육). 머니포워드(hold)·LayerX 는 in_progress.**
+**라쿠스 — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '경비 전표를 AI 가 초안 쓰고 규칙이 검사한다' 를 세 벽 글(`entry/20260703/aiagent`, scratchpad `rk_aiagent.txt`)과 LLMOps 글(`20260805/aicon_summer`, `rk_llmops.txt` — EKS vs AgentCore·KEDA·샘플링 표). 그 뒤 楽楽明細 장애 대응(`20260917/incident`, `rk_incident.txt` 후반 미독). 완주 판정 때 BlastMail·웹 미디어 수익원은 도메인이 없다 — 두 번 찾고 없으면 hold. 대기 2/3(ENECHANGE·드왕고 교육). 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 
