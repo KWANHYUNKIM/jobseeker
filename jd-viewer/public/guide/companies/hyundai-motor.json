@@ -402,6 +402,132 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55071760&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=1ad94830-4d43-42f3-bbf0-72ba61660fb7",
+      "title": "[제조로보틱스] 휴머노이드 로봇 운영 솔루션 개발",
+      "site": "saramin",
+      "verdict": "경력 5년 이상(로봇·자동화 미들웨어·플랫폼 또는 통신 프로토콜 표준화), 이공계 학사 이상. 공고가 '로봇의 상업화를 앞당기는 업무' 라고 적는다 — 로봇 종류·현장 구성에 관계없이 쓰는 범용 아키텍처를 설계하고 PoC 검증까지 한다. 업무는 네 묶음: 로봇–현장 설비·운영 시스템 연계 아키텍처와 표준 인터페이스, 이기종 통신(HTTP/gRPC/TCP/IP/Modbus)을 표준 규격으로 바꾸는 **Adapter 미들웨어**; 작업 실패·예외(자재 결품·인식 오류) 원인 판단 **AI Agent**, 작업 재할당·우선순위 조정 오케스트레이션, LLM 이상 분석·알림; ISO 13849·IEC 61508 기반 위험 감지·자동 긴급정지, 서열/조립 오더를 로봇 작업지시로 바꾸고 품질 시스템 연동; 예외·통신 단절 시나리오 통합 테스트와 Mock/Simulator 사전 검증. 필수에 소켓·비동기 통신·메시지 큐, 로봇 개발자와 좌표계·제어 주기로 소통한 경험, 비즈니스 영어가 있다. 우대사항 칸은 비어 있다. **접수 마감 2026.09.29 17시**. 전형: 지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격. 접수 2026년 09월 15일 09시 ~ 09월 29일 17시, 이력서·자기소개서. 급여 '면접 후 결정', 근무지 판교.",
+      "fit": {
+        "must_have": [
+          "로봇·자동화 미들웨어·플랫폼 또는 통신 프로토콜 표준화 5년 이상",
+          "소켓·비동기 통신·메시지 큐",
+          "로봇 개발자와 좌표계·제어 주기 소통",
+          "비즈니스 영어"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "이기종 통신 Adapter 미들웨어",
+          "from": "task",
+          "quote": "　· 이기종 통신 방식(HTTP/gRPC/TCP/IP/Modbus 등)을 표준 규격으로 변환·통합하는 Adapter 미들웨어 개발",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '소켓 프로그래밍, 비동기 통신, 메시지 큐 등 통신 구조 전반에 대한 이해도' 와 통신 프로토콜 표준화 경험이 있다.",
+          "gap_check": "PLC 는 Modbus 로, 로봇 컨트롤러는 gRPC 로, MES 는 HTTP 로 말할 때 공통 메시지 모델(명령·상태·이벤트)을 어떻게 정하고, 한쪽 통신이 끊겼다 돌아오면 밀린 명령과 상태는 어떻게 처리하는가?",
+          "drill": "가짜 Modbus 장치·gRPC 로봇·HTTP 설비를 만들고, 공통 메시지 스키마로 바꿔 메시지 큐(RabbitMQ 등)에 싣는 Adapter 를 작성한다. 연결을 끊었다 다시 붙여 재전송·중복 제거를 확인한다. VDA 5050 메시지와 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Simply Modbus / Modbus Tools — Modbus protocol",
+              "url": "https://www.modbustools.com/modbus.html",
+              "kind": "docs"
+            },
+            {
+              "title": "gRPC — Introduction",
+              "url": "https://grpc.io/docs/what-is-grpc/introduction/",
+              "kind": "docs"
+            },
+            {
+              "title": "RabbitMQ tutorials",
+              "url": "https://www.rabbitmq.com/tutorials",
+              "kind": "docs"
+            },
+            {
+              "title": "VDA 5050",
+              "url": "https://github.com/VDA5050/VDA5050",
+              "kind": "repo"
+            },
+            {
+              "title": "Enterprise Integration Patterns — Messaging",
+              "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "예외 상황 판단 AI Agent 와 작업 오케스트레이션",
+          "from": "task",
+          "quote": "　· 작업 실패, 예외 상황(자재 결품, 인식 오류 등) 발생 시 원인을 판단하고 대안을 제시하는 AI Agent 로직 개발",
+          "priority": "core",
+          "why": "주요업무이고 같은 묶음에 '작업 재할당, 우선순위 조정 등을 자율적으로 수행하는 오케스트레이션 레이어' 와 'LLM/생성형 AI를 활용한 이상 상황 분석 및 담당자 알림' 이 있다.",
+          "gap_check": "휴머노이드가 '부품 인식 실패' 로 멈췄을 때 에이전트가 쓸 수 있는 도구(재시도·다른 로봇에 재할당·사람 호출)와 절대 하면 안 되는 일(안전 정지 해제)을 어떻게 나누고, LLM 판단이 틀렸을 때 현장이 멈추지 않게 하는 안전장치는 무엇인가?",
+          "drill": "로봇 상태·작업 큐·예외 로그를 가진 시뮬레이터를 만들고, 규칙 기반 오케스트레이터 위에 LLM 에이전트가 '원인 요약·대안 제안' 만 하고 실행은 허용 목록 도구로만 하게 한다. 안전 관련 동작은 에이전트 도구에서 빼 둔다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Open-RMF",
+              "url": "https://open-rmf.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Model Context Protocol",
+              "url": "https://modelcontextprotocol.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "산업안전 표준 기반 위험 감지와 긴급정지",
+          "from": "task",
+          "quote": "　· 산업안전 표준(ISO 13849, IEC 61508 등) 기반 위험 감지 및 자동 긴급정지 기능 구현",
+          "priority": "high",
+          "why": "주요업무이고 같은 묶음에 작업 오더 → 로봇 작업지시 변환과 품질 시스템 연동, 실시간 모니터링·알림이 있다.",
+          "gap_check": "소프트웨어 레이어가 위험을 감지해 긴급정지를 요청하는 것과 안전 등급 하드웨어(Performance Level)가 정지를 보장하는 것은 무엇이 다르고, 통신이 끊겼을 때 로봇은 어떤 상태로 가야 하는가?",
+          "drill": "ISO 13849 개요를 읽고, 앞 드릴 시스템에 하트비트 끊김·구역 침입 이벤트 → 정지 요청 흐름과 '소프트웨어가 할 일 / 안전 하드웨어가 할 일' 경계 표를 만든다. 통신 단절 시나리오 통합 테스트를 Mock 으로 돌린다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Wikipedia — ISO 13849",
+              "url": "https://en.wikipedia.org/wiki/ISO_13849",
+              "kind": "article"
+            },
+            {
+              "title": "Wikipedia — IEC 61508",
+              "url": "https://en.wikipedia.org/wiki/IEC_61508",
+              "kind": "article"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Modbus·gRPC·HTTP Adapter + 메시지 큐 + 예외 판단 에이전트 + 통신 단절 Mock 테스트",
+          "why": "주요업무 네 묶음을 작게 재현한다. 필수가 통신 구조 전반 이해다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "로봇 개발자와 좌표계·제어 주기를 맞춘 사례 정리",
+          "why": "필수에 '로봇 HW/SW 개발자와 좌표계, 제어 주기 등 로봇 엔지니어링 기반 기술 소통 경험' 이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격. 접수 2026년 09월 15일 09시 ~ 09월 29일 17시, 이력서·자기소개서. 급여 '면접 후 결정', 근무지 판교.",
+        "expect": [
+          "미들웨어·통신 표준화 경험",
+          "예외 처리 설계",
+          "산업안전 이해",
+          "로봇 개발자와의 소통"
+        ],
+        "sources": [
+          {
+            "title": "[제조로보틱스] 휴머노이드 로봇 운영 솔루션 개발",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55071760&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=1ad94830-4d43-42f3-bbf0-72ba61660fb7",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ]
 }
