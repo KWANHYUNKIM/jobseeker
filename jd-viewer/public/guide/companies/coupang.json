@@ -9197,6 +9197,142 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188042",
+      "title": "Staff, Security Data Platform Engineer",
+      "site": "ats",
+      "verdict": "서울 구의오피스 근무, 대규모 데이터 엔지니어링 또는 백엔드 7년 이상. 쿠버네티스·서버·클라우드·네트워크의 보안 로그를 실시간으로 모아 SIEM·데이터 레이크/웨어하우스에 싣고, 탐지 엔진·AI 모델·분석가가 쓰기 좋은 스키마로 만들며, 탐지 룰을 코드로 관리하는(Detection-as-Code) 플랫폼을 책임지는 사람.",
+      "fit": {
+        "must_have": [
+          "대규모 데이터 엔지니어링 또는 백엔드 7년 이상",
+          "AWS 대규모 파이프라인(Kafka·Kinesis·S3)",
+          "Python 데이터 처리·백엔드",
+          "보안 이벤트·로그 구조 이해",
+          "파이프라인 장애 진단",
+          "Git·CI/CD"
+        ],
+        "can_learn": [
+          "OCSF·CIM 보안 데이터 모델",
+          "특정 SIEM 제품"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보안 로그 실시간 수집 아키텍처 (Kubernetes·서버·클라우드·네트워크)",
+          "from": "task",
+          "quote": "Kubernetes, 서버, 클라우드, 네트워크 등 다양한 환경의 보안 로그 실시간 수집 아키텍처 설계 및 데이터 파이프라인(ETL/ELT) 구축",
+          "priority": "core",
+          "why": "주요업무의 입구다. 로그 소스마다 형식·양·지연이 달라 수집 단계에서 유실·중복이 생기기 쉽다(추론).",
+          "gap_check": "노드 에이전트(Fluent Bit 등) → Kafka/Kinesis → S3·SIEM 경로에서 SIEM 이 느려지면 어디서 버퍼링하고, 유실 없이 재적재하려면 무엇을 남겨야 하는가?",
+          "drill": "kind 클러스터에 Fluent Bit 를 DaemonSet 으로 띄워 컨테이너 로그를 Kafka 로 보내고, 소비자를 멈췄다 재개해 오프셋 기준 재적재와 유실 여부를 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Fluent Bit — Documentation",
+              "url": "https://docs.fluentbit.io/manual",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Detection-as-Code (탐지 룰의 코드 관리·테스트·배포)",
+          "from": "task",
+          "quote": "Detection-as-Code 프레임워크 구축 및 운영 — 탐지 룰의 코드 기반 관리, 테스트, 배포 파이프라인",
+          "priority": "core",
+          "why": "탐지 룰을 콘솔에서 손으로 고치면 버전·리뷰·테스트가 없다. 주요업무와 우대에 모두 있다.",
+          "gap_check": "탐지 룰 PR 에 어떤 자동 테스트(양성·음성 샘플 로그, 문법, 성능)를 걸어야 배포해도 안전한가?",
+          "drill": "Sigma 룰 3개를 저장소에 두고, 샘플 로그로 탐지·미탐지를 검사하는 테스트와 룰을 SIEM 쿼리로 변환하는 CI 파이프라인을 GitHub Actions 로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Sigma — Documentation",
+              "url": "https://sigmahq.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보안 데이터 모델링 (OCSF·CIM)과 Enrichment",
+          "from": "preference",
+          "quote": "보안 데이터 모델링(OCSF, CIM 등)에 대한 이해 및 실무 적용 경험",
+          "priority": "high",
+          "why": "주요업무에 'AI/ML 모델 활용에 적합한 데이터 스키마 설계, 데이터 모델링 및 Enrichment 파이프라인'이 있다. 소스마다 다른 필드를 공통 스키마로 맞춰야 한 룰로 여러 소스를 본다.",
+          "gap_check": "CloudTrail·VPC Flow·쿠버네티스 감사 로그를 OCSF 클래스 중 어디에 매핑하고, 매핑이 안 되는 필드는 어떻게 보존하는가?",
+          "drill": "CloudTrail 로그 샘플을 OCSF API Activity 클래스로 변환하는 파이썬 매퍼를 만들고, 사용자 정보 Enrichment(부서·권한)를 조인해 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OCSF — Open Cybersecurity Schema Framework",
+              "url": "https://schema.ocsf.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SIEM 인덱싱·검색 성능과 비용",
+          "from": "task",
+          "quote": "SIEM 플랫폼 운영 및 고도화 — 탐지 룰 실행 환경 안정성 확보, 인덱싱/검색 성능 최적화, 신규 로그 소스 온보딩",
+          "priority": "high",
+          "why": "탐지 룰 실행 환경 안정성, 인덱싱/검색 성능, 신규 소스 온보딩이 한 줄에 묶여 있고, 성능·비용 관리가 따로 한 줄 더 있다.",
+          "gap_check": "로그량이 두 배가 됐을 때 모든 로그를 SIEM 에 인덱싱하는 대신 무엇을 웨어하우스(S3+쿼리 엔진)로 돌리고, 탐지 지연은 어떻게 달라지는가?",
+          "drill": "같은 로그 1억 건을 OpenSearch 인덱스와 S3 Parquet+Athena(또는 DuckDB) 두 곳에 두고, 대표 탐지 쿼리 3개의 응답 시간과 저장 비용을 비교한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "dbt·Airflow 로 변환·오케스트레이션",
+          "from": "preference",
+          "quote": "데이터 변환/오케스트레이션 프레임워크(dbt, Airflow 등) 운영 경험",
+          "priority": "nice",
+          "why": "웨어하우스 쪽 정규화·집계를 코드로 관리하면 Detection-as-Code 와 같은 원칙(리뷰·테스트)을 데이터 모델에도 적용할 수 있다(추론).",
+          "gap_check": "dbt 테스트(unique·not_null·관계)를 보안 로그 모델에 걸면 어떤 파이프라인 이상을 조기에 잡을 수 있는가?",
+          "drill": "위 OCSF 변환 결과를 dbt 모델로 옮기고 테스트를 붙여, 필수 필드가 비는 로그가 들어오면 실패하게 한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "dbt — Documentation",
+              "url": "https://docs.getdbt.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 으로 로그 정규화·스키마 자동 매핑·커버리지 분석",
+          "from": "preference",
+          "quote": "AI/LLM을 데이터 엔지니어링 업무에 활용한 경험 (로그 정규화, 스키마 자동 매핑, 커버리지 분석 등)",
+          "priority": "nice",
+          "why": "주요업무에 'AI/LLM을 활용한 로그 분석 자동화, 데이터 품질 관리, 커버리지 갭 분석'이 있다.",
+          "gap_check": "새 로그 소스의 필드를 LLM 이 OCSF 로 매핑 제안할 때, 틀린 매핑이 탐지 룰을 조용히 깨뜨리지 않게 어떤 검증을 두는가?",
+          "drill": "낯선 로그 형식 샘플 5종을 LLM 에게 OCSF 매핑을 제안하게 하고, 사람이 만든 정답 매핑과 필드 단위 정확도를 비교한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Detection-as-Code 미니 저장소 공개",
+          "why": "룰·테스트·CI·변환까지 한 저장소로 보여 주면 이 자리의 핵심 두 가지(데이터 파이프라인·탐지 룰 운영)를 동시에 증명한다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "로그 수집 경로의 버퍼링·재적재",
+          "Detection-as-Code 테스트 설계",
+          "OCSF 매핑",
+          "SIEM vs 웨어하우스 비용·지연",
+          "파이프라인 장애 진단 사례"
+        ],
+        "sources": [
+          {
+            "title": "Staff, Security Data Platform Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188042",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
