@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Nature — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '자물쇠를 기존 디바이스 모델에 끼워 넣는다' 를 스마트록 글(`entry/smartlock-domain-models`, scratchpad `nt_lock.txt` — '最初のモデル' 이후 모델 변천·가상 디바이스). 그 뒤 리팩터링 자동 머지(`2026/07/prove-pure-refactoring-with-ai-and-auto-merge`, `nt_refactor.txt`). 완주 판정 때 에너지 관리(Remo E·EV Switch) 수익원은 도메인이 없다 — 사이트맵 2023~2026 전 제목으로 두 번. 대기 1/3(ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
+**Nature — 확장 1(2026-09-26): 스마트록 도메인에 `smartlock-aggregate-three-models`(결정 7). 다음은 확장: '동작을 안 바꾸는 PR 은 AI 가 증명하고 스스로 머지한다' 를 리팩터링 글(`entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge`, scratchpad `nt_refactor.txt` — Skill ①②③·프롬프트 키우기·CI·비용·좋았던 것). 완주 판정 때 에너지 관리(Remo E·EV Switch) 수익원은 도메인이 없다 — 사이트맵 2023~2026 전 제목으로 두 번. 대기 1/3(ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
 
 
 

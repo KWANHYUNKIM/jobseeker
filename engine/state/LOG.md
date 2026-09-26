@@ -1528,3 +1528,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Nature 회사 프로파일
 
 - 대기 맨 위. 코퍼레이트 페이지 + 기술 글 둘(스마트록 도메인 모델링 · 순수 리팩터링 AI 자동 머지)로 도메인 둘 · 수익원 셋(스마트록 confirmed, 리모컨 inferred). category '기타'(IoT 없음).
+
+## 2026-09-26 Nature 스마트록 모델링
+
+- 스마트록 글 후반(세 모델·1door2lock·컨트롤러 디바이스)까지 읽고 `smartlock-aggregate-three-models`(결정 7). 모델 변천은 연도가 없어 history 대신 state 그림으로.
