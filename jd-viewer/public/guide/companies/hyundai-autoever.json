@@ -250,7 +250,8 @@
   "open_questions": [
     "매출 규모와 사업 영역별 비중을 이번에 읽지 않았다 — 홈페이지 IR·재무정보 메뉴에서 확인할 것",
     "salary: 공고에 금액이 없고 공개 연봉 자료를 확인하지 않았다 — 근거 없이 비워 둔다",
-    "jobkorea·catch 게시 5건은 본문이 크롤되지 않아 브리핑 대상에서 빠진다"
+    "jobkorea·catch 게시 5건은 본문이 크롤되지 않아 브리핑 대상에서 빠진다",
+    "wd/385515: 공고 제목은 '[IVI] Embedded SW Architect' 인데 본문 제목은 'Android Framework 개발 Developer', 경력은 5-11년이다 — 아키텍트 공고(385519, 8-16년)와 같은 머리를 붙인 것으로 보이나 확인하지 못했다"
   ],
   "postings": [
     {
@@ -761,6 +762,179 @@
           {
             "title": "[IVI] Embedded SW Architect - Android Framework 개발 Architector",
             "url": "https://www.wanted.co.kr/wd/385519",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385515",
+      "title": "[IVI] Embedded SW Architect - Android Framework 개발 Developer",
+      "site": "wanted",
+      "verdict": "경력 5~11년(서울 강남). 제목은 'Embedded SW Architect' 이지만 본문 제목은 'Android Framework 개발 Developer' 이고, 주요업무는 모듈 개발 리드·개발 일정 관리·개발/구현 설계·이슈 분석 및 대응이다. 같은 차량연동개발팀(내비SW 와 다른 앱·ADAS·클러스터·HUD 등 제어기 연동)의 아키텍트 공고(385519, 8-16년)보다 문턱이 낮다 — 자격은 Android 앱 또는 Framework 경력, Java/Kotlin, Service/Binder/IPC 개념, Git 협업, logcat·dumpsys·systrace 디버깅이고 AOSP 수정은 우대다. 전형에 직무역량테스트(코딩)가 있다.",
+      "fit": {
+        "must_have": [
+          "Android 앱 또는 Framework 개발 경력",
+          "Java/Kotlin 능숙",
+          "Android Service/Binder/IPC 개념",
+          "Git 협업(코드 리뷰·브랜치 전략)",
+          "logcat·dumpsys·systrace 디버깅"
+        ],
+        "can_learn": [
+          "AOSP 빌드·소스 수정",
+          "AAOS·차량용 임베디드",
+          "WindowManager / PackageManager 내부",
+          "C/C++ Native 디버깅"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Service·Binder·IPC — 앱 경력자가 프레임워크로 넘어가는 다리",
+          "from": "qualification",
+          "quote": "• Android Service/Binder/IPC 개념 이해",
+          "priority": "core",
+          "why": "자격요건이 'Android 앱 또는 Framework' 경력을 받으므로 앱 개발자도 지원할 수 있다. 그 차이를 메우는 것이 이 줄이다. 팀은 다른 앱이 지도 데이터 기반 기능을 쓰게 지원한다고 적는다.",
+          "gap_check": "bindService 로 받은 IBinder 뒤에서 무슨 일이 일어나고(프록시·스텁·Binder 드라이버), 바인더 스레드에서 오래 걸리는 일을 하면 호출한 앱에 무엇이 생기는가? 서비스 프로세스가 죽었을 때 클라이언트는 어떻게 알게 되는가?",
+          "drill": "앱 두 개로 AIDL 바운드 서비스를 만들어 동기 호출·oneway 콜백·linkToDeath 를 구현하고, 서비스 프로세스를 kill 해 클라이언트 반응을 로그로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Android Developers — AIDL",
+              "url": "https://developer.android.com/develop/background-work/services/aidl",
+              "kind": "docs"
+            },
+            {
+              "title": "Android Developers — Binder",
+              "url": "https://developer.android.com/reference/android/os/Binder",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "logcat·dumpsys·systrace 로 이슈 좁히기",
+          "from": "qualification",
+          "quote": "• 디버깅 도구 활용 (logcat, dumpsys, systrace)",
+          "priority": "core",
+          "why": "주요업무에 '이슈 분석 및 대응' 이 있고 자격요건이 도구 이름을 셋 다 적는다. 팀 리더는 차량 SW 가 '다양한 상황에 대한 대응의 어려움' 이 있다고 적는다.",
+          "gap_check": "ANR 이 났을 때 logcat 과 /data/anr 트레이스에서 무엇을 먼저 보고, dumpsys activity services 로 바인딩 상태를 어떻게 확인하며, 화면이 버벅일 때 트레이스에서 메인 스레드의 어느 구간을 찾는가?",
+          "drill": "위 서비스에 일부러 메인 스레드 sleep 과 바인더 지연을 넣어 ANR·프레임 드랍을 만들고, 세 도구로 원인을 찾아 가는 과정을 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android Developers — Logcat",
+              "url": "https://developer.android.com/tools/logcat",
+              "kind": "docs"
+            },
+            {
+              "title": "Android Developers — dumpsys",
+              "url": "https://developer.android.com/tools/dumpsys",
+              "kind": "docs"
+            },
+            {
+              "title": "Android Developers — System tracing",
+              "url": "https://developer.android.com/topic/performance/tracing",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AOSP 빌드와 소스 수정",
+          "from": "preference",
+          "quote": "• AOSP 빌드 및 소스 수정 경험",
+          "priority": "high",
+          "why": "우대사항 첫 줄이다. 공고 제목이 Android Framework 개발이고 같은 팀 아키텍트 공고는 AOSP 를 자격요건으로 둔다 — 입사 뒤 바로 필요해질 것으로 보인다(추론).",
+          "gap_check": "lunch 타깃을 고르고 전체 빌드와 모듈 단위 빌드(m <모듈>)를 구분해 쓸 수 있고, 프레임워크 jar 하나를 고친 뒤 기기에 반영하는 가장 짧은 경로는 무엇인가?",
+          "drill": "AOSP 를 에뮬레이터 타깃으로 빌드하고 frameworks/base 의 로그 한 줄을 고쳐 모듈만 다시 빌드·푸시해 반영되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Android — Building Android",
+              "url": "https://source.android.com/docs/setup/build/building",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "WindowManager / PackageManager 내부",
+          "from": "preference",
+          "quote": "• WindowManager / PackageManager 등 Framework 내부 이해",
+          "priority": "high",
+          "why": "우대사항이다. 팀이 연동하는 앱(VR / EV / 날씨 / 스포츠 / 하드키 등)이 여러 개라, 화면 배치와 앱 설치·권한 흐름을 프레임워크 쪽에서 이해해야 하는 자리로 보인다(추론).",
+          "gap_check": "앱이 창을 추가할 때 WindowManagerService 까지 가는 경로와, 앱 설치 시 PackageManagerService 가 권한을 부여하는 시점을 설명할 수 있는가?",
+          "drill": "dumpsys window 와 dumpsys package <패키지> 출력을 읽어 현재 창 스택과 권한 목록을 해설하고, 해당 서비스 소스(frameworks/base/services)에서 대응하는 코드를 찾아 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android — Architecture overview",
+              "url": "https://source.android.com/docs/core/architecture",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AAOS·차량용 임베디드 환경",
+          "from": "preference",
+          "quote": "• AAOS 또는 차량용 임베디드 경험",
+          "priority": "nice",
+          "why": "우대사항이다. 팀 리더는 팀이 Embedded SW 개발자로 구성되고 Linux / Android 플랫폼 지식이 도움이 된다고 적는다.",
+          "gap_check": "AAOS 는 휴대폰 Android 와 사용자 구조·차량 속성(VHAL) 면에서 무엇이 다른가?",
+          "drill": "AAOS 에뮬레이터 이미지를 띄워 차량 속성 값을 바꿔 보고 그 변화를 받는 앱을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android Automotive — overview",
+              "url": "https://source.android.com/docs/automotive",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "C/C++ Native 코드 디버깅",
+          "from": "preference",
+          "quote": "• C/C++ Native 코드 디버깅 가능",
+          "priority": "nice",
+          "why": "우대사항이다. 팀 리더가 팀의 주 언어를 C++ / Java 로 적는다 — Java 쪽 자격요건만으로는 반쪽이다.",
+          "gap_check": "네이티브 크래시의 tombstone 에서 백트레이스를 읽고 심볼을 붙여 소스 줄을 찾을 수 있는가?",
+          "drill": "JNI 로 일부러 널 포인터를 역참조하는 코드를 넣어 크래시를 내고, tombstone 을 받아 심볼화한 뒤 LLDB 로 같은 지점에 중단점을 건다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Android — Debugging native platform code",
+              "url": "https://source.android.com/docs/core/tests/debug",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Using debuggers",
+              "url": "https://source.android.com/docs/core/tests/debug/gdb",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "앱 두 개 + 바운드 서비스로 만든 '연동 흉내' 데모와 디버깅 기록",
+          "why": "자격요건 다섯 줄 중 Service/Binder/IPC 와 디버깅 도구를 한 결과물로 보여 준다. 팀 업무가 앱·제어기 연동이라 소재도 맞는다(추론).",
+          "effort": "3~4일"
+        },
+        {
+          "idea": "AOSP 한 줄 수정 기록",
+          "why": "우대 첫 줄(AOSP 빌드 및 소스 수정)을 앱 경력자가 가장 싸게 증명하는 방법이다.",
+          "effort": "2일(빌드 시간 포함)"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "Binder IPC 동작 설명",
+          "ANR·크래시를 도구로 추적한 사례",
+          "모듈 개발을 리드하며 일정을 관리한 경험",
+          "Git 브랜치 전략"
+        ],
+        "sources": [
+          {
+            "title": "[IVI] Embedded SW Architect - Android Framework 개발 Developer",
+            "url": "https://www.wanted.co.kr/wd/385515",
             "publisher": "원티드"
           }
         ]
