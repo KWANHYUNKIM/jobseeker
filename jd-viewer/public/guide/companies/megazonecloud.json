@@ -9,7 +9,7 @@
     "메가존클라우드㈜"
   ],
   "status": "in_progress",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-26",
   "site": "megazone.com",
   "one_liner": "남의 클라우드를 대신 설계·운영해 주고 그 위에 자기 플랫폼과 AI를 얹는 국내 최대 MSP — 2025년 매출 1조 7,496억원에 영업이익 2억 3천만원으로 창사 첫 흑자를 냈다",
   "salary": {
@@ -7274,6 +7274,132 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55071627&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e6202dcb-990d-491c-bca9-ec6e61be8859",
+      "title": "[메가존클라우드관계사] 메가존소프트 Data Engineer 경력 채용",
+      "site": "saramin",
+      "verdict": "경력 3년 이상. **메가존클라우드가 아니라 'Alliance 관계사인 메가존소프트 법인' 채용**이라고 공고가 적는다. 이 데이터에서는 담당업무가 자격요건 칸에 섞여 들어가 있다(인용은 그 칸에서 한다). 업무는 GCP 에서 대용량 데이터 수집·저장·처리·분석 파이프라인 설계·구축, BigQuery 데이터 모델링·성능 최적화, Cloud Storage·Cloud Run·Airflow·Pub/Sub 로 처리 시스템 구축·운영, 클라우드·DBMS 마이그레이션·파이프라인·AI 모델 배포 등 데이터·AI 프로젝트 전반 관리, 프레젠테이션·제안서·컨설팅 자료 작성. 자격은 DBMS DBA 경력(Oracle·MS-SQL·MySQL·PostgreSQL·SAP HANA 등)과 클라우드 데이터 플랫폼 경험. SQL·데이터 성능 최적화, 마이그레이션·ETL, AI 프로젝트, 클라우드 ML 플랫폼, 고객 관계·사업 기회 발굴, GCP/AWS/Azure 자격증은 우대다. 필요 시 레퍼런스 체크·인성검사. 근무지·급여·접수 기간은 본문에서 찾지 못했다.",
+      "fit": {
+        "must_have": [
+          "경력 3년 이상",
+          "DBMS DBA 경력(Oracle·MS-SQL·MySQL·PostgreSQL·SAP HANA 등)",
+          "클라우드 데이터 플랫폼 경험"
+        ],
+        "can_learn": [
+          "SQL·성능 최적화",
+          "마이그레이션·ETL",
+          "클라우드 ML 플랫폼",
+          "고객 관계·사업 발굴",
+          "GCP/AWS/Azure 자격증"
+        ]
+      },
+      "study": [
+        {
+          "topic": "BigQuery 모델링과 성능 최적화",
+          "from": "qualification",
+          "quote": "ㆍ BigQuery를 활용한 데이터 모델링 및 성능 최적화",
+          "priority": "core",
+          "why": "공고의 담당업무 줄이다(데이터상 자격요건 칸). 우대에 'SQL 최적화 및 데이터 성능 최적화 경험' 이 있다.",
+          "gap_check": "매일 수억 행이 쌓이는 로그 테이블에서 최근 7일 조회 비용을 줄이려면 파티션과 클러스터링을 무엇 기준으로 두고, 쿼리가 스캔하는 바이트는 어떻게 확인하는가? 정규화된 DBMS 스키마를 BigQuery 로 옮길 때 중첩·반복 필드는 언제 쓰는가?",
+          "drill": "공개 데이터셋을 날짜 파티션·클러스터 테이블로 복사해 같은 쿼리의 스캔 바이트를 비교하고, 조인 두 번이 필요한 정규화 스키마를 중첩 필드로 바꿔 비용·속도를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "BigQuery — Introduction",
+              "url": "https://cloud.google.com/bigquery/docs/introduction",
+              "kind": "docs"
+            },
+            {
+              "title": "BigQuery — Partitioned tables",
+              "url": "https://cloud.google.com/bigquery/docs/partitioned-tables",
+              "kind": "docs"
+            },
+            {
+              "title": "BigQuery — Optimize query performance",
+              "url": "https://cloud.google.com/bigquery/docs/best-practices-performance-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DBMS 마이그레이션(온프레미스 → GCP)",
+          "from": "qualification",
+          "quote": "ㆍ클라우드 마이그레이션, DBMS 마이그레이션, 데이터 파이프라인 구축, AI 모델 배포 등 데이터 및 AI 중심 프로젝트의 전반적인 관리",
+          "priority": "core",
+          "why": "담당업무 줄이고 자격요건이 'DBMS DBA 경력(Oracle/MS-SQL/MySQL/Postgres SQL/SAP HANA 등)' 이다. 우대에 'Data Migration 및 ETL 구축 경험' 이 있다.",
+          "gap_check": "운영 중인 MySQL 을 서비스 중단을 최소로 하면서 Cloud SQL 로 옮기려면 초기 적재 + 변경 복제(CDC) 순서를 어떻게 잡고, 전환 시점의 데이터 정합성은 무엇으로 확인하는가? 분석용으로 BigQuery 에도 실시간으로 흘리려면 무엇을 쓰는가?",
+          "drill": "Database Migration Service 와 Datastream 문서를 읽고, 가상 MySQL → Cloud SQL(운영) + BigQuery(분석) 이관 계획서(단계·다운타임·검증 쿼리·롤백)를 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Database Migration Service",
+              "url": "https://cloud.google.com/database-migration/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Datastream — Overview",
+              "url": "https://cloud.google.com/datastream/docs/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Pub/Sub·Cloud Run·Airflow 로 처리 파이프라인",
+          "from": "qualification",
+          "quote": "ㆍ Cloud Storage, Cloud Run, Airflow, Cloud Pub/Sub 등 GCP 서비스를 활용한 데이터 처리 시스템 구축 및 운영",
+          "priority": "high",
+          "why": "담당업무 줄이다. 첫 담당업무가 GCP 에서 대용량 수집·저장·처리·분석 파이프라인 설계·구축이다.",
+          "gap_check": "이벤트를 Pub/Sub 로 받아 Cloud Run 에서 가공해 BigQuery 에 넣을 때, 같은 메시지가 두 번 오거나 처리 중 실패하면 어떻게 중복·유실을 막고, 일 배치 작업은 Airflow(Composer)에서 어떻게 엮는가?",
+          "drill": "Pub/Sub → Cloud Run(가공) → BigQuery 스트리밍 적재를 만들고 메시지 ID 로 중복을 거른 뒤, 매일 집계 테이블을 만드는 DAG 를 Composer(또는 로컬 Airflow)로 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Pub/Sub — Overview",
+              "url": "https://cloud.google.com/pubsub/docs/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Cloud Run — What is Cloud Run",
+              "url": "https://cloud.google.com/run/docs/overview/what-is-cloud-run",
+              "kind": "docs"
+            },
+            {
+              "title": "Cloud Composer — Overview",
+              "url": "https://cloud.google.com/composer/docs/composer-3/composer-overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "MySQL → Cloud SQL + BigQuery 이관 계획서와 파티션 최적화 전후 비교",
+          "why": "자격요건(DBA 경력)과 담당업무(마이그레이션·BigQuery 최적화)를 잇는다. 담당업무에 제안서·컨설팅 자료 작성이 있다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "GCP 데이터 관련 자격증",
+          "why": "우대에 'GCP/ AWS/ Azure 관련 자격증 보유' 가 있다.",
+          "effort": "수 주"
+        }
+      ],
+      "interview": {
+        "process": "본문에 단계별 전형이 없다. '필요 시 레퍼런스 체크, 인성검사가 진행 될 수 있습니다' 만 적혀 있다.",
+        "expect": [
+          "DBA·마이그레이션 경험",
+          "BigQuery 설계·최적화",
+          "파이프라인 운영",
+          "제안서·고객 커뮤니케이션"
+        ],
+        "sources": [
+          {
+            "title": "[메가존클라우드관계사] 메가존소프트 Data Engineer 경력 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55071627&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e6202dcb-990d-491c-bca9-ec6e61be8859",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -7294,6 +7420,7 @@
     "**`메가존 Alliance` 관계사 구조를 확인하지 못했다.** `GCP AI Engineer` 공고가 `※ 안내 : 해당 내용은 메가존 Alliance 관계사인 메가존소프트 법인으로 채용 진행됩니다` 라고 밝히는데, **크롤 데이터의 회사명은 `메가존클라우드(주)`** 로 되어 있다. **어떤 법인이 몇 곳이고 지분·지배 관계가 어떤지는 공개 자료에서 확인하지 못했다** — 지원자에게는 **처우·복지가 다를 수 있다**는 점이 중요하다. **[2026-09-02 정정]** 세 번째 관계사 공고(`CDN & Security SA/SE`)는 **Akamai 전문**이었다 — 본문 첫 줄이 `메가존소프트 CDN & Security SA/SE Tech Engineer` 다. **즉 구글 클라우드 전담 법인이 아니라 여러 벤더의 파트너 사업을 맡는 법인**으로 보는 것이 맞다. **법인 구조와 처우 차이는 여전히 확인하지 못했다.**",
     "개발 직군 연봉 밴드가 없고, 집계 두 곳이 4,381만원과 7,746만원으로 거의 두 배 차이 난다.",
     "채용 전형 절차를 밝힌 공개 자료를 찾지 못했다. 공고 하단에 '필요 시 레퍼런스 체크, 인성검사가 진행될 수 있습니다'만 공통으로 붙어 있다.",
-    "**관계사 `메가존소프트` 공고는 본사와 같은 회사명으로 올라온다.** `GCP AI Engineer` 와 `Data Engineer` 둘 다 본문 끝에 `※ 안내 : 해당 내용은 메가존 Alliance 관계사인 메가존소프트 법인으로 채용 진행됩니다` 가 있는데, **크롤 데이터의 회사명은 `메가존클라우드(주)`** 다. **제목 접두사 `[메가존클라우드관계사]` 와 이 안내 줄로만 구분된다** — `aliases` 로는 걸러지지 않는다. **두 자리 모두 GCP 전문**이라 메가존소프트가 구글 클라우드 쪽을 맡는 법인으로 읽히나, **법인 구조와 처우 차이는 확인하지 못했다.**"
+    "**관계사 `메가존소프트` 공고는 본사와 같은 회사명으로 올라온다.** `GCP AI Engineer` 와 `Data Engineer` 둘 다 본문 끝에 `※ 안내 : 해당 내용은 메가존 Alliance 관계사인 메가존소프트 법인으로 채용 진행됩니다` 가 있는데, **크롤 데이터의 회사명은 `메가존클라우드(주)`** 다. **제목 접두사 `[메가존클라우드관계사]` 와 이 안내 줄로만 구분된다** — `aliases` 로는 걸러지지 않는다. **두 자리 모두 GCP 전문**이라 메가존소프트가 구글 클라우드 쪽을 맡는 법인으로 읽히나, **법인 구조와 처우 차이는 확인하지 못했다.**",
+    "사람인 '메가존소프트 Data Engineer'(55071627)는 관계사 메가존소프트 법인 채용이라고 적혀 있다"
   ]
 }
