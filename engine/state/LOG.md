@@ -1428,3 +1428,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ENECHANGE Step Functions 배선 테스트
 
 - Step Functions 글 전문으로 `stepfunctions-wiring-teststate-mock`(결정 6 — 배선/내용 분리·Local 대신 TestState API·mock 판단·output/nextState 만·CI 권한·E2E). 글이 짧아 결정 6.
+
+## 2026-09-26 ENECHANGE 완주 판정 — 비교·EV hold
+
+- 사이트맵 2023~2026 199편 제목을 병렬로 받아 거름(처음 'EV' 를 대소문자 무시로 걸어 'Developer' 에 다 걸렸다 — 블로그명 접미사를 떼고 대소문자 구분으로 다시). 비교·EV 0건, 전력 데이터 Glue+Iceberg·DR 은 사업자 쪽. speakerdeck 404. hold_reason 추가.

@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**ENECHANGE — 확장 2(2026-09-26): Step Functions 도메인에 `stepfunctions-wiring-teststate-mock`(결정 6). 두 도메인 모두 기능 있음. 다음은 완주 판정 — 비교·전환(개인·법인)·EV·투자 수익원에 도메인이 없다: tech.enechange.co.jp 사이트맵 2023~2026 전 제목(병렬, `awk 'length<400'`)을 '比較·切り替え·シミュレーション·料金プラン·EV·充電' 로 거르고, 두 번 없으면 hold. `--gaps` 는 신규(드왕고 교육)를 가리키지만 ENECHANGE 를 먼저 닫는다. 대기 1/3 — 그 뒤 후보 조사. 머니포워드·라쿠스(hold)·LayerX 는 in_progress.**
+**ENECHANGE — hold(2026-09-26, 도메인 2 · 기능 2). 비교·전환·EV·투자 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 신규: QUEUE 대기 맨 위(드왕고 교육 — `blog.nnn.dev`, 교재 기반 10년 회고 `entry/2026/06/01/110000` 부터, scratchpad `nnn_kyozai.txt`). 대기 1/3 — 드왕고 교육 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
 
 
 
@@ -366,6 +366,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **ANDPAD 청구서 선지급 도메인** — 2026-09-26 두 번 찾아 없음(블로그 검색 5낱말 · 웹 검색). PdM 회고만 있다. 선지급·請求管理·심사 시스템 글이 새로 나오면 다시.
 - **머니포워드 X(금융기관 DX) 수익원** — 2026-09-26 두 번 찾아 기능으로 쓸 자료 없음(블로그 검색 · 웹 검색 — 2023 Go 도입 발표는 얕다). BANK APP·Mikatano 구조 글이 새로 나오면 다시.
 - **라쿠스 BlastMail·웹 미디어 수익원** — 2026-09-26 두 번 찾아 없음(tech-blog 사이트맵 329편 제목 · blastmail.jp 블로그). 발송 엔진·도달률 구조 글이 새로 나오면 다시.
+- **ENECHANGE 비교·전환·EV·투자 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 199편 제목 · speakerdeck 404). 비교 엔진·요금 시뮬레이션·EV 충전 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
