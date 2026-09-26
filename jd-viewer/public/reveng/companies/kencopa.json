@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "in_progress",
+  "hold_reason": "수익원 '적산 AI 에이전트' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 8편 전부 / Zenn 검색 API '積算 AI'·'KENCOPA'·'数量拾い' 0건). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 설계도에서 수량을 뽑는 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "kencopa.com",
   "one_liner": "건설 전문 AI 에이전트 KENCOPA — 설계 도서에서 공정표를 15분에 만드는 에이전트는 수백 액티비티·계층 보카케·수천 수량의 연결을 워크플로 → 동시 연결 → 오케스트레이터 → 서브에이전트로 네 번 다시 짰고, PDF 표 해석은 VLM 에 통째로 맡기지 않고 표 구조는 변환 도구에, 의미는 VLM 에 나눈다",

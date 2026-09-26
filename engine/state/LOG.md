@@ -1779,3 +1779,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 KENCOPA SDS PDF 표 추출
 
 - 결정 5 — E2E 먼저·과제를 그라운딩/의미로 분해·Marker(OSS·일본어·병합 셀)·`--use_llm` 안 씀·크롭+VLM 대신 구조까지 전문 모델. 벤치마크 수치는 Marker README 인용이라 metrics 라벨에 표시.
+
+## 2026-09-26 KENCOPA hold
+
+- 검색 1 RSS 8편 전부 · 검색 2 Zenn 검색 API 3낱말 0건. hold_reason·'재시도 안 함'·QUEUE hold.
