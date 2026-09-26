@@ -389,6 +389,88 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/54900233",
+      "title": "Software Engineer / Full Stack(3~5년)",
+      "site": "jumpit",
+      "verdict": "경력 3~5년, 서울 강동구 성안로. AI사업실의 **AI 아티스트 신규 모바일 서비스** 풀스택 엔지니어다 — 팬이 AI 아티스트와 **채팅하고 AI 가 생성한 음성/영상으로 통화**하는 앱을 프론트부터 백엔드·배포·운영까지 맡는다. 주요업무는 React Native 크로스 플랫폼 클라이언트, **실시간 채팅과 AI 생성 음성/영상 스트리밍 통화**, 리얼타임 AI 서비스 백엔드 아키텍처와 고성능 API, **AI 모델 연동·추론 파이프라인**, 품질·성능 모니터링. 자격은 **TypeScript 숙련**, **WebSocket/WebRTC 연동**, REST API·DB 모델링, Python 또는 Node.js. 우대는 LLM·TTS 연동, Docker·AWS/GCP, Sentry·Crashlytics, 팬덤 도메인, 글로벌 서비스, 전 과정 참여. 같은 업무의 사람인 공고(54900167)는 9년 이상 리드급이다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "TypeScript",
+          "WebSocket/WebRTC 연동",
+          "REST API·DB 모델링",
+          "Python 또는 Node.js"
+        ],
+        "can_learn": [
+          "LLM·TTS 스트리밍 연동",
+          "WebRTC 미디어 서버",
+          "앱 크래시 모니터링"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AI 음성/영상 통화 — WebRTC 로 실시간 미디어 잇기",
+          "from": "task",
+          "quote": "• 실시간 채팅 및 AI 생성 음성/영상 스트리밍 기반 통화 기능 구현",
+          "priority": "core",
+          "why": "주요업무이고 자격요건이 WebRTC 연동 경험을 요구한다.",
+          "gap_check": "WebRTC 연결이 시그널링(SDP 교환)·ICE(STUN/TURN)·미디어 전송 순으로 서는 과정을 설명할 수 있는가? 한쪽이 사람이 아니라 서버의 AI 음성 합성일 때 P2P 대신 미디어 서버(SFU)를 두는 이유와, 모바일 네트워크 전환(와이파이→LTE) 때 무엇이 끊기는가?",
+          "drill": "MDN WebRTC API·프로토콜 문서를 읽고, 두 브라우저 사이 음성 통화를 WebSocket 시그널링으로 직접 연결한다. 이어 LiveKit 문서로 서버 측 참가자(미리 녹음한 음성을 AI 목소리 대신 송출)를 붙여 앱에서 받는 구조를 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "WebRTC API — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction to WebRTC protocols — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Protocols",
+              "kind": "docs"
+            },
+            {
+              "title": "LiveKit Documentation",
+              "url": "https://docs.livekit.io/intro/overview/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 추론을 실시간 채팅에 붙이기 — 스트리밍과 지연",
+          "from": "task",
+          "quote": "• AI 모델 연동 및 추론 파이프라인 구축",
+          "priority": "core",
+          "why": "주요업무이고 우대사항에 LLM·TTS 연동이 있다.",
+          "gap_check": "LLM 응답을 다 만든 뒤 보내는 것과 토큰 단위로 스트리밍하는 것은 체감 지연이 어떻게 다른가? LLM→TTS→음성 송출을 문장 단위로 파이프라인하면 첫 음성까지의 시간이 왜 줄어드는가? 팬 수천 명이 동시에 말을 걸 때 백엔드에서 큐·동시성 제한·타임아웃을 어디에 두는가?",
+          "drill": "MDN WebSocket 문서를 읽고, Node.js 서버가 LLM API 응답을 토큰 스트림으로 받아 WebSocket 으로 앱에 흘려보내게 만든다. 첫 토큰까지·첫 문장까지·전체 응답까지 시간을 측정하고, 동시 접속 100개 부하에서 지연 분포를 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "WebSocket API — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "앱 크래시·성능 모니터링",
+          "from": "preference",
+          "quote": "• 앱 크래시 및 성능 모니터링 운영 경험 (Sentry, Firebase Crashlytics 등)",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 서비스 품질·성능 모니터링이 있다.",
+          "gap_check": "RN 앱에서 JS 오류와 네이티브 크래시는 어떻게 다르게 잡히고, 소스맵·디버그 심볼을 올리지 않으면 스택트레이스가 왜 읽을 수 없게 되는가? 통화 중 끊김 같은 사용자 체감 문제를 크래시가 아닌 지표로 어떻게 남기는가?",
+          "drill": "Sentry React Native 문서로 샘플 앱에 SDK 를 붙이고 JS 예외·네이티브 크래시를 각각 일으켜 소스맵 업로드 전후 스택트레이스를 비교한다. 통화 연결 실패·재연결 횟수를 사용자 정의 이벤트로 남긴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Sentry for React Native",
+              "url": "https://docs.sentry.io/platforms/react-native/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
