@@ -13579,6 +13579,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8076295",
+      "title": "Senior Manager - Backend Engineering",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 벵갈루루 근무다(하이브리드, 주 3일 이상 출근 — 공고 원문). 소프트웨어 8년 이상 중 엔지니어링 관리 3년 이상의 관리자 자리로, 쿠팡 운송(transportation) 생태계의 플랫폼을 글로벌 사용 사례에 맞게 재설계하는 과제를 이끌고 인도에서 8~10명 팀을 새로 뽑아 키운다. 하루 3~4천만 건 트랜잭션을 처리하는 이벤트 기반 시스템이라고 공고가 적는다. 크롤러가 본문 전체를 주요업무 칸에 넣어 자격요건 칸이 비어 있다.",
+      "fit": {
+        "must_have": [
+          "소프트웨어 8년 이상·엔지니어링 관리 3년 이상",
+          "Java 백엔드·분산 시스템",
+          "10명 이상 팀 관리 경험",
+          "MySQL·Aurora·TiDB·DynamoDB 실무",
+          "Kafka·Flink·Spark 등 이벤트 기반·스트리밍",
+          "대규모 고신뢰 플랫폼 기한 내 전달"
+        ],
+        "can_learn": [
+          "이커머스·운송·물류 도메인(우대)",
+          "글로벌 확장을 위한 재설계 경험(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "이벤트 기반 아키텍처와 Kafka 운영",
+          "from": "task",
+          "quote": "Work on high-scale, event-driven systems processing 30–40 million transactions daily",
+          "priority": "core",
+          "why": "하루 3~4천만 건을 처리하는 이벤트 기반 고확장 시스템을 만들고 발전시키는 것이 주요업무이고, 이벤트 기반·스트리밍(Kafka·Flink·Spark) 경험이 기본 자격이다.",
+          "gap_check": "배송 상태 변경 이벤트를 여러 서비스가 구독할 때 순서 보장(파티션 키), 중복 처리(멱등성), DB 쓰기와 이벤트 발행의 원자성은 각각 무엇으로 해결하는가?",
+          "drill": "주문→배차→배송 상태 이벤트를 Kafka 로 흘리는 작은 시스템을 만들고, 배송 ID 를 파티션 키로 쓰는 경우와 아닌 경우 순서가 어떻게 달라지는지, 트랜잭셔널 아웃박스로 발행을 원자화하는 방법을 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apache Kafka Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Martin Fowler — What do you mean by \"Event-Driven\"?",
+              "url": "https://martinfowler.com/articles/201701-event-driven.html",
+              "kind": "article"
+            },
+            {
+              "title": "microservices.io — Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "관계형·분산 SQL·NoSQL 선택 — MySQL·Aurora·TiDB·DynamoDB",
+          "from": "task",
+          "quote": "Hands-on experience with relational databases (MySQL, Aurora, TiDB) and NoSQL (DynamoDB)",
+          "priority": "core",
+          "why": "기본 자격이 관계형(MySQL·Aurora·TiDB)과 NoSQL(DynamoDB) 실무 경험이다.",
+          "gap_check": "하루 수천만 건이 쌓이는 배송 이력 테이블을 Aurora 단일 클러스터·TiDB·DynamoDB 중 어디에 둘지, 조회 패턴과 트랜잭션 요구로 어떻게 가르는가?",
+          "drill": "배송 이력의 접근 패턴(배송 ID 단건 조회, 기사별 당일 목록, 지역별 집계)을 적고, DynamoDB 키 설계와 TiDB 테이블·인덱스 설계를 각각 한 장으로 그려 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Amazon DynamoDB Developer Guide",
+              "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
+              "kind": "docs"
+            },
+            {
+              "title": "TiDB Overview",
+              "url": "https://docs.pingcap.com/tidb/stable/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "글로벌 확장을 위한 플랫폼 재설계 계획",
+          "from": "task",
+          "quote": "Break down complex problem statements into clear technical designs and execution plans, partnering with senior engineers",
+          "priority": "high",
+          "why": "글로벌 사용 사례를 위한 운송 시스템 재설계 과제를 이끌고, 복잡한 문제를 기술 설계와 실행 계획으로 쪼개는 것이 주요업무다.",
+          "gap_check": "한 나라 전용으로 만든 배송 플랫폼을 여러 나라에서 쓰게 바꿀 때 무엇(시간대·주소 체계·규제·통화)을 설정으로 빼고, 운영 중인 시스템을 어떤 순서로 옮기는가?",
+          "drill": "가상의 단일 국가 배차 서비스를 다국가로 바꾸는 설계 문서(현황·목표·단계별 이관·롤백 계획·위험 목록)를 한 편 쓴다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "엔지니어링 관리 — 채용·팀 구축·실행 관리",
+          "from": "task",
+          "quote": "Lead, hire, and grow a team of 8–10 engineers, setting a high bar for performance and career development",
+          "priority": "high",
+          "why": "인도에서 새 팀을 만들고 8~10명을 채용·성장시키며, 리스크 식별·완화·이해관계자 커뮤니케이션 같은 프로그램 관리를 하는 것이 주요업무다.",
+          "gap_check": "새 지역에서 팀을 처음 꾸릴 때 첫 채용 순서(시니어 먼저 vs 한 번에)를 어떻게 정하고, 본사 팀과의 시차·지식 격차로 생기는 위험을 무엇으로 줄이는가?",
+          "drill": "8명 팀 구성안(역할·채용 순서·온보딩 90일 계획)과 분기 실행 계획의 위험 등록부(위험·영향·완화·담당)를 각각 한 장으로 쓴다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "배송 이벤트 파이프라인 설계 문서",
+          "why": "기본 자격의 이벤트 기반·스트리밍과 DB 선택을 한 문서로 묶어 보여 준다. 관리자 면접에서도 기술 방향을 스스로 그리는 능력이 요구된다(주요업무의 technical direction).",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "이벤트 순서·멱등성",
+          "DB 선택 기준",
+          "다국가 재설계 이관 계획",
+          "신규 팀 채용·온보딩",
+          "위험 관리와 이해관계자 소통"
+        ],
+        "sources": [
+          {
+            "title": "Senior Manager - Backend Engineering",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8076295",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
