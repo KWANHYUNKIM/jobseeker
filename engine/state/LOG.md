@@ -1396,3 +1396,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Findy 스킬 편차치
 
 - ver.3 글 전문으로 `skill-score-pairwise-ranking`(결정 8 — 페어와이즈 승패·무작위 페어·언어별 모델·단순 모델·어노테이션 편향 억제·정량+정성 평가·편차치 정규화·비공개(inferred)). AI 가 쓴 코드가 GitHub 스킬 판정에 주는 영향은 글이 안 다룬다 — failure 그림에 남김.
+
+## 2026-09-26 Findy Tools 데이터 기반 — 완주
+
+- Tools 데이터 기반 글 전문으로 `tools-data-platform-boring-choices`(결정 8 — fluentbit·ECS vs Private Link/ETL·Embulk·dbt vs Dataform·하루 배치·Terraform 알림 vs Lambda·감시 범위 분담·uv vs Docker). 도메인 4 모두 기능 · 수익원 3 연결 → done, QUEUE 완료로.

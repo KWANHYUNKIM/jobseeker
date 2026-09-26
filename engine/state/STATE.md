@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Findy — 확장 3(2026-09-26): 스킬 편차치 도메인에 `skill-score-pairwise-ranking`(결정 8). 다음은 확장: '도구 리뷰 사이트의 데이터 기반을 실적 있는 도구로 빨리 짓는다' 를 Tools 데이터 기반 글(`entry/findy_tools_data_infrastructure_introduction`, scratchpad `fd_tools_data.txt` — 전송 방식 기각안 표·dbt vs Dataform·Terraform 알림·uv vs Docker·래퍼) → 그러면 도메인 넷 모두 기능 · 수익원 셋 연결 → done. 대기 3/3(라쿠스·ENECHANGE·드왕고 교육). 머니포워드(hold)·LayerX 는 in_progress.**
+**Findy — 완주(2026-09-26, 도메인 4 · 기능 4). 다음은 `--gaps` 가 가리키는 신규: QUEUE 대기 맨 위(라쿠스 — `tech-blog.rakus.co.jp`, 楽楽精算 AI 에이전트 `entry/20260703/aiagent` 부터). 대기 3/3(라쿠스·ENECHANGE·드왕고 교육). 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 
