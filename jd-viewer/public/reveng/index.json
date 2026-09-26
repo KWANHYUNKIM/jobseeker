@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "기타",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "철 스크랩 검수를 카메라와 AI 로 하는 '鉄ナビ検収AI' 의 회사 — 공장마다 다른 기간 시스템은 코드가 아니라 설정으로 변환해 잇고, 거점마다 놓인 온프레 서버는 정의 파일로 릴리스하고, 쌓인 검수 데이터는 철강사마다 RLS 로 갈라 보여 준다",
       "updated_at": "2026-09-27",
       "domain": "eversteel.co.jp"
