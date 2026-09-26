@@ -21,7 +21,7 @@
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
 
-| **ANDPAD(アンドパッド)** | JP · 건설 SaaS | 프로파일(2026-09-26). 도메인 셋 — 서비스 입구와 대피로(VPC Origins) · 수발주에 붙은 청구서를 먼저 현금으로 · 도면의 표를 읽어 옮긴다. 기능 1(`single-entry-escape-route`). 다음 — 청구서 선지급(자료 얇음). |
+| **ANDPAD(アンドパッド)** | JP · 건설 SaaS | 프로파일(2026-09-26). 도메인 셋 — 서비스 입구와 대피로 · 수발주에 붙은 청구서를 먼저 현금으로 · 도면의 표를 읽어 옮긴다. 기능 2(`single-entry-escape-route` · `model-and-hands-read-tables`). **청구서 선지급 도메인 hold**(자료 2회 없음) — 그 수익원이 기능과 안 이어져 완주 기준 셋째 미달, in_progress 로 둔다. |
 
 ## 대기
 
