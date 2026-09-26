@@ -5,6 +5,7 @@
   "country": "KR",
   "category": "게임",
   "status": "in_progress",
+  "hold_reason": "수익원 '애니메이션·라이선싱' 에 이을 시스템 자료를 두 번 찾아 두 번 다 없었다(2026-09-26 — tech.devsisters.com RSS 전체 약 70편, 다시 웹 검색에서 채용·기업 소개 페이지뿐). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 라이선싱·굿즈·IP 관리 시스템 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "devsisters.com",
   "one_liner": "쿠키런 IP 하나로 게임 열 개를 굴리는 회사 — 게임별로 가른 로그를 lag 으로 늘려 흘려보내고, 지표는 쿼리가 아니라 정의를 고친다",
