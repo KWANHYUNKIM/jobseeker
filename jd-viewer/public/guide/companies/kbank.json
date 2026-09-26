@@ -211,6 +211,87 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572686?ReturnUrl=RecruitInfo",
+      "title": "계정계 법인여신 상품 및 담보 업무 개발자(정규직) 채용",
+      "site": "dev",
+      "verdict": "경력 3~10년 미만, 정규직, 서울 중구. **법인여신의 계정계(원장·업무 처리)** 개발자다. 팀 소개는 여신개발팀이 여신의 신청부터 실행·상환·사후관리까지 모든 업무시스템을 개발·운영하고, 개인→개인사업자→'종착역인' 법인여신까지 모든 상품이 이 팀을 거쳐 출시되며, **한도 산정부터 실행·약정·정산, 담보 평가·설정·관리**까지 복잡한 여신 로직과 규제 요건을 다룬다고 적는다. 주요업무는 두 줄 — **법인 여신 신청·심사업무**, **담보 평가·설정·관리업무** 개발·운영. 자격은 **금융기관 계정계 여신 업무 IT 3~10년**(또는 준하는 역량), 요구사항 분석·설계·개발, **Java·Oracle**. 우대는 여신업무 흐름 전반 이해, 전체 프로세스를 고려한 설계, 커뮤니케이션. 전형은 서류→온라인 역량검사 및 과제→1차·2차 면접→평판조회·처우협의. 같은 업무의 전문경력직(15년 이상, 572684)이 따로 있다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "금융권 계정계 여신 IT 3~10년",
+          "Java·Oracle",
+          "요구사항 분석·설계"
+        ],
+        "can_learn": [
+          "법인 심사 로직",
+          "담보 평가·설정",
+          "여신 원장 설계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "담보 — 평가·설정·관리가 원장에 남기는 것",
+          "from": "task",
+          "quote": "담보 평가/설정/관리업무 개발 및 운영",
+          "priority": "core",
+          "why": "주요업무 둘째 줄이다.",
+          "gap_check": "담보 평가액·선순위 채권·담보인정비율(LTV)로 담보 한도를 어떻게 계산하고, 담보 하나가 여러 대출을 담보하거나(공동 담보) 대출 하나에 여러 담보가 붙을 때 데이터 모델은 어떻게 되는가? 담보 가치가 재평가로 떨어지면 무엇을 다시 계산하고 누구에게 알리는가?",
+          "drill": "담보·LTV 문서를 읽고, 여신–담보 다대다 관계(배분액·순위 포함) 테이블을 Oracle 로 설계한 뒤, 담보 재평가 시 관련 여신의 담보 배분액과 한도 초과 여부를 다시 계산하는 PL/SQL 또는 Java 배치를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Collateral (finance) — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Collateral_%28finance%29",
+              "kind": "docs"
+            },
+            {
+              "title": "Loan-to-value ratio — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Loan-to-value_ratio",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "법인 여신 신청·심사 — 계정계 쪽 흐름",
+          "from": "task",
+          "quote": "법인 여신 신청 / 심사업무 개발 및 운영",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다.",
+          "gap_check": "신청 접수→심사(신용평가 결과·재무 정보·한도 산정)→승인→약정→실행으로 가는 동안 계정계 원장의 상태가 어떻게 바뀌고, 채널계·심사 시스템과는 어떤 경계로 주고받는가? 심사 조건이 바뀐 뒤에도 과거 신청건을 당시 기준으로 재현할 수 있게 하려면 무엇을 남기는가?",
+          "drill": "코어뱅킹·신용위험 문서를 읽고, 법인 여신 신청건 상태 전이(접수·심사중·승인·거절·약정·실행·취소)와 각 전이의 선행 조건을 표로 쓴다. 심사 시점의 기준값(금리·한도 규칙 버전)을 신청건에 고정 저장하는 테이블을 설계한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Core banking — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Core_banking",
+              "kind": "docs"
+            },
+            {
+              "title": "Credit risk — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Credit_risk",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "계정계 트랜잭션 — 돈이 오가는 곳의 정합성",
+          "from": "qualification",
+          "quote": "Java / Oracle을 활용한 개발에 능숙하신 분",
+          "priority": "high",
+          "why": "자격요건이다. 계정계 여신은 실행·상환·정산에서 원장 정합성이 생명이다.",
+          "gap_check": "대출 실행 한 건이 여신 원장·계좌 입금·담보 상태를 함께 바꿀 때 하나의 트랜잭션으로 묶어야 하는 범위는 어디까지이고, 중간 실패 시 무엇이 되돌려져야 하는가? 같은 여신을 두 요청이 동시에 수정할 때 잠금(SELECT FOR UPDATE)과 격리 수준은 어떻게 쓰는가?",
+          "drill": "Oracle 트랜잭션 개념 문서를 읽고, Java+Oracle 로 '대출 실행' 트랜잭션(원장 상태 변경·입금·담보 상태)을 구현한 뒤 입금 단계에서 예외를 던져 전체가 롤백되는지, 동시 실행 요청 두 개가 한 건만 성공하는지 테스트한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Transactions — Oracle Database Concepts 19c",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/transactions.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
