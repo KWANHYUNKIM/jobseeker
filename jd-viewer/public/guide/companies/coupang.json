@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다. `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(Mountain View)는 `The base pay for this position ranges from $187,000/year in our lowest geographic market to $322,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(Seattle)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 원화로 환산하지 않는다. `Sr. Director, AI Infrastructure`(Mountain View/Seattle)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Sr.Director, Data Science & Data Engineering`(Mountain View)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — `Sr. Director, AI Infrastructure` 와 같은 범위다. 원화로 환산하지 않는다. `Sr. Director, Search AI - Production Engineering`(Mountain View)도 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 같은 직급 공고 세 건이 같은 범위다. 원화로 환산하지 않는다.",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다. `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(Mountain View)는 `The base pay for this position ranges from $187,000/year in our lowest geographic market to $322,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(Seattle)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 원화로 환산하지 않는다. `Sr. Director, AI Infrastructure`(Mountain View/Seattle)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Sr.Director, Data Science & Data Engineering`(Mountain View)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — `Sr. Director, AI Infrastructure` 와 같은 범위다. 원화로 환산하지 않는다. `Sr. Director, Search AI - Production Engineering`(Mountain View)도 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 같은 직급 공고 세 건이 같은 범위다. 원화로 환산하지 않는다. `Principal Engineer, ML`(Seattle, Ads Serving & ML Platform)은 `The base pay for this position ranges from $207,900/year in our lowest geographic market to $386,100/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 하단·상단 모두 가장 높다. 원화로 환산하지 않는다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -15576,6 +15576,106 @@
           {
             "title": "Sr. Director, Search AI - Production Engineering",
             "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7776741",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8175850",
+      "title": "Principal Engineer, ML",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 미국 시애틀 근무다. 대규모 플랫폼·ML 시스템 12년 이상·석사 이상의 프린시펄 엔지니어로, 쿠팡 광고 서빙·ML 플랫폼(Ads Serving & ML Platform)의 장기 기술 비전·아키텍처를 정하고, 검색·랭킹·경매·타기팅·페이싱·측정을 포함한 대규모 광고 서빙 시스템 설계를 이끈다. 직접 권한 없이 여러 조직의 기술 방향에 영향을 주는 자리라고 공고가 적는다. 연봉 범위가 원문에 있다(기본급 $207,900~$386,100 — 지금까지 본 미국 범위 중 하단·상단 모두 가장 높다) — 원화로 환산하지 않는다.",
+      "fit": {
+        "must_have": [
+          "대규모 플랫폼·ML·분산 인프라 12년 이상",
+          "인터넷 규모 고처리량 온라인 시스템 설계·운영",
+          "광고·검색·추천·개인화 중 하나 이상 깊은 전문성",
+          "GPU·CPU 서빙 인프라의 지연·처리량·비용 최적화",
+          "LLM·파운데이션 모델·RAG·운영 AI 서빙",
+          "후보 생성·랭킹·정밀도/재현율/지연/비용 트레이드오프",
+          "Java·C++·Python",
+          "CS 등 석사 이상"
+        ],
+        "can_learn": [
+          "광고 플랫폼·경매·검색 광고 제품(우대)",
+          "실시간 ML(우대)",
+          "박사(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "광고 서빙 시스템 — 후보·랭킹·경매·페이싱·측정",
+          "from": "task",
+          "quote": "Lead the design and evolution of large-scale ad serving systems, including retrieval, ranking, auction, targeting, pacing, and measurement.",
+          "priority": "core",
+          "why": "검색·랭킹·경매·타기팅·페이싱·측정을 포함한 대규모 광고 서빙 시스템의 설계·발전을 이끄는 것이 주요업무이고, 광고 플랫폼·랭킹·경매·검색 광고 제품 경험이 우대사항이다.",
+          "gap_check": "광고 요청 하나가 들어와 노출이 결정되기까지 후보 광고 선택 → 클릭 확률 예측 → 입찰가와 결합한 순위 → 가격 결정 → 예산 소진 속도 조절이 어떤 순서로 일어나고, 각 단계의 지연 예산은 어떻게 나누는가?",
+          "drill": "GSP 경매 논문을 읽고, 광고 20개·입찰가·예측 CTR 로 순위와 과금(차순위 기준)을 계산하는 작은 시뮬레이터를 만든 뒤, 광고주 일 예산을 하루에 고르게 쓰는 단순 페이싱(확률적 스로틀링)을 붙여 예산 소진 곡선을 그린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Edelman, Ostrovsky, Schwarz — Internet Advertising and the Generalized Second-Price Auction",
+              "url": "https://www.aeaweb.org/articles?id=10.1257/aer.97.1.242",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "광고 클릭 예측 모델의 운영",
+          "from": "qualification",
+          "quote": "Strong understanding of modern machine learning systems, including model training, feature engineering, experimentation, online inference, evaluation, and production operations.",
+          "priority": "core",
+          "why": "모델 학습·특성 공학·실험·온라인 추론·평가·운영을 포함한 현대 ML 시스템의 깊은 이해가 필수 자격이다. 광고 랭킹의 핵심 입력은 클릭 확률 예측이다.",
+          "gap_check": "클릭 예측값이 실제보다 체계적으로 높거나 낮으면(보정 불량) 경매 순위와 광고주 과금이 어떻게 틀어지고, 운영 중에 보정은 무엇으로 감시하는가?",
+          "drill": "Google 의 광고 클릭 예측 운영 논문을 읽고, 공개 CTR 데이터로 로지스틱 회귀를 학습해 예측 구간별 실제 클릭률(보정 곡선)을 그리고 보정 전후 경매 과금 차이를 시뮬레이터로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "McMahan et al. — Ad Click Prediction: a View from the Trenches",
+              "url": "https://research.google/pubs/ad-click-prediction-a-view-from-the-trenches/",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "GPU·CPU 서빙 인프라의 지연·처리량·비용",
+          "from": "qualification",
+          "quote": "Experience building and scaling AI/ML serving infrastructure, including optimization of GPU- and CPU-based systems for latency, throughput, and cost efficiency.",
+          "priority": "high",
+          "why": "GPU·CPU 기반 AI/ML 서빙 인프라의 지연·처리량·비용 최적화 경험이 필수 자격이고, 실시간 추론·LLM 등 새 기술 도입을 이끄는 것이 주요업무다.",
+          "gap_check": "광고 랭킹 모델을 CPU 에서 GPU 로 옮길 때 요청당 지연 한도(수십 ms) 안에서 배칭을 어디까지 할 수 있고, 비용 이득이 나는 트래픽 규모는 어떻게 계산하는가?",
+          "drill": "Triton 으로 작은 랭킹 모델을 CPU·GPU 두 구성으로 띄워 동적 배칭 대기 시간을 바꿔 가며 p99 지연·처리량을 재고, 초당 요청 수별 대당 비용 곡선을 그린다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "NVIDIA Triton Inference Server — User Guide",
+              "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "GSP 경매 + 페이싱 시뮬레이터",
+          "why": "광고 서빙의 경매·페이싱은 이 자리의 핵심 도메인이다. 보정 불량이 과금에 미치는 영향까지 보여 주는 시뮬레이터는 프린시펄 면접의 설계 대화를 바로 끌어낸다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "광고 요청 경로와 지연 예산",
+          "경매 과금·보정",
+          "예산 페이싱",
+          "GPU 서빙 비용",
+          "권한 없이 방향 바꾸기"
+        ],
+        "sources": [
+          {
+            "title": "Principal Engineer, ML",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8175850",
             "publisher": "Coupang Careers"
           }
         ]

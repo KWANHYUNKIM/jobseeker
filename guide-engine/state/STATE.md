@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **148건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **149건**.
+직전 회차: ✅ `Principal Engineer, ML`(8175850) 3항목 — **시애틀**, 광고 서빙·ML 플랫폼(경매·페이싱·CTR 보정·GPU 서빙), $207,900~$386,100(미국 범위 최고).
 직전 회차: ✅ `Sr. Director, Search AI - Production Engineering`(7776741) 3항목 — **마운틴뷰**, 검색 E2E 소유·로드맵·조직, $184K~$376K(Sr. Director 세 건 동일 범위). 주요업무 한 줄 원문에서 끊김.
 직전 회차: ✅ `Sr.Director, Data Science & Data Engineering`(8155448) 3항목 — **마운틴뷰**, 검색 조직 DS·DE 20명, 실험 기능, $184K~$376K.
 직전 회차: ✅ `Sr. Director, AI Infrastructure`(7361248) 3항목 — **마운틴뷰/시애틀**, AI 인프라 오케스트레이션 총괄(GPU·활용률·SLO), $184K~$376K, 공고가 성과 지표를 직접 적음.
