@@ -312,6 +312,100 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/268223",
+      "title": "[제타]  Site Reliability Engineer (DevOps)",
+      "site": "wanted",
+      "verdict": "경력 3-10년, 서울 성동구. 제타의 **SRE(DevOps)** 로, 업무가 세 갈래다 — ① '수십만 명이 매일 3시간씩 체류하는' 서비스 운영, **멀티 클라우드 AI 서빙 인프라**, 모니터링, 처리량·지연 병목 최적화, ② 배포·모니터링 등 사내 자동화 유틸리티, ③ **로그 스트리밍·정제·대규모 배치 데이터 파이프라인**. 공고 소개가 자체 개발 LLM 을 **실시간 100대 이상의 GPU** 로 서빙하며 ML Engineer 와 비용·속도를 최적화한다고, 트래픽이 매월 2배 이상 늘고 여러 A/B 테스트가 동시에 돈다고, 로그를 제품 개선과 AI 학습에 쓰는 'AI Data Fly Wheel' 을 돌린다고 적는다. 필수는 SRE·DevOps·Backend 3년 이상, 대규모 트래픽 클라우드 운영, **Kubernetes 와 Istio**, **OS·Network 중심 CS 기초**. 우대는 IaC, RDB·NoSQL·In-memory DB, 로그 스트리밍·분석 시스템, AI 기반 서비스 운영, 비동기·논블로킹 웹 개발. 전형: 서류 ＞ 리쿠르터 콜 ＞ **직무 과제(코딩 테스트)** ＞ **컬처 에세이** ＞ 직무 면접 ＞ 컬처핏 면접 ＞ 처우 협의 ＞ 최종 합격, 3개월 수습. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "SRE·DevOps·Backend 3년 이상",
+          "대규모 트래픽 클라우드 운영",
+          "Kubernetes·Istio",
+          "OS·Network 기초"
+        ],
+        "can_learn": [
+          "LLM GPU 서빙 최적화",
+          "로그 스트리밍 파이프라인",
+          "멀티 클라우드"
+        ]
+      },
+      "study": [
+        {
+          "topic": "LLM 서빙 인프라 — GPU 를 비싸지 않게",
+          "from": "task",
+          "quote": "• 멀티 클라우드 환경에서 확장 가능한 AI 서빙 인프라를 구축합니다.",
+          "priority": "core",
+          "why": "주요업무다. 공고가 실시간 100대 이상 GPU 로 자체 LLM 을 서빙하며 비용·속도를 최적화한다고 적는다 — 무료 서비스(회사 브리핑)라 추론 비용이 곧 수익성이다.",
+          "gap_check": "요청을 하나씩 처리하면 GPU 가 왜 놀게 되고 연속 배칭(continuous batching)은 무엇을 바꾸며, 트래픽이 시간대별로 크게 출렁일 때 GPU 노드를 늘리고 줄이는 기준은 GPU 사용률·대기열 길이·첫 토큰 지연 중 무엇이 적합하고, 한 클라우드의 GPU 재고가 없을 때 멀티 클라우드로 무엇을 얻는가?",
+          "drill": "vLLM 문서로 작은 오픈 모델을 띄워 동시 요청 1·8·32 에서 처리량(토큰/초)과 첫 토큰 지연을 측정한다. Kubernetes GPU 스케줄링 문서를 읽고, GPU 노드 풀과 대기열 길이 기반 오토스케일 설계를 그림으로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "vLLM Documentation",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Schedule GPUs — Kubernetes",
+              "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Istio 트래픽 관리 — 실험과 무중단 배포",
+          "from": "qualification",
+          "quote": "• Kubernetes와 Istio를 활용한 시스템 운영 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격요건이다. 공고가 '동시에 진행되는 여러가지 A/B 테스트들을 원활하고 엄밀하게 진행할 수 있도록' 하는 것을 SRE 의 일로 적는다.",
+          "gap_check": "새 모델 버전을 트래픽의 5% 에만 보내려면 Istio VirtualService·DestinationRule 로 무엇을 정의하고, 같은 유저가 매번 같은 버전에 가게(실험 일관성) 하려면 무엇(헤더·쿠키 기반 라우팅)을 쓰며, 사이드카가 추가하는 지연은 LLM 응답처럼 긴 요청에서 얼마나 문제가 되는가?",
+          "drill": "Istio 트래픽 관리 문서를 따라 로컬 클러스터에 서비스 v1·v2 를 올리고 가중치 95/5 분할, 헤더(x-exp-group) 기반 고정 라우팅, 재시도·타임아웃을 설정해 요청 분포를 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Traffic Management — Istio",
+              "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "로그 스트리밍 파이프라인 — Data Fly Wheel 의 입구",
+          "from": "task",
+          "quote": "• 로그 스트리밍, 데이터 정제, 대규모 배치 작업 수행 등 다양한 일을 하는 파이프라인을 구축하고 운영에 필요한 도구를 개발합니다.",
+          "priority": "high",
+          "why": "주요업무이고 공고가 서비스 이벤트·로그를 실시간 수집해 제품 개선과 AI 모델 학습에 쓴다고 적는다.",
+          "gap_check": "대화 로그를 AI 학습 데이터로 쓰려면 수집 단계에서 무엇(개인정보 마스킹·유저 동의 여부·중복 제거)을 해야 하고, 실시간 지표용 스트림과 학습용 대규모 배치는 같은 원천에서 어떻게 나눠 흐르게 하며, 소비자가 멈춰도 로그를 잃지 않으려면 무엇(보존 기간·재처리)을 두는가?",
+          "drill": "Kafka 로 가짜 대화 이벤트를 흘리고, 스트림 소비자 하나는 분당 활성 유저를 집계하고 다른 하나는 이메일·전화번호 패턴을 마스킹해 파일로 적재하게 한다. 적재 소비자를 멈췄다 켜서 밀린 로그를 따라잡는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Introduction | Apache Kafka",
+              "url": "https://kafka.apache.org/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OS·네트워크 기초로 병목 찾기 — USE 방법",
+          "from": "qualification",
+          "quote": "• OS, Network를 중심으로 하는 컴퓨터 공학에 대한 탄탄한 기본 지식이 있으신 분",
+          "priority": "high",
+          "why": "필수 자격요건이고 주요업무에 '높은 Throughput과 낮은 Latency를 위해 병목 요소들을 찾아 최적화' 가 있다. 전형에 직무 과제(코딩 테스트)가 있다.",
+          "gap_check": "API 지연이 늘었을 때 CPU·메모리·디스크·네트워크 각각의 사용률(Utilization)·포화(Saturation)·오류(Errors)를 무엇(top·vmstat·iostat·ss)으로 확인하고, 연결은 많은데 CPU 가 한가하다면 무엇(파일 디스크립터·TIME_WAIT·커넥션 풀)을 의심하는가?",
+          "drill": "USE 방법 글을 읽고 리눅스 체크리스트를 만든 뒤, 일부러 커넥션을 닫지 않는 서버에 부하를 줘 ss 로 연결 상태가 쌓이는 것을 관찰하고 원인과 해결을 기록한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "The USE Method — Brendan Gregg",
+              "url": "https://www.brendangregg.com/usemethod.html",
+              "kind": "article"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
