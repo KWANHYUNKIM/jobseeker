@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **159건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **160건**.
+직전 회차: ✅ `Senior Staff ll, Machine Learning Engineer - Search Relevance`(8090443) 3항목 — **마운틴뷰**, 검색 관련성(재순위화·LLM 판정·스택), $187K~$322K.
 직전 회차: ✅ `Manager, Back-end Engineering (Eats Merchant)`(8175617) 3항목 — 서울, 이츠 상점주 플랫폼 EM(주문 상태 이벤트·온콜·다국가 정산).
 직전 회차: ✅ `Staff Backend Engineer – Search and Discovery Product Engineering`(8140987) 3항목 — **마운틴뷰**, 검색 백엔드(꼬리 지연·과부하·React Web), $194K~$243K.
 직전 회차: ✅ `Staff Backend Engineer (Application Infra)`(7849021) 3항목 — **마운틴뷰/시애틀**, durable execution 워크플로 플랫폼(Temporal·99.9999%·Cassandra/TiDB), $164K~$282K. Cadence 문서 404 라 뺌.
