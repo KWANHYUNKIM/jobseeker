@@ -167,7 +167,8 @@
     "salary: 공고에 금액이 없다 — 비워 둔다",
     "jobkorea·사람인 데이터 엔지니어와 사람인 의료데이터 분석가는 원티드와 제목이 같다 — 본문 비교로 duplicate_of 판단할 것",
     "NLP·AI 에이전트(375155)는 헤더가 경력 3-8년인데 자격요건 첫 줄은 'NLP 또는 자연어처리 관련 프로젝트 개발 경험 2년 이상' 이다",
-    "데이터 엔지니어(359557)는 신입-경력 4년인데 자격요건에 Spark·DuckDB 대규모 처리 인프라 '구축 및 운영 유경험자' 와 대용량 마이그레이션 병목 해결이 있다 — 신입에게 어디까지 요구하는지 공고로는 알 수 없다"
+    "데이터 엔지니어(359557)는 신입-경력 4년인데 자격요건에 Spark·DuckDB 대규모 처리 인프라 '구축 및 운영 유경험자' 와 대용량 마이그레이션 병목 해결이 있다 — 신입에게 어디까지 요구하는지 공고로는 알 수 없다",
+    "사람인 Medical AI(55026485)는 모집 인원 칸이 '0명' 으로 적혀 있다 — 오기인지 알 수 없다. 같은 공고가 근무지를 서울 강남구 강남대로 292 로, 2027년 1분기 내 수내역 부근 이전 예정으로 적는다"
   ],
   "postings": [
     {
@@ -707,6 +708,148 @@
             "title": "CDM 기반 연구지원 및 병원 네트워크 운영 담당자",
             "url": "https://www.wanted.co.kr/wd/354548",
             "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55026485&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=cbf791a2-0dc4-4ae0-ab48-24582dc65e4f",
+      "title": "Medical AI",
+      "site": "saramin",
+      "verdict": "경력 3~8년. 원티드 NLP·AI 에이전트(375155)와 경력 범위·팀 일이 겹치지만 본문은 다른 공고다 — 이쪽은 Medical AI 팀 전체의 일을 넓게 적는다: 병원 비정형 텍스트의 정보추출·정형화·문서분류·분석·가명화, 의미기반 연결을 통한 OMOP CDM 표준용어 매핑 자동화, 의료데이터의 임상적 가치 탐색, 의료정보를 처리하는 AI 에이전트 설계·개발, 그리고 'AI를 통한 가치창출과 AX가 가능한 것이라면 무엇이든'. 자격요건은 세 줄로 짧다 — PyTorch, AI 자동화 또는 에이전트 설계·개발 경험, 의료/헬스케어 연구·개발 경험. 우대가 길다 — GPU 인프라·Docker·vLLM/llama.cpp 서빙, LangChain/LangGraph·MCP·A2A, EHR·HL7·FHIR·SNOMED CT·ICD·LOINC, OMOP CDM, 석사 이상. 급여조건은 '협의', 근무지는 서울 강남구 강남대로 292 이고 2027년 1분기 내 수내역 부근으로 이전 예정이라고 적혀 있다. 모집 인원 칸이 '0명' 으로 적혀 있다. 접수 기간 2026.09.14 ~ 2026.10.13. 전형은 서류 평가 → 1차 면접 → 2차 면접 → 처우 협의 → 최종합격.",
+      "fit": {
+        "must_have": [
+          "PyTorch",
+          "AI 자동화 또는 에이전트 설계·개발 경험",
+          "의료/헬스케어 연구·개발 경험"
+        ],
+        "can_learn": [
+          "GPU 인프라·Docker·vLLM/llama.cpp 서빙",
+          "LangChain·LangGraph·MCP·A2A",
+          "EHR·HL7·FHIR·SNOMED CT·ICD·LOINC",
+          "OMOP CDM 표준화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "의미기반 표준용어 매핑",
+          "from": "task",
+          "quote": "ㆍ의미기반 연결을 통한 OMOP CDM 표준용어 매핑 자동화",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'OMOP CDM 또는 임상 데이터 표준화 프로젝트 경험' 과 SNOMED CT·ICD·LOINC 가 있다. 회사가 50여 개 병원 데이터를 OMOP-CDM 으로 구축한다.",
+          "gap_check": "병원 로컬 검사명 'Hb(혈색소)' 를 임베딩 유사도로 LOINC 표준 컨셉 후보에 붙일 때, 단위·검체가 다른 후보는 무엇으로 걸러내고 확신이 낮은 건은 어떻게 사람에게 넘기는가?",
+          "drill": "Athena 에서 검사 컨셉 수십 개를 받아 임베딩 색인을 만들고, 가상 로컬 검사명 목록을 매핑해 top-3 후보·점수·리뷰 필요 여부를 표로 뽑는다. Usagi 의 방식과 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OHDSI Athena",
+              "url": "https://athena.ohdsi.org/",
+              "kind": "tool"
+            },
+            {
+              "title": "OHDSI Usagi",
+              "url": "https://github.com/OHDSI/Usagi",
+              "kind": "repo"
+            },
+            {
+              "title": "The Book of OHDSI — Standardized Vocabularies",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/StandardizedVocabularies.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비정형 의료 텍스트 추출·가명화",
+          "from": "task",
+          "quote": "ㆍ병원 비정형 데이터 텍스트의 정보추출, 정형화, 문서분류, 분석, 가명화 등",
+          "priority": "core",
+          "why": "첫 주요업무이고 자격요건에 '의료/헬스케어 도메인에 대한 연구/개발 경험' 이 있다.",
+          "gap_check": "퇴원요약지에서 환자 이름·병원명·날짜를 LLM 으로 가명화할 때 누락을 무엇으로 재고, 가명화 뒤에도 임상 정보(날짜 간격 등)가 살아 있게 하려면 어떻게 바꾸는가?",
+          "drill": "가상 퇴원요약지 20건을 만들어 규칙 기반과 LLM 기반 가명화를 각각 돌리고, 누락·과잉 삭제를 세어 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Hugging Face — Token classification",
+              "url": "https://huggingface.co/docs/transformers/tasks/token_classification",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 에이전트와 도구 연결(MCP·A2A)",
+          "from": "qualification",
+          "quote": "ㆍAI 자동화 or 에이전트 설계/개발 경험",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '방대한 의료정보를 처리하는 다양한 주제의 AI 에이전트 설계, 개발' 이, 우대에 LangChain·LangGraph 와 'MCP, A2A의 활용 경험' 이 있다.",
+          "gap_check": "CDM 데이터베이스를 에이전트가 조회하게 할 때 MCP 서버로 무엇(스키마 조회·읽기 전용 쿼리)을 열고 무엇을 막으며, 여러 에이전트가 일을 나눌 때 A2A 는 무엇을 표준화하는가?",
+          "drill": "MCP 문서를 따라 CDM 샘플 DB 에 읽기 전용 쿼리 도구를 여는 MCP 서버를 만들고, LangGraph 에이전트가 그걸로 '특정 진단 환자 수' 를 답하게 한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Model Context Protocol",
+              "url": "https://modelcontextprotocol.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "A2A Protocol",
+              "url": "https://a2a-protocol.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "LangGraph overview",
+              "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "사내 LLM 서빙(vLLM·llama.cpp)",
+          "from": "preference",
+          "quote": "ㆍvLLM, llama.cpp 등 LLM 모델 서빙 프레임워크 활용 경험",
+          "priority": "high",
+          "why": "우대사항이고 같은 묶음에 GPU 인프라와 Docker 배포가 있다. 원티드 NLP 공고도 온프레미스/사내 LLM 서빙(vLLM 등)을 적는다.",
+          "gap_check": "같은 모델을 vLLM 과 llama.cpp 로 띄울 때 GPU 메모리·동시 요청 처리·양자화 선택이 어떻게 달라지는가?",
+          "drill": "작은 공개 모델을 vLLM(GPU) 과 llama.cpp(양자화, CPU) 로 각각 띄워 같은 추출 프롬프트 100건의 처리 시간과 결과를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "vLLM Documentation",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "llama.cpp",
+              "url": "https://github.com/ggml-org/llama.cpp",
+              "kind": "repo"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "로컬 검사명 → LOINC 매핑 + MCP 로 CDM 조회하는 에이전트 데모",
+          "why": "주요업무의 표준용어 매핑 자동화와 에이전트 설계, 우대의 MCP·LLM 서빙을 한 번에 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "설계 근거를 설명하는 문서",
+          "why": "우대에 '논리적이고 근거있는 설계가 가능하고, 스스로의 결과물을 설명 가능하신 분' 이 있다. 데모와 함께 왜 그렇게 했는지 한 장을 붙인다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 평가 → 1차 면접 → 2차 면접 → 처우 협의 → 최종합격(공고 기준). 접수 기간 2026.09.14 ~ 2026.10.13, 사람인 온라인 입사지원.",
+        "expect": [
+          "의료 데이터 AI 연구·개발 경험",
+          "에이전트 설계와 근거 설명",
+          "표준용어 매핑 접근",
+          "LLM 서빙 경험"
+        ],
+        "sources": [
+          {
+            "title": "[에비드넷] Medical AI 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55026485&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=cbf791a2-0dc4-4ae0-ab48-24582dc65e4f",
+            "publisher": "사람인"
           }
         ]
       }
