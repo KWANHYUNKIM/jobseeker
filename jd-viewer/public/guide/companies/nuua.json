@@ -634,6 +634,99 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/118971",
+      "title": "웹(Web) 백엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 2-15년, 서울 중구. '항공 B2B/B2C 서비스' 백엔드 자리로 누아 공고 가운데 **연차 문턱이 가장 낮다**. 업무는 넷 — **예약 관리 시스템**, **차세대 여행 플랫폼 기술 서비스 연동**, **항공권 예약 서비스**, **항공권 검색 엔진**. 필수는 Java·Spring 개발 경험, 웹 서비스 개발, 논리적 사고·문제 해결 세 줄뿐이고, 우대는 항공·숙박 등 **예약 플랫폼 연동** 경험과 새 언어에 대한 흥미다. 기술 태그에 PHP 가 있으나 본문에는 없다. 머리말이 '차세대 항공 유통' 을 IATA ARM Index 인증과 함께 적는다(회사 브리핑) — 연동 대상은 NDC 등 항공 유통 표준으로 읽힌다. 원티드 번호가 낮은 오래된 게시다(머리말의 '지난 4월' = 2024년 4월). 같은 회사 Spring 백엔드(215761, 5년 이상)는 Kubernetes·AWS·고가용성을 필수·우대로 요구하는 윗선 자리다. 전형: 서류 → 면접(1~2차) → 처우 협의(추가 면접 가능) → 최종 합격, 서류에서 급여내역 삭제, 3개월 수습 뒤 정규직 계약. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java·Spring 개발 경험",
+          "웹 서비스 개발",
+          "논리적 문제 해결"
+        ],
+        "can_learn": [
+          "항공·숙박 예약 플랫폼 연동",
+          "NDC 항공 유통 표준",
+          "외부 API 병렬 호출"
+        ]
+      },
+      "study": [
+        {
+          "topic": "항공권 검색 — 여러 공급처를 동시에 묻기",
+          "from": "task",
+          "quote": "• 항공권 검색 엔진 개발",
+          "priority": "core",
+          "why": "주요업무다. 회사 브리핑대로 누아는 NDC·GDS·LCC 를 통합하는 항공 API 를 내세운다 — 한 번의 검색이 여러 공급처 호출로 갈라진다.",
+          "gap_check": "서울–도쿄 검색 한 번에 공급처 세 곳을 차례로 부르면 응답 시간은 어떻게 되고, 동시에 부르면 어떻게 되는가? 한 곳이 5초 넘게 응답하지 않으면 그 결과만 빼고 보여줄지 무엇으로 정하며, 같은 편이 두 공급처에서 다른 운임으로 오면 무엇을 기준으로 합치는가?",
+          "drill": "응답 지연이 다른 가짜 공급처 API 세 개(WireMock)를 두고, Spring 에서 순차 호출과 CompletableFuture 병렬 호출(개별 타임아웃 포함)로 검색을 구현해 전체 응답 시간과 한 곳이 느릴 때 결과를 비교한다. 편명·출발 시각이 같은 결과는 최저 운임만 남기는 병합 규칙을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "CompletableFuture — Java SE 21",
+              "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CompletableFuture.html",
+              "kind": "docs"
+            },
+            {
+              "title": "REST Clients — Spring Framework",
+              "url": "https://docs.spring.io/spring-framework/reference/integration/rest-clients.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "예약 관리 — 예약 상태 전이",
+          "from": "task",
+          "quote": "• 예약 관리 시스템 개발",
+          "priority": "core",
+          "why": "주요업무다. 누아 오피스가 자동화하는 발권·취소·환불이 모두 예약 상태를 바꾸는 일이다(회사 브리핑).",
+          "gap_check": "예약이 '좌석 확보(HOLD) → 결제 → 발권 → 취소/환불' 로 움직일 때 허용되지 않는 전이(발권 전 환불, 취소된 예약 발권)는 코드 어디에서 막고, 발권 기한이 지나 좌석 확보가 풀린 예약은 누가 언제 상태를 바꾸는가?",
+          "drill": "예약 상태를 enum 과 허용 전이 표로 구현하고, 잘못된 전이를 시도하면 예외가 나는 단위 테스트를 모두 쓴다. 발권 기한이 지난 HOLD 예약을 만료시키는 스케줄 작업을 붙이고, Spring Statemachine 문서의 상태·이벤트 개념과 자신의 구현을 짝지어 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Spring Statemachine — Reference Documentation",
+              "url": "https://docs.spring.io/spring-statemachine/docs/current/reference/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "차세대 항공 유통 — NDC 의 오퍼와 오더",
+          "from": "task",
+          "quote": "• 차세대 여행 플랫폼 기술 서비스 연동",
+          "priority": "high",
+          "why": "주요업무다. 머리말이 IATA '차세대 항공권 유통' 최상위 기술 인증(ARM Index)을 국내 첫 번째로 받았다고 적는다.",
+          "gap_check": "NDC 에서 '오퍼(Offer)' 와 '오더(Order)' 는 각각 무엇이고, 기존 GDS 방식의 운임·PNR·전자항공권과 비교해 좌석·수하물 같은 부가 서비스를 파는 방식이 어떻게 달라지는가?",
+          "drill": "IATA 의 NDC 소개 페이지를 읽고 '검색 → 오퍼 → 주문 생성 → 부가 서비스 추가 → 변경·취소' 흐름을 순서도로 그린 뒤, 위 예약 상태 전이 실습의 상태와 어디가 대응하는지 표시한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Distribution with Offers & Orders (NDC) — IATA",
+              "url": "https://www.iata.org/en/programs/airline-distribution/retailing/ndc/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "외부 예약 플랫폼 연동을 테스트하기",
+          "from": "preference",
+          "quote": "• 항공, 숙박 등 예약 플랫폼 연동 개발 경험",
+          "priority": "high",
+          "why": "우대사항이다. 연동 상대(항공사·호텔 공급처)의 실제 시스템으로는 오류 상황을 마음대로 만들 수 없다.",
+          "gap_check": "공급처 예약 API 가 타임아웃을 냈을 때 예약이 실제로 됐는지 안 됐는지 모르는 상태를 어떻게 처리하고(조회로 확인 후 재시도), 그 상황을 테스트에서 어떻게 재현하는가?",
+          "drill": "WireMock 으로 공급처 예약 API 를 흉내 내 정상·오류(500)·지연(타임아웃)·'예약은 됐는데 응답만 유실' 네 시나리오를 만들고, 각 경우 우리 서비스가 중복 예약 없이 올바른 상태로 끝나는지 통합 테스트로 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "WireMock Java — API Mocking",
+              "url": "https://wiremock.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
