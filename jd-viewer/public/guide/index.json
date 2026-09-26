@@ -517,6 +517,17 @@
       "postings": 6,
       "study_items": 18,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "naverwebtoon",
+      "name": "네이버웹툰",
+      "aliases": [
+        "네이버웹툰"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }

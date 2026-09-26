@@ -1,0 +1,172 @@
+{
+  "slug": "naverwebtoon",
+  "name": "네이버웹툰",
+  "name_en": "NAVER WEBTOON",
+  "aliases": [
+    "네이버웹툰"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "webtoonscorp.com",
+  "one_liner": "네이버웹툰·웹툰 글로벌·라인망가·네이버시리즈·왓패드를 운영하는 웹툰·웹소설 플랫폼 회사 — 광고와 IP 제휴(영상·게임·출판)로 사업을 넓힌다",
+  "company": {
+    "business": "회사 사이트는 네이버웹툰이 네이버의 작은 서비스로 시작해 2017년 5월 자회사로 독립했다고 적고, 네이버웹툰·웹툰 글로벌(북미·동남아·유럽·중남미)·라인망가(일본)·네이버웹소설·네이버시리즈·왓패드(북미 웹소설 플랫폼)를 운영 서비스로 든다. 사업으로 빅배너·PPL·홍보/브랜드 웹툰 등 광고와 영화·드라마·게임·애니메이션·캐릭터 상품·디지털 콘텐츠·출판 제휴를 적고, 자회사 스튜디오 N(영상)·스튜디오 lico(창작), 2022년 문피아 인수를 적는다. 모집중 공고는 신규 **Disney 디지털 코믹스 플랫폼** 서버 개발, 글로벌 서비스 iOS 개발, 사업·기획을 돕는 Data Product Engineer, 그리고 웹툰 IP 에 LLM 을 붙이는 캐릭터챗·숏폼 크리에이티브 툴 쪽 체험형 인턴 둘이다. 매출·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "NAVER WEBTOON Ltd.",
+        "url": "https://www.webtoonscorp.com/",
+        "publisher": "네이버웹툰",
+        "summary": "네이버의 작은 서비스로 시작해 2017년 5월 자회사로 독립했다고 적는다. 서비스로 네이버웹툰·웹툰 글로벌(북미·동남아·유럽·중남미)·라인망가(일본)·네이버웹소설·네이버시리즈·왓패드(북미 웹소설 플랫폼)를 나열한다. business 절은 빅배너·PPL·홍보/브랜드 웹툰 등 광고와 영화·드라마·게임·애니메이션·캐릭터 상품·디지털 콘텐츠·출판 제휴로 사업을 넓힌다고 적고, 자회사로 영상 제작 스튜디오 N·창작 스튜디오 lico 를 든다. 연혁에 2022.02 문피아 인수. 사무실은 성남 분당 네이버 그린팩토리 6-10층"
+      },
+      {
+        "title": "Disney 디지털 코믹스 플랫폼 서버 개발 (경력) 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570887?ReturnUrl=RecruitInfo",
+        "publisher": "캐치"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "광고(빅배너·PPL·브랜드 웹툰)",
+        "how": "회사 사이트 business 절이 빅배너·PPL·홍보/브랜드 웹툰 등 웹툰·웹소설 캐릭터와 온라인 지면을 활용한 광고를 적는다. 비중은 읽지 않았다.",
+        "domains": [
+          "웹툰·웹소설 플랫폼",
+          "데이터 프로덕트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "NAVER WEBTOON Ltd.",
+            "url": "https://www.webtoonscorp.com/",
+            "publisher": "네이버웹툰",
+            "summary": "네이버의 작은 서비스로 시작해 2017년 5월 자회사로 독립했다고 적는다. 서비스로 네이버웹툰·웹툰 글로벌(북미·동남아·유럽·중남미)·라인망가(일본)·네이버웹소설·네이버시리즈·왓패드(북미 웹소설 플랫폼)를 나열한다. business 절은 빅배너·PPL·홍보/브랜드 웹툰 등 광고와 영화·드라마·게임·애니메이션·캐릭터 상품·디지털 콘텐츠·출판 제휴로 사업을 넓힌다고 적고, 자회사로 영상 제작 스튜디오 N·창작 스튜디오 lico 를 든다. 연혁에 2022.02 문피아 인수. 사무실은 성남 분당 네이버 그린팩토리 6-10층"
+          }
+        ]
+      },
+      {
+        "name": "IP 제휴(영상·게임·애니·캐릭터·출판)",
+        "how": "같은 절이 영화·드라마·게임·애니메이션·캐릭터 상품·디지털 콘텐츠·출판 파트너 제휴를 적고, 영상 제작 자회사 스튜디오 N 을 든다. 캐릭터 AI 인턴 공고는 IP 에 LLM 을 접목한 캐릭터챗으로 사업 아이템을 찾는다고 적는다.",
+        "domains": [
+          "IP × AI 신규 서비스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "NAVER WEBTOON Ltd.",
+            "url": "https://www.webtoonscorp.com/",
+            "publisher": "네이버웹툰",
+            "summary": "네이버의 작은 서비스로 시작해 2017년 5월 자회사로 독립했다고 적는다. 서비스로 네이버웹툰·웹툰 글로벌(북미·동남아·유럽·중남미)·라인망가(일본)·네이버웹소설·네이버시리즈·왓패드(북미 웹소설 플랫폼)를 나열한다. business 절은 빅배너·PPL·홍보/브랜드 웹툰 등 광고와 영화·드라마·게임·애니메이션·캐릭터 상품·디지털 콘텐츠·출판 제휴로 사업을 넓힌다고 적고, 자회사로 영상 제작 스튜디오 N·창작 스튜디오 lico 를 든다. 연혁에 2022.02 문피아 인수. 사무실은 성남 분당 네이버 그린팩토리 6-10층"
+          },
+          {
+            "title": "캐릭터 AI 모델 기획 및 테스트 (체험형 인턴) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571843?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "Disney 디지털 코믹스 플랫폼",
+        "how": "서버 공고가 신규 Disney 디지털 코믹스 플랫폼을 설계·개발하고 '풍부한 프리미엄 콘텐츠를 기반으로, 다양한 비즈니스 모델을 단계적으로 전개할 예정' 이라고 적는다. 계약·수익 구조는 공고에 없다(추론).",
+        "domains": [
+          "웹툰·웹소설 플랫폼"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Disney 디지털 코믹스 플랫폼 서버 개발 (경력) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570887?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "웹툰·웹소설 플랫폼",
+        "why": "Disney 플랫폼 서버 공고가 Kotlin·Spring Boot 서버와 Nginx·Redis·RDB·Batch·Kafka·Object Storage, 국가별 법령·규제 컴플라이언스를 적고, iOS 공고가 이미지·동영상 뷰어 등 미디어 기능과 다국어 앱을 적는다.",
+        "what_to_know": [
+          "Kotlin·Spring Boot",
+          "글로벌 서비스 컴플라이언스",
+          "iOS 미디어 뷰어·다국어"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Disney 디지털 코믹스 플랫폼 서버 개발 (경력) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570887?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "글로벌 서비스 iOS 개발 (iOS Developer)(경력) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572727?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "데이터 프로덕트",
+        "why": "Data Product Engineer 공고가 사업·기획 문제를 데이터·기술로 푸는 재사용 가능한 데이터 자산·지표·서비스형 기능, 기존 데이터 플랫폼 위 자동화, AI Agent·LLM 으로 데이터 지원 업무 재설계를 적는다.",
+        "what_to_know": [
+          "SQL·Python",
+          "데이터 모델링·지표",
+          "LLM 기반 업무 자동화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[네이버웹툰] Data Product Engineer (경력)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55008796&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=eaca9380-cca6-4f8a-8354-233d74f6855d",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "IP × AI 신규 서비스",
+        "why": "캐릭터 AI 인턴 공고가 Digital Characters TF 가 웹툰 IP 와 LLM 을 접목한 캐릭터챗을 기획한다고, AI 서비스 기획 인턴 공고가 숏폼 크리에이티브 툴(생성형 모델·TTS)을 적는다.",
+        "what_to_know": [
+          "LLM 캐릭터 프롬프팅",
+          "생성형 모델 품질 평가",
+          "숏폼 제작"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "캐릭터 AI 모델 기획 및 테스트 (체험형 인턴) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571843?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "AI 서비스 기획 (체험형 인턴) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571972?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "AI 를 개발 과정 자체에 넣는다",
+        "evidence": "AI를 단순 보조 도구가 아니라 개발 프로세스의 일부로 만듭니다.",
+        "so_what": "Disney 플랫폼 서버 팀이 '자체 AI Harness 를 구축해 설계·구현·리뷰·운영을 자동화' 한다고 적는다. Data Product Engineer 공고도 AI Agent 로 워크플로우 재설계를 적는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "Disney 와 새 디지털 코믹스 플랫폼을 준비 중이다",
+        "evidence": "신규 Disney 디지털 코믹스 플랫폼의 핵심 기능을 설계·개발하고, 안정적이며 확장 가능한 시스템 아키텍처를 구축합니다.",
+        "so_what": "공고가 '초기 서비스 준비 단계부터 출시까지 전 과정' 을 경험할 수 있다고 적는다. 출시 전 단계로 보인다(추론).",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수를 읽지 않았다",
+    "Disney 디지털 코믹스 플랫폼의 계약·수익 구조는 공고에 없다",
+    "jobkorea 3건(인재 Pool·iOS·Data Product Engineer)은 본문 칸이 비어 있다 — iOS·Data Product 는 캐치·사람인과 같은 자리로 보인다",
+    "사람인·캐치의 'AI 서비스 기획 (체험형 인턴)' 이 같은 자리인지 본문 비교 필요",
+    "salary: 공고 급여가 '면접 후 결정' — 비워 둔다"
+  ],
+  "postings": []
+}
