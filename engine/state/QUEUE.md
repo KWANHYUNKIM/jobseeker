@@ -60,9 +60,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **DMM(データ · 検索推薦)** | JP · 동영상 · 전자서적 · 통판 플랫폼의 검색 · 추천 | Zenn Publication `zenn.dev/p/dmmdata`(RSS 20편, 최신 2026-09). LightGBM LambdaMART 로 **검색 실시간 리랭킹** 도입 `2e8a0c127caa1d` · DMM TV '지표 해킹'에서 '사업 공헌'으로 — 추천 최적화 과정 `strategic-search-rec-3` · '좋은' 추천 순서의 가치를 A/B 로 증명 `cd39329518990d` · 검색 vs 추천의 카니발리제이션 `1e2bc59c66f158` · dbt State 로 이벤트 구동 데이터 마트 `dbt-state-event-driven-data-marts` · Uplift 7수법 비교. **검색 · 추천 축.** 예전 후보 조사에서 inside.dmm.com 503 으로 못 봤던 곳 — 새 입구(Zenn). |
+| **Chillstack(Stena Expense)** | JP · 경비 부정 검지 SaaS · 보안 | Zenn Publication `zenn.dev/p/chillstack`(RSS 20편, 최신 2026-07). Stena Expense 의 **검지 아키텍처 — Go × Python × gRPC** 로 부정 검지 `2026-04-20-detection-architecture-stena-expense` · 수십만 건 경비 데이터를 **실시간 집계**하려고 한 일 `2025-12-25-real-time-analysis-background` · **Row Level Security** 도입 `f2bb12fe37482f` · Cloud SQL → AlloyDB 이전 `710bdf3a5830a4` · 기술 부채를 풀려 한 리아키텍트 `2025-07-24-rearchitect` · 배포 흐름. **경비 부정 검지 축(처음).** 보안 연구(MITRE ATLAS 해설 등) 글이 절반 — 프로파일 때 제품 결정 글 수를 다시 판정. |
+| **HERP** | JP · 채용 관리 SaaS(ATS) | Zenn Publication `zenn.dev/p/herp_inc`(RSS 20편, 최신 2026-09). DB 에서 HTTP 응답까지 **Stream 으로 이어 메모리 사용량 격감** `92afb9a85d77d3` · 기술 부채는 언제 풀어야 하나 — **React 이행**에 쓴 세 판단 축 `when-to-resolve-technical-debt` · Ratcheting 패턴으로 부채 해소의 후퇴를 막는다 `ratcheting-technical-debt` · Cycle.js 졸업 · 애플리케이션에 운용 구조를 내장 · AI 제품으로 드러난 도메인 모델 과제. **채용 관리 · 프런트 이행 축.** 도구 글이 섞여 있다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-27 아흔여덟 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API '설계 주제어' 15개(冪等性 設計·イベント駆動 移行·キャッシュ 戦略·非同期 ジョブ·リトライ 設計·レート制限·検索 Elasticsearch 移行·データ移行 無停止·シャーディング·整合性 担保·在庫 引当·決済 冪等·配信 基盤·レコメンド 基盤·不正検知) × 2쪽, 2026-02 이후 → Publication 별 집계, 이미 있는 회사 표시 → RSS 3곳.**
+  - **DMM(dmmdata)** — **검색 · 추천 축.** 리랭킹 도입 · A/B 설계 · 카니발리제이션이 사업 결정이다.
+  - **Chillstack** — **경비 부정 검지 축(처음).** 검지 아키텍처 · 실시간 집계 · RLS.
+  - **HERP** — **채용 관리 · 프런트 이행 축.** 부채 해소의 판단 축과 Stream 전환.
+  - **걸렀다.** tokium_dev(설계 원칙 에세이 — 이미 걸렀던 곳) · nttdata(고객 프로젝트) · scalar_sol(연재 · SI) · jisou·digeon·codeconnect·singularity(개인 · 수탁 · 해설) · itdo(연구 해설) · irsc·yesodco·azpower(도구 · 운용 소품) · bnx·team_nishika·sun_asterisk(추천 기술 검증 · 논문 요약) · aws_japan·acntechjp(벤더).
 - **2026-09-27 아흔일곱 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API '결과·구조' 주제어 15개(爆速になった·レイテンシ 改善·コスト 削減·通知基盤·SLO 導入·リアーキテクチャ·負荷対策·決済基盤·予約システム·在庫 整合性·検索基盤·マイクロサービス 分割·データ基盤 刷新·障害 振り返り·移行 ダウンタイム) × 2쪽, 2026-03 이후 글 → Publication 별로 묶어 RSS.**
   - **jinjer** — **레거시 무정지 이행 축.** 스트랭글러 이행 글이 제품 결정이다.
   - **アルダグラム** — **현장 기록·AI 비용 축.** AI 비용을 기능별로 쪼개 보는 글과 분석 기반 재구축.
