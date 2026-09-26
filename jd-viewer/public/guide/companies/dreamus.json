@@ -246,5 +246,127 @@
     "jobkorea 클라우드 보안 리더 공고는 이미지 OCR 이라 글자가 깨져 있다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/376666",
+      "title": "음악 서비스 백엔드 서버 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-8년, 서울 강남구, 수습 3개월 미만. **Server개발팀**의 FLO 음악 서비스 백엔드 자리다. 업무는 음악 서비스 Backend Platform, **MSA 환경**, 대용량 데이터·트래픽 처리, 분산 환경 개발이고, 팀 소개가 합류 후 미션을 'MSA 환경에서 서비스 경계를 어떻게 나눌지 설계 논의에 참여' 하는 것, 성장 포인트를 'Kafka 기반의 이벤트 드리븐 구조, 캐시 설계, 비동기 처리' 로 적는다. 필수는 Spring Boot·Java/Kotlin 백엔드 3년 이상, Java 웹 서비스 실서비스 운영, DBMS/SQL/ORM 실질적 이해(데이터 접근 전략과 성능 트레이드오프). 우대는 AWS 설계·운영, NoSQL·Kafka, 기술 의사결정의 문서·발표 전파, 장애 근본 원인 분석, 전체 시스템 흐름과 병목 설명. 공고가 '맞지 않을 수 있는 분' 으로 티켓 구현에만 집중하는 분, 현상 유지를 선호하는 분을 적는다. 전형: 서류전형 ＞ **사전 과제**(음악 서비스에서 자주 마주칠 수 있는 데이터 처리 예제, 금요일 안내·일요일 23:59 제출) ＞ 1차 면접&**15분 내외 기술 프레젠테이션** ＞ 2차면접&CEO 커피챗 ＞ 처우협의. 주 1회 리모트워크, 선택적 근로시간제. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Spring Boot·Java/Kotlin 3년 이상",
+          "Java 웹 서비스 실서비스 운영",
+          "DBMS/SQL/ORM 실질적 이해"
+        ],
+        "can_learn": [
+          "AWS 설계·운영",
+          "NoSQL·Kafka",
+          "장애 근본 원인 분석",
+          "의사결정 문서화·발표"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MSA 서비스 경계 나누기",
+          "from": "task",
+          "quote": "ㆍMicro Service Architecture 환경 개발",
+          "priority": "core",
+          "why": "주요업무이고 팀 소개가 합류 후 미션을 '서비스 경계를 어떻게 나눌지 설계 논의에 참여' 로, '이 시스템을 어떻게 나눌까' 를 고민하는 역할이라고 적는다.",
+          "gap_check": "음악 서비스를 재생(스트리밍 권한)·플레이리스트·추천·결제(이용권)로 나눈다면 각 서비스가 소유할 데이터는 무엇이고, '이용권이 있어야 재생된다' 는 규칙 때문에 재생 요청마다 결제 서비스를 동기 호출하면 무엇이 위험하며(결제 장애가 재생 장애로 번짐), 대신 무엇을 복제해 둘 수 있는가?",
+          "drill": "위 네 서비스의 경계를 그리고 각 서비스의 소유 테이블·공개 API·발행 이벤트를 한 장 표로 쓴 뒤, '결제 서비스가 5분 죽었을 때 재생은 되는가' 를 기준으로 동기 호출 설계와 이용권 상태를 이벤트로 복제한 설계를 비교한다. 1차 면접의 15분 기술 발표 소재로 그대로 쓸 수 있다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Pattern: Decompose by subdomain",
+              "url": "https://microservices.io/patterns/decomposition/decompose-by-subdomain.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kafka 이벤트 드리븐 — 유실과 중복",
+          "from": "preference",
+          "quote": "ㆍNoSQL, Kafka 등 분산 메시징 및 비정형 데이터 처리 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이고 팀 소개의 성장 포인트가 'Kafka 기반의 이벤트 드리븐 구조' 다.",
+          "gap_check": "재생 완료 이벤트를 DB 에 저장하고 Kafka 로 보낼 때 DB 커밋과 발행 사이에서 서버가 죽으면 무엇이 어긋나고(저장됐는데 이벤트 없음), 이를 트랜잭셔널 아웃박스로 막으면 대신 무엇(중복 발행)을 소비자가 처리해야 하는가?",
+          "drill": "Spring Boot 로 '재생 기록 저장 → 이벤트 발행' 을 두 가지로 구현한다 — 저장 후 바로 발행, 아웃박스 테이블에 같이 쓰고 폴러가 발행. 발행 직전에 프로세스를 죽여 차이를 확인하고, 소비자에 이벤트 ID 기반 중복 제거를 넣어 같은 이벤트를 두 번 보내도 청취 수가 한 번만 오르는지 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Pattern: Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction | Apache Kafka",
+              "url": "https://kafka.apache.org/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대용량 트래픽 — 캐시 설계",
+          "from": "task",
+          "quote": "ㆍ대용량 데이터 처리 및 대용량 트래픽 처리 개발",
+          "priority": "core",
+          "why": "주요업무이고 팀 소개가 '어떤 Latency로 응답할지' 와 캐시 설계를 성장 포인트로 적는다.",
+          "gap_check": "신곡 발매 직후 같은 앨범 상세 조회가 몰릴 때 캐시가 만료되는 순간 요청이 DB 로 한꺼번에 몰리는 현상(캐시 스탬피드)은 어떻게 막고, 곡 메타데이터를 수정했을 때 캐시를 지울지·TTL 을 기다릴지는 무엇을 기준으로 정하는가?",
+          "drill": "Spring Cache + Redis 로 앨범 상세 API 에 캐시를 붙이고, 부하 도구로 동시 요청을 보내 만료 순간 DB 쿼리 수를 센다. 만료 시간에 무작위 편차를 주거나 한 요청만 갱신하게 막은 뒤 다시 센다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Cache Abstraction — Spring Framework",
+              "url": "https://docs.spring.io/spring-framework/reference/integration/cache.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Caching Best Practices — AWS",
+              "url": "https://aws.amazon.com/caching/best-practices/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ORM 데이터 접근 전략 — N+1 과 조회 설계",
+          "from": "qualification",
+          "quote": "ㆍDBMS/SQL/ORM에 대한 실질적인 이해",
+          "priority": "core",
+          "why": "필수 자격요건이고 바로 아래 줄이 '데이터 접근 전략과 성능 트레이드오프를 고민할 수 있는 분' 이라고 적는다.",
+          "gap_check": "플레이리스트 20개와 각 플레이리스트의 곡 목록을 JPA 로 읽을 때 쿼리가 몇 번 나가고(N+1), fetch join·배치 사이즈·DTO 조회 가운데 페이지 나눔이 있을 때 쓸 수 없는 것은 무엇이며 왜인가?",
+          "drill": "플레이리스트–곡 다대다를 JPA 로 매핑하고 SQL 로그를 켠 채 목록 API 를 기본 조회·fetch join·default_batch_fetch_size·DTO 프로젝션 네 방식으로 구현해 쿼리 수와 페이지 나눔 결과를 표로 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Hibernate ORM User Guide",
+              "url": "https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html",
+              "kind": "docs"
+            },
+            {
+              "title": "JPA Query Methods — Spring Data JPA",
+              "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애를 근본 원인까지 — 포스트모템 쓰기",
+          "from": "preference",
+          "quote": "ㆍ장애 발생 시 임시방편 없이 근본 원인(Root Cause)까지 파고든 경험이 있는 분",
+          "priority": "nice",
+          "why": "우대사항이고 팀 소개가 '장애를 복구로 끝내지 않고 구조적 개선으로 연결하는 문화' 를 적는다.",
+          "gap_check": "'DB 커넥션 풀 고갈로 API 타임아웃' 이라는 장애에서 '풀 크기를 늘렸다' 가 왜 근본 원인 해결이 아닐 수 있고, 무엇(느린 쿼리·외부 호출이 트랜잭션 안에 있음)을 더 파고들어야 하는가?",
+          "drill": "위 캐시·ORM 실습 중 하나에서 일부러 장애(트랜잭션 안에서 느린 외부 호출)를 만들고, 타임라인·영향·근본 원인·재발 방지를 담은 비난 없는 포스트모템을 한 장으로 쓴다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Blameless Postmortem — Google SRE Book",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "book"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
