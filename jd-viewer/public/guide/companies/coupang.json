@@ -9333,6 +9333,141 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188040",
+      "title": "Senior Threat Detection Engineer",
+      "site": "ats",
+      "verdict": "서울 구의오피스 근무. 정보보안 5년 이상 + 탐지 엔지니어링/보안 분석 2년 이상. 위협 인텔리전스와 비즈니스 맥락으로 탐지 유즈케이스를 정의하고, 여러 레이어 로그로 SIEM 탐지 로직을 구현·검증·튜닝하며, 개인정보보호·금융보안 규제가 요구하는 모니터링까지 기술로 설계하는 사람. 보안 운영·분석 직군이다(소프트웨어 개발 아님).",
+      "fit": {
+        "must_have": [
+          "정보보안 5년 + 탐지/보안 분석 2년",
+          "SIEM 탐지 쿼리·룰 개발(SQL·Python·SPL 등)",
+          "EDR·네트워크·클라우드·인증 로그 분석",
+          "MITRE ATT&CK·STRIDE 등 위협 프레임워크 실무",
+          "탐지 의도를 문서로 전달"
+        ],
+        "can_learn": [
+          "쿠팡 규제 환경(전자금융감독규정 등) 세부",
+          "Detection-as-Code(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "위협 시나리오 → 탐지 유즈케이스 → 커버리지 관리",
+          "from": "task",
+          "quote": "내외부 위협 인텔리전스 및 비즈니스 맥락을 분석하여 탐지 유즈케이스(시나리오)를 정의하고, 위협 프레임워크에 기반한 탐지 커버리지를 체계적으로 관리",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다. 룰을 하나씩 만드는 게 아니라 위협 프레임워크 기준으로 무엇이 덮이고 빠졌는지를 관리한다.",
+          "gap_check": "계정 탈취(ATO) 한 시나리오를 ATT&CK 기법 단위로 쪼개고, 각 기법을 어느 로그 소스로 탐지할지 매핑할 수 있는가?",
+          "drill": "ATO 시나리오를 ATT&CK 기법 5~6개로 분해해 기법별 데이터 소스·탐지 로직·현재 커버 여부 표를 만들고 Navigator 레이어로 시각화한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MITRE ATT&CK",
+              "url": "https://attack.mitre.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SIEM 탐지 룰 구현과 정탐/오탐 튜닝",
+          "from": "task",
+          "quote": "배포 전 테스트 및 배포 후 성능 검증(정탐/오탐 분석, 튜닝)을 통한 탐지 품질의 지속적 개선",
+          "priority": "core",
+          "why": "탐지 품질을 배포 전 테스트와 배포 후 정탐/오탐 분석으로 계속 개선하는 것이 역할의 중심이다.",
+          "gap_check": "오탐이 많은 룰을 '예외 추가'로만 줄이면 무엇이 위험하고, 대신 어떤 기준(맥락 필드·임계치·기준선)으로 튜닝하는가?",
+          "drill": "공개 샘플 로그로 '짧은 시간 다수 로그인 실패 후 성공' 룰을 SQL 로 만들고, 정상 사용 패턴을 섞어 오탐률을 잰 뒤 기준선 기반으로 튜닝해 전후를 비교한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "계정 탈취·내부자 위협 탐지",
+          "from": "task",
+          "quote": "계정 탈취(ATO), 내부자 위협, 비인가 접근 등 고도화된 위협에 대한 탐지 체계 확장",
+          "priority": "core",
+          "why": "고도화된 위협으로 명시된 세 가지다. 대규모 트랜잭션 환경(우대)에서는 정상 행동이 다양해 탐지가 어렵다(추론).",
+          "gap_check": "내부자 위협 탐지에서 '평소와 다른 대량 조회'를 잡을 때 역할·부서·시간대 기준선을 어떻게 잡고, 개인정보 보호와 어떻게 균형을 맞추는가?",
+          "drill": "가짜 사내 DB 조회 로그로 사용자별 평소 조회량 기준선을 만들고, 퇴사 예정자 시나리오(대량 다운로드)를 넣어 탐지되는지 확인한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "규제 요구를 탐지·모니터링 항목으로 옮기기",
+          "from": "task",
+          "quote": "규제 컴플라이언스(개인정보보호, 금융보안 등) 이행 과제에서 요구하는 탐지·모니터링 항목을 기술적으로 설계하고 구현",
+          "priority": "high",
+          "why": "쿠팡은 쿠팡페이 같은 금융 서비스를 운영한다(회사 브리핑). 규제가 요구하는 모니터링을 기술적으로 설계·구현하는 것이 주요업무에 있다.",
+          "gap_check": "'개인정보 처리 시스템 접속 기록 보관·점검' 같은 요구를 어떤 로그·보관 기간·경보 규칙으로 구현하는가?",
+          "drill": "개인정보보호 관련 요구 하나를 골라 '요구 문장 → 필요한 로그 → 탐지/점검 규칙 → 증적' 표로 옮긴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 개인정보 보호법",
+              "url": "https://www.law.go.kr/법령/개인정보보호법",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Detection-as-Code 와 Python 프로토타이핑",
+          "from": "preference",
+          "quote": "Detection-as-Code 환경에서 탐지 룰을 코드로 관리하고 CI/CD 파이프라인을 통해 배포한 경험",
+          "priority": "high",
+          "why": "룰 생성·변경·폐기 이력 관리가 주요업무에 있고, 우대가 CI/CD 배포 경험이다.",
+          "gap_check": "룰 변경 PR 에 샘플 로그 기반 양성·음성 테스트를 붙이려면 테스트 데이터를 어떻게 관리하는가?",
+          "drill": "Sigma 룰 3개와 양성·음성 샘플 로그를 저장소에 두고 pySigma 로 변환·테스트하는 GitHub Actions 를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Sigma — Documentation",
+              "url": "https://sigmahq.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "가설 기반 위협 헌팅과 공격 시뮬레이션 검증",
+          "from": "preference",
+          "quote": "위협 헌팅(Threat Hunting) 경험 또는 가설 기반의 탐지 시나리오 개발 경험",
+          "priority": "nice",
+          "why": "Red Team·Threat Intelligence 와 협업해 시나리오를 검증한다는 주요업무와 이어진다.",
+          "gap_check": "Atomic Red Team 같은 시뮬레이션으로 기법을 재현했을 때 탐지가 안 되면, 로그 부재·파싱·룰 로직 중 어디서 막혔는지 어떻게 가르는가?",
+          "drill": "테스트 VM 에서 Atomic Red Team 테스트 하나를 실행하고 로그가 남는 지점부터 룰 발화까지 단계별로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Atomic Red Team",
+              "url": "https://github.com/redcanaryco/atomic-red-team",
+              "kind": "repo"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "자사 환경용 커버리지 측정 방법론",
+          "why": "우대에 '기존 위협 프레임워크의 한계를 인식하고 자사 환경에 맞는 커버리지 측정 방법론'이 있다. ATT&CK 칸 채우기가 아니라 로그 품질·룰 검증까지 반영한 점수화를 제안해 보면 드물다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "위협 시나리오를 기법·로그로 분해",
+          "오탐 튜닝 기준",
+          "ATO·내부자 위협 탐지",
+          "규제 요구의 탐지 설계",
+          "탐지 실패 원인 분리"
+        ],
+        "sources": [
+          {
+            "title": "Senior Threat Detection Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188040",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
