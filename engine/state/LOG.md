@@ -2392,3 +2392,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 101번째 후보 조사
 
 - Zenn 검색 새 주제어 15개 × 2쪽 → RSS 6곳 → 본문 4편. 대기 3/3(iCARE · e-dash · atama plus). atama plus 는 88번째에 걸렀던 곳이지만 AI 스텝 해설 정식판 · 플랫폼 연재가 새 단서.
+
+## 2026-09-27 iCARE 회사 프로파일
+
+- carely.jp(r.jina.ai 에 X-Timeout 헤더) · Publication 소개문으로 수익원 둘. 비교 사이트의 도입 사 수는 2차 자료라 쓰지 않았다. 글 셋(CSV 임포트 · Datadog 리전 · 도메인 분리)으로 도메인 셋. SSO 글은 해설이라 도메인에 안 넣었다.

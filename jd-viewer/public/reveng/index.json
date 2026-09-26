@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "icare",
+      "name": "iCARE",
+      "name_en": "iCARE",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "기업이 사원의 건강을 주체적으로 관리하게 하는 'Carely' 의 회사 — 수만 건을 들여오는 CSV 잡은 트랜잭션 · 배치 · 감시 도구의 메모리까지 재어 12 시간을 3 시간 반으로 줄이고, 감시 데이터는 국내 리전으로 옮기며 환경마다 조직을 가르고, GraphQL 에 흩어진 업무 규칙은 도메인 객체로 모은다",
+      "updated_at": "2026-09-27",
+      "domain": "carely.jp"
+    },
+    {
       "slug": "gakken-leap",
       "name": "Gakken LEAP",
       "name_en": "Gakken LEAP",
@@ -3874,7 +3886,10 @@
     "늘어나는 ML 모델을 한 틀로 굴린다",
     "관리회사마다 다른 CSV 로 오는 물건을 한 DB 로 받고 여러 곳에 다시 낸다",
     "학습자의 행동 로그를 모아 분석하고 다시 서비스로 되돌린다",
-    "여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다"
+    "여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다",
+    "수만 건을 들여오는 긴 잡을 끝까지 버티게 한다",
+    "텔레메트리를 국내에 두고 환경마다 갈라 쥔다",
+    "흩어진 업무 규칙을 도메인 객체로 모은다"
   ],
   "countries": {
     "KR": "한국",

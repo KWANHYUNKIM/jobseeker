@@ -35,6 +35,7 @@
 | **スマサテ** | JP · 부동산 임대료 AI 사정 SaaS | 프로파일(2026-09-27, slug `sumasate`). 도메인 둘 — 출처마다 다르게 적힌 부동산 데이터를 한 물건으로 맞춘다 · 쓰고 있는 사정 화면을 멈추지 않고 새 틀로 옮긴다. 기능 2(명기 파이프라인 · 멈추지 않는 화면 이행). 입구 `zenn.dev/p/sumasate_tec/feed`. 타운나비 수익원은 도메인 없음. **hold(2026-09-27)** — 타운나비 자료 두 번 없음. |
 | **GA technologies** | JP · 부동산 테크 그룹(RENOSY · ITANDI) · 데이터/ML | 프로파일(2026-09-27, slug `ga-technologies`). 도메인 둘 — 흩어진 정기 처리를 데이터 자산의 계보로 묶는다 · 늘어나는 ML 모델을 한 틀로 굴린다 · 관리회사마다 다른 CSV 로 오는 물건을 한 DB 로 받고 여러 곳에 다시 낸다. 기능 3(Dagster · SageMaker · 물건 연동 packwerk). 입구 `zenn.dev/p/gatechnologies/feed` + イタンジ `tech.itandi.co.jp/feed`. M&A 수익원은 도메인 없음. **hold(2026-09-27)** — M&A 자료 두 번 없음. |
 | **Gakken LEAP** | JP · 교육(ShikakuPass) · 학연 그룹 DX | 프로파일(2026-09-27, slug `gakken-leap`). 도메인 둘 — 학습자의 행동 로그를 모아 분석하고 다시 서비스로 되돌린다 · 여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다. 기능 2(학습 로그 두 갈래 · Strangler Fig). 입구 `zenn.dev/p/gakken_leap/feed`. 그룹 개발 지원은 inferred · 벤처 투자는 도메인 없음. **hold(2026-09-27)** — 두 수익원 자료 두 번 없음. |
+| **iCARE** | JP · 건강 관리 SaaS(Carely) · 산업 보건 | 프로파일(2026-09-27, slug `icare`). 도메인 셋 — 수만 건을 들여오는 긴 잡을 끝까지 버티게 한다 · 텔레메트리를 국내에 두고 환경마다 갈라 쥔다 · 흩어진 업무 규칙을 도메인 객체로 모은다. 기능 0. 입구 `zenn.dev/p/icare/feed`. 사람 서비스 수익원은 도메인 없음. |
 | **ギークプラス(Geekplus)** | JP · 물류 로봇 · 오픈 SCM(skylaa) · 풀필먼트 | 프로파일(2026-09-27, slug `geekplus`). 도메인 둘 — 흩어진 창고·주문 데이터를 싸게 들여오고 내보낸다 · 계획 데이터의 사실과 경계를 서버가 쥔다. 기능 2(Java 배치 Lambda 이사 · 흐름 트리와 테넌트 경계). 입구 `zenn.dev/p/geekplus/feed`. 로봇 · 풀필먼트 수익원은 도메인 없음. **hold(2026-09-27)** — 로봇 · 풀필먼트 수익원 자료 두 번 없음. |
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
@@ -66,7 +67,6 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **iCARE(Carely)** | JP · 건강 관리 SaaS(산업 보건) | Zenn Publication `zenn.dev/p/icare`(RSS 20편, 최신 2026-09). 역사 있는 Rails 앱에서 **업무 규칙을 어디 두나** — 도메인 분리 리팩터링 `adbb881e18522d` · **CSV 임포트 12 시간 → 3 시간 반**(7가지 최적화 · 배치 크기 5000→500 · 뜻밖의 재열화 8 시간) `181c10f20dba04` · 'SSO 대응해 달라'에 IdP · SAML 과 Rails 구현 `8d832968180166` · GraphQL × Rails 트레이스 `9aa663219b43f9` · Datadog 사이트(리전) 이전 `27491180a1d9ba` · 사용자가 편집하는 메일 템플릿(mustache). **산업 보건 SaaS 축(처음).** |
 | **e-dash** | JP · 탈탄소(CO2 배출량 가시화) SaaS | Zenn Publication `zenn.dev/p/edash_tech_blog`(RSS 20편, 최신 2026-09). **권한 건수 상한은 Auth0 가 아니라 ALB 의 11KB** 에 있었다 — 층마다 여유를 재고 상한을 정한다 `e6445bcba75e7c` · 사내 문서를 AI 가 못 찾을 때 **RAG 가 아니라 frontmatter** 를 고른 이야기 `5aad9e07f1c201` · **환경성 배출계수 갱신**을 의뢰 기표에서 PR 까지 AI 로 자동화 `ea26d90415120f` · 청구서 OCR · TanStack Form 연동 폼. **탈탄소 SaaS 축(처음).** AI 활용 · 행사 글이 섞였다. |
 | **atama plus** | JP · AI 학습 교재(학원 · 학교) | Zenn Publication `zenn.dev/p/atamaplus`(RSS 20편, 최신 2026-09). **'AI 스텝 해설' β 에서 정식판**으로 — β 기간의 숫자 · 기술적 고안 · 특허 `6b64c407d11c8c` · **플랫폼과 레디니스 리뷰**(전 · 중 · 후편 — '플랫폼 = 프로덕트', 성숙 로드맵) `952f220318f088` · 비즈니스 로직을 쿼리 쪽에 두었더니 **BI 도구 이전이 쉬웠다** `0223ce57a7a7d3` · k6 부하 시험 · 사내 Dify 셀프 호스트. **에드테크 AI 축.** 전에 걸렀던 곳(88번째 · 제품 결정 약함) — 새 단서(AI 스텝 해설 정식판 · 플랫폼 연재)로 다시 올린다. |
 
