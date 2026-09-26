@@ -778,3 +778,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 cygames 재방문
 - 새 자료 없음(1회째). tech.cygames.co.jp 최신 글 71956(CEDEC2026 디자이너 육성)은 기술 결정 없음. updated_at 만 올림.
+
+## 2026-09-26 databricks 재방문 → 확장
+- RADAR(2026-09-19) 로 `radar-gray-failure` 추가. 새 도메인, 결정 6개, 그림 2장(flow·failure). 수치: 발견 시간 95% 단축, 정밀도 90%+, 학습 창 14일.
+- SPOT·Gray Failure 논문 링크는 못 열어(ACM CAPTCHA) papers 를 비웠다.
