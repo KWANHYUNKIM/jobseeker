@@ -2408,3 +2408,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 iCARE 제출 규칙 도메인 분리
 
 - `adbb881e18522d` 전문으로 기능 `submission-rule-domain-entity`, 결정 5. 글이 짧아 대안 · 대가 몇은 '이 사이트의 해석'.
+
+## 2026-09-27 iCARE 사람 서비스 수익원 보류
+
+- 검색 1: RSS 20편 + 글 목록 2쪽 — 해당 없음. 검색 2: Zenn 검색 4낱말 — 0건. hold_reason, in_progress 유지.
