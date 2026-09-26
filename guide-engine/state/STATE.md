@@ -8,9 +8,9 @@
 
 **사용자 지시(2026-09-26): 국내 사이트 회사를 공고 수 순서대로 전부 한다.** QUEUE `## 대기` 에 15곳을 순서대로 넣었다(기준·제외 목록은 대기 머리말). 대기가 비면 같은 기준으로 다음 15곳을 채운다.
 **현대오토에버** — 12건에서 멈춤(`in_progress`). 남은 사람인 Robot PM(55092048)은 보강 단계에서.
-**베스핀글로벌(`bespinglobal`) — `in_progress`, 공고 6건.** 출처는 홈페이지 서비스 목록 + `/about/` + 원티드 공고 팀 소개.
+**베스핀글로벌(`bespinglobal`) — `in_progress`, 공고 7건(원티드 6 + 사람인 Senior AI Infra 중복 1).** 출처는 홈페이지 서비스 목록 + `/about/` + 원티드 공고 팀 소개.
 원티드 6건 완료(Data Engineer 381981 · AI Agent 382243 · LLM Engineer 381976 · Senior AI Infra 381967 · Okta 381969 · GCP 382078).
-⚠️ 다음 회차: 사람인 9건. 먼저 원티드와 제목이 겹치는 4건(클라우드 기반 Data Engineer(과장급) · Google Cloud Platform Engineer 영입(대리급) · Okta 담당 클라우드 보안 엔지니어 · Senior AI Infrastructure Engineer)을 본문 비교 — 같으면 `duplicate_of` 로 한 사이클에 한 건씩.
+⚠️ 다음 회차: `--gaps` 가 남은 사람인 3건을 보여 준다 — PL 및 AI 개발자(차장급) · SRE 2팀 시니어 클라우드 SRE · Senior Cloud Platform Engineer. 사람인 Data Engineer·GCP·Okta·DBA·Big data 는 `--gaps` 목록에 안 나온다(모집중 10건으로 집계 — 사본은 export 에서 이미 걸러진 것으로 보인다).
 사람인만 있는 것: SRE 2팀 시니어 클라우드 SRE, PL 및 AI 개발자(차장급), Senior Cloud Platform Engineer, AWS DBA(과장급), GCP Big data Engineer(과장급). 원티드 6 + 사람인 6이면 12건 상한.
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 주의: 원문에 zero-width space(U+200B)가 섞여 있다 — quote 는 main_tasks/qualifications/preferences 에서 그대로 복사한다.
