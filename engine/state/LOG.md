@@ -1888,3 +1888,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Safie Trail Station AI 데이터 경로 — 완주
 
 - 결정 5 — 모델 대신 데이터 전달·복사 제거·공유 메모리·YUV420P 통일·AI 팀 협업. 수익원 둘 다 기능 → done.
+
+## 2026-09-26 92번째 후보 조사
+
+- Zenn 최신 글 API 91~100쪽(101쪽부터 404) → 제품 회사 6곳 RSS → 3편 본문 확인. 올림: Kanmu(pistachio)·dely(S3 스토리지 클래스)·みてね(Envoy Gateway 이행).

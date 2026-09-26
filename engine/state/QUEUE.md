@@ -50,8 +50,18 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Kanmu(カンム)** | JP · 프리페이드 카드 핀테크(밴들카드) | Zenn Publication `zenn.dev/p/kanmu_dev`(RSS 20편). **선언적 스키마 관리 도구 pistachio 를 만들었다**(`16789ef1f4283a`, 2026-04-30) — 본번 DB 마이그레이션에 도입, sqldef → pistachio 경위, PostgreSQL 네이티브 파서·대상 스키마 명시·의존 관계 고려 실행 순서·**DROP 기본 무효·트랜잭션 기본 무효**. 곁글 — 마이그레이션 전에 위험을 어림(`6d8496039c7a75`) · 선언적 스키마 관리의 데이터 마이그레이션(`fadd12ece9fbac`) · Datadog Monitor 로 비동기 잡 스케일링(`d9db4fd4f543db`) · terraform plan 으로 IAM 정책 점검. **결제 카드 축**. |
+| **dely(クラシル)** | JP · 레시피·리테일 앱(클라시루·레시챌) | Zenn Publication `zenn.dev/p/dely_jp`(RSS 20편). **수억 장 화상을 쌓는 S3 비용을 스토리지 클래스 나눠 쓰기로 줄인다**(`22a2c10b2e130d`, 2026-08-31) — 레시챌의 영수증 화상 수백 TB·수억 파일이 전부 S3 Standard → 버킷 일괄 Intelligent-Tiering 안 대신 폴더 접근 패턴별로 다시 보고 다시 안 보는 화상은 Glacier IR, 앱에서 다시 보는 건 Intelligent-Tiering, **Deep Archive 를 안 쓴 이유**, 이행 요청 비용을 놓쳤던 것까지 — 약 55% 절감. 곁글 — Braze 개인화 데이터 4패턴(`462bd6dfaffa89`) · Xcode Cloud CI 계측 · AWS Verified Access · 테이블 이름. **식품·리테일 미디어 축**. |
+| **みてね(MIXI · 家族アルバム)** | JP · 가족 사진·영상 공유 앱 | Zenn Publication `zenn.dev/p/mitene`(RSS 20편). **ingress-nginx retirement 에 따른 Gateway API + Envoy Gateway 이행**(`202604-ingress-nginx-to-envoy-gateway`, 2026-04-13) — 기존 요건 정리·annotation 재고·검토한 선택지·Envoy Gateway 선정 이유(인증 요건·확장성)·auth-* 계열이 가장 고생·리소스 두는 곳·전환 전략. 사용자 라우팅엔 Ingress 가 없어 내부용이라 안전하게 검토. 곁글 — Android Hilt 이행(`0e3193095affc9`) · 특정 단말만의 버그 재현. **사진 공유 축**. 제품 결정 글이 SRE·모바일 기반 위주라 두 번째 도메인이 약할 수 있다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 아흔두 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API 91~100쪽(101쪽부터 404 — API 상한) publication 집계 → RSS.**
+  - **Kanmu** — **결제 카드 축.** 전에 'Publication 없음' 으로 통과 못 했던 곳이 지금은 있다 — 스키마 도구의 기본값 결정(DROP·트랜잭션 무효)이 분명하다.
+  - **dely** — **식품·리테일 미디어 축.** 비용 글이 '안 쓴 선택지' 와 '놓친 비용' 까지 적는다.
+  - **みてね** — **사진 공유 축.** 이행 글의 선택지 비교가 분명하다.
+  - **통과 못 한 곳.** Fast Doctor — AI 도구 글. microCMS — 개발 환경·UI 글. Helpfeel — 행사·실험. akkodis_jp·highreso 등 — 수탁·검증 글.
+  - **배운 것.** Zenn 최신 글 API 는 100쪽이 상한(101쪽부터 404) — 다음 입구는 note·Speaker Deck·하테나 기업 블로그.
 
 - **2026-09-26 아흔한 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API 51~90쪽 publication 집계 → RSS.**
   - **WealthNavi** — **자산 운용 축.** '금융 서비스 설계 판단' 기획 특집이라 판단마다 선택지·기준이 적혀 있다.
