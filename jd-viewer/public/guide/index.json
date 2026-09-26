@@ -759,6 +759,18 @@
       "postings": 5,
       "study_items": 20,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "scatterlab",
+      "name": "스캐터랩",
+      "aliases": [
+        "스캐터랩",
+        "Scatterlab"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

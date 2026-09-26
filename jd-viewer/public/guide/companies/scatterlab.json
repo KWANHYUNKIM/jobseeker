@@ -1,0 +1,212 @@
+{
+  "slug": "scatterlab",
+  "name": "스캐터랩",
+  "name_en": "Scatter Lab",
+  "aliases": [
+    "스캐터랩",
+    "Scatterlab"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "scatterlab.co.kr",
+  "one_liner": "'이루다' 를 만든 AI 스타트업 — 지금은 사용자가 캐릭터·세계관을 만들어 AI 와 이야기를 쓰는 '제타'(2024년 4월 출시, 글로벌 누적 가입자 1,000만 — 공고)에 집중한다",
+  "company": {
+    "business": "원티드 공고 머리말은 스캐터랩을 '국내 최고의 일상대화 AI 기술' 을 가진 AI 스타트업으로 소개하고, 챗봇 '이루다' 가 200만 유저·10억 건 이상 대화를 나눴으며 SK텔레콤·소프트뱅크·NC소프트·크래프톤 등에서 **누적 410억 원** 투자를 받았다고 적는다. 현재 제품은 **제타(zeta)** — 2024년 4월 출시, 사용자가 캐릭터·세계관·상황을 설계하고 AI 와 실시간으로 상호작용하며 자기 이야기를 만드는 AI 인터랙티브 엔터테인먼트다. Ad-Tech 공고 머리말은 **글로벌 누적 가입자 1,000만 명·누적 플롯 약 300만 개**, 한일 1위 AI 엔터테인먼트 플랫폼, 일본 주간 평균 사용시간 20시간 이상을 적는다. 사용시간 주장은 출처마다 다르다 — 백엔드·SRE 공고 '하루 평균 2시간·일주일 8시간 이상', 회사 사이트 메타 '일주일에 12시간', zeta 사이트 메타 '주 13시간 이상·무료'. 공고는 **자체 개발 LLM 을 클라우드에서 직접 서빙하며 실시간 100대 이상의 GPU** 를 쓴다고 적는다. 모집중 공고는 Ad-Tech(AppLovin MAX 미디에이션·광고 네트워크 10여 곳), SRE(멀티 클라우드 AI 서빙·데이터 파이프라인), 백엔드, 프론트엔드(Next.js·React Native), 모바일(React Native)이다. 매출액·유료 상품 구조는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Ad-Tech Developer",
+        "url": "https://www.wanted.co.kr/wd/380728",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[제타] 백엔드 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/268215",
+        "publisher": "원티드"
+      },
+      {
+        "title": "스캐터랩",
+        "url": "https://www.scatterlab.co.kr/ko/intro",
+        "publisher": "스캐터랩",
+        "summary": "메타 설명: '유저들이 일주일에 12시간 쓰는 AI 서비스 제타를 만들고 있습니다.'"
+      },
+      {
+        "title": "zeta",
+        "url": "https://zeta-ai.io/en",
+        "publisher": "스캐터랩",
+        "summary": "메타 설명: 'The No.1 AI chat! Over 13 hours of weekly use — and it's free.'"
+      }
+    ],
+    "scale": [
+      {
+        "label": "제타 글로벌 누적 가입자(공고 주장)",
+        "value": "1,000만 명",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Ad-Tech Developer",
+            "url": "https://www.wanted.co.kr/wd/380728",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "누적 투자(공고 주장)",
+        "value": "410억 원",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제타] 백엔드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/268215",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "AI 서빙 GPU(공고 주장)",
+        "value": "실시간 100대 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제타] 백엔드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/268215",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[제타] Site Reliability Engineer (DevOps)",
+            "url": "https://www.wanted.co.kr/wd/268223",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "제타 광고 수익",
+        "how": "Ad-Tech 공고가 AppLovin MAX 미디에이션, 약 10여 개 국내외 광고 네트워크 파트너십, 수익화 기능 구현(TypeScript 웹·React Native 앱), 수익과 리텐션·몰입도의 트레이드오프 관리를 적는다. zeta 사이트 메타는 '무료' 를 적는다. 광고 매출 규모는 읽지 않았다.",
+        "domains": [
+          "광고 수익화(Ad-Tech)",
+          "제타 웹·앱(Next.js·React Native)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Ad-Tech Developer",
+            "url": "https://www.wanted.co.kr/wd/380728",
+            "publisher": "원티드"
+          },
+          {
+            "title": "zeta",
+            "url": "https://zeta-ai.io/en",
+            "publisher": "스캐터랩",
+            "summary": "메타 설명: 'The No.1 AI chat! Over 13 hours of weekly use — and it's free.'"
+          }
+        ]
+      },
+      {
+        "name": "제타 기타 수익(구조 미확인)",
+        "how": "백엔드·SRE 공고가 '매월 유저수, 매출을 2배씩 성장' 을 적는다. 광고 외 유료 상품(구독·재화)이 있는지는 읽은 자료에 없다.",
+        "domains": [
+          "제타 백엔드·AI 서빙 인프라"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제타] 백엔드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/268215",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "제타 웹·앱(Next.js·React Native)",
+        "why": "프론트엔드·모바일 공고가 채팅·이벤트·어드민 등 모든 접점, Next.js·React Native, 모바일 퍼포먼스, Kotlin·Swift 네이티브 모듈, A/B 테스트 환경·로그 설계를 적는다.",
+        "what_to_know": [
+          "React Native",
+          "채팅 UI 성능",
+          "A/B 테스트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Frontend Engineer",
+            "url": "https://www.wanted.co.kr/wd/347680",
+            "publisher": "원티드"
+          },
+          {
+            "title": "Mobile Engineer (React Native) 모바일 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/347683",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "제타 백엔드·AI 서빙 인프라",
+        "why": "백엔드 공고가 '수십만 명이 매일 3시간씩 체류' 하는 서비스, 확장 가능한 구조, A/B 테스트 환경·로그 파이프라인을, SRE 공고가 멀티 클라우드 AI 서빙 인프라, 처리량·지연 최적화, 데이터 파이프라인을 적는다.",
+        "what_to_know": [
+          "LLM 서빙 인프라",
+          "멀티 클라우드",
+          "로그 파이프라인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제타] 백엔드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/268215",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[제타] Site Reliability Engineer (DevOps)",
+            "url": "https://www.wanted.co.kr/wd/268223",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "광고 수익화(Ad-Tech)",
+        "why": "Ad-Tech 공고가 A/B 테스트로 수익성 개선, AppLovin MAX 미디에이션과 SDK·네트워크 연동·광고 게재 이슈 진단, 광고 네트워크 파트너십을 적는다.",
+        "what_to_know": [
+          "광고 미디에이션",
+          "eCPM·워터폴/비딩",
+          "리텐션과 수익 트레이드오프"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Ad-Tech Developer",
+            "url": "https://www.wanted.co.kr/wd/380728",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "LLM 서빙 비용이 핵심 경영 변수다",
+        "evidence": "실시간으로 100대 이상의 GPU 를 사용하고 있으며 그 가운데에서 비용, 속도 최적화를 위해 갖은 기법을 사용하고 있습니다.",
+        "so_what": "무료 서비스(zeta 사이트)에 사용시간이 매우 긴 제품이라 대화 한 턴의 추론 비용이 곧 수익성이다. SRE·백엔드 면접에서 비용 최적화를 물을 가능성이 크다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "실험으로 제품을 굴리는 조직이다",
+        "evidence": "A/B 테스트 환경, 로그 파이프라인 설계 및 구현을 통한 데이터 기반 의사결정을 지원합니다.",
+        "so_what": "백엔드·프론트엔드·모바일·SRE 공고가 모두 A/B 테스트를 적는다 — 목적 조직(PO·디자이너·프론트·백엔드)이 기획 → 개발 → 실험 평가 사이클을 돈다고 공고가 쓴다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출액과 광고 외 유료 상품 구조는 읽지 않았다",
+    "사용시간 주장이 출처마다 다르다(주 8시간·12시간·13시간 이상·일본 20시간 이상) — 시점 차이로 보이나 확인하지 못했다",
+    "임직원 수는 읽지 않았다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
