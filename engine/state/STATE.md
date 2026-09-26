@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**みてね hold(2026-09-26) — 프린트·포토북 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 신규: 큐 맨 위 SODA — `26f39f5e3b09f3`(구입·결제 ACID 와 멱등성) · `4f20b4b63e9be8`(구입·결제 DDD/모듈화) · `a52d51d7600121`(구입 흐름 형식 검증) · 회사 사이트에서 수익원부터. **후보 조사 입구: Zenn 검색 API 에 주제어.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**SODA 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다' — `26f39f5e3b09f3` + `4f20b4b63e9be8`(멱등성 규칙 · 오케스트레이터 원자성 · 불일치 해소 배치 · PSP 제약 앞 원칙 위반; 본문 아직). 그다음 '상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다' — `a52d51d7600121`. 수익원 실매장은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 2/3(COUNTERWORKS·Luup). **후보 조사 입구: Zenn 검색 API 에 주제어.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
