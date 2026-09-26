@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — doordash 재방문에서 확장(`measure-the-serving-config`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
+**없다 — duolingo 재방문에서 확장(`key-moments-not-every-move`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **duolingo** — 2026-09-26 체스 게임 리뷰(09-08) → `key-moments-not-every-move`, 새 도메인. 리더십 글(09-16)은 조직론이라 안 씀. 새 글은 `/rss/` 가 빠르다(언어 학습 글이 섞여 나온다).
 - **doordash** — 2026-09-26 Triton Auto Tuner(09-21) → `measure-the-serving-config`, 새 도메인. 안 읽은 새 글 다섯(Vera·기능 플래그 정리·Ask DoorDash 5·6·Dot) — 다음 재방문 때. 목록은 브라우저로 `/engineering-blog/` 를 열고 JS 로 `a[href*="/blog/"]` 를 모으면 된다.
 - **deliveroo** — 2026-09-26 이탈 예측(09-22) → `flag-only-what-we-can-call`, 새 도메인 "떠날 파트너를 먼저 찾는다". 처치·대조 실험 결과가 나오면 다시 볼 것. 목록은 r.jina.ai 로 루트를 받으면 된다.
 - **databricks** — 2026-09-26 RADAR(09-19) → `radar-gray-failure`, 새 도메인 "초록불 뒤의 부분 장애를 먼저 잡는다". 블로그는 r.jina.ai 가 트래커 픽셀만 주지만 브라우저 UA+`Accept: text/html` curl 로 본문이 온다. `/feed` RSS 로 최근 글 10건. 나머지(Unity Gateway·Genie MCP·비용 쿼리·보안 리뷰 에이전트)는 제품 안내라 안 씀.

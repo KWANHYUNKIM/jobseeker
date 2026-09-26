@@ -789,3 +789,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 doordash 재방문 → 확장
 - Triton Auto Tuner(2026-09-21) 로 `measure-the-serving-config` 추가. 새 도메인, 결정 7개, 그림 2장. 수치: 68→863 QPS, 퇴행 44/219 vs 0/206, 252 슬롯, 평균 QPS 1.75~6.78배.
 - 안 읽은 새 글 다섯은 open_questions 와 STATE 에 남김.
+
+## 2026-09-26 duolingo 재방문 → 확장
+- 체스 게임 리뷰(2026-09-08) 로 `key-moments-not-every-move` 추가. 새 도메인, 결정 6개, 그림 2장. 제품 수치는 글에 없어 metrics 는 설계 사실 하나.
