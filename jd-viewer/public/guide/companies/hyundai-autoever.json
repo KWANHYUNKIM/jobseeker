@@ -1812,6 +1812,146 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385495",
+      "title": "[Tech] Infra Security Engineer - 북미 기술 보안 주재원(네트웍 보안)",
+      "site": "wanted",
+      "verdict": "⚠️ 한국이 아니라 미국 근무다 — 주요업무 첫 줄이 '미주 지역(얼바인) 주재원 근무' 이고 근무지도 미주 지역(얼바인)이다.\n경력 7~14년. 네트웍보안기술팀 소속으로 북미 법인·해외 사업장의 IPS / IDS / WAF / NAC / DDoS 솔루션을 운영하고, 본사 보안 정책을 해외 법인에 적용·점검하며 보안 성숙도 진단과 신규 솔루션 구축을 맡는다. 자격요건이 여덟 줄로 넓다 — 호스트 기반 조사·분석, 웹·모바일 앱 트래픽 보안, DDoS·애플리케이션 거부공격, 워크스테이션 인증·Posture, 정책 운영, 장애 분석, 비즈니스 영어. 주재원 처우(급여·체류 기간·비자)는 공고에 없다. 같은 날 올라온 Endpoint 주재원 공고(385501)와는 팀과 운영 솔루션이 다르다. 전형의 직무역량테스트는 '코딩 또는 과제테스트' 다.",
+      "fit": {
+        "must_have": [
+          "정보보안 또는 관련분야 전공",
+          "호스트 기반 보안 조사·분석(Windows, Linux, 네트워크/보안 어플라이언스)",
+          "웹·모바일 앱 트래픽 등 애플리케이션 보안 지식",
+          "DDoS·애플리케이션 거부공격 지식",
+          "워크스테이션 인증·Posture 보안 지식",
+          "보안 정책 수립·적용·운영",
+          "시스템 운영·장애 분석·조치",
+          "비즈니스 영어"
+        ],
+        "can_learn": [
+          "운영 자동화·프로세스 개선",
+          "해외 법인 지원"
+        ]
+      },
+      "study": [
+        {
+          "topic": "IPS/IDS 룰 — 탐지와 차단 사이",
+          "from": "task",
+          "quote": "• 운영솔루션 : IPS / IDS / WAF / NAC / DDoS",
+          "priority": "core",
+          "why": "주요업무가 운영할 솔루션을 이름으로 적는다. 동료 한 마디는 '각종 데이터 분석을 통해 이상징후를 찾아' 낸다고 적는다.",
+          "gap_check": "IDS 로 탐지만 할 때와 IPS 로 인라인 차단할 때 오탐의 비용은 어떻게 다르고, 새 시그니처를 운영망에 넣기 전에 어떤 단계를 거치는가?",
+          "drill": "Suricata 를 VM 에 띄워 pcap 재생으로 공격 트래픽 몇 개를 탐지시키고, 룰 하나를 alert → drop 으로 바꾸기 전에 정상 트래픽 pcap 으로 오탐을 확인하는 절차를 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Suricata — Documentation",
+              "url": "https://docs.suricata.io/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Snort — Documents",
+              "url": "https://www.snort.org/documents",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "WAF 와 애플리케이션 보안",
+          "from": "qualification",
+          "quote": "• 웹 애플리케이션, 모바일 앱 트래픽 등 애플리케이션 보안 관련 지식 보유하신 분",
+          "priority": "core",
+          "why": "자격요건이고 해시태그에 #WAF 가 있다. WAF 룰을 조정하려면 막으려는 공격을 알아야 한다.",
+          "gap_check": "OWASP Top 10 의 인젝션·접근 통제 실패 가운데 WAF 가 막을 수 있는 것과 없는 것은 무엇이고, 특정 API 에서 오탐이 날 때 룰을 끄지 않고 예외를 거는 방법은?",
+          "drill": "OWASP Core Rule Set 을 붙인 리버스 프록시 앞에 취약한 연습용 웹앱을 두고, SQL 인젝션·XSS 요청이 막히는 로그와 정상 JSON API 가 오탐으로 막히는 경우를 재현해 예외 규칙을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWASP Top Ten",
+              "url": "https://owasp.org/www-project-top-ten/",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP Mobile Top 10",
+              "url": "https://owasp.org/www-project-mobile-top-10/",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP Core Rule Set — Documentation",
+              "url": "https://coreruleset.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DDoS 와 애플리케이션 계층 거부공격",
+          "from": "qualification",
+          "quote": "• 대규모 트래픽 거부공격(DDoS)과 어플리케이션 거부공격에 대한 보안관련 지식 보유하신 분",
+          "priority": "high",
+          "why": "자격요건이고 운영 솔루션 목록에 DDoS 가 있다.",
+          "gap_check": "볼류메트릭(UDP 반사)·프로토콜(SYN flood)·애플리케이션(HTTP flood) 공격은 각각 어느 계층에서 막히고, 온프레미스 장비로 못 막는 규모에서는 무엇(ISP·클라우드 스크러빙)에 기대는가?",
+          "drill": "CISA 의 DDoS 대응 문서를 읽고 세 유형별 탐지 지표·완화 수단·에스컬레이션 대상을 표로 만든다. 로컬 실험망에서 HTTP 요청 속도 제한을 설정해 효과를 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "CISA — Understanding and Responding to Distributed Denial-of-Service Attacks",
+              "url": "https://www.cisa.gov/resources-tools/resources/understanding-and-responding-distributed-denial-service-attacks",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "NAC — 워크스테이션 인증과 Posture 점검",
+          "from": "qualification",
+          "quote": "• 웍크 스테이션 인증 및 필수 설치 프로그램(Posture) 관련 보안지식 보유하신분",
+          "priority": "high",
+          "why": "자격요건이고 운영 솔루션 목록에 NAC 가 있다. 팀 리더가 '내부자 정보 유출 차단' 을 목적으로 적는다.",
+          "gap_check": "802.1X 인증과 Posture 점검(백신·패치·필수 에이전트 설치 여부)은 각각 언제 일어나고, 조건을 못 맞춘 단말은 어느 VLAN 으로 보내 어떻게 치료하게 하는가?",
+          "drill": "NAC 정책 한 장을 설계한다 — 인증 방식, Posture 조건, 격리 VLAN, 예외 장비(프린터·IoT) 처리, 해외 법인 현지 사정에 따른 예외 승인 절차.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "본사 정책의 해외 법인 적용과 성숙도 진단",
+          "from": "task",
+          "quote": "• 해외 법인 보안 성숙도 진단 및 개선 과제 추진",
+          "priority": "high",
+          "why": "주요업무 두 줄(본사 정책 적용·이행 점검, 성숙도 진단)이 주재원 자리의 핵심이다. 자격요건에 비즈니스 영어가 있다.",
+          "gap_check": "본사 정책이 현지 법·조직 사정과 부딪힐 때 무엇을 예외로 인정하고 무엇은 지키게 하며, 성숙도를 법인 간 같은 기준으로 비교하려면 어떤 지표를 쓰는가?",
+          "drill": "가상의 북미 법인에 대해 네트워크 보안 통제 10개(IPS 룰 갱신 주기, WAF 적용 범위, NAC 적용률 등)의 성숙도 진단표와 영어 개선 과제 보고서 한 장을 쓴다.",
+          "hours": 5,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Suricata + WAF(CRS) 홈랩과 오탐 튜닝 기록",
+          "why": "운영 솔루션 목록(IPS / IDS / WAF)과 자격요건의 애플리케이션 보안을 직접 운영해 본 증거가 된다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "영어로 쓴 보안 성숙도 진단 보고서 샘플",
+          "why": "주재원 업무가 본사 정책 이행 점검과 성숙도 진단이고, 비즈니스 영어가 자격요건이다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩 또는 과제테스트) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있고, 모집 분야에 따라 영어 구술평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "IPS·WAF 오탐 대응 경험",
+          "DDoS 대응 구조",
+          "NAC·Posture 정책 설계",
+          "해외 조직과 정책을 조율한 경험(영어)"
+        ],
+        "sources": [
+          {
+            "title": "[Tech] Infra Security Engineer - 북미 기술 보안 주재원(네트웍 보안)",
+            "url": "https://www.wanted.co.kr/wd/385495",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
