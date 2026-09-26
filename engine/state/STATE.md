@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — henry 재방문 → 확장(`attributes-belong-to-the-app`). 09-07 묶음 진행 중.**
+**없다 — inngest 재방문 → 확장(`deletion-that-stopped-the-platform`). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **inngest** — 2026-09-26 확장. RSS(`/api/rss`)는 HTML — r.jina.ai 로 `/blog` 목록(카드에 날짜). 09-18 장애 보고서로 새 도메인 "관리용 쓰기 하나가 플랫폼 전체를 막지 못하게 한다". 남은 후보: 09-09 공정 큐(기존 기능 보강 재료), 09-04 단계적 인프라 배포, 07-23 7월 장애 RCA, 04-17 4월 장애.
 - **henry** — 2026-09-26 확장. `dev.henry.jp/rss`. 09-07 12시 OpenTelemetry Collector 글(지난 갱신과 같은 날이지만 출처에 없었다)로 새 도메인 "관측 데이터가 어디서 왔는지를 틀리게 적지 않는다". 남은 후보: GCP→AWS 이전 글("なぜ AWS 移設をするのか"), 06-26 AI 에 PR 승인 권한을 준 효과, 08-12 GitHub Packages→Artifact Registry.
 - **hatena** — 2026-09-26 없음 1회째. `developer.hatenastaff.com/rss` 마지막 글이 09-04(iOSDC 공지). 이전 글 후보: 08-12 Jetpack Navigation 3 이전, 08-26 Glance 위젯.
 - **gunosy** — 2026-09-26 없음 1회째. `tech.gunosy.io/rss` 마지막 글이 04-16(행사 참가기) — 블로그가 사실상 멈췄다. 이전 글 후보: 2025-12 LLM 기사 선정(dripman), Text-to-SQL 평가.
