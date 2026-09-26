@@ -10811,6 +10811,118 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8194393",
+      "title": "[Coupang Pay Tech] Staff Mobile Engineer",
+      "site": "ats",
+      "verdict": "제목은 'Mobile' 이지만 자격요건은 'Java 또는 Kotlin으로 Android 코딩 개발 경력 최소 6년 이상'이다 — Android 자리로 읽는다. 쿠팡페이 프로덕트 앱의 설계를 이끌고 구현하며 미션 크리티컬 프로젝트에서 엔지니어를 이끄는 Staff. 같은 조직의 Staff iOS 공고와 짝으로 보인다(추론).",
+      "fit": {
+        "must_have": [
+          "Android(Java·Kotlin) 6년 이상",
+          "대규모 소비자 앱",
+          "미션 크리티컬 시스템 실적",
+          "B2C 도메인"
+        ],
+        "can_learn": [
+          "결제 도메인(우대)",
+          "Flutter(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Kotlin 코루틴으로 안전한 결제 흐름",
+          "from": "qualification",
+          "quote": "Java 또는 Kotlin으로 Android 코딩 개발 경력 최소 6년 이상",
+          "priority": "core",
+          "why": "결제는 화면 회전·프로세스 종료·네트워크 끊김 중에도 상태가 어긋나면 안 된다(추론).",
+          "gap_check": "결제 요청 중 화면이 회전되거나 앱이 백그라운드로 가면 ViewModel·코루틴 스코프·SavedStateHandle 로 상태를 어떻게 지키는가?",
+          "drill": "결제 요청 → 인증 → 승인 흐름을 ViewModel + StateFlow + viewModelScope 로 만들고, 중복 탭 방지와 프로세스 종료 후 복구를 테스트한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Android Developers — Kotlin coroutines on Android",
+              "url": "https://developer.android.com/kotlin/coroutines",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 소비자 앱의 품질 (성능·안정성)",
+          "from": "qualification",
+          "quote": "고품질의 대규모 소비자 앱 개발 경험이 있는 분",
+          "priority": "core",
+          "why": "결제 앱은 느리거나 튕기면 결제 포기로 이어진다(추론).",
+          "gap_check": "앱 시작 시간과 ANR 을 무엇으로 재고, Baseline Profile·지연 초기화로 얼마나 줄일 수 있는가?",
+          "drill": "샘플 앱에 Macrobenchmark 로 시작 시간을 재고 Baseline Profile 을 적용한 전후를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android Developers — Baseline Profiles",
+              "url": "https://developer.android.com/topic/performance/baselineprofiles/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "결제 도메인의 앱 보안",
+          "from": "preference",
+          "quote": "Payment 도메인에서 근무 경력.",
+          "priority": "high",
+          "why": "쿠팡페이는 전자결제대행(PG) 서비스다(같은 조직 iOS 공고 직무 소개). 앱이 결제 토큰·인증을 다룬다.",
+          "gap_check": "Android 에서 결제 토큰을 Keystore 로 보호하고 BiometricPrompt 로 사용자 확인을 묶는 방법, 루팅 기기에서의 위험은?",
+          "drill": "BiometricPrompt + Android Keystore 로 생체 인증 후에만 복호화되는 결제 토큰 저장 예제를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android Developers — Biometric authentication",
+              "url": "https://developer.android.com/identity/sign-in/biometric-auth",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Flutter 크로스플랫폼 (우대)",
+          "from": "preference",
+          "quote": "Cross-Platform(Flutter) 기반의 모바일 개발 경험",
+          "priority": "nice",
+          "why": "같은 조직 iOS 공고에도 Flutter 가 우대에 있다. 결제 화면 일부를 두 플랫폼이 공유할 가능성이 있다(추론).",
+          "gap_check": "Flutter 화면에서 네이티브 결제 SDK 를 부를 때 플랫폼 채널로 무엇을 주고받고, 오류는 어떻게 전달하는가?",
+          "drill": "Android 앱에 Flutter 모듈을 붙여 MethodChannel 로 네이티브 '결제 확인' 기능을 호출하는 예제를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Flutter — Platform channels",
+              "url": "https://docs.flutter.dev/platform-integration/platform-channels",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "결제 흐름 상태 머신 + 계측 테스트",
+          "why": "미션 크리티컬 실적을 보여 주는 가장 직접적인 방법이다. 네트워크 끊김·프로세스 종료까지 테스트로 덮는다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "결제 중 상태 보존",
+          "시작 시간·ANR 개선",
+          "Keystore·생체 인증",
+          "Flutter 연동",
+          "엔지니어를 이끈 미션 크리티컬 프로젝트"
+        ],
+        "sources": [
+          {
+            "title": "[Coupang Pay Tech] Staff Mobile Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8194393",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
