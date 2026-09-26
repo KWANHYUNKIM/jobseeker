@@ -45,7 +45,7 @@
 | **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 2(`cheap-model-prescreening` · `scanned-pdf-ocr-triage`). **hold** — Stock 제품 수익원 자료 두 번 없음(2026-09-26). 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
 | **ウェザーニューズ(Weathernews)** | JP · 기상 정보 | 프로파일(2026-09-26). 도메인 둘 — 기상과 실적으로 소매·제조의 반년 수요를 예측한다 · 수십만 개의 사용자 기상 조건을 10분마다 판정한다. 기능 2(`batch-gpu-demand-inference` · `my-solution-decision-tree`). **hold** — 방송 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 방송은 도메인 없음. 입구 `zenn.dev/p/weathernews/feed`. |
 | **Kanmu(カンム)** | JP · 프리페이드 카드 핀테크 | 프로파일(2026-09-26). 도메인 둘 — 결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다 · 월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다. 기능 2(`pistachio-declarative-schema` · `datadog-monitor-worker-scaling`). **hold** — Pool·법인 금융 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 Pool·법인 금융은 도메인 없음. 입구 `zenn.dev/p/kanmu_dev/feed`. |
-| **dely(クラシル)** | JP · 레시피·절약 앱·리테일 AI | 프로파일(2026-09-26). 도메인 둘(레시챌) — 수억 장의 영수증 화상을 싸게 쌓아 둔다 · 쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다. 기능 0. 수익원 넷 중 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음. 입구 `zenn.dev/p/dely_jp/feed`. |
+| **dely(クラシル)** | JP · 레시피·절약 앱·리테일 AI | 프로파일(2026-09-26). 도메인 둘(레시챌) — 수억 장의 영수증 화상을 싸게 쌓아 둔다 · 쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다. 기능 1(`receipt-image-storage-tiering`). 수익원 넷 중 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음. 입구 `zenn.dev/p/dely_jp/feed`. |
 
 
 ## 대기

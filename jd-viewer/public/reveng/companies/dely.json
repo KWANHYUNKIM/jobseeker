@@ -127,7 +127,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "receipt-image-storage-tiering"
+      ]
     },
     {
       "name": "쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다",
@@ -152,7 +154,276 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "receipt-image-storage-tiering",
+      "name": "레시챌의 수억 장 영수증 화상을 버킷 일괄이 아니라 폴더의 다시 보기 패턴으로 나눈다 — 다시 안 보는 폴더는 수명 주기로 Glacier IR, 앱에서 다시 보는 폴더만 Intelligent-Tiering 으로 감시 요금을 좁히고, 반나절 기다려야 하는 Deep Archive 는 버린다",
+      "domain": "수억 장의 영수증 화상을 싸게 쌓아 둔다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다. 대상 버킷은 수백 TB·수억 파일이 전부 **S3 Standard** 에 있었다. 화상은 올라온 직후엔 심사·분석 처리·앱 안 표시에 쓰이지만 시간이 지나면 접근이 크게 준다 — 그대로 Standard 에 두면 두기만 해도 요금이 붙고, 그 금액이 무시할 수 없게 됐다.\n\n접근 경향을 모를 때 Standard 에 쌓아 두는 것은 타당했고, 서비스 초기에 스토리지 클래스 설정이 없던 것도 당시 판단으로는 자연스럽다. 이제 경향이 보이니 줄일 때였다.",
+        "metrics": [
+          {
+            "label": "대상 버킷",
+            "value": "수백 TB · 수억 파일 · 평균 오브젝트 0.6 MB",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          },
+          {
+            "label": "스토리지 요금(이전 = 100)",
+            "value": "100 → 45(약 55% 감소) — Standard 26 · Glacier IR 16 · Intelligent-Tiering(Frequent) 3 · 감시 요금 1",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          },
+          {
+            "label": "단가(도쿄, 2026-08)",
+            "value": "Standard $0.025/GB-월 · Glacier IR $0.005/GB-월(5분의 1) · Intelligent-Tiering 감시 1,000 오브젝트당 월 $0.0025 · 이행 요청 1,000건당 Glacier IR $0.02 / Intelligent-Tiering $0.01",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          },
+          {
+            "label": "이행",
+            "value": "수백 TB 가 며칠 만에 자동 이행",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "일괄 Intelligent-Tiering 을 넣기 직전",
+          "thought": "오브젝트 내역을 확인하니 **감시 요금**이 생각보다 컸다. Intelligent-Tiering 은 오브젝트 하나하나의 접근을 감시해 오브젝트 수에 비례한 요금이 든다 — 파일 하나가 크고 수가 적으면 영향이 작지만 이번엔 반대로 작은 파일이 대량이다. 평균 0.6 MB 라 128 KB 미만이 감시 대상에서 빠지는 문제는 없었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+              "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+              "publisher": "dely Tech Blog (Zenn)",
+              "date": "2026-08-31",
+              "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+            }
+          ]
+        },
+        {
+          "at": "버킷 안을 다시 볼 때",
+          "thought": "화상은 도메인별 폴더로 나뉘어 있었고, 그 덕분에 **접근 패턴별로 폴더가 갈라져 있었다** — 처리에 한 번 쓰이고 거의 다시 안 보는 폴더, 사용자가 앱에서 이따금 다시 볼 수 있는 폴더.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+              "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+              "publisher": "dely Tech Blog (Zenn)",
+              "date": "2026-08-31",
+              "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "다시 안 보는 폴더",
+            "what": "처리(심사·분석)에 한 번 쓰인 뒤 거의 참조되지 않는 화상. 수명 주기로 일정 기간 뒤 Glacier IR."
+          },
+          {
+            "name": "다시 보는 폴더",
+            "what": "사용자가 앱에서 불규칙하게 다시 볼 수 있는 화상. Intelligent-Tiering(Frequent / Infrequent / Archive Instant 세 계층, 선택 Archive Access 는 끔)."
+          },
+          {
+            "name": "수명 주기 규칙",
+            "what": "오브젝트 생성일을 기점으로 날수를 세어 클래스를 옮긴다 — 적용하는 순간 과거 오브젝트가 한꺼번에 대상이 된다."
+          }
+        ],
+        "invariants": [
+          "앱에서 다시 보는 화상은 꺼내는 데 기다림이 없어야 한다.",
+          "다시 안 보는 화상도 문의·분석 때 반나절 안에 꺼낼 수 있어야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 영수증 화상을 올리면 도메인별 폴더의 S3 Standard 에 저장된다",
+            "why": "올린 직후엔 심사·분석·앱 표시에 자주 쓰인다."
+          },
+          {
+            "step": "다시 안 보는 폴더는 수명 주기로 일정 기간 뒤 Glacier IR 로 옮긴다",
+            "why": "오브젝트별 감시 요금 없이 보관 요금 5분의 1."
+          },
+          {
+            "step": "다시 보는 폴더는 Intelligent-Tiering 으로 — 접근이 없으면 싼 계층으로, 있으면 자동으로 빠른 계층으로",
+            "why": "꺼내기 요금이 없고 사용자 체험을 안 떨어뜨린다."
+          },
+          {
+            "step": "Cost Anomaly Detection 이 요청 요금 급증을 알린다",
+            "why": "이행 자체의 요청 요금을 놓치지 않게."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "버킷 전체를 Intelligent-Tiering 으로 넣을까?",
+            "chosen": "**넣지 않는다 — 폴더(프리픽스)의 접근 패턴으로 클래스를 나눈다.**",
+            "alternatives": [
+              "버킷 일괄 Intelligent-Tiering('넣어 두면 AWS 가 알아서')"
+            ],
+            "tradeoff": "수억 오브젝트에 비례하는 감시 요금을 피한다 — 폴더를 좁힌 결과 감시 요금은 원래 금액의 1% 정도. 대가 — 폴더별 접근 패턴을 사람이 판단하고 규칙을 관리해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          },
+          {
+            "question": "다시 안 보는 화상은?",
+            "chosen": "**수명 주기 날수로 Glacier IR(밀리초 꺼내기) 로.**",
+            "alternatives": [
+              "Standard 유지",
+              "Intelligent-Tiering"
+            ],
+            "tradeoff": "보관 요금이 Standard 의 5분의 1 이고 오브젝트별 감시 요금이 없다. 대가 — 꺼낼 때 GB 당 요금이 붙고, 최소 보관 90일·최소 과금 크기 128 KB(평균 0.6 MB 라 괜찮다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          },
+          {
+            "question": "앱에서 다시 보는 화상은?",
+            "chosen": "**Intelligent-Tiering 의 자동 세 계층만 — 선택 Archive Access 계층은 켜지 않는다.**",
+            "alternatives": [
+              "Glacier IR 로 일괄",
+              "Archive Access 계층까지 켬"
+            ],
+            "tradeoff": "Glacier IR 이면 사용자가 다시 볼 때마다 꺼내기 요금이 들어 비용을 읽기 어렵다 — Intelligent-Tiering 은 꺼내기 요금이 없고 접근하면 빠른 계층으로 돌아온다. Archive Access 를 켜면 꺼내기에 기다림이 생겨 앱 체험을 해친다. 대가 — 이 폴더엔 감시 요금이 든다(오브젝트 수가 비교적 적어 전체로는 이득).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          },
+          {
+            "question": "다시 안 보는 화상은 더 싼 Deep Archive 로 할까?",
+            "chosen": "**하지 않는다.**",
+            "alternatives": [
+              "Glacier Deep Archive"
+            ],
+            "tradeoff": "보관 요금은 더 싸지만 꺼내기가 표준 12시간·Bulk 48시간 이내 — 드물게 사용자 문의로 관리 화면에서 보거나 분석에 옛 화상이 필요할 때 반나절을 기다리면 업무가 막힌다. 대가 — 보관 요금을 조금 더 낸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          },
+          {
+            "question": "이행 비용을 미리 셀까?",
+            "chosen": "**셀 수 있었는데 놓쳤다 — 적용 직후 Cost Anomaly Detection 의 '요청 요금 급증' 알림으로 알았다.**",
+            "alternatives": [
+              "이행 요청 수 × 단가를 미리 계산"
+            ],
+            "tradeoff": "수명 주기 날수는 오브젝트 생성일 기점이라 과거 수억 개가 한꺼번에 옮겨지며 이행 요청이 대량으로 났다. 대가 — 일시적인 비용 급등(1,000건당 Glacier IR $0.02·Intelligent-Tiering $0.01 로 미리 계산할 수 있다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+                "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+                "publisher": "dely Tech Blog (Zenn)",
+                "date": "2026-08-31",
+                "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다(같은 회사의 다른 도메인)",
+          "via": "같은 레시챌 사용자 행동",
+          "contract": "영수증 화상은 올린 직후 심사·분석에 쓰이고 그 뒤엔 거의 안 보이며, 그 분석에서 나온 자주 가는 점포·사는 것이 Braze 개인화의 재료가 된다 — 화상은 싸게 잠재우고 거기서 뽑은 행동 데이터만 빠르게 돌린다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "폴더별 클래스",
+          "question": "화상은 어느 클래스로 가나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  U[영수증 업로드] --> STD[(S3 Standard)]\n  STD -->|다시 안 보는 폴더 · 수명 주기| GIR[(Glacier IR<br/>보관 1/5 · 꺼내기 유료)]\n  STD -->|다시 보는 폴더| IT[(Intelligent-Tiering<br/>자동 세 계층 · 감시 요금)]\n  IT -->|앱에서 다시 봄| IT\n  GIR -.문의 · 분석 때 밀리초.-> ADM[관리 화면 · 분석]"
+        },
+        {
+          "title": "놓친 비용과 버린 선택지",
+          "question": "어디서 비용이 튀거나 업무가 막힐 뻔했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  ALL[버킷 일괄 Intelligent-Tiering] --> M[수억 오브젝트 감시 요금]\n  DA[Deep Archive] --> W[꺼내기 12~48시간 · 문의·분석 막힘]\n  AA[Archive Access 계층] --> AP[앱에서 다시 볼 때 기다림]\n  LC[수명 주기 적용] --> BURST[과거 수억 개 일괄 이행 · 요청 요금 급증]\n  BURST --> CAD[Cost Anomaly Detection 알림]"
+        },
+        {
+          "title": "비용 구성의 전후",
+          "question": "100 이 어떻게 45 가 됐나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 이전: Standard 100\n  이전 --> 이후: 며칠 만에 자동 이행\n  이후: Standard 26 · Glacier IR 16 · IT Frequent 3 · 감시 1 = 45\n  이후 --> [*]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+          "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+          "publisher": "dely Tech Blog (Zenn)",
+          "date": "2026-08-31",
+          "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "과금 구조(광고·판촉·구독)와 사업별 비중을 확인하지 못했다.",
     "클라시루·Kurashiru AI OS·TRILL·LIVEwith 의 기술 결정 글을 아직 못 봤다.",

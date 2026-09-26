@@ -1912,3 +1912,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 dely 회사 프로파일
 
 - dely.jp(클라시루 주식회사)의 서비스 다섯을 수익원 넷으로. 기술 글 둘 다 레시챌 — 도메인 둘을 레시챌 수익원에. 과금 구조는 공개 자료에 없음.
+
+## 2026-09-26 dely 영수증 화상 스토리지 클래스
+
+- 결정 5 — 일괄 IT 대신 폴더 패턴·Glacier IR·IT(Archive Access 끔)·Deep Archive 안 씀·이행 요청 비용 놓침(Cost Anomaly Detection). 100→45.
