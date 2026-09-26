@@ -211,5 +211,82 @@
     "레이더 센서 SW 의 대전 근무 비중",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50004680?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=99&sc=630",
+      "title": "[골프존] 서버 개발자 경력직 채용",
+      "site": "jobkorea",
+      "verdict": "경력 5년 이상, 서울 강남구(골프존타워서울), 정규직(수습 3개월), 상시채용. **스크린골프 온라인 서비스의 C++ 게임 서버** 개발자다. 잡코리아 크롤은 담당업무·필수사항 칸이 비어 우대사항만 잡혔고, 같은 공고의 캐치 게시(571967)가 본문을 온전히 싣는다 — 담당업무는 **C++ 게임 서버 개발**, 다양한 플랫폼 온라인 서비스용 서버 프로그램 설계·구현·유지보수, **게임 서버 성능 최적화·안정화**. 필수는 **C++20**, 자료구조·알고리즘, **멀티스레드**, **네트워크 프로그래밍**, **Windows 개발 환경(Visual Studio, MS-SQL)**, 형상관리. 우대는 **라이브 서비스 운영**, **메모리 덤프 분석**, **분산 구조 서버**, OS·네트워크 전문 지식, **MSSQL·Redis·Kafka**, AWS·Azure·GCP·Azure DevOps CI/CD. 회사 소개의 하루 약 26만 라운드가 이 서버들을 지난다. 전형은 서류→1차(실무)→2차(임원)→HR 면접→처우협의. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "C++20 서버 5년",
+          "멀티스레드·네트워크",
+          "Windows·Visual Studio·MS-SQL"
+        ],
+        "can_learn": [
+          "IOCP",
+          "덤프 분석",
+          "Redis·Kafka 연동"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Windows 고성능 서버 — IOCP 와 멀티스레드",
+          "from": "preference",
+          "quote": "· OS / Network / 자료구조 / 알고리즘에 대한 전문 지식",
+          "priority": "core",
+          "why": "우대사항이고 같은 공고의 캐치 본문 필수사항이 멀티스레드·네트워크 프로그래밍·Windows 개발 환경을 요구한다.",
+          "gap_check": "I/O Completion Port 가 스레드 수보다 훨씬 많은 소켓을 적은 스레드로 처리하는 원리(완료 큐·작업자 스레드)를 설명할 수 있는가? 한 세션의 패킷을 여러 스레드가 동시에 처리할 때 순서·경쟁 조건은 어떻게 막는가(세션 단위 직렬화·락 범위)? 패킷 경계는 어떻게 나누는가?",
+          "drill": "Microsoft 의 I/O Completion Ports 문서를 읽고, C++20 으로 IOCP 에코 서버(길이 헤더 패킷)를 만든 뒤 동시 접속 1천 개 부하 도구로 처리량·지연을 재고, 세션별 송신 큐를 넣어 순서가 보장되는지 확인한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "I/O Completion Ports — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/fileio/i-o-completion-ports",
+              "kind": "docs"
+            },
+            {
+              "title": "C++20 — cppreference",
+              "url": "https://en.cppreference.com/cpp/20",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "라이브 서버 크래시 — 메모리 덤프 분석",
+          "from": "preference",
+          "quote": "· 메모리 덤프 분석에 대한 이해",
+          "priority": "core",
+          "why": "우대사항이고 라이브 서비스 운영 경험을 함께 우대한다.",
+          "gap_check": "운영 서버가 죽을 때 미니덤프를 자동으로 남기려면 무엇을 설정하고(예외 필터·덤프 종류), 덤프와 PDB(심볼)를 빌드마다 어떻게 보관해야 나중에 호출 스택을 읽을 수 있는가? 널 포인터·해제 후 사용·스택 오버플로는 덤프에서 각각 어떻게 보이는가?",
+          "drill": "미니덤프 문서를 읽고, 일부러 널 역참조·use-after-free 를 일으키는 C++ 서버에 크래시 시 미니덤프 저장을 붙인다. 생성된 덤프를 Visual Studio(또는 WinDbg)로 열어 원인 줄을 찾고, 빌드별 심볼 보관 규칙을 문서로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Minidump Files — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/debug/minidump-files",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "분산 서버 — 서버 간 메시징과 상태",
+          "from": "preference",
+          "quote": "· 분산 구조 서버에 대한 이해",
+          "priority": "high",
+          "why": "우대사항이고 바로 다음 줄이 MSSQL·Redis·Kafka 경력이다.",
+          "gap_check": "로비·라운드·매칭처럼 역할별로 나뉜 서버들이 서로 알림을 주고받을 때 Redis pub/sub(유실 가능, 즉시)과 Kafka(보존·재처리)는 어디에 맞는가? 라운드 결과를 MSSQL 에 쓰는 동안 서버가 죽으면 결과가 사라지지 않게 하려면 무엇을 해야 하는가?",
+          "drill": "Redis pub/sub 문서를 읽고, C++ 서버 두 대가 Redis 채널로 '라운드 종료' 이벤트를 주고받게 만든 뒤 구독 서버를 잠시 내렸다 올려 유실되는 것을 확인한다. 같은 이벤트를 Kafka 토픽으로 바꿔 재시작 후 이어 읽히는지 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Redis Pub/Sub — Redis Docs",
+              "url": "https://redis.io/docs/latest/develop/pubsub/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
