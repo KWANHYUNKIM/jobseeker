@@ -2360,3 +2360,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GA technologies Dagster
 
 - `76b3f400c26d1a` 전문으로 기능 `dagster-asset-lineage-platform`, 결정 8.
+
+## 2026-09-27 GA technologies SageMaker 파이프라인
+
+- `sagemaker-ml-pipeline` 전문으로 기능 `single-image-sagemaker-pipeline`, 결정 8. 과제(정확도 추적 · 재학습 자동화)를 실패 그림에.

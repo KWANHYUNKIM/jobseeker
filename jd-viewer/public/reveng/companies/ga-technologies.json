@@ -141,7 +141,7 @@
               "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
               "publisher": "GA technologies",
               "date": "2026-06-24",
-              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
             }
           ]
         },
@@ -156,12 +156,14 @@
               "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
               "publisher": "GA technologies",
               "date": "2026-06-24",
-              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "single-image-sagemaker-pipeline"
+      ]
     }
   ],
   "features": [
@@ -471,7 +473,7 @@
               "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
               "publisher": "GA technologies",
               "date": "2026-06-24",
-              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
             }
           ]
         },
@@ -493,7 +495,7 @@
               "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
               "publisher": "GA technologies",
               "date": "2026-06-24",
-              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
             }
           ]
         }
@@ -525,6 +527,396 @@
           "publisher": "GA technologies",
           "date": "2026-06-15",
           "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+        }
+      ]
+    },
+    {
+      "key": "single-image-sagemaker-pipeline",
+      "name": "모델마다 만들지 않는다 — Snowflake 가 주도하고 이미지 하나로 도는 ML 파이프라인",
+      "domain": "늘어나는 ML 모델을 한 틀로 굴린다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "GA technologies 의 Applied ML 부는 **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정의 정밀도와 업무 효율을 높인다. 요건 정의부터 모델 개발 · 파이프라인 · 배포 · 감시까지 한 팀이 끝까지 맡는다.\n\n여러 모델이 이미 본번에서 돌았는데, 모델마다 파이프라인 코드 · 배포 절차 · 감시 방법이 **제각각**이었다. 새 모델을 더할 때마다 그것들을 처음부터 다시 만들어야 했다. 여러 모델을 병행해 내고 시스템을 키우려면 공통의 튼튼한 파이프라인이 필요했고, 감시 도구를 새로 들이는 비용 · 운용 부하도 피하고 싶었다.",
+        "metrics": [
+          {
+            "label": "환경",
+            "value": "3 — dev · stg · main 브랜치에 AWS 환경 하나씩",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "label": "학습 파이프라인 스텝",
+            "value": "파라미터 계산 → 검증 → 전처리 → 학습 → 모델 작성 → 변환 → 드리프트 검지 → 평가 — 모두 같은 이미지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "label": "드리프트 지표",
+            "value": "PSI(예: 0.1 초과를 조건으로 추출)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "모델이 늘어날 때",
+          "thought": "모델을 따로따로 관리하면 새 모델마다 코드 · 배포 · 감시를 **처음부터** 만든다 — 팀으로 스케일하려면 공통 기반이 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+            }
+          ]
+        },
+        {
+          "at": "Snowflake 와 AWS 를 이을 때",
+          "thought": "AWS 쪽에 Snowflake 접속 정보를 두면 인증 관리와 의존이 는다 — **Snowflake 가 모든 주도권**을 쥐는 단순한 설계로.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+            }
+          ]
+        },
+        {
+          "at": "감시를 정할 때",
+          "thought": "감시 도구는 비용과 운용 부하를 만든다 — **AWS 네이티브만으로** 끝낸다. 무거운 대시보드 없이도 실용적인 감시가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+            }
+          ]
+        },
+        {
+          "at": "지금을 돌아보며",
+          "thought": "입력 분포(PSI)는 보지만 **정답과 예측을 맞춘 정확도**는 아직 파이프라인 밖(Snowflake 에서 그때그때 집계)이다. 재학습 자동화도 남았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "inference_input.csv",
+            "what": "Snowflake Tasks 가 정기적으로 S3 에 내보내는 추론 입력. 이 파일의 착지가 파이프라인을 깨운다."
+          },
+          {
+            "name": "파라미터 계산 스텝",
+            "what": "최신 성공 학습 실행 → 모델명 → 각 스텝의 S3 경로를 PropertyFile 로 내는 첫 스텝. 학습 데이터도 복사해 둔다."
+          },
+          {
+            "name": "단일 컨테이너 이미지",
+            "what": "모든 의존 라이브러리를 담은 이미지 하나. 스텝마다 엔트리포인트만 바꾼다. 실시간 서빙 코드(Flask · Gunicorn · Nginx)도 들어 있다."
+          },
+          {
+            "name": "거부 레코드",
+            "what": "Pandera 검증에서 떨어진 행과 그 사유. rejected_records_* · rejection_reasons_* 로 따로 저장된다."
+          },
+          {
+            "name": "구조화 로그",
+            "what": "각 잡이 print 로 내는 JSON(드롭 수 · 드롭률 · 드리프트). CloudWatch Logs 로 모인다."
+          }
+        ],
+        "invariants": [
+          "AWS 쪽은 Snowflake 접속 정보를 들지 않는다 — S3 가 유일한 경계다.",
+          "추론은 항상 최신 성공 학습의 모델을 쓴다 — 모델명을 하드코딩하지 않는다.",
+          "검증을 통과하지 못한 행은 버려지지 않고 사유와 함께 남는다.",
+          "파이프라인 정의는 코드로 Git 에 있고 CloudFormation 으로만 배포된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Snowflake Tasks 가 추론 데이터를 S3 의 정해진 경로에 inference_input.csv 로 내보낸다",
+            "why": "주도권을 Snowflake 에 둔다."
+          },
+          {
+            "step": "S3 Object Created 를 EventBridge 가 받아 버킷 · 키를 파라미터로 SageMaker Pipelines 를 기동",
+            "why": "폴링 · 스케줄 관리 없이 파일 착지가 곧 트리거."
+          },
+          {
+            "step": "파라미터 계산 스텝이 최신 학습 실행의 모델명 · S3 경로 · 학습 데이터를 PropertyFile 로 — 뒤 스텝은 JsonGet 으로 참조",
+            "why": "파이프라인 파라미터는 문자열뿐이라 동적 값은 스텝이 만들어 넘긴다."
+          },
+          {
+            "step": "같은 이미지로 Pandera 검증 → 전처리 → Batch Transform → Evidently 드리프트(PSI) → 후처리",
+            "why": "이미지 빌드 · 푸시는 한 번."
+          },
+          {
+            "step": "결과를 S3 에 두면 Snowflake 가 정기 확인으로 수동적으로 회수",
+            "why": "AWS 가 DWH 에 쓰지 않는다."
+          },
+          {
+            "step": "각 잡의 구조화 JSON 로그 → CloudWatch Logs Insights · Dashboard(드롭률 · PSI) · Alarm",
+            "why": "서드파티 없이 여러 모델을 한곳에서 본다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "모델마다 제각각인 파이프라인을 어떻게 하나?",
+            "chosen": "**SageMaker Pipelines 중심의 공통 ML 파이프라인 하나.**",
+            "alternatives": [
+              "모델마다 코드 · 배포 · 감시를 따로 만든다(이전)"
+            ],
+            "tradeoff": "새 모델을 더할 때 처음부터 만들지 않고 여러 모델을 병행해 낸다. 대가는 공통 틀에 맞추는 제약과, 기반 자체를 유지하는 공수(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "question": "Snowflake 와 AWS 를 어떻게 잇나?",
+            "chosen": "**Snowflake 가 주도권 — 입력은 Snowflake Tasks 가 S3 로 내보내고, 출력도 Snowflake 가 S3 를 정기 확인해 가져간다.**",
+            "alternatives": [
+              "AWS 쪽이 Snowflake 에 접속해 읽고 쓴다"
+            ],
+            "tradeoff": "AWS 쪽이 **DWH 접속 정보를 전혀 들지 않아** 인증 관리 · 의존이 줄고, S3 라는 단순한 인터페이스로 느슨하고 안전하게 잇는다. 대가는 결과 회수가 **정기 확인 주기만큼 늦는다**는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "question": "파이프라인을 무엇으로 깨우나?",
+            "chosen": "**S3 Object Created → EventBridge → SageMaker Pipelines**, 버킷 · 키를 파라미터로 넘긴다.",
+            "alternatives": [
+              "정기 폴링 · 스케줄로 기동한다"
+            ],
+            "tradeoff": "파일 착지가 곧 트리거라 폴링 · 스케줄의 복잡한 관리가 없다(서버리스 연계). 대가는 추론이 **Snowflake 쪽 내보내기에 묶인다**는 것 — 현재 자동화는 추론 중심이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "question": "스텝마다 이미지를 따로 두나?",
+            "chosen": "**단일 컨테이너 · 여러 엔트리포인트** — 모든 의존을 한 이미지에 넣고 스텝마다 스크립트만 바꾼다.",
+            "alternatives": [
+              "전처리 · 학습 · 추론마다 이미지를 따로(일반적 방식)"
+            ],
+            "tradeoff": "스텝이 늘 때마다 이미지가 늘어 **빌드 · 관리 비용이 치솟는** 것을 막는다 — 빌드 · 푸시는 한 번. 실시간 서빙 코드도 넣어 두어 설정만으로 실시간 추론으로 넓힐 수 있다. 대가는 이미지가 모든 의존을 안아 커지고, 한 스텝의 의존 변경이 전체 이미지에 닿는다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "question": "추론에 어느 모델을 쓸지 어떻게 넘기나?",
+            "chosen": "**첫 스텝에 '파라미터 계산' Processing 스텝** — 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로, 뒤 스텝은 JsonGet.",
+            "alternatives": [
+              "모델명을 하드코딩하거나 수동으로 설정한다"
+            ],
+            "tradeoff": "SageMaker Pipelines 의 실행 파라미터는 문자열만이라 '최신 학습 모델'을 스텝 사이에 넘기기 어렵다 — 이 스텝으로 **하드코딩 · 수동 설정 없이** 늘 최신 모델로 추론하고, 드리프트용 학습 데이터도 복사해 둔다. 대가는 SageMaker API 로 실행 이력을 거슬러 찾는 **자작 로직**을 들고 있어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "question": "들어온 데이터를 어떻게 믿나?",
+            "chosen": "**Pandera 로 스키마 · 값 범위를 엄격히 검증하고, 떨어진 행은 사유와 함께 따로 저장** — 드롭 수 · 드롭률을 구조화 로그로.",
+            "alternatives": [
+              "검증 없이 추론한다",
+              "불량 행을 조용히 버린다"
+            ],
+            "tradeoff": "숫자 칼럼에 문자열이 섞이는 등의 불량을 미리 막고, 무엇을 왜 버렸는지 남는다. 대가는 버려진 행만큼 **예측이 빠진 레코드**가 생긴다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "question": "분포 이탈을 어떻게 보나?",
+            "chosen": "**Evidently 의 DataDriftPreset — 학습 데이터와 추론 입력을 PSI 로 비교**, HTML 리포트 + 구조화 로그.",
+            "alternatives": [
+              "정확도가 떨어진 뒤에 알아챈다"
+            ],
+            "tradeoff": "특징량 분포가 얼마나 어긋났는지 수치로 본다. 대가는 **정답과 예측을 맞춘 정확도 추적은 아직 파이프라인 밖**이라는 것 — 지금은 Snowflake 에서 그때그때 집계한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          },
+          {
+            "question": "감시는 무엇으로 하나?",
+            "chosen": "**서드파티 없이 AWS 네이티브 — print 한 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm.**",
+            "alternatives": [
+              "감시 전용 서드파티 도구를 들인다"
+            ],
+            "tradeoff": "추가 비용 · 운용 부하 없이 여러 모델의 드롭률 · PSI 를 한곳에서 보고 임계 초과를 알람으로 잡는다. 대가는 쿼리와 대시보드 정의를 **직접 짜야** 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+                "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+                "publisher": "GA technologies",
+                "date": "2026-06-24",
+                "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "RENOSY(부동산 투자 · 매매)(수익원)",
+          "via": "마케팅 · 플래너 · CS 의 판단",
+          "contract": "Applied ML 부는 RENOSY 를 비롯한 그룹 서비스의 마케팅 · 부동산 영업 · 커스터머 석세스 데이터로 모델을 만들어 의사결정과 업무 효율을 돕는다 — 이 파이프라인이 그 모델들을 굴린다. 어느 모델이 무엇을 예측하는지는 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+            },
+            {
+              "title": "RENOSY | GA technologies",
+              "url": "https://www.ga-tech.co.jp/services/renosy/",
+              "publisher": "GA technologies",
+              "summary": "**부동산 투자 서비스** — '부동산으로 자산 형성을 당연하게.' 사고(BUY): **기술과 데이터로 부동산 가치를 정밀하게 추정**해 자산 가치가 높은 물건을 고르고 상위 몇 % 를 눈으로 검사, 상담부터 계약까지 원스톱 온라인. 팔기(SELL): 적정 가격 매각. 검토 · 구입 · 관리 · 매각까지."
+            }
+          ]
+        },
+        {
+          "to": "dagster-asset-lineage-platform",
+          "via": "Snowflake",
+          "contract": "Dagster 가 dbt 로 정리한 Snowflake 의 데이터를 이 파이프라인이 Snowflake Tasks → S3 로 받는다 — 두 글이 같은 Snowflake 계정 · 테이블을 쓰는지는 명시돼 있지 않다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+            },
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "파일 하나가 추론을 깨우는 길",
+          "question": "Snowflake 의 추론 입력은 어떤 길로 예측이 되어 Snowflake 로 돌아오나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  SF[(\"Snowflake\")] -- \"Tasks: inference_input.csv\" --> S3[\"S3\"]\n  S3 -- \"Object Created\" --> EB[\"EventBridge\"]\n  EB --> P[\"SageMaker Pipelines\"]\n  subgraph IMG[\"단일 컨테이너 이미지\"]\n    P1[\"파라미터 계산\\n최신 모델 · 경로\"] --> P2[\"Pandera 검증\"] --> P3[\"전처리\"] --> P4[\"Batch Transform\"] --> P5[\"Evidently PSI\"] --> P6[\"후처리\"]\n  end\n  P --> P1\n  P6 --> OUT[\"결과 → S3\"]\n  OUT -. \"정기 확인 · 회수\" .-> SF\n  P2 & P5 --> CW[\"CloudWatch Logs · Dashboard · Alarm\"]"
+        },
+        {
+          "title": "추론 실행 하나의 상태",
+          "question": "추론 파이프라인 실행은 어떤 상태를 거치고, 어디서 경보가 나나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 대기: inference_input.csv 착지 전\n  대기 --> 파라미터계산: EventBridge 기동\n  파라미터계산 --> 검증\n  검증 --> 추론: 통과 행\n  검증 --> 거부저장: 불량 행 + 사유\n  추론 --> 드리프트검지\n  드리프트검지 --> 완료: PSI 정상\n  드리프트검지 --> 경보: PSI 임계 초과\n  경보 --> 완료\n  완료 --> [*]: 결과 S3 → Snowflake 회수"
+        },
+        {
+          "title": "아직 파이프라인 밖에 있는 것",
+          "question": "입력 분포는 보는데 무엇을 놓칠 수 있나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"입력 분포는 그대로(PSI 정상)\"] --> B[\"그러나 정답과의 관계가 바뀜\"]\n  B --> C[\"정확도 하락\"]\n  C --> D{\"파이프라인이 알아채나\"}\n  D -- \"아니오 — 정확도 추적이 밖에 있음\" --> E[\"Snowflake 에서 그때그때 집계해야 발견\"]\n  E --> F[\"재학습 · 모델 교체도 수동\\n(Model Registry 연계는 과제)\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+          "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+          "publisher": "GA technologies",
+          "date": "2026-06-24",
+          "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
         }
       ]
     }
@@ -566,7 +958,7 @@
       "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
       "publisher": "GA technologies",
       "date": "2026-06-24",
-      "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+      "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
     }
   ]
 }
