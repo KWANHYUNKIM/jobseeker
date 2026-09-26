@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — oxide 재방문(보도자료뿐)을 마쳤다. 09-05 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
+**없다 — socar 재방문(보도자료뿐)을 마쳤다. 09-05 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **socar** — 2026-09-26 없음. `tech.socar.kr/rss.xml` 최신 07-27(피드는 `rss.xml` 만 열린다), `socarcorp.kr/blog/773~777` 은 보도자료(앱 개편·AI 음성 주차권·요금제). **07-27 「parking-brain-1」(모두의주차장)은 출처에 없다 — 안 읽은 재료.** updated_at 만. 1회째.
 - **oxide** — 2026-09-26 없음. `oxide.computer/blog/feed` 의 09-05 이후 글은 09-24 Carahsoft 파트너십 보도자료뿐. **08-13 「Kubernetes on Oxide」는 출처에 없다 — 안 읽은 재료**(고객 요구가 연동을 어떻게 정했나). updated_at 만. 1회째.
 - **nubank** — 2026-09-26 **새 글은 있으나 기능으로 안 씀.** 월드컵 중 Pix 이상치(09-17)는 z-score 해설, BLIND-CLAUDE.md(09-16)는 직원 한 명의 스크린리더용 지시 파일(회사 시스템이 아니다 — AI 개발 비교 문서의 곁가지 재료), 나머지는 문화·채용. 피드 `building.nubank.com/feed/`(도메인이 `building.nu.com` 으로 바뀌었다).
 - **mercadolibre** — 2026-09-26 없음. `medium.com/feed/mercadolibre-tech` 최신 **03-11**(continuous profiling). updated_at 만. 1회째.
