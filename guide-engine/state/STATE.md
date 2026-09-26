@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **178건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **179건**.
+직전 회차: ✅ `Staff, Full-Stack Engineer [Rocket Growth Engineering]`(8200007) 3항목 — **시애틀**, 로켓그로스 판매자(등록·풀필먼트·정산), '$164,00' 오타. `--gaps` 미완 13건.
 직전 회차: ✅ `Staff Data Scientist (Catalog)`(8200033) 3항목 — **타이베이**, 카탈로그 AI(멀티모달 추출·더러운 라벨·HITL), 8년↑.
 직전 회차: ✅ `Manager, Security Engineering _ DART Taiwan`(8188073) 3항목 — **타이베이**, 신설 DART TW 사고 대응 매니저(대응 절차·SIEM 헌팅·호스트 로그), 15년↑.
 직전 회차: ✅ `[TW Catalog] Staff Back-end Engineer`(8178865) 3항목 — **베이징**, TW Engineering. 제목 Catalog vs 팀 소개 마케팅 플랫폼 어긋남(open_questions).
