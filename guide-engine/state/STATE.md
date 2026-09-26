@@ -4,13 +4,14 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **105건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **106건**.
+직전 회차: ✅ `Staff Back-end Engineer (TW Pre-Purchase)`(8090538) 5항목 — 서울에서 대만 쿠팡 코어 서비스.
 직전 회차: ✅ `Staff Backend Engineer (Streaming & AI Infrastructure)`(7919211) 5항목 — 근무지에 'z-Test & Templates Only' 표기(open_questions).
 직전 회차: ✅ `Staff, Backend Engineer (Core Member & Infra Platform Team)`(8081147, 선릉) 5항목 — **Staff 인데 3년↑**, 비자 지원 없음.
 ⚠️ 그사이 마감·삭제: `Staff, Back-end (Traffic Management)`(8104792, closed), `Staff, ML Engineer - Coupang Play`(7927865, 데이터에 없음).
 
 **남은 서울 공고(미작성, 모집중)** — 번호로 찾는다:
-- 개발: TW Pre-Purchase Backend(8090538), Global Ops Tech Backend(7230867),
+- 개발: Global Ops Tech Backend(7230867),
   Staff Android (Rocket Pay)(8034909), Detection Platform(8188124), Security SW - Coupang Play(7956945),
   ML Ads(8012236), Sr. Staff ML Eats Search(8146344), Sr. Staff AI Data Center Architect(7994883),
   System Eng(8040801), Network Eng(8171509), IAM Eng(8172668), Senior QA (Advertiser Platform)(8222455)
@@ -18,7 +19,7 @@
   Control Assurance(8163764), Threat Hunting(8163723), Info Sec CFS(8158581), Vendor Security(8163760),
   Mobile Security(8203471), AI Security Architect(8224844)
 - 데이터 사이언스: Sr. Staff DS Incrementality(8029811)
-⚠️ 다음 회차: `Staff Back-end Engineer (TW Pre-Purchase)`(8090538).
+⚠️ 다음 회차: `Staff, Back-end Engineer (Global Operations Technology)`(7230867).
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
