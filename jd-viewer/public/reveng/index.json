@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "소셜",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "일 전용 SNS YOUTRUST — 스카우트 범위를 정하는 친구의 친구 계산을 그래프 DB 대신 Redis 로 옮겨 77% 줄이고, 프로필을 커뮤니티처럼 행렬에 넣어 가입 첫날부터 서비스를 넘는 추천을 낸다",
       "updated_at": "2026-09-26",
       "domain": "youtrust.co.jp"

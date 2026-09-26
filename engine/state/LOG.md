@@ -1516,3 +1516,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 YOUTRUST Redis 연결 계산
 
 - Redis 글 전문으로 `connections-redis-sunion`(결정 7 — Redis vs 그래프 DB·실시간이라 사전 계산 불가·SUNION·SoT MySQL·폴백·전건 동기·일일 차분 검사). RDS 스케일 다운까지.
+
+## 2026-09-26 YOUTRUST 크로스 도메인 추천
+
+- 협조 필터링 글 후반 + BigQuery 리버스 ETL 글로 `cross-domain-cf-profile-as-item`(결정 8 — 한 행렬·프로필을 아이템으로·가중치 탐색·출력은 서비스별·아이템 CF·GCS→S3 파일 연계·CSV·키 하나 추가). cold 사용자 HitRate 전승.

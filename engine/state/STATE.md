@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**YOUTRUST — 확장 1(2026-09-26): 연결 계산 도메인에 `connections-redis-sunion`(결정 7). 다음은 확장: '서비스를 넘나들고 첫날부터 추천한다' 를 협조 필터링 글(`entry/2026/09/14/140931`, scratchpad `yt_cf.txt` — '出力はサービスごとに分ける' 이후) + BigQuery 되돌리기 글(`2026/09/09/170000`)을 보탠다. 완주 판정 때 SALES·INSIGHT 수익원은 도메인이 없다. 대기 2/3(Nature·ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토(hold)·LayerX 는 in_progress.**
+**YOUTRUST — 확장 2(2026-09-26): 추천 도메인에 `cross-domain-cf-profile-as-item`(결정 8, BigQuery 리버스 ETL 글을 소스로 보탬). 두 도메인 모두 기능. 다음은 완주 판정 — SALES·INSIGHT 수익원은 도메인이 없고 ADS 연결은 inferred: tech.youtrust.co.jp 사이트맵 전 제목(병렬, 접미사 ' - YOUTRUST Tech Blog' 떼기)을 'SALES·INSIGHT·営業·調査·広告·ADS' 로, 두 번 없으면 hold. 대기 2/3(Nature·ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토(hold)·LayerX 는 in_progress.**
 
 
 
