@@ -163,7 +163,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "shared-eks-cross-account-subnets"
+      ]
     }
   ],
   "features": [
@@ -838,6 +840,353 @@
           "url": "https://studist.jp/",
           "publisher": "スタディスト",
           "summary": "Teachme Biz — 사진과 동영상으로 알기 쉬운 매뉴얼을 클라우드에서 누구나 쉽게 만들고 공유하는 시스템. 요금 체계는 이 페이지에 없다."
+        }
+      ]
+    },
+    {
+      "key": "shared-eks-cross-account-subnets",
+      "name": "클러스터는 하나, 계정은 프로덕트마다 — 1 대의 EKS 에 새 프로덕트를 합승시키기",
+      "domain": "적은 플랫폼 인원으로 새 프로덕트를 여럿 띄운다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "Teachme Biz 는 EKS 클러스터 1 대로 돌고 있었다. 새 프로덕트를 여럿 내기로 하자 그 인프라를 어떻게 할지 정해야 했는데, 당시 Platform Engineering 팀은 **전임 2 명**이었다. 프로덕트마다 EKS/ECS 클러스터를 운영하는 건 인원상 현실적이지 않아 **기존 1 대에 모으기로** 했다.\n\n남은 문제는 권한과 비용이었다. 한 AWS 계정에 다 올리면 운영은 편하지만 프로덕트별 데이터 접근을 가르기 어렵고, 모든 리소스에 프로덕트 태그를 빠짐없이 달아야 한다. 그래서 **클러스터는 하나로 두고 AWS 계정은 프로덕트마다 나누는** 구성을 골랐다.",
+        "metrics": [
+          {
+            "label": "Platform Engineering 인원(당시)",
+            "value": "전임 2 명",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+                "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+                "publisher": "スタディスト",
+                "date": "2026-06-08",
+                "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+              }
+            ]
+          },
+          {
+            "label": "EKS 클러스터",
+            "value": "기존 1 대에 새 프로덕트 여럿의 Pod 를 추가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+                "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+                "publisher": "スタディスト",
+                "date": "2026-06-08",
+                "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "새 프로덕트 인프라를 정할 때",
+          "thought": "운영 부하를 생각하면 프로덕트마다 클러스터를 운영하는 건 사람 수로 보아 현실적이지 않다 — 기존 1 대로 모은다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+              "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+              "publisher": "スタディスト",
+              "date": "2026-06-08",
+              "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+            }
+          ]
+        },
+        {
+          "at": "계정을 나눌지 고민할 때",
+          "thought": "권한 분리에서 중요한 건 Aurora · S3 같은 **데이터 저장소 접근을 좁히는 것** — EKS 화면을 못 보는 건 문제가 아니다. 매니페스트는 GitHub 와 ArgoCD 로 동기화하니 콘솔의 EKS 화면을 볼 필요도 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+              "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+              "publisher": "スタディスト",
+              "date": "2026-06-08",
+              "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "처음에 서브넷 공유 구조를 이해하는 데 시간이 걸렸지만 한 번 설정하면 운영 부하는 낮다. 계정을 나눈 덕에 권한 관리도 간단하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+              "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+              "publisher": "スタディスト",
+              "date": "2026-06-08",
+              "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "계정 A(플랫폼)",
+            "what": "기존 EKS 클러스터 · OIDC Provider · aws-load-balancer-controller 가 있는 AWS 계정. 서브넷을 공유해 준다."
+          },
+          {
+            "name": "계정 B(프로덕트)",
+            "what": "새 프로덕트마다 하나 — ALB · 타깃 그룹 · Aurora · S3 와 Pod 용 IAM 역할을 갖는다. 담당자는 이 계정 권한만 받는다."
+          },
+          {
+            "name": "공유 서브넷",
+            "what": "AWS RAM 으로 A 가 B 에 공유한 서브넷 — 리소스는 B 가 만들지만 실체는 이 서브넷에 있다."
+          },
+          {
+            "name": "TargetGroupBinding",
+            "what": "A 의 클러스터 안에서 B 의 타깃 그룹을 가리키는 쿠버네티스 리소스 — B 의 역할을 ExternalId 로 빌려 Pod IP 를 등록한다."
+          },
+          {
+            "name": "Pod 의 IAM 역할",
+            "what": "B 에 만든 역할 — B 에 등록한 A 클러스터의 OIDC issuer 를 믿고 특정 ServiceAccount 에만 넘겨진다."
+          }
+        ],
+        "invariants": [
+          "프로덕트 데이터(Aurora · S3)는 그 프로덕트의 계정에만 있고, 담당자 권한도 그 계정까지다.",
+          "A 와 B 의 ExternalId 는 같아야 한다.",
+          "Pod 가 B 의 리소스를 만지려면 B 의 역할을 거쳐야 한다 — 역할은 네임스페이스 · ServiceAccount 로 좁혀져 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "A: AWS RAM 으로 서브넷을 B 에 공유",
+            "why": "네트워크를 잇는 대신 같은 서브넷을 쓴다."
+          },
+          {
+            "step": "B: ALB · 타깃 그룹과 TargetGroupBinding 용 IAM 역할(A 의 LB 컨트롤러 역할만 믿음, ExternalId 조건)",
+            "why": "로드밸런서는 프로덕트 계정의 것."
+          },
+          {
+            "step": "A: 클러스터에 B 의 타깃 그룹을 가리키는 TargetGroupBinding(targetType ip)",
+            "why": "A 의 컨트롤러가 B 의 타깃 그룹에 Pod IP 를 등록한다."
+          },
+          {
+            "step": "B: A 클러스터의 OIDC issuer 를 OIDC 프로바이더로 등록하고 Pod 용 역할 생성",
+            "why": "A 의 Pod 가 B 의 권한을 받는다."
+          },
+          {
+            "step": "A: Pod(ServiceAccount)와 B 의 역할을 묶는다",
+            "why": "A 에서 도는 Pod 가 B 의 리소스를 다룬다."
+          },
+          {
+            "step": "B: Aurora 등은 공유 서브넷에, S3 등 VPC 밖 리소스는 Pod 역할로",
+            "why": "데이터는 프로덕트 계정에 남는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "새 프로덕트마다 클러스터를 만드나?",
+            "chosen": "**기존 EKS 1 대에 모은다.**",
+            "alternatives": [
+              "프로덕트마다 EKS 클러스터",
+              "프로덕트마다 ECS 클러스터"
+            ],
+            "tradeoff": "전임 2 명으로 클러스터 하나만 운영한다. 대가는 여러 프로덕트가 한 클러스터를 나눠 써서, 그 클러스터의 장애 · 업그레이드가 모든 프로덕트에 걸린다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+                "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+                "publisher": "スタディスト",
+                "date": "2026-06-08",
+                "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+              }
+            ]
+          },
+          {
+            "question": "AWS 계정은 하나로 두나, 프로덕트마다 나누나?",
+            "chosen": "**프로덕트마다 AWS 계정을 만들고 EKS 만 기존 계정 것을 쓴다.**",
+            "alternatives": [
+              "기존 계정 하나에 ALB · Aurora · ElastiCache 까지 전부 올린다"
+            ],
+            "tradeoff": "담당자에게 자기 계정 권한만 주면 운영 데이터 접근이 좁혀지고, 태그 관리가 필요 없고, 프로덕트별 비용이 보인다. 대가는 계정 사이를 잇는 설정이 필요하고 담당자가 콘솔의 EKS 화면을 못 본다는 것 — GitHub · ArgoCD 로 매니페스트를 관리해 그 화면은 필요 없다고 봤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+                "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+                "publisher": "スタディスト",
+                "date": "2026-06-08",
+                "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+              }
+            ]
+          },
+          {
+            "question": "한 계정 + 태그로 나누는 길은 왜 아닌가?",
+            "chosen": "**택하지 않았다.**",
+            "alternatives": [
+              "모든 리소스에 프로덕트 태그를 달아 권한 · 비용을 가른다"
+            ],
+            "tradeoff": "계정으로 나누면 경계가 저절로 생긴다. 태그는 모든 리소스에 빠짐없이 정확히 달아야 하고 그 관리 수고가 크다고 봤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+                "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+                "publisher": "スタディスト",
+                "date": "2026-06-08",
+                "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+              }
+            ]
+          },
+          {
+            "question": "계정 사이 네트워크를 어떻게 잇나?",
+            "chosen": "**서브넷 공유(AWS RAM).**",
+            "alternatives": [
+              "VPC 피어링",
+              "Transit Gateway"
+            ],
+            "tradeoff": "구성이 단순하고 처음 공유만 해 두면 운영이 가볍다. 피어링은 프로덕트 VPC 끼리도 이어져야 해 **메시 구조**가 되고 프로덕트가 늘수록 복잡해진다. Transit Gateway 는 온프레미스가 없는 구성에 과하고 비싸다. 대가는 서브넷 공유 구조를 팀이 이해하는 데 시간이 걸렸다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+                "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+                "publisher": "スタディスト",
+                "date": "2026-06-08",
+                "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+              }
+            ]
+          },
+          {
+            "question": "프로덕트 계정의 ALB 로 A 클러스터의 Pod 를 어떻게 붙이나?",
+            "chosen": "**ALB · 타깃 그룹은 B 에, A 클러스터에는 그 타깃 그룹을 가리키는 TargetGroupBinding.** A 의 LB 컨트롤러가 ExternalId 조건으로 B 의 역할을 빌린다.",
+            "alternatives": [
+              "ALB 를 플랫폼 계정 A 에 만든다(Ingress 로 자동 생성)"
+            ],
+            "tradeoff": "로드밸런서도 프로덕트 계정의 자원 · 비용으로 남는다(이 사이트의 해석). 대가는 B 의 역할에 타깃 등록 권한을 주고 ExternalId 를 양쪽에서 같게 맞춰야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+                "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+                "publisher": "スタディスト",
+                "date": "2026-06-08",
+                "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+              }
+            ]
+          },
+          {
+            "question": "A 에서 도는 Pod 가 B 의 Aurora · S3 를 어떻게 만지나?",
+            "chosen": "**B 에 A 클러스터의 OIDC issuer 를 프로바이더로 등록하고, 특정 네임스페이스 · ServiceAccount 에만 B 의 역할을 준다.**",
+            "alternatives": [
+              "B 의 액세스 키를 Pod 에 비밀로 넣는다"
+            ],
+            "tradeoff": "키를 나눠 주지 않고 Pod 단위로 권한을 좁힌다(이 사이트의 해석 — 대안 비교는 글에 없다). 대가는 계정마다 OIDC 프로바이더 등록과 역할 신뢰 관계를 따로 만들어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+                "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+                "publisher": "スタディスト",
+                "date": "2026-06-08",
+                "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Teachme 시리즈 신규 프로덕트(수익원)",
+          "via": "새 프로덕트의 실행 기반",
+          "contract": "작년 여럿 내기로 한 새 프로덕트의 Pod 를 기존 EKS 1 대에 올리고, 프로덕트마다 AWS 계정을 둔다 — 글은 어느 프로덕트인지 이름을 대지 않는다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+              "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+              "publisher": "スタディスト",
+              "date": "2026-06-08",
+              "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+            },
+            {
+              "title": "Teachmeシリーズ - 株式会社スタディスト",
+              "url": "https://studist.jp/business/strategy/teachme-series",
+              "publisher": "スタディスト",
+              "summary": "'린 오퍼레이션'(가시화 → 표준화 → 단순화 → 철저화 → 가치 강화의 순환) 실현을 위한 프레임워크 '9 Steps' 의 실행을 돕는 **AI 중심 신규 프로덕트군 'Teachme 시리즈'**. 이유로 인구 감소 · 대량 채용 모델의 한계 · **현장의 다양화 · 다국적화**(말이나 경험에 기대지 않고 누구나 즉전력이 되는 구조)를 든다. Teachme Player 옵션 기능 등 2026 년 여름 출시 예정."
+            }
+          ]
+        },
+        {
+          "to": "Teachme Biz 구독(수익원)",
+          "via": "같은 EKS 클러스터",
+          "contract": "Teachme Biz 가 원래 돌던 클러스터가 곧 새 프로덕트가 합승하는 클러스터다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+              "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+              "publisher": "スタディスト",
+              "date": "2026-06-08",
+              "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+            }
+          ]
+        },
+        {
+          "to": "llm-translation-stream-service",
+          "via": "멀티 프로덕트",
+          "contract": "번역은 제품 사이 일관성을, 인프라는 제품 사이 분리를 푼다 — 같은 멀티 프로덕트 전개의 두 면이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+              "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+              "publisher": "スタディスト",
+              "date": "2026-06-08",
+              "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+            },
+            {
+              "title": "マルチプロダクトでのAI翻訳実装：言語特性とマイクロサービスアーキテクチャの課題",
+              "url": "https://zenn.dev/studist/articles/multi-product-translation",
+              "publisher": "スタディスト",
+              "date": "2025-12-15",
+              "summary": "Teachme Biz 에는 사용자가 만든 콘텐츠를 열람 때 Google 번역으로 보여 주는 자동 번역이 있다 — 번역 엔진 선택지로 **AI(LLM) 번역**을 더하며 부딪힌 문제. ① 같은 문장량이라도 문자 체계에 따라 토큰 수가 크게 달라(크메르어는 영어의 약 3 배) 태국어 · 미얀마어 · 크메르어에서 콘텐츠 요청이 **타임아웃** → 타임아웃 연장 · 사전 번역 캐시 · **스트림 표시** 중 스트림을 택함. ② 매뉴얼 · 포털 · 동영상 자막은 거의 자동으로 됐지만 **트레이닝 코스는 다른 마이크로서비스**가 Google 번역 로직을 따로 갖고 있어 안 됨 — 멀티 프로덕트 전개를 앞두고 번역 품질 · 체험의 일관성이 과제. 스트림은 번역 자체는 공통 모듈이라도 **콘텐츠 엔드포인트 수만큼** 컨트롤러 대응이 필요해 비용이 크다 → **독립된 범용 번역 서비스**(각 서비스의 콘텐츠를 여기서 번역)를 검토 중: 품질 · 체험 일관성 · 스트림 구현 비용 절감 · 보수성 · 확장성, 앞으로 엔진 전환 · 품질 개선. 아직 검토 단계."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "계정 둘, 클러스터 하나",
+          "question": "프로덕트 계정의 요청과 데이터는 어디를 지나나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  U[\"사용자\"] --> ALB[\"ALB · 타깃 그룹(계정 B)\"]\n  subgraph A[\"계정 A(플랫폼)\"]\n    EKS[\"EKS 1 대\"] --> POD[\"새 프로덕트 Pod\"]\n    LBC[\"LB 컨트롤러\"]\n  end\n  LBC -. \"역할 빌림 · ExternalId\" .-> ALB\n  ALB --> POD\n  POD -. \"OIDC · B 의 역할\" .-> DB[\"Aurora · S3(계정 B)\"]\n  SUB[\"공유 서브넷(RAM)\"] --- POD\n  SUB --- DB"
+        },
+        {
+          "title": "프로덕트 하나를 합승시키는 순서",
+          "question": "새 프로덕트 계정은 어떤 상태를 거쳐 클러스터에 붙나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 계정생성: 프로덕트 계정 B\n  계정생성 --> 서브넷공유: A 가 RAM 으로 공유\n  서브넷공유 --> LB준비: B 에 ALB · 타깃 그룹 · 역할\n  LB준비 --> 바인딩: A 에 TargetGroupBinding\n  바인딩 --> 권한연결: B 에 OIDC 프로바이더 · Pod 역할\n  권한연결 --> 데이터: B 에 Aurora · S3\n  데이터 --> 운영: 이후 부하 낮음"
+        },
+        {
+          "title": "피어링을 고르면 생기는 일",
+          "question": "왜 VPC 피어링이 아니었나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"프로덕트마다 VPC\"] --> B[\"플랫폼 VPC 와 각 프로덕트 VPC 연결\"]\n  B --> C[\"프로덕트 VPC 끼리도 연결 필요\"]\n  C --> D[\"메시 구조\"]\n  D --> E[\"프로덕트가 늘수록 연결 수 급증\"]\n  E --> F[\"2 명 팀의 관리 부하\"]\n  F --> G[\"서브넷 공유로 선회\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "「プロダクトごとにクラスターを増やさない」という選択 — 1台のEKSに複数の新規プロダクトを相乗りさせた話",
+          "url": "https://zenn.dev/studist/articles/924fc12fd8f425",
+          "publisher": "スタディスト",
+          "date": "2026-06-08",
+          "summary": "Teachme Biz 를 1 대의 EKS 로 운용하던 중 신규 프로덕트 여럿을 출시 — Platform Engineering 전임 2 명으로 프로덕트마다 EKS/ECS 를 운용하는 건 비현실적이라 **기존 EKS 1 대에 집약**. 한 AWS 계정에 다 싣기(운용 효율) vs **프로덕트별 AWS 계정**(권한 분리 — 중요한 건 Aurora · S3 같은 데이터 접근을 좁히는 것, 모든 리소스 태그 관리의 수고, 비용 가시화) → 후자, EKS 만 기존 계정의 것을 쓴다. 매니페스트는 GitHub + ArgoCD 라 콘솔을 볼 필요가 없다. 이어서 기존 EKS 계정과 프로덕트 계정을 잇는 방법의 선택지를 검토."
+        },
+        {
+          "title": "Teachmeシリーズ - 株式会社スタディスト",
+          "url": "https://studist.jp/business/strategy/teachme-series",
+          "publisher": "スタディスト",
+          "summary": "'린 오퍼레이션'(가시화 → 표준화 → 단순화 → 철저화 → 가치 강화의 순환) 실현을 위한 프레임워크 '9 Steps' 의 실행을 돕는 **AI 중심 신규 프로덕트군 'Teachme 시리즈'**. 이유로 인구 감소 · 대량 채용 모델의 한계 · **현장의 다양화 · 다국적화**(말이나 경험에 기대지 않고 누구나 즉전력이 되는 구조)를 든다. Teachme Player 옵션 기능 등 2026 년 여름 출시 예정."
         }
       ]
     }

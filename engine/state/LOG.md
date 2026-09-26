@@ -2560,3 +2560,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 スタディスト PDF 정밀도 평가
 
 - `pdf-convert-quality-assurance` 전문으로 기능 `pdf-draft-accuracy-evaluation`, 결정 7. 번역 기능과의 연결은 inferred.
+
+## 2026-09-27 スタディスト EKS 합승
+
+- `924fc12fd8f425` 전문으로 기능 `shared-eks-cross-account-subnets`, 결정 6. 신규 프로덕트 수익원 연결은 여전히 inferred(프로덕트명 없음).
