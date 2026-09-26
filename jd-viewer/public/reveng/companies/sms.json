@@ -71,7 +71,7 @@
           "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
           "publisher": "エス・エム・エス エンジニア テックブログ",
           "date": "2025-12-08",
-          "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중."
+          "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
         }
       ]
     },
@@ -162,12 +162,14 @@
               "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
               "publisher": "エス・エム・エス エンジニア テックブログ",
               "date": "2025-12-08",
-              "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중."
+              "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "career-portal-ordinary-platform"
+      ]
     }
   ],
   "features": [
@@ -897,6 +899,352 @@
           "summary": "**카이포케 커넥트**(개호/장애 복지 사업자 경영 지원 SaaS, 도메인마다 앱·DB 분할, React/Next.js SPA)에 **PR 단위로 쓰고 버리는 preview 환경**을 들여 1년 운용. 이전의 **릴리스 트레인** 과제 — 릴리스 주기가 길다, **QA 환경 이용이 막힌다**, 릴리스 담당에게 운용·리스크 관리 부하 집중(수동 절차 증가, 차분 전체 파악 곤란). 해법은 **검증 작업을 떼어 병렬화**; 필수 요건에 **DB 를 쓰고 버릴 수 있을 것**(데이터가 더러워져도 점유). SRE 리소스가 적어 **처음부터 완벽 대신 작게 만들어 계속 가치를 높인다**. 결과: 릴리스 빈도 상승, 이용 **약 80 건 → 2026년 6월 약 160 건**(상정 밖 용도 증가). 어려움: **복제할 수 없는 외부 서비스** — 연계가 늘 때마다 개별 조정, 다른 부서의 사양·예산 제약. **이전**: Dev·QA·Staging·Production 넷, 릴리스 담당이 코드 프리즈 → 전 QA 멤버가 QA 환경을 **점유해 직렬 검증(약 1주)** → Staging E2E → Production, **2주에 한 번**. **해법**: QA 환경 검증을 전부 **개발 단계로 옮기고(시프트 레프트)** PR 마다 병렬 검증, 릴리스는 매일 정시 GitHub Actions scheduled workflow 가 Staging 배포→E2E→Production 을 잇고, **릴리스 플래그**로 PO 가 기능 공개 시점을 정한다. 인터페이스는 Vercel 류를 참고해 **PR 에 preview 라벨** → 구축, 커밋 → 차분 컴포넌트(FE/BE/DB)만 갱신, 머지·클로즈·라벨 제거 → 삭제, bot 이 접근 정보를 코멘트. 환경마다 FE(CloudFront+S3, 호스트명으로 에셋을 가르는 Lambda)/API(ECS 태스크 5개, GraphQL federation, **mirage-ecs** 가 호스트명으로 라우팅)/DB 한 벌, `preview-N.kaipoke.com`, 초기 구축 **약 10분**, 모니터링은 본번과 같은 Datadog. 설계 원칙: 요건이 불명확할 때 작정하지 않는다·운용 부담이 적은 기술·작게 만들어 계속 개선(설계~도입 초기 담당 **한 명**, 관련 PR 200건 넘음). 결과: 2025-10 전환 뒤 배포 **월 2 → 월 20 회 전후**. mirage-ecs 는 ecspresso 와 친화적; **Neon** 은 DB 복제 도입 공수를 크게 줄였지만 최근 리전이 **싱가포르**라 지연 → 지금은 도쿄 **Aurora Serverless v2** 가 주력. 인증 기반은 계약 플랜 제약으로 테넌트를 못 만들어 기존 테넌트에 상승(Dev DB 복사). 이용의 **8할이 개발 팀의 자주적 확인**(QA 인도는 2할) — DB 마이그레이션 확인·AI 병렬 개발·로컬 대체."
         }
       ]
+    },
+    {
+      "key": "career-portal-ordinary-platform",
+      "name": "'평범한' 기반을 일부러 고른다 — 잡 워커 대신 Cloud Tasks, BI 대신 배치, PR 마다 대신 다섯 개의 검증 환경",
+      "domain": "커리어 파트너의 흩어진 업무를 한 포털로 모은다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "SMS 는 의료·개호·보육 영역에서 **인재 소개**를 한다 — '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭을 만든다. 모든 업무 프로세스를 청취해 보니 업무가 다방면이고 양이 많으며, 민감한 정보와 불확실한 일이 많았다. 정보의 입도·저장처·소통 도구·노하우는 **팀과 개인마다 달랐다** — 더 나은 매칭을 위해 업무 프로세스와 업무 시스템을 함께 고쳐야 했다.\n\n개발 팀이 주도해 사내 업무 앱 **Career Portal** 을 만들었다(2025). 필자가 이 기반에서 노린 것은 새로움이 아니라 **'평범함'** 이다 — 생각할 것을 줄여 기술 운용 부하를 낮추고, 업무·비즈니스 과제에 집중하는 것.",
+        "metrics": [
+          {
+            "label": "첫 릴리스",
+            "value": "3~4명 · 2~3개월(생성 AI 활용)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "label": "검증 환경",
+            "value": "미리 만든 약 5개(PR 마다 아님)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "label": "생성 AI 응답",
+            "value": "수십 초 이상 — 웹과 떼어 비동기",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "label": "라이브러리 갱신",
+            "value": "Renovate 주간 그룹 PR",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기반을 설계할 때",
+          "thought": "'평범한' 기반 — 단순한 인프라·앱 설계, 컨테이너 로컬 환경, 본번 상당 검증 환경, 적당한 테스트, CI/CD, 이상 검지, IaC, 분석 환경, 정기 갱신, 생성 AI — 으로 **생각할 것을 줄이고** 업무 과제에 집중한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+              "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+              "publisher": "エス・エム・エス エンジニア テックブログ",
+              "date": "2025-12-08",
+              "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+            }
+          ]
+        },
+        {
+          "at": "재설계를 시작할 때(2024)",
+          "thought": "엔지니어링 조직의 과제 인식을 말로 만들어 **경영·사업 책임자가 함께하는 열린 자리**에 직접 가져가 논의한다 — 위에서 내려오는 게 아니라 스스로 주도한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "キャリア事業を中心としたデータ・業務管理基盤のリアーキテクチャの話",
+              "url": "https://tech.bm-sms.co.jp/entry/2024/12/19/100000_1",
+              "publisher": "エス・エム・エス エンジニア テックブログ",
+              "date": "2024-12-19",
+              "summary": "커리어 사업을 중심으로 한 데이터·업무 관리 기반의 재설계 구상 — ① 역할에 따른 시스템의 통합과 분할 ② 시스템 내부 구조의 공통/개별 최적화 ③ 역할에 맞는 아키텍처 선정. 엔지니어링 조직의 과제 인식을 말로 만들어 **경영·사업 책임자가 함께하는 열린 자리**에 직접 가져가 논의하는 데서 시작."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "커리어 파트너",
+            "what": "구직자(종사자)와 사업자를 잇는 전직·채용 지원 담당. Career Portal 의 사용자."
+          },
+          {
+            "name": "Career Portal Web",
+            "what": "TypeScript/Next.js · NextAuth(사내 Google OIDC) · Prisma. Cloud Run, IAP 로 접근 제한."
+          },
+          {
+            "name": "AI 앱",
+            "what": "Python/FastAPI · Vertex AI. 응답이 수십 초라 Cloud Tasks 로 비동기·리트라이."
+          },
+          {
+            "name": "배치",
+            "what": "Node.js. RDB 특정 데이터의 이상 감시도 여기서."
+          },
+          {
+            "name": "검증 환경",
+            "what": "본번 상당 구성으로 미리 만든 약 5개. 개발자에게 나눠 준다."
+          }
+        ],
+        "invariants": [
+          "사내 앱이라 입구에 **IAP** 를 둔다.",
+          "생성 AI 호출은 **웹 요청과 떼어** 비동기로.",
+          "main 머지 = 개발 환경, **GitHub 릴리스 Publish = 본번** — production 브랜치를 두지 않는다.",
+          "인프라까지 **한 모노레포**, CI/CD 는 전부 GitHub Actions."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "커리어 파트너가 Load Balancer(IAP) 를 거쳐 Cloud Run 의 Web 에 들어와 Cloud SQL 의 데이터를 다룬다",
+            "why": "일반적인 구성."
+          },
+          {
+            "step": "생성 AI 기능은 Web 이 Cloud Tasks 에 작업을 넣고 AI 앱(Vertex AI)이 처리한다",
+            "why": "수십 초 응답 · 리트라이 관리."
+          },
+          {
+            "step": "Cloud SQL 데이터는 매일 BigQuery 로, 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM)",
+            "why": "분석과 조회."
+          },
+          {
+            "step": "배치가 RDB 특정 데이터의 이상을 감시하고, Datadog·Sentry 가 Slack 으로 알린다",
+            "why": "이상 검지."
+          },
+          {
+            "step": "main 머지 → 개발 환경 자동 배포 + Draft 릴리스 자동 생성(Slack 에 링크) → Publish 하면 본번 배포",
+            "why": "개발·본번 괴리를 줄인다."
+          },
+          {
+            "step": "개발자는 미리 만든 약 5개 검증 환경 중 하나에서 본번 상당 구성으로 확인한다",
+            "why": "로컬로 다 못 보는 것."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수십 초 걸리는 생성 AI 를 어떻게 부르나?",
+            "chosen": "**Web 에서 직접 부르지 않고 별도 AI 앱 + Cloud Tasks 로 비동기·리트라이 — Celery 같은 잡 워커 대신.**",
+            "alternatives": [
+              "Celery 등 잡 워커",
+              "Cloud Run Worker Pools"
+            ],
+            "tradeoff": "출시 시점 Cloud Run Worker Pools 는 **퍼블릭 프리뷰**였고, 잡 워커는 운용·보수 부하가 크다. 대가 — Cloud Tasks 의 기능 범위와 Google Cloud 에 **묶인다**(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "question": "본번 배포를 어떻게 트리거하나?",
+            "chosen": "**production 브랜치 대신 GitHub 릴리스 — main 머지 때 Draft 릴리스를 자동 생성하고 Publish 만 누르면 본번.**",
+            "alternatives": [
+              "production 브랜치 운용"
+            ],
+            "tradeoff": "브랜치·PR 이 늘어 **관리성이 나빠지는 것**을 피하고, main 에서 확인한 뒤 곧바로 내보내 **개발·본번 괴리**를 줄인다. 대가 — 릴리스를 누르는 **사람의 손**이 한 번 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "question": "데이터 이상을 어떻게 감시하나?",
+            "chosen": "**Metabase·Redash 같은 BI 로 감시·통지하는 대신 배치로 스크래치 구현.**",
+            "alternatives": [
+              "BI 도구의 알림"
+            ],
+            "tradeoff": "총 **구현·운용 비용**이 배치 쪽이 적다고 판단했다. 대가 — 감시 조건을 바꿀 때마다 **코드**를 고쳐야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "question": "애드혹 쿼리는?",
+            "chosen": "**BI 도구 대신 Cloud SQL Studio — Google Group IAM 인증으로.**",
+            "alternatives": [
+              "별도 BI 환경"
+            ],
+            "tradeoff": "**자격 증명 관리 없이** 데이터에 접근한다. 대가 — BI 의 대시보드·공유 기능은 없다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "question": "검증 환경을 PR 마다 만들까?",
+            "chosen": "**아니다 — 본번 상당의 검증 환경을 미리 약 5개 만들어 개발자에게 준다.**",
+            "alternatives": [
+              "PR 마다 일회용 환경"
+            ],
+            "tradeoff": "IAP·Cloud Storage·Eventarc 설정 등은 **앱 분리만으로는 부족**하고, 실제로 5개쯤이면 개발이 돈다; Cloud Run 이 요청 없을 때 멈춰 **비용 걱정도 없다**. 대가 — 환경 수가 고정이라 개발자가 늘면 **모자랄 수 있다**(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "question": "CI 의 공급망을 어떻게 지키나?",
+            "chosen": "**GitHub Actions 액션을 pinact 로 고정하고 actionlint 로 정적 분석, Google Cloud 인증은 Workload Identity 연계.**",
+            "alternatives": [
+              "태그 참조 · 서비스 계정 키"
+            ],
+            "tradeoff": "장기 자격 증명 없이 인증하고 액션의 변조 위험을 줄인다(이 사이트의 해석). 대가 — 고정한 버전을 **갱신하는 수고**(Renovate 로 흡수).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "question": "저장소를 어떻게 나누나?",
+            "chosen": "**Web · AI 앱 · 배치 · 인프라를 한 모노레포로 — CI 는 앱마다(Biome·tsc·Vitest / Ruff·mypy·pytest / tflint·trivy).**",
+            "alternatives": [
+              "앱마다 저장소"
+            ],
+            "tradeoff": "3~4명 팀이 한곳에서 본다(이 사이트의 해석). 대가 — 언어가 TypeScript·Python 둘이라 **툴체인도 두 벌**이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          },
+          {
+            "question": "기반 전체를 무엇에 맞추나?",
+            "chosen": "**새 기술이 아니라 '평범함' — 단순한 구성·적당한 테스트·CI/CD·이상 검지·IaC·분석 환경·정기 갱신·생성 AI.**",
+            "alternatives": [
+              "최신 기술로 차별화"
+            ],
+            "tradeoff": "생각할 것이 줄어 **운용 부하**가 낮아지고 업무 과제에 집중한다; 답을 찾기 쉬운 영역이기도 하다. 대가 — 이 모두를 해내려면 **경험**이 필요하고, 결국 꾸준히 기반을 개선하는 수밖에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+                "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+                "publisher": "エス・エム・エス エンジニア テックブログ",
+                "date": "2025-12-08",
+                "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "PR 마다 쓰고 버리는 검증 환경으로 릴리스 트레인을 푼다(같은 회사의 다른 도메인)",
+          "via": "검증 환경을 어떻게 나누나",
+          "contract": "카이포케 커넥트는 QA 환경 쟁탈을 풀려고 **PR 마다** 환경을 세웠고, Career Portal 은 IAP·Eventarc 설정까지 분리하기 어렵고 5개면 충분해 **고정 환경**을 골랐다 — 같은 회사가 팀 규모와 구성에 따라 반대로 판단했다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "Career Portal 의 구성",
+          "question": "커리어 파트너의 요청과 AI 작업은 어디를 지나나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  CP[\"커리어 파트너\"] --> LB[\"Load Balancer + IAP\"] --> WEB[\"Web(Cloud Run)\\nNext.js · NextAuth · Prisma\"]\n  WEB --> SQL[\"Cloud SQL\"]\n  WEB --> CT[\"Cloud Tasks\\n비동기 · 리트라이\"] --> AI[\"AI 앱(Cloud Run)\\nFastAPI · Vertex AI\"]\n  SQL -->|일일| BQ[\"BigQuery\"]\n  BAT[\"배치(Node.js)\\n데이터 이상 감시\"] --> SQL\n  BAT --> SL[\"Slack\"]"
+        },
+        {
+          "title": "머지에서 본번까지",
+          "question": "production 브랜치 없이 어떻게 본번에 나가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> PR\n  PR --> main: 머지\n  main --> 개발환경: 자동 배포\n  main --> Draft릴리스: 자동 생성 · Slack 링크\n  Draft릴리스 --> 본번: Publish\n  본번 --> [*]"
+        },
+        {
+          "title": "'평범한' 선택이 모자라는 자리",
+          "question": "일부러 단순하게 고른 것들은 어디서 한계가 드러나나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"검증 환경 5개 고정\"] --> B[\"개발자 증가 시 부족\"]\n  C[\"배치로 데이터 감시\"] --> D[\"조건 변경마다 코드 수정\"]\n  E[\"Cloud Tasks\"] --> F[\"잡 워커 수준의 제어 부족 가능\"]\n  G[\"Publish 는 사람 손\"] --> H[\"릴리스 잊음 · 지연\"]\n  I[\"생성 AI 수십 초\"] --> J[\"동기 호출이면 타임아웃 → 비동기로 회피\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "人材紹介サービス向け社内基盤 Career Portal の技術紹介",
+          "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
+          "publisher": "エス・エム・エス エンジニア テックブログ",
+          "date": "2025-12-08",
+          "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
+        },
+        {
+          "title": "キャリア事業を中心としたデータ・業務管理基盤のリアーキテクチャの話",
+          "url": "https://tech.bm-sms.co.jp/entry/2024/12/19/100000_1",
+          "publisher": "エス・エム・エス エンジニア テックブログ",
+          "date": "2024-12-19",
+          "summary": "커리어 사업을 중심으로 한 데이터·업무 관리 기반의 재설계 구상 — ① 역할에 따른 시스템의 통합과 분할 ② 시스템 내부 구조의 공통/개별 최적화 ③ 역할에 맞는 아키텍처 선정. 엔지니어링 조직의 과제 인식을 말로 만들어 **경영·사업 책임자가 함께하는 열린 자리**에 직접 가져가 논의하는 데서 시작."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -939,7 +1287,7 @@
       "url": "https://tech.bm-sms.co.jp/entry/2025/12/08/110000",
       "publisher": "エス・エム・エス エンジニア テックブログ",
       "date": "2025-12-08",
-      "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중."
+      "summary": "의료·개호·보육 **인재 소개**는 '커리어 파트너' 가 구직자와 사업자 양쪽과 소통해 매칭한다. 커리어 파트너의 **모든 업무 프로세스를 청취**해 보니 업무가 다방면·대량이고 민감 정보·불확실성이 높으며, 정보의 입도·저장처·도구·노하우가 **팀·개인마다 달랐다** → 개발 팀 주도로 사내 업무 앱 **Career Portal**. Google Cloud — Load Balancer(+**IAP**) → Cloud Run → Cloud SQL, 일일 BigQuery 연계. 생성 AI(Vertex AI) 기능은 응답이 **수십 초** 걸려 별도 앱으로 두고 **Cloud Tasks** 로 비동기화·리트라이(Celery 같은 잡 워커 안도 있었다). Web 은 TypeScript/Next.js·NextAuth(사내 Google OIDC)·Prisma, AI 앱은 Python/FastAPI·uv, 배치는 Node.js, 인프라 포함 **모노레포**. 전 앱 구조화 로그. 릴리스는 production 브랜치 대신 **GitHub 릴리스** — 브랜치·PR 증가로 관리성이 나빠지는 것을 피하고 개발·본번 괴리를 줄인다. 목표는 **'평범한' 기술 기반** — 생각할 것을 줄여 업무·비즈니스 과제에 집중. Celery 대신 Cloud Tasks 인 이유 — 출시 시점 **Cloud Run Worker Pools 가 퍼블릭 프리뷰**였고 운용·보수 부하. CI/CD 는 인프라 포함 전부 GitHub Actions(pinact 로 액션 고정·actionlint·Workload Identity 연계), main 머지 → 개발 환경 자동 배포, **머지하면 Draft 릴리스 자동 생성 → Publish 만으로 본번 배포**(링크를 Slack 에). 관측은 Datadog·Sentry, RDB 특정 데이터 이상 감시는 Metabase·Redash 같은 BI 대신 **배치 스크래치**(총 구현·운용 비용이 적다), 애드혹 쿼리는 Cloud SQL Studio(Google Group IAM 인증). 검증 환경은 PR 마다가 좋았겠지만 IAP·Cloud Storage·Eventarc 설정까지 앱 분리만으로는 부족하고 **약 5개**면 충분해 미리 만든 환경을 개발자에게; Cloud Run 이 요청 없을 때 멈춰 비용 걱정 없음. Renovate 주간 그룹 PR. 첫 릴리스 **3~4명 · 2~3개월**, 생성 AI 없이는 어려웠다."
     },
     {
       "title": "キャリア事業を中心としたデータ・業務管理基盤のリアーキテクチャの話",
