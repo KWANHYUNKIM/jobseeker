@@ -1,0 +1,225 @@
+{
+  "book": "java-io",
+  "id": "files-api",
+  "no": "6.2",
+  "chapter": 6,
+  "title": "Files 로 하는 일",
+  "summary": "만들고 지우고 옮긴다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "이미 있을 때 무엇이 예외이고 무엇이 아닌지 가른다.",
+    "디렉토리 copy 가 안을 따라오지 않는 것을 확인한다.",
+    "재귀 삭제를 직접 만든다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.1절에서 **실패할 때 말해 주는 쪽**을 골랐다. 그러면 성공하는 경우도 알아야 한다 — `Files` 의 메서드는 스무 개가 넘는데 **이미 있을 때 어떻게 되는가**로 갈린다."
+    },
+    {
+      "type": "table",
+      "caption": "이미 있을 때 — 예외인가 아닌가",
+      "columns": [
+        "메서드",
+        "이미 있으면"
+      ],
+      "rows": [
+        [
+          "`createFile`",
+          "**`FileAlreadyExistsException`**"
+        ],
+        [
+          "`createDirectory`",
+          "**`FileAlreadyExistsException`**"
+        ],
+        [
+          "`createDirectories`",
+          "**아무 일도 없다** — 경로를 그냥 돌려준다"
+        ],
+        [
+          "`copy`",
+          "**`FileAlreadyExistsException`**"
+        ],
+        [
+          "`copy` + `REPLACE_EXISTING`",
+          "덮어쓴다"
+        ],
+        [
+          "`move`",
+          "**`FileAlreadyExistsException`**"
+        ],
+        [
+          "`delete`",
+          "(없으면 `NoSuchFileException`)"
+        ],
+        [
+          "`deleteIfExists`",
+          "(없으면 `false`)"
+        ]
+      ],
+      "note": "**`createDirectory` 와 `createDirectories` 가 갈린다.** 단수는 던지고 복수는 조용하다 — 한 글자 차이인데 동작이 반대다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "그래서 `createDirectories` 를 쓴다",
+      "md": "이름이 \"여러 단계를 만든다\" 는 뜻인데 **멱등이기도 하다.**\n\n```\ncreateDirectories(fa/a/b/c)  -> 세 단계를 만든다\n또 부르면                     -> 예외 없이 경로를 돌려준다\n```\n\n> `exists()` 로 먼저 확인하고 `createDirectory` 를 부르는 코드는 **경합이 있다** — 확인과 생성 사이에 다른 스레드가 만들 수 있다.\n> `createDirectories` 는 그 확인이 필요 없다. 이미 있으면 그냥 지나간다.\n> 파일도 같은 걸 원하면 `createFile` 대신 **`newOutputStream`**(CREATE 가 기본)을 쓰거나 예외를 잡는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 디렉토리 copy 는 안을 따라오지 않는다\n\n이것이 이 절에서 가장 많이 틀리는 자리다. 디렉토리에 파일 두 개와 하위 디렉토리가 있는 상태에서 `Files.copy` 를 했다."
+    },
+    {
+      "type": "compare",
+      "title": "기대와 결과",
+      "left": {
+        "title": "기대한 것",
+        "md": "```\nfa/a-copy/\n  one.txt\n  b/\n```\n\n\"디렉토리를 복사했으니 안도 왔겠지\""
+      },
+      "right": {
+        "title": "실제",
+        "bad": true,
+        "md": "```\n만들어진 것 = fa/a-copy\n  (디렉토리인가 true)\n그 안의 항목 수 = 0\n```\n\n**빈 디렉토리 하나뿐이다.**"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "`copy` 는 한 항목만 복사한다",
+      "md": "이름이 거짓말을 하는 것은 아니다 — 문서에 그렇게 적혀 있다.\n\n> `Files.copy(Path, Path)` 는 **파일 하나 또는 디렉토리 엔트리 하나**를 복사한다. 재귀는 하지 않는다.\n> 그리고 **`Files` 에는 재귀 복사도, 재귀 삭제도 없다.** 30년 된 API 인데 없다.\n> 없는 이유는 짐작할 수 있다 — 중간에 실패했을 때 어떻게 해야 하는지가 정해지지 않는다. 절반만 복사된 상태를 되돌릴지, 남길지, 건너뛸지는 부르는 쪽이 정할 일이다.\n> 그래서 **직접 `walk` 로 쓴다.** 아래가 삭제 쪽이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "재귀 삭제 — 깊은 것부터",
+      "code": "try (var s = Files.walk(root)) {\n    List<Path> all = s.sorted(Comparator.reverseOrder()).toList();\n    for (Path p : all) Files.delete(p);\n}\n\n// reverseOrder 가 핵심이다 — 경로를 거꾸로 정렬하면 깊은 것이 먼저 온다.\n// fa/a/b/c 가 fa/a/b 보다 앞에 오므로 DirectoryNotEmptyException 이 안 난다.\n// walk 는 Stream 이라 try-with-resources 가 필요하다(4.3절)."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "순서를 안 뒤집으면 첫 줄에서 막힌다",
+      "md": "`walk` 는 **위에서 아래로** 준다. 그 순서로 지우면 뿌리부터 지우려 한다.\n\n```\nfa/ 를 먼저 지우려 하면 -> DirectoryNotEmptyException\n```\n\n> `reverseOrder()` 가 그것을 뒤집는다. 문자열 역순 정렬이라 `fa/a/b/c` 가 `fa/a/b` 앞에 온다 — 경로가 접두사 관계면 **긴 쪽이 먼저**다.\n> 이 실험에서는 7개를 그렇게 지워 `fa` 가 사라졌다.\n> `Files.walkFileTree` 와 `SimpleFileVisitor` 의 `postVisitDirectory` 를 쓰는 방법도 있다 — 그쪽이 정석이고 예외 처리를 세밀하게 할 수 있다. 짧게 쓸 때는 위 세 줄이 편하다."
+    },
+    {
+      "type": "table",
+      "caption": "`move` 가 하는 세 가지 일",
+      "columns": [
+        "부른 모양",
+        "실제로 하는 일"
+      ],
+      "rows": [
+        [
+          "`move(a/two.txt, a/b/three.txt)`",
+          "다른 디렉토리로 **이동**"
+        ],
+        [
+          "`move(a/b/three.txt, a/b/renamed.txt)`",
+          "같은 곳에서 **이름 변경**"
+        ],
+        [
+          "`move(x, 이미 있는 y)`",
+          "**`FileAlreadyExistsException`**"
+        ]
+      ],
+      "note": "**이름 변경이 따로 없다** — `move` 가 그 일을 한다. `File.renameTo()` 가 `boolean` 을 돌려주던 것을 대신한다(6.1절)."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`ATOMIC_MOVE` 는 같은 파일시스템에서만 된다",
+      "md": "\"쓰다 만 파일이 보이지 않게\" 하려면 이 옵션이다.\n\n```java\nFiles.writeString(tmp, data);                              // 임시 이름으로 다 쓰고\nFiles.move(tmp, real, StandardCopyOption.ATOMIC_MOVE);      // 한 번에 바꾼다\n```\n\n> 읽는 쪽은 **옛 파일 아니면 새 파일**을 본다. 반쯤 쓰인 파일을 보는 일이 없다.\n> 다만 **다른 파일시스템 사이에서는 못 한다** — `AtomicMoveNotSupportedException` 이다. 디스크를 넘으면 복사 + 삭제가 되므로 원자적일 수 없다.\n> 그래서 임시 파일은 **최종 파일과 같은 디렉토리에** 만든다. `/tmp` 에 만들고 옮기면 파일시스템이 다를 수 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"디렉토리를 통째로 지우는 코드를 써 보세요.\"**\n\n> `Files` 에 **재귀 삭제가 없다**는 것을 아는지가 첫 관문이다. `walk` + `reverseOrder` 또는 `walkFileTree` 다.\n> `reverseOrder` 를 빼면 첫 줄에서 `DirectoryNotEmptyException` 이다 — 그것까지 말하면 확실하다.\n> `walk` 가 `Stream` 이라 `try-with-resources` 가 필요한 것도 본다(4.3절).\n> 파일을 안전하게 바꿔 쓰는 법을 물으면 **임시 이름 + `ATOMIC_MOVE`**, 그리고 같은 파일시스템이어야 한다는 조건."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 예외 이름들과 나무 모양",
+      "sql": "$ java -cp out Fa\n--- 만든다 ---\n  createDirectories(fa/a/b/c) = .../iotest/fa/a/b/c\n  createFile = fa/a/one.txt\n  한 번 더 createFile -> FileAlreadyExistsException: fa/a/one.txt\n  createDirectories 를 또 부르면 = fa/a/b/c  (예외 없다)\n  createDirectory(이미 있음) -> FileAlreadyExistsException: fa/a\n\n--- 복사한다 ---\n  copy = fa/a/two.txt\n  한 번 더 copy -> FileAlreadyExistsException: fa/a/two.txt\n  REPLACE_EXISTING 주면 = fa/a/two.txt\n  디렉토리를 copy 하면:\n    만들어진 것 = fa/a-copy (디렉토리인가 true)\n    그 안의 항목 수 = 0  (안은 안 따라온다)\n\n--- 옮긴다 ---\n  move = fa/a/b/three.txt\n  원래 자리에 있나 = false\n  이름만 바꾸는 것도 move = fa/a/b/renamed.txt\n  이미 있는 곳으로 move -> FileAlreadyExistsException: fa/a/one.txt\n\n--- 지운다 ---\n  deleteIfExists(없는 것) = false\n  delete(빈 아닌 디렉토리) -> DirectoryNotEmptyException: fa/a\n\n--- 지금 나무 모양 ---\n    fa/\n    fa/a/\n    fa/a-copy/\n    fa/a/b/\n    fa/a/b/c/\n    fa/a/b/renamed.txt  (11바이트)\n    fa/a/one.txt  (11바이트)\n\n--- 디렉토리 전체를 지우려면 순서가 있다 ---\n  깊은 것부터 7개를 지운다\n  fa 가 남아 있나 = false\n\n# fa/a-copy 가 나무에 빈 디렉토리로 남아 있는 것을 보라.\n# copy 했지만 one.txt 도 b/ 도 안 따라왔다.",
+      "note": "**나무 그림의 `fa/a-copy/` 가 이 절의 증거다.** 뒤에 아무 항목도 안 붙어 있다 — `Files.copy` 가 디렉토리 엔트리 하나만 만들었다."
+    }
+  ],
+  "recap": [
+    "createFile·createDirectory·copy·move 는 이미 있으면 FileAlreadyExistsException 이다.",
+    "createDirectories 는 이미 있어도 조용하다 — 단수와 복수가 동작이 반대다.",
+    "그래서 exists() 확인 없이 createDirectories 를 쓴다(경합이 없다).",
+    "디렉토리 copy 는 안을 따라오지 않는다 — a-copy 의 항목 수가 0 이었다.",
+    "Files 에는 재귀 복사도 재귀 삭제도 없다. 부르는 쪽이 실패 정책을 정해야 하기 때문이다.",
+    "재귀 삭제는 walk + reverseOrder 로 깊은 것부터 지운다 — 7개를 그렇게 지웠다.",
+    "순서를 안 뒤집으면 첫 줄에서 DirectoryNotEmptyException 이다.",
+    "move 가 이동과 이름 변경을 다 한다 — File.renameTo() 의 boolean 을 대신한다.",
+    "쓰다 만 파일을 안 보이게 하려면 임시 이름 + ATOMIC_MOVE 이고 같은 파일시스템이어야 한다."
+  ],
+  "drills": [
+    {
+      "task": "createDirectory 와 createDirectories 를 두 번씩 불러 본다.",
+      "done_when": "한쪽만 예외인 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "파일이 든 디렉토리를 Files.copy 한다.",
+      "done_when": "안이 비어 있는 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "walk 를 reverseOrder 없이 지워 본다.",
+      "done_when": "첫 줄에서 막히는 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "임시 파일 + ATOMIC_MOVE 로 설정 파일을 바꿔 쓴다.",
+      "done_when": "중간 상태가 안 보이는 것을 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "createDirectory 와 createDirectories 의 차이는.",
+      "a": "이미 있을 때 앞은 예외, 뒤는 조용히 지나간다. 여러 단계를 만드는 것도 뒤쪽이다."
+    },
+    {
+      "q": "디렉토리를 Files.copy 하면.",
+      "a": "빈 디렉토리 하나만 만들어진다. 안은 따라오지 않는다."
+    },
+    {
+      "q": "재귀 삭제를 어떻게 만드나.",
+      "a": "walk 를 reverseOrder 로 정렬해 깊은 것부터 지운다."
+    },
+    {
+      "q": "ATOMIC_MOVE 의 조건은.",
+      "a": "같은 파일시스템이어야 한다. 넘으면 AtomicMoveNotSupportedException 이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "멱등",
+      "what": "여러 번 해도 결과가 같은 성질. createDirectories 가 그렇고 createDirectory 는 아니다."
+    },
+    {
+      "term": "ATOMIC_MOVE",
+      "what": "옮기기를 한 번에 끝내는 옵션. 읽는 쪽이 반쯤 쓰인 파일을 못 본다. 같은 파일시스템에서만 된다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Files.copy",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — StandardCopyOption",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/StandardCopyOption.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Files.walkFileTree",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

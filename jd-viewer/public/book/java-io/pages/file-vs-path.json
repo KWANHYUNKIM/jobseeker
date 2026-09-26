@@ -1,0 +1,227 @@
+{
+  "book": "java-io",
+  "id": "file-vs-path",
+  "no": "6.1",
+  "chapter": 6,
+  "title": "File 과 Path",
+  "summary": "옛것과 새것.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "같은 실패에 두 API 가 무엇을 돌려주는지 비교한다.",
+    "File.delete() 의 false 가 무엇을 숨기는지 본다.",
+    "경로를 문자열로 붙이지 않는 방법을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "1장부터 5장까지 파일을 **`new FileInputStream(\"a.txt\")`** 로만 열었다. 파일 자체를 다룬 적은 없다 — 만들고 지우고 옮기고 속성을 보는 일이다.\n\n그 일에 API 가 **두 벌** 있다. `java.io.File`(1996)과 `java.nio.file.Path`·`Files`(자바 7). 둘 다 살아 있어서 골라야 하는데, **고르는 근거는 실패할 때 드러난다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 없는 파일에 물어보면\n\n`fp/없는파일.txt` 는 없다. 양쪽에 같은 것을 물었다."
+    },
+    {
+      "type": "table",
+      "caption": "없는 파일에 대한 응답",
+      "columns": [
+        "물은 것",
+        "`File`",
+        "`Files`"
+      ],
+      "rows": [
+        [
+          "크기",
+          "`length()` = **0**",
+          "`size()` → **`NoSuchFileException`**"
+        ],
+        [
+          "지우기",
+          "`delete()` = **false**",
+          "`delete()` → **`NoSuchFileException`**"
+        ],
+        [
+          "수정 시각",
+          "`lastModified()` = **0**",
+          "속성 읽기에서 예외"
+        ],
+        [
+          "있나",
+          "`exists()` = false",
+          "`Files.exists()` = false"
+        ]
+      ],
+      "note": "**`File` 은 0 과 `false` 로 답한다.** 크기가 0인 파일과 없는 파일이 같은 답을 준다 — 구별하려면 `exists()` 를 따로 불러야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`delete()` 의 `false` 는 아무것도 말하지 않는다",
+      "md": "두 상황을 나란히 돌려 봤다.\n\n```\n없는 파일        File.delete() = false\n빈 아닌 디렉토리  File.delete() = false\n```\n\n> **같은 `false`** 다. 파일이 없어서인지, 디렉토리가 비지 않아서인지, 권한이 없어서인지 알 수 없다.\n> `Files` 는 갈라서 말한다 — `NoSuchFileException` 과 **`DirectoryNotEmptyException`**.\n> 그래서 `File.delete()` 를 쓴 코드는 대개 반환값을 **안 본다.** 봐도 할 말이 없으니까. 그러면 지우기가 조용히 실패한다 — 3.6절의 `PrintWriter` 와 같은 모양이다.\n> 이것 하나만으로도 새 코드에 `Files` 를 쓸 이유가 된다."
+    },
+    {
+      "type": "prose",
+      "md": "## 경로를 문자열로 붙이지 않는다\n\n`\"fp\" + \"/\" + \"a.txt\"` 는 이 머신에서 잘 돈다. 윈도우에서도 돈다(윈도우가 `/` 를 받아 준다). 그래도 안 쓰는 이유는 **조립보다 분해**다."
+    },
+    {
+      "type": "table",
+      "caption": "`Path.of(\"fp\",\"a\",\"b\",\"c.txt\")` 에 물어본 것",
+      "columns": [
+        "메서드",
+        "결과"
+      ],
+      "rows": [
+        [
+          "`toString()`",
+          "`fp/a/b/c.txt`"
+        ],
+        [
+          "`getFileName()`",
+          "`c.txt`"
+        ],
+        [
+          "`getParent()`",
+          "`fp/a/b`"
+        ],
+        [
+          "`getNameCount()`",
+          "4"
+        ],
+        [
+          "`resolve(\"d.txt\")`",
+          "`fp/a/b/d.txt`"
+        ],
+        [
+          "`relativize`",
+          "`fp` 기준으로 `a/b/c.txt`"
+        ],
+        [
+          "`normalize()`",
+          "`fp/a/../b` → **`fp/b`**"
+        ]
+      ],
+      "note": "**`normalize()` 가 특히 중요하다.** 사용자 입력으로 받은 경로에 `../` 가 들어 있으면 디렉토리 밖으로 나간다 — 경로 탈출 공격이다. `normalize()` 뒤에 `startsWith(기준)` 을 확인해야 막힌다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "경로 탈출을 막는 형태",
+      "code": "Path base = Path.of(\"/var/www/uploads\").toAbsolutePath().normalize();\nPath target = base.resolve(userInput).normalize();   // normalize 가 ../ 를 접는다\n\nif (!target.startsWith(base))\n    throw new SecurityException(\"기준 밖으로 나간다: \" + target);\n\n// normalize 를 빼면 fp/a/../../etc/passwd 가 그대로 열린다"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "`File` 은 경로를 문자열 하나로 들고 있다",
+      "md": "그래서 분해가 문자열 자르기가 된다.\n\n> `File.getParent()` 는 `String` 을 돌려주고 `getParentFile()` 은 `File` 을 돌려준다 — 두 개가 따로 있다.\n> 구분자 처리가 플랫폼별로 얽혀 있고, `File(\"a\", \"b\")` 같은 생성자가 있지만 **여러 조각을 한 번에 못 받는다.**\n> `Path` 는 조각의 목록으로 들고 있다 — `getNameCount()` 가 4 인 것이 그 증거다. `subpath(1,3)` 처럼 잘라 쓸 수 있다.\n> 그리고 `Path` 는 **파일시스템 추상화**를 받는다 — ZIP 안의 경로도 `Path` 다(`FileSystems.newFileSystem`). `File` 은 로컬 디스크뿐이다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "속성은 한 번에 받는다",
+      "md": "`File` 로 크기·종류·시각을 알려면 **세 번 물어본다.**\n\n```java\nf.length(); f.isFile(); f.lastModified();   // OS 에 세 번 간다\n```\n\n```java\nBasicFileAttributes at = Files.readAttributes(p, BasicFileAttributes.class);\nat.size(); at.isRegularFile(); at.creationTime();   // 한 번\n```\n\n> 파일 하나면 차이가 없지만 **디렉토리를 훑을 때** 갈린다 — 6.5절에서 수만 개를 볼 때 이것이 드러난다.\n> `creationTime()` 은 `File` 에 아예 없다. 생성 시각을 알려면 `Files` 쪽이어야 한다."
+    },
+    {
+      "type": "compare",
+      "title": "그래서 무엇을 쓰나",
+      "left": {
+        "title": "새 코드",
+        "md": "**`Path` · `Files`**\n\n실패 이유를 말한다. 경로를 분해할 수 있다. 속성을 한 번에 받는다."
+      },
+      "right": {
+        "title": "`File` 이 남아 있는 자리",
+        "md": "**옛 API 와의 접점**\n\n라이브러리가 `File` 을 받으면 `path.toFile()`, 반대는 `file.toPath()`. 둘은 같은 곳을 가리킨다(`equals` 가 `true`)."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"File 과 Path 중 무엇을 씁니까.\"**\n\n> **`Path`·`Files`** 다. 이유를 하나만 대라면 — **`File.delete()` 는 실패 이유를 안 말한다.** 없는 파일이든 빈 아닌 디렉토리든 `false` 다.\n> `Files.delete()` 는 `NoSuchFileException` 과 `DirectoryNotEmptyException` 을 갈라서 던진다.\n> 경로를 문자열로 붙이지 않는 이유를 물으면 — **`normalize()` 와 `startsWith()`** 로 경로 탈출을 막을 수 있다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 같은 실패, 두 응답",
+      "sql": "$ java -cp out Fp\n--- 없는 파일에 물어보면 ---\n  File.length()   = 0        (없는데 0)\n  File.delete()   = false    (왜 실패했는지 안 알려준다)\n  File.exists()   = false\n  File.lastModified() = 0  (없는데 0)\n  Files.size()    -> NoSuchFileException: fp/없는파일.txt\n  Files.delete()  -> NoSuchFileException: fp/없는파일.txt\n  Files.deleteIfExists() = false  (없으면 false, 예외 없음)\n\n--- 지울 수 없는 것을 지우려 하면 ---\n  File.delete()  = false    (왜?)\n  Files.delete() -> DirectoryNotEmptyException: fp/빈아닌디렉토리\n\n--- 경로를 다루는 법 ---\n  Path.of(\"fp\",\"a\",\"b\",\"c.txt\") = fp/a/b/c.txt\n  getFileName = c.txt\n  getParent   = fp/a/b\n  getNameCount= 4\n  resolve(\"d.txt\")  = fp/a/b/d.txt\n  relativize        = a/b/c.txt\n  normalize(a/../b) = fp/b\n\n--- File 과 Path 사이 ---\n  path.toFile()   = fp/있는파일.txt\n  file.toPath()   = fp/있는파일.txt\n  같은 곳인가     = true\n\n--- 속성을 한 번에 받는다 ---\n  size            = 7\n  isRegularFile   = true\n  isDirectory     = false\n  creationTime 있나 = true\n\n# 두 번째 묶음이 이 절의 전부다.\n# 없는 파일과 빈 아닌 디렉토리 — File.delete() 는 둘 다 false 다.\n# Files.delete() 는 NoSuchFileException 과 DirectoryNotEmptyException 이다.",
+      "note": "**같은 `false` 가 두 번 나왔다.** 그 두 줄 사이에 `Files` 의 두 예외 이름이 있고, 그것이 이 장에서 `Files` 를 쓰는 이유다."
+    }
+  ],
+  "recap": [
+    "파일을 다루는 API 가 두 벌이다 — File(1996)과 Path·Files(자바 7).",
+    "File 은 없는 파일에 length() 0, lastModified() 0, delete() false 로 답한다.",
+    "Files 는 NoSuchFileException 을 던진다. deleteIfExists 만 false 를 준다.",
+    "File.delete() 의 false 는 이유를 말하지 않는다 — 없는 파일과 빈 아닌 디렉토리가 같은 false 다.",
+    "Files.delete() 는 NoSuchFileException 과 DirectoryNotEmptyException 을 갈라 던진다.",
+    "Path 는 경로를 조각 목록으로 들고 있어 getParent·resolve·relativize·normalize 가 된다.",
+    "normalize() 뒤에 startsWith(기준) 을 확인해야 경로 탈출을 막는다.",
+    "Files.readAttributes 로 속성을 한 번에 받는다 — File 은 세 번 물어보고 creationTime 은 없다.",
+    "path.toFile()·file.toPath() 로 오갈 수 있고 두 경로는 equals 가 true 다."
+  ],
+  "drills": [
+    {
+      "task": "없는 파일에 File.length() 와 Files.size() 를 각각 불러 본다.",
+      "done_when": "0 과 예외를 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "빈 아닌 디렉토리를 File.delete() 와 Files.delete() 로 지워 본다.",
+      "done_when": "false 와 예외 이름을 비교한다.",
+      "minutes": 8
+    },
+    {
+      "task": "사용자 입력에 ../ 를 넣어 resolve 해 본다.",
+      "done_when": "normalize + startsWith 로 막는다.",
+      "minutes": 12
+    },
+    {
+      "task": "내 코드에서 File.delete() 의 반환값을 안 보는 자리를 찾는다.",
+      "done_when": "Files.delete 로 바꾼다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "File.delete() 가 false 를 돌려주는 경우는.",
+      "a": "없는 파일, 빈 아닌 디렉토리, 권한 부족 등 여럿이고 구별할 수 없다."
+    },
+    {
+      "q": "Files 쪽은 그것을 어떻게 갈라 주나.",
+      "a": "NoSuchFileException 과 DirectoryNotEmptyException 을 던진다."
+    },
+    {
+      "q": "경로 탈출을 막는 방법은.",
+      "a": "normalize() 로 ../ 를 접고 startsWith(기준) 으로 밖으로 나갔는지 본다."
+    },
+    {
+      "q": "File 로는 알 수 없는 속성은.",
+      "a": "생성 시각이다. Files.readAttributes 의 creationTime() 으로 받는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "Path",
+      "what": "경로를 조각 목록으로 들고 있는 타입. 분해·조립·정규화가 되고 ZIP 같은 다른 파일시스템도 받는다."
+    },
+    {
+      "term": "normalize",
+      "what": "경로의 . 과 .. 를 접는 것. 경로 탈출을 막으려면 이 뒤에 startsWith 확인이 필요하다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Files",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Path",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java Tutorials — Legacy File I/O Code",
+      "url": "https://docs.oracle.com/javase/tutorial/essential/io/legacy.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

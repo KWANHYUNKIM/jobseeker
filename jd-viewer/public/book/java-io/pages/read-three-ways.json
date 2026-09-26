@@ -1,0 +1,222 @@
+{
+  "book": "java-io",
+  "id": "read-three-ways",
+  "no": "6.3",
+  "chapter": 6,
+  "title": "읽는 세 가지",
+  "summary": "크기가 방법을 정한다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "같은 방법들을 세 크기에 걸쳐 돌린다.",
+    "어디서 OutOfMemoryError 가 나는지 선을 찾는다.",
+    "힙 사용량을 재려다 실패한 것도 적는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "3.5절에서 **100MB 파일을 힙 64MB 로 `readAllBytes` 하면 죽는다**고 봤다. 한 점만 찍은 것이라 \"그럼 어디까지 괜찮은가\" 를 답하지 못했다.\n\n이 절은 같은 다섯 방법을 **세 크기**에 돌려 선을 찾는다. 힙은 256MB 로 고정했다."
+    },
+    {
+      "type": "table",
+      "caption": "힙 256MB, 세 크기 × 다섯 방법",
+      "columns": [
+        "방법",
+        "1,230 B",
+        "1.3 MB",
+        "142 MB"
+      ],
+      "rows": [
+        [
+          "`readString()`",
+          "2 ms",
+          "10 ms",
+          "**OutOfMemoryError**"
+        ],
+        [
+          "`readAllLines()`",
+          "0 ms",
+          "20 ms",
+          "**OutOfMemoryError**"
+        ],
+        [
+          "`lines().count()`",
+          "1 ms",
+          "7 ms",
+          "398 ms"
+        ],
+        [
+          "`newBufferedReader` 루프",
+          "0 ms",
+          "4 ms",
+          "359 ms"
+        ],
+        [
+          "8KB 버퍼 바이트",
+          "0 ms",
+          "0 ms",
+          "**30 ms**"
+        ]
+      ],
+      "note": "**세 번째 칼럼에서 갈린다.** 위 두 개만 죽었고 아래 세 개는 돌았다 — 그 선이 \"전부 메모리에 올리나\" 다."
+    },
+    {
+      "type": "figure",
+      "caption": "다섯 방법이 무엇을 힙에 올리나",
+      "ascii": "   readString      whole file as char[]     <- 142 MB file needs ~140 MB more\n   readAllLines    every line as String     <- 4,000,000 String objects\n   lines()         one line at a time       <- lazy, bounded\n   newBufferedReader  one line at a time    <- bounded\n   8 KB buffer     one 8 KB array, reused   <- bounded, and never decoded\n\n   the first two grow with the file. the last three do not.",
+      "note": "**마지막 줄이 가장 빠른 이유도 여기 있다** — 30ms 는 문자로 바꾸는 일을 아예 안 했기 때문이다(4.2절의 디코더를 안 거친다)."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "142MB 파일이 256MB 힙에 안 들어가는 이유",
+      "md": "파일이 142MB 이고 힙이 256MB 니 들어갈 것 같다. 안 들어간다.\n\n> `readString` 은 **바이트를 읽어 들이고 그것을 `char` 로 바꾼다.** 한글은 UTF-8 3바이트가 `char` 1개(2바이트)이고, 아스키는 1바이트가 2바이트가 된다.\n> 이 파일은 4,000,000줄 × 약 36바이트고 `char` 수로는 약 7천만이다 — `char[]` 이 **약 140MB**. 읽는 중에는 바이트 버퍼와 `char[]` 이 **동시에** 있다.\n> `readAllLines` 는 다르다 — `String` 객체 **4,000,000개**다. 객체 헤더만 개당 16바이트라 그것만 64MB이고 내용은 따로다.\n> 곧 **\"파일 크기 < 힙\" 은 안전선이 아니다.** 경험적으로 파일 크기의 2~3배를 봐야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "1.3MB 에서는 순서가 뒤바뀐다",
+      "md": "가운데 칼럼을 보면 `readAllLines` 가 20ms 로 **가장 느리다.**\n\n> 4.3절에서 20만 줄을 세 방법으로 읽었을 때 10~22ms 사이에서 순서가 회차마다 바뀌었다. 여기서도 같다.\n> 이 크기에서는 **JIT 워밍업과 페이지 캐시가 차이보다 크다.** 첫 측정이 불리하고 순서를 바꿔 재면 결과가 달라진다.\n> 그래서 작은 파일에서는 **속도로 고르지 않는다.** 코드가 짧은 것을 고른다 — `readString` 이나 `readAllLines` 다.\n> 갈리는 크기는 마지막 칼럼이고, 거기서는 **되는 것과 안 되는 것**으로 갈린다."
+    },
+    {
+      "type": "prose",
+      "md": "## 힙 사용량을 재려다 실패했다\n\n이 표에 원래 \"쓴 힙\" 칼럼을 넣으려 했다. `usedHeap()` 을 앞뒤로 재고 차이를 적는 방식이었다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "이렇게 쟀는데",
+      "code": "static long usedHeap() {\n    Runtime r = Runtime.getRuntime();\n    for (int i = 0; i < 3; i++) System.gc();\n    return r.totalMemory() - r.freeMemory();\n}\n\nlong before = usedHeap();\nlong n = job.run(p);           // 여기서 읽는다\nlong peak = usedHeap() - before;   // 0 KB 로 나왔다"
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "0 KB 로 나왔다 — 그래서 뺐다",
+      "md": "1.3MB 파일을 `readAllLines` 로 읽은 뒤에도 **0 KB** 였다.\n\n> 읽은 결과를 `size()` 만 세고 버렸으니 **GC 가 이미 치웠다.** `usedHeap()` 안의 `System.gc()` 가 그것을 앞당긴 것이다.\n> 곧 이 방식으로는 **최대 사용량(peak)을 못 잰다** — 끝난 뒤의 값만 본다. 사용량은 읽는 도중에 최고가 된다.\n> 제대로 재려면 JFR 의 할당 샘플링이나 `ThreadMXBean.getCurrentThreadAllocatedBytes()` 가 필요하다. 이 책의 범위를 넘는다.\n> **그래서 힙 칼럼을 빼고 OutOfMemoryError 로만 갈랐다.** 그것은 재는 것이 아니라 **일어나거나 안 일어나는 것**이라 흔들리지 않는다."
+    },
+    {
+      "type": "table",
+      "caption": "그래서 무엇으로 고르나",
+      "columns": [
+        "아는 것",
+        "고르는 것"
+      ],
+      "rows": [
+        [
+          "크기가 작다고 **보장할 수 있다** (설정·템플릿)",
+          "`readString` / `readAllLines` — 코드가 짧다"
+        ],
+        [
+          "크기를 **모른다** (업로드·로그·사용자 입력)",
+          "`lines` / `newBufferedReader` — 크기와 무관하다"
+        ],
+        [
+          "**문자로 안 바꿔도 된다** (복사·해시·전송)",
+          "바이트 버퍼 — 142MB 를 30ms 에 훑었다"
+        ],
+        [
+          "줄 단위로 **가공**해야 한다",
+          "`lines` — 스트림 연산을 붙일 수 있다"
+        ]
+      ],
+      "note": "**\"보장할 수 있다\" 가 첫 줄의 조건이다.** 내가 배포하는 설정 파일은 보장되고, 사용자가 올린 파일은 안 된다 — 3.5절의 결론과 같다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`Files.newInputStream` 과 `FileInputStream`",
+      "md": "마지막 줄에서 `new FileInputStream` 이 아니라 `Files.newInputStream` 을 썼다.\n\n> 같은 일을 하지만 `Files` 쪽은 **`Path` 를 받고 `OpenOption` 을 받는다** — `CREATE`·`APPEND`·`TRUNCATE_EXISTING` 을 조합할 수 있다.\n> 그리고 실패할 때 `NoSuchFileException` 처럼 **구체적인 예외**를 던진다. `FileInputStream` 은 `FileNotFoundException` 하나다(6.1절과 같은 결).\n> 성능은 이 측정으로 구분되지 않았다 — 둘 다 같은 채널 위에 있다.\n> 새 코드에서는 `Files.newInputStream`·`newOutputStream`·`newBufferedReader`·`newBufferedWriter` 를 쓴다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"파일 크기가 얼마까지면 readAllBytes 를 써도 됩니까.\"**\n\n> 숫자로 답하면 안 된다 — **힙 크기와 인코딩에 달렸다.** 이 실험에서 힙 256MB 에 142MB 파일이 안 들어갔다.\n> 이유를 말할 수 있으면 좋다 — 바이트 버퍼와 `char[]` 이 동시에 있고, UTF-8 한글은 3바이트가 `char` 1개(2바이트)다.\n> 그리고 **질문 자체를 바꾼다** — \"크기를 보장할 수 있는가\" 다. 보장되면 쓰고 아니면 스트리밍이다.\n> `readAllLines` 가 더 위험한 것도 말할 수 있다 — 4,000,000개의 `String` 객체다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 세 크기, 힙 256MB",
+      "sql": "$ java -Xmx256m -cp out R3 r-small.txt r-mid.txt r-big.txt\n최대 힙 = 256 MB\n\n  r-small.txt — 1,230 바이트\n    readString().length()         590      2 ms\n    readAllLines().size()          40      0 ms\n    lines().count()                40      1 ms\n    newBufferedReader 루프           40      0 ms\n    8KB 버퍼 바이트                  1,230      0 ms\n\n  r-mid.txt — 1,348,890 바이트\n    readString().length()     708,890     10 ms\n    readAllLines().size()      40,000     20 ms\n    lines().count()            40,000      7 ms\n    newBufferedReader 루프       40,000      4 ms\n    8KB 버퍼 바이트              1,348,890      0 ms\n\n  r-big.txt — 142,888,890 바이트\n    readString().length()  OutOfMemoryError: Java heap space\n    readAllLines().size()  OutOfMemoryError: Java heap space\n    lines().count()         4,000,000    398 ms\n    newBufferedReader 루프    4,000,000    359 ms\n    8KB 버퍼 바이트             142,888,890     30 ms\n\n# 1.3MB 에서 readString().length() 가 708,890 인 것을 보라.\n# 파일은 1,348,890 바이트다 — 한글이 3바이트에 char 하나라서 절반쯤이다(2.3절).\n#\n# 142MB 에서 위 두 개만 죽었다. 그 선이 '전부 올리나' 다.\n# 그리고 가장 빠른 30ms 는 문자로 안 바꾼 것이다.\n#\n# 힙 증가 칼럼은 전부 0 KB 로 나와서 표에서 뺐다 — GC 가 먼저 치웠다.",
+      "note": "**같은 파일에서 `readString` 은 죽고 8KB 버퍼는 30ms 다.** 142MB 를 다 읽은 것은 양쪽이 같고, 한쪽만 힙에 올렸다."
+    }
+  ],
+  "recap": [
+    "같은 다섯 방법을 1,230B · 1.3MB · 142MB 에 힙 256MB 로 돌렸다.",
+    "142MB 에서 readString 과 readAllLines 만 OutOfMemoryError 였다.",
+    "파일 크기 < 힙 은 안전선이 아니다 — 바이트 버퍼와 char[] 이 동시에 있다.",
+    "UTF-8 한글은 3바이트가 char 하나라 1.3MB 파일의 length() 가 708,890 이었다.",
+    "readAllLines 는 String 객체 4,000,000개라 readString 보다 더 불리하다.",
+    "8KB 버퍼가 142MB 를 30ms 에 훑었다 — 문자로 바꾸는 일을 아예 안 한다.",
+    "1.3MB 에서는 순서가 뒤바뀐다 — 작은 파일은 속도로 고르지 않고 코드 길이로 고른다.",
+    "힙 사용량을 재려 했으나 0 KB 로 나와 뺐다 — GC 가 먼저 치워 최대 사용량을 못 잡는다.",
+    "고르는 기준은 크기를 보장할 수 있는가다 — 보장되면 통째로, 아니면 스트리밍이다."
+  ],
+  "drills": [
+    {
+      "task": "-Xmx 를 낮춰 가며 readString 이 죽는 지점을 찾는다.",
+      "done_when": "파일 크기의 몇 배인지 적는다.",
+      "minutes": 12
+    },
+    {
+      "task": "같은 파일을 readAllLines 와 readString 으로 비교한다.",
+      "done_when": "어느 쪽이 먼저 죽는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "한글 파일과 영문 파일의 length() 대 바이트 비율을 비교한다.",
+      "done_when": "2.3절의 3바이트 규칙과 맞는지 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "내 코드에서 파일을 통째로 읽는 자리를 찾는다.",
+      "done_when": "크기가 보장되는지 판단한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "힙 256MB 에 142MB 파일을 readString 하면.",
+      "a": "OutOfMemoryError 다. 바이트 버퍼와 char[] 이 동시에 필요하다."
+    },
+    {
+      "q": "readAllLines 가 readString 보다 불리한 이유는.",
+      "a": "줄마다 String 객체를 만든다 — 4,000,000개면 헤더만 64MB 다."
+    },
+    {
+      "q": "8KB 버퍼가 가장 빨랐던 이유는.",
+      "a": "문자로 디코딩하지 않는다. 바이트만 세고 지나간다."
+    },
+    {
+      "q": "읽는 방법을 고르는 기준은.",
+      "a": "크기를 보장할 수 있는가다. 속도가 아니다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "스트리밍",
+      "what": "전체를 올리지 않고 조금씩 처리하는 방식. 메모리가 파일 크기와 무관해진다."
+    },
+    {
+      "term": "최대 사용량(peak)",
+      "what": "처리 도중의 힙 최고치. 끝난 뒤 재면 GC 가 치워서 안 보인다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Files.newInputStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Files.lines",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Runtime.freeMemory",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runtime.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
