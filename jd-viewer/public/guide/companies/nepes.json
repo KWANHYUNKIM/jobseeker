@@ -1,0 +1,232 @@
+{
+  "slug": "nepes",
+  "name": "네패스",
+  "name_en": "nepes",
+  "aliases": [
+    "네패스",
+    "㈜네패스"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "nepes.co.kr",
+  "one_liner": "반도체 후공정(범핑·WLP·FOWLP/PLP·SiP·테스트) 회사 — 개발 자리는 청주 공장의 장비·제조 IT 와 서울 캠퍼스의 피지컬 AI",
+  "company": {
+    "business": "홈페이지는 네패스를 '초연결 기술' 회사로 소개하고 사업을 다섯 갈래로 적는다 — **Semiconductor**(PLP/FOWLP/WLP 솔루션, Bumping, FOW-SiP, Test Service), **Artificial Intelligence**(Predictive Maintenance, Vision Inspection 등), IT Materials(공정·기능성 케미칼), Rechargeable Battery(Lead Tab, LIB 음극), Energy(스마트 윈도·Low-E·스마트 필름). 1990년 설립, KOSDAQ 상장(033640), 홈페이지 숫자로 매출액 '작년 약 4,800억원'·임직원 2,300명. 공고 머리말은 **OSAT**(반도체 후공정 외주)와 첨단패키징, 비메모리 반도체를 앞세운다. 모집중 개발 공고 다섯 건은 두 곳으로 갈린다 — **청주 1캠퍼스(오창) CIO실**의 AI장비파트(EES·FDC·RMS, SECS/GEM 장비 통신 S/W, 신입·경력)와 AI정보화파트(MES·스마트팩토리 웹, AWS 데이터레이크, Tableau), **서울 캠퍼스(서초)**의 피지컬 AI(로봇 하드웨어·회로 설계 경력, 로봇 학습·시뮬레이션 석사 신입). 피지컬 AI 두 공고에는 '정부 국책과제 실무 연구 참여' 가 있다. 계열사로 네패스아크·네패스야하드·네패스라웨·네패스하임이 홈페이지에 따로 있다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "NEPES | Global top-tier partner",
+        "url": "https://www.nepes.co.kr/kr/",
+        "publisher": "네패스",
+        "summary": "홈페이지: 사업 Semiconductor(PLP/FOWLP/WLP, Bumping, FOW-SiP/Test Service), Artificial Intelligence(Predictive Maintenance, Vision Inspection 등), IT Materials(공정·기능성 케미칼), Rechargeable Battery(Lead Tab, LIB 음극), Energy(스마트 윈도·필름). 설립 1990, 매출액 '작년 약 4,800억원', 임직원 2,300, KOSDAQ 033640. 계열 네패스아크·네패스야하드·네패스라웨·네패스하임."
+      },
+      {
+        "title": "AI정보화파트 신입 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569840?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "공고 머리말: 네패스는 미래 사업을 이어주는 초연결 기술을 만든다. #OSAT, #네패스그룹 첨단패키징 기술, 비메모리 반도체 시장 선두기업."
+      },
+      {
+        "title": "AI 장비파트 경력 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569828?ReturnUrl=RecruitInfo",
+        "publisher": "캐치"
+      },
+      {
+        "title": "피지컬 AI 개발 엔지니어 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570848?ReturnUrl=RecruitInfo",
+        "publisher": "캐치"
+      },
+      {
+        "title": "피지컬 AI 부문 신입 엔지니어 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570849?ReturnUrl=RecruitInfo",
+        "publisher": "캐치"
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출액(홈페이지 표기)",
+        "value": "약 4,800억 원('작년', 연도 표기 없음)",
+        "as_of": "2026-09 홈페이지 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "NEPES | Global top-tier partner",
+            "url": "https://www.nepes.co.kr/kr/",
+            "publisher": "네패스",
+            "summary": "홈페이지: 사업 Semiconductor(PLP/FOWLP/WLP, Bumping, FOW-SiP/Test Service), Artificial Intelligence(Predictive Maintenance, Vision Inspection 등), IT Materials(공정·기능성 케미칼), Rechargeable Battery(Lead Tab, LIB 음극), Energy(스마트 윈도·필름). 설립 1990, 매출액 '작년 약 4,800억원', 임직원 2,300, KOSDAQ 033640. 계열 네패스아크·네패스야하드·네패스라웨·네패스하임."
+          }
+        ]
+      },
+      {
+        "label": "임직원(홈페이지 표기)",
+        "value": "2,300명",
+        "as_of": "2026-09 홈페이지 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "NEPES | Global top-tier partner",
+            "url": "https://www.nepes.co.kr/kr/",
+            "publisher": "네패스",
+            "summary": "홈페이지: 사업 Semiconductor(PLP/FOWLP/WLP, Bumping, FOW-SiP/Test Service), Artificial Intelligence(Predictive Maintenance, Vision Inspection 등), IT Materials(공정·기능성 케미칼), Rechargeable Battery(Lead Tab, LIB 음극), Energy(스마트 윈도·필름). 설립 1990, 매출액 '작년 약 4,800억원', 임직원 2,300, KOSDAQ 033640. 계열 네패스아크·네패스야하드·네패스라웨·네패스하임."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "반도체 후공정(패키징·테스트)",
+        "how": "홈페이지가 PLP/FOWLP/WLP, Bumping, FOW-SiP, Test Service 를 적고 공고 머리말이 OSAT 를 적는다. 고객 수주로 공정을 돌리는 구조로 읽히나 고객·단가는 읽지 않았다. 청주 공장 장비 가동율·수율과 MES 가 이 매출을 받친다.",
+        "domains": [
+          "반도체 장비 자동화 S/W(EES·SECS/GEM)",
+          "제조 IT(MES·데이터레이크)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "NEPES | Global top-tier partner",
+            "url": "https://www.nepes.co.kr/kr/",
+            "publisher": "네패스",
+            "summary": "홈페이지: 사업 Semiconductor(PLP/FOWLP/WLP, Bumping, FOW-SiP/Test Service), Artificial Intelligence(Predictive Maintenance, Vision Inspection 등), IT Materials(공정·기능성 케미칼), Rechargeable Battery(Lead Tab, LIB 음극), Energy(스마트 윈도·필름). 설립 1990, 매출액 '작년 약 4,800억원', 임직원 2,300, KOSDAQ 033640. 계열 네패스아크·네패스야하드·네패스라웨·네패스하임."
+          },
+          {
+            "title": "AI정보화파트 신입 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569840?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "공고 머리말: 네패스는 미래 사업을 이어주는 초연결 기술을 만든다. #OSAT, #네패스그룹 첨단패키징 기술, 비메모리 반도체 시장 선두기업."
+          },
+          {
+            "title": "AI 장비파트 경력 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569828?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "AI 사업(예지보전·비전 검사 등)",
+        "how": "홈페이지 사업 목록에 Artificial Intelligence — Predictive Maintenance, Vision Inspection 이 있다. 매출 규모·고객은 읽지 않았다. 피지컬 AI 공고가 이 사업부 소속인지는 공고에 없다.",
+        "domains": [
+          "피지컬 AI 로봇 학습·시뮬레이션",
+          "피지컬 AI 하드웨어(회로·기구)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "NEPES | Global top-tier partner",
+            "url": "https://www.nepes.co.kr/kr/",
+            "publisher": "네패스",
+            "summary": "홈페이지: 사업 Semiconductor(PLP/FOWLP/WLP, Bumping, FOW-SiP/Test Service), Artificial Intelligence(Predictive Maintenance, Vision Inspection 등), IT Materials(공정·기능성 케미칼), Rechargeable Battery(Lead Tab, LIB 음극), Energy(스마트 윈도·필름). 설립 1990, 매출액 '작년 약 4,800억원', 임직원 2,300, KOSDAQ 033640. 계열 네패스아크·네패스야하드·네패스라웨·네패스하임."
+          },
+          {
+            "title": "피지컬 AI 부문 신입 엔지니어 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570849?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "피지컬 AI 개발 엔지니어 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570848?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "반도체 장비 자동화 S/W(EES·SECS/GEM)",
+        "why": "AI장비파트 공고 두 건(경력 3~8년·신입)이 EES(FDC, RMS) 운영·내재화, 장비별 통신 S/W, Recipe 검증용 실시간 통신 S/W, 장비 상태정보 수집·분석, 가동율·수율 개선을 적는다. 경력은 SECS/GEM, SQL, Java·Python 을 요구한다.",
+        "what_to_know": [
+          "SECS/GEM",
+          "FDC·RMS",
+          "장비 상태 데이터 분석"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 장비파트 경력 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569828?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "AI장비파트 신입 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569839?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "제조 IT(MES·데이터레이크)",
+        "why": "AI정보화파트 신입 공고가 웹 기반 MES 개발, 스마트팩토리 웹 플랫폼, 전사 Datalake·데이터 웨어하우징, AWS 데이터레이크와 Factory 마이그레이션, Tableau BI, Docker·AWS ECS CI/CD 를 적는다.",
+        "what_to_know": [
+          "MES",
+          "AWS 데이터레이크",
+          "PySpark·SQL"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI정보화파트 신입 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569840?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "공고 머리말: 네패스는 미래 사업을 이어주는 초연결 기술을 만든다. #OSAT, #네패스그룹 첨단패키징 기술, 비메모리 반도체 시장 선두기업."
+          }
+        ]
+      },
+      {
+        "name": "피지컬 AI 로봇 학습·시뮬레이션",
+        "why": "피지컬 AI 신입(석사 이상) 공고가 제조분야 파운데이션 모델, Isaac Sim·Mujoco 합성데이터 학습 파이프라인, ROS/ROS2 로봇 제어, 경량 객체탐지·강화학습, SLAM·Navigation, 국책과제를 적는다. 수익원은 읽은 자료로 확인하지 못했다.",
+        "what_to_know": [
+          "Isaac Sim·MuJoCo",
+          "ROS2",
+          "VLA 모델"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "피지컬 AI 부문 신입 엔지니어 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570849?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "피지컬 AI 하드웨어(회로·기구)",
+        "why": "피지컬 AI 개발 엔지니어(경력 1년↑) 공고가 EVK·로봇·기구 설계·제작, CPU/GPU/NPU 회로 설계, 온디바이스 AI 임베디드 시스템, 로보틱스 시제품, 국책과제를 적고 OrCAD·AutoCAD 를 요구한다. 수익원은 읽은 자료로 확인하지 못했다.",
+        "what_to_know": [
+          "OrCAD 회로 설계",
+          "NPU 칩셋 보드",
+          "기구 설계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "피지컬 AI 개발 엔지니어 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570848?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "개발 자리는 사업부가 아니라 CIO실과 서울 연구 조직에 있다",
+        "evidence": "네패스 CIO실 채용공고",
+        "so_what": "마감된 사람인 공고 제목이 AI장비파트를 CIO실 소속으로 적는다. 청주 공장의 장비·MES 를 내부 IT 가 직접 만드는 구조로 읽힌다 — 제품 개발이 아니라 공장 운영 S/W 다. 근무지는 청주 오창이고 기숙사·주거지원비·통근버스가 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "피지컬 AI 는 국책과제로 시작한 신규 영역으로 보인다",
+        "evidence": "정부 국책과제 실무 연구 참여",
+        "so_what": "두 피지컬 AI 공고 모두 이 줄을 적고, 신입도 석사 이상을 요구한다. 제품·매출로 이어졌는지는 읽은 자료에 없으니 면접에서 과제 기간과 이후 계획을 묻는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고가 '회사 내규에 따름' 만 적는다 — 비워 둔다",
+    "홈페이지 매출 '작년 약 4,800억원' 이 몇 년 기준인지 표기가 없다",
+    "피지컬 AI 조직이 AI 사업(예지보전·비전 검사)과 같은 부서인지, 국책과제 뒤 사업 계획은 읽지 않았다",
+    "후공정 고객사·매출 구성은 읽지 않았다(IR 자료 미확인)"
+  ],
+  "postings": []
+}

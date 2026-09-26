@@ -889,6 +889,18 @@
       "postings": 6,
       "study_items": 15,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "nepes",
+      "name": "네패스",
+      "aliases": [
+        "네패스",
+        "㈜네패스"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
