@@ -703,3 +703,7 @@ zerodha.tech 최신 2024-03. 블로그 멈춤. updated_at 만. 1회째. 09-03 �
 ## toss 재방문 → 확장 (2026-09-26)
 
 09-15 토스증권 GPU-native 클러스터 글로 gpu-native-cluster. 결정 7개, 새 도메인 AI 서빙 인프라(토스증권). 나머지 새 글 다섯은 STATE 에.
+
+## zozo 재방문 → 확장 (2026-09-26)
+
+09-08 재고 도메인 경계 글로 inventory-boundary. 결정 7개, 새 도메인 기간 시스템을 도메인으로 쪼갠다. 나머지 새 글 다섯은 STATE 에.
