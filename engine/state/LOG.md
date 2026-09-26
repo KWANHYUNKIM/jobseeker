@@ -1856,3 +1856,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 WealthNavi Outbox·SNS·SQS 팬아웃
 
 - 결정 6 — 즉시 확인 불필요한 연계만 이벤트(입출금은 API)·SNS+SQS(SQS 단독·EventBridge·Kinesis 대신)·Outbox·릴레이 이중 처리 락(구상)·FIFO(300 TPS, 나중에 HT FIFO)·Content-based dedup+종류별 그룹.
+
+## 2026-09-26 WealthNavi 생성 AI QA 3층 — 완주
+
+- 결정 6 — 판정 가능한 관점·△ 폐지·담보자 분리·기계/AI/사람·배치 분리 평가·오판정 때 프롬프트 증축 금지. 대상은 가계부 데이터 코멘트 기능. 수익원 하나 → done.

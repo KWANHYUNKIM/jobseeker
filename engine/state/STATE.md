@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**WealthNavi 확장 1/2(2026-09-26) — `outbox-sns-sqs-fanout` 완료. 다음은 확장: '생성 AI 기능의 품질을 기계·AI·사람으로 나눠 보증한다' — `95911ca28a7b1f`. 그러면 **완주**. 수익원은 운용 수수료 하나라 두 기능이면 완주. 대기 2/3(Weathernews·Safie). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**WealthNavi 완주(2026-09-26) — `genai-comment-qa-layers` 로 도메인 둘 다 기능, 수익원 하나 → done. 다음은 --gaps 의 신규: 큐 맨 위 Weathernews — `c40be230faccbf`(AWS Batch GPU 온디맨드 · AutoGluon TimeSeries · 이벤트 × 분위점 · Step Functions · 구성 선정 배경) · `dc7de23c12665e`(마이 솔루션 결정 트리) · 회사 사이트에서 수익원부터. 큐 2/3 → 이 회사 뒤 후보 조사. 대기 2/3(Weathernews·Safie). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
