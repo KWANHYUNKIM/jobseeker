@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**WED 기능 2(2026-09-27) — `receipt-gatekeeping`(영수증은 올리기 전에 단말에서 거르고 가게는 사진으로 맞힌다, 결정 8). 도메인 둘 다 찼고 수익원 둘 다 도메인이 있다(데이터 이활용 연결은 inferred) · 두 기능이 체인으로 서로 이어진다 — 다음 사이클에 완주 기준 셋을 확인하고 done(--gaps 가 신규·후보 조사를 가리켜도 done 이 먼저라고 LOG 에 남긴다). 그다음 큐 1/3 이라 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**WED 완주(2026-09-27) — 도메인 2 · 기능 2, 수익원 둘 다 confirmed 연결(데이터 이활용은 `creating_ng_model` 의 '구매 활동 분석에 쓴다'와 JAN 글의 '데이터를 더 활용하려고'로 올렸다). 다음은 --gaps 의 신규(큐 1/3): 큐 맨 위 mixtend — 프로파일 때 결정 글이 충분한지 다시 판정(`a7f2907594c2fa` 배타 제어 · `001d1a7f1c3cce` PC 톱 고속화 · `6d1b6be6a6cc84` Vite 이행). 모자라면 곧장 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
