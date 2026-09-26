@@ -695,6 +695,82 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55098406&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=fc7c405f-5a72-4b2b-8efa-4741b2df0fc3",
+      "title": "스마트팩토리 운영 경력사원 채용 (스마트팩토리 MES)",
+      "site": "saramin",
+      "verdict": "경력 5년 이상, 근무지 '서울전체'. 한화시스템 ICT 의 **스마트팩토리 MES(제조 실행 시스템) 운영·유지보수** 자리다 — 새로 만드는 것보다 **돌고 있는 고객 공장 시스템을 지키는 일**이다. 주요업무는 생산 공정 관리 시스템 운영 지원, **다음 작업 설비를 정하고 로딩·이송을 지시하는 디스패칭 로직** 유지보수, 공정 모니터링과 오류·이슈 조치, 웹·DB 프로그램 분석·설계·개발, 고객사 요청·공정 이슈 분석으로 개선, **공정망 인터페이스(Solace)** 연계와 실시간 데이터 처리 모니터링. 스택은 백엔드 Java·Oracle·PL/SQL·MoM(Solace)·BizActor, 프론트 Java·React. 자격은 웹(Java·React)·DB(Oracle·PL/SQL) 유지보수 5년, **LOT 추적 등 제조 실행 프로세스 이해**, 그리고 **방산 보안 정책상 신원조회 결격 사유 없음**·해외여행 결격 없음·병역. 우대 칸은 비어 있다. 고객 공장이 어디인지는 공고에 없다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java·React·Oracle PL/SQL 유지보수 5년",
+          "제조 실행 프로세스·LOT 추적 이해",
+          "신원조회 결격 없음"
+        ],
+        "can_learn": [
+          "Solace 메시징",
+          "디스패칭 로직",
+          "BizActor"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MES 의 LOT 추적 — 무엇이 어디를 지났나",
+          "from": "qualification",
+          "quote": "○ 생산 공정 프로세스(제조 실행 프로세스, LOT 추적 관리 등)에 대한 이해 보유자",
+          "priority": "core",
+          "why": "자격요건이다. MES 장애·이슈의 대부분은 LOT 상태가 실제와 어긋나는 데서 나온다.",
+          "gap_check": "LOT 의 생성·공정 투입(Track-In)·완료(Track-Out)·보류(Hold)·분할·병합 이력이 어떻게 남고, 불량이 났을 때 역추적(어느 설비·자재·작업자)과 정추적(영향받은 제품)을 어떤 테이블 조인으로 하는가? 설비 보고와 MES 상태가 어긋나면 어디부터 확인하는가?",
+          "drill": "MES·추적성 설명을 읽고, LOT·공정·설비·이력 테이블을 Oracle 로 설계해 분할·병합이 섞인 이력 100건을 넣은 뒤, 계층 질의(CONNECT BY 또는 재귀 WITH)로 특정 LOT 의 원자재까지 역추적하는 쿼리를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Manufacturing execution system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Manufacturing_execution_system",
+              "kind": "docs"
+            },
+            {
+              "title": "Traceability — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Traceability",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "디스패칭 로직 — 다음에 어느 설비로 보내나",
+          "from": "task",
+          "quote": "- 다음 작업 설비를 결정하고 로딩·이송 지시를 수행하는 디스패칭 로직/시스템 유지보수",
+          "priority": "high",
+          "why": "주요업무에 이름이 나온다.",
+          "gap_check": "FIFO·납기 우선·최단 작업시간 같은 디스패칭 규칙이 설비 가동률·대기 시간·납기 준수에서 무엇을 맞바꾸는가? 설비 준비 변경(setup)이 있을 때 같은 레시피를 묶어 보내는 규칙은 어떤 부작용이 있는가? 로직을 고친 뒤 운영 공장에 넣기 전에 무엇으로 검증하는가?",
+          "drill": "Job-shop 스케줄링 설명을 읽고, 설비 3대·LOT 20개 파이썬 시뮬레이터에서 FIFO·EDD·SPT 세 규칙의 평균 대기·납기 지연을 비교한 뒤, 과거 로그를 재생해 규칙 변경 효과를 보는 검증 절차를 문서로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Job-shop scheduling — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Job-shop_scheduling",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공정망 메시징 — Solace 로 시스템을 잇기",
+          "from": "task",
+          "quote": "(Back-End) Java, Oracle, PL/SQL, MoM(Solace), BizActor",
+          "priority": "high",
+          "why": "주요업무가 Solace 를 이용한 타 시스템 연계와 실시간 데이터 처리 모니터링이다.",
+          "gap_check": "발행/구독·큐·요청/응답 메시지 패턴 차이를 설명하고, 설비 이벤트처럼 유실되면 안 되는 메시지에 '보장 전달' 과 '직접 전달' 중 무엇을 쓰는가? 구독자가 느려서 메시지가 쌓일 때 어디서 알아채고 무엇부터 보는가?",
+          "drill": "Solace 문서의 메시지 교환 패턴을 읽고, 설비 이벤트(Track-In/Out) 발행자와 MES 구독자를 만들어 구독자를 일부러 멈췄다가 재시작해 보장 전달 큐에서 메시지가 유실 없이 이어지는지 확인한다(로컬 브로커 또는 다른 메시지 브로커로 대체).",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Message Exchange Patterns — Solace Docs",
+              "url": "https://docs.solace.com/Get-Started/message-exchange-patterns.htm",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
