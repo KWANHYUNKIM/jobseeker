@@ -1,0 +1,174 @@
+{
+  "book": "jvm-tuning",
+  "id": "aot",
+  "no": "10.7",
+  "chapter": 10,
+  "title": "미리 컴파일하기",
+  "summary": "AOT 와 CDS.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "CDS 가 기동을 얼마나 줄이는지 잰다.",
+    "AppCDS 로 내 클래스까지 굽는 법을 안다.",
+    "자바 24 의 AOT 캐시를 실제로 만들어 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "10.5절의 워밍업은 **실행해 봐야 빨라지는** 구조에서 온다. 그 시간을 줄이는 길은 둘이다 — **미리 읽어 두거나(CDS), 미리 컴파일해 두거나(AOT).**\n\n2.1절에서 이미 그 하나를 봤다. 490개 클래스 중 **480개가 `source: shared`** 였다."
+    },
+    {
+      "type": "prose",
+      "md": "## CDS — 이미 켜져 있다\n\nJDK 가 자기 클래스를 미리 구워 둔 아카이브를 **기본으로 들고** 온다. `-Xshare:off` 로 끄고 비교하면 값이 나온다."
+    },
+    {
+      "type": "table",
+      "caption": "`main` 하나뿐인 프로그램의 기동 (5회 중앙값)",
+      "columns": [
+        "",
+        "기동 시간",
+        "클래스 출처"
+      ],
+      "rows": [
+        [
+          "기본 (CDS 켬)",
+          "**64 ms**",
+          "**402 shared** · 3 jrt · 1 file"
+        ],
+        [
+          "`-Xshare:off`",
+          "**155 ms**",
+          "**419 jrt** · 1 file"
+        ],
+        [
+          "차이",
+          "**2.4배**",
+          ""
+        ]
+      ],
+      "note": "**같은 프로그램이 2.4배**다. 읽는 클래스 수는 거의 같은데 **어디서 읽느냐**만 다르다."
+    },
+    {
+      "type": "prose",
+      "md": "## AppCDS — 내 클래스까지\n\n기본 아카이브에는 **JDK 클래스만** 들어 있다. 내 애플리케이션 클래스까지 넣으려면 **두 단계**를 거친다 — 읽은 클래스 목록을 뽑고, 그 목록으로 아카이브를 굽는다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "디렉터리로는 못 굽는다",
+      "md": "```\n$ java -Xshare:dump -XX:SharedClassListFile=app.lst \\\n       -XX:SharedArchiveFile=app.jsa -cp out\nError occurred during initialization of VM\nCannot have non-empty directory in paths\n```\n\n> `-cp` 가 **디렉터리를 가리키면 거부**한다. **jar 로 묶어야** 한다.\n> 이유는 아카이브가 **클래스패스의 내용을 검증**하기 때문이다 — 디렉터리는 언제든 바뀔 수 있다.\n> 같은 이유로 **jar 가 바뀌면 아카이브가 무효**가 된다. 배포 파이프라인에서 같이 다시 구워야 한다."
+    },
+    {
+      "type": "table",
+      "caption": "AppCDS 까지 (같은 프로그램, jar 로, 5회 중앙값)",
+      "columns": [
+        "",
+        "기동 시간",
+        "클래스 출처"
+      ],
+      "rows": [
+        [
+          "`-Xshare:off`",
+          "179 ms",
+          ""
+        ],
+        [
+          "기본 CDS",
+          "158 ms",
+          ""
+        ],
+        [
+          "**AppCDS**",
+          "**151 ms**",
+          "**751 shared** (전부)"
+        ]
+      ],
+      "note": "**751개가 전부 `shared`** 다 — 내 클래스까지. 다만 이 정도 프로그램에서는 **시간 차이가 작다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## AOT 캐시 — 자바 24\n\n2.6절에서 자바 24 에 **`AOTCache`·`AOTMode`** 플래그가 새로 생긴 것을 봤다. CDS 가 **읽은 것**을 굽는다면 AOT 는 **거기에 링크와 컴파일 결과까지** 담는다. 만드는 것도 두 단계다 — **기록하고(record) 굽는다(create).**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "만들어졌고, 쓰이고 있고, 그런데 안 빨라졌다",
+      "md": "**세 가지를 다 확인했다.**\n\n```\nAOTCache creation is complete: app.aot          # 11MB\n[cds,aot,load] boot1 java.lang.Object (already loaded)\n```\n\n> 클래스 출처가 **1,027개 전부 `shared`** 다 — AOT 없이 돌리면 880 shared + 12 jrt + 1 file 이다.\n> 그런데 **기동은 129ms 대 135ms**, 첫 배치 작업은 **28,699us 대 30,592us** 다. **빨라지지 않았다.**\n> 이 프로그램이 **너무 작아서**로 보인다 — 11MB 캐시를 읽는 값이 아끼는 값만큼 된다.\n> **AOT 의 이득은 클래스가 수천 개인 애플리케이션에서** 나온다. 이 책의 예제로는 확인하지 못했다."
+    },
+    {
+      "type": "prose",
+      "md": "## 정리하면\n\n**CDS 는 이미 켜져 있고 값이 확실하다**(2.4배). **AppCDS 는 손이 좀 가지만 배포에 넣을 만하다.** **AOT 캐시는 규모가 되어야 값이 나온다** — 이 책의 40줄짜리로는 안 나왔다.\n\n셋 다 **워밍업의 앞부분**(클래스 로딩)을 줄인다. **뒷부분**(티어 3에서 4로 올라가는 구간, 10.5절)은 여전히 실행해 봐야 한다 — 그래서 **웜업 요청이 대체되지는 않는다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) CDS 켬/끔 ---\n\n$ java              -cp out Boot     ->  중앙값  64 ms  (52~153)\n$ java -Xshare:off  -cp out Boot     ->  중앙값 155 ms  (72~285)\n\n$ java              -Xlog:class+load=info -cp out Boot | (출처별 세기)\n    1 source: file    3 source: jrt  402 source: shared\n$ java -Xshare:off  -Xlog:class+load=info -cp out Boot\n    1 source: file  419 source: jrt\n\n# --- 2) AppCDS ---\n\n$ cd out && jar cf ../warm.jar Warm*.class && cd ..\n$ java -XX:DumpLoadedClassList=app.lst -cp warm.jar Warm\n  목록 806 클래스\n$ java -Xshare:dump -XX:SharedClassListFile=app.lst \\\n       -XX:SharedArchiveFile=app.jsa -cp warm.jar\n  아카이브 9.7M\n\n$ java -Xshare:off                        -cp warm.jar Warm  ->  179 ms\n$ java                                    -cp warm.jar Warm  ->  158 ms\n$ java -XX:SharedArchiveFile=app.jsa      -cp warm.jar Warm  ->  151 ms\n\n$ java -XX:SharedArchiveFile=app.jsa -Xlog:class+load=info -cp warm.jar Warm\n  751 source: shared                      <- 전부\n\n# --- 3) 자바 24 의 AOT 캐시 ---\n\n$ java24 -XX:AOTMode=record -XX:AOTConfiguration=app.aotconf -cp warm.jar Warm\n  설정 파일 101K\n$ java24 -XX:AOTMode=create -XX:AOTConfiguration=app.aotconf \\\n         -XX:AOTCache=app.aot -cp warm.jar\nAOTCache creation is complete: app.aot    <- 11MB\n\n$ java24 -XX:AOTCache=app.aot -Xlog:cds+aot+load=info -cp warm.jar Warm\n[cds,aot,load] boot1 java.lang.Object (already loaded)\n[cds,aot,load] boot1 java.io.Serializable (already loaded)\n\n$ java24                      -Xlog:class+load=info -cp warm.jar Warm\n    1 source: file   12 source: jrt   880 source: shared\n$ java24 -XX:AOTCache=app.aot -Xlog:class+load=info -cp warm.jar Warm\n 1027 source: shared                     <- 전부\n\n$ (기동 5회 중앙값)   AOT 없음 129 ms   AOT 캐시 135 ms\n$ (첫 배치 5회 중앙값) AOT 없음 28,699 us  AOT 캐시 30,592 us",
+      "note": "**AOT 는 쓰이는 것이 확인됐는데 빨라지지는 않았다.** 이 책의 예제 규모로는 값이 안 나온다는 것까지가 이 절의 결과다."
+    }
+  ],
+  "recap": [
+    "CDS 는 기본으로 켜져 있고 이 측정에서 기동이 64ms 대 155ms 로 2.4배였다.",
+    "AppCDS 는 클래스 목록을 뽑고 아카이브를 굽는 두 단계다.",
+    "-cp 가 디렉터리면 아카이브를 못 굽는다 — jar 로 묶어야 한다.",
+    "AppCDS 로 751개 클래스 전부가 shared 에서 왔다.",
+    "자바 24 의 AOT 캐시는 만들어지고 쓰이는 것을 확인했지만 이 규모에서는 빨라지지 않았다."
+  ],
+  "drills": [
+    {
+      "task": "-Xshare:off 로 내 애플리케이션 기동 시간을 비교한다.",
+      "done_when": "CDS 의 값을 숫자로 갖는다.",
+      "minutes": 12
+    },
+    {
+      "task": "AppCDS 아카이브를 만들어 배포 스크립트에 넣어 본다.",
+      "done_when": "jar 가 바뀌면 다시 구워야 하는 것을 확인한다.",
+      "minutes": 15
+    },
+    {
+      "task": "자바 24 가 있으면 AOT 캐시를 만들어 큰 애플리케이션에 붙여 본다.",
+      "done_when": "규모가 되면 값이 나오는지 확인한다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "CDS 가 하는 일은.",
+      "a": "클래스를 미리 구워 둔 아카이브에서 읽게 해 기동 시간을 줄인다."
+    },
+    {
+      "q": "AppCDS 를 만들 때 -cp 가 디렉터리면.",
+      "a": "거부된다. 아카이브가 클래스패스 내용을 검증하므로 jar 가 필요하다."
+    },
+    {
+      "q": "AOT 캐시와 CDS 의 차이는.",
+      "a": "CDS 는 읽은 클래스를, AOT 는 거기에 링크와 컴파일 결과까지 담는다."
+    },
+    {
+      "q": "CDS 와 AOT 가 워밍업을 다 없애 주나.",
+      "a": "아니다. 클래스 로딩 구간만 줄이고 티어를 올라가는 구간은 여전히 실행해야 한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "AppCDS",
+      "what": "애플리케이션 클래스까지 포함해 굽는 CDS 아카이브."
+    },
+    {
+      "term": "AOT 캐시",
+      "what": "자바 24 에 들어온 기능. 클래스 로딩과 링크 결과를 미리 담아 둔다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Class Data Sharing",
+      "url": "https://docs.oracle.com/en/java/javase/17/vm/class-data-sharing.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JEP 483: Ahead-of-Time Class Loading & Linking",
+      "url": "https://openjdk.org/jeps/483",
+      "publisher": "OpenJDK"
+    }
+  ]
+}

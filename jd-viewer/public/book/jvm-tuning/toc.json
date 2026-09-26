@@ -594,7 +594,7 @@
           "title": "미리 컴파일하기",
           "summary": "AOT 와 CDS.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
