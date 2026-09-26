@@ -131,7 +131,7 @@
               "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
               "publisher": "スマサテ",
               "date": "2025-11-10",
-              "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화."
+              "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
             }
           ]
         },
@@ -146,12 +146,14 @@
               "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
               "publisher": "スマサテ",
               "date": "2026-03-23",
-              "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭."
+              "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "non-stop-screen-migration"
+      ]
     }
   ],
   "features": [
@@ -514,7 +516,7 @@
               "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
               "publisher": "スマサテ",
               "date": "2025-11-10",
-              "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화."
+              "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
             }
           ]
         }
@@ -559,6 +561,409 @@
           "url": "https://sumasate.jp/",
           "publisher": "スマサテ",
           "summary": "**임대 부동산 회사용 SaaS** — 수 초 만에 고정밀 임대료 사정, 사례 수집 · 자료 작성 시간을 줄인다. 이용 **5,000 사 돌파**, '관리 호수 랭킹 TOP10 유료 도입률 80%'. **20 억 건 넘는 부동산 데이터**, 오차율 중앙값(MER) **1.4%**(AI 추정 임대료와 실제 임대료 차이 ÷ 실제 임대료의 중앙값). 설비가 임대료에 주는 영향 금액 · 여러 각도의 사례를 보여 주고, 사정 보고서를 버튼 하나로(엑셀). 요금: **월 5 회까지 계속 무료**, 스퍼라이트 19,800 엔/월(10 회) · 스탠더드 69,800 엔/월(60 회) · 무제한 150,000 엔/월 — 상한을 넘으면 이용 제한일 뿐 **자동 과금은 없다**."
+        }
+      ]
+    },
+    {
+      "key": "non-stop-screen-migration",
+      "name": "폼은 그대로, 필드 하나씩 — 멈추지 않는 React 화와 조용한 96 초",
+      "domain": "쓰고 있는 사정 화면을 멈추지 않고 새 틀로 옮긴다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "임대 관리회사 담당자는 **사정 조건 입력 화면**에 물건 조건을 넣고 사정을 돌린다. 입력 항목이 많고, 한 항목의 선택이 다른 항목을 비활성화하거나 숨기며, 저장된 조건을 복사하는 기능도 있다. 이 화면은 **Rails + Slim + jQuery** 라 한 기능을 고치려면 Slim 템플릿 · CSS · jQuery 파일을 가로질러 봐야 했다 — 개발 효율이 떨어졌다.\n\n그렇다고 새 기능 개발을 멈추고 화면을 갈아엎을 수는 없었다. 프레임워크도 같다 — Rails 를 8 로 올리는 중, 한 집계 API 가 **약 96 초**가 됐다. 사용자가 쓰는 화면과 API 를 멈추지 않고 새 틀로 옮기는 것이 과제였다.",
+        "metrics": [
+          {
+            "label": "업그레이드 뒤 한 API 응답",
+            "value": "95,891 ms(약 96 초) — DB 0.3% · GC 25 초 · Ruby 70 초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+                "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+                "publisher": "スマサテ",
+                "date": "2026-03-23",
+                "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+              }
+            ]
+          },
+          {
+            "label": "method_missing 호출",
+            "value": "약 7,000 건 × 별칭 컬럼 34 개 ≒ 234,000 회",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+                "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+                "publisher": "スマサテ",
+                "date": "2026-03-23",
+                "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+              }
+            ]
+          },
+          {
+            "label": "read_attribute 로 바꾼 뒤",
+            "value": "122.7 배 빠름 · 접근당 객체 생성 약 260 → 약 1",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+                "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+                "publisher": "スマサテ",
+                "date": "2026-03-23",
+                "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "React 화를 시작할 때",
+          "thought": "'완벽한 React 화'가 아니라 **'멈추지 않는 React 화'** — 기존 장치와 공존하며 사업 영향을 최소로.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+              "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+              "publisher": "スマサテ",
+              "date": "2025-11-10",
+              "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+            }
+          ]
+        },
+        {
+          "at": "해 보니",
+          "thought": "예상보다 오래 걸렸다. 레거시 교체는 새 기능 개발과 다른 기술 — **기존의 복잡한 사양을 정확히 읽고 그대로 재현하는 힘**이 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+              "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+              "publisher": "スマサテ",
+              "date": "2025-11-10",
+              "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+            }
+          ]
+        },
+        {
+          "at": "96 초를 봤을 때",
+          "thought": "같은 처리가 7.2.2.1 브랜치에선 멀쩡했다 — 앱 코드가 아니라 **프레임워크 쪽 변경**이 원인이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+              "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+              "publisher": "スマサテ",
+              "date": "2026-03-23",
+              "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+            }
+          ]
+        },
+        {
+          "at": "원인을 찾고 나서",
+          "thought": "릴리스 노트만 확인하면 되겠다고 생각했는데, 내부의 세세한 변경이 이렇게 큰 문제가 될 줄은 몰랐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+              "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+              "publisher": "スマサテ",
+              "date": "2026-03-23",
+              "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "사정 조건 입력 화면",
+            "what": "항목이 많고 항목 사이 의존(비활성 · 표시 전환)이 복잡한 폼. 저장된 조건 복사 기능이 있다."
+          },
+          {
+            "name": "form_with 폼",
+            "what": "Rails 가 송신을 처리하는 기존 폼. 이행 중에도 송신 경로는 이것 하나."
+          },
+          {
+            "name": "hidden field",
+            "what": "React 가 그린 입력의 값을 form_with 로 실어 나르는 보이지 않는 입력."
+          },
+          {
+            "name": "FieldManager",
+            "what": "React 상태를 hidden field 에 반영하는 전용 클래스 — React 컴포넌트가 직접 DOM 을 만지지 않게 한다."
+          },
+          {
+            "name": "별칭 컬럼",
+            "what": "`SELECT … AS has_auto_lock` 같은 집계용 스키마 밖 속성. 메서드 호출로 읽으면 method_missing 을 거친다."
+          }
+        ],
+        "invariants": [
+          "React 로 옮긴 필드와 jQuery 로 남은 필드는 같은 form_with 송신으로 나간다 — Rails 의 파라미터 구조는 바뀌지 않는다.",
+          "송신 전에 React 와 jQuery 양쪽 검증을 모두 통과해야 한다.",
+          "필드 하나를 React 로 옮긴 변경은 그 필드만 되돌릴 수 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "옮길 필드의 class · id 에 기대는 코드를 전부 검색하고, 언제 · 어떤 조건에서 도는지 엣지 케이스까지 실제 동작으로 확인",
+            "why": "의존을 놓치면 뜻밖의 버그를 만난다."
+          },
+          {
+            "step": "필드 하나를 React(react-hook-form)로 그리고 form_with 안에 hidden field 를 둔다",
+            "why": "송신 처리를 안 바꾼다."
+          },
+          {
+            "step": "watch 로 값 변화를 받아 FieldManager 가 hidden field 를 갱신",
+            "why": "DOM 조작을 한곳에 모은다."
+          },
+          {
+            "step": "jQuery 쪽 CustomEvent 를 React 가 addEventListener 로 받고, 필요하면 React 도 이벤트를 발화",
+            "why": "항목 사이 의존을 두 세계에 걸쳐 유지한다."
+          },
+          {
+            "step": "송신 때 React 와 jQuery 양쪽 검증",
+            "why": "어느 쪽 필드든 같은 규칙으로 막는다."
+          },
+          {
+            "step": "Rails 업그레이드 뒤 앱 수준 응답 시간을 확인하고, 스키마 밖 별칭 컬럼 접근은 read_attribute 로",
+            "why": "DB 쿼리는 빠른데 Ruby · GC 에서 느려지는 열화를 잡고 피한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "jQuery 화면을 어떻게 React 로 옮기나?",
+            "chosen": "**jQuery 와 React 를 공존시키며 조금씩** — 한 번에 옮기지 않는다.",
+            "alternatives": [
+              "화면을 한 번에 React 로 다시 만든다"
+            ],
+            "tradeoff": "새 기능 개발을 병행하면서 사업 영향을 최소로, 이행 우선순위를 팀이 조정할 수 있다. 대가는 **예상보다 오래 걸린다**는 것과 공존 기간 동안 두 세계를 잇는 코드가 남는다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+                "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+                "publisher": "スマサテ",
+                "date": "2025-11-10",
+                "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+              }
+            ]
+          },
+          {
+            "question": "폼의 송신은 어떻게 하나?",
+            "chosen": "**Slim 의 form_with 는 남기고 일부 필드만 React 화 — React 값은 hidden field 로 실시간 동기.**",
+            "alternatives": [
+              "폼 전체를 React 로 바꾸고 API 로 보낸다"
+            ],
+            "tradeoff": "Rails 의 파라미터 구조를 안 바꿔 기존 컨트롤러 · 모델에 영향이 없고, **필드 하나씩 옮기며 문제면 바로 되돌린다** — 저장 조건 복사 같은 기존 jQuery 연계도 유지된다. 대가는 React 가 그린 입력이 form_with 밖이라 **hidden field 동기라는 중간층**을 들고 있어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+                "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+                "publisher": "スマサテ",
+                "date": "2025-11-10",
+                "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+              }
+            ]
+          },
+          {
+            "question": "React 가 DOM 을 직접 만지나?",
+            "chosen": "**전용 FieldManager 가 hidden field 갱신을 한곳에서** — React 컴포넌트는 DOM 을 직접 조작하지 않는다.",
+            "alternatives": [
+              "컴포넌트마다 직접 hidden field 를 쓴다"
+            ],
+            "tradeoff": "책임이 갈리고 입력값 동기가 한 곳에 모인다. 대가는 공존이 끝나면 버릴 클래스를 하나 더 들고 가는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+                "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+                "publisher": "スマサテ",
+                "date": "2025-11-10",
+                "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+              }
+            ]
+          },
+          {
+            "question": "검증은 어디서 하나?",
+            "chosen": "**React 와 jQuery 양쪽에서 하고, 둘 다 OK 여야 송신.**",
+            "alternatives": [
+              "한쪽으로 검증을 모은다"
+            ],
+            "tradeoff": "옮긴 필드든 남은 필드든 빠짐없이 막는다. 대가는 공존 기간 동안 **검증 규칙이 두 곳**에 있어 어긋날 수 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+                "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+                "publisher": "スマサテ",
+                "date": "2025-11-10",
+                "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+              }
+            ]
+          },
+          {
+            "question": "항목 사이의 의존(비활성 · 표시 전환)을 두 세계에 걸쳐 어떻게 잇나?",
+            "chosen": "**CustomEvent — React 는 마운트 뒤 addEventListener 로 jQuery 쪽 이벤트를 받아 상태를 갱신하고, 필요하면 밖으로 발화.**",
+            "alternatives": [
+              "jQuery 가 React 의 DOM 을 직접 만진다"
+            ],
+            "tradeoff": "기존 jQuery 코드에서도 React 가 관리하는 폼에 안전하게 값을 반영한다 — 연계 방법을 하나로 통일. 대가는 **전역 이벤트**로 이어져 흐름을 코드만으로 따라가기 어렵다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+                "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+                "publisher": "スマサテ",
+                "date": "2025-11-10",
+                "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+              }
+            ]
+          },
+          {
+            "question": "옮기기 전에 무엇을 하나?",
+            "chosen": "**기존 코드를 완전히 읽는다** — class · id 하나도 관련 파일 전체를 검색해 의존과 동작 조건 · 엣지 케이스를 실제 동작으로 확인.",
+            "alternatives": [
+              "새로 만들며 문제를 그때그때 고친다"
+            ],
+            "tradeoff": "뜻밖의 버그를 막는다 — 레거시 교체는 기존 사양을 정확히 읽고 그대로 재현하는 기술이다. 대가는 그 지루한 조사가 **이행 시간의 대부분**을 차지한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+                "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+                "publisher": "スマサテ",
+                "date": "2025-11-10",
+                "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+              }
+            ]
+          },
+          {
+            "question": "업그레이드 뒤 96 초가 된 집계 API 를 어떻게 고치나?",
+            "chosen": "**별칭 컬럼 접근을 `send` 에서 `read_attribute` 로.**",
+            "alternatives": [
+              "Rails 7.2.2.1 에 머문다(이 사이트의 해석)",
+              "별칭을 모델 속성으로 정의한다(이 사이트의 해석)"
+            ],
+            "tradeoff": "read_attribute 는 직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 바로 꺼낸다 — **122.7 배** 빨라지고 객체 생성이 접근당 약 260 개에서 약 1 개로. 대가는 속성을 문자열 키로 읽어 **오타가 메서드 에러로 드러나지 않는다**는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+                "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+                "publisher": "スマサテ",
+                "date": "2026-03-23",
+                "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+              }
+            ]
+          },
+          {
+            "question": "프레임워크 업그레이드의 열화를 어떻게 잡나?",
+            "chosen": "**앱 수준 응답 시간을 같이 확인한다** — 릴리스 노트와 슬로 쿼리 감시만으로는 부족하다.",
+            "alternatives": [
+              "릴리스 노트만 확인한다(이전의 생각)"
+            ],
+            "tradeoff": "DB 쿼리 시간은 그대로이고 Ruby · GC 에서 느려지는 열화는 **슬로 쿼리 감시에 안 걸린다** — 이번 96 초가 그랬다. 대가는 업그레이드마다 엔드포인트 응답 시간을 비교하는 확인 공수(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+                "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+                "publisher": "スマサテ",
+                "date": "2026-03-23",
+                "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "스마사테(AI 임대료 사정 SaaS)(수익원)",
+          "via": "사정 조건 입력 화면 · 집계 API",
+          "contract": "유료 플랜은 월 사정 횟수로 팔린다 — 사용자가 매번 거치는 사정 조건 입력 화면과 물건 설비 집계 API 가 멈추거나 느려지면 사정 자체가 안 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+              "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+              "publisher": "スマサテ",
+              "date": "2025-11-10",
+              "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+            },
+            {
+              "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+              "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+              "publisher": "スマサテ",
+              "date": "2026-03-23",
+              "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+            },
+            {
+              "title": "スマサテ｜導入実績No.1の賃料査定システム・査定書作成も一瞬で",
+              "url": "https://sumasate.jp/",
+              "publisher": "スマサテ",
+              "summary": "**임대 부동산 회사용 SaaS** — 수 초 만에 고정밀 임대료 사정, 사례 수집 · 자료 작성 시간을 줄인다. 이용 **5,000 사 돌파**, '관리 호수 랭킹 TOP10 유료 도입률 80%'. **20 억 건 넘는 부동산 데이터**, 오차율 중앙값(MER) **1.4%**(AI 추정 임대료와 실제 임대료 차이 ÷ 실제 임대료의 중앙값). 설비가 임대료에 주는 영향 금액 · 여러 각도의 사례를 보여 주고, 사정 보고서를 버튼 하나로(엑셀). 요금: **월 5 회까지 계속 무료**, 스퍼라이트 19,800 엔/월(10 회) · 스탠더드 69,800 엔/월(60 회) · 무제한 150,000 엔/월 — 상한을 넘으면 이용 제한일 뿐 **자동 과금은 없다**."
+            }
+          ]
+        },
+        {
+          "to": "property-data-normalization-pipeline",
+          "via": "물건 속성(설비 · 築年)",
+          "contract": "집계 API 는 물건의 설비 속성(오토록 등)을 별칭 컬럼으로 모으고, 그 속성들은 정규화 파이프라인을 거친 데이터다 — 두 글은 이 연결을 적지 않는다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+              "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+              "publisher": "スマサテ",
+              "date": "2026-03-23",
+              "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
+            },
+            {
+              "title": "SumaSate　不動産データのデータパイプライン設計",
+              "url": "https://zenn.dev/sumasate_tec/articles/2aad29ab70c76a",
+              "publisher": "スマサテ",
+              "date": "2026-08-07",
+              "summary": "같은 물건 · 같은 주소인데 출처마다 표기가 다르다 — 그대로 두면 집계가 어긋나고 같은 물건이 따로 등록되며 사용자에게 주는 정보의 정밀도가 떨어진다. 출처: 자사 DB · 외부 API · 정기 납품 CSV/Excel · 웹 수집. 흔들림: 주소('1丁目2番3号'·'1-2-3'·한자 숫자 · 전각/반각 · 옛 지명), 수치(㎡/평 · 築年/築年月 · 결측 표현이 빈 문자 · 0 · null · '不明'), 건물명(알파벳 · 가타카나). 파이프라인: **수집 → 클렌징 → 명기(名寄せ) · 정규화 → 검증 → 저장**. 수집은 출처별 커넥터, 갱신 빈도에 따라 일차 배치 / 짧은 간격. 클렌징은 이상치를 거르되 **'수상하지만 버리기 아까운 데이터'는 격리 영역**에 두어 사람이 나중에 확인. 주소는 **지오코딩 서비스의 위경도 · 정규화 주소를 마스터**로 하되 결과를 100% 믿지 않고 요청 문자열을 조정. 기준: 정규화 100% 는 비용이 끝이 없으니 **'업무상 의사결정에 영향이 없는 오차인가'** 로 투자 범위를 정한다. 검증에서 이상이면 적재를 멈추고 알림. 함정: 출처 사양 변경을 몰라 정규화가 조용히 안 돌던 일 → **적재 시 간이 통계 체크(결측률 급증 등)**, 조용한 품질 저하 → 정기 샘플링 목시, 예외 규칙의 부채화 → 정기 재고 조사와 삭제."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "두 세계가 한 폼으로 송신하는 길",
+          "question": "React 로 옮긴 필드와 jQuery 로 남은 필드는 어떻게 같은 송신으로 나가나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  RF[\"React 필드\\nreact-hook-form\"] -- watch --> FM[\"FieldManager\"]\n  FM --> HF[\"hidden field\"]\n  JQ[\"jQuery 필드\"] --> FW[\"form_with(Slim)\"]\n  HF --> FW\n  JQ -- CustomEvent --> RF\n  RF -- CustomEvent --> JQ\n  FW --> V{\"React · jQuery\\n양쪽 검증\"}\n  V -- OK --> R[\"Rails 컨트롤러\\n파라미터 구조 그대로\"]"
+        },
+        {
+          "title": "필드 하나의 이행 상태",
+          "question": "필드는 어떤 상태를 거쳐 React 로 옮겨지고, 문제가 나면 어디로 돌아가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> jQuery필드\n  jQuery필드 --> 의존조사: class · id 참조 전부 검색\n  의존조사 --> React필드: hidden field 동기 · 이벤트 연결\n  React필드 --> jQuery필드: 문제 → 그 필드만 되돌림\n  React필드 --> [*]: 공존 종료 뒤"
+        },
+        {
+          "title": "슬로 쿼리 감시에 안 걸린 96 초",
+          "question": "Rails 업그레이드 뒤 왜 DB 는 빠른데 API 가 느려졌나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"Rails 7.2.3+ method_missing 변경\\n가드 절 삭제\"] --> B[\"스키마 밖 별칭 컬럼을 send 로 읽음\"]\n  B --> C[\"7,000 건 × 34 컬럼 = 234,000 회\\nmethod_missing\"]\n  C --> D[\"접근당 객체 ~260 → GC 25 초 · Ruby 70 초\"]\n  D --> E[\"API 96 초 · DB 는 0.3%\"]\n  E -. \"슬로 쿼리 감시\" .-> N[\"안 걸림\"]\n  E --> F[\"read_attribute 로 교체 → 122.7 배\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Rails + jQuery構成からReactへ──現場で進めた共存戦略と段階的移行",
+          "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
+          "publisher": "スマサテ",
+          "date": "2025-11-10",
+          "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
+        },
+        {
+          "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
+          "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
+          "publisher": "スマサテ",
+          "date": "2026-03-23",
+          "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
         }
       ]
     }
@@ -608,14 +1013,14 @@
       "url": "https://zenn.dev/sumasate_tec/articles/replace-to-react",
       "publisher": "スマサテ",
       "date": "2025-11-10",
-      "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화."
+      "summary": "프런트가 **Rails + Slim + jQuery** 라 한 기능 수정에 Slim · CSS · jQuery 파일을 가로질러 봐야 했다. 새 기능 개발과 병행해야 해서 한 번에 옮기지 않고 **jQuery 와 React 를 공존시키며 조금씩** — 예: 입력 항목이 많고 의존이 복잡한 **사정 조건 입력 화면**. 전략 ① 폼 전체를 바꾸지 않고 **Slim 의 form_with 는 남긴 채 일부 필드만 React 화**, React 값을 **hidden field 에 실시간 동기**(FieldManager, react-hook-form watch) — Rails 의 송신 처리 · 파라미터 구조를 안 바꾸고, 필드 하나씩 옮기고 문제면 바로 되돌린다. 검증은 React 와 jQuery 양쪽. 전략 ② 기존 DOM 이벤트와 공존 — React 가 마운트 뒤 CustomEvent 를 addEventListener 로 받고 필요하면 밖으로 발화. 이점: 단계 이행 · 기존 장치(복사 처리 · 다른 폼 연계)를 한동안 유지 · 이행 우선순위를 팀이 조정. 배운 것: 예상보다 오래 걸렸고, 가장 중요한 건 **기존 코드의 완전한 이해** — class · id 하나 바꾸려 해도 관련 파일 전체를 검색해 의존을 찾고, 어느 타이밍 · 조건에서 도는지 엣지 케이스까지 확인한 뒤 전략을 세운다. '완벽한 React 화'가 아니라 **'멈추지 않는 React 화'**."
     },
     {
       "title": "RailsアップグレードでAPIのレスポンスタイムが96秒に劣化した話",
       "url": "https://zenn.dev/sumasate_tec/articles/rails8-upgrade",
       "publisher": "スマサテ",
       "date": "2026-03-23",
-      "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭."
+      "summary": "Rails 7.2.2.1 → 8.0 업그레이드 중 한 API 가 **약 96 초** — DB 쿼리는 0.3%, **GC 25 초 · Ruby 처리 70 초**. 원인은 7.2.3 이후 백포트된 `ActiveRecord::AttributeMethods#method_missing` 변경(지연 속성 메서드 정의의 스레드 안전성 수정으로 가드 절이 빠져 **매번** define_attribute_methods · public_instance_method). 스마사테는 집계 API 에서 `SELECT … AS alias` 로 **별칭 컬럼 34 개**를 얻어 약 **7,000 건** 루프에서 메서드 호출로 접근 — 스키마 밖 속성이라 매번 NameError → ActiveModel 의 정규식 21 패턴 매칭. 약 7,000 건 × 34 컬럼 ≒ **234,000 회**의 method_missing, 스키마 밖 속성은 접근 1 회에 약 260 개 객체를 만들어 GC 를 부른다. 수정: `send` 대신 **`read_attribute`**(직접 정의된 메서드라 method_missing 을 안 거치고 내부 속성 해시에서 꺼냄) → **122.7 배** 빨라지고 객체 생성 약 1 개. 영향 조건: 스키마 밖 속성에 메서드 호출로 · 루프에서 대량. 교훈: DB 쿼리 시간은 그대로라 **슬로 쿼리 감시로는 안 보인다** — 업그레이드 때 **앱 수준 응답 시간**도 확인해야 하고, 릴리스 노트만으론 충분하지 않았다."
     },
     {
       "title": "「スマサテ for Owners」をスマホアプリにするなら、どんな構成がいいか",

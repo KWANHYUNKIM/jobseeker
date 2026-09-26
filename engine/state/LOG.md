@@ -2344,3 +2344,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 スマサテ 명기 파이프라인
 
 - `2aad29ab70c76a` + `3762dcb735ff89` 로 기능 `property-data-normalization-pipeline`, 결정 8. 글이 짧아 대가 여럿은 '이 사이트의 해석'. MER 1.4% 는 회사 공표치로 표시.
+
+## 2026-09-27 スマサテ 화면 이행
+
+- `replace-to-react` + `rails8-upgrade` 전문으로 기능 `non-stop-screen-migration`, 결정 8. 두 글 요약에 교훈 · 수정 수치를 보탰다.
