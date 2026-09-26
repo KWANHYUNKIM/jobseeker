@@ -11370,6 +11370,119 @@
       "site": "ats",
       "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=8194393",
       "verdict": "'[Coupang Pay Tech] Staff Mobile Engineer'(gh_jid=8194393)와 세 절 15줄이 양방향으로 모두 같다 — 같은 쿠팡페이 Android 자리를 제목만 바꿔 올린 것으로 보인다. 그 브리핑을 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188124",
+      "title": "Staff, Detection Platform Engineer",
+      "site": "ats",
+      "verdict": "서울 구의오피스 근무, 보안 엔지니어링·보안 인프라 10년 이상. SIEM(보안 데이터 플랫폼)과 SOAR(보안 자동화)를 모두 깊게 다뤄 두 영역의 접점에서 아키텍처를 결정하고, AI-SOC·LLM 기반 보안 자동화를 설계하며, Detection-as-Code 를 고도화하는 탐지 플랫폼의 기술 책임자. 앞서 쓴 Security Data Platform(데이터 파이프라인)·Threat Detection(룰 작성) 공고보다 한 층 위의 아키텍처 자리로 읽힌다(추론).",
+      "fit": {
+        "must_have": [
+          "보안 엔지니어링·보안 인프라 10년 이상",
+          "SIEM 아키텍처·파이프라인·탐지 엔진 구축~운영~마이그레이션",
+          "SOAR·보안 자동화 설계·구축·운영",
+          "Python 프로덕션 코드",
+          "EDR·CTI·티켓 시스템 등 연동 경험",
+          "AI-SOC·LLM Agent 이해",
+          "SIEM 과 SOAR 를 모두 깊게"
+        ],
+        "can_learn": [
+          "쿠팡 보안 조직 구성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SIEM 과 SOAR 의 접점 아키텍처",
+          "from": "qualification",
+          "quote": "SIEM과 SOAR를 모두 깊이 있게 다뤄본 경험 — 두 영역의 접점에서 아키텍처 의사결정을 내려본 경험",
+          "priority": "core",
+          "why": "자격이 두 영역을 '모두 깊이' 요구하고, 주요업무 첫 줄이 두 플랫폼 전체 아키텍처의 기술 방향이다.",
+          "gap_check": "탐지(SIEM)에서 나온 경보가 SOAR 플레이북으로 넘어갈 때 경보 스키마·중복 제거·우선순위를 어느 쪽에서 책임지는 것이 맞는가?",
+          "drill": "SIEM 경보(JSON) → 중복 제거·보강 → SOAR 풍 플레이북(티켓 생성·EDR 격리 요청 모의) 흐름을 Python 으로 만들고, 같은 경보 폭주에서 티켓 수를 비교한다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "AI-SOC — LLM 에이전트로 경보 분석 자동화",
+          "from": "task",
+          "quote": "SOAR 워크플로우 및 AI-SOC 체계의 설계, 기술적 난제 해결, 품질 기준 정의",
+          "priority": "core",
+          "why": "주요업무에 AI-SOC 설계와 'AI/LLM 기반 보안 자동화의 아키텍처 설계'가 따로 있다. 자격에 LLM Agent 아키텍처·프롬프트 설계·자동 판단 워크플로우가 있다.",
+          "gap_check": "LLM 에이전트가 경보를 '오탐'으로 닫을 수 있게 할 때, 어떤 경보는 반드시 사람이 보게 하고 에이전트 판단은 어떻게 감사하는가?",
+          "drill": "경보 30건 정답 셋을 만들고 LLM 에이전트(도구: 로그 조회·자산 조회)가 분류·근거를 내게 한 뒤, 고위험 분류는 사람 승인 큐로만 가게 하고 정확도를 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "OWASP Top 10 for LLM Applications",
+              "url": "https://genai.owasp.org/llm-top-10/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 보안 로그 파이프라인의 비용·성능",
+          "from": "task",
+          "quote": "대규모 보안 로그 파이프라인의 안정성, 성능, 비용 효율성에 대한 아키텍처 레벨의 문제 해결",
+          "priority": "core",
+          "why": "아키텍처 수준의 문제 해결로 명시돼 있고, 우대에 비용 최적화 프로젝트가 있다.",
+          "gap_check": "탐지에 쓰지 않는 로그까지 SIEM 에 모두 넣으면 비용이 어떻게 커지고, 계층형 저장(핫/웜/콜드)과 탐지 전 필터링을 어떻게 나누는가?",
+          "drill": "로그 소스별 수집량·탐지 규칙 참조 여부를 표로 만들고, 참조 없는 소스를 콜드 저장소로 돌렸을 때의 비용·탐지 영향을 추정하는 계산표를 만든다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "Detection-as-Code 고도화 (룰 수명주기·테스트·배포)",
+          "from": "task",
+          "quote": "Detection-as-Code 프레임워크의 고도화 — 탐지 룰 라이프사이클, 테스트 자동화, 배포 파이프라인 개선",
+          "priority": "high",
+          "why": "탐지 룰 라이프사이클·테스트 자동화·배포 파이프라인 개선이 주요업무에 있다.",
+          "gap_check": "룰을 폐기할 때 그 룰이 덮던 공격 기법이 다른 룰로 계속 덮이는지 어떻게 자동 확인하는가?",
+          "drill": "Sigma 룰마다 ATT&CK 태그를 달고, 룰 삭제 PR 에서 커버리지가 줄어드는 기법을 CI 가 경고하게 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Sigma — Documentation",
+              "url": "https://sigmahq.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보안 솔루션 선정·교체의 기술 평가",
+          "from": "task",
+          "quote": "보안 솔루션 선정·도입·교체에 대한 기술적 평가",
+          "priority": "high",
+          "why": "SIEM 마이그레이션 경험이 자격에 있다. 교체 결정은 비용·탐지 품질·연동 부담을 함께 봐야 한다(추론).",
+          "gap_check": "SIEM 을 교체할 때 기존 탐지 룰·대시보드·연동을 어떻게 옮기고, 두 시스템을 병행하는 기간의 성공 기준은?",
+          "drill": "SIEM 후보 두 개를 비교하는 평가표(수집 비용·쿼리 성능·룰 이식성·API·운영 부담)를 만들고 병행 운영 체크리스트를 쓴다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "AI-SOC 미니 데모 + 평가 리포트",
+          "why": "이 자리의 가장 새로운 요구다. 경보 분류 에이전트의 정확도·사람 개입 비율·실패 사례를 수치로 보여 주면 드물다.",
+          "effort": "3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "SIEM→SOAR 경계 설계",
+          "LLM 에이전트 판단의 통제",
+          "로그 비용 최적화",
+          "룰 폐기와 커버리지",
+          "SIEM 교체 평가"
+        ],
+        "sources": [
+          {
+            "title": "Staff, Detection Platform Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188124",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
