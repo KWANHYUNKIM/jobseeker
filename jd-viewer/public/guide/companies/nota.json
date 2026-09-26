@@ -1,0 +1,182 @@
+{
+  "slug": "nota",
+  "name": "노타",
+  "name_en": "Nota AI",
+  "aliases": [
+    "노타"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "nota.ai",
+  "one_liner": "AI 모델을 하드웨어에 맞게 줄이고 최적화하는 플랫폼 NetsPresso 와, 온디바이스 영상 AI 솔루션(영상 관제·ITS 등)을 파는 회사",
+  "company": {
+    "business": "공고 머리말은 노타를 AI 최적화 기술로 'AI의 일상화' 를 이끄는 기업으로 소개하고, 핵심 제품 넷츠프레소(NetsPresso)를 '하드웨어의 특성을 이해하는 AI 모델 최적화 플랫폼' 으로, 차세대 영상 관제 솔루션 NVA(Nota Vision Agent)·지능형 교통 시스템(ITS) 등을 온디바이스 생성형 AI 솔루션으로 적는다. 삼성·LG 투자 유치(국내 스타트업 최초라고 적음), 네이버 D2SF 첫 투자 기업, 두바이 교통국과의 AI 솔루션 공급 계약, CB Insights AI 100 선정을 적는다. 홈페이지는 'Hardware-aware AI Model Optimization Platform and AI solutions' 를 내걸고 솔루션 메뉴에 Nota Vision Agent·Industrial Safety·Surveillance·ITS·DMS&FR 을 둔다. 유럽 법인(Nota AI GmbH)에 On-device AI 최적화와 Physical AI(VLM·VLA)를 연구하는 Research team 이 있다고 적는다. 매출·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Nota AI",
+        "url": "https://www.nota.ai/",
+        "publisher": "노타",
+        "summary": "'Hardware-aware AI Model Optimization Platform and AI solutions' 를 내건다. 메뉴는 NetsPresso®, AI Solutions(Nota Vision Agent·Industrial Safety·Surveillance·ITS·DMS&FR), Blog, Company. 첫 화면 문구는 'High-performance AI on Any Device', 'Turning On-Device AI into Reality'"
+      },
+      {
+        "title": "[Nota AI GmbH] ML Researcher",
+        "url": "https://www.wanted.co.kr/wd/384789",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[NetsPresso] AI Engineer",
+        "url": "https://www.wanted.co.kr/wd/368178",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "NetsPresso 모델 최적화 플랫폼·고객 지원",
+        "how": "NetsPresso 공고들이 경량화·최적화 모듈로 고객 모델을 타겟 디바이스(CPU/GPU/NPU)에 맞추고 '고객사 모델 지원' 을 적는다. 과금 방식은 읽지 않았다(추론).",
+        "domains": [
+          "온디바이스 모델 최적화(NetsPresso)",
+          "AI 컴파일러·런타임 변환"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[NetsPresso] AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/368178",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[NetsPresso] Senior AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/368177",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "산업 현장 AI 솔루션(영상 관제·ITS 등)",
+        "how": "홈페이지 솔루션 메뉴(Nota Vision Agent·Industrial Safety·Surveillance·ITS·DMS&FR)와 공고 머리말의 두바이 교통국 공급 계약이 있다. Solution 공고가 고객과의 기술 논의와 신규 프로젝트를 적는다.",
+        "domains": [
+          "산업 영상 AI 솔루션"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Nota AI",
+            "url": "https://www.nota.ai/",
+            "publisher": "노타",
+            "summary": "'Hardware-aware AI Model Optimization Platform and AI solutions' 를 내건다. 메뉴는 NetsPresso®, AI Solutions(Nota Vision Agent·Industrial Safety·Surveillance·ITS·DMS&FR), Blog, Company. 첫 화면 문구는 'High-performance AI on Any Device', 'Turning On-Device AI into Reality'"
+          },
+          {
+            "title": "[Solution] Senior AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/354744",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "온디바이스 모델 최적화(NetsPresso)",
+        "why": "NetsPresso AI Engineer·Senior 공고가 CV·LLM·VLM 모델을 CPU/GPU/NPU 에 맞게 최적화하고 성능·정확도·메모리·지연 trade-off 를 정량 분석하며, Agent 기반 최적화 자동화를 적는다.",
+        "what_to_know": [
+          "양자화·가지치기",
+          "디바이스별 벤치마크",
+          "최적화 자동화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[NetsPresso] AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/368178",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[NetsPresso] Senior AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/368177",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 컴파일러·런타임 변환",
+        "why": "AI Compiler 공고가 NetsPresso IR(NPIR) 그래프 구조, PyTorch·ONNX↔NPIR 변환, ExecuTorch·TensorRT 등 타겟 런타임 IR 로의 로워링을 적는다.",
+        "what_to_know": [
+          "그래프 IR",
+          "ONNX",
+          "ExecuTorch·TensorRT"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[NetsPresso] AI Compiler Engineer",
+            "url": "https://www.wanted.co.kr/wd/338178",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "산업 영상 AI 솔루션",
+        "why": "Solution 공고가 CV·VLM 으로 산업 현장 영상의 객체·맥락을 이해하는 모델과 latency·robustness 를 고려한 서비스 파이프라인, Detection·Segmentation·Anomaly Detection 을 적는다.",
+        "what_to_know": [
+          "Detection·Segmentation",
+          "VLM",
+          "현장 성능 기준"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Solution] Senior AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/354744",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[Solution] AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/368136",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "Physical AI 연구",
+        "why": "유럽 법인 ML Researcher 공고가 VLM·VLA 로봇 파운데이션 모델 연구와 Foundation model 양자화를 적고, 연구 성과가 NetsPresso 제품에 반영된다고 적는다. 매출과는 NetsPresso 를 통해 이어진다고 적혀 있다.",
+        "what_to_know": [
+          "VLA",
+          "저비트 양자화",
+          "월드 모델"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Nota AI GmbH] ML Researcher",
+            "url": "https://www.wanted.co.kr/wd/384789",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "LLM·VLM 까지 디바이스에 올리는 쪽으로 넓히고 있다",
+        "evidence": "Computer Vision, Generative AI(LLM, VLM 등) 모델 대상 성능·정확도·메모리 중심 튜닝",
+        "so_what": "NetsPresso 공고들이 CV 뿐 아니라 LLM·VLM 최적화를, 유럽 연구팀이 VLA 까지 디바이스·로봇 위 실시간 동작을 목표로 적는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "최적화 작업 자체를 에이전트로 자동화하려 한다",
+        "evidence": "수동 설정에 의존하지 않는 Agent 기반 모델 최적화 실험 구조 설계",
+        "so_what": "NetsPresso AI Engineer·Senior 공고 모두에 있다. 최적화 경험에 더해 자동화 설계 역량을 볼 것으로 보인다(추론).",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수·NetsPresso 과금 방식을 읽지 않았다",
+    "'삼성·LG 투자 유치', '두바이 교통국 계약', 'CB Insights AI 100' 은 공고 머리말(회사 주장)만 읽었다",
+    "ML Researcher 는 유럽 법인(Nota AI GmbH) 자리다 — 근무지·고용 주체 확인 필요",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
