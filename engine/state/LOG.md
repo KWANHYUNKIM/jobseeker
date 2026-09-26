@@ -1755,3 +1755,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Finatext 회사 프로파일
 
 - 그룹 사이트의 사업 도메인 여섯을 수익원 다섯으로(Fintech SHIFT·Data AI Solution 묶음). 기술 글은 나우캐스트 데이터 쪽(Snowflake 비용)과 Crest DWH(자작 BI) — 도메인 둘. 결제 배치 DB 멈춤 글은 제품 불명이라 open_questions 로.
+
+## 2026-09-26 Finatext Snowflake 파이프라인 비용
+
+- 결정 6 — 개편 대신 감사·추가만 되는 ID 미리 계산+JOIN·HASH·MOD 청크·SHA256 ID 형식 검사 제거·최근 7일 창·입구·출구 테스트. 글의 빌드 감소치가 표(-35%)와 본문(~45%)에서 달라 둘 다 적었다.

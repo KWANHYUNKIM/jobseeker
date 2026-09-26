@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "핀테크",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "금융을 서비스로 다시 만드는 핀테크 인프라 그룹 Finatext — 결제·POS 같은 오르터너티브 데이터를 매일 고객에게 납품하는 나우캐스트는 추가만 되는 데이터를 미리 계산하고 정렬 대신 해시로 청크를 자르며 테스트를 입구·출구 두 끝으로 모아 Snowflake 비용을 39% 줄이고, 크레디트 인프라 Crest 의 DWH 는 BI·AI 에 보여 줄 층을 사람이 정한다",
       "updated_at": "2026-09-26",
       "domain": "finatext.com"

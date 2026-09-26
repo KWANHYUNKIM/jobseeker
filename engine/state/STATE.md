@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Finatext 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다' — `7dbbd9371fe046`(추가만 되는 ID 미리 계산+JOIN · ORDER BY 대신 HASH·MOD 청크 · SHA256 ID 형식 검사 제거 · 최근 창 검사 · 입구·출구 테스트). 그다음 'BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다' — `crest-bi-dwh-data-democratization`(Crest DWH 3층 · 보여 줄 층만 · BI JOIN 금지 · 경계는 사람이). 수익원 BaaS·Insurtech·Fintech SHIFT 는 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 2/3(KENCOPA·WWWAVE).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Finatext 확장 1/2(2026-09-26) — `snowflake-pipeline-cost-cut` 완료. 다음은 확장: 'BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다' — `crest-bi-dwh-data-democratization`(Crest DWH 3층 · 보여 줄 층만 · BI JOIN 금지 · 경계는 사람이). 수익원 BaaS·Insurtech·Fintech SHIFT 는 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 2/3(KENCOPA·WWWAVE).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
