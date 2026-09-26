@@ -1,0 +1,211 @@
+{
+  "slug": "finatext",
+  "name": "Finatext",
+  "name_en": "Finatext",
+  "country": "JP",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "finatext.com",
+  "one_liner": "금융을 서비스로 다시 만드는 핀테크 인프라 그룹 Finatext — 결제·POS 같은 오르터너티브 데이터를 매일 고객에게 납품하는 나우캐스트는 추가만 되는 데이터를 미리 계산하고 정렬 대신 해시로 청크를 자르며 테스트를 입구·출구 두 끝으로 모아 Snowflake 비용을 39% 줄이고, 크레디트 인프라 Crest 의 DWH 는 BI·AI 에 보여 줄 층을 사람이 정한다",
+  "business_model": "금융 기관과 사업자에게 금융 서비스를 만들 **인프라와 데이터**를 판다. 사업 도메인은 여섯 — 증권 플랫폼 **BaaS**(Brokerage), 차세대 보험 비즈니스 구축(Insurtech), 크레디트 인프라 **Crest**(Credit), 금융 서비스 기획·그로스·운영 원스톱 지원(Fintech SHIFT), 결제·POS 같은 3rd party **오르터너티브 데이터 제공**(Data Service — 그룹사 나우캐스트), 데이터·AI 공창(Data AI Solution). 과금 구조·도메인별 매출 비중은 이번에 확인하지 않았다(IR 자료는 있다).",
+  "products": [
+    "BaaS(증권 플랫폼)",
+    "Crest(크레디트 인프라)",
+    "Insurtech(보험 비즈니스 구축)",
+    "Fintech SHIFT",
+    "Data Service(오르터너티브 데이터 — 나우캐스트)",
+    "Data AI Solution"
+  ],
+  "revenue_total": "이번 사이클에 확인하지 않았다(IR 라이브러리에 결산 자료가 있다)",
+  "revenue_streams": [
+    {
+      "name": "Data Service(오르터너티브 데이터 제공)",
+      "how": "결제·POS·법인 데이터 등 외부 파트너 데이터를 공통 데이터 기반에 모아 가공해 금융기관·기관투자가·관공청에 데이터셋으로 납품한다.",
+      "weight": "비중 확인 못 함",
+      "domains": [
+        "수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Data Service",
+          "url": "https://finatext.com/domain/data_service",
+          "publisher": "株式会社Finatextホールディングス",
+          "date": "2026-09-26",
+          "summary": "외부 파트너에게서 모은 3rd party 데이터를 조합해 금융·부동산·관공청의 DX 를 지원. 전략 — 데이터 파트너 확충 · **공통 데이터 기반으로 여러 데이터를 집약** · 업계 특화 DX 서비스. 금융기관·기관투자가·관공청에 **종목 코드에 묶인 결제 데이터·POS 데이터 같은 오르터너티브 데이터**를 제공."
+        },
+        {
+          "title": "Cutting 39% Off Our Monthly Snowflake Pipeline Costs",
+          "url": "https://zenn.dev/finatext/articles/7dbbd9371fe046",
+          "publisher": "Finatext Tech Blog (Zenn)",
+          "date": "2026-09-14",
+          "summary": "나우캐스트는 금융 거래 데이터를 가공·보강해 고객에게 데이터셋으로 납품한다 — 하루 수백만 건, 누적 50억 행 초과. 큰 개편·새 도구 없이 '파이프라인이 실제로 하는 일 대 필요한 일' 을 대조해 일일 컴퓨트 비용 약 39% 감소. ① S3 내보내기 — 병렬 세그먼트마다 비물질화 뷰를 `WHERE IN` 서브쿼리로 다시 훑던 것을, 추가만 되는 사용자·점포 ID 를 하루 한 번 물리 테이블로 미리 계산해 INNER JOIN · `ROW_NUMBER() OVER (ORDER BY)` 로 ~2천만 행씩 청크를 자르던 정렬(O(N log N), 원격 디스크 스필)을 `HASH`·`MOD` 결정적 청크로(순서는 고객에게 무의미) → 내보내기 75% 단축·웨어하우스 비용 ~61% 감소(2026-07-21). ② dbt 테스트 — DB 가 SHA256 으로 만든 ID 의 형식 regex 검사 제거 · 수십억 행 전체를 매일 훑던 유일성·참조 무결성 검사를 최근 창(예: 7일, 원래의 0.3~0.4%)으로 · 모든 층 테스트를 입구·출구 두 끝으로(입도·스키마가 바뀌는 중간만 예외) → 빌드 35% 단축. 전체 파이프라인 53% 단축."
+        }
+      ]
+    },
+    {
+      "name": "Credit(크레디트 인프라 Crest)",
+      "how": "크레디트 관련 사업자에 Crest 를 제공해 신규 참여·업무 쇄신을 돕는다. 과금 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함",
+      "domains": [
+        "BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Finatextグループサイト｜金融をサービスとして再発明する。",
+          "url": "https://finatext.com/",
+          "publisher": "株式会社Finatextホールディングス",
+          "date": "2026-09-26",
+          "summary": "사업 도메인 여섯 — **Fintech SHIFT**(금융 서비스 기획부터 출시 뒤 그로스·운영까지 원스톱 지원) · **Data Service**(POS·결제·법인 데이터 등 3rd party 데이터 제공) · **Data AI Solution**(데이터·AI 로 고객과 공창) · **Brokerage**(증권 플랫폼 'BaaS' 로 파트너 증권 서비스 개발·자사 서비스) · **Insurtech**(차세대 보험 비즈니스 구축·보험업계 DX) · **Credit**(크레디트 인프라 **'Crest'** 를 크레디트 사업자에 제공). 그룹 회사 나우캐스트·스마트플러스크레디트 등, IR 있음(상장)."
+        },
+        {
+          "title": "自作BIツール × DWHで挑むデータの民主化",
+          "url": "https://zenn.dev/finatext/articles/crest-bi-dwh-data-democratization",
+          "publisher": "Finatext Tech Blog (Zenn)",
+          "date": "2026-08-07",
+          "summary": "스마트플러스크레디트의 크레디트 인프라 **Crest** 용 분석 기반(DWH)을 Snowflake 에 짓는 나우캐스트 팀과 Crest 업무 엔지니어가 사내 AI 콘테스트(2026-05)에서 '비엔지니어가 GUI 로 DWH 를 조회하는 자작 BI' 를 만들었다. 과제 — 고객 분석 의뢰마다 엔지니어에게 SQL 을 부탁하는 자원봉사 의존(1~2일 대기) · 기성 BI 는 비용이 안 맞음 · 여신 모델 같은 중요한 분석이 밀림. 핵심 설계 — **BI 나 AI 에 DWH 의 어느 층까지 보여줄지 상대마다 정한다**(3층 가공, 보여 주는 층엔 필요충분한 데이터만 · BI 쪽에서 JOIN 시키지 않는다 · 집계 품질로 숫자 흔들림 방지), 경계는 사람이 긋는다. 채팅으로 집계·여신 모델 시뮬레이션은 프로토타입. 데이터는 테스트 데이터."
+        }
+      ]
+    },
+    {
+      "name": "Brokerage(증권 플랫폼 BaaS)",
+      "how": "증권 플랫폼 BaaS 로 파트너 기업의 증권 서비스를 개발하고 자사 서비스도 낸다.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Finatextグループサイト｜金融をサービスとして再発明する。",
+          "url": "https://finatext.com/",
+          "publisher": "株式会社Finatextホールディングス",
+          "date": "2026-09-26",
+          "summary": "사업 도메인 여섯 — **Fintech SHIFT**(금융 서비스 기획부터 출시 뒤 그로스·운영까지 원스톱 지원) · **Data Service**(POS·결제·법인 데이터 등 3rd party 데이터 제공) · **Data AI Solution**(데이터·AI 로 고객과 공창) · **Brokerage**(증권 플랫폼 'BaaS' 로 파트너 증권 서비스 개발·자사 서비스) · **Insurtech**(차세대 보험 비즈니스 구축·보험업계 DX) · **Credit**(크레디트 인프라 **'Crest'** 를 크레디트 사업자에 제공). 그룹 회사 나우캐스트·스마트플러스크레디트 등, IR 있음(상장)."
+        }
+      ]
+    },
+    {
+      "name": "Insurtech(보험)",
+      "how": "기술을 지렛대로 차세대 보험 비즈니스를 짓고 보험업계 DX 를 돕는다.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Finatextグループサイト｜金融をサービスとして再発明する。",
+          "url": "https://finatext.com/",
+          "publisher": "株式会社Finatextホールディングス",
+          "date": "2026-09-26",
+          "summary": "사업 도메인 여섯 — **Fintech SHIFT**(금융 서비스 기획부터 출시 뒤 그로스·운영까지 원스톱 지원) · **Data Service**(POS·결제·법인 데이터 등 3rd party 데이터 제공) · **Data AI Solution**(데이터·AI 로 고객과 공창) · **Brokerage**(증권 플랫폼 'BaaS' 로 파트너 증권 서비스 개발·자사 서비스) · **Insurtech**(차세대 보험 비즈니스 구축·보험업계 DX) · **Credit**(크레디트 인프라 **'Crest'** 를 크레디트 사업자에 제공). 그룹 회사 나우캐스트·스마트플러스크레디트 등, IR 있음(상장)."
+        }
+      ]
+    },
+    {
+      "name": "Fintech SHIFT · Data AI Solution(지원·공창)",
+      "how": "금융 서비스 기획부터 운영까지의 원스톱 지원과 데이터·AI 공창. 사람이 하는 일의 비중이 크다(이 사이트의 해석).",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Finatextグループサイト｜金融をサービスとして再発明する。",
+          "url": "https://finatext.com/",
+          "publisher": "株式会社Finatextホールディングス",
+          "date": "2026-09-26",
+          "summary": "사업 도메인 여섯 — **Fintech SHIFT**(금융 서비스 기획부터 출시 뒤 그로스·운영까지 원스톱 지원) · **Data Service**(POS·결제·법인 데이터 등 3rd party 데이터 제공) · **Data AI Solution**(데이터·AI 로 고객과 공창) · **Brokerage**(증권 플랫폼 'BaaS' 로 파트너 증권 서비스 개발·자사 서비스) · **Insurtech**(차세대 보험 비즈니스 구축·보험업계 DX) · **Credit**(크레디트 인프라 **'Crest'** 를 크레디트 사업자에 제공). 그룹 회사 나우캐스트·스마트플러스크레디트 등, IR 있음(상장)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "금융 데이터를 쌓고, 나누고, 보여 준다",
+    "question": "수십억 행의 금융 데이터를 매일 납품하는 비용과, 같은 데이터를 사내 비엔지니어·AI 에 보여 주는 경계를 어떻게 정하나?",
+    "code": "flowchart LR\n  P[\"데이터 파트너\\n결제 · POS · 법인\"] --> SF[\"Snowflake · dbt\\n50억 행+\"]\n  SF -->|해시 청크 · 미리 계산한 ID| S3[\"S3 → 고객 납품\"]\n  CR[\"Crest 업무 DB\"] --> DWH[\"Crest DWH\\n3층\"]\n  DWH -->|보여 줄 층만| BI[\"자작 BI · AI 채팅\\n비엔지니어\"]",
+    "_note": "위는 나우캐스트의 데이터 납품, 아래는 Crest DWH 다. Crest DWH 를 Credit 수익원에 이은 것은 이 사이트의 해석 — 글의 BI 는 사내 콘테스트 프로토타입이다. BaaS·Insurtech 의 기술 글은 아직 못 봤다."
+  },
+  "domains": [
+    {
+      "name": "수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다",
+      "why": "나우캐스트는 금융 거래 데이터를 가공·보강해 매일 고객에게 납품한다. 데이터가 수백만에서 50억 행을 넘자, 급하게 짓느라 쌓인 전체 테이블 스캔과 중복 검사가 매일의 컴퓨트 비용을 끌어올렸다.",
+      "tech": [
+        {
+          "tech": "추가만 되는 ID 를 하루 한 번 물리 테이블로 미리 계산해 JOIN · `ORDER BY` 대신 `HASH`·`MOD` 청크 · DB 가 만든 ID 의 형식 검사 제거 · 유일성·참조 검사를 최근 창으로 · 테스트를 입구·출구로",
+          "solves": "일일 컴퓨트 약 39% 감소, 파이프라인 53% 단축(내보내기 75%·빌드 35%).",
+          "limits": "데이터가 추가만 되고 지워지지 않는다는 전제에 기댄다 — 옛 데이터가 바뀌면 최근 창 검사는 못 잡는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cutting 39% Off Our Monthly Snowflake Pipeline Costs",
+              "url": "https://zenn.dev/finatext/articles/7dbbd9371fe046",
+              "publisher": "Finatext Tech Blog (Zenn)",
+              "date": "2026-09-14",
+              "summary": "나우캐스트는 금융 거래 데이터를 가공·보강해 고객에게 데이터셋으로 납품한다 — 하루 수백만 건, 누적 50억 행 초과. 큰 개편·새 도구 없이 '파이프라인이 실제로 하는 일 대 필요한 일' 을 대조해 일일 컴퓨트 비용 약 39% 감소. ① S3 내보내기 — 병렬 세그먼트마다 비물질화 뷰를 `WHERE IN` 서브쿼리로 다시 훑던 것을, 추가만 되는 사용자·점포 ID 를 하루 한 번 물리 테이블로 미리 계산해 INNER JOIN · `ROW_NUMBER() OVER (ORDER BY)` 로 ~2천만 행씩 청크를 자르던 정렬(O(N log N), 원격 디스크 스필)을 `HASH`·`MOD` 결정적 청크로(순서는 고객에게 무의미) → 내보내기 75% 단축·웨어하우스 비용 ~61% 감소(2026-07-21). ② dbt 테스트 — DB 가 SHA256 으로 만든 ID 의 형식 regex 검사 제거 · 수십억 행 전체를 매일 훑던 유일성·참조 무결성 검사를 최근 창(예: 7일, 원래의 0.3~0.4%)으로 · 모든 층 테스트를 입구·출구 두 끝으로(입도·스키마가 바뀌는 중간만 예외) → 빌드 35% 단축. 전체 파이프라인 53% 단축."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다",
+      "why": "Crest 의 고객 분석 의뢰가 올 때마다 엔지니어에게 SQL 을 부탁하는 자원봉사 의존으로 1~2일을 기다렸고, 기성 BI 는 비용이 안 맞았다. 비엔지니어·AI 에게 DWH 를 열면 권한·속도·숫자 흔들림이 문제가 된다.",
+      "tech": [
+        {
+          "tech": "Snowflake 3층 가공 · 보여 주는 층엔 필요충분한 데이터만 · BI 쪽 JOIN 금지 · 상대(BI / AI / SQL 쓰는 사람)마다 보여 줄 층을 사람이 정한다 · 자작 BI",
+          "solves": "비엔지니어가 GUI·채팅으로 직접 집계한다.",
+          "limits": "사내 AI 콘테스트의 프로토타입이다 — 운영 규모의 결과는 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "自作BIツール × DWHで挑むデータの民主化",
+              "url": "https://zenn.dev/finatext/articles/crest-bi-dwh-data-democratization",
+              "publisher": "Finatext Tech Blog (Zenn)",
+              "date": "2026-08-07",
+              "summary": "스마트플러스크레디트의 크레디트 인프라 **Crest** 용 분석 기반(DWH)을 Snowflake 에 짓는 나우캐스트 팀과 Crest 업무 엔지니어가 사내 AI 콘테스트(2026-05)에서 '비엔지니어가 GUI 로 DWH 를 조회하는 자작 BI' 를 만들었다. 과제 — 고객 분석 의뢰마다 엔지니어에게 SQL 을 부탁하는 자원봉사 의존(1~2일 대기) · 기성 BI 는 비용이 안 맞음 · 여신 모델 같은 중요한 분석이 밀림. 핵심 설계 — **BI 나 AI 에 DWH 의 어느 층까지 보여줄지 상대마다 정한다**(3층 가공, 보여 주는 층엔 필요충분한 데이터만 · BI 쪽에서 JOIN 시키지 않는다 · 집계 품질로 숫자 흔들림 방지), 경계는 사람이 긋는다. 채팅으로 집계·여신 모델 시뮬레이션은 프로토타입. 데이터는 테스트 데이터."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "도메인별 매출 비중·과금 구조를 확인하지 않았다(IR 자료 있음).",
+    "BaaS(증권)·Insurtech 의 기술 결정 글을 아직 못 봤다 — Zenn 검색 '証券 BaaS' 0건, 보험 쪽은 2024 년 소개 글 하나.",
+    "결제 배치가 DB insert 도중 멈춘 원인 조사(`db-hang-survey`)는 어느 제품인지 글에 없다.",
+    "Crest DWH 의 수익원 연결은 inferred.",
+    "다른 글: MCP 게이트웨이 MCPass(`mcp-gateway-nowcast`)·Slack App 경유 MCP(`mcp-gateway-slack-app`)·dbt 와 Snowflake tag(`dbt-snowflake-and-tag`)."
+  ],
+  "sources": [
+    {
+      "title": "Finatextグループサイト｜金融をサービスとして再発明する。",
+      "url": "https://finatext.com/",
+      "publisher": "株式会社Finatextホールディングス",
+      "date": "2026-09-26",
+      "summary": "사업 도메인 여섯 — **Fintech SHIFT**(금융 서비스 기획부터 출시 뒤 그로스·운영까지 원스톱 지원) · **Data Service**(POS·결제·법인 데이터 등 3rd party 데이터 제공) · **Data AI Solution**(데이터·AI 로 고객과 공창) · **Brokerage**(증권 플랫폼 'BaaS' 로 파트너 증권 서비스 개발·자사 서비스) · **Insurtech**(차세대 보험 비즈니스 구축·보험업계 DX) · **Credit**(크레디트 인프라 **'Crest'** 를 크레디트 사업자에 제공). 그룹 회사 나우캐스트·스마트플러스크레디트 등, IR 있음(상장)."
+    },
+    {
+      "title": "Data Service",
+      "url": "https://finatext.com/domain/data_service",
+      "publisher": "株式会社Finatextホールディングス",
+      "date": "2026-09-26",
+      "summary": "외부 파트너에게서 모은 3rd party 데이터를 조합해 금융·부동산·관공청의 DX 를 지원. 전략 — 데이터 파트너 확충 · **공통 데이터 기반으로 여러 데이터를 집약** · 업계 특화 DX 서비스. 금융기관·기관투자가·관공청에 **종목 코드에 묶인 결제 데이터·POS 데이터 같은 오르터너티브 데이터**를 제공."
+    },
+    {
+      "title": "Cutting 39% Off Our Monthly Snowflake Pipeline Costs",
+      "url": "https://zenn.dev/finatext/articles/7dbbd9371fe046",
+      "publisher": "Finatext Tech Blog (Zenn)",
+      "date": "2026-09-14",
+      "summary": "나우캐스트는 금융 거래 데이터를 가공·보강해 고객에게 데이터셋으로 납품한다 — 하루 수백만 건, 누적 50억 행 초과. 큰 개편·새 도구 없이 '파이프라인이 실제로 하는 일 대 필요한 일' 을 대조해 일일 컴퓨트 비용 약 39% 감소. ① S3 내보내기 — 병렬 세그먼트마다 비물질화 뷰를 `WHERE IN` 서브쿼리로 다시 훑던 것을, 추가만 되는 사용자·점포 ID 를 하루 한 번 물리 테이블로 미리 계산해 INNER JOIN · `ROW_NUMBER() OVER (ORDER BY)` 로 ~2천만 행씩 청크를 자르던 정렬(O(N log N), 원격 디스크 스필)을 `HASH`·`MOD` 결정적 청크로(순서는 고객에게 무의미) → 내보내기 75% 단축·웨어하우스 비용 ~61% 감소(2026-07-21). ② dbt 테스트 — DB 가 SHA256 으로 만든 ID 의 형식 regex 검사 제거 · 수십억 행 전체를 매일 훑던 유일성·참조 무결성 검사를 최근 창(예: 7일, 원래의 0.3~0.4%)으로 · 모든 층 테스트를 입구·출구 두 끝으로(입도·스키마가 바뀌는 중간만 예외) → 빌드 35% 단축. 전체 파이프라인 53% 단축."
+    },
+    {
+      "title": "自作BIツール × DWHで挑むデータの民主化",
+      "url": "https://zenn.dev/finatext/articles/crest-bi-dwh-data-democratization",
+      "publisher": "Finatext Tech Blog (Zenn)",
+      "date": "2026-08-07",
+      "summary": "스마트플러스크레디트의 크레디트 인프라 **Crest** 용 분석 기반(DWH)을 Snowflake 에 짓는 나우캐스트 팀과 Crest 업무 엔지니어가 사내 AI 콘테스트(2026-05)에서 '비엔지니어가 GUI 로 DWH 를 조회하는 자작 BI' 를 만들었다. 과제 — 고객 분석 의뢰마다 엔지니어에게 SQL 을 부탁하는 자원봉사 의존(1~2일 대기) · 기성 BI 는 비용이 안 맞음 · 여신 모델 같은 중요한 분석이 밀림. 핵심 설계 — **BI 나 AI 에 DWH 의 어느 층까지 보여줄지 상대마다 정한다**(3층 가공, 보여 주는 층엔 필요충분한 데이터만 · BI 쪽에서 JOIN 시키지 않는다 · 집계 품질로 숫자 흔들림 방지), 경계는 사람이 긋는다. 채팅으로 집계·여신 모델 시뮬레이션은 프로토타입. 데이터는 테스트 데이터."
+    }
+  ]
+}

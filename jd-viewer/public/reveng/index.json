@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "finatext",
+      "name": "Finatext",
+      "name_en": "Finatext",
+      "country": "JP",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "금융을 서비스로 다시 만드는 핀테크 인프라 그룹 Finatext — 결제·POS 같은 오르터너티브 데이터를 매일 고객에게 납품하는 나우캐스트는 추가만 되는 데이터를 미리 계산하고 정렬 대신 해시로 청크를 자르며 테스트를 입구·출구 두 끝으로 모아 Snowflake 비용을 39% 줄이고, 크레디트 인프라 Crest 의 DWH 는 BI·AI 에 보여 줄 층을 사람이 정한다",
+      "updated_at": "2026-09-26",
+      "domain": "finatext.com"
+    },
+    {
       "slug": "rehabforjapan",
       "name": "Rehab for JAPAN",
       "name_en": "Rehab for JAPAN",
@@ -3363,7 +3375,9 @@
     "고객 PII 를 관측 스택에 흘리지 않고 AI 가 조사하게 한다",
     "AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다",
     "새 렌털 서비스를 공통 이벤트 기반 위에 올린다",
-    "멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다"
+    "멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다",
+    "수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다",
+    "BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다"
   ],
   "countries": {
     "KR": "한국",

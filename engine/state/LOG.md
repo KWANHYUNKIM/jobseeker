@@ -1751,3 +1751,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Rehab for JAPAN hold
 
 - 검색 1 RSS 20편 · 검색 2 Zenn 검색 API 3낱말 0건(89번째 후보 조사 때). hold_reason 을 status 뒤에, '재시도 안 함' 한 줄, QUEUE 진행 중 행에 hold.
+
+## 2026-09-26 Finatext 회사 프로파일
+
+- 그룹 사이트의 사업 도메인 여섯을 수익원 다섯으로(Fintech SHIFT·Data AI Solution 묶음). 기술 글은 나우캐스트 데이터 쪽(Snowflake 비용)과 Crest DWH(자작 BI) — 도메인 둘. 결제 배치 DB 멈춤 글은 제품 불명이라 open_questions 로.
