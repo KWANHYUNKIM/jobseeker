@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**LayerX — 기능 3(RAP · Bifrost · TypeSpec, 2026-09-26). 세 도메인 모두 기능이 있지만 수익원 Fintech·Security 에 도메인이 없어 완주 기준 셋째 미달 — in_progress. 이후 보강·재방문 때 'Fintech事業部' 카테고리(`tech.layerx.co.jp/archive/category/Fintech事業部`, 22편)에서 결정과 대가를 적은 글을 찾아 도메인을 더하고, Security 는 자료를 두 번 찾아 없으면 hold. 다음은 `--gaps` 대로 **후보 조사(80번째)** — 대기 0/3. 79번째에서 함께 열린 하테나(moneyforward-dev.jp · tech.pepabo.com · developers.prtimes.jp · tech.stmn.co.jp · tech.uzabase.com · kaminashi-developer.hatenablog.jp)부터.**
+**없다 — 80번째 후보 조사(2026-09-26)로 대기 3/3: 유자베이스(경제 정보·데이터 배포) · 머니포워드(가계부·백오피스 SaaS) · stmn(TUNAG, 글이 드묾). 다음은 신규 — 대기 맨 위 유자베이스 프로파일(입구 `tech.uzabase.com/sitemap_periodical.xml?year=&month=`, 첫 글 `entry/2026/09/05/154644`). LayerX 는 Fintech·Security 수익원 때문에 in_progress(Fintech事業部 카테고리 확인이 남음).**
+
 
 
 
