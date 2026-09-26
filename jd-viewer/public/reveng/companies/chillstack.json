@@ -44,9 +44,11 @@
     },
     {
       "name": "AI 보안 서비스(레드팀 · 안전 운용 · 교육)",
-      "how": "AI 를 넣은 시스템에 공격 검증을 하고 안전한 운용 체제를 함께 만들며, LLM 보안 실습 강좌를 판다. 기업 · 관공청 대상.",
+      "how": "Web 과 AI 의 안전을 검사하는 **보안 진단 서비스**(Web 진단은 일반 도구 + 자체 스캐너 + 진단원의 수동 검사), AI 를 넣은 시스템의 공격 검증(레드팀) · 안전한 운용 체제 구축, LLM 보안 실습 강좌. 기업 · 관공청 대상.",
       "weight": "공개 안 됨",
-      "domains": [],
+      "domains": [
+        "진단원마다 흔들리는 웹 진단 품질을 도구로 고르게 한다"
+      ],
       "confidence": "confirmed",
       "sources": [
         {
@@ -60,6 +62,13 @@
           "url": "https://chillstack.com/company",
           "publisher": "ChillStack",
           "summary": "미션 '더 재미있고 풍요롭고 **안심할 수 있는** 세계'. **2018년 창업**(CEO 이토 미치아키 — AI × 보안 연구, 국제 보안 콘테스트 우승). CTO 는 **이상 검지 AI** 연구 · 실운용 이상 검지 시스템 구축 출신. CEO 메시지: AI 보안의 기초 연구와 최첨단 기술로 **기업 · 관공청**을 돕고, 안전한 운용 체제 구축 · 개선까지 함께 만든다. 매출은 없다."
+        },
+        {
+          "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+          "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+          "publisher": "ChillStack",
+          "date": "2025-02-27",
+          "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
         }
       ]
     }
@@ -67,8 +76,8 @@
   "domain_map": {
     "title": "경비 파일이 검지 결과와 분석이 되기까지",
     "question": "회사마다 다른 경비 데이터를 어디서 받아 누가 검지하고, 어떻게 섞이지 않게 모아 보이나?",
-    "code": "flowchart TD\n  U[\"고객 경리 담당\\nManager(Next.js)\"] -->|파일 업로드| C[\"Controller(Go 모놀리스)\\n인증 · 권한 · 상태 · 영속화\"]\n  C --> W[\"Cloud Workflows\\n취득 → 추출 → 검지 → 집계\"]\n  W --> J[\"Cloud Run Job(Go CLI)\"]\n  J -->|PredictService| PR[\"Predictor(Python)\\npickle 모델 · GCS\"]\n  PR -->|PredictionHandler 콜백| C\n  C --> DB[\"PostgreSQL\\nRLS · current_setting(tenant_id)\"]\n  J --> AG[\"사전 집계 테이블\\n검지 때마다 재집계\"]\n  AG --> AN[\"분석 화면\\n쿼리 빌더 · 수백 ms\"]",
-    "_note": "위쪽은 검지 파이프라인(도메인 1), 아래쪽은 결과를 테넌트 경계 안에서 즉시 모아 보는 곳(도메인 2)이다. AI 보안 서비스 쪽 시스템은 공개 글이 없다."
+    "code": "flowchart TD\n  U[\"고객 경리 담당\\nManager(Next.js)\"] -->|파일 업로드| C[\"Controller(Go 모놀리스)\\n인증 · 권한 · 상태 · 영속화\"]\n  C --> W[\"Cloud Workflows\\n취득 → 추출 → 검지 → 집계\"]\n  W --> J[\"Cloud Run Job(Go CLI)\"]\n  J -->|PredictService| PR[\"Predictor(Python)\\npickle 모델 · GCS\"]\n  PR -->|PredictionHandler 콜백| C\n  C --> DB[\"PostgreSQL\\nRLS · current_setting(tenant_id)\"]\n  J --> AG[\"사전 집계 테이블\\n검지 때마다 재집계\"]\n  AG --> AN[\"분석 화면\\n쿼리 빌더 · 수백 ms\"]\n  PT[\"보안 진단 · Burp Suite\"] --> SC[\"자체 스캐너 · 근거 UI\"]",
+    "_note": "위쪽은 검지 파이프라인(도메인 1), 아래쪽은 결과를 테넌트 경계 안에서 즉시 모아 보는 곳(도메인 2)이다. AI 보안 서비스 쪽 시스템은 공개 글이 없다. 오른쪽 끝 한 줄은 두 번째 사업(보안 진단)의 자체 스캐너다."
   },
   "domains": [
     {
@@ -177,6 +186,30 @@
       ],
       "features": [
         "tenant-rls-and-realtime-aggregation"
+      ]
+    },
+    {
+      "name": "진단원마다 흔들리는 웹 진단 품질을 도구로 고르게 한다",
+      "why": "ChillStack 의 또 한 사업은 **Web 과 AI 의 보안 진단**이다. Web 진단은 일반 진단 도구 위에 **진단원의 정밀한 수동 검사**를 얹는다. 고객 환경이 다양해 일반 도구가 못 잡거나 애매하게 잡는 곳이 많고, 그 빈틈을 사람이 메우는 만큼 **진단원마다 품질이 흔들린다.**\n\n그래서 **자체 Web 취약성 스캐너**를 만들어 Burp Suite 에서 요청을 넘겨받아 검사하고, **근거와 함께** 결과를 보인다 — 예: Burp 가 '정보 · 불확실'로만 내는 RPO CSS 인젝션을 조건을 확인해 정확히 잡는다.",
+      "tech": [
+        {
+          "tech": "자체 Web 취약성 스캐너(Burp Suite 에서 요청을 보내 스캔 · Web UI 로 근거 표시)",
+          "solves": "일반 도구가 오검지 가능성 높음으로만 내는 취약성(예: RPO)을 조건을 따져 정확히 잡고, 근거를 보여 **진단원 간 차이와 확인 수고**를 줄인다.",
+          "limits": "글이 든 예는 RPO 하나다 — 어떤 취약성을 얼마나 덮는지, 수동 검사를 얼마나 덜었는지 숫자가 없다. 자체 도구는 **스스로 유지 · 갱신**해야 한다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+              "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+              "publisher": "ChillStack",
+              "date": "2025-02-27",
+              "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "inhouse-web-vuln-scanner"
       ]
     }
   ],
@@ -1005,11 +1038,310 @@
           "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지). 사전 집계 입도는 **신청자 단위 평균 명세 수를 재어** 효과를 확인하고 정했고(너무 잘게 하면 원본과 같아진다), 조직마다 다른 축은 **custom_field_1, 2 … 범용 컬럼 + 조직별 매핑 테이블**로."
         }
       ]
+    },
+    {
+      "key": "inhouse-web-vuln-scanner",
+      "name": "진단원의 손이 메우던 빈틈을 스캐너로 — Burp 옆에 붙인 자체 도구",
+      "domain": "진단원마다 흔들리는 웹 진단 품질을 도구로 고르게 한다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "보안 진단은 **품질과 속도**를 판다 — 고객 환경의 취약성을 빠짐없이, 빨리 보고해야 한다. ChillStack 의 Web 진단은 일반 Web 진단 도구를 진단원이 쓰고 그 위에 **정밀한 수동 검사**를 한다.\n\n문제는 고객 환경이 다양하다는 것이다. 검사 내용 자체는 복잡하지 않아도 **일반 도구로는 가려운 곳에 손이 안 닿는** 일이 많고, 그 빈틈을 진단원이 손으로 메우면 **부담이 늘고 진단원마다 품질이 흔들린다.** 예컨대 RPO(상대 경로 덮어쓰기)를 통한 CSS 인젝션을 Burp Suite 는 '정보 · 불확실'로만 내 놓아 확인하는 데 손이 가고 놓치기 쉽다.\n\n그래서 **자체 Web 취약성 스캐너**를 만들어 Burp Suite 옆에 붙였다.",
+        "metrics": [
+          {
+            "label": "예로 든 취약성",
+            "value": "RPO(Relative Path Overwrite)를 이용한 CSS 인젝션 — 성립 조건 넷",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+                "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+                "publisher": "ChillStack",
+                "date": "2025-02-27",
+                "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "Burp Suite 의 판정(같은 데모)",
+            "value": "Path-relative style sheet import · 심각도 Information · 확신도 Tentative",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+                "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+                "publisher": "ChillStack",
+                "date": "2025-02-27",
+                "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "진단원마다 결과가 다를 수 있다고 느낄 때",
+          "thought": "**검사 자체는 복잡하지 않은데 도구가 못 닿는다.** 그 빈틈을 사람마다 다르게 메우니 품질이 흔들린다 — 빈틈을 도구로 메우면 사람의 차이가 준다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+              "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+              "publisher": "ChillStack",
+              "date": "2025-02-27",
+              "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+            }
+          ]
+        },
+        {
+          "at": "Burp 가 'Tentative' 로 낸 결과를 볼 때",
+          "thought": "**잡긴 했는데 믿을 수 없다고 말한다.** 확인하는 수고가 들고, 바쁘면 놓친다 — 조건을 따져 근거와 함께 내면 확인이 빨라진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+              "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+              "publisher": "ChillStack",
+              "date": "2025-02-27",
+              "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "진단 대상 요청",
+            "what": "진단원이 Burp Suite 에서 고른 HTTP 요청. 자체 스캐너로 보낸다."
+          },
+          {
+            "name": "검출 규칙",
+            "what": "취약성의 성립 조건 묶음. 예: RPO — DOCTYPE 누락 · 상대 경로 CSS · 여분 경로에도 같은 페이지 · 임의 문자열 삽입."
+          },
+          {
+            "name": "검출 결과",
+            "what": "Web UI 에 **근거와 함께** 보인다. 진단원이 확인한다."
+          },
+          {
+            "name": "수동 검사",
+            "what": "진단원이 도구 결과 위에 하는 정밀 검사 — 여전히 진단의 본체."
+          }
+        ],
+        "invariants": [
+          "**도구 결과는 근거와 함께 낸다** — 진단원이 확인할 수 있게.",
+          "**수동 검사를 대신하지 않는다** — 빈틈을 메우고 흔들림을 줄인다(이 사이트의 해석 — 글은 수동 검사를 그대로 둔다)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "진단원이 일반 Web 진단 도구(Burp Suite)로 대상을 살핀다",
+            "why": "기존 흐름을 그대로 쓴다."
+          },
+          {
+            "step": "대상 요청을 Burp Suite 에서 골라 자체 스캐너로 보낸다",
+            "why": "도구를 갈아타지 않고 옆에 붙인다."
+          },
+          {
+            "step": "자체 스캐너가 취약성의 성립 조건을 따져 검사한다",
+            "why": "일반 도구가 '불확실'로만 내던 것을 정확히."
+          },
+          {
+            "step": "결과를 Web UI 에서 검출 근거와 함께 본다",
+            "why": "확인 수고와 진단원 간 차이를 줄인다."
+          },
+          {
+            "step": "진단원이 수동 검사를 더해 보고한다",
+            "why": "최고 품질 · 최단 보고."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "일반 도구가 못 닿는 곳을 누가 메울 것인가?",
+            "chosen": "**진단원의 손 대신 자체 Web 취약성 스캐너를 만든다.**",
+            "alternatives": [
+              "진단원이 수동으로 메운다(이전)",
+              "다른 상용 스캐너를 더 들인다(inferred)"
+            ],
+            "tradeoff": "진단원의 부담과 **진단원마다의 품질 흔들림**을 줄인다. 대가는 도구를 **스스로 만들고 유지**해야 한다는 것 — 어떤 취약성을 덮는지 목록 · 갱신이 곧 일이 된다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+                "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+                "publisher": "ChillStack",
+                "date": "2025-02-27",
+                "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "기존 도구와 어떻게 이을 것인가?",
+            "chosen": "**Burp Suite 에서 대상 요청을 골라 자체 스캐너로 보내게 했다.**",
+            "alternatives": [
+              "자체 스캐너를 독립 도구로 따로 돌린다(inferred)"
+            ],
+            "tradeoff": "진단원의 기존 흐름(Burp)을 바꾸지 않고 필요한 요청만 깊게 본다. 대가는 **Burp 에 기대는 연결**이라 Burp 쪽 변화에 따라가야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+                "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+                "publisher": "ChillStack",
+                "date": "2025-02-27",
+                "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "결과를 어떻게 보일 것인가?",
+            "chosen": "**Web UI 에서 검출 근거와 함께.**",
+            "alternatives": [
+              "심각도 · 확신도 라벨만 낸다(일반 도구)"
+            ],
+            "tradeoff": "'Information · Tentative' 처럼 믿을지 말지 사람에게 떠넘기지 않고, **근거를 보고 바로 판단**하게 한다 — 확인 수고와 진단원 간 차이가 준다. 대가는 규칙마다 근거를 설명하는 출력을 설계해야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+                "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+                "publisher": "ChillStack",
+                "date": "2025-02-27",
+                "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "무엇부터 잡을 것인가?",
+            "chosen": "**일반 도구가 잡더라도 '불확실'로 내는 취약성 — 예: RPO 를 통한 CSS 인젝션을 성립 조건 넷으로 정확히.**",
+            "alternatives": [
+              "일반 도구가 이미 잘 잡는 것까지 다시 만든다(inferred)"
+            ],
+            "tradeoff": "도구의 효과가 가장 큰 곳에 먼저 힘을 쓴다. 대가는 글이 든 예가 **하나뿐**이라 전체 범위와 효과(수동 시간이 얼마나 줄었나)는 공개되지 않았다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+                "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+                "publisher": "ChillStack",
+                "date": "2025-02-27",
+                "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "수동 검사를 줄일 것인가?",
+            "chosen": "**줄이지 않는다 — 일반 도구 + 자체 스캐너 위에 진단원의 정밀한 수동 검사를 그대로 한다.**",
+            "alternatives": [
+              "스캐너 결과만으로 보고한다(inferred)"
+            ],
+            "tradeoff": "'최고 품질을 지키며 최단으로 보고'가 목표다 — 스캐너는 수동 검사를 대신하는 것이 아니라 흔들림을 줄인다. 대가는 진단 비용의 큰 몫이 여전히 **사람의 시간**이라는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+                "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+                "publisher": "ChillStack",
+                "date": "2025-02-27",
+                "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "회사마다 다른 경비 데이터에서 부정을 찾는다(같은 회사의 다른 도메인)",
+          "via": "'사람이 다 볼 수 없는 것을 도구가 먼저 본다'",
+          "contract": "Stena Expense 의 검지(`expense-detection-pipeline`)는 경리 담당이 다 못 보는 경비를, 자체 스캐너는 진단원이 도구로 못 닿는 곳을 먼저 본다 — 둘 다 최종 판단은 사람이 한다. 두 사업이 코드 · 기반을 나누는지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+              "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+              "publisher": "ChillStack",
+              "date": "2025-02-27",
+              "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+            },
+            {
+              "title": "Stena Expenseの検知アーキテクチャ ── Go × Python × gRPCで不正検知を実現する仕組み",
+              "url": "https://zenn.dev/chillstack/articles/2026-04-20-detection-architecture-stena-expense",
+              "publisher": "ChillStack",
+              "date": "2026-04-23",
+              "summary": "**Stena Expense** 는 기업의 경비 데이터를 받아 **AI 로 부정 · 이상을 검지**하는 SaaS. 매달 수만~수십만 건 명세를 사람이 다 볼 수는 없고, '생성 AI 에 맡기면'도 안 된다 — **조직마다 경비 정산 서비스가 달라 컬럼 뜻 · 입도가 다르고**, 중복 신청 · 금액의 통계적 이상 · 부풀리기 등 **패턴이 다양**하고, 취득 → 추출 · 변환 → 여러 검지 모델 → 집계의 **단계가 많다.** 구성: Manager(Next.js) · **Controller(Go, 인증 · 권한 · 워크플로 · 영속화를 맡는 모놀리스)** · **Google Cloud Workflows**(YAML, 네 단계를 try/except 로 감싸 실패 시 Controller 에 PATCH — Controller 가 **자기 현재 상태로 실패 단계를 판정**) · Cloud Run Job(Controller 와 같은 Go 코드를 CLI 로) · **Predictor(Python, 전처리 · 검지)**. 마이크로서비스가 아니라 **Predictor 만** 떼어 낸 이유는 Go(빠른 API · 형 안전한 도메인)와 Python(pandas · 검지 로직)의 장점, 그리고 **독립 스케일링**. Cloud Run Job 이 PredictService 로 의뢰하면 Predictor 가 결과를 **모델마다 Controller 의 PredictionHandler 로 gRPC 콜백**(재시도 3회) — 일시 배치가 수천~수만 건 결과를 중계하지 않고 Predictor 는 모델마다 보내고 메모리를 푼다. 검지 상태는 Go 값 객체로 **허용된 전이만** 하고, 의뢰 전 Pending → Predicting 을 **먼저 영속화**해 재기동 뒤에도 멈춘 검지를 찾는다. 모델은 **preprocessor · detector 를 pickle 로 GCS 에** — 모델 갱신에 앱 배포가 필요 없다. preprocessor 와 detector 를 나눈 것은 **수명 주기가 달라서** — 데이터 형식이 바뀌면 preprocessor 만, 알고리즘을 고치면 detector 만 바꾼다."
+            }
+          ]
+        },
+        {
+          "to": "Burp Suite(외부 도구)",
+          "via": "대상 요청 전송",
+          "contract": "진단원이 Burp 에서 고른 요청을 자체 스캐너가 받아 검사한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+              "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+              "publisher": "ChillStack",
+              "date": "2025-02-27",
+              "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+            }
+          ]
+        },
+        {
+          "to": "AI 보안 서비스 · 보안 진단(수익원)",
+          "via": "Web 진단의 품질 · 속도",
+          "contract": "고객이 사는 것은 빠짐없고 빠른 진단 보고다 — 스캐너는 그 품질을 진단원에 덜 기대게 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+              "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+              "publisher": "ChillStack",
+              "date": "2025-02-27",
+              "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 진단 결과가 되기까지",
+          "question": "진단원은 어디서 무엇을 보고 자체 스캐너는 어디에 끼나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[\"고객 Web 앱\"] --> B[\"진단원 · Burp Suite\"]\n  B -->|대상 요청 전송| C[\"자체 스캐너\\n성립 조건 검사\"]\n  C --> D[\"Web UI\\n검출 근거\"]\n  B --> E[\"일반 도구 결과\\n심각도 · 확신도\"]\n  D --> F[\"진단원 수동 검사\"]\n  E --> F\n  F --> G[\"보고서\"]"
+        },
+        {
+          "title": "RPO CSS 인젝션의 성립",
+          "question": "스캐너는 어떤 조건이 모두 맞을 때 취약하다고 판정하나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 후방호환: DOCTYPE 누락\n  후방호환 --> 상대경로CSS: 스타일시트를 상대 경로로\n  상대경로CSS --> 경로관대: 여분 경로에도 같은 페이지\n  경로관대 --> 삽입가능: 임의 문자열(CSS)을 넣을 수 있다\n  삽입가능 --> 취약: 페이지 자체가 CSS 로 읽힌다\n  취약 --> [*]"
+        },
+        {
+          "title": "일반 도구만 쓸 때 무너지는 길",
+          "question": "왜 '잡긴 잡는' 도구로는 부족했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"Burp: Path-relative style sheet import\"] --> B[\"심각도 Information · 확신도 Tentative\"]\n  B --> C[\"진단원이 하나하나 확인\"]\n  C --> D[\"바쁘면 넘김 · 사람마다 판단이 다름\"]\n  D --> E[\"진단 품질이 진단원에 따라 흔들림\"]\n  B --> F[\"자체 스캐너: 조건 확인 + 근거\"]\n  F --> G[\"확인 수고↓ · 진단원 간 차이↓\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+          "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+          "publisher": "ChillStack",
+          "date": "2025-02-27",
+          "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
+        },
+        {
+          "title": "ChillStack",
+          "url": "https://chillstack.com/",
+          "publisher": "ChillStack",
+          "summary": "'**AI 보안 컴퍼니**' — 기술 특징으로 **시계열 · 다차원 데이터에서 부정 · 이상을 해석하는 AI**, 판단 과정을 보여 주는 **XAI**, AI 의 안전성 확보, AI 시스템에 공격 검증을 하는 **레드팀**, AI 를 넣은 시스템의 안전한 운용을 든다. 2026-09 뉴스: 위기관리 산업전 출전(AI 리스크 관리 전략 세미나), LLM 보안 실습 e러닝 강좌."
+        }
+      ]
     }
   ],
   "open_questions": [
     "**매출 · 사업별 비중 · Stena Expense 요금**이 공개 자료에 없다.",
-    "**AI 보안 서비스(레드팀 · 안전 운용)의 시스템 글**이 없다 — 블로그의 보안 글은 연구 · 해설(MITRE ATLAS 등)이다. 이 수익원은 도메인이 없다.",
+    "**AI 보안 서비스 중 레드팀 · AI 진단 쪽 시스템 글**은 아직 없다 — Web 진단의 자체 스캐너(2025-02)만 찾았다. 스캐너가 덮는 범위 · 효과의 숫자도 없다.",
     "**검지 모델이 무엇인지**(통계 · 규칙 · ML · LLM 의 비율) 글이 밝히지 않는다 — 조직마다 모델을 따로 두는지도 없다.",
     "**AlloyDB 로 옮긴 이유와 대가**를 아직 읽지 않았다(`710bdf3a5830a4`).",
     "**아직 안 읽은 것** — `2025-07-24-rearchitect`(기술 부채 해소 리아키텍트) · `2026-05-07-deploy-flow`(배포 흐름) · `2026-06-23-design-insight-through-dialogue`(도메인 모델 빈혈증을 부른 대화 부족)."
@@ -1054,6 +1386,13 @@
       "publisher": "ChillStack",
       "date": "2024-12-03",
       "summary": "Cloud SQL 에서 AlloyDB 로 옮긴 기록(이번 사이클엔 제목과 첫머리만 봤다 — 이유 · 대가는 확장 사이클에서 읽는다)."
+    },
+    {
+      "title": "独自スキャナー開発によるWebセキュリティ診断の品質向上への取り組み",
+      "url": "https://zenn.dev/chillstack/articles/2025-02-27-security-webscanner",
+      "publisher": "ChillStack",
+      "date": "2025-02-27",
+      "summary": "ChillStack 은 **Web 과 AI 의 안전을 검사하는 보안 진단 서비스**(pentest.chillstack.com)를 제공한다. Web 진단은 일반 Web 진단 도구를 진단원이 쓴 위에 **정밀한 수동 검사**를 한다 — 최고 품질을 지키며 최단으로 보고하려고. 그런데 고객 환경이 다양해 일반 도구로는 **가려운 곳에 손이 안 닿는** 일이 많고, 그만큼 진단원의 부담이 늘고 **진단원마다 품질이 흔들릴** 수 있다. 그래서 **자체 Web 취약성 스캐너**를 만들었다. 예로 **RPO(Relative Path Overwrite)** 를 이용한 CSS 인젝션 — 성립 조건 넷(DOCTYPE 누락으로 후방 호환 모드 · 상대 경로 스타일시트 · 여분의 경로에도 같은 페이지 · 임의 문자열 삽입). Burp Suite 는 이를 'Path-relative style sheet import' 로 잡지만 **심각도 Information · 확신도 Tentative**(오검지 가능성이 높다)라 확인 수고가 들고 놓치기 쉽다. 자체 스캐너는 **Burp Suite 에서 대상 요청을 골라 보내면** 스캔하고, 결과를 **Web UI 에서 검출 근거와 함께** 보여 준다 — 확인 수고를 줄이고 진단원 간 차이를 줄였다."
     }
   ]
 }

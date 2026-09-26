@@ -2239,3 +2239,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 ChillStack RLS 와 실시간 집계
 
 - `f2bb12fe37482f` + `2025-12-25-real-time-analysis-background` 를 끝까지 읽어 기능 `tenant-rls-and-realtime-aggregation`, 결정 8. 출처 요약에 뒤쪽 절(WHERE 병존 · CI · Feature Flag · 입도 측정 · custom_field)을 보탰다.
+
+## 2026-09-27 ChillStack 자체 Web 스캐너
+
+- AI 보안 수익원 판정의 검색 1(RSS)에서 보안 진단 서비스의 시스템 글(`2025-02-27-security-webscanner`)을 찾아 보류 대신 도메인 셋째 + 기능 `inhouse-web-vuln-scanner`. 글이 얇아 결정 5, 대가 여럿은 '이 사이트의 해석'. 수익원 how 에 진단 서비스를 넣고 confirmed.
