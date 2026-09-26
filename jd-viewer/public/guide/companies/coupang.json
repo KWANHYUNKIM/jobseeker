@@ -11252,6 +11252,117 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7230867",
+      "title": "Staff, Back-end Engineer (Global Operations Technology)",
+      "site": "ats",
+      "verdict": "서울 근무, Java·Spring 웹 애플리케이션 7년 이상(한국어 자격 기준; 영문은 프로그래밍 7년 + 웹 개발·운영 5년). 주문 후 몇 시간 안에 배송하게 하는 글로벌 운영 기술(GOT) 조직에서 물류 시스템의 프런트·백오피스 웹 서비스, 도메인 간 연동, 최소 비용·최단 배송 방법을 찾는 규칙 기반 최적화를 만든다.",
+      "fit": {
+        "must_have": [
+          "Java·Spring 웹 애플리케이션 7년 이상",
+          "대규모 웹 애플리케이션 개발·운영",
+          "복잡한 도메인 학습 의지",
+          "MSA·대규모 트래픽·고가용성 관심"
+        ],
+        "can_learn": [
+          "물류 도메인",
+          "배송 최적화 규칙"
+        ]
+      },
+      "study": [
+        {
+          "topic": "배송 방법 최적화 (규칙 기반)",
+          "from": "task",
+          "quote": "고객 주문을 최소 비용으로 빠르게 배송하기 위한 최적화 알고리즘 설계 및 적용",
+          "priority": "core",
+          "why": "영문판은 'rule-based logic 으로 가장 비용 효율적이고 빠른 배송 방법을 찾는 최적화'라고 적는다. GOT 조직 소개가 '주문 후 몇 시간 안에 배송'을 목표로 한다.",
+          "gap_check": "주문 하나를 어느 센터·어느 배송 방식으로 보낼지 정할 때 비용·약속 시간·재고 제약을 규칙으로 어떻게 표현하고, 규칙이 충돌하면 무엇이 이기는가?",
+          "drill": "센터 3곳·배송 방식 3가지·주문 100건 가짜 데이터로 '약속 시간 내 최소 비용' 배정 규칙 엔진을 만들고, 그리디 규칙과 간단한 정수계획(OR-Tools) 결과를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Google OR-Tools — Documentation",
+              "url": "https://developers.google.com/optimization",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 도메인 간 의존성과 시스템 연동",
+          "from": "task",
+          "quote": "다양한 도메인 간 의존성 정의 및 시스템 연동 개발",
+          "priority": "core",
+          "why": "물류는 주문·재고·센터·운송이 모두 다른 시스템이다(추론). 의존성을 정의하고 연동하는 일이 주요업무에 따로 있다.",
+          "gap_check": "주문 시스템과 물류 시스템을 동기 API 로 이을지 이벤트로 이을지, 물류 시스템이 느릴 때 주문이 막히지 않게 하려면?",
+          "drill": "주문 생성 이벤트를 받아 배송 배정을 비동기로 처리하는 두 서비스를 만들고, 배정 서비스가 멈췄다 살아났을 때 밀린 이벤트를 따라잡는지 확인한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "Java·Spring·JPA 도메인 모델링",
+          "from": "preference",
+          "quote": "Experience with ORM tools such as JPA or Hibernate and domain modeling.",
+          "priority": "high",
+          "why": "프런트·백오피스 웹 서비스를 Java 기반으로 만든다. 물류 상태 전이가 많은 도메인이라 모델링이 코드 품질을 좌우한다(추론).",
+          "gap_check": "배송 단계(배정→출고→이동→도착)를 JPA 엔티티 상태로 표현할 때 상태 전이 규칙을 어디에 두는가(엔티티 메서드 vs 서비스)?",
+          "drill": "배송 엔티티에 상태 전이 메서드와 불변 조건 검사를 넣고, 잘못된 전이를 막는 단위 테스트를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Hibernate ORM — User Guide",
+              "url": "https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비동기 이벤트 기반 대량 처리",
+          "from": "preference",
+          "quote": "Experience with asynchronous event-driven architecture for large-scale processing.",
+          "priority": "high",
+          "why": "주문이 몰리는 시간대에 배송 배정을 한꺼번에 처리해야 한다(추론).",
+          "gap_check": "순간적으로 주문 이벤트가 10배 몰릴 때 소비자 확장·배치 처리·우선순위 큐 중 무엇으로 약속 시간을 지키는가?",
+          "drill": "위 배정 서비스에 이벤트를 10배로 넣어 소비 지연을 재고, 소비자 수와 배치 크기를 바꿔 따라잡는 시간을 비교한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "NoSQL 캐시로 대량 데이터 다루기",
+          "from": "preference",
+          "quote": "Experience handling large-scale data using NoSQL technologies (e.g., Memcached, Redis).",
+          "priority": "nice",
+          "why": "배송 규칙·센터 정보처럼 자주 읽히는 참조 데이터는 캐시에 둔다(추론).",
+          "gap_check": "센터 운영 시간이 바뀌었는데 캐시에 옛 값이 남아 잘못 배정되지 않게 하려면 무효화를 어떻게 하는가?",
+          "drill": "센터 정보를 Redis 에 캐시하고 변경 이벤트로 무효화하는 흐름을 만든 뒤, 변경 직후 배정이 새 값을 쓰는지 확인한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "배송 배정 시뮬레이터",
+          "why": "물류 도메인 경험이 없어도 규칙·비용·약속 시간을 다뤄 본 결과물은 이 조직의 핵심 문제와 바로 닿는다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "배송 배정 규칙 설계",
+          "주문-물류 연동 방식",
+          "상태 전이 모델링",
+          "순간 폭주 처리",
+          "캐시 무효화"
+        ],
+        "sources": [
+          {
+            "title": "Staff, Back-end Engineer (Global Operations Technology)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7230867",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
