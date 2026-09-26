@@ -2280,3 +2280,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Seibii Lambda 요청/응답
 
 - `c3b1d64e6b4332` 전문 + `pdf-lambda-migration` 으로 기능 `monolith-led-lambda-requests`, 결정 8. Lambda 글 요약에 Webhook Forwarder · 추가 3단계 · 주의점 · 공수 절감을 보탰다.
+
+## 2026-09-27 Seibii 부품 분류
+
+- `20260728_car_parts_related_feature_updates` 로 기능 `phase-fixed-part-category`, 결정 6. '발주 시 카테고리 정보'를 따로 둔 이유는 글에 없어 그 결정만 inferred.

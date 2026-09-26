@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "모빌리티",
       "status": "in_progress",
-      "features_done": 2,
+      "features_done": 3,
       "one_liner": "정비사가 차 있는 곳으로 가는 '출장 정비' 회사 — Rails 모놀리스를 중심에 두고, 정비사 정보는 ID 기반으로 옮기며 이벤트와 차분 배치로 맞추고, 무거운 일은 Lambda 에 맡기되 판단과 상태는 모놀리스가 쥐고, 부품은 단계마다 그때의 분류를 남긴다",
       "updated_at": "2026-09-27",
       "domain": "seibii.co.jp"
