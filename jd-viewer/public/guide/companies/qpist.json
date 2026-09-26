@@ -6,7 +6,7 @@
     "큐피스트"
   ],
   "status": "in_progress",
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-26",
   "one_liner": "데이팅 앱 글램·케밋·알파스테이트를 운영하고, 미국에서 매출을 내는 AI 채팅 서비스(dotdotdot)를 만든 '러브테크' 회사",
   "company": {
     "business": "원티드 공고 머리말은 큐피스트를 '기술로 사람과 사람, 사람과 AI를 연결하는 러브테크 기업' 으로 소개하고, 국내 대표 데이팅 앱 글램, MBTI 기반 궁합 데이팅 앱 케밋, 인증 기반 하이엔드 데이팅 앱 알파스테이트, 미국 시장에서 성과를 내는 AI 채팅 서비스, 20대 여성만을 위한 하이엔드 결정사를 꼽는다. 흑자기업이라고 적고, 2024년 매출 150억 원, 올해 전년 대비 30% 이상 성장, 미국·일본 글로벌 확장과 상장 준비를 적는다. 사람인 백엔드 공고는 팀이 만든 AI 채팅 서비스 dotdotdot 이 출시 1년여 만에 140개국에서 누적 매출 70억 원을 넘었고, 지금은 캐릭터 대화에 이미지·비디오를 결합한 새 글로벌 AI 챗봇을 만든다고 적는다. 플랫폼 공고는 여러 브랜드 프로덕트를 하나의 공통 플랫폼 위에서 개발·운영한다고 적는다. 회사 홈페이지는 찾지 못했다(qpist.com·qpist.co.kr 응답 없음).",
@@ -177,5 +177,181 @@
     "사람인 AI 작가 2건은 프리랜서·재택 계약이다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/377278",
+      "title": "소프트웨어 엔지니어(플랫폼 · 풀스택 / Senior)",
+      "site": "wanted",
+      "verdict": "경력 8년 이상(원티드 8-16년). 글램·케밋·알파스테이트 등 **여러 브랜드를 하나의 공통 플랫폼 위에서 개발·운영하는 플랫폼팀**의 풀스택 시니어로, 특정 앱에 붙지 않고 모든 브랜드를 지원한다. 범위가 매우 넓다 — React·TypeScript·Next.js 웹과 웹 성능·DX, Python(FastAPI)·Node.js 백엔드, 브랜드 공통 플랫폼·툴링과 서비스 간 API 연동, 프런트측(CDN/엣지·SSR/ISR·빌드/배포) + 백엔드측(ECS Fargate·Lambda·API Gateway) 인프라, 관측성(RUM/Sentry). **필수(필수 표기)만 여섯 개**다: Next.js 웹 실서비스, Python·Node.js 백엔드, PostgreSQL 설계·운영, AWS 컨테이너 인프라, Kafka·Redis 대규모 트래픽·비동기 처리, **Expo·React Native 앱과 EAS 배포**. 우대는 Module Federation 마이크로프론트엔드, turbo/pnpm 모노레포, Terraform·CDK·멀티 어카운트·서버리스, RAG·임베딩·pgvector/faiss 등 LLM 백엔드, Datadog·GitHub Actions, Codex·Claude Code·Cursor. 전형: 서류 검토 > 온라인 사전과제 > 1차 직무 인터뷰 > 2차 문화 인터뷰 > 레퍼런스 체크 > 최종 합격.",
+      "fit": {
+        "must_have": [
+          "개발 경력 8년 이상",
+          "React·TypeScript·Next.js 실서비스",
+          "Python·Node.js 백엔드",
+          "PostgreSQL 설계·운영",
+          "AWS 컨테이너(Docker/ECS) 인프라",
+          "Kafka·Redis 대규모 트래픽·비동기",
+          "Expo·React Native·EAS 배포"
+        ],
+        "can_learn": [
+          "Module Federation",
+          "turbo/pnpm 모노레포",
+          "Terraform·CDK·멀티 어카운트",
+          "RAG·임베딩·pgvector/faiss",
+          "Datadog·GitHub Actions"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Next.js 렌더링 전략과 CDN 캐시",
+          "from": "task",
+          "quote": "• 클라우드·인프라 운영: 프런트측(CDN/엣지·SSR/ISR·빌드/배포 파이프라인) + 백엔드측(ECS Fargate·Lambda·API Gateway) 구성·운영",
+          "priority": "core",
+          "why": "주요업무가 프런트측 인프라로 CDN/엣지·SSR/ISR·빌드/배포 파이프라인을 적고, 필수가 React·TypeScript·Next.js 실서비스 운영이다.",
+          "gap_check": "데이팅 앱 브랜드 소개·이벤트 페이지는 ISR 로, 로그인한 사용자의 추천 목록은 SSR 이나 클라이언트 요청으로 나눌 때 기준은 무엇이고, ISR 페이지를 이벤트가 끝난 즉시 바꾸려면 시간 기반 재검증과 요청 기반 재검증 중 무엇을 쓰는가?",
+          "drill": "Next.js App Router 로 같은 페이지를 정적·ISR(revalidate 60)·동적 세 벌로 만들어 배포하고, 응답 헤더의 캐시 상태와 revalidatePath 호출 후 갱신 시점을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Guides: ISR | Next.js",
+              "url": "https://nextjs.org/docs/app/guides/incremental-static-regeneration",
+              "kind": "docs"
+            },
+            {
+              "title": "Getting Started: Caching | Next.js",
+              "url": "https://nextjs.org/docs/app/building-your-application/rendering",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ECS Fargate 와 Lambda 를 목적별로 나누기",
+          "from": "task",
+          "quote": "• Python(FastAPI)·Node.js 등 백엔드 서비스 설계·개발·운영(목적별 기술 조합)",
+          "priority": "core",
+          "why": "주요업무가 '목적별 기술 조합' 을 적고, 인프라 줄이 백엔드측을 ECS Fargate·Lambda·API Gateway 로 적는다. 필수에 AWS 컨테이너 운영이 있다.",
+          "gap_check": "상시 트래픽을 받는 FastAPI 서비스와 하루 몇 번 도는 이미지 후처리 작업을 각각 Fargate 와 Lambda 중 어디에 두고, Lambda 의 콜드 스타트·실행 시간 제한이 문제가 되는 경우는 언제인가?",
+          "drill": "FastAPI 앱 하나를 Fargate 서비스로, 같은 코드의 한 엔드포인트를 Lambda + API Gateway 로 올리고, 첫 요청과 이후 요청의 지연을 비교해 표로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Architect for AWS Fargate for Amazon ECS",
+              "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html",
+              "kind": "docs"
+            },
+            {
+              "title": "What is AWS Lambda?",
+              "url": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Expo·React Native 앱과 EAS 배포",
+          "from": "qualification",
+          "quote": "• Expo, React Native 기반 모바일 앱 개발 및 EAS 배포 경험(필수)",
+          "priority": "core",
+          "why": "필수 표기가 붙은 요건이다. 회사가 여러 데이팅 앱 브랜드를 운영한다(회사 브리핑).",
+          "gap_check": "자바스크립트만 바꾼 수정은 EAS Update 로 스토어 심사 없이 내보낼 수 있지만, 네이티브 모듈을 추가한 수정은 왜 안 되고, 이미 배포된 앱 버전과 업데이트가 맞지 않으면 무엇(runtime version)이 막아 주는가?",
+          "drill": "Expo 앱을 EAS Build 로 빌드해 기기에 깔고, 문구만 바꾼 수정을 EAS Update 로 보낸 뒤 앱을 재시작해 반영을 확인한다. 이어 네이티브 패키지를 추가하면 runtime version 이 바뀌어 업데이트가 옛 빌드에 적용되지 않는지 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Expo Application Services",
+              "url": "https://docs.expo.dev/eas/",
+              "kind": "docs"
+            },
+            {
+              "title": "EAS Update",
+              "url": "https://docs.expo.dev/eas-update/introduction/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kafka·Redis 로 비동기·캐시 처리",
+          "from": "qualification",
+          "quote": "• Kafka·Redis 등 메시징·캐시를 활용한 대규모 트래픽·비동기 처리 경험(필수)",
+          "priority": "high",
+          "why": "필수 표기가 붙은 요건이다. 같은 회사 AI Chat 백엔드 공고도 Kafka 기반 이벤트 스트리밍을 적는다.",
+          "gap_check": "'좋아요' 가 몰릴 때 알림 발송을 요청 경로에서 떼어 Kafka 로 넘기면 무엇이 빨라지고, 소비자가 같은 메시지를 두 번 받았을 때 알림이 두 번 가지 않게 하려면 무엇을 두는가? Redis 캐시는 무엇을 넣고 언제 지우는가?",
+          "drill": "FastAPI 에서 좋아요 API 가 Kafka 에 이벤트만 쓰고, 별도 워커가 소비해 알림 테이블에 넣게 만든 뒤, 같은 이벤트를 두 번 넣어도 알림이 한 번만 생기도록 이벤트 ID 유니크 제약을 건다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apache Kafka Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Develop with Redis",
+              "url": "https://redis.io/docs/latest/develop/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "PostgreSQL 설계·운영",
+          "from": "qualification",
+          "quote": "• PostgreSQL 등 관계형 데이터베이스를 설계·운영해본 경험(필수)",
+          "priority": "high",
+          "why": "필수 표기가 붙은 요건이다.",
+          "gap_check": "'성별·나이·지역으로 거르고 최근 접속 순으로 정렬' 하는 추천 후보 쿼리에 인덱스를 걸 때 복합 인덱스의 컬럼 순서를 어떻게 정하고, EXPLAIN 결과에서 무엇을 보고 인덱스가 쓰였는지 판단하는가?",
+          "drill": "가짜 회원 100만 행을 만들어 위 쿼리를 EXPLAIN ANALYZE 로 재고, 복합 인덱스 순서 두 가지를 바꿔 가며 실행 시간을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "PostgreSQL: Documentation: Chapter 11. Indexes",
+              "url": "https://www.postgresql.org/docs/current/indexes.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 브랜드를 한 저장소에 — 모노레포와 Module Federation",
+          "from": "preference",
+          "quote": "• Module Federation 등 마이크로프론트엔드 아키텍처를 설계·운영해본 경험",
+          "priority": "nice",
+          "why": "우대사항이고 다음 줄이 플랫폼·모노레포(turbo/pnpm)다. 팀이 여러 브랜드를 공통 플랫폼에서 지원한다.",
+          "gap_check": "브랜드별 웹앱이 공통 UI 패키지를 공유할 때, 모노레포 안에서 패키지로 묶는 것과 Module Federation 으로 런타임에 불러오는 것은 배포 단위와 버전 불일치 위험에서 무엇이 다른가?",
+          "drill": "pnpm workspace + turbo 로 앱 두 개와 공통 UI 패키지 하나를 만들고, 공통 패키지를 바꿨을 때 turbo 가 어느 앱만 다시 빌드하는지 캐시 로그로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Turborepo Introduction",
+              "url": "https://turborepo.com/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Module federation",
+              "url": "https://module-federation.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "관측성 — Sentry·RUM",
+          "from": "task",
+          "quote": "• 관측성(Observability, RUM/Sentry 등) 기반의 운영·품질 개선",
+          "priority": "nice",
+          "why": "주요업무이고 우대에 Datadog 등 관측성 도구가 있다.",
+          "gap_check": "사용자가 '추천 화면이 느리다' 고 할 때 서버 로그만으로는 무엇을 모르고, 브라우저 쪽 측정(RUM)에서 어떤 지표를 봐야 네트워크와 렌더링 중 어디가 느린지 가르는가?",
+          "drill": "Next.js 앱에 Sentry 를 붙여 일부러 던진 오류와 느린 페이지 트랜잭션이 소스맵과 함께 잡히는지 확인한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Sentry for Next.js",
+              "url": "https://docs.sentry.io/platforms/javascript/guides/nextjs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
