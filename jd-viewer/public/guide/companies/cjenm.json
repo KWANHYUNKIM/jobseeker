@@ -441,6 +441,94 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/321958",
+      "title": "[Mnet Plus] Backend Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 마포구 상암동. **Mnet Plus Tech팀** 백엔드 자리로, 업무는 Mnet Plus 개발, **방송 이벤트·콘서트·투표** 개발, **광고 수익 개선** 기능 세 줄이다. 팀 소개가 '대용량 트래픽과 실시간 이벤트를 처리하는 신뢰성' 과 유료 영상·디지털 굿즈·광고 등 새 수익 모델을 적는다. 필수는 **Java 또는 Kotlin** 서버 개발 3년 이상, **RDBMS 또는 NoSQL** 설계·운영, Git·코드 리뷰 세 줄로 문턱이 낮은 편이다. 우대는 대규모 트래픽 시스템 디자인, AWS·쿠버네티스, 초기 프로젝트 환경 세팅·아키텍처 수립. '캐릭터&성향' 에 사업부 차원의 의사결정, 조직 Stage 변화에 따른 Role·Formation 유연성, '콘텐츠業을 사랑하며 진정한 덕업일치' 를 적는다. 같은 회사 앱 공고 기준 전형은 서류 → 1차 면접 → CJ CFT → 2차 면접 → 평판조회·채용검진·처우협의(이 공고 본문에는 전형 절차가 따로 없다). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java 또는 Kotlin 서버 3년 이상",
+          "RDBMS 또는 NoSQL 설계·운영",
+          "Git·코드 리뷰"
+        ],
+        "can_learn": [
+          "대규모 트래픽 시스템 디자인",
+          "AWS·쿠버네티스",
+          "실시간 투표·집계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "실시간 투표 — 한 사람 한 표와 순위 집계",
+          "from": "task",
+          "quote": "• 방송 이벤트, 콘서트, 투표 개발",
+          "priority": "core",
+          "why": "주요업무다. 회사 브리핑대로 투표는 Mnet Plus 핵심 기능이고 방송 중 마감 시각에 요청이 몰린다.",
+          "gap_check": "투표 마감 1분 전에 수십만 건이 몰릴 때 매 투표마다 RDB 에 INSERT 하고 COUNT 로 순위를 내면 무엇이 먼저 무너지고, '1인 1일 1표' 같은 제한은 무엇(유니크 키·Redis SET NX)으로 막으며, Redis 에서 집계한 결과를 DB 원장과 어떻게 맞추는가(나중에 재집계로 검증)?",
+          "drill": "Kotlin(Spring)으로 투표 API 를 만들되 중복 방지는 Redis SET NX(키: 투표ID:사용자ID:날짜), 순위는 Redis 정렬 집합 ZINCRBY 로 하고, 원장은 비동기로 DB 에 적재한다. 부하 도구로 동시 투표를 보내 중복 표가 없는지, Redis 순위와 DB 재집계가 일치하는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Redis sorted sets — Redis Docs",
+              "url": "https://redis.io/docs/latest/develop/data-types/sorted-sets/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "순간 급증 흡수 — 큐로 부하 평탄화",
+          "from": "preference",
+          "quote": "• 대규모 트래픽을 고려한 시스템 디자인, 개발 경험을 보유한 분",
+          "priority": "core",
+          "why": "우대사항이고 팀 소개가 '대용량 트래픽과 실시간 이벤트를 처리하는 신뢰성' 을 적는다. 시상식·콘서트 순간에 요청이 몰린다(회사 브리핑).",
+          "gap_check": "요청이 평소의 50배로 순간 몰릴 때 모든 처리를 동기로 하면 DB 커넥션이 어떻게 되고, 요청을 큐에 넣고 소비자가 감당할 속도로 처리하면 사용자에게는 무엇('접수됨')을 먼저 돌려주며, 큐가 계속 쌓이면 어디서 받지 않고 거절(백프레셔)하는가?",
+          "drill": "큐 기반 부하 평탄화 패턴 문서를 읽고, 위 투표 원장 적재를 SQS(또는 로컬 큐)로 옮겨 API 는 큐에 넣기만 하고 소비자가 배치로 DB 에 쓰게 바꾼다. 급증 부하에서 API 응답 시간과 DB 커넥션 사용량을 동기 버전과 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Queue-Based Load Leveling Pattern — Azure Architecture Center",
+              "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/queue-based-load-leveling",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RDBMS 와 NoSQL — 무엇을 어디에 둘까",
+          "from": "qualification",
+          "quote": "• RDBMS 또는 Nosql DB를 활용한 설계/운영 경험을 보유하신 분",
+          "priority": "high",
+          "why": "필수 자격요건이다. 팬덤 플랫폼에는 결제·멤버십처럼 정합성이 중요한 데이터와 시청 기록·포토카드처럼 양이 많고 조회 패턴이 단순한 데이터가 함께 있다.",
+          "gap_check": "멤버십 결제 내역과 '사용자별 최근 시청 목록' 을 각각 RDB 와 NoSQL(DynamoDB 등) 중 어디에 두겠는가? NoSQL 은 왜 '조회 패턴을 먼저 정하고' 키를 설계하며, 나중에 새 조회 조건이 생기면 무엇(보조 인덱스·다른 테이블)으로 대응하는가?",
+          "drill": "DynamoDB NoSQL 설계 문서를 읽고 '사용자별 최근 시청 목록 20개', '콘텐츠별 시청자 수' 두 조회를 만족하는 키 설계를 쓴다. 같은 요구를 MySQL 테이블·인덱스로도 설계해 쓰기량·조회 방식·확장 방법을 표로 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "NoSQL design for DynamoDB — AWS",
+              "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-general-nosql-design.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kotlin 서버 — 코루틴으로 여러 조회 묶기",
+          "from": "qualification",
+          "quote": "• Java 또는 Kotlin을 사용한 서버 개발 업무를 3년 이상 경험하신 분",
+          "priority": "nice",
+          "why": "필수 자격요건이 Java 또는 Kotlin 이고 기술 태그에 Kotlin 이 있다. 팬덤 홈 화면은 아티스트·라이브·투표·굿즈 정보를 한 번에 모은다.",
+          "gap_check": "홈 화면 API 가 서비스 네 곳을 차례로 부르면 응답 시간은 합이 되는데, 코루틴 async 로 동시에 부르면 어떻게 되고, 그중 하나가 실패하면 전체를 실패시킬지(구조적 동시성) 그 칸만 비울지 무엇으로 정하는가?",
+          "drill": "Spring WebFlux + Kotlin 코루틴으로 가짜 하위 API 네 개를 순차·async 병렬로 부르는 홈 API 를 만들고, 한 곳에 지연·예외를 넣어 응답 시간과 부분 실패 처리(supervisorScope)를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Coroutines — Spring Framework",
+              "url": "https://docs.spring.io/spring-framework/reference/languages/kotlin/coroutines.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
