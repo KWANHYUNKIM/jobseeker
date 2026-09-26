@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**87번째 후보 조사(2026-09-26) — 대기 3/3(다이니·IVRy·PKSHA), 모두 Zenn Publication RSS 입구. 다음은 `--gaps` 대로 — estie 완주 검사가 먼저 걸리면: 스마트 리폼·DX 컨설팅 수익원은 **이미 두 번 찾았다**(1회 Zenn RSS 20편, 2회 Zenn 검색 API 'estie'·'エスティ'·'リフォーム'·'コンサル'·'修繕'·'CRE' — estie 글은 창간 글 1편뿐, 2026-09-26) → 바로 hold_reason. 그다음 신규: 대기 맨 위(다이니 — `aecc50e7a1735b` 통합 결제 대장부터). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에(estie ↔ CADDi Control Plane) + PR 환경(estie ↔ SMS·Career Portal·Sumzap) + **결제 대장**(다이니 USL ↔ ENECHANGE 검산 · 기존 결제사). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu(hold)·LayerX·estie 는 in_progress.**
+**estie hold(2026-09-26) — 도메인 둘·기능 둘, 스마트 리폼·DX 컨설팅은 두 번 찾아 없음 → hold_reason. 다음은 `--gaps` 대로 신규: 대기 맨 위 **다이니**(`zenn.dev/p/dinii` — 통합 결제 대장 `aecc50e7a1735b` 부터, 회사 페이지로 제품·수익원 확인). 대기 3/3(다이니·IVRy·PKSHA). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에(estie ↔ CADDi Control Plane) + PR 환경(estie ↔ SMS·Career Portal·Sumzap) + 결제 대장(다이니 USL ↔ ENECHANGE 검산). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -378,6 +378,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **Yappli CRM 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 224편 제목 · speakerdeck 404). CRM 구조 글이 새로 나오면 다시.
 - **로그라스 석세스 파트너·설비투자·IT 투자 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편·note 36편 · Zenn 검색 API 4낱말 · speakerdeck 404). 그쪽 구조 글이 새로 나오면 다시.
 - **Hacobu Strategy·Solution Studio·Career 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 5낱말, hacobu 글 9편). 그쪽 구조 글이 새로 나오면 다시.
+- **estie 스마트 리폼·DX 컨설팅 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 6낱말, estie 글은 창간 글뿐). 그쪽 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

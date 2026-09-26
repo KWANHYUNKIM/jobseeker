@@ -1660,3 +1660,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 여든일곱 번째 후보 조사
 
 - Zenn Publication RSS 30곳 탐침. 다이니(통합 결제 대장)·IVRy(Human-in-the-Loop 평가)·PKSHA(DynamoDB Zero-ETL) → 대기 3/3. 같은 사이클에 estie 완주 검사 2회차 검색도 돌려 결과만 STATE 에 적었다(글 0).
+
+## 2026-09-26 estie 스마트 리폼·컨설팅 수익원 보류
+
+- 87번째 후보 조사 때 돌린 2회차 검색(Zenn 검색 API 6낱말 — estie 글은 창간 글뿐)으로 두 번이 찼다. hold_reason 추가.
