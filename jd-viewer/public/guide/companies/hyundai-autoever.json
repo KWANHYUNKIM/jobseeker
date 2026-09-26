@@ -592,6 +592,179 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385519",
+      "title": "[IVI] Embedded SW Architect - Android Framework 개발 Architector",
+      "site": "wanted",
+      "verdict": "경력 8~16년(서울 강남). 차량연동개발팀에서 인포테인먼트 내비SW 와 다른 앱·제어기 연동 SW 의 설계와 장애 분석을 총괄하고, 이슈 게이트와 코드 리뷰를 이끌 아키텍트. 주요업무 네 줄이 전부 역할(총괄·게이트·리딩)이고 기술 내용은 자격요건에 있다 — AOSP, System_server 의 System Service, AIDL IPC, soong/blueprint, CTS/VTS. 팀 리더는 팀이 주로 C++ / Java 를 쓴다고 적는다. 같은 팀의 Developer 공고(385515, 5-11년)와 팀 소개는 같지만 업무·자격은 다르다. 전형에 직무역량테스트(코딩)가 있다.",
+      "fit": {
+        "must_have": [
+          "Android Framework(AOSP) 개발",
+          "System_server 의 System Service 개발·수정",
+          "AIDL 기반 IPC 설계·구현",
+          "soong/blueprint 빌드 시스템",
+          "CTS/VTS 대응"
+        ],
+        "can_learn": [
+          "Android Automotive OS(AAOS)",
+          "양산 차량용 SW 개발",
+          "Multi-Display / Multi-User",
+          "SELinux 정책 설계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "System_server 와 System Service 를 직접 추가하기",
+          "from": "qualification",
+          "quote": "• System_server 내 System Service 개발/수정 경험",
+          "priority": "core",
+          "why": "자격요건의 중심이다. 팀은 내비 지도 데이터 기반 기능을 다른 앱이 쓰도록 '지원' 한다고 적는다 — 시스템 서비스로 기능을 여는 구조로 보인다(추론).",
+          "gap_check": "SystemServer 가 서비스를 시작하는 단계(bootstrap·core·other)는 어떻게 나뉘고, 새 서비스를 ServiceManager 에 등록해 앱이 getSystemService 로 받게 하려면 어느 파일들을 고쳐야 하는가?",
+          "drill": "AOSP 를 에뮬레이터 타깃으로 빌드하고, 더미 시스템 서비스 하나를 SystemServer 에 추가해 앱에서 호출한 뒤 dumpsys 로 서비스가 보이는지 확인한다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Android — Architecture overview",
+              "url": "https://source.android.com/docs/core/architecture",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Building Android",
+              "url": "https://source.android.com/docs/setup/build/building",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AIDL IPC 설계 — 인터페이스를 여러 해 유지하기",
+          "from": "qualification",
+          "quote": "• AIDL 기반 IPC 설계 및 구현 경험",
+          "priority": "core",
+          "why": "자격요건이다. 팀 소개가 적는 연동 대상(VR / EV / 날씨 / 스포츠 / 하드키 등 앱, 타 제어기)이 많고, '기존 차량에서도 안정적으로 동작할 수 있도록 정기적인 업데이트' 를 한다 — 인터페이스를 깨지 않고 늘려야 한다(추론).",
+          "gap_check": "oneway 호출과 동기 호출은 스레드 풀·데드락 측면에서 어떻게 다르고, Stable AIDL 에서 메서드를 추가할 때 버전과 frozen API 는 어떻게 관리되는가? 호출 측 프로세스가 죽으면 서비스는 어떻게 알아채는가(linkToDeath)?",
+          "drill": "위 시스템 서비스에 AIDL 인터페이스를 두고 콜백 등록·oneway 이벤트·linkToDeath 를 구현한 뒤, 메서드를 하나 추가해 v2 로 올리고 v1 클라이언트가 계속 도는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Android — AIDL overview",
+              "url": "https://source.android.com/docs/core/architecture/aidl",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Stable AIDL",
+              "url": "https://source.android.com/docs/core/architecture/aidl/stable-aidl",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "soong/blueprint 빌드 시스템",
+          "from": "qualification",
+          "quote": "• Android 빌드 시스템 (soong/blueprint) 이해",
+          "priority": "high",
+          "why": "자격요건이다. System Service·AIDL 모듈을 이미지에 넣으려면 Android.bp 를 써야 한다.",
+          "gap_check": "Android.bp 에서 java_library·aidl_interface·cc_library 는 각각 무엇을 만들고, 모듈을 system 이미지가 아니라 vendor 파티션에 넣으려면 무엇을 지정하는가?",
+          "drill": "앞의 서비스와 AIDL 인터페이스를 Android.bp 로 묶고, m 명령으로 해당 모듈만 빌드해 산출물 경로를 기록한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Android — Build overview",
+              "url": "https://source.android.com/docs/setup/build",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "CTS/VTS 대응",
+          "from": "qualification",
+          "quote": "• CTS/VTS 대응 경험",
+          "priority": "high",
+          "why": "자격요건이다. 프레임워크를 고치면 호환성 테스트를 다시 통과해야 한다. 주요업무의 '이슈 게이트 역할' 이 이런 품질 관문을 가리키는지는 공고에 적혀 있지 않다.",
+          "gap_check": "CTS 와 VTS 는 각각 무엇을 검증하고, 프레임워크 수정으로 CTS 실패가 났을 때 어떤 순서로 원인을 좁히는가?",
+          "drill": "에뮬레이터 빌드에서 CTS 모듈 하나를 atest 또는 cts-tradefed 로 돌리고, 일부러 동작을 바꾼 서비스로 실패를 재현한 뒤 결과 로그를 읽는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android — Compatibility Test Suite (CTS)",
+              "url": "https://source.android.com/docs/compatibility/cts",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Vendor Test Suite (VTS)",
+              "url": "https://source.android.com/docs/core/tests/vts",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Android Automotive OS 와 Multi-User",
+          "from": "preference",
+          "quote": "• Android Automotive OS (AAOS) 프로젝트 경험",
+          "priority": "high",
+          "why": "우대사항 첫 줄이고, 우대사항에 'Multi-Display / Multi-User 환경 개발 경험' 도 있다. 해시태그도 #AAOS 다.",
+          "gap_check": "AAOS 에서 헤드리스 시스템 사용자(user 0)와 운전자 사용자는 어떻게 나뉘고, 시스템 서비스는 어느 사용자로 떠 있어야 하는가?",
+          "drill": "AAOS 에뮬레이터 이미지를 띄워 사용자를 추가·전환하며 앞의 서비스가 사용자 전환에 어떻게 반응하는지 로그로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android Automotive — overview",
+              "url": "https://source.android.com/docs/automotive",
+              "kind": "docs"
+            },
+            {
+              "title": "Android Automotive — Multi-user",
+              "url": "https://source.android.com/docs/automotive/users_accounts/multi_user",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SELinux 정책 — 새 서비스에 권한 주기",
+          "from": "preference",
+          "quote": "• SELinux 정책 설계 경험",
+          "priority": "nice",
+          "why": "우대사항이다. 새 시스템 서비스를 추가하면 service_contexts·sepolicy 없이는 등록이 거부된다.",
+          "gap_check": "avc: denied 로그 한 줄에서 scontext·tcontext·tclass·권한을 읽어 allow 규칙을 쓸 수 있고, 그 규칙이 neverallow 에 걸리면 어떻게 설계를 바꾸는가?",
+          "drill": "앞의 더미 서비스를 enforcing 모드에서 등록해 거부 로그를 받고, 서비스 타입과 service_contexts 를 추가해 통과시킨다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Android — SELinux",
+              "url": "https://source.android.com/docs/security/features/selinux",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "AOSP 에 시스템 서비스·Stable AIDL·SELinux 까지 넣은 기록",
+          "why": "자격요건 다섯 줄 중 네 줄(System Service, AIDL, soong/blueprint, CTS)과 우대 SELinux 를 한 작업으로 보여 준다. 아키텍트 자리라 결정 이유(버전 관리·권한 범위)를 문서로 남긴 것이 더 중요하다(추론).",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "설계·장애 분석 총괄 경험의 정리",
+          "why": "주요업무가 '설계 총괄', '장애 분석 총괄', '이슈 게이트 역할', '코드 리뷰 리딩 역할' 뿐이다. 양산 차량 SW 에서 게이트를 운영한 사례가 있으면 그것이 핵심 증거다.",
+          "effort": "경험 정리 반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "System Service·AIDL 설계 경험",
+          "CTS/VTS 실패 대응",
+          "장애 분석을 총괄한 사례",
+          "AAOS 멀티유저·멀티디스플레이"
+        ],
+        "sources": [
+          {
+            "title": "[IVI] Embedded SW Architect - Android Framework 개발 Architector",
+            "url": "https://www.wanted.co.kr/wd/385519",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
