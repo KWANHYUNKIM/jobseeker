@@ -2488,3 +2488,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GVA TECH 회사 프로파일
 
 - 공개 글 50편 제목 전수 → 제품 직결 글이 있어 거르지 않음. 회사 사이트 서비스 페이지로 수익원 넷, 글 둘로 도메인 둘. slug 는 `gva-tech`.
+
+## 2026-09-27 GVA TECH 법인등기 동시 신청
+
+- `5be121f17797b9` 전문으로 기능 `corporate-registration-multi-filing`, 결정 7.
