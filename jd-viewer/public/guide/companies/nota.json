@@ -694,6 +694,124 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/354744",
+      "title": "[Solution] Senior AI Engineer",
+      "site": "wanted",
+      "verdict": "경력 7-14년('7년 이상 또는 이에 준하는 전문성'). 같은 팀 AI Engineer(368136)가 모델을 만드는 쪽이라면 이 시니어 자리는 **문제 정의와 시스템·고객 쪽**이다 — 영상 데이터로 산업 현장 문제를 정의하고 AI 해결 전략을 세우며, CV·VLM 으로 영상 속 객체·맥락을 이해하는 모델과 시스템을 설계하고, 성능뿐 아니라 **latency·robustness 를 고려한 서비스 수준 파이프라인**과 현장 성능 기준을 정의·검증하며, 신규 프로젝트 기술 적합성 검토와 고객과의 기술 논의로 아키텍처를 정한다. 필수는 CV·멀티모달 모델 개발·개선, end-to-end AI 시스템 설계, 데이터·모델·평가를 함께 보는 개선 사이클, 비즈니스 요구의 기술 문제화, **포트폴리오 필수**. 공고는 '자격 요건을 완벽하게 충족하지 못하더라도 지원을 권장합니다' 라고 적는다. 고객 요구 기반 솔루션 설계, 평가 파이프라인 자동화, 대외 커뮤니케이션, 시니어 기술 의사결정은 우대다. 전형: 서류 검토 → 1차 인터뷰 → 2차 인터뷰&사전·현장 과제 → 3차 인터뷰 → 처우 협의 → 최종 선발('절차 간에 추가적인 과제가 있을 수 있습니다'). 자격요건 끝에 '* 포트폴리오 제출 필수'.",
+      "fit": {
+        "must_have": [
+          "7년 이상 또는 준하는 전문성",
+          "CV·멀티모달 모델 개발·개선",
+          "end-to-end AI 시스템 설계",
+          "데이터·모델·평가 개선 사이클",
+          "비즈니스 요구 → 기술 문제",
+          "포트폴리오(필수)"
+        ],
+        "can_learn": [
+          "고객 요구 기반 솔루션 설계",
+          "평가 파이프라인 자동화",
+          "고객 미팅·기술 검토",
+          "시니어 기술 의사결정"
+        ]
+      },
+      "study": [
+        {
+          "topic": "서비스 수준 영상 AI 파이프라인(지연·강건성)",
+          "from": "task",
+          "quote": "• 모델 성능뿐만 아니라 latency, robustness를 고려한 서비스 수준의 모델 파이프라인을 설계 및 실제 환경에서 요구되는 성능 기준을 정의 및 검증",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '실제 문제 해결을 위한 AI 시스템을 end-to-end로 설계하고 개선한 경험' 이 있다. 회사는 영상 관제·ITS 솔루션을 판다(회사 브리핑).",
+          "gap_check": "CCTV 수십 채널을 실시간 분석할 때 디코딩·추론·후처리·이벤트 발행 중 어디가 병목인지 어떻게 재고, 비·안개·야간·렌즈 오염에 대한 강건성은 어떤 평가셋으로 미리 확인하는가?",
+          "drill": "GStreamer(또는 DeepStream) 파이프라인에 검출 모델을 넣어 여러 채널 영상을 처리하고 단계별 지연을 측정한 뒤, 같은 평가 영상에 노이즈·블러·밝기 변화를 입혀 정확도 하락을 표로 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "NVIDIA DeepStream developer guide",
+              "url": "https://docs.nvidia.com/metropolis/deepstream/dev-guide/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "GStreamer documentation",
+              "url": "https://gstreamer.freedesktop.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Benchmarking Neural Network Robustness to Common Corruptions and Perturbations",
+              "url": "https://arxiv.org/abs/1903.12261",
+              "kind": "paper"
+            },
+            {
+              "title": "Triton Inference Server",
+              "url": "https://github.com/triton-inference-server/server",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "현장 문제 정의와 성능 기준",
+          "from": "task",
+          "quote": "• Vision 기반 데이터를 활용하여 산업 현장의 문제 정의 및 AI 기반 해결 전략 수립",
+          "priority": "core",
+          "why": "첫 주요업무이고 필수에 '비즈니스 요구사항을 기술 문제로 정의하고 협업을 통해 해결한 경험' 이, 다른 주요업무에 '실제 환경에서 요구되는 성능 기준을 정의 및 검증' 이 있다.",
+          "gap_check": "고객이 '공장 안전사고를 줄이고 싶다' 고만 말할 때 이를 어떤 탐지 과제(구역 침입·보호구 미착용·쓰러짐)로 쪼개고, 각 과제의 합격 기준(놓침률·시간당 오탐 수·경보 지연)을 누구와 어떻게 합의하는가?",
+          "drill": "가상의 공장 안전 요청 하나를 골라 문제 정의서(과제 목록·데이터 필요량·합격 기준·위험 요소)를 쓰고, 합격 기준대로 검증하는 평가 계획표를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "ADR — Architectural Decision Records",
+              "url": "https://adr.github.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터·모델·평가 개선 사이클",
+          "from": "qualification",
+          "quote": "• 데이터, 모델, 평가 방식을 종합적으로 분석하여 성능 개선 사이클을 수행한 경험이 있으신 분",
+          "priority": "high",
+          "why": "필수이고 우대에 '실험/평가 파이프라인을 구조화하거나 자동화한 경험' 이 있다.",
+          "gap_check": "현장 배포 후 오탐이 늘었을 때 원인이 데이터(분포 변화)·모델·평가셋 중 어디인지 어떻게 가르고, 실패 사례를 다음 학습 데이터로 되먹이는 흐름은 어떻게 자동화하는가?",
+          "drill": "앞 드릴 모델의 오탐 사례를 모아 유형별로 분류하는 스크립트와, 그 사례를 라벨링 큐 → 재학습 → 같은 평가셋 재평가로 돌리는 사이클을 문서와 코드로 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Triton Inference Server — User guide",
+              "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "다채널 영상 파이프라인 지연 측정 + 강건성 평가 + 현장 문제 정의서 포트폴리오",
+          "why": "포트폴리오가 필수이고 주요업무 네 줄(문제 정의·시스템 설계·서비스 성능 기준·고객 기술 논의)을 보여 준다. 전형에 사전·현장 과제가 있다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "고객과 기술 방향을 정한 사례 정리",
+          "why": "주요업무에 고객과의 기술 논의로 아키텍처·솔루션 방향 정의가, 우대에 고객 미팅·기술 검토가 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 검토 → 1차 인터뷰 → 2차 인터뷰&사전·현장 과제 → 3차 인터뷰 → 처우 협의 → 최종 선발('절차 간에 추가적인 과제가 있을 수 있습니다'). 자격요건 끝에 '* 포트폴리오 제출 필수'.",
+        "expect": [
+          "end-to-end 시스템 사례",
+          "현장 성능 기준 정의",
+          "개선 사이클",
+          "고객 기술 논의"
+        ],
+        "sources": [
+          {
+            "title": "[Solution] Senior AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/354744",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
