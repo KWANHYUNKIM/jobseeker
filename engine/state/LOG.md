@@ -751,3 +751,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## anthropic 재방문 (2026-09-26)
 
 09-06 이후 새 글 없음. 05-25 how-we-contain-claude 는 안 읽은 재료로 STATE 에. updated_at 만. 1회째.
+
+## atlassian 재방문 → 확장 (2026-09-26)
+
+09-21 합성 데이터 엔진 글로 rows-first-links-later. 결정 5개, 새 도메인 클라우드로 옮기는 고객을 미리 시험한다. 기존 도메인 지도의 이모지 표시는 문체 보수 몫으로 STATE 에.

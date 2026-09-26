@@ -5,7 +5,7 @@
   "country": "AU",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "atlassian.com",
   "one_liner": "팀이 일하는 자리를 파는 회사 — Jira·Confluence 를 묶어 팔고 쓰던 고객이 더 쓰게 만든다",
   "business_model": "협업 도구를 구독으로 판다. FY2026 3분기 매출이 17억 8,700만 달러로 32% 자랐고 그중 클라우드가 11억 달러로 29% 자랐다. **묶어 파는 것이 전략이다.** Jira 와 Confluence 와 Loom 과 Rovo 를 묶은 Teamwork Collection 이 최대 제품 위치이고, Service Collection 이 ARR 10억 달러를 넘겨 30% 넘게 자란다.\n\n그런데 성장의 모양이 특이하다. 순매출유지율이 4분기 연속 120%를 웃돈다. 새 고객보다 쓰던 고객이 더 쓰는 데서 자란다는 뜻이다(재구성). 클라우드 ARR 1만 달러를 넘는 고객 55,913곳이 클라우드 ARR 의 85% 이상을 차지한다. **수가 아니라 크기로 자란다**(재구성). 이 엔진의 Klaviyo 는 110%, Databricks 는 140% 이니 같은 방식으로 자라는 회사들이 여럿이다(뒤쪽은 재구성).",
@@ -20,7 +20,7 @@
   "domain_map": {
     "title": "쓰던 고객이 더 쓰게 만드는 회사의 인프라",
     "question": "이 회사의 도메인들이 어떻게 맞물리나",
-    "code": "flowchart TD\n  C[\"<b>고객 55,913곳</b><br/>• 클라우드 ARR 1만 달러 이상<br/>• NRR 120%+ 4분기 연속\"]:::list --> P[\"<b>Jira · Confluence · Loom · Rovo</b>\"]:::list\n  P --> S[\"⚠️ <b>검색 색인을 살아 있는 채로 바꾼다</b><br/>• 300+ 클러스터 · 1.7PB<br/>• ✅ 본문 확인\"]:::accent\n  P --> E[\"<b>이벤트를 옮기고 전달한다</b><br/>• StreamHub 하루 1,450억<br/>• Events Rail (웹훅)<br/>• ⏳ 미독\"]:::quiet\n  P --> A[\"<b>AI 를 제품에 넣는다</b><br/>• Rovo 에이전트 하네스<br/>• ⏳ 미독\"]:::quiet\n  E --> R[\"<b>매출 17.9억 달러 (+32%)</b>\"]:::list\n  S --> R\n  A --> R"
+    "code": "flowchart TD\n  C[\"<b>고객 55,913곳</b><br/>• 클라우드 ARR 1만 달러 이상<br/>• NRR 120%+ 4분기 연속\"]:::list --> P[\"<b>Jira · Confluence · Loom · Rovo</b>\"]:::list\n  P --> S[\"⚠️ <b>검색 색인을 살아 있는 채로 바꾼다</b><br/>• 300+ 클러스터 · 1.7PB<br/>• ✅ 본문 확인\"]:::accent\n  P --> E[\"<b>이벤트를 옮기고 전달한다</b><br/>• StreamHub 하루 1,450억<br/>• Events Rail (웹훅)<br/>• ⏳ 미독\"]:::quiet\n  P --> A[\"<b>AI 를 제품에 넣는다</b><br/>• Rovo 에이전트 하네스<br/>• ⏳ 미독\"]:::quiet\n  E --> R[\"<b>매출 17.9억 달러 (+32%)</b>\"]:::list\n  S --> R\n  A --> R\n  P --> M[\"<b>클라우드로 옮기는 고객을 미리 시험한다</b><br/>• 합성 데이터셋 · 두 단계 생성\"]:::list\n  M --> R"
   },
   "revenue_streams": [
     {
@@ -310,6 +310,30 @@
       ],
       "features": [
         "sandbox-dies-conversation-lives"
+      ]
+    },
+    {
+      "name": "클라우드로 옮기는 고객을 미리 시험한다",
+      "why": "온프레미스의 대형 기업 고객을 클라우드로 옮기는 일이 매출 성장의 한 축이다. 고객마다 데이터의 양보다 분포가 달라 이관을 다르게 누르므로, 실제 데이터 없이 그 모양을 재현해 옮기기 전에 병목을 찾는다.",
+      "tech": [
+        {
+          "tech": "Data Brewery(두 단계 생성 · 선언적 관계 · 청크 처리)",
+          "solves": "제품 API 대신 관계가 올바른 대량 합성 데이터셋을 여러 분포로 만들고, 새 엔터티·모양을 설정만으로 받는다.",
+          "limits": "복잡성을 설정으로 옮겼을 뿐이다 — 스키마 드리프트와 조건부 필드 규칙이 남은 문제다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Atlassian built a scalable synthetic data engine",
+              "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+              "publisher": "Atlassian",
+              "date": "2026-09-21",
+              "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "rows-first-links-later"
       ]
     }
   ],
@@ -1831,6 +1855,278 @@
           "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
         }
       ]
+    },
+    {
+      "key": "rows-first-links-later",
+      "name": "합성 데이터 — 행을 먼저 만들고 관계는 나중에 잇는다",
+      "domain": "클라우드로 옮기는 고객을 미리 시험한다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "아틀라시안의 클라우드 전환 조직은 제품과 앱을 온프레미스에서 클라우드로 옮기는 일을 맡는다. 대형 기업 고객이 줄지어 이관을 준비하던 때, 물어야 할 것은 하나였다 — **그들의 이관이 빠르고, 빠짐없고, 정확할까.** 몇 고객의 데이터 모양을 보고 대표 데이터셋 하나로 이관을 시험했더니 되긴 했다. 그런데 **모양 하나로는 부족했다** — 몇 개 공간에 업무 항목 수천만 개가 몰린 것과, 같은 양이 많은 공간에 흩어진 것은 시스템을 다르게 누른다. 고객이 늘자 고유한 데이터셋이 수십 개 필요해졌다.",
+        "metrics": [
+          {
+            "label": "이전 방식의 비용",
+            "value": "제품 API 로 만들던 때 시험 환경 하나를 준비하는 데 **몇 주**. 레이트 리밋이 병목이 됐고, 새 엔터티(업무 항목·댓글·첨부) 하나를 붙이는 데도 느리고 비쌌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "분포를 말하는 법",
+            "value": "공간당 업무 항목 **min 100 · p50 1,000 · p90 8,000 · p99 50,000 · max 500,000** 같은 백분위 목표로 모양을 준다(예시)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "배운 것",
+            "value": "병목은 총량보다 **분포**다 — 첨부 수천 GB 가 한 공간에 몰린 것은 수십 공간에 흩어진 같은 양과 이관 파이프라인을 다르게 누른다. 그래서 단일 공간 이관의 복원력을 먼저 손봤다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "개인정보",
+            "value": "실제 고객 데이터는 쓰지도 보지도 않는다 — 고객이 준 식별 불가능한 메타데이터와 데이터 모양만으로 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "API 로 계속 밀어붙이려다",
+          "thought": "제품 API 는 **실제 사용자가 일하는 규모**를 위해 설계됐지, 몇 해치 데이터를 한꺼번에 찍어 내라고 만든 게 아니다. 레이트 리밋은 시스템을 지키려고 **마땅히** 있는 것이다. 시니어 아키텍트의 조언: 제품을 거쳐 전체를 만들지 말고, 작은 데이터셋에서 시작해 늘려라.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "관계를 넣자 느려질 때",
+          "thought": "관계 없는 표끼리는 빨랐다. 외래 키가 들어가는 순간 느려졌고, 의존이 늘수록 더 나빠졌다. 대부분의 합성 도구는 **한 번에 한 행을 완성**하는 모델이다 — 행을 만들고 모든 필드를 채우고 FK 를 바로 푼다. 그러면 자식은 부모 값이 생겨 조회될 때까지 기다리고, **병렬성이 엔터티 계층에 묶인다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "외래 키를 다시 볼 때",
+          "thought": "엔터프라이즈 스키마의 FK 는 단순한 열이 아니다. 여러 열이 함께 부모를 가리키는 **복합 FK**, 자식 행의 구분자에 따라 가리키는 표가 달라지는 **다형 FK** 가 있다. FK 할당은 맞는 값을 찾는 게 아니라 **표를 넘나드는 제약을 만족시키는 일**이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "데이터 모양(data shape)",
+            "what": "크기와 제약으로 기술한 데이터의 모습 — 엔터티 수, 내용 길이, 부모당 자식 수의 백분위 분포 등."
+          },
+          {
+            "name": "데이터셋",
+            "what": "한 제품의 고객 데이터를 대표하는 SQL 덤프 묶음. 식별 불가능한 메타데이터와 모양으로만 만든다."
+          },
+          {
+            "name": "엔터티 정의 · 표 정의",
+            "what": "업무 개념(업무 항목·댓글·첨부)이 걸친 표들, 기본 키·널 규칙·비 FK 열의 생성 방식."
+          },
+          {
+            "name": "선언적 관계",
+            "what": "FK 를 단순·복합·다형으로 설정에 적어, 엔진이 해석 로직을 한 곳에서 똑같이 적용한다."
+          },
+          {
+            "name": "FK 주입 엔진",
+            "what": "ForeignKeyRegistry(관계 정의) · ForeignKeyValueProvider(메모리·DB 에서 부모 값) · ForeignKeyInjector(배치 주입) · DependencyContext(이번 실행에서 만든 행을 DB 왕복 없이 참조)."
+          }
+        ],
+        "invariants": [
+          "2단계는 새 행을 만들지 않는다 — 이미 있는 부모 중 어느 것을 가리킬지만 정하고, 그때 분포를 적용한다.",
+          "FK 해석은 처리량이 중요한 뜨거운 경로 밖에 있다.",
+          "어떤 청크도 데이터셋 전체를 메모리에 들고 있지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "고객이 준 데이터 모양(수·분포·제약)을 설정으로 받는다",
+            "why": "실제 데이터 없이 모양만"
+          },
+          {
+            "step": "1단계: 표마다 독립적으로, FK 를 뺀 모든 필드를 설정대로 채워 행을 만든다",
+            "why": "의존을 기다리지 않아 병렬로 빠르다"
+          },
+          {
+            "step": "2단계: 의존 순서대로 FK 를 주입한다 — 부모는 이번 실행의 메모리(DependencyContext)나 DB 에서 가져오고, 백분위 목표대로 자식을 나눠 붙인다",
+            "why": "관계를 한 곳에서 한 번에 맞춘다"
+          },
+          {
+            "step": "큰 작업은 청크로 나눠 각각 처리·플러시하고, 실패하면 그 청크만 다시 한다",
+            "why": "메모리 상한 · 장애 격리 · 수평 확장"
+          },
+          {
+            "step": "결과를 SQL 덤프 데이터셋으로 내고 이관 도구를 그 위에서 시험한다",
+            "why": "고객이 옮기기 전에 병목을 찾는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "데이터를 무엇으로 만들 것인가",
+            "chosen": "**제품 API 를 거치지 않고 데이터셋(SQL 덤프)을 직접 대량으로 만든다** — 작은 데이터에서 시작해 늘린다",
+            "alternatives": [
+              "제품 API 로 엔터티를 하나씩 생성(이전)"
+            ],
+            "tradeoff": "제품이 해 주던 검증과 동작을 거치지 않으니 관계와 제약의 정확성을 엔진이 스스로 책임진다 — 그게 이 글의 나머지 전부다. API 로는 환경 하나에 몇 주가 걸렸고, 레이트 리밋이 마땅히 막았으며, 새 엔터티마다 같은 연동을 되풀이해야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "시장의 도구를 쓸 것인가",
+            "chosen": "**직접 만든다(Data Brewery)**",
+            "alternatives": [
+              "POC 에서 잘 돌던 기성 합성 데이터 도구"
+            ],
+            "tradeoff": "플랫폼을 만들고 유지하는 부담을 진다. 기성 도구는 처음엔 잘 됐지만 **관계를 더할수록 생성 시간이 계속 늘어** 필요한 규모에 못 미쳤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "외래 키를 언제 풀 것인가",
+            "chosen": "**행 생성과 관계 해석을 뗀다** — 1단계는 표마다 FK 를 비워 둔 채 독립 생성, 2단계는 전용 주입기가 의존 순서대로 FK 만 채운다",
+            "alternatives": [
+              "한 번에 한 행을 완성하는 단일 패스(행 생성 → 모든 필드 → FK 즉시 해석)"
+            ],
+            "tradeoff": "두 단계를 오가는 중간 상태(FK 없는 배치)를 관리하고, 주입이 단순·복합·다형 FK 를 모두 올바르게 맞춰야 한다. 대신 행마다 할 일이 줄고 배치가 좋아지며, 자식이 부모가 조회될 때까지 기다리지 않아 **공간과 업무 항목을 병렬로** 만들 수 있다. 분포(백분위)는 새 행을 만들지 않는 2단계에서 '어느 부모를 가리킬지'로 적용한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "새 엔터티·새 모양을 어떻게 받을 것인가",
+            "chosen": "**코드가 아니라 설정으로** — 제품 설정·엔터티 정의·표 정의·필드 생성기·선언적 관계라는 범용 도메인 모델",
+            "alternatives": [
+              "엔터티마다 코드로 핸들러를 짠다"
+            ],
+            "tradeoff": "구현 복잡도가 크게 늘었다고 적는다. 그리고 **복잡성을 코드에서 설정으로 옮겼을 뿐 없애지 않았다** — DB 스키마가 바뀌면 설정이 어긋나는데, 조용한 불일치는 컴파일 오류보다 잡기 어렵다(기동 시 검증을 넣었고 스키마 레지스트리 연동을 찾는 중). 다른 생성 값에 따라 달라지는 조건부 필드 규칙은 아직 선언형으로 깔끔히 못 적는다. 대신 '무엇'이 '어떻게'보다 훨씬 자주 바뀌는 곳에서 병목이 셀프서비스가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "수백만 행을 어떻게 돌릴 것인가",
+            "chosen": "**청크로 나눠 각각 처리·플러시하고, 실패한 청크만 다시 하고, 청크를 워커에 나눈다**",
+            "alternatives": [
+              "한 번에 전체를 처리하는 긴 스크립트"
+            ],
+            "tradeoff": "청크 사이의 부모·자식 참조를 이어 줄 장치가 필요하다 — 같은 실행의 행은 DependencyContext, 이미 저장된 것은 DB 에서 가져온다. 대신 메모리에 상한이 생기고, 실패가 격리되고, 처리량이 계산 자원만큼 는다. 뜨거운 경로를 단순하게, 청크는 유한하게, 재시도는 잘게 — 흔한 분산 시스템 패턴을 가져왔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Atlassian built a scalable synthetic data engine",
+                "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+                "publisher": "Atlassian",
+                "date": "2026-09-21",
+                "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "클라우드 이관 도구",
+          "via": "합성 데이터셋",
+          "contract": "이관이 빠르고 빠짐없고 정확한지를 고객이 옮기기 전에 여러 분포로 시험한다. 단일 공간 이관의 복원력을 여기서 찾아 손봤다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "deliberately-slow",
+          "via": "없음",
+          "contract": "같은 회사의 데이터 이동 글이지만 둘은 서로를 언급하지 않는다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 두 단계로 만드는 데이터셋",
+          "question": "관계가 빽빽한 스키마를 어떻게 빠르게 채우는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  SHAPE[고객의 데이터 모양<br/>수 · 백분위 분포 · 제약] --> CFG[설정<br/>엔터티 · 표 · 필드 생성기 · 선언적 관계]\n  CFG --> P1[\"<b>1단계</b> — 표마다 독립 생성<br/>FK 는 비워 둔다\"]\n  P1 --> NOFK[FK 없는 배치]\n  NOFK --> P2[\"<b>2단계</b> — 의존 순서로 FK 주입<br/>• 부모: 메모리 · DB<br/>• 백분위대로 자식 배분\"]:::accent\n  P2 --> WFK[FK 가 찬 배치]\n  WFK --> CH[청크 단위 플러시 · 실패 청크만 재시도]\n  CH --> DS[(SQL 덤프 데이터셋)]\n  DS --> MIG[클라우드 이관 시험]"
+        },
+        {
+          "title": "업무 항목 한 행이 완성되기까지",
+          "question": "예전과 지금, FK 는 언제 채워지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 비FK필드: 1단계 · ID · 시각 · 텍스트 · 가중 enum\n  비FK필드 --> FK대기: 공간 · 보고자 · 담당자 비워 둠\n  FK대기 --> FK주입: 2단계 · 이미 있는 부모 중에서 고른다\n  FK주입 --> 완성: 참조 무결성 만족\n  완성 --> [*]\n  note right of FK대기\n    예전(API)엔 행을 만드는 순간\n    공간 · 담당자 · 상태를 다 풀어야 했다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 막혔던 길들",
+          "question": "왜 API 도 기성 도구도 안 됐나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  API[제품 API 로 생성]:::accent --> RL[레이트 리밋]\n  API --> WEEKS[환경 하나에 몇 주]\n  API --> NEWENT[엔터티마다 같은 연동 반복]\n  TOOL[기성 합성 도구] --> SLOW[관계가 늘수록 생성 시간 증가]\n  SP[단일 패스 · FK 즉시 해석] --> WAIT[자식이 부모를 기다린다 · 병렬성 계층에 묶임]\n  CFGX[설정으로 옮긴 복잡성] --> DRIFT[스키마 드리프트 · 조용한 불일치]\n  CFGX --> COND[조건부 필드 규칙 표현 불가]\n  ONE[데이터 모양 하나] --> MISSB[분포에 따른 병목을 놓친다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Atlassian built a scalable synthetic data engine",
+          "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+          "publisher": "Atlassian",
+          "date": "2026-09-21",
+          "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1842,7 +2138,8 @@
     "도메인으로 안 세운 글이 셋 있다 — 실시간 PWA · AI 시대의 번역 · 유료 마케팅 예산 배분 ML. 흩어져 있어 축을 이루지 못한다(재구성).",
     "이전이 실제로 얼마나 걸리는지 없다 — 의도적으로 느리게 하는 것이 이 기능의 핵심인데 50TB 색인을 옮기는 데 며칠이 걸리는지 몇 주가 걸리는지 안 적는다. 쓰기 차단 시간(2~5초)만 대는데, 그건 사용자가 보는 값이고 운영자가 보는 값은 따로다(재구성).",
     "이 글은 겪은 장애 여섯 개를 다 적는다 — 브로커 네트워크 포화 · S3 오프로드 지연 · 보존 변경 중 S3 요청 속도 제한 · 저장 확장 쿨다운 · AZ 장애 시 제어 평면 가시성 · 확장이 사고 대응에 너무 느림. 다만 각 장애의 영향 범위와 지속 시간은 없다 — 몇 분이었는지, 얼마나 많은 이벤트가 지연됐는지(재구성).",
-    "①축에서 갈리는 지점이 보인다 — Coinbase 는 사람을 루프 안에 둔다 — 의도적으로 라며 사람을 설계로 남기는데, Atlassian 은 같은 자리에서 현재의 자기 진화 흐름은 여전히 사람의 입력을 요구하지만, 이 플라이휠을 만들어 가는 것이 결정적으로 중요해진다며 사람을 빼는 쪽을 목표로 말한다(재구성). 같은 구조에 정반대 방향의 의도가 붙어 있다."
+    "①축에서 갈리는 지점이 보인다 — Coinbase 는 사람을 루프 안에 둔다 — 의도적으로 라며 사람을 설계로 남기는데, Atlassian 은 같은 자리에서 현재의 자기 진화 흐름은 여전히 사람의 입력을 요구하지만, 이 플라이휠을 만들어 가는 것이 결정적으로 중요해진다며 사람을 빼는 쪽을 목표로 말한다(재구성). 같은 구조에 정반대 방향의 의도가 붙어 있다.",
+    "Data Brewery 도입 뒤 데이터셋 하나를 만드는 데 걸리는 시간과, 이관 시험에서 찾은 병목의 구체적인 수치는 밝히지 않는다."
   ],
   "sources": [
     {
@@ -1879,6 +2176,13 @@
       "publisher": "Atlassian (BusinessWire)",
       "date": "2026-04-30",
       "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
+    },
+    {
+      "title": "How Atlassian built a scalable synthetic data engine",
+      "url": "https://www.atlassian.com/blog/how-we-build/how-atlassian-built-scalable-synthetic-data-engine",
+      "publisher": "Atlassian",
+      "date": "2026-09-21",
+      "summary": "온프레미스에서 클라우드로 옮기려는 대형 고객의 데이터 모양(개수·분포·제약만, 실제 데이터는 쓰지 않는다)을 받아 Jira·Confluence 합성 데이터셋을 만드는 Data Brewery 이야기. 제품 API 로 만들던 방식은 환경 하나에 몇 주가 걸리고 레이트 리밋에 막혔고, 시장의 도구는 관계가 늘수록 느려졌다. 행 생성과 외래 키 해석을 두 단계로 떼고(1단계 표마다 독립 생성, 2단계 의존 순서로 FK 주입하며 백분위 분포를 적용), 코드가 아니라 설정으로 정의하고, 청크로 나눠 돌린다. 복잡성을 설정으로 옮겼을 뿐이라는 대가(스키마 드리프트·조건부 필드)를 스스로 적는다."
     }
   ]
 }
