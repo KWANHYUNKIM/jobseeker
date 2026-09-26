@@ -2268,3 +2268,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 99번째 후보 조사
 
 - Zenn 검색 '구조 주제어' 15개 × 2쪽 → Publication 집계 → RSS 8곳 → 본문 3편(Seibii ID 기반 · EVERSTEEL 화상 해석 기술 선정 · neoAI 모듈러 모놀리스). 대기 3/3. dress_code 는 DRESS CODE 로 이미 완주.
+
+## 2026-09-27 Seibii 회사 프로파일
+
+- 회사 페이지 · 법인 페이지로 수익원 셋(출장 정비 개인 · 법인 · 스폿 공장 바이트). 글 넷(ID 기반 · Lambda 공존 · PDF Lambda · 부품 분류)으로 도메인 셋. Fluent Bit 글은 아직.
