@@ -320,6 +320,99 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387738",
+      "title": "[한화시스템/방산] (차세대반도체) MMIC 회로설계",
+      "site": "wanted",
+      "verdict": "⚠️ **제목과 본문이 다른 공고다.** 제목은 '(차세대반도체) MMIC 회로설계' 인데 원티드 원문 본문(페이지 JSON-LD 도 같다)은 **이종/다중 무인체계 군집제어** 직무다 — 원본 게시의 오류로 보이며, 여기서는 본문 기준으로 쓴다. 지원 전 채용 담당에게 실제 직무를 반드시 확인한다. 본문 기준: 경기 성남시(방산 부문), 경력 표기 '신입 이상' 이지만 자격요건이 **석사 이상**과 Multi-Agent/Swarm Robotics 연구·개발 경험을 요구한다. 주요업무는 중앙집중형·분산형 군집제어 알고리즘, 플랫폼 간 협업·상태 공유·**충돌 회피** 로직, **Swarm Simulation 환경 구축과 실증 시험**, 실전 운용 확장성, **통신 제약 환경에서의 분산 제어 안정성**. 자격은 제어/로봇/항공우주/CS 석사, 최적화·분산 제어 이론, Python/C++. 우대는 UAV/UGV/USV 군집 운용, 국과연 등 방산 연구 협업, **강화학습 기반 군집 제어**, 해외 학위·글로벌 프로젝트. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "석사 이상(제어·로봇·항공우주·CS)",
+          "Multi-Agent/Swarm 연구·개발",
+          "분산 제어·최적화 이론",
+          "Python/C++"
+        ],
+        "can_learn": [
+          "UAV 군집 시뮬레이션(PX4)",
+          "MARL"
+        ]
+      },
+      "study": [
+        {
+          "topic": "분산 합의 — 통신이 끊겨도 군집이 한 목표로",
+          "from": "task",
+          "quote": "• 통신 제약 환경에서의 분산 제어 안정성 확보",
+          "priority": "core",
+          "why": "주요업무이고 자격요건이 분산 제어 알고리즘 이해를 요구한다.",
+          "gap_check": "각 개체가 이웃 정보만으로 평균값(위치·속도·임무 상태)에 수렴하는 합의 알고리즘에서 통신 그래프의 연결성(라플라시안 고유값)은 수렴 속도에 어떻게 작용하는가? 링크가 끊기거나 지연·패킷 손실이 있으면 무엇이 깨지고, 중앙집중형과 분산형은 이때 어떤 장단을 갖는가?",
+          "drill": "Consensus dynamics 설명을 읽고, 파이썬으로 10개 개체의 평균 합의를 시뮬레이션해 통신 그래프(링·완전·랜덤)와 링크 손실률을 바꿔 수렴 시간을 그래프로 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Consensus dynamics — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Consensus_dynamics",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "다수 플랫폼 충돌 회피 — ORCA",
+          "from": "task",
+          "quote": "• 다수 플랫폼 간 협업/상태 공유/충돌 회피 로직 설계",
+          "priority": "core",
+          "why": "주요업무다. 여러 무인체계가 같은 공간을 움직인다.",
+          "gap_check": "속도 장애물(velocity obstacle)에서 서로 상대를 피하려다 진동하는 문제를 ORCA 는 책임을 반씩 나눠 어떻게 없애는가? 개체 수가 늘 때 계산량과 교착(deadlock)은 어떻게 되는가?",
+          "drill": "ORCA 페이지의 설명을 읽고, 원 위에 배치된 20개 개체가 반대편으로 이동하는 시뮬레이션을 만들어 ORCA 적용 전후 충돌 수와 도착 시간을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Optimal Reciprocal Collision Avoidance (ORCA)",
+              "url": "https://gamma.cs.unc.edu/ORCA/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Swarm Simulation 환경 만들기",
+          "from": "task",
+          "quote": "• Swarm Simulation 환경 구축 및 실증 시험",
+          "priority": "high",
+          "why": "주요업무이고 우대사항에 UAV/UGV/USV 군집 운용이 있다.",
+          "gap_check": "알고리즘 수준의 점 개체 시뮬레이션과 비행 역학·통신을 포함한 SITL 시뮬레이션은 무엇을 검증하고, 실증 시험 전에 어느 단계까지 올려야 하는가? 개체 수를 늘릴 때 시뮬레이터가 먼저 막히는 곳은?",
+          "drill": "PX4 다중 기체 Gazebo 시뮬레이션 문서대로 드론 3~5대를 띄우고, 위 합의·충돌 회피 로직을 오프보드 제어로 붙여 편대 이동을 시험한다. Boids 규칙(분리·정렬·응집)도 같은 환경에서 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Multi-Vehicle Simulation with Gazebo — PX4 Guide",
+              "url": "https://docs.px4.io/main/en/sim_gazebo_gz/multi_vehicle_simulation",
+              "kind": "docs"
+            },
+            {
+              "title": "Boids — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Boids",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "강화학습으로 군집 제어",
+          "from": "preference",
+          "quote": "• Reinforcement Learning 기반 군집 제어 경험",
+          "priority": "nice",
+          "why": "우대사항이다.",
+          "gap_check": "다중 에이전트 강화학습에서 중앙 학습·분산 실행(CTDE)이 왜 쓰이고, 개체 수가 달라져도 같은 정책을 쓰려면 관측·정책 구조를 어떻게 잡는가? 학습된 정책의 안전(충돌)을 규칙 기반 회피로 감싸는 이유는?",
+          "drill": "MAPPO 논문을 읽고, 간단한 격자 또는 연속 환경에서 N개 에이전트 목표 분할 과제를 MAPPO 로 학습한 뒤 개체 수를 바꿔 일반화를 시험한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "The Surprising Effectiveness of PPO in Cooperative, Multi-Agent Games (MAPPO)",
+              "url": "https://arxiv.org/abs/2103.01955",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
