@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Lincwell 기능 2(2026-09-27) — `inhouse-push-broadcast`(푸시는 사서 쓰지 않고 보내 보면서 만든다, 결정 7). 도메인 둘 다 찼다. 다음은 Smart Clinics(클리닉 DX) 수익원 판정 — RSS(`zenn.dev/p/lincwell_inc/feed`)와 Zenn 검색 API('クリニックフォア'·'電子カルテ'·'Linc'well') 두 번. 있으면 도메인·기능, 없으면 hold_reason + 재시도 안 함 + `fix(reveng): Lincwell 클리닉 DX 수익원 보류`. 대기 2/3(WED · mixtend). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Lincwell 클리닉 DX 수익원 보류(2026-09-27) — RSS 20편 · Zenn 검색 7낱말 모두 없음. hold_reason 달고 in_progress 유지(기능 2 · 도메인 둘 다 참). 다음은 --gaps 의 신규: 큐 맨 위 WED — `20260424-cache-matching-results`(영수증 상품명 → JAN 연결 캐시) · `vector_search_category_classification`(BigQuery 벡터 검색 JICFS 추정 +35%) · `20251205-grounding-for-product-names`(Gemini 그라운딩) · 회사 사이트에서 수익원부터. 그다음 mixtend, 큐가 2/3 이라 WED 뒤 후보 조사 한 번. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -392,6 +392,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **USEN ICT 법인 ICT 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 5편 전부 사내 데이터·DX · Zenn 검색 API 3낱말, 무관한 글뿐). 네트워크·보안·클라우드 서비스 쪽 구조 글이 새로 나오면 다시.
 - **TELLER 출판·미디어믹스 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 19편 · Zenn 검색 API 3낱말, 옛 Next.js·사명 변경 글뿐). 출판·코미컬라이즈·콘테스트 운영 구조 글이 새로 나오면 다시.
 - **Photoruction AI×BPO 수익원** — 2026-09-27 두 번 찾아 없음(Zenn RSS 19편 · Zenn 검색 API 3낱말, 옛 사내 행사·Android 글뿐). BPO 업무 처리 구조 글이 새로 나오면 다시.
+- **Lincwell 클리닉 DX(Smart Clinics) 수익원** — 2026-09-27 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 7낱말, 이 회사 글이 안 걸린다). 클리닉 예약판·진료 기록·접수 시스템 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

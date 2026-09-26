@@ -2118,3 +2118,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Lincwell 푸시 내재화
 
 - `c2e73de75af524` 로 기능 `inhouse-push-broadcast`. 결정 7(SaaS 대신 내재화·범위·최소 시작·자동 분할·테스트/본 발송·발송 권한·효과 지표). 전달 경로(APNs/FCM)·분할 크기는 글에 없어 unknown.
+
+## 2026-09-27 Lincwell 클리닉 DX 수익원 보류
+
+- 검색 1: RSS 20편 — 클리닉 운영 시스템 글 없음(`2bd5d09f35e79b` 는 RubyKaigi 노벨티 퍼즐). 검색 2: Zenn 검색 API 7낱말 — 이 회사 글 0. hold_reason, in_progress 유지.

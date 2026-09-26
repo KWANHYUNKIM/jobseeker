@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "기타",
   "status": "in_progress",
+  "hold_reason": "수익원 'Smart Clinics(클리닉 DX)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-27 — Zenn Publication RSS 20편: 푸시·예약 SLO·앱 SLO·ECS 배포·Datadog·모브 프로·AI 도구·RubyKaigi 노벨티 글뿐, 클리닉 예약판·진료 기록·접수·결제를 다루는 글이 없다 / Zenn 검색 API 'クリニックフォア'·'電子カルテ'·'Linc'well'·'lincwell'·'診療予約'·'クリニック DX'·'クリニック 予約 受付' — 이 회사 글이 하나도 안 걸린다). 완주 기준 셋째를 못 채워 in_progress 로 두고 더 파지 않는다. 클리닉 운영 시스템 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-27",
   "domain": "linc-well.com",
   "one_liner": "온라인 진료·클리닉 DX·헬스케어 EC 를 한 앱(クリフォア)에 얹는 의료 스타트업 — 예약 완료가 외부 통지를 기다리지 않게 떼어 내고, 운영이 고른 순간에 수만 명에게 보내는 푸시를 SaaS 대신 직접 만든다",
