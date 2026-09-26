@@ -132,12 +132,14 @@
               "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
               "publisher": "neoAI",
               "date": "2026-06-01",
-              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임)."
+              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "rls-tenant-boundary-seam"
+      ]
     },
     {
       "name": "외부에서 끌어오는 데이터가 커져도 동기화가 무너지지 않게 한다",
@@ -527,7 +529,7 @@
               "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
               "publisher": "neoAI",
               "date": "2026-06-01",
-              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임)."
+              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
             }
           ]
         }
@@ -565,6 +567,396 @@
           "url": "https://neoai.jp/neoaichat",
           "publisher": "neoAI",
           "summary": "**법인용 생성 AI 플랫폼** — ChatGPT · Gemini · Claude 최신 모델을 쓸 수 있다. 금융 · 교통 · 전력 · 부동산 등 **중요 인프라 산업 중심 250 사 이상** 도입. '보안이 걱정 · 출력 품질이 나빠 업무에 못 씀 · 현장에 정착 안 함'을 푼다고 내건다. 자료 청구 · 무료 트라이얼."
+        }
+      ]
+    },
+    {
+      "key": "rls-tenant-boundary-seam",
+      "name": "DB 가 월경을 막고 코드는 업무만 — 30 줄의 이음새",
+      "domain": "테넌트 경계는 DB 가 지키고, 업무 규칙은 코드가 지킨다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "neoAI Chat 은 금융 · 전력 · 부동산 같은 중요 인프라 기업이 사내 문서와 대화를 넣고 쓰는 생성 AI 다. 멀티테넌트 SaaS 에서 **한 건이라도 다른 테넌트로 새면 끝**이다.\n\n그런데 앱 층의 `WHERE tenant_id = ?` 는 언젠가 빠진다. `documents JOIN comments` 에서 한쪽에만 조건을 걸어도 테스트가 느슨하면 다른 테넌트의 댓글이 조용히 섞인다. 서브쿼리 · 운용 SQL · 전 테넌트 배치까지 새는 길이 많다. 새 기능 · 배치 · 운용 도구를 더할 때마다 '분리를 제대로 썼나'를 매번 확인하는 부담을 없애야 했다.",
+        "metrics": [
+          {
+            "label": "앱과 DB 를 잇는 이음새 코드",
+            "value": "30 줄 남짓(ContextVar + begin 이벤트)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "label": "함정 체크리스트",
+            "value": "10 항목 — CI 테스트 넷으로 자동화",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "label": "테이블당 정책",
+            "value": "4 개(SELECT · INSERT · UPDATE · DELETE) — Alembic 조작 한 줄",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "앱 층 분리만 보고 있을 때",
+          "thought": "`WHERE` 에만 맡기는 건 솔직히 무섭다. 빠뜨리는 일은 반드시 일어난다 — **빠뜨리면 DB 가 에러를 돌려주는 상태**가 더 안전하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+              "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+              "publisher": "neoAI",
+              "date": "2026-06-01",
+              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+            }
+          ]
+        },
+        {
+          "at": "RLS 에 무엇을 쓸지 정할 때",
+          "thought": "'무엇을 쓰지 않을지'를 먼저 정하느냐가 반년 뒤 보수성을 가른다. 업무 규칙이 조금이라도 스며들면 조건이 눈덩이처럼 불어나 앱과 DB 에 같은 규칙이 이중 관리된다 — 경험상 괴로운 패턴이었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+              "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+              "publisher": "neoAI",
+              "date": "2026-06-01",
+              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+            }
+          ]
+        },
+        {
+          "at": "특권 접근을 설계할 때",
+          "thought": "'특권 컨텍스트니 전부 연다'가 아니라 **읽기는 느슨하게, 쓰기는 느슨하게 하지 않는다**.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+              "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+              "publisher": "neoAI",
+              "date": "2026-06-01",
+              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "FORCE 를 뺐을 때 실패하는 테스트를 남겨 둔 게 좋았다 — 사람이 FORCE 를 지워도 CI 가 멈춰 주지 않으면 리뷰에서 놓친 날 본번만 샌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+              "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+              "publisher": "neoAI",
+              "date": "2026-06-01",
+              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "RequestContext",
+            "what": "'지금 이 요청이 누구로 움직이나'. HTTP 요청 · 배치 · 기동 초기화 세 종류를 한 형태로 담고, 자기 테넌트와 조작 대상 테넌트(target_tenant_id)를 따로 든다. ContextVar 에 담긴다."
+          },
+          {
+            "name": "세션 변수 app.current_tenant",
+            "what": "이 접속이 보고 있는 테넌트 ID. begin 이벤트가 설정하고 RLS 정책이 읽는다."
+          },
+          {
+            "name": "세션 변수 app.has_cross_tenant_access",
+            "what": "횡단 읽기 플래그. 미설정이면 NULL → 거짓으로 다뤄진다."
+          },
+          {
+            "name": "테넌트 RLS 정책",
+            "what": "테이블마다 SELECT · DELETE 는 USING, INSERT 는 WITH CHECK, UPDATE 는 둘 다. FORCE 로 소유자도 통과 못 한다."
+          },
+          {
+            "name": "Alembic 독자 조작",
+            "what": "create / drop / enable_tenant_row_level_security — 정책 4 개를 마이그레이션 한 줄로."
+          }
+        ],
+        "invariants": [
+          "앱 쿼리 어디에도 tenant_id 조건이 없어도 다른 테넌트 행은 보이지도 쓰이지도 않는다.",
+          "RLS 에는 테넌트 월경만 쓴다 — 역할 · 소속 · 담당 범위 · 상태 전이는 도메인 층에.",
+          "횡단 플래그가 서 있어도 쓰기는 대상 테넌트 일치가 필요하다.",
+          "RequestContext 를 빠뜨린 요청은 조용히 0 건이 아니라 실패한다.",
+          "앱의 본번 접속 롤은 비슈퍼유저 · NOBYPASSRLS 다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "인증 미들웨어가 JWT 를 검증하고 RequestContext 를 ContextVar 에 담는다",
+            "why": "이후 모든 처리가 '누구로 움직이는지'를 같은 곳에서 읽는다 — asyncio Task 사이에서도 섞이지 않는다."
+          },
+          {
+            "step": "SQLAlchemy 세션의 begin 이벤트가 ContextVar 를 읽어 int 로 캐스트한 뒤 SET app.current_tenant(와 횡단 플래그)",
+            "why": "SET 은 바인드 파라미터를 못 받는다 — 캐스트가 인젝션을 막는 사실상 유일한 선."
+          },
+          {
+            "step": "컨텍스트가 없으면 여기서 실패",
+            "why": "빠뜨림을 조용한 0 건이 아니라 에러로 드러낸다."
+          },
+          {
+            "step": "앱은 tenant_id 조건 없이 쿼리를 던진다",
+            "why": "쓰는 사람은 업무 로직에만 집중한다."
+          },
+          {
+            "step": "PostgreSQL RLS 가 세션 변수로 행을 거르고, 쓰기는 WITH CHECK 로 막는다",
+            "why": "앱이 틀려도 DB 가 마지막에 막는다."
+          },
+          {
+            "step": "CI 가 월경 · FORCE 회귀 · 비대칭 · 컨텍스트 누락 테스트를 돌린다",
+            "why": "체크리스트를 사람의 기억이 아니라 테스트로 지킨다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "테넌트 분리를 어디서 지키나?",
+            "chosen": "**DB 층 = 테넌트 경계(RLS), 앱 층 = 업무 규칙의 두 단.**",
+            "alternatives": [
+              "앱 층 `WHERE tenant_id = ?` 만으로 지킨다"
+            ],
+            "tradeoff": "빠뜨림 · JOIN 한쪽 누락 · 운용 SQL 사고가 '앱은 던졌지만 DB 가 거부'로 **반드시 드러난다**. 두 단은 같은 걸 두 번 확인하는 게 아니라 **지키는 대상이 다르다**. 대가는 '지금 이 접속이 누구인가'를 앱이 DB 에 넘기는 이음새가 결국 필요하다는 것 — 접속 풀을 공유하기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "question": "RLS 에 무엇을 쓰나?",
+            "chosen": "**테넌트 월경만.** 역할 · 소속 · 담당 범위 · 상태 전이는 도메인 층에 닫는다.",
+            "alternatives": [
+              "같은 테넌트 안의 세밀 규칙까지 RLS 정책으로 쓴다"
+            ],
+            "tradeoff": "SQL 표현력으로 쓴 복잡한 조건은 테스트 · 리뷰가 어렵고, 업무 규칙은 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다. 스며들면 앱과 DB 에 같은 규칙이 이중 관리돼 어느 쪽이 정본인지 모르게 된다. 대가는 **같은 테넌트 안의 권한 실수**는 DB 가 막아 주지 않는다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "question": "RLS 를 누가 우회할 수 있나?",
+            "chosen": "**`FORCE ROW LEVEL SECURITY` 를 반드시 켜고, 앱 본번 접속 롤은 비슈퍼유저 · NOBYPASSRLS.**",
+            "alternatives": [
+              "`ENABLE` 만 켠다"
+            ],
+            "tradeoff": "ENABLE 만이면 **테이블 소유자(= 마이그레이션 실행 사용자)가 통과**해 '로컬에선 되는데 본번만 새는' 사고가 난다. 슈퍼유저 · BYPASSRLS 는 FORCE 로도 막을 수 없는 게 PostgreSQL 사양이라 롤 쪽에서 막는다. 대가는 마이그레이션 · seed 도 막혀 env.py 에서 **더미 테넌트(0)** 를 설정해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "question": "정책을 어떻게 늘리나?",
+            "chosen": "**Alembic 독자 조작으로 정책 4 개를 한 줄에** — 신설 · 폐기 · 기존 테이블 후붙임.",
+            "alternatives": [
+              "정책 SQL 을 복사해 붙여 늘린다"
+            ],
+            "tradeoff": "복사로 늘리면 리뷰도 추적도 괴롭고 반드시 무너진다 — 정책을 마이그레이션의 **일급 시민**으로 만든다. 대가는 독자 조작을 들고 있어야 하고, 정책을 바꿀 때(비대칭 판처럼) 조작 쪽을 맞춰야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "question": "서포트 · 운용 도구 · 전 테넌트 배치는 어떻게 다른 테넌트를 보나?",
+            "chosen": "**세션 변수를 하나 더(app.has_cross_tenant_access) — 읽기만 넓히고 쓰기는 테넌트 일치 그대로의 비대칭.** 미설정이면 NULL 로 안전한 쪽.",
+            "alternatives": [
+              "특권 컨텍스트면 읽기 · 쓰기를 전부 연다"
+            ],
+            "tradeoff": "'횡단으로 보는' 조작과 '특정 테넌트에 쓰는' 조작이 갈려, 횡단 배치가 WHERE 없는 UPDATE 를 던져도 **다른 테넌트에 번지지 않는다**. 플래그를 안 세운 보통 요청은 아무것도 넓어지지 않는다. 대가는 횡단 쓰기가 필요하면 **대상 테넌트를 명시**해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "question": "앱의 '누구'를 DB 에 어떻게 넘기나?",
+            "chosen": "**ContextVar 의 RequestContext + SQLAlchemy begin 이벤트, 둘뿐.** 컨텍스트가 없으면 실패, SET 전에 int 캐스트.",
+            "alternatives": [
+              "쿼리마다 테넌트를 인자로 넘긴다(이 사이트의 해석 — 글에 없는 일반적 대안)"
+            ],
+            "tradeoff": "30 줄 남짓의 이음새로 'DB 가 막는다'고 단언할 수 있고, 빠뜨림은 **조용한 0 건이 아니라 에러**로 드러난다. 대가는 이음새를 거치지 않는 **raw connection** 을 쓰면 안 되고, ThreadPoolExecutor 로 넘길 때 `copy_context().run` 으로 컨텍스트를 손으로 물려줘야 한다는 것(글의 체크리스트).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "question": "SET 인가 SET LOCAL 인가?",
+            "chosen": "**SET(세션 범위) — begin 마다 덮어쓴다.** PgBouncer 트랜잭션 풀링을 끼우면 반드시 SET LOCAL.",
+            "alternatives": [
+              "SET LOCAL(트랜잭션 범위)"
+            ],
+            "tradeoff": "neoAI 는 PgBouncer 를 끼우지 않아, 풀에 돌아간 접속의 남은 값은 다음 begin 이 확실히 덮는다. 대가는 **begin 을 거치지 않는 접속이 없다는 전제**에 기대는 것 — PgBouncer 트랜잭션 풀링 구성이면 세션 값이 다른 클라이언트로 넘어가 **심각한 테넌트 누출**이 나므로 그땐 SET LOCAL 과 발화 시점 테스트가 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          },
+          {
+            "question": "체크리스트를 어떻게 지키나?",
+            "chosen": "**CI 테스트 넷 — 테넌트 월경 · FORCE 를 뺐을 때 실패 · 횡단 플래그 비대칭 · 컨텍스트 누락.**",
+            "alternatives": [
+              "설계 리뷰의 체크리스트에만 맡긴다"
+            ],
+            "tradeoff": "특히 **FORCE 회귀 테스트**는 누가 FORCE 를 지워도 CI 가 멈춰 준다 — 리뷰에서 놓치면 본번만 새는 사고를 막는다. 대가는 RLS 를 켠 DB 로 도는 테스트 환경을 들고 있어야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+                "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+                "publisher": "neoAI",
+                "date": "2026-06-01",
+                "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "neoAI Chat(SaaS · 싱글테넌트 · 온프레미스)(수익원)",
+          "via": "멀티테넌트 SaaS 의 데이터 분리",
+          "contract": "중요 인프라 산업의 기업들이 같은 SaaS 에 문서 · 대화를 넣는다 — '한 건이라도 새면 끝'인 멀티테넌트 환경의 분리를 DB 가 마지막에 쥔다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+              "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+              "publisher": "neoAI",
+              "date": "2026-06-01",
+              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+            },
+            {
+              "title": "neoAI Chat - 法人向け生成AIプラットフォーム",
+              "url": "https://neoai.jp/neoaichat",
+              "publisher": "neoAI",
+              "summary": "**법인용 생성 AI 플랫폼** — ChatGPT · Gemini · Claude 최신 모델을 쓸 수 있다. 금융 · 교통 · 전력 · 부동산 등 **중요 인프라 산업 중심 250 사 이상** 도입. '보안이 걱정 · 출력 품질이 나빠 업무에 못 씀 · 현장에 정착 안 함'을 푼다고 내건다. 자료 청구 · 무료 트라이얼."
+            }
+          ]
+        },
+        {
+          "to": "llm-split-modular-monolith",
+          "via": "모듈 사이에 공유하는 PostgreSQL",
+          "contract": "모듈러 모놀리스는 모듈 사이에 DB 를 공유한다 — 그 공유 DB 에서 어느 모듈의 쿼리든 같은 이음새(ContextVar → begin → RLS)를 지나므로, 모듈이 늘어도 테넌트 분리를 모듈마다 다시 쓰지 않는다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+              "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+              "publisher": "neoAI",
+              "date": "2026-06-01",
+              "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
+            },
+            {
+              "title": "モジュラモノリスで急成長SaaSをスケール - マイクロサービス移行の判断基準",
+              "url": "https://zenn.dev/neoai/articles/2b8ee68d99e545",
+              "publisher": "neoAI",
+              "date": "2026-02-20",
+              "summary": "Python 모놀리스 SaaS 에 채팅(GPT · Claude · Gemini 스트리밍) · 프롬프트 관리 · 데이터 연계 · 기반(테넌트 · 사용자 · 권한)이 한 프로세스. **LLM 용 프롬프트 · 모델 설정이 메모리에 상주**해 가벼운 CRUD 인스턴스도 그 메모리를 들고 뜬다(메모리 비대칭 — 'LLM 시대의 새 판단 축'). 고객 공부회 · 이벤트 때 CPU · **DB 커넥션 스파이크**, 스케일아웃하면 인스턴스마다 풀이 늘고 마이크로서비스면 서비스 수에 비례. 스케일업은 비용 한계. 마이크로서비스를 곧장 안 한 이유: 인프라 비용(3.75~6배라는 자료 · Amazon 이 모놀리스로 돌려 90% 절감), 가장 큰 이유는 **배포 환경의 다양성** — 멀티테넌트 SaaS 에 더해 **싱글테넌트 · 고객 환경 배포** → '마이크로서비스 수 × 배포 환경 수'(5 × 6 = 30 vs 6), 팀 10 명 남짓(서비스당 3~5 명 지침에 못 미침). 그래서 **모듈러 모놀리스**(모듈별 api/ 공개 인터페이스 · 내부 직접 import 금지 · 프레임워크 독립) + 역 콘웨이로 모듈 경계를 먼저. **LLM 채팅만 마이크로서비스**(메모리 편중 · 독립 스케일 · 장애 격리 → 동적 모델 라우팅으로 비용 최적화). Go 새 모듈은 같은 Pod 의 **사이드카**(localhost, 배포 단위는 하나). 인프라는 **Azure Container Apps**(AKS 보다 조직 규모에 맞음). 모듈러 모놀리스를 '최종 형태'로 둘 수도 있다 — 계획이지 예정이 아니다. 과제: 모듈 내 언어 통일 · 경계 재검토 · **DB 공유**(테이블 JOIN 이 나중 분리를 막는다)."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "ContextVar 에서 RLS 까지",
+          "question": "요청의 '누구'는 어떤 길로 DB 의 행 필터가 되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  J[\"JWT 검증\\n인증 미들웨어\"] --> CV[\"ContextVar\\nRequestContext\"]\n  CV --> BE[\"SQLAlchemy begin 이벤트\\nint 캐스트 → SET\"]\n  BE --> SV[\"app.current_tenant\\napp.has_cross_tenant_access\"]\n  Q[\"앱 쿼리\\ntenant_id 조건 없음\"] --> PG[\"PostgreSQL\"]\n  SV --> RLS[\"RLS 정책(FORCE)\\nUSING · WITH CHECK\"]\n  PG --> RLS --> R[\"자기 테넌트 행만\"]"
+        },
+        {
+          "title": "접속 하나의 권한 상태",
+          "question": "세션 변수에 따라 접속은 무엇을 읽고 쓸 수 있나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 미설정: 컨텍스트 없음\n  미설정 --> 실패: begin 에서 에러\n  [*] --> 테넌트모드: current_tenant = A\n  테넌트모드: 읽기 A · 쓰기 A\n  [*] --> 횡단모드: cross_tenant = true\n  횡단모드: 읽기 전체 · 쓰기는 대상 테넌트 일치만\n  테넌트모드 --> [*]\n  횡단모드 --> [*]"
+        },
+        {
+          "title": "앱이 틀린 날",
+          "question": "조건 누락 · WHERE 없는 UPDATE · FORCE 삭제는 각각 어디서 막히나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"JOIN 한쪽 tenant 조건 누락\"] --> R1[\"RLS 가 다른 테넌트 행을 거름\"]\n  B[\"횡단 배치의 WHERE 없는 UPDATE\"] --> R2[\"쓰기는 current_tenant 일치만\\n→ 다른 테넌트에 안 번짐\"]\n  C[\"누가 FORCE 를 지움\"] --> R3[\"FORCE 회귀 테스트가 CI 에서 실패\"]\n  D[\"PgBouncer 트랜잭션 풀링 + SET\"] --> X[\"세션 값이 다른 클라이언트로 누출\\n→ SET LOCAL 로 바꿔야\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "書き忘れたらDBが止める: PostgreSQL RLS × SQLAlchemyマルチテナント実装",
+          "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
+          "publisher": "neoAI",
+          "date": "2026-06-01",
+          "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
         }
       ]
     }
@@ -606,7 +998,7 @@
       "url": "https://zenn.dev/neoai/articles/z-20260521-d29db3392b5b50",
       "publisher": "neoAI",
       "date": "2026-06-01",
-      "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임)."
+      "summary": "'한 건이라도 다른 테넌트로 새면 끝'인 SaaS 에서 앱 층 `WHERE tenant_id = ?` 만으론 무섭다 — 쓰기 누락, JOIN 한쪽 누락, 운용 SQL · 배치. **PostgreSQL RLS 를 DB 쪽 최후의 방어선**으로 두고 Python/FastAPI/SQLAlchemy 와 잇는다: ContextVar 의 테넌트를 세션 변수 `app.current_tenant` 로 SET → RLS 가 행을 거른다. **DB 층 = 테넌트 경계, 앱 층 = 업무 규칙** 의 두 단 — RLS 에는 '월경'만 쓰고 역할 · 소속 · 담당 범위 같은 세밀 규칙은 쓰지 않는다(SQL 로는 테스트 · 리뷰가 어렵고 규칙이 자주 바뀌어 마이그레이션마다 정책을 갈 수 없다). `FORCE ROW LEVEL SECURITY` 필수(없으면 테이블 소유자가 통과 — '로컬에선 되는데 본번만 샌다'), 슈퍼유저 · BYPASSRLS 롤은 FORCE 로도 못 막으니 앱 접속 롤은 비슈퍼유저 · NOBYPASSRLS. 조작별 USING/WITH CHECK. 정책 4개를 **Alembic 독자 조작**으로 한 줄에(신설 · 폐기 · 후붙임). 뒷부분: 마이그레이션 중엔 FORCE 때문에 자신도 막히니 env.py 에서 더미 테넌트(0)를 설정. 서포트 · 운용 도구 · 전 테넌트 횡단 배치를 위해 세션 변수 `app.has_cross_tenant_access` 를 하나 더 — **읽기만 느슨하게, 쓰기는 테넌트 일치 그대로**(비대칭), `current_setting(…, true)` 로 미설정이면 NULL → 안전한 쪽. 앱 쪽은 **ContextVar 의 RequestContext**(HTTP · 배치 · 초기화 세 종류, target_tenant_id 를 따로) 하나만 들고, **SQLAlchemy begin 이벤트**에서 세션 변수로 넘긴다 — 컨텍스트를 빠뜨리면 조용히 0 건이 아니라 **기동 실패**로. SET 은 바인드를 못 받아 f-string 전 **int 캐스트**가 사실상 유일한 방어선. `SET` 대 `SET LOCAL` — PgBouncer 없이 begin 마다 덮어쓰니 SET, **PgBouncer 트랜잭션 풀링이면 반드시 SET LOCAL**(세션 값이 다른 클라이언트로 새는 테넌트 누출). 함정 체크리스트 10 항목과 CI 테스트 넷(월경 · **FORCE 를 뺐을 때 실패** · 비대칭 · 컨텍스트 누락) — 특히 FORCE 회귀 테스트가 도움이 됐다. 이음새는 30 줄 남짓."
     },
     {
       "title": "3 行の同期バッチが、壊れるたびに堅牢になっていく話",

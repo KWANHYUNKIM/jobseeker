@@ -2316,3 +2316,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 neoAI 모듈러 모놀리스
 
 - `2b8ee68d99e545` 전문으로 기능 `llm-split-modular-monolith`, 결정 8. 인용된 외부 수치(3.75~6배 · Amazon 90%)는 '글이 인용한 자료'로 표시.
+
+## 2026-09-27 neoAI RLS 이음새
+
+- `z-20260521-d29db3392b5b50` 전문으로 기능 `rls-tenant-boundary-seam`, 결정 8. 글 요약에 비대칭 횡단 · ContextVar/begin · SET vs SET LOCAL · CI 테스트를 보탰다.
