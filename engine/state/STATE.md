@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — airbnb 재방문에서 확장(`fresh-guest-embedding`)을 마쳤다. 09-06 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
+**없다 — anthropic 재방문(새 글 없음)을 마쳤다. 09-06 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **anthropic** — 2026-09-26 없음. `anthropic.com/engineering` 최신은 **05-25 「How we contain Claude across products」**(목록 맨 위, 날짜 표시 없음 — 본문에서 확인) — 09-06 전이지만 **출처에 없다. 안 읽은 재료**(격리·샌드박스, `claude-code-sandboxing` 과 이어질 것). updated_at 만. 1회째.
 - **airbnb** — 2026-09-26 새 글 둘. Chronon 실시간 시퀀스 추천(09-17) → `fresh-guest-embedding`. 「Beyond the model: AI infra with scientific judgement」(09-15)는 아직 안 읽었다. 09-06 전의 인증(08-12)·COVID 모델(08-19)·Lighthouse(08-25)도 출처에 없다. 피드 `medium.com/feed/airbnb-engineering`(본문 전문 포함).
 - **ably** — 2026-09-26 없음. `ably.com/blog/rss.xml` 의 09-06 이후 글 셋(WebSocket vs SSE ×2, 운영에서의 WebSocket 순서)은 **구매 안내형 교육 글** — Ably 자신의 결정이 없다(h2 가 '직접 유지할지 관리형을 고를지'). updated_at 만. 1회째.
 - **socar** — 2026-09-26 없음. `tech.socar.kr/rss.xml` 최신 07-27(피드는 `rss.xml` 만 열린다), `socarcorp.kr/blog/773~777` 은 보도자료(앱 개편·AI 음성 주차권·요금제). **07-27 「parking-brain-1」(모두의주차장)은 출처에 없다 — 안 읽은 재료.** updated_at 만. 1회째.

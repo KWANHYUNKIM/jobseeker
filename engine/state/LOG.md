@@ -747,3 +747,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## airbnb 재방문 → 확장 (2026-09-26)
 
 09-17 Chronon 실시간 시퀀스 추천으로 fresh-guest-embedding. 결정 5개, 새 도메인 검색 개인화. 09-15 AI 인프라 글은 미뤘다.
+
+## anthropic 재방문 (2026-09-26)
+
+09-06 이후 새 글 없음. 05-25 how-we-contain-claude 는 안 읽은 재료로 STATE 에. updated_at 만. 1회째.
