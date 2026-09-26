@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "임대 부동산 회사가 몇 초 만에 임대료를 사정하는 SaaS '스마사테'의 회사 — 20 억 건의 부동산 데이터를 출처마다 다른 표기에서 한 물건으로 맞추고, jQuery 사정 화면은 폼을 그대로 둔 채 필드 하나씩 React 로 옮긴다",
       "updated_at": "2026-09-27",
       "domain": "sumasate.jp"
