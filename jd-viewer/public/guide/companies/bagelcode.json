@@ -474,6 +474,104 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/369618",
+      "title": "[Platform] 게임 플랫폼 클라이언트(SDK) 개발자",
+      "site": "wanted",
+      "verdict": "경력 5-15년, 서울 강남구, 정규직(수습 3개월). **Platform 팀의 게임 플랫폼 클라이언트 SDK** 자리다 — Unity·Android·iOS 멀티 플랫폼 SDK 개발·관리와 아키텍처, 클라이언트·네이티브 연동 이슈 해결, 통합 빌드 시스템·스토어 배포 지원, SDK 샘플 프로젝트와 검증 환경으로 사내 게임팀 지원, AI 코딩 에이전트로 설계·구현·테스트·문서화 생산성 개선과 **AI 생성 코드를 각 플랫폼 런타임/배포 제약에 맞게 검증**, 반복 QA·릴리즈 체크리스트·문서·샘플 검증 자동화. 팀이 만드는 공통 플랫폼(인증·결제·메시지)을 게임 클라이언트 쪽에서 붙이는 도구로 읽힌다. 필수는 **본인 포함 개발자 3인 이상 프로젝트 주도**, Unity 깊은 이해, **SDK 직접 개발·라이브 서비스 적용**, 자기주도·소통. 우대는 다양한 SDK 사용, 게임 라이브 경력, SDK 문서·릴리즈 자동화 등 DX 개선, iOS·Android 네이티브 연동(Client DevOps), AI Agent Workflow·Evaluation Harness, 영어. 전형: 서류접수 - 코딩테스트 - 기술면접 - 임원면접 – 처우협의 – 입사.",
+      "fit": {
+        "must_have": [
+          "개발자 3인 이상 프로젝트 주도",
+          "Unity 깊은 이해",
+          "SDK 직접 개발·라이브 적용"
+        ],
+        "can_learn": [
+          "iOS·Android 네이티브 연동",
+          "SDK 릴리즈 자동화",
+          "AI Agent Workflow·Evaluation Harness",
+          "영어"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Unity 에서 네이티브 플러그인 잇기 — Android·iOS",
+          "from": "task",
+          "quote": ": 신규 기능 개발을 위한 SDK 코드 아키텍처 설계 및 클라이언트·네이티브 연동 이슈 해결",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'iOS, Android 등 주요 클라이언트 플랫폼별 네이티브 연동' 이 있다. 필수에 Unity 깊은 이해가 있다.",
+          "gap_check": "Unity C# 에서 안드로이드 Kotlin/Java 와 iOS Objective-C/Swift 코드를 부를 때 각각 어떤 다리(AndroidJavaObject·DllImport `__Internal`)를 쓰고, 네이티브 쪽 콜백을 Unity 메인 스레드로 돌려보내지 않으면 무엇이 깨지는가?",
+          "drill": "Unity 프로젝트에 '기기 언어 가져오기 + 비동기 로그인 콜백' 을 하는 작은 플러그인을 Android(.aar)·iOS(.mm) 양쪽으로 만들고, 네이티브 스레드에서 온 콜백을 메인 스레드 큐로 옮긴 뒤 두 기기에서 동작을 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Unity - Manual: Create and use plug-ins in Android",
+              "url": "https://docs.unity3d.com/Manual/PluginsForAndroid.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Unity - Manual: Native plug-in development for iOS",
+              "url": "https://docs.unity3d.com/Manual/PluginsForIOS.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SDK 를 패키지로 배포 — 버전과 의존성",
+          "from": "qualification",
+          "quote": "• SDK 직접 개발 및 라이브 서비스 적용 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 요건이고 주요업무가 멀티 플랫폼 SDK 관리와 사내 게임팀 지원이다.",
+          "gap_check": "여러 게임팀이 서로 다른 버전의 SDK 를 쓰는 상황에서 SDK 를 Unity 패키지(UPM)로 배포하면 무엇이 쉬워지고, SDK 가 끌어오는 안드로이드 라이브러리 버전이 게임의 다른 SDK(광고·분석)와 충돌하면 무엇으로 해결하는가?",
+          "drill": "위 플러그인을 UPM 패키지로 만들어 git URL 로 다른 Unity 프로젝트에 설치하고, External Dependency Manager 로 안드로이드 의존성을 선언한 뒤 다른 버전을 요구하는 가짜 SDK 를 함께 넣어 충돌 해결 결과를 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Unity - Manual: Package development workflow",
+              "url": "https://docs.unity3d.com/Manual/CustomPackages.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Unity - Manual: Introduction to packages",
+              "url": "https://docs.unity3d.com/Manual/upm-concepts.html",
+              "kind": "docs"
+            },
+            {
+              "title": "googlesamples/unity-jar-resolver",
+              "url": "https://github.com/googlesamples/unity-jar-resolver",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "통합 빌드·스토어 배포 자동화",
+          "from": "task",
+          "quote": ": 통합 빌드 시스템 개발, 스토어 배포 기술 지원 및 프로세스 개선",
+          "priority": "high",
+          "why": "주요업무이고 우대에 SDK 문서·프로젝트·릴리즈 자동화 등 개발자 경험 개선이 있다.",
+          "gap_check": "Unity 게임을 Android·iOS 로 빌드하고 스토어에 올리는 과정에서 서명 키·프로비저닝 프로필·버전 번호를 사람 손에 맡기지 않으려면 무엇을 자동화하고, SDK 가 새 버전으로 올라갈 때 샘플 게임 빌드가 깨지는지 누가 먼저 알게 하는가?",
+          "drill": "fastlane 문서를 따라 샘플 Unity 프로젝트의 Android 빌드·서명·내부 테스트 트랙 업로드를 한 명령으로 묶고, SDK 저장소 변경 시 샘플 빌드를 자동으로 돌리는 CI 를 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "fastlane docs",
+              "url": "https://docs.fastlane.tools/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 생성 코드를 플랫폼 제약에 맞게 검증",
+          "from": "task",
+          "quote": ": AI가 생성한 코드 및 문서를 각 플랫폼 런타임/배포 제약에 맞게 검증 및 최적화",
+          "priority": "nice",
+          "why": "주요업무이고 우대에 Evaluation Harness 가 있다.",
+          "gap_check": "AI 가 만든 SDK 코드가 에디터에서는 돌지만 IL2CPP 빌드(코드 스트리핑)나 iOS 빌드에서 깨지는 경우는 무엇이고, 이를 사람 리뷰 전에 잡으려면 검증 파이프라인에 무엇(실기기·빌드 타깃별 스모크)을 넣는가?",
+          "drill": "AI 도구로 SDK 기능 하나를 만들게 한 뒤 에디터 테스트·Android IL2CPP 빌드·iOS 빌드를 순서대로 돌리는 검증 스크립트를 만들고, 리플렉션을 쓰는 코드가 스트리핑으로 깨지는 사례를 재현해 link.xml 로 고친다.",
+          "hours": 5,
+          "resources": []
+        }
+      ]
     }
   ]
 }
