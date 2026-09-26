@@ -1,0 +1,236 @@
+{
+  "slug": "pfct",
+  "name": "피에프씨테크놀로지스",
+  "name_en": "PFC Technologies",
+  "aliases": [
+    "피에프씨테크놀로지스"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "pfct.co.kr",
+  "one_liner": "온투금융(P2P) 서비스 '크플' 을 운영하고, 그 여신 AI 기술을 금융사용 B2B 솔루션 '에어팩' 으로 파는 렌딩테크 회사",
+  "company": {
+    "business": "회사 홈페이지는 서비스를 둘로 적는다 — 온라인투자연계금융서비스 '크플' 과 AI 렌딩테크솔루션 '에어팩'. 크플은 개인이 5천원부터 대출 채권에 투자하는 온투금융 서비스로, 사이트에 온라인투자연계금융업 등록번호(2025-19)와 예치기관(전북은행)을 싣는다. 채용 공고의 회사 소개는 스스로를 '대한민국 최고의 온투금융사' 이자 'B2B AI 솔루션 서비스로 9 개국에서 사업' 하는 회사로 적는다. B2B 쪽은 Enterprise Unit 이라는 사내 독립 조직(CIC)이 금융사의 신용평가·여신 운영을 돕는 AI 리스크 관리 솔루션과 컨설팅을 팔고, 최근 Databricks 파트너 사업(데이터 플랫폼 구축)을 시작했다고 공고가 적는다. 매출 규모와 두 사업의 비중은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "PFCT - PFC Technologies",
+        "url": "https://www.pfct.co.kr/",
+        "publisher": "피에프씨테크놀로지스",
+        "summary": "서비스를 온라인투자연계금융서비스 '크플' 과 AI 렌딩테크솔루션 '에어팩' 둘로 적고, 사업자 정보(대표 이수환, 서울 서초구)를 싣는다"
+      },
+      {
+        "title": "크플 - 대한민국 최상위 온투금융(투자, 대출)",
+        "url": "https://www.cple.co.kr/",
+        "publisher": "피에프씨테크놀로지스",
+        "summary": "온투금융 투자 서비스 크플 — 5천원부터 투자, 평균 수익률 10.7%(월간공시 기준) 표기, 온라인투자연계금융업 등록번호 2025-19, 예치기관 전북은행"
+      },
+      {
+        "title": "Backend Engineer(백엔드 엔지니어)",
+        "url": "https://www.wanted.co.kr/wd/388360",
+        "publisher": "원티드"
+      },
+      {
+        "title": "B2B AI Product Owner(PO, 프로덕트 오너)",
+        "url": "https://www.wanted.co.kr/wd/338869",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "B2B AI 솔루션 사업 국가 수(회사 주장)",
+        "value": "9개국",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Engineer(백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/388360",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "공헌 이익률(회사 주장)",
+        "value": "약 80%",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Engineer(백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/388360",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "크플 — 온투금융(대출 중개·투자)",
+        "how": "대출자와 개인 투자자를 잇는 온라인투자연계금융업이다. 회사가 어디서 수수료를 떼는지(대출 수수료·투자 수수료)는 이번에 읽지 않았다(추론 보류). 공고의 Backend 팀이 대출, 투자, 상환, 정산 로직을 맡는다.",
+        "domains": [
+          "온투금융 거래 시스템",
+          "클라우드 운영(DevOps)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "크플 - 대한민국 최상위 온투금융(투자, 대출)",
+            "url": "https://www.cple.co.kr/",
+            "publisher": "피에프씨테크놀로지스",
+            "summary": "온투금융 투자 서비스 크플 — 5천원부터 투자, 평균 수익률 10.7%(월간공시 기준) 표기, 온라인투자연계금융업 등록번호 2025-19, 예치기관 전북은행"
+          },
+          {
+            "title": "Backend Engineer(백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/388360",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "에어팩 등 B2B AI 리스크 관리 솔루션·컨설팅",
+        "how": "금융사에 신용평가·여신 운영용 AI 솔루션을 On-premise/SaaS 로 팔고 컨설팅을 붙인다고 PO 공고가 적는다. ML 공고는 Airpack 을 '금융권 모델링/분석 툴' 로 부른다.",
+        "domains": [
+          "여신 신용평가·리스크 모델"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "PFCT - PFC Technologies",
+            "url": "https://www.pfct.co.kr/",
+            "publisher": "피에프씨테크놀로지스",
+            "summary": "서비스를 온라인투자연계금융서비스 '크플' 과 AI 렌딩테크솔루션 '에어팩' 둘로 적고, 사업자 정보(대표 이수환, 서울 서초구)를 싣는다"
+          },
+          {
+            "title": "B2B AI Product Owner(PO, 프로덕트 오너)",
+            "url": "https://www.wanted.co.kr/wd/338869",
+            "publisher": "원티드"
+          },
+          {
+            "title": "ML Engineer(ML 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/377655",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "Databricks 데이터 플랫폼 구축",
+        "how": "국내 최초 Databricks ISV 파트너 지위를 확보했다고 적고, 고객사 레이크하우스 설계·구축·이관 프로젝트를 수행한다고 공고가 적는다 — 구축 용역으로 보인다(추론).",
+        "domains": [
+          "금융사 데이터 레이크하우스"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "B2B Data Engineer(B2B 데이터 엔지니어) - Databricks",
+            "url": "https://www.wanted.co.kr/wd/379570",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "온투금융 거래 시스템",
+        "why": "Backend 팀이 크플의 대출, 투자, 상환, 정산 로직을 맡고, Python/Django 모놀리식을 이벤트 기반 마이크로서비스로 나누는 중이라고 적는다. 자격요건에 RDBMS 트랜잭션 이해가 있다.",
+        "what_to_know": [
+          "금융 거래의 정합성과 트랜잭션",
+          "Django·Spring Boot",
+          "Celery·Kafka 비동기 처리",
+          "모놀리식 점진 분리"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Engineer(백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/388360",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "여신 신용평가·리스크 모델",
+        "why": "AI R&D 팀이 여신 시장 데이터로 신용 평가·리스크 관리 모델을 연구하고 Airpack 기초 모듈을 만든다고 적는다.",
+        "what_to_know": [
+          "신용평가 모델링(정형 데이터)",
+          "모델 검증과 모니터링",
+          "서빙 파이프라인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ML Engineer(ML 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/377655",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "금융사 데이터 레이크하우스",
+        "why": "Databricks 레이크하우스 설계, Delta Lake·Structured Streaming 파이프라인, 레거시 DW/Hadoop 이관, Unity Catalog 거버넌스를 주요업무로 적는다.",
+        "what_to_know": [
+          "Databricks·Delta Lake",
+          "Structured Streaming",
+          "Unity Catalog",
+          "DW/Hadoop 이관"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "B2B Data Engineer(B2B 데이터 엔지니어) - Databricks",
+            "url": "https://www.wanted.co.kr/wd/379570",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "클라우드 운영(DevOps)",
+        "why": "DevOps 팀이 '크플의 서비스 안정성과 개발 생산성을 책임지는 조직' 이라고 적는다 — 크플 운영을 받치는 도메인이다. AWS 인프라, CI/CD, IaC, 관측성과 장애 대응을 맡는다.",
+        "what_to_know": [
+          "AWS·쿠버네티스",
+          "Terraform",
+          "무중단 배포",
+          "SLO/SLA·MTTR"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps Lead(데브옵스 리드)",
+            "url": "https://www.wanted.co.kr/wd/365587",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "B2B 쪽은 사내 독립 조직으로 떨어져 흑자를 냈다고 강조한다",
+        "evidence": "지난 3년간, 우리는 외부 투자 없이 오직 자체 개발한 AI RISK 관리 솔루션의 사업화 성공으로 팀 단위 흑자를 달성했어요.",
+        "so_what": "같은 회사 안에서도 크플(B2C 온투금융)과 Enterprise Unit(B2B 솔루션)의 일하는 방식이 다를 수 있다(추론). 지원 공고가 어느 쪽 소속인지부터 확인한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "백엔드가 모놀리식에서 이벤트 기반 MSA 로 옮겨 가는 중이다",
+        "evidence": "Python/Django 모놀리식 서비스를 이벤트 기반 마이크로서비스로 점진적으로 분리해요.",
+        "so_what": "레거시 분리 경험이 우대사항에 있고, Python(Django)과 Kotlin(Spring) 두 생태계를 함께 쓴다 — 전환기 설계 경험을 면접에서 볼 가능성이 크다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "이력서 평가 기준을 공고에 공개한다",
+        "evidence": "내부 서류 평가 기준이기도 한 아래의 내용들이 이력서에 잘 드러난다면 아주 좋아요!",
+        "so_what": "문제 정의·근본 원인 추적·기술 선택 근거·협업을 이력서에 과정으로 적으라고 명시한다. 이 네 항목에 맞춰 이력서를 다시 쓰는 것이 가장 직접적인 준비다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출 규모와 크플·B2B 솔루션 비중을 읽지 않았다 — 홈페이지 '경영공시' 메뉴에서 확인할 것",
+    "크플의 수익 구조(대출·투자 수수료)를 읽지 않았다",
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "'9 개국', '공헌 이익률 약 80%', '대한민국 최고의 온투금융사' 는 회사가 공고에 적은 주장이다 — 외부 출처로 확인하지 않았다",
+    "QUEUE 에는 공고 9건으로 적었으나 모집중은 원티드 10건이다"
+  ],
+  "postings": []
+}

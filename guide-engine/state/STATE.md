@@ -9,7 +9,8 @@
 **사용자 지시(2026-09-26): 국내 사이트 회사를 공고 수 순서대로 전부 한다.** QUEUE `## 대기` 에 15곳을 순서대로 넣었다(기준·제외 목록은 대기 머리말). 대기가 비면 같은 기준으로 다음 15곳을 채운다.
 **현대오토에버** — 12건에서 멈춤(`in_progress`). 남은 사람인 Robot PM(55092048)은 보강 단계에서.
 **베스핀글로벌 — `done`(공고 10건: 원티드 6 + 사람인 4, 그중 1건은 원티드 381967 의 중복).** 사람인 Data Engineer·GCP·Okta·DBA·Big data 는 모집중 집계에서 빠져 있다(사본으로 걸러진 것으로 보임).
-⚠️ 다음 회차: 대기 맨 위 **피에프씨테크놀로지스** 를 `in_progress` 로 만들고 3단계(회사 브리핑)부터. QUEUE `## 대기` 에서 그 줄을 지운다.
+**피에프씨테크놀로지스(`pfct`) — `in_progress`, 회사 브리핑만 썼다(공고 0건).** 출처: pfct.co.kr·cple.co.kr 첫 화면 + 원티드 공고 5건의 회사·팀 소개.
+⚠️ 다음 회차: 원티드 10건을 한 사이클 한 건씩 — Backend(388360) · B2B Data Engineer(379570) · B2B Senior Data Engineer(379567) · ML Engineer(377655) · Data Analyst(377730) · DevOps Lead(365587) · DevOps Engineer(367602) · B2B AI PO(338869) · iOS 경력(377626) · iOS 신입(384902). Data Engineer 두 건·iOS 두 건·DevOps 두 건은 본문 비교 후 판단(연차만 다르고 본문이 같으면 `duplicate_of`).
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 주의: 원문에 zero-width space(U+200B)가 섞여 있다 — quote 는 main_tasks/qualifications/preferences 에서 그대로 복사한다.

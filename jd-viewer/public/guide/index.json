@@ -374,6 +374,17 @@
       "postings": 10,
       "study_items": 43,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "pfct",
+      "name": "피에프씨테크놀로지스",
+      "aliases": [
+        "피에프씨테크놀로지스"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }
