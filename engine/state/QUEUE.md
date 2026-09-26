@@ -27,7 +27,7 @@
 
 | **머니포워드(Money Forward)** | JP · 핀테크 SaaS | 프로파일(2026-09-26). 도메인 둘 — 비밀번호 없이 들어온다 · PR 마다 기다리는 CI 를 줄인다. 기능 2. **hold** — X 수익원 자료 2회 없음(완주 기준 셋째 미달). |
 
-| **LegalOn Technologies** | JP · 리걸테크(법무 AI) | 프로파일(2026-09-26). 도메인 둘 — 데이터 거버넌스 상담을 AI 가 먼저 받는다 · 비엔지니어가 자연어로 로그를 판다. 기능 1(거버넌스 Skill). 다음 — 지원 로그. On Technologies 수익원은 도메인 없음. |
+| **LegalOn Technologies** | JP · 리걸테크(법무 AI) | 프로파일(2026-09-26). 도메인 둘 — 데이터 거버넌스 상담을 AI 가 먼저 받는다 · 비엔지니어가 자연어로 로그를 판다. 기능 2(거버넌스 Skill · 지원 Codex+Datadog). 다음 — 완주 판정(On Technologies). On Technologies 수익원은 도메인 없음. |
 
 ## 대기
 

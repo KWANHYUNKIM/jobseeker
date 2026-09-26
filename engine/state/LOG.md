@@ -1360,3 +1360,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 LegalOn 거버넌스 Skill
 
 - 거버넌스 글 후반(챗봇의 한계 → Skill 둘 → 결과)으로 `governance-skills-not-chatbot`(결정 8 — Skill vs Gems·68 규칙+11 질문·통제×접근 분류·읽기 전용 Live 체크·매트릭스 중요도·GitHub URL/CSV·세 관점+되묻기·DWG 팩트 체크). 정량 효과는 글이 '아직 없다' 고 밝힘. 지원 로그 도메인과의 연결은 inferred.
+
+## 2026-09-26 LegalOn 지원 Codex+Datadog
+
+- 지원 글 전문으로 `support-codex-datadog-mcp`(결정 6 — 지원이 먼저 봄·MCP 자연어 조회(inferred)·데스크톱 앱(inferred)·SSO+퍼미션·조사 Skill·팀 안에서 닫는 범위). 사례 셋(애드인·메일 연계·메일 접수 상한 초과), 정량 효과는 없음. 검증 절차가 글에 없다는 점을 failure 그림에 남김.

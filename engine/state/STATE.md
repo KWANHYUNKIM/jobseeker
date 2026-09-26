@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**LegalOn — 확장 1(2026-09-26): 거버넌스 도메인에 `governance-skills-not-chatbot`(결정 8). 다음은 확장: '비엔지니어가 자연어로 로그를 판다' 를 지원 로그 글(`entry/support-team-datadog-analysis-with-codex`, scratchpad `lo_support-team-datadog-analysis-with-codex.txt`)로. 그 뒤 완주 판정 — On Technologies 수익원은 도메인이 없다(두 번 찾고 없으면 hold). 대기 1/3(Findy). 머니포워드(hold)·LayerX 는 in_progress.**
+**LegalOn — 확장 2(2026-09-26): 지원 로그 도메인에 `support-codex-datadog-mcp`(결정 6). 두 도메인 모두 기능 있음. 다음은 완주 판정 — On Technologies 수익원(CXOn·DealOn·WorkOn)은 도메인이 없다: tech.legalforce.co.jp 검색 두 번(On Technologies / DealOn·WorkOn) 해서 없으면 회사 hold_reason + '재시도 안 함'. 그 뒤 LegalOn 본체(계약 검토 AI) 글이 있으면 도메인 추가 검토. `--gaps` 는 이 빈칸을 안 잡는다(신규를 가리킨다) — 무시하고 LegalOn 을 먼저 닫는다. 대기 1/3(Findy). 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 
