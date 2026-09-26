@@ -2436,3 +2436,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 atama plus 회사 프로파일
 
 - atama-plus.com DNS 실패 → 공식 뉴스 corp.atama.plus(프랜차이즈 발표) · atama.plus(塾 사이트)로 수익원 둘. 글 다섯(AI 스텝 해설 · 레디니스 리뷰 3편 · BI 이전)으로 도메인 둘. BI 글은 제품 수익원 연결이 약해 open_questions 로.
+
+## 2026-09-27 atama plus AI 스텝 해설
+
+- `6b64c407d11c8c` 전문으로 기능 `ai-step-explanation-choices`, 결정 7. 기반 세부(AWS Summit 2025 슬라이드)는 못 읽어 Bedrock 은 이름만.
