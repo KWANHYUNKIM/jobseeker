@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **114건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **115건**.
+직전 회차: ✅ `Staff Network Engineer (Fulfillment and Logistics Network Engineering)`(8171509, 10년↑) 5항목 — 비개발(네트워크), 전국 출장.
 직전 회차: ✅ `Staff System Engineer (Global Infrastructure System Engineering)`(8040801, 7년↑) 5항목 — 사내 IT 인프라(가상화·VDI).
 직전 회차: ✅ `Sr. Staff - AI Data Center Architect`(7994883) 4항목 — **시설 아키텍처(비개발)** 임을 verdict 첫 줄에.
 직전 회차: ✅ `Senior Staff, ML Engineer (Coupang Eats Search)`(8146344) → dup wd/382275 (한국어 ML Lead 의 영문판 — 줄 비교로는 0 이지만 항목·순서·요건이 같다).
@@ -19,12 +20,12 @@
 ⚠️ 그사이 마감·삭제: `Staff, Back-end (Traffic Management)`(8104792, closed), `Staff, ML Engineer - Coupang Play`(7927865, 데이터에 없음).
 
 **남은 서울 공고(미작성, 모집중)** — 번호로 찾는다:
-- 개발: Network Eng(8171509), IAM Eng(8172668), Senior QA (Advertiser Platform)(8222455)
+- 개발: IAM Eng(8172668), Senior QA (Advertiser Platform)(8222455)
 - 보안: Attack Surface(8160905), Forensics(8052967), Pen Tester(8163504), Email Detection(7813854),
   Control Assurance(8163764), Threat Hunting(8163723), Info Sec CFS(8158581), Vendor Security(8163760),
   Mobile Security(8203471), AI Security Architect(8224844)
 - 데이터 사이언스: Sr. Staff DS Incrementality(8029811)
-⚠️ 다음 회차: `Staff Network Engineer (Fulfillment and Logistics Network Engineering)`(8171509).
+⚠️ 다음 회차: `Staff IAM Engineer (IAM Architecture & Governance)`(8172668).
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중

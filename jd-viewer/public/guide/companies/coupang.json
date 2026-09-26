@@ -11925,6 +11925,120 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8171509",
+      "title": "Staff Network Engineer (Fulfillment and Logistics Network Engineering)",
+      "site": "ats",
+      "verdict": "서울 근무, 대규모 엔터프라이즈 네트워크 10년 이상. 소프트웨어 개발 직군이 아니라 네트워크 엔지니어다. 풀필먼트 센터·캠프(딜리버리 센터)·데이터센터의 LAN·WLAN·WAN·네트워크 보안을 설계·구축·운영하고, 자동화·로보틱스 장비가 안전한 네트워크에서 돌게 하며, 장애 때 대응을 이끈다. 전국 센터로 출장 제약이 없어야 하고 영어 업무 소통이 필요하다.",
+      "fit": {
+        "must_have": [
+          "대규모 엔터프라이즈 네트워크 10년 이상",
+          "TCP/IP·BGP·OSPF·스위칭",
+          "Cisco·Juniper(HPE) 스위칭·무선",
+          "Fortinet·Palo Alto·Zscaler 방화벽·VPN, Cisco ISE",
+          "장애 위기 관리",
+          "전국 센터 출장 가능",
+          "영어 업무 소통"
+        ],
+        "can_learn": [
+          "물류 센터 네트워크 특성(우대)",
+          "Python·Ansible 자동화(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "물류 센터의 무선(WLAN)과 로보틱스 네트워크",
+          "from": "task",
+          "quote": "안전한 네트워크 환경 내에서 자동화, 로보틱스, 창고 시스템 및 엔터프라이즈 애플리케이션의 배포, 통합 및 운영 관리를 지원",
+          "priority": "core",
+          "why": "풀필먼트 센터에는 핸디 단말·로봇·자동화 설비가 무선으로 붙는다(추론). 이들이 안전한 네트워크에서 돌게 하는 것이 주요업무다.",
+          "gap_check": "넓은 창고에서 이동하는 단말·로봇이 AP 사이를 옮겨 다닐 때 로밍 끊김을 줄이려면 무엇(채널 계획·로밍 프로토콜·VLAN 분리)을 설계하는가?",
+          "drill": "가상의 창고 도면에 AP 배치·채널·VLAN(작업자 단말·로봇·게스트 분리) 설계도를 그리고, 로봇 트래픽을 별도 SSID·VLAN·방화벽 정책으로 격리하는 구성을 적는다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "라우팅(BGP·OSPF)과 사이트 간 WAN",
+          "from": "qualification",
+          "quote": "통신 프로토콜(TCP/IP 등), 라우팅 프로토콜(예: BGP, OSPF), 스위칭 기술에 대한 심도 깊은 이해와 탄탄한 배경 지식을 보유하신 분",
+          "priority": "core",
+          "why": "수많은 센터와 데이터센터를 잇는 WAN 이 자격요건의 기본이다.",
+          "gap_check": "센터 하나가 회선 두 개로 데이터센터에 붙어 있을 때 한 회선이 끊기면 BGP/OSPF 에서 어떤 순서로 경로가 바뀌고 수렴 시간을 무엇으로 줄이는가(BFD 등)?",
+          "drill": "GNS3/Containerlab 에 FRRouting 라우터 4대로 센터-DC 이중화 WAN 을 구성하고, 링크 하나를 끊어 BFD 유무에 따른 수렴 시간을 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "FRRouting — User Guide",
+              "url": "https://docs.frrouting.org/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "네트워크 보안 (방화벽·VPN·NAC)",
+          "from": "qualification",
+          "quote": "엔터프라이즈 보안 및 네트워크 인프라 솔루션(Fortinet/Palo Alto/Zscaler 방화벽 및 VPN, Cisco ISE, DHCP 등)의 설계 및 운영 경험을 보유하신 분",
+          "priority": "core",
+          "why": "자격에 Fortinet·Palo Alto·Zscaler 방화벽·VPN 과 Cisco ISE(네트워크 접근 제어)가 명시돼 있다.",
+          "gap_check": "창고에 새 장비를 꽂았을 때 NAC(ISE) 가 무엇으로 장비를 식별하고 어떤 VLAN 으로 보내는가? 식별 안 되는 장비는?",
+          "drill": "802.1X/MAB 흐름을 그림으로 정리하고, 랩에서 FreeRADIUS 로 인증 성공/실패에 따라 다른 VLAN 이 할당되게 구성한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "장애 대응과 RCA 문서화",
+          "from": "task",
+          "quote": "네트워크 표준, 아키텍처 설계서, 운영 가이드 및 장애 보고서(RCA) 등 고품질의 기술 문서화를 수행하고 자산화",
+          "priority": "high",
+          "why": "심각한 장애의 기술 대응을 주도하고 RCA 를 포함한 문서를 자산화하는 것이 주요업무다.",
+          "gap_check": "센터 네트워크가 끊겨 출고가 멈췄을 때 첫 15분에 무엇을 확인하고(물리·L2·L3·방화벽), 누구에게 무엇을 알리는가?",
+          "drill": "가상의 '센터 WAN 단절' 장애로 타임라인·원인·영향·재발 방지를 담은 RCA 문서를 한 편 쓴다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "Python·Ansible 네트워크 자동화",
+          "from": "preference",
+          "quote": "Python 스크립팅, Ansible 등을 활용한 네트워크 자동화 설계 및 운영 역량을 보유하신 분",
+          "priority": "high",
+          "why": "센터 수가 많아 같은 구성을 손으로 반복하면 실수가 늘어난다(추론).",
+          "gap_check": "새 센터 스위치 수십 대의 기본 구성을 자동 배포하고, 운영 중 설정이 표준에서 벗어났는지 어떻게 검사하는가?",
+          "drill": "Ansible 로 스위치(또는 가상 장비) 기본 구성을 템플릿 배포하고, 실행 결과를 표준 구성과 비교하는 검사 플레이북을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Ansible — Network Getting Started",
+              "url": "https://docs.ansible.com/ansible/latest/network/getting_started/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "창고 무선·VLAN 설계 사례",
+          "why": "우대가 물류 네트워크 경험이다. 로봇·단말·게스트 격리와 로밍을 다룬 설계도 한 장이 바로 대화 재료가 된다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "창고 무선 로밍",
+          "WAN 이중화 수렴",
+          "NAC 흐름",
+          "장애 첫 15분",
+          "네트워크 구성 자동화"
+        ],
+        "sources": [
+          {
+            "title": "Staff Network Engineer (Fulfillment and Logistics Network Engineering)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8171509",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
