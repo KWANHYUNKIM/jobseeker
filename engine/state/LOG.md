@@ -840,3 +840,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 ramp 재방문 → 확장
 - OCA(2026-09-09) 로 `detours-not-gates` 추가. 새 도메인, 결정 7개, 그림 2장. 수치: 장애 수정 PR 575/1,220, 엔지니어 -37%·시간 -50%(추정), 도움 90%, 5분/13분.
+
+## 2026-09-26 razorpay 재방문 → 확장
+- UPI Switch Kafka 5년(2026-09-07) 으로 `portability-hid-the-knobs` 추가. 새 도메인, 결정 7개, 그림 2장. [VERIFY] 표시된 수치는 inferred.

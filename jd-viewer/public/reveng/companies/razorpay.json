@@ -5,7 +5,7 @@
   "country": "IN",
   "category": "핀테크",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "razorpay.com",
   "one_liner": "인도 온라인 결제의 절반을 처리하는 게이트웨이 — 규모가 커지자 결제보다 자기 관측과 빌드의 비용이 이야깃거리가 됐다",
   "business_model": "사업체가 온라인으로 돈을 받게 해 주고 거래마다 몫을 받는다. 그 위에 RazorpayX(지급·뱅킹)와 Capital(운전자금 대출)과 Payroll(급여)을 얹어 결제로 들어온 가맹점이 나머지를 쓰게 만든다. 연환산 총결제액 약 1,500억~1,800억 달러, 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%, 누적 거래 74억 건, 가맹점 유지율 94%. 밸류에이션 92억 달러이고 2026년 IPO 를 준비 중이다.\n\n**그런데 이 회사가 공개적으로 쓰는 기술 이야기에 결제가 없다**(2026년 글 기준). 메트릭 비용 62% 절감, CI 를 스팟 인스턴스로, 데이터 웨어하우스 갱신 10배, 보안 트리아지 750시간을 2시간으로. 그래서 이 문서의 도메인 셋은 전부 결제를 받치는 쪽이다 — 결제 자체의 도메인을 세우지 않은 것은 그 자료를 못 찾아서이지 없다고 판단해서가 아니다. 결제 규모가 커질수록 결제가 아니라 결제를 받치는 것들의 비용이 이야깃거리가 된다는 순서가 이 블로그에 그대로 드러난다(재구성).",
@@ -18,7 +18,7 @@
   "domain_map": {
     "title": "결제가 커지자 결제를 받치는 것들의 비용이 문제가 됐다",
     "question": "이 회사의 도메인들이 어떻게 맞물리나",
-    "code": "flowchart TD\n  M[\"<b>가맹점 1,200만 곳 이상</b><br/>• 인도 게이트웨이 시장 약 55%\"]:::list --> P[\"<b>결제 수납</b><br/>• 연환산 TPV 약 1,500억 달러\"]:::list\n  P --> X[\"<b>RazorpayX · Capital · Payroll</b><br/>• 결제로 들어와 나머지를 쓴다\"]:::list\n  P --> O[\"⚠️ <b>이것을 관측하는 비용</b><br/>• 하루 샘플 4,500억 → 1,700억\"]:::accent\n  P --> C[\"<b>이것을 만드는 비용</b><br/>• CI 를 스팟으로 (⏳ 미독)\"]:::quiet\n  P --> A[\"<b>사람의 조사 시간</b><br/>• 보안 트리아지 750h → 2h (⏳ 미독)\"]:::quiet"
+    "code": "flowchart TD\n  M[\"<b>가맹점 1,200만 곳 이상</b><br/>• 인도 게이트웨이 시장 약 55%\"]:::list --> P[\"<b>결제 수납</b><br/>• 연환산 TPV 약 1,500억 달러\"]:::list\n  P --> X[\"<b>RazorpayX · Capital · Payroll</b><br/>• 결제로 들어와 나머지를 쓴다\"]:::list\n  P --> U[\"<b>UPI 결제를 메시지로 흘린다</b><br/>• UPI Switch · Kafka (MSK)<br/>• UPI 물량의 70% 이상\"]:::accent\n  P --> O[\"⚠️ <b>이것을 관측하는 비용</b><br/>• 하루 샘플 4,500억 → 1,700억\"]:::accent\n  P --> C[\"<b>이것을 만드는 비용</b><br/>• CI 를 스팟으로 (⏳ 미독)\"]:::quiet\n  P --> A[\"<b>사람의 조사 시간</b><br/>• 보안 트리아지 750h → 2h (⏳ 미독)\"]:::quiet"
   },
   "revenue_streams": [
     {
@@ -292,6 +292,45 @@
       ],
       "features": [
         "isolation-belongs-to-the-kernel"
+      ]
+    },
+    {
+      "name": "UPI 결제를 메시지로 흘린다",
+      "why": "UPI 가 본질적으로 비동기라 메시징이 UPI Switch 의 한가운데 있고, 이 스위치가 회사 UPI 물량의 70% 넘게를 처리한다. 본문 확인함(2026-09-07). 관측·CI·조사 도메인이 결제를 떠받치는 비용 이야기라면 여기는 결제 자체가 흐르는 길이라 따로 세웠다(이 사이트의 해석).",
+      "tech": [
+        {
+          "tech": "Kafka (AWS MSK Provisioned, SASL/SCRAM) + franz-go",
+          "solves": "도메인별 토픽과 네이티브 클라이언트로 브로커 재시작 뒤 스스로 복구하고 연결을 고르게 퍼뜨린다.",
+          "limits": "MSK Connector 를 걷어 내 DB 쓰기와 발행의 원자성이 없고, 소비자 멱등성과 일관된 재시도·DLQ 정책이 아직 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Five Years of Kafka at Razorpay's UPI Switch",
+              "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-09-07",
+              "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+            }
+          ]
+        },
+        {
+          "tech": "소비자 워커 풀 + 흐름별 NPCI 게이트웨이",
+          "solves": "파티션을 늘리지 않고 동시성을 올리고, 느린 VPA 검증을 결제와 인프라 수준에서 떼어 둔다.",
+          "limits": "일괄 커밋이라 실패 시 한 묶음이 다시 처리될 수 있다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Five Years of Kafka at Razorpay's UPI Switch",
+              "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-09-07",
+              "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "portability-hid-the-knobs"
       ]
     }
   ],
@@ -1804,6 +1843,349 @@
           "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
         }
       ]
+    },
+    {
+      "key": "portability-hid-the-knobs",
+      "name": "이식성이 정작 돌려야 할 손잡이를 가렸다",
+      "domain": "UPI 결제를 메시지로 흘린다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "UPI Switch 는 NPCI 와 실시간 결제를 주고받는 플랫폼이고 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 시스템의 한가운데 있고, 결제 하나가 NPCI 갱신·가맹점 콜백·데이터 웨어하우스 적재로 퍼진다.\n\n이 글의 값은 성공담이 아니라 '당시엔 합리적이었던 결정들이 어떻게 한꺼번에 청구서를 보냈나'를 적은 데 있다. 벤더에 안 묶이려고 끼운 추상화는 DNS 재해석과 연결 설정을 가렸고, 도메인을 깔끔히 나누려고 이벤트 타입마다 만든 토픽은 브로커의 파티션 한도를 먼저 채웠고, 운영을 덜려고 고른 서버리스 Kafka 는 브로커 재시작과 연결 한도를 클라이언트에게 떠넘겼다. 그리고 그 셋이 아시아컵 트래픽 앞에서 한꺼번에 터졌다.\n\n**교훈은 회사가 직접 적는다 — 얇은 추상화는 괜찮다, 추상화해 버린 그 층이 운영 문제가 사는 층이 되기 전까지는.** 처리량이 아니라 연결이 이 시스템을 넘어뜨렸다.",
+        "metrics": [
+          {
+            "label": "UPI Switch 비중",
+            "value": "Razorpay 전체 UPI 물량의 70% 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "label": "v1 (모놀리스 + SQS) 최고 부하",
+            "value": "IPL 때 400 TPS",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "label": "v2 목표",
+            "value": "10,000 TPS",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "label": "MSK IAM 인증 연결 한도",
+            "value": "브로커당 활성 TCP 연결 약 3,000",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "label": "franz-go 교체 뒤",
+            "value": "브로커당 연결 약 1,100 → 300 · 발행 지연 약 250ms → 10ms (원문에 [VERIFY] 표시가 남아 있다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "v1 을 모놀리스로 지을 때",
+          "thought": "거대한 규모도 분산 시스템도 생각하지 않았다 — 빨리 움직이고 배우는 것이 먼저라 일부러 KISS 로 갔다. 그 판단은 맞았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "v2 의 결정들을 되돌아볼 때",
+          "thought": "하나하나는 정당해 보였다. 약속은 진짜였고 비용은 나중에 왔다. 함께 모여 구조를 만들었고, 그중 여럿을 되돌리는 데 몇 달을 썼다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "파티션이 한계가 됐을 때",
+          "thought": "Kafka 는 이론상 무한히 확장되지만 브로커마다 들 수 있는 파티션에는 실제 한계가 있다. 파티션이 늘수록 브로커가 데이터를 옮기기보다 장부 정리(ISR·복제 fetch·리더 선출)에 시간을 쓰고, 처리량이 병목이 되기 한참 전에 CPU 가 튄다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇이 시스템을 넘어뜨렸나 되짚을 때",
+          "thought": "주목받는 것은 처리량이지만 우리를 쓰러뜨린 것은 연결이었다 — 브로커 간 쏠림, 재시작 뒤 낡은 DNS, 연결 수 상한. 클라이언트를 고르고 설정할 때 연결 동작을 일급 관심사로 다뤄야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "UPI Switch",
+            "what": "NPCI 와 실시간 결제를 처리하는 플랫폼. 고객·가맹점·VPA·결제·위임 서비스로 나뉜 이벤트 기반 마이크로서비스."
+          },
+          {
+            "name": "이벤트",
+            "what": "결제 성공처럼 여러 워크플로(NPCI 갱신·가맹점 콜백·웨어하우스 적재)로 퍼지는 사실."
+          },
+          {
+            "name": "도메인 토픽",
+            "what": "같은 도메인의 관련 이벤트를 모은 토픽. 소비자가 이벤트 타입 메타데이터로 거른다(예전엔 이벤트 타입마다 토픽)."
+          },
+          {
+            "name": "소비자 워커 풀",
+            "what": "파티션별로 순차로 가져오고 고루틴으로 병렬 처리한 뒤 오프셋을 일괄 커밋한다."
+          },
+          {
+            "name": "NPCI 게이트웨이",
+            "what": "NPCI 로 나가는 모든 호출을 맡는 모듈. VPA·결제·위임 셋으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로 둔다."
+          },
+          {
+            "name": "MSK Provisioned (SASL/SCRAM)",
+            "what": "서버리스·IAM 인증에서 옮겨 간 곳. IAM 의 엄격한 연결 수 한도가 없다."
+          }
+        ],
+        "invariants": [
+          "파티션 안의 순서는 지킨다 — 병렬화는 파티션 안에서 가져온 뒤에 한다.",
+          "금융 흐름(결제)과 비금융 흐름(VPA 검증)은 인프라 수준에서 떼어 둔다 — 서로의 처리량·지연 예산을 침범하지 않는다.",
+          "브로커 재시작 뒤 클라이언트는 사람 손 없이 다시 붙어야 한다.",
+          "토픽은 이벤트 타입이 아니라 도메인 단위다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "v1 — 모놀리스 + SQS 표준 큐 둘. 퍼짐이 필요해지자 SNS+SQS 를 덧댄다",
+            "why": "빨리 배우는 것이 먼저였다. IPL 최고 400 TPS 를 버텼다."
+          },
+          {
+            "step": "v2 — 이벤트 기반 마이크로서비스, SQS 에서 MSK(Kafka)로. GoCloud 추상화·아웃박스+MSK Connector·MSK Serverless·이벤트 타입마다 토픽",
+            "why": "10,000 TPS 목표에 진짜 pub-sub 과 높은 처리량·낮은 지연이 필요했다."
+          },
+          {
+            "step": "규모에서 깨진다 — 파티션 폭발, 커넥터 다중 토픽 라우팅 충돌, 브로커 쏠림, 정비 뒤 재연결 실패, 아시아컵 때 IAM 연결 한도",
+            "why": "결정 넷의 비용이 함께 왔다."
+          },
+          {
+            "step": "GoCloud 를 franz-go 로 바꾸고, 방어적 재연결과 커스텀 TLS 다이얼러로 TCP 풀링",
+            "why": "DNS 재해석과 연결 설정이 되살아나 브로커 재시작 뒤 스스로 복구한다."
+          },
+          {
+            "step": "소비자마다 워커 풀 — 파티션별 순차 가져오기, 병렬 처리, 일괄 오프셋 커밋",
+            "why": "동시성을 파티션 수에서 떼어 내 파티션을 늘리지 않고 처리량을 올린다."
+          },
+          {
+            "step": "도메인별로 토픽을 모으고 NPCI 게이트웨이를 VPA·결제·위임으로 쪼갠다",
+            "why": "파티션 수를 줄이면서 느린 VPA 검증(최대 15초)이 결제를 굶기지 않게."
+          },
+          {
+            "step": "MSK Provisioned + SASL/SCRAM 으로 옮긴다",
+            "why": "IAM 인증의 브로커당 약 3,000 연결 한도를 벗어난다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Kafka 에 직접 붙을까, 추상화 너머로 붙을까",
+            "chosen": "처음엔 벤더 중립 추상화 GoCloud Pub/Sub, 지금은 Kafka 네이티브 Go 클라이언트 franz-go.",
+            "alternatives": [
+              "GoCloud Pub/Sub 유지",
+              "다른 네이티브 클라이언트"
+            ],
+            "tradeoff": "추상화는 종이 위에서 이식성을 줬지만 DNS 재해석·연결 관리·배칭 같은 Kafka 클라이언트 설정을 가렸다 — 월간 브로커 재시작 뒤 낡은 IP 로 붙다가 파드를 손으로 재시작해야 했고, 연결 쏠림을 클라이언트에서 막지 못했다. franz-go 로 바꾸자 스스로 복구하고 연결이 고르게 퍼졌다. 대가는 Kafka 를 떠나기 어려워진다는 것, 원래 추상화로 피하려던 바로 그 결박이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "question": "토픽을 어떤 단위로 나누나",
+            "chosen": "도메인 단위 — 관련 이벤트를 한 토픽에 모으고 소비자가 이벤트 타입 메타데이터로 거른다.",
+            "alternatives": [
+              "DDD·이벤트 스토밍대로 이벤트 타입마다 토픽(v2 초기)"
+            ],
+            "tradeoff": "타입마다 토픽은 도메인 그림에서는 깔끔하지만 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션이 불어 처리량보다 먼저 브로커를 CPU 로 눌렀다. 모으면 파티션이 준다. 대가는 소비자가 자기와 무관한 이벤트도 받아서 버려야 한다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "question": "Kafka 클러스터를 누가 관리하나",
+            "chosen": "처음엔 MSK Serverless + IAM 인증, 지금은 MSK Provisioned + SASL/SCRAM.",
+            "alternatives": [
+              "MSK Serverless 유지",
+              "자체 운영 Kafka"
+            ],
+            "tradeoff": "서버리스는 브로커 크기를 정하지 않고 쓰는 만큼 내는 약속이었지만, 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘 재시작 처리를 클라이언트에 떠넘겼고, IAM 인증의 브로커당 약 3,000 연결 한도에 아시아컵 때 곧바로 닿았다. 프로비저닝형은 그 한도가 없는 대신 브로커 크기와 확장을 직접 정해야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "question": "DB 쓰기와 이벤트 발행의 원자성을 어떻게 지키나",
+            "chosen": "처음엔 아웃박스 테이블 + MSK Connector. 커넥터가 한 테이블에서 한 토픽만 쓸 수 있어 다중 토픽 라우팅을 덧붙였다가 자주 죽어 걷어 냈다 — 지금은 원자성이 없다.",
+            "alternatives": [
+              "커넥터를 유지하며 토픽마다 아웃박스 테이블을 둔다",
+              "트랜잭션 아웃박스를 직접 구현한다"
+            ],
+            "tradeoff": "커넥터를 걷어 내 충돌은 사라졌지만 DB 쓰기와 Kafka 발행이 따로 가는 창이 생겼다 — 쓰기는 됐는데 발행이 실패하거나, 발행은 됐는데 쓰기가 롤백될 수 있다. 회사가 다음 과제로 직접 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "question": "동시성을 파티션 수로 늘릴 것인가",
+            "chosen": "아니다. 소비자마다 워커 풀 — 파티션별로 순차로 가져와 고루틴으로 병렬 처리하고 오프셋을 일괄 커밋한다.",
+            "alternatives": [
+              "파티션을 늘려 동시성을 올린다"
+            ],
+            "tradeoff": "파티션을 늘리면 브로커 부담이 늘어 이미 한계인 자리를 더 누른다. 워커 풀은 파티션 순서를 지키며 계산 자원을 더 쓴다. 대가는 일괄 커밋이라 실패 시 한 묶음이 다시 처리될 수 있다는 것이다 — 회사가 소비자 멱등성을 다음 과제로 꼽은 이유와 맞물린다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "question": "느린 흐름이 결제를 굶기지 않게 하려면",
+            "chosen": "NPCI 게이트웨이를 VPA·결제·위임 셋으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로 둔다.",
+            "alternatives": [
+              "토픽만 모으고 한 게이트웨이에서 처리한다"
+            ],
+            "tradeoff": "외부 지연이 최대 15초인 VPA 검증이 파티션과 소비자를 독점해 결제 처리량을 끌어내리는 것을 인프라 수준에서 막는다. 대가는 배포 단위와 소비자 그룹이 셋으로 늘어난다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          },
+          {
+            "question": "Kafka 클라이언트의 TCP 연결을 어떻게 다루나",
+            "chosen": "커스텀 TLS 다이얼러로 통제된 TCP 풀을 두고 기존 연결을 재사용한다. 방어적 재시도·재연결 로직을 소비자 폴링 둘레에 덧댄다.",
+            "alternatives": [
+              "클라이언트 기본 동작(짧게 사는 연결을 많이 만든다)"
+            ],
+            "tradeoff": "연결 수가 한도 아래로 내려가고 흔들림·롤링 재시작에도 사람 손 없이 복구한다. 대가는 SQL 클라이언트처럼 기본 제공되지 않는 풀링을 직접 유지해야 한다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Five Years of Kafka at Razorpay's UPI Switch",
+                "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-09-07",
+                "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "관측을 싸게 유지한다 (같은 회사 도메인)",
+          "via": "운영 신호",
+          "contract": "브로커 연결 수·CPU 쏠림이 이 시스템의 실제 병목이었다 — 무엇을 관측할지가 처리량 지표만으로는 부족했다(이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "NPCI",
+          "via": "NPCI 게이트웨이 (VPA·결제·위임)",
+          "contract": "모든 NPCI 호출이 여기를 나간다. VPA 검증은 외부 지연이 최대 15초다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "AWS MSK · franz-go",
+          "via": "메시징 백본",
+          "contract": "MSK Serverless(IAM)에서 Provisioned(SASL/SCRAM)로, GoCloud 에서 franz-go 로.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "다시 짓고 난 뒤의 메시지 길",
+          "question": "결제 이벤트는 지금 어떻게 흐르나",
+          "kind": "flow",
+          "code": "flowchart TD\n  SV[\"<b>도메인 서비스</b><br/>• 결제 · VPA · 위임 · 고객 · 가맹점\"]:::list -->|\"franz-go · TCP 풀\"| K[\"<b>MSK Provisioned (SASL/SCRAM)</b><br/>• 도메인별 토픽\"]:::accent\n  K --> WP[\"<b>소비자 워커 풀</b><br/>• 파티션별 순차 가져오기<br/>• 고루틴 병렬 · 일괄 커밋\"]:::accent\n  WP --> G1[\"<b>Payments_GwNPCI</b>\"]:::list\n  WP --> G2[\"<b>VPA_GwNPCI</b><br/>• 외부 지연 최대 15초\"]:::list\n  WP --> G3[\"<b>Mandates_GwNPCI</b>\"]:::list\n  G1 --> N[\"<b>NPCI</b>\"]:::quiet\n  G2 --> N\n  G3 --> N"
+        },
+        {
+          "title": "합리적이던 넷이 한꺼번에 청구서를 보낸 날",
+          "question": "아시아컵 트래픽 앞에서 무엇이 무너졌나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>이벤트 타입마다 토픽</b>\"]:::quiet --> A1[\"<b>파티션 폭발</b><br/>• 브로커가 장부 정리에 CPU\"]:::quiet\n  B[\"<b>GoCloud 추상화</b>\"]:::quiet --> B1[\"<b>DNS 재해석 안 함</b><br/>• 정비 뒤 파드 수동 재시작\"]:::quiet\n  B --> B2[\"<b>연결을 과하게 만든다</b>\"]:::quiet\n  C[\"<b>MSK Serverless + IAM</b>\"]:::quiet --> C1[\"<b>브로커 하나에 연결·CPU 쏠림</b>\"]:::quiet\n  C --> C2[\"<b>브로커당 약 3,000 연결 한도</b>\"]:::quiet\n  B2 --> X[\"<b>아시아컵 2025 — 파드 증설 즉시 한도 포화</b>\"]:::quiet\n  C2 --> X\n  X --> FIX[\"<b>franz-go · 도메인 토픽 · 워커 풀 · Provisioned</b>\"]:::accent\n  A1 --> FIX\n  B1 --> FIX\n  C1 --> FIX"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Five Years of Kafka at Razorpay's UPI Switch",
+          "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+          "publisher": "Razorpay Engineering",
+          "date": "2026-09-07",
+          "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1815,7 +2197,8 @@
     "사업 수치의 출처가 회사 뉴스룸과 3자 자료다 — IPO 를 준비 중이라 DRHP 에 더 정확한 수치가 있을 것이다.",
     "회사가 남은 일 셋을 스스로 적는다 — 일시적 실패와 영구적 실패를 갈라 헛된 재시도를 줄이는 것 · 팀별 비용 귀속 · CI 발자국이 커질 때의 멀티 클러스터 지원. 완성된 이야기로 마무리하지 않는다.",
     "보안 트리아지 글을 아직 안 읽었다 — 750시간이 2시간으로, 30분 조사가 90초 분석으로 줄었다는 수치가 목록에 있는데 본문을 못 봤다.",
-    "Hermes 글이 남은 실패 모드를 다루지 않는다 — 골든 핵 넷은 공개하면서도 보안 연구 과제나 이 구조가 못 막는 것은 적지 않는다. 차단된 21만 9천 건이 무엇이었는지, 오탐이 얼마인지도 없다."
+    "Hermes 글이 남은 실패 모드를 다루지 않는다 — 골든 핵 넷은 공개하면서도 보안 연구 과제나 이 구조가 못 막는 것은 적지 않는다. 차단된 21만 9천 건이 무엇이었는지, 오탐이 얼마인지도 없다.",
+    "UPI Switch Kafka 글(2026-09-07)의 재구축 뒤 벤치마크 표가 RSS 본문에 빠져 있고, franz-go 교체 효과 수치(연결 1,100→300, 지연 250→10ms)에는 원문에 [VERIFY] 표시가 남아 있다 — 확정되면 confidence 를 올린다."
   ],
   "sources": [
     {
@@ -1852,6 +2235,13 @@
       "publisher": "Razorpay Engineering",
       "date": "2026-07-14",
       "summary": "데이터 웨어하우스 갱신을 그래프와 인덱스로 10배 빠르게 만들었다. 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "Five Years of Kafka at Razorpay's UPI Switch",
+      "url": "https://engineering.razorpay.com/tryst-with-kafka-2f5cef766c45",
+      "publisher": "Razorpay Engineering",
+      "date": "2026-09-07",
+      "summary": "UPI Switch(NPCI 와 실시간 결제를 처리하는 플랫폼)는 Razorpay UPI 물량의 70% 넘게를 처리한다. UPI 가 본질적으로 비동기라 메시징이 중심이다. v1 은 모놀리스 + AWS SQS 표준 큐 두 개(KISS) — IPL 최고 400 TPS 를 버텼지만 결제 하나가 NPCI 갱신·가맹점 콜백·Redshift 적재로 퍼지면서 SNS+SQS 를 덧대는 즉흥 구조가 됐다. 10,000 TPS 목표로 v2 는 이벤트 기반 마이크로서비스, SQS 에서 AWS MSK(Kafka)로. 그때 내린 결정들이 나중에 문제가 됐다: ①벤더 중립을 위해 네이티브 클라이언트 대신 GoCloud Pub/Sub 추상화 ②DB 와 발행의 원자성을 위해 아웃박스 + MSK Connector ③브로커 크기를 안 정하려 MSK Serverless ④이벤트 스토밍·DDD 로 이벤트 타입마다 토픽. 규모에서 깨진 것: 토픽 x 복제 x 재시도·DLQ x 제품군으로 파티션 폭발 — 처리량보다 브로커당 파티션 수가 한계. MSK Connector 소스 커넥터는 한 테이블에서 한 토픽만 써서 다중 토픽 라우팅을 덧붙였다가 자주 죽었다. MSK Serverless 는 브로커 셋 중 하나에 연결·CPU 가 쏠렸고, 클러스터 엔드포인트 없이 개별 브로커 주소만 줘서 월간 정비 재시작 뒤 GoCloud 가 DNS 를 다시 풀지 않아 파드를 손으로 재시작해야 했다. 추상화가 Kafka 클라이언트 설정을 가려 쏠림을 못 막았다. 아시아컵 2025 대비로 파드를 늘렸다가 MSK IAM 인증의 브로커당 약 3,000 TCP 연결 한도에 곧바로 닿았다. 고친 것: franz-go 로 교체(DNS 재해석·연결 효율·배칭·세밀한 설정) — 브로커당 연결 약 1,100→300, 발행 지연 약 250→10ms(원문에 [VERIFY] 표시). 소비자마다 워커 풀(파티션별 순차 가져오기, 고루틴 병렬 처리, 일괄 오프셋 커밋)로 파티션 순서를 지키며 동시성을 파티션에서 떼어 냄. 방어적 재시도·재연결. 커스텀 TLS 다이얼러로 TCP 풀링. 도메인별로 관련 이벤트를 한 토픽에 모으고 소비자에서 거름(예: VPA·은행 계좌 모듈이 토픽 둘). 외부 지연 최대 15초인 VPA 검증이 결제를 굶기지 않게 NPCI 게이트웨이를 VPA·결제·위임으로 쪼개 토픽·소비자 그룹·컴퓨트를 따로. MSK Provisioned + SASL/SCRAM 으로 이전. 남은 것: 소비자 멱등성, MSK Connector 제거로 잃은 DB·Kafka 원자성, 일관된 재시도·DLQ 정책."
     }
   ]
 }
