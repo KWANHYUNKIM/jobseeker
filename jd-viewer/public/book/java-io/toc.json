@@ -74,7 +74,7 @@
           "title": "컴퓨터와 데이터",
           "summary": "세상에 문자는 없다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.2",
@@ -82,7 +82,7 @@
           "title": "문자 집합",
           "summary": "아스키에서 유니코드까지.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.3",
@@ -90,7 +90,7 @@
           "title": "UTF-8 이 하는 일",
           "summary": "한글은 왜 3바이트인가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "2.4",

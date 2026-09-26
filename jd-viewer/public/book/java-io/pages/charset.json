@@ -1,0 +1,234 @@
+{
+  "book": "java-io",
+  "id": "charset",
+  "no": "2.2",
+  "chapter": 2,
+  "title": "문자 집합",
+  "summary": "아스키에서 유니코드까지.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "문자 집합이 왜 여러 개인지 안다.",
+    "코드포인트와 char 개수가 다를 수 있는 것을 본다.",
+    "어느 집합이 어느 글자를 담을 수 있는지 재 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.1절에서 **글자 → 수**를 유니코드가 정한다고 했다. 그런데 유니코드 이전에 **각자 정한 표가 수십 개** 있었고, 그것들이 아직 돌아다닌다.\n\n이 JVM 이 아는 문자 집합은 **173개**다."
+    },
+    {
+      "type": "figure",
+      "caption": "표가 늘어난 순서",
+      "ascii": "   ASCII          7 bits, 128 slots        english only\n     |            0x00 - 0x7F\n     v\n   ISO-8859-1     8 bits, 256 slots        + western europe\n     |            latin-1\n     v\n   per-country    EUC-KR, Shift_JIS, GB2312, KOI8-R ...\n     |            each one incompatible with the others\n     v\n   Unicode        one table for everything, 1.1 million slots\n                  code point is NOT the same as bytes (2.3)",
+      "note": "**마지막 줄이 중요하다.** 유니코드는 \"어느 글자가 몇 번인가\"만 정했다. 그 번호를 바이트로 적는 방법은 따로 정해야 하고 그것이 UTF-8·UTF-16 이다."
+    },
+    {
+      "type": "table",
+      "caption": "글자와 코드포인트",
+      "columns": [
+        "글자",
+        "코드포인트",
+        "십진",
+        "`String.length()`"
+      ],
+      "rows": [
+        [
+          "`A`",
+          "U+41",
+          "65",
+          "1"
+        ],
+        [
+          "`~`",
+          "U+7E",
+          "126",
+          "1"
+        ],
+        [
+          "`é`",
+          "U+E9",
+          "233",
+          "1"
+        ],
+        [
+          "`가`",
+          "U+AC00",
+          "44032",
+          "1"
+        ],
+        [
+          "`한`",
+          "U+D55C",
+          "54620",
+          "1"
+        ],
+        [
+          "`€`",
+          "U+20AC",
+          "8364",
+          "1"
+        ],
+        [
+          "`😀`",
+          "**U+1F600**",
+          "128512",
+          "**2**"
+        ]
+      ],
+      "note": "**마지막 줄의 2 를 보라.** 한 글자인데 `String.length()` 가 2 다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "char 하나로 안 되는 글자가 있다",
+      "md": "`char` 는 16비트다 — **0 ~ 65,535** 까지만 담는다. 그런데 `😀` 는 **128,512** 다.\n\n> 자바는 이런 글자를 **`char` 둘로 쪼개서** 담는다(서로게이트 쌍). 그래서 `length()` 가 2 다.\n> `s.charAt(0)` 은 **글자의 반쪽**이다. 그것만 출력하면 깨진다.\n> 글자 단위로 세려면 `s.codePointCount(0, s.length())` 를 쓰고, 순회하려면 `s.codePoints()` 를 쓴다.\n> **이모지가 들어오는 입력에서 `length()` 로 글자 수를 세면 틀린다** — 흔한 버그다."
+    },
+    {
+      "type": "prose",
+      "md": "## 어느 표가 어느 글자를 담을 수 있나\n\n`Charset.newEncoder().canEncode()` 로 물어볼 수 있다. 네 집합에 네 글자를 물었다."
+    },
+    {
+      "type": "table",
+      "caption": "담을 수 있나 (O = 된다)",
+      "columns": [
+        "문자 집합",
+        "`A`",
+        "`é`",
+        "`가`",
+        "`😀`"
+      ],
+      "rows": [
+        [
+          "US-ASCII",
+          "O",
+          "**X**",
+          "**X**",
+          "**X**"
+        ],
+        [
+          "ISO-8859-1",
+          "O",
+          "O",
+          "**X**",
+          "**X**"
+        ],
+        [
+          "EUC-KR",
+          "O",
+          "**X**",
+          "O",
+          "**X**"
+        ],
+        [
+          "UTF-8",
+          "O",
+          "O",
+          "O",
+          "O"
+        ]
+      ],
+      "note": "**EUC-KR 은 `가` 는 되고 `é` 는 안 된다.** 한국 표에 프랑스 글자가 없다 — 표마다 담는 것이 다르다는 말이 이 뜻이다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "담을 수 없으면 조용히 물음표가 된다",
+      "md": "`canEncode()` 가 `false` 인 글자를 그 집합으로 쓰면 **예외가 아니라 `?`** 가 나간다.\n\n> 되돌릴 수 없다 — `?` 로 바뀐 바이트에는 원래 글자의 정보가 **남아 있지 않다.**\n> 그래서 \"글자가 물음표로 나온다\" 는 신고는 **이미 늦은 것**이다. 2.6절에서 이 두 가지 망가짐(되돌릴 수 있는 것과 없는 것)을 가른다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "이름이 여러 개다",
+      "md": "같은 집합을 여러 이름으로 부른다. 그래서 설정 파일마다 다른 이름이 적혀 있다.\n\n```\nx-windows-949  별칭 [windows949, ms949, windows-949, ms_949]\nEUC-KR         별칭 [ksc5601, euc_kr, ks_c_5601-1987, euckr, 5601, ...]\nISO-8859-1     별칭 [latin1, ISO8859_1, 8859_1, cp819, ...]\n```\n\n> **`MS949` 는 `x-windows-949` 의 별칭**이다 — 자바 안에서는 같은 것이다.\n> `US-ASCII` 의 별칭 목록에 **`default`** 가 들어 있는 것이 함정이다. `Charset.forName(\"default\")` 는 기본 charset 이 아니라 **US-ASCII** 다.\n> 기본 charset 을 알고 싶으면 `Charset.defaultCharset()` 을 쓴다(2.5절)."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"유니코드와 UTF-8 의 차이가 뭡니까.\"**\n\n> **유니코드는 글자에 번호를 붙인 표**이고, **UTF-8 은 그 번호를 바이트로 적는 방법**이다. 층이 다르다.\n> `'가'` 는 유니코드에서 `U+AC00` 하나지만, 바이트로는 UTF-8 에서 `ea b0 80`, UTF-16 에서 `ac 00` 이다.\n> \"유니코드로 저장했다\" 는 말은 **절반만 말한 것**이다 — 어느 UTF 인지가 빠져 있다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 173개와 canEncode",
+      "sql": "$ java -cp out Sets\n이 JVM 이 아는 문자 집합 개수 = 173\n기본 charset = UTF-8\n\n--- 이름을 몇 개만 ---\n  US-ASCII       별칭 [ANSI_X3.4-1968, cp367, csASCII, iso-ir-6, ASCII,\n                       iso_646.irv:1983, ANSI_X3.4-1986, ascii7, default, ...]\n  ISO-8859-1     별칭 [819, ISO8859-1, l1, ISO_8859-1:1987, latin1, cp819, ...]\n  UTF-8          별칭 [unicode-1-1-utf-8, UTF8]\n  UTF-16         별칭 [UTF_16, unicode, utf16, UnicodeBig]\n  x-windows-949  별칭 [windows949, ms949, windows-949, ms_949]\n  EUC-KR         별칭 [ksc5601-1987, csEUCKR, ksc5601, 5601, euc_kr, ...]\n\n--- 코드포인트 ---\n  A   U+41     십진 65      char 개수 1\n  ~   U+7E     십진 126     char 개수 1\n  é   U+E9     십진 233     char 개수 1\n  가   U+AC00   십진 44032   char 개수 1\n  한   U+D55C   십진 54620   char 개수 1\n  €   U+20AC   십진 8364    char 개수 1\n  😀  U+1F600  십진 128512  char 개수 2\n\n--- 어느 집합이 이 글자를 담을 수 있나 ---\n  US-ASCII     O   X   X   X\n  ISO-8859-1   O   O   X   X\n  EUC-KR       O   X   O   X\n  UTF-8        O   O   O   O\n             (A   é   가  😀)\n\n# 😀 만 char 개수가 2 다 — 16비트로 안 되는 글자라 char 둘로 쪼개 담는다.\n# US-ASCII 의 별칭에 default 가 있다. forName(\"default\") 는 US-ASCII 다.",
+      "note": "**표가 173개인데 전부 담는 것은 UTF 계열뿐이다.** 그래서 오늘 새로 만드는 것에 다른 집합을 고를 이유가 없다 — 2.4절에서 왜 아직 MS949 를 만나는지 본다."
+    }
+  ],
+  "recap": [
+    "이 JVM 이 아는 문자 집합은 173개다. 유니코드 이전에 각자 만든 표가 아직 돌아다닌다.",
+    "유니코드는 글자에 번호를 붙인 표이고, 그 번호를 바이트로 적는 방법이 UTF-8·UTF-16 이다.",
+    "😀 는 코드포인트 U+1F600 이지만 String.length() 가 2 다 — char 는 16비트뿐이다.",
+    "이모지가 들어오는 입력에서 length() 로 글자 수를 세면 틀린다. codePointCount 를 쓴다.",
+    "EUC-KR 은 가 는 담고 é 는 못 담는다. 담을 수 없으면 예외 없이 ? 가 된다.",
+    "MS949 는 x-windows-949 의 별칭이다. US-ASCII 의 별칭에 default 가 있어 헷갈린다."
+  ],
+  "drills": [
+    {
+      "task": "Charset.availableCharsets().size() 를 내 JVM 에서 찍어 본다.",
+      "done_when": "개수와 기본 charset 을 적는다.",
+      "minutes": 5
+    },
+    {
+      "task": "이모지가 든 문자열의 length() 와 codePointCount() 를 비교한다.",
+      "done_when": "두 값이 다른 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "EUC-KR 로 é 를 써 보고 파일을 od 로 확인한다.",
+      "done_when": "3f(?) 가 들어간 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "Charset.forName(\"default\") 가 무엇인지 확인한다.",
+      "done_when": "US-ASCII 인 것을 본다.",
+      "minutes": 5
+    }
+  ],
+  "quiz": [
+    {
+      "q": "유니코드와 UTF-8 의 관계는.",
+      "a": "유니코드는 글자에 번호를 붙인 표, UTF-8 은 그 번호를 바이트로 적는 방법이다."
+    },
+    {
+      "q": "😀 의 String.length() 가 2 인 이유는.",
+      "a": "코드포인트가 65,535 를 넘어 char 하나에 안 들어가고 서로게이트 쌍으로 쪼개진다."
+    },
+    {
+      "q": "canEncode() 가 false 인 글자를 쓰면.",
+      "a": "예외 없이 ? 로 바뀐다. 되돌릴 수 없다."
+    },
+    {
+      "q": "Charset.forName(\"default\") 는 무엇인가.",
+      "a": "US-ASCII 다. 기본 charset 은 Charset.defaultCharset() 으로 얻는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "문자 집합",
+      "what": "어떤 글자를 담고 각 글자를 무슨 번호로 부를지 정한 표. 유니코드도 그중 하나다."
+    },
+    {
+      "term": "서로게이트 쌍",
+      "what": "16비트로 안 되는 코드포인트를 char 둘로 나눠 담는 방식. length() 가 2 가 되는 이유다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Charset",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/Charset.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — String.codePointCount",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "The Unicode Standard — Appendix: Surrogates",
+      "url": "https://www.unicode.org/faq/utf_bom.html",
+      "publisher": "Unicode Consortium"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "book": "java-io",
+  "id": "data-and-bytes",
+  "no": "2.1",
+  "chapter": 2,
+  "title": "컴퓨터와 데이터",
+  "summary": "세상에 문자는 없다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "char 가 수인 것을 확인한다.",
+    "같은 바이트가 두 가지 뜻이 되는 것을 본다.",
+    "왜 약속이 따로 필요한지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "1.4절에서 파일의 한 바이트가 **0~255의 수**인 것을 봤다. 이 장은 그 수와 **글자** 사이의 약속을 본다.\n\n먼저 확실히 해 둘 것이 있다 — **컴퓨터 안에 문자는 없다.** 수만 있다. `'A'` 도 수고, `'가'` 도 수다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "char 를 int 로 바꿔 보면",
+      "code": "char c = 'A';\nSystem.out.println((int) c);        // 65\nSystem.out.println((char) 65);      // A\n\nSystem.out.println((int) '가');      // 44032\nSystem.out.println((char) 44032);   // 가\n\n// 44032 를 16진수로 쓰면 AC00. 이 수를 '코드포인트' 라고 부른다.\nSystem.out.println(Integer.toHexString('가'));   // ac00"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "`char` 는 정수 타입이다",
+      "md": "자바에서 `char` 는 **16비트 부호 없는 정수**다. 문자 타입이 아니라 수 타입이다.\n\n> `'A' + 1` 이 `'B'` 가 아니라 **`66`(int)** 이 되는 것이 그 증거다.\n> `switch` 에 `char` 를 쓸 수 있고 `case 'A'` 가 `case 65` 와 같다.\n> 그래서 **글자를 다루는 일은 처음부터 끝까지 수를 다루는 일**이다. 어디서 글자로 보이느냐만 다르다."
+    },
+    {
+      "type": "prose",
+      "md": "## 수를 바이트로 적는 것도 약속이다\n\n`44032` 라는 수를 파일에 넣으려면 **몇 바이트에 어떤 순서로 담을지**를 정해야 한다. `DataOutputStream` 이 그 약속 중 하나를 구현해 놓은 것이다."
+    },
+    {
+      "type": "figure",
+      "caption": "여섯 번 쓰고 28바이트가 된 파일",
+      "ascii": "   writeInt(1)        00 00 00 01        4 bytes, high byte first\n   writeInt(65)       00 00 00 41        4 bytes\n   writeLong(1)       00 00 00 00 00 00 00 01      8 bytes\n   writeDouble(1.0)   3f f0 00 00 00 00 00 00      8 bytes, IEEE 754\n   writeChar('A')     00 41              2 bytes\n   writeChar('가')    ac 00              2 bytes  <- the code point U+AC00\n                      --------------------------\n                      28 bytes total",
+      "note": "**`writeChar('가')` 가 `ac 00` 이다** — 코드포인트를 그대로 2바이트에 담았다. 2.3절에서 UTF-8 로 쓰면 `ea b0 80` 3바이트가 되는 것을 본다. **같은 글자, 다른 바이트.**"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "높은 바이트가 먼저 오는 것도 약속이다",
+      "md": "`writeInt(1)` 이 `00 00 00 01` 이다. `01 00 00 00` 이 아니다.\n\n> 큰 자리를 앞에 두는 방식을 **빅 엔디언**이라 하고, 자바의 `DataOutputStream` 은 **항상 빅 엔디언**이다.\n> x86 CPU 는 메모리에서 반대로 쓴다(리틀 엔디언). 그래도 자바가 파일에 쓸 때는 빅 엔디언이다 — **판과 CPU 가 달라도 같은 파일이 나오게** 하려고 그렇게 정했다.\n> 5.1절에서 이 약속을 다시 쓴다."
+    },
+    {
+      "type": "prose",
+      "md": "## 같은 바이트가 두 가지 뜻이 된다\n\n`3f 80 00 00` 네 바이트가 있다. **무슨 값인가.** 답이 둘이다."
+    },
+    {
+      "type": "compare",
+      "title": "`3f 80 00 00` 을 읽는 두 방법",
+      "left": {
+        "title": "`int` 로 읽으면",
+        "md": "**1,065,353,216**\n\n32비트를 정수로 읽은 값이다."
+      },
+      "right": {
+        "title": "`float` 로 읽으면",
+        "md": "**1.0**\n\n같은 32비트를 IEEE 754 로 읽은 값이다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "바이트만 보면 뜻을 알 수 없다",
+      "md": "이것이 이 책 전체의 전제다.\n\n> `od` 가 보여 주는 것은 **바이트뿐**이다. 그것이 정수인지 실수인지 글자인지는 **파일 안에 안 적혀 있다.**\n> 읽는 쪽이 **약속을 알고 있어야** 한다 — 그 약속이 숫자 쪽에서는 `DataInputStream`(5장), 글자 쪽에서는 **인코딩**(이 장)이다.\n> 약속이 어긋나면 예외도 안 나고 **그냥 다른 값**이 된다. 2.6절이 그 자리다."
+    },
+    {
+      "type": "prose",
+      "md": "## 그래서 인코딩이다\n\n글자를 바이트로 옮기려면 두 단계가 필요하다. **글자 → 수**(코드포인트)는 유니코드가 정했고(2.2절), **수 → 바이트**는 인코딩이 정한다(2.3절).\n\n`'가'` 는 유니코드에서 `U+AC00` 이고, 그 수를 바이트로 적는 방법은 **여럿**이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 수와 바이트",
+      "sql": "$ java -cp out Data1\n--- char 는 수다 ---\n'A' 를 int 로 = 65\n65 를 char 로 = A\n'가' 를 int 로 = 44032\n44032 를 char 로 = 가\n'가' 의 코드포인트 = U+AC00\n\n--- 그 수를 바이트로 적는 것도 약속이다 ---\nwriteInt(1) 은 4바이트, writeChar('가') 는 2바이트\n\n--- 같은 4바이트를 두 가지로 읽으면 ---\nint  로 읽으면 1,065,353,216\nfloat 로 읽으면 1.0\n16진수 = 3f800000\n\n# --- 파일에 무엇이 들어갔나 ---\n\n$ od -An -tx1 nums.bin\n           00  00  00  01  00  00  00  41  00  00  00  00  00  00  00  01\n           3f  f0  00  00  00  00  00  00  00  41  ac  00\n\n$ ls -l nums.bin\n28 bytes\n\n# 앞에서부터: int 1 / int 65 / long 1 / double 1.0 / char 'A' / char '가'\n# 마지막 두 바이트 ac 00 이 '가' 다 — 코드포인트 U+AC00 그대로다.",
+      "note": "**28바이트 안에 여섯 개의 값이 있는데, 파일은 그 경계를 모른다.** `writeInt` 네 개인지 `writeLong` 두 개인지 바이트만 보고는 알 수 없다 — 읽는 순서를 쓴 쪽과 맞춰야 한다."
+    }
+  ],
+  "recap": [
+    "컴퓨터 안에 문자는 없다. char 는 16비트 부호 없는 정수다.",
+    "'A' 는 65, '가' 는 44032(U+AC00)다. 이 수를 코드포인트라 부른다.",
+    "수를 바이트로 적는 것도 약속이다 — writeInt 는 4바이트, 자바는 항상 빅 엔디언이다.",
+    "writeChar('가') 는 ac 00 두 바이트로 코드포인트를 그대로 담는다.",
+    "같은 3f 80 00 00 이 int 로는 1,065,353,216 이고 float 로는 1.0 이다.",
+    "바이트만 보면 뜻을 알 수 없다. 읽는 쪽이 약속을 알고 있어야 한다.",
+    "글자 → 수는 유니코드가, 수 → 바이트는 인코딩이 정한다."
+  ],
+  "drills": [
+    {
+      "task": "'A' + 1 의 결과와 타입을 확인한다.",
+      "done_when": "66(int)인 것을 본다.",
+      "minutes": 5
+    },
+    {
+      "task": "내 이름의 각 글자를 (int) 로 찍어 본다.",
+      "done_when": "코드포인트를 16진수로도 적어 본다.",
+      "minutes": 7
+    },
+    {
+      "task": "writeInt 로 쓴 파일을 readLong 으로 읽어 본다.",
+      "done_when": "값이 엉키는 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "Float.floatToRawIntBits(2.0f) 를 od 로 확인한다.",
+      "done_when": "40 00 00 00 인 것을 본다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "자바의 char 는 무슨 타입인가.",
+      "a": "16비트 부호 없는 정수다. 'A' + 1 이 66 이 되는 것이 증거다."
+    },
+    {
+      "q": "코드포인트란.",
+      "a": "유니코드가 글자마다 정해 둔 수다. '가' 는 U+AC00, 곧 44032 다."
+    },
+    {
+      "q": "DataOutputStream 의 바이트 순서는.",
+      "a": "항상 빅 엔디언이다. CPU 와 무관하게 같은 파일이 나오게 정했다."
+    },
+    {
+      "q": "파일의 바이트만 보고 값의 뜻을 알 수 있나.",
+      "a": "없다. 정수인지 실수인지 글자인지는 파일에 적혀 있지 않다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "코드포인트",
+      "what": "유니코드가 글자에 붙인 수. U+AC00 처럼 적는다."
+    },
+    {
+      "term": "빅 엔디언",
+      "what": "큰 자리 바이트를 앞에 두는 방식. 자바의 Data 스트림은 항상 이쪽이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JLS 17 — 4.2.1. Integral Types and Values",
+      "url": "https://docs.oracle.com/javase/specs/jls/se17/html/jls-4.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — DataOutputStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/DataOutputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "The Unicode Standard — Glossary: Code Point",
+      "url": "https://www.unicode.org/glossary/#code_point",
+      "publisher": "Unicode Consortium"
+    }
+  ]
+}
