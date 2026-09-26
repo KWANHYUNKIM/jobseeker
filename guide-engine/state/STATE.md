@@ -7,9 +7,11 @@
 **쿠팡은 `done`(186건).** 남은 5건(모의해킹 4·Mobile Security 1)은 사용자 결정으로 보류 — QUEUE `## 미룸`.
 
 **사용자 지시(2026-09-26): 국내 사이트 회사를 공고 수 순서대로 전부 한다.** QUEUE `## 대기` 에 15곳을 순서대로 넣었다(기준·제외 목록은 대기 머리말). 대기가 비면 같은 기준으로 다음 15곳을 채운다.
-**현대오토에버(`hyundai-autoever`) — `in_progress`, 공고 12건 완료 → 확장 상한(`EXPAND_CAP`)에 닿았다.** 대기열이 남아 있으니 여기서 멈춘다.
-남은 것(보강 단계에서): 사람인 서비스 Robot PM(55092048, 본문 있음). jobkorea·catch 게시분은 본문 없음.
-⚠️ 다음 회차: 대기 맨 위 **베스핀글로벌** 을 `in_progress` 로 만들고 3단계(회사 브리핑)부터. QUEUE `## 대기` 에서 그 줄을 지운다.
+**현대오토에버** — 12건에서 멈춤(`in_progress`). 남은 사람인 Robot PM(55092048)은 보강 단계에서.
+**베스핀글로벌(`bespinglobal`) — `in_progress`, 회사 브리핑만 썼다(공고 0건).** 출처는 홈페이지 서비스 목록 + `/about/` + 원티드 공고 팀 소개.
+⚠️ 다음 회차: 원티드 6건부터 한 사이클 한 건씩 — Data Engineer(381981) · AI Agent(382243) · LLM Engineer(381976) · Senior AI Infra(381967) · Okta(381969) · GCP Engineer(382078).
+그다음 사람인 9건(원티드와 같은 직무가 겹친다 — Data Engineer·GCP·Okta·Senior AI Infra 는 본문 비교 후 `duplicate_of`). 사람인만 있는 것: SRE 2팀 시니어, PL 및 AI 개발자(차장급), Senior Cloud Platform Engineer, AWS DBA(과장급), GCP Big data Engineer(과장급).
+주의: Okta 공고(381969)는 제목이 'SECaaS팀' 인데 본문 첫 문단은 'AI Expert실 … Helpnow AI Foundry' 팀 소개다 — open_questions 에 적을 것.
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 주의: 원문에 zero-width space(U+200B)가 섞여 있다 — quote 는 main_tasks/qualifications/preferences 에서 그대로 복사한다.
 

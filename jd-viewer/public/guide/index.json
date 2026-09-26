@@ -363,6 +363,17 @@
       "postings": 12,
       "study_items": 61,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "bespinglobal",
+      "name": "베스핀글로벌",
+      "aliases": [
+        "베스핀글로벌"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }
