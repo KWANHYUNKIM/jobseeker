@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — val-town 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — zed 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **zed** — 2026-09-26 없음 1회째. `zed.dev/blog.rss`(정렬 필요). 09-07 이후는 09-16 Delta 공개 베타(제품 발표 — PR 을 끄고 33명이 main 에 570건, zed 저장소는 GitHub 유지, 공개 베타 무료). 이전 글 후보: **06-11 "Software Is Made Between Commits"(DeltaDB — Git 위에 델타 버전, 설계 원문, 1순위)**, 09-01 Xanadu 의견.
 - **val-town** — 2026-09-26 없음 1회째. `blog.val.town/rss.xml`(정렬 필요). 09-07 이후는 09-10 changelog 하나. 이전 글 후보: 09-02 커넥터(모든 앱을 잇기), 08-14 Access 인증, 08-11 투자자 업데이트(사업 수치가 있을 수 있다).
 - **ubicloud** — 2026-09-26 없음 1회째. RSS 는 `ubicloud.com/rss/rss.xml`(글 주소도 /rss/ 아래). 마지막 글이 08-17 Machine Images 발표. 이전 글 후보: **04-27 PostgreSQL 과 OOM killer — strict memory overcommit 을 쓰는 이유**(결정·대가, 1순위), 2025-12-15 HGX B200 가상화.
 - **turbopuffer** — 2026-09-26 없음 1회째. r.jina.ai 로 `/blog` 목록(날짜는 글마다). 마지막 글이 09-04. 이전 글 후보(출처에 없음, **엔지니어링 결정 있을 가능성 높음**): 09-04 대규모 코드 검색, 08-14 컨트롤 플레인, 02-18 객체 저장소 큐, 02-12 ANN v3.
