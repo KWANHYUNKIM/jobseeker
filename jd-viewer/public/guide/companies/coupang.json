@@ -8434,6 +8434,134 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55055665&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=f8319db3-ddae-41c1-b0bf-d0b9eff3dad1",
+      "title": "Senior, Network Security Engineer (Detection Operations)",
+      "site": "saramin",
+      "verdict": "소프트웨어 개발 직군이 아니라 네트워크 보안 운영(탐지·대응) 직군이다. 네트워크(L3·L4·L7)·보안 5년 이상으로, 국내외 IDC·오피스의 방화벽·IDS/IPS·WAF·SSLVA·NDR 을 운영하고 SIEM·NDR 로 위협을 탐지하며, 로그 분석·대시보드·Playbook·운영 자동화까지 만드는 사람. 국내외 출장에 결격 사유가 없어야 한다.",
+      "fit": {
+        "must_have": [
+          "네트워크(L3·L4·L7)·보안 실무 5년 이상",
+          "Firewall·IDS/IPS·WAF·SSLVA·NDR 구축·운영",
+          "SIEM·NDR 기반 모니터링·위협 탐지",
+          "보안 로그 분석으로 위협 식별·해결",
+          "국내외 출장 가능"
+        ],
+        "can_learn": [
+          "쿠팡 IDC·오피스 구성",
+          "Python/Go 자동화(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보안 장비 스택의 역할 구분 (Firewall·IDS/IPS·WAF·SSLVA·NDR)",
+          "from": "qualification",
+          "quote": "• 다양한 보안 솔루션(Firewall, IDS/IPS, WAF, SSLVA, NDR 등)의 구축 및 운영 경험을 보유하신 분",
+          "priority": "core",
+          "why": "자격 줄에 장비 다섯 종이 나열돼 있고, 주요업무가 IDC·오피스 보안 장비의 운영·자산 관리다.",
+          "gap_check": "암호화된 트래픽에서 IDS/NDR 이 무엇을 못 보고, SSLVA(SSL 가시성 장비)가 그 앞뒤 어디에 놓여야 하는지 그릴 수 있는가?",
+          "drill": "가상 랩(GNS3/EVE-NG 또는 VM)에 방화벽(pfSense)·IDS(Suricata)를 두고, 평문·TLS 트래픽 각각에서 Suricata 가 탐지하는 것과 못하는 것을 기록한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Suricata — Documentation",
+              "url": "https://docs.suricata.io/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SIEM·NDR 로 위협 탐지 Usecase 만들기",
+          "from": "task",
+          "quote": "• 네트워크 모니터링을 위한 Usecase 및 Playbook 생성",
+          "priority": "core",
+          "why": "주요업무에 Usecase·Playbook 생성이 있고, 자격에 SIEM·NDR 활용 탐지 경험이 있다.",
+          "gap_check": "'내부 호스트가 새벽에 처음 보는 해외 IP 로 대량 전송'을 탐지하는 규칙을 쓸 때 오탐을 줄이려면 어떤 기준선(baseline)을 두는가?",
+          "drill": "Zeek(또는 Suricata EVE) 로그를 Elastic/OpenSearch 에 넣고, 대량 외부 전송 탐지 규칙 하나와 그 대응 Playbook(확인 → 격리 → 보고)을 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Zeek — Documentation",
+              "url": "https://docs.zeek.org/en/master/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보안 로그 분석과 근본 원인 분석",
+          "from": "qualification",
+          "quote": "• 보안 로그 분석을 통해 위협을 식별하고 문제를 해결한 경험이 있으신 분",
+          "priority": "core",
+          "why": "팀 소개가 '정확한 원인 분석을 통해 재발 방지 체계를 구축'하는 역할을 강조한다.",
+          "gap_check": "방화벽·프록시·엔드포인트 로그의 시간·IP 가 서로 어긋날 때(NAT·시간대) 한 사건의 경로를 어떻게 이어 붙이는가?",
+          "drill": "공개 PCAP 하나(악성 트래픽 샘플)를 Wireshark·Zeek 로 분석해 감염 경로를 타임라인으로 정리한 보고서를 쓴다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "MITRE ATT&CK 으로 탐지 범위 매핑",
+          "from": "preference",
+          "quote": "• OWASP, MITRE ATT&CK 등 보안 프레임워크에 대한 이해와 활용 경험이 있으신 분",
+          "priority": "high",
+          "why": "탐지 규칙이 어떤 공격 기법을 덮고 어디가 비는지 보여 주는 공용 틀이다. 주요업무의 '가시성이 부족한 영역에 대한 모니터링 개선'과 이어진다.",
+          "gap_check": "자신이 운영한 탐지 규칙들을 ATT&CK 전술별로 나눴을 때 가장 비어 있는 전술은 무엇이고 왜인가?",
+          "drill": "위에서 만든 탐지 규칙들을 ATT&CK Navigator 레이어로 매핑해 빈 칸을 표시하고, 하나를 메우는 규칙을 추가한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "MITRE ATT&CK",
+              "url": "https://attack.mitre.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Python/Go 로 보안 운영 자동화",
+          "from": "preference",
+          "quote": "• Python, Go, JavaScript 등 프로그래밍 언어를 활용하여 보안 업무 자동화 또는 서비스 개발을 경험하신 분",
+          "priority": "high",
+          "why": "주요업무에 '운영 자동화 구현 및 효율화'와 '보안 장비 로그 분석 및 리포트/대시보드 구현'이 있다.",
+          "gap_check": "매일 손으로 하는 장비 점검(정책 변경 여부·라이선스·로그 수집 상태)을 자동화하면 무엇을 수집하고 무엇을 알림으로 보내는가?",
+          "drill": "Python 으로 방화벽 정책 내보내기 파일을 전날과 비교해 변경분만 요약해 메시지로 보내는 스크립트를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "SOP·재해복구 계획",
+          "from": "task",
+          "quote": "• SOP(Standard Operating Procedure) 개발, 개선 및 문서화",
+          "priority": "high",
+          "why": "네트워크 장비 모니터링 정책과 재해복구 계획 수립·이행이 주요업무에 따로 있다. 글로벌 벤더·파트너에게 작업을 지시하려면 절차 문서가 기준이 된다(추론).",
+          "gap_check": "IDC 코어 방화벽 한 대가 죽었을 때의 SOP 에 반드시 들어가야 하는 단계(판단 기준·전환·검증·복구·보고)를 말할 수 있는가?",
+          "drill": "방화벽 HA 전환 SOP 한 편을 쓰고, 랩에서 실제로 한 대를 내려 절차대로 전환·복구해 걸린 시간을 기록한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "보안 운영 대시보드 포트폴리오",
+          "why": "주요업무의 '로그 분석 및 리포트/대시보드 구현'과 우대의 SQL·데이터 분석 도구를 한 번에 보여 준다. 탐지 건수·오탐률·대응 시간을 보여 주는 대시보드가 좋다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "보안 장비별 역할과 배치",
+          "SIEM 탐지 규칙의 오탐 관리",
+          "로그로 사건 경로를 이은 경험",
+          "자동화한 운영 업무"
+        ],
+        "sources": [
+          {
+            "title": "Senior, Network Security Engineer (Detection Operations)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55055665&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=f8319db3-ddae-41c1-b0bf-d0b9eff3dad1",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
