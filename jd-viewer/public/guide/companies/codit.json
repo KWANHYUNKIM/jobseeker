@@ -559,6 +559,136 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/94220",
+      "title": "웹 크롤링(스크래핑) 개발자 (2년 이상)",
+      "site": "wanted",
+      "verdict": "경력 2-20년('신입 지원 불가'). 코딧 서비스의 원재료 — 한국·미국·일본 등의 입법·규제 데이터(회사 브리핑) — 를 모으는 자리다. 다양한 소스에서 수집·가공하는 크롤러와 데이터 파이프라인, AWS 데이터 인프라 구축·자동화, 파이프라인 모니터링·장애 해결·성능 개선, API 서버 개발. 필수가 넓다 — 크롤링 개발·운영 2년 이상, Airflow 크롤러 스케줄링, Node.js·Express API, MySQL·NoSQL, ELK 인덱싱·API 연동, JavaScript·TypeScript·Python, HTML5·CSS3·웹 표준. BeautifulSoup4·Puppeteer, Node.js·Django, 로깅 시스템, Docker/Kubernetes, 테스트 코드, 영어 개발문서 독해는 우대다. 우대에 '다양한 크롤링(스크래핑) 방어 회피 개발' 이 적혀 있다 — 대상 사이트의 이용약관·robots.txt·요청 빈도 한도와 공식 API 제공 여부를 먼저 확인할 일이다. 전형: 서류 전형 → 코딩 과제 테스트 → 온라인 면접 → 대면 면접 → 처우 협의 → 최종 합격(필요 시 레퍼런스 체크). 자기소개서는 '성장 배경보다 경험했던 업무에 대해' 쓰라고 한다.",
+      "fit": {
+        "must_have": [
+          "크롤링 개발·운영 2년 이상(신입 불가)",
+          "Airflow 크롤러 스케줄링",
+          "Node.js·Express API",
+          "MySQL·NoSQL",
+          "ELK 인덱싱",
+          "JavaScript·TypeScript·Python",
+          "HTML5·CSS3·웹 표준"
+        ],
+        "can_learn": [
+          "BeautifulSoup4·Puppeteer",
+          "로깅 시스템",
+          "Docker/Kubernetes",
+          "테스트 코드",
+          "영어 문서 독해"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Airflow 로 크롤러 스케줄링·재시도",
+          "from": "qualification",
+          "quote": "• Apache Airflow를 이용하여 크롤러 스케줄링 및 운영 경험이 있으신 분을 찾습니다.",
+          "priority": "core",
+          "why": "필수이고 주요업무에 '인프라 및 파이프라인을 지속적으로 모니터링하고 장애를 해결' 이 있다.",
+          "gap_check": "수십 개 사이트 크롤러를 Airflow 로 돌릴 때 사이트 하나가 구조를 바꿔 파싱이 깨지면 그 DAG 만 실패로 알리고 나머지는 계속 돌게 하려면 DAG 를 어떻게 나누고, '0건 수집' 을 성공이 아니라 이상으로 잡으려면 무엇을 검사하는가?",
+          "drill": "공개 데이터 사이트 두세 곳(법령·의안 공개 페이지 등, 이용약관·robots.txt 확인)을 대상으로 사이트별 DAG 를 만들고 재시도·요청 간격·수집 건수 검사·실패 알림을 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Airflow — DAGs",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 9309 — Robots Exclusion Protocol",
+              "url": "https://www.rfc-editor.org/rfc/rfc9309.html",
+              "kind": "docs"
+            },
+            {
+              "title": "국가법령정보 공동활용",
+              "url": "https://open.law.go.kr/LSO/main.do",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "정적 파싱과 헤드리스 브라우저",
+          "from": "preference",
+          "quote": "• Beautifulsoup4, Puppeteer 능숙하신 분이면 좋습니다.",
+          "priority": "core",
+          "why": "우대사항이고 필수에 'HTML5, CSS3, 웹 표준의 이해' 와 크롤링 개발·운영 경험이 있다.",
+          "gap_check": "어떤 페이지는 HTML 에 내용이 있고 어떤 페이지는 자바스크립트로 그려질 때 각각 무엇(requests+BeautifulSoup / Puppeteer·Playwright)으로 가져오고, 헤드리스 브라우저를 줄이려면 페이지가 부르는 내부 API 를 먼저 찾아볼 이유는 무엇인가?",
+          "drill": "정적 페이지 하나는 BeautifulSoup4 로, 자바스크립트 렌더 페이지 하나는 Puppeteer 로 같은 필드를 뽑고, 개발자 도구 네트워크 탭에서 내부 JSON 요청을 찾아 직접 호출한 방식과 시간·안정성을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Beautiful Soup documentation",
+              "url": "https://www.crummy.com/software/BeautifulSoup/bs4/doc/",
+              "kind": "docs"
+            },
+            {
+              "title": "Puppeteer",
+              "url": "https://pptr.dev/",
+              "kind": "docs"
+            },
+            {
+              "title": "Playwright for Python",
+              "url": "https://playwright.dev/python/docs/intro",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 크롤링 인프라와 모니터링",
+          "from": "task",
+          "quote": "• 클라우드 서비스(AWS)를 활용하여 데이터 인프라를 구축하고 자동화 합니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 로깅 시스템 구축과 Docker/Kubernetes 가 있다.",
+          "gap_check": "크롤링 작업을 큐(SQS)에 넣고 여러 워커가 가져가게 할 때 워커가 중간에 죽은 작업은 어떻게 다시 처리되고(가시성 타임아웃), 사이트별 실패율·수집 지연은 CloudWatch 에서 무엇으로 보는가?",
+          "drill": "수집 대상 URL 을 SQS 에 넣고 컨테이너 워커가 처리해 결과를 저장하는 구조를 로컬(LocalStack 등) 또는 AWS 무료 범위로 만들고, 사이트별 성공·실패 지표와 경보를 CloudWatch 로 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Amazon SQS Developer Guide",
+              "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Amazon CloudWatch — What is it?",
+              "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공개 법령·의안 데이터 수집 DAG + 품질 검사 + 모니터링 저장소",
+          "why": "필수(크롤링 운영·Airflow)와 주요업무(모니터링·장애 해결)를 회사 데이터와 같은 종류로 보여 준다. 전형에 코딩 과제 테스트가 있다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "운영한 크롤러의 규모·장애 대응 사례 정리",
+          "why": "필수가 '개발 및 운영 경험 2년 이상' 이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 코딩 과제 테스트 → 온라인 면접 → 대면 면접 → 처우 협의 → 최종 합격(필요 시 레퍼런스 체크). 자기소개서는 '성장 배경보다 경험했던 업무에 대해' 쓰라고 한다.",
+        "expect": [
+          "운영한 크롤러 규모와 장애",
+          "Airflow 운영",
+          "정적/동적 페이지 수집",
+          "ELK·API 연동"
+        ],
+        "sources": [
+          {
+            "title": "웹 크롤링(스크래핑) 개발자 (2년 이상)",
+            "url": "https://www.wanted.co.kr/wd/94220",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
