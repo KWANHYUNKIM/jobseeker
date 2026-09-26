@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-26",
+  "updated_at": "2026-09-27",
   "companies": [
     {
       "slug": "glowuprizz",
@@ -619,6 +619,18 @@
       "postings": 6,
       "study_items": 24,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "banf",
+      "name": "반프",
+      "aliases": [
+        "반프",
+        "BANF"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

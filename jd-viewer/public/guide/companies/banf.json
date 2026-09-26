@@ -1,0 +1,167 @@
+{
+  "slug": "banf",
+  "name": "반프",
+  "name_en": "BANF",
+  "aliases": [
+    "반프",
+    "BANF"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "banf.ai",
+  "one_liner": "회전하는 타이어 안에 센서를 달고 무선으로 전력을 넣어 타이어 상태와 노면을 실시간으로 읽는 스타트업 — 물류 트럭과 지능형 도로가 고객",
+  "company": {
+    "business": "원티드 공고 머리말은 반프(BANF, 'Build A New Future')를 타이어 센서 개발 기업으로 소개한다. iSensor 시스템이 거리 적응형 전력 기술로 주행 중 타이어 상태(마모, 휠 정렬, 너트/러그 풀림)와 노면(가열 아스팔트, 블랙 아이스)을 모니터링하고, 자체 하드웨어·소프트웨어·데이터 분석 구성 요소를 만든다고 적는다. banf.ai 첫 화면은 이를 iSensor(자체 개발 3축 가속도 센서·TPMS·저전력 블루투스) + Smart Profiler(회전하는 타이어 속 센서에 자가공진 무선 전력 공급, 데이터 분석 허브) + Data Viewer(분석 데이터 조회 프로그램) 세 부분으로 나눈다. 솔루션 페이지는 고객을 둘로 가른다 — OEM·물류 차량(사고 예방·타이어 교체 주기·연비)과 ITS·도로(블랙아이스·포트홀 등 노면 정보). 모집중 공고는 AI Engineer(센서 신호 처리·노면 상태 추정, 전문연구요원)와 풀스택 개발자(Nest.js·Next.js 웹 애플리케이션) 두 자리다. 과금 방식·매출·임직원 수는 읽은 자료에 없다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI Engineer 전문연구요원 [병역특례]",
+        "url": "https://www.wanted.co.kr/wd/379543",
+        "publisher": "원티드"
+      },
+      {
+        "title": "BANF: Intelligent Tire Sensor System – Redefining TPMS",
+        "url": "https://banf.ai/ko",
+        "publisher": "반프",
+        "summary": "첫 화면: iSensor(자체 개발 3축 가속도 센서·TPMS·저전력 블루투스) + Smart Profiler(회전하는 타이어 속 센서에 무선 전력 공급, 데이터 분석 허브) + Data Viewer(분석 데이터 조회 프로그램). 수상 목록에 CES2024 혁신상, TechCrunch Battlefield 한국 기업 최초 Top 20(2024) 등."
+      },
+      {
+        "title": "For OEMs & Fleets",
+        "url": "https://banf.ai/ko/solutions/fleets",
+        "publisher": "반프",
+        "summary": "물류 트럭 대상. 화물 트럭 사고의 30%를 차지하는 타이어 이슈 조기 감지, 교체 주기 연장·연료 효율 개선을 내세우고 '타이어 마모도 15% 감소, 연비 효율 20% 향상'을 적는다."
+      },
+      {
+        "title": "For ITS & Road",
+        "url": "https://banf.ai/ko/solutions/road",
+        "publisher": "반프",
+        "summary": "지능형 도로 대상. 타이어가 느끼는 노면으로 도로 미끄럼·블랙아이스·포트홀 깊이 등을 파악해 도로에 장비를 따로 설치하지 않는다고 적는다."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "OEM·물류 차량용 타이어 프로파일링",
+        "how": "솔루션 페이지가 물류 트럭 대상으로 실시간 타이어 상태 분석·휠 정렬 분석·적재량 기반 연비·타이어 수명 예측을 내세우고 절감액 계산기를 둔다. 판매 방식(센서 판매·구독 등)은 적혀 있지 않다.",
+        "domains": [
+          "타이어 센서 신호 처리·AI",
+          "센서 하드웨어·무선 전력"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "For OEMs & Fleets",
+            "url": "https://banf.ai/ko/solutions/fleets",
+            "publisher": "반프",
+            "summary": "물류 트럭 대상. 화물 트럭 사고의 30%를 차지하는 타이어 이슈 조기 감지, 교체 주기 연장·연료 효율 개선을 내세우고 '타이어 마모도 15% 감소, 연비 효율 20% 향상'을 적는다."
+          },
+          {
+            "title": "BANF: Intelligent Tire Sensor System – Redefining TPMS",
+            "url": "https://banf.ai/ko",
+            "publisher": "반프",
+            "summary": "첫 화면: iSensor(자체 개발 3축 가속도 센서·TPMS·저전력 블루투스) + Smart Profiler(회전하는 타이어 속 센서에 무선 전력 공급, 데이터 분석 허브) + Data Viewer(분석 데이터 조회 프로그램). 수상 목록에 CES2024 혁신상, TechCrunch Battlefield 한국 기업 최초 Top 20(2024) 등."
+          }
+        ]
+      },
+      {
+        "name": "ITS·지능형 도로용 노면 프로파일링",
+        "how": "솔루션 페이지가 타이어가 느끼는 노면으로 도로 미끄럼·블랙아이스·포트홀 깊이를 파악해 CCTV·LiDAR 보다 설치·유지 비용이 적다고 적는다. 고객·계약 형태는 적혀 있지 않다.",
+        "domains": [
+          "타이어 센서 신호 처리·AI"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "For ITS & Road",
+            "url": "https://banf.ai/ko/solutions/road",
+            "publisher": "반프",
+            "summary": "지능형 도로 대상. 타이어가 느끼는 노면으로 도로 미끄럼·블랙아이스·포트홀 깊이 등을 파악해 도로에 장비를 따로 설치하지 않는다고 적는다."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "타이어 센서 신호 처리·AI",
+        "why": "AI Engineer 공고가 CAN·IMU·TPMS 신호 처리 알고리즘, 신호 처리·머신러닝 기반 차량/노면 상태 추정, Edge Computing 모델 경량화·배포를 적는다. 사이트는 시간 영역 신호 필터링과 타이어 접촉면 정보를 뽑는 주파수 영역 알고리즘을 적는다.",
+        "what_to_know": [
+          "센서 신호 처리",
+          "노면·차량 상태 추정",
+          "엣지 모델 경량화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Engineer 전문연구요원 [병역특례]",
+            "url": "https://www.wanted.co.kr/wd/379543",
+            "publisher": "원티드"
+          },
+          {
+            "title": "BANF: Intelligent Tire Sensor System – Redefining TPMS",
+            "url": "https://banf.ai/ko",
+            "publisher": "반프",
+            "summary": "첫 화면: iSensor(자체 개발 3축 가속도 센서·TPMS·저전력 블루투스) + Smart Profiler(회전하는 타이어 속 센서에 무선 전력 공급, 데이터 분석 허브) + Data Viewer(분석 데이터 조회 프로그램). 수상 목록에 CES2024 혁신상, TechCrunch Battlefield 한국 기업 최초 Top 20(2024) 등."
+          }
+        ]
+      },
+      {
+        "name": "센서 하드웨어·무선 전력",
+        "why": "사이트가 자체 개발 3축 가속도 센서, BLE 고해상도 데이터 전송, 회전하는 타이어 속 센서에 전력을 넣는 자가공진 무선 전력 공급을 핵심 기술로 적는다. 지금 모집중 공고에는 이 자리가 없다(펌웨어·C++ 소프트웨어 공고는 마감).",
+        "what_to_know": [
+          "BLE",
+          "TPMS",
+          "무선 전력"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "BANF: Intelligent Tire Sensor System – Redefining TPMS",
+            "url": "https://banf.ai/ko",
+            "publisher": "반프",
+            "summary": "첫 화면: iSensor(자체 개발 3축 가속도 센서·TPMS·저전력 블루투스) + Smart Profiler(회전하는 타이어 속 센서에 무선 전력 공급, 데이터 분석 허브) + Data Viewer(분석 데이터 조회 프로그램). 수상 목록에 CES2024 혁신상, TechCrunch Battlefield 한국 기업 최초 Top 20(2024) 등."
+          }
+        ]
+      },
+      {
+        "name": "웹 서비스(풀스택)",
+        "why": "풀스택 공고가 Nest.js 백엔드·Next.js 프론트엔드 웹 애플리케이션 설계·배포·운영을 적고 자격요건에 '이커머스 또는 모빌리티 서비스 개발 경험'을 둔다. 이 웹 애플리케이션이 Data Viewer 인지 다른 서비스인지는 공고에 없다 — 그래서 수익원과 잇지 않았다.",
+        "what_to_know": [
+          "NestJS",
+          "Next.js",
+          "SQL 성능 최적화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "풀스텍 개발자(FullStack)",
+            "url": "https://jumpit.saramin.co.kr/position/54897619",
+            "publisher": "점핏"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "병역특례(전문연구요원) 자리를 신입·경력 양쪽으로 연다",
+        "evidence": "AI Engineer 전문연구요원 [병역특례]",
+        "so_what": "석사 이상 요건이 붙는다(AI·풀스택 전문연구요원 원티드 공고 모두 '석사'). 병역 대상 석사라면 신입으로 들어갈 수 있는 드문 자리다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "해외 무대(수상·전시)를 적극적으로 노린다",
+        "evidence": "TechCrunch Battlefield 한국 기업 최초 Top 20",
+        "so_what": "사이트 수상 목록에 CES2024 혁신상·DHL Fastforward·독일 스케일업 프로그램 등이 있고, 풀스택 우대에 영어 기술 문서 작성이 있다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "과금 방식(센서 판매·구독·데이터 판매)과 매출은 읽은 자료에 없다",
+    "임직원 수·투자 유치 이력은 읽지 않았다",
+    "풀스택 공고의 웹 애플리케이션이 어떤 서비스인지 공고에 없다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
