@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "reality",
+      "name": "REALITY",
+      "name_en": "REALITY",
+      "country": "JP",
+      "category": "스트리밍",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신하는 앱 'REALITY' 의 회사(그리 그룹) — 메모리 장애를 쫓다 CPU 스로틀이 범인임을 찾아 GOGC 를 실측으로 다시 정했고, 자체 샤딩 Redis 는 키 하나씩 Valkey 클러스터로, 출시 때의 MySQL 테이블은 CDC 로 Spanner 로 옮긴다",
+      "updated_at": "2026-09-27",
+      "domain": "reality.inc"
+    },
+    {
       "slug": "studist",
       "name": "スタディスト",
       "name_en": "Studist",
@@ -4004,7 +4016,10 @@
     "카드 부정을 막는 절차가 구매를 막지 않게 한다",
     "말도 경험도 다른 현장이 같은 매뉴얼을 읽게 한다",
     "매번 다른 답을 내는 AI 기능을 출시 가능한지 판정한다",
-    "적은 플랫폼 인원으로 새 프로덕트를 여럿 띄운다"
+    "적은 플랫폼 인원으로 새 프로덕트를 여럿 띄운다",
+    "수십 대의 Go 서비스를 정해진 메모리 · CPU 안에서 떨어지지 않게 돌린다",
+    "여러 서비스가 나눠 쓰는 캐시를 한 키씩 멈추지 않고 옮긴다",
+    "출시 때부터 쌓인 테이블을 서비스를 멈추지 않고 새 DB 로 옮긴다"
   ],
   "countries": {
     "KR": "한국",

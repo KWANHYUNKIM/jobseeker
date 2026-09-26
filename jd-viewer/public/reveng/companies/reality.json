@@ -1,0 +1,197 @@
+{
+  "slug": "reality",
+  "name": "REALITY",
+  "name_en": "REALITY",
+  "country": "JP",
+  "category": "스트리밍",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "reality.inc",
+  "one_liner": "스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신하는 앱 'REALITY' 의 회사(그리 그룹) — 메모리 장애를 쫓다 CPU 스로틀이 범인임을 찾아 GOGC 를 실측으로 다시 정했고, 자체 샤딩 Redis 는 키 하나씩 Valkey 클러스터로, 출시 때의 MySQL 테이블은 CDC 로 Spanner 로 옮긴다",
+  "business_model": "**REALITY** 는 스마트폰으로 아바타가 되어 얼굴을 내지 않고 라이브 배신 · 게임을 즐기는 커뮤니케이션 앱이다(전 세계 2,000 만 다운로드, 해외 매출 비율이 크다). 돈은 **라이브 배신에 보내는 기프팅**과 **아바타 · 룸 아이템 과금**에서 나온다 — 최근엔 아바타 관련이 상대적으로 줄고 룸 아이템과 기프팅이 늘었다. 그리 HD 의 메타버스 사업에는 VTuber 사업 'REALITY Studios' 도 있다.\n\n기술 글은 이 앱을 떠받치는 GKE 위 Go 마이크로서비스 군의 운영 — 메모리 · CPU 한도 안에서 버티기, 여러 서비스가 함께 쓰는 캐시 기반 교체, 출시 때부터의 MySQL 을 Spanner 로 옮기기 — 에 모여 있다.",
+  "products": [
+    "REALITY(아바타 라이브 배신 · 커뮤니케이션 앱)",
+    "REALITY Studios(VTuber 사업 — 그리 HD 메타버스 사업의 한 축)"
+  ],
+  "revenue_total": "REALITY 주식회사 2025 년 6 월기 매출 70 억 6100 만 엔 · 경상이익 15 억 8800 만 엔(gamebiz). 그리 HD 의 플랫폼 사업 'REALITY' 로는 매출 71 억 엔 · 영업이익 16 억 엔(Mogura VR).",
+  "revenue_streams": [
+    {
+      "name": "라이브 배신 기프팅",
+      "how": "시청자가 아바타 라이브 배신자에게 유료 기프트를 보낸다 — 결제 수단 다양화와 유력 라이버 사무소 제휴로 수익화가 견조하다.",
+      "weight": "플랫폼 매출 71 억 엔의 일부(비중 공개 안 됨) — 늘어나는 쪽",
+      "domains": [
+        "수십 대의 Go 서비스를 정해진 메모리 · CPU 안에서 떨어지지 않게 돌린다",
+        "여러 서비스가 나눠 쓰는 캐시를 한 키씩 멈추지 않고 옮긴다",
+        "출시 때부터 쌓인 테이블을 서비스를 멈추지 않고 새 DB 로 옮긴다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "グリーのメタバース事業、通期売上は83億円 プラットフォーム・VTuberとも好調で成長見込む",
+          "url": "https://www.moguravr.com/reality-gree-2025-financial-results/",
+          "publisher": "Mogura VR News",
+          "date": "2025-08-07",
+          "summary": "그리 HD 2025 년 6 월기 — 메타버스 사업 매출 83 억 엔 · 영업이익 7 억 엔. 플랫폼 사업 'REALITY'(아바타 라이브 배신) 매출 71 억 엔 · 영업이익 16 억 엔(매출 +9%, 이익 +23%) — 결제 수단 다양화로 **라이브 배신 수익화**가 견조, 아바타 관련은 계획 미달. 담당 임원 荒木: 아바타 관련은 상대적으로 줄고 **룸 관련 아이템 과금**과 **라이브 배신 기프팅**이 늘었다. VTuber 사업 'REALITY Studios' 매출 12 억 엔 · 영업손실 10 억 엔(굿즈 · 이벤트). 2026 년 6 월기 예상 매출 116 억 엔 · 영업이익 18 억 엔."
+        }
+      ]
+    },
+    {
+      "name": "아바타 · 룸 아이템 과금",
+      "how": "아바타 아이템과 자기만의 방을 꾸미는 룸 아이템을 판다 — 아바타 관련은 계획 미달, 룸 관련은 성장.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "수십 대의 Go 서비스를 정해진 메모리 · CPU 안에서 떨어지지 않게 돌린다",
+        "여러 서비스가 나눠 쓰는 캐시를 한 키씩 멈추지 않고 옮긴다",
+        "출시 때부터 쌓인 테이블을 서비스를 멈추지 않고 새 DB 로 옮긴다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "グリーのメタバース事業、通期売上は83億円 プラットフォーム・VTuberとも好調で成長見込む",
+          "url": "https://www.moguravr.com/reality-gree-2025-financial-results/",
+          "publisher": "Mogura VR News",
+          "date": "2025-08-07",
+          "summary": "그리 HD 2025 년 6 월기 — 메타버스 사업 매출 83 억 엔 · 영업이익 7 억 엔. 플랫폼 사업 'REALITY'(아바타 라이브 배신) 매출 71 억 엔 · 영업이익 16 억 엔(매출 +9%, 이익 +23%) — 결제 수단 다양화로 **라이브 배신 수익화**가 견조, 아바타 관련은 계획 미달. 담당 임원 荒木: 아바타 관련은 상대적으로 줄고 **룸 관련 아이템 과금**과 **라이브 배신 기프팅**이 늘었다. VTuber 사업 'REALITY Studios' 매출 12 억 엔 · 영업손실 10 억 엔(굿즈 · 이벤트). 2026 년 6 월기 예상 매출 116 억 엔 · 영업이익 18 억 엔."
+        }
+      ]
+    },
+    {
+      "name": "VTuber 사업(REALITY Studios)",
+      "how": "소속 VTuber 의 굿즈 · 이벤트 등 — 그리 HD 메타버스 사업의 한 축. REALITY 주식회사의 매출에 들어가는지는 확인하지 못했다.",
+      "weight": "그리 HD 기준 매출 12 억 엔 · 영업손실 10 억 엔",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "グリーのメタバース事業、通期売上は83億円 プラットフォーム・VTuberとも好調で成長見込む",
+          "url": "https://www.moguravr.com/reality-gree-2025-financial-results/",
+          "publisher": "Mogura VR News",
+          "date": "2025-08-07",
+          "summary": "그리 HD 2025 년 6 월기 — 메타버스 사업 매출 83 억 엔 · 영업이익 7 억 엔. 플랫폼 사업 'REALITY'(아바타 라이브 배신) 매출 71 억 엔 · 영업이익 16 억 엔(매출 +9%, 이익 +23%) — 결제 수단 다양화로 **라이브 배신 수익화**가 견조, 아바타 관련은 계획 미달. 담당 임원 荒木: 아바타 관련은 상대적으로 줄고 **룸 관련 아이템 과금**과 **라이브 배신 기프팅**이 늘었다. VTuber 사업 'REALITY Studios' 매출 12 억 엔 · 영업손실 10 억 엔(굿즈 · 이벤트). 2026 년 6 월기 예상 매출 116 억 엔 · 영업이익 18 억 엔."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "아바타 라이브 한 번을 떠받치는 것",
+    "question": "배신자가 아바타로 방송하고 시청자가 기프트를 보낼 때, 뒤에서는 무엇이 버티고 무엇이 옮겨지고 있나?",
+    "code": "flowchart LR\n  U[\"배신자 · 시청자(스마트폰)\"] --> API[\"GKE 위 Go 마이크로서비스 군\\nGOMEMLIMIT · GOGC 실측 조정\"]\n  API --> C[\"캐시\\n자체 샤딩 Redis → Valkey 클러스터\"]\n  API --> DB[\"DB\\nCloud SQL MySQL → Spanner\"]\n  DB -. \"Datastream CDC · Dataflow\" .-> SP[\"Spanner\"]\n  API --> G[\"기프팅 · 아이템 과금\"]",
+    "_note": "이 사이트의 해석 — 글 셋의 구성을 한 장에 모았다. 기프팅 · 과금이 어느 서비스 · 테이블 · 캐시 키에 해당하는지는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "수십 대의 Go 서비스를 정해진 메모리 · CPU 안에서 떨어지지 않게 돌린다",
+      "why": "REALITY 의 백엔드는 GKE 위에 올린 Go 마이크로서비스 십수 종이고, 같은 규칙(GOMEMLIMIT = limit × 0.9, Guaranteed QoS, GOGC=off)으로 설정돼 있다. 한 노드에 여러 서비스가 같이 산다.\n\n2026 년 8 월 그중 하나가 심야에 여러 번 OOMKill 됐다. 조사해 보니 데이터는 적은데 메모리를 한도 가까이 늘 붙잡고 있었고, 방아쇠는 메모리가 아니라 CPU 쟁탈이었다. 비용을 줄이려던 설정이 여유를 없애고 관측까지 가리고 있었다.",
+      "tech": [
+        {
+          "tech": "GOMEMLIMIT(limit 의 90%) + 실측 라이브 힙에서 식으로 정한 GOGC",
+          "solves": "힙 목표가 한도에 붙지 않아 CPU 스로틀로 GC 가 밀려도 여유가 초과분을 흡수한다.",
+          "limits": "라이브 힙을 계속 봐야 정할 수 있다 — 런타임 메트릭을 내보내야 하고, 관리형 Prometheus 는 샘플 수 과금이라 고른 것만 낸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+              "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+              "publisher": "REALITY",
+              "date": "2026-09-01",
+              "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "여러 서비스가 나눠 쓰는 캐시를 한 키씩 멈추지 않고 옮긴다",
+      "why": "여러 마이크로서비스가 같은 캐시 기반을 읽고 쓴다. 옛 구성은 독립 Redis 여러 대를 애플리케이션이 CRC32 로 직접 나눠 쓰는 방식이라, 볼 것이 많고 늘리고 줄이기 어렵고 한 대가 죽으면 대신할 길이 없었다. 여기에 2024 년 Redis 라이선스가 OSS 가 아니게 됐다.\n\n캐시는 모든 서비스 밑에 깔려 있어 한꺼번에 바꾸면 문제가 났을 때 어디가 원인인지 모른다. 그래서 키 하나씩, 수십 번 같은 절차를 되풀이해 옮긴다.",
+      "tech": [
+        {
+          "tech": "Valkey 클러스터 모드 + 키 단위 단계 이행(Claude Code 스킬로 반자동화)",
+          "solves": "샤딩 · 장애 조치가 클러스터 쪽으로 넘어가고, 반년에 Redis 인스턴스를 절반 이하로 줄였다.",
+          "limits": "고정 키는 한 노드에 쏠려 대상에서 빠졌고, 새 라이브러리에 없는 조작(복수 키 일괄 조회 · 정렬 집합)이나 서비스 공통 라이브러리 속 키는 hard 로 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Redis → Valkey 移行を Claude Code で半自動化した話",
+              "url": "https://zenn.dev/yuya_fujita/articles/d4858623c73a6b",
+              "publisher": "REALITY",
+              "date": "2026-08-05",
+              "summary": "여러 마이크로서비스가 같은 캐시 기반을 읽고 쓴다. 옛 구성은 독립 Redis 여러 대를 CRC32 로 직접 나눠 쓰는 자체 샤딩 — 볼 대상이 많고 스케일 인아웃이 어렵고 인스턴스 장애 폴백이 없었다. 첫 목적은 Redis 라이선스(2024 년 OSS 이탈) → **Valkey 클러스터 모드**로 이행, 반년에 Redis 인스턴스를 절반 이하로. 동적 키만 대상(고정 키는 한 노드에 쏠려 제외), 새 · 옛 라이브러리의 인터페이스가 달라 **키마다 단계 이행**. 반복 작업을 Claude Code 스킬 셋(analyze 월 1 자동 — BigQuery 접근 로그 상위 N 키를 Notion 관리표로 / migrate 수동 / review PR 자동)으로 반자동화, 착수 · 운영 투입 판단은 사람에게 남김. 난이도는 migratable / hard 2 값, hard 에는 이유를 반드시."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "출시 때부터 쌓인 테이블을 서비스를 멈추지 않고 새 DB 로 옮긴다",
+      "why": "REALITY 는 출시 때 Cloud SQL for MySQL 로 시작했고 근년엔 Spanner 도 쓴다. 오래된 테이블을 Spanner 로 모으고 싶지만 사내에 경험이 없었다.\n\n레코드가 수백만 건이라 덤프해서 한 번에 넣기 어렵고, 라이브 서비스라 멈추는 시간을 줄여야 했다. 그래서 가장 쉬운 테이블부터 CDC 로 옮기며 방법을 익혔다.",
+      "tech": [
+        {
+          "tech": "Datastream 백필 + CDC → GCS(Avro) → Pub/Sub → Dataflow 템플릿 → Spanner",
+          "solves": "덤프 없이 기존 데이터와 이후 변경을 이어 옮겨 다운타임을 줄인다. shadow 테이블이 중복 제거 · 멱등성을 맡는다.",
+          "limits": "이번엔 샤딩 없는 단일 테이블 · UUID 문자열 PK · 같은 스키마였다 — Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+              "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+              "publisher": "REALITY",
+              "date": "2025-12-26",
+              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**기프팅 · 아이템 과금이 어느 서비스 · 테이블 · 캐시 키인지** 글에 없다 — 그래서 수익원 연결은 inferred.",
+    "**VTuber 사업(REALITY Studios)이 REALITY 주식회사의 매출인지** 확인하지 못했다.",
+    "**아직 안 읽은 것** — Go monorepo(7 년 · 10 서버) Renovate 도입 · Spanner × GORM 커밋 타임스탬프 · Go 업그레이드 · 리포지토리 횡단 장애 조사 AI 워크플로 · Unity 아바타(FBX 애니메이션 · 툰 셰이더)."
+  ],
+  "sources": [
+    {
+      "title": "PRODUCT - REALITY株式会社",
+      "url": "https://reality.inc/products/",
+      "publisher": "REALITY",
+      "summary": "스마트폰용 메타버스 'REALITY' 개발 · 운영 — 누구나 스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신 · 게임을 즐기는 커뮤니케이션 플랫폼, 전 세계 다운로드 2,000 만 돌파. 모회사는 GREE Holdings."
+    },
+    {
+      "title": "グリーのメタバース事業、通期売上は83億円 プラットフォーム・VTuberとも好調で成長見込む",
+      "url": "https://www.moguravr.com/reality-gree-2025-financial-results/",
+      "publisher": "Mogura VR News",
+      "date": "2025-08-07",
+      "summary": "그리 HD 2025 년 6 월기 — 메타버스 사업 매출 83 억 엔 · 영업이익 7 억 엔. 플랫폼 사업 'REALITY'(아바타 라이브 배신) 매출 71 억 엔 · 영업이익 16 억 엔(매출 +9%, 이익 +23%) — 결제 수단 다양화로 **라이브 배신 수익화**가 견조, 아바타 관련은 계획 미달. 담당 임원 荒木: 아바타 관련은 상대적으로 줄고 **룸 관련 아이템 과금**과 **라이브 배신 기프팅**이 늘었다. VTuber 사업 'REALITY Studios' 매출 12 억 엔 · 영업손실 10 억 엔(굿즈 · 이벤트). 2026 년 6 월기 예상 매출 116 억 엔 · 영업이익 18 억 엔."
+    },
+    {
+      "title": "REALITY、25年6月期決算は経常益40％増の15億8800万円と大幅増益",
+      "url": "https://gamebiz.jp/news/413562",
+      "publisher": "gamebiz",
+      "summary": "그리 HD 그룹사 REALITY 주식회사의 2025 년 6 월기(제 9 기) 결산 — 매출 70 억 6100 만 엔(+9.0%), 경상이익 15 억 8800 만 엔(+40.2%), 순이익 9 억 4400 만 엔. 해외 매출 비율이 크다."
+    },
+    {
+      "title": "OOMKill の犯人は CPU だった：GOGC と GOMEMLIMIT を実測で設計し直す",
+      "url": "https://zenn.dev/keigo_masuzumi/articles/f6305331bccee0",
+      "publisher": "REALITY",
+      "date": "2026-09-01",
+      "summary": "REALITY 백엔드는 GKE 위 Go 마이크로서비스 군. 2026 년 8 월 한 서비스의 Pod 가 심야에 여러 번 OOMKill — 라이브 힙은 할당의 약 5% 뿐이었다. 원인은 **GOMEMLIMIT(limit 의 90%) + GOGC=off** 조합: 힙 목표가 늘 GOMEMLIMIT 에 붙어 평상시에도 limit 의 87% 를 점유(라이브 힙 중앙 99MiB, 점유 1793MiB/2048MiB). GOMEMLIMIT 는 소프트 리밋이라 GC 를 돌릴 CPU 가 있어야 듣는데, CFS 스로틀이 가장 심한 서비스(15.3%)가 떨어졌다 — 메모리 장애의 원인이 CPU. GOGC=off 는 2024 년 초 CPU · 비용 · 지연을 줄이려 넣은 것으로, 대가는 여유 소실 · GC 스래싱(OOMKill 없이 느린 채로 삶) · 메모리 관측 불가. GMP 는 샘플 수 과금이라 필요한 약 80 샘플만 내보내고, 실측 라이브 힙에서 GOGC 를 식으로 다시 정한다."
+    },
+    {
+      "title": "Redis → Valkey 移行を Claude Code で半自動化した話",
+      "url": "https://zenn.dev/yuya_fujita/articles/d4858623c73a6b",
+      "publisher": "REALITY",
+      "date": "2026-08-05",
+      "summary": "여러 마이크로서비스가 같은 캐시 기반을 읽고 쓴다. 옛 구성은 독립 Redis 여러 대를 CRC32 로 직접 나눠 쓰는 자체 샤딩 — 볼 대상이 많고 스케일 인아웃이 어렵고 인스턴스 장애 폴백이 없었다. 첫 목적은 Redis 라이선스(2024 년 OSS 이탈) → **Valkey 클러스터 모드**로 이행, 반년에 Redis 인스턴스를 절반 이하로. 동적 키만 대상(고정 키는 한 노드에 쏠려 제외), 새 · 옛 라이브러리의 인터페이스가 달라 **키마다 단계 이행**. 반복 작업을 Claude Code 스킬 셋(analyze 월 1 자동 — BigQuery 접근 로그 상위 N 키를 Notion 관리표로 / migrate 수동 / review PR 자동)으로 반자동화, 착수 · 운영 투입 판단은 사람에게 남김. 난이도는 migratable / hard 2 값, hard 에는 이유를 반드시."
+    },
+    {
+      "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+      "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+      "publisher": "REALITY",
+      "date": "2025-12-26",
+      "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다."
+    }
+  ]
+}
