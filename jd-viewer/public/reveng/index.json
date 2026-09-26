@@ -7,8 +7,8 @@
       "name_en": "Timee",
       "country": "JP",
       "category": "커머스",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "하루 단위 틈새 일자리를 잇는 매칭 서비스 — 한 벌의 Rails 모놀리스가 커지는 속도를, 테스트는 머지 큐로, 스키마 변경은 롱 트랜잭션 추적으로 받아 낸다",
       "updated_at": "2026-09-26",
       "domain": "timee.co.jp"

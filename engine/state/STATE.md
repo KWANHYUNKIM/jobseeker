@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**타이미 — 기능 1(`pr-speed-queue-safety`, 2026-09-26). 다음은 확장: '낮에도 스키마를 바꾸는 DB 운영' 을 롱 트랜잭션 글(`entry/2026/07/09/100000`, scratchpad `tm_2026_07_09_100000.txt` — MDL 메커니즘·수정 방침·Devin 자동 수정 설계를 마저)과 Reader CPU 글(`tm_2026_07_01_180000.txt`)로. 그러면 두 도메인이 차고 수익원 하나가 둘 다 이어져 완주 판정. 큐 1/3 — 그 뒤 후보 조사.**
+**없다 — 타이미 완주(2026-09-26, 도메인 2 · 기능 2). 다음은 신규 — 대기 맨 위 **LayerX**(`tech.layerx.co.jp`, 하테나 사이트맵; 첫 글 `entry/dbt-snowflake-rap-enforcement`, AI Gateway `entry/2026/08/28/180027`, TypeSpec `entry/typespec-in-aiworkforce`. 행사 공지가 절반이라 기술 글을 골라 읽는다). 큐 1/3 — LayerX 뒤 후보 조사. ANDPAD 는 선지급 도메인 hold 로 in_progress.**
+
 
 
 
