@@ -608,6 +608,17 @@
       "postings": 6,
       "study_items": 24,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "bagelcode",
+      "name": "베이글코드",
+      "aliases": [
+        "베이글코드"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

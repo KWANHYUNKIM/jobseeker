@@ -1,0 +1,172 @@
+{
+  "slug": "bagelcode",
+  "name": "베이글코드",
+  "name_en": "Bagelcode",
+  "aliases": [
+    "베이글코드"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "bagelcode.com",
+  "one_liner": "클럽 베가스 등 소셜카지노 모바일 게임을 전 세계에 서비스하는 게임사 — 2023년 매출 1,062억, 캐주얼 게임으로 장르를 넓히는 중",
+  "company": {
+    "business": "원티드 공고 머리말은 베이글코드를 글로벌 시장을 무대로 한 모바일 게임 기업으로 소개한다. 2012년 창업, 전 세계 5,000만 명이 즐기는 대표작으로 클럽 베가스·캐시 빌리어네어·잭팟 매드니스를 꼽고, 클럽 베가스가 소셜카지노 평균 플레이 시간 1위이며 2022년 미국 안드로이드 전체 매출 TOP 100 에 들었다고 적는다. 소셜카지노 성공을 바탕으로 국내외에서 캐주얼 게임을 개발하며 장르를 다각화하고 있고, 한국·베트남·이스라엘·우크라이나에 오피스가 있으며, 2023년 매출 1,062억 원과 최근 5년 연평균 60% 성장을 적는다. 모집중 공고는 Platform 팀(공통 게임 플랫폼 — 인증·결제·메시지·운영 도구, AWS·Kubernetes, 사내 AI 인프라), CVS 스튜디오(게임 백엔드·Live Ops·Admin 툴·AI 워크플로우 자동화), Data & AI 팀(LLM 인프라, 데이터 사이언스)이다. 과금 방식(인앱 결제 등)은 공고 CVS 우대에 '결제 시스템(IAP, 웹 결제 등)' 이 나올 뿐 구조는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[Platform] 서버 개발자",
+        "url": "https://www.wanted.co.kr/wd/259710",
+        "publisher": "원티드"
+      },
+      {
+        "title": "글로벌 모바일 게임 기업, 베이글코드 Bagelcode",
+        "url": "https://www.bagelcode.com",
+        "publisher": "베이글코드",
+        "summary": "메타 설명: 2012년 창업, 글로벌·성장·즐거움을 미션으로 전 세계 사람들이 즐길 수 있는 모바일 게임을 개발·서비스하는 글로벌 모바일 게임 기업."
+      },
+      {
+        "title": "[CVS] 서버 개발자",
+        "url": "https://www.wanted.co.kr/wd/355845",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출(공고 주장)",
+        "value": "1,062억 원",
+        "as_of": "2023",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Platform] 서버 개발자",
+            "url": "https://www.wanted.co.kr/wd/259710",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "이용자(공고 주장)",
+        "value": "전 세계 5,000만 명",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Platform] 서버 개발자",
+            "url": "https://www.wanted.co.kr/wd/259710",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "소셜카지노·캐주얼 모바일 게임",
+        "how": "공고가 클럽 베가스·캐시 빌리어네어·잭팟 매드니스를 대표작으로, 클럽 베가스의 미국 안드로이드 매출 TOP 100 진입을 적는다. CVS 서버 공고 우대에 결제 시스템(IAP, 웹 결제 등)이 있다. 과금 구조·매출 비중은 읽지 않았다.",
+        "domains": [
+          "게임 서버·Live Ops",
+          "공통 게임 플랫폼",
+          "게임 데이터·AI"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Platform] 서버 개발자",
+            "url": "https://www.wanted.co.kr/wd/259710",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[CVS] 서버 개발자",
+            "url": "https://www.wanted.co.kr/wd/355845",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "공통 게임 플랫폼",
+        "why": "Platform 팀 소개가 여러 게임이 쓰는 인증·결제·메시지·운영 도구 플랫폼화, AWS·Kubernetes·CI/CD·Inhouse Console, 사내 AI API·사용량·비용 모니터링을 적는다. 클라이언트(SDK)·프론트엔드 공고도 이 팀이다.",
+        "what_to_know": [
+          "인증·결제 플랫폼",
+          "Kubernetes",
+          "게임 SDK"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Platform] 서버 개발자",
+            "url": "https://www.wanted.co.kr/wd/259710",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[Platform] 게임 플랫폼 클라이언트(SDK) 개발자",
+            "url": "https://www.wanted.co.kr/wd/369618",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "게임 서버·Live Ops",
+        "why": "CVS 서버 공고가 TypeScript(Node.js·NestJS) 게임 백엔드 API, 장애 대응·배포·모니터링 Live Ops, React·Next.js 사내 Admin 툴, EKS·Docker, GitHub Actions 를 적는다.",
+        "what_to_know": [
+          "NestJS",
+          "라이브 서비스 운영",
+          "결제(IAP)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[CVS] 서버 개발자",
+            "url": "https://www.wanted.co.kr/wd/355845",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "게임 데이터·AI",
+        "why": "Data & AI 팀 공고가 LLM 추론 서빙·게이트웨이 등 LLM 인프라와, 데이터 분석부터 모델 개발·프로덕션 적용까지의 데이터 사이언스를 적는다.",
+        "what_to_know": [
+          "LLM 서빙",
+          "ML 모델 개발",
+          "게임 데이터 분석"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[DATA&AI] LLM Ops Engineer",
+            "url": "https://www.wanted.co.kr/wd/372425",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[DATA&AI] Data Scientist",
+            "url": "https://www.wanted.co.kr/wd/376825",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "AI 코딩 에이전트를 개발 방식의 기본으로 삼는다",
+        "evidence": "AI 코딩 에이전트(Claude Code, Cursor, Codex 등)를 활용한 개발 생산성 향상",
+        "so_what": "Platform 팀도 AI 활용 가이드와 AI 인프라 운영을 적는다. 면접에서 AI 도구를 어떻게 검증하며 쓰는지 물을 수 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "소셜카지노 이후 장르를 넓히고 있다",
+        "evidence": "소셜카지노 분야 성공 경험을 기반으로 장르 다각화를 위해 국내외 세계 곳곳에서 캐주얼 게임을 개발하고 있습니다.",
+        "so_what": "공통 플랫폼 팀을 키우는 이유와 맞물린다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "과금 구조(인앱 결제 비중 등)와 게임별 매출 비중은 읽지 않았다",
+    "2023년 이후 매출은 공고에 없다",
+    "임직원 수는 읽지 않았다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
