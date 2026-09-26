@@ -1,0 +1,139 @@
+{
+  "book": "jvm-tuning",
+  "id": "direct-leak",
+  "no": "9.4",
+  "chapter": 9,
+  "title": "다이렉트 버퍼 누수",
+  "summary": "GC 가 못 따라간다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "기본 한도가 얼마인지 재서 안다.",
+    "프로세스가 -Xmx 의 두 배를 쓸 수 있음을 안다.",
+    "직접 버퍼를 감시하는 자리를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.5절에서 **2,000개를 버렸는데 2GB 가 그대로 남는** 것을 봤다. GC 가 늦게 아는 메모리다.\n\n9장에서 다시 보는 이유는 **한도가 어디인가**다. 4.5절에서 `-XX:MaxDirectMemorySize=64m` 을 명시했을 때만 OOM 을 봤는데, **안 주면 어디까지 가나.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "기본값이 0 이라고 무제한이 아니다",
+      "md": "```\n$ java -Xmx256m -XX:+PrintFlagsFinal -version | grep MaxDirectMemorySize\nMaxDirectMemorySize = 0\n```\n\n> **0 은 \"정하지 않았으니 알아서\"** 라는 뜻이고, 실제로는 **`-Xmx` 와 같은 값**이 된다.\n> 4.2절의 `MaxMetaspaceSize = 18446744073709551615`(진짜 무제한)와 **읽는 법이 다르다.**\n> 플래그 출력만 보고 판단하면 안 되고 **잡아 봐야** 안다."
+    },
+    {
+      "type": "table",
+      "caption": "한도까지 4MB 씩 잡아 본다",
+      "columns": [
+        "-Xmx",
+        "잡힌 개수",
+        "총량",
+        "BufferPool count"
+      ],
+      "rows": [
+        [
+          "256m",
+          "64개",
+          "**256 MB**",
+          "64"
+        ],
+        [
+          "512m",
+          "128개",
+          "**512 MB**",
+          "128"
+        ]
+      ],
+      "note": "**정확히 `-Xmx` 만큼**이다. 즉 이 프로세스는 힙 256MB + 직접 버퍼 256MB 를 쓸 수 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 프로세스는 -Xmx 의 두 배가 된다",
+      "md": "**4.6절의 합산식에 이 항이 빠지면 안 되는 이유**다.\n\n> `-Xmx256m` 만 보고 컨테이너에 300MB 를 주면, **직접 버퍼를 쓰는 순간 넘긴다.**\n> 4.7절에서 본 대로 그러면 **137** 이고 기록이 안 남는다.\n> 네티·카프카 클라이언트·NIO 기반 서버는 **직접 버퍼를 기본으로** 쓴다 — 안 쓴다고 가정하면 안 된다."
+    },
+    {
+      "type": "prose",
+      "md": "## 감시하는 자리\n\n**`BufferPoolMXBean`** 이 개수와 용량을 둘 다 준다. 위 측정에서 `count` 가 64·128 로 실제 개수와 맞았다. **개수가 계속 오르면 누수**이고, 용량만 오르면 **버퍼가 커지는 것**이다 — 원인이 다르다.\n\nNMT 에서는 4.5절대로 **`Other` 칸**이고, 9.1절의 `summary.diff` 로 보면 **`Other +122,880KB`** 처럼 정확한 값이 나온다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "힙 덤프에는 안 나온다",
+      "md": "**2.5절에서 본 그대로**다.\n\n> 힙에 있는 것은 **껍데기 64바이트**뿐이라(4.5절) 힙 덤프를 떠도 **1MB 블록은 안 보인다.**\n> 다만 `DirectByteBuffer` 인스턴스 **개수**는 보인다 — 그것이 비정상으로 많으면 단서다.\n> **확정은 `BufferPoolMXBean` 이나 NMT `Other` 로** 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 플래그 출력 ---\n\n$ for X in 256m 512m 1g; do\n    java -Xmx$X -XX:+PrintFlagsFinal -version | grep -E 'MaxDirectMemorySize| MaxHeapSize '\n  done\n  -Xmx256m  MaxDirectMemorySize=0   (MaxHeapSize 256 MB)\n  -Xmx512m  MaxDirectMemorySize=0   (MaxHeapSize 512 MB)\n  -Xmx1g    MaxDirectMemorySize=0   (MaxHeapSize 1024 MB)\n\n# 셋 다 0 이다. 이것만 보면 알 수 없다.\n\n# --- 2) 잡아 본다 ---\n\n$ cat Dlimit.java\npublic class Dlimit {\n    public static void main(String[] a) {\n        List<ByteBuffer> keep = new ArrayList<>();\n        var bean = ManagementFactory.getPlatformMXBeans(BufferPoolMXBean.class)\n            .stream().filter(b -> b.getName().equals(\"direct\")).findFirst().orElse(null);\n        try { for (;;) keep.add(ByteBuffer.allocateDirect(4 << 20)); }\n        catch (OutOfMemoryError e) {\n            System.out.printf(\"  한도 도달: %,d개 · %,d MB · count=%d%n\",\n                keep.size(), (long)keep.size()*4, bean.getCount());\n        }\n    }\n}\n\n$ java -Xmx256m -cp out Dlimit\n  한도 도달: 64개 · 256 MB · count=64\n$ java -Xmx512m -cp out Dlimit\n  한도 도달: 128개 · 512 MB · count=128\n\n# 정확히 -Xmx 만큼이다.\n\n# --- 3) 9.1 의 diff 에서 본 것 ---\n\n-  Other (reserved=122880KB +122880KB, committed=122880KB +122880KB)\n# 직접 버퍼 120MB 를 만들었더니 정확히 그만큼 늘었다.",
+      "note": "**플래그는 0 이라고 하고 실제는 `-Xmx` 와 같다.** 이 종류의 기본값은 재 보는 수밖에 없다."
+    }
+  ],
+  "recap": [
+    "MaxDirectMemorySize 기본값 0 은 무제한이 아니라 -Xmx 와 같다는 뜻이다.",
+    "-Xmx256m 에서 직접 버퍼가 정확히 256MB 까지 잡혔다.",
+    "그래서 프로세스는 힙과 별도로 -Xmx 만큼을 더 쓸 수 있다.",
+    "감시는 BufferPoolMXBean 의 count 와 memoryUsed 로 한다.",
+    "힙 덤프에는 껍데기만 보이고 네이티브 블록은 안 보인다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션의 BufferPoolMXBean count 를 주기적으로 찍어 본다.",
+      "done_when": "오르는지 평평한지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "-XX:MaxDirectMemorySize 를 명시하고 기동한다.",
+      "done_when": "값을 근거와 함께 정한다.",
+      "minutes": 10
+    },
+    {
+      "task": "4.6 의 합산식에 직접 버퍼 항을 넣어 다시 계산한다.",
+      "done_when": "컨테이너 한도가 충분한지 본다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "MaxDirectMemorySize 기본값 0 의 뜻은.",
+      "a": "정하지 않았다는 뜻이고 실제로는 -Xmx 와 같은 값이 된다."
+    },
+    {
+      "q": "-Xmx256m 프로세스가 쓸 수 있는 직접 버퍼는.",
+      "a": "256MB 다. 측정에서 4MB 씩 64개가 잡혔다."
+    },
+    {
+      "q": "직접 버퍼 누수를 감시하는 자리는.",
+      "a": "BufferPoolMXBean 의 count 와 memoryUsed, NMT 의 Other 칸이다."
+    },
+    {
+      "q": "힙 덤프로 직접 버퍼를 볼 수 있나.",
+      "a": "껍데기 객체 개수만 보이고 네이티브 블록은 안 보인다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "MaxDirectMemorySize",
+      "what": "직접 버퍼 총량 한도. 기본값 0 은 -Xmx 와 같다는 뜻이다."
+    },
+    {
+      "term": "BufferPoolMXBean",
+      "what": "직접 버퍼와 매핑 버퍼의 개수·용량을 읽는 JMX 빈."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command, -XX:MaxDirectMemorySize",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — BufferPoolMXBean",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.management/java/lang/management/BufferPoolMXBean.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

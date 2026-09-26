@@ -515,7 +515,7 @@
           "title": "다이렉트 버퍼 누수",
           "summary": "GC 가 못 따라간다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -523,7 +523,7 @@
           "title": "네이티브 라이브러리",
           "summary": "JVM 이 모르는 할당.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",
@@ -531,7 +531,7 @@
           "title": "RSS 를 설명한다",
           "summary": "합이 안 맞을 때.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

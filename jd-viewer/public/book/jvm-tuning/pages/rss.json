@@ -1,0 +1,155 @@
+{
+  "book": "jvm-tuning",
+  "id": "rss",
+  "no": "9.6",
+  "chapter": 9,
+  "title": "RSS 를 설명한다",
+  "summary": "합이 안 맞을 때.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "예약·커밋·상주 셋을 가른다.",
+    "4.6 절에서 남긴 숙제를 푼다.",
+    "합이 안 맞을 때 어디를 보는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.6절에서 **NMT 는 336MB 라는데 `ps rss` 가 18MB** 로 나와 \"macOS 에서는 못 잰다\"고 적고 넘어갔다. 9장의 마지막 절에서 **그 숙제를 푼다.**\n\n결론부터 — **NMT 와 RSS 가 다른 것은 정상이고, 얼마나 다른지는 운영체제가 정한다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "세 숫자는 서로 다른 것을 센다",
+      "ascii": "   reserved   address space claimed          nothing is backing it yet\n   committed  the jvm says it will use this  the os may still be lazy\n   resident   physical pages actually held   this is what the box pays for\n\n   reserved >= committed >= resident, usually\n\n   a container limit is checked against resident, not against -Xmx",
+      "note": "**컨테이너가 보는 것은 맨 아래 줄**이다(4.7절의 137 이 그것이다)."
+    },
+    {
+      "type": "prose",
+      "md": "## 같은 프로그램을 두 운영체제에서\n\n4.6절의 프로그램(스레드 40개 + 약 50MB 살림)을 **macOS 와 리눅스 컨테이너에서** 각각 돌려 NMT 와 RSS 를 같이 읽었다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 프로그램, 같은 `-Xmx256m`",
+      "columns": [
+        "",
+        "macOS",
+        "리눅스 컨테이너"
+      ],
+      "rows": [
+        [
+          "NMT Total committed",
+          "**336,042 KB**",
+          "**177,188 KB**"
+        ],
+        [
+          "RSS",
+          "**18,624 KB**",
+          "**161,712 KB**"
+        ],
+        [
+          "NMT 대비 RSS",
+          "**5.5%**",
+          "**91%**"
+        ],
+        [
+          "`Thread` reserved",
+          "125,823 KB",
+          "124,613 KB"
+        ],
+        [
+          "`Thread` committed",
+          "**125,823 KB**",
+          "**5,233 KB**"
+        ]
+      ],
+      "note": "**마지막 두 줄이 답이다.** macOS 는 스택 예약을 전부 커밋으로 세고, 리눅스는 실제로 건드린 것만 센다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "두 곳에서 어긋났던 것",
+      "md": "**macOS 쪽은 NMT 가 부풀고 RSS 가 줄었다.**\n\n> **NMT 가 부푼 것** — 9.2절에서 본 대로 macOS 에서는 `Thread` 의 reserved 와 committed 가 같다. 스택 125MB 를 전부 쓴 것으로 센다.\n> **RSS 가 줄어든 것** — 손대지 않은 힙 페이지를 macOS 가 상주로 안 센다. 그래서 18MB 다.\n> **리눅스에서는 둘 다 정직하다** — `Thread committed` 가 5,233KB(예약의 4%)이고, NMT 177MB 에 RSS 162MB 로 **91%가 맞는다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그래서 macOS 에서 잰 값으로 컨테이너를 정하면 안 된다",
+      "md": "**이 책의 4장 측정이 그 예다.**\n\n> 4.6절에서 \"`-Xmx256m` 짜리가 336MB\"라고 적었는데, **리눅스에서 같은 프로그램은 177MB** 였다.\n> 컨테이너 한도는 **리눅스에서 재서** 정해야 한다. 4.7절의 측정이 컨테이너 안에서 이뤄진 이유다.\n> 개발 머신이 macOS 라면 **NMT 의 칸별 비율은 참고하되 절대값은 리눅스에서** 다시 잰다."
+    },
+    {
+      "type": "prose",
+      "md": "## 합이 안 맞을 때 보는 순서\n\n리눅스에서 **NMT 합계보다 RSS 가 크면** 9.5절의 네이티브 라이브러리를 의심한다 — 그 절에서 RSS 가 132MB 더 큰 것을 봤다.\n\n**NMT 합계보다 RSS 가 작으면** 정상이다. 커밋했지만 아직 안 건드린 페이지가 있다는 뜻이고, **부하가 오르면 RSS 가 NMT 쪽으로 다가간다.** 그때 컨테이너 한도에 닿는지가 4.6절의 계산이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 4.6 과 같은 Foot.java (스레드 40개 + 약 50MB 살림)\n\n# --- 리눅스 컨테이너 ---\n\n$ docker run --rm -v $PWD:/app eclipse-temurin:17 sh /app/rss.sh\nVmSize:  3883768 kB\nVmRSS:    161712 kB\nTotal: reserved=1826500KB, committed=177188KB\n-                 Java Heap (reserved=262144KB, committed=96256KB)\n-                    Thread (reserved=124613KB, committed=5233KB)     <- 예약의 4%\n-                        GC (reserved=59433KB, committed=53289KB)\n\n# --- macOS ---\n\n$ java -Xmx256m -XX:NativeMemoryTracking=summary -cp out Foot &\n$ jcmd <pid> VM.native_memory summary | grep Total\nTotal: reserved=1827882KB, committed=336042KB\n$ ps -o rss= -p <pid>\n  18624                                                   <- 18MB\n\n# --- 9.2 에서 본 macOS 의 Thread 칸 ---\n-  Thread (reserved=132825KB, committed=132825KB) (thread #119)\n#  예약과 커밋이 같다. 리눅스는 5233/124613 로 갈린다.\n\n# --- 정리 ---\n#            NMT committed    RSS        비율\n#  macOS        336,042 KB   18,624 KB    5.5%\n#  리눅스       177,188 KB  161,712 KB     91%",
+      "note": "**같은 프로그램인데 NMT 합계가 336MB 와 177MB 다.** 플랫폼이 세는 법이 다르면 숫자도 다르다."
+    }
+  ],
+  "recap": [
+    "예약·커밋·상주는 서로 다른 것을 세고 대개 그 순서로 작아진다.",
+    "컨테이너 한도는 -Xmx 가 아니라 상주 메모리를 본다.",
+    "macOS 는 스택 예약을 전부 커밋으로 세어 NMT 가 부푼다.",
+    "macOS 는 안 건드린 페이지를 상주로 안 세어 RSS 가 줄어든다.",
+    "리눅스에서는 NMT 177MB 에 RSS 162MB 로 91%가 맞았다."
+  ],
+  "drills": [
+    {
+      "task": "리눅스 컨테이너에서 내 애플리케이션의 NMT 와 RSS 를 같이 잰다.",
+      "done_when": "비율을 계산한다.",
+      "minutes": 12
+    },
+    {
+      "task": "Thread 칸의 reserved 와 committed 를 비교한다.",
+      "done_when": "플랫폼이 어느 쪽인지 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "부하를 올리며 RSS 가 NMT 쪽으로 다가가는지 본다.",
+      "done_when": "한도에 닿는 시점을 추정한다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "예약·커밋·상주 중 컨테이너가 보는 것은.",
+      "a": "상주(RSS)다. -Xmx 도 커밋도 아니다."
+    },
+    {
+      "q": "macOS 에서 NMT 가 부푸는 이유는.",
+      "a": "스레드 스택의 예약을 전부 커밋으로 세기 때문이다."
+    },
+    {
+      "q": "NMT 합계보다 RSS 가 크면 무엇을 의심하나.",
+      "a": "NMT 가 못 보는 네이티브 라이브러리 할당이다."
+    },
+    {
+      "q": "NMT 합계보다 RSS 가 작으면.",
+      "a": "정상이다. 커밋했지만 아직 안 건드린 페이지가 있다는 뜻이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "RSS",
+      "what": "Resident Set Size. 프로세스가 실제로 물리 메모리에 들고 있는 양."
+    },
+    {
+      "term": "VmSize",
+      "what": "가상 주소 공간 크기. 예약까지 포함하므로 실제 사용량과 무관하게 크다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Native Memory Tracking",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/diagnostic-tools.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Troubleshooting Memory Leaks",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/troubleshooting-memory-leaks.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
