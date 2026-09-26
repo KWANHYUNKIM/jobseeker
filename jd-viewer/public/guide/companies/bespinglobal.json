@@ -210,7 +210,9 @@
     "회사 소개 페이지에 경영진 명단은 있으나 공개 작업물(발표·서명 글)을 확인하지 않아 people 에 넣지 않았다",
     "원티드·사람인에 같은 직무가 겹쳐 올라와 있다(Data Engineer, GCP Engineer, Okta, Senior AI Infrastructure) — 공고를 쓸 때 본문 비교로 duplicate_of 를 판단할 것",
     "wd/381976: 자격요건이 'ReAct 기반의 고급 수준 Front-end' 로 적혀 있다 — 기술 스택 표기에는 React 가 있어 React 의 오기로 보이지만 공고에서 확인되지 않는다",
-    "wd/381967: 공고 제목은 '(Vertical Solution1팀)' 인데 본문 첫 문단은 'AI Expert실 … Helpnow AI Foundry' 소개다. 같은 문단이 Okta 공고(381969, 제목 'SECaaS팀')에도 붙어 있다 — 어느 조직 소속인지 공고로 확인되지 않는다"
+    "wd/381967: 공고 제목은 '(Vertical Solution1팀)' 인데 본문 첫 문단은 'AI Expert실 … Helpnow AI Foundry' 소개다. 같은 문단이 Okta 공고(381969, 제목 'SECaaS팀')에도 붙어 있다 — 어느 조직 소속인지 공고로 확인되지 않는다",
+    "사람인 'PL 및 AI 개발자(차장급)' 공고가 'HelpNow Plex' 플랫폼과 AI Plex팀을 적는데, 이번에 읽은 홈페이지 서비스 목록에는 HelpNow Agent Portal·AI Foundry 는 있고 Plex 는 없었다",
+    "사람인 'PL 및 AI 개발자(차장급)' 우대사항의 'AVML', 'Llamalndex' 는 원문 표기 그대로다 — 뜻(AI/ML? LlamaIndex?)은 공고로 확인되지 않는다"
   ],
   "postings": [
     {
@@ -1170,6 +1172,157 @@
       "site": "saramin",
       "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 자격요건·우대사항 문장과 팀 소개(AI Expert실, Helpnow AI Foundry)가 원티드 `Senior AI Infrastructure Engineer (Vertical Solution1팀)` 과 글자 그대로 같다. 브리핑은 그쪽을 본다. 차이는 셋이다 — 경력 표기가 여기서는 '7~18년'(원티드는 '7년 이상'), 주요업무에 'HelpNow AI Foundry 구축·설치' 와 'RAGOps 파이프라인 운영' 같은 소제목이 더 붙어 있고, 제목에 'Vertical Solution1팀' 이 없다. 두 자리가 아니므로 한 곳으로만 지원한다.",
       "duplicate_of": "https://www.wanted.co.kr/wd/381967"
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55102707&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=5ddfe914-06cb-405d-a22e-d5b4a4bb397c",
+      "title": "[베스핀글로벌] 프로젝트 리딩(PL) 및 AI 개발자 영입 (차장급)",
+      "site": "saramin",
+      "verdict": "차장급 — Python 또는 Java 실무 10년 이상, 프레임워크(Django·Flask·FastAPI·Spring Boot) 기반 개발 10년 이상(서울 서초, 정규직·수습 3개월). AI Plex팀에서 에이전틱 AI 플랫폼 'HelpNow Plex' 로 공공 고객 AI 프로젝트의 기술 리딩(PL)과 개발을 총괄하고, 일정·품질 관리, 신규 공공 사업 PoC, 팀 개발 가이드라인 수립까지 맡는다. 필수 자격에 '공공 프로젝트를 성공적으로 수행해 본 경험' 이 있다 — 기술보다 이 줄이 문을 가른다. LLM 연동은 필수, RAG·Elasticsearch·챗봇·AI 프레임워크는 우대다. 급여는 면접 후 결정, 전형은 서류 → 통합면접 → 최종합격.",
+      "fit": {
+        "must_have": [
+          "Python 또는 Java 실무 10년 이상",
+          "Django·Flask·FastAPI·Spring Boot 기반 개발 10년 이상",
+          "AI/ML 모델 백엔드 통합 또는 LLM 연동",
+          "RDB(MySQL·PostgreSQL)·NoSQL(MongoDB·Redis) 최적화",
+          "AWS·GCP·Azure 개발·배포",
+          "공공 프로젝트 수행 경험"
+        ],
+        "can_learn": [
+          "MSA 설계·구현",
+          "RAG·Elasticsearch",
+          "챗봇·검색 엔진",
+          "LangChain·LangGraph·LlamaIndex·Haystack·HuggingFace Transformers"
+        ]
+      },
+      "study": [
+        {
+          "topic": "공공 AI 프로젝트를 PL 로 이끄는 법",
+          "from": "qualification",
+          "quote": "공공 프로젝트를 성공적으로 수행해 본 경험이 있으신 분을 찾고 있어요.",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무 첫 줄이 '공공 분야 AI 플랫폼 프로젝트의 기술 리딩(PL) 및 개발을 총괄' 이다. 회사 홈페이지도 공공 산업 솔루션으로 K-GPT, K-민원을 둔다.",
+          "gap_check": "공공 프로젝트에서 요구사항 정의서·설계서·테스트 결과서 같은 산출물과 검수 절차가 일정에 어떻게 영향을 주고, 생성형 AI 기능은 '정답이 매번 다를 수 있다' 는 점 때문에 검수 기준을 어떻게 정해야 하는가? 공공 SI 에서 흔히 쓰는 전자정부 표준프레임워크를 기존 시스템 연계에서 만나면 무엇을 확인하는가(추론)?",
+          "drill": "가상의 공공기관 민원 챗봇 사업에 대해 WBS(요구사항→설계→개발→테스트→검수), 산출물 목록, AI 응답 품질 검수 기준(질문 세트·합격선)을 한 장씩 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "전자정부 표준프레임워크",
+              "url": "https://www.egovframe.go.kr/",
+              "kind": "docs"
+            },
+            {
+              "title": "국가법령정보센터 — 소프트웨어 진흥법",
+              "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4%EC%A7%84%ED%9D%A5%EB%B2%95",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 을 기존 백엔드에 붙이기",
+          "from": "qualification",
+          "quote": "AI/ML 모델을 백엔드에 통합하거나 LLM(대규모 언어 모델)과의 연동 경험이 있으신 분과 함께하고 싶어요.",
+          "priority": "core",
+          "why": "필수 자격 중 AI 에 관한 유일한 줄이다. 10년 차 백엔드 개발자에게 이 자리가 요구하는 새 역량이다.",
+          "gap_check": "LLM 호출을 기존 Spring Boot·FastAPI 서비스에 넣을 때 타임아웃·재시도·스트리밍 응답·비용 한도·응답 로그(개인정보 마스킹)를 어디에 두고, 외부 LLM API 를 못 쓰는 공공망에서는 무엇으로 바꾸는가?",
+          "drill": "기존 CRUD 백엔드 하나에 '문서 요약' 엔드포인트를 추가해 LLM 을 호출하고, 타임아웃·재시도·토큰 사용량 로그·개인정보 마스킹을 넣은 뒤 LLM 호출부를 인터페이스로 빼 로컬 모델로 바꿔 끼운다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "RAG 와 Elasticsearch 검색",
+          "from": "preference",
+          "quote": "검색 기술, RAG(검색 증강 생성), Elasticsearch를 응용한 경험이 있으신 분을 우대해요.",
+          "priority": "high",
+          "why": "우대사항이고 다음 줄이 '챗봇이나 검색 엔진을 직접 개발' 이다. 팀 소개가 플랫폼에 '문서 스튜디오' 기능이 있다고 적는다.",
+          "gap_check": "키워드 검색(BM25)과 벡터 검색을 섞는 하이브리드 검색이 공공 문서(법령·지침처럼 정확한 용어가 중요한 문서)에서 왜 필요하고, Elasticsearch 에서 두 점수를 어떻게 합치는가?",
+          "drill": "공개 행정 문서 묶음을 Elasticsearch 에 넣어 BM25·벡터·하이브리드 세 방식으로 질문 30개를 검색하고 정답 문서 적중률을 비교한 뒤, 가장 나은 방식으로 RAG 챗봇을 붙인다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Elastic — Hybrid search with semantic_text",
+              "url": "https://www.elastic.co/docs/solutions/search/hybrid-semantic-text",
+              "kind": "docs"
+            },
+            {
+              "title": "Elasticsearch — Reference",
+              "url": "https://www.elastic.co/docs/reference/elasticsearch/",
+              "kind": "docs"
+            },
+            {
+              "title": "LlamaIndex — Documentation",
+              "url": "https://docs.llamaindex.ai/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RDB·NoSQL 최적화",
+          "from": "qualification",
+          "quote": "MySQL, PostgreSQL 등 RDB 및 MongoDB, Redis 등 NoSQL DB의 최적화 경험이 있으신 분을 모셔요.",
+          "priority": "high",
+          "why": "필수 자격이다. 10년 차 자리라 경험 사례를 수치로 물을 가능성이 크다(추론).",
+          "gap_check": "느린 쿼리의 실행 계획에서 Seq Scan·Nested Loop 가 보일 때 인덱스 추가·쿼리 재작성·통계 갱신 중 무엇을 먼저 보며, Redis 캐시를 붙일 때 캐시와 DB 가 어긋나는 경우를 어떻게 막는가?",
+          "drill": "PostgreSQL 에 수백만 행 테이블을 만들어 느린 쿼리 3개를 EXPLAIN ANALYZE 로 분석·개선하고, 한 조회에 Redis 캐시를 붙여 갱신 시 무효화 흐름을 구현한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "PostgreSQL — Using EXPLAIN",
+              "url": "https://www.postgresql.org/docs/current/using-explain.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Redis — Develop with Redis",
+              "url": "https://redis.io/docs/latest/develop/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "팀 개발 가이드라인과 MSA",
+          "from": "task",
+          "quote": "• 팀 내 개발 가이드라인을 수립하고, 동료들과 함께 기술 역량을 키워나가는 데 기여해요.",
+          "priority": "nice",
+          "why": "주요업무이고 우대사항에 '마이크로서비스 아키텍처(MSA)를 직접 설계하고 구현' 이 있다. PL 자리라 코드보다 기준을 남기는 일이 크다(추론).",
+          "gap_check": "플랫폼을 공공 고객별로 커스터마이징할 때 공통 코어와 고객별 확장을 어떻게 나누고, 그 경계를 개발 가이드라인(모듈 구조·API 규약·리뷰 규칙)으로 어떻게 강제하는가?",
+          "drill": "위 챗봇을 '검색 서비스·대화 서비스·관리 서비스' 로 나눈 구성도와, 서비스 간 API 규약·에러 형식·로그 규칙을 담은 개발 가이드라인 2쪽을 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "microservices.io — Microservice Architecture pattern",
+              "url": "https://microservices.io/patterns/microservices.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공공 AI 사업 수행 사례를 PL 관점으로 정리",
+          "why": "필수 자격의 '공공 프로젝트를 성공적으로 수행' 과 주요업무의 일정·품질 관리가 핵심이다. 사업 규모·기간·산출물·검수 통과 과정을 숫자로 적는다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "공공 문서 하이브리드 검색 RAG 데모",
+          "why": "우대 두 줄(RAG·Elasticsearch, 챗봇·검색 엔진)과 필수 LLM 연동을 한 결과물로 보여 준다.",
+          "effort": "1주"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 통합면접 → 최종합격. 수습 3개월, 급여는 면접 후 결정(공고 기준).",
+        "expect": [
+          "공공 프로젝트 PL 경험과 검수 대응",
+          "LLM 을 기존 시스템에 붙인 사례",
+          "DB 최적화 사례",
+          "팀 가이드라인을 세운 경험"
+        ],
+        "sources": [
+          {
+            "title": "[베스핀글로벌] 프로젝트 리딩(PL) 및 AI 개발자 영입 (차장급)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55102707&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=5ddfe914-06cb-405d-a22e-d5b4a4bb397c",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ]
 }
