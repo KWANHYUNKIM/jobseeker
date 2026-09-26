@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**로그라스 확장 4/4(2026-09-26) — `ai-ir-bottleneck-driven-delivery` 완료, 빈 도메인 없음. 다음은 완주 검사 2회차: 설비투자 계획·IT 투자 관리·석세스 파트너 수익원에 도메인이 없다(1회차 Zenn RSS 20편·note 36편 없음) → speakerdeck(`speakerdeck.com/loglass`)·loglass.jp 제품 사이트로 한 번 더, 없으면 `hold_reason` 넣고 hold(QUEUE 진행 중 행에 **hold** 표시, 재시도 안 함에 한 줄). 대기 2/3(Hacobu·estie) — 로그라스를 닫으면 후보 조사 한 번 끼울 것. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX AI 리뷰). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
+**로그라스 hold(2026-09-26) — 도메인 넷·기능 넷, 석세스 파트너·설비투자·IT 투자 수익원은 두 번 찾아 없음 → hold_reason. 다음은 `--gaps` 대로 — 대기 2/3(Hacobu·estie)라 후보 조사 한 번을 끼우거나 대기 맨 위(Hacobu) 신규. 로그라스 Zenn 에 남은 글(DuckDB GROUP BY·인가 하네스·인덱스 네 관문·비동기 처리 기반 `51447768d35958`·백엔드 스택 2023)은 보강 재료. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX AI 리뷰). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스(hold)·LayerX 는 in_progress.**
 
 
 
@@ -376,6 +376,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **ABEJA 컨설팅·인재 육성·Insight for Retail 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 2025~2026 114편 · 2022~2024 130편 제목). 그쪽 구조 글이 새로 나오면 다시.
 - **Sumzap IP·이벤트(GCRESTUDIO) 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 37편 제목 · 홍보 note). IP·이벤트 구조 글이 새로 나오면 다시.
 - **Yappli CRM 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 224편 제목 · speakerdeck 404). CRM 구조 글이 새로 나오면 다시.
+- **로그라스 석세스 파트너·설비투자·IT 투자 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편·note 36편 · Zenn 검색 API 4낱말 · speakerdeck 404). 그쪽 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
