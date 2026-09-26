@@ -1,0 +1,174 @@
+{
+  "book": "java-io",
+  "id": "print-writer",
+  "no": "4.4",
+  "chapter": 4,
+  "title": "PrintWriter",
+  "summary": "편한 대신 삼키는 것.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "PrintWriter 가 IOException 을 던지지 않는 것을 확인한다.",
+    "같은 상황에서 Writer 는 던지는 것을 나란히 본다.",
+    "autoFlush 가 어디서 도는지 잰다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.3절까지 읽는 쪽을 봤다. 쓰는 쪽에서 가장 자주 쓰이는 것이 **`PrintWriter`** 다 — `println` 하나로 줄바꿈까지 붙여 준다.\n\n편한데 **값이 있다.** 이 절은 그 값이 무엇인지 하나만 확인한다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "가장 편한 쓰기",
+      "code": "// 자바 11+ 는 charset 을 받는 생성자가 있다\ntry (PrintWriter w = new PrintWriter(\"a.txt\", StandardCharsets.UTF_8)) {\n    w.println(\"a\");\n    w.println(\"b\");\n    w.printf(\"%s = %d%n\", \"count\", 3);    // 형식 출력도 된다\n}\n\n// 결과는 4바이트 — 61 0a 62 0a\n// println 이 줄바꿈을 붙이고, 그 줄바꿈은 System.lineSeparator() 다(4.5절)"
+    },
+    {
+      "type": "prose",
+      "md": "## 예외를 던지지 않는다\n\n`PrintWriter` 의 `println`·`print`·`printf` 에는 **`throws IOException` 이 없다.** 그러면 쓰기가 실패하면 어떻게 되나 — **닫은 스트림에 계속 써 봤다.**"
+    },
+    {
+      "type": "compare",
+      "title": "닫은 뒤에 또 쓰면",
+      "left": {
+        "title": "`PrintWriter`",
+        "bad": true,
+        "md": "```java\nw.println(\"before close\");\nw.close();\nw.println(\"after close\");\n```\n\n**예외가 안 난다.** 프로그램이 그대로 흘러간다.\n\n파일에는 `before close` 13바이트만 있다."
+      },
+      "right": {
+        "title": "`Writer`",
+        "md": "```java\nw.write(\"before close\\n\");\nw.close();\nw.write(\"after close\\n\");\n```\n\n```\nIOException: Stream closed\n```\n\n**즉시 터진다.**"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "실패는 `checkError()` 에만 남는다",
+      "md": "던지지 않는 대신 **깃발을 세운다.**\n\n```\nw2.println(\"after close\");   // 예외 없음\nw2.checkError() = true       // 여기에만 남는다\n```\n\n> 아무도 `checkError()` 를 부르지 않으면 **쓰기가 실패한 것을 영영 모른다.** 디스크가 꽉 찼든 스트림이 닫혔든 같다.\n> 그래서 **로그가 조용히 빈다.** 예외 로그도 없다 — 던지지 않았으니까.\n> 던지지 않게 만든 이유는 `System.out.println(\"hi\")` 에 `try-catch` 를 강제하지 않으려는 것이다. 콘솔 출력에는 맞는 결정이고 **파일 쓰기에는 안 맞는다.**\n> 파일에 쓸 때는 `BufferedWriter` 를 쓰거나, `PrintWriter` 를 쓰고 **닫기 전에 `checkError()` 를 본다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## autoFlush 는 `println` 에서만 돈다\n\n생성자의 두 번째 인수가 `autoFlush` 다. `true` 면 알아서 내보내 준다 — **다만 `println` 일 때만.**"
+    },
+    {
+      "type": "table",
+      "caption": "`autoFlush = true` 로 만든 뒤 파일 크기",
+      "columns": [
+        "부른 것",
+        "파일 크기"
+      ],
+      "rows": [
+        [
+          "`print(\"print 로만 썼다\")`",
+          "**0바이트**"
+        ],
+        [
+          "그 뒤 `println()`",
+          "**20바이트**"
+        ]
+      ],
+      "note": "**`print` 만으로는 안 나간다.** `println`·`printf` 의 개행이 방아쇠다 — 진행 로그를 `print` 로만 찍으면 화면에 아무것도 안 보인다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`autoFlush = false` 면 3.6절 그대로다",
+      "md": "기본값이 `false` 다 — 파일 이름만 주는 생성자도 그렇다.\n\n```\nprintln 뒤 flush 없이 본 파일 크기 = 0바이트\nflush() 뒤                     = 31바이트\n```\n\n> 3.6절의 `f1.txt` 0바이트와 같은 일이다. `PrintWriter` 도 안에 버퍼를 들고 있다.\n> `try-with-resources` 를 쓰면 `close()` 가 `flush()` 를 하므로 문제가 안 된다. **`close` 를 잊는 것과 예외를 삼키는 것이 겹치면** 파일이 비어 있고 로그도 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "`System.out` 은 `PrintWriter` 가 아니다",
+      "md": "이름이 닮아서 헷갈리는 자리다.\n\n```\nSystem.out 의 클래스 = java.io.PrintStream\nSystem.err 의 클래스 = java.io.PrintStream\n```\n\n> **`PrintStream` 은 `OutputStream` 계열**(바이트)이고 `PrintWriter` 는 `Writer` 계열(문자)이다. 4.1절의 두 계층에서 서로 반대편이다.\n> `PrintStream` 도 예외를 삼키고 `checkError()` 를 가진다 — 같은 설계다.\n> `System.out` 의 charset 은 콘솔 인코딩이라 파일과 다를 수 있다. **화면에서 잘 보이는데 파일에서 깨지는** 일이 여기서 난다(2.5절)."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"파일에 로그를 쓰는데 가끔 내용이 비어 있습니다.\"**\n\n> 후보가 둘이다 — **`close`/`flush` 를 안 했거나**(3.6절), **`PrintWriter` 가 실패를 삼켰거나.**\n> `PrintWriter` 라면 `checkError()` 를 확인하는 코드가 어디에도 없을 것이다. 그게 답이다.\n> 이어서 \"그럼 뭘 쓰시겠습니까\" 에는 **`BufferedWriter`** — `IOException` 을 던지므로 실패가 로그에 남는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 삼키는 것과 던지는 것",
+      "sql": "$ java -cp out Pw\n--- 1) println 이 쓰는 줄바꿈 ---\n  pw1.txt    4바이트  61 0a 62 0a\nSystem.lineSeparator() = \\n\nline.separator 프로퍼티 = \\n\n\n--- 2) 예외를 던지지 않는다 ---\nclose 뒤에 println 했다. 예외는? 안 났다.\ncheckError() = true\n파일에 남은 것:\n  pw2.txt    13바이트  62 65 66 6f 72 65 20 63 6c 6f 73 65 0a\n\n--- 3) Writer 는 던진다 ---\nIOException: Stream closed\n\n--- 4) flush 를 안 하면 ---\nflush 없이 본 파일 크기 = 0바이트\nflush 뒤 = 31바이트\n\n--- 5) autoFlush 는 println 에서만 돈다 ---\nprint 뒤 파일 크기 = 0바이트\nprintln 뒤 파일 크기 = 20바이트\n\n--- 6) System.out 은 PrintStream 이다 ---\nSystem.out 의 클래스 = java.io.PrintStream\nSystem.err 의 클래스 = java.io.PrintStream\n\n# 2) 와 3) 이 이 절의 전부다.\n# 같은 상황(닫은 뒤 쓰기)에서 PrintWriter 는 조용하고 Writer 는 터진다.\n# 파일에 남은 13바이트는 close 전에 쓴 것이고, 그 뒤에 쓴 것은 어디에도 없다.",
+      "note": "**`before close` 13바이트로 끝났다.** `after close` 는 파일에도 없고 예외로도 안 나왔다 — `checkError()` 를 물어본 이 프로그램만 그 사실을 안다."
+    }
+  ],
+  "recap": [
+    "PrintWriter 의 println·print·printf 는 IOException 을 던지지 않는다.",
+    "닫은 스트림에 println 해도 예외가 안 나고 checkError() 만 true 가 된다.",
+    "같은 상황에서 Writer 는 IOException: Stream closed 를 던진다.",
+    "아무도 checkError() 를 안 부르면 쓰기 실패를 영영 모른다 — 로그도 안 남는다.",
+    "autoFlush 는 println·printf 의 개행에서만 돈다. print 만으로는 안 나간다.",
+    "기본 autoFlush 는 false 라 close·flush 를 잊으면 3.6절처럼 0바이트다.",
+    "System.out 은 PrintStream(바이트 계열)이고 PrintWriter 와 계층이 반대다."
+  ],
+  "drills": [
+    {
+      "task": "PrintWriter 로 닫은 뒤 써 보고 checkError() 를 확인한다.",
+      "done_when": "예외 없이 true 가 되는 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "같은 코드를 BufferedWriter 로 바꿔 예외를 받는다.",
+      "done_when": "Stream closed 를 본다.",
+      "minutes": 6
+    },
+    {
+      "task": "autoFlush true 로 print 만 찍어 본다.",
+      "done_when": "파일이 0바이트인 것을 확인한다.",
+      "minutes": 6
+    },
+    {
+      "task": "내 코드에서 PrintWriter 를 쓰는 자리를 찾는다.",
+      "done_when": "checkError() 를 보는 곳이 있는지 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "PrintWriter 가 쓰기에 실패하면 어떻게 되나.",
+      "a": "예외를 던지지 않고 내부 깃발만 세운다. checkError() 로 물어봐야 알 수 있다."
+    },
+    {
+      "q": "왜 그렇게 만들었나.",
+      "a": "System.out.println 에 try-catch 를 강제하지 않으려고. 콘솔에는 맞고 파일에는 안 맞는다."
+    },
+    {
+      "q": "autoFlush = true 인데 print 만 부르면.",
+      "a": "안 나간다. 개행(println·printf)이 방아쇠다."
+    },
+    {
+      "q": "System.out 은 PrintWriter 인가.",
+      "a": "아니다. PrintStream 이고 바이트 계열이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "PrintWriter",
+      "what": "println·printf 를 주는 Writer. IOException 을 던지지 않고 checkError() 로만 알린다."
+    },
+    {
+      "term": "checkError",
+      "what": "PrintWriter·PrintStream 의 실패 여부를 묻는 메서드. 이것을 안 부르면 실패가 보이지 않는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — PrintWriter",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/PrintWriter.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — PrintStream",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/PrintStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — System.out",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

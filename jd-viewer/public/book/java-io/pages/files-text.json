@@ -1,0 +1,200 @@
+{
+  "book": "java-io",
+  "id": "files-text",
+  "no": "4.6",
+  "chapter": 4,
+  "title": "Files 의 문자 메서드",
+  "summary": "readString 과 lines.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "한 줄로 읽고 쓰는 방법을 안다.",
+    "틀린 charset 에서 예외가 나는 경로를 찾는다.",
+    "4장이 남긴 것을 정리한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.1절부터 4.5절까지 스트림을 손으로 조립했다. **`Files`** 에는 그것을 한 줄로 줄인 메서드들이 있다.\n\n3.5절에서 `Files.readAllBytes` 를 봤고, 그 문자 판이 **`Files.readString`**(자바 11+)이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "한 줄로 되는 것들",
+      "code": "// 통째로\nString text = Files.readString(p, StandardCharsets.UTF_8);\nFiles.writeString(p, text, StandardCharsets.UTF_8);\n\n// 줄 목록으로\nList<String> lines = Files.readAllLines(p, StandardCharsets.UTF_8);\nFiles.write(p, List.of(\"a\", \"b\"), StandardCharsets.UTF_8);   // 줄바꿈을 붙여 준다\n\n// 게으르게 (3.5절·4.3절의 그 이유로)\ntry (Stream<String> s = Files.lines(p, StandardCharsets.UTF_8)) { ... }\ntry (BufferedReader r = Files.newBufferedReader(p, StandardCharsets.UTF_8)) { ... }\n\n// 자바 11+ 는 charset 을 빼도 UTF-8 이다 — 기본 charset 이 아니다\nFiles.writeString(p, \"한글\");      // ed 95 9c ea b8 80"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`Files` 의 기본은 UTF-8 이다 — 2.5절과 다른 규칙이다",
+      "md": "`FileWriter` 의 기본은 **기본 charset** 인데 `Files` 의 기본은 **UTF-8** 이다.\n\n```\nFiles.writeString(p, \"한글\") = ed 95 9c ea b8 80   (UTF-8)\nCharset.defaultCharset()   = UTF-8\n```\n\n> 이 머신에서는 둘이 같아서 구분이 안 된다. **자바 17 이하 윈도우에서는 갈린다** — `FileWriter` 는 MS949, `Files` 는 UTF-8.\n> `Files` 쪽이 뒤에 만들어져서 처음부터 UTF-8 로 고정했다. 자바 18 의 JEP 400 이 나머지를 여기에 맞춘 것이다.\n> 헷갈리니 **양쪽 다 적는다.** 적으면 이 문단을 기억할 필요가 없다."
+    },
+    {
+      "type": "prose",
+      "md": "## 틀린 charset 에서 예외가 난다\n\n2.6절에서 MS949 바이트를 UTF-8 로 읽으면 **`U+FFFD` 가 되고 예외는 안 난다**고 했다. 그런데 `Files` 경로는 다르다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 `c7 d1 b1 db` 를 UTF-8 로 읽는 세 경로",
+      "columns": [
+        "코드",
+        "결과"
+      ],
+      "rows": [
+        [
+          "`new String(bytes, UTF_8)`",
+          "`[崿ѱ崿]` — **조용히 U+FFFD** (2.6절)"
+        ],
+        [
+          "`Files.readString(p, UTF_8)`",
+          "**`MalformedInputException: Input length = 1`**"
+        ],
+        [
+          "`Files.newBufferedReader(p, UTF_8)`",
+          "**`MalformedInputException: Input length = 1`**"
+        ]
+      ],
+      "note": "**같은 바이트, 같은 charset, 다른 동작이다.** 아래쪽 둘은 던진다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "던지는 쪽이 왜 있나",
+      "md": "2.6절의 `CodingErrorAction` 이 이 차이의 이름이다.\n\n> `new String(bytes, cs)` 와 `InputStreamReader(in, cs)` 는 **REPLACE** 로 만들어진다 — 못 읽는 바이트를 `U+FFFD` 로 바꾸고 계속 간다.\n> `Files.readString`·`Files.newBufferedReader`·`Files.lines` 는 **REPORT** 다 — 예외를 던진다.\n> 곧 **2.6절의 B 형 망가짐을 예외로 잡을 수 있는 경로가 있었다.** 그 절에서는 `byte[]` 로만 봐서 몰랐던 것이다.\n> 어느 쪽이 나은가는 상황이 정한다 — 로그 수집처럼 **한 줄 깨져도 계속 가야 하면** REPLACE, 설정 파일처럼 **틀리면 멈춰야 하면** REPORT."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`Input length = 1` 은 파일 길이가 아니다",
+      "md": "메시지가 오해를 부른다.\n\n> 파일은 4바이트인데 `Input length = 1` 이다. **디코더가 몇 바이트를 소비하다 막혔는지**를 말하는 것이지 파일 크기가 아니다.\n> `c7` 이 UTF-8 에서 2바이트 글자의 시작인데(`110xxxxx`, 2.3절) 다음 바이트 `d1` 이 `10xxxxxx` 가 아니라서 그 자리에서 멈췄다.\n> 그래서 이 예외는 **어느 바이트에서 막혔는지를 알려 주지 않는다.** 위치를 알려면 `od` 로 직접 봐야 한다(1.3절)."
+    },
+    {
+      "type": "table",
+      "caption": "그래서 무엇을 쓰나 — 4장의 정리",
+      "columns": [
+        "할 일",
+        "쓸 것"
+      ],
+      "rows": [
+        [
+          "작은 파일 통째로",
+          "`Files.readString` / `writeString`"
+        ],
+        [
+          "줄 단위로 훑기",
+          "`Files.lines` 또는 `Files.newBufferedReader`"
+        ],
+        [
+          "줄 목록이 필요",
+          "`Files.readAllLines` — **크기를 아는 파일만**(3.5절)"
+        ],
+        [
+          "바이트로 다뤄야 함",
+          "3장으로 — `Files.readAllBytes` 나 스트림"
+        ],
+        [
+          "**틀린 인코딩에서 멈춰야 함**",
+          "`Files` 경로 — 예외를 던진다"
+        ],
+        [
+          "**틀려도 계속 가야 함**",
+          "`new String(bytes, cs)` / `InputStreamReader`"
+        ]
+      ],
+      "note": "**마지막 두 줄이 이 절에서 새로 배운 것이다.** 나머지는 3장·4.3절에서 이미 정했다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`APPEND` 를 안 주면 덮어쓴다",
+      "md": "`writeString` 의 기본은 **새로 쓰기**다.\n\n```\nFiles.writeString(p, \"덮었다\\n\")                         -> [덮었다\\n]\nFiles.writeString(p, \"붙였다\\n\", StandardOpenOption.APPEND)  -> [덮었다\\n붙였다\\n]\n```\n\n> 로그를 이걸로 쓰다가 **매번 파일이 한 줄짜리가 되는** 실수가 흔하다.\n> `FileWriter` 는 두 번째 인수가 `append` 인데 `Files` 는 `OpenOption` 이다 — 같은 뜻인데 모양이 다르다."
+    },
+    {
+      "type": "prose",
+      "md": "## 4장이 남긴 것\n\n여섯 절로 **바이트 위에 문자를 얹는 층**을 다 봤다. 2장의 charset 이 들어가는 자리가 `InputStreamReader` 하나라는 것, 그 디코더가 쪼개진 바이트를 조립한다는 것, 그리고 `readLine()` 이 줄바꿈 세 가지를 떼어 준다는 것.\n\n5장은 방향을 바꾼다 — **문자가 아닌 것**을 바이트로 적는다. 숫자와 객체다. 2.1절에서 `writeInt(1)` 이 `00 00 00 01` 이 되는 것을 잠깐 봤는데, 그 자리로 돌아간다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 던지는 경로",
+      "sql": "$ java -cp out FilesText\n--- 한 줄로 쓰고 한 줄로 읽는다 (자바 11+) ---\n파일 크기 = 22바이트\nreadString = [안녕\\n두 번째 줄\\n]\n\n--- APPEND 를 안 주면 덮어쓴다 ---\n그냥 writeString = [덮었다\\n]\nAPPEND 주면   = [덮었다\\n붙였다\\n]\n\n--- 틀린 charset 으로 읽으면 (2.6절과 다르다) ---\n파일 바이트 = c7 d1 b1 db\nnew String(bytes, UTF_8) = [崿ѱ崿]  (2.6절: U+FFFD)\nFiles.readString(UTF_8) -> MalformedInputException: Input length = 1\nnewBufferedReader(UTF_8) -> MalformedInputException: Input length = 1\n\n--- 줄 목록으로 쓰고 읽는다 ---\n크기 = 21바이트 (줄바꿈을 붙여 준다)\nreadAllLines = [첫째, 둘째, 셋째]\nlines().count() = 3\n\n--- charset 을 뺀 자바 11+ 기본값 ---\nFiles.writeString(p, \"한글\") = ed 95 9c ea b8 80  (UTF-8 이다)\nCharset.defaultCharset() = UTF-8\n\n# 가운데 세 줄이 이 절의 발견이다.\n# 같은 c7 d1 b1 db 를 같은 UTF-8 로 읽는데\n#   new String  -> 조용히 U+FFFD\n#   Files 경로  -> MalformedInputException\n# 2.6절에서 \"예외가 안 나는 것이 이 문제의 전부\" 라고 쓴 것은\n# byte[] 경로에 한한 이야기였다.",
+      "note": "**`Input length = 1` 은 파일 길이가 아니라 디코더가 소비한 바이트 수다.** 4바이트짜리 파일인데 1 이 찍혔다 — 어디서 막혔는지는 `od` 로 봐야 한다."
+    }
+  ],
+  "recap": [
+    "Files.readString·writeString 은 자바 11부터이고 charset 을 빼면 UTF-8 이다.",
+    "FileWriter 의 기본은 기본 charset, Files 의 기본은 UTF-8 — 자바 17 이하 윈도우에서 갈린다.",
+    "Files.write(p, List) 는 줄바꿈을 붙여 주고 그 줄바꿈은 플랫폼 것이다(4.5절).",
+    "같은 c7 d1 b1 db 를 new String(bytes, UTF_8) 은 U+FFFD 로 바꾸고 Files.readString 은 MalformedInputException 을 던진다.",
+    "REPLACE 와 REPORT 의 차이다 — 2.6절의 B 형 망가짐을 예외로 잡는 경로가 있었다.",
+    "Input length = 1 은 파일 길이가 아니라 디코더가 소비한 바이트 수다.",
+    "writeString 의 기본은 덮어쓰기다. 붙이려면 StandardOpenOption.APPEND 를 준다."
+  ],
+  "drills": [
+    {
+      "task": "MS949 파일을 Files.readString(UTF_8) 으로 읽어 본다.",
+      "done_when": "MalformedInputException 을 직접 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "같은 파일을 new String(bytes, UTF_8) 로 읽어 비교한다.",
+      "done_when": "한쪽만 던지는 것을 확인한다.",
+      "minutes": 6
+    },
+    {
+      "task": "writeString 을 두 번 불러 덮어쓰는 것을 확인한다.",
+      "done_when": "APPEND 를 넣어 고친다.",
+      "minutes": 6
+    },
+    {
+      "task": "내 코드에서 설정 파일을 읽는 자리를 찾는다.",
+      "done_when": "틀린 인코딩에서 멈추는 게 나은지 판단한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Files.readString 의 기본 charset 은.",
+      "a": "UTF-8 이다. FileWriter 의 기본(기본 charset)과 다르다."
+    },
+    {
+      "q": "틀린 charset 으로 Files.readString 을 하면.",
+      "a": "MalformedInputException 을 던진다. new String(bytes, cs) 는 U+FFFD 로 바꾸고 조용하다."
+    },
+    {
+      "q": "그 차이의 이름은.",
+      "a": "CodingErrorAction 이다 — REPLACE 와 REPORT."
+    },
+    {
+      "q": "Input length = 1 이 뜻하는 것은.",
+      "a": "디코더가 소비하다 막힌 바이트 수다. 파일 크기가 아니다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "MalformedInputException",
+      "what": "디코더가 규칙에 안 맞는 바이트를 만났을 때 REPORT 모드에서 던지는 예외."
+    },
+    {
+      "term": "REPLACE 와 REPORT",
+      "what": "CodingErrorAction 의 두 값. Files 경로는 REPORT, new String·InputStreamReader 는 REPLACE 다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Files.readString",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — MalformedInputException",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/MalformedInputException.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JEP 400: UTF-8 by Default",
+      "url": "https://openjdk.org/jeps/400",
+      "publisher": "OpenJDK"
+    }
+  ]
+}

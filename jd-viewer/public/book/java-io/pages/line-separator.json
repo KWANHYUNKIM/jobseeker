@@ -1,0 +1,232 @@
+{
+  "book": "java-io",
+  "id": "line-separator",
+  "no": "4.5",
+  "chapter": 4,
+  "title": "줄바꿈",
+  "summary": "\\n 과 \\r\\n.",
+  "minutes": 11,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "줄바꿈을 정하는 자리가 어디인지 안다.",
+    "-Dline.separator 로 윈도우를 재현해 본다.",
+    "split 로 자르면 무엇이 남는지 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.3절에서 **`readLine()` 은 세 가지 줄바꿈을 다 떼어 준다**고 했다. 읽는 쪽은 걱정이 없다.\n\n**쓰는 쪽이 문제다.** 4.4절의 `println` 이 무슨 바이트를 넣는지, 그것을 내가 정할 수 있는지를 본다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 두 줄, 네 가지로 쓰기 (macOS)",
+      "columns": [
+        "코드",
+        "바이트",
+        "크기"
+      ],
+      "rows": [
+        [
+          "`w.write(\"a\\nb\\n\")`",
+          "`61 0a 62 0a`",
+          "4"
+        ],
+        [
+          "`w.write(\"a\\r\\nb\\r\\n\")`",
+          "`61 0d 0a 62 0d 0a`",
+          "6"
+        ],
+        [
+          "`w.write(\"a\"); w.newLine()` …",
+          "`61 0a 62 0a`",
+          "4"
+        ],
+        [
+          "`Files.write(p, List.of(\"a\",\"b\"))`",
+          "`61 0a 62 0a`",
+          "4"
+        ]
+      ],
+      "note": "**넷 중 둘만 내가 정했다.** 하드코딩한 두 줄은 내가 쓴 그대로고, `newLine()` 과 `Files.write` 는 **플랫폼이 정한다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "줄바꿈을 정하는 곳이 두 군데다",
+      "ascii": "   I decide                       the platform decides\n   ---------                      --------------------\n   write(\"...\\n\")                 println()\n   write(\"...\\r\\n\")               BufferedWriter.newLine()\n                                  Files.write(path, List)\n                                  String.format(\"%n\")\n\n   the right column reads System.lineSeparator()\n   on this machine that is \\n ; on windows it is \\r\\n",
+      "note": "**오른쪽 것들은 같은 코드가 OS 마다 다른 바이트를 낸다.** `%n` 과 `\\n` 이 다른 것이 이 표다 — `printf(\"%s%n\")` 은 플랫폼 것이고 `printf(\"%s\\n\")` 은 항상 `0a` 다."
+    },
+    {
+      "type": "prose",
+      "md": "## 윈도우를 재현해 봤다\n\n`System.lineSeparator()` 는 `line.separator` 프로퍼티에서 온다. 2.5절에서 `-Dfile.encoding` 은 **아무것도 바꾸지 못했는데**, 이것은 어떨까."
+    },
+    {
+      "type": "compare",
+      "title": "`java -Dline.separator=$'\\r\\n'` 을 줬을 때",
+      "left": {
+        "title": "옵션 없이",
+        "md": "```\nlineSeparator() = \\n\n\ns1 (하드코딩 \\n)    4바이트\ns2 (하드코딩 \\r\\n)  6바이트\ns3 (newLine)      4바이트\ns4 (Files.write)  4바이트\n```"
+      },
+      "right": {
+        "title": "`-Dline.separator=\\r\\n`",
+        "md": "```\nlineSeparator() = \\r\\n\n\ns1 (하드코딩 \\n)    4바이트\ns2 (하드코딩 \\r\\n)  6바이트\ns3 (newLine)      6바이트\ns4 (Files.write)  6바이트\n```"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이 프로퍼티는 먹는다 — 2.5절과 반대다",
+      "md": "`s3`·`s4` 가 4바이트에서 **6바이트로 바뀌었다.**\n\n> 2.5절의 `-Dfile.encoding=MS949` 는 프로퍼티만 바뀌고 실제 동작은 그대로였다. **`line.separator` 는 실제로 바뀐다.**\n> 그래서 **윈도우에서 돌 때의 바이트를 이 머신에서 확인할 수 있다** — 크로스 플랫폼 테스트에 쓸 만한 자리다.\n> 하드코딩한 `s1`·`s2` 는 안 바뀌었다. 당연하다 — 프로퍼티를 안 읽으니까.\n> 곧 \"어느 쪽이 안전하냐\" 는 **무엇을 만드느냐에 달렸다.** 다음 칼아웃이 그 기준이다."
+    },
+    {
+      "type": "table",
+      "caption": "어느 쪽을 쓰나",
+      "columns": [
+        "만드는 것",
+        "쓸 것",
+        "왜"
+      ],
+      "rows": [
+        [
+          "**형식이 정해진 파일** (CSV·JSON·프로토콜)",
+          "**하드코딩**",
+          "그 형식이 줄바꿈을 정해 뒀다. 플랫폼이 끼어들면 안 된다"
+        ],
+        [
+          "**사람이 그 OS 에서 열어 볼 파일**",
+          "`newLine()` / `%n`",
+          "메모장이 한 줄로 보이지 않게"
+        ],
+        [
+          "**HTTP 헤더** (9장)",
+          "**하드코딩 `\\r\\n`**",
+          "RFC 가 CRLF 로 정했다 — 플랫폼과 무관하다"
+        ],
+        [
+          "로그 파일",
+          "어느 쪽이든",
+          "읽는 쪽이 `readLine()` 이면 상관없다"
+        ]
+      ],
+      "note": "**9장이 세 번째 줄이다.** HTTP 는 줄 끝이 `\\r\\n` 이고, macOS 에서 `println` 으로 헤더를 쓰면 `0a` 만 나가서 **응답이 깨진다.** 그 절에서 다시 만난다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "1,000줄이면 1,000바이트가 갈린다",
+      "md": "차이가 줄마다 1바이트라 작아 보이지만 쌓인다.\n\n```\nLF   7,890바이트\nCRLF 8,890바이트  (+1,000)\n```\n\n> 정확히 줄 수만큼이다. 로그 100만 줄이면 **1MB** 차이다.\n> 파일 크기로 줄 수를 추정하는 코드는 이 1바이트에 걸린다.\n> git 이 `core.autocrlf` 로 이걸 변환하는 이유이기도 하다 — 같은 파일이 OS 마다 다른 크기가 되면 diff 가 전부 바뀐다."
+    },
+    {
+      "type": "prose",
+      "md": "## split 로 자르면 `\\r` 이 남는다\n\n4.3절에서 말한 버그를 **실제로 재현했다.** CRLF 파일을 두 방법으로 읽었다."
+    },
+    {
+      "type": "compare",
+      "title": "같은 `61 0d 0a 62 0d 0a` 를 읽는 두 방법",
+      "left": {
+        "title": "`readLine()`",
+        "md": "```\n1 = [a]  길이 1\n2 = [b]  길이 1\n```\n\n**깨끗하다.**"
+      },
+      "right": {
+        "title": "`readString()` 후 `split(\"\\n\")`",
+        "bad": true,
+        "md": "```\n[a\\r]  길이 2  끝이 \\r 인가 true\n[b\\r]  길이 2  끝이 \\r 인가 true\n```\n\n**길이가 2다.** 눈에는 `a` 로 보인다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "화면에서는 안 보인다",
+      "md": "`\\r` 은 커서를 줄 앞으로 보내는 문자라 **출력해도 자리를 차지하지 않는다.**\n\n> `System.out.println(\"[\" + line + \"]\")` 가 `[a]` 로 보인다 — `\\r` 이 `]` 를 덮어쓰고 지나가서 그렇다.\n> `line.length()` 나 `endsWith(\"\\r\")` 로 확인해야 보인다. 위 출력에서 `length 2` 가 그것이다.\n> 그래서 **`\"OK\".equals(line)` 이 `false` 인데 로그에는 `line=OK` 로 찍힌다.** 디버거로 봐도 눈에 안 걸린다.\n> 고치는 방법은 셋이다 — `readLine()` 을 쓰거나, `split(\"\\\\R\")`(자바 8+ 의 모든 줄바꿈 패턴), 또는 `strip()`."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"윈도우에서 만든 CSV 를 리눅스에서 파싱하니 마지막 칼럼 비교가 실패합니다.\"**\n\n> **`\\r` 이 마지막 값 끝에 붙은 것**이다. `split(\"\\n\")` 으로 줄을 잘랐을 것이다.\n> `readLine()` 이나 `split(\"\\\\R\")` 로 바꾸면 끝난다. `\\R` 은 `\\n`·`\\r\\n`·`\\r` 을 다 잡는다.\n> \"왜 로그에는 정상으로 보였습니까\" 가 이어지면 — **`\\r` 이 화면에서 자리를 차지하지 않기 때문**이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 네 가지 쓰기와 두 가지 읽기",
+      "sql": "$ java -cp out Sep\nlineSeparator() = \\n\n\n--- 같은 두 줄, 세 가지로 쓰기 ---\n  s1.txt           4바이트  61 0a 62 0a\n  s2.txt           6바이트  61 0d 0a 62 0d 0a\n  s3.txt           4바이트  61 0a 62 0a\n  s4.txt           4바이트  61 0a 62 0a\n\n--- 1000줄이면 크기가 얼마나 갈리나 ---\n  LF   7,890바이트\n  CRLF 8,890바이트  (+1,000)\n\n--- CRLF 파일을 읽으면 ---\n  readLine 1 = [a]  길이 1\n  readLine 2 = [b]  길이 1\n  readString 으로 통째로 = [a\\r\\nb\\r\\n]  길이 6\n  그것을 split(\"\\n\") 하면:\n    [a\\r]  길이 2  끝이 \\r 인가 true\n    [b\\r]  길이 2  끝이 \\r 인가 true\n\n# --- 프로퍼티를 바꿔서 윈도우를 재현한다 ---\n\n$ java -Dline.separator=$'\\r\\n' -cp out Sep\nlineSeparator() = \\r\\n\n\n  s1.txt           4바이트  61 0a 62 0a          <- 하드코딩, 안 바뀐다\n  s2.txt           6바이트  61 0d 0a 62 0d 0a    <- 하드코딩, 안 바뀐다\n  s3.txt           6바이트  61 0d 0a 62 0d 0a    <- newLine(), 바뀌었다\n  s4.txt           6바이트  61 0d 0a 62 0d 0a    <- Files.write, 바뀌었다\n\n# s3·s4 가 4 에서 6 으로 바뀌었다.\n# 2.5절의 -Dfile.encoding 은 아무것도 못 바꿨는데 이 프로퍼티는 먹는다.",
+      "note": "**같은 바이트(`61 0d 0a 62 0d 0a`)를 `readLine` 은 길이 1로, `split` 은 길이 2로 준다.** 그 1바이트가 문자열 비교를 조용히 깨는 것이 4.3절과 이 절의 공통 주제다."
+    }
+  ],
+  "recap": [
+    "줄바꿈을 정하는 곳이 둘이다 — 내가 하드코딩하거나 플랫폼이 정한다.",
+    "println·newLine()·Files.write(List)·%n 은 System.lineSeparator() 를 읽는다.",
+    "-Dline.separator=$'\\r\\n' 를 주면 그 셋이 6바이트로 바뀐다 — 2.5절의 file.encoding 과 반대로 실제로 먹는다.",
+    "형식이 정해진 파일(CSV·HTTP)은 하드코딩하고, 사람이 그 OS 에서 열 파일은 플랫폼 것을 쓴다.",
+    "HTTP 헤더는 RFC 가 CRLF 로 정했다 — macOS 에서 println 으로 쓰면 응답이 깨진다(9장).",
+    "1,000줄이면 정확히 1,000바이트가 갈린다.",
+    "split(\"\\n\") 으로 CRLF 파일을 자르면 길이 2인 [a\\r] 이 나오고 화면에서는 안 보인다.",
+    "readLine() 이나 split(\"\\\\R\") 을 쓰면 세 가지 줄바꿈을 다 잡는다."
+  ],
+  "drills": [
+    {
+      "task": "-Dline.separator 를 주고 newLine() 의 바이트를 확인한다.",
+      "done_when": "0d 0a 가 되는 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "printf(\"%n\") 과 printf(\"\\n\") 의 바이트를 비교한다.",
+      "done_when": "옵션을 줬을 때 갈리는 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "CRLF 파일을 split(\"\\n\") 으로 자르고 length() 를 찍는다.",
+      "done_when": "1 이 아니라 2 인 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "내 코드에서 split(\"\\n\") 을 쓰는 자리를 찾아 \\\\R 로 바꾼다.",
+      "done_when": "윈도우 파일로 테스트한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "println 이 쓰는 줄바꿈은 무엇이 정하나.",
+      "a": "System.lineSeparator() 이고 line.separator 프로퍼티에서 온다."
+    },
+    {
+      "q": "%n 과 \\n 의 차이는.",
+      "a": "%n 은 플랫폼 줄바꿈, \\n 은 항상 0a 다."
+    },
+    {
+      "q": "HTTP 헤더의 줄바꿈을 println 으로 쓰면 왜 안 되나.",
+      "a": "RFC 가 CRLF 로 정했는데 macOS·리눅스의 println 은 \\n 만 쓴다."
+    },
+    {
+      "q": "split(\"\\n\") 으로 CRLF 파일을 자르면.",
+      "a": "각 줄 끝에 \\r 이 남고 화면에서는 보이지 않아 문자열 비교가 조용히 실패한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "System.lineSeparator()",
+      "what": "플랫폼 줄바꿈. line.separator 프로퍼티에서 오고 -D 로 바꿀 수 있다."
+    },
+    {
+      "term": "\\\\R",
+      "what": "자바 8부터의 정규식 패턴. \\n·\\r\\n·\\r 을 모두 잡는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — System.lineSeparator()",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Pattern (Linebreak matcher \\R)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "RFC 9112 — HTTP/1.1 Message Format",
+      "url": "https://datatracker.ietf.org/doc/html/rfc9112",
+      "publisher": "IETF"
+    }
+  ]
+}

@@ -208,7 +208,7 @@
           "title": "PrintWriter",
           "summary": "편한 대신 삼키는 것.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.5",
@@ -216,7 +216,7 @@
           "title": "줄바꿈",
           "summary": "\\n 과 \\r\\n.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.6",
@@ -224,7 +224,7 @@
           "title": "Files 의 문자 메서드",
           "summary": "readString 과 lines.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
