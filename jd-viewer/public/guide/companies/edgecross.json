@@ -261,6 +261,13 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55029882",
+      "title": "AIoT 서비스 Backend Developer",
+      "site": "jumpit",
+      "duplicate_of": "https://www.wanted.co.kr/wd/338476",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 학습 항목은 원티드 'AIoT 서비스 백앤드 개발자 (3년 이상)'(338476) 브리핑을 본다. 주요업무(대용량 시계열 스트리밍 데이터 아키텍처 — Kafka·ClickHouse·펌웨어 연동·AI 결과 통합·시각화 API), 자격요건(백엔드 3년, Java/Spring, AWS, RDBMS·JPA·Mybatis, 대용량·Docker, MQTT), 우대사항이 글자까지 같다. 다른 점은 점핏이 경력을 '3~10년' 으로 적고(원티드는 '3년 이상'), 근무지를 '서울 금천구 가산디지털1로165, 1202호' 로 번지까지 적는다는 것뿐이다."
     }
   ]
 }
