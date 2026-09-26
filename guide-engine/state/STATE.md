@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **168건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **169건**.
+직전 회차: ✅ `Staff, Machine Learning Engineer - Coupang Play`(7962916) 3항목 — **싱가포르**, OTT 콘텐츠 추천·광고 개인화. `--gaps` 미완 23건.
 직전 회차: ✅ `Staff Machine Learning Engineer`(8097855) 3항목 — **마운틴뷰**, Growth Marketing ML(업리프트 타기팅·입찰·ML 자동화), 급여 '$152,00' 오타.
 직전 회차: ✅ `Staff IT Operations Engineer`(7835332) 3항목 — **도쿄**, 비개발(사내 IT 엔드포인트·Intune·Entra ID).
 직전 회차: ✅ `Staff, Front-end Engineer (Global Operations Technology)`(6412588) 3항목 — 한국, 웹 성능·MVC/Node·MSA. 주요업무 칸 비어 full_jd 직무 소개로 맥락.

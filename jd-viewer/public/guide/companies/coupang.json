@@ -17196,6 +17196,103 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7962916",
+      "title": "Staff, Machine Learning Engineer - Coupang Play",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 싱가포르 근무다. ML 제품 구축 7년 이상(콘텐츠 추천 또는 광고 개인화 2년 이상)의 스태프 ML 엔지니어로, 쿠팡플레이의 SVOD·라이브 이벤트·TVOD 카탈로그를 대상으로 대량의 재생(playback) 데이터에서 OTT 구독자 행동을 분석하고, 특성 데이터 작업을 만들고, 차세대 콘텐츠 추천과 광고 개인화 시스템을 만든다. 모델 추론을 운영 시스템에 통합하고 A/B 테스트로 성능을 검증하는 것까지 맡는다. 영어 커뮤니케이션이 필수 자격이다.",
+      "fit": {
+        "must_have": [
+          "CS·EE·통계·수학 등 학사",
+          "ML 제품 7년 이상·콘텐츠 추천/광고 개인화 2년 이상",
+          "대규모 추천·개인화 시스템 운영 배포",
+          "Python·딥러닝 프레임워크",
+          "실험·모델링 통계",
+          "영어"
+        ],
+        "can_learn": [
+          "석·박사(우대)",
+          "LLM 등 학습·평가·미세조정·배포(우대)",
+          "AWS·GPU(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "재생 로그로 만드는 콘텐츠 추천",
+          "from": "task",
+          "quote": "Build next generation content recommendation and ad personalization systems for Coupang Play",
+          "priority": "core",
+          "why": "쿠팡플레이의 차세대 콘텐츠 추천·광고 개인화 시스템 구축이 주요업무이고, 대량 재생 데이터에서 구독자 행동을 분석해 특성을 만든다고 공고가 적는다.",
+          "gap_check": "OTT 에는 별점 같은 명시적 평가가 드물다. 재생 시작·시청 완료율·이어보기·중도 이탈을 어떤 신호로 바꿔 학습하고, 라이브 이벤트처럼 짧은 시간에만 의미 있는 콘텐츠는 어떻게 다루는가?",
+          "drill": "YouTube 추천 논문을 읽고, 가상 재생 로그(사용자·콘텐츠·시청 시간·완료 여부)로 '시청 완료 가중' 학습 신호를 만들어 간단한 후보 생성 모델을 학습하고, 클릭만 쓴 모델과 recall@20 을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Covington et al. — Deep Neural Networks for YouTube Recommendations",
+              "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+              "kind": "paper"
+            },
+            {
+              "title": "Yi et al. — Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations",
+              "url": "https://research.google/pubs/sampling-bias-corrected-neural-modeling-for-large-corpus-item-recommendations/",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 수집 요건과 특성 파이프라인",
+          "from": "task",
+          "quote": "Develop data requirements and coordinate with relevant engineering and business teams to setup data collection as well as to validate data",
+          "priority": "high",
+          "why": "데이터 요건을 정하고 관련 팀과 데이터 수집 설정·검증을 조율하며, 수집한 데이터로 모델 특성을 만드는 것이 주요업무다.",
+          "gap_check": "재생 이벤트 로그에 '광고 노출 중 이탈'이 따로 기록되지 않으면 광고 개인화 모델이 무엇을 배울 수 없게 되는가? 이벤트 스키마에 무엇을 요청하고, 수집이 맞게 되는지 무엇으로 검증하는가?",
+          "drill": "OTT 재생 이벤트 스키마 초안(재생 시작·일시정지·광고 노출/건너뜀·완료·이탈)을 쓰고, 이벤트 순서 이상(완료가 시작보다 먼저)·누락률을 찾는 데이터 검증 쿼리를 만든다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "추천 모델의 A/B 검증",
+          "from": "task",
+          "quote": "Setup necessary testing requirements for the models in production, including A/B testing, and analyze results to gather insights about model performance",
+          "priority": "high",
+          "why": "운영 중 모델의 A/B 테스트를 포함한 검증 요건을 세우고 결과를 분석하는 것이 주요업무이고, 실험·모델링 통계가 필수 자격이다.",
+          "gap_check": "추천 변경 실험에서 '시청 시간 증가'를 주 지표로 삼으면 어떤 부작용(짧은 클립 편중·해지 증가)을 놓칠 수 있고, 구독 서비스에서는 어떤 장기 지표를 가드레일로 두는가?",
+          "drill": "실험 교재의 지표 장을 읽고, 쿠팡플레이 추천 변경 실험 설계서(주 지표·가드레일·기간·무작위 단위)를 한 장으로 쓴다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Trustworthy Online Controlled Experiments (book site)",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "시청 완료 가중 추천 실험 노트",
+          "why": "OTT 추천의 핵심은 명시적 평가 없이 재생 행동에서 신호를 만드는 것이다. 학습 신호를 바꿔 결과를 비교한 노트는 이 자리의 도메인 감각을 보여 준다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "암묵적 피드백 신호",
+          "라이브·TVOD 콘텐츠 특성",
+          "광고 개인화 데이터",
+          "추천 실험 가드레일",
+          "모델 서빙 통합"
+        ],
+        "sources": [
+          {
+            "title": "Staff, Machine Learning Engineer - Coupang Play",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7962916",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
