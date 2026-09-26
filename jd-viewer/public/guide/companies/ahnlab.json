@@ -335,6 +335,137 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/565711?ReturnUrl=RecruitInfo",
+      "title": "[신입/경력] SW개발(Windows) 채용",
+      "site": "dev",
+      "verdict": "신입/경력. Windows 보안 솔루션 개발·유지보수, Windows 애플리케이션·시스템 레벨 기능, 보안 프로그램 기능과 성능·안정성 개선. 자격은 Windows 개발, C++ 실무, Windows 시스템 프로그래밍, 'Windows C/C++(필수)'. 공고 안에 모집부문이 둘로 나뉘어 있다 — **EXDR Window Agent 개발**(우대: 커널 드라이버, 리버스 엔지니어링으로 악성코드·취약점 분석, 덤프·심볼 디버깅, 오픈소스, Git/SVN, 글로벌 제품·해외 고객 대응)과 **MDS Window Agent 개발**(우대: 리눅스 시스템 프로그래밍, Go). 지원서에 관심 분야를 고르지만 '실제 배치는 선택 분야와 상이할 수 있는 점' 을 적어 둔다. 전형은 서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사, 접수 ~2026.12.31 안랩 홈페이지.",
+      "fit": {
+        "must_have": [
+          "Windows 개발",
+          "C++ 실무",
+          "Windows 시스템 프로그래밍",
+          "Windows C/C++(필수)"
+        ],
+        "can_learn": [
+          "커널 드라이버(EXDR)",
+          "리버스 엔지니어링·악성코드 분석",
+          "덤프·심볼 디버깅",
+          "리눅스 시스템 프로그래밍·Go(MDS)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Windows 커널 드라이버와 보안 콜백",
+          "from": "preference",
+          "quote": "Windows 시스템 프로그래밍 및 커널 드라이버 개발 경험",
+          "priority": "core",
+          "why": "EXDR Window Agent 부문의 우대사항이고 자격요건이 Windows 시스템 프로그래밍이다. EDR 에이전트는 프로세스 생성·파일 접근 같은 이벤트를 커널에서 받는 경우가 많다(추론).",
+          "gap_check": "보안 에이전트가 프로세스 생성을 감시하려고 PsSetCreateProcessNotifyRoutineEx 를 쓸 때 콜백 안에서 하면 안 되는 일은 무엇이고, 파일 접근 감시는 왜 미니필터(Filter Manager)로 하는가?",
+          "drill": "Windows-driver-samples 의 미니필터 예제를 테스트 서명 VM 에 올려 특정 확장자 파일 열기를 로그로 남기고, 프로세스 생성 콜백을 붙여 커맨드라인을 기록한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Microsoft — Kernel-mode driver architecture",
+              "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/",
+              "kind": "docs"
+            },
+            {
+              "title": "Microsoft — Filter Manager concepts",
+              "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/filter-manager-concepts",
+              "kind": "docs"
+            },
+            {
+              "title": "Microsoft — PsSetCreateProcessNotifyRoutineEx",
+              "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-pssetcreateprocessnotifyroutineex",
+              "kind": "docs"
+            },
+            {
+              "title": "Windows-driver-samples",
+              "url": "https://github.com/microsoft/Windows-driver-samples",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "덤프·심볼로 디버깅",
+          "from": "preference",
+          "quote": "덤프 분석 또는 심볼 파일을 이용한 디버깅 경험",
+          "priority": "core",
+          "why": "EXDR Window Agent 부문의 우대사항이고 주요업무에 '보안 프로그램 기능 개발 및 성능·안정성 개선' 이 있다. 보안 에이전트의 크래시·BSOD 는 고객 PC 에서 덤프로만 남는다(추론).",
+          "gap_check": "고객 PC 에서 받은 크래시 덤프를 WinDbg 로 열 때 심볼 경로는 어떻게 잡고, 커널 드라이버가 일으킨 BSOD 덤프에서 원인 드라이버와 호출 스택은 어떤 명령으로 찾는가?",
+          "drill": "앞 드릴 드라이버에 일부러 널 포인터 참조를 넣어 VM 에서 BSOD 를 내고 메모리 덤프를 WinDbg 로 열어 !analyze -v 와 스택으로 원인 줄을 찾는다. 사용자 모드 앱 크래시 덤프도 같은 식으로 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Microsoft — Debugging Tools for Windows",
+              "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/",
+              "kind": "docs"
+            },
+            {
+              "title": "Microsoft — Symbol path",
+              "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/symbol-path",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "리버스 엔지니어링으로 악성코드 분석",
+          "from": "preference",
+          "quote": "리버스 엔지니어링을 통한 악성코드 또는 취약점 분석 가능자",
+          "priority": "high",
+          "why": "EXDR Window Agent 부문의 우대사항이다. 탐지 에이전트를 만들려면 막아야 할 행위를 알아야 한다(추론).",
+          "gap_check": "샘플이 어떤 API 를 호출해 지속성을 얻는지 정적 분석(디스어셈블)과 동적 분석(Procmon·ETW) 중 무엇으로 먼저 보고, 에이전트는 그 행위를 어느 지점(콜백·ETW)에서 잡을 수 있는가?",
+          "drill": "무해한 테스트 프로그램(레지스트리 Run 키 등록·예약 작업 생성)을 직접 만들어 Ghidra 로 정적 분석하고 Procmon·ETW 로 행위를 기록한 뒤, 탐지 지점을 표로 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Ghidra",
+              "url": "https://github.com/NationalSecurityAgency/ghidra",
+              "kind": "tool"
+            },
+            {
+              "title": "Sysinternals — Process Monitor",
+              "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/procmon",
+              "kind": "tool"
+            },
+            {
+              "title": "Microsoft — About Event Tracing",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/etw/about-event-tracing",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "미니필터 + 프로세스 생성 콜백으로 만든 작은 Windows 감시 드라이버와 BSOD 덤프 분석 기록",
+          "why": "자격요건(Windows 시스템 프로그래밍·C/C++)과 EXDR 부문 우대 셋(커널 드라이버·덤프 디버깅·악성코드 분석)을 한 번에 보여 준다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "관심 분야(EXDR/MDS) 선택 근거 정리",
+          "why": "지원서에 관심 분야를 고르게 되어 있다. 배치는 달라질 수 있다고 적혀 있으니 두 부문 우대사항에 맞춘 경험을 나눠 적는다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사(공고 기준, 직무에 따라 전형이 추가·변동될 수 있다). 접수는 ~2026.12.31 안랩 홈페이지.",
+        "expect": [
+          "Windows 시스템 프로그래밍",
+          "커널 드라이버·콜백",
+          "크래시 덤프 분석",
+          "악성코드 행위 이해"
+        ],
+        "sources": [
+          {
+            "title": "[신입/경력] SW개발(Windows) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/565711?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }
