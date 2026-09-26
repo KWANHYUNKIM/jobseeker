@@ -43,7 +43,7 @@
 | **KENCOPA** | JP · 건설 AI 에이전트 | 프로파일(2026-09-26). 도메인 둘 — 설계 도서로 공정표의 일수를 세운다 · 제각각인 PDF 표를 구조화 데이터로 뽑는다. 기능 2(`activity-rate-quantity-linking` · `sds-pdf-table-extraction`). **hold** — 적산 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 적산 AI 에이전트는 도메인 없음. 입구 `zenn.dev/p/kencopa/feed`(8편). |
 | **WWWAVE(ウェイブ)** | JP · 전자 코믹·아니메 제작·배신 | 프로파일(2026-09-26). 도메인 둘 — 전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다 · 이상 때만 알리는 감시에서 침묵을 해석한다. 기능 2(`access-vba-delivery-retirement` · `batch-silence-monitoring`). **hold** — 신규 사업 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 신규 사업은 도메인 없음. 입구 `zenn.dev/p/wwwave/feed`. |
 | **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 2(`cheap-model-prescreening` · `scanned-pdf-ocr-triage`). **hold** — Stock 제품 수익원 자료 두 번 없음(2026-09-26). 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
-| **WealthNavi(ウェルスナビ)** | JP · 로보어드바이저 | 프로파일(2026-09-26). 도메인 둘 — 서비스 사이의 데이터 변화를 이벤트로 잃지 않고 전한다 · 생성 AI 기능의 품질을 기계·AI·사람으로 나눠 보증한다. 기능 0. 수익원 하나(운용 수수료 연율 최대 1%). 입구 `zenn.dev/p/wn_engineering/feed`. |
+| **WealthNavi(ウェルスナビ)** | JP · 로보어드바이저 | 프로파일(2026-09-26). 도메인 둘 — 서비스 사이의 데이터 변화를 이벤트로 잃지 않고 전한다 · 생성 AI 기능의 품질을 기계·AI·사람으로 나눠 보증한다. 기능 1(`outbox-sns-sqs-fanout`). 수익원 하나(운용 수수료 연율 최대 1%). 입구 `zenn.dev/p/wn_engineering/feed`. |
 
 
 ## 대기

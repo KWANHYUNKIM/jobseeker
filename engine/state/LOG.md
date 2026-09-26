@@ -1852,3 +1852,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 WealthNavi 회사 프로파일
 
 - 서비스 사이트 첫 화면(예탁 자산 2.1조 엔·50만 명)과 수수료 페이지(연율 최대 1%)로 수익원 하나. 기술 글에서 도메인 둘(이벤트 구동 연계 · 생성 AI QA). STATE 지금 파는 중 줄의 잘못 남은 '**.' 도 이번 덮어쓰기로 정리.
+
+## 2026-09-26 WealthNavi Outbox·SNS·SQS 팬아웃
+
+- 결정 6 — 즉시 확인 불필요한 연계만 이벤트(입출금은 API)·SNS+SQS(SQS 단독·EventBridge·Kinesis 대신)·Outbox·릴레이 이중 처리 락(구상)·FIFO(300 TPS, 나중에 HT FIFO)·Content-based dedup+종류별 그룹.
