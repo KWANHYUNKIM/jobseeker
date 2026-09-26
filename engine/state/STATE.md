@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — CADDi 는 hold_reason 으로 보류(수발주 자료 2회 없음). 다음은 --gaps 가 가리키는 신규(QUEUE 대기 맨 위, 데브시스터즈). 큐가 2/3 라 그 뒤 후보 조사를 한 번 끼운다.**
+**데브시스터즈 — 프로파일(2026-09-26). 다음은 확장: "게임 로그를 게임별로 갈라 흘려보낸다" 를 `tech.devsisters.com/posts/kafka-streams-keda-scaling`(읽음, 후반 cron trigger·스레드 다중화 부분 마저)으로. 목록은 `tech.devsisters.com/rss.xml`. 큐 2/3 → 이 회사 뒤 후보 조사.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.

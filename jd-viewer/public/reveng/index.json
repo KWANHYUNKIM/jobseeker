@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "devsisters",
+      "name": "데브시스터즈",
+      "name_en": "Devsisters",
+      "country": "KR",
+      "category": "게임",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "쿠키런 IP 하나로 게임 열 개를 굴리는 회사 — 게임별로 가른 로그를 lag 으로 늘려 흘려보내고, 지표는 쿼리가 아니라 정의를 고친다",
+      "updated_at": "2026-09-26",
+      "domain": "devsisters.com"
+    },
+    {
       "slug": "caddi",
       "name": "캐디",
       "name_en": "CADDi",
@@ -2931,7 +2943,9 @@
     "아무도 안 보는 녹화를 모델이 보게 한다",
     "그래프 색인이 모르는 거리는 되채점으로 얹는다",
     "여러 제품이 한 문으로 들어온다",
-    "쌓인 제조 데이터를 싸게 꺼낸다"
+    "쌓인 제조 데이터를 싸게 꺼낸다",
+    "게임 로그를 게임별로 갈라 흘려보낸다",
+    "지표 정의를 한곳에 둔다"
   ],
   "countries": {
     "KR": "한국",

@@ -1,0 +1,166 @@
+{
+  "slug": "devsisters",
+  "name": "데브시스터즈",
+  "name_en": "Devsisters",
+  "country": "KR",
+  "category": "게임",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "devsisters.com",
+  "one_liner": "쿠키런 IP 하나로 게임 열 개를 굴리는 회사 — 게임별로 가른 로그를 lag 으로 늘려 흘려보내고, 지표는 쿼리가 아니라 정의를 고친다",
+  "business_model": "**2007년 설립**, **쿠키런 IP** 하나를 중심으로 게임 열 개 가까이를 서비스한다 — 오븐브레이크·킹덤·마녀의 성·모험의 탑·클래식·브레이버스 카드 게임·다키스트 나이트(VR)·퍼즐 월드·오븐스매시·크럼블. **누적 이용자 3억 명 이상**, 글로벌 오피스 4개, 개발 스튜디오 3개.\n\n돈은 **게임에서** 번다. **영업수익**이 게임 한 편으로 크게 흔들린다 — 2020년 약 705억 원에서 **쿠키런: 킹덤**이 나온 **2021년 약 3,693억 원**으로 뛰었고, 2023년 약 1,611억 원까지 내려갔다가 **2025년 약 2,956억 원**으로 올라왔다. 게임별·결제 방식별 비중은 공개 표에 없다.\n\n모바일에서 **PC·콘솔·VR** 로, 그리고 **애니메이션·라이선싱**으로 넓히는 중이다(로블록스 '쿠키런: 카드 컬렉션', 카드 게임 유럽 진출).",
+  "products": [
+    "쿠키런: 킹덤",
+    "쿠키런: 오븐브레이크",
+    "쿠키런 키우기 — 쿠키런: 크럼블",
+    "쿠키런: 브레이버스 카드 게임",
+    "쿠키런: 오븐스매시",
+    "쿠키런: 마녀의 성 · 모험의 탑 · 퍼즐 월드 · 클래식",
+    "쿠키런: 더 다키스트 나이트(VR)",
+    "DevPlay 계정"
+  ],
+  "revenue_total": "2025년 영업수익 약 2,956억 원(295,578,347,074원) — 회사 IR 요약재무정보",
+  "revenue_streams": [
+    {
+      "name": "쿠키런 게임 매출",
+      "how": "쿠키런 IP 게임들을 모바일·PC·콘솔·VR 로 서비스해 번다. 한 편(킹덤)이 나온 해에 영업수익이 약 5배가 될 만큼 **히트작에 기대는** 구조다.",
+      "weight": "공개 안 됨(게임별 비중 없음)",
+      "domains": [
+        "게임 로그를 게임별로 갈라 흘려보낸다",
+        "지표 정의를 한곳에 둔다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "DEVSISTERS — About",
+          "url": "https://www.devsisters.com/about",
+          "publisher": "데브시스터즈",
+          "summary": "**2007년 설립**, 쿠키런 IP 를 중심으로 **전 세계 3억 명 이상**의 누적 이용자에게 게임을 서비스해 왔다. 대한민국 본사를 포함한 **글로벌 오피스 4개, 개발 스튜디오 3개(오븐게임즈·스튜디오 킹덤·프레스에이), 투자 전문 자회사 1개**로 이뤄진다. 모바일에서 **PC·콘솔·VR** 로 넓히고, **애니메이션·라이선싱** 같은 새 사업으로도 나간다. 미션은 **'세상을 즐겁게! 더 넓은 곳에서, 더 많은 사람들에게, 더 오랜 시간 동안'**. 게임 목록: 쿠키런: 오븐브레이크 · 쿠키런: 킹덤 · 마녀의 성 · 모험의 탑 · 쿠키런(클래식) · 브레이버스 카드 게임 · 더 다키스트 나이트(VR) · 퍼즐 월드 · 오븐스매시 · 쿠키런 키우기(크럼블). 2026년에는 쿠키런 클래식 해외 서비스와 오븐스매시 글로벌 출시를 적는다. 뉴스에는 **크럼블 누적 매출 200억 원 돌파**, 로블록스 '쿠키런: 카드 컬렉션' 사전 등록, 카드 게임의 유럽 진출이 있다."
+        },
+        {
+          "title": "데브시스터즈 — 요약재무정보",
+          "url": "https://www.devsisters.com/investors/financial-info/summary",
+          "publisher": "데브시스터즈",
+          "summary": "연도별 **영업수익**(원): 2016 약 150억 · 2017 약 172억 · 2018 약 357억 · 2019 약 376억 · 2020 약 705억 · **2021 약 3,693억**(쿠키런: 킹덤 출시 해) · 2022 약 2,144억 · 2023 약 1,611억 · 2024 약 2,362억 · **2025 약 2,956억**(295,578,347,074원). 부문별 매출은 이 표에 없다."
+        }
+      ]
+    },
+    {
+      "name": "애니메이션·라이선싱",
+      "how": "쿠키런 IP 를 게임 밖으로 넓힌다 — 새 사업이라고 적는다.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "DEVSISTERS — About",
+          "url": "https://www.devsisters.com/about",
+          "publisher": "데브시스터즈",
+          "summary": "**2007년 설립**, 쿠키런 IP 를 중심으로 **전 세계 3억 명 이상**의 누적 이용자에게 게임을 서비스해 왔다. 대한민국 본사를 포함한 **글로벌 오피스 4개, 개발 스튜디오 3개(오븐게임즈·스튜디오 킹덤·프레스에이), 투자 전문 자회사 1개**로 이뤄진다. 모바일에서 **PC·콘솔·VR** 로 넓히고, **애니메이션·라이선싱** 같은 새 사업으로도 나간다. 미션은 **'세상을 즐겁게! 더 넓은 곳에서, 더 많은 사람들에게, 더 오랜 시간 동안'**. 게임 목록: 쿠키런: 오븐브레이크 · 쿠키런: 킹덤 · 마녀의 성 · 모험의 탑 · 쿠키런(클래식) · 브레이버스 카드 게임 · 더 다키스트 나이트(VR) · 퍼즐 월드 · 오븐스매시 · 쿠키런 키우기(크럼블). 2026년에는 쿠키런 클래식 해외 서비스와 오븐스매시 글로벌 출시를 적는다. 뉴스에는 **크럼블 누적 매출 200억 원 돌파**, 로블록스 '쿠키런: 카드 컬렉션' 사전 등록, 카드 게임의 유럽 진출이 있다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "게임 열 개, 로그 한 줄기",
+    "question": "여러 게임의 운영 데이터는 어떻게 흘러 지표가 되나?",
+    "code": "flowchart LR\n  G[\"쿠키런 게임들\\n킹덤 · 오븐브레이크 · 크럼블 ...\"] --> K[\"Kafka 원본 로그 topic들\"]\n  K --> T[\"Log Transformer\\nKafka Streams · k8s · KEDA(lag)\"]\n  T --> GT[\"게임별 topic\"]\n  GT --> L[\"Databricks\\n정제 테이블\"]\n  L --> MV[\"Metric View\\n지표 정의 한 벌\"]\n  MV --> D[\"대시보드\"]\n  MV --> A[\"분석 에이전트\"]",
+    "_note": "위쪽은 로그를 싸고 빠르게 게임별로 가르는 일, 아래쪽은 그 로그로 만든 지표를 모두가 같은 값으로 읽게 하는 일이다."
+  },
+  "domains": [
+    {
+      "name": "게임 로그를 게임별로 갈라 흘려보낸다",
+      "why": "게임이 열 개 가까이 되면 원본 로그도 여러 topic 으로 섞여 들어온다. **Log Transformer** 가 그것을 검증·변환해 **게임별 topic 으로 다시 내보내야** 뒤의 파이프라인이 필요한 것만 골라 먹는다.\n\n예전에는 이 일을 **EC2 72대**가 했다. 시간대에 따라 36↔72대를 오가게 했지만 불안정해 **피크 기준으로 고정**했고, 로그가 적은 시간에도 같은 규모를 돌렸다.\n\n쿠버네티스로 옮기며 **CPU 가 아니라 consumer lag** 으로 늘리고, **자정 초기화 급증은 미리** 늘리고, **pod 당 스레드**를 늘렸다 — **인프라 비용 80% 이상 절감.**",
+      "tech": [
+        {
+          "tech": "Kafka Streams(Log Transformer, source topic 별 앱)",
+          "solves": "여러 원본 topic 을 검증·변환해 게임별 topic 으로 가른다. topic 별로 앱을 나눠 스케일·장애·배포를 격리한다.",
+          "limits": "partition 을 task 로 묶어 스레드에 나누므로 **나누어떨어지지 않으면 일부 consumer 에 부하가 몰린다.** 한 partition 에 몰린 트래픽은 replica 로 못 푼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kafka Streams를 k8s로 옮기며 얻은 스케일링 설계: 비용 80% 절감까지",
+              "url": "https://tech.devsisters.com/posts/kafka-streams-keda-scaling",
+              "publisher": "데브시스터즈",
+              "date": "2026-09-03",
+              "summary": "데이터엔지니어링셀이 **Log Transformer**(여러 Kafka topic 의 원본 로그를 검증·변환해 **게임별 topic 으로 다시 produce** 하는 Kafka Streams 앱)를 EC2 에서 쿠버네티스로 옮긴 기록이다. 전에는 **c6g.2xlarge 72대** — ASG 에 cron 스케줄로 36↔72대를 오가게 했지만 **불안정해 피크 기준 72대로 고정**했고, 바꾸려면 사람이 ASG 를 고쳤고, Spinnaker 배포는 단계가 많아 느렸다. 먼저 **source topic 별로 앱을 나눠** 스케일·장애·배포를 topic 단위로 격리했다. **첫 시도(CPU 기반 HPA)는 실패했다** — Kafka Streams 는 partition 을 task 로 묶어 스레드 수에 비례해 나누는데, **task 수가 스레드 수로 나누어떨어지지 않으면** 일부 consumer 가 더 받아 CPU 100% 인데 **평균은 목표 아래**라 HPA 가 반응하지 않는다(어떤 할당 전략에도 남는 편차). CPU 평균은 부하가 고르게 퍼진다는 전제에서만 맞는 지표다. 그래서 **consumer lag** 으로 스케일한다 — HPA external metric 은 **lag 을 내보내는 metrics adapter 를 따로 운영**해야 해 **KEDA** 를 들였다(lagThreshold 로 replica 당 몫, replica 는 partition 수를 넘지 않는다). 개발 환경 topic 은 **scale-to-zero** 로 유휴 비용을 없애고 운영은 최소 replica 를 둔다. 특정 partition 에 몰리면 replica 로는 안 풀리니 partition 설계를 다시 봐야 한다고 적는다. **자정**에 일일 미션·출석 초기화로 로그가 한꺼번에 쏟아지면 lag 기반은 늦는다(pod ready·rebalance·JVM 워밍업) — **cron trigger 로 미리** 늘린다. **pod 당 스레드를 늘려** JVM 오버헤드와 rebalance 를 줄였다. 결과: EC2 대비 **인프라 비용 80% 이상 절감.**"
+            }
+          ]
+        },
+        {
+          "tech": "KEDA(Kafka scaler · cron trigger)",
+          "solves": "consumer lag 총량으로 replica 를 정해 불균등 할당에도 반응하고, 자정 급증은 cron 으로 미리 늘린다. 개발 topic 은 scale-to-zero.",
+          "limits": "lag 이 쌓인 뒤에 반응하므로 급증에는 늦다(pod ready·rebalance·JVM 워밍업) — 그래서 cron 보완이 필요하다. replica 는 partition 수를 넘지 못한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kafka Streams를 k8s로 옮기며 얻은 스케일링 설계: 비용 80% 절감까지",
+              "url": "https://tech.devsisters.com/posts/kafka-streams-keda-scaling",
+              "publisher": "데브시스터즈",
+              "date": "2026-09-03",
+              "summary": "데이터엔지니어링셀이 **Log Transformer**(여러 Kafka topic 의 원본 로그를 검증·변환해 **게임별 topic 으로 다시 produce** 하는 Kafka Streams 앱)를 EC2 에서 쿠버네티스로 옮긴 기록이다. 전에는 **c6g.2xlarge 72대** — ASG 에 cron 스케줄로 36↔72대를 오가게 했지만 **불안정해 피크 기준 72대로 고정**했고, 바꾸려면 사람이 ASG 를 고쳤고, Spinnaker 배포는 단계가 많아 느렸다. 먼저 **source topic 별로 앱을 나눠** 스케일·장애·배포를 topic 단위로 격리했다. **첫 시도(CPU 기반 HPA)는 실패했다** — Kafka Streams 는 partition 을 task 로 묶어 스레드 수에 비례해 나누는데, **task 수가 스레드 수로 나누어떨어지지 않으면** 일부 consumer 가 더 받아 CPU 100% 인데 **평균은 목표 아래**라 HPA 가 반응하지 않는다(어떤 할당 전략에도 남는 편차). CPU 평균은 부하가 고르게 퍼진다는 전제에서만 맞는 지표다. 그래서 **consumer lag** 으로 스케일한다 — HPA external metric 은 **lag 을 내보내는 metrics adapter 를 따로 운영**해야 해 **KEDA** 를 들였다(lagThreshold 로 replica 당 몫, replica 는 partition 수를 넘지 않는다). 개발 환경 topic 은 **scale-to-zero** 로 유휴 비용을 없애고 운영은 최소 replica 를 둔다. 특정 partition 에 몰리면 replica 로는 안 풀리니 partition 설계를 다시 봐야 한다고 적는다. **자정**에 일일 미션·출석 초기화로 로그가 한꺼번에 쏟아지면 lag 기반은 늦는다(pod ready·rebalance·JVM 워밍업) — **cron trigger 로 미리** 늘린다. **pod 당 스레드를 늘려** JVM 오버헤드와 rebalance 를 줄였다. 결과: EC2 대비 **인프라 비용 80% 이상 절감.**"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "지표 정의를 한곳에 둔다",
+      "why": "게임 런칭 직후는 데이터 요청이 가장 많고 급하다. 그때 대시보드와 adhoc 쿼리가 **각자 승률을 계산**하면서 **같은 지표가 차트마다 다른 숫자**가 됐고, 정제 쿼리가 대시보드를 열 때마다 다시 돌았다.\n\n결정적인 것은 **사내 분석 에이전트**였다 — 정제 안 된 로그를 읽고 **조건을 매번 스스로 정했다.** 스킬 문서에 조건을 적어도 길어지기만 했다.\n\n그래서 **쿼리가 아니라 정의를 고친다** — 지표를 Unity Catalog 의 **Metric View** 로 한 번 정의하고, 대시보드·SQL·에이전트가 모두 그것을 읽는다.",
+      "tech": [
+        {
+          "tech": "Databricks Unity Catalog Metric View(의미 계층)",
+          "solves": "measure·dimension 을 한 번 정의하고 group by 만 바꿔 어느 단위로든 같은 값을 읽는다(일별 평균으로 월을 내는 오류가 없다). 카탈로그에 있어 에이전트까지 같은 정의를 읽는다.",
+          "limits": "정의를 카탈로그에 모으는 일 자체가 설계 작업이다 — 어떻게 데이터 구조를 나눴는지는 기능 사이클에서 판다. Databricks 에 묶인다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+              "url": "https://tech.devsisters.com/posts/metric-view",
+              "publisher": "데브시스터즈",
+              "date": "2026-09-18",
+              "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**게임별 매출 비중이 없다** — 영업수익 총액만 공개돼 킹덤·오븐브레이크·크럼블 각각의 몫을 모른다.",
+    "**라이브 게임 서버 쪽을 아직 안 봤다** — 킹덤 Scala 백엔드, `crk-aws-az-failure-postmortem`(AZ 장애 사후 분석), `crk-hot-range-postmortem`, `tuning-zio-for-high-performance`, `cro-mysql-online-alter`, 엔지니어링 데이(게임 서버) 정리.",
+    "**`devplay-account`(통합 계정)·`deterministic-algorithm`(결정론적 알고리즘)** 도 도메인 후보다.",
+    "**Log Transformer 가 하루에 얼마를 처리하는지** 없다 — 72대 규모만 있고 메시지 수·용량은 없다."
+  ],
+  "sources": [
+    {
+      "title": "DEVSISTERS — About",
+      "url": "https://www.devsisters.com/about",
+      "publisher": "데브시스터즈",
+      "summary": "**2007년 설립**, 쿠키런 IP 를 중심으로 **전 세계 3억 명 이상**의 누적 이용자에게 게임을 서비스해 왔다. 대한민국 본사를 포함한 **글로벌 오피스 4개, 개발 스튜디오 3개(오븐게임즈·스튜디오 킹덤·프레스에이), 투자 전문 자회사 1개**로 이뤄진다. 모바일에서 **PC·콘솔·VR** 로 넓히고, **애니메이션·라이선싱** 같은 새 사업으로도 나간다. 미션은 **'세상을 즐겁게! 더 넓은 곳에서, 더 많은 사람들에게, 더 오랜 시간 동안'**. 게임 목록: 쿠키런: 오븐브레이크 · 쿠키런: 킹덤 · 마녀의 성 · 모험의 탑 · 쿠키런(클래식) · 브레이버스 카드 게임 · 더 다키스트 나이트(VR) · 퍼즐 월드 · 오븐스매시 · 쿠키런 키우기(크럼블). 2026년에는 쿠키런 클래식 해외 서비스와 오븐스매시 글로벌 출시를 적는다. 뉴스에는 **크럼블 누적 매출 200억 원 돌파**, 로블록스 '쿠키런: 카드 컬렉션' 사전 등록, 카드 게임의 유럽 진출이 있다."
+    },
+    {
+      "title": "데브시스터즈 — 요약재무정보",
+      "url": "https://www.devsisters.com/investors/financial-info/summary",
+      "publisher": "데브시스터즈",
+      "summary": "연도별 **영업수익**(원): 2016 약 150억 · 2017 약 172억 · 2018 약 357억 · 2019 약 376억 · 2020 약 705억 · **2021 약 3,693억**(쿠키런: 킹덤 출시 해) · 2022 약 2,144억 · 2023 약 1,611억 · 2024 약 2,362억 · **2025 약 2,956억**(295,578,347,074원). 부문별 매출은 이 표에 없다."
+    },
+    {
+      "title": "Kafka Streams를 k8s로 옮기며 얻은 스케일링 설계: 비용 80% 절감까지",
+      "url": "https://tech.devsisters.com/posts/kafka-streams-keda-scaling",
+      "publisher": "데브시스터즈",
+      "date": "2026-09-03",
+      "summary": "데이터엔지니어링셀이 **Log Transformer**(여러 Kafka topic 의 원본 로그를 검증·변환해 **게임별 topic 으로 다시 produce** 하는 Kafka Streams 앱)를 EC2 에서 쿠버네티스로 옮긴 기록이다. 전에는 **c6g.2xlarge 72대** — ASG 에 cron 스케줄로 36↔72대를 오가게 했지만 **불안정해 피크 기준 72대로 고정**했고, 바꾸려면 사람이 ASG 를 고쳤고, Spinnaker 배포는 단계가 많아 느렸다. 먼저 **source topic 별로 앱을 나눠** 스케일·장애·배포를 topic 단위로 격리했다. **첫 시도(CPU 기반 HPA)는 실패했다** — Kafka Streams 는 partition 을 task 로 묶어 스레드 수에 비례해 나누는데, **task 수가 스레드 수로 나누어떨어지지 않으면** 일부 consumer 가 더 받아 CPU 100% 인데 **평균은 목표 아래**라 HPA 가 반응하지 않는다(어떤 할당 전략에도 남는 편차). CPU 평균은 부하가 고르게 퍼진다는 전제에서만 맞는 지표다. 그래서 **consumer lag** 으로 스케일한다 — HPA external metric 은 **lag 을 내보내는 metrics adapter 를 따로 운영**해야 해 **KEDA** 를 들였다(lagThreshold 로 replica 당 몫, replica 는 partition 수를 넘지 않는다). 개발 환경 topic 은 **scale-to-zero** 로 유휴 비용을 없애고 운영은 최소 replica 를 둔다. 특정 partition 에 몰리면 replica 로는 안 풀리니 partition 설계를 다시 봐야 한다고 적는다. **자정**에 일일 미션·출석 초기화로 로그가 한꺼번에 쏟아지면 lag 기반은 늦는다(pod ready·rebalance·JVM 워밍업) — **cron trigger 로 미리** 늘린다. **pod 당 스레드를 늘려** JVM 오버헤드와 rebalance 를 줄였다. 결과: EC2 대비 **인프라 비용 80% 이상 절감.**"
+    },
+    {
+      "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+      "url": "https://tech.devsisters.com/posts/metric-view",
+      "publisher": "데브시스터즈",
+      "date": "2026-09-18",
+      "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다."
+    }
+  ]
+}
