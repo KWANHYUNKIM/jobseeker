@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "stmn",
+      "name": "スタメン",
+      "name_en": "stmn",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "사내 커뮤니케이션 SaaS TUNAG — 8년 묵은 코드를 떼어 보안 검사를 필수 관문으로 만들고, 돌아가는 KMP 앱은 버리지 않고 iPad 로 옮긴다",
+      "updated_at": "2026-09-26",
+      "domain": "stmn.co.jp"
+    },
+    {
       "slug": "moneyforward",
       "name": "マネーフォワード",
       "name_en": "Money Forward",
@@ -3033,7 +3045,9 @@
     "AI 에이전트의 실패를 두 칸에 나눠 담는다",
     "기사를 목소리로 읽어 준다",
     "비밀번호 없이 들어온다",
-    "PR 마다 기다리는 CI 를 줄인다"
+    "PR 마다 기다리는 CI 를 줄인다",
+    "10년 된 레포에 보안 관문을 세운다",
+    "돌아가는 모바일 자산을 새 기기로 옮긴다"
   ],
   "countries": {
     "KR": "한국",

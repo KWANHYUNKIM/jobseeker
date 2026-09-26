@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**머니포워드 — 보류(2026-09-26). 기능 2, X 수익원은 두 번 찾아 기능으로 쓸 자료 없음 → hold_reason. 다음은 `--gaps` 대로 신규 — 대기 맨 위 **stmn(TUNAG)**(`tech.stmn.co.jp`, 첫 글 `entry/codeql-code-quality`; 글이 드물어 도메인 둘이 나오는지 먼저 본다). 대기 1/3 → stmn 뒤 후보 조사. LayerX 는 in_progress.**
+**stmn — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '10년 된 레포에 보안 관문을 세운다' 를 CodeQL 글(`entry/codeql-code-quality`, scratchpad `st_cq.txt` — 원인 특정·분리·결과·뒤쪽 Bootstrap/빌드 파이프라인 절까지). 그 뒤 KMP(`st_kmp.txt`). FANTS 수익원은 도메인이 없다 — 완주 판정 때 FANTS 기술 글 확인. 대기 0/3 — stmn 뒤 후보 조사. 머니포워드·LayerX 는 in_progress(hold/미연결).**
+
 
 
 

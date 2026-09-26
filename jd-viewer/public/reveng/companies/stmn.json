@@ -1,0 +1,143 @@
+{
+  "slug": "stmn",
+  "name": "スタメン",
+  "name_en": "stmn",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "stmn.co.jp",
+  "one_liner": "사내 커뮤니케이션 SaaS TUNAG — 8년 묵은 코드를 떼어 보안 검사를 필수 관문으로 만들고, 돌아가는 KMP 앱은 버리지 않고 iPad 로 옮긴다",
+  "business_model": "**종업원 인게이지먼트 SaaS TUNAG**(사내 커뮤니케이션·제도 운영 플랫폼)가 주력이고, 팬 커뮤니티 플랫폼 **FANTS** 가 둘째 사업이다.\n\n2025년 3분기 그룹 ARR **30.7억 엔**, TUNAG **이용 기업 1,266 사**·**평균 MRR 20.2만 엔**. 3분기 단일 매출 **10.25억 엔(+44.6%)**. 부대 서비스 매출이 성장을 이끌고 있다.\n\n기술 글은 드물고 행사 후기가 많다. 읽을 만한 글은 **오래된 레포의 품질 관문**과 **모바일 자산의 재사용**에 대한 판단이다 — 둘 다 '있는 것을 어떻게 다루나' 라는 질문이다(이 사이트의 해석).",
+  "products": [
+    "TUNAG(종업원 인게이지먼트)",
+    "TUNAG 수부 앱(방문자 접수)",
+    "FANTS(커뮤니티 인게이지먼트)"
+  ],
+  "revenue_total": "2025년 3분기 그룹 ARR 30.7억 엔 · 3분기 매출 10.25억 엔(+44.6%) — 결산 설명 자료",
+  "revenue_streams": [
+    {
+      "name": "TUNAG(종업원 인게이지먼트 SaaS)",
+      "how": "기업에 사내 커뮤니케이션·제도 운영 플랫폼을 구독으로 판다. 평균 MRR 20.2만 엔, 스톡 비율 83.9%. 수부 앱은 TUNAG 이용 고객에게 제공한다.",
+      "weight": "주력(이용 기업 1,266 사)",
+      "domains": [
+        "10년 된 레포에 보안 관문을 세운다",
+        "돌아가는 모바일 자산을 새 기기로 옮긴다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "2025年12月期 第3四半期 決算説明資料",
+          "url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20251114/20251114503308.pdf",
+          "publisher": "株式会社スタメン",
+          "date": "2025-11-14",
+          "summary": "사업 둘 — **종업원 인게이지먼트(TUNAG)** 와 **커뮤니티 인게이지먼트(FANTS)**. 3분기 그룹 ARR **30.7억 엔**(전년 동기 22.9억), **TUNAG 이용 기업 1,266 사**(전년 동기 972 사), TUNAG **평균 MRR 20.2만 엔**, TUNAG 매출 스톡 비율 83.9%. 3분기(단일) 연결 매출 **10.25억 엔(+44.6%)**, 영업이익률 4.4%(일시적 매입 비용 증가). FANTS 사업 ARR 은 전년 대비 배증. 부대 서비스 매출이 성장을 이끈다."
+        },
+        {
+          "title": "KMPで作った受付アプリをiPadに対応させた話",
+          "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+          "publisher": "stmn tech blog",
+          "date": "2026-06-26",
+          "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**."
+        }
+      ]
+    },
+    {
+      "name": "FANTS(커뮤니티 인게이지먼트)",
+      "how": "팬 커뮤니티 운영 플랫폼. ARR 이 전년 대비 배증.",
+      "weight": "공개 없음(ARR 배증)",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "2025年12月期 第3四半期 決算説明資料",
+          "url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20251114/20251114503308.pdf",
+          "publisher": "株式会社スタメン",
+          "date": "2025-11-14",
+          "summary": "사업 둘 — **종업원 인게이지먼트(TUNAG)** 와 **커뮤니티 인게이지먼트(FANTS)**. 3분기 그룹 ARR **30.7억 엔**(전년 동기 22.9억), **TUNAG 이용 기업 1,266 사**(전년 동기 972 사), TUNAG **평균 MRR 20.2만 엔**, TUNAG 매출 스톡 비율 83.9%. 3분기(단일) 연결 매출 **10.25억 엔(+44.6%)**, 영업이익률 4.4%(일시적 매입 비용 증가). FANTS 사업 ARR 은 전년 대비 배증. 부대 서비스 매출이 성장을 이끈다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "있는 것을 어떻게 다루나",
+    "question": "오래된 코드와 이미 돌아가는 앱을 버리지 않고 어떻게 앞으로 가나?",
+    "code": "flowchart LR\n  MR[\"메인 레포(10년+)\"] -->|8년 전 서드파티 235MB 분리| SEP[\"별 레포\"]\n  MR --> CQ[\"CodeQL 20분 → 3분\\nPR 필수 게이트\"]\n  KMM[\"수부 앱(KMM, 2022 Android)\"] --> KMP[\"KMP 공통 로직\"]\n  KMP --> AND[\"Android 태블릿\\nCircleCI\"]\n  KMP --> IPAD[\"iPad\\nSKIE · Xcode Cloud\"]",
+    "_note": "위는 오래된 레포에서 무거운 짐을 떼어 보안 검사를 관문으로 세운 일, 아래는 이미 돌아가는 공통 코드 위에 새 기기를 얹은 일이다."
+  },
+  "domains": [
+    {
+      "name": "10년 된 레포에 보안 관문을 세운다",
+      "why": "메인 레포에서 CodeQL 이 평균 약 20분 걸려 PR 피드백이 늦고, 그래서 **보안 검사를 PR 필수 관문으로 둘 수 없었다.** 원인 코드는 도입자가 아무도 남지 않은 블랙박스였다.",
+      "tech": [
+        {
+          "tech": "GitHub CodeQL(Code Quality) + Datadog CI/CD Optimization + git 이력 추적 + 별 레포 분리",
+          "solves": "실행 시간을 분석하고 git blame 으로 8년 전 서드파티 라이브러리(235MB)를 찾아 별 레포로 떼어 CodeQL 을 20분 → 3분으로, PR 필수 게이트로 만들었다.",
+          "limits": "뗀 라이브러리는 **다른 레포에서 따로 관리**해야 하고, 그쪽이 같은 수준의 보안 검사를 받는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "10年モノのリポジトリでCodeQLが20分かかっていた理由が「8年前の遺物」だった話",
+              "url": "https://tech.stmn.co.jp/entry/codeql-code-quality",
+              "publisher": "stmn tech blog",
+              "date": "2026-08-26",
+              "summary": "메인 레포에서 **GitHub CodeQL** 이 평균 **약 20분** 걸려 PR 피드백이 늦고, **PR 필수 품질 게이트**로 둘 수 없었다. Datadog CI/CD Optimization 으로 실행 시간을 분석하고, 도입자가 이미 없는 블랙박스 코드를 **git 이력·blame** 으로 거슬러 **약 8년 전 서드파티에서 사 온 거대한 라이브러리**를 찾았다. 모놀리식으로 유지하지 않고 **라이프사이클이 다른 소프트웨어로 별 레포에 떼어** 독립 관리했다(메인 레포에서 **235MB** 제거). CodeQL 평균 **20분 → 3분**, **PR 필수 게이트**로 정식 설정해 보안 위험이 있는 코드의 머지를 CI 에서 막는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "돌아가는 모바일 자산을 새 기기로 옮긴다",
+      "why": "TUNAG 수부 앱은 2022년 Android 태블릿용으로 KMM 으로 만들어졌다. iPad 대응 때 iOS 인원이 늘어 네이티브로 다시 만드는 선택지도 있었다.",
+      "tech": [
+        {
+          "tech": "Kotlin Multiplatform(KMP) + SKIE(Swift 연결) + Xcode Cloud(iOS) · CircleCI(Android)",
+          "solves": "돌아가는 공통 로직을 버리지 않고 iPad 를 얹어 엔지니어를 새 기능에 쓴다. iOS 빌드·배포는 App Store 연동이 쉬운 Xcode Cloud 로.",
+          "limits": "CI 가 **CircleCI(Android)와 Xcode Cloud(iOS) 둘로** 갈린다. SKIE 버전에 따라 Swift 쪽 코드 모양이 달라진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "KMPで作った受付アプリをiPadに対応させた話",
+              "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+              "publisher": "stmn tech blog",
+              "date": "2026-06-26",
+              "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**FANTS** 수익원에 이을 기술 글을 아직 못 봤다.",
+    "CodeQL 글의 **메인 레포가 TUNAG 인지** 글이 명시하지 않는다(TUNAG 수익원에 둔 것은 이 사이트의 해석).",
+    "기술 글이 드물다(2026년 1~9월 약 20편 중 기술 글 네다섯) — 보강·재방문 자료가 적을 것이다."
+  ],
+  "sources": [
+    {
+      "title": "2025年12月期 第3四半期 決算説明資料",
+      "url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20251114/20251114503308.pdf",
+      "publisher": "株式会社スタメン",
+      "date": "2025-11-14",
+      "summary": "사업 둘 — **종업원 인게이지먼트(TUNAG)** 와 **커뮤니티 인게이지먼트(FANTS)**. 3분기 그룹 ARR **30.7억 엔**(전년 동기 22.9억), **TUNAG 이용 기업 1,266 사**(전년 동기 972 사), TUNAG **평균 MRR 20.2만 엔**, TUNAG 매출 스톡 비율 83.9%. 3분기(단일) 연결 매출 **10.25억 엔(+44.6%)**, 영업이익률 4.4%(일시적 매입 비용 증가). FANTS 사업 ARR 은 전년 대비 배증. 부대 서비스 매출이 성장을 이끈다."
+    },
+    {
+      "title": "10年モノのリポジトリでCodeQLが20分かかっていた理由が「8年前の遺物」だった話",
+      "url": "https://tech.stmn.co.jp/entry/codeql-code-quality",
+      "publisher": "stmn tech blog",
+      "date": "2026-08-26",
+      "summary": "메인 레포에서 **GitHub CodeQL** 이 평균 **약 20분** 걸려 PR 피드백이 늦고, **PR 필수 품질 게이트**로 둘 수 없었다. Datadog CI/CD Optimization 으로 실행 시간을 분석하고, 도입자가 이미 없는 블랙박스 코드를 **git 이력·blame** 으로 거슬러 **약 8년 전 서드파티에서 사 온 거대한 라이브러리**를 찾았다. 모놀리식으로 유지하지 않고 **라이프사이클이 다른 소프트웨어로 별 레포에 떼어** 독립 관리했다(메인 레포에서 **235MB** 제거). CodeQL 평균 **20분 → 3분**, **PR 필수 게이트**로 정식 설정해 보안 위험이 있는 코드의 머지를 CI 에서 막는다."
+    },
+    {
+      "title": "KMPで作った受付アプリをiPadに対応させた話",
+      "url": "https://tech.stmn.co.jp/entry/2026/06/26/152302",
+      "publisher": "stmn tech blog",
+      "date": "2026-06-26",
+      "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**."
+    }
+  ]
+}
