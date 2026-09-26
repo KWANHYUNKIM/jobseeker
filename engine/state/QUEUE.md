@@ -25,7 +25,7 @@
 
 | **LayerX** | JP · 법인 지출 관리 SaaS·LLM 솔루션 | 프로파일(2026-09-26). 도메인 셋 — 테넌트 데이터는 하류에서도 잠근다 · LLM 호출을 한 관문에 모은다 · API 스키마를 먼저 쓴다. 기능 3(`rap-reconcile-and-check` · `residency-by-virtual-key` · `typespec-schema-first`). **Fintech·Security 수익원에 도메인이 없어 완주 기준 셋째 미달** — Fintech事業部 카테고리(22편) 확인이 남았다. |
 
-| **머니포워드(Money Forward)** | JP · 핀테크 SaaS | 프로파일(2026-09-26). 도메인 둘 — 비밀번호 없이 들어온다 · PR 마다 기다리는 CI 를 줄인다. 기능 2(`passkey-across-lifecycle` · `replace-the-coverage-tool`). **X 수익원에 도메인이 없어 완주 기준 셋째 미달** — 조사 중. |
+| **머니포워드(Money Forward)** | JP · 핀테크 SaaS | 프로파일(2026-09-26). 도메인 둘 — 비밀번호 없이 들어온다 · PR 마다 기다리는 CI 를 줄인다. 기능 2. **hold** — X 수익원 자료 2회 없음(완주 기준 셋째 미달). |
 
 ## 대기
 
