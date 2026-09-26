@@ -2584,3 +2584,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 REALITY GOGC 재설계
 
 - `f6305331bccee0` 전문으로 기능 `gogc-from-measured-live-heap`, 결정 7(하지 않은 것 셋 포함). 수익원 연결은 inferred.
+
+## 2026-09-27 REALITY Valkey 이행
+
+- `d4858623c73a6b` 전문으로 기능 `valkey-key-by-key-migration`, 결정 7(비교표의 대안 셋 포함).
