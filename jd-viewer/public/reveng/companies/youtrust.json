@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "소셜",
   "status": "in_progress",
+  "hold_reason": "수익원 '영업·조사 지원(SALES · INSIGHT)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — tech.youtrust.co.jp 2023~2026 사이트맵 193편 제목에 SALES·INSIGHT·영업·조사·광고 글 없음 / speakerdeck.com/youtrust 에도 없음). 광고(ADS) 수익원은 추천 도메인에 inferred 로 이었다. 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. SALES·INSIGHT 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "youtrust.co.jp",
   "one_liner": "일 전용 SNS YOUTRUST — 스카우트 범위를 정하는 친구의 친구 계산을 그래프 DB 대신 Redis 로 옮겨 77% 줄이고, 프로필을 커뮤니티처럼 행렬에 넣어 가입 첫날부터 서비스를 넘는 추천을 낸다",
@@ -826,8 +827,8 @@
   "open_questions": [
     "과금 방식·매출 비중을 1차 자료로 확인하지 못했다.",
     "추천이 광고(ADS) 수익원과 이어진다는 1차 서술은 없다 — inferred.",
-    "SALES·INSIGHT 수익원의 기술 글은 아직 못 찾았다.",
-    "BigQuery 데이터를 프로덕트로 되돌리기(`2026/09/09/170000`)·RDS 비밀번호 무중단 월간 로테이션(`2026/08/28/095607`)·Rails 멀티스레드(`2026/08/21/171130`)는 도메인 후보다."
+    "BigQuery 데이터를 프로덕트로 되돌리기(`2026/09/09/170000`)·RDS 비밀번호 무중단 월간 로테이션(`2026/08/28/095607`)·Rails 멀티스레드(`2026/08/21/171130`)는 도메인 후보다.",
+    "SALES·INSIGHT 수익원의 기술 글은 2026-09-26 두 번 찾아 없었다 — hold_reason 참고."
   ],
   "sources": [
     {
