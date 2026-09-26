@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — rive 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — signal 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **signal** — 2026-09-26 없음 1회째. `signal.org/blog/rss.xml` 마지막 글이 08-11(이미 출처인 자동 키 검증). 이전 글 후보: 08-04 연결 기기 확장·안드로이드 태블릿(다중 기기 암호 동기화 결정이 있을 수 있다).
 - **rive** — 2026-09-26 없음 1회째. r.jina.ai 로 `rive.app/blog` 목록. 마지막 글이 06-04(고객 사례). 2026년 글은 대부분 고객 사례·발표 — 엔지니어링 글은 드물게 나온다.
 - **restate** — 2026-09-26 없음 1회째. RSS 500 — r.jina.ai 로 `/blog` 목록. 마지막 글이 07-07(1.7·BYOC 발표). 이전 글 후보: 03-11 오래 도는 에이전트의 버전 관리, 07-07 1.7 흐름 제어(발표지만 설계가 있을 수 있다).
 - **rerun** — 2026-09-26 없음 1회째. `rerun.io/blog/rss.xml`(정렬 필요). 마지막이 09-07 Spotlight(ARKitScenes 쓰임새 연재). 이전 글 후보: **04-30 "The data layer tax for robot learning"·05-13 "A new data layer for robot learning"**(사업 방향 전환의 근거일 수 있다, 1순위).
