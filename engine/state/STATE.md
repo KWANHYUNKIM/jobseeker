@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**SMS(`sms`) — 확장 2(2026-09-26): preview 도메인에 `preview-env-per-pr-shift-left`(결정 8). 두 도메인 모두 기능 있음. 다음은 완주 판정 — 커리어(인재)·헬스케어·시니어 라이프·해외 수익원에 도메인이 없다: 사이트맵 전 제목 `sms_titles.txt`(156편)을 'キャリア·求人·転職·ナース·ジョブメドレー·カイゴジョブ·ヘルスケア·シニア·海外·MIMS' 로 거르고, 두 번 없으면 hold. 대기 1/3(코네히토 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모(hold)·LayerX 는 in_progress.**
+**SMS(`sms`) — 완주 판정 중(2026-09-26): 사이트맵 156편 제목에서 커리어(인재) 글을 찾아 도메인 '커리어 파트너의 흩어진 업무를 한 포털로 모은다' 추가(← `entry/2025/12/08/110000` Career Portal, scratchpad `sms_portal.txt` + `2024/12/19/100000_1` 재설계 구상 `sms_career_re.txt`). 다음은 확장: 그 도메인 기능(Career Portal 글 후반 — CI/CD·o11y·검증 환경·Renovate·'평범한 기반'). 그 뒤 헬스케어·시니어·해외 수익원은 1회 검색 없음 — 한 번 더(웹/다른 블로그) 찾고 없으면 hold. 대기 1/3(코네히토 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모(hold)·LayerX 는 in_progress.**
 
 
 

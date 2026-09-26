@@ -1476,3 +1476,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 SMS preview 환경
 
 - preview 환경 글 전문으로 `preview-env-per-pr-shift-left`(결정 8 — 시프트 레프트+매일 릴리스·릴리스 플래그·라벨 트리거·FE/API/DB 한 벌·mirage-ecs·Neon→Aurora·작게 개선·외부 서비스 타협). 이용 8할이 개발자 자주 확인.
+
+## 2026-09-26 SMS 도메인 추가 — Career Portal
+
+- 완주 판정: 사이트맵 156편 제목을 수익원 낱말로 거름 — 커리어 쪽은 16편(Career Portal·데이터 기반 재설계·권한 관리 등), 헬스케어·시니어·해외는 0. Career Portal 로 도메인 추가 · 커리어 수익원 연결.
