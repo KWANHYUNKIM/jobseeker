@@ -775,3 +775,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## cursor 재방문 → 확장 (2026-09-26)
 
 09-23 토큰 효율 글로 harness-token-diet. 결정 6개, 기존 도메인 모델을 고르고 돌린다에 더함.
+
+## 2026-09-26 cygames 재방문
+- 새 자료 없음(1회째). tech.cygames.co.jp 최신 글 71956(CEDEC2026 디자이너 육성)은 기술 결정 없음. updated_at 만 올림.
