@@ -2167,3 +2167,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 jinjer 스트랭글러 무정지 이행
 
 - `c5213a5f2767a2` + 전편 `603d910e79308f`(로그 기반, 2025-06-09)로 기능 `strangler-no-downtime-migration`, 결정 8. 착수 연도가 '몇 년 전'뿐이라 history·eras 는 쓰지 않았다.
+
+## 2026-09-27 jinjer Lambda Cold Start 함수별 대책
+
+- `227da4949ce143` 을 끝까지 읽어 기능 `lambda-coldstart-per-function`, 결정 8. 프로파일 때 도메인 why 가 'SnapStart 를 들였다'로만 적혀 있어 실제 결론(함수별 PC/SnapStart/없음)으로 고치고, tech limits 도 함정(trace ID 충돌 · PC 와 병용 불가 · 128MB)으로 채웠다.

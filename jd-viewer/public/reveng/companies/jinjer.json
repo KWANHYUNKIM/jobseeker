@@ -132,12 +132,12 @@
     },
     {
       "name": "가끔 불리는 함수의 첫 응답을 돈을 덜 들여 당긴다",
-      "why": "제품 개발에 **Python Lambda** 를 쓰는 곳이 있는데 예상보다 느렸고, 대부분이 **Cold Start 2~3초**였다 — 부르는 순간에 따라 지연이 크게 튄다.\n\n가장 빠른 **Provisioned Concurrency 는 상시 과금**이라 **SnapStart**(초기화가 끝난 스냅숏을 복원)를 검증해 들였다. 스냅숏 복원 뒤 다시 해야 할 일(난수 재시드·외부 접속)은 훅으로 선언하고, 어느 함수가 어느 단계에서 느린지 **New Relic** 으로 본다.",
+      "why": "제품 개발에 **Python Lambda** 를 쓰는 곳이 있는데 예상보다 느렸고, 대부분이 **Cold Start 2~3초**였다 — 부르는 순간에 따라 지연이 크게 튄다.\n\n가장 빠른 **Provisioned Concurrency 는 상시 과금**, 싼 **SnapStart** 는 복원에 1초 가까이 걸리고 둘은 **함께 못 쓴다.** 그래서 **함수마다 나눴다** — 사용자가 화면에서 기다리는 동기 API 는 PC, 백그라운드·저빈도는 SnapStart, 이벤트 구동은 둘 다 없음. SnapStart 는 스냅숏에 난수 시드까지 박혀 **New Relic 의 trace ID 가 모든 환경에서 겹쳤고**, 복원 직후 재시드로 풀었다.",
       "tech": [
         {
           "tech": "Lambda SnapStart(Python 3.12+, 발행 버전 + Alias)",
           "solves": "상시 과금 없이 Cold Start 의 초기화를 건너뛴다 — 스냅숏 보존·복원 과금만.",
-          "limits": "복원 시간은 여전히 든다(PC 보다 느리다). **스냅숏에 박힌 상태**(난수 시드·접속)를 복원 뒤 다시 만들어야 하고, 그 훅이 Init 중에 import 되지 않으면 안 돈다. $LATEST 로는 못 쓴다.",
+          "limits": "복원이 **1초 가까이** 걸려 PC 보다 느리다 — 그래서 사용자 동기 API 에는 안 쓴다. **스냅숏에 박힌 상태**(난수 시드·접속)를 복원 뒤 다시 만들어야 하고, 그 훅이 Init 중에 import 되지 않으면 안 돈다. $LATEST 로는 못 쓴다. PC 와 함께 못 쓴다. 메모리가 작으면(128MB) 복원이 Cold Start 보다 느리다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -152,7 +152,7 @@
         {
           "tech": "New Relic Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)",
           "solves": "코드 변경 없이 함수별 · 단계별 지연을 본다.",
-          "limits": "Extension 이 함수 밖에서 나란히 도는 사이드카라 그 자체의 기동·종료가 수명 주기에 얹힌다(글이 '함정'을 따로 적는다 — 세부는 기능 사이클에서 읽는다).",
+          "limits": "에이전트가 **trace/span ID 를 random 으로 만들어** SnapStart 와 만나면 복원된 모든 환경에서 ID 가 겹친다 — 병렬 요청 추적이 한 줄로 뭉친다. 라이선스 키는 Secrets Manager 경유(NEW_RELIC_LICENSE_KEY_SECRET)인데 문서가 알기 어려웠다고 적는다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -165,7 +165,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "lambda-coldstart-per-function"
+      ]
     }
   ],
   "features": [
@@ -616,6 +618,403 @@
           "summary": "사업 개시 **2016-01-18**, 도쿄 니시신주쿠 본사 · 오사카 · 오키나와. 종업원 **510명(2026-05)**. 자본금 약 6,750만 엔. 사업 내용은 통합형 인사 시스템 ジンジャー 의 기획·개발·운영. 그룹사 タレンティオ. 매출은 없다."
         }
       ]
+    },
+    {
+      "key": "lambda-coldstart-per-function",
+      "name": "기다리는 함수엔 돈을 쓰고, 기다리지 않는 함수엔 스냅숏을",
+      "domain": "가끔 불리는 함수의 첫 응답을 돈을 덜 들여 당긴다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "ジンジャー 의 일부 기능은 **Python Lambda** 에서 돈다. 예상보다 느렸고, 파 보니 대부분이 **Cold Start** — 실행 환경이 없을 때 microVM 기동·런타임 초기화·코드 다운로드·import 를 순서대로 하느라 **2~3초**가 걸렸다. 부르는 순간에 따라 사용자가 몇 초씩 기다린다.\n\n가장 빠른 **Provisioned Concurrency(PC)** 는 **상시 과금**이다. 싼 **SnapStart** 는 초기화가 끝난 스냅숏을 복원하지만 **1초 가까이** 걸리고, 둘은 **함께 쓸 수 없다.** 그래서 **함수마다 요건에 따라 나눴다** — 사용자가 화면에서 기다리는 곳에는 돈을 쓰고, 기다리지 않는 곳에는 스냅숏을, 아무도 안 기다리는 곳에는 아무것도. 그리고 SnapStart 는 **New Relic 의 추적 ID 를 모든 환경에서 겹치게** 만드는 함정을 숨기고 있었다.",
+        "metrics": [
+          {
+            "label": "Cold Start(대책 전)",
+            "value": "2~3초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "label": "SnapStart 복원 시간",
+            "value": "1초 가까이 — 대책 없음보다는 빠르고 PC 보다는 느리다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "label": "vCPU 온전 할당 메모리",
+            "value": "1769MB 에서 vCPU 1(128MB 에서는 복원이 Cold Start 보다 느렸다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "대책 셋을 표로 견줄 때",
+          "thought": "**PC 가 가장 쉽고 빠르지만 돈이 계속 나간다.** SnapStart 가 실운용을 버티는지 먼저 확인한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+              "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+              "publisher": "jinjer",
+              "date": "2026-06-22",
+              "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+            }
+          ]
+        },
+        {
+          "at": "병렬 요청의 trace 가 한 줄로 뭉쳤을 때",
+          "thought": "**우리 코드는 초기화 때 난수를 안 쓰는데?** 에이전트 소스를 열어 보니 trace ID 가 random.getrandbits 였다 — 시드가 스냅숏에 박혀 모든 환경이 같은 수열을 낸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+              "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+              "publisher": "jinjer",
+              "date": "2026-06-22",
+              "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+            }
+          ]
+        },
+        {
+          "at": "PC 와 SnapStart 를 섞으려다",
+          "thought": "**둘 다 한 함수에 걸 수 없다.** 그렇다면 함수 하나하나를 '사용자가 기다리나'로 가르는 수밖에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+              "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+              "publisher": "jinjer",
+              "date": "2026-06-22",
+              "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Cold Start",
+            "what": "실행 환경이 없을 때의 기동 · 런타임 초기화 · 코드 다운로드 · import/핸들러 밖 초기화. 2~3초."
+          },
+          {
+            "name": "Provisioned Concurrency",
+            "what": "지정한 수만큼 초기화가 끝난 환경을 늘 띄워 둔다. 가장 빠르고 상시 과금."
+          },
+          {
+            "name": "SnapStart 스냅숏",
+            "what": "Init 끝의 메모리 · 디스크. 발행 버전에서만 만들어지고 Alias 로 부른다. 복원 1초 가까이."
+          },
+          {
+            "name": "복원 후 훅",
+            "what": "@register_after_restore — 스냅숏에 박힌 상태(난수 시드 · 외부 접속)를 다시 만든다."
+          },
+          {
+            "name": "함수 분류",
+            "what": "사용자 동기 API / 백그라운드 · 저빈도 / 이벤트 구동. 분류가 대책을 정한다."
+          }
+        ],
+        "invariants": [
+          "**복원된 환경마다 난수 시드는 달라야 한다** — 추적 ID 가 겹치지 않게.",
+          "**사용자가 화면에서 기다리는 함수는 복원 시간도 허용하지 않는다**(PC).",
+          "**한 함수에 PC 와 SnapStart 는 함께 걸리지 않는다**(AWS 사양)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "함수를 '사용자가 기다리나'로 가른다",
+            "why": "동기 API · 백그라운드 · 이벤트 구동 — 대책이 다르다."
+          },
+          {
+            "step": "동기 API 는 PC 로 늘 데워 둔다",
+            "why": "1초 가까운 복원도 체감 지연에 그대로 얹힌다."
+          },
+          {
+            "step": "백그라운드 · 저빈도는 SnapStart — CDK 에서 ON_PUBLISHED_VERSIONS, 호출은 Alias 로",
+            "why": "$LATEST 에는 스냅숏이 없다. current_version 이 배포마다 새 버전·새 스냅숏을 만든다."
+          },
+          {
+            "step": "Init 중에 복원 후 훅 모듈이 반드시 import 되게 경로를 둔다",
+            "why": "@register_after_restore 는 import 되는 순간 등록된다."
+          },
+          {
+            "step": "복원 직후 random.seed() 로 os.urandom 에서 재시드한다",
+            "why": "스냅숏에 박힌 시드를 환경마다 새로 만든다 — New Relic 의 trace ID 가 겹치지 않는다."
+          },
+          {
+            "step": "New Relic Layer(에이전트 · 핸들러 래퍼 · Extension)로 함수별 · 단계별 지연을 본다",
+            "why": "라이선스 키는 Secrets Manager 에서 읽는다."
+          },
+          {
+            "step": "메모리를 넉넉히 준다",
+            "why": "128MB 에서는 복원이 Cold Start 보다 느렸다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Cold Start 를 무엇으로 줄일 것인가?",
+            "chosen": "**코드 정리 · PC · SnapStart 셋을 견주고, 싼 SnapStart 가 실운용을 버티는지부터 검증했다.**",
+            "alternatives": [
+              "코드 · 패키지 정리만(추가 비용 없지만 한계)",
+              "Provisioned Concurrency 만(가장 빠르지만 상시 과금)"
+            ],
+            "tradeoff": "비용을 스냅숏 보존 · 복원 과금으로 묶는다. 대가는 복원 시간이 남고 스냅숏 특유의 함정(상태가 박힌다)을 떠안는다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "question": "PC 와 SnapStart 를 섞어 쓸 수 있나?",
+            "chosen": "**못 쓴다 — PC 로 받고 넘치면 SnapStart 로 빨리 띄우려던 안을 버렸다.**",
+            "alternatives": [
+              "한 함수에 PC + SnapStart(사양상 불가)"
+            ],
+            "tradeoff": "한 함수엔 하나만. 대가는 넘치는 트래픽 때의 Cold Start 를 PC 함수에서는 SnapStart 로 덜 수 없다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "question": "그럼 어느 함수에 무엇을 쓸 것인가?",
+            "chosen": "**함수 단위로 나눈다 — 사용자 동기 API(인증 · 검색 · 대화 응답)는 PC, 백그라운드 · 저빈도(집계 · 알림 · 정기 실행)는 SnapStart, 이벤트 구동(SQS · Kinesis · S3 알림)은 둘 다 없음.**",
+            "alternatives": [
+              "모든 함수에 PC",
+              "모든 함수에 SnapStart"
+            ],
+            "tradeoff": "돈은 **체감 지연이 걸린 곳에만** 쓰고 나머지는 싸게 — 비용과 체감을 같이 잡았다. SnapStart 쪽은 PC 수를 조정하는 운영도 필요 없다. 대가는 함수가 늘 때마다 **분류를 판단해야** 하고, 동기 API 의 PC 는 여전히 상시 과금이라는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "question": "스냅숏에 박힌 난수 시드를 어떻게 풀 것인가?",
+            "chosen": "**@register_after_restore 훅에서 복원 직후 random.seed() 로 os.urandom 재시드.**",
+            "alternatives": [
+              "핸들러 안에서 매번 ID 를 만든다(AWS 가 제시하는 안)",
+              "CSPRNG(random.SystemRandom 등)를 쓴다(AWS 가 제시하는 안)"
+            ],
+            "tradeoff": "**서드파티(New Relic 에이전트)의 코드는 못 고치니** 프로세스의 random 자체를 다시 섞는 것이 현실적인 유일한 길이었다 — 병렬 요청의 trace ID 가 다시 갈린다. 대가는 **훅이 Init 중에 import 되지 않으면 조용히 안 돈다**는 것 — import 경로를 신경 써야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "question": "훅이 빠지는 것을 어떻게 알아챌 것인가?",
+            "chosen": "**훅이 등록돼 있는지, random.seed() 뒤 시드 상태가 바뀌는지를 단위 테스트로 지킨다.**",
+            "alternatives": [
+              "운영에서 trace 가 뭉치면 알아챈다(inferred)"
+            ],
+            "tradeoff": "import 순서가 바뀌어 훅이 떨어져도 배포 전에 안다. 대가는 테스트가 Lambda 복원 자체를 재현하지는 못한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "question": "SnapStart 를 무엇으로 부를 것인가?",
+            "chosen": "**발행 버전 + Alias — CDK current_version 이 배포마다 새 버전을 만든다.**",
+            "alternatives": [
+              "$LATEST 로 부른다(SnapStart 불가)"
+            ],
+            "tradeoff": "배포마다 최신 스냅숏으로 자동 전환된다. 대가는 API Gateway 등 호출 쪽을 Alias 로 바꿔야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "question": "New Relic 라이선스 키를 어디에 둘 것인가?",
+            "chosen": "**환경 변수 직접이 아니라 Secrets Manager — NEW_RELIC_LICENSE_KEY_SECRET.**",
+            "alternatives": [
+              "NEW_RELIC_LICENSE_KEY 로 직접 적는다"
+            ],
+            "tradeoff": "키가 함수 설정에 평문으로 남지 않는다. 대가는 설정이 한 단계 늘고 — **문서가 알기 어려워 꽤 고생했다**고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          },
+          {
+            "question": "메모리를 얼마나 줄 것인가?",
+            "chosen": "**넉넉히 — 128MB 에서는 SnapStart 복원이 Cold Start 보다 느렸다.**",
+            "alternatives": [
+              "기본 128MB 그대로"
+            ],
+            "tradeoff": "Lambda 는 메모리에 비례해 CPU 가 붙는다 — 1769MB 에서 vCPU 1 이 온전히 붙는다. 대가는 메모리 단가만큼 실행 비용이 오른다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+                "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+                "publisher": "jinjer",
+                "date": "2026-06-22",
+                "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "10년 된 인사 시스템을 멈추지 않고 갈아 끼운다(같은 회사의 다른 도메인)",
+          "via": "관측을 먼저 세우는 습관",
+          "contract": "새 시스템은 통일 로그 기반(FireLens → S3 · Athena)을, Lambda 는 New Relic 을 먼저 붙여 '어디가 느린가'를 본다(`strangler-no-downtime-migration`). Lambda 가 이행 대상의 일부인지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+              "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+              "publisher": "jinjer",
+              "date": "2026-06-22",
+              "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+            },
+            {
+              "title": "10年分のレガシーに挑む！ジンジャー開発チームが『しめごろし』で挑んだ無停止移行戦記",
+              "url": "https://zenn.dev/jinjer_techblog/articles/c5213a5f2767a2",
+              "publisher": "jinjer",
+              "date": "2026-07-31",
+              "summary": "2016년부터 10년 쌓인 **PHP · SSR 의 거대 모놀리스**는 기능 간 의존이 커서 작은 수정도 다른 곳에 번졌다. 그렇다고 고객이 매일 쓰는 시스템을 멈출 수는 없다 — 목표는 **멈추지 않고 · 변경하기 쉽게 · 스몰 스타트로(언제든 되돌릴 수 있게).** 그래서 **스트랭글러 피그 패턴**으로 기능 단위로 새 시스템(**React SPA + Go 백엔드**)에 옮긴다. 프런트의 기점에 **스트랭글러 파사드**를 두고 **경로로 신구를 가른다.** 새 Go API 와 옛 API 를 둘 다 써야 해 **BFF(Aggregate API)** 가 신구를 불러 모아 돌려준다 — 프런트는 뒤가 신인지 구인지 모르고, **엔드포인트를 바꾸지 않고** 백엔드를 갈아 끼운다. BFF 는 여러 API 를 불러 무거워 **집약 JSON 을 Redis 에 TTL 수 초로 마이크로 캐시**한다. 백엔드는 **마이크로서비스 대신 모듈러 모놀리스** — 운영 비용을 짊어지지 않고, **모듈(API) 사이에 의존을 만들지 않는 것**을 코드가 다소 중복되더라도 우선했다. 모듈 안은 클린 아키텍처. 첫 대상은 **마이페이지** — 독립성이 높아 되돌리기 쉽고, 마침 리뉴얼과 디자인 시스템 도입이 있었다. 결과: 변경·테스트가 쉬워지고, SPA 와 마이크로 캐시로 표시가 가벼워지고, **무정지 전환을 실증**했다. 착수는 '몇 년 전'."
+            },
+            {
+              "title": "ログ基盤の構築",
+              "url": "https://zenn.dev/jinjer_techblog/articles/603d910e79308f",
+              "publisher": "jinjer",
+              "date": "2025-06-09",
+              "summary": "ジンジャー 는 여러 프로덕트로 이뤄져 **로그 운용·출력 방식을 프로덕트마다** 정해 왔다 — 로그가 흩어지고 조사가 프로덕트별 '비전의 소스'가 돼 속인화된다. 목표: 흩어진 애플리케이션 로그 집약 · 출력 규칙 통일로 프로덕트를 가로지른 조사 · 낮은 공수의 검색 · 낮은 비용의 도입. 수집을 **API 로 받는 안은** 각 프로덕트가 송신을 구현해야 하고 피크 때 API 가 병목이 될 수 있어 버리고, **ECS on Fargate 의 FireLens 로그 드라이버 + FluentBit 사이드카**로 — 앱은 몰라도 되고 태스크 정의만 바꾸면 도입된다. 규칙에 맞는 애플리케이션 로그(level 이 있는 것)만 S3 로, 미들웨어 로그는 CloudWatch Logs 로. 검색은 **S3 를 직접 보는 Athena**, 비용·성능을 위해 **Hive 형식 파티션(year/month/day/hour)** 과 스캔량 제한."
+            }
+          ]
+        },
+        {
+          "to": "New Relic(외부 APM)",
+          "via": "Lambda Layer · Extension",
+          "contract": "에이전트가 계측하고 Extension 이 함수 밖 사이드카로 텔레메트리를 보낸다. 복원 후 재시드가 없으면 trace ID 가 겹친다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+              "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+              "publisher": "jinjer",
+              "date": "2026-06-22",
+              "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+            }
+          ]
+        },
+        {
+          "to": "ジンジャー 구독(수익원)",
+          "via": "사용자가 화면에서 기다리는 응답",
+          "contract": "인증 · 검색 · 대화 응답 같은 동기 API 의 지연이 사용자의 체감에 그대로 얹힌다 — 그곳엔 비용을 들여 PC 를 건다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+              "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+              "publisher": "jinjer",
+              "date": "2026-06-22",
+              "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "함수 하나가 어떤 대책을 받는가",
+          "question": "같은 Lambda 라도 왜 대책이 셋으로 갈리나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"Python Lambda 함수\"] --> Q{\"사용자가 화면에서 기다리나\"}\n  Q -->|예 · 인증 · 검색 · 대화 응답| PC[\"Provisioned Concurrency\\n상시 과금 · Cold Start 없음\"]\n  Q -->|아니오| R{\"백그라운드 · 저빈도인가\"}\n  R -->|예 · 집계 · 알림 · 정기 실행| SS[\"SnapStart\\n복원 1초 가까이 · 싸다\"]\n  R -->|이벤트 구동 · SQS · Kinesis · S3| N[\"대책 없음\"]"
+        },
+        {
+          "title": "SnapStart 함수의 수명",
+          "question": "스냅숏은 언제 만들어지고 복원 뒤 무엇을 다시 하나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Init: 배포 · 발행 버전\n  Init --> 스냅숏: 초기화 끝 · 훅 등록(import)\n  스냅숏 --> 복원: 요청 · 스케일아웃\n  복원 --> 재시드: after_restore 훅 · random.seed()\n  재시드 --> 처리: 핸들러\n  처리 --> 처리: Warm 재사용\n  처리 --> [*]"
+        },
+        {
+          "title": "재시드가 없을 때 무너지는 길",
+          "question": "왜 병렬 요청의 추적이 한 줄로 뭉쳤나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"Init 에서 random 시드가 정해짐\"] --> B[\"스냅숏에 시드까지 박힘\"]\n  B --> C[\"스케일아웃 · 같은 스냅숏에서 여러 환경 복원\"]\n  C --> D[\"모든 환경의 첫 getrandbits(128) 가 같다\"]\n  D --> E[\"New Relic trace_id · guid 충돌\"]\n  E --> F[\"병렬 요청이 한 trace 로 뭉침 · 추적 불능\"]\n  C --> G[\"after_restore 훅에서 재시드\"]\n  G --> H[\"환경마다 다른 ID\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Python Lambda 本番運用ガイド：SnapStart × NewRelic の導入と落とし穴",
+          "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
+          "publisher": "jinjer",
+          "date": "2026-06-22",
+          "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -663,7 +1062,7 @@
       "url": "https://zenn.dev/jinjer_techblog/articles/227da4949ce143",
       "publisher": "jinjer",
       "date": "2026-06-22",
-      "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다."
+      "summary": "제품 개발에 쓰는 Python Lambda 가 예상보다 느렸고 대부분이 **Cold Start(2~3초)** 였다. 대책 셋을 견줬다 — 코드·패키지 정리(추가 비용 없지만 한계) / **Provisioned Concurrency**(가장 빠르지만 **상시 과금**) / **SnapStart**(초기화가 끝난 메모리·디스크 스냅숏을 복원, 스냅숏 보존·복원 과금만). SnapStart 를 검증해 들였다 — CDK 에서 ON_PUBLISHED_VERSIONS, $LATEST 가 아니라 **발행 버전에서만** 스냅숏이 생겨 API Gateway 는 **Alias** 로 부른다. 복원 뒤 다시 해야 할 일(random 재시드, 외부 접속 재수립)은 `@register_after_restore` 로 — import 되는 순간 등록되니 Init 중에 반드시 import 되게. 어느 함수가 어느 단계에서 느린지 보려고 **New Relic** 을 Lambda Layer(에이전트 · 핸들러 래퍼 · Extension)로 넣었다. **함정**: SnapStart 는 한 스냅숏에서 여러 환경을 복원하므로 초기화 때 만든 난수 시드가 **모든 환경에서 같다** — 자기 코드는 괜찮았는데 **New Relic Python 에이전트가 trace/span ID 를 random 으로 만들어** 병렬 요청의 추적이 한 줄로 뭉쳤다. 서드파티를 못 고치니 **복원 직후 훅에서 random.seed()** 로 재시드하고, 훅이 붙어 있는지 단위 테스트로 지킨다. **PC 와 SnapStart 는 함께 못 쓴다**(사양) — 그리고 SnapStart 복원은 **1초 가까이** 걸려 PC 보다 느렸다. 그래서 **함수 단위로 나눴다** — 사용자가 화면에서 기다리는 동기 API(인증·검색·대화 응답)는 PC, 백그라운드·저빈도(집계·알림·정기 실행)는 SnapStart, 이벤트 구동(SQS·Kinesis·S3 알림)은 둘 다 없음. 메모리 128MB 에서는 **복원이 Cold Start 보다 느렸다** — 1769MB 에서 vCPU 1 이 온전히 붙는다. SnapStart 는 절대해가 아니라 'Cold Start 를 낫게 하는 기능'."
     },
     {
       "title": "ログ基盤の構築",
