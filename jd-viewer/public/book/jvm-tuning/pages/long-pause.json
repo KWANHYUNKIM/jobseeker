@@ -1,0 +1,213 @@
+{
+  "book": "jvm-tuning",
+  "id": "long-pause",
+  "no": "12.3",
+  "chapter": 12,
+  "title": "긴 멈춤 잡기",
+  "summary": "원인은 대개 셋 중 하나.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "가장 긴 멈춤 한 건을 골라 단계별로 쪼갠다.",
+    "지배하는 단계 이름으로 원인을 가른다.",
+    "GC 가 아닌 경우를 구분해 낸다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "12.1절은 크기를, 12.2절은 할당량을 만졌다. 이 절은 **이미 일어난 긴 멈춤 한 건**을 들고 그 안으로 들어간다.\n\n방법은 하나다 — **`-Xlog:gc+phases=debug` 로 그 GC 번호의 단계를 본다.** 그러면 42ms 중 몇 ms 가 어디에 갔는지 나온다. 원인은 거기서 대개 **셋 중 하나**로 갈린다."
+    },
+    {
+      "type": "steps",
+      "title": "긴 멈춤 한 건을 쪼개는 순서",
+      "steps": [
+        {
+          "title": "가장 긴 멈춤의 GC 번호를 찾는다",
+          "md": "`grep Pause gc.log | sort` 로 최대값 한 줄을 고르고 `GC(11)` 같은 번호를 적는다. **합이 아니라 최대 한 건**이다."
+        },
+        {
+          "title": "단계 로그를 켠다",
+          "md": "`-Xlog:gc+phases=debug` 를 붙여 다시 돌린다. 11.8절의 `jcmd VM.log` 로도 켜진다. **로그가 무거워서 멈춤 분포가 조금 달라진다** — 아래에서 확인한다."
+        },
+        {
+          "title": "그 번호의 줄만 본다",
+          "md": "`grep 'GC(11)' phases.log`. 한 GC 에 수십 줄이 나오고 각 줄 끝에 ms 가 붙어 있다."
+        },
+        {
+          "title": "가장 큰 단계 이름을 읽는다",
+          "md": "이름이 원인을 말한다 — `Object Copy` 냐 `Scan Heap Roots` 냐 `Phase 1: Mark live objects` 냐."
+        },
+        {
+          "title": "어느 단계도 크지 않으면 GC 가 아니다",
+          "md": "단계 합이 멈춤보다 훨씬 작으면 **도달 시간**이다(11.6). `-Xlog:safepoint` 로 넘어간다."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "md": "## 원인 1 — 옮길 것이 많다\n\n12.1절의 2GB 실행을 단계 로그와 함께 다시 돌렸다. 가장 긴 멈춤은 **42.094ms** 였다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "42.094ms 를 쪼갠다",
+      "sql": "$ java -Xmx2g -Xms2g -Xlog:gc+phases=debug:file=ph2g.log -Xlog:gc:file=ph2g_plain.log \\\n       -cp out Lat 100000 50000\nresponse  mean 0.801  p50 0.003  p90 0.022  p99 23.341  p99.9 38.444  max 42.379  (ms)\n\n$ grep Pause ph2g_plain.log | sort -t' ' -k9 -rn | head -1\n[4.581s][info][gc] GC(11) Pause Young (Concurrent Start) (G1 Evacuation Pause) 1554M->1081M(2048M) 42.094ms\n\n$ grep 'GC(11)' ph2g.log | grep -E 'Collection Set|Heap Roots'\n  Pre Evacuate Collection Set: 0.3ms\n  Merge Heap Roots: 0.1ms\n  Evacuate Collection Set: 39.5ms          <- 42.094 중 39.5\n  Post Evacuate Collection Set: 1.6ms\n\n$ grep 'GC(11)' ph2g.log | grep -E 'Object Copy|Scan Heap Roots|Ext Root'\n  Ext Root Scanning (ms):  Min: 0.0, Avg: 0.1, Max:  0.3, Diff: 0.2, Sum:  0.9, Workers: 8\n  Scan Heap Roots (ms):    Min: 0.3, Avg: 2.0, Max:  3.1, Diff: 2.8, Sum: 15.8, Workers: 8\n  Object Copy (ms):        Min: 36.1, Avg: 37.2, Max: 38.9, Diff: 2.8, Sum: 297.5, Workers: 8\n  Termination (ms):        Min: 0.0, Avg: 0.1, Max:  0.1, Diff: 0.1, Sum:  0.6, Workers: 8\n\n# Object Copy Max 38.9ms. 42.094ms 짜리 멈춤의 92% 다.\n# Sum 297.5 / Workers 8 — 여덟 스레드가 나눠 했는데도 38.9ms 다.",
+      "note": "**`Max` 를 읽는다.** `Sum` 은 8개 스레드의 합이라 벽시계 시간이 아니다. 멈춤을 정하는 것은 가장 늦게 끝난 스레드다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "Object Copy 가 크면 살아남는 것이 많다는 뜻이다",
+      "md": "이 단계는 **살아남은 객체를 새 리전으로 복사**하는 일이다(6.2·7.2절).\n\n> 복사량은 **살아남은 양에 비례**한다. 죽은 것은 아무 비용도 안 든다 — 복사 방식의 성질이다.\n> 그래서 손 볼 자리가 셋이다: **살아남는 것을 줄인다**(12.2), **한 번에 모으는 양을 줄인다**(`MaxGCPauseMillis`, 힙), **복사를 동시에 하는 수집기로 간다**(ZGC·Shenandoah, 8장).\n> 이 실행의 `1554M->1081M` 이 그 말이다 — 한 번에 473MB 를 비우려고 나머지를 옮겼다."
+    },
+    {
+      "type": "prose",
+      "md": "## 원인 2 — Full GC 다\n\n힙을 160MB 로 줄여서 Full GC 를 만들었다(살아 있는 것이 130MB 다). Full GC 의 단계 이름은 **6.1절에서 본 네 단계 그대로** 로그에 나온다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "Full GC 의 네 단계",
+      "sql": "$ java -Xmx160m -Xms160m -Xlog:gc,gc+phases=debug:file=full160.log -cp out Lat 100000 50000\n$ grep -c 'Pause Full' full160.log\n7\n\n$ grep 'GC(32)' full160.log | grep -E 'Phase [0-9]|Pause Full'\nGC(32) Phase 1: Reference Processing 0.014ms\nGC(32) Phase 1: Weak Processing 0.169ms\nGC(32) Phase 1: Class Unloading and Cleanup 0.102ms\nGC(32) Phase 1: Mark live objects 4.497ms          <- 6.766 중 4.497\nGC(32) Phase 2: Prepare for compaction 0.185ms\nGC(32) Phase 3: Adjust pointers 0.717ms\nGC(32) Phase 4: Compact heap 0.941ms\nGC(32) Pause Full (G1 Compaction Pause) 158M->131M(160M) 6.766ms\n\n# 표시 - 쓸기 - 압축의 네 단계다(6.1). Phase 1 이 지배한다 — 살아 있는 것을 전부 훑는다.\n# 158M->131M: 6.766ms 를 쓰고 27MB 를 얻었다.",
+      "note": "**`Phase 1: Mark live objects` 는 힙 전체를 훑는다.** 그래서 Full GC 시간은 힙 크기가 아니라 **살아 있는 양**에 비례한다."
+    },
+    {
+      "type": "table",
+      "caption": "지배하는 단계 이름으로 가른다",
+      "columns": [
+        "가장 큰 단계",
+        "뜻",
+        "손 볼 자리"
+      ],
+      "rows": [
+        [
+          "`Object Copy`",
+          "살아남는 것이 많다",
+          "12.2(할당 줄이기) · 힙/`MaxGCPauseMillis` · 8장(수집기)"
+        ],
+        [
+          "`Scan Heap Roots` / `Merge Heap Roots`",
+          "세대 간 참조가 많다 (카드 테이블)",
+          "6.4절 — 오래 사는 객체가 젊은 객체를 가리키는 구조"
+        ],
+        [
+          "`Ext Root Scanning`",
+          "루트가 많다 (스레드·JNI·클래스)",
+          "4.3절 — 스레드 수, 9.5절 — 네이티브"
+        ],
+        [
+          "`Phase 1: Mark live objects`",
+          "Full GC. 힙이 모자라거나 humongous",
+          "12.1 · 7.6 · 12.4"
+        ],
+        [
+          "**어느 단계도 크지 않다**",
+          "**GC 가 아니다**",
+          "11.6 — `-Xlog:safepoint` 의 도달 시간"
+        ]
+      ],
+      "note": "**마지막 줄이 이 표의 핵심이다.** GC 로그를 아무리 봐도 안 나오는 멈춤이 있다."
+    },
+    {
+      "type": "prose",
+      "md": "## 원인 3 — GC 가 아니다\n\n11.6절의 숫자를 다시 놓는다. 세이프포인트 **도달 시간**이 1,696.80ms 였던 실행에서 GC 로그의 멈춤은 **2.033ms** 였다. 단계를 쪼개도 이 1.7초는 나오지 않는다 — **GC 가 시작하기도 전의 시간**이기 때문이다."
+    },
+    {
+      "type": "figure",
+      "caption": "단계 합과 멈춤이 맞지 않으면",
+      "ascii": "   gc log says            2.033 ms   ( At safepoint )\n   phases add up to      ~2.0  ms   ( Object Copy + ... )\n   the app was stopped 1698.8  ms\n                       --------\n   missing             1696.8  ms   <- Reaching safepoint, not in gc log\n\n   when phases match the pause but users still see worse,\n   the gap is outside the gc log: safepoint, swap, or another layer",
+      "note": "**단계 합이 멈춤과 맞는데도 사용자가 더 기다렸다면 GC 밖이다.** 11.6절과 11.7절이 그 두 자리다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "단계 로그를 켜면 멈춤 분포가 달라진다",
+      "md": "정직하게 적어 둘 것이 있다.\n\n> 12.1절의 2GB 실행은 최대 멈춤 **159.58ms**, p99 **118.723ms** 였다.\n> 같은 설정에 `gc+phases=debug` 를 붙인 이번 실행은 최대 **42.094ms**, p99 **23.341ms** 였다.\n> 로그가 무거워지면 프로그램이 느려지고, **느려지면 할당 속도도 떨어져서 한 번에 모이는 양이 줄어든다.**\n> 그래서 단계 로그는 **비율을 보는 데 쓴다** — 절대값은 평소 설정에서 잰 것을 쓴다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "벽 바로 앞에서는 재현이 안 된다",
+      "md": "160MB(살아 있는 것의 1.2배)로 세 번 돌린 응답 p99 다.\n\n```\n160m #1  p99 16.261 ms   GC=702 full=8\n160m #2  p99  0.973 ms   GC=750 full=7\n160m #3  p99  0.814 ms   GC=696 full=7\n```\n\n> **20배 차이**다. 12.1절의 256MB 는 세 번이 2.159~6.303 으로 모여 있었다.\n> OOM 벽 가까이에서는 Full GC 가 어디서 터지는지가 운이다. **좋게 나온 한 번을 근거로 힙을 줄이면 안 된다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"GC 멈춤이 500ms 나왔습니다. 무엇부터 보시겠습니까.\"**\n\n> \"그 한 건의 단계를 쪼개겠습니다\" 가 답이다. `-Xlog:gc+phases=debug` 로 그 GC 번호를 본다.\n> `Object Copy` 면 살아남는 것이 많은 것, `Phase 1` 이면 Full GC, `Scan Heap Roots` 면 세대 간 참조다.\n> **단계 합이 500ms 에 못 미치면 GC 가 아니다** — 도달 시간이나 OS(스왑)다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 세 원인의 로그를 나란히",
+      "sql": "# --- 원인 1: Object Copy 가 92% ---\n\n[4.581s][info][gc] GC(11) Pause Young (Concurrent Start) (G1 Evacuation Pause) 1554M->1081M(2048M) 42.094ms\n  Evacuate Collection Set: 39.5ms\n  Object Copy (ms):  Min: 36.1, Avg: 37.2, Max: 38.9, Diff: 2.8, Sum: 297.5, Workers: 8\n  Scan Heap Roots (ms): Min: 0.3, Avg: 2.0, Max: 3.1, Diff: 2.8, Sum: 15.8, Workers: 8\n\n# --- 원인 2: Full GC 의 네 단계 ---\n\n[0.154s][info][gc] GC(32) Pause Full (G1 Compaction Pause) 158M->131M(160M) 6.766ms\n  Phase 1: Mark live objects 4.497ms\n  Phase 2: Prepare for compaction 0.185ms\n  Phase 3: Adjust pointers 0.717ms\n  Phase 4: Compact heap 0.941ms\n\n# 그리고 힙이 더 작으면 (12.1 의 128MB)\n[0.324s][info][gc] GC(34) Pause Full (G1 Compaction Pause) 124M->124M(128M) 5.748ms\nException: java.lang.OutOfMemoryError\n# 124M->124M 이 열 번. 단계를 쪼개도 답은 하나다 — 힙이 모자라다(12.4).\n\n# --- 원인 3: 단계에 없는 멈춤 (11.6) ---\n\n# -Xlog:safepoint 를 켜고 20억 회 카운터 루프 중에 GC 를 부른 실행(11.6)\n\n  -XX:-UseCountedLoopSafepoints   도달 최대  1696.80 ms   (4건 중)\n  같은 실행의 GC 로그              머문 최대     2.033 ms\n\n# 두 값은 같은 로그의 다른 칸이다 — Reaching safepoint 와 At safepoint.\n# GC 로그에는 뒤쪽만 있다.\n\n# --- 같은 힙을 세 번: 벽 앞에서는 흔들린다 ---\n\n160m #1  response p99 16.261 ms   GC=702 full=8 sum=321.66ms max=16.12ms\n160m #2  response p99  0.973 ms   GC=750 full=7 sum=256.68ms max= 2.94ms\n160m #3  response p99  0.814 ms   GC=696 full=7 sum=249.61ms max= 7.56ms",
+      "note": "**세 원인의 증거가 서로 다른 로그에 있다** — 단계 로그, Full GC 단계, 세이프포인트 로그. 하나만 켜 두면 하나만 보인다."
+    }
+  ],
+  "recap": [
+    "긴 멈춤은 합이 아니라 최대 한 건을 골라 -Xlog:gc+phases=debug 로 쪼갠다.",
+    "여러 워커의 Sum 이 아니라 Max 를 읽는다 — 멈춤은 가장 늦게 끝난 스레드가 정한다.",
+    "42.094ms 짜리 멈춤의 92%가 Object Copy(Max 38.9ms)였다 — 살아남는 것이 많다는 뜻이다.",
+    "Full GC 는 Phase 1~4 로 찍히고 Phase 1: Mark live objects 가 지배한다(6.766 중 4.497ms).",
+    "어느 단계도 크지 않으면 GC 가 아니다 — 도달 시간(11.6)이나 OS 다.",
+    "단계 로그를 켜면 프로그램이 느려져 멈춤이 작아진다(159.58 → 42.094ms). 비율만 본다.",
+    "OOM 벽 가까운 힙(160MB)은 세 번의 p99 가 0.814~16.261ms 로 흔들렸다."
+  ],
+  "drills": [
+    {
+      "task": "GC 로그에서 최대 멈춤 한 건의 번호를 찾는다.",
+      "done_when": "GC(n) 을 적는다.",
+      "minutes": 10
+    },
+    {
+      "task": "gc+phases=debug 로 그 번호의 단계를 쪼갠다.",
+      "done_when": "가장 큰 단계 이름을 안다.",
+      "minutes": 15
+    },
+    {
+      "task": "단계 합과 멈춤 시간을 비교한다.",
+      "done_when": "차이가 있으면 -Xlog:safepoint 로 넘어간다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "단계 로그에서 Sum 과 Max 중 무엇을 읽나.",
+      "a": "Max 다. Sum 은 워커 스레드들의 합이라 벽시계 시간이 아니다."
+    },
+    {
+      "q": "Object Copy 가 지배하면 무슨 뜻인가.",
+      "a": "살아남는 객체가 많아 복사량이 크다는 뜻이다. 복사 비용은 살아남은 양에 비례한다."
+    },
+    {
+      "q": "Full GC 의 네 단계 이름은.",
+      "a": "Mark live objects / Prepare for compaction / Adjust pointers / Compact heap 이다(6.1절의 그 네 단계)."
+    },
+    {
+      "q": "단계 합이 멈춤보다 훨씬 작으면.",
+      "a": "GC 가 아니다. 세이프포인트 도달 시간이나 OS 쪽을 본다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "Object Copy",
+      "what": "살아남은 객체를 새 리전으로 복사하는 단계. G1 young 멈춤의 대부분을 차지하는 자리다."
+    },
+    {
+      "term": "Evacuate Collection Set",
+      "what": "고른 리전들을 비우는 큰 단계. Object Copy 가 그 안에 있다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "HotSpot Virtual Machine Garbage Collection Tuning Guide (JDK 17)",
+      "url": "https://docs.oracle.com/en/java/javase/17/gctuning/",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -Xlog",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

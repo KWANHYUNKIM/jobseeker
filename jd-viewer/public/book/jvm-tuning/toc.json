@@ -680,7 +680,7 @@
           "title": "힙 크기 정하기",
           "summary": "크면 좋은 게 아니다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.2",
@@ -688,7 +688,7 @@
           "title": "쓰레기를 줄인다",
           "summary": "가장 확실한 튜닝.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.3",
@@ -696,7 +696,7 @@
           "title": "긴 멈춤 잡기",
           "summary": "원인은 대개 셋 중 하나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "12.4",
