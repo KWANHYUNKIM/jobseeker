@@ -900,3 +900,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 antithesis 재방문 → 확장
 - Retroactive Logging(2026-09-24) 으로 `logs-into-the-black-hole` 추가(기존 도메인). 결정 5개, 그림 2장. 출력 6860→738MB, 효율 0.16→1.01.
+
+## 2026-09-26 astral 재방문
+- 새 자료 없음(1회째). RSS 최신 2026-09-04. updated_at 만 올림.
