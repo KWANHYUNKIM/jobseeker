@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **144건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **145건**.
+직전 회차: ✅ `Senior Staff / Staff Machine Learning Engineer`(8022956) 4항목 — **싱가포르**, AI and Knowledge Engineering(LLM 사후 학습·에이전트·차원 축소). 필수에 Claude Code 등 AI 코딩 도구가 이름으로.
 직전 회차: ✅ `Senior Staff / Staff Backend Engineer (Security Infrastructure)`(8047690) 3항목 — **싱가포르**, 동적 인가 엔진. 7342961(MTV)과 9줄 겹침 — 중심이 달라 별개로 씀.
 직전 회차: ✅ `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(7774291) 3항목 — **시애틀**, 추론·토큰 생성 최적화·CV 상품·추론 관측성, $174K~$299K. 공고 얇음.
 직전 회차: ✅ `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(7816155) 4항목 — **마운틴뷰**, 검색·추천 결함 진단·개인화 retrieval·랭킹 통합·A/B, $187K~$322K. LambdaMART 개요 403 이라 뺌.

@@ -15169,6 +15169,128 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8022956",
+      "title": "Senior Staff / Staff Machine Learning Engineer",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 싱가포르 근무다. 데이터 사이언스 5년 이상·이커머스 대규모 파운데이션 모델 구축 경험의 Staff/Senior Staff 로, AI and Knowledge Engineering 팀에서 이커머스용 언어·비전 이해·생성 모델과 파운데이션 모델을 학습하고, 저장·서빙까지의 end-to-end AI 파이프라인과 GenAI·에이전트 시스템을 만든다. 팀 소개에 지식 그래프·AI 에이전트·LLM·AIGC·멀티모달이 나열돼 있다. 필수 자격에 LLM 사후 학습(post-training)·배포 전문성이 있고, AI 코딩 도구(Cursor·Windsurf·Claude Code·Codex) 숙련이 이름으로 나온다. 연차 5년인데 제목은 Staff/Senior Staff 다.",
+      "fit": {
+        "must_have": [
+          "데이터 사이언스 5년 이상·이커머스 대규모 파운데이션 모델",
+          "LLM 사후 학습·배포",
+          "SQL·Python·PySpark·Scala·R",
+          "PyTorch/TensorFlow·Spark·BigQuery",
+          "AI 코딩 도구(Cursor·Windsurf·Claude Code·Codex)",
+          "대용량 차원 축소·데이터 시각화",
+          "AWS·Azure 등 추론 플랫폼"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "LLM 사후 학습 — SFT·선호 최적화",
+          "from": "task",
+          "quote": "Expertise in large language model post-training and deployment.",
+          "priority": "core",
+          "why": "LLM 사후 학습과 배포 전문성이 필수 자격이고, 파운데이션 모델 학습과 E2E 실험 과정 정의가 주요업무다.",
+          "gap_check": "이커머스 질의응답 모델을 만들 때 지도 미세조정(SFT)만으로 부족한 경우는 언제이고, 선호 데이터로 DPO 를 할 때 선호 쌍은 어디서(사용자 행동·사람 평가) 만들 수 있는가?",
+          "drill": "InstructGPT·DPO 논문을 읽고, TRL 로 작은 모델에 SFT 후 DPO 를 적용해 같은 평가 질문 세트에서 두 단계 결과를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Ouyang et al. — Training language models to follow instructions with human feedback",
+              "url": "https://arxiv.org/abs/2203.02155",
+              "kind": "paper"
+            },
+            {
+              "title": "Rafailov et al. — Direct Preference Optimization",
+              "url": "https://arxiv.org/abs/2305.18290",
+              "kind": "paper"
+            },
+            {
+              "title": "Hugging Face TRL Documentation",
+              "url": "https://huggingface.co/docs/trl/index",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "GenAI·에이전트로 이커머스 문제 풀기 — 복합 AI 시스템",
+          "from": "task",
+          "quote": "Work on GenAI, AI agents' systems to solve complex eCommerce scenarios.",
+          "priority": "core",
+          "why": "복잡한 이커머스 시나리오를 GenAI·AI 에이전트 시스템으로 푸는 것과 예측·복합(compound) AI 모델용 언어·비전 모델 개발이 주요업무다.",
+          "gap_check": "하나의 큰 모델에 모두 맡기는 것과 검색·분류·생성 모델을 이어 붙인 복합 시스템으로 나누는 것은 품질·비용·디버깅 측면에서 무엇이 다르고, 어느 단계에서 틀렸는지는 어떻게 찾는가?",
+          "drill": "복합 AI 시스템 글을 읽고, 상품 속성 채우기 과제를 '이미지 분류 → 텍스트 추출 → LLM 정규화' 3단계로 나눈 설계와 단일 멀티모달 모델 설계를 비교한 결정 기록을 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "BAIR — The Shift from Models to Compound AI Systems",
+              "url": "https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "대용량 데이터 차원 축소와 시각화",
+          "from": "task",
+          "quote": "Experience in dimension reduction in big data.",
+          "priority": "high",
+          "why": "빅데이터 차원 축소와 복잡한 데이터 시각화 도구 구축 경험이 필수 자격이고, 팀원에게 차원 축소·시각화·통계 모델 방법론을 가르치는 것이 주요업무다.",
+          "gap_check": "수백만 상품 임베딩을 2차원으로 그릴 때 PCA 와 UMAP 은 무엇을 보존하고 무엇을 왜곡하며, 그림에서 본 군집을 결론으로 쓰기 전에 무엇을 확인하는가?",
+          "drill": "상품 텍스트 임베딩 수만 개로 PCA·UMAP 을 각각 그리고, 카테고리 라벨로 색을 입혀 군집이 라벨과 얼마나 맞는지와 파라미터(n_neighbors) 민감도를 기록한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "UMAP Documentation",
+              "url": "https://umap-learn.readthedocs.io/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 코딩 도구 활용",
+          "from": "task",
+          "quote": "Proficiency in AI coding Cursor/Windsurf/Claude Code/Codex.",
+          "priority": "nice",
+          "why": "AI 코딩 도구(Cursor·Windsurf·Claude Code·Codex) 숙련이 필수 자격에 이름으로 나온다.",
+          "gap_check": "AI 코딩 도구로 학습 파이프라인 코드를 만들 때, 생성된 코드의 데이터 누수·재현성(시드·버전) 문제를 무엇으로 검증하는가?",
+          "drill": "앞 실습 중 하나를 AI 코딩 도구로 작성하고, 생성 코드에 대해 직접 쓴 테스트(데이터 분할 누수 검사·시드 고정 재현)를 붙여 통과시킨다.",
+          "hours": 2,
+          "resources": [
+            {
+              "title": "Claude Code overview",
+              "url": "https://docs.anthropic.com/en/docs/claude-code/overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "이커머스 QA 소형 모델 SFT→DPO 비교 리포트",
+          "why": "필수 자격 중 가장 구체적인 것이 LLM 사후 학습이다. 작은 모델로 두 단계를 직접 돌리고 평가한 리포트는 그 경험을 보여 준다.",
+          "effort": "3~4일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "SFT vs 선호 최적화",
+          "복합 AI 시스템 설계",
+          "임베딩 시각화 해석",
+          "파운데이션 모델 학습 파이프라인",
+          "학습 데이터 보안·규정 준수"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff / Staff Machine Learning Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8022956",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
