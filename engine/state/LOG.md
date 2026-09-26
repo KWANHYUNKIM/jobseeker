@@ -2380,3 +2380,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Gakken LEAP 학습 로그
 
 - `010b927ba62ce7` 전문으로 기능 `learning-log-loop`, 결정 8. 글이 비교안을 거의 적지 않아 대안 · 대가 여럿은 '이 사이트의 해석'.
+
+## 2026-09-27 Gakken LEAP Strangler Fig
+
+- `bd8167a771d2d5` 전문으로 기능 `strangler-fig-react-savings`, 결정 6. 글이 짧아 대가 몇은 '이 사이트의 해석'. 프로덕트명이 없어 수익원 연결은 inferred 유지.
