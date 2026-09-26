@@ -1,0 +1,214 @@
+{
+  "slug": "wirobotics",
+  "name": "위로보틱스",
+  "name_en": "WIRobotics",
+  "aliases": [
+    "위로보틱스"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "wirobotics.com",
+  "one_liner": "보행보조 웨어러블 로봇 WIM 을 팔고, 그 기술로 휴머노이드 로봇 ALLEX 와 Physical AI 플랫폼을 만드는 로보틱스 회사",
+  "company": {
+    "business": "공고 머리말은 위로보틱스를 세계 최초로 Single Motor 기반 개인용 보행 보조 웨어러블 로봇을 상용화하고 3년 연속 총 4개의 CES Innovation Awards 를 받은 Deep Tech 로보틱스 기업으로 소개한다. 고자유도 로봇 핸드, 역구동성 높은 액추에이터, 경량 메커니즘, 실시간 전신 제어를 기반으로 2025년 휴머노이드 로봇 ALLEX 를 공개했고, 로봇이 물리 세계에서 접촉과 상호작용으로 학습하는 Physical AI 플랫폼을 만든다고 적는다. 홈페이지 쇼핑 메뉴에는 초경량 보행보조 로봇 WIM·WIM S, 허리보조 로봇 분류, 케어 서비스(기본·프리미엄·올케어), WIM S 앱 구독 서비스가 있고, 서울 송파에 WIM 을 체험하고 운동 프로그램을 하는 '윔 보행운동 센터' 를 운영한다. 휴머노이드는 별도 사이트(rih.wirobotics.com)에서 소개한다. 매출·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "WIRobotics — 제품 구매",
+        "url": "https://www.wirobotics.com/product/productList?classType=8",
+        "publisher": "위로보틱스",
+        "summary": "제품 구매 메뉴에 보행보조 로봇·허리보조 로봇·악세사리 분류와 초경량 보행보조 웨어러블 로봇 WIM S·WIM, WIM S 방문 체험, 케어 서비스(기본·프리미엄·올케어), WIM S 앱 구독 서비스가 올라와 있다. 하단에 본점(충남 천안)·사업장(경기 용인 광교)·윔 보행운동 센터(서울 송파)·RIH(서울 송파 문정) 주소가 있다"
+      },
+      {
+        "title": "위로보틱스 | 인간과 공존하는 상호작용형 휴머노이드 로봇",
+        "url": "https://rih.wirobotics.com",
+        "publisher": "위로보틱스",
+        "summary": "안전하고 인간과 공존하는 상호작용형 휴머노이드 로봇을 비전으로 내걸고, 힘을 감지하고 접촉을 활용하며 충격에 적응하는 로봇 ALLEX 를 소개한다"
+      },
+      {
+        "title": "휴머노이드 로봇 AI엔지니어 (Robot Learning)",
+        "url": "https://www.wanted.co.kr/wd/373647",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "CES Innovation Awards(회사 주장)",
+        "value": "3년 연속 총 4개",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "휴머노이드 로봇 AI엔지니어 (Robot Learning)",
+            "url": "https://www.wanted.co.kr/wd/373647",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "보행보조 웨어러블 로봇 판매(WIM·WIM S)",
+        "how": "홈페이지 제품 구매 메뉴에서 WIM·WIM S 와 악세사리를 판다. 가격과 판매량은 읽지 않았다.",
+        "domains": [
+          "웨어러블 보행보조 로봇"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WIRobotics — 제품 구매",
+            "url": "https://www.wirobotics.com/product/productList?classType=8",
+            "publisher": "위로보틱스",
+            "summary": "제품 구매 메뉴에 보행보조 로봇·허리보조 로봇·악세사리 분류와 초경량 보행보조 웨어러블 로봇 WIM S·WIM, WIM S 방문 체험, 케어 서비스(기본·프리미엄·올케어), WIM S 앱 구독 서비스가 올라와 있다. 하단에 본점(충남 천안)·사업장(경기 용인 광교)·윔 보행운동 센터(서울 송파)·RIH(서울 송파 문정) 주소가 있다"
+          }
+        ]
+      },
+      {
+        "name": "케어 서비스·앱 구독",
+        "how": "같은 메뉴에 케어 서비스(기본·프리미엄·올케어)와 'WIM S 앱 구독 서비스' 가 상품으로 올라와 있다. 모바일 앱 공고가 WIM·WIMS 와 BLE 로 연동되는 Flutter 앱을 적는다.",
+        "domains": [
+          "웨어러블 보행보조 로봇"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WIRobotics — 제품 구매",
+            "url": "https://www.wirobotics.com/product/productList?classType=8",
+            "publisher": "위로보틱스",
+            "summary": "제품 구매 메뉴에 보행보조 로봇·허리보조 로봇·악세사리 분류와 초경량 보행보조 웨어러블 로봇 WIM S·WIM, WIM S 방문 체험, 케어 서비스(기본·프리미엄·올케어), WIM S 앱 구독 서비스가 올라와 있다. 하단에 본점(충남 천안)·사업장(경기 용인 광교)·윔 보행운동 센터(서울 송파)·RIH(서울 송파 문정) 주소가 있다"
+          },
+          {
+            "title": "[Wearable Robot] 모바일 앱 Jr. 개발자",
+            "url": "https://www.wanted.co.kr/wd/386374",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "윔 보행운동 센터 프로그램",
+        "how": "센터 페이지가 WIM 체험 운동과 유료 웰컴 프로그램('첫 방문 웰컴 프로그램 50% 혜택')을 안내한다. 매출 비중은 읽지 않았다.",
+        "domains": [
+          "웨어러블 보행보조 로봇"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WIRobotics — 윔 보행운동 센터",
+            "url": "https://www.wirobotics.com/trainingCenter/main",
+            "publisher": "위로보틱스",
+            "summary": "보행보조 웨어러블 로봇 WIM 을 체험하고 전문가와 운동 프로그램을 진행하는 센터라고 적고, 70분 웰컴 프로그램(문진→정밀 평가→체험 운동→컨설팅)을 안내한다"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "웨어러블 보행보조 로봇",
+        "why": "모바일 앱 공고가 WIM·WIMS 와의 BLE 연결·로봇 제어를, 웨어러블 AI 공고가 IMU·인코더 시계열로 동작·의도를 인식하고 보행 패턴별 제어 파라미터를 최적화하는 일을 적는다.",
+        "what_to_know": [
+          "BLE 기기 연동(Flutter)",
+          "IMU 시계열 동작 인식",
+          "보행 패턴 분류와 제어"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Wearable Robot] 모바일 앱 Jr. 개발자",
+            "url": "https://www.wanted.co.kr/wd/386374",
+            "publisher": "원티드"
+          },
+          {
+            "title": "웨어러블 로봇 AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/382040",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "휴머노이드 실시간 제어 소프트웨어",
+        "why": "Framework S/W 공고가 Xenomai·PREEMPT_RT 실시간 제어, EtherCAT Master, ZMQ·ROS 통신, 로봇 상태 머신을, 소프트웨어 엔지니어 공고가 ROS2/DDS 미들웨어·Gazebo/Isaac Sim 시뮬레이션을 적는다. 휴머노이드는 아직 판매 상품으로 올라와 있지 않다 — 매출원과 이어지지 않는 신사업이다.",
+        "what_to_know": [
+          "PREEMPT_RT·Xenomai",
+          "EtherCAT",
+          "ROS2/DDS",
+          "로봇 상태 머신"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Humanoid Robot] Framework S/W 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/385302",
+            "publisher": "원티드"
+          },
+          {
+            "title": "휴머노이드 로봇 소프트웨어 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/328617",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "로봇 학습·Physical AI",
+        "why": "Robot Learning 공고가 ACT·Diffusion Policy·VLA 를 실제 로봇에 적용하는 일을, Inference System 공고가 실시간 로봇 inference pipeline 을 적는다. 신사업(휴머노이드) 쪽이라 매출원과는 아직 이어지지 않는다.",
+        "what_to_know": [
+          "모방학습(ACT·Diffusion Policy)",
+          "VLA",
+          "실시간 추론 최적화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "휴머노이드 로봇 AI엔지니어 (Robot Learning)",
+            "url": "https://www.wanted.co.kr/wd/373647",
+            "publisher": "원티드"
+          },
+          {
+            "title": "휴머노이드 로봇 AI 엔지니어 (Inference System)",
+            "url": "https://www.wanted.co.kr/wd/328621",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "로봇 인지·SLAM",
+        "why": "Perception SLAM 공고가 LiDAR·휠 오도메트리·IMU 융합 SLAM, 저가형 센서 안전 감지, Head 카메라 6D 포즈 추정을 적는다. 휴머노이드 ALLEX 용이다(신사업).",
+        "what_to_know": [
+          "센서 융합 SLAM",
+          "6D 포즈 추정",
+          "기능 안전 센싱"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Humanoid Robot] Perception SLAM 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/385305",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "채용의 중심이 휴머노이드로 옮겨 있다",
+        "evidence": "휴머노이드 로봇 ALLEX의 Framework Software를 개발합니다.",
+        "so_what": "원티드 모집중 7건 중 5건이 휴머노이드(ALLEX) 자리이고 웨어러블은 2건(앱·AI)이다. 매출은 웨어러블에서, 채용은 휴머노이드에서 — 신사업에 사람을 모으는 단계로 보인다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "웨어러블 제품에 LLM 인터페이스를 붙이려 한다",
+        "evidence": "LLM 기반 웨어러블 로봇 제어 인터페이스 설계 및 데이터베이스 구축",
+        "so_what": "웨어러블 AI 공고의 한 줄이다. 음성·대화로 로봇 설정을 바꾸는 방향으로 읽히지만 구체적 형태는 공고에 없다(추론).",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수·WIM 가격을 읽지 않았다",
+    "휴머노이드 ALLEX 의 판매·사업화 계획은 공고와 사이트에 없다",
+    "사람인 '2026년 하반기 각 부문 수시채용'(경력무관)은 본문 칸이 비어 있다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
