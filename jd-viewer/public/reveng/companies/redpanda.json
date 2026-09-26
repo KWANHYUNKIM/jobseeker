@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-07",
+  "updated_at": "2026-09-26",
   "domain": "redpanda.com",
   "one_liner": "카프카와 같은 말을 쓰되 보장을 토픽마다 고르게 한 스트리밍 엔진 — 모든 스트림이 기록 시스템은 아니라는 전제 위에 서 있다",
   "business_model": "스트리밍 플랫폼을 판다. 제품은 두 갈래다 — **Data Platform**(Data Streaming · Redpanda Connect · 실시간 분석용 Redpanda SQL)과 **Agentic Data Plane**(AI 에이전트를 위한 신원·설명 가능성·통제). SQL 능력은 **Oxla 인수**로 들였다.\n\n파는 말은 **'클라우드 종속이 없다'** 와 **'카프카·A2A·MCP·Postgres 위에 지었다'** 이다. 카프카와 **같은 말(프로토콜)** 을 쓰면서 그 아래를 다르게 짓는 것이 이 회사의 자리다.\n\n**요금제는 홈에 없다** — 배포 형태도, C++ 구현이나 코어당 스레드 구조 같은 기술 이야기도 홈에서는 다루지 않는다(그런 이야기는 블로그에 있다). 본사는 **미국 샌프란시스코**다.",
