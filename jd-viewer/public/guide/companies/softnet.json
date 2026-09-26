@@ -260,6 +260,76 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55065817",
+      "title": "시스템 엔지니어 채용[6~10년]",
+      "site": "jumpit",
+      "verdict": "경력 6~10년(대리·과장·차장급), 서울 강남구 삼성로554. 서울 (주)소프트넷의 **마이크로소프트 인프라 시스템 엔지니어(SE)** 자리로, 공고 본문이 짧다 — 주요업무는 '시스템 엔지니어(SE)', '마이크로소프트 Window 인프라 기술지원' 두 줄, 필수는 연차와 **Active Directory·Azure 경험**, 우대는 공학계열·해당 직무 경험. 기술 태그는 Windows·Windows Server·Azure·Azure DevOps·Azure Synapse. 회사 브리핑대로 이 회사의 첫 사업이 'MS Consulting Business — 하이브리드 클라우드·SaaS Security 컨설팅 및 구축' 이라, 고객사 AD·Azure 환경 구축·지원으로 읽힌다(공고가 고객사 파견인지 본사 근무인지는 적지 않는다). 같은 본문으로 **3~5년(55065419)·11~15년(55065837)** 게시가 따로 있다. 복지에 차량유류비·야간교통비·주차비 지원, 노조/노사협의회가 있다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "MS 인프라 SE 경력(이 게시 6~10년)",
+          "Active Directory",
+          "Azure"
+        ],
+        "can_learn": [
+          "하이브리드 ID(Entra)",
+          "그룹 정책 운영"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Active Directory 기본 구조 — 도메인·OU·복제",
+          "from": "qualification",
+          "quote": "• 마이크로소프트 Active Directory 유 경험자",
+          "priority": "core",
+          "why": "필수 자격요건이다. 주요업무가 마이크로소프트 Windows 인프라 기술지원이다.",
+          "gap_check": "도메인 컨트롤러 두 대 중 한 대가 꺼져도 로그인이 되려면 무엇(복제·DNS 등록)이 맞아야 하고, 사용자를 OU 로 나누는 기준(부서 vs 정책 적용 단위)은 무엇이며, 'DNS 가 틀리면 AD 가 안 된다' 는 말은 왜 나오는가?",
+          "drill": "평가판 Windows Server 두 대(가상머신)로 도메인을 만들고 DC 를 두 대로 늘린 뒤, 한 대를 꺼도 클라이언트 로그인이 되는지 확인한다. repadmin /replsummary 로 복제 상태를 보고, 클라이언트 DNS 를 일부러 외부 DNS 로 바꿔 도메인 가입이 실패하는지 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Active Directory Domain Services overview — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "하이브리드 ID — 온프레미스 AD 와 Microsoft Entra ID 잇기",
+          "from": "qualification",
+          "quote": "• 마이크로소프트 Azure 유 경험자",
+          "priority": "core",
+          "why": "필수 자격요건이다. 회사 브리핑대로 첫 사업이 '하이브리드 클라우드' 컨설팅·구축이다.",
+          "gap_check": "사내 AD 계정으로 Microsoft 365·Azure 에도 로그인하게 하려면 비밀번호 해시 동기화·통과 인증·페더레이션 중 무엇을 고르고, 각각 온프레미스 서버가 죽었을 때 클라우드 로그인은 어떻게 되며, 퇴사자 계정을 AD 에서 비활성화하면 클라우드에는 언제 반영되는가?",
+          "drill": "Microsoft Learn 의 하이브리드 ID 문서를 읽고 세 인증 방식의 동작·장애 시 영향·필요 서버를 표로 정리한다. 가능하면 평가판 테넌트와 위 AD 실습 환경을 Entra Connect(클라우드 동기화)로 이어 사용자 하나가 동기화되는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "What is hybrid identity with Microsoft Entra ID? — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/entra/identity/hybrid/whatis-hybrid-identity",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Windows 인프라 기술지원 — 그룹 정책 문제 추적",
+          "from": "task",
+          "quote": "• 마이크로소프트 Window 인프라 기술지원",
+          "priority": "high",
+          "why": "주요업무다. Windows 인프라 기술지원의 흔한 문의가 '정책이 안 먹는다' 류다.",
+          "gap_check": "어떤 PC 에만 화면 잠금 정책이 적용되지 않을 때 GPO 연결 위치(OU)·보안 필터링·상속 차단·적용 순서(LSDOU) 중 무엇부터 확인하고, gpresult 결과에서 '적용됨' 과 '거부됨' 목록을 어떻게 읽는가?",
+          "drill": "위 실습 도메인에 화면 잠금 GPO 를 만들어 OU 에 연결하고, 보안 필터링으로 한 사용자만 빼 본다. 클라이언트에서 gpupdate /force 와 gpresult /r 결과로 적용·거부 사유를 확인해 문제 해결 순서를 한 장으로 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Group Policy overview for Windows Server — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
