@@ -45,8 +45,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Finatext(Nowcast)** | JP · 금융 데이터·핀테크 인프라 | Zenn Publication `zenn.dev/p/finatext`(RSS, 9월에만 7편 이상). **Snowflake 파이프라인 월 비용 39% 삭감**(`7dbbd9371fe046`, 2026-09-14, 영어) — 아키텍처 교체·새 도구 없이 '파이프라인이 실제로 하는 일 대 필요한 일' 을 대조: S3 내보내기(즉석 서브쿼리·파일 청크 디스크 스필) · dbt 테스트(결정적 함수 중복 검사·범위 없는 이력 스캔·층마다 과잉 테스트). 곁글 — DB 무응답 때 Go 앱이 어디서 막히나(`db-hang-survey`)·dbt·Snowflake tag. **금융 데이터 축**. |
+| **KENCOPA** | JP · 건설 공정 계획 SaaS | Zenn Publication `zenn.dev/p/kencopa`(RSS 8편). **'일단 LLM 에 던진다' 로 안 풀린 공정 계획**(`19ae96ba79ca40`, 2026-09-25) — 건설 공사의 액티비티·보카케(歩掛)·수량 연결을 AI 에이전트로 — 워크플로 → 연결 동시 처리 → 오케스트레이터 AI 에 통째로 → 서브에이전트 이관, **설계 넷을 거친 경위**. 곁글 — VLM 을 살리는 PDF 해석 역할 분담(`3530b0914bd834`)·asyncio Producer-Consumer. **건설 축(처음)**. |
+| **WWWAVE** | JP · 전자 코믹(코믹 페스타)·웹 서비스 | Zenn Publication `zenn.dev/p/wwwave`(RSS 20편). **배치 감시의 '침묵' 을 설계한다**(`fac9f4d865fb1b`, 2026-08-20) — 대시보드 눈 확인을 그만두고 이상 때만 통지하자 '통지가 없음' 이 정상인지 놓친 건지 구별이 안 된다 → 실패·미실행·미완료 셋 중 뒤 둘은 어디에도 기록이 안 남는다 → **예정을 먼저 만든다**·감시의 사활 감시. 곁글 — Access VBA 철수 기술 선정(`64283ed5170acc`)·마스터 데이터 갱신 흐름 쇄신(`3bc67fa4f5f12e`)·Google Chat×Claude Agent SDK×Lambda 사업부 에이전트(`50f7450f5d13bf`). **콘텐츠 커머스 축**. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 여든아홉 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API(1~20쪽)의 publication 을 세고 RSS 확인.**
+  - **Finatext** — **금융 데이터 축.** 보류해 둔 후보를 다시 봤다 — 비용 글에 '무엇을 안 해도 되는지' 의 판단이 셋씩 있다.
+  - **KENCOPA** — **건설 축(처음).** AI 에이전트 설계가 넷으로 바뀐 경위 — 각 단계의 한계가 적혀 있다.
+  - **WWWAVE** — **콘텐츠 커머스 축.** 전엔 '회고 위주' 로 보류했지만 배치 감시 글은 결정과 이유가 분명하다.
+  - **통과 못 한 곳.** **Rescue Now**(`rescuenow`) — 마이크로서비스화 글이 조직·추진 경위 위주. **TOKIUM**(`tokium_dev`)·**GENDA**(`genda_jp`) — AI 개발 과정·행사 글. **nauh_blog**(3편)·**bita**·**ficilcom**·**boy_techblog** — 제품 결정 약함. aws_japan·headwaters·nttdata_tech·acntechjp·snowflakejp 등 — 벤더·SIer 의 도구 시험 글.
 
 - **2026-09-26 여든여덟 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API 에서 활성 Publication 을 뽑아 RSS 확인(새 방식).**
   - **입구를 넓혔다.** `zenn.dev/api/articles?order=latest&page=1..15` 의 publication 이름을 세면 지금 쓰는 회사가 나온다 — 이름을 추측해 RSS 를 두드리던 것보다 적중률이 높다.

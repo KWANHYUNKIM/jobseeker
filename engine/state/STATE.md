@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Rehab for JAPAN 확장 1/1(2026-09-26) — `composer-to-cloud-run-jobs` 완료. 도메인 전부 기능. 다음은 완주 판정: 수익원 Rehab Studio 는 도메인 없음, Rehab Cloud 제품 자체 글도 없음 → 기능 뒤 두 번 찾고(RSS 20편은 봤다 — Zenn 검색 'Rehab Cloud' 는 QA 팀 과거편 하나) 없으면 hold. **배운 것(에어클로젯): RSS 는 최근 20편뿐 — 옛 글은 Zenn 검색 API 에 회사명 한 단어로.** 대기 0/3 — **--gaps 가 후보 조사를 부르면 그쪽이 먼저**(보류 후보 Finatext·WWWAVE·TOKIUM·Aldagram). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**89번째 후보 조사(2026-09-26) — 큐 3/3. 다음은 Rehab for JAPAN 완주 판정(진행 중이므로 신규보다 먼저): 수익원 Rehab Studio 에 도메인 없음 · Rehab Cloud 제품 자체 글도 없음. 검색 1 RSS 20편(제품 결정은 ETL 하나) · 검색 2 Zenn 검색 API 'Rehab Studio'·'オンラインリハビリ'·'rehabforjapan' 전부 0건(2026-09-26) — 두 번 찾았으니 다음 사이클은 hold_reason + '재시도 안 함' + QUEUE hold 만 하면 된다. 대기 3/3(Finatext·KENCOPA·WWWAVE — 89번째 후보 조사).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

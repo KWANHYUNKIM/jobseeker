@@ -1742,3 +1742,8 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Rehab for JAPAN Composer → Cloud Run Jobs
 
 - 결정 10 — 상시 가동 폐지·Workflows 불채용·Airflow 기능 소박하게·역할별 Job 3종+모듈·별도 데이터셋 병행+체크섬 사흘 0·B안(canonical 이름)·state rm+import 수술·paused apply 뒤 재구축·무거운 replicator 만 8GiB·스키마 GCS. 기능이 하나라 connections 는 비어 있다.
+
+## 2026-09-26 89번째 후보 조사
+
+- Zenn 최신 글 API 1~20쪽 publication 집계 → 제품 회사 10곳 RSS → 기사 4편 본문 확인. 올림: Finatext(Snowflake 비용 39%)·KENCOPA(공정 계획 AI 설계 넷)·WWWAVE(배치 감시 침묵). Rescue Now 는 조직 이야기라 통과 못 함.
+- 겸사: Rehab for JAPAN 완주 판정 검색 2 를 Zenn 검색 API 로 — 0건.
