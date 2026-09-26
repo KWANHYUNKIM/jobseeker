@@ -1,0 +1,195 @@
+{
+  "slug": "nextsecurities",
+  "name": "넥스트증권",
+  "name_en": "Next Securities",
+  "aliases": [
+    "넥스트증권"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "nextsecurities.com",
+  "one_liner": "AI 개인화 콘텐츠·커뮤니티·트레이딩을 합친 차세대 MTS 로 리테일 브로커리지를 다시 만드는 증권사",
+  "company": {
+    "business": "홈페이지는 넥스트증권을 'The Next Generation AI-driven Brokerage Services' 로 소개하고, 차세대 MTS 가 대학생 투자자부터 고액 자산가까지 개인화된 투자 콘텐츠와 트레이딩 경험을 제공한다고 적는다. 기능으로 AI 기반 개인화 콘텐츠, 소셜 커뮤니티, UI 수준의 AI 보조 주문을 나열한다. 채용 공고는 AWS 멀티 계정 환경에서 차세대 금융 투자 플랫폼을 구축 중이라고 적고, AI데이터플랫폼팀(Databricks·Kafka·EKS·RDS), 콘텐츠서비스개발팀(AI 기반 금융 콘텐츠 생성), DevOps팀 등을 소개한다. 채용 페이지(greetinghr)에는 해외주식 결제·야간데스크 같은 증권 업무 직무도 올라와 있다. 매출·고객 수와 수익 구성은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Next Securities",
+        "url": "https://www.nextsecurities.com/",
+        "publisher": "넥스트증권",
+        "summary": "'The Next Generation AI-driven Brokerage Services' 를 내걸고, 차세대 MTS 가 투자자 개인화 콘텐츠·트레이딩 경험을 제공한다고 적는다. 기능으로 AI-Powered Content, Social Community, Intelligent Trading(AI-assisted order placement at UI level)을 나열하고 'Transforming to AI-Based Retail Brokerage' 를 적는다"
+      },
+      {
+        "title": "Cloud Architect",
+        "url": "https://www.wanted.co.kr/wd/378758",
+        "publisher": "원티드"
+      },
+      {
+        "title": "Data Engineer (AI Content Platform)",
+        "url": "https://www.wanted.co.kr/wd/388893",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "리테일 브로커리지(주식 매매)",
+        "how": "MTS 로 개인 투자자의 주식 매매를 중개한다. 수수료 구조와 국내·해외주식 비중은 읽지 않았다(추론 보류). QA 공고가 시세·종목정보·주문·체결·잔고를 핵심 거래 흐름으로 적는다.",
+        "domains": [
+          "증권 거래 플랫폼 인프라",
+          "금융 데이터 플랫폼"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Next Securities",
+            "url": "https://www.nextsecurities.com/",
+            "publisher": "넥스트증권",
+            "summary": "'The Next Generation AI-driven Brokerage Services' 를 내걸고, 차세대 MTS 가 투자자 개인화 콘텐츠·트레이딩 경험을 제공한다고 적는다. 기능으로 AI-Powered Content, Social Community, Intelligent Trading(AI-assisted order placement at UI level)을 나열하고 'Transforming to AI-Based Retail Brokerage' 를 적는다"
+          },
+          {
+            "title": "DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/355991",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 콘텐츠·커뮤니티(차별화 요소)",
+        "how": "AI 가 생성하는 금융 콘텐츠와 커뮤니티로 투자자를 끌어들이는 구조로 보인다 — 콘텐츠가 직접 매출인지 매매 유도 수단인지는 읽지 않았다(추론).",
+        "domains": [
+          "AI 금융 콘텐츠 생성",
+          "금융 AI 에이전트"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Next Securities",
+            "url": "https://www.nextsecurities.com/",
+            "publisher": "넥스트증권",
+            "summary": "'The Next Generation AI-driven Brokerage Services' 를 내걸고, 차세대 MTS 가 투자자 개인화 콘텐츠·트레이딩 경험을 제공한다고 적는다. 기능으로 AI-Powered Content, Social Community, Intelligent Trading(AI-assisted order placement at UI level)을 나열하고 'Transforming to AI-Based Retail Brokerage' 를 적는다"
+          },
+          {
+            "title": "Data Engineer (AI Content Platform)",
+            "url": "https://www.wanted.co.kr/wd/388893",
+            "publisher": "원티드"
+          },
+          {
+            "title": "AI Agent Engineer",
+            "url": "https://www.wanted.co.kr/wd/386039",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "금융 데이터 플랫폼",
+        "why": "AI데이터플랫폼팀이 Databricks 레이크하우스(Delta Lake·Unity Catalog), Confluent Kafka, EKS, RDS 를 운영하고 Terraform·CI/CD 로 코드화한다고 적는다. 금융 데이터 분석가 공고는 LSEG 등 벤더 데이터의 식별자 매핑·표준화를 적는다.",
+        "what_to_know": [
+          "Databricks·Delta Lake·Unity Catalog",
+          "Kafka·Flink CDC",
+          "벤더 금융 데이터(시세·재무·기업행사) 표준화",
+          "Terraform"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer (Data Platform)",
+            "url": "https://www.wanted.co.kr/wd/388957",
+            "publisher": "원티드"
+          },
+          {
+            "title": "금융 데이터 분석가(Financial Data Analyst)",
+            "url": "https://www.wanted.co.kr/wd/378015",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 금융 콘텐츠 생성",
+        "why": "콘텐츠서비스개발팀이 증시 데이터와 뉴스·기업 자료를 수집·연결·가공해 AI 가 원고와 대본 제작에 쓰게 한다고 적는다.",
+        "what_to_know": [
+          "비정형 금융 데이터 수집",
+          "종목·기업·이벤트 관계 모델링",
+          "pgvector·RAG 데이터 파이프라인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer (AI Content Platform)",
+            "url": "https://www.wanted.co.kr/wd/388893",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "금융 AI 에이전트",
+        "why": "AI Agent Engineer 공고가 금융 데이터와 AI 를 결합한 인텔리전트 에이전트를 아이디어부터 프로덕션 운영까지 맡는다고 적는다.",
+        "what_to_know": [
+          "LLM 에이전트 설계·평가",
+          "금융 데이터 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Agent Engineer",
+            "url": "https://www.wanted.co.kr/wd/386039",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "증권 거래 플랫폼 인프라",
+        "why": "Cloud Architect 공고가 AWS 멀티 계정 환경에서 서비스 요구사항과 금융 규제를 클라우드 아키텍처로 구현한다고, DevOps 공고가 금융 compliance 를 충족하는 클라우드 인프라를 만든다고 적는다.",
+        "what_to_know": [
+          "AWS 멀티 계정·랜딩존",
+          "금융 클라우드 규제",
+          "IaC·비용 거버넌스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Cloud Architect",
+            "url": "https://www.wanted.co.kr/wd/378758",
+            "publisher": "원티드"
+          },
+          {
+            "title": "DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/355991",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "데이터·AI 인프라를 한꺼번에 뽑고 있다",
+        "evidence": "넥스트증권 AI데이터플랫폼팀과 함께 금융 데이터 플랫폼의 기반 인프라(Databricks·Kafka·EKS·RDS)를 운영할 Data Engineer (Data Platform, 경력)를 모집합니다.",
+        "so_what": "모집중 원티드 8건 중 5건이 데이터·AI(데이터 엔지니어 3, 분석 1, 에이전트 1)다. 플랫폼을 새로 세우는 단계로 보여, 표준과 운영 절차를 처음 만드는 일이 많을 것이다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 개발 도구 활용과 검증을 자격요건으로 요구한다",
+        "evidence": "AI 개발 도구(코딩 에이전트 등)를 실무에 활용하고, 생성된 결과물의 정확성·보안·테스트를 직접 검증한 경험이 있으신 분",
+        "so_what": "도구를 쓰는 것뿐 아니라 결과를 검증한 경험을 묻는다. 면접에서 AI 가 만든 코드를 어떻게 확인했는지 구체적으로 말할 준비가 필요하다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "1차 면접 전에 AI 스크리닝이 있다",
+        "evidence": "본 채용 포지션의 전형 절차상, 1차 면접에 앞서 AI 스크리닝이 진행될 예정입니다.",
+        "so_what": "음성·영상 응답을 수집하는 AI 스크리닝이 서류 다음 단계다. 직무 역량과 커뮤니케이션을 본다고 적혀 있다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·고객 수·수수료 구조를 읽지 않았다",
+    "홈페이지 뉴스(청소년 불법도박 근절 캠페인, Trust & Safety 조직 신설, 사내 AI 아이디어톤)는 제목·요약만 봤다",
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "jobkorea 게시 8건 중 Data Engineer·금융 데이터 분석가·Security Engineer(DevSecOps)는 원티드와 제목이 겹친다 — 본문 비교로 duplicate_of 판단할 것. QUEUE 에 16/8 로 적은 것은 jobkorea 본문이 있는 공고를 빼고 센 수였다"
+  ],
+  "postings": []
+}

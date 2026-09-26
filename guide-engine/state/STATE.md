@@ -11,7 +11,8 @@
 **베스핀글로벌 — `done`(공고 10건: 원티드 6 + 사람인 4, 그중 1건은 원티드 381967 의 중복).** 사람인 Data Engineer·GCP·Okta·DBA·Big data 는 모집중 집계에서 빠져 있다(사본으로 걸러진 것으로 보임).
 **피에프씨테크놀로지스 — `done`(원티드 모집중 9건 전부).** 388360(Backend)은 공고가 내려가 걷어냈다.
 **제논 — `done`(모집중 9건: 원티드 6 + catch 3, 그중 1건은 원티드 215978 의 중복).** catch 본문이 비면 genon.ninehire.site 원문으로 읽었다.
-⚠️ 다음 회차: 대기 맨 위 **넥스트증권** 을 `in_progress` 로 만들고 3단계(회사 브리핑)부터. QUEUE `## 대기` 에서 그 줄을 지운다.
+**넥스트증권(`nextsecurities`) — `in_progress`, 회사 브리핑만 썼다(공고 0건).** 출처: nextsecurities.com 첫 화면 + 원티드 공고 6건의 직무 Summary.
+⚠️ 다음 회차: 원티드 8건을 한 사이클 한 건씩 — Data Engineer AI Content(388893) · Data Analytics Engineer(388908) · Data Engineer Data Platform(388957) · 금융 데이터 분석가(378015) · AI Agent(386039) · DevOps(355991) · Cloud Architect(378758) · Security DevSecOps(378530). 그다음 jobkorea(원티드와 겹치는 3건은 본문 비교 후 `duplicate_of`, 나머지 Frontend 3·QA·Security 인프라는 본문으로). 12건 상한.
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 ⚠️ **공고 본문은 `jd-viewer/public/all_jobs_enriched.json` 에서 읽는다 — `jd-viewer/dist/` 는 빌드 사본이라 낡는다.** 2026-09-26 피에프씨 Backend(388360)를 dist 에서 읽고 썼다가 public·검증기 데이터에 없어(내려간 공고) 되돌렸다. 대상은 `--gaps` 목록에 있는 url 만 쓴다.

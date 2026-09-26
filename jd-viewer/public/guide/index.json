@@ -396,6 +396,17 @@
       "postings": 9,
       "study_items": 35,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "nextsecurities",
+      "name": "넥스트증권",
+      "aliases": [
+        "넥스트증권"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }
