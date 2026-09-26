@@ -385,6 +385,17 @@
       "postings": 9,
       "study_items": 41,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "genon",
+      "name": "제논",
+      "aliases": [
+        "제논"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }

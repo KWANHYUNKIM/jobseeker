@@ -1,0 +1,216 @@
+{
+  "slug": "genon",
+  "name": "제논",
+  "name_en": "GenON",
+  "aliases": [
+    "제논"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "genon.ai",
+  "one_liner": "AI 전문 컨설팅펌으로 출발해 기업용 생성형 AI 플랫폼(GenOS)·에이전트(GenA, OneAgent)와 구축 서비스를 파는 B2B AI 회사",
+  "company": {
+    "business": "채용 공고의 회사 소개는 제논을 '생성형 AI 기반의 B2B 솔루션을 제공하는 인공지능(AI) 전문 기업' 이자 '국내 최초의 AI 전문 컨설팅펌으로 출발' 한 회사로 적고, AI 전략 수립부터 모델 개발·시스템 구축까지 통합 서비스를 제공하며 '지난 8년 동안 200여개 이상의 다양한 AI 프로젝트' 를 수행했다고 적는다. 홈페이지는 솔루션을 GenOS(엔터프라이즈 생성형 AI 플랫폼), GenA(AI 에이전트 포털), 원에이전트(업무를 완결하는 AI 에이전트), Physical AI, ML·DL 로 나열하고 금융·에너지·공공을 적는다. 공고에는 자체 데이터센터 제어·CMP(오픈스택) 개발과 고객사 현장 보안 점검 직무도 있다. 매출 규모와 제품·용역 비중은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "제논 GenON - 생성형 AI로 켜는 기업 혁신",
+        "url": "https://www.genon.ai/",
+        "publisher": "제논",
+        "summary": "솔루션을 엔터프라이즈 생성형 AI 플랫폼 GenOS, AI 에이전트 포털 GenA, 업무를 완결하는 원에이전트(OneAgent), AI Agent, Physical AI, ML·DL 로 나열하고 '금융·에너지·공공에서 검증' 이라고 적는다. 뉴스 목록에 코스닥 상장예비심사 승인(2026-09-22), 상반기 매출 전년比 331% 증가(2026-09-03), 훈민 VLM 397B 오픈소스 공개(2026-09-18) 제목이 걸려 있다"
+      },
+      {
+        "title": "풀스택_FDE(Forward Deployed Engineer)",
+        "url": "https://www.wanted.co.kr/wd/289537",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "수행한 AI 프로젝트 수(회사 주장)",
+        "value": "200여개 이상(8년간)",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "풀스택_FDE(Forward Deployed Engineer)",
+            "url": "https://www.wanted.co.kr/wd/289537",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "생성형 AI 플랫폼·에이전트 솔루션(GenOS·GenA·OneAgent)",
+        "how": "기업 고객에게 생성형 AI 플랫폼과 에이전트 제품을 공급한다고 홈페이지가 적는다. 라이선스·구축·구독 중 어떤 형태인지는 읽지 않았다(추론 보류).",
+        "domains": [
+          "기업용 LLM 에이전트"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "제논 GenON - 생성형 AI로 켜는 기업 혁신",
+            "url": "https://www.genon.ai/",
+            "publisher": "제논",
+            "summary": "솔루션을 엔터프라이즈 생성형 AI 플랫폼 GenOS, AI 에이전트 포털 GenA, 업무를 완결하는 원에이전트(OneAgent), AI Agent, Physical AI, ML·DL 로 나열하고 '금융·에너지·공공에서 검증' 이라고 적는다. 뉴스 목록에 코스닥 상장예비심사 승인(2026-09-22), 상반기 매출 전년比 331% 증가(2026-09-03), 훈민 VLM 397B 오픈소스 공개(2026-09-18) 제목이 걸려 있다"
+          },
+          {
+            "title": "Agentic AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/376327",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 구축·프로페셔널 서비스(SI)",
+        "how": "'AI 전략 수립부터 모델 개발, 시스템 구축까지' 통합 서비스와 고객사 사이트 형상 유지보수, 고객사 보안성 심의 대응을 공고가 적는다 — 프로젝트 수주형 매출로 보인다(추론).",
+        "domains": [
+          "고객사 현장 구축·유지보수",
+          "AI 솔루션 납품 보안"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "풀스택_FDE(Forward Deployed Engineer)",
+            "url": "https://www.wanted.co.kr/wd/289537",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[인공지능솔루션] Delivery Security Engineer",
+            "url": "https://www.wanted.co.kr/wd/374750",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 인프라(오픈스택 CMP·데이터센터 제어)",
+        "how": "오픈스택 기반 CMP, AI/GPU 워크로드용 클라우드 인프라, 자체 데이터센터 제어 솔루션을 개발한다고 공고가 적는다. 사업화 형태는 읽지 않았다(추론).",
+        "domains": [
+          "AI/GPU 클라우드 인프라"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "오픈스택 플랫폼 개발자",
+            "url": "https://www.wanted.co.kr/wd/377638",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "기업용 LLM 에이전트",
+        "why": "OneAgent 를 'LLM이 사용자를 대신해 브라우저와 컴퓨터를 직접 조작해 실제 업무를 수행하는 데스크톱 AI 에이전트' 로 소개하고 Tool Call·MCP·Browser Use·Computer Use 를 설계한다고 적는다.",
+        "what_to_know": [
+          "에이전트 실행 루프와 Tool Calling",
+          "MCP",
+          "브라우저(CDP)·데스크톱 자동화",
+          "에이전트 평가(eval)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Agentic AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/376327",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "고객사 현장 구축·유지보수",
+        "why": "FDE 공고가 AI 서비스 백엔드·React SPA 유지보수, 외부 API 연동, 고객사 사이트 형상 유지보수를 적고 우대에 Linux·폐쇄망 환경을 둔다.",
+        "what_to_know": [
+          "FastAPI·asyncio",
+          "React 유지보수",
+          "폐쇄망 배포",
+          "Docker·Kubernetes"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "풀스택_FDE(Forward Deployed Engineer)",
+            "url": "https://www.wanted.co.kr/wd/289537",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 솔루션 납품 보안",
+        "why": "Delivery Security Engineer 공고가 프로젝트별 보안 점검, 고객사 보안성 심의 대응, 오픈소스 CVE 점검을 적는다.",
+        "what_to_know": [
+          "취약점 점검(SAST/DAST)",
+          "ISMS-P 통제 항목",
+          "보안성 심의 대응"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[인공지능솔루션] Delivery Security Engineer",
+            "url": "https://www.wanted.co.kr/wd/374750",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI/GPU 클라우드 인프라",
+        "why": "오픈스택 플랫폼 개발자 공고가 CMP 아키텍처, AI/GPU 워크로드 인프라 최적화, 자체 데이터센터 제어 솔루션을 적는다.",
+        "what_to_know": [
+          "OpenStack",
+          "Kubernetes·Helm",
+          "GPU 워크로드 스케줄링"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "오픈스택 플랫폼 개발자",
+            "url": "https://www.wanted.co.kr/wd/377638",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "Physical AI(연구개발)",
+        "why": "Physical AI 공고가 VLA 모델, 로봇 매니퓰레이션, RL 기반 Sim2Real, Perception 을 R&D 영역으로 적는다 — 아직 수익원으로 적힌 곳은 없어 신사업 연구로 본다(추론).",
+        "what_to_know": [
+          "VLA·Embodied Foundation Model",
+          "강화학습 Sim2Real",
+          "Isaac Sim·MuJoCo",
+          "6D Pose·SLAM"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Physical AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/370301",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "SI·컨설팅 출신이 자체 제품 회사로 옮겨 가는 중이다",
+        "evidence": "국내 최초의 AI 전문 컨설팅펌으로 출발한 제논은 비즈니스와 AI, IT에 대한 전문 지식과 다양한 산업 적용 경험을 바탕으로 AI 전략 수립부터 모델 개발, 시스템 구축까지 전 과정을 아우르는 통합 서비스를 제공합니다.",
+        "so_what": "같은 회사 안에 제품 개발(OneAgent 에이전트 엔진)과 고객사 현장 구축·유지보수(FDE, 보안 점검)가 함께 있다. 지원 공고가 어느 쪽인지에 따라 일하는 방식이 크게 다를 것으로 보인다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "고객사 현장·폐쇄망 대응이 일의 일부다",
+        "evidence": "고객사 현장 등 외부 환경에 유연하게 대응할 수 있는 태도",
+        "so_what": "보안 직무 자격요건에 현장 대응 태도가 있고 FDE 우대에 폐쇄망 개발이 있다. 금융·공공 고객 비중이 크다면(홈페이지가 금융·에너지·공공을 적는다) 망분리 환경 경험이 강점이 된다(추론).",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "홈페이지 뉴스 목록의 '코스닥 상장예비심사 승인', '상반기 매출 전년比 331%↑' 는 제목만 봤고 기사 본문·공시는 읽지 않았다 — 매출 규모는 IR 메뉴·공시에서 확인할 것",
+    "'200여개 이상의 AI 프로젝트', '국내 최초의 AI 전문 컨설팅펌' 은 회사가 공고에 적은 주장이다",
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "catch(dev) 게시 3건(Senior AI Engineer, AI Project Manager, AI Engineer)은 원티드와 제목이 겹친다 — 본문 비교로 duplicate_of 판단할 것"
+  ],
+  "postings": []
+}
