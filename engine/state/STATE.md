@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**머니포워드 — 기능 2(`passkey-across-lifecycle` · `replace-the-coverage-tool`, 2026-09-26). 두 도메인 채움. X(금융기관 DX) 수익원에 도메인이 없어 완주 기준 셋째 미달 — 다음 사이클에 X 기술 글 조사 1회째(moneyforward-dev.jp 검색 'X'·'金融機関'·'マネーフォワード X'·'BaaS'). 있으면 도메인·기능을 더해 완주, 두 번 없으면 수익원 hold. `--gaps` 는 신규(stmn)를 찍지만 이 회사를 먼저 닫는다. 대기 1/3. LayerX 는 in_progress.**
+**머니포워드 — 기능 2. X(금융기관 DX) 수익원 자료 조사 1회째(2026-09-26): moneyforward-dev.jp 검색('マネーフォワード X'·'金融機関'·'BaaS'·'Money Forward X') — 기술 결정 글 없음. 걸린 것은 2022 조직 소개(`entry/2022/08/23/organization-of-x-company/`, 결정·대가 없음)와 무관한 글뿐. 다음 사이클 2회째 — 웹 검색(マネーフォワード エックス·금융기관 DX 의 기술 발표·speakerdeck). 없으면 회사 hold_reason(X 수익원) 후 신규(stmn). 대기 1/3. LayerX 는 in_progress.**
+
 
 
 
