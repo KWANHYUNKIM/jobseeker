@@ -57,8 +57,18 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Lincwell(リンクウェル)** | JP · 온라인 진료 클리닉 앱 | Zenn Publication `zenn.dev/p/lincwell_inc`(RSS 19편, 최신 2026-09). 푸시 배신 내재화의 아키텍처 변천 `c2e73de75af524` · SLI/SLO 로 예약 레이턴시와 마주해 UI/UX 개선 `2c0befff862461` · 앱 팀 SLO 운용 `d4a4e58eeef06d` · ECS 네이티브 Blue/Green lifecycle hook 스모크 테스트 · ecspresso 이전. **의료 예약·알림 축.** |
+| **WED** | JP · 영수증 매입 앱(ONE) · 구매 데이터 | Zenn Publication `zenn.dev/p/wed_engineering`(RSS 19편, 최신 2026-08). 영수증 상품명 → JAN 코드 연결 처리 효율화 `20260424-cache-matching-results` · BigQuery 벡터 검색으로 JICFS 카테고리 추정 +35% `vector_search_category_classification` · Gemini 그라운딩으로 영수증 표기 ↔ 정식 상품명 `20251205-grounding-for-product-names` · 영수증 체인 예측 · iOS 27 OCRTool. **영수증 데이터 정규화 축(처음).** |
+| **mixtend(調整さん)** | JP · 일정 조정 서비스 | Zenn Publication `zenn.dev/p/mixtend`(RSS 15편, 최신 2026-06). 코드 리뷰를 계기로 배타 제어를 lockForUpdate 에서 Cache Lock 으로 `a7f2907594c2fa` · 調整さん PC 톱 고속화 `001d1a7f1c3cce` · Webpack Mix → Vite 단계 이행 `6d1b6be6a6cc84` · Flutter 거대 출결표 가로 스크롤 동기. **일정 조정 축.** 결정 글이 작은 편 — 프로파일 때 다시 판정. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-27 아흔여섯 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API 두 묶음 — ① '성질' 주제어 15개(撤去した話·やめた話·見直した話·段階的に移行·二重書き込み·再設計 …) × 3쪽 → 얇았다 ② '결과' 주제어 15개(爆速になった話·レイテンシ 改善·コスト 半減·通知 基盤·ポストモーテム·SLO 導入 …) × 2쪽, 2026-03 이후 글 → RSS.**
+  - **Lincwell** — **의료 예약·알림 축.** 푸시 내재화 변천과 예약 레이턴시 SLO 가 제품 결정이다.
+  - **WED** — **영수증 데이터 정규화 축.** 표기 흔들림을 JAN·JICFS 로 잇는 글이 여럿.
+  - **mixtend** — **일정 조정 축.** 배타 제어 재검토가 대가를 말한다.
+  - **걸렀다.** KnowledgeWork(여전히 QA·행사) · Rescue Now(여전히 조직 글 위주) · jisou(개인 학습) · BABY JOB(AI 추진·행사) · Social PLUS(인프라 이행 위주 — 다음 후보) · sompojapan·sprix(부하 시험 — SI 성격) · google_cloud_jp·acntechjp(벤더).
+  - **배운 것.** '撤去·やめた' 같은 성질어는 도구 이야기로 흘렀고, '爆速·レイテンシ·SLO·通知' 같은 결과어가 제품 글을 더 건졌다.
 
 - **2026-09-26 아흔다섯 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API 새 주제어 15개(障害対応 設計·コスト削減 アーキテクチャ·段階的 移行·負荷対策·データモデル 設計·検索基盤·配信基盤·決済基盤·在庫 引当·予約システム·マイクロサービス 分割·キャッシュ戦略·整合性·リアルタイム 設計 등) × 3쪽 → 2026년 publication 집계 → RSS → 본문 목차.**
   - **TELLER** — **소설·스토리 앱 축.** 열람 판정 DDD 글이 세 선택지와 대가를 나란히 둔다.

@@ -2101,3 +2101,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Photoruction AI×BPO 수익원 보류
 
 - 검색 1: RSS 19편(Android·AI 개발 방식·해커톤). 검색 2: Zenn 검색 API '建設BPO'·'フォトラクション'·'Photoruction' — 옛 행사·Android 글뿐. hold_reason, in_progress 유지.
+
+## 2026-09-27 아흔여섯 번째 후보 조사
+
+- Zenn 검색 API 두 묶음(성질어 15 · 결과어 15). Lincwell · WED · mixtend 를 대기로. 슬러그는 전부 RSS 에서 직접 확인.

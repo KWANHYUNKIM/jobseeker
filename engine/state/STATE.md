@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Photoruction hold(2026-09-27) — AI×BPO 수익원 글을 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 후보 조사(대기 0/3 — 3순위): 95번째에서 배운 대로 '성질' 주제어(整合性·段階的 移行·撤去·見直し·移行してみた·やめた) 중심, 이미 거른 Scalar·TOKIUM·nttdata·nextbeat·syncable·hacobell·SmartShopping·SCOGR·BNX 는 올리지 않는다. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**아흔여섯 번째 후보 조사(2026-09-27) — 대기 3/3: Lincwell · WED · mixtend. 다음은 --gaps 의 신규: 큐 맨 위 Lincwell — `c2e73de75af524`(푸시 내재화 변천) · `2c0befff862461`(예약 레이턴시 SLO) · `d4a4e58eeef06d`(앱 팀 SLO) · 회사 사이트에서 수익원부터. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
