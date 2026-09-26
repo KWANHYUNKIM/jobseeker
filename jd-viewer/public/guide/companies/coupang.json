@@ -14265,6 +14265,131 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7912287",
+      "title": "Senior Staff Backend Engineer - (K8)",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 벵갈루루 근무다. 전문 개발 12년 이상의 시니어 스태프로, 워크로드·서비스 관리 인프라를 설계하고 핵심 인프라 컴포넌트를 직접 개발하며, Java·AWS·Kafka·Kubernetes·Kubeflow·Argo CD·gRPC 를 쓰는 여러 플랫폼 팀을 기술적으로 이끈다. 자격요건에 Amazon EKS 와 ML 작업 배포 인프라(Argo CD workflows)가 있고, 우대에 TensorFlow·PyTorch·TensorRT·Triton 같은 ML 배포 프레임워크가 있다 — ML 워크로드를 돌리는 플랫폼 인프라 쪽이다. 제목의 '(K8)' 은 공고 본문에 설명이 없다.",
+      "fit": {
+        "must_have": [
+          "전문 개발 12년 이상",
+          "최근 3년 내 대규모 분산 시스템 설계·개발",
+          "Java·Go·Python 중 하나 이상",
+          "Amazon EKS",
+          "ML 작업 배포 인프라(Argo CD workflows 등)",
+          "글로벌 시니어 IC 육성"
+        ],
+        "can_learn": [
+          "Kubernetes·gRPC 실무(우대)",
+          "OS 커널·Kafka·Cassandra·MongoDB 깊은 이해(우대)",
+          "TensorFlow·PyTorch·TensorRT·Triton(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "EKS 위 워크로드 관리 인프라",
+          "from": "task",
+          "quote": "Architect workload and service management infrastructure.",
+          "priority": "core",
+          "why": "워크로드·서비스 관리 인프라 설계가 주요업무 첫 줄이고, Amazon EKS 경험이 자격요건이다.",
+          "gap_check": "여러 팀의 학습 작업과 온라인 서비스가 한 EKS 클러스터를 나눠 쓸 때 네임스페이스·리소스 쿼터·노드 그룹(GPU/CPU)·우선순위를 어떻게 나누고, 한 팀의 폭주가 다른 팀을 막지 않게 하는가?",
+          "drill": "EKS(또는 로컬 kind) 에 팀별 네임스페이스·ResourceQuota·PriorityClass 를 설정하고, 배치 작업이 자원을 몰아 쓸 때 서비스 파드가 밀려나지 않는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Amazon EKS User Guide — What is Amazon EKS",
+              "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ML 작업 배포 — Argo CD·Argo Workflows·Kubeflow",
+          "from": "qualification",
+          "quote": "Experience with machine learning job deployment infrastructure such as Argo CD workflows.",
+          "priority": "core",
+          "why": "ML 작업 배포 인프라(Argo CD workflows 등) 경험이 자격요건이고, 팀이 쓰는 스택에 Kubeflow·Argo CD 가 이름으로 나온다.",
+          "gap_check": "Argo CD(선언적 배포·GitOps)와 Argo Workflows(단계형 작업 실행)는 맡는 일이 어떻게 다르고, 학습 파이프라인과 추론 서비스 배포에 각각 무엇을 쓰는가?",
+          "drill": "Argo Workflows 로 '데이터 준비 → 학습 → 평가' 3단계 작업을 돌리고, 평가를 통과한 모델 버전을 Git 에 반영하면 Argo CD 가 추론 서비스를 갱신하는 흐름을 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Argo CD Documentation",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "Argo Workflows",
+              "url": "https://argoproj.github.io/workflows/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubeflow Documentation",
+              "url": "https://www.kubeflow.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "gRPC 서비스 설계",
+          "from": "preference",
+          "quote": "Hands on experience with Kubernetes and gRPC.",
+          "priority": "high",
+          "why": "우대사항에 Kubernetes·gRPC 실무가 있고, 팀 스택에 gRPC 가 나온다.",
+          "gap_check": "쿠버네티스 안에서 gRPC 는 긴 연결(HTTP/2)을 유지하기 때문에 기본 서비스 부하 분산이 한쪽 파드로 쏠리는 문제가 생긴다 — 왜 그렇고 무엇으로 푸는가?",
+          "drill": "gRPC 서버를 파드 3개로 띄우고 클라이언트 한 개가 호출할 때 요청 분포를 확인한 뒤, 클라이언트 측 부하 분산(헤드리스 서비스 + round_robin)으로 바꿔 분포를 다시 잰다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "gRPC — Introduction",
+              "url": "https://grpc.io/docs/what-is-grpc/introduction/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "추론 서빙 — Triton·TensorRT",
+          "from": "preference",
+          "quote": "Proficiency with ML infrastructure and deployment frameworks such as TensorFlow, PyTorch, TensorRT, and Triton Backend.",
+          "priority": "nice",
+          "why": "우대사항에 TensorFlow·PyTorch·TensorRT·Triton Backend 같은 ML 인프라·배포 프레임워크 숙련이 있다.",
+          "gap_check": "같은 모델을 여러 요청이 부를 때 동적 배칭은 처리량과 지연을 어떻게 바꾸고, 인프라 쪽에서는 무엇(GPU 메모리·동시 인스턴스 수)을 조정하는가?",
+          "drill": "Triton 문서의 빠른 시작으로 예제 모델을 띄우고 동적 배칭을 켜고 끈 상태에서 perf_analyzer 로 처리량·지연을 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "NVIDIA Triton Inference Server — User Guide",
+              "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Argo 기반 학습→배포 파이프라인 데모",
+          "why": "자격요건의 ML 작업 배포 인프라와 팀 스택(Kubeflow·Argo CD)을 한 번에 보여 준다. kind 클러스터 위에서 돌아가는 공개 저장소면 충분하다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "멀티 테넌트 클러스터 격리",
+          "Argo CD vs Workflows",
+          "gRPC 부하 분산",
+          "추론 서빙 튜닝",
+          "시니어 IC 육성"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff Backend Engineer - (K8)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7912287",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
