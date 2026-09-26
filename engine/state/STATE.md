@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**라쿠스 — hold(2026-09-26, 도메인 2 · 기능 2). BlastMail·웹 미디어 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 신규: QUEUE 대기 맨 위(ENECHANGE — `tech.enechange.co.jp`, 과금 계산 golden master `entry/2026/09/13/003945` 부터). 대기 2/3(ENECHANGE·드왕고 교육). 머니포워드·라쿠스(hold)·LayerX 는 in_progress.**
+**ENECHANGE — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '청구 금액 재작성의 합부를 기존 시스템의 출력이 가른다' 를 검산 하네스 글(`entry/2026/09/13/003945`, scratchpad `en_kenzan.txt` — '差分が出たら、何を疑うか'·'機械が弁別しない選択は、人に渡す' 후반 미독). 그 뒤 Step Functions(`2026/07/12/132216`, `en_sfn.txt`). 완주 판정 때 비교·전환·EV 수익원은 도메인이 없다 — 사이트맵 전 제목(병렬 grep)으로 두 번. 대기 1/3(드왕고 교육) — ENECHANGE 뒤 후보 조사. 머니포워드·라쿠스(hold)·LayerX 는 in_progress.**
 
 
 

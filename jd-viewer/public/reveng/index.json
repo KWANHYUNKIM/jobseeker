@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "enechange",
+      "name": "エネチェンジ",
+      "name_en": "ENECHANGE",
+      "country": "JP",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "전기·가스 비교와 전력 회사 DX 의 ENECHANGE — 1엔이 틀리면 청구가 틀리는 계산의 재작성을 사람도 AI 도 아닌 기존 시스템의 실제 출력으로 판정한다",
+      "updated_at": "2026-09-26",
+      "domain": "enechange.co.jp"
+    },
+    {
       "slug": "rakus",
       "name": "ラクス",
       "name_en": "RAKUS",
@@ -3093,7 +3105,9 @@
     "GitHub 활동으로 엔지니어 스킬을 순위 매긴다",
     "도구 리뷰 사이트의 데이터 기반을 실적 있는 도구로 빨리 짓는다",
     "경비 전표를 AI 가 초안 쓰고 규칙이 검사한다",
-    "청구서가 거래처에 닿는 제품의 장애를 영향으로 줄 세운다"
+    "청구서가 거래처에 닿는 제품의 장애를 영향으로 줄 세운다",
+    "청구 금액 재작성의 합부를 기존 시스템의 출력이 가른다",
+    "워크플로 테스트를 배선과 내용으로 가른다"
   ],
   "countries": {
     "KR": "한국",
