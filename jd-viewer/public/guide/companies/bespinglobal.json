@@ -367,6 +367,177 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382243",
+      "title": "AI Agent 개발자",
+      "site": "wanted",
+      "verdict": "경력 9~16년, 과장~차장급(서울 서초). Google PS 팀에서 Google Cloud(Vertex AI, Gemini API) 위에 고객사 맞춤 RAG 챗봇·업무 자동화 Agent·Multi-Agent 시스템을 만들고 운영할 사람. 자격요건이 열일곱 줄로 길지만 세 덩어리다 — LLM 에이전트(RAG·Function Calling·LangChain/LangGraph·프롬프트), 백엔드(Python/Java·FastAPI/Flask·REST·벡터 DB), 배포(Docker·Kubernetes·클라우드)와 비정형 데이터 전처리·임베딩. Google Cloud 는 자격이 아니라 우대다. 고객사 프로젝트형이라 '고객사 시스템 연동 개발 경험' 이 우대에 있다. 전형은 서류 → 인터뷰(통상 1회) → 처우 협의다.",
+      "fit": {
+        "must_have": [
+          "학사 이상",
+          "과장~차장급 경력",
+          "LLM 기반 AI Agent 개발(RAG·Function Calling)",
+          "LangChain·LangGraph",
+          "프롬프트 엔지니어링",
+          "Python/Java 백엔드(FastAPI·Flask)·REST API",
+          "벡터 DB",
+          "Docker·Kubernetes·클라우드 배포",
+          "비정형 데이터 전처리·임베딩"
+        ],
+        "can_learn": [
+          "Google Cloud·Vertex AI·Gemini API",
+          "GCP 인증",
+          "BigQuery",
+          "OCR·비전 분석",
+          "Multi-Agent",
+          "고객사 시스템 연동"
+        ]
+      },
+      "study": [
+        {
+          "topic": "RAG — 문서를 쪼개고 찾고 답하기",
+          "from": "task",
+          "quote": "• RAG 기반 챗봇, 업무 자동화 Agent, Multi-Agent 시스템 개발해요.",
+          "priority": "core",
+          "why": "주요업무 두 줄 중 하나다. 자격요건에 '비정형 데이터(문서, 이미지 등) 전처리', '텍스트 데이터 처리 및 임베딩 생성', 'Vector Database 활용' 이 줄지어 있다 — RAG 한 벌을 처음부터 끝까지 만들 줄 아느냐를 묻는다.",
+          "gap_check": "PDF·스캔 문서를 넣을 때 청크 크기·겹침은 무엇을 기준으로 정하고, 검색이 틀린 것인지 생성이 틀린 것인지를 어떻게 나눠 평가하는가? 표·이미지가 섞인 문서는 어떻게 전처리하는가?",
+          "drill": "공개 문서 묶음(표·스캔 포함)으로 RAG 를 만든다 — OCR/파싱 → 청크 → 임베딩 → 벡터 DB → 생성. 질문 30개로 검색 적중률과 답의 근거 포함률을 따로 재고, 청크 크기 두 가지로 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (arXiv:2005.11401)",
+              "url": "https://arxiv.org/abs/2005.11401",
+              "kind": "paper"
+            },
+            {
+              "title": "Vertex AI RAG Engine overview",
+              "url": "https://cloud.google.com/vertex-ai/generative-ai/docs/rag-engine/rag-overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Vertex AI — Get text embeddings",
+              "url": "https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings",
+              "kind": "docs"
+            },
+            {
+              "title": "Google Cloud — Document AI overview",
+              "url": "https://cloud.google.com/document-ai/docs/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Function Calling 과 에이전트 프레임워크",
+          "from": "qualification",
+          "quote": "• LLM 기반 AI Agent 개발 경험이 있으신 분 (RAG, Function Calling 등)",
+          "priority": "core",
+          "why": "자격요건이고 바로 다음 줄이 'LangChain, LangGraph 등 AI Agent 프레임워크' 다. 업무 자동화 Agent 는 고객사 시스템을 도구로 불러야 한다.",
+          "gap_check": "모델이 함수 호출 인자를 틀리게 만들었을 때(스키마 위반·없는 값) 어디서 잡아 되묻게 하고, 쓰기 동작(결재·메일 발송)은 어떻게 사람 확인을 거치게 하는가? LangGraph 로 상태를 둘 때와 단순 루프로 둘 때 무엇이 쉬워지는가?",
+          "drill": "사내 휴가 신청·조회 가짜 API 두 개를 Gemini(또는 다른 LLM) Function Calling 으로 붙이고, LangGraph 로 '조회 → 신청 초안 → 사람 승인 → 제출' 흐름을 만든 뒤 잘못된 인자 사례를 기록한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Gemini API — Function calling",
+              "url": "https://ai.google.dev/gemini-api/docs/function-calling",
+              "kind": "docs"
+            },
+            {
+              "title": "Vertex AI — Function calling",
+              "url": "https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/function-calling",
+              "kind": "docs"
+            },
+            {
+              "title": "LangGraph",
+              "url": "https://langchain-ai.github.io/langgraph/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Google Cloud 위에서 에이전트 배포·운영",
+          "from": "task",
+          "quote": "• Google Cloud 환경에서 고객 맞춤형 AI Agent 개발 및 운영해요.",
+          "priority": "high",
+          "why": "주요업무 첫 줄이다. 팀 소개가 Vertex AI, Gemini API 를 적고 우대에 'Vertex AI, Gemini API를 사용해보신 분' 과 GCP 인증이 있다. 자격요건에 Docker·Kubernetes 가 있다.",
+          "gap_check": "같은 에이전트를 Cloud Run 컨테이너로 올릴 때와 GKE 에 올릴 때, Vertex AI Agent Engine 같은 관리형으로 올릴 때 각각 무엇을 직접 챙겨야 하는가(스케일링·세션 상태·비밀키·로그)?",
+          "drill": "위 에이전트를 FastAPI 로 감싸 Docker 이미지로 만들고 GCP 무료 크레딧으로 한 곳에 배포한 뒤, 요청별 토큰 사용량·지연을 로그로 남기는 대시보드를 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Vertex AI Agent Engine overview",
+              "url": "https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Agent Development Kit (ADK)",
+              "url": "https://google.github.io/adk-docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "GKE overview",
+              "url": "https://cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "프롬프트와 LLM 응답 최적화",
+          "from": "qualification",
+          "quote": "• Prompt Engineering 및 LLM 응답 최적화 능력을 보유하신 분",
+          "priority": "high",
+          "why": "자격요건이다. 고객사마다 요구 형식이 달라 같은 모델로 다른 답 형식을 맞춰야 한다(추론).",
+          "gap_check": "답이 가끔 형식을 어길 때 프롬프트를 고치는 것, 구조화 출력(JSON 스키마)을 강제하는 것, 후처리로 검증·재시도하는 것 중 무엇을 먼저 하고, 개선됐는지를 무엇으로 재는가?",
+          "drill": "RAG 챗봇의 시스템 프롬프트 세 버전을 만들고 같은 질문 30개로 형식 준수율·근거 인용률·토큰 수를 비교하는 작은 평가 스크립트를 쓴다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "Multi-Agent 시스템",
+          "from": "preference",
+          "quote": "• Multi-Agent 시스템을 개발해보신 분",
+          "priority": "nice",
+          "why": "우대사항이지만 주요업무와 팀 소개에 'Multi-Agent 시스템' 이 두 번 나온다.",
+          "gap_check": "에이전트를 여럿으로 나누면 좋아지는 것과 나빠지는 것(지연·비용·추적 어려움)은 무엇이고, 한 에이전트로 충분한 경우를 어떻게 판단하는가?",
+          "drill": "위 휴가 에이전트를 '조회 담당' 과 '규정 확인 담당' 으로 나눈 버전과 단일 버전의 성공률·지연·토큰을 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Agent Development Kit (ADK)",
+              "url": "https://google.github.io/adk-docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "GCP 에 올린 RAG + Function Calling 업무 자동화 에이전트 데모와 평가표",
+          "why": "주요업무 두 줄과 자격요건 세 덩어리(LLM 에이전트·백엔드·배포), 우대(Vertex AI·Gemini)를 한 결과물로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "GCP 자격 인증",
+          "why": "우대사항에 'GCP 관련 인증을 보유하신 분' 이 있고, 팀이 Google PS 조직이다.",
+          "effort": "2~4주"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 > 인터뷰 > 처우 협의 > 최종 합격 > 채용검진 > 입사. 인터뷰는 통상 1회이나 추가될 수 있고, 필요 시 레퍼런스 체크가 있다(공고 기준).",
+        "expect": [
+          "RAG 품질을 측정·개선한 방법",
+          "Function Calling 안전 장치",
+          "에이전트 배포·운영 경험",
+          "고객사 시스템 연동 사례"
+        ],
+        "sources": [
+          {
+            "title": "AI Agent 개발자",
+            "url": "https://www.wanted.co.kr/wd/382243",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
