@@ -2009,3 +2009,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 TRIBEAU 회사 프로파일
 
 - corp.tribeau.jp·클리닉용 LP 로 수익원(클리닉 게재). AI 상담 두 편을 한 도메인, 사내 MCP 기반을 다른 도메인으로.
+
+## 2026-09-26 TRIBEAU ai-consult-deferred-rag
+
+- AI 상담 프런트편·백엔드편을 한 기능으로. 결정 9, 그림 3(flow·failure·state).
