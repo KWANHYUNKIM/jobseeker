@@ -54,7 +54,7 @@ AI Engineer 379543 완료.
 **헤렌(`herren`) — `done`, 공고 5건(프론트엔드 336266 · 시니어 프론트엔드 361706 · 백엔드 373691 · iOS 372618 · iOS 리드 383221).** 원티드 모집중 전부(모두 공비서), 중복 없음. 출처: 원티드 머리말 + herrencorp.com·gongbiz.kr 메타. 기술블로그 techblog.herrencorp.com 은 people 후보가 있을 수 있으나 읽지 않았다.
 **기어세컨드(`gear2`) — `done`, 공고 5건(서버 365991 · 풀스택 385667 · 데이터 엔지니어 370786 · 데이터 사이언티스트 376289 · 데이터 분석가 387053).** 원티드 모집중 전부, 중복 없음. 출처: 원티드 공고 머리말뿐(홈페이지 못 찾음).
 **스캐터랩(`scatterlab`) — `done`, 공고 5건(Ad-Tech 380728 · SRE 268223 · 백엔드 268215 · 프론트엔드 347680 · 모바일 RN 347683).** 원티드 모집중 전부, 중복 없음. 출처: 원티드 머리말 + scatterlab.co.kr·zeta-ai.io 메타. 사용시간 주장이 출처마다 다르다(open_questions).
-**에이아이트릭스(`aitrics`) — `in_progress`, 회사 브리핑만.** 출처: 원티드 공고 머리말 + aitrics.com/kr 첫 화면(제품·인증·보도자료). 모집중 원티드 5건: HAX Infra Data Engineer 379809(완료 — 크롤 밀림이 아니라 원문 '주요업무' 칸이 자격요건처럼 쓰여 있다) · Healthcare Data Engineer 계약직 380610 · 개발기획실장 373234 완료 · Healthcare Data Engineer(계약직) 380610 · 개발기획실장 373234 · Installation PM 365304 · Sr. TPM 355585.
+**에이아이트릭스(`aitrics`) — `in_progress`, 회사 브리핑만.** 출처: 원티드 공고 머리말 + aitrics.com/kr 첫 화면(제품·인증·보도자료). 모집중 원티드 5건: HAX Infra Data Engineer 379809(완료 — 크롤 밀림이 아니라 원문 '주요업무' 칸이 자격요건처럼 쓰여 있다) · Healthcare Data Engineer 계약직 380610 · 개발기획실장 373234 · Installation PM 365304 완료 · Healthcare Data Engineer(계약직) 380610 · 개발기획실장 373234 · Installation PM 365304 · Sr. TPM 355585.
 ⚠️ 다음 회차: `--gaps` 순서대로 에이아이트릭스 공고.
 ⚠️ `validate.py` 의 `MIN_STUDY = 3` — 학습 항목이 3개 미만이면 `--gaps` 가 그 공고를 계속 미완으로 올린다(duplicate_of 제외). OCR 로 얇은 공고도 3개는 채운다(위펀 54814455 에서 2개로 커밋했다가 다음 회차에 보강).
 ⚠️ 사람인 URL 의 `search_uuid` 는 검색 한 페이지 전체가 같이 쓴다 — 공고를 찾을 때 uuid 로 끝맺음을 맞추지 말고 `rec_idx` + 회사명으로 찾는다.
