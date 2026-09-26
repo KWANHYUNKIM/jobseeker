@@ -142,12 +142,14 @@
               "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
               "publisher": "GVA TECH",
               "date": "2026-09-14",
-              "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다."
+              "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "multitenant-prompt-cache-layers"
+      ]
     }
   ],
   "features": [
@@ -500,6 +502,320 @@
           "summary": "4 분야: **법무 부문** — 법무 오토메이션 'OLGA'(의뢰 접수부터 계약 관리 · 지식 활용까지 일관 자동화) · 생성 AI 동행 컨설팅, **법률 사무소** — 집객 지원 · AI 활용 서비스군(증거 일괄 해석으로 법률 서면 자동 작성, Word 위에서 계약 리스크 추출 · 수정), **등기 · 상표 · 노무** — GVA 법인등기(변경 등기 서류를 직접 작성, 옵션으로 날인 · 우송만) · 등기부 취득 · 상표 등록 · 노무 서류 · 템플릿 · 보조금 진단, **인재 소개 · 전직** — 관리 부문 · 사무직 전문 인재 소개."
         }
       ]
+    },
+    {
+      "key": "multitenant-prompt-cache-layers",
+      "name": "A 사가 데운 캐시를 B 사가 읽는다 — 멀티테넌트 생성 AI 의 네 층 프롬프트 캐싱",
+      "domain": "여러 회사가 함께 쓰는 생성 AI 를 싸고 빠르게 돌린다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "GVA TECH 는 여러 회사에 생성 AI 제품을 낸다. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 담은 긴 프롬프트를 이벤트 루프마다 거듭 LLM 에 보낸다 — 이미 읽은 텍스트를 매번 다시 계산하면 느리고 비싸다.\n\n프롬프트 캐싱은 그 계산 결과를 캐시해 다음 요청에서 건너뛰는 구조다. 문제는 **여러 회사가 같은 기능을 쓰는 멀티테넌트 환경**에서 어디까지를 캐시로 끊느냐다 — 잘못 끊으면 같은 시스템 프롬프트를 가진 다른 회사의 요청이 캐시를 전혀 못 쓴다. '되도록 빨리, 되도록 싸게'가 엔지니어의 일이 되어 가는 지금, 이 경계가 속도와 비용을 가른다.",
+        "metrics": [
+          {
+            "label": "검증",
+            "value": "L1 ~ L4 를 캐시한 뒤 요청을 거듭할수록 cache read 가 늘어 각 층이 의도대로 읽힘",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+                "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+                "publisher": "GVA TECH",
+                "date": "2026-09-14",
+                "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+              }
+            ]
+          },
+          {
+            "label": "실험",
+            "value": "tool_use 15 개 + tool_result 15 개(content 차이 30 이상)에도 캐시 적중",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+                "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+                "publisher": "GVA TECH",
+                "date": "2026-09-14",
+                "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "전략을 세울 때",
+          "thought": "자동 캐싱만으로는 B 사의 요청이 A 사와 같은 시스템 프롬프트를 담고 있어도 캐시를 전혀 쓰지 못한다 — 명시적 브레이크포인트로 공통층을 떼어 내야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+              "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+              "publisher": "GVA TECH",
+              "date": "2026-09-14",
+              "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+            }
+          ]
+        },
+        {
+          "at": "한계를 적으며",
+          "thought": "모든 경우에 쓸 수 있는 전략이 아니라 한 예다 — 테넌트마다 도구가 다르면 다른 전략이 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+              "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+              "publisher": "GVA TECH",
+              "date": "2026-09-14",
+              "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+            }
+          ]
+        },
+        {
+          "at": "맺으며",
+          "thought": "어떤 순서로 프롬프트를 짜고 어디에 브레이크포인트를 두느냐가 '빨리, 싸게'를 좇는 엔지니어의 센스를 보여 주는 곳이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+              "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+              "publisher": "GVA TECH",
+              "date": "2026-09-14",
+              "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "L1 전 테넌트 공통층",
+            "what": "모든 회사가 같은 기능에서 공유하는 시스템 프롬프트 부분."
+          },
+          {
+            "name": "L2 테넌트 고유층",
+            "what": "회사마다 다르지만 거의 바뀌지 않는 정보."
+          },
+          {
+            "name": "L3 · L4 대화 이력층",
+            "what": "최신 content 직후와, 직전 LLM 호출 때 최신이던 content 직후의 두 경계."
+          },
+          {
+            "name": "브레이크포인트",
+            "what": "cache_control 로 표시하는 캐시 경계 — 요청당 최대 4 개, 앞에서부터 그 지점까지가 캐시된다."
+          },
+          {
+            "name": "20 개 룩백",
+            "what": "브레이크포인트에서 content 를 20 개까지 거슬러 올라가며 캐시 해시를 찾는 범위."
+          }
+        ],
+        "invariants": [
+          "프롬프트는 tools → system → messages 순이고, 캐시는 앞에서부터만 맞는다 — 바뀌지 않는 것을 앞에 둔다.",
+          "모델별 최소 캐시 토큰에 못 미치는 구간의 브레이크포인트는 동작하지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "system_prompt 를 공통 부분(L1)과 테넌트 고유 부분(L2)으로 나눠 각각 끝에 브레이크포인트",
+            "why": "다른 회사가 데운 L1 을 읽고, 자기 L2 만 새로 계산."
+          },
+          {
+            "step": "모델 호출 직전 훅이 대화 이력의 두 지점(최신 content 직후 · 직전 호출 때 최신이던 content 직후)에 브레이크포인트",
+            "why": "이전 요청의 캐시 끝과 이번 요청의 끝을 둘 다 잡는다."
+          },
+          {
+            "step": "Strands Agents + Bedrock 경유 Claude 로 요청",
+            "why": "네 경계가 한 요청에 모두 실린다."
+          },
+          {
+            "step": "cache read · write 토큰을 요청마다 보고 층별로 읽히는지 확인",
+            "why": "전략이 실제로 적중하는지 숫자로 본다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "캐시를 자동에 맡기나, 경계를 직접 정하나?",
+            "chosen": "**명시적 브레이크포인트로 층을 나눈다.**",
+            "alternatives": [
+              "요청을 통째로 캐시하는 자동 캐싱"
+            ],
+            "tradeoff": "자동 캐싱만이면 같은 시스템 프롬프트를 담은 B 사 요청도 A 사 캐시를 못 쓴다 — 공통층을 떼어야 회사 사이에서 캐시가 재사용된다. 대가는 브레이크포인트가 요청당 최대 4 개라 **어디에 쓸지 설계**해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+                "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+                "publisher": "GVA TECH",
+                "date": "2026-09-14",
+                "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+              }
+            ]
+          },
+          {
+            "question": "네 개를 어디에 쓰나?",
+            "chosen": "**L1 전 테넌트 공통 · L2 테넌트 고유 · L3 · L4 대화 이력의 두 지점.**",
+            "alternatives": [
+              "브레이크포인트를 대화 이력 끝 하나에만 둔다"
+            ],
+            "tradeoff": "바뀌는 빈도가 다른 층마다 끊어 가장 많이 공유되는 것부터 앞에 둔다. 대가는 네 개를 다 써 버려 **다른 경계를 더 둘 여지가 없다**는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+                "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+                "publisher": "GVA TECH",
+                "date": "2026-09-14",
+                "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+              }
+            ]
+          },
+          {
+            "question": "테넌트 고유층과 대화 이력 사이에도 끊나?",
+            "chosen": "**끊는다** — L2 는 거의 안 바뀌고, 대화 이력은 요약(compact)이나 중간 메시지 편집 · 분기로 바뀌기 쉽다.",
+            "alternatives": [
+              "L2 와 대화 이력을 한 구간으로 둔다"
+            ],
+            "tradeoff": "대화 이력이 다시 쓰여도 L2 까지의 캐시는 살아남는다. 대가는 브레이크포인트 하나를 이 경계에 쓴다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+                "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+                "publisher": "GVA TECH",
+                "date": "2026-09-14",
+                "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+              }
+            ]
+          },
+          {
+            "question": "대화 이력 안에 브레이크포인트를 몇 개 두나?",
+            "chosen": "**두 개** — 최신 content 직후와, 직전 호출 때 최신이던 content 직후.",
+            "alternatives": [
+              "최신 content 직후 하나만"
+            ],
+            "tradeoff": "캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 가서, 두 요청 사이 차이가 20 을 넘으면 캐시를 못 찾는다 — 직전 끝에도 경계를 두면 대비된다. 대가는 연속 tool_use · tool_result 가 1 개로 세어져 **20 을 넘는 흔한 경우를 글쓴이도 못 찾았다**는 것 — 파일을 많이 첨부하는 경우 정도.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+                "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+                "publisher": "GVA TECH",
+                "date": "2026-09-14",
+                "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+              }
+            ]
+          },
+          {
+            "question": "테넌트마다 도구가 다르면?",
+            "chosen": "**이 배치를 쓰지 않고 다른 전략을 생각한다** — 프롬프트가 tools → system → messages 순이라.",
+            "alternatives": [
+              "도구가 달라도 같은 자리에 브레이크포인트를 둔다"
+            ],
+            "tradeoff": "테넌트별 도구가 맨 앞에 오면 공통 시스템 프롬프트보다 앞에서 이미 갈라져 L1 캐시가 공유되지 않는다. 대가는 이 전략이 **'한 예'일 뿐** 모든 제품에 통하지 않는다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+                "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+                "publisher": "GVA TECH",
+                "date": "2026-09-14",
+                "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+              }
+            ]
+          },
+          {
+            "question": "경계를 누가 박나?",
+            "chosen": "**Strands Agents 의 모델 호출 전 훅(BeforeModelCallEvent)이 대화 이력에 브레이크포인트를 박는다** — system_prompt 쪽은 에이전트 정의에서.",
+            "alternatives": [
+              "요청을 만들 때마다 앱 코드가 직접 cache_control 을 넣는다(이 사이트의 해석)"
+            ],
+            "tradeoff": "에이전트 루프가 몇 번 돌든 매 호출 직전에 같은 규칙으로 경계가 붙는다. 대가는 **프레임워크의 훅 구조에 기대고**, Bedrock 경유라 모델 제공 방식이 바뀌면 다시 맞춰야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+                "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+                "publisher": "GVA TECH",
+                "date": "2026-09-14",
+                "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "법무 부문용 OLGA · AI 컨설팅(수익원)",
+          "via": "여러 회사가 쓰는 생성 AI 제품",
+          "contract": "멀티테넌트 생성 AI 제품의 캐싱 전략이다 — 다만 글은 어느 제품인지 이름을 대지 않고, 코드는 글쓴이의 검증 레포다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+              "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+              "publisher": "GVA TECH",
+              "date": "2026-09-14",
+              "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+            },
+            {
+              "title": "サービス",
+              "url": "https://gvatech.co.jp/products",
+              "publisher": "GVA TECH",
+              "summary": "4 분야: **법무 부문** — 법무 오토메이션 'OLGA'(의뢰 접수부터 계약 관리 · 지식 활용까지 일관 자동화) · 생성 AI 동행 컨설팅, **법률 사무소** — 집객 지원 · AI 활용 서비스군(증거 일괄 해석으로 법률 서면 자동 작성, Word 위에서 계약 리스크 추출 · 수정), **등기 · 상표 · 노무** — GVA 법인등기(변경 등기 서류를 직접 작성, 옵션으로 날인 · 우송만) · 등기부 취득 · 상표 등록 · 노무 서류 · 템플릿 · 보조금 진단, **인재 소개 · 전직** — 관리 부문 · 사무직 전문 인재 소개."
+            }
+          ]
+        },
+        {
+          "to": "corporate-registration-multi-filing",
+          "via": "같은 회사의 다른 도메인",
+          "contract": "법인등기는 규칙이 분명한 등기 로직을 테스트로 굳히고, 생성 AI 쪽은 비용과 속도를 캐시 경계로 다룬다 — 두 글은 서로를 언급하지 않는다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+              "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+              "publisher": "GVA TECH",
+              "date": "2026-09-14",
+              "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "네 층의 캐시 경계",
+          "question": "한 요청의 프롬프트는 어디서 끊겨 캐시되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  T[\"tools\"] --> L1[\"system: 전 테넌트 공통\\n▲ L1\"]\n  L1 --> L2[\"system: 테넌트 고유\\n▲ L2\"]\n  L2 --> H1[\"messages: 직전 호출 때까지\\n▲ L3\"]\n  H1 --> H2[\"messages: 이번 content 까지\\n▲ L4\"]\n  H2 --> M[\"Claude(Bedrock)\"]"
+        },
+        {
+          "title": "회사를 오가는 캐시",
+          "question": "A 사와 B 사의 요청은 캐시를 어떻게 나눠 쓰나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 빈캐시\n  빈캐시 --> A1: A 사 첫 요청 — L1 ~ L3 쓰기\n  A1 --> A2: A 사 두 번째 — 읽기 + 차이만 쓰기\n  A2 --> B1: B 사 첫 요청 — L1 읽기, L2 ~ 새로 쓰기\n  B1 --> 이력개변: 요약 · 편집 · 분기\n  이력개변 --> B1: L2 까지는 살아 있음"
+        },
+        {
+          "title": "경계를 잘못 두면",
+          "question": "자동 캐싱만 쓰거나 테넌트마다 도구가 다르면 무엇이 깨지나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"자동 캐싱만\"] --> B[\"B 사 요청 = A 사와 같은 시스템 프롬프트\"]\n  B --> C[\"그래도 캐시 불일치 → 전부 다시 계산\"]\n  D[\"테넌트마다 tools 가 다름\"] --> E[\"프롬프트 맨 앞에서 이미 갈라짐\"]\n  E --> F[\"L1 공통 캐시가 공유 안 됨\"]\n  G[\"대화 이력 차이 > 20 content\"] --> H[\"룩백 범위 밖 → 캐시 못 찾음\"]\n  C & F & H --> I[\"느리고 비싼 요청\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "マルチテナント環境におけるプロンプトキャッシング戦略",
+          "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
+          "publisher": "GVA TECH",
+          "date": "2026-09-14",
+          "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
+        },
+        {
+          "title": "サービス",
+          "url": "https://gvatech.co.jp/products",
+          "publisher": "GVA TECH",
+          "summary": "4 분야: **법무 부문** — 법무 오토메이션 'OLGA'(의뢰 접수부터 계약 관리 · 지식 활용까지 일관 자동화) · 생성 AI 동행 컨설팅, **법률 사무소** — 집객 지원 · AI 활용 서비스군(증거 일괄 해석으로 법률 서면 자동 작성, Word 위에서 계약 리스크 추출 · 수정), **등기 · 상표 · 노무** — GVA 법인등기(변경 등기 서류를 직접 작성, 옵션으로 날인 · 우송만) · 등기부 취득 · 상표 등록 · 노무 서류 · 템플릿 · 보조금 진단, **인재 소개 · 전직** — 관리 부문 · 사무직 전문 인재 소개."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -527,7 +843,7 @@
       "url": "https://zenn.dev/gvatech_blog/articles/846faa50c60c86",
       "publisher": "GVA TECH",
       "date": "2026-09-14",
-      "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다."
+      "summary": "멀티테넌트로 제공하는 생성 AI 제품의 프롬프트 캐싱. AI Agent 는 도구 설명 · 시스템 프롬프트 · 대화 이력을 이벤트 루프마다 되풀이해 보내 캐싱의 은혜가 크다. Anthropic Claude 의 명시적 브레이크포인트(요청당 최대 4 개)를 **L1 전 테넌트 공통 · L2 테넌트 고유 · L3 대화 이력** 경계에 둔다 — A 사가 만든 L1 캐시를 B 사가 읽는다(자동 캐싱만이면 같은 시스템 프롬프트라도 B 사는 캐시를 못 쓴다). tools → system → messages 순이라 테넌트마다 도구가 다르면 이 배치가 효과 없다. L2/L3 사이 브레이크포인트는 대화 이력 개변에 강하다. 대화 이력(messages) 안에도 브레이크포인트 둘 — 캐시 적중 탐색이 브레이크포인트에서 content 20 개까지만 거슬러 올라가기 때문(연속 tool_use · tool_result 는 1 개로 센다 — 15 + 15 개로 실험해도 적중). 구현: Strands Agents + Bedrock 경유 Claude Sonnet 5, system_prompt 에 L1 · L2, 모델 호출 전 훅이 '최신 content 직후'와 '직전 호출 때 최신이던 content 직후'에 L3 · L4 를 박는다. 검증: 요청을 거듭할수록 cache read 가 늘어 각 층이 동작. 글쓴이의 제안이자 '한 예'이며, 코드는 개인 검증 레포."
     }
   ]
 }

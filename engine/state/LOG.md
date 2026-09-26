@@ -2492,3 +2492,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GVA TECH 법인등기 동시 신청
 
 - `5be121f17797b9` 전문으로 기능 `corporate-registration-multi-filing`, 결정 7.
+
+## 2026-09-27 GVA TECH 프롬프트 캐싱
+
+- `846faa50c60c86` 전문으로 기능 `multitenant-prompt-cache-layers`, 결정 6. 제품명 없는 글이라 OLGA 연결 inferred 유지.
