@@ -428,7 +428,7 @@
           "title": "우아한 종료",
           "summary": "받던 것은 끝내고 닫는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.5",
@@ -436,7 +436,7 @@
           "title": "블로킹의 한계",
           "summary": "기다리는 스레드의 값.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "8.6",
@@ -444,7 +444,7 @@
           "title": "동시에 붙여 본다",
           "summary": "백 명이 한꺼번에.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

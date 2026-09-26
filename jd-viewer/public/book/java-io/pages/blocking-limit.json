@@ -1,0 +1,212 @@
+{
+  "book": "java-io",
+  "id": "blocking-limit",
+  "no": "8.5",
+  "chapter": 8,
+  "title": "블로킹의 한계",
+  "summary": "기다리는 스레드의 값.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "스레드를 몇 개까지 만들 수 있는지 센다.",
+    "막힌 이유가 힙인지 아닌지 확인한다.",
+    "기다리는 스레드가 계산을 얼마나 늦추는지 잰다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "8.3절에서 풀 크기를 정하지 못하고 넘어왔다. \"몇 개까지 되나\"를 여기서 센다.\n\n빈 스레드를 계속 만들어 봤다 — `-Xmx512m` 에서, 만들 때마다 걸린 시간과 힙 증가를 같이 적었다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "만들어 본 것",
+      "sql": "  최대 힙 = 512 MB, CPU = 8개\n    100개 만들기 =     6 ms   힙 증가     89 KB   살아 있는 스레드 106\n  1,000개 만들기 =    38 ms   힙 증가    549 KB   살아 있는 스레드 1,006\n  5,000개 만들다 2,019개에서 OutOfMemoryError:\n      unable to create native thread: possibly out of memory\n      or process/resource limits reached",
+      "note": "**2,019개에서 멈췄다.** 그런데 힙 증가는 **1 MB 남짓**이었다 — 512 MB 중 1 MB 를 쓰고 더 못 만들었다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "힙이 아니라 네이티브다",
+      "md": "`OutOfMemoryError` 라는 이름이 오해를 만든다. **힙은 텅 비어 있었다.**\n\n> 스레드 하나는 **자바 객체 + OS 스레드**다. 객체는 몇백 바이트로 힙에 들어가지만 스택은 힙 밖(네이티브 메모리)에 따로 잡힌다.\n> JVM 이 찍은 경고가 그것을 말했다 — `pthread_create failed (EAGAIN) for attributes: stacksize: 2048k, guardsize: 16k`.\n> 즉 `pthread_create` 라는 **OS 호출이 거절한 것**이고, 자바가 할 수 있는 일이 없다. 그래서 `-Xmx` 를 키워도 안 늘어난다."
+    },
+    {
+      "type": "prose",
+      "md": "## 한도는 OS 가 정해 놨다\n\n2,019 라는 숫자가 어디서 나왔는지 OS 에 물어봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "OS 쪽 한도",
+      "sql": "$ ulimit -u\n  1333\n\n$ sysctl kern.num_threads kern.num_taskthreads\n  kern.num_threads: 10240\n  kern.num_taskthreads: 2048\n\n# 2,048 이다. 내가 만든 2,019 + JVM 자체 스레드가 여기에 닿는다.",
+      "note": "**`kern.num_taskthreads: 2048`** — 한 프로세스가 가질 수 있는 스레드 수다. 2,019 는 이 숫자였다. `ulimit -u` 의 1333 은 사용자 전체 프로세스 수라 여기서는 안 걸렸다."
+    },
+    {
+      "type": "prose",
+      "md": "## 스택을 줄이면 늘어날까\n\n경고가 `stacksize: 2048k` 라고 했으니 그것을 줄여 보는 것이 자연스럽다. `-Xss` 로 줄여 가며 다시 셌다."
+    },
+    {
+      "type": "table",
+      "caption": "`-Xss` 를 줄여 봤다",
+      "columns": [
+        "`-Xss`",
+        "만들어진 스레드"
+      ],
+      "rows": [
+        [
+          "기본(2 MB)",
+          "**2,019개**"
+        ],
+        [
+          "256 KB",
+          "**2,019개**"
+        ],
+        [
+          "64 KB",
+          "**2,019개**"
+        ]
+      ],
+      "note": "**한 개도 안 늘었다.** 짐작이 틀렸다 — 막은 것은 메모리 총량이 아니라 **개수 한도**였다. 메모리가 문제였다면 스택을 1/32 로 줄일 때 늘어났어야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "숫자를 옮겨 쓰지 않는다",
+      "md": "이 **2,019** 는 이 맥에서만 나오는 값이다.\n\n> 리눅스는 `/proc/sys/kernel/threads-max` 와 `vm.max_map_count`, `ulimit -u`(여기서는 컨테이너 안 스레드 수)로 정해지고 보통 수만 개까지 간다.\n> 그래서 **로컬에서 만들어진 개수를 운영의 한도로 옮겨 적으면 안 된다.** 운영에서는 그쪽 값을 직접 센다.\n> 옮겨 갈 수 있는 것은 숫자가 아니라 **형태** 다 — 힙과 무관한 상한이 있고, 거기 닿으면 `unable to create native thread` 가 나온다."
+    },
+    {
+      "type": "prose",
+      "md": "## 만드는 값과 유지하는 값\n\n값은 두 가지다. **만드는 데 드는 값**과 **살아 있는 동안 드는 값**."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "만드는 값 — 재사용과 비교",
+      "sql": "  --- 같은 10,000개 작업, 스레드를 재사용하면 ---\n    풀   1개 =     9 ms\n    풀   8개 =     5 ms\n    풀 100개 =     6 ms\n  --- 매번 새 스레드를 만들면 ---\n    새 스레드 10,000개 =   373 ms\n\n# 같은 일인데 373 ms 대 5 ms — 74배다.\n# 개당 만드는 값은 373/10,000 = 약 37 마이크로초.",
+      "note": "**풀 1개(9ms)가 새 스레드 10,000개(373ms)보다 40배 빠르다.** 병렬도가 1인데도 이긴다 — 이 일에서는 만드는 값이 일 자체보다 컸다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "풀 8개와 100개가 같은 이유",
+      "md": "5ms 와 6ms 는 차이가 아니다. 이 작업은 `AtomicInteger` 증가 하나라 **일이 없다.**\n\n> CPU 가 8개인데 100개를 둬도 동시에 도는 것은 8개뿐이다. 나머지 92개는 순서를 기다린다.\n> 8.3절에서 풀 크기를 \"CPU 개수\"로 시작하라고 한 근거가 이것이다 — **CPU 를 쓰는 일이라면** 그보다 크게 둘 이유가 없다.\n> 우리 서버는 CPU 를 쓰는 게 아니라 **I/O 를 기다린다.** 그래서 8개보다 훨씬 크게 둔다 — 다음 절에서 그 차이를 잰다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "유지하는 값 — 기다리는 스레드가 계산을 늦춘다",
+      "sql": "  대기 스레드     0개일 때 계산   23 ms\n  대기 스레드 1,000개일 때 계산   43 ms\n\n# 1,000개는 전부 park 상태다 — CPU 를 한 조각도 안 쓴다.\n# 그런데 같은 계산이 23 에서 43 이 됐다. 1.9배.",
+      "note": "**아무 일도 안 하는 스레드가 계산을 두 배 늦췄다.** \"기다리는 스레드는 공짜\"라는 말이 틀린 자리다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "park 인데 왜 느려지나",
+      "md": "CPU 를 안 쓰는 것은 맞는데, **CPU 를 안 쓰는 것과 공짜인 것은 다르다.**\n\n> 스케줄러가 매번 훑어야 하는 목록이 1,000개 길어졌다.\n> 각 스레드의 스택·TLS·GC 루트가 캐시를 밀어낸다 — 20권 19장에서 본 그 캐시다.\n> GC 는 **살아 있는 모든 스레드의 스택**을 루트로 훑는다. 1,000개면 1,000개를 훑는다.\n> 다만 이 1.9배는 이 측정 하나다. 반복 측정과 GC 로그 없이 원인 비중까지 단정하지 않는다 — **말할 수 있는 것은 공짜가 아니라는 것**까지다."
+    },
+    {
+      "type": "figure",
+      "caption": "스레드 하나가 차지하는 것",
+      "ascii": "        java Thread object       <- heap. a few hundred bytes.\n        +----------------------+\n        | name, state, ...     |\n        +----------+-----------+\n                   |\n                   v\n        OS thread (pthread)     <- NOT on the heap.\n        +----------------------+\n        | stack    2048k       |    <- -Xss. reserved, not all touched.\n        | guard      16k       |\n        +----------------------+\n                   |\n        kern.num_taskthreads    <- 2048 on this mac. the real wall.\n        +----------------------+\n        | 2019 made -> EAGAIN  |    <- -Xss 64k did not help.\n        +----------------------+"
+    },
+    {
+      "type": "compare",
+      "title": "두 개의 상한",
+      "left": {
+        "title": "개수 한도 (여기서 걸렸다)",
+        "md": "`kern.num_taskthreads: 2048`\n\n- `-Xss` 를 줄여도 안 늘어난다\n- `-Xmx` 와 무관하다\n- `pthread_create` 가 `EAGAIN` 을 준다"
+      },
+      "right": {
+        "title": "메모리 한도 (여기서는 안 걸렸다)",
+        "md": "스택 총량 = 개수 × `-Xss`\n\n- 2,019 × 2 MB = 약 4 GB **예약**\n- 실제로 만진 것은 그중 일부다\n- 리눅스에서는 보통 이쪽이 먼저 걸린다"
+      },
+      "note": "어느 쪽에 걸렸는지는 `-Xss` 를 줄여 보면 갈린다 — 늘어나면 메모리, 그대로면 개수다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"스레드를 몇 개까지 만들 수 있습니까.\"**\n\n> 숫자로 답하지 않는다. 이 실험으로 답한다 — 이 맥에서는 **2,019개**였고 그 근거는 `kern.num_taskthreads: 2048` 이다. 값은 OS 설정이라 기계마다 다르다.\n> **막힌 것이 힙이 아니라는 것**이 핵심이다. 힙 증가는 1 MB 였고 `-Xmx` 를 키워도 안 늘어난다.\n> `-Xss` 를 줄이면 되냐고 물으면 — **여기서는 안 됐다.** 64 KB 로 줄여도 2,019 그대로였다. 개수 한도와 메모리 한도는 다르다.\n> \"기다리는 스레드는 공짜냐\" 는 후속 질문에는 — park 상태 1,000개가 같은 계산을 23ms 에서 43ms 로 만들었다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 이 절의 전부",
+      "sql": "$ java -Xmx512m -cp out ThCost\n\n  최대 힙 = 512 MB, CPU = 8개\n    100개 만들기 =     6 ms   힙 증가     89 KB   살아 있는 스레드 106\n  1,000개 만들기 =    38 ms   힙 증가    549 KB   살아 있는 스레드 1,006\n  [warning][os,thread] Failed to start thread — pthread_create failed (EAGAIN)\n      for attributes: stacksize: 2048k, guardsize: 16k, detached.\n  5,000개 만들다 2,019개에서 OutOfMemoryError:\n      unable to create native thread: possibly out of memory or\n      process/resource limits reached\n  2,019개 만들기 = 10,095 ms   힙 증가  1,083 KB\n  대기 스레드     0개일 때 계산   23 ms\n  대기 스레드 1,000개일 때 계산   43 ms\n  (4,000개 시도에서 프로그램이 OutOfMemoryError 로 죽었다)\n\n$ ulimit -u        ; sysctl kern.num_taskthreads\n  1333             ; kern.num_taskthreads: 2048\n\n$ java -cp out PoolCost\n\n  --- 같은 10,000개 작업, 스레드를 재사용하면 ---\n    풀   1개 =     9 ms\n    풀   8개 =     5 ms\n    풀 100개 =     6 ms\n  --- 매번 새 스레드를 만들면 ---\n    새 스레드 10,000개 =   373 ms\n  --- 스택 크기를 줄이면 몇 개까지 되나 ---\n    -Xss 인수       0 bytes -> 2,019개\n    -Xss 인수 262,144 bytes -> 2,019개\n    -Xss 인수  65,536 bytes -> 2,019개\n\n# 힙은 1 MB 만 늘었는데 2,019개에서 막혔다 — 벽은 힙 밖에 있다.\n# 스택을 2 MB 에서 64 KB 로 줄여도 2,019 그대로다 — 개수 한도다.\n# 같은 10,000개 작업이 재사용 5 ms 대 새로 만들기 373 ms 다.\n# park 된 1,000개가 관여하지 않는 계산을 23 에서 43 ms 로 만들었다.",
+      "note": "**이 절의 숫자 넷.** 2,019(개수 벽) · 1 MB(힙은 아니다) · 373/5(만드는 값) · 23→43(유지하는 값). 8.3절이 남긴 \"몇 개까지\"에 대한 답이고, 동시에 8.6절의 질문을 만든다 — 그래서 실제 서버에서는 몇 개를 둬야 하나."
+    }
+  ],
+  "recap": [
+    "이 맥에서 스레드는 2,019개에서 unable to create native thread 로 막혔다.",
+    "그때 힙 증가는 1 MB 남짓이었다 — 512 MB 중 1 MB 다. 힙이 아니다.",
+    "근거는 kern.num_taskthreads: 2048 이다 — 한 프로세스의 스레드 개수 한도.",
+    "-Xss 를 2 MB 에서 64 KB 로 줄여도 2,019 그대로였다 — 메모리 한도가 아니라 개수 한도다.",
+    "이 숫자는 이 기계의 것이다. 리눅스는 보통 수만 개까지 가고 걸리는 쪽도 다르다.",
+    "같은 10,000개 작업이 풀 재사용 5 ms, 매번 새로 만들기 373 ms 였다 — 74배.",
+    "풀 8개와 100개가 같았다 — CPU 8개를 쓰는 일에서는 그보다 키울 이유가 없다.",
+    "park 된 스레드 1,000개가 관여하지 않는 계산을 23 ms 에서 43 ms 로 만들었다.",
+    "기다리는 스레드는 CPU 를 안 쓰지만 공짜는 아니다 — 스케줄러 목록·캐시·GC 루트."
+  ],
+  "drills": [
+    {
+      "task": "스레드를 계속 만들어 몇 개에서 막히는지 센다.",
+      "done_when": "OutOfMemoryError 가 난 개수를 적는다.",
+      "minutes": 12
+    },
+    {
+      "task": "-Xmx 와 -Xss 를 바꿔 가며 그 개수가 변하는지 본다.",
+      "done_when": "어느 쪽에 걸렸는지 가른다.",
+      "minutes": 14
+    },
+    {
+      "task": "같은 작업을 풀과 새 스레드로 나눠 재 본다.",
+      "done_when": "두 시간을 비교한다.",
+      "minutes": 12
+    },
+    {
+      "task": "park 된 스레드를 늘려 가며 무관한 계산을 잰다.",
+      "done_when": "느려지는지 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "unable to create native thread 가 났다. -Xmx 를 키우면 되나.",
+      "a": "안 된다. 스택은 힙 밖이고 이 실험에서 힙은 1 MB 만 늘었다."
+    },
+    {
+      "q": "-Xss 를 줄이면 스레드를 더 만들 수 있나.",
+      "a": "메모리에 걸렸으면 늘고, 개수 한도에 걸렸으면 안 늘어난다. 이 맥에서는 안 늘었다."
+    },
+    {
+      "q": "풀 8개와 100개의 결과가 같았던 이유는.",
+      "a": "CPU 가 8개라 동시에 도는 것이 8개뿐이고 작업이 CPU 바운드였다."
+    },
+    {
+      "q": "park 된 스레드가 다른 계산을 늦추는 이유는.",
+      "a": "스케줄러 목록·캐시·GC 루트가 스레드 수에 비례해 늘어난다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "네이티브 메모리",
+      "what": "힙 밖의 메모리. 스레드 스택·메타스페이스·다이렉트 버퍼가 여기 있다. -Xmx 가 관여하지 않는다."
+    },
+    {
+      "term": "kern.num_taskthreads",
+      "what": "macOS 에서 한 프로세스가 가질 수 있는 스레드 수. 이 맥에서는 2048 이고 2,019개에서 막힌 이유다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 Tools — java (-Xss, -Xmx)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "pthread_create(3) — EAGAIN",
+      "url": "https://man7.org/linux/man-pages/man3/pthread_create.3.html",
+      "publisher": "man7.org"
+    }
+  ]
+}
