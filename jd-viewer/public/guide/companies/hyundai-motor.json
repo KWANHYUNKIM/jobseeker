@@ -870,6 +870,117 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387545",
+      "title": "[AVP] 모빌리티 서비스 Data Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 서초구. 현대자동차 AVP 조직의 수요 응답 교통(MaaS) 서비스 **셔클**의 데이터 엔지니어다 — 공고 머리말은 셔클이 2020년 AI 기반 도심 수요 응답 교통으로 국내 처음 나왔고 이용자·운행 기록이 가장 많다고 적는다. 주요업무가 넓다: 서비스 이벤트를 데이터로 표현하는 문제, **데이터 레이크하우스 아키텍처 고도화**, 데이터 사이언티스트를 위한 **Feature Store 설계·구축**, **실시간·배치 파이프라인**, 정합성 검증과 테스트 가능한 파이프라인, 데이터 표준화·사전, **데이터 리니지**, 품질 모니터링 지표. 자격은 학사·3년 이상·확장 가능한 데이터 아키텍처 경험·Go/Python/Scala/Kotlin/Java 중 하나. 우대가 스택을 드러낸다 — Spark·BigQuery·Flink, DataHub·Amundsen·OpenMetadata(카탈로그), **Iceberg·Hudi·Delta Lake(오픈 테이블 포맷)**, Kubernetes 기반 데이터 플랫폼, **경로 탐색·위치 데이터 분석** 같은 모빌리티 지식. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어 3년",
+          "확장 가능한 데이터 아키텍처",
+          "Go·Python·Scala·Kotlin·Java 중 하나"
+        ],
+        "can_learn": [
+          "오픈 테이블 포맷(Iceberg 등)",
+          "Feature Store",
+          "데이터 리니지·카탈로그",
+          "위치 데이터 분석"
+        ]
+      },
+      "study": [
+        {
+          "topic": "레이크하우스 — 오픈 테이블 포맷 위에 쌓기",
+          "from": "task",
+          "quote": "• 다양한 형태의 정형/비정형 데이터를 안정적으로 수집할 수 있는 데이터 레이크하우스 아키텍처 고도화",
+          "priority": "core",
+          "why": "주요업무이고 우대사항이 Iceberg·Hudi·Delta Lake 를 이름으로 든다.",
+          "gap_check": "객체 스토리지의 파케이 파일 묶음과 Iceberg 테이블은 무엇이 다른가(스냅숏·매니페스트·스키마 진화·숨은 파티셔닝)? 스트리밍으로 작은 파일이 쌓이면 무엇이 느려지고 컴팩션은 언제 도는가? 잘못 적재된 하루치를 되돌릴 때 타임 트래블은 어떻게 쓰는가?",
+          "drill": "Iceberg 문서대로 로컬 Spark 에 Iceberg 테이블을 만들어 가짜 운행 이벤트를 적재하고, 컬럼 추가(스키마 진화)·파티션 변경·스냅숏 롤백을 해 본다. 작은 파일 수천 개를 만든 뒤 컴팩션 전후 쿼리 시간을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apache Iceberg — Introduction",
+              "url": "https://iceberg.apache.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Feature Store — 학습과 서빙이 같은 값을 보게",
+          "from": "task",
+          "quote": "• 데이터 사이언티스트의 모델 개발 생산성 향상을 위한 Feature Store 설계 및 구축",
+          "priority": "high",
+          "why": "주요업무다. 수요 응답 교통의 배차·수요 예측 모델이 쓰는 피처를 데이터 사이언티스트가 재사용하게 하는 일이다.",
+          "gap_check": "오프라인 스토어(학습용)와 온라인 스토어(서빙용)는 왜 나뉘고, 학습 데이터를 만들 때 '그 시점에 알 수 있었던 값' 만 붙이는 point-in-time 조인을 하지 않으면 어떤 누수가 생기는가? 온라인 피처가 늦게 갱신되면 모델에 무엇이 일어나는가?",
+          "drill": "Feast 문서의 빠른 시작으로 '정류장별 최근 30분 호출 수' 피처를 정의하고, 과거 이벤트로 point-in-time 조인 학습셋을 만든 뒤 온라인 스토어에 materialize 해 조회한다. 조인을 일부러 잘못 걸어 미래 값이 새는 것을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Feast — Introduction",
+              "url": "https://docs.feast.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "실시간·배치 파이프라인과 테스트 가능한 정합성",
+          "from": "task",
+          "quote": "• 실시간 및 배치 데이터 처리를 위한 안정적인 파이프라인 개발",
+          "priority": "high",
+          "why": "주요업무이고 우대사항에 Spark·Flink 가 있다. 바로 다음 줄이 정합성 검증과 테스트 가능한 파이프라인이다.",
+          "gap_check": "운행 이벤트가 늦게 도착하거나 두 번 오면 실시간 집계와 배치 집계가 어떻게 달라지고, 워터마크·중복 제거·멱등 쓰기로 무엇을 막는가? 배치를 다시 돌렸을 때 결과가 같다는 것을 어떤 테스트로 보장하는가?",
+          "drill": "Flink 로 호출 이벤트를 5분 창으로 집계하는 잡과 같은 계산의 배치 잡을 만들고, 늦은·중복 이벤트를 섞어 두 결과를 비교한다. 입력 픽스처와 기대 출력으로 파이프라인 단위 테스트를 작성한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apache Flink",
+              "url": "https://flink.apache.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "리니지와 카탈로그 — 이 숫자는 어디서 왔나",
+          "from": "task",
+          "quote": "• 데이터 라이프사이클 관리 및 데이터 리니지 시스템 고도화",
+          "priority": "nice",
+          "why": "주요업무이고 우대사항에 DataHub·Amundsen·OpenMetadata 가 있다.",
+          "gap_check": "대시보드 숫자가 틀렸을 때 리니지로 어느 잡·어느 원천까지 거슬러 오르는가? 컬럼 수준 리니지는 테이블 수준보다 무엇을 더 알려 주고, 파이프라인이 리니지 이벤트를 내보내게 하려면 무엇을 붙이는가?",
+          "drill": "OpenLineage 문서로 리니지 이벤트 모델(Job·Run·Dataset)을 정리하고, 위 파이프라인의 입력·출력을 이벤트로 내보내 DataHub 에 적재해 그래프로 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "About OpenLineage",
+              "url": "https://openlineage.io/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "DataHub",
+              "url": "https://docs.datahub.com/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "위치 데이터 — 격자로 묶어 수요를 본다",
+          "from": "preference",
+          "quote": "• 경로 탐색, 위치 데이터 분석 등 모빌리티 분야에 대한 지식 및 경험을 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 수요 응답 교통의 호출·운행은 전부 좌표다.",
+          "gap_check": "위경도 좌표를 그대로 GROUP BY 할 수 없을 때 격자(육각 격자 H3 등)로 묶으면 무엇이 쉬워지고, 해상도 선택은 무엇을 맞바꾸는가? GPS 튐 때문에 생기는 이상치는 어떻게 거르는가?",
+          "drill": "H3 문서를 읽고 가짜 호출 좌표를 해상도 두 가지로 묶어 시간대별 수요 히트맵을 만든 뒤, 해상도에 따라 칸당 표본 수가 어떻게 달라지는지 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "H3 — Introduction",
+              "url": "https://h3geo.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
