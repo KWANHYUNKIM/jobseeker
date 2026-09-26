@@ -1,0 +1,140 @@
+{
+  "slug": "photoruction",
+  "name": "フォトラクション",
+  "name_en": "Photoruction",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "photoruction.com",
+  "one_liner": "건설 생산 클라우드 Photoruction — 현장이 올린 도면을 뒤에서 가공하는 두 경로, 5년 손대지 못한 Windows·C# 변환 서버를 사내 표준 ECS Fargate 로 옮기며 '구현보다 현상 파악이 무겁다' 를 배웠고, 도면 잘라내기는 기존 SQS 를 유용해 Lambda 를 API 에서 직접 부르고 결과만 큐로 돌려받는다",
+  "business_model": "건설 회사에 사진·도면·BIM 을 다루는 시공 관리 클라우드를 판다 — 이용자 수에 따른 월정액, 데이터 용량으로는 요금이 늘지 않는다. 건설 특화 AI×BPO(업무를 소프트웨어에서 골라 반자동으로 맡기는 서비스)는 옵션 요금. 금액은 공개하지 않는다.",
+  "products": [
+    "시공 관리 클라우드(사진·도면·전자 흑판·대장·BIM)",
+    "리소스 관리 클라우드",
+    "건설 BPO(AI-BPO)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "클라우드 이용료(이용자 수 월정액)",
+      "how": "이용자 수에 따라 월정액, 데이터 용량 무관(연간 비용 고정).",
+      "weight": "비중 확인 못 함 — 기본 요금",
+      "domains": [
+        "현장이 올린 도면을 뒤에서 가공한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "料金プラン | Photoruction",
+          "url": "https://www.photoruction.com/pricing",
+          "publisher": "株式会社フォトラクション",
+          "date": "2026-09-27",
+          "summary": "이용자 수에 따른 월정액 · 데이터 용량에 따른 증감 없음(연간 비용 고정, 사진·도면·동영상이 늘어도 추가 비용 없음) · 시공 관리 클라우드·리소스 관리 클라우드는 같은 요금 · 무료 트라이얼 · 건설 특화 AI×BPO 서비스는 옵션 이용료 · 플랜별 조작 설명회·삭제 데이터 복원·BPO 커스터마이즈 차이."
+        },
+        {
+          "title": "Photoruction（フォトラクション）-建築・土木の生産支援クラウド-",
+          "url": "https://www.photoruction.com/",
+          "publisher": "株式会社フォトラクション",
+          "date": "2026-09-27",
+          "summary": "SaaS 와 AI-BPO 로 건설 생산을 표준화하는 올인원 건설 플랫폼. 사진 관리부터 BIM 까지 — 스마트폰·태블릿으로 찍기만 하면 자동 정리, 전자 흑판·대장 작성. 클라우드형 건설 BPO — 건설업용 서비스를 소프트웨어에서 골라 실행해 업무를 반자동화. 프로젝트마다 데이터·열람 권한 관리."
+        }
+      ]
+    },
+    {
+      "name": "건설 AI×BPO(옵션)",
+      "how": "건설업용 업무 서비스를 소프트웨어에서 골라 실행하면 반자동으로 처리 — 옵션 이용료, 상위 플랜은 커스터마이즈.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "料金プラン | Photoruction",
+          "url": "https://www.photoruction.com/pricing",
+          "publisher": "株式会社フォトラクション",
+          "date": "2026-09-27",
+          "summary": "이용자 수에 따른 월정액 · 데이터 용량에 따른 증감 없음(연간 비용 고정, 사진·도면·동영상이 늘어도 추가 비용 없음) · 시공 관리 클라우드·리소스 관리 클라우드는 같은 요금 · 무료 트라이얼 · 건설 특화 AI×BPO 서비스는 옵션 이용료 · 플랜별 조작 설명회·삭제 데이터 복원·BPO 커스터마이즈 차이."
+        },
+        {
+          "title": "Photoruction（フォトラクション）-建築・土木の生産支援クラウド-",
+          "url": "https://www.photoruction.com/",
+          "publisher": "株式会社フォトラクション",
+          "date": "2026-09-27",
+          "summary": "SaaS 와 AI-BPO 로 건설 생산을 표준화하는 올인원 건설 플랫폼. 사진 관리부터 BIM 까지 — 스마트폰·태블릿으로 찍기만 하면 자동 정리, 전자 흑판·대장 작성. 클라우드형 건설 BPO — 건설업용 서비스를 소프트웨어에서 골라 실행해 업무를 반자동화. 프로젝트마다 데이터·열람 권한 관리."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "도면이 올라간 뒤에 일어나는 일",
+    "question": "현장이 올린 도면은 뒤에서 어떤 경로로 가공되고, 그 경로를 어떻게 운영 가능한 형태로 바꾸나?",
+    "code": "flowchart LR\n  U[\"현장 · 도면 업로드\"] --> S3[(\"S3\")]\n  S3 --> Q[\"작업 큐\"] --> CV[\"변환 서버\\nWindows C# → ECS Fargate\"]\n  CV --> S3\n  U --> API[\"앱 서버 · 잡 ID\"] -->|직접 기동| L[\"Lambda 잘라내기\"]\n  L -->|결과| SQS[\"SQS\"] --> W[\"WorkerCron\"] --> DB[(\"잡 상태\")]\n  U -.폴링.-> DB",
+    "_note": "용량 무관 요금이라 도면·사진이 늘어도 수익은 늘지 않고 가공 비용만 는다 — 가공 경로의 운영 효율이 그대로 이익률이다(이 사이트의 해석). BPO 쪽 기술 글은 아직 못 봤다."
+  },
+  "domains": [
+    {
+      "name": "현장이 올린 도면을 뒤에서 가공한다",
+      "why": "사용자가 올린 도면 파일(이미지/PDF)은 시스템이 다루기 좋게 형식 변환·결합·분해해야 하고, 도면의 일부를 잘라 서류를 만드는 기능도 있다. 둘 다 API 요청 안에서 하기엔 무겁다 — 수십 GB·며칠 걸리는 처리도 있다.",
+      "tech": [
+        {
+          "tech": "큐 폴링 워커(Windows·.NET → ECS Fargate) · S3 · Lambda · SQS · WorkerCron · 잡 테이블 폴링 · CloudWatch Logs · Datadog · GitHub Actions",
+          "solves": "무거운 가공을 API 에서 떼고, 가공 경로를 사내 표준 운영에 맞춘다.",
+          "limits": "본번과 같은 환경을 못 만들어 ZIP 처리의 성능을 충분히 시험하지 못했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "図面ファイル非同期処理基盤のコンテナ化でやったこと",
+              "url": "https://zenn.dev/photoruction_bl/articles/9cc3a37caccdaf",
+              "publisher": "Photoruction Tech Blog (Zenn)",
+              "date": "2026-02-24",
+              "summary": "사용자가 올린 도면 파일(이미지/PDF)의 형식 변환·결합·분해를 맡는 '변환 서버'(Windows 서버 + .NET/C#, 큐 폴링 → S3 → 변환 → S3, GUI 로 손으로 기동·설정) — 주요 개발이 약 5년 전 일단락된 뒤 수작업과 암묵지가 쌓였다. 사내에서 이미 쓰는 ECS Fargate 로 옮겨 로그를 CloudWatch Logs 로, 배포를 GitHub Actions 로. 구현은 생성 AI 로 며칠이었지만 가장 무거웠던 건 현상 파악과 동작 확인 — 수십 GB·며칠 걸리는 ZIP 다운로드, C# 안의 Java 프로세스 기동 잔재."
+            },
+            {
+              "title": "AI時代こそアーキテクチャを理解しよう（Lambda×SQS）",
+              "url": "https://zenn.dev/photoruction_bl/articles/b66dfdff60005f",
+              "publisher": "Photoruction Tech Blog (Zenn)",
+              "date": "2026-06-18",
+              "summary": "건설 현장 도면에서 잘라 낼 범위를 지정하면 Lambda 가 S3 의 도면 이미지를 잘라 서류를 자동 생성하는 '도면 잘라내기' 기능 — 앱 서버가 잡 ID 를 발급·기록하고 Lambda 를 직접 기동 → 결과를 SQS 로 → WorkerCron 이 SQS 를 감시해 잡 상태 갱신 → 프런트가 몇 초 간격 폴링. 일반적인 SQS → Lambda '황금 패턴' 대신 이 구성인 이유는 기존 SQS 를 유용할 수 있었고 새 SQS 는 DLQ·재시도 설계가 늘기 때문."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "요금 금액과 매출을 확인하지 못했다.",
+    "건설 AI×BPO 옵션의 기술 결정 글을 아직 못 봤다."
+  ],
+  "sources": [
+    {
+      "title": "Photoruction（フォトラクション）-建築・土木の生産支援クラウド-",
+      "url": "https://www.photoruction.com/",
+      "publisher": "株式会社フォトラクション",
+      "date": "2026-09-27",
+      "summary": "SaaS 와 AI-BPO 로 건설 생산을 표준화하는 올인원 건설 플랫폼. 사진 관리부터 BIM 까지 — 스마트폰·태블릿으로 찍기만 하면 자동 정리, 전자 흑판·대장 작성. 클라우드형 건설 BPO — 건설업용 서비스를 소프트웨어에서 골라 실행해 업무를 반자동화. 프로젝트마다 데이터·열람 권한 관리."
+    },
+    {
+      "title": "料金プラン | Photoruction",
+      "url": "https://www.photoruction.com/pricing",
+      "publisher": "株式会社フォトラクション",
+      "date": "2026-09-27",
+      "summary": "이용자 수에 따른 월정액 · 데이터 용량에 따른 증감 없음(연간 비용 고정, 사진·도면·동영상이 늘어도 추가 비용 없음) · 시공 관리 클라우드·리소스 관리 클라우드는 같은 요금 · 무료 트라이얼 · 건설 특화 AI×BPO 서비스는 옵션 이용료 · 플랜별 조작 설명회·삭제 데이터 복원·BPO 커스터마이즈 차이."
+    },
+    {
+      "title": "図面ファイル非同期処理基盤のコンテナ化でやったこと",
+      "url": "https://zenn.dev/photoruction_bl/articles/9cc3a37caccdaf",
+      "publisher": "Photoruction Tech Blog (Zenn)",
+      "date": "2026-02-24",
+      "summary": "사용자가 올린 도면 파일(이미지/PDF)의 형식 변환·결합·분해를 맡는 '변환 서버'(Windows 서버 + .NET/C#, 큐 폴링 → S3 → 변환 → S3, GUI 로 손으로 기동·설정) — 주요 개발이 약 5년 전 일단락된 뒤 수작업과 암묵지가 쌓였다. 사내에서 이미 쓰는 ECS Fargate 로 옮겨 로그를 CloudWatch Logs 로, 배포를 GitHub Actions 로. 구현은 생성 AI 로 며칠이었지만 가장 무거웠던 건 현상 파악과 동작 확인 — 수십 GB·며칠 걸리는 ZIP 다운로드, C# 안의 Java 프로세스 기동 잔재."
+    },
+    {
+      "title": "AI時代こそアーキテクチャを理解しよう（Lambda×SQS）",
+      "url": "https://zenn.dev/photoruction_bl/articles/b66dfdff60005f",
+      "publisher": "Photoruction Tech Blog (Zenn)",
+      "date": "2026-06-18",
+      "summary": "건설 현장 도면에서 잘라 낼 범위를 지정하면 Lambda 가 S3 의 도면 이미지를 잘라 서류를 자동 생성하는 '도면 잘라내기' 기능 — 앱 서버가 잡 ID 를 발급·기록하고 Lambda 를 직접 기동 → 결과를 SQS 로 → WorkerCron 이 SQS 를 감시해 잡 상태 갱신 → 프런트가 몇 초 간격 폴링. 일반적인 SQS → Lambda '황금 패턴' 대신 이 구성인 이유는 기존 SQS 를 유용할 수 있었고 새 SQS 는 DLQ·재시도 설계가 늘기 때문."
+    }
+  ]
+}

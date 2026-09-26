@@ -50,13 +50,13 @@
 | **SODA(スニーカーダンク)** | JP · 감정 붙은 스니커·트레카 마켓 | 프로파일(2026-09-26). 도메인 둘 — 구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다 · 상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다. 기능 2(`purchase-payment-idempotency` · `purchase-flow-tla-audit`). **hold** — 실매장 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 실매장은 도메인 없음. 입구 `zenn.dev/p/team_soda/feed`. |
 | **USEN ICT Solutions** | JP · 법인 ICT(USEN&U-NEXT 그룹) | 프로파일(2026-09-26). 도메인 둘 — 부서마다 비용이 갈리는 사내 데이터 기반을 고른다 · 영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다. 기능 2(snowflake-over-bigquery · cortex-two-tier-roles). 수익원 법인 ICT(USEN GATE 02) — 데이터 기반과의 연결은 inferred. 입구 `zenn.dev/p/usen_ict/feed`(글 5편). **hold(2026-09-26)** — 법인 ICT 수익원에 이을 글을 두 번 찾아 없음. |
 | **TELLER(テラーノベル)** | JP · 소설 투고·열람(테라노벨 · 테라드라마) | 프로파일(2026-09-26, slug `teller-novel`). 도메인 둘 — 누가 어떤 이야기를 읽을 수 있는지 판정한다 · 이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다. 기능 2(story-view-decision · tts-g2p-bench). 수익원 둘(유료 작품·VIP / 출판·미디어믹스 — 후자 도메인 없음). 입구 `zenn.dev/p/tellernovel_inc/feed`. **hold(2026-09-26)** — 출판·미디어믹스 수익원 자료 두 번 없음. |
+| **Photoruction(フォトラクション)** | JP · 건설 생산 클라우드 + AI×BPO | 프로파일(2026-09-27). 도메인 하나 — 현장이 올린 도면을 뒤에서 가공한다. 기능 0. 수익원 둘(이용자 수 월정액 / AI×BPO 옵션 — 후자 도메인 없음). 입구 `zenn.dev/p/photoruction_bl/feed`. |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Photoruction(フォトラクション)** | JP · 건설 현장 도면·사진 관리 SaaS | Zenn Publication `zenn.dev/p/photoruction_bl`(RSS 19편, 최신 2026-08). 도면 파일을 비동기로 처리하는 '변환 서버' 를 ECS Fargate 로 `9cc3a37caccdaf`(무엇을 하나 → 현상 파악·변경 부담 → 변경을 꺼리는 게 안정성을 떨어뜨렸다 → 해 보니 생각대로 안 됐다 → 결과) · Lambda×SQS 아키텍처 · Android 크래시 조사 · 현장 확인 AI 에이전트. **건설 현장 축(처음).** 결정 글이 한두 편이라 프로파일 때 다시 판정. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
