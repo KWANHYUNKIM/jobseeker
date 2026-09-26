@@ -6,7 +6,7 @@
     "골프존",
     "㈜골프존"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "company.golfzon.com",
   "one_liner": "스크린골프 시장점유율 1위 — 시뮬레이터(투비전)·온라인 라운드 서버·센서(레이더) SW·골프 플랫폼을 함께 만드는 회사",
@@ -587,6 +587,13 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571962?ReturnUrl=RecruitInfo",
+      "title": "보안 취약점 진단 담당자 채용",
+      "site": "dev",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55054632&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=047649fe-5d89-495e-93c3-b5d396fb5852",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 담당업무 세 줄, 자격요건 두 줄, 우대사항 세 줄이 사람인 `[골프존] 보안 취약점 진단 담당자`(55054632)와 글자 그대로 같고 경력(4년 이상 ~ 8년 이하)·근무지(서울 강남구)도 같다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 마감일 10.30(금) 24시다(사람인은 '채용시'). 두 자리가 아니므로 한 곳으로만 지원한다."
     }
   ]
 }
