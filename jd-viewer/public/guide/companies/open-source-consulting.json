@@ -5,7 +5,7 @@
   "aliases": [
     "오픈소스컨설팅"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "osci.kr",
   "one_liner": "오픈스택·쿠버네티스 클라우드 구축(Playce Cloud)과 아틀라시안(Jira·Confluence) 파트너 사업을 두 축으로 하는 클라우드·워크매니지먼트 컨설팅 기업",
@@ -195,7 +195,6 @@
   "open_questions": [
     "매출·임직원 수는 읽지 않았다",
     "Playce Cloud 판매 방식(패키지 라이선스·구축 SI·운영 계약)",
-    "SM 엔지니어의 고객사 상주 여부·근무지",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
   "postings": [
@@ -569,6 +568,110 @@
             {
               "title": "Alertmanager — Prometheus",
               "url": "https://prometheus.io/docs/alerting/latest/alertmanager/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/358430",
+      "title": "WorkManagement사업부문 솔루션 개발",
+      "site": "wanted",
+      "verdict": "경력 3~12년, 서울 강남구. 회사의 **아틀라시안 파트너 사업(WorkManagement 부문)** 개발자다 — 머리말은 SaaS 클라우드 환경에서 Confluence·Jira 등 아틀라시안 제품의 기본 기능 밖 **확장 플러그인**, 고객사 **커스터마이징**, **D2C**(DataCenter→Cloud) 변경 개발·운영을 맡는다고 적는다. 주요업무는 Jira·Confluence·Bitbucket 의 **서버/데이터센터 커스터마이징**과 **클라우드 커스터마이징**, 고객사 개발운영 지원, 기존 커스터마이징 유지보수, **데이터센터→클라우드 변환 개발**, **Groovy 스크립트** 변경, **Automation** 환경 변경, 위키 문서. 자격은 웹 개발 3년, React 1년, **Node.js·TypeScript**, Java 또는 Python, REST API 연동. 우대는 아틀라시안 플러그인·SW 개발, 서비스 운영, 연동 개발, **Forge 앱**, OAuth·Webhook·비동기, 오픈소스 커밋. 서버/DC(Java 플러그인)와 클라우드(Forge·REST)라는 **두 개의 다른 확장 모델**을 오가는 것이 이 자리의 핵심이다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "웹 개발 3년",
+          "React·Node.js·TypeScript",
+          "Java 또는 Python",
+          "REST API 연동"
+        ],
+        "can_learn": [
+          "Atlassian Forge",
+          "서버/DC 플러그인",
+          "DC→Cloud 이전"
+        ]
+      },
+      "study": [
+        {
+          "topic": "데이터센터에서 클라우드로 — 확장 모델이 바뀐다",
+          "from": "task",
+          "quote": "• 기존 DataCenter 에서 Cloud 환경으로 변환/개발",
+          "priority": "core",
+          "why": "주요업무이고 머리말이 D2C 변경 개발을 따로 적는다.",
+          "gap_check": "서버/데이터센터 플러그인(JVM 안에서 도는 Java, 내부 API 접근)과 클라우드 앱(Forge·Connect, 샌드박스·REST API·권한 범위)은 무엇이 근본적으로 다른가? DC 에서 되던 기능(DB 직접 조회, 동기 이벤트 리스너)이 클라우드에서 안 될 때 무엇으로 대체하는가(웹훅·비동기)?",
+          "drill": "Atlassian 서버 플러그인 시작 문서와 Forge 소개를 읽고, '이슈 생성 시 특정 필드 자동 채우기' 기능을 (1) 서버 플러그인 구조로 설계 (2) Forge 앱 + 이벤트 트리거로 구현해 두 방식의 차이(실행 위치·권한·지연)를 표로 정리한다. Atlassian 클라우드 전환 선택지 페이지로 이전 경로를 요약한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Getting started — Jira Server platform",
+              "url": "https://developer.atlassian.com/server/jira/platform/getting-started/",
+              "kind": "docs"
+            },
+            {
+              "title": "About Forge — Atlassian",
+              "url": "https://developer.atlassian.com/platform/forge/",
+              "kind": "docs"
+            },
+            {
+              "title": "Cloud transformation options — Atlassian",
+              "url": "https://www.atlassian.com/migration/assess/journey-to-cloud",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Forge 앱 만들기",
+          "from": "preference",
+          "quote": "• Atlassian Forge 기반 앱 개발 경험",
+          "priority": "core",
+          "why": "우대사항이고 자격요건의 Node.js·TypeScript·React 가 Forge 앱의 기술이다.",
+          "gap_check": "Forge 앱의 manifest 에서 모듈(이슈 패널·매크로·트리거)·권한 범위(scopes)는 어떻게 선언하고, UI Kit 과 Custom UI(React)는 무엇이 다른가? 앱이 외부 시스템을 호출하려면 무엇을 허용해야 하는가?",
+          "drill": "Forge 문서로 개발용 사이트에 Jira 이슈 패널 앱을 만들어, 이슈의 링크된 커밋 수를 외부 API 에서 가져와 표시한다. 필요한 scope 와 외부 호출 허용을 manifest 에 최소로만 선언한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "About Forge — Atlassian",
+              "url": "https://developer.atlassian.com/platform/forge/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Automation·웹훅으로 연동하기",
+          "from": "task",
+          "quote": "• Automation 환경의 변경/개발",
+          "priority": "high",
+          "why": "주요업무이고 우대사항에 OAuth·Webhook·비동기 처리가 있다.",
+          "gap_check": "코드 없이 Jira Automation 규칙(트리거·조건·액션)으로 할 수 있는 것과 앱·스크립트가 필요한 것의 경계는? 웹훅을 받을 때 중복 전달·순서 뒤바뀜·서명 검증은 어떻게 처리하는가?",
+          "drill": "Jira Cloud automation 문서와 웹훅 문서를 읽고, '이슈가 완료로 바뀌면 외부 시스템에 알림' 을 (1) Automation 규칙 (2) 웹훅 + Node.js 수신 서버로 각각 구현한다. 수신 서버에 멱등 처리(이벤트 ID 저장)를 넣는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Jira Cloud automation — Atlassian Support",
+              "url": "https://support.atlassian.com/cloud-automation/docs/jira-cloud-automation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Webhooks — Jira Cloud platform",
+              "url": "https://developer.atlassian.com/cloud/jira/platform/webhooks/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Jira·Confluence REST API 로 고객 시스템 연계",
+          "from": "qualification",
+          "quote": "• REST API 연동 및 외부 시스템 연계 개발 경험",
+          "priority": "nice",
+          "why": "자격요건이다.",
+          "gap_check": "Confluence 페이지를 API 로 만들고 고칠 때 버전 번호는 왜 필요한가? 대량 조회에서 페이지네이션·요청 한도(rate limit)를 어떻게 다루는가?",
+          "drill": "Confluence Cloud REST API v2 문서를 읽고, Jira 스프린트 결과를 모아 Confluence 에 주간 보고 페이지를 만들고 매주 새 버전으로 갱신하는 스크립트를 만든다. 요청 한도에 걸렸을 때 재시도 간격을 늘리게 한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "The Confluence Cloud REST API",
+              "url": "https://developer.atlassian.com/cloud/confluence/rest/v2/intro/",
               "kind": "docs"
             }
           ]
