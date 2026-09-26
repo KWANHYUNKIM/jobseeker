@@ -495,6 +495,106 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/388562",
+      "title": "데이터 분석/엔지니어링 리더",
+      "site": "wanted",
+      "verdict": "경력 10-15년, 서울 강남구, 수습 3개월. **소수 정예 데이터팀의 실무형 리더** 자리다 — 공고가 '팀장도 직접 쿼리를 짜고 파이프라인을 만들어야 해요' 라고 적고, 방향 설정·조직 관리에만 집중하고 싶은 분은 맞지 않을 수 있다고 쓴다. 업무는 데이터팀 OKR, 로그·이벤트 스키마·**DW 계층·데이터마트** 설계와 AWS **Redshift·Trino·Airflow** 플랫폼·파이프라인 운영, MSTR·내부 BI 리포트, 사업·프로덕트 분석을 아티스트 성공·매출로 연결, **데이터 표준·품질·접근 권한 거버넌스**, 지표 정의를 **시멘틱 레이어**로 구현하는 등 AI 가 데이터를 제대로 다루게 하는 과제(데이터 분석 AX), 팀원 성장. 필수는 분석 또는 엔지니어링 10~15년과 리딩 경험(준하는 실무 리딩도 가능), SQL·Python 과 Redshift·Trino·Spark·Airflow·MSTR·Superset 으로 DW·데이터마트를 '최근까지 직접' 만든 경험, **A/B 테스트와 인과추론**, 분석으로 의사결정을 바꾼 경험, 생성형 AI 로 AI Workflow 설계, 비기술 직군·경영진 설득. 우대는 추천·개인화 ML 조직 협업, 흩어진 지표 정의를 하나로 맞춘 거버넌스. 데이터 규모는 하루 액션 로그 5억여 건·청취 7천만 건에 팬 플랫폼 활동과 정산 데이터(회사 브리핑). 전형: 서류전형 ＞ 면접전형(2~3회) ＞ 처우협의. 같은 공고가 사람인(55101784)에도 있다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 분석·엔지니어링 10~15년 + 리딩",
+          "SQL·Python 직접 분석",
+          "Redshift·Trino·Spark·Airflow 로 DW·마트 구축",
+          "A/B 테스트·인과추론",
+          "생성형 AI Workflow 설계",
+          "경영진 설득"
+        ],
+        "can_learn": [
+          "추천·개인화 ML 협업",
+          "전사 지표 거버넌스"
+        ]
+      },
+      "study": [
+        {
+          "topic": "DW 계층과 데이터마트 — 차원 모델링",
+          "from": "task",
+          "quote": "ㆍ로그·이벤트 스키마, DW 계층, 데이터마트 등 데이터 구조를 설계하고, AWS 환경에서 Redshift·Trino·Airflow 기반의 데이터 플랫폼과 파이프라인을 구축·운영해요. MSTR·내부 BI 등의 BI 환경에서 리포트/대시보드를 구성하고 운영해요.",
+          "priority": "core",
+          "why": "주요업무이고 팀 소개가 'DW 계층과 데이터마트를 어떻게 설계할지, 그 위에서 지표를 어떻게 정의하고 분석할지를 한 사람이 같이 결정' 한다고 적는다.",
+          "gap_check": "스트리밍 청취 로그·팬 플랫폼 활동·정산을 한 DW 에 올릴 때 사실 테이블의 그레인(한 행이 무엇인가)을 '청취 1회' 로 둘지 '유저×곡×일' 로 둘지 무엇으로 정하고, 곡 메타데이터(소속사·유통사)가 바뀌면 과거 정산 리포트가 흔들리지 않게 차원을 어떻게 관리하는가(SCD)?",
+          "drill": "Kimball 기법 목록에서 그레인·사실 테이블 종류·SCD 유형을 읽고, 음악 서비스의 청취 사실·곡 차원·아티스트 차원·일자 차원을 설계해 ERD 와 '곡의 소속사가 바뀐 날' 전후 정산 쿼리가 어떻게 달라지는지 한 장으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Dimensional Modeling Techniques — Kimball Group",
+              "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "시멘틱 레이어 — 지표를 한 곳에서 정의하기",
+          "from": "task",
+          "quote": "ㆍ지표 정의를 시멘틱 레이어로 구현하는 등, AI가 데이터를 제대로 다루는 데 필요한 과제를 정의하고, 데이터팀은 물론 전사가 데이터로 판단하는 방식을 바꿔요. 그 과정에서 데이터팀의 일하는 방법도 어떻게 AI로 바꿀 수 있을지 고민하고 전환해나가요.",
+          "priority": "core",
+          "why": "주요업무이고 팀 소개가 '사업·프로덕트·경영진이 각자 보는 데이터에 대해 사람이든 AI든 같은 답을 얻는 환경' 을 목표로 적는다. 우대에도 흩어진 지표 정의를 하나로 맞춘 경험이 있다.",
+          "gap_check": "'월간 활성 청취자' 를 MSTR 리포트·Superset 대시보드·LLM 질의가 각자 SQL 로 계산하면 숫자가 왜 갈리고(30초 미만 재생 포함 여부, 무료 이용자 포함 여부), 지표를 시멘틱 레이어에 한 번 정의하면 LLM 에게 무엇을 넘겨 같은 답을 내게 하는가?",
+          "drill": "MetricFlow 문서의 예제를 따라 청취 사실 테이블에 '활성 청취자' 지표를 정의하고, 같은 지표를 손으로 쓴 SQL 두 벌(정의가 다른)과 비교해 숫자가 어디서 갈리는지 확인한 뒤, 지표 정의 YAML 을 LLM 프롬프트에 넣어 질의를 생성하게 해 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "About MetricFlow — dbt Developer Hub",
+              "url": "https://docs.getdbt.com/docs/build/about-metricflow",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "A/B 테스트와 인과추론",
+          "from": "qualification",
+          "quote": "ㆍA/B 테스트와 인과추론에 대한 통계적 이해를 갖추고, 실험 설계와 해석을 주도할 수 있는 분",
+          "priority": "core",
+          "why": "필수 자격요건이다. 팀 미션이 '아티스트의 성장 기회를 데이터로 발굴해 매출 성장에 직접 기여' 다.",
+          "gap_check": "'응원하기' 기능을 쓴 팬의 이용권 유지율이 높다는 관찰만으로 기능이 유지율을 올렸다고 말할 수 없는 이유는 무엇이고, 실험이 불가능할 때 이중차분(DiD)을 쓰려면 어떤 가정(평행 추세)을 확인해야 하는가? 실험을 한다면 표본 비율 불일치(SRM)는 왜 먼저 보는가?",
+          "drill": "가짜 유저 데이터로 기능 사용 여부와 유지율을 만들되 '원래 충성도' 가 둘 다에 영향을 주게 설계하고, 단순 비교·무작위 실험·이중차분 추정치를 계산해 진짜 효과와 비교한다. Mixtape 의 DiD 장을 읽고 평행 추세 그래프를 그린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Causal Inference: The Mixtape",
+              "url": "https://mixtape.scunning.com/",
+              "kind": "book"
+            },
+            {
+              "title": "Trustworthy Online Controlled Experiments — Experiment Guide",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 거버넌스 — 품질 검사와 접근 권한",
+          "from": "task",
+          "quote": "ㆍ데이터 표준·품질·접근 권한 정책을 관련 조직과 함께 세우고 운영하며, 전사가 같은 데이터를 믿고 쓸 수 있는 거버넌스를 책임져요.",
+          "priority": "high",
+          "why": "주요업무이고 팀 소개가 정산 데이터를 '정확도가 곧 신뢰인' 데이터로 적는다.",
+          "gap_check": "정산 마트에 중복 청취가 섞이거나 전날 적재가 빠졌을 때 사람이 리포트를 보기 전에 잡으려면 파이프라인 어디에 어떤 검사(유일성·건수 급변·신선도)를 두고, 실패하면 하위 작업을 멈출지 경고만 할지 무엇으로 정하는가? 아티스트·소속사별 정산을 외부에 보여줄 때 행 단위 권한은 어떻게 거는가?",
+          "drill": "Airflow DAG 에 적재 → 품질 검사(중복·건수·신선도) → 마트 갱신을 잇고 검사 실패 시 마트 갱신이 멈추는지 확인한다. Redshift 행 수준 보안 문서를 읽고 '소속사 A 는 자기 아티스트 행만' 정책을 설계해 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Best Practices — Airflow Documentation",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Row-level security — Amazon Redshift",
+              "url": "https://docs.aws.amazon.com/redshift/latest/dg/t_rls.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
