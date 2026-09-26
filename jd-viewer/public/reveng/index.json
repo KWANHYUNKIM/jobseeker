@@ -380,9 +380,9 @@
       "country": "US",
       "category": "SaaS",
       "status": "done",
-      "features_done": 3,
+      "features_done": 4,
       "one_liner": "프런트엔드를 배포하던 회사가 에이전트가 코드를 돌리는 자리를 판다",
-      "updated_at": "2026-09-06",
+      "updated_at": "2026-09-26",
       "domain": "vercel.com"
     },
     {
@@ -2901,7 +2901,8 @@
     "장애를 에이전트가 먼저 조사한다",
     "UPI 결제를 메시지로 흘린다",
     "기기 위의 데이터 평면을 더 빠르게 한다",
-    "주문을 관계형 DB 밖으로 옮긴다"
+    "주문을 관계형 DB 밖으로 옮긴다",
+    "요청마다 알맞은 길을 찾는다"
   ],
   "countries": {
     "KR": "한국",
