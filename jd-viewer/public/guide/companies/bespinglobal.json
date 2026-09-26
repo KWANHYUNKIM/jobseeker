@@ -208,7 +208,8 @@
     "매출 규모와 서비스 갈래별 비중을 읽지 않았다 — 공시·보도자료에서 확인할 것",
     "salary: 공고에 금액이 없고 공개 연봉 자료를 확인하지 않았다 — 비워 둔다",
     "회사 소개 페이지에 경영진 명단은 있으나 공개 작업물(발표·서명 글)을 확인하지 않아 people 에 넣지 않았다",
-    "원티드·사람인에 같은 직무가 겹쳐 올라와 있다(Data Engineer, GCP Engineer, Okta, Senior AI Infrastructure) — 공고를 쓸 때 본문 비교로 duplicate_of 를 판단할 것"
+    "원티드·사람인에 같은 직무가 겹쳐 올라와 있다(Data Engineer, GCP Engineer, Okta, Senior AI Infrastructure) — 공고를 쓸 때 본문 비교로 duplicate_of 를 판단할 것",
+    "wd/381976: 자격요건이 'ReAct 기반의 고급 수준 Front-end' 로 적혀 있다 — 기술 스택 표기에는 React 가 있어 React 의 오기로 보이지만 공고에서 확인되지 않는다"
   ],
   "postings": [
     {
@@ -534,6 +535,144 @@
           {
             "title": "AI Agent 개발자",
             "url": "https://www.wanted.co.kr/wd/382243",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/381976",
+      "title": "LLM Engineer (과장급)",
+      "site": "wanted",
+      "verdict": "과장급 — 총 개발 경력 5년 이상·전체 경력 8년 이상(서울 서초). 고객사 AI 유스케이스를 '운영 가능한 최소 에이전트(MOA, Minimum Operable_Agent)' 로 빠르게 만드는 팀에서 Front-end·Back-end 와 LLM Workflow·Agent Loop 프롬프트를 모두 맡는 풀스택 LLM 엔지니어. 자격요건이 전부 '고급 수준' 이다 — 프론트엔드, Java & Python 백엔드, 클라우드·온프레미스 시스템 설계, LLM 프롬프트·워크플로. 팀 소개는 아모레퍼시픽(AI 마케터, FDE 프로젝트), 대상 같은 고객사 프로젝트를 적는다. 자격요건의 'ReAct 기반의 고급 수준 Front-end' 는 기술 스택 표기(React)로 보아 React 의 오기로 보이나 공고에서 확인되지 않는다(open_questions). 전형은 서류 → 인터뷰(통상 1회) → 처우 협의다.",
+      "fit": {
+        "must_have": [
+          "총 개발 5년 이상·전체 8년 이상",
+          "고급 수준 Front-end(React 로 보임)",
+          "Java & Python 고급 Back-end",
+          "클라우드·온프레미스 시스템 구성 설계",
+          "고급 LLM Prompt Engineering·LLM Workflow",
+          "Agent Loop Prompt Engineering"
+        ],
+        "can_learn": [
+          "LLM Fine-tuning",
+          "Transformer 아키텍처 심층 이해",
+          "대고객 커뮤니케이션"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Agent Loop 설계 — 도구를 부르는 반복을 끝내는 법",
+          "from": "qualification",
+          "quote": "• Agent Loop Prompt Engineering 구현 경험이 탄탄하신 분이면 좋아요.",
+          "priority": "core",
+          "why": "주요업무 '효율적인 LLM Workflow 및 Agent Loop Prompt Engineering 구성' 과 자격요건 두 줄이 같은 일을 가리킨다. '운영 가능한' 에이전트를 빨리 내는 팀이라 루프가 멈추지 않거나 엉뚱한 도구를 부르는 문제를 먼저 잡아야 한다(추론).",
+          "gap_check": "Thought→Action→Observation 루프에서 종료 조건·최대 단계·같은 도구 반복 감지·실패 시 사람에게 넘기기를 어디에 두고, 각 단계의 프롬프트·토큰·지연을 어떻게 추적하는가?",
+          "drill": "마케팅 문구 생성 같은 유스케이스로 도구 3개(자료 검색·초안 생성·금칙어 검사)를 쓰는 에이전트 루프를 직접(프레임워크 없이) 짜고, 최대 단계·반복 감지·사람 인계를 넣은 뒤 실패 사례 10개를 로그로 분석한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "ReAct: Synergizing Reasoning and Acting in Language Models (arXiv:2210.03629)",
+              "url": "https://arxiv.org/abs/2210.03629",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 워크플로를 쓰는 화면 — 스트리밍과 상태",
+          "from": "task",
+          "quote": "• Front-end 및 Back-end 설계 및 구현",
+          "priority": "core",
+          "why": "주요업무이고 자격요건이 고급 수준 프론트엔드와 Java & Python 백엔드를 모두 요구한다. 팀 소개가 'Front-end 및 Back-end 구현, LLM Workflow 구성까지 AI 엔지니어링의 Full-Stack' 을 적는다.",
+          "gap_check": "LLM 응답을 토큰 단위로 화면에 흘릴 때 SSE 와 WebSocket 중 무엇을 고르고, 중간에 사용자가 취소하면 백엔드의 LLM 호출·도구 실행을 어떻게 멈추는가? 긴 작업의 진행 상태는 어디에 저장하는가?",
+          "drill": "위 에이전트에 React 화면과 백엔드(Python 또는 Spring Boot)를 붙여 SSE 로 단계별 진행을 보여 주고, 취소 버튼이 서버 작업까지 멈추게 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "React — Learn",
+              "url": "https://react.dev/learn",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — Using server-sent events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring Boot — Reference",
+              "url": "https://docs.spring.io/spring-boot/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드와 온프레미스 양쪽 배치 설계",
+          "from": "qualification",
+          "quote": "• Cloud 및 On-premise 환경을 모두 아우르는 시스템 구성 설계 역량이 있으셔야 해요.",
+          "priority": "high",
+          "why": "자격요건이고 주요업무에 'Cloud 및 On-premise 환경 기반의 시스템 구성 설계 및 운영 체계 수립' 이 있다. 회사 홈페이지도 AI 전용 Private Cloud 를 서비스로 둔다.",
+          "gap_check": "고객사 데이터가 밖으로 못 나가는 경우 LLM 을 사내에 둘 때와 외부 API 를 쓸 때 구성(GPU·게이트웨이·로그 보관)은 어떻게 달라지고, 같은 앱을 두 환경에 다 배포하려면 무엇을 설정으로 빼야 하는가?",
+          "drill": "위 앱에서 LLM 호출부를 인터페이스로 빼고 외부 API 구현과 로컬 오픈 모델 구현 두 가지를 만든 뒤, 환경 변수만 바꿔 전환되게 하고 두 구성도를 그린다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "Fine-tuning 과 Transformer 이해",
+          "from": "preference",
+          "quote": "• LLM 모델 Fine-tuning을 직접 수행해 보신 경험이 있다면 적극 환영해요.",
+          "priority": "nice",
+          "why": "우대사항 첫 줄이고, 다음 줄이 'Transformer 아키텍처에 대한 깊은 기술적 이해도' 다. 프롬프트로 안 되는 고객 요구가 생길 때 다음 수단이다(추론).",
+          "gap_check": "프롬프트·RAG·LoRA 파인튜닝 중 무엇을 고를지 어떤 기준(데이터 양, 형식 준수, 비용)으로 정하고, LoRA 가 전체 파인튜닝보다 싼 이유를 행렬 차원으로 설명할 수 있는가?",
+          "drill": "작은 오픈 모델에 PEFT 로 LoRA 파인튜닝을 해 특정 문체(예: 브랜드 톤)를 학습시키고, 같은 요구를 프롬프트만으로 한 결과와 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LoRA: Low-Rank Adaptation of Large Language Models (arXiv:2106.09685)",
+              "url": "https://arxiv.org/abs/2106.09685",
+              "kind": "paper"
+            },
+            {
+              "title": "Hugging Face PEFT",
+              "url": "https://huggingface.co/docs/peft/index",
+              "kind": "docs"
+            },
+            {
+              "title": "Attention Is All You Need (arXiv:1706.03762)",
+              "url": "https://arxiv.org/abs/1706.03762",
+              "kind": "paper"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "화면까지 있는 '최소 운영 가능 에이전트' 한 벌",
+          "why": "팀이 하는 일(MOA 를 빠르게 구축)을 그대로 보여 준다 — React 화면, 백엔드, 에이전트 루프, 클라우드/온프레미스 전환 설정.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "고객 요구를 에이전트 설계로 바꾼 사례 정리",
+          "why": "우대사항에 대고객 커뮤니케이션이 있고, 팀 소개가 '고객사 니즈 분석부터' 를 적는다. 인터뷰가 통상 1회라 사례 하나를 짧게 말할 준비가 필요하다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 > 인터뷰 > 처우 협의 > 최종 합격 > 채용검진 > 입사. 인터뷰는 통상 1회이나 추가될 수 있고, 필요 시 레퍼런스 체크가 있다(공고 기준).",
+        "expect": [
+          "Agent Loop 실패를 다룬 방법",
+          "LLM 앱의 프론트·백엔드 구조",
+          "온프레미스 LLM 구성",
+          "파인튜닝을 할지 말지 판단한 기준"
+        ],
+        "sources": [
+          {
+            "title": "LLM Engineer (과장급)",
+            "url": "https://www.wanted.co.kr/wd/381976",
             "publisher": "원티드"
           }
         ]
