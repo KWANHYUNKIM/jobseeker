@@ -1688,3 +1688,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 IVRy 보존 기한 삭제 워크플로 · 완주
 
 - 결정 8 — Step Functions 대신 Durable·기동 시각으로 결정적 대상·페이지 map·wait 후 wait_for_condition·at-most-once·로그/메트릭 2층·보존 기간·버전 호출. 수익원 하나 → done.
+
+## 2026-09-26 PKSHA 회사 프로파일
+
+- 회사 페이지(AI Solution · AI SaaS · 4,400 사)·Zenn 두 편(AI 헬프데스크 Saga 경합 · llm-replacer). 수익원 둘에 도메인 하나씩, 기능 0. 대기열 0/3.

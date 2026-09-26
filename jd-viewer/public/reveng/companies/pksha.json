@@ -1,0 +1,156 @@
+{
+  "slug": "pksha",
+  "name": "PKSHA Technology",
+  "name_en": "PKSHA Technology",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "pkshatech.com",
+  "one_liner": "AI 솔루션과 AI SaaS 의 PKSHA — 헬프데스크가 SharePoint·Box 문서를 RAG 로 옮기는 동기화는 순서 없이 늦게 오는 이벤트를 Saga 상태 기계가 스킵·재시도로 받아 내고, 고객 LLM 서비스의 모델 EOL 은 Claude Code 가 shadow 환경에서 A/B 로 재지만 머지는 사람이 한다",
+  "business_model": "고객 과제에 맞춘 **커스터마이즈형 AI Solution** 과, 그 성과를 제품화한 **패키지형 AI SaaS**(AI 헬프데스크·ChatAgent·FAQ·Knowledge Stream·VoiceAgent·Speech Insight — 사내 지식 활용과 컨택트센터)를 판다. 두 사업이 서로를 먹인다(솔루션 → 제품화 → 새 데이터·지식 → 솔루션) — 회사 스스로의 설명. 도입 기업 4,400 사 이상(2025-10). 과금 구조·매출 비중은 1차 자료로 확인하지 못했다.\n\n솔루션 쪽은 고객마다 오래 운용되는 LLM 서비스가 늘어나고, SaaS 쪽은 고객의 사내 문서를 끌어와 RAG 에 넣는다 — 둘 다 '남의 것' 을 다룬다(이 사이트의 해석).",
+  "products": [
+    "PKSHA AI ヘルプデスク(AI Helpdesk)",
+    "PKSHA ChatAgent",
+    "PKSHA FAQ",
+    "PKSHA Knowledge Stream",
+    "PKSHA VoiceAgent",
+    "PKSHA Speech Insight",
+    "AI Solution(커스터마이즈 개발)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "AI SaaS(패키지형)",
+      "how": "사내 지식 활용·컨택트센터용 AI 제품을 SaaS 로. 과금 구조는 확인 못 함.",
+      "weight": "공개 없음",
+      "domains": [
+        "외부 문서 저장소를 RAG 로 옮기는 동기화의 경합을 상태 기계가 받는다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "PKSHA Technology Inc.",
+          "url": "https://www.pkshatech.com/",
+          "publisher": "株式会社PKSHA Technology",
+          "date": "2026-09-26",
+          "summary": "자연어 처리·화상 인식·기계학습/딥러닝 알고리즘을 개발해 솔루션으로 제공. 두 소프트웨어 사업의 상승효과 — **커스터마이즈형 AI Solution**(고객 과제에 맞춘 개발, AI SaaS 와 조합) · **패키지형 AI SaaS**(솔루션 성과를 제품화, 새 데이터·지식으로 Solution 을 진화) · **AI Research**(고객과 공동 개발). 도입 기업 **4,400 사 이상**(2025-10). AI SaaS 라인업: PKSHA AI Helpdesk · ChatAgent · FAQ · Knowledge Stream · VoiceAgent · Speech Insight(AI Agents Platform · AI Contact Center)."
+        },
+        {
+          "title": "イベント駆動で起きる Race Condition に MassTransit Saga でどう向き合うか",
+          "url": "https://zenn.dev/pksha/articles/2088c13ac89ca6",
+          "publisher": "PKSHA Tech Blog (Zenn)",
+          "date": "2026-06-29",
+          "summary": "**PKSHA AI 헬프데스크**는 SharePoint Online·Box 문서를 자사 RAG 서비스로 **동기화**하는 기능을 **MassTransit**(.NET 메시징, Azure Service Bus 추상화)의 비동기 이벤트 구동 **Saga 상태 기계**로 구현. 메시징의 성질(순서 비보장·at-least-once·배신 지연·Saga 생성 타이밍) 때문에 '상정 밖 상태에서 상정 밖 이벤트' 를 받는다 — 기본은 `OnUnhandledEvent` 예외. 패턴 ① **완료 뒤 늦게 온 이벤트** → 경고 로그를 남기고 스킵(`Ignore()` 대신 — 로그 레벨로 상정 내·외를 가른다) ② **순서 역전**(InProgress 에 IndexingCompleted) → 반드시 처리해야 하므로 예외로 `UseMessageRetry`(in-memory, 0.5·1·2·4초) 동안 상태가 따라오길 기다림 ③ Saga 인스턴스 생성 전 도착(`OnMissingInstance`) ④ 같은 갱신의 동시 충돌(낙관 락·외부 토큰 갱신). 대처 선택법까지."
+        }
+      ]
+    },
+    {
+      "name": "AI Solution(커스터마이즈형)",
+      "how": "고객 과제에 맞춘 알고리즘·솔루션을 개발해 제공하고 운용한다.",
+      "weight": "공개 없음",
+      "domains": [
+        "운용 중인 고객 LLM 서비스의 모델 EOL 을 사람 게이트 넷으로 넘긴다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "PKSHA Technology Inc.",
+          "url": "https://www.pkshatech.com/",
+          "publisher": "株式会社PKSHA Technology",
+          "date": "2026-09-26",
+          "summary": "자연어 처리·화상 인식·기계학습/딥러닝 알고리즘을 개발해 솔루션으로 제공. 두 소프트웨어 사업의 상승효과 — **커스터마이즈형 AI Solution**(고객 과제에 맞춘 개발, AI SaaS 와 조합) · **패키지형 AI SaaS**(솔루션 성과를 제품화, 새 데이터·지식으로 Solution 을 진화) · **AI Research**(고객과 공동 개발). 도입 기업 **4,400 사 이상**(2025-10). AI SaaS 라인업: PKSHA AI Helpdesk · ChatAgent · FAQ · Knowledge Stream · VoiceAgent · Speech Insight(AI Agents Platform · AI Contact Center)."
+        },
+        {
+          "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+          "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+          "publisher": "PKSHA Tech Blog (Zenn)",
+          "date": "2026-07-29",
+          "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "남의 문서, 남의 서비스",
+    "question": "AI 회사는 고객의 문서를 어떻게 안전하게 끌어오고, 고객에게 만들어 준 LLM 서비스를 어떻게 늙지 않게 하나?",
+    "code": "flowchart LR\n  SP[\"SharePoint · Box\"] -->|동기화 이벤트| SAGA[\"MassTransit Saga\\n스킵 · 재시도 · 낙관 락\"]\n  SAGA --> RAG[\"자사 RAG 서비스\"]\n  RAG --> HD[\"AI 헬프데스크\"]\n  EOL[\"모델 EOL\"] --> ISSUE[\"GitHub Issue\"]\n  ISSUE --> LR[\"llm-replacer\\nClaude Code on EC2\"]\n  LR --> SH[\"shadow 환경 · A/B judge\"]\n  SH --> PR[\"Draft PR · 사람 게이트 4\"]",
+    "_note": "위는 AI SaaS(헬프데스크)의 문서 동기화, 아래는 운용 중 서비스의 모델 교체다. llm-replacer 의 대상을 AI Solution 수익원에 이은 것은 이 사이트의 해석(글은 '운용 중 서비스' 와 '先方가 만지는 환경' 이라고만 적는다). 음성·컨택트센터 제품의 글은 아직 못 봤다."
+  },
+  "domains": [
+    {
+      "name": "외부 문서 저장소를 RAG 로 옮기는 동기화의 경합을 상태 기계가 받는다",
+      "why": "AI 헬프데스크는 고객의 SharePoint Online·Box 문서를 자사 RAG 서비스로 동기화한다. 비동기 이벤트 구동이라 메시지가 순서 없이·중복으로·늦게 도착하고, Saga 는 상정 밖 상태에서 상정 밖 이벤트를 받으면 기본으로 예외를 낸다.",
+      "tech": [
+        {
+          "tech": "MassTransit Saga 상태 기계(Azure Service Bus) · 완료 뒤 늦은 이벤트는 경고 로그 후 스킵 · 순서 역전은 예외로 in-memory 재시도(0.5·1·2·4초) · 인스턴스 생성 전 도착은 OnMissingInstance · 동시 충돌은 낙관 락",
+          "solves": "상정 내 지연은 경고, 미설계 전이는 에러로 로그 레벨이 갈려 정말 대처할 이벤트만 에러에 남는다.",
+          "limits": "순서 역전 재시도는 최대 7.5초 안에 상태가 따라오길 기대한다 — 넘으면 다음 단계의 재시도·재배신에 맡긴다(이 사이트의 해석). 외부 서비스의 토큰 갱신도 경합한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "イベント駆動で起きる Race Condition に MassTransit Saga でどう向き合うか",
+              "url": "https://zenn.dev/pksha/articles/2088c13ac89ca6",
+              "publisher": "PKSHA Tech Blog (Zenn)",
+              "date": "2026-06-29",
+              "summary": "**PKSHA AI 헬프데스크**는 SharePoint Online·Box 문서를 자사 RAG 서비스로 **동기화**하는 기능을 **MassTransit**(.NET 메시징, Azure Service Bus 추상화)의 비동기 이벤트 구동 **Saga 상태 기계**로 구현. 메시징의 성질(순서 비보장·at-least-once·배신 지연·Saga 생성 타이밍) 때문에 '상정 밖 상태에서 상정 밖 이벤트' 를 받는다 — 기본은 `OnUnhandledEvent` 예외. 패턴 ① **완료 뒤 늦게 온 이벤트** → 경고 로그를 남기고 스킵(`Ignore()` 대신 — 로그 레벨로 상정 내·외를 가른다) ② **순서 역전**(InProgress 에 IndexingCompleted) → 반드시 처리해야 하므로 예외로 `UseMessageRetry`(in-memory, 0.5·1·2·4초) 동안 상태가 따라오길 기다림 ③ Saga 인스턴스 생성 전 도착(`OnMissingInstance`) ④ 같은 갱신의 동시 충돌(낙관 락·외부 토큰 갱신). 대처 선택법까지."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "운용 중인 고객 LLM 서비스의 모델 EOL 을 사람 게이트 넷으로 넘긴다",
+      "why": "LLM 을 넣은 운용 중 서비스는 모델이 EOL 되면 갈아야 하는데, 오래된 서비스일수록 모델 ID 가 어디 있는지·어떻게 검증하는지 잊혔고 담당자가 퇴사했다. 'staging' 이 실은 고객이 만지는 환경인 경우도 있다.",
+      "tech": [
+        {
+          "tech": "llm-replacer — GitHub Issue 기동 · 인증된 EC2 의 Claude Code 커스텀 명령 복합체 · staging 복사 shadow 환경 · 구/신 E2E 출력의 LLM-as-a-judge A/B(위치 랜덤화, 레이턴시·비용·거부율 임계) · 사람 게이트 4 · Draft PR 고정 · prod 로 보이면 중단",
+          "solves": "탐색·계획·검증·PR 을 Issue 위 봇 대화로 끝낸다 — 엔지니어가 AWS 인증 함정에 시간을 쓰지 않는다.",
+          "limits": "브라우저 자동 조작은 미구현이라 UI 층을 건너뛰고 핵심 함수를 직접 돈다. 자동 머지는 하지 않는다 — 책임은 사람이 진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+              "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+              "publisher": "PKSHA Tech Blog (Zenn)",
+              "date": "2026-07-29",
+              "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 구조·매출 비중을 1차 자료로 확인하지 못했다.",
+    "VoiceAgent·Speech Insight 같은 음성·컨택트센터 제품의 설계 글은 아직 못 봤다.",
+    "llm-replacer 의 대상 서비스가 AI Solution 고객 서비스라는 연결은 inferred('先方가 만지는 환경' 에서 읽음).",
+    "다른 글: DynamoDB Zero-ETL(`dynamodb-zero-etl`)·MariaDB IN 절 최적화(`a7c7d6806b9b7c`)·AI 로 AWS 조사 정책(`2af74960747767`)·glibc malloc 누수(`python-memory-leak-jemalloc`)·AWS FIS 단일 AZ 장애 테스트(`0fe600522f1723`)·MassTransit 기초 편(`18e25967d45855`)."
+  ],
+  "sources": [
+    {
+      "title": "PKSHA Technology Inc.",
+      "url": "https://www.pkshatech.com/",
+      "publisher": "株式会社PKSHA Technology",
+      "date": "2026-09-26",
+      "summary": "자연어 처리·화상 인식·기계학습/딥러닝 알고리즘을 개발해 솔루션으로 제공. 두 소프트웨어 사업의 상승효과 — **커스터마이즈형 AI Solution**(고객 과제에 맞춘 개발, AI SaaS 와 조합) · **패키지형 AI SaaS**(솔루션 성과를 제품화, 새 데이터·지식으로 Solution 을 진화) · **AI Research**(고객과 공동 개발). 도입 기업 **4,400 사 이상**(2025-10). AI SaaS 라인업: PKSHA AI Helpdesk · ChatAgent · FAQ · Knowledge Stream · VoiceAgent · Speech Insight(AI Agents Platform · AI Contact Center)."
+    },
+    {
+      "title": "イベント駆動で起きる Race Condition に MassTransit Saga でどう向き合うか",
+      "url": "https://zenn.dev/pksha/articles/2088c13ac89ca6",
+      "publisher": "PKSHA Tech Blog (Zenn)",
+      "date": "2026-06-29",
+      "summary": "**PKSHA AI 헬프데스크**는 SharePoint Online·Box 문서를 자사 RAG 서비스로 **동기화**하는 기능을 **MassTransit**(.NET 메시징, Azure Service Bus 추상화)의 비동기 이벤트 구동 **Saga 상태 기계**로 구현. 메시징의 성질(순서 비보장·at-least-once·배신 지연·Saga 생성 타이밍) 때문에 '상정 밖 상태에서 상정 밖 이벤트' 를 받는다 — 기본은 `OnUnhandledEvent` 예외. 패턴 ① **완료 뒤 늦게 온 이벤트** → 경고 로그를 남기고 스킵(`Ignore()` 대신 — 로그 레벨로 상정 내·외를 가른다) ② **순서 역전**(InProgress 에 IndexingCompleted) → 반드시 처리해야 하므로 예외로 `UseMessageRetry`(in-memory, 0.5·1·2·4초) 동안 상태가 따라오길 기다림 ③ Saga 인스턴스 생성 전 도착(`OnMissingInstance`) ④ 같은 갱신의 동시 충돌(낙관 락·외부 토큰 갱신). 대처 선택법까지."
+    },
+    {
+      "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+      "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+      "publisher": "PKSHA Tech Blog (Zenn)",
+      "date": "2026-07-29",
+      "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+    }
+  ]
+}
