@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "기타",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "기상 정보 회사 웨더뉴스 — 소매·메이커의 반년 앞 일별 수요 예측은 GPU 인스턴스를 AWS Batch 로 그때만 띄워 추론하고, 개인 앱의 '마이 솔루션' 은 AND/OR 4단 조건 10만 오더를 10분마다 결정 트리의 단락 평가로 판정한다",
       "updated_at": "2026-09-26",
       "domain": "weathernews.com"

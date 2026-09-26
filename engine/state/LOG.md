@@ -1868,3 +1868,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Weathernews Batch GPU 수요 예측 추론
 
 - 결정 7 — Batch(Lambda·Fargate 대신)·Execute 만 Batch·x86 통일(ARM 표준 이탈)·BEST_FIT_PROGRESSIVE·slim+PyTorch CUDA wheel·이벤트 날 q90·수동 승인 배포.
+
+## 2026-09-26 Weathernews 마이 솔루션 결정 트리
+
+- 결정 5 — eval 대신 결정 트리 데이터·재귀 3함수·단락 평가(+순서)·Leaf jq·순수 함수 goroutine 병렬.

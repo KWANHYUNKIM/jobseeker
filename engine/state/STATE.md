@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Weathernews 확장 1/2(2026-09-26) — `batch-gpu-demand-inference` 완료. 다음은 확장: '수십만 개의 사용자 기상 조건을 10분마다 판정한다' — `dc7de23c12665e`(결정 트리 · 단락 평가 · jq Leaf · 병렬화). 수익원 방송은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(Safie) — --gaps 가 후보 조사를 부를 수 있다. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Weathernews 확장 2/2(2026-09-26) — `my-solution-decision-tree` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 '방송' 에 도메인 없음 — 검색 1 RSS 18편(방송 글 없음) 이어 검색 2(Zenn 검색 API '番組 ウェザーニューズ'·'放送'·'weathernews'), 없으면 hold. 단 --gaps 가 후보 조사(큐 1/3)를 먼저 부르면 그쪽. 대기 1/3(Safie) — --gaps 가 후보 조사를 부를 수 있다. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
