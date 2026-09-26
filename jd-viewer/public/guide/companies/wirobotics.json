@@ -208,7 +208,158 @@
     "매출·임직원 수·WIM 가격을 읽지 않았다",
     "휴머노이드 ALLEX 의 판매·사업화 계획은 공고와 사이트에 없다",
     "사람인 '2026년 하반기 각 부문 수시채용'(경력무관)은 본문 칸이 비어 있다",
-    "salary: 공고에 금액이 없다 — 비워 둔다"
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "모바일 앱 공고(386374)는 제목이 'Jr. 개발자' 인데 헤더·자격요건은 '모바일 앱 개발 경력 3년 이상' 이다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/386374",
+      "title": "[Wearable Robot] 모바일 앱 Jr. 개발자",
+      "site": "wanted",
+      "verdict": "제목은 'Jr.' 인데 헤더와 자격요건은 '모바일 앱 개발 경력 3년 이상' 이고 학사 이상(컴퓨터공학 등 유관 전공)을 적는다. 회사의 매출 제품인 보행보조 로봇 WIM·WIMS 와 BLE 로 연동되는 Flutter 기반 iOS·Android 앱 자리다 — Flutter·Dart 앱 구조 설계와 기능 개발, WIM·WIMS BLE 연결과 로봇 제어·상태 데이터 연동, WebView·네이티브 연동, 사내 배포와 스토어 등록·심사, 실기기 테스트로 품질 개선. 필수는 Flutter 앱 구조·상태 관리, BLE 또는 준하는 기기 연동, 앱 출시·유지보수, Git 협업, WebView↔앱 메시지 연동. Swift·Kotlin·Java 네이티브 연동, 양 플랫폼 배포·심사, **인앱결제·구독 기능**(홈페이지에 'WIM S 앱 구독 서비스' 가 상품으로 있다), AI 개발 도구 활용과 검증, 펌웨어 담당자와 BLE 안정성 개선, 빌드·배포 자동화는 우대다. 전형은 서류 전형 → 직무 인터뷰 → (필요 시 2차 인터뷰) → 경영진 인터뷰 → 처우 협의 → 최종 합격.",
+      "fit": {
+        "must_have": [
+          "모바일 앱 개발 3년 이상(제목은 Jr.)",
+          "Flutter 앱 구조·상태 관리",
+          "BLE 등 기기 연동",
+          "iOS·Android 앱 출시·유지보수",
+          "WebView↔앱 연동"
+        ],
+        "can_learn": [
+          "Swift·Kotlin·Java 네이티브 연동",
+          "인앱결제·구독",
+          "펌웨어 담당자와 BLE 안정성 개선",
+          "빌드·배포 자동화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Flutter 에서 BLE 기기 연동",
+          "from": "task",
+          "quote": "- WIM·WIMS와의 BLE 연결, 로봇 제어 및 상태 데이터 연동",
+          "priority": "core",
+          "why": "주요업무이고 필수 역량에 'BLE 또는 이에 준하는 기기·하드웨어 연동 개발 경험' 이, 우대에 '기기·펌웨어 담당자와 협업하며 BLE 연결 안정성을 개선한 경험' 이 있다. 연동 대상이 회사 매출 제품 WIM·WIMS 다.",
+          "gap_check": "보행 중 로봇과의 BLE 연결이 끊겼다 다시 붙을 때 앱은 무엇(재스캔·자동 재연결·보류된 제어 명령)을 어떻게 처리하고, Android 와 iOS 의 권한·백그라운드 제약은 어떻게 다른가?",
+          "drill": "flutter_blue_plus 로 ESP32 같은 개발보드나 BLE 시뮬레이터 앱에 붙어 GATT 서비스를 찾고, 상태 characteristic 을 notify 로 구독하며 제어 명령을 write 한다. 연결을 일부러 끊어 재연결·명령 재전송을 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "flutter_blue_plus",
+              "url": "https://pub.dev/packages/flutter_blue_plus",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Bluetooth Low Energy overview",
+              "url": "https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Apple — Core Bluetooth",
+              "url": "https://developer.apple.com/documentation/corebluetooth",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Flutter 앱 구조와 상태 관리",
+          "from": "qualification",
+          "quote": "- Flutter로 앱을 개발해 보았으며, 앱 구조와 상태 관리에 대한 이해",
+          "priority": "core",
+          "why": "필수 역량이고 첫 주요업무가 'Flutter·Dart 기반 앱의 구조 설계, 신규 기능 개발 및 유지보수' 다.",
+          "gap_check": "BLE 로 초당 여러 번 들어오는 로봇 상태를 여러 화면이 보여 줄 때 상태를 어디에 두고, 화면이 불필요하게 다시 그려지지 않게 하려면 어떻게 나누는가?",
+          "drill": "앞 드릴의 BLE 스트림을 상태 관리 계층(Riverpod·Bloc 등 하나)으로 감싸 연결 상태·배터리·보행 모드 화면 셋에 나눠 보여 주고, 연결 계층을 가짜로 바꿔 위젯 테스트를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Flutter — State management",
+              "url": "https://docs.flutter.dev/data-and-backend/state-mgmt/intro",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "WebView ↔ 네이티브 연동",
+          "from": "task",
+          "quote": "- 웹 화면과 앱 기능을 연결하는 WebView·네이티브 연동 개발",
+          "priority": "high",
+          "why": "주요업무이고 필수 역량에 'WebView와 앱 사이에서 메시지를 주고받거나 앱 기능을 호출하는 연동을 개발한 경험' 이 있다. 우대에 Swift·Kotlin·Java 네이티브 연동이 있다.",
+          "gap_check": "웹 화면이 '로봇 모드 바꾸기' 를 요청할 때 JavaScript 채널로 받은 메시지를 어떻게 검증하고(출처·형식), 결과를 웹으로 되돌려 주는 경로는 무엇인가?",
+          "drill": "webview_flutter 의 JavaScriptChannel 로 웹 → 앱 요청을 받아 BLE 명령을 보내고 결과를 runJavaScript 로 돌려주는 예제를 만든다. 네이티브 기능 하나는 플랫폼 채널로 Kotlin·Swift 에서 구현한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "webview_flutter",
+              "url": "https://pub.dev/packages/webview_flutter",
+              "kind": "docs"
+            },
+            {
+              "title": "Flutter — Platform channels",
+              "url": "https://docs.flutter.dev/platform-integration/platform-channels",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스토어 배포·심사와 인앱 구독",
+          "from": "task",
+          "quote": "- iOS·Android 사내 배포, 스토어 등록·심사 대응 및 업데이트",
+          "priority": "high",
+          "why": "주요업무이고 우대에 양 플랫폼 배포·심사 대응, '인앱결제 및 구독 기능', 빌드·배포 자동화가 있다. 홈페이지가 'WIM S 앱 구독 서비스' 를 판다(회사 브리핑).",
+          "gap_check": "앱 안에서 구독을 팔 때 스토어 인앱결제를 써야 하는 경우와 아닌 경우를 가르는 심사 기준은 무엇이고, 영수증 검증은 앱과 서버 중 어디서 하는가?",
+          "drill": "in_app_purchase 로 테스트 구독 상품을 붙이고, fastlane(또는 Flutter CD 문서)으로 TestFlight·내부 테스트 트랙 업로드를 자동화한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "in_app_purchase",
+              "url": "https://pub.dev/packages/in_app_purchase",
+              "kind": "docs"
+            },
+            {
+              "title": "App Store Review Guidelines",
+              "url": "https://developer.apple.com/app-store/review/guidelines/",
+              "kind": "docs"
+            },
+            {
+              "title": "Flutter — Continuous delivery",
+              "url": "https://docs.flutter.dev/deployment/cd",
+              "kind": "docs"
+            },
+            {
+              "title": "fastlane docs",
+              "url": "https://docs.fastlane.tools/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "BLE 기기 제어 Flutter 앱(재연결·상태 스트림·WebView 연동) 저장소",
+          "why": "주요업무 다섯 줄 중 셋(BLE·구조·WebView)과 필수 역량을 한 번에 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "출시한 앱의 심사 대응·BLE 안정화 사례 정리",
+          "why": "필수에 앱 출시·유지보수가, 우대에 심사 대응과 BLE 안정성 개선이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 직무 인터뷰 → (필요 시 2차 인터뷰) → 경영진 인터뷰 → 처우 협의 → 최종 합격(공고 기준).",
+        "expect": [
+          "BLE 연동 경험과 끊김 처리",
+          "Flutter 상태 관리 설계",
+          "WebView 연동",
+          "스토어 심사 대응"
+        ],
+        "sources": [
+          {
+            "title": "[Wearable Robot] 모바일 앱 Jr. 개발자",
+            "url": "https://www.wanted.co.kr/wd/386374",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
