@@ -12366,6 +12366,107 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163764",
+      "title": "Staff Security Engineer (Control Assurance)",
+      "site": "ats",
+      "verdict": "서울 근무, 보안·GRC·리스크·감사·개인정보 8년 이상. 소프트웨어 개발 직군이 아니라 GRC 직군이다 — 보안·컴플라이언스 통제 요구사항을 자동으로 검증 가능한 데이터 로직으로 바꾸고(통제 모니터링·컴플라이언스 자동화), 보안 이슈를 비즈니스 리스크로 번역하는 사람. 크롤 데이터에 주요업무 칸이 비어 있어 자격요건으로 역할을 읽었다.",
+      "fit": {
+        "must_have": [
+          "보안·GRC·리스크·감사·개인정보 8년 이상",
+          "통제 요구사항을 자동화 가능한 검증 로직으로 전환",
+          "Control Monitoring·Compliance Automation 기획",
+          "API 기반 데이터 수집·자동 검증 이해",
+          "기술·비기술 조직 간 조율"
+        ],
+        "can_learn": [
+          "Python·SQL·BI 도구(우대)",
+          "GRC 솔루션(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "통제 요구사항을 데이터 검증 로직으로 바꾸기",
+          "from": "qualification",
+          "quote": "보안 통제 요구사항을 데이터 기반 검증 로직으로 구체화한 경험",
+          "priority": "core",
+          "why": "자격요건의 핵심 두 줄(전환 능력·구체화 경험)이 같은 방향이다. 문서 통제를 사람이 표본 점검하는 대신 데이터로 계속 검사하는 방식이다.",
+          "gap_check": "'관리자 계정은 MFA 필수' 통제를 자동 검증하려면 어떤 데이터(계정 목록·권한·MFA 등록 상태)를 어디서 가져와 무엇을 합격/불합격으로 정하는가?",
+          "drill": "가짜 IAM 계정·권한·MFA 데이터로 '관리자 MFA 미등록', '90일 미사용 관리자' 두 통제를 SQL 로 매일 검사하고 위반 추이를 대시보드로 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "컴플라이언스 자동화 프로그램 설계",
+          "from": "qualification",
+          "quote": "Control Monitoring 또는 Compliance Automation 프로그램 기획 경험",
+          "priority": "core",
+          "why": "개별 검사를 넘어 어떤 통제를 어떤 주기로 자동 검증할지 프로그램으로 설계하는 경험을 요구한다.",
+          "gap_check": "통제 수백 개 중 무엇부터 자동화할지 위험도·검사 비용·데이터 가용성으로 우선순위를 어떻게 매기는가?",
+          "drill": "ISO 27001 Annex A 통제 10개를 골라 '자동화 가능성·필요 데이터·주기·담당' 표를 만들고 우선순위를 매긴다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "API 로 증적 데이터 수집",
+          "from": "qualification",
+          "quote": "API 기반 데이터 수집, 시스템 연계, 자동화 검증 체계에 대한 이해",
+          "priority": "high",
+          "why": "자동 검증은 여러 시스템에서 데이터를 가져와야 성립한다.",
+          "gap_check": "클라우드·SaaS 여러 곳에서 설정 데이터를 모을 때, 수집 실패와 '위반 없음'을 어떻게 구분해 보고하는가?",
+          "drill": "AWS Config(또는 boto3 로 직접 조회)로 S3 버킷 공개 여부·암호화 설정을 수집해 통제 결과 표를 만들고, 수집 실패를 별도 상태로 표시한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS Config — Developer Guide",
+              "url": "https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 프레임워크의 통제 매핑 (ISO 27001·SOC2·PCI DSS·개인정보)",
+          "from": "preference",
+          "quote": "ISO27001, NIST Cybersecurity Framework, NIST AI Risk Management Framework, SOC2, PCI DSS, GDPR, CCPA등 프레임워크 경험",
+          "priority": "high",
+          "why": "한 통제가 여러 프레임워크 요구를 동시에 만족시키게 매핑하면 검사를 한 번만 하면 된다(추론).",
+          "gap_check": "'로그 보관 1년' 같은 통제 하나가 ISO 27001·SOC2·PCI DSS 각각의 어느 요구와 대응하는지 매핑할 수 있는가?",
+          "drill": "통제 5개를 골라 ISO 27001·SOC2·PCI DSS 요구사항과의 매핑 표를 만든다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "NIST Cybersecurity Framework",
+              "url": "https://www.nist.gov/cyberframework",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "통제 자동 검증 대시보드",
+          "why": "자격의 핵심(통제 → 데이터 검증 로직)을 결과물로 보여 준다. 위반 추이와 수집 실패를 구분한 대시보드가 좋다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "통제를 검증 쿼리로 바꾸기",
+          "자동화 우선순위",
+          "수집 실패와 위반 없음 구분",
+          "프레임워크 간 매핑",
+          "보안 이슈를 비즈니스 리스크로 설명"
+        ],
+        "sources": [
+          {
+            "title": "Staff Security Engineer (Control Assurance)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163764",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
