@@ -2065,3 +2065,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 TELLER story-view-decision
 
 - 열람 판정 DDD 글 끝까지. 결정 7, 그림 3(flow·state·failure).
+
+## 2026-09-26 TELLER tts-g2p-bench
+
+- TTS 한자 읽기 벤치마크 글 끝까지. 결정 7, 그림 3(failure·flow·state).

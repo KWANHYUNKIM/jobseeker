@@ -96,7 +96,7 @@
         {
           "tech": "ja-tts-g2p-bench — 문맥 의존 동형이음어 세트 · 받아쓰기 대신 소리 자체를 대조 · 리더보드",
           "solves": "귀로 듣는 작업을 새 TTS 마다 수치 비교로 바꾼다.",
-          "limits": "본문의 '한계' 절은 다음 사이클에 읽는다.",
+          "limits": "v0.1 — 151문 소규모 seed. 재는 건 '읽기' 뿐(억양·감정은 아님)이고, 151문 중 142문을 Gemini 가 출제해 Gemini 에 유리한 편향이 남을 수 있다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -109,7 +109,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "tts-g2p-bench"
+      ]
     }
   ],
   "features": [
@@ -402,6 +404,319 @@
           "publisher": "Teller Novel Tech Blog (Zenn)",
           "date": "2026-09-07",
           "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+        }
+      ]
+    },
+    {
+      "key": "tts-g2p-bench",
+      "name": "이야기를 소리로 전하기 전에 새 TTS 의 한자 읽기를 수치로 잰다 — 똑똑한 ASR 이 오독을 '씻어' 버려 받아쓰기로는 채점할 수 없으니, 준비한 읽기 후보를 teacher-forcing 으로 소리에 맞춰 가장 잘 맞는 후보를 '실제로 읽힌 것' 으로 보고, 8범주 151문으로 엔진을 줄 세운다",
+      "domain": "이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "일본어 TTS 는 줄줄이 나오고 데모에선 목소리도 한자도 완벽하다 — 데모는 잘 되는 곳을 잘라 내거나 그걸 위해 조정했기 때문이고, 긴 글을 읽히면 곧 흠이 난다. 그중 분명한 것이 한자 읽기다. **이야기를 음성으로 전하는 서비스에 이건 수수하지만 치명적이다.** 고치려면 읽기를 하나하나 사람이 지정하거나 히라가나로 바꿔야 해 그 비용이 도입의 이득을 넘어 보류되기도 했고, 새 모델이 나올 때마다 대사를 준비해 귀로 다시 확인해야 했다.",
+        "metrics": [
+          {
+            "label": "판정기 정확도",
+            "value": "사람 라벨 60건 대비 읽기 맞힘 0.93~0.95 · Qwen3-ASR 와 Whisper 두 계통 교차 확인에서 어긋남 60건 중 1건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          },
+          {
+            "label": "리더보드(151문)",
+            "value": "gemini-3.1-flash-tts-preview 80.1% · gemini-2.5-pro-tts 77.5% · voicevox 69.5% · gpt-4o-mini-tts 56.3% · gemini-2.5-flash-tts 55.6% · qwen3-tts-flash 52.3%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          },
+          {
+            "label": "범주별 최대 격차",
+            "value": "'음훈의 분야 의존'(金=きん/かね 등) — gemini 100% 대 qwen3 17% · openai 33%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "처음 채점 방법을 떠올릴 때",
+          "thought": "'TTS 음성을 받아쓰기(ASR)해 정답 읽기와 비교하면 되지 않나' — 그런데 요즘 ASR 은 문맥 보정과 정규화가 강하다. TTS 가 'いちば' 로 잘못 읽어도 ASR 이 문맥으로 '市場' 로 되돌려 쓰고 히라가나화 단계에서 정준 읽기 'しじょう' 로 고친다. 오독이 도중에 씻겨 정답과 일치해 버린다 — **똑똑한 ASR 일수록 오독을 놓치는** 역설. 채점기가 틀림을 숨기면 의미가 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+              "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+              "publisher": "Teller Novel Tech Blog (Zenn)",
+              "date": "2026-06-10",
+              "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+            }
+          ]
+        },
+        {
+          "at": "무엇을 재는지 좁힐 때",
+          "thought": "TTS 평가는 자연스러움(MOS)·목소리 재현도·ASR 로 재는 알아듣기 쉬움(WER/CER)이 중심이다. 문맥 의존 한자 읽기를 합성 음성 자체에서 정량화한 공개 벤치마크는 보이지 않았다 — 그 빈칸을 메운다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+              "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+              "publisher": "Teller Novel Tech Blog (Zenn)",
+              "date": "2026-06-10",
+              "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+            }
+          ]
+        },
+        {
+          "at": "결과를 읽을 때",
+          "thought": "'Gemini 면 다 강하다' 가 아니다 — 같은 Gemini 도 3.1-flash-preview 80.1% · 2.5-pro 77.5% 인데 2.5-flash 는 55.6%. 모델 선택이 효과가 있다. 그리고 이 점수는 한 면일 뿐이다 — 읽기를 사람이 조정할 비용을 댈 수 있는 용도라면 감정 표현의 풍부함이 더 중요할 수도 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+              "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+              "publisher": "Teller Novel Tech Blog (Zenn)",
+              "date": "2026-06-10",
+              "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "문항",
+            "what": "문맥이 있는 문장 + 정답 읽기 + 헷갈리는 읽기(市場: 株式市場 → しじょう / いちば). 8범주 — 동표기 이독·숫자와 조수사·오쿠리가나·드라마 자막(의훈)·숙자훈·동사 활용과 자타·주바코/유토 읽기·음훈의 분야 의존."
+          },
+          {
+            "name": "읽기 후보",
+            "what": "문항마다 준비한 전부 히라가나 문장들."
+          },
+          {
+            "name": "teacher-forcing 판정기",
+            "what": "ASR 모델에 후보를 '이대로 읽혔을 것' 으로 주고 후보마다 소리에 얼마나 맞는지 점수만 읽는다 — 자유 디코딩을 하지 않는다."
+          },
+          {
+            "name": "리더보드",
+            "what": "엔진·모델별 정답률·95% 신뢰 구간 · McNemar 검정으로 인접 순위 확인."
+          }
+        ],
+        "invariants": [
+          "채점 경로에 ASR 의 자유 디코딩이 없다 — 문맥으로 오독을 되돌려 쓸 여지가 구조상 없다(언어 모델 유래 보정은 엄밀히는 남는다).",
+          "정답 읽기는 여러 출처로 교차 확인한 문항만 쓴다.",
+          "점수는 '문맥 의존 한자 읽기' 한 면만 뜻한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "문맥 의존 한자 읽기 문항을 8범주로 만든다",
+            "why": "읽기가 갈리는 원인마다 엔진의 약점을 따로 본다."
+          },
+          {
+            "step": "정답 읽기를 Claude·OpenAI·OpenJTalk + 사람으로 교차 확인 — 오류 3건 수정, 모호·대상 밖 9건 제외, TTS 를 갖지 않은 Claude 가 만든 중립 문항 9건 보충 → 151문",
+            "why": "정답이 틀리면 벤치마크 전체가 틀린다."
+          },
+          {
+            "step": "각 TTS 로 합성 → ASR 모델에 읽기 후보를 teacher-forcing 해 가장 잘 맞는 후보를 '실제로 읽힌 읽기' 로",
+            "why": "받아쓰기 없이 소리의 내용을 보니 같은 박 수의 쌍(かど/つの)도 가른다."
+          },
+          {
+            "step": "판정기를 사람 라벨 60건으로 검증하고 Qwen3-ASR 와 Whisper 두 계통으로 교차 확인",
+            "why": "teacher-forcing 은 ASR 벤더에 의존하지 않는다 — 계통이 달라도 결과가 같아야 판정기를 믿는다."
+          },
+          {
+            "step": "정답률·신뢰 구간·McNemar 검정으로 리더보드, 범주별 분석, GitHub 기술 리포트 공개",
+            "why": "숫자만이 아니라 같은 문제에서 통계적으로 차이가 있는지까지."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "새 TTS 를 어떻게 평가하나",
+            "chosen": "문맥 의존 한자 읽기 벤치마크를 직접 만든다(ja-tts-g2p-bench)",
+            "alternatives": [
+              "데모를 듣고 판단",
+              "새 모델마다 대사를 준비해 귀로 확인(기존)"
+            ],
+            "tradeoff": "귀로 하던 일을 새 모델마다 숫자 비교로 바꾼다. 대가는 문항·판정기를 만들고 유지하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 재나",
+            "chosen": "문맥 의존 한자 읽기(g2p)만",
+            "alternatives": [
+              "자연스러움(MOS)",
+              "ASR 로 재는 WER/CER"
+            ],
+            "tradeoff": "정답이 분명하고 사람도 쉽게 확인할 수 있는, 이야기 서비스에 치명적인 한 면을 잰다. 대가는 억양(운율)·감정 표현은 전혀 재지 않는 것 — 글쓴이도 용도에 따라선 그쪽이 더 중요하다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          },
+          {
+            "question": "합성 음성을 어떻게 채점하나",
+            "chosen": "받아쓰기를 하지 않고 준비한 읽기 후보를 teacher-forcing 으로 소리에 대조",
+            "alternatives": [
+              "ASR 로 받아쓰고 정답 읽기와 비교"
+            ],
+            "tradeoff": "ASR 이 문맥으로 오독을 되돌려 쓸 여지가 구조상 없고, 같은 박 수의 쌍도 가른다. 대가는 후보에 없는 엉뚱한 읽기는 '가장 가까운 후보' 로 떨어진다는 것(이 사이트의 해석) — 그리고 언어 모델 유래 보정은 엄밀히는 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          },
+          {
+            "question": "판정기를 어떻게 믿나",
+            "chosen": "사람 라벨 60건으로 정확도(0.93~0.95)를 재고 두 ASR 계통으로 교차 확인",
+            "alternatives": [
+              "한 ASR 의 결과를 그대로"
+            ],
+            "tradeoff": "벤더에 기대지 않는 판정이 된다. 대가는 검증 표본이 60건으로 작은 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          },
+          {
+            "question": "정답 읽기를 무엇으로 정하나",
+            "chosen": "LLM 둘(Claude·OpenAI) + OpenJTalk + 사람의 교차 확인, 오류 수정·모호 문항 제외",
+            "alternatives": [
+              "한 출처의 읽기"
+            ],
+            "tradeoff": "정답 오류를 줄인다. 대가는 문항이 줄고(9건 제외) 사람의 확인 비용이 드는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          },
+          {
+            "question": "출제자의 편향을 어떻게 다루나",
+            "chosen": "TTS 를 갖지 않은 Claude 가 만든 중립 문항 9건을 보충하고, 편향 검증을 기술 리포트에 공개",
+            "alternatives": [
+              "Gemini 생성 문항만"
+            ],
+            "tradeoff": "홈 어드밴티지를 조금 덜어 낸다. 대가는 151문 중 142문이 여전히 Gemini 생성이라 Gemini 유리가 남을 수 있다는 것 — 한계로 명시했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          },
+          {
+            "question": "순위를 무엇으로 말하나",
+            "chosen": "정답률 + 95% 신뢰 구간 + 같은 문제에서의 McNemar 검정",
+            "alternatives": [
+              "정답률 숫자만"
+            ],
+            "tradeoff": "gemini > voicevox > {openai ≒ qwen3} 의 인접 쌍이 대체로 유의함을 확인한다. 대가는 v0.1 의 작은 seed 라 확정판 리더보드가 아니라는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+                "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-06-10",
+                "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "누가 어떤 이야기를 읽을 수 있는지 판정한다(같은 회사의 다른 도메인)",
+          "via": "이야기 — 소리로 전할 이야기도 읽을 수 있다고 판정된 것이어야 한다",
+          "contract": "음성 전달 경로가 열람 판정을 어떻게 거치는지는 공개 자료에 없다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "똑똑한 ASR 이 오독을 씻는 길",
+          "question": "왜 받아쓰기로는 한자 오독을 채점할 수 없나?",
+          "kind": "failure",
+          "code": "flowchart LR\n  T[\"TTS\\n株式市場 → 'いちば' 오독\"] --> A[\"ASR 받아쓰기\\n문맥 보정\"]\n  A --> K[\"'市場' 로 되돌려 씀\"]\n  K --> H[\"히라가나화\\n정준 읽기 'しじょう'\"]\n  H --> M[\"정답과 일치 → 오독 놓침\"]"
+        },
+        {
+          "title": "teacher-forcing 채점",
+          "question": "받아쓰기 없이 어떻게 '실제로 읽힌 읽기' 를 고르나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  S[\"합성 음성\"] --> F[\"ASR 모델 · 디코딩 없음\"]\n  C1[\"후보 しじょう\"] --> F\n  C2[\"후보 いちば\"] --> F\n  F --> SC[\"후보별 적합 점수\"]\n  SC --> R[\"최고 점수 = 읽힌 읽기\"]\n  R --> J{\"정답?\"}\n  X[\"Qwen3-ASR · Whisper\\n교차 확인\"] -.-> F"
+        },
+        {
+          "title": "문항이 리더보드에 오르기까지",
+          "question": "정답 읽기는 어떤 검증을 거쳤나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Draft: 8범주 문항 생성\\n대부분 Gemini\n  Draft --> Checked: Claude·OpenAI·OpenJTalk·사람 교차 확인\n  Checked --> Fixed: 오류 3건 수정\n  Checked --> Dropped: 모호·대상 밖 9건 제외\n  Fixed --> Final: 중립 출제 9건 보충\\n151문\n  Final --> [*]: 채점 · 리더보드"
+        }
+      ],
+      "sources": [
+        {
+          "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+          "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+          "publisher": "Teller Novel Tech Blog (Zenn)",
+          "date": "2026-06-10",
+          "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
         }
       ]
     }
