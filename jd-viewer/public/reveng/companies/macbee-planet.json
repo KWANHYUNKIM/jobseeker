@@ -101,7 +101,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "dbt-incremental-rebuild"
+      ]
     }
   ],
   "features": [
@@ -388,6 +390,308 @@
           "publisher": "Macbee Planet Tech Blog (Zenn)",
           "date": "2025-11-26",
           "summary": "3D AD 의 입찰 배신 제어가 바로 읽는 (니어)리얼타임 로그 — 중요도 낮고 양이 많아 '어느 정도 손실을 허용할 수 있는' 로그 — 를 Fluentd → Memorystore for Redis 에서 Pub/Sub → GKE Subscriber → Memorystore for Valkey(Cluster Mode)로. 모든 로그를 한 StatefulSet 이 받아 Redis 쓰기 실패가 이어지면 버퍼가 Node Pool 을 터뜨려 중요한 로그까지 잃을 우려가 있었다. Valkey 를 고른 이유와 Cluster Mode·PSC 존 간 요금의 주의점."
+        }
+      ]
+    },
+    {
+      "key": "dbt-incremental-rebuild",
+      "name": "DSP 데이터 기반을 dbt 로 처음부터 다시 지어 BigQuery 스캔을 90% 넘게 줄인다 — 생로그를 시간별 파티션·종류별 테이블로 다시 설계하고, 매시 잡은 늘어난 한 시간만 읽는 incremental 로, ML 학습 데이터는 늦게 오는 적은 positive 만 며칠치를 다시 읽는다",
+      "domain": "매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "3D AD 의 데이터 기반은 ① Biz 쪽 분석·리포팅 ② 광고 입찰 때의 배신 제어 ③ ML 모델 학습에 쓰인다. QPS 가 늘면 로그가 늘고, 데이터 양이 커질수록 원래 아키텍처는 **특히 BigQuery 비용에서 버틸 수 없게** 됐다. 앞서 만든 사람은 퇴직했고 데이터 카탈로그도 없었다.",
+        "metrics": [
+          {
+            "label": "스캔량",
+            "value": "BigQuery 스캔 90% 이상 절감 — QPS 가 늘어 스캔이 10배로 커져도 버틸 수 있는 상태",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          },
+          {
+            "label": "ML 데이터의 성질",
+            "value": "negative sample 이 positive 의 1,000배 이상 · positive 는 수 시간~수 일 늦게 들어올 수 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "스캔 그래프를 볼 때",
+          "thought": "한 시간마다 도는 잡의 스캔량이 하루의 시작부터 끝까지 계속 늘었다 — 매시 **하루치**를 읽고 있었다. 있어야 할 모양은 매시 **그 한 시간에 늘어난 만큼**만 읽는 것. 생로그가 일별 파티션이라 한 시간 증분만 원해도 하루치가 스캔됐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+              "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+              "publisher": "Macbee Planet Tech Blog (Zenn)",
+              "date": "2026-06-01",
+              "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+            }
+          ]
+        },
+        {
+          "at": "ML 학습 데이터를 볼 때",
+          "thought": "positive 가 늦게 오니 놓치지 않으려고 며칠치를 읽는데, positive 와 negative 양쪽에 있는 unique key 로 JOIN 해서 **1,000배 많은 negative 까지 매시 며칠치**를 읽고 있었다. 늦게 오는 건 positive 뿐이고 그건 양이 적다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+              "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+              "publisher": "Macbee Planet Tech Blog (Zenn)",
+              "date": "2026-06-01",
+              "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+            }
+          ]
+        },
+        {
+          "at": "무엇이 가장 힘들었나",
+          "thought": "카탈로그 없는 옛 기반을 따라잡는 것, 생로그 테이블 설계를 처음부터, 있어야 할 생로그가 없어 로그 추가 구현까지, 옛 집계 결과와 맞는지 확인, 그리고 여기저기서 참조되던 옛 마트를 전부 새 테이블로 갈아 끼우는 것.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+              "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+              "publisher": "Macbee Planet Tech Blog (Zenn)",
+              "date": "2026-06-01",
+              "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "생로그 테이블",
+            "what": "시간별 파티션. 종류가 다른 로그는 테이블을 나누고, 어디서도 안 쓰는 칼럼은 두지 않는다. UDF 로 가공하던 것은 로그를 넣을 때 가공."
+          },
+          {
+            "name": "dbt 3층",
+            "what": "staging / intermediate / marts — 분석·배신 제어용과 ML 학습용이 같은 구조, 같은 리포지터리."
+          },
+          {
+            "name": "incremental model",
+            "what": "매시 그 한 시간 증분만 처리해 마트에 더한다."
+          },
+          {
+            "name": "positive / negative sample",
+            "what": "ML 학습 데이터. positive 는 적고 늦게 올 수 있다 · negative 는 1,000배 이상."
+          }
+        ],
+        "invariants": [
+          "매시 잡은 그 한 시간 파티션만 스캔한다.",
+          "늦게 올 수 있는 것(positive)만 넓은 창으로 다시 읽는다.",
+          "새 마트의 집계는 옛 기반의 집계와 맞는지 확인한 뒤 갈아 끼운다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "생로그 테이블을 일별 → 시간별 파티션으로",
+            "why": "대량 생로그가 짧은 기간에 들어오면 시간별이 맞는다고 Google 가이드도 말한다. 매시 잡이 한 시간 파티션만 읽는다."
+          },
+          {
+            "step": "생로그 테이블 재설계 — 정합성을 위해 데이터를 비틀던 생로그를 없애고 올바른 ELT 로 · 종류별로 테이블 분리 · 쓰지 않는 칼럼 제거 · UDF 가 하던 가공을 넣을 때",
+            "why": "뒤의 ELT 를 복잡하게 하고 인수인계를 어렵게 하던 설계. JavaScript UDF 는 표준 SQL 보다 슬롯을 더 먹는다."
+          },
+          {
+            "step": "GKE 위 자체 ETL 을 dbt + BigQuery 로, 두 리포지터리를 하나로, staging/intermediate/marts 3층",
+            "why": "BigQuery 안에서 끝나는 일에 서버 자원을 쓰지 않고, 두 층이 뭉친 복잡한 SQL 을 가르고, 카탈로그·리니지를 얻는다."
+          },
+          {
+            "step": "매시 잡을 dbt incremental model 로",
+            "why": "하루 동안 누적되던 스캔을 한 시간 증분으로."
+          },
+          {
+            "step": "ML — positive 만 매시 며칠치, negative 는 매시 한 시간치",
+            "why": "늦게 오는 positive 를 놓치지 않으면서 1,000배 많은 negative 를 반복해 읽지 않는다."
+          },
+          {
+            "step": "옛 집계와 대조 → 여기저기서 참조되던 옛 마트를 모두 새 테이블로 교체",
+            "why": "배신 제어·분석·ML 의 숫자가 바뀌지 않아야 한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "파티션 단위",
+            "chosen": "시간별",
+            "alternatives": [
+              "일별(기존)"
+            ],
+            "tradeoff": "매시 잡이 한 시간만 스캔한다. 대가는 파티션 수가 크게 늘어나는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          },
+          {
+            "question": "매시 집계를 어떻게",
+            "chosen": "dbt incremental models — 늘어난 한 시간만 처리",
+            "alternatives": [
+              "매번 생로그에서 하루치를 다시 집계(기존)"
+            ],
+            "tradeoff": "스캔이 하루 동안 누적되지 않는다. 대가는 늦게 온 데이터나 재처리를 증분 규칙 안에서 따로 다뤄야 하는 것 — ML 쪽에서 실제로 창을 나눴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          },
+          {
+            "question": "ETL 을 어디서 돌리나",
+            "chosen": "dbt + BigQuery 로 모으고 리포지터리도 하나로",
+            "alternatives": [
+              "GKE 위 자체 ETL(기존)",
+              "분석·배신 제어와 ML 을 다른 리포지터리로(기존)"
+            ],
+            "tradeoff": "BigQuery 안에서 끝나는 잡이 서버 자원을 쓰지 않고, 카탈로그·리니지가 생긴다. 대가는 GKE 의 자유도를 dbt 의 틀 안으로 줄이는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          },
+          {
+            "question": "SQL 층을 몇 개로",
+            "chosen": "dbt 베스트 프랙티스의 staging / intermediate / marts 3층",
+            "alternatives": [
+              "staging+intermediate 가 합쳐진 층과 marts 의 2층(기존)"
+            ],
+            "tradeoff": "뭉쳐서 복잡해진 SQL 을 가른다. 대가는 모델 수가 늘어나는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          },
+          {
+            "question": "SQL 로 되는 가공을 UDF 로 하나",
+            "chosen": "생로그를 넣는 시점에 가공해 UDF 를 없앤다",
+            "alternatives": [
+              "JavaScript UDF(기존)"
+            ],
+            "tradeoff": "JavaScript UDF 는 표준 SQL 보다 슬롯을 더 먹어 잡을 느리게 한다. 대가는 가공 규칙이 로그를 쓰는 쪽(서버)으로 옮겨 가는 것 — 로그 추가 구현까지 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          },
+          {
+            "question": "늦게 오는 positive 를 어떻게 잡나",
+            "chosen": "positive 만 매시 며칠치, negative 는 한 시간치",
+            "alternatives": [
+              "양쪽을 unique key 로 JOIN 해 매시 며칠치(기존)"
+            ],
+            "tradeoff": "1,000배 많은 negative 를 반복해 읽지 않고도 늦은 positive 를 놓치지 않는다. 대가는 학습 데이터 조립 로직이 두 창으로 갈라지는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          },
+          {
+            "question": "생로그를 어떻게 바꾸나",
+            "chosen": "처음부터 다시 설계 — 종류별 분리·불필요 칼럼 제거·비틀린 데이터 제거",
+            "alternatives": [
+              "기존 생로그 위에 마트만 다시"
+            ],
+            "tradeoff": "뒤의 ELT 가 단순해지고 인수인계가 쉬워진다. 대가는 생로그에 의존하던 배신 제어·분석·ML 을 전부 옮기고 옛 마트를 모두 갈아 끼우는 일.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+                "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-01",
+                "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "입찰 요청이 늘수록 비용이 붙는 로그 기반을 갈아 끼운다(같은 회사의 다른 도메인)",
+          "via": "생로그 테이블 — 새 로그 기반(BigQuery Subscription)이 쓰는 곳",
+          "contract": "로그 기반을 먼저 바꾸고 싶었지만 데이터 기반이 옛 생로그에 묶여 있어 이 재구축이 먼저였다. 재구축이 정한 생로그 설계가 로그 기반의 쓰기 대상이다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "매시 잡이 읽는 양",
+          "question": "왜 하루가 지날수록 스캔이 늘었고, 무엇으로 평평하게 했나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Daily: 일별 파티션 · 매번 전체 집계\n  Daily --> Daily: 매시 하루치 스캔\\n자정까지 누적\n  Daily --> Hourly: 시간별 파티션 + incremental\n  Hourly --> Hourly: 매시 한 시간 증분만\n  Hourly --> [*]: 스캔 90% 이상 절감"
+        },
+        {
+          "title": "ML 학습 데이터의 두 창",
+          "question": "늦게 오는 positive 를 놓치지 않으면서 무엇을 덜 읽나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  POS[\"positive\\n적음 · 늦게 옴\"] -->|매시 며칠치| J[\"학습 데이터\"]\n  NEG[\"negative\\n1,000배 이상\"] -->|매시 한 시간치| J\n  OLD[\"기존: 둘을 key 로 JOIN\\n매시 며칠치\"] -.->|제거| J"
+        },
+        {
+          "title": "옛 기반을 걷어 낼 때 막히는 곳",
+          "question": "다시 짓는 동안 무엇이 발목을 잡았나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"전임자 퇴직 · 카탈로그 없음\"] --> C[\"옛 기반 해독\"]\n  B[\"있어야 할 생로그가 없음\"] --> L[\"로그 추가 구현\"]\n  C --> V[\"옛 집계와 대조\"]\n  L --> V\n  V --> R[\"여기저기 참조되던 옛 마트\\n전부 새 테이블로 교체\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "大規模なデータ基盤にdbtを導入して1から作り直すことでBigQueryのスキャン量を90%以上削減した話",
+          "url": "https://zenn.dev/macbee_planet/articles/85c8ef4aeb063b",
+          "publisher": "Macbee Planet Tech Blog (Zenn)",
+          "date": "2026-06-01",
+          "summary": "3D AD 데이터 기반(Biz 분석·리포팅, 입찰 배신 제어, ML 학습)을 dbt 로 처음부터 다시 지어 BigQuery 스캔 90% 이상 절감. 원래 — 생로그 일별 파티션이라 매시 잡이 하루치를 스캔 · SQL 로 되는 걸 JavaScript UDF 로 · 자체 ETL 이 GKE 에서 · 두 층 구조로 SQL 복잡 · 카탈로그·리니지 없음 · ML 은 수 일치를 매시 JOIN(positive 가 늦게 오고 negative 는 1,000배 이상). 대응 — 시간별 파티션 · 생로그 테이블 재설계 · dbt incremental models · 데이터 모델링 재설계."
         }
       ]
     }
