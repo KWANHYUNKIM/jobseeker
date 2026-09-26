@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다.",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -8055,6 +8055,81 @@
       "site": "wanted",
       "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=8107804",
       "verdict": "쿠팡 채용 사이트 'Senior Back-end Engineer (Cloud Infrastructure Automation)'(gh_jid=8107804)의 원티드 게시다. 18줄 중 16줄이 같고, 나머지 두 줄(10X 확장·99.999% 가용성·서브 밀리초 지연, 글로벌 팀 협업)은 그 영문 소개의 한국어판이다. 원티드 경력 표기는 5~20년, 본문 자격은 '5+ years'. 브리핑은 채용 사이트 게시를 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8063701",
+      "title": "Staff Data Engineer",
+      "site": "ats",
+      "verdict": "Mountain View(미국) 근무. 'Director, Data Engineering'(gh_jid=8063697)과 같은 Search & Discovery 데이터 팀의 IC 판이다 — 팀을 이끄는 줄('Lead a small team…', '3+ years experience as a people manager')이 빠지고, 데이터 엔지니어 6년 + 전체 8년 이상을 요구한다. 공통 공부거리(대용량 ETL/ELT, 검색 실험 데이터)는 Director 브리핑을 보고, 여기서는 IC 판의 차이만 준비한다.",
+      "fit": {
+        "must_have": [
+          "미국(Mountain View) 근무",
+          "기술 회사 데이터 엔지니어 6년",
+          "데이터/엔지니어링 전체 8년 이상",
+          "분산 처리 프레임워크·분산 스토리지(HDFS, S3) 경험"
+        ],
+        "can_learn": [
+          "쿠팡 검색 실험 데이터 구조"
+        ]
+      },
+      "study": [
+        {
+          "topic": "직접 만드는 ETL/ELT (팀을 이끄는 대신)",
+          "from": "task",
+          "quote": "Ideate, build, and manage analytics and production data ETL/ELT systems for high-volume data ingestion from diverse sources",
+          "priority": "core",
+          "why": "Director 판의 같은 줄은 'Lead a small team of Data Engineers to…'로 시작한다. 이 판은 같은 파이프라인을 본인이 설계하고 만든다.",
+          "gap_check": "여러 소스에서 들어오는 대용량 데이터를 ETL 과 ELT 중 무엇으로 받을지, 변환 위치(적재 전/후)를 무엇으로 정하는가?",
+          "drill": "S3 에 쌓인 원시 로그를 Spark 로 정제해 파티션된 Parquet 테이블로 만드는 배치를 짜고, 같은 변환을 웨어하우스 SQL(ELT)로 바꿔 비용·재처리 편의를 비교한다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "분산 처리·분산 스토리지 기본",
+          "from": "task",
+          "quote": "Experience with distributed processing technologies and frameworks and distributed storage systems (e.g. HDFS, S3)",
+          "priority": "core",
+          "why": "Basic Qualifications 줄이다(Director 판은 예시에 Spark 가 더 있다).",
+          "gap_check": "HDFS 와 S3 는 일관성·지연·작은 파일 문제에서 어떻게 다르고, Spark 작업을 S3 위에서 돌릴 때 무엇을 조심하는가?",
+          "drill": "작은 파일 수천 개를 S3(또는 MinIO)에 두고 Spark 로 읽을 때와, 합쳐서(compaction) 읽을 때의 작업 시간을 비교한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "검색 실험 분석을 받치는 데이터",
+          "from": "task",
+          "quote": "Within S&D, the Data Science and Analytics team analyzes customer data to determine how our Search models should be designed. This includes assessing how customers interact with our search results, analyzing experiments, building predictive models, and much more. We partner with Product and Engineering to turn these insights into changes to our Search models.",
+          "priority": "high",
+          "why": "이 팀의 데이터는 검색 결과와의 상호작용·실험 분석·예측 모델에 쓰인다고 적혀 있다. 데이터 엔지니어는 그 분석이 믿을 수 있는 데이터를 만든다.",
+          "gap_check": "검색 A/B 실험 로그에서 한 사용자가 두 실험군에 섞여 들어가면 분석이 어떻게 틀어지고, 파이프라인에서 무엇으로 막는가?",
+          "drill": "가짜 검색 노출·클릭 로그로 실험군별 CTR 테이블을 만드는 파이프라인을 짜고, 실험군 오염을 검사하는 데이터 품질 체크를 붙인다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "파이프라인 SLA·데이터 품질 대시보드",
+          "why": "분석팀이 검색 모델을 바꾸는 근거가 이 데이터다. 지연·누락을 수치로 보여 주는 대시보드는 IC 가 팀에 주는 영향력의 증거가 된다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 적혀 있지 않다.",
+        "expect": [
+          "ETL/ELT 선택 기준",
+          "S3 위 Spark 작업의 함정",
+          "실험 데이터 품질 검증",
+          "Director 브리핑의 공통 질문"
+        ],
+        "sources": [
+          {
+            "title": "Staff Data Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8063701",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
