@@ -10,8 +10,8 @@
 **현대오토에버** — 12건에서 멈춤(`in_progress`). 남은 사람인 Robot PM(55092048)은 보강 단계에서.
 **베스핀글로벌 — `done`(공고 10건: 원티드 6 + 사람인 4, 그중 1건은 원티드 381967 의 중복).** 사람인 Data Engineer·GCP·Okta·DBA·Big data 는 모집중 집계에서 빠져 있다(사본으로 걸러진 것으로 보임).
 **피에프씨테크놀로지스 — `done`(원티드 모집중 9건 전부).** 388360(Backend)은 공고가 내려가 걷어냈다.
-**제논(`genon`) — `in_progress`, 공고 1건(FDE 289537).** 출처: genon.ai 첫 화면 + 원티드 공고 5건의 회사·직무 소개.
-⚠️ 다음 회차: 원티드 나머지 5건을 한 사이클 한 건씩 — Physical AI(370301) · Agentic AI(376327) · 오픈스택(377638) · Delivery Security(374750) · 생성형 AI Agent(215978). 그다음 catch 3건(원티드와 제목이 겹치는 AI Engineer 는 본문 비교 후 `duplicate_of`).
+**제논(`genon`) — `in_progress`, 공고 2건(FDE 289537 · Physical AI 370301).** 출처: genon.ai 첫 화면 + 원티드 공고 5건의 회사·직무 소개.
+⚠️ 다음 회차: 원티드 나머지 4건을 한 사이클 한 건씩 — Agentic AI(376327) · 오픈스택(377638) · Delivery Security(374750) · 생성형 AI Agent(215978). 그다음 catch 3건(원티드와 제목이 겹치는 AI Engineer 는 본문 비교 후 `duplicate_of`).
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 ⚠️ **공고 본문은 `jd-viewer/public/all_jobs_enriched.json` 에서 읽는다 — `jd-viewer/dist/` 는 빌드 사본이라 낡는다.** 2026-09-26 피에프씨 Backend(388360)를 dist 에서 읽고 썼다가 public·검증기 데이터에 없어(내려간 공고) 되돌렸다. 대상은 `--gaps` 목록에 있는 url 만 쓴다.

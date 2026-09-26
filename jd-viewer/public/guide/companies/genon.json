@@ -356,6 +356,142 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/370301",
+      "title": "Physical AI Engineer",
+      "site": "wanted",
+      "verdict": "경력 1~10년(서울 강남). 제논의 R&D 영역인 Embodied AI 에서 VLA·임바디드 Foundation Model 학습·파인튜닝, 로봇 매니퓰레이션 정책 학습과 실기 검증, RL 기반 Sim2Real, Isaac Sim·MuJoCo 데이터 합성·도메인 랜덤화, 센서 Perception(6D Pose·SLAM 등), 자율주행/휴머노이드 파이프라인 프로토타이핑을 맡는다. 문턱은 낮게 열려 있다 — 학사 이상(전공 무관 지원 가능), Python·PyTorch/JAX, 그리고 로보틱스·VLA·RL/Sim2Real·Perception 네 영역 중 '하나 이상' 에 대한 학습·프로젝트·논문·인턴 경험이면 된다. 실기 로봇(UR·Franka·xArm·휴머노이드), Diffusion Policy·ACT, LeRobot·Open X-Embodiment, Top Tier 논문·대회 입상은 우대다. 회사 소개상 이 분야는 수익원이 아니라 연구개발 영역이다. 전형은 서류 → 1차/2차 면접 → 처우협의.",
+      "fit": {
+        "must_have": [
+          "학사 이상(전공 무관 지원 가능)",
+          "Python·PyTorch 또는 JAX",
+          "로보틱스·VLA·RL/Sim2Real·Perception 중 하나 이상 경험(학습·프로젝트·논문·인턴 포함)",
+          "실험을 설계·실행해 결론 도출",
+          "AI 도구로 생산성 향상",
+          "협업"
+        ],
+        "can_learn": [
+          "로봇 팔·휴머노이드 실기 운용",
+          "Diffusion Policy·ACT·모방학습",
+          "Isaac Sim/Lab·MuJoCo 학습 파이프라인",
+          "LeRobot·Open X-Embodiment",
+          "VLM 파인튜닝",
+          "CUDA·분산학습·경량화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "VLA 모델 파인튜닝과 평가",
+          "from": "task",
+          "quote": "• Vision-Language-Action(VLA) 모델 및 임바디드 Foundation Model의 학습·파인튜닝 및 평가",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 자격요건이 RT-2, OpenVLA, π0, Octo 같은 연구 이해를 예로 든다. 우대에 Open X-Embodiment·LeRobot 이 있다.",
+          "gap_check": "OpenVLA 는 이미지와 언어 지시를 받아 로봇 행동을 어떻게 토큰으로 출력하고, 새 로봇·새 작업에 맞추려면 무엇(데이터 형식·행동 정규화·LoRA)을 준비해야 하며, 성공률은 시뮬레이션과 실기에서 어떻게 따로 재는가?",
+          "drill": "LeRobot 의 공개 데이터셋과 시뮬레이션 환경으로 작은 정책 하나를 학습·평가하고, OpenVLA 논문의 행동 토큰화·파인튜닝 부분을 한 장으로 요약한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "OpenVLA: An Open-Source Vision-Language-Action Model (arXiv:2406.09246)",
+              "url": "https://arxiv.org/abs/2406.09246",
+              "kind": "paper"
+            },
+            {
+              "title": "LeRobot (GitHub)",
+              "url": "https://github.com/huggingface/lerobot",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "Sim2Real — 도메인 랜덤화와 RL 정책",
+          "from": "task",
+          "quote": "• 강화학습(RL) 기반 정책 학습 파이프라인 구축 및 Sim2Real Transfer 실험",
+          "priority": "core",
+          "why": "주요업무이고 다음 줄이 'Isaac Sim, MuJoCo 등 시뮬레이션 환경에서 데이터 수집·합성·도메인 랜덤화 수행' 이다. 자격요건 영역 하나가 'PPO·SAC 등 알고리즘, Isaac Lab·MuJoCo 등 시뮬레이터' 다.",
+          "gap_check": "PPO 와 SAC 는 온폴리시·오프폴리시 면에서 어떻게 다르고 로봇 과제에 무엇을 먼저 고르는가? 시뮬레이션에서 잘 되던 정책이 실기에서 실패하는 원인(마찰·지연·카메라 노이즈)을 도메인 랜덤화로 어떻게 줄이는가?",
+          "drill": "MuJoCo 로봇 팔 reach/pick 과제를 PPO 로 학습하고, 질량·마찰·관측 노이즈를 랜덤화한 버전과 성공률을 비교한 실험 보고서를 쓴다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "MuJoCo — Overview",
+              "url": "https://mujoco.readthedocs.io/en/stable/overview.html",
+              "kind": "docs"
+            },
+            {
+              "title": "NVIDIA Isaac Sim — Documentation",
+              "url": "https://docs.isaacsim.omniverse.nvidia.com/latest/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World (arXiv:1703.06907)",
+              "url": "https://arxiv.org/abs/1703.06907",
+              "kind": "paper"
+            },
+            {
+              "title": "OpenAI Spinning Up in Deep RL",
+              "url": "https://spinningup.openai.com/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모방학습 — Diffusion Policy·ACT",
+          "from": "preference",
+          "quote": "• Diffusion Policy, ACT, Behavior Cloning, Imitation Learning 등 정책 학습 알고리즘 구현 경험",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 '로봇 매니퓰레이션(Pick & Place, Assembly, Tool-use 등) 정책 학습 및 실기 검증' 이 있다. 매니퓰레이션은 보상 설계가 어려워 시연 데이터로 배우는 방법을 많이 쓴다(추론).",
+          "gap_check": "Behavior Cloning 이 시연에 없던 상태에서 무너지는 이유(분포 이동)는 무엇이고, Diffusion Policy 는 여러 방식의 정답 행동(multimodal)을 어떻게 다루는가?",
+          "drill": "LeRobot 의 시연 데이터로 Behavior Cloning 과 Diffusion Policy 를 각각 학습해 같은 과제에서 성공률을 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion (arXiv:2303.04137)",
+              "url": "https://arxiv.org/abs/2303.04137",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "실험을 설계하고 결론 내리기",
+          "from": "qualification",
+          "quote": "• 새로운 기술을 빠르게 학습하고, 실험을 직접 설계·실행해 결론을 도출할 수 있는 능력",
+          "priority": "high",
+          "why": "자격요건이다. 연구개발 자리라 결과보다 실험 설계를 물을 가능성이 크다(추론). 주요업무에 '최신 Physical AI / Embodied AI 관련 논문 리뷰 및 사내 기술 공유' 가 있다.",
+          "gap_check": "정책 A 가 B 보다 낫다고 말하려면 시드·에피소드 수·초기 상태 분포를 어떻게 정하고, 실기 시험 횟수가 적을 때 결론의 한계를 어떻게 적는가?",
+          "drill": "위 두 실험(도메인 랜덤화, BC vs Diffusion)을 시드 5개로 반복해 평균·신뢰구간을 내고, 결론과 한계를 한 장 보고서로 쓴다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "시뮬레이션 매니퓰레이션 정책 실험 보고서(RL·모방학습·도메인 랜덤화 비교)",
+          "why": "자격요건의 '하나 이상 영역' 을 둘 이상으로 채우고, '실험을 직접 설계·실행해 결론 도출' 을 결과물로 보여 준다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "실기 로봇 경험이 없다면 저가 로봇 팔로 LeRobot 실습",
+          "why": "우대 첫 줄이 로봇 매니퓰레이터 실기 운용이다. 시뮬레이션만으로는 Sim2Real 을 말하기 어렵다(추론).",
+          "effort": "장비 준비에 따라 다름"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1차/2차 면접 - 처우협의(공고 기준).",
+        "expect": [
+          "VLA 구조와 파인튜닝",
+          "RL 알고리즘 선택",
+          "Sim2Real 실패 원인",
+          "실험 설계와 결론의 한계"
+        ],
+        "sources": [
+          {
+            "title": "Physical AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/370301",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
