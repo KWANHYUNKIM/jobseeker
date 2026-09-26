@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "moneyforward",
+      "name": "マネーフォワード",
+      "name_en": "Money Forward",
+      "country": "JP",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "가계부와 법인 백오피스 SaaS 의 핀테크 — 한 ID 에서 비밀번호를 걷어 내고, 분기 커버리지 한 단계가 먹던 CI 시간을 되찾는다",
+      "updated_at": "2026-09-26",
+      "domain": "moneyforward.com"
+    },
+    {
       "slug": "uzabase",
       "name": "ユーザベース",
       "name_en": "Uzabase",
@@ -3019,7 +3031,9 @@
     "API 스키마를 먼저 쓴다",
     "고객사 AWS 로 데이터를 흘려보낸다",
     "AI 에이전트의 실패를 두 칸에 나눠 담는다",
-    "기사를 목소리로 읽어 준다"
+    "기사를 목소리로 읽어 준다",
+    "비밀번호 없이 들어온다",
+    "PR 마다 기다리는 CI 를 줄인다"
   ],
   "countries": {
     "KR": "한국",
