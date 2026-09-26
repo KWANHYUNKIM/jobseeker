@@ -9,7 +9,7 @@
     "DreamusCompany",
     "FLO"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "dreamuscompany.com",
   "one_liner": "음악 스트리밍 플로(FLO)를 운영하면서 음원 유통·팬덤 플랫폼(FLO ZIP)·공연·MD 까지 음악 IP 의 전 과정을 하는 회사 — 2025년 최대주주가 SK스퀘어에서 비마이프렌즈로 바뀌었다",
@@ -244,7 +244,8 @@
     "임직원 수는 읽지 않았다",
     "뉴스 목록의 '연속 흑자 행진' 기사 본문은 열지 않았다 — 실적 숫자는 비워 둔다",
     "jobkorea 클라우드 보안 리더 공고는 이미지 OCR 이라 글자가 깨져 있다",
-    "salary: 공고에 금액이 없다 — 비워 둔다"
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "ISMS 인증 자료(KISA isms.kisa.or.kr)는 응답이 없어 읽지 못했다 — 사내 시스템 운영 공고의 ISMS 우대는 학습 항목으로 만들지 않았다"
   ],
   "postings": [
     {
@@ -729,6 +730,93 @@
       "site": "saramin",
       "duplicate_of": "https://www.wanted.co.kr/wd/388562",
       "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 학습 항목은 원티드 '데이터 분석/엔지니어링 리더'(388562) 브리핑을 본다. 팀 소개·주요업무 여섯 줄·자격요건·우대·'맞지 않을 수 있어요' 가 글자까지 같고 머리표만 다르다(원티드 [ ] 대괄호, 사람인 ✅·→). 다른 점은 둘이다. ① 사람인에는 **마감일 2026년 10월 21일**이 붙어 있다(원티드는 상시지원). ② **전형 절차가 다르게 적혀 있다** — 원티드는 '서류전형 ＞ 면접전형 ＞ 처우협의' 인데 사람인은 '서류전형 > 오프라인 실시간 코딩테스트&1차면접 >2차면접&CEO 커피챗 > 처우협의' 와 'JAVA/GO 중 택 1' 코딩테스트 안내를 적는다. 이 안내는 콘텐츠 플랫폼 백엔드 공고(376669·373760)의 것과 글자가 같다 — 어느 쪽이 이 자리의 실제 전형인지는 공고만으로 알 수 없으니 지원 전에 확인한다."
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55091211&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=b3129df4-f4c8-444a-9543-17d86b883db5",
+      "title": "사내 시스템 운영 담당자",
+      "site": "saramin",
+      "verdict": "⚠️ **계약직(12개월)** 이다 — 본문 끝 참고사항에 '본 공고는 계약직(12개월) 공고입니다' 가 있다. 사람인 경력 표기는 '신입' 이지만 자격요건 첫 줄은 '사내 시스템 운영 및 유지보수 업무 경력 1년~3년 이신 분 (또는 그에 준하는 역량을 보유하신 분)' 이다. 서울 강남구, 마감 2026-10-20, 수습 3개월. **개발 자리가 아니라 사내 IT 운영**이다 — ERP·그룹웨어·Google Workspace·Slack·Jira·Confluence 운영과 모니터링·장애 대응, 입사자 계정 생성부터 퇴사자 권한 회수까지 **계정 라이프사이클**, 구성원 문의 응대·매뉴얼·교육, 프로세스 개선·자동화 제안과 새 솔루션 도입·연동, 보안 패치, PC·소프트웨어 **IT 자산 관리와 SaaS 라이선스 사용률 최적화**, 사내 시스템 개발팀·정보보안팀·외부 업체와 협업. 필수는 위 경력, ERP·그룹웨어·SaaS 어드민 운영, 끈기 있는 원인 분석, 비개발 직군에게 쉽게 설명하는 커뮤니케이션, 문서화. 우대는 Python·Shell 자동화, ISMS 등 정보보안·인증 심사 대응(회사는 FLO 로 ISMS 인증을 받았다 — 회사 브리핑), 네트워크·서버·보안 기초 트러블슈팅, IT 자격증. 사용 기술 칸은 'ISMS' 하나다. 전형: 서류전형 > 면접전형(2~3회) > 처우협의. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "사내 시스템 운영 1~3년(또는 준하는 역량)",
+          "ERP·그룹웨어·SaaS 어드민",
+          "비개발 직군 커뮤니케이션",
+          "문서화"
+        ],
+        "can_learn": [
+          "Python·Shell 자동화",
+          "ISMS 인증 대응",
+          "네트워크·서버 트러블슈팅"
+        ]
+      },
+      "study": [
+        {
+          "topic": "계정 라이프사이클 — 입사부터 퇴사까지",
+          "from": "task",
+          "quote": "- 신규 입사자의 계정 생성부터 퇴사자의 권한 회수까지 계정 라이프사이클을 꼼꼼하게 관리합니다",
+          "priority": "core",
+          "why": "주요업무이고 협업 도구가 Google Workspace·Slack·Jira·Confluence 로 여럿이라 한 사람의 계정이 도구마다 따로 있다. 정보보안팀과 협업한다고 적는다.",
+          "gap_check": "퇴사자가 나가는 날 Google Workspace 계정을 바로 삭제하면 그 사람의 드라이브 파일·메일은 어떻게 되고, 그래서 삭제 대신 먼저 무엇(일시 정지·데이터 이전·세션 로그아웃)을 하며, Slack·Jira 등 다른 도구의 계정을 빠뜨리지 않으려면 무엇(체크리스트·SSO·SCIM 자동 해지)이 필요한가?",
+          "drill": "Google Workspace 도움말의 사용자 일시 정지 문서를 읽고 '입사 D-1 / 입사일 / 부서 이동 / 퇴사일 / 퇴사 D+30' 단계별로 도구마다 할 일을 표로 쓴다. SCIM RFC 의 사용자 생성·비활성화 요청 예시를 찾아, 자동 해지가 되면 표의 어느 칸이 사라지는지 표시한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Suspend a user temporarily — Google Workspace Help",
+              "url": "https://support.google.com/a/answer/33312",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 7644: SCIM Protocol",
+              "url": "https://www.rfc-editor.org/rfc/rfc7644",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "반복 업무 자동화 — 라이선스 사용률 뽑기",
+          "from": "preference",
+          "quote": "ㆍ단순 반복 업무를 스크립트(Python, Shell 등)나 자동화 도구로 개선해 본 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 'SaaS 라이선스 사용률을 분석하여 낭비되는 비용이 없도록 최적화' 와 '비효율적인 프로세스 개선 및 자동화를 제안' 이 있다.",
+          "gap_check": "Slack·Google Workspace 에서 '90일 넘게 로그인하지 않은 유료 계정' 을 매달 손으로 세지 않고 뽑으려면 어떤 API(사용자 목록·마지막 로그인)를 부르고, 관리자 권한 토큰은 스크립트 어디에 두면 안 되는가?",
+          "drill": "Python 으로 Slack users.list 와 Google Workspace Directory API 의 사용자 목록을 받아(테스트 워크스페이스 또는 가짜 JSON), 비활성·퇴사 표시된 계정과 마지막 로그인이 오래된 계정을 CSV 로 뽑는 스크립트를 쓴다. 토큰은 환경 변수로 읽게 한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "users.list method — Slack Developer Docs",
+              "url": "https://api.slack.com/methods/users.list",
+              "kind": "docs"
+            },
+            {
+              "title": "Manage user accounts — Google Workspace Admin SDK",
+              "url": "https://developers.google.com/workspace/admin/directory/v1/guides/manage-users",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "'접속이 안 돼요' — 네트워크 트러블슈팅 기초",
+          "from": "preference",
+          "quote": "ㆍ네트워크, 서버, 보안에 대한 기초적인 지식을 갖추고 트러블 슈팅이 가능하신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 '\"접속이 안 돼요\"와 같은 구성원들의 문의' 에 기술적인 해결책을 제공한다고 적는다.",
+          "gap_check": "한 구성원만 사내 그룹웨어 접속이 안 될 때 DNS(이름 해석)·네트워크(연결)·인증(계정 잠김)·브라우저(캐시) 중 무엇부터 어떤 명령(nslookup·ping·curl)으로 가려내고, 모두가 안 될 때와 한 명만 안 될 때 의심할 곳은 어떻게 달라지는가?",
+          "drill": "MDN·DigitalOcean 글로 인터넷 연결과 DNS 용어를 읽고, 자주 쓰는 사이트 하나에 nslookup → ping → curl -I 를 차례로 쳐 각 단계 출력이 무엇을 확인해 주는지 적은 뒤, '한 명만 접속 불가' 문의에 쓸 5단계 점검표를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "How does the Internet work? — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/How_does_the_Internet_work",
+              "kind": "docs"
+            },
+            {
+              "title": "An Introduction to DNS Terminology, Components, and Concepts — DigitalOcean",
+              "url": "https://www.digitalocean.com/community/tutorials/an-introduction-to-dns-terminology-components-and-concepts",
+              "kind": "article"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
