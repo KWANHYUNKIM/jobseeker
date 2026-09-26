@@ -5,7 +5,7 @@
   "aliases": [
     "큐피스트"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "one_liner": "데이팅 앱 글램·케밋·알파스테이트를 운영하고, 미국에서 매출을 내는 AI 채팅 서비스(dotdotdot)를 만든 '러브테크' 회사",
   "company": {
@@ -666,6 +666,157 @@
             {
               "title": "Quickstart — Ren'Py Documentation",
               "url": "https://renpy.org/doc/html/quickstart.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54409733&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a6c027e-c6a1-4d84-8ee9-c0b3cdc647f4",
+      "title": "[글로벌 AI Chat] 백엔드 개발자",
+      "site": "saramin",
+      "verdict": "경력 3년 이상, 서울 강남구. dotdotdot 을 만든 팀이 **캐릭터 대화에 이미지·비디오를 결합한 새 글로벌 AI 챗봇**을 만드는 자리다. 공고 스스로 어려운 점을 적는다 — 유저가 기다릴 수 있는 시간은 짧고 이미지·비디오 생성은 시간과 비용이 커서, 응답 속도·제작 비용·트래픽·안정성 중 하나만 놓쳐도 몰입과 사업성이 흔들린다. 업무는 넷으로 나뉜다: ① 크리에이터 저작 도구 백엔드(스토리 구조를 그래프로 설계, 다수 크리에이터 동시 편집) ② AI 스토리 생성 엔진(LLM 인터랙티브 스토리·프롬프트 파이프라인, 캐릭터 일관성, 이미지→비디오 생성 파이프라인) ③ Kafka 이벤트 기반 마이크로서비스(멀티 레포 분화, 워커 기반 백그라운드 작업) ④ 한국·미국·일본 멀티리전 대규모 트래픽, 콘텐츠 배포·발견, 외부 생성 지연·장애 시 degrade 하는 fallback. 필수는 백엔드 3년 이상, Python·FastAPI 비동기, SQLAlchemy async ORM·PostgreSQL·Alembic 마이그레이션, **Claude Code·Cursor 등 AI 코딩 도구를 워크플로우에 적극 활용**. 우대는 LLM 연동(프롬프트·스트리밍 응답), Go(Python 과 함께 쓴다고 적는다), ComfyUI·Diffusion·FLUX, 노드 에디터·워크플로우 엔진, Kafka·워커 큐, CRDT·OT, 인앱·Stripe 결제, DDD·헥사고날·클린 아키텍처. 채용 절차: 서류 지원 → 1차 직무 인터뷰 → 2차 문화 인터뷰 → 레퍼런스 체크 → 최종 합격(원티드 공고들과 달리 사전과제가 적혀 있지 않다).",
+      "fit": {
+        "must_have": [
+          "백엔드 3년 이상",
+          "Python·FastAPI 비동기",
+          "SQLAlchemy async·PostgreSQL·Alembic",
+          "AI 코딩 도구 활용"
+        ],
+        "can_learn": [
+          "LLM 스트리밍 연동",
+          "Go",
+          "ComfyUI·Diffusion·FLUX",
+          "CRDT·OT",
+          "Kafka·워커 큐",
+          "인앱·Stripe 결제"
+        ]
+      },
+      "study": [
+        {
+          "topic": "FastAPI + SQLAlchemy async + Alembic 데이터 계층",
+          "from": "qualification",
+          "quote": "• SQLAlchemy 등 async ORM과 PostgreSQL로 데이터 계층을 설계하고, 스키마 마이그레이션(Alembic 등)을 관리해보신 분",
+          "priority": "core",
+          "why": "필수 요건이고 바로 앞 필수가 Python·FastAPI 비동기 백엔드다.",
+          "gap_check": "async 세션에서 관계 속성을 그냥 접근하면 왜 오류(지연 로딩 불가)가 나고 무엇(selectinload 등)으로 미리 불러오는가? 운영 중인 테이블에 NOT NULL 컬럼을 추가하는 Alembic 마이그레이션은 어떤 순서로 나눠 배포하는가?",
+          "drill": "FastAPI + SQLAlchemy 2.0 async 로 캐릭터·대화 테이블 API 를 만들고, Alembic 으로 '캐릭터에 NOT NULL 컬럼 추가' 를 nullable 추가 → 값 채우기 → NOT NULL 세 단계 리비전으로 나눠 적용한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Asynchronous I/O (asyncio) — SQLAlchemy 2.0 Documentation",
+              "url": "https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Alembic Tutorial",
+              "url": "https://alembic.sqlalchemy.org/en/latest/tutorial.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Concurrency and async / await - FastAPI",
+              "url": "https://fastapi.tiangolo.com/async/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 스트리밍 응답과 생성 지연 시 fallback",
+          "from": "task",
+          "quote": "• 외부 생성 지연·장애에도 서비스가 우아하게 degrade하는 fallback 구조 설계",
+          "priority": "core",
+          "why": "주요업무이고 공고가 '유저가 기다릴 수 있는 시간은 짧고, 이미지와 비디오를 만드는 데 드는 시간과 비용은 큽니다' 라고 적는다. 우대에 스트리밍 응답 처리가 있다.",
+          "gap_check": "캐릭터 답변 텍스트는 토큰 단위로 바로 흘려보내고 이미지는 나중에 붙이려면 응답을 어떻게 나누고(SSE 이벤트 종류), 이미지 생성이 20초 넘게 걸리거나 실패하면 유저에게 무엇을 보여 주고 대화를 이어 가게 하는가?",
+          "drill": "FastAPI 에서 LLM 스트리밍 응답을 SSE 로 내보내고, 같은 요청에서 이미지 생성 작업을 백그라운드로 던진 뒤 완료 이벤트를 별도로 보낸다. 이미지 생성에 타임아웃을 걸어 넘으면 대체 이미지 이벤트를 보내게 한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Streaming messages - Claude Platform Docs",
+              "url": "https://docs.anthropic.com/en/docs/build-with-claude/streaming",
+              "kind": "docs"
+            },
+            {
+              "title": "Using server-sent events - MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kafka 이벤트와 워커 기반 백그라운드 작업",
+          "from": "task",
+          "quote": "• Kafka 기반 이벤트 스트리밍 및 서비스 간 비동기 통신 구조 설계",
+          "priority": "high",
+          "why": "주요업무이고 같은 묶음에 '워커 기반 대규모 백그라운드 작업 처리' 와 마이크로서비스 분화가 있다.",
+          "gap_check": "DB 에 생성 요청을 저장하고 Kafka 에 이벤트를 보내는 두 동작 중 하나만 성공하면 무엇이 어긋나고, 이를 막는 transactional outbox 는 어떻게 동작하는가? 워커가 같은 이벤트를 두 번 받으면 이미지가 두 번 생성되지 않게 무엇을 두는가?",
+          "drill": "요청 테이블과 outbox 테이블을 한 트랜잭션에 쓰고, 별도 릴레이가 outbox 를 Kafka 로 보내며, 워커가 요청 ID 로 중복을 걸러 처리하게 만든다. 릴레이를 중간에 죽였다 살려도 이벤트가 빠지지 않는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Pattern: Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Kafka Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스토리 그래프 저작 도구와 동시 편집",
+          "from": "task",
+          "quote": "• 크리에이터가 스토리 구조를 그래프 시각적으로 설계하는 백엔드 시스템 구축",
+          "priority": "high",
+          "why": "주요업무이고 다음 줄이 다수 크리에이터 동시 편집이다. 우대에 노드 에디터·워크플로우 엔진과 CRDT·OT 가 있다.",
+          "gap_check": "스토리를 노드(장면)와 엣지(선택지)로 저장할 때 PostgreSQL 에 어떤 테이블로 두고, 두 작가가 같은 노드를 동시에 고치면 '나중 저장이 이긴다' 대신 무엇(CRDT 문서 동기화)으로 합치는가?",
+          "drill": "장면·선택지 두 테이블로 스토리 그래프를 저장하는 API 를 만들고, 장면 본문 편집은 Yjs 문서로 두 브라우저 탭에서 동시에 고쳐 합쳐지는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "About CRDTs",
+              "url": "https://crdt.tech/",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction | Yjs Docs",
+              "url": "https://docs.yjs.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "이미지·비디오 생성 파이프라인 — ComfyUI",
+          "from": "preference",
+          "quote": "• AI 이미지·영상 생성 파이프라인을 만들어보신 분. ComfyUI, Diffusion, FLUX 등 관련 경험이 있다면 특히 반갑습니다.",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무에 '이미지에서 비디오까지, AI 미디어 생성 파이프라인 확장' 이 있다.",
+          "gap_check": "ComfyUI 워크플로우를 사람이 화면에서 누르지 않고 백엔드가 API 로 호출하려면 무엇을 보내고, 생성 한 건의 GPU 시간·비용을 어떻게 재서 캐릭터 대화 한 턴당 비용으로 환산하는가?",
+          "drill": "ComfyUI 를 로컬에 띄워 기본 워크플로우를 API 형식으로 내보내고, Python 에서 그 JSON 에 프롬프트만 바꿔 넣어 호출한 뒤 생성 시간을 열 번 재 평균을 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Comfy-Org/ComfyUI",
+              "url": "https://github.com/Comfy-Org/ComfyUI",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "Go 로 짜는 백엔드 서비스",
+          "from": "preference",
+          "quote": "• Go 기반 백엔드를 개발해보신 분. 저희는 Python과 Go를 함께 사용합니다.",
+          "priority": "nice",
+          "why": "우대사항이고 공고가 'Python과 Go를 함께 사용합니다' 라고 적는다.",
+          "gap_check": "같은 워커를 Python 대신 Go 로 쓸 때 얻는 것(동시성·메모리·배포 단위)과 잃는 것(AI 라이브러리 생태계)은 무엇이고, 이 공고의 업무 중 어느 쪽이 Go 에 맞아 보이는가?",
+          "drill": "Go 튜토리얼을 마치고, Kafka 이벤트를 받아 HTTP 로 외부 생성 API 를 호출하는 작은 워커를 goroutine 으로 동시 처리하게 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Tutorial: Get started with Go",
+              "url": "https://go.dev/doc/tutorial/getting-started",
               "kind": "docs"
             }
           ]
