@@ -461,6 +461,132 @@
       "site": "dev",
       "duplicate_of": "https://www.jobkorea.co.kr/Recruit/GI_Read/50004680?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=99&sc=630",
       "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 우대사항 여섯 줄이 잡코리아 `[골프존] 서버 개발자 경력직 채용`(50004680)과 글자 그대로 같다('MS Devops CI/CD Popeline' 오타까지). 잡코리아 크롤은 담당업무·필수사항 칸이 비어 있어서, 그쪽 브리핑이 이 캐치 게시의 담당업무 세 줄(C++ 게임 서버 개발, 서버 프로그램 설계·구현·유지보수, 성능 최적화·안정화)과 필수사항 여섯 줄(C++ 20, 자료구조·알고리즘, 멀티 스레드, 네트워크 프로그래밍, Visual Studio·MS-SQL, 형상 관리)을 이미 옮겨 적었다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 마감일 10.30(금) 24시다. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571965?ReturnUrl=RecruitInfo",
+      "title": "Radar Sensor S/W 개발자 (Core Module, Signal Processing) 채용",
+      "site": "dev",
+      "verdict": "경력 5년 이상, 서울 강남구. **스크린골프 센서의 레이더 신호를 받아 공 데이터를 산출하는 코어 소프트웨어**를 다시 짜는 자리다. 담당업무는 셋으로 나뉜다 — (1) **레거시 코드를 분석해 유지보수가 쉬운 구조로 재설계**하고 **Windows/Linux 크로스 플랫폼** 코드베이스를 만든다, (2) **실시간 신호 데이터 취득 파이프라인**, 계측 데이터 저장·검증, **이벤트 트리거 검출** 메커니즘, (3) 실시간 검증용 UI Tool, 센서 데이터 기반 산출 알고리즘, **영상 처리 기반 신규 컨텐츠 알고리즘**. 필수는 C++ 응용 SW 5년, **CMake** 등 빌드 환경, **디지털 신호처리(FFT·필터 설계)**, **레이더·초음파 센서 신호처리**, **OpenCV 객체 검출·트래킹**, **카메라 계측 또는 센서 퓨전**. 우대는 모듈화·재설계, **멀티스레드 실시간 처리 구조**, 외부 장비 통신 프로토콜, **Qt** GUI Tool, **MCU/FPGA** 연동. 신호처리와 비전을 둘 다 요구하는 드문 조합이라 한쪽만 깊다면 다른 쪽을 얼마나 채워야 하는지가 관건이다. 해외 출장 결격 사유가 없어야 한다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "C++ 5년",
+          "FFT·필터 설계",
+          "레이더·초음파 신호처리",
+          "OpenCV 검출·트래킹"
+        ],
+        "can_learn": [
+          "CMake 크로스 플랫폼",
+          "Qt 검증 도구",
+          "센서 퓨전"
+        ]
+      },
+      "study": [
+        {
+          "topic": "FFT 와 디지털 필터 설계",
+          "from": "qualification",
+          "quote": "디지털 신호처리 알고리즘 개발 (FFT, 필터 설계 등)",
+          "priority": "core",
+          "why": "필수사항이고, 담당업무의 실시간 신호 취득·센서 데이터 산출 알고리즘이 전부 이 위에 선다.",
+          "gap_check": "샘플링 주파수와 FFT 길이가 주파수 해상도를 어떻게 정하고, 창 함수(Hann 등)를 씌우지 않으면 스펙트럼에 무엇이 새는가(누설)? FIR 과 IIR 필터는 위상·안정성·연산량에서 무엇이 다르며, 실시간 스트림에서 블록 단위로 필터링할 때 경계는 어떻게 이어 붙이는가?",
+          "drill": "FFT·디지털 필터 문서를 읽고, 두 주파수가 섞인 신호에 잡음을 더해 C++(또는 먼저 Python)로 창 함수 유무에 따른 FFT 스펙트럼을 비교한다. 같은 대역을 FIR 과 IIR 로 걸러 지연·위상 차이를 그래프로 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Fast Fourier transform — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Fast_Fourier_transform",
+              "kind": "docs"
+            },
+            {
+              "title": "Digital filter — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Digital_filter",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "레이더 신호처리 — 도플러와 연속파 레이더",
+          "from": "qualification",
+          "quote": "레이더 · 초음파 등 센서 신호처리 개발 경험",
+          "priority": "core",
+          "why": "필수사항이고 공고 제목이 Radar Sensor S/W 다. 담당업무의 이벤트 트리거 검출·센서 데이터 산출이 레이더 신호에서 나온다.",
+          "gap_check": "움직이는 물체의 속도가 도플러 주파수로 어떻게 바뀌어 나오고, 연속파(CW) 레이더와 주파수 변조 연속파(FMCW) 레이더는 속도·거리 중 무엇을 잴 수 있는가? 신호에서 '공이 맞은 순간' 같은 이벤트를 잡으려면 임계값을 무엇 기준으로 잡고, 잡음에 의한 오검출은 어떻게 줄이는가?",
+          "drill": "Doppler radar·Continuous-wave radar 문서를 읽고, 속도가 시간에 따라 변하는 물체의 도플러 신호를 합성해 짧은 구간 FFT(스펙트로그램)로 속도 곡선을 복원한다. 잡음 수준을 올려 가며 에너지 임계값 기반 이벤트 검출의 오검출·누락을 센다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Doppler radar — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Doppler_radar",
+              "kind": "docs"
+            },
+            {
+              "title": "Continuous-wave radar — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Continuous-wave_radar",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "카메라 계측과 센서 퓨전",
+          "from": "qualification",
+          "quote": "카메라 기반 계측 또는 센서 퓨전 시스템 개발 경험",
+          "priority": "high",
+          "why": "필수사항이고, 같은 칸에 OpenCV 객체 검출·트래킹이, 담당업무에 영상 처리 기반 신규 컨텐츠 알고리즘이 있다.",
+          "gap_check": "레이더와 카메라처럼 샘플링 주기와 지연이 다른 두 센서의 측정을 합치려면 시간 동기화를 어떻게 하는가? 칼만 필터의 예측·갱신 단계가 무엇을 하고, 측정 잡음 공분산을 크게 잡으면 추정이 어떻게 바뀌는가?",
+          "drill": "Sensor fusion·Kalman filter 문서를 읽고, 1차원으로 움직이는 물체를 '느리지만 정확한 위치 센서' 와 '빠르지만 잡음 많은 속도 센서' 로 흉내 내 칼만 필터로 합친다. 잡음 공분산 값을 바꿔 가며 단일 센서보다 오차가 줄어드는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Sensor fusion — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Sensor_fusion",
+              "kind": "docs"
+            },
+            {
+              "title": "Kalman filter — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Kalman_filter",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "CMake 로 Windows/Linux 크로스 플랫폼 빌드",
+          "from": "qualification",
+          "quote": "Windows / Linux 크로스 플랫폼 개발 및 빌드 환경(CMake 등) 구성 경험",
+          "priority": "high",
+          "why": "필수사항이고 담당업무 (1)이 레거시 재설계와 Windows / Linux 크로스 플랫폼 코드베이스 구축이다.",
+          "gap_check": "target_link_libraries 의 PUBLIC/PRIVATE/INTERFACE 는 의존성 전파를 어떻게 바꾸는가? 플랫폼마다 다른 소스(장비 통신·스레드 API)를 한 CMakeLists 에서 어떻게 가르고, 툴체인 파일은 언제 필요한가?",
+          "drill": "CMake Tutorial 을 따라 라이브러리 하나(신호처리 모듈)와 실행 파일 하나(검증 도구)로 된 프로젝트를 만들고, 플랫폼별 소스를 조건으로 넣어 Windows(Visual Studio 생성기)와 Linux(Ninja)에서 모두 빌드한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "CMake Tutorial — CMake Documentation",
+              "url": "https://cmake.org/cmake/help/latest/guide/tutorial/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "cmake-toolchains(7) — CMake Documentation",
+              "url": "https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Qt 로 실시간 검증 도구 만들기",
+          "from": "preference",
+          "quote": "Qt 등 GUI 기반 Tool 개발 경험",
+          "priority": "nice",
+          "why": "우대사항이고 담당업무 (3)에 실시간 데이터 검증용 UI Tool 개발이 있다.",
+          "gap_check": "취득 스레드에서 들어오는 신호 데이터를 GUI 스레드의 위젯에 그릴 때, 위젯을 다른 스레드에서 직접 건드리면 왜 안 되고 무엇으로 넘기는가? 초당 수천 샘플을 매번 다시 그리지 않으려면 갱신 주기를 어떻게 제한하는가?",
+          "drill": "Qt Widgets 문서를 읽고, 작업 스레드가 합성 신호를 만들어 보내면 창이 30Hz 로 파형을 갱신하는 작은 검증 도구를 만든다. 이벤트 트리거가 걸린 구간을 표시하는 버튼·로그 창을 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Qt Widgets — Qt 6",
+              "url": "https://doc.qt.io/qt-6/qtwidgets-index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
