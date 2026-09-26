@@ -18306,6 +18306,110 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203746",
+      "title": "Senior Frontend Engineer",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 벵갈루루 근무다. 프런트엔드 4~7년의 시니어로, Micro Frontend Platform 팀에서 쿠팡 생태계 전반의 고객 대면(B2C) 화면을 React 등으로 만든다 — 공고가 '순수 프런트엔드 엔지니어링 역할'이라고 명시하고, 저지연·빠른 렌더링·반응성, 재사용 가능한 컴포넌트·모듈형 UI 아키텍처, 대규모 트래픽에서의 성능을 강조한다. Node.js 를 프런트/백엔드 연결 계층에 쓴 경험도 자격요건이다.",
+      "fit": {
+        "must_have": [
+          "프런트엔드 4~7년",
+          "JavaScript·Vue.js 또는 React.js",
+          "대규모 B2C 웹 애플리케이션",
+          "컴포넌트 기반 아키텍처·재사용 디자인 시스템",
+          "Node.js 연결 계층",
+          "렌더링·로딩·반응성 성능 최적화",
+          "브라우저·네트워크·클라이언트 성능 튜닝"
+        ],
+        "can_learn": [
+          "Vue.js 등 복수 프레임워크(우대)",
+          "마이크로 프런트엔드·모듈형 UI(우대)",
+          "디자인 시스템·컴포넌트 라이브러리(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "대규모 B2C 화면의 렌더링·로딩 성능",
+          "from": "qualification",
+          "quote": "Experience optimizing frontend performance (rendering, loading time, responsiveness)",
+          "priority": "core",
+          "why": "렌더링·로딩 시간·반응성 성능 최적화 경험과 브라우저·네트워크·클라이언트 성능 튜닝 이해가 자격요건이고, 고트래픽 환경의 저지연·빠른 렌더링이 주요업무다.",
+          "gap_check": "상품 목록 첫 화면의 LCP 가 느릴 때 원인을 서버 응답·자원 크기·렌더 차단 스크립트·이미지 중 어디서 찾고, 스크롤할 때 버벅임(INP·긴 작업)은 무엇으로 가르는가?",
+          "drill": "Chrome DevTools 성능 패널로 가상 상품 목록 화면을 기록해 LCP·INP 원인을 찾고, 이미지 지연 로딩·코드 분할·목록 가상화를 적용한 전후 Web Vitals 를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "web.dev — Web Vitals",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "article"
+            },
+            {
+              "title": "Chrome DevTools — Performance",
+              "url": "https://developer.chrome.com/docs/devtools/performance",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "마이크로 프런트엔드·모듈형 UI 아키텍처",
+          "from": "preference",
+          "quote": "Experience working on large-scale frontend architectures (micro-frontends, modular UI systems)",
+          "priority": "core",
+          "why": "팀 이름이 Micro Frontend Platform 이고, 대규모 프런트엔드 아키텍처(마이크로 프런트엔드·모듈형 UI) 경험이 우대사항, 재사용 컴포넌트·모듈형 UI 아키텍처 개발이 주요업무다.",
+          "gap_check": "여러 팀이 한 페이지의 조각을 따로 배포할 때 공통 라이브러리(React) 중복 로드·스타일 충돌·조각 간 상태 공유를 어떻게 막고, 한 조각의 장애가 페이지 전체를 깨지 않게 하려면 무엇을 두는가?",
+          "drill": "마이크로 프런트엔드 글을 읽고, 헤더·상품 목록 두 조각을 따로 빌드해 한 셸 앱에 합치되 공통 의존성을 공유하고, 한 조각이 오류를 던질 때 오류 경계로 나머지가 살아 있게 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Martin Fowler — Micro Frontends",
+              "url": "https://martinfowler.com/articles/micro-frontends.html",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "재사용 컴포넌트와 디자인 시스템",
+          "from": "task",
+          "quote": "Develop reusable components and modular UI architectures, ensuring consistency and maintainability across large systems",
+          "priority": "high",
+          "why": "대규모 시스템 전반의 일관성·유지보수성을 보장하는 재사용 컴포넌트·모듈형 UI 아키텍처 개발이 주요업무이고, 디자인 시스템·컴포넌트 라이브러리 이해가 우대사항이다.",
+          "gap_check": "여러 팀이 같은 버튼·카드 컴포넌트를 쓸 때 API(props)를 얼마나 열어 두고, 컴포넌트 라이브러리 버전을 올릴 때 팀별 화면이 깨지지 않게 무엇(시각 회귀 테스트·폐기 예고)을 두는가?",
+          "drill": "React 문서를 따라 상품 카드 컴포넌트를 설계하되 변형(variant)·크기 props 와 접근성 속성을 정의하고, 두 화면에서 재사용한 뒤 props 를 바꾸는 변경을 하위 호환으로 내보내는 절차를 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "React — Learn",
+              "url": "https://react.dev/learn",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "상품 목록 화면 성능 개선 전후 리포트",
+          "why": "자격요건 중 가장 구체적인 것이 렌더링·로딩·반응성 최적화다. Web Vitals 전후 수치를 담은 리포트는 이 순수 프런트엔드 자리에 맞는 증거가 된다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "LCP·INP 진단",
+          "마이크로 프런트엔드 격리",
+          "컴포넌트 API 설계",
+          "Node 연결 계층",
+          "백엔드·디자인 협업"
+        ],
+        "sources": [
+          {
+            "title": "Senior Frontend Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203746",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
