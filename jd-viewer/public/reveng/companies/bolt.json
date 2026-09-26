@@ -5,7 +5,7 @@
   "country": "EU",
   "category": "모빌리티",
   "status": "done",
-  "updated_at": "2026-09-05",
+  "updated_at": "2026-09-26",
   "domain": "bolt.eu",
   "one_liner": "에스토니아에서 시작해 50개국에서 차·음식·킥보드를 함께 굴리는 회사 — 그리고 자기가 과잉설계했다고 글로 적는다",
   "business_model": "한 앱에 여러 사업을 얹는다. 승차 호출과 음식 배달과 마이크로모빌리티에 걸쳐 50개국 넘는 곳에서 큰 사업을 굴린다고 회사가 적는다. **참여자가 여러 겹이라는 점이 이 회사의 성격을 정한다** — 승객과 기사와 배달원과 식당이 매일 수백만 건의 거래로 이어져 있다. 돈이 여러 손을 거치므로 사기와 정산이 곧 기술 문제가 된다. 매출·수수료율·사업부별 비중은 공개돼 있지 않다.\n\n도메인 셋을 사업(승차·배달·킥보드)으로 자르지 않고 **한 번 고른 구조를 나중에 어떻게 되돌리느냐**로 잘랐다. 사기 검문을 설정 주도로 만들었다가 되돌린 이야기, PSP 마다 다른 보고서를 한 모양으로 모으는 이야기, 쓰는 엔진과 읽는 엔진을 하나로 합치는 이야기 — 셋 다 앞선 결정을 되무르는 글이다. 사업으로 가르면 그 공통점이 흩어진다(재구성).",
@@ -49,7 +49,7 @@
   "domain_map": {
     "title": "Bolt 도메인 지도",
     "question": "참여자가 넷인 거래를 50개국에서 굴리면 무엇이 기술 문제가 되는가?",
-    "code": "flowchart TD\n  U[\"<b>참여자 넷</b><br/>• 승객 · 기사 · 배달원 · 식당<br/>• 50개국 이상 · 하루 수백만 거래\"]:::list --> B\n  B[\"<b>Bolt 플랫폼</b><br/>• 차량 · 배달 · 킥보드\"]:::list\n  B --> D1[\"<b>과잉설계했다고 적고<br/>되돌아온다</b><br/>• 사기 검문 약 60개 · 8년<br/>• 설정 주도에서 되돌아옴\"]:::list\n  B --> D2[\"<b>돈이 어디까지 왔는지<br/>끝까지 센다</b><br/>• 결제대행사마다 다른 보고서<br/>• 대사와 회계 처리\"]:::list\n  B --> D3[\"<b>엔진을 하나로 모은다</b><br/>• 월 1000만 쿼리<br/>• Presto → Databricks\"]:::list\n  D2 -.->|어긋난 금액이<br/>사기 신호가 된다| D1\n  D3 -.->|같은 지표가 두 값을 내면<br/>믿음이 무너진다| D2"
+    "code": "flowchart TD\n  U[\"<b>참여자 넷</b><br/>• 승객 · 기사 · 배달원 · 식당<br/>• 50개국 이상 · 하루 수백만 거래\"]:::list --> B\n  B[\"<b>Bolt 플랫폼</b><br/>• 차량 · 배달 · 킥보드\"]:::list\n  B --> D1[\"<b>과잉설계했다고 적고<br/>되돌아온다</b><br/>• 사기 검문 약 60개 · 8년<br/>• 설정 주도에서 되돌아옴\"]:::list\n  B --> D2[\"<b>돈이 어디까지 왔는지<br/>끝까지 센다</b><br/>• 결제대행사마다 다른 보고서<br/>• 대사와 회계 처리\"]:::list\n  B --> D3[\"<b>엔진을 하나로 모은다</b><br/>• 월 1000만 쿼리<br/>• Presto → Databricks\"]:::list\n  B --> D4[\"<b>디자인에서 제품 코드까지</b><br/>• 컴포넌트 110개 넘게<br/>• 일주일 → 한 시간\"]:::list\n  D2 -.->|어긋난 금액이<br/>사기 신호가 된다| D1\n  D3 -.->|같은 지표가 두 값을 내면<br/>믿음이 무너진다| D2"
   },
   "domains": [
     {
@@ -198,6 +198,30 @@
       "features": [
         "one-engine-one-dialect"
       ]
+    },
+    {
+      "name": "디자인에서 제품 코드까지",
+      "why": "연 6,000만 명이 쓰는 bolt.eu 가 110개 넘는 공유 컴포넌트에 기댄다. 코딩 에이전트로 디자이너가 돌아가는 코드를 만들게 되자, 디자인과 구현 사이의 넘겨주기 자체를 없애고 리뷰로 바꾸는 자리다.",
+      "tech": [
+        {
+          "tech": "단일 컴포넌트 라이브러리 + 코딩 에이전트(AGENTS.md · 작업 순서 스킬) + Chromatic 시각 리뷰",
+          "solves": "디자이너가 다듬은 컴포넌트를 그대로 내보내 두 번 짓기와 Storybook 간 어긋남을 없앤다. 일상 컴포넌트 전달이 일주일에서 한 시간으로.",
+          "limits": "리뷰가 병목이 되고, '엔지니어 둘'은 관례다. 새 패턴·복잡한 상태는 여전히 엔지니어가 구현한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Design engineering at Bolt: shipping components with AI agents",
+              "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+              "publisher": "Bolt Labs (Medium)",
+              "date": "2026-09-17",
+              "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "one-component-once"
+      ]
     }
   ],
   "eras": [],
@@ -206,7 +230,8 @@
     "사기 검문이 언제 각 단계를 지났는지 연도가 없다. 약 60개를 지난 8년에 걸쳐 만들었다는 것만 나오고, 빌더 → ETL 프레임워크 → 다시 빌더로 간 시점이 적혀 있지 않다. 그래서 eras 를 세우지 못했다 — 연도를 모르면 쓰지 않는다.",
     "결제 대사의 규모 수치가 없다 — PSP 몇 곳과 붙어 있는지, 대사율이 얼마인지, 하루 몇 건을 처리하는지가 글에 없다.",
     "본문이 브라우저로만 온다 — bolt.eu/en/blog/* 는 WebFetch 로 목록만 오고 글은 비어 온다. 다음 사이클도 get_page_text 를 쓴다.",
-    "아직 안 읽은 글이 있다 — seeing-the-bigger-picture-with-event-storming · scaling-security-testing-bolt-bug-bounty · how-to-make-tests-ai-friendly · 광고 증분 측정 연작 · BACA(자율 코딩 에이전트)."
+    "아직 안 읽은 글이 있다 — seeing-the-bigger-picture-with-event-storming · scaling-security-testing-bolt-bug-bounty · how-to-make-tests-ai-friendly · 광고 증분 측정 연작 · BACA(자율 코딩 에이전트).",
+    "디자인 엔지니어링 경로로 나간 컴포넌트 수와 리뷰 대기 시간, 에이전트 도구 이름은 밝히지 않는다."
   ],
   "features": [
     {
@@ -1557,6 +1582,289 @@
           "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
         }
       ]
+    },
+    {
+      "key": "one-component-once",
+      "name": "디자인 엔지니어링 — 컴포넌트를 두 번 짓지 않는다",
+      "domain": "디자인에서 제품 코드까지",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "bolt.eu 는 50개 넘는 시장에서 연 최대 **6,000만 명**이 쓰고, **110개 넘는 UI 컴포넌트**의 공유 디자인 시스템에 기댄다. 디자이너들은 이미 Figma 에서 멈추지 않는다 — 코딩 에이전트로 사내 Storybook 에서 **돌아가는** 컴포넌트를 만든다. 그런데 그건 제품에 나가지 않았다. bolt.eu 는 다른 라이브러리로 지어지고, 둘 사이의 다리는 티켓 하나였다. 엔지니어는 이미 돌아가는 것의 글 설명을 보고 **같은 컴포넌트를 두 번째로 짰다.** 보드 위에선 둘 다 평범한 일로 보여서 아무것도 이상해 보이지 않았다.",
+        "metrics": [
+          {
+            "label": "전달 시간",
+            "value": "디자인 시스템에 맞는 일상 컴포넌트의 전달이 **일주일 → 한 시간**. '돌아간다'에서 '머지됐다'까지 스프린트가 아니라 몇 시간이고, 그 시간은 다시 짓기가 아니라 리뷰다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "규모",
+            "value": "연 최대 **6,000만 명**, **50개 넘는 시장**, 공유 컴포넌트 **110개 넘게**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "스스로 적은 대가",
+            "value": "리뷰가 **일부러** 병목이 됐다 — 리뷰어 둘이 느리면 낭비를 없앤 게 아니라 옮긴 것이다. '엔지니어 둘'은 GitHub 이 강제하지 않는 **관례**다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "두 번 짓기를 볼 때",
+          "thought": "다시 짓기는 **성실한 확인처럼 보였지만 아니었다.** 디자이너에게는 이미 돌아가는 판이 있었다. 엔지니어는 bolt.eu 가 쓰는 라이브러리에 들어가게 하려고 그걸 다시 쳤을 뿐이다. Storybook 이 둘이면 어긋남은 필연이다 — 절차의 실패가 아니라 **진실의 원천이 둘일 때 생기는 일**이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "병목이 어디로 옮겨 갔는지 볼 때",
+          "thought": "지금의 개발 수명주기는 **구현이 병목이던 세상**에 맞춰 설계됐다. 에이전트가 타이핑을 짧게 만들자 병목은 그 앞뒤 단계와, 가운데 끼어 있던 다시 짓기로 옮겨 갔다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "엔지니어가 받는 것이 바뀔 때",
+          "thought": "그림을 받으면 엔지니어의 일은 재현이다. 돌아가는 코드를 받으면 재현할 것이 없다. 남는 질문은 **이 컴포넌트가 맞는가** — API 가 라이브러리에 맞는지, 스크린 리더에서 뜻이 통하는지, 모든 폭과 양방향에서 동작하는지. 그건 늘 가장 값진 질문이었는데 타이핑 비용을 다 치른 뒤 **맨 마지막에** 왔다. 이제 맨 처음에 온다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "컴포넌트 라이브러리",
+            "what": "bolt.eu 공개 페이지가 쓰는 하나의 라이브러리와 하나의 Storybook. 디자이너와 엔지니어가 같은 산출물을 함께 소유한다."
+          },
+          {
+            "name": "AGENTS.md",
+            "what": "라이브러리의 품질 기준을 에이전트에게 주는 지시 — 기존 토큰 쓰기, 접근 가능한 기본 요소 위에 짓기, 의미 있는 변형마다 스토리, 관계없는 코드는 건드리지 않기. 공개·내부·라이브러리 밖의 경계도 적는다."
+          },
+          {
+            "name": "작업 순서 스킬",
+            "what": "Figma 프레임에서 시작하기 전에 이미 있는 컴포넌트·상호작용인지 확인하고, 공개할지 내부로 둘지 정한 뒤 스토리를 만들고 결과를 검증한다. 프레임은 시각 명세이지 픽셀 값을 베끼거나 API 를 지어낼 원천이 아니다."
+          },
+          {
+            "name": "리뷰 분담",
+            "what": "디자이너: 시각적 정확성·토큰·모션·상태(Chromatic 에서 승인). 엔지니어 둘: 컴포넌트 API·접근성 의미·구조·테스트 범위."
+          }
+        ],
+        "invariants": [
+          "디자이너가 다듬는 컴포넌트가 곧 나가는 컴포넌트다.",
+          "기존 API 는 의도한 깨뜨림이 아니면 안정적으로 둔다 — 지역 관례가 새 패턴보다 먼저다.",
+          "변경은 자신 있게 리뷰할 수 있을 만큼 좁게."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "디자이너가 Figma 에서 탐색·토큰·필요한 상태를 정한다",
+            "why": "시각 명세"
+          },
+          {
+            "step": "제품 컴포넌트 라이브러리 안에서 코딩 에이전트와 Storybook 을 돌리며 컴포넌트를 만든다 — AGENTS.md 와 작업 순서 스킬을 따른다",
+            "why": "다듬는 것이 곧 나가는 것"
+          },
+          {
+            "step": "PR 을 열면 CI 와 Chromatic 이 돈다",
+            "why": "시각 변경을 변경이 보이는 자리에서"
+          },
+          {
+            "step": "디자이너가 Chromatic 에서 시각 변경을 승인한다",
+            "why": "diff 를 읽지 않고, 엔지니어에게 스크린샷을 대신 보게 하지 않고"
+          },
+          {
+            "step": "엔지니어 둘이 API·접근성·구조를 리뷰한다",
+            "why": "계약은 판단할 자격이 있는 사람이"
+          },
+          {
+            "step": "디자이너가 머지하고 bolt.eu 에 나간다",
+            "why": "티켓도 두 번째 구현도 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "디자이너가 만든 돌아가는 컴포넌트를 어떻게 제품으로 가져올 것인가",
+            "chosen": "**디자이너가 제품 컴포넌트 라이브러리에 직접 쓴다** — 새 직함이나 새 도구가 아니라 맞는 코드베이스에 접근하게 한 것",
+            "alternatives": [
+              "사내 Storybook 에서 만들고 티켓으로 넘겨 엔지니어가 다시 짓기(이전)"
+            ],
+            "tradeoff": "디자이너가 저장소를 로컬에서 돌려야 하는 준비 마찰이 생겼다 — 기여 가이드와 짝 세션 한 번이 지금 가진 전부라고 적는다. 대신 Storybook 이 둘일 때 생기던 어긋남(간격 토큰, 다크 모드·RTL 상태, 독일어 라벨 줄바꿈)이 사라지고, 다시 짓기가 리뷰로 바뀐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트의 결과물을 어떻게 리뷰할 만하게 만들 것인가",
+            "chosen": "**AGENTS.md 로 라이브러리의 품질 기준과 경계를, 작업 순서 스킬로 순서를 준다**",
+            "alternatives": [
+              "에이전트 출력을 그대로 받고 리뷰에서 다 잡기"
+            ],
+            "tradeoff": "지시와 스킬을 라이브러리의 관례에 맞춰 계속 유지해야 한다. 대신 에이전트가 **돌아가는 코드**가 아니라 **팀이 예측할 수 있는 코드**를 내고, 우연한 깨뜨림이나 새 패턴을 만들지 않는다. Figma 프레임에서 픽셀 값을 베끼거나 API 를 지어내지 않게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "리뷰를 누가 무엇을 볼 것인가",
+            "chosen": "**판단할 자격으로 나눈다** — 시각은 디자이너가 Chromatic 에서, 계약(API·접근성·구조·테스트)은 엔지니어 둘이",
+            "alternatives": [
+              "엔지니어 한 명이 diff 를 손으로 읽으며 전부 리뷰",
+              "양쪽이 모든 것을 리뷰하는 척"
+            ],
+            "tradeoff": "리뷰가 넓어진다(엔지니어 둘 + 디자이너 승인). 다만 구현이 줄어든 만큼은 넓어지지 않고 **그 차이가 절약**이다. 디자이너와 에이전트가 보기엔 맞지만 틀린 컴포넌트(라이브러리에 안 맞는 공개 API, 스크린 리더 이름 누락, 행복한 경로만 있는 스토리)를 만들 수 있고 쓰기 권한이 그걸 머지 가능하게 하므로, 계약은 엔지니어 둘이 쥔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "'엔지니어 둘'을 강제할 것인가",
+            "chosen": "**아직 관례로 둔다** — GitHub 은 쓰기 권한이 있는 누구든 두 명의 승인을 센다",
+            "alternatives": [
+              "코드 소유자 규칙 등으로 게이트에 새기기"
+            ],
+            "tradeoff": "그 관례가 느슨해지면 **위험이 돌아온다**고 스스로 적는다. 게이트로 새기는 비용과 선택지는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "병목을 어디에 둘 것인가",
+            "chosen": "**리뷰를 일부러 병목으로 둔다**",
+            "alternatives": [
+              "리뷰를 가볍게 해 속도를 더 내기"
+            ],
+            "tradeoff": "리뷰어 둘이 느리면 **낭비를 없앤 게 아니라 옮긴 것**이다. 대신 가장 값진 질문(이 컴포넌트가 맞는가)이 맨 처음에 온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "이 길을 어떤 컴포넌트에 열 것인가",
+            "chosen": "**시스템에 맞는 일상 컴포넌트만** — 새 패턴은 누군가 먼저 라이브러리에 넣어야 에이전트가 따라 할 수 있다",
+            "alternatives": [
+              "모든 컴포넌트를 디자이너+에이전트 경로로"
+            ],
+            "tradeoff": "복잡한 상태, 중단 가능한 모션, 맞춤 접근성 의미는 여전히 엔지니어가 **구현에** 들어가야 한다 — 리뷰만으로는 안 된다. 대신 엔지니어의 판단을 가장 필요한 곳에 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design engineering at Bolt: shipping components with AI agents",
+                "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+                "publisher": "Bolt Labs (Medium)",
+                "date": "2026-09-17",
+                "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Chromatic",
+          "via": "PR 의 시각 리뷰",
+          "contract": "시각 변경을 디자이너가 변경이 보이는 자리에서 승인한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Figma",
+          "via": "시각 명세",
+          "contract": "탐색·토큰·상태를 정한다. 픽셀 값을 베끼거나 API 를 지어낼 원천은 아니다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "checkpoint-back-to-simple",
+          "via": "없음",
+          "contract": "같은 회사의 글이지만 둘은 서로를 언급하지 않는다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 한 번 짓고 리뷰한다",
+          "question": "디자이너의 컴포넌트가 어떻게 bolt.eu 에 나가는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  FIG[Figma · 탐색 · 토큰 · 상태] --> AG[\"<b>제품 라이브러리 안의 에이전트 + Storybook</b><br/>• AGENTS.md 품질 기준<br/>• 작업 순서 스킬\"]:::accent\n  AG --> PR[PR · CI · Chromatic]\n  PR --> VIS[디자이너 · 시각 승인]\n  PR --> ENG[엔지니어 둘 · API · 접근성 · 구조]\n  VIS --> MERGE[디자이너가 머지]\n  ENG --> MERGE\n  MERGE --> LIVE[bolt.eu]"
+        },
+        {
+          "title": "컴포넌트가 거쳐 온 길",
+          "question": "왜 두 번 짓기가 멀쩡해 보였나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 그림: Figma 만 넘기던 때\n  그림 --> 사내Storybook: 디자이너가 에이전트로 돌아가는 판을 만든다\n  사내Storybook --> 티켓: 제품 라이브러리는 따로다\n  티켓 --> 다시짓기: 엔지니어가 글 설명을 보고 두 번째로\n  다시짓기 --> 어긋남: 토큰 · RTL · 다크 모드가 갈라진다\n  사내Storybook --> 한라이브러리: 제품 라이브러리에 직접 쓴다\n  한라이브러리 --> 리뷰: 시각은 디자이너 · 계약은 엔지니어 둘\n  리뷰 --> [*]: 일주일 → 한 시간"
+        },
+        {
+          "title": "실패 경로 — 남은 구멍",
+          "question": "한 번 짓기가 무엇을 새로 열어 두는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  WA[디자이너 쓰기 권한]:::accent --> LOOK[보기엔 맞고 틀린 컴포넌트가 머지 가능]\n  LOOK --> API[라이브러리에 안 맞는 공개 API]\n  LOOK --> A11Y[스크린 리더 이름 누락]\n  LOOK --> HAPPY[행복한 경로만 있는 스토리]\n  CONV[엔지니어 둘은 관례일 뿐] --> BACK[관례가 느슨해지면 위험이 돌아온다]\n  SLOW[리뷰어가 느리다] --> MOVE[낭비를 옮겼을 뿐]\n  LOCAL[디자이너 로컬 환경] --> FRIC[준비 마찰 · 가이드와 짝 세션 한 번]\n  NEW[새 패턴 · 복잡한 상태] -.-> ENGI[엔지니어가 구현에 들어가야 한다]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Design engineering at Bolt: shipping components with AI agents",
+          "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+          "publisher": "Bolt Labs (Medium)",
+          "date": "2026-09-17",
+          "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
+        }
+      ]
     }
   ],
   "sources": [
@@ -1580,6 +1888,13 @@
       "publisher": "Bolt Tech Blog",
       "date": "2026-08-04",
       "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+    },
+    {
+      "title": "Design engineering at Bolt: shipping components with AI agents",
+      "url": "https://medium.com/bolt-labs/design-engineering-at-bolt-shipping-components-with-ai-agents",
+      "publisher": "Bolt Labs (Medium)",
+      "date": "2026-09-17",
+      "summary": "디자이너가 코딩 에이전트로 사내 Storybook 에서 이미 돌아가는 컴포넌트를 만들고, 엔지니어가 티켓을 보고 제품 라이브러리에 그걸 다시 짜던 '두 번 짓기'를 없앤 이야기. 디자이너가 bolt.eu 의 컴포넌트 라이브러리에 직접 쓰고 PR 을 열면 디자이너가 Chromatic 에서 시각을, 엔지니어 둘이 API·접근성·구조를 리뷰한다. AGENTS.md 와 작업 순서 스킬이 가드레일. 일상 컴포넌트 전달이 일주일에서 한 시간으로. 리뷰가 일부러 병목이 됐고, '엔지니어 둘'은 게이트가 아니라 관례라는 대가를 스스로 적는다."
     }
   ]
 }

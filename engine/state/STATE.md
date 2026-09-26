@@ -8,14 +8,14 @@
 
 ## 지금 파는 중
 
-**없다 — zozo 재방문에서 확장(`inventory-boundary`)을 마쳤다. 09-04 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
+**없다 — bolt 재방문에서 확장(`one-component-once`)을 마쳤다. 다음은 09-05 묶음.** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
 
 **비교 재료 — 과부하에서 물러서기.** Canva `worker-backpressure`(워커가 스스로 동시성을 줄임) · Uber `retry-storm-ownership`(재시도를 원인 바로 위로) · PlanetScale `concurrency-limits` · 배민 `auto-approve`(폴링 주기와 재시도 주기 분리). 넷이면 비교 문서 한 편이 된다. Canva 2부(컨트롤러 내부)가 나오면 재방문 때 확장.
 
-**비교 재료 — AI 로 개발하기.** Adyen `ai-in-sdlc`(모노레포·마켓플레이스·Architect·위험 태그·토큰 증액제)를 기존 '에이전트로 옮기기'(Shopify·freee·GitHub) 재료에 더한다.
+**비교 재료 — AI 로 개발하기.** Bolt `one-component-once`(디자이너가 제품 라이브러리에 직접, 리뷰 분담) · Wayfair `design-qa-skill`(시안과 빌드를 AI 가 대조) — 디자인↔코드 한 쌍. Adyen `ai-in-sdlc`(모노레포·마켓플레이스·Architect·위험 태그·토큰 증액제)를 기존 '에이전트로 옮기기'(Shopify·freee·GitHub) 재료에 더한다.
 
 **비교 재료 — 에이전트·워크로드 신원.** Zalando `agent-identity-broker`(사용자→에이전트 위임, 토큰 교환, 에이전트는 제공자 토큰을 안 받는다) · Netflix 「Trading a Cloud Identity for Your Own」(Medium, 관리형 컴퓨트의 AWS 역할 → 사내 PKI 인증서, 두 주장을 맞대어 신뢰; 본문을 받아 둔 적 있으나 아직 기능으로 안 씀).
 
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **bolt** — 2026-09-26 새 글 하나(디자인 엔지니어링, 09-17, Medium) → `one-component-once`. `medium.com/feed/bolt-labs` 의 `content:encoded` 로 본문 전문이 온다.
 - **zozo** — 2026-09-26 09-04 이후 새 글 15편 넘게. 재고 도메인 경계(09-08) → `inventory-boundary`. 안 쓴 후보: Datastream BigQuery 비용 92% 절감(09-25) · Devin 교차 저장소 영향 조사(09-25) · Argo Events ChatOps(09-24) · 기간 시스템 세션 오프로드(09-18) · ArchUnit 으로 AI 코딩 규칙 검증(09-07). 피드 `techblog.zozo.com/feed`(Atom).
 - **toss** — 2026-09-26 09-04 이후 새 글 12편 넘게. GPU-native 클러스터(09-15) → `gpu-native-cluster`. 안 쓴 후보: 토스닥터(쉼 없이 도는 테스트, 09-22) · Toss Benchmark(LLM 평가, 09-16) · AI 상담 연 300시간(09-23) · App Router(09-09) · AI 팀 규칙(09-08). 이전 MIG 도입기 글도 안 읽었다. 피드 `toss.tech/rss.xml`.
 - **canva** — 2026-09-26 새 글 하나(Worker Backpressure 1부, 09-17) → `worker-backpressure`. 피드 `canva.dev/blog/engineering/feed.xml`(UA 필요). 2부 예고됨.
