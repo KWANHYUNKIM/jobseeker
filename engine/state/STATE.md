@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**USEN ICT 기능 1(2026-09-26) — `snowflake-over-bigquery`. 다음은 확장: '영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다' — `de11e8a1b55355`(목차만: 계정 롤/DB 롤·시스템 롤·커스텀 롤·롤 계층·설계 포인트). 그 뒤 완주 점검 — 수익원(법인 ICT) 연결이 inferred 라 RSS·Zenn 검색으로 사업 쪽 글을 두 번 찾고 없으면 hold. 대기 0 → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**USEN ICT 기능 2(2026-09-26) — `cortex-two-tier-roles`. 두 도메인 featured, connections 서로 이어짐. 다음은 완주 점검: 수익원(법인 ICT · USEN GATE 02)의 도메인 연결이 inferred 라 검색 1(RSS 5편 — 이미 전부 봤다: 사업 글 없음) · 검색 2(Zenn 검색 API 'USEN GATE' · 'USEN ICT')로 찾고 없으면 hold_reason + STATE '재시도 안 함' + QUEUE hold. 대기 0 → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

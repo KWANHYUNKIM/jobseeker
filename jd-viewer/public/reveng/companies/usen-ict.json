@@ -88,7 +88,7 @@
         {
           "tech": "Snowflake 계정 롤 / 데이터베이스 롤 · 커스텀 롤 · 롤 계층 · Cortex 권한 두 층(개발자·이용자)",
           "solves": "쓰는 사람과 만드는 사람을 권한으로 가른다.",
-          "limits": "본문 세부(롤 이름·부여 내용)는 다음 사이클에 읽는다.",
+          "limits": "Cortex 기능의 실체는 아직 DEVELOPMENT DB 에 있고 PRODUCTION 전개는 검증 단계다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -101,7 +101,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "cortex-two-tier-roles"
+      ]
     }
   ],
   "features": [
@@ -394,6 +396,285 @@
           "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
           "date": "2026-05-12",
           "summary": "DWH 로 BigQuery 대신 Snowflake. 고르지 않은 이유 셋 — 스캔 종량이라 쿼리 전엔 비용을 모름 · GCP 전제라 벤더 록인(전에 트레저 데이터에서 이행 비용·비용 초과를 겪음) · 쿼리 단위 과금이라 부서별 비용 안분이 어렵다. 구성 — DWH Snowflake · 인제스트·오케스트레이션 TROCCO(Fivetran 행 단위 종량·Cloud Composer 운용 부담을 피해) · 변환 dbt(dbt Cloud CLI), 부품으로 분리해 부분 교체 가능. 도입 뒤 비즈니스 쪽이 Snowflake Intelligence·Streamlit in Snowflake 로 직접 쓰게 됐다. 다음은 AI 에이전트로 데이터 품질 이상 탐지 → 원인 → PR."
+        }
+      ]
+    },
+    {
+      "key": "cortex-two-tier-roles",
+      "name": "영업과 데이터 엔지니어가 한 Snowflake 계정을 쓸 때 AI 기능을 '만드는 쪽' 과 '쓰는 쪽' 두 계정 롤로 가른다 — 사람에겐 역할 배지(계정 롤)만 주고 기능의 열쇠(데이터베이스 롤)는 배지에 묶으며, 개발자는 이용자를 상속하고 전용 웨어하우스로 비용을 떼고 모두 Terraform 으로",
+      "domain": "영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "데이터 엔지니어(개발자)와 영업 쪽 사원이 **같은 Snowflake 계정**을 쓴다. 엔지니어는 Cortex Agent·Search Service·Semantic View 를 만들고 고쳐야 하고, 영업은 만들어진 것을 쓰기만 하면 된다. 한 계정에서 권한이 섞이면 의도치 않은 변경과 오조작의 위험이 있다 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'.",
+        "metrics": [
+          {
+            "label": "롤 구성",
+            "value": "계정 롤 2(CORTEX_DEVELOPER_ROLE · CORTEX_USAGE_ROLE) · 커스텀 DB 롤 4(FEATURE_WRITE/USAGE · DEVELOPMENT_WRITE/READ) · Snowflake 시스템 DB 롤 6(개발자만 CORTEX_USER·COPILOT_USER)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          },
+          {
+            "label": "DB",
+            "value": "PRODUCTION(파이프라인 최종 산출물 — Tableau·Looker Studio·영업이 참조, dbt·Terraform 관리) · DEVELOPMENT(개발 작업용 — 지금은 Cortex 기능의 실체도 여기)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "롤을 나누기 전에",
+          "thought": "곧장 두 층으로 나누는 얘기에 들어가기 전에, Snowflake 롤이 어떻게 생겼는지부터 — 계정 롤(계정 전체의 권한 단위, 사용자에게 직접)과 데이터베이스 롤(특정 DB 안 객체의 권한 묶음). 둘은 혼자 쓰는 게 아니라 조합해야 동작한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+              "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+              "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+              "date": "2026-08-03",
+              "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+            }
+          ]
+        },
+        {
+          "at": "CORTEX_USER 가 다른 롤을 함께 켠다는 걸 알고",
+          "thought": "CORTEX_USER 를 주면 AGENT·ANALYST·EMBED 같은 Cortex DB 롤이 함께 유효해진다. 그래도 개별 롤을 일부러 중복으로 명시했다 — 암묵적 유효화에 기대지 않고 필요한 권한이 구성으로 보이게.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+              "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+              "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+              "date": "2026-08-03",
+              "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "계정 롤(역할 배지)",
+            "what": "CORTEX_DEVELOPER_ROLE(데이터 엔지니어 — 개발·구축) · CORTEX_USAGE_ROLE(영업 쪽 사원 등 — 참조·실행만). 개발자가 이용자를 상속한다."
+          },
+          {
+            "name": "데이터베이스 롤(기능의 열쇠)",
+            "what": "Snowflake 시스템 롤(CORTEX_USER · COPILOT_USER · CORTEX_ANALYST_USER · CORTEX_AGENT_USER · CORTEX_EMBED_USER · CORTEX_REST_API_USER)과 DX 부가 만든 커스텀 롤."
+          },
+          {
+            "name": "커스텀 DB 롤",
+            "what": "CORTEX_FEATURE_WRITE_ROLE(Agent·Search·Semantic View 작성·편집·사내 공개) ⊃ CORTEX_FEATURE_USAGE_ROLE(참조) · DEVELOPMENT_WRITE_ROLE / DEVELOPMENT_READ_ROLE(기능이 겨냥하는 테이블·뷰)."
+          },
+          {
+            "name": "CORTEX_WH",
+            "what": "Cortex 전용 웨어하우스 — 두 계정 롤 모두 USAGE·OPERATE."
+          }
+        ],
+        "invariants": [
+          "사람에게는 계정 롤만 준다 — DB 롤은 계정 롤에 묶여 따라온다.",
+          "이용자층은 AI 기능을 만들거나 고칠 수 없다(참조·실행만).",
+          "LLM 원시 기능(CORTEX_USER)과 코딩 에이전트(COPILOT_USER)는 개발자에게만.",
+          "모든 커스텀 롤과 권한은 Terraform(TERRAFORM_ROLE 경유)으로 관리한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "DB 를 둘로 — PRODUCTION(최종 산출물, BI·영업 참조) / DEVELOPMENT(작업용, Cortex 기능의 실체)",
+            "why": "권한을 줄 대상부터 정한다. PRODUCTION 전개는 아직 검증 단계."
+          },
+          {
+            "step": "계정 롤 둘을 만들고 개발자가 이용자를 상속",
+            "why": "개발자는 이용자 권한을 모두 가진다 — 부여·관리가 한곳에 모인다."
+          },
+          {
+            "step": "`GRANT DATABASE ROLE … TO ROLE …` 로 시스템 DB 롤·커스텀 DB 롤을 계정 롤에 묶는다",
+            "why": "사원에게 배지 하나만 주면 필요한 열쇠가 세트로 켜진다. 여러 객체의 권한을 DB 롤로 모아 계정 롤에 주는 것을 최소로."
+          },
+          {
+            "step": "계정 권한 — 개발자에 USE AI FUNCTIONS · MODIFY SNOWFLAKE_INTELLIGENCE, 두 롤에 CORTEX_WH",
+            "why": "Cortex 비용을 전용 웨어하우스로 떼어 관리·모니터링을 쉽게."
+          },
+          {
+            "step": "전부 Terraform 으로",
+            "why": "IaC 로 롤·권한의 변경을 남긴다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "한 계정을 쓰는 엔지니어와 영업을 어떻게 가르나",
+            "chosen": "Cortex 전용 계정 롤을 개발자층 / 이용자층 두 층으로 — 최소 권한",
+            "alternatives": [
+              "한 롤로 모두에게",
+              "계정을 나눈다(inferred)"
+            ],
+            "tradeoff": "만들 사람만 만들고 쓸 사람은 쓰기만 한다. 대가는 롤·부여 관계를 설계·유지하는 일.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          },
+          {
+            "question": "사람에게 무엇을 주나",
+            "chosen": "계정 롤(배지)만 주고, DB 롤(열쇠)은 계정 롤에 묶는다",
+            "alternatives": [
+              "사용자에게 DB 롤·객체 권한을 직접"
+            ],
+            "tradeoff": "배지 하나로 필요한 AI 기능이 켜지고 권한이 롤 단위로 읽힌다. 대가는 배지와 열쇠 두 겹의 구조를 이해해야 하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          },
+          {
+            "question": "개발자와 이용자의 권한을 따로 관리하나",
+            "chosen": "개발자가 이용자를 상속 — FEATURE_WRITE 도 FEATURE_USAGE 를 상속",
+            "alternatives": [
+              "두 롤에 같은 권한을 따로 부여"
+            ],
+            "tradeoff": "부여·관리가 일원화된다. 대가는 이용자 쪽에 넣은 권한이 개발자에게도 저절로 가는 것 — 이용자 쪽을 넓힐 때 조심해야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          },
+          {
+            "question": "LLM 원시 기능과 코딩 에이전트를 누구에게",
+            "chosen": "CORTEX_USER·COPILOT_USER 는 개발자에게만, 분석·에이전트·임베드·REST API 는 양쪽",
+            "alternatives": [
+              "모든 Cortex 롤을 양쪽에"
+            ],
+            "tradeoff": "영업은 만들어진 에이전트·자연어 분석을 쓰고, 원시 LLM 호출이나 기능 제작은 못 한다. 대가는 영업이 스스로 새 AI 활용을 시험해 볼 길이 좁아지는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          },
+          {
+            "question": "CORTEX_USER 가 다른 롤을 함께 켜는데 개별 롤을 또 주나",
+            "chosen": "일부러 중복해 명시적으로 부여",
+            "alternatives": [
+              "암묵적 유효화에 맡긴다"
+            ],
+            "tradeoff": "필요한 권한이 구성에 보인다. 대가는 겉보기엔 불필요한 중복.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          },
+          {
+            "question": "Cortex 비용을 어디에 묶나",
+            "chosen": "전용 웨어하우스 CORTEX_WH",
+            "alternatives": [
+              "다른 분석 잡과 같은 웨어하우스(inferred)"
+            ],
+            "tradeoff": "AI 기능 비용을 따로 보고 관리한다 — 데이터 기반을 고를 때의 '웨어하우스 단위 안분' 을 AI 에도. 대가는 웨어하우스 하나가 더 느는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          },
+          {
+            "question": "Cortex 기능을 어느 DB 에 두나",
+            "chosen": "지금은 DEVELOPMENT 에 두고 검증, PRODUCTION 전개는 나중",
+            "alternatives": [
+              "처음부터 PRODUCTION"
+            ],
+            "tradeoff": "본번 산출물을 건드리지 않고 시험한다. 대가는 이용자가 개발 DB 의 기능을 쓰는 과도기 — 롤 설계도 이 단계를 전제로 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+                "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+                "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+                "date": "2026-08-03",
+                "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "부서마다 비용이 갈리는 사내 데이터 기반을 고른다(같은 회사의 다른 도메인)",
+          "via": "Snowflake 계정·웨어하우스 — 부서별 웨어하우스로 비용을 가른 원칙이 CORTEX_WH 로 이어진다",
+          "contract": "PRODUCTION DB 는 dbt·Terraform 이 만든 파이프라인 산출물이고, Cortex 이용자층은 그것을 BI 와 함께 참조한다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "배지와 열쇠",
+          "question": "사원에게 롤 하나를 주면 무엇이 함께 켜지나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  EMP[\"사원\"] --> DEV[\"CORTEX_DEVELOPER_ROLE\\n데이터 엔지니어\"]\n  EMP --> USE[\"CORTEX_USAGE_ROLE\\n영업 쪽\"]\n  DEV -->|상속| USE\n  DEV --> W[\"FEATURE_WRITE · DEVELOPMENT_WRITE\\nCORTEX_USER · COPILOT_USER\"]\n  USE --> R[\"FEATURE_USAGE · DEVELOPMENT_READ\\nAGENT · ANALYST · EMBED · REST_API\"]\n  DEV --> WH[\"CORTEX_WH\"]\n  USE --> WH"
+        },
+        {
+          "title": "권한이 섞이면",
+          "question": "한 계정에서 롤을 가르지 않으면 무엇이 깨지나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[\"엔지니어·영업이 같은 권한\"] --> X[\"영업이 Agent·Semantic View 를\\n의도치 않게 변경\"]\n  X --> B[\"다른 사람이 쓰는 AI 기능이 깨짐\"]\n  M --> Y[\"원시 LLM 호출이 섞여\\n비용이 어디서 나는지 모름\"]\n  B --> F[\"이용자층은 참조·실행만\"]\n  Y --> G[\"CORTEX_USER 는 개발자만 · 전용 CORTEX_WH\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+          "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+          "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+          "date": "2026-08-03",
+          "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
         }
       ]
     }
