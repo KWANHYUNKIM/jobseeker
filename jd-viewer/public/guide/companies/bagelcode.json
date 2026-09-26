@@ -263,6 +263,110 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/298925",
+      "title": "[Platform] 프론트엔드 웹 개발",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 강남구, 정규직(수습 3개월). **Platform 팀 프론트엔드**로 화면이 셋으로 갈린다 — NextJS 로 만드는 게임 플랫폼 Console·사내 서비스 Portal, 사내 Web UI 시스템과 **공용 웹 컴포넌트 패키지**, 그리고 **게임 브랜드/홍보 웹사이트**. 여기에 AWS·Kubernetes DevOps 와 AI 기반 서비스·업무 자동화 개발 참여가 붙는다. 필수는 웹 프론트엔드 5년(NextJS 실무), CS 기초, 반응형·웹 접근성·웹 표준 실무. 우대는 게임 플랫폼 웹 페이지 경험, 주도적 웹 개발, AI 관심, **웹 프론트엔드 팀 리더 경험**. 전형: 서류지원 - **과제전형** - 현업면접 - 임원면접 - 처우협의 - 서류제출(서버 공고는 코딩테스트·CEO 면접으로 적혀 있어 다르다). '해외 여행에 결격 사유가 없으신 분' 조건이 있다.",
+      "fit": {
+        "must_have": [
+          "웹 프론트엔드 5년 이상(NextJS 실무)",
+          "CS 기초",
+          "반응형·웹 접근성·웹 표준 실무"
+        ],
+        "can_learn": [
+          "게임 플랫폼 웹",
+          "프론트엔드 팀 리드",
+          "AWS·Kubernetes DevOps",
+          "AI 기반 업무 자동화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "공용 웹 컴포넌트 패키지 — 디자인 시스템",
+          "from": "task",
+          "quote": "• 사내 Web UI시스템, 공용 웹 컴포넌트 패키지 개발",
+          "priority": "core",
+          "why": "주요업무다. Console·Portal·홍보 사이트가 같은 컴포넌트를 쓰게 된다.",
+          "gap_check": "Console 과 Portal 이 같은 버튼·표·폼 컴포넌트를 쓰게 하려면 패키지를 어떻게 나누고 버전을 올리며, 한 앱이 새 버전으로 올라가도 다른 앱이 깨지지 않게 하려면 무엇(시맨틱 버전·변경 기록·스토리 기반 시각 비교)을 두는가?",
+          "drill": "pnpm workspace 로 공용 UI 패키지와 Next.js 앱 두 개를 만들고, Button·DataTable 을 Storybook 에 상태별 스토리로 올린 뒤, 한 앱만 새 버전을 쓰게 해 다른 앱이 옛 버전으로 계속 동작하는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Workspace | pnpm",
+              "url": "https://pnpm.io/workspaces",
+              "kind": "docs"
+            },
+            {
+              "title": "Get started with Storybook",
+              "url": "https://storybook.js.org/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "웹 접근성·웹 표준",
+          "from": "qualification",
+          "quote": "• 반응형 디자인, 웹 접근성 및 웹 표준에 대한 이해와 실무 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 요건이다. 공용 컴포넌트는 한 번 잘못 만들면 모든 화면에 퍼진다.",
+          "gap_check": "직접 만든 드롭다운·모달이 키보드만으로 열고 닫히고 스크린리더가 역할과 상태를 읽게 하려면 무엇(시맨틱 요소·aria 속성·포커스 관리)이 필요하고, WCAG 의 명도 대비 기준은 어느 정도인가?",
+          "drill": "WCAG 개요를 읽고, 위 컴포넌트 중 Modal·Select 를 키보드 전용·스크린리더(VoiceOver 또는 NVDA)로 사용해 막히는 지점을 목록으로 적은 뒤 고치고, 자동 검사 도구 결과와 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "WCAG 2 Overview | W3C",
+              "url": "https://www.w3.org/WAI/standards-guidelines/wcag/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "글로벌 게임 홍보 사이트 — 다국어·반응형·성능",
+          "from": "task",
+          "quote": "• 게임 브랜드/홍보 웹사이트 개발",
+          "priority": "high",
+          "why": "주요업무이고 회사가 전 세계 5,000만 명이 즐기는 글로벌 게임을 서비스한다(회사 브리핑). 필수에 반응형 디자인이 있다.",
+          "gap_check": "여러 나라 유저가 모바일로 들어오는 홍보 사이트에서 언어를 URL 로 나눌지 쿠키로 나눌지, 큰 게임 이미지·영상이 첫 화면 로딩(LCP)을 늦추지 않게 무엇을 하는가?",
+          "drill": "Next.js 국제화 가이드로 영어·한국어 두 언어 홍보 페이지를 만들고, 반응형 레이아웃과 이미지 최적화를 적용한 뒤 모바일 기준 Web Vitals(LCP·CLS)를 전후 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Guides: Internationalization | Next.js",
+              "url": "https://nextjs.org/docs/app/guides/internationalization",
+              "kind": "docs"
+            },
+            {
+              "title": "Responsive web design - MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
+              "kind": "docs"
+            },
+            {
+              "title": "Web Vitals | web.dev",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Console·Portal — 서버·클라이언트 컴포넌트 나누기",
+          "from": "task",
+          "quote": "• NextJS 를 이용하여 게임 플랫폼 Console, 사내 서비스 Portal 개발",
+          "priority": "nice",
+          "why": "첫 주요업무이고 필수가 NextJS 실무다.",
+          "gap_check": "운영 콘솔의 유저 조회 표는 서버 컴포넌트에서 데이터를 가져오고, 필터·정렬 입력은 클라이언트 컴포넌트로 두는 식으로 나눌 때, 권한 없는 운영자에게 데이터가 새지 않게 하려면 권한 검사를 어디서 하는가?",
+          "drill": "Next.js App Router 로 운영자 역할에 따라 보이는 열이 다른 유저 조회 화면을 만들고, 권한 검사를 서버 쪽에서만 했을 때와 클라이언트에서 숨기기만 했을 때 네트워크 응답에 무엇이 실리는지 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Getting Started: Server and Client Components | Next.js",
+              "url": "https://nextjs.org/docs/app/getting-started/server-and-client-components",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
