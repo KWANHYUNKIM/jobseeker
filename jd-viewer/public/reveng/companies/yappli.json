@@ -1,0 +1,136 @@
+{
+  "slug": "yappli",
+  "name": "ヤプリ",
+  "name_en": "Yappli",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "yappli.co.jp",
+  "one_liner": "노코드 앱 플랫폼 Yappli — 한 줄짜리 targetSdk 상향 뒤의 1년 4개월을 배치 패턴 관리와 라이브러리 고정으로 버티고, 서버 문의는 원인 특정까지만 맡아 조사의 손을 늘 비워 둔다",
+  "business_model": "기업이 자사 앱을 **코드 없이** 만들고 운용·분석하는 클라우드 플랫폼 **Yappli** 와, 앱을 릴리스하기만 하면 시작하는 **노코드 CRM(Yappli CRM)** 을 판다(도쿄증권거래소 상장). 과금 구조·매출 비중은 1차 자료로 확인하지 못했다.\n\n고객사 앱이 **하나의 플랫폼** 위에서 만들어지는 구조라, OS 의 연례 요구(targetSdk)는 플랫폼이 한 번에 받아내야 하고, 고객사 문의는 CS 를 거쳐 개발로 월 수십 건 들어온다(이 사이트의 해석).",
+  "products": [
+    "Yappli(노코드 앱 개발·운용·분석)",
+    "Yappli CRM(노코드 CRM)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다(도쿄증권거래소 상장 — IR 에서 확인 가능할 것)",
+  "revenue_streams": [
+    {
+      "name": "Yappli(앱 플랫폼)",
+      "how": "기업 앱의 개발·운용·분석을 클라우드에서 원스톱으로 제공한다. 과금 구조는 확인 못 함.",
+      "weight": "주력(비중 확인 못 함)",
+      "domains": [
+        "한 줄 SDK 상향 뒤의 1년 4개월을 버틴다",
+        "문의 조사와 수정을 다른 줄에 세운다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "サービス｜Yappli, Inc.（株式会社ヤプリ）",
+          "url": "https://yappli.co.jp/service/",
+          "publisher": "株式会社ヤプリ",
+          "date": "2026-09-26",
+          "summary": "모든 기업의 'Go Mobile' 을 밀고 앱으로 기업과 고객을 잇는다. **Yappli** — 앱의 개발·운용·분석을 클라우드에서 **원스톱**으로 제공하는 플랫폼(판촉 지원·사내용 등). **Yappli CRM** — 앱을 릴리스하기만 하면 시작하는 **노코드 CRM**, 고객 행동 데이터로 앱다운 시책. 도쿄증권거래소 상장(IR 페이지)."
+        }
+      ]
+    },
+    {
+      "name": "Yappli CRM",
+      "how": "앱 릴리스로 시작하는 노코드 CRM. 고객 행동 데이터로 시책.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "サービス｜Yappli, Inc.（株式会社ヤプリ）",
+          "url": "https://yappli.co.jp/service/",
+          "publisher": "株式会社ヤプリ",
+          "date": "2026-09-26",
+          "summary": "모든 기업의 'Go Mobile' 을 밀고 앱으로 기업과 고객을 잇는다. **Yappli** — 앱의 개발·운용·분석을 클라우드에서 **원스톱**으로 제공하는 플랫폼(판촉 지원·사내용 등). **Yappli CRM** — 앱을 릴리스하기만 하면 시작하는 **노코드 CRM**, 고객 행동 데이터로 앱다운 시책. 도쿄증권거래소 상장(IR 페이지)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "하나의 플랫폼, 많은 고객 앱",
+    "question": "노코드 앱 플랫폼은 OS 요구와 고객 문의를 어떻게 받나?",
+    "code": "flowchart LR\n  OS[\"Android targetSdk 35 → 36\"] --> PLAT[\"Yappli Android 앱 기반\\nedge-to-edge 배치 패턴 · 16KB\"]\n  PLAT --> APPS[\"고객사 앱들\"]\n  CL[\"고객사\"] --> CS[\"CS\"] -->|못 푼 것| ENG[\"엔지니어\\n원인 특정까지\"]\n  ENG -->|Jira 기표| DEV[\"개발 관리 · 수정\"]\n  ENG -->|회답| CS",
+    "_note": "위는 Android 플랫폼 요구 대응, 아래는 서버사이드 문의 대응의 분업이다. 두 도메인을 Yappli 수익원에 이은 것은 이 사이트의 해석(글은 수익원을 말하지 않는다). Yappli CRM 쪽 기술 글은 아직 못 찾았다."
+  },
+  "domains": [
+    {
+      "name": "한 줄 SDK 상향 뒤의 1년 4개월을 버틴다",
+      "why": "Android 는 해마다 targetSdk 를 올려야 하고, 올해(36)는 edge-to-edge 강제와 16KB 페이지 크기가 겹쳤다. Yappli 는 기능마다 앱 바 유무가 달라 화면별 판단이 필요했고, 낡은 AR 라이브러리는 새 요구를 못 받았다.",
+      "tech": [
+        {
+          "tech": "배치 패턴별 edge-to-edge 적용 관리 · Sceneform → SceneView 이행 + 상속 커스터마이즈·버전 고정 · CameraX 업데이트",
+          "solves": "한 줄 차분(35→36) 뒤의 18화면·16KB 대응을 6명이 1년 4개월에 걸쳐 끝냈다.",
+          "limits": "다른 기능 개발과 병행해 **고려 누락·QA 되돌림·revert 2회**, 머지까지 최장 11개월 — 다음엔 집중 체제가 필요하다고 스스로 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "今年のtargetSdk 36対応を振り返る ― DroidKaigiポスターセッション解説",
+              "url": "https://tech.yappli.io/entry/droidkaigi-poster-session-targetsdk36",
+              "publisher": "Yappli Tech Blog",
+              "date": "2026-09",
+              "summary": "Android 의 연례 **targetSdk 대응**(35→36) — 한 줄 차분 뒤에 6명이 **2025-04 ~ 2026-08, 약 1년 4개월**. 관련 PR 37건, 변경 파일 연 207, +4,474/−1,504, **edge-to-edge** 개별 대응 Activity 18화면, 릴리스 뒤 revert·재대응 2회, PR 작성부터 develop 머지까지 **최장 11개월**. ① 기능마다 앱 바 유무가 달라 **배치 패턴별로 edge-to-edge 적용 영역을 관리하는 구조** — 그래도 고려 누락으로 QA 되돌림, 다른 기능 개발과 병행해 누락·지연(다음엔 집중 체제로). ② **16KB 페이지 크기** — 카메라는 CameraX 업데이트로, AR 은 낡은 Sceneform → **SceneView** 이행, 그대로면 강제 종료라 기한까지 업데이트를 기다려도 안 풀려 **라이브러리 클래스를 상속·커스터마이즈하고 버전 고정**. ③ CI/CD 도구 갱신·예측형 '뒤로'·대화면 제한 옵트아웃."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "문의 조사와 수정을 다른 줄에 세운다",
+      "why": "CS 가 못 푼 고객 문의가 개발로 월 약 70건(서버 4할) 들어오고, 30분짜리와 3일짜리가 한 목록에 섞인다. 주요 리포지토리 5개 이상을 넘나들며, 멀티프로덕트화로 난이도가 오르는 중이다.",
+      "tech": [
+        {
+          "tech": "원인 특정까지만 책임 · Jira 기표로 수정 분리 · Slack 하루 두 번 미담당 리마인드 · 손을 드는 운용 · AI 1차 회답",
+          "solves": "조사의 손을 늘 비워 두어 급한 문의의 초동을 늦추지 않는다.",
+          "limits": "담당이 **기마다 바뀌고 겸무**라 조사 감각이 안 쌓인다 — 전임 포지션이 필요하다는 결론.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ヤプリのサーバーサイド問い合わせ対応紹介",
+              "url": "https://tech.yappli.io/entry/handling-customer-inquiries",
+              "publisher": "Yappli Tech Blog",
+              "date": "2026-09-04",
+              "summary": "클라이언트가 CS 에 보낸 문의 중 CS 가 못 푼 것이 엔지니어로 — 개발 전체 **월 약 70건**, 서버사이드가 4할 전후, 기한 기본 3영업일(목표치), 주요 리포지토리 5개 이상을 넘나든다. 유형: 사양 확인·불량 확인·조사 의뢰·작업 의뢰(30분~2~3일). 조사는 New Relic·CloudWatch 로 서비스 횡단 로그 + DB. 예: 'Android 특정 사용자에 푸시가 안 옴' — 디바이스 토큰 유효 → 배포 로그·FCM 요청 → 원인은 설정 실수. **책임은 원인 특정까지**, Jira 에 기표, 수정은 개발 관리로 — 조사도 수정도 **소요 시간을 못 읽어** 한 사람이 둘을 안으면 한쪽이 반드시 멈춘다; 다만 조사를 막지 않는 작은 수정·디버그 로그는 그 자리에서. 크리티컬은 인시던트 플로로(첫 보고를 자주 맡음). Slack 에 하루 두 번 **미담당 티켓 리마인드**, 고정 당번 대신 손을 드는 운용(무게를 예측 못 해 균등 배분 불가). 과제: **멀티프로덕트화**로 난이도 상승, 기능 개발 겸무라 컨텍스트 스위치, 담당이 기마다 바뀌어 조사 감각이 안 쌓임 → **전임 포지션**이 필요하다는 결론. AI 1차 회답 자동화는 이미 하지만 정확도·범위를 넓히고 싶다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 구조·매출 비중을 1차 자료로 확인하지 못했다.",
+    "Yappli CRM 수익원의 기술 글은 아직 못 찾았다.",
+    "두 도메인의 Yappli 수익원 연결은 inferred.",
+    "Claude Code 로 사양 누락 찾기(`create-qa-plan`)·Claude Code Hooks(`claude-code-hooks`)가 있다."
+  ],
+  "sources": [
+    {
+      "title": "サービス｜Yappli, Inc.（株式会社ヤプリ）",
+      "url": "https://yappli.co.jp/service/",
+      "publisher": "株式会社ヤプリ",
+      "date": "2026-09-26",
+      "summary": "모든 기업의 'Go Mobile' 을 밀고 앱으로 기업과 고객을 잇는다. **Yappli** — 앱의 개발·운용·분석을 클라우드에서 **원스톱**으로 제공하는 플랫폼(판촉 지원·사내용 등). **Yappli CRM** — 앱을 릴리스하기만 하면 시작하는 **노코드 CRM**, 고객 행동 데이터로 앱다운 시책. 도쿄증권거래소 상장(IR 페이지)."
+    },
+    {
+      "title": "今年のtargetSdk 36対応を振り返る ― DroidKaigiポスターセッション解説",
+      "url": "https://tech.yappli.io/entry/droidkaigi-poster-session-targetsdk36",
+      "publisher": "Yappli Tech Blog",
+      "date": "2026-09",
+      "summary": "Android 의 연례 **targetSdk 대응**(35→36) — 한 줄 차분 뒤에 6명이 **2025-04 ~ 2026-08, 약 1년 4개월**. 관련 PR 37건, 변경 파일 연 207, +4,474/−1,504, **edge-to-edge** 개별 대응 Activity 18화면, 릴리스 뒤 revert·재대응 2회, PR 작성부터 develop 머지까지 **최장 11개월**. ① 기능마다 앱 바 유무가 달라 **배치 패턴별로 edge-to-edge 적용 영역을 관리하는 구조** — 그래도 고려 누락으로 QA 되돌림, 다른 기능 개발과 병행해 누락·지연(다음엔 집중 체제로). ② **16KB 페이지 크기** — 카메라는 CameraX 업데이트로, AR 은 낡은 Sceneform → **SceneView** 이행, 그대로면 강제 종료라 기한까지 업데이트를 기다려도 안 풀려 **라이브러리 클래스를 상속·커스터마이즈하고 버전 고정**. ③ CI/CD 도구 갱신·예측형 '뒤로'·대화면 제한 옵트아웃."
+    },
+    {
+      "title": "ヤプリのサーバーサイド問い合わせ対応紹介",
+      "url": "https://tech.yappli.io/entry/handling-customer-inquiries",
+      "publisher": "Yappli Tech Blog",
+      "date": "2026-09-04",
+      "summary": "클라이언트가 CS 에 보낸 문의 중 CS 가 못 푼 것이 엔지니어로 — 개발 전체 **월 약 70건**, 서버사이드가 4할 전후, 기한 기본 3영업일(목표치), 주요 리포지토리 5개 이상을 넘나든다. 유형: 사양 확인·불량 확인·조사 의뢰·작업 의뢰(30분~2~3일). 조사는 New Relic·CloudWatch 로 서비스 횡단 로그 + DB. 예: 'Android 특정 사용자에 푸시가 안 옴' — 디바이스 토큰 유효 → 배포 로그·FCM 요청 → 원인은 설정 실수. **책임은 원인 특정까지**, Jira 에 기표, 수정은 개발 관리로 — 조사도 수정도 **소요 시간을 못 읽어** 한 사람이 둘을 안으면 한쪽이 반드시 멈춘다; 다만 조사를 막지 않는 작은 수정·디버그 로그는 그 자리에서. 크리티컬은 인시던트 플로로(첫 보고를 자주 맡음). Slack 에 하루 두 번 **미담당 티켓 리마인드**, 고정 당번 대신 손을 드는 운용(무게를 예측 못 해 균등 배분 불가). 과제: **멀티프로덕트화**로 난이도 상승, 기능 개발 겸무라 컨텍스트 스위치, 담당이 기마다 바뀌어 조사 감각이 안 쌓임 → **전임 포지션**이 필요하다는 결론. AI 1차 회답 자동화는 이미 하지만 정확도·범위를 넓히고 싶다."
+    }
+  ]
+}

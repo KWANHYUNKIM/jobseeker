@@ -1580,3 +1580,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Sumzap 완주 판정 — IP·이벤트 hold
 
 - 사이트맵 2023~2026 37편 제목 0건, 홍보 note 도 해당 없음. hold_reason 추가.
+
+## 2026-09-26 Yappli 회사 프로파일
+
+- 대기 맨 위. 서비스 페이지 + 기술 글 둘(targetSdk 36 · 서버사이드 문의 대응)로 도메인 둘. 수익원 Yappli(inferred)·CRM.
