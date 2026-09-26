@@ -2368,3 +2368,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GA technologies 물건 연동(ITANDI)
 
 - ITANDI 수익원 판정: Zenn(Publication itandi* 없음 · 검색 0건)엔 없었지만 회사 쪽 기술 블로그 `tech.itandi.co.jp/feed` 를 찾았다. 물건 연동 통괄 시스템 packwerk 글로 도메인 셋째 + 기능 `property-sync-packwerk-monolith`, 결정 8. M&A 는 검색 둘 다 0건 — 다음 사이클 회사 페이지 확인 후 보류 판정.
+
+## 2026-09-27 GA technologies M&A 수익원 보류
+
+- 검색 1: RSS 두 곳(Zenn · イタンジ 블로그) 제목 — 없음. 검색 2: Zenn 검색 2낱말 0건 + spicon.co.jp — 시스템 글 없음. hold_reason, in_progress 유지.
