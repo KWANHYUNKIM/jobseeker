@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **142건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **143건**.
+직전 회차: ✅ `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(7774291) 3항목 — **시애틀**, 추론·토큰 생성 최적화·CV 상품·추론 관측성, $174K~$299K. 공고 얇음.
 직전 회차: ✅ `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(7816155) 4항목 — **마운틴뷰**, 검색·추천 결함 진단·개인화 retrieval·랭킹 통합·A/B, $187K~$322K. LambdaMART 개요 403 이라 뺌.
 직전 회차: ✅ `Senior Staff ll, AI Engineer (L7-2)`(7834206) 4항목 — **마운틴뷰**, 생성형 AI 앱(RAG·벡터 DB·에이전트·신뢰성), $171K~$351K. ⚠️ 직급 L7-2 인데 필수 3년(open_questions).
 직전 회차: ✅ `Senior Staff Data Scientist`(7997383) 4항목 — **마운틴뷰**, 검색 조직 DS(실험·검색 지표·데이터셋·랭킹 영향), $174K~$290K.
