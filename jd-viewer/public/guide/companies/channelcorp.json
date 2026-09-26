@@ -6,7 +6,7 @@
     "채널코퍼레이션",
     "채널톡"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "channel.io",
   "one_liner": "B2B '올인원 AI 메신저' 채널톡을 만드는 회사 — AI 상담 에이전트 ALF 가 이미 매출의 한 축이고, 일본 1위·미국 진출을 공고에 적는다",
@@ -752,6 +752,105 @@
             {
               "title": "Threat Modeling | OWASP",
               "url": "https://owasp.org/www-community/Threat_Modeling",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/338292",
+      "title": "[채널톡] Software Engineer, Senior",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. Software Engineer(222071)가 Backend·Frontend·모바일 세 트랙을 묶은 신입-경력 공고라면, 이쪽은 **백엔드 전용 시니어** 자리다 — 800만 명이 쓰는 채널톡 핵심 백엔드 설계·고도화, Java·Dropwizard 메인 API 서버의 성능 최적화·아키텍처, AWS Lambda·Node.js·Python·Golang 마이크로서비스, 트래픽 증가에 맞춘 인프라 스케일링·안정화, 장애 감지·알림·복구 프로세스 설계, ECS·EKS 배포 자동화, 그리고 **기술적 의사결정을 내리고 프로젝트 전 과정을 오너십 있게 리드**. 필수는 백엔드 아키텍처 설계·운영 5년, Java·Go·Python 중 하나 이상 깊이, 대규모 트래픽 성능·안정성, AWS·Kubernetes, 시스템 설계·자료구조·알고리즘, 주도적 태도, 협업 리더십. 우대는 스타트업에서 복잡한 문제 해결, 기획부터 출시까지 주도, SRE·데이터 엔지니어링·보안 전문성, 석·박사. 전형은 222071 과 같다 — 서류 > 사전기술인터뷰(온라인, 30~45분 구현·CS 기초) > 1차(PS 풀이·학부 CS·라이브 코딩) > 2차(대표 분야 기술 견해, 1시간 30분) > 3차(대표님) > 최종 합격. **시니어 공고도 PS 라이브 코딩을 거친다.**",
+      "fit": {
+        "must_have": [
+          "백엔드 아키텍처 설계·운영 5년 이상",
+          "Java·Go·Python 중 하나 이상 깊이",
+          "대규모 트래픽 성능·안정성",
+          "AWS·Kubernetes",
+          "시스템 설계·자료구조·알고리즘"
+        ],
+        "can_learn": [
+          "SRE·데이터 엔지니어링·보안 전문성",
+          "석·박사(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "메인 API 서버 성능 최적화 — 측정부터",
+          "from": "task",
+          "quote": "• Java, Dropwizard 기반의 메인 API 서버의 성능 최적화 및 아키텍처 디자인",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '대규모 트래픽을 처리한 경험, 성능 최적화 및 안정성 확보 경험' 이 있다.",
+          "gap_check": "메인 API 의 p99 지연이 오를 때 GC 멈춤·DB 커넥션 풀 고갈·특정 엔드포인트의 N+1·락 경합 중 무엇인지 어떤 순서로 좁히고, 프로파일러의 플레임 그래프에서 무엇을 먼저 보는가?",
+          "drill": "Dropwizard 앱에 Metrics 로 엔드포인트별 타이머를 달고 부하를 준 뒤, async-profiler 로 CPU·할당 플레임 그래프를 떠서 가장 넓은 스택 하나를 고쳐 전후 p99 를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Getting Started | Metrics",
+              "url": "https://metrics.dropwizard.io/4.2.0/getting-started.html",
+              "kind": "docs"
+            },
+            {
+              "title": "async-profiler/async-profiler",
+              "url": "https://github.com/async-profiler/async-profiler",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "장애 감지·알림·복구 프로세스 설계",
+          "from": "task",
+          "quote": "• 장애 대응 시스템 설계 및 운영: 장애 감지, 알림, 복구 프로세스 설계",
+          "priority": "core",
+          "why": "주요업무이고 우대에 SRE 전문성이 있다. 800만 명이 쓰는 메신저라 장애가 곧 고객사 상담 중단이다(회사 브리핑).",
+          "gap_check": "알림이 너무 많아 무시되는 상황을 피하려면 무엇(SLO 기반·증상 기반 알림)에 알림을 걸고, 장애 후 같은 일이 반복되지 않게 회고에서 무엇을 남기는가?",
+          "drill": "메인 API 에 가용성·지연 SLO 를 하나씩 정하고 에러 버짓 소진 속도 기반 알림 조건을 설계한 뒤, 가상의 장애 하나로 블레임리스 포스트모템을 써 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Google SRE - Service Level Objectives",
+              "url": "https://sre.google/sre-book/service-level-objectives/",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE - Postmortem Culture",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Lambda 마이크로서비스와 메인 서버의 경계",
+          "from": "task",
+          "quote": "• AWS Lambda, Node.js, Python, Golang 등을 활용한 마이크로서비스 설계 및 개발",
+          "priority": "high",
+          "why": "주요업무이고 다음 줄이 트래픽 증가에 대응한 인프라 스케일링이다.",
+          "gap_check": "어떤 기능은 메인 Dropwizard 서버에 두고 어떤 기능은 Lambda 로 빼는지 무엇(호출 빈도·지연 민감도·실행 시간)으로 가르고, 트래픽이 몰려 Lambda 동시성이 늘 때 뒤의 DB 가 먼저 무너지지 않게 무엇(예약 동시성·큐)으로 막는가?",
+          "drill": "웹훅 처리 기능을 Lambda 로 만들고 SQS 를 앞에 둔 버전과 직접 호출 버전에 같은 폭주 트래픽을 넣어, 예약 동시성을 걸었을 때 DB 커넥션 수가 어떻게 달라지는지 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Understanding Lambda function scaling",
+              "url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-concurrency.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "시스템 설계 — 메신저 규모로 생각하기",
+          "from": "qualification",
+          "quote": "• 시스템 설계, 자료구조, 알고리즘에 대한 탄탄한 기반",
+          "priority": "high",
+          "why": "필수 요건이고 전형에 PS 라이브 코딩과 '가장 깊게 쌓아오신 대표 분야' 기술 견해 인터뷰가 있다.",
+          "gap_check": "하루 수백만 명이 쓰는 채팅의 '안 읽은 메시지 수' 를 실시간으로 보여 주려면 쓰기 시점 계산과 읽기 시점 계산 중 무엇을 고르고, 여러 기기에서 읽음 상태가 어긋나면 무엇을 기준(서버 시퀀스)으로 맞추는가?",
+          "drill": "시스템 설계 입문서의 채팅 사례를 읽고, '고객사별 상담 채팅 + 안 읽은 수 + 멀티 디바이스' 설계를 한 장(저장소·캐시·팬아웃·병목)으로 그린 뒤 45분 안에 말로 설명해 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "donnemartin/system-design-primer",
+              "url": "https://github.com/donnemartin/system-design-primer",
               "kind": "docs"
             }
           ]
