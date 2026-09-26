@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**코네히토 — 확장 2(2026-09-26): Graviton 도메인에 `graviton-canary-migration`(결정 7). 두 도메인 모두 기능. 다음은 완주 판정 — 관공서 수익원은 도메인이 없다: tech.connehito.com 사이트맵 2024~2026 전 제목(병렬, 접미사 ' - コネヒト開発者ブログ' 떼기)을 '自治体·官公庁·行政·プレコン·母子手帳' 으로, 두 번 없으면 hold. 대기 0/3 — 그 뒤 후보 조사. 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS(hold)·LayerX 는 in_progress.**
+**코네히토 — hold(2026-09-26, 도메인 2 · 기능 2). 관공서 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 후보 조사(큐 0/3 — 3순위). 83번째에서 미판정: coincheck·feedforce(글 있음), kurashiru·KINTO·sakura·tabelog·GMO·visasq·lunch·nature(Remo)·fusic·JMDC·UUUM·macloud·smartcamp·medirom(9월 비었음). 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토(hold)·LayerX 는 in_progress.**
 
 
 
@@ -369,6 +369,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **ENECHANGE 비교·전환·EV·투자 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 199편 제목 · speakerdeck 404). 비교 엔진·요금 시뮬레이션·EV 충전 글이 새로 나오면 다시.
 - **엔니고모 BUYMA TRAVEL·STYLE HAUS 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 128편 제목 · 'AIでさがす' 는 기사 출처 불명). TRAVEL·미디어 구조 글이 새로 나오면 다시.
 - **SMS 헬스케어·시니어·해외 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 156편 제목 · speakerdeck sms_tech 21건). 그쪽 구조 글이 새로 나오면 다시.
+- **코네히토 관공서 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 102편 제목 · note connehito_blog). 관공서 대상 개발 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
