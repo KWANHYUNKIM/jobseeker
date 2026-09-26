@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**데브시스터즈 — 프로파일(2026-09-26). 다음은 확장: "게임 로그를 게임별로 갈라 흘려보낸다" 를 `tech.devsisters.com/posts/kafka-streams-keda-scaling`(읽음, 후반 cron trigger·스레드 다중화 부분 마저)으로. 목록은 `tech.devsisters.com/rss.xml`. 큐 2/3 → 이 회사 뒤 후보 조사.**
+**데브시스터즈 — 기능 1(`lag-not-cpu`, 2026-09-26). 다음은 확장: "지표 정의를 한곳에 둔다" 를 `tech.devsisters.com/posts/metric-view`(앞부분 읽음 — 데이터 구조를 어떻게 나눴는지·설계 규칙·결과 부분을 마저)로. 그 뒤 수익원 '애니메이션·라이선싱' 은 기술 자료가 없을 공산이 크다 — 완주 기준을 볼 때 확인.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.

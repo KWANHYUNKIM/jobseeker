@@ -19,7 +19,7 @@
 
 | **CADDi(キャディ)** | JP · 제조(조달·도면 SaaS) | 프로파일(2026-09-26). 도메인 둘 — 여러 제품이 한 문으로 들어온다(Control Plane) · 쌓인 제조 데이터를 싸게 꺼낸다(BigQuery). 기능 2(인증 게이트웨이 · BigQuery 비용). **hold** — 수발주 수익원 자료 2회 없음(완주 기준 셋째 미충족)(`CADDi の Control Plane`·`RFC 8707`·`Auth0 で SSO`), 그다음 Go 채택·JSON 컬럼 비용. |
 
-| **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 0. 다음 — **KEDA lag 스케일링**(이미 읽음), 그다음 Metric View. 라이브 서버(킹덤 AZ 장애·hot range 사후 분석)는 세 번째 도메인 후보. |
+| **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 1(KEDA lag 스케일링). 다음 — **Metric View**. 라이브 서버(킹덤 AZ 장애·hot range 사후 분석)는 세 번째 도메인 후보. |
 
 ## 대기
 
