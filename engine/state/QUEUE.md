@@ -48,7 +48,6 @@
 | **dely(クラシル)** | JP · 레시피·절약 앱·리테일 AI | 프로파일(2026-09-26). 도메인 둘(레시챌) — 수억 장의 영수증 화상을 싸게 쌓아 둔다 · 쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다. 기능 3(`receipt-image-storage-tiering` · `braze-personalization-four-ways` · `serving-size-adjustment`) — 셋째 도메인 '레시피의 분량을 사람 수에 맞춰 바꾼다'(클라시루). **hold** — AI OS·TRILL/LIVEwith 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음. 입구 `zenn.dev/p/dely_jp/feed`. |
 | **みてね(MIXI · 家族アルバム)** | JP · 가족 사진·영상 공유 앱 | 프로파일(2026-09-26). 도메인 둘 — 가족당 수백만 장에서 말로 사진을 찾는다 · 내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다. 기능 2(`natural-language-photo-search` · `ingress-nginx-to-envoy-gateway`). **hold** — 프린트·포토북 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 사진 프린트·포토북은 도메인 없음. 입구 `zenn.dev/p/mitene/feed`. |
 | **SODA(スニーカーダンク)** | JP · 감정 붙은 스니커·트레카 마켓 | 프로파일(2026-09-26). 도메인 둘 — 구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다 · 상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다. 기능 2(`purchase-payment-idempotency` · `purchase-flow-tla-audit`). **hold** — 실매장 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 실매장은 도메인 없음. 입구 `zenn.dev/p/team_soda/feed`. |
-| **Luup** | JP · 전동 킥보드·자전거 셰어 | 프로파일(2026-09-26). 도메인 둘 — 돈에 닿는 특전 로직을 동작 차이 없이 새 구조로 옮긴다 · 여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다. 기능 2(zero-diff-benefit-migration · admin-frontend-layers). 수익원 라이드 이용료(기본 50엔 + 분당). 입구 `zenn.dev/p/luup_developers/feed`. |
 
 
 ## 대기
@@ -1013,6 +1012,7 @@
 
 ## 완료
 
+- **Luup** (JP · 전동 킥보드·자전거 셰어 · 기본 50엔 + 분당) — 2026-09-26 완주. 도메인 2 · 기능 2. **바뀌지 않은 것이 성공이다.** 지불에 닿는 특전 도메인은 'main 과 미승인 동작 차 제로' 를 에이전트 메모리에 적고 Claude Code 와 7개 Stacked PR 로 DDD Modules 에 옮겼다 — 특성 테스트·count() 실측·의도적 차이 목록, AI 의 친절(undefined→null)과 fail-close 회귀를 원칙이 잡았다. 사내 관리 화면은 SFC 에 섞인 쿼리·라이브러리·UI 를 features·repository·infrastructure·core 로 한 단계씩 밀어내며 새것은 새 규칙, 기존은 만질 때. 차량·IoT 쪽 글은 못 봤다.
 - **COUNTERWORKS(カウンターワークス)** (JP · 상업 공간 마켓 SHOPCOUNTER · 리싱 SaaS SCE) — 2026-09-26 완주. 도메인 3 · 기능 3. **새는 자리는 사람이 아니라 구조로 막는다.** 도입 기업마다 따로 서던 Rails 앱을 10개월에 Pool 공유 DB 로 합치며 앱 층 WHERE 자동 부여와 PostgreSQL RLS 를 한 concern 으로 같이 켜고, BYPASSRLS 소유 VIEW 로 새던 구멍은 WHERE 와 CI 스펙으로. 60개 넘는 잡은 유료판 대신 SolidQueue 로 위험도별 Phase 를 하나씩, 철수는 Worker → 코드 → Redis. SHOPCOUNTER 는 멈춘 거래를 RAG 3관점 점수로 골라 사람이 확인(인턴 작). 요금 구조는 공개 자료에 없다.
 - **Safie(セーフィー)** (JP · 클라우드 카메라 영상 플랫폼 · Trail Station 녹화기) — 2026-09-26 완주. 도메인 2 · 기능 2. **이음매에서 문제가 난다.** 기동 직후 Fargate 썸네일 서버만 EC2 카메라 서버에 연결을 못 열던 2년 묵은 장애는 재사용된 IP 의 옛 MAC 이 ARP 캐시에 남은 탓 — sysctl 세 줄로 수명 60~75초·복구 2.1초. Trail Station AI 는 8대 예상이 4대에 그친 병목을 데이터 전달에서 찾아 복사 제거·공유 메모리·포맷 통일로 100 → 62, 8대 달성. 수익원(구독·기기)은 inferred.
 - **WealthNavi(ウェルスナビ)** (JP · 로보어드바이저 · 예탁 자산 2.1조 엔) — 2026-09-26 완주. 도메인 2 · 기능 2. **판정의 성질로 담당을 나눈다.** 서비스 사이 데이터 연계는 즉시 확인이 필요한 입출금만 API 에 두고 나머지를 Outbox + SNS/SQS FIFO 팬아웃으로 — DB 저장(회복 불가)과 배송(재시도)을 갈랐다. 가계부 코멘트를 쓰는 생성 AI 기능은 △ 판정을 없애 QA 의 × 를 릴리스 판단에 잇고, 위험마다 담보자를 정해 기계·AI·사람이 나눠 본다.

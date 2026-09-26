@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Luup 기능 2(2026-09-26) — `admin-frontend-layers`. 두 도메인 featured, connections 서로 이어짐, 수익원(라이드 이용료) 하나가 두 도메인과 연결 → 다음 사이클은 완주(done) 확인만. 그 뒤 후보 조사(대기 0 — 3순위, 입구: Zenn 검색 API 주제어; USEN ICT·TRIBEAU 재검토). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Luup done(2026-09-26). 대기 0/3 → 다음은 후보 조사(3순위): Zenn 검색 API 주제어(設計判断·トレードオフ·移行 本番·マルチテナント·リプレイス)로 2026 년 글을 세고, 보류 후보 USEN ICT(Snowflake over BigQuery)·TRIBEAU 를 다시 본다. 이미 판 회사와 겹치지 않는 축 우선. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
