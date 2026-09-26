@@ -336,6 +336,125 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382965",
+      "title": "[CEO Staff] 풀스택 개발자 (JavaScript/TypeScript)",
+      "site": "wanted",
+      "verdict": "경력 5-11년, 서울 강남구. **CEO 직속(CEO Staff)으로 신규 사업 아이디어를 검증하는** 1인 풀스택 자리다. 업무는 CEO·Staff 와 아이디어를 가설로 정리하고 가장 빠른 검증 방법을 설계, **PoC·MVP·파일럿을 화면부터 API·데이터·배포까지 혼자 완결**해 실제 사용자 앞에 내놓기, 지표로 '개발 리소스를 투입할 가치' 를 판단해 CEO 의사결정 근거 만들기, 아니라고 확인되면 빠르게 접기, **AI 코딩 에이전트와 LLM 을 기본 도구로** 사용, 사업성이 확인되면 가설·결과·데이터 구조·한계를 정리해 개발부문에 인계. 필수가 열한 줄이다 — 웹 5년 이상, 혼자 완결해 출시한 경험, JS/TS·React·Next.js·Node.js, RDB 스키마·질의, **AI 코딩 에이전트(Claude Code·Cursor 등)를 상시 쓰면서 어디까지 믿고 어디서 검증할지 자기 기준**, 기획서 없이 의사결정자와 문제 정의, 생략할 것과 지킬 것 판단, 사용자 행동 데이터 설계·측정, **인증·인가 경계와 최소 권한**, 인계 정리, 비개발 직군 설명. 우대는 0→1 제품·창업·사이드 프로젝트 출시, 경영진 직속·신사업·CIC, LLM API(RAG·에이전트·MCP), **기존 시스템에 새 화면 붙이기(iframe·CSP·postMessage·세션·SSO)**, 관리자 페이지·사내 도구, A/B·퍼널, NestJS·Supabase·Drizzle·Zod·TanStack Query·Tailwind, Vercel·AWS·GitHub Actions, **대용량 엑셀·파일 처리**, 물류·유통·커머스·B2B SaaS. 공고 머리말은 '사업 확대를 계획 중' 이라 증원한다고 적는다. 전형: 서류접수 - 실무면접 - 컬처핏면접 - 레퍼런스체크 or 2차면접 - 처우협의 - 입사(프론트엔드 공고와 달리 코딩테스트 단계가 없다). 복지에 연 2회 연봉 인상(우수 성과자 중심)이 있으나 금액은 없다.",
+      "fit": {
+        "must_have": [
+          "웹 5년 이상·혼자 완결해 출시",
+          "JS/TS·React·Next.js·Node.js",
+          "RDB 스키마·질의",
+          "AI 코딩 에이전트 상시 사용과 검증 기준",
+          "인증·인가·최소 권한",
+          "기획서 없이 문제 정의"
+        ],
+        "can_learn": [
+          "LLM API(RAG·에이전트·MCP)",
+          "iframe·CSP·SSO 연동",
+          "A/B·퍼널",
+          "대용량 엑셀 처리"
+        ]
+      },
+      "study": [
+        {
+          "topic": "가설을 검증 가능한 MVP 로 — 지표를 먼저 정하기",
+          "from": "task",
+          "quote": "• 사용자 반응과 지표를 근거로 “이 아이템에 개발 리소스를  투입할 만한 가치가 있는가”를 판단하고, CEO의 의사결정  근거를 만들어요",
+          "priority": "core",
+          "why": "주요업무의 핵심이다. 필수에 '사용자 행동 데이터를 직접 설계·측정하고, 그 숫자를 근거로 다음 결정' 이 있고, 회사 브리핑대로 서비스 가짓수를 계속 늘리는 회사다.",
+          "gap_check": "'고객사에 사내 라면바를 파는 새 서비스' 를 검증할 때 만들기 전에 무엇을 성공 기준(예: 랜딩 방문 고객사 중 견적 요청 비율 5% 이상, 2주)으로 적어 두고, 그 숫자를 얻는 데 가장 싸게 만들 수 있는 것은 무엇(가짜 문 테스트·수작업 뒤처리)이며, 결과가 기준에 못 미칠 때 '접는다' 를 무엇으로 판단하는가?",
+          "drill": "가상의 신규 서비스 하나를 골라 가설·성공 기준·측정 이벤트·기간·중단 조건을 한 장에 쓰고, Next.js 로 견적 요청 폼만 있는 랜딩을 만들어 PostHog(또는 GA4) 이벤트와 실험 플래그로 문구 두 안을 나눠 측정하는 데까지 하루 안에 배포한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Experiments — PostHog Docs",
+              "url": "https://posthog.com/docs/experiments",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 코딩 에이전트 — 믿을 곳과 검증할 곳",
+          "from": "qualification",
+          "quote": "• AI 코딩 에이전트(Claude Code, Cursor 등)를 상시 업무 도구로 사용하시고, 그 결과물을 어디까지 신뢰하고 어디서 직접 검증할지에 대한 자기 기준을 갖고 계신 분",
+          "priority": "core",
+          "why": "필수 자격요건이고 주요업무에 'AI 코딩 에이전트와 LLM을 기본 도구로 사용해, 혼자 감당하는 범위와 검증 속도를 끌어올려요' 가 있다. 면접에서 '자기 기준' 을 물을 가능성이 크다.",
+          "gap_check": "에이전트가 만든 코드 가운데 무엇(화면 배치·보일러플레이트)은 훑어보고 넘기고, 무엇(인증·권한 검사, 결제·금액 계산, 개인정보를 다루는 쿼리, 마이그레이션)은 반드시 직접 읽고 테스트로 확인하는가? 에이전트가 테스트까지 함께 고쳐서 통과시키는 일을 어떻게 막는가?",
+          "drill": "Claude Code 모범 사례 문서를 읽고, 작은 MVP(견적 요청 + 관리자 목록)를 에이전트로 만들면서 '직접 검증한 곳' 목록을 남긴다. 권한 검사를 일부러 빼 달라는 식의 요청이 아닌 평범한 요청에서도 에이전트가 권한 검사를 빠뜨린 곳이 있었는지 찾아 적는다 — 이 기록이 면접 답의 재료다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Best practices for Claude Code",
+              "url": "https://code.claude.com/docs/en/best-practices",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인증·인가 경계와 최소 권한",
+          "from": "qualification",
+          "quote": "• 서버셋업 인증·인가 경계를 구현할 수 있고, 운영 데이터와  개인정보를 다룰 때 최소 권한을 기본으로 삼는 분",
+          "priority": "core",
+          "why": "필수 자격요건이다. MVP 를 빨리 만들어도 고객사 담당자·임직원 개인정보를 다룬다(회사 브리핑: 기업 복지·선물 서비스).",
+          "gap_check": "고객사 A 의 담당자가 URL 의 주문 번호만 바꿔 고객사 B 의 주문을 볼 수 있는 버그(IDOR)는 어느 층에서 막아야 하고, 화면에서 버튼을 숨기는 것이 왜 인가가 아닌가? MVP 에서 생략해도 되는 것과 절대 생략하면 안 되는 것은 무엇인가?",
+          "drill": "Next.js + Node(또는 NestJS) 로 고객사 단위 주문 조회 API 를 만들고, 다른 고객사 주문 ID 로 요청했을 때 404 가 나오게 서버에서 소유권을 검사한다. OWASP 인가 치트시트의 항목을 체크리스트로 옮겨 MVP 필수·생략 가능으로 나눈다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Authorization — OWASP Cheat Sheet Series",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "기존 시스템에 새 화면 붙이기 — iframe·CSP·postMessage",
+          "from": "preference",
+          "quote": "• 기존 시스템에 새 화면을 안전하게 붙여 보신 분 (iframe, CSP, postMessage, 세션·SSO 등)",
+          "priority": "high",
+          "why": "우대사항이다. 검증용 서비스를 기존 관리자 페이지 안에 붙여 실제 고객사에게 보여줘야 할 때가 있다.",
+          "gap_check": "새 MVP 화면을 기존 관리자 페이지 안에 iframe 으로 넣을 때, 아무 사이트나 이 화면을 iframe 으로 감싸지 못하게 하려면 무엇(CSP frame-ancestors)을 설정하고, 부모 창과 postMessage 로 주고받을 때 받는 쪽은 무엇(event.origin 검사)을 반드시 확인하며, 로그인 세션은 어떻게 이어받는가?",
+          "drill": "두 개의 로컬 오리진(부모 관리자·자식 MVP)을 띄워 iframe 으로 붙이고, 자식이 frame-ancestors 로 부모 오리진만 허용하는지, postMessage 가 origin 검사 없이 받으면 다른 오리진의 메시지까지 처리되는지 확인한 뒤 검사를 넣어 막는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Window: postMessage() — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage",
+              "kind": "docs"
+            },
+            {
+              "title": "CSP: frame-ancestors — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대용량 엑셀 처리 — 스트리밍으로 읽기",
+          "from": "preference",
+          "quote": "• 대용량 엑셀·파일 처리, 브라우저 자동화, 배치·데이터 처리  흐름을 만들어 보신 분",
+          "priority": "nice",
+          "why": "우대사항이다. B2B 고객사는 임직원 명단·주문 목록을 엑셀로 올리는 일이 많다(회사 브리핑: 생일·명절 선물 서비스).",
+          "gap_check": "임직원 5만 명 엑셀을 한 번에 메모리로 읽으면 무엇이 터지고, 스트리밍으로 한 줄씩 읽으며 검증할 때 오류 행을 어떻게 모아 사용자에게 돌려주며, 절반쯤 들어간 뒤 실패하면 이미 저장한 행은 어떻게 하는가?",
+          "drill": "ExcelJS 의 스트리밍 리더로 5만 행 가짜 명단을 읽어 행마다 검증(이메일·생일 형식)하고, 오류 행만 모은 결과 파일을 만든다. 전체를 한 번에 읽는 방식과 메모리 사용량을 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "exceljs — GitHub",
+              "url": "https://github.com/exceljs/exceljs",
+              "kind": "docs"
+            },
+            {
+              "title": "Stream — Node.js Documentation",
+              "url": "https://nodejs.org/api/stream.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
