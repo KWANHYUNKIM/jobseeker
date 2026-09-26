@@ -1,0 +1,239 @@
+{
+  "book": "jvm-tuning",
+  "id": "oom",
+  "no": "12.4",
+  "chapter": 12,
+  "title": "메모리 부족",
+  "summary": "여덟 가지 메시지.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "OutOfMemoryError 의 뒷말이 서로 다른 문제인 것을 안다.",
+    "여섯 가지를 직접 만들어 메시지를 눈으로 본다.",
+    "OOM 이 나도 프로세스가 사는 것을 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "12.3절에서 힙 160MB 로 내렸을 때 Full GC 가 일곱 번 났고, 128MB 에서는 `124M->124M` 을 열 번 반복하다 죽었다. 그 죽는 자리를 이 절이 본다.\n\n**`OutOfMemoryError` 는 한 가지 오류가 아니다.** 뒷말이 다르면 다른 문제이고, 고치는 자리도 다르다. 힙을 늘려서 되는 것은 여덟 중 **둘**뿐이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "'힙이 부족하니 -Xmx 를 올린다' 가 틀리는 자리",
+      "md": "아래 메시지들 중 `-Xmx` 를 올려 고쳐지는 것은 `Java heap space` 계열뿐이다.\n\n> `Metaspace` 는 **`-Xmx` 와 무관한 영역**이다(4.2절). 올려도 그대로다.\n> `unable to create native thread` 는 **`-Xmx` 를 올리면 오히려 나빠질 수 있다** — 4.3절에서 본 대로 스레드 스택은 힙 밖이고, 힙을 키우면 그만큼 주소 공간이 준다.\n> **메시지를 읽지 않고 옵션을 바꾸는 것이 이 장에서 가장 자주 보는 잘못이다.**"
+    },
+    {
+      "type": "table",
+      "caption": "여덟 가지와 이 책에서 만든 것",
+      "columns": [
+        "메시지 뒷말",
+        "뜻",
+        "직접 만들었나",
+        "고칠 자리"
+      ],
+      "rows": [
+        [
+          "`Java heap space`",
+          "힙이 모자라다",
+          "**했다**",
+          "12.1 · 12.2 · 11.4(누수)"
+        ],
+        [
+          "`GC overhead limit exceeded`",
+          "GC 만 하고 못 비운다",
+          "**못 만들었다**",
+          "아래에 왜"
+        ],
+        [
+          "`Requested array size exceeds VM limit`",
+          "배열 길이가 한계를 넘었다",
+          "**했다**",
+          "코드. 힙과 무관하다"
+        ],
+        [
+          "`Metaspace`",
+          "클래스 자리가 모자라다",
+          "**했다**",
+          "3.5·4.2 — 클래스가 안 풀린다"
+        ],
+        [
+          "`Compressed class space`",
+          "압축 클래스 공간이 모자라다",
+          "**했다**",
+          "4.2 — `CompressedClassSpaceSize`"
+        ],
+        [
+          "`unable to create native thread`",
+          "OS 가 스레드를 더 안 준다",
+          "**했다**",
+          "4.3·9.2 — 스레드 수와 `-Xss`"
+        ],
+        [
+          "`Direct buffer memory`",
+          "힙 밖 버퍼 한계",
+          "**했다**",
+          "4.5·9.4 — `MaxDirectMemorySize`"
+        ],
+        [
+          "`Out of swap space?`",
+          "OS 가 메모리를 못 준다",
+          "**안 했다**",
+          "9.6 — 시스템 전체가 위험해서 안 돌렸다"
+        ]
+      ],
+      "note": "**여섯을 만들었고 둘은 못 만들었다.** 못 만든 이유도 아래에 적는다 — 그것도 이 절의 내용이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 만든 방법과 나온 메시지\n\n여섯 개를 각각 몇 줄로 만들었다. 옵션으로 한계를 좁혀 놓으면 몇 초 안에 난다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "각각을 만드는 최소 코드",
+      "code": "// 1. Java heap space\nList<byte[]> keep = new ArrayList<>();\nwhile (true) keep.add(new byte[1 << 20]);          // -Xmx64m\n\n// 3. Requested array size exceeds VM limit\nbyte[] b = new byte[Integer.MAX_VALUE];            // -Xmx2g (힙은 충분하다)\n\n// 4·5. Metaspace / Compressed class space\nbyte[] bytes = Files.readAllBytes(Path.of(\"Hello2.class\"));\nvar lookup = MethodHandles.lookup();\nwhile (true) keep.add(lookup.defineHiddenClass(bytes, true).lookupClass());\n// -XX:MaxMetaspaceSize=16m   /   -XX:CompressedClassSpaceSize=1m\n\n// 6. unable to create native thread\nwhile (n < 20000) { new Thread(() -> sleep()).start(); n++; }   // ulimit -u 300\n\n// 7. Direct buffer memory\nwhile (true) keep.add(ByteBuffer.allocateDirect(1 << 20));      // -XX:MaxDirectMemorySize=16m"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`GC overhead limit exceeded` 를 못 만들었다",
+      "md": "두 번 시도했고 둘 다 실패했다.\n\n> 플래그는 있다 — `UseGCOverheadLimit = true`, `GCTimeLimit = 98` (둘 다 기본값).\n> 힙 128MB 의 **93% 를 살려 두고**(119MB) 작은 객체만 계속 만들었다. G1 은 4,000만 번을 버텨 냈다 — 작은 쓰레기는 계속 치워진다.\n> `-XX:+UseParallelGC` 로 95% 를 채워도 Full GC 15건이 났을 뿐 OOM 은 안 났다.\n> **살아 있는 것이 조금씩 계속 늘어나야** 이 메시지가 난다 — 그러면 대개 그 전에 `Java heap space` 가 먼저 난다. 그래서 요즘 이 메시지를 보기 어렵다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "`Out of swap space?` 는 일부러 안 돌렸다",
+      "md": "이 오류는 **OS 가 메모리를 더 못 주는 상태**에서 난다.\n\n> 만들려면 이 머신(8GB)의 메모리와 스왑을 실제로 말려야 한다. 그러면 JVM 만 죽는 것이 아니라 **다른 프로세스와 셸이 같이 위험하다.**\n> 그래서 안 돌렸다. 대신 9.6절에서 RSS 와 committed 의 차이를 본 것이 같은 이야기다 — **JVM 이 예약만 해 둔 것과 OS 가 실제로 준 것은 다르다.**\n> 이 오류는 예외가 아니라 `hs_err_pid*.log` 로 나오는 것이 보통이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 메시지는 판마다 바뀐다\n\n인터넷에서 찾은 \"OOM 여덟 가지\" 목록에는 `Direct buffer memory` 가 그 이름으로 적혀 있다. **자바 11 까지는 맞고 17 부터는 다르다.** 같은 프로그램을 세 판으로 돌려 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 코드, 판만 다르게 (`MaxDirectMemorySize=16m`)",
+      "columns": [
+        "판",
+        "메시지"
+      ],
+      "rows": [
+        [
+          "자바 11.0.28",
+          "`OutOfMemoryError: Direct buffer memory`"
+        ],
+        [
+          "자바 17.0.16",
+          "`OutOfMemoryError: Cannot reserve 1048576 bytes of direct buffer memory (allocated: 16777216, limit: 16777216)`"
+        ],
+        [
+          "자바 24.0.1",
+          "17 과 같다"
+        ]
+      ],
+      "note": "**17 쪽이 훨씬 낫다** — 한계값과 이미 쓴 양이 메시지에 들어 있다. 대신 옛 문서의 문장으로 검색하면 안 나온다."
+    },
+    {
+      "type": "prose",
+      "md": "## OOM 이 나도 프로세스는 산다\n\n가장 자주 놓치는 것이 이것이다. `OutOfMemoryError` 는 **그 스레드를 죽이지만 JVM 을 죽이지 않는다.** 요청 처리 스레드 하나가 죽고 나머지가 계속 도는 상태가 된다."
+    },
+    {
+      "type": "compare",
+      "title": "무엇을 주느냐에 따라",
+      "left": {
+        "title": "기본값",
+        "bad": true,
+        "md": "OOM 이 난 스레드만 `TERMINATED` 가 되고 `main` 은 계속 돈다.\n\n**종료 코드 0** — 감시 도구가 정상 종료로 본다."
+      },
+      "right": {
+        "title": "`-XX:+ExitOnOutOfMemoryError`",
+        "md": "`Terminating due to java.lang.OutOfMemoryError` 를 찍고 즉시 죽는다.\n\n**종료 코드 3** — 오케스트레이터가 다시 띄운다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "컨테이너에서는 거의 항상 켜 두는 쪽이 낫다",
+      "md": "반쯤 죽은 프로세스는 **살아 있다고 보고되면서 일을 못 한다.**\n\n> 헬스체크가 HTTP 200 을 받으면 트래픽이 계속 들어오고, 안에서는 처리 스레드가 하나씩 죽는다.\n> `-XX:+ExitOnOutOfMemoryError` 로 **빨리 죽여서 다시 띄우는** 편이 낫다. 12.5절에서 그 자리를 본다.\n> 죽기 전에 증거를 남기려면 `-XX:+HeapDumpOnOutOfMemoryError` 를 같이 준다. 아래에서 34MB 파일이 0.080초에 떨어졌다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"OutOfMemoryError 가 났습니다. 어떻게 하시겠습니까.\"**\n\n> **\"뒷말을 읽겠습니다\"** 가 첫 마디다. `Metaspace` 면 `-Xmx` 를 아무리 올려도 안 되고, `unable to create native thread` 면 올리면 더 나빠진다.\n> `Java heap space` 면 다음 질문은 \"**늘어나는가**\" 다 — 늘어나면 누수(11.4), 그대로면 크기(12.1)다.\n> 그리고 **프로세스가 살아 있는지** 확인한다. 살아 있으면 그게 더 나쁜 상태다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 여섯 개의 메시지와 죽는 모습",
+      "sql": "# --- 1) Java heap space ---\n\n$ java -Xmx64m -cp out Oom heap\nException in thread \"main\" java.lang.OutOfMemoryError: Java heap space\n\tat Oom.main(Oom.java:9)\n\n# --- 3) Requested array size exceeds VM limit (힙은 2GB 다) ---\n\n$ java -Xmx2g -cp out Oom array\nException in thread \"main\" java.lang.OutOfMemoryError: Requested array size exceeds VM limit\n\tat Oom.main(Oom.java:16)\n\n# --- 4) Metaspace ---\n\n$ java -XX:MaxMetaspaceSize=16m -cp out Meta out/Hello2.class\nclasses 4000\nException in thread \"main\" java.lang.OutOfMemoryError: Metaspace\n\n# --- 5) Compressed class space ---\n\n$ java -XX:CompressedClassSpaceSize=1m -cp out Meta out/Hello2.class\nclasses 16000\nException in thread \"main\" java.lang.OutOfMemoryError: Compressed class space\n# 같은 프로그램인데 4,000개와 16,000개다 — 두 영역의 크기가 다르게 막혔다.\n\n# --- 6) unable to create native thread ---\n\n$ (ulimit -u 300; java -Xmx64m -Xss1m -cp out Thr)\n[0.182s][warning][os,thread] Failed to start the native thread for java.lang.Thread \"Thread-2026\"\n스레드 2026개에서 java.lang.OutOfMemoryError: unable to create native thread:\n  possibly out of memory or process/resource limits reached\n# JVM 이 warning 을 먼저 찍는다 — 이 줄이 로그에 있으면 곧 OOM 이다.\n\n# --- 7) Direct buffer memory (판마다 다르다) ---\n\n$ java11 -Xmx64m -XX:MaxDirectMemorySize=16m -cp out11 Dir\nException in thread \"main\" java.lang.OutOfMemoryError: Direct buffer memory\n\n$ java   -Xmx64m -XX:MaxDirectMemorySize=16m -cp out11 Dir\nException in thread \"main\" java.lang.OutOfMemoryError: Cannot reserve 1048576 bytes of\n  direct buffer memory (allocated: 16777216, limit: 16777216)\n\n# --- OOM 이 나도 프로세스는 산다 ---\n\n$ java -Xmx64m -cp out Survive\nException in thread \"eater\" java.lang.OutOfMemoryError: Java heap space\n\tat Survive.lambda$main$0(Survive.java:7)\nmain 은 살아 있다. eater 상태 = TERMINATED\n  일을 계속한다 0\n  일을 계속한다 1\n  일을 계속한다 2\n$ echo $?\n0                                      # 정상 종료로 보인다\n\n$ java -Xmx64m -XX:+ExitOnOutOfMemoryError -cp out Survive\nTerminating due to java.lang.OutOfMemoryError: Java heap space\n$ echo $?\n3                                      # 이제 다시 띄울 수 있다\n\n# --- 증거를 남긴다 ---\n\n$ java -Xmx64m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$PWD/oom.hprof -cp out Oom heap\njava.lang.OutOfMemoryError: Java heap space\nDumping heap to /.../oom.hprof ...\nHeap dump file created [34617809 bytes in 0.080 secs]\n# 64MB 힙에 34MB 파일. 0.080초다 — 11.3절의 70ms 와 같은 크기의 비용이다.",
+      "note": "**같은 `OutOfMemoryError` 인데 뒷말이 여섯 가지다.** 그리고 기본값에서는 종료 코드가 0 이다 — 감시 도구가 아무 일도 없었다고 본다."
+    }
+  ],
+  "recap": [
+    "OutOfMemoryError 의 뒷말이 문제를 정한다. -Xmx 로 고쳐지는 것은 그중 일부다.",
+    "여섯 가지를 직접 만들었다 — heap space, array size, Metaspace, Compressed class space, native thread, direct buffer.",
+    "GC overhead limit exceeded 는 못 만들었다. 93~95% 를 살려 두고 churn 해도 G1·Parallel 이 버텼다.",
+    "Out of swap space? 는 시스템 전체가 위험해서 일부러 안 돌렸다.",
+    "Direct buffer 메시지는 자바 11 과 17 이 다르다 — 17 부터 한계값이 메시지에 들어 있다.",
+    "OOM 이 난 스레드만 죽고 프로세스는 살며 종료 코드는 0 이다. -XX:+ExitOnOutOfMemoryError 를 주면 3 으로 죽는다.",
+    "-XX:+HeapDumpOnOutOfMemoryError 는 64MB 힙에서 34MB 파일을 0.080초에 썼다."
+  ],
+  "drills": [
+    {
+      "task": "지난 OOM 로그의 뒷말을 위 표에서 찾는다.",
+      "done_when": "고칠 자리가 어느 절인지 안다.",
+      "minutes": 10
+    },
+    {
+      "task": "내 서비스에 ExitOnOutOfMemoryError 가 켜져 있는지 확인한다.",
+      "done_when": "jcmd VM.flags 로 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "HeapDumpPath 가 쓸 수 있는 경로인지 확인한다.",
+      "done_when": "컨테이너라면 볼륨인지까지 본다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "-Xmx 를 올려도 안 고쳐지는 OOM 의 예는.",
+      "a": "Metaspace, Compressed class space, unable to create native thread, Direct buffer memory 다."
+    },
+    {
+      "q": "unable to create native thread 에서 -Xmx 를 올리면.",
+      "a": "더 나빠질 수 있다. 스레드 스택은 힙 밖이고 힙이 커지면 그만큼 주소 공간이 줄어든다."
+    },
+    {
+      "q": "기본값에서 OOM 이 난 JVM 의 종료 코드는.",
+      "a": "그 스레드만 죽으므로 프로세스가 살고 정상 종료면 0 이다. ExitOnOutOfMemoryError 를 주면 3 이다."
+    },
+    {
+      "q": "GC overhead limit exceeded 가 요즘 잘 안 보이는 이유는.",
+      "a": "살아 있는 것이 조금씩 계속 늘어나야 나는데 그 전에 Java heap space 가 먼저 나기 때문이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "ExitOnOutOfMemoryError",
+      "what": "OOM 이 나면 JVM 을 즉시 종료시키는 옵션. 종료 코드 3 이다."
+    },
+    {
+      "term": "hs_err 로그",
+      "what": "JVM 이 스스로 죽을 때 남기는 파일. Out of swap space 처럼 예외로 못 던지는 상황이 여기 적힌다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Troubleshooting Guide — Understand the OutOfMemoryError Exception (JDK 17)",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/troubleshooting-memory-leaks.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

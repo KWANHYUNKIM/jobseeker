@@ -1,0 +1,271 @@
+{
+  "book": "jvm-tuning",
+  "id": "container-tuning",
+  "no": "12.5",
+  "chapter": 12,
+  "title": "컨테이너에서",
+  "summary": "요청과 한계 사이.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "컨테이너 한계에서 기본 힙이 어떻게 정해지는지 재 본다.",
+    "자바 OOM 과 커널의 OOMKilled 를 구분한다.",
+    "한계 안에 힙 말고 무엇이 더 들어가는지 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "12.4절의 마지막 조언이 **컨테이너에서는 빨리 죽여라** 였다. 이 절은 그 컨테이너 쪽이다.\n\n요점 하나로 줄이면 이렇다 — **`--memory` 는 힙의 한계가 아니다.** 힙은 그 안에 들어가는 여러 개 중 하나이고, 넘으면 자바가 아니라 **커널이 죽인다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 기본 힙은 한계에서 자동으로 나온다\n\n`-Xmx` 를 안 주면 JVM 이 **컨테이너 한계를 읽어서** 정한다. 자바 10 부터의 동작이고 `UseContainerSupport` 가 기본으로 켜져 있다. 여덟 크기로 재 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "`docker run --memory=X eclipse-temurin:17-jre` 의 기본 최대 힙",
+      "columns": [
+        "`--memory`",
+        "기본 최대 힙",
+        "비율"
+      ],
+      "rows": [
+        [
+          "200MB",
+          "100 MiB",
+          "50%"
+        ],
+        [
+          "256MB",
+          "126 MiB",
+          "49%"
+        ],
+        [
+          "300MB",
+          "126 MiB",
+          "42%"
+        ],
+        [
+          "400MB",
+          "126 MiB",
+          "31%"
+        ],
+        [
+          "512MB",
+          "128 MiB",
+          "25%"
+        ],
+        [
+          "600MB",
+          "150 MiB",
+          "25%"
+        ],
+        [
+          "768MB",
+          "192 MiB",
+          "25%"
+        ],
+        [
+          "1GB",
+          "256 MiB",
+          "25%"
+        ]
+      ],
+      "note": "**25% 가 아닌 구간이 있다.** 200MB 에서는 50% 고, 256~400MB 에서는 126MiB 로 고정된다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "규칙은 둘이 겹쳐 있다",
+      "md": "관련 플래그가 둘이다 — `MaxRAMPercentage = 25`, `MinRAMPercentage = 50`.\n\n> **한계의 50% 가 128MB 보다 작으면** 그 50% 를 쓴다 (200MB → 100MiB).\n> **그렇지 않으면 25% 와 128MB 중 큰 쪽**이다 (300MB → max(75, 128) = 128, 1GB → max(256, 128) = 256).\n> 위 표의 여덟 줄이 모두 이 규칙과 맞는다. **256~400MB 구간이 다 126MiB 인 것이 그 128MB 바닥**이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`-XX:-UseContainerSupport` 를 끄면 호스트를 본다",
+      "md": "옛 설정에 남아 있는 경우가 있다.\n\n```\n# --memory=512m 짜리 컨테이너 안에서\n-XX:-UseContainerSupport  ->  MaxHeapSize = 1027604480  (980 MiB)\n```\n\n> 컨테이너 한계가 512MB 인데 **힙만 980MB 로 잡는다.** 도커 데스크톱의 VM 메모리를 본 값이다.\n> 이 상태로는 **반드시 OOMKilled 가 난다** — 자바는 아직 여유가 있다고 믿고 있다."
+    },
+    {
+      "type": "prose",
+      "md": "## CPU 한계는 스레드 수를 바꾼다\n\n`--cpus` 도 읽는다. 그리고 그 값이 **GC 워커 수와 컴파일러 스레드 수**를 정한다 — 12.3절에서 `Workers: 8` 을 봤던 그 숫자다."
+    },
+    {
+      "type": "table",
+      "caption": "`--cpus` 에 따라",
+      "columns": [
+        "`--cpus`",
+        "`availableProcessors()`",
+        "`ParallelGCThreads`",
+        "`ConcGCThreads`",
+        "`CICompilerCount`"
+      ],
+      "rows": [
+        [
+          "1",
+          "1",
+          "0 (실행 때 정한다)",
+          "0",
+          "2"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "1",
+          "2"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "2",
+          "4"
+        ]
+      ],
+      "note": "**`--cpus=1` 이면 병렬 GC 워커가 없다** — 12.3절의 `Object Copy` 를 한 스레드가 다 한다. 같은 힙에서 멈춤이 길어지는 자리다."
+    },
+    {
+      "type": "prose",
+      "md": "## 자바 OOM 과 OOMKilled 는 다르다\n\n512MB 컨테이너 안에서 두 가지를 만들었다. **하나는 스택 트레이스를 남기고 하나는 아무것도 남기지 않는다.**"
+    },
+    {
+      "type": "compare",
+      "title": "같은 컨테이너, 다른 죽음",
+      "left": {
+        "title": "자바가 막았다",
+        "bad": false,
+        "md": "`-Xmx480m` 으로 힙을 채웠다.\n\n```\nOutOfMemoryError: Java heap space\n  at Oom.main(Oom.java:9)\nexit=1  OOMKilled=false\n```\n\n스택 트레이스가 있고, `HeapDumpOnOutOfMemoryError` 도 동작한다."
+      },
+      "right": {
+        "title": "커널이 죽였다",
+        "bad": true,
+        "md": "`-Xmx128m -XX:MaxDirectMemorySize=1g` 으로 힙 밖을 채웠다.\n\n```\n(출력 없음)\nexit=137  OOMKilled=true\n```\n\n**예외도 로그도 힙 덤프도 없다.** `SIGKILL` 이라 아무것도 못 남긴다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "기본값에서는 direct 버퍼도 JVM 이 스스로 막는다",
+      "md": "`MaxDirectMemorySize` 를 안 주면 **기본값이 최대 힙과 같다**(4.5절).\n\n> 그래서 `-Xmx128m` 만 준 컨테이너에서 direct 버퍼를 무한히 잡아도 **자바 OOM 으로 끝난다** — 128MB 에서 JVM 이 막는다.\n> 위의 137 을 만들려면 **`MaxDirectMemorySize=1g` 을 일부러 줘야** 했다.\n> 즉 137 이 나는 흔한 경로는 direct 가 아니라 **스레드 스택·메타스페이스·네이티브 라이브러리**다(9장)."
+    },
+    {
+      "type": "prose",
+      "md": "## 한계 안에 무엇이 더 들어가나\n\n9.1절의 NMT 를 컨테이너 안에서 켰다. **아무 일도 안 하는 프로그램**이다 — `availableProcessors` 를 한 줄 찍고 끝난다."
+    },
+    {
+      "type": "figure",
+      "caption": "512MB 컨테이너, -Xmx128m, 하는 일 없음",
+      "ascii": "   committed total                       30.8 MB\n     Java Heap        8.4 MB   |########                        |\n     Code             7.8 MB   |#######                         |\n     Symbol           1.2 MB   |#                               |\n     Thread           0.7 MB   |                                |\n     Metaspace        0.3 MB   |                                |\n     Class            0.2 MB   |                                |\n     GC / Compiler / Internal  |                                |\n\n   heap is 8.4 of 30.8 MB at startup -> 27%\n   the rest grows with threads, classes and jit (see chapter 9)",
+      "note": "**시작부터 힙 밖에 22MB 가 있다.** 스레드가 늘고 클래스가 늘고 JIT 이 돌면 이쪽이 커진다 — 4.3·4.4·9.2 가 그 얘기였다."
+    },
+    {
+      "type": "steps",
+      "title": "컨테이너 한계를 정하는 순서",
+      "steps": [
+        {
+          "title": "live set 을 잰다",
+          "md": "12.1절 그대로. 컨테이너 밖에서 재도 된다 — 살아 있는 양은 환경이 아니라 코드가 정한다."
+        },
+        {
+          "title": "힙을 정한다",
+          "md": "12.1 의 U 자에서 고른다. **`-Xmx` 를 명시**한다 — 자동값은 한계가 바뀌면 같이 바뀐다."
+        },
+        {
+          "title": "힙 밖을 더한다",
+          "md": "NMT 로 `Thread`·`Code`·`Metaspace`·direct 를 본다(9장). 부하를 준 상태에서 재야 한다."
+        },
+        {
+          "title": "한계 = 힙 + 힙 밖 + 여유",
+          "md": "이 셋의 합이 `--memory` 다. 거꾸로 `--memory` 를 정하고 힙을 맞추면 힙 밖이 갈 자리가 없다."
+        },
+        {
+          "title": "빨리 죽게 만든다",
+          "md": "`-XX:+ExitOnOutOfMemoryError` 와 `-XX:+HeapDumpOnOutOfMemoryError`. **덤프 경로는 볼륨으로** — 컨테이너가 죽으면 안의 파일도 사라진다."
+        },
+        {
+          "title": "137 이 나면 힙을 보지 않는다",
+          "md": "137 은 힙 밖이거나 한계가 작은 것이다. GC 로그에는 아무것도 없다."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"파드가 OOMKilled 로 재시작됩니다. 힙을 줄이면 될까요.\"**\n\n> \"힙을 줄이면 **증상이 늦게 올 뿐**입니다\" 가 정확한 답이다. 137 은 **한계 전체**를 넘은 것이고 힙은 그 일부다.\n> 먼저 NMT 로 힙 밖을 잰다 — 스레드 수 × `-Xss`, 메타스페이스, 코드 캐시, direct, 네이티브(9장).\n> 그리고 **자바 OOM(exit 1)이 한 번도 안 났다는 것**을 확인한다. 안 났으면 힙은 범인이 아니다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 도커 28.3.2 (arm64), eclipse-temurin:17-jre",
+      "sql": "# --- 기본 힙이 한계에서 나온다 ---\n\n$ for m in 200m 256m 300m 400m 512m 600m 768m 1g; do\n    docker run --rm --memory=$m eclipse-temurin:17-jre \\\n      java -XX:+PrintFlagsFinal -version | grep ' MaxHeapSize'\n  done\n200m   MaxHeapSize=    100 MiB\n256m   MaxHeapSize=    126 MiB\n300m   MaxHeapSize=    126 MiB\n400m   MaxHeapSize=    126 MiB\n512m   MaxHeapSize=    128 MiB\n600m   MaxHeapSize=    150 MiB\n768m   MaxHeapSize=    192 MiB\n1g     MaxHeapSize=    256 MiB\n\n$ docker run --rm --memory=512m ... java -XX:MaxRAMPercentage=50  ...\nMaxHeapSize=268435456        # 256 MiB\n$ docker run --rm --memory=512m ... java -XX:MaxRAMPercentage=75  ...\nMaxHeapSize=402653184        # 384 MiB  <- 힙 밖이 갈 자리가 128MB 뿐이다\n\n# --- JVM 이 한계를 읽는 것을 확인한다 ---\n\n$ docker run --rm --memory=300m ... java -Xlog:os+container=trace -version\n[0.004s][trace][os,container] Raw value for memory limit is: 314572800\n[0.004s][trace][os,container] Memory Limit is: 314572800\n[0.004s][trace][os,container] CPU Quota is: -1\n[0.004s][trace][os,container] OSContainer::active_processor_count: 8\n\n$ docker run --rm --memory=512m ... java -XX:-UseContainerSupport -XX:+PrintFlagsFinal -version\n size_t MaxHeapSize = 1027604480 {product} {ergonomic}     # 980 MiB. 한계는 512MB 다.\n\n# --- CPU 한계 ---\n\n$ for c in 1 2 8; do docker run --rm --cpus=$c --memory=512m -v $PWD/out:/app \\\n    eclipse-temurin:17-jre java -cp /app Cpu; done\n--cpus=1   availableProcessors=1  maxMemory=123MB\n--cpus=2   availableProcessors=2  maxMemory=123MB\n--cpus=8   availableProcessors=8  maxMemory=123MB\n\n# --- 두 가지 죽음 ---\n\n$ docker run --name t1 --memory=512m --memory-swap=512m ... java -Xmx480m -cp /app Oom heap\nException in thread \"main\" java.lang.OutOfMemoryError: Java heap space\n\tat Oom.main(Oom.java:9)\n  exit=1  OOMKilled=false\n\n$ docker run --name t3 --memory=512m --memory-swap=512m ... \\\n    java -Xmx128m -XX:MaxDirectMemorySize=1g -cp /app Dir\n  exit=137  OOMKilled=true\n# 출력이 한 줄도 없다. SIGKILL 이라 예외도 로그도 힙 덤프도 없다.\n\n# --- 아무 일도 안 하는 프로그램의 힙 밖 (NMT) ---\n\n$ docker run --rm --memory=512m ... java -Xmx128m -XX:NativeMemoryTracking=summary \\\n    -XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics -cp /app Cpu\nTotal: reserved=1573671592, committed=30855848\n-  Java Heap (reserved=134217728, committed=8388608)\n-      Class (reserved=1073823582, committed=212830)\n-     Thread (reserved=25104400, committed=716816)\n-       Code (reserved=253673736, committed=7770376)\n-  Metaspace (reserved=67118944, committed=272224)\n-     Symbol (reserved=1199576, committed=1199576)\n# committed 30.8MB 중 힙이 8.4MB 다. reserved 1.5GB 는 한계와 무관하다(9.6).",
+      "note": "**exit 1 과 exit 137 이 이 절의 두 숫자다.** 하나는 자바가 막은 것이고 하나는 커널이 죽인 것이다."
+    }
+  ],
+  "recap": [
+    "--memory 는 힙의 한계가 아니다. 기본 힙은 그 한계에서 계산된다.",
+    "규칙은 두 플래그가 겹쳐 있다 — 한계의 50%가 128MB 미만이면 그 50%, 아니면 max(25%, 128MB) 다.",
+    "-XX:-UseContainerSupport 를 끄면 512MB 컨테이너에서 힙을 980MiB 로 잡는다.",
+    "--cpus 가 availableProcessors 와 ParallelGCThreads·CICompilerCount 를 정한다.",
+    "자바 OOM 은 exit 1 에 스택 트레이스가 남고, OOMKilled 는 exit 137 에 아무것도 안 남는다.",
+    "기본 MaxDirectMemorySize 는 최대 힙과 같아서 direct 는 보통 JVM 이 먼저 막는다.",
+    "아무 일도 안 하는 프로그램도 committed 30.8MB 중 22MB 가 힙 밖이었다."
+  ],
+  "drills": [
+    {
+      "task": "내 컨테이너에서 -Xmx 를 명시했는지 확인한다.",
+      "done_when": "jcmd VM.flags 의 MaxHeapSize 와 --memory 를 나란히 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "부하 중에 NMT committed 합과 --memory 를 비교한다.",
+      "done_when": "여유가 얼마인지 안다.",
+      "minutes": 15
+    },
+    {
+      "task": "지난 재시작이 exit 1 이었는지 137 이었는지 찾는다.",
+      "done_when": "힙 문제인지 아닌지 가른다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "--memory=1g 에서 -Xmx 를 안 주면 최대 힙은.",
+      "a": "256MiB 다. max(25% = 256MB, 128MB) 이다."
+    },
+    {
+      "q": "exit 137 이 뜻하는 것은.",
+      "a": "커널이 SIGKILL 로 죽였다는 것이다. 한계 전체를 넘었고 예외도 로그도 남지 않는다."
+    },
+    {
+      "q": "137 이 났을 때 힙을 먼저 보지 않는 이유는.",
+      "a": "힙은 한계의 일부다. 자바 OOM(exit 1)이 안 났다면 힙은 범인이 아니다."
+    },
+    {
+      "q": "--cpus=1 이 GC 에 주는 영향은.",
+      "a": "병렬 GC 워커가 줄어 Object Copy 같은 단계를 적은 스레드가 처리한다 — 멈춤이 길어진다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "UseContainerSupport",
+      "what": "JVM 이 cgroup 한계를 읽어 힙과 CPU 를 정하는 기능. 자바 10 부터 기본으로 켜져 있다."
+    },
+    {
+      "term": "OOMKilled / exit 137",
+      "what": "컨테이너가 메모리 한계를 넘어 커널에 SIGKILL 된 것. 자바 OOM 과 다르다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command (MaxRAMPercentage, UseContainerSupport)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Docker run reference — memory constraints",
+      "url": "https://docs.docker.com/engine/containers/resource_constraints/",
+      "publisher": "Docker"
+    }
+  ]
+}
