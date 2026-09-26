@@ -2247,3 +2247,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 ChillStack 완주
 
 - --gaps 는 신규를 가리켰지만 완주 판정이 먼저. 완주 기준 셋 — 도메인 셋 다 기능 1 · 기능이 서로 connections · 수익원 둘 다 confirmed.
+
+## 2026-09-27 HERP 회사 프로파일
+
+- 회사 페이지로 제품 10여 개를 수익원 셋으로 묶었다(채용 SaaS · 매칭 · 컨설팅/재취직). herp.cloud 는 CAPTCHA. 글 셋(스트림 · 부채 시점 · Ratcheting 앞부분)으로 도메인 둘.

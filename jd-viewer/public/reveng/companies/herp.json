@@ -1,0 +1,210 @@
+{
+  "slug": "herp",
+  "name": "HERP",
+  "name_en": "HERP",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "herp.co.jp",
+  "one_liner": "채용 관리 시스템 'HERP Hire' 에서 'SaaS × 매칭'으로 옮겨 가는 회사 — 쌓여 가는 선고 데이터를 DB 커서부터 HTTP 까지 한 스트림으로 흘려 SLO 를 되찾고, 부채는 '언제 갚을지'를 세 조건으로 가르고 갚은 부채가 되살아나지 않게 조인다",
+  "business_model": "주력은 **채용 관리 시스템(ATS) HERP Hire** 다 — 구인 매체 정보를 자동으로 모으고 Slack · Chatwork 로 현장 사원을 채용에 끌어들이는 '스크럼 채용'. 그 위에 **AI Recruiter · DataHub(집계) · Nurture(탤런트 풀) · Trust(레퍼런스 체크)** 를 얹는다.\n\n2024~2025 년 사업을 **'SaaS × 매칭'** 으로 틀었다 — ATS 에 머물지 않고 채용 시장의 매칭 체험을 고친다. 그 축이 **HERP Agent Network**(ATS 와 연계해 한 번 클릭으로 1,000명 이상의 에이전트에게 구인), **ジョブミル**(인재 소개 회사용 구인 제안 플랫폼), **HERP Career**(스타트업 구인 미디어)다. 그 밖에 **채용 컨설팅 · 재취직 지원(Re-start)**.\n\n**매출 · 비중 · 요금은 공개 자료에 없다.**",
+  "products": [
+    "HERP Hire(채용 관리 시스템 · ATS)",
+    "HERP AI Recruiter · DataHub · Nurture · Trust",
+    "HERP Agent Network · ジョブミル · HERP Career(매칭)",
+    "HERP 채용 컨설팅 · HERP Re-start"
+  ],
+  "revenue_total": "확인하지 못했다. 회사 페이지에 매출 · 고객 수가 없다.",
+  "revenue_streams": [
+    {
+      "name": "채용 SaaS(HERP Hire + AI Recruiter · DataHub · Nurture · Trust)",
+      "how": "기업이 채용 관리 시스템과 그 부가 기능을 쓴다. 요금은 공개 안 됨.",
+      "weight": "공개 안 됨(주력)",
+      "domains": [
+        "쌓여 가는 채용 데이터를 한 번에 들지 않고 흘려 내보낸다",
+        "언제 부채를 갚고, 갚은 부채가 돌아오지 않게 한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社HERP",
+          "url": "https://herp.co.jp/",
+          "publisher": "HERP",
+          "summary": "'채용을 바꿔 일본을 강하게.' 제품 · 서비스를 열거한다 — **HERP Hire**(디지털 인재 채용을 가속하는 채용 관리 시스템, 구인 매체 정보 자동 수집 · Slack/Chatwork 연계로 현장 사원 기점의 '스크럼 채용') · **HERP AI Recruiter**(Hire 와 연계해 AI 가 채용 프로세스 지원) · **HERP Agent Network**(쓰고 있는 ATS 와 연계해 한 번 클릭으로 구인을 내고 **1,000명 이상의 에이전트**에게 추천을 받는 매칭) · **HERP DataHub**(채용 집계 대시보드) · **HERP Nurture**(탤런트 풀) · **HERP Trust**(온라인 레퍼런스 체크) · **HERP Career**(1,000사 이상 스타트업 정보 · 구인 미디어) · **HERP 채용 컨설팅** · **ジョブミル**(인재 소개 회사용 구인 제안 플랫폼 — ATS 에서 구인 자동 집약 + 구인 DB) · **HERP Re-start**(재취직 지원)."
+        },
+        {
+          "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+          "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+          "publisher": "HERP",
+          "date": "2026-09-03",
+          "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+        },
+        {
+          "title": "技術的負債はいつ解消すべきか？ - HERP が React 移行で使った3つの判断軸",
+          "url": "https://zenn.dev/herp_inc/articles/when-to-resolve-technical-debt",
+          "publisher": "HERP",
+          "date": "2025-11-21",
+          "summary": "HERP Hire 는 2025 년 개발 9년째. 부채를 '**개발하며 얻는 지식 · 이해와 눈앞 시스템의 괴리가 일으키는 생산성 저하**'로 정의한다. 어려움은 '**부채 해소가 새 부채를 낳을 수 있다**'는 역설 — 여러 SaaS 를 전제로 기능을 **마이크로서비스로 떼어 냈다가** 방향이 멈추자 **분산 모놀리스**만 남았고, 코드베이스 전체를 **fp-ts 풍**으로 했다가 Effect-TS 가 대체해 전체가 부채가 됐다. 그래서 해소 시점의 세 조건 — ① 앞으로 개발량이 느는 방향이 분명해 **투자 효과가 크다** ② 얻는 자산이 **방향이 바뀌어도 가치를 잃지 않는다** ③ 사업과 기술이 **미래 전제를 맞추고 합의**했다. 사례: 2018 년부터 **jQuery + Pug** 로 만든 **구인 페이지**(당시 레거시 브라우저 · SSR 때문) — i18n · 폼 커스터마이즈 · 커스텀 항목 · note pro 연계로 복잡해져 응모 폼이 거대한 파일 하나. 개수 빈도가 낮아 미뤄 왔는데 2024~2025 년 **'SaaS × 매칭'** 으로 사업을 틀어 **구직자 체험**에 손댈 빈도가 확실히 늘어 React 이행을 결정."
+        }
+      ]
+    },
+    {
+      "name": "매칭(HERP Agent Network · ジョブミル · HERP Career)",
+      "how": "ATS 의 구인을 에이전트 · 구직자에게 잇는다 — 'SaaS × 매칭' 사업 전환의 축. 구인 페이지(구직자 체험)가 그 중심이라고 기술 블로그가 적는다.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "언제 부채를 갚고, 갚은 부채가 돌아오지 않게 한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社HERP",
+          "url": "https://herp.co.jp/",
+          "publisher": "HERP",
+          "summary": "'채용을 바꿔 일본을 강하게.' 제품 · 서비스를 열거한다 — **HERP Hire**(디지털 인재 채용을 가속하는 채용 관리 시스템, 구인 매체 정보 자동 수집 · Slack/Chatwork 연계로 현장 사원 기점의 '스크럼 채용') · **HERP AI Recruiter**(Hire 와 연계해 AI 가 채용 프로세스 지원) · **HERP Agent Network**(쓰고 있는 ATS 와 연계해 한 번 클릭으로 구인을 내고 **1,000명 이상의 에이전트**에게 추천을 받는 매칭) · **HERP DataHub**(채용 집계 대시보드) · **HERP Nurture**(탤런트 풀) · **HERP Trust**(온라인 레퍼런스 체크) · **HERP Career**(1,000사 이상 스타트업 정보 · 구인 미디어) · **HERP 채용 컨설팅** · **ジョブミル**(인재 소개 회사용 구인 제안 플랫폼 — ATS 에서 구인 자동 집약 + 구인 DB) · **HERP Re-start**(재취직 지원)."
+        },
+        {
+          "title": "技術的負債はいつ解消すべきか？ - HERP が React 移行で使った3つの判断軸",
+          "url": "https://zenn.dev/herp_inc/articles/when-to-resolve-technical-debt",
+          "publisher": "HERP",
+          "date": "2025-11-21",
+          "summary": "HERP Hire 는 2025 년 개발 9년째. 부채를 '**개발하며 얻는 지식 · 이해와 눈앞 시스템의 괴리가 일으키는 생산성 저하**'로 정의한다. 어려움은 '**부채 해소가 새 부채를 낳을 수 있다**'는 역설 — 여러 SaaS 를 전제로 기능을 **마이크로서비스로 떼어 냈다가** 방향이 멈추자 **분산 모놀리스**만 남았고, 코드베이스 전체를 **fp-ts 풍**으로 했다가 Effect-TS 가 대체해 전체가 부채가 됐다. 그래서 해소 시점의 세 조건 — ① 앞으로 개발량이 느는 방향이 분명해 **투자 효과가 크다** ② 얻는 자산이 **방향이 바뀌어도 가치를 잃지 않는다** ③ 사업과 기술이 **미래 전제를 맞추고 합의**했다. 사례: 2018 년부터 **jQuery + Pug** 로 만든 **구인 페이지**(당시 레거시 브라우저 · SSR 때문) — i18n · 폼 커스터마이즈 · 커스텀 항목 · note pro 연계로 복잡해져 응모 폼이 거대한 파일 하나. 개수 빈도가 낮아 미뤄 왔는데 2024~2025 년 **'SaaS × 매칭'** 으로 사업을 틀어 **구직자 체험**에 손댈 빈도가 확실히 늘어 React 이행을 결정."
+        }
+      ]
+    },
+    {
+      "name": "채용 컨설팅 · 재취직 지원(Re-start)",
+      "how": "후보자 인사이트를 기점으로 채용 전략 · 운영 설계 · 크리에이티브 · 광고 운용을 돕고, 재취직 지원 프로젝트를 맡는다.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社HERP",
+          "url": "https://herp.co.jp/",
+          "publisher": "HERP",
+          "summary": "'채용을 바꿔 일본을 강하게.' 제품 · 서비스를 열거한다 — **HERP Hire**(디지털 인재 채용을 가속하는 채용 관리 시스템, 구인 매체 정보 자동 수집 · Slack/Chatwork 연계로 현장 사원 기점의 '스크럼 채용') · **HERP AI Recruiter**(Hire 와 연계해 AI 가 채용 프로세스 지원) · **HERP Agent Network**(쓰고 있는 ATS 와 연계해 한 번 클릭으로 구인을 내고 **1,000명 이상의 에이전트**에게 추천을 받는 매칭) · **HERP DataHub**(채용 집계 대시보드) · **HERP Nurture**(탤런트 풀) · **HERP Trust**(온라인 레퍼런스 체크) · **HERP Career**(1,000사 이상 스타트업 정보 · 구인 미디어) · **HERP 채용 컨설팅** · **ジョブミル**(인재 소개 회사용 구인 제안 플랫폼 — ATS 에서 구인 자동 집약 + 구인 DB) · **HERP Re-start**(재취직 지원)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "ATS 에서 매칭으로",
+    "question": "9년 된 채용 관리 시스템이 매칭 사업으로 넓어질 때 무엇이 먼저 깨지고 무엇을 먼저 고치나?",
+    "code": "flowchart TD\n  C[\"기업 채용 담당 · 현장 사원\"] --> H[\"HERP Hire(ATS)\\nKoa · TypeORM · MySQL\"]\n  H --> CSV[\"선고 데이터 CSV\\n커서 → 스트림 → HTTP\"]\n  H --> JP[\"구인 페이지 · 응모 폼\\njQuery + Pug → React\"]\n  JP --> S[\"구직자\"]\n  H --> AN[\"Agent Network · ジョブミル\\n에이전트 1,000명+\"]\n  H -.-> SNAP[\"SQL 스냅숏 테스트 · Ratcheting\\n줄인 부채가 되살아나지 않게\"]",
+    "_note": "왼쪽 아래(CSV)는 쌓이는 데이터가 만든 문제, 오른쪽(구인 페이지)은 사업 전환이 앞당긴 부채 해소다. 둘 다 HERP Hire 한 코드베이스 안의 일이다."
+  },
+  "domains": [
+    {
+      "name": "쌓여 가는 채용 데이터를 한 번에 들지 않고 흘려 내보낸다",
+      "why": "HERP Hire 에는 기업마다 대량의 **선고 데이터**가 쌓이고, 채용 담당은 그것을 CSV 로 내려받는다. **전부 메모리에 꺼낸 뒤 가공**하던 구현은 출시 때는 멀쩡했지만, 데이터가 늘며 조금씩 나빠져 **OOM 재기동 반복**, 그리고 GC · 이벤트 루프 점유로 **무관한 요청의 지연**까지 끌어내렸다 — 가용성이 SLO 아래로 떨어져 **배포 동결**이 걸렸다.\n\n그래서 **DB 커서부터 HTTP 응답까지 배열로 돌아가지 않는 한 스트림**으로 흘렸다.",
+      "tech": [
+        {
+          "tech": "MySQL 커서 → 주키 경계 chunk → 엔티티 → CSV → UTF-16LE + BOM → HTTP 의 Web Streams 파이프(TypeORM SelectQueryBuilder.stream)",
+          "solves": "피크 메모리가 입력 크기에 비례하지 않는다 — 힙이 크게 줄고 SLO 가 회복, TTFB 도 짧아졌다.",
+          "limits": "stream() 은 생 행만 주어 **엔티티 변환을 직접 구현**해야 했다(JOIN 행이 chunk 경계에서 갈리지 않게). **다운로드 취소 시 커넥션 풀 고갈**이라는 새 장애가 생겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+              "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+              "publisher": "HERP",
+              "date": "2026-09-03",
+              "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+            }
+          ]
+        },
+        {
+          "tech": "collect() 로 배열 API 유지 + 피처 플래그 + setImmediate 양보",
+          "solves": "기존 호출부를 안 바꾸고, 일부 기업부터 켜고 깨지면 끄며, 동기 변환이 이벤트 루프를 막지 않게 한다.",
+          "limits": "collect() 를 쓰는 곳은 메모리 이점이 없다 — 옮길 가치가 있는 곳부터 순서대로 옮긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+              "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+              "publisher": "HERP",
+              "date": "2026-09-03",
+              "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "언제 부채를 갚고, 갚은 부채가 돌아오지 않게 한다",
+      "why": "HERP Hire 는 9년째다. HERP 는 부채 해소에서 여러 번 데었다 — 여러 SaaS 를 전제로 **마이크로서비스를 떼어 냈다가 분산 모놀리스**만 남았고, 코드 전체를 **fp-ts 풍**으로 했다가 생태계가 **Effect-TS** 로 옮겨 가 전체가 부채가 됐다. 그래서 '**어떻게**'보다 '**언제**' 갚느냐를 세 조건으로 가른다.\n\n사업이 **'SaaS × 매칭'** 으로 틀리자 2018 년 jQuery + Pug 로 만든 **구인 페이지**가 구직자 체험의 중심이 돼 React 이행을 결정했다. 그리고 갚은 부채가 **모르는 새 되살아나지 않게** — 특히 AI 코딩이 확률적으로 부채를 다시 만들 수 있는 때에 — SQL 스냅숏과 **Ratcheting** 으로 한 방향으로만 조인다.",
+      "tech": [
+        {
+          "tech": "부채 해소 시점의 세 조건(투자 효과 · 방향 전환에도 남는 자산 · 사업과 기술의 합의)",
+          "solves": "'눈앞 과제를 위한 부채 해소'가 방향이 바뀌면 새 부채가 되는 역설을 피한다.",
+          "limits": "조건이 갖춰지기를 기다리는 동안 부채는 그대로다 — 구인 페이지는 2018 년부터 오래 미뤄졌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "技術的負債はいつ解消すべきか？ - HERP が React 移行で使った3つの判断軸",
+              "url": "https://zenn.dev/herp_inc/articles/when-to-resolve-technical-debt",
+              "publisher": "HERP",
+              "date": "2025-11-21",
+              "summary": "HERP Hire 는 2025 년 개발 9년째. 부채를 '**개발하며 얻는 지식 · 이해와 눈앞 시스템의 괴리가 일으키는 생산성 저하**'로 정의한다. 어려움은 '**부채 해소가 새 부채를 낳을 수 있다**'는 역설 — 여러 SaaS 를 전제로 기능을 **마이크로서비스로 떼어 냈다가** 방향이 멈추자 **분산 모놀리스**만 남았고, 코드베이스 전체를 **fp-ts 풍**으로 했다가 Effect-TS 가 대체해 전체가 부채가 됐다. 그래서 해소 시점의 세 조건 — ① 앞으로 개발량이 느는 방향이 분명해 **투자 효과가 크다** ② 얻는 자산이 **방향이 바뀌어도 가치를 잃지 않는다** ③ 사업과 기술이 **미래 전제를 맞추고 합의**했다. 사례: 2018 년부터 **jQuery + Pug** 로 만든 **구인 페이지**(당시 레거시 브라우저 · SSR 때문) — i18n · 폼 커스터마이즈 · 커스텀 항목 · note pro 연계로 복잡해져 응모 폼이 거대한 파일 하나. 개수 빈도가 낮아 미뤄 왔는데 2024~2025 년 **'SaaS × 매칭'** 으로 사업을 틀어 **구직자 체험**에 손댈 빈도가 확실히 늘어 React 이행을 결정."
+            }
+          ]
+        },
+        {
+          "tech": "repository SQL 스냅숏 테스트 + Ratcheting",
+          "solves": "TypeORM 이 만드는 SQL 의 의도치 않은 변화와, 줄인 부채의 재증가를 테스트가 잡는다.",
+          "limits": "세부 동작(무엇을 어떻게 세고 조이는지)은 아직 안 읽었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "チームの振る舞いをテストする - Ratcheting パターンで技術的負債解消の後戻りを防ぐ",
+              "url": "https://zenn.dev/herp_inc/articles/ratcheting-technical-debt",
+              "publisher": "HERP",
+              "date": "2026-09-15",
+              "summary": "빚은 갚는 것보다 **새로 안 지는 것**이 중요하다 — 누군가 부채를 줄이는 동안 다른 누군가가 악의 없이 늘리고, AI 코딩은 확률적이라 새 부채를 피할 수 없다. HERP Hire 서버는 repository 가 내는 SQL 을 **스냅숏 테스트로 고정**(TypeORM 에 자작 Logger 를 꽂아 실제 SQL 을 찍는다) — 코드 리뷰에서 줄였던 부채가 되살아난 것을 보고 **Ratcheting**(한 방향으로만 조이는 래칫) 구조를 넣었다(세부는 확장 사이클에서 읽는다)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**매출 · 제품별 비중 · 요금**이 공개 자료에 없다.",
+    "**채용 컨설팅 · 재취직 지원**은 시스템 글이 없다 — 도메인이 없다.",
+    "**매칭(Agent Network · ジョブミル) 쪽 시스템**(구인 자동 집약 · 에이전트 추천) 글을 아직 못 봤다 — 매칭 수익원은 구인 페이지 이행 글로만 이어져 있다.",
+    "**아직 안 읽은 것** — `ratcheting-technical-debt` 뒷부분 · `fa85396aee44ad`(앱에 운용 구조를 내장) · `862f919b43c1c8`(AI 제품으로 드러난 도메인 모델 과제) · `4a76ce3ad75345`(Cycle.js 졸업) · `6e8734790c3536`(인시던트 대응 정비와 '피난 훈련')."
+  ],
+  "sources": [
+    {
+      "title": "株式会社HERP",
+      "url": "https://herp.co.jp/",
+      "publisher": "HERP",
+      "summary": "'채용을 바꿔 일본을 강하게.' 제품 · 서비스를 열거한다 — **HERP Hire**(디지털 인재 채용을 가속하는 채용 관리 시스템, 구인 매체 정보 자동 수집 · Slack/Chatwork 연계로 현장 사원 기점의 '스크럼 채용') · **HERP AI Recruiter**(Hire 와 연계해 AI 가 채용 프로세스 지원) · **HERP Agent Network**(쓰고 있는 ATS 와 연계해 한 번 클릭으로 구인을 내고 **1,000명 이상의 에이전트**에게 추천을 받는 매칭) · **HERP DataHub**(채용 집계 대시보드) · **HERP Nurture**(탤런트 풀) · **HERP Trust**(온라인 레퍼런스 체크) · **HERP Career**(1,000사 이상 스타트업 정보 · 구인 미디어) · **HERP 채용 컨설팅** · **ジョブミル**(인재 소개 회사용 구인 제안 플랫폼 — ATS 에서 구인 자동 집약 + 구인 DB) · **HERP Re-start**(재취직 지원)."
+    },
+    {
+      "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+      "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+      "publisher": "HERP",
+      "date": "2026-09-03",
+      "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+    },
+    {
+      "title": "技術的負債はいつ解消すべきか？ - HERP が React 移行で使った3つの判断軸",
+      "url": "https://zenn.dev/herp_inc/articles/when-to-resolve-technical-debt",
+      "publisher": "HERP",
+      "date": "2025-11-21",
+      "summary": "HERP Hire 는 2025 년 개발 9년째. 부채를 '**개발하며 얻는 지식 · 이해와 눈앞 시스템의 괴리가 일으키는 생산성 저하**'로 정의한다. 어려움은 '**부채 해소가 새 부채를 낳을 수 있다**'는 역설 — 여러 SaaS 를 전제로 기능을 **마이크로서비스로 떼어 냈다가** 방향이 멈추자 **분산 모놀리스**만 남았고, 코드베이스 전체를 **fp-ts 풍**으로 했다가 Effect-TS 가 대체해 전체가 부채가 됐다. 그래서 해소 시점의 세 조건 — ① 앞으로 개발량이 느는 방향이 분명해 **투자 효과가 크다** ② 얻는 자산이 **방향이 바뀌어도 가치를 잃지 않는다** ③ 사업과 기술이 **미래 전제를 맞추고 합의**했다. 사례: 2018 년부터 **jQuery + Pug** 로 만든 **구인 페이지**(당시 레거시 브라우저 · SSR 때문) — i18n · 폼 커스터마이즈 · 커스텀 항목 · note pro 연계로 복잡해져 응모 폼이 거대한 파일 하나. 개수 빈도가 낮아 미뤄 왔는데 2024~2025 년 **'SaaS × 매칭'** 으로 사업을 틀어 **구직자 체험**에 손댈 빈도가 확실히 늘어 React 이행을 결정."
+    },
+    {
+      "title": "チームの振る舞いをテストする - Ratcheting パターンで技術的負債解消の後戻りを防ぐ",
+      "url": "https://zenn.dev/herp_inc/articles/ratcheting-technical-debt",
+      "publisher": "HERP",
+      "date": "2026-09-15",
+      "summary": "빚은 갚는 것보다 **새로 안 지는 것**이 중요하다 — 누군가 부채를 줄이는 동안 다른 누군가가 악의 없이 늘리고, AI 코딩은 확률적이라 새 부채를 피할 수 없다. HERP Hire 서버는 repository 가 내는 SQL 을 **스냅숏 테스트로 고정**(TypeORM 에 자작 Logger 를 꽂아 실제 SQL 을 찍는다) — 코드 리뷰에서 줄였던 부채가 되살아난 것을 보고 **Ratcheting**(한 방향으로만 조이는 래칫) 구조를 넣었다(세부는 확장 사이클에서 읽는다)."
+    }
+  ]
+}

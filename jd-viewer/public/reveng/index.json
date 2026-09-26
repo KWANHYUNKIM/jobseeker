@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "herp",
+      "name": "HERP",
+      "name_en": "HERP",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "채용 관리 시스템 'HERP Hire' 에서 'SaaS × 매칭'으로 옮겨 가는 회사 — 쌓여 가는 선고 데이터를 DB 커서부터 HTTP 까지 한 스트림으로 흘려 SLO 를 되찾고, 부채는 '언제 갚을지'를 세 조건으로 가르고 갚은 부채가 되살아나지 않게 조인다",
+      "updated_at": "2026-09-27",
+      "domain": "herp.co.jp"
+    },
+    {
       "slug": "chillstack",
       "name": "칠스택",
       "name_en": "ChillStack",
@@ -3771,7 +3783,9 @@
     "추천 선반이 다른 경로의 몫을 빼앗지 않게 한다",
     "회사마다 다른 경비 데이터에서 부정을 찾는다",
     "여러 회사의 경비를 한 DB 에서 섞이지 않게 즉시 모아 본다",
-    "진단원마다 흔들리는 웹 진단 품질을 도구로 고르게 한다"
+    "진단원마다 흔들리는 웹 진단 품질을 도구로 고르게 한다",
+    "쌓여 가는 채용 데이터를 한 번에 들지 않고 흘려 내보낸다",
+    "언제 부채를 갚고, 갚은 부채가 돌아오지 않게 한다"
   ],
   "countries": {
     "KR": "한국",
