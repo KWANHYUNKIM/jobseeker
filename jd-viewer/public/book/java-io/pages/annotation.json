@@ -1,0 +1,228 @@
+{
+  "book": "java-io",
+  "id": "annotation",
+  "no": "11.1",
+  "chapter": 11,
+  "title": "애노테이션 만들기",
+  "summary": "@interface.",
+  "minutes": 12,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "애노테이션을 하나 만든다.",
+    "@interface 가 실제로 무엇인지 확인한다.",
+    "요소에 쓸 수 있는 타입의 경계를 찾는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.7절의 `ROUTES` 를 자동으로 채우려면 **클래스에 표시를 남겨야** 한다. 주석은 컴파일하면 사라지니 안 되고, 별도 설정 파일은 코드와 떨어진다.\n\n표시를 코드 옆에 두고 실행 중에도 읽을 수 있는 것 — 그것이 애노테이션이다. 직접 만든다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "선언은 한 글자 차이다",
+      "code": "@Retention(RetentionPolicy.RUNTIME)\n@Target(ElementType.METHOD)\npublic @interface Route {\n    String value();                       // 요소는 메서드처럼 쓴다\n    String method() default \"GET\";        // 기본값\n    int[] codes() default {200};\n    Class<?> type() default String.class;\n    Level level() default Level.LOW;\n    enum Level { LOW, HIGH }\n}"
+    },
+    {
+      "type": "prose",
+      "md": "## `@interface` 는 진짜 인터페이스다\n\n`javap` 으로 컴파일 결과를 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "컴파일하면 인터페이스가 나온다",
+      "sql": "$ javap -cp out Shape\n  Compiled from \"Shape.java\"\n  public interface Shape extends java.lang.annotation.Annotation {\n    public abstract java.lang.String name();\n    public abstract int size();\n  }",
+      "note": "**`interface ... extends Annotation`** 이다. 요소라고 부르던 것은 **추상 메서드**이고, 그래서 괄호가 붙어 있었다. `default` 값은 클래스 파일의 `AnnotationDefault` 속성에 따로 들어간다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 문법이 그 모양이었다",
+      "md": "`@interface` 의 낯선 규칙들이 \"인터페이스\"라는 한 가지로 설명된다.\n\n> **요소에 괄호가 붙는 이유** — 메서드이기 때문이다. `String value();`\n> **`default` 라는 낱말** — 인터페이스의 `default` 메서드와 다른 뜻이지만, 자리는 메서드 선언이라 같은 위치에 온다.\n> **상속이 안 되는 이유** — `extends Annotation` 이 이미 박혀 있어서 다른 것을 더 못 붙인다. 애노테이션끼리 상속 계층을 만들 수 없는 것이 이 때문이다.\n> **읽을 때 `r.value()` 로 부르는 이유** — 그냥 인터페이스 메서드 호출이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 그러면 구현체는 누가 만드나\n\n인터페이스라면 인스턴스가 있어야 한다. 리플렉션으로 읽어 그 정체를 물어봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "애노테이션 인스턴스는 프록시다",
+      "sql": "  r.getClass()          = jdk.proxy2.$Proxy1\n  r instanceof Route    = true\n  r.annotationType()    = Route\n  Proxy.isProxyClass    = true\n  인터페이스 목록         = [interface Route]",
+      "note": "**`$Proxy1`** 이다. JDK 가 실행 중에 `Route` 를 구현하는 클래스를 만들어 낸 것이고, 각 메서드는 클래스 파일에서 읽은 값을 돌려준다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "그래서 `getClass()` 로 판단하면 안 된다",
+      "md": "`r.getClass()` 는 `Route.class` 가 **아니다.**\n\n> 애노테이션 타입을 알고 싶으면 `annotationType()` 을 쓴다 — 그러라고 `Annotation` 인터페이스에 들어 있는 메서드다.\n> 10.2절의 규칙이 또 나온다: **이름이나 클래스로 판단하지 말고 물어보는 메서드를 쓴다.**\n> 프록시라서 생기는 성질이 하나 더 있는데(같은 애노테이션을 두 번 읽으면 `==` 인가) 11.3절에서 잰다."
+    },
+    {
+      "type": "prose",
+      "md": "## 요소에 아무 타입이나 못 쓴다\n\n`List<String>` 을 요소 타입으로 써 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "컴파일이 막았다",
+      "sql": "$ javac -d out Bad.java\n  Bad.java:6: error: invalid type for annotation type element\n      List<String> names();          // 컴파일 에러를 보려고 일부러\n          ^\n  1 error",
+      "note": "**`invalid type for annotation type element`** — 애노테이션 요소의 타입은 목록이 정해져 있다."
+    },
+    {
+      "type": "table",
+      "caption": "요소에 쓸 수 있는 것",
+      "columns": [
+        "쓸 수 있다",
+        "예",
+        "쓸 수 없다"
+      ],
+      "rows": [
+        [
+          "원시 타입",
+          "`int`, `boolean`, `double`",
+          "`Integer` 같은 래퍼"
+        ],
+        [
+          "`String`",
+          "`String value()`",
+          "`StringBuilder`"
+        ],
+        [
+          "`Class`",
+          "`Class<?> type()`",
+          "임의의 객체"
+        ],
+        [
+          "열거형",
+          "`Level level()`",
+          "인터페이스"
+        ],
+        [
+          "애노테이션",
+          "`@Route[] routes()`",
+          "`List`·`Map` 같은 컬렉션"
+        ],
+        [
+          "위의 **1차원 배열**",
+          "`int[] codes()`",
+          "2차원 배열 `int[][]`"
+        ]
+      ],
+      "note": "**전부 컴파일 시점에 상수로 확정되는 것들**이다. 클래스 파일에 값을 통째로 적어야 하므로 실행해야 정해지는 것은 못 쓴다 — 그래서 `null` 도 기본값으로 못 준다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`value` 라는 이름은 특별하다",
+      "md": "요소 이름이 `value` 하나뿐이면 이름을 생략할 수 있다.\n\n> `@Route(\"/hello\")` 는 `@Route(value = \"/hello\")` 의 줄임이다.\n> 다른 요소를 같이 쓸 때는 **전부 이름을 적어야 한다** — `@Route(value = \"/save\", method = \"POST\")`.\n> `@SuppressWarnings(\"unchecked\")`·`@Retention(RUNTIME)` 이 짧은 이유가 이것이다. 만들 때 **가장 중요한 요소의 이름을 `value` 로** 두면 쓰는 쪽이 짧아진다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "네 메서드에 붙여 읽어 보면",
+      "sql": "  hello    value=/hello   method=GET   codes=[200]      level=LOW   type=String\n  plain    (애노테이션 없음)\n  x        value=/x       method=GET   codes=[200]      level=HIGH  type=Integer\n  save     value=/save    method=POST  codes=[200, 201] level=LOW   type=String",
+      "note": "**기본값이 채워져 있다.** `hello` 는 `method` 를 안 적었는데 `GET` 이 나왔다 — 기본값은 클래스 파일이 아니라 **애노테이션 선언 쪽**에 있고 읽을 때 채워진다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "기본값을 바꾸면 다시 컴파일해야 하나",
+      "md": "위 문장에 중요한 함의가 있다.\n\n> 기본값은 **쓰는 쪽 클래스 파일에 복사되지 않는다.** `Route` 의 `default \"GET\"` 을 `\"POST\"` 로 고치면, `Use` 를 다시 컴파일하지 않아도 읽는 값이 바뀐다.\n> 10.4절의 `static final` 상수와 **반대**다. 상수는 쓰는 쪽에 복사되어 안 바뀌고, 애노테이션 기본값은 선언 쪽에 남아 바뀐다.\n> 둘 다 \"컴파일 시점에 정해지는 값\"인데 **어디에 저장되느냐**가 달라서 결과가 반대다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "클래스 파일에 어떻게 들어가나",
+      "sql": "$ javap -v -cp out Use\n  #12 = Utf8               RuntimeVisibleAnnotations\n  #13 = Utf8               LRoute;\n  #14 = Utf8               value\n  #15 = Utf8               /hello\n\n    RuntimeVisibleAnnotations:\n      0: #13(#14=s#15)\n        Route(\n          value=\"/hello\"\n        )",
+      "note": "**`RuntimeVisibleAnnotations` 라는 속성**에 들어간다. `#13(#14=s#15)` 는 \"`LRoute;` 타입, `value` 요소 = 문자열 `/hello`\" 라는 뜻이고 `s` 가 문자열 태그다. 이름이 `Runtime**Visible**` 인 것이 다음 절의 주제다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"애노테이션은 어떻게 동작합니까.\"**\n\n> `@interface` 는 `Annotation` 을 상속하는 **인터페이스**로 컴파일된다 — `javap` 으로 확인했다. 요소는 추상 메서드다.\n> 붙인 값은 클래스 파일의 **`RuntimeVisibleAnnotations` 속성**에 들어가고, 읽을 때 JDK 가 **동적 프록시**로 구현체를 만들어 준다. `getClass()` 가 `jdk.proxy2.$Proxy1` 이었다.\n> \"요소 타입 제한\" 을 물으면 — 원시·`String`·`Class`·열거형·애노테이션과 그 1차원 배열뿐이다. `List` 를 쓰면 `invalid type for annotation type element` 다.\n> 전부 **컴파일 시점에 상수로 확정되는 것**이라는 한 가지 이유다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 인터페이스와 프록시",
+      "sql": "$ javap -cp out Shape\n  public interface Shape extends java.lang.annotation.Annotation {\n    public abstract java.lang.String name();\n    public abstract int size();\n  }\n\n$ javac -d out Bad.java\n  error: invalid type for annotation type element\n      List<String> names();\n\n$ javap -v -cp out Use\n    RuntimeVisibleAnnotations:\n      0: #13(#14=s#15)          // LRoute; value=\"/hello\"\n\n$ java -cp out Show\n  hello    value=/hello  method=GET   codes=[200]      level=LOW   type=String\n  save     value=/save   method=POST  codes=[200, 201] level=LOW   type=String\n  x        value=/x      method=GET   codes=[200]      level=HIGH  type=Integer\n  plain    (애노테이션 없음)\n\n  r.getClass()       = jdk.proxy2.$Proxy1\n  r instanceof Route = true\n  r.annotationType() = Route\n  Proxy.isProxyClass = true\n  인터페이스 목록      = [interface Route]\n\n# 선언은 인터페이스, 값은 클래스 파일의 속성, 인스턴스는 프록시.\n# 셋 다 javap 과 getClass() 로 눈에 보였다.",
+      "note": "**`extends Annotation` 과 `$Proxy1` 이 이 절의 두 증거다.** 그리고 마지막에 본 속성 이름이 `Runtime**Visible**Annotations` 였다 — Invisible 도 있다는 뜻이고, 다음 절에서 그것을 만든다."
+    }
+  ],
+  "recap": [
+    "@interface 는 Annotation 을 상속하는 인터페이스로 컴파일된다 — javap 으로 확인했다.",
+    "요소는 추상 메서드다. 그래서 괄호가 붙고 애노테이션끼리 상속이 안 된다.",
+    "애노테이션 인스턴스는 동적 프록시다 — getClass() 가 jdk.proxy2.$Proxy1 이었다.",
+    "타입을 알려면 getClass() 가 아니라 annotationType() 을 쓴다.",
+    "요소 타입은 원시·String·Class·열거형·애노테이션과 그 1차원 배열뿐이다.",
+    "List 를 쓰면 invalid type for annotation type element 로 컴파일이 막는다.",
+    "전부 컴파일 시점에 상수로 확정되는 것들이다 — null 도 기본값으로 못 준다.",
+    "요소 이름이 value 하나뿐이면 이름을 생략할 수 있다.",
+    "기본값은 쓰는 쪽에 복사되지 않는다 — 선언을 고치면 다시 컴파일 안 해도 바뀐다.",
+    "static final 상수와 반대다 — 그쪽은 쓰는 쪽에 복사되어 안 바뀐다.",
+    "붙인 값은 클래스 파일의 RuntimeVisibleAnnotations 속성에 들어간다."
+  ],
+  "drills": [
+    {
+      "task": "요소 다섯 가지 타입을 가진 애노테이션을 만든다.",
+      "done_when": "기본값이 채워지는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "javap 으로 컴파일 결과를 본다.",
+      "done_when": "extends Annotation 을 찾는다.",
+      "minutes": 8
+    },
+    {
+      "task": "요소 타입에 List 를 써 본다.",
+      "done_when": "컴파일 오류 메시지를 읽는다.",
+      "minutes": 6
+    },
+    {
+      "task": "읽어 온 애노테이션의 getClass() 를 찍는다.",
+      "done_when": "프록시인 것을 확인한다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "@interface 는 무엇으로 컴파일되나.",
+      "a": "Annotation 을 상속하는 인터페이스다. 요소는 추상 메서드다."
+    },
+    {
+      "q": "애노테이션 인스턴스의 실제 클래스는.",
+      "a": "JDK 가 만든 동적 프록시다. 타입은 annotationType() 으로 묻는다."
+    },
+    {
+      "q": "요소 타입에 List 를 못 쓰는 이유는.",
+      "a": "컴파일 시점에 상수로 확정돼 클래스 파일에 적혀야 한다."
+    },
+    {
+      "q": "기본값을 고치면 쓰는 쪽을 다시 컴파일해야 하나.",
+      "a": "아니다. 기본값은 선언 쪽에 남아 있고 읽을 때 채워진다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "애노테이션 요소",
+      "what": "@interface 안의 선언. 실제로는 추상 메서드이고 default 로 기본값을 준다."
+    },
+    {
+      "term": "RuntimeVisibleAnnotations",
+      "what": "클래스 파일에서 애노테이션을 담는 속성. 이름에 Visible 이 붙은 이유는 11.2절에 있다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java Language Specification — 9.6 Annotation Types",
+      "url": "https://docs.oracle.com/javase/specs/jls/se17/html/jls-9.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JVM Specification — 4.7.16 RuntimeVisibleAnnotations",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

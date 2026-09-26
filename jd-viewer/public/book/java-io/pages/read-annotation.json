@@ -1,0 +1,259 @@
+{
+  "book": "java-io",
+  "id": "read-annotation",
+  "no": "11.3",
+  "chapter": 11,
+  "title": "애노테이션 읽기",
+  "summary": "리플렉션과 짝이다.",
+  "minutes": 13,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "물려받는 것과 안 받는 것을 가른다.",
+    "같은 애노테이션을 두 번 붙이면 무엇이 달라지는지 본다.",
+    "파라미터 애노테이션까지 읽는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.2절에서 `RUNTIME` 인 것만 읽힌다는 것을 확인했다. 이제 그것을 제대로 꺼낸다.\n\n메서드에 `getMethods` 와 `getDeclaredMethods` 가 있었듯(10.3절) 애노테이션에도 둘이 있고, **여기서는 차이가 물려받기**다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "하나에만 `@Inherited` 를 붙였다",
+      "code": "@Retention(RUNTIME) @Inherited @Target(TYPE)\npublic @interface Tag   { String value(); }\n\n@Retention(RUNTIME)            @Target(TYPE)\npublic @interface Plain { String value(); }   // @Inherited 없음\n\n@Tag(\"기반\") @Plain(\"평범\")\npublic class Base { }\npublic class Child extends Base { }           // 아무것도 안 붙였다"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "자식이 무엇을 물려받았나",
+      "sql": "  Base  getAnnotations()         = [@Tag(\"기반\"), @Plain(\"평범\")]\n  Child getAnnotations()         = [@Tag(\"기반\")]\n  Child getDeclaredAnnotations() = []",
+      "note": "**`@Tag` 만 내려왔다.** `@Inherited` 가 있는 것만이고, `getDeclaredAnnotations()` 로 보면 자식에는 **아무것도 없다** — 물려받은 것은 `getAnnotations()` 에서만 보인다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "@Inherited 의 범위가 좁다",
+      "md": "이름만 보면 다 될 것 같은데 **클래스 상속뿐**이다.\n\n> **인터페이스는 안 된다.** `interface A` 에 `@Inherited` 애노테이션을 붙이고 `class B implements A` 를 해도 `B` 에서는 안 보인다.\n> **메서드 재정의도 안 된다.** 부모 메서드에 붙인 것이 자식이 재정의한 메서드에서 안 보인다.\n> 그래서 스프링은 `@Inherited` 에 기대지 않고 `AnnotatedElementUtils` 로 **인터페이스와 메서드 계층을 직접 훑는다.** `@Transactional` 이 인터페이스에 붙어도 잡히는 이유다.\n> 정리: **`@Inherited` 는 클래스 한 줄기만 올라간다.** 그 이상이 필요하면 직접 훑어야 한다."
+    },
+    {
+      "type": "prose",
+      "md": "## 같은 것을 두 번 붙이면 읽는 방법이 바뀐다\n\n`@Repeatable` 로 만든 애노테이션을 한 번 붙인 메서드와 두 번 붙인 메서드에서 각각 읽어 봤다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "컨테이너를 같이 선언해야 한다",
+      "code": "@Retention(RUNTIME) @Repeatable(Roles.List.class) @Target(METHOD)\npublic @interface Roles {\n    String value();\n    @Retention(RUNTIME) @Target(METHOD)\n    @interface List { Roles[] value(); }      // 담는 그릇\n}\n\n@Roles(\"ADMIN\") @Roles(\"USER\") public void both() {}\n@Roles(\"GUEST\")                public void one()  {}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "개수에 따라 결과가 갈린다",
+      "sql": "  both getAnnotation(Roles.class)        = null              <-- !\n  both getAnnotationsByType(Roles.class) = [@Roles(\"ADMIN\"), @Roles(\"USER\")]\n  both getDeclaredAnnotations()          = [@Roles$List({@Roles(\"ADMIN\"), @Roles(\"USER\")})]\n\n  one  getAnnotation(Roles.class)        = @Roles(\"GUEST\")\n  one  getAnnotationsByType(Roles.class) = [@Roles(\"GUEST\")]\n  one  getDeclaredAnnotations()          = [@Roles(\"GUEST\")]",
+      "note": "**두 번 붙이면 `getAnnotation` 이 `null` 이다.** 컴파일러가 둘을 `@Roles$List` 컨테이너로 싸 버렸고, 그 클래스에는 `Roles` 가 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "하나일 때는 되고 둘일 때는 안 된다",
+      "md": "이 버그의 모양이 아주 고약하다.\n\n> 테스트는 보통 하나만 붙여 쓴다. 그때는 `getAnnotation` 이 잘 돌고, **운영에서 누가 두 개를 붙인 순간** `null` 이 되어 기능이 조용히 사라진다.\n> 9.8절의 경쟁 상태와 성질이 같다 — **조건에 따라 나타나는 실패**이고 컴파일도 테스트도 통과한다.\n> 규칙은 단순하다. **`@Repeatable` 인 애노테이션은 항상 `getAnnotationsByType` 으로 읽는다.** 하나만 붙었을 때도 배열로 잘 돌려준다(`one` 에서 확인했다).\n> `getDeclaredAnnotations()` 로 보면 컨테이너가 보이므로, 왜 `null` 인지 모를 때 그것부터 찍어 본다."
+    },
+    {
+      "type": "figure",
+      "caption": "what the compiler does with repeats",
+      "ascii": "        source                        class file\n        @Roles(\"ADMIN\")               @Roles$List({\n        @Roles(\"USER\")        --->        @Roles(\"ADMIN\"),\n        void both()                       @Roles(\"USER\")\n                                      })\n\n        @Roles(\"GUEST\")       --->    @Roles(\"GUEST\")\n        void one()                    (no container -- only one)\n\n        getAnnotation(Roles.class)  sees the second, not the first.\n        getAnnotationsByType(...)    unwraps both."
+    },
+    {
+      "type": "prose",
+      "md": "## 필드와 파라미터에도 붙는다\n\n9.7절의 라우팅은 메서드에만 붙였지만, 검증기(11.5절)를 만들려면 필드와 파라미터가 필요하다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "파라미터는 배열의 배열로 온다",
+      "sql": "  필드 id = @Named(\"아이디\")\n  파라미터 0 = [@Named(\"이름\")]\n  파라미터 1 = []\n  Parameter arg0 -> @Named(\"이름\")\n  Parameter arg1 -> null",
+      "note": "**`getParameterAnnotations()` 는 `Annotation[][]`** 이다 — 파라미터마다 배열 하나. 애노테이션이 없는 파라미터도 **빈 배열로 자리를 차지**하므로 인덱스가 어긋나지 않는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 파라미터 이름이 `arg0` 이다\n\n위 출력에서 이름이 `arg0`·`arg1` 로 나왔다. 소스에는 `name`·`n` 이라고 썼는데."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "컴파일 옵션이 갈랐다",
+      "sql": "--- -parameters 없이 컴파일한 것 ---\n  arg0  isNamePresent=false\n  arg1  isNamePresent=false\n\n--- -parameters 로 컴파일한 것 ---\n  name  isNamePresent=true\n  n     isNamePresent=true",
+      "note": "**파라미터 이름은 기본으로 클래스 파일에 안 들어간다.** `-parameters` 를 주면 `MethodParameters` 속성이 생기고 그때만 진짜 이름이 나온다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 `@PathVariable(\"id\")` 에 이름을 적었다",
+      "md": "스프링에서 이런 코드를 본 적이 있을 것이다.\n\n```java\n@GetMapping(\"/jobs/{id}\")\nString job(@PathVariable(\"id\") String id) { ... }\n```\n\n> 이름을 두 번 쓰는 게 낭비처럼 보이는데, **파라미터 이름이 클래스 파일에 없으면** 프레임워크가 `id` 라는 이름을 알 방법이 없어서다.\n> 스프링 부트는 컴파일에 `-parameters` 를 넣어 주므로 요즘은 생략할 수 있다. 다만 **스프링 6.1 부터는 그 옵션 없이 생략하면 기동 때 실패**한다 — 예전에는 디버그 정보로 추측했는데 그 경로를 없앴다.\n> 즉 `isNamePresent=false` 라는 한 줄이 그 모든 이야기의 뿌리다. 이름이 필요하면 **애노테이션에 적거나 `-parameters` 를 켜는** 두 길뿐이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 프록시라서 생기는 성질\n\n11.1절에서 애노테이션 인스턴스가 `$Proxy1` 이라는 것을 봤다. 그러면 두 번 읽으면 두 객체인가."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "같은 객체가 돌아왔다",
+      "sql": "  t1 == t2      : true\n  t1.equals(t2) : true\n  hash 같은가    : true\n  value() 를 invoke 로 = 기반",
+      "note": "**`==` 가 참이다.** `Base.class.getAnnotation(Tag.class)` 와 `Child.class.getAnnotation(Tag.class)`(물려받은 것)가 같은 인스턴스다 — JDK 가 만들어 캐시해 둔다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`equals` 는 값으로 비교한다",
+      "md": "`==` 가 참인 것은 캐시 덕이고, **`equals` 는 규약으로 정해져 있다.**\n\n> 애노테이션의 `equals` 는 **모든 요소 값이 같으면 참**이다 — 배열 요소는 내용 비교다. 그래서 서로 다른 클래스에 붙은 `@Tag(\"기반\")` 두 개도 `equals` 가 참이다.\n> `hashCode` 도 요소로부터 계산하는 식이 명세에 정해져 있다 — 그래서 `Set<Annotation>` 에 넣어도 예상대로 돈다.\n> `==` 에 기대면 안 되는 이유는, 그것이 **명세가 아니라 구현**이기 때문이다. 값을 비교하려면 `equals` 를 쓴다.\n> 그리고 `value()` 를 `invoke` 로 부른 것도 됐다 — 프록시의 메서드이니 10.3절이 그대로 적용된다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`toString` 이 한글을 이스케이프한다",
+      "md": "위 실험에서 출력이 이렇게 나온 자리가 있었다.\n\n```\nBase getAnnotations() = [@Tag(\"\\uae30\\ubc18\"), @Plain(\"\\ud3c9\\ubc94\")]\n```\n\n> `기반`·`평범` 이 유니코드 이스케이프로 찍혔다. 콘솔 인코딩 문제가 아니다 — 같은 값을 `r.value()` 로 꺼내면 `기반` 이 제대로 나왔다.\n> 애노테이션 프록시의 `toString` 이 문자열 요소를 소스에 다시 붙일 수 있는 형태로 적기 때문이다. **로그에 애노테이션을 그대로 찍으면 읽기 어렵다**는 실용적인 함의가 있다.\n> 값을 보려면 요소 메서드를 불러서 찍는다."
+    },
+    {
+      "type": "table",
+      "caption": "읽는 메서드 정리",
+      "columns": [
+        "메서드",
+        "물려받은 것",
+        "반복된 것",
+        "쓰는 자리"
+      ],
+      "rows": [
+        [
+          "`getAnnotation(X.class)`",
+          "**포함**",
+          "두 개면 `null`",
+          "하나만 붙는 애노테이션"
+        ],
+        [
+          "`getDeclaredAnnotation(X.class)`",
+          "제외",
+          "두 개면 `null`",
+          "자기 것만 볼 때"
+        ],
+        [
+          "`getAnnotationsByType(X.class)`",
+          "포함",
+          "**전부 풀어 준다**",
+          "`@Repeatable` 이면 항상 이것"
+        ],
+        [
+          "`getAnnotations()`",
+          "포함",
+          "컨테이너로 보인다",
+          "전부 훑을 때"
+        ],
+        [
+          "`getDeclaredAnnotations()`",
+          "제외",
+          "컨테이너로 보인다",
+          "디버깅"
+        ],
+        [
+          "`isAnnotationPresent(X.class)`",
+          "포함",
+          "두 개면 `false`",
+          "`getAnnotation` 과 같은 함정"
+        ]
+      ],
+      "note": "**`isAnnotationPresent` 도 같이 걸린다** — 내부가 `getAnnotation(...) != null` 이라서, 두 번 붙은 `@Repeatable` 에는 `false` 다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"`getAnnotations` 와 `getDeclaredAnnotations` 의 차이는.\"**\n\n> 물려받은 것(`@Inherited`)이 포함되느냐다. 재 봤다 — 자식의 `getAnnotations()` 에는 `@Tag` 가 있고 `getDeclaredAnnotations()` 는 **빈 배열**이었다.\n> `@Inherited` 의 범위를 물으면 **클래스 상속뿐**이다. 인터페이스도, 메서드 재정의도 안 된다 — 그래서 스프링이 계층을 직접 훑는다.\n> `@Repeatable` 은 함정으로 답한다. **두 번 붙이면 `getAnnotation` 이 `null`** 이 되고 `isAnnotationPresent` 도 `false` 다. 컴파일러가 컨테이너로 싸기 때문이고, 항상 `getAnnotationsByType` 을 쓴다.\n> 파라미터 이름을 물으면 — 기본으로 클래스 파일에 없다. `arg0` 이 나오고 `-parameters` 를 줘야 진짜 이름이 나온다. `@PathVariable(\"id\")` 에 이름을 적던 이유다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 세 가지 함정",
+      "sql": "$ java -cp out Read3\n\n물려받는 것과 안 받는 것 (@Inherited)\n  Base  getAnnotations()         = [@Tag(\"기반\"), @Plain(\"평범\")]\n  Child getAnnotations()         = [@Tag(\"기반\")]\n  Child getDeclaredAnnotations() = []\n\n같은 애노테이션을 여러 번 (@Repeatable)\n  both getAnnotation(Roles.class)        = null\n  both getAnnotationsByType(Roles.class) = [@Roles(\"ADMIN\"), @Roles(\"USER\")]\n  both getDeclaredAnnotations()          = [@Roles$List({@Roles(\"ADMIN\"), @Roles(\"USER\")})]\n  one  getAnnotation(Roles.class)        = @Roles(\"GUEST\")\n\n필드와 파라미터\n  필드 id = @Named(\"아이디\")\n  파라미터 0 = [@Named(\"이름\")]\n  파라미터 1 = []\n  Parameter arg0 -> @Named(\"이름\")\n\n$ javac -parameters ... ; java -cp outp PName\n  name  isNamePresent=true\n  n     isNamePresent=true\n  (-parameters 없이는 arg0 / arg1, isNamePresent=false)\n\n프록시라서 생기는 성질\n  t1 == t2 : true      t1.equals(t2) : true\n  value() 를 invoke 로 = 기반\n\n# null, [], arg0 — 세 줄이 세 함정이다.\n# 셋 다 오류가 아니라 조용한 빈손이라서 찾기 어렵다.",
+      "note": "**`both getAnnotation = null` 이 이 절의 중심이다.** 하나 붙였을 때는 되고 둘 붙였을 때 안 되므로 테스트를 통과한다. 다음 절에서 이 읽기를 9.7절의 `ROUTES` 에 연결한다 — 손으로 등록하던 표를 애노테이션이 채운다."
+    }
+  ],
+  "recap": [
+    "getAnnotations() 는 물려받은 것을 포함하고 getDeclaredAnnotations() 는 자기 것만 준다.",
+    "자식의 getDeclaredAnnotations() 는 빈 배열이었다 — 물려받은 것은 거기 안 보인다.",
+    "@Inherited 는 클래스 상속뿐이다 — 인터페이스도 메서드 재정의도 안 된다.",
+    "그래서 스프링은 @Inherited 에 기대지 않고 계층을 직접 훑는다.",
+    "@Repeatable 을 두 번 붙이면 getAnnotation 이 null 이고 isAnnotationPresent 가 false 다.",
+    "컴파일러가 컨테이너 애노테이션으로 싸기 때문이다 — getDeclaredAnnotations() 로 보면 보인다.",
+    "@Repeatable 은 항상 getAnnotationsByType 으로 읽는다 — 하나일 때도 배열로 준다.",
+    "하나일 때는 되고 둘일 때 안 되므로 테스트를 통과한다 — 9.8절의 경쟁 상태와 성질이 같다.",
+    "getParameterAnnotations() 는 Annotation[][] 이고 없는 파라미터도 빈 배열로 자리를 지킨다.",
+    "파라미터 이름은 기본으로 클래스 파일에 없다 — arg0 이 나오고 -parameters 를 줘야 한다.",
+    "@PathVariable(\"id\") 에 이름을 적던 이유가 그것이다.",
+    "애노테이션 인스턴스는 캐시되어 == 가 참이었지만 그것은 구현이고 equals 가 명세다.",
+    "애노테이션의 equals 는 모든 요소 값 비교이고 배열은 내용 비교다.",
+    "프록시의 toString 이 한글을 유니코드 이스케이프로 찍는다 — 값은 요소 메서드로 꺼내 찍는다."
+  ],
+  "drills": [
+    {
+      "task": "@Inherited 가 있는 것과 없는 것을 자식에서 읽는다.",
+      "done_when": "두 메서드의 결과 차이를 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "@Repeatable 애노테이션을 한 번과 두 번 붙여 읽는다.",
+      "done_when": "getAnnotation 이 null 이 되는 것을 본다.",
+      "minutes": 13
+    },
+    {
+      "task": "파라미터 애노테이션을 읽는다.",
+      "done_when": "빈 배열이 자리를 지키는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "-parameters 를 켜고 끄고 컴파일한다.",
+      "done_when": "isNamePresent 가 바뀌는지 본다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "@Inherited 가 적용되지 않는 곳은.",
+      "a": "인터페이스 구현과 메서드 재정의다. 클래스 상속만 된다."
+    },
+    {
+      "q": "@Repeatable 을 두 번 붙였을 때 getAnnotation 이 null 인 이유는.",
+      "a": "컴파일러가 컨테이너 애노테이션으로 싸므로 그 타입이 직접 붙어 있지 않다."
+    },
+    {
+      "q": "파라미터 이름이 arg0 으로 나오는 이유는.",
+      "a": "이름이 기본으로 클래스 파일에 안 들어간다. -parameters 가 필요하다."
+    },
+    {
+      "q": "애노테이션 두 개를 비교할 때 == 를 쓰면 안 되는 이유는.",
+      "a": "캐시는 구현이고 명세는 equals 다. equals 는 요소 값을 비교한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "@Inherited",
+      "what": "클래스 상속으로 애노테이션이 내려가게 하는 메타 애노테이션. 인터페이스와 메서드에는 적용되지 않는다."
+    },
+    {
+      "term": "컨테이너 애노테이션",
+      "what": "@Repeatable 이 여러 개를 담는 그릇. 두 번 이상 붙으면 컴파일러가 이것으로 싼다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — AnnotatedElement",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — java.lang.annotation.Annotation",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

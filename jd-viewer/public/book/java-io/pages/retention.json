@@ -1,0 +1,231 @@
+{
+  "book": "java-io",
+  "id": "retention",
+  "no": "11.2",
+  "chapter": 11,
+  "title": "유지 정책",
+  "summary": "클래스에 남느냐 안 남느냐.",
+  "minutes": 12,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "세 정책이 클래스 파일에 어떻게 남는지 본다.",
+    "리플렉션이 읽을 수 있는 것을 가른다.",
+    "기본값을 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.1절 마지막에 본 속성 이름이 `Runtime**Visible**Annotations` 였다. Visible 이 있으면 Invisible 도 있다.\n\n애노테이션 넷을 만들어 한 클래스에 다 붙였다 — 정책 셋과 **정책을 안 적은 것** 하나."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "넷을 한 클래스에",
+      "code": "@Retention(RetentionPolicy.SOURCE)  public @interface KeepSource {}\n@Retention(RetentionPolicy.CLASS)   public @interface KeepClass {}\n@Retention(RetentionPolicy.RUNTIME) public @interface KeepRuntime {}\npublic @interface NoRetention {}    // @Retention 을 안 붙였다\n\n@KeepSource @KeepClass @KeepRuntime @NoRetention\npublic class Four { }"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "클래스 파일을 열어 보면",
+      "sql": "$ javap -v -cp out Four\n\n  #13 = Utf8               RuntimeVisibleAnnotations\n  #14 = Utf8               LKeepRuntime;\n  #15 = Utf8               RuntimeInvisibleAnnotations\n  #16 = Utf8               LKeepClass;\n  #17 = Utf8               LNoRetention;\n\n  RuntimeVisibleAnnotations:\n    0: #14()\n      KeepRuntime\n  RuntimeInvisibleAnnotations:\n    0: #16()\n      KeepClass\n    1: #17()\n      NoRetention",
+      "note": "**`LKeepSource;` 가 어디에도 없다.** 상수 풀에도 없다 — 컴파일러가 통째로 버렸다. 나머지 셋은 두 속성으로 갈라져 들어갔다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "리플렉션으로 읽으면",
+      "sql": "$ java -cp out Read4\n\n  리플렉션으로 읽은 애노테이션\n    개수 = 1\n      @KeepRuntime()\n\n    KeepSource   @Retention=SOURCE    isAnnotationPresent=false\n    KeepClass    @Retention=CLASS     isAnnotationPresent=false\n    KeepRuntime  @Retention=RUNTIME   isAnnotationPresent=true\n    NoRetention  @Retention=(없음)      isAnnotationPresent=true 가 아니라 false",
+      "note": "**네 개를 붙였는데 하나만 읽힌다.** `RuntimeInvisibleAnnotations` 에 들어간 둘은 클래스 파일에 있는데도 리플렉션이 안 준다 — 그것이 Invisible 의 뜻이다."
+    },
+    {
+      "type": "table",
+      "caption": "세 정책이 하는 일",
+      "columns": [
+        "정책",
+        "클래스 파일",
+        "리플렉션",
+        "쓰는 자리"
+      ],
+      "rows": [
+        [
+          "`SOURCE`",
+          "**없다**",
+          "안 됨",
+          "컴파일러·애노테이션 프로세서"
+        ],
+        [
+          "`CLASS`",
+          "`RuntimeInvisibleAnnotations`",
+          "안 됨",
+          "바이트코드 도구"
+        ],
+        [
+          "`RUNTIME`",
+          "`RuntimeVisibleAnnotations`",
+          "**된다**",
+          "프레임워크"
+        ]
+      ],
+      "note": "**`CLASS` 가 가장 헷갈리는 자리다.** 클래스 파일에는 남는데 리플렉션으로는 못 읽는다 — 읽는 주체가 JVM 이 아니라 바이트코드를 직접 파싱하는 도구다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "기본값이 CLASS 다",
+      "md": "`@Retention` 을 안 붙인 `NoRetention` 이 `RuntimeInvisibleAnnotations` 에 들어갔다.\n\n> 즉 **기본값은 `CLASS`** 이고, 그것은 **리플렉션으로 못 읽는다**는 뜻이다.\n> 애노테이션을 만들어 프레임워크에 쓰려는데 `isAnnotationPresent` 가 계속 `false` 면 거의 항상 이것이다. 컴파일도 되고 붙이는 것도 되고 오류도 안 난다 — 그냥 **안 보인다.**\n> 잡는 방법은 두 가지다. `@Retention(RUNTIME)` 을 먼저 확인하거나, `javap -v` 로 `RuntimeVisible` 쪽에 있는지 본다.\n> 기본값이 왜 `CLASS` 냐는 것은 역사다 — 애노테이션이 자바 5 에 들어올 때 주된 용도가 바이트코드 도구였다."
+    },
+    {
+      "type": "figure",
+      "caption": "three fates of one annotation",
+      "ascii": "        .java                .class                   JVM at runtime\n        +---------+          +---------------------+  +----------------+\n        | SOURCE  | --drop-> |                     |  |                |\n        | CLASS   | -------> | RuntimeInvisible... |  |  (not exposed) |\n        | RUNTIME | -------> | RuntimeVisible...   |->| getAnnotation  |\n        | (none)  | -------> | RuntimeInvisible... |  |  (not exposed) |\n        +---------+          +---------------------+  +----------------+\n\n        default is CLASS -- the middle row, not the bottom one."
+    },
+    {
+      "type": "prose",
+      "md": "## JDK 의 애노테이션은 어느 쪽인가\n\n매일 쓰는 것들의 정책을 보면 규칙이 보인다."
+    },
+    {
+      "type": "table",
+      "caption": "익숙한 것들",
+      "columns": [
+        "애노테이션",
+        "정책",
+        "왜"
+      ],
+      "rows": [
+        [
+          "`@Override`",
+          "`SOURCE`",
+          "컴파일러만 보면 된다. 클래스 파일에 남을 이유가 없다"
+        ],
+        [
+          "`@SuppressWarnings`",
+          "`SOURCE`",
+          "같다"
+        ],
+        [
+          "`@FunctionalInterface`",
+          "`RUNTIME`",
+          "다만 실제로 읽는 쪽은 드물다"
+        ],
+        [
+          "`@Deprecated`",
+          "`RUNTIME`",
+          "IDE·도구가 실행 중에도 알아야 한다"
+        ],
+        [
+          "`@Retention` 자신",
+          "`RUNTIME`",
+          "**리플렉션으로 정책을 물어봐야** 하므로"
+        ]
+      ],
+      "note": "마지막 줄이 재미있다 — 이 절의 실험에서 `c.getAnnotation(Retention.class)` 로 정책을 읽었는데, 그것이 되는 이유가 `@Retention` 자신이 `RUNTIME` 이기 때문이다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`SOURCE` 가 쓸모없는 게 아니다",
+      "md": "클래스 파일에 안 남는데 왜 만드나.\n\n> **컴파일러가 본다.** `@Override` 가 대표적이고, 그 검사는 컴파일 시점에 끝나므로 남길 필요가 없다.\n> **애노테이션 프로세서가 본다.** 롬복의 `@Getter`·`@Builder`, 그리고 `@Entity` 를 보고 메타모델을 생성하는 도구들이 `SOURCE` 로 동작한다 — 컴파일할 때 **코드를 만들어 내고** 애노테이션은 사라진다.\n> 이것이 리플렉션보다 빠른 길이다. 10.6절에서 본 20ns·3.5ns 를 아예 안 내고, 생성된 코드는 직접 호출이다.\n> 대가는 컴파일 단계가 늘어나는 것과, 생성된 코드가 소스에 안 보이는 것이다."
+    },
+    {
+      "type": "compare",
+      "title": "같은 일을 두 시점에",
+      "left": {
+        "title": "`RUNTIME` + 리플렉션",
+        "md": "실행 중에 클래스를 훑어 표를 만든다.\n\n**장점** — 컴파일 단계가 단순하고, 런타임에 클래스가 추가돼도 잡힌다.\n\n**대가** — 기동 시간과 호출당 몇 ns(10.6절)."
+      },
+      "right": {
+        "title": "`SOURCE` + 애노테이션 프로세서",
+        "md": "컴파일할 때 코드를 생성한다.\n\n**장점** — 실행 중 비용이 0. 오류를 컴파일에서 잡는다.\n\n**대가** — 빌드가 복잡해지고 생성 코드가 소스에 없다."
+      },
+      "note": "스프링이 네이티브 이미지로 갈 때 `RUNTIME` 리플렉션을 **빌드 시점 처리로 옮기는** 것이 이 표의 왼쪽에서 오른쪽으로 가는 일이다. 같은 애노테이션을 어느 시점에 읽느냐의 선택이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"`@Retention` 의 기본값은 무엇입니까.\"**\n\n> **`CLASS`** 이고, 그것은 **리플렉션으로 못 읽는다**는 뜻이다. 재 봤다 — `@Retention` 없이 만든 애노테이션이 `RuntimeInvisibleAnnotations` 에 들어가고 `isAnnotationPresent` 가 `false` 였다.\n> 그래서 프레임워크용 애노테이션을 만들 때 `@Retention(RUNTIME)` 을 빼먹으면 **오류 없이 그냥 안 보인다.**\n> \"셋의 차이\" 는 클래스 파일로 답한다 — `SOURCE` 는 상수 풀에도 없고, `CLASS` 는 `RuntimeInvisible`, `RUNTIME` 은 `RuntimeVisible` 이다.\n> `SOURCE` 의 용도를 물으면 컴파일러 검사와 **애노테이션 프로세서**다. 롬복이 그쪽이고, 리플렉션 값을 아예 안 낸다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 넷을 붙이고 하나를 읽었다",
+      "sql": "$ javap -v -cp out Four | grep -E 'Utf8 +L(Keep|NoRetention)'\n  #14 = Utf8               LKeepRuntime;\n  #16 = Utf8               LKeepClass;\n  #17 = Utf8               LNoRetention;\n  (LKeepSource; 는 없다 — 상수 풀에도 안 남았다)\n\n  RuntimeVisibleAnnotations:\n    0: #14()   KeepRuntime\n  RuntimeInvisibleAnnotations:\n    0: #16()   KeepClass\n    1: #17()   NoRetention        <- @Retention 을 안 붙인 것\n\n$ java -cp out Read4\n  리플렉션으로 읽은 애노테이션\n    개수 = 1\n      @KeepRuntime()\n\n    KeepSource   @Retention=SOURCE   isAnnotationPresent=false\n    KeepClass    @Retention=CLASS    isAnnotationPresent=false\n    KeepRuntime  @Retention=RUNTIME  isAnnotationPresent=true\n    NoRetention  @Retention=(없음)     isAnnotationPresent=false\n\n# 넷을 붙였는데 하나만 읽혔다.\n# 그리고 정책을 안 적은 것은 CLASS 쪽에 들어갔다 — 그것이 기본값이다.",
+      "note": "**4 를 붙여 1 을 읽은 것이 이 절의 전부다.** 그리고 `LKeepSource;` 가 상수 풀에도 없는 것이 `SOURCE` 의 증거다. 다음 절에서는 읽을 수 있는 그 하나를 제대로 꺼낸다 — 물려받기와 반복이 걸린다."
+    }
+  ],
+  "recap": [
+    "SOURCE 는 클래스 파일에 아예 없다 — 상수 풀에도 이름이 안 남았다.",
+    "CLASS 는 RuntimeInvisibleAnnotations, RUNTIME 은 RuntimeVisibleAnnotations 에 들어간다.",
+    "넷을 붙였는데 리플렉션은 하나만 줬다 — Invisible 은 클래스 파일에 있어도 안 준다.",
+    "@Retention 을 안 붙이면 기본이 CLASS 다 — 리플렉션으로 못 읽는다.",
+    "그래서 프레임워크용 애노테이션이 오류 없이 그냥 안 보이는 일이 생긴다.",
+    "잡는 방법은 @Retention(RUNTIME) 확인 또는 javap -v 로 Visible 쪽인지 보는 것이다.",
+    "기본값이 CLASS 인 것은 자바 5 때 주 용도가 바이트코드 도구였기 때문이다.",
+    "@Override 와 @SuppressWarnings 는 SOURCE, @Deprecated 는 RUNTIME 이다.",
+    "@Retention 자신이 RUNTIME 이라서 리플렉션으로 정책을 물어볼 수 있다.",
+    "SOURCE 는 컴파일러 검사와 애노테이션 프로세서가 쓴다 — 롬복이 그쪽이다.",
+    "프로세서 방식은 실행 중 비용이 0 이고 대가는 빌드 복잡도다."
+  ],
+  "drills": [
+    {
+      "task": "세 정책의 애노테이션을 한 클래스에 붙인다.",
+      "done_when": "javap -v 로 어디에 들어갔는지 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "@Retention 을 뺀 애노테이션을 만든다.",
+      "done_when": "리플렉션으로 안 읽히는 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "상수 풀에서 SOURCE 애노테이션 이름을 찾아본다.",
+      "done_when": "없는 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "@Retention 자신의 정책을 리플렉션으로 읽는다.",
+      "done_when": "RUNTIME 인 것을 확인한다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "@Retention 의 기본값은.",
+      "a": "CLASS 다. 클래스 파일에는 남지만 리플렉션으로 못 읽는다."
+    },
+    {
+      "q": "CLASS 와 RUNTIME 은 클래스 파일에서 어떻게 다른가.",
+      "a": "RuntimeInvisibleAnnotations 와 RuntimeVisibleAnnotations 속성으로 갈린다."
+    },
+    {
+      "q": "SOURCE 애노테이션은 무엇이 읽나.",
+      "a": "컴파일러와 애노테이션 프로세서다. 클래스 파일에는 남지 않는다."
+    },
+    {
+      "q": "프레임워크 애노테이션이 안 읽히면 먼저 무엇을 보나.",
+      "a": "@Retention(RUNTIME) 이 붙었는지. 없으면 CLASS 로 들어간다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "RetentionPolicy",
+      "what": "애노테이션을 어디까지 남길지 정하는 열거형. SOURCE·CLASS·RUNTIME 셋이고 기본은 CLASS 다."
+    },
+    {
+      "term": "애노테이션 프로세서",
+      "what": "컴파일 중에 애노테이션을 읽어 코드를 생성하는 도구. SOURCE 정책으로 충분하다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — RetentionPolicy",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/RetentionPolicy.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JVM Specification — 4.7.17 RuntimeInvisibleAnnotations",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

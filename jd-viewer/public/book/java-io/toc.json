@@ -585,7 +585,7 @@
           "title": "애노테이션 만들기",
           "summary": "@interface.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.2",
@@ -593,7 +593,7 @@
           "title": "유지 정책",
           "summary": "클래스에 남느냐 안 남느냐.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.3",
@@ -601,7 +601,7 @@
           "title": "애노테이션 읽기",
           "summary": "리플렉션과 짝이다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",
