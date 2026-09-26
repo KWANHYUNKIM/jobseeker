@@ -9734,6 +9734,121 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7938018",
+      "title": "Staff Security Engineer (Data Security Engineering)",
+      "site": "ats",
+      "verdict": "서울 근무. 민감 데이터(PII) 탐지·검토 워크플로·접근 권한 거버넌스·리스크 추적을 위한 사내 플랫폼과 백엔드·데이터 파이프라인을 설계·개발하는 보안 소프트웨어 엔지니어. 자격요건에 연차가 적혀 있지 않다(Staff 직급만 표기). 오브젝트 스토리지·DB·웨어하우스·스트리밍·메타데이터 시스템과 두루 연계한다.",
+      "fit": {
+        "must_have": [
+          "백엔드·플랫폼·인프라·분산 시스템 소프트웨어 엔지니어링",
+          "Python·Java·Go·Scala 중 하나 이상",
+          "AWS·IAM·권한·로깅·접근 제어 이해"
+        ],
+        "can_learn": [
+          "사내 데이터 플랫폼·메타데이터 시스템 구성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "민감 데이터(PII) 탐지 파이프라인",
+          "from": "task",
+          "quote": "민감 데이터 탐지, 검토 워크플로우, 접근 권한 거버넌스, 리스크 추적 및 개선 활동을 지원하는 내부 플랫폼 및 도구 설계·개발",
+          "priority": "core",
+          "why": "주요업무 첫 줄이 민감 데이터 탐지·검토·접근 거버넌스·리스크 추적 플랫폼이다. 영문 소개도 'improving PII discovery and analysis'를 적는다.",
+          "gap_check": "수십억 행 테이블에서 PII 컬럼을 찾을 때 전수 스캔 대신 샘플링·컬럼 이름·값 패턴을 어떻게 섞고, 오탐(주민번호처럼 생긴 주문번호)은 어떻게 줄이는가?",
+          "drill": "S3(또는 로컬 Parquet)에 섞인 가짜 데이터에서 이메일·전화번호·주민등록번호 형식 컬럼을 샘플링+정규식+검증 규칙(체크섬)으로 찾는 스캐너를 만들고 오탐률을 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Microsoft Presidio — Documentation",
+              "url": "https://microsoft.github.io/presidio/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 데이터 시스템 연계 (스토리지·DB·웨어하우스·스트리밍·메타데이터)",
+          "from": "task",
+          "quote": "오브젝트 스토리지, 데이터베이스, 데이터 웨어하우스, 스트리밍 플랫폼, 메타데이터 시스템 및 프로덕션 서비스 등 대규모 데이터 시스템과의 연계 및 통합",
+          "priority": "core",
+          "why": "민감 데이터는 한 곳에 있지 않다. 스캔 결과를 메타데이터 시스템(데이터 카탈로그)에 태그로 남겨야 접근 통제와 연결된다(추론).",
+          "gap_check": "스캔으로 찾은 PII 태그를 데이터 카탈로그에 남기고, 그 태그를 웨어하우스 접근 정책에 자동 반영하려면 어떤 흐름이 필요한가?",
+          "drill": "위 스캐너 결과를 OpenMetadata(또는 DataHub) 컬럼 태그로 기록하고, 태그가 붙은 컬럼을 조회하는 사용자를 로그에서 뽑는 쿼리를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OpenMetadata — Documentation",
+              "url": "https://docs.open-metadata.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "접근 권한 거버넌스와 AWS IAM",
+          "from": "qualification",
+          "quote": "클라우드 인프라, 특히 AWS 서비스, IAM 개념, 권한 관리, 로깅 및 접근 제어 방식에 대한 이해를 보유하신 분",
+          "priority": "core",
+          "why": "민감 데이터에 누가 접근할 수 있는지를 정하고 줄이는 것이 이 팀의 결과물이다.",
+          "gap_check": "S3 버킷의 민감 데이터에 실제로 접근 가능한 주체를 IAM 정책·버킷 정책·역할 신뢰 관계까지 합쳐 계산하려면 어떤 도구·방법을 쓰는가?",
+          "drill": "IAM Access Analyzer(또는 직접 작성한 정책 평가 스크립트)로 특정 버킷에 접근 가능한 역할 목록을 뽑고, 90일간 쓰지 않은 권한을 CloudTrail 로 찾아 축소안을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS IAM Access Analyzer",
+              "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "검토·개선(remediation) 워크플로 자동화",
+          "from": "task",
+          "quote": "조직의 민감 데이터 노출 식별, 분석 및 감소를 지원하는 백엔드 서비스, API, 데이터 파이프라인 및 자동화 워크플로우 개발",
+          "priority": "high",
+          "why": "탐지만으로는 노출이 줄지 않는다. 데이터 오너에게 알리고 조치를 추적하는 워크플로가 있어야 한다.",
+          "gap_check": "PII 노출 건을 데이터 오너에게 배정하고 기한 안에 조치됐는지 추적할 때, 오너가 불분명한 테이블은 어떻게 처리하는가?",
+          "drill": "탐지 결과 → 오너 매핑(메타데이터) → 티켓 생성 → 재스캔으로 조치 확인까지 이어지는 작은 워크플로 서비스를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "비즈니스·리스크 요구를 엔지니어링으로 옮기기",
+          "from": "task",
+          "quote": "보안, 데이터 플랫폼 및 제품 엔지니어링 팀과의 협업을 통한 비즈니스 및 리스크 요구사항의 엔지니어링 솔루션 구체화",
+          "priority": "high",
+          "why": "데이터 보안 통제는 다른 팀의 속도를 늦추기 쉽다. 요구를 실용적인 솔루션으로 바꾸는 협업이 주요업무에 따로 있다.",
+          "gap_check": "분석팀이 민감 컬럼이 섞인 테이블 전체 접근을 요구할 때, 마스킹 뷰·토큰화·목적 제한 중 무엇을 제안하고 각각의 비용은?",
+          "drill": "같은 테이블에 대해 동적 마스킹 뷰와 토큰화 테이블 두 가지를 만들어 분석 쿼리 결과와 성능 차이를 비교한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "PII 스캐너의 정밀도·재현율 리포트",
+          "why": "민감 데이터 탐지는 오탐·미탐이 곧 신뢰다. 실제 수치와 실패 사례를 정리해 가면 드문 증거가 된다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "Application Review - Phone Interview - Virtual Onsite Interview – Offer (공고 기준).",
+        "expect": [
+          "대규모 PII 탐지의 샘플링·오탐",
+          "태그 기반 접근 통제 연결",
+          "IAM 실제 접근 가능 주체 계산",
+          "조치 워크플로 설계",
+          "분석 편의와 보호의 균형"
+        ],
+        "sources": [
+          {
+            "title": "Staff Security Engineer (Data Security Engineering)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7938018",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
