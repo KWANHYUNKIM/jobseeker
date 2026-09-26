@@ -7,8 +7,8 @@
       "name_en": "airCloset",
       "country": "JP",
       "category": "커머스",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "스타일리스트가 골라 주는 옷 렌털 구독 airCloset — 고객 문의를 조사할 관측 로그에는 email 을 평문으로 남기지 않고 쓰는 쪽과 찾는 쪽이 같은 해시를 거치며, AI 로 빨라진 개발이 쌓는 클라우드 비용은 AI 가 수량만 재고 스크립트가 금액을 판정하는 입구 게이트로 막는다",
       "updated_at": "2026-09-26",
       "domain": "corp.air-closet.com"
@@ -3349,7 +3349,8 @@
     "한 테넌트에 몰리는 스파이크를 캐시 헤더로 받아 낸다",
     "개인정보를 LLM 에 안 넘기고 문의 대응을 자동화한다",
     "고객 PII 를 관측 스택에 흘리지 않고 AI 가 조사하게 한다",
-    "AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다"
+    "AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다",
+    "새 렌털 서비스를 공통 이벤트 기반 위에 올린다"
   ],
   "countries": {
     "KR": "한국",

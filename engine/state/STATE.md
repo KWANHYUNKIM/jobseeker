@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**에어클로젯 확장 2/2(2026-09-26) — `ai-cost-gate` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 '주변 서비스·법인(Men's·Mall·Spot Rental·Salon·의상 렌털·스타일리스트 파견·물류 플랫폼)' 에 도메인이 없다 — 검색 1 Zenn RSS 전편(`zenn.dev/p/aircloset/feed` 제목에 Mall·Spot·물류·WMS·RFID 없음 — 이미 본 20편) 이어 검색 2(Zenn 검색 API 'エアークローゼット 物流'·'airCloset Mall' / Speaker Deck), 없으면 hold_reason + '재시도 안 함' + QUEUE hold. 대기 1/3(Rehab for Japan). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**에어클로젯 완주(2026-09-26) — 완주 판정 검색 2(Zenn 검색 'エアークローゼット')에서 10년 회고(`0e872a2432aa81`)가 걸려 hold 대신 셋째 도메인 '새 렌털 서비스를 공통 이벤트 기반 위에 올린다' + `event-driven-rental-platform`(2022 목표 `07ed9da7dd8d65` · 2023 기반 `aircloset_dev/7aa07583fd66d6` · 2024 Dress `ed4155d701a9ce`) → 주변 서비스 수익원에 연결, eras 셋(2015 Node.js 내제 · 2018 세분화 · 2021 이벤트 구동). done. **배운 것: RSS 는 최근 20편뿐이다 — 옛 글은 Zenn 검색 API 에 회사명 한 단어로 찾으면 나온다.** 대기 1/3(Rehab for Japan) — 목표 미달이라 --gaps 가 후보 조사를 부르면 그쪽이 먼저. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

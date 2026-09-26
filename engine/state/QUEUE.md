@@ -38,7 +38,6 @@
 | **ログラス(Loglass)** | JP · 경영관리(FP&A) SaaS | 프로파일(2026-09-26). 도메인 둘 — 계층을 엔진이 알게 해 읽지 않는다(OLAP 엔진 실험) · 장애 때 '당시 구조' 를 다시 세운다(이력 데이터 모델). 기능 3(`hierarchy-aware-olap-engine` — 실험 · `incident-history-data-model` · `headcount-cost-simulation` · `ai-ir-bottleneck-driven-delivery`). 완주 검사 1회차에 도메인 둘 추가(인원 계획 · AI IR). **hold** — 석세스 파트너·설비투자·IT 투자 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 인원 계획·설비투자·IT 투자·AI IR·석세스 파트너는 도메인 없음. 입구 `zenn.dev/p/loglass/feed`. |
 | **Hacobu(ハコブ)** | JP · 물류 SaaS(MOVO) | 프로파일(2026-09-26). 도메인 둘 — 장애 공지 스위치를 비개발자 손에 쥐여 준다(Datadog Forms 배너) · 기능 패키지의 경계를 규약 대신 CI 가 지킨다(MOVO Berth 프런트 템플릿). 기능 2(`maintenance-banner-datadog-forms` · `frontend-template-dependency-ci`). **hold** — 컨설팅·SI·인재 소개 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 컨설팅·SI·인재 소개는 도메인 없음. 입구 `zenn.dev/p/hacobu/feed`. |
 | **estie** | JP · 상업용 부동산 데이터 | 프로파일(2026-09-26). 도메인 둘 — 고객이 맡긴 데이터를 여러 서비스가 한 곳에 둔다(프라이빗 데이터 기반) · PR 마다 운영에 가까운 DB 를 빌려 쓰고 버린다(Aurora copy-on-write Preview). 기능 2(`private-data-platform` · `preview-with-db-aurora-clone`). **hold** — 스마트 리폼·DX 컨설팅 수익원 자료 두 번 없음(2026-09-26). 스마트 리폼·DX 컨설팅은 도메인 없음. 입구 `zenn.dev/p/estie/feed`. |
-| **エアークローゼット(airCloset)** | JP · 옷 렌털 구독 | 프로파일(2026-09-26). 도메인 둘 — 고객 PII 를 관측 스택에 흘리지 않고 AI 가 조사하게 한다 · AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다. 기능 2(`pii-hash-observability` · `ai-cost-gate`). 수익원 '주변 서비스·법인' 은 도메인 없음. 입구 `zenn.dev/p/aircloset/feed`, IR `corp.air-closet.com/ir/individual/`. |
 
 
 ## 대기
@@ -972,6 +971,7 @@
 
 ## 완료
 
+- **エアークローゼット(airCloset)** (JP · 옷 렌털 구독 · 순환 물류 · Dress · Mall) — 2026-09-26 완주. 도메인 3 · 기능 3 · eras 3. **AI 에 흔들리면 안 되는 몫을 코드로 뺀다.** 관측 로그의 고객 email 은 쓰는 쪽과 찾는 쪽이 같은 HMAC 해시를 거치고 AI 는 ID 만 건네 MCP 서버 안에서 해시를 받는다. AI 로 빨라진 개발의 비용은 AI 가 수량만 재고 스크립트가 판정하는 게이트·전주 같은 요일 리포트·평상시 1.5배 쿼터로 막는다. 렌털의 뼈대 다섯은 이벤트 구동 공통 기반으로 떼어 새 서비스(Dress 3개월)부터 올린다.
 - **カンリー(Canly)** (JP · 다점포 매장 SaaS · 매장 검색 페이지 · 복리후생) — 2026-09-26 완주. 도메인 2 · 기능 2. **실패의 방향을 먼저 정한다.** 매장 검색 페이지는 TV 방영 스파이크를 캐시 헤더 한 줄로 받는다 — 경로별 적중률로 원인을 찾고 신선도 5분·가용성 하루(SWR·SIE)로 시간축에서 갈라 504 대신 낡은 판. 복리후생 CS 에이전트는 검색·진단·번호 추출을 코드에 두고 LLM 에는 값 없는 문면 틀과 3층 마스킹한 회신 분류만 — 코드 층은 깨져도 새지 않고 멈춘다.
 - **PKSHA Technology** (JP · AI SaaS · AI Solution · AI 헬프데스크) — 2026-09-26 완주. 도메인 2 · 기능 2. **예상과 다른 것이 온다는 전제.** 헬프데스크의 SharePoint·Box → RAG 동기화는 늦게·먼저·인스턴스 전 도착하는 이벤트를 Saga 가 스킵·재시도·재배신으로 받고 토큰 충돌은 잠그지 않고 다시 읽는다. 운용 중 LLM 서비스의 모델 EOL 은 llm-replacer 가 shadow 환경 E2E A/B 로 재지만 게이트 넷에서 사람이 멈추고 Draft PR 만 받는다.
 - **IVRy(アイブリー)** (JP · AI 전화 SaaS · 음성 인식 Q&A) — 2026-09-26 완주. 도메인 2 · 기능 2. **흔들림을 입력 고정으로 막는다.** 가게가 만든 문의 항목은 정답을 먼저 고정한 발화로 오프라인 평가하고 불일치만 세 회사 LLM 이, 갈린 10% 만 사람이 본다. 보존 기한 지난 데이터는 Step Functions 대신 Lambda Durable Functions 하나로 — 대상 기간은 기동 시각에서 결정적으로, 대량 삭제는 페이지 단위 map 으로.

@@ -4,7 +4,7 @@
   "name_en": "airCloset",
   "country": "JP",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "domain": "corp.air-closet.com",
   "one_liner": "스타일리스트가 골라 주는 옷 렌털 구독 airCloset — 고객 문의를 조사할 관측 로그에는 email 을 평문으로 남기지 않고 쓰는 쪽과 찾는 쪽이 같은 해시를 거치며, AI 로 빨라진 개발이 쌓는 클라우드 비용은 AI 가 수량만 재고 스크립트가 금액을 판정하는 입구 게이트로 막는다",
@@ -56,7 +56,9 @@
       "name": "주변 서비스·법인(Men's·Mall·Spot Rental·Salon·의상 렌털·스타일리스트 파견·물류 플랫폼)",
       "how": "구독으로 만든 스타일링과 순환 물류를 다른 세그먼트와 법인에 편다. 과금 구조는 확인 못 함.",
       "weight": "확장 영역(비중 확인 못 함)",
-      "domains": [],
+      "domains": [
+        "새 렌털 서비스를 공통 이벤트 기반 위에 올린다"
+      ],
       "confidence": "inferred",
       "sources": [
         {
@@ -72,6 +74,20 @@
           "publisher": "株式会社エアークローゼット",
           "date": "2026-09-26",
           "summary": "국내 여성에게 스타일리스트가 취향에 맞춰 고른 옷을 빌려주는 **'airCloset'** — 온라인으로 취향·사이즈를 등록하고 받아 입고 반납, 반납 기한·세탁 걱정 없음, 마음에 들면 **구입 가능**. 스타일리스트 300명 이상(온라인 크라우드소싱), 코디 400만 회 이상. 창업 때부터 사내 물류팀 — 전용 창고·전용 세탁 공장, **세탁 가능한 RFID 태그**로 개품 관리하는 자체 WMS, 반납 옷을 **최단 1일**에 재대여. 2022년 3월 말 무료 회원 70만·월정액 회원 3만 2천. 확장 — 멘즈 등 다른 세그먼트·**물류 플랫폼 전개**·아시아."
+        },
+        {
+          "title": "イベント駆動アーキテクチャでドレスレンタルサービスを爆速でローンチできた話",
+          "url": "https://zenn.dev/aircloset/articles/ed4155d701a9ce",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2024-12-01",
+          "summary": "드레스 렌털 **airCloset Dress** 를 개발 시작부터 약 3개월, 작년의 Disney FASHION CLOSET 대비 약 20% 리소스로 출시. 기능 — 회원 가입·로그인·카트·상품·주문·**렌털 중 아이템 관리·반납**(엔드유저), 발주·아이템 등록(아이템 관리), 배송·발주·입고·반납 아이템 연계(창고). 렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 전년에 만든 공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가, 개발의 대부분은 디자인이 다른 엔드유저 Web. 1:1 연계면 API 가 다루기 쉽지만 1:2·1:1:1 이면 에러 처리가 복잡해진다 — 이벤트 구동은 에러 이벤트로 따로 처리. UI 도 공통화를 검토."
+        },
+        {
+          "title": "イベント駆動アーキテクチャへの変革",
+          "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2023-12-01",
+          "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
         }
       ]
     }
@@ -80,7 +96,7 @@
     "title": "빌려준 옷과 쌓이는 데이터를 새지 않게 순환시킨다",
     "question": "옷 렌털 구독은 고객 개인정보를 AI 에 어떻게 안 흘리고, AI 로 빨라진 개발의 비용을 어떻게 멈춰 세우나?",
     "code": "flowchart LR\n  C[\"고객 · 월정액 회원\"] --> SUB[\"subscription 서비스\"]\n  SUB -->|hashEmail 로 쓴다| LOKI[\"Loki · 관측 스택\"]\n  AI[\"AI · MCP\"] -->|같은 hashEmail 로 찾는다| LOKI\n  HUM[\"사람 · Web 포털\"] --> LOKI\n  DEV[\"AI 로 빨라진 개발 · PR\"] --> GATE[\"비용 게이트\\nAI 는 수량만 · 스크립트가 금액\"]\n  GATE -->|임계 초과| REV[\"사람 리뷰\"]\n  GATE --> GCP[\"BigQuery · Vertex AI · Cloud Run\\n쿼터 = 평상시 1.5배\"]",
-    "_note": "두 도메인을 월정액 렌털 수익원에 이은 것은 이 사이트의 해석이다 — 비용 글은 '사내 AI 기반' 의 이야기다. 순환 물류(RFID·WMS)와 주변 서비스의 기술 글은 아직 못 봤다."
+    "_note": "관측·비용 두 도메인을 월정액 렌털 수익원에 이은 것은 이 사이트의 해석이다 — 비용 글은 '사내 AI 기반' 의 이야기다. 공통 이벤트 기반은 Disney FASHION CLOSET·airCloset Dress 가 그 위에 올라가 주변 서비스 수익원에 잇는다(airCloset·Mall 은 상정 대상, 이행은 앞으로)."
   },
   "domains": [
     {
@@ -129,6 +145,179 @@
       ],
       "features": [
         "ai-cost-gate"
+      ]
+    },
+    {
+      "name": "새 렌털 서비스를 공통 이벤트 기반 위에 올린다",
+      "why": "렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC 패키지를 그대로 못 쓴다. 그런데 airCloset 의 시스템들은 airCloset 전제로 만들어져 API·배치로 얽혀 있었고, 한쪽 실패가 다른 쪽 에러·부정합으로 번졌다 — Dress·Disney FASHION CLOSET·Mall 같은 새 서비스를 낼 때마다 이걸 다시 만들 수는 없다.",
+      "tech": [
+        {
+          "tech": "인증·재고·수주·결제·통지 다섯을 추상화한 이벤트 구동 공통 기반 — EventBridge EventBus(n:n) · StepFunctions 로 ECS Task 감싸기 · MongoDB CQRS · 동기 API(API Gateway + Cognito) 병용",
+          "solves": "airCloset Dress 를 약 3개월·약 20% 리소스로 출시 — 개발 대부분이 디자인이 다른 엔드유저 Web 이었다.",
+          "limits": "처리를 따라가기 어렵고 로그가 보기 어려우며 구축 노하우가 적다. 기존 airCloset 의 이행은 비용·위험으로 뒤로 미뤘다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "イベント駆動アーキテクチャへの変革",
+              "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+              "publisher": "エアークローゼットテックブログ (Zenn)",
+              "date": "2023-12-01",
+              "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+            },
+            {
+              "title": "イベント駆動アーキテクチャでドレスレンタルサービスを爆速でローンチできた話",
+              "url": "https://zenn.dev/aircloset/articles/ed4155d701a9ce",
+              "publisher": "エアークローゼットテックブログ (Zenn)",
+              "date": "2024-12-01",
+              "summary": "드레스 렌털 **airCloset Dress** 를 개발 시작부터 약 3개월, 작년의 Disney FASHION CLOSET 대비 약 20% 리소스로 출시. 기능 — 회원 가입·로그인·카트·상품·주문·**렌털 중 아이템 관리·반납**(엔드유저), 발주·아이템 등록(아이템 관리), 배송·발주·입고·반납 아이템 연계(창고). 렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 전년에 만든 공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가, 개발의 대부분은 디자인이 다른 엔드유저 Web. 1:1 연계면 API 가 다루기 쉽지만 1:2·1:1:1 이면 에러 처리가 복잡해진다 — 이벤트 구동은 에러 이벤트로 따로 처리. UI 도 공통화를 검토."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "event-driven-rental-platform"
+      ]
+    }
+  ],
+  "eras": [
+    {
+      "id": "2015-nodejs-inhouse",
+      "from": "2015",
+      "to": "2017",
+      "title": "외주 Rails 가 첫날 무너지고 Node.js 내제로 버티던 시기",
+      "context": "2015년 서비스 시작, 예상을 크게 넘는 2만 5천 명 등록.",
+      "what_changed": "외주 개발 Rails 시스템을 10일 만에 다시 짜기로 하고, 첫 1년 안에 Node.js 내제 시스템으로 완전 이행. 고객용·사내 관리·배치(창고 연계·월정액 과금) 세 덩어리.",
+      "why": "첫 등록 폭주에 시스템이 완전히 다운했다. 실시간 재고 관리·주문 처리에 JavaScript 비동기가 맞는다고 봤다.",
+      "tradeoff": "당시 Node.js 는 엔터프라이즈 채용 사례가 적은 새 기술이었다 — 그 위험을 안고 시작했다.",
+      "domains": [],
+      "features": [],
+      "stack_in": [
+        "Node.js"
+      ],
+      "stack_out": [
+        "Rails(외주)"
+      ],
+      "metrics": [
+        {
+          "label": "서비스 시작 직후 등록",
+          "value": "2만 5천 명",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "エアークローゼットを支えるシステムの10年とこれから",
+              "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+              "publisher": "エアークローゼットテックブログ (Zenn)",
+              "date": "2025-08-19",
+              "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "エアークローゼットを支えるシステムの10年とこれから",
+          "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2025-08-19",
+          "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+        }
+      ]
+    },
+    {
+      "id": "2018-split",
+      "from": "2018",
+      "to": "2020",
+      "title": "전략 없이 잘게 나누던 시기",
+      "context": "사업 급성장.",
+      "what_changed": "사내 관리에서 스타일링 시스템, 배치에서 창고 연계 시스템, 아이템 관리 시스템을 독립 앱으로 떼어 냈다.",
+      "why": "'시스템은 책무로 나누는 게 중요하다' 고 봤다.",
+      "tradeoff": "장래 구상 없이 나눠 일부는 자체 DB, 일부는 공통 DB 인 어중간한 상태가 되어 아키텍처의 통일성을 잃었다 — 나누지 않아도 됐거나 나눠서 오히려 복잡해진 것이 많다.",
+      "domains": [],
+      "features": [],
+      "stack_in": [],
+      "stack_out": [],
+      "metrics": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "エアークローゼットを支えるシステムの10年とこれから",
+          "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2025-08-19",
+          "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+        }
+      ]
+    },
+    {
+      "id": "2021-event-driven",
+      "from": "2021",
+      "to": "",
+      "title": "이벤트 구동 공통 기반으로 옮겨 가는 시기",
+      "context": "10개가 넘는 앱, 동기 API 로 장애가 연쇄하고 신입이 전체를 이해하기 어려웠다.",
+      "what_changed": "2022년경 이벤트 구동을 결론으로, 2023년 인증·재고·수주·결제·통지를 이벤트 구동 공통 기반으로(Disney FASHION CLOSET 에서 먼저), 2024년 그 위에 airCloset Dress.",
+      "why": "자체 DB·공통 DB 혼재로 정합성·트랜잭션 경계가 흐려지고, 동기 API 호출로 한 장애가 연쇄했다. 시스템이 airCloset 전제라 다른 서비스에서 못 썼다.",
+      "tradeoff": "처리를 따라가기 어렵고 로그가 보기 어렵고 구축 노하우가 적다. 기존 서비스는 한 번에 못 옮겨 한동안 옛 구조와 나란히 산다.",
+      "domains": [
+        "새 렌털 서비스를 공통 이벤트 기반 위에 올린다"
+      ],
+      "features": [
+        "event-driven-rental-platform"
+      ],
+      "stack_in": [
+        "EventBridge",
+        "StepFunctions",
+        "MongoDB Atlas",
+        "ECS",
+        "API Gateway + Cognito"
+      ],
+      "stack_out": [],
+      "metrics": [
+        {
+          "label": "airCloset Dress 출시",
+          "value": "약 3개월 · 약 20% 리소스",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "イベント駆動アーキテクチャでドレスレンタルサービスを爆速でローンチできた話",
+              "url": "https://zenn.dev/aircloset/articles/ed4155d701a9ce",
+              "publisher": "エアークローゼットテックブログ (Zenn)",
+              "date": "2024-12-01",
+              "summary": "드레스 렌털 **airCloset Dress** 를 개발 시작부터 약 3개월, 작년의 Disney FASHION CLOSET 대비 약 20% 리소스로 출시. 기능 — 회원 가입·로그인·카트·상품·주문·**렌털 중 아이템 관리·반납**(엔드유저), 발주·아이템 등록(아이템 관리), 배송·발주·입고·반납 아이템 연계(창고). 렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 전년에 만든 공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가, 개발의 대부분은 디자인이 다른 엔드유저 Web. 1:1 연계면 API 가 다루기 쉽지만 1:2·1:1:1 이면 에러 처리가 복잡해진다 — 이벤트 구동은 에러 이벤트로 따로 처리. UI 도 공통화를 검토."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "エアークローゼットを支えるシステムの10年とこれから",
+          "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2025-08-19",
+          "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+        },
+        {
+          "title": "イベント駆動アーキテクチャへの変革",
+          "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2023-12-01",
+          "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+        },
+        {
+          "title": "イベント駆動アーキテクチャでドレスレンタルサービスを爆速でローンチできた話",
+          "url": "https://zenn.dev/aircloset/articles/ed4155d701a9ce",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2024-12-01",
+          "summary": "드레스 렌털 **airCloset Dress** 를 개발 시작부터 약 3개월, 작년의 Disney FASHION CLOSET 대비 약 20% 리소스로 출시. 기능 — 회원 가입·로그인·카트·상품·주문·**렌털 중 아이템 관리·반납**(엔드유저), 발주·아이템 등록(아이템 관리), 배송·발주·입고·반납 아이템 연계(창고). 렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 전년에 만든 공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가, 개발의 대부분은 디자인이 다른 엔드유저 Web. 1:1 연계면 API 가 다루기 쉽지만 1:2·1:1:1 이면 에러 처리가 복잡해진다 — 이벤트 구동은 에러 이벤트로 따로 처리. UI 도 공통화를 검토."
+        },
+        {
+          "title": "エアクロが目指しているアーキテクチャ",
+          "url": "https://zenn.dev/aircloset/articles/07ed9da7dd8d65",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2022-12-25",
+          "summary": "목표는 시스템 간 연계의 **이벤트 구동**. API 구동과의 가장 큰 차이는 책무 분리 — 주문이 창고에 발송을 '지시' 하면 창고 장애의 처리까지 주문이 떠안는다. 고객·인증·사내 관리·스타일링·재고·창고 연계·창고·반납·결제·회계 등을 API·배치로 잇다 보니 창고 연계 실패로 스타일링이 에러가 나거나, 배치가 실패했는데 후속이 돌아 부정합 데이터가 생겼다. 또 시스템이 airCloset 전제로 만들어져 있어 기능별로 떼어 여러 서비스에서 쓰게 하고 싶다. 조직도 지시가 아니라 각자 책무로 움직인다. 단점 셋 — 처리를 따라가기 어렵다 · 로그가 보기 어렵다 · 구축이 어렵다(프레임워크·노하우 부족). SNS+SQS 는 가로 관계가 안 보여 대규모 기반으로는 어렵고 EventBridge 를 권함."
+        }
       ]
     }
   ],
@@ -884,12 +1073,380 @@
           "summary": "사내 AI 기반의 운영 비용을 1주 동안 재고 조사 — Cloud Run instance-based 과금 84% 감소, 컨테이너 이미지 보존 세대 재검토로 스토리지 65% 감소, 그러나 가장 효과가 컸던 건 **비용 입구의 게이트와 일일 가시화**. AI 로 구현이 빨라지자 '정말 필요한가' 를 묻던 구현의 느림(= 의사결정 게이트)이 사라졌다. 여러 앱이 같은 서비스 계정으로 돌아 BigQuery·Vertex AI 비용을 **사후에 앱별로 나눌 수 없었다** → 늘기 전에 막는다: ① AI 리뷰어가 변경의 '수량'(스캔량·실행 횟수·토큰)만 재고 **엔화 환산·임계 판정은 결정적 스크립트**(단가는 Billing Export 실측), 임계 넘으면 사람 리뷰 ② 앱별 비용을 하루 2회 Slack — 문제 없어도 반드시 투고, **전주 같은 요일 대비**, 전주 0 인 앱도 증가로 ③ 쿼터 천장을 평상시 실측의 1.5배로(BigQuery 기본 200 TiB/일은 천장이 아니다) — 멈춰도 되는 사내 기반이라서 가능. IaC 로 리소스를 명시하면 `cpuIdle` 이 false 로 떨어져 비싼 쪽이 기본값이 된다(손으로 만들면 싼 쪽)."
         }
       ]
+    },
+    {
+      "key": "event-driven-rental-platform",
+      "name": "렌털 서비스의 뼈대 다섯을 이벤트 구동 공통 기반으로 떼어 낸다 — 주문은 '들어왔다' 만 알리고 창고가 스스로 받아, 새 서비스(Disney FASHION CLOSET · Dress)를 기존 airCloset 을 옮기지 않고 그 위에 먼저 올린다",
+      "domain": "새 렌털 서비스를 공통 이벤트 기반 위에 올린다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "airCloset 뒤에는 고객·인증·사내 관리·스타일링·재고·창고 연계·창고·반납·결제·회계 같은 시스템이 API 와 배치로 이어져 있었다. 창고 연계가 실패하면 스타일링이 에러가 나고, 배치 하나가 실패했는데 후속이 돌아 부정합 데이터가 생겼다. 게다가 대부분이 airCloset 을 쓰는 전제로 만들어져, 다른 렌털 서비스를 낼 때 다시 쓸 수 없었다.\n\n렌털은 EC 와 다르다 — 대여 중 아이템 관리와 반납이 고객 쪽에도 창고 쪽에도 있어서 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 새 서비스(Disney FASHION CLOSET, airCloset Dress, 그리고 상정 대상인 airCloset Mall)를 빨리 내려면 렌털의 뼈대를 서비스 밖으로 떼어 내야 했다.",
+        "metrics": [
+          {
+            "label": "airCloset Dress 출시",
+            "value": "개발 시작부터 약 3개월 · Disney FASHION CLOSET 대비 약 20% 리소스",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "イベント駆動アーキテクチャでドレスレンタルサービスを爆速でローンチできた話",
+                "url": "https://zenn.dev/aircloset/articles/ed4155d701a9ce",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2024-12-01",
+                "summary": "드레스 렌털 **airCloset Dress** 를 개발 시작부터 약 3개월, 작년의 Disney FASHION CLOSET 대비 약 20% 리소스로 출시. 기능 — 회원 가입·로그인·카트·상품·주문·**렌털 중 아이템 관리·반납**(엔드유저), 발주·아이템 등록(아이템 관리), 배송·발주·입고·반납 아이템 연계(창고). 렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 전년에 만든 공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가, 개발의 대부분은 디자인이 다른 엔드유저 Web. 1:1 연계면 API 가 다루기 쉽지만 1:2·1:1:1 이면 에러 처리가 복잡해진다 — 이벤트 구동은 에러 이벤트로 따로 처리. UI 도 공통화를 검토."
+              }
+            ]
+          },
+          {
+            "label": "공통화한 뼈대",
+            "value": "5개 — 인증 · 재고 · 수주 · 결제 · 통지 관리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "イベント駆動アーキテクチャへの変革",
+                "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2023-12-01",
+                "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+              }
+            ]
+          },
+          {
+            "label": "세분화의 끝",
+            "value": "2021~2023 시점 10개가 넘는 애플리케이션",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "エアークローゼットを支えるシステムの10年とこれから",
+                "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2025-08-19",
+                "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "API 구동과 무엇이 다른지 설명할 때",
+          "thought": "가장 큰 차이는 **책무 분리**다. 주문 시스템이 창고에 발송을 '지시' 하면 창고의 장애 처리까지 주문이 떠안고, 창고 너머에 다른 시스템이 있으면 거기까지 관리해야 한다. 이벤트 구동이면 주문은 '주문이 들어왔다' 를 발화할 뿐이고, 창고가 그것을 관찰해 자기 처리를 자기 책임으로 한다. 조직도 마찬가지 — 마케팅·퍼스널 스타일링·공급망 그룹은 서로 지시하지 않고 각자의 책무를 진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "エアクロが目指しているアーキテクチャ",
+              "url": "https://zenn.dev/aircloset/articles/07ed9da7dd8d65",
+              "publisher": "エアークローゼットテックブログ (Zenn)",
+              "date": "2022-12-25",
+              "summary": "목표는 시스템 간 연계의 **이벤트 구동**. API 구동과의 가장 큰 차이는 책무 분리 — 주문이 창고에 발송을 '지시' 하면 창고 장애의 처리까지 주문이 떠안는다. 고객·인증·사내 관리·스타일링·재고·창고 연계·창고·반납·결제·회계 등을 API·배치로 잇다 보니 창고 연계 실패로 스타일링이 에러가 나거나, 배치가 실패했는데 후속이 돌아 부정합 데이터가 생겼다. 또 시스템이 airCloset 전제로 만들어져 있어 기능별로 떼어 여러 서비스에서 쓰게 하고 싶다. 조직도 지시가 아니라 각자 책무로 움직인다. 단점 셋 — 처리를 따라가기 어렵다 · 로그가 보기 어렵다 · 구축이 어렵다(프레임워크·노하우 부족). SNS+SQS 는 가로 관계가 안 보여 대규모 기반으로는 어렵고 EventBridge 를 권함."
+            }
+          ]
+        },
+        {
+          "at": "2기의 세분화를 돌아볼 때",
+          "thought": "'시스템은 책무로 나누는 게 중요하다' 고 생각해 스타일링·창고 연계·아이템 관리를 떼어 냈지만, 장래 구상 없이 나눠 일부는 자체 DB, 일부는 공통 DB 인 어중간한 상태가 됐다. **나누는 것 자체가 목적이 되면 안 되고, 아키텍처에는 일관성이 필요하다.** 이벤트 구동은 그 교훈 위에서 골랐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "エアークローゼットを支えるシステムの10年とこれから",
+              "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+              "publisher": "エアークローゼットテックブログ (Zenn)",
+              "date": "2025-08-19",
+              "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+            }
+          ]
+        },
+        {
+          "at": "이행 순서를 정할 때",
+          "thought": "기존 서비스까지 전부 옮기고 싶지만, 이행 개발비만이 아니라 전부를 옮기는 것 자체의 위험이 크다. 먼저 **새 서비스를 운용하며 쓰기 편하게 다듬고**, 기존 서비스는 그 다음 해 이후로.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "イベント駆動アーキテクチャへの変革",
+              "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+              "publisher": "エアークローゼットテックブログ (Zenn)",
+              "date": "2023-12-01",
+              "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "아이템(한 벌)",
+            "what": "SKU 가 아니라 한 벌마다 고유 ID. 창고·배송 중·고객·반송 중·세탁 중을 오가는 상태 전이가 시스템의 뿌리다."
+          },
+          {
+            "name": "공통 기반 다섯",
+            "what": "인증·재고·수주·결제·통지 관리. airCloset·Mall 에서도 쓸 것을 상정해 서비스 밖으로 추상화했다."
+          },
+          {
+            "name": "EventBus",
+            "what": "EventBridge 의 이벤트 묶음. 이벤트를 n:n 으로 잇고, 도메인 단위로 관리를 맡긴다."
+          },
+          {
+            "name": "서비스",
+            "what": "Disney FASHION CLOSET(2023-10~)·airCloset Dress(2024) — 공통 기반 위에 엔드유저 Web 을 따로 얹는다."
+          }
+        ],
+        "invariants": [
+          "발화하는 쪽은 누가 관찰하는지 보지 않는다 — 처리 책임은 관찰하는 쪽에 있다.",
+          "전부 비동기로 하지 않는다 — 클라이언트가 부르는 동기 API 는 남긴다.",
+          "기존 서비스를 한 번에 옮기지 않는다 — 새 서비스에서 먼저 쓴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "고객이 새 서비스의 Web 에서 주문한다 → 동기 API(API Gateway + Cognito)",
+            "why": "전부 비동기면 쓰기 어렵다 — 클라이언트 쪽은 동기로 받는다."
+          },
+          {
+            "step": "수주 관리가 '주문이 들어왔다' 이벤트를 EventBus 에 발화한다",
+            "why": "창고에 지시하지 않으니 창고 장애의 처리를 주문이 떠안지 않는다."
+          },
+          {
+            "step": "Rule 이 StepFunctions 로 감싼 ECS Task(Node.js/TypeScript)를 띄운다",
+            "why": "에러 처리·로그를 업무 로직과 떼어 두면 나중에 무엇을 덧붙이기 쉽다."
+          },
+          {
+            "step": "창고 연계가 이벤트를 관찰해 배송·입고·반납 아이템을 처리한다",
+            "why": "1:2·1:1:1 연계에서도 실패는 에러 이벤트로 따로 처리한다."
+          },
+          {
+            "step": "엔드유저 쪽 조회는 MongoDB 에 aggregate 한 결과를 읽는다(CQRS)",
+            "why": "명령 결과 저장·집계·조회용 저장을 한 저장소에 맡긴다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "시스템 사이를 API 로 이을까, 이벤트로 이을까?",
+            "chosen": "**이벤트 구동 — 발화하는 쪽은 관찰자를 모른다.**",
+            "alternatives": [
+              "API 구동(지시)",
+              "배치 연계"
+            ],
+            "tradeoff": "한 시스템의 장애가 연쇄하지 않고, 기능을 여러 서비스에서 떼어 쓸 수 있다. 대가 — 발화 쪽 소스에서 처리를 따라갈 수 없고, 어느 처리끼리 이어졌는지 로그가 보기 어렵고, API 만큼 무르익은 프레임워크·노하우가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "エアクロが目指しているアーキテクチャ",
+                "url": "https://zenn.dev/aircloset/articles/07ed9da7dd8d65",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2022-12-25",
+                "summary": "목표는 시스템 간 연계의 **이벤트 구동**. API 구동과의 가장 큰 차이는 책무 분리 — 주문이 창고에 발송을 '지시' 하면 창고 장애의 처리까지 주문이 떠안는다. 고객·인증·사내 관리·스타일링·재고·창고 연계·창고·반납·결제·회계 등을 API·배치로 잇다 보니 창고 연계 실패로 스타일링이 에러가 나거나, 배치가 실패했는데 후속이 돌아 부정합 데이터가 생겼다. 또 시스템이 airCloset 전제로 만들어져 있어 기능별로 떼어 여러 서비스에서 쓰게 하고 싶다. 조직도 지시가 아니라 각자 책무로 움직인다. 단점 셋 — 처리를 따라가기 어렵다 · 로그가 보기 어렵다 · 구축이 어렵다(프레임워크·노하우 부족). SNS+SQS 는 가로 관계가 안 보여 대규모 기반으로는 어렵고 EventBridge 를 권함."
+              },
+              {
+                "title": "エアークローゼットを支えるシステムの10年とこれから",
+                "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2025-08-19",
+                "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+              }
+            ]
+          },
+          {
+            "question": "이벤트 기반은 SNS+SQS 로 할까?",
+            "chosen": "**EventBridge 의 EventBus.**",
+            "alternatives": [
+              "SNS + SQS",
+              "Redis Pub/Sub",
+              "Google Cloud Pub/Sub",
+              "Kafka 등 메시지 큐"
+            ],
+            "tradeoff": "SNS+SQS 는 이벤트마다 토픽·큐가 따로 생겨 가로 관계가 안 보인다 — EventBus 는 도메인 단위로 묶어 맡겨 보기 좋고, 스케줄 배치(Rule)도 나란히 다룬다. 대가 — 호출처 설정을 AWS 쪽이 쥐고 있어 관찰하는 쪽 코드만 봐서는 어디서 불리는지 모른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "イベント駆動アーキテクチャへの変革",
+                "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2023-12-01",
+                "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+              },
+              {
+                "title": "エアクロが目指しているアーキテクチャ",
+                "url": "https://zenn.dev/aircloset/articles/07ed9da7dd8d65",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2022-12-25",
+                "summary": "목표는 시스템 간 연계의 **이벤트 구동**. API 구동과의 가장 큰 차이는 책무 분리 — 주문이 창고에 발송을 '지시' 하면 창고 장애의 처리까지 주문이 떠안는다. 고객·인증·사내 관리·스타일링·재고·창고 연계·창고·반납·결제·회계 등을 API·배치로 잇다 보니 창고 연계 실패로 스타일링이 에러가 나거나, 배치가 실패했는데 후속이 돌아 부정합 데이터가 생겼다. 또 시스템이 airCloset 전제로 만들어져 있어 기능별로 떼어 여러 서비스에서 쓰게 하고 싶다. 조직도 지시가 아니라 각자 책무로 움직인다. 단점 셋 — 처리를 따라가기 어렵다 · 로그가 보기 어렵다 · 구축이 어렵다(프레임워크·노하우 부족). SNS+SQS 는 가로 관계가 안 보여 대규모 기반으로는 어렵고 EventBridge 를 권함."
+              }
+            ]
+          },
+          {
+            "question": "EventBus 에서 ECS Task 를 바로 부를까?",
+            "chosen": "**StepFunctions 로 감싸서 부른다 — 스텝이 하나뿐일 때부터.**",
+            "alternatives": [
+              "EventBridge Rule 에서 ECS Task 직접 실행(inferred)"
+            ],
+            "tradeoff": "업무 로직과 떼어 두고 싶은 에러 처리·로그 관리를 나중에 덧붙이기 쉽다. 대가 — 스텝 하나에도 상태 머신이 하나씩 붙는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "イベント駆動アーキテクチャへの変革",
+                "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2023-12-01",
+                "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+              }
+            ]
+          },
+          {
+            "question": "전부 비동기 이벤트로 할까?",
+            "chosen": "**아니다 — 클라이언트가 부르는 부분은 동기 API(API Gateway + Cognito)로 두고 비동기 이벤트와 병용한다. ECS 의 업무 로직은 DDD 로 두 호출 경로를 presentation 층에서 흡수한다.**",
+            "alternatives": [
+              "완전 비동기(inferred)"
+            ],
+            "tradeoff": "'이벤트 구동이라도 전부 비동기면 꽤 쓰기 어렵다'. 대가 — 같은 로직에 입구가 둘이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "イベント駆動アーキテクチャへの変革",
+                "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2023-12-01",
+                "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+              }
+            ]
+          },
+          {
+            "question": "엔드유저 쪽 조회는 어떻게 할까?",
+            "chosen": "**CQRS, 저장소는 MongoDB Atlas — 명령 결과 저장·aggregate·조회용 저장을 전부 맡긴다.**",
+            "alternatives": [
+              "명령과 조회를 한 모델로(inferred)"
+            ],
+            "tradeoff": "aggregate 와 스트림이 있어 CQRS 에 필요한 것을 한곳에서 한다. 대가 — 조회 모델은 명령보다 늦게 따라온다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "イベント駆動アーキテクチャへの変革",
+                "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2023-12-01",
+                "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+              }
+            ]
+          },
+          {
+            "question": "기존 airCloset 부터 옮길까?",
+            "chosen": "**새 서비스(2023년 10월 Disney FASHION CLOSET)에서 먼저 쓰고, 기존 서비스 이행은 다음 해 이후로.**",
+            "alternatives": [
+              "기존 서비스를 포함해 일괄 이행"
+            ],
+            "tradeoff": "이행 개발비와 전부를 옮기는 위험을 피하고, 운용하며 쓰기 편하게 다듬는다. 대가 — 한동안 기존 airCloset 과 새 기반이 나란히 산다(10년 회고 시점에도 '완전 이행' 은 앞으로의 과제).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "イベント駆動アーキテクチャへの変革",
+                "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2023-12-01",
+                "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+              },
+              {
+                "title": "エアークローゼットを支えるシステムの10年とこれから",
+                "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2025-08-19",
+                "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+              }
+            ]
+          },
+          {
+            "question": "새 렌털 서비스를 EC 패키지로 낼까?",
+            "chosen": "**공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가 — 새로 만드는 것은 디자인이 다른 엔드유저 Web 이 대부분.**",
+            "alternatives": [
+              "EC-CUBE · Shopify 같은 EC 패키지"
+            ],
+            "tradeoff": "렌털 중 관리·반납이 고객·창고 양쪽에 필요해 EC 패키지는 그대로 못 쓴다 — Dress 를 약 3개월·약 20% 리소스로. 대가 — 서비스마다 엔드유저 Web 은 여전히 새로 만든다(UI 공통화는 검토 중).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "イベント駆動アーキテクチャでドレスレンタルサービスを爆速でローンチできた話",
+                "url": "https://zenn.dev/aircloset/articles/ed4155d701a9ce",
+                "publisher": "エアークローゼットテックブログ (Zenn)",
+                "date": "2024-12-01",
+                "summary": "드레스 렌털 **airCloset Dress** 를 개발 시작부터 약 3개월, 작년의 Disney FASHION CLOSET 대비 약 20% 리소스로 출시. 기능 — 회원 가입·로그인·카트·상품·주문·**렌털 중 아이템 관리·반납**(엔드유저), 발주·아이템 등록(아이템 관리), 배송·발주·입고·반납 아이템 연계(창고). 렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 전년에 만든 공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가, 개발의 대부분은 디자인이 다른 엔드유저 Web. 1:1 연계면 API 가 다루기 쉽지만 1:2·1:1:1 이면 에러 처리가 복잡해진다 — 이벤트 구동은 에러 이벤트로 따로 처리. UI 도 공통화를 검토."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "고객 PII 를 관측 스택에 흘리지 않고 AI 가 조사하게 한다(같은 회사의 다른 도메인)",
+          "via": "따라가기 어려운 이벤트 흐름을 관측으로 메운다",
+          "contract": "이벤트 구동의 단점으로 든 '처리를 따라가기 어렵다 · 로그가 보기 어렵다' 는 관측 스택이 받는 자리다 — 관측 글은 subscription 서비스 로그를 AI 가 해시로 끌어 조사하게 한다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다(같은 회사의 다른 도메인)",
+          "via": "빨리 만드는 것의 뒷면",
+          "contract": "공통 기반은 새 서비스를 빨리 올리게 했고, 비용 게이트는 빨리 만들수록 쌓이는 러닝 코스트를 막는다 — 둘 다 '만드는 속도' 가 오른 뒤의 일이다(이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "지시와 관찰",
+          "question": "주문과 창고는 누가 누구의 실패를 떠안나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph API구동\n    O1[주문] -->|발송 지시| W1[창고 연계]\n    W1 -.실패.-> O1\n  end\n  subgraph 이벤트구동\n    O2[수주 관리] -->|주문이 들어왔다| BUS((EventBus))\n    BUS --> SF[StepFunctions<br/>ECS Task]\n    SF --> W2[창고 연계<br/>배송·입고·반납]\n    W2 -.실패.-> ERR[에러 이벤트]\n  end"
+        },
+        {
+          "title": "한 벌의 상태",
+          "question": "렌털 아이템은 어떤 상태를 돌며 순환하나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 창고\n  창고 --> 배송중: 주문 이벤트\n  배송중 --> 고객\n  고객 --> 구입: 마음에 들면\n  고객 --> 반송중: 반납\n  반송중 --> 세탁중\n  세탁중 --> 창고: 최단 1일에 재대여 가능\n  구입 --> [*]"
+        },
+        {
+          "title": "공통 기반 위의 서비스",
+          "question": "새 서비스를 낼 때 무엇을 새로 만들고 무엇을 재사용하나?",
+          "kind": "flow",
+          "code": "flowchart TB\n  DFC[Disney FASHION CLOSET<br/>2023-10] --> BASE\n  DR[airCloset Dress<br/>2024 · 약 3개월] --> BASE\n  AC[airCloset · Mall<br/>상정 · 이행은 뒤로] -.-> BASE\n  BASE[공통 기반<br/>인증 · 재고 · 수주 · 결제 · 통지] --> EB[EventBridge · StepFunctions · ECS · MongoDB]"
+        },
+        {
+          "title": "실패는 어디로 가나",
+          "question": "API·배치 연계에서 무엇이 무너졌고 이벤트 구동에서는 어디로 가나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  W[창고 연계 실패] -->|API 구동| S[스타일링 시스템까지 에러]\n  B[배치 한 단계 실패] -->|배치 연계| N[후속이 그대로 돌아 부정합 데이터]\n  W2[창고 연계 실패] -->|이벤트 구동| E[에러 이벤트로 따로 처리<br/>주문 쪽은 모른다]\n  E -.대가.-> T[발화 쪽에서 처리를 따라가기 어렵다<br/>어느 처리끼리 이어졌는지 로그가 안 보인다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "イベント駆動アーキテクチャへの変革",
+          "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2023-12-01",
+          "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+        },
+        {
+          "title": "イベント駆動アーキテクチャでドレスレンタルサービスを爆速でローンチできた話",
+          "url": "https://zenn.dev/aircloset/articles/ed4155d701a9ce",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2024-12-01",
+          "summary": "드레스 렌털 **airCloset Dress** 를 개발 시작부터 약 3개월, 작년의 Disney FASHION CLOSET 대비 약 20% 리소스로 출시. 기능 — 회원 가입·로그인·카트·상품·주문·**렌털 중 아이템 관리·반납**(엔드유저), 발주·아이템 등록(아이템 관리), 배송·발주·입고·반납 아이템 연계(창고). 렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 전년에 만든 공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가, 개발의 대부분은 디자인이 다른 엔드유저 Web. 1:1 연계면 API 가 다루기 쉽지만 1:2·1:1:1 이면 에러 처리가 복잡해진다 — 이벤트 구동은 에러 이벤트로 따로 처리. UI 도 공통화를 검토."
+        },
+        {
+          "title": "エアクロが目指しているアーキテクチャ",
+          "url": "https://zenn.dev/aircloset/articles/07ed9da7dd8d65",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2022-12-25",
+          "summary": "목표는 시스템 간 연계의 **이벤트 구동**. API 구동과의 가장 큰 차이는 책무 분리 — 주문이 창고에 발송을 '지시' 하면 창고 장애의 처리까지 주문이 떠안는다. 고객·인증·사내 관리·스타일링·재고·창고 연계·창고·반납·결제·회계 등을 API·배치로 잇다 보니 창고 연계 실패로 스타일링이 에러가 나거나, 배치가 실패했는데 후속이 돌아 부정합 데이터가 생겼다. 또 시스템이 airCloset 전제로 만들어져 있어 기능별로 떼어 여러 서비스에서 쓰게 하고 싶다. 조직도 지시가 아니라 각자 책무로 움직인다. 단점 셋 — 처리를 따라가기 어렵다 · 로그가 보기 어렵다 · 구축이 어렵다(프레임워크·노하우 부족). SNS+SQS 는 가로 관계가 안 보여 대규모 기반으로는 어렵고 EventBridge 를 권함."
+        },
+        {
+          "title": "エアークローゼットを支えるシステムの10年とこれから",
+          "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+          "publisher": "エアークローゼットテックブログ (Zenn)",
+          "date": "2025-08-19",
+          "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+        }
+      ]
     }
   ],
   "open_questions": [
     "수익원별 비중·최근 회원 수는 이번에 확인하지 않았다(IR 수치는 2022년 3월 말).",
     "순환 물류(RFID 개품 관리 WMS·최단 1일 재대여)의 기술 글은 아직 못 봤다.",
-    "주변 서비스·법인 수익원에 이어 줄 기술 글이 없다.",
     "두 도메인의 수익원 연결은 inferred — 비용 게이트는 사내 AI 기반의 이야기다.",
     "다른 글: 관측 설계편(`d4c32cff8cb230`)·GitHub Actions → Namespace(`6b47018589df0f`)·46 리포 지식 그래프(`a7cf65cc035572`·`9b63579545582d`)·Self-Healing(`74c7dfab13cea2`)·비엔지니어 PR 하니스(`07e276eeb77c3e`)."
   ],
@@ -921,6 +1478,34 @@
       "publisher": "エアークローゼットテックブログ (Zenn)",
       "date": "2026-08-05",
       "summary": "사내 AI 기반의 운영 비용을 1주 동안 재고 조사 — Cloud Run instance-based 과금 84% 감소, 컨테이너 이미지 보존 세대 재검토로 스토리지 65% 감소, 그러나 가장 효과가 컸던 건 **비용 입구의 게이트와 일일 가시화**. AI 로 구현이 빨라지자 '정말 필요한가' 를 묻던 구현의 느림(= 의사결정 게이트)이 사라졌다. 여러 앱이 같은 서비스 계정으로 돌아 BigQuery·Vertex AI 비용을 **사후에 앱별로 나눌 수 없었다** → 늘기 전에 막는다: ① AI 리뷰어가 변경의 '수량'(스캔량·실행 횟수·토큰)만 재고 **엔화 환산·임계 판정은 결정적 스크립트**(단가는 Billing Export 실측), 임계 넘으면 사람 리뷰 ② 앱별 비용을 하루 2회 Slack — 문제 없어도 반드시 투고, **전주 같은 요일 대비**, 전주 0 인 앱도 증가로 ③ 쿼터 천장을 평상시 실측의 1.5배로(BigQuery 기본 200 TiB/일은 천장이 아니다) — 멈춰도 되는 사내 기반이라서 가능. IaC 로 리소스를 명시하면 `cpuIdle` 이 false 로 떨어져 비싼 쪽이 기본값이 된다(손으로 만들면 싼 쪽)."
+    },
+    {
+      "title": "エアークローゼットを支えるシステムの10年とこれから",
+      "url": "https://zenn.dev/aircloset/articles/0e872a2432aa81",
+      "publisher": "エアークローゼットテックブログ (Zenn)",
+      "date": "2025-08-19",
+      "summary": "순환 물류('렌털 → 반납 → 세탁 → 재렌털')는 SKU 가 아니라 **한 벌마다 고유 ID 와 상태 전이**(창고·배송 중·고객·반송 중·세탁 중)를 관리해야 한다. 1기(2015~2017) 외주 Rails 로 시작해 첫 2만 5천 명 등록에 다운 → 10일 만에 다시 짜고 1년 안에 Node.js 내제로. 2기(2018~2020) 스타일링·창고 연계·아이템 관리를 떼어냈지만 전략 없는 세분화 — 자체 DB 와 공통 DB 가 섞였다. 3기(2021~2023) 10개 넘는 앱·동기 API 호출로 장애 연쇄 → 2022년경 이벤트 구동이 결론. 4기(2024~2025) 주문 시스템은 '주문이 들어왔다' 만 발화하고 창고가 관찰해 스스로 처리 — 이 기반으로 2024년 **airCloset Dress** 를 3개월·약 20% 리소스로 출시. 앞으로 인증·결제·물류를 공통화한 멀티 서비스 플랫폼."
+    },
+    {
+      "title": "イベント駆動アーキテクチャでドレスレンタルサービスを爆速でローンチできた話",
+      "url": "https://zenn.dev/aircloset/articles/ed4155d701a9ce",
+      "publisher": "エアークローゼットテックブログ (Zenn)",
+      "date": "2024-12-01",
+      "summary": "드레스 렌털 **airCloset Dress** 를 개발 시작부터 약 3개월, 작년의 Disney FASHION CLOSET 대비 약 20% 리소스로 출시. 기능 — 회원 가입·로그인·카트·상품·주문·**렌털 중 아이템 관리·반납**(엔드유저), 발주·아이템 등록(아이템 관리), 배송·발주·입고·반납 아이템 연계(창고). 렌털은 대여 중 관리와 반납이 고객·창고 양쪽에 필요해 EC-CUBE·Shopify 같은 EC 패키지는 그대로 못 쓴다. 전년에 만든 공통 기반을 거의 그대로 쓰고 기능 몇 개만 추가, 개발의 대부분은 디자인이 다른 엔드유저 Web. 1:1 연계면 API 가 다루기 쉽지만 1:2·1:1:1 이면 에러 처리가 복잡해진다 — 이벤트 구동은 에러 이벤트로 따로 처리. UI 도 공통화를 검토."
+    },
+    {
+      "title": "イベント駆動アーキテクチャへの変革",
+      "url": "https://zenn.dev/aircloset_dev/articles/7aa07583fd66d6",
+      "publisher": "エアークローゼットテックブログ (Zenn)",
+      "date": "2023-12-01",
+      "summary": "렌털 서비스의 뼈대 다섯 — **인증·재고·수주·결제·통지 관리** — 를 추상화해 이벤트 구동으로 구현. EventBridge(EventBus 로 이벤트를 n:n — SNS+SQS 는 이벤트마다 따로 관리해야 해 도메인 단위로 맡기는 EventBus 가 보기 좋다, Rule 은 스케줄 배치) · StepFunctions(EventBus 에서 ECS Task 를 부를 때 감싸서 에러 처리·로그를 업무 로직과 분리 — 스텝 하나일 때부터) · MongoDB Atlas(엔드유저 쪽 CQRS, aggregate) · API Gateway + Cognito(동기 API 병용 — 전부 비동기면 쓰기 어렵다) · ECS(Node.js/TypeScript, DDD 로 동기 API·Task 호출을 presentation 층에서 흡수) · Lambda(기존 EC2 처리와 EventBridge 연결, 통지). airCloset·airCloset Mall 에서도 쓰일 것을 상정하되 2023년 10월 시작한 신규 서비스 **Disney FASHION CLOSET** 에서 먼저 운용 — 기존 서비스 전부 이행은 비용·위험이 커서 뒤로."
+    },
+    {
+      "title": "エアクロが目指しているアーキテクチャ",
+      "url": "https://zenn.dev/aircloset/articles/07ed9da7dd8d65",
+      "publisher": "エアークローゼットテックブログ (Zenn)",
+      "date": "2022-12-25",
+      "summary": "목표는 시스템 간 연계의 **이벤트 구동**. API 구동과의 가장 큰 차이는 책무 분리 — 주문이 창고에 발송을 '지시' 하면 창고 장애의 처리까지 주문이 떠안는다. 고객·인증·사내 관리·스타일링·재고·창고 연계·창고·반납·결제·회계 등을 API·배치로 잇다 보니 창고 연계 실패로 스타일링이 에러가 나거나, 배치가 실패했는데 후속이 돌아 부정합 데이터가 생겼다. 또 시스템이 airCloset 전제로 만들어져 있어 기능별로 떼어 여러 서비스에서 쓰게 하고 싶다. 조직도 지시가 아니라 각자 책무로 움직인다. 단점 셋 — 처리를 따라가기 어렵다 · 로그가 보기 어렵다 · 구축이 어렵다(프레임워크·노하우 부족). SNS+SQS 는 가로 관계가 안 보여 대규모 기반으로는 어렵고 EventBridge 를 권함."
     }
   ]
 }

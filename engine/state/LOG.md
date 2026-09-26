@@ -1729,3 +1729,8 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 에어클로젯 AI 비용 게이트
 
 - 결정 10 — AI 는 수량만·Billing Export 실측 단가·전주 같은 요일+무음 없음+baseline 0·쿼터 1.5배(사내라서)·fire-and-forget 한 축·cpuIdle CI 가드(false 명시도 위반)·이미지 10→2·APPROVE 뒤 dispatch(fail-closed)·문서 PR 판정 잡 안 뺌(기댓값)·MERGE → Firestore 판정+insert.
+
+## 2026-09-26 에어클로젯 이벤트 구동 렌털 기반 — 완주
+
+- 완주 판정 검색 1(RSS 20편)엔 없었고 검색 2(Zenn 검색 API)에서 10년 회고가 걸렸다 → 링크를 따라 2022·2023·2024 글. hold 대신 셋째 도메인을 주변 서비스 수익원에.
+- 결정 7 — 이벤트 구동·EventBus(SNS+SQS 대신)·StepFunctions 로 감싸기·동기 API 병용·MongoDB CQRS·새 서비스 먼저·EC 패키지 대신 공통 기반. eras 셋은 10년 회고의 연도 그대로(4기를 3기와 합쳐 '2021~ 이벤트 구동' 하나로).
