@@ -279,6 +279,109 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/388812",
+      "title": "DevOps엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3~14년, 서울 강남구. **고객사에 CI/CD 를 구성해 주는 컨설팅형 DevOps 엔지니어**다. 주요업무는 두 줄이다 — 클라우드 환경에서 **GitHub·GitLab·Bitbucket·Jenkins·Bamboo** 로 CI/CD 구성 및 컨설팅, 오픈소스·엔터프라이즈 솔루션을 결합한 안정적·확장 가능한 아키텍처 설계·운영. 자격은 **컨테이너 환경 CI/CD 구축 4년**, 형상관리 솔루션과 **Jenkins(필수)**, 솔루션 간 **API 연동·자동화 스크립트(Python·Shell)**. 우대는 프론트·백엔드 개발, 오픈스택·쿠버네티스, Prometheus 모니터링, **Jira·Confluence**, 정적 분석 도구, AI 도구. 도구 목록에 아틀라시안 제품(Bitbucket·Bamboo·Jira·Confluence)이 많은 것은 회사의 아틀라시안 파트너 사업과 겹치는 대목이다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "컨테이너 CI/CD 4년",
+          "Jenkins(필수)",
+          "Python·Shell 자동화·API 연동"
+        ],
+        "can_learn": [
+          "아틀라시안 도구 연동",
+          "GitOps",
+          "정적 분석 게이트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Jenkins 파이프라인을 고객마다 재사용하기",
+          "from": "qualification",
+          "quote": "• Github, Gitlab, Bitbucket 등 형상관리 솔루션 및 Jenkins 유경험자 (Jenkins 필수)",
+          "priority": "core",
+          "why": "자격요건에서 유일하게 '필수' 가 붙은 도구다.",
+          "gap_check": "선언형 파이프라인(Jenkinsfile)의 stage·agent·post 구조를 설명하고, 고객사마다 비슷한 파이프라인을 복사하지 않고 공유 라이브러리로 묶을 때 버전 관리는 어떻게 하는가? 컨트롤러에서 빌드를 돌리면 안 되는 이유와 쿠버네티스 파드를 일회용 에이전트로 쓰는 방식은?",
+          "drill": "Jenkins 파이프라인·공유 라이브러리 문서와 Kubernetes 플러그인 문서를 읽고, 로컬 쿠버네티스에 Jenkins 를 올려 파드 에이전트로 빌드→테스트→이미지 푸시 파이프라인을 만든다. 공통 단계를 공유 라이브러리로 빼서 서비스 두 개가 같은 라이브러리 버전 태그를 쓰게 한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Pipeline — Jenkins User Handbook",
+              "url": "https://www.jenkins.io/doc/book/pipeline/",
+              "kind": "docs"
+            },
+            {
+              "title": "Extending with Shared Libraries — Jenkins",
+              "url": "https://www.jenkins.io/doc/book/pipeline/shared-libraries/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — Jenkins plugin",
+              "url": "https://plugins.jenkins.io/kubernetes/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 CI/CD 도구를 비교해 고객에게 권하기",
+          "from": "task",
+          "quote": "• Cloud 환경에서 Github, Gitlab, Bitbucket, Jenkins, Bamboo 등을 활용한 CI/CD 구성 및 컨설팅",
+          "priority": "high",
+          "why": "주요업무가 여러 도구로 CI/CD 를 구성하고 '컨설팅' 하는 일이다.",
+          "gap_check": "Jenkins(자체 운영·플러그인)와 GitLab CI(저장소 내장·러너)는 운영 부담·확장·보안 경계에서 무엇이 다른가? 배포 단계를 CI 서버가 밀어 넣는 방식과 클러스터가 Git 을 끌어오는 GitOps 방식은 권한·감사에서 무엇이 다른가?",
+          "drill": "GitLab CI 문서로 위 파이프라인을 .gitlab-ci.yml 로 옮기고, 배포 단계는 Argo CD 문서대로 GitOps 로 바꾼다. 세 방식(Jenkins 푸시·GitLab CI 푸시·GitOps 풀)을 운영 부담·권한·롤백 기준으로 고객 제안용 비교표 한 장에 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Get started with GitLab CI/CD — GitLab Docs",
+              "url": "https://docs.gitlab.com/ci/",
+              "kind": "docs"
+            },
+            {
+              "title": "Argo CD — Declarative GitOps CD for Kubernetes",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "솔루션 간 API 연동 — CI 결과를 Jira 에",
+          "from": "qualification",
+          "quote": "• 다양한 솔루션 간의 API 연동 및 자동화 스크립트(Python, Shell script 등) 개발 역량을 보유하신 분",
+          "priority": "high",
+          "why": "자격요건이고 우대사항에 Jira·Confluence 가 있다.",
+          "gap_check": "빌드·배포 결과를 이슈 트래커에 자동으로 남기려면 커밋 메시지의 이슈 키를 어떻게 추출하고, API 토큰은 파이프라인에서 어떻게 보관하는가? 외부 API 가 느리거나 실패할 때 파이프라인 전체를 실패시킬지 경고만 남길지는 무엇으로 정하는가?",
+          "drill": "Jira Cloud REST API 소개 문서를 읽고, 파이프라인 마지막 단계에서 커밋 메시지의 이슈 키를 찾아 해당 이슈에 배포 버전·결과를 코멘트로 남기는 Python 스크립트를 만든다. 토큰은 Jenkins 자격 증명으로 주입한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "The Jira Cloud platform REST API",
+              "url": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "정적 분석을 파이프라인 게이트로",
+          "from": "preference",
+          "quote": "• 정적 분석 도구 유 경험",
+          "priority": "nice",
+          "why": "우대사항이다.",
+          "gap_check": "정적 분석 결과로 머지를 막는 품질 게이트는 무엇(신규 코드 기준 버그·취약점·커버리지)으로 걸어야 기존 부채 때문에 전부 막히지 않는가?",
+          "drill": "SonarQube 문서로 로컬 서버를 띄우고 위 파이프라인에 분석 단계를 넣은 뒤, '신규 코드' 기준 품질 게이트를 설정해 일부러 넣은 취약 코드가 머지를 막는지 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "SonarQube Server Documentation",
+              "url": "https://docs.sonarsource.com/sonarqube-server",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
