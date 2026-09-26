@@ -530,7 +530,7 @@
           "title": "왜 리플렉션인가",
           "summary": "이름만 아는 코드를 부른다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",
@@ -538,7 +538,7 @@
           "title": "Class 객체",
           "summary": "클래스의 정보도 객체다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -546,7 +546,7 @@
           "title": "메서드 찾아 부르기",
           "summary": "invoke.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",

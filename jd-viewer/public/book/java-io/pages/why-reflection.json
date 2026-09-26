@@ -1,0 +1,214 @@
+{
+  "book": "java-io",
+  "id": "why-reflection",
+  "no": "10.1",
+  "chapter": 10,
+  "title": "왜 리플렉션인가",
+  "summary": "이름만 아는 코드를 부른다.",
+  "minutes": 12,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "문자열로 받은 클래스를 부른다.",
+    "이름이 틀렸을 때 무엇이 나는지 본다.",
+    "이미 쓰고 있던 자리를 찾는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.7절의 라우팅 표는 이렇게 채웠다.\n\n```java\nget(\"/hello\", (q, s) -> { ... });\n```\n\n주소가 100개면 이 줄이 100개다. **그 표를 자동으로 채우려면** 클래스 안에 무엇이 들어 있는지 프로그램이 스스로 알아야 한다. 컴파일할 때는 없던 클래스를, 실행 중에 이름만 가지고."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "이 클래스는 `Greeter` 를 `import` 하지 않는다",
+      "code": "public class Why {\n    public static void main(String[] a) throws Exception {\n        String cls = a[0], m = a[1];                 // 명령줄에서 받은 문자열\n        Class<?> c  = Class.forName(cls);\n        Object   o  = c.getDeclaredConstructor().newInstance();\n        Method   me = c.getMethod(m, String.class);\n        Object   r  = me.invoke(o, \"홍길동\");\n        System.out.println(\"  부른 결과 = \" + r);\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "문자열 두 개로 코드를 불렀다",
+      "sql": "$ java -cp out Why Greeter hello\n  문자열로 받은 것 = \"Greeter\", \"hello\"\n    찾았다 = class Greeter\n    부른 결과 = 안녕하세요 홍길동",
+      "note": "**`Why.java` 안에 `Greeter` 라는 글자가 없다.** 컴파일된 `Why.class` 에도 없다 — 그 연결은 실행 중에 문자열로 만들어졌다."
+    },
+    {
+      "type": "prose",
+      "md": "## 이름이 틀리면 컴파일이 아니라 실행이 터진다\n\n이것이 리플렉션의 값이다. 같은 프로그램에 틀린 이름을 넣어 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "두 가지 실패",
+      "sql": "$ java -cp out Why Greetr hello        # 클래스 이름 오타\n  ClassNotFoundException: Greetr\n\n$ java -cp out Why Greeter hi          # 메서드 이름 오타\n    찾았다 = class Greeter\n  NoSuchMethodException: Greeter.hi(java.lang.String)",
+      "note": "**둘 다 컴파일은 통과했다.** 평소에 컴파일러가 잡아 주던 오타가 여기서는 런타임 예외가 된다 — 리플렉션을 쓰는 순간 **타입 검사를 포기한 것**이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그런데도 쓰는 이유",
+      "md": "컴파일 시점에 **알 수 없는** 것이 있기 때문이다.\n\n> 프레임워크는 내가 만들 클래스를 모른다. 스프링이 `@Service` 를 찾을 때, JUnit 이 `@Test` 를 찾을 때, 잭슨이 JSON 을 객체로 바꿀 때 — 그 클래스는 프레임워크를 만든 뒤에 내가 쓴 것이다.\n> 설정 파일에 적힌 이름도 그렇다. `web.xml` 의 `<servlet-class>`, JDBC 드라이버 이름, 로그 구현체 — 문자열로 들어오니 문자열로 부를 수밖에 없다.\n> 즉 리플렉션은 **선택이 아니라 경계**다. 내 코드 안에서는 쓸 이유가 없고, 내 코드와 남의 코드가 만나는 자리에서만 필요하다."
+    },
+    {
+      "type": "prose",
+      "md": "## 이미 쓰고 있었다 — 5장의 역직렬화\n\n`ObjectInputStream` 이 어떻게 객체를 되살리는지 다시 생각해 보면, 그것도 **이름으로 클래스를 찾는 일**이다. 확인해 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "직렬화 파일에 클래스 이름이 적혀 있다",
+      "sql": "$ java -cp withBox WriteBox\n  box.ser 를 썼다 (70 바이트)\n\n$ od -c box.ser | head -3\n  0000000  254 355  \\0 005   s   r  \\0 003   B   o   x  \\0  \\0  \\0  \\0  \\0\n  0000020   \\0  \\0 001 002  \\0 002   I  \\0 001   n   L  \\0 005   l   a   b\n  0000040    e   l   t  \\0 022   L   j   a   v   a   /   l   a   n   g   /",
+      "note": "**`254 355 \\0 005` 는 5.1절의 그 `ac ed 00 05` 다.** 그 뒤 `s r`(TC_OBJECT·TC_CLASSDESC) 다음에 길이 3 과 `B o x` — **클래스 이름이 글자로 들어 있다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "그 클래스를 빼고 읽어 보면",
+      "sql": "# Box.class 가 있는 클래스패스\n$ java -cp withBox ReadBox\n  읽었다 = Box\n\n# Box.class 를 뺀 클래스패스 (ReadBox.class 만 있다)\n$ java -cp onlyRW ReadBox\n  ClassNotFoundException: Box\n    -> ObjectInputStream 이 파일에 적힌 이름으로 클래스를 찾았고, 없었다",
+      "note": "**`ClassNotFoundException` 이 증거다.** 역직렬화는 파일에서 이름을 읽어 `Class.forName` 에 해당하는 일을 하고, 생성자를 거치지 않고 필드를 채운다 — 리플렉션의 전부를 쓴다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "5.6절의 필터가 왜 있었는지가 여기서 설명된다",
+      "md": "역직렬화가 **이름을 보고 클래스를 로드한다**는 것이 취약점의 뿌리다.\n\n> 파일(또는 네트워크로 온 바이트)이 클래스 이름을 정하므로, 공격자가 그 이름을 고를 수 있으면 **클래스패스에 있는 아무 클래스나 로드하게 만들 수 있다.**\n> 그중 역직렬화 과정에서 코드가 도는 클래스(`readObject` 를 가진 것)를 엮으면 실행으로 이어진다. 그것이 gadget chain 이다.\n> JEP 290 의 `ObjectInputFilter`(5.6절)는 그래서 **이름 목록**으로 막는다 — 막을 지점이 이름밖에 없다는 뜻이다.\n> 정리: **리플렉션은 강력해서 위험한 게 아니라, 문자열이 코드를 고르게 해서 위험하다.**"
+    },
+    {
+      "type": "table",
+      "caption": "이미 쓰고 있던 자리들",
+      "columns": [
+        "어디",
+        "무엇을 이름으로 찾나",
+        "이 책에서 본 곳"
+      ],
+      "rows": [
+        [
+          "`ObjectInputStream`",
+          "직렬화 파일에 적힌 클래스 이름",
+          "**5장**"
+        ],
+        [
+          "JDBC `Class.forName`",
+          "드라이버 클래스 이름",
+          "—"
+        ],
+        [
+          "`ServiceLoader`",
+          "`META-INF/services` 의 구현체 이름",
+          "—"
+        ],
+        [
+          "서블릿 컨테이너",
+          "`web.xml`·`@WebServlet` 의 서블릿",
+          "**9.7절**"
+        ],
+        [
+          "JSON 매퍼",
+          "필드 이름과 getter/setter",
+          "—"
+        ],
+        [
+          "스프링",
+          "`@Component` 가 붙은 클래스",
+          "**11장에서 만든다**"
+        ]
+      ]
+    },
+    {
+      "type": "figure",
+      "caption": "where reflection sits",
+      "ascii": "        my code                 framework / config / file\n        +-------------+         +--------------------------+\n        | Greeter     |         | \"Greeter\" , \"hello\"      |\n        | @Service    |         | web.xml, box.ser, JSON   |\n        +------+------+         +------------+-------------+\n               |                             |\n               |   compiled together?  NO    |\n               +--------------+--------------+\n                              |\n                              v\n                     Class.forName(name)\n                     getMethod / getField\n                     invoke / set\n\n        the compiler checks the left side only."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "쓰기 전에 물어볼 것",
+      "md": "리플렉션이 필요한지 가르는 질문은 하나다.\n\n> **\"그 이름을 컴파일할 때 알 수 있나.\"** 알 수 있으면 리플렉션이 아니라 인터페이스와 다형성이다.\n> `if (type.equals(\"pdf\")) reflect(...)` 같은 코드는 거의 항상 `Map<String, Exporter>` 로 바꿀 수 있다 — 9.7절의 `ROUTES` 가 그 예다.\n> 리플렉션이 남는 자리는 **그 `Map` 을 누가 채우느냐**다. 손으로 채우면 필요 없고, 애노테이션을 보고 채우려면 필요하다. 11장이 그 이야기다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"리플렉션을 왜 씁니까.\"**\n\n> 컴파일 시점에 이름을 알 수 없을 때다. 프레임워크는 내가 나중에 쓸 클래스를 모르고, 설정 파일은 이름을 문자열로 준다.\n> 대가는 타입 검사다 — 클래스 이름 오타는 `ClassNotFoundException`, 메서드 이름 오타는 `NoSuchMethodException` 이고 **둘 다 컴파일은 통과한다.**\n> \"쓴 적 없다\" 고 답하면 반쯤 틀렸다. 역직렬화가 그것이다 — `box.ser` 안에 `B o x` 가 글자로 있고, 그 클래스를 빼면 `ClassNotFoundException` 이다.\n> 역직렬화 취약점의 뿌리도 같다. **문자열이 클래스를 고른다**는 것이고, 그래서 JEP 290 필터가 이름 목록으로 막는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 이름만으로 부른 것과 못 부른 것",
+      "sql": "$ java -cp out Why Greeter hello\n  문자열로 받은 것 = \"Greeter\", \"hello\"\n    찾았다 = class Greeter\n    부른 결과 = 안녕하세요 홍길동\n\n$ java -cp out Why Greetr hello\n  ClassNotFoundException: Greetr\n\n$ java -cp out Why Greeter hi\n  NoSuchMethodException: Greeter.hi(java.lang.String)\n\n# 그리고 5장으로 돌아가 보면\n$ od -c box.ser | head -1\n  0000000  254 355  \\0 005   s   r  \\0 003   B   o   x  ...\n                                         ^^^^^^^^^^^^^  클래스 이름이 글자다\n\n$ java -cp withBox ReadBox   ->  읽었다 = Box\n$ java -cp onlyRW  ReadBox   ->  ClassNotFoundException: Box\n\n# Why.java 에는 Greeter 라는 글자가 없다. 연결은 실행 중에 만들어졌다.\n# 그 대가로 오타 두 개가 컴파일을 통과해 런타임까지 왔다.",
+      "note": "**`ac ed 00 05` 다음의 `B o x` 가 이 절의 전부다.** 5장에서는 그것을 \"형식\"으로만 봤는데, 그 이름으로 클래스를 찾는 기능이 리플렉션이다. 다음 절에서는 그 찾기의 결과물 — `Class` 객체 자체를 들여다본다."
+    }
+  ],
+  "recap": [
+    "리플렉션은 컴파일 시점에 이름을 알 수 없을 때 쓴다 — 그때만 필요하다.",
+    "Class.forName + getMethod + invoke 세 줄로 문자열이 코드를 부른다.",
+    "Why.java 에는 Greeter 라는 글자가 없다 — 연결이 실행 중에 만들어졌다.",
+    "클래스 이름 오타는 ClassNotFoundException, 메서드 이름 오타는 NoSuchMethodException 이다.",
+    "둘 다 컴파일을 통과한다 — 리플렉션은 타입 검사를 포기하는 것이다.",
+    "역직렬화가 이미 리플렉션이다 — box.ser 안에 B o x 가 글자로 들어 있다.",
+    "그 클래스를 클래스패스에서 빼면 ClassNotFoundException 이 난다.",
+    "역직렬화 취약점의 뿌리는 문자열이 클래스를 고른다는 것이고, JEP 290 필터가 이름으로 막는다.",
+    "컴파일할 때 이름을 알 수 있으면 리플렉션이 아니라 Map 과 다형성이다.",
+    "리플렉션이 남는 자리는 그 Map 을 누가 채우느냐다."
+  ],
+  "drills": [
+    {
+      "task": "클래스와 메서드 이름을 명령줄로 받아 부르는 프로그램을 쓴다.",
+      "done_when": "import 없이 다른 클래스를 부른다.",
+      "minutes": 12
+    },
+    {
+      "task": "두 이름에 각각 오타를 낸다.",
+      "done_when": "예외 두 종류를 구분한다.",
+      "minutes": 8
+    },
+    {
+      "task": "객체를 직렬화한 뒤 od 로 클래스 이름을 찾는다.",
+      "done_when": "파일 안의 글자를 눈으로 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "그 클래스를 뺀 클래스패스로 읽어 본다.",
+      "done_when": "ClassNotFoundException 을 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "리플렉션이 필요한지 가르는 질문은.",
+      "a": "그 이름을 컴파일할 때 알 수 있나. 알 수 있으면 필요 없다."
+    },
+    {
+      "q": "클래스 이름 오타와 메서드 이름 오타는 각각 무슨 예외인가.",
+      "a": "ClassNotFoundException 과 NoSuchMethodException. 둘 다 런타임이다."
+    },
+    {
+      "q": "역직렬화가 리플렉션이라는 증거는.",
+      "a": "파일에 클래스 이름이 글자로 있고, 그 클래스를 빼면 ClassNotFoundException 이 난다."
+    },
+    {
+      "q": "JEP 290 필터가 이름 목록으로 막는 이유는.",
+      "a": "역직렬화가 이름으로 클래스를 고르므로 막을 지점이 이름밖에 없다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "리플렉션",
+      "what": "실행 중에 클래스·메서드·필드를 이름으로 찾아 쓰는 것. 컴파일러의 검사 밖에 있다."
+    },
+    {
+      "term": "Class.forName",
+      "what": "문자열 이름으로 클래스를 로드해 Class 객체를 얻는 것. 없으면 ClassNotFoundException 이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — java.lang.reflect",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/package-summary.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JEP 290: Filter Incoming Serialization Data",
+      "url": "https://openjdk.org/jeps/290",
+      "publisher": "OpenJDK"
+    }
+  ]
+}

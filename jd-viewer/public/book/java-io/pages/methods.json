@@ -1,0 +1,231 @@
+{
+  "book": "java-io",
+  "id": "methods",
+  "no": "10.3",
+  "chapter": 10,
+  "title": "메서드 찾아 부르기",
+  "summary": "invoke.",
+  "minutes": 13,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "메서드를 찾는 두 방법을 가른다.",
+    "오버로드를 어떻게 고르는지 확인한다.",
+    "부른 쪽이 던진 예외를 꺼낸다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "10.2절의 `Class` 객체에게 메서드를 물어본다. 묻는 방법이 **둘**이고, 그 차이가 먼저 걸린다.\n\n실험 대상은 오버로드와 `private` 과 가변 인수를 한 클래스에 모아 둔 `Calc` 다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "재 볼 클래스",
+      "code": "public class Calc {\n    public int    add(int a, int b)         { return a + b; }\n    public String add(String a, String b)   { return a + b; }\n    public int    add(Integer a, Integer b) { return a + b + 1000; }  // 일부러 다른 값\n    public int    sum(int... xs)            { ... }\n    public void   boom()   { throw new IllegalArgumentException(\"핸들러가 터졌다\"); }\n    private int   hidden(int a) { return a * 2; }\n    protected int prot(int a)   { return a * 3; }\n    public static int twice(int a) { return a * 2; }\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "목록을 두 가지로 받아 보면",
+      "sql": "  getMethods()         = 15개 (public + 물려받은 것)\n  getDeclaredMethods() = 8개 (이 클래스에 적힌 것 전부)\n    private hidden\n    protected prot\n    public add\n    public add\n    public add\n    public boom\n    public static twice\n    public transient sum          <- ?\n\n  getMethods() 에 Object 것이 섞여 있다:\n    equals  hashCode  notify  toString  wait",
+      "note": "**8 개는 내가 쓴 전부이고 15 개에는 `Object` 의 것이 섞여 있다.** 그리고 `sum` 이 `transient` 로 찍혔다 — 필드에만 쓰는 그 낱말이다."
+    },
+    {
+      "type": "compare",
+      "title": "두 가지 찾기",
+      "left": {
+        "title": "`getMethod` / `getMethods`",
+        "md": "**public 만.** 물려받은 것 **포함**.\n\n`Object` 의 `toString`·`wait` 까지 나온다.\n\n부모의 public 메서드를 부를 때 쓴다."
+      },
+      "right": {
+        "title": "`getDeclaredMethod` / `getDeclaredMethods`",
+        "md": "**이 클래스에 적힌 것 전부.** 물려받은 것 **제외**.\n\n`private`·`protected` 도 나온다.\n\n클래스를 훑어 애노테이션을 찾을 때 쓴다(11장)."
+      },
+      "note": "**둘 다 필요하다.** 프레임워크는 보통 `getDeclaredMethods()` 로 클래스마다 훑고 `getSuperclass()` 로 올라간다 — 한 번의 호출로 둘을 다 얻는 방법이 없다."
+    },
+    {
+      "type": "prose",
+      "md": "## `transient` 로 찍힌 것은 버그가 아니다\n\n비트를 직접 찍어 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "같은 비트를 두 이름이 쓴다",
+      "sql": "  sum 의 modifiers = 0x0081\n    Modifier.toString = \"public transient\"\n    Modifier.TRANSIENT = 0x0080  (필드용)\n    ACC_VARARGS      = 0x0080  (메서드용, JVM 명세)\n    같은 비트다 -> Modifier.toString 이 메서드에서 transient 라고 쓴다\n    제대로 보는 방법 = sum.isVarArgs() -> true\n\n  비교: add 의 modifiers = 0x0001 -> \"public\"  isVarArgs=false",
+      "note": "**`0x0081` = `ACC_PUBLIC`(0x0001) + `0x0080`** 이다. 그 `0x0080` 을 필드에서는 `ACC_TRANSIENT`, 메서드에서는 `ACC_VARARGS` 로 읽는다 — 비트는 하나고 뜻은 자리에 따라 둘이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "10.2절의 교훈이 여기서 또 나온다",
+      "md": "이름 문자열을 믿으면 안 된다.\n\n> `Modifier.toString(m.getModifiers())` 은 **비트를 필드 기준으로** 풀어 쓴다. 메서드에 쓰면 `transient` 라는 거짓말이 섞인다.\n> 마찬가지로 `0x0040` 은 필드에서 `volatile`, 메서드에서 `ACC_BRIDGE`(제네릭 때문에 컴파일러가 만든 다리 메서드)다. 그것도 `volatile` 로 찍힌다.\n> 그래서 **묻는 메서드를 쓴다** — `isVarArgs()`, `isBridge()`, `isSynthetic()`, `Modifier.isStatic(...)`.\n> 로그에 `Modifier.toString` 을 쓰는 것 자체는 괜찮다. **그 글자로 분기하면** 틀린다."
+    },
+    {
+      "type": "prose",
+      "md": "## 오버로드는 파라미터 타입으로 정확히 고른다\n\n`add` 가 셋이다. 컴파일러가 해 주던 선택을 이제 내가 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "세 개를 각각 불렀다",
+      "sql": "  add(int,int)         = 7\n  add(Integer,Integer) = 1007\n  add(String,String)   = 34\n  add(int,Integer)     -> NoSuchMethodException (오토박싱이 안 통한다)",
+      "note": "**`7` 과 `1007` 이 갈린 것이 증거다.** `invoke(o, 3, 4)` 로 똑같이 불렀는데 `int.class` 로 찾은 쪽과 `Integer.class` 로 찾은 쪽이 다른 메서드다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "찾을 때는 안 되고 부를 때는 된다",
+      "md": "이 비대칭이 헷갈리는 자리다.\n\n> **찾을 때**(`getMethod`)의 타입은 **정확히 일치**해야 한다. `int.class` 는 `int` 이고 `Integer.class` 는 `Integer` 다 — 오토박싱도 상위 타입도 안 통한다.\n> **부를 때**(`invoke`)는 박싱이 일어난다. `invoke(o, 3, 4)` 의 `3` 은 이미 `Integer` 객체로 박싱돼 `Object[]` 에 담기고, JVM 이 `int` 파라미터에 맞게 **풀어 준다.**\n> 그래서 `add(int,int)` 를 `invoke(o, 3, 4)` 로 부를 수 있다. 시그니처는 엄격하고 인수는 관대하다.\n> 정리: **`getMethod` 의 인수는 선언 그대로, `invoke` 의 인수는 값 그대로.**"
+    },
+    {
+      "type": "prose",
+      "md": "## private 은 두 단계로 열린다\n\n찾는 것과 부르는 것이 따로 막혀 있다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "막힌 곳이 두 번이다",
+      "sql": "  getMethod(\"hidden\")         -> NoSuchMethodException\n  getDeclaredMethod 로는 찾았다 = private int Calc.hidden(int)\n  그냥 invoke -> IllegalAccessException\n  setAccessible(true) 후 = 42",
+      "note": "**세 줄이 세 단계다.** `getMethod` 로는 안 보이고, `getDeclaredMethod` 로 보이지만 못 부르고, `setAccessible(true)` 후에 부른다 — 접근 제어가 리플렉션에서도 한 겹 남아 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "setAccessible 은 이제 무조건 되는 게 아니다",
+      "md": "우리 실험은 통했지만, 그것은 `Calc` 가 **내 코드**여서다.\n\n> 자바 9 의 모듈 시스템 이후 **다른 모듈의 내부**에 `setAccessible(true)` 를 하면 막힌다. 자바 16 부터는 기본이 거부(`InaccessibleObjectException`)다.\n> 그래서 `--add-opens java.base/java.util=ALL-UNNAMED` 같은 옵션을 붙이는 라이브러리가 있다 — 그 옵션이 보이면 **누군가 남의 내부를 열고 있다**는 신호다.\n> 내 클래스나 같은 모듈 안이면 지금도 문제없다. 11장에서 만들 것도 그 범위다.\n> 그리고 성능 이야기가 하나 붙는다 — `setAccessible(true)` 는 **접근 검사를 끄는 것**이라 반복 호출에서 빠르다. 10.6절에서 잰다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "정적 메서드와 가변 인수",
+      "sql": "  정적 메서드는 대상이 null 이다\n    twice(21) = 42\n\n  가변 인수는 배열 하나로 넘긴다\n    sum(1,2,3) = 6\n    파라미터 타입 = [class [I]  isVarArgs=true",
+      "note": "**`sum` 의 파라미터는 하나다** — `int[]`(즉 `[I`). 가변 인수는 컴파일러가 만든 배열이고 리플렉션에는 그 본모습이 보인다. `invoke(o, new int[]{1,2,3})` 으로 넘긴다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "가변 인수를 넘길 때 한 번 더 감싸야 하는 경우",
+      "md": "`Object...` 를 받는 메서드를 부를 때가 진짜 함정이다.\n\n> `invoke(o, new Object[]{1, 2, 3})` 은 `invoke` 자신의 가변 인수로 **풀려서** 인수 세 개가 된다. 하나짜리 배열 파라미터에 안 맞는다.\n> 그래서 `invoke(o, new Object[]{ new Object[]{1,2,3} })` 로 **한 겹 더 감싼다.**\n> `int[]` 는 `Object[]` 가 아니라 이 문제가 없다 — 우리 `sum` 이 그래서 그냥 됐다. 원시 배열과 참조 배열의 차이가 여기서 드러난다."
+    },
+    {
+      "type": "prose",
+      "md": "## 부른 쪽이 던진 예외는 한 겹 싸여 온다\n\n9.7절에서 핸들러 예외를 500 으로 바꿨는데, 그것을 리플렉션으로 부르면 모양이 달라진다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "`InvocationTargetException` 이 감싸고 있다",
+      "sql": "  try {\n      c.getMethod(\"boom\").invoke(o);\n  } catch (InvocationTargetException e) { ... }\n\n  잡힌 것   = java.lang.reflect.InvocationTargetException\n  getCause = java.lang.IllegalArgumentException: 핸들러가 터졌다",
+      "note": "**던진 것은 `IllegalArgumentException` 인데 잡힌 것은 `InvocationTargetException`** 이다. 진짜 예외는 `getCause()` 안에 있다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 감싸나 — 두 종류를 구분해야 해서다",
+      "md": "`invoke` 가 던질 수 있는 예외는 성질이 다른 둘이다.\n\n> **내가 잘못한 것** — 인수 개수가 틀리면 `IllegalArgumentException`, 접근이 막히면 `IllegalAccessException`. 이것은 `invoke` 호출 자체의 실패다.\n> **대상이 던진 것** — 메서드 안에서 나온 예외. 이것은 `invoke` 가 성공했고 그 결과가 예외인 경우다.\n> 감싸지 않으면 둘을 구분할 수 없다. 하필 대상이 `IllegalArgumentException` 을 던지면(우리 `boom` 이 그렇다) **어느 쪽인지 알 수 없어진다.**\n> 그래서 프레임워크는 거의 항상 `catch (InvocationTargetException e) { throw e.getCause(); }` 로 벗겨서 올린다 — 안 벗기면 사용자가 스택 트레이스에서 자기 예외를 못 찾는다."
+    },
+    {
+      "type": "steps",
+      "title": "메서드 하나를 부르는 순서",
+      "steps": [
+        "**`Class` 를 얻는다** — `Class.forName` 또는 `obj.getClass()`.",
+        "**찾는 방법을 고른다** — public 이고 물려받았을 수 있으면 `getMethod`, 이 클래스에 적힌 전부면 `getDeclaredMethod`.",
+        "**파라미터 타입을 선언 그대로 준다** — `int.class` 와 `Integer.class` 는 다르고 오토박싱이 안 통한다.",
+        "**필요하면 `setAccessible(true)`** — 자바 16 이후 다른 모듈은 막힌다.",
+        "**`invoke(대상, 인수...)`** — 정적이면 대상은 `null`, 가변 인수는 배열 하나.",
+        "**`InvocationTargetException` 을 잡아 `getCause()` 로 벗긴다** — 안 벗기면 진짜 원인이 묻힌다."
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"`getMethod` 와 `getDeclaredMethod` 의 차이는.\"**\n\n> 앞은 **public + 물려받은 것**, 뒤는 **이 클래스에 적힌 것 전부**다. `Calc` 에서 15 개 대 8 개였고, 15 개에는 `Object` 의 `toString`·`wait` 이 섞여 있었다.\n> \"오버로드는 어떻게 고르냐\" 에는 — 파라미터 타입이 **정확히** 맞아야 한다. `int.class` 로 찾으면 7, `Integer.class` 로 찾으면 1007 이 나왔고 `(int, Integer)` 는 `NoSuchMethodException` 이다.\n> 찾을 때는 엄격하고 **부를 때는 박싱이 된다** — `invoke(o, 3, 4)` 로 `add(int,int)` 를 부를 수 있다.\n> `InvocationTargetException` 을 물으면 — 대상이 던진 예외와 `invoke` 자체의 실패를 구분하려고 감싼다. `getCause()` 로 벗겨서 올려야 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 찾기·고르기·벗기기",
+      "sql": "$ java -cp out Meth\n\n  getMethods()         = 15개 (public + 물려받은 것)\n  getDeclaredMethods() = 8개 (이 클래스에 적힌 것 전부)\n    private hidden / protected prot / public add x3 / public boom\n    public static twice / public transient sum\n\n  add(int,int)         = 7\n  add(Integer,Integer) = 1007\n  add(String,String)   = 34\n  add(int,Integer)     -> NoSuchMethodException\n\n  getMethod(\"hidden\")  -> NoSuchMethodException\n  getDeclaredMethod    -> private int Calc.hidden(int)\n  그냥 invoke          -> IllegalAccessException\n  setAccessible(true)  -> 42\n\n  twice(21) = 42                    (대상이 null)\n  sum(1,2,3) = 6                    (파라미터 타입 = [class [I], isVarArgs=true)\n\n  잡힌 것  = java.lang.reflect.InvocationTargetException\n  getCause = java.lang.IllegalArgumentException: 핸들러가 터졌다\n\n$ java -cp out Bits\n  sum 의 modifiers = 0x0081  ->  Modifier.toString = \"public transient\"\n  Modifier.TRANSIENT = 0x0080 (필드용) = ACC_VARARGS (메서드용)\n  sum.isVarArgs() -> true\n\n# 7 과 1007 이 갈린 것이 이 절의 중심이다 — 오버로드 선택이\n# 컴파일러에서 내 손으로 넘어왔고, 그 손은 오토박싱을 모른다.",
+      "note": "**`7` 과 `1007`, 그리고 `0x0081`.** 앞은 시그니처를 정확히 줘야 한다는 것이고 뒤는 그 결과를 문자열로 읽으면 안 된다는 것이다. 다음 절에서는 메서드 대신 필드를 연다 — `private` 이 거기서 더 크게 문제가 된다."
+    }
+  ],
+  "recap": [
+    "getMethods() 는 public + 물려받은 것, getDeclaredMethods() 는 이 클래스에 적힌 것 전부다.",
+    "Calc 에서 15개 대 8개였고 15개에는 Object 의 toString·wait 이 섞여 있었다.",
+    "프레임워크는 getDeclaredMethods() 로 훑고 getSuperclass() 로 올라간다.",
+    "가변 인수 메서드가 Modifier.toString 에서 transient 로 찍힌다 — 0x0080 을 두 이름이 쓴다.",
+    "0x0040 도 필드에서는 volatile, 메서드에서는 ACC_BRIDGE 다. 글자로 분기하면 틀린다.",
+    "오버로드는 파라미터 타입이 정확히 맞아야 한다 — int.class 는 7, Integer.class 는 1007 이었다.",
+    "(int, Integer) 조합은 NoSuchMethodException 이다 — 오토박싱이 안 통한다.",
+    "찾을 때는 엄격하고 부를 때는 박싱된다 — invoke(o, 3, 4) 로 add(int,int) 를 부른다.",
+    "private 은 getDeclaredMethod 로 찾고 setAccessible(true) 후에 부른다 — 두 단계다.",
+    "자바 16 이후 다른 모듈의 내부에는 setAccessible 이 막힌다(InaccessibleObjectException).",
+    "정적 메서드는 invoke 의 대상이 null 이고 가변 인수는 배열 하나로 넘긴다.",
+    "Object... 를 부를 때는 배열을 한 겹 더 감싸야 한다 — int[] 는 그 문제가 없다.",
+    "대상이 던진 예외는 InvocationTargetException 에 싸여 오고 getCause() 로 벗긴다.",
+    "감싸는 이유는 invoke 자체의 실패와 대상의 예외를 구분해야 해서다."
+  ],
+  "drills": [
+    {
+      "task": "한 클래스의 두 목록을 받아 개수를 비교한다.",
+      "done_when": "Object 의 메서드가 어디에 섞이는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "int 와 Integer 로 오버로드된 메서드를 각각 부른다.",
+      "done_when": "결과가 다른 것을 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "private 메서드를 부른다.",
+      "done_when": "막히는 단계 두 곳을 모두 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "예외를 던지는 메서드를 invoke 한다.",
+      "done_when": "getCause() 로 원래 예외를 꺼낸다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "private 메서드를 부르려면 무엇이 두 번 필요한가.",
+      "a": "getDeclaredMethod 로 찾고 setAccessible(true) 로 연다."
+    },
+    {
+      "q": "getMethod(\"add\", int.class, Integer.class) 가 실패하는 이유는.",
+      "a": "파라미터 타입이 정확히 일치해야 한다. 오토박싱이 적용되지 않는다."
+    },
+    {
+      "q": "invoke 가 던진 InvocationTargetException 을 어떻게 처리하나.",
+      "a": "getCause() 로 벗겨서 올린다. 안 벗기면 원인이 묻힌다."
+    },
+    {
+      "q": "가변 인수 메서드가 transient 로 찍히는 이유는.",
+      "a": "ACC_VARARGS 와 ACC_TRANSIENT 가 같은 비트(0x0080)다. isVarArgs() 로 물어야 한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "InvocationTargetException",
+      "what": "invoke 로 부른 메서드가 던진 예외를 감싸는 껍데기. 원래 예외는 getCause() 에 있다."
+    },
+    {
+      "term": "setAccessible",
+      "what": "접근 검사를 끄는 것. 자바 16 이후 다른 모듈의 내부에는 기본으로 거부된다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — java.lang.reflect.Method",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JVM Specification — Method access flags",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
