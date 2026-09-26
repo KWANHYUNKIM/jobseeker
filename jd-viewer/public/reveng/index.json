@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "usen-ict",
+      "name": "USEN ICT Solutions",
+      "name_en": "USEN ICT Solutions",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "USEN&U-NEXT 그룹의 법인 ICT 벤더 USEN ICT Solutions — 사내 데이터 기반을 BigQuery 대신 Snowflake·TROCCO·dbt 로 부품처럼 나눠 비용을 미리 읽고 부서마다 가르게 했고, 영업과 엔지니어가 한 계정을 쓰는 Cortex 는 롤을 만드는 쪽과 쓰는 쪽 두 층으로 갈랐다",
+      "updated_at": "2026-09-26",
+      "domain": "usen-ict.co.jp"
+    },
+    {
       "slug": "macbee-planet",
       "name": "Macbee Planet",
       "name_en": "Macbee Planet",
@@ -3603,7 +3615,9 @@
     "LLM 에게 전부 맡기지 않는 미용 의료 AI 상담",
     "전사원이 쓰는 사내 MCP 를 빠르고 안전하게 늘린다",
     "입찰 요청이 늘수록 비용이 붙는 로그 기반을 갈아 끼운다",
-    "매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다"
+    "매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다",
+    "부서마다 비용이 갈리는 사내 데이터 기반을 고른다",
+    "영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다"
   ],
   "countries": {
     "KR": "한국",

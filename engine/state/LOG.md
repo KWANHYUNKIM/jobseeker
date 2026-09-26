@@ -2037,3 +2037,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Macbee Planet 완주
 
 - 완주 기준 셋 확인 → done, QUEUE 완료로(--gaps 는 신규를 가리켰지만 in_progress 로 두고 넘어가지 않으려 먼저 닫음).
+
+## 2026-09-26 USEN ICT 회사 프로파일
+
+- 회사 사이트로 수익원(법인 ICT). 블로그 5편 중 결정 글 둘(Snowflake 선정 · Cortex 롤)을 도메인 둘로. 수익원 연결은 inferred.

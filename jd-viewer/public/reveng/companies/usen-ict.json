@@ -1,0 +1,141 @@
+{
+  "slug": "usen-ict",
+  "name": "USEN ICT Solutions",
+  "name_en": "USEN ICT Solutions",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "usen-ict.co.jp",
+  "one_liner": "USEN&U-NEXT 그룹의 법인 ICT 벤더 USEN ICT Solutions — 사내 데이터 기반을 BigQuery 대신 Snowflake·TROCCO·dbt 로 부품처럼 나눠 비용을 미리 읽고 부서마다 가르게 했고, 영업과 엔지니어가 한 계정을 쓰는 Cortex 는 롤을 만드는 쪽과 쓰는 쪽 두 층으로 갈랐다",
+  "business_model": "USEN&U-NEXT GROUP 의 법인용 ICT 솔루션(USEN GATE 02) — 네트워크·보안·클라우드·AI 서비스를 한 벤더로 묶어 제안한다. 정시스(사내 IT)·보안·AI 활용 미디어를 운영해 기업 담당자와 만난다. 과금 구조와 매출은 회사 사이트에 없다.",
+  "products": [
+    "USEN GATE 02(법인 ICT — 네트워크·보안·클라우드·AI)",
+    "운영 미디어(통신 속도 측정 · 정시스 칼럼 · 사이버 보안 랩 · AI-Clutch)",
+    "사내 데이터 기반(Snowflake · TROCCO · dbt)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "법인 ICT 솔루션(USEN GATE 02)",
+      "how": "네트워크·보안·클라우드·AI 서비스를 기업에 제공한다. 요금 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함 — 회사 사이트가 내세우는 유일한 사업",
+      "domains": [
+        "부서마다 비용이 갈리는 사내 데이터 기반을 고른다",
+        "영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社USEN ICT Solutions",
+          "url": "https://www.usen-ict.co.jp/",
+          "publisher": "株式会社USEN ICT Solutions",
+          "date": "2026-09-26",
+          "summary": "USEN&U-NEXT GROUP 의 법인용 ICT 솔루션 — USEN GATE 02(USEN ICT Solutions 와 USEN Smart Works 가 제공하는 법인 ICT 의 총칭): 네트워크·보안·클라우드·AI 서비스를 묶어 제안하는 '멀티 서비스 벤더'. 운영 미디어 — 통신 속도 측정, 정시스(사내 IT) 과제 칼럼, 중소기업 보안 랩, AI 현장 활용 미디어 AI-Clutch."
+        },
+        {
+          "title": "なぜ BigQuery を選ばなかったのか：Snowflakeで作るデータ基盤の設計判断",
+          "url": "https://zenn.dev/usen_ict/articles/b375c916bf8c9b",
+          "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+          "date": "2026-05-12",
+          "summary": "DWH 로 BigQuery 대신 Snowflake. 고르지 않은 이유 셋 — 스캔 종량이라 쿼리 전엔 비용을 모름 · GCP 전제라 벤더 록인(전에 트레저 데이터에서 이행 비용·비용 초과를 겪음) · 쿼리 단위 과금이라 부서별 비용 안분이 어렵다. 구성 — DWH Snowflake · 인제스트·오케스트레이션 TROCCO(Fivetran 행 단위 종량·Cloud Composer 운용 부담을 피해) · 변환 dbt(dbt Cloud CLI), 부품으로 분리해 부분 교체 가능. 도입 뒤 비즈니스 쪽이 Snowflake Intelligence·Streamlit in Snowflake 로 직접 쓰게 됐다. 다음은 AI 에이전트로 데이터 품질 이상 탐지 → 원인 → PR."
+        },
+        {
+          "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+          "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+          "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+          "date": "2026-08-03",
+          "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "영업·기획이 직접 만지는 데이터와 AI",
+    "question": "엔지니어만이 아니라 영업·기획까지 데이터와 AI 를 직접 쓰게 하려면 기반과 권한을 어떻게 나누나?",
+    "code": "flowchart LR\n  SRC[\"사내 소스 · GA4 · Marketplace\"] -->|TROCCO 인제스트·오케스트레이션| SF[(\"Snowflake\\n부서별 웨어하우스\")]\n  SF -->|dbt 변환| M[\"마트\"]\n  M --> BIZ[\"영업·기획\\nSnowflake Intelligence · Streamlit\"]\n  M --> ENG[\"엔지니어\"]\n  CX[\"Cortex AI\"] --> ROLE{\"롤 두 층\\n개발자 / 이용자\"}\n  ROLE --> BIZ\n  ROLE --> ENG",
+    "_note": "데이터 기반이 무엇을 분석해 법인 ICT 사업을 돕는지는 글에 없다. 수익원 연결은 '영업·기획이 이 기반을 쓴다' 는 사실에서 짐작한 것이라 inferred."
+  },
+  "domains": [
+    {
+      "name": "부서마다 비용이 갈리는 사내 데이터 기반을 고른다",
+      "why": "DWH 를 고르며 세 가지를 피하고 싶었다 — 쿼리를 던지기 전엔 비용을 모르는 것, 전에 트레저 데이터에서 겪은 벤더 록인, 부서·그룹사로 넓힐 때 누가 얼마 썼는지 가를 수 없는 것. 기반의 사용자는 엔지니어만이 아니라 SQL 을 쓰는 비즈니스 쪽이다.",
+      "tech": [
+        {
+          "tech": "Snowflake(웨어하우스별 사이즈·서스펜드, Marketplace) · TROCCO(인제스트+오케스트레이션, 고정 요금) · dbt(ref/source 리니지, dbt Cloud CLI)",
+          "solves": "월 예산이 읽히고, 부서마다 웨어하우스를 세워 비용을 나누고, 층마다 부품을 따로 바꿀 수 있다.",
+          "limits": "데이터 품질 문제는 아직 사람이 알아채 원인을 찾고 PR 을 낸다 — AI 에이전트 자동화는 다음 과제.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "なぜ BigQuery を選ばなかったのか：Snowflakeで作るデータ基盤の設計判断",
+              "url": "https://zenn.dev/usen_ict/articles/b375c916bf8c9b",
+              "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+              "date": "2026-05-12",
+              "summary": "DWH 로 BigQuery 대신 Snowflake. 고르지 않은 이유 셋 — 스캔 종량이라 쿼리 전엔 비용을 모름 · GCP 전제라 벤더 록인(전에 트레저 데이터에서 이행 비용·비용 초과를 겪음) · 쿼리 단위 과금이라 부서별 비용 안분이 어렵다. 구성 — DWH Snowflake · 인제스트·오케스트레이션 TROCCO(Fivetran 행 단위 종량·Cloud Composer 운용 부담을 피해) · 변환 dbt(dbt Cloud CLI), 부품으로 분리해 부분 교체 가능. 도입 뒤 비즈니스 쪽이 Snowflake Intelligence·Streamlit in Snowflake 로 직접 쓰게 됐다. 다음은 AI 에이전트로 데이터 품질 이상 탐지 → 원인 → PR."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다",
+      "why": "Cortex(LLM 기능)를 전사에서 쓰기 시작했는데 엔지니어와 영업이 같은 Snowflake 계정을 쓴다. AI 기능은 써 주길 바라지만 고쳐 만들면 곤란하다.",
+      "tech": [
+        {
+          "tech": "Snowflake 계정 롤 / 데이터베이스 롤 · 커스텀 롤 · 롤 계층 · Cortex 권한 두 층(개발자·이용자)",
+          "solves": "쓰는 사람과 만드는 사람을 권한으로 가른다.",
+          "limits": "본문 세부(롤 이름·부여 내용)는 다음 사이클에 읽는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+              "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+              "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+              "date": "2026-08-03",
+              "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "법인 ICT 사업의 요금 구조와 매출을 확인하지 못했다.",
+    "데이터 기반이 어떤 사업 데이터를 다루는지(영업·고객·회선?) 글에 없다.",
+    "네트워크·보안 서비스 쪽 기술 결정 글은 아직 못 봤다."
+  ],
+  "sources": [
+    {
+      "title": "株式会社USEN ICT Solutions",
+      "url": "https://www.usen-ict.co.jp/",
+      "publisher": "株式会社USEN ICT Solutions",
+      "date": "2026-09-26",
+      "summary": "USEN&U-NEXT GROUP 의 법인용 ICT 솔루션 — USEN GATE 02(USEN ICT Solutions 와 USEN Smart Works 가 제공하는 법인 ICT 의 총칭): 네트워크·보안·클라우드·AI 서비스를 묶어 제안하는 '멀티 서비스 벤더'. 운영 미디어 — 통신 속도 측정, 정시스(사내 IT) 과제 칼럼, 중소기업 보안 랩, AI 현장 활용 미디어 AI-Clutch."
+    },
+    {
+      "title": "なぜ BigQuery を選ばなかったのか：Snowflakeで作るデータ基盤の設計判断",
+      "url": "https://zenn.dev/usen_ict/articles/b375c916bf8c9b",
+      "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+      "date": "2026-05-12",
+      "summary": "DWH 로 BigQuery 대신 Snowflake. 고르지 않은 이유 셋 — 스캔 종량이라 쿼리 전엔 비용을 모름 · GCP 전제라 벤더 록인(전에 트레저 데이터에서 이행 비용·비용 초과를 겪음) · 쿼리 단위 과금이라 부서별 비용 안분이 어렵다. 구성 — DWH Snowflake · 인제스트·오케스트레이션 TROCCO(Fivetran 행 단위 종량·Cloud Composer 운용 부담을 피해) · 변환 dbt(dbt Cloud CLI), 부품으로 분리해 부분 교체 가능. 도입 뒤 비즈니스 쪽이 Snowflake Intelligence·Streamlit in Snowflake 로 직접 쓰게 됐다. 다음은 AI 에이전트로 데이터 품질 이상 탐지 → 원인 → PR."
+    },
+    {
+      "title": "❄️ Snowflake Cortex 関連の機能を使用するためのロールを設計してみた",
+      "url": "https://zenn.dev/usen_ict/articles/de11e8a1b55355",
+      "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+      "date": "2026-08-03",
+      "summary": "Snowflake 의 AI 기능(Cortex)을 전사에서 쓰기 시작하며 만든 롤 설계. 엔지니어와 영업이 같은 Snowflake 계정을 공유 — 'AI 기능은 써 주면 좋겠지만 고쳐 만들면 곤란하다'. 계정 롤과 데이터베이스 롤의 차이 · Cortex 권한을 개발자층·이용자층 두 층으로 · 실제 롤 이름과 부여 내용 · 롤 계층."
+    },
+    {
+      "title": "データを自由に使えないのは、道具のせいじゃない",
+      "url": "https://zenn.dev/usen_ict/articles/0a45ae8665e8dc",
+      "publisher": "USEN ICT Solutions Tech Blog (Zenn)",
+      "date": "2026-08-04",
+      "summary": "영업·기획·디지털 마케팅을 거친 DX 추진 담당의 글. DX 논의는 도구 이름에서 시작한다 — 스스로 데이터를 다루게 하려 했지만 Raw 데이터만으론 아무것도 알 수 없어 결국 예전 공정으로 돌아갔다. 'AI 를 도입하면' 에도 같은 구조가 있고, 간과되는 건 가장 수수한 일(데이터를 정돈하는 것)이다."
+    }
+  ]
+}
