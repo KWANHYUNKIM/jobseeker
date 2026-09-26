@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "safie",
+      "name": "セーフィー",
+      "name_en": "Safie",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "클라우드 카메라 점유율 1위 Safie — 기동 직후의 썸네일 서버만 카메라 서버에 연결을 못 열던 2년 묵은 장애를 Linux ARP 캐시까지 파 내려가 풀었고, 점포용 녹화기 Trail Station AI 는 8대를 기대했다 4대에 그친 엣지 AI 처리의 병목을 데이터 전달에서 찾았다",
+      "updated_at": "2026-09-26",
+      "domain": "safie.co.jp"
+    },
+    {
       "slug": "weathernews",
       "name": "ウェザーニューズ",
       "name_en": "Weathernews",
@@ -3475,7 +3487,9 @@
     "서비스 사이의 데이터 변화를 이벤트로 잃지 않고 전한다",
     "생성 AI 기능의 품질을 기계·AI·사람으로 나눠 보증한다",
     "기상과 실적으로 소매·제조의 반년 수요를 예측한다",
-    "수십만 개의 사용자 기상 조건을 10분마다 판정한다"
+    "수십만 개의 사용자 기상 조건을 10분마다 판정한다",
+    "수많은 카메라 서버에 요청 때마다 연결을 연다",
+    "녹화기 안에서 여러 카메라의 AI 를 동시에 돌린다"
   ],
   "countries": {
     "KR": "한국",

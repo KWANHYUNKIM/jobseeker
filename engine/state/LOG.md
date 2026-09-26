@@ -1876,3 +1876,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Weathernews hold
 
 - 검색 1 RSS 18편 · 검색 2 Zenn 검색 API 3낱말 — 방송 글 0. hold_reason·'재시도 안 함'·QUEUE hold.
+
+## 2026-09-26 Safie 회사 프로파일
+
+- safie.co.jp 첫 화면(과금 카메라 대수 지표)·사업 소개(판매 파트너 경유 구매)로 수익원 둘(구독·기기)을 inferred. 기술 글 중 제품 쪽 둘을 도메인으로(SYN-ACK 장애 · Trail Station AI 성능). 생성 AI 안전 5층은 사내 이용이라 제외.
