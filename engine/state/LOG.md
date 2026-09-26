@@ -968,3 +968,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 depot 재방문 → 확장
 
 - 09-07 이후 4편. 09-22 "The evolution of the Depot Metal autoscaler" 에서 결정 8개로 `metal-autoscaler` 를 추가(features 3→4). 여유분의 요금·저장 유형 증가의 운영 부담은 해석 표시.
+
+## 2026-09-26 dolt 재방문 → 보강
+
+- 09-07 이후 글 다수, 대부분 발표. 09-08 "Can Radix Trees Replace Prolly Trees?" 가 기존 선택의 근거를 대안과 견줘 `prolly-tree` 결정 6→8. 새 기능은 만들지 않음.

@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — depot 재방문 → 확장(`metal-autoscaler`). 09-07 묶음 진행 중.**
+**없다 — dolt 재방문 → 기존 기능 보강(prolly-tree 결정 +2). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **dolt** — 2026-09-26 보강. `dolthub.com/blog/rss.xml`. 09-08 래딕스 대 프롤리 글로 `prolly-tree` 에 결정 2개(ART 로 안 바꿈, 컬럼별 계층 보류)·생각·불변식 추가. 남은 후보: **09-04 Doltgres 베타→1.0 업그레이드 데이터 손실 포스트모템**(실패 그림 재료, 1순위), 09-22 DumboDB 복제 V1, 09-23 와일드카드 binlog 필터.
 - **depot** — 2026-09-26 확장. `depot.dev/rss.xml`(본문은 r.jina.ai). 09-22 Depot Metal 오토스케일러 글로 기존 도메인 "마이크로VM 을 초 단위로 띄운다" 에 추가. 남은 후보: 09-16 부하 시험 글(오토스케일러 원가 빈칸을 채울 수 있다), 09-10 GitHub 없는 GitHub Actions, 07-20 TLA+ 검증.
 - **deno** — 2026-09-26 없음 1회째. `deno.com/feed` 의 마지막 글이 06-25(Deno 2.9) — 09-07 이후 글 없음. 이전 글 후보: 02-03 Deno Sandbox·Deploy GA, 05-21 Claw Patrol(에이전트 방화벽).
 - **dena** — 2026-09-26 확장. RSS `engineering.dena.com/blog/index.xml`. 09-10 MySQL 8.4 방침 글(MHA 미지원 → 6안 비교 → 그룹 복제 대신 관리형)로 새 도메인 "만든 도구라도 따라가지 못하면 내려놓는다". 남은 후보: 09-09 ProxySQL 부족 기능을 AI 로 구현한 사양·검증 루프, 09-18 생성 AI 골든 패스, 08-06 ARC Region Switch 10분 내 리전 전환, 08-07 AI 토큰 비용 FinOps.
