@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **158건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **159건**.
+직전 회차: ✅ `Manager, Back-end Engineering (Eats Merchant)`(8175617) 3항목 — 서울, 이츠 상점주 플랫폼 EM(주문 상태 이벤트·온콜·다국가 정산).
 직전 회차: ✅ `Staff Backend Engineer – Search and Discovery Product Engineering`(8140987) 3항목 — **마운틴뷰**, 검색 백엔드(꼬리 지연·과부하·React Web), $194K~$243K.
 직전 회차: ✅ `Staff Backend Engineer (Application Infra)`(7849021) 3항목 — **마운틴뷰/시애틀**, durable execution 워크플로 플랫폼(Temporal·99.9999%·Cassandra/TiDB), $164K~$282K. Cadence 문서 404 라 뺌.
 ⏭ `Senior Security Engineer, Penetration Tester`(8175728, 타이베이) — 서울 Pen Tester(8163504)와 같은 이유로 사람 판단 대기. 쓰지 않았다(파일 변경 없음). **`--gaps` 에서 모의해킹(Penetration Tester) 공고는 건너뛰고 다음 줄로 간다.**
