@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**PKSHA 확장 1/2(2026-09-26) — `file-sync-saga-race-conditions` 완료. 다음은 확장: '운용 중인 고객 LLM 서비스의 모델 EOL 을 사람 게이트 넷으로 넘긴다' — `llm-replacer-workflow`(Issue 기동 · EC2 Claude Code 명령 복합체 · shadow 환경 · E2E A/B judge 위치 랜덤화 · 임계 메트릭 · 게이트 A~D · Draft PR 고정 · prod 차단 · Bedrock opt-out). 그 뒤 수익원 둘 다 기능이면 **완주 → done**. 대기 0/3 — PKSHA 를 닫으면 **후보 조사**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경(+ PKSHA shadow) + 결제 대장 + 첫 대응 봇 + LLM 평가(IVRy HITL ↔ PKSHA judge) + 워크플로 엔진(IVRy Durable ↔ PKSHA Saga ↔ ENECHANGE Step Functions). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**PKSHA 완주(2026-09-26) — `llm-replacer` 로 도메인 둘·기능 둘, 수익원 둘 다 연결 → done, QUEUE 완료로. 다음은 `--gaps` 대로 — 대기 0/3 이라 **후보 조사**(88번째). 입구는 Zenn Publication RSS(`zenn.dev/p/<id>/feed`) — 87번째에 못 본 곳을 시험(예: hacomono·ubie 재확인·smarthr 재확인·kaonavi·sansan 재확인·money_forward·layerx 는 판 곳), 7~9월 글 중 **결정과 대가가 적힌 제품 글** 하나씩 확인해 3곳. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경(estie · PKSHA shadow) + 결제 대장 + 첫 대응 봇 + LLM 평가(IVRy HITL ↔ PKSHA judge) + 워크플로 엔진(IVRy Durable ↔ PKSHA Saga ↔ ENECHANGE Step Functions). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

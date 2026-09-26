@@ -7,8 +7,8 @@
       "name_en": "PKSHA Technology",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "AI 솔루션과 AI SaaS 의 PKSHA — 헬프데스크가 SharePoint·Box 문서를 RAG 로 옮기는 동기화는 순서 없이 늦게 오는 이벤트를 Saga 상태 기계가 스킵·재시도로 받아 내고, 고객 LLM 서비스의 모델 EOL 은 Claude Code 가 shadow 환경에서 A/B 로 재지만 머지는 사람이 한다",
       "updated_at": "2026-09-26",
       "domain": "pkshatech.com"

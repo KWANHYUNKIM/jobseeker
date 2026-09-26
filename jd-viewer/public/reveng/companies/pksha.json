@@ -4,7 +4,7 @@
   "name_en": "PKSHA Technology",
   "country": "JP",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "domain": "pkshatech.com",
   "one_liner": "AI 솔루션과 AI SaaS 의 PKSHA — 헬프데스크가 SharePoint·Box 문서를 RAG 로 옮기는 동기화는 순서 없이 늦게 오는 이벤트를 Saga 상태 기계가 스킵·재시도로 받아 내고, 고객 LLM 서비스의 모델 EOL 은 Claude Code 가 shadow 환경에서 A/B 로 재지만 머지는 사람이 한다",
@@ -122,7 +122,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "llm-replacer"
+      ]
     }
   ],
   "features": [
@@ -456,6 +458,376 @@
           "publisher": "PKSHA Tech Blog (Zenn)",
           "date": "2026-06-29",
           "summary": "**PKSHA AI 헬프데스크**는 SharePoint Online·Box 문서를 자사 RAG 서비스로 **동기화**하는 기능을 **MassTransit**(.NET 메시징, Azure Service Bus 추상화)의 비동기 이벤트 구동 **Saga 상태 기계**로 구현. 메시징의 성질(순서 비보장·at-least-once·배신 지연·Saga 생성 타이밍) 때문에 '상정 밖 상태에서 상정 밖 이벤트' 를 받는다 — 기본은 `OnUnhandledEvent` 예외. 패턴 ① **완료 뒤 늦게 온 이벤트** → 경고 로그를 남기고 스킵(`Ignore()` 대신 — 로그 레벨로 상정 내·외를 가른다) ② **순서 역전**(InProgress 에 IndexingCompleted) → 반드시 처리해야 하므로 예외로 `UseMessageRetry`(in-memory, 0.5·1·2·4초) 동안 상태가 따라오길 기다림 ③ Saga 인스턴스 생성 전 도착(`OnMissingInstance`) ④ 같은 갱신의 동시 충돌(낙관 락·외부 토큰 갱신). 대처 선택법까지."
+        }
+      ]
+    },
+    {
+      "key": "llm-replacer",
+      "name": "모델 EOL 을 GitHub Issue 하나로 넘긴다 — Claude Code 가 호출 위치를 찾아 shadow 환경에서 구/신 모델을 E2E 로 A/B 하고, 사람은 네 게이트에서 멈추고 Draft PR 만 받는다",
+      "domain": "운용 중인 고객 LLM 서비스의 모델 EOL 을 사람 게이트 넷으로 넘긴다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "LLM 을 넣은 **운용 중 서비스**는 모델이 **EOL** 을 맞으면 모델을 갈아야 한다. 그런데 `model_id` 한 줄로 끝나지 않는다 — ① 모델 ID 가 어디서 지정되는지 찾고(코드 직접 기입·`.env`·SSM Parameter·Secrets Manager) ② 검증 환경에서 새 모델 정확도를 평가하고 ③ 코드·설정을 고쳐 PR 을 만들고 ④ 머지해 반영한다.\n\n모델이 EOL 될 만큼 오래 운용한 서비스일수록 세부 구현과 운용 정보는 잊혔고 담당자가 **이미 퇴사**한 경우도 있다. 과거 코드와 문서에서 정보를 다시 모아 평가·갱신하는 일은 비싸다. 운용 중 서비스는 역사적 이유로 변칙적 구성이 많아 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일도 흔하다 — 이 사이트는 이를 AI Solution(고객별 커스터마이즈) 쪽 서비스로 읽는다.",
+        "metrics": [
+          {
+            "label": "사람 게이트",
+            "value": "4 — 계획 뒤 · shadow 생성 뒤 · 평가 뒤 · Draft PR 뒤",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "label": "judge 모델",
+            "value": "Bedrock Opus 4.8(opt-out, PKSHA AWS 환경) 기본",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "label": "판정 기준",
+            "value": "judge 승률 + 레이턴시 · 비용 · 거부율 임계값",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "label": "최종 산출물",
+            "value": "Draft PR 고정 — 자동 머지 없음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "왜 시스템으로 만들었나",
+          "thought": "원리적으로는 엔지니어가 각자 환경을 만들어 Claude Code 를 직접 다뤄도 같은 일이 된다. 하지만 본질적이지 않은 작업에 엔지니어 공수를 쓰는 것은 건설적이지 않고, 경험상 **AWS 인증 주변에 함정이 많아** 시간을 버리기 쉽다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+              "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+              "publisher": "PKSHA Tech Blog (Zenn)",
+              "date": "2026-07-29",
+              "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+            }
+          ]
+        },
+        {
+          "at": "평가를 설계할 때",
+          "thought": "LLM 단독 추론이 아니라 가능한 한 전처리·후처리를 포함한 **E2E** 로 평가하는 것이 바람직하다. UI 층·요청 파싱은 모델 교체 영향을 거의 안 받으니, LLM 호출을 포함한 핵심 처리를 E2E 로 통과시키면 판단 재료로는 실용상 충분하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+              "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+              "publisher": "PKSHA Tech Blog (Zenn)",
+              "date": "2026-07-29",
+              "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+            }
+          ]
+        },
+        {
+          "at": "머지를 볼 때",
+          "thought": "머지는 사람이 판단하고, **최종 책임은 사람이 져야 한다**.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+              "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+              "publisher": "PKSHA Tech Blog (Zenn)",
+              "date": "2026-07-29",
+              "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+            }
+          ]
+        },
+        {
+          "at": "앞날을 볼 때",
+          "thought": "파이프라인이 비교적 범용이라 일부를 바꾸면 LLM 이외의 보수 작업(폐지 예정 API 이행·구성 조사·보안 리스크 수복)으로 넓힐 수 있다 — 번잡한 보수를 AI 에 맡겨 엔지니어가 더 생산적인 일에 집중하게.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+              "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+              "publisher": "PKSHA Tech Blog (Zenn)",
+              "date": "2026-07-29",
+              "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "GitHub Issue",
+            "what": "기동 인터페이스. 사람에게 묻는 것·승인도 전부 Issue 위 봇 댓글과 `answer:`·`stop:`·`interrupt:`·`resume:` 댓글로."
+          },
+          {
+            "name": "/upgrade-llm",
+            "what": "통괄 커스텀 명령. 내부에서 호출 위치 탐색·계획·shadow·평가·PR 명령을 차례로 부른다."
+          },
+          {
+            "name": ".llm-replacer-state/",
+            "what": "단계별 산출물(YAML·Markdown). 다른 명령이 참조한다."
+          },
+          {
+            "name": "shadow 리소스",
+            "what": "운용 중 리소스 `hogehoge` 옆에 증설한 `hogehoge-shadow`. 새 모델 설정은 여기에만 적용."
+          },
+          {
+            "name": "judge",
+            "what": "구/신 출력을 과제 달성도·정확성·간결함으로 비교해 A/B/무승부와 점수·이유를 돌려주는 LLM."
+          },
+          {
+            "name": "게이트 A~D",
+            "what": "계획 뒤 · shadow 생성 뒤 · 평가 뒤 · Draft PR 뒤 — 사람이 판단하는 지점."
+          }
+        ],
+        "invariants": [
+          "기존 dev·staging 환경을 직접 고치지 않는다 — 새 설정은 shadow 리소스에만.",
+          "prod 로 보이는 환경이 입력되면 **에러로 중단**한다 — 고객 데이터가 있는 prod 와 stg/dev 는 다른 AWS 계정이다.",
+          "최종 산출물은 Draft PR 이다 — master 자동 머지는 없다.",
+          "구/신 출력의 A/B 할당은 입력마다 랜덤이다(위치 편향 대책).",
+          "내부 LLM 은 opt-out 된 사내 Bedrock API — 실행 중 정보가 학습에 쓰이지 않는다.",
+          "정확도 열화가 드러나면 PR 제목에 `[NEEDS-REVIEW]` 를 단다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 대상 GitHub 리포와 AWS 계정을 적어 Issue 를 만들면 GitHub Actions 가 인증된 EC2 의 Claude Code 에서 `/upgrade-llm` 을 돌린다",
+            "why": "엔지니어가 인증 함정에 시간을 안 쓴다."
+          },
+          {
+            "step": "리포와 AWS 리소스를 주사해 LLM 호출·모델 ID 설정 위치를 찾고, 후계 모델과 교체 계획을 만든다 → 게이트 A",
+            "why": "잊힌 정보를 다시 모은다."
+          },
+          {
+            "step": "staging 을 복사한 shadow 환경을 만들어 새 모델 설정을 적용한다 → 게이트 B",
+            "why": "운용 중 환경을 안 건드린다."
+          },
+          {
+            "step": "리포에서 평가 입력을 스스로 찾아(S3 등) 구/신 모델로 E2E 출력을 만들고, judge 가 위치를 랜덤화해 A/B 비교, 레이턴시·비용·거부율 임계값도 본다 → 게이트 C",
+            "why": "열화하지 않는지."
+          },
+          {
+            "step": "비교표와 출력 예를 본문에 담아 Draft PR 을 만든다(열화면 `[NEEDS-REVIEW]`) → 게이트 D(shadow 정리 절차 확인)",
+            "why": "머지·반영은 사람이."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "엔지니어가 각자 Claude Code 로 하면 안 되나?",
+            "chosen": "**미리 AWS·GitHub 인증을 통과한 EC2 에 Claude Code 를 두고 GitHub Issue 를 인터페이스로 — 사용자는 Issue 위 봇과 대화만 한다.**",
+            "alternatives": [
+              "엔지니어가 각자 환경을 만들어 Claude Code 를 직접 조작"
+            ],
+            "tradeoff": "본질적이지 않은 작업과 AWS 인증 함정에 공수를 안 쓴다. 대가 — 강한 권한을 쥔 공용 EC2 를 운영해야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "question": "파이프라인을 어떻게 짜나?",
+            "chosen": "**한 덩어리 대신 여러 Claude Code 커스텀 명령의 복합체로 나누고 단계 산출물을 `.llm-replacer-state/` 에 YAML·Markdown 으로 남긴다.**",
+            "alternatives": [
+              "단일 프롬프트 · 단일 명령"
+            ],
+            "tradeoff": "일부만 바꿔 폐지 예정 API 이행 같은 다른 보수 작업에 전용하기 쉽다. 대가 — 명령 사이의 상태 파일 계약을 관리한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "question": "어디서 새 모델을 시험하나?",
+            "chosen": "**기존 dev·staging 을 고치는 대신 staging 을 복사한 shadow 리소스(`…-shadow`)를 증설해 거기에만 적용.**",
+            "alternatives": [
+              "staging 을 직접 수정"
+            ],
+            "tradeoff": "운용 중 환경을 부수지 않는다. 대가 — shadow 를 만들고 치우는 절차가 생기고, 그 정리 절차에 위험한 조작이 없는지 사람이 한 번 더 본다(게이트 D).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 평가하나?",
+            "chosen": "**LLM 단독이 아니라 대상 서비스와 같은 모양으로 입력을 처리하는 E2E 에 가깝게 — 구/신 모델을 같은 입력으로 돌려 LLM-as-a-judge 로 A/B, 할당은 입력마다 랜덤.**",
+            "alternatives": [
+              "LLM 단독 추론 비교",
+              "브라우저 자동 조작까지 포함한 완전 E2E"
+            ],
+            "tradeoff": "전처리·후처리를 포함한 핵심 처리의 열화를 본다. 대가 — 브라우저 자동 조작이 미구현이라 버튼 뒤 함수(`process(...)`)를 직접 부른다 — UI·요청 파싱은 모델 영향을 거의 안 받는다고 보고 감수.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "question": "합격을 무엇으로 가르나?",
+            "chosen": "**judge 승률만이 아니라 레이턴시·비용·거부율에도 임계값을 둔다.**",
+            "alternatives": [
+              "judge 승률만"
+            ],
+            "tradeoff": "출력은 좋아도 느리거나 비싸거나 거부가 늘어난 모델을 거른다. 대가 — 서비스마다 임계값을 정해야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "question": "어디서 사람을 부르나?",
+            "chosen": "**완전 자동 대신 게이트 A(계획)·B(shadow 생성)·C(평가)·D(Draft PR·정리)에서 Issue 댓글로 사람의 판단을 받는다.**",
+            "alternatives": [
+              "완전 자동"
+            ],
+            "tradeoff": "'staging 인데 실은 고객이 만지는 환경' 같은 변칙 구성에서 운용 중 서비스를 부수지 않는다. 대가 — 사람이 네 번 멈춰 답해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "question": "머지까지 자동화할까?",
+            "chosen": "**최종 산출물은 Draft PR 고정 — 머지와 본번 반영은 사람이(master 머지가 사실상 배포).**",
+            "alternatives": [
+              "평가 통과 시 자동 머지"
+            ],
+            "tradeoff": "최종 책임을 사람이 진다. 대가 — 마지막 한 걸음은 여전히 사람의 공수다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          },
+          {
+            "question": "기밀 데이터는?",
+            "chosen": "**구독판 대신 PKSHA AWS 환경의 opt-out Bedrock API 를 쓰고, 고객 정보가 있는 환경에서의 실행 자체를 금지 — prod 로 보이면 에러로 중단.**",
+            "alternatives": [
+              "구독판 LLM",
+              "prod 에서도 실행"
+            ],
+            "tradeoff": "기밀이 학습에 쓰이거나 운용 시스템 밖으로 새지 않는다. 대가 — stg/dev 에서만 평가하므로 실제 본번 데이터 분포로는 재지 못한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+                "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+                "publisher": "PKSHA Tech Blog (Zenn)",
+                "date": "2026-07-29",
+                "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "외부 문서 저장소를 RAG 로 옮기는 동기화의 경합을 상태 기계가 받는다(같은 회사의 다른 도메인)",
+          "via": "상정 밖을 명시하기",
+          "contract": "llm-replacer 는 'staging 인데 고객이 만지는 환경' 같은 상정 밖 구성을 사람 게이트와 prod 차단으로 막고, 동기화 Saga 는 상정 밖 이벤트를 상태마다 명시적으로 받게 설계한다 — 두 쪽 다 '예상과 다른 것이 온다' 를 전제로 설계한다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "Issue 한 장의 교체 흐름",
+          "question": "모델 교체는 어떤 단계와 게이트를 지나나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 주사: Issue · /upgrade-llm\n  주사 --> 계획: 호출 위치 · 모델 ID · 후계 모델\n  계획 --> shadow: 게이트 A\n  shadow --> 평가: 게이트 B · smoke\n  평가 --> DraftPR: 게이트 C · A/B judge · 임계값\n  DraftPR --> 정리: 게이트 D\n  정리 --> [*]: 사람이 머지 · 반영\n  계획 --> 중단: stop: · prod 로 보임"
+        },
+        {
+          "title": "A/B 가 합격을 가르는 법",
+          "question": "새 모델은 무엇을 넘어야 PR 이 깨끗해지나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  IN[\"평가 입력\\n리포 · S3 에서 자율 수집\"] --> OLD[\"구 모델 E2E 출력\"]\n  IN --> NEW[\"신 모델 E2E 출력\"]\n  OLD --> J[\"judge(Opus 4.8 opt-out)\\nA/B 할당 랜덤\"]\n  NEW --> J\n  J --> WIN[\"승률\"]\n  NEW --> M[\"레이턴시 · 비용 · 거부율\"]\n  WIN --> DEC{\"임계값 통과?\"}\n  M --> DEC\n  DEC -->|예| PR[\"Draft PR\"]\n  DEC -->|아니오| NR[\"[NEEDS-REVIEW] Draft PR\"]"
+        },
+        {
+          "title": "교체가 사고로 번지는 자리",
+          "question": "어디서 운용 중 서비스나 데이터가 다칠 수 있나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"staging 이 실은 고객 환경\"] --> B[\"운용 중 서비스 파손 → shadow · 게이트 A/B\"]\n  C[\"prod 계정 입력\"] --> D[\"고객 데이터 노출 → 에러로 중단\"]\n  E[\"judge 위치 편향\"] --> F[\"먼저 보인 쪽 편애 → 할당 랜덤화\"]\n  G[\"승률만 봄\"] --> H[\"느리거나 비싼 모델 통과 → 임계값\"]\n  I[\"UI 층 미평가\"] --> J[\"브라우저 자동 조작 미구현 — 감수\"]\n  K[\"shadow 정리 절차\"] --> L[\"위험 조작 섞임 → 게이트 D\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "LLM モデルの差し替えを自動化する llm-replacer の紹介",
+          "url": "https://zenn.dev/pksha/articles/llm-replacer-workflow",
+          "publisher": "PKSHA Tech Blog (Zenn)",
+          "date": "2026-07-29",
+          "summary": "LLM 을 넣은 **운용 중 서비스**의 모델이 **EOL** 되면 model_id 한 줄로 안 끝난다 — 지정 위치 찾기(코드·.env·SSM·Secrets Manager)·검증 환경·정확도 평가·PR·반영, 오래 운용한 서비스일수록 담당자가 퇴사했고 정보가 잊혔다. **llm-replacer**: GitHub Issue 로 기동, 인증된 EC2 의 Claude Code 커스텀 명령(`/upgrade-llm` 등)의 복합체 — ① 리포·AWS 계정을 주사해 LLM 호출·모델 ID 위치 탐색 ② 후계 모델과 교체 계획 ③ staging 을 복사한 **shadow 환경**에 적용 ④ 구/신 모델 출력 생성 ⑤ **LLM-as-a-judge A/B**(Bedrock Opus 4.8 opt-out, 위치 편향 대책으로 A/B 할당 랜덤화, 승률만이 아니라 레이턴시·비용·거부율 임계값) — 전처리·후처리 포함 E2E 에 가깝게 ⑥ **Draft PR**(자동 머지 없음, 열화면 `[NEEDS-REVIEW]`). 사람 게이트 4개(계획·shadow 생성·평가·정리) — 'staging 이란 이름인데 실은 **고객(先方)이 만지는 환경**' 인 일이 있다. 고객 데이터가 있는 prod 와 stg/dev 는 AWS 계정이 달라 prod 로 보이면 에러로 중단. 단계 산출물은 `.llm-replacer-state/` 의 YAML·Markdown — 다른 용도로 전용하려고 명령을 나눴다."
         }
       ]
     }
