@@ -369,6 +369,111 @@
       "site": "saramin",
       "duplicate_of": "https://jumpit.saramin.co.kr/position/54920516",
       "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 학습 항목은 점핏 '임베디드 소프트웨어 개발자(신입)'(54920516) 브리핑을 본다. 공고 번호가 같고, 주요업무(AVR·ESPRESSIF MCU 펌웨어, 신규 하드웨어 테스트, OTA 배포)와 자격요건(C/C++, 데이터 시트 기반 개발, 네트워크 프로그래밍)·우대사항(RTOS/Linux, 필드버스, 운전면허)이 글자까지 같다. 사람인 쪽에만 있는 정보는 **마감일 2026년 10월 01일**과 전형절차 '서류전형 > 1차면접 > 2차면접(필요시) > 최종합격' 이다."
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55030576",
+      "title": "AI SW Engineer (Algorithmic AI)",
+      "site": "jumpit",
+      "verdict": "경력 5~10년(자격요건 문장은 '머신러닝 모델 개발 및 시계열 데이터 분석 경험 3년 이상'), 서울 금천구. 회사 소개의 'AI Algorithmic Engineer' 자리로, MODLINK 가 모으는 **센서·시계열 데이터로 설비 이상 탐지와 예지 보전(Predictive Maintenance)** 모델을 만든다 — Anomaly Detection·Clustering·Contrastive Learning, 설비 상태 예측, 데이터 파이프라인·ETL/스트림 처리, 학습·추론·실행을 묶은 MLOps/LLMOps 플랫폼, **ESP32·ARM Cortex 에서 도는 경량 모델**, Edge-Cloud Hybrid 아키텍처. 필수는 컴퓨터·전자·AI 학사 또는 준하는 경력, ML 모델·시계열 분석 3년, PyTorch·TensorFlow, 데이터 파이프라인·MLOps, 산업 현장·IoT 에 AI 를 잇는 일에 대한 열정, 그리고 **'Researcher가 아닌 Engineer 관점'**. 우대는 AI 석·박사, 논문·특허, 센서 기반 설비 관리 AI 서비스, AWS·EKS·Kubeflow ML 서빙, Edge AI(ESP32·ARM Cortex).",
+      "fit": {
+        "must_have": [
+          "ML 모델·시계열 분석 3년 이상",
+          "PyTorch·TensorFlow",
+          "데이터 파이프라인·MLOps",
+          "컴퓨터·전자·AI 학사 또는 준하는 경력"
+        ],
+        "can_learn": [
+          "센서 기반 설비 관리 AI",
+          "Kubeflow ML 서빙",
+          "Edge AI(ESP32·ARM Cortex)",
+          "논문·특허"
+        ]
+      },
+      "study": [
+        {
+          "topic": "센서 시계열 이상 탐지",
+          "from": "task",
+          "quote": "• 센서 및 시계열 데이터를 활용한 Anomaly Detection, Clustering, Contrastive Learning 등 ML 알고리즘 개발",
+          "priority": "core",
+          "why": "첫 주요업무이고 필수에 시계열 데이터 분석 3년이 있다. 회사가 Edge AI 기반 예지 보전을 핵심 기술로 적는다(회사 브리핑).",
+          "gap_check": "고장 라벨이 거의 없는 공장 센서 데이터에서 '정상만 학습해 벗어난 것을 이상으로' 보는 방식(예측 오차·재구성 오차)을 쓸 때, 설비가 계절·생산량에 따라 원래 달라지는 것(정상 변동)과 이상을 무엇으로 가르고, 경보 임계값은 무엇으로 정하는가?",
+          "drill": "NASA 예지 보전 데이터셋 하나를 받아 Isolation Forest 와 LSTM 예측 오차 기반 탐지를 각각 만들고, 동적 임계값(최근 오차 분포 기반)을 붙여 고장 직전 구간을 얼마나 먼저 잡는지와 오경보 수를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Detecting Spacecraft Anomalies Using LSTMs and Nonparametric Dynamic Thresholding",
+              "url": "https://arxiv.org/abs/1802.04431",
+              "kind": "paper"
+            },
+            {
+              "title": "Novelty and Outlier Detection — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Prognostics Center of Excellence Data Set Repository - NASA",
+              "url": "https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "MCU 에서 도는 경량 모델 — ESP32",
+          "from": "task",
+          "quote": "• Edge 환경(ESP32, ARM Cortex 등) 에서 동작하는 경량 AI 모델 개발",
+          "priority": "core",
+          "why": "주요업무이고 우대에 Edge AI(ESP32, ARM Cortex) 모델 개발이 있다. 회사 단말 펌웨어가 ESPRESSIF MCU 로 돌아간다(임베디드 공고).",
+          "gap_check": "수백 KB RAM 의 ESP32 에 이상 탐지 모델을 올리려면 모델 크기·연산을 무엇(int8 양자화·작은 구조·특징 추출을 단말에서)으로 줄이고, 단말에서 판단할 것과 클라우드로 보낼 것은 무엇을 기준으로 나누는가(Edge-Cloud Hybrid)?",
+          "drill": "위 이상 탐지를 작은 오토인코더로 다시 만들어 int8 로 변환하고 LiteRT for Microcontrollers(esp-tflite-micro)로 ESP32 에 올려 추론 시간·메모리 사용량을 잰다. 정확도가 float 모델 대비 얼마나 떨어지는지 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LiteRT for Microcontrollers",
+              "url": "https://ai.google.dev/edge/litert/microcontrollers/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "espressif/esp-tflite-micro",
+              "url": "https://github.com/espressif/esp-tflite-micro",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "라벨 없는 센서 데이터의 표현 학습 — Contrastive Learning",
+          "from": "task",
+          "quote": "• 센서 및 시계열 데이터를 활용한 Anomaly Detection, Clustering, Contrastive Learning 등 ML 알고리즘 개발",
+          "priority": "high",
+          "why": "주요업무가 Anomaly Detection 과 함께 Clustering·Contrastive Learning 을 적는다. 우대에 논문 게재 경험이 있다.",
+          "gap_check": "같은 설비의 시계열 조각 두 개를 '양성 쌍' 으로 만들 때 이미지 대비 학습처럼 쓸 수 있는 증강은 무엇이고(잡음·시간 이동·스케일), 설비 종류가 다른 데이터가 섞였을 때 학습한 표현으로 클러스터링하면 무엇을 확인할 수 있는가?",
+          "drill": "SimCLR 논문의 틀을 따라 센서 시계열 조각에 증강 두 가지를 적용한 대비 학습을 PyTorch 로 짜고, 학습한 임베딩을 k-means 로 묶어 설비 상태(정상·열화)가 나뉘는지 시각화한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "A Simple Framework for Contrastive Learning of Visual Representations",
+              "url": "https://arxiv.org/abs/2002.05709",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "학습·추론을 묶는 MLOps — Kubeflow",
+          "from": "task",
+          "quote": "• 학습, 추론, 실행을 통합한 MLOps/LLMOps 기반 모델 운영 플랫폼 개발",
+          "priority": "nice",
+          "why": "주요업무이고 우대에 AWS·EKS·Kubeflow ML 서빙 플랫폼 운영이 있다. 필수에 데이터 파이프라인·MLOps 환경 개발이 있다.",
+          "gap_check": "설비마다 따로 학습한 모델 수백 개를 어떻게 버전·배포·재학습 관리하고, 센서가 교체돼 데이터 분포가 바뀐 것(드리프트)은 무엇으로 감지해 재학습을 트리거하는가?",
+          "drill": "Kubeflow 소개 문서를 읽고, '데이터 수집 → 학습 → 평가 → 기준 통과 시 배포' 파이프라인을 설계도 한 장으로 그린 뒤, 설비별 모델 레지스트리 항목(설비 ID·데이터 기간·지표·버전)을 표로 정의한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Introduction | Kubeflow",
+              "url": "https://www.kubeflow.org/docs/started/introduction/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
