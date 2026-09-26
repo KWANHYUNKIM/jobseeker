@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "caddi",
+      "name": "캐디",
+      "name_en": "CADDi",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "제조업의 특주 부품 조달에서 시작해 도면·제조 데이터를 AI 로 잇는 회사 — 여러 제품이 한 문으로 들어오게 인증을 떼어 내고, 쌓인 데이터는 스캔량을 깎아 꺼낸다",
+      "updated_at": "2026-09-26",
+      "domain": "caddi.com"
+    },
+    {
       "slug": "kakehashi",
       "name": "카케하시",
       "name_en": "KAKEHASHI",
@@ -2917,7 +2929,9 @@
     "발급 기록을 운영 DB 밖에서 센다",
     "에이전트가 늘린 코드를 CI 가 따라잡게 한다",
     "아무도 안 보는 녹화를 모델이 보게 한다",
-    "그래프 색인이 모르는 거리는 되채점으로 얹는다"
+    "그래프 색인이 모르는 거리는 되채점으로 얹는다",
+    "여러 제품이 한 문으로 들어온다",
+    "쌓인 제조 데이터를 싸게 꺼낸다"
   ],
   "countries": {
     "KR": "한국",

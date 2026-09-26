@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — zulip 재방문은 새 자료 없음(1회째). 09-07 묶음 끝.**
+**CADDi — 프로파일(2026-09-26). 다음 사이클은 확장: 도메인 "여러 제품이 한 문으로 들어온다" 의 인증 게이트웨이 + Internal Token. 읽을 것 — `caddi.tech/2026/02/24/092138`(이미 읽음), `RFC 8707 Resource Indicators`(2026-05-21), `Auth0を使って1年かけてSSOをサポートした話`. 사이트맵은 `caddi.tech/sitemap_periodical.xml?year=Y&month=M`(글 주소는 /Y/MM/DD/HHMMSS).**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
