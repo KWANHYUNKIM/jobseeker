@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "채용 관리 시스템 'HERP Hire' 에서 'SaaS × 매칭'으로 옮겨 가는 회사 — 쌓여 가는 선고 데이터를 DB 커서부터 HTTP 까지 한 스트림으로 흘려 SLO 를 되찾고, 부채는 '언제 갚을지'를 세 조건으로 가르고 갚은 부채가 되살아나지 않게 조인다",
       "updated_at": "2026-09-27",
       "domain": "herp.co.jp"

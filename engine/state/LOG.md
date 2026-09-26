@@ -2255,3 +2255,8 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 HERP CSV 스트림
 
 - `92afb9a85d77d3` 로 기능 `candidacy-csv-streaming`, 결정 8.
+
+
+## 2026-09-27 HERP 부채 시점과 래칫
+
+- `when-to-resolve-technical-debt` 뒷부분(수제 SSR · Playwright · LaunchDarkly · 점진) + `ratcheting-technical-debt` 전문으로 기능 `debt-timing-and-ratchet`, 결정 8. 두 글 요약을 갱신(Ratcheting 요약의 '리뷰에서 부채가 되살아났다'를 '테스트 누락을 리뷰에서 지적받았다'로 바로잡음). 도메인 tech 에 이행 방식 하나 추가.
