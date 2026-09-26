@@ -14497,6 +14497,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7496873",
+      "title": "Senior Staff Backend Engineer (Service Mesh)",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 근무다(근무지가 'India' 로만 적혀 있고 도시는 없다). 전문 개발 13년 이상의 시니어 스태프로, Gateway Services 팀에서 쿠팡 전 서비스의 서비스 간 통신 인프라 — 디스커버리·부하 분산·트래픽 복원력·트래픽 관리·장애 복구·관측성 — 를 서비스 메시로 설계하고 팀을 이끈다. 전사 세밀한 트래픽 제어, 중앙 관리 플레인의 정책·설정 관리, mTLS·신원 기반 인증·인가가 명시돼 있다. API 는 Java Spring Boot(REST/Hibernate), 인프라 컴포넌트는 Go 로 만든다.",
+      "fit": {
+        "must_have": [
+          "전문 개발 13년 이상",
+          "대규모 요청 트래픽 관리 설계·구현",
+          "최근 4년 이상 대규모 분산 시스템 설계·개발",
+          "Go·Java·Python",
+          "AWS·Azure·GCP"
+        ],
+        "can_learn": [
+          "Istio/Envoy 기능 설계·구현(우대)",
+          "가상 네트워크·라우트 테이블·서브넷·게이트웨이(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "서비스 메시 트래픽 관리 — Istio·Envoy",
+          "from": "preference",
+          "quote": "Strong experience in designing and implementing Service Mesh (Istio/Envoy) features.",
+          "priority": "core",
+          "why": "전사 세밀한 트래픽 제어를 개발·구현하는 것이 주요업무이고, 대규모 트래픽 관리 설계·구현이 기본 자격, Istio/Envoy 기능 설계가 우대사항이다.",
+          "gap_check": "새 버전 서비스를 트래픽 5% 로 시작해 넓혀 가는 동안, 타임아웃·재시도·서킷 브레이커 설정이 서로 어떻게 부딪혀 재시도 폭증을 만들 수 있고 무엇으로 막는가?",
+          "drill": "Istio 트래픽 관리 문서대로 VirtualService·DestinationRule 로 가중치 라우팅을 걸고, 느린 버전을 넣어 재시도·타임아웃·Envoy 서킷 브레이커가 각각 요청 분포와 오류율을 어떻게 바꾸는지 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Istio — Traffic Management",
+              "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+              "kind": "docs"
+            },
+            {
+              "title": "Envoy — What is Envoy",
+              "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/what_is_envoy",
+              "kind": "docs"
+            },
+            {
+              "title": "Envoy — Circuit breaking",
+              "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/circuit_breaking",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "서비스 간 mTLS·신원 기반 인증·인가",
+          "from": "task",
+          "quote": "Secure inter-service communication with mTLS encryption, identity-based authentication, and authorization.",
+          "priority": "core",
+          "why": "mTLS 암호화와 신원 기반 인증·인가로 서비스 간 통신을 보호하는 것이 주요업무에 명시돼 있다.",
+          "gap_check": "이미 운영 중인 수천 개 서비스에 mTLS 를 강제할 때 한 번에 STRICT 로 바꾸면 무엇이 깨지고, PERMISSIVE 에서 어떤 지표를 보며 단계적으로 옮기는가?",
+          "drill": "Istio 보안 문서대로 네임스페이스 하나를 PERMISSIVE → STRICT 로 옮기면서 평문 호출이 남은 워크로드를 찾아내고, AuthorizationPolicy 로 호출 가능한 서비스 계정을 제한한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Istio — Security concepts",
+              "url": "https://istio.io/latest/docs/concepts/security/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "중앙 관리 플레인과 정책 배포",
+          "from": "task",
+          "quote": "Use a centralized management plane for managing policies and configurations.",
+          "priority": "high",
+          "why": "정책·설정을 관리하는 중앙 관리 플레인을 쓰는 것이 주요업무이고, 인프라 컴포넌트를 Go 로 만든다고 공고가 적는다.",
+          "gap_check": "잘못된 라우팅 정책 하나가 전사에 퍼지면 전 서비스가 영향을 받는다. 정책 배포에 어떤 검증(스키마·시뮬레이션)과 점진 적용·롤백 단계를 두는가?",
+          "drill": "라우팅 정책 YAML 을 받아 검증(필수 필드·가중치 합 100·대상 서비스 존재)하고 네임스페이스 단위로 순차 적용하는 작은 Go CLI 를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "클라우드 네트워크 구성요소",
+          "from": "preference",
+          "quote": "Deep understanding of network components (virtual networks, route tables, subnets, and gateways).",
+          "priority": "high",
+          "why": "가상 네트워크·라우트 테이블·서브넷·게이트웨이의 깊은 이해가 우대사항이다. 메시 아래에 깔린 네트워크가 트래픽 경로를 좌우한다.",
+          "gap_check": "프라이빗 서브넷의 파드가 외부 API 를 부를 때 패킷이 지나는 경로(라우트 테이블 → NAT 게이트웨이 → 인터넷 게이트웨이)를 설명하고, 메시의 이그레스 게이트웨이는 그 위 어디에 놓이는가?",
+          "drill": "AWS VPC 문서를 읽고 퍼블릭·프라이빗 서브넷 두 쌍과 라우트 테이블·NAT·IGW 를 그린 구성도 위에 메시 인그레스·이그레스 게이트웨이 위치를 표시한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Amazon VPC User Guide — What is Amazon VPC",
+              "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "메시 정책 검증·단계 적용 CLI",
+          "why": "중앙 관리 플레인의 정책 관리와 Go 인프라 컴포넌트가 둘 다 주요업무에 있다. 정책 검증과 롤백을 갖춘 작은 도구는 그 사고방식을 보여 준다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "재시도·타임아웃·서킷 브레이커 상호작용",
+          "mTLS 단계 전환",
+          "정책 배포 안전장치",
+          "VPC 트래픽 경로",
+          "대규모 트래픽 관리 경험"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff Backend Engineer (Service Mesh)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7496873",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
