@@ -2041,3 +2041,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 USEN ICT 회사 프로파일
 
 - 회사 사이트로 수익원(법인 ICT). 블로그 5편 중 결정 글 둘(Snowflake 선정 · Cortex 롤)을 도메인 둘로. 수익원 연결은 inferred.
+
+## 2026-09-26 USEN ICT snowflake-over-bigquery
+
+- Snowflake 선정 글 하나로 기능. 결정 7, 그림 2(flow·failure).
