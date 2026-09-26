@@ -964,3 +964,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 deno 재방문
 
 - 피드 마지막 글이 06-25. 09-07 이후 새 글 없음. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 depot 재방문 → 확장
+
+- 09-07 이후 4편. 09-22 "The evolution of the Depot Metal autoscaler" 에서 결정 8개로 `metal-autoscaler` 를 추가(features 3→4). 여유분의 요금·저장 유형 증가의 운영 부담은 해석 표시.
