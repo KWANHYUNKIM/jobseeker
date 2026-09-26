@@ -455,6 +455,112 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385835",
+      "title": "DevOps 리더 (Operations&Security)",
+      "site": "wanted",
+      "verdict": "경력 8-16년, 근무지 표기 서울 서초구. 이름은 DevOps 리더지만 **인프라보다 운영 시스템 개발이 중심**이다 — 업무 첫 줄이 운영팀·CS·물류 내부 사용자의 수작업을 시스템화하는 일이고, 이어서 운영 자동화 **백오피스** 개발·유지보수, 오류 핫픽스·긴급 운영 이슈, 운영팀/CS 의 **데이터 일괄 변경/조회 요청 처리와 시스템화**, **데이터 변경 이력·감사 대응** 기능, **권한 인가·접근 통제** 관리, 알림·로그·지표 Observability, 보안 감사·개인정보 보호 대응, **ERP·CRM·WMS·TMS·Slack·Notion 연동**, 그리고 **DevOps 팀원 2명**의 업무 배분·우선순위·리뷰와 장애 대응 프로세스·운영 지표 정기 보고. 필수는 백엔드·운영 시스템 8년 이상, Java·Spring Boot, MySQL/MariaDB 설계·운영, API·메시징(Kafka·ActiveMQ)·인증 토큰 통합, AWS·GCP 운영, 운영팀 협업, 소규모 조직 리드. 우대는 데이터 변경 요청 시스템화, 백오피스 UX, ELK·Grafana, 접근 제어·감사 로그, GitHub Actions·Jenkins. 전형: 서류접수 - **코딩테스트(과제)** - 실무면접 - 컬처핏면접 - 레퍼런스체크 or 2차면접 - 처우협의 - 입사. jobkorea·사람인의 '백엔드 개발자 (서비스 운영·보안)' 게시가 같은 성격으로 보이나 본문이 이미지라 비교하지 못했다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드·운영 시스템 8년 이상",
+          "Java·Spring Boot",
+          "MySQL/MariaDB 설계·운영",
+          "Kafka 등 메시징·API 통합",
+          "AWS·GCP 운영",
+          "2명 규모 조직 리드"
+        ],
+        "can_learn": [
+          "감사 로그·접근 제어",
+          "ELK·Grafana",
+          "백오피스 UX"
+        ]
+      },
+      "study": [
+        {
+          "topic": "데이터 일괄 변경 요청을 시스템으로 — 변경 이력과 감사",
+          "from": "task",
+          "quote": "• 데이터 변경 이력 기록 및 감사 대응을 위한 기능 설계 및 구현",
+          "priority": "core",
+          "why": "주요업무 두 줄(운영팀/CS 데이터 일괄 변경 요청 처리·시스템화, 변경 이력·감사 대응)이 이 자리의 핵심이고 우대에도 '반복적인 데이터 변경/조회 요청을 시스템화' 가 있다.",
+          "gap_check": "CS 가 '고객사 300곳의 배송 요일을 화→목으로 바꿔 주세요' 라고 슬랙으로 요청할 때마다 개발자가 UPDATE 를 직접 치면 무엇이 남지 않고(누가·왜·무엇을), 이를 백오피스 기능으로 바꾼다면 미리보기·승인·실행·되돌리기 중 무엇을 반드시 넣으며, 변경 이력은 엔티티 감사(Envers)와 별도 감사 로그 테이블 중 무엇으로 남기는가?",
+          "drill": "Spring Boot 로 'CSV 업로드 → 변경 미리보기(전/후 비교) → 승인자 승인 → 실행' 백오피스 API 를 만들고, Spring Data JPA Auditing 으로 작성·수정자와 시각을, Hibernate Envers 로 행별 이전 값을 남긴다. 실행 후 특정 요청 ID 로 되돌리기가 되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Auditing — Spring Data JPA",
+              "url": "https://docs.spring.io/spring-data/jpa/reference/auditing.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Envers — Hibernate ORM",
+              "url": "https://hibernate.org/orm/envers/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "권한 인가와 접근 통제 — 백오피스 역할 설계",
+          "from": "task",
+          "quote": "• 권한 인가 및 접근 통제 시스템 관리",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '보안 및 컴플라이언스 대응 기능 (접근 제어, 감사 로그 등)' 이 있다. 운영팀·CS·물류가 같은 백오피스를 다른 권한으로 쓴다.",
+          "gap_check": "CS 는 고객사 연락처를 보되 결제 정보는 못 보고, 물류는 배송지만 보고, 일괄 변경은 팀장 승인이 있어야 한다면 역할(RBAC)만으로 표현되는가, 아니면 조건(ABAC — 담당 고객사만)이 필요한가? 권한 검사를 컨트롤러·서비스 중 어디에 두고, 개인정보 조회 자체를 감사 로그로 남겨야 하는 이유는 무엇인가?",
+          "drill": "Spring Security 메서드 보안(@PreAuthorize)으로 CS·물류·운영팀장 세 역할과 '담당 고객사만' 조건을 구현하고, 역할별로 같은 API 를 불러 허용·거부가 맞는지 테스트한다. 개인정보 필드를 조회한 요청은 누가·언제·어떤 고객사를 봤는지 감사 테이블에 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Method Security — Spring Security",
+              "url": "https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "외부 시스템 연동 — ERP·WMS·TMS 와 메시징",
+          "from": "qualification",
+          "quote": "• API 연동, 메시징 시스템(Kafka, ActiveMQ 등), 인증 토큰 처리 등 통합 경험",
+          "priority": "high",
+          "why": "필수 자격요건이고 주요업무에 'ERP, CRM, WMS, TMS, Slack, Notion 등' 연동이 있다. 회사 브리핑대로 식음료 구독은 물류(새벽배송)가 붙는 사업이다.",
+          "gap_check": "주문이 확정되면 WMS(출고)·TMS(배송)·ERP(매출)에 모두 알려야 할 때 주문 트랜잭션 안에서 세 시스템을 차례로 부르면 무엇이 깨지고, 이벤트를 발행해 각 연동 담당이 구독하게 하면 한 시스템이 하루 멈췄을 때 무엇이 쌓였다가 어떻게 따라잡는가? 외부 API 인증 토큰 만료는 어디서 갱신하는가?",
+          "drill": "주문 확정을 아웃박스 테이블에 기록하고 Kafka 로 발행한 뒤, WMS·ERP 연동을 흉내 내는 소비자 둘을 만든다. ERP 소비자를 멈췄다가 다시 켜서 밀린 이벤트를 처리하는지, 같은 이벤트가 두 번 와도 한 번만 반영되는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Pattern: Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction | Apache Kafka",
+              "url": "https://kafka.apache.org/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애 대응 프로세스 세우기 — 리더의 일",
+          "from": "task",
+          "quote": "• DevOps 팀원 2명의 업무 배분 · 우선순위 결정 · 리뷰, 운영  체계와 장애 대응 프로세스 수립 및 정착, 운영 지표 정기 보고",
+          "priority": "high",
+          "why": "주요업무의 마지막 줄이 팀원 2명 관리와 '운영 체계와 장애 대응 프로세스 수립 및 정착, 운영 지표 정기 보고' 다. 필수에 소규모 조직 리드가 있다.",
+          "gap_check": "세 명짜리 팀에서 새벽 주문 장애가 나면 누가 지휘하고 누가 고치며 누가 운영팀·CS 에 알리는가(역할 분리), 장애가 끝난 뒤 무엇을 기록하고, 매주 보고할 운영 지표로 무엇(긴급 요청 건수·처리 시간·재발 건수)을 고르는가?",
+          "drill": "SRE 책의 사고 관리 장을 읽고 3인 팀용 장애 대응 절차 한 장(심각도 기준·역할·연락 채널·기록 양식)과 주간 운영 지표 표를 만든다. Grafana 알림 문서로 '긴급 요청 처리 시간' 지표에 알림을 거는 방법을 정리한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Incident Management — Google SRE Book",
+              "url": "https://sre.google/sre-book/managing-incidents/",
+              "kind": "book"
+            },
+            {
+              "title": "Grafana Alerting",
+              "url": "https://grafana.com/docs/grafana/latest/alerting/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
