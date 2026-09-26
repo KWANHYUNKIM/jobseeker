@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**84번째 후보 조사(2026-09-26) — 대기 3/3(YOUTRUST·Nature·ABEJA). 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(YOUTRUST — `tech.youtrust.co.jp`, Redis 이행 `entry/redis_performance_optimization` 부터, scratchpad `c84_*.txt` 중 하나). 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증, Findy 스킬 편차치 ↔ YOUTRUST 추천. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토(hold)·LayerX 는 in_progress.**
+**YOUTRUST — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '친구의 친구 계산을 RDB 에서 떼어 낸다' 를 Redis 글(`entry/redis_performance_optimization`, scratchpad `yt_redis.txt` — 결과 이후 부분 마저). 그 뒤 협조 필터링(`2026/09/14/140931`, `yt_cf.txt` — '出力はサービスごとに分ける' 이후 미독). 완주 판정 때 SALES·INSIGHT 수익원은 도메인이 없다. 대기 2/3(Nature·ABEJA). 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증, Findy 스킬 편차치 ↔ YOUTRUST 추천. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토(hold)·LayerX 는 in_progress.**
 
 
 

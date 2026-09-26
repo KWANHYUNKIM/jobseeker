@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "youtrust",
+      "name": "YOUTRUST",
+      "name_en": "YOUTRUST",
+      "country": "JP",
+      "category": "소셜",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "일 전용 SNS YOUTRUST — 스카우트 범위를 정하는 친구의 친구 계산을 그래프 DB 대신 Redis 로 옮겨 77% 줄이고, 프로필을 커뮤니티처럼 행렬에 넣어 가입 첫날부터 서비스를 넘는 추천을 낸다",
+      "updated_at": "2026-09-26",
+      "domain": "youtrust.co.jp"
+    },
+    {
       "slug": "connehito",
       "name": "コネヒト",
       "name_en": "Connehito",
@@ -3164,7 +3176,9 @@
     "PR 마다 쓰고 버리는 검증 환경으로 릴리스 트레인을 푼다",
     "커리어 파트너의 흩어진 업무를 한 포털로 모은다",
     "약관 동의를 덮어쓰지 않고 이력으로 쌓는다",
-    "메인 API 를 ARM 으로 옮겨 비용을 줄인다"
+    "메인 API 를 ARM 으로 옮겨 비용을 줄인다",
+    "친구의 친구 계산을 RDB 에서 떼어 낸다",
+    "서비스를 넘나들고 첫날부터 추천한다"
   ],
   "countries": {
     "KR": "한국",

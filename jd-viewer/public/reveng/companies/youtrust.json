@@ -1,0 +1,163 @@
+{
+  "slug": "youtrust",
+  "name": "YOUTRUST",
+  "name_en": "YOUTRUST",
+  "country": "JP",
+  "category": "소셜",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "youtrust.co.jp",
+  "one_liner": "일 전용 SNS YOUTRUST — 스카우트 범위를 정하는 친구의 친구 계산을 그래프 DB 대신 Redis 로 옮겨 77% 줄이고, 프로필을 커뮤니티처럼 행렬에 넣어 가입 첫날부터 서비스를 넘는 추천을 낸다",
+  "business_model": "**신뢰를 바탕으로 한 일 전용 SNS** 를 운영한다 — 사용자는 친구·동료와 이어지고 커뮤니티·이벤트·기사·모집을 만난다. 돈은 주로 **기업(toB)** 에서 온다: 독자 탤런트 풀에서 채용하는 **YOUTRUST TALENT**, BtoB 마케팅·채용 홍보 광고 **ADS**, 영업 지원 **SALES**, 조사 지원 **INSIGHT**. 비즈니스 미디어 ユースタ 도 있다. 과금 방식·매출 비중은 1차 자료로 확인하지 못했다.\n\n신뢰 기반이라 **누가 누구에게 스카우트를 보낼 수 있는지**가 연결의 거리(1차·2차·3차)로 정해지고, 그 계산이 서비스 전체의 속도를 좌우한다(이 사이트의 해석).",
+  "products": [
+    "YOUTRUST(일 전용 SNS)",
+    "YOUTRUST TALENT(채용)",
+    "YOUTRUST ADS(광고)",
+    "YOUTRUST SALES · INSIGHT",
+    "ユースタ(비즈니스 미디어)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "채용 지원(YOUTRUST TALENT)",
+      "how": "독자 탤런트 풀에서 기업이 스카우트로 채용한다. 스카우트 대상 범위는 연결 거리로 정해진다.",
+      "weight": "공개 없음",
+      "domains": [
+        "친구의 친구 계산을 RDB 에서 떼어 낸다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社YOUTRUST コーポレートサイト",
+          "url": "https://youtrust.co.jp/",
+          "publisher": "株式会社YOUTRUST",
+          "date": "2026-09-26",
+          "summary": "'일본의 비즈니스를 움직이는 프로페셔널 네트워크'. **toC** — 일 전용 SNS **YOUTRUST**, 비즈니스 미디어 **ユースタ(YOUTRUST Studio)**. **toB** — 채용 지원 **YOUTRUST TALENT**(독자 탤런트 풀에서 채용하는 네트워크 리크루팅), 광고 지원 **YOUTRUST ADS**(BtoB 마케팅·채용 홍보 광고), 영업 지원 **YOUTRUST SALES**, 조사 지원 **YOUTRUST INSIGHT**."
+        },
+        {
+          "title": "YOUTRUSTで一番重い計算をMySQLからRedisへ移行したことで、レスポンスタイムを77%削減した話",
+          "url": "https://tech.youtrust.co.jp/entry/redis_performance_optimization",
+          "publisher": "YOUTRUST Tech Blog",
+          "date": "2026-07-03",
+          "summary": "신뢰 기반 일 전용 SNS 라 **스카우트를 보낼 수 있는 대상·알림 대상에 범위**가 있다 — 1차(친구)·2차(친구의 친구)·3차(소속 리크루터 팀의 친구의 친구) 연결 계산. 창업 때부터 RDB 라 친구 수가 늘수록 계산량이 **지수적으로** 늘어 2차 연결이 **레스폰스 병목**이자 **DB 부하의 주요인**(CPU 스파이크). 스카우트 조건·피드 열람 조건이라 **실시간성**이 필요해 사전 계산 불가. **Redis 안 vs 그래프 DB 안** 비교 — 그래프 DB 는 장기 확장성이 높지만 학습·도입 비용이 크다, Redis 는 낮고 **MySQL 과의 정합만 구현으로 풀면** 현실적. 읽기: 각자의 1차 연결을 Redis 에, 2차는 **SUNION** 으로 O(N)(RDB 는 O(N²)), **Redis 장애 시 MySQL 로 폴백**, **SoT 는 늘 MySQL**. 쓰기: Command 가 MySQL 에 쓰고 비동기 동기 Job — 순서가 보장되지 않아 **차분 대신 전건 동기**, 동기 실패율을 몰라 **일일 차분 검사 배치**. 결과: 적용 **12 API 모두 개선**, 9개는 50% 이상, 최대 **11.96초 → 2.74초(77%)**."
+        }
+      ]
+    },
+    {
+      "name": "광고 지원(YOUTRUST ADS)",
+      "how": "플랫폼 위의 BtoB 마케팅·채용 홍보 광고.",
+      "weight": "공개 없음",
+      "domains": [
+        "서비스를 넘나들고 첫날부터 추천한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社YOUTRUST コーポレートサイト",
+          "url": "https://youtrust.co.jp/",
+          "publisher": "株式会社YOUTRUST",
+          "date": "2026-09-26",
+          "summary": "'일본의 비즈니스를 움직이는 프로페셔널 네트워크'. **toC** — 일 전용 SNS **YOUTRUST**, 비즈니스 미디어 **ユースタ(YOUTRUST Studio)**. **toB** — 채용 지원 **YOUTRUST TALENT**(독자 탤런트 풀에서 채용하는 네트워크 리크루팅), 광고 지원 **YOUTRUST ADS**(BtoB 마케팅·채용 홍보 광고), 영업 지원 **YOUTRUST SALES**, 조사 지원 **YOUTRUST INSIGHT**."
+        }
+      ]
+    },
+    {
+      "name": "영업·조사 지원(SALES · INSIGHT)",
+      "how": "영업 지원과 조사 지원.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社YOUTRUST コーポレートサイト",
+          "url": "https://youtrust.co.jp/",
+          "publisher": "株式会社YOUTRUST",
+          "date": "2026-09-26",
+          "summary": "'일본의 비즈니스를 움직이는 프로페셔널 네트워크'. **toC** — 일 전용 SNS **YOUTRUST**, 비즈니스 미디어 **ユースタ(YOUTRUST Studio)**. **toB** — 채용 지원 **YOUTRUST TALENT**(독자 탤런트 풀에서 채용하는 네트워크 리크루팅), 광고 지원 **YOUTRUST ADS**(BtoB 마케팅·채용 홍보 광고), 영업 지원 **YOUTRUST SALES**, 조사 지원 **YOUTRUST INSIGHT**."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "연결의 거리와 행동의 공기",
+    "question": "일 전용 SNS 는 누구에게 무엇을 보여 줄지 어떻게 정하나?",
+    "code": "flowchart LR\n  MY[\"MySQL(SoT)\\n친구 관계\"] -->|비동기 전건 동기| RD[\"Redis\\n각자의 1차 연결\"]\n  RD -->|SUNION| F2[\"2차 연결\"] --> SC[\"스카우트 범위 · 피드 열람 조건\"]\n  BQ[\"BigQuery 일일 계산\\n행동 + 프로필 한 행렬\"] --> SIM[\"유사도 테이블(RDS)\"]\n  SIG[\"사용자 시그널 테이블\"] --> REC[\"커뮤니티 · 이벤트 · 기사 · 모집 추천\"]\n  SIM --> REC",
+    "_note": "위는 스카우트 범위를 정하는 연결 계산, 아래는 서비스를 넘는 추천이다. 추천이 광고(ADS) 수익원과 이어진다는 것은 이 사이트의 해석이다. SALES·INSIGHT 쪽 기술 글은 아직 못 찾았다."
+  },
+  "domains": [
+    {
+      "name": "친구의 친구 계산을 RDB 에서 떼어 낸다",
+      "why": "신뢰 기반 SNS 라 스카우트를 보낼 수 있는 대상과 알림 대상이 **연결의 거리**로 정해진다. 창업 때부터 RDB 였고 친구 수가 늘수록 2차 연결 계산이 지수적으로 늘어 **레스폰스 병목**이자 **DB 부하의 주요인**이 됐다. 실시간성이 필요해 미리 계산해 둘 수도 없었다.",
+      "tech": [
+        {
+          "tech": "Redis 에 1차 연결 · SUNION 으로 2차 계산 · SoT 는 MySQL · 비동기 전건 동기 + 일일 차분 검사",
+          "solves": "2차 연결을 O(N²) 에서 O(N) 으로 — 적용 12 API 모두 개선, 최대 77% 단축.",
+          "limits": "Redis 와 MySQL 의 **정합**을 구현으로 지켜야 한다. 그래프 DB 의 장기 확장성은 포기했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "YOUTRUSTで一番重い計算をMySQLからRedisへ移行したことで、レスポンスタイムを77%削減した話",
+              "url": "https://tech.youtrust.co.jp/entry/redis_performance_optimization",
+              "publisher": "YOUTRUST Tech Blog",
+              "date": "2026-07-03",
+              "summary": "신뢰 기반 일 전용 SNS 라 **스카우트를 보낼 수 있는 대상·알림 대상에 범위**가 있다 — 1차(친구)·2차(친구의 친구)·3차(소속 리크루터 팀의 친구의 친구) 연결 계산. 창업 때부터 RDB 라 친구 수가 늘수록 계산량이 **지수적으로** 늘어 2차 연결이 **레스폰스 병목**이자 **DB 부하의 주요인**(CPU 스파이크). 스카우트 조건·피드 열람 조건이라 **실시간성**이 필요해 사전 계산 불가. **Redis 안 vs 그래프 DB 안** 비교 — 그래프 DB 는 장기 확장성이 높지만 학습·도입 비용이 크다, Redis 는 낮고 **MySQL 과의 정합만 구현으로 풀면** 현실적. 읽기: 각자의 1차 연결을 Redis 에, 2차는 **SUNION** 으로 O(N)(RDB 는 O(N²)), **Redis 장애 시 MySQL 로 폴백**, **SoT 는 늘 MySQL**. 쓰기: Command 가 MySQL 에 쓰고 비동기 동기 Job — 순서가 보장되지 않아 **차분 대신 전건 동기**, 동기 실패율을 몰라 **일일 차분 검사 배치**. 결과: 적용 **12 API 모두 개선**, 9개는 50% 이상, 최대 **11.96초 → 2.74초(77%)**."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "서비스를 넘나들고 첫날부터 추천한다",
+      "why": "커뮤니티·이벤트·기사·모집 같은 여러 서비스를 따로 추천하면 서비스를 넘는 관계를 못 쓰고, 행동이 없는 **가입 직후 사용자**에게는 추천할 것이 없다.",
+      "tech": [
+        {
+          "tech": "아이템 기반 협조 필터링 — 네 서비스 아이템 + 프로필(지역·직종·나이대)을 한 행렬로, BigQuery 일일 계산 → RDS 두 테이블",
+          "solves": "서비스를 넘는 공기를 배우고, 행동 0건 사용자에게도 첫날부터 추천한다.",
+          "limits": "섞은 채 합산하면 정확도가 떨어져 **입력 × 추천처 가중치를 총당으로** 찾아야 한다. 일일 계산이라 오늘 행동은 내일 반영.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "協調フィルタリングのコールドスタートを解消しつつクロスドメイン化した話",
+              "url": "https://tech.youtrust.co.jp/entry/2026/09/14/140931",
+              "publisher": "YOUTRUST Tech Blog",
+              "date": "2026-09-14",
+              "summary": "커뮤니티·이벤트·기사·모집을 **하나의 행렬**로 계산하는 아이템 기반 협조 필터링. ① **크로스 도메인** — 열에 네 기능의 아이템을 모두 늘어놓아 서비스를 넘는 공기(共起)를 배운다(내용을 안 읽으니 이름에 공통어가 없어도 된다). ② **콜드 스타트** — '도쿄도·Web 엔지니어·27~29세' 같은 **프로필을 소속 커뮤니티처럼 같은 행렬의 아이템**으로 — 속성용 별도 모델·합성의 이중 관리 없이 행동 0건인 가입 직후 사용자에게도 추천. BigQuery 에서 일일 계산해 프로덕트 RDS 에 **유사도 테이블**과 **사용자 시그널 테이블** 둘. 섞은 행렬을 그대로 합산하면 정확도가 떨어져 **입력 7종 × 추천처 5종의 가중치를 탐색** — 직종은 어디서나 강함(1.0~3.0), 나이는 이벤트에서만 4.0(U29 같은 세대 한정 이벤트). 출력은 서비스마다 가른다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 방식·매출 비중을 1차 자료로 확인하지 못했다.",
+    "추천이 광고(ADS) 수익원과 이어진다는 1차 서술은 없다 — inferred.",
+    "SALES·INSIGHT 수익원의 기술 글은 아직 못 찾았다.",
+    "BigQuery 데이터를 프로덕트로 되돌리기(`2026/09/09/170000`)·RDS 비밀번호 무중단 월간 로테이션(`2026/08/28/095607`)·Rails 멀티스레드(`2026/08/21/171130`)는 도메인 후보다."
+  ],
+  "sources": [
+    {
+      "title": "株式会社YOUTRUST コーポレートサイト",
+      "url": "https://youtrust.co.jp/",
+      "publisher": "株式会社YOUTRUST",
+      "date": "2026-09-26",
+      "summary": "'일본의 비즈니스를 움직이는 프로페셔널 네트워크'. **toC** — 일 전용 SNS **YOUTRUST**, 비즈니스 미디어 **ユースタ(YOUTRUST Studio)**. **toB** — 채용 지원 **YOUTRUST TALENT**(독자 탤런트 풀에서 채용하는 네트워크 리크루팅), 광고 지원 **YOUTRUST ADS**(BtoB 마케팅·채용 홍보 광고), 영업 지원 **YOUTRUST SALES**, 조사 지원 **YOUTRUST INSIGHT**."
+    },
+    {
+      "title": "YOUTRUSTで一番重い計算をMySQLからRedisへ移行したことで、レスポンスタイムを77%削減した話",
+      "url": "https://tech.youtrust.co.jp/entry/redis_performance_optimization",
+      "publisher": "YOUTRUST Tech Blog",
+      "date": "2026-07-03",
+      "summary": "신뢰 기반 일 전용 SNS 라 **스카우트를 보낼 수 있는 대상·알림 대상에 범위**가 있다 — 1차(친구)·2차(친구의 친구)·3차(소속 리크루터 팀의 친구의 친구) 연결 계산. 창업 때부터 RDB 라 친구 수가 늘수록 계산량이 **지수적으로** 늘어 2차 연결이 **레스폰스 병목**이자 **DB 부하의 주요인**(CPU 스파이크). 스카우트 조건·피드 열람 조건이라 **실시간성**이 필요해 사전 계산 불가. **Redis 안 vs 그래프 DB 안** 비교 — 그래프 DB 는 장기 확장성이 높지만 학습·도입 비용이 크다, Redis 는 낮고 **MySQL 과의 정합만 구현으로 풀면** 현실적. 읽기: 각자의 1차 연결을 Redis 에, 2차는 **SUNION** 으로 O(N)(RDB 는 O(N²)), **Redis 장애 시 MySQL 로 폴백**, **SoT 는 늘 MySQL**. 쓰기: Command 가 MySQL 에 쓰고 비동기 동기 Job — 순서가 보장되지 않아 **차분 대신 전건 동기**, 동기 실패율을 몰라 **일일 차분 검사 배치**. 결과: 적용 **12 API 모두 개선**, 9개는 50% 이상, 최대 **11.96초 → 2.74초(77%)**."
+    },
+    {
+      "title": "協調フィルタリングのコールドスタートを解消しつつクロスドメイン化した話",
+      "url": "https://tech.youtrust.co.jp/entry/2026/09/14/140931",
+      "publisher": "YOUTRUST Tech Blog",
+      "date": "2026-09-14",
+      "summary": "커뮤니티·이벤트·기사·모집을 **하나의 행렬**로 계산하는 아이템 기반 협조 필터링. ① **크로스 도메인** — 열에 네 기능의 아이템을 모두 늘어놓아 서비스를 넘는 공기(共起)를 배운다(내용을 안 읽으니 이름에 공통어가 없어도 된다). ② **콜드 스타트** — '도쿄도·Web 엔지니어·27~29세' 같은 **프로필을 소속 커뮤니티처럼 같은 행렬의 아이템**으로 — 속성용 별도 모델·합성의 이중 관리 없이 행동 0건인 가입 직후 사용자에게도 추천. BigQuery 에서 일일 계산해 프로덕트 RDS 에 **유사도 테이블**과 **사용자 시그널 테이블** 둘. 섞은 행렬을 그대로 합산하면 정확도가 떨어져 **입력 7종 × 추천처 5종의 가중치를 탐색** — 직종은 어디서나 강함(1.0~3.0), 나이는 이벤트에서만 4.0(U29 같은 세대 한정 이벤트). 출력은 서비스마다 가른다."
+    }
+  ]
+}

@@ -1508,3 +1508,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 여든네 번째 후보 조사
 
 - 83번째 미판정 10곳 재확인(대부분 6~9월 비었음) + 하테나 21곳 추가 탐색. YOUTRUST(Redis vs 그래프 DB)·Nature(스마트록 도메인 모델링)·ABEJA(의료 LLM 매핑, 약함) 등록 → 3/3. Feedforce·VISASQ·Monex 탈락.
+
+## 2026-09-26 YOUTRUST 회사 프로파일
+
+- 대기 맨 위. 코퍼레이트 페이지 + 기술 글 둘(Redis 연결 계산 · 크로스 도메인 협조 필터링)로 도메인 둘 · 수익원 셋(TALENT 연결 confirmed, ADS 연결 inferred).
