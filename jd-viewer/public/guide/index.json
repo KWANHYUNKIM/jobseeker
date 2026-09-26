@@ -672,6 +672,20 @@
       "postings": 5,
       "study_items": 17,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "tmapmobility",
+      "name": "티맵모빌리티",
+      "aliases": [
+        "티맵모빌리티",
+        "티맵모빌리티㈜",
+        "TMAP모빌리티",
+        "TMAPMobility"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

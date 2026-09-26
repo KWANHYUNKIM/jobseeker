@@ -1,0 +1,204 @@
+{
+  "slug": "tmapmobility",
+  "name": "티맵모빌리티",
+  "name_en": "TMAP Mobility",
+  "aliases": [
+    "티맵모빌리티",
+    "티맵모빌리티㈜",
+    "TMAP모빌리티",
+    "TMAPMobility"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "tmapmobility.com",
+  "one_liner": "내비게이션 TMAP 을 중심으로 대리운전·주차·보험혜택(UBI)·장소 추천까지 잇는 모빌리티 플랫폼 — 완성차 IVI(TMAP AUTO)와 API·데이터도 판다",
+  "company": {
+    "business": "원티드 공고 머리말은 티맵모빌리티를 '대한민국 No.1 내비이자 국민 내비' 를 중심으로 이동 전·중·후를 하나의 경험으로 잇는 모빌리티 플랫폼으로 소개하고, 20년 이상 축적한 서비스 운영 노하우와 이동 데이터를 바탕으로 '카 라이프', '어디갈까', '로컬 맛집', 'AI Voice Agent' 등을 만든다고 적는다. 회사 사이트 첫 화면 메뉴는 서비스를 장소(어디갈까·비즈플레이스·이동로그), 운전(내비게이션·운전점수/보험혜택(UBI)·대리운전·주차·전기차충전·렌터카), 일상(대중교통·바이크·만보기), 비즈니스(**TMAP AUTO**·**TMAP API & DATA**·**TMAP 광고**)로 나누고, TMAP AUTO 아래에 르노코리아·재규어 랜드로버를 둔다. Android 클라이언트 공고는 TMAP Android 앱의 MAU 를 1,500만 명 이상이라고 적는다. 모집중 공고는 TMAP AUTO 차량 IVI 개발 PM, 지도·내비게이션 Android SDK(AAOS 포함), TMAP Android 앱, 전사 SRE, QA 자동화, API/SDK 상품운영(캐치, 본문 없음)이다. 사이트 하단이 'SK윤리경영 및 제보' 를 단다. 매출·과금 구조와 하위 페이지 본문은 읽지 못했다(스크립트 렌더).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "개발 Project Manager - TMAP AUTO 개발 프로젝트 리딩",
+        "url": "https://www.wanted.co.kr/wd/361653",
+        "publisher": "원티드"
+      },
+      {
+        "title": "TMAP MOBILITY",
+        "url": "https://www.tmapmobility.com/",
+        "publisher": "티맵모빌리티",
+        "summary": "첫 화면 메뉴: 장소(어디갈까·비즈플레이스·이동로그), 운전(내비게이션·운전점수/보험혜택(UBI)·대리운전·주차·전기차충전·렌터카·소셜제보), 일상(대중교통·바이크·만보기), 비즈니스(TMAP AUTO·TMAP API & DATA·TMAP 광고). TMAP AUTO 아래 르노코리아·재규어 랜드로버, TMAP DATA 아래 길안내·경로 최적화·이동 데이터·맵 데이터·AI 마케팅. 하단에 'SK윤리경영 및 제보'. 하위 페이지는 스크립트로 그려져 본문이 읽히지 않았다."
+      },
+      {
+        "title": "Client Engineer (Android)",
+        "url": "https://www.wanted.co.kr/wd/379430",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "TMAP Android 앱 MAU(공고 주장)",
+        "value": "1,500만 명 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Client Engineer (Android)",
+            "url": "https://www.wanted.co.kr/wd/379430",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "TMAP 앱 기반 이동 서비스",
+        "how": "사이트 메뉴가 내비게이션과 함께 대리운전·주차·전기차충전·렌터카·UBI(운전점수/보험혜택)를 나열한다. 어느 것이 얼마를 버는지, 광고·수수료·제휴 중 무엇인지는 읽지 못했다.",
+        "domains": [
+          "TMAP 앱(Android)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "TMAP MOBILITY",
+            "url": "https://www.tmapmobility.com/",
+            "publisher": "티맵모빌리티",
+            "summary": "첫 화면 메뉴: 장소(어디갈까·비즈플레이스·이동로그), 운전(내비게이션·운전점수/보험혜택(UBI)·대리운전·주차·전기차충전·렌터카·소셜제보), 일상(대중교통·바이크·만보기), 비즈니스(TMAP AUTO·TMAP API & DATA·TMAP 광고). TMAP AUTO 아래 르노코리아·재규어 랜드로버, TMAP DATA 아래 길안내·경로 최적화·이동 데이터·맵 데이터·AI 마케팅. 하단에 'SK윤리경영 및 제보'. 하위 페이지는 스크립트로 그려져 본문이 읽히지 않았다."
+          },
+          {
+            "title": "Client Engineer (Android)",
+            "url": "https://www.wanted.co.kr/wd/379430",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "TMAP AUTO(완성차 IVI)",
+        "how": "사이트 비즈니스 메뉴에 TMAP AUTO 가 있고 르노코리아·재규어 랜드로버가 달려 있다. PM 공고가 자동차 IVI 환경의 내비게이션·Infotainment 개발과 양산 대응을 적는다. 계약·과금 구조는 읽지 않았다.",
+        "domains": [
+          "차량용 내비게이션(IVI·SDK)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "TMAP MOBILITY",
+            "url": "https://www.tmapmobility.com/",
+            "publisher": "티맵모빌리티",
+            "summary": "첫 화면 메뉴: 장소(어디갈까·비즈플레이스·이동로그), 운전(내비게이션·운전점수/보험혜택(UBI)·대리운전·주차·전기차충전·렌터카·소셜제보), 일상(대중교통·바이크·만보기), 비즈니스(TMAP AUTO·TMAP API & DATA·TMAP 광고). TMAP AUTO 아래 르노코리아·재규어 랜드로버, TMAP DATA 아래 길안내·경로 최적화·이동 데이터·맵 데이터·AI 마케팅. 하단에 'SK윤리경영 및 제보'. 하위 페이지는 스크립트로 그려져 본문이 읽히지 않았다."
+          },
+          {
+            "title": "개발 Project Manager - TMAP AUTO 개발 프로젝트 리딩",
+            "url": "https://www.wanted.co.kr/wd/361653",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "TMAP API & DATA·광고",
+        "how": "사이트 비즈니스 메뉴에 TMAP API & DATA(길안내·경로 최적화·이동 데이터·맵 데이터·AI 마케팅)와 TMAP 광고가 있다. SDK 공고가 SDK API 문서화와 Sample App 으로 외부 개발자 연동을 지원한다고 적는다. 가격은 읽지 않았다.",
+        "domains": [
+          "차량용 내비게이션(IVI·SDK)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "TMAP MOBILITY",
+            "url": "https://www.tmapmobility.com/",
+            "publisher": "티맵모빌리티",
+            "summary": "첫 화면 메뉴: 장소(어디갈까·비즈플레이스·이동로그), 운전(내비게이션·운전점수/보험혜택(UBI)·대리운전·주차·전기차충전·렌터카·소셜제보), 일상(대중교통·바이크·만보기), 비즈니스(TMAP AUTO·TMAP API & DATA·TMAP 광고). TMAP AUTO 아래 르노코리아·재규어 랜드로버, TMAP DATA 아래 길안내·경로 최적화·이동 데이터·맵 데이터·AI 마케팅. 하단에 'SK윤리경영 및 제보'. 하위 페이지는 스크립트로 그려져 본문이 읽히지 않았다."
+          },
+          {
+            "title": "Android SDK Engineer",
+            "url": "https://www.wanted.co.kr/wd/378307",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "TMAP 앱(Android)",
+        "why": "Android 클라이언트 공고가 MAU 1,500만 명 이상 TMAP Android 앱, 검색·경로 탐색·즐겨찾기 등 핵심 기능의 백엔드 API 연동, 다양한 디바이스·OS 버전 대응, VOC 기반 개선을 적는다.",
+        "what_to_know": [
+          "Android 앱 안정성",
+          "경로 탐색 API 연동",
+          "VOC 기반 개선"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Client Engineer (Android)",
+            "url": "https://www.wanted.co.kr/wd/379430",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "차량용 내비게이션(IVI·SDK)",
+        "why": "PM 공고가 차량 IVI 내비게이션·Infotainment 프로젝트의 요구사항부터 양산 대응까지, SDK 공고가 모듈화된 Android SDK·지도/내비게이션 기능·AAOS 등 차량용 플랫폼 대응·외부 개발자용 문서와 Sample App 을 적는다.",
+        "what_to_know": [
+          "AAOS",
+          "SDK API 설계",
+          "양산 프로젝트 관리"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "개발 Project Manager - TMAP AUTO 개발 프로젝트 리딩",
+            "url": "https://www.wanted.co.kr/wd/361653",
+            "publisher": "원티드"
+          },
+          {
+            "title": "Android SDK Engineer",
+            "url": "https://www.wanted.co.kr/wd/378307",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "신뢰성·품질(SRE·QA)",
+        "why": "수익원이 아니라 모든 서비스의 공통 기반이다. SRE 공고가 전사 장애 1차 대응·RCA, 온콜·인시던트 체계, SLI/SLO, 배포·변경 관리 표준화, Chaos Engineering 을, QA 공고가 자동화 테스트 플랫폼을 적는다.",
+        "what_to_know": [
+          "SLI/SLO",
+          "포스트모템",
+          "테스트 자동화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Site Reliability Engineer (SRE)",
+            "url": "https://www.wanted.co.kr/wd/365859",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[티맵모빌리티] QA Automation Engineer",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54654808",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "내비 앱을 넘어 차 안(IVI)과 AI 대화형 안내로 가고 있다",
+        "evidence": "차 안에서 AI 에이전트와 자연스럽게 이어지는 대화형 안내 경험",
+        "so_what": "공고 머리말이 'AI Voice Agent' 를 서비스로 꼽고, 모집중 자리 넷 중 둘(TMAP AUTO PM·Android SDK 의 AAOS 대응)이 차량 탑재 쪽이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "장애 대응을 전사 표준으로 끌어올리는 중이다",
+        "evidence": "온콜/인시던트 체계를 수립 및 표준화 합니다.",
+        "so_what": "SRE 공고가 '전사' 배포·변경 관리 표준화와 서비스 레벨별 프로덕션 점검항목 정의를 적는다 — 아직 표준이 자리 잡는 단계로 읽힌다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "서비스별 과금 방식(대리운전 수수료·광고·API 이용료·완성차 라이선스)과 매출은 읽지 못했다",
+    "tmapmobility.com 하위 페이지(TMAP AUTO·API·UBI·회사소개)는 스크립트로 그려져 본문이 읽히지 않았다",
+    "임직원 수는 읽지 않았다",
+    "캐치 'API/SDK 상품운영 및 기술지원' 공고는 본문이 비어 있다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
