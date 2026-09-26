@@ -1,0 +1,151 @@
+{
+  "slug": "bistelligence",
+  "name": "비스텔리젼스",
+  "name_en": "BISTelligence",
+  "aliases": [
+    "비스텔리젼스",
+    "BISTelligence"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "bistelligence.ai",
+  "one_liner": "BISTel 에서 인적분할한 제조 AI 기업 — 반도체·디스플레이·철강·2차전지 공장 데이터로 진단·AI 구축·운영까지 하는 'Service as a Solution'",
+  "company": {
+    "business": "원티드 공고 머리말은 비스텔리젼스를 '전신인 BISTel에서 인적분할을 통해 분사한 manufacturing AI 전문 기업' 으로, BISTel 에서 20년 이상 쌓은 제조 솔루션 개발·컨설팅 경험을 바탕으로 제조 디지털 전환을 단계별로 지원한다고 소개한다. 회사 사이트는 'Industrial AI Company for Autonomous Manufacturing' 과 '25년 제조 현장 경험' 을 내세우고, 산업을 반도체&디스플레이·철강·제약&바이오·공공·자동차·2차전지로 나누며, 사업 모델을 **'Service as a Solution'** — Consulting(데이터 기반 제조 진단·AI 전략), Solution(현장 중심 Industrial AI 솔루션 구축), Operation(자율 제조 운영 최적화) — 으로 적는다. 모집중 공고는 AI Platform(Knowledge Graph·Agent 프레임워크·Ontology) 위에서 고객사 제조 AI 애플리케이션·에이전트를 만드는 Full Stack Engineer, AI Solution Engineer, 데이터 수집·처리·Kafka·Oracle·MinIO 를 다루는 Product Development Leader, 충남 아산 근무 Full stack(Spring Boot·Vue.js), 그리고 점핏의 '[Aidentyx]' 이름을 단 반도체·제조 데이터 조회·분석 AI Agent 엔지니어다. 매출·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Full stack 개발자",
+        "url": "https://www.wanted.co.kr/wd/385532",
+        "publisher": "원티드"
+      },
+      {
+        "title": "BISTelligence | 제조AI",
+        "url": "https://www.bistelligence.ai/",
+        "publisher": "비스텔리젼스",
+        "summary": "첫 화면: 'Leading Industrial AI Company for Autonomous Manufacturing', '25년 제조 현장 경험과 AI 기술의 결합'. 산업 메뉴 반도체&디스플레이·철강·제약&바이오·공공·자동차·2차전지. 사업 모델 'Service as a Solution' — Consulting(데이터 기반 제조 진단·AI 전략), Solution(현장 중심 Industrial AI 솔루션 구축), Operation(자율 제조 운영 최적화). 데이터 원천으로 설비·공정 데이터, 계측 데이터, 문서, 레거시 시스템을 적는다."
+      },
+      {
+        "title": "Full Stack Engineer (FSE)",
+        "url": "https://www.wanted.co.kr/wd/370490",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "제조 AI 컨설팅·솔루션 구축·운영(Service as a Solution)",
+        "how": "사이트가 진단 컨설팅 → 솔루션 구축 → 자율 운영의 세 단계를 사업 모델로 적는다. FSE 공고가 고객사 도메인 특화 AI 애플리케이션(설비 이상 분석·공정 최적화·예측정비·품질 관리)과 고객사 현장 검증을 적는다. 계약·과금 구조는 읽지 않았다.",
+        "domains": [
+          "제조 AI 애플리케이션·에이전트",
+          "제조 데이터 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "BISTelligence | 제조AI",
+            "url": "https://www.bistelligence.ai/",
+            "publisher": "비스텔리젼스",
+            "summary": "첫 화면: 'Leading Industrial AI Company for Autonomous Manufacturing', '25년 제조 현장 경험과 AI 기술의 결합'. 산업 메뉴 반도체&디스플레이·철강·제약&바이오·공공·자동차·2차전지. 사업 모델 'Service as a Solution' — Consulting(데이터 기반 제조 진단·AI 전략), Solution(현장 중심 Industrial AI 솔루션 구축), Operation(자율 제조 운영 최적화). 데이터 원천으로 설비·공정 데이터, 계측 데이터, 문서, 레거시 시스템을 적는다."
+          },
+          {
+            "title": "Full Stack Engineer (FSE)",
+            "url": "https://www.wanted.co.kr/wd/370490",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "제조 AI 애플리케이션·에이전트",
+        "why": "FSE 공고가 AI Platform 의 Knowledge Graph·Agent 프레임워크·Ontology 로 고객사 요구에 맞는 AI 애플리케이션, Tool 정의·Reasoning 흐름·Human-in-the-loop 승인이 있는 에이전트, 이벤트 트리거·에스컬레이션 Workflow 자동화, 응답 정확성 평가 루프를 적는다. AI Solution Engineer·Aidentyx 공고도 AI Agent 개발을 적는다.",
+        "what_to_know": [
+          "AI Agent·Tool 설계",
+          "Knowledge Graph·Ontology",
+          "제조 공정 도메인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Full Stack Engineer (FSE)",
+            "url": "https://www.wanted.co.kr/wd/370490",
+            "publisher": "원티드"
+          },
+          {
+            "title": "AI Solution Engineer",
+            "url": "https://www.wanted.co.kr/wd/372348",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[Aidentyx] Ai Agent Engineer",
+            "url": "https://jumpit.saramin.co.kr/position/55042670",
+            "publisher": "점핏"
+          }
+        ]
+      },
+      {
+        "name": "제조 데이터 플랫폼",
+        "why": "Product Development Leader 공고가 데이터 수집·처리(DP)와 백엔드, 파이프라인 구조 애플리케이션, Kubernetes 배포, Oracle 대용량 적재·조회와 트랜잭션 정합성, Kafka 메시징, MinIO/S3 오브젝트 스토리지를 적는다. 사이트는 설비·공정·계측 데이터와 레거시 시스템을 데이터 원천으로 든다.",
+        "what_to_know": [
+          "Kafka",
+          "Oracle 대용량 처리",
+          "MinIO/S3"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Product Development Leader",
+            "url": "https://www.wanted.co.kr/wd/385098",
+            "publisher": "원티드"
+          },
+          {
+            "title": "BISTelligence | 제조AI",
+            "url": "https://www.bistelligence.ai/",
+            "publisher": "비스텔리젼스",
+            "summary": "첫 화면: 'Leading Industrial AI Company for Autonomous Manufacturing', '25년 제조 현장 경험과 AI 기술의 결합'. 산업 메뉴 반도체&디스플레이·철강·제약&바이오·공공·자동차·2차전지. 사업 모델 'Service as a Solution' — Consulting(데이터 기반 제조 진단·AI 전략), Solution(현장 중심 Industrial AI 솔루션 구축), Operation(자율 제조 운영 최적화). 데이터 원천으로 설비·공정 데이터, 계측 데이터, 문서, 레거시 시스템을 적는다."
+          }
+        ]
+      },
+      {
+        "name": "현장 웹 애플리케이션(Spring·Vue)",
+        "why": "충남 아산 근무 Full stack 공고가 SpringBoot·Vue.js 풀스택 개발을 적는다. 어느 고객 현장인지는 공고에 없다.",
+        "what_to_know": [
+          "Spring Boot",
+          "Vue.js"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Full stack 개발자",
+            "url": "https://www.wanted.co.kr/wd/385532",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "제조 AI 를 '에이전트' 로 다시 짜는 중이다",
+        "evidence": "AI Agent 구현 — Tool 정의, Reasoning 흐름 설계, Human-in-the-loop 승인 로직 개발",
+        "so_what": "모집중 다섯 건 중 셋(FSE·AI Solution Engineer·Aidentyx)이 AI Agent 를 주요업무로 적는다 — 제조 현장의 판단을 사람 승인과 묶는 설계가 면접 소재가 될 수 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "고객 현장 근무가 섞여 있다",
+        "evidence": "설계 담당자와 긴밀히 협업하여 시스템 요구사항을 구현 가능한 기술 스펙으로 구체화하고, 개발 완료 후 고객사 현장 검증 참여",
+        "so_what": "Full stack 공고 하나는 근무지가 충남 아산이다(서울 서초구 본사와 다름) — 고객 공장 인근 근무일 수 있으니 지원 전에 근무지·기간을 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수는 읽지 않았다",
+    "'Aidentyx' 가 비스텔리젼스의 제품·조직 이름인지 공고에 설명이 없다",
+    "충남 아산 Full stack 자리가 고객사 상주인지 공고에 없다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

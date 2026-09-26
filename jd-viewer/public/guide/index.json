@@ -722,6 +722,18 @@
       "postings": 5,
       "study_items": 11,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "bistelligence",
+      "name": "비스텔리젼스",
+      "aliases": [
+        "비스텔리젼스",
+        "BISTelligence"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

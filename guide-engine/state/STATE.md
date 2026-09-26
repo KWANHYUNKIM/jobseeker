@@ -50,7 +50,8 @@ AI Engineer 379543 완료.
 **씨제이이엔엠(`cjenm`) — `done`, 공고 5건(Mnet Plus React Native 380140 · DevOps 373347 · Backend 321958 · 사람인 Data Analyst 55097589 · 사람인 AI Producer 55097586(VFX 경력 자리)).** 중복 없음. 출처: cjenm.com/ko + mnetplus.world + 원티드 Mnet Plus 머리말. 커머스부문 2026 신입사원 55101818 은 비개발·주요업무 칸 없음이라 `--gaps` 가 세지 않는다.
 **매드업(`madup`) — `done`, 공고 5건(AI PO 341002 · 시니어 AI Engineer 294189 · SRE 171889 · AI Engineer 294187 · 주니어 백엔드 222550).** 원티드 모집중 전부, 중복 없음. 출처: 원티드 머리말·기술 스택 + madup.com 메타 + lever.me 첫 화면. '인프라·SRE' 도메인은 공통 기반이라 경고가 남는다.
 **소프트넷(`softnet`) — `done`, 공고 5건(원티드 병원 ERP 345290(안양, 동일 법인 미확인) · 점핏 SE 6~10년 55065817 · SE 3~5년 55065419·11~15년 55065837 = 55065817 연차별 게시 · 사람인 IT기술연구소 프론트엔드 54912353).** 출처: softnet.co.kr 첫 화면 + 공고들.
-⚠️ 다음 회차: **비스텔리젼스**(QUEUE 맨 위) — `in_progress` 로 바꾸고 3단계 회사 브리핑부터.
+**비스텔리젼스(`bistelligence`) — `in_progress`, 회사 브리핑만.** 출처: 원티드 Full stack 머리말(BISTel 인적분할) + bistelligence.ai 첫 화면. 모집중: 원티드 Full stack(아산) 385532 · AI Solution Engineer 372348 · Product Development Leader 385098 · Full Stack Engineer(FSE) 370490 · 점핏 [Aidentyx] AI Agent 55042670.
+⚠️ 다음 회차: `--gaps` 순서대로 비스텔리젼스 공고.
 ⚠️ `validate.py` 의 `MIN_STUDY = 3` — 학습 항목이 3개 미만이면 `--gaps` 가 그 공고를 계속 미완으로 올린다(duplicate_of 제외). OCR 로 얇은 공고도 3개는 채운다(위펀 54814455 에서 2개로 커밋했다가 다음 회차에 보강).
 ⚠️ 사람인 URL 의 `search_uuid` 는 검색 한 페이지 전체가 같이 쓴다 — 공고를 찾을 때 uuid 로 끝맺음을 맞추지 말고 `rec_idx` + 회사명으로 찾는다.
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
