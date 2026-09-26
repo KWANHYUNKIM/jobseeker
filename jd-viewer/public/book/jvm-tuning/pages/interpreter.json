@@ -1,0 +1,147 @@
+{
+  "book": "jvm-tuning",
+  "id": "interpreter",
+  "no": "10.1",
+  "chapter": 10,
+  "title": "해석과 컴파일",
+  "summary": "두 실행 방식.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "반복 횟수에 따라 차이가 어떻게 달라지는지 잰다.",
+    "전부 컴파일하는 것이 왜 답이 아닌지 본다.",
+    "기본 동작이 왜 섞어 쓰는 것인지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "2.1절에서 **같은 루프가 0.24초와 6.72초**로 갈렸다. 해석과 컴파일의 차이였다.\n\n10장은 그 컴파일러를 여는 장이고, 이 절은 **언제 그 차이가 생기는지**다. **항상 컴파일이 이기는 것이 아니다.**"
+    },
+    {
+      "type": "table",
+      "caption": "같은 메서드, 반복 횟수만 바꿈",
+      "columns": [
+        "반복",
+        "`-Xint` (해석만)",
+        "기본 (섞어 씀)",
+        "`-Xcomp` (전부 컴파일)"
+      ],
+      "rows": [
+        [
+          "1,000",
+          "0 ms",
+          "0 ms",
+          "0 ms"
+        ],
+        [
+          "100,000",
+          "3 ms",
+          "1 ms",
+          "1 ms"
+        ],
+        [
+          "10,000,000",
+          "349 ms",
+          "**9 ms**",
+          "29 ms"
+        ],
+        [
+          "300,000,000",
+          "7,640 ms",
+          "**217 ms**",
+          "759 ms"
+        ]
+      ],
+      "note": "**기본이 양쪽을 다 이긴다.** 해석만 하면 35배 느리고, 전부 컴파일하면 3.5배 느리다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "-Xcomp 가 기본보다 느리다",
+      "md": "**3억 회에서 759ms 대 217ms** 다. 두 번 더 재도 814·935ms 대 273·218ms 였다.\n\n> `-Xcomp` 는 **처음 불리는 순간 최고 단계로 컴파일**한다. 좋아 보이는데 둘이 손해다.\n> **한 번만 불리는 메서드까지 컴파일**한다 — 그 컴파일 비용이 그대로 낭비다.\n> 그리고 **프로파일이 없다.** 어느 분기가 자주 도는지, 어떤 타입이 오는지 모른 채 컴파일하므로 **나온 코드가 나쁘다**(10.2·10.3절)."
+    },
+    {
+      "type": "figure",
+      "caption": "왜 섞어 쓰나",
+      "ascii": "   interpret          start immediately, no compile cost, slow per instruction\n   compile            fast per instruction, costs time and needs a profile\n\n   most methods run a handful of times     -> interpreting is cheaper\n   a few methods run millions of times     -> compiling pays back\n\n   the jvm does not know which is which in advance, so it counts",
+      "note": "**세어 보고 정한다.** 그 세는 장치가 다음 절의 티어다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "1,000 회에서는 아무 차이가 없다",
+      "md": "**표의 첫 줄이 0·0·0 이다.**\n\n> 짧게 도는 코드는 **컴파일할 이유가 없다** — 컴파일하는 시간이 실행 시간보다 길다.\n> 그래서 **CLI 도구나 짧은 배치에서는 JIT 이 거의 일을 안 한다.** 10.7절의 AOT 가 그 자리를 노린다.\n> 반대로 **오래 도는 서버는 JIT 이 전부**다 — 10.5절의 워밍업이 그래서 문제가 된다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Hot2.java\npublic class Hot2 {\n    static int add(int a, int b) { return a + b; }\n    public static void main(String[] x) {\n        int n = Integer.parseInt(x[0]);\n        long t0 = System.nanoTime(), s = 0;\n        for (int i = 0; i < n; i++) s += add(i, 1);\n        System.out.printf(\"%,d ms (s=%d)%n\", (System.nanoTime()-t0)/1_000_000, s);\n    }\n}\n\n$ for N in 1000 100000 10000000 300000000; do\n    for OPT in -Xint \"\" -Xcomp; do java $OPT -cp out Hot2 $N; done\n  done\n\n  반복             -Xint        기본         -Xcomp\n  1000             0 ms         0 ms         0 ms\n  100000           3 ms         1 ms         1 ms\n  10000000       349 ms         9 ms        29 ms\n  300000000    7,640 ms       217 ms       759 ms\n\n# --- -Xcomp 를 두 번 더 ---\n\n  기본     273 ms      -Xcomp  814 ms\n  기본     218 ms      -Xcomp  935 ms\n\n# 3억 회에서 -Xint 는 기본의 35배, -Xcomp 는 3.5배 느리다.",
+      "note": "**양쪽 끝이 다 손해**다. 전부 해석해도, 전부 컴파일해도 섞어 쓰는 것보다 못하다."
+    }
+  ],
+  "recap": [
+    "짧게 도는 코드에서는 해석과 컴파일의 차이가 없다.",
+    "3억 회에서 -Xint 는 기본의 35배 느렸다.",
+    "-Xcomp 는 기본의 3.5배 느렸다 — 두 번 더 재도 같았다.",
+    "-Xcomp 가 느린 이유는 한 번 쓰는 메서드까지 컴파일하고 프로파일이 없어서다.",
+    "JVM 은 어느 쪽인지 모르므로 세어 보고 정한다."
+  ],
+  "drills": [
+    {
+      "task": "내 짧은 배치를 -Xint 로 돌려 차이를 본다.",
+      "done_when": "JIT 이 일을 하는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "반복 횟수를 바꿔 가며 -Xint 와의 배수를 잰다.",
+      "done_when": "차이가 생기는 지점을 찾는다.",
+      "minutes": 12
+    },
+    {
+      "task": "-Xcomp 로 돌려 기본보다 느린지 확인한다.",
+      "done_when": "프로파일의 값을 체감한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "1,000 회 반복에서 -Xint 와 기본의 차이는.",
+      "a": "없다. 컴파일할 이유가 없는 규모다."
+    },
+    {
+      "q": "-Xcomp 가 기본보다 느린 이유 둘은.",
+      "a": "한 번 쓰는 메서드까지 컴파일하고, 프로파일 없이 컴파일해 코드가 나쁘다."
+    },
+    {
+      "q": "JVM 이 해석과 컴파일을 섞어 쓰는 이유는.",
+      "a": "어느 메서드가 자주 도는지 미리 모르기 때문에 세어 보고 정한다."
+    },
+    {
+      "q": "짧은 CLI 도구에서 JIT 의 역할은.",
+      "a": "거의 없다. 컴파일 비용을 회수할 시간이 없다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "-Xint",
+      "what": "JIT 을 끄고 해석만 하게 하는 옵션."
+    },
+    {
+      "term": "-Xcomp",
+      "what": "처음 호출부터 최고 단계로 컴파일하게 하는 옵션. 프로파일이 없어 대개 느리다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Java HotSpot VM Performance Enhancements",
+      "url": "https://docs.oracle.com/en/java/javase/17/vm/java-hotspot-virtual-machine-performance-enhancements.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

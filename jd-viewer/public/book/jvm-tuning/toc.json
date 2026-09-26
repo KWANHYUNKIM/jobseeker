@@ -546,7 +546,7 @@
           "title": "해석과 컴파일",
           "summary": "두 실행 방식.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.2",
@@ -554,7 +554,7 @@
           "title": "티어",
           "summary": "다섯 단계로 올라간다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.3",
@@ -562,7 +562,7 @@
           "title": "인라이닝",
           "summary": "가장 큰 최적화.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.4",

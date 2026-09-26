@@ -1,0 +1,180 @@
+{
+  "book": "jvm-tuning",
+  "id": "inlining",
+  "no": "10.3",
+  "chapter": 10,
+  "title": "인라이닝",
+  "summary": "가장 큰 최적화.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "인라이닝의 값을 직접 잰다.",
+    "한계 값들이 무엇인지 안다.",
+    "왜 다른 최적화의 전제가 되는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "10.2절의 로그에서 **`Hot2::add (4 bytes) inline`** 을 봤다. 네 바이트짜리 메서드 하나다.\n\n그것이 인라인되느냐 아니냐로 **얼마나 갈리는지** 재 보면, 왜 이것을 **가장 큰 최적화**라고 부르는지가 나온다."
+    },
+    {
+      "type": "prose",
+      "md": "## 같은 코드, 인라인만 막아 본다\n\n한계 값을 건드리는 대신 **`-XX:CompileCommand=dontinline`** 으로 그 메서드 하나만 막았다. 다른 조건은 전부 같다."
+    },
+    {
+      "type": "table",
+      "caption": "`return a + 1` 짜리 메서드를 2억 번 (3회씩)",
+      "columns": [
+        "",
+        "1회",
+        "2회",
+        "3회"
+      ],
+      "rows": [
+        [
+          "인라인 허용",
+          "**128 ms**",
+          "**133 ms**",
+          "**126 ms**"
+        ],
+        [
+          "`dontinline`",
+          "**496 ms**",
+          "**486 ms**",
+          "**485 ms**"
+        ],
+        [
+          "배수",
+          "3.9배",
+          "3.7배",
+          "3.8배"
+        ]
+      ],
+      "note": "**네 바이트짜리 메서드 하나가 3.8배**다. 세 번 다 같았다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "호출을 없애는 것이 전부가 아니다",
+      "md": "**호출 비용만으로는 3.8배가 안 나온다.**\n\n> 인라인하면 **호출된 코드가 부른 쪽 안으로 들어온다.** 그러면 그 자리에서 **다른 최적화가 가능해진다** — 상수 전파, 죽은 코드 제거, 루프 밖으로 끌어내기.\n> `a + 1` 이 루프 안으로 펼쳐지면 컴파일러는 **루프 전체를 하나로 보고** 다시 짤 수 있다.\n> 그래서 인라이닝은 **최적화 하나가 아니라 다른 최적화들의 전제**다. 못 하면 그 뒤가 전부 막힌다."
+    },
+    {
+      "type": "table",
+      "caption": "인라인을 정하는 기본값들",
+      "columns": [
+        "옵션",
+        "기본값",
+        "무엇"
+      ],
+      "rows": [
+        [
+          "`MaxInlineSize`",
+          "**35**",
+          "보통 메서드의 바이트코드 한계"
+        ],
+        [
+          "`FreqInlineSize`",
+          "**325**",
+          "자주 불리는 메서드의 한계"
+        ],
+        [
+          "`MaxInlineLevel`",
+          "15",
+          "인라인을 몇 겹까지"
+        ],
+        [
+          "`InlineSmallCode`",
+          "2500",
+          "컴파일된 코드 크기 한계"
+        ],
+        [
+          "`C1MaxInlineSize`",
+          "35",
+          "C1 쪽 한계(따로 있다)"
+        ]
+      ],
+      "note": "**한계가 하나가 아니다.** 그래서 `MaxInlineSize` 만 올려서는 안 되는 경우가 있다 — 아래."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "한계를 올려도 안 된 경우",
+      "md": "**164바이트짜리 메서드를 인라인시키려고 `MaxInlineSize=200` 을 줬는데 안 됐다.**\n\n```\n@ 40   Inline::big (164 bytes)   callee is too large\n```\n\n> `FreqInlineSize=400` 까지 같이 줬는데도 같은 메시지였다.\n> 위 표대로 **한계가 여럿**이고, 어느 것이 걸렸는지는 이 메시지만으로 안 갈린다.\n> **이 책에서는 왜 안 됐는지까지 확인하지 못했다.** 그래서 값은 `dontinline` 쪽으로 쟀다 — **변수 하나만 바꾸는 편이 확실하다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 실무에서 뜻하는 것\n\n**큰 메서드는 인라인이 안 된다.** 그래서 뜨거운 경로의 메서드를 **작게 유지하는 것**이 성능에 실제로 영향을 준다 — 읽기 좋으라고 쪼개는 것이 성능에도 맞는 드문 경우다.\n\n다만 **재고 나서** 판단한다. 대부분의 메서드는 뜨겁지 않고, 뜨겁지 않으면 인라인 여부가 아무 차이도 안 만든다(10.1절의 1,000회 줄)."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Inline.java\npublic class Inline {\n    static int small(int a) { return a + 1; }\n    static int big(int a) { /* 40줄쯤의 산술 — 164바이트 */ }\n    public static void main(String[] x) {\n        boolean useBig = x[0].equals(\"big\");\n        int n = Integer.parseInt(x[1]);\n        long t0 = System.nanoTime(), s = 0;\n        for (int i = 0; i < n; i++) s += useBig ? big(i) : small(i);\n        System.out.printf(\"%s %,d ms (s=%d)%n\", x[0], (System.nanoTime()-t0)/1_000_000, s);\n    }\n}\n\n# --- 1) 인라인되는지 본다 ---\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining -cp out Inline small 200000000\n@ 49   Inline::small (4 bytes)   inline\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining -cp out Inline big 200000000\n@ 40   Inline::big (164 bytes)   callee is too large\n\n# --- 2) small 을 막고 재 본다 ---\n\n$ java                                          -cp out Inline small 200000000\nsmall 128 ms  /  133 ms  /  126 ms\n$ java -XX:CompileCommand=dontinline,Inline::small -cp out Inline small 200000000\nsmall 496 ms  /  486 ms  /  485 ms\n\n$ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining \\\n       -XX:CompileCommand=dontinline,Inline::small -cp out Inline small 200000000\n@ 49   Inline::small (4 bytes)   disallowed by CompileCommand    <- 실제로 막혔다\n\n# --- 3) 안 된 시도 ---\n\n$ java -XX:MaxInlineSize=200 -XX:FreqInlineSize=400 ... -cp out Inline big 200000000\n@ 40   Inline::big (164 bytes)   callee is too large             <- 그대로다\n  기본 560/619 ms   한계 올림 547/569 ms                          <- 차이도 없다",
+      "note": "**`disallowed by CompileCommand` 로 통제가 걸린 것을 확인하고 쟀다.** 안 된 시도도 같이 싣는다 — 한계 값이 여럿이라는 증거다."
+    }
+  ],
+  "recap": [
+    "네 바이트짜리 메서드를 인라인 못 하게 하니 3.8배 느려졌다.",
+    "세 번 재서 128/133/126 대 496/486/485ms 로 일관됐다.",
+    "인라이닝은 호출 제거만이 아니라 다른 최적화의 전제다.",
+    "한계 값이 MaxInlineSize·FreqInlineSize·MaxInlineLevel·InlineSmallCode 등 여럿이다.",
+    "MaxInlineSize 를 올려도 164바이트 메서드는 인라인되지 않았다."
+  ],
+  "drills": [
+    {
+      "task": "-XX:+PrintInlining 으로 내 뜨거운 경로가 인라인되는지 본다.",
+      "done_when": "too large 가 있는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "핵심 메서드를 dontinline 으로 막고 차이를 잰다.",
+      "done_when": "인라인의 값을 숫자로 갖는다.",
+      "minutes": 15
+    },
+    {
+      "task": "too large 로 걸린 메서드의 바이트코드 크기를 javap 로 확인한다.",
+      "done_when": "한계와 비교한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "인라이닝이 가장 큰 최적화로 불리는 이유는.",
+      "a": "호출 제거만이 아니라 상수 전파·죽은 코드 제거 같은 다른 최적화의 전제가 되기 때문이다."
+    },
+    {
+      "q": "보통 메서드와 자주 불리는 메서드의 인라인 한계는.",
+      "a": "MaxInlineSize 35 바이트와 FreqInlineSize 325 바이트다."
+    },
+    {
+      "q": "인라인의 값을 재는 확실한 방법은.",
+      "a": "-XX:CompileCommand=dontinline 으로 그 메서드 하나만 막고 비교하는 것이다."
+    },
+    {
+      "q": "MaxInlineSize 만 올리면 되나.",
+      "a": "안 되는 경우가 있다. 한계가 여럿이고 이 측정에서는 164바이트가 여전히 too large 였다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "인라이닝",
+      "what": "호출된 메서드의 코드를 부른 자리에 펼쳐 넣는 최적화."
+    },
+    {
+      "term": "CompileCommand",
+      "what": "특정 메서드의 컴파일 동작을 지정하는 옵션. dontinline 으로 인라인을 막을 수 있다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command, -XX:CompileCommand",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Java HotSpot VM Performance Enhancements",
+      "url": "https://docs.oracle.com/en/java/javase/17/vm/java-hotspot-virtual-machine-performance-enhancements.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

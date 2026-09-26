@@ -1,0 +1,178 @@
+{
+  "book": "jvm-tuning",
+  "id": "tiers",
+  "no": "10.2",
+  "chapter": 10,
+  "title": "티어",
+  "summary": "다섯 단계로 올라간다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "PrintCompilation 의 숫자를 읽는다.",
+    "한 메서드가 단계를 올라가는 것을 본다.",
+    "% 표시가 무엇인지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "앞 절에서 **세어 보고 정한다**고 했다. 그 세는 구조가 **티어**다.\n\n컴파일러가 둘이다 — **C1 은 빨리 컴파일하고 덜 최적화**, **C2 는 느리게 컴파일하고 많이 최적화**. 그 사이를 **다섯 단계**로 잇는다."
+    },
+    {
+      "type": "table",
+      "caption": "티어 번호가 뜻하는 것",
+      "columns": [
+        "티어",
+        "무엇",
+        "특징"
+      ],
+      "rows": [
+        [
+          "**0**",
+          "인터프리터",
+          "즉시 시작, 호출 횟수를 센다"
+        ],
+        [
+          "1",
+          "C1, 프로파일 없음",
+          "더 최적화할 여지가 없는 사소한 메서드"
+        ],
+        [
+          "2",
+          "C1, 호출 횟수만",
+          "C2 가 밀려 있을 때 임시로"
+        ],
+        [
+          "**3**",
+          "**C1, 전체 프로파일**",
+          "**분기·타입까지 센다. 여기서 C2 의 재료가 만들어진다**"
+        ],
+        [
+          "**4**",
+          "**C2**",
+          "**최종 판. 프로파일을 근거로 공격적으로 최적화**"
+        ]
+      ],
+      "note": "**보통 길은 0 → 3 → 4** 다. 1 과 2 는 특수한 경우에 나온다."
+    },
+    {
+      "type": "prose",
+      "md": "## 실제로 올라가는 것을 본다\n\n`-XX:+PrintCompilation` 을 켜면 **컴파일될 때마다 한 줄**이 찍힌다. 세 번째 칸이 티어 번호다."
+    },
+    {
+      "type": "figure",
+      "caption": "Hot2::add 가 3 에서 4 로",
+      "ascii": "     22    5       3       Hot2::add (4 bytes)\n     22    6       4       Hot2::add (4 bytes)\n     22    5       3       Hot2::add (4 bytes)   made not entrant\n\n   ms  id  tier   method\n\n   tier 3 compiled first, then tier 4,\n   and the tier 3 version was retired -- made not entrant",
+      "note": "**`made not entrant` 는 더 좋은 판으로 갈아탔다**는 뜻이다. 2.1절에서 처음 본 그 표시다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "% 는 루프 안에서 갈아탔다는 뜻",
+      "md": "```\n     23    7 %     3       Hot2::main @ 17 (78 bytes)\n     24    9 %     4       Hot2::main @ 17 (78 bytes)\n```\n\n> `%` 는 **OSR**(On-Stack Replacement)이다. **이미 돌고 있는 루프를 실행 중에 컴파일판으로 바꿔** 끼운다.\n> `@ 17` 은 **바이트코드 17번 자리의 루프**라는 뜻이다(2.4절의 그 번호).\n> 이것이 없으면 **`main` 안의 긴 루프는 끝날 때까지 해석으로** 돌아야 한다 — 벤치마크가 끝나 버린다."
+    },
+    {
+      "type": "table",
+      "caption": "이 프로그램에서 티어별 컴파일 건수",
+      "columns": [
+        "티어",
+        "건수"
+      ],
+      "rows": [
+        [
+          "0",
+          "37"
+        ],
+        [
+          "1",
+          "8"
+        ],
+        [
+          "3",
+          "**64**"
+        ],
+        [
+          "4",
+          "**8**"
+        ]
+      ],
+      "note": "**티어 2 는 한 건도 없다.** C2 가 밀리지 않았다는 뜻이다. 그리고 3 이 64건인데 4 는 8건 — **대부분은 4까지 안 간다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "3 이 많고 4 가 적은 것이 정상이다",
+      "md": "**티어 4 로 올리려면 티어 3 에서 충분히 돌아야** 한다.\n\n> 짧게 끝난 프로그램이라 **대부분이 3 에서 멈췄다.** 오래 도는 서버라면 비율이 달라진다.\n> 그리고 티어 3 은 **프로파일을 세느라 티어 1 보다 느리다** — 최적화된 코드가 아니라 **재료를 모으는 단계**다.\n> 그래서 **기동 직후에는 티어 3 코드로 도는 구간**이 있고, 그것이 10.5절 워밍업의 한 부분이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 10.1 과 같은 Hot2.java\n\n$ java -XX:+PrintCompilation -cp out Hot2 300000000 | grep Hot2::\n\n     22    5       3       Hot2::add (4 bytes)\n     22    6       4       Hot2::add (4 bytes)\n     22    5       3       Hot2::add (4 bytes)   made not entrant\n     23    7 %     3       Hot2::main @ 17 (78 bytes)\n     24    8       3       Hot2::main (78 bytes)\n     24    9 %     4       Hot2::main @ 17 (78 bytes)\n     25    7 %     3       Hot2::main @ 17 (78 bytes)   made not entrant\n    331    9 %     4       Hot2::main @ 17 (78 bytes)   made not entrant\n\n# 칸 읽는 법\n#   22        기동 후 밀리초\n#   5         컴파일 작업 번호\n#   %         OSR — 돌고 있는 루프를 갈아 끼운다\n#   3         티어\n#   @ 17      바이트코드 17번 자리의 루프\n\n# --- 티어별 건수 ---\n\n$ java -XX:+PrintCompilation -cp out Hot2 300000000 | (티어 칸만 세기)\n  37  0\n   8  1\n  64  3\n   8  4\n\n# 티어 2 는 0건이다.",
+      "note": "**마지막 줄의 `331` 이 눈에 띈다.** 티어 4 OSR 판마저 331ms 에 은퇴했다 — 루프가 끝나서다."
+    }
+  ],
+  "recap": [
+    "컴파일러가 둘이고 그 사이를 다섯 단계로 잇는다.",
+    "보통 길은 0(해석) → 3(C1 프로파일) → 4(C2)다.",
+    "PrintCompilation 의 세 번째 칸이 티어 번호다.",
+    "% 는 OSR 로 돌고 있는 루프를 실행 중에 갈아 끼우는 것이다.",
+    "이 측정에서 티어 3 이 64건, 4 는 8건이었다 — 대부분은 4까지 안 간다."
+  ],
+  "drills": [
+    {
+      "task": "-XX:+PrintCompilation 으로 내 애플리케이션의 티어 분포를 센다.",
+      "done_when": "3 과 4 의 비율을 안다.",
+      "minutes": 12
+    },
+    {
+      "task": "OSR(%) 이 붙은 줄을 찾아 어느 루프인지 확인한다.",
+      "done_when": "@ 번호를 javap 와 맞춰 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "-XX:-TieredCompilation 으로 끄고 차이를 본다.",
+      "done_when": "단계가 사라지는 것을 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "보통의 티어 경로는.",
+      "a": "0(해석) → 3(C1 전체 프로파일) → 4(C2)다."
+    },
+    {
+      "q": "티어 3 이 하는 일은.",
+      "a": "C1 으로 컴파일하면서 분기와 타입까지 프로파일을 센다. C2 의 재료다."
+    },
+    {
+      "q": "PrintCompilation 의 % 는.",
+      "a": "OSR 이다. 이미 돌고 있는 루프를 실행 중에 컴파일판으로 갈아 끼운다."
+    },
+    {
+      "q": "티어 3 이 4 보다 많은 것이 정상인가.",
+      "a": "정상이다. 4 로 올라가려면 3 에서 충분히 돌아야 한다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "티어",
+      "what": "해석과 두 컴파일러 사이의 다섯 단계. 호출 횟수와 루프 횟수로 올라간다."
+    },
+    {
+      "term": "OSR",
+      "what": "On-Stack Replacement. 실행 중인 루프를 컴파일판으로 갈아 끼우는 것."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Java HotSpot VM Performance Enhancements",
+      "url": "https://docs.oracle.com/en/java/javase/17/vm/java-hotspot-virtual-machine-performance-enhancements.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:+TieredCompilation",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
