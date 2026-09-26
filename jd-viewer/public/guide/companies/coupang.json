@@ -10451,6 +10451,105 @@
       "site": "ats",
       "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=8130043",
       "verdict": "같은 팀(Search & Discovery 추천)의 Sr. Staff 판이다. 31줄 중 29줄이 Staff 판과 같고, 다른 두 줄은 연차('8+ years of professional experience in applied AI/ML…', Staff 는 5+)와 리더 범위('company-wide technical leader', Staff 는 domain)뿐이다. Staff 판 브리핑을 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8073876",
+      "title": "Staff Backend Engineer (Coupang Pay)",
+      "site": "ats",
+      "verdict": "서울 근무, 백엔드 아키텍처 설계·구현 6년 이상(공고 전문 Basic Qualifications). 쿠팡페이 백엔드 — 특히 이상거래탐지시스템(FDS) 같은 고객 데이터 보호 시스템과, 법·규제를 지키는 금융 서비스 기능을 Java·Spring·MSA 로 만드는 사람. 크롤 데이터에는 우대사항 칸만 들어와 주요업무·기본 자격은 전문에서 읽었다.",
+      "fit": {
+        "must_have": [
+          "백엔드 아키텍처 6년 이상(전문 기준)",
+          "Java·Spring·MSA 깊은 이해",
+          "조직·시스템 성장기 복잡성 해결 경험",
+          "OOP + 스크립트 언어"
+        ],
+        "can_learn": [
+          "FDS 도메인",
+          "금융 규제 세부"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보안·컴플라이언스 시스템 개발 (FDS 포함)",
+          "from": "preference",
+          "quote": "Experience in security or compliance-related system development",
+          "priority": "high",
+          "why": "전문 Key Responsibilities 에 'Fraud Detection System (FDS) 같은 시스템 개발'과 '법·규제를 준수하는 시스템 설계'가 있다.",
+          "gap_check": "결제 승인 경로에 FDS 판정을 넣을 때 동기 판정(승인 전 차단)과 비동기 판정(사후 탐지)을 무엇으로 나누고, FDS 가 느리거나 죽으면 결제는 어떻게 하는가?",
+          "drill": "결제 API 앞에 규칙 기반 FDS(단시간 다건 결제·신규 기기·고액)를 동기 호출로 붙이고, 타임아웃 시 '소액은 통과·고액은 보류' 정책을 구현해 테스트한다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "Java·분산 시스템·마이크로서비스·메시징",
+          "from": "preference",
+          "quote": "Strong knowledge in Java, distributed systems, micro services, messaging services",
+          "priority": "core",
+          "why": "기본 자격(Java·Spring·MSA)과 우대가 같은 방향이다. 결제·FDS·정산이 서비스로 나뉘어 메시지로 이어질 가능성이 크다(추론).",
+          "gap_check": "결제 완료 이벤트를 FDS 사후 분석과 정산이 함께 받을 때, 메시지 중복·순서 뒤바뀜을 각 소비자가 어떻게 견디게 하는가?",
+          "drill": "Spring Boot 결제 서비스가 트랜잭셔널 아웃박스로 이벤트를 Kafka 에 싣고, FDS·정산 두 소비자가 멱등하게 처리하도록 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "microservices.io — Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "전사 API Gateway·Service Mesh 적용",
+          "from": "preference",
+          "quote": "Experience in company-wide application of API Gateway and Service Mesh",
+          "priority": "high",
+          "why": "금융 서비스는 서비스 간 인증·암호화·감사가 필수라 메시·게이트웨이로 공통 적용하는 경우가 많다(추론).",
+          "gap_check": "서비스 간 mTLS 를 메시로 강제할 때 레거시 서비스(사이드카 없음)와는 어떻게 공존시키는가?",
+          "drill": "Istio 에서 네임스페이스 하나는 STRICT mTLS, 다른 하나는 PERMISSIVE 로 두고 레거시 서비스 호출이 어떻게 되는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Istio — Documentation",
+              "url": "https://istio.io/latest/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "핀테크 조직에서의 개발 경험",
+          "from": "preference",
+          "quote": "Experience in software development in a fintech organization",
+          "priority": "nice",
+          "why": "전문에 '지속적인 금융 서비스 제공'과 '고객 데이터 보호'가 반복된다.",
+          "gap_check": "금융 서비스 개발에서 일반 커머스와 달라지는 요구(감사 로그·권한 분리·변경 승인)를 세 가지 이상 말할 수 있는가?",
+          "drill": "자신의 과거 기능 하나를 금융 서비스로 옮긴다고 가정하고, 추가해야 할 통제(감사 로그·접근 분리·변경 승인)를 설계 문서 한 장으로 쓴다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "FDS 규칙 + ML 점수 혼합 프로토타입",
+          "why": "주요업무 첫 예시가 FDS 다. 규칙 기반과 모델 점수를 함께 쓰고 오탐·미탐을 측정한 결과물은 이 자리와 곧바로 맞닿는다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "FDS 를 결제 경로 어디에 둘지",
+          "이벤트 중복·순서 대응",
+          "레거시와 mTLS 공존",
+          "금융 서비스 통제 요구"
+        ],
+        "sources": [
+          {
+            "title": "Staff Backend Engineer (Coupang Pay)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8073876",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
