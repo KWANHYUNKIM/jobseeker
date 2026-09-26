@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**86번째 후보 조사(2026-09-26) — 대기 3/3(로그라스·Hacobu·estie). 새 입구 Zenn Publication RSS(`zenn.dev/p/<id>/feed`)가 먹힌다 — API 의 publication_name 필터는 안 먹는다. 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(로그라스 — `zenn.dev/p/loglass`, OLAP DB·장애 이력 모델부터). 비교 문서 재료 다섯 묶음(STATE 이전 줄 참고: 청구 검증·추천·AI 리뷰·첫 대응·검증 환경). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
+**로그라스 회사 프로파일(2026-09-26) — 도메인 둘: 계층을 엔진이 알게 해 읽지 않는다(`d51400bd724686` — 개인이 사흘 연휴에 Claude Code 로 만든 **실험**, 제품 반영은 안 밝힘) · 장애 때 '당시 구조' 를 다시 세운다(`8d8d227e2fc017` — 회사가 데이터 모델·집계 처리 쇄신 중이라 밝힘). 다음은 확장: 로그라스 첫 기능은 **이력 데이터 모델**(이력 4축 판단·차분 대 템포럴·보고 3종 — 결정이 이미 글에 다 있다), 그다음 OLAP 엔진(limits 에 '실험' 을 반드시 남길 것). 남은 글 후보: DuckDB 가 메모리에 안 올라가는 GROUP BY 를 어떻게(2026-09-10) · AI 시대 인가 하네스(2026-08-14) · 인덱스가 안 쓰이는 네 관문(2026-09-03) — 인원 계획·설비투자·AI IR 수익원 글을 RSS 에서 찾을 것. 대기 2/3(Hacobu·estie). 비교 문서 재료 다섯 묶음(청구 검증·추천·AI 리뷰·첫 대응·검증 환경). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
 
 
 
