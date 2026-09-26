@@ -609,7 +609,7 @@
           "title": "GC 로그 읽기",
           "summary": "한 줄에 든 것.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.2",
@@ -617,7 +617,7 @@
           "title": "비행 기록",
           "summary": "돌아가는 채로 본다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.3",
@@ -625,7 +625,7 @@
           "title": "힙 덤프",
           "summary": "무엇이 살아 있나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.4",

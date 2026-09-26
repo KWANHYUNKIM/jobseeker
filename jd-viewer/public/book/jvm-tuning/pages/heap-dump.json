@@ -1,0 +1,149 @@
+{
+  "book": "jvm-tuning",
+  "id": "heap-dump",
+  "no": "11.3",
+  "chapter": 11,
+  "title": "힙 덤프",
+  "summary": "무엇이 살아 있나.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "덤프 없이 히스토그램만 보는 법을 안다.",
+    "덤프가 멈추는 시간을 직접 잰다.",
+    "덤프에 안 나오는 것을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.2절의 할당 표본은 **누가 만들었나**를 말한다. 남은 질문이 **지금 무엇이 살아 있나**다 — 6.3절부터 계속 나온 그 질문이고, **멈춤과 풀 GC 를 정하는 값**이다.\n\n힙 덤프는 그 순간의 힙을 **통째로 파일에** 떠 놓는다. 가장 자세하고 **가장 비싸다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 먼저 히스토그램 — 덤프 없이\n\n타입별 개수와 바이트만 필요하면 **덤프를 뜨지 않는다.** `jcmd <pid> GC.class_histogram` 이 그 자리에서 답한다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "히스토그램으로 끝나는 경우가 많다",
+      "md": "**누수의 대상이 한 타입에 쏠려 있으면 여기서 보인다.**\n\n> 아래 출력에서 `[B`(byte 배열)가 7,121개 332KB 로 1위다 — 정상적인 모양이다.\n> 3.6절의 클래스로더 누수라면 `java.lang.Class` 가, 세션 누수라면 그 세션 타입이 비정상으로 올라온다.\n> **덤프를 뜨는 것은 \"누가 그것을 붙잡고 있나\"가 필요할 때**다 — 11.4절의 지배자 트리."
+    },
+    {
+      "type": "prose",
+      "md": "## 덤프는 멈춘다\n\n`GC.heap_dump` 는 **세이프포인트에서** 힙을 훑는다. 그 동안 애플리케이션은 멈춰 있다. `-Xlog:safepoint` 로 그 멈춤을 직접 재 봤다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "3.3MB 힙을 뜨는 데 70ms 멈췄다",
+      "md": "```\nHeap dump file created [3433785 bytes in 0.069 secs]\nSafepoint \"HeapDumper\", Reaching safepoint: 358125 ns,\n  At safepoint: 70297083 ns, Total: 70680625 ns\n```\n\n> **`At safepoint: 70297083 ns` 는 70.3ms** 다. 힙이 3.3MB 인데 그렇다.\n> 7.5절에서 G1 에게 **5ms 를 요구**했던 것과 비교해 보라 — 덤프 한 번이 그 목표의 **14배**다.\n> 힙이 기가바이트 단위면 **초 단위로** 멈춘다. **운영에서 아무 때나 뜨는 도구가 아니다.**\n> `Reaching safepoint` 가 따로 있는 것도 눈여겨볼 것 — 11.6절의 주제다."
+    },
+    {
+      "type": "prose",
+      "md": "## 덤프에 안 나오는 것\n\n9장 전체가 이 이야기였다. **힙 덤프는 힙만 뜬다.** 4.5절의 직접 버퍼, 9.5절의 네이티브 라이브러리, 4.2절의 메타스페이스는 **거기 없다.**\n\n직접 버퍼는 특히 헷갈린다 — **껍데기가 힙에 있어서 나오기는 하는데 크기가 거짓말**을 한다."
+    },
+    {
+      "type": "table",
+      "caption": "직접 버퍼 120MB 를 만든 프로세스",
+      "columns": [
+        "어디서 보나",
+        "무엇이 보이나"
+      ],
+      "rows": [
+        [
+          "힙 히스토그램",
+          "`DirectByteBuffer` **120개 7,680 바이트**"
+        ],
+        [
+          "힙 히스토그램",
+          "`DirectByteBuffer$Deallocator` 120개 3,840 바이트"
+        ],
+        [
+          "NMT `Other` 칸",
+          "**122,880 KB**"
+        ]
+      ],
+      "note": "**같은 120개인데 7,680 바이트와 122,880 KB** 다. 개당 64바이트 껍데기만 힙에 있고 1MB 씩은 힙 밖이다(4.5절)."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 개수를 본다",
+      "md": "**크기는 거짓말하지만 개수는 안 한다.**\n\n> `DirectByteBuffer` 가 120개면 **직접 버퍼가 120개 살아 있다**는 것은 맞다.\n> 그것이 몇 바이트인지는 **NMT 의 `Other`**(9.1절) 나 **`BufferPoolMXBean`**(9.4절) 이 답한다.\n> `Deallocator` 가 같이 120개인 것도 단서다 — 5.6절의 `Cleaner` 가 아직 안 돌았다는 뜻이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 언제 뜨나\n\n**미리 걸어 두는 쪽이 낫다.** `-XX:+HeapDumpOnOutOfMemoryError` 를 주면 **OOM 이 난 그 순간의 힙**을 남긴다 — 9.3절에서 본 대로 **종료 코드 137 은 아무것도 안 남기므로** 그 전에 자바 쪽에서 터지게 해 두는 것(한도 명시)과 짝이다.\n\n손으로 뜰 때는 **부하가 낮은 시각**에, **인스턴스 하나만** 대상으로 한다. 위 70ms 가 이유다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 직접 버퍼 120MB + 스레드 60개를 만드는 Grow.java (9.1 절과 같은 것)\n\n# --- 1) 덤프 없이 히스토그램 ---\n\n$ jcmd <pid> GC.class_histogram\n num     #instances         #bytes  class name (module)\n-------------------------------------------------------\n   1:          7121         332296  [B (java.base@17.0.16)\n   2:          1454         179104  java.lang.Class (java.base@17.0.16)\n   3:          7036         168864  java.lang.String (java.base@17.0.16)\n   4:          1004          92896  [Ljava.lang.Object; (java.base@17.0.16)\n   5:          1065          34080  java.util.concurrent.ConcurrentHashMap$Node\n   6:             7          33032  [C (java.base@17.0.16)\n   7:           482          32904  [I (java.base@17.0.16)\n\n# --- 2) 직접 버퍼는 이렇게 보인다 ---\n\n$ jcmd <pid> GC.class_histogram | grep -i DirectByteBuffer\n  15:           120           7680  java.nio.DirectByteBuffer (java.base@17.0.16)\n  31:           120           3840  java.nio.DirectByteBuffer$Deallocator\n\n$ jcmd <pid> VM.native_memory summary | grep Other\n-                     Other (reserved=122880KB, committed=122880KB)\n\n# 7,680 바이트 대 122,880 KB. 같은 120 개다.\n\n# --- 3) 덤프를 뜨고, 멈춤을 잰다 ---\n\n$ jcmd <pid> GC.heap_dump heap.hprof\nHeap dump file created [3433312 bytes in 0.040 secs]\n  (jcmd 왕복까지 171 ms)\n\n$ ls -lh heap.hprof\n  3.3M\n\n# 같은 프로세스를 -Xlog:safepoint 로 다시 띄우고 덤프를 뜨면\n\n[4.988s][info][safepoint] Safepoint \"HeapDumper\", Time since last: 3874444292 ns,\n  Reaching safepoint: 358125 ns, Cleanup: 25417 ns,\n  At safepoint: 70297083 ns, Total: 70680625 ns\n\n# At safepoint 70,297,083 ns = 70.3 ms.\n# 7.5 절에서 G1 에게 요구한 멈춤 목표가 5 ms 였다.",
+      "note": "**힙 3.3MB 에 70ms** 다. 이 값은 힙 크기를 따라 커진다 — 운영 힙에서 재 보고 나서 뜬다."
+    }
+  ],
+  "recap": [
+    "타입별 개수와 바이트만 필요하면 GC.class_histogram 으로 덤프 없이 본다.",
+    "덤프는 세이프포인트에서 힙을 훑으므로 그 동안 멈춘다.",
+    "3.3MB 힙을 뜨는 데 At safepoint 70.3ms 였다 — 7.5 의 멈춤 목표 5ms 의 14배다.",
+    "힙 덤프는 힙만 뜬다 — 직접 버퍼·네이티브·메타스페이스는 없다.",
+    "직접 버퍼는 껍데기만 보여 크기가 거짓말한다 — 개수를 보고 크기는 NMT 로 확인한다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션에 GC.class_histogram 을 걸어 상위 10개를 본다.",
+      "done_when": "예상과 다른 타입이 있는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "-Xlog:safepoint 를 켜고 덤프를 떠 At safepoint 를 잰다.",
+      "done_when": "내 힙 크기에서 몇 ms 인지 안다.",
+      "minutes": 15
+    },
+    {
+      "task": "-XX:+HeapDumpOnOutOfMemoryError 를 기동 옵션에 넣는다.",
+      "done_when": "덤프 경로와 디스크 여유를 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "덤프를 뜨지 않고 타입별 개수를 보는 명령은.",
+      "a": "jcmd <pid> GC.class_histogram 이다."
+    },
+    {
+      "q": "힙 덤프가 비싼 이유는.",
+      "a": "세이프포인트에서 힙을 훑으므로 그 동안 애플리케이션이 멈춘다."
+    },
+    {
+      "q": "DirectByteBuffer 120개가 7,680 바이트로 보이는 이유는.",
+      "a": "힙에 있는 것은 개당 64바이트 껍데기뿐이고 1MB 씩은 힙 밖이다."
+    },
+    {
+      "q": "OOM 순간의 힙을 남기는 옵션은.",
+      "a": "-XX:+HeapDumpOnOutOfMemoryError 다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "클래스 히스토그램",
+      "what": "타입별 인스턴스 개수와 바이트 합. 덤프를 뜨지 않고 얻는다."
+    },
+    {
+      "term": "hprof",
+      "what": "힙 덤프 파일 형식. 그 순간의 객체와 참조를 통째로 담는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — jcmd",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/jcmd.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Troubleshooting Memory Leaks",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/troubleshooting-memory-leaks.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

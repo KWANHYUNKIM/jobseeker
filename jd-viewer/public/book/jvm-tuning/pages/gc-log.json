@@ -1,0 +1,164 @@
+{
+  "book": "jvm-tuning",
+  "id": "gc-log",
+  "no": "11.1",
+  "chapter": 11,
+  "title": "GC 로그 읽기",
+  "summary": "한 줄에 든 것.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "한 줄의 칸을 전부 읽을 수 있다.",
+    "괄호 안의 원인을 처방과 잇는다.",
+    "운영에 켜 둘 수 있는 형태로 설정한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "10장까지 로그를 계속 읽었다. 이 절은 **그 한 줄을 끝까지 해부하는** 자리다.\n\nGC 로그는 **가장 싸고 가장 먼저 보는 도구**다. 힙 덤프는 멈추고(11.3절), JFR 은 켜 둘 준비가 필요하지만(11.2절), **GC 로그는 켜 두는 값이 거의 없고 끄고 있으면 아무것도 모른다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 한 줄을 쪼갠다\n\n4.1절부터 계속 본 그 줄이다. **칸마다 묻는 질문이 다르다.**"
+    },
+    {
+      "type": "figure",
+      "caption": "Pause Young 한 줄의 칸",
+      "ascii": "   [0.108s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 23M->6M(130M) 3.975ms\n    ^^^^^^        ^^^  ^^^^^  ^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^  ^^^ ^^ ^^^^  ^^^^^^^^\n      1            2     3       4                5              6   7   8       9\n\n   1  uptime        when, since jvm start\n   2  gc id         one collection; ids interleave (10.2, 6.5)\n   3  kind          Young / Full\n   4  sub kind      Normal / Mixed / Prepare Mixed / Concurrent Start\n   5  cause         why it ran -- the field that picks the fix\n   6  before        heap used before\n   7  after         heap used after -- this one sets the time (6.2)\n   8  capacity      current heap size, not -Xmx (4.1)\n   9  pause         stop-the-world duration",
+      "note": "**8번이 `-Xmx` 가 아니다.** 4.1절에서 `-Xmx512m` 인데 이 칸이 130M 이었다 — 힙은 필요한 만큼 늘어난다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "괄호 안의 원인이 처방을 고른다",
+      "md": "**5번 칸만 보고도 어디를 볼지 갈린다.**\n\n> `G1 Evacuation Pause` — 정상. 에덴이 찼다.\n> `G1 Humongous Allocation` — 연속 리전을 못 찾았다. **힙이 아니라 리전 크기나 객체 크기**다(7.6절).\n> `G1 Preventive Collection` — 대피 실패를 피하려고 미리 돌았다. 라이브 셋이 힙에 가까워지고 있다.\n> `G1 Compaction Pause` — 풀 GC. **여기까지 오면 옵션이 아니라 데이터를 봐야** 한다(7.7절)."
+    },
+    {
+      "type": "prose",
+      "md": "## 한 줄로 안 되는 것\n\n`Pause Young` 한 줄은 **얼마나 회수했는지**만 말한다. **어디서 어디로 옮겨졌는지**는 `-Xlog:gc+heap=info` 의 네 줄이 말한다 — 4.1절에서 본 그 네 줄이 **객체의 일생**(5장)이다."
+    },
+    {
+      "type": "table",
+      "caption": "볼 것과 그것을 주는 태그",
+      "columns": [
+        "알고 싶은 것",
+        "태그",
+        "어느 절"
+      ],
+      "rows": [
+        [
+          "언제·얼마나 멈췄나",
+          "`gc`",
+          "여기"
+        ],
+        [
+          "영역이 어떻게 움직였나",
+          "`gc+heap=info`",
+          "4.1 · 7.2"
+        ],
+        [
+          "멈춤 안에서 어디가 오래 걸렸나",
+          "`gc+phases=debug`",
+          "6.1 · 7.2"
+        ],
+        [
+          "나이 분포와 승격 임계값",
+          "`gc+age=debug`",
+          "5.3"
+        ],
+        [
+          "TLAB 조각 크기와 낭비",
+          "`gc+tlab=trace`",
+          "5.1"
+        ],
+        [
+          "GC 아닌 멈춤까지",
+          "`safepoint`",
+          "11.6"
+        ]
+      ],
+      "note": "**`-Xlog:gc*` 로 다 켜면 읽을 수 없다.** 위에서 필요한 것만 고른다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "운영에서는 파일로 빼고 회전시킨다",
+      "md": "**표준 출력에 섞으면 8.6절에서 본 그 사고가 난다** — 애플리케이션 출력 한가운데 GC 줄이 끼어든다.\n\n```\n-Xlog:gc*:file=gc.log:time,uptime,level,tags:filecount=5,filesize=20k\n```\n\n> **`file=`** 로 빼고, **`filecount`·`filesize`** 로 회전시킨다 — 안 걸면 무한히 커진다.\n> **`time`** 을 데코레이터에 넣는다. `uptime` 만 있으면 **장애 시각과 맞출 수가 없다.**\n> 아래 출력의 첫 칸이 그 `time` 이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 로그가 먼저 말해 주는 것\n\n이 책에서 **로그 한 줄이 원인을 짚은 자리**가 여럿이었다. 6.7절의 `(G1 Humongous Allocation)`, 7.7절의 `To-space exhausted`, 4.4절의 `CodeCache is full`, 9.3절의 **아무 줄도 남기지 않은 종료 코드 137**. **마지막 것이 로그를 켜 두는 이유**다 — 남은 것이 없으면 아무것도 못 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 운영용 설정으로 켠다 ---\n\n$ java -Xmx256m \\\n    '-Xlog:gc*:file=gc.log:time,uptime,level,tags:filecount=5,filesize=20k' \\\n    -cp out Live 12\n\n$ ls -la gc.log*\n  12888  gc.log\n\n$ head -2 gc.log\n[2026-09-26T11:54:02.351+0900][0.045s][info][gc] Using G1\n[2026-09-26T11:54:02.352+0900][0.045s][info][gc,init] Version: 17.0.16+0 (release)\n\n# 첫 칸이 time, 둘째가 uptime. 장애 시각과 맞출 수 있다.\n# 이 실행은 12,888 바이트로 끝나 filesize=20k 에 안 닿았다 — 회전 파일은 안 생겼다.\n\n# --- 2) 해부한 그 줄 (4.1 절) ---\n\n[0.108s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 23M->6M(130M) 3.975ms\n\n# --- 3) 원인이 다른 줄들 (각 절에서 실제로 나온 것) ---\n\nGC(49) Pause Young (Concurrent Start) (G1 Humongous Allocation) 190M->151M(256M) 0.317ms\nGC(20) Pause Full (G1 Compaction Pause) 94M->50M(96M) 2.323ms\nGC(9)  To-space exhausted\n[warning][codecache] CodeCache is full. Compiler has been disabled.\n\n# --- 4) 같은 수집의 네 줄 (gc+heap=info) ---\n\nGC(0) Eden regions:      23->0(14)\nGC(0) Survivor regions:   0->3(3)\nGC(0) Old regions:        0->20\nGC(0) Humongous regions:  0->0",
+      "note": "**같은 GC(0) 을 두 태그가 다르게 말한다.** `gc` 는 `23M->6M`, `gc+heap` 은 그 6M 이 어디로 갔는지다."
+    }
+  ],
+  "recap": [
+    "한 줄에 시각·GC 번호·종류·원인·전후·용량·멈춤이 들어 있다.",
+    "괄호 안의 capacity 는 -Xmx 가 아니라 현재 힙 크기다.",
+    "원인 칸이 처방을 고른다 — Humongous Allocation 은 힙이 아니라 리전 문제다.",
+    "영역이 어떻게 움직였는지는 gc+heap=info 의 네 줄이 말한다.",
+    "운영에서는 file= 로 빼고 filecount·filesize 로 회전시키고 time 을 넣는다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션의 GC 로그를 운영용 설정으로 켠다.",
+      "done_when": "time 데코레이터와 회전이 걸린 것을 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "로그에서 원인별 횟수를 세어 본다.",
+      "done_when": "무엇이 수집을 부르고 있는지 안다.",
+      "minutes": 12
+    },
+    {
+      "task": "Pause Young 의 뒤 숫자와 멈춤 시간의 관계를 그려 본다.",
+      "done_when": "6.2 의 결론이 내 로그에서도 보이는지 확인한다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "23M->6M(130M) 의 130M 은 무엇인가.",
+      "a": "현재 힙 크기다. -Xmx 가 아니다."
+    },
+    {
+      "q": "멈춤 시간을 정하는 것은 앞 숫자인가 뒤 숫자인가.",
+      "a": "뒤 숫자다. 살아남아 옮겨진 양이 비용이다."
+    },
+    {
+      "q": "(G1 Humongous Allocation) 이 보이면 무엇을 고치나.",
+      "a": "힙 크기가 아니라 리전 크기나 객체 크기다."
+    },
+    {
+      "q": "운영 GC 로그에 time 데코레이터가 필요한 이유는.",
+      "a": "uptime 만으로는 장애 시각과 맞출 수 없다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "데코레이터",
+      "what": "-Xlog 의 각 줄 앞에 붙는 정보. time·uptime·level·tags 등을 고른다."
+    },
+    {
+      "term": "GC 원인",
+      "what": "괄호 안의 문구. 왜 그 수집이 일어났는지를 말하고 처방을 고르는 근거다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command, Enable Logging with the JVM Unified Logging Framework",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JEP 158: Unified JVM Logging",
+      "url": "https://openjdk.org/jeps/158",
+      "publisher": "OpenJDK"
+    }
+  ]
+}
