@@ -1656,3 +1656,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 estie PR 전용 DB Preview
 
 - 결정 7 — 필요한 PR 만 추가 라벨·copy-on-write 클론(3안 비교)·Aurora 통일로 엔진 분기 없음·Reusable Workflow 파라미터·5일 유휴 삭제와 태그 감시·t4g.medium·63자 명명. 두 도메인 다 기능 참. 다음 완주 검사.
+
+## 2026-09-26 여든일곱 번째 후보 조사
+
+- Zenn Publication RSS 30곳 탐침. 다이니(통합 결제 대장)·IVRy(Human-in-the-Loop 평가)·PKSHA(DynamoDB Zero-ETL) → 대기 3/3. 같은 사이클에 estie 완주 검사 2회차 검색도 돌려 결과만 STATE 에 적었다(글 0).

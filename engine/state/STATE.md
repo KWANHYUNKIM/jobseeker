@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**estie 확장 2/2(2026-09-26) — `preview-with-db-aurora-clone` 완료, 빈 도메인 없음. 다음은 완주 검사: 스마트 리폼(합작)·DX 컨설팅 수익원에 도메인이 없다 — 1회차는 Zenn RSS 20편(없음)으로 셈, 2회차는 Zenn 검색 API('estie'·'エスティ'·'リフォーム'·'コンサル' 를 publication estie 로 필터)·estie.jp/blog. 리서치 데이터 구조화(CRE 발표) 글이 나오면 리서치 수익원 보강 후보로 적기만. 있으면 도메인 추가, 없으면 hold_reason. 대기 0/3 — estie 를 닫으면 **후보 조사**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에(estie ↔ CADDi Control Plane) + **PR 환경**(estie Preview with DB ↔ SMS·Career Portal·Sumzap 검증 환경). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu(hold)·LayerX 는 in_progress.**
+**87번째 후보 조사(2026-09-26) — 대기 3/3(다이니·IVRy·PKSHA), 모두 Zenn Publication RSS 입구. 다음은 `--gaps` 대로 — estie 완주 검사가 먼저 걸리면: 스마트 리폼·DX 컨설팅 수익원은 **이미 두 번 찾았다**(1회 Zenn RSS 20편, 2회 Zenn 검색 API 'estie'·'エスティ'·'リフォーム'·'コンサル'·'修繕'·'CRE' — estie 글은 창간 글 1편뿐, 2026-09-26) → 바로 hold_reason. 그다음 신규: 대기 맨 위(다이니 — `aecc50e7a1735b` 통합 결제 대장부터). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에(estie ↔ CADDi Control Plane) + PR 환경(estie ↔ SMS·Career Portal·Sumzap) + **결제 대장**(다이니 USL ↔ ENECHANGE 검산 · 기존 결제사). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu(hold)·LayerX·estie 는 in_progress.**
 
 
 

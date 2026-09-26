@@ -44,8 +44,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **ダイニー(dinii)** | JP · 음식점 모바일 오더·POS·결제 | Zenn Publication `zenn.dev/p/dinii`(RSS, 7~9월 4편). **AMEX 대응으로 입금원이 2곳이 돼 통합 결제 대장(USL)을 만든 이야기**(`aecc50e7a1735b`, 2026-08-07) — 금액은 항상 양수+방향 컬럼, 행 구분은 Adyen 구분을 거의 그대로 공통화, '처리한 회사' 와 '입금하는 회사' 분리, 정산 내 수수료와 사후 청구 수수료 분리, **Validation 을 설계 중심에**(대가: 알림 운영 비용 — '거의 맞는 대장' 은 아무도 안 믿는다). 온콜 조사 Slack 봇(`2026-09`)·AI 리뷰 비용을 구독에 편승. **결제 대장 축** — 결정과 대가가 글에 그대로 있다. |
+| **IVRy(アイブリー)** | JP · AI 전화 자동 응답 SaaS | Zenn Publication `zenn.dev/p/ivry`(RSS, 7~9월 8편). **대화 시스템 평가를 Human-in-the-Loop 전제로 설계**(`71376f575ccd9c`, 2026-08-04) — 사용자가 만든 분류 선택지를 공개 전에 검증, 정답 라벨 고정 생성, **온라인 시뮬레이션 대신 오프라인 평가**(LLM 사용자 역이 불안정), 불일치만 3사 LLM 재판정·일치 시 새 정답(전건 고급 모델 판정은 비싸다), 멀티턴은 과제. Lambda Durable Functions 본번 운용 · dbt 인증 태그. **음성 AI 제품 축(처음)**. |
+| **PKSHA Technology** | JP · AI SaaS(챗봇·음성 등) | Zenn Publication `zenn.dev/p/pksha`(RSS, 7~9월 11편). **DynamoDB 를 포기하지 않기 위한 Zero-ETL**(`dynamodb-zero-etl`, 2026-08-05) — 분석용 GSI 를 늘리면 쓰기·저장 비용이 인덱스 수만큼 → 앱용·분석용 저장소 분리, S3 Tables(Iceberg)·Athena, 다른 연계 수단 비교, 비용은 변경 취입 횟수로 결정. MariaDB IN 절·다중 인덱스 최적화 · 다수 AWS 계정에서 AI 가 안전하게 조사할 정책 · LLM 모델 교체 자동화(llm-replacer) · AI 네이티브 분석 기반. **제품 이름이 붙은 글인지는 프로파일 때 확인** — 인프라 글이 많다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 여든일곱 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn Publication RSS(계속).**
+  - **다이니** — **결제 대장 축.** 입금원이 늘 때의 대장 설계, 결정 다섯에 대가(알림 운영)까지 적는다.
+  - **IVRy** — **음성 AI 축(처음).** LLM 평가 루프에서 무엇을 사람에게 돌리는지 — 비용 이유가 분명하다.
+  - **PKSHA** — **AI SaaS 축.** 인프라 글 위주라 제품 결정은 약할 수 있다.
+  - **통과 못 한 곳.** **carenet** — 인기 기사 요약 글이 대부분. **sakura_internet** — '해 보기' 시리즈·SDK 릴리스. **ncdc** — 수탁 개발사의 기술 시험 글. **mixi**·**medley**·**globis**·**praha**·**cureapp**·**nstock**·**spacemarket** — 7~9월 1~4편, 제품 결정 약함. **micin** — 7~9월 0편. kaminashi·herp·tokium·aldagram·atama_plus·buyma·rinnai·tver·gaudiy·lapras·kubell·kinto_tech·tech_tier4 — Zenn Publication 없음(피드 0).
 
 - **2026-09-26 여든여섯 번째 후보 조사 — 목표 3곳 중 3곳. 새 입구: Zenn Publication RSS.**
   - **입구를 바꿨다.** 하테나 사이트맵이 바닥이라 `zenn.dev/p/<id>/feed`(RSS)를 시험 — `zenn.dev/api/articles?publication_name=` 은 **필터가 안 먹는다**(전체 최신 목록이 돌아온다). RSS 는 된다. 21곳 중 8~9월 글이 있는 곳 11곳.
