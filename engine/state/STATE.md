@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Lincwell 기능 1(2026-09-27) — `reservation-line-async`(예약은 먼저 끝내고 LINE 은 뒤에서, 결정 7). 다음은 --gaps 의 확장: 도메인 '운영이 고른 순간에 수만 명에게 푸시를 보낸다' — `c2e73de75af524`(수작업 스크립트 → 자동 분할 → 관리 화면, SaaS 대신 내재화). 그 뒤 Smart Clinics 수익원을 RSS·Zenn 검색 두 번으로 판정(도메인 없음). 대기 2/3(WED · mixtend). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Lincwell 기능 2(2026-09-27) — `inhouse-push-broadcast`(푸시는 사서 쓰지 않고 보내 보면서 만든다, 결정 7). 도메인 둘 다 찼다. 다음은 Smart Clinics(클리닉 DX) 수익원 판정 — RSS(`zenn.dev/p/lincwell_inc/feed`)와 Zenn 검색 API('クリニックフォア'·'電子カルテ'·'Linc'well') 두 번. 있으면 도메인·기능, 없으면 hold_reason + 재시도 안 함 + `fix(reveng): Lincwell 클리닉 DX 수익원 보류`. 대기 2/3(WED · mixtend). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

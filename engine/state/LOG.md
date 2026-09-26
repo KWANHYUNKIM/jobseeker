@@ -2114,3 +2114,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Lincwell 예약 LINE 비동기화
 
 - `2c0befff862461` 로 기능 `reservation-line-async`. 결정 7(비동기화·재시도·스낵바 폐지·6단계 계측·SLO 초록에도 조사·외부 지연 흡수 위치·Amplitude). 멱등 방식·재시도 한도는 글에 없어 비웠다.
+
+## 2026-09-27 Lincwell 푸시 내재화
+
+- `c2e73de75af524` 로 기능 `inhouse-push-broadcast`. 결정 7(SaaS 대신 내재화·범위·최소 시작·자동 분할·테스트/본 발송·발송 권한·효과 지표). 전달 경로(APNs/FCM)·분할 크기는 글에 없어 unknown.
