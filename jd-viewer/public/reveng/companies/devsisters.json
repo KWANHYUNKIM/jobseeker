@@ -64,7 +64,7 @@
   "domain_map": {
     "title": "게임 열 개, 로그 한 줄기",
     "question": "여러 게임의 운영 데이터는 어떻게 흘러 지표가 되나?",
-    "code": "flowchart LR\n  G[\"쿠키런 게임들\\n킹덤 · 오븐브레이크 · 크럼블 ...\"] --> K[\"Kafka 원본 로그 topic들\"]\n  K --> T[\"Log Transformer\\nKafka Streams · k8s · KEDA(lag)\"]\n  T --> GT[\"게임별 topic\"]\n  GT --> L[\"Databricks\\n정제 테이블\"]\n  L --> MV[\"Metric View\\n지표 정의 한 벌\"]\n  MV --> D[\"대시보드\"]\n  MV --> A[\"분석 에이전트\"]",
+    "code": "flowchart LR\n  G[\"쿠키런 게임들\\n킹덤 · 오븐브레이크 · 크럼블 ...\"] --> K[\"Kafka 원본 로그 topic들\"]\n  K --> T[\"Log Transformer\\nKafka Streams · k8s · KEDA(lag)\"]\n  T --> GT[\"게임별 topic\"]\n  GT --> L[\"Databricks\\n정제 테이블\"]\n  L --> MV[\"Metric View\\n지표 정의 한 벌\"]\n  L --> GOLD[\"Gold\\n비가산 지표만\"]\n  MV --> D[\"대시보드\"]\n  MV --> A[\"분석 에이전트\"]",
     "_note": "위쪽은 로그를 싸고 빠르게 게임별로 가르는 일, 아래쪽은 그 로그로 만든 지표를 모두가 같은 값으로 읽게 하는 일이다."
   },
   "domains": [
@@ -114,7 +114,7 @@
         {
           "tech": "Databricks Unity Catalog Metric View(의미 계층)",
           "solves": "measure·dimension 을 한 번 정의하고 group by 만 바꿔 어느 단위로든 같은 값을 읽는다(일별 평균으로 월을 내는 오류가 없다). 카탈로그에 있어 에이전트까지 같은 정의를 읽는다.",
-          "limits": "정의를 카탈로그에 모으는 일 자체가 설계 작업이다 — 어떻게 데이터 구조를 나눴는지는 기능 사이클에서 판다. Databricks 에 묶인다(이 사이트의 해석).",
+          "limits": "**잘못된 합산을 막지 못한다**(YAML 스펙 1.1 — dbt 의 `non_additive_dimension` 같은 선언이 없다), dimension 을 바꾸면 materialization **전 기간 재계산**, 비가산 measure 는 캐시가 안 먹는다. Databricks 에 묶인다(이 사이트의 해석).",
           "confidence": "confirmed",
           "sources": [
             {
@@ -122,12 +122,29 @@
               "url": "https://tech.devsisters.com/posts/metric-view",
               "publisher": "데브시스터즈",
               "date": "2026-09-18",
-              "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다."
+              "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+            }
+          ]
+        },
+        {
+          "tech": "Metric View materialization(aggregated · unaggregated)",
+          "solves": "자주 쓰는 dimension 조합을 미리 집계해 대시보드를 캐시로 읽게 한다 — 대부분의 대시보드가 Gold 없이 충분히 빨라졌다.",
+          "limits": "가산 measure 에만 통한다. `where` 의 dimension 까지 조합에 있어야 쓰이고, 비가산 measure 가 하나라도 섞이면 쿼리 전체가 unaggregated 로 간다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+              "url": "https://tech.devsisters.com/posts/metric-view",
+              "publisher": "데브시스터즈",
+              "date": "2026-09-18",
+              "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "metric-view-over-silver"
+      ]
     }
   ],
   "features": [
@@ -508,6 +525,381 @@
           "summary": "데이터엔지니어링셀이 **Log Transformer**(여러 Kafka topic 의 원본 로그를 검증·변환해 **게임별 topic 으로 다시 produce** 하는 Kafka Streams 앱)를 EC2 에서 쿠버네티스로 옮긴 기록이다. 전에는 **c6g.2xlarge 72대** — ASG 에 cron 스케줄로 36↔72대를 오가게 했지만 **불안정해 피크 기준 72대로 고정**했고, 바꾸려면 사람이 ASG 를 고쳤고, Spinnaker 배포는 단계가 많아 느렸다. 먼저 **source topic 별로 앱을 나눠** 스케일·장애·배포를 topic 단위로 격리했다. **첫 시도(CPU 기반 HPA)는 실패했다** — Kafka Streams 는 partition 을 task 로 묶어 스레드 수에 비례해 나누는데, **task 수가 스레드 수로 나누어떨어지지 않으면** 일부 consumer 가 더 받아 CPU 100% 인데 **평균은 목표 아래**라 HPA 가 반응하지 않는다(어떤 할당 전략에도 남는 편차). CPU 평균은 부하가 고르게 퍼진다는 전제에서만 맞는 지표다. 그래서 **consumer lag** 으로 스케일한다 — HPA external metric 은 **lag 을 내보내는 metrics adapter 를 따로 운영**해야 해 **KEDA** 를 들였다(lagThreshold 로 replica 당 몫, replica 는 partition 수를 넘지 않는다). 개발 환경 topic 은 **scale-to-zero** 로 유휴 비용을 없애고 운영은 최소 replica 를 둔다. 특정 partition 에 몰리면 replica 로는 안 풀리니 partition 설계를 다시 봐야 한다고 적는다. **자정**에 일일 미션·출석 초기화로 로그가 한꺼번에 쏟아지면 lag 기반은 늦는다(pod ready·rebalance·JVM 워밍업) — **cron trigger 로 미리** 늘린다. **pod 당 스레드를 늘려** JVM 오버헤드와 rebalance 를 줄였다. 결과: EC2 대비 **인프라 비용 80% 이상 절감.** **pod 당 스레드를 늘린다** — pod 1대에 스레드 1개면 JVM 기동 오버헤드가 pod 수만큼 늘고 재시작·롤링 배포·축출이 곧 rebalance 가 된다. `num.stream.threads` 로 전체 consumer 스레드 수는 그대로 두고 pod 수만 줄인다. 대가로 **pod 1대의 장애 영향이 커져** 스레드 수를 무한정 늘리지 않고 **스레드당 CPU 1코어**(보수적)로 맞춘다 — 그래야 'pod 1대가 흡수하는 lag' 이 예측 가능해진다. 결과 표: 스케일링 72대 고정 → 자동(lag + cron), 비용 24시간 고정 → 트래픽 비례(**새벽에는 2대까지** 준다), 게임 추가는 인스턴스 증설 → **Helm 값 추가**, 배포는 Spinnaker → **ArgoCD**. '80% 는 현재 트래픽 패턴의 결과이고 핵심은 리소스가 패턴을 따라 움직인다는 것.' **남은 과제**: KEDA 의 `ensureEvenDistributionOfPartitions` 는 partition÷replica 만 보는데 실제로 partition 을 나눠 갖는 것은 **스레드**라 partition÷(replica×스레드)가 정수여야 한다(24 partition·pod 당 4스레드면 replica 4 에서 스레드 간 처리량 2배 차, 8 이상이면 일감 없는 스레드). 그래서 KEDA 에 **`threadsPerConsumer` 옵션 이슈를 올렸고 구현 PR 이 리뷰 중**이다. 더 근본적으로는 **Scala 로 짠 Log Transformer 를 Rust 로 대체**하는 작업이 진행 중이다(JVM 기동·GC 지연·자원 절감 기대). 글의 YAML 에 나온 replica 수·임계값은 **설명용 예시 값**이라고 밝힌다."
         }
       ]
+    },
+    {
+      "key": "metric-view-over-silver",
+      "name": "정의는 Silver 위의 한 레이어에, 정제는 그 아래에",
+      "domain": "지표 정의를 한곳에 둔다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "런칭 직후 게임은 대시보드와 분석 요청이 가장 몰리는 때다. 그때 **승률 하나가 차트마다 다른 숫자**로 나오고, 정제 쿼리가 대시보드를 열 때마다 다시 돌았다. 사내 **분석 에이전트**는 정제 안 된 로그를 직접 읽으며 조건을 스스로 골라 **대시보드와 다른 값**을 냈다.\n\n대시보드 속도만 문제였다면 데이터 마트(Gold)로 충분했다. 그러나 에이전트는 **질문마다 다른 dimension 조합**으로 지표를 부르니, 단위를 고정한 테이블로는 미리 대비할 수 없다. 그래서 지표 정의를 **Metric View** 로 한 레이어에 모으고, 그 레이어가 읽는 값은 전부 **Silver 에서 미리 정제**한다.\n\n이 기능의 대부분은 Metric View 를 두는 것보다 **잘못 합쳐지지 않게 하는 규칙**이다 — 엔진이 막아 주지 않기 때문이다.",
+        "metrics": [
+          {
+            "label": "가장 무거운 대시보드",
+            "value": "1회 cold 실행 기준 compute 41% 감소 · 스캔량 6.7배 감소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "label": "데이터셋별 compute",
+            "value": "정제 비용이 컸던 곳 0.3배, 원래 가볍던 곳 0.8배 안팎",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "label": "분석 에이전트",
+            "value": "같은 질문 세트에서 토큰·비용 약 절반, 턴 수 30% 감소 — 대시보드와 같은 승률을 낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "label": "운영 기간",
+            "value": "배포 후 석 달 동안 고치며 정리한 기록",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "Metric View 를 어느 레이어에 둘지 정할 때",
+          "thought": "역할로 보면 Gold 같은 소비 레이어지만 **집계 단위를 고정하지 않고 정의만 가진다.** Bronze 를 읽게 하면 중첩 필드를 펼치는 비용을 조회마다 다시 낸다. 그러니 정제는 Silver 에 다 해 두고 Metric View 는 **Silver 를 읽는 view** — Gold 와 나란히 선 Semantic 레이어로 둔다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+              "url": "https://tech.devsisters.com/posts/metric-view",
+              "publisher": "데브시스터즈",
+              "date": "2026-09-18",
+              "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+            }
+          ]
+        },
+        {
+          "at": "Gold 테이블과 무엇이 다르냐는 질문을 지표마다 받을 때",
+          "thought": "대시보드만 보면 대부분 Gold 로 충분하다. Metric View 를 고른 이유는 **에이전트**다 — 질문마다 쪼개는 축이 달라 미리 만든 표로는 대비할 수 없다. 기본은 Metric View, Gold 는 **비가산 지표가 느릴 때만.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+              "url": "https://tech.devsisters.com/posts/metric-view",
+              "publisher": "데브시스터즈",
+              "date": "2026-09-18",
+              "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+            }
+          ]
+        },
+        {
+          "at": "평균·점유율·고유 유저 수를 정의할 때",
+          "thought": "**가산성**이 모든 것을 정한다 — 미리 집계해 둘 수 있는지, comment 에 합산 주의를 적어야 하는지, 소비자가 다시 합쳐도 되는지. 엔진이 막아 주지 않으니 **이름·타입·comment 만 보고 쿼리를 쓰는 에이전트**에게 comment 가 유일한 경고다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+              "url": "https://tech.devsisters.com/posts/metric-view",
+              "publisher": "데브시스터즈",
+              "date": "2026-09-18",
+              "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+            }
+          ]
+        },
+        {
+          "at": "석 달 운영 뒤 돌아볼 때",
+          "thought": "대시보드 결과 컬럼과 1:1 로 맞추는 것을 완료 조건으로 삼았더니 Metric View 가 **대시보드의 모양을 그대로 따라갔다** — 조건 하나마다 measure 하나. 파생 지표는 밖에 두고 **재료가 되는 measure 만** 남겨야 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+              "url": "https://tech.devsisters.com/posts/metric-view",
+              "publisher": "데브시스터즈",
+              "date": "2026-09-18",
+              "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Silver",
+            "what": "**데이터 정합성** 레이어. 중첩 필드를 펼치고, 소스를 합치고, 중복을 지우고, 정제 flag 를 붙인다. measure 가 읽는 값은 모두 여기서 만든다. 지표는 계산하지 않는다."
+          },
+          {
+            "name": "Gold",
+            "what": "집계 단위를 고정해 미리 계산한 물리 테이블. **비가산 지표를 고정 단위로 빠르게** 봐야 할 때만 만든다."
+          },
+          {
+            "name": "Semantic(Metric View)",
+            "what": "Silver 를 읽는 view. measure 산식과 dimension 을 한곳에 정의한다. Gold 와 나란히 선다."
+          },
+          {
+            "name": "measure(가산 · 비가산)",
+            "what": "가산은 작은 단위를 더해 큰 단위가 되는 값(플레이 수, 합). 비가산은 그러면 틀리는 값(고유 유저 수, 분위수)."
+          },
+          {
+            "name": "aggregated / unaggregated materialization",
+            "what": "자주 쓰는 dimension 조합의 **미리 집계한 결과** / 비가산 measure 를 위해 **개별 row 전체**를 저장한 것."
+          },
+          {
+            "name": "comment 태그",
+            "what": "`[non-additive]` — 집계된 값을 다시 합치면 틀린다. `[LOD:exclude=<dim>]` — 그 축을 group by 에서 빼면 틀린다. 태그가 없으면 합쳐도 안전하다."
+          }
+        ],
+        "invariants": [
+          "Metric View 는 **Silver 만** 읽는다 — Bronze 를 읽지 않는다.",
+          "Silver 는 **지표를 계산하지 않는다.** 지표 산식은 Semantic 에만 있다.",
+          "평균은 `avg()` 로 두지 않고 **합 ÷ 건수** 로 나눠 정의한다.",
+          "비가산 measure 에는 반드시 `[non-additive]` 태그가 붙는다 — 태그가 없다는 것이 '합쳐도 안전' 의 신호다.",
+          "aggregated materialization 의 dimension 에는 **소비자가 항상 거는 필터**가 들어 있어야 한다.",
+          "unaggregated materialization 은 빼지 않는다 — 비가산 measure 가 하나라도 있으면 필요하다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Bronze 원본을 Silver 에서 펼치고 합치고 중복을 지우고 정제 flag(정상 유저 등)를 붙인다",
+            "why": "정제 비용을 조회마다가 아니라 적재 때 한 번 낸다."
+          },
+          {
+            "step": "Metric View YAML 에 dimension 과 measure(산식 + comment 태그)를 정의한다",
+            "why": "대시보드·SQL·노트북·에이전트가 같은 정의를 읽는다."
+          },
+          {
+            "step": "대시보드가 쓰는 dimension 조합(항상 거는 필터 포함)을 aggregated materialization 에 등록한다",
+            "why": "가산 measure 조회는 저장된 결과를 읽어 빨라진다."
+          },
+          {
+            "step": "소비자는 `measure()` 로 부르고 group by 만 바꾼다 — 엔진이 조합이 맞으면 캐시를, 아니면 unaggregated 에서 다시 계산한다",
+            "why": "어느 단위로 보든 같은 정의로 계산된다."
+          },
+          {
+            "step": "비가산 지표가 속도 요구를 못 맞추는 조회만 Gold 테이블로 뺀다",
+            "why": "Gold 를 기본으로 두면 축이 늘 때마다 테이블이 는다."
+          },
+          {
+            "step": "분석 에이전트의 도메인 지식을 Metric View 위주로 다시 쓰고, 태그 설명을 가이드에 넣는다",
+            "why": "만드는 쪽과 조회하는 쪽이 같은 규칙을 본다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Metric View 를 어느 레이어에 두나?",
+            "chosen": "**Silver 를 읽는 view 로, Semantic 이라는 별도 레이어에 Gold 와 나란히 둔다.**",
+            "alternatives": [
+              "Bronze 를 직접 읽는 Metric View",
+              "Gold 테이블 위에 둔다"
+            ],
+            "tradeoff": "Bronze 를 읽으면 중첩 필드 처리 같은 가공 비용을 **조회마다 중복**으로 낸다. Gold 위에 두면 집계 단위가 이미 고정돼 비가산 지표를 다시 계산할 수 없다. 대가는 **measure 가 읽는 값은 전부 Silver 에 미리 있어야** 한다는 것 — 새 지표가 정제 안 된 필드를 원하면 Silver 부터 고쳐야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "question": "Gold 테이블과 Metric View 중 무엇을 만드나?",
+            "chosen": "**기본은 Metric View. Gold 는 비가산 measure 가 든 조회가 unaggregated 로 충분히 빠르지 않을 때만.**",
+            "alternatives": [
+              "지금처럼 대시보드마다 Gold(마트)를 만든다"
+            ],
+            "tradeoff": "Gold 는 고정 단위로 가장 빠르지만 새 축이 필요하면 테이블을 새로 만들고, 컬럼을 더하면 **전 기간을 다시 적재**한다. 에이전트는 질문마다 축이 달라 대비할 수 없다. Metric View 는 YAML 에 measure 를 더하면 바로 쓰지만, 캐시가 안 맞는 조합은 **다시 집계하는 비용**을 낸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "question": "반복해서 여는 대시보드의 조회 비용을 어떻게 줄이나?",
+            "chosen": "**자주 쓰는 dimension 조합을 aggregated materialization 으로 등록한다. 비가산 measure 용으로 unaggregated 는 항상 둔다.**",
+            "alternatives": [
+              "Metric View 앞에 캐시용 Gold 테이블을 따로 둔다"
+            ],
+            "tradeoff": "대부분의 대시보드가 이것만으로 충분히 빨라졌다. 대가 — **비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로** 가서 기간이 길수록 느리다. 대시보드는 비가산 지표를 **다른 차트로 분리**해 피했지만 에이전트는 부르는 measure 가 매번 달라 같은 방법을 못 쓴다. 그리고 **dimension 을 더하거나 바꾸면 전 기간을 다시 계산**한다 — 날짜별 재적재 개념이 없어서다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "question": "평균을 어떻게 정의하나?",
+            "chosen": "**`avg()` 대신 합 measure 와 건수 measure 를 두고, 둘을 나눈 조합 measure 를 따로 둔다.**",
+            "alternatives": [
+              "`avg()` 로 바로 정의한다"
+            ],
+            "tradeoff": "`avg()` 는 조회 시점엔 정확하지만 **aggregated 캐시가 적용되지 않고**, 소비자가 일별 평균을 받아 다시 평균 내면 표본 수가 다른 날이 같은 비중이 돼 틀린다. 합과 건수는 따로 합칠 수 있어 어느 단위로 group by 해도 그 단위에서 다시 나눠진다. 대가는 **평균 하나에 measure 셋** — 뒤의 'measure 가 너무 많다' 로 이어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "question": "픽률처럼 분모가 더 넓은 점유율을 어떻게 정의하나?",
+            "chosen": "**분모를 window measure 로 두고 window 정의에서 쿠키 축을 뺀다. comment 에 `[LOD:exclude=cookie_id]` 를 적는다.**",
+            "alternatives": [
+              "소비 쿼리마다 분모를 서브쿼리로 따로 계산한다"
+            ],
+            "tradeoff": "어떤 단위로 group by 하든 분모가 쿠키를 무시한 값이 된다. 대가 — 뺀 축(쿠키)이 소비 쿼리의 group by 에 **없으면 분자와 분모가 같아져 에러 없이 조용히 100%** 가 나온다. 그래서 태그로 경고한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "question": "잘못된 합산을 어떻게 막나?",
+            "chosen": "**엔진이 못 막으니 comment 에 세 가지만 적는다 — 무엇을 세는지, 이름에 안 드러난 모집단 조건, 합산 태그(`[non-additive]`·`[LOD:exclude]`). 태그가 없으면 '합쳐도 안전'. 같은 설명을 에이전트 가이드에도 넣는다.**",
+            "alternatives": [
+              "dbt Semantic Layer 처럼 `non_additive_dimension` 을 선언해 엔진이 막게 한다",
+              "comment 에 산식까지 길게 적는다"
+            ],
+            "tradeoff": "Metric View(YAML 스펙 1.1)는 일반 measure 에 그런 선언이 없어 정의된 dimension 이면 **어느 것으로든 group by 되고** 그럴듯한 숫자가 나온다(고유 게임 수를 실력 구간으로 쪼개면 합이 전체보다 크다). 산식은 정의에 이미 있으니 다시 적으면 중복이고, comment 가 길면 **정작 봐야 할 경고를 놓친다.** 대가는 막는 힘이 **읽는 쪽의 성실함**에 달렸다는 것 — 사람은 물어볼 수 있지만 에이전트는 comment 가 없으면 스스로 판단해 버린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "question": "조건을 measure 에 넣나, dimension 으로 빼나?",
+            "chosen": "**지표 정의에 속한 조건(성사된 매칭만)은 measure 안에, 소비자가 상황마다 바꿀 조건(봇 포함 여부)은 dimension 으로.** 그리고 소비자가 **항상 거는 필터 dimension 은 aggregated 에 넣는다.**",
+            "alternatives": [
+              "모든 조건을 measure 에 고정한다",
+              "모든 조건을 dimension 으로 뺀다"
+            ],
+            "tradeoff": "대기시간 measure 에 '봇 없는 매칭만' 을 고정했더니 봇 비중이 높은 시기에 **봇 포함 대기시간을 볼 수 없었다.** 전부 dimension 으로 빼면 지표 정의가 다시 흩어진다. 또 query rewrite 는 `where` 에 쓴 dimension 도 materialization 에 있어야 후보로 삼는데, 정상 유저 flag 가 빠져 **캐시가 전혀 안 쓰이고 있었다**(`explain extended` 로 발견).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          },
+          {
+            "question": "전환의 완료 조건을 무엇으로 두나?",
+            "chosen": "**(그때) 기존 대시보드 쿼리 결과의 모든 컬럼이 dimension 이나 measure 가 되고 전후 값이 컬럼 단위로 일치하는 것. (이제) 기본 measure 와 비가산 measure 만 남기는 쪽으로 정리한다.**",
+            "alternatives": [
+              "처음부터 재료가 되는 measure 만 정의하고 파생 지표는 밖에 둔다"
+            ],
+            "tradeoff": "빠르게 옮기고 바로 검증할 수 있었다. 대가 — Metric View 가 **대시보드 결과의 모양을 따라가** '봇 제외 승률'·'특정 모드 승률'·'1위 기준 승률' 처럼 조건마다 measure 가 생겼고, 비슷한 이름이 많아 **정의를 열어 봐야** 고를 수 있게 됐다. 규칙(가산성 판정·태그·materialization 배치·검증)을 **코딩 에이전트 스킬**로 옮겨 기계적으로 검사하려 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+                "url": "https://tech.devsisters.com/posts/metric-view",
+                "publisher": "데브시스터즈",
+                "date": "2026-09-18",
+                "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "게임 로그를 게임별로 갈라 흘려보낸다(같은 회사의 다른 도메인)",
+          "via": "게임별 topic → Bronze → Silver",
+          "contract": "Log Transformer 가 게임별로 가른 로그가 적재돼 Bronze 가 되고, Silver 가 그것을 펼치고 정제한다. 앞이 밀리면 **Metric View 의 숫자가 늦어진다**(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "레이어 네 개와 소비자",
+          "question": "정의는 어디에 있고 정제는 어디서 하나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  B[\"Bronze\\n원본 그대로\"] --> S[\"Silver\\n펼치기 · 합치기 · 중복 제거\\n정제 flag\"]\n  S --> G[\"Gold\\n비가산 지표를 고정 단위로\\n(느릴 때만)\"]\n  S --> M[\"Semantic = Metric View\\nmeasure 산식 · dimension\\ncomment 태그\"]\n  M --> D[\"대시보드\"]\n  M --> Q[\"SQL · 노트북\"]\n  M --> A[\"분석 에이전트\"]\n  G --> D"
+        },
+        {
+          "title": "한 쿼리가 어디서 계산되나",
+          "question": "`measure()` 호출은 캐시를 읽나, 다시 계산하나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"measure() 호출\\ngroup by + where\"] --> N{\"비가산 measure 가\\n하나라도 있나?\"}\n  N -->|예| U[\"unaggregated materialization\\n개별 row 에서 다시 계산\\n기간이 길수록 느리다\"]\n  N -->|아니오| C{\"group by · where 의 dimension 이\\naggregated 조합에 다 있나?\"}\n  C -->|예| AG[\"aggregated 결과를\\n더 큰 단위로 합쳐 읽는다\"]\n  C -->|아니오| U\n  U -.->|속도가 끝내 안 나오면| GOLD[\"그 조회만 Gold 테이블로\"]"
+        },
+        {
+          "title": "조용히 틀리는 세 가지",
+          "question": "에러 없이 그럴듯한 숫자가 나오는 곳은?",
+          "kind": "failure",
+          "code": "flowchart TD\n  X[\"소비자 · 에이전트가\\nMetric View 를 부른다\"] --> F1[\"픽률을 cookie_id 없이 group by\"]\n  F1 --> R1[\"분자 = 분모 → 100%\\n(에러 없음)\"]\n  X --> F2[\"고유 수를 다른 축으로 쪼개\\n바깥에서 다시 합친다\"]\n  F2 --> R2[\"중복 집계 → 합이 전체보다 크다\"]\n  X --> F3[\"정상 유저 flag 로 where\\n그 flag 가 aggregated 에 없다\"]\n  F3 --> R3[\"값은 맞지만 캐시 미사용\\n→ 전부 unaggregated, 느리고 비싸다\"]\n  R1 --> T[\"대책: comment 태그\\n[LOD:exclude] · [non-additive]\\n+ 에이전트 가이드\"]\n  R2 --> T\n  R3 --> T2[\"대책: 항상 거는 필터를\\naggregated dimension 에 넣는다\\n(explain extended 로 확인)\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "쿼리가 아니라 정의를 고치기로 했습니다: Databricks Metric View 도입기",
+          "url": "https://tech.devsisters.com/posts/metric-view",
+          "publisher": "데브시스터즈",
+          "date": "2026-09-18",
+          "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -515,7 +907,8 @@
     "**라이브 게임 서버 쪽을 아직 안 봤다** — 킹덤 Scala 백엔드, `crk-aws-az-failure-postmortem`(AZ 장애 사후 분석), `crk-hot-range-postmortem`, `tuning-zio-for-high-performance`, `cro-mysql-online-alter`, 엔지니어링 데이(게임 서버) 정리.",
     "**`devplay-account`(통합 계정)·`deterministic-algorithm`(결정론적 알고리즘)** 도 도메인 후보다.",
     "**Log Transformer 가 하루에 얼마를 처리하는지** 없다 — 72대 규모만 있고 메시지 수·용량은 없다.",
-    "**Log Transformer 의 처리량이 없다** — 초당 메시지·게임 수·partition 수의 실제 값(글의 YAML 은 예시)이 없다. Rust 대체 결과와 `threadsPerConsumer` PR 의 병합 여부는 후속 글을 기다린다."
+    "**Log Transformer 의 처리량이 없다** — 초당 메시지·게임 수·partition 수의 실제 값(글의 YAML 은 예시)이 없다. Rust 대체 결과와 `threadsPerConsumer` PR 의 병합 여부는 후속 글을 기다린다.",
+    "**Metric View 규칙 검사 스킬**(YAML 위반을 기계적으로 잡는 코딩 에이전트 스킬)과 measure 정리 결과는 후속 글을 기다린다. 어느 **신규 런칭 게임**인지 글이 밝히지 않는다."
   ],
   "sources": [
     {
@@ -542,7 +935,7 @@
       "url": "https://tech.devsisters.com/posts/metric-view",
       "publisher": "데브시스터즈",
       "date": "2026-09-18",
-      "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다."
+      "summary": "데이터인텔리전스셀이 **신규 런칭 게임**의 파이프라인에 Databricks Unity Catalog **Metric View**(의미 계층)를 들인 기록이다. 런칭 직후 대시보드와 분석 요청이 쏟아지며 조건(어떤 유저를 뺄지, 봇이 섞인 게임, 어느 시점의 값)이 **대시보드마다·adhoc 쿼리마다 따로** 정의됐다. 몇 주 뒤 문제 셋 — **같은 지표가 데이터셋마다 다른 산출식**(승률의 '승부가 결정된 게임' 조건, 운영 계정·비정상 유저 제외 기준이 제각각이라 차트끼리 숫자가 어긋남), **집계 전 정제 비용**(중첩 필드를 펼치고 소스를 합치고 중복을 거르는 일)이 **대시보드를 열 때마다** 반복, 그리고 **사내 분석 에이전트가 지표를 매번 스스로 정의**했다(스킬 문서에 조건을 적어도 길어지기만 하고 요청마다 조금씩 달라졌다). 앞의 둘은 사람의 노력으로 어느 정도 풀리지만 **셋째는 기존 환경으로는 풀 수 없었다.** Metric View 는 measure·dimension 을 YAML 로 한 번 정의해 두고 소비자가 `measure()` 로 부르며 group by 만 바꾼다 — 일반 뷰는 집계 단위가 고정돼 **일별 승률을 avg 하면 월 승률이 틀리지만** Metric View 는 그 달의 행 전체로 다시 계산한다. BI 도구가 아니라 **데이터 카탈로그**에 있어 대시보드·SQL·노트북·외부 BI·에이전트가 같은 정의를 읽고 권한도 카탈로그에서 관리한다. **설계**: 메달리온(Bronze·Silver·Gold) 위에 Metric View 를 **Silver 를 읽는 view** 로 두고 **Semantic 레이어**로 따로 분류해 Gold 와 나란히 놓았다 — Bronze 를 읽으면 중첩 필드 처리 비용을 조회마다 다시 낸다. Silver 는 정합성(펼치기·합치기·중복 제거·정제 flag, 지표는 계산 안 함), Gold 는 **비가산 지표를 고정 단위로 빠르게 봐야 할 때만** 만드는 물리 테이블, Semantic 은 산식과 dimension. **materialization**: 자주 쓰는 dimension 조합을 **aggregated** 로 미리 계산해 대시보드 대부분이 충분히 빨라졌고, 고유 유저 수·분위수 같은 **비가산** measure 는 개별 row 를 담은 **unaggregated** 에서 매번 다시 계산된다. **규칙**: 평균은 `avg()` 대신 **합 measure·건수 measure·둘을 나눈 measure** 로 쪼갠다(avg 는 캐시가 안 먹는다). 픽률 같은 점유율은 **window measure** 로 분모에서 쿠키 축을 뺀다 — 그 축이 group by 에 없으면 **에러 없이 조용히 100%** 가 된다. measure comment 에는 무엇을 세는지·모집단 조건·태그(`[non-additive]`, `[LOD:exclude=<dim>]`)만 적고 **태그가 없으면 합쳐도 안전**하다는 뜻이다 — Metric View(YAML 스펙 1.1)는 잘못된 합산을 막지 못한다(dbt 는 `non_additive_dimension` 으로 막는다). 같은 태그 설명을 에이전트 가이드에도 넣었다. **결과**: 가장 무거운 대시보드가 1회 cold 실행 기준 **compute 41% 감소·스캔량 6.7배 감소**(데이터셋별 0.3~0.8배), 분석 에이전트는 같은 질문 세트에서 **토큰·비용 약 절반, 턴 수 30% 감소**하고 대시보드와 같은 승률을 낸다. **석 달 운영에서 배운 것**: 소비자가 늘 거는 정상 유저 flag 가 aggregated 의 dimension 에 없어 **캐시가 전혀 안 쓰였다**(`explain extended` 로 발견), dimension 을 바꾸면 **전 기간을 다시 계산**한다, 비가산 measure 를 하나라도 부르면 쿼리 전체가 unaggregated 로 간다(대시보드는 차트를 나눴지만 에이전트는 못 나눈다), measure 에 '봇 없는 매칭만' 을 고정했더니 봇 포함 값을 볼 수 없었다. **남은 과제**: 대시보드 결과 컬럼과 1:1 일치를 완료 조건으로 삼아 조건마다 measure 가 생겨 **measure 가 너무 많아졌다** — 기본 measure 와 비가산 measure 만 남기려 하고, 규칙 검사를 **코딩 에이전트 스킬**로 옮기는 중이다."
     }
   ]
 }

@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**데브시스터즈 — 기능 1(`lag-not-cpu`, 2026-09-26). 다음은 확장: "지표 정의를 한곳에 둔다" 를 `tech.devsisters.com/posts/metric-view`(앞부분 읽음 — 데이터 구조를 어떻게 나눴는지·설계 규칙·결과 부분을 마저)로. 그 뒤 수익원 '애니메이션·라이선싱' 은 기술 자료가 없을 공산이 크다 — 완주 기준을 볼 때 확인.**
+**데브시스터즈 — 기능 2(`metric-view-over-silver`, 2026-09-26). 두 도메인 모두 기능이 있다. 남은 완주 조건은 수익원 '애니메이션·라이선싱'(domains 비어 있음) 하나 — 다음 사이클에 tech.devsisters.com·뉴스룸에서 라이선싱 쪽 기술 자료를 찾고, 두 번 없으면 CADDi 처럼 hold_reason. `--gaps` 는 '신규(Picnic)' 를 찍지만 이 회사를 먼저 닫는다. 큐 1/3 이라 그 뒤 후보 조사.**
+
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.

@@ -1212,3 +1212,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 데브시스터즈 확장 — CPU 가 아니라 밀린 양으로
 
 - KEDA 글(09-03)로 `lag-not-cpu`(결정 8). 글의 YAML 값은 예시라 자정 시각은 inferred. topic 분리의 관리 부담·KEDA 컴포넌트·cron 의 고정 시간표는 해석 표시.
+
+## 2026-09-26 데브시스터즈 확장 — 정의는 Silver 위의 한 레이어에
+
+- Metric View 글(09-18) 후반까지 읽고 `metric-view-over-silver`(결정 8·그림 3). 레이어 배치·Gold 기준·materialization·평균 분해·window measure·comment 태그·조건 배치·완료 조건. 결과 수치(compute 41%↓·스캔 6.7배↓·에이전트 토큰 절반) confirmed. 로그 기능과의 연결은 inferred.
