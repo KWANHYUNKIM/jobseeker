@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Hacobu 확장 1/2(2026-09-26) — `maintenance-banner-datadog-forms` 완료. 다음은 확장: '기능 패키지의 경계를 규약 대신 CI 가 지킨다' — `5717458ca99f9b`(5층·dependency-cruiser 13 규칙·후방 참조 1 규칙·check-structure.mjs 존재·공존 검사·baseline/allowlist 도피로·네이티브 이식). 그다음 완주 검사 — 컨설팅(Strategy)·SI(Solution Studio)·인재 소개(Career) 수익원: Zenn RSS 20편엔 없음(1회차) → 두 번째는 Zenn 검색 API·hacobu.jp/solution-studio. 물류 도메인 로직(Berth 예약 슬롯·Fleet 위치) 글이 있으면 MOVO 도메인으로 추가. 대기 1/3(estie) — Hacobu 를 닫으면 **후보 조사** 먼저. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX ↔ Hacobu CI 가드레일). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스(hold)·LayerX 는 in_progress.**
+**Hacobu 확장 2/2(2026-09-26) — `frontend-template-dependency-ci` 완료, 빈 도메인 없음. 다음은 완주 검사: 컨설팅(Strategy)·SI(Solution Studio)·인재 소개(Career) 수익원에 도메인이 없다 — 1회차는 Zenn RSS 20편(없음)으로 셈, 2회차는 Zenn 검색 API('Hacobu'·'ハコブ'·'MOVO' 로 publication hacobu 필터)·hacobu.jp/solution-studio. 있으면 도메인 추가, 없으면 hold_reason. MOVO 물류 로직(Berth 예약 슬롯·Fleet 위치) 글이 검색에서 나오면 도메인 후보로 STATE 에 적기만. 대기 1/3(estie) — Hacobu 를 닫으면 **후보 조사** 먼저. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX ↔ Hacobu CI 가드레일). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스(hold)·LayerX 는 in_progress.**
 
 
 

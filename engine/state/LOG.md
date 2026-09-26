@@ -1636,3 +1636,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Hacobu 점검 배너 스위치
 
 - 결정 6 — 자작 대신 Datadog Forms+Workflow·S3 무인증 JSON+CloudFront 무효화·S3 손 편집 대체 경로·Service Account·전용 Okta 그룹·실패 Slack 통지.
+
+## 2026-09-26 Hacobu 프런트 템플릿 의존 CI
+
+- 결정 7 — CI 0-tolerance·후방 참조 1 규칙·엣지+존재 2층·getRouteApi 순환 회피·세 도피로·공존 강제·네이티브 이식. 두 도메인 다 기능 참. 다음 완주 검사.
