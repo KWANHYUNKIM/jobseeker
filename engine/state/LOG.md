@@ -695,3 +695,7 @@ zerodha.tech 최신 2024-03. 블로그 멈춤. updated_at 만. 1회째. 09-03 �
 ## baemin 재방문 → 확장 (2026-09-26)
 
 09-23 입점 자동승인 글로 auto-approve. 결정 8개(큐 걷기·Kafka 대신 상태 조정·주기 분리·건 단위 락·Redis vs 조건부 UPDATE vs SKIP LOCKED·폴백 없음·fixedDelay+무작위·클렌징). 새 도메인 사장님 입점·계약 승인.
+
+## canva 재방문 → 확장 (2026-09-26)
+
+09-17 워커 백프레셔 1부로 worker-backpressure. 결정 7개, 새 도메인 비동기 작업 큐. 과부하 비교 재료(Canva·Uber·PlanetScale·배민)를 STATE 에 모았다.
