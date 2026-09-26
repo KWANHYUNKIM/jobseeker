@@ -167,5 +167,162 @@
     "salary: 공고에 금액이 없다 — 비워 둔다",
     "jobkorea·사람인 데이터 엔지니어와 사람인 의료데이터 분석가는 원티드와 제목이 같다 — 본문 비교로 duplicate_of 판단할 것"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/375155",
+      "title": "NLP·AI 에이전트 / 비정형 의무기록 분석 개발자",
+      "site": "wanted",
+      "verdict": "헤더는 경력 3-8년인데 자격요건 첫 줄은 'NLP 또는 자연어처리 관련 프로젝트 개발 경험 2년 이상' 이다. 병원의 진료기록·간호기록·판독지·퇴원요약지 같은 비정형 텍스트에서 구조화된 임상 정보를 뽑는 파이프라인을 만들고, 임상 NLP 모델(NER·관계 추출·문서 분류)을 개선하고, LLM 에이전트로 비정형 데이터를 OMOP CDM/FHIR 로 매핑하는 일을 자동화한다. LLM 은 온프레미스/사내 서빙(vLLM 등)과 연동하고, 의료 도메인 프롬프트 엔지니어링·파인튜닝과 함께 '추출 결과에 대한 정확도 검증 체계 및 임상 전문가 리뷰 프로세스' 까지 만든다. 자격은 PyTorch·Hugging Face, LLM 에이전트(LangChain·LangGraph 우대), 정보 추출·NER 실무, Git 협업. 의료 데이터 표준(EHR·HL7·FHIR·SNOMED CT·ICD·LOINC), OMOP CDM, 한국어 LLM(Qwen·EXAONE) 서빙, vLLM·Docker/Podman, 석사 이상은 우대다. 전형은 서류 → 실무 면접 → 임원 면접 → 처우협의 → 입사.",
+      "fit": {
+        "must_have": [
+          "NLP 프로젝트 개발 2년 이상(헤더는 경력 3-8년)",
+          "PyTorch·Hugging Face",
+          "LLM 에이전트 개발",
+          "정보 추출·NER 실무",
+          "Git 협업·코드 리뷰"
+        ],
+        "can_learn": [
+          "의료 데이터 표준(FHIR·SNOMED CT·LOINC 등)",
+          "OMOP CDM",
+          "한국어 LLM 서빙(Qwen·EXAONE)",
+          "vLLM·Docker/Podman 서빙"
+        ]
+      },
+      "study": [
+        {
+          "topic": "임상 텍스트 NER·관계 추출",
+          "from": "task",
+          "quote": "• 임상 NLP 모델(NER, 관계 추출, 문서 분류 등) 개발 및 성능 개선",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 '정보 추출(Information Extraction), 개체명 인식(NER) 등 텍스트 마이닝 실무 경험' 이 있다. 첫 주요업무가 진료기록·간호기록·판독지·퇴원요약지에서 임상 정보를 뽑는 파이프라인이다.",
+          "gap_check": "판독지 문장 '폐결절 없음' 에서 진단 개체를 뽑았을 때 부정(negation)을 어떻게 표시하고, 약물–용량 관계 추출은 NER 과 무엇이 다른가?",
+          "drill": "Hugging Face 토큰 분류로 공개 의료 텍스트나 직접 만든 가상 판독지 수십 건에 진단·약물·용량 NER 을 학습시키고, 부정 표현이 섞인 문장에서 틀린 사례를 모아 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Hugging Face — Token classification",
+              "url": "https://huggingface.co/docs/transformers/tasks/token_classification",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OMOP CDM 과 표준 용어 매핑",
+          "from": "task",
+          "quote": "• LLM 기반 AI 에이전트를 활용한 비정형 데이터 OMOP CDM/FHIR 매핑 자동화",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'OMOP CDM 또는 임상 데이터 표준화 프로젝트 경험' 과 EHR·HL7·FHIR·SNOMED CT·ICD·LOINC 가 있다. 회사가 50여 개 병원 데이터를 OMOP-CDM 으로 구축한다.",
+          "gap_check": "'고혈압' 이라는 원문 진단명이 CONDITION_OCCURRENCE 테이블의 어느 컬럼(source value·concept_id)에 어떻게 들어가고, 표준 컨셉이 아닌 원천 코드는 어떻게 표준 컨셉으로 연결되는가?",
+          "drill": "OHDSI CDM 문서와 Athena 에서 진단 5개·검사 5개의 표준 컨셉을 찾아 원문→concept_id 매핑 표를 만들고, 같은 것을 FHIR Condition·Observation 리소스로도 적어 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OMOP Common Data Model",
+              "url": "https://ohdsi.github.io/CommonDataModel/",
+              "kind": "docs"
+            },
+            {
+              "title": "The Book of OHDSI",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/",
+              "kind": "docs"
+            },
+            {
+              "title": "OHDSI Athena",
+              "url": "https://athena.ohdsi.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "HL7 FHIR",
+              "url": "https://hl7.org/fhir/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 에이전트 워크플로우와 사내 서빙",
+          "from": "task",
+          "quote": "• 온프레미스/사내 LLM 서빙 인프라(vLLM 등)와 연동한 에이전트 워크플로우 설계",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 'LLM 기반 에이전트 개발 경험 (LangChain, LangGraph 등 프레임워크 활용 경험 우대)' 이, 우대에 한국어 LLM 서빙과 vLLM 이 있다.",
+          "gap_check": "외부 API 를 못 쓰는 사내 vLLM 환경에서 추출→매핑 후보 검색→검증을 에이전트 단계로 나눌 때, 각 단계의 실패를 어떻게 감지하고 사람 리뷰로 넘기는가?",
+          "drill": "vLLM 으로 작은 공개 모델을 OpenAI 호환 서버로 띄우고, LangGraph 로 '추출 → 매핑 후보 → 자기 검증 → 불확실하면 리뷰 큐' 그래프를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "vLLM Documentation",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "LangGraph overview",
+              "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "추출 정확도 검증과 전문가 리뷰",
+          "from": "task",
+          "quote": "• 추출 결과에 대한 정확도 검증 체계 및 임상 전문가 리뷰 프로세스 구축",
+          "priority": "high",
+          "why": "주요업무다. 추출 결과를 임상 전문가가 리뷰하는 프로세스까지 만든다고 적혀 있다.",
+          "gap_check": "추출 결과의 정밀도·재현율을 재려면 정답셋을 누가 어떻게 만들고, 리뷰어 간 판정이 갈리면 무엇으로 일치도를 재는가?",
+          "drill": "앞 드릴의 결과에 대해 작은 정답셋을 만들고 개체별 정밀도·재현율과 오류 유형 표를 뽑는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "The Book of OHDSI",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의료 도메인 파인튜닝",
+          "from": "task",
+          "quote": "• 의료 도메인 특화 프롬프트 엔지니어링 및 파인튜닝",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 PyTorch·Hugging Face 가, 우대에 한국어 특화 LLM(Qwen·EXAONE) 이 있다.",
+          "gap_check": "프롬프트만으로 안 되는 추출 과제를 LoRA 로 파인튜닝할 때 학습 데이터는 몇 건이 필요하고, 과적합은 무엇으로 알아채는가?",
+          "drill": "PEFT LoRA 로 작은 모델을 가상 판독지 추출 과제에 파인튜닝하고, 프롬프트만 쓴 결과와 정확도를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Hugging Face PEFT",
+              "url": "https://huggingface.co/docs/peft/index",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "가상 판독지 → OMOP 매핑 에이전트 데모(사내 vLLM 가정)",
+          "why": "주요업무 여섯 줄 중 네 줄(추출·매핑 자동화·사내 서빙·검증)을 한 번에 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "추출 정확도 평가 보고서",
+          "why": "'정확도 검증 체계' 가 주요업무다. 정답셋·지표·오류 유형을 문서로 준비한다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 실무 면접 → 임원 면접 → 처우협의 → 입사(공고 기준).",
+        "expect": [
+          "NER·정보 추출 경험",
+          "LLM 에이전트 설계와 실패 처리",
+          "사내 LLM 서빙",
+          "추출 정확도 검증 방법"
+        ],
+        "sources": [
+          {
+            "title": "NLP·AI 에이전트 / 비정형 의무기록 분석 개발자",
+            "url": "https://www.wanted.co.kr/wd/375155",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
