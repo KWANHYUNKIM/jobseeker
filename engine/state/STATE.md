@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**WED 완주(2026-09-27) — 도메인 2 · 기능 2, 수익원 둘 다 confirmed 연결(데이터 이활용은 `creating_ng_model` 의 '구매 활동 분석에 쓴다'와 JAN 글의 '데이터를 더 활용하려고'로 올렸다). 다음은 --gaps 의 신규(큐 1/3): 큐 맨 위 mixtend — 프로파일 때 결정 글이 충분한지 다시 판정(`a7f2907594c2fa` 배타 제어 · `001d1a7f1c3cce` PC 톱 고속화 · `6d1b6be6a6cc84` Vite 이행). 모자라면 곧장 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**mixtend 프로파일(2026-09-27, slug `mixtend`) — 판정: 결정 글이 두 도메인을 세울 만큼은 된다. 도메인 둘: 여러 담당자에게 예약을 고르게 나눈다(TimeRex, lockForUpdate → Cache Lock) · 몰리는 두 페이지를 가장 빨리 띄운다(調整さん MPA·LCP/CLS·Flutter 출결표). 회사 사이트 mixtend.co.jp 는 r.jina.ai 에서 도메인 해석 실패 — 수익원은 TimeRex 요금표·블로그에서만. 다음은 --gaps 의 후보 조사(큐 0/3) — 이번 사이클은 신규였으니 확장보다 후보 조사가 먼저 걸릴 수 있다, --gaps 를 따를 것. 확장이 오면 첫 기능 `a7f2907594c2fa`(균등 배정 Cache Lock), 둘째 `001d1a7f1c3cce`(PC 톱 고속화). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
