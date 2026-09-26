@@ -1512,3 +1512,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 YOUTRUST 회사 프로파일
 
 - 대기 맨 위. 코퍼레이트 페이지 + 기술 글 둘(Redis 연결 계산 · 크로스 도메인 협조 필터링)로 도메인 둘 · 수익원 셋(TALENT 연결 confirmed, ADS 연결 inferred).
+
+## 2026-09-26 YOUTRUST Redis 연결 계산
+
+- Redis 글 전문으로 `connections-redis-sunion`(결정 7 — Redis vs 그래프 DB·실시간이라 사전 계산 불가·SUNION·SoT MySQL·폴백·전건 동기·일일 차분 검사). RDS 스케일 다운까지.
