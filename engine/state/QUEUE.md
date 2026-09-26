@@ -74,9 +74,14 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **フェズ(FEZ)** | JP · 리테일 데이터 · 리테일 미디어(Urumo) | 입구 `zenn.dev/p/fez_tech/feed`(Zenn Publication, 20편+ — 본문은 `zenn.dev/api/articles/<slug>`, 주소는 `zenn.dev/<작성자>/articles/<slug>`). 대가를 말하는 1 차 글: ① `zenn.dev/fuktig/articles/037c3bd6e80390`(2026-08-27, BigQuery 온디맨드 → Editions + Fluid Scaling — '느려져도 되면 싸진다'는 트레이드오프를 피한 설계, baseline 0 이 안 되던 시절엔 보류, Standard 는 1,600 슬롯 상한이라 2,000 에 맞추려 Enterprise, 이행을 보류한 프로덕트도) ② dbt 모델 분해 · PostgreSQL 다대다 검색(중간 테이블로 좁히기) ③ AI 에이전트 프레임워크 비교(풀스크래치 · Lang 계열 · Agno · Mastra). 수익 구조(리테일 미디어 · 데이터 사업)는 프로파일 사이클에서 확인. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-27 백여섯 번째 후보 조사 — 목표 3곳 중 1곳. 입구: `zenn.dev/api/articles?order=latest` 31~70쪽(2026-09-15 까지)에서 기존에 없는 Publication 47곳 → 제품 회사 10곳 RSS → 본문 5편.**
+  - **フェズ(FEZ)** — **리테일 데이터 · 광고 축.** BigQuery 과금 모델 이행이 대가 · 보류 이유를 말한다.
+  - **약함 — 다음에 다시 볼 곳.** **Rebase**(インスタベース, 공간 대여 — '금전계 대형 시책을 QA 프로세스째 AI 에 맡긴 이야기와 부작용' 한 편 외엔 행사 글) · **ミスミ DataTech**(`msmtec`, B2B EC 검색 — LightGBM 랭커 해설 · 상품 라벨 OCR PoC, 결정보다 학습 · 검증 글) · **日本トレカセンター**(`jtcc`, 오리파 앱 — 블로그 막 시작, 2편).
+  - **걸렀다.** miive(2편) · セレス(6편, 도구 · 사내 개발) · FORCIA(Rust · TS 학습 글) · kiva(AI 도구 · 개인 회고) · FLUX(연구 · 행사) · デジタルガレージ DG(보안 · 자격 · 학습 글) 외 한두 편짜리 37곳.
 - **2026-09-27 백다섯 번째 후보 조사 — 목표 3곳 중 1곳. 입구: 검색 대신 `zenn.dev/api/articles?order=latest&page=1..30` 을 훑어 Publication 을 모으고(`api/publications` 는 막힘), 기존 회사 · QUEUE · STATE 에 없는 40곳을 골라 RSS 로 목록을 보고 본문은 `zenn.dev/api/articles/<slug>` 의 body_html 로 읽었다(Publication 글 주소는 `zenn.dev/<작성자>/articles/<slug>` — `zenn.dev/<pub>/<slug>` 는 404).**
   - **REALITY** — **버추얼 라이브 · Go 백엔드 축(처음).** GC 튜닝 · Valkey 이행 · Spanner 이행이 대가를 말한다.
   - **약함 — 다음에 다시 볼 곳.** **ourly**(사내보 SaaS — 비트 플래그 1 대 다 모델이 장단점을 적지만 글이 짧다 · CanCanCan 권한 5 년 · Redshift → Aurora 동기화) · **PORTERS**(인재 업계 SaaS — 선고 프로세스 이중 등록 버그에서 도메인 모델 · PK 형 BIGINT vs VARCHAR, 둘 다 짧다).
