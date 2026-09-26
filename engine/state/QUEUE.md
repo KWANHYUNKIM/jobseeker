@@ -23,12 +23,12 @@
 
 | **ANDPAD(アンドパッド)** | JP · 건설 SaaS | 프로파일(2026-09-26). 도메인 셋 — 서비스 입구와 대피로 · 수발주에 붙은 청구서를 먼저 현금으로 · 도면의 표를 읽어 옮긴다. 기능 2(`single-entry-escape-route` · `model-and-hands-read-tables`). **청구서 선지급 도메인 hold**(자료 2회 없음) — 그 수익원이 기능과 안 이어져 완주 기준 셋째 미달, in_progress 로 둔다. |
 
+| **LayerX** | JP · 법인 지출 관리 SaaS·LLM 솔루션 | 프로파일(2026-09-26). 도메인 셋 — 테넌트 데이터는 하류에서도 잠근다(RAP·dbt) · LLM 호출을 한 관문에 모은다(Bifrost) · API 스키마를 먼저 쓴다(TypeSpec). 기능 0. 다음 — RAP. Fintech·Security 수익원은 도메인 없음. |
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **LayerX** | JP · 법인 지출 관리 SaaS(바쿠라쿠)·AI 에이전트 | `tech.layerx.co.jp`(하테나, 최신 2026-09-18 — 행사 공지가 많아 **기술 글을 골라야** 한다). `dbt-snowflake-rap-enforcement`(2026-08-14)는 **테넌트 분리 행이 하류 테이블로 보호 없이 복제**되는 구멍을 적고, dbt 도 Snowflake 도 '하류에 RAP 를 강제' 하는 기능이 없어 **리뷰 눈대중**에 기대던 것을 **dbt 훅(실행 전 그래프 검사·실행 후 정합)** 으로 막는다. 태그 기반 정책은 **태그를 빠뜨리면 보호가 안 돼** 아직 public preview 로 두고 본다. 먼저 팔 것 — **멀티테넌트 데이터 격리**. AI Gateway `Bifrost` 도입(`2026/08/28`)·TypeSpec 스키마 주도(`typespec-in-aiworkforce`)가 뒤를 잇는다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 

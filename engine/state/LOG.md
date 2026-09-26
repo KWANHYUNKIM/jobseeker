@@ -1276,3 +1276,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 타이미 확장 — 롱 트랜잭션 자동 수정 고리 → 완주
 
 - 롱 트랜잭션 글(07-09)로 `long-tx-autofix-loop`(결정 8·state 그림). 측정 위치 결정은 대안이 이 사이트의 것이라 inferred. 두 도메인 모두 기능, 수익원 하나가 둘 다 이어져 done.
+
+## 2026-09-26 LayerX 회사 프로파일
+
+- 대기 마지막. 사업 소개(바쿠라쿠 2만 사 이상·Ai Workforce·Fintech·Security) + 기술 글 셋(RAP·Bifrost·TypeSpec)으로 도메인 셋·수익원 넷(둘은 도메인 없음), 기능 0. 대기가 비었다.

@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "layerx",
+      "name": "LayerX",
+      "name_en": "LayerX",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "'모든 경제 활동의 디지털화' — 백오피스 SaaS 바쿠라쿠와 LLM 문서 처리 Ai Workforce. 테넌트 데이터는 하류에서도 잠그고, LLM 호출은 한 관문으로 모은다",
+      "updated_at": "2026-09-26",
+      "domain": "layerx.co.jp"
+    },
+    {
       "slug": "timee",
       "name": "タイミー",
       "name_en": "Timee",
@@ -2989,7 +3001,10 @@
     "수발주에 붙은 청구서를 먼저 현금으로",
     "도면의 표를 읽어 옮긴다",
     "PR 마다 전부 돌리지 않는 CI",
-    "낮에도 스키마를 바꾸는 DB 운영"
+    "낮에도 스키마를 바꾸는 DB 운영",
+    "테넌트 데이터는 하류에서도 잠근다",
+    "LLM 호출을 한 관문에 모은다",
+    "API 스키마를 먼저 쓴다"
   ],
   "countries": {
     "KR": "한국",

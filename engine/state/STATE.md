@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**없다 — 타이미 완주(2026-09-26, 도메인 2 · 기능 2). 다음은 신규 — 대기 맨 위 **LayerX**(`tech.layerx.co.jp`, 하테나 사이트맵; 첫 글 `entry/dbt-snowflake-rap-enforcement`, AI Gateway `entry/2026/08/28/180027`, TypeSpec `entry/typespec-in-aiworkforce`. 행사 공지가 절반이라 기술 글을 골라 읽는다). 큐 1/3 — LayerX 뒤 후보 조사. ANDPAD 는 선지급 도메인 hold 로 in_progress.**
+**LayerX — 프로파일(2026-09-26). 도메인 셋, 기능 0. 다음은 확장: '테넌트 데이터는 하류에서도 잠근다' 를 RAP 글(`entry/dbt-snowflake-rap-enforcement`, scratchpad `lx.txt` — 세 과제·check/reconcile 세부를 마저). 그 뒤 Bifrost(`lx_2026_08_28_180027.txt`, 선택지 넷 비교)·TypeSpec. Fintech·Security 수익원은 도메인이 없다 — 완주 판정 때 'Fintech事業部' 카테고리(22편)를 보고, 없으면 두 번 찾아 hold. 대기 0/3 — LayerX 뒤 후보 조사.**
+
 
 
 
