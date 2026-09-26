@@ -2001,3 +2001,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Luup 완주
 
 - 완주 기준 셋 확인 → done, QUEUE 완료로. 대기 0.
+
+## 2026-09-26 아흔네 번째 후보 조사
+
+- Zenn 검색 API 주제어 15개 × 3쪽 → publication 집계 → RSS·목차 확인. TRIBEAU · Macbee Planet · USEN ICT 를 대기로. SmartShopping·SCOGR·BNX 는 거름.
