@@ -50,7 +50,7 @@
 | **SODA(スニーカーダンク)** | JP · 감정 붙은 스니커·트레카 마켓 | 프로파일(2026-09-26). 도메인 둘 — 구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다 · 상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다. 기능 2(`purchase-payment-idempotency` · `purchase-flow-tla-audit`). **hold** — 실매장 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 실매장은 도메인 없음. 입구 `zenn.dev/p/team_soda/feed`. |
 | **USEN ICT Solutions** | JP · 법인 ICT(USEN&U-NEXT 그룹) | 프로파일(2026-09-26). 도메인 둘 — 부서마다 비용이 갈리는 사내 데이터 기반을 고른다 · 영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다. 기능 2(snowflake-over-bigquery · cortex-two-tier-roles). 수익원 법인 ICT(USEN GATE 02) — 데이터 기반과의 연결은 inferred. 입구 `zenn.dev/p/usen_ict/feed`(글 5편). **hold(2026-09-26)** — 법인 ICT 수익원에 이을 글을 두 번 찾아 없음. |
 | **TELLER(テラーノベル)** | JP · 소설 투고·열람(테라노벨 · 테라드라마) | 프로파일(2026-09-26, slug `teller-novel`). 도메인 둘 — 누가 어떤 이야기를 읽을 수 있는지 판정한다 · 이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다. 기능 2(story-view-decision · tts-g2p-bench). 수익원 둘(유료 작품·VIP / 출판·미디어믹스 — 후자 도메인 없음). 입구 `zenn.dev/p/tellernovel_inc/feed`. **hold(2026-09-26)** — 출판·미디어믹스 수익원 자료 두 번 없음. |
-| **DRESS CODE** | JP · Workforce Management SaaS(HR·IT·GA Force) | 프로파일(2026-09-26, slug `dress-code`). 도메인 둘 — 변경 이력을 상태가 아니라 쌓인 사실로 남긴다 · DB 연결을 모으는 프록시를 넣었다가 실측으로 걷어 낸다. 기능 1(crud-to-event-outbox). 수익원 구독(요금 비공개). 입구 `zenn.dev/p/dress_code/feed`. |
+| **DRESS CODE** | JP · Workforce Management SaaS(HR·IT·GA Force) | 프로파일(2026-09-26, slug `dress-code`). 도메인 둘 — 변경 이력을 상태가 아니라 쌓인 사실로 남긴다 · DB 연결을 모으는 프록시를 넣었다가 실측으로 걷어 낸다. 기능 2(crud-to-event-outbox · rds-proxy-removal). 수익원 구독(요금 비공개). 입구 `zenn.dev/p/dress_code/feed`. |
 
 
 ## 대기

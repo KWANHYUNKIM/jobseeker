@@ -101,7 +101,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "rds-proxy-removal"
+      ]
     }
   ],
   "features": [
@@ -447,6 +449,319 @@
           "publisher": "Dress Code Tech Blog (Zenn)",
           "date": "2026-07-13",
           "summary": "CRUD 로 도는 서비스를 Event Sourcing 으로 옮기는 첫걸음 — 제품 전체의 방침은 'SSoT 는 상태가 아니라 불변 이벤트(사실)의 누적'. 변경 이력과 Domain Event 의 차이 · Pure Event Sourcing 과의 차이 · Event 를 처음부터 DynamoDB 에 두는 이유 · RDB 와 DynamoDB 의 이중 쓰기가 낳는 Phantom Event(유령 이벤트)와 Event 유실 → 트랜잭션을 공유할 수 없는 다른 저장소로 확실히 보내는 Transactional Outbox."
+        }
+      ]
+    },
+    {
+      "key": "rds-proxy-removal",
+      "name": "연결 고갈에 대비해 넣은 RDS Proxy 를 몇 달 만에 걷어 낸다 — Prisma 가 만드는 16KB 넘는 SQL 이 세션 핀 고정을 일으켜 다중화가 거의 안 되고 연결 압박도 실측상 없자, Secrets 의 host 한 칸을 되돌려 Aurora 에 직결하고 스파이크 대책은 Prisma 7 의 pg.Pool 설정으로 옮겼다",
+      "domain": "DB 연결을 모으는 프록시를 넣었다가 실측으로 걷어 낸다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "백엔드는 NestJS + Prisma 이고 API 서버·SQS 컨슈머·배치 잡 같은 ECS 태스크가 각자 커넥션 풀을 갖는다 — '태스크 수 × 풀 max' 가 그대로 Aurora 의 max_connections 를 먹는다. 걱정은 셋: 오토스케일·장애 복구 때 일제 재기동으로 인한 연결 고갈, 페일오버 때 느린 재접속, Blue/Green 업그레이드의 전환 끊김이 앱에 그대로 전해지는 것. 이걸 한꺼번에 흡수할 관리형 상자로 RDS Proxy 를 넣었다. 그런데 'Proxy 경유 접속에서 재접속이 많은 것 같다' 는 사내 보고가 들어왔다.",
+        "metrics": [
+          {
+            "label": "핀 고정",
+            "value": "전체 클라이언트 세션의 약 2할이 SQL 텍스트 16KB 초과로 핀 고정 · 대출 중 연결 수와 핀 고정 수가 일평균으로 거의 같음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          },
+          {
+            "label": "연결 압박",
+            "value": "Aurora 연결 수는 Writer/Reader 합계 피크에서도 max_connections 의 몇 %",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          },
+          {
+            "label": "비용·지연",
+            "value": "Proxy 요금은 연결 수가 아니라 뒤의 DB 인스턴스 크기(vCPU)로 — 월 수백 달러 · Proxy 홉 추가 지연은 평균 150~200µs(예상보다 훨씬 작음)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "'재접속이 많다' 는 보고를 받았을 때",
+          "thought": "Proxy 로그를 며칠치 모으니 재접속은 풀 idle timeout 에 의한 의도적 교체라 실해가 없었다. 대신 **SQL 텍스트 16KB 초과로 인한 세션 핀 고정**이 전체의 약 2할. 핀 고정의 흔한 원인(prepared statement·SET)은 Prisma 7 의 pg 드라이버가 이름 붙은 prepared statement 를 쓰지 않아 해당하지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+              "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+              "publisher": "Dress Code Tech Blog (Zenn)",
+              "date": "2026-08-17",
+              "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+            }
+          ]
+        },
+        {
+          "at": "Proxy 를 탓하기 전에",
+          "thought": "연결을 쓰고 버리는 클라이언트(Lambda 등)가 대량인 구성이라면 RDS Proxy 는 지금도 유력한 선택지다. 안 맞은 건 긴 수명의 프로세스가 자기 풀을 갖고 ORM 이 16KB 넘는 SQL(전 칼럼 완전 수식으로 부풂)을 내는 **우리 워크로드와의 궁합**이었다 — 도입 전에 핀 고정 조건과의 적합성을 확인했어야 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+              "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+              "publisher": "Dress Code Tech Blog (Zenn)",
+              "date": "2026-08-17",
+              "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+            }
+          ]
+        },
+        {
+          "at": "전제가 바뀐 걸 알아챘을 때",
+          "thought": "도입 판단은 Prisma 6 시절의 것 — Rust 쿼리 엔진이 풀을 안에 갖고 앱에서 제어할 수 있는 건 connection_limit 정도라 연결을 관리형 상자로 빼는 게 자연스러웠다. Prisma 7 은 Driver Adapter 로 pg.Pool 을 그대로 넘기는 구성이 표준이 되어 max·대출 대기 타임아웃·idle 반환·keepAlive 가 앱의 설정으로 돌아왔다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+              "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+              "publisher": "Dress Code Tech Blog (Zenn)",
+              "date": "2026-08-17",
+              "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "ECS 태스크의 커넥션 풀",
+            "what": "API·SQS 컨슈머·배치가 각자 — 태스크 수 × max 가 Aurora 연결 소비."
+          },
+          {
+            "name": "RDS Proxy",
+            "what": "연결을 다중화하는 관리형 층. SQL 텍스트 16KB 초과 등의 조건에서 세션을 핀 고정해 다중화가 멈춘다(AWS 전 엔진 공통 하드 제한)."
+          },
+          {
+            "name": "Secrets 의 host 필드",
+            "what": "앱이 필드 단위로 읽는 DB 접속처 — Proxy 엔드포인트면 경유, 클러스터 엔드포인트면 직결. CDK·앱 코드를 건드리지 않는 전환점."
+          },
+          {
+            "name": "pg.Pool(Prisma 7 Driver Adapter)",
+            "what": "앱이 직접 가진 풀 — max · connectionTimeoutMillis · idleTimeoutMillis · keepAlive · maxUses."
+          }
+        ],
+        "invariants": [
+          "접속처 전환은 Secrets 의 host 한 칸으로 — 되돌리기가 늘 가능하다(Proxy 리소스를 지우기 전까지).",
+          "연결 수 상한은 '프로세스 수 × max' 로 앱이 정한다.",
+          "session-level SET·LISTEN·임시 테이블을 쓰지 않는 규약 — 언제든 pgBouncer 로 옮길 수 있게."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "도입 — Secrets 의 host 만 Proxy 엔드포인트로 · Proxy 전용 서브넷을 잘라 낸다",
+            "why": "인스턴스 클래스별 최소 빈 IP 요건(Writer·Reader 각각, 커스텀 엔드포인트면 더)을 기존 DB 서브넷이 못 채웠다."
+          },
+          {
+            "step": "Driver Adapter 층에 SQL 바이트 수 계측을 끼워 16KB 초과 때 호출 원을 warn 로그·APM 트레이스로",
+            "why": "CloudWatch 의 `DatabaseConnectionsCurrentlySessionPinned` 는 건수만 알려 주고 원인 쿼리를 못 짚는다."
+          },
+          {
+            "step": "CloudWatch 일간 지표를 나란히 — 대출 중 연결 ≒ 핀 고정 · Aurora 연결은 한도의 몇 %",
+            "why": "다중화가 거의 안 되고 도입 동기였던 고갈 위험도 실측상 없다는 걸 숫자로."
+          },
+          {
+            "step": "철거 — 앱의 Proxy 관련 코드 삭제 → 개발 환경 host 를 클러스터 엔드포인트로 재배포 → 본번도 저트래픽대에 → Proxy ClientConnections = 0 확인 뒤 CDK 로 리소스 삭제",
+            "why": "되돌릴 수 없는 건 마지막 삭제뿐, 그 전까진 host 를 되돌리면 언제든 Proxy 경유."
+          },
+          {
+            "step": "Proxy 가 맡던 스파이크 대책을 pg.Pool 로 — max 명시 · 대출 대기 몇 초에 끊기 · 스파이크 뒤 idle 조기 반환 · keepAlive · maxUses",
+            "why": "Prisma 7 에서 풀이 앱의 소유물이 됐기에 가능하다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "연결 고갈·페일오버·전환 끊김을 무엇으로 흡수하나(도입 때)",
+            "chosen": "RDS Proxy",
+            "alternatives": [
+              "PgBouncer 자체 운용"
+            ],
+            "tradeoff": "관리형으로 한꺼번에 흡수한다. PgBouncer 는 운용 부담과 SPOF 설계 비용으로 미뤘다. 대가는 — 뒤늦게 드러났듯 — 핀 고정 조건과 워크로드의 궁합을 미리 확인하지 않은 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          },
+          {
+            "question": "접속처를 어떻게 바꿀 수 있게 하나",
+            "chosen": "Secrets 의 host 필드 하나에 모은다",
+            "alternatives": [
+              "CDK·앱 설정에 엔드포인트를 박는다(inferred)"
+            ],
+            "tradeoff": "넣을 때도 뺄 때도 환경 변수 교체와 재배포뿐 — '입구에서 출구도 설계' 해 둔 덕에 몇 달 만의 철수가 쉬웠다. 대가 없음에 가깝다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          },
+          {
+            "question": "16KB 핀 고정을 SQL 을 짧게 해 피하나 — IN 절을 호출 쪽에서 쪼갠다",
+            "chosen": "하지 않는다",
+            "alternatives": [
+              "큰 IN 절을 1,000건씩 쪼개 플레이스홀더 약 7KB 로"
+            ],
+            "tradeoff": "16KB 를 넘을지는 조직의 데이터 양에 달려 코드로 판정 못 하고 CI 로도 못 지킨다 — 새 쿼리가 늘 때마다 샌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          },
+          {
+            "question": "Prisma 엔진에 분할을 맡기나 — maxBindValues 를 2,000 으로",
+            "chosen": "하지 않는다",
+            "alternatives": [
+              "Driver Adapter 의 maxBindValues 를 낮춰 엔진이 자동 분할·직렬 실행"
+            ],
+            "tradeoff": "엔진이 쪼갤 수 있는 건 INSERT 와 orderBy·notIn 없는 IN 필터뿐이라, 못 쪼개는 쿼리가 한도를 넘으면 '돌지만 핀 고정' 이 P2029 오류로 바뀐다. $queryRaw 계는 대상 밖인데 QueryService 에 상당량 있다. Proxy 고유 임계에 맞춰 앱을 비트는 셈.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          },
+          {
+            "question": "Proxy 를 어떻게 하나",
+            "chosen": "Aurora 직결로 철거",
+            "alternatives": [
+              "현상 유지",
+              "Proxy 튜닝",
+              "pgBouncer 로 교체"
+            ],
+            "tradeoff": "핀 고정은 AWS 사양이라 설정으로 못 풀고, 연결 이용률은 한도의 몇 % 라 고갈 위험이 없다 — 월 수백 달러와 Proxy 층 고유의 장애 면(TLS 핸드셰이크 실패·IdleClientTimeout 끊김)이 사라진다. 대가는 페일오버 흡수를 놓는 것 — 복구가 Proxy 즉시 전환에서 클러스터 엔드포인트 DNS 전환(수십 초 오류 버스트, SQS 계는 재시도로 자기 회복)으로 돌아가고 Blue/Green 전환 끊김도 마찬가지. 발생 빈도와 실해를 따져 허용했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          },
+          {
+            "question": "스파이크 대책을 어디로",
+            "chosen": "앱의 pg.Pool 설정(Prisma 7)",
+            "alternatives": [
+              "다른 관리형 층"
+            ],
+            "tradeoff": "연결 수 상한을 '프로세스 수 × max' 로 앱이 정한다 — 연결 수는 오히려 줄었다(Proxy 철거가 아니라 함께 고친 idle 조기 반환 덕). 대가는 풀 설정을 태스크마다 앱이 책임지는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          },
+          {
+            "question": "다음에 연결 압박이 오면",
+            "chosen": "pgBouncer — 16KB 에 해당하는 하드 제한이 없고 unnamed prepared statement 와 궁합이 좋다 · SET·LISTEN·임시 테이블을 피하는 규약을 유지",
+            "alternatives": [
+              "RDS Proxy 재도입"
+            ],
+            "tradeoff": "그대로 옮길 수 있는 상태를 지킨다. 대가는 도입 때 미뤘던 자체 운용 부담을 그때 떠안는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+                "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+                "publisher": "Dress Code Tech Blog (Zenn)",
+                "date": "2026-08-17",
+                "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "변경 이력을 상태가 아니라 쌓인 사실로 남긴다(같은 회사의 다른 도메인)",
+          "via": "Aurora PostgreSQL 트랜잭션 — outbox·Projection·version 카운터가 도는 같은 DB·같은 Prisma 접속",
+          "contract": "Outbox 의 drainer 도 이 풀 설정의 상한 안에서 연결을 쓴다(inferred)",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "다중화가 멈춘 이유",
+          "question": "RDS Proxy 는 왜 연결을 나눠 쓰지 못했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[\"Prisma · 전 칼럼 완전 수식\"] --> Q[\"SQL 텍스트 16KB 초과\"]\n  Q --> PIN[\"세션 핀 고정\\nAWS 전 엔진 공통 하드 제한\"]\n  PIN --> M[\"대출 중 ≒ 핀 고정\\n다중화 거의 없음\"]\n  M --> C[\"월 수백 달러 · Proxy 층 장애 면만 남음\"]\n  T1[\"IN 절 호출 쪽 분할\"] -.CI 로 못 지킴.-> Q\n  T2[\"maxBindValues 2,000\"] -.P2029 · $queryRaw 제외.-> Q"
+        },
+        {
+          "title": "철거 순서",
+          "question": "어디까지가 되돌릴 수 있는 단계였나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Proxy: Secrets host = Proxy 엔드포인트\n  Proxy --> DevDirect: 앱 Proxy 코드 삭제 · 개발 host 교체\n  DevDirect --> ProdDirect: 본번 저트래픽대 host 교체\n  ProdDirect --> Proxy: host 되돌리기(가역)\n  ProdDirect --> Removed: ClientConnections = 0 확인 · CDK 삭제\n  Removed --> [*]: 불가역"
+        },
+        {
+          "title": "연결 경로 — 전과 후",
+          "question": "Proxy 가 하던 일은 어디로 갔나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph 전\n    T1[\"ECS 태스크 풀\"] --> PX[\"RDS Proxy\"] --> A1[(\"Aurora\")]\n  end\n  subgraph 후\n    T2[\"ECS 태스크\\npg.Pool max · timeout · idle · keepAlive · maxUses\"] --> A2[(\"Aurora 직결\")]\n    NEXT[\"압박이 오면 pgBouncer\"] -.-> A2\n  end"
+        }
+      ],
+      "sources": [
+        {
+          "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+          "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+          "publisher": "Dress Code Tech Blog (Zenn)",
+          "date": "2026-08-17",
+          "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
         }
       ]
     }

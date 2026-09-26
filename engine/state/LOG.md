@@ -2081,3 +2081,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 DRESS CODE crud-to-event-outbox
 
 - ES 의의 글 + Outbox 글을 한 기능으로. 결정 9, 그림 3(failure·flow·state).
+
+## 2026-09-26 DRESS CODE rds-proxy-removal
+
+- RDS Proxy 철거 글 끝까지. 결정 7, 그림 3(failure·state·flow).
