@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "핀테크",
   "status": "in_progress",
+  "hold_reason": "수익원 'Brokerage(BaaS)'·'Insurtech'·'Fintech SHIFT · Data AI Solution' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 20편 / Zenn 검색 API '証券 BaaS'·'スマートプラス'·'Finatext 保険'·'Fintech SHIFT'·'証券 Finatext'·'Inspire' — 증권·보험 제품 글 0건, 걸린 것은 행사·인턴·사내 AI 글). 2024년 보험 글은 타사 소개. 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 증권·보험 쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "finatext.com",
   "one_liner": "금융을 서비스로 다시 만드는 핀테크 인프라 그룹 Finatext — 결제·POS 같은 오르터너티브 데이터를 매일 고객에게 납품하는 나우캐스트는 추가만 되는 데이터를 미리 계산하고 정렬 대신 해시로 청크를 자르며 테스트를 입구·출구 두 끝으로 모아 Snowflake 비용을 39% 줄이고, 크레디트 인프라 Crest 의 DWH 는 BI·AI 에 보여 줄 층을 사람이 정한다",

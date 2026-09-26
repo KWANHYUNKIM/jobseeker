@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Finatext 확장 2/2(2026-09-26) — `crest-dwh-layer-exposure` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 BaaS(증권)·Insurtech·Fintech SHIFT·Data AI Solution 에 도메인 없음 — 검색 1 RSS 20편(증권·보험 글 없음) 이어 검색 2(Zenn 검색 API '証券 BaaS' 0건은 이미 봤다 → 'スマートプラス'·'保険 Finatext'·'Fintech SHIFT' 로), 없으면 hold. 대기 2/3(KENCOPA·WWWAVE).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Finatext hold(2026-09-26) — 증권·보험·지원 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 신규: 큐 맨 위 KENCOPA — `19ae96ba79ca40`(공정 계획 AI 에이전트 설계 넷 — 워크플로 → 보카케·수량 동시 연결 → 오케스트레이터에 통째로 → 서브에이전트 이관) · `3530b0914bd834`(VLM PDF 해석 역할 분담) · 회사 사이트에서 수익원부터. 큐 2/3 이라 이 회사 뒤 후보 조사. 대기 2/3(KENCOPA·WWWAVE).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -380,6 +380,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **Hacobu Strategy·Solution Studio·Career 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 5낱말, hacobu 글 9편). 그쪽 구조 글이 새로 나오면 다시.
 - **estie 스마트 리폼·DX 컨설팅 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 6낱말, estie 글은 창간 글뿐). 그쪽 구조 글이 새로 나오면 다시.
 - **Rehab for JAPAN Rehab Studio 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 3낱말 0건). 온라인 리하비리·Rehab Cloud 제품 구조 글이 새로 나오면 다시.
+- **Finatext 증권(BaaS)·보험·Fintech SHIFT 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 6낱말, 증권·보험 제품 글 0건). 스마트플러스·보험 쪽 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
