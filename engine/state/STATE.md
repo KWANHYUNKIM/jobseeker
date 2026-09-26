@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**Picnic — 프로파일(2026-09-26). 도메인 셋(수요 예측과 발주 · 토트 속을 보는 비전 검수 · 자동화 물류센터 관제), 기능 0. 다음은 확장: '자동화 물류센터 관제' 를 `our-vision-of-building-an-intelligent-control-center-for-fulfilment`(scratchpad 에 앞부분 읽음 — 세 갈래 비교·dbt/RabbitMQ 까지. 뒷부분의 결과·장기 비전은 마저)로. 그 뒤 비전(1부 + 2부 `-part-2`)·예측(signal-vs-noise 뒷부분). 대기가 비어 큐 0/3 — Picnic 을 판 뒤 후보 조사. 비전 1부 날짜는 r.jina 가 2022-04-04 로 잘못 줘 큐 기록(2025-06-11)을 썼다.**
+**Picnic — 기능 1(`coarse-as-you-can`, 2026-09-26). 다음은 확장: '토트 속을 보는 비전 검수' 를 1부(scratchpad `pk_adding-eyes-to-picnics-automated-warehouses.txt`, 다 읽음)와 2부(`pk_...-part-2.txt`, 아직 안 읽음 — CountGD 대 Gemini 비교 결과)로. 그 뒤 '자동화 물류센터 관제'(control center 글, 뒷부분 마저). 대기가 비어 큐 0/3 — Picnic 을 판 뒤 후보 조사. 비전 1부 날짜는 r.jina 가 2022-04-04 로 잘못 줘 큐 기록(2025-06-11)을 썼다.**
+
 
 
 
