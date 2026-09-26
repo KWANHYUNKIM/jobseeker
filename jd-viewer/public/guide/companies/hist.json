@@ -276,6 +276,110 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572283?ReturnUrl=RecruitInfo",
+      "title": "AI 융합 풀스택 소프트웨어 개발 - 채용연계형 대학 인턴십 모집",
+      "site": "dev",
+      "verdict": "**신입(채용연계형 대학 인턴십)**, 서울 강서구 마곡. 한진정보통신에서 신입이 들어갈 수 있는 유일한 모집중 공고다. 대상은 **4년제 재학생·졸업예정자·졸업 1년 이내**, SW·AI 관련 전공(비전공자는 SW 프로젝트 실적 있으면 가능). 업무는 현업 과제 기반 서비스의 요구사항 정의, **React+TypeScript** 화면, **Java+Spring Boot** REST 백엔드(보조 Python/Node.js), **LLM RAG**(문서 검색·요약·질의응답) 기능, 컨테이너 빌드·배포·CI·테스트, 산출물 작성과 중간·최종 발표. **필수 경험이 셋**이다 — ① 팀 SW 프로젝트 1건 이상 완주, ② **브랜치·PR 기반 Git 협업**(개인 커밋 이력 아님), ③ **클라우드·컨테이너로 외부에 공개한 배포 경험**. **GitHub URL·포트폴리오(본인 기여도 명시) 제출 필수**. 기술 자격표가 수준까지 적는다 — 언어 2개 이상(Lv2), 자료구조·알고리즘(Lv2), **DB·SQL(Lv3)**, **Git(Lv3)**, 웹·네트워크·리눅스·단위 테스트·AI 코딩 도구(Lv2). 전형은 **학교 추천(3배수)**·서류→**온라인 코딩테스트(알고리즘 2+SQL 1, 120분)**→기술 면접(포트폴리오 심층·라이브 코딩·설계)→인성 면접. 우대는 정보처리기사·SQLD·AWS 등, 오픈소스·블로그·수상, **항공·물류·유통·공공 도메인**, 영어 문서 독해. 접수 2026-09-11~10-10. 연봉·인턴 기간은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "팀 프로젝트 완주",
+          "브랜치·PR Git 협업",
+          "외부 공개 배포 경험",
+          "GitHub·포트폴리오"
+        ],
+        "can_learn": [
+          "RAG 기능",
+          "SQL Lv3",
+          "코딩테스트 SQL 문항"
+        ]
+      },
+      "study": [
+        {
+          "topic": "브랜치·PR 협업 — 개인 커밋이 아닌 팀 이력 만들기",
+          "from": "task",
+          "quote": "② Git 기반 협업 경험 (개인 저장소 커밋 이력이 아닌 브랜치·PR 기반 협업)",
+          "priority": "core",
+          "why": "필수경험이고 기술 자격표에서 Git 이 Lv3(브랜치 전략·PR·코드리뷰·충돌 해결·커밋 컨벤션)으로 요구된다.",
+          "gap_check": "Git Flow 와 트렁크 기반 브랜치 전략은 릴리스 주기·충돌 빈도에서 무엇이 다른가? PR 리뷰에서 무엇을 보고, 충돌이 났을 때 rebase 와 merge 중 무엇을 쓰며 이력이 어떻게 달라지는가? 서류 평가자가 GitHub 에서 '팀 협업 흔적' 으로 무엇을 보게 되는가?",
+          "drill": "Git 브랜칭 워크플로 문서와 GitHub PR 문서를 읽고, 두 사람(또는 두 계정)으로 작은 서비스를 기능 브랜치·PR·리뷰 코멘트·충돌 해결·squash merge 까지 진행한다. 커밋 컨벤션과 PR 템플릿을 저장소에 둔다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Git — Branching Workflows",
+              "url": "https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows",
+              "kind": "docs"
+            },
+            {
+              "title": "Pull requests — GitHub Docs",
+              "url": "https://docs.github.com/en/pull-requests/reference/pull-requests",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "React + Spring Boot 서비스를 컨테이너로 외부 공개",
+          "from": "task",
+          "quote": "③ 배포 경험 (클라우드 또는 컨테이너 환경에서 서비스를 외부에 공개해 본 경험)",
+          "priority": "core",
+          "why": "필수경험 셋째이고 업무에 컨테이너 빌드·배포·CI·테스트가 있다.",
+          "gap_check": "Spring Boot REST API 와 React 정적 빌드를 각각 이미지로 만들고, CI 에서 테스트→빌드→배포가 이어지게 하려면 무엇을 설정하는가? 외부 공개 시 환경 변수·비밀값·CORS 는 어디서 처리하는가?",
+          "drill": "Spring 'Building a RESTful Web Service' 가이드로 API 를 만들고 JUnit 테스트를 붙인 뒤, Docker 시작 문서대로 이미지화한다. GitHub Actions 로 테스트·이미지 빌드를 자동화하고 무료 클라우드에 배포해 README 에 공개 URL 과 구조도를 적는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Building a RESTful Web Service — Spring",
+              "url": "https://spring.io/guides/gs/rest-service/",
+              "kind": "docs"
+            },
+            {
+              "title": "Get started — Docker Docs",
+              "url": "https://docs.docker.com/get-started/",
+              "kind": "docs"
+            },
+            {
+              "title": "Understanding GitHub Actions — GitHub Docs",
+              "url": "https://docs.github.com/en/actions/get-started/understand-github-actions",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SQL Lv3 과 코딩테스트 SQL 문항",
+          "from": "task",
+          "quote": "정규화 기반 스키마 설계, JOIN·집계·서브쿼리 작성, 인덱스 개념 이해",
+          "priority": "high",
+          "why": "기술 자격표에서 DB·SQL 이 유일하게 Lv3 이고, 온라인 코딩테스트에 SQL 1문항이 있다.",
+          "gap_check": "정규화로 테이블을 나누는 이유와, JOIN·GROUP BY·서브쿼리를 섞은 질의를 손으로 쓸 수 있는가? 인덱스가 어떤 조건에서 쓰이고 어떤 조건(함수로 감싼 컬럼, 앞쪽 와일드카드)에서 안 쓰이는가?",
+          "drill": "PostgreSQL 튜토리얼의 조인 절을 읽고, 항공 예약(승객·항공편·예약·좌석) 스키마를 3정규형으로 설계해 '노선별 월 탑승률 상위 3개' 같은 질의 10개를 작성한다. 인덱스 유무로 실행 계획을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Joins Between Tables — PostgreSQL Documentation",
+              "url": "https://www.postgresql.org/docs/current/tutorial-join.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RAG 기능 — 문서 검색·요약·질의응답",
+          "from": "task",
+          "quote": "LLM 기반 기능 개발 (문서 검색·요약·질의응답 등 RAG 파이프라인 구성 및 성능 개선)",
+          "priority": "high",
+          "why": "주요업무에 LLM 기반 기능 개발이 들어 있다.",
+          "gap_check": "문서를 청크로 나눠 임베딩·검색한 뒤 LLM 에 넣는 과정에서 청크 크기·겹침·검색 개수가 답의 품질에 어떻게 작용하는가? 답의 근거 문서를 함께 보여 주려면 무엇을 저장해야 하고, '성능 개선' 을 무엇으로 측정하는가?",
+          "drill": "RAG 원 논문의 구조를 읽고, 사내 규정 같은 PDF 몇 개로 검색·질의응답 API(Spring Boot 또는 Python)를 만든다. 질문 20개와 정답 근거로 청크 크기 두 가지의 정답률을 비교해 README 에 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+              "url": "https://arxiv.org/abs/2005.11401",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
