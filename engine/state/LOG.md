@@ -903,3 +903,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 astral 재방문
 - 새 자료 없음(1회째). RSS 최신 2026-09-04. updated_at 만 올림.
+
+## 2026-09-26 authzed 재방문
+- 새 자료 없음(1회째). Materialize GA 발표는 대가가 없어 안 씀. updated_at 만 올림.

@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — astral 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — authzed 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **authzed** — 2026-09-26 없음 1회째. 09-07 이후는 Materialize GA(09-10) — 미리 계산 + 스냅숏·변경 스트림이라는 방향만 있고 대가(저장·지연·일관성 범위)가 없는 발표문. 설계 글이 나오면 질의 도메인 보강 후보. 목록은 r.jina.ai 로 `/blog`(feed.xml 은 HTML).
 - **astral** — 2026-09-26 없음 1회째. `astral.sh/blog/rss.xml` 최신 09-04(패키징 위원회 지지). 출처에 없는 uv audit(06-08)·오픈소스 보안(04-08)은 이전 글 쓰기 답을 받으면 후보.
 - **antithesis** — 2026-09-26 Retroactive Logging(09-24) → `logs-into-the-black-hole`, 기존 "찾은 것을 다시 돌려". 뮤테이션 테스트(09-25)는 다음. `antithesis.com/blog/rss.xml` 이 curl 로 온다.
 - **airbyte** — 2026-09-26 없음 1회째. 09-07 이후 3건 모두 커넥터·기능 업데이트. RSS 는 HTML 이 오니 r.jina.ai 로 `/blog`(Engineering 카테고리 따로 있음).
