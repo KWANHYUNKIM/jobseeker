@@ -5,7 +5,7 @@
   "aliases": [
     "핀다"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "finda.co.kr",
   "one_liner": "여러 금융사의 대출 상품을 한 번에 비교·신청하게 하고 금융사로부터 모집수수료를 받는 대출비교 플랫폼",
@@ -162,9 +162,9 @@
     "매출·수수료율·임직원 수를 읽지 않았다",
     "'핀다뱅크' 는 Team Lead 공고가 '핀다의 새로운 챕터를 열어줄 중대한 넥스트 스텝, 핀다뱅크 런칭' 이라고만 적는다 — 무엇인지(인가·형태)는 읽지 않았다",
     "홈페이지의 파트너사 수가 '0개' 로 렌더링된다(자바스크립트 숫자 애니메이션) — 값을 읽지 못했다",
-    "Data Engineer·DevOps 는 원티드·점핏·사람인에 같은 제목으로 올라와 있다 — 본문 비교 필요",
     "salary: 공고에 금액이 없다 — 비워 둔다",
-    "DevOps(387464)는 헤더가 경력 5-10년인데 자격요건 첫 줄은 '4년 이상의 DevOps/SRE/플랫폼 엔지니어링 경험' 이다"
+    "DevOps(387464)는 헤더가 경력 5-10년인데 자격요건 첫 줄은 '4년 이상의 DevOps/SRE/플랫폼 엔지니어링 경험' 이다",
+    "Data Engineer 는 원티드(355267)와 점핏(54933925)에 같은 제목으로 올라왔지만 본문이 다르다 — 같은 자리의 다른 판인지 두 자리인지 공고로는 알 수 없다"
   ],
   "postings": [
     {
@@ -713,6 +713,124 @@
       "site": "jumpit",
       "duplicate_of": "https://www.wanted.co.kr/wd/387464",
       "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 주요업무 여섯 줄, 자격요건 다섯 줄, 우대사항 네 줄이 원티드 `DevOps 엔지니어`(387464)와 같다. 브리핑은 그쪽을 본다. 여기에는 주요업무 앞에 '이 방향으로 함께 일해요' 두 줄(컨테이너·배포·관측 환경의 표준화·자동화, 금융 도메인 보안/컴플라이언스를 지키며 배포 속도·운영 효율 향상)이 더 붙어 있다. 점핏 번호(55063354)가 사람인 공고 번호와 같다 — 사람인 게시가 점핏에도 뜬 것으로 보인다. 경력 표기 5~10년. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/54933925",
+      "title": "Data Engineer",
+      "site": "jumpit",
+      "verdict": "경력 2~8년(자격요건은 '데이터 엔지니어링 분야에서 2년 이상'). 같은 제목의 원티드 공고(355267)와 **본문이 다른 별도 게시**다 — 이쪽은 Airflow·Databricks/Spark 파이프라인 운영과 장애 재발 방지, Kubernetes/ArgoCD·Terraform 으로 데이터 플랫폼 인프라 코드화, **Kafka/Flink 실시간 파이프라인**, **StarRocks 조회 환경 고도화**, 높은 컴플라이언스 기준 속 전사 데이터 활용, **데이터 품질 검증·모니터링 체계** 를 적는다. 자격은 AWS·Kubernetes 에서 데이터 플랫폼·파이프라인 운영, SQL·Python 능숙과 Java/Scala 코드 이해, PySpark 파이프라인, 배치·실시간 파이프라인 구축·문제 해결. Databricks·Snowflake, Beam·Flink·Spark Streaming, 온프레미스·하이브리드, MLOps, LLM 서비스·서빙·평가·관측은 우대다. 원티드 공고의 Airflow·거버넌스 중심보다 실시간·조회·품질 쪽 비중이 크다. 점핏 본문에는 전형 안내가 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어링 2년 이상",
+          "AWS·Kubernetes 데이터 플랫폼 운영",
+          "SQL·Python, Java/Scala 코드 이해",
+          "PySpark 파이프라인",
+          "배치·실시간 파이프라인 구축·문제 해결"
+        ],
+        "can_learn": [
+          "Databricks·Snowflake",
+          "Flink·Spark Streaming",
+          "온프레미스·하이브리드",
+          "MLOps",
+          "LLM 서빙·평가·관측"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Kafka·Flink 실시간 파이프라인",
+          "from": "task",
+          "quote": "Kafka / Flink 기반 실시간 파이프라인을 개발하며 데이터가 빠르고 정확하게 처리되도록 개발합니다.",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 '배치 또는 실시간 데이터 파이프라인을 구축하고 운영 과정의 문제를 해결해 본 경험', 우대에 Beam·Flink·Spark Streaming 이 있다.",
+          "gap_check": "대출 신청 이벤트를 Flink 로 5분 단위 집계할 때 늦게 도착한 이벤트는 워터마크로 어떻게 다루고, 작업이 재시작돼도 집계가 두 번 반영되지 않게 하려면 체크포인트와 싱크를 어떻게 맞추는가?",
+          "drill": "로컬 Kafka 에 가상 신청 이벤트(일부는 순서 뒤섞음·지연)를 흘리고 Flink 로 이벤트 시간 기준 텀블링 윈도 집계를 만든 뒤, 작업을 강제 종료·재시작해 결과가 중복되지 않는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apache Flink documentation",
+              "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Kafka documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "PySpark 파이프라인과 장애 재발 방지",
+          "from": "qualification",
+          "quote": "ㆍSQL과 Python을 능숙하게 활용하며, Java 또는 Scala로 작성된 코드를 이해할 수 있고, PySpark 기반 데이터 파이프라인을 개발하거나 운영해 본 경험이 있으신 분",
+          "priority": "core",
+          "why": "자격요건이고 첫 주요업무가 'Airflow와 Databricks/Spark 기반의 데이터 파이프라인을 안정적으로 운영하고, 장애 원인을 분석하여 재발하지 않는 구조로 개선' 이다.",
+          "gap_check": "매일 도는 PySpark 작업이 어느 날부터 메모리 부족으로 죽는다면 데이터 쏠림(skew)·파티션 수·조인 전략 중 무엇을 먼저 의심하고, 재발을 막으려면 무엇을 지표로 남기는가?",
+          "drill": "쏠린 키가 있는 가상 대출 데이터로 PySpark 조인을 돌려 Spark UI 에서 느린 태스크를 찾고, 솔팅·브로드캐스트 조인·AQE 로 고친 뒤 실행 시간과 셔플 크기를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "PySpark documentation",
+              "url": "https://spark.apache.org/docs/latest/api/python/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks documentation",
+              "url": "https://docs.databricks.com/aws/en/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 품질 검증·모니터링",
+          "from": "task",
+          "quote": "데이터 품질 문제를 사용자가 발견하기 전에 감지할 수 있도록 검증, 모니터링 체계를 구축합니다.",
+          "priority": "high",
+          "why": "주요업무다. 다른 주요업무가 '높은 컴플라이언스 기준을 지키면서도 전사 구성원이 데이터를 잘 활용' 하게 하는 일이다.",
+          "gap_check": "사용자가 '어제 대출 신청 수가 이상하다' 고 먼저 말하기 전에 잡으려면 어떤 검사(건수 급변·NULL 비율·스키마 변경·신선도)를 어디에 걸고, 실패 시 하위 테이블 적재는 멈출지 경고만 할지 무엇으로 정하는가?",
+          "drill": "앞 드릴의 테이블에 Great Expectations 로 신선도·건수 급변·키 중복 검사를 붙이고, 실패하면 Airflow 하위 태스크를 막는 경우와 알림만 보내는 경우를 나눠 구현한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Great Expectations Docs",
+              "url": "https://docs.greatexpectations.io/docs/home/",
+              "kind": "docs"
+            },
+            {
+              "title": "StarRocks — Introduction",
+              "url": "https://docs.starrocks.io/docs/introduction/StarRocks_intro/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Kafka→Flink 실시간 집계 + PySpark 쏠림 개선 + 품질 검사 저장소",
+          "why": "주요업무 여섯 줄 중 넷(실시간·Spark 운영·품질·재발 방지)과 자격(PySpark·배치/실시간)을 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "같은 팀 원티드 공고와 비교해 지원 포인트 정리",
+          "why": "같은 제목이지만 원티드는 Airflow·거버넌스, 점핏은 실시간·StarRocks·품질 쪽을 강조한다. 둘 중 어느 쪽 경험이 강한지 이력서에서 드러낸다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "점핏 본문에 전형 안내가 없다. 같은 회사 원티드 공고들은 서류 → 1차(직무) → 2·3차(리드·CEO, 컬쳐핏) → 레퍼런스 체크 → 처우 협의 → 최종 합격을 적는다.",
+        "expect": [
+          "실시간 파이프라인 정합성",
+          "Spark 장애 대응",
+          "데이터 품질 체계",
+          "AWS·Kubernetes 운영"
+        ],
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://jumpit.saramin.co.kr/position/54933925",
+            "publisher": "점핏"
+          }
+        ]
+      }
     }
   ]
 }
