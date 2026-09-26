@@ -573,6 +573,17 @@
       "postings": 6,
       "study_items": 27,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "edgecross",
+      "name": "엣지크로스",
+      "aliases": [
+        "엣지크로스"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

@@ -1,0 +1,153 @@
+{
+  "slug": "edgecross",
+  "name": "엣지크로스",
+  "name_en": "EdgeCross",
+  "aliases": [
+    "엣지크로스"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "edgecross.ai",
+  "one_liner": "공장 설비에 붙는 산업용 AIoT 단말 MODLINK 로 기계 데이터를 모아 예지 보전·Physical AI 로 넓히는 스마트팩토리 회사",
+  "company": {
+    "business": "원티드 공고 머리말은 엣지크로스를 산업용 AIoT 디바이스와 스마트팩토리 솔루션 회사로 소개하고, '기계와 협력하는 AI를 만드는 사람들' 이라는 비전 아래 Physical AI 를 개척한다고 적는다. 대표 제품 MODLINK 시리즈는 LTE 무선 통신과 자동 펌웨어 업데이트(OTA)로 기존 설비와 연동해 실시간 데이터를 수집하고, 이를 Edge AI 기반 예지 보전과 기계 운영에 쓰며, 하드웨어 공급을 넘어 데이터 중심 플랫폼 비즈니스로 넓힌다고 적는다. 고용노동부 선정 서울형 강소기업, 연 매출 30억 규모, 미래에셋·카카오벤처스·KDB산업은행·스파크랩·BSK 인베스트먼트 투자 유치, 한국미쓰비시전기오토메이션 e-F@ctory Alliance 공식 파트너십을 적는다. 신입 임베디드 공고는 AVR·ESPRESSIF MCU 펌웨어와 OTA 배포를 적는다. 회사 사이트(edgecross.ai)는 403 으로 열리지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AIoT 서비스 백앤드 개발자 (3년 이상)",
+        "url": "https://www.wanted.co.kr/wd/338476",
+        "publisher": "원티드"
+      },
+      {
+        "title": "임베디드 소프트웨어 개발자(신입)",
+        "url": "https://jumpit.saramin.co.kr/position/54920516",
+        "publisher": "점핏"
+      }
+    ],
+    "scale": [
+      {
+        "label": "연 매출(회사 주장)",
+        "value": "30억 규모",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AIoT 서비스 백앤드 개발자 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/338476",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "산업용 AIoT 단말 MODLINK",
+        "how": "공고가 MODLINK 를 대표 제품으로, LTE·OTA 로 기존 설비에 붙여 데이터를 모은다고 적는다. 판매·임대 여부와 가격은 읽지 않았다.",
+        "domains": [
+          "AIoT 단말 펌웨어",
+          "산업 데이터 클라우드 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AIoT 서비스 백앤드 개발자 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/338476",
+            "publisher": "원티드"
+          },
+          {
+            "title": "임베디드 소프트웨어 개발자(신입)",
+            "url": "https://jumpit.saramin.co.kr/position/54920516",
+            "publisher": "점핏"
+          }
+        ]
+      },
+      {
+        "name": "데이터 플랫폼·예지 보전 서비스",
+        "how": "공고가 '단순한 하드웨어 공급을 넘어 데이터 중심의 플랫폼 비즈니스로 영역을 확장' 한다고 적고, Edge AI 예지 보전을 적는다. 과금 구조는 읽지 않았다.",
+        "domains": [
+          "산업 데이터 클라우드 플랫폼",
+          "예지 보전·제조 AI 에이전트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AIoT 서비스 백앤드 개발자 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/338476",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "AIoT 단말 펌웨어",
+        "why": "신입 임베디드 공고가 AVR·ESPRESSIF MCU 대상 임베디드 소프트웨어, 신규 하드웨어 테스트, OTA 배포를 적는다.",
+        "what_to_know": [
+          "MCU 펌웨어",
+          "OTA",
+          "산업 통신"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "임베디드 소프트웨어 개발자(신입)",
+            "url": "https://jumpit.saramin.co.kr/position/54920516",
+            "publisher": "점핏"
+          }
+        ]
+      },
+      {
+        "name": "산업 데이터 클라우드 플랫폼",
+        "why": "공고의 Backend Developer(Cloud Team) 소개가 MODLINK 가 전 세계 제조 현장에서 모으는 산업 데이터를 수용·가공하는 아키텍처와 실시간 데이터 파이프라인을 적는다.",
+        "what_to_know": [
+          "IoT 데이터 수집",
+          "실시간 파이프라인",
+          "시계열 저장"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AIoT 서비스 백앤드 개발자 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/338476",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "예지 보전·제조 AI 에이전트",
+        "why": "공고의 AI Algorithmic Engineer 소개가 시계열 기반 예지 보전·이상 탐지 알고리즘을, AI Agentic Developer 소개가 제조 현장 문제를 해결하는 자율 지능형 에이전트를 적는다.",
+        "what_to_know": [
+          "시계열 이상 탐지",
+          "예지 보전",
+          "에이전트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AIoT 서비스 백앤드 개발자 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/338476",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "하드웨어 회사에서 데이터·AI 플랫폼으로 옮겨 가는 중이다",
+        "evidence": "단순한 하드웨어 공급을 넘어 데이터 중심의 플랫폼 비즈니스로 영역을 확장하고 있습니다.",
+        "so_what": "모집중 공고가 백엔드(클라우드)·AI 두 갈래·임베디드 신입으로 나뉜다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "회사 사이트 edgecross.ai 가 403 을 돌려줘 읽지 못했다",
+    "MODLINK 판매·구독 방식과 가격은 읽지 않았다",
+    "연 매출 30억·투자사·파트너십은 회사 주장이다 — 외부 자료로 확인하지 않았다",
+    "원티드 백엔드(338476)와 점핏 AIoT Backend(55029882)가 같은 자리인지 본문 비교가 필요하다",
+    "급여: '회사내규에 따름, 면접 후 결정' — 비워 둔다"
+  ],
+  "postings": []
+}
