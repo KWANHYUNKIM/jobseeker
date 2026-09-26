@@ -855,6 +855,17 @@
       "postings": 5,
       "study_items": 6,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "kbank",
+      "name": "케이뱅크",
+      "aliases": [
+        "케이뱅크"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

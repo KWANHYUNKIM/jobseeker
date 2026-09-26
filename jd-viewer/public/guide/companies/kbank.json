@@ -1,0 +1,139 @@
+{
+  "slug": "kbank",
+  "name": "케이뱅크",
+  "name_en": "K bank",
+  "aliases": [
+    "케이뱅크"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "kbanknow.com",
+  "one_liner": "인터넷전문은행 — 지금 채용은 새로 연 법인여신(기업 대출)의 채널계·계정계 개발",
+  "company": {
+    "business": "사이트(kbanknow.com) 메타 설명은 케이뱅크가 **예적금·대출·카드·투자·해외송금** 등 금융 상품과 서비스를 제공한다고 적는다. 이 데이터의 모집중 공고 5건은 모두 **법인여신(기업 대출)** 개발이다. 공고의 팀 소개가 구조를 알려 준다 — **채널서비스개발팀**은 고객과 케이뱅크가 만나는 모든 화면·서비스를 맡고, 그중 법인여신은 **새로 구축한 업무 영역**이라 오픈 이후 운영·고도화를 이끌 사람을 찾는다(상품 조회→신청·심사·약정·실행 가입 여정, 스크래핑 기반 **멀티오퍼**). **여신개발팀**은 여신의 신청부터 실행·상환·사후관리까지 모든 업무시스템을 개발·운영하며, 개인→개인사업자→'종착역인' 법인여신까지 모든 상품이 이 팀을 거쳐 출시된다고 적는다(한도 산정·실행·약정·정산, 담보 평가·설정·관리). 은행 IT 용어로 **채널계**(고객 화면·앱)와 **계정계**(원장·업무 처리)가 나뉘어 있다. 인터넷전문은행이라는 규정은 공고·사이트에 직접 나오지 않고, 매출·인원도 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "케이뱅크",
+        "url": "https://www.kbanknow.com/web/web-home/home/main",
+        "publisher": "케이뱅크",
+        "summary": "메타 설명: 예적금, 대출, 카드, 투자, 해외송금 등 폭넓은 금융 상품 및 서비스 제공"
+      },
+      {
+        "title": "채널계 법인여신 사전 업무 개발자(정규직) 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572683?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "채널서비스개발팀: 고객과 케이뱅크가 만나는 모든 화면·서비스. 법인여신은 새로 구축한 업무 영역 — 상품 조회부터 신청·심사·약정·실행 가입 여정과 멀티오퍼"
+      },
+      {
+        "title": "계정계 법인여신 상품 및 담보 업무 개발자(정규직) 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572686?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "여신개발팀: 여신의 신청부터 실행/상환, 사후관리까지 모든 업무시스템 개발·운영. 개인·개인사업자·법인여신 모든 상품이 여신개발팀을 거쳐 출시"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "여신(대출) — 개인·개인사업자·법인",
+        "how": "여신개발팀 소개가 개인·개인사업자·법인여신 상품을 모두 이 팀이 출시한다고 적고, 채널 공고가 법인사업자 대상 비대면 여신 가입을 적는다. 이자 수익 규모는 읽지 않았다.",
+        "domains": [
+          "여신 채널(비대면 가입)",
+          "계정계 여신·담보"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "계정계 법인여신 상품 및 담보 업무 개발자(정규직) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572686?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "여신개발팀: 여신의 신청부터 실행/상환, 사후관리까지 모든 업무시스템 개발·운영. 개인·개인사업자·법인여신 모든 상품이 여신개발팀을 거쳐 출시"
+          },
+          {
+            "title": "채널계 법인여신 사전 업무 개발자(정규직) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572683?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "채널서비스개발팀: 고객과 케이뱅크가 만나는 모든 화면·서비스. 법인여신은 새로 구축한 업무 영역 — 상품 조회부터 신청·심사·약정·실행 가입 여정과 멀티오퍼"
+          }
+        ]
+      },
+      {
+        "name": "수신·카드·투자·해외송금",
+        "how": "사이트 메타 설명이 예적금·카드·투자·해외송금을 든다. 이 데이터의 모집중 공고와는 직접 연결되지 않는다.",
+        "domains": [
+          "여신 채널(비대면 가입)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "케이뱅크",
+            "url": "https://www.kbanknow.com/web/web-home/home/main",
+            "publisher": "케이뱅크",
+            "summary": "메타 설명: 예적금, 대출, 카드, 투자, 해외송금 등 폭넓은 금융 상품 및 서비스 제공"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "여신 채널(비대면 가입)",
+        "why": "채널계 공고가 법인사업자 비대면 여신 가입 프로세스, 멀티오퍼(스크래핑 기반), 전자약정·전자서명 연계, 실행 신청·결과 안내 화면, 이탈 분석을 적는다.",
+        "what_to_know": [
+          "비대면 여신 프로세스",
+          "전자약정·전자서명",
+          "모바일 뱅킹"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "채널계 법인여신 사전 업무 개발자(정규직) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572683?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "채널서비스개발팀: 고객과 케이뱅크가 만나는 모든 화면·서비스. 법인여신은 새로 구축한 업무 영역 — 상품 조회부터 신청·심사·약정·실행 가입 여정과 멀티오퍼"
+          }
+        ]
+      },
+      {
+        "name": "계정계 여신·담보",
+        "why": "계정계 공고가 법인 여신 신청·심사, 담보 평가·설정·관리 업무 개발·운영과 Java·Oracle 을 적는다.",
+        "what_to_know": [
+          "여신 원장·한도·약정",
+          "담보 평가·설정",
+          "Java·Oracle"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "계정계 법인여신 상품 및 담보 업무 개발자(정규직) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572686?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "여신개발팀: 여신의 신청부터 실행/상환, 사후관리까지 모든 업무시스템 개발·운영. 개인·개인사업자·법인여신 모든 상품이 여신개발팀을 거쳐 출시"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "법인여신을 새로 열고 채널·계정계를 함께 채운다",
+        "evidence": "법인여신은 새롭게 구축한 업무 영역인 만큼",
+        "so_what": "두 팀이 같은 업무(법인여신)로 정규직·전문경력직을 동시에 뽑는다. 오픈 직후 운영·고도화 단계라 장애 대응과 상품 추가가 잦을 수 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "금융권 여신 도메인 경력이 문턱이다",
+        "evidence": "금융기관 계정계 여신 업무 IT 실무경험이 3년이상",
+        "so_what": "자격요건이 '금융권 여신' 경력을 콕 집는다. 일반 웹 개발 경력만으로는 서류 단계에서 불리하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수는 읽지 않았다",
+    "법인여신 오픈 시점",
+    "전문경력직과 정규직의 처우 차이(사람인 공고 급여는 '면접 후 결정')",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
