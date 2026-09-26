@@ -5,7 +5,7 @@
   "country": "기타",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-07",
+  "updated_at": "2026-09-26",
   "domain": "supabase.com",
   "one_liner": "Postgres 를 고치지 않고 그 둘레를 짓는 회사 — 그래서 자기 제품이 무엇을 못 하는지도 같이 적는다",
   "business_model": "**Postgres 위에 얹은 백엔드 서비스**를 판다. 제품은 여섯이다 — Database · Auth · Storage · Edge Functions · Realtime · Vector. **핵심 도구가 전부 오픈소스이고 스스로 호스팅할 수 있다**고 밝히므로, 파는 것은 소프트웨어가 아니라 **운영**이다.\n\n요금은 네 등급이다. **Free**(월 $0 · DB 500MB · MAU 5만)의 실질 제약은 용량이 아니라 **1주일 놀면 멈추고 활성 프로젝트가 2개까지**라는 것이다. **Pro**(월 $25 · DB 8GB · MAU 10만)부터 한도를 넘으면 **종량으로 넘어간다**(GB당 $0.125 · MAU 당 $0.00325). **Team** 은 월 $599, Enterprise 는 협의다.\n\n**Postgres 를 고치지 않는다는 것이 이 회사의 기술 노선이다** — Multigres 도 '수정하지 않은 Postgres 복제'를 그대로 쓴다. 남의 데이터베이스를 포크하지 않고 그 **둘레**를 짓는 쪽을 골랐다(재구성).",
