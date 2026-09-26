@@ -285,6 +285,132 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572727?ReturnUrl=RecruitInfo",
+      "title": "글로벌 서비스 iOS 개발 (iOS Developer)(경력) 채용",
+      "site": "dev",
+      "verdict": "경력 6년 이상(iOS). 전 세계 사용자가 쓰는 콘텐츠 서비스 iOS 앱 — **이미지·동영상 뷰어 등 미디어 기능**의 설계·구현, 다국어 환경에 최적화된 앱, 기획·디자인과의 UI/UX 개선, 아키텍처 가이드라인에 맞춘 확장 가능한 코드, 성능 최적화·안정성. 조직 소개는 Swift Concurrency·Combine 같은 현대 스택과 기존 코드를 점진적으로 개선해 기술 부채를 푸는 과정을 적는다. 필수는 iOS 6년·Swift 깊은 이해, API 연동·효율적 데이터 처리, Combine·async/await 실무. 모듈화, UIKit 안에 SwiftUI 점진 도입, 현지화, 콘텐츠·뷰어 개발, AI 를 활용한 대규모 서비스는 우대다. 전형: 지원서 리뷰 → 프리 인터뷰 → 실무 인터뷰 → Culture-Fit 인터뷰(기업문화 적합도 검사 포함). 결과에 따라 레퍼런스 체크·추가 인터뷰가 붙을 수 있다. 접수 2026.09.18 ~ 2026.09.30 23:59, 근무지 정자동 그린팩토리. '남자의 경우, 군필자 또는 면제자에 한해 지원 가능'.",
+      "fit": {
+        "must_have": [
+          "iOS 6년 이상·Swift",
+          "API 연동·데이터 처리",
+          "Combine·Swift Concurrency"
+        ],
+        "can_learn": [
+          "모듈화",
+          "UIKit + SwiftUI 병행",
+          "현지화",
+          "콘텐츠 뷰어",
+          "AI 활용 서비스"
+        ]
+      },
+      "study": [
+        {
+          "topic": "끊김 없는 이미지·동영상 뷰어",
+          "from": "task",
+          "quote": "특히, 이미지 및 동영상 뷰어 등 미디어 관련 기능의 설계 및 구현을 통해",
+          "priority": "core",
+          "why": "주요업무이고 다른 주요업무가 '앱의 성능 최적화 및 안정성 향상' 이다. 우대에 '콘텐츠 서비스 또는 뷰어 개발 경험' 이 있다. 회사는 웹툰·만화 플랫폼이다(회사 브리핑).",
+          "gap_check": "세로로 수십 장 이어지는 웹툰 회차를 스크롤할 때 이미지를 어디까지 미리 받고(프리페치), 메모리 경고가 오기 전에 무엇을 해제하며, 큰 이미지를 화면 크기에 맞게 줄여 디코딩하는 이유는 무엇인가?",
+          "drill": "UICollectionView 로 긴 이미지 세로 뷰어를 만들고 프리페치·다운샘플링·메모리 캐시 한도를 넣은 뒤, Instruments 로 스크롤 중 메모리·프레임 드랍을 전후 비교한다. 같은 화면에 AVFoundation 동영상 셀을 섞어 재생·정지 시점을 관리한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "UIKit — UICollectionView",
+              "url": "https://developer.apple.com/documentation/uikit/uicollectionview",
+              "kind": "docs"
+            },
+            {
+              "title": "AVFoundation",
+              "url": "https://developer.apple.com/documentation/avfoundation",
+              "kind": "docs"
+            },
+            {
+              "title": "Xcode — Improving your app's performance",
+              "url": "https://developer.apple.com/documentation/xcode/improving-your-app-s-performance",
+              "kind": "docs"
+            },
+            {
+              "title": "MetricKit",
+              "url": "https://developer.apple.com/documentation/metrickit",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Combine·Swift Concurrency 비동기 설계",
+          "from": "qualification",
+          "quote": "Combine, Swift Concurrency(async/await) 등 리액티브/비동기 프로그래밍 패러다임에 대한",
+          "priority": "core",
+          "why": "필수이고 조직 소개가 'Swift Concurrency나 Combine과 같은 현대적인 기술 스택을 활용해 더 견고하고 안정적인 서비스 구조를 설계' 한다고 적는다.",
+          "gap_check": "회차 목록 API 와 이미지 다운로드를 async/await 로 짤 때 화면이 사라지면 진행 중 작업은 어떻게 취소되고, 기존 Combine 파이프라인과 새 async 코드를 한 화면에서 어떻게 잇는가? 메인 스레드 UI 갱신은 무엇(@MainActor)으로 보장하는가?",
+          "drill": "회차 목록 로딩을 async/await + Task 취소로, 검색어 입력 디바운스를 Combine 으로 구현하고, 두 흐름을 AsyncSequence 로 연결한다. 화면 이탈 시 작업이 취소되는지 로그로 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Swift — Concurrency",
+              "url": "https://developer.apple.com/documentation/swift/concurrency",
+              "kind": "docs"
+            },
+            {
+              "title": "Combine",
+              "url": "https://developer.apple.com/documentation/combine",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "다국어·현지화 앱과 SwiftUI 점진 도입",
+          "from": "task",
+          "quote": "다국어 환경에 최적화된 앱 설계 및 구현을 진행합니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 현지화·글로벌 시장 특성을 고려한 개발과 'UIKit 프로젝트 내에 SwiftUI를 점진적으로 도입' 이 있다.",
+          "gap_check": "오른쪽→왼쪽(RTL) 언어나 텍스트 길이가 크게 다른 언어에서 UI 가 깨지지 않게 하려면 레이아웃·폰트·복수형 규칙을 어떻게 다루고, 기존 UIKit 화면 일부를 SwiftUI 로 바꿀 때 어디부터 시작하는가?",
+          "drill": "앞 뷰어 앱에 String Catalog 로 3개 언어(RTL 하나 포함)를 넣고 복수형·날짜 형식을 처리한 뒤, 설정 화면 하나를 SwiftUI 로 만들어 UIHostingController 로 기존 네비게이션에 끼운다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Xcode — Localization",
+              "url": "https://developer.apple.com/documentation/xcode/localization",
+              "kind": "docs"
+            },
+            {
+              "title": "SwiftUI — UIHostingController",
+              "url": "https://developer.apple.com/documentation/swiftui/uihostingcontroller",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "긴 이미지 세로 뷰어 + 메모리·프레임 전후 수치 + 다국어·SwiftUI 병행 저장소",
+          "why": "주요업무(미디어 뷰어·다국어·성능)와 우대(뷰어·현지화·SwiftUI 도입)를 한 번에 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "기술 부채를 점진적으로 개선한 사례 정리",
+          "why": "조직 소개가 '기존의 코드를 더 나은 방향으로 점진적으로 개선하며 기술적 부채를 해결하는 과정' 을 적는다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 리뷰 → 프리 인터뷰 → 실무 인터뷰 → Culture-Fit 인터뷰(기업문화 적합도 검사 포함). 결과에 따라 레퍼런스 체크·추가 인터뷰가 붙을 수 있다. 접수 2026.09.18 ~ 2026.09.30 23:59, 근무지 정자동 그린팩토리. '남자의 경우, 군필자 또는 면제자에 한해 지원 가능'.",
+        "expect": [
+          "뷰어 성능·메모리",
+          "Swift Concurrency·Combine",
+          "현지화",
+          "아키텍처 판단"
+        ],
+        "sources": [
+          {
+            "title": "글로벌 서비스 iOS 개발 (iOS Developer)(경력) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572727?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }
