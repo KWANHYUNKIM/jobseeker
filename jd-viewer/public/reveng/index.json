@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "기업이 사원의 건강을 주체적으로 관리하게 하는 'Carely' 의 회사 — 수만 건을 들여오는 CSV 잡은 트랜잭션 · 배치 · 감시 도구의 메모리까지 재어 12 시간을 3 시간 반으로 줄이고, 감시 데이터는 국내 리전으로 옮기며 환경마다 조직을 가르고, GraphQL 에 흩어진 업무 규칙은 도메인 객체로 모은다",
       "updated_at": "2026-09-27",
       "domain": "carely.jp"

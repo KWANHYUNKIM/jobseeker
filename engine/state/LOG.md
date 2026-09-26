@@ -2400,3 +2400,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 iCARE CSV 임포트
 
 - `181c10f20dba04` 전문으로 기능 `long-csv-import-memory`, 결정 8.
+
+## 2026-09-27 iCARE Datadog 리전 이전
+
+- `27491180a1d9ba` 전문으로 기능 `datadog-domestic-site-migration`, 결정 8.
