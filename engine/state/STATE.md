@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Weathernews 확장 2/2(2026-09-26) — `my-solution-decision-tree` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 '방송' 에 도메인 없음 — 검색 1 RSS 18편(방송 글 없음) 이어 검색 2(Zenn 검색 API '番組 ウェザーニューズ'·'放送'·'weathernews'), 없으면 hold. 단 --gaps 가 후보 조사(큐 1/3)를 먼저 부르면 그쪽. 대기 1/3(Safie) — --gaps 가 후보 조사를 부를 수 있다. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Weathernews hold(2026-09-26) — 방송 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 신규: 큐 맨 위 Safie — `97cdd15308a818`(카메라 서버 EC2 · 썸네일 서버 Fargate · 같은 서브넷 · 기동 직후만 SYN-ACK 타임아웃 · 기각된 가설 · Linux ARP 캐시 11.2초 · Amazon Linux 는 10년 넘게 대책) · `109c96218ef66d`(생성 AI 안전 5층) · 회사 사이트에서 수익원부터. 그 뒤 큐가 비니 후보 조사. 대기 1/3(Safie) — --gaps 가 후보 조사를 부를 수 있다. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -384,6 +384,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **KENCOPA 적산 AI 에이전트 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 8편 전부 · Zenn 검색 API 3낱말 0건). 적산 구조 글이 새로 나오면 다시.
 - **WWWAVE 신규 사업 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 4낱말, 사내 문화·행사 글뿐). 신규 사업 구조 글이 새로 나오면 다시.
 - **Stock 제품(인원 구간 구독) 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 6편 전부 · Zenn 검색 API 4낱말 0건). Stock 제품 구조 글이 새로 나오면 다시.
+- **Weathernews 방송 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 18편 · Zenn 검색 API 3낱말, 방송 글 0). 방송 제작 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

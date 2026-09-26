@@ -1872,3 +1872,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Weathernews 마이 솔루션 결정 트리
 
 - 결정 5 — eval 대신 결정 트리 데이터·재귀 3함수·단락 평가(+순서)·Leaf jq·순수 함수 goroutine 병렬.
+
+## 2026-09-26 Weathernews hold
+
+- 검색 1 RSS 18편 · 검색 2 Zenn 검색 API 3낱말 — 방송 글 0. hold_reason·'재시도 안 함'·QUEUE hold.

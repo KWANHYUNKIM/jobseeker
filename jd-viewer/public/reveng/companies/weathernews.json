@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "기타",
   "status": "in_progress",
+  "hold_reason": "수익원 '방송(라디오·TV 기상 프로그램 제작)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 18편 / Zenn 검색 API '番組 ウェザーニューズ'·'放送 気象'·'weathernews' — 플랫폼 엔지니어링·수요 예측 소개·행사 글뿐). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 방송 제작 쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "weathernews.com",
   "one_liner": "기상 정보 회사 웨더뉴스 — 소매·메이커의 반년 앞 일별 수요 예측은 GPU 인스턴스를 AWS Batch 로 그때만 띄워 추론하고, 개인 앱의 '마이 솔루션' 은 AND/OR 4단 조건 10만 오더를 10분마다 결정 트리의 단락 평가로 판정한다",
