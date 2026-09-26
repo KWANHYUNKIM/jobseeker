@@ -752,9 +752,9 @@
               "kind": "docs"
             },
             {
-              "title": "Zustand — Introduction",
-              "url": "https://zustand.docs.pmnd.rs/getting-started/introduction",
-              "kind": "docs"
+              "title": "Zustand (GitHub)",
+              "url": "https://github.com/pmndrs/zustand",
+              "kind": "repo"
             }
           ]
         },
