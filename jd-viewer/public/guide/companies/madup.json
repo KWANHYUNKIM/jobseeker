@@ -192,5 +192,100 @@
     "임직원 수는 읽지 않았다",
     "salary: 개발 공고에 금액이 없다 — 비워 둔다(사람인 HR 인턴 공고의 월 240만 원은 인턴·비개발이라 넣지 않았다)"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/341002",
+      "title": "[제품 본부] AI 프로덕트 오너",
+      "site": "wanted",
+      "verdict": "경력 5-11년, 서울 강남구. 제품 본부에서 마케팅 AI 에이전트 **LEVER Xpert** 의 AI 기능을 기획하는 **AI 프로덕트 오너** 자리다. 업무는 통합 마케팅 성과 분석·개선을 위한 AI 제품 요구사항 기획과 비즈니스 임팩트, **생성형 AI 와 분류·회귀 모델**로 신규 제품·서비스 기획·실행, **AI 서비스 성능 평가 데이터셋 정의와 품질 관리·성능 지표 설계·모니터링**, AI 제품 개발 라이프사이클 관리, PO·유관 부서 협업. 기술 스택 소개는 PyTorch·TensorFlow 모델을 마이크로서비스로 서빙하고 상용 Foundation Model 을 함께 쓰며, AWS(Lambda·Beanstalk·ECS·EKS, MemoryDB·RDS, Redshift·Athena, Airflow)와 Python(FastAPI·Django)을 적는다. 필수는 서비스 기획·PM 5년 이상, AI/ML 제품 설계·운영, 데이터 분석·해석과 데이터 기반 의사결정, ML·생성형/대화형 AI 기본 이해, 유관 부서 커뮤니케이션. 우대는 제품 런칭·성장 주도, 디지털 마케팅 제품, **평가용 데이터셋 기반 정량 평가로 AI 제품 기획**, 애자일·JIRA, MLOps, 관련 전공 학사, OpenAI·GCP. 전형: 서류 ＞ 리크루터 콜 ＞ 1차 인터뷰(**케이스 인터뷰**) ＞ 2차 인터뷰 ＞ 처우협의, 포트폴리오 또는 경력기술서 필수. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "서비스 기획·PM 5년 이상",
+          "AI/ML 제품 설계·운영",
+          "데이터 기반 의사결정",
+          "ML·생성형 AI 기본 이해"
+        ],
+        "can_learn": [
+          "평가 데이터셋 기반 기획",
+          "MLOps",
+          "디지털 마케팅 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AI 기능의 평가 데이터셋과 지표를 PO 가 설계하기",
+          "from": "task",
+          "quote": "• AI 서비스 성능 평가를 위한 데이터셋을 정의하고, 품질 관리와 성능 지표 설계·모니터링을 담당합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '평가용 데이터셋 기반의 모델 성능 정량 평가 결과를 바탕으로 AI 제품을 기획·관리' 가 있다.",
+          "gap_check": "LEVER Xpert 가 '지난주 성과가 떨어진 캠페인과 원인' 을 요약하는 기능이라면 평가 세트에 어떤 질문과 정답(원인 캠페인 목록·수치)을 넣고, 수치 정확도·원인 지목 정확도·요약의 쓸모를 각각 무엇으로 채점하며, 출시 기준(예: 원인 지목 정확도 80% 이상)은 누가 어떤 근거로 정하는가?",
+          "drill": "가상의 캠페인 성과 표 5개로 '성과 하락 원인 요약' 평가 세트 20문항(질문·기대 원인·기대 수치)을 만들고, 자동 채점(수치 일치)과 채점 기준표(요약 품질)를 나눠 쓴다. Claude 평가 가이드를 참고해 출시 기준 문서 한 장을 작성한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Define success criteria and build evaluations — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "분류·회귀 모델을 제품으로 — 지표를 비즈니스 말로",
+          "from": "task",
+          "quote": "• 생성형 AI 및 분류·회귀 모델을 활용하여 신규 제품과 서비스를 기획하고 실행합니다.",
+          "priority": "core",
+          "why": "주요업무다. 같은 본부 시니어 AI Engineer 공고가 '광고 소재별 전환율(CVR) 예측', '전환율 기여 캠페인 랭킹' 을 예로 든다.",
+          "gap_check": "'성과가 좋을 소재' 를 고르는 분류 모델의 정밀도와 재현율 중 마케터에게 무엇이 더 중요하고(좋은 소재를 놓치는 비용 vs 나쁜 소재를 추천하는 비용), 모델 지표가 좋아졌는데 광고 성과가 안 오르면 무엇을 의심하며, ML 없이 규칙으로 먼저 출시하는 것이 왜 좋은 출발일 수 있는가?",
+          "drill": "Google 'Rules of ML' 앞부분(규칙 1~10)과 분류 지표 문서를 읽고, '고효율 소재 추천' 기능의 PRD 한 장(문제·지표·기준선 규칙·모델 도입 조건·실패 비용)을 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Rules of Machine Learning — Google",
+              "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+              "kind": "docs"
+            },
+            {
+              "title": "Classification: Accuracy, recall, precision — Google ML Crash Course",
+              "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "케이스 인터뷰 — 통합 마케팅 성과를 무엇으로 재나",
+          "from": "task",
+          "quote": "• 통합 마케팅 성과 분석 및 개선을 위한 AI 제품 요구사항을 기획하고 비즈니스 임팩트를 창출합니다.",
+          "priority": "high",
+          "why": "주요업무 첫 줄이고 전형에 '1차 인터뷰 시, 케이스 인터뷰' 가 있다. 회사 브리핑대로 여러 매체·GA·Appsflyer 데이터를 하나로 모으는 것이 제품의 출발이다.",
+          "gap_check": "메타·구글·틱톡이 각자 보고하는 전환 수를 더하면 실제 전환보다 커지는 이유는 무엇이고(중복 기여), 매체별 예산 배분을 정하려면 라스트 클릭 기여·실험(증분 측정)·마케팅 믹스 모델(MMM) 중 무엇을 언제 쓰는가? 이를 AI 제품 기능으로 만든다면 마케터에게 무엇을 보여주는가?",
+          "drill": "Google Meridian(MMM) 소개를 읽고, '광고주가 다음 달 예산을 매체별로 어떻게 나눌까' 라는 케이스 질문에 대한 30분 답안(문제 정의 → 데이터 → 측정 방법의 한계 → 제품 기능 제안 → 성공 지표)을 한 장으로 연습한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Meridian — Google for Developers",
+              "url": "https://developers.google.com/meridian",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ML 제품의 라이프사이클 — MLOps 를 PO 관점에서",
+          "from": "preference",
+          "quote": "• ML 프로젝트 라이프 사이클 관리 및 MLOps에 대한 이해도를 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무에 'AI 제품 개발 라이프사이클 전반을 관리' 가 있다.",
+          "gap_check": "광고 시장 계절성(연말·명절)으로 모델 성능이 떨어질 때 재학습 주기와 트리거를 PO 가 어떻게 정하고, 모델 버전을 바꿨을 때 사용자에게 보이는 결과가 달라지는 것을 어떻게 알리고 검증하는가?",
+          "drill": "Google Cloud 의 MLOps 성숙도 문서를 읽고 LEVER Xpert 소재 추천 기능을 가정해 수준 0·1·2 에서 PO 가 챙길 항목(데이터 변화 모니터링·재학습 승인·A/B 검증·릴리즈 노트)을 표로 정리한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "MLOps: Continuous delivery and automation pipelines in ML — Google Cloud",
+              "url": "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
