@@ -156,7 +156,7 @@
               "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
               "publisher": "EVERSTEEL",
               "date": "2026-02-17",
-              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
             }
           ]
         },
@@ -171,7 +171,7 @@
               "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
               "publisher": "EVERSTEEL",
               "date": "2026-02-17",
-              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
             }
           ]
         },
@@ -186,12 +186,14 @@
               "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
               "publisher": "EVERSTEEL",
               "date": "2026-02-17",
-              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "tenant-split-scrap-analytics"
+      ]
     },
     {
       "name": "데이터셋 없이 화상 해석부터 띄운다",
@@ -570,7 +572,7 @@
               "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
               "publisher": "EVERSTEEL",
               "date": "2026-02-17",
-              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
             }
           ]
         }
@@ -616,6 +618,367 @@
           "publisher": "EVERSTEEL",
           "date": "2025-06-13",
           "summary": "鉄ナビ検収AI 백엔드는 **카메라 시스템 · AI 해석(추론) · 공장 기간 시스템** 연계와 실시간 결과 제공을 맡는다. **TypeScript + NestJS** — 타입 · zod · DI 로 외부 연계를 보수하기 쉽게, 소인원 팀이 프런트 · 백을 같이 맡아 언어 통일. 구성: 클라우드(AI 검수 관리 · 촬영 세션 관리 · 검수 정보 관리) + 추론 서비스(AI 팀) + **온프레미스**(고객 기간 시스템 · 카메라 기기에 붙는 EVERSTEEL 온프레 서버 — 화상 전처리 · 전송, HW 팀). 기능 영역별 모듈, ID 에 **Branded Type**, 에러는 Neverthrow. 검토 중: 프레젠테이션 층 통합 · **클라우드와 엣지의 균형**(영상 처리 · 추론의 엣지화, 네트워크 단절 대응). 과제: 관측성, **공장 온보딩 간소화**(공장마다 다른 기간 시스템), 화상 데이터 증가에 따른 비용, 문서 부족."
+        }
+      ]
+    },
+    {
+      "key": "tenant-split-scrap-analytics",
+      "name": "철강사끼리 서로를 못 보게 — 기본은 DB 가 막고, 막지 못하는 곳은 코드가 막는다",
+      "domain": "쌓인 검수 데이터를 철강사마다 갈라서 보여 준다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "鉄ナビ検収AI 는 스크랩 한 트럭마다 판정을 남긴다 — 중량 · 품종 · 등급 · 업자 · 검수원. 철강사는 그걸 **납입 관리와 검수 업무 효율화**에 쓰고 싶어 했고, 2025 년 6 월 **鉄ナビAnalytiX** 가 새 기능으로 나왔다 — 일차/월차 개요(중량 추이 · 품종 내역), 업자 · 검수원별 납입량 · 품질 평가, 상세 목록과 CSV.\n\n같은 서비스를 **여러 철강 메이커**가 쓴다. 어느 업자가 얼마를 어떤 품질로 넣었는지는 경쟁사에 새면 안 되는 데이터다. 그리고 분석의 무거운 집계가 **실시간 안정이 최우선인 검수 AI** 를 흔들면 현장의 검수가 멈춘다.",
+        "metrics": [
+          {
+            "label": "제공 시작",
+            "value": "2025 년 6 월(鉄ナビ検収AI 의 새 기능)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          },
+          {
+            "label": "화면",
+            "value": "일차/월차 개요 · 업자/검수원별 · 상세 목록(필터 · CSV)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "멀티테넌트를 설계할 때",
+          "thought": "데이터 분리가 **최우선 과제**다. 개발자가 WHERE 를 잊는 날은 온다 — 그날에도 DB 가 막아야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+              "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+              "publisher": "EVERSTEEL",
+              "date": "2026-02-17",
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+            }
+          ]
+        },
+        {
+          "at": "Snowflake 에도 행 접근 정책이 있다는 걸 봤을 때",
+          "thought": "조직 → 공장의 부모자식에 사용자마다 볼 수 있는 공장이 다르다 — 테넌트 ID 하나로 거르는 정책으론 모자라고, 정책 관리가 번거로워진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+              "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+              "publisher": "EVERSTEEL",
+              "date": "2026-02-17",
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+            }
+          ]
+        },
+        {
+          "at": "App Router 의 기본값을 볼 때",
+          "thought": "'App Router = 전부 Server Components' 가 아니다. 로그인 필수 대시보드에선 초기 HTML 에 내용을 담는 이점이 살지 않는다 — 적재적소로 고른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+              "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+              "publisher": "EVERSTEEL",
+              "date": "2026-02-17",
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "조직(Organization · 테넌트)",
+            "what": "철강 메이커. 자기 데이터만 본다."
+          },
+          {
+            "name": "공장",
+            "what": "조직 아래의 공장. 사용자마다 볼 수 있는 공장이 다르다."
+          },
+          {
+            "name": "검수 데이터",
+            "what": "검수 AI 가 모아 Snowflake 에 쌓은 판정 기록 — 분석용 집계 테이블은 Snowflake 쪽에서 관리."
+          },
+          {
+            "name": "사용자 · 권한",
+            "what": "AnalytiX 고유의 트랜잭션 데이터 — PostgreSQL(Aurora Serverless v2)."
+          },
+          {
+            "name": "RLS 확장 클라이언트",
+            "what": "쿼리 전에 세션 변수 app.current_tenant_id 를 설정하는 Prisma 클라이언트. repository 는 이것만 받는다."
+          }
+        ],
+        "invariants": [
+          "PostgreSQL 쿼리는 테넌트 세션 변수가 설정된 채로만 나간다 — 맨 PrismaClient 는 주입할 수 없다.",
+          "RLS 우회는 명시적으로 선언한 경로(관리자 기능)에서만.",
+          "Snowflake 쿼리는 factory_id 없이 만들 수 없다.",
+          "AnalytiX 는 검수 데이터를 쓰지 않는다 — 읽기만."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "브라우저 → Next.js(Vercel) `/api/[...proxy]` — HTTP-only Cookie 의 토큰을 붙여 AWS 의 NestJS 로 넘긴다",
+            "why": "같은 출처라 SameSite=Strict · CORS 없음 · 백엔드 URL 은닉."
+          },
+          {
+            "step": "응답 헤더에 새 액세스 토큰이 있으면 프록시가 Cookie 를 갱신",
+            "why": "클라이언트가 토큰 갱신을 모른다."
+          },
+          {
+            "step": "NestJS AuthGuard 가 인증하고 조직 정보를 CLS 에 넣는다",
+            "why": "요청 전체에서 테넌트를 참조한다."
+          },
+          {
+            "step": "repository 는 CLS 의 테넌트 ID 로 RLS 확장 클라이언트를 써 PostgreSQL 을 부른다",
+            "why": "WHERE 를 안 써도 DB 가 거른다."
+          },
+          {
+            "step": "분석 조회는 factory_id 가 필수인 Snowflake 클라이언트로",
+            "why": "사용자별 공장 권한을 앱 층에서 건다."
+          },
+          {
+            "step": "화면은 Client Components + SWR — 필터를 바꿀 때마다 다시 가져오고 같은 키는 캐시에서",
+            "why": "분석 화면은 동적이다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "철강사끼리 데이터를 어떻게 가르나?",
+            "chosen": "**PostgreSQL Row Level Security.**",
+            "alternatives": [
+              "쿼리마다 `WHERE tenant_id = ?` 를 쓴다"
+            ],
+            "tradeoff": "WHERE 를 잊어도 **DB 가 자동으로 거르고**, 앱에 취약점이 있어도 마지막 방어선이 되며, 쿼리가 단순해진다. 대가는 세션 변수를 설정하는 경로를 **반드시 거치게 하는 설계**가 따로 필요하다는 것(다음 결정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          },
+          {
+            "question": "RLS 를 우회하는 코드를 어떻게 막나?",
+            "chosen": "**맨 PrismaClient 를 주입할 수 없게 하고, RLS 확장 클라이언트만 받게 한다. '기본은 RLS, 우회는 명시'.**",
+            "alternatives": [
+              "개발자가 올바른 클라이언트를 고르게 둔다"
+            ],
+            "tradeoff": "테넌트 ID 가 비어 있는 채 쿼리가 나가는 일을 **구조로** 막으면서, 관리자 기능은 명시적 선언으로 다룬다. 대가는 우회 경로가 존재하므로 그 선언을 리뷰로 지켜야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          },
+          {
+            "question": "테넌트 정보를 요청 안에서 어떻게 넘기나?",
+            "chosen": "**인증 때 조직 정보를 CLS(Continuation Local Storage)에** 넣고 repository 가 거기서 꺼낸다.",
+            "alternatives": [
+              "메서드 인자로 테넌트 ID 를 계속 넘긴다(이 사이트의 해석 — 글에 없는 일반적 대안)"
+            ],
+            "tradeoff": "호출 체인이 테넌트 ID 를 들고 다니지 않아도 된다. 대가는 테넌트가 **보이지 않는 문맥**에 있어 추적이 어렵다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          },
+          {
+            "question": "분석할 검수 데이터를 어디서 읽나?",
+            "chosen": "**검수 AI 가 쌓은 Snowflake 에서 읽기만** 한다.",
+            "alternatives": [
+              "검수 AI 의 DB 에 직접 붙는다"
+            ],
+            "tradeoff": "AnalytiX 는 쓰지 않고, 검수 AI 는 **실시간 안정이 최우선**이라 분석의 읽기 부하를 같은 DB 에 줄 수 없다. 분석용 집계 테이블을 Snowflake 쪽에서 관리하고 열 지향으로 대량 집계가 빠르다. 대가는 **RDB 보다 큰 레이턴시** — 일 · 월 집계가 주 용도라 허용했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          },
+          {
+            "question": "사용자 · 권한은 어디에 두나?",
+            "chosen": "**PostgreSQL(Aurora Serverless v2)** — Snowflake 와 둘로 나눈다.",
+            "alternatives": [
+              "Snowflake 하나에 모두 둔다"
+            ],
+            "tradeoff": "사용자 관리 · 권한 설정은 AnalytiX 고유이고 **트랜잭션**이 필요하다 — Snowflake 에 두기엔 맞지 않는다. 인증 · 인가 · 테넌트 관리와 분석 데이터의 책임이 갈린다. 대가는 **DB 두 벌과 분리 방식 두 벌**(RLS · 앱 층)을 운용한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          },
+          {
+            "question": "Snowflake 에서는 테넌트를 어떻게 가르나?",
+            "chosen": "**행 접근 정책 대신 앱 층 — factory_id 지정이 필수인 전용 클라이언트 패키지.**",
+            "alternatives": [
+              "Snowflake Row Access Policy"
+            ],
+            "tradeoff": "조직 → 공장 부모자식에 사용자마다 볼 수 있는 공장이 달라 정책 표현이 복잡하고 관리가 번거롭다 — 앱 층이면 공장 단위로 단순히 건다. 대가는 **DB 레벨의 강제력이 없다**는 것 — 분리 누락은 코드 리뷰와 테스트로 확인한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          },
+          {
+            "question": "브라우저가 AWS 의 API 를 어떻게 부르나?",
+            "chosen": "**Next.js Route Handler `/api/[...proxy]` 를 거친다.**",
+            "alternatives": [
+              "브라우저가 크로스 오리진으로 API 를 직접 부른다"
+            ],
+            "tradeoff": "토큰을 **HTTP-only Cookie** 에 두고(XSS), 같은 출처라 **SameSite=Strict**(CSRF) · CORS 회피 · 토큰 갱신이 투명하고 백엔드 URL 이 드러나지 않는다. 직접 부르면 SameSite=None 에 CSRF 토큰 같은 대책이 더 필요하다. 대가는 모든 요청이 **한 홉 더** 지나고, 프록시의 URL 정규화 · 헤더 전달 · 캐시를 따로 챙겨야 한다는 것(글이 스스로 보충한 주의점).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          },
+          {
+            "question": "App Router 에서 무엇을 Server Component 로 쓰나?",
+            "chosen": "**인증 확인 Layout(과 메타데이터)만. 분석 화면은 Client Components + SWR.**",
+            "alternatives": [
+              "App Router 기본대로 Server Components 로 초기 데이터를 넣는다"
+            ],
+            "tradeoff": "로그인 필수라 **SEO 가 필요 없고**, 날짜 · 공장 · 업자 · 품종 필터가 계속 바뀌어 어차피 클라이언트에서 다시 가져와야 하며, 그래프 · 정렬 · 모달 같은 인터랙션이 많고, SWR 캐시로 필터를 되돌릴 때 빠르다. 대가는 **첫 표시에 로딩이 보인다**는 것 — 필터 변경 때와 동작을 맞추고 경계를 의식할 곳을 줄이려고 일부러 허용했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+                "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+                "publisher": "EVERSTEEL",
+                "date": "2026-02-17",
+                "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "鉄ナビ検収AI(+AnalytiX)(수익원)",
+          "via": "검수 AI 의 새 기능",
+          "contract": "AnalytiX 는 검수 AI 를 쓰는 철강사에게 그 검수 데이터를 납입 관리 · 검수 효율화용으로 보여 주는 기능으로 제공된다 — 서비스 페이지의 예정 기능(납입 데이터 분석)과 같은 방향이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+              "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+              "publisher": "EVERSTEEL",
+              "date": "2026-02-17",
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+            },
+            {
+              "title": "提供サービス | EVERSTEEL",
+              "url": "https://eversteel.co.jp/service/steelrecyclingaI",
+              "publisher": "EVERSTEEL",
+              "summary": "**鉄ナビ検収AI** — 숙련 기술이 필요한 철 스크랩 검수(부재의 **등급 사정**, 불순물 · **위험물 검출**, 더스트 등 **중량 공제**)를 고해상도 카메라와 화상 해석으로 AI 가 판정 → 사정의 평준화 · 안전 · 품질 확보 · **24시간 가동으로 인력 절감**. '국내 톱 셰어(자사 조사)', 국내에서 개발하는 유일한 메이커. 도입 때 실제 업무에 붙어 **정착까지 동행**, 이물 검출 우선도 · 감도 조정이나 **독자 검수 규칙** 적용도. 예정: 장표 전자화 · 성분 분석 · 반품 리포트 · 검수원 교육 · 납입 데이터 분석."
+            }
+          ]
+        },
+        {
+          "to": "config-driven-factory-onboarding",
+          "via": "표준 포맷으로 바뀐 검수 데이터 → Snowflake",
+          "contract": "공장마다 다른 형식이 변환 엔진에서 표준 포맷이 된 뒤 검수 AI 가 Snowflake 에 쌓고 AnalytiX 가 읽는다 — 공장이 달라도 같은 화면이 되는 건 앞에서 형식을 맞췄기 때문이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+              "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+              "publisher": "EVERSTEEL",
+              "date": "2026-02-17",
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
+            },
+            {
+              "title": "鉄鋼業界のAI検収システムのデータ変換モジュールについて",
+              "url": "https://zenn.dev/eversteel_tech/articles/d41ddd33f08d89",
+              "publisher": "EVERSTEEL",
+              "date": "2025-11-17",
+              "summary": "각 전로(電炉) 공장은 **독자 스크랩 관리 시스템**(역사 · 독자 요건 · 여러 ERP 벤더)을 써서 필드명 · 구조 · 값 형식 · 단위가 모두 다르다. 원래는 공장이 EVERSTEEL 사양에 맞춰 보내는 게 맞지만 **상대 기간 시스템 개수 비용 · 도입 속도 · 공장별 교섭 비용** 때문에 **EVERSTEEL 이 변환을 맡는다** — 고객 개수 불필요 · '바로 쓸 수 있다'가 영업 무기. 이전엔 공장마다 커스텀 변환 코드(코드 변경 · 배포 · 보수 · 테스트 · 도메인 지식 유실). 해법: **'코드가 아니라 설정으로'** — DB 에 저장된 JSON 설정으로 **SchemaMapper(배치) · FieldTransformer(값 변환) · ConditionalStructure(전체 조건에 따른 값 변환)** 3 단계. 새 공장 추가 리드타임이 **1~2 일**(설정 작성 → DB 등록)로 — 이전은 요약에 1~2 주, 본문에 2~4 주로 적혀 있다. 결과 요약(본문 끝): 새 공장 추가 공수 **200 시간 → 10 시간**(설정 8 · 테스트 2 · 개별 구현 0). '설정만으로는 안전하지 않다'며 **테스트는 반드시** 쓴다 — 다만 테스트 이상의 구현은 없다. 설정은 **커스터머 석세스 · 도메인 전문가**가 만들고 엔지니어는 변환 엔진 품질에 집중. 3 단계로 나눈 이유는 단일 책임(이해 · 독립 테스트 · 확장 · 재사용). 막 시작해 부족한 곳을 고치는 일이 많지만 수정이 다음 고객에게도 재사용돼 수정 폭이 줄고 있다. 다음: **MCP 로 공장 데이터 샘플에서 초기 설정 · 테스트를 자동 생성**(설정 8 시간 → 1 시간 목표) 개발 중."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 두 DB 에 닿는 길",
+          "question": "철강사 사용자의 필터 변경은 어떤 길로 자기 데이터만 가져오나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  B[\"브라우저\\nClient Components · SWR\"] --> PX[\"Next.js /api/[...proxy]\\nHTTP-only Cookie\"]\n  PX --> G[\"NestJS AuthGuard\\n조직 → CLS\"]\n  G --> R[\"repository\\nRLS 확장 클라이언트\"]\n  R --> PG[(\"PostgreSQL\\n사용자 · 권한 · RLS\")]\n  G --> SC[\"Snowflake 클라이언트\\nfactory_id 필수\"]\n  SC --> SF[(\"Snowflake\\n검수 데이터 · 읽기 전용\")]"
+        },
+        {
+          "title": "쿼리 하나가 나가기까지의 상태",
+          "question": "PostgreSQL 쿼리는 어떤 상태를 거쳐야 나갈 수 있나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 미인증\n  미인증 --> 인증됨: Cognito 토큰 · AuthGuard\n  인증됨 --> 테넌트설정: 조직을 CLS 에\n  테넌트설정 --> RLS클라이언트: repository 가 확장 클라이언트 획득\n  RLS클라이언트 --> 쿼리실행: 세션 변수 설정 후\n  인증됨 --> 우회선언: 관리자 기능만 명시적으로\n  우회선언 --> 쿼리실행\n  쿼리실행 --> [*]"
+        },
+        {
+          "title": "WHERE 를 잊은 날",
+          "question": "개발자가 테넌트 조건을 빠뜨리면 두 DB 에서 각각 무슨 일이 일어나나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"새 조회 코드 — 테넌트 조건 누락\"] --> P{\"어느 DB?\"}\n  P -- PostgreSQL --> R[\"RLS 정책이 세션 변수로 거름\\n→ 자사 행만\"]\n  P -- Snowflake --> S{\"factory_id 필수 클라이언트?\"}\n  S -- 예 --> OK[\"공장 지정 없이는 쿼리 불가\"]\n  S -- \"아니오(클라이언트 우회)\" --> X[\"DB 는 막지 않는다\\n→ 코드 리뷰 · 테스트가 마지막 선\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+          "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+          "publisher": "EVERSTEEL",
+          "date": "2026-02-17",
+          "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
         }
       ]
     }
@@ -671,7 +1034,7 @@
       "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
       "publisher": "EVERSTEEL",
       "date": "2026-02-17",
-      "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+      "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인. 인프라: ECS Fargate(ecspresso) + **Aurora Serverless v2**(사내 운용 실적 · 오토스케일로 운용 부하와 비용 최적화) · Cognito · CloudWatch · Sentry, Terraform 모듈로 dev/prod. 보안 보충: 이 프록시 구성은 요건에 맞춘 한 예 — XSS · URL 정규화 · 헤더 전달 · 캐시 · IdP 토큰 설정도 따로 검토하라."
     },
     {
       "title": "BtoB 向け業務システムにおける画像解析の技術選定：汎用 LLM をどう使うか",
