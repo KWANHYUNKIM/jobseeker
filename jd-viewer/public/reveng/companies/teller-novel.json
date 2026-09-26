@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "소셜",
   "status": "in_progress",
+  "hold_reason": "수익원 '출판·미디어믹스' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 19편: React Native·Expo·DDD·TTS 글뿐 / Zenn 검색 API 'テラーノベル'·'コミカライズ'·'テラードラマ' — 걸린 것은 2022·2024 년의 Next.js·사명 변경 글뿐). 완주 기준 셋째를 못 채워 in_progress 로 두고 더 파지 않는다. 출판·코미컬라이즈·콘테스트 운영 쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "tellernovel.com",
   "one_liner": "무료 소설 투고 사이트 테라노벨 — 공개 범위·팔로워·VIP 유료가 얽힌 '이 이야기를 읽어도 되나' 판정을 '판단하려면 무엇이 필요한가' 를 타입으로 돌려주는 Decision 패턴으로 풀고, 이야기를 소리로 전하기 전에 새 TTS 의 한자 읽기를 받아쓰기 대신 소리 자체로 대조해 잰다",
