@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**CADDi — 기능 2, done 보류. 수발주 수익원 자료를 **1회 찾아 없었다**(caddi.tech 2023~2026 62편 제목 · tech.caddi.com 첫 화면). 다음 CADDi 사이클에서 **한 번 더**: tech.caddi.com 의 note 글(`ソフトウェアと技術の力で…`, `製造業エンタープライズにおけるソフトウェア提供形態の再定義`)과 회사 뉴스룸에서 수발주·Quote 쪽을 본다. 또 없으면 `hold_reason` 을 달고 `## 재시도 안 함` 에 적는다(PROMPT 2″). --gaps 는 신규를 가리키지만 회사를 갈아타지 않는다는 규칙이 앞선다.**
+**없다 — CADDi 는 hold_reason 으로 보류(수발주 자료 2회 없음). 다음은 --gaps 가 가리키는 신규(QUEUE 대기 맨 위, 데브시스터즈). 큐가 2/3 라 그 뒤 후보 조사를 한 번 끼운다.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -325,6 +325,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 ### 재방문 — 새 자료가 없었던 곳
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
+- **CADDi 수발주 수익원** — 2026-09-26 두 번 찾아 없음(caddi.tech 62편 · tech.caddi.com note 16편 · 뉴스룸). 수발주·견적·공급망 시스템 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
