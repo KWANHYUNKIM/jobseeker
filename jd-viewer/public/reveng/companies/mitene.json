@@ -110,7 +110,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "ingress-nginx-to-envoy-gateway"
+      ]
     }
   ],
   "features": [
@@ -424,12 +426,256 @@
           "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
         }
       ]
+    },
+    {
+      "key": "ingress-nginx-to-envoy-gateway",
+      "name": "은퇴한 ingress-nginx 를 떠난다 — annotation 을 기계적으로 재고해 요건을 먼저 세우고, 다른 Ingress 구현으로 갈아 끼우는 대신 Gateway API 로, 구현은 Envoy Gateway, 전환은 같은 호스트 이름의 새 경로를 ALB 규칙으로 명시적으로 밟게 해 되돌릴 수 있게",
+      "domain": "내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "2026년 3월 Kubernetes Ingress Controller **kubernetes/ingress-nginx** 가 retirement 되어 리포지토리도 공개 아카이브됐다. みてね 도 ingress-nginx 를 쓰고 있어 이행을 검토해야 했다.\n\n다만 **사용자용 라우팅엔 Ingress 가 없고 이용 범위는 내부용에 한정**돼 있어, 이행처 선정과 전환 전략을 비교적 안전하게 검토할 수 있었다. 그 안엔 oauth2-proxy 와 연계한 외부 인증(`auth-url`/`auth-signin`) 같은 기능이 annotation 으로 설정돼 있었다.",
+        "metrics": [
+          {
+            "label": "검토한 길",
+            "value": "2 — 다른 Ingress 구현으로 교체 · Gateway API 이행",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+                "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-04-13",
+                "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+              }
+            ]
+          },
+          {
+            "label": "비교한 Gateway API 구현",
+            "value": "3 — Envoy Gateway(채택) · NGINX Gateway Fabric · Traefik",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+                "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-04-13",
+                "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "요건을 정리할 때",
+          "thought": "ingress-nginx 에 기대는 기능은 기본적으로 annotation(`nginx.ingress.kubernetes.io/*`)으로 선언돼 있어 기존 매니페스트에서 **기계적으로** 뽑을 수 있다. 여기가 흐릿한 채 비교를 시작하면 이행처 평가가 감각적이 되기 쉽다 — 먼저 재고한 것이 판단 정확도를 올렸다. 호스트·경로 라우팅은 Ingress 표준이고 HTTPRoute 도 같은 것을 지원해 이 단계에선 뺐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+              "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+              "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+              "date": "2026-04-13",
+              "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+            }
+          ]
+        },
+        {
+          "at": "옮기면서 알게 된 것",
+          "thought": "**Ingress 에서 Gateway API 로의 이행은 매니페스트 변환이 아니라, 기존 구성이 맡던 책무를 분해해 다시 설계하는 일**이다. annotation 을 대응 설정으로 '번역' 하는 발상으론 안 나아간다 — 이건 라우팅인가·인증인가·타임아웃이나 본문 크기 같은 통신 제어인가·IP 제한 같은 정책인가·AWS 접속 방식인가를 가르며 HTTPRoute·SecurityPolicy·각종 Policy·ALB 설정으로 다시 놓았다. 특히 인증은 예상보다 복잡해 일찍 검증에 들어간 것이 전체를 매끄럽게 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+              "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+              "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+              "date": "2026-04-13",
+              "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "annotation 재고",
+            "what": "`kubectl get ingress -A -o yaml | grep nginx.ingress.kubernetes.io` 로 클러스터마다 쓰는 annotation 을 뽑아 무엇에 얼마나 기대는지 본다."
+          },
+          {
+            "name": "Gateway · GatewayClass",
+            "what": "컨트롤러 쪽에 둔다 — 인증·TLS 종단 같은 Gateway 층 공통 책무."
+          },
+          {
+            "name": "HTTPRoute · SecurityPolicy",
+            "what": "각 애플리케이션 쪽에 둔다 — 앱 고유 라우팅과 인증·IP 제한 같은 정책."
+          },
+          {
+            "name": "ALB 리스너 규칙",
+            "what": "같은 호스트 이름으로 옛 ingress-nginx 와 새 Gateway 둘 다에 보낼 수 있게 하고, 명시적 조건으로 새 경로를 밟게 한다."
+          }
+        ],
+        "invariants": [
+          "되돌릴 수 없는 일괄 이행은 피한다 — 옛·새 경로를 나란히 두고 비교할 기간을 둔다.",
+          "검증용 쿼리 파라미터 규칙은 내부·한정 검증에서만 쓰고 끝나면 지운다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "모든 클러스터의 Ingress 에서 `nginx.ingress.kubernetes.io/*` annotation 을 뽑아 요건을 목록으로 만든다",
+            "why": "비교가 감각적이지 않게."
+          },
+          {
+            "step": "annotation 이 하던 기능을 라우팅·인증·통신 제어·정책·AWS 접속으로 나눠 HTTPRoute·SecurityPolicy·Policy·ALB 설정에 다시 놓는다",
+            "why": "Gateway API 에선 책무가 리소스별로 갈라진다."
+          },
+          {
+            "step": "같은 호스트 이름으로 옛·새 경로를 둘 다 열고, ALB 리스너 규칙의 명시적 조건(예: `?debug=true`)으로만 새 경로를 밟는다",
+            "why": "사용자 전체에 영향을 주기 전에 확인하고, 문제가 나면 곧장 되돌린다."
+          },
+          {
+            "step": "검증이 끝나면 조건 규칙을 지우고 새 경로로 넘긴다",
+            "why": "검증용 규칙이 보안 구멍으로 남지 않게."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "다른 Ingress 구현으로 갈아 끼울까, Gateway API 로 갈까?",
+            "chosen": "**Gateway API.**",
+            "alternatives": [
+              "다른 Ingress 구현으로 교체"
+            ],
+            "tradeoff": "annotation 호환만으로 기존 요건을 싸게 옮길 수 있는 Ingress 구현은 찾지 못했고 어차피 이행 비용이 든다면, 장래 또 Gateway API 로 옮길 필요를 없애고 Gateway 층 공통 책무(인증·TLS 종단)와 앱 고유 라우팅을 나누며 인증·정책을 더 명시적으로 관리한다. 대가 — 단기 차분이 커진다(비교해 두면 판단 이유가 분명해진다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+                "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-04-13",
+                "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+              }
+            ]
+          },
+          {
+            "question": "Gateway API 구현은?",
+            "chosen": "**Envoy Gateway — Gateway API 에 대한 솔직함·인증 기능의 다루기 쉬움·L7 제어 표현력·장래 확장과 책무 분리·성숙도와 조사하기 쉬움의 균형.**",
+            "alternatives": [
+              "NGINX Gateway Fabric",
+              "Traefik"
+            ],
+            "tradeoff": "모든 축에서 일률적으로 낫다는 판단이 아니라 みてね 요건과의 적합도다 — 문서상 가능한가뿐 아니라 설정의 전망·장애 때 가르기·변경 차분 추적까지 봤다. 대가 — 기능이 많은 구현이 과하지 않나 하는 걱정(필요할 때 쓰는 편이 결국 운영 비용을 낮춘다고 판단).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+                "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-04-13",
+                "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+              }
+            ]
+          },
+          {
+            "question": "oauth2-proxy 외부 인증을 어떻게 옮길까?",
+            "chosen": "**Cognito 와 OIDC 연계로 구성을 단순화할 여지를 보되, 인증 패턴이 여럿이라 한 번에 다 바꾸지 않고 대상 범위의 인증부터 가른다.**",
+            "alternatives": [
+              "oauth2-proxy 구성을 그대로 유지",
+              "인증 기반을 통째로 쇄신"
+            ],
+            "tradeoff": "라우팅만 옮기고 인증이 복잡해지면 운영 부담이 줄지 않는다 — OIDC·Cookie·리다이렉트·헤더 전달을 방식이 굳기 전에 일찍 검증한다. 장래 JWT 클레임을 보고 백엔드에 헤더를 넘기는 확장도 쉽다. 대가 — 한동안 인증 방식이 섞인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+                "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-04-13",
+                "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+              }
+            ]
+          },
+          {
+            "question": "리소스를 어디에 둘까?",
+            "chosen": "**Gateway / GatewayClass 는 컨트롤러 쪽, HTTPRoute / SecurityPolicy 는 각 앱 쪽.**",
+            "alternatives": [
+              "한곳에 모두 모음(inferred)"
+            ],
+            "tradeoff": "장래 어느 팀이 어떤 책무로 보수하나에 맞춘다. 대가 — SecurityPolicy 같은 설정이 여러 곳에 나타나 공통화와 영향 범위 분리 중 무엇을 우선할지 매번 판단한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+                "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-04-13",
+                "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+              }
+            ]
+          },
+          {
+            "question": "본번 전환은?",
+            "chosen": "**같은 호스트 이름으로 옛·새 경로를 둘 다 열고, ALB 리스너 규칙의 명시적 조건으로만 새 경로를 밟게 한다 — 가중치보다 '누가 어떻게 새 경로를 밟나' 를 분명히.**",
+            "alternatives": [
+              "일괄 전환",
+              "가중치 라우팅"
+            ],
+            "tradeoff": "새 경로를 한정해 확인하고 문제 때 되돌리기 쉽다. 대가 — 쿼리 파라미터 조건은 뜻하지 않은 사용자가 새 경로에 닿을 위험이 있어 내부·한정 검증 때만 쓰고 지운다(사용자용이면 IP 제한·커스텀 헤더나 가중치 단계 이행).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+                "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-04-13",
+                "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "가족당 수백만 장에서 말로 사진을 찾는다(같은 회사의 다른 도메인)",
+          "via": "크리티컬하지 않은 곳에서 비용·위험을 받아들이기",
+          "contract": "입구 이행은 사용자용 라우팅엔 Ingress 가 없고 내부용이라 쿼리 파라미터로 새 경로를 밟는 단순한 전환을 받아들였고, 자연어 검색은 크리티컬 기능이 아니라 레플리카 0 의 복구 시간을 받아들였다 — 둘 다 영향 범위로 위험의 크기를 정한다(이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "annotation 이 흩어지는 곳",
+          "question": "한 덩어리였던 annotation 은 어디로 가나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[nginx.ingress.kubernetes.io/*] --> R[라우팅 → HTTPRoute]\n  A --> AU[auth-url · auth-signin → SecurityPolicy<br/>Cognito OIDC 검토]\n  A --> T[타임아웃 · 본문 크기 → Policy]\n  A --> IP[IP 제한 → SecurityPolicy]\n  A --> ALB[AWS 접속 → ALB 설정]\n  GW[Gateway · GatewayClass<br/>컨트롤러 쪽] --- R"
+        },
+        {
+          "title": "전환의 상태",
+          "question": "새 경로는 어떻게 본번이 되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 옛경로: ingress-nginx\n  옛경로 --> 병행: 같은 호스트로 새 Gateway 도 열림\n  병행 --> 한정검증: ALB 규칙 · ?debug=true 만 새 경로\n  한정검증 --> 병행: 문제 → 규칙 제거로 되돌림\n  한정검증 --> 새경로: 검증 완료 · 규칙 제거\n  새경로 --> [*]"
+        },
+        {
+          "title": "피한 함정",
+          "question": "어떤 길이 비싸거나 위험했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  I[다른 Ingress 구현] --> I1[annotation 호환만으로 못 옮김 · 나중에 또 Gateway API]\n  X[annotation 1:1 번역] --> X1[책무가 리소스별로 갈라져 안 나아감]\n  AUTH[인증 일괄 쇄신] --> A1[패턴이 여럿 · 한 번에 못 바꿈]\n  Q[쿼리 파라미터 전환] --> Q1[외부 노출이면 보안 구멍 · 내부 한정에만]\n  BIG[일괄 전환] --> B1[되돌릴 수 없음]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Ingress NGINXのretirementに伴うGateway API + Envoy Gatewayへの移行",
+          "url": "https://zenn.dev/mitene/articles/202604-ingress-nginx-to-envoy-gateway",
+          "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+          "date": "2026-04-13",
+          "summary": "2026년 3월 kubernetes/ingress-nginx 가 retirement(리포지토리 공개 아카이브) — 쓰고 있어 이행을 검토. 사용자용 라우팅엔 Ingress 가 없고 **내부용으로 한정**돼 비교적 안전하게 선정·전환을 검토. 기존 요건 정리·annotation 재고 명령 · 검토한 선택지 · **Envoy Gateway** 선정 이유(인증 요건과의 궁합·장래 확장성) · Ingress → HTTPRoute 변환 · annotation 을 그대로 옮기는 발상으론 안 나아간다 · 가장 고생한 auth-* 계열 · 리소스 두는 곳 · 전환 전략."
+        }
+      ]
     }
   ],
   "open_questions": [
     "요금 금액·매출 비중을 확인하지 않았다.",
     "사진 프린트·포토북(실물 주문)의 기술 글을 아직 못 봤다.",
-    "Envoy Gateway 이행 글의 선택지 비교·전환 전략은 다음 사이클에 읽는다.",
     "다른 글: 한 건의 문의에서 하루 3만 건의 사용자 체험을 고친 CRE(`37670f812485b3`)·Android Hilt 이행·350화면 Edge-to-edge·10bit HDR 인코딩·EKS 업그레이드."
   ],
   "sources": [

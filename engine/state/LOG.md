@@ -1936,3 +1936,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 みてね 자연어 사진 검색
 
 - 결정 7 — OpenSearch Service·해시 인덱스+샤드+라우팅·Efficient k-NN Filtering(Post/Pre 대신)·OR2 레플리카 0·FAISS HNSW on_disk 16x·clip-japanese-base·점수 임계값.
+
+## 2026-09-26 みてね ingress-nginx → Envoy Gateway
+
+- 결정 5 — Gateway API(다른 Ingress 대신)·Envoy Gateway(NGF·Traefik 대신)·인증은 범위부터·리소스 위치·ALB 명시 조건 전환.
