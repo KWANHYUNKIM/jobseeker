@@ -734,6 +734,18 @@
       "postings": 5,
       "study_items": 20,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "herren",
+      "name": "헤렌",
+      "aliases": [
+        "헤렌",
+        "HERREN"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

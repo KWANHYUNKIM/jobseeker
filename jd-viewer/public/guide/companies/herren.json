@@ -1,0 +1,210 @@
+{
+  "slug": "herren",
+  "name": "헤렌",
+  "name_en": "HERREN",
+  "aliases": [
+    "헤렌",
+    "HERREN"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "herrencorp.com",
+  "one_liner": "미용실·네일샵 원장님용 예약·매출·고객관리 앱 '공비서'(월 80만 건 예약)와 SNS 자동화 '브랜다즈' 를 만드는 회사 — 외부 투자 없이 매년 50% 이상 성장(공고)",
+  "company": {
+    "business": "원티드 공고 머리말은 헤렌이 '외부 투자 없이도 매년 50% 이상의 성장' 을 한다고 적고 두 팀을 소개한다. **공비서팀** — 7조 원 규모·19만여 사업자의 뷰티서비스 시장에서 **매월 80만 건 이상의 오프라인 뷰티샵 예약**을 처리한다. **브랜다즈팀** — 20만 고객이 쓰는 SNS 자동화 솔루션 인스타겟·인스타터와 데이터 기반 인플루언서 마케팅 플랫폼(백엔드 공고 '파인앳플', iOS 공고 '파인앤플' 로 표기가 다르다)을 운영한다. 회사 사이트 메타는 '공비서·공비서스토어·브랜다즈를 만드는 (주)헤렌' 이고, 공비서 사이트 메타는 미용실·네일샵·속눈썹·에스테틱·왁싱·애견 등 매장의 고객관리·매출·예약관리 앱이다. 모집중 개발 공고 다섯 건은 모두 **공비서** 조직(프론트엔드 둘·백엔드·iOS 둘)이고, 공비서는 원장님 앱(B2B)과 고객 앱(B2C) 두 제품이다. 공고가 개발 방식을 길게 적는다 — 회사가 Claude 를 지원하고 기획·구현·테스트를 사내 에이전트·스킬 파이프라인으로 묶으며 1차 코드 리뷰를 AI 리뷰어가 하고, Notion·Slack 을 MCP 로 연결하며, 인프라는 AWS ECS·ECR·Jenkins·OpenTofu, 앱 배포는 Fastlane·GitHub Actions, 매주 수요일 개발파트 재택, 기술블로그 techblog.herrencorp.com. 매출액·과금 구조·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[헤렌/공비서] 프론트엔드 개발자 (3년차~6년차)",
+        "url": "https://www.wanted.co.kr/wd/336266",
+        "publisher": "원티드"
+      },
+      {
+        "title": "(주)헤렌 | HERREN",
+        "url": "https://www.herrencorp.com/",
+        "publisher": "헤렌",
+        "summary": "메타 설명: '아직 아무도 디지털화하지 않은 시장에서, 우리는 새로운 표준을 만듭니다. 공비서·공비서스토어·브랜다즈를 만드는 (주)헤렌.'"
+      },
+      {
+        "title": "공비서",
+        "url": "https://gongbiz.kr/",
+        "publisher": "헤렌",
+        "summary": "메타 설명: 미용실·네일샵·속눈썹·에스테틱·헤어샵·왁싱·마사지·애견·두피/탈모관리 고객관리·매출 예약관리 앱."
+      },
+      {
+        "title": "[헤렌/공비서] 백엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/373691",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "공비서 예약 처리(공고 주장)",
+        "value": "매월 80만 건 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[헤렌/공비서] 프론트엔드 개발자 (3년차~6년차)",
+            "url": "https://www.wanted.co.kr/wd/336266",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[헤렌/공비서] 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/373691",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "브랜다즈 SNS 자동화 이용 고객(공고 주장)",
+        "value": "20만",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[헤렌/공비서] 프론트엔드 개발자 (3년차~6년차)",
+            "url": "https://www.wanted.co.kr/wd/336266",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "공비서(뷰티샵 예약·매출·고객관리)",
+        "how": "공고가 원장님 운영(예약·결제·고객관리·마케팅)을 백엔드 도메인으로, 공비서 사이트가 매장용 고객관리·매출·예약관리 앱을 적는다. 과금 방식(구독·수수료)은 읽지 않았다. 회사 사이트 메타에 '공비서스토어' 도 있다.",
+        "domains": [
+          "공비서 웹(Next.js)",
+          "공비서 iOS 앱",
+          "공비서 백엔드(예약·결제)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[헤렌/공비서] 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/373691",
+            "publisher": "원티드"
+          },
+          {
+            "title": "공비서",
+            "url": "https://gongbiz.kr/",
+            "publisher": "헤렌",
+            "summary": "메타 설명: 미용실·네일샵·속눈썹·에스테틱·헤어샵·왁싱·마사지·애견·두피/탈모관리 고객관리·매출 예약관리 앱."
+          },
+          {
+            "title": "(주)헤렌 | HERREN",
+            "url": "https://www.herrencorp.com/",
+            "publisher": "헤렌",
+            "summary": "메타 설명: '아직 아무도 디지털화하지 않은 시장에서, 우리는 새로운 표준을 만듭니다. 공비서·공비서스토어·브랜다즈를 만드는 (주)헤렌.'"
+          }
+        ]
+      },
+      {
+        "name": "브랜다즈(SNS 자동화·인플루언서 마케팅)",
+        "how": "공고가 인스타겟·인스타터(20만 고객)와 인플루언서 마케팅 플랫폼을 적는다. 모집중 개발 공고는 이 팀 자리가 아니고, 과금 구조는 읽지 않았다.",
+        "domains": [],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[헤렌/공비서] 프론트엔드 개발자 (3년차~6년차)",
+            "url": "https://www.wanted.co.kr/wd/336266",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[헤렌/공비서] 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/373691",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "공비서 웹(Next.js)",
+        "why": "프론트엔드 공고 둘이 Next.js SSR 웹 앱, 디자인 시스템, Sentry·Core Web Vitals, WebView 브릿지·딥링크·푸시 등 네이티브-웹 연동, AI 도구로 개발·테스트 자동화를 적는다.",
+        "what_to_know": [
+          "Next.js SSR",
+          "WebView 브릿지",
+          "Core Web Vitals"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[헤렌/공비서] 프론트엔드 개발자 (3년차~6년차)",
+            "url": "https://www.wanted.co.kr/wd/336266",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[헤렌/공비서] 시니어 프론트엔드 개발자 (7년차 ~)",
+            "url": "https://www.wanted.co.kr/wd/361706",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "공비서 iOS 앱",
+        "why": "iOS 공고 둘이 원장님 앱·고객 앱 두 제품의 설계·개발, UIKit·SwiftUI 디자인 시스템, Crashlytics·Sentry, App Store 정책 대응, Universal Link·APNs, Widget Extension 을 적는다.",
+        "what_to_know": [
+          "UIKit·SwiftUI",
+          "App Store 정책",
+          "APNs·딥링크"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[헤렌/공비서] iOS 개발자",
+            "url": "https://www.wanted.co.kr/wd/372618",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[헤렌/공비서] iOS 리드 엔지니어 (7년차~)",
+            "url": "https://www.wanted.co.kr/wd/383221",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "공비서 백엔드(예약·결제)",
+        "why": "백엔드 공고가 예약·결제·고객관리·마케팅 도메인, 월 80만 건 예약 트래픽, JVM·동시성·트랜잭션 이해, Sentry·Prometheus 모니터링을 적는다.",
+        "what_to_know": [
+          "예약 동시성",
+          "트랜잭션",
+          "JVM"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[헤렌/공비서] 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/373691",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "AI 를 개발 흐름 전체에 넣은 팀이다",
+        "evidence": "모든 코드는 PR 단위 리뷰를 거치며, 그 1차를 직접 세팅한 AI 리뷰어가 수행해 리뷰 품질과 속도를 함께 잡습니다.",
+        "so_what": "iOS 공고가 'AI 결과물을 검증 없이 받아들이지 않고, 본인 판단으로 수정·거절해본 구체 사례' 를 기대한다고 적는다 — 면접에서 그 사례를 물을 가능성이 크다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "직군 경계를 넘어가는 것을 성장 경로로 둔다",
+        "evidence": "직군은 지금 가장 잘하는 영역일 뿐, 역할의 경계가 아닙니다",
+        "so_what": "iOS 리드 공고가 iOS·Android 간 패턴 전파를, 공고들이 한 제품을 웹·iOS·Android·백엔드·QA·PD 한 스쿼드로 만든다고 적는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "공비서·브랜다즈의 과금 구조와 매출액은 읽지 않았다",
+    "임직원 수는 읽지 않았다",
+    "인플루언서 플랫폼 이름이 공고마다 '파인앳플'·'파인앤플' 로 다르게 적혀 있다",
+    "기술블로그(techblog.herrencorp.com) 글은 읽지 않았다 — people 후보가 있을 수 있다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
