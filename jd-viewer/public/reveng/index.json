@@ -7,7 +7,7 @@
       "name_en": "jinjer",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 2,
       "one_liner": "근태·급여·인사 노무를 하나의 인사 DB 에 담는 백오피스 SaaS 'ジンジャー' — 10년 된 PHP 모놀리스를 멈추지 않고 경로 단위로 React + Go 로 갈아 끼우고, 가끔 불리는 Lambda 의 첫 응답은 상시 과금 대신 스냅숏으로 당긴다",
       "updated_at": "2026-09-27",

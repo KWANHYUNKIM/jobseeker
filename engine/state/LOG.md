@@ -2171,3 +2171,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 jinjer Lambda Cold Start 함수별 대책
 
 - `227da4949ce143` 을 끝까지 읽어 기능 `lambda-coldstart-per-function`, 결정 8. 프로파일 때 도메인 why 가 'SnapStart 를 들였다'로만 적혀 있어 실제 결론(함수별 PC/SnapStart/없음)으로 고치고, tech limits 도 함정(trace ID 충돌 · PC 와 병용 불가 · 128MB)으로 채웠다.
+
+## 2026-09-27 jinjer 완주
+
+- --gaps 는 신규를 가리켰지만 완주 판정이 먼저. 완주 기준 셋 — 도메인 둘 다 기능 1 · 두 기능이 서로 connections(관측) · 수익원 하나가 두 도메인과 confirmed.

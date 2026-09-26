@@ -29,7 +29,6 @@
 | **CADDi(キャディ)** | JP · 제조(조달·도면 SaaS) | 프로파일(2026-09-26). 도메인 둘 — 여러 제품이 한 문으로 들어온다(Control Plane) · 쌓인 제조 데이터를 싸게 꺼낸다(BigQuery). 기능 2(인증 게이트웨이 · BigQuery 비용). **hold** — 수발주 수익원 자료 2회 없음(완주 기준 셋째 미충족)(`CADDi の Control Plane`·`RFC 8707`·`Auth0 で SSO`), 그다음 Go 채택·JSON 컬럼 비용. |
 | **Lincwell(リンクウェル)** | JP · 온라인 진료·클리닉 DX·헬스케어 EC | 프로파일(2026-09-27, slug `lincwell`). 도메인 둘 — 예약 완료가 외부 통지를 기다리지 않는다 · 운영이 고른 순간에 수만 명에게 푸시를 보낸다. 기능 2(예약 LINE 비동기화 · 푸시 내재화). 입구 `zenn.dev/p/lincwell_inc/feed`. **hold(2026-09-27)** — Smart Clinics 수익원 자료 두 번 없음. Smart Clinics 수익원은 도메인 없음. |
 | **mixtend(調整さん · TimeRex)** | JP · 일정 조정(무료 대중 서비스 + B2B SaaS) | 프로파일(2026-09-27, slug `mixtend`). 도메인 둘 — 여러 담당자에게 예약을 고르게 나눈다 · 몰리는 두 페이지를 가장 빨리 띄운다. 기능 2(균등 배정 Cache Lock · 調整さん 톱 고속화). 입구 `zenn.dev/p/mixtend/feed`. 회사 사이트 NXDOMAIN. **hold(2026-09-27)** — 調整さん 광고 수익원 연결이 inferred, 두 번 찾아 확인 못 함. |
-| **ジンジャー(jinjer)** | JP · 인사·근태·급여 통합 SaaS | 프로파일(2026-09-27, slug `jinjer`). 도메인 둘 — 10년 된 인사 시스템을 멈추지 않고 갈아 끼운다 · 가끔 불리는 함수의 첫 응답을 돈을 덜 들여 당긴다. 기능 2(스트랭글러 무정지 이행 · Lambda Cold Start 함수별 대책). 입구 `zenn.dev/p/jinjer_techblog/feed`. |
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
 
@@ -1046,6 +1045,7 @@
 
 ## 완료
 
+- **ジンジャー(jinjer)** (JP · 인사·근태·급여 통합 SaaS · 종업원 수 × 월 300엔~) — 2026-09-27 완주. 도메인 2 · 기능 2. **멈출 수 없는 곳은 경로 하나씩, 기다리는 곳에만 돈을.** 10년 된 PHP · SSR 모놀리스를 스트랭글러 파사드가 경로로 가르고 BFF(+ Redis 마이크로 캐시 수 초)가 신구 API 를 모아 프런트가 뒤를 모르게 하며, Go 는 마이크로서비스 대신 모듈 간 무의존 모듈러 모놀리스(중복 허용) — 첫 대상 마이페이지는 되돌리기 쉬워서, 관측은 통일 로그 기반을 먼저. Python Lambda 의 Cold Start 2~3초는 함수마다 — 사용자가 기다리는 동기 API 는 PC, 백그라운드는 SnapStart(복원 1초 가까이), 이벤트 구동은 없음. SnapStart 는 난수 시드까지 스냅숏에 박아 New Relic trace ID 를 겹치게 해 복원 직후 재시드.
 - **WED** (JP · 영수증 매입 앱 ONE · 구매 데이터 · 성과 보수형 판촉 PMN) — 2026-09-27 완주. 도메인 2 · 기능 2. **돈이 되기 전에 가리고, 코드는 LLM 이 아니라 인덱스가 붙인다.** 줄여 찍힌 상품명은 자체 서브워드 벡터 + Vertex AI 벡터 검색으로 JAN 을 붙이되 인자 × 가격 × 체인 키로 한 번 구한 답을 다시 찾지 않고, 못 붙인 표기는 Gemini 그라운딩에서 '이름'만 받아 사람이 확인한다(JAN 을 직접 물으면 가공의 코드). 올라오는 사진은 단말(CoreML · 브라우저 WASM)에서 NG 를 걸러 재촬영을 권하고, 체인은 OCR+정규식에서 업종 → 체인 2단 사진 모델로 옮기는 중 — 라벨 청소가 일의 절반. 두 기능은 체인이라는 키로 만난다.
 - **DRESS CODE** (JP · Workforce Management SaaS · HR·IT·GA Force) — 2026-09-27 완주. 도메인 2 · 기능 2. **들어갈 때 나갈 길을 만든다.** 보안 체크 시트·SOC 2·문의가 묻는 '누가·언제·무엇을·왜' 에 답하려 CRUD 도메인에 Domain Event 를 싣되, 처음부터 DynamoDB 에 두고 이중 쓰기의 유령·유실을 같은 트랜잭션의 outbox + 독립 drainer 로 막고 version 은 RDB 카운터로 매겼다('Event Log 붙은 CRUD' 라고 솔직히 부른다). 연결 고갈에 대비해 넣은 RDS Proxy 는 Prisma 의 16KB 넘는 SQL 이 세션 약 2할을 핀 고정해 다중화가 안 되자, Secrets host 한 칸으로 Aurora 직결에 되돌리고 스파이크 대책은 Prisma 7 의 pg.Pool 로. 요금은 비공개.
 - **Macbee Planet(マクビープラネット)** (JP · 성과 보수형 광고 · 매출 약 400억 엔 · DSP 3D AD) — 2026-09-26 완주. 도메인 2 · 기능 2. **사업이 클수록 비용에 지는 구성을 끊는다.** 로그 기반은 손실 허용 니어 리얼타임 로그를 먼저 Pub/Sub × Valkey 로 떼고, 나머지는 서버가 Pub/Sub 에 바로 Publish 해 BigQuery Subscription 이 쓰게 해 고정 대수 Fluentd 집약(정액)을 없애고 종량 20~30%↓ — 이중 쓰기로 옮겼다. 데이터 기반은 시간별 파티션·생로그 재설계·dbt incremental 로 매시 하루치를 긁던 잡을 한 시간치로, ML 은 늦게 오는 적은 positive 만 며칠치를 다시 읽어 스캔 90%↓. 3D AD 의 매출 기여는 비공개.

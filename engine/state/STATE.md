@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**jinjer 기능 2(2026-09-27) — `lambda-coldstart-per-function`(기다리는 함수엔 돈을, 기다리지 않는 함수엔 스냅숏을, 결정 8 — New Relic trace ID 충돌과 재시드). 도메인 둘 다 찼고 수익원 하나가 두 도메인과 confirmed 연결 · 두 기능이 서로 connections — 다음 사이클에 완주 판정(--gaps 가 신규를 가리켜도 done 이 먼저). 그 뒤 신규 アルダグラム. 대기 2/3. 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**jinjer 완주(2026-09-27) — 도메인 2 · 기능 2, 수익원 하나가 두 도메인과 confirmed 연결. 다음은 --gaps 의 신규: 큐 맨 위 アルダグラム — `ee846ade880fcc`(Bedrock 비용 기능별 분해) · `ab35100d97ffa4`(Aurora → Datastream → BigQuery) · `rails-bulk-import-memory-improvement` · `f95ec27d51176b`(모달 지연 마운트 94%) · 회사 사이트(aldagram.com)에서 KANNA 수익원부터. 대기 1/3 — 이 회사 뒤 후보 조사. 비교 문서 재료 +1: SnapStart 의 '스냅숏에 박힌 상태' ↔ 다른 회사의 초기화 함정이 있으면. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
