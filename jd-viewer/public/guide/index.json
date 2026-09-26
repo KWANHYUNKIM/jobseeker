@@ -710,6 +710,18 @@
       "postings": 5,
       "study_items": 20,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "softnet",
+      "name": "소프트넷",
+      "aliases": [
+        "소프트넷",
+        "Softnet"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
