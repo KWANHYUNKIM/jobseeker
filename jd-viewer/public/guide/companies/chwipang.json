@@ -188,5 +188,126 @@
     "사람인 'UI/UX 디자이너·프론트엔드 개발자'(신입·경력)는 원티드 프론트엔드와 다른 자리다 — 본문 확인 필요",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/381953",
+      "title": "AI 개발자",
+      "site": "wanted",
+      "verdict": "헤더는 경력 3-8년이지만 공고는 '본인이 직접 주도한 프로젝트와 결과가 분명하다면 경력이 짧아도 지원할 수 있습니다' 라고 적는다. 취팡의 AI 기반 취업 진단·분석·추천 기능을 만들고, LLM·AI API 로 신규 기능을 설계·연동하며, AI 결과 품질을 평가해 모델·프롬프트·데이터 처리 구조를 개선한다. 자격요건은 가볍다 — Python 등, ML·DL·LLM 중 하나 이상의 기본 이해 또는 프로젝트, AI 기능을 서비스에 붙이기 위한 데이터·API 구조 이해. 생성형 AI·LLM·RAG 서비스, 추천·NLP·HR/채용 데이터, 기획부터 배포·운영까지 경험은 우대다. '모든 분야 공통' 으로 경력을 결과로 설명하기, 우선순위 스스로 정리, 대표에게 선택지와 추천안 제시, GPT·Claude 등 AI 도구 실무 활용을 요구하고 '취팡의 업무 방식 자체가 AI 전제' 라고 적는다. 전형: 서류 → 인터뷰 → 실무과제 → 최종 인터뷰 및 조건 협의(분야·경력에 따라 조정). 실무과제는 '판단력·정리 능력·실행 수준을 확인하는 범위' 이고 '장시간의 완성 결과물을 무상으로 요구하지 않습니다' 라고 적는다. 제출은 이력서·경력기술서·포트폴리오(또는 직접 수행한 업무 확인 자료), 경력기술서는 '본인이 직접 판단하고 실행한 범위와 결과 중심' 으로, 희망연봉을 적게 한다.",
+      "fit": {
+        "must_have": [
+          "Python 등",
+          "ML·DL·LLM 기본 이해 또는 프로젝트",
+          "AI 기능을 붙일 데이터·API 구조 이해",
+          "결과 중심 경력 설명·AI 도구 활용(공통)"
+        ],
+        "can_learn": [
+          "생성형 AI·LLM·RAG 서비스",
+          "추천·NLP·HR/채용 데이터",
+          "기획→배포→운영 전 과정"
+        ]
+      },
+      "study": [
+        {
+          "topic": "LLM 으로 이력서·자기소개서 진단 기능",
+          "from": "task",
+          "quote": "LLM 및 AI API를 활용한 신규 기능을 설계하고 서비스에 연동합니다.",
+          "priority": "core",
+          "why": "주요업무이고 첫 주요업무가 'AI 기반 취업 진단·분석·추천 기능' 이다. 회사는 구직자 진단→입사지원서 작성→면접 준비 흐름을 서비스로 내세운다(회사 브리핑). 우대에 생성형 AI·LLM·RAG 가 있다.",
+          "gap_check": "자기소개서를 넣으면 '직무 적합도·근거 문장·보완 제안' 을 돌려주는 기능에서 LLM 출력을 화면이 쓸 수 있는 구조(JSON 스키마)로 강제하려면 무엇을 쓰고, 근거 문장이 원문에 실제로 있는지는 어떻게 검사하는가?",
+          "drill": "공개 채용공고 몇 개와 가상 자기소개서로, 구조화 출력(스키마 강제)을 쓰는 진단 API 를 만들고 '근거 문장이 원문에 있는가' 검사를 붙인다. 채용공고 요구사항을 검색해 붙이는 RAG 버전과 결과를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OpenAI — Structured outputs",
+              "url": "https://platform.openai.com/docs/guides/structured-outputs",
+              "kind": "docs"
+            },
+            {
+              "title": "Claude — Prompt engineering overview",
+              "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+              "url": "https://arxiv.org/abs/2005.11401",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "AI 결과 품질 평가 체계",
+          "from": "task",
+          "quote": "AI 결과 품질을 평가하고 모델·프롬프트·데이터 처리 구조를 지속적으로 개선합니다.",
+          "priority": "core",
+          "why": "주요업무다. 공통 요건이 '자신의 경력을 업무 나열이 아닌 실제 결과로 설명' 이고, 공고가 기반을 '실제 서비스 성과와 매출로' 바꿀 사람을 찾는다(회사 브리핑).",
+          "gap_check": "프롬프트를 바꿨을 때 진단 품질이 좋아졌는지 느낌이 아니라 무엇(고정 평가셋·채점 기준·LLM 판정과 사람 판정의 일치도)으로 판단하고, 운영 중 사용자 반응(재생성·만족 표시)은 어떻게 평가에 되먹이는가?",
+          "drill": "앞 드릴 기능에 대해 30건 평가셋과 채점 기준표를 만들고 promptfoo 로 프롬프트 두 버전을 자동 비교한 뒤, 사람이 채점한 10건과 LLM 채점의 일치도를 잰다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "promptfoo — Intro",
+              "url": "https://www.promptfoo.dev/docs/intro/",
+              "kind": "docs"
+            },
+            {
+              "title": "Ragas docs",
+              "url": "https://docs.ragas.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenAI Evals",
+              "url": "https://github.com/openai/evals",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "직무·공고 추천",
+          "from": "preference",
+          "quote": "추천 시스템·자연어처리·HR·채용 데이터 관련 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이고 첫 주요업무에 '추천' 이 있다. 서비스 흐름 마지막이 기업 연결이다(회사 브리핑).",
+          "gap_check": "회원 2만 규모에 행동 데이터가 적을 때 협업 필터링 대신 무엇(공고·이력서 임베딩 유사도·규칙)으로 시작하고, 추천이 좋은지는 클릭 외에 어떤 지표(지원 전환)로 보는가?",
+          "drill": "공개 채용공고와 가상 이력서로 sentence-transformers 임베딩 유사도 추천을 만들고, 직무 키워드 규칙 기반 추천과 상위 10개 결과를 사람이 평가해 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Sentence Transformers",
+              "url": "https://www.sbert.net/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "자기소개서 진단 API + 평가셋·자동 비교 + 공고 추천 데모",
+          "why": "주요업무 세 줄(진단·LLM 연동·품질 평가)을 결과 수치와 함께 보여 준다. 제출 자료에 '직접 수행한 업무 확인 자료' 가 있다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "직접 판단·실행한 범위와 결과 중심 경력기술서",
+          "why": "공고가 경력기술서를 '참여 사실보다 본인이 직접 판단하고 실행한 범위와 결과 중심' 으로 쓰라고 한다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 → 인터뷰 → 실무과제 → 최종 인터뷰 및 조건 협의(분야·경력에 따라 조정). 실무과제는 '판단력·정리 능력·실행 수준을 확인하는 범위' 이고 '장시간의 완성 결과물을 무상으로 요구하지 않습니다' 라고 적는다. 제출은 이력서·경력기술서·포트폴리오(또는 직접 수행한 업무 확인 자료), 경력기술서는 '본인이 직접 판단하고 실행한 범위와 결과 중심' 으로, 희망연봉을 적게 한다.",
+        "expect": [
+          "직접 주도한 AI 기능과 결과",
+          "품질 평가 방법",
+          "대표에게 추천안 제시",
+          "AI 도구 활용 방식"
+        ],
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/381953",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
