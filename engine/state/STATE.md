@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — kakaobank 재방문에서 확장(`notification-sender`)을 마쳤다. 09-05 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
+**없다 — kraken-tech 재방문(새 글 없음)을 마쳤다. 09-05 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **kraken-tech** — 2026-09-26 없음. `engineering.kraken.tech/feed.xml`·첫 화면 최신 **03-09**(How we ship 2026). 반년 넘게 새 글 없음. updated_at 만. 1회째.
 - **kakaobank** — 2026-09-26 새 글 둘. 알림 발송기 1편(09-07) → `notification-sender`. KodeRunner 2026(09-22)은 행사 글이라 안 씀. 2편(이메일) 예고. 피드 `tech.kakaobank.com/index.xml`.
 - **flyio** — 2026-09-26 없음. `fly.io/blog/feed.xml` 최신 09-03(Sprites MCP) — 지난 갱신(09-05) 전이다. updated_at 만. 1회째.
 - **bolt** — 2026-09-26 새 글 하나(디자인 엔지니어링, 09-17, Medium) → `one-component-once`. `medium.com/feed/bolt-labs` 의 `content:encoded` 로 본문 전문이 온다.
