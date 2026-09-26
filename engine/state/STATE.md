@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**CADDi — 기능 2(`gateway-and-internal-token` · `yesterday-optimized-today-raw`, 2026-09-26). 두 도메인이 다 찼지만 **done 이 아니다** — 수익원 '특주 부품 수발주'(창업 사업, 세계 톱3 취급량)에 이어진 기능이 없다(완주 기준 셋째). 다음은 그 수익원의 시스템(견적·조달·공급망) 글을 caddi.tech 사이트맵에서 찾아 도메인·기능을 만든다. 못 찾으면 그 사실을 open_questions 에 남기고 수익원을 어떻게 다룰지 정한다. 후보: `CADDi Quote` 관련 글, 2023~2025 사이트맵(`cd_all.txt` 62편).**
+**CADDi — 기능 2, done 보류. 수발주 수익원 자료를 **1회 찾아 없었다**(caddi.tech 2023~2026 62편 제목 · tech.caddi.com 첫 화면). 다음 CADDi 사이클에서 **한 번 더**: tech.caddi.com 의 note 글(`ソフトウェアと技術の力で…`, `製造業エンタープライズにおけるソフトウェア提供形態の再定義`)과 회사 뉴스룸에서 수발주·Quote 쪽을 본다. 또 없으면 `hold_reason` 을 달고 `## 재시도 안 함` 에 적는다(PROMPT 2″). --gaps 는 신규를 가리키지만 회사를 갈아타지 않는다는 규칙이 앞선다.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
