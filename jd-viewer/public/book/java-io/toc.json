@@ -483,7 +483,7 @@
           "title": "없는 주소",
           "summary": "404 를 직접 쓴다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.5",
@@ -491,7 +491,7 @@
           "title": "정적 파일 주기",
           "summary": "바이트를 그대로 흘린다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.6",
@@ -499,7 +499,7 @@
           "title": "연결 유지",
           "summary": "닫지 않으면 무엇이 달라지나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.7",

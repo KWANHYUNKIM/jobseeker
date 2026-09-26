@@ -1,0 +1,276 @@
+{
+  "book": "java-io",
+  "id": "static-file",
+  "no": "9.5",
+  "chapter": 9,
+  "title": "정적 파일 주기",
+  "summary": "바이트를 그대로 흘린다.",
+  "minutes": 13,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "파일을 두 방법으로 보내고 힙을 잰다.",
+    "같은 바이트가 갔는지 md5 로 확인한다.",
+    "경로를 벗어나는 요청을 실제로 보내 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.4절까지 본문을 코드 안에서 만들었다. 이제 **파일**을 보낸다.\n\n여기서 `Content-Length` 는 짐작하지 않는다 — `Files.size(path)` 가 답이다. 그리고 6장에서 본 방법들이 여기서 쓰인다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "파일 하나를 보낸다",
+      "code": "long size = Files.size(file);\nString type = switch (ext(file.toString())) {\n    case \"html\" -> \"text/html; charset=UTF-8\";\n    case \"csv\"  -> \"text/csv; charset=UTF-8\";\n    case \"png\"  -> \"image/png\";\n    default     -> \"application/octet-stream\";\n};\nos.write((\"HTTP/1.1 200 OK\\r\\nContent-Type: \" + type\n    + \"\\r\\nContent-Length: \" + size + \"\\r\\n\\r\\n\").getBytes(\"ISO-8859-1\"));\n\nFiles.copy(file, os);      // 바이트를 그대로 흘린다\nos.flush();"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "작은 파일 셋 — md5 가 같은가",
+      "sql": "  /index.html  -> http=200 type=text/html; charset=UTF-8 바이트=16\n  /data.csv    -> http=200 type=text/csv; charset=UTF-8  바이트=12\n  /tiny.png    -> http=200 type=image/png                바이트=208\n\n$ md5 -q www/index.html gotindex.html\n  cfd85b80c6191be1840948739c8fec88\n  cfd85b80c6191be1840948739c8fec88\n\n$ md5 -q www/tiny.png gottiny.png\n  82c19dcd347b5b1c0594c4adf006689e\n  82c19dcd347b5b1c0594c4adf006689e",
+      "note": "**해시가 같다.** 한글이 든 HTML 과 바이너리 PNG 가 둘 다 한 바이트도 안 변했다 — 중간에 문자로 바꾸지 않았기 때문이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "charset 은 헤더에만 있다",
+      "md": "`text/html; charset=UTF-8` 을 적었지만 **서버는 그 파일을 UTF-8 로 읽지 않았다.**\n\n> `Files.copy` 는 바이트를 옮긴다. 파일에 무엇이 들어 있든 그대로 간다.\n> `charset` 은 **받는 쪽에게 알려 주는 표시**일 뿐이다. 그래서 파일이 EUC-KR 인데 헤더에 UTF-8 이라고 적으면 2.5절의 그 깨짐이 브라우저에서 나온다 — 서버는 아무 잘못도 안 한 것처럼 보인다.\n> PNG 에 `charset` 을 안 붙인 이유도 같다. 바이너리는 해석할 문자가 없다."
+    },
+    {
+      "type": "prose",
+      "md": "## 다 읽어 놓고 보내기 대 흘려보내기\n\n50MB 파일로 두 방법을 쟀다. 힙 증가를 같이 찍었다."
+    },
+    {
+      "type": "compare",
+      "title": "같은 50MB, 같은 결과, 다른 힙",
+      "left": {
+        "title": "`Files.readAllBytes` 후 write",
+        "bad": true,
+        "md": "```\n52,428,800 바이트 · 127 ms\n힙 증가 52,224 KB\n```\n\n파일 크기만큼 힙을 쓴다."
+      },
+      "right": {
+        "title": "`Files.copy(file, os)`",
+        "md": "```\n52,428,800 바이트 · 63 ms\n힙 증가 0 KB\n```\n\n**2배 빠르고 힙은 안 쓴다.**"
+      },
+      "note": "`md5` 는 원본·readAllBytes·Files.copy 셋이 모두 `af45cec2d367262eebbbd0a712279328` 로 같았다. 결과는 같고 값만 다르다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 안 읽어 놓는 쪽이 더 빠른가",
+      "md": "6장에서 본 이유가 그대로다.\n\n> `readAllBytes` 는 **디스크 → 힙 → 소켓** 두 번 옮긴다. `Files.copy` 는 내부에서 작은 버퍼로 **디스크 → 소켓** 을 반복한다.\n> 50MB 배열을 할당하는 값도 있다. 그 배열은 바로 쓰레기가 되고 GC 가 치운다 — 20권에서 본 그 순환이다.\n> 그리고 첫 바이트가 나가는 시각이 다르다. `readAllBytes` 는 **50MB 를 다 읽은 뒤에** 쓰기를 시작한다. 큰 파일에서는 이 대기가 사용자에게 보인다."
+    },
+    {
+      "type": "prose",
+      "md": "## 힙을 조이면 어디서 깨지나\n\n먼저 짐작했다 — 힙 64MB 면 50MB 배열이 안 될 것이다. **틀렸다.**"
+    },
+    {
+      "type": "table",
+      "caption": "힙을 줄여 가며 `readAllBytes`",
+      "columns": [
+        "`-Xmx`",
+        "결과",
+        "받은 바이트"
+      ],
+      "rows": [
+        [
+          "256 MB",
+          "200 · 힙 증가 52,224 KB",
+          "52,428,800"
+        ],
+        [
+          "64 MB",
+          "**된다** · 힙 증가 52,135 KB",
+          "52,428,800"
+        ],
+        [
+          "48 MB",
+          "**`OutOfMemoryError: Java heap space`**",
+          "**0** (`curl: (18)`)"
+        ]
+      ],
+      "note": "**64MB 는 버텼다.** 50MB 배열이 64MB 안에 들어가니 당연한데, 나는 \"여유가 없으니 안 될 것\"이라고 짐작했다. 짐작이 아니라 재 봐야 갈리는 자리였다."
+    },
+    {
+      "type": "prose",
+      "md": "## 진짜 깨지는 자리는 동시 요청이다\n\n혼자 쓰면 되는데 **여러 명이 동시에** 같은 파일을 받으면 다르다. 힙 128MB, 손님 3명, 파일 50MB."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "한 명이 죽었다",
+      "sql": "# readAllBytes (힙 128MB, 동시 3명, 50MB 파일)\n  손님1 받은바이트=0\n  손님2 받은바이트=52428800\n  손님3 받은바이트=52428800\n  [서버] java.lang.OutOfMemoryError: Java heap space\n  [서버]   200 · 52,428,800 바이트 · readAllBytes · 124 ms · 힙 증가 102,666 KB\n  [서버]   200 · 52,428,800 바이트 · readAllBytes · 125 ms · 힙 증가 102,666 KB\n\n# Files.copy (같은 조건)\n  손님1 받은바이트=52428800\n  손님2 받은바이트=52428800\n  손님3 받은바이트=52428800\n  [서버]   200 · 52,428,800 바이트 · Files.copy · 68 ms · 힙 증가 471 KB\n  [서버]   200 · 52,428,800 바이트 · Files.copy · 68 ms · 힙 증가 471 KB\n  [서버]   200 · 52,428,800 바이트 · Files.copy · 68 ms · 힙 증가 471 KB",
+      "note": "**같은 서버, 같은 파일, 같은 힙인데 3/3 과 2/3 다.** 힙 증가가 102,666 KB — 두 명 분량에서 멈췄고 세 번째가 `OutOfMemoryError` 를 맞았다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "혼자 테스트하면 절대 안 보인다",
+      "md": "이 버그의 성질이 8.6절의 교훈과 같다.\n\n> **힙 소요 = 파일 크기 × 동시 요청 수.** 개발 중에는 동시 요청 수가 1 이라 어떤 파일 크기도 통과한다.\n> 그리고 죽는 것이 **요청한 사람이 아닐 수도 있다.** 위에서 죽은 손님1은 먼저 온 쪽이고, 늦게 온 둘이 성공했다. 로그만 보면 인과가 뒤집혀 보인다.\n> `Files.copy` 쪽은 힙 증가가 **471 KB** 로 손님 수와 무관하다. 8.3절에서 풀이 \"상한을 산다\"고 한 것과 같은 성질이다 — 흘려보내기는 **메모리 상한을 산다.**\n> 그래서 정적 파일은 크기를 보고 방법을 고르지 않는다. **언제나 흘려보낸다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 요청한 경로를 그대로 믿으면\n\n여기까지는 `www/` 안의 파일만 요청했다. 밖으로 나가 보면 어떻게 되는지 해 봤다. `www/` 바로 위에 `secret.txt` 를 두고."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "curl 로는 재현되지 않는다",
+      "sql": "$ curl \"http://localhost:12890/../secret.txt\"\n  -> http=404\n\n  [서버] 요청 = /secret.txt            <- .. 가 사라졌다",
+      "note": "**curl 이 보내기 전에 `..` 을 정리했다.** 서버에 온 것은 `/secret.txt` 다. 즉 정상 클라이언트로는 이 공격을 만들 수 없고, **그래서 안전하다고 착각하게 된다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "소켓으로 직접 보낸다 — 정리해 줄 사람이 없다",
+      "code": "try (Socket s = new Socket(\"localhost\", port)) {\n    s.getOutputStream().write(\n        (\"GET /../secret.txt HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n\")\n            .getBytes(\"ISO-8859-1\"));\n    // ... 응답을 읽는다\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "검사 없는 서버가 파일을 줬다",
+      "sql": "  [서버] 요청 = /../secret.txt\n  [서버]   찾을 파일 = .../scratchpad/iotest/www/../secret.txt\n  [서버]   200 text/plain; charset=UTF-8 · 12 바이트\n\n# 받은 응답 92바이트:\n  HTTP/1.1 200 OK\n  Content-Type: text/plain; charset=UTF-8\n  Content-Length: 12\n\n  secret=1234",
+      "note": "**`secret=1234` 가 나왔다.** `base + decoded` 로 이어 붙인 한 줄이 전부였다 — `www/../secret.txt` 는 파일 시스템에게 완전히 정당한 경로다."
+    },
+    {
+      "type": "prose",
+      "md": "## 문자열에서 `..` 를 찾는 흔한 고침\n\n가장 먼저 떠오르는 고침을 넣어 봤다 — 요청 원문에 `..` 가 있으면 거절한다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "원문을 검사한다 — 뚫린다",
+      "code": "if (target.contains(\"..\")) {          // 디코딩 전의 원문을 본다\n    error(os, 403, \"Forbidden\", \"밖으로 나갈 수 없습니다\\n\");\n    return;\n}\nPath file = Path.of(base + URLDecoder.decode(target, UTF_8));   // 여기서 디코딩한다"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "퍼센트로 숨기면 통과한다",
+      "sql": "# (1) 그냥 보내면 막힌다\n  [서버] 요청 = /../secret.txt\n  [서버]   원문에 .. 가 있다 — 거절한다\n  [서버]   403 Forbidden\n\n# (2) %2e%2e%2f 로 보내면\n  [서버] 요청 = /%2e%2e%2fsecret.txt  (디코딩 = /../secret.txt)\n  [서버]   원문에 .. 가 없다 — 통과시킨다\n  [서버]   찾을 파일 = .../www/../secret.txt\n  [서버]   200 · 12 바이트를 보냈다\n\n# 받은 것: ...Content-Length: 12\\r\\n\\r\\nsecret=1234",
+      "note": "**`%2e` 는 `.` 이다.** 검사할 때는 아직 `.` 이 아니었고, 파일을 찾을 때는 `.` 이 됐다 — **검사와 사용이 다른 문자열을 봤다.** 이것이 이런 종류 버그의 형태다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "디코딩하고 정규화한 뒤 검사한다",
+      "code": "String decoded = URLDecoder.decode(target, UTF_8);\nPath file = base.resolve(decoded.substring(1)).normalize();   // .. 를 실제로 접는다\nif (!file.startsWith(base)) {                                 // 접은 결과로 검사한다\n    error(os, 403, \"Forbidden\", \"밖으로 나갈 수 없습니다\\n\");\n    return;\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "두 요청 모두 403",
+      "sql": "# /../secret.txt\n  [서버]   정규화 결과 = .../scratchpad/iotest/secret.txt\n  [서버]   base 밖이다 — 거절한다\n  [서버]   403 Forbidden\n\n# /%2e%2e%2fsecret.txt\n  [서버] 요청 = /%2e%2e%2fsecret.txt  (디코딩 = /../secret.txt)\n  [서버]   정규화 결과 = .../scratchpad/iotest/secret.txt\n  [서버]   base 밖이다 — 거절한다\n  [서버]   403 Forbidden",
+      "note": "**`normalize()` 가 `www/../secret.txt` 를 `secret.txt` 로 접어 줬고**, 그다음 `startsWith(base)` 가 거짓이 됐다. 검사한 문자열과 사용할 경로가 **같은 것**이 되었다."
+    },
+    {
+      "type": "steps",
+      "title": "순서가 규칙이다",
+      "steps": [
+        "**디코딩한다** — `URLDecoder.decode(target, UTF_8)`. 질의 문자열은 먼저 떼어 낸다.",
+        "**경로로 만든다** — `base.resolve(...)`.",
+        "**정규화한다** — `.normalize()`. `..` 와 `.` 가 여기서 접힌다.",
+        "**검사한다** — `file.startsWith(base)`. 접힌 결과로 본다.",
+        "**그다음 파일을 연다** — 검사한 그 `Path` 객체를 쓴다. 문자열로 다시 만들지 않는다."
+      ],
+      "note": "마지막 줄이 중요하다. 검사한 값과 사용할 값이 **다른 표현**이면 그 사이에 틈이 생긴다 — 위의 `%2e` 사례가 정확히 그 틈이었다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "이것만으로 끝은 아니다",
+      "md": "`normalize()` + `startsWith` 는 필요하지만 충분하지는 않다.\n\n> **심볼릭 링크** — `www/link` 가 `/etc` 를 가리키면 경로는 `base` 안인데 파일은 밖이다. 6.6절의 `Files.readAttributes` 로 확인하거나 `toRealPath()` 로 실제 경로를 얻어 다시 검사한다.\n> **대소문자** — macOS 기본 파일 시스템은 대소문자를 안 가린다. `/SECRET.txt` 가 열린다.\n> **숨은 파일** — `.git/config`·`.env` 는 `base` 안에 있으므로 이 검사를 통과한다. 별도로 막는다.\n> 그래서 실무에서는 **직접 만든 정적 서버로 아무 디렉토리나 열지 않는다.** 내보낼 파일만 있는 디렉토리를 따로 두는 것이 검사보다 싸다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"큰 파일을 어떻게 내려 줍니까.\"**\n\n> 읽어 놓지 않고 흘려보낸다. 재 봤다 — 50MB 에서 `readAllBytes` 는 **127ms · 힙 +52MB**, `Files.copy` 는 **63ms · 힙 +0** 이었고 md5 는 같았다.\n> \"힙이 충분하면 되지 않냐\" 에는 동시 요청을 든다. 힙 128MB 에서 **동시 3명이면 한 명이 `OutOfMemoryError`** 였다. 필요한 힙은 파일 크기 × 동시 요청 수다.\n> 경로 검사를 물으면 **순서**로 답한다 — 디코딩 → `normalize()` → `startsWith(base)` → 그 `Path` 로 열기.\n> 원문에서 `..` 를 찾으면 되냐고 하면 — 재 봤다. `%2e%2e%2f` 가 통과해서 `secret=1234` 가 나갔다. **검사한 문자열과 사용한 경로가 달라서**다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 오간 것 — 힙과 유출",
+      "sql": "# (1) 같은 50MB, 두 방법\n  readAllBytes : 52,428,800 바이트 · 127 ms · 힙 증가 52,224 KB\n  Files.copy   : 52,428,800 바이트 ·  63 ms · 힙 증가      0 KB\n  $ md5 -q www/big.bin got_all.bin got_stream.bin\n    af45cec2d367262eebbbd0a712279328\n    af45cec2d367262eebbbd0a712279328\n    af45cec2d367262eebbbd0a712279328\n\n# (2) 힙 128MB · 동시 3명 · 50MB\n  readAllBytes -> 손님1 0바이트 (OutOfMemoryError: Java heap space)\n                  손님2 52,428,800  손님3 52,428,800   힙 증가 102,666 KB\n  Files.copy   -> 손님1·2·3 모두 52,428,800            힙 증가 471 KB\n\n# (3) GET /../secret.txt 를 소켓으로 직접\n  검사 없음      -> 200 · Content-Length: 12 · secret=1234\n  원문에서 .. 검사 -> 403\n  GET /%2e%2e%2fsecret.txt\n  원문에서 .. 검사 -> 원문에 .. 가 없다 — 통과시킨다 -> secret=1234\n  normalize + startsWith -> 403 (두 요청 모두)\n\n# curl 로는 (3)이 재현되지 않는다 — curl 이 .. 를 먼저 정리한다.\n# 정상 클라이언트만으로 테스트하면 이 구멍은 안 보인다.",
+      "note": "**세 덩어리가 각각 \"혼자 해 보면 안 보이는 것\"이다.** 힙은 동시 요청에서, 경로는 비정상 클라이언트에서 드러난다. 다음 절에서는 지금까지 매번 닫아 온 연결을 **열어 둔다** — 그러면 무엇이 달라지는지 잰다."
+    }
+  ],
+  "recap": [
+    "Content-Length 는 Files.size(path) 다 — 짐작하지 않는다.",
+    "Files.copy 로 바이트를 옮기면 md5 가 같다. 한글 HTML 과 PNG 둘 다 그대로 갔다.",
+    "charset 은 받는 쪽에 알려 주는 표시일 뿐이고 서버는 파일을 해석하지 않는다.",
+    "50MB 에서 readAllBytes 는 127ms 힙 +52MB, Files.copy 는 63ms 힙 +0 이었다.",
+    "흘려보내는 쪽이 빠른 이유는 디스크→힙→소켓 이 아니라 디스크→소켓 이기 때문이다.",
+    "힙 64MB 에서도 50MB 배열은 됐다 — 안 될 거라는 내 짐작이 틀렸다. 48MB 에서 OutOfMemoryError 다.",
+    "힙 128MB·동시 3명·50MB 에서 readAllBytes 는 한 명이 죽었고 Files.copy 는 셋 다 성공했다.",
+    "필요한 힙은 파일 크기 × 동시 요청 수다 — 혼자 테스트하면 절대 안 보인다.",
+    "죽는 것이 먼저 온 손님일 수도 있다 — 로그에서 인과가 뒤집혀 보인다.",
+    "curl 은 .. 를 보내기 전에 정리한다 — 정상 클라이언트로는 경로 탈출이 재현되지 않는다.",
+    "검사 없는 서버는 소켓으로 직접 보낸 /../secret.txt 에 secret=1234 를 줬다.",
+    "원문에서 .. 를 찾는 검사는 %2e%2e%2f 로 뚫린다 — 검사한 문자열과 쓴 경로가 다르다.",
+    "디코딩 → normalize() → startsWith(base) → 그 Path 로 열기, 이 순서가 규칙이다.",
+    "심볼릭 링크·대소문자·숨은 파일은 이 검사로 안 막힌다 — 내보낼 것만 있는 디렉토리를 두는 게 싸다."
+  ],
+  "drills": [
+    {
+      "task": "확장자로 Content-Type 을 정해 파일을 보낸다.",
+      "done_when": "md5 로 원본과 같은지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "큰 파일을 readAllBytes 와 Files.copy 로 각각 보낸다.",
+      "done_when": "시간과 힙 증가를 비교한다.",
+      "minutes": 12
+    },
+    {
+      "task": "동시 요청을 걸어 readAllBytes 를 죽여 본다.",
+      "done_when": "몇 명에서 OutOfMemoryError 가 나는지 적는다.",
+      "minutes": 14
+    },
+    {
+      "task": "/../ 와 /%2e%2e%2f 를 소켓으로 직접 보낸다.",
+      "done_when": "두 검사 방식의 결과 차이를 확인한다.",
+      "minutes": 14
+    }
+  ],
+  "quiz": [
+    {
+      "q": "50MB 파일에서 readAllBytes 대신 Files.copy 를 쓰는 이유는.",
+      "a": "힙을 파일 크기만큼 쓰지 않는다. 힙 +52MB 대 +0 이고 시간도 절반이었다."
+    },
+    {
+      "q": "힙이 충분하면 readAllBytes 로 충분한가.",
+      "a": "아니다. 필요한 힙은 파일 크기 × 동시 요청 수다. 128MB·3명에서 한 명이 죽었다."
+    },
+    {
+      "q": "원문에서 .. 를 찾아 막으면 왜 부족한가.",
+      "a": "%2e%2e%2f 가 통과한다. 검사한 문자열과 파일을 열 때의 경로가 다르다."
+    },
+    {
+      "q": "경로 검사의 올바른 순서는.",
+      "a": "디코딩 → normalize() → startsWith(base) → 검사한 그 Path 로 열기."
+    }
+  ],
+  "terms": [
+    {
+      "term": "경로 탈출",
+      "what": "요청 경로에 .. 를 넣어 공개 디렉토리 밖의 파일을 읽는 것. normalize 후 검사로 막는다."
+    },
+    {
+      "term": "흘려보내기",
+      "what": "파일 전체를 메모리에 올리지 않고 작은 버퍼로 소켓에 옮기는 것. 힙 소요가 파일 크기와 무관해진다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Files.copy(Path, OutputStream)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "OWASP — Path Traversal",
+      "url": "https://owasp.org/www-community/attacks/Path_Traversal",
+      "publisher": "OWASP"
+    }
+  ]
+}

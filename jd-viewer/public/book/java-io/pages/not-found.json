@@ -1,0 +1,278 @@
+{
+  "book": "java-io",
+  "id": "not-found",
+  "no": "9.4",
+  "chapter": 9,
+  "title": "없는 주소",
+  "summary": "404 를 직접 쓴다.",
+  "minutes": 12,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "주소로 응답을 가른다.",
+    "404 에 본문과 길이를 어떻게 둘지 정한다.",
+    "본문을 보내면 안 되는 응답을 찾아 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.3절까지 무엇을 물어도 `200 OK` 를 줬다. 주소를 보고 가르면 그것이 **라우팅**이다.\n\n9.1절에서 가른 `target` 으로 `switch` 하면 끝이다. 특별한 장치가 없다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "주소로 가른다",
+      "code": "switch (target) {\n    case \"/\"      -> send(os, method, 200, \"OK\", \"text/plain; charset=UTF-8\", \"첫 화면\\n\");\n    case \"/hello\" -> send(os, method, 200, \"OK\", \"text/plain; charset=UTF-8\", \"안녕하세요\\n\");\n    default       -> send(os, method, 404, \"Not Found\", \"text/plain; charset=UTF-8\",\n                          \"그런 주소는 없습니다: \" + target + \"\\n\");\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "네 주소를 물어봤다",
+      "sql": "  /        -> http=200 바이트=11 시간=0.012170s\n  /hello   -> http=200 바이트=16 시간=0.001686s\n  /nope    -> http=404 바이트=37 시간=0.003117s\n  /a/b/c   -> http=404 바이트=38 시간=0.000875s\n\n  [서버] GET /nope\n  [서버]   404 Not Found · 본문 37바이트",
+      "note": "**404 도 본문이 있는 정상 응답이다.** 37바이트를 보냈고 curl 은 37바이트를 받았다 — 9.3절의 규칙이 상태 코드와 무관하게 그대로 적용된다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "404 는 오류가 아니다 — 예외로 처리하지 않는다",
+      "md": "\"없으면 예외를 던지면 되지\" 가 가장 흔한 첫 설계다.\n\n> 예외가 스레드 밖으로 나가면 응답을 **아무것도 안 보내고** 소켓이 닫힌다. 클라이언트가 보는 것은 404 가 아니라 7.5절의 `Connection reset` 이다.\n> 즉 \"주소가 없다\"는 **정상적인 대화의 결과**다. 서버가 할 일은 404 라는 답을 쓰는 것이고, 그 답도 머리와 본문을 다 갖춰야 한다.\n> 스프링의 `@ExceptionHandler` 가 하는 일이 정확히 이 변환이다 — 예외를 잡아 **응답으로 바꾼다.** 안 잡히면 컨테이너가 500 을 만들고, 그것도 못 하면 연결이 끊긴다."
+    },
+    {
+      "type": "prose",
+      "md": "## 404 의 본문을 어떻게 둘까\n\n세 가지로 보내 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "404 를 세 가지로",
+      "columns": [
+        "보낸 것",
+        "curl 이 받은 것",
+        "판정"
+      ],
+      "rows": [
+        [
+          "`Content-Length: 37` + 본문",
+          "404 · 37바이트 · 0.003 s",
+          "**이것이 맞다**"
+        ],
+        [
+          "`Content-Length: 0`, 본문 없음",
+          "404 · 0바이트 · 0.021 s",
+          "된다. 사람이 볼 것이 없다"
+        ],
+        [
+          "`Content-Length` 없이 본문",
+          "404 · 24바이트 · 0.008 s",
+          "**닫아서 전달됐다** — 위험"
+        ]
+      ],
+      "note": "셋째 줄이 통한 것은 응답 뒤에 **소켓을 닫았기** 때문이다. 9.6절처럼 연결을 유지하면 그 24바이트가 다음 응답의 앞에 섞인다 — `Content-Length` 는 상태 코드와 무관하게 늘 필요하다."
+    },
+    {
+      "type": "prose",
+      "md": "## HEAD 는 머리만 준다\n\n`HEAD` 는 `GET` 과 같은 머리를 주고 **본문만 뺀다.** 길이는 그대로 적는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "본문만 건너뛴다",
+      "code": "h.append(\"Content-Length: \").append(body.length).append(\"\\r\\n\");   // 길이는 적는다\nh.append(\"\\r\\n\");\nos.write(h.toString().getBytes(\"ISO-8859-1\"));\nif (!method.equals(\"HEAD\")) os.write(body);                       // 본문만 뺀다"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "`HEAD /hello` 의 응답 원문 80바이트",
+      "sql": "$ curl -s -I http://localhost:12861/hello | od -c\n  0000000    H   T   T   P   /   1   .   1       2   0   0       O   K  \\r\n  0000020   \\n   C   o   n   t   e   n   t   -   T   y   p   e   :       t\n  0000040    e   x   t   /   p   l   a   i   n   ;       c   h   a   r   s\n  0000060    e   t   =   U   T   F   -   8  \\r  \\n   C   o   n   t   e   n\n  0000100    t   -   L   e   n   g   t   h   :       1   6  \\r  \\n  \\r  \\n\n  0000120\n\n  http=200 바이트=0\n  [서버]   200 OK · 본문 16바이트 (HEAD 라 안 보냈다)",
+      "note": "**`Content-Length: 16` 인데 본문이 0바이트다.** 모순처럼 보이지만 규약이다 — HEAD 의 길이는 \"GET 하면 이만큼 온다\"는 뜻이다. 그래서 다운로드 크기를 미리 알아보는 데 쓴다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "HEAD 를 잊으면 브라우저가 멈춘다",
+      "md": "`HEAD` 를 GET 처럼 처리해 본문을 보내면 클라이언트가 **다음 응답의 시작이라고 읽는다.**\n\n> 연결을 유지하는 상황(9.6절)에서 이것이 정확히 응답 밀림을 만든다. 9.3절의 \"짧게 적은 `Content-Length`\" 와 같은 증상이다.\n> 그래서 라우팅을 짤 때 **메서드 분기는 응답을 만드는 곳 한 군데서** 한다. 주소마다 `if (HEAD)` 를 흩뿌리면 한 곳을 빼먹는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 주소는 있는데 메서드가 틀리면 405\n\n`/hello` 에 POST 를 보내 봤다. 404 가 아니다 — **주소는 있다.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "405 에는 `Allow` 를 붙인다",
+      "sql": "$ curl -s -X POST -i http://localhost:12866/hello\n\n  HTTP/1.1 405 Method Not Allowed\n  Content-Type: text/plain; charset=UTF-8\n  Content-Length: 18\n  Allow: GET, HEAD\n\n  GET 만 됩니다",
+      "note": "**`Allow` 는 405 의 필수 헤더다.** 무엇이 되는지를 알려 주지 않으면 클라이언트가 추측해야 한다. 404 와 405 를 가르는 기준은 하나다 — **주소가 있느냐.**"
+    },
+    {
+      "type": "compare",
+      "title": "404 와 405",
+      "left": {
+        "title": "404 Not Found",
+        "md": "그 주소를 모른다.\n\n`/nope`, `/a/b/c` — 라우팅 표에 없다. 본문에 무엇을 넣어도 되지만 **있는 주소를 알려 주지는 않는다**(정찰에 쓰인다)."
+      },
+      "right": {
+        "title": "405 Method Not Allowed",
+        "md": "주소는 아는데 그 방법은 아니다.\n\n`POST /hello` — `/hello` 는 있다. **`Allow` 헤더로 되는 메서드를 알려 준다.**"
+      },
+      "note": "보안을 따지는 자리에서는 405 대신 404 를 주기도 한다 — 405 는 \"그 주소는 있다\"를 알려 주기 때문이다. 정답이 있는 게 아니라 **선택**이고, 선택했다는 것을 알고 해야 한다."
+    },
+    {
+      "type": "prose",
+      "md": "## 본문을 보내면 안 되는 응답이 있다\n\n`204 No Content` 에 본문을 붙여 봤다. `Content-Length` 도 정직하게 20 으로 적었다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "curl 이 남는 바이트를 찾아냈다",
+      "sql": "# 서버가 보낸 것\n  HTTP/1.1 204 No Content\n  Content-Length: 20\n  (빈 줄)\n  이건 본문이다\n\n# curl 이 본 것\n  { [20 bytes data]\n  * Excess found writing body: excess = 20, size = 0, maxdownload = 0, bytecount = 0\n  * Closing connection",
+      "note": "**`size = 0`** 이 핵심이다. curl 은 204 를 보고 \"본문 길이는 0\" 이라고 이미 정했다 — 내가 적은 `Content-Length: 20` 을 **무시하고** 남은 20바이트를 잉여로 처리했다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "상태 코드가 길이 규칙을 덮는다",
+      "md": "`Content-Length` 가 항상 최종 권한인 것은 아니다.\n\n> `204 No Content`·`304 Not Modified`·`1xx` 는 **본문이 없다고 규약이 정해 놨다.** 클라이언트는 길이 헤더를 읽지 않고 바로 다음 응답을 기다린다.\n> `HEAD` 의 응답도 같다 — 길이는 적혀 있지만 본문은 없다.\n> 그래서 연결을 유지하는 서버에서 204 에 본문을 붙이면 **그 바이트가 다음 응답의 상태 줄 자리로 밀려 들어간다.** curl 이 여기서 잡아 준 것은 연결을 닫는 상황이라 다행이었던 것이다.\n> 정리: **본문이 없다고 정해진 응답에는 `write(body)` 를 하지 않는다.** 길이 헤더를 지우는 것으로는 부족하다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "302 는 주소를 돌려준다",
+      "sql": "$ curl -s -i http://localhost:12867/old\n  HTTP/1.1 302 Found\n  Location: /hello\n  Content-Length: 0\n\n$ curl -sL http://localhost:12870/old        # -L 로 따라간다\n  -L 결과: 최종 http=200 리다이렉트 1회\n\n  [서버] GET /old\n  [서버]   302 -> /hello\n  [서버] GET /hello\n  [서버]   200 OK · 본문 16바이트",
+      "note": "**요청이 두 번 왔다.** 리다이렉트는 서버가 따라가 주는 게 아니라 **클라이언트가 다시 요청하는 것**이다. `-L` 없이는 302 에서 멈춘다."
+    },
+    {
+      "type": "table",
+      "caption": "이 절에서 쓴 상태 코드",
+      "columns": [
+        "코드",
+        "뜻",
+        "본문",
+        "같이 보내는 헤더"
+      ],
+      "rows": [
+        [
+          "**200** OK",
+          "됐다",
+          "있다",
+          "`Content-Type`, `Content-Length`"
+        ],
+        [
+          "**204** No Content",
+          "됐는데 줄 것이 없다",
+          "**금지**",
+          "길이도 적지 않는다"
+        ],
+        [
+          "**302** Found",
+          "다른 데로 가라",
+          "없어도 된다",
+          "**`Location`**"
+        ],
+        [
+          "**403** Forbidden",
+          "알지만 안 준다",
+          "있다",
+          "9.5절에서 쓴다"
+        ],
+        [
+          "**404** Not Found",
+          "그 주소를 모른다",
+          "있다",
+          "있는 주소를 알려 주지 않는다"
+        ],
+        [
+          "**405** Method Not Allowed",
+          "주소는 있고 방법이 틀렸다",
+          "있다",
+          "**`Allow`**"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"404 와 405 는 언제 갈립니까.\"**\n\n> 주소가 있느냐다. `/nope` 은 404, `POST /hello` 는 405 이고 405 에는 **`Allow: GET, HEAD`** 를 붙인다.\n> \"404 를 예외로 처리하면\" 에는 — 예외가 스레드 밖으로 나가면 응답이 **아예 안 나가고** 클라이언트는 `Connection reset` 을 본다. 404 는 정상적인 대화의 결과다.\n> `HEAD` 는 머리만 보내는데 **`Content-Length` 는 GET 했을 때의 길이를 적는다** — 실제 본문은 0바이트다.\n> 204 에 본문을 붙이면 어떻게 되냐고 물으면 — 재 봤다. curl 이 `Excess found writing body: excess = 20, size = 0` 이라고 했다. 상태 코드가 길이 규칙을 덮는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 오간 것 — 여섯 가지 응답",
+      "sql": "$ curl ... /        -> http=200 바이트=11\n$ curl ... /hello   -> http=200 바이트=16\n$ curl ... /nope    -> http=404 바이트=37\n$ curl ... /a/b/c   -> http=404 바이트=38\n\n$ curl -I /hello    -> http=200 바이트=0        # 머리 80바이트, Content-Length: 16\n$ curl -X POST /hello\n  HTTP/1.1 405 Method Not Allowed\n  Content-Length: 18\n  Allow: GET, HEAD\n\n$ curl ... (204 에 본문 20바이트)\n  * Excess found writing body: excess = 20, size = 0, maxdownload = 0\n\n$ curl -i /old      -> HTTP/1.1 302 Found · Location: /hello · Content-Length: 0\n$ curl -L /old      -> 최종 http=200 리다이렉트 1회\n  [서버] GET /old   ->  302\n  [서버] GET /hello ->  200            # 요청이 두 번 왔다\n\n# 404 도 37바이트 본문을 가진 정상 응답이다.\n# HEAD 는 Content-Length: 16 인데 본문 0바이트 — 규약이 그렇다.\n# 204 는 내가 적은 길이 20 을 클라이언트가 무시했다 — size = 0 이 그 증거다.",
+      "note": "**세 줄이 다 \"길이를 누가 정하나\" 이야기다.** 보통은 `Content-Length` 가, HEAD 와 204 에서는 **규약이** 정한다. 다음 절에서는 그 길이를 파일 크기에서 가져온다 — 50MB 를 흘려보낸다."
+    }
+  ],
+  "recap": [
+    "라우팅은 target 으로 switch 하는 것이다 — 별도 장치가 없다.",
+    "404 는 오류가 아니라 정상 응답이다. 본문 37바이트를 보내고 37바이트가 도착했다.",
+    "예외를 스레드 밖으로 내보내면 응답이 안 나가고 클라이언트는 Connection reset 을 본다.",
+    "404 에도 Content-Length 가 필요하다 — 없이 통한 것은 소켓을 닫았기 때문이다.",
+    "HEAD 는 머리만 보낸다. Content-Length: 16 인데 본문은 0바이트다 — GET 했을 때의 길이다.",
+    "HEAD 에 본문을 보내면 클라이언트가 다음 응답의 시작으로 읽는다.",
+    "주소는 있고 메서드가 틀리면 405 이고 Allow 헤더가 필수다.",
+    "405 는 그 주소가 있다는 것을 알려 주므로 일부러 404 를 주는 선택도 있다.",
+    "204·304·1xx 와 HEAD 응답에는 본문이 금지된다 — 상태 코드가 길이 규칙을 덮는다.",
+    "204 에 본문 20바이트를 붙이니 curl 이 Excess found writing body, size = 0 이라고 했다.",
+    "302 는 서버가 따라가는 게 아니다 — -L 을 주면 클라이언트가 두 번째 요청을 보낸다."
+  ],
+  "drills": [
+    {
+      "task": "주소 세 개를 라우팅하고 나머지를 404 로 만든다.",
+      "done_when": "404 에도 본문과 길이가 있는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "HEAD 를 처리한다.",
+      "done_when": "curl -I 로 머리만 오는지, 길이가 적혀 있는지 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "405 에 Allow 를 붙인다.",
+      "done_when": "curl -i 로 헤더를 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "204 에 본문을 붙여 본다.",
+      "done_when": "curl 이 무엇이라고 하는지 적는다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "404 를 예외로 던지면 클라이언트는 무엇을 보나.",
+      "a": "응답이 안 나가므로 404 가 아니라 Connection reset 이다."
+    },
+    {
+      "q": "HEAD 응답의 Content-Length 는 무엇을 뜻하나.",
+      "a": "GET 했을 때 올 본문의 길이다. 실제 본문은 0바이트다."
+    },
+    {
+      "q": "404 와 405 의 기준은.",
+      "a": "주소가 있느냐다. 있으면 405 이고 Allow 를 붙인다."
+    },
+    {
+      "q": "204 에 Content-Length 를 정확히 적어도 왜 안 되나.",
+      "a": "본문이 없다고 규약이 정해 놔서 클라이언트가 길이를 읽지 않는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "라우팅",
+      "what": "요청 대상을 보고 어느 코드가 답할지 고르는 것. target 으로 분기하는 것이 전부다."
+    },
+    {
+      "term": "Allow",
+      "what": "405 응답의 필수 헤더. 그 주소에서 되는 메서드 목록이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "RFC 9110 — HTTP Semantics: Status Codes",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "publisher": "IETF"
+    },
+    {
+      "title": "RFC 9110 — 405 Method Not Allowed, Allow",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "publisher": "IETF"
+    }
+  ]
+}
