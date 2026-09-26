@@ -1,0 +1,279 @@
+{
+  "slug": "eversteel",
+  "name": "EVERSTEEL",
+  "name_en": "EVERSTEEL",
+  "country": "JP",
+  "category": "기타",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "eversteel.co.jp",
+  "one_liner": "철 스크랩 검수를 카메라와 AI 로 하는 '鉄ナビ検収AI' 의 회사 — 공장마다 다른 기간 시스템은 코드가 아니라 설정으로 변환해 잇고, 거점마다 놓인 온프레 서버는 정의 파일로 릴리스하고, 쌓인 검수 데이터는 철강사마다 RLS 로 갈라 보여 준다",
+  "business_model": "주력은 **鉄ナビ検収AI** 다. 전로(電炉) 메이커 공장에 **고해상도 카메라와 온프레 서버**를 놓고, 들어오는 철 스크랩의 **등급 사정 · 위험물 · 불순물 검출 · 중량 공제**를 AI 가 판정한다 — 숙련 검수원의 고령화 · 기능 승계 문제를 풀고 24시간 가동으로 인력을 줄인다. 도입 때 현장에 붙어 공장별 검수 규칙 · 감도를 맞춘다. 2025 년 6 월부터 그 검수 데이터를 보여 주는 **鉄ナビAnalytiX** 를 새 기능으로 얹었다.\n\n회사가 내건 목표는 **철강업의 탈탄소화**다 — 철 스크랩을 녹여 쓰는 전로법이 카본 뉴트럴의 수단이고, 검수가 그 원료 품질을 쥔다. 산업폐기물 처리 사업자용 앱 **SanPa Navi** 도 있다. 요금은 공개되지 않았다.",
+  "products": [
+    "鉄ナビ検収AI(철 스크랩 AI 검수 — 카메라 · 온프레 서버 · 클라우드)",
+    "鉄ナビAnalytiX(검수 데이터 분석 · 2025-06~)",
+    "SanPa Navi(산업폐기물 처리 사업자용 앱)"
+  ],
+  "revenue_total": "확인하지 못했다. 회사 페이지에 매출 · 요금 · 도입 공장 수가 없다('국내 톱 셰어 — 자사 조사'만).",
+  "revenue_streams": [
+    {
+      "name": "鉄ナビ検収AI(+AnalytiX)",
+      "how": "전로 메이커 공장에 AI 검수(카메라 · 온프레 서버 · 클라우드)를 도입하고 정착까지 동행한다. AnalytiX 는 그 검수 데이터의 분석 기능으로 제공된다. 요금 체계는 공개 안 됨.",
+      "weight": "공개 안 됨(주력)",
+      "domains": [
+        "공장마다 다른 기간 시스템과 카메라를, 공장을 고치지 않고 잇는다",
+        "쌓인 검수 데이터를 철강사마다 갈라서 보여 준다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "提供サービス | EVERSTEEL",
+          "url": "https://eversteel.co.jp/service/steelrecyclingaI",
+          "publisher": "EVERSTEEL",
+          "summary": "**鉄ナビ検収AI** — 숙련 기술이 필요한 철 스크랩 검수(부재의 **등급 사정**, 불순물 · **위험물 검출**, 더스트 등 **중량 공제**)를 고해상도 카메라와 화상 해석으로 AI 가 판정 → 사정의 평준화 · 안전 · 품질 확보 · **24시간 가동으로 인력 절감**. '국내 톱 셰어(자사 조사)', 국내에서 개발하는 유일한 메이커. 도입 때 실제 업무에 붙어 **정착까지 동행**, 이물 검출 우선도 · 감도 조정이나 **독자 검수 규칙** 적용도. 예정: 장표 전자화 · 성분 분석 · 반품 리포트 · 검수원 교육 · 납입 데이터 분석."
+        },
+        {
+          "title": "鉄鋼業界のAI検収システムのデータ変換モジュールについて",
+          "url": "https://zenn.dev/eversteel_tech/articles/d41ddd33f08d89",
+          "publisher": "EVERSTEEL",
+          "date": "2025-11-17",
+          "summary": "각 전로(電炉) 공장은 **독자 스크랩 관리 시스템**(역사 · 독자 요건 · 여러 ERP 벤더)을 써서 필드명 · 구조 · 값 형식 · 단위가 모두 다르다. 원래는 공장이 EVERSTEEL 사양에 맞춰 보내는 게 맞지만 **상대 기간 시스템 개수 비용 · 도입 속도 · 공장별 교섭 비용** 때문에 **EVERSTEEL 이 변환을 맡는다** — 고객 개수 불필요 · '바로 쓸 수 있다'가 영업 무기. 이전엔 공장마다 커스텀 변환 코드(코드 변경 · 배포 · 보수 · 테스트 · 도메인 지식 유실). 해법: **'코드가 아니라 설정으로'** — DB 에 저장된 JSON 설정으로 **SchemaMapper(배치) · FieldTransformer(값 변환) · ConditionalStructure(전체 조건에 따른 값 변환)** 3 단계. 새 공장 추가 리드타임이 **1~2 일**(설정 작성 → DB 등록)로 — 이전은 요약에 1~2 주, 본문에 2~4 주로 적혀 있다."
+        },
+        {
+          "title": "オンプレ × クラウドのハイブリッド環境で、大量オンプレサーバへのリリースを自動化した話 (Portainer + Terraform)",
+          "url": "https://zenn.dev/eversteel_tech/articles/a9d528adbfca39",
+          "publisher": "EVERSTEEL",
+          "date": "2026-03-16",
+          "summary": "Web 계열은 AWS, **카메라 · I/O 보드 · 기간 시스템과 밀결합한 앱은 각 고객 거점의 온프레 서버**에서 돈다. 릴리스는 담당자가 서버마다 SSH 해 docker 를 손으로 — **거점 수 × 서버 대수(이중화)** 로 공수가 늘고, 조작 실수 · 변경 추적 불가 · 리뷰 없음 · Linux/Docker 숙련자에게 속인화. **Portainer(Server + 각 서버 Agent) 설정을 Terraform(Portainer Provider)으로** 관리 — 인프라 층과 Portainer 설정 층을 나누고, 온프레 서버 정의 · 앱 정의 파일을 GitHub 에서 편집 · 리뷰 · 승인해 릴리스. 결과: 거점 · 서버가 늘어도 정의 파일 편집과 GitHub 조작만으로 끝, 변경 추적 · 리뷰 체계, 전문 지식 없이도 릴리스 가능."
+        },
+        {
+          "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+          "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+          "publisher": "EVERSTEEL",
+          "date": "2026-02-17",
+          "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+        }
+      ]
+    },
+    {
+      "name": "신규 사업(SanPa Navi 등)",
+      "how": "산업폐기물 처리 사업자 · 배출 사업자 · 스크랩 도매상의 업무용 앱. 과금 방식은 공개 안 됨.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "데이터셋 없이 화상 해석부터 띄운다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "プライバシーポリシー(SanPa Navi)",
+          "url": "https://eversteel.co.jp/privacy_policy/sanpa_navi",
+          "publisher": "EVERSTEEL",
+          "summary": "EVERSTEEL 이 제공하는 스마트폰 앱 **'SanPa Navi'** — 주로 **산업폐기물 처리 사업자와 관련 사업자**(배출 사업자 · 협력 회사 · 스크랩 도매상 등)의 업무 이용을 상정한 서비스. 이용 기업명 · 사업자명 등 계약 정보를 보관한다."
+        },
+        {
+          "title": "BtoB 向け業務システムにおける画像解析の技術選定：汎用 LLM をどう使うか",
+          "url": "https://zenn.dev/eversteel_tech/articles/c046afa79617c1",
+          "publisher": "EVERSTEEL",
+          "date": "2025-12-17",
+          "summary": "**신규 사업 개발 담당**(업무위탁)이 쓴 BtoB 업무 시스템의 화상 해석 · 물체 검출 기술 선정. 사내에 전용 모델을 만드는 AI 부문이 있지만, 요건이 불확실한 PoC~초기 릴리스에선 **데이터셋 없이 빠르게 가설을 돌리는 범용 LLM** 도 쥐고 있어야 한다. 요건: 현장 촬영 화상 → 다루기 쉬운 JSON(장래 BoundingBox), **20 초 이내**(UI 는 비동기로 흡수), 월 수천~수만 요청의 비용, **데이터셋 · 어노테이션 안 함**. 기각: 검출 전용 프레임워크(MMDetection · Detectron2 · YOLO — 어노테이션 · Python/GPU 운용 · 사양 확정 전 투자로 '시기상조'), Vision 전용 API(다양한 대상을 유연히 설명 못 하고 JSON 화를 자작 — 커스터마이즈 여지 부족). 벤치(장변 1800px WebP, 모델별 50회, 평균 · P50 · **P90**) — **Gemini Flash-Lite 가 P90 7 초대로 안정**, Pro 계열은 정밀하지만 무겁고 GPT 계열은 가끔 스파이크. JSON 은 GPT 의 Structured Output 이 안정적이나 속도 · 비용 · 화상 이해 균형으로 Gemini 를 택하고 **sanitize**(마크다운 펜스 · 따옴표 없는 키 · ANSI 제거)로 흡수. BoundingBox 는 Flash-Lite=전체 파악 · PoC, Pro=상세. 물체 검출은 **3 단계 비동기 태스크**로 사용자를 기다리게 하지 않는다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "공장 안의 카메라에서 철강사의 대시보드까지",
+    "question": "스크랩 한 트럭이 공장에 들어와 판정되고, 그 기록이 고객의 분석 화면에 닿기까지 무엇을 지나나?",
+    "code": "flowchart LR\n  T[\"스크랩 반입\"] --> CAM[\"고해상도 카메라\\n(GigE Vision)\"]\n  CAM --> OP[\"거점 온프레 서버\\n전처리 · 전송\\nPortainer 로 릴리스\"]\n  OP --> CL[\"클라우드 백엔드\\nNestJS · 촬영 세션 · AI 검수\"]\n  CL --> INF[\"추론 서비스\"]\n  ERP[\"공장 기간 시스템\\n(공장마다 형식이 다름)\"] -- \"설정 기반 3단계 변환\" --> CL\n  CL --> SF[\"Snowflake\\n검수 데이터\"]\n  SF --> AX[\"鉄ナビAnalytiX\\n철강사별 RLS\"]",
+    "_note": "이 사이트의 해석 — 글 다섯에 나온 구성을 한 장에 모았다."
+  },
+  "domains": [
+    {
+      "name": "공장마다 다른 기간 시스템과 카메라를, 공장을 고치지 않고 잇는다",
+      "why": "검수 AI 는 공장 안에 산다 — 카메라 · I/O 보드 · 기간 시스템에 밀결합한 앱이 **거점마다 놓인 온프레 서버**에서 돌고, 판정 결과는 공장의 **스크랩 관리 시스템**과 주고받아야 한다. 그런데 공장마다 시스템이 제각각(역사 · 독자 요건 · 여러 ERP 벤더)이라 필드명 · 구조 · 값 형식 · 단위가 다 다르다.\n\n공장에 우리 사양을 맞추라고 하면 상대의 개수 비용 · 도입 지연 · 교섭 비용이 든다. 그래서 **EVERSTEEL 이 변환을 떠안고**, 그 변환과 거점 릴리스가 공장 수에 비례해 늘지 않게 만든다.",
+      "tech": [
+        {
+          "tech": "설정 기반 3단계 변환(SchemaMapper · FieldTransformer · ConditionalStructure, DB 의 JSON 설정)",
+          "solves": "새 공장 추가가 코드 변경 · 배포 없이 설정 작성 → DB 등록으로 끝난다 — 리드타임 1~2 일.",
+          "limits": "변환 규칙이 설정 언어로 표현되는 범위에 묶인다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "鉄鋼業界のAI検収システムのデータ変換モジュールについて",
+              "url": "https://zenn.dev/eversteel_tech/articles/d41ddd33f08d89",
+              "publisher": "EVERSTEEL",
+              "date": "2025-11-17",
+              "summary": "각 전로(電炉) 공장은 **독자 스크랩 관리 시스템**(역사 · 독자 요건 · 여러 ERP 벤더)을 써서 필드명 · 구조 · 값 형식 · 단위가 모두 다르다. 원래는 공장이 EVERSTEEL 사양에 맞춰 보내는 게 맞지만 **상대 기간 시스템 개수 비용 · 도입 속도 · 공장별 교섭 비용** 때문에 **EVERSTEEL 이 변환을 맡는다** — 고객 개수 불필요 · '바로 쓸 수 있다'가 영업 무기. 이전엔 공장마다 커스텀 변환 코드(코드 변경 · 배포 · 보수 · 테스트 · 도메인 지식 유실). 해법: **'코드가 아니라 설정으로'** — DB 에 저장된 JSON 설정으로 **SchemaMapper(배치) · FieldTransformer(값 변환) · ConditionalStructure(전체 조건에 따른 값 변환)** 3 단계. 새 공장 추가 리드타임이 **1~2 일**(설정 작성 → DB 등록)로 — 이전은 요약에 1~2 주, 본문에 2~4 주로 적혀 있다."
+            }
+          ]
+        },
+        {
+          "tech": "Portainer(Server + 거점 Agent) 설정을 Terraform(Portainer Provider)으로 — 온프레 서버 · 앱 정의 파일을 GitHub 에서 리뷰",
+          "solves": "거점 × 서버 대수만큼 늘던 수동 SSH 릴리스를 정의 파일 편집으로 — 변경 추적 · 리뷰 · 속인화 해소.",
+          "limits": "온프레 서버가 중앙 Portainer 에 닿아야 한다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "オンプレ × クラウドのハイブリッド環境で、大量オンプレサーバへのリリースを自動化した話 (Portainer + Terraform)",
+              "url": "https://zenn.dev/eversteel_tech/articles/a9d528adbfca39",
+              "publisher": "EVERSTEEL",
+              "date": "2026-03-16",
+              "summary": "Web 계열은 AWS, **카메라 · I/O 보드 · 기간 시스템과 밀결합한 앱은 각 고객 거점의 온프레 서버**에서 돈다. 릴리스는 담당자가 서버마다 SSH 해 docker 를 손으로 — **거점 수 × 서버 대수(이중화)** 로 공수가 늘고, 조작 실수 · 변경 추적 불가 · 리뷰 없음 · Linux/Docker 숙련자에게 속인화. **Portainer(Server + 각 서버 Agent) 설정을 Terraform(Portainer Provider)으로** 관리 — 인프라 층과 Portainer 설정 층을 나누고, 온프레 서버 정의 · 앱 정의 파일을 GitHub 에서 편집 · 리뷰 · 승인해 릴리스. 결과: 거점 · 서버가 늘어도 정의 파일 편집과 GitHub 조작만으로 끝, 변경 추적 · 리뷰 체계, 전문 지식 없이도 릴리스 가능."
+            }
+          ]
+        },
+        {
+          "tech": "TypeScript + NestJS 백엔드(DI 로 카메라 · 추론 · 기간 시스템 연계, Branded Type · Neverthrow)",
+          "solves": "여러 외부 연계를 보수하기 쉽게, 소인원이 프런트 · 백을 한 언어로.",
+          "limits": "기간 시스템 연계가 공장마다 달라 온보딩이 과제로 남았다(변환 모듈이 그 답).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "「鉄ナビ検収AI」のアーキテクチャを紹介します！",
+              "url": "https://zenn.dev/eversteel_tech/articles/20250526-es_tnavi_kensyu-arch_intro",
+              "publisher": "EVERSTEEL",
+              "date": "2025-06-13",
+              "summary": "鉄ナビ検収AI 백엔드는 **카메라 시스템 · AI 해석(추론) · 공장 기간 시스템** 연계와 실시간 결과 제공을 맡는다. **TypeScript + NestJS** — 타입 · zod · DI 로 외부 연계를 보수하기 쉽게, 소인원 팀이 프런트 · 백을 같이 맡아 언어 통일. 구성: 클라우드(AI 검수 관리 · 촬영 세션 관리 · 검수 정보 관리) + 추론 서비스(AI 팀) + **온프레미스**(고객 기간 시스템 · 카메라 기기에 붙는 EVERSTEEL 온프레 서버 — 화상 전처리 · 전송, HW 팀). 기능 영역별 모듈, ID 에 **Branded Type**, 에러는 Neverthrow. 검토 중: 프레젠테이션 층 통합 · **클라우드와 엣지의 균형**(영상 처리 · 추론의 엣지화, 네트워크 단절 대응). 과제: 관측성, **공장 온보딩 간소화**(공장마다 다른 기간 시스템), 화상 데이터 증가에 따른 비용, 문서 부족."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "쌓인 검수 데이터를 철강사마다 갈라서 보여 준다",
+      "why": "검수 AI 는 판정을 날마다 쌓는다 — 등급 · 중량 · 업자 · 검수원. 철강사는 그걸 **납입 관리와 검수 업무 효율화**에 쓰고 싶어 했고, 2025 년 6 월 **鉄ナビAnalytiX** 가 나왔다.\n\n여러 철강 메이커가 같은 서비스를 쓰므로 **자사 데이터만** 보여야 한다. 그리고 분석의 무거운 집계가 **실시간 안정이 최우선인 검수 AI** 를 흔들면 안 된다.",
+      "tech": [
+        {
+          "tech": "PostgreSQL RLS(Prisma Client Extensions 로 세션 변수 · 맨 PrismaClient 주입 불가 · 우회는 명시)",
+          "solves": "WHERE 를 잊어도 DB 가 거른다 — 앱에 취약점이 있어도 마지막 방어선.",
+          "limits": "RLS 확장 클라이언트를 거치지 않는 경로를 설계로 막아야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+              "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+              "publisher": "EVERSTEEL",
+              "date": "2026-02-17",
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+            }
+          ]
+        },
+        {
+          "tech": "PostgreSQL(사용자 · 권한) + Snowflake(검수 데이터, 앱 층에서 factory_id 필수)",
+          "solves": "분석 부하가 검수 AI 의 트랜잭션 DB 에 안 간다 — 열 지향으로 대량 집계가 빠르다.",
+          "limits": "Snowflake 는 레이턴시가 크고(일 · 월 집계라 허용), 테넌트 분리를 DB 가 강제하지 않아 리뷰 · 테스트로 지킨다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+              "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+              "publisher": "EVERSTEEL",
+              "date": "2026-02-17",
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+            }
+          ]
+        },
+        {
+          "tech": "Next.js API 프록시 + Client Components 주체(SWR)",
+          "solves": "HTTP-only Cookie · SameSite=Strict 로 XSS · CSRF 를 막고, 동적 필터를 한 방식으로 다룬다.",
+          "limits": "첫 표시에 로딩이 보인다 — 일부러 허용.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+              "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+              "publisher": "EVERSTEEL",
+              "date": "2026-02-17",
+              "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "데이터셋 없이 화상 해석부터 띄운다",
+      "why": "새 사업의 업무 시스템에서 **현장 촬영 화상**(화각 · 노출 · 배경 · 대상이 제각각)을 해석해야 했다. 사내엔 전용 검출 모델을 만드는 AI 부문이 있지만, 요건이 아직 흔들리는 PoC~초기 릴리스에 **데이터셋 구축 · 어노테이션**부터 시작하면 사양이 정해지기 전에 투자하게 된다.\n\n그래서 **범용 LLM 으로 먼저 띄우고** 쌓인 이용 데이터로 요건을 찾은 뒤, 정밀도 요구가 분명해지면 전용 모델을 검토한다.",
+      "tech": [
+        {
+          "tech": "Gemini Flash-Lite(멀티모달) + JSON sanitize + 3단계 비동기 태스크",
+          "solves": "데이터셋 없이 물체 검출 상당의 결과를 JSON 으로 — P90 7 초대로 안정, UI 는 비동기로 기다리지 않는다.",
+          "limits": "JSON 이 가끔 흐트러져 sanitize 가 필요하고, BoundingBox 정밀도는 Pro 계열보다 낮다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "BtoB 向け業務システムにおける画像解析の技術選定：汎用 LLM をどう使うか",
+              "url": "https://zenn.dev/eversteel_tech/articles/c046afa79617c1",
+              "publisher": "EVERSTEEL",
+              "date": "2025-12-17",
+              "summary": "**신규 사업 개발 담당**(업무위탁)이 쓴 BtoB 업무 시스템의 화상 해석 · 물체 검출 기술 선정. 사내에 전용 모델을 만드는 AI 부문이 있지만, 요건이 불확실한 PoC~초기 릴리스에선 **데이터셋 없이 빠르게 가설을 돌리는 범용 LLM** 도 쥐고 있어야 한다. 요건: 현장 촬영 화상 → 다루기 쉬운 JSON(장래 BoundingBox), **20 초 이내**(UI 는 비동기로 흡수), 월 수천~수만 요청의 비용, **데이터셋 · 어노테이션 안 함**. 기각: 검출 전용 프레임워크(MMDetection · Detectron2 · YOLO — 어노테이션 · Python/GPU 운용 · 사양 확정 전 투자로 '시기상조'), Vision 전용 API(다양한 대상을 유연히 설명 못 하고 JSON 화를 자작 — 커스터마이즈 여지 부족). 벤치(장변 1800px WebP, 모델별 50회, 평균 · P50 · **P90**) — **Gemini Flash-Lite 가 P90 7 초대로 안정**, Pro 계열은 정밀하지만 무겁고 GPT 계열은 가끔 스파이크. JSON 은 GPT 의 Structured Output 이 안정적이나 속도 · 비용 · 화상 이해 균형으로 Gemini 를 택하고 **sanitize**(마크다운 펜스 · 따옴표 없는 키 · ANSI 제거)로 흡수. BoundingBox 는 Flash-Lite=전체 파악 · PoC, Pro=상세. 물체 검출은 **3 단계 비동기 태스크**로 사용자를 기다리게 하지 않는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**매출 · 요금 · 도입 공장 수**가 공개 자료에 없다.",
+    "**SanPa Navi** 가 화상 해석 글의 '신규 사업'과 같은 것인지 글에 없다 — 신규 사업 수익원을 D3 에 잇는 건 이 사이트의 추론이다.",
+    "**AI 판정 자체**(등급 사정 모델 · 어노테이션 · 추론 고속화)는 입문 · 조사 글만 있다 — 제품 결정으로 읽을 수 있는지 아직 모른다.",
+    "**아직 안 읽은 것** — `ad5cad95817294`(GigE Vision 멀티 카메라 안정 동작) · `e8e55e3674c84d`(관측성 개선) · `92c0cc8e6f486b`(어노테이션 팀) · `8ed9a448415368`(GraphQL 파괴적 변경 검지) · `5e31fcc248483e`(Prisma findUnique 함정)."
+  ],
+  "sources": [
+    {
+      "title": "Top | EVERSTEEL",
+      "url": "https://eversteel.co.jp/",
+      "publisher": "EVERSTEEL",
+      "summary": "'철에서 미래를 연다' — **철강업의 탈탄소화**에 도전하는 스타트업. 최신 AI 로 철강업의 과제를 풀고, 현장 노하우를 IT 로 조직 지식으로 바꿔 업무를 효율화한다. 푸터에 스마트폰 앱 **'SanPa Navi'** 의 개인정보 방침이 따로 있다."
+    },
+    {
+      "title": "提供サービス | EVERSTEEL",
+      "url": "https://eversteel.co.jp/service/steelrecyclingaI",
+      "publisher": "EVERSTEEL",
+      "summary": "**鉄ナビ検収AI** — 숙련 기술이 필요한 철 스크랩 검수(부재의 **등급 사정**, 불순물 · **위험물 검출**, 더스트 등 **중량 공제**)를 고해상도 카메라와 화상 해석으로 AI 가 판정 → 사정의 평준화 · 안전 · 품질 확보 · **24시간 가동으로 인력 절감**. '국내 톱 셰어(자사 조사)', 국내에서 개발하는 유일한 메이커. 도입 때 실제 업무에 붙어 **정착까지 동행**, 이물 검출 우선도 · 감도 조정이나 **독자 검수 규칙** 적용도. 예정: 장표 전자화 · 성분 분석 · 반품 리포트 · 검수원 교육 · 납입 데이터 분석."
+    },
+    {
+      "title": "プライバシーポリシー(SanPa Navi)",
+      "url": "https://eversteel.co.jp/privacy_policy/sanpa_navi",
+      "publisher": "EVERSTEEL",
+      "summary": "EVERSTEEL 이 제공하는 스마트폰 앱 **'SanPa Navi'** — 주로 **산업폐기물 처리 사업자와 관련 사업자**(배출 사업자 · 협력 회사 · 스크랩 도매상 등)의 업무 이용을 상정한 서비스. 이용 기업명 · 사업자명 등 계약 정보를 보관한다."
+    },
+    {
+      "title": "「鉄ナビ検収AI」のアーキテクチャを紹介します！",
+      "url": "https://zenn.dev/eversteel_tech/articles/20250526-es_tnavi_kensyu-arch_intro",
+      "publisher": "EVERSTEEL",
+      "date": "2025-06-13",
+      "summary": "鉄ナビ検収AI 백엔드는 **카메라 시스템 · AI 해석(추론) · 공장 기간 시스템** 연계와 실시간 결과 제공을 맡는다. **TypeScript + NestJS** — 타입 · zod · DI 로 외부 연계를 보수하기 쉽게, 소인원 팀이 프런트 · 백을 같이 맡아 언어 통일. 구성: 클라우드(AI 검수 관리 · 촬영 세션 관리 · 검수 정보 관리) + 추론 서비스(AI 팀) + **온프레미스**(고객 기간 시스템 · 카메라 기기에 붙는 EVERSTEEL 온프레 서버 — 화상 전처리 · 전송, HW 팀). 기능 영역별 모듈, ID 에 **Branded Type**, 에러는 Neverthrow. 검토 중: 프레젠테이션 층 통합 · **클라우드와 엣지의 균형**(영상 처리 · 추론의 엣지화, 네트워크 단절 대응). 과제: 관측성, **공장 온보딩 간소화**(공장마다 다른 기간 시스템), 화상 데이터 증가에 따른 비용, 문서 부족."
+    },
+    {
+      "title": "鉄鋼業界のAI検収システムのデータ変換モジュールについて",
+      "url": "https://zenn.dev/eversteel_tech/articles/d41ddd33f08d89",
+      "publisher": "EVERSTEEL",
+      "date": "2025-11-17",
+      "summary": "각 전로(電炉) 공장은 **독자 스크랩 관리 시스템**(역사 · 독자 요건 · 여러 ERP 벤더)을 써서 필드명 · 구조 · 값 형식 · 단위가 모두 다르다. 원래는 공장이 EVERSTEEL 사양에 맞춰 보내는 게 맞지만 **상대 기간 시스템 개수 비용 · 도입 속도 · 공장별 교섭 비용** 때문에 **EVERSTEEL 이 변환을 맡는다** — 고객 개수 불필요 · '바로 쓸 수 있다'가 영업 무기. 이전엔 공장마다 커스텀 변환 코드(코드 변경 · 배포 · 보수 · 테스트 · 도메인 지식 유실). 해법: **'코드가 아니라 설정으로'** — DB 에 저장된 JSON 설정으로 **SchemaMapper(배치) · FieldTransformer(값 변환) · ConditionalStructure(전체 조건에 따른 값 변환)** 3 단계. 새 공장 추가 리드타임이 **1~2 일**(설정 작성 → DB 등록)로 — 이전은 요약에 1~2 주, 본문에 2~4 주로 적혀 있다."
+    },
+    {
+      "title": "オンプレ × クラウドのハイブリッド環境で、大量オンプレサーバへのリリースを自動化した話 (Portainer + Terraform)",
+      "url": "https://zenn.dev/eversteel_tech/articles/a9d528adbfca39",
+      "publisher": "EVERSTEEL",
+      "date": "2026-03-16",
+      "summary": "Web 계열은 AWS, **카메라 · I/O 보드 · 기간 시스템과 밀결합한 앱은 각 고객 거점의 온프레 서버**에서 돈다. 릴리스는 담당자가 서버마다 SSH 해 docker 를 손으로 — **거점 수 × 서버 대수(이중화)** 로 공수가 늘고, 조작 실수 · 변경 추적 불가 · 리뷰 없음 · Linux/Docker 숙련자에게 속인화. **Portainer(Server + 각 서버 Agent) 설정을 Terraform(Portainer Provider)으로** 관리 — 인프라 층과 Portainer 설정 층을 나누고, 온프레 서버 정의 · 앱 정의 파일을 GitHub 에서 편집 · 리뷰 · 승인해 릴리스. 결과: 거점 · 서버가 늘어도 정의 파일 편집과 GitHub 조작만으로 끝, 변경 추적 · 리뷰 체계, 전문 지식 없이도 릴리스 가능."
+    },
+    {
+      "title": "鉄ナビ検収AIのデータ分析サービス「鉄ナビAnalytiX」のアーキテクチャ紹介",
+      "url": "https://zenn.dev/eversteel_tech/articles/0f818de50ea46c",
+      "publisher": "EVERSTEEL",
+      "date": "2026-02-17",
+      "summary": "**鉄ナビAnalytiX**(2025-06 제공 시작) — 검수 AI 가 모은 검수 데이터를 일차/월차 개요 · 업자/검수원별 · 상세 목록(CSV)으로 보여 준다. **여러 철강 메이커가 자사 데이터만** 보는 멀티테넌트. Next.js(Vercel) + NestJS(ECS Fargate). 브라우저가 AWS API 를 직접 부르지 않고 **Next.js `/api/[...proxy]` 경유** — HTTP-only Cookie · SameSite=Strict(CSRF) · CORS 회피 · 토큰 갱신 투명 · 백엔드 URL 은닉(직접 부르면 SameSite=None + CSRF 토큰이 필요). **인증 확인 Layout 만 Server Component, 나머지는 Client Component + SWR** — SEO 불필요 · 필터가 복잡하게 동적 · 인터랙션 많음 · SWR 캐시, 대가로 첫 표시에 로딩이 보이는 걸 허용. **PostgreSQL RLS**(Prisma Client Extensions 로 세션 변수, 맨 PrismaClient 는 주입 불가 · '기본은 RLS, 우회는 명시') — WHERE 누락 방지 · 다층 방어 · 코드 단순. **PostgreSQL + Snowflake 이중 DB**: 검수 데이터는 검수 AI 가 Snowflake 에 쌓고, AnalytiX 는 읽기만 — 검수 AI DB 직결은 실시간 안정이 최우선인 곳에 분석 부하를 주므로 기각, Snowflake 의 레이턴시는 일 · 월 집계 용도라 허용. Snowflake 는 행 접근 정책 대신 **앱 층에서 factory_id 필수** 클라이언트(조직-공장 부모자식 · 사용자별 공장 권한 표현이 복잡) — DB 강제력이 없어 리뷰 · 테스트로 확인."
+    },
+    {
+      "title": "BtoB 向け業務システムにおける画像解析の技術選定：汎用 LLM をどう使うか",
+      "url": "https://zenn.dev/eversteel_tech/articles/c046afa79617c1",
+      "publisher": "EVERSTEEL",
+      "date": "2025-12-17",
+      "summary": "**신규 사업 개발 담당**(업무위탁)이 쓴 BtoB 업무 시스템의 화상 해석 · 물체 검출 기술 선정. 사내에 전용 모델을 만드는 AI 부문이 있지만, 요건이 불확실한 PoC~초기 릴리스에선 **데이터셋 없이 빠르게 가설을 돌리는 범용 LLM** 도 쥐고 있어야 한다. 요건: 현장 촬영 화상 → 다루기 쉬운 JSON(장래 BoundingBox), **20 초 이내**(UI 는 비동기로 흡수), 월 수천~수만 요청의 비용, **데이터셋 · 어노테이션 안 함**. 기각: 검출 전용 프레임워크(MMDetection · Detectron2 · YOLO — 어노테이션 · Python/GPU 운용 · 사양 확정 전 투자로 '시기상조'), Vision 전용 API(다양한 대상을 유연히 설명 못 하고 JSON 화를 자작 — 커스터마이즈 여지 부족). 벤치(장변 1800px WebP, 모델별 50회, 평균 · P50 · **P90**) — **Gemini Flash-Lite 가 P90 7 초대로 안정**, Pro 계열은 정밀하지만 무겁고 GPT 계열은 가끔 스파이크. JSON 은 GPT 의 Structured Output 이 안정적이나 속도 · 비용 · 화상 이해 균형으로 Gemini 를 택하고 **sanitize**(마크다운 펜스 · 따옴표 없는 키 · ANSI 제거)로 흡수. BoundingBox 는 Flash-Lite=전체 파악 · PoC, Pro=상세. 물체 검출은 **3 단계 비동기 태스크**로 사용자를 기다리게 하지 않는다."
+    }
+  ]
+}
