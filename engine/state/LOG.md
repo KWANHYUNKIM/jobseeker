@@ -2093,3 +2093,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Photoruction 회사 프로파일
 
 - 요금 페이지로 수익원 둘(월정액 · AI×BPO 옵션). 도면 가공 글 둘을 한 도메인으로. BPO 쪽 글은 없음.
+
+## 2026-09-27 Photoruction drawing-converter-fargate
+
+- 변환 서버 이전 글 끝까지. 결정 8, 그림 3(flow·failure·state). ZIP 기능이 이번 범위에서 빠진 것을 도메인 limits 에 바로잡음.

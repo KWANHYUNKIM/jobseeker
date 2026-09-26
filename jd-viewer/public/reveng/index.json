@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "건설 생산 클라우드 Photoruction — 현장이 올린 도면을 뒤에서 가공하는 두 경로, 5년 손대지 못한 Windows·C# 변환 서버를 사내 표준 ECS Fargate 로 옮기며 '구현보다 현상 파악이 무겁다' 를 배웠고, 도면 잘라내기는 기존 SQS 를 유용해 Lambda 를 API 에서 직접 부르고 결과만 큐로 돌려받는다",
       "updated_at": "2026-09-27",
       "domain": "photoruction.com"

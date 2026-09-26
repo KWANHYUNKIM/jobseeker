@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Photoruction 프로파일(2026-09-27) — 도메인 하나('현장이 올린 도면을 뒤에서 가공한다'), 기능 0. 다음은 확장: 그 도메인의 기능 — 변환 서버 Fargate 이전 `9cc3a37caccdaf`(본문 다 읽음) · 도면 잘라내기 Lambda×SQS `b66dfdff60005f`(본문 다 읽음). 둘을 한 기능으로 묶을지 나눌지는 쓸 때 판단. 그 뒤 수익원 'AI×BPO' 에 도메인 없음 → 두 번 찾고 없으면 hold. 대기 0 → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Photoruction 기능 1(2026-09-27) — `drawing-converter-fargate`. 도메인 하나가 featured. 다음은 완주 점검: 수익원 'AI×BPO 옵션' 에 도메인 없음 → 검색 1 RSS 19편(BPO·AI 현장 확인 글? `17 Jul 2026` Agent Hackathon 은 해커톤 작품) · 검색 2 Zenn 검색 API '建設BPO'·'フォトラクション' — 있으면 도메인·기능, 없으면 hold. 도면 잘라내기(Lambda×SQS)는 필요하면 같은 도메인의 두 번째 기능. 대기 0 → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
