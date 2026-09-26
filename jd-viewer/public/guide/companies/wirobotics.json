@@ -5,7 +5,7 @@
   "aliases": [
     "위로보틱스"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "wirobotics.com",
   "one_liner": "보행보조 웨어러블 로봇 WIM 을 팔고, 그 기술로 휴머노이드 로봇 ALLEX 와 Physical AI 플랫폼을 만드는 로보틱스 회사",
@@ -1073,6 +1073,161 @@
           {
             "title": "[Humanoid Robot] Framework S/W 엔지니어",
             "url": "https://www.wanted.co.kr/wd/385302",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385305",
+      "title": "[Humanoid Robot] Perception SLAM 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3년 이상('석사 재학·연구경력 인정'), 학사 이상(로봇공학·컴퓨터비전·컴퓨터공학 등). 휴머노이드 ALLEX 의 인지·SLAM 자리다 — 부서 소개가 단기 목표(모바일 플랫폼 LiDAR·오도메트리 SLAM, 저가형 센서 안전 감지, Head 카메라 3D 인지)와 장기 목표(이족보행 같은 격한 움직임에도 강인한 Visual SLAM, 목 관절 제어와 결합한 능동 인지)를 나눠 적는다. 주요업무는 다섯 묶음 — LiDAR+휠 오도메트리+IMU 융합 Localization/SLAM, TOF·초음파·Radar 로 단차·절벽·장애물을 감지하는 기능안전 센싱과 센서 이중화, Head 카메라 6D 포즈 추정(Foundation Pose 등)과 SDF 3D 재구성, 진동·급격한 자세 변화에 강인한 VO/VIO/SLAM 과 카메라‒IMU‒관절 융합 전신 상태 추정, 목 관절 시선 제어와 View Planning 을 묶은 능동 인지 — 그리고 실로봇 캘리브레이션·시간 동기화·검증. 필수는 C++/Python·ROS2 실시간 인지 파이프라인, SLAM·VO/LO·센서 융합(Kalman Filter·Factor Graph), 멀티모달 센서 캘리브레이션·시간 동기화. 족형·휴머노이드 실기 경험, 6D Pose·Open-Vocabulary Detection, SDF·NeRF·3D Gaussian Splatting, Active Perception, 기능안전(ISO 13482 등), CUDA·TensorRT, RSS·CoRL·ICRA·IROS·CVPR·ICCV 논문은 우대다. 전형은 서류 전형 → 직무 인터뷰 → (필요 시 2차 인터뷰) → 경영진 인터뷰 → 처우 협의 → 최종 합격.",
+      "fit": {
+        "must_have": [
+          "실무 3년 이상(석사 재학·연구 인정), 학사 이상",
+          "C++/Python·ROS2 실시간 인지 파이프라인",
+          "SLAM·VO/LO·센서 융합(KF·Factor Graph)",
+          "멀티모달 센서 캘리브레이션·시간 동기화"
+        ],
+        "can_learn": [
+          "족형·휴머노이드 실기 인지",
+          "6D Pose·Open-Vocabulary Detection",
+          "SDF·NeRF·3DGS",
+          "Active Perception·Gaze Control",
+          "기능안전(ISO 13482)",
+          "CUDA·TensorRT"
+        ]
+      },
+      "study": [
+        {
+          "topic": "LiDAR+휠 오도메트리+IMU 융합 위치 추정",
+          "from": "task",
+          "quote": "• LiDAR + 휠 오도메트리(Wheel Encoder) + IMU 센서 융합 기반 Localization/SLAM",
+          "priority": "core",
+          "why": "주요업무이고 필수 역량에 'SLAM, Visual/LiDAR Odometry, 센서 융합(Kalman Filter, Factor Graph 등) 실무 경험' 이 있다. 부서 소개가 단기 과제로 모바일 플랫폼 SLAM 을 적는다.",
+          "gap_check": "휠이 미끄러져 오도메트리가 틀릴 때 EKF 에서는 무엇으로 그걸 걸러내고, Factor Graph 방식은 루프 클로저가 들어왔을 때 과거 궤적을 어떻게 고치는가?",
+          "drill": "공개 로봇 bag 이나 시뮬레이터 데이터로 robot_localization(EKF)에 휠 오도메트리+IMU 를 넣고, slam_toolbox 또는 FAST-LIO 로 LiDAR SLAM 을 돌린다. 같은 경로를 GTSAM 팩터 그래프(오도메트리·루프 팩터)로도 풀어 궤적 오차를 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "GTSAM — Factor Graphs and GTSAM tutorial",
+              "url": "https://gtsam.org/tutorials/intro.html",
+              "kind": "docs"
+            },
+            {
+              "title": "robot_localization",
+              "url": "https://github.com/cra-ros-pkg/robot_localization",
+              "kind": "repo"
+            },
+            {
+              "title": "slam_toolbox",
+              "url": "https://github.com/SteveMacenski/slam_toolbox",
+              "kind": "repo"
+            },
+            {
+              "title": "FAST_LIO",
+              "url": "https://github.com/hku-mars/FAST_LIO",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "진동·급격한 자세 변화에 강인한 VIO/SLAM",
+          "from": "task",
+          "quote": "• 모바일·이족보행 시 발생하는 진동 및 급격한 자세 변화에 강인한 VO/VIO/SLAM",
+          "priority": "core",
+          "why": "주요업무이고 다음 줄이 '카메라‒IMU‒관절 상태(Kinematics) 융합 기반 전신 상태 추정' 이다. 부서 소개가 이족보행 등 격한 몸체 움직임에도 강인한 Visual SLAM 을 목표로 적는다.",
+          "gap_check": "걸음마다 머리가 흔들려 이미지가 번지고 특징점이 사라질 때 IMU 사전적분은 무엇을 메워 주고, 관절 기구학으로 구한 머리 자세는 VIO 에 어떤 제약으로 넣을 수 있는가?",
+          "drill": "ORB-SLAM3 를 공개 VI 데이터셋의 쉬운 구간과 격한 구간에서 돌려 추적 실패 지점을 찾고, 같은 구간을 모노 vs 모노-관성 모드로 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM",
+              "url": "https://arxiv.org/abs/2007.11898",
+              "kind": "paper"
+            },
+            {
+              "title": "ORB_SLAM3",
+              "url": "https://github.com/UZ-SLAMLab/ORB_SLAM3",
+              "kind": "repo"
+            },
+            {
+              "title": "GTSAM",
+              "url": "https://github.com/borglab/gtsam",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "멀티모달 센서 캘리브레이션·시간 동기화",
+          "from": "qualification",
+          "quote": "• 카메라·LiDAR·IMU 등 멀티모달 센서 캘리브레이션 및 시간 동기화 경험",
+          "priority": "core",
+          "why": "필수 역량이고 주요업무 '실기 검증' 묶음에 '실제 로봇 플랫폼에서의 센서 캘리브레이션, 시간 동기화, 성능 검증' 이 있다.",
+          "gap_check": "카메라와 IMU 사이 외부 파라미터와 시간 오프셋을 함께 추정해야 하는 이유는 무엇이고, 10 ms 시간 어긋남이 빠르게 고개를 돌릴 때 어떤 오차로 나타나는가?",
+          "drill": "Kalibr 로 카메라-IMU 캘리브레이션 절차를 따라가고(공개 캘리브레이션 bag 사용), 추정된 시간 오프셋을 일부러 틀리게 넣었을 때 앞 드릴 VIO 궤적이 어떻게 나빠지는지 본다. ROS2 tf2 로 센서 좌표계 트리를 구성한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Kalibr",
+              "url": "https://github.com/ethz-asl/kalibr",
+              "kind": "repo"
+            },
+            {
+              "title": "ROS 2 — tf2",
+              "url": "https://docs.ros.org/en/jazzy/Tutorials/Intermediate/Tf2/Tf2-Main.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Head 카메라 6D 포즈 추정",
+          "from": "task",
+          "quote": "• Head 카메라를 활용한 객체 6D 포즈 추정 (Foundation Pose 등 최신 모델 활용)",
+          "priority": "high",
+          "why": "주요업무이고 같은 묶음에 '조작(Manipulation)·모션 플래닝에 활용 가능한 실시간 인지 결과 제공' 이 있다. 우대에 Foundation Model 기반 6D Pose·Open-Vocabulary Detection 과 CUDA·TensorRT 가 있다.",
+          "gap_check": "처음 보는 물체의 6D 포즈를 CAD 모델 없이 몇 장의 참조 이미지로 추정할 때 무엇이 필요하고, 손으로 집는 동안 가려질 때 추적은 어떻게 유지하는가?",
+          "drill": "FoundationPose 논문과 저장소를 읽고 데모를 돌려 추정·추적 지연을 재고, 결과 포즈를 ROS2 tf 로 발행해 조작 플래너가 받는 형태로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "FoundationPose: Unified 6D Pose Estimation and Tracking of Novel Objects",
+              "url": "https://arxiv.org/abs/2312.08344",
+              "kind": "paper"
+            },
+            {
+              "title": "FoundationPose",
+              "url": "https://github.com/NVlabs/FoundationPose",
+              "kind": "repo"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "EKF vs 팩터 그래프 비교 + 캘리브레이션 오프셋 민감도 실험 저장소",
+          "why": "필수 역량 세 줄(융합·SLAM·캘리브레이션)을 수치로 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "실로봇에서 인지를 올린 경험을 기여 중심으로 정리",
+          "why": "공고가 이력서에 직접 한 프로젝트와 기여를 구체적으로 적어 달라고 하고, 우대에 모바일·족형·휴머노이드 실기 인지 경험이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 직무 인터뷰 → (필요 시 2차 인터뷰) → 경영진 인터뷰 → 처우 협의 → 최종 합격(공고 기준). 이력서에 직접 수행한 프로젝트와 기여를 구체적으로 적어 달라고 한다.",
+        "expect": [
+          "센서 융합 설계(KF·Factor Graph)",
+          "동적 플랫폼 VIO 강인화",
+          "캘리브레이션·시간 동기화",
+          "6D 포즈·3D 인지"
+        ],
+        "sources": [
+          {
+            "title": "[Humanoid Robot] Perception SLAM 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/385305",
             "publisher": "원티드"
           }
         ]
