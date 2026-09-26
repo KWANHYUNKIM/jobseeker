@@ -771,3 +771,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## coinbase 재방문 → 확장 (2026-09-26)
 
 09-21 Autopilot 글로 support-procedure-autopilot. 결정 7개, 기존 도메인 AI 에이전트를 기업 규모로 쓴다에 더함. curl 403 이라 브라우저로 읽었다.
+
+## cursor 재방문 → 확장 (2026-09-26)
+
+09-23 토큰 효율 글로 harness-token-diet. 결정 6개, 기존 도메인 모델을 고르고 돌린다에 더함.

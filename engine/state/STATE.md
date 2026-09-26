@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — coinbase 재방문에서 확장(`support-procedure-autopilot`)을 마쳤다. 09-06 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
+**없다 — cursor 재방문에서 확장(`harness-token-diet`)을 마쳤다. 09-06 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **cursor** — 2026-09-26 새 글 셋. 토큰 효율(09-23) → `harness-token-diet`(기존 도메인). Rollouts·Security Review 봇(09-23)·Projects(09-10)는 제품 소개라 안 씀. 목록 날짜가 글과 1:1 로 안 맞아 글마다 확인해야 한다.
 - **coinbase** — 2026-09-26 새 글 둘. Autopilot(09-21, 고객지원 절차 품질 루프) → `support-procedure-autopilot`(기존 도메인에 더함). 디자인 시스템과 AI 프로토타이핑(09-09)은 안 읽었다. **curl·사이트맵·RSS 는 Cloudflare 403 — 목록과 본문 모두 브라우저 `get_page_text` 로 온다.** 검색이 말한 양자내성 암호 글(09-21)은 엔지니어링 목록에 없었다.
 - **clickhouse** — 2026-09-26 09-06 이후 새 글 20편 넘게(대부분 발표·파트너·릴리스). WalShadow(09-10) → `physical-wal-replica`. 안 쓴 후보: Postgres on NVMe(09-21) · TimeSeries 엔진/PromQL(09-15) · Replica-aware routing(09-15) · CostBench(09-08). 피드 `clickhouse.com/rss.xml`.
 - **bookingcom** — 2026-09-26 새 글 하나(Kafka 컨슈머 자동 용량 시험, 09-14) → `partition-ratio-load`. 08-27 실시간 인텔리전스 글은 09-06 전이고 출처에 없다. 피드 `medium.com/feed/booking-com-development`(본문 전문).
