@@ -268,6 +268,100 @@
       "site": "jumpit",
       "duplicate_of": "https://www.wanted.co.kr/wd/338476",
       "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 학습 항목은 원티드 'AIoT 서비스 백앤드 개발자 (3년 이상)'(338476) 브리핑을 본다. 주요업무(대용량 시계열 스트리밍 데이터 아키텍처 — Kafka·ClickHouse·펌웨어 연동·AI 결과 통합·시각화 API), 자격요건(백엔드 3년, Java/Spring, AWS, RDBMS·JPA·Mybatis, 대용량·Docker, MQTT), 우대사항이 글자까지 같다. 다른 점은 점핏이 경력을 '3~10년' 으로 적고(원티드는 '3년 이상'), 근무지를 '서울 금천구 가산디지털1로165, 1202호' 로 번지까지 적는다는 것뿐이다."
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/54920516",
+      "title": "임베디드 소프트웨어 개발자(신입)",
+      "site": "jumpit",
+      "verdict": "신입(또는 관련 경력 2년 이하), 서울 금천구. MODLINK 같은 산업용 AIoT 단말의 **펌웨어 신입** 자리다 — AVR·ESPRESSIF MCU 대상 임베디드 소프트웨어를 내부 프레임워크의 작은 기능 단위부터 개발, 신규 하드웨어 테스트 코드와 디버깅, 문서화, 신규 소프트웨어 OTA 배포. 필수는 C/C++, AVR·ESPRESSIF 칩셋 개발(또는 준하는 경험), **데이터 시트를 토대로 개발**, 네트워크 이해와 네트워크 프로그래밍 경험. 우대는 컴퓨터·소프트웨어·전자·전기전자·정보통신 전공, RTOS 또는 Linux, **필드버스 프로토콜**, 운전면허·운전 가능(현장 방문이 있다고 읽힌다 — 공고에 이유는 없다). 사람인에 같은 번호(54920516)로 올라온 게시가 있다.",
+      "fit": {
+        "must_have": [
+          "C/C++",
+          "AVR·ESPRESSIF MCU 개발(또는 준하는 경험)",
+          "데이터 시트 기반 개발",
+          "네트워크 프로그래밍 경험"
+        ],
+        "can_learn": [
+          "RTOS·Linux",
+          "필드버스 프로토콜",
+          "OTA 배포"
+        ]
+      },
+      "study": [
+        {
+          "topic": "데이터 시트 읽고 MCU 주변장치 다루기 — ESP32",
+          "from": "qualification",
+          "quote": "- 데이터 시트를 토대로 임베디드 소프트웨어를 개발할 수 있는 역량 또는 그에 준하는 경험",
+          "priority": "core",
+          "why": "필수 요건이고 바로 앞 필수가 AVR·ESPRESSIF 칩셋 개발 역량이다. 주요업무가 AVR·ESPRESSIF MCU 대상 임베디드 소프트웨어 개발이다.",
+          "gap_check": "센서 하나를 붙일 때 데이터 시트에서 무엇(전압·통신 방식 I2C/SPI/UART·레지스터 맵·타이밍 도표)을 먼저 찾고, 값이 안 읽히면 로직 분석기 없이 무엇부터 의심하는가(주소·풀업·클럭)?",
+          "drill": "ESP-IDF 로 ESP32 개발 환경을 세우고, I2C 온습도 센서 하나를 데이터 시트의 레지스터 설명만 보고 읽어 1초마다 출력하는 펌웨어를 만든다(라이브러리 없이 레지스터 읽기부터).",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Get Started - ESP32 (ESP-IDF Programming Guide)",
+              "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "단말 펌웨어 원격 업데이트 — OTA",
+          "from": "task",
+          "quote": "- 신규 소프트웨어 배포(OTA) 등",
+          "priority": "core",
+          "why": "주요업무이고 회사가 MODLINK 의 자동 펌웨어 업데이트(OTA)를 대표 기능으로 적는다(회사 브리핑).",
+          "gap_check": "공장에 붙은 단말을 OTA 로 업데이트하다 전원이 꺼지면 무엇이 단말을 살려 두고(A/B 파티션), 새 펌웨어가 부팅은 되는데 통신이 안 되면 무엇으로 자동으로 이전 버전으로 되돌리는가?",
+          "drill": "ESP-IDF OTA 예제로 HTTP 서버에서 새 펌웨어를 받아 교체하게 만들고, 새 버전이 '정상' 을 스스로 확인하지 않으면 롤백되도록 설정한 뒤 일부러 망가진 버전을 올려 롤백을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Over The Air Updates (OTA) - ESP32",
+              "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/ota.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RTOS 태스크와 네트워크 프로그래밍",
+          "from": "preference",
+          "quote": "- RTOS 또는 Linux 운영체제로 개발 및 운영을 해본 경험",
+          "priority": "high",
+          "why": "우대사항이고 필수에 '네트워크에 대한 이해와 네트워크 프로그래밍을 해본 경험' 이 있다.",
+          "gap_check": "센서 읽기·네트워크 전송·OTA 확인을 한 무한 루프에 넣지 않고 FreeRTOS 태스크로 나누면 무엇이 좋아지고, 태스크끼리 데이터를 넘길 때 전역 변수 대신 무엇(큐)을 쓰는가? 네트워크가 끊겼을 때 센서 데이터는 어디에 쌓아 두는가?",
+          "drill": "위 펌웨어를 센서 태스크·전송 태스크 둘로 나누고 큐로 잇는다. 전송 태스크는 Wi-Fi 로 서버에 TCP(또는 MQTT) 전송을 하고, 공유기를 껐다 켜서 쌓인 데이터가 재연결 뒤 보내지는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "FreeRTOS Overview - ESP32",
+              "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/freertos.html",
+              "kind": "docs"
+            },
+            {
+              "title": "FreeRTOS documentation",
+              "url": "https://www.freertos.org/Documentation/00-Overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "필드버스 — 공장 설비와 말하기(Modbus)",
+          "from": "preference",
+          "quote": "- 필드버스 프로토콜에 대한 지식 및 경험",
+          "priority": "nice",
+          "why": "우대사항이다. MODLINK 가 기존 설비와 연동해 데이터를 모은다(회사 브리핑).",
+          "gap_check": "Modbus RTU 에서 마스터가 슬레이브 주소·기능 코드·레지스터 주소로 값을 읽는 요청 한 프레임의 모양을 적을 수 있고, 응답이 안 올 때 무엇(통신 속도·패리티·종단 저항·CRC)부터 확인하는가?",
+          "drill": "PC 의 Modbus 시뮬레이터를 슬레이브로 두고 ESP32 에 RS-485 모듈을 붙여 홀딩 레지스터 값을 주기적으로 읽는 마스터를 만든 뒤, 요청·응답 프레임 바이트를 로그로 찍어 설명을 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Modbus Protocol",
+              "url": "https://www.modbustools.com/modbus.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
