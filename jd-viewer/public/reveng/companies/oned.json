@@ -4,7 +4,7 @@
   "name_en": "1D",
   "country": "JP",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "domain": "oned.jp",
   "one_liner": "치과 세미나 동영상 구독 1D — 치과의사·위생사·국시 앱으로 늘어난 프로덕트를 Cognito 대신 Ory Hydra 로 자체 구축한 공통 계정으로 묶으며 기존 사용자를 안은 채 강제 업데이트 한 번에 전환했고, 표시에 10초 넘게 걸리던 Laravel 은 Go·GraphQL·Next.js 로 갈아 끼우는 중이다",
@@ -113,7 +113,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "laravel-to-go-graphql"
+      ]
     }
   ],
   "features": [
@@ -467,6 +469,271 @@
           "publisher": "ワンディー Techブログ (Zenn)",
           "date": "2026-09-20",
           "summary": "1D 는 동영상 구독으로 시작해 지금은 치과의사용 1D Web·1D 앱, **치과위생사용 앱과 Web, 국가시험 대책 앱**으로 늘었다. 전 프로덕트 공통 IdP('1D 계정')를 **Ory Hydra** 로 자체 구축해 가동 중 서비스를 OIDC RP 로 전환. 배경 — Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하던 구조의 한계 넷(프로덕트 간 SSO 불가 등). Cognito 를 그만두고 Hydra + 자체 IDM(Kratos 가 아닌 이유·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 로 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 이중 인증 미들웨어 · 컷오버는 심야 점검 + **모바일 앱 강제 업데이트**로 한 번에, PoC 부터 옛 방식 철거까지 약 4개월. RP 앱은 Flutter(flutter_appauth)."
+        }
+      ]
+    },
+    {
+      "key": "laravel-to-go-graphql",
+      "name": "10초 넘게 걸리던 Laravel 1D 를 Go·GraphQL·Next.js 로 갈아 끼운다 — 두 사람이 REST 엔드포인트를 페이지마다 만드는 대신 GraphQL 스키마를 공유하고, gqlgen+ent 의 편리함과 클린 아키텍처를 ent 모델을 감싼 Entity 로 타협시킨다",
+      "domain": "느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "1D 는 동영상으로 치과 의료 기술을 배우는 구독 서비스다. 필자가 입사하기 전 1D 는 Laravel 로 지어졌는데 기술 부채가 쌓여 **표시까지 10초 넘게 걸리는 페이지**도 있을 만큼 사용자 체험이 나빠졌다. 프런트도 Laravel 의 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 보수성이 낮았고 새 기능 추가·수정이 어려웠다. 인프라는 EC2 위에 손 운영이 많아 확장성·가용성·보안에 과제가 있었다.\n\n동영상 학습 플랫폼이라 사용자가 동영상을 보거나 원하는 정보에 닿을 때 페이지 속도가 빨라야 한다. 이대로면 사용자 체험도 개발 체험도 나빠지기만 한다 — 기술 스택을 다시 보게 됐다.",
+        "metrics": [
+          {
+            "label": "교체 전 페이지 속도",
+            "value": "표시까지 10초 넘게 걸리는 페이지 있음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          },
+          {
+            "label": "교체 인원(초기)",
+            "value": "기본적으로 2명",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          },
+          {
+            "label": "현재 상태(2024-12)",
+            "value": "Go 와 Laravel 하이브리드 — Go 로 통일 예정, 인프라 코드화는 100% 아님",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "언어를 고를 때",
+          "thought": "Go 는 단순한 언어 사양의 컴파일 언어라 빠르고, 동시 처리로 고부하를 견뎌 동영상 배신에 맞는다. 읽기 쉬운 코드는 도메인 지식이 없는 새 엔지니어도 이해하기 쉽다. 그리고 나와 팀이 Go 로 개발하고 싶었다 — 동기가 오르는 언어는 개발 효율과 장래 채용에도 좋다. **'해 보고 싶다' 는 호기심과 합리성을 공존시키는** 결정을 하고 싶다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+              "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+              "publisher": "ワンディー Techブログ (Zenn)",
+              "date": "2024-12-09",
+              "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+            }
+          ]
+        },
+        {
+          "at": "클린 아키텍처와 gqlgen+ent 가 부딪힐 때",
+          "thought": "gqlgen+ent 통합이 생성하는 기본 리졸버는 응답 형으로 ent.Model 을 써 쿼리 편의를 얻는다 — 클린 아키텍처 원칙에 어긋나는 부분이다. 딱 알맞은 선에서 공존시키려고 Usecase 층은 ent.Model 을 감싼 자체 Entity 에 의존하게 했다. 아직 과제가 있다고 보고 계속 다듬는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+              "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+              "publisher": "ワンディー Techブログ (Zenn)",
+              "date": "2024-12-09",
+              "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Entity(예: BiographyEntity)",
+            "what": "ent.Model 을 감싼 자체 도메인 객체. 생성 때 ozzo-validation 으로 검증하고, Usecase 층은 이것만 다룬다."
+          },
+          {
+            "name": "Resolver",
+            "what": "gqlgen 이 만든 GraphQL 리졸버. 여기서만 ent.Model 을 공개한다."
+          },
+          {
+            "name": "GraphQL 스키마",
+            "what": "프런트와 백엔드가 공유하는 형 정의."
+          }
+        ],
+        "invariants": [
+          "Usecase 층은 ent 에 직접 의존하지 않는다 — Entity 를 거친다.",
+          "ent.Model 은 Resolver 층에서만 밖으로 나간다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Next.js(Vercel, App Router)가 페이지를 SSR/SSG 로 그리고 Apollo Client 로 GraphQL 을 부른다",
+            "why": "페이지 속도·SEO, 이미지 최적화·캐시·프리렌더링에 올라탄다."
+          },
+          {
+            "step": "Go 의 gqlgen 서버가 요청을 받아 Resolver → Usecase(Entity) 로 넘긴다",
+            "why": "형 안전한 GraphQL 서버를 적은 인원으로."
+          },
+          {
+            "step": "ent 가 GraphQL Field Collection 으로 Eager Loading 해 Aurora MySQL 을 읽는다",
+            "why": "N+1 을 손 안 대고 푼다."
+          },
+          {
+            "step": "백엔드는 ECS Fargate(프라이빗 서브넷)에서 돌고 Terraform 으로 관리한다",
+            "why": "EC2 손 운영의 확장성·가용성·보안 과제를 줄인다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "백엔드 언어는?",
+            "chosen": "**Go — 단순함·컴파일 언어의 속도·동시 처리, 그리고 팀이 쓰고 싶었다.**",
+            "alternatives": [
+              "Laravel(PHP) 유지·개선(inferred)"
+            ],
+            "tradeoff": "동영상 배신의 고부하를 견디고, 읽기 쉬워 새 엔지니어가 빨리 이해한다. 대가 — 교체가 끝날 때까지 Go 와 Laravel 두 스택을 함께 운영한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          },
+          {
+            "question": "API 를 REST 로 옮길까, GraphQL 로 옮길까?",
+            "chosen": "**GraphQL — 교체를 처음엔 두 사람이 했으므로.**",
+            "alternatives": [
+              "REST API 유지"
+            ],
+            "tradeoff": "REST 는 페이지마다 엔드포인트를 많이 만들어야 하지만 GraphQL 은 조회 쪽에서 클라이언트가 필요한 데이터를 자유롭게 가져간다. 스키마 공유로 프런트·백엔드 개발 효율이 오르고 형 안전으로 오류를 미리 잡는다. 대가 — 스키마 설계와 서버 쪽 쿼리 부하 관리가 새로 생긴다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          },
+          {
+            "question": "ORM 은?",
+            "chosen": "**ent — gqlgen 통합과 GraphQL Field Collection 으로 Eager Loading 이 기본으로 돌아 N+1 을 푼다.**",
+            "alternatives": [
+              "직접 SQL 이나 다른 ORM(inferred)"
+            ],
+            "tradeoff": "개발자가 손대지 않아도 성능이 난다. 대가 — 복잡한 집계 쿼리는 불편하다(1D 엔 그런 요건이 적어 아직 문제없다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          },
+          {
+            "question": "클린 아키텍처와 gqlgen+ent 생성 리졸버의 충돌은?",
+            "chosen": "**Usecase 층은 ent.Model 을 감싼 자체 Entity 에 의존하고, ent.Model 은 Resolver 층에서만 공개한다.**",
+            "alternatives": [
+              "생성 리졸버 그대로(ent.Model 이 비즈니스 로직까지)",
+              "ent 를 완전히 숨김(inferred)"
+            ],
+            "tradeoff": "원칙을 지키면서 gqlgen+ent 의 편리함을 살린다. 대가 — Entity 래퍼를 모델마다 써야 하고 아직 과제가 남아 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          },
+          {
+            "question": "프런트엔드는?",
+            "chosen": "**React/TypeScript + Next.js(App Router, Vercel 호스팅) + Apollo Client 캐시.**",
+            "alternatives": [
+              "Laravel Blade 템플릿"
+            ],
+            "tradeoff": "UI 와 백엔드를 떼어 내고, SSR/SSG·이미지 최적화·캐시·프리렌더링을 낮은 개발 비용으로 쓴다. 대가 — 프런트와 백엔드가 다른 호스팅(Vercel·AWS)으로 갈라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          },
+          {
+            "question": "인프라는?",
+            "chosen": "**AWS — ECS Fargate(프라이빗 서브넷) + Aurora MySQL + Terraform.**",
+            "alternatives": [
+              "물려받은 EC2 손 운영"
+            ],
+            "tradeoff": "대용량 저장·트래픽 집중에 대한 확장성을 소규모 팀이 낮은 운영 비용으로 얻는다. 대가 — 코드화가 아직 100% 가 아니다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+                "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+                "publisher": "ワンディー Techブログ (Zenn)",
+                "date": "2024-12-09",
+                "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "여러 앱이 하나의 계정으로 로그인하게 한다(같은 회사의 다른 도메인)",
+          "via": "Laravel 이 남긴 것을 걷어 내기",
+          "contract": "Go 이행은 인증을 Laravel Passport 유래 자체 서명 JWT 를 Go 가 계속 검증하는 형태로 물려받았고, 공통 계정 이행이 그것을 Hydra OIDC 로 바꿨다. idm-backend 도 1D API 와 같은 Go·ent·클린 아키텍처로 짰다(연결은 인증 글에, 표현은 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "지금의 층",
+          "question": "요청은 어느 층을 지나나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  B[브라우저] --> NX[Next.js · Vercel<br/>SSR / SSG · Apollo 캐시]\n  NX -->|GraphQL| GQ[gqlgen Resolver<br/>ent.Model 공개]\n  GQ --> UC[Usecase<br/>ent 를 감싼 Entity]\n  UC --> ENT[ent<br/>Field Collection · Eager Loading]\n  ENT --> DB[(Aurora MySQL)]\n  LAR[Laravel 잔존] -.교체 중.-> GQ"
+        },
+        {
+          "title": "Laravel 시절이 막힌 자리",
+          "question": "왜 갈아 끼워야 했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  L[Laravel 모놀리스] --> P1[표시까지 10초 넘는 페이지]\n  L --> P2[Blade 템플릿 · UI 와 백엔드 강결합<br/>기능 추가 · 수정 곤란]\n  L --> P3[EC2 손 운영<br/>확장성 · 가용성 · 보안]\n  L --> P4[Passport 자체 서명 JWT<br/>프로덕트 간 SSO 불가]\n  P1 & P2 --> G[Go · GraphQL · Next.js]\n  P3 --> F[ECS Fargate · Terraform]\n  P4 --> H[Hydra 공통 계정]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "1D 歯科医療プラットフォームの技術スタック及び選定理由",
+          "url": "https://zenn.dev/oned_tech/articles/oned-tech-select",
+          "publisher": "ワンディー Techブログ (Zenn)",
+          "date": "2024-12-09",
+          "summary": "Laravel 로 지은 레거시를 Go 로 갈아 끼워 왔다(일부 Laravel 이 남은 하이브리드, Go 로 통일 예정). 기술 부채가 쌓여 표시까지 10초 넘는 페이지가 있었고, 프런트도 Blade 템플릿이라 UI 와 백엔드의 의존이 높아 기능 추가·수정이 어려웠다. 선정 — Go(단순한 언어·컴파일 언어의 속도·동시성, 동영상 배신에 적합) · 클린 아키텍처 · GraphQL(gqlgen) · ent · React/TypeScript · Next.js · Apollo Client."
         }
       ]
     }
