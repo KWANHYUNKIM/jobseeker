@@ -48,7 +48,7 @@
 | **dely(クラシル)** | JP · 레시피·절약 앱·리테일 AI | 프로파일(2026-09-26). 도메인 둘(레시챌) — 수억 장의 영수증 화상을 싸게 쌓아 둔다 · 쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다. 기능 3(`receipt-image-storage-tiering` · `braze-personalization-four-ways` · `serving-size-adjustment`) — 셋째 도메인 '레시피의 분량을 사람 수에 맞춰 바꾼다'(클라시루). **hold** — AI OS·TRILL/LIVEwith 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음. 입구 `zenn.dev/p/dely_jp/feed`. |
 | **みてね(MIXI · 家族アルバム)** | JP · 가족 사진·영상 공유 앱 | 프로파일(2026-09-26). 도메인 둘 — 가족당 수백만 장에서 말로 사진을 찾는다 · 내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다. 기능 2(`natural-language-photo-search` · `ingress-nginx-to-envoy-gateway`). **hold** — 프린트·포토북 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 사진 프린트·포토북은 도메인 없음. 입구 `zenn.dev/p/mitene/feed`. |
 | **SODA(スニーカーダンク)** | JP · 감정 붙은 스니커·트레카 마켓 | 프로파일(2026-09-26). 도메인 둘 — 구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다 · 상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다. 기능 2(`purchase-payment-idempotency` · `purchase-flow-tla-audit`). **hold** — 실매장 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 실매장은 도메인 없음. 입구 `zenn.dev/p/team_soda/feed`. |
-| **TRIBEAU(トリビュー)** | JP · 미용 의료 입소문·예약 앱 | 프로파일(2026-09-26). 도메인 둘 — LLM 에게 전부 맡기지 않는 미용 의료 AI 상담 · 전사원이 쓰는 사내 MCP 를 빠르고 안전하게 늘린다. 기능 1(ai-consult-deferred-rag). 수익원 클리닉 게재(요금 비공개). 입구 `zenn.dev/p/tribeau/feed` · 회사 `corp.tribeau.jp`(tribeau.co.jp 는 응답 없음). |
+| **TRIBEAU(トリビュー)** | JP · 미용 의료 입소문·예약 앱 | 프로파일(2026-09-26). 도메인 둘 — LLM 에게 전부 맡기지 않는 미용 의료 AI 상담 · 전사원이 쓰는 사내 MCP 를 빠르고 안전하게 늘린다. 기능 2(ai-consult-deferred-rag · shared-mcp-auth). 수익원 클리닉 게재(요금 비공개). 입구 `zenn.dev/p/tribeau/feed` · 회사 `corp.tribeau.jp`(tribeau.co.jp 는 응답 없음). |
 
 
 ## 대기

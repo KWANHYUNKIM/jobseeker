@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "커머스",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "미용 의료 입소문·예약 앱 트리뷰 — AI 상담에서 LLM 의 일을 '어느 부품에 무엇을 보일지' 지정하는 템플릿 JSON 까지로 좁혀 실데이터는 프런트가 가져오고 후보는 자사 데이터 밖에서 내지 않게 해 비용을 약 1/10 로, 사내 MCP 는 공유 인가 서버에 Workspace 그룹 인가를 얹어 '더하기만' 으로 늘린다",
       "updated_at": "2026-09-26",
       "domain": "tribeau.jp"

@@ -94,7 +94,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "shared-mcp-auth"
+      ]
     }
   ],
   "features": [
@@ -480,6 +482,367 @@
           "publisher": "TRIBEAU Tech Blog (Zenn)",
           "date": "2026-08-04",
           "summary": "AI 상담의 백엔드. 여건과 규제 · 전체 처리 흐름과 기술 구성 · 프로토타입의 세 과제 · LLM·API·RAG 역할 분담(시나리오에 따른 프롬프트, 툴로 LLM 의 행동 범위를 규정 — '화면에 내는 구체 후보는 트리뷰 실데이터 밖에서 내지 않는다', 일반론은 LLM 지식) · 지연 확장적 RAG · 모델 선정과 다층적 품질 향상."
+        }
+      ]
+    },
+    {
+      "key": "shared-mcp-auth",
+      "name": "사내 MCP 를 늘릴 때마다 인증을 다시 짜지 않는다 — 공유 인가 서버 하나가 Google Workspace 그룹으로 'MCP·툴' 을 인가해 대상 MCP 를 박은 JWT 를 내고, 각 MCP 는 검증 몇 줄만 가지며, 새로 고칠 때마다 소속을 다시 봐 30일 리프레시의 구멍을 막는다",
+      "domain": "전사원이 쓰는 사내 MCP 를 빠르고 안전하게 늘린다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "한 사람 한 사람이 더 큰 과제·가설을 다루고 더 많은 결정을 하도록 **AI 를 전제로 업무를 제로 베이스에서 다시 짜는 중**이다. 전사원이 Claude·Notion AI·Codex 같은 클라이언트에서 MCP 로 사내 시스템을 다룬다. 쓰임이 늘자 MCP 별 권한, 같은 MCP 안에서도 툴별 권한이 필요해졌다. MCP 하나는 작게 시작할 수 있지만 전사로 넓히며 수를 늘리려면 토대를 먼저 굳혀야 한다 — **안전하게 빨리 MCP 를 더할 수 있는 것**이 일찍 공통 기반을 만든 가장 큰 이유.",
+        "metrics": [
+          {
+            "label": "토큰 수명",
+            "value": "액세스 1시간(무상태 JWT) · 리프레시 최장 30일(Firestore, TTL) · 인가 코드 10분(Firestore, TTL) · 그룹 판정 캐시 몇 분(메모리)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "label": "새 MCP 하나에 드는 것",
+            "value": "툴 본체 · 로드 밸런서 경로 하나 · audience 로 MCP URL 한 줄 등록 · 허용 그룹 지정 — 인증은 검증기 몇 줄",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "label": "로그",
+            "value": "Datadog 직근 2주가량(이상 탐지) · BigQuery 장기(사내 규모로 월 몇 센트)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "멤버 관리를 어디에 둘지 정할 때",
+          "thought": "툴 쪽에서 따로 관리하면 귀찮고, **귀찮은 것은 관리되지 않는다.** 사람과 조직이 움직일 때마다 두 번 고쳐야 하고 반드시 실제 조직도와 어긋난다. 퇴직·이동 같은 Workspace 쪽 조작을 '정답' 으로 삼으면 MCP 쪽도 곧 따라간다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+              "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+              "publisher": "TRIBEAU Tech Blog (Zenn)",
+              "date": "2026-06-18",
+              "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+            }
+          ]
+        },
+        {
+          "at": "리프레시 토큰을 길게 줄 때",
+          "thought": "다시 인증하지 않고 쓰게 하려고 30일을 줬다. 그런데 새로 고칠 때마다 소속을 다시 보지 않으면 **그룹에서 뺀 사용자가 최대 30일 들어온다.** PII 취급은 전 툴 공통으로 금지지만, 쓰기 계 툴이라면 이 구멍은 작지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+              "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+              "publisher": "TRIBEAU Tech Blog (Zenn)",
+              "date": "2026-06-18",
+              "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+            }
+          ]
+        },
+        {
+          "at": "로그 형식을 정할 때",
+          "thought": "MCP 마다 따로 설계하면 나중에 가로질러 못 본다. 감사만이 아니라 이용률·이용법에서 개선으로 이어 가는 관측 수단으로도 중요하다 — 전 MCP 공통 형식으로.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+              "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+              "publisher": "TRIBEAU Tech Blog (Zenn)",
+              "date": "2026-06-18",
+              "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "AS(공유 인가 서버)",
+            "what": "'누구인가(인증)' 와 '어느 MCP 를 써도 되나(인가)' 를 판정해 토큰을 발행. 비밀 키는 AS 만. SRE 담당."
+          },
+          {
+            "name": "RS(각 MCP)",
+            "what": "인증도 인가도 없이 AS 토큰을 검증하고 툴을 제공. Workspace 에 묻지 않는다. 각 툴 오너 담당."
+          },
+          {
+            "name": "토큰",
+            "what": "사용자·소속 그룹·MCP 만 실은 최소 JWT. aud 에 대상 MCP 를 박는다."
+          },
+          {
+            "name": "Workspace 그룹",
+            "what": "인가의 근거(SoT). MCP 사용 여부와 같은 MCP 안의 툴 노출까지 그룹 단위로."
+          },
+          {
+            "name": "허가된 MCP 클라이언트",
+            "what": "클라이언트 등록의 콜백 URL 을 화이트리스트로 좁힌다 — 쓸 클라이언트를 늘릴 때 여기에 더한다."
+          },
+          {
+            "name": "공통 로그 레코드",
+            "what": "성공 직전·인가 거부·오류 세 곳에서 같은 모양 한 건: at·code·mcp_service·tool·user_email·group_email·outcome·duration_ms + 툴별 필드(bytes_billed·row_count 등)."
+          }
+        ],
+        "invariants": [
+          "각 MCP 는 aud 가 자기인 토큰만 받는다 — MCP 사이 토큰 돌려쓰기 차단.",
+          "발행자는 공유 AS 하나만 믿는다.",
+          "리프레시 때 AS 가 소속을 다시 확인한다 — 그룹에서 빠지면 새 액세스 토큰이 안 나온다(이미 나간 것은 최장 1시간 남는다).",
+          "사용자가 액세스 키 같은 비밀을 직접 다루지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "MCP 클라이언트(Claude·Notion AI·Codex …) → Cloud Load Balancer 가 경로로 AS / 각 RS(둘 다 Cloud Run) 로",
+            "why": "제품 본체(사용자·클리닉 앱)는 AWS 중심이지만 인가 토대로 쓸 Google Workspace·BigQuery 와의 궁합으로 GCP. 접근이 없으면 0대로 떨어져 대기 비용이 거의 없다."
+          },
+          {
+            "step": "OAuth 2.1 + PKCE · DCR(RFC 7591) · AS 메타데이터/PRM(RFC 8414/9728) · Resource Indicator(RFC 8707) · JWT+JWKS(RFC 9068/7517) · MCP Streamable HTTP(2025-03-26) — 독자 커스터마이즈 없이",
+            "why": "여러 클라이언트에서 쓰는 기반이라 표준 준수가 원칙. 클라이언트마다 빼먹는 파라미터 차이는 필수만 단단히 보고 흡수한다."
+          },
+          {
+            "step": "Google 로그인(OAuth) → 메일·소속 그룹으로 허가 MCP 판정 → 최소 JWT 발행(aud = 그 MCP)",
+            "why": "각 MCP 는 서명·iss·aud·기한만 보면 된다."
+          },
+          {
+            "step": "리프레시 때 AS 가 소속을 다시 확인",
+            "why": "'쾌적하게 계속 쓴다' 와 '빼면 멈춘다' 를 함께."
+          },
+          {
+            "step": "Cloud Logging → Datadog(이상 탐지·알림) / BigQuery(감사·이용 분석, SQL·dbt·BI)",
+            "why": "짧게 알아채는 경로와 길게 쫓는 경로는 보존 요건도 비용도 달라 억지로 하나로 모으지 않는다. BQ 로의 싱크 전송은 무료."
+          },
+          {
+            "step": "모노레포 — `mcp-auth/`(SRE) · `mcp-a/`… (툴 오너) · `terraform/modules/` 공통 모듈, terraform 은 SRE 와 오너 양쪽 리뷰 필수 · MCP 마다 main push 로 Cloud Run 배포",
+            "why": "MCP 하나를 템플릿으로 찍어 낸다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "인증·인가를 어디에 두나",
+            "chosen": "공유 AS 하나에 모으고 각 MCP 는 토큰 검증만",
+            "alternatives": [
+              "MCP 마다 인증·인가를 따로 구현"
+            ],
+            "tradeoff": "같은 인가를 MCP 마다 만들지 않고 비밀 키는 AS 만 가진다. 대가는 AS 가 모든 MCP 의 입구가 되는 것 — AS 가 멈추면 새 토큰이 안 나온다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "question": "누가 무엇을 쓸 수 있는지의 근거",
+            "chosen": "Google Workspace 그룹을 SoT 로",
+            "alternatives": [
+              "MCP 쪽에서 멤버를 따로 관리"
+            ],
+            "tradeoff": "퇴직·이동이 곧 반영되고 운용 비용이 한없이 0 에 가깝다. 대가는 권한의 단위가 Workspace 그룹 설계에 묶이는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "question": "권한의 세밀함",
+            "chosen": "MCP 사용 여부의 한 단 안쪽 — 같은 MCP 에서도 그룹마다 노출하는 툴을 나눈다(예: 분석 툴에서 전 데이터셋 그룹 / 일부 데이터셋 그룹)",
+            "alternatives": [
+              "MCP 단위 쓸 수 있다/없다만"
+            ],
+            "tradeoff": "툴 수준까지 최소 권한. 대가는 그룹 × 툴 조합을 설계·유지하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "question": "토큰을 MCP 사이에서 돌려쓸 수 있게 하나",
+            "chosen": "토큰에 제공 MCP 를 박는다(Resource Indicator, aud 검증)",
+            "alternatives": [
+              "한 토큰으로 모든 MCP"
+            ],
+            "tradeoff": "여러 MCP 가 전제인 곳에서 한 MCP 로 받은 토큰이 다른 MCP 로 새지 않는다. 대가는 MCP 마다 따로 토큰을 받는 흐름.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "question": "표준을 따르나 커스터마이즈하나",
+            "chosen": "MCP 인가 사양이 빨리 움직여도 표준 준수 — 독자 판단은 운용상 필요한 것만 위에 얹는다",
+            "alternatives": [
+              "사내 전용 간이 인증(액세스 키 배포 등)"
+            ],
+            "tradeoff": "여러 MCP 클라이언트가 그대로 붙고 사용자가 비밀을 다루지 않는다. 대가는 사양 변화를 따라가는 것과 클라이언트별 파라미터 차이를 흡수하는 수고.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "question": "어떤 클라이언트든 붙게 하나",
+            "chosen": "접속 가능한 클라이언트를 허가제로 — 등록 콜백을 화이트리스트로",
+            "alternatives": [
+              "DCR 로 누구나 등록"
+            ],
+            "tradeoff": "모르는 사이 모르는 클라이언트에서 쓰이는 것을 막는다. 대가는 새 클라이언트를 쓸 때마다 화이트리스트에 더하는 운용.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "question": "리프레시 토큰을 얼마나",
+            "chosen": "액세스 1시간 · 리프레시 최장 30일 + 리프레시마다 AS 가 소속 재확인",
+            "alternatives": [
+              "짧은 리프레시로 자주 재인증",
+              "긴 리프레시만(재확인 없음)"
+            ],
+            "tradeoff": "다시 로그인 없이 쓰면서 빼면 멈춘다. 대가는 이미 나간 액세스 토큰(최장 1시간)은 끝날 때까지 통하는 틈이 남는 것 — 액세스 토큰은 저장하지 않는 무상태 JWT 라 되돌릴 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "question": "로그를 한곳으로 모으나",
+            "chosen": "Datadog(단기 2주가량·이상 탐지)과 BigQuery(장기·분석)로 목적별로 나눈다 · 형식은 전 MCP 공통, 성공·거부·오류를 outcome 한 필드로",
+            "alternatives": [
+              "한 도구에 전부"
+            ],
+            "tradeoff": "거부율 급증(=권한 설계 누락)을 바로 알아채고 장기 추세는 싸게 둔다. 대가는 두 경로를 유지하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          },
+          {
+            "question": "인프라를 제품과 같은 클라우드에 두나",
+            "chosen": "제품 본체(AWS)와 달리 GCP — Workspace·BigQuery 와의 궁합",
+            "alternatives": [
+              "제품과 같은 AWS(inferred)"
+            ],
+            "tradeoff": "인가 토대와 분석 창구에 붙기 쉽다. 대가는 클라우드가 둘이 되는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+                "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+                "publisher": "TRIBEAU Tech Blog (Zenn)",
+                "date": "2026-06-18",
+                "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "LLM 에게 전부 맡기지 않는 미용 의료 AI 상담(같은 회사의 다른 도메인)",
+          "via": "MCP — AI 상담의 툴 레이어도 본체와 떨어진 MCP 서버다",
+          "contract": "'LLM 이 부를 수 있는 조작을 MCP 에서 좁힌다' 는 같은 원칙. 고객용 AI 상담 MCP 가 이 사내 인가 기반을 쓰는지는 공개 자료에 없다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "토큰 한 장이 오가는 길",
+          "question": "사원이 사내 MCP 를 부를 때 누가 무엇을 판정하나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  C[\"MCP 클라이언트\\nClaude · Notion AI · Codex\"] --> LB[\"Cloud Load Balancer\"]\n  LB --> AS[\"공유 AS · Cloud Run\\nGoogle 로그인 · 그룹 판정\"]\n  AS --> WS[\"Google Workspace 그룹\"]\n  AS -->|JWT aud = mcp-b| C\n  LB --> RS[\"mcp-b · Cloud Run\\n서명·iss·aud 검증만\"]\n  RS --> LOG[\"공통 로그 한 건\"]\n  LOG --> DD[\"Datadog 2주\"]\n  LOG --> BQ[\"BigQuery 장기\"]"
+        },
+        {
+          "title": "그룹에서 빠진 사람은 언제 멈추나",
+          "question": "30일 리프레시 토큰은 어떤 구멍을 만들고 어떻게 막았나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[\"그룹에서 제외\"] --> Q{\"리프레시 때 소속을 다시 보나?\"}\n  Q -->|아니오| H[\"최대 30일 계속 접근\\n쓰기 툴이면 위험\"]\n  Q -->|예 · AS 에서| S[\"새 액세스 토큰 발급 안 됨\"]\n  S --> G[\"남은 틈: 이미 나간 액세스 토큰\\n최장 1시간\"]"
+        },
+        {
+          "title": "토큰의 수명",
+          "question": "각 토큰은 어디에 얼마나 머무나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Code: 인가 코드\\nFirestore · 10분 TTL\n  Code --> Access: 교환\n  Access --> Access: 사용 · 무상태 JWT 1시간\n  Access --> Refresh: 만료\n  Refresh --> Access: 소속 재확인 통과\\nFirestore · 최장 30일\n  Refresh --> [*]: 소속 없음 / 30일 TTL"
+        }
+      ],
+      "sources": [
+        {
+          "title": "社内MCPを\"素早く安全に\"増やすために、ちゃんとしておきたい共通基盤（認証・認可・ログの話）",
+          "url": "https://zenn.dev/tribeau/articles/0d03b4c9fdf360",
+          "publisher": "TRIBEAU Tech Blog (Zenn)",
+          "date": "2026-06-18",
+          "summary": "전사원이 Claude·Notion AI·Codex 등에서 MCP 로 사내 시스템을 다루게 하는 공통 기반. GCP — Cloud Load Balancer 가 공유 인가 서버(AS)와 리소스 서버(RS, 둘 다 Cloud Run)로 경로 라우팅. 표준 사양 준수 + 독자 설계 판단(Workspace 그룹으로 인가해 멤버 관리를 이중화하지 않는다 · 토큰 수명과 실효) · 로그는 단기 Datadog·장기 BigQuery · 새 MCP 는 '더하기만'."
         }
       ]
     }

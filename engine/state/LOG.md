@@ -2013,3 +2013,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 TRIBEAU ai-consult-deferred-rag
 
 - AI 상담 프런트편·백엔드편을 한 기능으로. 결정 9, 그림 3(flow·failure·state).
+
+## 2026-09-26 TRIBEAU shared-mcp-auth
+
+- 사내 MCP 공통 기반 글 끝까지. 결정 9, 그림 3(flow·failure·state).
