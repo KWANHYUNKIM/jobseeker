@@ -500,6 +500,95 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/347680",
+      "title": "Frontend Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 성동구. 제타 **웹·앱 프론트엔드**(Next.js·React Native)로, 업무는 '수백만 명이 매일 사용하는' 서비스의 핵심인 **채팅**부터 유입 이벤트·어드민까지 모든 접점, 모바일 최적화 퍼포먼스, 목표 지표 아젠다, **A/B 테스트 환경·로그 설계**, 행동 분석 기반 UI/UX 개선, 짧은 배포 주기의 빌드·배포 환경, 컴포넌트 설계·테스트 자동화, 성능 모니터링. 필수는 React/Next.js 3년 이상 운영, HTML·CSS·ES6+·TypeScript 기본기, 프론트·백엔드 이해, **모바일 웹 특성과 다양한 디바이스·브라우저 성능 최적화**, 협업. 우대는 React Native, UI·단위 테스트·CI/CD, 공통 라이브러리, **AI 서비스 프론트엔드(스트리밍 응답 처리, 대화 인터페이스)**, 데이터로 제품 개선, 주도적 기능 제안. 같은 회사 모바일(React Native) 공고(347683)가 따로 있다. 전형: 지원 접수 ＞ **직무 과제&컬처 에세이** ＞ 직무 면접 ＞ **자기소개PT&티타임** ＞ 컬처핏 면접(2회) ＞ 최종 합격. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "React/Next.js 3년 이상",
+          "HTML·CSS·TS 기본기",
+          "모바일 웹 성능 최적화"
+        ],
+        "can_learn": [
+          "스트리밍 응답 UI",
+          "React Native",
+          "A/B 플래그",
+          "테스트·CI/CD"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AI 스트리밍 응답을 채팅 UI 에 흘리기",
+          "from": "preference",
+          "quote": "• AI 기반 서비스의 프론트엔드 개발 경험이 있으신 분 (스트리밍 응답 처리, 대화 인터페이스 등)",
+          "priority": "core",
+          "why": "우대사항이고 주요업무가 '서비스의 핵심인 채팅' 이다. 회사 브리핑대로 제타는 AI 와 긴 대화를 나누는 서비스다.",
+          "gap_check": "fetch 응답 본문을 ReadableStream 으로 읽어 토큰이 올 때마다 화면에 붙이면 매 토큰마다 React 상태를 갱신할 때 무엇이 느려지고(재렌더 폭주), 무엇(requestAnimationFrame 단위로 묶기)으로 완화하며, 사용자가 '중지' 를 누르면 AbortController 로 무엇까지 끊기는가?",
+          "drill": "MDN 가이드대로 가짜 스트리밍 API(토큰을 20ms 간격)를 fetch 로 읽어 채팅 말풍선에 이어 붙이는 컴포넌트를 만든다. 토큰마다 setState·프레임 단위 묶음 두 버전을 성능 패널로 비교하고, 중지 버튼으로 요청이 실제로 끊기는지 네트워크 탭에서 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Using readable streams — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모바일 웹 반응성 — INP 줄이기",
+          "from": "qualification",
+          "quote": "• 모바일 웹 환경의 특성을 이해하고 다양한 디바이스·브라우저에서의 성능 최적화 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격요건이고 주요업무가 '모바일 환경에 최적화된 퍼포먼스' 다.",
+          "gap_check": "저사양 안드로이드 브라우저에서 메시지 전송 버튼을 눌렀는데 화면 반응이 늦다면 INP 를 입력 지연·처리 시간·표시 지연 중 어디가 차지하는지 무엇으로 나누고, 긴 작업을 쪼개 메인 스레드를 양보하면(yield) 무엇이 나아지는가?",
+          "drill": "web.dev INP 가이드를 읽고, 전송 클릭 시 무거운 동기 작업(로그 직렬화·목록 재정렬)을 하는 샘플을 만들어 CPU 스로틀링 4배로 INP 를 잰다. 작업을 쪼개 scheduler.yield(또는 setTimeout)로 양보한 뒤 다시 잰다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Optimize Interaction to Next Paint — web.dev",
+              "url": "https://web.dev/articles/optimize-inp",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "긴 대화 기록 — 가상 스크롤과 위로 불러오기",
+          "from": "task",
+          "quote": "• 서비스의 핵심인 채팅을 비롯해 유입을 위한 이벤트, 매끄러운 운영을 위한 어드민까지 제타가 유저와 만나는 모든 접점의 프론트엔드를 구현합니다.",
+          "priority": "high",
+          "why": "주요업무다. 공고가 유저가 매일 몇 시간씩 대화한다고 적는다(회사 브리핑) — 대화 기록이 수천 개 메시지로 길어진다.",
+          "gap_check": "수천 개 메시지를 모두 DOM 에 그리면 무엇이 느려지고, 가상 스크롤에서 높이가 제각각인 말풍선(긴 AI 응답)은 어떻게 측정하며, 위로 스크롤해 이전 메시지를 불러올 때 현재 보던 위치가 튀지 않게 하려면 무엇을 보정하는가?",
+          "drill": "TanStack Virtual 로 높이가 다른 메시지 5천 개 대화 목록을 만들고, 위로 불러오기 시 스크롤 위치를 유지하도록 보정한다. 가상화 전후 DOM 노드 수와 스크롤 프레임을 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "TanStack Virtual",
+              "url": "https://tanstack.com/virtual/latest",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "A/B 테스트 환경 — 기능 플래그로 화면 나누기",
+          "from": "task",
+          "quote": "• A/B 테스트 환경 구축 및 로그 설계를 통해 데이터 기반 의사결정을 지원합니다.",
+          "priority": "nice",
+          "why": "주요업무다. 같은 회사 백엔드 공고도 A/B 테스트 환경을 적는다 — 프론트는 실험군에 따라 다른 화면을 보여주고 노출 로그를 남긴다.",
+          "gap_check": "실험군별로 다른 채팅 입력 UI 를 보여줄 때 플래그 값을 첫 렌더 전에 알지 못하면 무엇(깜빡임)이 생기고, 서버 렌더링(Next.js)에서 플래그를 미리 평가하면 무엇이 달라지며, '노출' 로그는 컴포넌트가 실제로 화면에 보인 순간에 한 번만 남기려면 어떻게 하는가?",
+          "drill": "OpenFeature 소개를 읽고 Next.js 샘플에서 서버 측에서 플래그를 평가해 실험군별 입력 UI 를 렌더링하고, IntersectionObserver 로 실제 노출 시 한 번만 로그를 보내게 한다. 클라이언트 평가 버전과 깜빡임을 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Introduction — OpenFeature",
+              "url": "https://openfeature.dev/docs/reference/intro/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
