@@ -2077,3 +2077,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 DRESS CODE 회사 프로파일
 
 - dress-code.com 으로 제품군(HR·IT·GA Force). ES 두 편을 한 도메인, RDS Proxy 철거를 다른 도메인으로. 확장점 패턴 글은 도메인으로 세우지 않음.
+
+## 2026-09-26 DRESS CODE crud-to-event-outbox
+
+- ES 의의 글 + Outbox 글을 한 기능으로. 결정 9, 그림 3(failure·flow·state).
