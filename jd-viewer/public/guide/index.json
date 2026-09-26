@@ -506,6 +506,17 @@
       "postings": 7,
       "study_items": 21,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "hyundai-motor",
+      "name": "현대자동차",
+      "aliases": [
+        "현대자동차"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }

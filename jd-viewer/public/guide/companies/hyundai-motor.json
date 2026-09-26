@@ -1,0 +1,164 @@
+{
+  "slug": "hyundai-motor",
+  "name": "현대자동차",
+  "name_en": "Hyundai Motor Company",
+  "aliases": [
+    "현대자동차"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "hyundai.com",
+  "one_liner": "완성차 회사 — 모집중 개발 공고는 차량 자체보다 로보틱스랩·제조로보틱스(휴머노이드·모바일로봇)와 보안(차량 사이버보안·사내 정보보호) 쪽이다",
+  "company": {
+    "business": "현대자동차 공식 웹사이트는 차량 정보·브랜드 비전·클린 모빌리티·지속가능성을 소개하고, 메뉴에 모델·IR 정보·해외사업망과 '미래 모빌리티 > 로보틱스' 를 둔다. 첫 화면은 Pleos·Pleos Connect 의 OTA 업데이트·AI 기반 경험·커넥티드 서비스를 소개한다. IR 페이지는 2026년 2분기 실적발표와 감사보고서를 PDF 로 제공한다(수치는 읽지 않았다). 이 데이터에서 본문이 있는 모집중 공고는 사람인 6건 — 로보틱스랩(Perceptive AI·모바일로봇 전장), 제조로보틱스(휴머노이드 로봇 운영 솔루션), 차량 사이버보안, 통합보안(정보보호 전략·보안점검) — 이고, 캐치 공고 5건은 본문 칸이 비어 있다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "현대자동차 글로벌 공식 웹사이트",
+        "url": "https://www.hyundai.com/worldwide/ko",
+        "publisher": "현대자동차",
+        "summary": "차량 정보·브랜드 비전·클린 모빌리티·지속가능성을 소개한다. 메뉴에 모델·회사소개·IR 정보·해외사업망이 있고 '미래 모빌리티' 아래 '로보틱스' 가 있다. 첫 화면 기사로 Pleos·Pleos Connect 의 OTA 업데이트·AI 기반 경험·커넥티드 서비스를 소개한다"
+      },
+      {
+        "title": "현대자동차 IR",
+        "url": "https://www.hyundai.com/worldwide/ko/company/ir",
+        "publisher": "현대자동차",
+        "summary": "2026 CEO 주주서한, 2026년 2분기 실적발표 자료, 연결·별도 감사보고서 다운로드와 IR 이벤트 목록이 있다. 실적 수치는 PDF 로만 제공돼 읽지 않았다"
+      },
+      {
+        "title": "[로보틱스랩] Perceptive AI 개발",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022478&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=12594526-3409-4b8f-9fd5-75d092a64e50",
+        "publisher": "사람인"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "완성차 판매",
+        "how": "공식 웹사이트가 모델 메뉴와 차량 정보를 두고, IR 페이지가 분기 실적을 공개한다. 판매 대수·매출 수치는 PDF 로만 제공돼 읽지 않았다.",
+        "domains": [
+          "차량 사이버보안",
+          "사내 정보보호·국가핵심기술"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "현대자동차 글로벌 공식 웹사이트",
+            "url": "https://www.hyundai.com/worldwide/ko",
+            "publisher": "현대자동차",
+            "summary": "차량 정보·브랜드 비전·클린 모빌리티·지속가능성을 소개한다. 메뉴에 모델·회사소개·IR 정보·해외사업망이 있고 '미래 모빌리티' 아래 '로보틱스' 가 있다. 첫 화면 기사로 Pleos·Pleos Connect 의 OTA 업데이트·AI 기반 경험·커넥티드 서비스를 소개한다"
+          },
+          {
+            "title": "현대자동차 IR",
+            "url": "https://www.hyundai.com/worldwide/ko/company/ir",
+            "publisher": "현대자동차",
+            "summary": "2026 CEO 주주서한, 2026년 2분기 실적발표 자료, 연결·별도 감사보고서 다운로드와 IR 이벤트 목록이 있다. 실적 수치는 PDF 로만 제공돼 읽지 않았다"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "로봇 인지·제어(로보틱스랩)",
+        "why": "Perceptive AI 공고가 3D 비전 AI 로 6DoF·파지 자세 추정, Visual Prompt 기반 물체 검출, 비전 알고리즘 양산화를, 모바일로봇 전장 공고가 제어기·모터드라이버 회로와 기능안전 HW 아키텍처, CAN 기반 제어기 연동을 적는다. 로봇은 아직 매출원으로 확인하지 못한 신사업이다.",
+        "what_to_know": [
+          "6DoF 포즈 추정",
+          "기능안전 HW",
+          "모터 제어·CAN"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[로보틱스랩] Perceptive AI 개발",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022478&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=12594526-3409-4b8f-9fd5-75d092a64e50",
+            "publisher": "사람인"
+          },
+          {
+            "title": "[로보틱스랩] 모바일로봇 전장 시스템 개발",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022391&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=6f2b6634-5973-48a0-8279-7650ed1e40d5",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "제조 현장 휴머노이드 운영",
+        "why": "제조로보틱스 공고가 로봇-현장 설비·운영 시스템 연계 아키텍처, 이기종 통신(HTTP/gRPC/TCP/IP/Modbus) Adapter 미들웨어, 작업 실패·예외 판단 AI Agent, ISO 13849·IEC 61508 기반 안전 기능, Mock/Simulator 통합 검증을 적는다. 공고가 '로봇의 상업화를 앞당기는' 업무라고 적는다 — 신사업이다.",
+        "what_to_know": [
+          "산업 통신 프로토콜",
+          "로봇 오케스트레이션",
+          "산업안전 표준"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제조로보틱스] 휴머노이드 로봇 운영 솔루션 개발",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55071760&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=1ad94830-4d43-42f3-bbf0-72ba61660fb7",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "차량 사이버보안",
+        "why": "차량 사이버보안 공고가 보안 신기술 연구·개발, 양산 적용을 위한 사양 관리, 모의해킹 시나리오 수립, 펌웨어 취약점 자동 점검 도구 개발을 적는다.",
+        "what_to_know": [
+          "차량 네트워크(CAN) 보안",
+          "펌웨어 분석",
+          "모의해킹"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "차량 사이버보안 기술",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022364&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=7c23aa86-4e28-4a19-baa3-ead4ed6b44e9",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "사내 정보보호·국가핵심기술",
+        "why": "통합보안 공고들이 국내외 연구소 정보보호 정책, 연구개발 망분리·망연계, EDR·DLP·NAC 운영, 국가핵심기술 보호·수출 신고, 정보 유출 이상징후 탐지를 적는다.",
+        "what_to_know": [
+          "망분리·망연계",
+          "DLP·EDR",
+          "산업기술보호법"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[통합보안] Information Security Strategy",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55070969&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=2121cf9f-1ac5-40f0-ad26-cc23606afe42",
+            "publisher": "사람인"
+          },
+          {
+            "title": "[통합보안] 보안점검(분석)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55089542&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=c2336478-da09-4c3e-b53a-4630f2edd093",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "로봇을 상업화 단계로 끌고 가려 한다",
+        "evidence": "로봇 종류나 현장 시스템 구성에 관계없이 적용 가능한 범용적인 아키텍처/역량을 설계하고, 현장 적용 전 PoC 검증까지 수행하여 로봇의 상업화를 앞당기는 업무를 수행합니다.",
+        "so_what": "본문 있는 공고 6건 중 3건이 로봇(로보틱스랩 2·제조로보틱스 1)이고, 캐치의 본문 없는 공고 셋도 로보틱스랩(관절로봇 SW·Perceptive AI·Bi-manipulation)이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "공고 접수 기간이 길다",
+        "evidence": "접수기간 : 2025년 08월 04일 09시 ~ 2026년 09월 30일 23시 59분, 채용 시 마감",
+        "so_what": "보안점검 공고는 2025년 8월부터 열려 있다. 공고들 모두 2026-09-30 23:59 마감(채용 시 조기 마감)이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·판매 대수·임직원 수는 IR PDF 로만 있어 읽지 않았다",
+    "캐치 공고 5건(관절로봇 SW·Perceptive AI·Bi-manipulation·9월 집중/월간 채용)은 본문 칸이 비어 있다 — 캐치 Perceptive AI 는 사람인 55022478 과 같은 자리로 보인다",
+    "근무지가 공고마다 다르다(의왕·판교·양재본사 등)",
+    "salary: 공고 급여가 '면접 후 결정' — 비워 둔다"
+  ],
+  "postings": []
+}
