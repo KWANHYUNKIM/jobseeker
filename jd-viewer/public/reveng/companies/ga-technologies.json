@@ -53,7 +53,9 @@
       "name": "ITANDI(부동산 회사용 SaaS · 업자간 사이트)",
       "how": "관리회사 · 중개회사에 업자간 사이트와 임대 관리 · 중개 · 매매 도구를 제공한다.",
       "weight": "공개 안 됨",
-      "domains": [],
+      "domains": [
+        "관리회사마다 다른 CSV 로 오는 물건을 한 DB 로 받고 여러 곳에 다시 낸다"
+      ],
       "confidence": "confirmed",
       "sources": [
         {
@@ -61,6 +63,13 @@
           "url": "https://www.ga-tech.co.jp/services/itandibb/",
           "publisher": "GA technologies",
           "summary": "イタンジ株式会社가 운영하는 부동산 회사용 서비스 — **ITANDI BB**(관리회사 물건 정보와 실시간 연계되는 업자간 사이트, 내견 예약 · 입주 신청까지, 365일 24시간), ITANDI 임대 관리 · 임대 중개 · 매매 Propocloud."
+        },
+        {
+          "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+          "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+          "publisher": "イタンジ(ITANDI)",
+          "date": "2026-03-02",
+          "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
         }
       ]
     },
@@ -83,8 +92,8 @@
   "domain_map": {
     "title": "데이터가 모델의 판단이 되기까지",
     "question": "자사 프로덕트와 외부 서비스의 데이터는 어떤 길을 지나 영업 · 마케팅의 판단이 되나?",
-    "code": "flowchart LR\n  SRC[\"외부 서비스 · 자사 프로덕트 DB\"] -- \"dlt\" --> S3[\"S3 · Iceberg\\nGlue Catalog\"]\n  S3 --> SF[(\"Snowflake\\ndbt 모델\")]\n  DG[\"Dagster\\n애셋 · Lineage\"] -. 오케스트레이션 .-> S3\n  DG -. 오케스트레이션 .-> SF\n  SF --> BI[\"BI\"]\n  SF -- \"Snowflake Tasks → S3\" --> EB[\"EventBridge\"] --> SMP[\"SageMaker Pipelines\\n단일 컨테이너\"]\n  SMP -- \"결과 CSV → S3\" --> SF\n  SF --> USE[\"마케팅 · 플래너 · CS 의 판단\"]",
-    "_note": "이 사이트의 해석 — 글 둘의 구성을 한 장에 모았다. 두 파이프라인이 실제로 같은 Snowflake 계정을 공유하는지는 글에 없다."
+    "code": "flowchart LR\n  SRC[\"외부 서비스 · 자사 프로덕트 DB\"] -- \"dlt\" --> S3[\"S3 · Iceberg\\nGlue Catalog\"]\n  S3 --> SF[(\"Snowflake\\ndbt 모델\")]\n  DG[\"Dagster\\n애셋 · Lineage\"] -. 오케스트레이션 .-> S3\n  DG -. 오케스트레이션 .-> SF\n  SF --> BI[\"BI\"]\n  SF -- \"Snowflake Tasks → S3\" --> EB[\"EventBridge\"] --> SMP[\"SageMaker Pipelines\\n단일 컨테이너\"]\n  SMP -- \"결과 CSV → S3\" --> SF\n  SF --> USE[\"마케팅 · 플래너 · CS 의 판단\"]\n  MC[\"관리회사 · 외부 시스템\\n제각각의 CSV\"] --> IMP[\"import_system_*\"] --> IDB[(\"イタンジ 물건 DB\")]\n  IDB --> EXP[\"export_system_*\"] --> OUT2[\"외부 게재처\"]\n  IDB --> BB[\"ITANDI BB\\n업자간 사이트\"]",
+    "_note": "이 사이트의 해석 — GA technologies Zenn 글 둘과 イタンジ 블로그 글 하나의 구성을 한 장에 모았다. 두 파이프라인이 실제로 같은 Snowflake 계정을 공유하는지, イタンジ 물건 DB 가 그룹 데이터 기반에 들어가는지는 글에 없다."
   },
   "domains": [
     {
@@ -163,6 +172,30 @@
       ],
       "features": [
         "single-image-sagemaker-pipeline"
+      ]
+    },
+    {
+      "name": "관리회사마다 다른 CSV 로 오는 물건을 한 DB 로 받고 여러 곳에 다시 낸다",
+      "why": "ITANDI BB 는 **관리회사의 물건 정보와 실시간으로 이어진** 업자간 사이트다 — 정보가 늘 최신이라 중개회사가 그 자리에서 내견 예약 · 입주 신청까지 한다. 그 물건은 외부 시스템들이 **각자 다른 CSV 형식**으로 보내 오고, 받은 물건은 다시 여러 외부 시스템에 게재된다.\n\n받는 쪽 · 내는 쪽 시스템이 저마다 다른 워크플로 엔진 · 배포 파이프라인에서 돌아 운용 비용과 횡단 변경 비용이 컸다. 한 앱으로 모으되, 모은 앱 안에서 시스템끼리 엉키지 않게 해야 했다.",
+      "tech": [
+        {
+          "tech": "물건 연동 통괄 시스템 — 한 Rails 앱 · 한 워크플로 엔진에 import_system_* / export_system_* 를 packwerk 패키지로(packs/shared 만 공유)",
+          "solves": "시스템마다 따로이던 인프라 · 배포를 하나로 모으고, 공통 검증 · 변환을 API 없이 쓴다.",
+          "limits": "모놀리스라 시스템 간 의존이 모르는 새 엉키기 쉬워 packwerk 로 막아야 한다. 통합은 아직 진행 중이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+              "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+              "publisher": "イタンジ(ITANDI)",
+              "date": "2026-03-02",
+              "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "property-sync-packwerk-monolith"
       ]
     }
   ],
@@ -919,13 +952,377 @@
           "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
         }
       ]
+    },
+    {
+      "key": "property-sync-packwerk-monolith",
+      "name": "여러 연동 시스템을 한 앱에 — 모으되 엉키지 않게, 경계는 CI 가 지킨다",
+      "domain": "관리회사마다 다른 CSV 로 오는 물건을 한 DB 로 받고 여러 곳에 다시 낸다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "ITANDI BB 는 관리회사의 물건 정보와 **실시간으로 이어져** 있어 정보가 늘 최신이고, 중개회사는 그 자리에서 내견 예약 · 입주 신청을 한다 — '客付力(손님을 붙이는 힘)'이 오른다고 내건다. 그 최신성을 만드는 게 **물건 연동**이다: 외부 시스템들이 제각각의 CSV 형식으로 보내는 물건을 받아들여 イタンジ 물건 DB 에 넣고(import), 그 DB 의 물건을 여러 외부 시스템에 게재한다(export).\n\n받는 곳 · 내는 곳마다 연동 시스템이 하나씩 있었고, 각자 **다른 워크플로 엔진** 위에서 돌았다. 인프라 설정 · 운용 비용이 시스템마다 들었고, 배포 파이프라인도 따로라 여러 시스템에 걸친 변경 한 번에 레포 여럿을 만져야 했다 — 연동처가 늘수록 개발 효율이 떨어졌다.",
+        "metrics": [
+          {
+            "label": "연동 시스템 형태",
+            "value": "import_system_* · export_system_* 가 연동처마다 병렬 — 가운데 イタンジ 물건 DB 하나",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          },
+          {
+            "label": "ITANDI BB 가동",
+            "value": "365 일 24 시간, 관리회사 물건과 실시간 연계",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ITANDI | GA technologies",
+                "url": "https://www.ga-tech.co.jp/services/itandibb/",
+                "publisher": "GA technologies",
+                "summary": "イタンジ株式会社가 운영하는 부동산 회사용 서비스 — **ITANDI BB**(관리회사 물건 정보와 실시간 연계되는 업자간 사이트, 내견 예약 · 입주 신청까지, 365일 24시간), ITANDI 임대 관리 · 임대 중개 · 매매 Propocloud."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "'마이크로서비스로 나누면 되지 않나'라는 물음에",
+          "thought": "공통 로직을 API 너머로 부르는 건 **의외로 번거롭다** — 팀 간 소통 비용과 사양 차이. gem 으로 떼면 릴리스 주기가 얽혀 무거워진다. 그리고 한 번 나눈 걸 나중에 모으려면 비용이 뛴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+              "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+              "publisher": "イタンジ(ITANDI)",
+              "date": "2026-03-02",
+              "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+            }
+          ]
+        },
+        {
+          "at": "모놀리스로 모으고 나서",
+          "thought": "이번엔 시스템끼리의 의존이 **모르는 새** 엉킨다 — `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식으로.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+              "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+              "publisher": "イタンジ(ITANDI)",
+              "date": "2026-03-02",
+              "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+            }
+          ]
+        },
+        {
+          "at": "packwerk 를 돌려 보고",
+          "thought": "의존 관리를 **리뷰에만 기대지 않아도 되는** 게 생각보다 기분 좋다. 뜻밖에 리뷰에서 '이 코드는 어느 패키지인가'라는 설계 대화가 자연스럽게 생겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+              "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+              "publisher": "イタンジ(ITANDI)",
+              "date": "2026-03-02",
+              "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "import_system_*",
+            "what": "한 외부 시스템(취입원)의 고유 CSV 형식과 업무 로직으로 물건을 받아 イタンジ 물건 DB 에 넣는 패키지."
+          },
+          {
+            "name": "export_system_*",
+            "what": "イタンジ 물건 DB 의 물건을 한 외부 시스템(게재처)의 형식으로 내보내는 패키지."
+          },
+          {
+            "name": "packs/shared",
+            "what": "검증 · 데이터 변환 · 저장 같은 공통 로직. 공개 상수는 app/public/ 아래에만 둔다."
+          },
+          {
+            "name": "package.yml",
+            "what": "패키지마다 의존 · 공개 범위 · 가시성 규칙을 선언하는 파일."
+          },
+          {
+            "name": "packwerk check",
+            "what": "선언된 규칙 위반을 정적 해석으로 찾는 명령. CI 에서 돈다."
+          }
+        ],
+        "invariants": [
+          "import · export 패키지는 packs/shared 에만 의존한다 — 서로에게 의존하지 않는다.",
+          "다른 패키지는 app/public/ 아래의 상수만 참조할 수 있다.",
+          "의존 위반은 package_todo.yml 로 미뤄 둘 수 없다(strict) — 위반 0 이어야 머지된다.",
+          "visible_to 가 걸린 패키지는 지정된 패키지(예: packs/admin)만 참조한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "연동처별 연동 시스템을 한 Rails 앱 · 한 워크플로 엔진(물건 연동 통괄 시스템)으로 옮긴다",
+            "why": "시스템마다 따로이던 인프라 · 운용 · 배포를 하나로."
+          },
+          {
+            "step": "packs/ 아래에 shared 와 import_system_* · export_system_* 패키지를 둔다",
+            "why": "공통과 고유를 폴더와 선언으로 가른다."
+          },
+          {
+            "step": "각 package.yml 에 dependencies: [packs/shared] · enforce_dependencies: strict · enforce_privacy · enforce_folder_privacy · enforce_visibility 를 선언",
+            "why": "무엇이 무엇에 기대도 되는지를 코드로 적는다."
+          },
+          {
+            "step": "공개할 상수만 app/public/ 로 옮기고, 예외는 pack_public 로 표시",
+            "why": "내부 모델을 다른 패키지가 직접 쥐지 못하게."
+          },
+          {
+            "step": "CI 에서 packwerk check — 위반이면 PR 이 떨어진다",
+            "why": "런타임 에러가 안 나는 의존 추가를 리뷰 대신 기계가 잡는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "연동처마다 따로 도는 연동 시스템을 어떻게 하나?",
+            "chosen": "**한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)으로 통합.**",
+            "alternatives": [
+              "시스템마다 다른 워크플로 엔진 · 배포 파이프라인으로 둔다(이전)"
+            ],
+            "tradeoff": "인프라 설정 · 운용 비용이 한 벌이 되고, 여러 시스템에 걸친 변경을 한 레포에서 한다. 대가는 한 앱에 모든 연동의 코드가 **동거**해 의존이 엉키기 쉬워진다는 것 — 뒤 결정들이 그 대가를 막는다. 통합은 아직 진행 중이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          },
+          {
+            "question": "왜 마이크로서비스로 나누지 않았나?",
+            "chosen": "**모놀리스로 모은다.**",
+            "alternatives": [
+              "시스템마다 컨테이너로 나누고 API 로 잇는 마이크로서비스",
+              "공통 로직을 gem 으로 떼어 나눠 쓴다"
+            ],
+            "tradeoff": "공통 검증 · 변환을 API 너머로 부르면 팀 간 소통 비용과 사양 차이로 연계가 어렵고, gem 으로 떼면 릴리스 주기가 얽혀 무거워진다. 게다가 **한 번 나눈 걸 나중에 모으면** 인프라 · DNS 존 관리 · 통신 설계를 다시 해야 해 비용이 뛴다. 대가는 연동처가 아주 많아져도 **한 앱의 배포 단위**에 묶인다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          },
+          {
+            "question": "모은 앱 안에서 시스템끼리의 의존을 어떻게 막나?",
+            "chosen": "**packwerk(+ packwerk-extensions)로 패키지를 나누고 규칙을 선언 — 정적 해석.**",
+            "alternatives": [
+              "코드 리뷰로 지킨다"
+            ],
+            "tradeoff": "의존 위반은 **런타임 에러를 안 내서** 리뷰를 빠져나가 쌓인다 — 정적 해석은 실행 오버헤드 없이 그걸 잡는다. 대가는 패키지 구조와 package.yml 을 유지하는 수고와, 기존 코드를 패키지 경계에 맞춰 옮기는 이행 비용(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          },
+          {
+            "question": "패키지끼리 무엇에 기대도 되나?",
+            "chosen": "**import · export 패키지는 packs/shared 에만 의존하고, 서로에게는 의존하지 않는다.**",
+            "alternatives": [
+              "필요하면 다른 연동 시스템의 클래스를 직접 쓴다"
+            ],
+            "tradeoff": "연동처 하나를 고쳐도 다른 연동처에 번지지 않고, '이건 shared 인가 고유인가'를 정하는 과정에서 공유할 것과 고유한 것이 가려진다. 대가는 두 연동 시스템이 같은 걸 필요로 하면 **shared 로 올리는 판단**을 매번 해야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          },
+          {
+            "question": "기존 위반을 어떻게 다루나?",
+            "chosen": "**enforce_dependencies: strict — package_todo.yml 로 미뤄 두기를 금지, 위반 0 을 강제.**",
+            "alternatives": [
+              "`true` — 기존 위반을 package_todo.yml 에 적어 '임시 허용 목록'으로 두고 단계적으로 해소"
+            ],
+            "tradeoff": "'나중에 고치자'가 쌓이는 상황을 막는다. `true` 는 기존 위반을 안고 옮겨 갈 때 유효하다. 대가는 위반이 있으면 **먼저 고치지 않고는 머지할 수 없다**는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          },
+          {
+            "question": "패키지 안의 무엇을 밖에 보여 주나?",
+            "chosen": "**enforce_privacy — 기본은 private, 외부 참조는 app/public/ 아래 상수만**(예외는 pack_public).",
+            "alternatives": [
+              "패키지 안의 모든 클래스를 밖에서 쓸 수 있게 둔다"
+            ],
+            "tradeoff": "shared 의 내부 모델(예: property)을 다른 패키지가 직접 쥐지 못해, 공개 인터페이스만 계약이 된다. 대가는 공개할 것을 public 으로 **옮기는 수고**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          },
+          {
+            "question": "특정 패키지를 누가 참조할 수 있나?",
+            "chosen": "**enforce_visibility + visible_to — 예컨대 packs/admin 만.** 폴더 위치로도 제한(enforce_folder_privacy).",
+            "alternatives": [
+              "의존 선언만으로 통제한다"
+            ],
+            "tradeoff": "의존을 선언해도 되는 상대 자체를 좁혀, 관리 화면 같은 특정 소비자만 쓰게 한다. 대가는 규칙 종류가 늘어 **설정을 읽는 사람이 알아야 할 것**이 많아진다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          },
+          {
+            "question": "규칙을 언제 확인하나?",
+            "chosen": "**CI 에서 packwerk check — 위반이면 PR 이 떨어진다.**",
+            "alternatives": [
+              "가끔 수동으로 돌린다"
+            ],
+            "tradeoff": "새 코드를 더할 때마다 머지 전에 잡는다. package.yml 만 봐도 의존이 보여 새 멤버도 구조를 읽는다. 대가는 CI 가 설계 규칙의 문지기가 되어 **규칙 자체가 틀리면 개발이 막힌다**는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+                "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+                "publisher": "イタンジ(ITANDI)",
+                "date": "2026-03-02",
+                "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "ITANDI(부동산 회사용 SaaS · 업자간 사이트)(수익원)",
+          "via": "관리회사 물건의 실시간 연계",
+          "contract": "ITANDI BB 의 '관리회사 물건 정보와 실시간 연계 · 늘 최신'은 외부 시스템의 CSV 를 イタンジ 물건 DB 로 받아들이는 물건 연동이 만든다 — 연동처가 늘수록 이 통괄 시스템에 패키지가 하나씩 는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+              "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+              "publisher": "イタンジ(ITANDI)",
+              "date": "2026-03-02",
+              "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+            },
+            {
+              "title": "ITANDI | GA technologies",
+              "url": "https://www.ga-tech.co.jp/services/itandibb/",
+              "publisher": "GA technologies",
+              "summary": "イタンジ株式会社가 운영하는 부동산 회사용 서비스 — **ITANDI BB**(관리회사 물건 정보와 실시간 연계되는 업자간 사이트, 내견 예약 · 입주 신청까지, 365일 24시간), ITANDI 임대 관리 · 임대 중개 · 매매 Propocloud."
+            }
+          ]
+        },
+        {
+          "to": "dagster-asset-lineage-platform",
+          "via": "'흩어진 정기 처리를 한 워크플로 엔진으로'",
+          "contract": "그룹의 데이터 기반은 여러 도구에 흩어진 정기 처리를 Dagster 하나로, イタンジ 의 물건 연동은 시스템마다 다른 워크플로 엔진을 하나로 모았다 — 같은 그룹에서 같은 문제를 각자 풀었다. 둘이 같은 엔진을 쓰는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+              "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+              "publisher": "イタンジ(ITANDI)",
+              "date": "2026-03-02",
+              "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+            },
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다. 비용은 네 후보 모두 OSS 기반이라 차이가 없었다. 학습 곡선 — 애셋 지향 개념에 익숙해지는 데 시간이 들지만 dbt 를 다루는 팀이면 직관적으로 익힌다."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "받고 내는 연동, 한 앱 안의 패키지",
+          "question": "외부 CSV 는 어떤 패키지를 지나 물건 DB 에 들어가고 다시 나가나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[\"외부 시스템 A · B · C\\n제각각의 CSV\"] --> IA[\"packs/import_system_*\"]\n  IA --> DB[(\"イタンジ 물건 DB\")]\n  DB --> EX[\"packs/export_system_*\"] --> D[\"외부 시스템 D · E · F\"]\n  IA -- \"의존 허용\" --> SH[\"packs/shared\\n검증 · 변환 · 저장\"]\n  EX -- \"의존 허용\" --> SH\n  IA -. \"금지 — packwerk check\" .-x EX\n  DB --> BB[\"ITANDI BB\"]"
+        },
+        {
+          "title": "PR 하나가 머지되기까지",
+          "question": "새 의존을 더한 PR 은 어떤 상태를 거치나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> PR작성\n  PR작성 --> packwerk_check: CI\n  packwerk_check --> 위반: 미선언 의존 · private 참조 · 가시성 밖\n  위반 --> 수정: shared 로 올리기 · public 으로 옮기기 · 의존 선언\n  수정 --> packwerk_check\n  packwerk_check --> 리뷰: 위반 0\n  리뷰 --> 머지\n  머지 --> [*]"
+        },
+        {
+          "title": "모놀리스로 모으고 경계를 안 그었다면",
+          "question": "한 앱에 동거한 연동 시스템은 어떻게 엉키나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"export_system_d 개발자가\\nimport_system_a 의 내부 클래스를 가져다 씀\"] --> B[\"런타임 에러 없음\"]\n  B --> C[\"리뷰 통과 → 쌓임\"]\n  C --> D[\"import_system_a 를 고치면\\nexport_system_d 가 깨짐\"]\n  D --> E[\"'이 클래스 어디서 쓰지?' grep 으로 추적\"]\n  A -. \"packwerk check(strict)\" .-> X[\"PR 의 CI 가 떨어짐\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+          "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+          "publisher": "イタンジ(ITANDI)",
+          "date": "2026-03-02",
+          "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+        },
+        {
+          "title": "ITANDI | GA technologies",
+          "url": "https://www.ga-tech.co.jp/services/itandibb/",
+          "publisher": "GA technologies",
+          "summary": "イタンジ株式会社가 운영하는 부동산 회사용 서비스 — **ITANDI BB**(관리회사 물건 정보와 실시간 연계되는 업자간 사이트, 내견 예약 · 입주 신청까지, 365일 24시간), ITANDI 임대 관리 · 임대 중개 · 매매 Propocloud."
+        }
+      ]
     }
   ],
   "open_questions": [
     "**매출 · 사업별 비중**을 이번에 확인하지 못했다(IR 페이지 본문이 비어 보였다).",
     "**RENOSY 의 물건 가치 추정 모델** 자체와, SageMaker 파이프라인이 어느 판단(마케팅 · 영업 · CS)에 쓰이는지 구체 사례가 글에 없다.",
-    "**ITANDI · M&A** 의 시스템 글을 아직 못 봤다 — 도메인이 없다. ITANDI 는 별도 기술 블로그가 있을 수 있다.",
-    "**아직 안 읽은 것** — `2026-05-11-shap-reflects-model-bias`(SHAP 과 모델 편향) · `2026-05-01-grm-with-pymc`(PyMC 단계 반응 모델) · Snowflake IaC 글."
+    "**M&A(スピカコンサルティング)** 의 시스템 글이 없다 — 도메인이 없다.",
+    "**아직 안 읽은 것** — `2026-05-11-shap-reflects-model-bias`(SHAP 과 모델 편향) · `2026-05-01-grm-with-pymc`(PyMC 단계 반응 모델) · Snowflake IaC 글.",
+    "**ITANDI 블로그에서 아직 안 읽은 것** — 1,600 테이블 BigQuery 집약(2026-02-12) · ITANDI QC 테스트 기반 · 임대 중개 팀 개발 프로세스 · 프로포클라우드 Terraform 이설 · 정산 관리 팀."
   ],
   "sources": [
     {
@@ -959,6 +1356,19 @@
       "publisher": "GA technologies",
       "date": "2026-06-24",
       "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm. 대시보드: 입력 · 드롭 건수, 드롭률, 특징량별 PSI 를 Logs Insights 쿼리로 그리고, Alarm 으로 임계 초과를 감지(Amazon Q + Slack 통지 가능). 과제: **정답(Ground Truth)과 예측을 맞춘 정확도 추적**이 파이프라인 안에서 완결되지 않아 Snowflake 에서 그때그때 집계 · **재학습 자동화와 Model Registry 연계에 의한 자동 교체**는 아직 · Snowflake 와의 접속 친화성 향상."
+    },
+    {
+      "title": "Railsモジュラーモノリスの依存関係を見える化する ―packwerkを物件連動統括システムに導入した話",
+      "url": "https://tech.itandi.co.jp/entry/2026/03/02/151419",
+      "publisher": "イタンジ(ITANDI)",
+      "date": "2026-03-02",
+      "summary": "イタンジ 물건 연동 팀 — 외부 시스템이 **제각각의 CSV 형식**으로 보내는 물건 정보를 받아들이는 `import_system_*` 와 여러 외부 시스템에 게재하는 `export_system_*` 가 병렬로 돈다(총칭 '물건 연동 시스템'), 가운데는 **イタンジ 물건 DB**. 원래 시스템마다 **다른 워크플로 엔진** 위에서 돌아 인프라 설정 · 운용 비용이 시스템마다 있고, 배포 파이프라인도 따로라 횡단 변경 때 레포 여럿을 만졌다 → **한 워크플로 엔진 · 한 Rails 앱(물건 연동 통괄 시스템)** 으로 통합 중. 마이크로서비스는 안 했다 — 공통 로직(검증 · 변환 · 저장)을 API 너머로 부르는 건 의외로 번거롭고(팀 간 소통 · 사양 차이, gem 으로 떼면 릴리스 주기가 무거워짐), 한 번 나눈 걸 나중에 모으면 인프라 · DNS 존 · 통신 설계를 다시 해야 해 비용이 뛴다. 대신 모놀리스에서 `import_system_a` 의 내부 클래스를 `export_system_d` 가 참조하는 식의 **의존 혼돈**을 막으려 **packwerk + packwerk-extensions**(정적 해석, CI 의 `packwerk check`). `packs/shared`(검증 · 변환 유틸)에만 의존하고 시스템끼리는 서로 의존하지 않게. enforce_dependencies **strict**(package_todo.yml 로 기존 위반을 임시 허용하는 `true` 와 달리 신규 기록 금지 · 위반 0), enforce_privacy(외부 참조는 app/public/ 만), enforce_folder_privacy, enforce_visibility + visible_to(예: packs/admin 만). 효과: package.yml 만 보면 의존이 보이고(새 멤버도), 런타임 에러가 안 나 리뷰를 빠져나가던 의존 추가를 CI 가 잡고, 실행 오버헤드가 없으며, 리뷰에서 '이 코드는 어느 패키지인가 · shared 인가 고유인가'라는 **설계 대화**가 자연스럽게 생겼다."
+    },
+    {
+      "title": "ITANDI Engineer Blog",
+      "url": "https://tech.itandi.co.jp/",
+      "publisher": "イタンジ(ITANDI)",
+      "summary": "イタンジ(GA technologies 그룹)의 기술 블로그 — 물건 연동 · 임대 중개 · 정산 관리 · 부동산 매매 프로덕트(프로포클라우드) · 프런트엔드 공통 패키지(@itandi/playwright · @itandi/tools) · 1,600 테이블의 BigQuery 집약 · Solid Queue · sidekiq-scheduler 등의 글이 있다. GA technologies 의 Zenn Publication 과 별개다."
     }
   ]
 }

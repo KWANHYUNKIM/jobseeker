@@ -2364,3 +2364,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GA technologies SageMaker 파이프라인
 
 - `sagemaker-ml-pipeline` 전문으로 기능 `single-image-sagemaker-pipeline`, 결정 8. 과제(정확도 추적 · 재학습 자동화)를 실패 그림에.
+
+## 2026-09-27 GA technologies 물건 연동(ITANDI)
+
+- ITANDI 수익원 판정: Zenn(Publication itandi* 없음 · 검색 0건)엔 없었지만 회사 쪽 기술 블로그 `tech.itandi.co.jp/feed` 를 찾았다. 물건 연동 통괄 시스템 packwerk 글로 도메인 셋째 + 기능 `property-sync-packwerk-monolith`, 결정 8. M&A 는 검색 둘 다 0건 — 다음 사이클 회사 페이지 확인 후 보류 판정.
