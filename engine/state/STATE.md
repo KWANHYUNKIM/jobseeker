@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — snyk 재방문은 새 자료 없음(1회째). 09-06 묶음 진행 중.**
+**없다 — tailscale 재방문에서 확장(`lanes-not-one-line`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **tailscale** — 2026-09-26 데이터 평면 가속(09-22) → `lanes-not-one-line`, 새 도메인. `/blog/index.xml` 이 curl 로 온다. 멀티큐 처리량 수치는 v1.104 이후.
 - **snyk** — 2026-09-26 없음 1회째. `snyk.io/blog/feed/` 로 09-06 이후 4건 — 전부 의견·사고 리더십 글(취약점 백로그·AI 허리케인·예방은 끝났나·에이전트에 물었다).
 - **sentry** — 2026-09-26 없음 1회째. `blog.sentry.io/feed.xml` 로 09-06 이후 3건 — AI 검색 도우미 디버깅(09-11)은 제품 사용기(버그 하나), Laravel AI 통합·bfcache 지표는 제품 안내.
 - **scylladb** — 2026-09-26 Seastar QUIC(09-14, 학생 프로젝트·운영 전) → `a-stream-per-call`, 기존 shared-nothing 도메인. C# 드라이버(09-22)는 다음. `www.scylladb.com/feed/` 로 목록, 본문은 r.jina.ai(직접 curl 은 빈 페이지).

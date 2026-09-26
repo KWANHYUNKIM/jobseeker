@@ -1472,9 +1472,9 @@
       "country": "CA",
       "category": "SaaS",
       "status": "done",
-      "features_done": 3,
+      "features_done": 4,
       "one_liner": "기기끼리 직접 잇는 사설망을 파는 회사",
-      "updated_at": "2026-09-06",
+      "updated_at": "2026-09-26",
       "domain": "tailscale.com"
     },
     {
@@ -2899,7 +2899,8 @@
     "수십억 임베딩에서 가까운 것을 싸게 찾는다",
     "에이전트가 사람의 이름으로 데이터에 닿게 한다",
     "장애를 에이전트가 먼저 조사한다",
-    "UPI 결제를 메시지로 흘린다"
+    "UPI 결제를 메시지로 흘린다",
+    "기기 위의 데이터 평면을 더 빠르게 한다"
   ],
   "countries": {
     "KR": "한국",
