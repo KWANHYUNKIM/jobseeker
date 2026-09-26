@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — ladybird 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — letsencrypt 재방문 → 확장(`issuance-in-a-warehouse`). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **letsencrypt** — 2026-09-26 확장. `letsencrypt.org/feed.xml`. 09-17 ClickHouse 웨어하우스 글로 새 도메인 "발급 기록을 운영 DB 밖에서 센다". 이전 글 후보: 06-03 양자 내성 인증서, 03-17 ARI(갱신 정보), 02-18 DNS-PERSIST-01, 04-10 일부러 깨진 시험 사이트.
 - **ladybird** — 2026-09-26 없음 1회째. 피드는 `ladybird.org/posts.rss`(`/posts.xml` 은 리다이렉트). 마지막이 08-31 월간 뉴스레터 — **9월호는 09-30 에 나온다**, 다음 재방문 때 1순위. 이전 글 후보: 06-05 "Changing How We Develop Ladybird".
 - **kakehashi** — 2026-09-26 확장. `kakehashi-dev.hatenablog.com/rss`. 09-10 Pocket Musubi 배신 단축 글로 새 도메인 "환자에게 가는 자동 발송을 늦지도 겹치지도 않게 한다". 남은 후보: 09-24 AI·사람 모두에 맞는 웹 프레임워크 선정, 09-08 약국 기기를 움직이는 코드.
 - **kakaopay** — 2026-09-26 없음 1회째. RSS 가 빈 채널(`/rss.xml` 에 item 0) — r.jina.ai 로 메인 목록(카드에 날짜). 09-07 이후 2편: 09-16 Querydsl 대량 처리, 09-09 Spring Data MongoDB — 둘 다 특정 서비스의 결정이 아닌 **일반 가이드**라 제외. 이전 글 후보: 06월 "PR 을 더 느리게 만들기 위한 고민"(손해보험, AI 도입 뒤 리뷰).

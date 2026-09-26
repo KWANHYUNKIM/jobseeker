@@ -1048,3 +1048,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ladybird 재방문
 
 - 월간 뉴스레터 8월호(08-31) 뒤 새 글 없음, 9월호는 월말. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 letsencrypt 재방문 → 확장
+
+- 09-17 "How We Built a Data Warehouse Using ClickHouse" 에서 결정 6개로 `issuance-in-a-warehouse` 를 새 도메인에 추가(features 2→3). 로그 의존·하드웨어 운영·병합 전 중복은 해석 표시.
