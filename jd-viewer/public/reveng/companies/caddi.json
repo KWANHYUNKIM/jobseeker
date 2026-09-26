@@ -149,9 +149,26 @@
               "summary": "Control Plane 인증인가 그룹이 **2025년부터 Go 를 본격 채택**한 1년 회고다. 기준은 **의존 관리** — OSS 패키지를 노린 공급망 공격과 제로데이가 늘어 '앱이 기대는 라이브러리를 어떻게 관리하나'가 선택의 축이 됐다. Control Plane 은 큰 서비스 하나가 아니라 **인증 게이트웨이·토큰 발행·테넌트 관리·인가** 같은 **작은 서비스의 집합**이라 요건은 **'작은 서비스를 많이, 탄탄히'.** 회사 백엔드의 주류는 **TypeScript** 다 — 생태계와 프런트·백엔드 통일은 좋지만 **라이브러리가 늘어 의존 관리 비용이 커진다.** 좋았던 점: **유지 비용** — 몇 달씩 손대지 않는 앱에도 보안 업데이트는 돌려야 하는데, 같은 층의 **TypeScript(NestJS) 앱 대비 보안 업데이트 빈도가 약 1/5**. AI 코딩(Claude Code·Devin)과도 잘 맞는다(단순한 구문, 표준 go fmt·go test). 힘들었던 점: **라이브러리에 기대지 않는 대가** — 그레이스풀 셧다운처럼 **다른 언어에선 프레임워크가 해 주는 일을 직접** 쓴다(Echo v4 기준, v5 에는 들어갔다). '장기 운영 비용이 초기 구현 비용보다 중요하다'며 **의도적으로 받아들였다.** 팀 대부분이 Go 경험이 적어 **'Go 다운 코드'에 익숙해지는 비용**이 있었다. **빗나간 기대**: goroutine 의 병행 처리를 기대했지만 지금 서비스가 **요청/응답형 API 중심이라 아직 쓸 일이 없다.** 스택은 **얇은 것** — Connect(gRPC 보다 디버깅이 쉽다), Echo(앱에 따라 프레임워크 없이), Bun ORM, lestrrat-go/jwx."
             }
           ]
+        },
+        {
+          "tech": "RFC 8707 Resource Indicators + Istio(RequestAuthentication · AuthorizationPolicy)",
+          "solves": "M2M 토큰에 목적지(aud)와 조작(scope)을 새기고, 받는 서비스가 메시에서 둘 다 검증한다 — 다른 서비스 앞 토큰으로는 못 들어온다.",
+          "limits": "여러 resource 에 서로 다른 scope 는 못 준다(최소 권한 우선). scope 운영 규칙은 아직 검토 중이고, 식별자 형식은 강제하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+              "url": "https://caddi.tech/2026/05/21/110000",
+              "publisher": "CADDi",
+              "date": "2026-05-21",
+              "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "gateway-and-internal-token"
+      ]
     },
     {
       "name": "쌓인 제조 데이터를 싸게 꺼낸다",
@@ -191,13 +208,424 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "gateway-and-internal-token",
+      "name": "인증은 Auth0 에 맡기고, 토큰은 우리가 쥔다",
+      "domain": "여러 제품이 한 문으로 들어온다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "CADDi Drawer 하나이던 회사가 **Quote 등 여러 앱**을 한 고객에게 파는 **컴파운드 전략**으로 가면서, 인증은 앱마다의 일이 아니라 **모든 앱이 같이 서는 바닥**이 됐다.\n\n전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 스스로 OIDC 클라이언트**였다. 확장은 됐지만 조직이 커지자 세 가지가 아팠다 — 기반을 고치면 **각 앱의 설정과 배포까지** 챙겨야 했고, 새 앱마다 개발자가 Callback URL·Scope 를 몰라 **매번 인증 팀의 지원**이 필요했고, SDK 의 파괴적 변경(v4)을 **팀마다 따라가야** 했다.\n\n그래서 인증 흐름을 **중앙 게이트웨이**로 모으고, 안쪽에서는 **Auth0 토큰 대신 자체 Internal Token** 을 쓴다. 사람 없는 시스템 간 호출도 같은 토큰을 받게 **M2M Token Issuer** 를 두었고, 쓰임이 늘자 그 토큰에 **'어느 서비스 앞, 어떤 조작만'** 을 새겨 넣었다(RFC 8707).",
+        "metrics": [
+          {
+            "label": "토큰을 쓰는 제품",
+            "value": "CADDi Drawer · CADDi Quote 등 여러 앱(컴파운드 전략)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+                "url": "https://caddi.tech/2026/02/24/092138",
+                "publisher": "CADDi",
+                "date": "2026-02-24",
+                "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+              }
+            ]
+          },
+          {
+            "label": "클러스터 분리",
+            "value": "Control Plane 과 Data/Application Plane 을 서로 다른 쿠버네티스 클러스터로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+                "url": "https://caddi.tech/2026/05/21/110000",
+                "publisher": "CADDi",
+                "date": "2026-05-21",
+                "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+              }
+            ]
+          },
+          {
+            "label": "예전 구조",
+            "value": "모든 앱이 각자 nextjs-auth0 SDK 로 OIDC 클라이언트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+                "url": "https://caddi.tech/2026/02/24/092138",
+                "publisher": "CADDi",
+                "date": "2026-02-24",
+                "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+              }
+            ]
+          },
+          {
+            "label": "M2M 토큰 원칙",
+            "value": "토큰 하나 = 요청 하나, 여러 resource 면 scope 는 교집합",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+                "url": "https://caddi.tech/2026/05/21/110000",
+                "publisher": "CADDi",
+                "date": "2026-05-21",
+                "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "앱마다 OIDC 를 달던 구조를 볼 때",
+          "thought": "**확장은 되지만 통제가 안 된다.** 기반을 한 번 고치려면 앱 수만큼 설정·배포를 챙겨야 하고, 새 앱마다 같은 질문이 온다. 흐름 자체를 가운데로 모아야 인증 팀이 앱 팀을 붙잡지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+              "url": "https://caddi.tech/2026/02/24/092138",
+              "publisher": "CADDi",
+              "date": "2026-02-24",
+              "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+            }
+          ]
+        },
+        {
+          "at": "외부 IDaaS 를 어디까지 쓸지 정할 때",
+          "thought": "**인증은 맡기고 인가는 쥔다.** Auth0 에 내부 로직과 데이터를 기대면 흐름이 안 보인다. 그래서 Auth0 는 '당신이 누구인가'만 답하게 하고, '무엇을 해도 되나'는 자체 토큰의 클레임으로 옮긴다 — 스스로 OIDC 를 짜지 않는 대신 인가 설계에 힘을 싣는다고 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+              "url": "https://caddi.tech/2026/02/24/092138",
+              "publisher": "CADDi",
+              "date": "2026-02-24",
+              "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+            }
+          ]
+        },
+        {
+          "at": "M2M 토큰을 다시 볼 때",
+          "thought": "**처음엔 빨리, 쓰임이 늘면 좁게.** 사람이 없는 흐름에는 동의 단계가 없으니 토큰이 가진 범위가 곧 위험의 크기다. 표준(RFC 8707)을 따르면 다른 팀에 설명하기도 쉽다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+              "url": "https://caddi.tech/2026/05/21/110000",
+              "publisher": "CADDi",
+              "date": "2026-05-21",
+              "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+            }
+          ]
+        },
+        {
+          "at": "여러 resource 에 서로 다른 scope 를 달라는 요구를 볼 때",
+          "thought": "**편의보다 최소 권한.** 지원하면 토큰 하나의 권한이 넓어진다 — 이 작업의 목적과 정면으로 어긋나니 지원하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+              "url": "https://caddi.tech/2026/05/21/110000",
+              "publisher": "CADDi",
+              "date": "2026-05-21",
+              "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "인증 게이트웨이(프록시)",
+            "what": "모든 앱 앞에서 OIDC 흐름을 쥔다. oauth2-proxy 와 비슷한 패턴."
+          },
+          {
+            "name": "Auth0",
+            "what": "외부 IDaaS. **인증만** 맡는다 — 내부 로직과 인가 데이터는 기대지 않는다."
+          },
+          {
+            "name": "Internal Token",
+            "what": "CADDi 가 발급하는 JWT. 인가 클레임을 스스로 정한다. 사내 API 인증은 이것으로 통일."
+          },
+          {
+            "name": "M2M Token Issuer",
+            "what": "OAuth2 Client Credentials 로 시스템 간·배치에 Internal Token 을 준다."
+          },
+          {
+            "name": "resource(aud) · scope",
+            "what": "토큰이 **어느 서비스 앞**인지와 **어떤 조작**을 허락하는지. 받는 서비스가 둘 다 검증한다."
+          },
+          {
+            "name": "URN 리소스 식별자",
+            "what": "`urn:caddi-service01` 같은 논리 이름. 접근 가능한 URL 이 아니다."
+          }
+        ],
+        "invariants": [
+          "**Auth0 는 인증만** — 인가는 Internal Token 의 클레임이 정한다.",
+          "자기 식별자와 다른 **aud 를 가진 토큰은 거부**한다.",
+          "여러 resource 를 담은 토큰의 **scope 는 모든 resource 에 공통**이다 — resource 별 scope 는 없다.",
+          "리소스 식별자는 **네트워크 위치가 아니라 논리 이름**이다.",
+          "각 서비스는 **다른 서비스를 믿지 않고** 토큰을 스스로 검증한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자 요청이 앱 앞의 인증 게이트웨이에 닿는다",
+            "why": "앱은 OIDC 를 몰라도 된다 — 흐름은 게이트웨이가 쥔다."
+          },
+          {
+            "step": "게이트웨이가 Auth0 로 인증하고 CADDi Internal Token 을 앱에 넘긴다",
+            "why": "안쪽은 자체 클레임을 가진 토큰 하나로 통일한다."
+          },
+          {
+            "step": "배치·서비스 간 호출은 M2M Token Issuer 에 client_id/secret 과 resource·scope 를 내고 토큰을 받는다",
+            "why": "Client Credentials — 사람이 없으니 범위를 요청에 명시한다."
+          },
+          {
+            "step": "발급자는 요청한 scope 가 지정한 모든 resource 에 허락됐을 때만 발급한다",
+            "why": "교집합 — 토큰 하나가 가진 권한이 넓어지지 않는다."
+          },
+          {
+            "step": "받는 서비스는 Istio RequestAuthentication 으로 aud, AuthorizationPolicy 로 scope 를 검증한다",
+            "why": "자기 앞이 아닌 토큰, 허락되지 않은 조작을 거부한다."
+          },
+          {
+            "step": "요청이 다음 서비스로 이어지면 같은 토큰을 넘기고 그 서비스도 따로 검증한다",
+            "why": "사슬의 각 칸이 독립적으로 판단한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "여러 앱의 인증을 어디서 처리할 것인가?",
+            "chosen": "**앱마다 OIDC 클라이언트를 두던 구조를 버리고, 인증 흐름을 중앙 게이트웨이/프록시로 모은다.**",
+            "alternatives": [
+              "각 앱이 nextjs-auth0 SDK 로 스스로 OIDC 클라이언트가 된다(이전)"
+            ],
+            "tradeoff": "기반 변경·새 앱 온보딩·SDK 업그레이드를 **인증 팀 한곳에서** 한다 — 앱 개발자는 OIDC 파라미터를 몰라도 된다. 대가는 **모든 앱의 인증이 한 경로**를 지난다는 것 — 그 경로의 장애·지연이 전 제품에 번진다(이 사이트의 해석, 글은 대가를 적지 않는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+                "url": "https://caddi.tech/2026/02/24/092138",
+                "publisher": "CADDi",
+                "date": "2026-02-24",
+                "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+              }
+            ]
+          },
+          {
+            "question": "외부 IDaaS 의 토큰을 안쪽까지 쓸 것인가?",
+            "chosen": "**안쪽에서는 Auth0 토큰 대신 CADDi Internal Token 을 쓴다.** Auth0 는 인증만.",
+            "alternatives": [
+              "Auth0 가 발급한 토큰을 사내 API 까지 그대로"
+            ],
+            "tradeoff": "JWT 클레임을 **스스로 정하고**, 외부 IDaaS 에 내부 로직·데이터를 기대 **흐름이 흐려지는 것**을 막는다. 대가는 **토큰 발급을 자체로 운영**해야 한다는 것 — 발급자가 사내 모든 API 의 바닥이 된다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+                "url": "https://caddi.tech/2026/02/24/092138",
+                "publisher": "CADDi",
+                "date": "2026-02-24",
+                "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+              }
+            ]
+          },
+          {
+            "question": "OIDC 를 직접 구현할 것인가?",
+            "chosen": "**아니다 — 인증 코어는 Auth0 에 맡기고 인가·플랫폼 설계에 힘을 쓴다.**",
+            "alternatives": [
+              "OIDC 를 스크래치로 구현"
+            ],
+            "tradeoff": "스스로 짜지 않으니 인증 코어의 정확성은 Auth0 에 기댄다. 채용 글에서 '스크래치 구현을 못 해 지루하다'고 여길 수 있음을 인정하면서, 그 대신 **고급 인가 제어와 플랫폼 설계에 지렛대**를 건다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+                "url": "https://caddi.tech/2026/02/24/092138",
+                "publisher": "CADDi",
+                "date": "2026-02-24",
+                "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+              }
+            ]
+          },
+          {
+            "question": "사람 없는 시스템 간 호출은 어떤 토큰을 쓰나?",
+            "chosen": "**OAuth2 Client Credentials 로 같은 Internal Token 을 발급하는 M2M Token Issuer.**",
+            "alternatives": [
+              "서비스마다 제각각의 API 키"
+            ],
+            "tradeoff": "사내 API 인증이 **한 종류의 토큰**으로 통일된다. 대가는 **client_id/secret 을 손으로 나눠 주는** 운영 — 수동 배포가 필요 없는 워크로드 신원(OAuth SPIFFE Client Authentication 등)으로 옮길 계획이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+                "url": "https://caddi.tech/2026/02/24/092138",
+                "publisher": "CADDi",
+                "date": "2026-02-24",
+                "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+              },
+              {
+                "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+                "url": "https://caddi.tech/2026/05/21/110000",
+                "publisher": "CADDi",
+                "date": "2026-05-21",
+                "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+              }
+            ]
+          },
+          {
+            "question": "M2M 토큰의 권한을 어디까지 좁힐 것인가?",
+            "chosen": "**RFC 8707 Resource Indicators 로 요청마다 목적지(resource→aud)와 조작(scope)을 명시한다.** 원칙은 토큰 하나 = 요청 하나.",
+            "alternatives": [
+              "처음 설계대로 최소한의 권한 제어(빨리 내놓기 우선)",
+              "자체 규격으로 좁힌다"
+            ],
+            "tradeoff": "동의 단계가 없는 흐름에서 **토큰이 가진 범위**를 줄이고, 표준이라 **다른 팀에 설명하기 쉽다.** 대가는 호출자가 **요청마다 토큰을 받는 비용**과, scope 운영 규칙을 어디까지 발급자가 정할지라는 **아직 풀지 못한 숙제**다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+                "url": "https://caddi.tech/2026/05/21/110000",
+                "publisher": "CADDi",
+                "date": "2026-05-21",
+                "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+              }
+            ]
+          },
+          {
+            "question": "여러 서비스를 한 토큰으로 부르면 scope 를 어떻게 줄 것인가?",
+            "chosen": "**여러 resource 는 허락하되 scope 는 모든 resource 에 공통(교집합)으로만 — resource 별 scope 는 지원하지 않는다.**",
+            "alternatives": [
+              "resource 마다 다른 scope 를 담는다"
+            ],
+            "tradeoff": "토큰 하나의 권한이 넓어지지 않고, 사슬로 이어지는 호출에서 **같은 토큰으로 각 서비스가 독립 검증**한다. 대가는 **서비스마다 다른 조작이 필요하면 토큰을 따로** 받아야 한다는 것 — 최소 권한을 편의보다 앞에 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+                "url": "https://caddi.tech/2026/05/21/110000",
+                "publisher": "CADDi",
+                "date": "2026-05-21",
+                "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+              }
+            ]
+          },
+          {
+            "question": "리소스 식별자를 무엇으로 쓸 것인가?",
+            "chosen": "**URL 대신 URN 논리 이름**을 기본으로 — 형식은 강제하지 않고 규칙만 준다.",
+            "alternatives": [
+              "쿠버네티스 클러스터 내 서비스 URL"
+            ],
+            "tradeoff": "Control Plane 과 Data/Application Plane 이 **다른 클러스터**라 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728 메타데이터 엔드포인트로 오해**될 수 있다. 대가는 형식을 강제하지 않아 **이름 짓기가 쓰는 쪽에 맡겨진다**는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+                "url": "https://caddi.tech/2026/05/21/110000",
+                "publisher": "CADDi",
+                "date": "2026-05-21",
+                "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+              }
+            ]
+          },
+          {
+            "question": "토큰 검증을 어디서 할 것인가?",
+            "chosen": "**서비스 메시(Istio) — RequestAuthentication 으로 aud, AuthorizationPolicy 로 scope.**",
+            "alternatives": [
+              "각 서비스 코드에서 직접 검증"
+            ],
+            "tradeoff": "서비스 코드가 검증 로직을 들지 않고 **선언으로** 막는다. 대가는 검증 규칙이 **메시 설정**에 있어 서비스 코드만 봐서는 보이지 않는다는 것(이 사이트의 해석). 백엔드가 서비스 메시 층에서 인증 제어를 한다는 것은 Control Plane 소개 글에도 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+                "url": "https://caddi.tech/2026/05/21/110000",
+                "publisher": "CADDi",
+                "date": "2026-05-21",
+                "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+              },
+              {
+                "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+                "url": "https://caddi.tech/2026/02/24/092138",
+                "publisher": "CADDi",
+                "date": "2026-02-24",
+                "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "쌓인 제조 데이터를 싸게 꺼낸다(같은 회사의 다른 도메인)",
+          "via": "관리 메타데이터와 업무 데이터의 경계",
+          "contract": "Control Plane 의 Tenant Platform 은 **관리 메타데이터만** 두고 도면 같은 **고객 업무 데이터는 Data/Application Plane** 에 남긴다 — 이 기능의 토큰은 그 경계를 넘는 호출에 aud 를 달아 준다. 클러스터도 둘로 나뉘어 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+              "url": "https://caddi.tech/2026/02/24/092138",
+              "publisher": "CADDi",
+              "date": "2026-02-24",
+              "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+            },
+            {
+              "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+              "url": "https://caddi.tech/2026/05/21/110000",
+              "publisher": "CADDi",
+              "date": "2026-05-21",
+              "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "사람의 요청과 기계의 요청",
+          "question": "두 종류의 호출은 어떻게 같은 토큰에 이르나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  U[\"사용자\"] --> G[\"인증 게이트웨이\\n(oauth2-proxy 류)\"]\n  G -->|\"인증만\"| A0[\"Auth0\"]\n  G -->|\"Internal Token\"| APP[\"Drawer · Quote\"]\n  B[\"배치 · 서비스\"] -->|\"client credentials\\nresource · scope\"| M[\"M2M Token Issuer\"]\n  M -->|\"aud=urn:... scope=...\"| S1[\"서비스 1\"]\n  S1 -->|\"같은 토큰 전달\"| S2[\"서비스 2\"]\n  S1 -.-> I[\"Istio\\naud · scope 검증\"]\n  S2 -.-> I"
+        },
+        {
+          "title": "토큰 한 장이 발급되고 쓰이는 길",
+          "question": "M2M 토큰은 어떤 조건에서 나가고 어떻게 거부되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 요청: resource 여럿 · scope\n  요청 --> 거절: 어떤 resource 에 scope 가 없음\n  요청 --> 발급: 모든 resource 에 허락(교집합)\n  발급 --> 도착\n  도착 --> 거부: aud 가 내 URN 이 아님\n  도착 --> 거부: scope 가 정책 밖\n  도착 --> 처리: aud · scope 통과\n  처리 --> [*]\n  거부 --> [*]\n  거절 --> [*]"
+        },
+        {
+          "title": "앱마다 OIDC 를 쥐고 있을 때",
+          "question": "예전 구조는 어디서 아팠고 지금 남은 위험은?",
+          "kind": "failure",
+          "code": "flowchart TD\n  O[\"앱마다 nextjs-auth0 · OIDC 클라이언트\"] --> O1[\"기반 수정 → 앱마다 설정·배포\"]\n  O --> O2[\"새 앱 → Callback·Scope 를 몰라 매번 지원\"]\n  O --> O3[\"SDK v4 파괴적 변경 → 팀마다 대응\"]\n  O1 --> N[\"게이트웨이로 모음\"]\n  O2 --> N\n  O3 --> N\n  N --> R1[\"남은 위험: 한 경로의 장애가\\n모든 제품으로(해석)\"]\n  M[\"M2M 토큰 초기 설계\"] --> M1[\"권한 제어 최소 — 범위가 넓다\"]\n  M1 --> M2[\"RFC 8707 · 교집합 scope\"]\n  M2 --> R2[\"남은 위험: secret 을 손으로 배포\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "CADDi の Control Plane を支えるシステムたちの紹介",
+          "url": "https://caddi.tech/2026/02/24/092138",
+          "publisher": "CADDi",
+          "date": "2026-02-24",
+          "summary": "**CADDi Drawer 와 CADDi Quote** 등 여러 앱을 내는 **'컴파운드 전략(멀티 프로덕트화)'** 을 밀면서, 공통 기능을 **Control Plane**(테넌트 수명 주기·인증·인가·과금·지표처럼 모든 테넌트에 걸친 운영 기능)으로 떼어 낸다. 조직도 **역콘웨이 법칙**으로 짰다 — 시스템의 '있어야 할 모습'을 먼저 정하고 사람을 맞췄다. 원래 인증인가 그룹은 **Drawer 의 인증만** 맡았고, Drawer 와 **밀결합된 시스템을 떼어 내는 중**이다(끝난 것도 있고 아직 아닌 것도 있다). **인증 플랫폼**: 전에는 **모든 앱이 각자 nextjs-auth0 SDK 를 넣고 OIDC 클라이언트**가 됐다. 확장성은 됐지만 조직이 커지며 문제 셋 — 기반을 고치면 **각 앱의 설정·배포까지** 챙겨야 하고, 새 앱마다 개발자가 OIDC 파라미터(Callback URL·Scope)를 몰라 **매번 지원이 필요**했고, nextjs-auth0 v4 같은 **파괴적 변경을 각 팀이 따라가야** 했다. 그래서 인증 흐름을 **중앙에서 쥐는 게이트웨이/프록시 패턴**(oauth2-proxy 에 가깝다)으로 바꿨다. 동시에 내부에서는 Auth0 토큰 대신 **CADDi 자체 Internal Token** 을 쓴다 — JWT 클레임을 스스로 쥐려고, 그리고 외부 IDaaS 에 내부 로직을 기대면 **흐름이 안 보이므로** **Auth0 는 '인증'만, 인가는 Internal Token 으로.** **M2M Token Issuer**: 사용자 없는 시스템 간 호출·배치용으로 OAuth2 Client Credentials 로 Internal Token 을 발급한다. 지금은 **client_id/secret 을 손으로 나눠** 주는데 이런 수동 배포가 필요 없는 방식(OAuth SPIFFE Client Authentication 등)으로 가려 한다. **Tenant Platform**: 테넌트 정보(어떤 고객이 어떤 플랜·기능 옵션)를 **Drawer DB 에서 떼어** 독립 서비스로 두고 Quote 등도 같은 인터페이스로 본다. **고객 업무 데이터(도면 등)는 두지 않고 관리 메타데이터만** — Data/Application Plane 과 경계를 긋는다. 고객 관리자용 **테넌트 관리 UI**(초대·역할·차단)도 인증인가 그룹이 제공하고 각 앱은 만들지 않는다. **분리는 아직 완전하지 않다**고 적고, R&D 로 **Google Zanzibar** 류 범용 인가 시스템(Cedar·SpiceDB)을 검증 중이다. 백엔드는 **Go** 를 적극 쓰고 서비스 메시 층에서 인증 제어도 한다."
+        },
+        {
+          "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+          "url": "https://caddi.tech/2026/05/21/110000",
+          "publisher": "CADDi",
+          "date": "2026-05-21",
+          "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**매출을 확인하지 못했다** — 누적 조달 363억 엔·기업 가치 1,820억 엔은 공개하지만 매출·Drawer/Quote 각각의 고객 수는 없다.",
     "**인증 게이트웨이로 모은 대가**를 적지 않는다 — 모든 앱의 인증이 한 경로를 지나는데 그 경로의 가용성·지연을 어떻게 다루는지 없다.",
     "**Control Plane 분리는 진행 중**이라고만 적는다 — 무엇이 아직 Drawer 에 묶여 있는지, 언제 끝나는지 없다.",
     "**아직 안 읽은 것** — 도면 검색(`検索から探索へ` 3부작, Elasticsearch), Iceberg 레이크하우스, `RFC 8707 Resource Indicators`(2026-05-21), `Auth0を使って1年かけてSSOをサポートした話`, 특주 부품 수발주 쪽 시스템.",
-    "**제조 데이터 자체(도면 해석·구조화)의 기술**을 아직 못 봤다 — 플랫폼 소개가 '제조 고유의 제품 데이터 해석에 강하다'고만 적는다."
+    "**제조 데이터 자체(도면 해석·구조화)의 기술**을 아직 못 봤다 — 플랫폼 소개가 '제조 고유의 제품 데이터 해석에 강하다'고만 적는다.",
+    "**인증 게이트웨이의 가용성**이 없다 — 모든 앱이 한 경로를 지나는데 이중화·장애 시 동작·지연 수치를 적지 않는다. M2M 토큰의 수명·재사용 정책(요청마다 받는 비용)도 없다."
   ],
   "sources": [
     {
@@ -232,6 +660,13 @@
       "publisher": "CADDi",
       "date": "2024-12-04",
       "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감.**"
+    },
+    {
+      "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",
+      "url": "https://caddi.tech/2026/05/21/110000",
+      "publisher": "CADDi",
+      "date": "2026-05-21",
+      "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
     }
   ]
 }
