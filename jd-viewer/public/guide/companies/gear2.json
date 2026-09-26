@@ -276,6 +276,97 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385667",
+      "title": "풀스택 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 2년 이상, 서울 성동구. 게임이 아니라 **사내 제품**을 만드는 풀스택 자리다 — 내부 **게임 운영 플랫폼** 개발·운영, 회사 소개 사이트·블로그 등 웹페이지, 게임 개발자에게 지표를 보여주는 **BI 프로덕트**, React/Next.js 웹과 **NestJS** API, **Electron/Electrobun 데스크톱 앱**, **생성형 AI(LLM·ComfyUI) 신규 서비스**, AWS·Docker 운영·배포, 아키텍처·성능 개선, 기술 의사결정. 필수는 실무 2년 이상, React·TypeScript 부터 API·DB 까지 풀스택, MySQL 설계·운영, Docker, E2E 로 기능 완성. 우대는 웹 기획·설계, React·MySQL·Redis 내부 원리, K8s·AWS·CI/CD, 메시지 큐, **SEO**, 게임에 대한 관심, 그리고 서버팀이 반기는 **Claude Code·Codex 일상 활용**. 공고 하단 기술 목록은 서버팀 공통(C#·.NET·Kotlin·Spring 등)이고 이 자리의 주요업무는 TypeScript 쪽(React·Next.js·NestJS)이다. jobkorea 에 같은 제목 게시(이미지)가 있다. 전형: 서류(이력서·경력기술서·포트폴리오) ＞ 사전 질문 ＞ 대면 인터뷰(30분~1시간, 필요 시 2차) ＞ 최종 합격. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "실무 2년 이상",
+          "React·TypeScript + API·DB 풀스택",
+          "MySQL 설계·운영",
+          "Docker"
+        ],
+        "can_learn": [
+          "NestJS",
+          "Electron",
+          "ComfyUI·LLM 서비스",
+          "SEO",
+          "게임 운영 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "게임 운영 툴 — 권한과 감사 로그",
+          "from": "task",
+          "quote": "• 기어세컨드 내부 게임 운영 플랫폼 개발 및 운영",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다. 운영 툴은 유저에게 재화를 지급하거나 계정을 제재하는 강력한 기능을 가진다.",
+          "gap_check": "운영자가 '전체 유저에게 다이아 100개 우편 지급' 을 누르기 전에 무엇(대상 수 미리보기·2인 승인)을 거치게 하고, CS 담당은 조회만·운영 리드는 지급까지 가능하게 하려면 NestJS 에서 무엇(Guard·역할 메타데이터)으로 막으며, 누가 언제 무엇을 지급했는지 남기는 감사 로그는 왜 수정 불가능해야 하는가?",
+          "drill": "NestJS 로 '우편 지급' API 를 만들고 역할 기반 Guard(조회·지급·승인)를 붙인다. 지급 요청 → 승인 → 실행 두 단계와 감사 로그 테이블(INSERT 만 허용)을 구현하고, 권한 없는 역할이 호출하면 403 이 나는지 e2e 테스트로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Guards — NestJS Documentation",
+              "url": "https://docs.nestjs.com/guards",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "게임 BI — 리텐션 코호트 쿼리",
+          "from": "task",
+          "quote": "• 게임 개발자에게 인사이트를 주는 다양한 지표를 볼 수 있는 BI 프로덕트를 개발",
+          "priority": "core",
+          "why": "주요업무다. 회사 브리핑대로 데이터 조직을 크게 뽑고 있고, 방치형 게임은 리텐션이 매출과 직결된다.",
+          "gap_check": "가입일 코호트별 D1·D7·D30 리텐션을 MySQL 로 계산할 때 무엇을 기준 테이블로 두고(가입·접속 로그), 윈도 함수·조인 중 무엇이 적합하며, 대시보드가 열릴 때마다 원본 로그에서 계산하지 않도록 무엇(일 단위 집계 테이블)을 두는가?",
+          "drill": "가짜 가입·접속 로그(1만 명 × 60일)로 코호트 리텐션 표를 뽑는 SQL 을 쓰고, 일별 집계 테이블을 만든 뒤 같은 표를 집계 테이블에서 뽑아 시간을 비교한다. 결과를 React 히트맵 표로 그린다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Window Function Concepts and Syntax — MySQL 8.4",
+              "url": "https://dev.mysql.com/doc/refman/8.4/en/window-functions-usage.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Electron 데스크톱 앱 — 보안 기본값",
+          "from": "task",
+          "quote": "• Electron / Electrobun 기반 Desktop Application 개발",
+          "priority": "high",
+          "why": "주요업무다. 사내 도구를 데스크톱 앱으로 배포하면 웹과 달리 로컬 파일·OS 권한에 닿는다.",
+          "gap_check": "렌더러 프로세스에서 Node API 를 바로 쓰게 두면(nodeIntegration) 외부 콘텐츠 하나로 무엇이 뚫리고, contextIsolation·preload 의 contextBridge 로 노출할 API 를 좁히면 무엇이 달라지며, 앱 자동 업데이트 파일은 무엇(서명 검증)으로 지키는가?",
+          "drill": "Electron 보안 체크리스트를 따라 샘플 앱을 contextIsolation 켜기·nodeIntegration 끄기·preload 로 '파일 저장' 함수 하나만 노출하도록 만들고, 렌더러에서 require 가 막히는지 확인한다. 체크리스트 항목별 적용 여부를 표로 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Security — Electron",
+              "url": "https://www.electronjs.org/docs/latest/tutorial/security",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ComfyUI 를 서비스 뒤에 붙이기 — 생성 작업 큐",
+          "from": "task",
+          "quote": "• 생성형 AI(LLM, ComfyUI 등)를 활용해 다양한 신규 서비스 개발",
+          "priority": "high",
+          "why": "주요업무다. 게임사에서 이미지 생성은 아트·마케팅 소재 제작에 쓰일 수 있다(공고가 용도를 적지는 않는다).",
+          "gap_check": "사내 웹에서 이미지 생성 요청을 받아 ComfyUI 서버에 넘길 때 생성이 수십 초 걸리면 HTTP 요청을 그대로 붙잡지 않고 무엇(작업 큐·작업 ID·진행 상황 알림)으로 풀며, GPU 한 대에 요청이 몰리면 순서·동시 실행 수는 어디서 제한하는가?",
+          "drill": "ComfyUI 서버 통신 문서를 읽고, NestJS 가 요청을 받아 작업 ID 를 돌려주고 큐 워커가 ComfyUI API 로 워크플로를 실행한 뒤 웹소켓으로 완료를 알리는 흐름을 만든다(ComfyUI 대신 지연하는 가짜 서버로도 가능). 동시 실행 1개 제한에서 요청 5개가 순서대로 처리되는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Server Overview — ComfyUI",
+              "url": "https://docs.comfy.org/development/comfyui-server/comms_overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
