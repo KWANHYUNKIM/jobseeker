@@ -7,10 +7,10 @@
       "name_en": "Dress Code",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 2,
       "one_liner": "인사·IT·총무를 한 '업무 OS' 로 묶는 Workforce Management SaaS DRESS CODE — 보안 체크 시트와 감사가 묻는 '이력' 에 답하려 CRUD 를 불변 이벤트 누적으로 옮기며 RDB·DynamoDB 이중 쓰기의 유령·유실을 Transactional Outbox 로 막고, Prisma 의 16KB 넘는 SQL 이 핀 고정을 일으켜 다중화가 안 되던 RDS Proxy 는 실측으로 걷어 냈다",
-      "updated_at": "2026-09-26",
+      "updated_at": "2026-09-27",
       "domain": "dress-code.com"
     },
     {

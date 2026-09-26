@@ -2085,3 +2085,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 DRESS CODE rds-proxy-removal
 
 - RDS Proxy 철거 글 끝까지. 결정 7, 그림 3(failure·state·flow).
+
+## 2026-09-27 DRESS CODE 완주
+
+- 완주 기준 셋 확인 → done, QUEUE 완료로(--gaps 는 신규를 가리켰지만 in_progress 로 두고 넘어가지 않으려 먼저 닫음).

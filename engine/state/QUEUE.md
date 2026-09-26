@@ -50,7 +50,6 @@
 | **SODA(スニーカーダンク)** | JP · 감정 붙은 스니커·트레카 마켓 | 프로파일(2026-09-26). 도메인 둘 — 구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다 · 상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다. 기능 2(`purchase-payment-idempotency` · `purchase-flow-tla-audit`). **hold** — 실매장 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 실매장은 도메인 없음. 입구 `zenn.dev/p/team_soda/feed`. |
 | **USEN ICT Solutions** | JP · 법인 ICT(USEN&U-NEXT 그룹) | 프로파일(2026-09-26). 도메인 둘 — 부서마다 비용이 갈리는 사내 데이터 기반을 고른다 · 영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다. 기능 2(snowflake-over-bigquery · cortex-two-tier-roles). 수익원 법인 ICT(USEN GATE 02) — 데이터 기반과의 연결은 inferred. 입구 `zenn.dev/p/usen_ict/feed`(글 5편). **hold(2026-09-26)** — 법인 ICT 수익원에 이을 글을 두 번 찾아 없음. |
 | **TELLER(テラーノベル)** | JP · 소설 투고·열람(테라노벨 · 테라드라마) | 프로파일(2026-09-26, slug `teller-novel`). 도메인 둘 — 누가 어떤 이야기를 읽을 수 있는지 판정한다 · 이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다. 기능 2(story-view-decision · tts-g2p-bench). 수익원 둘(유료 작품·VIP / 출판·미디어믹스 — 후자 도메인 없음). 입구 `zenn.dev/p/tellernovel_inc/feed`. **hold(2026-09-26)** — 출판·미디어믹스 수익원 자료 두 번 없음. |
-| **DRESS CODE** | JP · Workforce Management SaaS(HR·IT·GA Force) | 프로파일(2026-09-26, slug `dress-code`). 도메인 둘 — 변경 이력을 상태가 아니라 쌓인 사실로 남긴다 · DB 연결을 모으는 프록시를 넣었다가 실측으로 걷어 낸다. 기능 2(crud-to-event-outbox · rds-proxy-removal). 수익원 구독(요금 비공개). 입구 `zenn.dev/p/dress_code/feed`. |
 
 
 ## 대기
@@ -1030,6 +1029,7 @@
 
 ## 완료
 
+- **DRESS CODE** (JP · Workforce Management SaaS · HR·IT·GA Force) — 2026-09-27 완주. 도메인 2 · 기능 2. **들어갈 때 나갈 길을 만든다.** 보안 체크 시트·SOC 2·문의가 묻는 '누가·언제·무엇을·왜' 에 답하려 CRUD 도메인에 Domain Event 를 싣되, 처음부터 DynamoDB 에 두고 이중 쓰기의 유령·유실을 같은 트랜잭션의 outbox + 독립 drainer 로 막고 version 은 RDB 카운터로 매겼다('Event Log 붙은 CRUD' 라고 솔직히 부른다). 연결 고갈에 대비해 넣은 RDS Proxy 는 Prisma 의 16KB 넘는 SQL 이 세션 약 2할을 핀 고정해 다중화가 안 되자, Secrets host 한 칸으로 Aurora 직결에 되돌리고 스파이크 대책은 Prisma 7 의 pg.Pool 로. 요금은 비공개.
 - **Macbee Planet(マクビープラネット)** (JP · 성과 보수형 광고 · 매출 약 400억 엔 · DSP 3D AD) — 2026-09-26 완주. 도메인 2 · 기능 2. **사업이 클수록 비용에 지는 구성을 끊는다.** 로그 기반은 손실 허용 니어 리얼타임 로그를 먼저 Pub/Sub × Valkey 로 떼고, 나머지는 서버가 Pub/Sub 에 바로 Publish 해 BigQuery Subscription 이 쓰게 해 고정 대수 Fluentd 집약(정액)을 없애고 종량 20~30%↓ — 이중 쓰기로 옮겼다. 데이터 기반은 시간별 파티션·생로그 재설계·dbt incremental 로 매시 하루치를 긁던 잡을 한 시간치로, ML 은 늦게 오는 적은 positive 만 며칠치를 다시 읽어 스캔 90%↓. 3D AD 의 매출 기여는 비공개.
 - **TRIBEAU(トリビュー)** (JP · 미용 의료 입소문·예약 앱 · 클리닉 게재) — 2026-09-26 완주. 도메인 2 · 기능 2. **LLM 은 믿을 수 없는 녀석이다.** AI 상담은 LLM 이 템플릿 JSON 과 ID 까지만 내고 실데이터는 프런트가 다시 가져오며, 후보는 검색 API 의 실데이터에서만, 수십만 건 입소문은 ID 만 돌려주는 '지연 확장 RAG' 로 표시 시점에 합류시켜 편향·비용(약 1/10)·법무를 구조로 막았다. 사내 MCP 는 공유 인가 서버가 Workspace 그룹으로 MCP·툴을 인가해 aud 를 박은 JWT 를 내고, 리프레시마다 소속을 다시 봐 30일의 구멍을 닫았다. 클리닉 게재 요금은 비공개.
 - **Luup** (JP · 전동 킥보드·자전거 셰어 · 기본 50엔 + 분당) — 2026-09-26 완주. 도메인 2 · 기능 2. **바뀌지 않은 것이 성공이다.** 지불에 닿는 특전 도메인은 'main 과 미승인 동작 차 제로' 를 에이전트 메모리에 적고 Claude Code 와 7개 Stacked PR 로 DDD Modules 에 옮겼다 — 특성 테스트·count() 실측·의도적 차이 목록, AI 의 친절(undefined→null)과 fail-close 회귀를 원칙이 잡았다. 사내 관리 화면은 SFC 에 섞인 쿼리·라이브러리·UI 를 features·repository·infrastructure·core 로 한 단계씩 밀어내며 새것은 새 규칙, 기존은 만질 때. 차량·IoT 쪽 글은 못 봤다.
