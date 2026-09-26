@@ -406,6 +406,91 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/54943871",
+      "title": "WMS/WCS 개발",
+      "site": "jumpit",
+      "verdict": "경력 5~20년, 서울 강남구(도산대로 본사). 점핏에는 회사명이 '씨메스' 로만 올라와 있다(브리핑 open_questions 참고). 주요업무는 세 줄로 짧다 — **WMS/WCS 시스템 설계·개발 및 시운전**, 고객 기술 협의 지원과 **기술사양서·제안서** 작성, 협력업체 관리. 자격은 전문학사 이상, **WMS/WCS 또는 물류·제조 자동화 설비 제어 SW 개발 5년**, **물류센터 제어 시스템 구축 프로젝트 경험**. 우대는 **자동창고(AS/RS)·소터** 연동, 대규모 트랜잭션·실시간 제어, **물류 시뮬레이션 툴(FlexSim·AutoMod·Plant Simulation)**, 기계·전기·건축·안전 기사/기술사, 영어·중국어. 회사의 디팔레타이징·피스 피킹 로봇 셀을 물류센터 전체 흐름에 붙이는 자리로 읽힌다. 복지 목록에 출장용 법인차량·주말수당·출장수당이 있어 현장 시운전 출장이 잦을 수 있다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "WMS/WCS·자동화 설비 제어 SW 5년",
+          "물류센터 제어 시스템 구축 경험"
+        ],
+        "can_learn": [
+          "AS/RS·소터 연동",
+          "물류 시뮬레이션(FlexSim 등)",
+          "제안서·기술사양서"
+        ]
+      },
+      "study": [
+        {
+          "topic": "WMS 와 WCS 의 경계 — 주문이 설비 명령이 되기까지",
+          "from": "task",
+          "quote": "• WMS/WCS 시스템 설계·개발 및 시운전 담당",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 자격요건의 핵심이다.",
+          "gap_check": "WMS(재고·로케이션·주문 할당)와 WCS(컨베이어·소터·자동창고·로봇 셀에 실시간 명령)는 어떤 메시지를 주고받고, 어느 쪽이 '어느 상자를 어디로' 를 결정하는가? 설비가 명령을 거부하거나 상자가 인식되지 않았을 때(노리드) WCS 는 무엇을 하고 WMS 에 무엇을 알리는가?",
+          "drill": "WMS·WCS 문서를 읽고, 출고 주문 1건이 피킹→컨베이어→소터 슈트 배정→출하까지 가는 메시지 시퀀스도를 그린다. 노리드·슈트 만재·설비 정지 세 예외의 처리 흐름을 각각 덧붙인다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Warehouse management system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Warehouse_management_system",
+              "kind": "docs"
+            },
+            {
+              "title": "Warehouse control system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Warehouse_control_system",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "자동창고·소터 연동",
+          "from": "preference",
+          "quote": "• 자동창고(AS/RS), 소터 등 물류 자동화 설비 연동 개발 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 WCS 가 실제로 붙는 설비다.",
+          "gap_check": "AS/RS 의 입고·출고 작업은 스태커 크레인 한 대의 작업 순서를 어떻게 짜야 이동 거리가 줄고(이중 명령 사이클), 소터는 상자 바코드를 읽은 뒤 몇 밀리초 안에 슈트를 정해야 하는가? 설비 PLC 와 WCS 사이 통신이 끊기면 컨베이어 위 상자의 위치 추적은 어떻게 복구하는가?",
+          "drill": "AS/RS·컨베이어 문서를 읽고, 파이썬으로 스태커 크레인 1대의 입·출고 요청 스케줄러(단일/이중 명령)를 만들어 시간당 처리량을 비교한다. 소터 슈트 배정 로직에 '슈트 만재 시 재순환' 규칙을 넣는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Automated storage and retrieval system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Automated_storage_and_retrieval_system",
+              "kind": "docs"
+            },
+            {
+              "title": "Conveyor system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Conveyor_system",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "물류 시뮬레이션으로 설계를 먼저 검증",
+          "from": "preference",
+          "quote": "• 물류 시뮬레이션 툴(FlexSim, AutoMod, Plant Simulation 등) 활용이 가능하신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 제안서·기술사양서 작성이 있다 — 제안 단계에서 처리량을 증명해야 한다.",
+          "gap_check": "이산 사건 시뮬레이션에서 도착 분포·처리 시간·버퍼 크기를 어떻게 정하고, 병목 설비를 무엇으로 찾는가? 시뮬레이션 결과를 고객 제안서의 처리량 보증 숫자로 쓰려면 워밍업 구간·반복 횟수·신뢰구간을 어떻게 다루는가?",
+          "drill": "이산 사건 시뮬레이션 설명을 읽고(FlexSim 평가판이나 SimPy), 입고→AS/RS→피킹 로봇 셀→소터 흐름을 모델링해 로봇 셀 대수·버퍼 크기를 바꿔 시간당 출고량과 병목을 비교하고, 결과를 제안서 한 쪽 분량으로 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Discrete-event simulation — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Discrete-event_simulation",
+              "kind": "docs"
+            },
+            {
+              "title": "FlexSim",
+              "url": "https://www.flexsim.com/",
+              "kind": "tool"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
