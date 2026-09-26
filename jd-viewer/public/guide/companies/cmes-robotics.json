@@ -491,6 +491,87 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/54912157",
+      "title": "[청주] 시스템 엔지니어",
+      "site": "jumpit",
+      "verdict": "경력 3~10년, **충북 청주시 흥덕구** 근무(점핏 회사명 '씨메스'). 개발자라기보다 **3D 비전 검사 설비의 시스템 엔지니어**다 — 검사 시스템 분석·설계·**원가 산출**과 엔지니어링 지원, 일정·비용을 고려한 프로젝트 수행, **산업용 3D 센서와 설비 간 통신**을 활용한 설비 개발, **고객사 현장 유지보수·기술지원·교육**, 샘플 테스트와 기술 제안서. 자격은 전기·전자·기계 전공 전문학사 이상, 3년, **운전면허와 운전 가능**, **해외 출장 결격 없음**, 기계·전기·전자 기본 이해. 우대는 머신비전 검사 장비 셋업·유지보수, C++·JavaScript·Python **기초(로그 분석·간단한 스크립트 수정 수준)**, 외국어, OrCAD·AutoCAD·SolidWorks·Inventor, PM 경험. 코드는 '읽고 고치는' 수준을 요구한다 — 소프트웨어 개발 경력으로 들어갈 자리가 아니라 설비·현장 경력으로 들어갈 자리다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "전기·전자·기계 기반 3년",
+          "운전 가능·해외 출장 가능",
+          "현장 기술지원"
+        ],
+        "can_learn": [
+          "3D 센서 원리",
+          "머신비전 검사 셋업",
+          "로그 분석 스크립트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "산업용 3D 센서 — 무엇으로 깊이를 재나",
+          "from": "task",
+          "quote": "• 산업용 3D 센서 및 설비 간 통신 기술을 활용한 설비 개발",
+          "priority": "core",
+          "why": "주요업무다. 검사 사양(정밀도·속도·대상 표면)에 맞는 센서를 고르는 것이 설계의 출발점이다.",
+          "gap_check": "구조광·ToF·스테레오 방식은 정밀도·측정 속도·반사/투명 표면·외광에 각각 어떻게 반응하는가? 컨베이어 위를 움직이는 제품을 재야 한다면 어떤 방식과 트리거가 필요한가?",
+          "drill": "구조광 3D 스캐너·ToF 카메라 문서를 읽고, 가상의 검사 과제 셋(자동차 부품 치수, 이차전지 셀 표면 결함, 박스 부피)에 대해 센서 방식·필요 정밀도·시야·측정 속도를 표로 선정한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Structured-light 3D scanner — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Structured-light_3D_scanner",
+              "kind": "docs"
+            },
+            {
+              "title": "Time-of-flight camera — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Time-of-flight_camera",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "머신비전 검사 장비 셋업과 현장 유지보수",
+          "from": "preference",
+          "quote": "• 머신비전 검사 장비 셋업 및 유지보수 경험이 있으신 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무에 고객사 현장 유지보수·기술지원이 있다.",
+          "gap_check": "조명(방향·색·확산)·렌즈·작업 거리·노출이 검사 결과를 어떻게 흔드는가? 현장에서 '어제까지 잘 되던 검사가 오늘 오판정' 이 나면 조명 열화·렌즈 오염·제품 변경·설비 진동 중 무엇부터 확인하는가?",
+          "drill": "머신비전·AOI 문서를 읽고, 오판정 원인 점검 체크리스트(광학·기구·통신·SW 버전·제품 변경)를 만든다. 스마트폰 카메라와 탁상 조명으로 같은 부품을 조명 방향 세 가지로 찍어 결함 대비 차이를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Machine vision — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Machine_vision",
+              "kind": "docs"
+            },
+            {
+              "title": "Automated optical inspection — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Automated_optical_inspection",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "설비 간 통신과 로그로 문제 좁히기",
+          "from": "preference",
+          "quote": "• C++, JavaScript, Python 등 개발 언어에 대한 기초 지식을 보유하신 분 (로그 분석 및 간단한 스크립트 수정 가능 수준)",
+          "priority": "high",
+          "why": "우대사항이 로그 분석·간단한 스크립트 수정 수준의 언어 지식을 요구하고, 주요업무에 설비 간 통신이 있다.",
+          "gap_check": "카메라(GigE Vision 등)와 PC, PC 와 설비 PLC 사이에서 트리거·결과 신호가 어긋나면 로그의 어떤 타임스탬프를 비교하는가? 패킷 유실로 이미지가 깨지는 문제는 네트워크 설정 중 무엇(점보 프레임·대역폭)과 관련 있는가?",
+          "drill": "GigE Vision 설명을 읽고, 트리거·촬영·판정·PLC 응답 로그 샘플(가짜)을 만들어 파이썬 스크립트로 구간별 지연과 누락 트리거를 찾아내는 도구를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "GigE Vision — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/GigE_Vision",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
