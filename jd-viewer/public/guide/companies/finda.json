@@ -163,7 +163,8 @@
     "'핀다뱅크' 는 Team Lead 공고가 '핀다의 새로운 챕터를 열어줄 중대한 넥스트 스텝, 핀다뱅크 런칭' 이라고만 적는다 — 무엇인지(인가·형태)는 읽지 않았다",
     "홈페이지의 파트너사 수가 '0개' 로 렌더링된다(자바스크립트 숫자 애니메이션) — 값을 읽지 못했다",
     "Data Engineer·DevOps 는 원티드·점핏·사람인에 같은 제목으로 올라와 있다 — 본문 비교 필요",
-    "salary: 공고에 금액이 없다 — 비워 둔다"
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "DevOps(387464)는 헤더가 경력 5-10년인데 자격요건 첫 줄은 '4년 이상의 DevOps/SRE/플랫폼 엔지니어링 경험' 이다"
   ],
   "postings": [
     {
@@ -406,6 +407,159 @@
           {
             "title": "Data Platform Team Lead",
             "url": "https://www.wanted.co.kr/wd/382480",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387464",
+      "title": "DevOps 엔지니어",
+      "site": "wanted",
+      "verdict": "헤더는 경력 5-10년인데 자격요건 첫 줄은 '4년 이상의 DevOps/SRE/플랫폼 엔지니어링 경험' 이다. 대출비교 서비스를 돌리는 Kubernetes·Istio 서비스 클러스터 운영, 배포 시스템 개선과 반복 작업 자동화, LGTM 조합(Loki·Grafana·Tempo·Mimir)으로 모니터링·알림 개선과 고가용성, Terraform·GitOps IaC, 장애 해결과 재발 방지 설계, 보안·Compliance 를 지키는 시스템. 필수는 Terraform·ArgoCD GitOps/IaC 실무, Kubernetes 프로덕션 운영 설계·개선 주도, 반복 업무 자동화 경험. Istio 등 Service Mesh, Prometheus/Grafana/Loki Observability 설계·대규모 개선, 금융/규제 환경 운영·보안, IDP(Backstage 등) 개발은 우대다. 회사는 대출모집법인으로 금융 규제를 받는다(회사 브리핑). 전형은 서류 전형 → 1차 인터뷰 → 2차 인터뷰 → 3차 인터뷰 → 레퍼런스 체크 → 처우 협의 → 최종 합격.",
+      "fit": {
+        "must_have": [
+          "DevOps/SRE/플랫폼 4년 이상(헤더는 5-10년)",
+          "Terraform·ArgoCD GitOps/IaC",
+          "Kubernetes 프로덕션 운영 설계·개선 주도",
+          "반복 업무 자동화"
+        ],
+        "can_learn": [
+          "Istio Service Mesh",
+          "Prometheus/Grafana/Loki Observability",
+          "금융/규제 환경 운영·보안",
+          "IDP(Backstage)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Istio 서비스 메시 운영",
+          "from": "task",
+          "quote": "• Kubernetes와 Istio 기반의 서비스 클러스터를 운영합니다.",
+          "priority": "core",
+          "why": "첫 주요업무이고 우대에 'Istio 등 Service Mesh 운영 경험' 이 있다. 데이터 팀장 공고의 인프라 목록에도 Istio 가 있다.",
+          "gap_check": "새 버전 서비스를 트래픽 10% 로 카나리 배포할 때 Istio 의 어떤 리소스(VirtualService·DestinationRule)를 쓰고, 서비스 간 mTLS 를 켜면 사이드카가 없는 워크로드와의 통신은 어떻게 되는가?",
+          "drill": "kind 에 Istio 를 설치하고 샘플 앱 두 버전을 올려 가중치 카나리·타임아웃·재시도를 걸어 본 뒤, STRICT mTLS 를 켜고 사이드카 없는 파드에서 호출이 막히는 것을 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Istio — What is Istio?",
+              "url": "https://istio.io/latest/docs/overview/what-is-istio/",
+              "kind": "docs"
+            },
+            {
+              "title": "Istio — Traffic Management tasks",
+              "url": "https://istio.io/latest/docs/tasks/traffic-management/",
+              "kind": "docs"
+            },
+            {
+              "title": "Istio — Security concepts",
+              "url": "https://istio.io/latest/docs/concepts/security/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LGTM 관측성과 알림",
+          "from": "task",
+          "quote": "• LGTM 조합으로 모니터링/알림 시스템을 개선하고 고가용성 아키텍처를 구현하여 서비스 안정성을 높입니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'Prometheus/Grafana/Loki 등으로 Observability 체계를 설계하거나 대규모 개선한 경험' 이 있다.",
+          "gap_check": "대출 신청 API 가 느려졌다는 알림을 받았을 때 메트릭(Mimir)·로그(Loki)·트레이스(Tempo)를 어떤 순서로 이어 원인 서비스를 찾고, 알림은 무엇(증상·SLO 번 레이트)에 걸어야 소음이 줄어드는가?",
+          "drill": "앞 드릴 클러스터에 Grafana·Loki·Tempo·Mimir(또는 Prometheus)를 올리고, 샘플 앱에 지연을 주입해 메트릭 → 트레이스 → 로그로 따라가는 대시보드와 SLO 번 레이트 알림을 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Grafana Loki",
+              "url": "https://grafana.com/docs/loki/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Grafana Tempo",
+              "url": "https://grafana.com/docs/tempo/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Grafana Mimir",
+              "url": "https://grafana.com/docs/mimir/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE Workbook — Implementing SLOs",
+              "url": "https://sre.google/workbook/implementing-slos/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Terraform·ArgoCD GitOps",
+          "from": "qualification",
+          "quote": "• Terraform·ArgoCD 등 GitOps/IaC 실무 역량을 갖춘 분",
+          "priority": "core",
+          "why": "필수이고 주요업무에 'Terraform, GitOps 와 같은 IaC 전략에 맞춰 리소스를 관리' 와 배포 시스템 개선이 있다.",
+          "gap_check": "클라우드 리소스는 Terraform, 클러스터 안 리소스는 ArgoCD 로 나눌 때 그 경계(예: IRSA 역할·시크릿)는 어디에 두고, 누군가 kubectl 로 직접 바꾼 변경은 어떻게 되돌려지는가?",
+          "drill": "Terraform 으로 클러스터 외부 리소스(예: 버킷·역할)를, ArgoCD App-of-Apps 로 클러스터 내부 앱을 관리하는 저장소 구조를 만들고, kubectl 로 수동 변경한 뒤 self-heal 로 되돌아오는 것을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Argo CD",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "Terraform — Introduction",
+              "url": "https://developer.hashicorp.com/terraform/intro",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애 대응과 재발 방지",
+          "from": "task",
+          "quote": "• 장애 발생 시 문제를 해결하고 재발 방지를 위한 설계와 해법을 마련합니다.",
+          "priority": "high",
+          "why": "주요업무이고 같은 주요업무 목록에 '업무 과정에서 보안과 Compliance 를 지킬 수 있는 시스템' 이 있다. 우대에 금융/규제 환경 운영·보안이 있다.",
+          "gap_check": "장애 후 포스트모템에서 '사람 실수' 로 결론 내지 않으려면 무엇을 기록하고, 재발 방지 조치를 코드(정책·자동 검사)로 바꾸는 예는 무엇인가?",
+          "drill": "앞 드릴에서 일부러 낸 장애(잘못된 카나리 가중치)를 포스트모템 형식으로 쓰고, 재발 방지로 ArgoCD 배포 전 정책 검사나 알림 규칙을 추가한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Google SRE Book — Postmortem Culture",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "docs"
+            },
+            {
+              "title": "Backstage — What is Backstage?",
+              "url": "https://backstage.io/docs/overview/what-is-backstage",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Istio 카나리 + LGTM 관측성 + Terraform/ArgoCD GitOps 저장소와 포스트모템 한 건",
+          "why": "주요업무 여섯 줄 중 다섯과 필수 역량을 한 번에 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "자동화로 줄인 시간·장애를 수치로 정리",
+          "why": "필수에 '반복 업무를 자동화하여 품질과 속도를 끌어올린 경험' 이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 1차 인터뷰 → 2차 인터뷰 → 3차 인터뷰 → 레퍼런스 체크 → 처우 협의 → 최종 합격(공고 기준).",
+        "expect": [
+          "Kubernetes 프로덕션 운영",
+          "GitOps/IaC 설계",
+          "관측성·알림",
+          "장애 대응 사례"
+        ],
+        "sources": [
+          {
+            "title": "DevOps 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/387464",
             "publisher": "원티드"
           }
         ]
