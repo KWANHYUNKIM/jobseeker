@@ -432,6 +432,137 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/338178",
+      "title": "[NetsPresso] AI Compiler Engineer",
+      "site": "wanted",
+      "verdict": "경력 5년 이상(관련 전공). NetsPresso 의 **컴파일러 층** 자리다 — 다양한 프레임워크의 모델 구조를 표현하는 NetsPresso Intermediate Representation(NPIR) 데이터 구조를 구현·확장하고, PyTorch·ONNX ↔ NPIR 변환을 만들고 검증하며, NPIR 을 ExecuTorch·TensorRT 등 타겟 런타임·하드웨어 전용 IR 로 내리는 **로워링 패스**와 하드웨어 제약 기반 그래프 변환을 연구·개발한다. 필수는 Python OOP·클린 코드, PyTorch·ONNX·Linux·Git·Docker, 5년 이상. C++ 시스템 구현, CPU/GPU/NPU 메모리 계층·SIMD·멀티스레딩, IR·컴파일러 패스·AST 원리, ExecuTorch·ONNX·TensorRT·AIMET, 정적 메모리 할당·데이터 레이아웃 최적화는 우대다. 전형: 서류 검토 → 사전과제 발표 → 1차 인터뷰 → 2차 인터뷰 → 3차 인터뷰 → 처우 협의('절차 간에 추가적인 과제가 있을 수 있습니다').",
+      "fit": {
+        "must_have": [
+          "관련 전공, 5년 이상",
+          "Python OOP·클린 코드",
+          "PyTorch·ONNX·Linux·Git·Docker"
+        ],
+        "can_learn": [
+          "C++ 시스템 구현",
+          "메모리 계층·SIMD·멀티스레딩",
+          "IR·컴파일러 패스·AST",
+          "ExecuTorch·TensorRT·AIMET",
+          "정적 메모리 할당·레이아웃 최적화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "그래프 IR 설계와 PyTorch·ONNX 변환",
+          "from": "task",
+          "quote": "- NPIR 그래프 구조 개발: 다양한 딥러닝 프레임워크의 다양한 모델 구조를 표현할 수 있는 NetsPresso Intermediate Representation (NPIR)의 데이터 구조를 구현하고 기능을 확장합니다.",
+          "priority": "core",
+          "why": "주요업무이고 다음 줄이 'PyTorch, ONNX 등 다양한 프레임워크와 NPIR 간의 변환 로직을 구현하고 검증' 이다. 필수에 PyTorch·ONNX 가, 우대에 IR·컴파일러 패스·AST 원리가 있다.",
+          "gap_check": "여러 프레임워크 모델을 한 IR 로 담으려면 노드·엣지·텐서 메타(모양·타입·레이아웃)·서브그래프(조건·반복)를 어떻게 표현하고, PyTorch → IR → ONNX 왕복 변환이 맞는지는 무엇(수치 비교·그래프 동형)으로 검증하는가?",
+          "drill": "torch.export(또는 FX)로 작은 모델 그래프를 뽑아 노드·텐서 메타를 담는 최소 IR 클래스로 옮기고, 그 IR 을 onnx.helper 로 ONNX 로 내보낸 뒤 원본과 출력 수치를 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "PyTorch — torch.export",
+              "url": "https://docs.pytorch.org/docs/stable/export.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PyTorch — torch.fx",
+              "url": "https://docs.pytorch.org/docs/stable/fx.html",
+              "kind": "docs"
+            },
+            {
+              "title": "ONNX — Concepts",
+              "url": "https://onnx.ai/onnx/intro/concepts.html",
+              "kind": "docs"
+            },
+            {
+              "title": "ONNX IR specification",
+              "url": "https://github.com/onnx/onnx/blob/main/docs/IR.md",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "하드웨어 제약 기반 그래프 변환·로워링",
+          "from": "task",
+          "quote": "- 하드웨어 제약 기반 그래프 변환: 타겟 HW 오퍼레이터 및 제약 사항 분석, 컴파일러/Low-level IR 분석 기술을 기반으로 한 하드웨어 최적화 기술 연구 개발",
+          "priority": "core",
+          "why": "주요업무이고 바로 위 줄이 'NPIR을 ExecuTorch, TensorRT 등 타겟 런타임 및 하드웨어 전용 IR로 변환하는 로워링 패스' 다. 우대에 ExecuTorch·TensorRT·AIMET 이 있다.",
+          "gap_check": "타겟 NPU 가 LayerNorm 이나 동적 모양을 지원하지 않을 때, 그래프 패스로 무엇을 할 수 있는가(등가 연산 분해·상수 접기·모양 고정·연산 융합)? 패스를 적용한 뒤 수치가 달라지지 않았음은 어떻게 보장하는가?",
+          "drill": "앞 드릴 IR 위에 패스 셋(상수 접기, Conv+BN 융합, 미지원 연산을 기본 연산으로 분해)을 구현하고, 각 패스 전후 그래프와 출력 수치를 비교하는 테스트를 만든다. ExecuTorch 백엔드 방언 문서로 실제 로워링 구조와 대조한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "ExecuTorch — Compiler backend dialect",
+              "url": "https://docs.pytorch.org/executorch/stable/compiler-backend-dialect.html",
+              "kind": "docs"
+            },
+            {
+              "title": "MLIR documentation",
+              "url": "https://mlir.llvm.org/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache TVM documentation",
+              "url": "https://tvm.apache.org/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "AIMET",
+              "url": "https://github.com/quic/aimet",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "정적 메모리 할당과 데이터 레이아웃",
+          "from": "preference",
+          "quote": "• 정적 메모리 할당(Static Memory Allocation) 또는 복잡한 데이터 레이아웃 최적화 관련 프로젝트 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 다른 우대 줄이 'CPU/GPU/NPU의 메모리 계층 구조, 병렬 컴퓨팅(SIMD, Multi-threading)' 과 C++ 시스템 구현이다.",
+          "gap_check": "추론 그래프의 중간 텐서들 수명을 분석해 메모리를 재사용하면 최대 메모리가 어떻게 줄고, NCHW 와 NHWC 레이아웃 중 무엇이 특정 하드웨어에서 유리한 이유는 무엇인가?",
+          "drill": "앞 드릴 IR 에서 텐서 생존 구간을 계산하고 탐욕적 오프셋 배치로 정적 메모리 계획을 세워 '텐서마다 따로 할당' 대비 최대 메모리를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Apache TVM documentation",
+              "url": "https://tvm.apache.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "torch.export → 최소 IR → 패스 3개 → ONNX 내보내기 + 정적 메모리 계획 저장소",
+          "why": "주요업무 두 묶음(IR 구현·로워링)과 우대(컴파일러 패스·정적 메모리)를 한 번에 보여 준다. 전형 첫 단계가 사전과제 발표다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "다룬 컴파일러·런타임과 기여 정리",
+          "why": "우대에 ExecuTorch·ONNX·TensorRT·AIMET 과 컴파일러 원리가 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 검토 → 사전과제 발표 → 1차 인터뷰 → 2차 인터뷰 → 3차 인터뷰 → 처우 협의('절차 간에 추가적인 과제가 있을 수 있습니다').",
+        "expect": [
+          "IR 설계 판단",
+          "그래프 패스·로워링",
+          "하드웨어 제약 대응",
+          "사전과제 발표"
+        ],
+        "sources": [
+          {
+            "title": "[NetsPresso] AI Compiler Engineer",
+            "url": "https://www.wanted.co.kr/wd/338178",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
