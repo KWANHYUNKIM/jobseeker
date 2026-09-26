@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**에어클로젯 확장 1/2(2026-09-26) — `pii-hash-observability` 완료. 다음은 확장: 'AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다' — `7760060d03216c`(AI 는 수량만·스크립트가 금액 · 하루 2회 전주 같은 요일 대비 · 쿼터 1.5배 · cpuIdle 기본값 역전). 수익원 '주변 서비스·법인' 은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(Rehab for Japan). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**에어클로젯 확장 2/2(2026-09-26) — `ai-cost-gate` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 '주변 서비스·법인(Men's·Mall·Spot Rental·Salon·의상 렌털·스타일리스트 파견·물류 플랫폼)' 에 도메인이 없다 — 검색 1 Zenn RSS 전편(`zenn.dev/p/aircloset/feed` 제목에 Mall·Spot·물류·WMS·RFID 없음 — 이미 본 20편) 이어 검색 2(Zenn 검색 API 'エアークローゼット 物流'·'airCloset Mall' / Speaker Deck), 없으면 hold_reason + '재시도 안 함' + QUEUE hold. 대기 1/3(Rehab for Japan). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

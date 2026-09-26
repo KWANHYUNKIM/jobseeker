@@ -1725,3 +1725,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 에어클로젯 PII 해시 관측
 
 - 결정 8 — 양 끝 같은 해시·HMAC(키 밖)·12자 prefix·ID 로 받아 MCP 안에서 해시·Policy Tag 순수 CLS·ETL DLP 플레이스홀더·@도메인 남김+사원 email 분리·사람 Web/AI MCP 같은 백엔드. 남은 과제(error 설계·stacktrace)는 thinking 으로.
+
+## 2026-09-26 에어클로젯 AI 비용 게이트
+
+- 결정 10 — AI 는 수량만·Billing Export 실측 단가·전주 같은 요일+무음 없음+baseline 0·쿼터 1.5배(사내라서)·fire-and-forget 한 축·cpuIdle CI 가드(false 명시도 위반)·이미지 10→2·APPROVE 뒤 dispatch(fail-closed)·문서 PR 판정 잡 안 뺌(기댓값)·MERGE → Firestore 판정+insert.
