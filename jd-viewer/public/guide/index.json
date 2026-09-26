@@ -484,6 +484,17 @@
       "postings": 7,
       "study_items": 21,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "chwipang",
+      "name": "취팡",
+      "aliases": [
+        "취팡"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }

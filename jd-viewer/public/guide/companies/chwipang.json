@@ -1,0 +1,192 @@
+{
+  "slug": "chwipang",
+  "name": "취팡",
+  "aliases": [
+    "취팡"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "one_liner": "구직자 진단부터 지원서 작성·면접 준비·기업 연결까지 잇는 AI 커리어 플랫폼 — 기존 취업 콘텐츠 사업의 구직자 기반 위에 서비스를 새로 올리는 단계",
+  "company": {
+    "business": "공고 머리말은 취팡을 '구직자의 진단부터 입사지원서 작성, 면접 준비, 기업 연결까지 취업 준비 전 과정을 연결하는 AI 커리어 플랫폼' 으로 소개하고, 기존 취업사업에서 축적한 고객·콘텐츠·커리어 데이터·기업 네트워크 위에서 실제 서비스를 출시하고 확장하는 중이라고 적는다. 보유 자산으로 블로그 누적 방문자 1,700만, 구직자 회원 DB 2만, 직무·취준·이직 단톡방 300개, 현직 인사담당자 네트워크(HR아너스포럼) 300명+, 카카오톡 플러스친구 1만을 들고, 대표가 취업 관련 도서 저자라고 적는다. '지금 필요한 것은 이 기반을 실제 서비스 성과와 매출로 바꿀 사람' 이라고 적는다. 공고들은 AI 기반 취업 진단·분석·추천, 회원·진단·채용·콘텐츠 백엔드, 웹 서비스를 적는다. 회사 홈페이지 주소는 공고에서 찾지 못했다(사람인 공고는 '취팡 홈페이지' 채용페이지로 지원하라고만 적는다). 매출·요금은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI 개발자",
+        "url": "https://www.wanted.co.kr/wd/381953",
+        "publisher": "원티드"
+      },
+      {
+        "title": "백엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/382000",
+        "publisher": "원티드"
+      },
+      {
+        "title": "데이터 분석가",
+        "url": "https://www.wanted.co.kr/wd/382003",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "블로그 누적 방문자(회사 주장)",
+        "value": "1,700만",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/381953",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "구직자 회원 DB(회사 주장)",
+        "value": "2만",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/381953",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "인사담당자 네트워크(회사 주장)",
+        "value": "HR아너스포럼 300명+",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/381953",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "구직자 대상 AI 취업 서비스",
+        "how": "공고가 진단·입사지원서 작성·면접 준비를 서비스 흐름으로 적고, 기반을 '실제 서비스 성과와 매출로' 바꿀 사람을 찾는다고 적는다. 유료 여부·가격은 공고에 없다(추론).",
+        "domains": [
+          "AI 취업 진단·추천",
+          "취업 서비스 웹 플랫폼"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/381953",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "기업 연결",
+        "how": "서비스 흐름의 마지막이 '기업 연결' 이고 인사담당자 네트워크를 자산으로 든다. 기업에서 돈을 받는지(채용 수수료 등)는 공고에 없다(추론).",
+        "domains": [
+          "취업 서비스 웹 플랫폼",
+          "서비스 데이터·분석"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/381953",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "AI 취업 진단·추천",
+        "why": "AI 개발자 공고가 AI 기반 취업 진단·분석·추천, LLM·AI API 기능 연동, 결과 품질 평가와 프롬프트·데이터 처리 개선을 적는다.",
+        "what_to_know": [
+          "LLM API 연동",
+          "프롬프트·결과 품질 평가",
+          "추천"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/381953",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "취업 서비스 웹 플랫폼",
+        "why": "백엔드 공고가 회원·진단·채용·콘텐츠 기능과 API·DB, AI·인증·알림 연동을, 프론트엔드 공고가 진단·채용·회원 플로우 화면을 적는다.",
+        "what_to_know": [
+          "웹 API·DB 설계",
+          "인증·알림 연동",
+          "사용자 플로우 화면"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/382000",
+            "publisher": "원티드"
+          },
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/381999",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "서비스 데이터·분석",
+        "why": "데이터 엔지니어 공고가 서비스·외부 데이터 수집·정제·적재와 품질 기준을, 데이터 분석가 공고가 유입·진단·이용 행동 분석과 지표·대시보드를 적는다.",
+        "what_to_know": [
+          "데이터 파이프라인",
+          "제품 지표·퍼널 분석",
+          "대시보드"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "데이터 엔지니어·데이터 운영",
+            "url": "https://www.wanted.co.kr/wd/382004",
+            "publisher": "원티드"
+          },
+          {
+            "title": "데이터 분석가",
+            "url": "https://www.wanted.co.kr/wd/382003",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "개발 조직을 한꺼번에 새로 꾸리고 있다",
+        "evidence": "정해진 업무를 처리할 실무 보조 인력이 아니라, 문제를 진단하고 실행계획을 세우고 결과까지 책임질 담당자를 찾습니다.",
+        "so_what": "원티드에 AI·프론트엔드·백엔드·풀스택·데이터 엔지니어·데이터 분석가 6건이 모두 경력 3-8년으로 같은 머리말을 달고 올라와 있다. 초기 제품 조직을 세우는 단계로 보인다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "사용자 기반은 있고 매출 전환이 과제다",
+        "evidence": "지금 필요한 것은 이 기반을 실제 서비스 성과와 매출로 바꿀 사람입니다.",
+        "so_what": "공고 스스로 구직자 모객 단계는 통과했고 매출 전환이 과제라고 적는다. 면접에서 성과·지표로 말할 준비가 필요하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "회사 홈페이지 주소를 찾지 못했다(공고에 도메인이 없고 추측한 도메인은 응답하지 않았다)",
+    "유료 서비스·가격·매출·임직원 수를 읽지 않았다",
+    "사람인 'UI/UX 디자이너·프론트엔드 개발자'(신입·경력)는 원티드 프론트엔드와 다른 자리다 — 본문 확인 필요",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
