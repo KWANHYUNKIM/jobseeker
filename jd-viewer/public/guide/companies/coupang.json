@@ -17717,6 +17717,114 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8093677",
+      "title": "Staff System Engineer",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 벵갈루루 근무다. 총 경력 7년 이상의 스태프로, 범위가 넓다 — 에이전트형 운영 플랫폼(agentic operations platform)을 만들고, 도메인·엔터프라이즈용 소형 언어 모델(SLM)을 설계·미세조정·저지연/엣지 추론 최적화하며, REST API·백엔드·DB·인증/인가까지 맡는다. 필수 자격에 Python·React·Node·Next.js 프런트엔드 스택과 Ansible·Terraform·셸 스크립트, Prometheus·Grafana 가 함께 나열된다. 제목은 'Staff System Engineer' 인데 본문 첫 문장은 'Systems & Platform Engineer' 라고 부른다. 어느 팀인지는 적혀 있지 않다.",
+      "fit": {
+        "must_have": [
+          "총 경력 7년 이상·학사 또는 석사",
+          "Python·React·Node·Next.js",
+          "API 설계·데이터 모델링·오류 처리",
+          "Prometheus·Grafana",
+          "Ansible·Terraform·셸",
+          "PostgreSQL·MySQL·MongoDB"
+        ],
+        "can_learn": [
+          "AWS·CI/CD(우대)",
+          "RabbitMQ·Kafka(우대)",
+          "Docker(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "도메인 소형 언어 모델(SLM) 미세조정",
+          "from": "task",
+          "quote": "Fine-tune SLMs to improve accuracy, performance, and task-specific capabilities.",
+          "priority": "core",
+          "why": "도메인·엔터프라이즈용 SLM 을 설계·개발하고, 정확도·성능·작업별 능력을 높이도록 미세조정하는 것이 주요업무다.",
+          "gap_check": "사내 운영 문의 분류·요약 작업에 작은 모델을 미세조정할 때 전체 미세조정 대신 LoRA 를 쓰면 무엇을 얻고 잃으며, 미세조정이 일반 능력을 망가뜨렸는지는 무엇으로 확인하는가?",
+          "drill": "LoRA 논문과 PEFT 문서를 읽고, 1B 급 작은 모델에 가상 운영 티켓 분류 데이터로 LoRA 미세조정을 한 뒤 기본 모델 대비 정확도와 일반 질의 응답 품질을 비교하고 MLflow 로 실험을 기록한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Hu et al. — LoRA: Low-Rank Adaptation of Large Language Models",
+              "url": "https://arxiv.org/abs/2106.09685",
+              "kind": "paper"
+            },
+            {
+              "title": "Hugging Face PEFT Documentation",
+              "url": "https://huggingface.co/docs/peft/index",
+              "kind": "docs"
+            },
+            {
+              "title": "MLflow Documentation",
+              "url": "https://mlflow.org/docs/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "저지연·엣지 추론 최적화",
+          "from": "task",
+          "quote": "Optimize models for low-latency inference and edge deployments.",
+          "priority": "core",
+          "why": "저지연 추론·엣지 배포를 위한 모델 최적화와, 여러 환경에서 추론 파이프라인 개발·성능 평가가 주요업무다.",
+          "gap_check": "같은 SLM 을 GPU 서버와 CPU 엣지 기기에 올릴 때 양자화 수준(8비트·4비트)이 지연·메모리·정확도를 각각 어떻게 바꾸고, 어느 지점에서 정확도 손실을 받아들이지 않는가?",
+          "drill": "llama.cpp 로 작은 모델을 여러 양자화 수준으로 변환해 CPU 에서 토큰당 지연·메모리를 재고, 앞 실습의 분류 과제 정확도와 함께 표로 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "ggml-org/llama.cpp",
+              "url": "https://github.com/ggml-org/llama.cpp",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "에이전트형 운영 플랫폼 — 백엔드·인증·프런트",
+          "from": "task",
+          "quote": "Build and maintain modern, responsive, and high-performance agentic operations platform.",
+          "priority": "high",
+          "why": "에이전트형 운영 플랫폼 구축·유지가 주요업무이고, REST API·DB·인증/인가·외부 API 연동과 React·Next.js 프런트엔드가 필수 자격·주요업무에 나열돼 있다.",
+          "gap_check": "운영 에이전트가 사내 시스템(티켓·배포·모니터링) API 를 대신 호출할 때, 에이전트 권한을 사용자 권한 안으로 제한하고 모든 호출을 감사 가능하게 하려면 인증·인가를 어떻게 설계하는가?",
+          "drill": "Next.js 로 운영 요청 화면과 API 라우트를 만들고, 에이전트가 사용자 토큰 범위 안에서만 외부 API 를 호출하도록 인가 검사와 호출 로그를 넣은 작은 앱을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Next.js Documentation",
+              "url": "https://nextjs.org/docs",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "운영 티켓 분류 SLM: LoRA + 양자화 비교 리포트",
+          "why": "주요업무 절반이 SLM 미세조정·저지연 추론이다. 정확도·지연·메모리를 함께 보인 리포트는 이 넓은 자리의 AI 쪽 요건을 구체적으로 보여 준다.",
+          "effort": "3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "LoRA vs 전체 미세조정",
+          "양자화와 정확도",
+          "에이전트 권한 제한",
+          "API·DB 설계",
+          "모델 거버넌스·실험 기록"
+        ],
+        "sources": [
+          {
+            "title": "Staff System Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8093677",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
