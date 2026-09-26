@@ -4,18 +4,14 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 재개(2026-09-26). 공고 **60건**(+1).
-(대기열이 비어 `--gaps` 가 쿠팡을 2순위로 줬다. 컬리·파이오링크·메디인테크는 `done`.)
-
-직전 회차: **`Senior Staff Back-end Engineer (Rocket Pay)`**(ats gh_jid=8078889) — Staff 판(wd/381767)과
-자격·우대 거의 같음, 차이 = **12년↑** + ats 본문의 **Rocket Pay 소개 세 문단**(온·오프라인 범용 결제로 확장,
-지갑·가맹점 온보딩·리스크 통제·재무 보고). 차이만 3항목. 미국 공고가 아니라 `base pay` 없음.
-⚠️ ats 본문은 `main_tasks` 칸에 **영어 소개 + Basic Qualifications 가 섞여** 들어온다 — quote 는 그 칸의 원문 줄에서.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **61건**.
+직전 회차: `Staff Back-end Engineer (Rocket Pay)`(ats gh_jid=8138624) → **`duplicate_of` wd/381767**
+(원티드판의 영문본 — 자격 줄 단위 일치, 주요업무는 원티드판의 영문 문장과 같음, 차이는 채용 절차 안내뿐).
 
 ⚠️ 다음 회차: `--gaps` 먼저. 개발 직군이 아닌 공고(Data Analyst 등)가 먼저 나오면 목록에서 개발 공고를 고른다.
-남은 "차이만" 후보: `Staff Back-end Engineer (Rocket Pay)`(ats gh_jid=8138624, wd/381767 과 겹침 0.53 — 세 절 비교 후
-같으면 duplicate), `Staff Backend Engineer (Orchestration Platform)`, `Staff, Back-end Engineer (GOEX)`.
-**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다** — 그러면 쿠팡은 다시 뒤로 밀린다.
+남은 "차이만" 후보: `Staff Backend Engineer (Orchestration Platform)`, `Staff, Back-end Engineer (GOEX)` —
+**먼저 이미 쓴 쿠팡 공고와 정규화 겹침을 센다**(ats 판은 원티드판의 영문본인 경우가 많다 → duplicate).
+**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.
