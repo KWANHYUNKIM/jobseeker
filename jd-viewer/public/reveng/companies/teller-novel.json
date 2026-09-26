@@ -1,0 +1,156 @@
+{
+  "slug": "teller-novel",
+  "name": "テラーノベル",
+  "name_en": "Teller Novel",
+  "country": "JP",
+  "category": "소셜",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "tellernovel.com",
+  "one_liner": "무료 소설 투고 사이트 테라노벨 — 공개 범위·팔로워·VIP 유료가 얽힌 '이 이야기를 읽어도 되나' 판정을 '판단하려면 무엇이 필요한가' 를 타입으로 돌려주는 Decision 패턴으로 풀고, 이야기를 소리로 전하기 전에 새 TTS 의 한자 읽기를 받아쓰기 대신 소리 자체로 대조해 잰다",
+  "business_model": "누구나 무료로 소설을 쓰고 읽는 투고 사이트(랭킹·콘테스트)에서 출판·미디어믹스로 작품을 넓힌다. 유료 디지털 상품을 앱 내 결제 등으로 판다 — 기술 블로그의 예로는 '유료 작품은 VIP 회원이면 읽는다'. 요금·매출은 공개 자료에 없다. 테라드라마라는 별도 모바일 앱도 있다.",
+  "products": [
+    "테라노벨(소설 투고·열람 — Web·iOS·Android)",
+    "테라드라마(모바일 앱)",
+    "출판·미디어믹스"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "유료 작품·VIP 회원",
+      "how": "유료 디지털 상품을 앱 내 결제·신용카드 등으로 판다. 블로그의 열람 판정 예에서 유료 작품은 VIP 회원이면 읽는다. 가격 체계는 구입 화면에만.",
+      "weight": "비중 확인 못 함",
+      "domains": [
+        "누가 어떤 이야기를 읽을 수 있는지 판정한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "特定商取引法に基づく表記 | テラーノベル",
+          "url": "https://tellernovel.com/legal_information",
+          "publisher": "株式会社テラーノベル",
+          "date": "2026-09-26",
+          "summary": "판매 사업자 주식회사 테라노벨. 판매 가격은 구입 절차 화면에 표시 · 신용카드·편의점·Apple Pay·Google Pay·앱 내 결제 · 전자 상품이라 반품 불가 · iOS/Android 동작 환경."
+        },
+        {
+          "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+          "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+          "publisher": "Teller Novel Tech Blog (Zenn)",
+          "date": "2026-09-07",
+          "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+        }
+      ]
+    },
+    {
+      "name": "출판·미디어믹스",
+      "how": "투고 작품을 출판·코미컬라이즈 등으로 넓힌다. 수익 배분 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "テラーノベル（Teller Novel）｜無料の小説投稿サイト",
+          "url": "https://tellernovel.com/",
+          "publisher": "株式会社テラーノベル",
+          "date": "2026-09-26",
+          "summary": "무료로 읽고 쓰는 소설 투고 사이트 테라노벨 — 랭킹·콘테스트·출판·미디어믹스 작품 소개 · 커뮤니티 가이드라인·안심 안전 대책."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "읽을 수 있나, 들을 수 있나",
+    "question": "투고 소설 서비스는 누가 무엇을 읽을 수 있는지 어떻게 판정하고, 이야기를 소리로 옮길 때 무엇을 먼저 재나?",
+    "code": "flowchart LR\n  R[\"열람 요청\"] --> J{\"열람 판정\\nDecision 패턴\"}\n  J -->|공개 범위| F[\"팔로워 여부 · DB\"]\n  J -->|유료| V[\"VIP 회원 여부\"]\n  J --> READ[\"읽기\"]\n  S[\"이야기 텍스트\"] --> T[\"TTS 후보\"] --> B[\"g2p 벤치마크\\n한자 읽기 구분\"] --> A[\"소리로 전달\"]",
+    "_note": "TTS 로 이야기를 전하는 기능이 어느 제품(테라노벨·테라드라마)에 들어가는지는 글에 없다. 출판·미디어믹스 수익원에 이을 기술 글은 아직 못 봤다."
+  },
+  "domains": [
+    {
+      "name": "누가 어떤 이야기를 읽을 수 있는지 판정한다",
+      "why": "소설 투고 서비스에서 한 이야기를 읽어도 되는지는 작가가 정한 공개 범위(전체·팔로워 한정 등)와 유료 여부가 함께 정한다. 팔로워인지는 Story 를 봐선 모르고 DB 에 물어야 한다 — 그 순간 로직을 어디 둘지 세 갈래가 생긴다.",
+      "tech": [
+        {
+          "tech": "Go · DDD 전술 패턴 · Decision 패턴(판단에 필요한 것을 타입으로 반환)",
+          "solves": "domain 이 repository 를 부르지 않으면서도 판정 로직이 domain 밖으로 새지 않는다. 전체 공개면 쿼리가 하나도 안 나간다.",
+          "limits": "호출 쪽이 Decision 의 종류마다 대응하는 대응표가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+              "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+              "publisher": "Teller Novel Tech Blog (Zenn)",
+              "date": "2026-09-07",
+              "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다",
+      "why": "일본어 TTS 는 데모에선 완벽해 보여도 긴 문장에서 문맥 의존 한자 읽기를 틀린다. 이야기를 음성으로 전하는 서비스에 이건 치명적인데, 고치려면 읽기를 하나하나 사람이 지정해야 해 도입의 이득을 넘기도 하고, 새 모델이 나올 때마다 귀로 다시 확인해야 했다.",
+      "tech": [
+        {
+          "tech": "ja-tts-g2p-bench — 문맥 의존 동형이음어 세트 · 받아쓰기 대신 소리 자체를 대조 · 리더보드",
+          "solves": "귀로 듣는 작업을 새 TTS 마다 수치 비교로 바꾼다.",
+          "limits": "본문의 '한계' 절은 다음 사이클에 읽는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+              "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+              "publisher": "Teller Novel Tech Blog (Zenn)",
+              "date": "2026-06-10",
+              "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "유료 작품·VIP 회원의 가격과 매출 비중을 확인하지 못했다.",
+    "출판·미디어믹스 쪽 기술 글은 아직 못 봤다.",
+    "테라드라마 앱의 QA 빌드 단축 글(`05b0e164a3ceff`)은 개발 생산성 글이라 도메인으로 세우지 않았다 — 제품 쪽 연결이 드러나면 다시 본다."
+  ],
+  "sources": [
+    {
+      "title": "テラーノベル（Teller Novel）｜無料の小説投稿サイト",
+      "url": "https://tellernovel.com/",
+      "publisher": "株式会社テラーノベル",
+      "date": "2026-09-26",
+      "summary": "무료로 읽고 쓰는 소설 투고 사이트 테라노벨 — 랭킹·콘테스트·출판·미디어믹스 작품 소개 · 커뮤니티 가이드라인·안심 안전 대책."
+    },
+    {
+      "title": "特定商取引法に基づく表記 | テラーノベル",
+      "url": "https://tellernovel.com/legal_information",
+      "publisher": "株式会社テラーノベル",
+      "date": "2026-09-26",
+      "summary": "판매 사업자 주식회사 테라노벨. 판매 가격은 구입 절차 화면에 표시 · 신용카드·편의점·Apple Pay·Google Pay·앱 내 결제 · 전자 상품이라 반품 불가 · iOS/Android 동작 환경."
+    },
+    {
+      "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+      "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+      "publisher": "Teller Novel Tech Blog (Zenn)",
+      "date": "2026-09-07",
+      "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+    },
+    {
+      "title": "声は“完璧”、漢字はポンコツ——TTSデモに踊らされず読み分けを数値化した",
+      "url": "https://zenn.dev/tellernovel_inc/articles/ja-tts-g2p-benchmark",
+      "publisher": "Teller Novel Tech Blog (Zenn)",
+      "date": "2026-06-10",
+      "summary": "이야기를 음성으로 전하는 서비스에 일본어 TTS 의 한자 읽기(문맥 의존 동형이음어, g2p) 오류는 치명적이다 — 데모는 잘 들리지만 긴 문장에서 틀린다. 새 TTS 가 나올 때마다 읽기 구분을 자동으로 재는 벤치마크 `ja-tts-g2p-bench`. 받아쓰기로 채점할 수 없어(ASR 도 읽기를 틀린다) '소리 자체' 를 대조 · 리더보드 · 한계."
+    },
+    {
+      "title": "React NativeのQAビルド時間を約80%改善した話 — Expoのfingerprint × repackでフルビルドをスキップ",
+      "url": "https://zenn.dev/tellernovel_inc/articles/05b0e164a3ceff",
+      "publisher": "Teller Novel Tech Blog (Zenn)",
+      "date": "2026-06-19",
+      "summary": "테라드라마 모바일 앱에서 PR 마다 도는 iOS/Android QA 빌드가 약 17분 — 대부분 JS 변경뿐이라 Expo fingerprint 로 네이티브 변화를 검출해 네이티브 산출물을 캐시하고 JS 만 repack·재서명해 몇 분대로. self-hosted GitHub Actions · OTA(EAS Update)와 repack 의 구분."
+    }
+  ]
+}

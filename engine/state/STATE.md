@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**아흔다섯 번째 후보 조사(2026-09-26) — 대기 3/3: TELLER · DRESS CODE · Photoruction. 다음은 --gaps 의 신규: 큐 맨 위 TELLER — `0193eb68cabb6e`(DDD 트릴레마·Decision 패턴) · `05b0e164a3ceff`(RN QA 빌드 80%↓) · `ja-tts-g2p-benchmark`(TTS 읽기 구분 수치화) · 회사 사이트에서 수익원부터. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**TELLER 프로파일(2026-09-26) — slug `teller-novel`, 도메인 둘, 기능 0. 다음은 확장: '누가 어떤 이야기를 읽을 수 있는지 판정한다' — `0193eb68cabb6e`(A/B/C 세 선택지·Decision 패턴·유료 축 — 본문 다 읽을 것). 그다음 '이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다' — `ja-tts-g2p-benchmark`. 수익원 둘 중 출판·미디어믹스는 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 2/3(DRESS CODE · Photoruction). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

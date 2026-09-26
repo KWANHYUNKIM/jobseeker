@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "teller-novel",
+      "name": "テラーノベル",
+      "name_en": "Teller Novel",
+      "country": "JP",
+      "category": "소셜",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "무료 소설 투고 사이트 테라노벨 — 공개 범위·팔로워·VIP 유료가 얽힌 '이 이야기를 읽어도 되나' 판정을 '판단하려면 무엇이 필요한가' 를 타입으로 돌려주는 Decision 패턴으로 풀고, 이야기를 소리로 전하기 전에 새 TTS 의 한자 읽기를 받아쓰기 대신 소리 자체로 대조해 잰다",
+      "updated_at": "2026-09-26",
+      "domain": "tellernovel.com"
+    },
+    {
       "slug": "usen-ict",
       "name": "USEN ICT Solutions",
       "name_en": "USEN ICT Solutions",
@@ -3617,7 +3629,9 @@
     "입찰 요청이 늘수록 비용이 붙는 로그 기반을 갈아 끼운다",
     "매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다",
     "부서마다 비용이 갈리는 사내 데이터 기반을 고른다",
-    "영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다"
+    "영업과 엔지니어가 한 계정에서 AI 기능을 나눠 쓴다",
+    "누가 어떤 이야기를 읽을 수 있는지 판정한다",
+    "이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다"
   ],
   "countries": {
     "KR": "한국",

@@ -2057,3 +2057,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 아흔다섯 번째 후보 조사
 
 - Zenn 검색 API 새 주제어 15개 × 3쪽. TELLER · DRESS CODE · Photoruction 을 대기로. Scalar·TOKIUM·nttdata·nextbeat·syncable·hacobell 은 거름.
+
+## 2026-09-26 TELLER 회사 프로파일
+
+- 특상법 표기로 유료 디지털 상품 확인, VIP 는 블로그 예에서. 열람 판정 DDD 글과 TTS 벤치마크 글을 도메인 둘로. RN QA 빌드 글은 개발 생산성이라 도메인으로 세우지 않음.
