@@ -4,13 +4,13 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **70건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **71건**.
 이번 루프에서 정리한 겹침(전부 ✅): Rocket Pay Senior Staff(차이만) · Rocket Pay Staff 영문(dup) · Orchestration 영문(dup) ·
 Eats Web FE(dup) · Eats Merchant 재게시(dup) · ML Staff 3건(dup) · Infrastructure 싱가포르 IC(차이만) ·
 **Cloud Infra Automation 원티드(wd/382712 → dup gh_jid=8107804)**.
 
 ⚠️ 다음 회차: 겹침 0.9↑ 후보가 바닥났다. 다음 겹침 후보(0.5~0.8, 직급·팀이 다를 수 있어 **양방향 비교 필수**):
-✅ `Staff Data Engineer`(ats 8063701, Director 의 IC 판, 차이만 3 + **salary.note 에 $164K~$282K 추가**), `Staff ML Engineer – Search & Discovery Relevance`(8202824),
+✅ `Staff Data Engineer`(ats 8063701, Director 의 IC 판, 차이만 3 + **salary.note 에 $164K~$282K 추가**), ✅ `Staff ML Engineer – Search & Discovery Relevance`(8202824, 차이만 3 + 급여 $174,000K~$299,000K 원문 표기),
 `Senior Staff / Staff Back-End Engineer`(7981493 ↔ Pricing 0.67), `Sr. Staff Back-end Engineer (Coupang Pay)`(7936538).
 겹침이 낮으면(<0.5) 새 공고로 **전부** 쓴다. 비개발 공고는 건너뛴다.
 `Staff, Back-end Engineer (GOEX)` — 회사명 표기가 달라 쿠팡 필터에 안 걸린다(미확인).
