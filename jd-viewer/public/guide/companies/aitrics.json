@@ -6,7 +6,7 @@
     "에이아이트릭스",
     "AITRICS"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "aitrics.com",
   "one_liner": "병원 EMR 을 실시간으로 분석해 환자 상태 악화를 예측하는 의료 AI 'AITRICS-VC(바이탈케어)' 를 만드는 회사 — 동남아·일본으로 허가·연구를 넓히는 중",
@@ -539,6 +539,97 @@
               "title": "Data Quality — The Book of OHDSI",
               "url": "https://ohdsi.github.io/TheBookOfOhdsi/DataQuality.html",
               "kind": "book"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/355585",
+      "title": "Sr. Technical Product Manager",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 강남구. **제품 오너십과 기술 프로그램 오너십을 함께 지는 Sr. TPM** 이다. 제품 쪽 — 로드맵·릴리즈 정렬, 국내외 의료진·고객 요구를 요구사항(**SRS**)으로 정의, Business/Clinical KPI, 출시 후 개선 백로그, 신규 사업 기술 PoC. 기술 프로그램 쪽 — Backend·ML·DevOps/SRE·App·QA 여러 팀 프로젝트의 범위·마일스톤·리스크와 E2E 딜리버리, **요구사항을 API 명세·비기능 요구사항·데이터 모델로 분해**, 설계 리뷰에서 트레이드오프 설명, **Epic 등 EMR·환자 모니터 장비·HL7/FHIR·병원 온프레미스 통합**, **IEC 62304·ISO 13485·ISO 14971·KGMP·MDSAP 에 맞는 릴리즈 프로세스와 QMS 산출물(SDS·DHF·추적성 매트릭스)**, 리드타임·배포 빈도·장애율 같은 **Delivery 지표**. 필수는 **SW 개발 경험 3년 이상** + 디지털 헬스케어·B2B SaaS·플랫폼 PO/PM/TPM 5년 이상, 복수 팀 프로젝트 런칭, 분산 시스템·클라우드·CI/CD·MSA, API·데이터 모델·통합 기술 리뷰, Jira/Confluence 애자일, 다양한 이해관계자 조정, EMR·HL7/FHIR·Clinical Workflow 이해(또는 학습 의지). 우대는 의료 제품·기술 동시 리딩, 규제 대응(FDA 510(k) 포함), MLOps, K8s·Istio·관측성, 사용 적합성 평가, 글로벌 런칭, HIPAA·SOC 2·ISMS-P, 직접 설계도·PoC 코드·SQL 산출. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "SW 개발 3년 이상",
+          "PO/PM/TPM 5년 이상",
+          "복수 팀 런칭",
+          "백엔드 아키텍처·API·통합 리뷰",
+          "의료 데이터·Clinical Workflow 이해"
+        ],
+        "can_learn": [
+          "IEC 62304·QMS 산출물",
+          "HL7/FHIR 통합",
+          "DORA 지표",
+          "MLOps"
+        ]
+      },
+      "study": [
+        {
+          "topic": "의료기기 SW 규제 — IEC 62304 와 추적성",
+          "from": "task",
+          "quote": "• 의료기기 규제 환경(IEC 62304, ISO 13485, ISO 14971, KGMP, MDSAP 등)에 부합하는 릴리즈 프로세스·QMS 산출물(SDS, DHF, 추적성 매트릭스 등) 리딩",
+          "priority": "core",
+          "why": "주요업무이고 우대에 규제 대응 경험이 있다. 회사 브리핑대로 AITRICS-VC 는 여러 나라에서 의료기기 허가를 받은 제품이다.",
+          "gap_check": "IEC 62304 는 SW 안전 등급(A·B·C)에 따라 요구 산출물이 어떻게 달라지고, 요구사항(SRS) → 설계(SDS) → 테스트 → 위험 통제(ISO 14971)를 잇는 추적성 매트릭스가 없으면 인허가·감사에서 무엇을 증명하지 못하며, 애자일 스프린트로 개발하면서 이 산출물을 어떻게 함께 쌓는가?",
+          "drill": "IEC 62304 개요를 읽고, 가상의 기능 '악화 위험 점수 알림' 하나로 요구사항 3개 → 설계 항목 → 테스트 케이스 → 관련 위험을 잇는 추적성 매트릭스를 만든다. 요구사항 하나가 바뀌면 다시 해야 할 산출물을 표시한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "IEC 62304 — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/IEC_62304",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "요구사항을 기술 스펙으로 — API 명세와 비기능 요구사항",
+          "from": "task",
+          "quote": "• 제품 요구사항을 기술 스펙(API 명세, 시스템·비기능 요구사항, 데이터 모델)으로 분해하고 엔지니어링 팀과 합의",
+          "priority": "core",
+          "why": "주요업무이고 필수에 'API 설계, 데이터 모델링, 시스템 통합에 대한 기술 리뷰 역량' 과 SW 개발 경험 3년이 있다.",
+          "gap_check": "'의료진이 병동별 고위험 환자 목록을 5초 안에 본다' 는 요구를 엔지니어링 팀과 합의할 스펙으로 바꾸면 API(경로·파라미터·응답)·데이터 모델·비기능 요구사항(지연·가용성·감사 로그·접근 권한)은 각각 무엇이 되고, 이를 명세로 먼저 합의하면 무엇이 줄어드는가?",
+          "drill": "OpenAPI 명세 형식으로 위 요구의 API 하나를 작성하고(요청·응답 스키마·오류 코드), 비기능 요구사항 표(지연 p95·가용성·감사 로그·권한)를 붙인다. 엔지니어 관점 질문 5개를 스스로 뽑아 답을 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "OpenAPI Specification",
+              "url": "https://spec.openapis.org/oas/latest.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "외부 시스템 통합 — EMR·환자 모니터·FHIR",
+          "from": "task",
+          "quote": "• 외부 시스템 통합 프로젝트 리딩 (Epic 등 EMR, 환자 모니터 장비, HL7/FHIR, 병원 온프레미스 배포)",
+          "priority": "high",
+          "why": "주요업무이고 필수에 'EMR, HL7/FHIR 등 및 Clinical Workflow에 대한 이해' 가 있다.",
+          "gap_check": "해외 병원의 Epic 같은 EMR 과 붙을 때 FHIR 로 무엇(환자·관찰값)을 받고, 환자 모니터 장비의 고빈도 활력징후는 왜 EMR 경유와 직접 연동의 지연·빈도가 다르며, 병원 온프레미스 배포에서 통합 테스트 환경은 어떻게 확보하는가?",
+          "drill": "FHIR 개요를 읽고 통합 프로젝트 계획서 한 장(연동 대상·데이터 항목·방식·지연 요구·테스트 환경·병원 측 준비물·리스크)을 가상의 해외 병원 기준으로 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Overview — FHIR v5.0.0",
+              "url": "https://hl7.org/fhir/overview.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Delivery 지표 — DORA 네 지표로 팀 흐름 보기",
+          "from": "task",
+          "quote": "• Delivery 지표(리드타임·배포 빈도·장애율 등) 관리 및 기술 부채·운영 이슈의 로드맵 반영",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "리드타임·배포 빈도·변경 실패율·복구 시간 네 지표는 각각 무엇을 보여주고, 의료기기 규제 때문에 릴리즈 절차가 무거운 팀에서 배포 빈도만 올리려 하면 무엇이 위험하며, 지표가 나빠졌을 때 기술 부채를 로드맵에 어떻게 반영하는가?",
+          "drill": "DORA 지표 가이드를 읽고, 가상의 팀 데이터(PR 병합 시각·배포 시각·장애 기록)로 네 지표를 계산하는 SQL 또는 스프레드시트를 만든다. 규제 릴리즈(검증 단계) 구간을 따로 떼어 리드타임을 두 구간으로 나눠 본다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "DORA's software delivery performance metrics",
+              "url": "https://dora.dev/guides/dora-metrics/",
+              "kind": "docs"
             }
           ]
         }
