@@ -1,0 +1,210 @@
+{
+  "book": "java-io",
+  "id": "request-line",
+  "no": "9.1",
+  "chapter": 9,
+  "title": "요청 한 줄 읽기",
+  "summary": "GET / HTTP/1.1",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "브라우저가 보내는 첫 줄을 바이트로 본다.",
+    "세 조각으로 가른다.",
+    "readLine 이 무엇을 떼어 냈는지 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "8장까지 서버는 아무 약속 없이 글자를 주고받았다. 이제 **HTTP** 라는 약속을 지킨다.\n\nHTTP 를 쓰려면 라이브러리가 필요할 것 같지만, 요청은 **그냥 텍스트**다. 7장에서 쓴 `ServerSocket` 으로 받아서 `od` 로 찍어 보면 전부 보인다.\n\n먼저 curl 이 보내는 것을 **한 바이트도 고치지 않고** 파일에 적었다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "받은 것을 그대로 파일에 적는다",
+      "code": "try (ServerSocket ss = new ServerSocket(port); Socket s = ss.accept()) {\n    InputStream in = s.getInputStream();\n    ByteArrayOutputStream buf = new ByteArrayOutputStream();\n    int b, run = 0;\n    while ((b = in.read()) != -1) {\n        buf.write(b);\n        if (b == '\\r' || b == '\\n') run++; else run = 0;\n        if (run == 4) break;      // \\r\\n\\r\\n 이 요청 머리의 끝이다\n    }\n    Files.write(Path.of(\"curl.bin\"), buf.toByteArray());\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "`od -c curl.bin` — curl 이 보낸 78바이트 전부",
+      "sql": "$ curl -s http://localhost:12800/\n$ od -c curl.bin\n\n  0000000    G   E   T       /       H   T   T   P   /   1   .   1  \\r  \\n\n  0000020    H   o   s   t   :       l   o   c   a   l   h   o   s   t   :\n  0000040    1   2   8   0   0  \\r  \\n   U   s   e   r   -   A   g   e   n\n  0000060    t   :       c   u   r   l   /   8   .   7   .   1  \\r  \\n   A\n  0000100    c   c   e   p   t   :       *   /   *  \\r  \\n  \\r  \\n\n  0000116",
+      "note": "**전부 읽을 수 있는 글자다.** 78바이트 안에 요청 줄 하나와 헤더 셋이 있고, 구분자는 `\\r\\n` 뿐이다. 마지막 `\\r\\n\\r\\n` 이 \"머리 끝\" 신호다."
+    },
+    {
+      "type": "prose",
+      "md": "## 첫 줄이 요청 줄이다\n\n그 첫 줄만 16진수로 다시 본다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "첫 줄 16바이트",
+      "sql": "$ head -c 16 curl.bin | od -An -tx1\n    47  45  54  20  2f  20  48  54  54  50  2f  31  2e  31  0d  0a\n     G   E   T  SP   /  SP   H   T   T   P   /   1   .   1  CR  LF",
+      "note": "**공백(`20`) 두 개가 구분자**이고 끝은 `0d 0a` 다. 즉 요청 줄은 `메서드 SP 대상 SP 버전 CRLF` 라는 딱 하나의 형식이다."
+    },
+    {
+      "type": "figure",
+      "caption": "the request line",
+      "ascii": "        GET / HTTP/1.1\\r\\n\n        ^^^ ^ ^^^^^^^^  ^^^^\n         |  |    |       |\n         |  |    |       +-- CRLF. always 0d 0a, never just 0a.\n         |  |    +---------- version. HTTP/1.1 or HTTP/1.0\n         |  +--------------- request target. path + optional ?query\n         +------------------ method. GET POST PUT DELETE ...\n\n        +--------------------------------------------+\n        | split(\" \") -> exactly 3 pieces            |\n        +--------------------------------------------+"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "세 조각으로 가른다",
+      "code": "BufferedReader in = new BufferedReader(\n    new InputStreamReader(s.getInputStream(), \"UTF-8\"));\nString line = in.readLine();\nString[] p = line.split(\" \");\nString method = p[0], target = p[1], version = p[2];\n\nint q = target.indexOf('?');\nString path  = q < 0 ? target : target.substring(0, q);\nString query = q < 0 ? null   : target.substring(q + 1);"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "다섯 가지 요청을 넣어 봤다",
+      "sql": "$ curl -s http://localhost:12801/\n  readLine() = [GET / HTTP/1.1]\n    길이 = 14  마지막 글자 = 49\n    메서드 = GET   대상 = /            버전 = HTTP/1.1\n\n$ curl -s \"http://localhost:12801/hello?name=kim&x=1\"\n  readLine() = [GET /hello?name=kim&x=1 HTTP/1.1]\n    대상 = /hello?name=kim&x=1\n    경로 = /hello        질의 = name=kim&x=1\n\n$ curl -s \"http://localhost:12801/한글\"\n  readLine() = [GET /%ed%95%9c%ea%b8%80 HTTP/1.1]\n    대상 = /%ed%95%9c%ea%b8%80\n\n$ curl -s -X POST http://localhost:12801/save -d 'a=1'\n    메서드 = POST  대상 = /save        버전 = HTTP/1.1\n\n$ curl -s --http1.0 http://localhost:12801/old\n    메서드 = GET   대상 = /old         버전 = HTTP/1.0",
+      "note": "**길이 14 · 마지막 글자 49**가 중요하다. `GET / HTTP/1.1` 은 14글자이고 49는 `'1'` 이다 — 바이트에는 `0d 0a` 가 있었는데 `readLine()` 이 준 문자열에는 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "readLine() 이 CRLF 를 떼어 낸다",
+      "md": "이것을 모르고 쓰면 나중에 못 찾는 버그가 된다.\n\n> `readLine()` 은 `\\n`·`\\r`·`\\r\\n` 셋 다 줄 끝으로 보고 **떼어 내고 돌려준다.** 그래서 `split(\" \")` 의 마지막 조각이 `HTTP/1.1` 로 깨끗하다.\n> 만약 `\\r` 이 남아 있었다면 `p[2]` 는 `\"HTTP/1.1\\r\"` 이 되고, `version.equals(\"HTTP/1.1\")` 이 **조용히 거짓**이 된다.\n> 반대로 **응답을 쓸 때는 `\\r\\n` 을 직접 넣어야 한다.** `println()` 은 OS 기본 줄 끝(6.5절의 `line.separator` — 맥에서는 `\\n` 하나)을 쓰므로 HTTP 에 쓰면 안 된다. 9.3절에서 그 결과를 본다."
+    },
+    {
+      "type": "prose",
+      "md": "## 한글 경로는 이미 퍼센트로 바뀌어 온다\n\n`/한글` 을 요청했는데 서버에 온 것은 `/%ed%95%9c%ea%b8%80` 이었다. 2장으로 돌아가 확인해 본다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "퍼센트 인코딩의 재료는 2장의 그 바이트다",
+      "sql": "$ printf '한' | od -An -tx1\n           ed  95  9c\n\n# 요청에 온 것:  /%ed%95%9c%ea%b8%80\n#                 ^^^^^^^^^^^^  한\n#                             ^^^^^^^^^^^^  글",
+      "note": "**퍼센트 인코딩은 새 규칙이 아니다** — UTF-8 바이트 하나를 `%xx` 로 적은 것뿐이다. 2.2절에서 찍은 `ed 95 9c` 가 그대로 들어 있다. 되돌리는 것은 `URLDecoder.decode(s, UTF_8)` 다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "공백이 든 주소는 서버까지 오지 않았다",
+      "md": "`/my file` 을 요청해 봤는데 **서버 로그에 아무것도 안 찍혔다.**\n\n```\n$ curl -sv \"http://localhost:12801/my file\"\n* URL rejected: Malformed input to a URL function\n* Closing connection\n```\n\n> curl 이 **연결도 하기 전에** 거절했다. 요청 줄의 구분자가 공백이라 `split(\" \")` 이 4조각이 될 텐데, 그 상황을 만들 수가 없었다.\n> 즉 **정상 클라이언트는 공백을 `%20` 으로 바꿔 보낸다.** 그래도 서버에서 `p.length != 3` 을 확인해야 한다 — 정상 클라이언트만 오는 게 아니다.\n> 확인 없이 `p[2]` 를 읽으면 `ArrayIndexOutOfBoundsException` 이고, 그것은 400 이 아니라 **스레드 죽음**으로 나타난다."
+    },
+    {
+      "type": "table",
+      "caption": "요청 줄에서 확인해야 하는 것",
+      "columns": [
+        "확인",
+        "안 하면",
+        "응답"
+      ],
+      "rows": [
+        [
+          "`line != null`",
+          "연결만 하고 끊은 경우 `NullPointerException`",
+          "응답할 대상이 없다"
+        ],
+        [
+          "`p.length == 3`",
+          "`ArrayIndexOutOfBoundsException`",
+          "**400 Bad Request**"
+        ],
+        [
+          "메서드가 아는 것인지",
+          "모르는 메서드를 GET 처럼 처리",
+          "**405 Method Not Allowed**"
+        ],
+        [
+          "버전이 `HTTP/1.x` 인지",
+          "엉뚱한 프로토콜을 HTTP 로 읽음",
+          "**505 Version Not Supported**"
+        ],
+        [
+          "줄 길이 상한",
+          "긴 줄 하나로 메모리를 채울 수 있다",
+          "**414 URI Too Long**"
+        ]
+      ],
+      "note": "마지막 줄이 실제 공격 경로다. `readLine()` 에는 상한이 없어서 `\\n` 없이 계속 보내면 힙이 찬다 — 톰캣의 `maxHttpHeaderSize`(기본 8KB)가 이걸 막는 값이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"HTTP 요청의 첫 줄에는 무엇이 있습니까.\"**\n\n> `메서드 SP 대상 SP 버전 CRLF` 세 조각이다. `od` 로 찍으면 `47 45 54 20 2f 20 ... 0d 0a` 로 보인다.\n> 대상은 경로와 질의가 `?` 로 붙어 있고, **이미 퍼센트 인코딩된 상태**로 온다 — 디코딩은 서버가 한다.\n> `readLine()` 을 쓰면 CRLF 가 떨어지지만 **응답에는 `\\r\\n` 을 직접 넣어야 한다.** `println()` 은 OS 줄 끝을 쓴다.\n> 확인 안 하면 어디가 깨지냐고 물으면 — `split(\" \")` 이 3개가 아닐 때, 그리고 `readLine()` 에 길이 상한이 없을 때다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 오간 것 — 78바이트 중 첫 줄",
+      "sql": "$ od -c curl.bin | head -1\n  0000000    G   E   T       /       H   T   T   P   /   1   .   1  \\r  \\n\n\n$ head -c 16 curl.bin | od -An -tx1\n           47  45  54  20  2f  20  48  54  54  50  2f  31  2e  31  0d  0a\n\n$ tail -c 4 curl.bin | od -An -tx1\n           0d  0a  0d  0a\n\n# 그것을 readLine() 으로 읽으면:\n  readLine() = [GET / HTTP/1.1]\n    길이 = 14  마지막 글자 = 49        <- '1'. 0d 0a 가 없다.\n    조각 3개\n    메서드 = GET   대상 = /   버전 = HTTP/1.1\n\n# 바이트는 16개인데 문자열은 14글자다 — readLine() 이 뗀 두 바이트가 0d 0a 다.\n# 그리고 요청 전체의 끝은 0d 0a 0d 0a 네 바이트 — 빈 줄 하나다.",
+      "note": "**16바이트와 14글자의 차이가 이 절의 전부다.** 다음 절에서는 그 `0d 0a 0d 0a` 까지 — 헤더를 어디서 멈춰야 하는지를 센다."
+    }
+  ],
+  "recap": [
+    "HTTP 요청은 그냥 텍스트다 — curl 의 기본 요청은 78바이트, 전부 읽을 수 있는 글자였다.",
+    "요청 줄은 메서드 SP 대상 SP 버전 CRLF 한 형식뿐이다.",
+    "16진수로는 47 45 54 20 2f 20 48 54 54 50 2f 31 2e 31 0d 0a 다.",
+    "readLine() 은 CRLF 를 떼어 준다 — 14글자가 나오고 마지막 글자는 '1'(49) 이다.",
+    "응답을 쓸 때는 \\r\\n 을 직접 넣는다. println() 은 OS 줄 끝을 쓴다.",
+    "대상은 경로와 질의가 ? 로 붙어 있고 퍼센트 인코딩된 채로 온다.",
+    "한글 경로는 /%ed%95%9c%ea%b8%80 로 왔고 ed 95 9c 는 2장의 UTF-8 바이트 그대로다.",
+    "공백이 든 주소는 curl 이 연결도 하기 전에 거절했다 — 정상 클라이언트는 %20 으로 바꾼다.",
+    "그래도 p.length == 3 을 확인해야 한다 — 안 하면 400 이 아니라 스레드가 죽는다.",
+    "readLine() 에는 길이 상한이 없다 — 톰캣의 maxHttpHeaderSize 가 그걸 막는 값이다."
+  ],
+  "drills": [
+    {
+      "task": "받은 요청을 파일에 적고 od -c 로 찍는다.",
+      "done_when": "첫 줄과 끝의 CRLF 를 눈으로 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "요청 줄을 세 조각으로 가른다.",
+      "done_when": "질의 문자열까지 분리한다.",
+      "minutes": 10
+    },
+    {
+      "task": "한글 경로를 요청해 본다.",
+      "done_when": "퍼센트 인코딩과 2장의 바이트를 맞춰 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "조각이 3개가 아닌 요청을 직접 소켓으로 보낸다.",
+      "done_when": "서버가 400 을 주는지 본다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "요청 줄의 세 조각은.",
+      "a": "메서드, 요청 대상, 버전. 공백으로 갈리고 CRLF 로 끝난다."
+    },
+    {
+      "q": "readLine() 이 준 문자열이 14글자인데 바이트는 16개였다. 차이는.",
+      "a": "readLine() 이 \\r\\n 두 바이트를 떼어 냈다."
+    },
+    {
+      "q": "/한글 이 /%ed%95%9c%ea%b8%80 로 온 이유는.",
+      "a": "UTF-8 바이트 하나를 %xx 로 적은 것이다. ed 95 9c 가 한 의 UTF-8 바이트다."
+    },
+    {
+      "q": "응답에 println() 을 쓰면 안 되는 이유는.",
+      "a": "OS 기본 줄 끝을 쓴다. 맥에서는 \\n 하나라 HTTP 의 CRLF 가 아니다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "요청 줄",
+      "what": "HTTP 요청의 첫 줄. 메서드 SP 대상 SP 버전 CRLF. 이 형식 하나뿐이다."
+    },
+    {
+      "term": "퍼센트 인코딩",
+      "what": "바이트 하나를 %xx 로 적는 것. 재료는 그 문자의 UTF-8 바이트다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "RFC 9112 — HTTP/1.1: Request Line",
+      "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+      "publisher": "IETF"
+    },
+    {
+      "title": "Java SE 17 API — BufferedReader.readLine",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/BufferedReader.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

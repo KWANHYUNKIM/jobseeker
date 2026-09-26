@@ -1,0 +1,237 @@
+{
+  "book": "java-io",
+  "id": "headers",
+  "no": "9.2",
+  "chapter": 9,
+  "title": "헤더와 빈 줄",
+  "summary": "어디까지가 헤더인가.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "헤더를 언제 멈춰 읽는지 정한다.",
+    "빈 줄 다음을 읽으면 무슨 일이 나는지 본다.",
+    "Content-Length 를 글자로 세면 어떻게 되는지 잰다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.1절이 `0d 0a 0d 0a` 로 끝났다. 그 네 바이트가 **빈 줄 하나**이고, 헤더는 거기서 멈춘다.\n\n`readLine()` 은 CRLF 를 떼어 주니 빈 줄은 **길이 0 짜리 문자열**로 온다. 그것이 종료 조건이다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "빈 줄이 나올 때까지",
+      "code": "Map<String, String> h = new LinkedHashMap<>();\nString line;\nwhile ((line = in.readLine()) != null) {\n    if (line.isEmpty()) break;           // 빈 줄 — 헤더 끝\n    int c = line.indexOf(':');\n    String k = line.substring(0, c).toLowerCase();   // 이름은 대소문자 무관\n    String v = line.substring(c + 1).trim();         // 값 앞 공백은 버린다\n    h.put(k, v);\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "이름을 소문자로 바꿔 넣는 이유",
+      "md": "HTTP 헤더 **이름**은 대소문자를 구분하지 않는다. `Content-Length` 와 `content-length` 는 같은 헤더다.\n\n> 그래서 받은 그대로 `Map` 에 넣으면 `h.get(\"content-length\")` 가 클라이언트에 따라 `null` 이 된다.\n> **값은 대소문자를 구분한다.** 소문자로 바꾸는 것은 이름뿐이다.\n> 서블릿의 `request.getHeader(\"Content-Type\")` 이 대소문자를 안 가리는 이유가 이것이다 — 안에서 같은 일을 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "curl 이 기본으로 보내는 헤더는 셋",
+      "sql": "$ curl -s http://localhost:12810/\n\n  요청 줄 = GET / HTTP/1.1\n  빈 줄 — 헤더 끝\n  헤더 줄 3개, 이름 3개\n    host = localhost:12810\n    user-agent = curl/8.7.1\n    accept = */*",
+      "note": "**`Host` 는 HTTP/1.1 의 필수 헤더다** — 한 IP 에 여러 도메인이 올라가므로 어느 이름으로 왔는지가 여기에만 있다. 없으면 400 이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "같은 이름이 두 번 오면",
+      "sql": "$ curl -s -H 'X-One: a' -H 'X-One: b' \\\n        -H 'Accept-Language: ko' -H 'Cookie: sid=abc' http://localhost:12811/\n\n  요청 줄 = GET / HTTP/1.1\n    (같은 이름이 또 왔다: x-one)\n  빈 줄 — 헤더 끝\n  헤더 줄 7개, 이름 6개\n    host = localhost:12811\n    user-agent = curl/8.7.1\n    accept = */*\n    x-one = b            <- a 가 사라졌다\n    accept-language = ko\n    cookie = sid=abc",
+      "note": "**줄은 7개인데 이름은 6개다.** `Map.put` 이 `a` 를 `b` 로 덮었다 — 내가 쓴 코드의 선택이고, HTTP 규약은 이 경우 **쉼표로 이어 붙이라**고 한다(`x-one: a,b`)."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "덮어쓰기가 보안 문제가 되는 자리",
+      "md": "같은 이름을 어느 쪽으로 해석하느냐는 취향이 아니다.\n\n> 프록시는 첫 번째를 쓰고 서버는 마지막을 쓰면, **둘이 서로 다른 값을 보는 요청**을 만들 수 있다. `Content-Length` 가 두 번 오는 경우가 특히 그렇다.\n> 그래서 실제 서버는 `Content-Length` 나 `Host` 가 두 번 오면 **덮어쓰지 않고 400 으로 거절한다.**\n> 여기서 만드는 것은 공부용이라 `put` 으로 두지만, 왜 그게 위험한지는 알고 둔다. 규칙: **이어 붙여도 되는 헤더와 하나만 와야 하는 헤더는 다르다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 빈 줄 다음을 읽으면 멈춘다\n\n빈 줄에서 `break` 하지 않고 한 줄 더 읽어 보면 무슨 일이 나는지 재 봤다. 소켓에 2초 타임아웃을 걸어 두고."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "GET 에는 본문이 없다",
+      "sql": "$ curl -s -m 5 http://localhost:12812/\n\n  요청 줄 = GET / HTTP/1.1\n  빈 줄 — 헤더 끝\n  헤더 줄 3개, 이름 3개\n  빈 줄 다음에 한 번 더 readLine() 해 본다...\n    SocketTimeoutException — 2001 ms 기다렸다",
+      "note": "**2초를 통째로 기다렸다.** 클라이언트는 다 보냈는데 서버가 더 기다린 것이고, 타임아웃이 없었다면 **영원히** 기다린다. 7.6절에서 본 그 상황이 여기서 재현된다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 EOF 가 아니라 멈춤인가",
+      "md": "\"더 없으면 `readLine()` 이 `null` 을 주면 되지 않나\" 가 자연스러운 질문이다.\n\n> `null`(EOF)은 **상대가 닫았을 때만** 온다. curl 은 응답을 기다리는 중이라 아직 안 닫았다.\n> 즉 소켓에서 \"데이터가 더 없다\"와 \"연결이 끝났다\"는 **다른 상태**다. 3장에서 `read()` 가 `-1` 을 주는 조건이 후자였던 것과 같다.\n> 그래서 HTTP 에서 **어디까지 읽어야 하는지는 프로토콜이 알려 줘야 한다** — 빈 줄까지가 머리, 그 뒤는 `Content-Length` 만큼이 본문이다. 이 두 규칙이 없으면 읽기를 끝낼 수 없다."
+    },
+    {
+      "type": "figure",
+      "caption": "where to stop reading",
+      "ascii": "        GET /save HTTP/1.1\\r\\n        <- request line\n        Host: localhost\\r\\n           <- header\n        Content-Length: 21\\r\\n        <- header. says how long the body is.\n        \\r\\n                          <- BLANK LINE. head ends here.\n        name=... (21 bytes)          <- body. read exactly 21. no more.\n\n        +------------------------------------------------+\n        | blank line -> stop reading headers             |\n        | Content-Length -> stop reading body            |\n        | neither -> the read blocks forever              |\n        +------------------------------------------------+"
+    },
+    {
+      "type": "prose",
+      "md": "## POST 는 본문이 붙는다\n\n같은 서버에 POST 를 보냈다. 헤더가 둘 늘어난다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "POST 의 헤더",
+      "sql": "$ curl -s -X POST http://localhost:12813/save -d 'name=홍길동&age=30'\n\n  요청 줄 = POST /save HTTP/1.1\n  헤더 줄 5개, 이름 5개\n    host = localhost:12813\n    user-agent = curl/8.7.1\n    accept = */*\n    content-length = 21\n    content-type = application/x-www-form-urlencoded",
+      "note": "`Content-Length: 21` 이 왔다. 그런데 보낸 것은 `name=홍길동&age=30` 으로 **15글자**다."
+    },
+    {
+      "type": "prose",
+      "md": "## 21 과 15 — 여기서 서버가 멈췄다\n\n`Content-Length` 만큼 읽으면 된다고 생각하고 `BufferedReader` 로 21을 읽었다. 내 코드가 멈췄다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "글자 수로 읽었다 — 멈춘다",
+      "code": "int len = 21;                       // Content-Length\nchar[] buf = new char[len];\nint got = 0;\nwhile (got < len) {                 // 21 글자를 기다린다\n    int r = in.read(buf, got, len - got);\n    if (r < 0) break;\n    got += r;\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "15자에서 멈췄다",
+      "sql": "  요청 줄 = POST /save HTTP/1.1\n  Content-Length = 21\n    read -> 15자  (누적 15/21)\n    SocketTimeoutException — 15자에서 멈췄다\n    받은 것 = [name=홍길동&age=30]\n    15자를 받았는데 21자를 기다렸다",
+      "note": "**본문은 다 왔다.** `[name=홍길동&age=30]` 이 전부다. 그런데 6글자가 더 올 거라고 믿고 기다렸다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "Content-Length 는 바이트다",
+      "md": "4장에서 이미 봤던 그 경계가 여기서 다시 나온다.\n\n> `name=` 5바이트 + `홍길동` 9바이트 + `&age=30` 7바이트 = **21바이트**.\n> 글자로는 5 + 3 + 7 = **15글자**.\n> `Reader` 는 바이트를 글자로 **합쳐서** 준다(4.2절). 그래서 21바이트를 다 받았는데도 15자만 나오고, 남은 6은 영원히 안 온다.\n> 이 버그가 무서운 것은 **영문만으로 테스트하면 안 걸린다**는 점이다. 영문은 1바이트 1글자라 21 = 21 이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "16진수로 확인 — 21바이트, 한글 하나에 3바이트",
+      "sql": "$ tail -c 21 post.bin | od -An -tx1\n     6e  61  6d  65  3d  ed  99  8d  ea  b8  b8  eb  8f  99  26  61\n      n   a   m   e   =  <---홍--->  <---길--->  <---동--->   &   a\n     67  65  3d  33  30\n      g   e   =   3   0\n\n# 5 + 9 + 7 = 21 바이트.  5 + 3 + 7 = 15 글자.",
+      "note": "**같은 데이터의 두 가지 셈이다.** HTTP 는 바이트로 세고 `Reader` 는 글자로 센다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "바이트로 읽는다 — 이것이 맞다",
+      "code": "// 머리는 바이트로 직접 읽는다 — 디코더가 본문을 미리 삼키지 않게\nInputStream raw = s.getInputStream();\nByteArrayOutputStream head = new ByteArrayOutputStream();\nint b, run = 0;\nwhile ((b = raw.read()) != -1) {\n    head.write(b);\n    if (b == '\\r' || b == '\\n') run++; else run = 0;\n    if (run == 4) break;\n}\nString h = head.toString(\"ISO-8859-1\");   // 머리는 ASCII 다\n\nbyte[] body = raw.readNBytes(len);        // 정확히 len 바이트\nString form = new String(body, UTF_8);    // 여기서 한 번만 해석한다"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "바이트로 읽으면 끝난다",
+      "sql": "  요청 줄 = POST /save HTTP/1.1\n  Content-Length = 21\n  본문 21바이트를 받았다\n    바이트 그대로 = 21글자로 보이고\n    UTF-8 로 해석 = [name=홍길동&age=30]  15글자",
+      "note": "**21바이트를 받고 15글자로 해석한다.** 이 순서다 — 세는 것은 바이트, 해석은 마지막에 한 번."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "머리를 Reader 로 읽으면 본문을 잃는다",
+      "md": "위 코드에서 머리까지 바이트로 읽은 이유가 있다.\n\n> `BufferedReader` 는 **미리 채운다**(3.4절). 빈 줄까지 읽으라고 했어도 뒤에 있는 본문 바이트를 버퍼로 당겨 간다.\n> 그다음 `socket.getInputStream()` 에서 직접 읽으면 **이미 Reader 가 가져간 바이트는 없다.** 본문의 앞부분이 사라진 채로 시작한다.\n> 그래서 한 소켓에 `Reader` 와 `InputStream` 을 섞어 쓰면 안 된다. 머리도 본문도 바이트로 읽고, 머리만 `ISO-8859-1` 로 문자열화한다(그 인코딩은 바이트 하나가 글자 하나라 안전하다)."
+    },
+    {
+      "type": "compare",
+      "title": "머리와 본문의 인코딩은 다르다",
+      "left": {
+        "title": "머리 — ASCII 다",
+        "md": "`ISO-8859-1` 로 읽어도 안전하다.\n\n바이트 하나 = 글자 하나이므로 길이가 안 어긋난다. 규약이 머리에 비ASCII 를 금지한다."
+      },
+      "right": {
+        "title": "본문 — 무엇이든 온다",
+        "md": "`Content-Type` 의 `charset` 이 정한다.\n\n그 값이 없으면 **추측하지 않는다** — 바이트로 들고 있다가 쓰는 쪽에서 정한다."
+      },
+      "note": "9.3절에서 응답을 쓸 때도 같은 구분이 필요하다 — 머리는 `ISO-8859-1` 로, 본문은 그 본문의 인코딩으로 쓴다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"HTTP 요청의 본문을 어디까지 읽어야 합니까.\"**\n\n> 빈 줄까지가 머리, 그 뒤 `Content-Length` **바이트**만큼이 본문이다. 두 규칙이 없으면 읽기가 안 끝난다.\n> \"안 끝나면 어떻게 되냐\" 에는 — 실제로 재 봤다. 빈 줄 다음에 한 줄 더 읽으면 `SocketTimeoutException` 까지 **2,001ms** 를 기다렸고 타임아웃이 없으면 영원히다.\n> `Reader` 로 읽으면 안 되는 이유가 핵심이다 — `Content-Length: 21` 인데 `name=홍길동&age=30` 은 **15글자**다. 21을 기다리다 멈춘다.\n> 그리고 한 소켓에 `Reader` 와 `InputStream` 을 섞으면 Reader 가 미리 당겨 간 본문이 사라진다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 21과 15",
+      "sql": "$ curl -s -X POST http://localhost:12850/save -d 'name=홍길동&age=30'\n\n# (1) Reader 로 Content-Length 만큼 읽었다\n  Content-Length = 21\n    read -> 15자  (누적 15/21)\n    SocketTimeoutException — 15자에서 멈췄다\n    받은 것 = [name=홍길동&age=30]\n    15자를 받았는데 21자를 기다렸다\n\n# (2) InputStream.readNBytes(21) 로 읽었다\n  Content-Length = 21\n  본문 21바이트를 받았다\n    바이트 그대로 = 21글자로 보이고\n    UTF-8 로 해석 = [name=홍길동&age=30]  15글자\n\n$ tail -c 21 post.bin | od -An -tx1\n     6e  61  6d  65  3d  ed  99  8d  ea  b8  b8  eb  8f  99  26  61\n     67  65  3d  33  30\n\n# 같은 데이터가 21바이트이고 15글자다.\n# 영문으로만 테스트하면 21 = 21 이라 이 버그는 안 보인다.\n#\n# 그리고 빈 줄 다음에 한 줄 더 읽으면:\n  빈 줄 다음에 한 번 더 readLine() 해 본다...\n    SocketTimeoutException — 2001 ms 기다렸다",
+      "note": "**이 절의 숫자는 21과 15, 그리고 2,001ms 다.** 요청을 다 읽었으니 다음은 답을 쓴다 — 9.3절에서 `Content-Length` 를 이번에는 **내가** 적는다. 같은 함정이 반대 방향으로 한 번 더 나온다."
+    }
+  ],
+  "recap": [
+    "헤더는 빈 줄(0d 0a 0d 0a 의 뒷 절반)에서 멈춘다 — readLine() 으로는 길이 0 짜리 문자열이다.",
+    "헤더 이름은 대소문자를 구분하지 않으므로 소문자로 바꿔 넣는다. 값은 구분한다.",
+    "Host 는 HTTP/1.1 필수 헤더다 — 한 IP 의 여러 도메인을 가리는 유일한 정보다.",
+    "같은 이름이 두 번 오면 규약은 쉼표로 이어 붙이라고 한다. Map.put 은 앞의 값을 버린다.",
+    "Content-Length 나 Host 가 두 번 오면 실제 서버는 400 으로 거절한다 — 프록시와 해석이 갈리면 위험하다.",
+    "빈 줄 다음에 한 줄 더 읽으면 SocketTimeoutException 까지 2,001ms 를 기다렸다.",
+    "EOF 는 상대가 닫을 때만 온다 — 데이터가 없는 것과 연결이 끝난 것은 다르다.",
+    "Content-Length 는 바이트다. name=홍길동&age=30 은 21바이트이고 15글자다.",
+    "Reader 로 21자를 기다리면 15자에서 멈춘다 — 영문 테스트로는 안 걸린다.",
+    "머리도 바이트로 읽는다. Reader 는 미리 채우므로 본문 앞부분을 삼킨다.",
+    "머리는 ISO-8859-1 로, 본문은 Content-Type 의 charset 으로 해석한다."
+  ],
+  "drills": [
+    {
+      "task": "헤더를 빈 줄까지 읽어 Map 에 담는다.",
+      "done_when": "이름을 소문자로 바꿔 넣는다.",
+      "minutes": 12
+    },
+    {
+      "task": "같은 이름의 헤더를 두 번 보낸다.",
+      "done_when": "줄 수와 이름 수가 다른 것을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "빈 줄 다음에 한 줄 더 읽어 본다.",
+      "done_when": "타임아웃까지 걸린 시간을 적는다.",
+      "minutes": 10
+    },
+    {
+      "task": "한글이 든 본문을 Reader 로 Content-Length 만큼 읽어 본다.",
+      "done_when": "몇 자에서 멈추는지 세고 바이트로 고친다.",
+      "minutes": 14
+    }
+  ],
+  "quiz": [
+    {
+      "q": "헤더의 끝은 무엇으로 아나.",
+      "a": "빈 줄이다. 바이트로는 요청 머리 끝의 0d 0a 0d 0a 중 뒤쪽 CRLF 다."
+    },
+    {
+      "q": "Content-Length: 21 인데 Reader 로 21자를 읽으면.",
+      "a": "한글이 섞이면 15자에서 멈춘다. 길이는 바이트 단위다."
+    },
+    {
+      "q": "한 소켓에 Reader 와 InputStream 을 섞으면.",
+      "a": "Reader 가 미리 채워 둔 바이트만큼 본문 앞부분이 사라진다."
+    },
+    {
+      "q": "헤더 이름을 소문자로 바꿔 두는 이유는.",
+      "a": "HTTP 헤더 이름은 대소문자를 구분하지 않는다. 클라이언트마다 표기가 다르다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "빈 줄",
+      "what": "CRLF 하나만 있는 줄. HTTP 머리의 끝 표시이고 readLine() 으로는 길이 0 문자열이다."
+    },
+    {
+      "term": "Content-Length",
+      "what": "본문의 길이. 단위는 바이트다 — 글자 수가 아니다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "RFC 9110 — HTTP Semantics: Field Names",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "publisher": "IETF"
+    },
+    {
+      "title": "RFC 9112 — HTTP/1.1: Message Body Length",
+      "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+      "publisher": "IETF"
+    }
+  ]
+}

@@ -459,7 +459,7 @@
           "title": "요청 한 줄 읽기",
           "summary": "GET / HTTP/1.1",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -467,7 +467,7 @@
           "title": "헤더와 빈 줄",
           "summary": "어디까지가 헤더인가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -475,7 +475,7 @@
           "title": "응답 만들기",
           "summary": "상태 줄과 Content-Length.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",

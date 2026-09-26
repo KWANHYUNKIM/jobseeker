@@ -1,0 +1,284 @@
+{
+  "book": "java-io",
+  "id": "response",
+  "no": "9.3",
+  "chapter": 9,
+  "title": "응답 만들기",
+  "summary": "상태 줄과 Content-Length.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "응답 원문을 바이트로 만든다.",
+    "Content-Length 를 빼거나 틀리면 무엇이 달라지는지 잰다.",
+    "curl 이 거절하는 형태를 찾아 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.2절에서 요청을 다 읽었다. 이번에는 **내가 적는다.**\n\n응답도 요청과 같은 모양이다 — 첫 줄, 헤더들, 빈 줄, 본문. 첫 줄만 다르다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "응답 하나",
+      "code": "byte[] body = \"hello\\n\".getBytes(UTF_8);          // 6 바이트\n\nString head = \"HTTP/1.1 200 OK\\r\\n\"\n            + \"Content-Type: text/plain\\r\\n\"\n            + \"Content-Length: \" + body.length + \"\\r\\n\"\n            + \"\\r\\n\";                              // 빈 줄\n\nOutputStream os = s.getOutputStream();\nos.write(head.getBytes(\"ISO-8859-1\"));            // 머리는 ASCII\nos.write(body);                                    // 본문은 그 바이트로\nos.flush();"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "`od -c` 로 본 응답 70바이트",
+      "sql": "  0000000    H   T   T   P   /   1   .   1       2   0   0       O   K  \\r\n  0000020   \\n   C   o   n   t   e   n   t   -   T   y   p   e   :       t\n  0000040    e   x   t   /   p   l   a   i   n  \\r  \\n   C   o   n   t   e\n  0000060    n   t   -   L   e   n   g   t   h   :       6  \\r  \\n  \\r  \\n\n  0000100    h   e   l   l   o  \\n\n  0000106",
+      "note": "**요청과 대칭이다.** 첫 줄 · 헤더 · `\\r\\n\\r\\n` · 본문. 64바이트가 머리이고 6바이트가 본문이다."
+    },
+    {
+      "type": "figure",
+      "caption": "the status line",
+      "ascii": "        HTTP/1.1 200 OK\\r\\n\n        ^^^^^^^^ ^^^ ^^  ^^^^\n            |     |   |    |\n            |     |   |    +-- CRLF\n            |     |   +------- reason phrase. optional. clients ignore it.\n            |     +----------- status code. 3 digits. this is the API.\n            +----------------- version\n\n        request line : METHOD SP TARGET SP VERSION\n        status line  : VERSION SP CODE SP REASON\n                       ^^^^^^^ comes first here, last there."
+    },
+    {
+      "type": "prose",
+      "md": "## 열 가지 형태를 curl 에 먹여 봤다\n\n형식을 조금씩 어긴 응답 열 개를 만들고 curl 이 어떻게 받는지 쟀다. 걸린 시간까지 같이 적었다."
+    },
+    {
+      "type": "table",
+      "caption": "curl 이 받은 것",
+      "columns": [
+        "응답 형태",
+        "상태",
+        "받은 바이트",
+        "걸린 시간",
+        "결과"
+      ],
+      "rows": [
+        [
+          "`Content-Length: 6` (정상)",
+          "200",
+          "6",
+          "**0.003 s**",
+          "제대로"
+        ],
+        [
+          "`Content-Length` 없이 안 닫음",
+          "200",
+          "6",
+          "**3.017 s**",
+          "서버가 닫을 때까지 기다렸다"
+        ],
+        [
+          "`Content-Length` 없이 닫음",
+          "200",
+          "6",
+          "0.008 s",
+          "받긴 받는다"
+        ],
+        [
+          "`Content-Length: 3` (짧게)",
+          "200",
+          "**3**",
+          "0.004 s",
+          "**조용히 잘렸다**"
+        ],
+        [
+          "`Content-Length: 20` (길게)",
+          "200",
+          "6",
+          "0.008 s",
+          "**curl: (18)**"
+        ],
+        [
+          "`HTTP/1.1 200` (이유구 없음)",
+          "200",
+          "6",
+          "0.003 s",
+          "정상 동작"
+        ],
+        [
+          "빈 줄 없음",
+          "200",
+          "**0**",
+          "0.005 s",
+          "**curl: (8)**"
+        ],
+        [
+          "CRLF 대신 LF",
+          "200",
+          "6",
+          "0.005 s",
+          "정상 동작"
+        ],
+        [
+          "한글 본문 · 길이를 글자 수로",
+          "200",
+          "**6**",
+          "0.003 s",
+          "**본문이 잘렸다**"
+        ],
+        [
+          "한글 본문 · 길이를 바이트로",
+          "200",
+          "16",
+          "0.006 s",
+          "제대로"
+        ]
+      ],
+      "note": "**세 줄이 조용히 틀린다** — 짧은 길이, 글자 수 길이, 그리고 `Content-Length` 없이 안 닫는 경우. 나머지는 오류로 드러난다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "3.017초는 어디서 왔나",
+      "md": "`Content-Length` 를 빼고 소켓을 3초 동안 안 닫아 뒀다. curl 은 **정확히 그만큼** 기다렸다.\n\n> 본문이 어디서 끝나는지 알 방법이 **연결이 닫히는 것**밖에 없었다. 9.2절에서 서버가 멈춘 것과 같은 상황이 클라이언트 쪽에서 재현된 것이다.\n> HTTP/1.0 은 실제로 이렇게 동작했다 — 그래서 응답마다 연결을 새로 맺어야 했다.\n> HTTP/1.1 이 연결을 재사용하려면 **길이를 알려 주는 방법**이 필요하고, 그것이 `Content-Length` 와 `Transfer-Encoding: chunked` 다. 9.6절에서 이 이야기를 잇는다."
+    },
+    {
+      "type": "compare",
+      "title": "길이를 틀리는 두 방향",
+      "left": {
+        "title": "짧게 적었다 — 조용하다",
+        "bad": true,
+        "md": "`Content-Length: 3`, 실제 6바이트\n\n```\nhttp=200  받은바이트=3\n본문: h e l\n```\n\n**오류가 없다.** curl 은 3바이트를 받고 정상 종료했다. 남은 `lo\\n` 은 다음 응답의 앞부분으로 해석된다."
+      },
+      "right": {
+        "title": "길게 적었다 — 드러난다",
+        "md": "`Content-Length: 20`, 실제 6바이트\n\n```\ncurl: (18) transfer closed with\n           14 bytes remaining to read\n```\n\n**즉시 오류다.** 14바이트가 모자란다고 정확히 말해 준다."
+      },
+      "note": "**짧게 적는 쪽이 훨씬 위험하다.** 오류가 없으니 배포되고, 연결을 재사용하면 다음 응답이 밀려서 깨진다 — 그 증상은 여기서 찍힌 자리와 아주 멀리 떨어져 나타난다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "빈 줄을 빼면 본문이 헤더로 읽힌다",
+      "sql": "# 서버가 보낸 것 (빈 줄 없음):\n$ od -c nb.bin\n  0000000    H   T   T   P   /   1   .   1       2   0   0       O   K  \\r\n  0000020   \\n   C   o   n   t   e   n   t   -   L   e   n   g   t   h   :\n  0000040        6  \\r  \\n   h   e   l   l   o  \\n\n  0000052\n\n# curl 이 본 것:\n  < HTTP/1.1 200 OK\n  < Content-Length: 6\n  * Header without colon\n  curl: (8) Header without colon",
+      "note": "**`hello` 를 헤더 줄로 읽었다.** 콜론이 없으니 거절한다 — 빈 줄은 장식이 아니라 \"머리 끝\" 이라는 유일한 신호다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "관대한 자리와 엄한 자리",
+      "md": "열 가지 중 **둘은 규약을 어겼는데도 통했다.**\n\n> `HTTP/1.1 200`(이유구 생략) — 통했다. 이유구는 사람이 읽는 것이고 클라이언트는 숫자만 본다. 실제로 HTTP/2 에는 이유구가 아예 없다.\n> **CRLF 대신 LF** — 통했다. curl 이 `\\n` 하나도 줄 끝으로 받아 준다.\n> 그래도 LF 로 쓰면 안 된다 — 관대한 것은 curl 이고, **중간의 프록시나 다른 서버는 거절한다.** 받는 쪽이 관대한 것을 보내는 쪽의 허락으로 착각하는 것이 호환성 문제의 출발이다.\n> 정리하면 **빈 줄은 못 뺀다. 이유구는 빼도 된다. 줄 끝은 뺄 수 있어도 빼지 않는다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 같은 함정이 반대 방향으로 한 번 더\n\n9.2절에서 `Content-Length` 를 글자로 세다 멈췄다. 이번에는 **내가 글자로 적어 봤다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "bad": true,
+      "caption": "본문의 글자 수를 길이로 적었다",
+      "code": "byte[] kor = \"안녕하세요\\n\".getBytes(UTF_8);      // 16 바이트\n\nhead.append(\"Content-Length: \")\n    .append(\"안녕하세요\\n\".length());             // 6 — 글자 수다\nos.write(kor);                                    // 16 바이트를 보낸다"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "6바이트만 읽고 끝냈다",
+      "sql": "# 길이를 글자 수(6)로 적었을 때\n$ curl -s http://localhost:12828/ -o body.txt -w '받은바이트=%{size_download}\\n'\n  받은바이트=6\n$ od -An -tx1 body.txt\n     ec  95  88  eb  85  95\n     <---안--->  <---녕--->              <- 여기까지만 왔다\n\n# 길이를 바이트(16)로 적었을 때\n  받은바이트=16\n$ od -c body.txt\n  0000000   안  **  **  녕  **  **  하  **  **  세  **  **  요  **  **  \\n",
+      "note": "**`안녕` 만 도착했다.** 6바이트는 한글 두 자다. 오류는 없었다 — 화면에 `안녕` 이 나오고 나머지가 사라진 것으로 보인다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "String.length() 를 Content-Length 에 쓰지 않는다",
+      "md": "자바에서 이 버그를 만드는 방법은 하나뿐이고 아주 짧다.\n\n> `Content-Length: \" + text.length()` — **이 한 줄이다.**\n> 맞는 것은 `text.getBytes(UTF_8).length` 이고, 더 나은 것은 **바이트 배열을 먼저 만들고 그것의 길이를 쓰는 것**이다. 두 번 만들면 두 값이 어긋날 여지가 남는다.\n> ```java\nbyte[] body = text.getBytes(UTF_8);\nhead.append(\"Content-Length: \").append(body.length);\nos.write(body);\n```\n> 그래서 4.4절에서 `PrintWriter` 로 응답을 쓰지 말라고 한 것이다 — 글자로 쓰면 몇 바이트가 나갔는지 내가 모른다."
+    },
+    {
+      "type": "steps",
+      "title": "응답 하나를 쓰는 순서",
+      "steps": [
+        "**본문을 바이트로 먼저 만든다** — `byte[] body = ...`. 길이의 근거가 여기서 생긴다.",
+        "**상태 줄을 쓴다** — `HTTP/1.1 <코드> <이유구>\\r\\n`. 이유구는 생략 가능하지만 적어 준다.",
+        "**헤더를 쓴다** — 최소한 `Content-Type` 과 `Content-Length: body.length`.",
+        "**빈 줄을 쓴다** — `\\r\\n`. 이것을 빼면 본문이 헤더로 읽힌다.",
+        "**본문 바이트를 그대로 쓴다** — `os.write(body)`. 여기서 문자열로 되돌리지 않는다.",
+        "**`flush()` 한다** — 3.5절. 안 하면 버퍼에 남아 클라이언트가 기다린다."
+      ]
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"Content-Length 를 안 보내면 어떻게 됩니까.\"**\n\n> 클라이언트는 **연결이 닫힐 때까지** 기다린다. 재 봤다 — 3초 안 닫고 있으니 curl 이 정확히 **3.017초** 걸렸다.\n> \"틀리게 보내면\" 에는 방향으로 갈라 답한다. **길게** 적으면 `curl: (18) transfer closed with 14 bytes remaining`, **짧게** 적으면 **오류 없이 잘린다** — 후자가 위험하다.\n> 자바에서 가장 흔한 실수는 `String.length()` 를 쓰는 것이다. `안녕하세요\\n` 을 6으로 적으면 `안녕` 만 도착한다.\n> 빈 줄을 빼면 어떻게 되냐고 물으면 — 본문의 첫 줄이 헤더로 읽혀 `curl: (8) Header without colon` 이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 열 가지 응답",
+      "sql": "$ for m in len nolen nolenclose short over noreason noblank lf korchars korbytes; do\n>   java -cp out Resp $m $p &\n>   curl -s -m 6 -o body.txt -w 'http=%{http_code} 받은바이트=%{size_download} 걸린시간=%{time_total}s\\n' ...\n> done\n\n  ===== len =====\n  http=200 받은바이트=6  걸린시간=0.003283s\n  ===== nolen =====\n  http=200 받은바이트=6  걸린시간=3.016696s        <- 서버가 닫을 때까지\n  ===== nolenclose =====\n  http=200 받은바이트=6  걸린시간=0.008014s\n  ===== short =====\n  http=200 받은바이트=3  걸린시간=0.004145s        <- 오류 없이 잘렸다\n    본문: h e l\n  ===== over =====\n  curl: (18) transfer closed with 14 bytes remaining to read\n  ===== noreason =====\n  http=200 받은바이트=6  걸린시간=0.002527s        <- 이유구 없어도 된다\n  ===== noblank =====\n  curl: (8) Header without colon\n  ===== lf =====\n  http=200 받은바이트=6  걸린시간=0.004892s        <- LF 도 받아 준다\n  ===== korchars =====\n  http=200 받은바이트=6  걸린시간=0.002501s        <- 안녕 만 왔다\n    본문: ec 95 88 eb 85 95\n  ===== korbytes =====\n  http=200 받은바이트=16 걸린시간=0.005553s\n\n# 0.003 초와 3.017 초의 차이는 Content-Length 한 줄이다.\n# 그리고 short 와 korchars 두 줄은 200 으로 성공했는데 내용이 잘렸다 —\n# 오류로 드러나는 실수보다 이쪽이 오래 살아남는다.",
+      "note": "**표의 열 줄이 이 절의 전부다.** 다음 절에서는 지금까지 200 만 보내 온 이 서버에 **없는 주소**를 물어본다 — 404 를 직접 쓴다."
+    }
+  ],
+  "recap": [
+    "응답도 요청과 같은 모양이다 — 상태 줄, 헤더, 빈 줄, 본문. 정상 응답 하나가 70바이트였다.",
+    "상태 줄은 VERSION SP CODE SP REASON 이고 요청 줄과 순서가 반대다.",
+    "Content-Length 를 빼고 안 닫으면 curl 이 3.017초를 기다렸다 — 닫히는 것이 유일한 끝 신호다.",
+    "길게 적으면 curl: (18) transfer closed with 14 bytes remaining 으로 드러난다.",
+    "짧게 적으면 오류 없이 잘린다 — 200 으로 성공하므로 훨씬 위험하다.",
+    "빈 줄을 빼면 본문 첫 줄이 헤더로 읽혀 curl: (8) Header without colon 이다.",
+    "이유구(OK)는 생략해도 통했다 — HTTP/2 에는 아예 없다.",
+    "CRLF 대신 LF 도 curl 은 받아 줬다. 그래도 프록시가 거절하므로 쓰지 않는다.",
+    "String.length() 를 Content-Length 에 쓰면 안녕하세요 가 안녕 으로 잘린다.",
+    "본문 바이트를 먼저 만들고 그 length 를 쓴다 — 두 번 세지 않는다.",
+    "flush() 를 안 하면 버퍼에 남아 클라이언트가 기다린다."
+  ],
+  "drills": [
+    {
+      "task": "응답 하나를 손으로 만들어 od 로 찍는다.",
+      "done_when": "머리와 본문의 바이트 수를 센다.",
+      "minutes": 12
+    },
+    {
+      "task": "Content-Length 를 빼고 안 닫아 본다.",
+      "done_when": "curl 이 몇 초 걸리는지 잰다.",
+      "minutes": 10
+    },
+    {
+      "task": "길이를 실제보다 짧게·길게 적어 본다.",
+      "done_when": "한쪽만 오류가 나는 것을 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "한글 본문에 String.length() 를 써 본다.",
+      "done_when": "본문이 어디서 잘리는지 od 로 본다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Content-Length 를 안 보내고 연결도 안 닫으면.",
+      "a": "클라이언트가 계속 기다린다. 실제로 3초 안 닫으니 3.017초 걸렸다."
+    },
+    {
+      "q": "Content-Length 를 실제보다 짧게 적으면.",
+      "a": "오류 없이 잘린다. 200 으로 성공하므로 발견이 늦다."
+    },
+    {
+      "q": "응답에서 빈 줄을 빼면.",
+      "a": "본문 첫 줄이 헤더로 읽힌다. curl 은 Header without colon 으로 거절한다."
+    },
+    {
+      "q": "Content-Length 에 String.length() 를 쓰면 왜 안 되나.",
+      "a": "글자 수이고 필요한 것은 바이트 수다. 안녕하세요 는 6글자 16바이트다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "상태 줄",
+      "what": "응답의 첫 줄. VERSION SP CODE SP REASON. 이유구는 생략 가능하다."
+    },
+    {
+      "term": "이유구",
+      "what": "상태 코드 뒤의 사람용 설명(OK, Not Found). 클라이언트는 숫자만 본다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "RFC 9112 — HTTP/1.1: Status Line",
+      "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+      "publisher": "IETF"
+    },
+    {
+      "title": "curl — Exit codes",
+      "url": "https://curl.se/libcurl/c/libcurl-errors.html",
+      "publisher": "curl"
+    }
+  ]
+}
