@@ -2191,3 +2191,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 アルダグラム 완주
 
 - 수익원 판정: 검색 1 — 회사 뉴스 두 편의 각주 '무료 플랜 협력사 포함' 으로 유료 + 무료 구조 확인. 검색 2 — Zenn 'KANNA 料金'·'アルダグラム' 는 인프라·행사 글뿐. 구조가 회사 발표로 확인돼 confirmed, 과금 단위는 open_questions 에. 완주 기준 셋 충족으로 done.
+
+## 2026-09-27 ギークプラス 회사 프로파일
+
+- geekplus.co.jp · skylaa.jp 는 해석 실패, geekplus.co.jp 는 401 — WebSearch 로 geekplus.jp · service.geekplus.jp 를 찾아 회사 개요 · skylaa 발표 · 서비스 페이지로 수익원 셋. 글 셋(배치 · 흐름 트리 · 테넌트 분리)으로 도메인 둘, 모두 skylaa.
