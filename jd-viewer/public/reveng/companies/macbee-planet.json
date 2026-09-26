@@ -77,7 +77,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "fluentd-to-pubsub-logs"
+      ]
     },
     {
       "name": "매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다",
@@ -102,7 +104,294 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "fluentd-to-pubsub-logs",
+      "name": "DSP 의 로그 기반에서 고정 대수 Fluentd 집약을 걷어 낸다 — 잃어도 되는 니어 리얼타임 로그를 먼저 Pub/Sub × Valkey 로 떼어 내고, 나머지는 서버가 Pub/Sub 에 바로 Publish 해 BigQuery Subscription 이 쓰게 해 정액을 없애고 종량을 20~30% 줄였다",
+      "domain": "입찰 요청이 늘수록 비용이 붙는 로그 기반을 갈아 끼운다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "3D AD 는 QPS(초당 입찰 요청)를 최대화하려고 클라우드 기반을 다시 짜는 중이다. DSP 에서 사업이 커진다는 건 QPS 가 는다는 뜻인데, 로그 기반은 StatefulSet 고정 대수 aggregator(정액)와 BigQuery Streaming Insert(종량)의 합이라 **사업이 클수록 클라우드 비용에 지는 구성**이었다. QPS 는 시간대·요일·계절로 출렁이는데 피크에도 안 떨어지게 여유 대수로 돌려 대부분의 시간엔 남는 비용을 냈다. 그리고 이 구성을 만들고 운용한 사람은 이미 퇴직해 장애 때 풀 사람이 없었다.",
+        "metrics": [
+          {
+            "label": "결과(BigQuery 쪽)",
+            "value": "로그 집약에 쓰던 Node Pool 을 통째로 내림(정액 제거) · 종량 비용 20~30% 절감 — 전송 데이터 양은 거의 같은데",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ログ基盤をFluentdからBigQuery Subscription（Pub/Sub）にリアーキテクチャした話",
+                "url": "https://zenn.dev/macbee_planet/articles/3c9957ef9d6e42",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-17",
+                "summary": "광고 배신 플랫폼(DSP) **3D AD** 에서 QPS(초당 입찰 요청)를 최대화하려 클라우드 기반을 다시 짜는 중. 원래 로그 기반 — 서버와 fluentd forwarder 사이드카 → StatefulSet 고정 대수 aggregator → BigQuery Streaming Insert(정액+종량) · QPS 변동(시간대·요일·계절)에 못 따라가고 전임자는 퇴직. BigQuery Subscription(Pub/Sub)로 새로 짓고, 배신 제어·분석·ML 의 옛 생로그 의존을 옮기는 동안 이중 쓰기. 결과 — aggregator Node Pool 통째로 내림 · 종량 비용 20~30% 절감(Storage Write API)."
+              }
+            ]
+          },
+          {
+            "label": "이행 기간",
+            "value": "데이터 리아키텍처가 끝날 때까지 옛 기반을 못 멈춰 로그를 이중 쓰기 — 그동안 비용이 부풀어 잔손질 절감으로 버텼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ログ基盤をFluentdからBigQuery Subscription（Pub/Sub）にリアーキテクチャした話",
+                "url": "https://zenn.dev/macbee_planet/articles/3c9957ef9d6e42",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-17",
+                "summary": "광고 배신 플랫폼(DSP) **3D AD** 에서 QPS(초당 입찰 요청)를 최대화하려 클라우드 기반을 다시 짜는 중. 원래 로그 기반 — 서버와 fluentd forwarder 사이드카 → StatefulSet 고정 대수 aggregator → BigQuery Streaming Insert(정액+종량) · QPS 변동(시간대·요일·계절)에 못 따라가고 전임자는 퇴직. BigQuery Subscription(Pub/Sub)로 새로 짓고, 배신 제어·분석·ML 의 옛 생로그 의존을 옮기는 동안 이중 쓰기. 결과 — aggregator Node Pool 통째로 내림 · 종량 비용 20~30% 절감(Storage Write API)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "로그를 한 덩어리로 볼 때",
+          "thought": "모든 로그를 한 기반이 받았다. 그런데 로그의 성질이 다르다 — 중요도(높음/낮음)와 양(많음/적음)으로 나누면, 배신 제어가 바로 읽는 니어 리얼타임 로그는 **중요도가 낮고 양이 많아 어느 정도 손실을 허용할 수 있는** 칸이다. Redis 쓰기가 계속 실패하면 버퍼가 Pod 에 쌓여 Node Pool 을 터뜨리고, 그러면 중요한 로그까지 잃는다 — 성질이 다른 로그가 같은 배를 타고 있었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "（ニア）リアルタイムなログ基盤をFluentdからPub/Sub × Memorystore for Valkeyに移行した話",
+              "url": "https://zenn.dev/macbee_planet/articles/d41ccae942c10b",
+              "publisher": "Macbee Planet Tech Blog (Zenn)",
+              "date": "2025-11-26",
+              "summary": "3D AD 의 입찰 배신 제어가 바로 읽는 (니어)리얼타임 로그 — 중요도 낮고 양이 많아 '어느 정도 손실을 허용할 수 있는' 로그 — 를 Fluentd → Memorystore for Redis 에서 Pub/Sub → GKE Subscriber → Memorystore for Valkey(Cluster Mode)로. 모든 로그를 한 StatefulSet 이 받아 Redis 쓰기 실패가 이어지면 버퍼가 Node Pool 을 터뜨려 중요한 로그까지 잃을 우려가 있었다. Valkey 를 고른 이유와 Cluster Mode·PSC 존 간 요금의 주의점."
+            }
+          ]
+        },
+        {
+          "at": "왜 로그 기반부터가 아니었나",
+          "thought": "원래는 로그 기반을 다시 짜고 싶었지만 데이터 기반이 Fluentd 가 모은 생로그에 의존하고 있어 떼어 내기 어려웠다. 그래서 데이터 기반 리아키텍처를 먼저 했다. 실제로 힘들었던 것도 기반 구축(데이터셋·테이블 준비 → Subscription 설정 → 서버에서 Publish)이 아니라 **배신 제어·분석·ML 의 옛 생로그 의존을 새 생로그로 돌리는 일**이었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ログ基盤をFluentdからBigQuery Subscription（Pub/Sub）にリアーキテクチャした話",
+              "url": "https://zenn.dev/macbee_planet/articles/3c9957ef9d6e42",
+              "publisher": "Macbee Planet Tech Blog (Zenn)",
+              "date": "2026-06-17",
+              "summary": "광고 배신 플랫폼(DSP) **3D AD** 에서 QPS(초당 입찰 요청)를 최대화하려 클라우드 기반을 다시 짜는 중. 원래 로그 기반 — 서버와 fluentd forwarder 사이드카 → StatefulSet 고정 대수 aggregator → BigQuery Streaming Insert(정액+종량) · QPS 변동(시간대·요일·계절)에 못 따라가고 전임자는 퇴직. BigQuery Subscription(Pub/Sub)로 새로 짓고, 배신 제어·분석·ML 의 옛 생로그 의존을 옮기는 동안 이중 쓰기. 결과 — aggregator Node Pool 통째로 내림 · 종량 비용 20~30% 절감(Storage Write API)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "3D AD 서버(GKE)",
+            "what": "입찰 요청을 처리하며 로그를 남긴다. 예전엔 log file 에 쓰고 fluentd forwarder 사이드카가 tail."
+          },
+          {
+            "name": "log aggregator(StatefulSet)",
+            "what": "옛 구성 — 고정 대수 Pod 안의 fluentd 가 모아 BigQuery Streaming Insert. 잃고 싶지 않은 로그 때문에 StatefulSet."
+          },
+          {
+            "name": "BigQuery Subscription",
+            "what": "Pub/Sub 가 BigQuery Storage Write API 로 테이블에 직접 쓴다 — 집약 서버가 필요 없다."
+          },
+          {
+            "name": "니어 리얼타임 로그",
+            "what": "배신 로직이 바로 읽는 로그. 중요도 낮음·양 많음 — 어느 정도 손실 허용. Pub/Sub → GKE Subscriber → Memorystore for Valkey(Cluster Mode)."
+          }
+        ],
+        "invariants": [
+          "손실을 허용할 수 없는 로그와 허용할 수 있는 로그는 같은 버퍼·같은 Node Pool 을 공유하지 않는다.",
+          "옛 로그 기반은 모든 소비자(배신 제어·분석·ML)가 새 생로그로 옮길 때까지 멈추지 않는다.",
+          "새 생로그와 옛 생로그를 같은 집계 쿼리로 돌려 비슷한 결과가 나오는지 본 뒤 옮긴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "(2025년) 니어 리얼타임 로그만 먼저 — Fluentd → Memorystore for Redis 에서 Pub/Sub → GKE Subscriber → Memorystore for Valkey(Cluster Mode) 로",
+            "why": "손실 허용 로그를 StatefulSet 에서 떼어 내 중요한 로그를 잃을 위험을 낮춘다. Pub/Sub·Valkey·Publisher·Subscriber Deployment 가 느슨하게 묶여 각각 스케일하기 쉬워졌다."
+          },
+          {
+            "step": "(2026년) BigQuery 데이터셋·테이블 준비 → BigQuery Subscription 설정 → 각 서버에서 Publish",
+            "why": "기반 구축 자체는 이 세 단계로 끝나 어렵지 않았다."
+          },
+          {
+            "step": "새 생로그와 옛 생로그를 같은 집계 쿼리로 돌려 결과가 비슷한지 검증",
+            "why": "배신 제어·분석·ML 이 새 생로그로 옮겨도 숫자가 바뀌지 않아야 한다."
+          },
+          {
+            "step": "데이터 리아키텍처가 끝날 때까지 이중 쓰기 → 끝나면 옛 로그 기반 정지",
+            "why": "사업을 멈출 수 없다. 이중 쓰기 동안 부푼 비용은 잔손질 절감으로 버텼다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "집약 서버를 계속 두나",
+            "chosen": "서버가 Pub/Sub 에 직접 Publish 하고 BigQuery Subscription 이 쓴다 — aggregator 없음",
+            "alternatives": [
+              "Fluentd forwarder → StatefulSet aggregator → Streaming Insert(기존)"
+            ],
+            "tradeoff": "집약 서버의 정액이 사라지고 QPS 변동에 운용을 덜 신경 쓴다. 대가는 Pub/Sub 의 할당량과 상한 — 이것도 한계가 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ログ基盤をFluentdからBigQuery Subscription（Pub/Sub）にリアーキテクチャした話",
+                "url": "https://zenn.dev/macbee_planet/articles/3c9957ef9d6e42",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-17",
+                "summary": "광고 배신 플랫폼(DSP) **3D AD** 에서 QPS(초당 입찰 요청)를 최대화하려 클라우드 기반을 다시 짜는 중. 원래 로그 기반 — 서버와 fluentd forwarder 사이드카 → StatefulSet 고정 대수 aggregator → BigQuery Streaming Insert(정액+종량) · QPS 변동(시간대·요일·계절)에 못 따라가고 전임자는 퇴직. BigQuery Subscription(Pub/Sub)로 새로 짓고, 배신 제어·분석·ML 의 옛 생로그 의존을 옮기는 동안 이중 쓰기. 결과 — aggregator Node Pool 통째로 내림 · 종량 비용 20~30% 절감(Storage Write API)."
+              }
+            ]
+          },
+          {
+            "question": "BigQuery 에 어떻게 쓰나",
+            "chosen": "BigQuery Subscription — 내부적으로 Storage Write API",
+            "alternatives": [
+              "Streaming Insert(tabledata.insertAll)"
+            ],
+            "tradeoff": "같은 양을 보내는데 비용이 20~30% 낮았다. Google 도 새 프로젝트엔 Storage Write API 를 권한다(한 번만 배달 의미론). 대가는 쓰기 경로가 관리형 서비스 설정 안으로 들어가 직접 손대기 어려워지는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ログ基盤をFluentdからBigQuery Subscription（Pub/Sub）にリアーキテクチャした話",
+                "url": "https://zenn.dev/macbee_planet/articles/3c9957ef9d6e42",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-17",
+                "summary": "광고 배신 플랫폼(DSP) **3D AD** 에서 QPS(초당 입찰 요청)를 최대화하려 클라우드 기반을 다시 짜는 중. 원래 로그 기반 — 서버와 fluentd forwarder 사이드카 → StatefulSet 고정 대수 aggregator → BigQuery Streaming Insert(정액+종량) · QPS 변동(시간대·요일·계절)에 못 따라가고 전임자는 퇴직. BigQuery Subscription(Pub/Sub)로 새로 짓고, 배신 제어·분석·ML 의 옛 생로그 의존을 옮기는 동안 이중 쓰기. 결과 — aggregator Node Pool 통째로 내림 · 종량 비용 20~30% 절감(Storage Write API)."
+              }
+            ]
+          },
+          {
+            "question": "모든 로그를 한 기반에서 처리하나",
+            "chosen": "중요도 × 양으로 나눠, 손실 허용 니어 리얼타임 로그를 따로 뗀다",
+            "alternatives": [
+              "한 기반이 모든 로그를 받는다(기존)"
+            ],
+            "tradeoff": "한쪽(Redis 쓰기 실패 → 버퍼 폭주)의 장애가 중요한 로그를 잃게 하지 않는다. 대가는 로그 경로가 둘이 되는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "（ニア）リアルタイムなログ基盤をFluentdからPub/Sub × Memorystore for Valkeyに移行した話",
+                "url": "https://zenn.dev/macbee_planet/articles/d41ccae942c10b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2025-11-26",
+                "summary": "3D AD 의 입찰 배신 제어가 바로 읽는 (니어)리얼타임 로그 — 중요도 낮고 양이 많아 '어느 정도 손실을 허용할 수 있는' 로그 — 를 Fluentd → Memorystore for Redis 에서 Pub/Sub → GKE Subscriber → Memorystore for Valkey(Cluster Mode)로. 모든 로그를 한 StatefulSet 이 받아 Redis 쓰기 실패가 이어지면 버퍼가 Node Pool 을 터뜨려 중요한 로그까지 잃을 우려가 있었다. Valkey 를 고른 이유와 Cluster Mode·PSC 존 간 요금의 주의점."
+              }
+            ]
+          },
+          {
+            "question": "니어 리얼타임 로그의 저장소",
+            "chosen": "Memorystore for Valkey, Cluster Mode",
+            "alternatives": [
+              "Memorystore for Redis(기존)"
+            ],
+            "tradeoff": "QPS 를 늘리면 양이 더 늘 것이라 샤드를 수평으로 늘리고 나중엔 Autoscaler 로 자동화할 여지를 남겼다 — Autoscaler 의 Valkey 대응 PR 이 머지됐고, 합류 전부터 검증이 진행됐고, Redis Cluster 의 GA 기능을 다 갖춘다고 Google 이 밝혔다. 대가는 클라이언트도 Cluster Mode 로 설정해야 하는 것, 그리고 PSC 로 존을 건너면 데이터 처리 요금이 붙는 것(한 번 졌다 — 같은 존 통신이 싸다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "（ニア）リアルタイムなログ基盤をFluentdからPub/Sub × Memorystore for Valkeyに移行した話",
+                "url": "https://zenn.dev/macbee_planet/articles/d41ccae942c10b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2025-11-26",
+                "summary": "3D AD 의 입찰 배신 제어가 바로 읽는 (니어)리얼타임 로그 — 중요도 낮고 양이 많아 '어느 정도 손실을 허용할 수 있는' 로그 — 를 Fluentd → Memorystore for Redis 에서 Pub/Sub → GKE Subscriber → Memorystore for Valkey(Cluster Mode)로. 모든 로그를 한 StatefulSet 이 받아 Redis 쓰기 실패가 이어지면 버퍼가 Node Pool 을 터뜨려 중요한 로그까지 잃을 우려가 있었다. Valkey 를 고른 이유와 Cluster Mode·PSC 존 간 요금의 주의점."
+              }
+            ]
+          },
+          {
+            "question": "Autoscaler 를 지금 넣나",
+            "chosen": "아직 — 당장 필요하지 않아 Cluster Mode 로 자리만 만든다",
+            "alternatives": [
+              "처음부터 자동 스케일"
+            ],
+            "tradeoff": "필요할 때 붙일 수 있다. 대가는 그때까지 샤드 수를 사람이 정하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "（ニア）リアルタイムなログ基盤をFluentdからPub/Sub × Memorystore for Valkeyに移行した話",
+                "url": "https://zenn.dev/macbee_planet/articles/d41ccae942c10b",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2025-11-26",
+                "summary": "3D AD 의 입찰 배신 제어가 바로 읽는 (니어)리얼타임 로그 — 중요도 낮고 양이 많아 '어느 정도 손실을 허용할 수 있는' 로그 — 를 Fluentd → Memorystore for Redis 에서 Pub/Sub → GKE Subscriber → Memorystore for Valkey(Cluster Mode)로. 모든 로그를 한 StatefulSet 이 받아 Redis 쓰기 실패가 이어지면 버퍼가 Node Pool 을 터뜨려 중요한 로그까지 잃을 우려가 있었다. Valkey 를 고른 이유와 Cluster Mode·PSC 존 간 요금의 주의점."
+              }
+            ]
+          },
+          {
+            "question": "어떻게 갈아 끼우나",
+            "chosen": "새 기반을 세우고 이중 쓰기 · 같은 집계 쿼리로 대조 · 모든 소비자가 옮긴 뒤 옛 기반 정지",
+            "alternatives": [
+              "한 번에 전환"
+            ],
+            "tradeoff": "사업을 멈추지 않는다. 대가는 이중 쓰기 동안의 비용 — 데이터 리아키텍처 사이사이 잔손질 절감으로 버텼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ログ基盤をFluentdからBigQuery Subscription（Pub/Sub）にリアーキテクチャした話",
+                "url": "https://zenn.dev/macbee_planet/articles/3c9957ef9d6e42",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-17",
+                "summary": "광고 배신 플랫폼(DSP) **3D AD** 에서 QPS(초당 입찰 요청)를 최대화하려 클라우드 기반을 다시 짜는 중. 원래 로그 기반 — 서버와 fluentd forwarder 사이드카 → StatefulSet 고정 대수 aggregator → BigQuery Streaming Insert(정액+종량) · QPS 변동(시간대·요일·계절)에 못 따라가고 전임자는 퇴직. BigQuery Subscription(Pub/Sub)로 새로 짓고, 배신 제어·분석·ML 의 옛 생로그 의존을 옮기는 동안 이중 쓰기. 결과 — aggregator Node Pool 통째로 내림 · 종량 비용 20~30% 절감(Storage Write API)."
+              }
+            ]
+          },
+          {
+            "question": "무엇부터 다시 짜나",
+            "chosen": "데이터 기반 리아키텍처를 먼저, 로그 기반은 그다음",
+            "alternatives": [
+              "로그 기반부터(원래 하고 싶던 것)"
+            ],
+            "tradeoff": "데이터 기반이 옛 생로그에 묶여 있어 로그 기반을 먼저 떼기 어려웠다. 대가는 원래 목표가 뒤로 밀리고, 그사이 옛 기반의 비용을 계속 낸 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ログ基盤をFluentdからBigQuery Subscription（Pub/Sub）にリアーキテクチャした話",
+                "url": "https://zenn.dev/macbee_planet/articles/3c9957ef9d6e42",
+                "publisher": "Macbee Planet Tech Blog (Zenn)",
+                "date": "2026-06-17",
+                "summary": "광고 배신 플랫폼(DSP) **3D AD** 에서 QPS(초당 입찰 요청)를 최대화하려 클라우드 기반을 다시 짜는 중. 원래 로그 기반 — 서버와 fluentd forwarder 사이드카 → StatefulSet 고정 대수 aggregator → BigQuery Streaming Insert(정액+종량) · QPS 변동(시간대·요일·계절)에 못 따라가고 전임자는 퇴직. BigQuery Subscription(Pub/Sub)로 새로 짓고, 배신 제어·분석·ML 의 옛 생로그 의존을 옮기는 동안 이중 쓰기. 결과 — aggregator Node Pool 통째로 내림 · 종량 비용 20~30% 절감(Storage Write API)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다(같은 회사의 다른 도메인)",
+          "via": "생로그 테이블 — BigQuery Subscription 이 쓰는 곳이 dbt 증분 모델의 입력",
+          "contract": "새 생로그는 시간별 파티션·종류별 테이블·불필요 칼럼 제거로 설계가 바뀌었고, 로그 기반은 그 설계대로 써야 한다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "로그가 BigQuery 에 닿는 길 — 전과 후",
+          "question": "무엇을 걷어 내서 정액을 없앴나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph 전\n    S1[\"서버\"] --> F1[\"fluentd forwarder\\n사이드카\"] --> AG[\"aggregator\\nStatefulSet 고정 대수\"] -->|Streaming Insert| B1[(\"BigQuery\")]\n  end\n  subgraph 후\n    S2[\"서버\"] -->|Publish| PS[\"Pub/Sub\"] -->|BigQuery Subscription\\nStorage Write API| B2[(\"BigQuery\")]\n    PS -->|Subscriber| VK[(\"Valkey Cluster\")]\n  end"
+        },
+        {
+          "title": "한 배를 탄 로그",
+          "question": "손실 허용 로그의 쓰기 실패가 왜 중요한 로그를 잃게 할 수 있었나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[\"Redis 쓰기 실패 지속\"] --> B[\"Pod 에 버퍼 누적\"]\n  B --> N[\"Node Pool 파열\"]\n  N --> L[\"중요한 로그까지 손실\"]\n  L --> FIX[\"손실 허용 로그를 떼어 냄\\nPub/Sub → Subscriber → Valkey\"]\n  FIX --> OK[\"StatefulSet 과 무관\"]"
+        },
+        {
+          "title": "로그 기반 교체의 단계",
+          "question": "옛 기반은 언제 멈춰도 되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Old: Fluentd 집약\n  Old --> Dual: 새 기반 구축 · 이중 쓰기\n  Dual --> Dual: 소비자 이전 · 집계 쿼리 대조\\n비용 부풂\n  Dual --> New: 배신 제어·분석·ML 이전 완료\n  New --> [*]: 옛 기반 정지 · Node Pool 제거"
+        }
+      ],
+      "sources": [
+        {
+          "title": "ログ基盤をFluentdからBigQuery Subscription（Pub/Sub）にリアーキテクチャした話",
+          "url": "https://zenn.dev/macbee_planet/articles/3c9957ef9d6e42",
+          "publisher": "Macbee Planet Tech Blog (Zenn)",
+          "date": "2026-06-17",
+          "summary": "광고 배신 플랫폼(DSP) **3D AD** 에서 QPS(초당 입찰 요청)를 최대화하려 클라우드 기반을 다시 짜는 중. 원래 로그 기반 — 서버와 fluentd forwarder 사이드카 → StatefulSet 고정 대수 aggregator → BigQuery Streaming Insert(정액+종량) · QPS 변동(시간대·요일·계절)에 못 따라가고 전임자는 퇴직. BigQuery Subscription(Pub/Sub)로 새로 짓고, 배신 제어·분석·ML 의 옛 생로그 의존을 옮기는 동안 이중 쓰기. 결과 — aggregator Node Pool 통째로 내림 · 종량 비용 20~30% 절감(Storage Write API)."
+        },
+        {
+          "title": "（ニア）リアルタイムなログ基盤をFluentdからPub/Sub × Memorystore for Valkeyに移行した話",
+          "url": "https://zenn.dev/macbee_planet/articles/d41ccae942c10b",
+          "publisher": "Macbee Planet Tech Blog (Zenn)",
+          "date": "2025-11-26",
+          "summary": "3D AD 의 입찰 배신 제어가 바로 읽는 (니어)리얼타임 로그 — 중요도 낮고 양이 많아 '어느 정도 손실을 허용할 수 있는' 로그 — 를 Fluentd → Memorystore for Redis 에서 Pub/Sub → GKE Subscriber → Memorystore for Valkey(Cluster Mode)로. 모든 로그를 한 StatefulSet 이 받아 Redis 쓰기 실패가 이어지면 버퍼가 Node Pool 을 터뜨려 중요한 로그까지 잃을 우려가 있었다. Valkey 를 고른 이유와 Cluster Mode·PSC 존 간 요금의 주의점."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "3D AD 가 매출에서 차지하는 몫과 과금 방식은 확인하지 못했다.",
     "ID 생성 솔루션(쿠키 대체 트래킹)의 기술 결정 글은 아직 못 봤다.",

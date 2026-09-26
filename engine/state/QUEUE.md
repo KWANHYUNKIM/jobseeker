@@ -48,7 +48,7 @@
 | **dely(クラシル)** | JP · 레시피·절약 앱·리테일 AI | 프로파일(2026-09-26). 도메인 둘(레시챌) — 수억 장의 영수증 화상을 싸게 쌓아 둔다 · 쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다. 기능 3(`receipt-image-storage-tiering` · `braze-personalization-four-ways` · `serving-size-adjustment`) — 셋째 도메인 '레시피의 분량을 사람 수에 맞춰 바꾼다'(클라시루). **hold** — AI OS·TRILL/LIVEwith 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음. 입구 `zenn.dev/p/dely_jp/feed`. |
 | **みてね(MIXI · 家族アルバム)** | JP · 가족 사진·영상 공유 앱 | 프로파일(2026-09-26). 도메인 둘 — 가족당 수백만 장에서 말로 사진을 찾는다 · 내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다. 기능 2(`natural-language-photo-search` · `ingress-nginx-to-envoy-gateway`). **hold** — 프린트·포토북 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 사진 프린트·포토북은 도메인 없음. 입구 `zenn.dev/p/mitene/feed`. |
 | **SODA(スニーカーダンク)** | JP · 감정 붙은 스니커·트레카 마켓 | 프로파일(2026-09-26). 도메인 둘 — 구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다 · 상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다. 기능 2(`purchase-payment-idempotency` · `purchase-flow-tla-audit`). **hold** — 실매장 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 실매장은 도메인 없음. 입구 `zenn.dev/p/team_soda/feed`. |
-| **Macbee Planet(マクビープラネット)** | JP · 성과 보수형 광고 · DSP 3D AD | 프로파일(2026-09-26). 도메인 둘 — 입찰 요청이 늘수록 비용이 붙는 로그 기반을 갈아 끼운다 · 매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다. 기능 0. 수익원 성과 보수형 광고(매출 약 400억 엔). 입구 `zenn.dev/p/macbee_planet/feed`. |
+| **Macbee Planet(マクビープラネット)** | JP · 성과 보수형 광고 · DSP 3D AD | 프로파일(2026-09-26). 도메인 둘 — 입찰 요청이 늘수록 비용이 붙는 로그 기반을 갈아 끼운다 · 매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다. 기능 1(fluentd-to-pubsub-logs). 수익원 성과 보수형 광고(매출 약 400억 엔). 입구 `zenn.dev/p/macbee_planet/feed`. |
 
 
 ## 대기

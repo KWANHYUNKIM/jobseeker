@@ -2025,3 +2025,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Macbee Planet 회사 프로파일
 
 - 서비스 LP 로 수익원(성과 보수형 광고). 3D AD 글 셋을 로그 기반·데이터 기반 두 도메인으로.
+
+## 2026-09-26 Macbee Planet fluentd-to-pubsub-logs
+
+- 로그 기반 두 편(2025 Valkey · 2026 BQ Subscription)을 한 기능으로. 결정 7, 그림 3(flow·failure·state).
