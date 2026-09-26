@@ -7,7 +7,7 @@
     "채널톡"
   ],
   "status": "in_progress",
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-26",
   "site": "channel.io",
   "one_liner": "B2B '올인원 AI 메신저' 채널톡을 만드는 회사 — AI 상담 에이전트 ALF 가 이미 매출의 한 축이고, 일본 1위·미국 진출을 공고에 적는다",
   "company": {
@@ -188,5 +188,121 @@
     "ML·DevOps 공고는 전문연구요원·산업기능요원(병역특례) 지원 가능이라고 적는다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/222071",
+      "title": "[채널톡] Software Engineer",
+      "site": "wanted",
+      "verdict": "신입-경력 10년. **한 공고에 Backend·Frontend·Android/iOS 세 트랙**이 들어 있다. Backend: 하루 800만명이 쓰는 채널톡의 Java·Dropwizard 메인 API 서버, 스케일을 위한 재설계, 장애 감지·알림, AWS Lambda·Serverless 와 nodejs·python·golang 마이크로서비스, ECS·Docker·EKS 빌드·배포. Frontend: 매니저용 '데스크'(REST·WebSocket·LocalStorage 를 다루는 통합 수신함, 대용량 연락처 시각화, GUI 에디터), 고객사 웹에 붙는 '프론트'(크로스브라우징, 고객사 웹앱에 영향을 주지 않는 가볍고 격리된 환경), 오픈 소스 디자인 시스템·위지윅 에디터, 개발환경 개선. Android/iOS: 하루 300만명이 쓰는 모바일 플러그인(SDK), 1만 명 매니저의 데스크 앱, B2C 채널엑스 앱. **자격요건에 특정 기술 스택이 없다** — 컴퓨터 공학 또는 관련 전공, 깊은 자료구조·알고리즘, 팀워크·커뮤니케이션, 빠른 학습, 빠른 디버깅이 전부이고 우대는 석·박사. 전형은 서류 > 사전기술인터뷰(온라인, 30~45분 구현/CS 기초) > 1차(1~2시간 PS 풀이·학부 CS·라이브 코딩) > 2차(대표 분야 기술 견해) > 3차(대표님, 직무·컬쳐핏) > 최종 합격. 같은 회사 Software Engineer, Senior(338292)는 경력 5년 이상 백엔드 전용 자리다.",
+      "fit": {
+        "must_have": [
+          "컴퓨터 공학 또는 관련 학과 전공",
+          "깊은 자료구조·알고리즘 지식",
+          "빠른 학습·디버깅",
+          "팀워크·커뮤니케이션"
+        ],
+        "can_learn": [
+          "트랙별 스택(Java·Dropwizard / React / Kotlin·Swift)",
+          "석·박사(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "자료구조·알고리즘 — PS 라이브 코딩 대비",
+          "from": "qualification",
+          "quote": "• 자료구조, 알고리즘과 관련한 지식이 깊은 분",
+          "priority": "core",
+          "why": "자격요건의 중심이고, 전형의 1차 인터뷰가 1~2시간 PS 문제 풀이와 라이브 코딩, 사전기술인터뷰가 구현/CS 기초 테스트다.",
+          "gap_check": "문제를 보고 입력 크기로 허용 시간복잡도를 먼저 계산하는 습관이 있는가(예: n=10^5 이면 O(n log n) 까지)? 해시·힙·그래프 탐색·이분 탐색·DP 중 무엇을 쓸지 말로 먼저 설명할 수 있는가?",
+          "drill": "프로그래머스 코딩테스트 연습에서 유형별(해시·힙·BFS/DFS·이분 탐색·DP) 두 문제씩을 45분 제한으로 풀고, 풀기 전에 접근과 복잡도를 소리 내어 설명하는 것을 녹음해 들어 본다.",
+          "hours": 20,
+          "resources": [
+            {
+              "title": "코딩테스트 연습 | 프로그래머스 스쿨",
+              "url": "https://school.programmers.co.kr/learn/challenges",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "학부 수준 CS 기초",
+          "from": "qualification",
+          "quote": "• 컴퓨터 공학 또는 관련 학과 전공",
+          "priority": "core",
+          "why": "자격요건이고 1차 인터뷰가 '학부 수준의 CS 지식' 을 묻는다. 공고 머리말이 자료구조·알고리즘·시스템 이해를 '기초 역량' 으로 적는다.",
+          "gap_check": "프로세스와 스레드, TCP 연결 수립, DB 인덱스(B-tree)와 트랜잭션 격리 수준을 각각 2분 안에 예시와 함께 설명할 수 있는가?",
+          "drill": "CS 면접 정리 저장소의 운영체제·네트워크·데이터베이스 장에서 주제 15개를 골라 각각 1분 설명을 쓰고, 친구에게 꼬리 질문을 받아 막힌 곳을 다시 채운다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "tech-interview-for-developer",
+              "url": "https://github.com/gyoogle/tech-interview-for-developer",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "[Frontend] 고객사 웹에 격리해 붙는 위젯 — Shadow DOM",
+          "from": "task",
+          "quote": "- 고객사 웹앱의 스타일과 성능에 영향을 미치지 않도록, 가볍고 격리된 환경을 만드는 문제를 풀어 나갑니다.",
+          "priority": "high",
+          "why": "Frontend 트랙 주요업무다. 채널톡 '프론트' 는 고객사 웹에 붙는 첫 접점이라고 적는다.",
+          "gap_check": "고객사 페이지의 전역 CSS 가 위젯 버튼 스타일을 깨뜨리거나, 위젯 CSS 가 고객사 페이지를 깨뜨리지 않게 하려면 iframe 과 Shadow DOM 중 무엇을 쓰고, 위젯 스크립트가 고객사 첫 로딩을 느리게 하지 않게 하려면 무엇(지연 로드·크기 제한)을 하는가?",
+          "drill": "전역 CSS 가 험하게 걸린 테스트 페이지를 만들고, 같은 채팅 버튼을 일반 DOM·Shadow DOM·iframe 세 방식으로 붙여 스타일 누수와 로딩 영향을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Using shadow DOM - MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM",
+              "kind": "docs"
+            },
+            {
+              "title": "channel-io/bezier-react",
+              "url": "https://github.com/channel-io/bezier-react",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "[Backend] Dropwizard 메인 API 와 스케일 재설계",
+          "from": "task",
+          "quote": "• Java, Dropwizard를 이용해 만들어진 메인 API 서버를 개발합니다.",
+          "priority": "high",
+          "why": "Backend 트랙 주요업무이고 다음 줄이 '가파르게 늘어나는 사용량' 에 맞춘 재설계다.",
+          "gap_check": "Dropwizard 가 Spring Boot 와 달리 무엇(Jetty·Jersey·Jackson·Metrics)을 묶어 주는 얇은 프레임워크인지 설명할 수 있고, 메시지 조회 API 가 느려질 때 어디부터 재는가(메트릭·DB 쿼리·캐시)?",
+          "drill": "Dropwizard 시작하기로 작은 메시지 API 를 만들고 내장 Metrics 로 엔드포인트 지연을 본 뒤, 조회에 캐시를 붙여 전후 p99 를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Getting Started — Dropwizard",
+              "url": "https://www.dropwizard.io/en/stable/getting-started.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "[Android/iOS] 모바일 SDK 의 실시간 연결",
+          "from": "task",
+          "quote": "• 하루 300만명이 사용하는 국민 라이브챗! 채널톡의 모바일 플러그인(SDK)을 만드는 역할을 합니다.",
+          "priority": "nice",
+          "why": "Android/iOS 트랙 주요업무이고 두 플랫폼 스택에 Socket.IO·WebRTC 가 적혀 있다.",
+          "gap_check": "고객사 앱에 들어가는 SDK 는 앱 크기·권한·다른 라이브러리 버전과 충돌하지 않아야 하는데, 이를 위해 무엇을 피하고, 앱이 백그라운드로 가면 소켓 연결과 새 메시지 알림을 어떻게 나눠 처리하는가?",
+          "drill": "Socket.IO 로 채팅 서버와 안드로이드(또는 iOS) 샘플 앱을 연결하고, 백그라운드 전환·네트워크 끊김 뒤 재연결과 놓친 메시지 동기화가 되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Introduction | Socket.IO",
+              "url": "https://socket.io/docs/v4/",
+              "kind": "docs"
+            },
+            {
+              "title": "Getting started with WebRTC",
+              "url": "https://webrtc.org/getting-started/overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
