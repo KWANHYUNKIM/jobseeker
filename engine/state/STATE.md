@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — redpanda 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — render 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **render** — 2026-09-26 없음 1회째. RSS 404 — r.jina.ai 로 `/blog` 목록(카드에 "분류 날짜"). 09-07 이후는 09-21 빌드 재사용 비공개 베타(제품 발표) 하나. 이전 글 후보: **08-25 Render Workflows 로 내부 데이터 파이프라인**(엔지니어링 분류, 1순위).
 - **redpanda** — 2026-09-26 없음 1회째. `redpanda.com/blog/rss.xml`(정렬 필요). 09-07 이후 2편 — 09-22 웨비나 요약(Red Canary 의 경험, 타사), 09-15 Streamhouse 의견. 이전 글 후보: 08-11 Stretch Cluster 다중 리전 HA, 07-29 Redpanda SQL 단일 질의 확장(1TB 4초), 08-25 Shadowing 이전.
 - **railway** — 2026-09-26 없음 1회째. `blog.railway.com/rss.xml`(정렬 필요). 09-07 이후 3편 — 09-10 "First-Class Databases"는 기능 소개(Patroni·etcd·HAProxy HA, pgBackRest PITR, PgBouncer — 물린 것·대가 없음), 나머지는 가격 비교·호스팅 비교. 이전 글 후보: **07-03 7월 2일 US East 장애 보고서**(실패 그림 재료, 1순위), 07-17 기능 플래그.
 - **questdb** — 2026-09-26 없음 1회째. RSS 404 — r.jina.ai 로 `/blog/` 목록. 09-07 이후 2편: 09-25 시계열 조인 가이드, 09-11 DuckLake 연동(콜드 스토리지가 잠금 없는 Hive 분할 Parquet 이라 테이블 형식을 고를 수 있다는 **사용법**). 이전 글 후보: 09-04 Parquet·Iceberg, 08-25 QWP 대 ILP 적재 벤치, "Streaming 500 million rows into Apache Arrow".
