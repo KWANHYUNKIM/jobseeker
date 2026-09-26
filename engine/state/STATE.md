@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Stock 확장 1/2(2026-09-26) — `cheap-model-prescreening` 완료. 다음은 확장: '스캔 PDF 를 OCR 로 빠짐없이 읽는다' — `scanned-pdf-ocr-blind-spots`(/Rotate · 빈 페이지 인덱스 · 감시 오판). 수익원 Stock(인원 구간 구독)은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(1D) — **다음 --gaps 가 후보 조사를 부를 수 있다.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Stock 확장 2/2(2026-09-26) — `scanned-pdf-ocr-triage` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 'Stock(인원 구간 구독)' 에 도메인 없음 — 검색 1 RSS 6편 전부(Stock 제품 자체 결정 글 없음 — 익명화는 사내 채용, PostgreSQL·ECS 는 운영 일반) 이어 검색 2(Zenn 검색 API 'Stock タスク'·'情報ストック'·'stock_inc'), 없으면 hold. 단 --gaps 가 후보 조사(큐 1/3)를 먼저 부르면 그쪽. 대기 1/3(1D) — **다음 --gaps 가 후보 조사를 부를 수 있다.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
