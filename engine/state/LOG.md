@@ -2472,3 +2472,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 助太刀 회사 프로파일
 
 - suke-dachi.jp(corp 는 DNS 실패)로 수익원 둘, 글 셋(검색 자동 전환 · Flutter 4 층 · 불구합 수정률)으로 도메인 둘. RSS 링크는 끝 14 자만 쓰면 slug 가 틀린다(날짜 접두어 slug 가 있다) — 전체 링크를 쓸 것.
+
+## 2026-09-27 助太刀 검색 자동 전환
+
+- `20241207-a4859735b8b546` 로 기능 `search-failover-opensearch-rds`, 결정 6(되돌림 방향은 inferred). OpenSearch 이행 글은 공개 글 목록 · Zenn 검색에 없음.

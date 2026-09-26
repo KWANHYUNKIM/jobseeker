@@ -91,7 +91,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "search-failover-opensearch-rds"
+      ]
     },
     {
       "name": "적은 인원으로 오래된 매칭 앱을 계속 고쳐 나간다",
@@ -130,7 +132,276 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "search-failover-opensearch-rds",
+      "name": "빠른 검색이 멈추면 느린 검색으로 — OpenSearch 장애 때 RDS 로 자동으로 돌아간다",
+      "domain": "직인과 건설 회사를 서로 찾게 하는 검색이 멈추지 않게 한다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "助太刀는 직인과 공사 회사가 서로를 찾는 서비스다. 검색은 서비스의 중핵이라 편의성과 성능을 크게 좌우하고, 높은 가용성이 요구된다 — 검색이 멈추면 만남이 멈춘다.\n\n원래 RDS(Aurora)로 하던 검색을 성능 향상을 위해 Amazon OpenSearch 로 옮겼다. 빨라졌지만, 이제 검색은 새 기반 하나에 기대게 됐다. 장애나 성능 저하가 났을 때 사람이 알아채고 손쓰기를 기다리지 않고 **빠르게 대응할 구조**가 필요했다.",
+        "metrics": [
+          {
+            "label": "대응",
+            "value": "OpenSearch 장애 감지 시 Webhook 으로 검색 소스를 RDS 로 자동 전환 + Slack 통지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+                "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+                "publisher": "助太刀",
+                "date": "2024-12-15",
+                "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "OpenSearch 로 옮길 때",
+          "thought": "OpenSearch 와 RDS 의 검색 로직에 **호환성을 두게 설계**한다 — 그래야 장애 때 RDS 로 바꿔 검색을 이어 갈 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+              "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+              "publisher": "助太刀",
+              "date": "2024-12-15",
+              "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+            }
+          ]
+        },
+        {
+          "at": "구조를 만든 뒤",
+          "thought": "OpenSearch 장애로 인한 서비스 정지를 막고 사용자에게 안정된 서비스를 줄 수 있게 됐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+              "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+              "publisher": "助太刀",
+              "date": "2024-12-15",
+              "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "검색 소스",
+            "what": "검색 요청을 어느 기반(OpenSearch 또는 RDS)으로 보낼지의 설정."
+          },
+          {
+            "name": "검색 소스 전환 엔드포인트",
+            "what": "POST 를 받아 검색 소스를 OpenSearch 에서 RDS 로 바꾸는 앱 쪽 엔드포인트."
+          },
+          {
+            "name": "Synthetic API 테스트",
+            "what": "Datadog 이 OpenSearch 검색 엔드포인트를 정기적으로 두드리는 헬스 체크."
+          },
+          {
+            "name": "Webhook",
+            "what": "모니터가 경보 상태(is_alert)일 때 전환 엔드포인트를 부르는 Datadog 통합."
+          }
+        ],
+        "invariants": [
+          "OpenSearch 와 RDS 는 같은 검색에 호환되는 결과를 낸다 — 그래야 전환해도 서비스가 이어진다.",
+          "전환은 사람 판단을 기다리지 않고 경보가 뜨면 바로 일어난다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "평소엔 검색 요청이 OpenSearch 로 간다",
+            "why": "RDS 보다 검색 성능이 좋다."
+          },
+          {
+            "step": "Datadog Synthetic API 테스트가 OpenSearch 검색 엔드포인트를 정기적으로 점검",
+            "why": "밖에서 실제 요청처럼 두드려 장애 · 성능 저하를 감지."
+          },
+          {
+            "step": "경보(is_alert)가 되면 Webhook 이 검색 소스 전환 엔드포인트에 POST",
+            "why": "사람을 기다리지 않고 바로 대응."
+          },
+          {
+            "step": "검색 소스가 RDS(Aurora)로 바뀌고, 같은 모니터가 Slack 에도 알린다",
+            "why": "검색은 이어지고 사람은 원인을 본다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "검색을 어디서 돌리나?",
+            "chosen": "**RDS(Aurora)에서 Amazon OpenSearch 로 옮긴다** — 검색 성능 향상을 위해.",
+            "alternatives": [
+              "RDS 에서 계속 검색한다"
+            ],
+            "tradeoff": "직인 · 회사 검색이 빨라진다. 대가는 검색이 새 기반 하나에 기대게 돼 **그 기반의 장애가 곧 서비스 정지**가 될 수 있다는 것 — 그래서 아래 결정들이 따라왔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+                "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+                "publisher": "助太刀",
+                "date": "2024-12-15",
+                "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+              }
+            ]
+          },
+          {
+            "question": "OpenSearch 가 죽으면 무엇으로 검색하나?",
+            "chosen": "**원래 쓰던 RDS 를 대체 기반으로 남기고, 두 검색 로직에 호환성을 둔다.**",
+            "alternatives": [
+              "OpenSearch 만 두고 복구를 기다린다",
+              "OpenSearch 를 이중화해 대비한다(이 사이트의 해석 — 글에 없는 일반적 대안)"
+            ],
+            "tradeoff": "이미 있는 RDS 로 되돌리면 검색이 멈추지 않는다. 대가는 **두 기반의 검색 로직을 계속 호환되게 유지**해야 한다는 것, 그리고 되돌린 동안은 옮기기 전의 성능으로 돈다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+                "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+                "publisher": "助太刀",
+                "date": "2024-12-15",
+                "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+              }
+            ]
+          },
+          {
+            "question": "장애를 무엇으로 감지하나?",
+            "chosen": "**Datadog Synthetic 모니터링의 API 테스트로 OpenSearch 검색 엔드포인트를 정기 점검.**",
+            "alternatives": [
+              "OpenSearch 의 내부 메트릭(클러스터 상태 등)만 본다(이 사이트의 해석)"
+            ],
+            "tradeoff": "실제 요청처럼 밖에서 두드려 '검색이 되는가'를 직접 본다. 대가는 점검 간격만큼 감지가 늦고, 합성 요청이 실제 사용자 요청을 다 대표하진 못한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+                "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+                "publisher": "助太刀",
+                "date": "2024-12-15",
+                "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+              }
+            ]
+          },
+          {
+            "question": "감지한 뒤 누가 전환하나?",
+            "chosen": "**Webhook 이 앱의 '검색 소스 전환 엔드포인트'를 불러 자동으로 바꾼다.**",
+            "alternatives": [
+              "Slack 알림을 받은 사람이 수동으로 바꾼다"
+            ],
+            "tradeoff": "사람이 붙기 전에 검색이 이어진다. 대가는 전환을 받는 POST 엔드포인트를 앱에 열어 둬야 하고, **오탐이면 멀쩡한데 느린 쪽으로 넘어간다**는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+                "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+                "publisher": "助太刀",
+                "date": "2024-12-15",
+                "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+              }
+            ]
+          },
+          {
+            "question": "전환 신호를 모니터에 어떻게 거나?",
+            "chosen": "**모니터 통지에 조건 변수 {{#is_alert}} 로 Webhook 을 걸고, 같은 통지로 Slack 에도 알린다.**",
+            "alternatives": [
+              "별도의 전환 서비스가 메트릭을 폴링한다(이 사이트의 해석)"
+            ],
+            "tradeoff": "Datadog 설정만으로 감지 · 전환 · 통지를 한곳에 묶었다 — 따로 전환 서버를 만들지 않는다. 대가는 전환 로직이 **Datadog 설정 화면 안에** 있어 코드 리뷰 · 버전 관리 밖에 놓인다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+                "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+                "publisher": "助太刀",
+                "date": "2024-12-15",
+                "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+              }
+            ]
+          },
+          {
+            "question": "다시 OpenSearch 로 돌아오는 것도 자동인가?",
+            "chosen": "**글은 OpenSearch → RDS 방향의 전환만 적는다.**",
+            "alternatives": [
+              "복구 감지 시 자동으로 되돌린다"
+            ],
+            "tradeoff": "되돌아가는 방법은 글에 없다 — 사람이 원인을 확인한 뒤 되돌리는 운용으로 보인다(이 사이트의 해석). 대가는 복구 뒤에도 전환을 풀 때까지 이전 성능으로 돈다는 것(이 사이트의 해석).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+                "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+                "publisher": "助太刀",
+                "date": "2024-12-15",
+                "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "助太刀 매칭(발주 측 유료 플랜)(수익원)",
+          "via": "직인 · 협력회사 검색",
+          "contract": "검색은 서비스의 중핵이라 편의성 · 성능을 크게 좌우한다 — 직인 · 협력회사를 찾는 발주 측이 돈을 내는 이유가 이 검색이다(이 사이트의 해석 — 플랜과 검색의 대응은 글에 없다).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+              "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+              "publisher": "助太刀",
+              "date": "2024-12-15",
+              "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+            },
+            {
+              "title": "助太刀 - 建設現場で働くすべての人を支えるアプリ",
+              "url": "https://suke-dachi.jp/",
+              "publisher": "助太刀",
+              "summary": "건설 사업자와 직인이 만나는 앱 — 공사 회사 출신 멤버가 만들었다. 입구 넷: 거래처 · 원청을 찾는다(등록 무료) · 직인 · 협력회사를 찾는다(1~4 명 소규모용 Lite, 5 명 이상용 비즈니스) · 건설업 전직(전국 87 직종 구인, '助太刀社員') · 구인을 싣는다(사원 모집 · 스카우트). 요금 수준은 페이지에 적혀 있지 않다."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "감지에서 전환까지",
+          "question": "OpenSearch 가 멈추면 검색 요청은 어떤 길로 이어지나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  SY[\"Datadog Synthetic\\nAPI 테스트\"] -->|정기 점검| OS[\"OpenSearch 검색 엔드포인트\"]\n  SY -- \"is_alert\" --> WH[\"Webhook\"]\n  SY -- \"is_alert\" --> SL[\"Slack 통지\"]\n  WH -->|POST| SWE[\"검색 소스 전환 엔드포인트\"]\n  SWE --> SRC{\"검색 소스\"}\n  Q[\"직인 · 회사 검색 요청\"] --> SRC\n  SRC -- 평소 --> OS\n  SRC -- 전환 뒤 --> RDS[\"RDS(Aurora)\\n호환 검색 로직\"]"
+        },
+        {
+          "title": "검색 소스의 상태",
+          "question": "검색 소스는 어떤 상태 사이를 오가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> OpenSearch: 평소(빠름)\n  OpenSearch --> RDS대체: Synthetic 경보 → Webhook\n  RDS대체 --> OpenSearch: 복구 뒤 되돌림(방법은 글에 없음)\n  RDS대체 --> RDS대체: 검색은 이어지나 이전 성능"
+        },
+        {
+          "title": "대체 기반이 없었다면",
+          "question": "OpenSearch 하나에만 기댄 검색은 장애 때 어떻게 되나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"OpenSearch 장애 · 성능 저하\"] --> B{\"대체 기반이 있나\"}\n  B -- 없음 --> C[\"검색 정지 = 직인과 회사가 서로 못 찾음\"]\n  C --> D[\"사람이 알아채고 복구할 때까지 서비스 중핵 정지\"]\n  B -- \"RDS(호환 로직)\" --> E[\"자동 전환 · 검색 계속\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+          "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+          "publisher": "助太刀",
+          "date": "2024-12-15",
+          "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+        },
+        {
+          "title": "助太刀 - 建設現場で働くすべての人を支えるアプリ",
+          "url": "https://suke-dachi.jp/",
+          "publisher": "助太刀",
+          "summary": "건설 사업자와 직인이 만나는 앱 — 공사 회사 출신 멤버가 만들었다. 입구 넷: 거래처 · 원청을 찾는다(등록 무료) · 직인 · 협력회사를 찾는다(1~4 명 소규모용 Lite, 5 명 이상용 비즈니스) · 건설업 전직(전국 87 직종 구인, '助太刀社員') · 구인을 싣는다(사원 모집 · 스카우트). 요금 수준은 페이지에 적혀 있지 않다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**Lite · 비즈니스 요금 · 助太刀社員 과금 방식 · 매출 비중**이 공개 자료에 없다(회사 사이트 corp.suke-dachi.jp 는 DNS 해석 실패).",
     "**OpenSearch 로의 이행 글**은 '별도로 쓸 예정'이라고만 적혀 있다 — 아직 못 찾았다.",
