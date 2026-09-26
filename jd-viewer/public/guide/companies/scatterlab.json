@@ -208,5 +208,110 @@
     "임직원 수는 읽지 않았다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/380728",
+      "title": "Ad-Tech Developer",
+      "site": "wanted",
+      "verdict": "경력 1년 이상, 서울 성동구. 제타의 **광고 수익화를 개발자로서** 맡는 자리다 — A/B 테스트 등 실험으로 수익성 개선, **수익화 기능을 TypeScript 웹·React Native 앱 코드에 직접 구현**, **AppLovin MAX 미디에이션** 관리와 SDK 업데이트·신규 네트워크 연동·광고 게재 이슈 진단, **수익과 리텐션·몰입도의 트레이드오프**를 정량·정성적으로 관리, 국내외 광고 네트워크 약 10여 곳 파트너십. 필수는 A/B 설계·분석으로 제품 결정, **BigQuery 등 DW 분석과 통계적 실험 방법론**, AI 를 활용한 웹·앱 개발, 광고 수익화 기본 이해. 우대는 AppLovin MAX 운영, AppLovin·AdMob·Unity Ads·ironSource·Meta Audience Network 이해, **Paywall·IAP·구독 전환 최적화**, 해외 파트너 비즈니스 영어. 회사 브리핑대로 zeta 사이트는 '무료' 를 내세우고 사용시간이 매우 길다 — 광고 노출을 늘리면 몰입이 깨질 수 있다. 전형: 지원 접수 → **과제 전형** → 직무 면접 → **자기소개PT&티타임** → 컬처핏 면접 → 최종 합격. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "A/B 설계·분석",
+          "BigQuery·통계적 실험",
+          "AI 활용 웹·앱 개발",
+          "광고 수익화 기본"
+        ],
+        "can_learn": [
+          "AppLovin MAX",
+          "광고 네트워크 비딩",
+          "Paywall·구독 최적화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "광고 미디에이션 — AppLovin MAX 의 동작",
+          "from": "task",
+          "quote": "• AppLovin MAX 미디에이션을 관리하고, SDK 업데이트·신규 네트워크 연동·광고 게재 이슈를 직접 진단하고 해결합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 AppLovin MAX 운영과 주요 광고 네트워크 이해가 있다.",
+          "gap_check": "미디에이션은 한 광고 자리에 여러 네트워크를 붙여 무엇(가장 높은 가격의 광고)을 고르는 구조이고, 순서대로 호출하는 워터폴과 동시에 입찰받는 인앱 비딩은 지연·수익에서 무엇이 다르며, 새 네트워크 SDK 를 붙인 뒤 '광고가 안 뜬다' 는 신고가 오면 무엇(어댑터 버전·앱 ID·테스트 모드·필레이트)부터 확인하는가?",
+          "drill": "AppLovin MAX 안드로이드 통합 가이드와 AdMob 미디에이션 가이드를 읽고, 가짜 네트워크 세 곳의 eCPM·필레이트로 워터폴과 비딩의 기대 수익을 계산하는 스프레드시트를 만든다. '광고 미노출' 진단 순서를 체크리스트로 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "MAX SDK Integration — AppLovin Support",
+              "url": "https://support.applovin.com/en/max/android/overview/integration",
+              "kind": "docs"
+            },
+            {
+              "title": "Set up AdMob Mediation — Google",
+              "url": "https://developers.google.com/admob/android/mediation",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "광고 빈도 실험 — 수익과 리텐션을 함께 보기",
+          "from": "task",
+          "quote": "• 서비스 수익과 사용자 경험(리텐션, 몰입도)의 트레이드오프를 정량/정성적으로 관리합니다.",
+          "priority": "core",
+          "why": "주요업무이고 필수에 'A/B 실험을 설계하고 결과를 분석해 제품 의사결정' 이 있다. 회사 브리핑대로 제타는 몰입도(사용시간)가 핵심 지표다.",
+          "gap_check": "대화 N턴마다 전면 광고를 넣는 실험에서 N 을 줄이면 오늘 광고 수익은 오르지만 무엇(7일 리텐션·세션 길이)이 떨어질 수 있고, 이 둘을 한 숫자로 비교하려면 무엇(유저당 기간 누적 수익 = 광고 ARPDAU × 잔존일)을 주 지표로 두며, 실험 기간이 짧으면 왜 수익 쪽만 좋아 보이는가?",
+          "drill": "가짜 유저 시뮬레이션(광고 빈도에 따라 이탈 확률이 오르는)으로 N=5·10·20 세 그룹을 만들고, 1일·30일 누적 유저당 수익을 비교해 짧은 기간 판단이 뒤집히는 지점을 찾는다. Evan Miller 계산기로 리텐션 차이를 잡을 표본을 구한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Sample Size Calculator — Evan Miller",
+              "url": "https://www.evanmiller.org/ab-testing/sample-size.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Trustworthy Online Controlled Experiments — Experiment Guide",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "BigQuery 로 실험 결과 뽑기",
+          "from": "qualification",
+          "quote": "• BigQuery 등 데이터 웨어하우스 기반 분석, 통계적 실험 방법론에 익숙한 분",
+          "priority": "high",
+          "why": "필수 자격요건이다.",
+          "gap_check": "실험 배정 테이블과 광고 노출·수익 이벤트 테이블을 조인해 그룹별 유저당 수익을 낼 때 분석 단위를 유저로 두는 이유는 무엇이고(노출 단위 집계의 함정), 수익처럼 치우친 분포에서 평균 차이의 신뢰구간은 무엇(부트스트랩)으로 구하며, 날짜 파티션 필터를 빠뜨리면 비용이 어떻게 되는가?",
+          "drill": "BigQuery 샌드박스에 가짜 배정·노출 테이블을 만들어 그룹별 유저당 수익 SQL 을 쓰고, 결과를 Python 으로 받아 부트스트랩 신뢰구간을 계산한다. 파티션 필터 유무로 처리 바이트를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "BigQuery overview — Google Cloud",
+              "url": "https://cloud.google.com/bigquery/docs/introduction",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction to partitioned tables — BigQuery",
+              "url": "https://cloud.google.com/bigquery/docs/partitioned-tables",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Paywall·구독 — 광고 외 수익 설계",
+          "from": "preference",
+          "quote": "• Paywall / IAP / 구독 전환 최적화 경험이 있는 분",
+          "priority": "nice",
+          "why": "우대사항이다. 광고 수익화와 구독은 같은 유저 경험 위에서 서로 영향을 준다(광고 제거 구독 등).",
+          "gap_check": "'광고 제거 + 추가 기능' 구독을 넣으면 광고 수익과 구독 수익이 어떻게 맞바뀌고, 페이월을 언제(첫 세션·N턴 뒤·기능 잠금 시) 보여줄지 무엇으로 실험하며, 구독 갱신·해지·유예 상태는 앱이 아니라 어디(스토어 서버)에서 확인하는가?",
+          "drill": "Google Play 구독 개요를 읽고 구독 상태(활성·유예·보류·해지)별 앱 동작 표를 만든다. 페이월 노출 시점 세 가지 실험 설계서를 쓰고, 주 지표를 '광고+구독 합산 유저당 수익' 으로 정의한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "About subscriptions — Play Billing",
+              "url": "https://developer.android.com/google/play/billing/subscriptions",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
