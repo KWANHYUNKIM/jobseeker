@@ -1747,3 +1747,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - Zenn 최신 글 API 1~20쪽 publication 집계 → 제품 회사 10곳 RSS → 기사 4편 본문 확인. 올림: Finatext(Snowflake 비용 39%)·KENCOPA(공정 계획 AI 설계 넷)·WWWAVE(배치 감시 침묵). Rescue Now 는 조직 이야기라 통과 못 함.
 - 겸사: Rehab for JAPAN 완주 판정 검색 2 를 Zenn 검색 API 로 — 0건.
+
+## 2026-09-26 Rehab for JAPAN hold
+
+- 검색 1 RSS 20편 · 검색 2 Zenn 검색 API 3낱말 0건(89번째 후보 조사 때). hold_reason 을 status 뒤에, '재시도 안 함' 한 줄, QUEUE 진행 중 행에 hold.

@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "in_progress",
+  "hold_reason": "수익원 'Rehab Studio(온라인 리하비리)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 20편 / Zenn 검색 API 'Rehab Studio'·'オンラインリハビリ'·'rehabforjapan' 0건). Rehab Cloud 제품 자체(계획서·청구·AI 동작 분석)의 결정 글도 아직 없다 — 전자 서명 출시 글은 회고. 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 그쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "rehabforjapan.com",
   "one_liner": "데이 서비스용 과학적 개호 SaaS Rehab Cloud — 여러 프로덕트 DB 를 BigQuery 로 모으는 멈출 수 없는 데이터 기반을, 하루 몇 시간 도는 ETL 에 월 $600~1,000 을 내던 상시 가동 Cloud Composer 에서 Cloud Run Jobs 와 시각차 기동으로 옮겨 월 $10~20 로 돌린다",
