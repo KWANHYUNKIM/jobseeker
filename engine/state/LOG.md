@@ -2464,3 +2464,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Skyfall 계측 API
 
 - `c268501b030fae` 전문으로 기능 `measurement-api-testable`, 결정 7. 오퍼월 기능과 connections 로 이음.
+
+## 2026-09-27 Skyfall 포커 · 포인트 앱 수익원 보류
+
+- 첫째 RSS 15편(지난 사이클) · 둘째 Zenn 검색 4낱말 0 건 + 공개 글 목록 2쪽째 없음 + 채용 페이지 단서 없음 → hold_reason. --gaps 는 이미 신규를 가리켰지만 수익원 판정을 먼저 끝냈다.

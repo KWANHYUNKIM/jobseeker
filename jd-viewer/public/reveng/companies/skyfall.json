@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "광고",
   "status": "in_progress",
+  "hold_reason": "수익원 'ポーカーチェイス(포커 게임)' · 'ポケットプレイ · SKYORDER' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-27 — Zenn Publication RSS 15편 + 공개 글 목록 2쪽째 없음: 글은 전부 SKYFLAG · 데이터 기반 · 신입 연수 / Zenn 검색 API 'ポーカーチェイス'·'ポケットプレイ'·'SKYORDER'·'poker chase' — 0 건, 채용 페이지에도 기술 블로그 단서 없음). 완주 기준 셋째를 못 채워 in_progress 로 두고 더 파지 않는다. 포커 게임 · 포인트 앱 · 셀프 오더의 시스템 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-27",
   "domain": "skyfall.co.jp",
   "one_liner": "앱 · 게임 안에 리워드 광고(오퍼월)를 붙여 매체엔 수익을, 광고주엔 행동한 사용자를 주는 SKYFLAG 의 회사 — 수익을 내 온 C# API 를 존중하며 Node.js 로 은퇴시켜 300ms 를 80ms 로 줄였고, 클릭에서 성과까지 세는 계측 API 는 '테스트할 수 있는 구조'로 다시 짰다",
