@@ -734,6 +734,81 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54912572&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ffd55b11-c9d5-4d65-92a9-3c252be56981",
+      "title": "Physical AI 기획 및 PM",
+      "site": "saramin",
+      "verdict": "경력 3년 이상, 서울 강남구. 개발자가 아니라 **Physical AI 기획·PM** 이다 — 머리말은 선행 기술을 현장 적용 가능한 **양산 기술로 전환**하기 위한 기술 전략·프로젝트 관리를 맡는다고 적는다. (사람인 원문은 자격요건이 주요업무 칸 안에 붙어 있다.) 업무는 **사내 Physical AI Center 구축·운영 전략**, Single Arm·Dual-Arm·Humanoid 로봇 Cell/Zone 구성과 **단계별 도입 로드맵**, 현장 자동화 Task 발굴·우선순위, **Real-to-Sim-to-Real** 데이터·모델·검증·배포 프로세스 기획, 텔레오퍼레이션·모션캡처·시뮬레이터·엔드이펙터·학습 인프라 등 센터 구성 요소 기획, Task별 산출물·범위·성능 목표·비용·일정·**리스크 관리**, AI·로보틱스·비전·제어·SW/HW·SI 조직과 **PoC·양산 프로젝트 리딩**, PoC 결과 분석과 확산 전략, 데이터·모델 **자산화** 전략. 자격은 로봇·AI·제조/물류 자동화·SI 등에서 기획·PM 3년, 요구사항·로드맵·일정·범위·리스크 관리, 다양한 이해관계자 협업, 기술 내용을 의사결정 가능한 문서로 구조화, PoC 를 넘어 양산화 리딩. 우대는 로보틱스·비전·AI 이해, 로봇 도입 기획, 산업 현장 자동화, Teleoperation·IL·RFM/VLA·Sim-to-Real·Digital Twin, 제안서·사업계획서·비용 산정서·PRD. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "로봇·AI·자동화 분야 기획/PM 3년",
+          "요구사항·로드맵·리스크 관리",
+          "기술 문서 구조화"
+        ],
+        "can_learn": [
+          "Physical AI 기술 지형(VLA·Sim-to-Real)",
+          "TRL 기반 성숙도 판단"
+        ]
+      },
+      "study": [
+        {
+          "topic": "도입 로드맵 — 셀 단위로 단계를 나누기",
+          "from": "task",
+          "quote": "ㆍSingle Arm, Dual-Arm, Humanoid 등 로봇 Cell/Zone 구성 및 단계별 도입 로드맵 기획",
+          "priority": "core",
+          "why": "주요업무다. 싱글암→양팔→휴머노이드처럼 난이도가 다른 로봇을 어떤 순서로 센터에 들일지가 첫 결정이다.",
+          "gap_check": "기술 로드맵에서 '시장·현장 요구 → 제품/태스크 → 기술 → 자원' 을 층으로 잇는 방식을 설명할 수 있는가? 각 단계의 진입 조건(이전 단계 성능 목표 달성)과 중단 조건을 어떻게 정의하는가?",
+          "drill": "Technology roadmap 문서를 읽고, 가상의 Physical AI Center 18개월 로드맵(1단계 싱글암 피스피킹 → 2단계 양팔 포장 → 3단계 휴머노이드 PoC)을 층 구조로 그리고, 단계별 진입·중단 조건과 필요 인프라(텔레오퍼레이션·시뮬레이터)를 표로 붙인다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Technology roadmap — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Technology_roadmap",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "PoC 에서 양산까지 — 성숙도로 말하기",
+          "from": "task",
+          "quote": "ㆍPoC를 넘어 실제 현장 적용과 양산화를 목표로 프로젝트를 리딩할 수 있는 분",
+          "priority": "core",
+          "why": "자격요건(원문은 주요업무 칸)이고 업무에 PoC 결과 분석·성능 검증·현장 배포 전략이 있다.",
+          "gap_check": "'데모는 되는데 현장에서 안 된다' 를 기술 성숙도(TRL)로 표현하면 어느 단계에서 어느 단계로 가는 문제이고, 각 단계에서 무엇을 증명해야 하는가(실험실 성공률 → 실제 환경 연속 가동 → 운영 조직 인수)? PoC 성공 기준을 사전에 숫자로 합의하지 않으면 무엇이 일어나는가?",
+          "drill": "TRL·PoC 문서를 읽고, 가상 과제 '양팔 로봇 택배 포장' 의 PoC 계획서 한 장(목표 TRL, 성공 기준: 성공률·사이클 타임·개입 횟수, 기간, 비용, 중단 조건)을 작성한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Technology readiness level — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Technology_readiness_level",
+              "kind": "docs"
+            },
+            {
+              "title": "Proof of concept — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Proof_of_concept",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "연구형 프로젝트의 리스크 관리",
+          "from": "task",
+          "quote": "ㆍTask별 연구 산출물, 개발 범위, 성능 목표, 비용, 일정, 리스크 관리",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 일정·범위·리스크 관리 경험이 있다.",
+          "gap_check": "학습 기반 로봇 과제의 전형적 리스크(데이터 부족, Sim-to-Real 격차, 하드웨어 납기, 현장 환경 변화)를 리스크 레지스터에 어떻게 적고, 발생 가능성·영향·대응·담당자를 누가 언제 갱신하는가? 연구 결과가 불확실할 때 일정은 어떻게 약속하는가?",
+          "drill": "Risk register 문서를 읽고, 위 PoC 계획서에 리스크 10건짜리 레지스터를 붙이고 상위 3건의 대응 계획(회피·완화·수용)과 조기 경보 지표를 적는다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Risk register — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Risk_register",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
