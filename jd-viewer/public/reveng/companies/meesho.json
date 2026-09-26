@@ -5,7 +5,7 @@
   "country": "IN",
   "category": "커머스",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "meesho.com",
   "one_liner": "인도에서 판매 수수료를 받지 않는 커머스 — 대신 물류와 광고로 벌고, 주소도 신용도 갖춰지지 않은 시장을 시스템으로 메운다",
   "business_model": "**판매자에게 커미션을 받지 않는다.** 인도 커머스 중 처음으로 그렇게 했고 대신 물류 이행 수수료와 광고로 번다. 광고가 가장 빨리 크는 매출원이다. 자체 물류 플랫폼을 세우고 리셀러 네트워크를 만들어 2025년 12월에 인도 최초의 수평 이커머스 상장사가 됐다.\n\n2025년 9월까지 12개월 기준 연간 거래 판매자가 70만 6,471명이고 연간 거래 사용자가 2억 3,420만 명이며, FY25 인도 이커머스 배송 물량의 29~31%를 차지한다.\n\n**커미션을 안 받는다는 결정이 기술 문제를 바꿔 놓는다.** 거래마다 떼는 몫이 없으니 정산이 얼마를 뗐는지가 아니라 왜 이만큼인지를 설명해야 하고, 물류를 직접 하니 주소를 읽는 일까지 이 회사의 문제가 된다(재구성).",
@@ -18,7 +18,7 @@
   "domain_map": {
     "title": "수수료를 안 받기로 하면 나머지가 전부 문제가 된다",
     "question": "이 회사의 도메인들이 어떻게 맞물리나",
-    "code": "flowchart TD\n  S[\"<b>판매자 약 70만 명</b><br/>• 커미션 0\"]:::list --> O[\"<b>주문</b>\"]:::list\n  U[\"<b>사용자 2억 3천만 명</b>\"]:::list --> O\n  O --> A[\"<b>주소를 읽는다</b><br/>• GeoIndia · 지오코더\"]:::quiet\n  O --> F[\"<b>사기를 끊는다</b><br/>• TrustMesh (그래프+시퀀스)\"]:::quiet\n  O --> I[\"<b>이미지를 보낸다</b><br/>• 10억 기기의 다양성\"]:::quiet\n  A --> D[\"<b>Valmo 로 배달</b>\"]:::list\n  D --> P[\"⚠️ <b>판매자에게 정산한다</b><br/>• 얼마가 아니라 왜 이만큼인가\"]:::accent\n  F --> P\n  P --> R[\"<b>버는 곳</b><br/>• 물류 이행 수수료<br/>• 광고 (가장 빨리 큰다)\"]:::list"
+    "code": "flowchart TD\n  S[\"<b>판매자 약 70만 명</b><br/>• 커미션 0\"]:::list --> O[\"<b>주문</b>\"]:::list\n  U[\"<b>사용자 2억 3천만 명</b>\"]:::list --> O\n  O --> A[\"<b>주소를 읽는다</b><br/>• GeoIndia · 지오코더\"]:::quiet\n  O --> F[\"<b>사기를 끊는다</b><br/>• TrustMesh (그래프+시퀀스)\"]:::quiet\n  O --> I[\"<b>이미지를 보낸다</b><br/>• 10억 기기의 다양성\"]:::quiet\n  A --> D[\"<b>Valmo 로 배달</b>\"]:::list\n  D --> Z[\"<b>배송 구역을 밀도에 맞춰 긋는다</b><br/>• 밀도 벗기기 클러스터링<br/>• 미클러스터 4.2% · 픽업 500m 95%\"]:::accent\n  D --> P[\"⚠️ <b>판매자에게 정산한다</b><br/>• 얼마가 아니라 왜 이만큼인가\"]:::accent\n  F --> P\n  P --> R[\"<b>버는 곳</b><br/>• 물류 이행 수수료<br/>• 광고 (가장 빨리 큰다)\"]:::list"
   },
   "revenue_streams": [
     {
@@ -409,6 +409,45 @@
       ],
       "features": [
         "deterministic-paths-need-no-database"
+      ]
+    },
+    {
+      "name": "배송 구역을 밀도에 맞춰 긋는다",
+      "why": "라스트마일이 물류비의 41~53% 이고 그중 절반 넘게 인건비다. 한 센터 안에서도 밀도가 극단적으로 갈려 전역 반경 하나로는 도시나 시골 중 하나를 버린다. 본문 확인함(2026-09). 주소 도메인이 한 주문의 위치를 찾는다면 여기는 수많은 위치를 누가 어떻게 나눠 도는지를 정한다(이 사이트의 해석).",
+      "tech": [
+        {
+          "tech": "밀도 벗기기 클러스터링 (k-distance + GMM + 반복 DBSCAN)",
+          "solves": "데이터에서 밀도 척도를 찾아 촘촘한 척도부터 구역을 떼어 낸다. 200개 센터에서 미클러스터 4.2%, 실루엣 0.72.",
+          "limits": "MinPts 는 주문 수 구간 휴리스틱이고, 도로망·SLA·시간·계절 수요를 아직 반영하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+              "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+              "publisher": "Meesho Tech Blog",
+              "date": "2026-09",
+              "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+            }
+          ]
+        },
+        {
+          "tech": "Apache Spark 분산 파이프라인",
+          "solves": "k-distance·GMM 후보·센터별 DBSCAN 을 각각 병렬화해 약 5,000개 센터에 다시 돌릴 수 있게 한다.",
+          "limits": "센터 크기가 고르지 않으면 워커 부하가 치우친다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+              "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+              "publisher": "Meesho Tech Blog",
+              "date": "2026-09",
+              "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "peel-density-one-scale-at-a-time"
       ]
     }
   ],
@@ -2486,6 +2525,343 @@
           "summary": "판매자에게 커미션을 받지 않은 최초의 인도 커머스로, 자체 물류(Valmo)를 세우고 리셀러 네트워크를 만들어 인도 최초의 수평 이커머스 상장사가 됐다. 2025년 9월까지 12개월간 연간 거래 판매자 70만 6,471명·연간 거래 사용자 2억 3,420만 명."
         }
       ]
+    },
+    {
+      "key": "peel-density-one-scale-at-a-time",
+      "name": "한 척도씩 밀도를 벗겨 낸다",
+      "domain": "배송 구역을 밀도에 맞춰 긋는다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "라스트마일이 물류비의 41~53% 이고 그중 50~60% 가 인건비다. 배송 구역을 어떻게 긋느냐가 배송원이 촘촘한 동네에서 넘치는지 시골에서 노는지, 픽업 지점이 닿는 거리에 있는지, 건당 수당이 실제 수고를 반영하는지를 정한다.\n\n문제는 인도의 배송지가 한 센터 안에서도 밀도가 극단적으로 갈린다는 것이다. 아파트 세 동에 100건, 15km 에 10건. 밀도 기반 클러스터링의 표준인 DBSCAN 은 반경이 하나라 둘 중 하나를 버린다 — 도시에 맞추면 시골 주소가 잡음으로 빠지고, 시골에 맞추면 도시 동네가 한 덩어리가 된다. 잡음으로 빠진 점은 통계가 아니라 구역 계획에서 통째로 사라지는 실제 배송지다.\n\n**그래서 반경을 잘 고르는 대신 데이터에 어떤 밀도 척도들이 있는지 먼저 묻고, 촘촘한 척도부터 한 겹씩 벗겨 낸다.** 이 회사의 주소 도메인이 '이 주문이 어디인가'를 풀었다면 여기는 '이 주소들을 누가 어떻게 나눠 도나'를 푼다(이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "미클러스터 주소 비율 (200개 센터)",
+            "value": "4.2% — DBSCAN 12.5%, 가장 강한 적응형 AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "label": "클러스터 품질",
+            "value": "실루엣 0.72 · Davies-Bouldin 0.72 — 12개 기준선 중 최고",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "label": "셀프 픽업 지점 500m 커버리지",
+            "value": "20% → 95%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "label": "밀도 인식 요율표",
+            "value": "배송 비용 3.2% · RTO 0.1% 감소 (오프라인)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "label": "인력 불균형 (오프라인 분석)",
+            "value": "센터 21% 가 약 19% 부족, 79% 가 약 55% 과잉",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "label": "평가 데이터",
+            "value": "배송 센터 200곳, 약 1,000만 주문 (하리아나 110곳·마하라슈트라 95곳)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "전역 반경이 안 맞는 까닭을 볼 때",
+          "thought": "밀도의 변화는 제멋대로가 아니라 구조가 있고, 그 구조는 통계로 찾을 수 있다. 그러면 반경을 손으로 고르거나 휴리스틱으로 적응시키는 대신 데이터가 가진 밀도 척도들을 먼저 알아내면 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇에 모델을 맞출지 정할 때",
+          "thought": "좌표 자체가 아니라 k-distance 분포에 맞춘다. 1차원이고 모양에 무관하며 싸서 수천만 점까지 간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "'DBSCAN 을 여러 번 돌리는 것'과 무엇이 다른지 물을 때",
+          "thought": "임계값이 없으면 척도를 내려갈 때마다 가짜 작은 클러스터가 쌓인다. 보정 수용 임계값이 epsilon 만큼 중요하다고 회사가 적는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "딥러닝 기준선이 진 것을 볼 때",
+          "thought": "DEC 가 기본 DBSCAN 보다 못했다. 지리 클러스터링에는 근접성·자연 경계·밀도 연속성이라는 강한 사전 구조가 있고, 밀도 기반 방법은 그것을 바로 쓰지만 학습된 임베딩은 라벨 없이 되찾기 어렵다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "배송 센터(LMDC)",
+            "what": "라스트마일 배송 거점. 클러스터링의 단위다. 전국 약 5,000곳."
+          },
+          {
+            "name": "k-distance",
+            "what": "주소에서 k번째 가까운 주소까지의 거리. 전체 분포가 그 센터의 밀도 지문이다."
+          },
+          {
+            "name": "MinPts",
+            "what": "핵심점이 되려면 필요한 이웃 수. 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱."
+          },
+          {
+            "name": "밀도 척도",
+            "what": "k-distance 분포에 맞춘 GMM 의 성분 하나. 가중치 0.01 미만 성분은 버린다."
+          },
+          {
+            "name": "후보 반경 집합",
+            "what": "각 성분 평균에 표준편차 0~3배를 더한 값들을 정렬한 것. 촘촘한 척도부터 성긴 척도까지 덮는다."
+          },
+          {
+            "name": "보정 수용 임계값",
+            "what": "각 반복에서 받아들일 클러스터 크기 합의 상한. 데이터에서 계산하고, 큰 클러스터부터 욕심 있게 받는다."
+          }
+        ],
+        "invariants": [
+          "반경을 사람이 고르지 않는다 — 데이터의 밀도 분포에서 나온다.",
+          "촘촘한 척도부터 벗겨 낸다 — 받아들인 클러스터는 다음 반복에서 빠진다.",
+          "각 척도에서 받을 양은 데이터가 정한 임계값까지다 — 그 너머의 작은 클러스터는 가짜로 본다.",
+          "모든 척도를 지나고도 남은 점만 잡음이다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "센터마다 주문 수로 MinPts 를 정하고, 주소마다 k-distance 를 구한다 — Spark 에서 데이터 조각별로 나눠 계산",
+            "why": "크기가 다른 센터 사이에서 동작을 안정시키고, 수백만 주소에도 싸다."
+          },
+          {
+            "step": "k-distance 분포에 GMM 을 후보 K 마다 워커에 나눠 병렬로 맞추고, 모든 성분 가중치가 0.01 이상인 가장 큰 K 를 고른다",
+            "why": "성분 수를 미리 정하지 않고, 무시할 만한 성분은 통계적으로 버린다. 순차 적합보다 한 자릿수 빠르다."
+          },
+          {
+            "step": "각 성분 평균 + 0~3 표준편차로 후보 반경들을 만들어 작은 것부터 정렬한다",
+            "why": "가장 촘촘한 곳부터 점점 성긴 곳까지 모든 척도를 덮는다."
+          },
+          {
+            "step": "아직 배정 안 된 점에 현재 반경으로 DBSCAN 을 돌리고, 보정 임계값까지 큰 클러스터부터 받아 떼어 낸다 — 센터별로 mapPartitions",
+            "why": "가짜 작은 클러스터가 반복마다 쌓이지 않는다."
+          },
+          {
+            "step": "모든 반경을 지나고 남은 점을 잡음으로 표시한다",
+            "why": "잡음은 구역 계획에서 빠지는 실제 배송지라 최소화 대상이다 — 4.2%."
+          },
+          {
+            "step": "클러스터로 셀프 픽업 지점 배치 · 밀도 인식 요율표 · 인력 배치를 계산한다",
+            "why": "세 가지가 측정 기준이 가장 분명해 파일럿을 그 순서로 평가한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "밀도가 극단적으로 갈리는 센터를 어떻게 한 번에 나누나",
+            "chosen": "데이터에서 밀도 척도들을 찾아 촘촘한 척도부터 DBSCAN 을 반복해 벗겨 낸다.",
+            "alternatives": [
+              "전역 반경 하나의 DBSCAN",
+              "국소적으로 반경을 적응시키는 ADBSCAN·AMD-DBSCAN",
+              "밀도 계층을 쌓는 HDBSCAN"
+            ],
+            "tradeoff": "전역 반경은 도시나 시골 중 하나를 버리고(미클러스터 12.5%), HDBSCAN 은 반도시에서 동네를 합치고 도심에서 쪼갠다. 벗겨 내기는 미클러스터 4.2% 로 가장 적다. 대가는 반복 DBSCAN 과 GMM 적합이라는 계산량이다 — 그래서 Spark 분산이 따라온다. 그리고 한 번 받아들인 클러스터는 다음 척도에서 다시 안 보므로 앞 단계의 실수가 굳는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "question": "밀도 척도를 무엇으로 찾나",
+            "chosen": "좌표가 아니라 k-distance 의 1차원 분포에 GMM 을 맞춘다. 성분 수는 모든 가중치가 0.01 이상인 가장 큰 K.",
+            "alternatives": [
+              "좌표에 직접 GMM 을 맞춘다(GMM 기준선)",
+              "반경을 사람이 센터마다 고른다"
+            ],
+            "tradeoff": "1차원이라 싸고 모양에 무관하며 수천만 점까지 간다. 좌표 GMM 기준선은 미클러스터 13.4% 였다. 대신 k-distance 는 거리만 보고 방향과 도로를 모른다 — 강 건너 가까운 주소가 같은 척도로 묶일 수 있다(이 사이트의 해석). 도로망 제약은 회사가 남은 과제로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "question": "각 척도에서 몇 개의 클러스터를 받나",
+            "chosen": "데이터에서 계산한 보정 수용 임계값까지, 큰 클러스터부터 욕심 있게 받는다.",
+            "alternatives": [
+              "DBSCAN 이 내놓은 클러스터를 모두 받는다",
+              "고정 최소 크기로 거른다"
+            ],
+            "tradeoff": "척도를 내려갈수록 쌓이는 가짜 작은 클러스터를 막는다 — 회사는 이 임계값이 반경만큼 중요하다고 적는다. 대가는 식이 하나 더 늘어 결과를 설명하기 어려워진다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "question": "MinPts 는 어떻게 정하나",
+            "chosen": "주문 수 구간으로 정하는 휴리스틱(0~1000→10, 1000~2000→20 …).",
+            "alternatives": [
+              "센터마다 튜닝한다",
+              "통계적으로 자동 결정한다"
+            ],
+            "tradeoff": "크기가 다른 센터 사이에서 동작을 안정시킨다. 그러나 이것만은 데이터에서 나오지 않는다 — 회사가 새 지역으로의 일반화를 막는 열린 문제로 직접 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "question": "딥러닝 클러스터링을 쓸 것인가",
+            "chosen": "쓰지 않는다. 밀도 기반 방법을 확장한다.",
+            "alternatives": [
+              "DEC 같은 딥 임베딩 클러스터링"
+            ],
+            "tradeoff": "DEC 는 미클러스터 14.3% 로 기본 DBSCAN 보다도 못했다. 지리에는 근접성·자연 경계·밀도 연속성이라는 강한 사전 구조가 있어 밀도 기반이 그것을 바로 쓴다. 대신 수요의 시간·계절 변동 같은, 학습이 잡을 수 있었을 신호는 아직 안 들어간다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          },
+          {
+            "question": "5,000개 센터에 어떻게 돌리나",
+            "chosen": "Spark 에서 단계마다 따로 병렬화 — k-distance 는 데이터 조각별, GMM 은 후보 K 별, DBSCAN 은 센터별 mapPartitions.",
+            "alternatives": [
+              "센터를 하나씩 순차로 돌린다"
+            ],
+            "tradeoff": "수요가 바뀔 때마다 다시 돌릴 수 있는 파이프라인이 된다. 대가는 드라이버 1대 + 워커 20대의 클러스터이고, 센터 크기가 고르지 않으면 워커 간 부하가 치우친다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+                "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+                "publisher": "Meesho Tech Blog",
+                "date": "2026-09",
+                "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "주소를 못 쓰는 나라에서 배달지를 찾는다 (같은 회사 도메인)",
+          "via": "배송지 좌표",
+          "contract": "클러스터링의 입력은 배송 주소의 위치다. 지오코딩이 틀리면 밀도 지문 자체가 틀린다(이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Valmo 배송원 수당·인력 배치",
+          "via": "밀도 인식 요율표와 인력 계획",
+          "contract": "획일적인 건당 수당 대신 구역 밀도에 맞춘 요율을 쓴다 — 오프라인에서 배송 비용 3.2% 감소. 센터 21% 부족·79% 과잉이 구역 정의 없이는 안 보였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "셀프 픽업 지점",
+          "via": "클러스터 기반 배치",
+          "contract": "500m 커버리지가 20% 에서 95% 로.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "밀도 지문에서 배송 구역까지",
+          "question": "반경을 사람이 고르지 않고 어떻게 척도별 구역이 나오나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>한 센터의 배송 주소</b><br/>• MinPts = 주문 수 구간\"]:::quiet --> K[\"<b>1. k-distance</b><br/>• 주소마다 k번째 이웃 거리<br/>• 밀도 지문\"]:::list\n  K --> G[\"<b>2. GMM</b><br/>• 성분 가중치 0.01 이상인 최대 K<br/>• 반경 = 평균 + 0~3σ\"]:::accent\n  G --> L{\"3. 가장 촘촘한 반경부터\"}\n  L --> D[\"<b>남은 점에 DBSCAN</b>\"]:::list\n  D --> T[\"<b>보정 임계값까지<br/>큰 클러스터부터 받는다</b>\"]:::accent\n  T -->|\"떼어 내고 다음 반경\"| L\n  T --> Z[\"<b>구역</b><br/>• 픽업 500m 20% → 95%<br/>• 요율표 · 인력 배치\"]:::accent\n  L -->|\"반경 소진\"| N[\"<b>남은 점 = 잡음</b><br/>• 4.2%\"]:::quiet"
+        },
+        {
+          "title": "전역 반경 하나가 무너지는 자리",
+          "question": "왜 DBSCAN 하나로는 한 센터를 못 나누나",
+          "kind": "failure",
+          "code": "flowchart TD\n  C[\"<b>한 센터 안</b><br/>• 아파트 세 동에 100건<br/>• 15km 에 10건\"]:::quiet --> Q{\"반경 하나를 고르면\"}\n  Q -->|\"도시에 맞춘다\"| F1[\"<b>시골 주소가 잡음으로 빠진다</b><br/>• 구역 계획에서 사라진다\"]:::quiet\n  Q -->|\"시골에 맞춘다\"| F2[\"<b>도시 동네가 한 덩어리</b><br/>• 경로·인력 계획에 못 쓴다\"]:::quiet\n  F1 --> M[\"<b>DBSCAN 미클러스터 12.5%</b>\"]:::quiet\n  F2 --> M\n  Q -->|\"척도별로 벗겨 낸다\"| OK[\"<b>미클러스터 4.2%</b>\"]:::accent\n  OK --> R[\"<b>남은 틈</b><br/>• MinPts 는 휴리스틱<br/>• 도로망·계절 수요 미반영\"]:::list"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+          "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+          "publisher": "Meesho Tech Blog",
+          "date": "2026-09",
+          "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -2498,7 +2874,8 @@
     "GeoIndia 두 세대의 연도를 모른다 — V2 논문이 CIKM '25 에 실렸다는 것은 블로그가 밝히지만, V1 이 언제 프로덕션에 들어갔고 V2 로 언제 넘어갔는지는 어느 글에도 없다. 연도를 모르면 쓰지 않는다는 규칙대로 history 를 비웠다(STYLE 8번).",
     "TrustMesh 논문(AAAI 2026 채택)의 주소를 확인하지 못했다 — 블로그가 전체 기술 세부는 논문에 있다고 가리키지만 링크를 못 받았다. 그럴듯한 주소를 지어내지 않는다는 규칙대로 research.papers 를 비웠다.",
     "이미지 도메인의 나머지 두 글을 안 읽었다 — the-right-pixels-optimising-images-at-meeshos-scale(2026-08-25)과 the-350-kb-hidden-in-our-xml-layouts(2026-08-17). 클라이언트 쪽(앱 레이아웃·메모리)에서 무엇을 하는지가 비어 있다.",
-    "Pixius 의 실패 사례가 없다 — 처리량과 절감은 적는데 장애·회귀·잘못 만든 변형본을 어떻게 되돌리는지가 없다. 결정론적 경로는 조회를 없애 주지만, 잘못 만들어진 변형본을 무효화하는 일은 그만큼 어려워진다(재구성)."
+    "Pixius 의 실패 사례가 없다 — 처리량과 절감은 적는데 장애·회귀·잘못 만든 변형본을 어떻게 되돌리는지가 없다. 결정론적 경로는 조회를 없애 주지만, 잘못 만들어진 변형본을 무효화하는 일은 그만큼 어려워진다(재구성).",
+    "배송 구역 클러스터링(2026-09)의 성과는 모두 오프라인이다 — 전국 약 5,000곳 단계 배포의 실측이 나오면 채운다. 같은 달의 릴스 즉시 로딩(chasing-zero)·TrendPulse(축제 피드) 글은 아직 안 읽었다."
   ],
   "sources": [
     {
@@ -2549,6 +2926,13 @@
       "publisher": "Meesho Blog",
       "date": "2026-05-25",
       "summary": "배달 기사가 15분 안에 연달아 배달한 두 주소를 1-hop 엣지로 삼아 2년치 배달 로그에서 공간 그래프를 만들고, 주소 텍스트를 읽는 언어 경로와 그 그래프를 읽는 Graphormer 를 KMCA 로 합쳤다. 새 주소는 배달 이력이 없어 추론 시 ANN 으로 그래프를 동적으로 만든다."
+    },
+    {
+      "title": "Cracking the Density Problem: Smarter Delivery Zone Clustering at Meesho",
+      "url": "https://www.meesho.io/blog/cracking-the-density-problem-smarter-delivery-zone-clustering-at-meesho",
+      "publisher": "Meesho Tech Blog",
+      "date": "2026-09",
+      "summary": "한 배송원이 같은 날 아파트 세 동에 100건이 몰린 곳과 15km 에 10건이 흩어진 곳을 함께 돈다. DBSCAN 의 반경(epsilon)과 최소 점 수(MinPts)가 전역이라 도시에 맞추면 시골 주소가 잡음이 되고 시골에 맞추면 도시 동네가 한 덩어리로 합쳐진다. ADBSCAN·AMD-DBSCAN·HDBSCAN 도 적응성·확장성·통계적 엄밀성 사이에서 맞바꾼다. 세 단계: ①주소마다 k번째 이웃까지 거리(k-distance)를 구한다 — MinPts 는 주문 수 구간(0~1000→10, 1000~2000→20 …)으로 정하는 휴리스틱 ②k-distance 분포에 GMM 을 맞춰 밀도 척도를 찾는다 — K 는 모든 성분 가중치가 0.01 이상인 가장 큰 값, 후보 epsilon 은 성분 평균 + 0~3 표준편차 ③가장 촘촘한 척도부터 DBSCAN 을 돌려 벗겨 내고, 데이터에서 나온 보정 수용 임계값까지만 큰 클러스터부터 받는다. 하리아나 110곳(약 600만 주문)·마하라슈트라 95곳(약 400만) 200개 배송 센터에서 12개 기준선 대비 실루엣 0.72, DBI 0.72, 미클러스터 비율 4.2%(DBSCAN 12.5%, AMD-DBSCAN 6.9%, 딥러닝 DEC 14.3%). Spark 로 단계별 병렬화(드라이버 1 + 워커 20). 셀프 픽업 지점 500m 커버리지 20%→95%, 밀도 인식 요율표로 배송 비용 3.2%·RTO 0.1% 감소(오프라인), 센터 21% 가 약 19% 인력 부족, 79% 가 약 55% 과잉. 약 5,000곳 전국 단계 배포 준비 중. 남은 문제 — MinPts 휴리스틱, 시간·계절 수요, 도로망·SLA 제약."
     }
   ]
 }

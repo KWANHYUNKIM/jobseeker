@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — klaviyo 재방문은 새 자료 없음(1회째). 09-06 묶음 진행 중.**
+**없다 — meesho 재방문에서 확장(`peel-density-one-scale-at-a-time`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **meesho** — 2026-09-26 배송 구역 클러스터링(2026-09) → `peel-density-one-scale-at-a-time`, 새 도메인. 같은 달 새 글 둘 더(릴스 즉시 로딩·TrendPulse) — 다음 재방문 후보. 목록에 날짜가 없어 본문 이미지 경로(`/2026/09/`)로 달을 가린다.
 - **klaviyo** — 2026-09-26 없음 1회째. `klaviyo.tech/feed` 최신이 04-23 — 블로그가 다섯 달째 멈춰 있다. 출처에 없는 BFCM 규모(2025-12)·분산 ML(2025-11)은 이전 글 쓰기 제안 답을 받으면 후보.
 - **honeycomb** — 2026-09-26 적응형 테일 샘플링(09-21) → `drop-but-keep-the-count`, 새 도메인. `/blog/feed` 는 404 — 목록은 r.jina.ai 로 `/blog`. 나머지 새 글(Canvas·AI 규범 3·wide events·relational query)은 안 봄.
 - **grafana-labs** — 2026-09-26 없음 1회째. `/blog/index.xml` 로 09-06 이후 5건 — 에이전트 SLO(09-24)는 개념·제품 안내(95% 는 예시), 나머지는 기능 소개·사용법. 본문은 curl 직접이 엉뚱한 글을 주니 r.jina.ai 로.
