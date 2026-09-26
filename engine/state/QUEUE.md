@@ -40,13 +40,13 @@
 | **estie** | JP · 상업용 부동산 데이터 | 프로파일(2026-09-26). 도메인 둘 — 고객이 맡긴 데이터를 여러 서비스가 한 곳에 둔다(프라이빗 데이터 기반) · PR 마다 운영에 가까운 DB 를 빌려 쓰고 버린다(Aurora copy-on-write Preview). 기능 2(`private-data-platform` · `preview-with-db-aurora-clone`). **hold** — 스마트 리폼·DX 컨설팅 수익원 자료 두 번 없음(2026-09-26). 스마트 리폼·DX 컨설팅은 도메인 없음. 입구 `zenn.dev/p/estie/feed`. |
 | **Rehab for JAPAN** | JP · 개호 리하비리 SaaS | 프로파일(2026-09-26). 도메인 하나 — 멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다. 기능 1(`composer-to-cloud-run-jobs`). **hold** — Rehab Studio 수익원 자료 두 번 없음(2026-09-26). 수익원 셋(Rehab Cloud · Rehab Studio · Rehab Insight) 중 Studio 는 도메인 없음. 입구 `zenn.dev/p/rehabforjapan/feed`. |
 | **Finatext** | JP · 핀테크 인프라·금융 데이터 | 프로파일(2026-09-26). 도메인 둘 — 수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다 · BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다. 기능 2(`snowflake-pipeline-cost-cut` · `crest-dwh-layer-exposure`). **hold** — 증권·보험·지원 수익원 자료 두 번 없음(2026-09-26). 수익원 다섯 중 BaaS·Insurtech·Fintech SHIFT 는 도메인 없음. 입구 `zenn.dev/p/finatext/feed`. |
+| **KENCOPA** | JP · 건설 AI 에이전트 | 프로파일(2026-09-26). 도메인 둘 — 설계 도서로 공정표의 일수를 세운다 · 제각각인 PDF 표를 구조화 데이터로 뽑는다. 기능 0. 수익원 셋 중 적산 AI 에이전트는 도메인 없음. 입구 `zenn.dev/p/kencopa/feed`(8편). |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **KENCOPA** | JP · 건설 공정 계획 SaaS | Zenn Publication `zenn.dev/p/kencopa`(RSS 8편). **'일단 LLM 에 던진다' 로 안 풀린 공정 계획**(`19ae96ba79ca40`, 2026-09-25) — 건설 공사의 액티비티·보카케(歩掛)·수량 연결을 AI 에이전트로 — 워크플로 → 연결 동시 처리 → 오케스트레이터 AI 에 통째로 → 서브에이전트 이관, **설계 넷을 거친 경위**. 곁글 — VLM 을 살리는 PDF 해석 역할 분담(`3530b0914bd834`)·asyncio Producer-Consumer. **건설 축(처음)**. |
 | **WWWAVE** | JP · 전자 코믹(코믹 페스타)·웹 서비스 | Zenn Publication `zenn.dev/p/wwwave`(RSS 20편). **배치 감시의 '침묵' 을 설계한다**(`fac9f4d865fb1b`, 2026-08-20) — 대시보드 눈 확인을 그만두고 이상 때만 통지하자 '통지가 없음' 이 정상인지 놓친 건지 구별이 안 된다 → 실패·미실행·미완료 셋 중 뒤 둘은 어디에도 기록이 안 남는다 → **예정을 먼저 만든다**·감시의 사활 감시. 곁글 — Access VBA 철수 기술 선정(`64283ed5170acc`)·마스터 데이터 갱신 흐름 쇄신(`3bc67fa4f5f12e`)·Google Chat×Claude Agent SDK×Lambda 사업부 에이전트(`50f7450f5d13bf`). **콘텐츠 커머스 축**. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

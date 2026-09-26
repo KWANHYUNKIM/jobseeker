@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "kencopa",
+      "name": "KENCOPA",
+      "name_en": "KENCOPA",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "건설 전문 AI 에이전트 KENCOPA — 설계 도서에서 공정표를 15분에 만드는 에이전트는 수백 액티비티·계층 보카케·수천 수량의 연결을 워크플로 → 동시 연결 → 오케스트레이터 → 서브에이전트로 네 번 다시 짰고, PDF 표 해석은 VLM 에 통째로 맡기지 않고 표 구조는 변환 도구에, 의미는 VLM 에 나눈다",
+      "updated_at": "2026-09-26",
+      "domain": "kencopa.com"
+    },
+    {
       "slug": "finatext",
       "name": "Finatext",
       "name_en": "Finatext",
@@ -3377,7 +3389,9 @@
     "새 렌털 서비스를 공통 이벤트 기반 위에 올린다",
     "멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다",
     "수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다",
-    "BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다"
+    "BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다",
+    "설계 도서로 공정표의 일수를 세운다",
+    "제각각인 PDF 표를 구조화 데이터로 뽑는다"
   ],
   "countries": {
     "KR": "한국",

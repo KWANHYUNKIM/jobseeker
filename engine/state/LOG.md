@@ -1767,3 +1767,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Finatext hold
 
 - 검색 1 RSS 20편 · 검색 2 Zenn 검색 API 6낱말 — 증권·보험 제품 글 0건. hold_reason·'재시도 안 함'·QUEUE hold.
+
+## 2026-09-26 KENCOPA 회사 프로파일
+
+- 회사 사이트(kencopa.com — Zenn Publication 의 홈페이지 링크로 찾음, .co.jp 는 안 풀림)의 서비스 셋을 수익원으로. 기술 글은 공정 에이전트와 SDS PDF 해석 — 도메인 둘. PDF 해석의 제품 연결은 inferred.

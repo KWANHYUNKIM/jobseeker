@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Finatext hold(2026-09-26) — 증권·보험·지원 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 신규: 큐 맨 위 KENCOPA — `19ae96ba79ca40`(공정 계획 AI 에이전트 설계 넷 — 워크플로 → 보카케·수량 동시 연결 → 오케스트레이터에 통째로 → 서브에이전트 이관) · `3530b0914bd834`(VLM PDF 해석 역할 분담) · 회사 사이트에서 수익원부터. 큐 2/3 이라 이 회사 뒤 후보 조사. 대기 2/3(KENCOPA·WWWAVE).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**KENCOPA 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '설계 도서로 공정표의 일수를 세운다' — `19ae96ba79ca40`(액티비티·보카케·수량 연결 — 워크플로 → 동시 연결 → 오케스트레이터 → 서브에이전트; 뒤 두 절은 아직 본문을 안 읽었다). 그다음 '제각각인 PDF 표를 구조화 데이터로 뽑는다' — `3530b0914bd834`(VLM E2E 실패 · 그라운딩 약점 · Marker 선정). 수익원 적산 AI 에이전트는 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(WWWAVE) — **다음 --gaps 가 후보 조사를 부를 수 있다.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
