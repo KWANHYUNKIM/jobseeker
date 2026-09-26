@@ -2616,3 +2616,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 フェズ Urumo BI
 
 - dbt 1 편 끝까지 읽음(macro 화 하나뿐, 이유는 2 편으로 미룸) · 작성자 글 목록에 2 · 3 편 없음 → dbt 만으론 결정 5 개 불가. fez_tech 전체 47편에서 Urumo BI 개발 글 · 개인정보 글을 찾음. 도메인 둘째의 why · tech 를 두 글로 넓히고 기능 `urumo-bi-semantic-layer-ai`(결정 8, AI 를 Semantic Layer 위에 둔 결정은 대안이 이 사이트의 것이라 inferred).
+
+## 2026-09-27 フェズ 동의 데이터 · 클린룸
+
+- --gaps 는 후보 조사를 가리켰지만 완주 우선으로 수익원 판정. fez_tech 47편 제목 전수(1 차) — 광고 기술 전용 글은 없고 2022 년 개인정보 · Analytics Hub · 서비스 소개 글 셋으로 도메인 · 기능(결정 6, 대안 둘은 이 사이트의 것). Urumo Ads · 소매 지원 confirmed. 컨설은 제목에 없음.
