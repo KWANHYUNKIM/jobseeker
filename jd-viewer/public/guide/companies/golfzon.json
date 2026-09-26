@@ -1,0 +1,215 @@
+{
+  "slug": "golfzon",
+  "name": "골프존",
+  "name_en": "GOLFZON",
+  "aliases": [
+    "골프존",
+    "㈜골프존"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "company.golfzon.com",
+  "one_liner": "스크린골프 시장점유율 1위 — 시뮬레이터(투비전)·온라인 라운드 서버·센서(레이더) SW·골프 플랫폼을 함께 만드는 회사",
+  "company": {
+    "business": "공고의 회사 소개(사람인·잡코리아 공통)는 골프존이 IT 기술로 **스크린골프 시장점유율 1위**이고, **통합회원 530만 명 이상**이 **하루 약 26만, 연간 약 9천7백만 라운드**를 플레이한다고 적는다. 스크린골프를 넘어 **골프 아카데미**와 **플랫폼**을 통한 골프 서비스, 골프·미디어·IT 결합을 말하며 'Global No.1 Golf Platform Company' 를 지향한다. 제품 사이트(golfzon.com) 메타는 **투비전·투비전플러스, 골프존파크**를 든다. 모집중 공고는 네 직무다 — **C++ 게임(라운드) 서버**(C++20, Windows·MSSQL, Redis·Kafka, AWS·Azure), **레이더 센서 SW**(실시간 신호 취득·FFT·필터, OpenCV 객체 검출·트래킹, 서울·**대전**), **데이터 사이언티스트**, **보안 취약점 진단**. 같은 브랜드의 **골프존클라우드**(골프장 운영 솔루션·스마트캐디)와 **골프존카운티**(대중제 골프장 운영)는 공고상 별도 법인이라 이 브리핑에 넣지 않았다. 매출·인원은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[골프존] 데이터 사이언티스트",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55059645&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=424d766c-c12d-4adc-b641-4783864ffc13",
+        "publisher": "사람인",
+        "summary": "회사 소개: 스크린골프 시장점유율 1위, 통합회원 530만 명 이상, 하루 약 26만·연간 약 9천7백만 라운드. 스크린골프를 넘어 골프 아카데미와 플랫폼을 통한 골프 서비스, Global No.1 Golf Platform Company 지향"
+      },
+      {
+        "title": "골프존 - Play Different, GOLFZON",
+        "url": "https://company.golfzon.com/",
+        "publisher": "골프존",
+        "summary": "회사 사이트 메타: 회사소개, 사업소개, 구매문의, 홍보, IR, 인재영입. 제품 사이트(golfzon.com) 메타: 스크린골프 투비전·투비전플러스, 골프존파크"
+      },
+      {
+        "title": "서버 개발자 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571967?ReturnUrl=RecruitInfo",
+        "publisher": "캐치"
+      },
+      {
+        "title": "Radar Sensor S/W 개발자 (Core Module, Signal Processing) 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571965?ReturnUrl=RecruitInfo",
+        "publisher": "캐치"
+      }
+    ],
+    "scale": [
+      {
+        "label": "통합회원(공고 주장)",
+        "value": "530만 명 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[골프존] 데이터 사이언티스트",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55059645&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=424d766c-c12d-4adc-b641-4783864ffc13",
+            "publisher": "사람인",
+            "summary": "회사 소개: 스크린골프 시장점유율 1위, 통합회원 530만 명 이상, 하루 약 26만·연간 약 9천7백만 라운드. 스크린골프를 넘어 골프 아카데미와 플랫폼을 통한 골프 서비스, Global No.1 Golf Platform Company 지향"
+          }
+        ]
+      },
+      {
+        "label": "라운드 수(공고 주장)",
+        "value": "하루 약 26만, 연간 약 9천7백만 라운드",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[골프존] 데이터 사이언티스트",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55059645&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=424d766c-c12d-4adc-b641-4783864ffc13",
+            "publisher": "사람인",
+            "summary": "회사 소개: 스크린골프 시장점유율 1위, 통합회원 530만 명 이상, 하루 약 26만·연간 약 9천7백만 라운드. 스크린골프를 넘어 골프 아카데미와 플랫폼을 통한 골프 서비스, Global No.1 Golf Platform Company 지향"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "스크린골프 시뮬레이터·매장 네트워크",
+        "how": "회사 소개가 스크린골프 점유율 1위와 라운드 수를, 제품 사이트가 투비전·투비전플러스·골프존파크를 적는다. 판매·가맹·라운드 과금 구조는 읽지 않았다.",
+        "domains": [
+          "온라인 라운드 서버(C++)",
+          "센서·신호처리 SW"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[골프존] 데이터 사이언티스트",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55059645&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=424d766c-c12d-4adc-b641-4783864ffc13",
+            "publisher": "사람인",
+            "summary": "회사 소개: 스크린골프 시장점유율 1위, 통합회원 530만 명 이상, 하루 약 26만·연간 약 9천7백만 라운드. 스크린골프를 넘어 골프 아카데미와 플랫폼을 통한 골프 서비스, Global No.1 Golf Platform Company 지향"
+          },
+          {
+            "title": "골프존 - Play Different, GOLFZON",
+            "url": "https://company.golfzon.com/",
+            "publisher": "골프존",
+            "summary": "회사 사이트 메타: 회사소개, 사업소개, 구매문의, 홍보, IR, 인재영입. 제품 사이트(golfzon.com) 메타: 스크린골프 투비전·투비전플러스, 골프존파크"
+          },
+          {
+            "title": "서버 개발자 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571967?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "Radar Sensor S/W 개발자 (Core Module, Signal Processing) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571965?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "골프 플랫폼·아카데미",
+        "how": "회사 소개가 골프 아카데미와 플랫폼을 통한 골프 서비스를 적는다. 매출 비중은 읽지 않았다.",
+        "domains": [
+          "서비스 데이터 분석"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[골프존] 데이터 사이언티스트",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55059645&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=424d766c-c12d-4adc-b641-4783864ffc13",
+            "publisher": "사람인",
+            "summary": "회사 소개: 스크린골프 시장점유율 1위, 통합회원 530만 명 이상, 하루 약 26만·연간 약 9천7백만 라운드. 스크린골프를 넘어 골프 아카데미와 플랫폼을 통한 골프 서비스, Global No.1 Golf Platform Company 지향"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "온라인 라운드 서버(C++)",
+        "why": "서버 개발자 공고가 C++ 게임 서버, 여러 플랫폼 온라인 서비스용 서버 프로그램, 성능 최적화·안정화, C++20·멀티스레드·네트워크·Windows/MSSQL 을 적는다.",
+        "what_to_know": [
+          "C++20 서버",
+          "IOCP 등 Windows 네트워크",
+          "MSSQL·Redis·Kafka"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "서버 개발자 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571967?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "센서·신호처리 SW",
+        "why": "레이더 센서 SW 공고가 실시간 신호 취득 파이프라인, 이벤트 트리거 검출, FFT·필터 설계, OpenCV 검출·트래킹, 센서 퓨전을 적는다.",
+        "what_to_know": [
+          "디지털 신호처리",
+          "OpenCV 트래킹",
+          "실시간 멀티스레드"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Radar Sensor S/W 개발자 (Core Module, Signal Processing) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571965?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "서비스 데이터 분석",
+        "why": "데이터 사이언티스트 공고가 사용자 행동·서비스 데이터 분석, 예측·추천·자동화 AI 기능 고도화를 적는다.",
+        "what_to_know": [
+          "행동 데이터 분석",
+          "추천·예측 모델"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[골프존] 데이터 사이언티스트",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55059645&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=424d766c-c12d-4adc-b641-4783864ffc13",
+            "publisher": "사람인",
+            "summary": "회사 소개: 스크린골프 시장점유율 1위, 통합회원 530만 명 이상, 하루 약 26만·연간 약 9천7백만 라운드. 스크린골프를 넘어 골프 아카데미와 플랫폼을 통한 골프 서비스, Global No.1 Golf Platform Company 지향"
+          }
+        ]
+      },
+      {
+        "name": "서비스 보안 진단",
+        "why": "수익원이 아니라 모든 서비스의 공통 기반이다. 보안 취약점 진단 공고가 웹·모바일·인프라 진단과 모의해킹, 개선 이행 점검을 적는다.",
+        "what_to_know": [
+          "모의해킹",
+          "클라우드 취약점",
+          "시큐어코딩"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "보안 취약점 진단 담당자 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571962?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "하드웨어 센서까지 직접 만든다",
+        "evidence": "레이더 · 초음파 등 센서 신호처리 개발 경험",
+        "so_what": "레이더 센서 SW 공고가 레거시 코드 재설계, 크로스 플랫폼, FPGA/MCU 연동을 적는다 — 공이 날아가는 것을 재는 계측 장비 SW 로 읽힌다(추론). 근무지에 대전이 함께 적혀 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "게임 서버 기술이 쓰인다",
+        "evidence": "C++ 언어를 활용한 게임 서버 개발",
+        "so_what": "스크린골프 온라인 라운드를 '게임 서버' 로 부르고, 라이브 서비스·메모리 덤프 분석을 우대한다. 게임 업계 서버 경력이 그대로 통하는 자리다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수(IR 미열람)",
+    "스크린골프 매출 구조(시뮬레이터 판매·가맹·라운드 과금)",
+    "레이더 센서 SW 의 대전 근무 비중",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

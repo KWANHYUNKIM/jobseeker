@@ -877,6 +877,18 @@
       "postings": 5,
       "study_items": 14,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "golfzon",
+      "name": "골프존",
+      "aliases": [
+        "골프존",
+        "㈜골프존"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
