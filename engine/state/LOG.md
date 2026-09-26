@@ -2520,3 +2520,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 マナリンク 선생님 검색 에이전트
 
 - `teacher-search-agent-by-mastra` 전문으로 기능 `teacher-search-agent`, 결정 7.
+
+## 2026-09-27 マナリンク 구독 결제
+
+- `manalink-subscription-payment-whole` 로 기능 `subscription-billing-payjp`, 결정 7. 같은 파일이라 지난 기능 connections 의 '마나리ンク' 오타도 여기서 고쳤다.
