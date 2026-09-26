@@ -1052,3 +1052,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 letsencrypt 재방문 → 확장
 
 - 09-17 "How We Built a Data Warehouse Using ClickHouse" 에서 결정 6개로 `issuance-in-a-warehouse` 를 새 도메인에 추가(features 2→3). 로그 의존·하드웨어 운영·병합 전 중복은 해석 표시.
+
+## 2026-09-26 linear 재방문 → 확장
+
+- 09-21 "AI coding has made CI a bottleneck" 에서 결정 7개로 `ci-when-agents-write-the-code` 를 새 도메인에 추가(features 2→3). 타입 없는 린트의 정확도·묶은 잡의 실패 추적은 해석 표시.
