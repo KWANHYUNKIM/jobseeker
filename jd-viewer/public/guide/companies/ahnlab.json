@@ -1,0 +1,215 @@
+{
+  "slug": "ahnlab",
+  "name": "안랩",
+  "name_en": "AhnLab",
+  "aliases": [
+    "안랩"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "ahnlab.com",
+  "one_liner": "V3 로 시작해 엔드포인트·네트워크·클라우드·OT 보안 제품과 관제·컨설팅 서비스를 파는 국내 보안 회사 — 지금은 AI 에이전트를 얹은 통합 보안 플랫폼(AhnLab AI PLUS)을 내세운다",
+  "company": {
+    "business": "홈페이지는 안랩을 'AI 기반 통합 보안 플랫폼 기업' 으로 소개하고 엔드포인트·네트워크·클라우드·CPS 보안·XDR·위협 인텔리전스(TI)를 연계한다고 적는다. 제품 목록은 Endpoint(V3 안티멀웨어·EPP·EDR·모바일), Network(차세대 방화벽 XTG·디도스·IPS·TMS), Cloud(클라우드 워크로드 보안·클라우드 방화벽·IPS), Security Operations(XDR·TIP·SOAR), CPS(OT 방화벽·데이터 다이오드·OT 엔드포인트 등)로 나뉘고, 서비스로 MDR·보안관제·디지털 포렌식·클라우드 MSP·정보보호컨설팅·PTaaS 를 판다. 첫 화면은 AI 에이전트를 얹은 AhnLab AI PLUS 와 EDR 의 AI 분석 보고서, TIP 의 AI 인텔리전스를 내세운다. 채용 공고(캐치)는 EDR Mac·Windows·Linux 에이전트, ASD 엔진, V3Net for Linux, 어플라이언스 보안 모듈, XDR 클라우드 DevOps/SRE, AI 플랫폼, AI SOC 웹, 악성코드 분석을 적는다. 매출·임직원 수와 제품별 매출 비중은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AhnLab",
+        "url": "https://www.ahnlab.com/ko",
+        "publisher": "안랩",
+        "summary": "메타 설명이 안랩을 'AI 기반 통합 보안 플랫폼 기업' 으로, 엔드포인트·네트워크·클라우드·CPS 보안·XDR·TI 를 연계한다고 적는다. 첫 화면은 AI 네이티브 보안 플랫폼 AhnLab AI PLUS(AI Hub·Agentic EDR·AI Threat-Intel), 2026 APAC 엔드포인트 보안 경쟁전략 리더십 어워드(Frost & Sullivan) 수상, MITRE ATT&CK 평가 라운드 7 결과를 내세운다"
+      },
+      {
+        "title": "안랩 — 전체 제품 및 서비스",
+        "url": "https://www.ahnlab.com/ko/product/all-products-and-services",
+        "publisher": "안랩",
+        "summary": "제품을 Endpoint(V3 안티멀웨어·EPP·EDR·중소기업·모바일), Network(차세대 방화벽 XTG·디도스·IPS·TMS), Cloud(CWPP·클라우드 방화벽·IPS), Security Operations(XDR·TIP·SOAR), CPS(OT 방화벽·데이터 다이오드 등)로 나누고, 서비스로 MDR·보안관제·Professional Service·디지털 포렌식·클라우드 MSP·정보보호컨설팅·PTaaS 를 나열한다. 전체 78개 결과"
+      },
+      {
+        "title": "2026 AhnLab 연구소 집중 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553161?ReturnUrl=RecruitInfo",
+        "publisher": "캐치"
+      }
+    ],
+    "scale": [
+      {
+        "label": "제품·서비스 수(홈페이지 목록)",
+        "value": "78개",
+        "as_of": "2026-09 홈페이지 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "안랩 — 전체 제품 및 서비스",
+            "url": "https://www.ahnlab.com/ko/product/all-products-and-services",
+            "publisher": "안랩",
+            "summary": "제품을 Endpoint(V3 안티멀웨어·EPP·EDR·중소기업·모바일), Network(차세대 방화벽 XTG·디도스·IPS·TMS), Cloud(CWPP·클라우드 방화벽·IPS), Security Operations(XDR·TIP·SOAR), CPS(OT 방화벽·데이터 다이오드 등)로 나누고, 서비스로 MDR·보안관제·Professional Service·디지털 포렌식·클라우드 MSP·정보보호컨설팅·PTaaS 를 나열한다. 전체 78개 결과"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "보안 제품 판매(엔드포인트·네트워크·클라우드·CPS)",
+        "how": "홈페이지 제품 목록과 '견적 및 도입 문의' 메뉴로 기업에 제품을 판다. 소프트웨어·네트워크 장비별 구매 정책 메뉴가 따로 있다. 라이선스·구독 구조와 매출 비중은 읽지 않았다.",
+        "domains": [
+          "엔드포인트 보안 에이전트",
+          "네트워크·어플라이언스 보안",
+          "XDR·보안 운영 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "안랩 — 전체 제품 및 서비스",
+            "url": "https://www.ahnlab.com/ko/product/all-products-and-services",
+            "publisher": "안랩",
+            "summary": "제품을 Endpoint(V3 안티멀웨어·EPP·EDR·중소기업·모바일), Network(차세대 방화벽 XTG·디도스·IPS·TMS), Cloud(CWPP·클라우드 방화벽·IPS), Security Operations(XDR·TIP·SOAR), CPS(OT 방화벽·데이터 다이오드 등)로 나누고, 서비스로 MDR·보안관제·Professional Service·디지털 포렌식·클라우드 MSP·정보보호컨설팅·PTaaS 를 나열한다. 전체 78개 결과"
+          }
+        ]
+      },
+      {
+        "name": "보안 서비스(관제·MDR·컨설팅·포렌식·PTaaS)",
+        "how": "서비스 메뉴에 매니지드 탐지 & 대응(MDR), 보안관제, 디지털 포렌식, 클라우드 MSP, 정보보호컨설팅, PTaaS 가 있다. 마감된 캐치 공고에 보안관제(파견)·보안기술 컨설팅 자리가 있었다.",
+        "domains": [
+          "XDR·보안 운영 플랫폼",
+          "악성코드 분석·위협 인텔리전스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "안랩 — 전체 제품 및 서비스",
+            "url": "https://www.ahnlab.com/ko/product/all-products-and-services",
+            "publisher": "안랩",
+            "summary": "제품을 Endpoint(V3 안티멀웨어·EPP·EDR·중소기업·모바일), Network(차세대 방화벽 XTG·디도스·IPS·TMS), Cloud(CWPP·클라우드 방화벽·IPS), Security Operations(XDR·TIP·SOAR), CPS(OT 방화벽·데이터 다이오드 등)로 나누고, 서비스로 MDR·보안관제·Professional Service·디지털 포렌식·클라우드 MSP·정보보호컨설팅·PTaaS 를 나열한다. 전체 78개 결과"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "엔드포인트 보안 에이전트",
+        "why": "캐치 공고가 ASD Engine MAC 플랫폼과 EDR Mac, Windows 보안 솔루션·커널 드라이버·MDS Window Agent, EXDR Linux Agent·V3Net for Linux 를 적는다.",
+        "what_to_know": [
+          "Windows 커널 드라이버·시스템 프로그래밍",
+          "macOS System Extension",
+          "Linux 시스템 프로그래밍",
+          "C/C++"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[신입/경력] SW개발(Mac OS) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/565713?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "[신입/경력] SW개발(Windows) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/565711?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "2026 AhnLab 연구소 집중 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553161?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "네트워크·어플라이언스 보안",
+        "why": "연구소 집중 채용 공고가 어플라이언스 제품 보안 모듈·플랫폼 SW 와 네트워크 보안제품 개발을 적는다. 제품 목록에 차세대 방화벽 XTG·IPS·디도스 방어가 있다.",
+        "what_to_know": [
+          "Linux 네트워크 스택",
+          "방화벽·IPS 원리",
+          "임베디드 Linux 어플라이언스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "2026 AhnLab 연구소 집중 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553161?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "안랩 — 전체 제품 및 서비스",
+            "url": "https://www.ahnlab.com/ko/product/all-products-and-services",
+            "publisher": "안랩",
+            "summary": "제품을 Endpoint(V3 안티멀웨어·EPP·EDR·중소기업·모바일), Network(차세대 방화벽 XTG·디도스·IPS·TMS), Cloud(CWPP·클라우드 방화벽·IPS), Security Operations(XDR·TIP·SOAR), CPS(OT 방화벽·데이터 다이오드 등)로 나누고, 서비스로 MDR·보안관제·Professional Service·디지털 포렌식·클라우드 MSP·정보보호컨설팅·PTaaS 를 나열한다. 전체 78개 결과"
+          }
+        ]
+      },
+      {
+        "name": "XDR·보안 운영 플랫폼",
+        "why": "Cloud 공고가 XDR 클라우드 DevOps/SRE(Kubernetes·Terraform·CI/CD)를, AI 공고가 AI 플랫폼·서비스 개발(REST·Cassandra)을, 연구소 공고가 EXDR 백엔드·AI SOC 웹·EPS Server 백엔드를 적는다.",
+        "what_to_know": [
+          "Kubernetes·IaC",
+          "Java/Spring 백엔드",
+          "대규모 이벤트 처리",
+          "AI 에이전트 서비스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[신입/경력] SW개발(Cloud) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570935?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "[신입/경력] AI 서비스/플랫폼 엔지니어 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/564869?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "2026 AhnLab 연구소 집중 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553161?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      },
+      {
+        "name": "악성코드 분석·위협 인텔리전스",
+        "why": "연구소 집중 채용 공고의 보안 분석 부문이 모바일 악성코드 분석과 EDR·XDR 룰 작성을 적고, 홈페이지가 ASEC 블로그·위협 행위자 분류 체계와 TIP 를 둔다. Windows·Mac 공고 우대에 리버스 엔지니어링·악성코드 분석이 있다.",
+        "what_to_know": [
+          "리버스 엔지니어링(IDA 등)",
+          "EDR·XDR 탐지 룰",
+          "MITRE ATT&CK"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "2026 AhnLab 연구소 집중 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553161?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "AhnLab",
+            "url": "https://www.ahnlab.com/ko",
+            "publisher": "안랩",
+            "summary": "메타 설명이 안랩을 'AI 기반 통합 보안 플랫폼 기업' 으로, 엔드포인트·네트워크·클라우드·CPS 보안·XDR·TI 를 연계한다고 적는다. 첫 화면은 AI 네이티브 보안 플랫폼 AhnLab AI PLUS(AI Hub·Agentic EDR·AI Threat-Intel), 2026 APAC 엔드포인트 보안 경쟁전략 리더십 어워드(Frost & Sullivan) 수상, MITRE ATT&CK 평가 라운드 7 결과를 내세운다"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "제품 전반에 AI 에이전트를 붙이고 있다",
+        "evidence": "AI 플랫폼 및 서비스 개발",
+        "so_what": "홈페이지 첫 화면이 AI 네이티브 플랫폼 AhnLab AI PLUS 와 EDR·TIP 의 AI 기능을 내세우고, 캐치에 AI 서비스/플랫폼 엔지니어·AI SOC 웹 개발 자리가 있다. 면접에서 보안 도메인과 AI 서비스를 잇는 질문이 나올 수 있다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "모집이 상시·연중이다",
+        "evidence": "접수기간 : ~ 2026.12.31 오후 11:59",
+        "so_what": "캐치 공고 여러 건이 2026년 말까지 접수하고 '정확한 마감일정은 반드시 홈페이지를 참고' 하라고 적는다. 사람인·캐치에 월별 신입/경력 채용 공고(6월·8월·9월)가 마감된 채로 남아 있다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수·제품별 매출 비중을 읽지 않았다(투자정보 사이트 ir.ahnlab.com 은 응답이 없었다)",
+    "캐치 Web 개발(570940)·SW개발(Linux)(572252)·전문연구요원(570603)은 담당업무·자격 칸이 비어 있다 — 본문(full_jd)은 있는 것도 있다",
+    "안랩클라우드메이트·안랩블록체인컴퍼니 공고는 자회사 이름으로 올라와 있어 여기서 다루지 않는다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

@@ -440,6 +440,17 @@
       "postings": 7,
       "study_items": 27,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "ahnlab",
+      "name": "안랩",
+      "aliases": [
+        "안랩"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }
