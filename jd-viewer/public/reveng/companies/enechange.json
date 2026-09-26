@@ -114,12 +114,14 @@
               "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
               "publisher": "ENECHANGE Developer Blog",
               "date": "2026-07-12",
-              "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다."
+              "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "stepfunctions-wiring-teststate-mock"
+      ]
     }
   ],
   "features": [
@@ -481,6 +483,294 @@
           "summary": "AI 가 코드를 쓰는 속도는 올랐지만 **맞는지 확인하는 속도**는 안 올랐다 — 생성된 코드의 정당성은 누가 판정하나. 담당은 **금액을 계산하는 시스템의 재작성**(1엔이 틀리면 오류, 오류는 그대로 청구에 나간다). 판정을 엔지니어에게도 에이전트에게도 맡기지 않고 **정답을 밖에 둔다** — 같은 계산을 이미 하고 있는 **기존 시스템의 실제 출력**에 같은 입력을 새 구현에 흘려 한 건씩 대조(golden master 를 AI 코드 수용 판정에 쓴다). 대조 단위는 **계약 × 대상 월**, 합계만이 아니라 **명세 한 줄까지**(단가 500×200 과 250×400 은 합계가 같다). 합부는 **완전 일치가 기본** — '99% 면 합격' 선을 긋지 않는다(남은 1% 가 미완인지 의도인지 숫자로는 못 읽는다). Cursor pstack 의 prove-it-works 도 에이전트가 '무엇이 맞는지' 를 정하는 한 닿지 않는 곳이 있다. 불일치 행은 **규칙으로 적어 정답으로 세거나**(기존 동작을 기대값 쪽에 명시) **의도적으로 바꾼다고 정해 별도 목록에** — 어느 쪽에도 안 떨어진 **미해결 불일치만** 줄일 대상. 한 바퀴: 구현 변경 → 검산 → 지난 리포트와 비교(명령 하나, 기계의 일) → 사람이 어긋난 행을 **셋으로 가른다** — ① 내 구현의 오류 ② **마스터의 오류**(등록값이 사양 원전과 다름) ③ **기존 시스템 쪽의 버릇**. ②를 ①로 알면 옳은 구현을 부수고 숫자만 맞추고, ①을 ③으로 단정하면 내 버그가 '기존의 버릇' 으로 사양에 적혀 정으로 유지된다 — 이 분류는 **업무 쪽 사람만** 답할 수 있어 자동화하지 않는다. **구멍**: 어느 구현을 골라도 실데이터에서 **같은 값이 되는 선택**(예: **반올림 위치**) — 테스트·검산·리뷰가 다 통과해도 옳음은 확인되지 않았다. 규율: 검산이 **변별하지 않는 선택**이면 확정하지 않고 멈춰 사람에게 — 판단 무게 3단(대화하며 함께 / 승인 뒤 확정 / 진행 후 보고) 중 가장 가벼운 단에서 가운데로 **기계적으로 격상**. 정한 선택은 단위 테스트 기대값으로 고정하고 **구현을 일부러 변이**시켜 테스트가 떨어지는지까지 확인. 기준은 '중요해 보이는가' 가 아니라 **'검산이 이 선택을 변별하는가'**."
         }
       ]
+    },
+    {
+      "key": "stepfunctions-wiring-teststate-mock",
+      "name": "스테이트 머신을 통으로 돌리지 않는다 — 배선은 TestState API 와 mock 으로, 내용은 각 컴포넌트가 스스로 증명한다",
+      "domain": "워크플로 테스트를 배선과 내용으로 가른다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "ENECHANGE 시스템 개발부는 여러 Lambda·ECS·Batch 를 엮은 워크플로를 AWS Step Functions 로 지었다. 막상 테스트하려니 '스테이트 머신 전체를 **통으로 돌리는 수밖에 없나**' 는 벽에 부딪혔다 — 통으로 돌리면 실제 서비스를 부르고, 실패하면 어디가 틀렸는지 모른다.\n\n게다가 로컬에서 쓰던 **Step Functions Local** 을 AWS 공식 문서가 '기능 동등성이 없고 지원하지 않는다' 고 못 박았다. 대신 권장된 **TestState API** 에 2025년 11월 **mock** 이 붙으면서, 외부 서비스를 부르지 않고 **배선만** 검증하는 것이 실용적이 됐다.",
+        "metrics": [
+          {
+            "label": "테스트 층",
+            "value": "3 — 컴포넌트 UT · ASL 배선(TestState API) · E2E",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          },
+          {
+            "label": "TestState API mock",
+            "value": "2025년 11월 추가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          },
+          {
+            "label": "CI 권한",
+            "value": "mock 시 states:TestState 하나(실행 롤·iam:PassRole 불요)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "스테이트 머신을 볼 때",
+          "thought": "검증·변환·계산 같은 실제 로직은 전부 Lambda·ECS·Batch 안에 있다. 스테이트 머신이 하는 일은 그것들을 **올바른 순서·조건으로 부르고 결과를 다음에 넘기는 것** — JSONata 정형과 Choice 분기도 '배선의 일' 이지 비즈니스 로직이 아니다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+              "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+              "publisher": "ENECHANGE Developer Blog",
+              "date": "2026-07-12",
+              "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+            }
+          ]
+        },
+        {
+          "at": "mock 값을 정할 때",
+          "thought": "mock 에 준 5 는 **가정**일 뿐이다. 5 가 맞는지는 Lambda 쪽 UT 가 담보한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+              "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+              "publisher": "ENECHANGE Developer Blog",
+              "date": "2026-07-12",
+              "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Task 스테이트",
+            "what": "Lambda·ECS·Batch 를 invoke 하는 단계. 테스트 대상이 앱 쪽(내용)과 ASL 쪽(배선)으로 갈린다."
+          },
+          {
+            "name": "배선(ASL)",
+            "what": "무엇을 넘기나(Arguments) · 결과를 어떻게 정형하나(Output, JSONata) · 분기 · Retry · Catch."
+          },
+          {
+            "name": "내용",
+            "what": "Lambda·ECS·Batch 가 실행하는 처리. 각 컴포넌트의 UT(Go test·pytest)."
+          },
+          {
+            "name": "mock",
+            "what": "외부 서비스의 반환값 가정. 외부를 부르는 Task 에만 붙인다."
+          },
+          {
+            "name": "E2E",
+            "what": "기동부터 완료까지 전체 흐름. 스테이징·본번 상당의 실환경에서만."
+          }
+        ],
+        "invariants": [
+          "비즈니스 로직은 **스테이트 머신 밖**(컴포넌트)에 있고 그쪽 UT 가 책임진다.",
+          "mock 은 **외부 서비스를 부르는 스테이트에만** 붙인다 — Choice·Pass 에는 안 붙인다.",
+          "mock 값은 **가정**이다 — 값의 옳음은 배선 테스트가 증명하지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "각 Lambda·ECS·Batch 의 내부 로직을 Go test·pytest 등으로 로컬·CI 에서 테스트한다",
+            "why": "내용은 컴포넌트의 책임."
+          },
+          {
+            "step": "Task 스테이트마다 외부 호출 여부를 보고, 부르면 mock 반환값을 붙인다",
+            "why": "실제 서비스를 부르지 않는다."
+          },
+          {
+            "step": "TestState API 로 한 스테이트씩 실행해 output(JSONata 가 mock 에서 값을 꺼내나)과 nextState(전이처)를 확인한다",
+            "why": "배선만 검증."
+          },
+          {
+            "step": "Choice·Retry·Catch 전이도 같은 식으로 스테이트 단위로 본다",
+            "why": "분기·에러 경로."
+          },
+          {
+            "step": "CI 에서는 states:TestState 권한과 AWS 자격 증명으로 돌린다",
+            "why": "실행 롤 없이 넣기 쉽다."
+          },
+          {
+            "step": "기동부터 완료까지의 결합은 스테이징에서 E2E 로 마지막에 확인한다",
+            "why": "실환경에서만 가능."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "스테이트 머신을 어떻게 테스트하나?",
+            "chosen": "**전체를 통으로 돌리는 대신, 테스트 대상을 '배선(ASL)' 과 '내용(컴포넌트)' 으로 가른다.**",
+            "alternatives": [
+              "스테이트 머신 전체를 통으로 실행"
+            ],
+            "tradeoff": "무엇을·어디서·왜 테스트할지가 명쾌해진다. 대가 — 층이 셋(UT·배선·E2E)이 되어 **층마다 따로** 유지해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          },
+          {
+            "question": "로컬 에뮬레이터를 계속 쓸까?",
+            "chosen": "**Step Functions Local 대신 TestState API — AWS 문서가 Local 을 '기능 동등성 없음·비지원' 으로 명시했다.**",
+            "alternatives": [
+              "Step Functions Local"
+            ],
+            "tradeoff": "공식 지원되는 경로로 옮긴다. 대가 — TestState API 는 **AWS 쪽에서 도는 API** 라 완전 오프라인이 아니다; CI 에 AWS 자격 증명과 네트워크가 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          },
+          {
+            "question": "mock 을 어디에 붙이나?",
+            "chosen": "**그 스테이트가 외부 서비스를 부르는가 하나로 — Choice·Pass 는 불요, Lambda·ECS invoke Task 는 붙인다.**",
+            "alternatives": [
+              "모든 스테이트에 붙인다",
+              "안 붙이고 실제로 부른다"
+            ],
+            "tradeoff": "판단이 단순하다; 안 붙이면 **실제 서비스를 부른다.** 대가 — mock 값은 가정이라 틀린 가정을 넣으면 배선 테스트도 그 가정 위에서만 맞다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          },
+          {
+            "question": "배선 테스트에서 무엇을 확인하나?",
+            "chosen": "**output(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)과 nextState(성공 시 전이처) 둘 — 값 자체(건수 5)의 옳음은 Lambda UT 에 맡긴다.**",
+            "alternatives": [
+              "배선 테스트에서 값까지 검증"
+            ],
+            "tradeoff": "각 층이 **자기 책임만** 증명한다. 대가 — 컴포넌트 UT 가 비면 그 구멍은 배선 테스트로 메워지지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          },
+          {
+            "question": "CI 에 어떻게 넣나?",
+            "chosen": "**mock 을 쓰면 states:TestState 권한만 — 실행 롤·iam:PassRole 없이.**",
+            "alternatives": [
+              "실행 롤을 주고 실제 실행"
+            ],
+            "tradeoff": "CI 에 줄 권한이 좁고 **넣기 쉽다.** 대가 — 여전히 AWS 자격 증명을 CI 에 둬야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          },
+          {
+            "question": "전체 흐름은 언제 보나?",
+            "chosen": "**기동부터 완료까지는 E2E 로 스테이징·본번 상당 환경에서만 — 마지막 결합 확인.**",
+            "alternatives": [
+              "배선 테스트로 전체를 대신한다"
+            ],
+            "tradeoff": "TestState API 는 **한 번에 한 스테이트만** 실행하고 StartExecution 을 못 한다 — 전체는 원래 실환경에서만 볼 수 있다. 대가 — 결합 문제는 **스테이징까지 가야** 드러난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+                "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+                "publisher": "ENECHANGE Developer Blog",
+                "date": "2026-07-12",
+                "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "청구 금액 재작성의 합부를 기존 시스템의 출력이 가른다(같은 회사의 다른 도메인)",
+          "via": "무엇을 어느 검사가 맡는가",
+          "contract": "배선 테스트는 mock 값을 '가정' 으로만 두고 값의 옳음을 컴포넌트 UT 에 넘기고, 검산 하네스는 계산 값의 옳음을 기존 시스템의 출력에 넘긴다 — 둘 다 **옳음을 판정하는 곳을 먼저 정한다**(이 사이트의 해석 — 같은 필자·같은 부서지만 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "세 층이 각자 증명하는 것",
+          "question": "워크플로의 어느 부분을 어느 테스트가 맡나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  SM[\"Step Functions 스테이트 머신\\n얇은 오케스트레이션 층\"] --> T[\"Task 스테이트\"]\n  T --> APP[\"내용: Lambda · ECS · Batch\"]\n  T --> ASL[\"배선: Arguments · Output(JSONata) · Choice · Retry · Catch\"]\n  APP --> UT[\"① 컴포넌트 UT\\nGo test · pytest · 로컬/CI\"]\n  ASL --> TS[\"② TestState API + mock\\nAWS(CI 가능)\"]\n  SM --> E2E[\"③ E2E\\n스테이징\"]"
+        },
+        {
+          "title": "mock 을 붙일지",
+          "question": "스테이트마다 mock 여부를 어떻게 정하나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  S[\"스테이트\"] --> Q{\"외부 서비스를 부르나?\"}\n  Q -->|아니오: Choice · Pass| N[\"mock 불요\\nASL 안에서 완결\"]\n  Q -->|예: Lambda · ECS invoke| M[\"mock 붙임\\n안 붙이면 실제 호출\"]\n  M --> C[\"확인: output · nextState\\n값의 옳음은 UT 몫\"]"
+        },
+        {
+          "title": "배선 테스트가 못 보는 자리",
+          "question": "이 전략은 어디서 버그를 놓치나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"mock 값이 현실과 다름\"] --> B[\"배선은 통과, 실제 Payload 모양이 달라 본번에서 실패\"]\n  C[\"컴포넌트 UT 가 빈약\"] --> D[\"값의 옳음을 아무도 증명 안 함\"]\n  E[\"한 번에 한 스테이트만\"] --> F[\"스테이트 사이 결합 문제는 E2E 까지 안 보임\"]\n  G[\"AWS 쪽 API\"] --> H[\"CI 네트워크 · 자격 증명이 없으면 못 돎\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Step Functions のテストを「配線」と「中身」に分けて考える",
+          "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
+          "publisher": "ENECHANGE Developer Blog",
+          "date": "2026-07-12",
+          "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -509,7 +799,7 @@
       "url": "https://tech.enechange.co.jp/entry/2026/07/12/132216",
       "publisher": "ENECHANGE Developer Blog",
       "date": "2026-07-12",
-      "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다."
+      "summary": "스테이트 머신은 **얇은 오케스트레이션 층** — JSONata 정형·Choice 분기는 '배선' 이지 비즈니스 로직이 아니다. Task 하나의 테스트 대상을 **앱 쪽(Lambda/ECS/Batch 의 내용 → 각 컴포넌트 UT)** 과 **ASL 쪽(Arguments·Output·분기·Retry·Catch → TestState API)** 으로 가르고, 전체를 ① 컴포넌트 UT ② ASL 배선 테스트(AWS 에서, CI 가능) ③ E2E 세 층으로. Step Functions Local 은 AWS 문서가 **'기능 동등성 없음·비지원'** 이라 명시 → TestState API(2025-11 에 **mock** 지원 추가). mock 여부는 **외부 서비스를 부르는가**로 — Choice/Pass 는 불요, Task 는 붙인다. TestState API 의 제약도 적는다. 워크플로는 여러 **Lambda·ECS·Batch** 를 엮은 것 — '스테이트 머신 전체를 통으로 돌리는 수밖에 없나' 는 벽에서 출발. 예: Lambda 로 건수를 얻어 `Output` 으로 정형하는 Task — 확인하는 것은 **`output`(JSONata 가 mock Payload 에서 값을 제대로 꺼내나)** 와 **`nextState`(성공 시 전이처)** 둘; mock 에 준 5 는 '가정' 일 뿐 5 가 맞는지는 **Lambda UT 가** 담보. mock 을 쓰면 **`states:TestState` 권한만**으로 되고 실행 롤·`iam:PassRole` 불요라 CI 에 넣기 쉽다. **제약**: 한 번에 **한 스테이트만**(StartExecution 불가), **AWS 쪽에서 도는 API** 라 CI 에 AWS 자격 증명과 네트워크가 필요."
     }
   ]
 }

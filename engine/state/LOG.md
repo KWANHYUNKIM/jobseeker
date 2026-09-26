@@ -1424,3 +1424,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ENECHANGE 검산 하네스
 
 - 검산 하네스 글 후반(불일치 처리·세 갈래 분류·변별하지 않는 선택)까지 읽고 `golden-master-exact-match-harness`(결정 8). 이 엔진이 판 것 중 'AI 코드의 정당성' 을 가장 정면으로 다룬 글.
+
+## 2026-09-26 ENECHANGE Step Functions 배선 테스트
+
+- Step Functions 글 전문으로 `stepfunctions-wiring-teststate-mock`(결정 6 — 배선/내용 분리·Local 대신 TestState API·mock 판단·output/nextState 만·CI 권한·E2E). 글이 짧아 결정 6.

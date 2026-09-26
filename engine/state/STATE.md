@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**ENECHANGE — 확장 1(2026-09-26): 검산 하네스 도메인에 `golden-master-exact-match-harness`(결정 8). 다음은 확장: '워크플로 테스트를 배선과 내용으로 가른다' 를 Step Functions 글(`entry/2026/07/12/132216`, scratchpad `en_sfn.txt` — mock 판단표·Lambda invoke 출력 검증·TestState API 제약). 완주 판정 때 비교·전환·EV 수익원은 도메인이 없다 — 사이트맵 전 제목(병렬 grep, `awk 'length<400'` 로 긴 URL 거르기)으로 두 번. 대기 1/3(드왕고 교육) — ENECHANGE 뒤 후보 조사. 머니포워드·라쿠스(hold)·LayerX 는 in_progress.**
+**ENECHANGE — 확장 2(2026-09-26): Step Functions 도메인에 `stepfunctions-wiring-teststate-mock`(결정 6). 두 도메인 모두 기능 있음. 다음은 완주 판정 — 비교·전환(개인·법인)·EV·투자 수익원에 도메인이 없다: tech.enechange.co.jp 사이트맵 2023~2026 전 제목(병렬, `awk 'length<400'`)을 '比較·切り替え·シミュレーション·料金プラン·EV·充電' 로 거르고, 두 번 없으면 hold. `--gaps` 는 신규(드왕고 교육)를 가리키지만 ENECHANGE 를 먼저 닫는다. 대기 1/3 — 그 뒤 후보 조사. 머니포워드·라쿠스(hold)·LayerX 는 in_progress.**
 
 
 
