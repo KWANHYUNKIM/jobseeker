@@ -12977,6 +12977,140 @@
       "site": "ats",
       "verdict": "⚠️ 같은 자리의 다른 게시다 — 제목만 조금 다르고(gh 8161175 'Senior Security Engineer (Detection Operations : Email)' 과 같은 이메일 탐지 운영 직무) 주요업무 10줄은 글자 그대로 같으며, 자격·우대 18줄은 문장 끝 '~을 보유하신 분' 만 빠진 같은 문장이다. 한 곳만 다르다: 이 게시는 '관련 총 경력 5년 이상, 이메일 보안 시스템 및 솔루션 운영 경험 3년 이상 우대' 로 이메일 보안 3년을 우대로 따로 적는다. 브리핑은 `보안엔지니어 (이메일 보안) 채용` 쪽을 본다. 두 자리인지는 공고로 알 수 없다.",
       "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54875253&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=f1a50b6a-2f35-4768-a342-7cd261998b6d"
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8029811",
+      "title": "Senior Staff, Data Scientist (Incrementality and Attribution)",
+      "site": "ats",
+      "verdict": "서울 근무, Senior Staff 개인 기여자(IC). 석사·박사(통계·계량경제·데이터 사이언스 등)와 업계 10년 이상. 마케팅 증분 효과(incrementality) 실험과 MMM·MTA 모델을 처음부터 설계·구축하고, 채널별 예산 배분 최적화를 이끄는 기술 리더다. 직접 사람 관리 없이 방향을 정하고 팀원을 풀어 주는 역할이라고 공고가 적는다. 크롤러가 공고 본문 전체를 주요업무 칸에 넣어 자격요건 칸이 비어 있다.",
+      "fit": {
+        "must_have": [
+          "통계·계량경제·데이터 사이언스 등 석사 또는 박사",
+          "데이터 사이언스·ML·마케팅 사이언스 10년 이상",
+          "MMM·MTA 모델 구축·배포 실적",
+          "증분·한계효과·잠식·A/B 설계·어트리뷰션 이해",
+          "Python·SQL·통계 모델링·인과추론",
+          "사람 관리 없는 테크 리드 경험"
+        ],
+        "can_learn": [
+          "업리프트·DML·합성 대조군·지역 실험(우대)",
+          "대규모 채널 예산 최적화(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "마케팅 믹스 모델(MMM)",
+          "from": "task",
+          "quote": "Hands-on Modeling: Architect, build, and refine advanced Marketing Mix Models (MMM) and Multi-Touch Attribution (MTA) models from scratch",
+          "priority": "core",
+          "why": "MMM·MTA 를 처음부터 설계·구축·개선하는 것이 주요업무이고, 이전 회사에서 대규모로 구축·배포한 실적이 기본 자격이다.",
+          "gap_check": "광고 지출의 이월 효과(adstock)와 포화(saturation)를 모델에 어떻게 넣고, 채널 간 지출이 함께 움직일 때 계수 식별 문제를 무엇으로 완화하는가?",
+          "drill": "Meridian 또는 Robyn 의 예제 데이터로 MMM 을 돌려 채널별 ROI 와 응답 곡선을 뽑고, 사전분포나 adstock 설정을 바꿨을 때 결과가 얼마나 흔들리는지 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "google/meridian",
+              "url": "https://github.com/google/meridian",
+              "kind": "repo"
+            },
+            {
+              "title": "facebookexperimental/Robyn",
+              "url": "https://github.com/facebookexperimental/Robyn",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "증분 효과 실험 설계 — A/B·지역 실험",
+          "from": "qualification",
+          "quote": "Deep Domain Expertise: Deep, foundational understanding of incrementality & marginality concepts, synergy & cannibalization, A/B testing design, and attribution methodology",
+          "priority": "core",
+          "why": "증분·한계효과·시너지·잠식·A/B 설계·어트리뷰션 방법론 이해가 기본 자격이고, 팀의 일이 마케팅 실험으로 증분을 재는 것이다.",
+          "gap_check": "사용자 단위 무작위 배정이 불가능한 TV·옥외 광고의 증분 효과는 어떻게 재고, 지역 실험에서 대조 지역을 어떻게 고르는가?",
+          "drill": "가상의 지역별 매출 시계열을 만들고 일부 지역에 처치를 넣은 뒤, CausalImpact 로 처치 효과와 신뢰구간을 추정해 실제 넣은 값과 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "google/CausalImpact",
+              "url": "https://github.com/google/CausalImpact",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "인과추론 — 업리프트·DML·합성 대조군",
+          "from": "preference",
+          "quote": "Strong background in causal inference methodologies (e.g., uplift modeling, double machine learning, synthetic controls, geo experiments, non-compliance, confounding and bias)",
+          "priority": "high",
+          "why": "우대사항 첫 줄이 업리프트 모델링·이중 기계학습·합성 대조군·지역 실험·비순응·교란과 편향이다.",
+          "gap_check": "관측 데이터로 쿠폰 효과를 추정할 때 교란 변수를 어떻게 다루고, DML 이 단순 회귀보다 나은 점은 무엇인가?",
+          "drill": "EconML 로 합성 데이터에 DML·업리프트(메타러너) 추정을 해 보고, 참값과 비교해 편향을 적는다. 인과추론 교재 해당 장을 같이 읽는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "py-why/EconML",
+              "url": "https://github.com/py-why/EconML",
+              "kind": "repo"
+            },
+            {
+              "title": "Causal Inference: The Mixtape",
+              "url": "https://mixtape.scunning.com/",
+              "kind": "book"
+            },
+            {
+              "title": "Causal Inference for the Brave and True",
+              "url": "https://matheusfacure.github.io/python-causality-handbook/landing-page.html",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "멀티터치 어트리뷰션(MTA)과 MMM 의 역할 분담",
+          "from": "qualification",
+          "quote": "Proven Model Building: Demonstrated track record of hands-on experience building and deploying advanced MMM (Marketing Mix Modeling) and MTA (Multi-Touch Attribution) models at scale in previous companies",
+          "priority": "high",
+          "why": "MMM 과 MTA 를 둘 다 구축·배포한 실적을 요구한다. 두 모델은 쓰는 데이터와 답하는 질문이 다르다.",
+          "gap_check": "MTA 의 채널 기여도와 MMM 의 채널 ROI 가 크게 다를 때 어느 쪽을 예산 결정에 쓰고, 증분 실험 결과로 어떻게 보정하는가?",
+          "drill": "가상의 사용자 경로 데이터로 마지막 터치·선형·데이터 기반(예: Shapley) 어트리뷰션을 계산해 채널 순위가 어떻게 바뀌는지 표로 비교한다.",
+          "hours": 5,
+          "resources": []
+        },
+        {
+          "topic": "채널 간 예산 배분 최적화",
+          "from": "task",
+          "quote": "Drive Business Impact: Enable the growth marketing team to make data-driven decisions and optimize budget allocation across various channels",
+          "priority": "high",
+          "why": "성장 마케팅 팀이 채널별 예산 배분을 데이터로 결정하게 하는 것이 주요업무다. 우대에 대규모 예산 최적화 경험이 있다.",
+          "gap_check": "채널별 응답 곡선이 있을 때 총예산 제약 아래 한계 ROI 를 맞추는 배분을 어떻게 구하고, 곡선의 불확실성은 결정에 어떻게 반영하는가?",
+          "drill": "앞 MMM 실습의 응답 곡선으로 총예산을 ±20% 바꿔 가며 최적 배분을 계산하고, 경영진용 한 장(권고 배분·기대 증분·불확실성)을 쓴다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "MMM·실험 보정 비교 노트북",
+          "why": "MMM 결과를 지역 실험의 증분 추정으로 보정하는 과정을 한 저장소에 보이면, 기본 자격(MMM·MTA·A/B)과 우대(지역 실험·인과추론)를 한 번에 보여 준다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "adstock·포화 모델링",
+          "지역 실험 설계",
+          "교란과 DML",
+          "MTA 와 MMM 의 차이",
+          "예산 배분 권고"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff, Data Scientist (Incrementality and Attribution)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8029811",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
