@@ -286,6 +286,101 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/294189",
+      "title": "[제품본부] 시니어 AI Engineer",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 강남구. 제품 본부 **시니어 AI Engineer** 로, 비즈니스 목표('광고 효율 극대화')를 측정 가능한 AI 문제로 바꾸는 일부터 배포까지 맡는다. 공고가 드는 예는 **광고 소재별 전환율(CVR) 예측**, **전환율 기여 캠페인 랭킹**, **광고 소재 이미지 자동 생성**이다. 업무는 데이터 요건·**레이블 체계**·성능 지표(F1-score, hit@k, NDCG) 정의, Computer Vision·상용 LLM Agent·sLLM·Time-series 중 문제에 맞는 기술 선택, 오픈소스·상용 API 로 빠른 정량 탐색, 필요 시 레이블 스키마 설계·fine-tuning, LLM Agent 의 프롬프트·**RAG**·**Function Calling** 최적화, MLOps·CI/CD. 필수는 **AI/ML 석사 이상 + 상용 서비스 5년 이상**, 문제 정의·레이블 체계·지표 수립 완수 경험, CV·NLP 등 한 분야 깊이, 비기술 직군 소통, PyTorch/TensorFlow 로 학습·상용 배포, 기술 리딩·멘토링. 우대는 Ad-Tech, LLM Agent·멀티모달, 비즈니스 임팩트, PR 리뷰 협업, 글로벌 학회 논문·특허, **정교한 실험 설계(ablation·통계적 유의성)**, Docker·K8s, CI/CD. 전형: 서류 ＞ 리크루터 콜 ＞ **과제 테스트** ＞ 1차 인터뷰(**PT 발표**) ＞ 2차 인터뷰 ＞ 처우협의. 같은 본부 'AI Engineer(전문연구요원 가능)'(294187, 3년 이상)이 더 낮은 연차 자리다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AI/ML 석사 + 상용 서비스 5년 이상",
+          "문제 정의·레이블 체계·지표 수립",
+          "CV 또는 NLP 깊이",
+          "PyTorch/TF 학습·상용 배포",
+          "기술 리딩"
+        ],
+        "can_learn": [
+          "Ad-Tech 도메인",
+          "LLM Agent·RAG",
+          "정교한 실험 설계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "광고 CVR 예측 — 희소한 전환과 선택 편향",
+          "from": "task",
+          "quote": "• 제품/비즈니스팀과 긴밀히 협업하여 '광고 효율 극대화'와 같은 비즈니스 목표와 주어진 요구 사항을 기반으로, 이를 해결하기 위한 구체적인 AI 과제를 도출하고, 측정 가능하며 실행 가능한 엔지니어링 문제로 명확하게 정의합니다.",
+          "priority": "core",
+          "why": "주요업무가 드는 첫 예가 '광고 소재별 전환율(CVR) 예측' 이다. 회사 브리핑대로 매드업은 취급고 4,000억 원 규모 캠페인 데이터를 갖고 있다.",
+          "gap_check": "CVR 모델을 클릭된 노출로만 학습하면 왜 '클릭되지 않은 노출' 에 대해 편향된 예측을 하고(표본 선택 편향), 전환이 1% 미만으로 드물 때 무엇이 문제이며, ESMM 은 CTR 과 CTCVR 을 함께 학습해 이를 어떻게 푸는가? 예측값을 입찰·예산에 쓰려면 왜 확률 보정이 필요한가?",
+          "drill": "ESMM 논문 초록·그림을 읽고, 가짜 노출→클릭→전환 데이터(클릭 여부가 전환 확률과 상관되게)로 '클릭 데이터만으로 학습한 CVR 모델' 과 '전체 노출 공간 모델' 을 비교한다. 두 모델에 신뢰도 곡선을 그려 보정 전후를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Entire Space Multi-Task Model (ESMM) — arXiv 1804.07931",
+              "url": "https://arxiv.org/abs/1804.07931",
+              "kind": "paper"
+            },
+            {
+              "title": "Probability calibration — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/calibration.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "랭킹 평가 — hit@k 와 NDCG",
+          "from": "task",
+          "quote": "• 설계된 솔루션 구현에 필요한 데이터 요건을 도출하고, 모델 학습 및 평가에 가장 효과적인 레이블 체계를 정의하며, 성능 지표(F1-score, hit@k, NDCG 등) 측정을 위한 측정하기 위한 고품질 데이터 확보 및 검증 전략을 수립합니다.",
+          "priority": "core",
+          "why": "주요업무가 성능 지표로 F1-score·hit@k·NDCG 를 직접 적고, '전환율 기여 캠페인 랭킹' 을 예로 든다.",
+          "gap_check": "캠페인 랭킹을 hit@5 로 재면 무엇(상위 5개 안에 들었는가)만 보고 무엇(순서·정답 여럿의 등급)을 놓치며, NDCG 는 순서와 관련도 등급을 어떻게 반영하는가? 정답 레이블을 '실제 전환 기여' 로 만들 때 레이블 체계를 무엇으로 정하는가?",
+          "drill": "가짜 캠페인 20개에 관련도 등급(0~3)을 매기고, 순서가 다른 랭킹 세 개에 대해 hit@5·NDCG@5 를 직접 계산한 뒤 scikit-learn ndcg_score 결과와 대조한다. 어떤 랭킹이 hit@5 는 같고 NDCG 는 다른지 설명을 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "ndcg_score — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.ndcg_score.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "상용 LLM Agent — RAG 와 Function Calling 으로 성능 올리기",
+          "from": "task",
+          "quote": "• 상용 LLM 기반 Agent의 경우, 프롬프트 엔지니어링, RAG 시스템 구축, Function Calling 등을 통해 성능을 최적화하고 실제 서비스에 적용합니다.",
+          "priority": "high",
+          "why": "주요업무다. 회사 브리핑대로 LEVER Xpert 가 '마케팅 AI 에이전트' 다.",
+          "gap_check": "'지난주 ROAS 가 떨어진 캠페인을 찾아 예산을 20% 줄여 줘' 라는 요청에서 에이전트가 숫자는 도구(성과 조회 API)로 가져오고, 매체별 운영 가이드는 검색(RAG)으로 가져오며, 예산 변경은 도구 호출 전에 사용자 확인을 받게 하려면 흐름을 어떻게 나누는가? 도구 인자 오류는 무엇으로 막는가?",
+          "drill": "가짜 성과 조회·예산 변경 도구 두 개와 매체 가이드 문서 몇 장을 준비해, Claude(또는 다른 상용 LLM) 도구 호출과 간단한 RAG 로 위 요청을 처리하는 에이전트를 만든다. 예산 변경 전 확인 단계와 인자 스키마 검증을 넣고, 질문 10개로 도구 호출 정확도를 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Tool use with Claude — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "실험 설계 — ablation 과 통계적 유의성",
+          "from": "preference",
+          "quote": "• 정교한 실험 설계(변인통제, 가설설정, ablation test, 통계적 유의성 검증 등)부터 실제 서비스 적용까지 균형 있게 수행하며 데이터 기반 의사결정을 이끌어 본 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 전형에 과제 테스트와 1차 인터뷰 PT 발표가 있다 — 모델 개선을 '얼마나, 왜' 로 설명해야 한다.",
+          "gap_check": "새 CVR 모델이 검증 세트 AUC 를 0.005 올렸을 때 그것이 우연이 아닌지 무엇(부트스트랩 신뢰구간·여러 시드)으로 확인하고, 피처 세 개를 동시에 넣었을 때 어느 것이 효과를 냈는지 ablation 을 어떻게 설계하며, 오프라인 지표 개선이 온라인 광고 성과로 이어지는지는 무엇으로 검증하는가?",
+          "drill": "위 CVR 실습 모델에 피처 세 개를 하나씩 뺀 ablation 표를 만들고, 각 변형의 AUC 차이에 scipy 부트스트랩 신뢰구간을 붙인다. 이 표로 5분 PT 슬라이드 한 장을 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "bootstrap — SciPy Manual",
+              "url": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
