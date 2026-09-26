@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**ANDPAD — 기능 1(`single-entry-escape-route`, 2026-09-26). 다음은 확장: `--gaps` 가 '수발주에 붙은 청구서를 먼저 현금으로' 를 찍는다. 자료는 PdM 회고(`2026/09/02/100000`, scratchpad `ap_fin.txt`)뿐이라 기술 결정이 얇다 — 먼저 tech.andpad.co.jp 사이트맵에서 FinTech·청구서·審査 글을 찾아보고(1회째), 없으면 제품 결정(3클릭 연동·속도 대 알기 쉬움·관리 화면)만으로 쓸 수 있는지 보고, 안 되면 두 번째 조사 뒤 도메인 hold_reason. 그 뒤 표 캡처(`ap_tbl.txt`). 대기 2/3(타이미·LayerX).**
+**ANDPAD — 기능 1(`single-entry-escape-route`). '수발주에 붙은 청구서를 먼저 현금으로' 자료 조사 1회째(2026-09-26): tech.andpad.co.jp 검색(FinTech·請求書·先払い·与信·審査) — 기술 글 없음. 걸린 것은 PdM 회고 둘(`2026/09/02`, `2026/08/05` — 'ANDPAD 請求管理' 소개)과 무관한 글(S3 백신·FinOps)뿐. 다음 사이클은 2회째 — 웹 검색(andpad.co.jp 뉴스·채용 공고·발표 자료 speakerdeck 의 선지급/請求管理 시스템 구조). 또 없으면 **도메인 hold_reason**(회사 레벨 아님 — 나머지 도메인은 계속 판다) 후 표 캡처로. 대기 2/3(타이미·LayerX).**
+
 
 
 

@@ -1252,3 +1252,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ANDPAD 확장 — 입구를 하나로 모으고, 그 입구의 대피로를 남겨 둔다
 
 - Builder Work 구조 변경 글(06-26)과 VPC Origins 장애 글(08-06)로 `single-entry-escape-route`(결정 7·state 그림). 샤딩 폐지·VPC Origins(mTLS 안 기각)·Canary Ping-Pong 범용화·장애 당일 롤백 불가·대피로 상시 유지. 표 캡처와의 연결은 inferred.
+
+## 2026-09-26 ANDPAD 청구서 선지급 도메인 자료 조사(1회째)
+
+- 블로그 검색 다섯 낱말에 기술 글 없음 — PdM 회고 둘뿐. 데이터 변경 없음.
