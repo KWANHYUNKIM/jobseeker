@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**KENCOPA hold(2026-09-26) — 적산 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 신규: 큐 맨 위 WWWAVE — `fac9f4d865fb1b`(배치 감시의 침묵 — 실패·미실행·미완료, 예정을 먼저 만든다, 감시의 사활 감시) · `64283ed5170acc`(Access VBA 철수 기술 선정) · `3bc67fa4f5f12e`(마스터 데이터 갱신 흐름) · 회사 사이트에서 수익원부터. 그 뒤 큐가 비니 후보 조사. 대기 1/3(WWWAVE) — **다음 --gaps 가 후보 조사를 부를 수 있다.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**WWWAVE 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다' — `64283ed5170acc`(4만 행 VBA 재고 조사 · 스키마 재설계 보류 · Rails+PySide6 · 웹 앱·로우코드 기각 · LGPL · 선정 상태 메모리). 그다음 '이상 때만 알리는 감시에서 침묵을 해석한다' — `fac9f4d865fb1b`(실패·미실행·미완료 · 예정 먼저 · 감시의 사활 감시). 수익원 신규 사업은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 0/3 — **--gaps 가 후보 조사를 부르면 그쪽이 먼저.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
