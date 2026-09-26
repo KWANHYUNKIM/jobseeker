@@ -522,6 +522,113 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382098",
+      "title": "DevOps 엔지니어(SRE)(시니어)",
+      "site": "wanted",
+      "verdict": "경력 8년 이상, 전산 관련 학사 이상 또는 동등. AI Native Engineering팀의 **시니어 SRE** 자리로, 인프라 운영보다 **변경 안정성과 장애 대응 체계**가 중심이다 — 전사 기술부채 발굴·해소 주도, 변경을 안심하고 시험할 공용 검증 환경, 코드·구성 변경의 파급 효과 사전 가시화, 외부 의존성 가시화와 장애 시 자동 전환(Failover), 핵심 서비스 플로우 가시화, 성능지표, 예방→실시간 대응→사후 분석 운영 체계, 운영 환경 표준화, 모니터링·로깅·트레이싱 Observability 플랫폼 직접 개발·운영, 자동화된 장애 대응. 필수는 다부서 기술 이슈를 실행까지 주도, Prometheus·Grafana 등 Observability, Kubernetes, MSA·분산 환경, Linux, 오픈소스 활용. 우대는 검증 환경·자동화 정착, **금융 규제·내부통제를 고려한 운영 체계**, 레거시 현대화, 성능 분석, Java/Kotlin·Spring, AWS·멀티클라우드 비용·보안, AI 도구, 멘토링. 전형: 서류전형 - 1차 인터뷰 - 2차 인터뷰 - 처우협의 - 입사일 조정(다른 카카오페이증권 공고와 달리 과제전형이 없다).",
+      "fit": {
+        "must_have": [
+          "유관 경력 8년 이상",
+          "다부서 기술 이슈 주도",
+          "Prometheus·Grafana 등 Observability",
+          "Kubernetes",
+          "MSA·분산 환경 운영",
+          "Linux"
+        ],
+        "can_learn": [
+          "금융 내부통제 요건",
+          "레거시 현대화",
+          "Java/Kotlin·Spring",
+          "AWS 비용·보안"
+        ]
+      },
+      "study": [
+        {
+          "topic": "메트릭·로그·트레이스로 핵심 플로우 보기",
+          "from": "task",
+          "quote": "• 모니터링·로깅·트레이싱 등 Observability 플랫폼을 직접 개발하고 운영해요.",
+          "priority": "core",
+          "why": "주요업무이고 필수에 'Observability(메트릭·로그·트레이싱) 영역의 이해를 바탕으로, Prometheus·Grafana 등' 이 있다. 다른 주요업무가 핵심 서비스 플로우 가시화다.",
+          "gap_check": "'주문 → 체결 → 잔고 반영' 이 여러 서비스를 거칠 때 한 건이 느려진 이유를 찾으려면 메트릭·로그·트레이스를 무엇으로 서로 이어 보고(trace ID), 어떤 지표를 SLO 로 삼아 알림을 거는가?",
+          "drill": "서비스 세 개짜리 샘플에 OpenTelemetry 를 붙여 Tempo 로 트레이스를, Prometheus 로 지연 히스토그램을 모으고, Grafana 에서 느린 요청의 트레이스로 바로 건너가는 대시보드를 만든다. p99 지연 SLO 하나를 정해 알림을 건다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Observability primer | OpenTelemetry",
+              "url": "https://opentelemetry.io/docs/concepts/observability-primer/",
+              "kind": "docs"
+            },
+            {
+              "title": "Overview | Prometheus",
+              "url": "https://prometheus.io/docs/introduction/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Grafana Tempo documentation",
+              "url": "https://grafana.com/docs/tempo/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE - Service Level Objectives",
+              "url": "https://sre.google/sre-book/service-level-objectives/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "외부 연계 장애와 자동 전환",
+          "from": "task",
+          "quote": "• 외부 의존성을 가시화하고, 장애 발생 시 자동 전환(Failover) 구조를 설계해 외부 연계 시스템을 안정화해요.",
+          "priority": "core",
+          "why": "주요업무다. 증권사 서비스는 외부 연계 시스템에 기대는 흐름이 있다(업무 문장의 '외부 연계 시스템').",
+          "gap_check": "외부 연계 API 가 응답을 30초씩 끌면 우리 서비스의 스레드·커넥션이 어떻게 말라 가고, 타임아웃·서킷 브레이커·대체 경로(Failover)는 각각 어느 지점에서 무엇을 막는가? 자동 전환이 잘못 켜졌을 때(오탐)의 피해는?",
+          "drill": "Spring 서비스에서 가짜 외부 API 를 부르게 하고 응답을 일부러 늦춘 뒤, Resilience4j 서킷 브레이커와 보조 엔드포인트로의 전환을 붙여 상태 변화(CLOSED→OPEN→HALF_OPEN)를 메트릭으로 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "CircuitBreaker (Resilience4j)",
+              "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "변경 안정성 — 공용 검증 환경과 점진 배포",
+          "from": "task",
+          "quote": "• 코드·구성 변경의 파급 효과를 미리 볼 수 있게 만들어, 변화 안정성을 확보해요.",
+          "priority": "high",
+          "why": "주요업무이고 바로 앞 업무가 '변경을 안심하고 시험해 볼 수 있는 공용 검증 환경' 이다. 우대에 검증 환경·분석 도구·자동화 체계 정착이 있다.",
+          "gap_check": "설정 한 줄 변경이 어느 서비스들에 영향을 주는지 배포 전에 알려면 무엇(의존 그래프·구성 diff)을 보고, 카나리 배포에서 새 버전을 되돌릴지 판단하는 지표와 기준은 무엇인가?",
+          "drill": "Google SRE 워크북의 카나리 장을 읽고, 쿠버네티스에서 새 버전을 트래픽 10% 로 먼저 내보낸 뒤 오류율 비교로 자동 롤백하는 절차를 설계서 한 장(비교 지표·기간·판정선)으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Google SRE - Canarying Releases",
+              "url": "https://sre.google/workbook/canarying-releases/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애 전 주기 운영 체계 — 사후 분석",
+          "from": "task",
+          "quote": "• 사전 예방부터 실시간 대응, 사후 분석까지 전 주기를 아우르는 운영 체계를 만들어 정착시켜요.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 금융 규제·내부통제 요건을 고려한 기술 운영 체계가 있다.",
+          "gap_check": "장애 후 회고에서 '누가 실수했나' 대신 무엇을 남겨야 같은 장애가 반복되지 않고, 금융사 내부통제 관점에서 장애 기록에 꼭 들어가야 하는 항목(영향 범위·조치 시각·재발 방지 책임)은 무엇인가?",
+          "drill": "위 실습에서 일부러 낸 장애 하나로 블레임리스 포스트모템 문서(타임라인·영향·근본 원인·조치 항목·담당)를 써 본다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Google SRE - Postmortem Culture",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
