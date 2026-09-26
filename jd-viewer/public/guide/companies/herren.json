@@ -206,5 +206,124 @@
     "기술블로그(techblog.herrencorp.com) 글은 읽지 않았다 — people 후보가 있을 수 있다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/336266",
+      "title": "[헤렌/공비서] 프론트엔드 개발자 (3년차~6년차)",
+      "site": "wanted",
+      "verdict": "경력 3-6년, 서울 성동구. **공비서** 웹(Next.js SSR)의 프론트엔드 자리다. 업무는 복잡한 UI/UX 기능 개발, 기획 단계부터 요구사항 검토, 공통 컴포넌트·디자인 시스템, AI 도구로 개발·테스트 자동화와 결과 검증, Sentry 대응·Core Web Vitals 개선, **WebView 브릿지·딥링크·푸시 등 네이티브-웹 연동**, PO·PD·BE·QA 협업. 필수가 구체적이다 — FE 3년 이상, React·Next.js·TypeScript, **React 렌더링 동작(Virtual DOM·Reconciliation·리렌더링 조건)**, **Next.js SSR/SSG/CSR 선택**, TypeScript 제네릭·유틸리티 타입, 컴포넌트 분리·상태 관리, **AI 도구(Claude Code·Cursor) 실무 활용과 결과물 검증 습관**, 자기 코드를 자기 언어로 설명. 우대는 뷰티·예약·O2O 도메인, 브라우저 렌더링·이벤트 루프, **하이드레이션 이슈 해결**, Storybook, Jest·Playwright, 번들·렌더링 지표 개선, WebView 브리지, A/B·퍼널, 장애 대응, 'AI 시대에 프론트엔드 개발자는 어떻게 달라져야 하는가' 에 대한 본인 생각. 기술 스택은 React·Next.js(**Page Router**)·TypeScript, TanStack Query·Recoil·Context, Styled-Components·Storybook, Jest·Playwright, Jenkins·Sentry, Claude Code·Codex·MCP. 전형: 서류 ＞ **컬쳐핏 설문조사** ＞ 대면 인터뷰 ＞ 최종 컬쳐핏(CEO·CTO) ＞ 최종 합격, 수습 3개월(급여 100%). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "FE 3년 이상",
+          "React·Next.js·TypeScript",
+          "React 렌더링 동작 이해",
+          "SSR/SSG/CSR 선택",
+          "AI 도구 활용과 검증"
+        ],
+        "can_learn": [
+          "하이드레이션 이슈",
+          "WebView 브릿지",
+          "Playwright E2E",
+          "예약 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "리렌더링은 언제 일어나나 — 도구로 확인하기",
+          "from": "qualification",
+          "quote": "• React의 렌더링 동작(Virtual DOM, Reconciliation, 리렌더링이 발생하는 조건)에 대한 이해",
+          "priority": "core",
+          "why": "필수 자격요건이고 회사가 '리렌더링이 왜 일어났는지, 이 페이지가 왜 느린지를 추측이 아니라 도구와 근거로 확인' 하는 자세를 기대한다고 적는다.",
+          "gap_check": "원장님 예약 캘린더에서 한 칸을 클릭했을 때 캘린더 전체가 다시 그려진다면 무엇(부모 상태 변경·매 렌더 새로 만들어지는 객체/함수 props·Context 값 변경)이 원인일 수 있고, React.memo 가 효과 없는 경우는 언제이며, 리렌더링과 실제 DOM 변경(커밋)은 무엇이 다른가?",
+          "drill": "예약 캘린더(직원 × 시간 칸 수백 개)를 만들고 React DevTools Profiler 로 칸 하나 클릭 시 다시 그려지는 컴포넌트 수를 기록한다. 상태 위치 내리기·useCallback·memo 를 하나씩 적용하며 수치 변화를 표로 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Render and Commit — React",
+              "url": "https://react.dev/learn/render-and-commit",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Next.js Pages Router 렌더링 선택과 하이드레이션",
+          "from": "qualification",
+          "quote": "• Next.js의 SSR/SSG/CSR 차이를 이해하고 상황에 맞게 선택해본 경험",
+          "priority": "core",
+          "why": "필수 자격요건이고 우대에 '하이드레이션 이슈를 직접 겪고 해결해본 경험' 이 있다. 기술 스택이 Next.js Page Router 다.",
+          "gap_check": "매장 소개 페이지·원장님 예약 관리 화면·고객 예약 완료 페이지를 getStaticProps·getServerSideProps·클라이언트 조회 중 무엇으로 그릴지 무엇(검색 노출·개인화·데이터 신선도)으로 정하고, 서버에서 만든 HTML 과 브라우저 첫 렌더 결과가 달라 하이드레이션 오류가 나는 흔한 원인(현재 시각·시간대·localStorage)은 무엇이며 어떻게 고치는가?",
+          "drill": "Pages Router 로 세 페이지를 각각 SSG·SSR·CSR 로 만들고, 예약 시각을 new Date() 로 서버에서 그려 하이드레이션 경고를 일부러 낸 뒤 Next.js 오류 안내 문서의 방법(클라이언트에서만 그리기 등)으로 고친다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Building Your Application: Rendering — Next.js (Pages)",
+              "url": "https://nextjs.org/docs/pages/building-your-application/rendering",
+              "kind": "docs"
+            },
+            {
+              "title": "Text content does not match server-rendered HTML — Next.js",
+              "url": "https://nextjs.org/docs/messages/react-hydration-error",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "WebView 브릿지 — 앱 안의 웹과 네이티브 잇기",
+          "from": "task",
+          "quote": "• WebView 브릿지, 딥링크, 푸시 알림 등 네이티브-웹 연동 기능 구현",
+          "priority": "high",
+          "why": "주요업무이고 우대에도 있다. 회사 브리핑대로 공비서는 원장님 앱·고객 앱이 있어 웹 화면이 앱 안에서 돈다.",
+          "gap_check": "웹 화면에서 '예약 확정 후 네이티브 알림 권한 요청' 을 부를 때 웹 → 네이티브 메시지(iOS WKScriptMessageHandler·Android JavascriptInterface)와 네이티브 → 웹 콜백을 어떻게 짝지어 응답을 받으며, 브릿지가 없는 일반 브라우저에서 열렸을 때 어떻게 대비하고, 아무 페이지나 브릿지를 부르지 못하게 무엇을 확인하는가?",
+          "drill": "Apple·Android 문서를 읽고, 웹 쪽에 요청 ID 로 응답을 기다리는 Promise 기반 브릿지 래퍼를 만든다(네이티브 쪽은 가짜 구현). 브릿지 부재 시 대체 동작과 허용 도메인 검사를 넣어 테스트한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "WKScriptMessageHandler — Apple",
+              "url": "https://developer.apple.com/documentation/webkit/wkscriptmessagehandler",
+              "kind": "docs"
+            },
+            {
+              "title": "Build web apps in WebView — Android Developers",
+              "url": "https://developer.android.com/develop/ui/views/layout/webapps/webview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "TypeScript 제네릭 — 공통 컴포넌트를 안전하게",
+          "from": "qualification",
+          "quote": "• TypeScript로 안전한 타입을 설계해본 경험 (제네릭, 유틸리티 타입 활용 수준)",
+          "priority": "high",
+          "why": "필수 자격요건이고 주요업무에 '공통 UI 컴포넌트 및 디자인 시스템 구성 요소 개발·개선' 이 있다.",
+          "gap_check": "직원·시술·고객 어떤 목록에도 쓰는 공통 Select 컴포넌트를 any 없이 만들려면 제네릭으로 무엇을 매개변수화하고(항목 타입·키 추출), Pick·Omit·Partial 같은 유틸리티 타입은 API 응답 타입에서 폼 타입을 만들 때 어떻게 쓰는가?",
+          "drill": "TypeScript 핸드북 제네릭 장을 읽고 제네릭 Select<T>(getLabel·getValue 를 받는)를 만들어 직원·시술 목록에 각각 써 본다. API 응답 타입에서 Omit 으로 생성 폼 타입을 만들고, 잘못된 키를 넘기면 컴파일 오류가 나는지 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Generics — TypeScript Handbook",
+              "url": "https://www.typescriptlang.org/docs/handbook/2/generics.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "예약 흐름 E2E 테스트 — Playwright",
+          "from": "preference",
+          "quote": "• 컴포넌트 테스트 및 E2E 테스트 작성 경험 (Jest, Playwright)",
+          "priority": "nice",
+          "why": "우대사항이고 기술 스택에 Jest·Playwright 가 있다. 회사가 '예약 플로우 한 단계의 지연이 고객 이탈로 이어진다' 고 적는다.",
+          "gap_check": "'매장 선택 → 시술 선택 → 시간 선택 → 예약 확정' E2E 테스트에서 실제 결제·SMS 같은 외부 호출은 어떻게 막고(네트워크 가로채기), 시간 선택 테스트가 날짜에 따라 깨지지 않게 하려면 무엇(시각 고정)을 하는가?",
+          "drill": "Playwright 로 가짜 예약 흐름 E2E 테스트를 쓰고, page.route 로 결제 API 를 가로채 고정 응답을 주며, 브라우저 시각을 고정해 날짜가 바뀌어도 통과하는지 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Installation — Playwright",
+              "url": "https://playwright.dev/docs/intro",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

@@ -52,6 +52,7 @@ AI Engineer 379543 완료.
 **소프트넷(`softnet`) — `done`, 공고 5건(원티드 병원 ERP 345290(안양, 동일 법인 미확인) · 점핏 SE 6~10년 55065817 · SE 3~5년 55065419·11~15년 55065837 = 55065817 연차별 게시 · 사람인 IT기술연구소 프론트엔드 54912353).** 출처: softnet.co.kr 첫 화면 + 공고들.
 **비스텔리젼스(`bistelligence`) — `done`, 공고 5건(Full stack 아산 385532 · AI Solution Engineer 372348 · Product Development Leader 385098 · FSE 370490 · 점핏 [Aidentyx] AI Agent 55042670).** 중복 없음. 출처: 원티드 머리말(BISTel 인적분할) + bistelligence.ai 첫 화면. '현장 웹 애플리케이션' 도메인은 수익원에 안 이어져 경고가 남는다.
 **헤렌(`herren`) — `in_progress`, 회사 브리핑만.** 출처: 원티드 공고 머리말 + herrencorp.com·gongbiz.kr 메타. 모집중 원티드 5건(모두 공비서): 프론트엔드 3~6년 336266 · 시니어 프론트엔드 361706 · 백엔드 373691 · iOS 372618 · iOS 리드 383221.
+프론트엔드 336266 완료.
 ⚠️ 다음 회차: `--gaps` 순서대로 헤렌 공고.
 ⚠️ `validate.py` 의 `MIN_STUDY = 3` — 학습 항목이 3개 미만이면 `--gaps` 가 그 공고를 계속 미완으로 올린다(duplicate_of 제외). OCR 로 얇은 공고도 3개는 채운다(위펀 54814455 에서 2개로 커밋했다가 다음 회차에 보강).
 ⚠️ 사람인 URL 의 `search_uuid` 는 검색 한 페이지 전체가 같이 쓴다 — 공고를 찾을 때 uuid 로 끝맺음을 맞추지 말고 `rec_idx` + 회사명으로 찾는다.
