@@ -2320,3 +2320,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 neoAI RLS 이음새
 
 - `z-20260521-d29db3392b5b50` 전문으로 기능 `rls-tenant-boundary-seam`, 결정 8. 글 요약에 비대칭 횡단 · ContextVar/begin · SET vs SET LOCAL · CI 테스트를 보탰다.
+
+## 2026-09-27 neoAI 큐 동기화
+
+- `878ed0b400f45d` 전문으로 기능 `queue-hardened-data-sync`, 결정 8. 글이 테넌트 처리를 적지 않아 RLS 기능과의 연결은 inferred.
