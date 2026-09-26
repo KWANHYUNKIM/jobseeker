@@ -1323,6 +1323,157 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55110104&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f62bbdef-2298-493e-8ec7-bd227e5fc8e7",
+      "title": "[베스핀글로벌] SRE 2팀 시니어 클라우드 SRE 엔지니어",
+      "site": "saramin",
+      "verdict": "과장급, 경력 7~13년(서울 서초, 월~금 9~18시, 수습 3개월 급여 100%). SRE2팀에서 대형 엔터프라이즈 고객과 통합 MSP 의 멀티 클라우드(AWS, Azure, GCP, Naver Cloud) 인프라를 운영하며, 고객사 SLA 달성, MTTD/MTTR 개선 자동화, IaC 형상 관리, 백업·DR·보안 정책, 주니어 멘토링을 맡는다. 필수 자격의 핵심은 '클라우드 2개 이상 5년 이상 운영' 이다 — 한 클라우드만 깊이 한 사람은 걸린다. 팀 소개는 삼성전자, 신세계백화점 같은 고객사를 적는다. 오픈소스 모니터링(Redis·Kafka·Grafana·Prometheus), CI/CD, AIOps 는 우대다(원문에서 자격요건 칸 안에 '이런 분이면 더욱 좋아요!' 로 붙어 있다). 전형은 서류 → 인터뷰(통상 1회) → 처우 협의.",
+      "fit": {
+        "must_have": [
+          "AWS·Azure·GCP 중 2개 이상 운영 5년 이상",
+          "대규모 멀티 클라우드 구축·운영",
+          "Linux/Unix·네트워크 기본",
+          "장애 대응·트러블슈팅·컨테이너 관리",
+          "Python·Bash 스크립팅"
+        ],
+        "can_learn": [
+          "Redis·Kafka·Grafana·Prometheus 모니터링",
+          "CI/CD·DevOps 도구",
+          "AIOps",
+          "Naver Cloud"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MTTD/MTTR 을 줄이는 운영 — 탐지·대응·포스트모템",
+          "from": "task",
+          "quote": "MTTD/MTTR 개선을 위해 운영 프로세스를 고도화하고 자동화를 적극적으로 구현해요.",
+          "priority": "core",
+          "why": "주요업무이고 바로 앞 줄이 '고객사 SLA를 달성하기 위한 운영 전략' 이다. MSP 에서는 탐지·복구 시간이 곧 고객 계약 지표다(추론).",
+          "gap_check": "MTTD 를 줄이려면 무엇을 경보로 두고(증상 vs 원인), MTTR 을 줄이려면 런북·자동 복구 중 무엇부터 만들며, 장애 뒤 포스트모템에서 '누구 탓' 이 아니라 무엇을 남기는가?",
+          "drill": "테스트 환경에 웹 서비스를 띄우고 증상 기반 경보(오류율·지연)를 건 뒤, 디스크 가득 참·프로세스 종료 두 장애를 일으켜 탐지·복구 시간을 재고, 자동 복구 스크립트를 넣은 뒤 다시 재서 포스트모템 한 장을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Google SRE Book — Monitoring Distributed Systems",
+              "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE Book — Managing Incidents",
+              "url": "https://sre.google/sre-book/managing-incidents/",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE Book — Postmortem Culture",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "두 개 이상의 클라우드를 같은 눈으로 보기",
+          "from": "qualification",
+          "quote": "클라우드 플랫폼(AWS, Azure, GCP 중 2개 이상) 운영 경험이 5년 이상이신 분을 찾아요.",
+          "priority": "core",
+          "why": "필수 자격 첫 줄이다. 주요업무의 운영 대상에 Naver Cloud 까지 네 곳이 있다.",
+          "gap_check": "AWS·Azure·GCP 에서 네트워크 격리 단위(VPC·VNet·VPC), 권한 모델(IAM·RBAC·IAM), 모니터링 도구가 각각 무엇이고, 고객사가 여럿일 때 경보·로그를 한 화면에 모으려면 무엇이 필요한가?",
+          "drill": "두 클라우드의 무료 계정에 같은 구성(네트워크·VM·로드밸런서)을 만들고 대응표(개념·이름·기본값 차이)를 쓴 뒤, 두 쪽 VM 메트릭을 Prometheus 하나로 모은다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Prometheus — Overview",
+              "url": "https://prometheus.io/docs/introduction/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Grafana — Documentation",
+              "url": "https://grafana.com/docs/grafana/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IaC 로 프로비저닝과 형상 관리",
+          "from": "task",
+          "quote": "IaC(Infrastructure as Code)를 활용하여 인프라를 프로비저닝하고 형상을 철저히 관리해요.",
+          "priority": "high",
+          "why": "주요업무이고 팀 소개가 'IaC, AIOps, 자동화 파이프라인(CI/CD)을 주도적으로 설계' 를 적는다. 콘솔에서 누가 손으로 바꾼 설정이 문제의 씨앗이 된다(추론).",
+          "gap_check": "Terraform state 를 여러 사람이 쓸 때 원격 저장·잠금을 어떻게 두고, 콘솔 수동 변경으로 생긴 드리프트를 어떻게 발견·정리하며, 고객사별 환경을 모듈·워크스페이스 중 무엇으로 나누는가?",
+          "drill": "위 구성을 Terraform 으로 다시 쓰고 원격 state·잠금을 붙인 뒤, 콘솔에서 보안 그룹 규칙 하나를 손으로 바꿔 plan 으로 드리프트를 잡아내는 과정을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Terraform — Documentation",
+              "url": "https://developer.hashicorp.com/terraform/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Terraform — State",
+              "url": "https://developer.hashicorp.com/terraform/language/state",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "백업과 재해복구(DR) 설계",
+          "from": "task",
+          "quote": "백업, 재해복구(DR), 보안 정책을 수립하고 이행하며, 뛰어난 역량으로 주니어 엔지니어의 멘토링과 기술 가이드를 이끌어주세요.",
+          "priority": "high",
+          "why": "주요업무 마지막 줄이다. 엔터프라이즈 고객사는 RTO/RPO 를 계약으로 요구하는 경우가 많다(추론).",
+          "gap_check": "백업·복원, 파일럿 라이트, 웜 스탠바이, 멀티 사이트 액티브-액티브는 RTO/RPO 와 비용이 어떻게 다르고, DR 훈련에서 '복원이 실제로 된다' 를 무엇으로 확인하는가?",
+          "drill": "DB 하나에 자동 백업을 걸고 다른 리전으로 복원해 걸린 시간(RTO)과 잃은 데이터 범위(RPO)를 재서 DR 절차서 한 장을 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "AWS — Disaster recovery options in the cloud",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "오픈소스 모니터링과 AIOps",
+          "from": "qualification",
+          "quote": "Python 개발 능력을 갖추셨거나 AIOps 환경에 대한 높은 이해도가 있으신 분을 우대해요.",
+          "priority": "nice",
+          "why": "우대사항이다. 바로 앞 줄이 'Redis, Kafka, Grafana, Prometheus 등' 모니터링 구축 경험이고, 회사 홈페이지는 AIOps 기반 Cloud MSP 와 에이전틱 AI 운영 자동화(AutoMSP)를 서비스로 적는다.",
+          "gap_check": "경보 폭주를 줄이려면 규칙 기반 묶음(같은 원인 경보 그룹핑)과 이상 탐지 중 무엇을 먼저 쓰고, 자동 조치를 사람이 승인하는 선은 어디에 긋는가?",
+          "drill": "위 Prometheus 에 경보 20개를 걸어 장애 하나에 몇 개가 동시에 울리는지 세고, Alertmanager 그룹핑·억제 규칙으로 줄인 뒤 줄어든 수를 기록한다.",
+          "hours": 5,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "두 클라우드 + Terraform + Prometheus 운영 실습 기록(장애 재현·MTTR 전후·DR 훈련)",
+          "why": "필수 자격의 '2개 이상 클라우드' 와 주요업무 다섯 줄(SLA 운영, MTTD/MTTR, IaC, 백업·DR)을 한 저장소로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "엔터프라이즈 고객사 장애 대응 사례 정리(숫자 포함)",
+          "why": "7~13년 자리이고 인터뷰가 통상 1회다. 장애 규모·탐지/복구 시간·재발 방지를 짧게 말할 준비가 필요하다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 인터뷰 → 처우 협의 → 최종 합격 → 채용검진 → 입사. 인터뷰는 통상 1회이나 추가될 수 있고, 필요 시 레퍼런스 체크가 있다(공고 기준).",
+        "expect": [
+          "멀티 클라우드 운영 경험",
+          "MTTD/MTTR 을 줄인 사례",
+          "Terraform 형상 관리",
+          "DR 설계와 훈련",
+          "주니어 멘토링"
+        ],
+        "sources": [
+          {
+            "title": "[베스핀글로벌] SRE 2팀 시니어 클라우드 SRE 엔지니어",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55110104&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f62bbdef-2298-493e-8ec7-bd227e5fc8e7",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ]
 }
