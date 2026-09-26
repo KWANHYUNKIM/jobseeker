@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**USEN ICT hold(2026-09-26) — 법인 ICT 수익원에 이을 글을 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 후보 조사(대기 0/3 — 3순위): Zenn 검색 API 주제어(94번째에 쓴 15개에 새 낱말 더해 — 예: 障害対応 設計·コスト削減 アーキテクチャ·移行 段階的) · 94번째에서 거른 SmartShopping·SCOGR 은 다시 올리지 않는다. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**아흔다섯 번째 후보 조사(2026-09-26) — 대기 3/3: TELLER · DRESS CODE · Photoruction. 다음은 --gaps 의 신규: 큐 맨 위 TELLER — `0193eb68cabb6e`(DDD 트릴레마·Decision 패턴) · `05b0e164a3ceff`(RN QA 빌드 80%↓) · `ja-tts-g2p-benchmark`(TTS 읽기 구분 수치화) · 회사 사이트에서 수익원부터. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

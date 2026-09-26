@@ -55,8 +55,18 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **TELLER(テラーノベル)** | JP · 채팅형 소설 투고·열람 앱 | Zenn Publication `zenn.dev/p/tellernovel_inc`(RSS 19편, 최신 2026-09). 스토리 열람 판정으로 본 **DDD 트릴레마와 Decision 패턴** `0193eb68cabb6e`(Go — domain 이 repository 를 부르나 / 먼저 다 가져오나 / 호출 쪽 분기나) · React Native QA 빌드 약 80% 단축(Expo fingerprint × repack) `05b0e164a3ceff` · TTS 읽기 구분을 수치화 `ja-tts-g2p-benchmark` · 'ここがつらいよ React Native' 재론. **소설·스토리 앱 축(처음).** |
+| **DRESS CODE** | JP · 제품은 프로파일 때 확인 | Zenn Publication `zenn.dev/p/dress_code`(RSS 19편, 최신 2026-09). CRUD 서비스를 Event Sourcing 으로 옮기며 RDB + DynamoDB 이중 쓰기의 정합성 문제(Phantom Event·Event 유실)를 Transactional Outbox 로 `1646ef6e35df62` · '확장성은 누가 무엇을 바꾸나로 설계한다' · 단위 테스트 6할 단축 · Prisma v7·React 19 이행 · 'ADR(Any Decision Record)' 문화. **이벤트 소싱 이행 축.** |
+| **Photoruction(フォトラクション)** | JP · 건설 현장 도면·사진 관리 SaaS | Zenn Publication `zenn.dev/p/photoruction_bl`(RSS 19편, 최신 2026-08). 도면 파일을 비동기로 처리하는 '변환 서버' 를 ECS Fargate 로 `9cc3a37caccdaf`(무엇을 하나 → 현상 파악·변경 부담 → 변경을 꺼리는 게 안정성을 떨어뜨렸다 → 해 보니 생각대로 안 됐다 → 결과) · Lambda×SQS 아키텍처 · Android 크래시 조사 · 현장 확인 AI 에이전트. **건설 현장 축(처음).** 결정 글이 한두 편이라 프로파일 때 다시 판정. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 아흔다섯 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API 새 주제어 15개(障害対応 設計·コスト削減 アーキテクチャ·段階的 移行·負荷対策·データモデル 設計·検索基盤·配信基盤·決済基盤·在庫 引当·予約システム·マイクロサービス 分割·キャッシュ戦略·整合性·リアルタイム 設計 등) × 3쪽 → 2026년 publication 집계 → RSS → 본문 목차.**
+  - **TELLER** — **소설·스토리 앱 축.** 열람 판정 DDD 글이 세 선택지와 대가를 나란히 둔다.
+  - **DRESS CODE** — **이벤트 소싱 이행 축.** 이중 쓰기가 낳는 두 종류의 불일치를 이름 붙여 다룬다.
+  - **Photoruction** — **건설 현장 축.** 변환 서버 이전이 '생각대로 안 됐다' 를 적는다.
+  - **걸렀다.** Scalar(POS 마이크로서비스 Saga 연재 — SI 성격, 제품 결정이 약함) · TOKIUM(이미 AI 개발 과정 글 위주로 걸렀던 곳) · nttdata(COBOL 이행 검증 — 고객 프로젝트) · nextbeat(자작 언어·GC 글 위주) · syncable(잡글) · hacobell(사내 기반 글 위주).
+  - **배운 것.** '시스템 요소' 주제어(검색기반·배신기반·결제기반·재고)보다 '성질' 주제어(整合性·段階的 移行)가 제품 결정 글을 더 잘 건진다.
 
 - **2026-09-26 아흔네 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API 주제어 15개(設計判断·トレードオフ·移行 本番·リプレイス·イベント駆動·モジュラーモノリス·決済 設計 등) × 3쪽, 2026년 글의 publication 집계 → RSS → 본문 목차.**
   - **TRIBEAU** — **의료 × 생성 AI 축.** 앞 조사에서 보류했던 곳. AI 상담 설계 두 편이 체험·안전·비용을 대가로 말한다.
