@@ -191,5 +191,153 @@
     "salary: 공고에 금액이 없다 — 비워 둔다",
     "jobkorea 게시 8건 중 Data Engineer·금융 데이터 분석가·Security Engineer(DevSecOps)는 원티드와 제목이 겹친다 — 본문 비교로 duplicate_of 판단할 것. QUEUE 에 16/8 로 적은 것은 jobkorea 본문이 있는 공고를 빼고 센 수였다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/388893",
+      "title": "Data Engineer (AI Content Platform)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상(데이터 엔지니어링 또는 데이터 처리 중심 백엔드, 서울). 콘텐츠서비스개발팀에서 사내 증시 데이터와 뉴스·기업 자료 같은 비정형 정보를 수집·연결·가공해 AI 가 원고와 대본을 만들 때 쓰게 하는 데이터 기반을 만든다 — 파이프라인, 종목·기업·이벤트 관계 모델링과 검색용 구조, 데이터 정확성·최신성·출처 관리, 서비스 DB 운영(마이그레이션·인덱스·파티셔닝·백업·권한). 자격요건이 DB 운영에 무게를 둔다: RDB 모델링·인덱스·쿼리 튜닝·마이그레이션, 백업·복구·권한·모니터링, 중복·누락·증분 갱신·실패 재처리, 그리고 AI 코딩 도구 결과물의 정확성·보안·테스트 검증 경험. 금융 데이터(시세·뉴스·공시), pgvector·RAG, LLM 문서 추출, PostgreSQL 운영(VACUUM·복제)은 우대다. 전형은 서류접수 → AI Screening → 1차 → 2차 인터뷰 → 처우논의. 근무는 유연 출퇴근(7~11시 출근)·주 1회 재택이 가능하다고 공고가 적는다.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어링·데이터 중심 백엔드 5년 이상",
+          "파이프라인 개발·운영",
+          "RDB 모델링·인덱스·쿼리 튜닝·마이그레이션",
+          "운영 DB 백업·복구·권한·모니터링",
+          "API·DB·웹·파일 수집",
+          "중복·누락·증분·재처리 설계",
+          "유관 조직과 요구사항 구체화",
+          "AI 코딩 도구 결과물 검증"
+        ],
+        "can_learn": [
+          "금융 데이터(시세·뉴스·공시·보고서)",
+          "pgvector·RAG 파이프라인",
+          "LLM 문서 추출·분류·요약 검증",
+          "시계열·온톨로지 관계 모델링",
+          "Databricks·S3·Parquet",
+          "스케줄링·재시도·모니터링",
+          "AWS·Docker",
+          "PostgreSQL·RDS/Aurora 운영",
+          "민감 데이터 접근 통제·감사 로그"
+        ]
+      },
+      "study": [
+        {
+          "topic": "증분 수집과 실패 재처리 — 중복·누락 없이",
+          "from": "qualification",
+          "quote": "• 데이터 중복·누락, 증분 갱신 및 실패 재처리를 고려한 안정적인 처리 구조를 구현할 수 있으신 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무 첫 줄이 증시 데이터·뉴스·기업 자료 수집이다. 뉴스·공시는 계속 들어오고 수정본도 나와, 다시 돌려도 결과가 같아야 한다(추론).",
+          "gap_check": "뉴스 API 를 5분마다 긁을 때 마지막 수집 지점을 무엇으로 기억하고, 같은 기사가 수정돼 다시 오면 덮어쓸지 버전으로 남길지 어떻게 정하며, 중간 실패 후 재실행해도 중복이 생기지 않게 하려면 무엇(자연 키·upsert·멱등 키)을 두는가?",
+          "drill": "공개 뉴스 RSS 나 전자공시(DART) 목록을 주기적으로 수집해 PostgreSQL 에 upsert 하는 작업을 만들고, 중간에 강제로 죽인 뒤 재실행해 건수·중복을 확인하는 테스트를 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "전자공시시스템 DART",
+              "url": "https://dart.fss.or.kr/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Airflow — Documentation",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "종목·기업·이벤트 관계 모델링과 AI 검색 구조",
+          "from": "task",
+          "quote": "• 관계 모델링 및 검색 지원: 종목·기업·이벤트와 관련 자료를 연결하고, AI가 필요한 정보를 검색·활용할 수 있는 데이터 구조를 구축합니다.",
+          "priority": "core",
+          "why": "주요업무다. 우대에 'pgvector 등 벡터 검색 도구' 와 '온톨로지·지식 그래프를 위한 관계 모델링' 이 있다. AI 가 원고를 쓸 때 '이 종목과 관련된 최근 공시·뉴스' 를 정확히 찾아야 한다.",
+          "gap_check": "하나의 기업이 여러 종목코드·영문명·약칭을 가질 때 식별자를 어떻게 통합하고, 뉴스 기사와 종목을 연결하는 테이블을 어떻게 설계하며, 벡터 검색과 관계 조인을 한 질의에서 어떻게 섞는가?",
+          "drill": "기업·종목·이벤트(공시)·기사 네 테이블과 기사-종목 연결 테이블을 설계하고, pgvector 로 기사 임베딩을 넣은 뒤 '특정 종목의 최근 7일 기사 중 질문과 가까운 것' 을 한 쿼리로 찾는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "pgvector (GitHub)",
+              "url": "https://github.com/pgvector/pgvector",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "운영 DB 관리 — 마이그레이션·인덱스·파티셔닝·백업",
+          "from": "qualification",
+          "quote": "• 관계형 데이터베이스의 모델링, 인덱스 설계, 쿼리 성능 개선과 스키마 변경(마이그레이션) 운영 경험이 있으신 분",
+          "priority": "core",
+          "why": "자격요건 두 줄(모델링·인덱스·마이그레이션, 백업·복구·권한·모니터링)이 서비스 DB 운영이다. 우대에 PostgreSQL 파티셔닝·VACUUM·복제 운영이 있다.",
+          "gap_check": "수천만 행 기사 테이블에 컬럼을 추가하거나 인덱스를 만들 때 잠금을 피하려면 무엇(CONCURRENTLY·단계별 마이그레이션)을 쓰고, 날짜 파티셔닝으로 오래된 데이터를 어떻게 정리하며, 복구 연습은 어떻게 하는가?",
+          "drill": "위 기사 테이블을 월별 파티션으로 바꾸고, 운영 중 인덱스 추가(CONCURRENTLY)와 컬럼 추가를 단계별로 실행한 뒤, 백업에서 특정 시점으로 복구해 건수를 대조한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "PostgreSQL — Table Partitioning",
+              "url": "https://www.postgresql.org/docs/current/ddl-partitioning.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PostgreSQL — Routine Vacuuming",
+              "url": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PostgreSQL — Indexes",
+              "url": "https://www.postgresql.org/docs/current/indexes.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터의 정확성·최신성·출처 관리",
+          "from": "task",
+          "quote": "• 데이터 품질 및 운영 관리: 데이터의 정확성·최신성·출처를 관리하고, 처리 성능과 운영 안정성을 개선합니다.",
+          "priority": "high",
+          "why": "주요업무다. AI 가 만든 금융 원고에 틀린 숫자나 오래된 정보가 들어가면 문제가 커진다 — 회사가 Trust & Safety 조직을 따로 만들었다고 홈페이지가 적는다.",
+          "gap_check": "원고에 쓰인 숫자 하나가 어느 원천·어느 시점 데이터에서 왔는지 역추적할 수 있으려면 무엇(출처·수집 시각·버전 컬럼)을 남기고, 오래된 데이터가 AI 에 들어가지 않게 무엇으로 막는가?",
+          "drill": "위 테이블들에 출처·수집 시각·버전 컬럼을 추가하고, 신선도 기준을 넘긴 데이터를 검색에서 빼는 뷰와 품질 점검 쿼리(누락·중복·지연)를 만든다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "AI 코딩 도구 결과물 검증",
+          "from": "qualification",
+          "quote": "• AI 개발 도구(코딩 에이전트 등)를 실무에 활용하고, 생성된 결과물의 정확성·보안·테스트를 직접 검증한 경험이 있으신 분",
+          "priority": "high",
+          "why": "자격요건이다. 쓰는 것만이 아니라 '정확성·보안·테스트를 직접 검증한 경험' 을 묻는다.",
+          "gap_check": "코딩 에이전트가 만든 마이그레이션 SQL 이나 수집 코드를 운영에 넣기 전에 무엇(테스트 데이터 실행·실행 계획·권한 범위·비밀키 노출)을 확인하는가?",
+          "drill": "위 작업 중 하나를 코딩 에이전트로 만들게 하고, 검증 체크리스트로 결함을 찾아 고친 과정을 기록한다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공시·뉴스 증분 수집 + 종목 연결 + pgvector 검색 데모",
+          "why": "주요업무 세 줄(수집·관계 모델링·검색 지원)과 우대 둘(금융 데이터, pgvector)을 한 저장소로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "운영 DB 변경을 무중단으로 한 사례 정리",
+          "why": "자격요건이 DB 운영에 무게를 둔다. 마이그레이션·백업 복구 경험을 수치(테이블 크기·다운타임)로 적는다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류접수 → AI Screening → 1차 인터뷰 → 2차 인터뷰 → 처우논의 → 최종합격. 필요 시 사전 동의 후 레퍼런스 체크(공고 기준).",
+        "expect": [
+          "증분 수집·재처리 설계",
+          "관계 모델링과 검색 구조",
+          "운영 DB 무중단 변경",
+          "AI 도구 결과 검증 방식"
+        ],
+        "sources": [
+          {
+            "title": "Data Engineer (AI Content Platform)",
+            "url": "https://www.wanted.co.kr/wd/388893",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
