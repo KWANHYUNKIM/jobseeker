@@ -1,0 +1,226 @@
+{
+  "slug": "blue-garage",
+  "name": "블루개러지",
+  "name_en": "Blue Garage",
+  "aliases": [
+    "블루개러지"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": null,
+  "one_liner": "JYP Entertainment 자회사(구 JYP360) — 팬 커뮤니티·커머스 플랫폼 FANS 와 AI 아티스트(가상 아티스트)를 만든다",
+  "company": {
+    "business": "공고 머리말은 블루개러지를 **JYP Entertainment 의 자회사**로, 기술과 IP 의 융합으로 엔터테인먼트 경험을 새로 만들기 위해 설립됐고 **JYP360 에서 사명을 변경**해 IP 유통을 넘어 AI·플랫폼 중심으로 콘텐츠 제작과 팬 경험을 재정의하려 한다고 소개한다. 설립 4년 만의 연 매출은 원티드 공고가 **1,200억 원 이상**, 사람인 공고가 **900억 원 이상**으로 적는다(시점이 다른 문구로 보인다). 사업은 공고에서 두 갈래로 보인다 — **FANS**(팬 커뮤니티 플랫폼)와 **FANS SHOP**(굿즈 커머스, 다국어·국가별 가격·해외 배송), 아티스트 **라이브/채팅** / **AI사업실**의 **AI 아티스트** — 생성형 AI 로 비주얼·세계관을 만들고(AI Content Creator), LLM 으로 페르소나·장기 기억을 가진 대화를 만들며(LLM Engineer), 팬과 AI 아티스트가 채팅·AI 생성 음성/영상 통화로 만나는 신규 모바일 앱을 만든다(Full Stack). 회사 사이트는 찾지 못했다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI Artist / AI Content Creator",
+        "url": "https://www.wanted.co.kr/wd/388800",
+        "publisher": "원티드",
+        "summary": "머리말: JYP Entertainment 자회사, JYP360 에서 사명 변경, 설립 4년 만에 연 매출 1,200억 원 이상. AI사업실은 Creative·Engineering 부문이 협력해 AI 기반 새 유형 콘텐츠를 만든다"
+      },
+      {
+        "title": "FANS / 프론트엔드 개발자 (React Native)",
+        "url": "https://www.wanted.co.kr/wd/358349",
+        "publisher": "원티드",
+        "summary": "팬 커뮤니티 플랫폼(FANS)·커머스(FANS SHOP)·AI 아티스트 개발. 기여 도메인: 커뮤니티, 커머스(다국어·국가별 가격·해외 배송), 라이브/채팅"
+      },
+      {
+        "title": "AI Artist / LLM Engineer(3~5년)",
+        "url": "https://jumpit.saramin.co.kr/position/54900070",
+        "publisher": "점핏"
+      },
+      {
+        "title": "Software Engineer / Full Stack(9년~)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54900167&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=6ad92bf8-0849-4c07-8ba0-f0fefeef0616",
+        "publisher": "사람인",
+        "summary": "같은 머리말이지만 매출을 '연 900억 원 이상' 으로 적는다(원티드는 1,200억)"
+      }
+    ],
+    "scale": [
+      {
+        "label": "연 매출(공고 주장)",
+        "value": "1,200억 원 이상(원티드) / 900억 원 이상(사람인)",
+        "as_of": "2026-09 공고 기준, 기준 연도 미표기",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Artist / AI Content Creator",
+            "url": "https://www.wanted.co.kr/wd/388800",
+            "publisher": "원티드",
+            "summary": "머리말: JYP Entertainment 자회사, JYP360 에서 사명 변경, 설립 4년 만에 연 매출 1,200억 원 이상. AI사업실은 Creative·Engineering 부문이 협력해 AI 기반 새 유형 콘텐츠를 만든다"
+          },
+          {
+            "title": "Software Engineer / Full Stack(9년~)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54900167&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=6ad92bf8-0849-4c07-8ba0-f0fefeef0616",
+            "publisher": "사람인",
+            "summary": "같은 머리말이지만 매출을 '연 900억 원 이상' 으로 적는다(원티드는 1,200억)"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "팬 커머스(FANS SHOP)",
+        "how": "프론트엔드 공고가 팬 활동 굿즈를 글로벌로 판매하며 다국어·국가별 가격·해외 배송을 구현한다고 적는다. 매출 비중은 공고에 없다.",
+        "domains": [
+          "팬 커뮤니티·커머스 앱"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "FANS / 프론트엔드 개발자 (React Native)",
+            "url": "https://www.wanted.co.kr/wd/358349",
+            "publisher": "원티드",
+            "summary": "팬 커뮤니티 플랫폼(FANS)·커머스(FANS SHOP)·AI 아티스트 개발. 기여 도메인: 커뮤니티, 커머스(다국어·국가별 가격·해외 배송), 라이브/채팅"
+          }
+        ]
+      },
+      {
+        "name": "팬 커뮤니티·라이브(FANS)",
+        "how": "아티스트와 팬의 소통 커뮤니티, 아티스트가 직접 송출하는 라이브/채팅. 과금 방식(멤버십 등)은 공고에 없다.",
+        "domains": [
+          "팬 커뮤니티·커머스 앱"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "FANS / 프론트엔드 개발자 (React Native)",
+            "url": "https://www.wanted.co.kr/wd/358349",
+            "publisher": "원티드",
+            "summary": "팬 커뮤니티 플랫폼(FANS)·커머스(FANS SHOP)·AI 아티스트 개발. 기여 도메인: 커뮤니티, 커머스(다국어·국가별 가격·해외 배송), 라이브/채팅"
+          }
+        ]
+      },
+      {
+        "name": "AI 아티스트",
+        "how": "AI사업실이 생성형 AI 콘텐츠·LLM 대화·AI 음성/영상 통화 앱으로 AI 아티스트와 팬의 상호작용을 만든다. 신규 서비스라 수익 모델은 공고에 없다 — 개발 중인 사업으로 읽었다.",
+        "domains": [
+          "AI 아티스트 대화(LLM)",
+          "실시간 AI 통화 앱",
+          "생성형 AI 콘텐츠 제작"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Artist / LLM Engineer(3~5년)",
+            "url": "https://jumpit.saramin.co.kr/position/54900070",
+            "publisher": "점핏"
+          },
+          {
+            "title": "Software Engineer / Full Stack(3~5년)",
+            "url": "https://jumpit.saramin.co.kr/position/54900233",
+            "publisher": "점핏"
+          },
+          {
+            "title": "AI Artist / AI Content Creator",
+            "url": "https://www.wanted.co.kr/wd/388800",
+            "publisher": "원티드",
+            "summary": "머리말: JYP Entertainment 자회사, JYP360 에서 사명 변경, 설립 4년 만에 연 매출 1,200억 원 이상. AI사업실은 Creative·Engineering 부문이 협력해 AI 기반 새 유형 콘텐츠를 만든다"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "팬 커뮤니티·커머스 앱",
+        "why": "FANS 프론트엔드 공고가 React Native 크로스 플랫폼, 렌더링 성능, 커뮤니티·글로벌 커머스·라이브 채팅을 적는다.",
+        "what_to_know": [
+          "React Native 성능",
+          "다국어·다통화 커머스",
+          "실시간 채팅"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "FANS / 프론트엔드 개발자 (React Native)",
+            "url": "https://www.wanted.co.kr/wd/358349",
+            "publisher": "원티드",
+            "summary": "팬 커뮤니티 플랫폼(FANS)·커머스(FANS SHOP)·AI 아티스트 개발. 기여 도메인: 커뮤니티, 커머스(다국어·국가별 가격·해외 배송), 라이브/채팅"
+          }
+        ]
+      },
+      {
+        "name": "AI 아티스트 대화(LLM)",
+        "why": "LLM Engineer 공고가 페르소나 프롬프트, RAG·메모리 아키텍처(장기 기억), 저지연 챗봇 파이프라인, 채널별 응답 모듈, 품질 평가 체계를 적는다.",
+        "what_to_know": [
+          "RAG·장기 기억",
+          "저지연 스트리밍 응답",
+          "LLM 평가"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Artist / LLM Engineer(3~5년)",
+            "url": "https://jumpit.saramin.co.kr/position/54900070",
+            "publisher": "점핏"
+          }
+        ]
+      },
+      {
+        "name": "실시간 AI 통화 앱",
+        "why": "Full Stack 공고가 React Native 앱, 실시간 채팅과 AI 생성 음성/영상 스트리밍 통화, WebSocket/WebRTC, AI 추론 파이프라인 연동을 적는다.",
+        "what_to_know": [
+          "WebRTC",
+          "실시간 백엔드",
+          "TTS·LLM 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Software Engineer / Full Stack(3~5년)",
+            "url": "https://jumpit.saramin.co.kr/position/54900233",
+            "publisher": "점핏"
+          },
+          {
+            "title": "Software Engineer / Full Stack(9년~)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54900167&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=6ad92bf8-0849-4c07-8ba0-f0fefeef0616",
+            "publisher": "사람인",
+            "summary": "같은 머리말이지만 매출을 '연 900억 원 이상' 으로 적는다(원티드는 1,200억)"
+          }
+        ]
+      },
+      {
+        "name": "생성형 AI 콘텐츠 제작",
+        "why": "AI Content Creator 공고가 생성형 AI 로 컨셉 포토·숏폼·댄스/챌린지 콘텐츠를 만들고 AI 아티스트의 얼굴·스타일·세계관 일관성을 유지한다고 적는다.",
+        "what_to_know": [
+          "이미지·영상 생성 모델",
+          "캐릭터 일관성"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Artist / AI Content Creator",
+            "url": "https://www.wanted.co.kr/wd/388800",
+            "publisher": "원티드",
+            "summary": "머리말: JYP Entertainment 자회사, JYP360 에서 사명 변경, 설립 4년 만에 연 매출 1,200억 원 이상. AI사업실은 Creative·Engineering 부문이 협력해 AI 기반 새 유형 콘텐츠를 만든다"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "엔터 IP 회사가 'AI 아티스트' 를 제품으로 만든다",
+        "evidence": "AI 아티스트가 일관된 페르소나를 유지하며 팬들과 의미있는 상호작용",
+        "so_what": "LLM·풀스택·콘텐츠 크리에이터를 한꺼번에 뽑고, 9년 이상 풀스택 공고는 기술뿐 아니라 팬 경험·콘텐츠 가치를 리드할 사람을 찾는다. 신규 서비스 초기 멤버 자리로 읽힌다 — 출시 일정과 팀 규모를 면접에서 묻는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "매출 문구가 공고마다 다르다",
+        "evidence": "설립 4년 만에 연 매출 900억 원 이상",
+        "so_what": "같은 머리말이 원티드에서는 1,200억, 사람인에서는 900억이다. 한쪽이 옛 문구로 보이지만 어느 해 기준인지 공고에 없다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "회사 사이트를 찾지 못했다(bluegarage 도메인 응답 없음)",
+    "매출 900억/1,200억 문구의 기준 연도",
+    "AI 아티스트 서비스의 출시 여부와 수익 모델",
+    "FANS 멤버십 등 과금 방식",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

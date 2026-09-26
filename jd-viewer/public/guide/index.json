@@ -822,6 +822,17 @@
       "postings": 8,
       "study_items": 27,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "blue-garage",
+      "name": "블루개러지",
+      "aliases": [
+        "블루개러지"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
