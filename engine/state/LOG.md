@@ -2388,3 +2388,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Gakken LEAP 수익원 보류
 
 - 그룹 개발 지원 · 벤처 투자. 검색 1: RSS 20편 + 글 목록 2쪽 — 해당 없음. 검색 2: Zenn 검색 4낱말 — 0건. hold_reason 하나에 둘을 적고 in_progress 유지.
+
+## 2026-09-27 101번째 후보 조사
+
+- Zenn 검색 새 주제어 15개 × 2쪽 → RSS 6곳 → 본문 4편. 대기 3/3(iCARE · e-dash · atama plus). atama plus 는 88번째에 걸렀던 곳이지만 AI 스텝 해설 정식판 · 플랫폼 연재가 새 단서.
