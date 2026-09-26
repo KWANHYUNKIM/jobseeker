@@ -5,7 +5,7 @@
   "country": "기타",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-07",
+  "updated_at": "2026-09-26",
   "domain": "electric.ax",
   "one_liner": "동기화를 부품으로 파는 회사 — 읽기를 CDN 으로 밀어내 데이터베이스 부하를 평평하게 두는 쪽에 걸었다",
   "business_model": "동기화를 **조합할 수 있는 부품**으로 판다 — Sync Engine, Electric Agents, Electric Streams, Electric Circuits, 그리고 브라우저에서 도는 포스트그레스 PGlite.\n\n값은 **Electric Cloud** 의 사용량 기반이었다. **그런데 2026년 8월 11일 데이터브릭스 합류를 발표하며 클라우드를 접는다고 밝혔다** — 쓰던 사람은 스스로 호스팅하거나 다른 제공자로 옮겨야 한다. 오픈소스(Postgres Sync·PGlite·TanStack DB·Durable Streams)는 Apache 2.0 으로 그대로 남는다.\n\n기술 주장이 사업 모델과 붙어 있다 — **동시 독자 100만 이상, CDN 캐시 적중률 99%, 규모가 커져도 데이터베이스 부하는 평평하게.** 파는 것이 '읽기를 데이터베이스 밖으로 밀어내는 방법'이라는 뜻이다(재구성).",
