@@ -428,6 +428,161 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/353123",
+      "title": "[ESTsecurity] 시스템 엔지니어 10년 이상",
+      "site": "wanted",
+      "verdict": "경력 10년 이상('상기 관련 업무 경력을 10년 이상 갖춘 분'). 공고 머리말은 이스트시큐리티 소개지만 첫 주요업무가 '이스트그룹사 서비스의 IT인프라 구축 및 운영' 이라 한 제품이 아니라 **그룹 계열사 서비스 전체의 인프라**를 맡는 자리다. 범위는 Public Cloud 와 On-Premise, Linux(CentOS/Rocky/Ubuntu), 컨테이너(쿠버네티스/도커), CI/CD(Jenkins/Argo), 그리고 서비스 로그·메트릭·비즈니스 데이터를 모으는 데이터레이크 인프라까지다. 필수는 대용량 트래픽 대규모 시스템 운영, **검색시스템 운영과 빅데이터 시스템 경험**, Linux 운영, Public Cloud(AWS/Azure/GCP), 모니터링(Zabbix/Prometheus/Grafana) 구축·운영, 네트워크·보안 기본 지식. 우대는 IDC·H/W 장비, IaC(Terraform, Ansible, Puppet), Shell Script·Python·Go, RDBMS(MySQL/MariaDB)·No-SQL 운영. 전형: 서류심사 → 실무진인터뷰 → 인성검사 → 최종인터뷰 → 처우협의 → 최종합격, 수시 채용.",
+      "fit": {
+        "must_have": [
+          "대용량 트래픽 대규모 시스템 운영 10년 이상",
+          "검색시스템·빅데이터 시스템 운영",
+          "Linux(CentOS/Rocky/Ubuntu)",
+          "Public Cloud(AWS/Azure/GCP)",
+          "Zabbix/Prometheus/Grafana"
+        ],
+        "can_learn": [
+          "IDC·H/W 장비",
+          "IaC(Terraform, Ansible, Puppet)",
+          "Shell Script·Python·Go",
+          "MySQL/MariaDB·No-SQL 운영"
+        ]
+      },
+      "study": [
+        {
+          "topic": "클라우드·온프레미스를 함께 쓰는 쿠버네티스 운영",
+          "from": "task",
+          "quote": "- 컨테이너(쿠버네티스/도커) 시스템 구축 및 운영",
+          "priority": "core",
+          "why": "주요업무이고 바로 앞 줄이 'Public Cloud & On-Premise 인프라 시스템 구축 및 운영 관리' 다. 대상이 이스트그룹사 서비스 전체다.",
+          "gap_check": "같은 서비스를 퍼블릭 클라우드의 관리형 쿠버네티스와 IDC 의 자체 클러스터에 나눠 띄울 때, 스토리지(PV)와 로드밸런서는 각각 무엇으로 대신하고, 노드 하나가 죽으면 파드가 옮겨 가는지 어떻게 확인하는가?",
+          "drill": "VM 세 대(Rocky Linux)에 kubeadm 으로 클러스터를 올리고 스테이트리스 앱을 띄운 뒤, 노드 하나를 끄고 파드가 다른 노드로 옮겨지는 데 걸린 시간을 kubectl get pods -w 로 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Overview | Kubernetes",
+              "url": "https://kubernetes.io/docs/concepts/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Rocky Linux Documentation",
+              "url": "https://docs.rockylinux.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Jenkins 빌드 + Argo 배포로 나눈 CI/CD",
+          "from": "task",
+          "quote": "- CI/CD(Jenkins/Argo) 플랫폼 운영 및 개선",
+          "priority": "core",
+          "why": "주요업무다. 두 도구가 나란히 적혀 있어 빌드와 배포를 나눠 쓰는 구성으로 읽힌다.",
+          "gap_check": "Jenkins 가 이미지를 빌드해 레지스트리에 올린 뒤 Argo CD 가 배포하게 하려면 둘을 무엇(매니페스트 저장소의 이미지 태그 커밋)으로 잇고, 잘못된 배포는 Argo CD 에서 어떻게 되돌리는가?",
+          "drill": "Jenkinsfile 로 이미지를 빌드·푸시하고 매니페스트 저장소의 태그를 올리는 커밋까지 자동화한 뒤, Argo CD 가 그 커밋을 동기화하는지 보고 이전 리비전으로 롤백해 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Pipeline (Jenkins User Documentation)",
+              "url": "https://www.jenkins.io/doc/book/pipeline/",
+              "kind": "docs"
+            },
+            {
+              "title": "Argo CD - Declarative GitOps CD for Kubernetes",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "검색시스템 클러스터 운영",
+          "from": "qualification",
+          "quote": "- 검색시스템 운영경험이 있고, 빅데이터 시스템에 대한 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 요건이다. 주요업무의 데이터레이크가 서비스 로그·메트릭을 통합 수집한다.",
+          "gap_check": "검색 클러스터에서 노드 하나가 빠지면 샤드와 레플리카가 어떻게 재배치되고, 클러스터 상태가 yellow 와 red 일 때 각각 무엇을 잃은 것인가?",
+          "drill": "Elasticsearch(또는 OpenSearch) 노드 세 개를 도커로 띄워 인덱스를 샤드 3·레플리카 1 로 만들고, 노드 하나를 멈춘 뒤 _cluster/health 와 _cat/shards 로 상태 변화를 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Distributed architecture | Elastic Docs",
+              "url": "https://www.elastic.co/docs/deploy-manage/distributed-architecture",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenSearch documentation and user guides",
+              "url": "https://opensearch.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "로그·메트릭 데이터레이크 인프라",
+          "from": "task",
+          "quote": "- 서비스 로그, 메트릭, 비즈니스 데이터의 통합 수집을 위한 데이터레이크 인프라 구축 및 운영",
+          "priority": "high",
+          "why": "주요업무이고 필수에 빅데이터 시스템 경험이 있다.",
+          "gap_check": "로그를 검색용(최근 며칠, 빠른 조회)과 보관·분석용(몇 년, 싼 저장소)으로 나눌 때 각각 어디에 두고, 오브젝트 스토리지 위의 로그를 테이블처럼 조회하려면 무엇(테이블 포맷·파티션)이 필요한가?",
+          "drill": "Loki 로 컨테이너 로그를 모아 Grafana 에서 조회하고, 같은 로그를 날짜 파티션으로 오브젝트 스토리지(MinIO)에 떨궈 Iceberg 테이블로 묶는 구성을 그림 한 장과 보관 기간 표로 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Grafana Loki documentation",
+              "url": "https://grafana.com/docs/loki/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction - Apache Iceberg",
+              "url": "https://iceberg.apache.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Zabbix·Prometheus·Grafana 모니터링",
+          "from": "qualification",
+          "quote": "- 모니터링 솔루션(Zabbix/Prometheus/Grafana) 구축 및 운영 경험이 있으신 분",
+          "priority": "high",
+          "why": "필수 요건이고, 대상이 클라우드와 온프레미스 양쪽이다.",
+          "gap_check": "IDC 의 물리 서버·네트워크 장비는 Zabbix 로, 쿠버네티스 워크로드는 Prometheus 로 볼 때 알림 기준을 어떻게 한곳에 모으고, Prometheus 가 풀(pull) 방식이라 생기는 제약은 무엇인가?",
+          "drill": "Prometheus + node_exporter + Grafana 로 VM 세 대의 CPU·디스크 대시보드와 디스크 90% 알림을 만들고, 같은 알림을 Zabbix 에이전트로도 걸어 두 도구의 설정량을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Overview | Prometheus",
+              "url": "https://prometheus.io/docs/introduction/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Zabbix User manual",
+              "url": "https://www.zabbix.com/documentation/current/en/manual",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IaC — Terraform 과 Ansible",
+          "from": "preference",
+          "quote": "- IaC(Terraform, Ansible, Puppet) 를 통한 자동화 업무가 능숙하고 운영 경험이 있으신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 인프라 범위가 클라우드와 온프레미스 양쪽이라 자원 생성과 서버 설정을 코드로 남길 일이 많다.",
+          "gap_check": "Terraform 과 Ansible 의 역할을 '자원을 만든다' 와 '안을 설정한다' 로 나눠 설명할 수 있고, Terraform state 파일을 여러 사람이 쓸 때 무엇으로 잠그는가?",
+          "drill": "Terraform 으로 클라우드 VM 두 대를 만들고 Ansible 플레이북으로 node_exporter 를 설치한 뒤, 플레이북을 두 번 돌려 두 번째에 changed=0 인지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "What is Terraform",
+              "url": "https://developer.hashicorp.com/terraform/intro",
+              "kind": "docs"
+            },
+            {
+              "title": "Getting started with Ansible",
+              "url": "https://docs.ansible.com/ansible/latest/getting_started/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
