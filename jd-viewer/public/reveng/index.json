@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "물류 DX 의 Hacobu(MOVO) — 로그인 화면의 장애 배너는 자작 대신 Datadog 폼으로 비개발자에게 넘기고 S3 파일 하나를 최후의 수단으로 남기며, 트럭 예약 화면의 프런트엔드는 기능 간 의존을 규약 문서가 아니라 CI 가 막는다",
       "updated_at": "2026-09-26",
       "domain": "hacobu.jp"

@@ -1632,3 +1632,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Hacobu 회사 프로파일
 
 - 회사 페이지(MOVO·Strategy·Solution Studio·Career)와 Zenn 두 편(점검 배너 Datadog Forms · MOVO Berth 프런트 템플릿 CI 강제). 피드 20편에 물류 도메인 로직 글 없음 — 사내 AI 글이 대부분. 도메인 둘, 기능 0.
+
+## 2026-09-26 Hacobu 점검 배너 스위치
+
+- 결정 6 — 자작 대신 Datadog Forms+Workflow·S3 무인증 JSON+CloudFront 무효화·S3 손 편집 대체 경로·Service Account·전용 Okta 그룹·실패 Slack 통지.

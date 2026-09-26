@@ -114,7 +114,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "maintenance-banner-datadog-forms"
+      ]
     },
     {
       "name": "기능 패키지의 경계를 규약 대신 CI 가 지킨다",
@@ -139,7 +141,330 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "maintenance-banner-datadog-forms",
+      "name": "점검 배너의 스위치를 자작 관리 화면 대신 Datadog 폼에 두고, 프런트는 인증 없는 S3 파일 하나만 읽게 해 Datadog 이 죽어도 손으로 켤 길을 남긴다",
+      "domain": "장애 공지 스위치를 비개발자 손에 쥐여 준다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "장애가 나면 MOVO 로그인 화면에 '현재 장애가 발생하고 있습니다' 같은 배너를 **빨리** 띄워야 한다. 그 스위치를 엔지니어만 누를 수 있으면, 고객 문의를 먼저 받는 비즈니스 멤버가 엔지니어를 기다리게 된다.\n\n요건은 보기보다 많다 — ① 화면·폼에서 쉽게, **PR 이 필요한 절차는 피한다** ② 장애 때 빨리 반영 ③ ON/OFF 상태 저장 ④ 프런트가 **인증 없이** 읽기(인증이 필요하면 취득이 번거롭다) ⑤ 제한된 멤버만 조작 ⑥ 조작하면 Slack 통지 ⑦ 누가 언제 켰는지 이력. 전부 자작하면 조작 UI·상태 저장·권한·통지·이력을 다 만들어야 한다.",
+        "metrics": [
+          {
+            "label": "반영 시간",
+            "value": "폼 송신 → 프런트 반영 약 25초(실측)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          },
+          {
+            "label": "채운 요건",
+            "value": "7(조작성 · 속도 · 저장 · 무인증 취득 · 권한 · 통지 · 이력)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "Form 무료 · Workflow 100회당 $14(온디맨드) — 전환이 드물어 사실상 무료",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "자작할지 볼 때",
+          "thought": "요건을 전부 자작하면 조작 UI·상태 저장·권한 관리·통지·이력 기록까지 필요하다 — Datadog 의 Forms 와 Workflow Automation 을 조합하면 전용 UI 도 백엔드 API 도 새로 안 만들어도 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+              "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+              "publisher": "Hacobu Tech Blog (Zenn)",
+              "date": "2026-07-19",
+              "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+            }
+          ]
+        },
+        {
+          "at": "실패를 볼 때",
+          "thought": "실패를 눈치채지 못하면 **바꾼 줄 알았는데 안 바뀐 상태**가 이어진다 — Workflow 실패 알림을 반드시 켜 둔다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+              "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+              "publisher": "Hacobu Tech Blog (Zenn)",
+              "date": "2026-07-19",
+              "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+            }
+          ]
+        },
+        {
+          "at": "의존을 볼 때",
+          "thought": "배너는 장애 대응 중에 띄우는 것이라 Datadog 에만 기대면 불안이 남는다. 하지만 프런트가 보는 것은 S3 의 JSON 뿐이니 Datadog 이 불안정하면 파일을 손으로 바꾸면 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+              "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+              "publisher": "Hacobu Tech Blog (Zenn)",
+              "date": "2026-07-19",
+              "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+            }
+          ]
+        },
+        {
+          "at": "누구에게 넘길지 볼 때",
+          "thought": "사내 누군가에게 **작은 조작을 안전하게** 제공하고 싶은 장면이라면 이 조합을 선택지에 넣어 볼 만하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+              "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+              "publisher": "Hacobu Tech Blog (Zenn)",
+              "date": "2026-07-19",
+              "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "점검 표시 상태 JSON",
+            "what": "정적 리소스 배포용 S3 버킷에 놓인 ON/OFF 파일. 로그인 화면이 CloudFront 경유로 인증 없이 읽는다."
+          },
+          {
+            "name": "Datadog Form",
+            "what": "조작 UI. 표시·응답 권한을 제한하고, Responses 화면이 그대로 조작 이력이 된다."
+          },
+          {
+            "name": "Workflow",
+            "what": "폼 송신을 트리거로 S3 PUT → CloudFront 무효화 → Slack 통지를 돌리는 본체."
+          },
+          {
+            "name": "Service Account",
+            "what": "Workflow 실행 주체. 작성자의 퇴직·권한 변경에 흔들리지 않게 한다(Workflows Run · Connections Resolve 권한)."
+          },
+          {
+            "name": "Connection",
+            "what": "Workflow 가 AWS 를 조작할 IAM Role. Datadog 이 AssumeRole 할 Trust Policy 가 필요하다."
+          },
+          {
+            "name": "Okta 전용 그룹",
+            "what": "SAML Group Mapping 으로 배너 전환용 Datadog Role 에 대응. 멤버 교체로 조작 가능자를 관리한다."
+          }
+        ],
+        "invariants": [
+          "프런트는 **S3 의 상태 JSON 하나만** 본다 — 그래서 Datadog 없이도 전환할 수 있다.",
+          "상태를 바꿀 때마다 CloudFront 캐시를 지운다 — 안 지우면 낡은 상태가 계속 보인다.",
+          "배너를 켜고 끌 수 있는 사람은 전용 Okta 그룹 멤버뿐이다.",
+          "모든 전환은 Slack 에 '누가' 를 남기고, 실패도 Slack 에 알린다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "전용 Okta 그룹 멤버가 Datadog Form 을 열어 ON/OFF 를 골라 송신한다",
+            "why": "PR 없이, 비개발자도."
+          },
+          {
+            "step": "폼 송신이 Workflow Automation 을 기동하고 응답 내용을 다음 단계로 넘긴다",
+            "why": "코드 없이 트리거."
+          },
+          {
+            "step": "Service Account 로 Connection(IAM Role)을 풀어 S3 에 상태 JSON 을 PUT 한다",
+            "why": "작성자 권한에 안 기댄다."
+          },
+          {
+            "step": "CloudFront 캐시를 무효화한다",
+            "why": "캐시 비헤이비어가 켜져 있다."
+          },
+          {
+            "step": "Slack 에 누가 ON/OFF 했는지 알린다(실패면 실패를 알린다)",
+            "why": "주지 · 조용한 실패 방지."
+          },
+          {
+            "step": "로그인 화면이 CloudFront 경유로 JSON 을 읽어 배너를 띄운다 — 약 25초",
+            "why": "인증 없이."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "스위치 UI 를 무엇으로?",
+            "chosen": "**조작 UI·상태 저장·권한·통지·이력을 자작하는 대신 Datadog Forms + Workflow Automation 조합.**",
+            "alternatives": [
+              "사내 관리 화면과 백엔드 API 자작",
+              "PR 로 설정 파일 변경"
+            ],
+            "tradeoff": "전용 UI·API 없이 7 요건을 채우고 거의 무료. 대가 — 장애 도구가 **외부 SaaS(Datadog)에 의존**하고, IAM Trust Policy·Resolver 권한 같은 설정 걸림돌을 넘어야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          },
+          {
+            "question": "상태를 어디에 두고 프런트는 어떻게 읽나?",
+            "chosen": "**정적 리소스용 S3 버킷의 JSON 을 CloudFront 로 인증 없이 배포.**",
+            "alternatives": [
+              "인증이 필요한 API 로 상태 조회"
+            ],
+            "tradeoff": "로그인 전 화면에서 번거로움 없이 읽는다. 대가 — 캐시가 켜진 경로라 매번 **무효화**가 필요하고 반영에 약 25초가 걸린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          },
+          {
+            "question": "Datadog 이 장애 중 불안정하면?",
+            "chosen": "**프런트가 S3 JSON 만 보므로 S3 파일을 손으로 고친다.**",
+            "alternatives": [
+              "Datadog 의존을 받아들인다",
+              "이중 경로를 자작"
+            ],
+            "tradeoff": "도구가 죽어도 배너는 켠다. 대가 — 수동 경로는 권한 제어·Slack 통지·이력을 거치지 않는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          },
+          {
+            "question": "Workflow 를 누구 권한으로 돌리나?",
+            "chosen": "**작성자 대신 전용 Role 을 단 Service Account 로 실행.**",
+            "alternatives": [
+              "기본값 — 작성자 권한"
+            ],
+            "tradeoff": "작성자의 퇴직·권한 변경에 워크플로가 안 흔들린다. 대가 — Role·Service Account·Connection 의 Resolver 권한까지 따로 설정해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          },
+          {
+            "question": "누가 켤 수 있나?",
+            "chosen": "**Okta SAML Group Mapping 으로 전용 Okta 그룹 → 전용 Datadog Role → 폼 표시·응답 권한.**",
+            "alternatives": [
+              "기존 Okta 그룹 재사용"
+            ],
+            "tradeoff": "조작 가능자를 좁게 묶고 멤버 교체로 관리한다. 대가 — 그룹 하나를 따로 운영한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          },
+          {
+            "question": "조용한 실패를 어떻게 막나?",
+            "chosen": "**Workflow 실패 시 Slack 통지를 설정하고, 성공 때도 누가 바꿨는지 Slack 에 남긴다.**",
+            "alternatives": [
+              "폼 응답 이력만 본다"
+            ],
+            "tradeoff": "'바꾼 줄 알았는데 안 바뀐' 상태를 눈치챈다. 대가 — 통지 채널 소음이 조금 는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+                "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+                "publisher": "Hacobu Tech Blog (Zenn)",
+                "date": "2026-07-19",
+                "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "기능 패키지의 경계를 규약 대신 CI 가 지킨다(같은 회사의 다른 도메인)",
+          "via": "사람 대신 도구에 맡기는 규칙",
+          "contract": "배너는 '누가 켤 수 있나·누가 켰나' 를 Okta 그룹과 Datadog 이력에, 프런트 템플릿은 '어디서 무엇을 import 해도 되나' 를 CI 에 맡긴다 — 둘 다 사람의 기억 대신 도구가 규칙을 쥔다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "폼 송신에서 배너까지",
+          "question": "스위치를 누르면 무엇이 어떤 순서로 도나?",
+          "kind": "flow",
+          "code": "sequenceDiagram\n  participant U as 비즈니스 멤버(Okta 그룹)\n  participant F as Datadog Form\n  participant W as Workflow(Service Account)\n  participant S as S3 상태 JSON\n  participant C as CloudFront\n  participant K as Slack\n  participant L as 로그인 화면\n  U->>F: ON / OFF 송신\n  F->>W: 트리거\n  W->>S: PUT\n  W->>C: 캐시 무효화\n  W->>K: 누가 바꿨나\n  L->>C: JSON 취득(인증 없음)\n  C-->>L: 새 상태 — 약 25초"
+        },
+        {
+          "title": "배너의 두 상태와 두 길",
+          "question": "배너는 어떤 경로로 켜지고 꺼지나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> OFF\n  OFF --> ON: Form → Workflow\n  ON --> OFF: Form → Workflow\n  OFF --> ON: Datadog 불안정 — S3 손 편집\n  ON --> OFF: S3 손 편집"
+        },
+        {
+          "title": "스위치가 안 먹는 자리",
+          "question": "켰는데 안 보이는 경우는 어디서 생기나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"Trust Policy 없음\"] --> B[\"AssumeRole 실패 → Workflow 실패\"]\n  C[\"Resolver 권한 없음\"] --> D[\"Connection 을 못 풂\"]\n  E[\"캐시 무효화 누락\"] --> F[\"낡은 상태가 계속 보임\"]\n  G[\"작성자 퇴직 · 권한 변경\"] --> H[\"Service Account 로 막음\"]\n  I[\"Workflow 실패를 모름\"] --> J[\"바꾼 줄 알았는데 그대로 — Slack 실패 통지\"]\n  K[\"장애 중 Datadog 불안정\"] --> L[\"S3 손 편집 — 통지 · 이력 없음\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+          "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+          "publisher": "Hacobu Tech Blog (Zenn)",
+          "date": "2026-07-19",
+          "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "과금 구조·매출 비중을 1차 자료로 확인하지 못했다.",
     "트럭 예약 접수(MOVO Berth)의 예약 슬롯·동태 관리(MOVO Fleet)의 위치 데이터 같은 물류 도메인 로직 글은 아직 못 찾았다.",
