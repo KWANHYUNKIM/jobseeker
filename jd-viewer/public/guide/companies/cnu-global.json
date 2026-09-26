@@ -191,6 +191,87 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55099954",
+      "title": "HW개발자 채용(10년이상)",
+      "site": "jumpit",
+      "verdict": "경력 10~20년, 경기 성남시 분당구 판교. **하드웨어 개발자**다 — 주요업무는 세 줄, **MCU/Processor 기반 하드웨어 설계**, **시제품 제작 및 검증**, **인증 및 신뢰성 시험**. 자격은 **PADS/OrCAD**, 전기전자 학사 이상, 경력 10년 이상. 기술스택 표기에 Embedded Linux·Network 가 있다. 회사 소개(사람인)상 대상 제품은 자체 PLC 칩 기반 **원격검침·에너지 관리 장비**로 읽힌다 — 옥외·배전반에 붙는 장비라 인증(전자파 등)과 장기 신뢰성이 설계의 큰 몫이다(추론). 같은 본문의 5~10년 공고(55099919)가 따로 있다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "MCU/Processor 보드 설계 10년",
+          "PADS/OrCAD",
+          "전기전자 학사"
+        ],
+        "can_learn": [
+          "전력선통신 회로",
+          "EMC 대책",
+          "Embedded Linux 보드 브링업"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MCU/Processor 보드 설계 — 회로도에서 PCB 까지",
+          "from": "task",
+          "quote": "• MCU/Processor 기반 하드웨어 설계",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 자격요건이 PADS/OrCAD 를 요구한다.",
+          "gap_check": "MCU 단독 보드와 Embedded Linux 가 도는 프로세서 보드는 전원 시퀀스·메모리(DDR) 배선·부트 설정에서 무엇이 달라지는가? 전원·접지 설계와 부품 배치가 노이즈·발열에 주는 영향을 설명하고, 양산을 고려한 설계(시험 포인트·부품 수급)는 어디서 반영하는가?",
+          "drill": "마이크로컨트롤러·PCB 문서를 읽고, OrCAD(또는 KiCad)로 MCU + 전원부 + 통신 인터페이스(RS-485 등) 회로도를 그리고 2층 PCB 로 배치·배선한다. 시험 포인트와 부품 대체품 목록을 설계 문서에 함께 남긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Microcontroller — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Microcontroller",
+              "kind": "docs"
+            },
+            {
+              "title": "Printed circuit board — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Printed_circuit_board",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인증 시험 — 전자파 적합성(EMC)",
+          "from": "task",
+          "quote": "• 인증 및 신뢰성 시험",
+          "priority": "core",
+          "why": "주요업무다. 전력선에 붙는 장비는 전도·방사 노이즈와 서지에 노출된다.",
+          "gap_check": "EMC 의 방출(emission)과 내성(immunity) 시험은 각각 무엇을 보고, 전력선에 연결되는 장비에서 전도 방출·서지·ESD 대책은 회로의 어디(입력 필터·보호 소자·접지)에 들어가는가? 인증에서 떨어졌을 때 어떤 순서로 원인을 좁히는가?",
+          "drill": "전자파 적합성 문서를 읽고, 위 보드의 전원 입력단에 넣을 필터·서지 보호 구성과 그 이유를 정리한다. 인증 불합격(특정 주파수 방출 초과) 가정 시 원인 추적 체크리스트(클럭·배선·케이블·접지)를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Electromagnetic compatibility — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Electromagnetic_compatibility",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "시제품 검증과 신뢰성 시험",
+          "from": "task",
+          "quote": "• 인증 및 신뢰성 시험",
+          "priority": "high",
+          "why": "주요업무 두 줄(시제품 검증, 인증·신뢰성 시험)이다.",
+          "gap_check": "시제품 검증에서 기능·전기 특성·환경(온도·습도) 시험을 어떤 순서로 하고, 가속 수명 시험은 짧은 시간에 무엇을 드러내려는 것인가? 옥외·배전반 장비라면 어떤 스트레스를 우선 시험하는가?",
+          "drill": "가속 수명 시험·시험 용이성 설계 문서를 읽고, 원격검침 단말(가정) 시제품의 검증 계획표(시험 항목·조건·합격 기준·표본 수)를 작성한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Highly accelerated life test — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Highly_accelerated_life_test",
+              "kind": "docs"
+            },
+            {
+              "title": "Design for testing — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Design_for_testing",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
