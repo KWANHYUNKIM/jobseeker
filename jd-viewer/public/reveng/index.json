@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "건설 전문 AI 에이전트 KENCOPA — 설계 도서에서 공정표를 15분에 만드는 에이전트는 수백 액티비티·계층 보카케·수천 수량의 연결을 워크플로 → 동시 연결 → 오케스트레이터 → 서브에이전트로 네 번 다시 짰고, PDF 표 해석은 VLM 에 통째로 맡기지 않고 표 구조는 변환 도구에, 의미는 VLM 에 나눈다",
       "updated_at": "2026-09-26",
       "domain": "kencopa.com"
