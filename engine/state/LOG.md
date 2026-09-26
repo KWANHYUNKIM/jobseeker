@@ -2223,3 +2223,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 DMM TV 추천 지표 해킹 탈피
 
 - `strategic-search-rec-3` 으로 기능 `dmmtv-u2i-without-metric-hack`, 결정 8. `cd39329518990d`(네거티브 A/B)는 검색 팀 글이라 결정이 아니라 connections 의 근거로 붙였다.
+
+## 2026-09-27 DMM 완주
+
+- --gaps 는 신규를 가리켰지만 완주 판정이 먼저. 완주 기준 셋 — 도메인 둘 다 기능 1 · 두 기능이 서로 connections(카니발) · 수익원 둘 다 confirmed.
