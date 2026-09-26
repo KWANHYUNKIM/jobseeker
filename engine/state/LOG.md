@@ -1232,3 +1232,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Picnic 확장 — 쓰이는 입도로 예측하고, 쓰이는 입도로 잰다
 
 - signal-vs-noise 글(01-27)로 `coarse-as-you-can`(결정 5). 반나절 → 일 단위 전환(데이터셋 절반·과소 예측 개선)이 중심. 반나절 분할의 대가와 관제와의 연결은 해석 표시.
+
+## 2026-09-26 Picnic 확장 — 재고 토트를 카메라로 센다
+
+- 비전 1부·2부(2025-10-09)로 `count-stock-with-mllm`(결정 8). 2D·클라우드 MLLM·WCS 라벨·3등분·MMMU 거르기·규칙 countability·Flash LoRA·검증 토트. 정확도 절대값은 글에 없어 open_questions.

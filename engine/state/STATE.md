@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**Picnic — 기능 1(`coarse-as-you-can`, 2026-09-26). 다음은 확장: '토트 속을 보는 비전 검수' 를 1부(scratchpad `pk_adding-eyes-to-picnics-automated-warehouses.txt`, 다 읽음)와 2부(`pk_...-part-2.txt`, 아직 안 읽음 — CountGD 대 Gemini 비교 결과)로. 그 뒤 '자동화 물류센터 관제'(control center 글, 뒷부분 마저). 대기가 비어 큐 0/3 — Picnic 을 판 뒤 후보 조사. 비전 1부 날짜는 r.jina 가 2022-04-04 로 잘못 줘 큐 기록(2025-06-11)을 썼다.**
+**Picnic — 기능 2(`coarse-as-you-can` · `count-stock-with-mllm`, 2026-09-26). 다음은 확장: '자동화 물류센터 관제' 를 control center 글(scratchpad `pk_our-vision-of-building-an-intelligent-control-center-for-fulfilment.txt` — dbt/RabbitMQ 까지 읽음, 뒷부분의 결과·장기 비전은 마저)로. 그러면 세 도메인이 다 차고 수익원은 하나(식료품 판매, 세 도메인 연결)라 완주 판정. 대기가 비어 큐 0/3 — 그 뒤 후보 조사.**
+
 
 
 
