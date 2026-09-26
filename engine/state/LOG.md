@@ -2480,3 +2480,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 助太刀 Flutter 재작성
 
 - `20260729-b6b211dbe7ef` 전문 + `e5c9cdd085bb40` 후반으로 기능 `flutter-rewrite-ai-architecture`, 결정 8. 검색 기능과 connections(inferred).
+
+## 2026-09-27 助太刀 助太刀社員 수익원 보류
+
+- 지난 STATE 의 '목록 3쪽 제목 기준 확인'은 실제로는 검색 낱말로만 거른 것이라, 이번에 공개 글 30편(4쪽) 제목을 전수로 다시 확인했다 — 구인 글 없음. 둘째 Zenn 검색 3낱말 · shain 사이트도 없음 → hold_reason.

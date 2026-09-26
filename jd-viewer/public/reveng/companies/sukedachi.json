@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "기타",
   "status": "in_progress",
+  "hold_reason": "수익원 '助太刀社員(건설업 구인 게재 · 스카우트)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-27 — 첫째 Zenn Publication 공개 글 목록 4쪽 전체 30편을 제목으로 확인: 구인 · 스카우트 · 助太刀社員 시스템 글 없음(글은 매칭 앱 · Web · 검색 · 품질 · AI 개발) / 둘째 Zenn 검색 API '助太刀社員'·'建設 求人 スカウト'·'助太刀 求人' — 助太刀 글은 App Router 이행 · 멀티모듈뿐, shain.suke-dachi.jp 에도 기술 블로그 단서 없음). 완주 기준 셋째를 못 채워 in_progress 로 두고 더 파지 않는다. 구인 · 스카우트 쪽 시스템 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-27",
   "domain": "suke-dachi.jp",
   "one_liner": "건설 직인과 공사 회사를 잇는 매칭 앱 — 검색을 OpenSearch 로 옮기면서도 RDS 와 로직을 맞춰 장애 때 자동으로 되돌리고, 7 년 쓴 네이티브 앱 20 만 행은 'AI 가 헤매지 않는' 4 층 Flutter 구조로 1 년 만에 갈아 끼웠다",
