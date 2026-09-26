@@ -2536,3 +2536,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 シロク 금액 로직 이행
 
 - `09ff5dc8e84cae` 전문으로 기능 `subscription-price-logic-migration`, 결정 7.
+
+## 2026-09-27 シロク 3DS 구제
+
+- `3e20d34054b72f` 전문으로 기능 `3ds-checkout-rescue`, 결정 7.
