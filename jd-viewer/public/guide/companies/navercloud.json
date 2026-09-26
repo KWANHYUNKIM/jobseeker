@@ -179,7 +179,8 @@
     "매출·임직원 수를 읽지 않았다",
     "navercloudcorp.com 첫 화면 소식이 2021년 것에서 멈춰 있다 — 최신 회사 소개는 읽지 못했다",
     "특화 AI 모델 개발 엔지니어는 캐치·사람인·잡코리아에 같은 제목으로 올라와 있다 — 본문 비교 필요(잡코리아는 본문 칸이 비어 있다)",
-    "salary: 공고에 금액이 없다 — 비워 둔다"
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "Audio FM 인턴(571470)의 접수기간은 2026.09.23 18:00 까지였는데 크롤 데이터에는 모집중으로 남아 있다 — 마감 재확인(close_check) 대상"
   ],
   "postings": [
     {
@@ -574,6 +575,127 @@
           {
             "title": "[NAVER Cloud] Video Agent 연구/개발 (체험형 인턴)",
             "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572647?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571470?ReturnUrl=RecruitInfo",
+      "title": "[NAVER Cloud] Audio Foundation Model Research Engineer (체험형 인턴) 채용",
+      "site": "dev",
+      "verdict": "**체험형 인턴(약 3개월, 2026년 10월 ~ 2027년 1월 중)이지만 연구 인턴이라 문턱이 높다** — 자격요건이 '연구개발 분야에서 2년 이상의 경험(대학원 포함)' 과 'ICML, NeurIPS, ICLR, EMNLP, ACL 등' 국제학회 논문 게재 경험이다. HyperCLOVA X 를 비롯한 소버린 Foundation Model 조직에서 Audio Foundation Model 을 연구한다 — Continuous/Encoder-Free Audio LM, Streaming/Causal 모델링과 Causal↔Non-Causal 성능 격차·효율적 추론, Full-Duplex Voice Agent(실시간 turn-taking, 문맥 인식, interruption·backchanneling). 부서 소개는 Duplex 모델 학습 데이터 설계부터 post-training, foundational modeling 까지 다룬다고 적는다. Audio modality 연구, 평가 벤치마크 제작, Pre-training, Multimodal FM 개발은 우대다. 전형은 서류전형 → 필기(코딩테스트) → 사전과제 및 인터뷰(과제 발표) → 인턴십 입과. **공고의 접수기간은 2026.09.14 ~ 2026.09.23 (18:00)** 으로 이미 지났다 — 크롤 데이터는 모집중으로 남아 있다. 채용전제형이 아니다.",
+      "fit": {
+        "must_have": [
+          "연구개발 2년 이상(대학원 포함)",
+          "ICML·NeurIPS·ICLR·EMNLP·ACL 등 논문 게재",
+          "Python·PyTorch/TensorFlow 연구 개발",
+          "3개월 풀타임"
+        ],
+        "can_learn": [
+          "Audio modality 연구",
+          "평가 벤치마크 제작",
+          "Pre-training",
+          "Multimodal FM"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Full-Duplex 음성 대화 모델",
+          "from": "task",
+          "quote": "실시간 음성 상호작용 및 자연스러운 Turn-taking 기술 연구",
+          "priority": "core",
+          "why": "주요업무 둘째 묶음이 Full-Duplex Voice Agent 이고 같은 묶음에 'Interruption, Backchanneling 등 Human-like Conversational Dynamics 연구' 가 있다. 부서 소개가 Duplex 모델 학습 데이터 설계와 turn dynamics post-training 을 적는다.",
+          "gap_check": "반이중(말 끝나면 답하기) 음성 비서와 달리 전이중 모델은 듣기와 말하기를 동시에 어떻게 표현하고, 사용자가 끼어들 때 모델은 무엇을 근거로 멈추는가?",
+          "drill": "Moshi 논문과 dGSLM 논문에서 두 화자 스트림을 모델링하는 방식을 비교해 한 장으로 정리하고, Moshi 공개 구현을 돌려 끼어들기·맞장구 상황에서의 반응 지연을 기록한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Moshi: a speech-text foundation model for real-time dialogue",
+              "url": "https://arxiv.org/abs/2410.00037",
+              "kind": "paper"
+            },
+            {
+              "title": "Generative Spoken Dialogue Language Modeling",
+              "url": "https://arxiv.org/abs/2203.16502",
+              "kind": "paper"
+            },
+            {
+              "title": "kyutai-labs/moshi",
+              "url": "https://github.com/kyutai-labs/moshi",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "Streaming·Causal 오디오 모델링",
+          "from": "task",
+          "quote": "Causal / Non-Causal 성능 격차 분석 및 효율적인 추론 구조 연구",
+          "priority": "core",
+          "why": "주요업무이고 같은 묶음에 'Streaming / Causal Audio Modeling 연구' 가 있다. 실시간 음성 상호작용이 둘째 묶음이다.",
+          "gap_check": "오디오 인코더를 미래 프레임을 못 보게(causal) 바꾸면 성능이 왜 떨어지고, 청크 단위 스트리밍에서 지연과 정확도는 청크 크기·lookahead 로 어떻게 맞바꾸는가?",
+          "drill": "공개 ASR 인코더(Whisper 등)를 기준으로 전체 문맥 입력과 청크 단위 입력의 오류율을 비교하고, 청크 크기별 지연-오류 곡선을 그린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Hugging Face — Whisper",
+              "url": "https://huggingface.co/docs/transformers/model_doc/whisper",
+              "kind": "docs"
+            },
+            {
+              "title": "Google USM: Scaling Automatic Speech Recognition Beyond 100 Languages",
+              "url": "https://arxiv.org/abs/2303.01037",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "Audio Language Model 구조(인코더 기반 vs Encoder-Free)",
+          "from": "task",
+          "quote": "Continuous / Encoder-Free Audio Language Model 연구",
+          "priority": "high",
+          "why": "주요업무이고 우대에 Audio modality 연구·Multimodal Foundation Model 개발 경험이 있다.",
+          "gap_check": "오디오 인코더 출력을 LLM 에 붙이는 방식과 오디오를 연속 표현이나 코덱 토큰으로 LLM 에 직접 넣는 방식은 학습 데이터·지연·음성 생성 능력에서 무엇이 다른가?",
+          "drill": "Qwen2-Audio 와 SALMONN 기술 보고서의 구조를 Moshi 와 비교해 '입력 표현 · LLM 연결 · 출력(텍스트/음성)' 표로 정리한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Qwen2-Audio Technical Report",
+              "url": "https://arxiv.org/abs/2407.10759",
+              "kind": "paper"
+            },
+            {
+              "title": "SALMONN: Towards Generic Hearing Abilities for Large Language Models",
+              "url": "https://arxiv.org/abs/2310.13289",
+              "kind": "paper"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "청크 스트리밍 지연-오류 실험 + Full-Duplex 모델 비교 노트",
+          "why": "주요업무 두 묶음(Streaming/Causal·Full-Duplex)을 결과로 보여 준다. 전형에 사전과제 발표가 있다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "게재 논문과 연구 경험을 과제·기여 중심으로 정리",
+          "why": "자격요건이 연구 2년 이상과 국제학회 논문 게재다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 필기(코딩테스트) 전형 → 사전과제 및 인터뷰 전형(과제 발표) → 인턴십 입과(공고 기준). 접수 2026.09.14 ~ 2026.09.23 18:00 — 이미 지났다.",
+        "expect": [
+          "게재 논문과 연구 과정",
+          "오디오 모델링 이해",
+          "사전과제 발표",
+          "코딩테스트"
+        ],
+        "sources": [
+          {
+            "title": "[NAVER Cloud] Audio Foundation Model Research Engineer (체험형 인턴) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571470?ReturnUrl=RecruitInfo",
             "publisher": "캐치"
           }
         ]
