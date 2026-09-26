@@ -211,7 +211,8 @@
     "'200여개 이상의 AI 프로젝트', '국내 최초의 AI 전문 컨설팅펌' 은 회사가 공고에 적은 주장이다",
     "salary: 공고에 금액이 없다 — 비워 둔다",
     "catch(dev) 게시 3건(Senior AI Engineer, AI Project Manager, AI Engineer)은 원티드와 제목이 겹친다 — 본문 비교로 duplicate_of 판단할 것",
-    "wd/377638: 공고 경력 표기는 5-10년인데 자격요건 첫 줄은 '경력 7년 이상' 이다 — 어느 쪽이 실제 기준인지 공고로 확인되지 않는다"
+    "wd/377638: 공고 경력 표기는 5-10년인데 자격요건 첫 줄은 '경력 7년 이상' 이다 — 어느 쪽이 실제 기준인지 공고로 확인되지 않는다",
+    "wd/374750: 공고 경력 표기는 1-5년인데 자격요건 첫 줄은 '유관 경력 3년 이상' 이다"
   ],
   "postings": [
     {
@@ -793,6 +794,147 @@
           {
             "title": "오픈스택 플랫폼 개발자",
             "url": "https://www.wanted.co.kr/wd/377638",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/374750",
+      "title": "[인공지능솔루션] Delivery Security Engineer",
+      "site": "wanted",
+      "verdict": "경력 표기는 1~5년인데 자격요건은 '유관 경력 3년 이상' 이다(서울 강남). 제논이 고객사에 AI 솔루션을 납품할 때의 보안을 맡는다 — 프로젝트별 보안 요구사항 분석과 점검 계획, 고객사 보안성 심의 대응 자료, 오픈소스 CVE 사전 점검, 배포 전 취약점·계정·권한·접근 제어 검토, 결함 리포팅, 오픈 후 패치·긴급 대응. 점검 도구와 수동 진단, 인증·권한·암호화 설정 점검, ISMS-P 통제 항목·법령 이해, 고객사 보안 부서와의 소통, 현장 대응 태도가 자격요건이다. SAST/DAST, 금융·공공 보안성 검토, 보안 자격증, 라이선스 점검은 우대다. 전형은 서류 → 1/2차 기술역량면접(사전 과제가 있을 수 있음) → Culture Fit 면접(가급적 대면) → 처우협의.",
+      "fit": {
+        "must_have": [
+          "유관 경력 3년 이상",
+          "취약점 점검 도구·수동 진단",
+          "인증·권한·암호화·접근 제어 점검과 조치 도출",
+          "ISMS-P 통제 항목·관계 법령 이해",
+          "고객사 보안 부서와 소통",
+          "고객사 현장 대응 태도"
+        ],
+        "can_learn": [
+          "SAST/DAST 운영",
+          "금융·공공 보안성 검토",
+          "정보보안기사·CISA·CISSP·ISO27001 심사원",
+          "CVE·라이선스 점검",
+          "B2B SaaS·엔터프라이즈 솔루션"
+        ]
+      },
+      "study": [
+        {
+          "topic": "고객사 보안성 심의 대응",
+          "from": "task",
+          "quote": "• 고객사 보안성 심의 대응 및 제출 기술 자료 작성",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '금융, 공공 분야 보안성 검토 또는 대규모 SI 프로젝트 보안 점검 수행 경험' 이 있다. 납품 전에 고객사 보안 부서의 심의를 통과해야 한다.",
+          "gap_check": "생성형 AI 솔루션을 금융사에 납품할 때 보안성 심의 자료에 무엇(데이터 흐름도·저장 위치·암호화·접근 통제·로그·외부 연동·LLM 입력의 개인정보 처리)을 적고, ISMS-P 통제 항목과 어떻게 매핑하는가?",
+          "drill": "가상의 사내 문서 RAG 챗봇에 대해 보안성 심의 제출 자료 한 벌을 쓴다 — 구성도, 데이터 흐름, 통제 항목 매핑표, 잔여 위험과 보완 조치.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWASP — Threat Modeling Cheat Sheet",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP Top 10 for LLM Applications",
+              "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "오픈소스 취약점(CVE) 사전 점검",
+          "from": "task",
+          "quote": "• 오픈소스 라이브러리 취약점(CVE) 사전 점검 및 조치 관리",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '오픈소스 취약점(CVE) 분석 및 라이선스 점검 경험' 이 있다. AI 솔루션은 Python 오픈소스 의존성이 많다(추론).",
+          "gap_check": "의존성 목록에서 CVE 가 나왔을 때 실제로 그 취약 함수가 호출되는지 어떻게 판단하고, 바로 올릴 수 없는 버전은 어떤 완화 조치로 대신하며, 조치 현황을 무엇으로 추적하는가?",
+          "drill": "공개 Python 웹 앱 하나에 의존성 취약점 스캐너를 돌려 결과를 심각도·도달 가능성·조치 방법으로 분류한 표를 만들고, 라이선스(GPL 계열 등)도 함께 표시한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "NIST — National Vulnerability Database",
+              "url": "https://nvd.nist.gov/",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP Dependency-Check",
+              "url": "https://owasp.org/www-project-dependency-check/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "배포 전 점검 — 인증·권한·접근 제어",
+          "from": "qualification",
+          "quote": "• 인증, 권한, 암호화, 접근 제어 등 보안 설정을 점검하고 조치 방안을 도출할 수 있는 역량",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '배포 전 보안 취약점 점검과 계정, 권한, 접근 제어 설정 검토' 가 있다.",
+          "gap_check": "관리자 기능에 대한 권한 검사가 프론트에만 있고 API 에 없는 경우를 어떻게 찾고, 세션·토큰 만료·비밀번호 저장 방식·전송 구간 암호화는 무엇으로 확인하는가?",
+          "drill": "ASVS 의 인증·접근 제어 장을 기준으로 연습용 웹 앱을 점검하는 체크리스트를 만들고, 수동 진단(프록시로 요청 변조)과 결과 리포트를 한 번 돌린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWASP ASVS (GitHub)",
+              "url": "https://github.com/OWASP/ASVS",
+              "kind": "repo"
+            },
+            {
+              "title": "OWASP Top Ten",
+              "url": "https://owasp.org/www-project-top-ten/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SAST/DAST 도구 운영",
+          "from": "preference",
+          "quote": "• 정적/동적 분석 도구(SAST/DAST) 활용 및 운영 경험",
+          "priority": "high",
+          "why": "우대사항이고 자격요건에 '주요 취약점 점검 도구 활용' 이 있다. 프로젝트마다 점검을 반복하려면 도구를 파이프라인에 넣어야 한다(추론).",
+          "gap_check": "SAST 오탐을 어떻게 걸러 개발팀에 넘기고, DAST 를 운영 환경이 아닌 곳에서 안전하게 돌리려면 무엇을 준비하는가?",
+          "drill": "연습용 앱에 Semgrep(SAST)과 ZAP(DAST)을 CI 에 붙여 결과를 모으고, 오탐·진탐을 분류한 결함 리포트 양식을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Semgrep — Documentation",
+              "url": "https://semgrep.dev/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "ZAP — Documentation",
+              "url": "https://www.zaproxy.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "AI 솔루션 납품용 보안성 심의 자료 샘플",
+          "why": "주요업무 중 이 회사에 가장 특화된 일(고객사 심의 대응)을 문서로 보여 준다. 기술역량면접 전 사전 과제가 있을 수 있다고 공고가 적는다.",
+          "effort": "2일"
+        },
+        {
+          "idea": "CI 에 붙인 SAST/DAST/의존성 점검 파이프라인",
+          "why": "우대 두 줄(SAST/DAST, CVE)과 주요업무의 사전 점검을 한 번에 보여 준다.",
+          "effort": "3일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1/2차 기술역량면접 - Culture Fit 면접 - 처우협의 - 입사확정. 기술역량 면접 전 사전 과제가 부여될 수 있고, Culture Fit 은 가급적 대면이다(공고 기준).",
+        "expect": [
+          "보안성 심의 자료 작성 경험",
+          "CVE 조치 우선순위",
+          "수동 진단으로 찾은 취약점 사례",
+          "ISMS-P 통제 항목"
+        ],
+        "sources": [
+          {
+            "title": "[인공지능솔루션] Delivery Security Engineer",
+            "url": "https://www.wanted.co.kr/wd/374750",
             "publisher": "원티드"
           }
         ]
