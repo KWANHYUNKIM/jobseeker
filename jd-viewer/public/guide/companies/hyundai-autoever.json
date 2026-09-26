@@ -252,7 +252,8 @@
     "salary: 공고에 금액이 없고 공개 연봉 자료를 확인하지 않았다 — 근거 없이 비워 둔다",
     "jobkorea·catch 게시 5건은 본문이 크롤되지 않아 브리핑 대상에서 빠진다",
     "wd/385515: 공고 제목은 '[IVI] Embedded SW Architect' 인데 본문 제목은 'Android Framework 개발 Developer', 경력은 5-11년이다 — 아키텍트 공고(385519, 8-16년)와 같은 머리를 붙인 것으로 보이나 확인하지 못했다",
-    "wd/385504: 공고 본문 머리의 포지션명이 '[사내 변호사(국내)]' 인데 팀 소개·업무·자격은 전부 Physical AI(RX기술팀)다 — 다른 공고의 머리가 잘못 붙은 것으로 보이나 확인하지 못했다"
+    "wd/385504: 공고 본문 머리의 포지션명이 '[사내 변호사(국내)]' 인데 팀 소개·업무·자격은 전부 Physical AI(RX기술팀)다 — 다른 공고의 머리가 잘못 붙은 것으로 보이나 확인하지 못했다",
+    "wd/385501: 우대사항 셋째 줄이 '환경 또는 해외 법인 지원 경험' 으로 앞말이 빠져 있다(같은 틀의 385495 는 '글로벌 환경 또는 해외 법인 지원 경험'). 본문 머리 포지션명도 'Endpoint/Sever' 로 적혀 있다"
   ],
   "postings": [
     {
@@ -1948,6 +1949,152 @@
           {
             "title": "[Tech] Infra Security Engineer - 북미 기술 보안 주재원(네트웍 보안)",
             "url": "https://www.wanted.co.kr/wd/385495",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385501",
+      "title": "[Tech] Infra Security Engineer - 북미 기술 보안 주재원(Endpoint)",
+      "site": "wanted",
+      "verdict": "⚠️ 한국이 아니라 미국 근무다 — 주요업무 첫 줄이 '미주 지역(얼바인) 주재원 근무' 이고 근무지도 미주 지역(얼바인)이다.\n경력 7~14년. 글로벌보안기술팀(현대오토에버와 북미·호주·일본 법인의 IT·OT 보안솔루션 운영) 소속으로 북미 법인의 DLP, EDR(PC, Server), SASE, SAC/DAC(CyberArk)를 운영하고, 본사 정책의 해외 적용·이행 점검과 보안 성숙도 진단을 맡는다. 같은 날 올라온 네트웍 보안 주재원 공고(385495)와 주요업무 틀은 같지만 팀과 운영 솔루션이 다르고, 자격요건도 엔드포인트·서버 보안 운영과 접근 통제·계정 관리·데이터 보호 정책 운영으로 다르다. 주재원 처우는 공고에 없다. 전형의 직무역량테스트는 '코딩 또는 과제테스트' 다.",
+      "fit": {
+        "must_have": [
+          "Linux·Windows Server·Network 등 IT 인프라 이해",
+          "Endpoint·Server 보안 솔루션 운영",
+          "접근 통제·계정 관리·데이터 보호 정책 운영",
+          "보안 정책 수립·적용·운영",
+          "시스템 운영·장애 분석·조치",
+          "비즈니스 영어"
+        ],
+        "can_learn": [
+          "CyberArk 등 특권 접근 관리",
+          "SASE",
+          "운영 자동화·프로세스 개선",
+          "해외 법인 지원"
+        ]
+      },
+      "study": [
+        {
+          "topic": "EDR 을 PC 와 서버에 운영하기",
+          "from": "qualification",
+          "quote": "• Endpoint 및 Server 보안 솔루션 운영 경험을 보유하신 분",
+          "priority": "core",
+          "why": "자격요건이고 운영 솔루션 목록에 'EDR (PC, Server )' 가 있다. 해시태그도 #EDR 이다.",
+          "gap_check": "서버에 EDR 을 깔 때 PC 와 달리 무엇(성능 영향, 차단 정책의 위험, 예외 경로)을 먼저 따지고, 에이전트가 빠진 호스트를 어떻게 찾아내는가? 격리(isolation) 버튼을 운영 서버에 누르기 전에 누구의 승인이 필요한가?",
+          "drill": "윈도우·리눅스 VM 에 무료 도구(Sysmon, osquery)를 깔아 프로세스·네트워크 이벤트를 모으고, 에이전트 설치 현황표와 서버용 탐지 전용·PC 용 차단 정책을 나눈 운영 정책서를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Microsoft Defender for Endpoint — documentation",
+              "url": "https://learn.microsoft.com/en-us/defender-endpoint/",
+              "kind": "docs"
+            },
+            {
+              "title": "osquery",
+              "url": "https://osquery.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "NIST SP 800-123 — Guide to General Server Security",
+              "url": "https://csrc.nist.gov/pubs/sp/800/123/final",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "접근 통제와 특권 계정 관리 (SAC/DAC·CyberArk)",
+          "from": "qualification",
+          "quote": "• 접근 통제, 계정 관리, 데이터 보호 정책 운영 경험을 보유하신 분",
+          "priority": "core",
+          "why": "자격요건이고 운영 솔루션에 'SAC/DAC(CyberArk)' 가 있다. 서버 접근 통제(SAC)와 DB 접근 통제(DAC)로 읽힌다(추론).",
+          "gap_check": "관리자 계정 비밀번호를 사람이 모르게 금고에 두고 세션을 기록하는 방식은 어떤 공격(계정 탈취·내부자)을 막고, 긴급 접근(break-glass)은 어떻게 허용·사후 검토하는가?",
+          "drill": "리눅스 서버 두 대에 대해 역할별 접근 매트릭스(누가·어느 서버·어떤 권한·승인자)를 만들고, sudo 규칙과 세션 로그(script/auditd)로 흉내 낸 뒤 분기별 권한 검토 양식을 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "CyberArk — What is Privileged Access Management",
+              "url": "https://www.cyberark.com/what-is/privileged-access-management/",
+              "kind": "docs"
+            },
+            {
+              "title": "NIST SP 800-53 Rev. 5 — Security and Privacy Controls",
+              "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DLP — 데이터가 나가는 길 막기",
+          "from": "task",
+          "quote": "• 운영솔루션 : DLP , EDR (PC, Server ) , SASE , SAC/DAC(CyberArk)",
+          "priority": "high",
+          "why": "운영 솔루션 목록 첫 번째가 DLP 다. 자격요건에 '데이터 보호 정책 운영' 이 있다.",
+          "gap_check": "DLP 정책을 '탐지만' 으로 시작해 '차단' 으로 올릴 때 무엇을 근거로 판단하고, 현지 법인에서 업무상 필요한 외부 전송(협력사 메일)을 어떻게 예외 처리하는가?",
+          "drill": "Microsoft Purview DLP 문서를 읽고 민감 정보 유형(예: 설계 문서 키워드) 기반 정책 초안 — 채널(메일·USB·클라우드), 동작(감사→경고→차단), 예외 승인 — 을 한 장으로 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Microsoft Purview — Learn about data loss prevention",
+              "url": "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SASE 와 제로 트러스트",
+          "from": "task",
+          "quote": "• 신규 보안솔루션 구축 및 고도화 프로젝트 수행",
+          "priority": "high",
+          "why": "운영 솔루션에 SASE 가 있고, 주요업무에 신규 솔루션 구축 프로젝트가 있다. 팀 소개가 '신규 보안 기술 도입' 을 적는다.",
+          "gap_check": "VPN 으로 본사망에 붙이던 해외 법인 사용자를 SASE 로 옮기면 접근 결정은 어디서, 무엇(사용자·기기 상태·위치)을 근거로 내려지는가?",
+          "drill": "NIST SP 800-207 의 정책 결정 지점(PDP)·집행 지점(PEP) 구조로 북미 법인 사용자의 사내 앱 접근 흐름을 그리고, 기존 VPN 구조와의 차이를 표로 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "NIST SP 800-207 — Zero Trust Architecture",
+              "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "본사 정책의 해외 법인 적용과 이행 점검",
+          "from": "task",
+          "quote": "• 본사 보안 정책의 해외 법인 적용 및 이행 점검",
+          "priority": "high",
+          "why": "주재원 업무의 중심이다. 팀 소개는 '해외 법인의 보안 성숙도 향상을 목표로 보안 수준을 동일한 기준으로 관리할 수 있는 운영체계' 를 만든다고 적는다. 비즈니스 영어가 자격요건이다.",
+          "gap_check": "북미·호주·일본 법인에 같은 엔드포인트 기준(EDR 설치율, 패치 기한, 특권 계정 수)을 적용할 때 현지 사정에 따른 예외는 누가 승인하고, 점검 결과를 영어로 어떻게 보고하는가?",
+          "drill": "엔드포인트 통제 10개의 법인별 이행 점검표와 영어 개선 요청서 샘플을 쓴다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "엔드포인트·특권 접근 운영 정책서 묶음(EDR 정책, 접근 매트릭스, DLP 초안)",
+          "why": "운영 솔루션 네 가지 중 세 가지(EDR, SAC/DAC, DLP)의 운영 판단을 문서로 보여 준다. 7~14년 자리라 운영 판단의 근거가 핵심 증거다(추론).",
+          "effort": "3~4일"
+        },
+        {
+          "idea": "해외 법인 지원 경험 정리(영어)",
+          "why": "우대사항에 해외 법인 지원 경험이 있고, 자격요건에 비즈니스 영어가 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩 또는 과제테스트) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 모집 분야에 따라 영어 구술평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "서버 EDR 운영과 장애 사례",
+          "특권 계정 관리 정책",
+          "DLP 차단 정책 도입 경험",
+          "해외 법인과 정책을 조율한 경험(영어)"
+        ],
+        "sources": [
+          {
+            "title": "[Tech] Infra Security Engineer - 북미 기술 보안 주재원(Endpoint)",
+            "url": "https://www.wanted.co.kr/wd/385501",
             "publisher": "원티드"
           }
         ]
