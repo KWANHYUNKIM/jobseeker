@@ -843,3 +843,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 razorpay 재방문 → 확장
 - UPI Switch Kafka 5년(2026-09-07) 으로 `portability-hid-the-knobs` 추가. 새 도메인, 결정 7개, 그림 2장. [VERIFY] 표시된 수치는 inferred.
+
+## 2026-09-26 rightmove 재방문
+- 새 자료 없음(1회째). RSS 최신 2026-06-24(디자인). updated_at 만 올림.
