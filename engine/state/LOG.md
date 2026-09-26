@@ -2420,3 +2420,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 e-dash 청구서 OCR
 
 - `a3497b5e0ce357` 전문으로 기능 `invoice-ocr-llm-roles`, 결정 8.
+
+## 2026-09-27 e-dash 배출계수 갱신
+
+- `ea26d90415120f` 전문으로 기능 `emission-factor-update-agent`, 결정 8.
