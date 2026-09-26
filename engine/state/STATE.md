@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**다이니 완주(2026-09-26) — `oncall-dev-bot` 으로 도메인 둘·기능 둘, 수익원 둘 다 기능과 연결 → done, QUEUE 완료로. 다음은 `--gaps` 대로 — 신규면 대기 맨 위 **IVRy**(`zenn.dev/p/ivry` — Human-in-the-Loop 평가 `71376f575ccd9c`, 회사 페이지로 제품·수익원). 대기 2/3(IVRy·PKSHA) — 목표 미달이니 손이 비면 후보 조사. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에(estie ↔ CADDi) + PR 환경 + 결제 대장(다이니 USL ↔ ENECHANGE 검산) + 첫 대응 봇(다이니 dev-bot ↔ LegalOn·Yappli·RAKUS). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**IVRy 회사 프로파일(2026-09-26) — 도메인 둘: 가게가 만든 문의 항목을 공개 전에 시험한다(`71376f575ccd9c` + 앞 글 `2c298614d0ee85` '5가지 함정') · 보존 기한이 지난 데이터를 리플레이에 흔들리지 않게 지운다(`ff7d2e939b3e61`). 다음은 확장: `--gaps` 순서대로 기능 하나씩. 수익원이 하나뿐이라 두 기능이면 **완주(done)**. 대기 1/3(PKSHA) — 목표 미달, IVRy 를 닫으면 후보 조사. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + **LLM 평가**(IVRy HITL ↔ 로그라스 OLAP 오라클 · ENECHANGE 검산). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
