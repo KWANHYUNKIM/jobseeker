@@ -474,6 +474,150 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/388957",
+      "title": "Data Engineer (Data Platform)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상(데이터 엔지니어 또는 데이터 플랫폼 엔지니어). AI데이터플랫폼팀에서 데이터 파이프라인이 도는 '바닥' 을 운영하는 자리 — Databricks 레이크하우스(Delta Lake·Unity Catalog) 구조·권한·비용, Confluent Kafka 클러스터(브로커·Schema Registry·Connect), 데이터 서비스용 EKS·RDS, 파이프라인 실행 환경과 재처리·백필 도구, 공통 품질 게이트·리니지, Terraform·CI/CD 코드화, 플랫폼 온콜. 역할 경계를 공고가 적는다: 개별 파이프라인의 처리 로직은 Financial Data DE·DAE 가 개발하고, 이 자리는 그 실행 환경과 공통 플랫폼을 맡는다. 자격은 Spark/Databricks 프로덕션 운영, 스케줄러·오케스트레이션·관측 운영과 재처리 지원, AWS 데이터 인프라, EKS 또는 RDS 중 하나 이상 직접 운영, Terraform·CI/CD, 온콜. Kafka 운영, GitOps, Aurora PITR, 전자금융감독규정·ISMS-P 반영은 우대다. 전형은 서류접수 → AI Screening → 1차 → 2차 인터뷰 → 처우논의.",
+      "fit": {
+        "must_have": [
+          "데이터·데이터 플랫폼 엔지니어 5년 이상",
+          "Python·Java·Kotlin 중 하나",
+          "Spark 또는 Databricks 프로덕션 운영",
+          "분산 시스템 이해",
+          "파이프라인 실행 환경 운영과 재처리·백필 지원",
+          "AWS 데이터 인프라",
+          "EKS 또는 RDS 중 하나 이상 프로덕션 운영",
+          "Terraform·CI/CD",
+          "모니터링·알림·온콜"
+        ],
+        "can_learn": [
+          "Kafka(Schema Registry·Connect) 운영",
+          "멱등 파이프라인",
+          "Databricks 멀티 환경",
+          "Helm·Argo CD",
+          "Aurora Multi-AZ·PITR",
+          "멀티 클러스터·미러링",
+          "dbt·OpenLineage·Great Expectations 연동",
+          "금융 규제(전자금융감독규정·ISMS-P)",
+          "AI 코딩 에이전트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Confluent Kafka 클러스터 운영",
+          "from": "task",
+          "quote": "• Kafka 플랫폼 운영: Confluent Kafka 클러스터(브로커·Schema Registry·Kafka Connect 클러스터)를 구축·운영합니다. 토픽·ACL·쿼터·보존 정책과 멀티 환경 구성을 관리하고 처리량·지연·장애 복구·버전 업그레이드를 책임집니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대 첫 줄이 Kafka(Schema Registry·Kafka Connect·ksqlDB) 프로덕션 운영이다. 회사의 다른 공고는 거래·시세·고객 행동 데이터를 실시간으로 수집한다고 적는다.",
+          "gap_check": "토픽의 파티션 수·복제 계수·min.insync.replicas·보존 정책을 무엇으로 정하고, 브로커 한 대가 죽을 때 프로듀서 acks 설정에 따라 무엇이 유실될 수 있으며, KRaft 모드 롤링 업그레이드는 어떤 순서로 하는가? Schema Registry 호환성 모드는 스키마 변경을 어떻게 막는가?",
+          "drill": "로컬에 3 브로커 KRaft 클러스터와 Schema Registry 를 띄우고, 브로커 하나를 죽였을 때 acks=1 과 acks=all 의 유실 여부를 비교한 뒤, 호환되지 않는 스키마 변경이 거부되는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Apache Kafka — Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Confluent — KRaft overview",
+              "url": "https://docs.confluent.io/platform/current/kafka-metadata/kraft.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "파이프라인 실행 플랫폼 — 재처리·백필 도구",
+          "from": "qualification",
+          "quote": "• 배치·스트리밍 파이프라인의 실행 환경(스케줄러·오케스트레이션·관측)을 운영하고 장애 시 재처리·백필을 지원해보신 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '재처리·백필을 수행할 수 있는 운영 도구와 절차를 제공' 이 있다. 우대에 '재처리·백필·멱등성을 확보' 가 있다.",
+          "gap_check": "특정 날짜 범위를 다시 돌릴 때 하위 마트까지 어떤 순서로 재계산하고, 같은 파티션을 두 번 써도 결과가 같게 하려면 무엇(파티션 덮어쓰기·MERGE)을 쓰며, 백필이 실시간 작업의 컴퓨트를 뺏지 않게 어떻게 분리하는가?",
+          "drill": "Databricks(또는 로컬 Spark)에 날짜 파티션 적재 작업 두 단계를 만들고, 파라미터로 날짜 범위를 받아 멱등하게 백필하는 스크립트와 런북을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Databricks — What is Delta Lake",
+              "url": "https://docs.databricks.com/aws/en/delta/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Terraform 으로 데이터 인프라·권한 코드화",
+          "from": "task",
+          "quote": "• IaC·환경 자동화: Terraform 등 IaC와 CI/CD로 데이터 인프라·워크스페이스·권한·네트워크 구성을 코드화하고 환경 복제·확장을 자동화합니다.",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 'Terraform 등 IaC로 인프라를 코드화하고 CI/CD와 함께 운영' 이 있다. 직무 Summary 가 환경 분리·권한·비용·용량을 코드화한다고 적는다.",
+          "gap_check": "Databricks 워크스페이스·Unity Catalog 권한·Kafka 토픽·RDS 를 Terraform 한 저장소에서 어떻게 모듈로 나누고, dev/stg/prod 복제 시 달라지는 값(크기·권한·네트워크)은 어디에 두는가?",
+          "drill": "Databricks provider 로 카탈로그·스키마·그룹 권한을 Terraform 으로 만들고, 같은 모듈로 dev/prod 두 환경을 변수만 바꿔 생성·파괴해 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Terraform — Databricks provider",
+              "url": "https://registry.terraform.io/providers/databricks/databricks/latest/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Terraform — Documentation",
+              "url": "https://developer.hashicorp.com/terraform/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "EKS·RDS 운영과 온콜",
+          "from": "qualification",
+          "quote": "- EKS 등 Kubernetes 클러스터(배포·업그레이드·노드 관리·모니터링·장애 대응)",
+          "priority": "high",
+          "why": "자격요건 '다음 중 1개 이상' 의 한쪽이다. 주요업무에 EKS·RDS 버전 업그레이드·용량·백업·복구·보안 패치와 온콜 rotation 이 있다.",
+          "gap_check": "EKS 컨트롤 플레인과 노드 그룹 업그레이드 순서, 파드 중단 예산(PDB)의 역할, RDS 의 자동 백업과 PITR 로 특정 시각으로 되돌리는 절차를 말할 수 있는가?",
+          "drill": "EKS 문서의 업그레이드 절차와 RDS PITR 절차를 읽고, 각각 런북(사전 점검·단계·롤백·검증)을 한 장씩 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Amazon EKS — What is Amazon EKS",
+              "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Amazon RDS — User Guide",
+              "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Kafka 장애·Schema 호환성 실험 + 백필 런북",
+          "why": "우대 첫 줄(Kafka 운영)과 자격요건의 재처리·백필을 수치와 문서로 보여 준다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "Terraform 으로 만든 Databricks 멀티 환경",
+          "why": "주요업무 IaC 줄과 우대의 '멀티 환경 운영' 을 한 저장소로 증명한다.",
+          "effort": "3~4일"
+        }
+      ],
+      "interview": {
+        "process": "서류접수 → AI Screening → 1차 인터뷰 → 2차 인터뷰 → 처우논의 → 최종합격(공고 기준).",
+        "expect": [
+          "Kafka 장애·업그레이드 경험",
+          "재처리·백필 설계",
+          "IaC 로 권한·환경 관리",
+          "EKS·RDS 운영 사례",
+          "플랫폼과 파이프라인 담당 경계"
+        ],
+        "sources": [
+          {
+            "title": "Data Engineer (Data Platform)",
+            "url": "https://www.wanted.co.kr/wd/388957",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
