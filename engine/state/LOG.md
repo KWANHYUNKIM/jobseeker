@@ -1864,3 +1864,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Weathernews 회사 프로파일
 
 - global.weathernews.com 의 시장별 서비스·회사 개요(연결 매출 244.79억 엔)로 수익원 셋(B2B·모바일/인터넷·방송). 기술 글 둘이 두 수익원에 딱 맞음(육상 기상 사업부 수요 예측 · 모바일 사업부 마이 솔루션). 방송은 도메인 없음.
+
+## 2026-09-26 Weathernews Batch GPU 수요 예측 추론
+
+- 결정 7 — Batch(Lambda·Fargate 대신)·Execute 만 Batch·x86 통일(ARM 표준 이탈)·BEST_FIT_PROGRESSIVE·slim+PyTorch CUDA wheel·이벤트 날 q90·수동 승인 배포.

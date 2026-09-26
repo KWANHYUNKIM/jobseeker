@@ -88,7 +88,7 @@
     "title": "예보를 각자의 판단으로 바꾼다",
     "question": "기상 회사는 예보를 기업의 반년 수요와 개인의 조건 알림으로 어떻게 바꾸나?",
     "code": "flowchart LR\n  WX[\"기상 예보 · 몇 분마다 갱신\"] --> FC[\"장기 수요 예측\\nAWS Batch GPU · AutoGluon\"]\n  ACT[\"고객 실적 · 캘린더\"] --> FC\n  FC --> B2B[\"소매 발주 · 메이커 생산 조정\\n약 6개월 일별\"]\n  WX --> MS[\"마이 솔루션 판정\\n결정 트리 · 10분마다\"]\n  COND[\"사용자 조건 10만 오더\\nAND/OR 4단\"] --> MS\n  MS --> PUSH[\"푸시 알림 · 웨더뉴스 Pro\"]",
-    "_note": "방송 수익원의 기술 글은 아직 못 봤다. 수요 예측 글은 추론 파이프라인의 마지막 단계만 다룬다."
+    "_note": "방송 수익원의 기술 글은 아직 못 봤다. 수요 예측 글은 추론 파이프라인만 다룬다(학습은 밖)."
   },
   "domains": [
     {
@@ -97,7 +97,7 @@
       "tech": [
         {
           "tech": "AWS Batch 로 GPU 인스턴스 온디맨드 기동 · AutoGluon TimeSeries · 이벤트 × 분위점 매핑 · Step Functions 와 Batch Parameters 연계",
-          "solves": "상시 GPU 없이 필요할 때만 추론한다(이 사이트의 해석 — 선정 배경 절을 다음 사이클에 읽는다).",
+          "solves": "Lambda 15분 제한과 Fargate 의 GPU 미지원을 피해 GPU 로 짧게 끝내고, 잡이 없을 땐 인스턴스 0대라 유휴 비용이 없다.",
           "limits": "사내에서 드문 구성 — 운영 노하우를 새로 쌓아야 한다.",
           "confidence": "confirmed",
           "sources": [
@@ -111,7 +111,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "batch-gpu-demand-inference"
+      ]
     },
     {
       "name": "수십만 개의 사용자 기상 조건을 10분마다 판정한다",
@@ -136,7 +138,303 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "batch-gpu-demand-inference",
+      "name": "소매·메이커의 반년 앞 일별 수요를 추론하는 마지막 단계만 AWS Batch GPU 로 — Lambda 15분 제한과 Fargate 의 GPU 부재 때문에, ARM 표준을 깨고 x86 GPU 인스턴스를 가장 싼 것부터 잡으며, 이벤트 날에는 상위 분위점을 쓴다",
+      "domain": "기상과 실적으로 소매·제조의 반년 수요를 예측한다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "웨더뉴스 육상 기상 사업부는 소매 사업자·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위로** 예측한다. 소매의 발주 지원에 더해 메이커의 제조 라인 조정에도 쓰이려면 장기 수요를 고정밀로 예측해야 했다 — '다음 달 기온이 평년보다 더우면 수요가 얼마나 느나', '연말 세일로 몇 명 느나'.\n\n자사 기상 장기 예측·업무 캘린더·과거 실적을 조합한 장기 예측은 큰 모델을 오래 돌리는 계산 자원이 필요하다. 정확도 검증 끝에 AutoGluon 의 시계열 모델(시계열 기반 모델 Chronos2 포함)을 쓰기로 했지만, 수십~수백 개 이상의 시계열을 추론하면 **Lambda 최대 실행 시간 15분을 넘겨 타임아웃**했다. Chronos2 는 학습뿐 아니라 추론도 CPU 만으로는 오래 걸려 GPU 가 권장된다.",
+        "metrics": [
+          {
+            "label": "예측 범위",
+            "value": "약 6개월 앞 · 일 단위 · 점포별 내점객·판매 수·생산량",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          },
+          {
+            "label": "Batch 잡 자원",
+            "value": "GPU 1 · vCPU 4 · 메모리 14 GB",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          },
+          {
+            "label": "GPU 인스턴스 온디맨드(도쿄, 2026-07)",
+            "value": "g4dn.xlarge $0.710/h · g6.xlarge $1.167/h · g5.xlarge $1.459/h — 실제론 g4dn·g6 가 대부분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "실행 기반을 좁혀 갈 때",
+          "thought": "컨테이너 실행 환경으로 가장 먼저 떠오르는 Fargate 는 GPU 를 지원하지 않는다(2026년 6월 시점). Lambda 는 최대 15분·10 GB 메모리. 이 용도에선 **Batch 한 가지뿐**이라는 판단이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+              "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+              "publisher": "Weathernews Tech Blog (Zenn)",
+              "date": "2026-07-17",
+              "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+            }
+          ]
+        },
+        {
+          "at": "비용을 다시 볼 때",
+          "thought": "GPU 인스턴스는 단가가 높지만 GPU 로 짧게 끝내는 편이 CPU 로 오래 돌리는 것보다 싼 경우도 충분히 있다 — GPU 가속은 단순한 비용 절감이기도 하다. Batch(EC2 기동형)는 잡이 없으면 인스턴스가 0대로 줄어 유휴 비용이 없다 — 상시 기동이 전제인 서비스와 크게 다르다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+              "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+              "publisher": "Weathernews Tech Blog (Zenn)",
+              "date": "2026-07-17",
+              "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "입력",
+            "what": "고객 실적(점포별 과거 실적) · 기상 장기 예측(기온·강수량 등 6개월) · 고객 캘린더(세일·이벤트·특이일 플래그) · 점포 마스터(위경도·매장 면적·업태)."
+          },
+          {
+            "name": "추론 파이프라인",
+            "what": "Step Functions 5단계 — Config(Lambda) → BzExtract(Lambda) → WxExtract(Lambda) → Feature(Lambda, Parquet) → Execute(AWS Batch GPU)."
+          },
+          {
+            "name": "분위점 예측",
+            "what": "AutoGluon 이 q50·q90 같은 여러 분위점을 낸다 — 점예측뿐 아니라 예측 구간."
+          },
+          {
+            "name": "이벤트 × 분위점 매핑",
+            "what": "세일·특이일 플래그가 선 날은 평소보다 높은 분위점(예: q90)을 예측값으로 쓴다."
+          }
+        ],
+        "invariants": [
+          "Execute 만 Batch, 앞 네 단계는 Lambda.",
+          "잡이 없으면 GPU 인스턴스는 0대.",
+          "본번에는 빌드 시각 태그로 고정한 이미지만 수동 승인 뒤 배포한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Step Functions 가 고객별 설정 읽기 → 업무 실적 처리 → 기상 데이터 처리 → 특징량 결합(Parquet) 을 Lambda 로 차례로 돈다(각 단계 재시도, 앞 단계 실패면 곧장 Fail)",
+            "why": "가벼운 전처리는 Lambda 로."
+          },
+          {
+            "step": "Execute 단계가 `batch:submitJob.sync` 로 Batch 잡을 제출하고 끝날 때까지 기다린다 — 앞 단계가 만든 이벤트를 JSON 문자열로 Batch Parameters 에 넣어 `Ref::event` → 명령행 인자로",
+            "why": "환경 변수를 거치지 않는 단순한 전달."
+          },
+          {
+            "step": "`BEST_FIT_PROGRESSIVE` 로 조건(GPU 1·vCPU 4·14 GB)을 만족하는 가장 싼 x86 GPU 인스턴스를 띄우고, S3 에서 zip 된 학습 모델을 받아 AutoGluon 으로 분위점을 추론한다",
+            "why": "재고가 없으면 다음 후보로 넘어간다."
+          },
+          {
+            "step": "이벤트 날엔 상위 분위점을 고르고, 결과 Parquet 을 S3 에, 경로를 DynamoDB 에 쓴다",
+            "why": "뒤따르는 배신 처리가 DynamoDB 레코드를 읽는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "추론을 어디서 돌릴까?",
+            "chosen": "**AWS Batch(EC2 기동형) + GPU.**",
+            "alternatives": [
+              "AWS Lambda",
+              "AWS Fargate(CPU 만)"
+            ],
+            "tradeoff": "Lambda 는 15분·10 GB 제한으로 수십~수백 시계열에서 타임아웃, Fargate 는 GPU 를 지원하지 않아 CPU 로는 추론이 타임아웃. 대가 — GPU 인스턴스 단가가 높고, 사내에서 드문 구성이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          },
+          {
+            "question": "파이프라인 전체를 Batch 로 할까?",
+            "chosen": "**GPU 가 필요한 Execute 만 Batch, 설정·추출·특징량 네 단계는 Lambda — Step Functions 가 `submitJob.sync` 로 잇는다.**",
+            "alternatives": [
+              "전 단계를 Batch 잡으로(inferred)"
+            ],
+            "tradeoff": "비싼 GPU 는 추론 시간에만 쓴다. 대가 — 실행 기반이 둘이라 파라미터를 Batch Parameters → 명령행 인자로 넘기는 연결을 따로 짠다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          },
+          {
+            "question": "빌드·실행 아키텍처는 ARM 표준을 따를까?",
+            "chosen": "**x86_64 로 통일(CodeBuild 포함) — g4dn / g5 / g6 를 안정적으로 잡는 쪽.**",
+            "alternatives": [
+              "사내 표준 ARM(G5g = Graviton2 + NVIDIA T4g)"
+            ],
+            "tradeoff": "ARM + GPU 는 G5g 한 계열뿐이라 대체 인스턴스로 바꿀 수 없어 운영 제약이 된다. 대가 — 비용 때문에 표준으로 둔 ARM 을 이 구성만 벗어난다(G5g 는 스팟 중단율이 낮아 스팟엔 매력적이었다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 GPU 인스턴스를 잡을까?",
+            "chosen": "**`BEST_FIT_PROGRESSIVE` 에 g5·g6·g4dn 을 후보로 — 조건을 만족하는 가장 싼 것부터, 재고 없으면 다음.**",
+            "alternatives": [
+              "인스턴스 하나 고정(inferred)",
+              "스팟 인스턴스(60~70% 절감 기대)"
+            ],
+            "tradeoff": "실제론 g4dn·g6 가 대부분이라 싸게 돈다. 스팟은 절감이 크지만 중단 위험을 따로 생각해야 한다. 대가 — 인스턴스에 따라 추론 속도가 달라진다(이 사이트의 해석). `MaxvCpus` 로 대수 상한을 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          },
+          {
+            "question": "GPU 이미지를 무엇으로 만들까?",
+            "chosen": "**slim Python 이미지 + CUDA 를 번들한 PyTorch 2.x wheel — `nvidia/cuda` 기반 이미지를 쓰지 않는다. 의존성은 uv.**",
+            "alternatives": [
+              "NVIDIA CUDA 기반 이미지"
+            ],
+            "tradeoff": "이미지 크기를 크게 줄여 ECR 저장료도 준다. 대가 — 호스트(EC2)엔 NVIDIA 드라이버가 필요해 GPU 대응 AMI 를 지정해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          },
+          {
+            "question": "세일·특이일의 예측값은?",
+            "chosen": "**이벤트 플래그가 선 날은 평소(중앙값)보다 높은 분위점(예: q90)을 예측값으로.**",
+            "alternatives": [
+              "모든 날 중앙값(q50)"
+            ],
+            "tradeoff": "'평소엔 중앙값, 이벤트 날엔 상위 추정' 이라는 업무 요건을 맞춘다. 대가 — 이벤트 날 과대 발주로 기울 수 있다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          },
+          {
+            "question": "본번 배포는?",
+            "chosen": "**CodePipeline — 빌드 시각 태그로 이미지를 고정하고 CloudFormation ChangeSet 을 수동 승인 뒤 실행.**",
+            "alternatives": [
+              "자동 배포(inferred)"
+            ],
+            "tradeoff": "본번에 고정 판의 이미지를 올리고 잘못된 배포를 막는다. 대가 — 배포마다 사람이 승인한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+                "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+                "publisher": "Weathernews Tech Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "수십만 개의 사용자 기상 조건을 10분마다 판정한다(같은 회사의 다른 도메인)",
+          "via": "같은 예보, 다른 시간축",
+          "contract": "수요 예측은 6개월 앞 기상 장기 예측을 특징량으로 무거운 모델을 필요할 때만 돌리고, 마이 솔루션은 몇 분마다 갱신되는 예보로 10분마다 가벼운 판정을 반복한다 — 한 회사의 예보가 한쪽은 GPU 배치, 한쪽은 단락 평가로 소비된다(이 사이트의 해석 — 두 글은 다른 사업부의 글이다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "5단계 추론 파이프라인",
+          "question": "어느 단계가 GPU 를 쓰나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  SF[Step Functions] --> C1[Config · Lambda]\n  C1 --> C2[BzExtract · Lambda<br/>업무 실적]\n  C2 --> C3[WxExtract · Lambda<br/>기상 장기 예측]\n  C3 --> C4[Feature · Lambda<br/>Parquet]\n  C4 -->|submitJob.sync| EX[Execute · AWS Batch<br/>GPU 1 · AutoGluon · 분위점]\n  EX --> S3[(S3 · 결과 Parquet)]\n  EX --> DDB[(DynamoDB · 경로)]\n  DDB --> DL[뒤따르는 배신]"
+        },
+        {
+          "title": "떨어져 나간 실행 기반",
+          "question": "왜 Batch 한 가지만 남았나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[수십~수백 시계열 · Chronos2 등] --> L[Lambda<br/>15분 · 10 GB → 타임아웃]\n  M --> F[Fargate<br/>GPU 없음 → CPU 추론 타임아웃]\n  M --> A[ARM G5g<br/>GPU 계열 하나뿐 · 대체 불가]\n  L & F & A --> B[AWS Batch · x86 GPU · BEST_FIT_PROGRESSIVE]"
+        },
+        {
+          "title": "GPU 인스턴스의 수명",
+          "question": "GPU 는 언제 비용을 내나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 0대: 잡 없음 · 유휴 비용 없음\n  0대 --> 기동: 잡 제출 · 가장 싼 g4dn/g6/g5\n  기동 --> 기동: 재고 없음 → 다음 후보\n  기동 --> 추론: 모델 zip 다운로드 · 예측\n  추론 --> 0대: 잡 완료 · 축퇴"
+        }
+      ],
+      "sources": [
+        {
+          "title": "AWS Batch × GPU で実現する長期需要予測推論基盤",
+          "url": "https://zenn.dev/weathernews/articles/c40be230faccbf",
+          "publisher": "Weathernews Tech Blog (Zenn)",
+          "date": "2026-07-17",
+          "summary": "육상 기상 사업부. 소매 사업자의 발주 지원에 더해 메이커의 제조 라인 조정 지원에도 쓰이게 **장기 수요를 고정밀로 예측**할 필요 — 소매·메이커를 대상으로 점포별 내점객 수·상품 판매 수·생산량을 **약 6개월 앞까지 일 단위**로 예측(입력: 고객 실적·고객 캘린더(세일·이벤트·특이일)·기상 등). 추론 파이프라인의 마지막 단계 — GPU 인스턴스를 **AWS Batch 로 온디맨드 기동**해 AutoGluon TimeSeries 추론, 이벤트 × 분위점 매핑, Step Functions 와 Batch Parameters 로 연계, 출력처·CI/CD. 사내에서 드문 구성이며 구성 선정 배경 절이 있다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "사업별 매출 비중은 IR 자료로 확인하지 않았다.",
     "방송 수익원의 기술 글이 없다.",
