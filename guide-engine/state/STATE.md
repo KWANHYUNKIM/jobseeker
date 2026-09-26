@@ -4,15 +4,13 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **73건**.
-직전 회차: `Sr. Staff Back-end Engineer (Coupang Pay)`(ats 7936538, 서울) — 겹침 0.61 은 다른 팀(E-commerce Director)
-템플릿이라 **새 공고로 썼다**(4항목). ⚠️ 이 ats 공고는 **세 절 중 우대사항 칸만** 들어왔다 — 주요업무·기본 자격(15년+)은
-`full_jd` 에서 읽어 `verdict`·`why` 에만 쓰고, **quote 는 우대 칸에서만** 뽑았다(검증은 세 절만 본다).
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **74건**.
+직전 회차: `[쿠팡] Senior Front-end Engineer (Coupang Ads-ACI Intelligence)`(wd/385086, 5년↑) — 6항목.
+주요업무 칸이 **쿠팡 공통 문구**라 자리의 실체는 `full_jd` 의 **[조직 소개]**(셀프서비스 광고·그린필드·저지연 API)에서 읽었다.
 
-이번 루프의 쿠팡 겹침 후보(0.5↑)는 **모두 정리했다.** 다음 회차부터는 겹침이 낮은 **새 개발 공고**를 전부 쓴다.
-후보를 뽑을 때: 개발 직군 제목 + 미작성 + 겹침 <0.5. 비개발은 건너뛴다.
-`Staff, Back-end Engineer (GOEX)` — 회사명 표기가 달라 쿠팡 필터에 안 걸린다(미확인).
-**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
+⚠️ **원티드·사람인 쪽 미작성 개발 공고는 이제 1건** — `Senior, Network Security Engineer (Detection Operations)`(saramin, 5년↑).
+그다음은 **ats(쿠팡 채용 사이트) 영문 공고** 뿐이다. 겹침 <0.5 인 새 공고를 쓴다. 미국 공고면 base pay 를 salary.note 에.
+**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다** — 이번 루프에서 쿠팡이 74건까지 왔다.
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.

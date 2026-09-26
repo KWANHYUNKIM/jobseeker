@@ -8301,6 +8301,139 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385086",
+      "title": "[쿠팡] Senior Front-end Engineer (Coupang Ads-ACI Intelligence)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. 쿠팡 판매자·공급자가 스스로 광고를 운영하는 셀프서비스 광고 플랫폼의 화면을 React/TypeScript 로 설계·개발하고, 장애 허용·모니터링까지 갖춘 대규모 운영 화면을 만드는 사람. 주요업무 칸은 쿠팡 공통 문구에 가깝고, 이 자리의 실체는 [조직 소개](셀프서비스 광고, 그린필드, 낮은 지연 API)에 있다.",
+      "fit": {
+        "must_have": [
+          "장애 허용·모니터링이 있는 프론트엔드·대규모 운영 시스템 5년 이상",
+          "HTML5·CSS3·JavaScript·TypeScript + React 등",
+          "RESTful·GraphQL·마이크로서비스 이해",
+          "Babel·Webpack·NPM"
+        ],
+        "can_learn": [
+          "광고 도메인(입찰·구좌·성과 지표)",
+          "데이터 웨어하우징 개념"
+        ]
+      },
+      "study": [
+        {
+          "topic": "셀프서비스 광고 관리 화면 (캠페인·예산·성과)",
+          "from": "preference",
+          "quote": "• 광고 및 이커머스 도메인 경험이 있는 분",
+          "priority": "high",
+          "why": "조직 소개에 'Coupang Ads 조직은 쿠팡의 판매자 및 공급자에게 셀프서비스 광고 운영 기능을 제공'한다고 적혀 있다. 판매자가 직접 캠페인을 만들고 예산·성과를 보는 화면이 핵심이다.",
+          "gap_check": "광고 캠페인 생성 흐름(상품 선택 → 입찰가 → 예산 → 기간)에서 판매자가 가장 많이 틀리는 입력은 무엇이고, 화면이 그걸 어떻게 막아야 하는가?",
+          "drill": "React+TypeScript 로 캠페인 생성 마법사(4단계)와 성과 대시보드(노출·클릭·전환·ROAS)를 만들고, 폼 검증과 단계 간 상태 유지를 넣는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "React — Documentation",
+              "url": "https://react.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애 허용·모니터링이 있는 대규모 프론트엔드",
+          "from": "qualification",
+          "quote": "• 장애 허용 및 모니터링 기능이 있는 프론트 엔드, 대규모 운영시스템 개발 및 설계 경험이 5년 이상인 분",
+          "priority": "core",
+          "why": "자격 첫 줄이다. 광고 관리 화면은 판매자의 돈(광고비)이 걸려 있어, 일부 API 가 실패해도 화면 전체가 무너지지 않아야 한다(추론).",
+          "gap_check": "대시보드의 위젯 하나가 API 실패로 에러를 낼 때, 나머지 위젯은 그대로 보이게 하고 실패를 수집하려면 무엇을 두는가?",
+          "drill": "위 대시보드 위젯마다 Error Boundary 와 재시도·대체 UI 를 두고, 에러를 Sentry(또는 콘솔 수집기)로 보내 실패율을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "React — Error Boundaries (reference)",
+              "url": "https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RESTful·GraphQL API 설계와 연동",
+          "from": "qualification",
+          "quote": "• RESTful, GraphQL 및 마이크로 서비스 아키텍처 설계 및 개발에 대한 전문 지식이 있는 분",
+          "priority": "core",
+          "why": "조직 소개에 '프로그래매틱 연동을 위한 API 개발'이 있다. 광고 데이터는 화면마다 필요한 필드가 달라 GraphQL 이 쓰일 여지가 있다(추론).",
+          "gap_check": "캠페인 목록 화면에서 REST 로 N+1 요청이 생길 때 GraphQL 로 바꾸면 무엇이 좋아지고 무엇(캐싱·권한)이 어려워지는가?",
+          "drill": "같은 캠페인 목록을 REST(목록+상세 N회)와 GraphQL(한 번) 두 방식으로 받아 요청 수·응답 크기를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "GraphQL — Learn",
+              "url": "https://graphql.org/learn/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "프론트엔드 빌드 도구 (Babel·Webpack·NPM)",
+          "from": "qualification",
+          "quote": "• Babel, Webpack, NPM 등 일반적인 프론트 엔드 개발 도구 사용 경험이 있는 분",
+          "priority": "core",
+          "why": "자격에 도구 이름이 명시돼 있다.",
+          "gap_check": "Babel 과 Webpack 이 각각 무엇을 하고, 트리 셰이킹이 동작하려면 코드가 어떤 모듈 형식이어야 하는가?",
+          "drill": "작은 React 앱을 Webpack+Babel 로 직접 설정해 빌드하고, 번들 분석기로 큰 의존성 하나를 동적 import 로 분리한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "webpack — Concepts",
+              "url": "https://webpack.js.org/concepts/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "사용성·Lean UX·반복 설계",
+          "from": "qualification",
+          "quote": "• 사용성, Lean UX 설계, 개념적 모델링, 트렌드에 대한 뛰어난 지식이 있는 분",
+          "priority": "high",
+          "why": "자격에 Lean UX·개념적 모델링·단위/사용자 테스트·반복 설계가 함께 있다. 판매자용 도구라 사용성이 광고 매출로 이어진다(추론).",
+          "gap_check": "캠페인 생성 완료율을 올리기 위한 가설 하나를 세우고, 그걸 작은 실험으로 검증하는 절차를 설명할 수 있는가?",
+          "drill": "캠페인 마법사의 한 단계를 두 가지 안으로 만들어 지인 5명에게 과제를 주고 걸린 곳·완료 시간을 기록한다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "데이터 웨어하우징 개념 (광고 성과 데이터)",
+          "from": "preference",
+          "quote": "• 데이터베이스 시스템, 데이터 웨어하우징 개념에 대한 높은 이해가 있는 분",
+          "priority": "nice",
+          "why": "성과 대시보드는 대량 집계 데이터를 읽는다. 어떤 집계가 미리 계산돼 오는지 알아야 화면을 설계할 수 있다(추론).",
+          "gap_check": "일별 성과 테이블과 원시 이벤트 테이블 중 대시보드가 무엇을 읽어야 하는지, 기간 필터를 바꿀 때 지연은 어떻게 달라지는가?",
+          "drill": "가짜 광고 이벤트로 일별 집계 테이블을 만들고, 원시 테이블 직접 집계와 응답 시간을 비교한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "광고 성과 대시보드 포트폴리오",
+          "why": "셀프서비스 광고 화면과 가장 가까운 결과물이다. 입찰·예산·성과 지표를 다루는 화면을 보여 주면 도메인 경험 우대를 대신할 수 있다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 전화면접 - 대면(화상)면접 – 최종 합격 (공고 기준, 직무별로 다를 수 있음).",
+        "expect": [
+          "부분 실패에도 버티는 화면 설계",
+          "REST vs GraphQL 선택",
+          "빌드 도구 동작 원리",
+          "판매자 사용성 개선 사례"
+        ],
+        "sources": [
+          {
+            "title": "[쿠팡] Senior Front-end Engineer (Coupang Ads-ACI Intelligence)",
+            "url": "https://www.wanted.co.kr/wd/385086",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
