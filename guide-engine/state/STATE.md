@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **123건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **124건**.
+직전 회차: ✅ `Senior Security Engineer (Digital Forensics & eDiscovery)`(8052967, 6년↑) 5항목 — Purview eDiscovery·PowerShell·포렌식 수집·보고서. 겹침 0. (EDRM 모델 페이지 403 이라 뺌)
 직전 회차: ✅ `Senior Security Engineer (Attack Surface Identification)`(8160905, 5년↑) 5항목 — 외부 자산 식별·자체 ASM 도구(Python·AWS)·KEV 우선순위. 기존 공고와 겹침 0.
 직전 회차: ✅ `Staff Security Engineer (Information Security CFS, CLS, CES and DDnayo)`(8158581, 10년↑) 5항목 — 정보보호 거버넌스(비개발): ISMS-P·리스크·경영진 대시보드·위치정보법·OT. 제목 약어 풀이 없음(open_questions).
 직전 회차: ✅ `Staff Security Engineer (Vendor Security Assurance)`(8163760, 8년↑) 4항목 — 서드파티 리스크(비개발). 원문 오타 '3rd-prary' 그대로 인용.
@@ -28,10 +29,10 @@
 
 **남은 서울 공고(미작성, 모집중)** — 번호로 찾는다:
 - 개발: Senior QA (Advertiser Platform)(8222455)
-- 보안: Forensics(8052967), Pen Tester(8163504), Email Detection(7813854),
+- 보안: Pen Tester(8163504), Email Detection(7813854),
   Mobile Security(8203471), AI Security Architect(8224844)
 - 데이터 사이언스: Sr. Staff DS Incrementality(8029811)
-⚠️ 다음 회차: 보안 계열 — `Forensics`(8052967). ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
+⚠️ 다음 회차: 보안 계열 — `Pen Tester`(8163504). ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
