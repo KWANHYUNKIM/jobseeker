@@ -4,14 +4,18 @@
 
 ## 지금 쓰는 중
 
-**메디인테크**(`medintech`) — ✅ **`done`**(2026-09-26). 모집중 개발 공고 9건 전부(브리핑 7 + dup 2), 학습 40.
-이번 루프에서 끝낸 회사: **컬리 · 파이오링크 · 메디인테크** (셋 다 `done`, 사실 규칙 적용).
+**쿠팡**(`coupang`) — `in_progress`, 확장 재개(2026-09-26). 공고 **60건**(+1).
+(대기열이 비어 `--gaps` 가 쿠팡을 2순위로 줬다. 컬리·파이오링크·메디인테크는 `done`.)
 
-⚠️ 다음 회차: **QUEUE `## 대기` 가 비었다.** `--gaps` 는 **쿠팡 확장(2순위)** 을 준다 — 대기열이 비면
-`EXPAND_CAP` 보류가 풀리므로 사다리대로면 쿠팡이 맞다. 첫 후보가 `Senior Data Analyst (Audit Automation…)` 라
-**개발 직군이 아닐 수 있다** → 개발 직군이 아니면 `verdict` 첫 줄에 밝히거나, 목록에서 개발 공고를 골라 쓴다
-(아래 `⏸ 쿠팡` 절의 "차이만 쓸 대상 3건" 도 후보).
-대안: 새 회사로 대기열을 채우고 싶으면 **사람이 QUEUE 에 넣어야** 한다 — 엔진은 사다리를 건너뛰지 않는다.
+직전 회차: **`Senior Staff Back-end Engineer (Rocket Pay)`**(ats gh_jid=8078889) — Staff 판(wd/381767)과
+자격·우대 거의 같음, 차이 = **12년↑** + ats 본문의 **Rocket Pay 소개 세 문단**(온·오프라인 범용 결제로 확장,
+지갑·가맹점 온보딩·리스크 통제·재무 보고). 차이만 3항목. 미국 공고가 아니라 `base pay` 없음.
+⚠️ ats 본문은 `main_tasks` 칸에 **영어 소개 + Basic Qualifications 가 섞여** 들어온다 — quote 는 그 칸의 원문 줄에서.
+
+⚠️ 다음 회차: `--gaps` 먼저. 개발 직군이 아닌 공고(Data Analyst 등)가 먼저 나오면 목록에서 개발 공고를 고른다.
+남은 "차이만" 후보: `Staff Back-end Engineer (Rocket Pay)`(ats gh_jid=8138624, wd/381767 과 겹침 0.53 — 세 절 비교 후
+같으면 duplicate), `Staff Backend Engineer (Orchestration Platform)`, `Staff, Back-end Engineer (GOEX)`.
+**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다** — 그러면 쿠팡은 다시 뒤로 밀린다.
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.

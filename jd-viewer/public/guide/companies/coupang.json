@@ -8,7 +8,7 @@
     "Coupang"
   ],
   "status": "in_progress",
-  "updated_at": "2026-09-04",
+  "updated_at": "2026-09-26",
   "site": "coupang.com",
   "one_liner": "**직접 사서 직접 배송하는 커머스**로 시작해 **결제·배달·광고·대만까지 늘린 회사**. NYSE 상장사(`CPNG`)라 **이 엔진에서 실적을 공시로 확인할 수 있는 첫 회사**다.",
   "company": {
@@ -7841,6 +7841,80 @@
           "다른 팀이 내 도구를 쓰게 만든 방법"
         ],
         "sources": []
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078889",
+      "title": "Senior Staff Back-end Engineer (Rocket Pay)",
+      "site": "ats",
+      "verdict": "Staff 판(wd/381767)과 자격·우대가 거의 같고 '백엔드 12년 이상'이 다르다 — 공통 공부거리(결제 백오피스·정산·대사, 기술 오너십)는 Staff 브리핑을 본다. 이 게시에만 있는 것은 Rocket Pay 플랫폼 소개다: 쿠팡 안에 머물던 결제를 온·오프라인 범용 결제로 넓히고, 지갑·가맹점 온보딩·리스크 통제·재무 보고까지 한 팀이 맡는다.",
+      "fit": {
+        "must_have": [
+          "백엔드 12년 이상",
+          "Java/Kotlin·Spring 대규모 분산 시스템 설계·운영",
+          "성능·안정성·데이터 정합성·보안을 고려한 설계"
+        ],
+        "can_learn": [
+          "오프라인 가맹점 결제 흐름"
+        ]
+      },
+      "study": [
+        {
+          "topic": "쿠팡 밖(온·오프라인 가맹점)으로 넓어지는 결제 플랫폼",
+          "from": "task",
+          "quote": "The Product Engineering team owns the technology platform behind Rocket Pay, Coupang Pay's next-generation payment ecosystem. We are transforming a payment solution that was once limited to the Coupang ecosystem into a universal payment platform that serves customers across online and offline commerce. Our mission is to deliver the most trusted, scalable, and frictionless payment experience while building the financial infrastructure that powers the future of commerce.",
+          "priority": "high",
+          "why": "ats 본문 소개가 '쿠팡 생태계에 갇혀 있던 결제를 온·오프라인 범용 결제 플랫폼으로 바꾸는 중'이라고 적었다. 12년차에게는 이 확장의 설계 방향을 물을 가능성이 크다(추론).",
+          "gap_check": "내부 전용 결제를 외부 가맹점에 열 때 API·인증·정산 주기·장애 격리에서 무엇이 새로 필요해지는가?",
+          "drill": "'외부 가맹점 결제 API' 설계 문서 한 장 — 가맹점 인증, 멱등 키, 웹훅 재시도, 가맹점별 정산 주기, 가맹점 하나의 폭주가 다른 가맹점에 번지지 않게 하는 격리(rate limit·bulkhead)를 적는다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "지갑·가맹점 온보딩·리스크 통제·재무 보고의 경계",
+          "from": "task",
+          "quote": "Our systems process massive transaction volumes and support critical financial operations including payment processing, wallet services, merchant onboarding, settlement, reconciliation, risk controls, and financial reporting. We operate in an environment where reliability, scalability, security, and operational excellence are non-negotiable.",
+          "priority": "high",
+          "why": "이 팀이 맡는 범위가 결제 처리, 지갑, 가맹점 온보딩, 정산, 대사, 리스크 통제, 재무 보고로 나열돼 있다. Staff 브리핑이 정산·대사를 다뤘으니, 여기서는 나머지 경계가 차이다.",
+          "gap_check": "지갑 잔액 변경과 결제 승인, 리스크 판정이 한 요청 안에서 일어날 때 어느 것이 먼저이고, 중간에 실패하면 무엇을 되돌리는가?",
+          "drill": "결제 한 건이 리스크 판정 → 지갑 차감 → 승인 → 원장 기록을 지나는 순서도를 그리고, 각 단계 실패 시 보상 동작을 표로 적는다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "12년차 기대치 — 도메인 하나를 끝까지 책임진 이력",
+          "from": "qualification",
+          "quote": "Backend 개발 경력 12년 이상을 보유하신 분",
+          "priority": "core",
+          "why": "Staff 판과 갈리는 유일한 자격 줄이다. 자격의 나머지 줄(오너십, 모호한 문제 구조화, 비즈니스 임팩트)은 같으니 연차만큼 증거의 크기가 커져야 한다(추론).",
+          "gap_check": "'하나 이상의 복잡한 서비스 또는 도메인에 대한 기술적 오너십'을 수치(트래픽·장애율·비용·매출)로 보여 줄 사례가 둘 이상 있는가?",
+          "drill": "대표 프로젝트 둘을 '문제 → 내가 내린 기술 판단 → 비즈니스 결과(숫자)' 세 줄로 다시 쓴다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "오프라인 결제(QR·단말) 흐름을 온라인 결제와 비교한 한 장",
+          "why": "소개문이 오프라인 커머스로의 확장을 명시한다. 두 흐름의 차이(승인 지연 허용치, 취소·부분취소, 정산)를 정리해 가면 확장 방향 대화에 바로 들어간다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "Application Review - 1st Interview - 2nd Interview – Offer (공고 기준, 일정·상황에 따라 바뀔 수 있음).",
+        "expect": [
+          "내부 결제를 외부 가맹점에 열 때의 설계",
+          "결제·지갑·리스크의 실패 처리 순서",
+          "12년 경력에서 도메인을 끝까지 책임진 사례",
+          "Staff 브리핑의 공통 질문(정산·대사, 기술 오너십)"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff Back-end Engineer (Rocket Pay)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078889",
+            "publisher": "Coupang Careers"
+          }
+        ]
       }
     }
   ],
