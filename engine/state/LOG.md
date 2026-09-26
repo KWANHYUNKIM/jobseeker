@@ -1644,3 +1644,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Hacobu 컨설팅·SI·인재 소개 수익원 보류
 
 - 완주 검사: Zenn RSS 20편(1회) · Zenn 검색 API 5낱말(2회) — hacobu 글 9편은 조직·QA·보안·MOVO Vista SLO. 세 수익원 글 없음 → hold_reason. MOVO Vista SLO 는 보강 재료로 남김.
+
+## 2026-09-26 estie 회사 프로파일
+
+- 사업 페이지(리서치 5종·안건 관리·스마트 리폼·컨설팅)·CTO 회사 소개 블로그·Zenn 두 편(프라이빗 데이터 기반 · Preview with DB). 도메인 둘, 기능 0. 대기열 0/3.

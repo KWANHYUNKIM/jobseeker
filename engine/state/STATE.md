@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Hacobu hold(2026-09-26) — 도메인 둘·기능 둘, 컨설팅·SI·인재 소개 수익원은 두 번 찾아 없음 → hold_reason. MOVO 보강 재료는 open_questions 에(MOVO Vista SLI/SLO `10604ab75c4232` 등). 다음은 **후보 조사**(대기 1/3 — estie 뿐, `--gaps` 가 신규를 가리켜도 먼저 버퍼를 채울 것: 물류 축·Zenn Publication RSS 입구가 유효). 그다음 대기 맨 위 신규. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX ↔ Hacobu CI 가드레일). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu(hold)·LayerX 는 in_progress.**
+**estie 회사 프로파일(2026-09-26) — 도메인 둘: 고객이 맡긴 데이터를 여러 서비스가 한 곳에 둔다(`c6ab2270eaab31` — 결정이 풍부: 단일 DB·매크로 ORM 래퍼·원시 권한 모델) · PR 마다 운영에 가까운 DB 를 빌려 쓰고 버린다(`59ec0ae59c3199` — 방식 3안 비교표). 다음은 확장: `--gaps` 순서대로 기능 하나씩. 그다음 완주 검사 — 스마트 리폼·DX 컨설팅 수익원(1회차: Zenn RSS 20편 없음) → 2회차 Zenn 검색 API·estie.jp/blog. 대기 0/3 — **estie 를 닫기 전이라도 `--gaps` 가 후보 조사를 찍으면 따를 것**(큐 0 이면 3순위). 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스·Nature·LayerX·Hacobu CI) + **여러 제품이 한 데이터 기반에**(estie 프라이빗 데이터 ↔ 로그라스 · CADDi Control Plane). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu(hold)·LayerX 는 in_progress.**
 
 
 
