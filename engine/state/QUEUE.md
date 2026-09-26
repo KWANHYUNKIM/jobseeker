@@ -73,9 +73,15 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **REALITY** | JP · 버추얼 라이브 앱(REALITY) · 아바타 · GREE 그룹 | 입구 `zenn.dev/p/reality_tech/feed`(Zenn Publication, 20편+). 대가를 말하는 1 차 글: ① `zenn.dev/keigo_masuzumi/articles/f6305331bccee0`(2026-09-01, OOMKill 원인이 CPU — GOGC · GOMEMLIMIT 를 실측으로 다시 설계, 메모리 절대량 기준 GC 의 대가 · GC CPU limiter 50% 에 CPU 절반을 먹히는 문제) ② `zenn.dev/yuya_fujita/articles/d4858623c73a6b`(2026-08-05, Redis → Valkey 이행 — 견준 안과 '과하다'는 이유로 버린 안) ③ `zenn.dev/nobtagon/articles/b94f27fff47c16`(2025-12-26, Datastream + Dataflow 로 MySQL → Spanner 이행) · Spanner × GORM 커밋 타임스탬프 · 7 년 된 Go monorepo(10 서버) Renovate. 수익 구조(선물 · 코인 등)는 프로파일 사이클에서 확인. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-27 백다섯 번째 후보 조사 — 목표 3곳 중 1곳. 입구: 검색 대신 `zenn.dev/api/articles?order=latest&page=1..30` 을 훑어 Publication 을 모으고(`api/publications` 는 막힘), 기존 회사 · QUEUE · STATE 에 없는 40곳을 골라 RSS 로 목록을 보고 본문은 `zenn.dev/api/articles/<slug>` 의 body_html 로 읽었다(Publication 글 주소는 `zenn.dev/<작성자>/articles/<slug>` — `zenn.dev/<pub>/<slug>` 는 404).**
+  - **REALITY** — **버추얼 라이브 · Go 백엔드 축(처음).** GC 튜닝 · Valkey 이행 · Spanner 이행이 대가를 말한다.
+  - **약함 — 다음에 다시 볼 곳.** **ourly**(사내보 SaaS — 비트 플래그 1 대 다 모델이 장단점을 적지만 글이 짧다 · CanCanCan 권한 5 년 · Redshift → Aurora 동기화) · **PORTERS**(인재 업계 SaaS — 선고 프로세스 이중 등록 버그에서 도메인 모델 · PK 형 BIGINT vs VARCHAR, 둘 다 짧다).
+  - **걸렀다.** TRUSTDOCK(eKYC — IC 칩 읽기 입문 · 행사 글 위주) · alphapolis_tech(6편, 도구 글) · sprix_it(사내 IT · Claude Code 운용 위주) · deloitte_jp_eng · microsoft · mkj · yumemi_inc(수탁) · gnss_egg_team · crandim_r_and_d · m16_llc · eques_blog(발표 · 연구 성격 또는 한두 편). KnowledgeWork 는 이번에도 목록에 떴지만 두 번 걸렀던 곳이라 다시 안 봄.
+  - **배운 것.** 최신 글 30쪽을 훑는 입구가 검색 API 보다 '아직 안 본 Publication'을 많이 낸다(40곳). 다만 대부분 한두 편짜리라 RSS 20편 이상 · 제품 글 비율로 거르는 게 빠르다.
 - **2026-09-27 백네 번째 후보 조사 — 목표 3곳 중 1곳. 입구: Zenn 검색 API 두 묶음 × 3쪽 — ① 비즈니스 로직 주제어 10개(在庫 引当 ロジック · 割引 計算 · 税 計算 端数 · 定期便 システム · サブスク 課金 設計 · 返金 処理 · 締め処理 · 与信 · ポイント 失効 · 配送料 計算) → 거의 비었다(이미 본 글 · 무관) ② 제품 출시 주제어 10개(新機能 開発 背景 · 新機能 リリース 裏側 · プロダクト 開発 事例 · 大規模 リプレイス · 本番 移行 事例 · toC/toB 設計 · マルチプロダクト 基盤 · 検索機能 刷新 · 通知基盤 刷新) → 스타디스트.**
   - **スタディスト** — **업무 매뉴얼 SaaS 축.** 1 대 EKS 에 멀티 프로덕트, 계정 분리 판단.
   - **걸렀다.** uniquevision(Rust · 도구 글 위주, 수탁 개발 성격) · contrea(AI 도구 · 사내 활용) · jins(비엔지니어 실험) · ubie_dev(이미 언급) · purpom · takeyuwebinc(라이브러리 소개) · komlock_lab · more_tech_blog · mbk_digital · funovo · peoplex_blog · agent_grow.
