@@ -1572,3 +1572,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Sumzap 메모리 최적화
 
 - 메모리 글 전문으로 `battle-resource-lifetime-scene-manager`(결정 7 — 전담 팀·SceneManager 수명·남기는 게 예외·경량 품질·누수 클래스별·iOS 옵션(데드 코드 발견)·통 플레이 검증). v3.5.0 에서 1시간 크래시 없음.
+
+## 2026-09-26 Sumzap 동적 개발 환경
+
+- 동적 환경 글 전문으로 `ephemeral-envs-suffix-callback-reaper`(결정 7 — 동적 환경·suffix 키·공유/폐기 선긋기·0 스케일·OAuth callback host(HMAC state)·TTL reaper·라벨 가드). SMS preview 환경·Career Portal 고정 환경과 비교 재료.

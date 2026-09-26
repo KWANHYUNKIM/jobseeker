@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Sumzap — 확장 1(2026-09-26): 메모리 도메인에 `battle-resource-lifetime-scene-manager`(결정 7). 다음은 확장: '기능 브랜치마다 개발 환경을 세우고 기한이 지나면 지운다' 를 동적 환경 글(`entry/dynamic-development-environment-provisioning`, scratchpad `sz_env.txt` — 공유/사용 후 폐기 설계·OAuth callback proxy·reaper). 완주 판정 때 IP·이벤트 수익원은 도메인이 없다. 대기 1/3(Yappli `yp_inq.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
+**Sumzap — 확장 2(2026-09-26): 동적 환경 도메인에 `ephemeral-envs-suffix-callback-reaper`(결정 7). 두 도메인 모두 기능. 다음은 완주 판정 — IP·이벤트(GCRESTUDIO) 수익원은 도메인이 없다: tech.sumzap.co.jp 사이트맵 2023~2026 전 제목(병렬, 접미사 ' - Sumzap Engineering Blog' 떼기)을 'Paradox·パラライ·GCRESTUDIO·イベント·ライブ·IP' 로, 두 번 없으면 hold. 대기 1/3(Yappli `yp_inq.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
 
 
 
