@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**ENECHANGE — hold(2026-09-26, 도메인 2 · 기능 2). 비교·전환·EV·투자 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 신규: QUEUE 대기 맨 위(드왕고 교육 — `blog.nnn.dev`, 교재 기반 10년 회고 `entry/2026/06/01/110000` 부터, scratchpad `nnn_kyozai.txt`). 대기 1/3 — 드왕고 교육 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
+**드왕고 교육(`dwango-edu`) — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '교재 기반을 대학부터 새 시스템으로 옮긴다' 를 교재 기반 10년 회고(`entry/2026/06/01/110000`, scratchpad `nnn_kyozai.txt` — 전문 읽음). 그 뒤 Android Legacy 격리(`2026/07/29/110000`, `nnn_android.txt` — Step 0~4 코드 부분 미독). 수익원 둘은 inferred — 완주 판정 때 학교 법인 관계를 한 번 더 찾는다. 대기 0/3 — 큐가 0 이라 후보 조사가 3순위로 먼저 걸릴 수 있다(`--gaps` 를 따른다). 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
 
 
 

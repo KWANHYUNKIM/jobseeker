@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "dwango-edu",
+      "name": "ドワンゴ 教育事業(ZEN Study)",
+      "name_en": "Dwango Education (ZEN Study)",
+      "country": "JP",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "N고·ZEN 대학의 학습 플랫폼 ZEN Study — 부채 쌓인 교재 기반을 옛 시스템에 대학을 덧대는 대신 새 시스템으로 대학부터 옮기고, 10년 된 앱은 Legacy 에 가둬 한 방향으로만 빼낸다",
+      "updated_at": "2026-09-26",
+      "domain": "nnn.dev"
+    },
+    {
       "slug": "enechange",
       "name": "エネチェンジ",
       "name_en": "ENECHANGE",
@@ -3107,7 +3119,9 @@
     "경비 전표를 AI 가 초안 쓰고 규칙이 검사한다",
     "청구서가 거래처에 닿는 제품의 장애를 영향으로 줄 세운다",
     "청구 금액 재작성의 합부를 기존 시스템의 출력이 가른다",
-    "워크플로 테스트를 배선과 내용으로 가른다"
+    "워크플로 테스트를 배선과 내용으로 가른다",
+    "교재 기반을 대학부터 새 시스템으로 옮긴다",
+    "10년 된 앱을 Legacy 에 가두고 한 방향으로 빼낸다"
   ],
   "countries": {
     "KR": "한국",
