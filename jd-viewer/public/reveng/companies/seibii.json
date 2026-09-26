@@ -160,7 +160,7 @@
               "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
               "publisher": "Seibii",
               "date": "2025-12-09",
-              "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**."
+              "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
             }
           ]
         },
@@ -180,7 +180,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "monolith-led-lambda-requests"
+      ]
     },
     {
       "name": "부품이 거친 단계마다 그때의 분류를 남긴다",
@@ -508,7 +510,7 @@
               "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
               "publisher": "Seibii",
               "date": "2025-12-09",
-              "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**."
+              "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
             }
           ]
         }
@@ -548,6 +550,397 @@
           "summary": "**출장 정비** — 정비사가 집 · 주차장으로 와서 고장 수리(배터리 · 얼터네이터 · 스타터 교환, 엔진 진단) · 부품 장착(드라이브 레코더 · TV 캔슬러) · 차검 · 12개월 점검 · 에어컨 · 타이어 교체를 한다. 전국 47 도도부현. **금액을 미리 확정하고 간다**(결제 후 추가 청구 없음, 서비스 추가 제외) · 캐시리스(카드 · QR · NP 후불, 현금 불가). 부품 수배가 필요한 메뉴는 일정 확정 후 원칙 취소 불가(취소 시 공임 · 부품대 100%). 메뉴에 법인 · 정비사(프리랜서 · 부업 · **스폿 바이트**) · **정비 공장** 입구가 따로 있다."
         }
       ]
+    },
+    {
+      "key": "monolith-led-lambda-requests",
+      "name": "Lambda 는 실행만, 판단과 기록은 Rails — 요청과 응답이 짝을 이루는 이벤트",
+      "domain": "무거운 일은 밖에서 돌리되, 판단과 상태는 모놀리스가 쥔다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "출장 정비 뒤에는 무거운 일이 붙는다 — 고객에게 보내는 **영수증 등 PDF**, Playwright 로 하는 브라우저 조작, Ruby SDK 가 없는 LLM 연계. Rails 안에서 돌리면 Chromium 의 메모리 · CPU 가 Worker 비용을 올리고 긴 Job 이 Worker 를 막는다. PDF 를 만들던 **wkhtmltopdf** 는 레포가 아카이브됐고 glibc 바이너리라 Alpine 업그레이드를 깨뜨려 Rails 이미지를 Debian 에 묶어 두고 있었다.\n\n이미 있던 Lambda 들은 Webhook · 인증 · 레포가 제각각이라 **새로 하나 붙일 때마다** 그걸 처음부터 생각해야 했고, 실패하면 무엇이 일어났는지 추적하기 어려웠다. 무거운 일을 밖으로 빼되 **Rails 의 업무 흐름이 끊기지 않게** — 결과를 받아 메일을 보내는 후속 처리까지 이어져야 했다.",
+        "metrics": [
+          {
+            "label": "EventBridge 이벤트 크기 상한",
+            "value": "256KB — 큰 HTML · PDF 는 S3 서명 URL 로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              },
+              {
+                "title": "wkhtmltopdf依存から抜け出して、PDF生成をLambdaにお引っ越しした話",
+                "url": "https://zenn.dev/seibii_blog/articles/pdf-lambda-migration",
+                "publisher": "Seibii",
+                "date": "2025-12-01",
+                "summary": "Rails 안에서 **wkhtmltopdf** 로 PDF(영수증 등)를 만들어 왔다. 문제: 레포 아카이브 · QtWebkit 유지보수 중단(보안), glibc 바이너리라 **Alpine 업그레이드 때 깨져 Debian 이미지로** 갈아탐, Noto CJK 폰트까지 들어가 **이미지 비대화**. grover gem 은 Puppeteer 때문에 Node.js 가 들어가고, ferrum 은 Chromium 바이너리를 Rails 컨테이너에 넣어야 해서 기각. **Lambda(컨테이너, Playwright + Chromium) + EventBridge** 로 분리 — 사내 Rails↔Lambda 이벤트 프레임워크를 쓴다. EventBridge 이벤트 **256KB 제한** 때문에 HTML 은 S3 에 올려 **서명 URL** 을 싣고, Lambda 는 PDF 를 자기 버킷에 올려 서명 URL 로 응답, Rails 는 받아서 **자기 버킷에 복사**(버킷을 공유하지 않는다, Shrine 에 태운다). 폰트 의존도 Lambda 에 가둔다. 글 시점엔 본번 전환 준비 중 — 이후 wkhtmltopdf · 폰트 삭제, Alpine/distroless 검토, PNG 등 화상 변환(OGP)으로 확장 예정. 부수 효과: PDF 피크 부하를 신경 안 써도 된다."
+              }
+            ]
+          },
+          {
+            "label": "Lambda 추가 절차",
+            "value": "3 단계 — 함수 · EventBridge 규칙 · Rails 의 detail-type → Job 등록",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "콜드 스타트",
+            "value": "수백 ms~수 초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "프로젝트를 시작할 때",
+          "thought": "처음엔 '느슨한 결합'의 마이크로서비스 설계를 목표로 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+              "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+              "publisher": "Seibii",
+              "date": "2025-12-09",
+              "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+            }
+          ]
+        },
+        {
+          "at": "트리거를 따져 봤을 때",
+          "thought": "'이 사용자가 이 행동을 하면 이 처리를' 이라는 판단은 **Rails 의 업무 로직**에 붙어 있다. Lambda 가 스스로 판단하게 할 이유가 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+              "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+              "publisher": "Seibii",
+              "date": "2025-12-09",
+              "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+            }
+          ]
+        },
+        {
+          "at": "다 만들고 돌아봤을 때",
+          "thought": "필요했던 건 느슨한 결합이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다. 느슨한 결합은 만능이 아니다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+              "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+              "publisher": "Seibii",
+              "date": "2025-12-09",
+              "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "EventSystemRequest",
+            "what": "Rails 가 EventBridge 로 보낸 요청의 기록. detail-type · expected_detail_types(기다리는 응답 종류) · timeout_at(언제까지 기다리나)을 든다."
+          },
+          {
+            "name": "EventSystemResponse",
+            "what": "Webhook Forwarder 를 거쳐 Rails 에 온 응답의 기록. 후속 Job 을 띄운다."
+          },
+          {
+            "name": "detail-type",
+            "what": "이벤트의 종류(예: request.content-converter). Rails 는 이것만 알고, 어느 Lambda 가 처리할지는 EventBridge 규칙이 정한다."
+          },
+          {
+            "name": "Lambda(실행자)",
+            "what": "입력을 받아 처리하고 결과를 EventBridge 로 보내는 무상태 함수. '언제 무엇을' 판단하지 않는다."
+          },
+          {
+            "name": "Webhook Forwarder",
+            "what": "모든 Lambda 결과를 Rails 의 단일 엔드포인트로 넘기는 전용 Lambda. 인증 · 에러 처리를 공통화한다."
+          }
+        ],
+        "invariants": [
+          "처리의 시작 · 완료 · 타임아웃 판단과 모든 상태는 Rails DB 에 있다 — Lambda 는 상태를 들지 않는다.",
+          "timeout_at 을 넘긴 응답은 기록만 하고 후속 처리를 하지 않는다 — 재시도해도 후속 처리가 두 번 돌지 않는다.",
+          "Lambda 와 Rails 는 S3 버킷을 공유하지 않는다 — 서명 URL 로 주고받고 받은 쪽이 자기 버킷에 복사한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Rails 가 EventSystemRequest 를 만들고 detail-type 을 붙여 EventBridge 로 보낸다(큰 HTML 은 S3 에 올려 서명 URL 만)",
+            "why": "요청을 DB 에 먼저 남겨 '보냈는가'를 추적한다. 256KB 제한을 피한다."
+          },
+          {
+            "step": "EventBridge 규칙이 detail-type 에 맞는 Lambda 를 띄운다",
+            "why": "Rails 는 어느 Lambda 가 어디 있는지 모른다 — 팬아웃 · 조건 분기도 규칙만으로."
+          },
+          {
+            "step": "Lambda(예: Playwright + Chromium PDF)가 처리하고 결과를 자기 버킷에 올려 서명 URL 을 응답 이벤트로",
+            "why": "무거운 바이너리 · 폰트는 Lambda 컨테이너에 가둔다."
+          },
+          {
+            "step": "Webhook Forwarder 가 응답을 Rails 단일 엔드포인트로 넘긴다",
+            "why": "Lambda 마다 Webhook · 인증을 만들지 않는다."
+          },
+          {
+            "step": "Rails 가 EventSystemResponse 를 만들고, timeout_at 안이면 후속 Job(PDF 를 자기 버킷에 복사 · 메일 등)을 띄운다",
+            "why": "결과를 받아 업무 흐름을 잇는다. 늦은 응답은 기록만."
+          },
+          {
+            "step": "기한까지 응답이 없으면 timed_out — 알림을 올린다",
+            "why": "'영영 안 오는 응답'을 검지한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무거운 처리(Chromium · LLM · PDF)를 어디서 돌리나?",
+            "chosen": "**Lambda(또는 개별 ECS)로 뺀다.**",
+            "alternatives": [
+              "ActiveJob Worker 에서 돌린다"
+            ],
+            "tradeoff": "Chromium 의 메모리 · CPU 로 Worker 비용이 오르거나 긴 Job 이 Worker 를 막지 않고, API 서버 이미지를 작게 유지하며 Node.js 같은 별도 프로세스를 들이지 않는다. 대가는 **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 부적합)와 동기 처리보다 어려운 디버그 · 로컬 재현, 그리고 ActiveJob 만 쓸 때보다 느는 공수.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "Lambda 에 보내고 끝인가, 결과를 받나?",
+            "chosen": "**Request/Response** — 결과를 받아 후속 처리(메일 등)를 한다.",
+            "alternatives": [
+              "발행자가 결과를 모르는 fire-and-forget(마이크로서비스 교과서의 이상형)"
+            ],
+            "tradeoff": "성공했는지 실패했는지 **추적**할 수 있고, 타임아웃을 검지해 알림을 올리며, 장애 조사 때 무엇이 일어났는지 따라갈 수 있다. 대가는 발행자와 처리자가 **서로를 기다리는 결합**이 남는다는 것 — 교과서의 느슨한 결합을 일부러 포기했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "'언제 무엇을 처리할지'는 누가 판단하나?",
+            "chosen": "**Rails 가 판단해 요청을 낸다.** Lambda 는 실행자.",
+            "alternatives": [
+              "Lambda 가 이벤트 버스를 구독해 스스로 판단한다"
+            ],
+            "tradeoff": "트리거가 Rails 의 업무 로직('이 사용자가 이 행동을 하면')에 붙어 있으니 판단을 한곳에 둔다. 대가는 Lambda 가 **자율적으로 배포 · 확장되는 이점**을 덜 누린다는 것(이 사이트의 해석 — 글은 독립 배포 · 스케일을 자율형의 장점으로만 든다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "처리 상태 · 잡 이력은 어디에 두나?",
+            "chosen": "**모두 Rails DB** — EventSystemRequest / Response. Lambda 는 무상태.",
+            "alternatives": [
+              "Lambda 마다 DynamoDB 등 자기 저장소를 든다"
+            ],
+            "tradeoff": "시작 · 완료 · 타임아웃 판단이 Rails 에 있고, 장애 조사 때 **볼 곳이 한 곳**이다 — 언제 보냈나 · 응답이 왔나 · 얼마나 걸렸나 · 어떤 상태로 실패했나. 대가는 서비스별 저장소가 주는 **스키마 변경 영향의 국소화**를 포기한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "요청을 어느 Lambda 로 보낼지 어떻게 정하나?",
+            "chosen": "**EventBridge 규칙** — Rails 는 detail-type 만 안다.",
+            "alternatives": [
+              "SQS 로 직접 보낸다",
+              "SNS + SQS 로 팬아웃한다"
+            ],
+            "tradeoff": "S3 파일 추가 같은 AWS 이벤트와 **같은 구조**로 받을 수 있고, 팬아웃 · 조건별 송신처 변경을 규칙만으로 한다 — SQS 단독으론 어렵고 SNS + SQS 조합이 필요한 패턴이 한 서비스로 끝난다. 대가는 **256KB 이벤트 상한** — 큰 데이터는 S3 에 두고 URL 만 싣는 설계가 필수.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              },
+              {
+                "title": "wkhtmltopdf依存から抜け出して、PDF生成をLambdaにお引っ越しした話",
+                "url": "https://zenn.dev/seibii_blog/articles/pdf-lambda-migration",
+                "publisher": "Seibii",
+                "date": "2025-12-01",
+                "summary": "Rails 안에서 **wkhtmltopdf** 로 PDF(영수증 등)를 만들어 왔다. 문제: 레포 아카이브 · QtWebkit 유지보수 중단(보안), glibc 바이너리라 **Alpine 업그레이드 때 깨져 Debian 이미지로** 갈아탐, Noto CJK 폰트까지 들어가 **이미지 비대화**. grover gem 은 Puppeteer 때문에 Node.js 가 들어가고, ferrum 은 Chromium 바이너리를 Rails 컨테이너에 넣어야 해서 기각. **Lambda(컨테이너, Playwright + Chromium) + EventBridge** 로 분리 — 사내 Rails↔Lambda 이벤트 프레임워크를 쓴다. EventBridge 이벤트 **256KB 제한** 때문에 HTML 은 S3 에 올려 **서명 URL** 을 싣고, Lambda 는 PDF 를 자기 버킷에 올려 서명 URL 로 응답, Rails 는 받아서 **자기 버킷에 복사**(버킷을 공유하지 않는다, Shrine 에 태운다). 폰트 의존도 Lambda 에 가둔다. 글 시점엔 본번 전환 준비 중 — 이후 wkhtmltopdf · 폰트 삭제, Alpine/distroless 검토, PNG 등 화상 변환(OGP)으로 확장 예정. 부수 효과: PDF 피크 부하를 신경 안 써도 된다."
+              }
+            ]
+          },
+          {
+            "question": "응답이 영영 안 오거나 늦게 오면?",
+            "chosen": "**expected_detail_types + timeout_at** — 기한까지 기다리는 종류의 응답이 없으면 timed_out, 늦은 응답은 기록만 하고 후속 처리 안 함.",
+            "alternatives": [
+              "응답이 올 때까지 무기한 기다린다"
+            ],
+            "tradeoff": "네트워크 장애 · Lambda 이상 종료로 응답이 안 와도 검지하고, **재시도로 같은 요청을 다시 보내도 후속 처리가 두 번 돌지 않는다**. 대가는 기한 뒤 성공한 처리의 결과를 버린다는 것(이 사이트의 해석 — 기록은 남는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "Lambda 결과를 Rails 로 어떻게 돌려받나?",
+            "chosen": "**전용 Webhook Forwarder Lambda → Rails 단일 엔드포인트.**",
+            "alternatives": [
+              "Lambda 마다 Rails 에 Webhook 을 둔다(이전)"
+            ],
+            "tradeoff": "개별 Lambda 는 EventBridge 로 결과만 보내면 되고 인증 · 에러 처리 · 후속 처리 기동이 공통화된다 — 추가가 **함수 · 규칙 · Job 등록 3 단계**로 줄었다. 대가는 모든 응답이 **한 경로를 지난다**는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+                "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+                "publisher": "Seibii",
+                "date": "2025-12-09",
+                "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "PDF 생성(wkhtmltopdf)을 무엇으로 바꾸나?",
+            "chosen": "**Lambda 컨테이너(Playwright + Chromium + Noto CJK)** 로 분리하고, HTML · PDF 는 S3 서명 URL 로 주고받되 **버킷을 공유하지 않는다**.",
+            "alternatives": [
+              "grover gem(Chromium + Puppeteer)",
+              "ferrum gem(Node.js 없이 Chromium 조작)"
+            ],
+            "tradeoff": "grover 는 Node.js 를, ferrum 은 Chromium 바이너리를 Rails 컨테이너에 들여 **OS 의존 · 이미지 비대화**가 그대로다. 분리하면 Rails 에서 wkhtmltopdf · 폰트를 빼 **Alpine/distroless 로 갈 길**이 열리고 PDF 피크 부하도 신경 쓸 일이 준다. 대가는 S3 왕복과 Rails 쪽 복사 한 단계 — 글 시점엔 본번 전환 준비 중이었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "wkhtmltopdf依存から抜け出して、PDF生成をLambdaにお引っ越しした話",
+                "url": "https://zenn.dev/seibii_blog/articles/pdf-lambda-migration",
+                "publisher": "Seibii",
+                "date": "2025-12-01",
+                "summary": "Rails 안에서 **wkhtmltopdf** 로 PDF(영수증 등)를 만들어 왔다. 문제: 레포 아카이브 · QtWebkit 유지보수 중단(보안), glibc 바이너리라 **Alpine 업그레이드 때 깨져 Debian 이미지로** 갈아탐, Noto CJK 폰트까지 들어가 **이미지 비대화**. grover gem 은 Puppeteer 때문에 Node.js 가 들어가고, ferrum 은 Chromium 바이너리를 Rails 컨테이너에 넣어야 해서 기각. **Lambda(컨테이너, Playwright + Chromium) + EventBridge** 로 분리 — 사내 Rails↔Lambda 이벤트 프레임워크를 쓴다. EventBridge 이벤트 **256KB 제한** 때문에 HTML 은 S3 에 올려 **서명 URL** 을 싣고, Lambda 는 PDF 를 자기 버킷에 올려 서명 URL 로 응답, Rails 는 받아서 **자기 버킷에 복사**(버킷을 공유하지 않는다, Shrine 에 태운다). 폰트 의존도 Lambda 에 가둔다. 글 시점엔 본번 전환 준비 중 — 이후 wkhtmltopdf · 폰트 삭제, Alpine/distroless 검토, PNG 등 화상 변환(OGP)으로 확장 예정. 부수 효과: PDF 피크 부하를 신경 안 써도 된다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "출장 정비(개인)(수익원)",
+          "via": "영수증 등 PDF",
+          "contract": "본번의 영수증 등 PDF 생성을 이 구조로 옮길 계획이다 — 고객에게 가는 문서를 Rails 가 요청하고 결과를 받아 자기 버킷에 둔다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "wkhtmltopdf依存から抜け出して、PDF生成をLambdaにお引っ越しした話",
+              "url": "https://zenn.dev/seibii_blog/articles/pdf-lambda-migration",
+              "publisher": "Seibii",
+              "date": "2025-12-01",
+              "summary": "Rails 안에서 **wkhtmltopdf** 로 PDF(영수증 등)를 만들어 왔다. 문제: 레포 아카이브 · QtWebkit 유지보수 중단(보안), glibc 바이너리라 **Alpine 업그레이드 때 깨져 Debian 이미지로** 갈아탐, Noto CJK 폰트까지 들어가 **이미지 비대화**. grover gem 은 Puppeteer 때문에 Node.js 가 들어가고, ferrum 은 Chromium 바이너리를 Rails 컨테이너에 넣어야 해서 기각. **Lambda(컨테이너, Playwright + Chromium) + EventBridge** 로 분리 — 사내 Rails↔Lambda 이벤트 프레임워크를 쓴다. EventBridge 이벤트 **256KB 제한** 때문에 HTML 은 S3 에 올려 **서명 URL** 을 싣고, Lambda 는 PDF 를 자기 버킷에 올려 서명 URL 로 응답, Rails 는 받아서 **자기 버킷에 복사**(버킷을 공유하지 않는다, Shrine 에 태운다). 폰트 의존도 Lambda 에 가둔다. 글 시점엔 본번 전환 준비 중 — 이후 wkhtmltopdf · 폰트 삭제, Alpine/distroless 검토, PNG 등 화상 변환(OGP)으로 확장 예정. 부수 효과: PDF 피크 부하를 신경 안 써도 된다."
+            }
+          ]
+        },
+        {
+          "to": "shared-identity-foundation",
+          "via": "'메인 Rails 를 축으로 필요한 만큼만 떼어 낸다'",
+          "contract": "ID 기반은 공유 때문에 떼면서 정본까지 밖으로 냈고, Lambda 는 무거워서 떼되 상태와 판단은 Rails 에 남겼다 — 같은 회사가 떼어 내는 이유에 따라 정본의 자리를 달리한다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+              "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+              "publisher": "Seibii",
+              "date": "2025-12-09",
+              "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+            },
+            {
+              "title": "Seibii の ID 基盤移管: モノリスに集まったユーザー/整備士データをどう分けたか",
+              "url": "https://zenn.dev/seibii_blog/articles/b6a5bf468c95a4",
+              "publisher": "Seibii",
+              "date": "2026-08-07",
+              "summary": "출장 정비를 세우려 만든 **Rails 모놀리스**(메뉴 제시 · 예약 · 정비사 매칭 · 주문 · 작업 · 결제)가 중심이다. 정비사가 공장에서 일하는 **'스폿 공장 바이트'** · 정비사 활약 지원 서비스 · HubSpot 연계가 생기자 사용자/정비사 정보가 '출장 정비 안의 데이터'가 아니라 **서비스 횡단 데이터**가 됐다 — 각자 들면 갱신 누락 · 검증 차이 · 인증 중복 · '어디가 정본인가'. 그래서 **ID 기반**(SSOT 지향)으로 옮긴다: ① 여러 서비스에서 같은 뜻인 항목(이름 · 전화 · 메일 · 인증 연결 · 정비사 프로필 · 자격)만 싣고 주문 명세 · 작업 이력은 각 서비스에 ② 백엔드 간 **gRPC**(gem 클라이언트), 프런트는 **GraphQL** — 스폿 공장 바이트는 처음부터 ID 기반이 정본 ③ 모놀리스의 읽기를 **한 번에 돌리지 않고** 필요한 정보를 남긴 채 동기화해 점차 '참조용 사본'으로 ④ **이벤트 즉시 반영(속도) + 전회 이후 차분 배치(신뢰)** 로 누락을 따라잡는다 ⑤ HubSpot 연계도 항목별로 책임을 가른다. 모놀리스는 Packwerk 로 **모듈러 모놀리스** 화 중. 어려움: 사용자 정보가 주문 · 차량 · 정비사 배정 · 외부 연계에 깊이 얽혀 있었고, 같은 항목 같아도 정의 · 입도가 다른 데이터가 있어 QA 가 컸다."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청과 응답이 짝을 이루는 길",
+          "question": "Rails 의 요청은 어떤 길로 Lambda 에 가서 결과로 돌아오나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  R[\"Rails\\nEventSystemRequest\"] -- \"detail-type\\n(+S3 서명 URL)\" --> EB[\"EventBridge 규칙\"]\n  EB --> L[\"Lambda\\nPDF · Playwright · LLM\"]\n  L -- \"결과 이벤트\" --> EB2[\"EventBridge\"]\n  EB2 --> WF[\"Webhook Forwarder\"]\n  WF --> EP[\"Rails 단일 엔드포인트\\nEventSystemResponse\"]\n  EP --> J[\"후속 Job\\n버킷 복사 · 메일\"]"
+        },
+        {
+          "title": "요청 하나의 상태",
+          "question": "EventSystemRequest 는 어떤 상태를 거치고, 늦은 응답은 어떻게 되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 보냄\n  보냄 --> 응답받음: timeout_at 전 · expected_detail_types 일치\n  응답받음 --> 후속처리\n  후속처리 --> [*]\n  보냄 --> timed_out: timeout_at 까지 응답 없음\n  timed_out --> 알림\n  timed_out --> 늦은응답기록: 뒤늦게 도착\n  늦은응답기록 --> [*]: 후속 처리 안 함"
+        },
+        {
+          "title": "재시도가 이중 처리를 만들지 않는 이유",
+          "question": "타임아웃 뒤 재시도했는데 첫 요청의 응답이 늦게 오면?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"요청 1 — 응답 없음\"] --> B[\"timeout_at 경과 → timed_out\"]\n  B --> C[\"재시도: 요청 2\"]\n  C --> D[\"요청 2 응답 → 후속 처리 1회\"]\n  A -. \"늦게 도착\" .-> E[\"요청 1 응답\"]\n  E --> F{\"요청 1 은 timed_out?\"}\n  F -- 예 --> G[\"기록만 · 후속 처리 안 함\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "マイクロサービスにしない Lambda 連携 ─ Rails モノリスとの共存設計",
+          "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
+          "publisher": "Seibii",
+          "date": "2025-12-09",
+          "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
+        },
+        {
+          "title": "wkhtmltopdf依存から抜け出して、PDF生成をLambdaにお引っ越しした話",
+          "url": "https://zenn.dev/seibii_blog/articles/pdf-lambda-migration",
+          "publisher": "Seibii",
+          "date": "2025-12-01",
+          "summary": "Rails 안에서 **wkhtmltopdf** 로 PDF(영수증 등)를 만들어 왔다. 문제: 레포 아카이브 · QtWebkit 유지보수 중단(보안), glibc 바이너리라 **Alpine 업그레이드 때 깨져 Debian 이미지로** 갈아탐, Noto CJK 폰트까지 들어가 **이미지 비대화**. grover gem 은 Puppeteer 때문에 Node.js 가 들어가고, ferrum 은 Chromium 바이너리를 Rails 컨테이너에 넣어야 해서 기각. **Lambda(컨테이너, Playwright + Chromium) + EventBridge** 로 분리 — 사내 Rails↔Lambda 이벤트 프레임워크를 쓴다. EventBridge 이벤트 **256KB 제한** 때문에 HTML 은 S3 에 올려 **서명 URL** 을 싣고, Lambda 는 PDF 를 자기 버킷에 올려 서명 URL 로 응답, Rails 는 받아서 **자기 버킷에 복사**(버킷을 공유하지 않는다, Shrine 에 태운다). 폰트 의존도 Lambda 에 가둔다. 글 시점엔 본번 전환 준비 중 — 이후 wkhtmltopdf · 폰트 삭제, Alpine/distroless 검토, PNG 등 화상 변환(OGP)으로 확장 예정. 부수 효과: PDF 피크 부하를 신경 안 써도 된다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -582,7 +975,7 @@
       "url": "https://zenn.dev/seibii_blog/articles/c3b1d64e6b4332",
       "publisher": "Seibii",
       "date": "2025-12-09",
-      "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**."
+      "summary": "LLM(Ruby SDK 없음 · 느림) · Playwright 브라우저 조작 · 화상/PDF 변환 같은 무거운 일을 Rails 밖으로 뺀다. 원래 Lambda 마다 **Webhook · 인증 · 레포가 제각각**, 실패 검지 · 복구가 통일되지 않고 추적이 어려웠다. ActiveJob 은 Chromium 의 메모리 · CPU 비용, 장시간 Job 의 Worker 막힘, 별도 프로세스 관리, API 이미지 비대화가 걱정. 마이크로서비스 교과서를 **'일부러' 안 따른 것** 셋 — ① 발행자가 결과를 모르는 fire-and-forget 대신 **Request/Response**(결과를 받아 메일 등 후속 처리) ② Lambda 가 이벤트를 구독해 스스로 판단하는 대신 **Rails 가 '언제 무엇을' 판단**하고 Lambda 는 실행자 ③ Lambda 별 DB 대신 **모든 상태를 Rails DB 에** — Lambda 는 무상태 함수, 장애 조사는 한 곳. Rails 는 detail-type 만 지정해 **EventBridge** 로 보내고 어느 Lambda 가 처리할지는 규칙이 정한다(S3 등 AWS 이벤트와 같은 구조 · 팬아웃을 규칙만으로, SQS 단독으론 어렵고 SNS+SQS 가 필요한 패턴). 요청 · 응답을 ActiveRecord 로 기록하고 **expected_detail_types + timeout_at** — 기한까지 응답이 없으면 timed_out, 뒤늦은 응답은 기록만 하고 후속 처리 안 함 → 재시도 시 **후속 처리 이중 실행 방지**. 모든 Lambda 결과는 전용 **Webhook Forwarder** Lambda 를 거쳐 **Rails 의 단일 엔드포인트**로 온다 — 인증 · 에러 처리 · 후속 처리 기동이 공통화. Lambda 추가는 ① 함수 ② EventBridge 규칙 ③ Rails 쪽 detail-type → Job 등록 셋뿐, 코어 로직은 안 건드린다. 주의점: 256KB 제한(S3 에 두고 URL), **콜드 스타트**(수백 ms~수 초 — 실시간 처리엔 안 맞음), 동기 처리보다 디버그 · 로컬 재현이 어렵다. 결론: 필요한 건 '느슨한 결합'이 아니라 **ActiveJob 같은 백그라운드 잡을 EventBridge 생태계에 올리는 것**이었다 — ActiveJob 만 쓰는 것보다 공수는 늘어(요청/응답 설계 · Lambda · 후속 Job) Rails 쪽 프레임워크, DLQ · EventBridge 의 Terraform 템플릿, Lambda 공통 NPM 패키지(Sentry 연계)로 줄였다."
     },
     {
       "title": "wkhtmltopdf依存から抜け出して、PDF生成をLambdaにお引っ越しした話",

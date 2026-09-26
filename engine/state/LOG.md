@@ -2276,3 +2276,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Seibii ID 기반
 
 - `b6a5bf468c95a4` 로 기능 `shared-identity-foundation`, 결정 7. 글이 대가를 적지 않은 곳(인터페이스 두 벌 · 동기 경로 둘 · HubSpot 두 곳)은 '이 사이트의 해석'.
+
+## 2026-09-27 Seibii Lambda 요청/응답
+
+- `c3b1d64e6b4332` 전문 + `pdf-lambda-migration` 으로 기능 `monolith-led-lambda-requests`, 결정 8. Lambda 글 요약에 Webhook Forwarder · 추가 3단계 · 주의점 · 공수 절감을 보탰다.
