@@ -1000,6 +1000,169 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382078",
+      "title": "Google Cloud Platform Engineer",
+      "site": "wanted",
+      "verdict": "경력 4년 이상(클라우드·인프라, 서울 서초). 고객사 GCP IaaS 환경의 매니지드 서비스(Shared/Dedicated MSP)를 운영하고, 인프라 구축·마이그레이션·PoC 와 PreSales(고객 미팅·기술 Q&A·제안서·SoW)까지 지원하는 MSP 엔지니어. 제목은 GCP 인데 자격요건은 GCP 를 요구하지 않는다 — 인프라 기본(OS·Web/WAS·DB·Network·보안), 퍼블릭 클라우드 또는 온프레미스 구축·운영·이관 경험, 고객 커뮤니케이션이다. GCP 경험·자격증과 MSP 의 장애 대응·SLA 관리는 우대다. 사람인에 '(대리급)' 이 붙은 같은 제목 공고가 있다 — 사람인 차례에 본문 비교. 전형은 서류 → 인터뷰(통상 1회) → 처우 협의다.",
+      "fit": {
+        "must_have": [
+          "학사 이상",
+          "클라우드·인프라 실무 4년 이상",
+          "OS·Web/WAS·DB·Network·보안 기본",
+          "퍼블릭 클라우드 또는 온프레미스 구축·운영·이관",
+          "고객 요구사항 기반 문제 해결",
+          "고객·유관부서 커뮤니케이션"
+        ],
+        "can_learn": [
+          "GCP 구축·운영",
+          "GCP·AWS 자격증",
+          "MSP 장애 대응·SLA 관리",
+          "RDB·NoSQL 운영",
+          "DevOps·CI/CD·모니터링",
+          "제안·발표·영어 기술 문서"
+        ]
+      },
+      "study": [
+        {
+          "topic": "GCP 기본 인프라 — VPC·Compute·로드밸런서·IAM",
+          "from": "preference",
+          "quote": "• Google Cloud Platform 기반 시스템 구축 및 운영 경험을 보유하신 분",
+          "priority": "core",
+          "why": "우대사항이지만 주요업무 전체가 GCP IaaS 운영·구축이다. AWS·온프레미스 경력자가 이 자리에 오려면 GCP 의 다른 점부터 익혀야 한다(추론).",
+          "gap_check": "GCP VPC 가 전역(global)이고 서브넷이 리전 단위라는 점이 AWS 와 어떻게 다르고, 방화벽 규칙을 태그·서비스 계정으로 거는 방식과 IAM 역할 상속(조직·폴더·프로젝트)을 설명할 수 있는가?",
+          "drill": "무료 체험 계정에 프로젝트 하나를 만들고 VPC·서브넷 2개·방화벽 규칙·관리형 인스턴스 그룹·HTTP(S) 로드밸런서·Cloud SQL 로 웹 3계층을 세운 뒤, 최소 권한 IAM 역할을 설계해 구성도로 남긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Google Cloud — VPC networks",
+              "url": "https://cloud.google.com/vpc/docs/vpc",
+              "kind": "docs"
+            },
+            {
+              "title": "Google Cloud — Compute Engine instances",
+              "url": "https://cloud.google.com/compute/docs/instances",
+              "kind": "docs"
+            },
+            {
+              "title": "Google Cloud — Load balancing overview",
+              "url": "https://cloud.google.com/load-balancing/docs/load-balancing-overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Google Cloud — IAM overview",
+              "url": "https://cloud.google.com/iam/docs/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Cloud SQL — Introduction",
+              "url": "https://cloud.google.com/sql/docs/introduction",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "마이그레이션과 PoC",
+          "from": "qualification",
+          "quote": "• Public Cloud 또는 On-premise 환경에서 시스템 구축, 운영 또는 Migration 경험을 보유하신 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 'GCP 기반 인프라 구축, Migration 및 PoC를 수행하고 고객 환경에 맞는 아키텍처를 제안' 이 있다.",
+          "gap_check": "온프레미스 Web/WAS/DB 3계층을 GCP 로 옮길 때 리호스트·리플랫폼 중 무엇을 고르고, DB 이관 중 다운타임을 줄이려면 무엇(복제·컷오버 계획)을 준비하는가?",
+          "drill": "로컬 VM 의 Nginx+Tomcat+MySQL 을 위 GCP 구성으로 옮기는 이관 계획서(현황 조사표·방식·컷오버 절차·롤백 기준)를 쓰고 실제로 옮겨 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Google Cloud — Migrate to Google Cloud: Get started",
+              "url": "https://cloud.google.com/architecture/migration-to-gcp-getting-started",
+              "kind": "docs"
+            },
+            {
+              "title": "Google Cloud Architecture Framework",
+              "url": "https://cloud.google.com/architecture/framework",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MSP 운영 — 장애 대응·SR·SLA",
+          "from": "preference",
+          "quote": "• MSP 환경에서 운영, 장애 대응, SLA 관리 경험을 보유하신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 '고객 기술 문의 대응, 장애 처리, SR 관리' 가 있다. 여러 고객사를 동시에 운영하는 Shared MSP 에서는 고객마다 SLA 가 다를 수 있다(추론).",
+          "gap_check": "SLA·SLO·SLI 는 어떻게 다르고, 고객사 서비스의 가용성 SLO 99.9% 를 월 허용 중단 시간으로 바꾸면 얼마인가? 장애 알림이 왔을 때 고객 공지·원인 분석·재발 방지 보고서는 어떤 순서로 쓰는가?",
+          "drill": "위 GCP 구성에 Cloud Monitoring 가동 확인·알림 정책을 걸고, 인스턴스를 일부러 내려 알림 → 복구 → 장애 보고서(타임라인·영향·원인·재발 방지)까지 한 번 돌린다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Google SRE Book — Service Level Objectives",
+              "url": "https://sre.google/sre-book/service-level-objectives/",
+              "kind": "docs"
+            },
+            {
+              "title": "Cloud Monitoring overview",
+              "url": "https://cloud.google.com/monitoring/docs/monitoring-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "PreSales — 제안서와 SoW",
+          "from": "preference",
+          "quote": "• 기술 문서 작성 및 고객 대상 제안/발표 경험을 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무에 '고객 미팅, 기술 Q&A, 제안서 및 SoW 작성을 통해 PreSales 활동을 지원' 이 있다. 엔지니어 자리에 영업 지원이 포함된다는 점이 이 회사 공고들의 공통점이다.",
+          "gap_check": "SoW 에서 범위(in/out of scope)·산출물·가정·고객 책임을 빠뜨리면 운영 중 무엇이 분쟁이 되는가?",
+          "drill": "위 이관 계획을 고객 제안서 5장(현황·목표 구성도·이관 방식·일정·운영 범위)과 SoW 한 장으로 바꿔 쓴다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "GCP 자격증",
+          "from": "preference",
+          "quote": "• Public Cloud(GCP, AWS 등) 관련 자격증을 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항 첫 줄이다. 자격요건이 GCP 를 요구하지 않으므로 자격증이 GCP 역량을 보여 주는 가장 빠른 증거가 된다(추론).",
+          "gap_check": "Associate Cloud Engineer 시험 범위(구축·배포·운영·접근 관리) 중 위 학습으로 채우지 못한 부분은 무엇인가?",
+          "drill": "Associate Cloud Engineer 시험 안내의 범위 목록을 위 네 항목과 대조해 빈 곳을 채우는 2주 계획을 세운다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Google Cloud — Associate Cloud Engineer certification",
+              "url": "https://cloud.google.com/learn/certification/cloud-engineer",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "온프레미스 3계층 → GCP 이관 기록(구성도·이관 계획·장애 보고서·제안서 묶음)",
+          "why": "주요업무 여섯 줄 중 네 줄(MSP 운영, 구축·이관·PoC, 장애·SR, 제안서·SoW)을 한 묶음으로 보여 준다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "Associate Cloud Engineer 취득",
+          "why": "자격요건에 GCP 가 없어서, GCP 를 해 봤다는 가장 싼 증거가 된다. 우대 첫 줄이기도 하다.",
+          "effort": "2~4주"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 > 인터뷰 > 처우 협의 > 최종 합격 > 채용검진 > 입사. 인터뷰는 통상 1회이나 추가될 수 있고, 필요 시 레퍼런스 체크가 있다(공고 기준).",
+        "expect": [
+          "GCP 와 AWS·온프레미스의 차이",
+          "이관 경험과 컷오버",
+          "장애 대응과 고객 커뮤니케이션",
+          "제안서·SoW 작성 경험"
+        ],
+        "sources": [
+          {
+            "title": "Google Cloud Platform Engineer",
+            "url": "https://www.wanted.co.kr/wd/382078",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
