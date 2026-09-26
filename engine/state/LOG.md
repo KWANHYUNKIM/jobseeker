@@ -1024,3 +1024,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 hatena 재방문
 
 - 피드 마지막 글이 09-04(행사 공지). 09-07 이후 새 글 없음. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 henry 재방문 → 확장
+
+- 09-07 "あなたもわたしも OpenTelemetry Collector" 에서 결정 6개로 `attributes-belong-to-the-app` 를 새 도메인에 추가(features 2→3). 독립 collector 의 선택 이유·명시 목록의 유지 부담은 해석 표시.
