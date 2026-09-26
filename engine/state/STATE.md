@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**ABEJA — 확장 1(2026-09-26): 의료 매핑 도메인에 `jlac11-mapping-reagent-first-human-review`(결정 8). 다음은 확장: '큰 모델의 지식을 작은 모델로 증류한다' 를 증류 글(`entry/geniac2-distillation-pipeline-parallel`, scratchpad `ab_distill.txt` — 실험·まとめ·追記 미독). 완주 판정 때 컨설팅·Insight for Retail 수익원은 도메인이 없다(사이트맵 2025~2026 114편 제목 1회 검색 없음 — `ab_titles.txt`). 대기 0/3 — ABEJA 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
+**ABEJA — 확장 2(2026-09-26): 증류 도메인에 `distillation-microbatch-interleave`(결정 6). 두 도메인 모두 기능. 다음은 완주 판정 — 컨설팅·Insight for Retail 수익원은 도메인이 없다(1회차: 사이트맵 2025~2026 114편 제목에 Platform·Retail 0). 2회차: 2022~2024 사이트맵 제목 또는 speakerdeck abeja 를 보고 없으면 hold. 대기 0/3 — 그 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
 
 
 

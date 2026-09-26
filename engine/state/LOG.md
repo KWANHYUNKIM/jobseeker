@@ -1552,3 +1552,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ABEJA JLAC11 매핑
 
 - 의료 LLM 매핑 글 전문으로 `jlac11-mapping-reagent-first-human-review`(결정 8 — 사람 확정·시약 기점·LLM 은 명칭 대조·퍼지 매칭·GS1-128 바코드·검사 명칭 먼저·청취 먼저·채번까지). 정확도 70~80%.
+
+## 2026-09-26 ABEJA 증류 pipeline parallel
+
+- 증류 글 전문으로 `distillation-microbatch-interleave`(결정 6 — 최종층 soft target·자체 구현·micro batch 교대·송수신 두 벌·학생만 backward·OOM 판정). global batch 64 OOM → 1024 통과. 본가가 곧 고침.

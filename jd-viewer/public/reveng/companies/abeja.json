@@ -57,7 +57,7 @@
           "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
           "publisher": "ABEJA Tech Blog",
           "date": "2025-05-19",
-          "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작)."
+          "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
         }
       ]
     },
@@ -124,12 +124,14 @@
               "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
               "publisher": "ABEJA Tech Blog",
               "date": "2025-05-19",
-              "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작)."
+              "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "distillation-microbatch-interleave"
+      ]
     }
   ],
   "features": [
@@ -488,6 +490,294 @@
           "summary": "사쿠라 인터넷 등 10개 기관과 함께 NEDO 의 '일본어판 의료 특화형 LLM 사회 구현을 위한 안전성 검증·실증' 사업에 참여 — ABEJA 는 학습 데이터 조달·유스케이스 구체화·애플리케이션 개발을 맡았다. 유스케이스: 병원마다 제각각인 **원내 검사 마스터**(검사 명칭·시약명·장치명)를 표준 코드 **JLAC11** 로 매핑. 시약명과 검사 명칭이 다른 시스템에 있고 연결이 없는 경우도 있다. 채택한 처리 흐름을 그림으로 두고, 정확도 검증은 시약·기기 정보를 기점으로 좁히는 흐름이었지만 **실제 앱에서는 검사 명칭 선택을 먼저** 하는 이유 둘을 적는다. **배경**: 국가의 '전자 카르테 정보 공유 서비스'(HL7 FHIR, 2026년도 겨울 전국 운용 목표)에 검사 정보를 넣으려면 각 검사를 **JLAC11**(측정물·식별·재료·측정법·결과 단위 5요소 17자리)에 먼저 대응시켜야 한다. **측정법** 은 시판 **시약마다 붙은 고유 코드**라 어느 시약으로 쟀는지 알아야 한다 — 원내 코드 1개가 재료별로 JLAC11 **N 개**로 펼쳐진다(1대 N). 유식자·선행 의료기관 청취로 **시약·검사 기기 정보를 기점**으로 설계: 경로 ① 시약·기기 목록 → PMDA 에서 승인·인증·신고 번호 → 부번 코드표 → JLAC 검사 명칭, 경로 ② 원내 검사 명칭과 JLAC 명칭을 **LLM 이 명칭 대조** → JLAC11 **후보·확신도·근거**. **완전 자동화는 노리지 않는다** — 한 시약이 여러 검사에 쓰이거나 단위가 표준과 다른 '그 시설만 아는 정보' 가 남아 **사람이 확정**. 방법 1 시약명 우선 **퍼지 매칭**(레벤슈타인, 정규화, 일괄 처리) / 방법 2 **GS1-128 바코드**를 스마트폰으로 찍어 PMDA 로(목록이 없어도 현물로, 표기 흔들림에 강함). 정확도(LLM 대조 단계, 정답 포함 후보면 정답): 대체로 **70~80%**, 의료 추가 학습으로 개선(모델에 따라 오히려 하락도). 앱은 준비 → 채번 → 반영 중 **채번까지**, 반영은 전자 카르테 벤더와 따로. 앱에서 검사 명칭을 먼저 고르는 이유: **LLM 입력 토큰을 줄여 응답 시간·비용**, 검사 담당자가 시약과 검사 명칭을 묶어 기억한다."
         }
       ]
+    },
+    {
+      "key": "distillation-microbatch-interleave",
+      "name": "교사의 중간 결과를 쌓아 두지 않는다 — micro batch 마다 교사·학생을 번갈아 돌리도록 파이프라인 스케줄을 다시 쓴다",
+      "domain": "큰 모델의 지식을 작은 모델로 증류한다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "ABEJA 는 경제산업성·NEDO 의 생성 AI 개발력 강화 프로젝트 **GENIAC** 1기에 이어 2기에도 채택되어 대규모 언어 모델을 만들고, 그 성과를 **ABEJA LLM Series** 로 공개한다. 소형 모델(ABEJA Qwen2.5-7B)을 만들려면 큰 교사 모델의 지식을 **증류**해야 했다.\n\n2025년 2월 당시 NeMo 의 증류 구현은 example 디렉터리에만 있었고 **pipeline parallel 을 지원하지 않아** 대규모 모델에 쓸 수 없었다. 그래서 ABEJA 는 증류를 직접 구현했다 — 공교롭게도 비슷한 시기에 NeMo 본가도 대응을 시작했다.",
+        "metrics": [
+          {
+            "label": "OOM 한계(global batch)",
+            "value": "원래 구현 64 부터 OOM → ABEJA 구현 1024 까지 통과(V100 2기, 1.5B→0.5B, seq 1024)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          },
+          {
+            "label": "필요 메모리",
+            "value": "global batch × seq_len × hidden → micro batch × seq_len × hidden",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          },
+          {
+            "label": "본가 대응",
+            "value": "2025-05-10 NeMo 가 adjust_tensor_shapes_fn 도입(동작 미확인)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "원인을 찾을 때",
+          "thought": "이상적으로는 교사의 결과를 캐시하지 않고 **micro batch 단위로 교사와 학생을 번갈아** 돌리고 싶다. 막는 것은 Megatron-Core 의 스테이지 간 송수신 shape 가 레이어 출력에 고정돼 있다는 점이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+              "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+              "publisher": "ABEJA Tech Blog",
+              "date": "2025-05-19",
+              "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+            }
+          ]
+        },
+        {
+          "at": "돌아볼 때",
+          "thought": "NeMo 의 속을 알면 **취할 수 있는 수단이 는다** — 소스 코드를 계속 읽자.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+              "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+              "publisher": "ABEJA Tech Blog",
+              "date": "2025-05-19",
+              "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "교사 모델",
+            "what": "지식을 넘겨주는 큰 모델. forward 만, backward 불요."
+          },
+          {
+            "name": "학생 모델",
+            "what": "배우는 작은 모델(ABEJA Qwen2.5-7B 등). 베이스가 교사와 다르다."
+          },
+          {
+            "name": "soft target 손실",
+            "what": "최종층 출력끼리 LogitsKLLoss 로 비교. 중간층 맞추기는 쓰지 않는다."
+          },
+          {
+            "name": "pipeline stage",
+            "what": "모델 레이어를 GPU 들에 나눈 단계. 스테이지 사이로 텐서를 보내고 받는다."
+          },
+          {
+            "name": "micro batch / global batch",
+            "what": "파이프라인이 한 번에 흘리는 작은 묶음 / 한 스텝의 전체 묶음."
+          }
+        ],
+        "invariants": [
+          "교사와 학생은 **micro batch 마다 짝지어** 돈다 — 교사 결과를 global batch 분 쌓지 않는다.",
+          "교사는 **forward 만** 한다.",
+          "송수신 **순서가 어긋나면 행**한다 — 순서를 엄밀히 맞춘다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "NeMo 증류 example 을 바탕으로 최종층 출력끼리 LogitsKLLoss 를 거는 kd_config 를 둔다",
+            "why": "교사·학생 베이스가 달라 중간층을 맞출 수 없다."
+          },
+          {
+            "step": "Megatron-Core 의 schedules.py 병렬 구현을 증류용으로 다시 쓴다",
+            "why": "원래 스케줄은 교사·학생을 global batch 단위로 돌린다."
+          },
+          {
+            "step": "각 스테이지에서 micro batch 마다 교사 입력과 학생 입력을 받아 교사 forward → 곧바로 학생 forward",
+            "why": "교사 중간 결과 캐시를 없앤다."
+          },
+          {
+            "step": "마지막 스테이지에서 loss 를 계산하고 학생만 backward 해 앞 스테이지로 보낸다",
+            "why": "교사는 backward 불요."
+          },
+          {
+            "step": "backward 단계에서는 학생만 뒤 스테이지에서 받아 backward 하고 앞으로 보낸다",
+            "why": "송수신 순서를 맞춘다."
+          },
+          {
+            "step": "작은 교사·학생으로 global batch 를 키우며 OOM 지점을 확인한다",
+            "why": "메모리 절감 검증."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "증류 손실을 무엇으로?",
+            "chosen": "**중간층 맞추기(intermediate layer matching) 대신 최종층 soft target(LogitsKLLoss).**",
+            "alternatives": [
+              "중간층 출력을 맞춘다"
+            ],
+            "tradeoff": "교사와 학생의 **베이스 모델이 달라** 중간층을 대응시킬 수 없다. 대가 — 중간 표현의 지식은 넘기지 못한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          },
+          {
+            "question": "NeMo 가 pipeline parallel 증류를 지원하지 않으면?",
+            "chosen": "**본가를 기다리지 않고 자체 구현.**",
+            "alternatives": [
+              "지원될 때까지 기다린다",
+              "pipeline parallel 없이 작은 모델만"
+            ],
+            "tradeoff": "GENIAC 일정 안에 **대규모 모델**로 증류를 돌린다. 대가 — 비슷한 시기에 본가도 대응을 시작해(2025-05-10 수정) 자체 구현의 **수명이 짧을 수 있다**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          },
+          {
+            "question": "교사의 중간 결과를 어떻게 다루나?",
+            "chosen": "**global batch 분을 캐시하지 않고, micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward 로 번갈아 돈다.**",
+            "alternatives": [
+              "NeMo 처럼 global batch 단위로 교사·학생을 따로 돌리고 캐시"
+            ],
+            "tradeoff": "필요 메모리가 global batch × seq × hidden 에서 **micro batch × seq × hidden** 으로 — 원래 64 에서 OOM 이던 global batch 가 **1024 까지** 돈다. 대가 — Megatron-Core 의 **스케줄 코드를 직접 고쳐야** 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          },
+          {
+            "question": "스테이지 간에 무엇을 보내나?",
+            "chosen": "**교사 입력과 학생 입력을 각각 받는(recv_forward 두 번) 스케줄로 — 송수신 순서를 엄밀히 맞춘다.**",
+            "alternatives": [
+              "레이어 출력 shape 하나로 고정된 송수신"
+            ],
+            "tradeoff": "교사·학생 출력을 함께 흘린다. 대가 — 송수신 순서가 어긋나면 **행**하고, 병렬 프로그래밍이라 **디버그가 어렵다**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          },
+          {
+            "question": "backward 는?",
+            "chosen": "**학생만 — 교사는 forward 만 한다.**",
+            "alternatives": [
+              "교사도 backward"
+            ],
+            "tradeoff": "교사는 배우지 않으니 **계산과 메모리**를 아낀다. 대가 — 교사와 학생의 흐름이 비대칭이라 스케줄이 복잡해진다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          },
+          {
+            "question": "효과를 어떻게 확인하나?",
+            "chosen": "**작은 교사·학생(1.5B→0.5B, V100 2기)으로 global batch 를 키우며 OOM 여부만 본다.**",
+            "alternatives": [
+              "실제 대규모 모델로 메모리 사용량을 잰다"
+            ],
+            "tradeoff": "nvidia-smi 로는 push/pop 때문에 사용량이 안 변해 **OOM 이 나느냐**로 판정했다. 대가 — 대규모 모델에서의 **정확한 절감량**은 모른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+                "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+                "publisher": "ABEJA Tech Blog",
+                "date": "2025-05-19",
+                "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "병원마다 다른 검사 이름을 표준 코드에 잇는다(같은 회사의 다른 도메인)",
+          "via": "국책 LLM 과제",
+          "contract": "증류는 GENIAC 에서 LLM 을 만드는 일이고, JLAC11 매핑은 NEDO 의료 LLM 을 현장에 쓰는 일이다 — 한쪽은 훈련, 한쪽은 적용이다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "global batch 단위에서 micro batch 교대로",
+          "question": "교사 결과 캐시를 어떻게 없앴나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph 원래[\"NeMo · modelopt\"]\n    A1[\"교사 forward × global batch\"] --> A2[\"중간 결과 캐시\\nglobal × seq × hidden → OOM\"]\n    A2 --> A3[\"학생 forward × global batch\"]\n  end\n  subgraph ABEJA\n    B1[\"micro batch i\"] --> B2[\"교사 forward\"] --> B3[\"학생 forward\"] --> B4[\"loss\"] --> B5[\"학생 backward\"]\n    B5 --> B1\n  end"
+        },
+        {
+          "title": "스테이지 사이의 송수신",
+          "question": "파이프라인 스테이지들은 무엇을 주고받나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  S1[\"스테이지 1\\n교사 · 학생 층 일부\"] -->|교사 텐서 · 학생 텐서| S2[\"스테이지 2\"]\n  S2 -->|교사 텐서 · 학생 텐서| S3[\"마지막 스테이지\\nloss\"]\n  S3 -->|학생 grad 만| S2\n  S2 -->|학생 grad 만| S1"
+        },
+        {
+          "title": "증류가 멈추는 자리",
+          "question": "pipeline parallel 증류는 어디서 실패하나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"교사 중간 결과를 global batch 분 캐시\"] --> B[\"global batch 64 부터 OOM\"]\n  C[\"송수신 순서 어긋남\"] --> D[\"행(hang) · 디버그 곤란\"]\n  E[\"교사 · 학생 베이스가 다름\"] --> F[\"중간층 맞추기 불가 → 최종층 soft target\"]\n  G[\"본가가 같은 문제를 고침\"] --> H[\"자체 구현 유지 비용\"]\n  I[\"nvidia-smi 로 사용량 안 보임\"] --> J[\"OOM 여부로만 판정\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "小型LLM「ABEJA Qwen2.5-7B Model」学習のための蒸留のパイプライン並列化",
+          "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
+          "publisher": "ABEJA Tech Blog",
+          "date": "2025-05-19",
+          "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -516,7 +806,7 @@
       "url": "https://tech-blog.abeja.asia/entry/geniac2-distillation-pipeline-parallel",
       "publisher": "ABEJA Tech Blog",
       "date": "2025-05-19",
-      "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작)."
+      "summary": "경제산업성·NEDO 의 **GENIAC** 1기에 이어 2기에 채택되어 LLM 개발 — 그중 소형 LLM(ABEJA Qwen2.5-7B)을 위한 **지식 증류**. 교사·학생 모델의 베이스가 달라 **중간층 맞추기 대신 최종층 soft target(LogitsKLLoss)**. 2025년 2월 시점 NeMo 의 증류 구현은 example 에만 있고 **pipeline parallel 미지원**이라 대규모 모델에 못 써 **자체 구현** — Megatron-Core 의 pipeline parallel 은 교사 forward 의 중간층 결과를 hook 으로 캐시했다가 loss 계산 때 꺼내는 구조가 global batch 단위와 어긋나 어렵다(본가도 비슷한 시기에 대응 시작). modelopt 구현은 교사 forward 의 중간층 결과를 hook 으로 **global batch 분** 캐시해야 해 global batch 가 크면 **OOM** — Megatron-Core 는 스테이지 간 송수신 모양이 레이어 출력 shape 에 고정돼 교사·학생 출력을 함께 보내기 어려워 NeMo 는 각각 global batch 단위로 돌렸다(global batch × seq_len × hidden_dim). ABEJA 는 `schedules.py` 의 병렬 구현을 고쳐 **micro batch 마다 교사 forward → 학생 forward → loss → 학생 backward** — 캐시가 필요 없어 micro batch × seq_len × hidden_dim 로; 교사는 backward 불요; 송수신 순서가 어긋나면 **행**해 조심스레 만들어야 했다. 실험(V100 2기, 교사 Qwen2.5-1.5B·학생 0.5B, seq 1024, micro 1): 원래 코드는 **global batch 64 부터 OOM**, ABEJA 판은 **1024 까지 통과**(nvidia-smi 로는 사용량이 안 변해 OOM 여부만 봄). 추기: 2025-05-10 NeMo 본가가 `adjust_tensor_shapes_fn` 으로 송수신 shape 를 바꿀 수 있게 해 같은 문제를 고친 듯하다(동작 확인은 안 함)."
     }
   ]
 }
