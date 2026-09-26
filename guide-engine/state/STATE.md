@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **167건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **168건**.
+직전 회차: ✅ `Staff Machine Learning Engineer`(8097855) 3항목 — **마운틴뷰**, Growth Marketing ML(업리프트 타기팅·입찰·ML 자동화), 급여 '$152,00' 오타.
 직전 회차: ✅ `Staff IT Operations Engineer`(7835332) 3항목 — **도쿄**, 비개발(사내 IT 엔드포인트·Intune·Entra ID).
 직전 회차: ✅ `Staff, Front-end Engineer (Global Operations Technology)`(6412588) 3항목 — 한국, 웹 성능·MVC/Node·MSA. 주요업무 칸 비어 full_jd 직무 소개로 맥락.
 직전 회차: ✅ `Staff Engineer - Cloud Backend Engineering`(8171556) 3항목 — **벵갈루루**, 클라우드 인프라(99.999%·셀프서비스 IaC·네트워크). 제목 Staff vs 본문 Senior Staff 어긋남(open_questions).
