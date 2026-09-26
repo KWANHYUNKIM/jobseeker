@@ -2516,3 +2516,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 マナリンク 회사 프로파일
 
 - manalink.jp(요금 · 입회금) · 글 둘(에이전트 2025 · 구독 2022)로 수익원 둘 · 도메인 둘.
+
+## 2026-09-27 マナリンク 선생님 검색 에이전트
+
+- `teacher-search-agent-by-mastra` 전문으로 기능 `teacher-search-agent`, 결정 7.

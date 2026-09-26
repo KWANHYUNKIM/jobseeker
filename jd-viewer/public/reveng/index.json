@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "기타",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "엄선한 선생님과 가정을 온라인으로 잇는 가정교사 서비스 — '의사소통이 서툰 아이' 같은 말까지 RAG 로 찾는 선생님 검색 AI 에이전트를 구조화 스트리밍으로 보여 주고, 매달의 지도료는 카드 토큰 · 구독 ID · Webhook 으로 끊기지 않게 받는다",
       "updated_at": "2026-09-27",
       "domain": "manalink.jp"
