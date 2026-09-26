@@ -4,98 +4,10 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **186건**.
-직전 회차: ✅ `Staff Computer Vision Engineer - Search AI Product Engineering`(greenhouse 8207114) 3항목 — **마운틴뷰**, CV(자기지도 특징·임베딩 배포·A/B). **이제 남은 미완은 모의해킹 4건 + Mobile Security 1건뿐 — 모두 사람 판단 대기.** 다음 회차부터 쓸 공고가 없으면 그 사실만 적고 끝낸다(없는 일을 만들지 않는다).
-직전 회차: ✅ `Staff Backend Engineer -  K8 (Envoy)`(greenhouse 8222609) 3항목 — **벵갈루루**, AI 추론 게이트웨이(라우팅·토큰 할당량·TTFT SLO). 남은 미완: 모의해킹 4건·Mobile Security(사람 판단 대기)·`Staff Computer Vision Engineer - Search AI Product Engineering`(greenhouse 8207114). `--gaps` 는 앞 5줄만 보여 준다 — 전체는 validate.load_jobs 로 직접 뽑았다.
-직전 회차: ✅ `Security Automation Engineer [L5]`(8207116) 3항목 — **시애틀**, AI-SOC 자동화(정규화·LLM 분류·SOAR 연동), $152K~$169K.
-직전 회차: ✅ `Sr. Software Engineer - Rocket Growth Inbound & Global Logistics`(8210358) 3항목 — **상하이**, 로켓그로스 입고(pre-ship~stow·Kafka/ES·멱등), 4년.
-직전 회차: ✅ `Senior Staff Cloud Backend Engineer`(8205728) 3항목 — **시애틀**, 제목 Cloud Backend 지만 본문은 데이터센터 SRE·관측성. '$174,00' 오타. `--gaps` 미완 10건.
-직전 회차: ✅ `Senior Frontend Engineer`(8203746) 3항목 — **벵갈루루**, Micro Frontend Platform(성능·마이크로 프런트엔드·컴포넌트), 4~7년.
-직전 회차: ✅ `Sr. Staff Back-end engineer [Promise Platform]`(8187816) 3항목 — **시애틀**, 재고·Promise 플랫폼 재설계(약속일·재고 스트림·캐시). 주요업무는 full_jd 에서.
-직전 회차: ✅ `Staff, Full-Stack Engineer [Rocket Growth Engineering]`(8200007) 3항목 — **시애틀**, 로켓그로스 판매자(등록·풀필먼트·정산), '$164,00' 오타. `--gaps` 미완 13건.
-직전 회차: ✅ `Staff Data Scientist (Catalog)`(8200033) 3항목 — **타이베이**, 카탈로그 AI(멀티모달 추출·더러운 라벨·HITL), 8년↑.
-직전 회차: ✅ `Manager, Security Engineering _ DART Taiwan`(8188073) 3항목 — **타이베이**, 신설 DART TW 사고 대응 매니저(대응 절차·SIEM 헌팅·호스트 로그), 15년↑.
-직전 회차: ✅ `[TW Catalog] Staff Back-end Engineer`(8178865) 3항목 — **베이징**, TW Engineering. 제목 Catalog vs 팀 소개 마케팅 플랫폼 어긋남(open_questions).
-직전 회차: ✅ `Staff System Engineer`(8093677) 3항목 — **벵갈루루**, SLM 미세조정·엣지 추론·에이전트 운영 플랫폼(범위 넓음, 팀 불명). `--gaps` 미완 17건.
-직전 회차: ✅ `Staff Software Engineer, Ads`(8075427) 3항목 — **시애틀**, 광고 데이터 플랫폼(집계·정산·실시간 서빙·셀프서비스), 급여 '$164/year' K 누락 표기.
-직전 회차: ✅ `Staff Software Engineer`(8070738) 3항목 — **마운틴뷰/시애틀**, Resource Fabric(Resource Manager·이벤트 기반 자원 관리·데이터 거버넌스), $152K~$282K.
-직전 회차: ✅ `Staff Site Reliability Engineer`(8176234, **벵갈루루**) → dup 7938018 — 주요업무가 서울 데이터 보안 공고와 동일, 제목(SRE)·자격(SRE 8년↑)만 다름. 제목/본문 어긋남 open_questions.
-직전 회차: ✅ `Staff Robotics System Engineer`(8187428) 3항목 — **마운틴뷰**, GO ART 로보틱스(엣지 추론·인식 계약·로봇 CI/CD), $164K~$282K. 세 칸엔 우대만, 맥락은 full_jd.
-직전 회차: ✅ `Staff ML Infra Engineer, Search & Discovery`(8025195) 3항목 — **마운틴뷰**, 검색 ML 인프라(로그→학습·데이터 품질·온라인 서빙), 급여 'K' 중복 표기.
-직전 회차: ✅ `Staff, Machine Learning Engineer - Coupang Play`(7962916) 3항목 — **싱가포르**, OTT 콘텐츠 추천·광고 개인화. `--gaps` 미완 23건.
-직전 회차: ✅ `Staff Machine Learning Engineer`(8097855) 3항목 — **마운틴뷰**, Growth Marketing ML(업리프트 타기팅·입찰·ML 자동화), 급여 '$152,00' 오타.
-직전 회차: ✅ `Staff IT Operations Engineer`(7835332) 3항목 — **도쿄**, 비개발(사내 IT 엔드포인트·Intune·Entra ID).
-직전 회차: ✅ `Staff, Front-end Engineer (Global Operations Technology)`(6412588) 3항목 — 한국, 웹 성능·MVC/Node·MSA. 주요업무 칸 비어 full_jd 직무 소개로 맥락.
-직전 회차: ✅ `Staff Engineer - Cloud Backend Engineering`(8171556) 3항목 — **벵갈루루**, 클라우드 인프라(99.999%·셀프서비스 IaC·네트워크). 제목 Staff vs 본문 Senior Staff 어긋남(open_questions).
-직전 회차: ✅ `Staff Data Scientist - Search and Discovery`(8037655, **상하이**, 대만 검색 조직) → dup 7997383 — 주요업무 동일, 자격(7년+팀 리딩 3년·영어/중국어)만 달라 verdict 에 차이만 적음.
-직전 회차: ✅ `Staff Data Scientist (SCM)`(8124212) 3항목 — **타이베이**, 공급망 예측·대규모 최적화·성과 측정.
-직전 회차: ✅ `Staff, Data Scientist (Ads Analytics)`(7901538) 3항목 — **마운틴뷰**, 광고 수익화 시뮬레이션·예측·A/B, $152K~$261K. `--gaps` 미완 30건.
-직전 회차: ✅ `Staff Back-end Engineer (Gowri/Picking)`(8122290) 3항목 — **시애틀**, GOT 피킹(재고·Promise·메시지 지향), 급여 '$164,00' 오타. 'Gowri' 설명 없음.
-직전 회차: ✅ `Senior Staff ll, Machine Learning Engineer - Search Relevance`(8090443) 3항목 — **마운틴뷰**, 검색 관련성(재순위화·LLM 판정·스택), $187K~$322K.
-직전 회차: ✅ `Manager, Back-end Engineering (Eats Merchant)`(8175617) 3항목 — 서울, 이츠 상점주 플랫폼 EM(주문 상태 이벤트·온콜·다국가 정산).
-직전 회차: ✅ `Staff Backend Engineer – Search and Discovery Product Engineering`(8140987) 3항목 — **마운틴뷰**, 검색 백엔드(꼬리 지연·과부하·React Web), $194K~$243K.
-직전 회차: ✅ `Staff Backend Engineer (Application Infra)`(7849021) 3항목 — **마운틴뷰/시애틀**, durable execution 워크플로 플랫폼(Temporal·99.9999%·Cassandra/TiDB), $164K~$282K. Cadence 문서 404 라 뺌.
-⏭ `Senior Security Engineer, Penetration Tester`(8175728, 타이베이) — 서울 Pen Tester(8163504)와 같은 이유로 사람 판단 대기. 쓰지 않았다(파일 변경 없음). **`--gaps` 에서 모의해킹(Penetration Tester) 공고는 건너뛰고 다음 줄로 간다.**
-직전 회차: ✅ `Staff Back-end Engineer`(7892762) → dup 7953042 — 하이데라바드, 요건 동일, 연차 8년 vs 12년·출근 주3일 vs 주2일만 다름.
-직전 회차: ✅ `Staff, Back-end engineer`(7919191) → dup 7965062 — 본문 동일, 직급·요청번호·급여만 다름($164K~$282K vs $174K~$299K). salary.note 에 한 쌍으로 기록.
-직전 회차: ✅ `Sr. Staff Observability Software Engineer`(8107448) 3항목 — **마운틴뷰/시애틀**, 관측성 플랫폼(OTel·SLO 알림·장애 분석). 급여 '$174,00' 오타가 7342961 과 같음.
-직전 회차: ✅ `Sr. Staff Front-end Engineer (Global Operations Technology)`(5868936) 3항목 — 한국, 라스트마일 Admin·WebView. 세 칸엔 우대 3줄뿐이라 quote 는 그 줄에서, 맥락은 full_jd 에서 읽음.
-직전 회차: ✅ `Sr. Staff Engineer, Rocket Growth`(8022893) 3항목 — **벵갈루루**, 로켓그로스(2P) 공급망(입고·반품·재판매). `--gaps` 미완 40건.
-직전 회차: ✅ `Sr. Staff Backend Software Engineer`(7965062) 3항목 — **시애틀**, 팀 불명(얇음), 10년 vs Minimum 7년 어긋남(open_questions), $174K~$299K.
-직전 회차: ✅ `Sr.Staff Backend Engineer`(7925105) → dup 7953042 (하이데라바드, 자격 7줄 완전 일치, 제목 표기만 다름).
-직전 회차: ✅ `Principal Engineer, ML`(8175850) 3항목 — **시애틀**, 광고 서빙·ML 플랫폼(경매·페이싱·CTR 보정·GPU 서빙), $207,900~$386,100(미국 범위 최고).
-직전 회차: ✅ `Sr. Director, Search AI - Production Engineering`(7776741) 3항목 — **마운틴뷰**, 검색 E2E 소유·로드맵·조직, $184K~$376K(Sr. Director 세 건 동일 범위). 주요업무 한 줄 원문에서 끊김.
-직전 회차: ✅ `Sr.Director, Data Science & Data Engineering`(8155448) 3항목 — **마운틴뷰**, 검색 조직 DS·DE 20명, 실험 기능, $184K~$376K.
-직전 회차: ✅ `Sr. Director, AI Infrastructure`(7361248) 3항목 — **마운틴뷰/시애틀**, AI 인프라 오케스트레이션 총괄(GPU·활용률·SLO), $184K~$376K, 공고가 성과 지표를 직접 적음.
-직전 회차: ✅ `Senior Staff / Staff Machine Learning Engineer`(8022956) 4항목 — **싱가포르**, AI and Knowledge Engineering(LLM 사후 학습·에이전트·차원 축소). 필수에 Claude Code 등 AI 코딩 도구가 이름으로.
-직전 회차: ✅ `Senior Staff / Staff Backend Engineer (Security Infrastructure)`(8047690) 3항목 — **싱가포르**, 동적 인가 엔진. 7342961(MTV)과 9줄 겹침 — 중심이 달라 별개로 씀.
-직전 회차: ✅ `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(7774291) 3항목 — **시애틀**, 추론·토큰 생성 최적화·CV 상품·추론 관측성, $174K~$299K. 공고 얇음.
-직전 회차: ✅ `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(7816155) 4항목 — **마운틴뷰**, 검색·추천 결함 진단·개인화 retrieval·랭킹 통합·A/B, $187K~$322K. LambdaMART 개요 403 이라 뺌.
-직전 회차: ✅ `Senior Staff ll, AI Engineer (L7-2)`(7834206) 4항목 — **마운틴뷰**, 생성형 AI 앱(RAG·벡터 DB·에이전트·신뢰성), $171K~$351K. ⚠️ 직급 L7-2 인데 필수 3년(open_questions).
-직전 회차: ✅ `Senior Staff Data Scientist`(7997383) 4항목 — **마운틴뷰**, 검색 조직 DS(실험·검색 지표·데이터셋·랭킹 영향), $174K~$290K.
-직전 회차: ✅ `Senior Staff Backend Engineer (Service Mesh)`(7496873) 4항목 — **인도(도시 미기재)**, Gateway Services 팀 서비스 메시(Istio/Envoy·mTLS·관리 플레인·VPC), 13년↑.
-직전 회차: ✅ `Senior Staff Backend Engineer, Security`(7342961) 4항목 — **마운틴뷰**, Security Infrastructure 팀 IAM 플랫폼. 급여 원문 '$174,00' 오타 그대로 salary.note 에.
-직전 회차: ✅ `Senior Staff Backend Engineer - (K8)`(7912287) 4항목 — **벵갈루루**, EKS·Argo·Kubeflow·gRPC·Triton(ML 워크로드 인프라). '(K8)' 설명 없음.
-직전 회차: 🔧 `Senior Staff Backend Engineer`(7953042) 보수 — 2항목이라 `--gaps` 가 미완(MIN_STUDY=3)으로 되돌려 보냄. 자격요건 줄(Java/IntelliJ/Spring)에서 1항목 추가해 3항목.
-직전 회차: ✅ `Senior Staff Backend Engineer (IAM)`(8068982) 4항목 — **벵갈루루**, AI 클라우드 플랫폼 Identity 팀(OAuth2·OIDC·워크로드 신원·OPA), 13~17년.
-직전 회차: ✅ `Senior Staff Backend Engineer - Cloud Infrastructure`(7962133) 4항목 — **마운틴뷰**, $174K~$299K(salary.note 에 원문 추가), 우대 칸 연차(15/10년) vs Basic(7년) 어긋남(open_questions).
-직전 회차: ✅ `Senior Staff Backend Engineer`(7953042) 2항목 — **하이데라바드**, 자격 7줄뿐(팀 불명, open_questions). 얇은 대로 씀.
-직전 회차: ✅ `Senior Software Development Manager - ECommerce Engineering`(7988272) 4항목 — **벵갈루루**, SCMA(발주·재고 자동화), 대만 확장, 10~13년·관리 3년↑.
-직전 회차: ✅ `Senior Manager, Back-End Engineering`(7923645) 4항목 — **하이데라바드**, 관리자의 관리자(12년↑·관리 5년↑). 8076295 와는 공통 문구 외 겹침 0 — 별개 자리.
-직전 회차: ✅ `Senior Manager - Backend Engineering`(8076295) 4항목 — **벵갈루루** 근무(하이브리드 주3일), 관리자(관리 3년↑), 운송 플랫폼 글로벌 재설계·이벤트 기반 3~4천만 건/일.
-직전 회차: ✅ `[쿠팡] 고객 경험을 혁신할 CS 전문가 공개채용`(사람인 55110254) 4항목 — 비개발(CS), 한 공고에 세 자리(기술 상담·CS 정책·대외 민원), 크롤에서 자리별 요건이 섞임(open_questions).
-직전 회차: ✅ `[쿠팡] 카탈로그 품질 검수 및 운영 프로세스 개선 (2년 이상)`(사람인 55005782) 4항목 — 비개발(3P 카탈로그 검수 운영). 전형 절차 원문에 있음. ASQ 자료 403 이라 뺌.
-직전 회차: ✅ `[쿠팡] 이츠 데이터 분석 어시스턴트 (계약직/신입가능)`(사람인 54939508) 3항목 — 비개발(데이터 운영 보조, 엑셀). 근무지 칸 '216 만원' 정체 불명(open_questions).
-직전 회차: ✅ `Staff, AI Security Architect`(greenhouse 8224844, 6년↑) 5항목 — LLM 위협·AI 파이프라인 위협 모델·AI RMF 지표·차등 프라이버시·Zero Trust. 한국어 요약 한 줄 글머리표 깨짐(원문 그대로).
-직전 회차: ✅ `Senior Staff, Data Scientist (Incrementality and Attribution)`(8029811, 석·박사+10년↑) 5항목 — MMM·지역 실험·인과추론(DML)·MTA·예산 배분. 크롤러가 본문 전체를 주요업무 칸에 넣어 자격 칸이 빔. GeoLift 저장소 404 라 뺌.
-직전 회차: ✅ `Sr. Security Engineer (Detection Ops-Email)`(7813854) → dup — gh 8161175 와 주요업무 10줄 동일, 자격·우대 18줄은 어미('~을 보유하신 분')만 다름. 차이는 '이메일 보안 3년 이상 우대' 한 줄.
-⏭ `Senior Staff Security Engineer, Mobile Security (Digital Trust)`(8203471) — 작성 중 응답이 중단돼 건너뜀(파일 변경 없음). 사람이 판단할 때까지 다시 꺼내지 않는다.
-⏭ `Senior Security Engineer (Penetration Tester)`(8163504) — 이 세션에서 작성 중 응답이 중단돼 건너뜀(파일 변경 없음). 사람이 판단할 때까지 다시 꺼내지 않는다.
-직전 회차: ✅ `Senior Security Engineer (Digital Forensics & eDiscovery)`(8052967, 6년↑) 5항목 — Purview eDiscovery·PowerShell·포렌식 수집·보고서. 겹침 0. (EDRM 모델 페이지 403 이라 뺌)
-직전 회차: ✅ `Senior Security Engineer (Attack Surface Identification)`(8160905, 5년↑) 5항목 — 외부 자산 식별·자체 ASM 도구(Python·AWS)·KEV 우선순위. 기존 공고와 겹침 0.
-직전 회차: ✅ `Staff Security Engineer (Information Security CFS, CLS, CES and DDnayo)`(8158581, 10년↑) 5항목 — 정보보호 거버넌스(비개발): ISMS-P·리스크·경영진 대시보드·위치정보법·OT. 제목 약어 풀이 없음(open_questions).
-직전 회차: ✅ `Staff Security Engineer (Vendor Security Assurance)`(8163760, 8년↑) 4항목 — 서드파티 리스크(비개발). 원문 오타 '3rd-prary' 그대로 인용.
-직전 회차: ✅ `Staff Security Engineer (Control Assurance)`(8163764, 8년↑, GRC) 4항목 — 주요업무 칸 비어 자격으로 읽음.
-직전 회차: ✅ `Staff Security Engineer (Cyber Threat Hunting)`(8163723, 8년↑) 5항목.
-직전 회차: ✅ `[Coupang] Senior Data Analyst (Audit Automation…)`(wd/385087) 4항목(비개발, 감사 데이터 분석) + greenhouse 8222455 dup — **그 게시는 제목이 'Senior QA Engineer (Advertiser Platform)' 인데 본문이 감사 공고**(open_questions).
-직전 회차: ✅ `Staff IAM Engineer (IAM Architecture & Governance)`(8172668, 8년↑) 5항목 — NHI·Saviynt·감사. ⚠️ 한·영 병기 공고는 quote 부분 문자열이 두 줄에 걸린다 — 한쪽에만 있는 글자까지 넣는다.
-직전 회차: ✅ `Staff Network Engineer (Fulfillment and Logistics Network Engineering)`(8171509, 10년↑) 5항목 — 비개발(네트워크), 전국 출장.
-직전 회차: ✅ `Staff System Engineer (Global Infrastructure System Engineering)`(8040801, 7년↑) 5항목 — 사내 IT 인프라(가상화·VDI).
-직전 회차: ✅ `Sr. Staff - AI Data Center Architect`(7994883) 4항목 — **시설 아키텍처(비개발)** 임을 verdict 첫 줄에.
-직전 회차: ✅ `Senior Staff, ML Engineer (Coupang Eats Search)`(8146344) → dup wd/382275 (한국어 ML Lead 의 영문판 — 줄 비교로는 0 이지만 항목·순서·요건이 같다).
-직전 회차: ✅ `Staff~Sr. Staff, ML Engineer (Ads Engineering)`(8012236, 10년↑) 5항목 — 에이전트·RLHF·증류. **우대에 Claude Code 가 이름으로 나온다.**
-직전 회차: ✅ `Staff, Security Software Engineer - Coupang Play`(7956945) 5항목 — 연차 표기 없음.
-직전 회차: ✅ `Staff, Detection Platform Engineer`(8188124, 구의, 10년↑) 5항목 — SIEM+SOAR+AI-SOC. 앞선 보안 두 공고와 겹침 1줄.
-직전 회차: ✅ `Staff Android Engineer (Rocket Pay)`(8034909) → dup 8194393(15줄 완전 일치, 제목만 다름).
-직전 회차: ✅ `Staff, Back-end Engineer (Global Operations Technology)`(7230867) 5항목 — 물류 배송 배정 최적화.
-직전 회차: ✅ `Staff Back-end Engineer (TW Pre-Purchase)`(8090538) 5항목 — 서울에서 대만 쿠팡 코어 서비스.
-직전 회차: ✅ `Staff Backend Engineer (Streaming & AI Infrastructure)`(7919211) 5항목 — 근무지에 'z-Test & Templates Only' 표기(open_questions).
-직전 회차: ✅ `Staff, Backend Engineer (Core Member & Infra Platform Team)`(8081147, 선릉) 5항목 — **Staff 인데 3년↑**, 비자 지원 없음.
-⚠️ 그사이 마감·삭제: `Staff, Back-end (Traffic Management)`(8104792, closed), `Staff, ML Engineer - Coupang Play`(7927865, 데이터에 없음).
+**쿠팡은 `done`(186건).** 남은 5건(모의해킹 4·Mobile Security 1)은 사용자 결정으로 보류 — QUEUE `## 미룸`.
 
-**남은 서울 목록은 다 썼다**(8222455 는 이미 dup 로 있음). 이제 `--gaps` 목록 순서대로 간다.
-⚠️ 다음 회차: `--gaps` 첫 줄을 따르되 **Pen Tester(8163504)가 맨 위에 나오면 건너뛰고 다음 줄**(사람 판단 대기). 다음은 `--gaps` 의 Pen Tester 다음 줄 — `--gaps` 의 Pen Tester 다음 줄. ⚠️ **항목은 최소 3개**(MIN_STUDY) — 얇은 공고라도 3개를 못 채우면 --gaps 가 다시 꺼낸다. 건너뛴 두 건(Pen Tester·Mobile Security)은 사람 판단 대기. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
-**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
+**사용자 지시(2026-09-26): 국내 사이트 회사를 공고 수 순서대로 전부 한다.** QUEUE `## 대기` 에 15곳을 순서대로 넣었다(기준·제외 목록은 대기 머리말). 대기가 비면 같은 기준으로 다음 15곳을 채운다.
+⚠️ 다음 회차: 대기 맨 위 **현대오토에버** 를 `in_progress` 로 만들고 3단계(회사 브리핑)부터. 대기에 회사가 있으면 확장은 12건(`EXPAND_CAP`)에서 멈추고 다음 회사로 넘어간다.
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.
