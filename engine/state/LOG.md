@@ -2524,3 +2524,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 マナリンク 구독 결제
 
 - `manalink-subscription-payment-whole` 로 기능 `subscription-billing-payjp`, 결정 7. 같은 파일이라 지난 기능 connections 의 '마나리ンク' 오타도 여기서 고쳤다.
+
+## 2026-09-27 マナリンク 입회금 수익원 보류
+
+- 첫째 공개 글 99편 제목(결제 글은 구독 하나) · 둘째 Zenn 검색 3낱말 → hold_reason.
