@@ -1,0 +1,184 @@
+{
+  "slug": "dely",
+  "name": "クラシル",
+  "name_en": "dely(Kurashiru)",
+  "country": "JP",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "dely.jp",
+  "one_liner": "레시피 동영상 클라시루와 절약 앱 레시챌의 회사 — 수백 TB 영수증 화상은 버킷 일괄이 아니라 폴더의 다시 보기 패턴에 따라 Glacier IR 과 Intelligent-Tiering 으로 나눠 약 55% 줄이고, 자주 가는 점포·사는 것에 맞춘 알림은 PdM 이 Braze 안에서 데이터를 어디 둘지 골라 구현 없이 돌린다",
+  "business_model": "식(食)과 쇼핑 앱에 모은 사용자와 데이터로 돈을 번다 — 레시피 동영상 **클라시루**(다운로드 4,400만), 전단지 열람·영수증 송신으로 코인을 주는 절약 앱 **레시챌·클라시루 전단지**, 그 데이터로 메이커·도매·소매의 상담·수발주·경영 판단을 돕는 **Kurashiru AI OS**(B2B), 라이프스타일 미디어 **TRILL**, 라이브 배신자 매니지먼트 **LIVEwith**. 광고·판촉·구독 같은 과금 구조와 비중은 공개 자료에서 확인하지 못했다.",
+  "products": [
+    "クラシル(레시피 동영상)",
+    "レシチャレ · クラシルチラシ(절약 · 영수증 · 전단지)",
+    "Kurashiru AI OS(메이커·도매·소매용 AI 에이전트 기반)",
+    "TRILL(라이프스타일 미디어)",
+    "LIVEwith(라이브 배신자 매니지먼트)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "레시챌·클라시루 전단지(쇼핑 판촉)",
+      "how": "쇼핑 행동(이동·전단지 열람·영수증)에 코인을 주는 앱. 소매·메이커 판촉으로 버는 구조로 보이나 과금 상세는 확인 못 함(이 사이트의 해석).",
+      "weight": "비중 확인 못 함",
+      "domains": [
+        "수억 장의 영수증 화상을 싸게 쌓아 둔다",
+        "쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "クラシル株式会社",
+          "url": "https://www.dely.jp/",
+          "publisher": "クラシル株式会社",
+          "date": "2026-09-26",
+          "summary": "서비스 다섯 — **클라시루**(레시피 동영상 플랫폼, 앱 다운로드 4,400만 돌파) · **레시챌·클라시루 전단지**(이동 거리·전자 전단지 열람·쇼핑 뒤 영수증 송신 수에 따라 코인 → 특전 교환하는 절약 앱) · **Kurashiru AI OS**(클라시루·레시챌의 독자 데이터로 메이커·도매·소매의 공급망 전 영역을 받치는 AI 에이전트 기반 — 상담·수발주부터 경영 판단까지) · **TRILL**(라이프스타일 미디어) · **LIVEwith**(라이브 배신자 매니지먼트, 파트너 약 1,000명)."
+        },
+        {
+          "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+          "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+          "publisher": "dely Tech Blog (Zenn)",
+          "date": "2026-08-31",
+          "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+        },
+        {
+          "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+          "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+          "publisher": "dely Tech Blog (Zenn)",
+          "date": "2026-08-13",
+          "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+        }
+      ]
+    },
+    {
+      "name": "클라시루(레시피 동영상)",
+      "how": "레시피 동영상 앱. 과금 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "クラシル株式会社",
+          "url": "https://www.dely.jp/",
+          "publisher": "クラシル株式会社",
+          "date": "2026-09-26",
+          "summary": "서비스 다섯 — **클라시루**(레시피 동영상 플랫폼, 앱 다운로드 4,400만 돌파) · **레시챌·클라시루 전단지**(이동 거리·전자 전단지 열람·쇼핑 뒤 영수증 송신 수에 따라 코인 → 특전 교환하는 절약 앱) · **Kurashiru AI OS**(클라시루·레시챌의 독자 데이터로 메이커·도매·소매의 공급망 전 영역을 받치는 AI 에이전트 기반 — 상담·수발주부터 경영 판단까지) · **TRILL**(라이프스타일 미디어) · **LIVEwith**(라이브 배신자 매니지먼트, 파트너 약 1,000명)."
+        }
+      ]
+    },
+    {
+      "name": "Kurashiru AI OS(B2B)",
+      "how": "클라시루·레시챌 데이터로 메이커·도매·소매 업무를 돕는 AI 에이전트 기반.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "クラシル株式会社",
+          "url": "https://www.dely.jp/",
+          "publisher": "クラシル株式会社",
+          "date": "2026-09-26",
+          "summary": "서비스 다섯 — **클라시루**(레시피 동영상 플랫폼, 앱 다운로드 4,400만 돌파) · **레시챌·클라시루 전단지**(이동 거리·전자 전단지 열람·쇼핑 뒤 영수증 송신 수에 따라 코인 → 특전 교환하는 절약 앱) · **Kurashiru AI OS**(클라시루·레시챌의 독자 데이터로 메이커·도매·소매의 공급망 전 영역을 받치는 AI 에이전트 기반 — 상담·수발주부터 경영 판단까지) · **TRILL**(라이프스타일 미디어) · **LIVEwith**(라이브 배신자 매니지먼트, 파트너 약 1,000명)."
+        }
+      ]
+    },
+    {
+      "name": "TRILL · LIVEwith(미디어·매니지먼트)",
+      "how": "라이프스타일 미디어와 라이브 배신자 매니지먼트.",
+      "weight": "비중 확인 못 함",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "クラシル株式会社",
+          "url": "https://www.dely.jp/",
+          "publisher": "クラシル株式会社",
+          "date": "2026-09-26",
+          "summary": "서비스 다섯 — **클라시루**(레시피 동영상 플랫폼, 앱 다운로드 4,400만 돌파) · **레시챌·클라시루 전단지**(이동 거리·전자 전단지 열람·쇼핑 뒤 영수증 송신 수에 따라 코인 → 특전 교환하는 절약 앱) · **Kurashiru AI OS**(클라시루·레시챌의 독자 데이터로 메이커·도매·소매의 공급망 전 영역을 받치는 AI 에이전트 기반 — 상담·수발주부터 경영 판단까지) · **TRILL**(라이프스타일 미디어) · **LIVEwith**(라이브 배신자 매니지먼트, 파트너 약 1,000명)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "쇼핑의 흔적을 싸게 쌓고 빨리 쓴다",
+    "question": "절약 앱은 수억 장의 영수증을 어떻게 싸게 두고, 쇼핑 행동에 맞춘 알림을 어떻게 구현 없이 돌리나?",
+    "code": "flowchart LR\n  U[\"레시챌 사용자\"] -->|영수증 화상| S3[(\"S3 · 수백 TB · 수억 파일\")]\n  S3 --> GIR[\"다시 안 보는 폴더\\nGlacier IR\"]\n  S3 --> IT[\"앱에서 다시 보는 폴더\\nIntelligent-Tiering\"]\n  U -->|자주 가는 점포 · 사는 것| BZ[\"Braze\\n개인화 데이터 4방식\"]\n  PDM[\"PdM · CRM 담당\"] --> BZ\n  BZ --> PUSH[\"개인화 알림 · 콘텐츠\"]",
+    "_note": "두 도메인 모두 레시챌의 글이다. 클라시루·Kurashiru AI OS·TRILL·LIVEwith 의 기술 글은 아직 못 봤다. 레시챌의 과금 구조(판촉)는 이 사이트의 해석."
+  },
+  "domains": [
+    {
+      "name": "수억 장의 영수증 화상을 싸게 쌓아 둔다",
+      "why": "레시챌에는 사용자가 날마다 대량의 영수증 화상을 올려, 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 스토리지 요금을 냈다.",
+      "tech": [
+        {
+          "tech": "폴더(프리픽스) 접근 패턴별 스토리지 클래스 — 다시 안 보는 화상은 Glacier IR · 앱에서 다시 보는 화상은 Intelligent-Tiering · Deep Archive 는 안 씀",
+          "solves": "대상 버킷 비용 약 55% 감소.",
+          "limits": "스토리지 클래스 이행 때 일시적인 요청 비용이 든다 — 처음엔 놓쳤다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+              "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+              "publisher": "dely Tech Blog (Zenn)",
+              "date": "2026-08-31",
+              "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다",
+      "why": "레시챌은 쇼핑을 받치는 앱이라 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 하고, '구현 전에 최소 공수로 가설을 검증한다' 문화라 PdM·CRM 담당이 CRM 도구로 시책을 돌린다.",
+      "tech": [
+        {
+          "tech": "Braze — 개인화 데이터의 자리 넷(베타 입력 · API-Triggered + trigger_properties · CDI 동기 custom attribute · 데이터 카탈로그 참조)",
+          "solves": "2주에 시책 10개를 개발 구현 없이 돌린다.",
+          "limits": "CDI 동기는 반영 대기가 길다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+              "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+              "publisher": "dely Tech Blog (Zenn)",
+              "date": "2026-08-13",
+              "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 구조(광고·판촉·구독)와 사업별 비중을 확인하지 못했다.",
+    "클라시루·Kurashiru AI OS·TRILL·LIVEwith 의 기술 결정 글을 아직 못 봤다.",
+    "다른 글: Xcode Cloud CI 계측 기반·AWS Verified Access 로 사내 시스템 인증 횡단 관리·ReadOnlyAccess 로 terraform plan·테이블 이름."
+  ],
+  "sources": [
+    {
+      "title": "クラシル株式会社",
+      "url": "https://www.dely.jp/",
+      "publisher": "クラシル株式会社",
+      "date": "2026-09-26",
+      "summary": "서비스 다섯 — **클라시루**(레시피 동영상 플랫폼, 앱 다운로드 4,400만 돌파) · **레시챌·클라시루 전단지**(이동 거리·전자 전단지 열람·쇼핑 뒤 영수증 송신 수에 따라 코인 → 특전 교환하는 절약 앱) · **Kurashiru AI OS**(클라시루·레시챌의 독자 데이터로 메이커·도매·소매의 공급망 전 영역을 받치는 AI 에이전트 기반 — 상담·수발주부터 경영 판단까지) · **TRILL**(라이프스타일 미디어) · **LIVEwith**(라이브 배신자 매니지먼트, 파트너 약 1,000명)."
+    },
+    {
+      "title": "数億の画像を溜めるS3のコストを、ストレージクラス使い分けでコスト削減する",
+      "url": "https://zenn.dev/dely_jp/articles/22a2c10b2e130d",
+      "publisher": "dely Tech Blog (Zenn)",
+      "date": "2026-08-31",
+      "summary": "레시챌에는 사용자가 날마다 대량의 **영수증 화상**을 올린다 — 수백 TB·수억 파일이 전부 S3 Standard 에 쌓여 쓰든 안 쓰든 요금을 냈다. 처음 안은 버킷 일괄 Intelligent-Tiering → 폴더(프리픽스) 접근 패턴을 다시 봐 **다시 안 보는 화상은 Glacier IR**, **앱에서 다시 보는 화상은 Intelligent-Tiering**, 다시 안 보는 폴더를 **Deep Archive 로 하지 않은 이유**, 적용과 결과(대상 버킷 약 55% 감소), 스토리지 클래스 이행의 일시적 **요청 비용을 놓쳤던** 것."
+    },
+    {
+      "title": "PdMが2週間で10施策量産して学んだ、Brazeにおけるパーソナライズデータの持たせ方4パターン",
+      "url": "https://zenn.dev/dely_jp/articles/462bd6dfaffa89",
+      "publisher": "dely Tech Blog (Zenn)",
+      "date": "2026-08-13",
+      "summary": "'구현 전에 최소 공수로 가설을 검증한다' 문화 — PdM·CRM 담당이 CRM 도구를 쓰는 게 중요하다. 레시챌은 자주 가는 점포·자주 사는 것에 맞춰 밀어 줄 콘텐츠를 개인화해야 해 Braze 를 쓴다. 2주 동안 시책 10개를 몰아 돌리며 개인화 데이터를 어디 둘지 — 방식 넷: ① 베타 입력(사용자 1 = 캠페인 1) ② API-Triggered + trigger_properties ③ CDI 동기 custom attribute(대기 시간이 길다) ④ 데이터 카탈로그 참조."
+    }
+  ]
+}

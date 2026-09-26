@@ -45,13 +45,13 @@
 | **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 2(`cheap-model-prescreening` · `scanned-pdf-ocr-triage`). **hold** — Stock 제품 수익원 자료 두 번 없음(2026-09-26). 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
 | **ウェザーニューズ(Weathernews)** | JP · 기상 정보 | 프로파일(2026-09-26). 도메인 둘 — 기상과 실적으로 소매·제조의 반년 수요를 예측한다 · 수십만 개의 사용자 기상 조건을 10분마다 판정한다. 기능 2(`batch-gpu-demand-inference` · `my-solution-decision-tree`). **hold** — 방송 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 방송은 도메인 없음. 입구 `zenn.dev/p/weathernews/feed`. |
 | **Kanmu(カンム)** | JP · 프리페이드 카드 핀테크 | 프로파일(2026-09-26). 도메인 둘 — 결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다 · 월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다. 기능 2(`pistachio-declarative-schema` · `datadog-monitor-worker-scaling`). **hold** — Pool·법인 금융 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 Pool·법인 금융은 도메인 없음. 입구 `zenn.dev/p/kanmu_dev/feed`. |
+| **dely(クラシル)** | JP · 레시피·절약 앱·리테일 AI | 프로파일(2026-09-26). 도메인 둘(레시챌) — 수억 장의 영수증 화상을 싸게 쌓아 둔다 · 쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다. 기능 0. 수익원 넷 중 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음. 입구 `zenn.dev/p/dely_jp/feed`. |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **dely(クラシル)** | JP · 레시피·리테일 앱(클라시루·레시챌) | Zenn Publication `zenn.dev/p/dely_jp`(RSS 20편). **수억 장 화상을 쌓는 S3 비용을 스토리지 클래스 나눠 쓰기로 줄인다**(`22a2c10b2e130d`, 2026-08-31) — 레시챌의 영수증 화상 수백 TB·수억 파일이 전부 S3 Standard → 버킷 일괄 Intelligent-Tiering 안 대신 폴더 접근 패턴별로 다시 보고 다시 안 보는 화상은 Glacier IR, 앱에서 다시 보는 건 Intelligent-Tiering, **Deep Archive 를 안 쓴 이유**, 이행 요청 비용을 놓쳤던 것까지 — 약 55% 절감. 곁글 — Braze 개인화 데이터 4패턴(`462bd6dfaffa89`) · Xcode Cloud CI 계측 · AWS Verified Access · 테이블 이름. **식품·리테일 미디어 축**. |
 | **みてね(MIXI · 家族アルバム)** | JP · 가족 사진·영상 공유 앱 | Zenn Publication `zenn.dev/p/mitene`(RSS 20편). **ingress-nginx retirement 에 따른 Gateway API + Envoy Gateway 이행**(`202604-ingress-nginx-to-envoy-gateway`, 2026-04-13) — 기존 요건 정리·annotation 재고·검토한 선택지·Envoy Gateway 선정 이유(인증 요건·확장성)·auth-* 계열이 가장 고생·리소스 두는 곳·전환 전략. 사용자 라우팅엔 Ingress 가 없어 내부용이라 안전하게 검토. 곁글 — Android Hilt 이행(`0e3193095affc9`) · 특정 단말만의 버그 재현. **사진 공유 축**. 제품 결정 글이 SRE·모바일 기반 위주라 두 번째 도메인이 약할 수 있다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

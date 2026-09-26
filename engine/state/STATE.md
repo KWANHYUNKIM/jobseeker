@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Kanmu hold(2026-09-26) — Pool·법인 금융 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 신규: 큐 맨 위 dely — `22a2c10b2e130d`(레시챌 영수증 화상 수백 TB·수억 파일 · 일괄 Intelligent-Tiering 안 대신 폴더 접근 패턴별 · Glacier IR · Deep Archive 안 쓴 이유 · 이행 요청 비용 · 약 55%) · `462bd6dfaffa89`(Braze 개인화 데이터 4패턴) · 회사 사이트에서 수익원부터. 큐 2/3 → 이 회사 뒤 후보 조사(입구: note·Speaker Deck·하테나). 대기 2/3(dely·みてね). **Zenn 최신 글 API 는 100쪽 상한 — 다음 후보 조사는 note·Speaker Deck·하테나로.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**dely 프로파일(2026-09-26) — 도메인 둘(둘 다 레시챌), 기능 0. 다음은 확장: '수억 장의 영수증 화상을 싸게 쌓아 둔다' — `22a2c10b2e130d`(일괄 Intelligent-Tiering 안 · 폴더 패턴 · Glacier IR · Deep Archive 안 쓴 이유 · 이행 요청 비용 · 약 55%; 본문 아직). 그다음 '쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다' — `462bd6dfaffa89`(Braze 4방식). 수익원 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 1/3(みてね) — --gaps 가 후보 조사를 부를 수 있다(입구: note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
