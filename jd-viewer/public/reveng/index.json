@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "timee",
+      "name": "タイミー",
+      "name_en": "Timee",
+      "country": "JP",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "하루 단위 틈새 일자리를 잇는 매칭 서비스 — 한 벌의 Rails 모놀리스가 커지는 속도를, 테스트는 머지 큐로, 스키마 변경은 롱 트랜잭션 추적으로 받아 낸다",
+      "updated_at": "2026-09-26",
+      "domain": "timee.co.jp"
+    },
+    {
       "slug": "andpad",
       "name": "アンドパッド",
       "name_en": "ANDPAD",
@@ -2975,7 +2987,9 @@
     "자동화 물류센터 관제",
     "서비스 입구와 대피로",
     "수발주에 붙은 청구서를 먼저 현금으로",
-    "도면의 표를 읽어 옮긴다"
+    "도면의 표를 읽어 옮긴다",
+    "PR 마다 전부 돌리지 않는 CI",
+    "낮에도 스키마를 바꾸는 DB 운영"
   ],
   "countries": {
     "KR": "한국",
