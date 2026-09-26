@@ -516,6 +516,98 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/372618",
+      "title": "[헤렌/공비서] iOS 개발자",
+      "site": "wanted",
+      "verdict": "경력 2-15년, 서울 성동구. **공비서 원장님 앱(B2B)과 고객 앱(B2C)** 두 iOS 앱을 설계·개발하고 운영·안정성·성능 지표를 직접 소유하는 자리다. 업무는 Crashlytics·Sentry 에러 모니터링·장애 대응, **App Store 정책 변화 대응**(Deployment Target 강제 업데이트 등), UIKit/SwiftUI 디자인 시스템, WebView 브릿지·Universal Link·APNs 연동, **Widget·CallDirectory Extension**, 다른 플랫폼 셀과 컨벤션 정립, AI 도구 활용 방식 정립. 필수는 iOS 정규직 2년 이상, **B2C 앱 App Store 출시·운영(지표·CS·장애)**, Swift, UIKit 프로그래매틱 UI·SwiftUI, **MVVM+Clean Architecture·TCA 중 둘 이상을 본인 결정으로 적용**, **RxSwift 와 Swift Concurrency 둘 다**, Combine, **Instruments·Memory Graph 트러블슈팅**, 코드 리뷰, AI 도구 워크플로우. 기술 스택은 Swift·UIKit·SwiftUI, TCA, Concurrency·Combine·RxSwift, Alamofire/Moya, Firebase, Tuist·SPM, Fastlane·GitHub Actions·Xcode Cloud, XCTest·Swift Testing·XCUITest, WidgetKit·CallDirectory, Claude Code·Codex·MCP. 우대는 대규모 B2C 장기 운영, 정량 성능 개선, Tuist/SPM 멀티 모듈, **UIKit·SwiftUI 혼용 점진 마이그레이션**, 디자인 시스템, Extension 구현, CI/CD, 테스트 자산화, 분석 도구, 외부 활동, 예약·결제 B2B. 공고가 'AI 결과물을 검증 없이 받아들이지 않고 수정·거절해본 구체 사례' 를 기대한다고 적는다. 같은 회사 iOS 리드(383221, 7년 이상)가 따로 있다. 전형: 서류 ＞ 대면 인터뷰 ＞ 최종 컬쳐핏(CEO·CTO) ＞ 최종 합격, 수습 3개월(급여 100%). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "iOS 2년 이상",
+          "B2C 앱 출시·운영",
+          "UIKit·SwiftUI",
+          "아키텍처 두 가지 이상 적용",
+          "RxSwift + Swift Concurrency",
+          "Instruments 트러블슈팅"
+        ],
+        "can_learn": [
+          "TCA",
+          "Tuist 멀티 모듈",
+          "App Extension",
+          "UIKit→SwiftUI 마이그레이션"
+        ]
+      },
+      "study": [
+        {
+          "topic": "RxSwift 와 Swift Concurrency 공존 — 다리 놓기",
+          "from": "qualification",
+          "quote": "• RxSwift와 Swift Concurrency 양쪽 모두 실무 활용 경험",
+          "priority": "core",
+          "why": "필수 자격요건이 '양쪽 모두 실무 활용' 이다 — 오래된 코드는 RxSwift, 새 코드는 async/await 로 섞여 있는 앱으로 읽힌다.",
+          "gap_check": "기존 RxSwift Observable 을 반환하는 예약 조회 API 를 새 화면에서 async/await 로 쓰려면 무엇(withCheckedThrowingContinuation 또는 values 로 AsyncSequence 변환)으로 잇고, 화면이 닫혔을 때 Rx 의 dispose 와 Task 취소는 각각 어떻게 일어나며, @MainActor 없이 UI 를 갱신하면 무엇이 생기는가?",
+          "drill": "Swift 동시성 문서를 읽고, RxSwift 로 된 가짜 예약 목록 저장소를 async 함수로 감싸는 어댑터를 만든다. 화면 종료 시 Task 가 취소되고 Rx 구독이 해제되는지 로그로 확인하고, @MainActor 누락 시 Thread Sanitizer 경고를 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Concurrency — Apple Developer Documentation",
+              "url": "https://developer.apple.com/documentation/swift/concurrency",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "메모리 트러블슈팅 — Instruments 와 Memory Graph",
+          "from": "qualification",
+          "quote": "• Instruments / Memory Graph Debugger를 활용한 메모리·성능 트러블슈팅 경험",
+          "priority": "core",
+          "why": "필수 자격요건이고 업무가 '두 앱의 운영·안정성·성능 지표를 직접 소유' 다.",
+          "gap_check": "예약 상세 화면을 열고 닫을 때마다 메모리가 늘어난다면 Memory Graph 에서 무엇(해제되지 않은 ViewController 와 그를 붙잡는 참조)을 찾고, 클로저의 [weak self] 누락·RxSwift disposeBag 수명·delegate strong 참조 중 흔한 원인은 무엇이며, Allocations 의 세대(Generation) 표시는 무엇을 보여주는가?",
+          "drill": "샘플 앱에 일부러 클로저 순환 참조를 넣고 화면을 10번 열고 닫으며 Instruments Allocations 의 Generation 과 Xcode Memory Graph 로 새는 객체와 참조 경로를 찾는다. 고친 뒤 다시 측정해 전후 수치를 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Gathering information about memory use — Apple",
+              "url": "https://developer.apple.com/documentation/xcode/gathering-information-about-memory-use",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "UIKit 앱에 SwiftUI 를 점진적으로 들이기",
+          "from": "preference",
+          "quote": "- UIKit SwiftUI 혼용 환경에서의 점진 마이그레이션 경험 (`UIViewRepresentable` / `UIHostingController`)",
+          "priority": "high",
+          "why": "우대사항이고 업무에 'UIKit / SwiftUI' 디자인 시스템, 회사 공고에 'UIKit 진영과 SwiftUI 진영의 컨벤션을 함께 정리' 가 있다.",
+          "gap_check": "UIKit 내비게이션 안에 SwiftUI 화면을 UIHostingController 로 넣을 때 화면 간 데이터·이벤트 전달은 무엇(ObservableObject·클로저)으로 하고, 반대로 SwiftUI 안에 기존 UIKit 캘린더를 UIViewRepresentable 로 넣을 때 갱신 주기(updateUIView)를 잘못 다루면 무엇이 생기며, 어떤 화면부터 옮기는 것이 위험이 적은가?",
+          "drill": "UIKit 예약 목록 앱에서 상세 화면만 SwiftUI 로 만들어 UIHostingController 로 푸시하고, 상세에서 변경한 값이 목록에 반영되게 한다. 반대 방향으로 UIKit 달력 뷰를 SwiftUI 에 UIViewRepresentable 로 넣어 선택 날짜를 양방향으로 맞춘다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "UIHostingController — Apple",
+              "url": "https://developer.apple.com/documentation/swiftui/uihostingcontroller",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "CallDirectory Extension — 전화 온 고객 알아보기",
+          "from": "task",
+          "quote": "• Widget Extension·CallDirectory Extension 등 App Extension 운영",
+          "priority": "nice",
+          "why": "주요업무다. 원장님 앱에서 예약 고객의 전화가 오면 이름이 뜨게 하는 기능으로 읽힌다(공고가 용도를 적지는 않는다).",
+          "gap_check": "CallDirectory Extension 은 앱 본체와 어떻게 데이터를 공유하고(App Group), 전화번호를 정렬된 순서로 넣어야 하는 제약은 무엇이며, 고객 수천 명의 번호를 매번 전부 다시 넣지 않고 추가·삭제만 반영하는 증분 갱신은 어떻게 하는가? 고객 전화번호를 기기에 저장하는 것의 개인정보 측면은?",
+          "drill": "Apple CallKit 문서를 읽고 CallDirectory Extension 샘플을 만들어 App Group 공유 파일의 번호·이름으로 식별 항목을 넣고, reloadExtension 호출 후 시뮬레이터 설정에서 확장이 켜지는지 확인한다. 증분 갱신 흐름을 순서도로 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "CXCallDirectoryProvider — Apple",
+              "url": "https://developer.apple.com/documentation/callkit/cxcalldirectoryprovider",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
