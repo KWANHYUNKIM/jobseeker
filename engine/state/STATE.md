@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — canva 재방문에서 확장(`worker-backpressure`)을 마쳤다. 09-04 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
+**없다 — toss 재방문에서 확장(`gpu-native-cluster`)을 마쳤다. 09-04 묶음 진행 중.** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **toss** — 2026-09-26 09-04 이후 새 글 12편 넘게. GPU-native 클러스터(09-15) → `gpu-native-cluster`. 안 쓴 후보: 토스닥터(쉼 없이 도는 테스트, 09-22) · Toss Benchmark(LLM 평가, 09-16) · AI 상담 연 300시간(09-23) · App Router(09-09) · AI 팀 규칙(09-08). 이전 MIG 도입기 글도 안 읽었다. 피드 `toss.tech/rss.xml`.
 - **canva** — 2026-09-26 새 글 하나(Worker Backpressure 1부, 09-17) → `worker-backpressure`. 피드 `canva.dev/blog/engineering/feed.xml`(UA 필요). 2부 예고됨.
 - **baemin** — 2026-09-26 09-04 이후 새 글 여럿. 입점 자동승인(27678, 09-23) → `auto-approve`. 안 쓴 후보: 배치→워크플로(26832, 09-08) · 아키텍처 규칙을 테스트로 강제(26835, 09-07) · 전자계약서 화면 개편(27604). 피드 `techblog.woowahan.com/feed/` 는 **브라우저 UA 가 있어야** 내용이 온다.
 - **adyen** — 2026-09-26 새 글 하나(AI in our development lifecycle, 게시 09-04·수정 09-11) → `ai-in-sdlc`. 새 글 찾기: `adyen.com/sitemap-en.xml` 의 knowledge-hub lastmod(대부분 마케팅 안내서 갱신이라 걸러야 한다), 글의 `datePublished`. `medium.com/feed/adyen` 최신 08-22(OpenRewrite). 본문이 링크한 Architect 설계 글은 아직 안 읽었다.

@@ -608,9 +608,9 @@
       "country": "KR",
       "category": "핀테크",
       "status": "done",
-      "features_done": 5,
+      "features_done": 6,
       "one_liner": "송금에서 시작해 금융 슈퍼앱이 된 핀테크",
-      "updated_at": "2026-09-04",
+      "updated_at": "2026-09-26",
       "domain": "toss.im"
     },
     {
@@ -2878,7 +2878,8 @@
     "에이전트가 사람 대신 들어간다",
     "AI 가 개발 과정에 들어온다",
     "사장님 입점·계약 승인",
-    "비동기 작업 큐"
+    "비동기 작업 큐",
+    "AI 서빙 인프라(토스증권)"
   ],
   "countries": {
     "KR": "한국",
