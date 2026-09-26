@@ -1,0 +1,167 @@
+{
+  "slug": "sukedachi",
+  "name": "助太刀",
+  "name_en": "Sukedachi",
+  "country": "JP",
+  "category": "기타",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "suke-dachi.jp",
+  "one_liner": "건설 직인과 공사 회사를 잇는 매칭 앱 — 검색을 OpenSearch 로 옮기면서도 RDS 와 로직을 맞춰 장애 때 자동으로 되돌리고, 7 년 쓴 네이티브 앱 20 만 행은 'AI 가 헤매지 않는' 4 층 Flutter 구조로 1 년 만에 갈아 끼웠다",
+  "business_model": "**건설 사업자와 직인이 만나는 매칭 앱 '助太刀'** 가 중심이다. 공사 회사 출신 멤버가 '직인이 더 좋은 일을 만나도록' 만들었다. 거래처 · 원청을 찾는 쪽은 무료로 등록하고, 직인 · 협력회사를 찾는 쪽에는 규모별 유료 입구(1~4 명용 Lite, 5 명 이상용 비즈니스)가 있다.\n\n또 하나는 **건설업 구인 '助太刀社員'** — 전국 87 직종의 정사원 구인을 싣고 스카우트한다. 요금 수준 · 매출 비중은 공개 자료에서 확인하지 못했다.",
+  "products": [
+    "助太刀(직인 ↔ 공사 회사 매칭 앱 · Web)",
+    "助太刀 Lite · 비즈니스(발주 측 유료 플랜)",
+    "助太刀社員(건설업 구인)"
+  ],
+  "revenue_total": "확인하지 못했다.",
+  "revenue_streams": [
+    {
+      "name": "助太刀 매칭(발주 측 유료 플랜)",
+      "how": "직인 · 협력회사를 찾는 사업자가 규모별 플랜(Lite · 비즈니스)으로 쓴다 — 거래처를 찾는 쪽 등록은 무료. 요금 수준은 공개 자료에서 확인하지 못했다.",
+      "weight": "공개 안 됨(주력)",
+      "domains": [
+        "직인과 건설 회사를 서로 찾게 하는 검색이 멈추지 않게 한다",
+        "적은 인원으로 오래된 매칭 앱을 계속 고쳐 나간다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "助太刀 - 建設現場で働くすべての人を支えるアプリ",
+          "url": "https://suke-dachi.jp/",
+          "publisher": "助太刀",
+          "summary": "건설 사업자와 직인이 만나는 앱 — 공사 회사 출신 멤버가 만들었다. 입구 넷: 거래처 · 원청을 찾는다(등록 무료) · 직인 · 협력회사를 찾는다(1~4 명 소규모용 Lite, 5 명 이상용 비즈니스) · 건설업 전직(전국 87 직종 구인, '助太刀社員') · 구인을 싣는다(사원 모집 · 스카우트). 요금 수준은 페이지에 적혀 있지 않다."
+        },
+        {
+          "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+          "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+          "publisher": "助太刀",
+          "date": "2024-12-15",
+          "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+        },
+        {
+          "title": "20万行のアプリを1年でフルリプレイス！「AIのため」のFlutterアーキテクチャ設計",
+          "url": "https://zenn.dev/sukedachi_dev/articles/e5c9cdd085bb40",
+          "publisher": "助太刀",
+          "date": "2026-08-06",
+          "summary": "약 7 년 운영한 iOS/Android 네이티브 앱(20 만 행 · 130 화면 · API 100 개 정도)을 Flutter 로 통합 풀 리플레이스, 약 1 년 만에 출시. 목표 아키텍처: 되도록 일반적인 Flutter 구조 · 사람이 읽고 리뷰 · 수정할 수 있음 · **AI 가 조사 · 구현 · 문서화하기 쉬움** · 거의 AI 가 구현 · 보수하니 **프로그래밍 오버헤드는 허용** · 테스트 쓰기 쉬움. 4 층(Presentation → Application → Domain ← Infrastructure, 의존은 한 방향), 기능 공통 토대는 core/(API 클라이언트 · 인증 · 공통 에러 핸들러 · 전역 내비게이션) — 'AI 가 기능 횡단은 core, 전용은 feature 폴더로 헤매지 않고 나눈다'. 엔티티 @freezed sealed class, 리포지토리 인터페이스는 Domain · 반환값 AppResult<T> 통일, DTO + 정적 Mapper + BaseRepository 상속. API 주변은 사양에서 자동 생성하지 않고 **융통성 있는 AI 수동 생성**을 택했다."
+        }
+      ]
+    },
+    {
+      "name": "助太刀社員(건설업 구인 게재 · 스카우트)",
+      "how": "건설 회사가 정사원 구인을 싣고 직인에게 스카우트한다. 과금 방식은 공개 자료에서 확인하지 못했다.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "助太刀 - 建設現場で働くすべての人を支えるアプリ",
+          "url": "https://suke-dachi.jp/",
+          "publisher": "助太刀",
+          "summary": "건설 사업자와 직인이 만나는 앱 — 공사 회사 출신 멤버가 만들었다. 입구 넷: 거래처 · 원청을 찾는다(등록 무료) · 직인 · 협력회사를 찾는다(1~4 명 소규모용 Lite, 5 명 이상용 비즈니스) · 건설업 전직(전국 87 직종 구인, '助太刀社員') · 구인을 싣는다(사원 모집 · 스카우트). 요금 수준은 페이지에 적혀 있지 않다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "직인 한 명이 일을 찾기까지",
+    "question": "직인과 공사 회사는 어떤 길로 서로를 찾고, 그 길은 무엇이 받치나?",
+    "code": "flowchart LR\n  W[\"직인 · 협력회사\"] --> APP[\"助太刀 앱\\nFlutter(iOS · Android) · Web\"]\n  C[\"공사 회사(Lite · 비즈니스)\"] --> APP\n  APP --> API[\"백엔드 API\"]\n  API --> SW{\"검색 소스\"}\n  SW -- 평소 --> OS[\"OpenSearch\"]\n  SW -- 장애 때 --> RDS[\"RDS(Aurora)\"]\n  DD[\"Datadog Synthetic\"] -. \"장애 감지 → Webhook\" .-> SW",
+    "_note": "이 사이트의 해석 — 글 둘의 구성을 한 장에 모았다. 앱과 백엔드 API 사이 구성은 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "직인과 건설 회사를 서로 찾게 하는 검색이 멈추지 않게 한다",
+      "why": "助太刀는 직인과 공사 회사가 서로를 찾는 서비스라 **검색이 곧 서비스의 중핵**이다. 검색이 느리거나 멈추면 만남 자체가 끊긴다.\n\n원래 RDS(Aurora)로 하던 검색을 성능을 위해 OpenSearch 로 옮기면서, 새 기반이 장애를 내도 검색을 멈추지 않을 방법이 필요했다.",
+      "tech": [
+        {
+          "tech": "OpenSearch 와 RDS 의 검색 로직 호환 + Datadog Synthetic 모니터링 → Webhook 으로 검색 소스 자동 전환",
+          "solves": "OpenSearch 장애를 감지하면 사람이 붙기 전에 RDS 로 되돌려 검색을 잇는다.",
+          "limits": "두 기반의 검색 로직을 계속 호환되게 유지해야 한다 — 되돌린 동안은 이전 성능으로 돈다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+              "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+              "publisher": "助太刀",
+              "date": "2024-12-15",
+              "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "적은 인원으로 오래된 매칭 앱을 계속 고쳐 나간다",
+      "why": "약 7 년 운영한 iOS · Android 네이티브 앱은 20 만 행 · 130 화면 · API 100 개 규모였다. 두 OS 를 따로 유지하며 새 기능을 내다 보니 불구합이 쌓였고(2022 년 iOS 불구합 수정률 52%), 안 쓰이는 기능 · 기술 부채가 수정을 막았다.\n\n인원은 한정돼 있어, 적은 사람이 — 이제는 AI 와 함께 — 오래 고쳐 나갈 수 있는 구조가 필요했다.",
+      "tech": [
+        {
+          "tech": "Flutter 통합 풀 리플레이스 — 4 층(Presentation → Application → Domain ← Infrastructure) + core/ 공통 토대 + AppResult<T> 통일",
+          "solves": "두 OS 를 한 코드로 모으고, AI 가 조사 · 구현 · 문서화하기 쉬운 '형'을 정해 사람도 리뷰할 수 있다.",
+          "limits": "AI 가 거의 구현한다는 전제로 프로그래밍 오버헤드(층 · 보일러플레이트)를 받아들였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "20万行のアプリを1年でフルリプレイス！「AIのため」のFlutterアーキテクチャ設計",
+              "url": "https://zenn.dev/sukedachi_dev/articles/e5c9cdd085bb40",
+              "publisher": "助太刀",
+              "date": "2026-08-06",
+              "summary": "약 7 년 운영한 iOS/Android 네이티브 앱(20 만 행 · 130 화면 · API 100 개 정도)을 Flutter 로 통합 풀 리플레이스, 약 1 년 만에 출시. 목표 아키텍처: 되도록 일반적인 Flutter 구조 · 사람이 읽고 리뷰 · 수정할 수 있음 · **AI 가 조사 · 구현 · 문서화하기 쉬움** · 거의 AI 가 구현 · 보수하니 **프로그래밍 오버헤드는 허용** · 테스트 쓰기 쉬움. 4 층(Presentation → Application → Domain ← Infrastructure, 의존은 한 방향), 기능 공통 토대는 core/(API 클라이언트 · 인증 · 공통 에러 핸들러 · 전역 내비게이션) — 'AI 가 기능 횡단은 core, 전용은 feature 폴더로 헤매지 않고 나눈다'. 엔티티 @freezed sealed class, 리포지토리 인터페이스는 Domain · 반환값 AppResult<T> 통일, DTO + 정적 Mapper + BaseRepository 상속. API 주변은 사양에서 자동 생성하지 않고 **융통성 있는 AI 수동 생성**을 택했다."
+            }
+          ]
+        },
+        {
+          "tech": "불구합 기표 정리 · 안 쓰는 기능 삭제(사용 조사 · CS/영업 · 법무) · 원인 팀으로 이관",
+          "solves": "iOS 불구합 수정률 52% → 99.06%(개발부 전체 97.69%).",
+          "limits": "기능 삭제는 사용자 · 영업 · 법무를 거쳐야 해 느리다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "不具合修正率を99.06%まで向上させた3年間の取り組み",
+              "url": "https://zenn.dev/sukedachi_dev/articles/edb60896d3544f",
+              "publisher": "助太刀",
+              "summary": "iOS 팀의 불구합 수정률(수정 완료 / 기표 수)을 2022-07 의 52% 에서 **99.06%**(개발부 전체 97.69%)로 약 3 년. 원인: 불구합 기표에 요망 · 사양 확인 · 폐지 예정 기능 · 서버 측 원인 · OS 간 레이아웃 차이가 섞여 있었다. 기표를 하나씩 정리(요망은 PM 으로, 사양은 PM/엔지니어가 다시 정함, 없는 기능은 닫음), **안 쓰이는 기능은 사용 조사 · CS/영업 안내 여부 · 법무 확인 뒤 삭제**(예: 그룹 메시지), 디자인 시스템 반영 뒤 OS 간 레이아웃 차이는 불구합에서 제외, 원인 팀으로 카테고리 이관."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**Lite · 비즈니스 요금 · 助太刀社員 과금 방식 · 매출 비중**이 공개 자료에 없다(회사 사이트 corp.suke-dachi.jp 는 DNS 해석 실패).",
+    "**OpenSearch 로의 이행 글**은 '별도로 쓸 예정'이라고만 적혀 있다 — 아직 못 찾았다.",
+    "**아직 안 읽은 것** — 구현자 2 명 × 약 1 년 × AI 로 Flutter 이행(`20260729-b6b211dbe7ef`) · Flutter UT 1 만 개 10 분 → 90 초 · AI 리뷰 풀 베팅 · Swagger 를 읽는 자작 MCP · Datadog 모바일 감시 · Web 판 App Router 이행 · LINE Messaging API."
+  ],
+  "sources": [
+    {
+      "title": "助太刀 - 建設現場で働くすべての人を支えるアプリ",
+      "url": "https://suke-dachi.jp/",
+      "publisher": "助太刀",
+      "summary": "건설 사업자와 직인이 만나는 앱 — 공사 회사 출신 멤버가 만들었다. 입구 넷: 거래처 · 원청을 찾는다(등록 무료) · 직인 · 협력회사를 찾는다(1~4 명 소규모용 Lite, 5 명 이상용 비즈니스) · 건설업 전직(전국 87 직종 구인, '助太刀社員') · 구인을 싣는다(사원 모집 · 스카우트). 요금 수준은 페이지에 적혀 있지 않다."
+    },
+    {
+      "title": "20万行のアプリを1年でフルリプレイス！「AIのため」のFlutterアーキテクチャ設計",
+      "url": "https://zenn.dev/sukedachi_dev/articles/e5c9cdd085bb40",
+      "publisher": "助太刀",
+      "date": "2026-08-06",
+      "summary": "약 7 년 운영한 iOS/Android 네이티브 앱(20 만 행 · 130 화면 · API 100 개 정도)을 Flutter 로 통합 풀 리플레이스, 약 1 년 만에 출시. 목표 아키텍처: 되도록 일반적인 Flutter 구조 · 사람이 읽고 리뷰 · 수정할 수 있음 · **AI 가 조사 · 구현 · 문서화하기 쉬움** · 거의 AI 가 구현 · 보수하니 **프로그래밍 오버헤드는 허용** · 테스트 쓰기 쉬움. 4 층(Presentation → Application → Domain ← Infrastructure, 의존은 한 방향), 기능 공통 토대는 core/(API 클라이언트 · 인증 · 공통 에러 핸들러 · 전역 내비게이션) — 'AI 가 기능 횡단은 core, 전용은 feature 폴더로 헤매지 않고 나눈다'. 엔티티 @freezed sealed class, 리포지토리 인터페이스는 Domain · 반환값 AppResult<T> 통일, DTO + 정적 Mapper + BaseRepository 상속. API 주변은 사양에서 자동 생성하지 않고 **융통성 있는 AI 수동 생성**을 택했다."
+    },
+    {
+      "title": "不具合修正率を99.06%まで向上させた3年間の取り組み",
+      "url": "https://zenn.dev/sukedachi_dev/articles/edb60896d3544f",
+      "publisher": "助太刀",
+      "summary": "iOS 팀의 불구합 수정률(수정 완료 / 기표 수)을 2022-07 의 52% 에서 **99.06%**(개발부 전체 97.69%)로 약 3 년. 원인: 불구합 기표에 요망 · 사양 확인 · 폐지 예정 기능 · 서버 측 원인 · OS 간 레이아웃 차이가 섞여 있었다. 기표를 하나씩 정리(요망은 PM 으로, 사양은 PM/엔지니어가 다시 정함, 없는 기능은 닫음), **안 쓰이는 기능은 사용 조사 · CS/영업 안내 여부 · 법무 확인 뒤 삭제**(예: 그룹 메시지), 디자인 시스템 반영 뒤 OS 간 레이아웃 차이는 불구합에서 제외, 원인 팀으로 카테고리 이관."
+    },
+    {
+      "title": "Syntheticモニタリング × Webhookで検索基盤を自動切替する仕組みを構築してみた",
+      "url": "https://zenn.dev/sukedachi_dev/articles/20241207-a4859735b8b546",
+      "publisher": "助太刀",
+      "date": "2024-12-15",
+      "summary": "검색 기반은 서비스의 중핵이라 높은 가용성이 필요하다. 원래 RDS(Aurora)였던 검색을 성능 향상을 위해 **Amazon OpenSearch 로 옮기되, 두 검색 로직에 호환성을 두어** OpenSearch 장애 때 RDS 로 되돌려 검색을 이어 간다. Datadog Synthetic 모니터링이 OpenSearch 검색 엔드포인트를 정기 점검 → 장애(is_alert) 때 Webhook 이 **검색 소스 전환 엔드포인트**를 불러 RDS 로 전환, 동시에 Slack 통지."
+    }
+  ]
+}
