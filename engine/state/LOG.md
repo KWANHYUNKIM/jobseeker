@@ -1924,3 +1924,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 dely 클라시루 분량 조정
 
 - 완주 판정 검색 2 에서 클라시루 글 → 셋째 도메인(클라시루 수익원). 결정 5 — Web 클라이언트 시험·서버 이전·10가지 한꺼번에 캐시·단위 40종 표기·보정 안 함. 남은 수익원(AI OS·TRILL/LIVEwith)은 두 번 찾아 없음.
+
+## 2026-09-26 dely hold
+
+- 남은 수익원 둘(AI OS·TRILL/LIVEwith) — 검색 1 RSS 20편 · 검색 2 Zenn 검색 API(지난 사이클). hold_reason·'재시도 안 함'·QUEUE hold.

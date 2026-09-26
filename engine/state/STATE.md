@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**dely 확장 3(2026-09-26) — 완주 판정 검색 2(Zenn 검색 'クラシル')에서 클라시루 글이 나와 hold 대신 셋째 도메인 '레시피의 분량을 사람 수에 맞춰 바꾼다' + `serving-size-adjustment`. 남은 수익원 Kurashiru AI OS·TRILL/LIVEwith 는 도메인 없음 — 검색 1 RSS 20편 · 검색 2 Zenn 검색 'Kurashiru AI'·'TRILL'·'dely' 모두 해당 글 0 → 다음 사이클은 그 둘만 hold(검색은 끝났다). 곁에 걸린 글: 클라시루 ID 기반 응답 1/10(`62da1c77c947da` — 레시챌 등 공통 IDP, Puma·N+1·Rails 8·메모리). 대기 1/3(みてね) — --gaps 가 후보 조사를 부를 수 있다(입구: note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**dely hold(2026-09-26) — AI OS·TRILL/LIVEwith 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지(도메인 3·기능 3). 다음은 --gaps 를 따른다 — 큐 대기 みてね(`202604-ingress-nginx-to-envoy-gateway` · Hilt 이행) 또는 큐 1/3 이라 후보 조사(입구: note·Speaker Deck·하테나 — Zenn 최신 글 API 는 100쪽 상한). 대기 1/3(みてね) — --gaps 가 후보 조사를 부를 수 있다(입구: note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -386,6 +386,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **Stock 제품(인원 구간 구독) 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 6편 전부 · Zenn 검색 API 4낱말 0건). Stock 제품 구조 글이 새로 나오면 다시.
 - **Weathernews 방송 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 18편 · Zenn 검색 API 3낱말, 방송 글 0). 방송 제작 구조 글이 새로 나오면 다시.
 - **Kanmu Pool·법인 금융 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 4낱말 0건). 제품 구조 글이 새로 나오면 다시.
+- **dely Kurashiru AI OS·TRILL/LIVEwith 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 4낱말, 해당 글 0). 그쪽 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

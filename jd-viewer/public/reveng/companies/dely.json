@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "커머스",
   "status": "in_progress",
+  "hold_reason": "수익원 'Kurashiru AI OS(B2B)'·'TRILL · LIVEwith(미디어·매니지먼트)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 20편 / Zenn 검색 API 'Kurashiru AI'·'TRILL'·'dely'·'クラシル' — 클라시루·레시챌·데이터 기반 글뿐). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. AI OS·TRILL·LIVEwith 쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "dely.jp",
   "one_liner": "레시피 동영상 클라시루와 절약 앱 레시챌의 회사 — 수백 TB 영수증 화상은 버킷 일괄이 아니라 폴더의 다시 보기 패턴에 따라 Glacier IR 과 Intelligent-Tiering 으로 나눠 약 55% 줄이고, 자주 가는 점포·사는 것에 맞춘 알림은 PdM 이 Braze 안에서 데이터를 어디 둘지 골라 구현 없이 돌린다",
