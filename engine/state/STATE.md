@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — metabase 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — mozilla 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **mozilla** — 2026-09-26 없음 1회째. 피드 셋: `hacks.mozilla.org/feed/`(마지막 08-24 JPEG XL), `blog.mozilla.org/security/feed/`(08-10), `blog.mozilla.org/en/feed/`(9월은 제품·제휴 발표). 이전 글 후보: 08-24 JPEG XL 출시 의도(물린 대안이 있을 수 있다), 06-23 PACT 익명 자격증명, 05-05 신뢰할 수 있는 JavaScript.
 - **metabase** — 2026-09-26 없음 1회째. `metabase.com/feed.xml` 마지막 글이 08-27(이미 출처인 취약점 사후 보고). 이전 글 후보: 07-20 LibreChat 을 고르고 Slack 에이전트가 된 이야기(물린 대안이 있을 수 있다), 06-16 persistent agent.
 - **materialize** — 2026-09-26 없음 1회째. RSS 404 — r.jina.ai 로 `/blog/` 목록. 마지막 글이 08-03(이미 출처인 사전 압축). 이전 글 후보: 07-29 live context graph 와 AI 비용, 06-29 agent search.
 - **mapbox** — 2026-09-26 없음 1회째. `blog.mapbox.com/feed` 는 2020년에 멈춘 Medium 피드 — r.jina.ai 로 `mapbox.com/blog` 목록. 9월 4편(Standard 새 판·3D 차선·지오코딩 45개국·대화형 지도) 모두 제품 발표. 이전 글 후보: 08-21 MTS 증분 업데이트, 08-13 Atlas v3 자체 호스팅, "From answers to addresses: grounding an LLM for location".
