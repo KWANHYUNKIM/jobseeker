@@ -7,7 +7,7 @@
     "씨메스로보틱스㈜",
     "씨메스"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "cmesrobotics.ai",
   "one_liner": "3D 비전 + AI + 로봇으로 물류(디팔레타이징·팔레타이징·피스 피킹)와 제조 공정을 자동화하는 로봇 솔루션·SI 기업 — 지금은 Physical AI(VLA·모방학습) 조직을 키우는 중",
@@ -804,6 +804,88 @@
             {
               "title": "Risk register — Wikipedia",
               "url": "https://en.wikipedia.org/wiki/Risk_register",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55000895&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=db025c1d-cada-440c-a358-1c778f5ed1c8",
+      "title": "AI Robot System 최적화 엔지니어(계약직)",
+      "site": "saramin",
+      "verdict": "**계약직**, 경력 무관, 이공계 학사 이상, 서울 강남구. 머리말은 비전 AI 모듈·AI Decision/알고리즘 모듈·Robotics 모듈을 **실제 산업 현장에 적용하고 최적화**하는 역할 — 객체 인식·포즈 추정·3D 매칭·캘리브레이션 같은 비전 모듈과 로봇 모션·행동 모듈을 **현장에 배포하고 성능을 검증**한다고 적는다. (사람인 원문은 업무가 자격요건 칸 안에 있다.) 업무는 세 묶음이다 — **R&D 지원·툴링**(Python/C++ 스크립트, 테스트 벤치·**자동 회귀 테스트**·지표 대시보드, 데이터 수집·정제 파이프라인, 재현 실험 문서화, 신규 버전 **Pre-QA**·배포 체크리스트) / **현장 적용·최적화**(AI/Robot SW 설치·배포·업데이트·**롤백**, **비전 센서 설치·캘리브레이션과 조명·작업 거리·해상도 최적화**, 배포 후 모니터링·로그·1차 이슈 분석, 라인 요구에 맞는 통합·튜닝) / **제품화 지원**(RGB-D·Stereo 카메라 선정·비교 평가와 SOP/Runbook, 이슈 트래킹·기술 보고서). 자격은 비전 AI·이미지 처리 이해, Python 또는 C++ 또는 Linux/Git, **카메라 캘리브레이션·좌표계 변환 개념**, 문서화·데이터 분석, 현장 실행력. 우대는 산업용 비전·광학·조명과 OpenCV/PCL, 로봇 통합과 ROS·PLC, 비전 모델 운영, 3D 센서·3D 매칭·포즈 추정, 자동화 테스트·CI. 신입이 현장과 연구 사이에서 로봇 비전을 배우기 좋은 자리로 읽힌다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "이공계 학사",
+          "Python·C++·Linux·Git 중 하나",
+          "캘리브레이션·좌표계 변환 개념",
+          "현장 실행력"
+        ],
+        "can_learn": [
+          "핸드-아이 캘리브레이션",
+          "3D 매칭(PCL)",
+          "회귀 테스트 벤치"
+        ]
+      },
+      "study": [
+        {
+          "topic": "카메라 캘리브레이션과 좌표계 변환",
+          "from": "qualification",
+          "quote": "ㆍ카메라 캘리브레이션·좌표계 변환 개념 이해 및",
+          "priority": "core",
+          "why": "자격요건이고 업무에 비전 센서 설치·캘리브레이션이 있다. 로봇이 카메라가 본 곳을 정확히 집으려면 이 사슬이 맞아야 한다.",
+          "gap_check": "내부 파라미터(초점거리·주점·왜곡)와 외부 파라미터(카메라 자세)는 각각 무엇이고, 로봇 팔 끝에 카메라를 단 경우(eye-in-hand)와 고정한 경우(eye-to-hand) 핸드-아이 캘리브레이션은 어떤 변환을 푸는가? 재투영 오차가 작아도 집기 위치가 어긋날 수 있는 이유는?",
+          "drill": "카메라 캘리브레이션·핸드-아이 문서를 읽고, 체스보드 사진 15장으로 내부 파라미터를 추정해 재투영 오차를 기록한다. 로봇 자세·보드 자세 쌍(시뮬레이션 데이터 가능)으로 핸드-아이 변환을 풀어, 카메라 좌표 한 점을 로봇 베이스 좌표로 바꾸는 체인을 코드로 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Camera resectioning — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Camera_resectioning",
+              "kind": "docs"
+            },
+            {
+              "title": "Hand–eye calibration problem — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Hand_eye_calibration_problem",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "3D 매칭 — 점군에서 물체 자세 찾기",
+          "from": "preference",
+          "quote": "3D 매칭·포즈 추정 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 머리말이 3D 매칭·포즈 추정 모듈의 현장 배포를 적는다.",
+          "gap_check": "CAD 모델 점군을 장면 점군에 맞출 때 초기 정렬(특징 기반)과 정밀 정렬(ICP)을 왜 나누고, ICP 가 초기값이 나쁘면 왜 틀린 답에 수렴하는가? 반사·가림이 많은 상자 더미에서 매칭 점수가 떨어질 때 무엇(다운샘플링·관심영역·임계값)을 조정하는가?",
+          "drill": "PCL 정합(Registration) 튜토리얼을 읽고, 상자 CAD 점군을 잡음·가림을 넣은 장면에 ICP 로 정렬해 초기 오차 크기별 성공률을 기록한다. Stereo 카메라 문서로 깊이 잡음이 거리에 따라 커지는 이유도 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "The PCL Registration API — Point Cloud Library",
+              "url": "https://pointclouds.org/documentation/tutorials/registration_api.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Stereo camera — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Stereo_camera",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "자동 회귀 테스트와 배포·롤백",
+          "from": "qualification",
+          "quote": "- 테스트 벤치 구성, 자동 회귀 테스트 및",
+          "priority": "high",
+          "why": "업무다(원문은 자격요건 칸). 신규 모델·알고리즘 Pre-QA 와 현장 버전 업데이트·롤백이 이어진다.",
+          "gap_check": "비전 알고리즘 새 버전을 현장에 내보내기 전에 어떤 고정 데이터셋·지표(인식률·자세 오차·처리 시간)로 이전 버전과 비교하고, 무엇이 나빠지면 배포를 막는가? 현장 업데이트가 실패했을 때 몇 분 안에 이전 버전으로 되돌리려면 무엇을 미리 준비하는가?",
+          "drill": "Regression testing 문서를 읽고, 이미지 100장 고정 셋과 정답 좌표로 두 버전의 인식 결과를 비교하는 스크립트와 합격 기준(지표별 허용 하락폭)을 만든다. 배포 체크리스트와 롤백 Runbook 을 한 장씩 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Regression testing — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Regression_testing",
               "kind": "docs"
             }
           ]
