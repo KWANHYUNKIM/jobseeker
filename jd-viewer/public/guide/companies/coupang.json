@@ -11608,6 +11608,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8012236",
+      "title": "Staff~Sr. Staff, Machine Learning Engineer (Ads Engineering)",
+      "site": "ats",
+      "verdict": "서울 근무, 대규모 프로덕션 ML 10년 이상. 쿠팡 광고(Ads Growth)의 차세대 기반을 설계하는 최고참 IC — 멀티 에이전트 Agentic AI(ReAct·LangGraph), 보상 기반 포스트 트레이닝 강화학습(RLHF·RLAIF), LLM 파인튜닝·증류·저지연 서빙을 광고 성과(CTR·CVR·tROAS)로 연결한다. 국·영문 설계 문서로 글로벌 조직을 맞추고, Claude Code 같은 코딩 에이전트 활용이 우대에 있다.",
+      "fit": {
+        "must_have": [
+          "프로덕션 ML 10년 이상",
+          "멀티 에이전트·플래닝·자율 추론 파이프라인 구축(ReAct·LangGraph)",
+          "Python + 테스트·CI/CD·확장 가능한 설계",
+          "기술 방향·로드맵·교차 조직 얼라인먼트",
+          "글로벌 커뮤니케이션"
+        ],
+        "can_learn": [
+          "쿠팡 광고 지면·입찰 구조"
+        ]
+      },
+      "study": [
+        {
+          "topic": "멀티 에이전트 오케스트레이션 (ReAct·LangGraph)",
+          "from": "qualification",
+          "quote": "Agentic AI 시스템 구축 경험: 멀티 에이전트 오케스트레이션, 플래닝, 자율 추론 파이프라인 설계 및 구현 경험 (예: ReAct 프레임워크, LangGraph 등 활용)",
+          "priority": "core",
+          "why": "자격요건 줄이고, 주요업무 첫 항목이 도구 사용·장단기 메모리·자율 추론을 갖춘 대규모 에이전트 시스템이다.",
+          "gap_check": "에이전트가 도구 호출을 반복하다 멈추지 않거나 잘못된 결론에 도달할 때, 그래프 설계(종료 조건·단계 제한·검증 노드)로 어떻게 막는가?",
+          "drill": "LangGraph 로 '광고 성과 하락 원인 분석' 에이전트를 만든다 — 지표 조회·캠페인 설정 조회 도구 두 개, 계획→실행→검증 노드, 최대 단계 제한과 사람 확인 노드를 둔다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "LangGraph — Documentation",
+              "url": "https://langchain-ai.github.io/langgraph/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보상 기반 포스트 트레이닝 (RLHF·RLAIF·리워드 모델링)",
+          "from": "preference",
+          "quote": "보상 기반 최적화(Reward-based optimization)를 위한 포스트 트레이닝 강화학습(RLHF, RLAIF 또는 도메인 특화 리워드 모델링) 경험",
+          "priority": "high",
+          "why": "주요업무가 이 기법으로 '광고주 성과와 사용자 경험을 극대화'한다고 적는다.",
+          "gap_check": "광고 문구 생성 모델에 리워드 모델을 붙일 때, 클릭만 보상하면 생기는 부작용(낚시성 문구)을 어떤 보상 설계·제약으로 막는가?",
+          "drill": "작은 언어 모델에 선호 쌍 데이터로 DPO(또는 TRL 의 PPO)를 적용해 '정확하고 클릭을 부르는 문구' 선호를 학습시키고 전후 생성 결과를 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Hugging Face TRL — Documentation",
+              "url": "https://huggingface.co/docs/trl/index",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 파인튜닝·증류·저지연 서빙",
+          "from": "preference",
+          "quote": "LLM 파인튜닝, 증류(Distillation), 대규모 serving/inference 인프라 최적화 경험",
+          "priority": "high",
+          "why": "광고는 요청마다 실시간으로 결정돼 큰 모델을 그대로 쓰기 어렵다(추론). 증류와 추론 효율화가 주요업무에 있다.",
+          "gap_check": "큰 교사 모델의 광고 관련성 판단을 작은 학생 모델로 증류할 때 무엇을 손실로 쓰고, 지연·정확도 목표를 어떻게 함께 잡는가?",
+          "drill": "교사 모델(큰 LLM)로 광고-쿼리 관련성 라벨을 만들고, 작은 모델을 그 라벨로 학습시켜 정확도·지연을 비교한 뒤 vLLM 으로 서빙해 처리량을 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "vLLM — Documentation",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "광고 성과 지표 (CTR·CVR·tROAS)와 온·오프라인 평가",
+          "from": "task",
+          "quote": "데이터 기반의 혁신: 복잡하고 거대한 광고 데이터셋을 탐색하여 숨겨진 패턴을 식별하고, 이를 계량화된 광고 퍼포먼스(CTR, CVR, tROAS 달성률 등) 개선으로 연결",
+          "priority": "core",
+          "why": "주요업무가 대규모 광고 데이터에서 찾은 패턴을 CTR·CVR·tROAS 달성률 개선으로 연결하라고 적는다. 우대에 Feature Store·온/오프라인 평가·A/B 프레임워크가 있다.",
+          "gap_check": "tROAS(목표 광고 수익률) 달성률을 올리는 모델 변경이 전체 광고 매출이나 사용자 경험을 해치지 않는지 A/B 에서 어떤 가드레일로 확인하는가?",
+          "drill": "공개 광고 클릭 데이터(Criteo 등)로 CTR 모델을 학습하고, 오프라인 AUC/로그 손실과 가상의 온라인 지표(예산 소진·수익률)를 함께 보고하는 평가 노트북을 만든다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "국·영문 설계 문서로 글로벌 얼라인먼트",
+          "from": "task",
+          "quote": "글로벌 기술 리더십 및 얼라인먼트: Ads Growth의 중장기 기술 로드맵을 설정하고, 국/영문 테크니컬 디자인 문서(Design Docs) 작성을 통해 글로벌 유관 부서(Product, Infrastructure 등)와 복잡한 트레이드오프 조율 및 싱크 얼라인",
+          "priority": "high",
+          "why": "설계 문서(Design Docs)를 국·영문으로 써서 다국적 조직과 트레이드오프를 맞추는 것이 주요업무이자 우대(서면 커뮤니케이션)다.",
+          "gap_check": "에이전트 시스템 도입 설계 문서에서 대안·트레이드오프·위험·되돌리기 계획을 한 쪽에 담을 수 있는가?",
+          "drill": "위 에이전트 과제의 설계 문서를 영문 한 쪽으로 쓰고(배경·목표·대안·결정·위험·지표), 한국어 요약을 붙인다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "코딩 에이전트로 가속한 ML 개발 사례",
+          "why": "우대에 'Claude Code 등 코딩 에이전트로 AI 개발 워크플로우 가속'이 이름까지 적혀 있다. 무엇을 맡기고 어떻게 검증했는지 기록이 있으면 바로 통한다.",
+          "effort": "기존 경험 정리 반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "에이전트 그래프의 종료·검증 설계",
+          "보상 해킹 방지",
+          "증류와 서빙 지연",
+          "tROAS 실험 가드레일",
+          "설계 문서로 얼라인한 사례"
+        ],
+        "sources": [
+          {
+            "title": "Staff~Sr. Staff, Machine Learning Engineer (Ads Engineering)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8012236",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
