@@ -1,0 +1,257 @@
+{
+  "slug": "baropharm",
+  "name": "바로팜",
+  "name_en": "Baropharm",
+  "aliases": [
+    "바로팜"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "baropharm.com",
+  "one_liner": "약국이 여러 도매상·온라인몰에 흩어진 의약품 주문을 한 곳에서 하게 만든 약국 경영 플랫폼 — 그 위에 광고·자사브랜드·제약 데이터 사업을 얹고 있다",
+  "company": {
+    "business": "공고 머리말은 바로팜을 현직 약사 출신 창업자들이 세운 플랫폼 기반 PharmTech 기업으로 소개하고, 국내 최초 의약품 주문 통합 플랫폼으로 전국 약국의 90% 이상이 쓰는 플랫폼이 됐다고 적는다. 홈페이지는 도매상부터 온라인몰까지 한 번에 주문하는 통합 주문을 시작으로 전문가 상담, 개국올인원, 품절 상품 재입고 알림 등을 제공한다고 적는다. 백엔드 공고는 그 밖에 데이터 기반 광고·마케팅 사업, 약국 전용 PB 제품 판매, AI 기반 의약품 식별 서비스 '필렌즈', 구독형 실시간 데이터 제공 서비스 '비알피인사이트', B2B2C 플랫폼 '어라운드팜' 을 나열한다. 비알피커넥트 공고는 사업을 세 축(약국 경영 통합 플랫폼, K-뷰티존·제약 브랜드관의 브랜드 사업, 클라우드·데이터 인프라 사업)으로 나누고, 계열사로 제약 커머스 '비알피랩스', 제약사·도매상·약국을 잇는 제약 데이터 분석 기업 '비알피커넥트', 의약품 제조 '씨에이치디제약' 을 든다. 비알피커넥트는 수급·처방·매출 데이터를 통합한 대시보드 비알피인사이트(BRPInsight)와 맞춤형 분석 플랫폼 비알피인뎁스(BRPIndepth)를 운영한다고 적는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "바로팜 - 약국 경영의 모든 것",
+        "url": "https://www.baropharm.com/",
+        "publisher": "바로팜",
+        "summary": "메타 설명이 '이용중인 도매상부터 온라인몰까지 한번에 주문 가능한 통합 주문을 시작으로 전문가 상담, 개국올인원, 품절 상품 재입고 알림 등 약사를 위한 모든 정보와 서비스를 제공' 한다고 적는다. 메뉴는 통합주문내역·커뮤니티·브랜드관·멤버십·전문가 상담·개국올인원·필렌즈"
+      },
+      {
+        "title": "백엔드 개발자 (Python)",
+        "url": "https://www.wanted.co.kr/wd/367917",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[비알피커넥트] 데이터 사이언티스트",
+        "url": "https://www.wanted.co.kr/wd/373736",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출(회사 주장)",
+        "value": "2024년 455억원, 2025년 약 1,000억원",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[비알피커넥트] 데이터 사이언티스트",
+            "url": "https://www.wanted.co.kr/wd/373736",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "누적 투자 유치(회사 주장)",
+        "value": "약 400억원(KB인베스트먼트·미래에셋·소프트뱅크벤처스·KDB산업은행 등)",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "약국 점유(회사 주장)",
+        "value": "전국 약국의 90% 이상이 사용",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "임직원 수(회사 주장)",
+        "value": "약 160명(백엔드 공고) / 전체 170명(비알피커넥트 공고)",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[비알피커넥트] 데이터 사이언티스트",
+            "url": "https://www.wanted.co.kr/wd/373736",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "약국 의약품 통합 주문 플랫폼",
+        "how": "약국이 여러 도매상·온라인몰에 한 번에 주문하는 플랫폼이다. 백엔드 공고가 주문·정산·결제와 파트너사 연동 API 를 핵심 비즈니스 로직으로 적는다. 수수료를 누구에게서 얼마나 받는지는 읽지 않았다(추론).",
+        "domains": [
+          "약국 의약품 주문·정산 플랫폼"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "바로팜 - 약국 경영의 모든 것",
+            "url": "https://www.baropharm.com/",
+            "publisher": "바로팜",
+            "summary": "메타 설명이 '이용중인 도매상부터 온라인몰까지 한번에 주문 가능한 통합 주문을 시작으로 전문가 상담, 개국올인원, 품절 상품 재입고 알림 등 약사를 위한 모든 정보와 서비스를 제공' 한다고 적는다. 메뉴는 통합주문내역·커뮤니티·브랜드관·멤버십·전문가 상담·개국올인원·필렌즈"
+          },
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "광고·마케팅과 자사브랜드(PB) 판매",
+        "how": "백엔드 공고가 '데이터 기반 광고·마케팅 사업' 과 '약국 전용 PB 제품 판매' 를 사업으로 나열하고, 비알피커넥트 공고가 K-뷰티존·제약 브랜드관의 브랜드 사업을 세 축의 하나로 적는다. 비중은 읽지 않았다.",
+        "domains": [
+          "약국 의약품 주문·정산 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[비알피커넥트] 데이터 사이언티스트",
+            "url": "https://www.wanted.co.kr/wd/373736",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "제약 데이터 구독·분석(비알피커넥트)",
+        "how": "백엔드 공고가 비알피인사이트를 '구독형 실시간 데이터 제공 서비스' 로 적고, 비알피커넥트 공고가 수급·처방·매출 데이터 대시보드(BRPInsight)와 제약사 맞춤형 분석(BRPIndepth)으로 제약 업계 의사결정을 돕는다고 적는다.",
+        "domains": [
+          "의약품 유통 데이터 분석",
+          "데이터 인프라·MDM"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[비알피커넥트] 데이터 사이언티스트",
+            "url": "https://www.wanted.co.kr/wd/373736",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[비알피커넥트] 데이터 분석가 (Data Analyst)",
+            "url": "https://www.wanted.co.kr/wd/387783",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "약국 의약품 주문·정산 플랫폼",
+        "why": "백엔드 공고가 RESTful API 와 주문·정산·결제 로직, 파트너사 연동 API, AWS 운영을 적고 우대에 플랫폼 정산 개발과 대용량 트래픽 운영을 둔다.",
+        "what_to_know": [
+          "주문·정산·결제 도메인 모델",
+          "파트너(도매상) 연동 API",
+          "Python 백엔드·AWS"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "의약품 유통 데이터 분석",
+        "why": "비알피커넥트 데이터 사이언티스트 공고가 의약품 유통 데이터 통계 분석·알고리즘, 약국 구매·판매·사용 패턴 기반 예측 모델을, 데이터 분석가 공고가 Tableau 대시보드를 적는다.",
+        "what_to_know": [
+          "의약품 유통·처방 데이터 구조",
+          "수요 예측",
+          "Tableau 대시보드"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[비알피커넥트] 데이터 사이언티스트",
+            "url": "https://www.wanted.co.kr/wd/373736",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[비알피커넥트] 데이터 분석가 (Data Analyst)",
+            "url": "https://www.wanted.co.kr/wd/387783",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "데이터 인프라·MDM",
+        "why": "데이터 엔지니어 공고가 AWS 데이터 인프라, 배치·증분 파이프라인, DW/마트 모델링과 품질 검증, 마스터 데이터 관리(MDM), Elasticsearch/OpenSearch 색인을 적는다.",
+        "what_to_know": [
+          "배치·증분 파이프라인",
+          "DW/마트 모델링",
+          "MDM",
+          "Elasticsearch 색인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "데이터 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/377859",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "코스닥 상장을 준비 중이라고 적는다",
+        "evidence": "코스닥 상장을 위한 예비심사청구서를 제출하고 IPO 절차를 순조롭게 진행하고 있습니다",
+        "so_what": "같은 문단이 2026년 상반기 영업이익 흑자 전환을 적는다(회사 주장). 상장 준비기에는 정산·데이터 정합성과 내부 통제 요구가 커질 수 있다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "데이터 쪽 채용이 모집중의 다수다",
+        "evidence": "데이터 품질 검증(정합성 체크, 이상치 탐지, 소스 간 대사) 체계를 직접 설계해 본 경험",
+        "so_what": "원티드 모집중 4건 중 3건이 데이터(엔지니어·사이언티스트·분석가)이고 그중 둘이 계열사 비알피커넥트 자리다. 데이터 사업(구독·분석)을 키우는 쪽으로 보인다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 코딩 도구 활용과 검증 기준을 우대한다",
+        "evidence": "AI 코딩도구(Claude Code, Cursor 등)를 실무에 활용하며, 그 결과를 검증하는 자기기준을 갖고 있는 분",
+        "so_what": "데이터 엔지니어 공고에 있다. 면접에서 AI 가 만든 코드를 어떻게 검증했는지 말할 준비가 필요하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "임직원 수가 공고마다 다르다(약 160명 / 170명) — 게시 시점 차이로 보인다",
+    "통합 주문 플랫폼의 과금 구조(약국·도매상 중 누가 내는지)를 읽지 않았다",
+    "매출·흑자 전환·IPO 는 공고 머리말(회사 주장)만 읽었다",
+    "비알피커넥트 공고는 계열사 채용인데 회사명이 바로팜으로 올라온다 — 근로계약 주체는 공고로 확인하지 못했다",
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "jumpit·사람인 데이터 분석가 4건(정규·계약직)은 원티드 387783 과 본문 비교가 필요하다"
+  ],
+  "postings": []
+}
