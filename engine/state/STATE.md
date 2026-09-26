@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**SMS(`sms`) — 확장 3(2026-09-26): Career Portal 도메인에 `career-portal-ordinary-platform`(결정 8). 도메인 셋 모두 기능. 남은 것은 헬스케어·시니어 라이프·해외 수익원(사이트맵 156편 제목 1회 검색 없음) — 한 번 더(bm-sms.co.jp 뉴스·speakerdeck.com/sms_tech) 찾고 없으면 hold. 대기 1/3(코네히토 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모(hold)·LayerX 는 in_progress.**
+**SMS — hold(2026-09-26, 도메인 3 · 기능 3). 헬스케어·시니어·해외 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(코네히토 — `tech.connehito.com`, 약관 동의 이력 `entry/2026/06/17/115912`, scratchpad `cand_f36525.txt`). 대기 1/3 — 코네히토 뒤 후보 조사. 비교 문서 재료: ENECHANGE 검산 하네스 ↔ SMS 산정 테스트(둘 다 '1엔 오류 = 청구 오류'), SMS 카이포케 PR 마다 환경 ↔ Career Portal 고정 5개. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS(hold)·LayerX 는 in_progress.**
 
 
 
@@ -368,6 +368,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **라쿠스 BlastMail·웹 미디어 수익원** — 2026-09-26 두 번 찾아 없음(tech-blog 사이트맵 329편 제목 · blastmail.jp 블로그). 발송 엔진·도달률 구조 글이 새로 나오면 다시.
 - **ENECHANGE 비교·전환·EV·투자 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 199편 제목 · speakerdeck 404). 비교 엔진·요금 시뮬레이션·EV 충전 글이 새로 나오면 다시.
 - **엔니고모 BUYMA TRAVEL·STYLE HAUS 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 128편 제목 · 'AIでさがす' 는 기사 출처 불명). TRAVEL·미디어 구조 글이 새로 나오면 다시.
+- **SMS 헬스케어·시니어·해외 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 156편 제목 · speakerdeck sms_tech 21건). 그쪽 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

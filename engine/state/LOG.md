@@ -1484,3 +1484,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 SMS Career Portal
 
 - Career Portal 글 후반까지 읽고 `career-portal-ordinary-platform`(결정 8 — Cloud Tasks vs 잡 워커·GitHub 릴리스·배치 감시 vs BI·Cloud SQL Studio·고정 5 검증 환경·pinact/WIF·모노레포(inferred)·'평범함'). 같은 회사의 카이포케는 PR 마다 환경, Career Portal 은 고정 5개 — 반대 판단을 연결에 남김.
+
+## 2026-09-26 SMS 완주 판정 — 헬스케어·시니어·해외 hold
+
+- 2회차: speakerdeck.com/sms_tech 21건에도 없음(1회차는 사이트맵 156편 제목). hold_reason 추가.
