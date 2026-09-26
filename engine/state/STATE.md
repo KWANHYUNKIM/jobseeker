@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**ABEJA — hold(2026-09-26, 도메인 2 · 기능 2). 컨설팅·Retail 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 후보 조사(큐 0/3 — 3순위). 84번째에서 미판정·탈락 목록은 QUEUE '확인해 둔 후보' 참고. 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증, Findy ↔ YOUTRUST 추천, Nature ↔ LayerX AI 리뷰. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
+**85번째 후보 조사(2026-09-26) — 대기 2/3(Sumzap·Yappli). 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(Sumzap — `tech.sumzap.co.jp`, 메모리 최적화 `entry/unity-optimize-memory-in-jujutsuphanpara` 부터, scratchpad `c85_*.txt`). 하테나 사이트맵 탐색이 바닥을 보인다 — 다음 후보 조사는 Zenn Publication·note 기업 계정 같은 다른 입구를 시험. 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증, Findy ↔ YOUTRUST 추천, Nature ↔ LayerX AI 리뷰. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
 
 
 

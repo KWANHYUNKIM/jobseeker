@@ -39,8 +39,16 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Sumzap(サムザップ)** | JP · 모바일 게임(CyberAgent 그룹) | `tech.sumzap.co.jp`(하테나, jina 로 읽힘, 최신 2026-09, 7~9월 10편). `entry/unity-optimize-memory-in-jujutsuphanpara`(2026-08) 는 『呪術廻戦 ファントムパレード』의 **저메모리 단말 크래시**를 줄인 Unity 메모리 최적화 — 에셋 관리 라이브러리 개선으로 300MB→200MB, 적절한 시점에 GC, 피크 약 300MB 감소, **로드 시간이 조금 늘어나는 대가를 체감 허용 범위로** 받아들였다고 적는다. `dynamic-development-environment-provisioning`(2026-07) 은 **Terragrunt × GitHub Actions 로 개발 환경을 원클릭 추가·자동 삭제** — Cloud Run 으로 요청 없으면 0 스케일, **OAuth callback 을 상설 환경(callback host) 하나에 모아** 동적 환경이 늘어도 redirect URI 등록이 늘지 않게. Unity 에디터 확장·UI Toolkit 글이 절반. **게임 축**(데브시스터즈·Cygames 와 비교 재료). |
+| **Yappli(ヤプリ)** | JP · 노코드 앱 플랫폼 SaaS | `tech.yappli.io`(하테나, jina 로 읽힘, 최신 2026-09, 7~9월 16편). `entry/handling-customer-inquiries`(2026-09) 는 서버사이드의 문의 대응 — 엔지니어의 책임은 **원인 특정까지**, 고객 회신 문면은 CS, 수정은 개발 관리로 넘긴다; 조사와 수정은 **둘 다 소요 시간을 못 읽어** 한 사람이 둘을 안으면 한쪽이 반드시 멈춘다는 이유를 적는다. targetSdk 36 대응(`droidkaigi-poster-session-targetsdk36`)·Claude Code 로 사양 누락 찾기(`create-qa-plan`). **행사·인턴 글이 절반 넘게** 섞인다 — 도메인 둘을 채우려면 2025 사이트맵까지 봐야 할 수 있다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 여든다섯 번째 후보 조사 — 목표 3곳 중 2곳.**
+  - **Sumzap** — **게임 축.** 메모리 최적화의 로드 시간 대가, 동적 개발 환경의 OAuth callback 집약.
+  - **Yappli** — **노코드 앱 SaaS 축.** 문의 대응에서 조사와 수정을 가르는 이유가 분명하다. 행사 글이 많아 약하다.
+  - **통과 못 한 곳.** **Insight Edge** — 실험·조직 글이 대부분(사내 에이전트 기반 글 하나는 볼 만). **Leverages** — 7~9월 4편, 행사·인턴. **freee·ZOZO·Classi·Mirrativ** — 이미 판 회사이거나 이미 탈락. 7~9월 사이트맵이 빈 곳 30여 곳(optim·retty·recochoku·pksha·goodpatch·drecom·qualiarts·appbrew·coconala·raksul·kaonavi·wantedly·pixiv·tebiki·makeleaps·shiftinc·kinto·algoage·dmm·linc-well·jmdc·10x 등) — 미판정.
+  - **2곳만 채운 것을 채운 척하지 않는다.** 하테나 사이트맵으로 찾는 방식이 바닥을 보이고 있다 — 다음 조사는 **Zenn Publication**(zenn.dev/p/…)이나 **note 기업 계정**처럼 다른 입구를 시험할 것.
 
 - **2026-09-26 여든네 번째 후보 조사 — 목표 3곳 중 3곳.**
   - **YOUTRUST** — **커리어 SNS 축.** Redis vs 그래프 DB 비교·전건 동기 선택이 분명하다. 가장 튼튼한 후보.
