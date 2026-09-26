@@ -2568,3 +2568,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 スタディスト 계정 간 이벤트 · 신규 프로덕트 수익원 판정 1 차
 
 - 수익원 판정 1 차: publication 전체 목록(75 편) 제목을 훑음. `20260612_pub_sub` 이 Teachme Process · MySkill · Communication 을 명시 → '신규 프로덕트' confirmed, 기능 `cross-account-tenant-event-fanout`(결정 6). 린 오퍼레이션 지원 프로그램 관련 제목은 없음.
+
+## 2026-09-27 スタディスト 수익원 정정 · 보류
+
+- 2 차 탐색: Zenn 검색 GENSEKI · リーンカレッジ · リーンオペレーション · スタディスト リーン 모두 0건. 회사 페이지를 읽어 보니 GENSEKI 는 사내 신규 사업 프로그램, 린 칼리지는 사내 인재 성장 구조 — 수익원이 아니었다. 사업 페이지 기준으로 '린 솔루션 서비스' · '디바이스 렌털 서비스'로 정정(confirmed 존재, 도메인 없음)하고 보류. status 는 in_progress 유지.
