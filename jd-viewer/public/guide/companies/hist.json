@@ -10,7 +10,7 @@
   "site": "hist.co.kr",
   "one_liner": "한진 계열 IT 서비스 기업 — ITO·IT 솔루션·항공(공항/항공사)·물류·헬스 부문, 지금은 AX(데이터 플랫폼)와 보안을 뽑는다",
   "company": {
-    "business": "회사 사이트(hist.co.kr)는 사업 부문을 **ITO Service · IT Solution · Airport/Airline · Logistics · Health** 다섯으로 나누고, ITO Service 를 '온프레미스에서 클라우드까지 고객 비즈니스의 최적화된 디지털 혁신을 지원' 한다고 소개한다. 첫 화면에 조양호(한진그룹 전 회장) 어록을 인용하고 영문명은 Hanjin Information Systems & Telecommunication 이다(한진 계열로 읽힌다 — 지분 관계는 읽지 않았다). 본사는 서울 강서구 마곡. 모집중 공고는 세 갈래다 — **AX사업 AX아키텍트팀 플랫폼그룹**의 데이터 아키텍트/엔지니어(GCP·AWS 레이크하우스, BigQuery·Databricks·Snowflake, Oracle 레거시의 클라우드 이전), **정보보호실**의 보안운영 총괄(팀장급)·보안 솔루션 운영·위협 분석(AWS GuardDuty·WAF 등), 그리고 **채용연계형 대학 인턴십**(AI 융합 풀스택, React·Spring Boot·RAG). 보안 공고 두 건은 **계약직 1년, 정규직 전환 가능(계약 종료 시 검토)** 이다. 매출·사원수는 사이트에 항목만 있고 숫자는 읽히지 않았다.",
+    "business": "회사 사이트(hist.co.kr)는 사업 부문을 **ITO Service · IT Solution · Airport/Airline · Logistics · Health** 다섯으로 나누고, ITO Service 를 '온프레미스에서 클라우드까지 고객 비즈니스의 최적화된 디지털 혁신을 지원' 한다고 소개한다. 첫 화면에 조양호(한진그룹 전 회장) 어록을 인용하고 영문명은 Hanjin Information Systems & Telecommunication 이다(한진 계열로 읽힌다 — 지분 관계는 읽지 않았다). 본사는 서울 강서구 마곡. 모집중 공고는 세 갈래다 — **AX사업 AX아키텍트팀 플랫폼그룹**의 데이터 아키텍트/엔지니어(GCP·AWS 레이크하우스, BigQuery·Databricks·Snowflake, Oracle 레거시의 클라우드 이전), **정보보호실**의 보안운영 총괄(팀장급)·보안 솔루션 운영·위협 분석(AWS GuardDuty·WAF 등), 그리고 **채용연계형 대학 인턴십**(AI 융합 풀스택, React·Spring Boot·RAG). **경력직 공고 세 건(AX 데이터·보안 두 건)이 모두 계약직 1년, 정규직 전환 가능(계약 종료 시 검토)** 이다. 매출·사원수는 사이트에 항목만 있고 숫자는 읽히지 않았다.",
     "business_confidence": "confirmed",
     "business_sources": [
       {
@@ -150,9 +150,9 @@
     ],
     "signals": [
       {
-        "reading": "보안 인력을 계약직으로 먼저 뽑는다",
+        "reading": "경력직을 계약직으로 먼저 뽑는다",
         "evidence": "정규직 전환 가능, 계약종료시점 전환 검토 예정",
-        "so_what": "정보보호실 공고 두 건(팀장급 포함)이 1년 계약직 후 전환 검토다. 전환 기준과 비율을 면접에서 확인한다.",
+        "so_what": "AX 데이터 아키텍트와 정보보호실 두 건(팀장급 포함) — 모집중 경력직 공고 전부가 1년 계약직 후 전환 검토다. 전환 기준과 비율을 면접에서 확인한다.",
         "confidence": "inferred"
       },
       {
@@ -169,7 +169,7 @@
     "매출·사원수(사이트에 항목만 있고 숫자는 읽히지 않음)",
     "한진그룹 내 지분 관계",
     "항공·물류·헬스 솔루션의 내용",
-    "보안 계약직의 정규직 전환 기준",
+    "계약직(경력직 전 공고)의 정규직 전환 기준",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
   "postings": [
@@ -177,7 +177,7 @@
       "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55001950&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dbaa2382-79a2-4557-a447-6dd72c234a6d",
       "title": "[AX사업]데이터 아키텍트 / 데이터 엔지니어(경력)",
       "site": "saramin",
-      "verdict": "경력 3년 이상(시니어 7년 이상), 4년대졸 이상, 서울 강서구 마곡. **AX사업 AX아키텍트팀 플랫폼그룹**의 데이터 아키텍트/엔지니어다. 업무는 네 묶음 — **GCP·AWS 레이크하우스 설계**(BigQuery·Databricks·Snowflake 구축과 비용/성능 최적화) / **배치·스트리밍 파이프라인**(Airflow·dbt·Spark·Kafka) / **Oracle 등 온프레미스 레거시 RDBMS 의 클라우드 이전**과 Cloud SQL·AlloyDB·RDS/Aurora 설계·튜닝 / **거버넌스**(메타데이터·카탈로그·Unity Catalog 접근 제어·품질 모니터링). 자격은 GCP 또는 AWS 데이터 인프라, BigQuery·Databricks·Snowflake 중 하나 이상, **Oracle 깊은 이해와 SQL 튜닝**, RDBMS→클라우드/레이크하우스 **마이그레이션 수행 경험**, Python·SQL·Scala·Java 중 하나, Spark·Airflow. 우대는 **그룹사·금융·물류·항공·모빌리티** 대규모 트랜잭션 도메인 프로젝트 리드, **CDC 로 전사 데이터 이전**, dbt·Unity Catalog·Debezium/Kafka·Iceberg/Delta, MLOps·피처 스토어, Terraform·CI/CD, 클라우드·Databricks·Snowflake 자격증. 우대 도메인이 회사의 항공·물류 부문과 겹친다. 같은 공고가 캐치(570692)에도 있다. 연봉은 공고에 없다.",
+      "verdict": "경력 3년 이상(시니어 7년 이상), 4년대졸 이상, 서울 강서구 마곡, **고용형태 '계약직 12개월(정규직 전환 가능)'**. **AX사업 AX아키텍트팀 플랫폼그룹**의 데이터 아키텍트/엔지니어다. 업무는 네 묶음 — **GCP·AWS 레이크하우스 설계**(BigQuery·Databricks·Snowflake 구축과 비용/성능 최적화) / **배치·스트리밍 파이프라인**(Airflow·dbt·Spark·Kafka) / **Oracle 등 온프레미스 레거시 RDBMS 의 클라우드 이전**과 Cloud SQL·AlloyDB·RDS/Aurora 설계·튜닝 / **거버넌스**(메타데이터·카탈로그·Unity Catalog 접근 제어·품질 모니터링). 자격은 GCP 또는 AWS 데이터 인프라, BigQuery·Databricks·Snowflake 중 하나 이상, **Oracle 깊은 이해와 SQL 튜닝**, RDBMS→클라우드/레이크하우스 **마이그레이션 수행 경험**, Python·SQL·Scala·Java 중 하나, Spark·Airflow. 우대는 **그룹사·금융·물류·항공·모빌리티** 대규모 트랜잭션 도메인 프로젝트 리드, **CDC 로 전사 데이터 이전**, dbt·Unity Catalog·Debezium/Kafka·Iceberg/Delta, MLOps·피처 스토어, Terraform·CI/CD, 클라우드·Databricks·Snowflake 자격증. 우대 도메인이 회사의 항공·물류 부문과 겹친다. 같은 공고가 캐치(570692)에도 있다. 연봉은 공고에 없다.",
       "fit": {
         "must_have": [
           "데이터 엔지니어링·마이그레이션 3년",
@@ -380,6 +380,13 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570692?ReturnUrl=RecruitInfo",
+      "title": "[AX사업] 데이터 아키텍트 / 데이터 엔지니어 (경력) 채용",
+      "site": "dev",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55001950&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dbaa2382-79a2-4557-a447-6dd72c234a6d",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 학습 항목은 사람인 '[AX사업]데이터 아키텍트 / 데이터 엔지니어(경력)'(55001950) 브리핑을 본다. 모집부문(AX아키텍트팀 플랫폼그룹)·담당업무 네 묶음·지원자격·우대사항이 같다(캐치는 학력과 경력 요건을 한 줄로 붙여 적었을 뿐이다). 두 게시 모두 근무조건이 **'계약직 (입사일로부터 1년), 정규직 전환 가능, 계약종료시점 전환 검토 예정'** 이다. 캐치에만 있는 것은 접수기간 **2026-09-09 ~ 2026-10-04** 와 '본사 홈페이지 지원' 안내다."
     }
   ]
 }
