@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **160건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **161건**.
+직전 회차: ✅ `Staff Back-end Engineer (Gowri/Picking)`(8122290) 3항목 — **시애틀**, GOT 피킹(재고·Promise·메시지 지향), 급여 '$164,00' 오타. 'Gowri' 설명 없음.
 직전 회차: ✅ `Senior Staff ll, Machine Learning Engineer - Search Relevance`(8090443) 3항목 — **마운틴뷰**, 검색 관련성(재순위화·LLM 판정·스택), $187K~$322K.
 직전 회차: ✅ `Manager, Back-end Engineering (Eats Merchant)`(8175617) 3항목 — 서울, 이츠 상점주 플랫폼 EM(주문 상태 이벤트·온콜·다국가 정산).
 직전 회차: ✅ `Staff Backend Engineer – Search and Discovery Product Engineering`(8140987) 3항목 — **마운틴뷰**, 검색 백엔드(꼬리 지연·과부하·React Web), $194K~$243K.
