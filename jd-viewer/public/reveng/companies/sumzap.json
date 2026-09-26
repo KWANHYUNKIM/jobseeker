@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "게임",
   "status": "in_progress",
+  "hold_reason": "수익원 'IP · 이벤트(GCRESTUDIO)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — tech.sumzap.co.jp 2023~2026 사이트맵 37편 제목에 Paradox·GCRESTUDIO·이벤트·IP 글 없음 / 홍보 note(sumzap2009) 최신 글도 행사 참가·조직 소개·게임 표현 글뿐). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. IP·이벤트 쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "sumzap.co.jp",
   "one_liner": "『呪術廻戦 ファントムパレード』의 사무자프 — 2년 운영으로 불어난 배틀 리소스의 수명을 씬 관리자에게 넘겨 저메모리 iPhone 의 크래시를 줄이고, 개발 환경은 브랜치마다 세우고 기한이 지나면 알아서 지운다",
@@ -790,9 +791,9 @@
   ],
   "open_questions": [
     "과금 구조·매출과 모회사(CyberAgent) 관계를 1차 자료로 확인하지 못했다.",
-    "IP·이벤트(GCRESTUDIO) 수익원의 기술 글은 아직 못 찾았다.",
     "개발 환경 글이 어느 타이틀의 서버인지 밝히지 않는다 — 게임 운영 수익원 연결은 inferred.",
-    "Unity 에디터 확장(UI 프리팹 일원 관리·텍스처 임포트 규칙)·UI Toolkit 배칭·APV 조명 글이 있다."
+    "Unity 에디터 확장(UI 프리팹 일원 관리·텍스처 임포트 규칙)·UI Toolkit 배칭·APV 조명 글이 있다.",
+    "IP·이벤트(GCRESTUDIO) 수익원의 기술 글은 2026-09-26 두 번 찾아 없었다 — hold_reason 참고."
   ],
   "sources": [
     {

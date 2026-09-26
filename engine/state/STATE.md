@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Sumzap — 확장 2(2026-09-26): 동적 환경 도메인에 `ephemeral-envs-suffix-callback-reaper`(결정 7). 두 도메인 모두 기능. 다음은 완주 판정 — IP·이벤트(GCRESTUDIO) 수익원은 도메인이 없다: tech.sumzap.co.jp 사이트맵 2023~2026 전 제목(병렬, 접미사 ' - Sumzap Engineering Blog' 떼기)을 'Paradox·パラライ·GCRESTUDIO·イベント·ライブ·IP' 로, 두 번 없으면 hold. 대기 1/3(Yappli `yp_inq.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
+**Sumzap — hold(2026-09-26, 도메인 2 · 기능 2). IP·이벤트 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(Yappli — `tech.yappli.io`, 서버사이드 문의 대응 `entry/handling-customer-inquiries`, scratchpad `yp_inq.txt`). 대기 1/3 — Yappli 뒤 후보 조사(Zenn Publication·note 기업 계정 시험). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap(hold)·LayerX 는 in_progress.**
 
 
 
@@ -372,6 +372,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **코네히토 관공서 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 102편 제목 · note connehito_blog). 관공서 대상 개발 글이 새로 나오면 다시.
 - **YOUTRUST SALES·INSIGHT 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 193편 제목 · speakerdeck youtrust). 그쪽 구조 글이 새로 나오면 다시.
 - **ABEJA 컨설팅·인재 육성·Insight for Retail 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 2025~2026 114편 · 2022~2024 130편 제목). 그쪽 구조 글이 새로 나오면 다시.
+- **Sumzap IP·이벤트(GCRESTUDIO) 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 37편 제목 · 홍보 note). IP·이벤트 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

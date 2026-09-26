@@ -1576,3 +1576,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Sumzap 동적 개발 환경
 
 - 동적 환경 글 전문으로 `ephemeral-envs-suffix-callback-reaper`(결정 7 — 동적 환경·suffix 키·공유/폐기 선긋기·0 스케일·OAuth callback host(HMAC state)·TTL reaper·라벨 가드). SMS preview 환경·Career Portal 고정 환경과 비교 재료.
+
+## 2026-09-26 Sumzap 완주 판정 — IP·이벤트 hold
+
+- 사이트맵 2023~2026 37편 제목 0건, 홍보 note 도 해당 없음. hold_reason 추가.
