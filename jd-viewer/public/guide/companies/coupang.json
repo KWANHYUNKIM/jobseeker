@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다.",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -14610,6 +14610,119 @@
           {
             "title": "Senior Staff Backend Engineer (Service Mesh)",
             "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7496873",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7997383",
+      "title": "Senior Staff Data Scientist",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 미국 마운틴뷰 근무다. 석사·데이터 사이언티스트 8년 이상의 시니어 스태프로, Search and Discovery 조직의 핵심 축 하나에서 데이터 사이언스 기능 전체를 맡는다 — 검색 결과와 고객 상호작용 분석, 실험 발상·설계·측정·해석 주도, 분석용 데이터셋 구축, ML 랭킹 모델·LLM 이 검색 제품에 주는 영향 이해. 공고는 검색·추천이 상품 발견의 70% 이상을 이끈다고 적는다. 연봉 범위가 원문에 있다(기본급 $174,000~$290,000) — 원화로 환산하지 않는다. 우대 칸에 같은 요건 줄(SQL·R/Python 등)이 중복돼 들어가 있다.",
+      "fit": {
+        "must_have": [
+          "CS·EE·수학 등 석사",
+          "고객 대면 기술 기업 데이터 사이언티스트 8년 이상",
+          "실험 설계·통계 전문성",
+          "SQL·R/Python",
+          "대규모 데이터 추출 최적화",
+          "C레벨까지 데이터 설명"
+        ],
+        "can_learn": [
+          "이커머스·검색 경험(우대)",
+          "ML 모델 설정이 결과에 주는 영향 이해"
+        ]
+      },
+      "study": [
+        {
+          "topic": "검색 실험 설계·측정·해석",
+          "from": "task",
+          "quote": "Lead experiment ideation, design, measurement, and interpretation",
+          "priority": "core",
+          "why": "실험 발상·설계·측정·해석을 이끄는 것이 주요업무이고, 실험·통계 전문성이 요건이다.",
+          "gap_check": "검색 랭킹 변경 A/B 에서 사용자 단위 배정과 검색어 단위 분석을 섞으면 분산 추정이 어떻게 틀어지고, 주 지표(구매 전환)와 가드레일 지표(지연·0건 결과율)는 어떻게 정하는가?",
+          "drill": "가상 검색 로그로 사용자 단위 A/B 를 시뮬레이션하고, 검색어 단위로 표준오차를 잘못 계산했을 때와 사용자 단위(또는 델타 방법)로 계산했을 때 신뢰구간을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Trustworthy Online Controlled Experiments (book site)",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            },
+            {
+              "title": "statsmodels — Statistics",
+              "url": "https://www.statsmodels.org/stable/stats.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "검색 품질 지표 — 오프라인 평가와 온라인 행동",
+          "from": "task",
+          "quote": "Analyze how customers interact with Coupang’s search results to determine how to improve customer experience and business performance",
+          "priority": "core",
+          "why": "고객이 검색 결과와 어떻게 상호작용하는지 분석해 고객 경험과 사업 성과를 개선하는 것이 주요업무다.",
+          "gap_check": "NDCG 같은 오프라인 관련성 지표가 올랐는데 온라인 클릭·구매는 그대로일 때, 무엇(라벨 기준·위치 편향·지표 계산 범위)을 먼저 의심하는가?",
+          "drill": "IR 교재의 평가 장을 읽고, 가상 검색 결과·라벨로 Precision@k·NDCG 를 계산한 뒤, 클릭 로그의 위치 편향을 보정하지 않았을 때 결론이 어떻게 바뀌는지 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Introduction to Information Retrieval — Evaluation in information retrieval",
+              "url": "https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-in-information-retrieval-1.html",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 로그에서 분석용 데이터셋 만들기",
+          "from": "task",
+          "quote": "Build datasets to increase the speed and accuracy with which the team analyzes data",
+          "priority": "high",
+          "why": "팀의 분석 속도와 정확도를 높이는 데이터셋 구축이 주요업무이고, 대규모 데이터와 추출 최적화 이해가 요건이다.",
+          "gap_check": "검색 세션(검색어→노출→클릭→장바구니→구매)을 한 행으로 만드는 데이터셋을 설계할 때, 어떤 키로 이벤트를 잇고 어느 단위로 파티션해야 분석 쿼리가 빨라지는가?",
+          "drill": "가상 이벤트 로그 세 테이블(검색·클릭·구매)로 세션 단위 데이터셋 SQL 을 쓰고, 날짜 파티션·필요 칼럼만 읽기 전후의 스캔량을 비교한다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "ML 랭킹 모델·LLM 이 검색 제품에 주는 영향",
+          "from": "task",
+          "quote": "Understand the nuances of ML ranking models, LLMs, and more to determine how our core search product can be optimized",
+          "priority": "high",
+          "why": "ML 랭킹 모델·LLM 의 세부를 이해해 핵심 검색 제품을 어떻게 최적화할지 판단하는 것이 주요업무이고, 모델 설정이 결과에 주는 영향 이해가 요건이다.",
+          "gap_check": "랭킹 모델의 학습 목표를 클릭에서 구매로 바꾸면 검색 결과 구성과 실험 지표가 각각 어떻게 달라질 것으로 예상하고, 그 예상을 실험 전에 어떻게 점검하는가?",
+          "drill": "공개 랭킹 데이터(또는 가상 데이터)로 클릭 목표·구매 목표 랭커를 각각 학습해 상위 결과의 가격대·카테고리 분포 차이를 비교하는 노트를 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Introduction to Information Retrieval (book)",
+              "url": "https://nlp.stanford.edu/IR-book/",
+              "kind": "book"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "검색 A/B 분산 추정 비교 노트북",
+          "why": "실험·통계 전문성이 핵심 요건이다. 분석 단위와 배정 단위가 다를 때 생기는 오류를 시뮬레이션으로 보여 주면 검색 실험을 실제로 다뤄 본 사람의 감각이 드러난다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "검색 A/B 분석 단위",
+          "오프라인 vs 온라인 지표",
+          "세션 데이터셋 설계",
+          "랭킹 목표 변경 영향",
+          "경영진 설명"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff Data Scientist",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7997383",
             "publisher": "Coupang Careers"
           }
         ]

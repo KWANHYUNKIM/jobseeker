@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **139건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **140건**.
+직전 회차: ✅ `Senior Staff Data Scientist`(7997383) 4항목 — **마운틴뷰**, 검색 조직 DS(실험·검색 지표·데이터셋·랭킹 영향), $174K~$290K.
 직전 회차: ✅ `Senior Staff Backend Engineer (Service Mesh)`(7496873) 4항목 — **인도(도시 미기재)**, Gateway Services 팀 서비스 메시(Istio/Envoy·mTLS·관리 플레인·VPC), 13년↑.
 직전 회차: ✅ `Senior Staff Backend Engineer, Security`(7342961) 4항목 — **마운틴뷰**, Security Infrastructure 팀 IAM 플랫폼. 급여 원문 '$174,00' 오타 그대로 salary.note 에.
 직전 회차: ✅ `Senior Staff Backend Engineer - (K8)`(7912287) 4항목 — **벵갈루루**, EKS·Argo·Kubeflow·gRPC·Triton(ML 워크로드 인프라). '(K8)' 설명 없음.
