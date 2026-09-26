@@ -861,3 +861,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 temporal 재방문
 - 새 자료 없음(1회째). 09-06 이후 글은 제품 발표·예제. Coinbase 작업 큐 수치를 단서로 STATE 에 남김. updated_at 만 올림.
+
+## 2026-09-26 trainline 재방문 → 확장
+- DynamoDB 이전(2026-09-25) 으로 `access-patterns-before-databases` 추가. 새 도메인, 결정 5개, 그림 2장. 수치: P1 장애 시간 -40%, 비용 -20%, 관계형 쓰임새 80% 가 키-값.
