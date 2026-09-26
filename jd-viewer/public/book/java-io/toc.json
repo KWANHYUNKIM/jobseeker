@@ -153,7 +153,7 @@
           "title": "Buffered 스트림",
           "summary": "버퍼를 대신 들어 준다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.5",
@@ -161,7 +161,7 @@
           "title": "한 번에 읽기",
           "summary": "readAllBytes 의 값과 대가.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "3.6",
@@ -169,7 +169,7 @@
           "title": "flush 와 close",
           "summary": "안 쓴 바이트가 남는다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },

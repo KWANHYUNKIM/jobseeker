@@ -232,5 +232,156 @@
     "'9 개국', '공헌 이익률 약 80%', '대한민국 최고의 온투금융사' 는 회사가 공고에 적은 주장이다 — 외부 출처로 확인하지 않았다",
     "QUEUE 에는 공고 9건으로 적었으나 모집중은 원티드 10건이다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/388360",
+      "title": "Backend Engineer(백엔드 엔지니어)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상(또는 그에 준하는 밀도, 서울 서초). 온투금융 서비스 크플의 대출·투자·상환·정산 로직을 맡는 Backend Team 에서 공통 플랫폼·API 와 필요하면 어드민까지 만들고, Python/Django 모놀리식을 이벤트 기반 마이크로서비스로 점진 분리할 사람. 자격요건은 기술 목록이 아니라 다섯 역량(경험의 밀도, 집요한 문제 해결, 기술적 깊이 — CS 기본과 RDBMS 트랜잭션, 문제 정의, 협업)이다. 스택은 Python·Kotlin, Django·Spring Boot, MySQL·Redis, Celery·Kafka. 공고에 '합격을 높이는 이력서 작성 가이드' 로 서류 평가 기준을 공개한다. 전형은 서류 → 코딩 테스트 및 사전 설문 → 1차 인터뷰(Job & Culture Fit) → 2차 인터뷰(Final) → 처우 협의, 수습 3개월.",
+      "fit": {
+        "must_have": [
+          "백엔드 개발·운영 5년 이상(또는 그에 준하는 밀도)",
+          "프로젝트를 처음부터 끝까지 주도한 경험",
+          "근본 원인까지 추적한 장애 해결",
+          "CS 기본(자료구조·네트워크·DB)과 RDBMS 트랜잭션",
+          "문제 정의와 지표 연결",
+          "직군 간 협업"
+        ],
+        "can_learn": [
+          "Django 와 Kotlin/Spring 양쪽",
+          "대규모 트래픽·금융 도메인",
+          "모놀리식 점진 분리",
+          "온투업/P2P 금융"
+        ]
+      },
+      "study": [
+        {
+          "topic": "금융 거래의 정합성 — RDBMS 트랜잭션과 멱등성",
+          "from": "qualification",
+          "quote": "3. 기술적 깊이: CS 기본 개념(자료구조, 네트워크, 데이터베이스) 및 RDBMS 트랜잭션에 대한 충분한 이해를 바탕으로, 새로운 기술이나 스택을 도입할 때 단순한 나열이나 유행이 아닌, 명확한 대안 비교와 트레이드오프를 고려하여 합리적인 의사결정을 내릴 수 있는 분",
+          "priority": "core",
+          "why": "자격요건 중 기술을 이름으로 적은 유일한 줄이 RDBMS 트랜잭션이다. 주요업무가 대출, 투자, 상환, 정산이고 '수많은 트랜잭션이 정확하게 처리' 되어야 한다고 적는다.",
+          "gap_check": "투자자 여러 명이 같은 대출 상품의 남은 한도에 동시에 투자할 때 초과 모집을 막으려면 격리 수준·SELECT ... FOR UPDATE·낙관적 락 중 무엇을 쓰고, 결제 요청이 네트워크 오류로 재시도될 때 두 번 처리되지 않게 하려면(멱등 키) 어디에 무엇을 저장하는가?",
+          "drill": "Django + MySQL 로 '대출 상품 한도에 투자' API 를 만들고 동시 요청 100개로 초과 모집을 재현한 뒤, select_for_update 와 조건부 UPDATE 두 방식으로 고쳐 결과를 비교한다. 같은 요청에 멱등 키를 붙여 재시도해도 한 번만 반영되게 한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Django — Database transactions",
+              "url": "https://docs.djangoproject.com/en/stable/topics/db/transactions/",
+              "kind": "docs"
+            },
+            {
+              "title": "Stripe — Designing robust and predictable APIs with idempotency",
+              "url": "https://stripe.com/blog/idempotency",
+              "kind": "article"
+            },
+            {
+              "title": "Spring Framework — Transaction Management",
+              "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모놀리식을 이벤트 기반 MSA 로 점진 분리",
+          "from": "task",
+          "quote": "• Python/Django 모놀리식 서비스를 이벤트 기반 마이크로서비스로 점진적으로 분리해요.",
+          "priority": "core",
+          "why": "주요업무이고 공고가 '기존 코드를 그대로 옮기는 게 아니라 도메인 경계를 다시 그리고' 라고 적는다. 우대사항에 '레거시/모놀리식을 운영하면서 점진적으로 분리 개선해 본 경험' 이 있다.",
+          "gap_check": "정산 도메인을 떼어낼 때 DB 는 언제 나누고, 기존 트랜잭션 하나로 묶이던 '상환 반영 + 투자자 정산' 이 서비스 둘로 갈리면 무엇(아웃박스·사가·보상 트랜잭션)으로 정합성을 지키는가? 분리 중 옛 경로와 새 경로를 동시에 돌릴 때 무엇으로 결과를 비교하는가?",
+          "drill": "작은 Django 모놀리식(대출·상환·정산)에서 정산을 별도 서비스로 떼어 내며, 트랜잭셔널 아웃박스 테이블 → Kafka → 정산 서비스 흐름을 만들고 소비 실패·중복 전달 시에도 정산 합계가 맞는지 확인한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Martin Fowler — Strangler Fig Application",
+              "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+              "kind": "article"
+            },
+            {
+              "title": "microservices.io — Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            },
+            {
+              "title": "microservices.io — Saga",
+              "url": "https://microservices.io/patterns/data/saga.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Kafka — Message delivery semantics",
+              "url": "https://kafka.apache.org/documentation/#semantics",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "근본 원인까지 쫓는 장애 분석",
+          "from": "qualification",
+          "quote": "2. 집요한 문제 해결: 원인이 불분명한 장애나 어려운 복잡도를 마주했을 때, 단순히 \"고쳤다\"에 머물지 않고 근본 원인을 끝까지 추적하여 해결해 내는 집요함을 갖춘 분",
+          "priority": "core",
+          "why": "자격요건이고, 이력서 가이드도 '원인이 분명하지 않은 어려운 문제를 끝까지 파고들어 해결한 구체적인 과정' 을 담으라고 한다 — 서류 평가 기준이다.",
+          "gap_check": "'가끔 정산 금액이 1원 틀린다' 같은 간헐 장애를 받았을 때 재현 → 가설 → 계측 → 확인을 어떤 순서로 하고, 반올림·부동소수·동시성 중 무엇을 먼저 의심하는가?",
+          "drill": "위 정산 서비스에 float 계산과 동시 업데이트를 일부러 섞어 간헐적 오차를 만들고, 로그·쿼리로 원인을 좁혀 Decimal 과 락으로 고친 과정을 '증상 → 가설 → 확인 → 해결 → 재발 방지' 형식으로 쓴다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "Celery 비동기 작업과 Kafka",
+          "from": "preference",
+          "quote": "• Python(Django) 생태계와 Kotlin(Spring) 생태계 양쪽 모두에 대한 개발 및 운영 경험이 깊은 분",
+          "priority": "high",
+          "why": "우대사항이고 도구 목록이 Python·Kotlin, Django·Spring Boot, Celery·Kafka 를 나란히 적는다. 분리 과정에서 새 서비스가 Kotlin/Spring 으로 갈 가능성이 있다(추론).",
+          "gap_check": "Celery 작업과 Kafka 이벤트는 각각 언제 쓰고, Celery 작업이 두 번 실행돼도 안전하게 하려면(acks_late·멱등) 무엇을 해야 하는가?",
+          "drill": "상환 알림 발송을 Celery 작업으로 만들고 워커를 중간에 죽여 재실행되게 한 뒤 알림이 두 번 가지 않게 고친다. 같은 이벤트를 Kotlin/Spring Kafka 소비자로 받아 처리해 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Celery — Documentation",
+              "url": "https://docs.celeryq.dev/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "이력서 — 문제 정의와 지표",
+          "from": "qualification",
+          "quote": "4. 문제 정의: 주어진 과제를 수동적으로 구현하기보다, 임팩트와 ROI 관점에서 중요한 문제를 직접 정의하고 제안하여 비즈니스 가치(지표)로 연결할 수 있는 분",
+          "priority": "high",
+          "why": "자격요건이고 이력서 가이드 첫 줄이 '중요한 문제를 직접 정의하고, 제안부터 운영까지 주도해 어떤 가치(지표)를 만들었는지' 다. 서류 평가 기준을 공개했으니 그대로 맞춘다.",
+          "gap_check": "지난 프로젝트 셋을 '문제 정의 → 대안 비교 → 선택 근거 → 결과 지표' 로 한 문단씩 쓸 수 있는가? 기술 선택 이유에 비교한 대안이 적혀 있는가?",
+          "drill": "이력서의 프로젝트 항목을 공고의 가이드 네 줄(문제 정의·근본 원인 과정·기술 선택 근거·협업)에 맞춰 다시 쓰고, 각 항목에 숫자 하나 이상을 넣는다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "대출·정산 미니 모놀리식에서 정산 서비스를 떼어낸 기록(동시성·멱등·아웃박스 포함)",
+          "why": "주요업무의 핵심 두 줄(금융 로직의 정확한 처리, 모놀리식 점진 분리)과 우대 세 줄을 한 저장소로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "공고의 이력서 가이드에 맞춘 이력서",
+          "why": "공고가 '내부 서류 평가 기준' 이라고 밝힌 네 항목이다. 이걸 과정 중심으로 쓰는 것이 서류 통과에 가장 직접적이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 > 코딩 테스트 및 사전 설문 > 1차 인터뷰 (Job & Culture Fit) > 2차 인터뷰(Final) > 처우 협의 > 최종 합류. 수습 3개월, 추가 인터뷰·레퍼런스 체크가 있을 수 있다(공고 기준).",
+        "expect": [
+          "금융 거래의 동시성·정합성 처리",
+          "모놀리식 분리 설계",
+          "근본 원인을 추적한 장애 사례",
+          "기술 선택의 대안 비교"
+        ],
+        "sources": [
+          {
+            "title": "Backend Engineer(백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/388360",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }

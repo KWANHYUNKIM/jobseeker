@@ -1,0 +1,204 @@
+{
+  "book": "java-io",
+  "id": "all-at-once",
+  "no": "3.5",
+  "chapter": 3,
+  "title": "한 번에 읽기",
+  "summary": "readAllBytes 의 값과 대가.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "readAllBytes 가 가장 빠를 때와 죽을 때를 본다.",
+    "같은 파일을 힙 64MB 에서 읽어 본다.",
+    "크기를 모르는 입력에 왜 쓰면 안 되는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "3.4절까지는 **조금씩 여러 번** 옮겼다. 파일이 작으면 **한 번에 다 올리는** 것이 가장 빠르고 코드도 짧다.\n\n1.2절의 표에서 `readAllBytes` 가 1MB 를 **6ms** 에 처리했다. 그런데 이 방법에는 **숨은 조건**이 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "세 줄이면 끝난다",
+      "code": "byte[] all = Files.readAllBytes(Path.of(\"a.bin\"));\n// 또는\ntry (InputStream in = new FileInputStream(\"a.bin\")) {\n    byte[] all = in.readAllBytes();\n}\n\n// 문자열이면 한 줄이다 (4.6절)\nString text = Files.readString(Path.of(\"a.txt\"), StandardCharsets.UTF_8);"
+    },
+    {
+      "type": "table",
+      "caption": "100MB 파일, 힙만 바꿔서",
+      "columns": [
+        "최대 힙",
+        "방법",
+        "결과"
+      ],
+      "rows": [
+        [
+          "512MB",
+          "`Files.readAllBytes`",
+          "성공 — 104,857,600바이트, **60 ms**, 쓴 힙 102MB"
+        ],
+        [
+          "**64MB**",
+          "`Files.readAllBytes`",
+          "**`OutOfMemoryError: Java heap space`**"
+        ],
+        [
+          "**64MB**",
+          "8KB 버퍼로 훑기",
+          "성공 — 104,857,600바이트, **17 ms**"
+        ]
+      ],
+      "note": "**마지막 줄을 보라.** 힙이 파일보다 작은데 성공했고, **512MB 로 한 번에 읽은 것보다 빨랐다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "한 번에 읽는 것이 더 느렸다",
+      "md": "60ms 대 17ms 다. 호출 횟수는 `readAllBytes` 쪽이 훨씬 적은데 느리다.\n\n> **100MB 배열을 만들어야** 한다 — 자바는 새 배열을 **0으로 채운다.** 100MB 를 0으로 쓰는 시간이 그대로 붙는다.\n> 그리고 그 100MB 가 **힙에 남는다** — GC 가 나중에 치워야 할 쓰레기다.\n> 8KB 버퍼는 **같은 8KB 를 계속 다시 쓴다.** 할당이 한 번뿐이고 CPU 캐시에 들어간다(3.3절).\n> 곧 `readAllBytes` 의 값은 **속도가 아니라 코드의 짧음**이다."
+    },
+    {
+      "type": "figure",
+      "caption": "두 방법이 쓰는 메모리",
+      "ascii": "   readAllBytes on a 100 MB file\n   +------------------------------------------------+  100 MB on the heap\n   |                  byte[104857600]               |  zeroed first\n   +------------------------------------------------+  then garbage\n\n   8 KB buffer on the same file\n   +--+                                                8 KB, reused 12,800 times\n   |  |\n   +--+\n\n   the file size decides whether the first one exists at all.",
+      "note": "**위쪽은 파일 크기가 힙에 그대로 올라간다.** 파일이 커지면 어느 순간 안 올라가고, 그때 `OutOfMemoryError` 다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "크기를 모르는 입력에 쓰면 안 된다",
+      "md": "가장 위험한 자리는 **파일이 아니라 네트워크**다.\n\n> 소켓 스트림에 `readAllBytes()` 를 부르면 **상대가 보내는 만큼** 힙에 쌓인다. 상대가 얼마를 보낼지 내가 모른다.\n> 9장에서 HTTP 요청 본문을 읽을 때 이 함정이 나온다 — `Content-Length` 를 보고 **한도를 정해** 읽어야 한다.\n> `readNBytes(int)` 는 상한을 받는다 — `in.readNBytes(1_000_000)` 은 1MB 까지만 읽는다. 크기를 모르면 이쪽이다.\n> 파일도 마찬가지다. 사용자가 올린 파일을 `readAllBytes` 로 읽는 코드는 **업로드 크기가 그대로 힙**이 된다."
+    },
+    {
+      "type": "table",
+      "caption": "그래서 무엇을 쓰나",
+      "columns": [
+        "상황",
+        "방법",
+        "이유"
+      ],
+      "rows": [
+        [
+          "작고 크기를 아는 파일 (설정·템플릿)",
+          "`readAllBytes` / `readString`",
+          "코드가 짧다"
+        ],
+        [
+          "큰 파일을 훑기만",
+          "8KB~64KB 버퍼",
+          "메모리가 일정하다"
+        ],
+        [
+          "파일을 그대로 복사",
+          "`Files.copy`",
+          "가장 짧고 빠르다 (1.2절 3ms)"
+        ],
+        [
+          "크기를 모르는 입력",
+          "**`readNBytes(한도)`**",
+          "상한을 정할 수 있다"
+        ],
+        [
+          "줄 단위 처리",
+          "`BufferedReader` / `Files.lines`",
+          "4장"
+        ]
+      ],
+      "note": "**1.2절의 \"가장 빠른 것이 가장 좋은 것은 아니다\"** 가 이 표다. 크기와 목적이 방법을 정한다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "배열은 21억 바이트를 넘지 못한다",
+      "md": "힙이 아무리 커도 벽이 하나 더 있다.\n\n> 자바 배열의 길이는 `int` 다 — **최대 2,147,483,647**. 2GB 가 넘는 파일은 `readAllBytes` 로 **못 읽는다.**\n> 실제로는 그보다 조금 작은 데서 막힌다(JVM 이 배열 헤더를 쓴다). `OutOfMemoryError: Requested array size exceeds VM limit` 가 그 메시지다 — 힙과 무관하게 난다.\n> 6.4절에서 큰 파일을 다루는 방법으로 돌아온다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"파일을 읽어 처리하는 코드인데 서버가 가끔 죽습니다.\"**\n\n> **\"파일 크기가 힙에 올라가는 코드가 있는지 보겠습니다\"** 가 답이다. `readAllBytes`·`readString`·`Files.readAllLines` 가 그렇다.\n> 이 실험의 숫자로 말할 수 있다 — **힙 64MB 에서 100MB 파일은 `OutOfMemoryError`** 이고, 같은 파일을 8KB 버퍼로는 **17ms 에 다 읽는다.**\n> 그리고 **스트리밍이 느릴 거라는 짐작이 틀렸다**는 것도 말할 수 있다 — 여기서는 더 빨랐다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 같은 파일, 힙만 바꿔서",
+      "sql": "$ ls -l big100m.bin\n104857600 bytes\n\n$ java -Xmx512m -cp out All big100m.bin\n파일 = 104,857,600 바이트, 최대 힙 = 512 MB\nreadAllBytes 성공 = 104,857,600 바이트, 60 ms\n쓴 힙 = 102 MB\n\n$ java -Xmx64m -cp out All big100m.bin\n파일 = 104,857,600 바이트, 최대 힙 = 64 MB\nOutOfMemoryError: Java heap space\n\n$ java -Xmx64m -cp out Count8k big100m.bin\n8KB 버퍼로 읽은 바이트 = 104,857,600, 17 ms, 최대 힙 64 MB\n\n# 힙 64MB 에서\n#   readAllBytes  -> OutOfMemoryError\n#   8KB 버퍼      -> 17ms 에 100MB 를 다 읽는다\n#\n# 그리고 힙 512MB 의 readAllBytes(60ms)보다 힙 64MB 의 버퍼(17ms)가 빨랐다.\n# 100MB 배열을 0으로 채우는 시간이 그대로 붙는다.",
+      "note": "**같은 파일이고 같은 바이트를 읽었다.** 한쪽은 죽고 한쪽은 3.5배 빠르다 — 파일 크기를 힙에 올리지 않았기 때문이다."
+    }
+  ],
+  "recap": [
+    "readAllBytes 는 파일 전체를 배열 하나로 올린다. 코드가 짧은 것이 값이다.",
+    "힙 512MB 에서 100MB 파일을 60ms 에 읽었고 힙 102MB 를 썼다.",
+    "힙 64MB 에서는 OutOfMemoryError: Java heap space 였다.",
+    "같은 파일을 8KB 버퍼로는 힙 64MB 에서 17ms 에 다 읽었다 — 더 빠르다.",
+    "100MB 배열을 0으로 채우는 시간과 GC 가 치울 쓰레기가 그대로 붙기 때문이다.",
+    "크기를 모르는 입력에는 쓰면 안 된다. readNBytes(한도) 로 상한을 정한다.",
+    "배열 길이는 int 라 2GB 를 넘는 파일은 힙과 무관하게 못 읽는다."
+  ],
+  "drills": [
+    {
+      "task": "큰 파일을 -Xmx 를 낮춰 readAllBytes 로 읽어 본다.",
+      "done_when": "OutOfMemoryError 메시지를 직접 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "같은 파일을 8KB 버퍼로 읽어 시간을 비교한다.",
+      "done_when": "어느 쪽이 빠른지 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "readNBytes(한도) 로 상한을 걸어 본다.",
+      "done_when": "한도까지만 읽히는 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "내 코드에서 readAllBytes·readString 을 쓰는 자리를 찾는다.",
+      "done_when": "입력 크기가 보장되는지 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "readAllBytes 의 값은 무엇인가.",
+      "a": "코드가 짧은 것이다. 속도는 오히려 버퍼 쪽이 빠를 수 있다."
+    },
+    {
+      "q": "힙 64MB 에서 100MB 파일을 readAllBytes 로 읽으면.",
+      "a": "OutOfMemoryError: Java heap space 가 난다."
+    },
+    {
+      "q": "왜 8KB 버퍼가 더 빨랐나.",
+      "a": "100MB 배열을 새로 만들어 0으로 채우는 비용이 없고 같은 8KB 를 재사용해 캐시에 들어간다."
+    },
+    {
+      "q": "크기를 모르는 입력에는 무엇을 쓰나.",
+      "a": "readNBytes(한도) 로 상한을 정해 읽는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "readAllBytes",
+      "what": "스트림이나 파일 전체를 byte[] 하나로 읽는 메서드. 파일 크기가 힙에 그대로 올라간다."
+    },
+    {
+      "term": "readNBytes",
+      "what": "상한을 정해 읽는 메서드. 크기를 모르는 입력에 쓴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — Files.readAllBytes",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — InputStream.readNBytes",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/InputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Troubleshooting Guide — Requested array size exceeds VM limit",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/troubleshooting-memory-leaks.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

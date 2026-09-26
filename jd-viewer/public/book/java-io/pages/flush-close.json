@@ -1,0 +1,185 @@
+{
+  "book": "java-io",
+  "id": "flush-close",
+  "no": "3.6",
+  "chapter": 3,
+  "title": "flush 와 close",
+  "summary": "안 쓴 바이트가 남는다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "닫지 않으면 무엇이 사라지는지 본다.",
+    "버퍼가 있는 쪽과 없는 쪽을 가른다.",
+    "감싼 스트림을 하나만 닫아도 되는 이유를 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "3.4절에서 `BufferedOutputStream` 이 **안 내보낸 바이트를 들고 있다**고 했다. 3장을 닫는 절이 그 자리다.\n\n같은 `\"안녕\"` 여섯 바이트를 다섯 방법으로 쓰고 **파일에 무엇이 남았는지** 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "`\"안녕\"`(UTF-8 6바이트)을 쓰고 끝낸 결과",
+      "columns": [
+        "코드",
+        "파일 크기",
+        "내용"
+      ],
+      "rows": [
+        [
+          "`Buffered` + 안 닫음",
+          "**0바이트**",
+          "**없다**"
+        ],
+        [
+          "`Buffered` + `flush()`",
+          "6바이트",
+          "`ec 95 88 eb 85 95`"
+        ],
+        [
+          "`Buffered` + `close()`",
+          "6바이트",
+          "`ec 95 88 eb 85 95`"
+        ],
+        [
+          "맨 `FileOutputStream` + 안 닫음",
+          "**6바이트**",
+          "`ec 95 88 eb 85 95`"
+        ],
+        [
+          "`try-with-resources` (감싼 것)",
+          "6바이트",
+          "`ec 95 88 eb 85 95`"
+        ]
+      ],
+      "note": "**첫 줄과 넷째 줄이 갈린다.** 둘 다 닫지 않았는데 한쪽은 0바이트고 한쪽은 6바이트다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "버퍼가 있는 쪽만 잃는다",
+      "md": "차이는 **바이트가 어디까지 갔느냐**다.\n\n> 맨 `FileOutputStream.write()` 는 **곧바로 시스템 콜**을 한다 — 바이트가 이미 OS 에 있다. 프로그램이 죽어도 파일에 남는다.\n> `BufferedOutputStream.write()` 는 **자바 배열에 넣고 끝**이다. 8192 가 차거나 `flush()` 가 불릴 때까지 OS 로 안 간다.\n> `\"안녕\"` 은 6바이트라 **버퍼에만 있었다.** `System.exit(0)` 이 그 배열을 그냥 버렸다.\n> 곧 **속도를 얻은 대가가 이것**이다. 3.4절에서 485ms 를 7ms 로 만든 그 버퍼다."
+    },
+    {
+      "type": "figure",
+      "caption": "바이트가 어디까지 갔나",
+      "ascii": "   plain FileOutputStream\n     write(6 bytes)  ---> syscall ---> OS ---> file      safe\n\n   BufferedOutputStream\n     write(6 bytes)  ---> java array [6/8192]            lost on exit\n                              |\n                     flush()  |  or the array fills up\n                              v\n                          syscall ---> OS ---> file\n\n   close() calls flush() first, then closes the stream under it.",
+      "note": "**`close()` 는 `flush()` 를 먼저 한다.** 그래서 닫기만 해도 내용이 나간다 — 셋째 줄이 그 결과다."
+    },
+    {
+      "type": "prose",
+      "md": "## 감싼 것은 하나만 닫으면 된다\n\n`BufferedOutputStream(FileOutputStream)` 처럼 겹쳐 놓았을 때 **바깥만 닫아도 되는지** 확인했다. 안쪽에 호출을 기록하는 스트림을 끼웠다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "안쪽이 불리는지 기록한다",
+      "code": "static class Track extends FilterOutputStream {\n    boolean closed, flushed;\n    Track(OutputStream o) { super(o); }\n    @Override public void flush() throws IOException { flushed = true; super.flush(); }\n    @Override public void close() throws IOException { closed = true; super.close(); }\n}\n\nTrack inner = new Track(new FileOutputStream(\"f5.txt\"));\ntry (OutputStream out = new BufferedOutputStream(inner)) {   // 바깥만 try 에 둔다\n    out.write(\"안녕\".getBytes(\"UTF-8\"));\n}\n// 안쪽 close() 가 불렸나 = true\n// 안쪽 flush() 가 불렸나 = true"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "그래서 `try-with-resources` 에 바깥만 적는다",
+      "md": "감싼 스트림의 `close()` 는 **자기 버퍼를 내보내고 안쪽을 닫는다.**\n\n```java\n// 이렇게 쓴다\ntry (OutputStream out = new BufferedOutputStream(new FileOutputStream(f))) { ... }\n\n// 이렇게 둘 다 적을 필요가 없다\ntry (FileOutputStream fos = new FileOutputStream(f);\n     OutputStream out = new BufferedOutputStream(fos)) { ... }\n```\n\n> 다만 **둘 다 적어도 틀리지 않는다** — `close()` 는 두 번 불려도 되게 만들어져 있다.\n> 굳이 나눠 적을 때가 있다 — **감싸는 생성자가 예외를 던질 수 있는 경우**다. 그러면 안쪽이 닫히지 않는다. 5.2절의 `ObjectOutputStream` 이 그렇다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`flush()` 는 디스크까지 보장하지 않는다",
+      "md": "`flush()` 가 하는 일은 **자바 버퍼를 OS 로 넘기는 것**까지다.\n\n> OS 도 자기 캐시에 들고 있다가 나중에 디스크에 쓴다. **전원이 갑자기 꺼지면 그것도 사라진다.**\n> 디스크까지 보장하려면 `FileOutputStream.getFD().sync()` 나 `FileChannel.force(true)` 를 부른다 — **훨씬 느리다.**\n> 곧 보장 단계가 셋이다 — **자바 버퍼 → OS 캐시 → 디스크.** `flush()` 는 첫 화살표만 한다.\n> 로그나 감사 기록처럼 잃으면 안 되는 것에는 `sync` 를 생각한다. 일반 파일 쓰기에는 과하다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "close 를 안 하면 파일 핸들도 남는다",
+      "md": "내용이 나갔어도 **닫지 않으면 다른 것이 새어 나간다.**\n\n> 열린 파일 하나가 **OS 파일 디스크립터 하나**를 쓴다. 프로세스마다 한도가 있고(보통 수백~수천), 넘으면 `Too many open files` 다.\n> GC 가 치워 주지 않는다 — 정확히는 옛날 `finalize` 가 닫아 주기도 했지만 **언제 될지 모른다.** 기대하면 안 된다.\n> 그래서 규칙은 하나다 — **`Closeable` 은 `try-with-resources` 에 넣는다.** 예외가 나도 닫힌다."
+    },
+    {
+      "type": "prose",
+      "md": "## 3장이 남긴 것\n\n여섯 절로 **바이트를 옮기는 값**을 다 봤다. 22초와 4ms 사이의 거리가 **호출 횟수** 하나로 설명된다.\n\n4장은 그 위에 **문자**를 얹는다 — 2장의 charset 이 스트림에 붙는 자리이고, 3.4절의 `Buffered` 가 `readLine()` 으로 값을 하는 자리다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 남은 파일들",
+      "sql": "$ for m in buffered-noclose buffered-flush buffered-close plain-noclose; do\n    java -cp out Flush $m\n  done\n$ java -cp out Flush chain\n안쪽 close() 가 불렸나 = true\n안쪽 flush() 가 불렸나 = true\n\n$ for f in f1 f2 f3 f4 f5; do wc -c < $f.txt; od -An -tx1 $f.txt; done\n\nf1.txt   0바이트\nf2.txt   6바이트   ec  95  88  eb  85  95\nf3.txt   6바이트   ec  95  88  eb  85  95\nf4.txt   6바이트   ec  95  88  eb  85  95\nf5.txt   6바이트   ec  95  88  eb  85  95\n\n# f1 = BufferedOutputStream 에 쓰고 System.exit(0)      -> 0바이트\n# f2 = 같은 코드 + flush()                              -> 6바이트\n# f3 = 같은 코드 + close()                              -> 6바이트\n# f4 = 맨 FileOutputStream 에 쓰고 System.exit(0)       -> 6바이트\n# f5 = try-with-resources 로 감싼 것 하나만 닫음         -> 6바이트\n#\n# f1 과 f4 의 차이가 이 절의 전부다.\n# 둘 다 안 닫았는데 버퍼가 있는 쪽만 잃었다.",
+      "note": "**`f1.txt` 가 0바이트다.** 예외도 경고도 없었고 프로그램은 정상 종료했다 — 쓴 줄 알았던 바이트가 그냥 없다."
+    }
+  ],
+  "recap": [
+    "BufferedOutputStream 에 쓰고 닫지 않으면 파일이 0바이트다. 예외도 안 난다.",
+    "맨 FileOutputStream 은 닫지 않아도 6바이트가 남는다 — write 가 곧바로 시스템 콜이다.",
+    "flush() 는 자바 버퍼를 OS 로 넘기고, close() 는 flush 를 먼저 한 뒤 닫는다.",
+    "감싼 스트림의 close() 는 안쪽의 flush() 와 close() 를 부른다 — 확인했다.",
+    "그래서 try-with-resources 에는 바깥만 적으면 된다.",
+    "flush() 는 디스크까지 보장하지 않는다 — 자바 버퍼 → OS 캐시 → 디스크 중 첫 화살표만 한다.",
+    "닫지 않으면 파일 디스크립터도 남아 Too many open files 가 된다."
+  ],
+  "drills": [
+    {
+      "task": "Buffered 에 조금 쓰고 System.exit 으로 끝내 본다.",
+      "done_when": "파일이 0바이트인 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "같은 코드에 flush() 만 넣어 다시 본다.",
+      "done_when": "내용이 나오는 것을 확인한다.",
+      "minutes": 5
+    },
+    {
+      "task": "8192바이트보다 많이 써 보고 닫지 않는다.",
+      "done_when": "일부만 남는 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "감싼 스트림 중 안쪽만 닫아 본다.",
+      "done_when": "무슨 일이 나는지 확인한다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "BufferedOutputStream 에 6바이트 쓰고 닫지 않으면 파일은.",
+      "a": "0바이트다. 바이트가 자바 배열에만 있었다."
+    },
+    {
+      "q": "맨 FileOutputStream 은 왜 닫지 않아도 남나.",
+      "a": "write 가 곧바로 시스템 콜이라 바이트가 이미 OS 에 있다."
+    },
+    {
+      "q": "close() 와 flush() 의 관계는.",
+      "a": "close() 가 flush() 를 먼저 부른 뒤 닫는다."
+    },
+    {
+      "q": "flush() 가 보장하는 범위는.",
+      "a": "자바 버퍼를 OS 로 넘기는 것까지다. 디스크까지는 sync 나 force 가 필요하다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "flush",
+      "what": "자바 버퍼에 있는 바이트를 아래 스트림으로 내보내는 것. OS 캐시까지다."
+    },
+    {
+      "term": "파일 디스크립터",
+      "what": "OS 가 열린 파일에 붙이는 번호. 한도가 있어 닫지 않으면 Too many open files 가 난다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — OutputStream.flush()",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/OutputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — FileDescriptor.sync()",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/FileDescriptor.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JLS 17 — 14.20.3. try-with-resources",
+      "url": "https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
