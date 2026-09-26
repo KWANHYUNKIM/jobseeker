@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**TELLER hold(2026-09-26) — 출판·미디어믹스 수익원 글을 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 신규: 큐 맨 위 DRESS CODE — `1646ef6e35df62`(Event Sourcing 이행 · RDB+DynamoDB 이중 쓰기 · Outbox) · '拡張性は誰が何を変えるか' · 회사 사이트에서 제품·수익원부터(아직 모름). 대기 2/3 → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**DRESS CODE 프로파일(2026-09-26) — slug `dress-code`, 도메인 둘, 기능 0, 수익원 하나(구독). 다음은 확장: '변경 이력을 상태가 아니라 쌓인 사실로 남긴다' — `event-sourcing-btob-saas`(목차) + `1646ef6e35df62`(목차 — Phantom Event·Event 유실·Outbox, 본문 다 읽을 것). 그다음 'DB 연결을 모으는 프록시를 넣었다가 실측으로 걷어 낸다' — `da536c39873876`. 대기 1/3(Photoruction) → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

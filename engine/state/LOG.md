@@ -2073,3 +2073,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 TELLER 출판·미디어믹스 수익원 보류
 
 - 검색 1: RSS 19편(RN·Expo·DDD·TTS). 검색 2: Zenn 검색 API 'テラーノベル'·'コミカライズ'·'テラードラマ' — 2022·2024 글뿐. hold_reason, in_progress 유지.
+
+## 2026-09-26 DRESS CODE 회사 프로파일
+
+- dress-code.com 으로 제품군(HR·IT·GA Force). ES 두 편을 한 도메인, RDS Proxy 철거를 다른 도메인으로. 확장점 패턴 글은 도메인으로 세우지 않음.

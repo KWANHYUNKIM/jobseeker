@@ -1,0 +1,140 @@
+{
+  "slug": "dress-code",
+  "name": "Dress Code",
+  "name_en": "Dress Code",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "dress-code.com",
+  "one_liner": "인사·IT·총무를 한 '업무 OS' 로 묶는 Workforce Management SaaS DRESS CODE — 보안 체크 시트와 감사가 묻는 '이력' 에 답하려 CRUD 를 불변 이벤트 누적으로 옮기며 RDB·DynamoDB 이중 쓰기의 유령·유실을 Transactional Outbox 로 막고, Prisma 의 16KB 넘는 SQL 이 핀 고정을 일으켜 다중화가 안 되던 RDS Proxy 는 실측으로 걷어 냈다",
+  "business_model": "기업에 인사(HR Force)·정보 시스템(IT Force)·총무(GA Force)를 한 플랫폼으로 파는 B2B SaaS — 부서마다 따로 최적화된 업무를 전체 최적으로 바꾸는 '컴파운드 제품'. 2025년 4월 출시, 5개국, 215사 이상. 글로벌 대상이라 나라·지역마다 다른 노무 법제와 운용을 받는다. 요금은 공개 자료에 없다.",
+  "products": [
+    "HR Force(Workforce Management)",
+    "IT Force(IT 자산 수명 주기)",
+    "GA Force(총무)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다(조달 14억 엔 · 215사 이상)",
+  "revenue_streams": [
+    {
+      "name": "DRESS CODE 구독(HR·IT·GA Force)",
+      "how": "기업이 업무 OS 를 계약해 쓴다. 요금 구조는 확인 못 함.",
+      "weight": "비중 확인 못 함 — 유일한 제품군",
+      "domains": [
+        "변경 이력을 상태가 아니라 쌓인 사실로 남긴다",
+        "DB 연결을 모으는 프록시를 넣었다가 실측으로 걷어 낸다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Dress Code Inc. – Workforce management",
+          "url": "https://www.dress-code.com/",
+          "publisher": "Dress Code Inc.",
+          "date": "2026-09-26",
+          "summary": "DRESS CODE — 인사·IT·총무 등 여러 부서를 묶는 컴파운드 제품, '업무 OS'. HR Force(정사원·임원·계약직·외부 파트너를 한 시스템에) · IT Force(기기·소프트웨어·SaaS·BYOD 의 수명 주기) · GA Force(총무). 2025년 4월 출시 · 5개국 · 조달 14억 엔 · 215사 이상."
+        },
+        {
+          "title": "BtoB SaaSでイベントソーシングを採用する意義",
+          "url": "https://zenn.dev/dress_code/articles/event-sourcing-btob-saas",
+          "publisher": "Dress Code Tech Blog (Zenn)",
+          "date": "2026-07-31",
+          "summary": "B2B SaaS 를 팔 때의 벽 — 보안 체크 시트 · 제3자 인증·보증 · 도입 뒤 문의 — 에서 고객이 원하는 건 '이력'. 이력만이라면 감사 테이블로도 되지만 이벤트 소싱은 상태 대신 변화를 저장한다. 같은 이력을 '수비'(문의 때 변경 경위 추적)와 '공격'(남은 사실을 후발 제품에 활용)에 쓴다 · 의의는 있지만 쉽지 않다(채택하지 않는 편이 나은 경우)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "팔 때 묻는 이력과 그것을 받치는 DB",
+    "question": "B2B SaaS 가 보안 심사와 문의에 '이력' 으로 답하려면 저장 방식을 어떻게 바꾸고, DB 앞단은 무엇을 걷어 내나?",
+    "code": "flowchart LR\n  C[\"고객 · 보안 체크 시트 · 감사 · 문의\"] --> H[\"변경 경위\"]\n  APP[\"DRESS CODE 앱 · Prisma\"] -->|상태| RDB[(\"Aurora PostgreSQL\")]\n  APP -->|Outbox 경유| EV[(\"DynamoDB\\n불변 이벤트\")]\n  EV --> H\n  PX[\"RDS Proxy\"] -.철거.-> RDB",
+    "_note": "RDS Proxy 철거가 구독 매출에 닿는 길은 글에 없다 — 같은 제품의 운영 비용·안정성이라 이었다(inferred)."
+  },
+  "domains": [
+    {
+      "name": "변경 이력을 상태가 아니라 쌓인 사실로 남긴다",
+      "why": "B2B SaaS 를 팔 때 보안 체크 시트·제3자 인증·도입 뒤 문의가 모두 '누가 언제 무엇을 바꿨나' 를 묻는다. 제품 전체의 방침은 SSoT 를 상태가 아니라 불변 이벤트(사실)의 누적으로 두는 것 — 그런데 지금 서비스는 CRUD 로 돈다.",
+      "tech": [
+        {
+          "tech": "Event Sourcing(Domain Event) · Aurora PostgreSQL + DynamoDB · Transactional Outbox",
+          "solves": "같은 이력을 문의 대응(수비)과 후발 제품(공격)에 쓴다.",
+          "limits": "트랜잭션을 공유하지 못하는 두 저장소 사이에서 유령 이벤트·유실이 난다 — Outbox 로 막는다. 의의는 있지만 쉽지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "BtoB SaaSでイベントソーシングを採用する意義",
+              "url": "https://zenn.dev/dress_code/articles/event-sourcing-btob-saas",
+              "publisher": "Dress Code Tech Blog (Zenn)",
+              "date": "2026-07-31",
+              "summary": "B2B SaaS 를 팔 때의 벽 — 보안 체크 시트 · 제3자 인증·보증 · 도입 뒤 문의 — 에서 고객이 원하는 건 '이력'. 이력만이라면 감사 테이블로도 되지만 이벤트 소싱은 상태 대신 변화를 저장한다. 같은 이력을 '수비'(문의 때 변경 경위 추적)와 '공격'(남은 사실을 후발 제품에 활용)에 쓴다 · 의의는 있지만 쉽지 않다(채택하지 않는 편이 나은 경우)."
+            },
+            {
+              "title": "RDB と DynamoDB の二重書き込みで起きる整合性問題と Transactional Outbox",
+              "url": "https://zenn.dev/dress_code/articles/1646ef6e35df62",
+              "publisher": "Dress Code Tech Blog (Zenn)",
+              "date": "2026-07-13",
+              "summary": "CRUD 로 도는 서비스를 Event Sourcing 으로 옮기는 첫걸음 — 제품 전체의 방침은 'SSoT 는 상태가 아니라 불변 이벤트(사실)의 누적'. 변경 이력과 Domain Event 의 차이 · Pure Event Sourcing 과의 차이 · Event 를 처음부터 DynamoDB 에 두는 이유 · RDB 와 DynamoDB 의 이중 쓰기가 낳는 Phantom Event(유령 이벤트)와 Event 유실 → 트랜잭션을 공유할 수 없는 다른 저장소로 확실히 보내는 Transactional Outbox."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "DB 연결을 모으는 프록시를 넣었다가 실측으로 걷어 낸다",
+      "why": "앱용 Aurora PostgreSQL 에 연결을 모아 다중화하려고 RDS Proxy 를 넣었다. 그런데 ORM(Prisma)이 만드는 긴 SQL 이 세션 핀 고정을 일으켰다.",
+      "tech": [
+        {
+          "tech": "Aurora PostgreSQL · RDS Proxy · Prisma",
+          "solves": "실측으로 넣을지 뺄지를 판단한다.",
+          "limits": "16KB 넘는 SQL 텍스트는 AWS 전 엔진 공통의 하드 제한이라 설정으로 못 피한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+              "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+              "publisher": "Dress Code Tech Blog (Zenn)",
+              "date": "2026-08-17",
+              "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "요금 구조와 매출을 확인하지 못했다.",
+    "나라마다 다른 노무 규칙을 받는 확장점 설계(`design-extensibility-who-what`)는 패턴 정리 글이라 도메인으로 세우지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "Dress Code Inc. – Workforce management",
+      "url": "https://www.dress-code.com/",
+      "publisher": "Dress Code Inc.",
+      "date": "2026-09-26",
+      "summary": "DRESS CODE — 인사·IT·총무 등 여러 부서를 묶는 컴파운드 제품, '업무 OS'. HR Force(정사원·임원·계약직·외부 파트너를 한 시스템에) · IT Force(기기·소프트웨어·SaaS·BYOD 의 수명 주기) · GA Force(총무). 2025년 4월 출시 · 5개국 · 조달 14억 엔 · 215사 이상."
+    },
+    {
+      "title": "BtoB SaaSでイベントソーシングを採用する意義",
+      "url": "https://zenn.dev/dress_code/articles/event-sourcing-btob-saas",
+      "publisher": "Dress Code Tech Blog (Zenn)",
+      "date": "2026-07-31",
+      "summary": "B2B SaaS 를 팔 때의 벽 — 보안 체크 시트 · 제3자 인증·보증 · 도입 뒤 문의 — 에서 고객이 원하는 건 '이력'. 이력만이라면 감사 테이블로도 되지만 이벤트 소싱은 상태 대신 변화를 저장한다. 같은 이력을 '수비'(문의 때 변경 경위 추적)와 '공격'(남은 사실을 후발 제품에 활용)에 쓴다 · 의의는 있지만 쉽지 않다(채택하지 않는 편이 나은 경우)."
+    },
+    {
+      "title": "RDB と DynamoDB の二重書き込みで起きる整合性問題と Transactional Outbox",
+      "url": "https://zenn.dev/dress_code/articles/1646ef6e35df62",
+      "publisher": "Dress Code Tech Blog (Zenn)",
+      "date": "2026-07-13",
+      "summary": "CRUD 로 도는 서비스를 Event Sourcing 으로 옮기는 첫걸음 — 제품 전체의 방침은 'SSoT 는 상태가 아니라 불변 이벤트(사실)의 누적'. 변경 이력과 Domain Event 의 차이 · Pure Event Sourcing 과의 차이 · Event 를 처음부터 DynamoDB 에 두는 이유 · RDB 와 DynamoDB 의 이중 쓰기가 낳는 Phantom Event(유령 이벤트)와 Event 유실 → 트랜잭션을 공유할 수 없는 다른 저장소로 확실히 보내는 Transactional Outbox."
+    },
+    {
+      "title": "RDS Proxyを導入して、数ヶ月で撤去した話",
+      "url": "https://zenn.dev/dress_code/articles/da536c39873876",
+      "publisher": "Dress Code Tech Blog (Zenn)",
+      "date": "2026-08-17",
+      "summary": "앱용 Aurora PostgreSQL 에 RDS Proxy 를 넣어 몇 달 운용한 끝에 걷어 냈다. Prisma 가 만드는 16KB 넘는 SQL 텍스트가 세션 핀 고정을 일으킨다(AWS 전 엔진 공통 하드 제한, 설정으로 못 피함) — 전체 클라이언트 세션의 약 2할이 핀 고정돼 연결 다중화가 거의 작동하지 않았다. 16KB 회피 시도 · 다중화와 연결 압박 · Prisma 메이저 업데이트 · 철거 · 결과 · 배운 것."
+    }
+  ]
+}
