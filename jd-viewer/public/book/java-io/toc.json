@@ -184,7 +184,7 @@
           "title": "Reader 와 Writer",
           "summary": "바이트와 문자 사이.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.2",
@@ -192,7 +192,7 @@
           "title": "InputStreamReader",
           "summary": "인코딩을 여기서 정한다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.3",
@@ -200,7 +200,7 @@
           "title": "BufferedReader",
           "summary": "줄 단위로 읽는 법.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "4.4",

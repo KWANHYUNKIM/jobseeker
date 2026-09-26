@@ -1,0 +1,218 @@
+{
+  "book": "java-io",
+  "id": "stream-reader",
+  "no": "4.2",
+  "chapter": 4,
+  "title": "InputStreamReader",
+  "summary": "인코딩을 여기서 정한다.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "charset 이 들어가는 자리가 한 곳인 것을 안다.",
+    "여러 바이트짜리 글자가 쪼개져 와도 조립되는 것을 확인한다.",
+    "이미 버퍼가 있는데도 Buffered 를 씌우는 이유를 잰다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.1절의 그림에서 두 계층을 잇는 것이 **두 클래스**뿐이었다. `InputStreamReader` 와 `OutputStreamWriter`.\n\n곧 **2장의 charset 이 들어갈 자리가 이 두 곳**이다. 다른 어디에도 안 들어간다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "charset 은 여기 적는다",
+      "code": "// 읽기\nReader r = new InputStreamReader(in, StandardCharsets.UTF_8);\nReader r2 = new FileReader(\"a.txt\", StandardCharsets.UTF_8);   // 자바 11+\n\n// 쓰기\nWriter w = new OutputStreamWriter(out, StandardCharsets.UTF_8);\nWriter w2 = new FileWriter(\"a.txt\", StandardCharsets.UTF_8);   // 자바 11+\n\n// charset 을 빼면 기본값이다 — 2.5절에서 본 그 함정\nReader bad = new InputStreamReader(in);      // 환경에 따라 달라진다"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`FileReader` 에 charset 을 줄 수 있게 된 것은 자바 11 부터다",
+      "md": "그전에는 `FileReader` 가 **기본 charset 만** 썼다.\n\n> 그래서 옛 코드는 `new InputStreamReader(new FileInputStream(f), cs)` 로 길게 쓸 수밖에 없었다.\n> 자바 11 부터 `new FileReader(f, cs)` 가 된다 — **같은 일이고 짧다.**\n> 옛 코드에서 `new FileReader(f)` 를 보면 **기본 charset 에 맡긴 것**이다. 2.5절의 함정이 그 자리에 있다."
+    },
+    {
+      "type": "prose",
+      "md": "## 글자가 쪼개져 와도 조립한다\n\nUTF-8 한글은 3바이트다(2.3절). 그런데 스트림이 **한 바이트만 주는** 상황이면 어떻게 되나. 무슨 요청을 받아도 1바이트만 돌려주는 스트림을 만들어 감싸 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "1바이트씩만 주는 스트림을 `InputStreamReader` 로 감싸면",
+      "columns": [
+        "",
+        "값"
+      ],
+      "rows": [
+        [
+          "첫 `read(char[100])` 반환값",
+          "**1** → `[안]`"
+        ],
+        [
+          "그때까지 바이트 스트림에 부탁한 횟수",
+          "**3**"
+        ],
+        [
+          "끝까지 모은 결과",
+          "`[안녕하세요 hello 😀]`"
+        ],
+        [
+          "원본과 같은가",
+          "**true**"
+        ],
+        [
+          "바이트 스트림 총 호출",
+          "27 (26바이트 + 끝 확인 1)"
+        ]
+      ],
+      "note": "**세 번 부탁해 한 글자를 만들었다.** 디코더가 불완전한 바이트를 들고 있다가 완성되면 내놓는다 — 이것을 직접 해야 한다면 2장이 훨씬 어려웠을 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이것이 Reader 를 쓰는 진짜 이유다",
+      "md": "속도가 아니라 **경계 처리**다.\n\n> 3장처럼 8KB 버퍼로 바이트를 읽으면 **8192번째 바이트에서 글자가 잘릴 수 있다.** 한글은 3바이트라 8192 가 3의 배수가 아니면 반드시 걸린다.\n> 그것을 직접 처리하려면 **남은 바이트를 다음 덩어리 앞에 붙이는** 코드를 써야 한다. 인코딩마다 규칙이 다르다.\n> `InputStreamReader` 가 그 일을 한다. **바이트를 몇 개씩 받든 문자는 온전하게 나온다.**\n> 7장의 소켓에서 이것이 특히 중요하다 — 네트워크는 바이트를 **아무 크기로** 잘라 보낸다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "`read(char[])` 도 요청보다 적게 준다",
+      "md": "100칸으로 물었는데 **1** 이 왔다.\n\n> 3.1절의 규칙이 `Reader` 에도 그대로 있다 — **반환값을 써야 한다.**\n> `new String(buf)` 가 아니라 `new String(buf, 0, n)` 이다. 안 그러면 뒤에 `\\u0000` 이 붙는다.\n> 3.3절의 `write(buf)` 버그와 같은 모양이고, 여기서는 **널 문자가 문자열 끝에 붙는** 형태로 나타난다."
+    },
+    {
+      "type": "prose",
+      "md": "## 틀린 charset 을 주면\n\n2.6절에서 `byte[]` 로 본 것과 **같은 일**이 `Reader` 경로에서도 일어난다. MS949 로 쓴 `\"한글\"` 을 UTF-8 `Reader` 로 읽었다."
+    },
+    {
+      "type": "compare",
+      "title": "같은 4바이트, 두 Reader",
+      "left": {
+        "title": "UTF-8 `Reader`",
+        "bad": true,
+        "md": "```\nU+FFFD U+0471 U+FFFD\n```\n\n**세 글자**가 됐고 가운데는 진짜 글자(`ѱ`)다."
+      },
+      "right": {
+        "title": "MS949 `Reader`",
+        "md": "```\n[한글]\n```\n\n두 글자. 맞다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "2.6절과 똑같은 U+0471 이 나왔다",
+      "md": "다른 경로로 같은 결과가 재현됐다.\n\n> 2.6절에서는 `new String(bytes, UTF_8)` 로, 여기서는 `InputStreamReader(in, UTF_8)` 로 읽었다.\n> 둘 다 `U+FFFD U+0471 U+FFFD` 다 — **같은 디코더를 쓴다.**\n> 곧 2.6절의 판단표(되돌릴 수 있나)가 **스트림 코드에도 그대로 적용된다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 이미 버퍼가 있는데도 Buffered 를 씌우는 이유\n\n3.4절에서 `Buffered` 가 **파일 호출을 줄인다**고 했다. `InputStreamReader` 에 씌우면 몇 번이 되나 — 3.4MB 파일(20만 줄)로 재 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "3,488,890바이트를 `read()` 로 다 읽으면서",
+      "columns": [
+        "감싸기",
+        "파일 호출",
+        "시간 (3회, ms)"
+      ],
+      "rows": [
+        [
+          "`InputStreamReader` 만",
+          "**427**",
+          "69 / 55 / 56"
+        ],
+        [
+          "`BufferedReader` 로 한 번 더",
+          "**427**",
+          "**20 / 18 / 21**"
+        ]
+      ],
+      "note": "**파일 호출이 같다 (427 ≈ 3,488,890 ÷ 8192).** `InputStreamReader` 안에 이미 8KB 버퍼가 있다. 그런데 시간은 3배 다르다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "3.4절과 반대 모양이다",
+      "md": "3.4절에서는 **호출 횟수가 달라서** 빨라졌다. 여기서는 **호출이 같은데** 빨라졌다.\n\n> `InputStreamReader.read()` 는 한 글자마다 **디코더를 거치고 잠금을 잡는다.** 내부 버퍼에서 꺼내더라도 그 경로가 있다.\n> `BufferedReader.read()` 는 자기 `char[]` 에서 **바로 꺼낸다.** 디코딩은 8KB 마다 한 번씩 미리 해 둔다.\n> 곧 줄어든 것은 시스템 콜이 아니라 **자바 안의 일**이다 — 3.2절에서 13ms 로 잰 그 층이다.\n> 그래서 규칙은 하나다 — **`InputStreamReader` 는 거의 항상 `BufferedReader` 로 감싼다.** 4.3절의 `readLine()` 도 거기 있다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 조립과 감싸기",
+      "sql": "$ java -cp out Chars     (마지막 부분)\n--- 한 바이트씩만 주는 스트림을 Reader 로 감싸면 ---\n첫 read(char[100]) 반환값 = 1  -> [안]\n그때까지 바이트 스트림에 부탁한 횟수 = 3\n끝까지 모으면 = [안녕하세요 hello 😀]\n원본과 같은가 = true\n바이트 스트림 총 호출 = 27\n\n# 1바이트씩 세 번 받아 '안' 한 글자를 만들었다.\n# 26바이트를 다 읽는 데 27번 부탁했다 (마지막은 끝 확인).\n\n$ java -cp out Rdr\n파일 = 3,488,890 바이트, 20만 줄\n\n--- InputStreamReader 는 이미 버퍼를 갖고 있나 ---\n  InputStreamReader 만          파일 호출      427\n  Buffered 로 한 번 더 감싸면    파일 호출      427\n  참고: 3,488,890 / 8192 = 425\n\n--- 틀린 charset 으로 읽으면 (2.6 의 그것) ---\n  UTF-8 Reader 로 = U+FFFD U+0471 U+FFFD\n  MS949 Reader 로 = [한글]\n\n--- 시간 (20만 줄, 각 3회, ms) ---\n  read() 만                     69     55     56\n  Buffered + read()             20     18     21\n\n# 파일 호출은 427 로 같은데 시간이 3배 다르다.\n# 줄어든 것은 시스템 콜이 아니라 디코더를 거치는 자바 안의 일이다.",
+      "note": "**427 과 427.** 3.4절에서는 1,048,577 과 129 로 갈렸는데 여기서는 같다 — 그런데도 감싸는 값이 있다. 이유가 다르다는 것이 이 절의 마지막 발견이다."
+    }
+  ],
+  "recap": [
+    "charset 이 들어가는 자리는 InputStreamReader 와 OutputStreamWriter 두 곳뿐이다.",
+    "FileReader·FileWriter 에 charset 을 줄 수 있게 된 것은 자바 11 부터다.",
+    "1바이트씩만 주는 스트림을 감싸도 문자는 온전하다 — 세 번 부탁해 '안' 하나를 만들었다.",
+    "그것이 Reader 를 쓰는 진짜 이유다. 8KB 경계에서 한글이 잘리는 것을 대신 처리한다.",
+    "read(char[]) 도 요청보다 적게 준다 — new String(buf, 0, n) 을 써야 한다.",
+    "틀린 charset 으로 읽으면 2.6절과 똑같이 U+FFFD U+0471 U+FFFD 가 나온다.",
+    "InputStreamReader 에 이미 8KB 버퍼가 있어 파일 호출은 427 로 같은데, Buffered 를 씌우면 3배 빠르다."
+  ],
+  "drills": [
+    {
+      "task": "FileReader 를 charset 없이 만든 코드를 찾아 고친다.",
+      "done_when": "자바 11+ 생성자로 바꾼다.",
+      "minutes": 10
+    },
+    {
+      "task": "1바이트씩 주는 스트림을 만들어 Reader 로 감싸 본다.",
+      "done_when": "한글이 온전히 나오는지 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "InputStreamReader 만 쓴 것과 Buffered 를 씌운 것의 시간을 잰다.",
+      "done_when": "차이가 나는지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "read(char[]) 의 반환값을 무시하고 new String(buf) 를 해 본다.",
+      "done_when": "뒤에 널 문자가 붙는 것을 본다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "charset 을 지정하는 자리는 어디인가.",
+      "a": "InputStreamReader·OutputStreamWriter(그리고 자바 11+ 의 FileReader·FileWriter)다."
+    },
+    {
+      "q": "3바이트 글자의 바이트가 나뉘어 도착하면.",
+      "a": "디코더가 들고 있다가 완성되면 내놓는다. 세 번 부탁해 한 글자를 만들었다."
+    },
+    {
+      "q": "InputStreamReader 에 이미 버퍼가 있는데 BufferedReader 를 씌우는 이유는.",
+      "a": "시스템 콜이 아니라 디코더를 거치는 자바 안의 비용을 줄인다. 이 실험에서 3배였다."
+    },
+    {
+      "q": "틀린 charset 으로 Reader 를 만들면 2.6절과 같은 결과가 나오나.",
+      "a": "그렇다. 같은 디코더를 쓰므로 U+FFFD 와 엉뚱한 글자가 똑같이 나온다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "InputStreamReader",
+      "what": "바이트 스트림을 문자 스트림으로 바꾸는 다리. charset 을 여기 적는다."
+    },
+    {
+      "term": "디코더",
+      "what": "바이트를 문자로 바꾸는 부분. 불완전한 바이트를 들고 있다가 글자가 완성되면 내놓는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — InputStreamReader",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/InputStreamReader.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — FileReader(File, Charset)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/FileReader.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — CharsetDecoder",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/CharsetDecoder.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

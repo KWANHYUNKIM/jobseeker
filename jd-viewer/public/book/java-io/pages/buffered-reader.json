@@ -1,0 +1,233 @@
+{
+  "book": "java-io",
+  "id": "buffered-reader",
+  "no": "4.3",
+  "chapter": 4,
+  "title": "BufferedReader",
+  "summary": "줄 단위로 읽는 법.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "readLine() 이 세 가지 줄바꿈을 다 처리하는 것을 본다.",
+    "줄 수를 세는 자리의 경계 조건을 확인한다.",
+    "세 가지 줄 읽기 방법이 무엇으로 갈리는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.2절에서 **`InputStreamReader` 는 거의 항상 `BufferedReader` 로 감싼다**고 했다. 그 이유가 속도만은 아니다.\n\n`BufferedReader` 에만 있는 메서드가 하나 있다 — **`readLine()`**. 3.2절에서 \"구분자까지 읽어야 할 때는 `read()` 를 써야 한다\" 고 한 그 자리를 이것이 메운다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "줄 단위로 읽는 형태",
+      "code": "try (BufferedReader r = new BufferedReader(\n        new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8))) {\n    String line;\n    while ((line = r.readLine()) != null) {     // -1 이 아니라 null 이다\n        process(line);\n    }\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "끝은 `-1` 이 아니라 `null` 이다",
+      "md": "`read()` 계열과 다르다.\n\n> `readLine()` 은 `String` 을 돌려주므로 **끝을 `null` 로 알린다.** `-1` 을 쓸 자리가 없다.\n> 빈 줄은 `null` 이 아니라 **길이 0인 문자열**이다 — 두 개를 섞으면 빈 줄에서 읽기가 멈춘다.\n> `while ((line = r.readLine()) != null)` 이 관용구이고, 여기서 `!= null` 을 `!= \"\"` 로 바꾸면 틀린다."
+    },
+    {
+      "type": "prose",
+      "md": "## 줄바꿈 세 가지를 다 처리한다\n\n줄바꿈은 플랫폼마다 다르다 — 유닉스 `\\n`(0a), 윈도우 `\\r\\n`(0d 0a), 옛 맥 `\\r`(0d). 세 가지로 같은 내용을 만들어 읽혔다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 두 줄, 세 가지 줄바꿈",
+      "columns": [
+        "파일",
+        "바이트",
+        "`readLine()` 결과"
+      ],
+      "rows": [
+        [
+          "`lf.txt`",
+          "`61 0a 62 0a`",
+          "`[a]` `[b]` — **2줄**"
+        ],
+        [
+          "`crlf.txt`",
+          "`61 0d 0a 62 0d 0a`",
+          "`[a]` `[b]` — **2줄**"
+        ],
+        [
+          "`cr.txt`",
+          "`61 0d 62 0d`",
+          "`[a]` `[b]` — **2줄**"
+        ]
+      ],
+      "note": "**셋 다 2줄이고 줄 길이가 1이다** — `readLine()` 이 줄바꿈 문자를 **떼어 내고** 준다. 그래서 `\\r` 이 줄 끝에 붙어 오는 일이 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "직접 자르면 `\\r` 이 남는다",
+      "md": "`readLine()` 을 안 쓰고 `split(\"\\n\")` 으로 자르는 코드가 흔하다.\n\n```java\n// 윈도우에서 만든 파일이면\nfor (String line : text.split(\"\\n\")) {\n    // line 끝에 \\r 이 붙어 있다\n}\n```\n\n> 눈에 안 보이는 `\\r` 이 값 끝에 붙어 **문자열 비교가 조용히 실패**한다. `\"OK\".equals(line)` 이 `false` 가 된다.\n> CSV 를 직접 파싱하는 코드에서 마지막 칼럼만 값이 틀리는 버그가 이것이다.\n> `readLine()` 이나 `Files.lines()` 를 쓰면 일어나지 않는다 — **세 가지를 다 떼어 준다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 줄 수를 세는 자리의 경계\n\n\"몇 줄이냐\" 는 생각보다 애매하다. 두 가지 경계를 확인했다."
+    },
+    {
+      "type": "compare",
+      "title": "마지막 줄바꿈이 있느냐 없느냐",
+      "left": {
+        "title": "`a\\nb\\n` (끝에 있다)",
+        "md": "바이트 `61 0a 62 0a`\n\n`[a]` `[b]` — **2줄**"
+      },
+      "right": {
+        "title": "`a\\nb` (끝에 없다)",
+        "md": "바이트 `61 0a 62`\n\n`[a]` `[b]` — **2줄**"
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "끝의 줄바꿈은 줄을 만들지 않는다",
+      "md": "둘 다 2줄이다. 그런데 **가운데 줄바꿈은 줄을 만든다.**\n\n```\na\\n\\nb\\n   ->  [a]  []  [b]   3줄\n           바이트 61 0a 0a 62 0a\n```\n\n> 줄바꿈은 **구분자가 아니라 종결자**다. 마지막 `\\n` 은 둘째 줄을 끝냈을 뿐 셋째 줄을 열지 않는다.\n> 그래서 `wc -l` 과 `readLine()` 횟수가 다를 수 있다 — `wc -l` 은 `\\n` 개수를 센다. `a\\nb` 는 `wc -l` 이 1, `readLine()` 은 2다.\n> 가운데 빈 줄은 **길이 0인 문자열**로 온다. 건너뛰려면 직접 `isEmpty()` 를 봐야 한다."
+    },
+    {
+      "type": "prose",
+      "md": "## 줄을 읽는 세 가지\n\n20만 줄(3.4MB) 파일을 세 방법으로 읽어 시간을 쟀다."
+    },
+    {
+      "type": "table",
+      "caption": "20만 줄, 각 3회 (ms)",
+      "columns": [
+        "방법",
+        "1회",
+        "2회",
+        "3회",
+        "메모리"
+      ],
+      "rows": [
+        [
+          "`readLine()` 루프",
+          "22",
+          "14",
+          "10",
+          "한 줄씩"
+        ],
+        [
+          "`Files.lines()`",
+          "16",
+          "11",
+          "10",
+          "한 줄씩 (게으르다)"
+        ],
+        [
+          "`Files.readAllLines()`",
+          "18",
+          "22",
+          "10",
+          "**20만 줄 전부**"
+        ]
+      ],
+      "note": "**시간은 셋이 거의 같다.** 이 크기에서 갈리는 것은 속도가 아니라 메모리다 — 3.5절의 결론이 여기서도 그대로다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "시간으로 고르지 말라는 것이 이 표의 내용이다",
+      "md": "10~22ms 사이에서 세 방법이 서로를 앞질렀다 — **순서가 회차마다 바뀐다.**\n\n> 이 크기에서는 JIT 워밍업과 페이지 캐시가 차이보다 크다. **여기서 \"A 가 B 보다 빠르다\" 고 말하면 지어내는 것이다.**\n> 갈리는 것은 마지막 칼럼이다 — `readAllLines` 는 20만 개의 `String` 을 힙에 올린다. 3.5절의 100MB `OutOfMemoryError` 와 같은 모양이다.\n> 그래서 고르는 기준은 하나다 — **전부 들고 있어야 하나.** 아니면 `readLine()` 이나 `Files.lines()` 다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`Files.lines()` 는 닫아야 한다",
+      "md": "`Stream` 인데 파일을 들고 있다.\n\n```java\n// 이렇게 쓴다 — Stream 도 Closeable 이다\ntry (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {\n    lines.filter(l -> !l.isEmpty()).forEach(this::process);\n}\n```\n\n> `try-with-resources` 없이 쓰면 **파일 디스크립터가 남는다**(3.6절). 스트림이라 GC 가 치울 것 같지만 안 치운다.\n> `Files.readAllLines()` 는 다 읽고 바로 닫으므로 이 문제가 없다 — 대신 메모리를 쓴다.\n> `charset` 을 빼면 자바 11 부터는 UTF-8 이고 그 이하는 기본값이다(2.5절)."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"대용량 로그 파일에서 특정 문자열을 찾는 코드를 써 보세요.\"**\n\n> `readLine()` 루프나 `Files.lines()` 다. `readAllLines()` 를 쓰면 **파일 크기가 힙에 올라간다**는 것을 알고 있는지가 채점 기준이다.\n> `try-with-resources` 로 감쌌는지도 본다 — `Files.lines()` 는 특히 잊기 쉽다.\n> charset 을 적었는지까지 보면 2장을 읽은 사람이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 줄바꿈과 경계",
+      "sql": "$ java -cp out Lines\n--- 세 가지 줄바꿈 ---\n  lf.txt     61 0a 62 0a\n             1번째 = [a]  길이 1\n             2번째 = [b]  길이 1\n             총 2줄\n  crlf.txt   61 0d 0a 62 0d 0a\n             1번째 = [a]  길이 1\n             2번째 = [b]  길이 1\n             총 2줄\n  cr.txt     61 0d 62 0d\n             1번째 = [a]  길이 1\n             2번째 = [b]  길이 1\n             총 2줄\n\n--- 마지막 줄에 줄바꿈이 없으면 ---\n  noeol.txt  61 0a 62\n             1번째 = [a]  길이 1\n             2번째 = [b]  길이 1\n             총 2줄\n\n--- 빈 줄과 끝의 줄바꿈 ---\n  empty.txt  61 0a 0a 62 0a\n             1번째 = [a]  길이 1\n             2번째 = []  길이 0\n             3번째 = [b]  길이 1\n             총 3줄\n\n--- 20만 줄 읽기 (각 3회, ms) ---\n  readLine() 200,000줄    22 ms\n  readLine() 200,000줄    14 ms\n  readLine() 200,000줄    10 ms\n  Files.lines() 200,000줄    16 ms\n  Files.lines() 200,000줄    11 ms\n  Files.lines() 200,000줄    10 ms\n  readAllLines() 200,000줄    18 ms  (전부 메모리)\n  readAllLines() 200,000줄    22 ms  (전부 메모리)\n  readAllLines() 200,000줄    10 ms  (전부 메모리)\n\n# 줄바꿈 세 가지가 다 2줄로 읽혔고 줄 길이가 1 이다 — 떼어 준다.\n# 61 0a 62 (끝에 줄바꿈 없음)도 2줄이다. 종결자라서 그렇다.\n# 61 0a 0a 62 0a 는 3줄이고 가운데가 길이 0 이다.\n#\n# 시간은 10~22ms 사이에서 순서가 회차마다 바뀐다.\n# 이 크기에서 세 방법의 속도 차이를 말할 수 없다.",
+      "note": "**마지막 두 줄이 이 절에서 가장 정직한 부분이다.** 세 방법의 시간이 갈리지 않았으므로 속도로 고르라고 쓸 수 없다 — 갈린 것은 메모리뿐이다."
+    }
+  ],
+  "recap": [
+    "readLine() 은 BufferedReader 에만 있고 끝을 null 로 알린다 — -1 이 아니다.",
+    "빈 줄은 null 이 아니라 길이 0인 문자열이다.",
+    "\\n · \\r\\n · \\r 세 가지를 다 처리하고 줄바꿈 문자를 떼어 준다.",
+    "직접 split(\"\\n\") 하면 윈도우 파일에서 \\r 이 값 끝에 남아 비교가 조용히 실패한다.",
+    "줄바꿈은 종결자다 — 끝의 \\n 은 줄을 만들지 않지만 가운데 빈 줄은 길이 0인 줄이 된다.",
+    "wc -l 과 readLine() 횟수가 다를 수 있다. a\\nb 는 1 과 2 다.",
+    "20만 줄에서 세 방법의 시간은 10~22ms 로 순서가 뒤바뀌었다 — 갈리는 것은 메모리다.",
+    "Files.lines() 는 Stream 이지만 파일을 들고 있어 try-with-resources 가 필요하다."
+  ],
+  "drills": [
+    {
+      "task": "\\r\\n 으로 끝나는 파일을 만들어 split(\"\\n\") 과 readLine() 을 비교한다.",
+      "done_when": "\\r 이 남는 쪽을 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "같은 파일의 wc -l 과 readLine() 횟수를 비교한다.",
+      "done_when": "끝에 줄바꿈이 없을 때 달라지는 것을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "빈 줄이 든 파일을 읽어 길이 0인 줄을 확인한다.",
+      "done_when": "null 과 구분한다.",
+      "minutes": 6
+    },
+    {
+      "task": "Files.lines() 를 try-with-resources 없이 반복 호출한다.",
+      "done_when": "열린 파일 수가 늘어나는지 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "readLine() 이 끝을 알리는 값은.",
+      "a": "null 이다. String 을 돌려주므로 -1 을 쓸 수 없다."
+    },
+    {
+      "q": "readLine() 이 처리하는 줄바꿈은.",
+      "a": "\\n · \\r\\n · \\r 셋 다이고, 줄바꿈 문자는 떼어 내고 준다."
+    },
+    {
+      "q": "a\\nb 는 몇 줄인가.",
+      "a": "readLine() 으로는 2줄이다. wc -l 은 \\n 개수를 세서 1 이다."
+    },
+    {
+      "q": "세 가지 줄 읽기 방법을 고르는 기준은.",
+      "a": "속도가 아니라 메모리다 — 전부 들고 있어야 하는지로 고른다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "readLine",
+      "what": "BufferedReader 의 메서드. 줄바꿈 세 종류를 떼어 내고 한 줄을 주며 끝은 null 이다."
+    },
+    {
+      "term": "종결자",
+      "what": "줄바꿈의 성질. 줄을 끝내지만 다음 줄을 열지 않아 끝의 \\n 은 줄 수를 늘리지 않는다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — BufferedReader.readLine()",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/BufferedReader.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Files.lines",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "POSIX — 3.206 Line",
+      "url": "https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html",
+      "publisher": "The Open Group"
+    }
+  ]
+}
