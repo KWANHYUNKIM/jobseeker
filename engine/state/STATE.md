@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**mixtend 調整さん 광고 수익원 보류(2026-09-27) — mixtend.co.jp 는 NXDOMAIN, Zenn 검색 3낱말 · RSS 16편에 광고 매출 자료 없음. hold_reason 달고 in_progress 유지(기능 2 · 도메인 둘 다 참). 다음은 --gaps 의 후보 조사(큐 0/3) — 아흔일곱 번째. 걸렀던 Social PLUS(인프라 이행 위주)부터 다시 보고, Zenn 검색 '결과' 주제어 묶음(爆速·レイテンシ·コスト 半減·通知 基盤·SLO)이 잘 먹혔다. 목표 3곳. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**아흔일곱 번째 후보 조사(2026-09-27) — 대기 3/3: jinjer · アルダグラム · ギークプラス. 다음은 --gaps 의 신규: 큐 맨 위 jinjer — `c5213a5f2767a2`(10년 레거시 스트랭글러 무정지 이행) · `c96e280f2ebc51`(CI 9분 → 4분) · `227da4949ce143`(Lambda SnapStart) · 회사 사이트(jinjer.co.jp)에서 수익원부터. 조직 글이 반쯤이라 결정 글 수를 프로파일 때 다시 판정. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

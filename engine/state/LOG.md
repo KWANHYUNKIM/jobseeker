@@ -2155,3 +2155,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 mixtend 調整さん 광고 수익원 보류
 
 - --gaps 는 후보 조사를 가리켰지만 이 회사의 완주/보류 판정이 먼저(앞 사이클에 약속). 검색 1: mixtend.co.jp 직접 curl — NXDOMAIN. 검색 2: Zenn 검색 API 3낱말 + RSS 16편 — 광고 매출 자료 없음. hold_reason, in_progress 유지.
+
+## 2026-09-27 아흔일곱 번째 후보 조사
+
+- Zenn 검색 API '결과·구조' 주제어 15개 × 2쪽(2026-03 이후) → Publication 별 집계 → RSS 4곳 확인. jinjer · アルダグラム · ギークプラス 를 대기로(ギークプラス 는 예전에 걸렀으나 새 단서). Social PLUS 는 다시 걸렀다. 슬러그는 전부 RSS 에서 직접 확인.

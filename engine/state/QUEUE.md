@@ -59,9 +59,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **ジンジャー(jinjer)** | JP · 인사·근태·급여 백오피스 SaaS | Zenn Publication `zenn.dev/p/jinjer_techblog`(RSS 20편, 최신 2026-09). 10년 레거시를 **스트랭글러로 무정지 이행** `c5213a5f2767a2` · Go 단일 리포 CI 9분 → 4분(병목은 코드가 아니라 환경) `c96e280f2ebc51` · Python Lambda SnapStart × New Relic 본번 운용 `227da4949ce143` · New Relic MCP 로 SLO 설정 자동화. **레거시 무정지 이행 축.** 조직 글이 반쯤 — 프로파일 때 결정 글 수를 다시 판정. |
+| **アルダグラム(KANNA)** | JP · 현장 관리 SaaS(건설·제조) | Zenn Publication `zenn.dev/p/aldagram_tech`(RSS 20편, 최신 2026-09). Bedrock 비용을 Application Inference Profile 로 **기능별로 분해** `ee846ade880fcc` · Aurora → Datastream → BigQuery 로 사내 분석 기반 재구축 `ab35100d97ffa4` · Rails 일괄 임포트 메모리 개선 `rails-bulk-import-memory-improvement` · 입력 100개 모달 초기 표시 지연 마운트로 94% 단축 `f95ec27d51176b` · 모바일 Firebase + SAML 인증. **현장 기록·AI 비용 축.** 96번째에서 '다음 후보'로 보류했던 곳. |
+| **ギークプラス(GeekPlus · 소프트웨어 사업부)** | JP · 물류·공급망 SaaS | Zenn Publication `zenn.dev/p/geekplus`(RSS 20편, 최신 2026-09). 200MB 넘는 Java 배치를 **ECS 에서 Lambda 로** 옮겨 비용 1/4 · 처리 시간 1/6 `9238a967bf0509` · 멀티테넌트 SaaS 에 AI 에이전트를 넣을 때의 **테넌트 분리 설계** `e9ea7d8e183eb5` · 공급망 정합성을 TypeScript 타입에 가둔다 `a9be3b8c162e45` · OR-Tools 트럭 적재 최적화 `bba23d37db4f2d`. **물류 배치·테넌트 분리 축.** 예전 후보 조사에서 'AI 개발 과정 글'로 걸렀으나 새 단서(배치 이전 · 테넌트 분리)가 생겼다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-27 아흔일곱 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API '결과·구조' 주제어 15개(爆速になった·レイテンシ 改善·コスト 削減·通知基盤·SLO 導入·リアーキテクチャ·負荷対策·決済基盤·予約システム·在庫 整合性·検索基盤·マイクロサービス 分割·データ基盤 刷新·障害 振り返り·移行 ダウンタイム) × 2쪽, 2026-03 이후 글 → Publication 별로 묶어 RSS.**
+  - **jinjer** — **레거시 무정지 이행 축.** 스트랭글러 이행 글이 제품 결정이다.
+  - **アルダグラム** — **현장 기록·AI 비용 축.** AI 비용을 기능별로 쪼개 보는 글과 분석 기반 재구축.
+  - **ギークプラス** — **물류 배치·테넌트 분리 축.** 배치 이전이 비용·시간을 숫자로 적는다.
+  - **걸렀다.** Social PLUS(Karpenter·EKS·Datadog 등 인프라 이행 위주 — 여전히) · scalar_sol(Saga 연재 — SI 성격, 이미 걸렀던 곳) · nttdata(고객 프로젝트) · smartshopping·nextbeat·syncable(이미 걸렀던 곳, 새 단서 없음) · gemcook·urth·relic·idnet·codeconnect(도구 시험·기술 해설) · google_cloud_jp·acntechjp·aws 계열(벤더).
 - **2026-09-27 아흔여섯 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API 두 묶음 — ① '성질' 주제어 15개(撤去した話·やめた話·見直した話·段階的に移行·二重書き込み·再設計 …) × 3쪽 → 얇았다 ② '결과' 주제어 15개(爆速になった話·レイテンシ 改善·コスト 半減·通知 基盤·ポストモーテム·SLO 導入 …) × 2쪽, 2026-03 이후 글 → RSS.**
   - **Lincwell** — **의료 예약·알림 축.** 푸시 내재화 변천과 예약 레이턴시 SLO 가 제품 결정이다.
   - **WED** — **영수증 데이터 정규화 축.** 표기 흔들림을 JAN·JICFS 로 잇는 글이 여럿.
