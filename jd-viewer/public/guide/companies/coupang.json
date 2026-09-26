@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다. `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(Mountain View)는 `The base pay for this position ranges from $187,000/year in our lowest geographic market to $322,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(Seattle)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 원화로 환산하지 않는다.",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다. `Senior Staff ll, Machine Learning Engineer (Tech Lead)`(Mountain View)는 `The base pay for this position ranges from $187,000/year in our lowest geographic market to $322,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다. `Senior Staff Machine Learning Engineer (Coupang AI Foundations)`(Seattle)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 원화로 환산하지 않는다. `Sr. Director, AI Infrastructure`(Mountain View/Seattle)는 `The base pay for this position ranges from $184,000/year in our lowest geographic market to $376,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다. 원화로 환산하지 않는다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -15287,6 +15287,114 @@
           {
             "title": "Senior Staff / Staff Machine Learning Engineer",
             "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8022956",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7361248",
+      "title": "Sr. Director, AI Infrastructure",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 미국 마운틴뷰 또는 시애틀 근무다. 소프트웨어·인프라·플랫폼 운영 15년 이상, 기술 조직 관리 5년 이상(디렉터급)의 시니어 디렉터 자리로, 회사 AI 인프라 오케스트레이션 계층의 장기 비전·로드맵을 세우고, 대규모 모델 학습(분산 학습·하이퍼파라미터 튜닝)과 배포(컨테이너·서버리스·엣지)용 오케스트레이션 플랫폼을 총괄하며, 예산·자원 배분과 팀 운영을 맡는다. 공고가 성과 지표를 직접 적는다 — AI 인프라 구축·확장·운영의 출시 속도, AI 컴퓨트 자원 활용률·비용 효율, 핵심 AI 플랫폼 서비스 가동률, 팀 인재 유지·성장. 연봉 범위가 원문에 있다(기본급 $184,000~$376,000) — 원화로 환산하지 않는다. 원문 오타('delievrables', 'AI Infar', 'inferecning')는 그대로 둔다.",
+      "fit": {
+        "must_have": [
+          "소프트웨어·인프라·플랫폼 운영 15년 이상",
+          "기술 조직 관리 5년 이상(디렉터급)",
+          "대규모 분산·클라우드 네이티브 설계·운영",
+          "Kubernetes·Kubeflow 등 AI 인프라 오케스트레이션과 GPU/TPU 관리",
+          "IaC 10년 이상",
+          "Docker·Kubernetes 전문 수준"
+        ],
+        "can_learn": [
+          "LLM·파운데이션 모델 학습·추론 인프라(우대)",
+          "규제 산업 컴플라이언스(우대)",
+          "AI 프라이빗 클라우드(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "GPU 클러스터 오케스트레이션 — Kubernetes·Kubeflow·Ray",
+          "from": "task",
+          "quote": "Select, evaluate, and integrate the core technologies required for the AI stack (e.g., Kubernetes, Kubeflow, Ray, ML frameworks, GPU/accelerator management, distributed file systems).",
+          "priority": "core",
+          "why": "AI 스택의 핵심 기술(Kubernetes·Kubeflow·Ray·ML 프레임워크·GPU/가속기 관리·분산 파일 시스템)을 고르고 통합하는 것이 주요업무이고, AI 인프라 오케스트레이션과 가속 컴퓨트 관리 경험이 기본 자격이다.",
+          "gap_check": "여러 팀의 학습·추론 작업이 한정된 GPU 를 나눠 쓸 때, 작업 대기열·우선순위·선점(preemption)을 Kubernetes 기본 스케줄러만으로 다루기 어려운 이유는 무엇이고 무엇을 더하는가?",
+          "drill": "Kubernetes GPU 스케줄링 문서와 Kueue 개요를 읽고, 팀별 GPU 할당량과 우선순위 대기열 설계를 한 장으로 그린다. Ray 로 분산 학습 예제를 하나 돌려 작업이 GPU 를 잡고 놓는 흐름을 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Kubernetes — Schedule GPUs",
+              "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kueue — Overview",
+              "url": "https://kueue.sigs.k8s.io/docs/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Ray Documentation",
+              "url": "https://docs.ray.io/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 컴퓨트 활용률·비용 효율",
+          "from": "task",
+          "quote": "The resource utilization rate and cost efficiency of the AI compute infrastructure.",
+          "priority": "core",
+          "why": "AI 컴퓨트 인프라의 자원 활용률과 비용 효율이 이 자리의 성과 지표로 명시돼 있고, 예산·자원 배분 관리가 주요업무다.",
+          "gap_check": "GPU '할당률'은 높은데 실제 연산 사용률은 낮을 때 원인(데이터 로딩 병목·작은 배치·유휴 예약)을 어떻게 가르고, 팀별 비용을 어떻게 나눠 보고하는가?",
+          "drill": "NVIDIA GPU Operator 문서에서 GPU 지표 수집 구성을 읽고, 할당률·실사용률·팀별 GPU 시간 비용을 한 대시보드에 두는 지표 정의서를 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "NVIDIA GPU Operator Documentation",
+              "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 플랫폼 서비스 SLO·KPI",
+          "from": "task",
+          "quote": "Establish Service Level Objectives (SLOs) and Key Performance Indicators (KPIs) for the AI platform services and lead efforts for continuous optimization and performance tuning.",
+          "priority": "high",
+          "why": "AI 플랫폼 서비스의 SLO·KPI 를 정하고 지속 최적화를 이끄는 것이 주요업무이고, 핵심 AI 플랫폼 서비스의 가동률이 성과 지표다.",
+          "gap_check": "학습 플랫폼(수시간짜리 작업)과 추론 플랫폼(밀리초 요청)은 SLO 를 무엇으로 정의해야 하는가 — 학습 쪽에서 '작업 대기 시간'과 '중단 없이 끝난 비율'은 어떻게 재는가?",
+          "drill": "SRE 책 SLO 장을 읽고, 학습 플랫폼·추론 플랫폼 각각의 SLI 세 개와 목표치, 에러 버짓 소진 시 조치를 한 장으로 쓴다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Google SRE Book — Service Level Objectives",
+              "url": "https://sre.google/sre-book/service-level-objectives/",
+              "kind": "book"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "팀별 GPU 할당·우선순위 설계안",
+          "why": "기술 선택·자원 활용률·예산 배분이 모두 이 자리의 책임이다. 공유 GPU 클러스터의 할당·대기열·비용 보고 설계안은 디렉터 면접의 전략 대화를 끌어낸다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "GPU 스케줄링·선점",
+          "할당률 vs 실사용률",
+          "학습·추론 SLO",
+          "AI 인프라 로드맵",
+          "예산·조직 운영"
+        ],
+        "sources": [
+          {
+            "title": "Sr. Director, AI Infrastructure",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7361248",
             "publisher": "Coupang Careers"
           }
         ]
