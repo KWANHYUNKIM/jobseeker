@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "기타",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "엔터프라이즈 AI 플랫폼 ABEJA — 국책 사업으로 자체 LLM 을 만들며 파이프라인 병렬 증류를 직접 구현하고, 병원마다 제각각인 검사 마스터를 표준 코드 JLAC11 에 잇는 의료 LLM 유스케이스를 검증한다",
       "updated_at": "2026-09-26",
       "domain": "abejainc.com"

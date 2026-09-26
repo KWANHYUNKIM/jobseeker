@@ -1548,3 +1548,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ABEJA 회사 프로파일
 
 - 대기 맨 위. 코퍼레이트 페이지 + 기술 글 둘(NEDO 의료 LLM JLAC11 매핑 · GENIAC 증류 pipeline parallel)로 도메인 둘. 블로그 2025~2026 114편에 Platform·Retail 글 0 — 제품 운용 글이 드물다는 한계를 business_model 에 적음. category '기타'.
+
+## 2026-09-26 ABEJA JLAC11 매핑
+
+- 의료 LLM 매핑 글 전문으로 `jlac11-mapping-reagent-first-human-review`(결정 8 — 사람 확정·시약 기점·LLM 은 명칭 대조·퍼지 매칭·GS1-128 바코드·검사 명칭 먼저·청취 먼저·채번까지). 정확도 70~80%.

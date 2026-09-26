@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**ABEJA — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '병원마다 다른 검사 이름을 표준 코드에 잇는다' 를 JLAC11 글(`entry/medical-llm-jlac11-mapping-202608`, scratchpad `ab_jlac.txt`). 그 뒤 증류(`geniac2-distillation-pipeline-parallel`, `ab_distill.txt` — 실험·まとめ·追記). 완주 판정 때 컨설팅·Insight for Retail 수익원은 도메인이 없다 — 사이트맵 전 제목은 `ab_titles.txt`(2025~2026, 114편, Platform·Retail 글 0). 대기 0/3 — ABEJA 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
+**ABEJA — 확장 1(2026-09-26): 의료 매핑 도메인에 `jlac11-mapping-reagent-first-human-review`(결정 8). 다음은 확장: '큰 모델의 지식을 작은 모델로 증류한다' 를 증류 글(`entry/geniac2-distillation-pipeline-parallel`, scratchpad `ab_distill.txt` — 실험·まとめ·追記 미독). 완주 판정 때 컨설팅·Insight for Retail 수익원은 도메인이 없다(사이트맵 2025~2026 114편 제목 1회 검색 없음 — `ab_titles.txt`). 대기 0/3 — ABEJA 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
 
 
 
