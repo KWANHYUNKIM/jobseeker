@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **116건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **118건**.
+직전 회차: ✅ `[Coupang] Senior Data Analyst (Audit Automation…)`(wd/385087) 4항목(비개발, 감사 데이터 분석) + greenhouse 8222455 dup — **그 게시는 제목이 'Senior QA Engineer (Advertiser Platform)' 인데 본문이 감사 공고**(open_questions).
 직전 회차: ✅ `Staff IAM Engineer (IAM Architecture & Governance)`(8172668, 8년↑) 5항목 — NHI·Saviynt·감사. ⚠️ 한·영 병기 공고는 quote 부분 문자열이 두 줄에 걸린다 — 한쪽에만 있는 글자까지 넣는다.
 직전 회차: ✅ `Staff Network Engineer (Fulfillment and Logistics Network Engineering)`(8171509, 10년↑) 5항목 — 비개발(네트워크), 전국 출장.
 직전 회차: ✅ `Staff System Engineer (Global Infrastructure System Engineering)`(8040801, 7년↑) 5항목 — 사내 IT 인프라(가상화·VDI).
@@ -26,7 +27,7 @@
   Control Assurance(8163764), Threat Hunting(8163723), Info Sec CFS(8158581), Vendor Security(8163760),
   Mobile Security(8203471), AI Security Architect(8224844)
 - 데이터 사이언스: Sr. Staff DS Incrementality(8029811)
-⚠️ 다음 회차: `Senior QA Engineer (Advertiser Platform)`(8222455) → 그다음 보안 계열.
+⚠️ 다음 회차: 보안 계열 — `Staff Security Engineer (Cyber Threat Hunting)`(8163723)부터.
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중

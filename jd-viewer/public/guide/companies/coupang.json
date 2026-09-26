@@ -12162,6 +12162,105 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385087",
+      "title": "[Coupang] Senior Data Analyst (Audit Automation & Data Analytics)",
+      "site": "wanted",
+      "verdict": "개발 직군이 아니라 내부 감사(Internal Audit) 조직의 데이터 분석·자동화 자리다. BI 도구·DB 로 고급 분석을 한 경력 4년 이상, Python·SQL(·C++) 스크립팅, RPA 도구 지식. SOX 테스트 자동화, 감사 전반의 분석·자동화, AI 기반 감사 도구를 만든다. 영어·한국어 모두 중급 이상이어야 한다.",
+      "fit": {
+        "must_have": [
+          "BI 도구·DB 고급 분석·리포팅 4년 이상",
+          "Python·SQL 등 스크립팅으로 분석 솔루션 제공",
+          "영어·한국어 중급 이상"
+        ],
+        "can_learn": [
+          "SOX 통제 테스트 절차",
+          "RPA 도구(강한 우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SOX 통제 테스트 자동화",
+          "from": "task",
+          "quote": "• Develop automation solutions within our SOX testing program, unlocking efficiencies in our testing",
+          "priority": "core",
+          "why": "주요업무 둘째 줄이다. 쿠팡은 미국 상장사라 재무 보고 내부통제(SOX) 테스트가 반복 업무로 존재한다(추론).",
+          "gap_check": "'결제 권한이 있는 사람과 승인 권한이 있는 사람은 달라야 한다(직무 분리)' 같은 통제를 표본 추출이 아니라 전수 데이터로 검사하려면 어떤 쿼리가 필요한가?",
+          "drill": "가짜 사용자 권한·거래 승인 로그로 직무 분리 위반과 자기 승인 거래를 전수 탐지하는 SQL 과 결과 리포트를 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "데이터 이상 탐지로 감사 인사이트 만들기",
+          "from": "task",
+          "quote": "• Analyze complex data, identify anomalies, and provide useable insight to internal and external customers",
+          "priority": "core",
+          "why": "복잡한 데이터에서 이상을 찾아 내·외부 고객에게 쓸모 있는 인사이트로 주는 것이 주요업무다.",
+          "gap_check": "비용 전표에서 이상 거래를 찾을 때 규칙(주말 결제·반올림 금액·한도 직전 분할)과 통계(벤포드 법칙)를 어떻게 조합하는가?",
+          "drill": "가짜 전표 데이터에 벤포드 첫 자리 분포 검정과 한도 직전 분할 결제 규칙을 적용해 의심 목록을 뽑는 Python 노트북을 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "RPA 로 반복 업무 자동화",
+          "from": "qualification",
+          "quote": "• Knowledge of RPA tools such as Power Automate, Automation Anywhere, Blue Prism, or others strongly preferred",
+          "priority": "high",
+          "why": "자격에 RPA 도구 지식이 '강하게 우대'로 적혀 있다.",
+          "gap_check": "감사 증적 수집(여러 시스템 화면 캡처·엑셀 다운로드)을 RPA 로 자동화할 때 화면 변경에 깨지지 않게 하려면 무엇을 우선하는가(API 우선·셀렉터 안정성)?",
+          "drill": "Power Automate Desktop(또는 Python Playwright)으로 웹 화면에서 보고서를 내려받아 정리하는 흐름을 만들고, 가능한 부분은 API 호출로 바꿔 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Microsoft Learn — Power Automate",
+              "url": "https://learn.microsoft.com/en-us/power-automate/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 기반 감사 도구",
+          "from": "task",
+          "quote": "• Develop and implement AI-driven solutions using available tools, supporting our audit teams and audit operations",
+          "priority": "high",
+          "why": "주요업무에 AI 기반 솔루션 개발이 있다. 감사는 판단 근거가 남아야 한다(추론).",
+          "gap_check": "감사 문서 검토에 LLM 을 쓸 때, 판단의 근거 문장을 반드시 인용하게 하고 사람이 검토한 기록을 어떻게 남기는가?",
+          "drill": "계약서·정책 문서 몇 개로 '승인 한도 조항 찾기' LLM 도구를 만들되, 답마다 원문 인용과 위치를 붙이고 검토자 확인 필드를 남긴다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "전수 데이터 기반 통제 테스트 데모",
+          "why": "표본 감사를 전수 분석으로 바꾸는 것이 감사 자동화의 핵심 가치다. 직무 분리 위반 전수 탐지 같은 데모가 바로 통한다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "SOX 통제 자동 검사",
+          "전표 이상 탐지",
+          "RPA 설계",
+          "감사용 LLM 의 근거·검토"
+        ],
+        "sources": [
+          {
+            "title": "[Coupang] Senior Data Analyst (Audit Automation & Data Analytics)",
+            "url": "https://www.wanted.co.kr/wd/385087",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/coupang/jobs/8222455",
+      "title": "Senior QA Engineer (Advertiser Platform)",
+      "site": "ats",
+      "duplicate_of": "https://www.wanted.co.kr/wd/385087",
+      "verdict": "⚠️ 제목은 'Senior QA Engineer (Advertiser Platform)' 이지만 본문은 내부 감사(Internal Audit) 자동화·데이터 분석 공고다 — 원티드 'Senior Data Analyst (Audit Automation & Data Analytics)'(wd/385087)와 주요업무·자격 문장이 같다. 제목과 본문이 어긋난 게시로 보고 원티드판 브리핑을 본다."
     }
   ],
   "open_questions": [
@@ -12187,6 +12286,7 @@
     "`SCMA Senior Staff Data Scientist` 는 **제목의 직함(`Senior Staff`)과 본문 첫 줄(`As a Principal Data Scientist`)이 다르다.** 표기 실수인지 직급이 조정 가능한 것인지 확인하지 못했다 — `Sr. Director, Back-End Engineering`(본문은 `Head of SRE`)에 이어 **두 번째 사례**다.",
     "⚠️ `[쿠팡페이] Senior Back-end Engineer (계약직)`(ats)는 **본문이 `[쿠팡페이] Senior QA Engineer (계약직)`(saramin)와 16줄 전부 같은데 제목만 백엔드**다. 표기 실수인지 두 직무를 함께 뽑는 것인지 확인하지 못했다 — **제목과 본문이 어긋난 세 번째 사례**이고(앞의 둘은 `Sr. Director`=Head of SRE, `SCMA Senior Staff`=Principal), **이번은 직무 자체가 달라 보여 위험이 크다.**",
     "'[Coupang Pay] Sr./Staff Back-end Engineer (Pay Test Operations)'(gh 8212748·8212656)는 제목에 Test Operations 가 있지만 본문은 플랫폼·HA/DR·CI/CD 다 — 제목과 본문 중 어느 쪽이 맞는지 공고로는 알 수 없다",
-    "'Staff Backend Engineer (Streaming & AI Infrastructure)'(gh 7919211)의 근무지 표기가 'Seoul, South Korea; z-Test & Templates Only' 다 — 템플릿용 표기가 섞인 것으로 보이며 실제 근무지는 서울로만 읽었다"
+    "'Staff Backend Engineer (Streaming & AI Infrastructure)'(gh 7919211)의 근무지 표기가 'Seoul, South Korea; z-Test & Templates Only' 다 — 템플릿용 표기가 섞인 것으로 보이며 실제 근무지는 서울로만 읽었다",
+    "greenhouse 8222455 는 제목이 'Senior QA Engineer (Advertiser Platform)' 인데 본문이 내부 감사 데이터 분석(wd/385087)과 같다 — 크롤 시 제목·본문이 섞였는지, 채용 사이트 자체가 잘못 게시했는지 공고로는 알 수 없다"
   ]
 }
