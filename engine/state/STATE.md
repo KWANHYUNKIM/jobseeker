@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Macbee Planet 기능 2(2026-09-26) — `dbt-incremental-rebuild`. 두 도메인 featured, connections 서로 이어짐, 수익원(성과 보수형 광고) 하나가 두 도메인과 연결 → 다음 사이클은 완주(done) 확인만(--gaps 는 신규를 가리킬 것 — 닫고 넘어간다). 그 뒤 신규 USEN ICT(대기 1/3) → 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Macbee Planet done(2026-09-26). 다음은 --gaps 의 신규: 큐 맨 위 USEN ICT — `b375c916bf8c9b`(왜 BigQuery 를 고르지 않았나) · Snowflake Cortex 롤 설계 · 'データを自由に使えないのは、道具のせいじゃない'(2026-08-04) · 회사 사이트에서 수익원부터. 데이터 쪽에 몰려 도메인 하나로 끝나면 수익원 연결을 먼저 본다. 대기 1/3 → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

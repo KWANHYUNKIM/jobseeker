@@ -48,7 +48,6 @@
 | **dely(クラシル)** | JP · 레시피·절약 앱·리테일 AI | 프로파일(2026-09-26). 도메인 둘(레시챌) — 수억 장의 영수증 화상을 싸게 쌓아 둔다 · 쇼핑 행동에 맞춘 CRM 시책을 구현 없이 빨리 돌린다. 기능 3(`receipt-image-storage-tiering` · `braze-personalization-four-ways` · `serving-size-adjustment`) — 셋째 도메인 '레시피의 분량을 사람 수에 맞춰 바꾼다'(클라시루). **hold** — AI OS·TRILL/LIVEwith 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 클라시루·AI OS·TRILL/LIVEwith 는 도메인 없음. 입구 `zenn.dev/p/dely_jp/feed`. |
 | **みてね(MIXI · 家族アルバム)** | JP · 가족 사진·영상 공유 앱 | 프로파일(2026-09-26). 도메인 둘 — 가족당 수백만 장에서 말로 사진을 찾는다 · 내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다. 기능 2(`natural-language-photo-search` · `ingress-nginx-to-envoy-gateway`). **hold** — 프린트·포토북 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 사진 프린트·포토북은 도메인 없음. 입구 `zenn.dev/p/mitene/feed`. |
 | **SODA(スニーカーダンク)** | JP · 감정 붙은 스니커·트레카 마켓 | 프로파일(2026-09-26). 도메인 둘 — 구입과 결제를 모듈 경계를 넘어 한 번만 일어나게 한다 · 상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다. 기능 2(`purchase-payment-idempotency` · `purchase-flow-tla-audit`). **hold** — 실매장 수익원 자료 두 번 없음(2026-09-26). 수익원 둘 중 실매장은 도메인 없음. 입구 `zenn.dev/p/team_soda/feed`. |
-| **Macbee Planet(マクビープラネット)** | JP · 성과 보수형 광고 · DSP 3D AD | 프로파일(2026-09-26). 도메인 둘 — 입찰 요청이 늘수록 비용이 붙는 로그 기반을 갈아 끼운다 · 매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다. 기능 2(fluentd-to-pubsub-logs · dbt-incremental-rebuild). 수익원 성과 보수형 광고(매출 약 400억 엔). 입구 `zenn.dev/p/macbee_planet/feed`. |
 
 
 ## 대기
@@ -1021,6 +1020,7 @@
 
 ## 완료
 
+- **Macbee Planet(マクビープラネット)** (JP · 성과 보수형 광고 · 매출 약 400억 엔 · DSP 3D AD) — 2026-09-26 완주. 도메인 2 · 기능 2. **사업이 클수록 비용에 지는 구성을 끊는다.** 로그 기반은 손실 허용 니어 리얼타임 로그를 먼저 Pub/Sub × Valkey 로 떼고, 나머지는 서버가 Pub/Sub 에 바로 Publish 해 BigQuery Subscription 이 쓰게 해 고정 대수 Fluentd 집약(정액)을 없애고 종량 20~30%↓ — 이중 쓰기로 옮겼다. 데이터 기반은 시간별 파티션·생로그 재설계·dbt incremental 로 매시 하루치를 긁던 잡을 한 시간치로, ML 은 늦게 오는 적은 positive 만 며칠치를 다시 읽어 스캔 90%↓. 3D AD 의 매출 기여는 비공개.
 - **TRIBEAU(トリビュー)** (JP · 미용 의료 입소문·예약 앱 · 클리닉 게재) — 2026-09-26 완주. 도메인 2 · 기능 2. **LLM 은 믿을 수 없는 녀석이다.** AI 상담은 LLM 이 템플릿 JSON 과 ID 까지만 내고 실데이터는 프런트가 다시 가져오며, 후보는 검색 API 의 실데이터에서만, 수십만 건 입소문은 ID 만 돌려주는 '지연 확장 RAG' 로 표시 시점에 합류시켜 편향·비용(약 1/10)·법무를 구조로 막았다. 사내 MCP 는 공유 인가 서버가 Workspace 그룹으로 MCP·툴을 인가해 aud 를 박은 JWT 를 내고, 리프레시마다 소속을 다시 봐 30일의 구멍을 닫았다. 클리닉 게재 요금은 비공개.
 - **Luup** (JP · 전동 킥보드·자전거 셰어 · 기본 50엔 + 분당) — 2026-09-26 완주. 도메인 2 · 기능 2. **바뀌지 않은 것이 성공이다.** 지불에 닿는 특전 도메인은 'main 과 미승인 동작 차 제로' 를 에이전트 메모리에 적고 Claude Code 와 7개 Stacked PR 로 DDD Modules 에 옮겼다 — 특성 테스트·count() 실측·의도적 차이 목록, AI 의 친절(undefined→null)과 fail-close 회귀를 원칙이 잡았다. 사내 관리 화면은 SFC 에 섞인 쿼리·라이브러리·UI 를 features·repository·infrastructure·core 로 한 단계씩 밀어내며 새것은 새 규칙, 기존은 만질 때. 차량·IoT 쪽 글은 못 봤다.
 - **COUNTERWORKS(カウンターワークス)** (JP · 상업 공간 마켓 SHOPCOUNTER · 리싱 SaaS SCE) — 2026-09-26 완주. 도메인 3 · 기능 3. **새는 자리는 사람이 아니라 구조로 막는다.** 도입 기업마다 따로 서던 Rails 앱을 10개월에 Pool 공유 DB 로 합치며 앱 층 WHERE 자동 부여와 PostgreSQL RLS 를 한 concern 으로 같이 켜고, BYPASSRLS 소유 VIEW 로 새던 구멍은 WHERE 와 CI 스펙으로. 60개 넘는 잡은 유료판 대신 SolidQueue 로 위험도별 Phase 를 하나씩, 철수는 Worker → 코드 → Redis. SHOPCOUNTER 는 멈춘 거래를 RAG 3관점 점수로 골라 사람이 확인(인턴 작). 요금 구조는 공개 자료에 없다.
