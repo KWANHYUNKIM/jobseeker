@@ -564,6 +564,141 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55000479",
+      "title": "안드로이드 개발자",
+      "site": "jumpit",
+      "verdict": "경력 5~20년(자격요건은 'Android 개발 경력 5년 이상 또는 이에 준하는 역량'). 핀다 Android 앱의 핵심 기능 — 대출비교·자산관리·마이데이터 사용자 경험, 개인화 추천 피드와 콘텐츠 탐색 — 을 개발·운영하고, 모듈화 아키텍처와 빌드 최적화로 개발 환경을 고도화하며, 크래시·프리즈·메모리 같은 품질 지표 기반으로 성능·안정성을 개선한다. 기술은 Kotlin·Coroutine·Koin·MVVM·MVI·Jetpack, Firebase. 필수는 Jetpack Compose UI, Coroutines 비동기·반응형, **Claude Code·Codex·Gemini 등 AI 개발 도구 적극 활용**, 지표 기반 성능·안정성 분석과 재발 방지, 아키텍처 트레이드오프 결정, 코드 리뷰 중심 협업과 의사결정 문서화. 금융·핀테크, 멀티 모듈, 빌드 시간 단축, 테스트 자동화, 지식 공유, CI/CD, Server-Driven UI 는 우대다. 점핏 본문에는 전형 안내가 없다.",
+      "fit": {
+        "must_have": [
+          "Android 5년 이상",
+          "Jetpack Compose",
+          "Coroutines",
+          "AI 개발 도구 활용",
+          "지표 기반 성능·안정성 개선",
+          "아키텍처 트레이드오프 결정",
+          "코드 리뷰·문서화"
+        ],
+        "can_learn": [
+          "금융·핀테크",
+          "멀티 모듈·빌드 최적화",
+          "테스트 자동화",
+          "CI/CD",
+          "Server-Driven UI"
+        ]
+      },
+      "study": [
+        {
+          "topic": "품질 지표 기반 성능·안정성 개선",
+          "from": "qualification",
+          "quote": "ㆍ성능·안정성 이슈를 지표 기반으로 분석하고, 재발 방지까지 고려해 개선해 보신 분",
+          "priority": "core",
+          "why": "필수이고 주요업무에 '크래시, 프리즈, 메모리 이슈 등 앱 품질 지표 기반의 성능 및 안정성 개선' 이 있다. 개발 도구 목록에 Firebase 가 있다.",
+          "gap_check": "대출 비교 화면에서 ANR(프리즈) 비율이 오르면 Android vitals·Crashlytics 에서 무엇을 보고 원인 스레드를 찾으며, 고친 뒤 재발을 막는 장치(베이스라인 프로파일·StrictMode·회귀 지표 알림)는 무엇인가?",
+          "drill": "샘플 앱에 메인 스레드 디스크 I/O·메모리 누수를 일부러 넣고 StrictMode·LeakCanary·Crashlytics 로 잡은 뒤, 수정 전후 시작 시간을 Macrobenchmark 로 재고 베이스라인 프로파일을 적용한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Android — Android vitals",
+              "url": "https://developer.android.com/topic/performance/vitals",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Baseline Profiles",
+              "url": "https://developer.android.com/topic/performance/baselineprofiles/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Firebase Crashlytics",
+              "url": "https://firebase.google.com/docs/crashlytics",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Compose + Coroutines 로 MVI 화면",
+          "from": "qualification",
+          "quote": "ㆍCoroutines 기반 비동기·반응형 프로그래밍에 대한 이해와 실무 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 두 줄이 Jetpack Compose 와 Coroutines 이고, 팀 기술 목록에 MVVM·MVI·Koin 이 있다. 주요업무에 개인화 추천 피드 개발이 있다.",
+          "gap_check": "추천 피드 화면에서 로딩·오류·새로고침·페이지 추가를 MVI 상태 하나로 표현할 때 StateFlow 와 일회성 이벤트(스낵바·이동)는 어떻게 나누고, 화면 회전이나 프로세스 종료 후 상태는 어떻게 복원하는가?",
+          "drill": "Compose + ViewModel + StateFlow 로 무한 스크롤 피드를 MVI 로 만들고(Koin 주입), 네트워크 실패·빠른 연속 새로고침 상황의 상태 전이를 단위 테스트로 검증한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Android — Jetpack Compose",
+              "url": "https://developer.android.com/develop/ui/compose/documentation",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Kotlin coroutines",
+              "url": "https://developer.android.com/kotlin/coroutines",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Guide to app architecture",
+              "url": "https://developer.android.com/topic/architecture",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티 모듈과 빌드 최적화",
+          "from": "task",
+          "quote": "- 모듈화 아키텍처 설계 및 빌드 최적화",
+          "priority": "high",
+          "why": "주요업무이고 우대에 '멀티 모듈 설계 및 아키텍처 개선 경험' 과 '빌드 최적화, 모듈 의존성 개선, 빌드 시간 단축' 이 있다.",
+          "gap_check": "기능 모듈끼리 서로 참조하지 않게 하려면 모듈을 어떤 층(app·feature·core)으로 나누고, 한 파일 수정에 앱 전체가 다시 빌드되는 원인은 무엇(api vs implementation 의존)인가?",
+          "drill": "Now in Android 저장소의 모듈 구조를 읽고, 단일 모듈 샘플 앱을 feature·core 모듈로 나눈 뒤 Gradle 빌드 스캔으로 증분 빌드 시간을 전후 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android — Guide to Android app modularization",
+              "url": "https://developer.android.com/topic/modularization",
+              "kind": "docs"
+            },
+            {
+              "title": "Now in Android",
+              "url": "https://github.com/android/nowinandroid",
+              "kind": "repo"
+            },
+            {
+              "title": "Android — Optimize your build speed",
+              "url": "https://developer.android.com/build/optimize-your-build",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Compose MVI 피드 + 품질 지표 개선 전후 수치 + 모듈 분리 샘플",
+          "why": "필수 역량(Compose·Coroutines·지표 기반 개선)과 우대(멀티 모듈·빌드)를 한 번에 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "AI 개발 도구 활용 사례와 검증 방식 정리",
+          "why": "필수에 'Claude Code, Codex, Gemini 등 AI 기반 개발 도구를 적극적으로 활용해 보신 분' 이 있고 주요업무에도 AI 도구로 생산성 향상이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "점핏 본문에 전형 안내가 없다. 같은 회사 원티드 공고들은 서류 → 1차(직무) → 2·3차(리드·CEO, 컬쳐핏) → 레퍼런스 체크 → 처우 협의 → 최종 합격을 적는다.",
+        "expect": [
+          "성능·안정성 개선 사례와 지표",
+          "Compose·Coroutines 설계",
+          "아키텍처 트레이드오프",
+          "AI 도구 활용"
+        ],
+        "sources": [
+          {
+            "title": "안드로이드 개발자",
+            "url": "https://jumpit.saramin.co.kr/position/55000479",
+            "publisher": "점핏"
+          }
+        ]
+      }
     }
   ]
 }
