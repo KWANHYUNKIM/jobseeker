@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**LayerX — 프로파일(2026-09-26). 도메인 셋, 기능 0. 다음은 확장: '테넌트 데이터는 하류에서도 잠근다' 를 RAP 글(`entry/dbt-snowflake-rap-enforcement`, scratchpad `lx.txt` — 세 과제·check/reconcile 세부를 마저). 그 뒤 Bifrost(`lx_2026_08_28_180027.txt`, 선택지 넷 비교)·TypeSpec. Fintech·Security 수익원은 도메인이 없다 — 완주 판정 때 'Fintech事業部' 카테고리(22편)를 보고, 없으면 두 번 찾아 hold. 대기 0/3 — LayerX 뒤 후보 조사.**
+**LayerX — 기능 1(`rap-reconcile-and-check`, 2026-09-26). 다음은 확장: 'LLM 호출을 한 관문에 모은다' 를 Bifrost 글(`entry/2026/08/28/180027`, scratchpad `lx_2026_08_28_180027.txt` — 세 과제는 읽음, '技術選定：ADR と4つの選択肢' 이후를 마저). 그 뒤 TypeSpec(`lx_typespec-in-aiworkforce.txt`). Fintech·Security 수익원은 도메인이 없다 — 완주 판정 때 'Fintech事業部' 카테고리(22편) 확인. 대기 0/3 — LayerX 뒤 후보 조사.**
+
 
 
 
