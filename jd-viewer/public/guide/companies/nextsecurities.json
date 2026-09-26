@@ -1064,6 +1064,144 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/378758",
+      "title": "Cloud Architect",
+      "site": "wanted",
+      "verdict": "경력 3년 이상(AWS 인프라 설계·운영). AWS 멀티 계정 환경에서 서비스 요구사항과 금융 규제를 클라우드 아키텍처로 옮기고 조직의 클라우드 표준을 세우는 자리 — 비기능 요구사항 설계, 개인정보·신용정보 시스템의 저장소·KMS 키 분리와 네트워크 경계·접근통제·감사로그, 아키텍처 리뷰와 ADR, 리소스 표준·수명주기·런북, 그리고 비용 거버넌스(계정·팀·서비스별 배분, Showback, 태그 정책, Savings Plans·RI, 이상 지출 분석). 같은 회사 DevOps 공고가 인프라를 '만드는' 쪽이라면 이쪽은 표준·설계·비용을 '정하는' 쪽이다. 자격은 AWS 3년, Organizations 또는 Control Tower 멀티 계정, 비기능 요구 설계, 문서·다이어그램으로 합의 이끌기. 금융 규제(전자금융감독규정·ISMS-P·망분리), FinOps(CUR·Chargeback), Landing Zone 신규 구축, Terraform 표준화는 우대다. 전형은 서류 검토 → AI 스크리닝 인터뷰 → 1차 → 2차 인터뷰 순으로 '진행될수도있습니다' 라고 적혀 있다.",
+      "fit": {
+        "must_have": [
+          "AWS 인프라 설계·운영 3년 이상",
+          "Organizations 또는 Control Tower 멀티 계정",
+          "비기능 요구사항 기반 아키텍처 설계",
+          "요구사항을 문서·다이어그램으로 합의"
+        ],
+        "can_learn": [
+          "금융 규제(전자금융감독규정·ISMS-P·망분리)",
+          "FinOps(CUR·Showback/Chargeback·SP/RI)",
+          "Landing Zone 신규 구축",
+          "Terraform 표준화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "개인정보·신용정보 시스템의 경계 설계",
+          "from": "task",
+          "quote": "· 개인정보·신용정보가 포함된 시스템은 정보보호 정책을 반영하여 저장소 분리, KMS 키 분리, 네트워크 경계, 접근통제 및 감사로그 체계를 설계합니다.",
+          "priority": "core",
+          "why": "주요업무다. 우대에 전자금융감독규정·ISMS-P·망분리가 있다. 증권사는 계정·거래·신용정보를 다룬다.",
+          "gap_check": "신용정보를 다루는 서비스를 별도 계정·VPC 로 떼어낼 때 저장소 암호화 키를 서비스별로 나누는 이유는 무엇이고, 다른 서비스가 그 데이터에 접근할 때 경로(Private Link·API)와 감사 로그는 어떻게 남기는가?",
+          "drill": "AWS 보안 참조 아키텍처를 읽고, '신용정보 처리 계정' 의 설계 한 장(계정·VPC 경계, KMS 키 분리, 접근 경로, 감사 로그 흐름)을 그린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AWS Security Reference Architecture",
+              "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "국가법령정보센터 — 전자금융감독규정",
+              "url": "https://www.law.go.kr/%ED%96%89%EC%A0%95%EA%B7%9C%EC%B9%99/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비기능 요구사항과 ADR",
+          "from": "qualification",
+          "quote": "· 비기능 요구사항(가용성, 확장성, 보안 등)을 고려하여 클라우드 아키텍처를 설계한 경험",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '아키텍처 리뷰를 수행하고 ADR을 작성하여 검증된 설계 패턴을 표준화' 가 있다. 다른 자격 줄이 '문서·다이어그램을 통해 합의' 다.",
+          "gap_check": "주문 서비스의 가용성 목표를 99.95% 로 정하면 AZ·리전 구성과 DB 선택이 어떻게 달라지고, 그 결정을 ADR 에 무엇(맥락·대안·결정·결과·재검토 조건)으로 남기는가?",
+          "drill": "Well-Architected 프레임워크의 신뢰성·보안 원칙을 기준으로 가상의 주문 서비스 아키텍처를 그리고, 핵심 결정 3개를 ADR 로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS Well-Architected Framework",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드 비용 거버넌스 — 태그·Showback·SP/RI",
+          "from": "task",
+          "quote": "· 태그 정책을 수립하고 비용 최적화(Savings Plans, Reserved Instances 등)를 추진합니다.",
+          "priority": "high",
+          "why": "주요업무 셋째 묶음 전체가 비용이다. 우대에 'FinOps 경험 (AWS CUR 분석, Showback/Chargeback, Savings Plans·Reserved Instances 최적화 등)' 이 있다.",
+          "gap_check": "태그가 빠진 리소스 비용은 어떻게 배분하고, Savings Plans 와 RI 중 무엇을 어느 워크로드에 사며, CUR 로 팀별 Showback 보고서를 어떻게 만드는가?",
+          "drill": "필수 태그 정책(팀·서비스·환경)을 정의하고, 가상의 CUR 데이터로 팀별 비용 배분 쿼리와 월간 Showback 보고서 한 장, SP/RI 구매 권고안을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS — What are Cost and Usage Reports",
+              "url": "https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS — What are Savings Plans",
+              "url": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
+              "kind": "docs"
+            },
+            {
+              "title": "FinOps Framework",
+              "url": "https://www.finops.org/framework/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티 계정 Landing Zone",
+          "from": "qualification",
+          "quote": "· AWS Organizations 또는 Control Tower 기반 멀티 계정 환경을 설계하거나 운영한 경험",
+          "priority": "high",
+          "why": "자격요건이고 우대에 '신규 플랫폼 또는 Landing Zone을 처음부터 설계하고 구축한 경험' 이 있다. 직무 Summary 가 멀티 계정 환경에서 차세대 플랫폼을 구축 중이라고 적는다.",
+          "gap_check": "보안·로그·공유 네트워크·워크로드 계정을 어떻게 나누고, Transit Gateway 로 계정 간 네트워크를 연결할 때 라우팅 격리는 어떻게 하는가?",
+          "drill": "Control Tower 문서를 기준으로 계정 구조도(OU·계정·역할)와 Transit Gateway 라우팅 표를 그린다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "AWS Control Tower — What is AWS Control Tower",
+              "url": "https://docs.aws.amazon.com/controltower/latest/userguide/what-is-control-tower.html",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS Transit Gateway — What is a transit gateway",
+              "url": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "신용정보 계정 설계 + ADR 3건 + Showback 보고서 샘플",
+          "why": "주요업무 세 묶음(설계, 표준화, 비용)을 문서로 보여 준다. 이 자리의 산출물이 곧 문서·다이어그램이다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "Landing Zone 을 처음부터 세운 경험 정리",
+          "why": "우대사항에 그대로 있다. 계정 수·OU 구조·가드레일을 숫자와 그림으로 준비한다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 검토 → AI 스크리닝 인터뷰 → 1차 인터뷰 → 2차 인터뷰 순으로 진행될 수 있다(공고 기준).",
+        "expect": [
+          "비기능 요구사항을 설계로 바꾼 사례",
+          "신용정보 시스템 경계 설계",
+          "비용 배분·절감 경험",
+          "이해관계자 합의를 이끈 방법"
+        ],
+        "sources": [
+          {
+            "title": "Cloud Architect",
+            "url": "https://www.wanted.co.kr/wd/378758",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
