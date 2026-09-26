@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Yappli — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '한 줄 SDK 상향 뒤의 1년 4개월을 버틴다' 를 targetSdk 글(`entry/droidkaigi-poster-session-targetsdk36`, scratchpad `yp_sdk.txt` — 스케줄·마무리 부분) + 16KB 발표 슬라이드(speakerdeck kenfuruya)가 있으면 보탠다. 그 뒤 문의 대응(`handling-customer-inquiries`, `yp_inq.txt` — 전문 읽음). 완주 판정 때 CRM 수익원은 도메인이 없다. 대기 0/3 — Yappli 뒤 후보 조사(Zenn Publication·note 기업 계정 시험). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap(hold)·LayerX 는 in_progress.**
+**Yappli — 확장 1(2026-09-26): targetSdk 도메인에 `targetsdk36-edge-to-edge-16kb`(결정 6). 다음은 확장: '문의 조사와 수정을 다른 줄에 세운다' 를 문의 대응 글(`entry/handling-customer-inquiries`, scratchpad `yp_inq.txt` — 전문 읽음). 완주 판정 때 CRM 수익원은 도메인이 없다. 대기 0/3 — Yappli 뒤 후보 조사(Zenn Publication·note 기업 계정 시험). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap(hold)·LayerX 는 in_progress.**
 
 
 
