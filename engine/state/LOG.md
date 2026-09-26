@@ -2396,3 +2396,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 iCARE 회사 프로파일
 
 - carely.jp(r.jina.ai 에 X-Timeout 헤더) · Publication 소개문으로 수익원 둘. 비교 사이트의 도입 사 수는 2차 자료라 쓰지 않았다. 글 셋(CSV 임포트 · Datadog 리전 · 도메인 분리)으로 도메인 셋. SSO 글은 해설이라 도메인에 안 넣었다.
+
+## 2026-09-27 iCARE CSV 임포트
+
+- `181c10f20dba04` 전문으로 기능 `long-csv-import-memory`, 결정 8.
