@@ -110,5 +110,87 @@
     "매출·임직원 수",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://jumpit.saramin.co.kr/position/55100008",
+      "title": "백엔드 개발자 채용(5~10년)",
+      "site": "jumpit",
+      "verdict": "경력 5~10년, 경기 성남시 분당구 판교. **본문이 매우 짧다** — 주요업무는 '자사 솔루션 기반 프로젝트 수행' 한 줄과 언어(Java)·프레임워크(Spring)·DBMS(Oracle·MariaDB) 나열, 자격은 백엔드 5~10년과 Java·Spring, 우대는 컴퓨터/시스템공학 전공과 **Kafka·Spark·Redis 중 1개 이상**(원문 표기 'Kfaka'). 회사 소개(사람인 같은 회사 공고)상 '자사 솔루션' 은 **자체 PLC 칩 기반 원격검침·에너지 관리 시스템**이므로, 수많은 계량기에서 주기적으로 올라오는 검침 데이터를 받고 저장·조회하는 서버일 가능성이 높다 — 다만 공고는 이를 적지 않았다(추론). '프로젝트 수행' 이라는 표현은 고객별 납품 프로젝트 방식을 시사한다. 같은 직무의 10년 이상 공고가 따로 있다(55100024). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 5~10년",
+          "Java·Spring",
+          "Oracle 또는 MariaDB"
+        ],
+        "can_learn": [
+          "Kafka 수집 파이프라인",
+          "원격검침 도메인",
+          "시계열성 대량 테이블 관리"
+        ]
+      },
+      "study": [
+        {
+          "topic": "원격검침 도메인 — 서버가 받는 데이터는 무엇인가",
+          "from": "task",
+          "quote": "• 자사 솔루션 기반 프로젝트 수행",
+          "priority": "core",
+          "why": "주요업무 한 줄이 '자사 솔루션 기반 프로젝트' 이고, 그 솔루션이 원격검침·에너지 관리 시스템이다(회사 소개).",
+          "gap_check": "원격검침(AMR/AMI)에서 계량기→집중기(DCU)→중앙 서버로 데이터가 어떻게 올라오고, 전력선통신(PLC)은 이 경로의 어디를 맡는가? 검침 누락·중복·시각 오차가 생기면 서버는 무엇으로 보정하는가? 계량기 수만 대가 15분마다 값을 보내면 하루 몇 건이 되는가?",
+          "drill": "원격검침·전력선통신 문서를 읽고 계량기–집중기–서버 구성도를 그린 뒤, 계량기 1만 대 × 15분 주기의 하루 적재량을 계산하고, 누락·중복·순서 뒤바뀜을 처리하는 검침 적재 규칙(유일 키·재수신 허용 범위)을 문서로 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Automatic meter reading — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Automatic_meter_reading",
+              "kind": "docs"
+            },
+            {
+              "title": "Power-line communication — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Power-line_communication",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kafka 로 검침 데이터 받기",
+          "from": "preference",
+          "quote": "• 활동/경험 : Kfaka, Spark, Redis 중 1개 이상 유경험자",
+          "priority": "high",
+          "why": "우대사항이 Kafka·Spark·Redis 를 든다. 대량 장비 데이터 수집의 전형적 도구다.",
+          "gap_check": "집중기 수천 대가 동시에 보내는 데이터를 API 서버가 바로 DB 에 쓰는 것과 Kafka 에 넣고 소비자가 쓰는 것은 장애·재처리에서 무엇이 다른가? 파티션 키를 계량기 ID 로 잡으면 무엇이 보장되고, 소비자가 죽었다 살아나면 어디서부터 다시 읽는가?",
+          "drill": "Kafka 소개 문서를 읽고, Spring Boot 생산자가 가짜 검침 메시지(계량기 ID·시각·값)를 계량기 ID 키로 보내고 소비자가 MariaDB 에 적재하게 만든다. 소비자를 중간에 강제 종료했다 재시작해 중복·누락 없이 이어지는지(멱등 적재) 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Introduction — Apache Kafka",
+              "url": "https://kafka.apache.org/intro/",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring Boot",
+              "url": "https://docs.spring.io/spring-boot/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "커지는 검침 테이블 — 파티셔닝",
+          "from": "task",
+          "quote": "• DBMS : Oracle, Maria 등",
+          "priority": "high",
+          "why": "주요업무가 Oracle·MariaDB 를 DBMS 로 든다. 검침 테이블은 시간과 함께 계속 커진다.",
+          "gap_check": "날짜 기준 범위 파티셔닝을 하면 '특정 계량기 지난달 사용량' 조회와 오래된 데이터 삭제가 어떻게 빨라지는가? 파티션 키가 조회 조건에 없으면 무엇이 일어나는가(전 파티션 스캔)?",
+          "drill": "MariaDB 파티셔닝 개요를 읽고, 1천만 건 검침 테이블을 월 파티션/무파티션으로 만들어 계량기별 월 사용량 조회와 3개월 이전 삭제 시간을 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Partitioning Overview — MariaDB Documentation",
+              "url": "https://mariadb.com/docs/server/server-usage/partitioning-tables/partitioning-overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
