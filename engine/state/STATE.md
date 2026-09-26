@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — rerun 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — restate 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **restate** — 2026-09-26 없음 1회째. RSS 500 — r.jina.ai 로 `/blog` 목록. 마지막 글이 07-07(1.7·BYOC 발표). 이전 글 후보: 03-11 오래 도는 에이전트의 버전 관리, 07-07 1.7 흐름 제어(발표지만 설계가 있을 수 있다).
 - **rerun** — 2026-09-26 없음 1회째. `rerun.io/blog/rss.xml`(정렬 필요). 마지막이 09-07 Spotlight(ARKitScenes 쓰임새 연재). 이전 글 후보: **04-30 "The data layer tax for robot learning"·05-13 "A new data layer for robot learning"**(사업 방향 전환의 근거일 수 있다, 1순위).
 - **replicate** — 2026-09-26 없음 1회째. `replicate.com/blog/rss` 마지막 글 2026-04-15(모델 사용법). **2025-11 Cloudflare 합류** 뒤 엔지니어링 글이 끊겼다 — 다음에도 없으면 재시도 안 함, 이후 단서는 Cloudflare 블로그에서.
 - **render** — 2026-09-26 없음 1회째. RSS 404 — r.jina.ai 로 `/blog` 목록(카드에 "분류 날짜"). 09-07 이후는 09-21 빌드 재사용 비공개 베타(제품 발표) 하나. 이전 글 후보: **08-25 Render Workflows 로 내부 데이터 파이프라인**(엔지니어링 분류, 1순위).
