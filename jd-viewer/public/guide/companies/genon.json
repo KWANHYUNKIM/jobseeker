@@ -1065,6 +1065,13 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570167?ReturnUrl=RecruitInfo",
+      "title": "AI Engineer(생성형 AI Agent개발)",
+      "site": "dev",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 담당업무 여섯 줄과 자격요건 여섯 줄이 원티드 `AI Engineer_생성형 AI Agent개발` 과 글자 그대로 같다. 브리핑은 그쪽을 본다. 차이는 셋이다 — 경력 표기가 여기서는 '경력(3년이상~20년 이하)'(원티드는 3-10년), 모집인원이 '0명' 으로 적혀 있고, 전형이 '서류전형 → 1/2차면접 → CEO면접 → 최종합격' 으로 원티드(1/2차 기술역량면접 → Culture Fit 면접 → 처우협의)와 다르게 적혀 있다. 접수는 제논 채용 페이지(ninehire)로 한다. 두 자리가 아니므로 한 곳으로만 지원한다.",
+      "duplicate_of": "https://www.wanted.co.kr/wd/215978"
     }
   ]
 }
