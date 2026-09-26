@@ -6,7 +6,7 @@
     "현대자동차",
     "현대자동차그룹"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "hyundai.com",
   "one_liner": "완성차 회사 — 모집중 개발 공고는 차량 자체보다 로보틱스랩·제조로보틱스(휴머노이드·모바일로봇)와 보안(차량 사이버보안·사내 정보보호) 쪽이다",
@@ -1263,6 +1263,99 @@
             {
               "title": "Security best practices in IAM — AWS",
               "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387496",
+      "title": "[통합보안] Service Security Engineer - 애플리케이션 보안",
+      "site": "wanted",
+      "verdict": "경력 6년 이상, 서울 서초구. 공고 머리말은 **현대자동차에서 개발되는 모든 Web, API, Mobile App 서비스**의 보안 아키텍처 수립·보안 요구사항 도출·**위협 모델링**·취약점 분석 등 개발 보안을 총괄하고, IT 보안성 검토 프로세스를 기획·운영한다고 적는다 — 조직은 기획 단계부터 출시 이후까지 **SDLC 전 과정**에서 보안 분석을 한다. 주요업무는 애플리케이션 보안 아키텍처 검토·가이드, 웹/모바일 앱 취약점 점검·사고 대응, 보안 가이드 작성, **취약점 신고(제보) 건 분석·대응**, **Key/Credential 보안 정책**. 자격은 취약점 점검·보안성 검토 6년, 웹/모바일 점검과 **소스코드 보안 리뷰**, 위험평가 이해, 환경을 고려한 개선방안 가이드. 우대는 대규모 서비스 점검 경험, 해킹대회 수상·버그바운티 포상, SW 개발 경험, 위협 모델링. 같은 통합보안 조직의 사람인 공고(정보보호 전략 55070969·보안점검 55089542)가 사내 정보보호·점검이라면 이 자리는 **서비스(제품) 보안**이다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "취약점 점검·보안성 검토 6년",
+          "웹/모바일 점검·소스코드 보안 리뷰",
+          "환경을 고려한 개선 가이드"
+        ],
+        "can_learn": [
+          "위협 모델링 체계화",
+          "취약점 제보 운영",
+          "시크릿 관리 정책"
+        ]
+      },
+      "study": [
+        {
+          "topic": "위협 모델링 — 설계 단계에서 공격 경로 찾기",
+          "from": "preference",
+          "quote": "• 애플리케이션 위협 모델링 경험을 보유하신 분",
+          "priority": "core",
+          "why": "우대사항이고 머리말이 위협 모델링과 SDLC 전 과정 보안 분석을 적는다.",
+          "gap_check": "데이터 흐름도에 신뢰 경계를 그리고 STRIDE 로 위협을 뽑는 과정을 설명할 수 있는가? 찾은 위협마다 완화·수용·전가를 어떻게 정하고, 설계가 바뀌면 모델은 언제 다시 보는가? 점검(사후)보다 위협 모델링(사전)이 싸게 먹히는 결함은 어떤 종류인가?",
+          "drill": "OWASP 위협 모델링 치트시트를 읽고, 가상의 차량 원격제어 앱(모바일 앱–API 게이트웨이–텔레매틱스 서버–차량) 데이터 흐름도를 그려 STRIDE 위협 목록과 완화책, 남는 위험을 표로 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Threat Modeling — OWASP Cheat Sheet Series",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모바일 앱 점검 — MASVS 기준으로",
+          "from": "task",
+          "quote": "• 웹/모바일 앱 취약점 점검, 분석 및 사고 대응",
+          "priority": "high",
+          "why": "주요업무이고 자격요건이 웹/모바일 앱 점검 역량을 요구한다.",
+          "gap_check": "모바일 앱에서 저장소(키체인·키스토어), 네트워크(인증서 고정), 인증, 코드 변조·리버싱 방어는 각각 무엇을 확인하는가? 앱에 하드코딩된 API 키는 왜 결국 새고, 서버 쪽에서 무엇으로 보완하는가?",
+          "drill": "OWASP MASVS 의 통제 그룹을 읽고, 공개된 취약 연습 앱(OWASP 제공 등)을 정적·동적으로 점검해 그룹별 발견 사항과 재현 절차·개선안을 보고서 형식으로 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWASP MASVS",
+              "url": "https://mas.owasp.org/MASVS/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Key/Credential 정책 — 시크릿을 코드 밖으로",
+          "from": "task",
+          "quote": "• Key/Credential 보안 정책 수립 및 보호",
+          "priority": "high",
+          "why": "주요업무다. 수많은 서비스·앱이 쓰는 키와 자격 증명의 정책을 세우고 보호한다.",
+          "gap_check": "시크릿을 코드·설정 파일·환경 변수·전용 금고에 둘 때 각각의 유출 경로는? 자동 회전과 짧은 수명 자격 증명은 무엇을 막고, 저장소 커밋 이력에 이미 들어간 키는 어떻게 처리하는가(삭제가 아니라 폐기·교체)?",
+          "drill": "OWASP 시크릿 관리 치트시트를 읽고, 샘플 저장소에 시크릿 스캐너를 CI 에 걸어 일부러 넣은 키를 잡아내게 한다. 발견 시 폐기→재발급→영향 조사 절차를 런북 한 장으로 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Secrets Management — OWASP Cheat Sheet Series",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "취약점 제보 받고 등급 매기기",
+          "from": "task",
+          "quote": "• 애플리케이션 관련 취약점 신고(제보) 건 분석 및 대응",
+          "priority": "nice",
+          "why": "주요업무이고 우대사항에 버그바운티 포상 경험이 있다.",
+          "gap_check": "외부 제보를 받는 창구·응답 기한·공개 정책은 어떻게 정하고, 제보된 취약점의 심각도를 CVSS 로 매길 때 공격 벡터·필요 권한·영향 범위는 어떻게 판단하는가? 점수와 실제 비즈니스 위험이 다를 때는 무엇을 우선하는가?",
+          "drill": "OWASP 취약점 공개 치트시트와 CVSS v4.0 명세를 읽고, 가상의 제보 3건(IDOR·저장형 XSS·키 노출)에 점수를 매겨 우선순위와 제보자 답신 초안을 작성한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Vulnerability Disclosure — OWASP Cheat Sheet Series",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Vulnerability_Disclosure_Cheat_Sheet.html",
+              "kind": "docs"
+            },
+            {
+              "title": "CVSS v4.0 Specification Document — FIRST",
+              "url": "https://www.first.org/cvss/v4.0/specification-document",
               "kind": "docs"
             }
           ]
