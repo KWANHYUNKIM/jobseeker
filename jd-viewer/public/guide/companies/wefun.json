@@ -605,6 +605,28 @@
           ]
         },
         {
+          "topic": "관리자·고객사 API 설계 — 페이지·오류 응답",
+          "from": "qualification",
+          "quote": "RESTful API 설계 및 개",
+          "priority": "high",
+          "why": "자격요건 조각에 있다(OCR 로 줄 끝이 잘렸다). OCR 된 업무 설명이 'RESTful API 및 GraphQL 설계 및 개발하여 프론트엔드와 원활한 데이터 통신' 을 적는다.",
+          "gap_check": "고객사 주문 목록 API 에서 offset 페이지와 커서 페이지는 주문이 계속 쌓이는 중에 무엇이 달라지고(건너뜀·중복), 검증 실패·권한 없음·없는 주문을 프론트엔드가 한 가지 방식으로 처리하게 하려면 오류 본문을 어떤 형식(RFC 9457 Problem Details)으로 맞추는가?",
+          "drill": "주문 목록 API 를 offset·커서 두 방식으로 만들고, 조회 도중 새 주문을 끼워 넣어 두 방식의 결과 차이를 확인한다. 400·403·404 오류를 Problem Details 형식으로 통일하는 전역 예외 처리기를 붙인다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Web API Design Best Practices — Azure Architecture Center",
+              "url": "https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 9457: Problem Details for HTTP APIs",
+              "url": "https://www.rfc-editor.org/rfc/rfc9457",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
           "topic": "Linux 기본 명령으로 운영 서버 들여다보기",
           "from": "qualification",
           "quote": "기본적인 Linux/Unix 명",
