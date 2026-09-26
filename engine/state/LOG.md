@@ -1152,3 +1152,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 tigerdata 재방문
 
 - 09-07 이후 가이드 1편. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 tigris 재방문 → 정정
+
+- 09-22 "We used a database as a message queue. Now we use Kafka." — 이벤트·스캔 작업을 Kafka 로 옮기고 복제만 FDB 큐에 남겼다. `fdb-metadata` 결정 5→7, "한 트랜잭션" 불변식을 복제로 좁히고 open_questions 에 어긋남을 남겼다. FDB tech 의 limits 는 재구성 추정을 원문으로 교체.
