@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **155건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **156건**.
+직전 회차: ✅ `Staff Back-end Engineer`(7892762) → dup 7953042 — 하이데라바드, 요건 동일, 연차 8년 vs 12년·출근 주3일 vs 주2일만 다름.
 직전 회차: ✅ `Staff, Back-end engineer`(7919191) → dup 7965062 — 본문 동일, 직급·요청번호·급여만 다름($164K~$282K vs $174K~$299K). salary.note 에 한 쌍으로 기록.
 직전 회차: ✅ `Sr. Staff Observability Software Engineer`(8107448) 3항목 — **마운틴뷰/시애틀**, 관측성 플랫폼(OTel·SLO 알림·장애 분석). 급여 '$174,00' 오타가 7342961 과 같음.
 직전 회차: ✅ `Sr. Staff Front-end Engineer (Global Operations Technology)`(5868936) 3항목 — 한국, 라스트마일 Admin·WebView. 세 칸엔 우대 3줄뿐이라 quote 는 그 줄에서, 맥락은 full_jd 에서 읽음.

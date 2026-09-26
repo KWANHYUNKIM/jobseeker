@@ -16096,6 +16096,13 @@
       "site": "ats",
       "verdict": "⚠️ 같은 본문의 다른 직급 게시다 — 시애틀 근무, 자격·우대 문장이 `Sr. Staff Backend Software Engineer`(gh 7965062)와 글자 그대로 같고, 다른 것은 제목 직급(Staff vs Sr. Staff)·채용 요청 번호(R0073055 vs R0074201)·'Basic'/'Minimum Qualifications' 머리말·급여 범위뿐이다. 이 게시의 급여는 기본급 $164,000~$282,000(Sr. Staff 쪽은 $174,000~$299,000). 학습 브리핑은 그쪽을 본다. 같은 팀의 두 직급 자리인지는 공고로 알 수 없다.",
       "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=7965062"
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7892762",
+      "title": "Staff Back-end Engineer",
+      "site": "ats",
+      "verdict": "⚠️ 같은 요건의 다른 직급 게시다 — 하이데라바드 근무, 자격요건 7줄이 `Senior Staff Backend Engineer`(gh 7953042)와 같고 두 줄이 다르다: 연차(이쪽 'Minimum 8 years', 그쪽 'Minimum 12 years')와 하이브리드 출근 일수(이쪽 주 3일 이상 출근, 그쪽 주 2일 이상 출근). 제목 직급도 Staff 로 한 단계 낮다. 학습 브리핑은 그쪽을 본다. 같은 팀의 두 직급 자리인지는 공고로 알 수 없다.",
+      "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=7953042"
     }
   ],
   "open_questions": [
