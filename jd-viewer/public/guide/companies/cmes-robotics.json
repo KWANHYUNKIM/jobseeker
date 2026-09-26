@@ -219,5 +219,104 @@
     "Physical AI 모델이 실제 제품·현장에 들어갔는지는 공고로 알 수 없다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/384049",
+      "title": "Physical AI 엔지니어",
+      "site": "wanted",
+      "verdict": "신입~경력 10년, 서울 강남구, **석사 이상**(경력 무관, 신입 가능). 공고 머리말은 물류·제조 자동화를 목표로 **싱글암·양팔로봇**에 적용할 Physical AI 모델과 로봇 액션 정책을 연구·개발하고, **연구실 데모에 머무르지 않고** 실제 물류센터·제조공정에서 로봇이 인식·판단·집고·옮기고·배치하게 만든다고 적는다. 주요업무는 물류·제조 특화 Robot Action Policy·Robot Foundation Model·World Model 설계·학습, 시연 데이터 수집·정제·라벨링과 **멀티모달 데이터셋·학습 파이프라인**, **VLA·Imitation Learning·Behavior Cloning·Diffusion Policy** 행동 모델, **Inference 모듈과 Perception·Planning·Control 연동**, 시뮬레이션·실로봇 평가와 실패 케이스 분석·**Sim-to-Real**, RGB-D·멀티뷰·로봇/엔드이펙터 상태 기반 학습. 자격은 Python·PyTorch/JAX, IL·RL·Diffusion Policy·Transformer 중 하나 이상, 로봇 조작·러닝·멀티모달·시뮬레이션 중 하나 이상. 우대는 VLA·파운데이션 모델, 대규모 시연 데이터셋, **피스피킹·패킹·팔레타이징/디팔레타이징** 태스크, Isaac Sim/Lab·MuJoCo·Gazebo, Domain Randomization·System ID, RGB-D·Pose·Grasp Planning, AMR/AGV 연계. 회사의 기존 물류 솔루션(디팔레타이징·피스 피킹)과 직접 이어지는 자리다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "석사 이상",
+          "Python·PyTorch/JAX",
+          "IL·RL·Diffusion Policy·Transformer 중 하나"
+        ],
+        "can_learn": [
+          "VLA 미세조정",
+          "Isaac Lab Sim-to-Real",
+          "물류 피킹 태스크"
+        ]
+      },
+      "study": [
+        {
+          "topic": "VLA — 공개 모델을 물류 태스크에 미세조정",
+          "from": "task",
+          "quote": "• VLA, Imitation Learning, Behavior Cloning, Diffusion Policy 기반 싱글암/양팔로봇 행동 모델 설계·학습",
+          "priority": "core",
+          "why": "주요업무이고 우대사항 첫 줄이 VLA·Robot Foundation Model 이다.",
+          "gap_check": "OpenVLA 처럼 action 을 토큰으로 내는 방식과 π0 처럼 flow matching 으로 연속 action chunk 를 내는 방식은 정밀 조작·추론 속도에서 무엇이 다른가? 물류 피킹처럼 좁은 태스크에 미세조정할 때 시연 몇 건·어떤 다양성이 필요하고, 사전학습 일반화를 잃지 않으려면 무엇을 섞는가?",
+          "drill": "OpenVLA 와 π0 논문의 모델 구조·학습 데이터 절을 표로 비교한 뒤, 공개 체크포인트 하나를 시뮬레이터 집기 과제 시연 50건으로 LoRA 미세조정해 미세조정 전후 성공률과 추론 지연을 측정한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "OpenVLA: An Open-Source Vision-Language-Action Model",
+              "url": "https://arxiv.org/abs/2406.09246",
+              "kind": "docs"
+            },
+            {
+              "title": "π0: A Vision-Language-Action Flow Model for General Robot Control",
+              "url": "https://arxiv.org/abs/2410.24164",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "시뮬레이션 → 실로봇 — Domain Randomization",
+          "from": "preference",
+          "quote": "• Domain Randomization, System Identification, Sim-to-Real 개선 경험이 있으신 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무에 시뮬레이션·실로봇 평가와 Sim-to-Real 개선이 있다.",
+          "gap_check": "시뮬레이터와 실제의 차이(조명·질감·깊이 잡음·마찰·질량)를 무작위화로 메우는 원리와, 무작위화 범위를 너무 넓히면 무엇을 잃는가? System Identification 으로 실제 파라미터를 맞추는 방법과는 언제 함께 쓰는가? 실로봇 실패 케이스를 시뮬레이터로 되돌려 재현하려면 무엇을 기록해야 하는가?",
+          "drill": "Domain Randomization 논문을 읽고, Isaac Lab 에서 상자 집기 환경의 조명·질감·상자 크기·카메라 위치를 무작위화해 정책을 학습한 뒤, 무작위화를 끈 환경·범위를 바꾼 환경에서 성공률을 교차 평가한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World",
+              "url": "https://arxiv.org/abs/1703.06907",
+              "kind": "docs"
+            },
+            {
+              "title": "Isaac Lab Documentation",
+              "url": "https://isaac-sim.github.io/IsaacLab/main/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티모달 시연 데이터셋과 학습 파이프라인",
+          "from": "task",
+          "quote": "• 시연/실험 데이터 수집, 정제, 라벨링, 멀티모달 데이터셋 구성 및 학습 파이프라인 플랫폼 개발",
+          "priority": "high",
+          "why": "주요업무이고 우대사항에 대규모 로봇 시연 데이터셋 구축·정제·학습 파이프라인이 있다.",
+          "gap_check": "RGB-D·멀티뷰 영상·관절 상태·그리퍼 상태를 서로 다른 주기로 기록할 때 시간 동기화는 어떻게 하고, 실패·주저한 시연은 어떤 기준으로 거르는가? 데이터셋 버전과 학습 결과를 어떻게 묶어 재현 가능하게 하는가?",
+          "drill": "LeRobot 데이터셋 형식을 참고해 가짜 시연 20건(영상 2뷰·관절·그리퍼, 주기 다름)을 한 에피소드 형식으로 정렬·저장하고, 품질 필터(길이·정지 구간·실패 플래그)와 데이터셋 버전 태그가 붙은 학습 스크립트를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "huggingface/lerobot",
+              "url": "https://github.com/huggingface/lerobot",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "확산 정책으로 피킹 행동 학습",
+          "from": "qualification",
+          "quote": "• Imitation Learning, Reinforcement Learning, Diffusion Policy, Transformer 기반 시퀀스 모델 중 하나 이상의 이해 또는 구현 경험이 있는 분",
+          "priority": "high",
+          "why": "자격요건에 이름이 나오고 주요업무의 행동 모델 목록에 있다.",
+          "gap_check": "같은 물체를 여러 방식으로 집을 수 있을 때(다봉 분포) BC 의 평균 회귀가 왜 실패하고 확산 정책은 어떻게 피하는가? 추론 단계 수를 줄이면 속도와 정확도가 어떻게 바뀌는가?",
+          "drill": "Diffusion Policy 논문을 읽고 LeRobot 의 확산 정책 구현으로 시뮬레이터 밀기/집기 과제를 학습한 뒤, 같은 데이터의 BC(MLP) 와 성공률을 비교하고 디노이징 단계 수별 지연을 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",
+              "url": "https://arxiv.org/abs/2303.04137",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
