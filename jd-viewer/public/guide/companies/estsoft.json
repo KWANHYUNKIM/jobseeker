@@ -1,0 +1,192 @@
+{
+  "slug": "estsoft",
+  "name": "이스트소프트",
+  "name_en": "ESTsoft",
+  "aliases": [
+    "이스트소프트"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "estsoft.ai",
+  "one_liner": "알툴즈·알약으로 알려진 SW 회사가 AI 아바타·대화형 AI·AI 더빙(Perso)·AI 검색(Alan)으로 옮겨 가는 중 — 모집중 공고 다수는 보안 자회사 이스트시큐리티 자리다",
+  "company": {
+    "business": "공고 머리말은 이스트소프트를 30년간 국민 유틸리티 '알툴즈' 와 국내 1위 백신 '알약' 을 서비스해 온 SW 기업으로, 지금은 '실용주의 인공지능' 을 지향하며 AI 서비스 기업으로 성장하려 한다고 소개한다. 회사 사이트는 AI 아바타·대화형 AI·AI 검색·AI 더빙을 내세우고, Perso Interactive(대화형 인터페이스·SDK·키오스크 AI Station), Perso Dubbing·AI Lip Sync, AI Avatar·STUDIO PERSO, Alan(한국어 AI)·Alan Slide 를 사업 영역으로 나열한다. AI 사업개발 공고는 기업·정부·지자체·공공·교육기관 대상 AX 사업을 기획·수주·수행하는 조직을 적는다. **모집중 원티드 6건 중 5건은 '[ESTsecurity]' 표기**로, 공고가 이스트시큐리티를 이스트소프트에서 분사한 보안 전문 기업이자 국내 사용자수 1위 백신 '알약' 서비스 회사로, 1,600만 명 이상 글로벌 사용자를 보호하며 IPO 를 앞두고 있다고 적는다. 매출·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "이스트소프트(ESTsoft) | 실용주의 인공지능·AI 아바타 전문 기업",
+        "url": "https://estsoft.ai/",
+        "publisher": "이스트소프트",
+        "summary": "메타 설명이 'AI 아바타, 대화형 AI, AI 검색 및 더빙 기술' 로 실용적 AI 서비스를 제공한다고 적는다. 사업 영역으로 Perso Interactive & SDK(대화형 인터페이스), Perso Interactive AI Station(키오스크), Perso Dubbing(AI 더빙), Perso AI Lip Sync, AI Avatar, STUDIO PERSO(AI 아바타 영상제작), Alan(한국어 AI), Alan Slide 를 나열한다. '20개 이상의 프로젝트를 성공적으로 수행' 이라고 적는다"
+      },
+      {
+        "title": "[ESTsoft] AI 사업개발 매니저 5년 이상",
+        "url": "https://www.wanted.co.kr/wd/374896",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[ESTsecurity] 시스템 엔지니어 10년 이상",
+        "url": "https://www.wanted.co.kr/wd/353123",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "알약 보호 사용자(회사 주장, 이스트시큐리티)",
+        "value": "1,600만 명 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[ESTsecurity] 시스템 엔지니어 10년 이상",
+            "url": "https://www.wanted.co.kr/wd/353123",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "보안 제품(알약·기업용 보안 솔루션)",
+        "how": "이스트시큐리티 공고들이 알약 공개용/기업용 제품, 시큐어디스크·인터넷디스크·ECM 솔루션 기술지원·프로젝트를 적고 정부·교육·일반 기업 고객에게 보안 솔루션을 제공한다고 적는다. 과금·매출 비중은 읽지 않았다.",
+        "domains": [
+          "보안 제품 개발(알약)",
+          "보안 솔루션 구축·기술지원"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[ESTsecurity] Windows C++ 어플리케이션 개발자",
+            "url": "https://www.wanted.co.kr/wd/356357",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[ESTsecurity] 보안 솔루션 S/W PM 및 기술지원 5년 이상",
+            "url": "https://www.wanted.co.kr/wd/374871",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 서비스·AX 사업(Perso·Alan)",
+        "how": "회사 사이트가 Perso Dubbing·AI Avatar·STUDIO PERSO·Alan 등을 사업 영역으로 두고, AI 사업개발 공고가 공공·기업·교육 AI 프로젝트의 수주 전략·제안·수행을 적는다. 서비스별 과금은 읽지 않았다.",
+        "domains": [
+          "AI 서비스·AX 사업"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "이스트소프트(ESTsoft) | 실용주의 인공지능·AI 아바타 전문 기업",
+            "url": "https://estsoft.ai/",
+            "publisher": "이스트소프트",
+            "summary": "메타 설명이 'AI 아바타, 대화형 AI, AI 검색 및 더빙 기술' 로 실용적 AI 서비스를 제공한다고 적는다. 사업 영역으로 Perso Interactive & SDK(대화형 인터페이스), Perso Interactive AI Station(키오스크), Perso Dubbing(AI 더빙), Perso AI Lip Sync, AI Avatar, STUDIO PERSO(AI 아바타 영상제작), Alan(한국어 AI), Alan Slide 를 나열한다. '20개 이상의 프로젝트를 성공적으로 수행' 이라고 적는다"
+          },
+          {
+            "title": "[ESTsoft] AI 사업개발 매니저 5년 이상",
+            "url": "https://www.wanted.co.kr/wd/374896",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "보안 제품 개발(알약)",
+        "why": "Windows C++ 공고가 윈도우용 알약 공개용/기업용 제품, 알약 내PC지키미, 제품군을 관리하는 통합 에이전트 개발을 적는다.",
+        "what_to_know": [
+          "Windows C++",
+          "보안 에이전트",
+          "클라이언트 배포"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[ESTsecurity] Windows C++ 어플리케이션 개발자",
+            "url": "https://www.wanted.co.kr/wd/356357",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "보안 솔루션 구축·기술지원",
+        "why": "PM·기술지원 공고가 시큐어디스크·인터넷디스크·ECM 솔루션 기술지원·교육·프로젝트 수행을, 정보보안 기술 담당자 공고가 IPS·WAF·망연계·DB접근제어·MDM 운영과 ISMS 대응을 적는다.",
+        "what_to_know": [
+          "문서 보안·ECM",
+          "보안 장비 운영",
+          "ISMS"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[ESTsecurity] 보안 솔루션 S/W PM 및 기술지원 5년 이상",
+            "url": "https://www.wanted.co.kr/wd/374871",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[ESTsecurity] 정보보안 기술 담당자 5년 이상",
+            "url": "https://www.wanted.co.kr/wd/376849",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "그룹 IT 인프라",
+        "why": "시스템 엔지니어 공고가 이스트그룹사 서비스의 퍼블릭 클라우드·온프레미스 인프라, Linux, Kubernetes·Docker, Jenkins·Argo CI/CD, 로그·메트릭 데이터레이크를 적는다. 매출 제품을 떠받치는 공통 기반이다.",
+        "what_to_know": [
+          "Linux·K8s 운영",
+          "CI/CD",
+          "데이터레이크 인프라"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[ESTsecurity] 시스템 엔지니어 10년 이상",
+            "url": "https://www.wanted.co.kr/wd/353123",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 서비스·AX 사업",
+        "why": "AI 사업개발 공고가 AX 및 AI 사업의 기회 발굴부터 제안·수주·수행·고도화, 컨소시엄 구성과 제안서를 적는다.",
+        "what_to_know": [
+          "공공 AI 사업 수주",
+          "제안서",
+          "프로젝트 관리"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[ESTsoft] AI 사업개발 매니저 5년 이상",
+            "url": "https://www.wanted.co.kr/wd/374896",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "보안 자회사가 IPO 를 앞두고 인력을 뽑는다",
+        "evidence": "IPO를 앞두고 있는 이스트시큐리티에서 함께 성장할 인재를 모집합니다.",
+        "so_what": "원티드 모집중 6건 중 5건이 이스트시큐리티 자리다. 지원 전 실제 소속 법인(이스트소프트/이스트시큐리티)을 확인할 만하다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "본사는 AI 서비스·AX 사업으로 옮겨 간다",
+        "evidence": "AX(AI Transformation) 및 AI 사업의 기회 발굴부터 제안, 수주, 수행, 고도화까지 전 주기를 리드합니다",
+        "so_what": "회사 사이트 전면이 AI 아바타·더빙·검색이고, 이스트소프트 본사 공고는 AI 사업개발과 글로벌 AI 더빙 인턴이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수, 이스트시큐리티 IPO 일정은 읽지 않았다",
+    "[ESTsecurity] 공고의 고용 주체(이스트소프트/이스트시큐리티)가 공고에 명시돼 있지 않다",
+    "원티드 Windows C++ 두 건(1-5년·5-10년)은 연차만 다른 같은 팀 공고로 보인다 — 본문 비교 필요",
+    "캐치 '글로벌 사업 및 AX 전략 인턴(글로벌 AI 더빙)' 은 본문 칸이 비어 있다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
