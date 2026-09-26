@@ -7,7 +7,7 @@
     "위즈코어㈜",
     "WIZCORE"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "wizcore.co.kr",
   "one_liner": "스마트팩토리 통합 플랫폼 NEXPOM 과 AI-CAD 로 '설계부터 제조까지' 데이터를 잇는 스마트제조 기업 — 글로벌 IT 인프라(Pure Storage·Nutanix 등) 유통도 한다",
@@ -585,6 +585,103 @@
               "kind": "docs"
             }
           ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54933354&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=806ca5b7-ecc1-4d26-9464-734f560203d6",
+      "title": "풀스택 개발자 경력직 채용 (3년 이상)",
+      "site": "saramin",
+      "verdict": "경력 3~12년, 서울 금천구(가산 본사), 연구소 부서 팀원, 2명 모집, 마감 2026-11-02. 같은 회사의 성수 AI Factory 공고들(데이터·ML·임베디드·PLC)과 달리 **웹 풀스택**이다 — React·Next.js·Node.js 웹 개발과 AWS·NCP 배포·운영, Docker 컨테이너화와 배포 환경 구성, **내부 AI 에이전트·자동화 파이프라인**, **CAD·그래픽 관련 웹 솔루션·플랫폼**, 매뉴얼 문서화, 기술 커뮤니케이션. 사용 기술은 React·Next.js·Node.js·TypeScript·MySQL·Docker·AWS/NCP·Git·CI/CD·REST API·Python·AI. 자격요건에 '기획 > 디자인 > 개발 자동화 파이프라인으로 상용 프로젝트를 수행' 한 경험과 병렬 프로젝트 수행이 있다. 우대가 이 자리의 색깔을 보여 준다 — **WebAssembly·WebGL·대용량 파일 처리·파일 변환·CAD 2D/3D 그래픽**, 도면·문서 뷰어나 제조·PLM, 인증·권한·라이선스·결제 공통 플랫폼, 외부 엔진·SDK 연동. 회사 브리핑의 AI-CAD(이미지 도면 → CAD·BOM)·도면관리 사업과 이어지는 자리로 읽힌다. 잡코리아 49920097 이 같은 공고다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "React·Next.js·Node.js 상용 개발",
+          "Docker·클라우드 배포",
+          "TypeScript·MySQL·REST API"
+        ],
+        "can_learn": [
+          "WebAssembly·WebGL",
+          "대용량 CAD 파일 변환·뷰어",
+          "AI 에이전트 파이프라인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "브라우저에서 CAD 도면 보여 주기 — WebGL 과 WebAssembly",
+          "from": "preference",
+          "quote": "• WebAssembly, WebGL, 대용량 파일 처리, 파일 변환 등 브라우저 기반 고성능 처리 경험이 있으신 분",
+          "priority": "core",
+          "why": "우대사항에 두 번 나오고 주요업무에 'CAD·그래픽 관련 웹 솔루션 및 플랫폼 개발' 이 있다.",
+          "gap_check": "수십만 개 선분이 있는 도면을 Canvas 2D 로 그릴 때와 WebGL 로 그릴 때 무엇이 병목이 되고, 드로 콜을 줄이려면 지오메트리를 어떻게 묶는가? C++ 로 된 CAD 파서를 WebAssembly 로 옮기면 무엇이 빨라지고, JS↔Wasm 사이 메모리 복사는 어떻게 줄이는가?",
+          "drill": "MDN WebGL·three.js 문서로 선분 10만 개를 BufferGeometry 한 개로 묶어 그리고 줌·팬 성능을 선분마다 객체를 만든 경우와 비교한다. MDN WebAssembly 문서대로 작은 C 파서(좌표 텍스트 → Float32Array)를 Wasm 으로 빌드해 같은 파싱을 JS 구현과 시간 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "WebGL API — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API",
+              "kind": "docs"
+            },
+            {
+              "title": "WebAssembly — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/WebAssembly",
+              "kind": "docs"
+            },
+            {
+              "title": "three.js docs",
+              "url": "https://threejs.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대용량 파일 업로드·변환을 막히지 않게",
+          "from": "preference",
+          "quote": "• WebAssembly, WebGL, 대용량 파일 처리, 파일 변환 등 브라우저 기반 고성능 처리 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이다. 도면·CAD 파일은 크고 변환(이미지 → CAD·BOM, 포맷 변환)이 오래 걸린다.",
+          "gap_check": "수백 MB 파일을 올릴 때 한 번에 올리면 무엇이 문제이고(타임아웃·재시도), 청크·재개 가능 업로드나 스토리지 직접 업로드(사전 서명 URL)는 어떻게 동작하는가? 변환이 몇 분 걸리면 요청-응답이 아니라 작업 큐·상태 조회로 바꾸는 이유는? 브라우저에서 파싱할 때 메인 스레드가 멈추지 않게 하려면?",
+          "drill": "Node.js 로 청크 업로드 API(시작·청크·완료)와 변환 작업 큐(상태: 대기·진행·완료·실패)를 만들고, 프론트에서 Web Worker 로 파일 해시·파싱을 돌려 UI 가 멈추지 않는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Web Workers API — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Next.js 앱을 Docker 로 싸서 클라우드에 배포",
+          "from": "task",
+          "quote": "• Docker를 활용한 웹 애플리케이션 컨테이너화 및 개발·배포 환경 구성",
+          "priority": "high",
+          "why": "주요업무 첫 두 줄이 웹 개발·클라우드 배포 운영과 Docker 컨테이너화다.",
+          "gap_check": "Next.js 앱 이미지를 멀티 스테이지로 빌드하면 최종 이미지에 무엇이 남아야 하고 무엇을 빼는가? 빌드 시점 환경 변수와 실행 시점 환경 변수를 헷갈리면 어떤 사고가 나는가? AWS 와 NCP 두 곳에 같은 이미지를 올릴 때 무엇을 설정으로 분리하는가?",
+          "drill": "Next.js 문서로 작은 앱을 만들고 Docker 멀티 스테이지 빌드 문서를 따라 이미지를 만든 뒤, 단일 스테이지 이미지와 크기를 비교한다. CI 에서 빌드·푸시하고 환경 변수만 바꿔 두 환경에 띄워 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Next.js Docs",
+              "url": "https://nextjs.org/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Multi-stage builds — Docker Docs",
+              "url": "https://docs.docker.com/get-started/docker-concepts/building-images/multi-stage-builds/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인증·권한·라이선스 — B2B 솔루션의 공통 플랫폼",
+          "from": "preference",
+          "quote": "• 인증·권한·라이선스·결제 등 공통 플랫폼 영역을 개발해 보신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 설치형·SaaS CAD 솔루션을 기업에 팔면 사용자 권한과 라이선스 좌석 관리가 따라온다.",
+          "gap_check": "회사(테넌트)·사용자·역할·권한을 어떤 테이블로 나누고, 라이선스 좌석 수를 넘는 동시 사용을 어디서 막는가? 토큰에 권한을 실어 보낼 때와 매 요청 DB 를 볼 때 권한 변경이 반영되는 시점이 어떻게 다른가?",
+          "drill": "MySQL 에 테넌트·사용자·역할·라이선스(좌석 수·만료일) 스키마를 설계하고, Node.js API 에 좌석 초과 로그인 차단과 역할 기반 접근 제어를 붙인 뒤, 권한 회수 직후 요청이 막히는지 테스트한다.",
+          "hours": 6,
+          "resources": []
         }
       ]
     }
