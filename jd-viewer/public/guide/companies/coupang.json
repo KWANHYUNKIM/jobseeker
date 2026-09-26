@@ -9610,6 +9610,130 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163774",
+      "title": "Staff Security Engineer (AI GRC)",
+      "site": "ats",
+      "verdict": "서울 근무, 정보보안·기술 GRC·보안 아키텍처·AI/클라우드 거버넌스 10년 이상. 소프트웨어 개발이 아니라 AI 거버넌스·리스크·컴플라이언스(GRC) 직군이다 — NIST AI RMF·ISO 42001·국내 가이드라인·각국 AI 법을 사내 AI 리스크 프레임워크와 policy-as-code 규칙으로 옮기고, 프롬프트 인젝션·학습 데이터 유출·섀도 AI 같은 위험의 완화 기준을 세우는 사람. 영어 문서·소통이 필수다.",
+      "fit": {
+        "must_have": [
+          "정보보안·기술 GRC·보안 아키텍처·AI/클라우드 거버넌스 10년 이상",
+          "AI/ML 보안 위험 + AWS 클라우드 보안 + 개인정보 보호 이해",
+          "아키텍처 다이어그램·데이터 흐름을 읽고 정책을 기술 명세로 옮기는 능력",
+          "NIST AI RMF·ISO 42001·NIST CSF·PIPA 프레임워크 설계 경험",
+          "영어 문서·소통"
+        ],
+        "can_learn": [
+          "사내 AI 플랫폼 구성",
+          "Control Assurance 팀의 검증 방식"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AI 리스크 프레임워크 (NIST AI RMF·ISO 42001) 매핑",
+          "from": "task",
+          "quote": "Framework Architecture & Policy-as-Code Strategy: Design and maintain Coupang’s AI Security & Risk Management Framework (mapped to NIST AI RMF, ISO 42001, MSIT guidelines, and global AI Acts). Architect policy-as-code rule sets and security baseline specifications for deployment across AI pipelines.",
+          "priority": "core",
+          "why": "주요업무 첫 항목이 NIST AI RMF·ISO 42001·과기정통부(MSIT) 가이드라인·해외 AI 법에 매핑된 사내 프레임워크 설계다.",
+          "gap_check": "NIST AI RMF 의 Govern·Map·Measure·Manage 네 기능 중 사내 LLM 도입 승인 절차는 어디에 해당하고, ISO 42001 의 어떤 요구와 겹치는가?",
+          "drill": "가상의 사내 LLM 챗봇 도입 건을 NIST AI RMF 네 기능별 통제 항목 표로 정리하고, 각 통제를 ISO 42001 조항과 매핑한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NIST AI Risk Management Framework",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "정책을 policy-as-code 로 옮기기",
+          "from": "preference",
+          "quote": "Experience defining policy-as-code specifications, continuous control monitoring logic, or automated compliance guardrails in cloud environments.",
+          "priority": "core",
+          "why": "주요업무에 '규제 요구를 policy-as-code 명세로 번역'과 '보안 기준선 명세'가 있다. 문서 정책을 자동 검사 가능한 규칙으로 바꾸는 일이다.",
+          "gap_check": "'개인정보가 담긴 데이터는 해외 리전 AI 모델로 보내지 않는다'는 정책을 클라우드 설정·코드 수준에서 어떻게 자동 검사하는가?",
+          "drill": "OPA(Rego)로 '승인되지 않은 외부 LLM 엔드포인트 호출 금지'·'개인정보 태그 데이터의 해외 리전 전송 금지' 규칙을 쓰고, 가짜 배포 설정 JSON 에 대해 통과/실패 테스트를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Open Policy Agent — Documentation",
+              "url": "https://www.openpolicyagent.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 고유 위협과 완화 기준",
+          "from": "task",
+          "quote": "AI Risk Evaluation & Safeguards: Identify, assess, and set mitigation standards for AI-specific threat vectors (e.g., prompt injection, training data leakage, model extraction, shadow AI, and supply chain vulnerabilities) across internal and third-party AI SaaS/LLM deployments.",
+          "priority": "core",
+          "why": "프롬프트 인젝션·학습 데이터 유출·모델 추출·섀도 AI·공급망 취약점이 주요업무에 직접 나열돼 있다.",
+          "gap_check": "사내 RAG 챗봇에서 간접 프롬프트 인젝션(문서 안에 숨긴 지시)이 권한 밖 데이터 유출로 이어지는 경로와, 설계로 막는 방법을 설명할 수 있는가?",
+          "drill": "작은 RAG 앱에 악성 지시가 숨은 문서를 넣어 인젝션을 재현하고, 도구 권한 최소화·출력 필터·문서 출처 표시 세 가지 완화책의 효과를 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWASP Top 10 for LLM Applications",
+              "url": "https://genai.owasp.org/llm-top-10/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "아키텍처·데이터 흐름을 읽고 통제 기준으로 옮기기",
+          "from": "task",
+          "quote": "Strong technical literacy to evaluate system architecture diagrams, interpret API/data flow models, and translate policy requirements into technical specifications for engineering and assurance teams.",
+          "priority": "core",
+          "why": "Control Assurance 팀이 실행할 기술 통제 기준과 검증 로직을 정의하는 것이 주요업무다(Assurance Partnering).",
+          "gap_check": "LLM 연동 아키텍처 다이어그램 한 장에서 데이터가 신뢰 경계를 넘는 지점을 찾고, 각 지점에 검증 가능한 통제 기준을 붙일 수 있는가?",
+          "drill": "사내 문서 검색 RAG 아키텍처를 그려 신뢰 경계·데이터 분류를 표시하고, 경계마다 '통제 → 검증 방법 → 증적' 세 줄을 쓴다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "국내 개인정보 보호(PIPA)와 국외 이전",
+          "from": "task",
+          "quote": "Enterprise AI Policy Ownership: Own the enterprise AI policy lifecycle, establishing clear decision frameworks for AI model adoption, data privacy guardrails, and cross-border data transfer requirements.",
+          "priority": "high",
+          "why": "AI 모델 도입 의사결정 틀, 개인정보 가드레일, 국경 간 데이터 이전 요건을 정책 수명주기로 소유한다고 적혀 있다.",
+          "gap_check": "해외 SaaS AI 에 고객 문의 내용을 보내려 할 때 개인정보 보호법상 무엇을 확인해야 하고, 가명처리로 무엇이 달라지는가?",
+          "drill": "'외부 AI SaaS 도입 검토 체크리스트'를 개인정보 처리 위탁·국외 이전·가명처리 항목으로 한 장 만든다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 개인정보 보호법",
+              "url": "https://www.law.go.kr/법령/개인정보보호법",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "policy-as-code 로 만든 AI 가드레일 예제 저장소",
+          "why": "GRC 경력자 중 정책을 실제 코드·테스트로 만든 사람은 드물다. 우대 첫 줄과 바로 맞는다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "NIST AI RMF·ISO 42001 적용 경험",
+          "정책을 자동 검사 규칙으로 옮긴 사례",
+          "프롬프트 인젝션 완화 설계",
+          "아키텍처 리뷰로 통제 기준 도출",
+          "국외 이전 판단"
+        ],
+        "sources": [
+          {
+            "title": "Staff Security Engineer (AI GRC)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163774",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
