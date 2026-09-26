@@ -13930,6 +13930,86 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7953042",
+      "title": "Senior Staff Backend Engineer",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 하이데라바드 근무다. 공고가 얇다 — 주요업무·우대 칸이 비어 있고 자격요건 7줄뿐이라 어느 팀·어느 시스템인지 알 수 없다. 자격요건: 학사·석사, Java·Python 설계·개발 12년 이상, 고가용성 대규모 시스템 설계·구축·배포, AWS, 컨테이너 기반 테스트 환경 개발, Java/IntelliJ/Spring.",
+      "fit": {
+        "must_have": [
+          "Java·Python 설계·개발 12년 이상",
+          "고가용성·확장 시스템 설계·배포",
+          "대규모 시스템 아키텍처",
+          "AWS",
+          "컨테이너 기반 테스트 환경 개발",
+          "Java/Spring"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "고가용성 대규모 시스템 설계",
+          "from": "qualification",
+          "quote": "Hands-on experience with designing, building, and deploying scalable, high available systems.",
+          "priority": "core",
+          "why": "고가용성·확장 시스템의 설계·구축·배포 실무와 대규모 아키텍처 설계 경험, AWS 가 자격요건이다.",
+          "gap_check": "한 가용 영역이 통째로 내려갔을 때도 서비스가 살아 있으려면 상태 저장 계층(DB·캐시·큐)을 AWS 에서 어떻게 배치하고, 장애 전환을 어떻게 시험하는가?",
+          "drill": "AWS Well-Architected 신뢰성 기둥의 질문으로 가상 주문 서비스 아키텍처를 점검해 단일 장애점 목록과 다중 AZ 배치안을 그린다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "AWS Well-Architected — Reliability Pillar",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "컨테이너 기반 테스트 환경 — Testcontainers",
+          "from": "qualification",
+          "quote": "Experience of developing container-based testing environment.",
+          "priority": "core",
+          "why": "컨테이너 기반 테스트 환경 개발 경험과 Java/Spring 환경이 자격요건이다.",
+          "gap_check": "통합 테스트마다 실제 MySQL·Kafka 를 컨테이너로 띄울 때, 테스트 속도와 격리(테스트 간 데이터 오염)를 어떻게 함께 잡는가?",
+          "drill": "Spring Boot 앱 하나에 Testcontainers 로 MySQL·Kafka 를 붙인 통합 테스트를 쓰고, 컨테이너 재사용과 테스트별 데이터 초기화 방식을 비교해 실행 시간을 잰다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Testcontainers for Java",
+              "url": "https://java.testcontainers.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring Boot Reference — Testcontainers",
+              "url": "https://docs.spring.io/spring-boot/reference/testing/testcontainers.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Testcontainers 통합 테스트 템플릿 저장소",
+          "why": "자격요건 중 가장 구체적인 항목이 컨테이너 기반 테스트 환경이다. Spring Boot + MySQL + Kafka 통합 테스트 템플릿은 그 경험을 바로 보여 준다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "다중 AZ 고가용성 설계",
+          "대규모 아키텍처 경험",
+          "컨테이너 기반 통합 테스트"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff Backend Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7953042",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -13959,6 +14039,7 @@
     "greenhouse 8222455 는 제목이 'Senior QA Engineer (Advertiser Platform)' 인데 본문이 내부 감사 데이터 분석(wd/385087)과 같다 — 크롤 시 제목·본문이 섞였는지, 채용 사이트 자체가 잘못 게시했는지 공고로는 알 수 없다",
     "gh 8158581 제목의 CFS·CLS·CES·DDnayo 가 각각 어느 법인·서비스를 가리키는지 공고에 풀이가 없다.",
     "사람인 '이츠 데이터 분석 어시스턴트'(rec_idx=54939508) 크롤 근무지 칸의 '216 만원' 이 무엇의 금액인지 공고 세 절에 설명이 없다.",
-    "사람인 'CS 전문가 공개채용'(rec_idx=55110254)은 한 공고에 기술 상담·CS 정책 운영관리·본사 대외 민원 자리가 묶여 있고, 크롤 데이터에서 자리별 자격요건이 섞여 어느 요건이 어느 자리의 것인지 가를 수 없다."
+    "사람인 'CS 전문가 공개채용'(rec_idx=55110254)은 한 공고에 기술 상담·CS 정책 운영관리·본사 대외 민원 자리가 묶여 있고, 크롤 데이터에서 자리별 자격요건이 섞여 어느 요건이 어느 자리의 것인지 가를 수 없다.",
+    "gh 7953042 'Senior Staff Backend Engineer'(하이데라바드)는 자격요건 7줄뿐이라 어느 팀·시스템인지 공고로 알 수 없다."
   ]
 }
