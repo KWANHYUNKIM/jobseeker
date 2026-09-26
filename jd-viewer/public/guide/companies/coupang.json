@@ -16996,6 +16996,105 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7835332",
+      "title": "Staff IT Operations Engineer",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 일본 도쿄 근무다. 소프트웨어 개발이 아니라 사내 IT 운영(엔드포인트·업무 환경) 직무다 — IT 운영·엔드포인트 엔지니어링·Modern Workplace 7년 이상, 엔터프라이즈 엔드포인트 관리 플랫폼(정책 설계·기기 수명주기·보안 컴플라이언스) 운영, Microsoft Intune·MDM, AD/Entra ID, SSO·MFA·신원 수명주기, Windows/macOS 환경 관리. 크롤 데이터에는 자격요건 7줄만 있고 주요업무·우대 칸은 비어 있다.",
+      "fit": {
+        "must_have": [
+          "IT 운영·엔드포인트·Modern Workplace 7년 이상",
+          "엔드포인트 관리 플랫폼 운영(정책·수명주기·컴플라이언스)",
+          "엔드포인트 이전·대규모 배포 프로젝트 리딩",
+          "Microsoft Intune·MDM",
+          "AD/Entra ID",
+          "SSO·MFA·신원 수명주기",
+          "Windows/macOS"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "Intune 정책 설계와 기기 수명주기",
+          "from": "qualification",
+          "quote": "Experience owning and administering enterprise endpoint management platforms, including policy design, device lifecycle management, and security compliance.",
+          "priority": "core",
+          "why": "엔터프라이즈 엔드포인트 관리 플랫폼의 정책 설계·기기 수명주기·보안 컴플라이언스 운영과 Intune·MDM 실무가 자격요건이다.",
+          "gap_check": "신규 입사자 노트북이 상자에서 나와 첫 로그인까지 자동으로 회사 설정·앱·보안 정책을 받게 하려면 어떤 단계(등록·구성 프로필·컴플라이언스 정책·앱 배포)가 필요하고, 퇴사 시 기기는 어떻게 회수·초기화하는가?",
+          "drill": "Intune 과 Windows Autopilot 개요를 읽고, 기기 수명주기(구매→등록→구성→컴플라이언스 확인→퇴사 초기화) 단계별 설정·담당·확인 방법을 표로 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Microsoft Learn — What is Microsoft Intune",
+              "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/what-is-intune",
+              "kind": "docs"
+            },
+            {
+              "title": "Microsoft Learn — Windows Autopilot overview",
+              "url": "https://learn.microsoft.com/en-us/autopilot/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "신원 수명주기 — Entra ID·SSO·MFA",
+          "from": "qualification",
+          "quote": "Experience with SSO, MFA, and identity lifecycle management",
+          "priority": "core",
+          "why": "SSO·MFA·신원 수명주기 관리 경험과 AD/Entra ID 환경 지원이 자격요건이다.",
+          "gap_check": "입사·부서 이동·퇴사 때 계정·그룹·앱 권한이 자동으로 따라가게 하려면 무엇을 원천(인사 시스템)으로 삼고, 퇴사자의 SaaS 세션과 기기 접근을 몇 분 안에 끊으려면 무엇이 연결돼 있어야 하는가?",
+          "drill": "Entra ID 개요와 신원 수명주기 관리 문서를 읽고, 입사·이동·퇴사 세 이벤트별로 자동화할 동작(계정 생성·그룹 변경·MFA 등록·세션 폐기·기기 초기화)을 흐름도로 그린다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "Microsoft Learn — What is Microsoft Entra",
+              "url": "https://learn.microsoft.com/en-us/entra/fundamentals/whatis",
+              "kind": "docs"
+            },
+            {
+              "title": "Microsoft Learn — What is identity lifecycle management",
+              "url": "https://learn.microsoft.com/en-us/entra/id-governance/what-is-identity-lifecycle-management",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "엔드포인트 이전·대규모 배포 프로젝트",
+          "from": "qualification",
+          "quote": "Experience leading endpoint migration, modernization, or large-scale deployment projects.",
+          "priority": "high",
+          "why": "엔드포인트 이전·현대화·대규모 배포 프로젝트 리딩 경험이 자격요건이다.",
+          "gap_check": "기존 온프레미스 도메인 가입 PC 수천 대를 클라우드 관리(Intune·Entra 가입)로 옮길 때, 파일럿 그룹·단계·롤백 기준을 어떻게 정하고, 사용자 업무 중단을 무엇으로 재는가?",
+          "drill": "가상 조직(3개 사무실·PC 2,000대)의 엔드포인트 이전 계획서(파일럿·웨이브·성공 지표·롤백·사용자 안내)를 한 장으로 쓴다.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "입사·이동·퇴사 자동화 흐름도",
+          "why": "자격요건의 신원 수명주기·기기 수명주기를 한 장으로 잇는다. 퇴사 시 세션·기기 차단까지 적은 흐름도는 IT 운영 면접에서 바로 쓸 수 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "기기 등록·컴플라이언스",
+          "퇴사자 접근 차단",
+          "도메인→클라우드 이전",
+          "Windows/macOS 혼합 관리",
+          "SSO·MFA 도입"
+        ],
+        "sources": [
+          {
+            "title": "Staff IT Operations Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7835332",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
