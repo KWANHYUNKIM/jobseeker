@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**엔니고모 — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '수천만 장 상품 이미지에서 비슷한 것을 찾는다' 를 이미지 검색 글(`entry/2026/09/07/070000`, scratchpad `eg_image.txt` — '検索対象範囲とコスト' 후반·운용 부분 마저). 그 뒤 매입 보증(`2026/09/24/070000`, `eg_buyback.txt` — 페이즈 2·3 미독). 완주 판정 때 TRAVEL·STYLE HAUS 수익원은 도메인이 없다 — 사이트맵 전 제목으로 두 번. 대기 2/3(SMS·코네히토 — SMS 글은 `cand_27912a.txt`, 코네히토는 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
+**엔니고모 — 확장 1(2026-09-26): 이미지 검색 도메인에 `image-search-scope-vs-cost`(결정 6). 다음은 확장: '산 뒤에 되사 주는 약속을 단계로 나눠 붙인다' 를 매입 보증 글(`entry/2026/09/24/070000`, scratchpad `eg_buyback.txt` — 배송비 상한 이후 · 페이즈 2 스냅숏 3단 · 페이즈 3 신청). 완주 판정 때 TRAVEL·STYLE HAUS 수익원은 도메인이 없다 — 사이트맵 전 제목으로 두 번. 대기 2/3(SMS `cand_27912a.txt` · 코네히토 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
 
 
 
