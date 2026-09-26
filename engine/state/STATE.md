@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**없다 — 79번째 후보 조사(2026-09-26)로 대기 3/3: ANDPAD(건설 SaaS) · 타이미(스폿 근로 매칭) · LayerX(지출 관리 SaaS). 다음은 신규 — 대기 맨 위 ANDPAD 의 프로파일(입구 `tech.andpad.co.jp/sitemap_periodical.xml?year=&month=`, 첫 글 `entry/2026/08/06/100000`).**
+**ANDPAD — 프로파일(2026-09-26). 도메인 셋, 기능 0. 다음은 확장: '서비스 입구와 대피로' 를 `tech.andpad.co.jp/entry/2026/08/06/100000`(다 읽음, scratchpad `ap_vpc.txt`) + 이전 구조 글 `entry/2026/06/26/120000`(안 읽음)로. 그 뒤 표 캡처(`ap_tbl.txt`, 뒷부분 '今後の展望' 마저)·청구서 선지급(PdM 회고라 기술 결정이 얇다 — 결정을 못 채우면 두 번 찾아 hold 후보). 대기 2/3(타이미·LayerX).**
+
 
 
 

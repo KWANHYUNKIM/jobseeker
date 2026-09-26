@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "andpad",
+      "name": "アンドパッド",
+      "name_en": "ANDPAD",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "건설 현장의 시공 관리 SaaS — 입구를 하나로 모은 대가를 대피로로 치르고, 도면의 표는 모델과 UI 가 나눠 읽고, 수발주에 붙은 청구서로 직인의 자금 사정을 푼다",
+      "updated_at": "2026-09-26",
+      "domain": "andpad.jp"
+    },
+    {
       "slug": "picnic",
       "name": "Picnic",
       "name_en": "Picnic",
@@ -2960,7 +2972,10 @@
     "지표 정의를 한곳에 둔다",
     "수요 예측과 발주",
     "토트 속을 보는 비전 검수",
-    "자동화 물류센터 관제"
+    "자동화 물류센터 관제",
+    "서비스 입구와 대피로",
+    "수발주에 붙은 청구서를 먼저 현금으로",
+    "도면의 표를 읽어 옮긴다"
   ],
   "countries": {
     "KR": "한국",

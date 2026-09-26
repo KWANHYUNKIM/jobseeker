@@ -1244,3 +1244,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 일흔아홉 번째 후보 조사
 
 - 3/3 — ANDPAD · 타이미 · LayerX(모두 하테나). Riot 은 최신 기술 글 2025-10-16 그대로라 접은 판정 유지, 물류 후보(Ocado·Flexport·Hacobu·Gopuff·Instacart·Oda) 전부 못 엶.
+
+## 2026-09-26 ANDPAD 회사 프로파일
+
+- 대기 맨 위. andpad.jp(27.9만 사·81.8만 명) + 기술 글 셋(VPC Origins 장애·청구서 선지급 PdM 회고·표 캡처 인터뷰)으로 도메인 셋·수익원 셋, 기능 0. 매출 비공개.
