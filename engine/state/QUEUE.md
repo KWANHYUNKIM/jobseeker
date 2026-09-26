@@ -35,7 +35,7 @@
 | **LayerX** | JP · 법인 지출 관리 SaaS·LLM 솔루션 | 프로파일(2026-09-26). 도메인 셋 — 테넌트 데이터는 하류에서도 잠근다 · LLM 호출을 한 관문에 모은다 · API 스키마를 먼저 쓴다. 기능 3(`rap-reconcile-and-check` · `residency-by-virtual-key` · `typespec-schema-first`). **Fintech·Security 수익원에 도메인이 없어 완주 기준 셋째 미달** — Fintech事業部 카테고리(22편) 확인이 남았다. |
 
 | **머니포워드(Money Forward)** | JP · 핀테크 SaaS | 프로파일(2026-09-26). 도메인 둘 — 비밀번호 없이 들어온다 · PR 마다 기다리는 CI 를 줄인다. 기능 2. **hold** — X 수익원 자료 2회 없음(완주 기준 셋째 미달). |
-| **ログラス(Loglass)** | JP · 경영관리(FP&A) SaaS | 프로파일(2026-09-26). 도메인 둘 — 계층을 엔진이 알게 해 읽지 않는다(OLAP 엔진 실험) · 장애 때 '당시 구조' 를 다시 세운다(이력 데이터 모델). 기능 2(`hierarchy-aware-olap-engine` — 실험 · `incident-history-data-model`). 다음: 완주 검사. 수익원 넷 중 인원 계획·설비투자·IT 투자·AI IR·석세스 파트너는 도메인 없음. 입구 `zenn.dev/p/loglass/feed`. |
+| **ログラス(Loglass)** | JP · 경영관리(FP&A) SaaS | 프로파일(2026-09-26). 도메인 둘 — 계층을 엔진이 알게 해 읽지 않는다(OLAP 엔진 실험) · 장애 때 '당시 구조' 를 다시 세운다(이력 데이터 모델). 기능 2(`hierarchy-aware-olap-engine` — 실험 · `incident-history-data-model`). 완주 검사 1회차에 도메인 둘 추가(인원 계획 · AI IR) — 다음: 그 두 도메인 확장, 설비투자·IT 투자·석세스 파트너는 2회차 검색 뒤 hold. 수익원 넷 중 인원 계획·설비투자·IT 투자·AI IR·석세스 파트너는 도메인 없음. 입구 `zenn.dev/p/loglass/feed`. |
 
 
 ## 대기
