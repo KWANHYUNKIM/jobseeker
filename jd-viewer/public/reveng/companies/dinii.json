@@ -100,7 +100,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "unified-settlement-ledger"
+      ]
     },
     {
       "name": "POS 알림의 1차 조사를 봇에 맡기고 판단은 사람이 쥔다",
@@ -125,7 +127,381 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "unified-settlement-ledger",
+      "name": "Adyen 과 AMEX 의 정산을 부호 없는 한 장의 대장에 모은다 — 처리한 회사와 입금하는 회사를 가르고, 수수료를 공제분과 사후 청구분으로 나눠 행 불변식을 100% 지키며, 깨지면 취입을 통째로 멈춘다",
+      "domain": "입금원이 늘어도 한 장의 정산 대장을 지킨다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "다이니 캐시리스는 결제 대행 **Adyen** 을 쓰고, 어느 브랜드로 결제해도 입금은 Adyen 한 줄이었다. 2026년 7월 **AMEX** 를 내면서 AMEX 매출은 AMEX 가 **다이니에 직접** 입금하게 됐다.\n\n입금원이 둘이 되자 ① 은행 착금이 2계통이라 어느 입금이 어느 결제분인지 대조를 따로 해야 하고 ② 리포트 형식도 수수료 표기도 달라 '이번 달 수수료는 얼마?' 를 쿼리 한 줄로 못 쓰며 ③ 전 거래가 빠짐없이 입금됐는지(회계·감사)를 프로바이더마다 다른 로직으로 만들게 됐다. Adyen 만이면 CSV 를 BigQuery 에 넣어 자사 결제 데이터와 맞추면 끝이었지만, 2곳째는 파일 구성(AMEX 는 가맹점 키가 Adyen 의 다른 리포트에만 있어 2파일 대조)·부호 표기(Credit/Debit 컬럼 대 부호 있는 금액)·수수료와 행 구분의 입도가 다 달라 **구현 비용이 2배로 끝나지 않는다**.\n\n정산 대장은 입금액의 근거이자 감사의 증적이다 — 가장 치명적인 리스크는 버그가 아니라 **깨진 대장이 아무도 모르게 계속 쓰이는 것**으로 정의했다.",
+        "metrics": [
+          {
+            "label": "입금원",
+            "value": "2 — Adyen · AMEX(2026-07 AMEX 출시)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "label": "게이트가 멈춘 사례",
+            "value": "파일 생성 지연으로 영업일 1일 어긋남 — 1,865건 중 1,862건 불일치",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "label": "검증이 잡은 본번 버그",
+            "value": "3 — 영업일 어긋남 · 부호 버그(단위 테스트 통과) · 조용히 빠진 수수료 행",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "label": "대가",
+            "value": "검증 NG 로 수일분 취입이 멈춰 수동 복구한 적 있음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "구분 체계를 정할 때",
+          "thought": "0 부터 '있어야 할 분류' 를 발명하면 어느 프로바이더의 실데이터와도 안 맞는 어중간한 구분이 생긴다. Adyen 구분을 쓰면 적어도 그쪽은 무변환으로 들어오고 다른 쪽만 매핑하면 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+              "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+              "publisher": "dinii Tech Blog (Zenn)",
+              "date": "2026-08-07",
+              "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+            }
+          ]
+        },
+        {
+          "at": "수수료 부호를 볼 때",
+          "thought": "보기 좋게 절대값을 취하면 '내역 합 = deductedFee' 와 '순액이 파일과 일치' 를 동시에 못 지킨다 — **보기 좋게 가공하지 않는다**.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+              "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+              "publisher": "dinii Tech Blog (Zenn)",
+              "date": "2026-08-07",
+              "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+            }
+          ]
+        },
+        {
+          "at": "알림을 이진으로 할 때",
+          "thought": "예외를 1건이라도 인정하면 울릴 때마다 '알려진 예외인가, 새 버그인가' 를 사람이 판정하게 되고, 그 시점에 검증은 자동화의 역할을 못 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+              "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+              "publisher": "dinii Tech Blog (Zenn)",
+              "date": "2026-08-07",
+              "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+            }
+          ]
+        },
+        {
+          "at": "테스트와 비교할 때",
+          "thought": "테스트는 쓴 사람이 상상한 망가짐만 지킨다. Validation 은 상상하지 못한 망가짐까지 파일·대장·돈의 실태 사이의 어긋남으로 잡는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+              "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+              "publisher": "dinii Tech Blog (Zenn)",
+              "date": "2026-08-07",
+              "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+            }
+          ]
+        },
+        {
+          "at": "돌아볼 때",
+          "thought": "변하지 않는 규칙이 테이블 구조로 남아 있으면 구멍이 났을 때 무엇을 고쳐도 되고 무엇을 바꾸면 안 되는지 판단하기 쉽다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+              "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+              "publisher": "dinii Tech Blog (Zenn)",
+              "date": "2026-08-07",
+              "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "USL 행",
+            "what": "프로바이더 정산 레코드 하나. recordType · processingProvider · settlementProvider · gross/net Credit/Debit · 수수료 · batchNumber · settlementDate."
+          },
+          {
+            "name": "Credit / Debit",
+            "what": "복식부기의 대변·차변에서 빌린 말. Credit 은 다이니로 돈이 들어오는 방향, Debit 은 나가는 방향. 행마다 한쪽만 값이 있고 다른 쪽은 0."
+          },
+          {
+            "name": "recordType",
+            "what": "공통 행 구분. Adyen 구분을 거의 그대로 — PAYIN / PAYIN_RETURNED 로 이름을 바꾸고 ADJUSTMENT 를 더했다."
+          },
+          {
+            "name": "processingProvider / settlementProvider",
+            "what": "결제를 처리한 회사와 매출을 입금하는 회사. AMEX 결제는 ADYEN / AMEX."
+          },
+          {
+            "name": "deductedFee / accruedFee",
+            "what": "정산 안에서 공제된 수수료와 정산 밖에서 나중에 따로 청구되는 수수료. 내역은 정규화 키와 프로바이더 원본 코드의 2층."
+          },
+          {
+            "name": "정산 파일 상태",
+            "what": "파일 대기 → 수령 → 검증 OK / 검증 NG → 대조 완료."
+          },
+          {
+            "name": "Converter",
+            "what": "프로바이더별 변환기. 판단 1~4 의 규칙이 전부 여기 있고, 공통 스키마에 안 들어가는 정보는 providerSpecificData(JSONB)로."
+          }
+        ],
+        "invariants": [
+          "금액은 **항상 0 이상**이다 — 음수가 들어오는 순간 검증 에러.",
+          "모든 거래 행에서 `grossCredit − deductedFee = netCredit`(Debit 쪽은 `grossDebit + deductedFee = netDebit`)가 **100%** 성립한다.",
+          "USL 의 합계 금액·건수는 정산 파일 쪽과 일치한다.",
+          "검증 NG 인 파일은 대장에 **한 행도** 들어가지 않는다 — 부분 취입도 없다.",
+          "settlementDate 는 실제 착금일이고, 입금이 없는 행은 null 이다.",
+          "금액은 엔·정수 — 부동소수는 쓰지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "정산 파일이 도착하면 파일별 상태를 가진다(대기 → 수령)",
+            "why": "한 파일씩 멈추고 재개하기 위해."
+          },
+          {
+            "step": "입구 검증 — 취입 앞단의 독립 잡이 AMEX 는 2파일 대조, Adyen 은 단체 정합 검사",
+            "why": "통과 못 하면 여기서 정지."
+          },
+          {
+            "step": "취입 — 파일 취득·파스(프로바이더 고유)",
+            "why": "형식이 다르다."
+          },
+          {
+            "step": "Converter 가 공통 스키마로 변환 — 부호 → Credit/Debit, 구분 매핑, 처리·입금 회사, 수수료 두 갈래, 고유 정보는 JSONB",
+            "why": "판단 1~4 를 한곳에 가둔다."
+          },
+          {
+            "step": "출구 검증 — 행 불변식 전건 + 합계 금액·건수 대조",
+            "why": "넣은 뒤에도 의심한다."
+          },
+          {
+            "step": "하나라도 깨지면 CRITICAL 알림, 사람이 즉시 조사",
+            "why": "'거의 성립' 은 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "금액의 방향을 어떻게 표현하나?",
+            "chosen": "**부호 있는 amount 한 컬럼 대신 항상 양수인 grossCredit·grossDebit·netCredit·netDebit 네 컬럼 — 방향은 컬럼으로.**",
+            "alternatives": [
+              "amount 한 컬럼에 부호"
+            ],
+            "tradeoff": "프로바이더마다 부호 의미가 달라 생기던 변환 버그가 구조적으로 어려워지고, 음수면 즉시 검증 에러. 대가 — 컬럼이 두 배가 된다(어디에 넣을지 판정은 Converter 안에 가둬 읽는 쪽엔 안 보인다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "question": "행의 종류를 어떻게 통일하나?",
+            "chosen": "**운영해 온 Adyen 구분을 거의 그대로 공통 recordType 으로 — 두 곳만 손대고(PAYIN 이름, ADJUSTMENT 추가) AMEX 는 매핑.**",
+            "alternatives": [
+              "0 부터 '있어야 할 분류' 를 발명"
+            ],
+            "tradeoff": "한쪽은 무변환으로 들어오고 매일 쓰는 대조 쿼리가 프로바이더와 무관해진다. 대가 — 가장 세밀한 한 프로바이더의 구분에 맞춰져, 거기 안 맞는 AMEX 조정 레코드를 받을 새 구분이 필요했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "question": "provider 한 컬럼으로 충분한가?",
+            "chosen": "**처리한 회사(processingProvider)와 입금하는 회사(settlementProvider)를 두 컬럼으로 가르고, 거래 ID 는 양쪽 번호를 다, batchNumber 는 두 회사 입금 배치를 같은 컬럼에.**",
+            "alternatives": [
+              "provider 한 컬럼(처리한 회사)"
+            ],
+            "tradeoff": "은행 입금 대조를 입금 회사별로 라우팅하고(AMEX 결제가 Adyen 입금으로 맞춰져 계좌가 안 맞던 문제), 수수료 귀속·보고를 제대로 가른다. 대가 — 컬럼과 식별자를 두 벌 관리한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "question": "날짜의 뜻을 어떻게 맞추나?",
+            "chosen": "**settlementDate 를 실제 착금일로 통일하고, 입금이 없는 매출 행은 null.**",
+            "alternatives": [
+              "프로바이더가 준 날짜 그대로(AMEX 예정 입금일 · Adyen 파일 날짜)"
+            ],
+            "tradeoff": "시계열에 뜻이 다른 날짜가 섞이지 않는다. 대가 — 뜻을 맞춰도 **타임존**은 남는다: 파일 생성이 늦어 파일명 날짜가 다음 날이 되자 전날분 대조가 거의 전건 불일치로 멈췄다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "question": "수수료를 한 컬럼으로 둘까?",
+            "chosen": "**정산 안에서 공제된 deductedFee 와 나중에 따로 청구되는 accruedFee 로 가르고, 내역은 정규화 키 + 원본 코드 2층으로 보존.**",
+            "alternatives": [
+              "모든 수수료를 totalFee 한 컬럼에(AMEX 결제의 Adyen 처리 수수료를 거래별 안분해 포함)"
+            ],
+            "tradeoff": "`gross − deductedFee = net` 를 행마다 100% 지켜 정산 파일로 기계 검증한다; accruedFee 는 자사 계산 합계를 Adyen 청구와 대조. 대가 — 공제냐 사후 청구냐는 회사마다 달라 **분류 지식이 각 Converter 에 박힌다**(등식을 지키는 대가).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "question": "변환 버그를 어떻게 막나?",
+            "chosen": "**Validation 을 설계 중심에 — 넣기 전에 멈추는 게이트(독립 잡, 파일 상태 기계, 부분 취입 불허) + 넣은 뒤 의심하는 대조(행 불변식 · 합계 대조).**",
+            "alternatives": [
+              "단위 테스트로 충분",
+              "넣은 뒤 대조만"
+            ],
+            "tradeoff": "본번에서 영업일 어긋남·단위 테스트를 통과한 부호 버그·조용히 빠진 행을 잡았다. 대가 — 한 파일이 NG 면 **후속 취입이 통째로 멈추고** 수일분을 수동 복구한 적도 있다; USL 은 가게 송금을 맡지 않아 허용했지만, 멈춘 지점에서 재개하는 구조와 복구 절차가 전제다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          },
+          {
+            "question": "알림 기준은?",
+            "chosen": "**100% 성립이거나 즉시 CRITICAL 이거나의 이진 — '거의 성립' 을 허락하지 않는다.**",
+            "alternatives": [
+              "허용 오차·알려진 예외 목록"
+            ],
+            "tradeoff": "울릴 때마다 '알려진 예외인가' 를 사람이 판정할 일이 없다. 대가 — 깨지면 누군가 즉시 조사하는 체제가 필요하고, 울린 채 방치하면 설계가 의미를 잃는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+                "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+                "publisher": "dinii Tech Blog (Zenn)",
+                "date": "2026-08-07",
+                "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "POS 알림의 1차 조사를 봇에 맡기고 판단은 사람이 쥔다(같은 회사의 다른 도메인)",
+          "via": "알림을 믿게 만드는 규칙",
+          "contract": "USL 은 '거의 성립' 을 없애 울리면 반드시 조사할 알림만 남기고, dev-bot 은 보수 쪽으로 울리는 알림을 봇이 먼저 조사하며 가치 없는 알림을 줄인다 — 두 쪽 다 알림이 방치되는 순간 설계가 무너진다고 본다(이 사이트의 해석 — USL 알림이 dev-bot 을 부르는지는 글이 말하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정산 파일 하나의 일생",
+          "question": "파일은 어떤 상태를 지나 대장에 들어가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 파일대기\n  파일대기 --> 수령\n  수령 --> 검증OK: 입구 검증 통과\n  수령 --> 검증NG: 2파일 대조 · 정합 검사 실패\n  검증NG --> [*]: 한 행도 안 넣음 · 후속 정지\n  검증OK --> 대조완료: 취입 → Converter → 출구 검증\n  대조완료 --> [*]"
+        },
+        {
+          "title": "AMEX 결제 한 건의 두 회사",
+          "question": "처리와 입금이 갈리면 행은 어떻게 적히나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  POS[\"가게 · Adyen 단말\"] -->|처리| ADY[\"processingProvider = ADYEN\"]\n  ADY -->|처리 수수료 · 나중에 청구| ACC[\"accruedFee\"]\n  POS -->|매출 입금| AMX[\"settlementProvider = AMEX\"]\n  AMX -->|정산 안 공제| DED[\"deductedFee\\ngrossCredit − deductedFee = netCredit\"]\n  AMX -->|착금| BANK[\"AMEX 계좌 대조\\nsettlementDate\"]"
+        },
+        {
+          "title": "대장이 틀어지는 자리",
+          "question": "어디서 깨지고 무엇이 잡았나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"파일 생성 지연 · 타임존\"] --> B[\"파일명 날짜 +1 → 영업일 어긋남\"] --> B2[\"입구 게이트가 정지(1,862 / 1,865 불일치)\"]\n  C[\"Adyen 입금을 Debit 로\"] --> D[\"부호 버그 — 단위 테스트 통과\"] --> D2[\"출구 금액 대조가 발견\"]\n  E[\"취입 버그\"] --> F[\"수수료 행이 조용히 빠짐\"] --> F2[\"건수 대조 CRITICAL\"]\n  G[\"수수료를 한 컬럼에 안분\"] --> H[\"행 불변식 붕괴\"] --> H2[\"deductedFee / accruedFee 분리\"]\n  I[\"검증 NG 한 파일\"] --> J[\"후속 취입 통째로 정지 · 수일 수동 복구\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+          "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+          "publisher": "dinii Tech Blog (Zenn)",
+          "date": "2026-08-07",
+          "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "과금 구조·매출 비중·결제 수수료 수익 여부를 1차 자료로 확인하지 못했다.",
     "모바일 오더·POS·예약 자체의 도메인 로직 글은 아직 못 봤다.",
