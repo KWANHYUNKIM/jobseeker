@@ -10550,6 +10550,143 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8018258",
+      "title": "Staff, Site Reliability Engineer (Tech Infra)",
+      "site": "ats",
+      "verdict": "서울 선릉 오피스 근무, 대규모 분산 시스템 구축·운영 5년 이상. 쿠팡의 모든 고객 대상 서비스의 안정성·성능을 책임지는 SRE — SLO 정의, 장애 관리 자동화, 관측성, DR·부하 테스트 자동화, 배포 가드레일을 만들고 24x7 온콜에 참여한다.",
+      "fit": {
+        "must_have": [
+          "대규모 분산 시스템 구축·운영 5년 이상",
+          "UNIX/Linux 깊은 이해",
+          "Python·Java·Go·Ruby 중 하나",
+          "시스템·네트워크(TCP/IP)·코드 전반 문제 분석",
+          "클라우드·컨테이너·CI/CD·IaC",
+          "Prometheus·Grafana·Datadog 등 관측 도구",
+          "24x7 온콜 참여"
+        ],
+        "can_learn": [
+          "쿠팡 서비스 의존성 구조",
+          "JVM 튜닝(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SLO 정의와 에러 버짓 운영",
+          "from": "task",
+          "quote": "시스템 가용성, 성능, 안정성과 관련된 KPI 및 SLO 정의 및 관리",
+          "priority": "core",
+          "why": "주요업무 핵심 줄이다. 모든 고객 대상 서비스를 책임지려면 '얼마나 안정적이어야 하는가'를 숫자로 정해야 한다.",
+          "gap_check": "주문 API 의 SLI 로 가용성·지연을 어떻게 정의하고(무엇을 성공으로 셀지), 에러 버짓 소진 속도(번 레이트) 알림은 어떻게 거는가?",
+          "drill": "샘플 서비스에 Prometheus 지표를 붙이고 99.9% 가용성 SLO 와 다중 윈도 번 레이트 알림 규칙을 작성해 장애를 주입해 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Google SRE Workbook — Alerting on SLOs",
+              "url": "https://sre.google/workbook/alerting-on-slos/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애 관리 프로세스와 자동화",
+          "from": "task",
+          "quote": "신속한 장애 복구, 운영 리뷰 및 사후 분석을 포함한 Incident Management 프로세스 및 자동화 구축",
+          "priority": "core",
+          "why": "신속한 복구·운영 리뷰·사후 분석까지 프로세스와 자동화로 만드는 것이 주요업무다. 24x7 온콜도 있다.",
+          "gap_check": "장애 선언부터 복구·포스트모템까지 역할(지휘자·커뮤니케이터·조사자)을 어떻게 나누고, 무엇을 자동화하는가(채널 생성·타임라인 기록)?",
+          "drill": "과거에 겪은(또는 가상의) 장애 하나로 블레임리스 포스트모템을 쓰고, 알림이 오면 장애 채널·타임라인 문서를 자동 생성하는 스크립트를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Google SRE Book — Postmortem Culture",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DR 테스트·부하 테스트 자동화",
+          "from": "task",
+          "quote": "서비스 성장에 대비하기 위한 정기적인 Disaster Recovery 테스트 및 Load Testing 자동화 구축",
+          "priority": "core",
+          "why": "서비스 성장에 대비해 DR·부하 테스트를 '정기적·자동으로' 돌리는 것을 명시했다.",
+          "gap_check": "운영 환경에서 DR 훈련을 할 때 고객 영향 없이 무엇을 끊어 보고, 성공 기준은 무엇으로 정하는가?",
+          "drill": "k6 부하 테스트를 CI 에 걸어 배포마다 p99·오류율 기준을 검사하고, kind 에서 노드 하나를 죽이는 카오스 실험을 스크립트로 반복 실행한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "k6 — Documentation",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "프로덕션 배포 가드레일",
+          "from": "task",
+          "quote": "서비스 안정성을 유지하기 위한 프로덕션 배포 가드레일 및 자동화 구축",
+          "priority": "high",
+          "why": "장애의 상당수는 배포에서 시작된다(추론). 안정성을 위해 배포 단계에 자동 안전장치를 둔다.",
+          "gap_check": "카나리 배포 중 무엇(오류율·지연·SLO 번 레이트)을 보고 자동 롤백을 결정하고, 오탐 롤백은 어떻게 줄이는가?",
+          "drill": "Argo Rollouts 로 카나리 배포를 구성하고 Prometheus 분석 템플릿으로 오류율이 기준을 넘으면 자동 롤백되게 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Argo Rollouts — Documentation",
+              "url": "https://argo-rollouts.readthedocs.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "시스템·네트워크·코드를 가로지르는 문제 분석",
+          "from": "qualification",
+          "quote": "시스템, 네트워크(TCP/IP), 코드 전반에 걸친 문제 해결 및 분석 능력 (데이터 기반 의사결정 포함)",
+          "priority": "core",
+          "why": "SRE 는 어느 계층의 문제인지 모르는 상태에서 시작한다. 자격이 데이터 기반 의사결정까지 요구한다.",
+          "gap_check": "'가끔 5초씩 느려진다'는 증상에서 TCP 재전송·DNS·GC·커넥션 풀 고갈 중 무엇을 어떤 도구로 먼저 확인하는가?",
+          "drill": "Java 서비스에 커넥션 풀 고갈과 GC 압박을 번갈아 주입하고, 지표·스레드 덤프·tcpdump 로 원인을 구분하는 과정을 기록한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "대규모 Java 아키텍처와 JVM 설정",
+          "from": "preference",
+          "quote": "대규모 웹 기반 Java 아키텍처 및 JVM 설정 경험",
+          "priority": "nice",
+          "why": "쿠팡 서비스 다수가 Java 로 보이며(다른 공고들 기준, 추론) 장애 원인에 GC·힙 설정이 자주 끼어든다.",
+          "gap_check": "컨테이너 메모리 제한 안에서 JVM 힙·메타스페이스·다이렉트 메모리를 어떻게 나누고, OOMKilled 와 Java OOM 을 어떻게 구분하는가?",
+          "drill": "메모리 제한을 건 컨테이너에서 Spring Boot 를 띄워 -XX:MaxRAMPercentage 값별로 부하를 주고 OOMKilled 가 나는 지점을 기록한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "SLO·번 레이트·카나리 롤백이 연결된 데모",
+          "why": "주요업무의 SLO·배포 가드레일·자동화를 한 흐름으로 보여 준다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "SLI/SLO 정의",
+          "장애 대응 역할과 포스트모템",
+          "DR 훈련 설계",
+          "카나리 자동 롤백 기준",
+          "계층을 가로지르는 원인 분석"
+        ],
+        "sources": [
+          {
+            "title": "Staff, Site Reliability Engineer (Tech Infra)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8018258",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
