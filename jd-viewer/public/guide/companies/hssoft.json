@@ -7,7 +7,7 @@
     "HSSOFT"
   ],
   "status": "in_progress",
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-26",
   "one_liner": "제조 현장에 AI 오케스트레이션·Physical AI·탄소추적 솔루션을 설계·납품하는 B2B 제조 DX 회사 — 인천 본사와 대구지사, 현장 상주가 잦다",
   "company": {
     "business": "원티드 공고 머리말은 에이치에스소프트를 '제조 AI 오케스트레이션과 Physical AI로 완성하는 지능형 제조혁신' 을 내건 B2B 솔루션 기업으로 소개한다. 분절된 AI 모델을 하나의 오픈소스 아키텍처로 통합하는 제조 AI 오케스트레이션, 제조 현장과 데이터를 실시간으로 잇는 Physical AI, 3D 메타버스·AI 기반 재난안전 솔루션, LCA 전 과정평가와 CBAM 대응 스마트 탄소추적 플랫폼을 꼽고, 자동차 부품·전자·장치산업 등 대기업부터 중소기업까지 제조 현장에 솔루션을 직접 설계하고 납품한다고 적는다. 근무지는 인천 연수구와 대구지사(대구 달서구, 대구테크노파크 성서캠퍼스)이며, PM 공고는 '주 3회 이상 현장 출장 및 상주 근무' 를, 대구 AI 공고는 '대구지사의 상주 개발자' 를 적는다. 회사 사이트는 찾지 못했다(hssoft.co.kr 응답 없음). 매출·임직원 수는 읽지 않았다.",
@@ -136,6 +136,21 @@
     "as_of": "2026-09",
     "bands": [
       {
+        "role": "AI 개발자(인천, 영상 분석)",
+        "level": "경력 5년 이상",
+        "low": 5000,
+        "high": 5000,
+        "basis": "posting",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/386011",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
         "role": "AI 개발자(대구지사, 영상 분석)",
         "level": "경력 5년 이상",
         "low": 7000,
@@ -166,9 +181,10 @@
         ]
       }
     ],
-    "note": "**하한만 적혀 있다** — 사람인 대구 AI 공고가 '급여 : 연봉 7,000만원' 과 우대사항 '경력에 따른 연봉 협상 (7,000만원 이상)' 을, 원티드 PM 공고가 '경력에 따른 연봉 협상 (6,000만원 이상)' 을 적는다. low=high 는 상한이 아니라 적힌 유일한 숫자다. 원티드 대구 AI 공고(388730)는 같은 문장에 금액이 없다.",
+    "note": "**하한만 적혀 있다** — 사람인 대구 AI 공고가 '급여 : 연봉 7,000만원' 과 우대사항 '경력에 따른 연봉 협상 (7,000만원 이상)' 을, 원티드 인천 AI 공고(386011)가 '경력에 따른 연봉 협상 (5,000만원 이상)' 을, 원티드 PM 공고가 '경력에 따른 연봉 협상 (6,000만원 이상)' 을 적는다. low=high 는 상한이 아니라 적힌 유일한 숫자다. 원티드 대구 AI 공고(388730)는 같은 문장에 금액이 없다.",
     "open_questions": [
-      "인천 연수구 AI·풀스택 공고의 연봉은 적혀 있지 않다"
+      "인천 AX 풀스택 공고의 연봉은 적혀 있지 않다",
+      "같은 본문의 AI 개발자 자리가 인천은 5,000만원 이상, 대구지사(사람인)는 7,000만원으로 적혀 있다 — 지사 상주 조건 차이로 보이나 공고에 이유는 없다"
     ]
   },
   "people": [],
@@ -178,5 +194,105 @@
     "솔루션이 프로젝트 납품인지 제품 라이선스인지는 읽지 않았다",
     "원티드 대구 AI 개발자(388730)와 사람인 대구 AI 개발자(55105410), 원티드·사람인 풀스택 공고가 같은 자리인지 본문 비교가 필요하다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/386011",
+      "title": "AI 개발자",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, **인천 연수구**, 학력무관. 제조 현장용 **AI 영상 분석** 자리다 — OpenCV·딥러닝 기반 실시간 영상 인식·분석 알고리즘, 기존 영상 처리 프로그램의 기능 개선·리팩토링·유지보수와 요구사항·버전 관리, Python 기반 대용량 영상/데이터 전처리와 제어 시퀀스, 학습·추론 파이프라인 최적화와 **센서·PLC 등 타 장비와의 데이터 연동**. 필수는 Python·C++ 높은 숙련도, OpenCV·PyTorch·TensorFlow, 딥러닝 영상 인식·컴퓨터 비전 실무. 우대는 ROS2·ROS 시뮬레이션, 로봇/센서/제어 피지컬 AI, 산업용 통신(Modbus·시리얼·PLC)과 IO 장비 인터페이스, 현장 적용까지 전 과정 주도. **연봉은 '경력에 따른 연봉 협상 (5,000만원 이상)'** 으로 적혀 있다. 전형: 서류전형 > 1차면접 > 최종합격. 같은 본문의 대구지사 AI 개발자 공고(원티드 388730, 사람인 55105410)가 따로 있고, 사람인 대구 공고는 연봉을 7,000만원으로 적는다.",
+      "fit": {
+        "must_have": [
+          "Python·C++ 높은 숙련도",
+          "OpenCV·PyTorch·TensorFlow",
+          "딥러닝 영상 인식·컴퓨터 비전 실무",
+          "경력 5년 이상"
+        ],
+        "can_learn": [
+          "ROS2",
+          "Modbus·시리얼·PLC 장비 연동",
+          "로봇·센서·제어 피지컬 AI"
+        ]
+      },
+      "study": [
+        {
+          "topic": "제조 현장 실시간 영상 인식",
+          "from": "task",
+          "quote": "- OpenCV 및 딥러닝 기반의 실시간 영상 인식·분석 알고리즘 설계 및 구현",
+          "priority": "core",
+          "why": "첫 주요업무이고 필수에 딥러닝 기반 영상 인식·컴퓨터 비전 실무와 OpenCV·PyTorch·TensorFlow 가 있다.",
+          "gap_check": "공장 라인 카메라로 불량을 잡을 때 조명 변화·반사·흔들림이 모델을 흔드는데, 모델 앞단 OpenCV 전처리(ROI 자르기·정규화·노이즈 제거)로 무엇을 해결하고 학습 데이터 증강으로 무엇을 해결하는가? 불량 사진이 수십 장뿐이면 탐지 모델과 이상 탐지 중 무엇으로 시작하는가?",
+          "drill": "공개 산업 불량 이미지 데이터(또는 직접 찍은 부품 사진)로 YOLO 탐지 모델을 파인튜닝하고, OpenCV 로 조명을 바꾼 테스트 이미지를 만들어 전처리 유무에 따른 재현율 차이를 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "YOLO Object Detection & Segmentation | Ultralytics",
+              "url": "https://docs.ultralytics.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "torchvision",
+              "url": "https://docs.pytorch.org/vision/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비전 결과를 설비로 — PLC·Modbus 연동",
+          "from": "task",
+          "quote": "- 딥러닝 모델의 학습/추론 파이프라인 최적화 및 타 장비(센서, PLC 등)와의 데이터 연동·통합",
+          "priority": "core",
+          "why": "주요업무이고 우대에 산업용 통신(Modbus, 시리얼, PLC)과 IO 기반 장비 인터페이스가 있다. 주요업무에 '제어 시퀀스 구축' 이 있다.",
+          "gap_check": "카메라가 불량을 판정하면 그 결과를 PLC 의 어느 레지스터에 언제 써서 배출 장치가 움직이게 하고, 추론이 늦어 부품이 이미 지나간 경우와 통신이 끊긴 경우 라인은 어떻게 동작해야 안전한가?",
+          "drill": "PyModbus 로 PLC 역할의 Modbus TCP 서버를 흉내 내고, 추론 스크립트가 판정 결과를 홀딩 레지스터에 쓰며 'PLC 가 읽음' 플래그를 확인하는 핸드셰이크를 만든다. 추론 지연을 일부러 늘려 타임아웃 처리를 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Welcome to PyModbus's documentation!",
+              "url": "https://pymodbus.readthedocs.io/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "추론 최적화 — ONNX·TensorRT",
+          "from": "task",
+          "quote": "• AI 모델 학습·추론 환경 구축 및 시스템 통합",
+          "priority": "high",
+          "why": "주요업무가 학습/추론 파이프라인 최적화를 적고, 첫 업무가 '실시간' 영상 인식이다.",
+          "gap_check": "라인 속도상 한 장에 50ms 안에 판정해야 할 때 모델 크기·입력 해상도·정밀도(FP16/INT8)·배치 중 무엇부터 줄이고, INT8 양자화 뒤 정확도가 떨어지면 무엇(보정 데이터)으로 되돌리는가?",
+          "drill": "위 YOLO 모델을 ONNX 로 내보내 ONNX Runtime 과 TensorRT(가능하면)에서 FP32·FP16 추론 시간을 재고, 장당 지연과 mAP 를 표로 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ONNX Runtime",
+              "url": "https://onnxruntime.ai/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "NVIDIA TensorRT Documentation",
+              "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ROS2 로 비전·제어 잇기",
+          "from": "preference",
+          "quote": "• ROS2 기반 지능형 제어 및 ROS 시뮬레이션 환경 경험자",
+          "priority": "nice",
+          "why": "우대사항이고 다음 우대가 로봇/센서/제어 피지컬 AI 다. 회사가 Physical AI 를 사업으로 꼽는다(회사 브리핑).",
+          "gap_check": "카메라 노드·추론 노드·제어 노드를 ROS2 토픽으로 나누면 무엇이 쉬워지고, 영상처럼 큰 메시지를 주고받을 때 지연을 줄이려면 무엇(QoS·같은 프로세스 내 통신)을 조정하는가?",
+          "drill": "ROS2 튜토리얼로 카메라 영상을 발행하는 노드와 추론 결과를 발행하는 노드를 만들고, 결과를 받아 가상 액추에이터를 움직이는 노드까지 이어 전체 지연을 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Tutorials — ROS 2 Documentation: Jazzy",
+              "url": "https://docs.ros.org/en/jazzy/Tutorials.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
