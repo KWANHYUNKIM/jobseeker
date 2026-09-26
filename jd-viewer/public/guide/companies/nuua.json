@@ -1,0 +1,239 @@
+{
+  "slug": "nuua",
+  "name": "누아",
+  "name_en": "NUUA",
+  "aliases": [
+    "누아",
+    "NUUA"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "nuua.ai",
+  "one_liner": "여행사의 항공권 발권·취소·환불을 자동화하는 항공 유통 솔루션 '누아 오피스'와 카드사 여행 플랫폼을 만드는 트래블테크 — IATA ARM Index 국내 첫 인증",
+  "company": {
+    "business": "원티드 공고 머리말은 누아를 '인공지능 기반 여행 서비스' 회사로 소개한다. 주력은 항공권 유통 솔루션 '누아 오피스' — 여행사에서 수작업으로 처리되던 취소·환불 등 발권 업무를 자동화하고 좌석지정·기내식·Wi-Fi 등 부가 서비스를 유통하게 한다. 자체 항공권 유통 소프트웨어로 2024년 4월 우리카드와 항공·호텔 예약 플랫폼 '우리WON트래블' 을 만들어 운영하고, 개발팀은 방한 중화권 대상 한국 여행 앱 '워짜이날' 과 24개 도시 지하철을 오프라인으로 검색하는 '누아 메트로' 앱도 운영한다. IATA 차세대 항공권 유통 최상위 기술 등급 'ARM Index' 를 국내 첫 번째·세계 7번째로 받았다고 적는다. nuua.ai 메타 설명은 'NDC·GDS·LCC 통합 항공 API 솔루션' 을 앞세운다. 머니투데이 기사(공고가 링크)는 2012년 설립, 2024년 9개 투자사에서 130억원 시리즈A(첫 투자)를 적고, 투자사가 중소 여행사 수요와 여행업을 하지 않던 플랫폼 기업도 항공권을 팔 수 있게 되는 확장성을 꼽았다고 쓴다. 과금 방식(수수료·이용료)은 읽은 자료에 없다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "웹(Web) 백엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/118971",
+        "publisher": "원티드"
+      },
+      {
+        "title": "NUUA | Asia No.1 Travel Tech Startup",
+        "url": "https://www.nuua.ai/en/",
+        "publisher": "누아",
+        "summary": "메타 설명: NDC·GDS·LCC 통합 항공 API 솔루션부터 온라인 항공 직접 예약이 되는 여행 앱까지, 빅데이터와 AI 기술로 여행 시장을 혁신한다."
+      },
+      {
+        "title": "언제 어디서든 항공권 변경·환불…130억 몰린 차세대 트래블테크",
+        "url": "https://www.mt.co.kr/future/2024/12/07/2024120617545689946",
+        "publisher": "머니투데이",
+        "summary": "2012년 설립, 2024년 9개 투자사로부터 130억원 시리즈A(첫 투자). 누아 오피스는 여행사의 발권·취소·환불과 좌석·기내식·와이파이 부가서비스를 자동화하는 항공 백오피스. 투자사는 중소 여행사 수요와, 여행업을 하지 않던 플랫폼 기업도 항공권을 팔 수 있게 되는 점(우리카드 '우리WON트래블')을 꼽았다. 싱가포르 등 해외 지사 설립 시도."
+      }
+    ],
+    "scale": [
+      {
+        "label": "첫 투자 유치",
+        "value": "130억 원(시리즈A, 9개 기관)",
+        "as_of": "2024-11",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "언제 어디서든 항공권 변경·환불…130억 몰린 차세대 트래블테크",
+            "url": "https://www.mt.co.kr/future/2024/12/07/2024120617545689946",
+            "publisher": "머니투데이",
+            "summary": "2012년 설립, 2024년 9개 투자사로부터 130억원 시리즈A(첫 투자). 누아 오피스는 여행사의 발권·취소·환불과 좌석·기내식·와이파이 부가서비스를 자동화하는 항공 백오피스. 투자사는 중소 여행사 수요와, 여행업을 하지 않던 플랫폼 기업도 항공권을 팔 수 있게 되는 점(우리카드 '우리WON트래블')을 꼽았다. 싱가포르 등 해외 지사 설립 시도."
+          },
+          {
+            "title": "웹(Web) 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/118971",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "연속 흑자(공고 주장)",
+        "value": "외부 투자 없이 8개년 연속 흑자",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "웹(Web) 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/118971",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "항공 유통 솔루션(누아 오피스·항공 API)",
+        "how": "여행사에 발권·취소·환불 자동화와 부가 서비스 유통을 제공한다(공고·기사). 사이트는 NDC·GDS·LCC 통합 항공 API 를 적는다. 이용료·수수료 구조는 읽지 않았다.",
+        "domains": [
+          "항공 예약·발권 백엔드",
+          "B2B·B2C 여행 웹 프론트엔드"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "웹(Web) 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/118971",
+            "publisher": "원티드"
+          },
+          {
+            "title": "언제 어디서든 항공권 변경·환불…130억 몰린 차세대 트래블테크",
+            "url": "https://www.mt.co.kr/future/2024/12/07/2024120617545689946",
+            "publisher": "머니투데이",
+            "summary": "2012년 설립, 2024년 9개 투자사로부터 130억원 시리즈A(첫 투자). 누아 오피스는 여행사의 발권·취소·환불과 좌석·기내식·와이파이 부가서비스를 자동화하는 항공 백오피스. 투자사는 중소 여행사 수요와, 여행업을 하지 않던 플랫폼 기업도 항공권을 팔 수 있게 되는 점(우리카드 '우리WON트래블')을 꼽았다. 싱가포르 등 해외 지사 설립 시도."
+          },
+          {
+            "title": "NUUA | Asia No.1 Travel Tech Startup",
+            "url": "https://www.nuua.ai/en/",
+            "publisher": "누아",
+            "summary": "메타 설명: NDC·GDS·LCC 통합 항공 API 솔루션부터 온라인 항공 직접 예약이 되는 여행 앱까지, 빅데이터와 AI 기술로 여행 시장을 혁신한다."
+          }
+        ]
+      },
+      {
+        "name": "제휴 여행 예약 플랫폼(우리WON트래블)",
+        "how": "자체 항공권 유통 소프트웨어로 우리카드와 항공·호텔 예약 플랫폼을 만들어 운영한다(공고·기사). 수익 배분 구조는 읽지 않았다.",
+        "domains": [
+          "항공 예약·발권 백엔드",
+          "B2B·B2C 여행 웹 프론트엔드"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "웹(Web) 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/118971",
+            "publisher": "원티드"
+          },
+          {
+            "title": "언제 어디서든 항공권 변경·환불…130억 몰린 차세대 트래블테크",
+            "url": "https://www.mt.co.kr/future/2024/12/07/2024120617545689946",
+            "publisher": "머니투데이",
+            "summary": "2012년 설립, 2024년 9개 투자사로부터 130억원 시리즈A(첫 투자). 누아 오피스는 여행사의 발권·취소·환불과 좌석·기내식·와이파이 부가서비스를 자동화하는 항공 백오피스. 투자사는 중소 여행사 수요와, 여행업을 하지 않던 플랫폼 기업도 항공권을 팔 수 있게 되는 점(우리카드 '우리WON트래블')을 꼽았다. 싱가포르 등 해외 지사 설립 시도."
+          }
+        ]
+      },
+      {
+        "name": "AI 여행 에이전트",
+        "how": "AI Agent 공고가 자연어 챗봇으로 항공 검색·예약·발권까지 잇는 서비스를 개발한다고 적는다. 출시 여부·과금은 공고에 없다 — 개발 중인 사업으로 읽었다.",
+        "domains": [
+          "LLM 항공 예약 에이전트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Agent 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/363748",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "항공 예약·발권 백엔드",
+        "why": "웹 백엔드 공고가 예약 관리 시스템·항공권 예약 서비스·항공권 검색 엔진·차세대 여행 플랫폼 연동을, Spring 백엔드 공고가 B2C/B2B 서비스 설계·리팩토링을 적는다. 자격은 Java·Spring.",
+        "what_to_know": [
+          "NDC·GDS 항공 유통",
+          "Spring",
+          "항공권 운임·환불 규정"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "웹(Web) 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/118971",
+            "publisher": "원티드"
+          },
+          {
+            "title": "백엔드 개발자 (Spring Framework)",
+            "url": "https://www.wanted.co.kr/wd/215761",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "B2B·B2C 여행 웹 프론트엔드",
+        "why": "프론트엔드 공고 둘(실무·팀장)이 항공 등 여행 B2B·B2C 시스템 프론트엔드를 적고 React(Next) 를 요구한다.",
+        "what_to_know": [
+          "React·Next.js",
+          "프론트엔드 아키텍처"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/118906",
+            "publisher": "원티드"
+          },
+          {
+            "title": "프론트엔드 개발자 팀장",
+            "url": "https://www.wanted.co.kr/wd/367207",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "LLM 항공 예약 에이전트",
+        "why": "AI Agent 공고가 LLM 에이전트가 실제 항공 예약 업무를 하는 backend·workflow, 운임·예약 정책 데이터를 AI 가 이해할 구조로 가공, GDS/NDC 연동, LangChain·LangGraph, OpenAI·Claude API, Terraform 을 적는다.",
+        "what_to_know": [
+          "LangGraph",
+          "도구 호출 에이전트",
+          "운임 규정 데이터 구조화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Agent 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/363748",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "클라우드 인프라·DevOps",
+        "why": "수익원이 아니라 모든 서비스의 공통 기반이다. DevOps 공고가 AWS 인프라, CI/CD, 모니터링·장애 대응, 사내 IT 인프라를 적고 AWS·NCP·Kubernetes·Terraform/CDK 를 요구한다.",
+        "what_to_know": [
+          "Kubernetes",
+          "Terraform",
+          "모니터링·장애 대응"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/376966",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "12년 흑자 경영 뒤 첫 투자로 해외·AI 로 넓히는 중이다",
+        "evidence": "외부 투자 없이 8개년 연속 흑자 달성을 해왔으며 4년 연속 매해 42% 이상 팀원 수가 성장하고 있습니다.",
+        "so_what": "공고는 일본·중화권·동남아 확장 준비를, 기사는 싱가포르 등 해외 지사 설립 시도를 적는다. 동시에 AI Agent·DevOps 자리를 새로 연다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "공고 머리말이 오래된 채 남아 있다",
+        "evidence": "지난 4월 우리카드와 함께 항공 및 호텔 예약 플랫폼",
+        "so_what": "웹 백엔드(118971)·프론트엔드(118906)는 원티드 번호가 낮은 오래된 게시이고 머리말의 '지난 4월' 은 2024년 4월이다(프론트엔드 팀장 공고는 '2024년 4월' 로 고쳐 적는다). 기술 스택·조직은 면접에서 다시 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "누아 오피스·항공 API 의 과금 방식(이용료·발권 수수료)은 읽지 않았다",
+    "매출액·임직원 수는 읽지 않았다(공고는 흑자·인원 증가율만 적는다)",
+    "AI 여행 에이전트가 출시됐는지는 공고로 알 수 없다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

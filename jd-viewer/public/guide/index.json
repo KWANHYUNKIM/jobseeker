@@ -646,6 +646,18 @@
       "postings": 6,
       "study_items": 22,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "nuua",
+      "name": "누아",
+      "aliases": [
+        "누아",
+        "NUUA"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
