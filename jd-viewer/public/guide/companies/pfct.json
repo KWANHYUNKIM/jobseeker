@@ -396,6 +396,135 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/379567",
+      "title": "B2B Senior Data Engineer(B2B 시니어 데이터 엔지니어) - Databricks",
+      "site": "wanted",
+      "verdict": "경력 7~14년 — 데이터 플랫폼 7년 이상, 그중 아키텍트/리드 3년 이상(서울 서초). 같은 Databricks 파트너 사업의 구축 엔지니어 공고(379570)와 달리 이쪽은 사업을 끌고 가는 자리다 — Pre-Sales(기술 컨설팅·제안서·견적·PoC 총괄), 엔터프라이즈 레이크하우스 아키텍처 총괄, 범위·일정·리스크 관리와 고객 경영진 커뮤니케이션, 구축 엔지니어 기술 리딩과 딜리버리 방법론 수립, Databricks 본사·파트너 협업과 신규 사업 개발. Databricks 자격증(Certified Data Engineer Professional 등)이 우대가 아니라 자격요건이다. 공고는 '사업 성장과 함께 조직 리더로 확장되는 커리어' 를 적는다. 전형은 서류 → 1차(Job-Fit) → 2차(Culture Fit) → 3차(Final) 인터뷰 → 처우 협의, 수습 3개월.",
+      "fit": {
+        "must_have": [
+          "데이터 플랫폼 7년 이상·아키텍트/리드 3년 이상",
+          "Databricks 구축 프로젝트 리드(아키텍처 총괄 또는 PM/PL)",
+          "Databricks 자격증(Data Engineer Professional 등)",
+          "Unity Catalog 포함 엔터프라이즈 거버넌스 설계",
+          "다수 이해관계자 조율·일정·리스크 관리"
+        ],
+        "can_learn": [
+          "금융권 대형 SI 리드(망분리·금융 클라우드 가이드라인)",
+          "Pre-Sales(제안서·기술 세일즈·PoC)",
+          "SI/MSP/컨설팅 데이터 사업 개발",
+          "AWS+Azure 멀티클라우드",
+          "Mosaic AI·MLflow 사업화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Pre-Sales — 제안서·견적·PoC 를 설계하는 법",
+          "from": "task",
+          "quote": "• Pre-Sales 리드: 고객 발굴 단계의 기술 컨설팅, 제안서·견적 작성 및 PoC를 총괄해요.",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 우대에 'Pre-Sales 경험(기술 제안서 작성, 고객 대상 기술 세일즈·PoC 리드)' 이 있다. 공고가 '영업–제안–수주–딜리버리까지 딜 전 주기를 총괄' 한다고 적는다.",
+          "gap_check": "금융사 레이크하우스 PoC 를 제안할 때 성공 기준(성능·비용·거버넌스)을 어떻게 숫자로 합의하고, 견적에서 인력(MM)·Databricks 사용량·이관 대상 규모를 어떻게 산정하며, PoC 가 본 계약으로 이어지게 범위를 어디서 끊는가?",
+          "drill": "가상의 저축은행(온프레미스 DW + Hadoop) 대상 레이크하우스 전환 제안서 10장과 견적표(MM·사용량 가정 포함), 4주 PoC 계획(성공 기준 3개)을 쓴다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "엔터프라이즈 레이크하우스 참조 아키텍처",
+          "from": "task",
+          "quote": "• 엔터프라이즈 레이크하우스 아키텍처를 총괄 설계하고 기술적 의사결정을 해요.",
+          "priority": "core",
+          "why": "주요업무이고 자격요건이 'Databricks 구축 프로젝트를 리드한 경험(아키텍처 총괄 또는 PM/PL)' 이다. 주요업무에 '표준 아키텍처·딜리버리 방법론을 수립' 이 있다.",
+          "gap_check": "워크스페이스를 사업부별로 나눌지 하나로 둘지, 카탈로그를 환경(dev/prod)별로 나눌지 도메인별로 나눌지, 금융 고객의 프라이빗 네트워크 연결을 어떻게 구성할지 결정 기준을 말할 수 있는가?",
+          "drill": "Databricks 레이크하우스 아키텍처 가이드를 읽고, 금융 고객용 표준 아키텍처 한 장(워크스페이스·카탈로그 구조·네트워크·권한·CI/CD)과 결정 기록(ADR) 세 건을 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Databricks — Lakehouse architecture",
+              "url": "https://docs.databricks.com/aws/en/lakehouse-architecture/",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — Networking",
+              "url": "https://docs.databricks.com/aws/en/security/network/",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — What is Unity Catalog?",
+              "url": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "프로젝트 매니징 — 범위·일정·리스크",
+          "from": "task",
+          "quote": "• 프로젝트 매니징: 범위·일정·리소스·리스크를 관리하고 고객 경영진·실무진과 커뮤니케이션해요.",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 '다수 이해관계자를 조율하며 일정·리스크를 관리한 프로젝트 매니징 역량' 이 있다.",
+          "gap_check": "이관 프로젝트에서 흔한 리스크(원천 데이터 품질, 고객 보안 심사 지연, 레거시 작업의 숨은 의존성)를 착수 때 어떻게 찾아 리스크 목록에 올리고, 범위가 늘 때 변경 요청으로 어떻게 처리하는가?",
+          "drill": "위 제안의 수행 계획서를 쓴다 — WBS, 마일스톤, 리스크 목록(확률·영향·대응), 변경 관리 절차, 주간 보고 양식.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "Databricks 자격증과 플랫폼 AI(MLflow·Mosaic AI)",
+          "from": "qualification",
+          "quote": "• Databricks 자격증(Certified Data Engineer Professional 등)을 보유한 분",
+          "priority": "high",
+          "why": "시니어 공고에서는 자격증이 필수다. 우대에 'GenAI/ML 플랫폼(Mosaic AI, MLflow) 사업화 경험' 이 있고, 공고가 '플랫폼과 AI 모델·에이전트를 묶은 차별화된 딜 구조' 를 적는다.",
+          "gap_check": "Data Engineer Professional 시험 범위 중 약한 부분은 어디이고, 고객에게 '플랫폼 구축 다음 단계' 로 MLflow 기반 모델 관리를 어떻게 설명하는가?",
+          "drill": "자격 시험 범위를 점검표로 만들어 약한 영역을 채우고, Databricks 에서 간단한 신용 점수 모델을 MLflow 로 기록·등록·서빙하는 데모를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Databricks Certified Data Engineer Professional",
+              "url": "https://www.databricks.com/learn/certification/data-engineer-professional",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — AI and machine learning",
+              "url": "https://docs.databricks.com/aws/en/machine-learning/",
+              "kind": "docs"
+            },
+            {
+              "title": "MLflow — Documentation",
+              "url": "https://mlflow.org/docs/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "금융 고객용 레이크하우스 제안서 + 표준 아키텍처 + 수행 계획서 묶음",
+          "why": "주요업무 다섯 줄 중 셋(Pre-Sales, 아키텍처 총괄, 프로젝트 매니징)을 문서로 보여 준다. 이 자리는 코드보다 이 문서들이 산출물이다(추론).",
+          "effort": "1주"
+        },
+        {
+          "idea": "Databricks 프로젝트 리드 사례를 수주 금액·기간·인원으로 정리",
+          "why": "자격요건이 '구축 프로젝트를 리드한 경험' 이고, 신설 사업이라 수주 경험 자체가 가장 강한 증거다(추론).",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 > 1차 인터뷰(Job-Fit) > 2차 인터뷰(Culture Fit) > 3차 인터뷰(Final) > 처우 협의 > 최종 합류. 수습 3개월(공고 기준).",
+        "expect": [
+          "Databricks 프로젝트를 리드한 사례",
+          "제안·견적·PoC 경험",
+          "거버넌스 설계",
+          "리스크를 관리한 사례",
+          "신규 사업 개발 구상"
+        ],
+        "sources": [
+          {
+            "title": "B2B Senior Data Engineer(B2B 시니어 데이터 엔지니어) - Databricks",
+            "url": "https://www.wanted.co.kr/wd/379567",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
