@@ -814,6 +814,132 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/93806",
+      "title": "프론트엔드 개발자 (리더, React.js 5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5-7년. 코딧 프론트엔드 팀을 관리·리드하면서 웹 서비스와 **내부 관리자 페이지** 를 개발하고 서비스 운영·개선에 참여한다. 필수는 React 5년 이상, JavaScript(ES6+)·CSS·HTML 깊은 이해, Webpack·Babel·Redux·**Recoil**·react-query 실무, Git 협업. TypeScript 적용·테스트 코드, 최적화·리팩토링, 성능·크로스브라우징, 영어 문서 독해는 우대다. 같은 회사 2년 이상 프론트엔드 공고(216514)는 TypeScript 를 필수로, Zustand·Vite 를 적는 반면 이 리더 공고는 TypeScript 가 우대이고 Recoil 을 적는다 — 원티드 번호(93806)가 낮아 더 오래된 게시로 보인다(추론). 전형: 서류 전형 → 코딩 과제 테스트 → 온라인 면접 → 대면 면접 → 처우 협의 → 최종 합격(필요 시 레퍼런스 체크). 자기소개서는 '성장 배경보다 경험했던 업무에 대해' 쓰라고 한다.",
+      "fit": {
+        "must_have": [
+          "React 5년 이상, 팀 리드",
+          "JavaScript·CSS·HTML",
+          "Webpack·Babel·Redux·Recoil·react-query",
+          "Git 협업"
+        ],
+        "can_learn": [
+          "TypeScript 적용",
+          "테스트 코드",
+          "성능·크로스브라우징",
+          "영어 문서 독해"
+        ]
+      },
+      "study": [
+        {
+          "topic": "프론트엔드 팀 리딩과 코드 리뷰",
+          "from": "task",
+          "quote": "• 코딧의 프론트엔드 팀을 관리 및 리드 합니다.",
+          "priority": "core",
+          "why": "첫 주요업무이고 우대에 '최적화 및 리팩토링에 대한 고민' 과 테스트 코드가 있다.",
+          "gap_check": "서너 명의 프론트엔드 팀에서 리뷰 기준(반드시 막을 것 vs 제안)을 어떻게 정하고, 새 기능 일정과 리팩토링·테스트 도입 시간을 어떤 근거로 나누는가?",
+          "drill": "Google 코드 리뷰 가이드를 기준으로 팀 프론트엔드 리뷰 체크리스트와 PR 템플릿을 만들고, GitHub Actions 로 타입 검사·린트·테스트를 PR 마다 돌리게 한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Google Engineering Practices — Code Review",
+              "url": "https://google.github.io/eng-practices/review/",
+              "kind": "docs"
+            },
+            {
+              "title": "GitHub Actions",
+              "url": "https://docs.github.com/en/actions",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "JavaScript 코드베이스에 TypeScript·테스트 들이기",
+          "from": "preference",
+          "quote": "• Typescript 적용 또는 사용 경험 및 테스트 코드(Jest, Jasmine, Mocha ...) 작성 경험이 있는 분이면 좋습니다.",
+          "priority": "core",
+          "why": "우대사항이다. 같은 회사 2년차 공고는 TypeScript 를 필수로 적어, 팀이 TypeScript 쪽으로 옮겨 가는 중일 수 있다(추론).",
+          "gap_check": "큰 JavaScript React 앱을 한 번에 바꾸지 않고 TypeScript 로 옮기려면 어떤 순서(allowJs·경계 타입 먼저·strict 단계적 적용)로 가고, 테스트가 없는 화면에는 무엇부터 붙이는가?",
+          "drill": "작은 JavaScript React 앱을 TypeScript 공식 이관 가이드대로 allowJs → 파일 단위 전환 → strict 로 옮기고, 핵심 화면 둘에 React Testing Library 테스트를 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "TypeScript — Migrating from JavaScript",
+              "url": "https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html",
+              "kind": "docs"
+            },
+            {
+              "title": "React Testing Library",
+              "url": "https://testing-library.com/docs/react-testing-library/intro/",
+              "kind": "docs"
+            },
+            {
+              "title": "Vitest guide",
+              "url": "https://vitest.dev/guide/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "내부 관리자 페이지",
+          "from": "task",
+          "quote": "• 내부에서 사용하는 관리자 페이지를 개발합니다.",
+          "priority": "high",
+          "why": "주요업무다. 코딧은 법령·규제 데이터를 수집해 기업에 제공하므로(회사 브리핑) 내부 운영자가 데이터를 다루는 화면이 필요하다(추론). 필수에 react-query 가 있다.",
+          "gap_check": "운영자가 수집된 법안 데이터를 검수·수정하는 관리자 화면에서 대량 편집·필터·권한(보기 전용/수정)을 어떻게 설계하고, 수정 이력은 어디에 남기는가?",
+          "drill": "react-query 로 목록·상세·일괄 수정이 되는 관리자 화면을 만들고, Storybook 으로 테이블·필터 컴포넌트를 문서화한 뒤 Playwright 로 '필터 → 선택 → 일괄 수정' 흐름을 E2E 테스트한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Storybook docs",
+              "url": "https://storybook.js.org/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Playwright docs",
+              "url": "https://playwright.dev/docs/intro",
+              "kind": "docs"
+            },
+            {
+              "title": "TanStack Query — Overview",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "JS→TS 점진 이관 + 테스트·CI 를 붙인 관리자 화면 저장소",
+          "why": "리더 자리의 주요업무(팀 리드·관리자 페이지)와 우대(TypeScript·테스트)를 한 번에 보여 준다. 전형에 코딩 과제 테스트가 있다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "이끈 팀의 규모·도입한 것·결과 정리",
+          "why": "첫 주요업무가 프론트엔드 팀 관리·리드다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 코딩 과제 테스트 → 온라인 면접 → 대면 면접 → 처우 협의 → 최종 합격(필요 시 레퍼런스 체크). 자기소개서는 '성장 배경보다 경험했던 업무에 대해' 쓰라고 한다.",
+        "expect": [
+          "팀 리딩 경험",
+          "React 아키텍처",
+          "TypeScript·테스트 도입",
+          "코딩 과제"
+        ],
+        "sources": [
+          {
+            "title": "프론트엔드 개발자 (리더, React.js 5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/93806",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
