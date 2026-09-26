@@ -528,6 +528,118 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571843?ReturnUrl=RecruitInfo",
+      "title": "캐릭터 AI 모델 기획 및 테스트 (체험형 인턴) 채용",
+      "site": "dev",
+      "verdict": "**개발 자리가 아니라 기획·테스트 인턴**이다(체험형, 최소 3개월 full-time, 3~6개월 협의, 정규직 전환 연계 없음). Digital Characters TF 가 네이버웹툰 IP 와 LLM 을 접목한 캐릭터챗 같은 서비스를 기획한다고 조직 소개가 적는다. 업무는 IP·캐릭터 깊이 분석, 콘텐츠 시장 조사, **IP 를 AI 에 접목한 사업 기회 발굴(모델링·프롬프팅·테스트)**, 준비부터 출시까지 참여. 필수는 웹툰·콘텐츠 '덕후', AI 서비스에 열린 태도, 콘텐츠 제작 경험, 기획·아이디어, 3개월 full-time. MZ 감각과 창의적 질문, 덕질 경험, 재미있는 글쓰기·엑셀, ChatGPT·Gemini 사용 경험은 우대다. 전형: 지원서 리뷰 → 실무 인터뷰. **접수 2026.09.15 ~ 2026.09.27 23:59**, 인턴십 시작 2026년 10월 중(예정), 평일 10:00~19:00, 정자동 그린팩토리(원격근무 병행 가능). '정규직 채용과 연계되지 않는 체험형 인턴십'.",
+      "fit": {
+        "must_have": [
+          "웹툰·콘텐츠에 대한 깊은 관심",
+          "AI 서비스에 열린 태도",
+          "콘텐츠 제작 경험",
+          "기획·아이디어",
+          "최소 3개월 full-time"
+        ],
+        "can_learn": [
+          "MZ 감각·창의적 질문",
+          "덕질 경험",
+          "재미있는 글쓰기·엑셀",
+          "AI 채팅 서비스 사용"
+        ]
+      },
+      "study": [
+        {
+          "topic": "캐릭터 프롬프팅과 페르소나 일관성",
+          "from": "task",
+          "quote": "IP를 AI에 접목하여 사업 기회 발굴 (모델링, 프롬프팅, 테스트 등)",
+          "priority": "core",
+          "why": "주요업무이고 조직 소개가 'LLM 기술에 웹툰의 IP를 접목한 캐릭터챗 등의 서비스' 를 기획한다고 적는다. 우대에 ChatGPT·Gemini 등 AI 채팅 서비스 사용 경험이 있다.",
+          "gap_check": "웹툰 캐릭터가 대화 20턴이 지나도 말투·세계관·설정(나이·관계·비밀)을 지키게 하려면 시스템 프롬프트에 무엇을 넣고, 원작에 없는 질문(스포일러·민감한 주제)에는 어떻게 답하게 하는가?",
+          "drill": "좋아하는 웹툰 캐릭터 하나로 캐릭터 시트(말투 예시·설정·금지사항)와 시스템 프롬프트를 쓰고, 일부러 캐릭터를 흔드는 질문 20개로 대화해 설정이 무너진 곳을 기록한 뒤 프롬프트를 고친다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Claude — Prompt engineering overview",
+              "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenAI — Prompt engineering",
+              "url": "https://platform.openai.com/docs/guides/prompt-engineering",
+              "kind": "docs"
+            },
+            {
+              "title": "RoleLLM: Benchmarking, Eliciting, and Enhancing Role-Playing Abilities of Large Language Models",
+              "url": "https://arxiv.org/abs/2310.00746",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "캐릭터 AI 테스트 설계",
+          "from": "task",
+          "quote": "IP를 AI에 접목하여 사업 기회 발굴 (모델링, 프롬프팅, 테스트 등)",
+          "priority": "core",
+          "why": "같은 주요업무 줄에 '테스트' 가 명시돼 있고, 우대에 '특정 주제에 대한 창의적인 질문을 던질 수 있으신 분' 과 엑셀 활용이 있다.",
+          "gap_check": "캐릭터챗이 '잘 됐다' 는 것을 무엇(설정 일치·말투 유사도·재미·안전)으로 나눠 채점하고, 두 프롬프트 중 어느 쪽이 나은지는 몇 개의 질문으로 어떻게 비교하는가?",
+          "drill": "앞 드릴 캐릭터로 평가 질문 30개와 4항목 채점표(엑셀)를 만들고, 프롬프트 두 버전을 promptfoo 로 돌려 항목별 점수를 비교한 한 장 보고서를 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "promptfoo — Intro",
+              "url": "https://www.promptfoo.dev/docs/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IP·캐릭터 분석과 사업 기회",
+          "from": "task",
+          "quote": "IP/캐릭터에 대해 깊은 이해 및 분석 진행",
+          "priority": "high",
+          "why": "첫 주요업무이고 다음 줄이 '콘텐츠 시장에 대한 분석/조사' 다. 회사 사이트가 웹툰·웹소설 IP 를 영화·드라마·게임·캐릭터 상품으로 넓힌다고 적는다(회사 브리핑).",
+          "gap_check": "어떤 웹툰 IP 가 캐릭터챗에 잘 맞는지 무엇(캐릭터 매력·팬덤 규모·대화할 거리·세계관 깊이)으로 고르고, 원작 팬이 싫어할 위험은 무엇인가?",
+          "drill": "웹툰 세 작품을 골라 캐릭터챗 적합도 비교표(캐릭터·팬덤·대화 소재·위험)를 만들고, 한 작품에 대한 캐릭터챗 기획 한 장(타깃·핵심 경험·수익 아이디어)을 쓴다. Generative Agents 논문으로 캐릭터가 '기억' 하는 구조를 참고한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Generative Agents: Interactive Simulacra of Human Behavior",
+              "url": "https://arxiv.org/abs/2304.03442",
+              "kind": "paper"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "캐릭터 시트·프롬프트·평가표·기획서 한 벌",
+          "why": "주요업무(IP 분석·시장 조사·프롬프팅·테스트)를 결과물로 보여 준다. 필수에 콘텐츠 제작 경험이 있다.",
+          "effort": "3~5일"
+        },
+        {
+          "idea": "덕질·콘텐츠 제작 경험을 결과물 중심으로 정리",
+          "why": "필수와 우대가 모두 콘텐츠 애정과 제작 경험을 묻는다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 리뷰 → 실무 인터뷰. **접수 2026.09.15 ~ 2026.09.27 23:59**, 인턴십 시작 2026년 10월 중(예정), 평일 10:00~19:00, 정자동 그린팩토리(원격근무 병행 가능). '정규직 채용과 연계되지 않는 체험형 인턴십'.",
+        "expect": [
+          "좋아하는 IP 분석",
+          "캐릭터챗 아이디어",
+          "AI 채팅 사용 경험",
+          "기획 결과물"
+        ],
+        "sources": [
+          {
+            "title": "캐릭터 AI 모델 기획 및 테스트 (체험형 인턴) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571843?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }

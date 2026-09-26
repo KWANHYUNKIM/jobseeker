@@ -25,8 +25,8 @@ jobkorea 에비드넷 데이터 엔지니어(49968005)는 본문 세 칸이 비�
 **노타(`nota`) — `done`, 공고 7건(NetsPresso AI Engineer 368178 · Senior 368177 · AI Compiler 338178 · Solution AI Engineer 368136 · Solution Senior 354744 · GmbH ML Researcher 384789 · 사람인 Edge AI 인턴 55108835).** 출처: nota.ai 첫 화면 + 원티드 공고 머리말.
 **현대자동차(`hyundai-motor`) — `done`, 공고 6건(Perceptive AI 55022478 · 모바일로봇 전장 55022391 · 휴머노이드 운영 55071760 · 차량 사이버보안 55022364 · 정보보호 전략 55070969 · 보안점검 55089542).** 사람인 본문 있는 6건 전부. 출처: hyundai.com/worldwide/ko 첫 화면·IR 페이지 + 사람인 공고 본문. 본문 있는 모집중은 사람인 6건뿐, 캐치 5건은 본문 없음.
 **메가존클라우드 — `done`.** `--gaps` 가 다시 올린 사람인 3건(메가존소프트 Data Engineer · Back-end/Full-Stack · Dell/Nvidia 여신·외환(비개발))을 채웠다.
-**네이버웹툰(`naverwebtoon`) — `in_progress`, 공고 3건(Disney 플랫폼 서버 570887 · iOS 572727 · Data Product Engineer).** 출처: webtoonscorp.com 첫 화면(서비스·business·연혁) + 캐치·사람인 공고.
-⚠️ 다음 회차: 네이버웹툰 공고를 한 사이클 한 건씩 — 캐치 캐릭터 AI 인턴(571843) · 캐치 AI 서비스 기획 인턴(571972). 그다음 사람인 AI 서비스 기획 인턴을 캐치 571972 와 본문 비교. 2차 대기 나머지: 이스트소프트·큐피스트·코리아써치·카카오페이증권·채널코퍼레이션·이그레브·엣지크로스·에이치에스소프트·에이블리코퍼레이션·베이글코드·반프·드림어스컴퍼니·누아·위펀.
+**네이버웹툰(`naverwebtoon`) — `in_progress`, 공고 4건(Disney 플랫폼 서버 570887 · iOS 572727 · Data Product Engineer · 캐릭터 AI 인턴 571843).** 출처: webtoonscorp.com 첫 화면(서비스·business·연혁) + 캐치·사람인 공고.
+⚠️ 다음 회차: 네이버웹툰 공고를 한 사이클 한 건씩 — 캐치 AI 서비스 기획 인턴(571972). 그다음 사람인 AI 서비스 기획 인턴을 캐치 571972 와 본문 비교. 2차 대기 나머지: 이스트소프트·큐피스트·코리아써치·카카오페이증권·채널코퍼레이션·이그레브·엣지크로스·에이치에스소프트·에이블리코퍼레이션·베이글코드·반프·드림어스컴퍼니·누아·위펀.
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 ⚠️ **공고 본문은 `jd-viewer/public/all_jobs_enriched.json` 에서 읽는다 — `jd-viewer/dist/` 는 빌드 사본이라 낡는다.** 2026-09-26 피에프씨 Backend(388360)를 dist 에서 읽고 썼다가 public·검증기 데이터에 없어(내려간 공고) 되돌렸다. 대상은 `--gaps` 목록에 있는 url 만 쓴다.
