@@ -4,17 +4,14 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **82건**.
-직전 회차: ✅ `Staff Back-end Engineer (Security Service Engineering)`(8212612, 서울) 5항목 — 보안 운영이 아니라 보안 **소프트웨어** IC.
-직전 회차: Detection Operations 네트워크 보안 **ats 판 2건 → 사람인 브리핑에 dup**
-(Senior ats 는 28줄 완전 일치, Staff 는 연차 줄 하나만 10년 ↔ 5년).
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **83건**.
+직전 회차: `Staff Security Software Engineer`(8187912, 벵갈루루) → **dup 8212612**(역할 문장 동일, 학위·근무 방식만 다름).
 
-**미작성 보안 계열 26건**(서울·싱가포르·미국·대만·인도). 서로 겹침 >0.5 인 쌍(먼저 한쪽을 쓰고 다른 쪽을 비교):
-- 0.78 `Staff Back-end Engineer (Security Service Engineering)`(8212612, 서울) ↔ `Staff Security Software Engineer`(8187912, 벵갈루루)
+**미작성 보안 계열 남은 쌍**(한쪽을 쓰고 다른 쪽을 비교):
 - 0.74 `Staff Security Engineer, Penetration Tester`(8172730, 타이베이) ↔ `Senior Security Engineer, Penetration Tester`(8175728, 타이베이)
 - 0.64 `Senior Staff / Staff Backend Engineer (Security Infrastructure)`(8047690, 싱가포르) ↔ `Senior Staff Backend Engineer, Security`(7342961, 미국)
 - 0.63 `Staff, AI Security Architect`(greenhouse 8224844) ↔ `Senior Staff Security Engineer, Mobile Security`(8203471)
-⚠️ 다음 회차: 짝 `Staff Security Software Engineer`(8187912, 벵갈루루)를 8212612 와 양방향 비교 → 근무지만 다르면 dup. 그다음 서울 보안 개발 공고(`Staff AI Engineer (Security)` 8203172, `Staff, Security Data Platform Engineer` 8188042).
+⚠️ 다음 회차: 서울 보안 개발 공고 — `Staff AI Engineer (Security)`(8203172) 또는 `Staff, Security Data Platform Engineer`(8188042).
 ⚠️ 경고 80(마감·url 못 찾음)은 크롤 쪽 원인, 미확인. **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
