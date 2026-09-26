@@ -529,6 +529,105 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55097589&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=d83f62b8-9d0d-4a5c-9d66-ba748cf0b517",
+      "title": "[CJ ENM] Mnet Plus Data Analyst",
+      "site": "saramin",
+      "verdict": "경력(연차 표기 없음), 서울 마포구, 마감 2026-09-30. **Mnet Plus 데이터 분석가** 자리로 업무가 넷이다 — **dbt·BigQuery** 로 raw 데이터를 정제해 데이터 마트 설계·구축·관리, 글로벌 K-POP 팬덤 이용 행태를 보는 **KPI 정의와 Superset** 전사/팀별 대시보드, 기능 개선·팬덤·콘텐츠·마케팅 성과 분석으로 의사결정 지원, 데이터 엔지니어와 분석 환경 고도화와 현업의 데이터 접근성 향상. 필수는 분석가 실무(또는 준하는 역량), BigQuery 복잡한 SQL·대용량 조회와 dbt 모델링·마트 구축, Superset(또는 Tableau·Looker) KPI 대시보드 설계·운영, 문제 정의·유저 행동 분석·**A/B 테스트 검증**, 엔지니어·PM·마케터와 소통해 요구사항을 분석용 모델로 전환. 우대사항 칸에는 내용 없이 제출서류(이력서·자기소개서)와 홈페이지 지원 안내만 있다. 전형: 서류전형 → 1차 면접 → CJ CFT → 2차 면접 → 평판조회·채용검진·처우협의 → 합격자 발표. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 분석 실무",
+          "BigQuery SQL·dbt 마트",
+          "Superset 등 KPI 대시보드",
+          "A/B 테스트·유저 행동 분석",
+          "현업 요구를 데이터 모델로"
+        ],
+        "can_learn": [
+          "팬덤 지표 설계",
+          "데이터 접근성 개선"
+        ]
+      },
+      "study": [
+        {
+          "topic": "dbt 로 데이터 마트 쌓기 — staging·intermediate·marts",
+          "from": "task",
+          "quote": "- dbt 및 BigQuery 기반 데이터 Modeling & Data Mart 구축: raw 데이터를 비즈니스 목적에 맞게 정제하고, 분석 및 시각화에 최적화된 데이터 마트(Data Mart)를 설계·구축 및 관리합니다.",
+          "priority": "core",
+          "why": "첫 번째 주요업무이고 필수에 'dbt를 활용한 데이터 모델링 및 Data Mart 구축 경험' 이 있다.",
+          "gap_check": "앱 이벤트 raw 테이블에서 '일별 아티스트별 투표 참여자 수' 마트를 만들 때 staging(이름·타입 정리)·intermediate(세션·사용자 단위 가공)·marts(비즈니스 지표) 중 어디에 어떤 변환을 두고, 매일 전체를 다시 계산하지 않도록 incremental 모델을 쓰면 늦게 도착한 이벤트는 어떻게 처리하며, 마트의 유일성·not null 을 무엇(dbt test)으로 보장하는가?",
+          "drill": "dbt 구조 가이드를 따라 가짜 이벤트 로그(투표·시청·구매)로 stg_ → int_ → fct_daily_votes 모델을 만들고, incremental 설정과 unique·not_null 테스트를 붙인다. 이틀 전 이벤트를 늦게 넣어 incremental 창(lookback)이 그것을 반영하는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "How we structure our dbt projects — dbt Developer Hub",
+              "url": "https://docs.getdbt.com/best-practices/how-we-structure/1-guide-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "BigQuery 대용량 조회 — 파티션과 클러스터로 비용 줄이기",
+          "from": "qualification",
+          "quote": "- SQL 및 데이터 모델링 역량: BigQuery 환경에서 복잡한 SQL 쿼리 작성 및 대용량 데이터 조회가 원활하며, dbt를 활용한 데이터 모델링 및 Data Mart 구축 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격요건이다. 250여 개국 사용자 로그를 BigQuery 로 조회한다(회사 브리핑) — BigQuery 는 스캔한 데이터 양만큼 비용과 시간이 든다.",
+          "gap_check": "최근 7일 이벤트만 보는 쿼리가 테이블 전체를 스캔하는 이유는 무엇이고, 날짜 파티션과 국가·이벤트 종류 클러스터링을 하면 스캔량이 어떻게 줄며, SELECT * 와 파티션 열을 함수로 감싼 WHERE 는 왜 이 효과를 없애는가?",
+          "drill": "BigQuery 공개 데이터셋(또는 샌드박스에 만든 가짜 이벤트)으로 파티션 없는 테이블과 날짜 파티션+클러스터 테이블을 만들고, 같은 쿼리를 돌려 실행 전 예상 스캔량과 실제 처리량을 비교한다. 파티션 필터를 깨는 WHERE 를 일부러 써서 차이를 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Introduction to partitioned tables — BigQuery",
+              "url": "https://cloud.google.com/bigquery/docs/partitioned-tables",
+              "kind": "docs"
+            },
+            {
+              "title": "Optimize query computation — BigQuery",
+              "url": "https://cloud.google.com/bigquery/docs/best-practices-performance-compute",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "팬덤 KPI 정의와 Superset 대시보드",
+          "from": "task",
+          "quote": "- 지표 체계 수립 및 Superset 대시보드 개발: 글로벌 K-POP 팬덤의 서비스 이용 행태를 다각도로 파악할 수 있는 핵심 지표(KPI)를 정의하고, Superset을 활용해 전사/팀별 대시보드를 구축·운영합니다.",
+          "priority": "high",
+          "why": "주요업무이고 필수에 KPI 대시보드 설계·운영이 있다.",
+          "gap_check": "'활성 팬' 을 앱 실행으로 셀지, 투표·시청·구매 같은 참여 행동으로 셀지에 따라 숫자와 해석이 어떻게 달라지고, 전사 대시보드와 팀별 대시보드는 같은 지표 정의를 어디에 두어야 숫자가 어긋나지 않으며(마트에서 한 번 정의), 시상식 주간 같은 이벤트성 급증은 대시보드에서 어떻게 구분해 보이는가?",
+          "drill": "위 dbt 마트로 '일간 참여 팬 수·투표 참여율·유료 전환율' 세 지표의 정의서(분자·분모·제외 조건)를 쓰고, Superset 로컬 실행으로 첫 대시보드를 만들어 이벤트 기간을 주석으로 표시한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Creating Your First Dashboard — Superset",
+              "url": "https://superset.apache.org/user-docs/using-superset/creating-your-first-dashboard/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "A/B 테스트 검증 — 표본 크기부터",
+          "from": "qualification",
+          "quote": "- 비즈니스 문제 해결 및 인사이트 도출: 앱/웹 서비스 내 데이터 기반 문제 정의, 유저 행동 분석, A/B 테스트 검증 등을 통해 가치 있는 비즈니스 인사이트를 도출해본 경험이 있으신 분",
+          "priority": "high",
+          "why": "필수 자격요건에 'A/B 테스트 검증' 이 있다. 멤버십·유료 영상 같은 수익화 기능 개선이 실험 대상이 된다(회사 브리핑).",
+          "gap_check": "멤버십 구매 전환율이 2% 일 때 0.2%p 개선을 잡으려면 그룹당 표본이 대략 얼마 필요하고, 실험 도중 결과를 매일 들여다보며 유의해지면 멈추는 것이 왜 거짓 양성을 늘리며, 나라마다 행동이 다른 글로벌 서비스에서 결과를 국가별로 쪼개 볼 때 무엇을 조심하는가?",
+          "drill": "Evan Miller 표본 크기 계산기로 위 조건의 표본을 구하고, 가짜 실험 데이터(효과 없음)를 만들어 매일 들여다보다 멈추는 방식이 거짓 양성을 얼마나 내는지 시뮬레이션한다. Experiment Guide 로 사전 등록할 항목(주요 지표·기간·가드레일)을 정리한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Sample Size Calculator — Evan Miller",
+              "url": "https://www.evanmiller.org/ab-testing/sample-size.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Trustworthy Online Controlled Experiments — Experiment Guide",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
