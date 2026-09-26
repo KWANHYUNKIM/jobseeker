@@ -5,7 +5,7 @@
   "aliases": [
     "제논"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "genon.ai",
   "one_liner": "AI 전문 컨설팅펌으로 출발해 기업용 생성형 AI 플랫폼(GenOS)·에이전트(GenA, OneAgent)와 구축 서비스를 파는 B2B AI 회사",
@@ -213,7 +213,8 @@
     "catch(dev) 게시 3건(Senior AI Engineer, AI Project Manager, AI Engineer)은 원티드와 제목이 겹친다 — 본문 비교로 duplicate_of 판단할 것",
     "wd/377638: 공고 경력 표기는 5-10년인데 자격요건 첫 줄은 '경력 7년 이상' 이다 — 어느 쪽이 실제 기준인지 공고로 확인되지 않는다",
     "wd/374750: 공고 경력 표기는 1-5년인데 자격요건 첫 줄은 '유관 경력 3년 이상' 이다",
-    "wd/215978: 공고 경력 표기는 3-10년인데 자격요건 첫 줄은 '석사 이상 혹은 학사+1년 이상의 경력' 이다. 도구 목록의 'Langraph' 는 원문 표기 그대로다"
+    "wd/215978: 공고 경력 표기는 3-10년인데 자격요건 첫 줄은 '석사 이상 혹은 학사+1년 이상의 경력' 이다. 도구 목록의 'Langraph' 는 원문 표기 그대로다",
+    "catch 570170(AI Project Manager): catch 경력 표기는 1-5년인데 자격요건 첫 줄은 'PM 업무 경력 최소 5년 이상' 이다"
   ],
   "postings": [
     {
@@ -1182,6 +1183,132 @@
           {
             "title": "Senior AI Engineer (경력 10년 내외) | 제논",
             "url": "https://genon.ninehire.site/job_posting/L5t8HAI5",
+            "publisher": "제논 채용 페이지"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570170?ReturnUrl=RecruitInfo",
+      "title": "AI Project Manager",
+      "site": "dev",
+      "verdict": "catch 경력 표기는 1~5년인데 자격요건 첫 줄은 'PM 업무 경력 최소 5년 이상' 이다(서울 강남). 제논 채용 페이지(ninehire) 원문의 주요업무(catch 게시에는 없다)는 AI 솔루션 고객 제안(요건 협의·제안서), 고객 요구를 반영한 AI 프로젝트 계획·실행 총괄, LLM·생성형 AI 기반 맞춤형 프로젝트 기획, 일정·예산·리소스 관리, 진행 보고, 내부 팀 협업과 고객 신뢰 구축이다. 자격은 AI 기본 이해와 비즈니스 연계, AI·B2B 프로젝트 관리, PMP·애자일 이해, 의사소통·협상, 성과 기반 보고서다. 원문 우대는 LLM·RAG·멀티모달 프로젝트, 대규모 B2B 조율, 컨설팅·대규모 AI 프로젝트 PM, k8s 기본 이해, 대기업 SI 산출물 문서화다. 전형은 catch 기준 서류 → 1/2차면접 → CEO면접 → 최종합격.",
+      "fit": {
+        "must_have": [
+          "PM 경력 5년 이상",
+          "AI 기본 지식과 비즈니스 연계",
+          "AI 프로젝트·B2B 고객사 프로젝트 관리",
+          "프로젝트 관리 도구·PMP·애자일 이해",
+          "고객 의사소통·협상",
+          "다수 팀 협업",
+          "성과 기반 보고서"
+        ],
+        "can_learn": [
+          "LLM·RAG·멀티모달 프로젝트",
+          "대규모 B2B 요구 조율",
+          "컨설팅·대규모 AI 프로젝트 PM",
+          "k8s 기본",
+          "대기업 SI 산출물 문서화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AI 프로젝트의 불확실성을 일정·예산에 담기",
+          "from": "qualification",
+          "quote": "• AI 프로젝트 관리 및 B2B 고객사 프로젝트 경험 보유",
+          "priority": "core",
+          "why": "자격요건이고 원문 주요업무에 '프로젝트의 일정, 예산, 리소스 관리' 가 있다. AI 프로젝트는 데이터 품질·모델 성능이 착수 전에 확정되지 않아 일반 SI 와 계획 방식이 다르다(추론).",
+          "gap_check": "'정확도 90%' 같은 목표를 계약·일정에 어떻게 적고(단계별 검증 게이트·PoC 후 본사업), 데이터가 예상보다 나쁠 때 범위·일정·비용 중 무엇을 먼저 조정하는가?",
+          "drill": "가상의 사내 문서 RAG 챗봇 구축 사업에 대해 WBS, 단계별 검증 게이트(데이터 확인→PoC→파일럿→오픈), 리스크 목록(데이터·보안 심의·성능), 예산 초과 시 대응안을 한 벌로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Atlassian — Agile project management",
+              "url": "https://www.atlassian.com/agile/project-management",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "AI 기술을 비즈니스 요구와 잇기",
+          "from": "qualification",
+          "quote": "• 인공지능 전반에 대한 기본 지식과 이해 보유, 이를 비즈니스 요구와 연계할 수 있는 능력",
+          "priority": "core",
+          "why": "자격요건이고 원문 주요업무에 'LLM과 생성형 AI기술에 기반을 둔 인공지능 솔루션을 활용하여 고객사 맞춤형 프로젝트를 기획' 과 고객 제안서 작성이 있다. 원문 우대에 LLM·RAG·멀티모달 프로젝트 경험이 있다.",
+          "gap_check": "RAG·파인튜닝·에이전트가 각각 어떤 고객 요구에 맞고, 각 방식의 대략적 비용·기간·필요 데이터를 제안서 수준에서 설명할 수 있는가?",
+          "drill": "고객 요구 세 가지(사내 규정 질의응답, 상담 요약, 보고서 자동 작성)에 대해 추천 기술·필요 데이터·예상 기간·성공 지표를 표로 만들고 제안서 목차를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Retrieval-Augmented Generation for Large Language Models: A Survey (arXiv:2312.10997)",
+              "url": "https://arxiv.org/abs/2312.10997",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "PMP·애자일 프로세스",
+          "from": "qualification",
+          "quote": "• 프로젝트 관리 소프트웨어 사용 경험, 프로젝트 관리 프로세스(PMP, 애자일 등)에 대한 이해",
+          "priority": "high",
+          "why": "자격요건이다. B2B 계약은 고정 범위(폭포수)를 요구하는데 AI 개발은 반복 실험이 필요해, 둘을 섞어 쓰게 된다(추론).",
+          "gap_check": "고정 범위 계약 안에서 스프린트로 실험을 돌릴 때 변경 요청은 어떻게 처리하고, 고객 보고는 무엇(번다운·마일스톤·지표)으로 하는가?",
+          "drill": "스크럼 가이드를 읽고, 위 RAG 사업을 4주 스프린트 3개로 나눈 계획과 스프린트 리뷰 보고서 양식을 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "The Scrum Guide",
+              "url": "https://scrumguides.org/scrum-guide.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Manifesto for Agile Software Development",
+              "url": "https://agilemanifesto.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "성과를 숫자로 입증하는 보고서",
+          "from": "qualification",
+          "quote": "• 데이터 및 성과 기반의 보고서 작성, 결과 분석을 통해 프로젝트 성과를 객관적으로 입증 가능자",
+          "priority": "high",
+          "why": "자격요건이고 원문 주요업무에 '프로젝트 진행 상황을 체계적으로 모니터링하고 보고서를 작성하여 고객사 및 내부 이해관계자 공유' 가 있다.",
+          "gap_check": "AI 도입 성과를 '정확도' 가 아니라 고객 언어(처리 시간·인력 절감·오류 감소)로 어떻게 측정하고, 도입 전 기준값은 언제 재 두는가?",
+          "drill": "가상의 상담 요약 도입 사업의 성과 보고서 한 장을 쓴다 — 도입 전·후 처리 시간, 품질 검수 결과, 비용, 남은 과제.",
+          "hours": 3,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "AI 프로젝트 제안서 + 단계별 게이트 계획서 샘플",
+          "why": "원문 주요업무 첫 줄이 고객 제안(요건 협의·제안서 작성)이고 다음이 계획·실행 총괄이다. 두 문서가 이 자리의 산출물이다.",
+          "effort": "2일"
+        },
+        {
+          "idea": "과거 PM 프로젝트를 성과 지표로 정리",
+          "why": "자격요건 마지막 줄이 '성과를 객관적으로 입증' 이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 1/2차면접 → CEO면접 → 최종합격(catch 게시 기준).",
+        "expect": [
+          "AI 프로젝트 일정·리스크 관리",
+          "고객 요구를 AI 기술로 연결한 사례",
+          "범위 변경 협상",
+          "성과 보고 방식"
+        ],
+        "sources": [
+          {
+            "title": "AI Project Manager",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570170?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          },
+          {
+            "title": "AI Project Manager | 제논",
+            "url": "https://genon.ninehire.site/job_posting/qYRf7zPp",
             "publisher": "제논 채용 페이지"
           }
         ]
