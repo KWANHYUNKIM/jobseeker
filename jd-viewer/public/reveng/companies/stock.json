@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "in_progress",
+  "hold_reason": "수익원 'Stock(팀 인원 구간별 구독)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 6편 전부: 익명화는 사내 채용, PostgreSQL·ECS 는 운영 일반 / Zenn 검색 API 'Stock タスク'·'情報ストック'·'stock_inc'·'株式会社Stock' 0건). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. Stock 제품(정보 스톡·태스크·메시지)의 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "stock-app.info",
   "one_liner": "팀 정보 관리 도구 Stock 과 비 IT 기업용 AI 지식 도구 나레칸 — 검색 적중률은 전건 고성능 모델 대신 싼 모델이 먼저 걸러 비용을 누르며 끌어올리고, 스캔 PDF OCR 은 엔진을 바꾸기 전에 회전 메타데이터·빈 페이지·감시 오판이라는 엔진 밖 실패부터 없앤다",
