@@ -2444,3 +2444,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 atama plus 레디니스 리뷰
 
 - 전 · 중 · 후편 전문으로 기능 `readiness-review-roadmap`, 결정 7.
+
+## 2026-09-27 atama plus 완주
+
+- --gaps 는 후보 조사였지만 완주 판정이 먼저. 완주 기준 셋 — 도메인 둘 다 기능 1 · 기능이 서로 connections · 수익원 둘 다 confirmed.
