@@ -1176,6 +1176,98 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387540",
+      "title": "[AVP] 모빌리티 플랫폼 Infra Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 서초구. 같은 AVP 조직(수요 응답 교통 **셔클**)의 데이터 엔지니어 387545 와 짝을 이루는 **클라우드 인프라** 자리다. 주요업무는 클라우드 인프라 설계·구축·운영, 트러블슈팅, **장애 예방·탐지·복구를 위한 고가용성 아키텍처**, **코드 기반 인프라 관리와 환경 표준화**, 모니터링·로그 분석·이상 탐지, **클라우드 접근 권한·데이터 보호 정책**, **보안 인증 심사 대응**과 상시 보안 점검. 자격은 학사·플랫폼 엔지니어 3년·대규모 트래픽용 클라우드 설계·마이그레이션·운영 경험. 우대가 이 자리의 특징을 드러낸다 — **퍼블릭 클라우드와 공공 클라우드 운영**, **CSAP/ISMS-P** 체계 하의 설계·운영·감사 대응, Terraform 등 IaC. 공공 클라우드·CSAP 가 나오는 것은 셔클이 지자체 등 공공 영역과 닿아 있을 수 있다는 신호지만 공고에 이유는 없다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "플랫폼 엔지니어 3년",
+          "대규모 클라우드 설계·마이그레이션·운영"
+        ],
+        "can_learn": [
+          "Terraform",
+          "CSAP·ISMS-P 감사 대응",
+          "공공 클라우드"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Terraform 으로 환경을 코드로 찍어 내기",
+          "from": "task",
+          "quote": "• 코드 기반 인프라 관리 체계 구축 및 환경 표준화",
+          "priority": "core",
+          "why": "주요업무이고 우대사항이 Terraform 을 이름으로 든다.",
+          "gap_check": "state 파일은 무엇을 기억하고, 여러 사람이 동시에 apply 하면 무엇이 깨지며(원격 state·잠금), 개발·스테이징·운영을 모듈과 변수로 어떻게 나누는가? 누군가 콘솔에서 손으로 바꾼 설정(drift)은 어떻게 발견하고 되돌리는가?",
+          "drill": "Terraform 소개 문서를 읽고 VPC·서브넷·보안그룹·오토스케일링 웹 계층을 모듈로 만들어 dev/prod 두 환경을 같은 코드로 띄운다. 원격 state 와 잠금을 설정하고, 콘솔에서 보안그룹을 손으로 바꾼 뒤 plan 으로 drift 가 보이는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "What is Terraform — HashiCorp Developer",
+              "url": "https://developer.hashicorp.com/terraform/intro",
+              "kind": "docs"
+            },
+            {
+              "title": "Infrastructure as code — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Infrastructure_as_code",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고가용성 — 장애를 예방·탐지·복구하는 구조",
+          "from": "task",
+          "quote": "• 장애 예방·탐지·복구를 위한 고가용성 아키텍처 설계 및 운영",
+          "priority": "core",
+          "why": "주요업무다. 실시간 호출·배차 서비스는 멈추면 바로 이용자가 못 탄다.",
+          "gap_check": "다중 가용 영역, 헬스체크 기반 교체, 데이터베이스 복제·장애 조치는 각각 어떤 장애를 막는가? RTO·RPO 를 정하면 백업·복제 방식이 어떻게 달라지고, 복구 절차는 실제로 돌려 보지 않으면 왜 믿을 수 없는가?",
+          "drill": "AWS Well-Architected 신뢰성 원칙을 읽고, 위 Terraform 환경에 다중 AZ 로드밸런서·오토스케일링·관리형 DB 복제본을 붙인다. 인스턴스 하나와 AZ 하나를 일부러 내려 서비스 지속 여부와 복구 시간을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Reliability Pillar — AWS Well-Architected Framework",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모니터링·로그와 이상 탐지",
+          "from": "task",
+          "quote": "• 인프라 전반의 모니터링·로그 분석 체계 구축 및 이상 탐지 대응",
+          "priority": "high",
+          "why": "주요업무다. 장애를 '탐지' 하는 쪽을 맡는다.",
+          "gap_check": "지연·트래픽·오류·포화(골든 시그널)를 인프라와 서비스 수준에서 각각 무엇으로 재는가? 증상 기반 알림과 원인 기반 알림 중 무엇을 사람에게 보내고, 알림 피로를 줄이려면 무엇을 버리는가?",
+          "drill": "Google SRE 책의 분산 시스템 모니터링 장을 읽고, 샘플 서비스에 골든 시그널 대시보드와 SLO 기반 알림 두 개만 만든다. 부하 테스트로 지연을 올려 알림이 증상 기준으로 한 번만 오는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Monitoring Distributed Systems — Google SRE Book",
+              "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "접근 권한 설계와 보안 인증 심사 대응",
+          "from": "preference",
+          "quote": "• CSAP/ISMS-P 등 보안·개인정보보호 체계 하에서 설계, 운영, 감사 대응을 수행한 경험을 보유하신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 접근 권한·데이터 보호 정책 설계와 보안 인증 심사 대응이 있다.",
+          "gap_check": "사람·서비스별 최소 권한을 어떻게 주고(역할·임시 자격 증명), 운영 DB 접근 기록은 어디에 남기는가? 인증 심사에서 '정책이 있다' 가 아니라 '지켜진다' 를 보이려면 어떤 증적(접근 로그·변경 이력·점검 결과)을 평소에 쌓아 두는가?",
+          "drill": "AWS IAM 보안 모범 사례를 읽고 위 환경에 역할 기반 접근·MFA·장기 액세스 키 제거·접근 로그 수집을 적용한다. 개인정보가 든 테이블 하나를 정해 접근 권한표와 분기 점검 체크리스트, 증적 목록을 한 장으로 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Security best practices in IAM — AWS",
+              "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
