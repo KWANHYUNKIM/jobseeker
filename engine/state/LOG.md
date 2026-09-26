@@ -2143,3 +2143,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 mixtend 회사 프로파일
 
 - 큐 등록 때 '결정 글이 작다 — 프로파일 때 다시 판정'. 판정: Cache Lock 글이 Ver1→3 대가를 적고, 고속화 글이 MPA·폰트·광고 높이를 적어 두 도메인은 선다. mixtend.co.jp 는 r.jina.ai 도메인 해석 실패 — TimeRex 요금표(1인당 월정액)와 블로그의 퍼스트뷰 광고 서술로 수익원 둘(광고는 inferred).
+
+## 2026-09-27 mixtend 균등 배정 Cache Lock
+
+- `a7f2907594c2fa` 로 기능 `even-assignment-cache-lock`, 결정 7. 글이 '샘플 코드는 실제와 다르다'고 적어 잠금 키(캘린더)·만료(30초)는 inferred 로 내리고, 도메인 tech 의 표기도 그에 맞춰 고쳤다.

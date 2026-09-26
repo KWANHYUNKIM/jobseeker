@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**mixtend 프로파일(2026-09-27, slug `mixtend`) — 판정: 결정 글이 두 도메인을 세울 만큼은 된다. 도메인 둘: 여러 담당자에게 예약을 고르게 나눈다(TimeRex, lockForUpdate → Cache Lock) · 몰리는 두 페이지를 가장 빨리 띄운다(調整さん MPA·LCP/CLS·Flutter 출결표). 회사 사이트 mixtend.co.jp 는 r.jina.ai 에서 도메인 해석 실패 — 수익원은 TimeRex 요금표·블로그에서만. 다음은 --gaps 의 후보 조사(큐 0/3) — 이번 사이클은 신규였으니 확장보다 후보 조사가 먼저 걸릴 수 있다, --gaps 를 따를 것. 확장이 오면 첫 기능 `a7f2907594c2fa`(균등 배정 Cache Lock), 둘째 `001d1a7f1c3cce`(PC 톱 고속화). 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**mixtend 기능 1(2026-09-27) — `even-assignment-cache-lock`(잠글 것은 담당자 표가 아니라 예약 한 건 전체다, 결정 7 — 키·만료는 샘플 코드라 inferred). 다음은 --gaps 의 확장: 도메인 '몰리는 두 페이지를 가장 빨리 띄운다' — `001d1a7f1c3cce`(MPA · LCP fetchpriority · 웹폰트 비동기 · 광고 높이 고정) + `f3627bc47121dd`(Flutter 출결표). 그 뒤 調整さん 광고 수익원(inferred)을 RSS · Zenn 검색으로 판정, mixtend.co.jp 는 WebFetch 로 한 번 더. 큐 0/3 — 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계' · +Outbox: DRESS CODE ↔ WealthNavi): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
