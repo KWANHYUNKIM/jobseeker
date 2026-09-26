@@ -5,7 +5,7 @@
   "aliases": [
     "베스핀글로벌"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "bespinglobal.com",
   "one_liner": "AWS·Google Cloud·Azure 등 퍼블릭 클라우드를 대신 구축·운영하는 MSP 로 출발해, AI 에이전트 플랫폼·데이터·보안 서비스로 넓히고 있는 회사",
@@ -26,7 +26,21 @@
         "summary": "회사를 '기업의 AI 전환을 설계하고 실행하는 운영 혁신 파트너' 로 소개하고, 2015년 설립, Gartner 퍼블릭 클라우드 관리 서비스 MQ 에서 동아시아 최초 리더(2020), 2022-2024 Visionary 를 적는다"
       }
     ],
-    "scale": [],
+    "scale": [
+      {
+        "label": "클라우드 운영 경험 고객사 수(회사 주장)",
+        "value": "5,000개 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[베스핀글로벌] Senior Cloud Platform Engineer",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54845426&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e7a29785-fc4a-4f10-8434-fb5a629a2758",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
     "revenue": [
       {
         "name": "클라우드 구축·운영(MSP)",
@@ -212,7 +226,8 @@
     "wd/381976: 자격요건이 'ReAct 기반의 고급 수준 Front-end' 로 적혀 있다 — 기술 스택 표기에는 React 가 있어 React 의 오기로 보이지만 공고에서 확인되지 않는다",
     "wd/381967: 공고 제목은 '(Vertical Solution1팀)' 인데 본문 첫 문단은 'AI Expert실 … Helpnow AI Foundry' 소개다. 같은 문단이 Okta 공고(381969, 제목 'SECaaS팀')에도 붙어 있다 — 어느 조직 소속인지 공고로 확인되지 않는다",
     "사람인 'PL 및 AI 개발자(차장급)' 공고가 'HelpNow Plex' 플랫폼과 AI Plex팀을 적는데, 이번에 읽은 홈페이지 서비스 목록에는 HelpNow Agent Portal·AI Foundry 는 있고 Plex 는 없었다",
-    "사람인 'PL 및 AI 개발자(차장급)' 우대사항의 'AVML', 'Llamalndex' 는 원문 표기 그대로다 — 뜻(AI/ML? LlamaIndex?)은 공고로 확인되지 않는다"
+    "사람인 'PL 및 AI 개발자(차장급)' 우대사항의 'AVML', 'Llamalndex' 는 원문 표기 그대로다 — 뜻(AI/ML? LlamaIndex?)은 공고로 확인되지 않는다",
+    "사람인 'Senior Cloud Platform Engineer' 의 모집 인원이 '(0명)' 으로 적혀 있다 — 표기 오류인지 공고로 확인되지 않는다"
   ],
   "postings": [
     {
@@ -1470,6 +1485,164 @@
           {
             "title": "[베스핀글로벌] SRE 2팀 시니어 클라우드 SRE 엔지니어",
             "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55110104&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f62bbdef-2298-493e-8ec7-bd227e5fc8e7",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54845426&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e7a29785-fc4a-4f10-8434-fb5a629a2758",
+      "title": "[베스핀글로벌] Senior Cloud Platform Engineer",
+      "site": "saramin",
+      "verdict": "과장급, 관련 경력 7~12년(서울 서초). SK AX 통합 MSP 와 LG Uplus 통합 MSP 운영을 맡아 AWS, Azure, GCP, Naver Cloud 환경의 운영·배포·모니터링·거버넌스를 수행하고, MTTD/MTTR 개선과 재발 방지, Terraform·컨테이너 기반 운영 환경 구축을 맡는다. 같은 회사 SRE 2팀 공고와 결이 비슷하지만 문턱이 조금 낮다 — 클라우드 2개 이상 운영 경험이 '3년 이상'(SRE 2팀은 5년 이상)이고 IaC 도구 실무가 필수다. 컨테이너·자격증(AWS SAA/SAP, Azure Administrator)·ITIL 은 우대다. 모집 인원이 '(0명)' 으로 적혀 있다. 전형은 서류 → 인터뷰(통상 1회) → 처우 협의.",
+      "fit": {
+        "must_have": [
+          "학사 이상",
+          "관련 경력 7~12년(과장급)",
+          "AWS·Azure·GCP 중 2개 이상 운영 3년 이상",
+          "Linux/Unix·네트워크 기본",
+          "IaC(Terraform·CloudFormation·Ansible)",
+          "장애 대응·트러블슈팅",
+          "Python·Bash"
+        ],
+        "can_learn": [
+          "Kubernetes·Docker",
+          "AWS SAA/SAP·Azure Administrator",
+          "Datadog·Prometheus·Grafana·CloudWatch",
+          "ITIL·DevOps 방법론"
+        ]
+      },
+      "study": [
+        {
+          "topic": "통합 MSP 운영 — 여러 고객사를 한 체계로",
+          "from": "task",
+          "quote": "- SK AX 통합 MSP 및 LG Uplus 통합 MSP 운영을 담당하며, 고객사의 안정적인 클라우드 서비스 운영을 책임져요.",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다. '통합 MSP' 는 다른 IT 서비스 회사가 맡은 여러 고객의 클라우드 운영을 이 회사가 한데 받아 운영한다는 뜻으로 보인다(추론). 우대에 'ITIL 또는 DevOps 방법론' 과 'MSP 또는 대규모 인프라 운영 경험' 이 있다.",
+          "gap_check": "ITIL 의 인시던트·문제·변경 관리는 각각 무엇을 다루고, 고객사 수십 곳의 변경 요청을 받을 때 승인·작업 창·롤백 계획을 어떻게 표준화하는가?",
+          "drill": "가상의 고객사 3곳 운영을 가정해 인시던트 등급 기준, 변경 요청 양식(작업 내용·영향·롤백), 월간 운영 보고서 목차를 한 벌로 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "AXELOS — ITIL service management",
+              "url": "https://www.axelos.com/certifications/itil-service-management",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티 클라우드 거버넌스 — 계정·정책·가드레일",
+          "from": "task",
+          "quote": "- AWS, Azure, GCP, Naver Cloud 등 멀티 클라우드 환경에서의 운영, 배포, 모니터링, 거버넌스 관리 등 클라우드 운영 서비스 전반을 수행해요.",
+          "priority": "core",
+          "why": "주요업무이고 필수 자격이 '클라우드 플랫폼(AWS, Azure, GCP 중 2개 이상) 운영 경험이 3년 이상' 이다. 거버넌스가 운영 범위에 명시돼 있다.",
+          "gap_check": "AWS SCP 와 Azure Policy 는 각각 무엇을 막고(권한 상한 vs 리소스 규칙), 고객사 계정에서 '서울 리전 밖 생성 금지'·'공개 버킷 금지' 를 두 클라우드에 어떻게 똑같이 거는가?",
+          "drill": "AWS Organizations 의 SCP 와 Azure Policy 로 같은 규칙 두 개(리전 제한·필수 태그)를 걸고, 위반 리소스를 만들어 막히는 모습을 기록한 대응표를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS Organizations — Service control policies",
+              "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Azure Policy — Overview",
+              "url": "https://learn.microsoft.com/en-us/azure/governance/policy/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IaC 도구 — Terraform·CloudFormation·Ansible 의 자리",
+          "from": "task",
+          "quote": "IaC 도구(Terraform, CloudFormation, Ansible 등) 실무 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격이다(원문에서 자격 목록이 주요업무 칸 안에 붙어 있다). 주요업무 마지막 줄이 'Terraform 기반의 인프라 자동화(IaC) 및 컨테이너 기술' 이다.",
+          "gap_check": "Terraform·CloudFormation 은 리소스를 만드는 도구이고 Ansible 은 서버 안 설정을 맞추는 도구라는 차이를 운영 사례로 말할 수 있고, 이미 콘솔로 만들어진 고객 자원을 Terraform 으로 가져오려면(import) 무엇을 조심하는가?",
+          "drill": "콘솔로 만든 VM·보안 그룹을 Terraform import 로 가져와 코드화하고, 같은 VM 의 패키지·설정은 Ansible 플레이북으로 맞춘 뒤 두 도구의 경계를 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Terraform — Documentation",
+              "url": "https://developer.hashicorp.com/terraform/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS CloudFormation — User Guide",
+              "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Ansible — Documentation",
+              "url": "https://docs.ansible.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애 즉시 조치와 재발 방지",
+          "from": "task",
+          "quote": "- 운영 환경에 대한 모니터링 및 장애에 대한 체계적인 관리를 통해 즉시 조치하고, MTTD/MTTR 개선을 주도하며 재발 방지 계획을 수립해요.",
+          "priority": "high",
+          "why": "주요업무이고 필수 자격에 '장애 대응 및 트러블슈팅 경험' 이 있다. 우대에 Datadog, Prometheus, Grafana, CloudWatch 가 있다.",
+          "gap_check": "CloudWatch 경보와 Prometheus 경보를 한 고객사에 같이 쓸 때 누가 먼저 받는지, 중복 알림을 어떻게 줄이는지, 재발 방지 계획을 무엇으로 추적하는가?",
+          "drill": "테스트 환경에 CloudWatch 경보와 Prometheus 경보를 같은 지표로 걸어 장애를 일으키고, 알림 경로를 하나로 정리한 뒤 재발 방지 항목을 담당·기한과 함께 표로 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Google SRE Book — Managing Incidents",
+              "url": "https://sre.google/sre-book/managing-incidents/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드 자격증",
+          "from": "preference",
+          "quote": "클라우드 관련 자격증(AWS SAA/SAP, Azure Administrator 등)을 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 필수 자격이 클라우드 2개 이상이라 두 번째 클라우드를 증명하는 수단이 된다(추론).",
+          "gap_check": "주로 쓴 클라우드가 아닌 쪽의 자격 범위 중 위 학습으로 채우지 못한 영역은 무엇인가?",
+          "drill": "AWS SAA 와 Azure Administrator 시험 안내의 범위를 위 학습 항목과 대조해 빈 곳을 채우는 계획을 세운다.",
+          "hours": 2,
+          "resources": [
+            {
+              "title": "AWS Certified Solutions Architect – Associate",
+              "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+              "kind": "docs"
+            },
+            {
+              "title": "Microsoft — Azure Administrator Associate",
+              "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "두 클라우드 거버넌스 + IaC import + 운영 표준 문서 한 벌",
+          "why": "주요업무 네 줄(통합 MSP 운영, 멀티 클라우드 거버넌스, 장애·재발 방지, Terraform)을 결과물로 보여 준다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "두 번째 클라우드 자격증",
+          "why": "필수 자격의 '2개 이상' 을 서류에서 바로 보여 준다.",
+          "effort": "2~4주"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 인터뷰 → 처우 협의 → 최종 합격 → 채용검진 → 입사. 인터뷰는 통상 1회이나 추가될 수 있고, 필요 시 레퍼런스 체크가 있다(공고 기준).",
+        "expect": [
+          "여러 고객사를 동시에 운영한 방식",
+          "멀티 클라우드 거버넌스",
+          "IaC 도입·import 경험",
+          "장애 대응과 재발 방지"
+        ],
+        "sources": [
+          {
+            "title": "[베스핀글로벌] Senior Cloud Platform Engineer",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54845426&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e7a29785-fc4a-4f10-8434-fb5a629a2758",
             "publisher": "사람인"
           }
         ]
