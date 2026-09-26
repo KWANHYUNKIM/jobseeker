@@ -134,7 +134,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "sds-pdf-table-extraction"
+      ]
     }
   ],
   "features": [
@@ -422,6 +424,250 @@
           "publisher": "株式会社KENCOPA",
           "date": "2026-09-26",
           "summary": "설계 도서를 AI 가 읽어 **공정표를 최단 15분에 대화로 생성**. 과제 — 견적 때 개략 공정 작성이 오래 걸리고 사람에 묶인다, 수주 뒤 전체 공정표를 젊은 기술자가 밤새 만든다, 공정 보카케(歩掛) 데이터가 쌓이지 않아 교육이 어렵다, 엑셀 관리가 번거롭다. 제네콘·서브콘·플랜트 현장에 도입 확대 중."
+        }
+      ]
+    },
+    {
+      "key": "sds-pdf-table-extraction",
+      "name": "SDS PDF 의 성분표를 JSON 으로 뽑는다 — VLM 에 E2E 로 맡겨 8할은 됐지만 남은 실패가 거의 다 병합 셀·괘선 없는 표였다, 그래서 셀 경계·병합 구조(그라운딩)는 Marker 에, 의미 해석과 JSON 화는 VLM 에 나눈다",
+      "domain": "제각각인 PDF 표를 구조화 데이터로 뽑는다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "AI 에이전트를 만드는 데 **SDS(안전 데이터 시트)** PDF 해석이 필요했다. SDS 에서 뽑고 싶은 것은 물질의 부모 자식 관계(성분 카테고리와 개별 성분)·함유량(질량%)·CAS 번호(화학 물질의 국제 식별 번호). 이 정보는 표이기도 하고 문장 속에 있기도 하며, 표 형식도 통일돼 있지 않다. 목표는 이를 시스템이 다룰 수 있는 구조화 데이터(JSON)로 바꾸는 것.\n\n'VLM 이라면 PDF 를 그림으로 넘기기만 하면 E2E 로 해석될 것' 이라 보고 최신 VLM 에 통째로 맡겼다. 어느 제품·프로젝트의 일인지는 글에 없다.",
+        "metrics": [
+          {
+            "label": "VLM E2E(GPT-5.1) 성공률",
+            "value": "약 8할 — 실패는 대부분 표 구조 인식 실수(병합 셀·괘선 없는 표), Few-shot 으로도 개선 없음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+                "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+                "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+                "date": "2026-02-03",
+                "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+              }
+            ]
+          },
+          {
+            "label": "변환 도구 비교(Marker README 인용)",
+            "value": "Marker 평균 2.838초·LLM Score 4.239 · LlamaParse 23.348초·3.976 · Mathpix 6.362초·4.156 · Docling 3.699초·3.704",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+                "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+                "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+                "date": "2026-02-03",
+                "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+              }
+            ]
+          },
+          {
+            "label": "표 구조 점수(FinTabNet Avg, Marker README 인용)",
+            "value": "Marker 0.816 · Marker + `--use_llm` 0.907 · Gemini 단독 0.829",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+                "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+                "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+                "date": "2026-02-03",
+                "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "프롬프트를 고쳐도 안정되지 않을 때",
+          "thought": "VLM 은 만능 도구가 아니다. '이건 화학 물질 표다' 같은 **의미 이해·추론**은 잘하지만, '이 셀은 좌표 (x,y) 에 있다'·'이 열은 3열까지 병합됐다' 같은 **그라운딩(구체적 위치 특정)**은 못한다. 실패가 거의 다 표 구조에서 났던 이유다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+              "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+              "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+              "date": "2026-02-03",
+              "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+            }
+          ]
+        },
+        {
+          "at": "접근 순서를 돌아볼 때",
+          "thought": "처음부터 VLM 으로 E2E 를 시도한 것은 유효했다 — 실패 사례를 분석해 VLM 이 못하는 부분을 특정하고, 그 부분을 전문 모델로 단계적으로 떼어 낸다. 먼저 통째로 맡겨 보고, 실패 패턴에서 역할을 나눈다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+              "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+              "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+              "date": "2026-02-03",
+              "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "SDS",
+            "what": "안전 데이터 시트 PDF. 성분의 부모 자식 관계·함유량(질량%)·CAS 번호가 표나 문장으로, 제각각인 형식으로 적혀 있다."
+          },
+          {
+            "name": "병합 셀",
+            "what": "'90 이상' 같은 함유량이나 CAS 번호가 여러 행에 걸친 셀(rowspan). 잘못 읽으면 어느 성분이 어느 함유량인지 연결이 무너진다."
+          },
+          {
+            "name": "Marker",
+            "what": "OSS 표 구조 인식·PDF 변환 도구. 셀 경계와 병합 구조를 HTML/Markdown 표로 낸다."
+          },
+          {
+            "name": "VLM",
+            "what": "구조화된 표를 받아 '성분표다' 를 이해하고 부모 자식 관계를 추론해 JSON 으로 바꾼다."
+          }
+        ],
+        "invariants": [
+          "표 영역 검출·셀 경계·병합 셀 구조는 VLM 에 맡기지 않는다.",
+          "VLM 은 이미 구조화된 표를 받아 의미 해석과 JSON 화만 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "PDF 이미지를 Marker 에 넣어 표 구조(셀 경계·병합 셀)를 HTML/Markdown 표로 바꾼다",
+            "why": "그라운딩은 전문 모델이 잘한다 — 병합 셀을 rowspan 으로 맞게 읽는다."
+          },
+          {
+            "step": "구조화된 표를 VLM 에 넘겨 성분표임을 이해하고 부모 자식 관계를 추론해 JSON 으로 바꾼다",
+            "why": "의미 이해·추론은 VLM 이 잘한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "처음엔 어떻게 해석할까?",
+            "chosen": "**VLM(GPT-5.1)에 PDF 전체를 넘기고 'JSON 으로 출력하라' — E2E.**",
+            "alternatives": [
+              "처음부터 파이프라인 분업(inferred)"
+            ],
+            "tradeoff": "가장 빨리 시험할 수 있고 8할은 기대대로 구조화됐다. 대가 — 병합 셀을 못 읽어 '90 이상' 이 1행에만 나오고 2~4행 함유량이 비며, 병합된 CAS 번호가 1행에 섞여 성분·함유량 연결이 무너졌다. Few-shot 으로도 안 나아졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+                "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+                "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+                "date": "2026-02-03",
+                "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+              }
+            ]
+          },
+          {
+            "question": "실패를 프롬프트로 고칠까, 과제를 나눌까?",
+            "chosen": "**과제를 VLM 이 잘하는 것과 못하는 것으로 나눈다 — 표 영역 검출·셀 경계·병합 구조(그라운딩)는 전문 모델, '성분표다' 이해·부모 자식 추론·JSON 변환은 VLM.**",
+            "alternatives": [
+              "프롬프트·Few-shot 개선 계속"
+            ],
+            "tradeoff": "실패 원인(그라운딩)을 VLM 밖으로 뺀다. 대가 — 모델이 둘이 되어 파이프라인과 운영할 것이 는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+                "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+                "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+                "date": "2026-02-03",
+                "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+              }
+            ]
+          },
+          {
+            "question": "표 구조 인식 전문 모델은 무엇으로?",
+            "chosen": "**Marker — 병합 셀·괘선 없는 표에 대한 정확도가 좋고, 일본어를 지원하고, OSS 라 자사 인프라에서 운용할 수 있다.**",
+            "alternatives": [
+              "LlamaParse(클라우드 API)",
+              "Mathpix(클라우드 API)",
+              "Docling(OSS)"
+            ],
+            "tradeoff": "README 벤치마크에서 변환 품질·속도가 앞서고 클라우드로 PDF 를 보내지 않는다. 대가 — GPU 등 자체 인프라 운용을 떠안는다(이 사이트의 해석), 이 분야가 빨리 바뀌어(Chandra·DeepSeek-OCR) 선정을 다시 봐야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+                "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+                "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+                "date": "2026-02-03",
+                "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+              }
+            ]
+          },
+          {
+            "question": "Marker 의 `--use_llm`(LLM 후처리)을 켤까?",
+            "chosen": "**이번엔 쓰지 않았다.**",
+            "alternatives": [
+              "Marker + `--use_llm`(표 구조 점수 0.816 → 0.907)"
+            ],
+            "tradeoff": "README 상 페이지를 넘는 표 병합·표 정리를 LLM 이 맡으면 표 구조가 더 안정된다 — 이번엔 그 몫을 뒤단 VLM 이 진다. 대가 — 쓰지 않은 이유는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+                "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+                "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+                "date": "2026-02-03",
+                "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+              }
+            ]
+          },
+          {
+            "question": "표를 잘라 VLM 에 구조까지 맡기는 길은?",
+            "chosen": "**표 구조 인식까지 전문 모델에 맡기는 쪽을 택했다.**",
+            "alternatives": [
+              "표 검출·크롭만 전문 모델(Table Transformer)로 하고 구조 인식은 VLM 에(QunaSys 가 소개한 방식)"
+            ],
+            "tradeoff": "크롭 방식은 한 페이지를 통째로 넘길 때보다 낫다고 알려져 있지만, 구조 인식을 VLM 에 남기면 이 글이 본 그라운딩 약점이 그대로 남는다(이 사이트의 해석). 대가 — 표 밖 문장 속 정보는 따로 다뤄야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+                "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+                "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+                "date": "2026-02-03",
+                "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "설계 도서로 공정표의 일수를 세운다(같은 회사의 다른 도메인)",
+          "via": "LLM 에 통째로 맡겼다가 역할을 나누기",
+          "contract": "PDF 해석은 VLM 에 E2E 로 맡겼다가 그라운딩을 Marker 로 떼어 냈고, 공정 연결은 오케스트레이터에 통째로 맡겼다가 연결을 전용 서브에이전트로 떼어 냈다 — 둘 다 먼저 맡겨 보고 실패 패턴에서 분업을 정한다(이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "분업한 파이프라인",
+          "question": "PDF 는 누구를 거쳐 JSON 이 되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  PDF[SDS PDF 이미지] --> MK[Marker<br/>표 영역 · 셀 경계 · 병합 셀]\n  MK --> TB[HTML / Markdown 표<br/>rowspan 보존]\n  TB --> VLM[VLM<br/>성분표 이해 · 부모 자식 추론]\n  VLM --> J[JSON<br/>성분 · 함유량 · CAS]"
+        },
+        {
+          "title": "E2E 가 무너진 자리",
+          "question": "VLM 에 통째로 넘기면 어디서 틀리나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  E2E[VLM 에 PDF 전체] -->|약 8할| OK[기대대로 구조화]\n  E2E -->|나머지| ERR[표 구조 인식 실수]\n  ERR --> M1[병합 셀 '90 이상' 이 1행에만]\n  ERR --> M2[2~4행 함유량 공백]\n  ERR --> M3[병합 CAS 번호가 1행에 섞임]\n  M1 & M2 & M3 --> BR[성분 ↔ 함유량 연결 붕괴]\n  BR -.Few-shot 도 개선 없음.-> SPLIT[그라운딩을 Marker 로 분리]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "丸投げから役割分担へ ─ VLMを活かすPDF解析の設計",
+          "url": "https://zenn.dev/kencopa/articles/3530b0914bd834",
+          "publisher": "株式会社KENCOPA テックブログ (Zenn)",
+          "date": "2026-02-03",
+          "summary": "SDS(안전 데이터 시트) PDF 에서 물질의 부모 자식 관계·함유량(질량%)·CAS 번호를 JSON 으로 뽑는다 — 표이기도 문장이기도, 표 형식도 제각각. 처음엔 최신 VLM 에 PDF 를 그림으로 E2E 로 통째로 → 벽. VLM 은 의미 이해·추론은 잘하지만 **그라운딩(구체적 위치 특정)** 은 약하다 → 과제를 잘하는·못하는 것으로 나눠 표 구조 변환은 **Marker**(README 비교표·운용면으로 선정)에, 의미 해석은 VLM 에. 병합 셀(rowspan)을 Marker 는 맞게 읽었다. 이 분야는 진화가 빠르다(Chandra·DeepSeek-OCR)."
         }
       ]
     }
