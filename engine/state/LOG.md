@@ -1738,3 +1738,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Rehab for JAPAN 회사 프로파일
 
 - 회사 사이트 '사업 내용' 이 수익원 셋(Rehab Cloud · Studio · Insight)을 준다. 기술 글 20편 중 제품 결정을 담은 것은 ETL 이행 하나 — 전자 서명 출시 글은 회고, 도메인 규칙 UT 는 카드 게임 예제. 도메인 하나로 시작.
+
+## 2026-09-26 Rehab for JAPAN Composer → Cloud Run Jobs
+
+- 결정 10 — 상시 가동 폐지·Workflows 불채용·Airflow 기능 소박하게·역할별 Job 3종+모듈·별도 데이터셋 병행+체크섬 사흘 0·B안(canonical 이름)·state rm+import 수술·paused apply 뒤 재구축·무거운 replicator 만 8GiB·스키마 GCS. 기능이 하나라 connections 는 비어 있다.
