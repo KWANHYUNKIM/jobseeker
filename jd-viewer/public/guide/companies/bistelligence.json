@@ -342,6 +342,100 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385098",
+      "title": "Product Development Leader",
+      "site": "wanted",
+      "verdict": "경력 15-26년, 서울 서초구. 제목은 'Product Development Leader' 지만 **업무 여덟 줄이 모두 직접 개발·운영**이다 — 데이터 수집·처리(DP)와 백엔드 기능, 결함 수정, 기능 정책 문서화, 파이프라인 구조 애플리케이션 설계·개발, **Kubernetes 기본**(배포·ConfigMap·로그·리소스 확인), **Oracle 대용량 적재·조회와 트랜잭션 경계·데이터 정합성**, **Kafka 메시지 처리 애플리케이션 운용 설계**, **MinIO/S3 오브젝트 스토리지**(버킷 정책·용량 관리). 공고에 팀 리딩·인원 관리 문장은 없다. 필수는 학사 이상(전공무관)과 **Java 7년 이상** 두 줄이다. 우대는 Python·React, S/W UML 설계, **제조 설비 데이터(DCP·FDC·SPC) 처리 도메인**. 회사 브리핑대로 BISTel 에서 분사한 제조 AI 기업이라 FDC(설비 이상 감지)·SPC(통계적 공정 관리) 데이터가 핵심 재료다. 전형: 서류전형 - 1차면접 - 2차면접 - 최종합격. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java 7년 이상",
+          "학사 이상"
+        ],
+        "can_learn": [
+          "Kafka 운용",
+          "Oracle 대용량 처리",
+          "MinIO/S3",
+          "FDC·SPC 도메인",
+          "Kubernetes 기본"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Kafka 메시지 처리 — 순서·중복·재처리",
+          "from": "task",
+          "quote": "7. 메시징: Kafka등 Message 처리 Application 운용설계 및 개발",
+          "priority": "core",
+          "why": "주요업무다. 설비에서 쏟아지는 센서·이벤트 데이터를 수집·처리(DP)하는 파이프라인이 중심 업무다.",
+          "gap_check": "설비별 센서 이벤트의 순서를 지키려면 파티션 키를 무엇(설비 ID)으로 두고, 컨슈머가 처리 후 오프셋 커밋 전에 죽으면 무엇이 다시 들어오며(at-least-once), DB 적재를 멱등하게 만들려면 무엇을 키로 쓰는가? 한 설비만 데이터가 폭증하면 파티션이 어떻게 치우치는가?",
+          "drill": "로컬 Kafka 로 설비 ID 를 키로 한 센서 토픽을 만들고, 컨슈머가 적재 직후·커밋 직전에 죽도록 해 재시작 시 중복이 들어오는 것을 확인한 뒤 (설비ID, 측정시각) 유니크 키로 멱등 적재한다. 한 설비만 초당 100배로 보내 파티션별 지연을 관찰한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Introduction | Apache Kafka",
+              "url": "https://kafka.apache.org/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Oracle 대용량 적재 — 파티션과 트랜잭션 경계",
+          "from": "task",
+          "quote": "6. DB: Oracle등 대용량 적재·조회 설계, 트랜잭션 경계 및 데이터 정합성 설계",
+          "priority": "core",
+          "why": "주요업무이고 필수가 Java 7년 이상이다 — 적재 로직과 트랜잭션 경계를 애플리케이션에서 설계한다.",
+          "gap_check": "하루 수억 건 센서 데이터를 한 테이블에 쌓으면 조회·삭제가 왜 느려지고, 날짜 범위 파티션으로 나누면 오래된 데이터 정리가 어떻게 쉬워지며(파티션 드롭), 수만 건 배치 적재를 한 트랜잭션으로 묶을지 나눌지는 실패 시 재처리와 락 시간 중 무엇을 기준으로 정하는가?",
+          "drill": "Oracle 파티셔닝 개념 문서를 읽고 날짜 범위 파티션 테이블을 설계한다. Java JDBC 배치로 10만 건을 1건씩·1천 건 배치·한 트랜잭션 세 방식으로 적재해 시간과 실패 시 재처리 범위를 비교한다(Oracle Free 또는 다른 RDB 로 대체 가능).",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Partitioning Concepts — Oracle Database",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/vldbg/partition-concepts.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "오브젝트 스토리지 운영 — 버킷 정책과 수명 주기",
+          "from": "task",
+          "quote": "8. 스토리지: 오브젝트 스토리지(MinIO / S3) 운영 — 버킷 정책, 용량 관리",
+          "priority": "high",
+          "why": "주요업무다. 원본 센서 파일·모델 산출물을 MinIO/S3 에 쌓는다.",
+          "gap_check": "설비 원본 데이터 버킷에 애플리케이션은 쓰기만, 분석가는 읽기만 하게 하려면 정책을 어떻게 나누고, 90일 지난 원본을 자동 삭제하거나 싼 계층으로 옮기려면 무엇(수명 주기 규칙)을 쓰며, 용량이 급증할 때 어느 접두사(prefix)가 원인인지 무엇으로 찾는가?",
+          "drill": "로컬 MinIO 에 버킷을 만들고 쓰기 전용·읽기 전용 사용자 정책을 붙여 권한 밖 동작이 거부되는지 확인한다. 수명 주기 규칙(접두사별 만료)을 걸고, S3 수명 주기 문서와 비교해 차이를 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Object Lifecycle Management — MinIO",
+              "url": "https://docs.min.io/aistor/administration/object-lifecycle-management/",
+              "kind": "docs"
+            },
+            {
+              "title": "Managing the lifecycle of objects — Amazon S3",
+              "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "FDC·SPC 데이터 — 관리도의 기초",
+          "from": "preference",
+          "quote": "• 제조 데이터 설비 데이터) DCP, FDC, SPC 데이터 처리 도메인 경험자 우대",
+          "priority": "high",
+          "why": "우대사항이다. 회사 브리핑대로 BISTel 에서 20년 넘게 쌓은 제조 솔루션 경험이 회사의 기반이다.",
+          "gap_check": "SPC 관리도의 관리 한계선은 규격 한계선과 무엇이 다르고, 한 점이 한계를 벗어나지 않아도 연속 몇 점이 한쪽에 몰리면 왜 이상 신호로 보며(런 규칙), FDC 가 공정 중 센서 궤적으로 이상을 잡는 것은 SPC 와 무엇이 다른가?",
+          "drill": "NIST 핸드북의 관리도 절을 읽고, 가짜 측정값(평균 이동을 중간에 넣은)으로 X-bar 관리도를 그려 한계선 이탈과 런 규칙 위반 시점을 찾는다. 이 계산을 Kafka 적재 파이프라인 뒤에 붙인다면 어느 단계에서 할지 설계를 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "What are Control Charts? — NIST/SEMATECH e-Handbook",
+              "url": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc31.htm",
+              "kind": "book"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
