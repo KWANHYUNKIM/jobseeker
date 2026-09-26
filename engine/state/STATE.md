@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Nature — 확장 2(2026-09-26): 자동 머지 도메인에 `review-refactoring-auto-merge`(결정 8). 두 도메인 모두 기능. 다음은 완주 판정 — 에너지 관리(Remo E·EV Switch) 수익원은 도메인이 없다: engineering.nature.global 사이트맵 2023~2026 전 제목(병렬, 접미사 ' - Nature Engineering Blog' 떼기)을 'Remo E·HEMS·電力·エネルギー·EV·ECHONET·スマートメーター·太陽光' 로, 두 번 없으면 hold. 대기 1/3(ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
+**Nature — 완주 판정 중(2026-09-26): 사이트맵 2021~2026 103편 제목에서 에너지 글을 찾아 도메인 '집의 전기를 기기 규격으로 잇고 요금을 계산한다' 추가(← `entry/evps-dev-diary` V2H 개발 일기 2022-02, scratchpad `nt_evps-dev-diary.txt` + `entry/electricity-plan` 요금 플랜 2022-12 `nt_electricity-plan.txt`). 에너지 관리 수익원 연결. 다음은 확장: 그 도메인 기능(V2H 글 후반 '湯河原ラボで再挑戦'·'アプリ' 부분). 전 제목은 `nt_titles.txt`. 대기 1/3(ABEJA). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
 
 
 

@@ -64,7 +64,9 @@
       "name": "에너지 관리(Remo E · EV Switch)",
       "how": "스마트폰 HEMS 와 EV 충전 기기 판매.",
       "weight": "공개 없음",
-      "domains": [],
+      "domains": [
+        "집의 전기를 기기 규격으로 잇고 요금을 계산한다"
+      ],
       "confidence": "confirmed",
       "sources": [
         {
@@ -73,6 +75,13 @@
           "publisher": "Nature株式会社",
           "date": "2026-09-26",
           "summary": "'테크놀로지로 전기 쓰는 법을 최적화해 세계를 더 깨끗하고 분산된 전원으로' — **Nature Remo 시리즈**(스마트 리모컨: Lapis·3·mini 2·nano, 온습도·인감·조도 센서, Matter·Apple 홈), **Nature Remo E 시리즈**(스마트폰 HEMS — 전기 사용량·요금, 태양광 자가소비 최대화, E2), **Nature EV Switch**(월 충전량·전기 요금), **스마트록**(핸즈프리 해정)."
+        },
+        {
+          "title": "Nature Remo E V2H 機能開発日記",
+          "url": "https://engineering.nature.global/entry/evps-dev-diary",
+          "publisher": "Nature Engineering Blog",
+          "date": "2022-02-15",
+          "summary": "Remo E 에 **V2H**(전기차 충방전 — EV 배터리를 가정 축전지처럼) 대응. Nature 는 **Behind The Meter** 를 새 사업 축으로, 태양광·EV 가 가정 에너지 관리의 핵심이라 본다; Remo E 는 2019년 발매 전부터 ECHONET Lite AIF 인증(전기차 충방전기)을 받아 두었고, 2021년 **Nature 스마트 전기**로 전기 소매에 들어가 Remo E + 소매 조합의 토대가 생겼다. V2H 는 축전지보다 복잡 — EV 접속 확인, 커넥터(CHAdeMO 등)별 동작, ECHONET Lite Appendix 버전별 동작. 규격서만으로는 몰라 유가와라 스마트 에너지 랩·외부 V2H 셰어 시설(가마보코노사토)에서 **실기 확인**, 그때 모은 데이터로 **Rust 제 ECHONET Lite 에뮬레이터**를 만들어 새 V2H 설치(2개월)까지 개발을 멈추지 않음. V2H·축전지를 묶은 **최소 UI 로 먼저 릴리스**, 테스트가 부족한 곳부터 테스트를 채우고 기능 추가, 서버는 이미 **플러거블**했지만 앱은 아니어서 리팩터링해 플러거블로, 펌웨어는 **사양화 테스트**를 써서 이해."
         }
       ]
     }
@@ -80,8 +89,8 @@
   "domain_map": {
     "title": "집 안의 기기를 한 모델로",
     "question": "하드웨어 회사의 서버는 새 기기와 빨라진 개발을 어떻게 받나?",
-    "code": "flowchart LR\n  HOME[\"홈\"] --> DEV[\"디바이스\\n= Nature Home 앱에 등록할 수 있는 Nature 제품\"]\n  DEV --> REMO[\"Remo · Remo E\"]\n  DEV --> EVS[\"EV Switch(가전이기도)\"]\n  DEV --> LOCK[\"Nature Lock(가전이기도, 서버 통신 없음)\"]\n  DEV --> KEY[\"Nature Key(Lock 에 연결)\"]\n  REMO -->|BLE| LOCK\n  PR[\"PR + /review_refactoring\"] --> AI[\"AI 가 순수 리팩터링 증명\"] --> MERGE[\"CI 통과 → 자동 머지\"]",
-    "_note": "위는 스마트록을 기존 디바이스 모델에 끼우는 일, 아래는 동작 불변 PR 을 AI 가 증명해 머지하는 일이다. 리팩터링 자동 머지를 스마트 리모컨 수익원에 이은 것은 이 사이트의 해석(글은 Remo 의 헤비한 사용을 리뷰 중시의 이유로 든다). 에너지 관리 쪽 기술 글은 아직 못 찾았다."
+    "code": "flowchart LR\n  HOME[\"홈\"] --> DEV[\"디바이스\\n= Nature Home 앱에 등록할 수 있는 Nature 제품\"]\n  DEV --> REMO[\"Remo · Remo E\"]\n  DEV --> EVS[\"EV Switch(가전이기도)\"]\n  DEV --> LOCK[\"Nature Lock(가전이기도, 서버 통신 없음)\"]\n  DEV --> KEY[\"Nature Key(Lock 에 연결)\"]\n  REMO -->|BLE| LOCK\n  PR[\"PR + /review_refactoring\"] --> AI[\"AI 가 순수 리팩터링 증명\"] --> MERGE[\"CI 통과 → 자동 머지\"]\n  REMOE[\"Remo E\"] -->|ECHONET Lite| V2H[\"V2H · 축전지\"]\n  EMU[\"Rust ECHONET Lite 에뮬레이터\"] -.->|실기 대신| REMOE",
+    "_note": "위 둘은 스마트록 모델과 리팩터링 자동 머지, 아래는 Remo E 가 V2H 같은 에너지 기기와 규격으로 잇는 일이다(2022년 글)."
   },
   "domains": [
     {
@@ -131,6 +140,35 @@
       "features": [
         "review-refactoring-auto-merge"
       ]
+    },
+    {
+      "name": "집의 전기를 기기 규격으로 잇고 요금을 계산한다",
+      "why": "Nature 는 태양광·EV 가 가정 에너지 관리의 핵심이라 보고 **Behind The Meter** 를 새 사업 축으로 삼았다. Remo E 가 V2H·축전지 같은 기기와 ECHONET Lite 로 말해야 하는데, 규격서만으로는 실제 동작을 알 수 없고 실기는 손에 없었다. 요금 가시화는 사업자·에어리어·암페어·검침일마다 다른 플랜을 다뤄야 한다.",
+      "tech": [
+        {
+          "tech": "ECHONET Lite 기기 연계(V2H·축전지) · 실기 데이터로 만든 Rust 에뮬레이터 · 서버 플러거블 기기 추가 · 요금 설정 JSON + 형식별 계산 interface(제안)",
+          "solves": "실기 없이도 개발을 이어 가고, 새 기기를 플러그인처럼 더한다. 요금 플랜을 형식별로 계산한다.",
+          "limits": "요금 플랜 관리는 2022년 글 시점 **제안 단계**다. 실기 확보(설치 2개월)가 개발 속도를 묶는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Nature Remo E V2H 機能開発日記",
+              "url": "https://engineering.nature.global/entry/evps-dev-diary",
+              "publisher": "Nature Engineering Blog",
+              "date": "2022-02-15",
+              "summary": "Remo E 에 **V2H**(전기차 충방전 — EV 배터리를 가정 축전지처럼) 대응. Nature 는 **Behind The Meter** 를 새 사업 축으로, 태양광·EV 가 가정 에너지 관리의 핵심이라 본다; Remo E 는 2019년 발매 전부터 ECHONET Lite AIF 인증(전기차 충방전기)을 받아 두었고, 2021년 **Nature 스마트 전기**로 전기 소매에 들어가 Remo E + 소매 조합의 토대가 생겼다. V2H 는 축전지보다 복잡 — EV 접속 확인, 커넥터(CHAdeMO 등)별 동작, ECHONET Lite Appendix 버전별 동작. 규격서만으로는 몰라 유가와라 스마트 에너지 랩·외부 V2H 셰어 시설(가마보코노사토)에서 **실기 확인**, 그때 모은 데이터로 **Rust 제 ECHONET Lite 에뮬레이터**를 만들어 새 V2H 설치(2개월)까지 개발을 멈추지 않음. V2H·축전지를 묶은 **최소 UI 로 먼저 릴리스**, 테스트가 부족한 곳부터 테스트를 채우고 기능 추가, 서버는 이미 **플러거블**했지만 앱은 아니어서 리팩터링해 플러거블로, 펌웨어는 **사양화 테스트**를 써서 이해."
+            },
+            {
+              "title": "電気料金プランをどないして管理するか",
+              "url": "https://engineering.nature.global/entry/electricity-plan",
+              "publisher": "Nature Engineering Blog",
+              "date": "2022-12-20",
+              "summary": "요금 가시화 기능이 다룰 **전기 요금 플랜**의 곤란한 성질 — 소매 사업자 732곳(2021년 말)이 저마다 플랜을 내고, 기본·종량 단가가 **전력 회사 10 에어리어**마다·계약 암페어마다 다르다; **검침일**이 수요가마다 달라(에어리어별 약 20 패턴) 월 요금의 계산 기간이 바뀐다; 단계 요금은 그달 누적 사용량이 있어야 해 **하루 사용량만으로는 계산 못 한다**. 제안: 요금 설정을 DB 에 **JSON** 으로 두고 '형식' 필드로 struct 를 갈라 요금 계산 interface 를 구현 — 형식 문자열로 동적으로 타입을 바꿔야 해 generics 는 못 쓰고 **type switch**, 형식이 늘 때마다 switch 유지가 필요해 **코드 자동 생성**을 검토(필자 개인의 제안 단계)."
+            }
+          ]
+        }
+      ],
+      "features": []
     }
   ],
   "features": [
@@ -786,9 +824,10 @@
   ],
   "open_questions": [
     "하드웨어 판매 외 매출(구독 등)·비중을 1차 자료로 확인하지 못했다.",
-    "에너지 관리(Remo E · EV Switch) 수익원의 기술 글은 아직 못 찾았다 — 2026년 6~9월 글이 둘뿐이라 이전 사이트맵을 봐야 한다.",
     "자동 머지를 스마트 리모컨 수익원에 이은 것은 inferred.",
-    "'최근의 AI 사용법 2026년 1월 편'(`2026/01/22/160431`)이 있다."
+    "'최근의 AI 사용법 2026년 1월 편'(`2026/01/22/160431`)이 있다.",
+    "에너지 관리 쪽 글은 2022년 것이다(V2H 개발 일기 · 요금 플랜 관리 제안). 전기 소매 'Nature 스마트 전기' 의 현재 상태와 기술 글은 확인하지 못했다.",
+    "Remo E 추가 API 공개(`nature-remo-e-spec-intro`)·에코큐트 오토메이션(`ecocute-automation`)·전기 핍박 예보 위젯(`electricity-forecast-widget`) 글이 있다."
   ],
   "sources": [
     {
@@ -811,6 +850,20 @@
       "publisher": "Nature Engineering Blog",
       "date": "2026-07-31",
       "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+    },
+    {
+      "title": "Nature Remo E V2H 機能開発日記",
+      "url": "https://engineering.nature.global/entry/evps-dev-diary",
+      "publisher": "Nature Engineering Blog",
+      "date": "2022-02-15",
+      "summary": "Remo E 에 **V2H**(전기차 충방전 — EV 배터리를 가정 축전지처럼) 대응. Nature 는 **Behind The Meter** 를 새 사업 축으로, 태양광·EV 가 가정 에너지 관리의 핵심이라 본다; Remo E 는 2019년 발매 전부터 ECHONET Lite AIF 인증(전기차 충방전기)을 받아 두었고, 2021년 **Nature 스마트 전기**로 전기 소매에 들어가 Remo E + 소매 조합의 토대가 생겼다. V2H 는 축전지보다 복잡 — EV 접속 확인, 커넥터(CHAdeMO 등)별 동작, ECHONET Lite Appendix 버전별 동작. 규격서만으로는 몰라 유가와라 스마트 에너지 랩·외부 V2H 셰어 시설(가마보코노사토)에서 **실기 확인**, 그때 모은 데이터로 **Rust 제 ECHONET Lite 에뮬레이터**를 만들어 새 V2H 설치(2개월)까지 개발을 멈추지 않음. V2H·축전지를 묶은 **최소 UI 로 먼저 릴리스**, 테스트가 부족한 곳부터 테스트를 채우고 기능 추가, 서버는 이미 **플러거블**했지만 앱은 아니어서 리팩터링해 플러거블로, 펌웨어는 **사양화 테스트**를 써서 이해."
+    },
+    {
+      "title": "電気料金プランをどないして管理するか",
+      "url": "https://engineering.nature.global/entry/electricity-plan",
+      "publisher": "Nature Engineering Blog",
+      "date": "2022-12-20",
+      "summary": "요금 가시화 기능이 다룰 **전기 요금 플랜**의 곤란한 성질 — 소매 사업자 732곳(2021년 말)이 저마다 플랜을 내고, 기본·종량 단가가 **전력 회사 10 에어리어**마다·계약 암페어마다 다르다; **검침일**이 수요가마다 달라(에어리어별 약 20 패턴) 월 요금의 계산 기간이 바뀐다; 단계 요금은 그달 누적 사용량이 있어야 해 **하루 사용량만으로는 계산 못 한다**. 제안: 요금 설정을 DB 에 **JSON** 으로 두고 '형식' 필드로 struct 를 갈라 요금 계산 interface 를 구현 — 형식 문자열로 동적으로 타입을 바꿔야 해 generics 는 못 쓰고 **type switch**, 형식이 늘 때마다 switch 유지가 필요해 **코드 자동 생성**을 검토(필자 개인의 제안 단계)."
     }
   ]
 }
