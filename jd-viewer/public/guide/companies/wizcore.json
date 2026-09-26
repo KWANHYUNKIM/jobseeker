@@ -471,6 +471,122 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/376683",
+      "title": "PLC 스토리지 엔지니어 (시니어)",
+      "site": "wanted",
+      "verdict": "유관 경력 5~10년, 서울 성동구. 위즈코어의 다른 공고들과 결이 다르다 — 데이터·ML 이 아니라 **현장 공정 제어**다. 액체·가스·기름 같은 **유체 흐름을 제어하는 공정 PLC 프로그램**, 공장 자동화 설계, **고객사 P&ID 분석과 IO Map·BoM 등 산출물 작성**, **SCADA(SIMATIC HMI WinCC V7.5)와 레시피 연동**, 센서 계측과 펌프·밸브 액추에이터 **PID 제어**, 이기종 통신(Profinet·ModbusTCP·Serial), **시운전**까지 맡는다. 자격요건은 두 줄뿐이고 하나가 필수다 — **Siemens TIA Portal 과 S7-1500 사용 필수**(공고 표기는 'S-1500'). 우대는 화학·정유·발전소·제약·식음료·수처리 등 다양한 현장 경험, 다른 PLC 경험, WinCC V7.5 개발. 시운전이 업무에 있으니 고객사 현장 출장이 있을 수 있다 — 빈도는 공고에 없다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Siemens TIA Portal·S7-1500",
+          "공정 제어 PLC 프로그램",
+          "P&ID 읽기·IO Map 작성",
+          "시운전 경험"
+        ],
+        "can_learn": [
+          "WinCC V7.5 레시피 연동",
+          "Profinet·ModbusTCP",
+          "다른 제조사 PLC"
+        ]
+      },
+      "study": [
+        {
+          "topic": "P&ID 에서 IO Map 까지 — 도면을 태그 목록으로",
+          "from": "task",
+          "quote": "• 고객사 P&ID 분석, IO Map, BoM, 기타 산출물 작성",
+          "priority": "core",
+          "why": "주요업무다. 공정 PLC 프로젝트의 첫 산출물이 도면을 읽어 만든 IO 목록이다.",
+          "gap_check": "P&ID 의 계기 기호(예: FT·PT·LT, FCV)와 태그 번호에서 어떤 신호가 AI·AO·DI·DO 중 무엇으로 PLC 에 들어오는지 읽을 수 있는가? 인터록이 도면 어디에 표시되고, IO Map 에 여유 채널(스페어)을 몇 % 남기며, IO 개수에서 카드 수·BoM 은 어떻게 나오는가?",
+          "drill": "P&ID 설명 문서를 읽고 공개된 예제 P&ID 한 장(탱크·펌프·유량 제어 루프 하나)에서 계기를 모두 뽑아 태그·신호 종류·범위·단위·IO 주소를 적은 IO Map 표를 만들고, 그 표로 IO 카드 BoM 을 산출한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Piping and instrumentation diagram — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Piping_and_instrumentation_diagram",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "펌프·밸브 PID 루프 — 튜닝과 현장 문제",
+          "from": "task",
+          "quote": "• 각종 센서류 계측 및 펌프, 밸브 액추에이터 PID 제어",
+          "priority": "core",
+          "why": "주요업무이고 유체 흐름 제어 공정 PLC 의 중심이다.",
+          "gap_check": "유량·압력·레벨 루프에서 P·I·D 가 각각 무엇을 하고, 밸브가 끝까지 열려 있는 동안 적분이 쌓이는 와인드업은 어떻게 막으며, 수동→자동 전환 시 출력이 튀지 않게(bumpless transfer) 하려면 무엇이 필요한가? 레벨 루프에서 D 를 잘 안 쓰는 이유는?",
+          "drill": "PID 설명을 읽고, 탱크 레벨 1차 지연 모델을 파이썬이나 PLC 시뮬레이터(구조적 텍스트)로 만들어 PID 를 붙인다. 게인을 바꿔 가며 오버슈트·정착 시간을 기록하고, 안티 와인드업 유무로 밸브 포화 뒤 복귀 곡선을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "PID controller — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IEC 61131-3 로 공정 PLC 프로그램 구조 잡기",
+          "from": "task",
+          "quote": "• 유체(액체, 가스, 기름 등)의 흐름을 제어하는 공정 제어 PLC 프로그램 개발)",
+          "priority": "high",
+          "why": "주요업무다. 자격요건의 TIA Portal·S7-1500 은 IEC 61131-3 언어(LAD·FBD·SCL=ST)로 프로그래밍한다.",
+          "gap_check": "펌프·밸브처럼 같은 장비가 수십 개일 때 FB(인스턴스 DB)로 한 번 만들고 재사용하는 구조를 설명할 수 있는가? 순차 공정(충전→가열→배출)을 상태 머신이나 SFC 로 쓸 때 비상정지·인터록은 어느 층에 두는가? 스캔 사이클 안에서 순서가 결과를 바꾸는 예를 들 수 있는가?",
+          "drill": "IEC 61131-3 개요와 PLCopen 자료를 읽고, 무료 IEC 61131-3 환경에서 펌프 FB(기동·정지·고장·운전시간)와 밸브 FB 를 만든다. 이를 인스턴스 여러 개로 써서 탱크 충전→배출 순차 공정을 상태 머신으로 짜고 인터록(저레벨 시 펌프 정지)을 넣는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "IEC 61131-3 — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/IEC_61131-3",
+              "kind": "docs"
+            },
+            {
+              "title": "PLCopen",
+              "url": "https://www.plcopen.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "이기종 통신 — Profinet 과 ModbusTCP",
+          "from": "task",
+          "quote": "• 이기종간 통신 ( Profinet, ModbusTCP, Serial etc )",
+          "priority": "high",
+          "why": "주요업무다. 고객사 현장에는 제조사가 다른 장비가 섞여 있다.",
+          "gap_check": "Profinet IO 가 컨트롤러·디바이스를 GSDML 로 구성하고 주기 데이터를 교환하는 방식과, ModbusTCP 가 클라이언트 요청·응답으로 레지스터를 읽는 방식의 차이를 설명할 수 있는가? 서드파티 장비의 float 값이 이상하게 들어올 때 무엇(워드·바이트 순서)부터 의심하는가?",
+          "drill": "Profinet·Modbus 설명을 읽고 두 방식의 구성 절차·주기·진단 방법을 표로 정리한다. 모의 ModbusTCP 서버에 유량계 값을 float32 로 넣고 클라이언트로 읽어 워드 순서 조합을 바꿔 맞는 값을 찾는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Profinet — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/PROFINET",
+              "kind": "docs"
+            },
+            {
+              "title": "Modbus Protocol — Modbus Tools",
+              "url": "https://www.modbustools.com/modbus.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SCADA 와 레시피 — WinCC 와 PLC 사이",
+          "from": "preference",
+          "quote": "• Scada (SIMATIC HMI WinCC V7.5) 개발 경험",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무에도 'Scada (SIMATIC HMI WinCC V7.5) 사이 레시피 연동 프로그램 개발' 이 있다.",
+          "gap_check": "SCADA 가 PLC 위에서 맡는 일(화면·알람·트렌드·레시피)과 PLC 가 맡는 일을 어디서 가르는가? 운전 중 레시피를 내려보낼 때 PLC 가 반쯤 바뀐 값으로 돌지 않게 하려면 어떤 핸드셰이크가 필요한가?",
+          "drill": "SCADA 설명을 읽고, 레시피 다운로드 핸드셰이크(요청→PLC 확인→값 쓰기→완료 비트→적용)를 시퀀스도로 그린 뒤 PLC 측 상태 머신으로 구현한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "SCADA — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/SCADA",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
