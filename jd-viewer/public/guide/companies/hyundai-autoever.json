@@ -5,7 +5,7 @@
   "aliases": [
     "현대오토에버"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "site": "hyundai-autoever.com",
   "one_liner": "현대자동차그룹의 차량 SW(내비·인포테인먼트)·스마트팩토리·기업 IT·보안을 맡는 IT 서비스 회사",
@@ -2096,6 +2096,117 @@
             "title": "[Tech] Infra Security Engineer - 북미 기술 보안 주재원(Endpoint)",
             "url": "https://www.wanted.co.kr/wd/385501",
             "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55092048&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=c0eceaff-52ee-4672-8039-1e6a82c31c54",
+      "title": "서비스 Robot PM 및 필드/HW/SW 엔지니어",
+      "site": "saramin",
+      "verdict": "경력 4~20년. **여러 역할을 한 공고에 묶었다** — 주요업무 목록 앞에 '[아래 항목 중 1~2개 담당]', 자격요건 앞에 '[아래 항목 중 1개 이상 충족 시 지원가능]' 이 적혀 있다. 업무는 로보틱스 SI 프로젝트 기술표준·RFP·제안서, 서비스로봇 미션 기획과 관리자/사용자 서비스 시나리오, 로봇주행시스템 API/SDK 연동·테스트, ROP–RCS–로봇 연동 서비스 설계·검증, 공간별 표준 인프라(건축·설비 연동·전원·네트워크) 설계, 로봇·페이로드 HW 사양 설계, 현장 구축·장애 대응. 자격은 로보틱스 SI 경험, 로봇 SI 기술(로봇 시스템 아키텍처·C/C++·Python·Matlab·REST API·ROS/ROS2), Linux·임베디드, PLC·로봇 HW·통신·시스템 통합 중 하나 이상. 로봇 하드웨어·소프트웨어·기구 개발기사 자격증과 영어는 우대다. 급여 '면접 후 결정', 근무지 서울 강남구 테헤란로 510 루첸타워, **접수 2026-09-21 15시 ~ 2026-09-28 24시**, 자유양식 이력서. 전형절차 칸은 비어 있다.",
+      "fit": {
+        "must_have": [
+          "다음 중 1개 이상: 로보틱스 SI 경험 / 로봇 SI 기술(ROS·REST·C/C++·Python) / Linux·임베디드 / PLC·로봇 HW·통신·통합"
+        ],
+        "can_learn": [
+          "로봇 하드웨어·소프트웨어·기구 개발기사",
+          "영어 커뮤니케이션"
+        ]
+      },
+      "study": [
+        {
+          "topic": "로봇 주행시스템 API/SDK 연동",
+          "from": "task",
+          "quote": "- 로봇주행시스템 API/SDK 분석, 연동, 테스트",
+          "priority": "core",
+          "why": "주요업무이고 다음 줄이 'ROP–RCS- 로봇 연동 서비스 설계 및 검증' 이다. 자격에 REST API·ROS/ROS2 가 있다.",
+          "gap_check": "건물 안 배송 로봇에 '3층 회의실로 가라' 는 미션을 보낼 때 상위 서비스와 로봇 제어 시스템 사이에서 무엇을 주고받고(미션·상태·오류), 엘리베이터·자동문 같은 설비 연동과 여러 대의 로봇 경로 충돌은 어느 층에서 푸는가?",
+          "drill": "Nav2 시뮬레이션 로봇에 REST 로 목적지를 보내고 상태를 받는 작은 게이트웨이를 만들고, Open-RMF 문서를 읽어 설비(문·엘리베이터) 연동과 다중 로봇 관리 구조를 정리한다. VDA 5050 메시지(order·state)와 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Nav2 documentation",
+              "url": "https://docs.nav2.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Open-RMF",
+              "url": "https://open-rmf.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "VDA 5050",
+              "url": "https://github.com/VDA5050/VDA5050",
+              "kind": "repo"
+            },
+            {
+              "title": "ROS 2 documentation",
+              "url": "https://docs.ros.org/en/jazzy/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "로봇 적용 공간 표준 인프라 설계",
+          "from": "task",
+          "quote": "- 로봇 적용 공간별 표준 인프라 설계 (건축공간, 설비연동, 전원, 네트워크 환경)",
+          "priority": "high",
+          "why": "주요업무이고 자격에 PLC·로봇 HW·통신·시스템 통합 경험이 있다.",
+          "gap_check": "서비스 로봇을 새 건물에 넣기 전 현장 조사에서 무엇(통로 폭·문턱·경사, 엘리베이터 연동 가능 여부, 충전 위치·전원, Wi-Fi 음영)을 체크리스트로 보고, 설비 연동은 PLC·API 중 무엇으로 하는가?",
+          "drill": "가상의 사무 건물 한 층 도면을 놓고 로봇 도입 현장 조사 체크리스트와 표준 인프라 요구사항 표(공간·설비·전원·네트워크)를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Open-RMF (GitHub)",
+              "url": "https://github.com/open-rmf/rmf",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "로보틱스 SI 제안과 기술표준",
+          "from": "task",
+          "quote": "- 로보틱스 SI 프로젝트 기술표준, RFP, 제안서 작성",
+          "priority": "high",
+          "why": "주요업무 첫 줄이고 자격 첫 줄이 로보틱스 SI 프로젝트 경험이다. 해시태그에 #프로젝트관리 #변경관리가 붙어 있다.",
+          "gap_check": "고객 RFP 의 '로봇 10대로 물류 자동화' 요구를 받아 제안서에 무엇(현장 조건·대수 산정 근거·연동 범위·장애 대응·변경관리 절차)을 적어야 나중에 범위 분쟁이 줄어드는가?",
+          "drill": "가상의 사내 배송 로봇 RFP 에 대한 제안서 목차와 기술표준 한 장(인터페이스·SLA·변경관리 절차)을 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Q-Net — 국가자격 정보",
+              "url": "https://www.q-net.or.kr/",
+              "kind": "tool"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Nav2 시뮬레이션 로봇 + REST 미션 게이트웨이 + 현장 조사 체크리스트",
+          "why": "여러 역할 중 SW 연동(API/SDK·ROP-RCS)과 인프라 설계 둘을 함께 보여 준다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "로봇 관련 기사 자격증",
+          "why": "우대에 로봇하드웨어·소프트웨어·기구개발기사가 이름으로 적혀 있다.",
+          "effort": "수 주"
+        }
+      ],
+      "interview": {
+        "process": "전형절차 칸이 비어 있다. 접수 2026-09-21 15시 ~ 2026-09-28 24시, 자유양식 이력서, 홈페이지 지원.",
+        "expect": [
+          "담당하려는 역할(1~2개)과 경험",
+          "로봇 SI 프로젝트 사례",
+          "연동·장애 대응",
+          "현장 구축 경험"
+        ],
+        "sources": [
+          {
+            "title": "서비스 Robot PM 및 필드/HW/SW 엔지니어",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55092048&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=c0eceaff-52ee-4672-8039-1e6a82c31c54",
+            "publisher": "사람인"
           }
         ]
       }
