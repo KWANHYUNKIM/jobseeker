@@ -1,0 +1,185 @@
+{
+  "slug": "gear2",
+  "name": "기어세컨드",
+  "name_en": "GEAR2",
+  "aliases": [
+    "기어세컨드",
+    "㈜기어세컨드",
+    "GEAR2"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": null,
+  "one_liner": "방치형 RPG '슬레이어 키우기'(2023년 연매출 200억+, 누적 800만 다운로드 — 공고)를 자체 개발·퍼블리싱한 모바일 게임사",
+  "company": {
+    "business": "원티드 공고 머리말은 기어세컨드(GEAR2)를 게임 메커니즘과 즐거움을 연구해 '압도적인 재미를 가진 최고의 게임' 을 지향하는 회사로 소개하고, 자체 제작·퍼블리싱한 방치형 키우기 게임 **<슬레이어 키우기>** 가 구글 플레이 매출 17위까지 올랐다고 적는다. 데이터 분석가 공고는 연표를 적는다 — 2021 출시·구글플레이 게임 종합 인기 4위·시뮬레이션 매출 4개월 연속 1위, 2022 글로벌 출시, **2023 연매출 200억+**, 다운로드 2024 500만+·2025 600만+·**2026 800만+**. 모집중 공고는 서버(인증·결제·채팅·게임 로직·TCP 소켓 서버와 내부 운영 플랫폼, C#/.NET Core·Kotlin/Spring), 풀스택(내부 게임 운영 플랫폼·BI·회사 사이트·Electron 데스크톱·생성형 AI 신규 서비스), 데이터 엔지니어(AWS·Airflow·dbt·Flink·Kafka(MSK)·Snowflake), 데이터 사이언티스트(LTV·이탈·결제 예측), 데이터 분석가(대시보드·로그 설계·A/B)다. 서버 공고가 '초기 코어 멤버' 를 찾는다고 적는다. 회사 홈페이지는 찾지 못했다. 매출 구조(인앱 결제·광고)의 비중은 읽지 않았다 — 데이터 사이언티스트 공고가 '결제, 광고 반응' 을 유저 행동으로 적는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "서버 프로그래머",
+        "url": "https://www.wanted.co.kr/wd/365991",
+        "publisher": "원티드"
+      },
+      {
+        "title": "데이터 분석가",
+        "url": "https://www.wanted.co.kr/wd/387053",
+        "publisher": "원티드"
+      },
+      {
+        "title": "데이터 사이언티스트",
+        "url": "https://www.wanted.co.kr/wd/376289",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "슬레이어 키우기 연매출(공고 주장)",
+        "value": "200억 원 이상",
+        "as_of": "2023",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "데이터 분석가",
+            "url": "https://www.wanted.co.kr/wd/387053",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "슬레이어 키우기 누적 다운로드(공고 주장)",
+        "value": "800만 이상",
+        "as_of": "2026",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "데이터 분석가",
+            "url": "https://www.wanted.co.kr/wd/387053",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "자체 개발·퍼블리싱 모바일 게임(슬레이어 키우기)",
+        "how": "공고가 구글 플레이 매출 순위와 연매출을 적고, 데이터 사이언티스트 공고가 결제·광고 반응을 유저 행동으로 든다 — 인앱 결제와 광고로 읽히지만 비중은 읽지 않았다.",
+        "domains": [
+          "게임 서버",
+          "게임 데이터 플랫폼·분석",
+          "내부 운영·BI 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "서버 프로그래머",
+            "url": "https://www.wanted.co.kr/wd/365991",
+            "publisher": "원티드"
+          },
+          {
+            "title": "데이터 분석가",
+            "url": "https://www.wanted.co.kr/wd/387053",
+            "publisher": "원티드"
+          },
+          {
+            "title": "데이터 사이언티스트",
+            "url": "https://www.wanted.co.kr/wd/376289",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "게임 서버",
+        "why": "서버 공고가 인증·결제·채팅·게임 로직·TCP 소켓 서버, 대용량 트래픽 테스트, TDD·코드 리뷰, C#·.NET Core·EF Core·Kotlin·Spring·MySQL·MongoDB·Redis·Kafka·EKS·Terraform 을 적는다.",
+        "what_to_know": [
+          "C#/.NET Core",
+          "TCP 소켓 서버",
+          "TDD"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "서버 프로그래머",
+            "url": "https://www.wanted.co.kr/wd/365991",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "게임 데이터 플랫폼·분석",
+        "why": "데이터 엔지니어 공고가 게임 클라이언트·서버 실시간 데이터 수집, Airflow·dbt 배치, 마트 모델링, 데이터 API(FastAPI·Spring)를, 사이언티스트·분석가 공고가 LTV·이탈·결제 예측, 대시보드, 로그 설계, A/B 를 적는다.",
+        "what_to_know": [
+          "Kafka·Flink",
+          "dbt·Snowflake",
+          "LTV·이탈 예측"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "데이터 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/370786",
+            "publisher": "원티드"
+          },
+          {
+            "title": "데이터 사이언티스트",
+            "url": "https://www.wanted.co.kr/wd/376289",
+            "publisher": "원티드"
+          },
+          {
+            "title": "데이터 분석가",
+            "url": "https://www.wanted.co.kr/wd/387053",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "내부 운영·BI 플랫폼",
+        "why": "풀스택 공고가 내부 게임 운영 플랫폼, 게임 개발자용 지표 BI 프로덕트, React·Next.js·NestJS, Electron/Electrobun 데스크톱, 생성형 AI(LLM·ComfyUI) 신규 서비스를 적는다. 서버 공고도 내부 운영 플랫폼 설계를 적는다.",
+        "what_to_know": [
+          "NestJS",
+          "Next.js",
+          "운영 툴 설계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "풀스택 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/385667",
+            "publisher": "원티드"
+          },
+          {
+            "title": "서버 프로그래머",
+            "url": "https://www.wanted.co.kr/wd/365991",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "한 게임의 성공 뒤 다음 작품을 준비하는 단계다",
+        "evidence": "이를 발판으로 한 단계 진화한 인사이트와 기술, 감각을 베이스로 새로운 도약을 계획하고 있습니다.",
+        "so_what": "서버 공고가 '초기 코어 멤버로 합류' 를 적고, 데이터 조직(엔지니어·사이언티스트·분석가)을 한꺼번에 뽑는다 — 차기작과 데이터 기반 운영을 함께 키우는 것으로 읽힌다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "데이터 직군 채용 비중이 크다",
+        "evidence": "대용량 게임 데이터를 다루는 환경에서 데이터 파이프라인, 분석 자동화, 지표 플랫폼, 실시간 데이터 처리",
+        "so_what": "모집중 다섯 건 중 셋이 데이터 직군이다. 방치형 게임은 리텐션·과금 곡선 분석이 매출과 직결된다는 점에서 면접 소재가 될 수 있다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "회사 홈페이지를 찾지 못했다(gear2.com·gear2.co.kr 등 응답 없음)",
+    "인앱 결제·광고 매출 비중과 2024년 이후 매출은 읽지 않았다",
+    "차기작 정보는 공고에 없다",
+    "임직원 수는 읽지 않았다",
+    "jobkorea 풀스택 공고는 본문이 이미지라 비교하지 못했다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

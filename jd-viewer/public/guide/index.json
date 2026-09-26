@@ -746,6 +746,19 @@
       "postings": 5,
       "study_items": 21,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "gear2",
+      "name": "기어세컨드",
+      "aliases": [
+        "기어세컨드",
+        "㈜기어세컨드",
+        "GEAR2"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
