@@ -155,7 +155,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "preview-with-db-aurora-clone"
+      ]
     }
   ],
   "features": [
@@ -499,6 +501,356 @@
           "publisher": "estie Tech Blog (Zenn)",
           "date": "2026-07-08",
           "summary": "컴파운드 스타트업(Rippling 처럼 한 DB 위에 여러 제품)을 참조해, '제공하는 데이터' 에 더해 고객에게서 **'맡는 데이터'** 서비스를 많이 세우려는 국면. 서비스마다 유출 대책 수준을 보증하기 어려워 **고객 데이터를 전부 담는 단일 DB 를 사내 API 로** — **프라이빗 데이터 기반**. 요건: 테넌트 분리·조작 기록·변경 이력·탈퇴 시 일괄 삭제·데이터별 권한. 기반은 전담 팀이 아니라 각 팀이 테이블·API 를 올리는 '두는 곳' 이라 규약만으론 안 된다 → 메타데이터는 ID 를 전 테이블 유일로 해 **단일 테이블**, 실데이터 테이블은 **틀(복붙)**(좋은 방법 못 찾음 — 리뷰 부하), API 내부는 **Rust 매크로로 sea-orm 래퍼**(`find_visible_and_latest`·`create_object`, update 는 새 버전 insert), 미들웨어는 한 번만. 권한은 **데이터마다 볼 수 있는 기업·부서·사용자 ID 를 적는 원시 모델** — 부동산 데이터(빌딩→구획→모집→상담→계약)는 뿌리 있는 나무가 아니고 간선 종류도 하나로 안 끝나 파일 시스템식 상속이 안 맞는다; '정하지 않음' 으로 유연성 유지, 실례를 모아 나중에 추상화 — 자기 루프처럼 보인다. 스택: Rust 2024·sea-orm·tracing·PostgreSQL 17."
+        }
+      ]
+    },
+    {
+      "key": "preview-with-db-aurora-clone",
+      "name": "Staging DB 를 공유하던 Preview 에 라벨 하나로 전용 DB 를 붙인다 — 같은 인스턴스 별도 DB·스냅숏 복원 대신 Aurora copy-on-write 클론을 쓰고, PR 닫힘·5일 유휴에 함께 지운다",
+      "domain": "PR 마다 운영에 가까운 DB 를 빌려 쓰고 버린다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "estie 는 10개 이상 제품과 그 기반을 만든다. PR 에 `Preview` 라벨만 붙이면 전용 URL 이 나와 **엔지니어 리뷰**(UI 변화를 움직여 보기), **로컬에선 번거로운 연동 확인**(Staging 의 다른 서비스에 그대로 접속), **프로토타이핑**(PM·영업이 사용자에게 직접 보여 줌), **AI 자동 검증**(Devin 이 녹화 동작 확인, Claude Code 가 Playwright 로 UI 검증)에 일상적으로 쓰인다.\n\n기존 Preview 는 **Staging DB 를 그대로 참조**한다 — 읽기 중심 제품이 많아 충분했고, 스키마 변경도 마이그레이션을 먼저 머지하면 확인할 수 있었다. 그러나 ① 운영에 가까운 데이터량에서 큰 마이그레이션이 통하는지, ② 쓰기가 잦은 제품이 다른 Preview·수동 테스트와 간섭하지 않는지, ③ AI 로 스키마째 프로토타입을 빨리 시험하는 단계, ④ 마이그레이션 적용된 환경에서의 리뷰 — 이때는 확신 없이 Staging 에 먼저 머지하고 싶지 않다.",
+        "metrics": [
+          {
+            "label": "Preview 를 쓰는 제품",
+            "value": "10개 이상 + 기반",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "label": "자동 삭제",
+            "value": "PR 닫힘 · 라벨 제거 · 5일 유휴",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "label": "최소 인스턴스",
+            "value": "db.t4g.medium(Aurora 최소 스펙, 기본값)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "label": "Reusable Workflow 규모",
+            "value": "주요 workflow 파일 수백 줄 — Rust CLI 로 분리 중",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "방식을 고를 때",
+          "thought": "copy-on-write 면 write 가 없는 동안 인스턴스 요금만 든다. Preview 에서의 쓰기는 아주 적으니 **데이터가 큰 제품일수록** 이쪽이 유리하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+              "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+              "publisher": "estie Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+            }
+          ]
+        },
+        {
+          "at": "유지보수를 볼 때",
+          "thought": "같은 인스턴스에 별도 DB 를 만들면 워크플로가 DB 에 접속해 DDL 을 돌려야 해 **DB 인증 정보를 쥐게 되고** 엔진별 분기가 들어온다. copy-on-write 는 생성도 삭제도 AWS API 호출로 끝난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+              "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+              "publisher": "estie Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+            }
+          ]
+        },
+        {
+          "at": "걸림돌을 만났을 때",
+          "thought": "인스턴스 식별자 63자 상한은 여러 제품으로 펼치는 과정에서 **처음 보이는 종류**의 문제다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+              "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+              "publisher": "estie Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+            }
+          ]
+        },
+        {
+          "at": "돌아볼 때",
+          "thought": "기존 Reusable Workflow 와 Preview 구조 위에 얹어서 비교적 적은 노력으로 큰 가치를 냈다 — 대신 워크플로 자체가 커져 테스트 가능한 CLI 로 옮기고 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+              "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+              "publisher": "estie Tech Blog (Zenn)",
+              "date": "2026-07-01",
+              "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Preview 환경",
+            "what": "PR 에 `Preview` 라벨을 붙이면 뜨는 전용 URL 의 환경. 기본은 Staging DB 참조."
+          },
+          {
+            "name": "Preview with DB",
+            "what": "추가 라벨. PR 전용 Aurora 클론 DB 를 만들어 거기에 접속한다."
+          },
+          {
+            "name": "클론 클러스터",
+            "what": "copy-on-write 로 소스와 저장을 공유하다가 쓴 페이지만 갈라지는 Aurora 클러스터."
+          },
+          {
+            "name": "Reusable Workflow",
+            "what": "GitHub Actions 의 공유 워크플로. 호출 쪽은 preview.yml 에 파라미터(소스 클러스터·인스턴스 크기)만 더한다."
+          },
+          {
+            "name": "마이그레이션 잡",
+            "what": "클론 엔드포인트로 접속처를 바꿔 제품별 방식으로 실행한다."
+          },
+          {
+            "name": "Env=preview 태그",
+            "what": "클론에 붙이는 AWS 리소스 태그. Preview 전체 비용을 태그로 감시한다."
+          }
+        ],
+        "invariants": [
+          "클론은 PR 이 닫히거나 라벨이 빠지거나 5일 유휴면 Preview 환경과 **함께** 지운다 — 방치된 클러스터가 남지 않는다.",
+          "앱은 호스트(엔드포인트) 환경 변수만 바뀐다 — 접속 설정은 그대로.",
+          "Preview 의 쓰기는 클론에만 간다 — Staging·운영 본체를 더럽히지 않는다.",
+          "모든 클론에 `Env=preview` 태그가 붙는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "PR 에 `Preview` 라벨 — 기존 Preview 가 Staging DB 를 참조해 뜬다",
+            "why": "읽기 중심이면 이것으로 충분."
+          },
+          {
+            "step": "`Preview with DB` 라벨 추가 — `restore-db-cluster-to-point-in-time --restore-type copy-on-write` 로 클론 생성(태그 Env=preview)",
+            "why": "빠르고 접속 설정 그대로."
+          },
+          {
+            "step": "클론 엔드포인트로 접속처를 바꿔 제품별 마이그레이션 잡을 돌린다",
+            "why": "스키마 변경을 PR 안에서."
+          },
+          {
+            "step": "앱을 클론 DB 에 접속해 배포한다",
+            "why": "호스트 환경 변수만 교체."
+          },
+          {
+            "step": "PR 닫힘·라벨 제거·5일 유휴 → Preview 와 클론을 함께 삭제",
+            "why": "클러스터 삭제만으로 정리."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "PR 마다 DB 가 필요한가?",
+            "chosen": "**기본 Preview 는 Staging DB 공유를 유지하고, 필요한 PR 만 추가 라벨로 전용 DB 를 붙인다.**",
+            "alternatives": [
+              "모든 Preview 에 전용 DB",
+              "마이그레이션을 먼저 Staging 에 머지"
+            ],
+            "tradeoff": "읽기 중심 제품은 추가 비용이 없고, 큰 마이그레이션·쓰기가 잦은 제품·스키마째 프로토타입만 전용 DB 를 쓴다. 대가 — 라벨을 두 종류로 구분해 붙여야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "question": "전용 DB 를 어떻게 만드나?",
+            "chosen": "**같은 인스턴스 별도 DB·스냅숏 복원 대신 Aurora copy-on-write 클론.**",
+            "alternatives": [
+              "같은 인스턴스에 별도 데이터베이스 — 추가 인스턴스 요금 없음",
+              "스냅숏에서 복원 — 완전히 독립된 사본"
+            ],
+            "tradeoff": "빠르고 접속 설정이 그대로이며 쓰기 전까지 인스턴스 요금만. 대가 — **Aurora 전용**이고 인스턴스 요금은 따로 든다. 별도 DB 는 엔진마다 방식이 다르고 데이터량 비례 시간·I/O 요금, 스냅숏은 기동 수십 분·복원 직후부터 전량 요금.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "question": "MySQL·PostgreSQL 이 섞이면?",
+            "chosen": "**RDS 가 Aurora 로 통일돼 있어 MySQL 호환·PostgreSQL 호환 모두 같은 API 로 — Reusable Workflow 하나로 제공.**",
+            "alternatives": [
+              "엔진별 분기(PostgreSQL CREATE DATABASE / MySQL dump&import)"
+            ],
+            "tradeoff": "워크플로에 DB 인증 정보와 엔진 분기가 필요 없다. 대가 — Aurora 가 아닌 DB 에는 못 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "question": "어떻게 배포하나?",
+            "chosen": "**기존 Preview 의 Reusable Workflow 에 소스 클러스터·인스턴스 크기 파라미터를 더하는 형태 — 호출 쪽은 preview.yml 에 파라미터만.**",
+            "alternatives": [
+              "별도 워크플로 신설"
+            ],
+            "tradeoff": "적은 노력으로 여러 리포지토리에 도입된다. 대가 — 워크플로가 **수백 줄**로 커져 Rust CLI 로 분리해 테스트 가능하게 정리 중.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "question": "방치된 클론은?",
+            "chosen": "**라벨 제거·5일 유휴 때 클론도 함께 지우고, `Env=preview` 태그로 Preview 전체 비용을 감시한다.**",
+            "alternatives": [
+              "수동 정리"
+            ],
+            "tradeoff": "방치된 클러스터가 남지 않는다. 대가 — 5일 넘게 쉬는 PR 은 다시 만들어야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "question": "인스턴스 크기는?",
+            "chosen": "**Aurora 최소 스펙 `db.t4g.medium` 을 기본값으로.**",
+            "alternatives": [
+              "비용을 위해 더 작은 인스턴스"
+            ],
+            "tradeoff": "클론이 뜬다. 대가 — 더 작게는 동작하지 않아 PR 마다 이 이상의 인스턴스 요금이 든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          },
+          {
+            "question": "이름은?",
+            "chosen": "**PR 번호·소스 클러스터 이름·인스턴스 식별자를 조합해 자동 생성 — 63자 상한을 넘은 뒤 명명 규칙을 조정.**",
+            "alternatives": [
+              "임의 ID"
+            ],
+            "tradeoff": "어느 PR 의 어느 제품 클론인지 이름으로 안다. 대가 — 소스 클러스터 이름이 긴 제품에서 상한에 걸렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+                "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+                "publisher": "estie Tech Blog (Zenn)",
+                "date": "2026-07-01",
+                "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "고객이 맡긴 데이터를 여러 서비스가 한 곳에 둔다(같은 회사의 다른 도메인)",
+          "via": "스키마 변경의 시험장",
+          "contract": "프라이빗 데이터 기반은 각 팀이 실데이터 테이블을 틀에 맞춰 정의하게 하고, DB 붙은 Preview 는 스키마 변경을 Staging 에 머지하기 전에 PR 안에서 시험하게 한다 — 기반 위 테이블 변경을 이 구조로 시험하는지는 글이 말하지 않는다(이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "라벨 둘로 갈리는 Preview",
+          "question": "PR 은 어떤 상태를 지나 사라지나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> PR\n  PR --> Preview: Preview 라벨 — Staging DB 참조\n  Preview --> 클론생성: Preview with DB 라벨\n  클론생성 --> 마이그레이션: copy-on-write · Env=preview\n  마이그레이션 --> 전용DB배포: 엔드포인트만 교체\n  전용DB배포 --> 삭제: PR 닫힘 · 라벨 제거 · 5일 유휴\n  Preview --> 삭제: PR 닫힘\n  삭제 --> [*]"
+        },
+        {
+          "title": "세 방식의 비교",
+          "question": "왜 copy-on-write 클론인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"PR 전용 DB\"] --> A[\"같은 인스턴스 별도 DB\\n추가 인스턴스 요금 없음\"]\n  Q --> B[\"스냅숏 복원\\n완전 독립 사본\"]\n  Q --> C[\"copy-on-write 클론\\n빠름 · 접속 설정 그대로\"]\n  A --> A2[\"엔진마다 방식 다름 · 복사 I/O · DB 인증 정보\"]\n  B --> B2[\"기동 수십 분 · 전량 요금\"]\n  C --> C2[\"Aurora 전용 · 인스턴스 요금 별도\"]\n  C2 --> OK[\"채택 — RDS 가 Aurora 로 통일\"]"
+        },
+        {
+          "title": "클론이 막히거나 새는 자리",
+          "question": "어디서 실패하거나 비용이 새나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"소스 클러스터 이름이 김\"] --> B[\"식별자 63자 초과\"]\n  C[\"t4g.medium 보다 작게\"] --> D[\"클론이 안 뜸\"]\n  E[\"정리 누락\"] --> F[\"방치 클러스터 — 5일 유휴 삭제 · 태그 감시\"]\n  G[\"Preview 에서 쓰기 많음\"] --> H[\"copy-on-write 이점 감소\"]\n  I[\"워크플로 수백 줄\"] --> J[\"테스트 불가 — Rust CLI 로 분리 중\"]\n  K[\"Aurora 아닌 DB\"] --> L[\"적용 불가\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Preview環境でPRごとに専用DBを使えるようにした話",
+          "url": "https://zenn.dev/estie/articles/59ec0ae59c3199",
+          "publisher": "estie Tech Blog (Zenn)",
+          "date": "2026-07-01",
+          "summary": "10개 이상 제품의 PR 에 `Preview` 라벨만 달면 전용 URL — 리뷰·스테이징 연동 확인·PM/영업 프로토타입·AI(Devin·Claude Code+Playwright) 검증에 일상적으로 쓴다. 기존 Preview 는 **Staging DB 를 참조**(읽기 중심이면 충분). 큰 마이그레이션 검증·쓰기가 잦은 제품·AI 프로토타이핑·스키마 변경 리뷰에는 PR 전용 DB 가 필요 → 비교: 같은 인스턴스에 별도 DB(엔진마다 방식이 달라 통일 어렵고 복사 I/O) · 스냅숏 복원(수십 분·전량 요금) · **Aurora copy-on-write 클론**(빠르고 접속 설정 그대로, Aurora 전용·인스턴스 요금 별도) — RDS 가 Aurora 로 통일돼 있어 채택. `Preview with DB` 라벨 → 클론 → 마이그레이션 → 배포, PR 닫힘·라벨 제거·**5일 유휴**면 함께 삭제, `Env=preview` 태그로 비용 감시. 걸림돌: 인스턴스 식별자 63자 상한, 최소 `db.t4g.medium`. 쓰임: PoC 실험장, **Rust 이행 신구 비교**, 상설 dev 환경 대체. Reusable Workflow 가 수백 줄이 돼 Rust CLI 로 분리 중."
         }
       ]
     }

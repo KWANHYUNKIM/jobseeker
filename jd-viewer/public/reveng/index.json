@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "상업용 부동산 데이터의 estie — 고객이 맡긴 데이터를 모든 서비스가 한 DB 에 두게 하고 권한은 일부러 원시적으로 남겨 '정하지 않음' 으로 버티며, PR 마다 Aurora copy-on-write 클론으로 전용 DB 를 띄웠다 지운다",
       "updated_at": "2026-09-26",
       "domain": "estie.jp"

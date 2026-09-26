@@ -1652,3 +1652,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 estie 프라이빗 데이터 기반
 
 - 결정 7 — 단일 DB 사내 API·'두는 곳' 플랫폼·매크로 ORM 래퍼·테이블 틀 복붙·update=새 버전 insert·단일 메타 테이블·원시 권한 모델(상속 안 정함).
+
+## 2026-09-26 estie PR 전용 DB Preview
+
+- 결정 7 — 필요한 PR 만 추가 라벨·copy-on-write 클론(3안 비교)·Aurora 통일로 엔진 분기 없음·Reusable Workflow 파라미터·5일 유휴 삭제와 태그 감시·t4g.medium·63자 명명. 두 도메인 다 기능 참. 다음 완주 검사.
