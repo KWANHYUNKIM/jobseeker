@@ -715,3 +715,7 @@ zerodha.tech 최신 2024-03. 블로그 멈춤. updated_at 만. 1회째. 09-03 �
 ## flyio 재방문 (2026-09-26)
 
 피드 최신 09-03, 지난 갱신 전. updated_at 만. 1회째.
+
+## kakaobank 재방문 → 확장 (2026-09-26)
+
+09-07 알림 발송기 1편으로 notification-sender. 결정 6개, 새 도메인 고객에게 알린다. 행사 글(KodeRunner)은 안 씀.
