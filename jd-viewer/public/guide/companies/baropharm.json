@@ -391,6 +391,161 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/377859",
+      "title": "데이터 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 7-12년(자격요건은 '데이터 엔지니어링 실무 경력 7년 이상'). 바로팜 모집중 원티드 공고 중 경력 기준이 가장 높다. AWS 데이터 인프라를 설계·구축·운영하고 비용·안정성·확장성을 고려해 비용을 계속 줄이며, 대용량 배치·증분 파이프라인과 오케스트레이션을 자동화하고, DW/마트 모델링과 품질 검증 체계를 운영하고, 마스터 데이터 관리(MDM)와 데이터 조회·내부 연동 API 까지 맡는다. 자격은 수천만 행 이상 파이프라인 설계·운영, Python·DW/마트 모델링, Elasticsearch/OpenSearch 색인 파이프라인, 품질 검증(정합성 체크·이상치 탐지·소스 간 대사) 체계를 직접 설계한 경험. 제약·헬스케어 데이터, Kafka·Kinesis 스트리밍, AI 코딩도구를 쓰며 결과를 검증하는 자기기준은 우대다. 오케스트레이터·DW 제품 이름은 본문에 없다. 전형은 서류전형 → 1차면접(실무진) → 2차면접(임원진) → 입사.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어링 7년 이상",
+          "수천만 행 이상 파이프라인 설계·운영",
+          "Python·DW/마트 모델링",
+          "Elasticsearch/OpenSearch 색인 파이프라인",
+          "품질 검증 체계 직접 설계"
+        ],
+        "can_learn": [
+          "제약·헬스케어 데이터",
+          "Kafka·Kinesis 스트리밍",
+          "AI 코딩도구 활용과 검증"
+        ]
+      },
+      "study": [
+        {
+          "topic": "소스 간 대사와 품질 검증 체계",
+          "from": "qualification",
+          "quote": "• 데이터 품질 검증(정합성 체크, 이상치 탐지, 소스 간 대사) 체계를 직접 설계해 본 경험",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '데이터 웨어하우스/마트 모델링과 데이터 품질 검증 체계 운영' 이 있다. 회사가 여러 도매상·온라인몰 주문을 모으는 플랫폼이라 같은 거래가 여러 소스에 있다(회사 브리핑).",
+          "gap_check": "주문 DB 와 파트너(도매상) 정산 파일의 일별 금액이 안 맞을 때 어떤 키와 기준 시각으로 대사하고, 차이를 '지연 도착' 과 '진짜 누락' 으로 어떻게 가르는가?",
+          "drill": "주문 테이블과 가짜 파트너 정산 CSV 를 만들어 일별·파트너별 건수·금액 대사 쿼리를 쓰고, 차이 유형별 리포트와 이상치(전일 대비 급변) 탐지를 Great Expectations 체크로 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Great Expectations Docs",
+              "url": "https://docs.greatexpectations.io/docs/home/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "증분 파이프라인과 DW/마트 모델링",
+          "from": "task",
+          "quote": "• 대용량 배치·증분 데이터 파이프라인 설계·구축 및 오케스트레이션 자동화",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 '대용량 데이터(수천만 행 이상) 처리 파이프라인' 과 DW/마트 모델링이 있다.",
+          "gap_check": "수천만 행 주문 팩트를 매일 증분 적재할 때 늦게 들어온 변경(취소·수정)은 어떻게 반영하고, 약국·상품 차원이 바뀌면(주소·분류 변경) 과거 매출은 어느 값으로 보이게 하는가?",
+          "drill": "주문 팩트·약국·상품 차원으로 스타 스키마를 설계하고, updated_at 기준 증분 + 최근 N일 재처리 방식으로 적재하는 작업을 Airflow DAG 로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Kimball Group — Dimensional Modeling Techniques",
+              "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/",
+              "kind": "docs"
+            },
+            {
+              "title": "dbt — Incremental models",
+              "url": "https://docs.getdbt.com/docs/build/incremental-models",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Airflow Documentation",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Elasticsearch/OpenSearch 색인 파이프라인",
+          "from": "qualification",
+          "quote": "• Elasticsearch/OpenSearch 색인 파이프라인 구축·운영 경험",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '데이터 조회 및 내부 서비스 연동을 위한 API 설계·개발' 이 있다.",
+          "gap_check": "매핑을 바꿔 전체 재색인해야 할 때 서비스 중단 없이 새 인덱스로 옮기려면 별칭(alias)을 어떻게 쓰고, 재색인 중 들어온 변경은 어떻게 놓치지 않는가?",
+          "drill": "상품(의약품) 데이터를 v1 인덱스에 색인하고 별칭으로 조회하게 한 뒤, 매핑을 바꾼 v2 로 재색인하면서 증분 변경을 따라잡고 별칭을 원자적으로 바꾼다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Elasticsearch — Aliases",
+              "url": "https://www.elastic.co/docs/manage-data/data-store/aliases",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenSearch Documentation",
+              "url": "https://docs.opensearch.org/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "마스터 데이터 관리(MDM)",
+          "from": "task",
+          "quote": "• 마스터 데이터 관리 (MDM)",
+          "priority": "high",
+          "why": "주요업무다. 여러 도매상·온라인몰의 같은 의약품·같은 약국을 하나로 묶어야 통합 주문과 데이터 사업(비알피인사이트)이 성립한다(회사 브리핑, 추론).",
+          "gap_check": "도매상마다 상품명·규격 표기가 다른 같은 의약품을 하나의 마스터로 묶을 때 무엇을 키로 쓰고, 자동 매칭이 애매한 건은 어떻게 처리하는가?",
+          "drill": "표기가 다른 가짜 상품 목록 세 개를 만들어 정규화 규칙 + 유사도 매칭으로 골든 레코드를 만들고, 매칭 확신도가 낮은 건은 검토 큐로 뺀다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Wikipedia — Master data management",
+              "url": "https://en.wikipedia.org/wiki/Master_data_management",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 데이터 인프라 비용 최적화",
+          "from": "task",
+          "quote": "• 비용·안정성·확장성을 고려한 인프라 설계와 지속적인 비용 최적화",
+          "priority": "high",
+          "why": "주요업무다. 첫 주요업무가 AWS 기반 데이터 인프라 설계·구축·운영이다.",
+          "gap_check": "매일 도는 배치 클러스터와 늘 켜진 검색 클러스터 중 어디서 비용이 새는지 무엇으로 보고, 저장소 계층(S3 스토리지 클래스)과 컴퓨팅 크기는 어떤 기준으로 줄이는가?",
+          "drill": "Well-Architected 비용 최적화 원칙과 분석 렌즈를 읽고, 가상의 데이터 플랫폼 구성(S3·배치·검색·DW)의 월 비용표와 절감안 세 가지를 만든다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "AWS Well-Architected — Cost Optimization Pillar",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS Well-Architected — Data Analytics Lens",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/analytics-lens/analytics-lens.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "주문·파트너 정산 대사 + 증분 스타 스키마 + 무중단 재색인 저장소",
+          "why": "자격요건 다섯 줄 중 네 줄(대용량 파이프라인·모델링·색인·품질 검증)을 한 번에 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "AI 코딩도구로 만든 코드를 검증한 방법 정리",
+          "why": "우대사항에 '그 결과를 검증하는 자기기준' 이 그대로 적혀 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 1차면접(실무진) → 2차면접(임원진) → 입사(공고 기준).",
+        "expect": [
+          "대용량 파이프라인 설계·운영 사례",
+          "품질 검증·대사 체계",
+          "색인 파이프라인 운영",
+          "비용 최적화 경험"
+        ],
+        "sources": [
+          {
+            "title": "데이터 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/377859",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
