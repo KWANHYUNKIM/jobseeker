@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**엔니고모 — hold(2026-09-26, 도메인 2 · 기능 2). TRAVEL·STYLE HAUS 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(SMS 카이포케 — `tech.bm-sms.co.jp`, 보수 산정 엔진 테스트 자산화 `entry/2026/08/20/110000`, scratchpad `cand_27912a.txt`). 대기 2/3(SMS·코네히토). 머니포워드·라쿠스·ENECHANGE·엔니고모(hold)·LayerX 는 in_progress.**
+**SMS(`sms`) — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '개호 보수 계산의 정답을 전문가가 시트로 쌓는다' 를 테스트 자산화 글(`entry/2026/08/20/110000`, scratchpad `sms_tests.txt` — 전문 읽음) + 글이 언급한 '이전 글'(카이포케 리뉴얼용 산정 로직 재구현)을 찾아 보탠다. 그 뒤 preview 환경(`2026/07/21/110000`, `sms_preview.txt` — 인터페이스·아키텍처·설계 시 고려 부분 미독). 완주 판정 때 커리어·헬스케어 등 수익원은 도메인이 없다. 대기 1/3(코네히토 `cand_f36525.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모(hold)·LayerX 는 in_progress.**
 
 
 
