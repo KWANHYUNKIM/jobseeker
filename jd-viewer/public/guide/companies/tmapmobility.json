@@ -419,6 +419,108 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/379430",
+      "title": "Client Engineer (Android)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 중구. **MAU 1,500만 명 이상 TMAP Android 앱**을 만드는 클라이언트 자리다. 업무는 기획자·UI/UX 디자이너와 신규 기능 설계·구현, 다양한 Android 디바이스·OS 버전에서 안정적인 기능, 고객 VOC 분석과 사용자 경험 개선 제안, 백엔드 API 와 연동한 **검색·경로 탐색·즐겨찾기** 핵심 기능, 서버·QA·운영과 품질 개선. 필수는 Android 네이티브 5년 이상, Kotlin(Java 유지보수 가능), MVVM·Clean Architecture, 기획 검토부터 출시·운영, **디바이스·OS 호환성 이슈 해결**. 우대는 대규모 사용자 앱, **앱 시작 속도·렌더링·메모리·네트워크 최적화**, **ANR·크래시 분석**, CI/CD·테스트 자동화, A/B 테스트, Jetpack Compose, **위치 권한·백그라운드 위치**·지도·경로 탐색, 모바일 앱 보안. 같은 회사 Android SDK 공고(378307)가 외부에 주는 SDK 를 만든다면 이 자리는 TMAP 앱 자체를 만든다. 전형: 서류 ＞ **코딩테스트** ＞ 1차 인터뷰 ＞ 2차 인터뷰 ＞ 레퍼런스 체크 ＞ 처우협의 및 채용검진 ＞ 최종합격, 3개월 시용기간(급여 100%). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Android 네이티브 5년 이상",
+          "Kotlin(Java 유지보수)",
+          "MVVM·Clean Architecture",
+          "출시·운영 경험",
+          "디바이스·OS 호환성 해결"
+        ],
+        "can_learn": [
+          "ANR·크래시 분석",
+          "앱 시작 속도 최적화",
+          "백그라운드 위치",
+          "Jetpack Compose",
+          "A/B 테스트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ANR 과 크래시 — 1,500만 명 앱에서 원인 좁히기",
+          "from": "preference",
+          "quote": "• ANR 및 크래시를 분석하고 개선한 경험을 보유하신 분",
+          "priority": "core",
+          "why": "우대사항이다. 주요업무가 'MAU 1,500만 명 이상' 앱이라 0.1% 비율도 수만 명이고, 운전 중 앱이 멈추면 안내가 끊긴다.",
+          "gap_check": "메인 스레드가 5초 넘게 막혀 ANR 이 나는 흔한 원인(메인 스레드 디스크·네트워크 I/O, 락 대기, 느린 BroadcastReceiver)은 무엇이고, Play Console 의 ANR 스택에서 메인 스레드가 무엇을 기다리는지 어떻게 읽으며, StrictMode 로 개발 단계에서 무엇을 미리 잡는가?",
+          "drill": "샘플 앱에서 메인 스레드 파일 읽기·네트워크 호출·Thread.sleep 으로 ANR 을 일부러 만들고, StrictMode 경고와 ANR 트레이스(adb bugreport 또는 /data/anr)에서 원인 줄을 찾은 뒤 코루틴 IO 디스패처로 옮겨 사라지는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ANRs — Android Developers",
+              "url": "https://developer.android.com/topic/performance/vitals/anr",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "앱 시작 속도 — 콜드 스타트 줄이기",
+          "from": "preference",
+          "quote": "• 앱 시작 속도, 렌더링, 메모리, 네트워크 등 앱 성능을 최적화한 경험을 보유하신 분",
+          "priority": "high",
+          "why": "우대사항이다. 내비 앱은 차에 타자마자 열어 바로 목적지를 찾는다 — 시작 시간이 곧 사용자 체감이다.",
+          "gap_check": "콜드·웜·핫 스타트는 무엇이 다르고, Application.onCreate 에 몰린 SDK 초기화가 첫 화면(TTID)을 얼마나 늦추며, Baseline Profile 은 무엇을 미리 컴파일해 시작을 빠르게 하는가?",
+          "drill": "샘플 앱의 Application.onCreate 에 무거운 초기화 세 개를 넣고 Macrobenchmark 로 콜드 스타트를 잰다. 초기화를 지연·백그라운드로 옮기고 Baseline Profile 을 생성해 적용한 뒤 다시 재서 표로 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "App startup time — Android Developers",
+              "url": "https://developer.android.com/topic/performance/vitals/launch-time",
+              "kind": "docs"
+            },
+            {
+              "title": "Baseline Profiles overview — Android Developers",
+              "url": "https://developer.android.com/topic/performance/baselineprofiles/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "백그라운드 위치 — 권한과 포그라운드 서비스",
+          "from": "preference",
+          "quote": "• 위치 권한, 백그라운드 위치, 지도 또는 경로 탐색 등 위치 기반 모바일 서비스 개발 경험을 보유하신 분",
+          "priority": "high",
+          "why": "우대사항이다. 내비 안내는 화면을 끄거나 다른 앱으로 가도 계속되어야 하고, Android 버전마다 위치 권한 규칙이 달라졌다(필수의 '다양한 디바이스 및 OS 환경의 호환성').",
+          "gap_check": "주행 안내 중 앱이 백그라운드로 가도 위치를 받으려면 '백그라운드 위치' 권한과 '위치 유형 포그라운드 서비스' 중 무엇이 맞고, 사용자가 '앱 사용 중에만 허용' 을 골랐을 때 안내를 어떻게 이어 가며, 최신 OS 에서 포그라운드 서비스 유형을 선언하지 않으면 무엇이 실패하는가?",
+          "drill": "안내 시작 시 location 유형 포그라운드 서비스를 띄워 알림을 보여주고 위치 업데이트를 받는 샘플을 만든다. 권한을 '사용 중에만'·'항상'·'거부' 로 바꿔 가며 화면을 끈 상태에서 위치가 계속 오는지 확인하고, 결과를 OS 버전별 표로 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Access location in the background — Android Developers",
+              "url": "https://developer.android.com/develop/sensors-and-location/location/background",
+              "kind": "docs"
+            },
+            {
+              "title": "Foreground service types — Android Developers",
+              "url": "https://developer.android.com/develop/background-work/services/fgs/service-types",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OS 버전 호환성 — targetSdk 를 올릴 때",
+          "from": "qualification",
+          "quote": "• 다양한 디바이스 및 OS 환경의 호환성 이슈를 해결한 경험을 보유하신 분",
+          "priority": "high",
+          "why": "필수 자격요건이다. 사용자가 1,500만 명이면 오래된 OS 와 최신 OS 가 함께 섞여 있다.",
+          "gap_check": "Google Play 의 target API 요구 때문에 targetSdk 를 한 단계 올리면 앱 동작이 바뀌는 지점(권한·백그라운드 실행·알림 권한 등)을 어떻게 찾아내고, minSdk 는 그대로 둔 채 새 API 를 쓰려면 버전 분기를 어디에 모아 두는가?",
+          "drill": "Play 의 target API 요구 문서와 해당 버전 동작 변경 목록을 읽고, 샘플 앱의 targetSdk 를 한 단계 올려 알림 권한·포그라운드 서비스 동작이 어떻게 달라지는지 두 에뮬레이터(구·신 OS)에서 비교해 체크리스트로 남긴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Meet Google Play's target API level requirement",
+              "url": "https://developer.android.com/google/play/requirements/target-sdk",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
