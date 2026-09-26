@@ -1364,3 +1364,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 LegalOn 지원 Codex+Datadog
 
 - 지원 글 전문으로 `support-codex-datadog-mcp`(결정 6 — 지원이 먼저 봄·MCP 자연어 조회(inferred)·데스크톱 앱(inferred)·SSO+퍼미션·조사 Skill·팀 안에서 닫는 범위). 사례 셋(애드인·메일 연계·메일 접수 상한 초과), 정량 효과는 없음. 검증 절차가 글에 없다는 점을 failure 그림에 남김.
+
+## 2026-09-26 LegalOn 도메인 추가 — 제품 공통 잠재 고객 예측
+
+- 완주 판정: On Technologies 수익원 검색. 블로그 검색은 결과가 사이드바 최신 글뿐이었지만 그중 입사 엔트리 둘을 열어 봄 — 플랫폼 엔지니어(DealOn 팀 파견·통합 ID PoC, 얕음)와 데이터 팀 EM(잠재 고객 예측을 LegalOn·DealOn·WorkOn·GovernOn 공통 2값 분류 모델로). 후자로 도메인 '제품 여럿 중 이 고객에게 무엇을 팔지 한 잣대로 점친다' 추가, On Technologies·LegalOn 두 수익원에 연결. hold 불필요.
