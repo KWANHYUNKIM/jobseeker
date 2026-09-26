@@ -6,7 +6,7 @@
     "카카오페이증권"
   ],
   "status": "in_progress",
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-26",
   "site": "kakaopaysec.com",
   "one_liner": "해외·국내주식·연금저축·ETF·펀드를 파는 '국내최초 테크핀 증권사' — 모집중 공고는 전부 시니어 개발·데이터 자리다",
   "company": {
@@ -154,5 +154,133 @@
     "모집중 6건이 모두 경력 4~14년 시니어다 — 신입 공고는 없다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/377076",
+      "title": "대용량 데이터 플랫폼 백엔드 개발자(시니어)",
+      "site": "wanted",
+      "verdict": "경력 7-14년. **고객 금융 데이터 플랫폼의 시니어·기술 리더** 자리다. 조직소개가 과제를 분명히 적는다 — 고객자산·계좌수익률·투자리포트 데이터는 정합성과 신뢰성이 필수이고, 원장 시스템에 몰리는 조회 트래픽과 데이터 증가에 대응하려면 분산 데이터베이스 기반의 확장 구조가 필요하다. 업무는 장기 아키텍처·기술 로드맵, 분산 DB·데이터 파이프라인 기반 처리 시스템 설계·운영, 성능·정합성·동시성 문제 해결, 코드 리뷰·멘토링·아키텍처 워크샵. 필수는 Java/Kotlin 대규모 백엔드와 객체지향 설계, 대용량·분산·파이프라인, 분산 DB 데이터 모델링, MSA 운영(서비스 간 통신·장애 대응·데이터 일관성), **CQRS·이벤트 소싱 실제 적용**, 팀 기술 리더 경험. 우대는 금융 도메인·규제 대응, Kafka·CDC 이벤트 스트리밍, Vitess 같은 분산 DB 또는 ClickHouse 같은 OLAP, 트랜잭션 일관성의 아키텍처 해결, 주니어 코칭·기술 면접관. 전형: 서류전형 - 과제전형 - 1차 현업 인터뷰 - 2차 최종 인터뷰 - 처우협의 - 입사일 조정(레퍼런스 체크는 필요에 따라).",
+      "fit": {
+        "must_have": [
+          "Java/Kotlin 대규모 백엔드",
+          "분산 DB 데이터 모델링",
+          "MSA 대규모 아키텍처",
+          "CQRS·이벤트 소싱 적용 경험",
+          "기술 리더 경험"
+        ],
+        "can_learn": [
+          "금융 도메인·규제",
+          "Kafka·CDC",
+          "Vitess·ClickHouse"
+        ]
+      },
+      "study": [
+        {
+          "topic": "원장 조회 부하를 떼어 내는 CQRS",
+          "from": "qualification",
+          "quote": "• CQRS, 이벤트 소싱 등 아키텍처 패턴을 이해하고 실제 시스템에 적용한 경험이 있으신 분을 원해요.",
+          "priority": "core",
+          "why": "필수 요건이고 우대에 CQRS 적용 경험이 한 번 더 있다. 조직소개가 원장 시스템에 집중되는 조회 트래픽 대응을 과제로 적는다.",
+          "gap_check": "주문·체결을 쓰는 원장(쓰기 모델)과 고객이 보는 자산·수익률 화면(읽기 모델)을 나누면 읽기 모델이 몇 초 늦을 수 있는데, 고객에게 늦은 값을 보여도 되는 화면과 절대 안 되는 화면(예: 주문 가능 금액)을 어떻게 가르는가?",
+          "drill": "작은 모의 계좌 서비스를 만들어 쓰기는 원장 테이블에, 이벤트를 받아 갱신하는 읽기 전용 '계좌 자산 뷰' 를 따로 두고, 이벤트 처리를 일부러 3초 늦춘 상태에서 두 화면의 값 차이를 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "CQRS",
+              "url": "https://martinfowler.com/bliki/CQRS.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Event Sourcing",
+              "url": "https://martinfowler.com/eaaDev/EventSourcing.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "분산 DB 데이터 모델링 — 샤딩 키",
+          "from": "qualification",
+          "quote": "• 분산 데이터베이스 환경에서의 데이터 모델링 경험이 있으며, 성능 최적화와 확장성을 함께 고려한 아키텍처 설계 경험이 있으신 분을 원해요.",
+          "priority": "core",
+          "why": "필수 요건이고 우대에 Vitess 같은 분산 데이터베이스가 있다. 조직소개가 분산 데이터베이스 기반의 데이터 모델링·트래픽 분산·조회 성능 최적화를 적는다.",
+          "gap_check": "고객 계좌 데이터를 고객 ID 로 샤딩하면 한 고객의 조회는 한 샤드에서 끝나지만, '종목별 전체 보유자 수' 같은 조회는 어떻게 되고, 이런 교차 샤드 조회는 어디로(OLAP·별도 집계) 보내는가?",
+          "drill": "Vitess 샤드·Vindex 문서를 읽고, 계좌·거래내역·보유종목 세 테이블의 샤딩 키를 정한 뒤 자주 쓰는 조회 다섯 개가 단일 샤드인지 교차 샤드인지 표로 판정한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "The Vitess Docs | Shard",
+              "url": "https://vitess.io/docs/concepts/shard/",
+              "kind": "docs"
+            },
+            {
+              "title": "The Vitess Docs | Vindexes",
+              "url": "https://vitess.io/docs/reference/features/vindexes/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MSA 에서 데이터 일관성 — Outbox 와 Saga",
+          "from": "qualification",
+          "quote": "• MSA 환경에서 대규모 서비스 아키텍처를 설계·운영한 경험이 있으며, 서비스 간 통신, 장애 대응, 데이터 일관성 등 복잡한 기술 문제를 해결해본 분을 원해요.",
+          "priority": "high",
+          "why": "필수 요건이고 우대에 '정합성, 동시성 제어, 트랜잭션 일관성 문제를 아키텍처 차원에서 해결' 이 있다.",
+          "gap_check": "주문 서비스가 DB 에 저장하고 이벤트를 보내는 두 동작 중 하나만 성공하면 무엇이 어긋나고, 여러 서비스에 걸친 작업이 중간에 실패하면 Saga 의 보상 트랜잭션은 무엇을 되돌리는가?",
+          "drill": "'주식 선물하기' 를 보내는 쪽 차감 → 받는 쪽 입고 두 서비스로 나누고 Outbox 로 이벤트를 발행한 뒤, 입고 단계를 일부러 실패시켜 보상 트랜잭션으로 차감이 복구되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Pattern: Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Pattern: Saga",
+              "url": "https://microservices.io/patterns/data/saga.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kafka·CDC 기반 데이터 파이프라인",
+          "from": "preference",
+          "quote": "• Kafka, CDC, 이벤트 스트리밍 기반의 대규모 데이터 파이프라인을 설계·구축·운영한 경험이 있는 분이면 좋아요.",
+          "priority": "high",
+          "why": "우대사항이다. 주요업무가 분산 데이터베이스와 데이터 파이프라인 기반의 고객 금융 데이터 처리 시스템을 적는다.",
+          "gap_check": "원장 DB 의 변경을 CDC 로 뽑아 Kafka 로 보낼 때 같은 계좌의 변경 순서를 지키려면 파티션 키를 무엇으로 두고, 컨슈머가 재시작해 같은 변경을 두 번 받으면 무엇으로 멱등하게 처리하는가?",
+          "drill": "MySQL + Debezium + Kafka 를 도커로 띄워 계좌 테이블 변경이 토픽으로 나오는지 보고, 계좌 ID 를 키로 한 파티션에서 순서가 유지되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Debezium Documentation",
+              "url": "https://debezium.io/documentation/reference/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Kafka Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OLAP 로 집계 조회 분리 — ClickHouse",
+          "from": "preference",
+          "quote": "• 분산 데이터베이스(Vitess 등) 또는 OLAP 데이터베이스(ClickHouse 등)를 활용한 아키텍처 설계 및 활용 경험이 있는 분이면 좋아요.",
+          "priority": "nice",
+          "why": "우대사항이다. 조직소개가 투자리포트 등 고객에게 제공되는 데이터를 적는다.",
+          "gap_check": "월간 투자리포트처럼 기간 전체를 훑는 집계를 원장 DB 가 아니라 컬럼형 OLAP 에서 돌리면 무엇이 빨라지고, 대신 무엇(실시간성·갱신·삭제)이 불편해지는가?",
+          "drill": "거래내역 수백만 행을 ClickHouse 에 넣고 '고객별 월 수익률' 집계를 MySQL 과 같은 쿼리로 비교해 실행 시간을 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "What is ClickHouse?",
+              "url": "https://clickhouse.com/docs/intro",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
