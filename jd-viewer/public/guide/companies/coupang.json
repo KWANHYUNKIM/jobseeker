@@ -17918,6 +17918,109 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188073",
+      "title": "Manager, Security Engineering _ DART Taiwan",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 대만 타이베이 근무다. 정보보안 15년 이상(그중 사이버 보안 사고 분석가 8년 이상)·영어 필수의 매니저 자리로, 쿠팡의 탐지·대응팀 DART(Detection and Response Team)가 DART KR·US 에 이어 새로 세우는 DART TW 를 이끈다 — 대만에서 일어나는 보안 사고와 의심 사고의 대응을 직접 주도하고(원인 분석·봉쇄·보고서), CSOC 에서 올라온 티켓을 검토하며, SIEM 으로 수집된 로그로 기존 탐지를 피한 위협을 찾고, 사고 대응 정책·절차를 개선하며 온콜을 선다. 팀원 관리와 실무(hands-on)를 함께 요구한다.",
+      "fit": {
+        "must_have": [
+          "정보보안 15년 이상·사고 분석가 8년 이상",
+          "영어",
+          "보안 이벤트 분석·AWS/클라우드",
+          "Windows/Linux/Mac 시스템 로그 분석",
+          "SIEM 질의로 로그 분석",
+          "IPS/IDS·EDR·앱 보안 이벤트 분석",
+          "Bash·Python·PowerShell 자동화"
+        ],
+        "can_learn": [
+          "Kubernetes·Docker 환경(우대)",
+          "네트워크 트래픽·패킷 분석과 포렌식(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보안 사고 대응 절차와 사고 보고",
+          "from": "task",
+          "quote": "Improvement of incident response policies and procedures, and process",
+          "priority": "core",
+          "why": "대만의 보안 사고·의심 사고 대응을 직접 주도하며 원인 분석·봉쇄·보고서를 맡고, 사고 대응 정책·절차·프로세스를 개선하는 것이 주요업무다. 새로 세우는 DART TW 의 절차를 KR·US 와 맞춰야 한다.",
+          "gap_check": "CSOC 가 올린 경보 하나가 오탐인지 실제 사고인지 판정하고, 실제라면 영향 범위 확인 → 봉쇄 → 복구 → 재발 방지로 넘어가는 각 단계의 결정 기준과 기록 항목은 무엇인가?",
+          "drill": "NIST SP 800-61 r3 를 읽고, 새 지역 대응팀용 사고 대응 절차서(심각도 등급·판정 기준·에스컬레이션·보고서 양식·사후 검토)를 한 편 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "NIST SP 800-61 Rev. 3 — Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+              "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SIEM 로그 분석과 위협 헌팅",
+          "from": "qualification",
+          "quote": "Experience and skills querying SIEM for analyzing security events from the logs",
+          "priority": "core",
+          "why": "SIEM 질의로 로그의 보안 이벤트를 분석하는 경험과 대용량 로그 분석 능력이 자격요건이고, 엔드포인트·서버·클라우드·네트워크 데이터로 CSOC 가 놓친 위협을 찾는 헌팅이 주요업무다.",
+          "gap_check": "탐지 규칙에 걸리지 않은 위협을 찾을 때 무엇(가설)에서 출발하고, 어떤 기준으로 정상 행동과 이상 행동을 가르며, 찾은 결과를 새 탐지 규칙으로 어떻게 넘기는가?",
+          "drill": "MITRE ATT&CK 에서 기법 하나를 골라 가설을 세우고, 공개 샘플 로그(또는 실습용 로그)에서 그 흔적을 찾는 SIEM 질의를 쓴 뒤, 헌팅 결과를 탐지 규칙 제안서로 정리한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "MITRE ATT&CK",
+              "url": "https://attack.mitre.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "SANS — Hunt Evil poster",
+              "url": "https://www.sans.org/posters/hunt-evil/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "호스트 로그 분석 — Windows·Linux·Mac",
+          "from": "qualification",
+          "quote": "Experience of analyzing system logs of Windows/Linux/Mac systems.",
+          "priority": "high",
+          "why": "Windows·Linux·Mac 시스템 로그 분석과 호스트 기반 보안 조사 경험이 자격요건이다.",
+          "gap_check": "Windows 에서 계정 로그온·권한 상승·서비스 생성 같은 행동을 보려면 어떤 감사 정책이 켜져 있어야 하고, 로그가 꺼져 있던 기간의 조사는 어떻게 한계를 보고서에 적는가?",
+          "drill": "Windows 고급 감사 정책 문서를 읽고, 사고 조사에 필요한 감사 범주와 이벤트 종류를 정리한 뒤, 테스트 VM 에서 로그온·서비스 생성을 일으켜 해당 이벤트가 남는지 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Microsoft Learn — Advanced security audit policy settings",
+              "url": "https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/advanced-security-audit-policy-settings",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "신규 지역 대응팀 운영 절차서",
+          "why": "DART TW 는 새로 세우는 팀이다. KR·US 와 맞춘 심각도·에스컬레이션·보고서 양식을 담은 절차서 초안은 매니저 면접에서 팀을 어떻게 세울지 보여 준다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "경보 판정과 에스컬레이션",
+          "위협 헌팅 가설",
+          "호스트 로그 조사",
+          "새 팀 구축과 온콜",
+          "지역 간 협업(영어)"
+        ],
+        "sources": [
+          {
+            "title": "Manager, Security Engineering _ DART Taiwan",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188073",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
