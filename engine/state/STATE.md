@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**유자베이스 — 기능 1(`stage-guard-then-deliver`, 2026-09-26). 다음은 확장: 'AI 에이전트의 실패를 두 칸에 나눠 담는다' 를 에이전트 글(`entry/2026/09/16/082055`, scratchpad `uz_ag.txt` — '例外で停止した場合は500' 이후 200 응답의 status 값들·마무리를 마저). 그 뒤 완주 판정: NewsPicks 수익원에 도메인이 없다 — NewsPicks 기술 글을 찾고 없으면 두 번 뒤 hold. 대기 2/3(머니포워드·stmn). LayerX 는 in_progress.**
+**유자베이스 — 기능 2(`stage-guard-then-deliver` · `completed-or-degraded`, 2026-09-26). 두 도메인 채움. NewsPicks 수익원에 도메인이 없어 완주 기준 셋째 미달 — 다음 사이클에 NewsPicks 기술 글 조사 1회째(tech.uzabase.com 의 NewsPicks 카테고리·검색). 없으면 두 번째 뒤 수익원 hold(회사 hold_reason — CADDi·데브시스터즈 선례). `--gaps` 는 '신규(머니포워드)' 를 찍지만 이 회사를 먼저 닫는다. 대기 2/3. LayerX 는 in_progress.**
+
 
 
 

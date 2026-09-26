@@ -1304,3 +1304,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 유자베이스 확장 — 작업 버킷에서 막고, 달라진 것만 올리고, 계약한 폴더만 열어 준다
 
 - Datafeed 글(09-05)로 `stage-guard-then-deliver`(결정 8). 버킷 하나+프리픽스 결정은 대안이 이 사이트의 것이라 inferred. ETag 한계·임계 아래 감소는 해석 표시.
+
+## 2026-09-26 유자베이스 확장 — HTTP 는 에이전트가 돌았는지를, status 는 슬라이드가 어땠는지를
+
+- 에이전트 트릴레마 글(09-16)로 `completed-or-degraded`(결정 6·state 그림). A2A 재의뢰 기대는 inferred. 두 도메인 채움, NewsPicks 수익원 미연결.
