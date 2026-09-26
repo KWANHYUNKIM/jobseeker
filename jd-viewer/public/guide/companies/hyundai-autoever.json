@@ -251,7 +251,8 @@
     "매출 규모와 사업 영역별 비중을 이번에 읽지 않았다 — 홈페이지 IR·재무정보 메뉴에서 확인할 것",
     "salary: 공고에 금액이 없고 공개 연봉 자료를 확인하지 않았다 — 근거 없이 비워 둔다",
     "jobkorea·catch 게시 5건은 본문이 크롤되지 않아 브리핑 대상에서 빠진다",
-    "wd/385515: 공고 제목은 '[IVI] Embedded SW Architect' 인데 본문 제목은 'Android Framework 개발 Developer', 경력은 5-11년이다 — 아키텍트 공고(385519, 8-16년)와 같은 머리를 붙인 것으로 보이나 확인하지 못했다"
+    "wd/385515: 공고 제목은 '[IVI] Embedded SW Architect' 인데 본문 제목은 'Android Framework 개발 Developer', 경력은 5-11년이다 — 아키텍트 공고(385519, 8-16년)와 같은 머리를 붙인 것으로 보이나 확인하지 못했다",
+    "wd/385504: 공고 본문 머리의 포지션명이 '[사내 변호사(국내)]' 인데 팀 소개·업무·자격은 전부 Physical AI(RX기술팀)다 — 다른 공고의 머리가 잘못 붙은 것으로 보이나 확인하지 못했다"
   ],
   "postings": [
     {
@@ -1094,6 +1095,157 @@
           {
             "title": "[SDx] Data Engineer - Robot Data Engineer",
             "url": "https://www.wanted.co.kr/wd/385505",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385504",
+      "title": "[Tech] AI Engineer - Physical AI Engineer",
+      "site": "wanted",
+      "verdict": "경력 3~8년(서울 강남). 2024년에 신설된 RX기술팀에서 LLM·비전 모델·강화학습을 합친 로봇용 자율 의사결정 에이전트를 만들고, 시뮬레이션(ROS, Gazebo, PyBullet, IsaacGym)으로 정책을 학습시킬 사람. 경력 표기는 3-8년인데 자격요건에는 Python, C++ 5년 이상과 로봇·시뮬레이션 3년 이상이 있다 — 하한 3년으로는 모자란다. LLM 에이전트 1년·Embodied AI 1년 이상도 자격요건이다. 공고 본문 머리의 포지션명이 '[사내 변호사(국내)]' 로 붙어 있는데, 내용은 전부 Physical AI 다(open_questions). 전형에 직무역량테스트(코딩)가 있다.",
+      "fit": {
+        "must_have": [
+          "AI Agent 또는 LLM 애플리케이션 1년 이상",
+          "로봇·Embodied AI 1년 이상",
+          "ROS/ROS 2·센서 처리·컴퓨터 비전 3년 이상",
+          "딥러닝 자동화 프레임워크 개발",
+          "Python, C++ 5년 이상",
+          "Git·Docker·REST/gRPC API"
+        ],
+        "can_learn": [
+          "LangChain·OpenAI Assistants API",
+          "Vision-Language Models",
+          "벡터 DB·프롬프트 엔지니어링",
+          "IsaacGym"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ReAct 로 LLM 에이전트에 도구 쥐여 주기",
+          "from": "task",
+          "quote": "• ReACT 아키텍처 설계, 도구 및 API 통합을 통한 LLM 기반 에이전트 프레임워크 개발",
+          "priority": "core",
+          "why": "주요업무이고 자격요건 첫 줄이 'AI Agent 시스템 또는 LLM 기반 애플리케이션 1년 이상' 이다. 우대에 LangChain, AutoGPT, OpenAI Assistants API 가 있다.",
+          "gap_check": "ReAct 의 Thought → Action → Observation 루프에서 로봇 제어 API 를 도구로 줄 때, 잘못된 행동(충돌 위험)을 LLM 이 고르지 못하게 어디서 막고, 루프가 끝나지 않을 때 어떻게 멈추는가?",
+          "drill": "시뮬레이터의 로봇을 '이동', '집기', '카메라 캡처' 세 도구로 감싸 ReAct 에이전트에 붙이고, 도구 호출 전 안전 검사 계층과 최대 단계 제한을 넣은 뒤 실패 사례를 기록한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "ReAct: Synergizing Reasoning and Acting in Language Models (arXiv:2210.03629)",
+              "url": "https://arxiv.org/abs/2210.03629",
+              "kind": "paper"
+            },
+            {
+              "title": "LangChain — Introduction",
+              "url": "https://python.langchain.com/docs/introduction/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "시뮬레이션에서 정책 학습 (강화학습)",
+          "from": "task",
+          "quote": "• 정책 학습, 시뮬레이션 환경을 활용한 에이전트 훈련 및 최적화",
+          "priority": "core",
+          "why": "주요업무이고 첫 줄이 LLM·비전·강화학습의 통합이다. 시뮬레이터 이름(Gazebo, PyBullet, IsaacGym)을 공고가 직접 적는다.",
+          "gap_check": "PPO 같은 정책 경사 방법이 무엇을 최적화하는지 말하고, 시뮬레이션에서 학습한 정책이 실제 로봇에서 깨지는 이유(sim-to-real 격차)와 도메인 랜덤화가 그걸 어떻게 줄이는지 설명할 수 있는가?",
+          "drill": "로봇 팔 도달(reach) 과제를 시뮬레이터에 만들고 PPO 로 학습해 보상 곡선을 남긴 뒤, 질량·마찰을 랜덤화한 환경에서 다시 학습해 일반화 차이를 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "OpenAI Spinning Up in Deep RL",
+              "url": "https://spinningup.openai.com/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "NVIDIA Isaac Gym",
+              "url": "https://developer.nvidia.com/isaac-gym",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ROS 2 와 Gazebo 로 로봇 시뮬레이션",
+          "from": "qualification",
+          "quote": "• 로봇 및 시뮬레이션 기술(ROS/ROS 2, 센서 처리, 컴퓨터 비전 등) 3년 이상 실무 경험",
+          "priority": "core",
+          "why": "자격요건 중 가장 긴 연차(3년)가 붙은 줄이다. 주요업무의 '멀티모달 센서 기반 환경 인식 및 자율 내비게이션 에이전트' 도 여기 기댄다.",
+          "gap_check": "Gazebo 의 카메라·LiDAR 토픽을 ROS 2 노드에서 받아 장애물 지도를 만들고 내비게이션 목표를 보내는 흐름에서, 좌표계(tf) 변환은 어디서 일어나는가?",
+          "drill": "Gazebo 에 이동 로봇을 띄워 ROS 2 로 센서를 받고, 목표 지점까지 이동시키는 노드를 만든 뒤 LLM 에이전트의 '이동' 도구가 이 노드를 호출하게 연결한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "ROS 2 Jazzy — Tutorials",
+              "url": "https://docs.ros.org/en/jazzy/Tutorials.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Gazebo — Getting started",
+              "url": "https://gazebosim.org/docs/latest/getstarted/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Vision-Language(-Action) 모델",
+          "from": "preference",
+          "quote": "• Vector Databases, Prompt Engineering, Vision-Language Models 활용 경험",
+          "priority": "high",
+          "why": "우대사항이고 해시태그에 #VLA 가 있다. 주요업무의 '비전 모델' 을 LLM 과 합치는 방법이다.",
+          "gap_check": "VLM 이 이미지에서 '빨간 컵' 을 찾아 말로 답하는 것과, VLA 가 그 답을 로봇 행동으로 바로 내는 것은 출력 표현이 어떻게 다른가?",
+          "drill": "시뮬레이터 카메라 이미지를 VLM 에 넣어 물체 위치를 설명하게 하고, 그 출력을 '집기' 도구의 인자로 바꾸는 파서를 만들어 성공률을 잰다. RT-2 논문의 행동 토큰화 부분을 요약한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control (arXiv:2307.15818)",
+              "url": "https://arxiv.org/abs/2307.15818",
+              "kind": "paper"
+            },
+            {
+              "title": "Hugging Face Transformers",
+              "url": "https://huggingface.co/docs/transformers/index",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "에이전트를 서비스로 내보내기 — Docker·gRPC",
+          "from": "qualification",
+          "quote": "• Git, Docker, REST/gRPC API 개발 및 배포 경험",
+          "priority": "high",
+          "why": "자격요건이다. 팀이 이기종 로봇 관제 시스템과 '여러 시스템들과의 연계' 를 한다고 적는다 — 에이전트가 관제 시스템과 API 로 이어져야 한다(추론).",
+          "gap_check": "로봇 상태 스트림처럼 계속 흐르는 데이터를 REST 와 gRPC 스트리밍 중 무엇으로 보내고, 그 이유는 무엇인가?",
+          "drill": "위 에이전트를 Docker 이미지로 만들고, 로봇 상태를 gRPC 서버 스트리밍으로 받는 관제 클라이언트를 붙인다.",
+          "hours": 5,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Gazebo 로봇 + ReAct 에이전트 + VLM 인식 데모",
+          "why": "주요업무 여섯 줄 중 네 줄(LLM·비전 통합, 멀티모달 인식, ReACT 도구 통합, 시뮬레이션)을 한 영상으로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "시뮬레이션 정책 학습 보상 곡선과 sim-to-real 메모",
+          "why": "'정책 학습, 시뮬레이션 환경을 활용한 에이전트 훈련' 을 숫자로 보여 준다.",
+          "effort": "3~4일"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "LLM 에이전트의 안전 장치",
+          "강화학습 정책을 시뮬레이션에서 학습한 경험",
+          "ROS 2 기반 로봇 시스템 경험",
+          "VLM/VLA 활용"
+        ],
+        "sources": [
+          {
+            "title": "[Tech] AI Engineer - Physical AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/385504",
             "publisher": "원티드"
           }
         ]
