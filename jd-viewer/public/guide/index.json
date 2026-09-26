@@ -596,6 +596,18 @@
       "postings": 6,
       "study_items": 12,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "ably",
+      "name": "에이블리코퍼레이션",
+      "aliases": [
+        "에이블리코퍼레이션",
+        "에이블리"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
