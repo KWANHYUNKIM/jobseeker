@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "macbee-planet",
+      "name": "Macbee Planet",
+      "name_en": "Macbee Planet",
+      "country": "JP",
+      "category": "광고",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "성과 보수형 광고 1위(매출 약 400억 엔)의 Macbee Planet — DSP '3D AD' 가 초당 입찰 요청을 늘릴수록 불던 비용을, 고정 대수 Fluentd 집약을 걷어 낸 Pub/Sub 직결 로그 기반과 시간별 파티션·dbt 증분으로 다시 지은 데이터 기반으로 끊어 냈다",
+      "updated_at": "2026-09-26",
+      "domain": "macbee-planet.com"
+    },
+    {
       "slug": "tribeau",
       "name": "トリビュー",
       "name_en": "TRIBEAU",
@@ -3589,7 +3601,9 @@
     "돈에 닿는 특전 로직을 동작 차이 없이 새 구조로 옮긴다",
     "여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다",
     "LLM 에게 전부 맡기지 않는 미용 의료 AI 상담",
-    "전사원이 쓰는 사내 MCP 를 빠르고 안전하게 늘린다"
+    "전사원이 쓰는 사내 MCP 를 빠르고 안전하게 늘린다",
+    "입찰 요청이 늘수록 비용이 붙는 로그 기반을 갈아 끼운다",
+    "매시간 하루치를 긁던 광고 데이터 기반을 증분으로 다시 짓는다"
   ],
   "countries": {
     "KR": "한국",
