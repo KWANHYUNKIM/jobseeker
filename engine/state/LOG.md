@@ -1000,3 +1000,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ferrous-systems 재방문
 
 - 피드 마지막 글이 08-26(채용 공고). 09-07 이후 새 글 없음. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 fireworks-ai 재방문 → 확장
+
+- 09-23 "Every byte counts: ARCv3" 에서 결정 6개로 `ship-the-delta-not-the-checkpoint` 를 새 도메인에 추가(features 1→2). 손실 압축 비교·S3 경유 지연·비대칭 약한 워크로드는 해석 표시.
