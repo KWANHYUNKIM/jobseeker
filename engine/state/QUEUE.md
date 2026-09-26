@@ -37,6 +37,7 @@
 | **Gakken LEAP** | JP · 교육(ShikakuPass) · 학연 그룹 DX | 프로파일(2026-09-27, slug `gakken-leap`). 도메인 둘 — 학습자의 행동 로그를 모아 분석하고 다시 서비스로 되돌린다 · 여러 세대의 프런트 기술이 겹친 화면을 사업을 멈추지 않고 React 로 옮긴다. 기능 2(학습 로그 두 갈래 · Strangler Fig). 입구 `zenn.dev/p/gakken_leap/feed`. 그룹 개발 지원은 inferred · 벤처 투자는 도메인 없음. **hold(2026-09-27)** — 두 수익원 자료 두 번 없음. |
 | **iCARE** | JP · 건강 관리 SaaS(Carely) · 산업 보건 | 프로파일(2026-09-27, slug `icare`). 도메인 셋 — 수만 건을 들여오는 긴 잡을 끝까지 버티게 한다 · 텔레메트리를 국내에 두고 환경마다 갈라 쥔다 · 흩어진 업무 규칙을 도메인 객체로 모은다. 기능 3(CSV 임포트 · Datadog 리전 이전 · 제출 규칙 엔티티). 입구 `zenn.dev/p/icare/feed`. 사람 서비스 수익원은 도메인 없음. **hold(2026-09-27)** — 사람 서비스 자료 두 번 없음. |
 | **e-dash** | JP · 탈탄소(CO2 배출량 가시화) SaaS | 프로파일(2026-09-27, slug `e-dash`). 도메인 셋 — 제각각의 에너지 청구서를 읽어 배출량의 원자료로 만든다 · 해마다 바뀌는 배출계수를 틀리지 않고 반영한다 · 거점이 많은 사용자의 권한을 인증 경로가 버티게 한다. 기능 3(청구서 OCR · 배출계수 갱신 · 권한 상한). 입구 `zenn.dev/p/edash_tech_blog/feed`. 컨설팅 수익원은 도메인 없음. **hold(2026-09-27)** — 컨설팅 자료 두 번 없음. |
+| **Skyfall** | JP · 광고(리워드 · 오퍼월) · 게임 | 프로파일(2026-09-27, slug `skyfall`). 도메인 둘 — 리워드 광고를 사용자 관심에 맞게 빨리 보여 준다 · 광고 클릭에서 성과까지를 빠짐없이 정확하게 센다. 기능 0. 입구 `zenn.dev/p/skyfall/feed`. |
 | **ギークプラス(Geekplus)** | JP · 물류 로봇 · 오픈 SCM(skylaa) · 풀필먼트 | 프로파일(2026-09-27, slug `geekplus`). 도메인 둘 — 흩어진 창고·주문 데이터를 싸게 들여오고 내보낸다 · 계획 데이터의 사실과 경계를 서버가 쥔다. 기능 2(Java 배치 Lambda 이사 · 흐름 트리와 테넌트 경계). 입구 `zenn.dev/p/geekplus/feed`. 로봇 · 풀필먼트 수익원은 도메인 없음. **hold(2026-09-27)** — 로봇 · 풀필먼트 수익원 자료 두 번 없음. |
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
@@ -68,7 +69,6 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Skyfall(SKYFLAG)** | JP · 광고 · 포인트(리워드) 플랫폼 | Zenn Publication `zenn.dev/p/skyfall`(RSS 15편, 최신 2026-09). **API 를 C# 에서 Node.js + Hono + Zod + Kysely + TypeSpec 으로 리플레이스해 3 배 이상** — 조직 과제 · 앱 과제 · 방침 `58f71aa4f25bfa` · **계측 API 를 다시 만들었더니 팀의 개발 체험이 바뀌었다** · 노코드 E2E 에서 Playwright 로 · dbt YAML Selectors · Snowflake Cortex 로 자연어 분석 기반 · 프로젝트 단위 개발로 조직 유동성. **광고 계측 축.** 신입 연수 · 인턴 글이 섞였다 — 회사 · 제품(SKYFLAG) 확인 필요. |
 | **助太刀(Sukedachi)** | JP · 건설업 매칭 앱(직인 ↔ 현장) | Zenn Publication `zenn.dev/p/sukedachi_dev`(RSS 20편, 최신 2026-08). **20 만 행 앱을 1 년에 풀 리플레이스 — 'AI 를 위한' Flutter 아키텍처**(4 층 · core 층 · Domain/Infrastructure/Application/Presentation 의 '형') `e5c9cdd085bb40` · 구현자 2 명 × 약 1 년 × AI 로 네이티브 앱을 Flutter 로 · Flutter UT 1 만 개 10 분 → 90 초 · Datadog 모바일 감시 + MCP · 불구합 수정률 99.06% 까지 3 년. **건설 인력 매칭 축(처음).** 제품 도메인(매칭 · 결제) 글이 있는지 프로파일 때 확인. |
 | **GVA TECH** | JP · 리걸테크(계약 · 법무 AI) | Zenn Publication `zenn.dev/p/gvatech_blog`(RSS 20편, 최신 2026-09). **멀티테넌트 환경의 프롬프트 캐싱 전략** — 브레이크포인트 · 층 사이 캐시 유효성 · 대화 이력에 둘 `846faa50c60c86` · 티켓 · 인기 상품 쟁탈전을 받치는 **가상 대기실** · 대규모 제품의 성능 체크 스킬을 AI 개발 루프에 · 병렬 agent coding(하루 PR 54 개) · Go 네트워킹 연재. **리걸테크 축.** Go · AI 개발 과정 글이 많다 — 제품(법무 서비스)과 이어지는 글 수를 프로파일 때 재판정. |
 

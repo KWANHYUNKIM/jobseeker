@@ -1,0 +1,184 @@
+{
+  "slug": "skyfall",
+  "name": "Skyfall",
+  "name_en": "Skyfall",
+  "country": "JP",
+  "category": "광고",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "skyfall.co.jp",
+  "one_liner": "앱 · 게임 안에 리워드 광고(오퍼월)를 붙여 매체엔 수익을, 광고주엔 행동한 사용자를 주는 SKYFLAG 의 회사 — 수익을 내 온 C# API 를 존중하며 Node.js 로 은퇴시켜 300ms 를 80ms 로 줄였고, 클릭에서 성과까지 세는 계측 API 는 '테스트할 수 있는 구조'로 다시 짰다",
+  "business_model": "주력은 **리워드 마케팅 플랫폼 SKYFLAG** 다 — 앱 · 게임 안의 **오퍼월**에 여러 광고 안건을 늘어놓고, 사용자가 앱 설치 · 설문 · 회원가입 같은 조건을 채우면 포인트나 게임 내 통화를 준다. 매체에게는 마네타이즈, 광고주에게는 프로모션, 거기에 리서치까지 판다. 광고 클릭에서 성과까지를 일관되게 트래킹하는 계측이 매체 · 광고주 양쪽 정산의 근거다.\n\n그 밖에 배틀로얄식 포커 게임 **ポーカーチェイス**, 게임만 해도 포인트가 쌓이는 **ポケットプレイ**, 광고로 손님과 가게 모두에 이득을 주는 음식점 셀프 오더 **SKYORDER** 를 운영한다. 수수료 체계 · 매출 비중은 공개 자료에서 확인하지 못했다.",
+  "products": [
+    "SKYFLAG(마네타이즈 · 프로모션 · 리서치)",
+    "ポーカーチェイス",
+    "ポケットプレイ",
+    "SKYORDER"
+  ],
+  "revenue_total": "확인하지 못했다(회사 사이트에 IR 메뉴가 있으나 이번엔 읽지 않았다).",
+  "revenue_streams": [
+    {
+      "name": "SKYFLAG 리워드 광고(마네타이즈 · 프로모션 · 리서치)",
+      "how": "매체의 앱 · 게임에 오퍼월을 붙여 광고 안건을 보이고, 사용자가 조건을 채우면 보상을 준다 — 광고주 성과에 연동된다. 수수료 체계는 공개 자료에서 확인하지 못했다.",
+      "weight": "공개 안 됨(주력)",
+      "domains": [
+        "리워드 광고를 사용자 관심에 맞게 빨리 보여 준다",
+        "광고 클릭에서 성과까지를 빠짐없이 정확하게 센다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "SKYFLAG",
+          "url": "https://skyflag.info/",
+          "publisher": "Skyfall",
+          "summary": "리워드를 활용한 독자 수법으로 **마네타이즈 · 프로모션 · 리서치**의 종합 마케팅 지원. 도입 사례(Paddle 'BitWalk' 다음날 잔존율 20% 향상 등)와 웨비나."
+        },
+        {
+          "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+          "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+          "publisher": "Skyfall",
+          "date": "2026-02-25",
+          "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+        },
+        {
+          "title": "計測APIを作り直したら、チームの開発体験が変わった",
+          "url": "https://zenn.dev/skyfall/articles/c268501b030fae",
+          "publisher": "Skyfall",
+          "date": "2026-06-08",
+          "summary": "SKYFLAG 의 핵심 **계측 API** — 클릭에서 컨버전까지 일관 트래킹해 광고주 · 매체 양쪽에 정확한 데이터를 준다. 역할 둘: **리다이렉트**(클릭 정보 저장 · 안건 페이지로, 입구)와 **컨버전**(성과 달성 감지 · 부정 대책(중복 · 변조) · 성과 저장, 출구). 정확 · 고속 · 안정이 요구되고 광고 성과에 직결. 리팩터 전: 공통 처리 중복 · 설계 방침 없음(레이어 · 책임 혼재) · 거의 모든 처리가 서비스 클래스에 · 테스트 코드 없음 → 작은 수정에도 방대한 수동 QA. 옛 시스템 리플레이스 때 속도를 우선한 탓. 방침: 책임별 클래스 · Controller/Service/Repository 레이어 · **테스트할 수 있는 형태가 목표**(DI · 모킹 쉬운 인터페이스 · 부작용 분리). 결과: 일부만 만지던 계측 API 를 다른 멤버 · 인턴도 안심하고 만지게 됐고 테스트 문화가 뿌리내렸다."
+        }
+      ]
+    },
+    {
+      "name": "ポーカーチェイス(포커 게임)",
+      "how": "배틀로얄식 텍사스 홀덤 포커 게임을 운영한다. 과금 방식은 공개 자료에서 확인하지 못했다.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "事業内容",
+          "url": "https://skyfall.co.jp/service",
+          "publisher": "Skyfall",
+          "summary": "사업 넷 — **SKYFLAG**(사용자 체험에 맞춘 리워드 마케팅 플랫폼), **ポーカーチェイス**(배틀로얄식 텍사스 홀덤 포커 게임), **ポケットプレイ**(게임만 해도 포인트가 쌓여 Amazon 기프트카드 등으로 교환하는 포인트 활동 앱), **SKYORDER**(광고로 손님은 이득, 가게엔 새 수익원을 주는 음식점용 셀프 오더)."
+        }
+      ]
+    },
+    {
+      "name": "ポケットプレイ · SKYORDER",
+      "how": "게임으로 포인트가 쌓이는 앱과, 광고로 수익원을 주는 음식점 셀프 오더. 수익 구조는 공개 자료에서 확인하지 못했다.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "事業内容",
+          "url": "https://skyfall.co.jp/service",
+          "publisher": "Skyfall",
+          "summary": "사업 넷 — **SKYFLAG**(사용자 체험에 맞춘 리워드 마케팅 플랫폼), **ポーカーチェイス**(배틀로얄식 텍사스 홀덤 포커 게임), **ポケットプレイ**(게임만 해도 포인트가 쌓여 Amazon 기프트카드 등으로 교환하는 포인트 활동 앱), **SKYORDER**(광고로 손님은 이득, 가게엔 새 수익원을 주는 음식점용 셀프 오더)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "클릭 하나가 성과가 되기까지",
+    "question": "사용자가 오퍼월에서 광고 하나를 눌러 조건을 채우면, 무엇을 거쳐 보상과 정산으로 이어지나?",
+    "code": "flowchart LR\n  U[\"매체 앱 · 게임 사용자\"] --> OW[\"오퍼월 API\\nNode.js · Hono · 로컬 Redis\"]\n  OW --> R[\"계측 API · 리다이렉트\\n클릭 정보 저장\"]\n  R --> AD[\"광고주 안건 페이지\"]\n  AD -- \"조건 달성\" --> CV[\"계측 API · 컨버전\\n부정 대책 · 성과 저장\"]\n  CV --> PT[\"사용자에게 포인트\"]\n  CV --> BILL[\"광고주 · 매체 정산 데이터\"]",
+    "_note": "이 사이트의 해석 — 글 둘의 설명을 한 흐름으로 이었다. 보상 지급과 정산 경로는 글에 그림으로 나오지 않는다."
+  },
+  "domains": [
+    {
+      "name": "리워드 광고를 사용자 관심에 맞게 빨리 보여 준다",
+      "why": "오퍼월은 매체의 앱 · 게임 안에서 여러 광고 안건을 사용자 관심에 맞게 늘어놓는 화면이다. 느리면 사용자가 떠나고 매체 수익도 준다.\n\n그런데 그 API 는 옛 시스템 위에 급하게 쌓아 올린 C# 코드였다 — 한 엔드포인트가 여러 리소스를 돌려주고 DB 를 사치스럽게 썼다. 팀엔 C# 전문가가 없고 서버사이드 C# 채용도 어려웠다.",
+      "tech": [
+        {
+          "tech": "Node.js · TypeScript · Hono · Kysely · Zod + TypeSpec 스펙 → Orval 로 Zod 생성",
+          "solves": "팀이 이미 쓰는 TypeScript 로 옮겨 누구나 캐치업하고, 스펙을 문서로 리뷰한 뒤 구현한다.",
+          "limits": "TypeSpec emitter 가 실험적이라 openapi.yaml 을 한 번 거친다 — 생성 단계가 하나 늘었다. C# 로 다시 썼다면 더 빨랐을 수도 있다고 글이 스스로 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+              "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+              "publisher": "Skyfall",
+              "date": "2026-02-25",
+              "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+            }
+          ]
+        },
+        {
+          "tech": "앱 로컬 Redis 에 수 초 캐시 + SQL 병렬 실행 + 인덱스 수정(k6 · Datadog 로 계측)",
+          "solves": "가장 느린 API 가 평균 300ms → 80ms, 서버 · DB 스펙을 줄였다.",
+          "limits": "캐시가 수 초라 스파이크에만 효과 — 자주 안 바뀌는 데이터로 한정했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+              "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+              "publisher": "Skyfall",
+              "date": "2026-02-25",
+              "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "광고 클릭에서 성과까지를 빠짐없이 정확하게 센다",
+      "why": "SKYFLAG 는 광고 클릭에서 컨버전까지 일관되게 추적해 광고주와 매체 양쪽에 데이터를 준다 — 이 숫자가 곧 성과이자 돈이다. 정확 · 고속 · 안정이 모두 요구된다.\n\n그런데 계측 API 는 옛 시스템 리플레이스 때 속도를 우선해 만들어져, 거의 모든 처리가 서비스 클래스 하나에 몰리고 테스트 코드가 없었다. 작은 수정에도 방대한 수동 QA 가 필요했고, 일부 사람만 만질 수 있었다.",
+      "tech": [
+        {
+          "tech": "리다이렉트(입구) · 컨버전(출구, 부정 대책 포함)을 Controller / Service / Repository 로 나누고 DI 로 테스트 가능하게",
+          "solves": "영향 범위가 보이고 테스트로 품질을 지킨다 — 인턴도 안심하고 만진다.",
+          "limits": "리팩터 자체의 공수 — 쓰이지 않는 처리 · 사양 변천의 흔적을 걷어 내야 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "計測APIを作り直したら、チームの開発体験が変わった",
+              "url": "https://zenn.dev/skyfall/articles/c268501b030fae",
+              "publisher": "Skyfall",
+              "date": "2026-06-08",
+              "summary": "SKYFLAG 의 핵심 **계측 API** — 클릭에서 컨버전까지 일관 트래킹해 광고주 · 매체 양쪽에 정확한 데이터를 준다. 역할 둘: **리다이렉트**(클릭 정보 저장 · 안건 페이지로, 입구)와 **컨버전**(성과 달성 감지 · 부정 대책(중복 · 변조) · 성과 저장, 출구). 정확 · 고속 · 안정이 요구되고 광고 성과에 직결. 리팩터 전: 공통 처리 중복 · 설계 방침 없음(레이어 · 책임 혼재) · 거의 모든 처리가 서비스 클래스에 · 테스트 코드 없음 → 작은 수정에도 방대한 수동 QA. 옛 시스템 리플레이스 때 속도를 우선한 탓. 방침: 책임별 클래스 · Controller/Service/Repository 레이어 · **테스트할 수 있는 형태가 목표**(DI · 모킹 쉬운 인터페이스 · 부작용 분리). 결과: 일부만 만지던 계측 API 를 다른 멤버 · 인턴도 안심하고 만지게 됐고 테스트 문화가 뿌리내렸다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**SKYFLAG 수수료 체계 · 매출 비중**이 공개 자료에 없다(회사 IR 페이지는 아직 안 읽었다).",
+    "**ポーカーチェイス · ポケットプレイ · SKYORDER** 의 기술 글이 Zenn 에 없다 — 수익원 판정 때 RSS · Zenn 검색 · 회사 페이지로 두 번 찾는다.",
+    "**아직 안 읽은 것** — 노코드 E2E → Playwright · A/B 테스트와 p 값 · Snowflake Cortex 자연어 분석 · CloudFront 로그 분석 · 프로젝트 단위 개발 조직 · NAT Gateway 비용 절감."
+  ],
+  "sources": [
+    {
+      "title": "事業内容",
+      "url": "https://skyfall.co.jp/service",
+      "publisher": "Skyfall",
+      "summary": "사업 넷 — **SKYFLAG**(사용자 체험에 맞춘 리워드 마케팅 플랫폼), **ポーカーチェイス**(배틀로얄식 텍사스 홀덤 포커 게임), **ポケットプレイ**(게임만 해도 포인트가 쌓여 Amazon 기프트카드 등으로 교환하는 포인트 활동 앱), **SKYORDER**(광고로 손님은 이득, 가게엔 새 수익원을 주는 음식점용 셀프 오더)."
+    },
+    {
+      "title": "SKYFLAG",
+      "url": "https://skyflag.info/",
+      "publisher": "Skyfall",
+      "summary": "리워드를 활용한 독자 수법으로 **마네타이즈 · 프로모션 · 리서치**의 종합 마케팅 지원. 도입 사례(Paddle 'BitWalk' 다음날 잔존율 20% 향상 등)와 웨비나."
+    },
+    {
+      "title": "APIをC#からNode.js + Hono + Zod + Kysely + TypeSpecにリプレイスして3倍以上",
+      "url": "https://zenn.dev/skyfall/articles/58f71aa4f25bfa",
+      "publisher": "Skyfall",
+      "date": "2026-02-25",
+      "summary": "SKYFLAG **오퍼월 API** 리플레이스. 이유: 조직 — 팀에 C# 전문가가 없고 서버사이드 C# 채용이 어렵다 · 앱 — 옛 시스템 위에 급하게 쌓아 구조가 없고 한 엔드포인트가 여러 리소스를 반환, DB 를 사치스럽게 쓴다. 방침: 수익을 내 온 API 에 경의를 표하되 제대로 은퇴시킨다 — 캐치업 쉬운 구조 · API 를 잘게 나눠 소결합 · 성능. C# AspNetCore + Dapper → **Node.js · TypeScript · Hono · Kysely(SQL 에 가까운 타입 안전 쿼리) · Zod · TypeSpec**(인프라는 CloudFront · ALB · ECS Fargate · Aurora MySQL 그대로). 처음엔 Bun 이었지만 Datadog 트레이스가 안 돼 Node.js 로 — Hono 라 거의 안 고쳤다. 프런트 · 관리 화면이 React + TS 라 팀 친화, 엔지니어는 프런트 · 백엔드를 둘 다. 기존 OpenAPI 3.1 인터페이스를 유지 — **TypeSpec 으로 스펙을 문서로 남기고 리뷰**, emitter 가 실험적이라 openapi.yaml 에서 **Orval** 로 Zod 생성. 튜닝: 본번 레플리카 + k6 부하 시험 + Datadog · Performance Insight → 인덱스 수정 · 직렬 SQL 을 Promise.all 병렬 · **앱 로컬 Redis 에 수 초만 캐시**(Valkey 는 네트워크 RTT 가 무시 못 해 동거, 짧은 TTL 로 무효화 수고 제거) · 이중 삼중 루프와 불필요한 큰 텍스트 필드 제거. 결과: 가장 느린 API 평균 300ms → 80ms, 서버 · DB 스펙 축소, 트래픽 감소. C# 로 같은 관점으로 다시 쓰면 더 빨랐을 수 있지만 시간이 더 걸리고 유지보수가 어려웠을 것."
+    },
+    {
+      "title": "計測APIを作り直したら、チームの開発体験が変わった",
+      "url": "https://zenn.dev/skyfall/articles/c268501b030fae",
+      "publisher": "Skyfall",
+      "date": "2026-06-08",
+      "summary": "SKYFLAG 의 핵심 **계측 API** — 클릭에서 컨버전까지 일관 트래킹해 광고주 · 매체 양쪽에 정확한 데이터를 준다. 역할 둘: **리다이렉트**(클릭 정보 저장 · 안건 페이지로, 입구)와 **컨버전**(성과 달성 감지 · 부정 대책(중복 · 변조) · 성과 저장, 출구). 정확 · 고속 · 안정이 요구되고 광고 성과에 직결. 리팩터 전: 공통 처리 중복 · 설계 방침 없음(레이어 · 책임 혼재) · 거의 모든 처리가 서비스 클래스에 · 테스트 코드 없음 → 작은 수정에도 방대한 수동 QA. 옛 시스템 리플레이스 때 속도를 우선한 탓. 방침: 책임별 클래스 · Controller/Service/Repository 레이어 · **테스트할 수 있는 형태가 목표**(DI · 모킹 쉬운 인터페이스 · 부작용 분리). 결과: 일부만 만지던 계측 API 를 다른 멤버 · 인턴도 안심하고 만지게 됐고 테스트 문화가 뿌리내렸다."
+    }
+  ]
+}

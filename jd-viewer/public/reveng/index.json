@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "skyfall",
+      "name": "Skyfall",
+      "name_en": "Skyfall",
+      "country": "JP",
+      "category": "광고",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "앱 · 게임 안에 리워드 광고(오퍼월)를 붙여 매체엔 수익을, 광고주엔 행동한 사용자를 주는 SKYFLAG 의 회사 — 수익을 내 온 C# API 를 존중하며 Node.js 로 은퇴시켜 300ms 를 80ms 로 줄였고, 클릭에서 성과까지 세는 계측 API 는 '테스트할 수 있는 구조'로 다시 짰다",
+      "updated_at": "2026-09-27",
+      "domain": "skyfall.co.jp"
+    },
+    {
       "slug": "atama-plus",
       "name": "atama plus",
       "name_en": "atama plus",
@@ -3918,7 +3930,9 @@
     "해마다 바뀌는 배출계수를 틀리지 않고 반영한다",
     "거점이 많은 사용자의 권한을 인증 경로가 버티게 한다",
     "학생이 무엇을 모르는지 말하지 않아도 필요한 해설에 닿게 한다",
-    "플랫폼을 쓰는 개발 팀이 운용 수준을 스스로 판단하게 한다"
+    "플랫폼을 쓰는 개발 팀이 운용 수준을 스스로 판단하게 한다",
+    "리워드 광고를 사용자 관심에 맞게 빨리 보여 준다",
+    "광고 클릭에서 성과까지를 빠짐없이 정확하게 센다"
   ],
   "countries": {
     "KR": "한국",
