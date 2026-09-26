@@ -744,6 +744,163 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/386039",
+      "title": "AI Agent Engineer",
+      "site": "wanted",
+      "verdict": "경력 5년 이상(AI/ML 또는 백엔드). 개인화된 금융 콘텐츠 생성·추천을 맡는 LLM 자율 에이전트와 멀티-에이전트 시스템을 설계·배포·운영하는 자리 — Function Calling·Tool Use 로 에이전트 행동을 제어하고, 뉴스·공시·시장 데이터로 RAG 를 만들며, 실시간 사용자 피드백으로 이터레이션한다. 자격요건은 '프로덕션' 에 무게를 둔다: LLM 에이전트를 프로덕션에서 구축·배포한 경험, LangChain·LangGraph·AutoGen, RAG(벡터 DB·시맨틱 검색·컨텍스트 관리), FastAPI·gRPC 백엔드. 우대가 세 묶음이다 — 제품(아이디어→MVP→프로덕션, A/B 테스트), 고급 에이전트(멀티-에이전트, RL/RLHF, 파인튜닝, 평가 자동화), 플랫폼(LLMOps: LangSmith·Helicone·LangFuse, GPU 튜닝, K8s, 실시간 스트리밍). 회사 홈페이지가 AI 개인화 콘텐츠와 AI 보조 주문을 핵심 기능으로 내세운다. 전형은 서류 접수 → AI Screening → 1차 → 2차 인터뷰 → 처우논의.",
+      "fit": {
+        "must_have": [
+          "AI/ML 또는 백엔드 5년 이상",
+          "LLM 에이전트 프로덕션 구축·배포",
+          "Function Calling·Tool Use·프롬프트 제어",
+          "LangChain·LangGraph·AutoGen",
+          "RAG(벡터 DB·시맨틱 검색·컨텍스트 관리)",
+          "FastAPI·gRPC 백엔드"
+        ],
+        "can_learn": [
+          "아이디어→MVP→프로덕션·A/B 테스트",
+          "멀티-에이전트 협업 프로토콜",
+          "RL·RLHF",
+          "LLM 파인튜닝",
+          "에이전트 평가 자동화",
+          "LLMOps(LangSmith·Helicone·LangFuse)",
+          "GPU 프로파일링",
+          "K8s·Docker",
+          "실시간 스트리밍"
+        ]
+      },
+      "study": [
+        {
+          "topic": "금융 콘텐츠 에이전트를 프로덕션에 올리기",
+          "from": "qualification",
+          "quote": "• LLM 기반 에이전트 시스템을 프로덕션 환경에서 구축 및 배포한 경험",
+          "priority": "core",
+          "why": "자격요건이고 주요업무 첫 줄이 'LLM 기반 자율 에이전트를 설계, 구축, 배포하여 개인화된 금융 컨텐츠 생성 및 추천 서비스 제공' 이다. 주요업무에 '신뢰성, 안정성, 확장성을 보장하는 프로덕션 시스템' 이 있다.",
+          "gap_check": "에이전트가 틀린 숫자나 투자 권유처럼 보이는 문장을 생성하지 않게 무엇(원천 데이터 대조·금지 표현 필터·사람 검수 경로)을 두고, LLM 응답 지연·장애 시 사용자에게는 무엇을 보여 주는가? 비용이 급증할 때 어디서 끊는가?",
+          "drill": "공시·뉴스 몇 건을 입력받아 종목 요약 카드를 만드는 에이전트를 FastAPI 로 서비스하고, 숫자 대조 검증·금지 표현 필터·타임아웃 폴백·요청당 토큰 한도를 넣은 뒤 실패 사례를 기록한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "LangGraph",
+              "url": "https://langchain-ai.github.io/langgraph/",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "뉴스·공시·시장 데이터 RAG",
+          "from": "task",
+          "quote": "• 금융 데이터 소스(뉴스, 공시, 시장 데이터)를 활용한 RAG 시스템 구축 및 최적화",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 'RAG 시스템 구축 경험 (벡터 DB, 시맨틱 검색, 컨텍스트 관리)' 이 있다. 금융 문서는 시점이 중요하다(추론).",
+          "gap_check": "'삼성전자 최근 실적' 질문에 1년 전 기사가 섞여 들어오지 않게 검색에 시점·종목 필터를 어떻게 걸고, 벡터 검색과 메타데이터 필터를 어느 DB 에서 어떻게 조합하는가?",
+          "drill": "Qdrant(또는 Weaviate)에 공시·뉴스를 종목·발행일 메타데이터와 함께 넣고, 필터 없는 검색과 '종목+최근 30일' 필터 검색의 답 품질을 질문 20개로 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Qdrant — Documentation",
+              "url": "https://qdrant.tech/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Weaviate — Documentation",
+              "url": "https://docs.weaviate.io/weaviate",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티-에이전트 오케스트레이션",
+          "from": "task",
+          "quote": "• LangChain, LangGraph, AutoGen 등 에이전트 프레임워크를 활용한 멀티-에이전트 시스템 구축",
+          "priority": "high",
+          "why": "주요업무이고 다음 줄이 '에이전트 간 협업 프로토콜 및 오케스트레이션 워크플로우 설계' 다. 우대에 '멀티-에이전트 시스템 및 에이전트 간 협업 프로토콜 구현 경험' 이 있다.",
+          "gap_check": "'자료 수집 → 초안 작성 → 사실 검증' 을 에이전트 셋으로 나눌 때 LangGraph 처럼 흐름을 고정하는 방식과 AutoGen 처럼 대화로 협업시키는 방식은 제어·디버깅·비용에서 어떻게 다른가?",
+          "drill": "위 요약 카드 흐름을 단일 에이전트, LangGraph 3 노드, AutoGen 3 에이전트 대화 세 방식으로 만들어 품질·지연·토큰을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AutoGen — Documentation",
+              "url": "https://microsoft.github.io/autogen/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLMOps — 추적·평가·피드백 이터레이션",
+          "from": "task",
+          "quote": "• 실시간 사용자 피드백 기반 에이전트 성능 개선 및 이터레이션",
+          "priority": "high",
+          "why": "주요업무이고 우대에 'LLMOps 구축 및 운영 경험 (LangSmith, Helicone, LangFuse 등)' 과 '에이전트 평가 프레임워크 및 자동화된 테스팅' 이 있다.",
+          "gap_check": "사용자 피드백(좋아요·신고)을 어떤 트레이스에 붙이고, 그것으로 평가 세트를 어떻게 키우며, 프롬프트를 바꿀 때 리그레션을 무엇으로 막는가?",
+          "drill": "위 서비스에 LangSmith 또는 Langfuse 트레이싱과 피드백 수집을 붙이고, 부정 피드백 사례로 평가 세트를 만든 뒤 프롬프트 수정 전후 점수를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "LangSmith — Documentation",
+              "url": "https://docs.smith.langchain.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Langfuse — Documentation",
+              "url": "https://langfuse.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "gRPC 로 에이전트 서비스 잇기",
+          "from": "qualification",
+          "quote": "• FastAPI, gRPC 등을 활용한 API 개발 및 백엔드 시스템 구축 경험",
+          "priority": "nice",
+          "why": "자격요건이다. 에이전트가 사내 시세·계정 서비스를 도구로 부를 때 내부 API 가 gRPC 일 수 있다(추론).",
+          "gap_check": "스트리밍 응답을 FastAPI(SSE)와 gRPC 서버 스트리밍으로 각각 만들 때 클라이언트·타임아웃·오류 처리가 어떻게 다른가?",
+          "drill": "시세 조회 가짜 서비스를 gRPC 로 만들고 에이전트의 도구로 연결한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "gRPC — Python basics",
+              "url": "https://grpc.io/docs/languages/python/basics/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공시·뉴스 RAG + 요약 카드 에이전트 + 사실 검증 + LLMOps",
+          "why": "주요업무 세 묶음(에이전트 프로덕션화, 제품 이터레이션, RAG)을 한 저장소로 보여 준다. 금융 콘텐츠라 사실 검증 계층이 핵심 증거다(추론).",
+          "effort": "2주"
+        },
+        {
+          "idea": "아이디어→MVP→프로덕션 사례 정리",
+          "why": "우대 첫 묶음이 제품 개발이다. 에이전트를 실제 사용자에게 내보내고 지표로 개선한 경험을 숫자로 적는다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > AI Screening > 1차 인터뷰 > 2차 인터뷰 > 처우논의 > 최종 합격. 필요 시 사전 동의 후 레퍼런스 체크(공고 기준).",
+        "expect": [
+          "프로덕션 에이전트의 안전 장치",
+          "금융 RAG 의 시점·종목 필터",
+          "멀티-에이전트 설계 선택",
+          "피드백 기반 개선과 평가"
+        ],
+        "sources": [
+          {
+            "title": "AI Agent Engineer",
+            "url": "https://www.wanted.co.kr/wd/386039",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
