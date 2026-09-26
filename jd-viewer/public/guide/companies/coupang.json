@@ -16692,6 +16692,101 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8124212",
+      "title": "Staff Data Scientist (SCM)",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 대만 타이베이 근무다. 수학·통계·CS·산업공학·OR 등 학·석사와 5년 이상의 스태프 데이터 사이언티스트로, 공급망 관리(SCM) 기술 팀에서 통계·ML·운영과학(OR)으로 대규모 자동 의사결정을 지원하는 솔루션을 만든다 — 공급망 관리 자동화의 비전을 세우고 실행하는 역할이라고 공고가 적는다. 우대사항에 수요 예측·리드타임 예측·인과 모델·충족률(fulfillment rate) 예측과 대규모 최적화(분해법·휴리스틱/메타휴리스틱)가 구체적으로 나온다.",
+      "fit": {
+        "must_have": [
+          "정량 분야 학·석사·5년 이상",
+          "통계·ML 기초와 Python·SQL·시각화 도구",
+          "모호한 비즈니스 문제를 데이터 사이언스 문제로 정식화",
+          "가설·실험 설계·통계 분석 독립 수행"
+        ],
+        "can_learn": [
+          "수요·리드타임·충족률 예측·인과 모델(우대)",
+          "대규모 최적화·분해법·메타휴리스틱(우대)",
+          "Spark·Hive·HBase(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "공급망 예측 — 수요·리드타임·충족률",
+          "from": "preference",
+          "quote": "Proven experience in AI/ML-driven demand forecasting, lead time prediction, causal models, fulfillment rate prediction, with the ability to collaborate with ML Engineers and Data Analysts to optimize model development and deployment",
+          "priority": "core",
+          "why": "AI/ML 기반 수요 예측·리드타임 예측·인과 모델·충족률 예측 경험이 우대사항이고, 통계·ML·OR 로 대규모 자동 의사결정을 지원하는 것이 주요업무다.",
+          "gap_check": "상품 수만 개의 주간 수요를 예측할 때 판매 기록이 짧은 신상품·간헐 수요 상품은 어떻게 다루고, 품절로 판매가 0 인 날(수요가 가려진 날)을 그대로 학습하면 무엇이 틀어지는가?",
+          "drill": "예측 교재의 계층·간헐 수요 관련 장을 읽고, 가상 판매 데이터(품절 구간 포함)로 품절 보정 전후의 예측 오차를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Forecasting: Principles and Practice (3rd ed)",
+              "url": "https://otexts.com/fpp3/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 최적화 — 수리 모델과 분해·휴리스틱",
+          "from": "preference",
+          "quote": "Experience designing and implementing large-scale optimization solutions for complex business problems",
+          "priority": "core",
+          "why": "복잡한 비즈니스 문제의 대규모 최적화 설계·구현 경험과 분해법·휴리스틱/메타휴리스틱·혼합 방법 알고리즘 개발이 우대사항이다.",
+          "gap_check": "센터별 재고 배분처럼 변수가 수백만 개인 정수 계획 문제를 한 번에 못 풀 때, 문제를 지역·상품군으로 쪼개는 분해법과 휴리스틱으로 근사할 때 각각 무엇을 잃고 해의 질은 어떻게 확인하는가?",
+          "drill": "OR-Tools 소개를 따라 센터 3곳·상품 20종의 재고 배분 정수 계획 모델(운송비 최소·수요 충족 제약)을 풀고, 같은 문제를 탐욕 휴리스틱으로 풀어 목적함수 차이와 실행 시간을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Google OR-Tools — Introduction",
+              "url": "https://developers.google.com/optimization/introduction",
+              "kind": "docs"
+            },
+            {
+              "title": "COIN-OR",
+              "url": "https://www.coin-or.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "출시한 솔루션의 실제 성과 정량화",
+          "from": "task",
+          "quote": "Provide analysis for launched solutions to quantify outcomes based on real-world results, identifying areas for improvement and opportunities for future development",
+          "priority": "high",
+          "why": "출시한 솔루션의 실제 결과를 정량화하고 개선점을 찾는 분석과, 솔루션 효과 평가 지표·성공 기준 설정이 주요업무다.",
+          "gap_check": "새 발주 자동화를 전 상품에 한꺼번에 적용했다면 대조군이 없다. 이때 재고 회전·품절률 변화가 솔루션 덕인지 계절·행사 덕인지 어떻게 가르는가?",
+          "drill": "가상 데이터로 일부 센터만 먼저 적용된 상황을 만들고, 이중차분(DiD)으로 품절률 효과를 추정한 뒤 적용 전 추세가 평행한지 확인하는 분석 노트를 쓴다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "재고 배분 MIP vs 휴리스틱 비교 노트",
+          "why": "우대사항의 대규모 최적화·휴리스틱을 작은 규모로 직접 비교해 보이면, OR 과 ML 을 함께 요구하는 이 자리에 맞는 증거가 된다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "품절로 가려진 수요",
+          "분해법·휴리스틱 선택",
+          "성과 측정의 대조군",
+          "모호한 문제 정식화",
+          "기술·비기술 설명"
+        ],
+        "sources": [
+          {
+            "title": "Staff Data Scientist (SCM)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8124212",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
