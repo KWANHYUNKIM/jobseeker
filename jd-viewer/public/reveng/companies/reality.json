@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "스트리밍",
   "status": "in_progress",
+  "hold_reason": "수익원 'VTuber 사업(REALITY Studios)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-27 — 첫째 Zenn Publication `reality_tech` 28편 제목 전수 · note 엔지니어 블로그 `reality_eng` 목록 84편 제목: VTuber 사무소 · 굿즈 · 이벤트 시스템 글 없음(VTuber 기술 공개 행사 보고는 있지만 앱 배신 이야기). 둘째 Zenn 검색 'REALITY Studios' 외 5낱말, 회사 페이지 · 결산 기사 — REALITY 주식회사의 매출에 들어가는지도 확인 못 함). 라이브 기프팅은 서버편 글로 플랫폼 수준 연결을 confirmed 로 올렸다(기프트 전용 설계 글은 없음).",
   "updated_at": "2026-09-27",
   "domain": "reality.inc",
   "one_liner": "스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신하는 앱 'REALITY' 의 회사(그리 그룹) — 메모리 장애를 쫓다 CPU 스로틀이 범인임을 찾아 GOGC 를 실측으로 다시 정했고, 자체 샤딩 Redis 는 키 하나씩 Valkey 클러스터로, 출시 때의 MySQL 테이블은 CDC 로 Spanner 로 옮긴다",
@@ -17,14 +18,14 @@
   "revenue_streams": [
     {
       "name": "라이브 배신 기프팅",
-      "how": "시청자가 아바타 라이브 배신자에게 유료 기프트를 보낸다 — 결제 수단 다양화와 유력 라이버 사무소 제휴로 수익화가 견조하다.",
+      "how": "시청자가 코인으로 아바타 라이브 배신자에게 기프트를 보낸다 — 결제 수단 다양화와 유력 라이버 사무소 제휴로 수익화가 견조하다. 월간 그레이드(코인 구매 등급) 특전으로 그레이드 한정 기프트도 있다. 기프팅은 라이브 배신 기능의 하나로 Go WebAPI 마이크로서비스(Cloud SQL · Spanner) 위에서 돈다 — 기프트만의 설계 글은 찾지 못했다.",
       "weight": "플랫폼 매출 71 억 엔의 일부(비중 공개 안 됨) — 늘어나는 쪽",
       "domains": [
         "수십 대의 Go 서비스를 정해진 메모리 · CPU 안에서 떨어지지 않게 돌린다",
-        "여러 서비스가 나눠 쓰는 캐시를 한 키씩 멈추지 않고 옮긴다",
-        "출시 때부터 쌓인 테이블을 서비스를 멈추지 않고 새 DB 로 옮긴다"
+        "출시 때부터 쌓인 테이블을 서비스를 멈추지 않고 새 DB 로 옮긴다",
+        "여러 서비스가 나눠 쓰는 캐시를 한 키씩 멈추지 않고 옮긴다"
       ],
-      "confidence": "inferred",
+      "confidence": "confirmed",
       "sources": [
         {
           "title": "グリーのメタバース事業、通期売上は83億円 プラットフォーム・VTuberとも好調で成長見込む",
@@ -39,6 +40,13 @@
           "publisher": "REALITY",
           "date": "2025-07-08",
           "summary": "2025 년 4 월 출시한 **월간 그레이드** — 코인을 매달 일정 수 이상 사면 획득 코인 수(유료 + 부수 무료 코인, 구매 외 획득분 제외)에 따라 그레이드가 오르고 특전을 준다. 특전 예(2025 년 7 월): 염색 티켓(기한 180 일) · 가챠 티켓 · 확정 가챠 티켓(기한 7 일) · WEB 코인 증량 · **그레이드 한정 기프트** · 배신 코멘트란 그레이드 표시. 코인은 앱보다 **WEB(REALITY for WEB) 구매가 유리**(무료 코인이 붙는다). 6 월부터 연속 달성에 VIP 포인트(기한 있음) → 포인트 숍에서 아이템 교환."
+        },
+        {
+          "title": "アプリ「REALITY」を創る技術 ~サーバ編~",
+          "url": "https://note.com/reality_eng/n/n808f7ba63371",
+          "publisher": "REALITY",
+          "date": "2025-02-07",
+          "summary": "주요 기능 — 아바타(무료 아이템 + 가챠 · 숍 구매), 라이브 배신(**기프팅** 등), 게임 · 월드, 룸(가구 배치), 커뮤니케이션. 서버 구성: WebAPI 는 **Go**(GatewayServer 가 모든 연결을 받고 BackendServer 는 마이크로서비스 — 2025 년 1 월 13 개, Cloud SQL · Cloud Spanner, Go monorepo), WebSocket 은 Node.js + TypeScript(배신 동기 · 게임 동기 서버 등, 라이브 중 여러 개에 동시 접속), Redis PubSub 은 Memorystore 가 아니라 GKE 에 호스팅(라이브 동시 접속 증가에 버티려고). 사내 운영 도구(Vue.js)로 이벤트 · 미션 · 가챠를 입고."
         }
       ]
     },
@@ -74,6 +82,13 @@
           "publisher": "REALITY",
           "date": "2025-07-08",
           "summary": "2025 년 4 월 출시한 **월간 그레이드** — 코인을 매달 일정 수 이상 사면 획득 코인 수(유료 + 부수 무료 코인, 구매 외 획득분 제외)에 따라 그레이드가 오르고 특전을 준다. 특전 예(2025 년 7 월): 염색 티켓(기한 180 일) · 가챠 티켓 · 확정 가챠 티켓(기한 7 일) · WEB 코인 증량 · **그레이드 한정 기프트** · 배신 코멘트란 그레이드 표시. 코인은 앱보다 **WEB(REALITY for WEB) 구매가 유리**(무료 코인이 붙는다). 6 월부터 연속 달성에 VIP 포인트(기한 있음) → 포인트 숍에서 아이템 교환."
+        },
+        {
+          "title": "アプリ「REALITY」を創る技術 ~サーバ編~",
+          "url": "https://note.com/reality_eng/n/n808f7ba63371",
+          "publisher": "REALITY",
+          "date": "2025-02-07",
+          "summary": "주요 기능 — 아바타(무료 아이템 + 가챠 · 숍 구매), 라이브 배신(**기프팅** 등), 게임 · 월드, 룸(가구 배치), 커뮤니케이션. 서버 구성: WebAPI 는 **Go**(GatewayServer 가 모든 연결을 받고 BackendServer 는 마이크로서비스 — 2025 년 1 월 13 개, Cloud SQL · Cloud Spanner, Go monorepo), WebSocket 은 Node.js + TypeScript(배신 동기 · 게임 동기 서버 등, 라이브 중 여러 개에 동시 접속), Redis PubSub 은 Memorystore 가 아니라 GKE 에 호스팅(라이브 동시 접속 증가에 버티려고). 사내 운영 도구(Vue.js)로 이벤트 · 미션 · 가챠를 입고."
         }
       ]
     },
@@ -1622,7 +1637,7 @@
     }
   ],
   "open_questions": [
-    "**라이브 기프팅이 어느 서비스 · 테이블인지** 글에 없다 — 기프팅 수익원의 기술 연결은 아직 inferred(코인 · 그레이드 한정 기프트는 월간 그레이드 글로 확인).",
+    "**기프팅 전용 설계**(기프트 연출 · 정산 · 코인 원장)를 다룬 글은 없다 — 기프팅 수익원은 서버편(기프팅이 Go WebAPI 마이크로서비스 위 라이브 배신 기능)으로 플랫폼 수준에서만 confirmed.",
     "**VTuber 사업(REALITY Studios)이 REALITY 주식회사의 매출인지** 확인하지 못했다.",
     "**아직 안 읽은 것** — note 엔지니어 블로그(`note.com/reality_eng`, 84편+): 배신에서 무엇을 통신하나 · 채팅 구조 · 가챠 티켓 기한 · 가구(룸) 3D 에셋 검증기 · 서버편/인프라편, 그리고 Zenn: Go monorepo(7 년 · 10 서버) Renovate 도입 · Spanner × GORM 커밋 타임스탬프 · Go 업그레이드 · 리포지토리 횡단 장애 조사 AI 워크플로 · Unity 아바타(FBX 애니메이션 · 툰 셰이더)."
   ],
@@ -1680,6 +1695,13 @@
       "publisher": "REALITY",
       "date": "2025-07-08",
       "summary": "2025 년 4 월 출시한 **월간 그레이드** — 코인을 매달 일정 수 이상 사면 획득 코인 수(유료 + 부수 무료 코인, 구매 외 획득분 제외)에 따라 그레이드가 오르고 특전을 준다. 특전 예(2025 년 7 월): 염색 티켓(기한 180 일) · 가챠 티켓 · 확정 가챠 티켓(기한 7 일) · WEB 코인 증량 · **그레이드 한정 기프트** · 배신 코멘트란 그레이드 표시. 코인은 앱보다 **WEB(REALITY for WEB) 구매가 유리**(무료 코인이 붙는다). 6 월부터 연속 달성에 VIP 포인트(기한 있음) → 포인트 숍에서 아이템 교환."
+    },
+    {
+      "title": "アプリ「REALITY」を創る技術 ~サーバ編~",
+      "url": "https://note.com/reality_eng/n/n808f7ba63371",
+      "publisher": "REALITY",
+      "date": "2025-02-07",
+      "summary": "주요 기능 — 아바타(무료 아이템 + 가챠 · 숍 구매), 라이브 배신(**기프팅** 등), 게임 · 월드, 룸(가구 배치), 커뮤니케이션. 서버 구성: WebAPI 는 **Go**(GatewayServer 가 모든 연결을 받고 BackendServer 는 마이크로서비스 — 2025 년 1 월 13 개, Cloud SQL · Cloud Spanner, Go monorepo), WebSocket 은 Node.js + TypeScript(배신 동기 · 게임 동기 서버 등, 라이브 중 여러 개에 동시 접속), Redis PubSub 은 Memorystore 가 아니라 GKE 에 호스팅(라이브 동시 접속 증가에 버티려고). 사내 운영 도구(Vue.js)로 이벤트 · 미션 · 가챠를 입고."
     }
   ]
 }
