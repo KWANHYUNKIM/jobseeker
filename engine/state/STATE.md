@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**IVRy 확장 1/2(2026-09-26) — `hitl-intent-routing-evaluation` 완료(HITL 글 + 5가지 함정 글). 다음은 확장: '보존 기한이 지난 데이터를 리플레이에 흔들리지 않게 지운다' — `ff7d2e939b3e61`(Step Functions waitForTaskToken 대신 Durable · 내보내기 → wait/wait_for_condition → 페이지 map · EventBridge 기동 시각으로 결정적 대상 · 3,000 오퍼레이션 · 보존 14일 · $LATEST 금지). 그 뒤 수익원 하나뿐이라 **완주 → done**. 대기 1/3(PKSHA) — IVRy 를 닫으면 후보 조사. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가(IVRy HITL ↔ 로그라스 OLAP 오라클 · ENECHANGE 검산). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**IVRy 완주(2026-09-26) — `retention-delete-durable-functions` 로 도메인 둘·기능 둘, 수익원 하나와 연결 → done, QUEUE 완료로. 다음은 `--gaps` 대로 — 대기 1/3(PKSHA)라 **후보 조사**가 걸릴 수 있다(Zenn Publication RSS: 아직 안 본 곳 — kaizen_platform·ubie 는 8~9월 글 없음이었음, 새로 hacomono·enechange 외 SaaS 를 시험). 신규면 PKSHA(`zenn.dev/p/pksha` — Zero-ETL `dynamodb-zero-etl`, 제품 이름 붙은 글인지 확인). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가(IVRy HITL ↔ 로그라스 OLAP 오라클 · ENECHANGE 검산) + **워크플로 엔진**(IVRy Durable ↔ ENECHANGE Step Functions). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

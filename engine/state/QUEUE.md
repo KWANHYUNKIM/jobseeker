@@ -38,7 +38,6 @@
 | **ログラス(Loglass)** | JP · 경영관리(FP&A) SaaS | 프로파일(2026-09-26). 도메인 둘 — 계층을 엔진이 알게 해 읽지 않는다(OLAP 엔진 실험) · 장애 때 '당시 구조' 를 다시 세운다(이력 데이터 모델). 기능 3(`hierarchy-aware-olap-engine` — 실험 · `incident-history-data-model` · `headcount-cost-simulation` · `ai-ir-bottleneck-driven-delivery`). 완주 검사 1회차에 도메인 둘 추가(인원 계획 · AI IR). **hold** — 석세스 파트너·설비투자·IT 투자 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 인원 계획·설비투자·IT 투자·AI IR·석세스 파트너는 도메인 없음. 입구 `zenn.dev/p/loglass/feed`. |
 | **Hacobu(ハコブ)** | JP · 물류 SaaS(MOVO) | 프로파일(2026-09-26). 도메인 둘 — 장애 공지 스위치를 비개발자 손에 쥐여 준다(Datadog Forms 배너) · 기능 패키지의 경계를 규약 대신 CI 가 지킨다(MOVO Berth 프런트 템플릿). 기능 2(`maintenance-banner-datadog-forms` · `frontend-template-dependency-ci`). **hold** — 컨설팅·SI·인재 소개 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 컨설팅·SI·인재 소개는 도메인 없음. 입구 `zenn.dev/p/hacobu/feed`. |
 | **estie** | JP · 상업용 부동산 데이터 | 프로파일(2026-09-26). 도메인 둘 — 고객이 맡긴 데이터를 여러 서비스가 한 곳에 둔다(프라이빗 데이터 기반) · PR 마다 운영에 가까운 DB 를 빌려 쓰고 버린다(Aurora copy-on-write Preview). 기능 2(`private-data-platform` · `preview-with-db-aurora-clone`). **hold** — 스마트 리폼·DX 컨설팅 수익원 자료 두 번 없음(2026-09-26). 스마트 리폼·DX 컨설팅은 도메인 없음. 입구 `zenn.dev/p/estie/feed`. |
-| **IVRy(アイブリー)** | JP · AI 전화 SaaS | 프로파일(2026-09-26). 도메인 둘 — 가게가 만든 문의 항목을 공개 전에 시험한다(HITL 평가) · 보존 기한이 지난 데이터를 리플레이에 흔들리지 않게 지운다(Lambda Durable). 기능 1(`hitl-intent-routing-evaluation`). 수익원 하나(AI 전화)에 도메인 둘. 입구 `zenn.dev/p/ivry/feed`. |
 
 
 ## 대기
@@ -964,6 +963,7 @@
 
 ## 완료
 
+- **IVRy(アイブリー)** (JP · AI 전화 SaaS · 음성 인식 Q&A) — 2026-09-26 완주. 도메인 2 · 기능 2. **흔들림을 입력 고정으로 막는다.** 가게가 만든 문의 항목은 정답을 먼저 고정한 발화로 오프라인 평가하고 불일치만 세 회사 LLM 이, 갈린 10% 만 사람이 본다. 보존 기한 지난 데이터는 Step Functions 대신 Lambda Durable Functions 하나로 — 대상 기간은 기동 시각에서 결정적으로, 대량 삭제는 페이지 단위 map 으로.
 - **ダイニー(dinii)** (JP · 음식점 올인원 클라우드 · POS · 모바일 오더 · 캐시리스) — 2026-09-26 완주. 도메인 2 · 기능 2. **믿을 수 없는 알림은 없느니만 못하다.** 입금원이 Adyen·AMEX 둘이 되자 정산을 부호 없는 한 장의 대장(USL)에 모으고 처리 회사·입금 회사와 공제·사후 청구 수수료를 갈라 행 불변식을 100% 지키며, 깨지면 취입을 통째로 멈춘다. POS 알림은 사람이 이미 하던 Claude 조사를 dev-bot 이 전 알림에 돌리되 정확도는 Runbook 이, 알림을 줄이는 판단은 주 1회 사람이 쥔다.
 - **Nature(Nature Remo)** (JP · 스마트홈 IoT · Remo · Remo E · 스마트록) — 2026-09-26 완주. 도메인 3 · 기능 3. **정의를 넓히고, 현장에서 데이터를 떠 오고, 증명할 수 있는 것만 AI 에.** 스마트록은 '가상 디바이스' 를 버리고 SmartLock 루트 → SmartLockUnit(1door2lock)으로 세 번 고쳤고, Remo E 의 V2H 는 규격서 대신 실기를 찾아가 떠 온 데이터로 Rust 에뮬레이터를 만들어 두 달을 버텼다. 리팩터링 PR 은 설계를 사람이 먼저 합의하고 동작 등가성만 회의적인 AI 가 증명해 자동 머지(247건 · 건당 $1.35). 수익원 중 리모컨 연결은 inferred.
 - **ドワンゴ 教育事業(ZEN Study)** (`dwango-edu`, JP · 에듀테크 · N고 · ZEN 대학 학습 플랫폼) — 2026-09-26 완주. 도메인 2 · 기능 2. **돌고 있는 것을 멈추지 않고 뒤를 바꾼다.** 교재 기반은 옛 Rails 에 ZEN 대학을 덧대지 않고 **새 학교를 새 시스템(Kotlin · gRPC)으로** 열어 대학 → 고교 필수 → 과외 순으로 옮기고, 10년 된 Android 는 옛 코드를 전부 **Legacy 모듈**에 가둬 의존을 Legacy → 새 쪽 한 방향만 허용하며 데이터 층부터 빼낸다. 수익원(학교 법인과의 관계·과금)은 1차 자료가 없어 inferred.
