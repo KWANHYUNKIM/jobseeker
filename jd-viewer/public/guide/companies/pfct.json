@@ -232,5 +232,170 @@
     "'9 개국', '공헌 이익률 약 80%', '대한민국 최고의 온투금융사' 는 회사가 공고에 적은 주장이다 — 외부 출처로 확인하지 않았다",
     "QUEUE 에는 공고 9건으로 적었으나 모집중은 원티드 10건이다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/379570",
+      "title": "B2B Data Engineer(B2B 데이터 엔지니어) - Databricks",
+      "site": "wanted",
+      "verdict": "경력 3년 이상(서울 서초). Enterprise Unit 이 새로 시작한 Databricks 파트너 사업의 구축 엔지니어 — 고객사(금융권 등) 요구사항을 분석해 레이크하우스를 설계하고, Delta Lake·Structured Streaming 파이프라인, 레거시 DW/Hadoop 이관, Unity Catalog 거버넌스, Workflows/DLT 자동화, PoC·산출물 작성까지 맡는다. 3년 차 문턱에 비해 필수 자격이 무겁다 — Databricks 기반 대규모 레이크하우스 구축·고도화와 Unity Catalog 거버넌스 설계 경험이 둘 다 필수다. 공고는 '국내에서 최초로 Databricks ISV 파트너 지위를 확보' 했고 합류자가 '창립 멤버' 라고 적는다. 같은 사업의 시니어 공고(379567, 7-14년)는 Pre-Sales·PM 총괄 자리로 본문이 다르다. 전형은 서류 → 1차(Job-Fit) → 2차(Culture Fit) → 3차(Final) 인터뷰 → 처우 협의, 수습 3개월.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어링/아키텍처 3년 이상",
+          "Databricks 대규모 레이크하우스 구축·고도화",
+          "Unity Catalog 등 거버넌스 설계·적용",
+          "Spark(PySpark) 파이프라인·튜닝",
+          "AWS 또는 Azure 데이터 플랫폼",
+          "SQL·DW 모델링과 고객 대면 커뮤니케이션"
+        ],
+        "can_learn": [
+          "Databricks Certified Data Engineer Professional",
+          "금융권 SI(망분리·금융 클라우드 가이드라인)",
+          "Terraform 워크스페이스 프로비저닝",
+          "Kafka·Kinesis·Event Hubs",
+          "MLflow"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Unity Catalog 로 거버넌스·권한 설계",
+          "from": "task",
+          "quote": "• Unity Catalog 기반 거버넌스·권한 체계를 설계하고 적용해요.",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 'Unity Catalog 등 데이터 거버넌스 설계·적용 경험' 이 필수로 있다. 금융 고객사는 누가 어떤 데이터를 봤는지가 감사 대상이다(추론).",
+          "gap_check": "metastore·catalog·schema·table 3단 이름 공간에서 부서별·민감도별 권한을 어떻게 나누고, 개인정보 열만 가리는 행/열 수준 보안과 데이터 계보(lineage)·감사 로그는 어디서 확인하는가?",
+          "drill": "Databricks 체험 워크스페이스에 카탈로그 둘(원천·분석)과 그룹 셋(엔지니어·분석가·외부감사)을 만들고, 고객 테이블의 주민번호 열에 열 마스킹을 걸어 그룹별로 보이는 결과를 캡처한 권한 설계표를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Databricks — What is Unity Catalog?",
+              "url": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Delta Lake·Structured Streaming 파이프라인",
+          "from": "task",
+          "quote": "• Spark 기반 대용량 배치/스트리밍 파이프라인(Delta Lake, Structured Streaming)을 설계·개발해요.",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 'Apache Spark(PySpark) 기반 파이프라인 개발 및 성능 튜닝' 이 있다. 우대에 Kafka/Kinesis/Event Hubs 가 있다.",
+          "gap_check": "Structured Streaming 의 체크포인트가 무엇을 저장하고, 스트림을 다시 시작할 때 중복 없이 이어지려면 싱크(Delta)가 무엇을 보장해야 하는가? 늦게 도착한 데이터는 워터마크로 어떻게 버리거나 받아들이는가?",
+          "drill": "이벤트 생성기 → Kafka(또는 파일 드롭) → Structured Streaming → Delta bronze/silver 를 만들고, 작업을 중간에 죽였다 재시작해 중복이 없는지 확인한 뒤 워터마크 기반 집계를 붙인다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Databricks — Structured Streaming",
+              "url": "https://docs.databricks.com/aws/en/structured-streaming/",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — What is Delta Lake",
+              "url": "https://docs.databricks.com/aws/en/delta/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "레거시 DW/Hadoop 을 Databricks 로 이관",
+          "from": "task",
+          "quote": "• 레거시 DW/Hadoop Databricks 마이그레이션을 수행해요.",
+          "priority": "core",
+          "why": "주요업무이고 공고의 '이런 경험을 얻을 수 있어요' 가 '금융권 등 엔터프라이즈 고객사의 대규모 데이터 환경을 레이크하우스로 직접 전환' 을 적는다.",
+          "gap_check": "Hive 테이블·Oozie/스케줄러 작업·DW 저장 프로시저를 옮길 때 각각 무엇(Delta 테이블 변환, Workflows, Spark SQL 재작성)으로 바꾸고, 이관 뒤 원천과 결과를 무엇으로 대조하는가?",
+          "drill": "Hive 파티션 테이블과 SQL 배치 하나를 Databricks 로 옮겨 Delta 로 변환하고 Workflows 로 스케줄한 뒤, 행 수·합계 대조표를 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Databricks — Migrate to Databricks",
+              "url": "https://docs.databricks.com/aws/en/migration/",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — Lakeflow Jobs",
+              "url": "https://docs.databricks.com/aws/en/jobs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DLT·Workflows 자동화와 비용 최적화",
+          "from": "task",
+          "quote": "• Workflows/DLT 기반 ETL/ELT를 자동화하고 성능을 튜닝하며 비용을 최적화해요.",
+          "priority": "high",
+          "why": "주요업무다. 고객사가 클러스터 비용을 직접 내므로 성능과 비용을 함께 설명해야 한다(추론).",
+          "gap_check": "같은 파이프라인을 DLT 로 선언형으로 짤 때와 노트북+Workflows 로 짤 때 무엇이 달라지고(데이터 품질 기대치·재처리), 비용은 클러스터 종류·오토스케일·OPTIMIZE/Z-ORDER 중 무엇으로 줄이는가?",
+          "drill": "위 파이프라인을 DLT 로 다시 짜 품질 기대치(expectations)를 두 개 넣고, 작업 클러스터 크기 두 가지로 돌려 실행 시간과 DBU 사용량을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Databricks — Lakeflow Declarative Pipelines (DLT)",
+              "url": "https://docs.databricks.com/aws/en/dlt/",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — Optimization recommendations",
+              "url": "https://docs.databricks.com/aws/en/optimizations/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "금융권 SI 와 Databricks 자격증",
+          "from": "preference",
+          "quote": "• 금융권 SI 프로젝트 경험(망분리, 금융 클라우드 이용 가이드라인 대응)이 있는 분",
+          "priority": "nice",
+          "why": "우대사항이다. 회사 출신이 온투금융이고 B2B 고객이 금융사라, 금융권 클라우드 규정을 아는 사람이 드물다(추론). 우대 첫 줄은 'Databricks Certified Data Engineer Professional 등 관련 자격증' 이다.",
+          "gap_check": "금융회사가 클라우드를 쓸 때 망분리와 금융 클라우드 이용 가이드라인이 데이터 위치·접근 경로·로그 보관에 무엇을 요구하는가? 이 조건에서 Databricks 워크스페이스를 어떻게 구성해야 하는가(프라이빗 연결 등)?",
+          "drill": "금융감독원 등 공개 자료에서 금융 클라우드 이용 관련 안내를 찾아 요구사항을 목록으로 만들고, 위 워크스페이스 구성을 그 목록에 맞춰 점검한다. 자격증 시험 범위를 위 네 항목과 대조한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Databricks Certified Data Engineer Professional",
+              "url": "https://www.databricks.com/learn/certification/data-engineer-professional",
+              "kind": "docs"
+            },
+            {
+              "title": "금융감독원",
+              "url": "https://www.fss.or.kr/",
+              "kind": "docs"
+            },
+            {
+              "title": "Terraform — Databricks provider",
+              "url": "https://registry.terraform.io/providers/databricks/databricks/latest/docs",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Unity Catalog 거버넌스 + 스트리밍 + 이관 데모(금융 가상 데이터)",
+          "why": "필수 자격의 무거운 두 줄(레이크하우스 구축, Unity Catalog 거버넌스)을 3년 차가 증명하는 가장 빠른 방법이다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "Databricks Data Engineer Professional 취득",
+          "why": "우대 첫 줄이고, 신설 파트너 사업이라 파트너 자격 인원 수가 회사에도 의미가 있을 수 있다(추론).",
+          "effort": "3~6주"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 > 1차 인터뷰(Job-Fit) > 2차 인터뷰(Culture Fit) > 3차 인터뷰(Final) > 처우 협의 > 최종 합류. 수습 3개월(공고 기준).",
+        "expect": [
+          "Unity Catalog 권한 설계",
+          "스트리밍 재시작·중복 처리",
+          "DW/Hadoop 이관 경험",
+          "비용 최적화",
+          "고객 대면 커뮤니케이션"
+        ],
+        "sources": [
+          {
+            "title": "B2B Data Engineer(B2B 데이터 엔지니어) - Databricks",
+            "url": "https://www.wanted.co.kr/wd/379570",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
