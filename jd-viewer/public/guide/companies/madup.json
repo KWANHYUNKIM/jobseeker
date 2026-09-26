@@ -1,0 +1,196 @@
+{
+  "slug": "madup",
+  "name": "매드업",
+  "name_en": "MADUP",
+  "aliases": [
+    "매드업",
+    "MADUP"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "madup.com",
+  "one_liner": "광고 대행(2025년 취급고 4,000억 원 이상, 공고)과 마케팅 AI 에이전트 SaaS 'LEVER Xpert' 를 함께 하는 AI 마케팅 컴퍼니",
+  "company": {
+    "business": "원티드 공고 머리말은 매드업을 데이터 기반 캠페인 제안·운영부터 솔루션 개발, 자체 브랜드까지 디지털 마케팅 전 과정을 하는 'AI Marketing Company' 로 소개하고, 2025년 광고 취급고 4,000억 원 이상, 북미·유럽 등 60개국 이상 시장, 메타·구글·틱톡·크리테오 등 매체사와의 관계를 적는다. 자체 제품은 마케팅 AI 에이전트 **LEVER Xpert** — 제품 소개 사이트(lever.me)는 기능을 데이터 센터(광고 매체·GA·Appsflyer 데이터 매일 자동 수집·적재·통합), 소재 센터(소재 라이브러리·클러스터링·이미지/영상 소재 분석), 운영 센터(시간·날씨 조건에 따른 캠페인 상태·예산 변경, 예산 모니터링)로 나누고 가격·Free Trial 메뉴를 둔다. 회사 사이트 메타는 퍼포먼스·Tech·브랜딩·콘텐츠·CRM 전 영역을 적는다. 모집중 개발 공고는 제품 본부(AI 프로덕트 오너, AI Engineer 두 자리)와 개발 본부(SRE, 주니어 백엔드)다. 공고가 Claude·Gemini Pro·Cursor 등 AI 툴 구독과 개인 토큰, 사내 GPU 워크스테이션을 지원한다고 적는다. 매출액·영업이익·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[제품 본부] AI 프로덕트 오너",
+        "url": "https://www.wanted.co.kr/wd/341002",
+        "publisher": "원티드"
+      },
+      {
+        "title": "매드업(MADUP), 혁신적인 성장을 이끌어내는 AI 마케팅 컴퍼니",
+        "url": "https://madup.com/",
+        "publisher": "매드업",
+        "summary": "메타 설명: 퍼포먼스, Tech, 브랜딩, 콘텐츠, CRM 전 영역에서 성과 중심 전략, 크리에이티브 실행, AI 기술 역량을 결합한 AI 마케팅 컴퍼니."
+      },
+      {
+        "title": "디지털 마케팅 솔루션, LEVER Xpert",
+        "url": "https://lever.me/",
+        "publisher": "매드업",
+        "summary": "'마케팅 AI 에이전트'. 기능을 데이터 센터·소재 센터·운영 센터로 나누고, 광고 매체와 GA·Appsflyer 데이터 매일 자동 수집·적재, 전처리·통합, 소재 라이브러리와 클러스터링, 이미지·영상 소재 분석 리포트, 시간·날씨 조건에 따른 캠페인 상태·예산 변경, 예산 모니터링을 적는다. 메뉴에 가격·Free Trial 이 있고 고객 사례(코오롱몰 등)를 싣는다."
+      }
+    ],
+    "scale": [
+      {
+        "label": "광고 취급고(공고 주장)",
+        "value": "4,000억 원 이상",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제품 본부] AI 프로덕트 오너",
+            "url": "https://www.wanted.co.kr/wd/341002",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "label": "캠페인 운영 시장(공고 주장)",
+        "value": "60개국 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제품 본부] AI 프로덕트 오너",
+            "url": "https://www.wanted.co.kr/wd/341002",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "디지털 광고 대행(캠페인 전략·운영)",
+        "how": "공고가 데이터 기반 캠페인 전략·운영과 2025년 광고 취급고 4,000억 원 이상을 적는다. 취급고는 매출이 아니다 — 대행 수수료율·매출액은 읽지 않았다.",
+        "domains": [
+          "LEVER Xpert 데이터·백엔드",
+          "광고 AI(예측·생성·에이전트)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제품 본부] AI 프로덕트 오너",
+            "url": "https://www.wanted.co.kr/wd/341002",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "LEVER Xpert(마케팅 AI 에이전트 SaaS)",
+        "how": "lever.me 가 가격·Free Trial 메뉴와 외부 고객 사례를 싣는다. 요금 구조는 읽지 않았다.",
+        "domains": [
+          "LEVER Xpert 데이터·백엔드",
+          "광고 AI(예측·생성·에이전트)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "디지털 마케팅 솔루션, LEVER Xpert",
+            "url": "https://lever.me/",
+            "publisher": "매드업",
+            "summary": "'마케팅 AI 에이전트'. 기능을 데이터 센터·소재 센터·운영 센터로 나누고, 광고 매체와 GA·Appsflyer 데이터 매일 자동 수집·적재, 전처리·통합, 소재 라이브러리와 클러스터링, 이미지·영상 소재 분석 리포트, 시간·날씨 조건에 따른 캠페인 상태·예산 변경, 예산 모니터링을 적는다. 메뉴에 가격·Free Trial 이 있고 고객 사례(코오롱몰 등)를 싣는다."
+          },
+          {
+            "title": "[제품 본부] AI 프로덕트 오너",
+            "url": "https://www.wanted.co.kr/wd/341002",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "LEVER Xpert 데이터·백엔드",
+        "why": "주니어 백엔드 공고가 LEVER Xpert 의 데이터 센터·운영 센터·소재 센터 기능 개발·운영과 AWS 데이터 파이프라인·DL·DW·DM 구축을 적는다. lever.me 가 광고 매체·GA·Appsflyer 데이터 매일 수집·통합을 적는다.",
+        "what_to_know": [
+          "광고 매체 API 수집",
+          "데이터 파이프라인·DW",
+          "캠페인 자동 제어"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[개발 본부] 주니어 백엔드 개발자 (전문연구요원 가능)",
+            "url": "https://www.wanted.co.kr/wd/222550",
+            "publisher": "원티드"
+          },
+          {
+            "title": "디지털 마케팅 솔루션, LEVER Xpert",
+            "url": "https://lever.me/",
+            "publisher": "매드업",
+            "summary": "'마케팅 AI 에이전트'. 기능을 데이터 센터·소재 센터·운영 센터로 나누고, 광고 매체와 GA·Appsflyer 데이터 매일 자동 수집·적재, 전처리·통합, 소재 라이브러리와 클러스터링, 이미지·영상 소재 분석 리포트, 시간·날씨 조건에 따른 캠페인 상태·예산 변경, 예산 모니터링을 적는다. 메뉴에 가격·Free Trial 이 있고 고객 사례(코오롱몰 등)를 싣는다."
+          }
+        ]
+      },
+      {
+        "name": "광고 AI(예측·생성·에이전트)",
+        "why": "시니어 AI Engineer 공고가 광고 소재별 전환율(CVR) 예측·캠페인 랭킹·광고 소재 이미지 자동 생성을 예로 들고, AI Engineer 공고가 LLM·멀티모달 생성형 AI·추천, 모델 서빙·평가 시스템을, PO 공고가 AI 서비스 성능 평가 데이터셋과 지표를 적는다.",
+        "what_to_know": [
+          "CVR 예측",
+          "LLM 에이전트",
+          "평가 데이터셋·지표"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[제품본부] 시니어 AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/294189",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[제품 본부] AI Engineer(전문연구요원 가능)",
+            "url": "https://www.wanted.co.kr/wd/294187",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[제품 본부] AI 프로덕트 오너",
+            "url": "https://www.wanted.co.kr/wd/341002",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "인프라·SRE",
+        "why": "수익원이 아니라 제품 공통 기반이다. SRE 공고가 매드업 프로덕트 인프라 설계·운영, LEVER Xpert 배포 파이프라인, 가용성·변경·용량 옵저버빌리티, 장애 대응, 인프라 보안 취약점을 적는다.",
+        "what_to_know": [
+          "배포 파이프라인",
+          "옵저버빌리티",
+          "인프라 보안"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[개발 본부] SRE",
+            "url": "https://www.wanted.co.kr/wd/171889",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "대행사에서 자기 제품(SaaS)을 파는 회사로 무게를 옮기는 중이다",
+        "evidence": "우리는 단순한 도구(Tool)를 만들지 않습니다. 마케터의 가장 완벽한 AI 동료(Agent)를 설계합니다.",
+        "so_what": "제품 본부 공고 셋(PO·AI Engineer 둘)이 모두 LEVER Xpert 를 향하고, lever.me 에 외부 고객 사례와 가격 메뉴가 있다 — 사내 대행 조직이 첫 고객이자 데이터 원천이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 도구를 업무 전제로 둔다",
+        "evidence": "Claude, Gemini Pro, Cursor 등 업무에 맞게 AI 툴 구독 및 개인 단위 토큰을 지원하여 AI 활용을 전제로 한 업무 환경을 설계합니다.",
+        "so_what": "면접에서 AI 도구를 어떻게 검증하며 쓰는지 물을 수 있다. 사람인 HR 인턴 공고 제목도 'AI Native' 를 단다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "광고 취급고가 아닌 매출액·영업이익은 읽지 않았다",
+    "LEVER Xpert 요금 구조(가격 페이지 본문)는 읽지 않았다",
+    "임직원 수는 읽지 않았다",
+    "salary: 개발 공고에 금액이 없다 — 비워 둔다(사람인 HR 인턴 공고의 월 240만 원은 인턴·비개발이라 넣지 않았다)"
+  ],
+  "postings": []
+}
