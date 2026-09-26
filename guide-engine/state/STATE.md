@@ -4,13 +4,16 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **79건**.
-직전 회차: SPIR/OC Senior DevOps(8078331, 5항목) + Staff(8078329) dup — 연차 줄 하나(5/5 ↔ 10/8)만 다름.
-직전 회차: `Senior Back-end Engineer (Developer Experience)`(ats 8146685, 서울, **한국어 본문**) — 개발자 플랫폼 팀, 6항목.
-자격이 연차가 아니라 **'최근 3년 이내 대규모 분산 시스템'** 이다.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **81건**.
+직전 회차: Detection Operations 네트워크 보안 **ats 판 2건 → 사람인 브리핑에 dup**
+(Senior ats 는 28줄 완전 일치, Staff 는 연차 줄 하나만 10년 ↔ 5년).
 
-**원티드·사람인에 남은 쿠팡 미작성 공고는 전부 비개발**(CS 전문가·카탈로그 검수·AI 콘텐츠 평가자·Data Analyst·데이터 분석 어시스턴트) — 건너뛴다.
-⚠️ 다음 회차: ats 서울 공고 중 겹침 <0.5 — `Senior, Back-end Engineer(CX) - Coupang Play`(8186132), ✅ SPIR/OC 쌍 정리, 보안 계열 여러 건(Attack Surface·Forensics·Pen Tester·Threat Detection·CTEM…)은 같은 팀 템플릿일 수 있어 **서로 겹침을 먼저 센다**.
+**미작성 보안 계열 26건**(서울·싱가포르·미국·대만·인도). 서로 겹침 >0.5 인 쌍(먼저 한쪽을 쓰고 다른 쪽을 비교):
+- 0.78 `Staff Back-end Engineer (Security Service Engineering)`(8212612, 서울) ↔ `Staff Security Software Engineer`(8187912, 벵갈루루)
+- 0.74 `Staff Security Engineer, Penetration Tester`(8172730, 타이베이) ↔ `Senior Security Engineer, Penetration Tester`(8175728, 타이베이)
+- 0.64 `Senior Staff / Staff Backend Engineer (Security Infrastructure)`(8047690, 싱가포르) ↔ `Senior Staff Backend Engineer, Security`(7342961, 미국)
+- 0.63 `Staff, AI Security Architect`(greenhouse 8224844) ↔ `Senior Staff Security Engineer, Mobile Security`(8203471)
+⚠️ 다음 회차: **서울 개발 성격 공고부터** — `Staff Back-end Engineer (Security Service Engineering)`(8212612, 58줄).
 ⚠️ 경고 80(마감·url 못 찾음)은 크롤 쪽 원인, 미확인. **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
