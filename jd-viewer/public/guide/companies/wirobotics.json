@@ -360,6 +360,149 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/373647",
+      "title": "휴머노이드 로봇 AI엔지니어 (Robot Learning)",
+      "site": "wanted",
+      "verdict": "경력 5-15년(자격요건은 '경 력: 5년 이상', 학사 이상). 휴머노이드 ALLEX 에 최신 로봇 학습 모델(ACT·Diffusion Policy·VLA)을 **실제 로봇에** 적용하는 자리다 — 부서 소개가 '실제 환경에서 모델을 학습, 배포, 디버깅하는 end-to-end 시스템 작업' 을 적는다. 일은 ACT·Diffusion Policy·Transformer 정책 학습, VLA 행동 정책 운영, 모방학습·강화학습(DAgger·Behavior Cloning·Policy Gradient), 로봇 데이터 수집 파이프라인과 정제·증강, 시뮬레이션↔실로봇 학습·검증 파이프라인. 필수는 Transformer·Diffusion·ACT·VLA 이해, IL/RL 알고리즘 구현, Python/C++ 모델 개발·최적화, **학습된 모델을 실제 로봇 제어 시스템에 적용해 본 경험**. Robotics·ML·Control 석·박사, IsaacSim·MuJoCo·RLBench·RT-X, VLA action space 튜닝은 우대다. 공고 본문에 전형 안내가 없다.",
+      "fit": {
+        "must_have": [
+          "경력 5년 이상, 학사 이상",
+          "Transformer·Diffusion·ACT·VLA 이해",
+          "BC·DAgger·Policy Gradient 구현",
+          "Python/C++ 모델 개발·최적화",
+          "학습 모델을 실로봇 제어에 적용한 경험"
+        ],
+        "can_learn": [
+          "Robotics·ML·Control 석·박사",
+          "IsaacSim·MuJoCo·RLBench·RT-X",
+          "VLA action space 튜닝"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ACT·Diffusion Policy 로 모방학습",
+          "from": "task",
+          "quote": "• ACT, Diffusion Policy, Transformer 기반 로봇 정책 모델 적용 및 학습",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 필수 역량에 'Transformer, Diffusion, ACT, VLA 등' 이해가 있다. 대상 로봇 ALLEX 는 고자유도 손과 팔을 가진 휴머노이드다(회사 브리핑).",
+          "gap_check": "ACT 가 행동을 한 스텝이 아니라 청크(chunk)로 예측하는 이유는 무엇이고, Diffusion Policy 는 같은 관측에서 여러 방식의 시연(다봉 분포)이 섞일 때 왜 단순 회귀보다 나은가?",
+          "drill": "LeRobot 으로 공개 시뮬레이션 데이터셋(예: ALOHA 계열)에 ACT 와 Diffusion Policy 를 각각 학습시키고, 같은 평가 에피소드에서 성공률과 추론 지연을 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware (ACT)",
+              "url": "https://arxiv.org/abs/2304.13705",
+              "kind": "paper"
+            },
+            {
+              "title": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",
+              "url": "https://arxiv.org/abs/2303.04137",
+              "kind": "paper"
+            },
+            {
+              "title": "LeRobot",
+              "url": "https://github.com/huggingface/lerobot",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "Behavior Cloning 의 분포 이동과 DAgger",
+          "from": "qualification",
+          "quote": "• Behavior Cloning, DAgger, Policy Gradient 등 IL/RL 알고리즘 이해 및 구현 경험",
+          "priority": "core",
+          "why": "필수 역량이고 주요업무에 'DAgger, Behavior Cloning, Policy Gradient 등의 알고리즘 적용' 과 IL/RL 제어 정책 학습이 있다.",
+          "gap_check": "BC 로 학습한 정책이 시연에 없던 상태로 조금 벗어나면 오류가 누적되는 이유는 무엇이고, DAgger 는 실로봇에서 전문가 라벨을 어떻게 다시 모으게 하는가 — 그 비용은?",
+          "drill": "MuJoCo 의 간단한 과제에서 BC 정책을 학습해 오류 누적을 관찰하고, 스크립트 전문가로 DAgger 반복을 몇 번 돌려 성공률 변화를 그린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning (DAgger)",
+              "url": "https://arxiv.org/abs/1011.0686",
+              "kind": "paper"
+            },
+            {
+              "title": "MuJoCo — Overview",
+              "url": "https://mujoco.readthedocs.io/en/stable/overview.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "VLA 행동 정책",
+          "from": "task",
+          "quote": "• VLA 기반 행동 정책 적용 및 운영",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'Multimodal policy기반 VLA action space 활용 및 튜닝 경험' 과 RT-X 가 있다.",
+          "gap_check": "VLA 가 연속 관절 명령을 언어 모델 토큰으로 다루려면 action 을 어떻게 이산화하고, 로봇마다 다른 action space(자유도·제어 주기)는 파인튜닝 때 어떻게 맞추는가?",
+          "drill": "OpenVLA 논문과 Open X-Embodiment 자료를 읽고 action 토큰화 방식을 정리한 뒤, 가상의 고자유도 양손 로봇에 맞춘 action space 정의(차원·정규화·주기)를 한 장으로 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OpenVLA: An Open-Source Vision-Language-Action Model",
+              "url": "https://arxiv.org/abs/2406.09246",
+              "kind": "paper"
+            },
+            {
+              "title": "Open X-Embodiment (RT-X)",
+              "url": "https://robotics-transformer-x.github.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "로봇 데이터 수집과 sim-to-real 검증",
+          "from": "task",
+          "quote": "• 시뮬레이션과 실제 로봇 간 안정적인 학습·검증 파이프라인 구축",
+          "priority": "high",
+          "why": "주요업무이고 바로 위 줄이 '로봇 데이터 수집 파이프라인 설계 및 데이터 정제/증강' 이다. 필수 역량에 학습 모델을 실제 로봇 제어 시스템에 적용해 본 경험이 있다.",
+          "gap_check": "시뮬레이션에서 90% 성공한 정책이 실로봇에서 떨어질 때 무엇(관측 차이·지연·접촉 모델)부터 의심하고, 시연 데이터 중 버릴 에피소드는 어떤 기준으로 거르는가?",
+          "drill": "Isaac Sim 또는 MuJoCo 에서 같은 과제를 도메인 랜덤화 유무로 학습해 파라미터를 바꾼 평가 환경에서 성공률을 비교하고, 시연 데이터 정제 규칙(실패·정지 구간·이상 관절값)을 코드로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Isaac Sim Documentation",
+              "url": "https://docs.isaacsim.omniverse.nvidia.com/latest/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "LeRobot",
+              "url": "https://github.com/huggingface/lerobot",
+              "kind": "repo"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "ACT vs Diffusion Policy 비교 + DAgger 실험 저장소",
+          "why": "주요업무 첫 줄과 필수 역량(IL 알고리즘 구현)을 결과 수치로 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "학습 모델을 실제 로봇에 올린 경험 정리(지연·안전·실패 사례)",
+          "why": "필수 역량에 '학습된 모델을 실제 로봇 제어 시스템에 적용해본 경험' 이 있다. 시뮬레이션만의 경험과 구별된다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 안내가 없다.",
+        "expect": [
+          "실로봇에 정책을 올린 경험",
+          "ACT·Diffusion Policy·VLA 원리",
+          "IL/RL 알고리즘 구현",
+          "sim-to-real 문제 해결"
+        ],
+        "sources": [
+          {
+            "title": "휴머노이드 로봇 AI엔지니어 (Robot Learning)",
+            "url": "https://www.wanted.co.kr/wd/373647",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
