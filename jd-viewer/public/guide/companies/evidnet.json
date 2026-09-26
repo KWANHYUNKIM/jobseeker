@@ -1,0 +1,171 @@
+{
+  "slug": "evidnet",
+  "name": "에비드넷",
+  "name_en": "evidnet",
+  "aliases": [
+    "에비드넷"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "evidnet.com",
+  "one_liner": "국내 50여 개 병원의 진료 데이터를 OMOP-CDM 표준으로 모아 다기관 연구·임상시험·약물감시용 실제 임상 근거(RWE)를 만드는 헬스케어 데이터 회사",
+  "company": {
+    "business": "공고 머리말은 에비드넷을 병원 데이터에 기반한 실제 임상 근거(Real World Evidence, RWE) 솔루션을 제공해 생명과학·헬스케어 산업의 연구개발과 의사결정을 지원하는 헬스케어 IT 기업으로 소개하고, 국내 50여 개 대학병원 및 상급/종합병원과 협력해 OMOP-CDM 표준으로 실제 임상 데이터(RWD)를 구축한다고 적는다. FeederNet 데이터 플랫폼이 개인정보 보호와 보안을 유지하면서 다기관 연구와 AI 연합학습을 가능하게 한다고 적는다. 홈페이지는 제품을 대상별로 나눈다 — 임상연구자용(원격 다기관 연구 EVIX-ONE, 데이터 확장 EVIX-MART, 질환 통계 EVIX-INSIGHT, GUI 통계분석 EVIX-EXPLO), 기업용(임상시험 기관·환자 수 탐색 EVIX-FIND, 후향적 코호트 연구 EVIX-RESEARCH, 약물감시·시판후조사 EVIX-PV/PMS), 환자용(의무기록 통합 EVIX-HEALTH). 매출·고객 수와 제품별 가격은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Make the world healthy with data - evidnet",
+        "url": "https://evidnet.com/en/",
+        "publisher": "에비드넷",
+        "summary": "RWD/RWE 플랫폼이 의사·임상연구자·헬스케어 서비스 제공자·환자를 지원한다고 적고, 대상별 제품을 나열한다 — 연구자용 EVIX-ONE(원격 다기관 연구)·EVIX-MART(데이터 확장)·EVIX-INSIGHT(국내 상위 500개 질환 통계)·EVIX-INSIGHT PRO·EVIX-EXPLO(GUI 통계분석), 기업용 EVIX-FIND(임상시험 기관·대상 환자 수 탐색)·EVIX-RESEARCH(후향적 코호트 연구)·EVIX-PV/PMS(약물감시·시판후조사), 환자용 EVIX-HEALTH(여러 병원 의무기록 통합)"
+      },
+      {
+        "title": "NLP·AI 에이전트 / 비정형 의무기록 분석 개발자",
+        "url": "https://www.wanted.co.kr/wd/375155",
+        "publisher": "원티드"
+      },
+      {
+        "title": "데이터 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/359557",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "협력 병원 수(회사 주장)",
+        "value": "50여 개 대학병원 및 상급/종합병원",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "NLP·AI 에이전트 / 비정형 의무기록 분석 개발자",
+            "url": "https://www.wanted.co.kr/wd/375155",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "기업 대상 RWD 연구 서비스",
+        "how": "홈페이지가 기업(제약 등으로 보임)에 임상시험 기관·대상 환자 수 탐색(EVIX-FIND), 맞춤형 후향적 연구(EVIX-RESEARCH), 약물감시·시판후조사 근거(EVIX-PV/PMS)를 제공한다고 적는다. 과금 방식과 매출 비중은 읽지 않았다(추론).",
+        "domains": [
+          "OMOP-CDM 병원 데이터 네트워크",
+          "RWE 연구·통계 분석"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Make the world healthy with data - evidnet",
+            "url": "https://evidnet.com/en/",
+            "publisher": "에비드넷",
+            "summary": "RWD/RWE 플랫폼이 의사·임상연구자·헬스케어 서비스 제공자·환자를 지원한다고 적고, 대상별 제품을 나열한다 — 연구자용 EVIX-ONE(원격 다기관 연구)·EVIX-MART(데이터 확장)·EVIX-INSIGHT(국내 상위 500개 질환 통계)·EVIX-INSIGHT PRO·EVIX-EXPLO(GUI 통계분석), 기업용 EVIX-FIND(임상시험 기관·대상 환자 수 탐색)·EVIX-RESEARCH(후향적 코호트 연구)·EVIX-PV/PMS(약물감시·시판후조사), 환자용 EVIX-HEALTH(여러 병원 의무기록 통합)"
+          }
+        ]
+      },
+      {
+        "name": "연구자 대상 다기관 연구 플랫폼",
+        "how": "홈페이지가 임상연구자에게 원격 다기관 연구(EVIX-ONE), 데이터 확장(EVIX-MART), 질환 통계(EVIX-INSIGHT·PRO), GUI 통계분석(EVIX-EXPLO)을 제공한다고 적는다. 유료 여부는 읽지 않았다(추론).",
+        "domains": [
+          "OMOP-CDM 병원 데이터 네트워크",
+          "RWE 연구·통계 분석"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Make the world healthy with data - evidnet",
+            "url": "https://evidnet.com/en/",
+            "publisher": "에비드넷",
+            "summary": "RWD/RWE 플랫폼이 의사·임상연구자·헬스케어 서비스 제공자·환자를 지원한다고 적고, 대상별 제품을 나열한다 — 연구자용 EVIX-ONE(원격 다기관 연구)·EVIX-MART(데이터 확장)·EVIX-INSIGHT(국내 상위 500개 질환 통계)·EVIX-INSIGHT PRO·EVIX-EXPLO(GUI 통계분석), 기업용 EVIX-FIND(임상시험 기관·대상 환자 수 탐색)·EVIX-RESEARCH(후향적 코호트 연구)·EVIX-PV/PMS(약물감시·시판후조사), 환자용 EVIX-HEALTH(여러 병원 의무기록 통합)"
+          },
+          {
+            "title": "CDM 기반 연구지원 및 병원 네트워크 운영 담당자",
+            "url": "https://www.wanted.co.kr/wd/354548",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "OMOP-CDM 병원 데이터 네트워크",
+        "why": "공고 머리말이 50여 개 병원과 OMOP-CDM 표준으로 RWD 를 구축한다고 적고, 데이터 엔지니어 공고가 Embulk·Digdag/Airflow 수집 파이프라인과 민감 정보 비식별화를, 연구지원 공고가 협력기관 방문과 CDM 교육을 적는다.",
+        "what_to_know": [
+          "OMOP CDM 테이블 구조와 표준 용어(Vocabulary)",
+          "의료 데이터 비식별화",
+          "배치 수집 파이프라인(Embulk·Airflow)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "데이터 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/359557",
+            "publisher": "원티드"
+          },
+          {
+            "title": "CDM 기반 연구지원 및 병원 네트워크 운영 담당자",
+            "url": "https://www.wanted.co.kr/wd/354548",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "비정형 의무기록 NLP·용어 매핑",
+        "why": "NLP·AI 에이전트 공고가 진료기록·간호기록·판독지 등에서 임상 정보를 추출하고 LLM 에이전트로 OMOP CDM/FHIR 매핑을 자동화한다고 적는다. 사람인 Medical AI 에이전트 공고는 국내 로컬 코드를 SNOMED CT·LOINC·RxNorm 등으로 매핑하는 일을 적는다. 어느 수익원과 이어지는지는 공고에 적혀 있지 않다 — 비정형 기록을 CDM 으로 옮겨 연구용 데이터를 넓히는 쪽으로 보인다(추론).",
+        "what_to_know": [
+          "임상 NLP(NER·관계 추출)",
+          "LLM 에이전트·vLLM 서빙",
+          "의료 용어체계(SNOMED CT·LOINC·RxNorm·KCD)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "NLP·AI 에이전트 / 비정형 의무기록 분석 개발자",
+            "url": "https://www.wanted.co.kr/wd/375155",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "RWE 연구·통계 분석",
+        "why": "의료데이터 분석가 공고가 CDM 기반 연구 수행, 연구계획서(Protocol)·통계분석계획서(SAP) 작성, 통계 분석과 보고서를 적는다.",
+        "what_to_know": [
+          "후향적 코호트 연구 설계",
+          "SQL 로 CDM 코호트 추출",
+          "생존분석 등 통계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "의료데이터 분석가 (Medical Data Analyst)",
+            "url": "https://www.wanted.co.kr/wd/379411",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "LLM 으로 비정형 의무기록과 용어 매핑을 자동화하려 한다",
+        "evidence": "LLM 기반 AI 에이전트를 활용한 비정형 데이터 OMOP CDM/FHIR 매핑 자동화",
+        "so_what": "원티드 NLP 공고와 사람인 Medical AI 두 건이 모두 LLM 을 쓴 추출·매핑이다. 정확도 검증과 임상 전문가 리뷰 프로세스를 같이 적어 두어, 모델만이 아니라 검증 체계를 만든 경험을 볼 것이다(추론).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "온프레미스 LLM 을 쓴다",
+        "evidence": "온프레미스/사내 LLM 서빙 인프라(vLLM 등)와 연동한 에이전트 워크플로우 설계",
+        "so_what": "병원 데이터라 외부 API 로 보내지 못하는 조건으로 보인다(추론). 사내 모델 서빙과 그 제약 속 프롬프트·파인튜닝이 핵심이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·고객 수·제품별 가격을 읽지 않았다",
+    "feedernet.com 은 제목만 돌려줘(자바스크립트 렌더) 본문을 읽지 못했다",
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "jobkorea·사람인 데이터 엔지니어와 사람인 의료데이터 분석가는 원티드와 제목이 같다 — 본문 비교로 duplicate_of 판단할 것"
+  ],
+  "postings": []
+}
