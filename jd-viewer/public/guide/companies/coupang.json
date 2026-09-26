@@ -9849,6 +9849,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8186132",
+      "title": "Senior, Back-end Engineer(CX) - Coupang Play",
+      "site": "ats",
+      "verdict": "직함은 Senior 지만 자격요건은 '서버 애플리케이션·시스템 엔지니어링 경력 2년 이상'이다 — 쿠팡 공고 중 문턱이 낮은 편. 서울 근무. 쿠팡플레이의 라이브 스포츠·Discover 영역 API 를 저지연·고처리량으로 설계·운영하고, 모바일 앱과 API 연동을 이끄는 백엔드 개발자.",
+      "fit": {
+        "must_have": [
+          "서버 애플리케이션·시스템 엔지니어링 2년 이상",
+          "저지연·고처리량 시스템, 성능 프로파일링, 비용/성능 트레이드오프",
+          "Go·Java·JavaScript·Node.js 중 하나 이상",
+          "AWS·GCP 등 클라우드 실무"
+        ],
+        "can_learn": [
+          "비디오 스트리밍 도메인",
+          "GraphQL 운영"
+        ]
+      },
+      "study": [
+        {
+          "topic": "라이브 스포츠 트래픽 급증을 견디는 API",
+          "from": "task",
+          "quote": "라이브 스포츠 및 Discover 영역 API의 아키텍처 로드맵 설계 및 총괄",
+          "priority": "core",
+          "why": "라이브 경기는 시작 시각에 요청이 한꺼번에 몰린다(추론). 주요업무 첫 줄이 이 영역 API 의 아키텍처 로드맵이다.",
+          "gap_check": "경기 시작 1분 전 동시 접속이 10배로 뛸 때, 캐시·사전 확장(pre-warming)·요청 합치기(request coalescing) 중 무엇을 어디에 두는가?",
+          "drill": "'경기 일정·상태 조회' API 를 만들고 k6 로 순간 10배 부하를 준 뒤, CDN/인메모리 캐시와 singleflight(요청 합치기)를 넣기 전후 p99 와 원본 호출 수를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "k6 — Documentation",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "저지연·고처리량과 성능 프로파일링",
+          "from": "qualification",
+          "quote": "Low-latency, High-throughput 시스템 구축, 성능 프로파일링 및 비용/성능 간의 트레이드오프 최적화에 깊은 전문성을 보유하신 분",
+          "priority": "core",
+          "why": "자격 두 번째 줄이 '깊은 전문성'을 요구한다. 비용/성능 트레이드오프까지 명시돼 있다.",
+          "gap_check": "p99 지연이 튈 때 CPU 프로파일·GC·락 경합·외부 호출 중 무엇부터 보고, 그 도구는 무엇인가(pprof·async-profiler 등)?",
+          "drill": "Go(또는 Node.js) API 에 일부러 무거운 JSON 직렬화와 락 경합을 넣고 pprof(또는 clinic.js)로 찾아 고친 전후 flame graph 를 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Go — Diagnostics (pprof)",
+              "url": "https://go.dev/doc/diagnostics",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "GraphQL 운영",
+          "from": "preference",
+          "quote": "GraphQL 활용 및 운용 경험이 있으신 분",
+          "priority": "high",
+          "why": "Discover(탐색) 화면은 여러 소스(추천·일정·콘텐츠 메타)를 조합한다. 모바일 앱과의 연동이 우대에 따로 있다.",
+          "gap_check": "GraphQL 에서 N+1 리졸버 문제를 DataLoader 로 어떻게 막고, 공개 API 라면 쿼리 깊이·복잡도는 어떻게 제한하는가?",
+          "drill": "콘텐츠·경기·추천 세 소스를 합치는 GraphQL 서버를 만들어 DataLoader 적용 전후 백엔드 호출 수를 세고, 쿼리 복잡도 제한을 건다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "GraphQL — Learn",
+              "url": "https://graphql.org/learn/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모바일 앱과 API 연동 이슈 주도",
+          "from": "preference",
+          "quote": "iOS 및 Android 개발자와의 협업을 통해 모바일 앱과 API 간 통합을 원활히 진행하고 연동 이슈를 주도적으로 해결할 수 있으신 분",
+          "priority": "high",
+          "why": "앱은 배포 후 바로 갱신되지 않아 구버전 앱이 오래 남는다(추론). API 변경이 앱을 깨지 않게 해야 한다.",
+          "gap_check": "필드 하나를 바꿔야 할 때 구버전 앱을 깨지 않게 하는 방법(추가만 하기·버전 헤더·기능 플래그)을 설명할 수 있는가?",
+          "drill": "API 응답에 새 필드를 추가하고 구 필드를 유지한 채 앱 버전 헤더로 분기하는 예제와, 사용 중인 앱 버전 분포를 로그로 보는 대시보드를 만든다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "비디오 스트리밍 서비스 기본",
+          "from": "preference",
+          "quote": "비디오 스트리밍 서비스 및 관련 데이터 시스템 상용화 구축/운영 경험이 있으신 분",
+          "priority": "nice",
+          "why": "백엔드 API 가 재생 권한·시청 기록·추천과 맞물린다(추론).",
+          "gap_check": "HLS 재생에서 매니페스트·세그먼트·DRM 라이선스 요청은 각각 어느 서버가 처리하고, 백엔드 API 는 어디에 끼는가?",
+          "drill": "ffmpeg 로 짧은 영상을 HLS 로 변환해 정적 서버로 재생하고, 재생 시작 전 권한 확인 API 를 거치게 만든다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "순간 트래픽 대응 부하 테스트 리포트",
+          "why": "라이브 스포츠 API 의 핵심 문제와 자격의 성능·비용 트레이드오프를 한 번에 보여 준다. 2년차에게 드문 결과물이다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "순간 트래픽 급증 대응 설계",
+          "p99 지연 원인 찾기",
+          "GraphQL N+1·복잡도 제한",
+          "구버전 앱 호환",
+          "비용과 성능의 트레이드오프"
+        ],
+        "sources": [
+          {
+            "title": "Senior, Back-end Engineer(CX) - Coupang Play",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8186132",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [

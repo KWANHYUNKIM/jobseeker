@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **89건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **90건**.
+직전 회차: ✅ `Senior, Back-end Engineer(CX) - Coupang Play`(8186132, 서울) 5항목 — **직함 Senior 인데 자격 2년↑**(쿠팡 중 문턱 낮음).
 직전 회차: ✅ `Staff Security Engineer (Data Security Engineering)`(7938018, 서울) 5항목 — 자격에 **연차 없음**. 본문에 `(Recruiter Note: add in the case of full-time regulars)` 라는 채용 담당자 메모가 그대로 남아 있다.
 직전 회차: ✅ `Staff Security Engineer (AI GRC)`(8163774, 서울, 10년↑) 5항목 — GRC 직군임을 verdict 에. 이 ats 는 자격 칸이 비고 Basic Qualifications 가 main_tasks 칸에 섞여 있다.
 직전 회차: ✅ `Staff Security Engineer (CTEM)`(8163725, 서울) 6항목 — 보안 데이터 계보·매핑 엔진·BAS.
