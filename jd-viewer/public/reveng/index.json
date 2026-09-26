@@ -7,8 +7,8 @@
       "name_en": "dinii",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "음식점 올인원 클라우드 다이니 — 입금원이 Adyen 에서 AMEX 까지 둘로 늘자 모든 정산을 부호 없는 한 장의 대장에 모으고 '거의 맞음' 을 허락하지 않는 검증으로 막으며, 몇 분 다운이 치명적인 POS 의 알림은 봇이 먼저 조사하되 알림을 줄이는 판단은 사람이 주 1회 한다",
       "updated_at": "2026-09-26",
       "domain": "dinii.jp"
