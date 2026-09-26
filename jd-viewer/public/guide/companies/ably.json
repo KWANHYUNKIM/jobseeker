@@ -7,7 +7,7 @@
     "에이블리"
   ],
   "status": "in_progress",
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-26",
   "site": "ably.team",
   "one_liner": "패션 커머스 앱 에이블리(과 남성 앱 4910, 일본 아무드)를 운영하는 회사 — 2025년 매출 3,697억·거래액 약 2.8조, 기업가치 3조 유니콘에서 중견기업으로",
   "company": {
@@ -235,5 +235,105 @@
     "앱 사이트 a-bly.com 은 403 으로 열리지 않았다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/359638",
+      "title": "백엔드 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3년 이상(또는 그에 준하는 역량), 서울 서초구. 에이블리 **커머스 코어 백엔드** 자리로 대상이 셋이다 — 유저가 쓰는 앱의 커머스 백엔드, **셀러가 쓰는 플랫폼 서비스와 Open API**, 팀원이 쓰는 백오피스. 동료 한마디는 유저의 빠른 주문, 셀러의 쉬운 상품 등록, 어드민 효율을 목표로 카테고리별 운영 시스템과 반복 이슈 자동화를 적는다. 자격요건 칸에 필수와 우대가 섞여 있다 — 필수는 3년 이상, Django·Spring 등 웹 프레임워크와 RDBMS, 다른 직군과 문제 정의·해결. 같은 칸의 '이면 좋아요' 줄이 Django·DRF, AWS·GCP, 플랫폼·이커머스 이해다. 기술 스택은 Python/Django, Kotlin/Spring, MySQL·Redis·ScyllaDB·Kafka·Elasticsearch, GitHub Actions·ArgoCD, Datadog·Grafana·Sentry. 전형: 서류전형 > **라이브 코딩테스트(화상)** > 직무 인터뷰(대면) > 최종 인터뷰(화상) > 최종합격, 수시 채용. 같은 팀의 '백엔드 엔지니어 (시니어)'(356350)는 7년 이상·대용량 트래픽·MSA 요건이 붙은 별도 공고다.",
+      "fit": {
+        "must_have": [
+          "개발 경력 3년 이상(또는 준하는 역량)",
+          "Django·Spring 등 웹 프레임워크 + RDBMS",
+          "다른 직군과 문제 정의·해결"
+        ],
+        "can_learn": [
+          "Django·DRF",
+          "AWS·GCP",
+          "이커머스 도메인",
+          "Redis·Kafka·Elasticsearch"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Django ORM 쿼리 최적화 — 커머스 목록 API",
+          "from": "qualification",
+          "quote": "• 웹 프레임워크(Django, Spring 등)과 RDBMS를 사용해 보신 분을 찾고 있어요.",
+          "priority": "core",
+          "why": "필수 요건이고 같은 칸의 우대가 'Django와 DRF에 익숙하신 분' 이다. 기술 스택 첫 줄이 Python/Django 다.",
+          "gap_check": "주문 목록 API 에서 주문마다 상품·셀러·배송 정보를 붙이면 쿼리 수가 목록 길이만큼 늘어나는데(N+1), select_related 와 prefetch_related 는 각각 어떤 관계에 쓰고, 실제 나간 쿼리 수는 무엇으로 확인하는가?",
+          "drill": "주문·주문상품·상품·셀러 모델로 DRF 목록 API 를 만들고 쿼리 수를 로그로 센 뒤, select_related·prefetch_related·only 로 줄여 전후 쿼리 수와 응답 시간을 표로 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Database access optimization | Django",
+              "url": "https://docs.djangoproject.com/en/stable/topics/db/optimization/",
+              "kind": "docs"
+            },
+            {
+              "title": "Django REST framework",
+              "url": "https://www.django-rest-framework.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "셀러용 Open API 설계 — 버전·제한",
+          "from": "task",
+          "quote": "• 에이블리 셀러들이 사용하는 플랫폼 서비스, Open API를 개발해요.",
+          "priority": "core",
+          "why": "주요업무이고 동료 한마디가 '셀러는 더 쉽게 상품을 등록' 을 목표로 적는다.",
+          "gap_check": "외부 셀러가 연동한 Open API 의 응답 필드를 바꿔야 할 때 기존 셀러 연동을 깨지 않으려면 무엇(버전·하위 호환)을 하고, 한 셀러가 상품 등록을 초당 수백 번 호출하면 무엇으로 막으며, 같은 요청이 재시도로 두 번 오면 상품이 두 번 등록되지 않게 하려면 무엇이 필요한가?",
+          "drill": "DRF 로 셀러 상품 등록 API v1 을 만들고 필드를 바꾼 v2 를 URL 버전으로 나란히 둔 뒤, 셀러 키별 스로틀링과 Idempotency-Key 헤더로 중복 등록을 막는 처리를 붙여 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Versioning - Django REST framework",
+              "url": "https://www.django-rest-framework.org/api-guide/versioning/",
+              "kind": "docs"
+            },
+            {
+              "title": "Throttling - Django REST framework",
+              "url": "https://www.django-rest-framework.org/api-guide/throttling/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "주문의 정합성 — 트랜잭션과 동시성",
+          "from": "task",
+          "quote": "• 유저들이 사용하는 에이블리 앱의 커머스 백엔드 서비스를 개발해요.",
+          "priority": "high",
+          "why": "주요업무다. 동료 한마디가 '유저는 상품 구매 주문을 더 빠르게' 를 적는다.",
+          "gap_check": "재고 1개 남은 상품에 주문 두 건이 동시에 들어오면 둘 다 성공하지 않게 하려면 무엇(select_for_update·조건부 업데이트)을 쓰고, 결제 승인 뒤 주문 저장이 실패하면 무엇을 되돌리는가?",
+          "drill": "Django 에서 재고 차감을 트랜잭션 없이·atomic + select_for_update 로·F 식 조건부 업데이트로 세 벌 만들고, 동시 요청 20개를 보내 재고가 음수가 되는 버전을 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Database transactions | Django",
+              "url": "https://docs.djangoproject.com/en/stable/topics/db/transactions/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "백오피스 — 운영 자동화",
+          "from": "task",
+          "quote": "• 에이블리 팀원들이 플랫폼 운영을 위해 사용하는 백오피스 서비스를 개발해요.",
+          "priority": "nice",
+          "why": "주요업무이고 동료 한마디가 '반복되는 이슈를 자동화하여 각 스쿼드가 본질적인 문제 해결에 더 집중' 을 적는다.",
+          "gap_check": "운영팀이 매일 손으로 하는 일(예: 특정 조건 상품 일괄 노출 중지)을 백오피스 기능으로 만들 때 잘못 실행하면 되돌릴 수 있게 무엇(미리보기·실행 기록·권한)을 두는가?",
+          "drill": "Django admin 에 '조건으로 상품 일괄 노출 중지' 액션을 만들고, 실행 전 대상 건수 미리보기와 실행자·시각·대상 ID 를 남기는 기록 테이블, 되돌리기 액션을 붙인다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "The Django admin site",
+              "url": "https://docs.djangoproject.com/en/stable/ref/contrib/admin/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
