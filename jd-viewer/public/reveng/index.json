@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "chillstack",
+      "name": "칠스택",
+      "name_en": "ChillStack",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "'AI 보안 컴퍼니' — 기업의 경비 데이터에서 부정 · 이상을 찾는 SaaS 'Stena Expense' 를 Go 모놀리스 + Python 검지 서비스(gRPC 콜백)로 돌리고, 여러 회사의 경비를 한 DB 에서 RLS 로 가르며 사전 집계로 수백 밀리초에 모아 보인다",
+      "updated_at": "2026-09-27",
+      "domain": "chillstack.com"
+    },
+    {
       "slug": "dmm",
       "name": "DMM",
       "name_en": "DMM.com",
@@ -3756,7 +3768,9 @@
     "흩어진 창고·주문 데이터를 싸게 들여오고 내보낸다",
     "계획 데이터의 사실과 경계를 서버가 쥔다",
     "많은 상품 중 검색 결과를 사용자마다 실시간으로 다시 줄 세운다",
-    "추천 선반이 다른 경로의 몫을 빼앗지 않게 한다"
+    "추천 선반이 다른 경로의 몫을 빼앗지 않게 한다",
+    "회사마다 다른 경비 데이터에서 부정을 찾는다",
+    "여러 회사의 경비를 한 DB 에서 섞이지 않게 즉시 모아 본다"
   ],
   "countries": {
     "KR": "한국",

@@ -1,0 +1,229 @@
+{
+  "slug": "chillstack",
+  "name": "칠스택",
+  "name_en": "ChillStack",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "chillstack.com",
+  "one_liner": "'AI 보안 컴퍼니' — 기업의 경비 데이터에서 부정 · 이상을 찾는 SaaS 'Stena Expense' 를 Go 모놀리스 + Python 검지 서비스(gRPC 콜백)로 돌리고, 여러 회사의 경비를 한 DB 에서 RLS 로 가르며 사전 집계로 수백 밀리초에 모아 보인다",
+  "business_model": "**2018년 창업**, 스스로를 '**AI 보안 컴퍼니**'라 부른다. 사업은 둘로 읽힌다 — ① **Stena Expense**: 기업의 경비 데이터를 받아 **AI 로 부정 · 이상을 검지**하는 SaaS(중복 신청 · 금액 이상 · 부풀리기, 그리고 분석 기능) ② **AI 보안**: AI 시스템에 대한 **레드팀(공격 검증)**, 안전한 운용 체제 구축, LLM 보안 교육(e러닝) 등 기업 · 관공청 대상.\n\n**기술 블로그의 제품 글은 Stena Expense**이고, 나머지 절반은 보안 연구 해설(MITRE ATLAS 등)이다. **매출 · 사업별 비중 · 요금은 공개 자료에 없다.**",
+  "products": [
+    "Stena Expense(경비 부정 · 이상 검지 SaaS · 분석 기능)",
+    "AI 보안 서비스(레드팀 · 안전 운용 지원)",
+    "LLM 보안 실습 e러닝"
+  ],
+  "revenue_total": "확인하지 못했다. 회사 페이지에 매출 · 고객 수가 없다.",
+  "revenue_streams": [
+    {
+      "name": "Stena Expense(경비 부정 · 이상 검지 SaaS)",
+      "how": "기업이 경비 정산 서비스에서 내보낸 데이터를 올리면 여러 검지 모델이 부정 · 이상을 찾고, 분석 기능으로 비용을 나눠 본다. 요금은 공개 안 됨.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "회사마다 다른 경비 데이터에서 부정을 찾는다",
+        "여러 회사의 경비를 한 DB 에서 섞이지 않게 즉시 모아 본다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stena Expenseの検知アーキテクチャ ── Go × Python × gRPCで不正検知を実現する仕組み",
+          "url": "https://zenn.dev/chillstack/articles/2026-04-20-detection-architecture-stena-expense",
+          "publisher": "ChillStack",
+          "date": "2026-04-23",
+          "summary": "**Stena Expense** 는 기업의 경비 데이터를 받아 **AI 로 부정 · 이상을 검지**하는 SaaS. 매달 수만~수십만 건 명세를 사람이 다 볼 수는 없고, '생성 AI 에 맡기면'도 안 된다 — **조직마다 경비 정산 서비스가 달라 컬럼 뜻 · 입도가 다르고**, 중복 신청 · 금액의 통계적 이상 · 부풀리기 등 **패턴이 다양**하고, 취득 → 추출 · 변환 → 여러 검지 모델 → 집계의 **단계가 많다.** 구성: Manager(Next.js) · **Controller(Go, 인증 · 권한 · 워크플로 · 영속화를 맡는 모놀리스)** · **Google Cloud Workflows**(YAML, 네 단계를 try/except 로 감싸 실패 시 Controller 에 PATCH — Controller 가 **자기 현재 상태로 실패 단계를 판정**) · Cloud Run Job(Controller 와 같은 Go 코드를 CLI 로) · **Predictor(Python, 전처리 · 검지)**. 마이크로서비스가 아니라 **Predictor 만** 떼어 낸 이유는 Go(빠른 API · 형 안전한 도메인)와 Python(pandas · 검지 로직)의 장점, 그리고 **독립 스케일링**. Cloud Run Job 이 PredictService 로 의뢰하면 Predictor 가 결과를 **모델마다 Controller 의 PredictionHandler 로 gRPC 콜백**(재시도 3회) — 일시 배치가 수천~수만 건 결과를 중계하지 않고 Predictor 는 모델마다 보내고 메모리를 푼다. 검지 상태는 Go 값 객체로 **허용된 전이만** 하고, 의뢰 전 Pending → Predicting 을 **먼저 영속화**해 재기동 뒤에도 멈춘 검지를 찾는다. 모델은 **preprocessor · detector 를 pickle 로 GCS 에** — 모델 갱신에 앱 배포가 필요 없다."
+        },
+        {
+          "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+          "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+          "publisher": "ChillStack",
+          "date": "2025-12-25",
+          "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지)."
+        }
+      ]
+    },
+    {
+      "name": "AI 보안 서비스(레드팀 · 안전 운용 · 교육)",
+      "how": "AI 를 넣은 시스템에 공격 검증을 하고 안전한 운용 체제를 함께 만들며, LLM 보안 실습 강좌를 판다. 기업 · 관공청 대상.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "ChillStack",
+          "url": "https://chillstack.com/",
+          "publisher": "ChillStack",
+          "summary": "'**AI 보안 컴퍼니**' — 기술 특징으로 **시계열 · 다차원 데이터에서 부정 · 이상을 해석하는 AI**, 판단 과정을 보여 주는 **XAI**, AI 의 안전성 확보, AI 시스템에 공격 검증을 하는 **레드팀**, AI 를 넣은 시스템의 안전한 운용을 든다. 2026-09 뉴스: 위기관리 산업전 출전(AI 리스크 관리 전략 세미나), LLM 보안 실습 e러닝 강좌."
+        },
+        {
+          "title": "COMPANY | ChillStack",
+          "url": "https://chillstack.com/company",
+          "publisher": "ChillStack",
+          "summary": "미션 '더 재미있고 풍요롭고 **안심할 수 있는** 세계'. **2018년 창업**(CEO 이토 미치아키 — AI × 보안 연구, 국제 보안 콘테스트 우승). CTO 는 **이상 검지 AI** 연구 · 실운용 이상 검지 시스템 구축 출신. CEO 메시지: AI 보안의 기초 연구와 최첨단 기술로 **기업 · 관공청**을 돕고, 안전한 운용 체제 구축 · 개선까지 함께 만든다. 매출은 없다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "경비 파일이 검지 결과와 분석이 되기까지",
+    "question": "회사마다 다른 경비 데이터를 어디서 받아 누가 검지하고, 어떻게 섞이지 않게 모아 보이나?",
+    "code": "flowchart TD\n  U[\"고객 경리 담당\\nManager(Next.js)\"] -->|파일 업로드| C[\"Controller(Go 모놀리스)\\n인증 · 권한 · 상태 · 영속화\"]\n  C --> W[\"Cloud Workflows\\n취득 → 추출 → 검지 → 집계\"]\n  W --> J[\"Cloud Run Job(Go CLI)\"]\n  J -->|PredictService| PR[\"Predictor(Python)\\npickle 모델 · GCS\"]\n  PR -->|PredictionHandler 콜백| C\n  C --> DB[\"PostgreSQL\\nRLS · current_setting(tenant_id)\"]\n  J --> AG[\"사전 집계 테이블\\n검지 때마다 재집계\"]\n  AG --> AN[\"분석 화면\\n쿼리 빌더 · 수백 ms\"]",
+    "_note": "위쪽은 검지 파이프라인(도메인 1), 아래쪽은 결과를 테넌트 경계 안에서 즉시 모아 보는 곳(도메인 2)이다. AI 보안 서비스 쪽 시스템은 공개 글이 없다."
+  },
+  "domains": [
+    {
+      "name": "회사마다 다른 경비 데이터에서 부정을 찾는다",
+      "why": "경비 명세는 건수가 많고 한 건 금액이 작아 **사람이 다 볼 수 없다** — 매달 수만~수십만 건. 그렇다고 생성 AI 에 통째로 맡길 수도 없다: **조직마다 경비 정산 서비스가 달라** 컬럼 뜻 · 입도가 다르고, 중복 신청 · 금액 이상 · 부풀리기처럼 **보는 관점이 여럿**이고, 취득 → 추출 → 검지 → 집계라는 **여러 단계**를 순서대로 · 실패를 다루며 돌려야 한다.\n\n그래서 **Go 모놀리스(Controller)** 가 제품의 업무 로직과 상태를 쥐고, **Python Predictor** 만 떼어 검지를 맡기며, 단계는 **Cloud Workflows** 가 몬다. 결과는 Predictor 가 **gRPC 콜백**으로 Controller 에 모델마다 보낸다.",
+      "tech": [
+        {
+          "tech": "Go 모놀리스 Controller + Python Predictor 만 분리(마이크로서비스 아님)",
+          "solves": "Go 의 빠른 API · 형 안전 도메인과 Python 의 pandas · 검지 로직을 각자 잘하는 곳에. Predictor 는 검지 때만 돌고 따로 스케일한다.",
+          "limits": "두 언어 · 두 서비스 사이 계약(gRPC 정의)을 유지해야 한다. 나머지 업무 로직은 모놀리스에 모여 있다 — 의도한 단순함이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Stena Expenseの検知アーキテクチャ ── Go × Python × gRPCで不正検知を実現する仕組み",
+              "url": "https://zenn.dev/chillstack/articles/2026-04-20-detection-architecture-stena-expense",
+              "publisher": "ChillStack",
+              "date": "2026-04-23",
+              "summary": "**Stena Expense** 는 기업의 경비 데이터를 받아 **AI 로 부정 · 이상을 검지**하는 SaaS. 매달 수만~수십만 건 명세를 사람이 다 볼 수는 없고, '생성 AI 에 맡기면'도 안 된다 — **조직마다 경비 정산 서비스가 달라 컬럼 뜻 · 입도가 다르고**, 중복 신청 · 금액의 통계적 이상 · 부풀리기 등 **패턴이 다양**하고, 취득 → 추출 · 변환 → 여러 검지 모델 → 집계의 **단계가 많다.** 구성: Manager(Next.js) · **Controller(Go, 인증 · 권한 · 워크플로 · 영속화를 맡는 모놀리스)** · **Google Cloud Workflows**(YAML, 네 단계를 try/except 로 감싸 실패 시 Controller 에 PATCH — Controller 가 **자기 현재 상태로 실패 단계를 판정**) · Cloud Run Job(Controller 와 같은 Go 코드를 CLI 로) · **Predictor(Python, 전처리 · 검지)**. 마이크로서비스가 아니라 **Predictor 만** 떼어 낸 이유는 Go(빠른 API · 형 안전한 도메인)와 Python(pandas · 검지 로직)의 장점, 그리고 **독립 스케일링**. Cloud Run Job 이 PredictService 로 의뢰하면 Predictor 가 결과를 **모델마다 Controller 의 PredictionHandler 로 gRPC 콜백**(재시도 3회) — 일시 배치가 수천~수만 건 결과를 중계하지 않고 Predictor 는 모델마다 보내고 메모리를 푼다. 검지 상태는 Go 값 객체로 **허용된 전이만** 하고, 의뢰 전 Pending → Predicting 을 **먼저 영속화**해 재기동 뒤에도 멈춘 검지를 찾는다. 모델은 **preprocessor · detector 를 pickle 로 GCS 에** — 모델 갱신에 앱 배포가 필요 없다."
+            }
+          ]
+        },
+        {
+          "tech": "Google Cloud Workflows(try/except) + Cloud Run Job(Controller 와 같은 Go 코드를 CLI 로)",
+          "solves": "네 단계를 순서대로 돌리고, 어느 단계든 실패하면 Controller 에 알려 Controller 가 **자기 현재 상태로** 실패 단계를 정한다.",
+          "limits": "한 단계가 실패하면 **워크플로 전체가 실패**다 — 단계별 재개는 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Stena Expenseの検知アーキテクチャ ── Go × Python × gRPCで不正検知を実現する仕組み",
+              "url": "https://zenn.dev/chillstack/articles/2026-04-20-detection-architecture-stena-expense",
+              "publisher": "ChillStack",
+              "date": "2026-04-23",
+              "summary": "**Stena Expense** 는 기업의 경비 데이터를 받아 **AI 로 부정 · 이상을 검지**하는 SaaS. 매달 수만~수십만 건 명세를 사람이 다 볼 수는 없고, '생성 AI 에 맡기면'도 안 된다 — **조직마다 경비 정산 서비스가 달라 컬럼 뜻 · 입도가 다르고**, 중복 신청 · 금액의 통계적 이상 · 부풀리기 등 **패턴이 다양**하고, 취득 → 추출 · 변환 → 여러 검지 모델 → 집계의 **단계가 많다.** 구성: Manager(Next.js) · **Controller(Go, 인증 · 권한 · 워크플로 · 영속화를 맡는 모놀리스)** · **Google Cloud Workflows**(YAML, 네 단계를 try/except 로 감싸 실패 시 Controller 에 PATCH — Controller 가 **자기 현재 상태로 실패 단계를 판정**) · Cloud Run Job(Controller 와 같은 Go 코드를 CLI 로) · **Predictor(Python, 전처리 · 검지)**. 마이크로서비스가 아니라 **Predictor 만** 떼어 낸 이유는 Go(빠른 API · 형 안전한 도메인)와 Python(pandas · 검지 로직)의 장점, 그리고 **독립 스케일링**. Cloud Run Job 이 PredictService 로 의뢰하면 Predictor 가 결과를 **모델마다 Controller 의 PredictionHandler 로 gRPC 콜백**(재시도 3회) — 일시 배치가 수천~수만 건 결과를 중계하지 않고 Predictor 는 모델마다 보내고 메모리를 푼다. 검지 상태는 Go 값 객체로 **허용된 전이만** 하고, 의뢰 전 Pending → Predicting 을 **먼저 영속화**해 재기동 뒤에도 멈춘 검지를 찾는다. 모델은 **preprocessor · detector 를 pickle 로 GCS 에** — 모델 갱신에 앱 배포가 필요 없다."
+            }
+          ]
+        },
+        {
+          "tech": "gRPC 콜백(PredictService 의뢰 · PredictionHandler 로 결과) + pickle 모델(GCS)",
+          "solves": "일시 배치가 수천~수만 건 결과를 중계하지 않고, Predictor 는 모델마다 보내고 메모리를 푼다. 모델 갱신에 앱 배포가 필요 없다.",
+          "limits": "콜백은 재시도 3회뿐 — 그 뒤의 실패 처리는 글에 없다. pickle 은 신뢰한 곳에서만 불러야 하는 형식이다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Stena Expenseの検知アーキテクチャ ── Go × Python × gRPCで不正検知を実現する仕組み",
+              "url": "https://zenn.dev/chillstack/articles/2026-04-20-detection-architecture-stena-expense",
+              "publisher": "ChillStack",
+              "date": "2026-04-23",
+              "summary": "**Stena Expense** 는 기업의 경비 데이터를 받아 **AI 로 부정 · 이상을 검지**하는 SaaS. 매달 수만~수십만 건 명세를 사람이 다 볼 수는 없고, '생성 AI 에 맡기면'도 안 된다 — **조직마다 경비 정산 서비스가 달라 컬럼 뜻 · 입도가 다르고**, 중복 신청 · 금액의 통계적 이상 · 부풀리기 등 **패턴이 다양**하고, 취득 → 추출 · 변환 → 여러 검지 모델 → 집계의 **단계가 많다.** 구성: Manager(Next.js) · **Controller(Go, 인증 · 권한 · 워크플로 · 영속화를 맡는 모놀리스)** · **Google Cloud Workflows**(YAML, 네 단계를 try/except 로 감싸 실패 시 Controller 에 PATCH — Controller 가 **자기 현재 상태로 실패 단계를 판정**) · Cloud Run Job(Controller 와 같은 Go 코드를 CLI 로) · **Predictor(Python, 전처리 · 검지)**. 마이크로서비스가 아니라 **Predictor 만** 떼어 낸 이유는 Go(빠른 API · 형 안전한 도메인)와 Python(pandas · 검지 로직)의 장점, 그리고 **독립 스케일링**. Cloud Run Job 이 PredictService 로 의뢰하면 Predictor 가 결과를 **모델마다 Controller 의 PredictionHandler 로 gRPC 콜백**(재시도 3회) — 일시 배치가 수천~수만 건 결과를 중계하지 않고 Predictor 는 모델마다 보내고 메모리를 푼다. 검지 상태는 Go 값 객체로 **허용된 전이만** 하고, 의뢰 전 Pending → Predicting 을 **먼저 영속화**해 재기동 뒤에도 멈춘 검지를 찾는다. 모델은 **preprocessor · detector 를 pickle 로 GCS 에** — 모델 갱신에 앱 배포가 필요 없다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "여러 회사의 경비를 한 DB 에서 섞이지 않게 즉시 모아 본다",
+      "why": "Stena Expense 는 여러 회사가 한 소프트웨어를 쓰는 **멀티테넌트 SaaS** 다. 쿼리마다 `WHERE tenant_id` 를 붙여 왔는데 **하나만 빠뜨려도 다른 회사의 경비가 보인다** — 사내 취약성 진단에서도 지적됐고 리뷰로 사람이 막는 데는 한계가 있었다. 그래서 운영 중인 앱의 이전 비용이 가장 작은 **행 단위 RLS** 를 넣었다.\n\n그리고 분석 기능은 담당자가 조건을 바꾸면 **그 자리에서** 결과가 와야 한다 — 수십만 건 경비와 관련 데이터를. **사전 집계 테이블 · 비정규화 · 필요한 JOIN 만**으로 수백 밀리초에, 조직마다 다른 커스텀 항목은 **쿼리 빌더**로 검증해 조립한다.",
+      "tech": [
+        {
+          "tech": "PostgreSQL Row Level Security + current_setting 에 tenant_id(Go SessionResetter · Connector 구현)",
+          "solves": "WHERE 누락이 사고로 이어지지 않게 **DB 가 마지막에 막는다.** 테넌트마다 롤을 만들지 않아 커넥션 수 문제도 없다.",
+          "limits": "여러 테넌트를 다루는 관리 화면 · 배치는 **BYPASSRLS 롤**로 빠진다 — 그 경로는 여전히 코드가 지켜야 한다. 자식 테이블에도 tenant_id 를 추가해야 했다. 로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Row Level Security導入のためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+              "publisher": "ChillStack",
+              "date": "2025-02-18",
+              "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM)."
+            }
+          ]
+        },
+        {
+          "tech": "사전 집계 테이블 · 비정규화 · 집계 단위별 인덱스와 동적 JOIN",
+          "solves": "조건을 바꿔도 상정 유스케이스에서 수백 밀리초 안에 돌아온다.",
+          "limits": "비정규화한 부서명 등은 **검지 실행 때 재집계되기 전까지** 옛 이름이다 — 연계 데이터가 제품에서 편집되지 않는다는 전제에 기댄다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+              "publisher": "ChillStack",
+              "date": "2025-12-25",
+              "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지)."
+            }
+          ]
+        },
+        {
+          "tech": "쿼리 빌더 패턴 + 설정 구동 집계(커스텀 항목)",
+          "solves": "조직마다 다른 집계 축을 관리 화면 설정만으로 고르고, 입력을 모델링 · 검증한 뒤 SQL 을 조립해 인젝션을 막는다.",
+          "limits": "축 조합이 늘수록 사전 집계 테이블과 빌더의 경우의 수가 늘어난다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+              "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+              "publisher": "ChillStack",
+              "date": "2025-12-25",
+              "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**매출 · 사업별 비중 · Stena Expense 요금**이 공개 자료에 없다.",
+    "**AI 보안 서비스(레드팀 · 안전 운용)의 시스템 글**이 없다 — 블로그의 보안 글은 연구 · 해설(MITRE ATLAS 등)이다. 이 수익원은 도메인이 없다.",
+    "**검지 모델이 무엇인지**(통계 · 규칙 · ML · LLM 의 비율) 글이 밝히지 않는다 — 조직마다 모델을 따로 두는지도 없다.",
+    "**AlloyDB 로 옮긴 이유와 대가**를 아직 읽지 않았다(`710bdf3a5830a4`).",
+    "**아직 안 읽은 것** — `2025-07-24-rearchitect`(기술 부채 해소 리아키텍트) · `2026-05-07-deploy-flow`(배포 흐름) · `2026-06-23-design-insight-through-dialogue`(도메인 모델 빈혈증을 부른 대화 부족)."
+  ],
+  "sources": [
+    {
+      "title": "ChillStack",
+      "url": "https://chillstack.com/",
+      "publisher": "ChillStack",
+      "summary": "'**AI 보안 컴퍼니**' — 기술 특징으로 **시계열 · 다차원 데이터에서 부정 · 이상을 해석하는 AI**, 판단 과정을 보여 주는 **XAI**, AI 의 안전성 확보, AI 시스템에 공격 검증을 하는 **레드팀**, AI 를 넣은 시스템의 안전한 운용을 든다. 2026-09 뉴스: 위기관리 산업전 출전(AI 리스크 관리 전략 세미나), LLM 보안 실습 e러닝 강좌."
+    },
+    {
+      "title": "COMPANY | ChillStack",
+      "url": "https://chillstack.com/company",
+      "publisher": "ChillStack",
+      "summary": "미션 '더 재미있고 풍요롭고 **안심할 수 있는** 세계'. **2018년 창업**(CEO 이토 미치아키 — AI × 보안 연구, 국제 보안 콘테스트 우승). CTO 는 **이상 검지 AI** 연구 · 실운용 이상 검지 시스템 구축 출신. CEO 메시지: AI 보안의 기초 연구와 최첨단 기술로 **기업 · 관공청**을 돕고, 안전한 운용 체제 구축 · 개선까지 함께 만든다. 매출은 없다."
+    },
+    {
+      "title": "Stena Expenseの検知アーキテクチャ ── Go × Python × gRPCで不正検知を実現する仕組み",
+      "url": "https://zenn.dev/chillstack/articles/2026-04-20-detection-architecture-stena-expense",
+      "publisher": "ChillStack",
+      "date": "2026-04-23",
+      "summary": "**Stena Expense** 는 기업의 경비 데이터를 받아 **AI 로 부정 · 이상을 검지**하는 SaaS. 매달 수만~수십만 건 명세를 사람이 다 볼 수는 없고, '생성 AI 에 맡기면'도 안 된다 — **조직마다 경비 정산 서비스가 달라 컬럼 뜻 · 입도가 다르고**, 중복 신청 · 금액의 통계적 이상 · 부풀리기 등 **패턴이 다양**하고, 취득 → 추출 · 변환 → 여러 검지 모델 → 집계의 **단계가 많다.** 구성: Manager(Next.js) · **Controller(Go, 인증 · 권한 · 워크플로 · 영속화를 맡는 모놀리스)** · **Google Cloud Workflows**(YAML, 네 단계를 try/except 로 감싸 실패 시 Controller 에 PATCH — Controller 가 **자기 현재 상태로 실패 단계를 판정**) · Cloud Run Job(Controller 와 같은 Go 코드를 CLI 로) · **Predictor(Python, 전처리 · 검지)**. 마이크로서비스가 아니라 **Predictor 만** 떼어 낸 이유는 Go(빠른 API · 형 안전한 도메인)와 Python(pandas · 검지 로직)의 장점, 그리고 **독립 스케일링**. Cloud Run Job 이 PredictService 로 의뢰하면 Predictor 가 결과를 **모델마다 Controller 의 PredictionHandler 로 gRPC 콜백**(재시도 3회) — 일시 배치가 수천~수만 건 결과를 중계하지 않고 Predictor 는 모델마다 보내고 메모리를 푼다. 검지 상태는 Go 값 객체로 **허용된 전이만** 하고, 의뢰 전 Pending → Predicting 을 **먼저 영속화**해 재기동 뒤에도 멈춘 검지를 찾는다. 모델은 **preprocessor · detector 를 pickle 로 GCS 에** — 모델 갱신에 앱 배포가 필요 없다."
+    },
+    {
+      "title": "分析機能開発の裏側 -- 数十万件の経費データと関連データをリアルタイム集計するためにやったこと",
+      "url": "https://zenn.dev/chillstack/articles/2025-12-25-real-time-analysis-background",
+      "publisher": "ChillStack",
+      "date": "2025-12-25",
+      "summary": "Stena Expense 의 **분석 기능** — 입체 경비 · 청구서 · 동석자 · 법인 카드 · 출퇴근 데이터처럼 종류도, 같은 종류라도 **조직마다 형식이** 다른 데이터를 흡수해, 화면에서 조건을 바꾸면 **그 자리에서 결과가 오는 실시간 집계**. 비동기 집계는 조건마다 기다리게 해 '짧은 시간에 의미 있는 분석'이라는 목적을 못 이룬다고 봤다. 수십만 건을 그대로 부르면 불가능해 **사전 집계 테이블 · 비정규화(부서명 · 계정과목명 · 신청자명을 직접 보유) · 집계 단위에 맞춘 인덱스와 필요한 테이블만 동적 JOIN** — 상정 유스케이스에서 **수백 밀리초 이내**. 비정규화의 이름 변경 문제는 **검지 실행 때마다 재집계**하고, 연계된 데이터는 제품에서 편집되지 않아 정합성이 안 깨진다. 조직마다 다른 **커스텀 항목**을 축으로 고르게 **쿼리 빌더 패턴 + 설정 구동 집계** — 프런트 입력을 그대로 SQL 에 넣지 않고 모델링 · 검증 뒤 조립(SQL 인젝션 방지)."
+    },
+    {
+      "title": "Row Level Security導入のためにやったこと",
+      "url": "https://zenn.dev/chillstack/articles/f2bb12fe37482f",
+      "publisher": "ChillStack",
+      "date": "2025-02-18",
+      "summary": "멀티테넌트 SaaS 인 Stena Expense 는 앱 · DB 를 테넌트 사이에 공유하고 분리하지 않는 수준(1)이었다 — 쿼리마다 `WHERE tenant_id = ?` 를 붙이는데 **빠뜨리면 다른 테넌트가 보인다**, 사내 취약성 진단에서도 지적되고 PR 리뷰로 사람이 막는 데엔 한계. 분리 수준 다섯(공유 · **행 단위 RLS** · 스키마 · DB 실행 환경 · 앱 + DB 실행 환경)을 견줘, 운영 중인 앱이라 3 이상은 이전 · 운영 비용이 커서 **RLS(2)**. 대상은 tenant_id 를 가진 테이블 — **자식 테이블에도 tenant_id 를 추가**. 여러 테넌트를 다루는 관리 화면(CS 공지 배신 등) API · 배치는 대상 밖으로 가르고, 롤을 **NOBYPASSRLS(대상) / BYPASSRLS(대상 외)** 로 나눴다(로컬과 클라우드에서 같은 이름 롤의 옵션이 달랐던 함정). 테넌트 식별은 테넌트마다 롤(커넥션 수 문제) 대신 **current_setting** — Go database/sql 의 SessionResetter · Connector 를 구현해 context 의 tenant_id 를 세션에 싣는다(GORM)."
+    },
+    {
+      "title": "Cloud SQLからAlloyDBへ移行した時にやったこと",
+      "url": "https://zenn.dev/chillstack/articles/710bdf3a5830a4",
+      "publisher": "ChillStack",
+      "date": "2024-12-03",
+      "summary": "Cloud SQL 에서 AlloyDB 로 옮긴 기록(이번 사이클엔 제목과 첫머리만 봤다 — 이유 · 대가는 확장 사이클에서 읽는다)."
+    }
+  ]
+}

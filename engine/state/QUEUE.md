@@ -29,6 +29,7 @@
 | **CADDi(キャディ)** | JP · 제조(조달·도면 SaaS) | 프로파일(2026-09-26). 도메인 둘 — 여러 제품이 한 문으로 들어온다(Control Plane) · 쌓인 제조 데이터를 싸게 꺼낸다(BigQuery). 기능 2(인증 게이트웨이 · BigQuery 비용). **hold** — 수발주 수익원 자료 2회 없음(완주 기준 셋째 미충족)(`CADDi の Control Plane`·`RFC 8707`·`Auth0 で SSO`), 그다음 Go 채택·JSON 컬럼 비용. |
 | **Lincwell(リンクウェル)** | JP · 온라인 진료·클리닉 DX·헬스케어 EC | 프로파일(2026-09-27, slug `lincwell`). 도메인 둘 — 예약 완료가 외부 통지를 기다리지 않는다 · 운영이 고른 순간에 수만 명에게 푸시를 보낸다. 기능 2(예약 LINE 비동기화 · 푸시 내재화). 입구 `zenn.dev/p/lincwell_inc/feed`. **hold(2026-09-27)** — Smart Clinics 수익원 자료 두 번 없음. Smart Clinics 수익원은 도메인 없음. |
 | **mixtend(調整さん · TimeRex)** | JP · 일정 조정(무료 대중 서비스 + B2B SaaS) | 프로파일(2026-09-27, slug `mixtend`). 도메인 둘 — 여러 담당자에게 예약을 고르게 나눈다 · 몰리는 두 페이지를 가장 빨리 띄운다. 기능 2(균등 배정 Cache Lock · 調整さん 톱 고속화). 입구 `zenn.dev/p/mixtend/feed`. 회사 사이트 NXDOMAIN. **hold(2026-09-27)** — 調整さん 광고 수익원 연결이 inferred, 두 번 찾아 확인 못 함. |
+| **ChillStack(Stena Expense)** | JP · 경비 부정 검지 SaaS · AI 보안 | 프로파일(2026-09-27, slug `chillstack`). 도메인 둘 — 회사마다 다른 경비 데이터에서 부정을 찾는다 · 여러 회사의 경비를 한 DB 에서 섞이지 않게 즉시 모아 본다. 기능 0. 입구 `zenn.dev/p/chillstack/feed`. AI 보안 수익원은 도메인 없음. |
 | **ギークプラス(Geekplus)** | JP · 물류 로봇 · 오픈 SCM(skylaa) · 풀필먼트 | 프로파일(2026-09-27, slug `geekplus`). 도메인 둘 — 흩어진 창고·주문 데이터를 싸게 들여오고 내보낸다 · 계획 데이터의 사실과 경계를 서버가 쥔다. 기능 2(Java 배치 Lambda 이사 · 흐름 트리와 테넌트 경계). 입구 `zenn.dev/p/geekplus/feed`. 로봇 · 풀필먼트 수익원은 도메인 없음. **hold(2026-09-27)** — 로봇 · 풀필먼트 수익원 자료 두 번 없음. |
 
 | **데브시스터즈** | KR · 게임 | 프로파일(2026-09-26). 도메인 둘 — 게임 로그를 게임별로 갈라 흘려보낸다(Log Transformer·KEDA) · 지표 정의를 한곳에 둔다(Metric View). 기능 2(`lag-not-cpu` · `metric-view-over-silver`). **hold** — 애니메이션·라이선싱 수익원 자료 2회 없음(완주 기준 셋째 미달). |
@@ -60,7 +61,6 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Chillstack(Stena Expense)** | JP · 경비 부정 검지 SaaS · 보안 | Zenn Publication `zenn.dev/p/chillstack`(RSS 20편, 최신 2026-07). Stena Expense 의 **검지 아키텍처 — Go × Python × gRPC** 로 부정 검지 `2026-04-20-detection-architecture-stena-expense` · 수십만 건 경비 데이터를 **실시간 집계**하려고 한 일 `2025-12-25-real-time-analysis-background` · **Row Level Security** 도입 `f2bb12fe37482f` · Cloud SQL → AlloyDB 이전 `710bdf3a5830a4` · 기술 부채를 풀려 한 리아키텍트 `2025-07-24-rearchitect` · 배포 흐름. **경비 부정 검지 축(처음).** 보안 연구(MITRE ATLAS 해설 등) 글이 절반 — 프로파일 때 제품 결정 글 수를 다시 판정. |
 | **HERP** | JP · 채용 관리 SaaS(ATS) | Zenn Publication `zenn.dev/p/herp_inc`(RSS 20편, 최신 2026-09). DB 에서 HTTP 응답까지 **Stream 으로 이어 메모리 사용량 격감** `92afb9a85d77d3` · 기술 부채는 언제 풀어야 하나 — **React 이행**에 쓴 세 판단 축 `when-to-resolve-technical-debt` · Ratcheting 패턴으로 부채 해소의 후퇴를 막는다 `ratcheting-technical-debt` · Cycle.js 졸업 · 애플리케이션에 운용 구조를 내장 · AI 제품으로 드러난 도메인 모델 과제. **채용 관리 · 프런트 이행 축.** 도구 글이 섞여 있다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
