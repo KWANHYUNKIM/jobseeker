@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "커머스",
   "status": "in_progress",
+  "hold_reason": "수익원 BUYMA TRAVEL 과 STYLE HAUS(미디어)에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — tech.enigmo.co.jp 2022~2026 사이트맵 128편 제목에 TRAVEL·여행·투어·STYLE HAUS 글 없음 / 걸린 'AIでさがす' 리뉴얼(2025-12)은 'BUYMA 내 기사 콘텐츠 약 4,000건' 을 쓰지만 STYLE HAUS 라고 밝히지 않는다). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. TRAVEL·STYLE HAUS 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "enigmo.co.jp",
   "one_liner": "해외 퍼스널 쇼퍼 마켓플레이스 BUYMA — 수천만 장 상품 이미지 검색의 범위를 비용과 저울질하고, 매입 보증은 못 움직이는 세일 기한 앞에서 '붙는다' 를 먼저 '제시한 조건 그대로' 를 나중에 만든다",
@@ -771,8 +772,9 @@
   ],
   "open_questions": [
     "BUYMA 의 수수료 구조·매출 비중을 1차 자료로 확인하지 못했다.",
-    "BUYMA TRAVEL·STYLE HAUS 수익원의 기술 글은 아직 못 찾았다.",
-    "검색·MLOps 기반(`2026/08/26`)·홈 추천을 검색 쿼리로(`2026/07/14`)·NGINX Gateway Fabric 무정지 이행(`2026/09/25`)은 도메인 후보다."
+    "검색·MLOps 기반(`2026/08/26`)·홈 추천을 검색 쿼리로(`2026/07/14`)·NGINX Gateway Fabric 무정지 이행(`2026/09/25`)은 도메인 후보다.",
+    "BUYMA TRAVEL·STYLE HAUS 의 기술 글은 2026-09-26 두 번 찾아 없었다 — hold_reason 참고.",
+    "'AIでさがす' 리뉴얼(`2025/12/18/070000` — ChatGPT+MeCab 에서 Vertex AI Search(기사 약 4,000건)+Gemini 키워드로)은 BUYMA 쪽 도메인 후보다. 그 기사가 STYLE HAUS 것인지는 글이 밝히지 않는다."
   ],
   "sources": [
     {

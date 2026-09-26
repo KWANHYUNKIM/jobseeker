@@ -1460,3 +1460,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 엔니고모 매입 보증 3 페이즈
 
 - 매입 보증 글 전문으로 `buyback-guarantee-three-phases`(결정 8 — 카트 스냅숏 생략·YAML 마스터·차이의 방향·요율 저장·재판정=재동의·3단 스냅숏+행 잠금·중고 매입 화면 상승(MySQL/SQL Server)·개품 ID 6단계).
+
+## 2026-09-26 엔니고모 완주 판정 — TRAVEL·미디어 hold
+
+- 사이트맵 2022~2026 128편 제목. TRAVEL·STYLE HAUS 0건. 'AIでさがす' 가 'BUYMA 내 기사' 를 쓰지만 STYLE HAUS 로 밝히지 않아 미디어 수익원에 잇지 않았다(추측으로 잇지 않는다). hold_reason 추가.
