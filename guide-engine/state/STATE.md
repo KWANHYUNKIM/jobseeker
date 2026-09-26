@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **170건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **171건**.
+직전 회차: ✅ `Staff Robotics System Engineer`(8187428) 3항목 — **마운틴뷰**, GO ART 로보틱스(엣지 추론·인식 계약·로봇 CI/CD), $164K~$282K. 세 칸엔 우대만, 맥락은 full_jd.
 직전 회차: ✅ `Staff ML Infra Engineer, Search & Discovery`(8025195) 3항목 — **마운틴뷰**, 검색 ML 인프라(로그→학습·데이터 품질·온라인 서빙), 급여 'K' 중복 표기.
 직전 회차: ✅ `Staff, Machine Learning Engineer - Coupang Play`(7962916) 3항목 — **싱가포르**, OTT 콘텐츠 추천·광고 개인화. `--gaps` 미완 23건.
 직전 회차: ✅ `Staff Machine Learning Engineer`(8097855) 3항목 — **마운틴뷰**, Growth Marketing ML(업리프트 타기팅·입찰·ML 자동화), 급여 '$152,00' 오타.
