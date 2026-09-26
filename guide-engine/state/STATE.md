@@ -48,9 +48,8 @@ AI Engineer 379543 완료.
 **대기열 2차 채움(2026-09-27)** — 브리핑 없는 국내 사이트 회사 15곳을 본문 있는 모집중 수 순으로 QUEUE 에 넣었다(목록·근거는 QUEUE 대기 머리말).
 **티맵모빌리티(`tmapmobility`) — `done`, 공고 5건(TMAP AUTO PM 361653 · Android SDK 378307 · Android 클라이언트 379430 · SRE 365859 · 사람인 QA Automation 54654808).** 중복 없음. 출처: 원티드 머리말 + tmapmobility.com 첫 화면 메뉴. 캐치 API/SDK 상품운영 560572 는 본문 없음. '신뢰성·품질(SRE·QA)' 도메인은 공통 기반이라 경고가 남는다.
 **씨제이이엔엠(`cjenm`) — `done`, 공고 5건(Mnet Plus React Native 380140 · DevOps 373347 · Backend 321958 · 사람인 Data Analyst 55097589 · 사람인 AI Producer 55097586(VFX 경력 자리)).** 중복 없음. 출처: cjenm.com/ko + mnetplus.world + 원티드 Mnet Plus 머리말. 커머스부문 2026 신입사원 55101818 은 비개발·주요업무 칸 없음이라 `--gaps` 가 세지 않는다.
-**매드업(`madup`) — `in_progress`, 회사 브리핑만.** 출처: 원티드 AI PO 머리말 + madup.com 메타 + lever.me 첫 화면. 본문 있는 모집중: 원티드 AI PO 341002 · 시니어 AI Engineer 294189 · SRE 171889 · AI Engineer(전문연구요원) 294187 · 주니어 백엔드(전문연구요원) 222550. 사람인 HR 인턴 55033300 은 비개발·주요업무 칸 없음.
-AI PO 341002 · 시니어 AI Engineer 294189 · SRE 171889 · AI Engineer 294187 완료.
-⚠️ 다음 회차: `--gaps` 순서대로 매드업 공고.
+**매드업(`madup`) — `done`, 공고 5건(AI PO 341002 · 시니어 AI Engineer 294189 · SRE 171889 · AI Engineer 294187 · 주니어 백엔드 222550).** 원티드 모집중 전부, 중복 없음. 출처: 원티드 머리말·기술 스택 + madup.com 메타 + lever.me 첫 화면. '인프라·SRE' 도메인은 공통 기반이라 경고가 남는다.
+⚠️ 다음 회차: **소프트넷**(QUEUE 맨 위) — `in_progress` 로 바꾸고 3단계 회사 브리핑부터.
 ⚠️ `validate.py` 의 `MIN_STUDY = 3` — 학습 항목이 3개 미만이면 `--gaps` 가 그 공고를 계속 미완으로 올린다(duplicate_of 제외). OCR 로 얇은 공고도 3개는 채운다(위펀 54814455 에서 2개로 커밋했다가 다음 회차에 보강).
 ⚠️ 사람인 URL 의 `search_uuid` 는 검색 한 페이지 전체가 같이 쓴다 — 공고를 찾을 때 uuid 로 끝맺음을 맞추지 말고 `rec_idx` + 회사명으로 찾는다.
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
