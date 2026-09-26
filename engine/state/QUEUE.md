@@ -61,9 +61,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Seibii** | JP · 출장 차량 정비 마켓플레이스 | Zenn Publication `zenn.dev/p/seibii_blog`(RSS 15편, 최신 2026-08). 모놀리스에 모인 사용자/정비사 데이터를 **ID 기반으로 떼어 낸** 방식 — 공통/서비스 고유 데이터 분리 · gRPC · 기존 데이터는 지우지 않고 동기화 · **이벤트 즉시 반영 + 차분 배치**로 속도와 신뢰를 나눠 쥔다 `b6a5bf468c95a4` · 업무 단계를 넘나드는 **부품 분류 정보** `20260728_car_parts_related_feature_updates` · **마이크로서비스로 안 가는 Lambda 연계**(Rails 모놀리스와 공존) `c3b1d64e6b4332` · wkhtmltopdf 에서 PDF 생성 Lambda 로 `pdf-lambda-migration` · 거대 로그 테이블을 Fluent Bit + S3 로 `20260804_seibii-api-fluentbit`. **차량 정비 축(처음).** 글이 짧다 — 결정의 대가를 글이 말하는지 프로파일 때 다시 판정. |
+| **EVERSTEEL** | JP · 철 스크랩 AI 검수(鉄ナビ) · 산업 AI | Zenn Publication `zenn.dev/p/eversteel_tech`(RSS 18편, 최신 2026-07). 검수 AI 의 데이터 분석 서비스 **'鉄ナビAnalytiX' 아키텍처**(API 프록시 · Server Components 방침 · PostgreSQL **RLS 멀티테넌트**) `0f818de50ea46c` · BtoB 업무 시스템의 **화상 해석 기술 선정** — 물체 검출 프레임워크 · Vision API · 범용 LLM 을 속도 · JSON 출력 안정성으로 비교 `c046afa79617c1` · 검수 AI 의 데이터 변환 모듈 · 온프레 × 클라우드 대량 서버 릴리스 자동화 · 멀티 카메라 안정 동작 설계 · Prisma findUnique 가 데이터를 조용히 지우는 함정. **제조 · 리사이클 현장 AI 축(처음).** ML 입문 글이 섞여 있다. |
+| **neoAI** | JP · 생성 AI SaaS(neoAI Chat 등) · 연구 | Zenn Publication `zenn.dev/p/neoai`(RSS 20편, 최신 2026-09). 급성장 SaaS 를 **모듈러 모놀리스로 — 마이크로서비스 이행의 판단 기준**(LLM 통합이 만든 메모리 편중 · 스파이크 · 스케일업 한계, '처음엔 마이크로서비스가 정답이라 봤다') `2b8ee68d99e545` · **써 넣기를 잊으면 DB 가 막는다** — PostgreSQL RLS × SQLAlchemy 멀티테넌트 `z-20260521-d29db3392b5b50` · 3줄 동기 배치가 깨질 때마다 단단해진 이야기 `878ed0b400f45d` · Unit of Work 도입 · Pydantic × DDD. **생성 AI SaaS 축.** 벤치마크 · 모델 연구 글이 절반 — 제품 수익원 잡을 때 주의. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-27 아흔아홉 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API '구조 주제어' 15개(権限 設計·マルチテナント 設計·監査ログ·帳票 生成·バッチ 刷新·ジョブキュー 導入·ワークフロー 設計·楽観ロック·イベントソーシング·CQRS·請求 計算·料金計算·BFF 導入·モノリス 分割·テナント分離) × 2쪽, 2026-02 이후 → Publication 별 집계, 이미 있는 회사 표시 → RSS 8곳 → 본문 3편 확인.**
+  - **Seibii** — **차량 정비 축(처음).** ID 기반 분리가 이행 설계(이벤트 + 차분 배치)를 적는다.
+  - **EVERSTEEL** — **현장 AI 축(처음).** 화상 해석 기술 선정 글이 선택지별 적합 · 부적합을 적는다.
+  - **neoAI** — **생성 AI SaaS 축.** 왜 곧장 마이크로서비스로 안 갔나가 분명하다.
+  - **걸렀다.** dress_code(DRESS CODE — 이미 완주) · scogr_tech(paylight X 리아키텍트 글 하나, 나머지 회고 · AI 활용) · castingone_dev(프런트 · CI 소품 위주) · deltax(행사 · 도구) · trefac(학습 · 인턴 · 에세이) · jtechjapan_pub(자사 OSS 해설) · levtech·team_delta·rakko_inc(해설 · 소품) · tokium_dev·jisou·codeconnect·itdo·digeon·singularity·nttdata·acntechjp·aws_japan·ncdc·scalar_sol(이미 걸렀던 곳).
 - **2026-09-27 아흔여덟 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API '설계 주제어' 15개(冪等性 設計·イベント駆動 移行·キャッシュ 戦略·非同期 ジョブ·リトライ 設計·レート制限·検索 Elasticsearch 移行·データ移行 無停止·シャーディング·整合性 担保·在庫 引当·決済 冪等·配信 基盤·レコメンド 基盤·不正検知) × 2쪽, 2026-02 이후 → Publication 별 집계, 이미 있는 회사 표시 → RSS 3곳.**
   - **DMM(dmmdata)** — **검색 · 추천 축.** 리랭킹 도입 · A/B 설계 · 카니발리제이션이 사업 결정이다.
   - **Chillstack** — **경비 부정 검지 축(처음).** 검지 아키텍처 · 실시간 집계 · RLS.
