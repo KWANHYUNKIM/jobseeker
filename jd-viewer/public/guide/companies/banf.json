@@ -279,6 +279,113 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/379547",
+      "title": "FullStack 개발자 전문연구요원 [병역특례]",
+      "site": "wanted",
+      "verdict": "신입, 서울 강남구, **전문연구요원(병역특례)** 자리이고 자격요건 첫 줄이 **관련 학과 석사 이상**이다. 업무는 웹 애플리케이션 백엔드 설계·개발, 서비스 서버·API 설계, **Next.js 기반** 프론트엔드, 배포·운영이다. 필수는 JavaScript/TypeScript, React.js 또는 Next.js, RESTful API·백엔드, 요구사항에 맞춘 DB 설계와 SQL 성능 최적화, **이커머스 또는 모빌리티 서비스 개발 경험**. 우대는 C#/.NET 백엔드, GCP/AWS 아키텍처, Docker·CI-CD, 웹 성능 최적화, AI(LLM/MCP) 활용 개발, 영어 기술 문서. 같은 본문의 점핏·사람인 게시가 넷 더 있는데 거기서는 자격요건 첫 줄이 'Nest.js 기반 백엔드 개발 경력 1년 이상'(전문연구요원) 또는 '5년 이상'(일반)으로 바뀐다 — 이 원티드 게시에는 Nest.js 라는 말이 없지만 같은 자리다. 이 웹 애플리케이션이 어떤 서비스(Data Viewer 등)인지는 공고에 없다. 전형: 서류전형 ＞비대면면접 ＞ 대면면접 ＞ 채용. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "관련 학과 석사 이상",
+          "JavaScript/TypeScript",
+          "React.js 또는 Next.js",
+          "RESTful API·백엔드",
+          "DB 설계·SQL 최적화",
+          "이커머스 또는 모빌리티 서비스 경험"
+        ],
+        "can_learn": [
+          "C#/.NET",
+          "GCP/AWS",
+          "Docker·CI-CD",
+          "LLM/MCP 활용"
+        ]
+      },
+      "study": [
+        {
+          "topic": "NestJS 로 서비스 API 설계",
+          "from": "task",
+          "quote": "• 서비스 서버 개발 및 API 설계",
+          "priority": "core",
+          "why": "주요업무다. 같은 자리의 점핏·사람인 게시는 자격요건 첫 줄에 'Nest.js 기반 백엔드 개발 경력' 을 적는다 — 백엔드 프레임워크가 NestJS 다.",
+          "gap_check": "NestJS 에서 모듈·컨트롤러·프로바이더는 각각 무엇을 맡고, 요청 본문 검증(ValidationPipe·DTO)과 예외를 HTTP 응답으로 바꾸는 일(Exception Filter)은 어느 층에 두는가? 차량 한 대의 타이어 기록 목록 API 라면 경로와 페이지 나눔을 어떻게 설계하는가?",
+          "drill": "NestJS 로 '차량(vehicles)–타이어 측정값(readings)' 두 리소스의 REST API 를 만들고, DTO 검증 실패·없는 차량 조회가 각각 400·404 로 나가는지 e2e 테스트로 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Documentation | NestJS",
+              "url": "https://docs.nestjs.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Next.js App Router 로 화면 만들기",
+          "from": "task",
+          "quote": "• 웹 어플리케이션 프론트엔드 개발 (Next.js 기반)",
+          "priority": "core",
+          "why": "주요업무이고 필수에 React.js 또는 Next.js 가 있다.",
+          "gap_check": "App Router 에서 서버 컴포넌트와 클라이언트 컴포넌트는 무엇으로 갈리고, 데이터를 서버 컴포넌트에서 가져올 때와 브라우저에서 가져올 때 캐시·로딩 화면·API 키 노출은 어떻게 달라지는가?",
+          "drill": "위 NestJS API 를 읽는 Next.js 화면(차량 목록 → 차량 상세의 측정값 표)을 서버 컴포넌트로 만들고, 필터 입력만 클라이언트 컴포넌트로 분리한 뒤 빌드 결과에서 어느 페이지가 정적·동적으로 나오는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Next.js Docs: App Router",
+              "url": "https://nextjs.org/docs/app",
+              "kind": "docs"
+            },
+            {
+              "title": "Getting Started: Fetching Data | Next.js",
+              "url": "https://nextjs.org/docs/app/getting-started/fetching-data",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DB 설계와 SQL 성능 — EXPLAIN 으로 읽기",
+          "from": "qualification",
+          "quote": "• 비즈니스 요구사항에 따른 DB 설계 및 SQL 성능 최적화 경험",
+          "priority": "core",
+          "why": "필수 자격요건이다. 타이어 센서 회사라 시간 순으로 쌓이는 측정값이 많다(회사 브리핑).",
+          "gap_check": "'차량별 최근 30일 측정값' 조회가 느릴 때 EXPLAIN 결과의 Seq Scan·Index Scan 을 어떻게 읽고, (vehicle_id, measured_at) 복합 인덱스에서 열 순서를 바꾸면 왜 이 쿼리에 못 쓰이게 되는가?",
+          "drill": "PostgreSQL 에 측정값 수백만 행을 넣고 위 쿼리를 인덱스 없이·(measured_at, vehicle_id)·(vehicle_id, measured_at) 세 경우로 EXPLAIN ANALYZE 해 실행 계획과 시간을 표로 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "PostgreSQL: Using EXPLAIN",
+              "url": "https://www.postgresql.org/docs/current/using-explain.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Use The Index, Luke",
+              "url": "https://use-the-index-luke.com/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "배포 자동화 — Docker 멀티스테이지와 CI",
+          "from": "preference",
+          "quote": "• Docker / CI-CD 배포 자동화 경험",
+          "priority": "high",
+          "why": "우대사항이지만 주요업무에 '웹 애플리케이션 배포 및 운영' 이 있다.",
+          "gap_check": "Next.js·NestJS 이미지를 멀티스테이지로 만들면 빌드 도구와 devDependencies 가 최종 이미지에서 빠지는 이유는 무엇이고, CI 에서 테스트가 실패하면 배포 단계가 어떻게 막히게 하는가?",
+          "drill": "NestJS 앱에 단일 스테이지와 멀티스테이지 Dockerfile 을 각각 만들어 이미지 크기를 비교하고, GitHub Actions 로 테스트 → 이미지 빌드를 잇는 워크플로를 만들어 테스트를 일부러 깨뜨려 빌드가 멈추는지 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Multi-stage builds | Docker Docs",
+              "url": "https://docs.docker.com/build/building/multi-stage/",
+              "kind": "docs"
+            },
+            {
+              "title": "GitHub Actions documentation",
+              "url": "https://docs.github.com/en/actions",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
