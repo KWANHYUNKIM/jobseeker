@@ -6,7 +6,7 @@
     "누아",
     "NUUA"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "nuua.ai",
   "one_liner": "여행사의 항공권 발권·취소·환불을 자동화하는 항공 유통 솔루션 '누아 오피스'와 카드사 여행 플랫폼을 만드는 트래블테크 — IATA ARM Index 국내 첫 인증",
@@ -722,6 +722,110 @@
             {
               "title": "WireMock Java — API Mocking",
               "url": "https://wiremock.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/118906",
+      "title": "프론트엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-12년, 서울 중구. 여행 **B2B·B2C 시스템 프론트엔드** 실무 자리다. 주요업무 둘째 줄에 '(팀장급의 경우) 프론트개발 구성원/팀 리드' 가 있지만, 팀장급은 별도 공고 '프론트엔드 개발자 팀장'(367207, 8년 이상, 아키텍처·기술 표준 수립 필수)으로 따로 올라와 있다 — 이 공고는 3년 이상 실무자 기준으로 읽는다. 필수는 웹 프론트엔드 3년 이상(또는 준하는 경력), **React(Next) 등 SPA 능숙**, 여러 팀과 커뮤니케이션, 주도적 문제 해결, 합리적 의사결정. 우대는 디자인 시스템 구축·유지보수, TypeScript, 새 기술 탐구, **반응형 웹**, **다국어 서비스**. 기술 태그에 PHP 가 있으나 본문에는 없다. 원티드 번호가 낮은 오래된 게시다(머리말 '지난 4월' = 2024년 4월). 전형: 서류 → 면접(1~2차) → 처우 협의(추가 면접 가능) → 최종 합격, 서류에서 급여내역 삭제, 3개월 수습 뒤 정규직 계약. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "웹 프론트엔드 3년 이상",
+          "React(Next) 능숙",
+          "여러 팀 커뮤니케이션"
+        ],
+        "can_learn": [
+          "TypeScript",
+          "디자인 시스템",
+          "반응형 웹",
+          "다국어 서비스"
+        ]
+      },
+      "study": [
+        {
+          "topic": "탑승객 정보 입력 폼 — 검증과 상태",
+          "from": "qualification",
+          "quote": "• React(Next) 등 SPA 프레임워크 사용에 능숙하신 분",
+          "priority": "core",
+          "why": "필수 자격요건이다. 항공 예약에서 가장 긴 화면은 탑승객(이름·생년월일·여권) 입력이고, 여권 영문 이름이 틀리면 발권 뒤 고치기 어렵다.",
+          "gap_check": "성인 2·소아 1 예약에서 탑승객 수만큼 폼이 늘어날 때 입력 상태를 어디에(각 컴포넌트·폼 라이브러리·전역) 두고, '여권 영문 이름은 대문자 알파벳만', '소아는 출발일 기준 만 2~11세' 같은 규칙을 클라이언트와 서버가 같은 스키마로 검증하게 하려면 어떻게 하는가?",
+          "drill": "React Hook Form 과 Zod 로 탑승객 수에 따라 늘어나는 입력 폼을 만들고, 영문 이름·생년월일(출발일 기준 나이 구분) 규칙을 Zod 스키마 하나로 정의해 같은 스키마로 서버 API(Next.js route handler)에서도 다시 검증한다. 잘못된 입력 다섯 가지를 넣어 메시지를 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Managing State — React",
+              "url": "https://react.dev/learn/managing-state",
+              "kind": "docs"
+            },
+            {
+              "title": "Get Started — React Hook Form",
+              "url": "https://react-hook-form.com/get-started",
+              "kind": "docs"
+            },
+            {
+              "title": "Intro — Zod",
+              "url": "https://zod.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "TypeScript 로 예약 상태를 타입에 담기",
+          "from": "preference",
+          "quote": "• Typescript를 활용하여 개발을 해본 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이다. 회사 브리핑대로 주력 제품이 발권·취소·환불을 다루는 백오피스라 예약 상태마다 화면에 보일 버튼이 다르다.",
+          "gap_check": "예약을 { status: string; ticketNumber?: string; refundAmount?: number } 로 두면 '발권 전인데 항공권 번호를 읽는' 버그를 컴파일러가 왜 못 잡고, status 로 구분되는 유니온 타입으로 바꾸면 switch 에서 빠뜨린 상태를 어떻게 잡아내는가?",
+          "drill": "예약 타입을 HOLD·TICKETED·CANCELLED·REFUNDED 네 갈래 유니온으로 정의하고, 상태별 버튼을 그리는 컴포넌트를 switch 와 never 검사로 작성한 뒤, 새 상태(PARTIALLY_REFUNDED)를 추가하면 어디서 컴파일 오류가 나는지 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Narrowing — TypeScript Handbook",
+              "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "반응형 — 데스크톱 표를 모바일 카드로",
+          "from": "preference",
+          "quote": "• 반응형 웹 작업을 해보신 분",
+          "priority": "high",
+          "why": "우대사항이다. B2B 백오피스는 넓은 화면의 표, B2C 예약 화면(카드사 앱 등)은 좁은 모바일 화면이 주 무대다(회사 브리핑).",
+          "gap_check": "항공편 목록을 데스크톱에서는 열 여덟 개짜리 표로, 모바일에서는 카드로 보여줄 때 미디어 쿼리와 컨테이너 쿼리 중 무엇을 고르고(같은 컴포넌트가 사이드바·본문 어디에 놓이든), 좁은 화면에서 먼저 숨길 정보와 끝까지 남길 정보는 무엇인가?",
+          "drill": "항공편 한 건을 보여주는 컴포넌트를 만들고 컨테이너 쿼리로 넓으면 표의 한 행, 좁으면 카드로 바뀌게 한다. 같은 컴포넌트를 넓은 본문과 좁은 사이드바에 동시에 놓아 각각 맞게 바뀌는지 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Responsive web design — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
+              "kind": "docs"
+            },
+            {
+              "title": "CSS container queries — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "다국어 문구 — 복수형과 변수",
+          "from": "preference",
+          "quote": "• 다국어 서비스를 개발해본 경험이 있으신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 머리말이 일본·중화권·동남아 확장 준비를 적고, 개발팀이 방한 중화권 대상 앱 '워짜이날' 을 운영한다.",
+          "gap_check": "'성인 {n}명, 경유 {k}회' 같은 문구를 언어마다 문자열 이어 붙이기로 만들면 어떤 언어에서 깨지고(영어 복수형, 어순), ICU 메시지 형식은 복수형·선택을 어떻게 번역가에게 맡기는가?",
+          "drill": "FormatJS ICU 문법으로 '성인 {n}명·경유 {k}회' 메시지를 한국어·영어·일본어로 작성하고, n·k 에 0·1·2 를 넣어 영어 복수형과 '직항' 분기가 맞게 나오는지 확인한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "ICU Syntax — FormatJS",
+              "url": "https://formatjs.github.io/docs/core-concepts/icu-syntax/",
               "kind": "docs"
             }
           ]
