@@ -8955,6 +8955,123 @@
       "site": "ats",
       "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55055665&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=f8319db3-ddae-41c1-b0bf-d0b9eff3dad1",
       "verdict": "같은 팀(Detection Operations)의 Staff 판이다. 세 절 28줄 중 27줄이 Senior 판과 같고, 다른 한 줄은 연차뿐이다 — '네트워크(L3, L4, L7) 및 보안 영역에 대한 깊은 이해를 바탕으로 10년 이상의 실무 경험을 보유하신 분'(Senior 는 5년). 공부할 문장이 같으므로 Senior 판 브리핑을 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8212612",
+      "title": "Staff Back-end Engineer (Security Service Engineering)",
+      "site": "ats",
+      "verdict": "서울 근무, 대규모 분산 시스템을 포함한 소프트웨어 엔지니어링 8년 이상. 보안 조직 안에서 보안 플랫폼·분산 시스템을 직접 설계·개발하는 개인 기여자(IC)다 — 보안 운영이 아니라 보안을 위한 소프트웨어를 만드는 자리. Security·Engineering·Infrastructure·GRC 조직의 모호한 요구를 서비스 수준 솔루션으로 옮기고, 여러 팀의 아키텍처를 이끈다.",
+      "fit": {
+        "must_have": [
+          "대규모 분산 시스템 포함 8년 이상",
+          "Java·Go·Python·C++ 중 하나 이상",
+          "확장 가능한 플랫폼 설계·구축·운영",
+          "AWS + IAM·접근 통제·로깅 이해",
+          "교차 조직 프로젝트 리딩"
+        ],
+        "can_learn": [
+          "특정 보안 도메인(취약점 관리·GRC 등) 세부"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보안 플랫폼을 분산 시스템으로 설계하기",
+          "from": "task",
+          "quote": "복잡한 보안 문제를 해결하기 위한 확장 가능한 Security Platform 및 Distributed System을 설계하고 개발합니다.",
+          "priority": "core",
+          "why": "주요업무의 중심 줄이다. 보안 기능(스캔·접근 통제·탐지)을 수많은 서비스에 적용하려면 결국 대규모 분산 시스템 문제가 된다.",
+          "gap_check": "사내 수천 개 서비스의 권한 요청을 처리하는 접근 관리 서비스에서 결정 지연·가용성·감사 로그를 어떻게 동시에 만족시키는가?",
+          "drill": "정책 결정 서비스(PDP)를 OPA 로 띄우고 Go/Java 서비스에서 호출하게 한 뒤, 정책 캐시·장애 시 기본 거부(fail-closed)·결정 로그를 넣어 부하 테스트한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Open Policy Agent — Documentation",
+              "url": "https://www.openpolicyagent.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AWS IAM·접근 통제·로깅",
+          "from": "qualification",
+          "quote": "AWS 환경 경험 및 IAM, Access Control, Logging 등 보안 관련 기술 이해",
+          "priority": "core",
+          "why": "자격요건에 명시돼 있다. 보안 플랫폼의 입력·출력이 대부분 IAM 정책과 감사 로그다.",
+          "gap_check": "IAM 정책 평가에서 명시적 Deny·SCP·권한 경계·리소스 정책이 어떤 순서로 적용되고, 어디서 의도치 않은 허용이 생기는가?",
+          "drill": "AWS 계정에 권한 경계와 SCP 를 걸어 어떤 호출이 막히는지 IAM Policy Simulator 로 확인하고, CloudTrail 로그에서 거부 이벤트를 찾아 집계한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS IAM — Policy evaluation logic",
+              "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보안 도메인 하나 이상의 엔지니어링 경험",
+          "from": "preference",
+          "quote": "Security Engineering 경험 (Vulnerability Management, IAM (Identity & Access Management), Application Security, Data Security, Detection & Response, Security Automation, GRC 관련 기술 솔루션 개발)",
+          "priority": "high",
+          "why": "우대 첫 줄이 도메인 목록(취약점 관리·IAM·앱 보안·데이터 보안·탐지·보안 자동화·GRC)이다. 한 도메인을 깊게 보여 주는 것이 좋다(추론).",
+          "gap_check": "취약점 관리 시스템을 만든다면, 스캐너 결과 수집 → 중복 제거 → 소유 팀 매핑 → SLA 추적 중 어디가 가장 어렵고 왜인가?",
+          "drill": "여러 스캐너 결과(가짜 JSON)를 받아 자산·CVE 기준으로 중복 제거하고 소유 팀별 SLA 초과 목록을 뽑는 서비스를 만든다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "AI 로 보안 역량·개발 생산성 높이기",
+          "from": "preference",
+          "quote": "AI 기술을 활용한 Security Solution 또는 개발 생산성 향상 경험",
+          "priority": "high",
+          "why": "주요업무에 'AI 및 차세대 보안 기술 검토와 PoC'가 있다.",
+          "gap_check": "보안 경보 분류에 LLM 을 쓸 때 프롬프트 인젝션(경보 본문에 섞인 공격 문자열)을 어떻게 막는가?",
+          "drill": "보안 경보 50건을 LLM 으로 분류·요약하되, 경보 본문을 데이터로만 다루도록 구조화하고 인젝션 문자열을 넣은 경보로 시험한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OWASP Top 10 for LLM Applications",
+              "url": "https://genai.owasp.org/llm-top-10/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "교차 조직 아키텍처 리딩",
+          "from": "qualification",
+          "quote": "복잡한 Cross-functional 프로젝트를 주도한 기술 리더십 경험",
+          "priority": "core",
+          "why": "Staff IC 자리라 권한보다 설계 리뷰와 멘토링으로 여러 팀을 움직여야 한다(주요업무).",
+          "gap_check": "보안 요구가 제품 팀의 속도를 늦춘다는 반발이 있을 때, 설계로 마찰을 줄인 사례(기본값·가드레일·셀프서비스)를 말할 수 있는가?",
+          "drill": "겪은 교차 조직 프로젝트 하나를 '반대 의견 → 설계로 푼 방법 → 채택률·결과' 순서로 한 쪽에 쓴다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "'보안을 기본값으로' 만든 플랫폼 사례",
+          "why": "보안 소프트웨어 엔지니어링의 핵심은 개발자가 따로 신경 쓰지 않아도 안전해지는 구조다. 기본값·가드레일로 보안 이슈를 줄인 수치가 있으면 강하다.",
+          "effort": "경험 정리 반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "정책 결정 서비스 설계(지연·가용성·감사)",
+          "IAM 평가 로직",
+          "취약점 관리 파이프라인",
+          "보안 LLM 의 인젝션 대응",
+          "교차 조직 설계 리딩"
+        ],
+        "sources": [
+          {
+            "title": "Staff Back-end Engineer (Security Service Engineering)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8212612",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
