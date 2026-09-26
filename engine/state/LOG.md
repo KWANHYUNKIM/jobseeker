@@ -2608,3 +2608,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 フェズ 회사 프로파일
 
 - fez-inc.jp(톱 · 메이커용 · 소매용 · Urumo Ads)로 사업 확인. Zenn 본문 5편 중 제품 결정은 BigQuery · dbt 두 편, 다대다 검색 · AI 에이전트 연재는 학습 글이라 도메인에서 뺌.
+
+## 2026-09-27 フェズ BigQuery Editions · Fluid Scaling
+
+- `037c3bd6e80390` 전문(결과 · 주의점 · 시뮬레이션까지)으로 기능 `bigquery-editions-fluid-scaling`, 결정 7. 수익원 연결은 inferred(글에 Urumo 이름 없음).

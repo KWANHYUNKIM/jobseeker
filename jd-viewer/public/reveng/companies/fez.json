@@ -107,7 +107,7 @@
         {
           "tech": "BigQuery Editions(Enterprise) · baseline 0 · autoscale 상한만 설계 + Fluid Scaling",
           "solves": "쓴 슬롯만큼만 내고, 온디맨드 때의 최대 2,000 슬롯을 지켜 느려지지 않게 하며, 짧은 쿼리의 1 분 최소 과금을 없앤다.",
-          "limits": "커밋 할인은 안 쓴다. Reservation 할당을 빠뜨린 프로젝트는 조용히 온디맨드로 과금되고, 상한에 닿으면 큐 대기가 늘어난다.",
+          "limits": "커밋 할인은 안 쓴다. Reservation 할당을 빠뜨린 프로젝트는 조용히 온디맨드로 과금되고, 상한에 닿으면 큐 대기가 늘어난다. Fluid Scaling 은 유휴 슬롯 공유 배분을 조금 흔든다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -115,12 +115,14 @@
               "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
               "publisher": "フェズ",
               "date": "2026-08-27",
-              "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다."
+              "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "bigquery-editions-fluid-scaling"
+      ]
     },
     {
       "name": "길게 자란 집계 SQL 을 쪼개 고칠 수 있게 한다",
@@ -145,7 +147,400 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "bigquery-editions-fluid-scaling",
+      "name": "느려지지 않고 5 분의 1 로 — BigQuery 를 용량 과금으로 옮기고 1 분의 벽을 초 단위 과금으로 넘기",
+      "domain": "15 유통의 구매 데이터를 느려지지 않게, 쓴 만큼만 내고 돌린다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "Urumo 의 구매 데이터는 BigQuery 에 모인다. 일일 배치 ETL(dbt · Dataform)이 새벽 · 심야에 치솟고, 낮엔 프로덕트 참조와 애드혹 쿼리가 드문드문 온다. 스캔량은 더 줄일 수 없는데 슬롯 사용률엔 기복이 있어 온디맨드(스캔 바이트 과금)는 비쌌다.\n\n비용 절감은 대개 '느려져도 되면 싸진다'와 한 세트다. 분석과 프로덕트를 떠받치는 기반에선 느려질 바엔 돈을 내겠다는 판단이 되기 쉽다 — 이 기능은 그 트레이드오프를 피하는 설계다.",
+        "metrics": [
+          {
+            "label": "Fluid Scaling 전후 Reservation API 비용",
+            "value": "설정 전 100 → 약 17~21(약 8 할 감)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          },
+          {
+            "label": "데이터 기반 Google Cloud 비용 전체",
+            "value": "7 월 대비 8 월 약 37% 감(8 월 23 일까지 실적 기반 예측)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          },
+          {
+            "label": "쿼리 성능(설정 전 → 후)",
+            "value": "실행 p95 5,593 → 4,923ms · 체감 p95 6,039 → 5,308ms · 큐 대기 p95 535 → 496ms — 악화 없음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "Editions 를 오래 검토하며",
+          "thought": "초기엔 baseline 을 0 으로 못 해 쿼리가 없는 시간에도 과금됐고, 슬롯이라는 '상한 있는 그릇'에 워크로드를 어떻게 담을지 설계하지 못해 발을 떼지 못했다 — 지금은 baseline 0 이 된다. 예전에 보류했다면 전제가 바뀌었을 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+              "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+              "publisher": "フェズ",
+              "date": "2026-08-27",
+              "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+            }
+          ]
+        },
+        {
+          "at": "전사 전개가 멈췄을 때",
+          "thought": "'Editions 로 옮기면 비용이 읽힌다'고 전개해 놓고, 워크로드에 따라선 옮기지 않는 편이 싼 상태였다 — 이래선 전사 전개를 못 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+              "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+              "publisher": "フェズ",
+              "date": "2026-08-27",
+              "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "쿼리도 테이블 설계도 바꾸지 않고 DDL 한 줄로 같은 처리가 같은 속도로 싸게 끝났다. 단순한 구성이 결과적으로 Fluid Scaling 과 궁합이 좋았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+              "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+              "publisher": "フェズ",
+              "date": "2026-08-27",
+              "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "관리 프로젝트",
+            "what": "Reservation · 커밋을 가진 프로젝트 — 쿼리를 실행하는 프로젝트와 따로, Assignment 로 잇는다. 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증)."
+          },
+          {
+            "name": "Reservation",
+            "what": "슬롯 할당 단위 — Enterprise, baseline 0, autoscale 상한(운영 2,000 · 개발/검증 800)만."
+          },
+          {
+            "name": "Assignment",
+            "what": "어느 프로젝트를 어느 Reservation 에 태우나 — 운영은 프로젝트 단위, 비운영은 폴더 단위, jobType=QUERY 만."
+          },
+          {
+            "name": "최소 과금 1 분",
+            "what": "표준 오토스케일에서 스케일업한 슬롯은 최소 1 분치 과금 — 10 초 쿼리에 500 슬롯이면 500 × 60 초."
+          },
+          {
+            "name": "Fluid Scaling",
+            "what": "오토스케일의 최소 과금 1 분을 없애고 초 단위로 조정 — 50 슬롯 단위는 그대로, Reservation 단위 DDL 로 켜고 끈다."
+          }
+        ],
+        "invariants": [
+          "autoscale 상한은 온디맨드 때 쓸 수 있던 2,000 슬롯 아래로 내리지 않는다 — '옮겼더니 느려졌다'를 만들지 않는다.",
+          "개발 · 검증의 무거운 쿼리가 운영 슬롯을 먹지 않는다.",
+          "모든 프로젝트가 어느 Reservation 에 할당돼 있어야 한다 — 빠지면 조용히 온디맨드로 과금된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "JOBS_TIMELINE 의 시간대별 슬롯 소비와 60 초 미만 잡 비율로 미리 시뮬레이션",
+            "why": "autoscale 상한과 Fluid Scaling 효과를 먼저 가늠한다."
+          },
+          {
+            "step": "환경별 · 워크로드별 관리 프로젝트 넷에 Reservation 하나씩(baseline 0 · 상한만)",
+            "why": "스파이크가 서로를 막지 않고 비용이 워크로드별로 보인다."
+          },
+          {
+            "step": "2026 년 2 월 sandbox · develop → 4 월 production 순으로 이행",
+            "why": "할당은 즉시 붙이고 뗄 수 있어 개발에 영향이 없는지 보며 진행한다."
+          },
+          {
+            "step": "전사 전개 중 짧은 쿼리 프로덕트가 이행 보류 → 원인이 최소 과금 1 분",
+            "why": "운영 잡 대부분이 60 초 미만이었다."
+          },
+          {
+            "step": "2026 년 8 월 12 일 Fluid Scaling 을 Reservation 마다 ALTER PROJECT 한 줄로",
+            "why": "되돌리기도 NULL 한 줄 — 운영 투입 판단에 크게 효과."
+          },
+          {
+            "step": "비용(Cloud Billing 일별)과 성능(실행 · 체감 · 큐 대기 분위수, 배치 완료 시각, 프로덕트 응답)을 함께 본다",
+            "why": "'싸졌지만 느려졌다'면 의미가 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "온디맨드로 남나, 용량 과금(Editions)으로 가나?",
+            "chosen": "**Editions.**",
+            "alternatives": [
+              "온디맨드를 유지하고 스캔량을 줄이는 튜닝"
+            ],
+            "tradeoff": "스캔량을 못 줄이는 워크로드라 슬롯 효율을 올리는 쪽이 싸다 — 이행 전후 평균 106 → 90. 대가는 슬롯이라는 상한 있는 그릇에 워크로드를 담는 설계가 필요하고, 짧은 쿼리가 많으면 최소 과금 1 분 때문에 오히려 비싸질 수 있다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          },
+          {
+            "question": "어느 에디션?",
+            "chosen": "**Enterprise.**",
+            "alternatives": [
+              "Standard(가장 쌈)",
+              "Enterprise Plus"
+            ],
+            "tradeoff": "온디맨드 때 암묵적으로 쓸 수 있던 2,000 슬롯을 지켜야 '옮겼더니 느려졌다'가 안 생긴다 — Standard 는 Reservation 최대 1,600 슬롯이라 못 닿는다. 대가는 Standard 보다 단가가 높다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          },
+          {
+            "question": "Reservation 을 어떻게 자르나?",
+            "chosen": "**환경(prod / dev / sdx)을 먼저 나누고, 운영은 '기반 배치'와 '사람이 치는 쿼리(DWH)'로 나눈다 — 넷.**",
+            "alternatives": [
+              "하나로 묶는다",
+              "한 관리 프로젝트에 여러 Reservation 을 두고 유휴 슬롯을 융통"
+            ],
+            "tradeoff": "비용이 워크로드별로 보이고, '누군가의 무거운 쿼리로 일일 배치가 늦는' 가장 알기 어려운 장애를 구조로 막는다. 대가는 Reservation 사이에 유휴 슬롯을 융통하지 않는다는 것 — 노린 건 아니지만 Fluid Scaling 의 유일한 문서상 대가(유휴 공유 배분 흔들림)와 무관해졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          },
+          {
+            "question": "baseline 과 상한을 어떻게?",
+            "chosen": "**baseline 0, autoscale 상한만 설계.**",
+            "alternatives": [
+              "baseline 을 확보하고 1 년 · 3 년 커밋(20% · 40% 할인)"
+            ],
+            "tradeoff": "배치 중심에 파도가 커서 상시 확보분은 빈 시간의 과금이 그대로 낭비 — 상한이 실질 비용의 천장이 된다. 대가는 커밋 할인을 못 받는다는 것 — 안정된 하한이 보이면 재검토.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          },
+          {
+            "question": "할당(Assignment)을 어떤 단위로?",
+            "chosen": "**운영은 프로젝트 단위로 명시, 비운영은 폴더 단위로 포괄. jobType 은 QUERY 만.**",
+            "alternatives": [
+              "모두 폴더 단위",
+              "PIPELINE(로드 잡)까지 태운다"
+            ],
+            "tradeoff": "운영엔 의도치 않은 프로젝트가 안 올라타고, 비운영은 새 검증 프로젝트가 자동으로 올라탄다. 대가는 할당을 빠뜨린 프로젝트는 오류 없이 **조용히 온디맨드로 과금**돼 청구서를 봐야 안다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          },
+          {
+            "question": "짧은 쿼리가 최소 과금 1 분에 벌받는 걸 어떻게?",
+            "chosen": "**Fluid Scaling(2026 년 6 월 GA)을 Reservation 마다 켠다.**",
+            "alternatives": [
+              "짧은 쿼리 프로덕트는 온디맨드에 남긴다",
+              "쿼리를 묶어 길게 만든다"
+            ],
+            "tradeoff": "쿼리 · 테이블을 안 바꾸고 Reservation API 비용이 약 8 할 준다. DDL 한 줄로 켜고 NULL 로 되돌릴 수 있어 운영 투입 판단이 쉬웠다. 대가는 짧은 시간 구간의 유휴 슬롯 배분이 공정 배분에서 조금 흔들린다는 것, 그리고 옵션이 전량 지정이라 Reservation 을 더할 때 목록 전체를 다시 써야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          },
+          {
+            "question": "효과를 무엇으로 판정하나?",
+            "chosen": "**비용과 함께 실행 · 체감 · 큐 대기 시간의 분위수, 일일 배치 완료 시각, 프로덕트 참조 응답 시간.**",
+            "alternatives": [
+              "비용 · 평균 실행 시간만"
+            ],
+            "tradeoff": "Editions 에서 가장 나빠지기 쉬운 건 상한에 닿아 늘어나는 큐 대기 — 실행 시간만 보면 그게 통째로 빠진다. 대가는 조직 범위 뷰(JOBS_BY_ORGANIZATION)에 조직 권한이 필요하고, 기간 중 쿼리 구성이 바뀌면 분포 비교가 흔들린다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+                "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+                "publisher": "フェズ",
+                "date": "2026-08-27",
+                "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Urumo Ads(메이커 광고)(수익원)",
+          "via": "낮에 몰리는 프로덕트 참조 쿼리",
+          "contract": "프로덕트가 BigQuery 를 참조하고 그 응답 시간을 감시한다 — 그 프로덕트가 Urumo Ads 인지는 글에 이름이 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+              "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+              "publisher": "フェズ",
+              "date": "2026-08-27",
+              "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+            },
+            {
+              "title": "Urumo Ads - 株式会社フェズ",
+              "url": "https://fez-inc.jp/urumo/ads",
+              "publisher": "フェズ",
+              "summary": "구매 데이터와 주요 광고 매체를 연계해 디지털 광고의 플래닝 · 타기팅 · 리포팅을 최적화 — 2026 년 1 월 600 브랜드 이상 이용. 리치와 구매 양축의 미디어 플랜 자동 산출(특허), 구매 타기팅 · 유사 오디언스 · 배신 전 구매 친화 세그먼트 탐색 '세그먼트 파인더'(특허), 광고 효과뿐 아니라 **구매 효과**까지 가시화. 15 유통에서 제 3 자 제공 허락을 받아 적법하게 활용."
+            }
+          ]
+        },
+        {
+          "to": "Urumo BI(구매 데이터 분석)(수익원)",
+          "via": "짧은 쿼리를 자주 던지는 프로덕트",
+          "contract": "짧은 쿼리를 고빈도로 던지는 프로덕트가 1 분 최소 과금의 영향을 가장 받았다 — Urumo BI 인지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+              "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+              "publisher": "フェズ",
+              "date": "2026-08-27",
+              "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+            },
+            {
+              "title": "株式会社フェズ",
+              "url": "https://fez-inc.jp/",
+              "publisher": "フェズ",
+              "summary": "'데이터와 테크놀로지로 매출에 공헌한다' — 전국 15 유통 횡단 · 1 억 ID 의 실구매 데이터에 기반한 국내 최대급 **리테일 데이터 플랫폼**. 구매 데이터 특화 AI 분석 도구 'Urumo BI', 데이터 마케팅 솔루션 'Urumo Ads'. 2026 년 9 월 Urumo Ads 에 TVer 광고 커넥티드 TV 배신의 구매 검증 기능, 츠루하 · 웰시아 그룹 고객 데이터 통합 기반 1 단계 정비 완료."
+            }
+          ]
+        },
+        {
+          "to": "소매 데이터 매네타이즈 · 리테일 미디어 지원(수익원)",
+          "via": "구매 데이터 레이크",
+          "contract": "15 유통의 구매 데이터가 모이는 기반의 비용이다 — 소매 지원 매출과의 관계는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+              "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+              "publisher": "フェズ",
+              "date": "2026-08-27",
+              "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+            },
+            {
+              "title": "株式会社フェズ",
+              "url": "https://fez-inc.jp/",
+              "publisher": "フェズ",
+              "summary": "'데이터와 테크놀로지로 매출에 공헌한다' — 전국 15 유통 횡단 · 1 억 ID 의 실구매 데이터에 기반한 국내 최대급 **리테일 데이터 플랫폼**. 구매 데이터 특화 AI 분석 도구 'Urumo BI', 데이터 마케팅 솔루션 'Urumo Ads'. 2026 년 9 월 Urumo Ads 에 TVer 광고 커넥티드 TV 배신의 구매 검증 기능, 츠루하 · 웰시아 그룹 고객 데이터 통합 기반 1 단계 정비 완료."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "쿼리 하나가 어느 슬롯에서 도나",
+          "question": "누가 던진 쿼리가 어느 Reservation 의 슬롯으로 가고, 빠지면 어떻게 되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  B[\"기반 배치 ETL\"] --> P1[\"production\\nbaseline 0 · 상한 2,000\"]\n  H[\"애드혹 · 프로덕트 참조\"] --> P2[\"production-dwh\\nbaseline 0 · 상한 2,000\"]\n  DV[\"dev 폴더\"] --> P3[\"develop · 상한 800\"]\n  SX[\"sdx 폴더\"] --> P4[\"sandbox · 상한 800\"]\n  X[\"할당 누락 프로젝트\"] -. \"오류 없이\" .-> OD[\"온디맨드 과금\"]\n  P1 --> F[\"Fluid Scaling\\n초 단위 과금\"]\n  P2 --> F"
+        },
+        {
+          "title": "이행의 단계",
+          "question": "과금 모델은 어떤 상태를 거쳐 여기까지 왔나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 온디맨드: 스캔 바이트 과금\n  온디맨드 --> 보류: 초기 Editions 는 baseline 0 불가\n  보류 --> Editions: 2026-02 dev/sdx · 04 prod(106 → 90)\n  Editions --> 전개정지: 짧은 쿼리 프로덕트가 이행 보류\n  전개정지 --> FluidScaling: 2026-08-12 DDL 한 줄(Reservation API 약 8 할 감)\n  FluidScaling --> Editions: NULL 로 되돌림 가능"
+        },
+        {
+          "title": "1 분의 벽",
+          "question": "용량 과금으로 옮겼는데 왜 오히려 비싸지는 프로덕트가 생겼나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"10 초짜리 쿼리\"] --> B[\"500 슬롯으로 스케일업\"]\n  B --> C[\"최소 과금 1 분: 500 × 60 초 청구\"]\n  C --> D[\"운영 잡 대부분이 60 초 미만\"]\n  D --> E[\"짧은 쿼리를 자주 던지는 프로덕트일수록 손해\"]\n  E --> F[\"'안 옮기는 편이 싸다' → 이행 보류\"]\n  F --> G[\"Fluid Scaling: 초 단위 과금으로 해소\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "BigQuery Editions + Fluid Scaling でパフォーマンスを落とさずコストを激減させた話",
+          "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
+          "publisher": "フェズ",
+          "date": "2026-08-27",
+          "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
+        },
+        {
+          "title": "株式会社フェズ",
+          "url": "https://fez-inc.jp/",
+          "publisher": "フェズ",
+          "summary": "'데이터와 테크놀로지로 매출에 공헌한다' — 전국 15 유통 횡단 · 1 억 ID 의 실구매 데이터에 기반한 국내 최대급 **리테일 데이터 플랫폼**. 구매 데이터 특화 AI 분석 도구 'Urumo BI', 데이터 마케팅 솔루션 'Urumo Ads'. 2026 년 9 월 Urumo Ads 에 TVer 광고 커넥티드 TV 배신의 구매 검증 기능, 츠루하 · 웰시아 그룹 고객 데이터 통합 기반 1 단계 정비 완료."
+        },
+        {
+          "title": "Urumo Ads - 株式会社フェズ",
+          "url": "https://fez-inc.jp/urumo/ads",
+          "publisher": "フェズ",
+          "summary": "구매 데이터와 주요 광고 매체를 연계해 디지털 광고의 플래닝 · 타기팅 · 리포팅을 최적화 — 2026 년 1 월 600 브랜드 이상 이용. 리치와 구매 양축의 미디어 플랜 자동 산출(특허), 구매 타기팅 · 유사 오디언스 · 배신 전 구매 친화 세그먼트 탐색 '세그먼트 파인더'(특허), 광고 효과뿐 아니라 **구매 효과**까지 가시화. 15 유통에서 제 3 자 제공 허락을 받아 적법하게 활용."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**Urumo Ads · BI 의 요금 체계와 매출**은 공개 자료에 없다(비상장).",
     "**BigQuery 글의 '프로덕트'가 Urumo Ads · BI 인지** 글에 이름이 없다 — 그래서 수익원 연결은 inferred.",
@@ -181,7 +576,7 @@
       "url": "https://zenn.dev/fuktig/articles/037c3bd6e80390",
       "publisher": "フェズ",
       "date": "2026-08-27",
-      "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다."
+      "summary": "데이터 플랫폼 그룹. BigQuery 가 기반의 중심 — 일일 배치 ETL(dbt · Dataform) · 낮에 몰리는 프로덕트 참조 · 수시 애드혹, **부하의 파도가 뚜렷**하다. 스캔량은 못 줄이지만 슬롯 사용률에 기복이 있어 온디맨드 → **Editions(용량 과금)**. baseline 0 이 안 되던 초기엔 보류. Standard 는 Reservation 최대 1,600 슬롯이라 온디맨드 때의 2,000 을 지키려 Enterprise. Reservation 넷(운영 데이터 레이크 · 운영 DWH · 개발 · 검증) — 환경을 먼저 나누고, 운영은 '기반이 돌리는 배치'와 '사람이 치는 쿼리'로 나누고, 운영은 프로젝트 단위 · 비운영은 폴더 단위 할당, **baseline 0 · autoscale 상한만** 설계(커밋 할인은 안 씀). 할당 누락 프로젝트는 조용히 온디맨드로 과금. 전사 전개에서 **최소 과금 1 분** 때문에 짧은 쿼리가 많은 프로덕트가 이행을 보류(운영 잡 대부분이 60 초 미만) → 2026 년 6 월 GA 된 **Fluid Scaling**(초 단위 과금)을 Reservation 단위 DDL 한 줄로 켜고 끔. 효과는 비용과 함께 실행 · 체감 · 큐 대기 분위수, 배치 완료 시각 · 프로덕트 응답 시간으로 본다. 결과: 2026 년 2 월 sandbox · develop(800 슬롯), 4 월 production(2,000) 이행 — 1 월 합계 100 대비 이행 전(1~4 월) 평균 106 → 이행 후(5~7 월) 90, 1~1.5 할 감(다른 시책 · 스토리지 포함이라 참고값). 2026 년 8 월 12 일 Fluid Scaling 켬 → Reservation API 비용 약 8 할 감(설정 전 100 → 약 17~21), 데이터 기반 Google Cloud 비용 전체는 7 월 대비 8 월 약 37% 감 예상. 실행 · 체감 · 큐 대기 p95 모두 악화 없음(잡 수가 1 할 줄어 개선이라 주장하진 않음). 문서상 대가는 유휴 슬롯 공유 배분의 흔들림뿐 — 1 관리 프로젝트 = 1 Reservation 이라 무관."
     },
     {
       "title": "複雑化したdbtモデルを“分解”して扱いやすくする方法~その1~",
