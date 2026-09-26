@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**estie hold(2026-09-26) — 도메인 둘·기능 둘, 스마트 리폼·DX 컨설팅은 두 번 찾아 없음 → hold_reason. 다음은 `--gaps` 대로 신규: 대기 맨 위 **다이니**(`zenn.dev/p/dinii` — 통합 결제 대장 `aecc50e7a1735b` 부터, 회사 페이지로 제품·수익원 확인). 대기 3/3(다이니·IVRy·PKSHA). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에(estie ↔ CADDi Control Plane) + PR 환경(estie ↔ SMS·Career Portal·Sumzap) + 결제 대장(다이니 USL ↔ ENECHANGE 검산). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**다이니 회사 프로파일(2026-09-26) — 도메인 둘: 입금원이 늘어도 한 장의 정산 대장을 지킨다(`aecc50e7a1735b` — 판단 다섯이 글에 번호째 있다, 대가까지) · POS 알림의 1차 조사를 봇에 맡기고 판단은 사람이 쥔다(`5841734a5b232b`). 다음은 확장: `--gaps` 순서대로 기능 하나씩(scratchpad `c_dinii.txt`·`dn_oncall.txt` 없으면 jina 로 다시). 수익원 둘 다 도메인이 있다 — 확장 두 번이면 완주(done) 후보. 대기 2/3(IVRy·PKSHA). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에(estie ↔ CADDi) + PR 환경(estie ↔ SMS·Career Portal·Sumzap) + 결제 대장(다이니 USL ↔ ENECHANGE 검산) + **첫 대응 봇**(다이니 dev-bot ↔ LegalOn·Yappli·RAKUS). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

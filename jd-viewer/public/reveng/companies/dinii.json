@@ -1,0 +1,159 @@
+{
+  "slug": "dinii",
+  "name": "ダイニー",
+  "name_en": "dinii",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "dinii.jp",
+  "one_liner": "음식점 올인원 클라우드 다이니 — 입금원이 Adyen 에서 AMEX 까지 둘로 늘자 모든 정산을 부호 없는 한 장의 대장에 모으고 '거의 맞음' 을 허락하지 않는 검증으로 막으며, 몇 분 다운이 치명적인 POS 의 알림은 봇이 먼저 조사하되 알림을 줄이는 판단은 사람이 주 1회 한다",
+  "business_model": "음식점에 POS 레지·모바일 오더·고객 관리·예약 대장·집객·모바일 결제·캐시리스·근태·경영 관리를 **'All in One Restaurant Cloud'** 로 판다. 캐시리스(카드 결제)는 결제 대행 Adyen 을 쓰며, 2026-07 AMEX 를 더했다. 과금 구조·매출 비중·결제 수수료 수익 여부는 1차 자료로 확인하지 못했다.\n\n가게의 주문과 결제가 모두 한 클라우드를 지나므로, 결제 쪽은 **돈의 대장이 맞는가**, 운영 쪽은 **POS 가 몇 분이라도 멈추지 않는가**가 사업의 바닥이 된다(이 사이트의 해석).",
+  "products": [
+    "ダイニー POSレジ",
+    "ダイニー モバイルオーダー",
+    "ダイニー 顧客管理",
+    "ダイニー予約台帳",
+    "ダイニー集客",
+    "ダイニー モバイル決済",
+    "ダイニー キャッシュレス",
+    "ダイニー勤怠",
+    "ダイニー経営管理"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "음식점 클라우드(POS·모바일 오더 등 SaaS)",
+      "how": "POS 레지·모바일 오더·예약·고객 관리·근태·경영 관리를 올인원으로 제공. 과금 구조는 확인 못 함.",
+      "weight": "주력(비중 확인 못 함)",
+      "domains": [
+        "POS 알림의 1차 조사를 봇에 맡기고 판단은 사람이 쥔다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "【公式】ダイニー｜飲食店の売上UPとコストDOWNを両方から実現",
+          "url": "https://www.dinii.jp/",
+          "publisher": "株式会社ダイニー",
+          "date": "2026-09-26",
+          "summary": "음식점용 서비스 라인업 — POS 레지, 모바일 오더, 고객 관리, 예약 대장, 집객, 모바일 결제, 캐시리스, 근태, 경영 관리. '음식점의 매출 UP 과 비용 DOWN 을 양쪽에서'."
+        },
+        {
+          "title": "オンコール調査を自動化する Slack bot で人間の労力削減とアラートの適正化を実現した話",
+          "url": "https://zenn.dev/dinii/articles/5841734a5b232b",
+          "publisher": "dinii Tech Blog (Zenn)",
+          "date": "2026-09-06",
+          "summary": "**dev-bot** — Google Cloud 알림이 울리면 사람보다 먼저 조사를 시작해 영향 범위를 Slack 스레드에 쓴다. 알림 본문의 멘션 → Slack 핸들러 → Cloud Run → **Claude Managed Agents**, 에이전트는 gcloud·Notion Runbook·릴리스 정보·코드베이스를 본다(사람 온콜과 같은 것). POS 라 몇 분 다운이 치명적 → 알림은 **보수 쪽**으로 설계, 울린 만큼 누가 봐야 해 부담 — 이미 온콜 멤버가 알림을 Claude Code 에 복붙해 조사하고 있었다 → 그걸 전 알림에 자동으로. 5분에 간이, 10~15분에 최종 보고. 정확도 = **Runbook 충실도**(알림 추가 때 Runbook 을 세트로 쓰는 규칙, 알림 정의 설명문에 Runbook). 조사와 함께 **알림 자체가 오탐인지·가치 있는지 평가** → 대량 삭감, 그래서 설계 때 보수 쪽으로 대충 기울일 수 있다. **자기 개선은 자동화하지 않는다** — 주 1회 퍼포먼스 리뷰에서 사람이 판단(엔드포인트별 전주 대비 열화율 랭킹으로 완만한 열화 포착). 비용 **3일에 약 1달러**(토큰은 알림 수에 비례). 향후: 레이턴시 자율 개선, 심각할 때만 fast mode."
+        }
+      ]
+    },
+    {
+      "name": "캐시리스·모바일 결제",
+      "how": "Adyen 을 결제 대행으로 카드 결제(2026-07 AMEX 추가)를 처리하고 정산한다. 수수료 수익 구조는 확인 못 함.",
+      "weight": "공개 없음",
+      "domains": [
+        "입금원이 늘어도 한 장의 정산 대장을 지킨다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "【公式】ダイニー｜飲食店の売上UPとコストDOWNを両方から実現",
+          "url": "https://www.dinii.jp/",
+          "publisher": "株式会社ダイニー",
+          "date": "2026-09-26",
+          "summary": "음식점용 서비스 라인업 — POS 레지, 모바일 오더, 고객 관리, 예약 대장, 집객, 모바일 결제, 캐시리스, 근태, 경영 관리. '음식점의 매출 UP 과 비용 DOWN 을 양쪽에서'."
+        },
+        {
+          "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+          "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+          "publisher": "dinii Tech Blog (Zenn)",
+          "date": "2026-08-07",
+          "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "가게의 결제와 가동",
+    "question": "음식점 올인원 클라우드는 늘어나는 입금원의 돈을 어떻게 한 장에 맞추고, 멈추면 안 되는 POS 의 알림을 누가 먼저 보나?",
+    "code": "flowchart LR\n  SHOP[\"음식점 · POS · 모바일 오더\"] -->|카드 결제| ADY[\"Adyen\"]\n  ADY -->|입금 · 리포트| USL[\"통합 정산 대장 USL\\n입구 검증 → Converter → 출구 검증\"]\n  AMEX[\"AMEX 직접 입금\"] --> USL\n  SHOP -. 장애 .-> AL[\"Google Cloud 알림\\n보수 쪽\"]\n  AL -->|@dev-bot| BOT[\"Managed Agents\\nRunbook · gcloud · 코드\"]\n  BOT --> SL[\"Slack 스레드\\n5분 간이 · 15분 최종\"]\n  SL --> WK[\"주 1회 리뷰\\n사람이 알림을 줄인다\"]",
+    "_note": "위는 캐시리스 정산, 아래는 POS 운영이다. USL 은 가게로의 송금을 맡지 않는다(송금은 다른 구조). 두 도메인을 수익원에 이은 것은 이 사이트의 해석. 모바일 오더·예약·POS 자체의 도메인 로직 글은 아직 못 봤다."
+  },
+  "domains": [
+    {
+      "name": "입금원이 늘어도 한 장의 정산 대장을 지킨다",
+      "why": "AMEX 매출은 Adyen 이 아니라 AMEX 가 직접 입금한다 — 입금원이 둘이 되자 착금이 2계통, 리포트 형식·부호·수수료 입도가 다 달라 '이번 달 수수료는?' 을 쿼리 한 줄로 못 쓰고, 전 거래 입금 확인(회계·감사)을 프로바이더마다 따로 만들게 됐다. 2곳째가 오면 구현 비용은 2배로 끝나지 않는다.",
+      "tech": [
+        {
+          "tech": "Unified Settlement Ledger(BigQuery) — 항상 양수 + Credit/Debit 컬럼 · Adyen 구분을 공통 recordType 으로 · processingProvider ≠ settlementProvider · deductedFee / accruedFee 분리 · 입구 게이트 + 출구 대조의 이중 Validation · 프로바이더별 Converter(고유 정보는 JSONB)",
+          "solves": "프로바이더를 하나 더해도 Converter 하나만 더한다. 본번 검증이 영업일 어긋남·부호 버그·조용히 빠진 행을 잡았다.",
+          "limits": "게이트가 검증 NG 한 파일에 후속 취입을 통째로 멈춘다(수일분 수동 복구) — 가게 송금을 맡지 않아 허용. 수수료가 공제냐 사후 청구냐는 회사마다 달라 분류 지식이 Converter 에 박힌다. 재개 시 이중 취입 방지는 다음 글로.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+              "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+              "publisher": "dinii Tech Blog (Zenn)",
+              "date": "2026-08-07",
+              "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "POS 알림의 1차 조사를 봇에 맡기고 판단은 사람이 쥔다",
+      "why": "음식점 POS 는 몇 분 다운이 치명적이라 알림을 취급 누락이 없게 보수 쪽으로 짰다 — 울린 만큼 누군가 메시지를 다 보고 로그를 보러 가야 해 온콜 부담이 됐다. 온콜 멤버는 이미 낯선 알림을 Claude Code 에 복붙해 조사시키고 있었다.",
+      "tech": [
+        {
+          "tech": "dev-bot — 알림 본문의 @멘션 → Slack 핸들러 → Cloud Run → Claude Managed Agents(gcloud · Notion Runbook · 릴리스 · 코드) · 5분 간이 / 10~15분 최종 · 알림의 오탐·가치 평가 · 주 1회 사람 리뷰",
+          "solves": "누가 당번이든 같은 깊이의 1차 조사가 스레드에 선다. 가치 없는 알림을 대량 삭감했고 비용은 3일에 약 1달러.",
+          "limits": "정확도는 에이전트가 아니라 Runbook 충실도에 달렸다. 알림 개선 판단은 일부러 자동화하지 않는다. 레이턴시 자율 개선·심각할 때만 fast mode 는 아직.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "オンコール調査を自動化する Slack bot で人間の労力削減とアラートの適正化を実現した話",
+              "url": "https://zenn.dev/dinii/articles/5841734a5b232b",
+              "publisher": "dinii Tech Blog (Zenn)",
+              "date": "2026-09-06",
+              "summary": "**dev-bot** — Google Cloud 알림이 울리면 사람보다 먼저 조사를 시작해 영향 범위를 Slack 스레드에 쓴다. 알림 본문의 멘션 → Slack 핸들러 → Cloud Run → **Claude Managed Agents**, 에이전트는 gcloud·Notion Runbook·릴리스 정보·코드베이스를 본다(사람 온콜과 같은 것). POS 라 몇 분 다운이 치명적 → 알림은 **보수 쪽**으로 설계, 울린 만큼 누가 봐야 해 부담 — 이미 온콜 멤버가 알림을 Claude Code 에 복붙해 조사하고 있었다 → 그걸 전 알림에 자동으로. 5분에 간이, 10~15분에 최종 보고. 정확도 = **Runbook 충실도**(알림 추가 때 Runbook 을 세트로 쓰는 규칙, 알림 정의 설명문에 Runbook). 조사와 함께 **알림 자체가 오탐인지·가치 있는지 평가** → 대량 삭감, 그래서 설계 때 보수 쪽으로 대충 기울일 수 있다. **자기 개선은 자동화하지 않는다** — 주 1회 퍼포먼스 리뷰에서 사람이 판단(엔드포인트별 전주 대비 열화율 랭킹으로 완만한 열화 포착). 비용 **3일에 약 1달러**(토큰은 알림 수에 비례). 향후: 레이턴시 자율 개선, 심각할 때만 fast mode."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 구조·매출 비중·결제 수수료 수익 여부를 1차 자료로 확인하지 못했다.",
+    "모바일 오더·POS·예약 자체의 도메인 로직 글은 아직 못 봤다.",
+    "USL 재개 시 이중 취입 방지와 취입 버그 경위는 '다음 글' 로 예고됐다.",
+    "두 도메인의 수익원 연결은 inferred.",
+    "다른 글: Managed Agents Slack 봇 안정 운용(`1cfac1ca8b46c3`)·사내 문의 AI 에이전트(`18128bd1685e2a`)·AI 리뷰 비용을 구독에 편승(`4aafd4c4fda4d2`)·V8 copyWithin 450배(`a272b7c3b60ab8`) — 인증 인가 기반 재아키텍처 발표(2026-09-17)."
+  ],
+  "sources": [
+    {
+      "title": "【公式】ダイニー｜飲食店の売上UPとコストDOWNを両方から実現",
+      "url": "https://www.dinii.jp/",
+      "publisher": "株式会社ダイニー",
+      "date": "2026-09-26",
+      "summary": "음식점용 서비스 라인업 — POS 레지, 모바일 오더, 고객 관리, 예약 대장, 집객, 모바일 결제, 캐시리스, 근태, 경영 관리. '음식점의 매출 UP 과 비용 DOWN 을 양쪽에서'."
+    },
+    {
+      "title": "AMEX 対応で入金元が2社になったので、統合決済台帳を作った話",
+      "url": "https://zenn.dev/dinii/articles/aecc50e7a1735b",
+      "publisher": "dinii Tech Blog (Zenn)",
+      "date": "2026-08-07",
+      "summary": "'All in One Restaurant Cloud' 의 **다이니 캐시리스**가 2026-07 AMEX 를 냈다. 결제 대행은 **Adyen** — 지금까지 입금은 Adyen 한 줄이었는데 AMEX 매출은 AMEX 가 직접 입금 → 입금원 2곳, 리포트 형식·수수료 표기·부호가 다 다르다. **UnifiedSettlementLedger(USL)** — 모든 프로바이더 정산을 한 테이블(BigQuery)에. 판단 ① 금액은 **항상 양수** + grossCredit/grossDebit/netCredit/netDebit(복식부기 차용 — 음수가 들어오면 검증 에러) ② 행 구분은 **Adyen 구분을 거의 그대로** 공통화(PAYIN·ADJUSTMENT 추가) — 0 부터 발명하면 어느 실데이터와도 안 맞는다 ③ **처리한 회사(processingProvider) ≠ 입금하는 회사(settlementProvider)**, batchNumber·양측 거래 ID, settlementDate=착금일(입금 없는 행은 null) ④ 수수료를 **정산 내 공제(deductedFee)** 와 **사후 청구(accruedFee)** 로 — `grossCredit − deductedFee = netCredit` 를 전건에서 지키려고; 내역은 정규화 키 + 원본 코드 2층, 보기 좋게 절대값을 취하지 않는다 ⑤ **Validation 을 설계 중심에** — 넣기 전 게이트(파일 상태 기계, 검증 NG 면 1행도 안 넣음) + 넣은 뒤 의심하는 대조(행 불변식·집계 대조), '거의 성립' 불허·CRITICAL 이진. 실제로 잡은 것: 파일 생성 지연으로 영업일 1일 어긋남(1,865건 중 1,862 불일치), 부호 버그(단위 테스트 통과), 조용히 빠진 수수료 행. 대가: 게이트가 후속 취입을 **통째로 멈춤**(수일분 수동 복구) — USL 은 가게로의 송금을 맡지 않아 허용; 알림 운영 비용. 파이프라인 4단: 입구 검증 → 취입 → Converter(프로바이더별, 고유 정보는 JSONB) → 출구 검증."
+    },
+    {
+      "title": "オンコール調査を自動化する Slack bot で人間の労力削減とアラートの適正化を実現した話",
+      "url": "https://zenn.dev/dinii/articles/5841734a5b232b",
+      "publisher": "dinii Tech Blog (Zenn)",
+      "date": "2026-09-06",
+      "summary": "**dev-bot** — Google Cloud 알림이 울리면 사람보다 먼저 조사를 시작해 영향 범위를 Slack 스레드에 쓴다. 알림 본문의 멘션 → Slack 핸들러 → Cloud Run → **Claude Managed Agents**, 에이전트는 gcloud·Notion Runbook·릴리스 정보·코드베이스를 본다(사람 온콜과 같은 것). POS 라 몇 분 다운이 치명적 → 알림은 **보수 쪽**으로 설계, 울린 만큼 누가 봐야 해 부담 — 이미 온콜 멤버가 알림을 Claude Code 에 복붙해 조사하고 있었다 → 그걸 전 알림에 자동으로. 5분에 간이, 10~15분에 최종 보고. 정확도 = **Runbook 충실도**(알림 추가 때 Runbook 을 세트로 쓰는 규칙, 알림 정의 설명문에 Runbook). 조사와 함께 **알림 자체가 오탐인지·가치 있는지 평가** → 대량 삭감, 그래서 설계 때 보수 쪽으로 대충 기울일 수 있다. **자기 개선은 자동화하지 않는다** — 주 1회 퍼포먼스 리뷰에서 사람이 판단(엔드포인트별 전주 대비 열화율 랭킹으로 완만한 열화 포착). 비용 **3일에 약 1달러**(토큰은 알림 수에 비례). 향후: 레이턴시 자율 개선, 심각할 때만 fast mode."
+    }
+  ]
+}

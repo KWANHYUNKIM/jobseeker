@@ -38,13 +38,13 @@
 | **ログラス(Loglass)** | JP · 경영관리(FP&A) SaaS | 프로파일(2026-09-26). 도메인 둘 — 계층을 엔진이 알게 해 읽지 않는다(OLAP 엔진 실험) · 장애 때 '당시 구조' 를 다시 세운다(이력 데이터 모델). 기능 3(`hierarchy-aware-olap-engine` — 실험 · `incident-history-data-model` · `headcount-cost-simulation` · `ai-ir-bottleneck-driven-delivery`). 완주 검사 1회차에 도메인 둘 추가(인원 계획 · AI IR). **hold** — 석세스 파트너·설비투자·IT 투자 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 인원 계획·설비투자·IT 투자·AI IR·석세스 파트너는 도메인 없음. 입구 `zenn.dev/p/loglass/feed`. |
 | **Hacobu(ハコブ)** | JP · 물류 SaaS(MOVO) | 프로파일(2026-09-26). 도메인 둘 — 장애 공지 스위치를 비개발자 손에 쥐여 준다(Datadog Forms 배너) · 기능 패키지의 경계를 규약 대신 CI 가 지킨다(MOVO Berth 프런트 템플릿). 기능 2(`maintenance-banner-datadog-forms` · `frontend-template-dependency-ci`). **hold** — 컨설팅·SI·인재 소개 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 컨설팅·SI·인재 소개는 도메인 없음. 입구 `zenn.dev/p/hacobu/feed`. |
 | **estie** | JP · 상업용 부동산 데이터 | 프로파일(2026-09-26). 도메인 둘 — 고객이 맡긴 데이터를 여러 서비스가 한 곳에 둔다(프라이빗 데이터 기반) · PR 마다 운영에 가까운 DB 를 빌려 쓰고 버린다(Aurora copy-on-write Preview). 기능 2(`private-data-platform` · `preview-with-db-aurora-clone`). **hold** — 스마트 리폼·DX 컨설팅 수익원 자료 두 번 없음(2026-09-26). 스마트 리폼·DX 컨설팅은 도메인 없음. 입구 `zenn.dev/p/estie/feed`. |
+| **ダイニー(dinii)** | JP · 음식점 올인원 클라우드(POS·모바일 오더·캐시리스) | 프로파일(2026-09-26). 도메인 둘 — 입금원이 늘어도 한 장의 정산 대장을 지킨다(USL) · POS 알림의 1차 조사를 봇에 맡기고 판단은 사람이 쥔다(dev-bot). 기능 0. 입구 `zenn.dev/p/dinii/feed`. |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **ダイニー(dinii)** | JP · 음식점 모바일 오더·POS·결제 | Zenn Publication `zenn.dev/p/dinii`(RSS, 7~9월 4편). **AMEX 대응으로 입금원이 2곳이 돼 통합 결제 대장(USL)을 만든 이야기**(`aecc50e7a1735b`, 2026-08-07) — 금액은 항상 양수+방향 컬럼, 행 구분은 Adyen 구분을 거의 그대로 공통화, '처리한 회사' 와 '입금하는 회사' 분리, 정산 내 수수료와 사후 청구 수수료 분리, **Validation 을 설계 중심에**(대가: 알림 운영 비용 — '거의 맞는 대장' 은 아무도 안 믿는다). 온콜 조사 Slack 봇(`2026-09`)·AI 리뷰 비용을 구독에 편승. **결제 대장 축** — 결정과 대가가 글에 그대로 있다. |
 | **IVRy(アイブリー)** | JP · AI 전화 자동 응답 SaaS | Zenn Publication `zenn.dev/p/ivry`(RSS, 7~9월 8편). **대화 시스템 평가를 Human-in-the-Loop 전제로 설계**(`71376f575ccd9c`, 2026-08-04) — 사용자가 만든 분류 선택지를 공개 전에 검증, 정답 라벨 고정 생성, **온라인 시뮬레이션 대신 오프라인 평가**(LLM 사용자 역이 불안정), 불일치만 3사 LLM 재판정·일치 시 새 정답(전건 고급 모델 판정은 비싸다), 멀티턴은 과제. Lambda Durable Functions 본번 운용 · dbt 인증 태그. **음성 AI 제품 축(처음)**. |
 | **PKSHA Technology** | JP · AI SaaS(챗봇·음성 등) | Zenn Publication `zenn.dev/p/pksha`(RSS, 7~9월 11편). **DynamoDB 를 포기하지 않기 위한 Zero-ETL**(`dynamodb-zero-etl`, 2026-08-05) — 분석용 GSI 를 늘리면 쓰기·저장 비용이 인덱스 수만큼 → 앱용·분석용 저장소 분리, S3 Tables(Iceberg)·Athena, 다른 연계 수단 비교, 비용은 변경 취입 횟수로 결정. MariaDB IN 절·다중 인덱스 최적화 · 다수 AWS 계정에서 AI 가 안전하게 조사할 정책 · LLM 모델 교체 자동화(llm-replacer) · AI 네이티브 분석 기반. **제품 이름이 붙은 글인지는 프로파일 때 확인** — 인프라 글이 많다. |
 
