@@ -12039,6 +12039,129 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8172668",
+      "title": "Staff IAM Engineer (IAM Architecture & Governance)",
+      "site": "ats",
+      "verdict": "서울 근무, IAM 8년 이상(IGA 플랫폼 + 시크릿·머신 아이덴티티). 사람 계정 거버넌스와 비인간 아이덴티티(NHI: 서비스 계정·API 키·OAuth 토큰·시크릿·인증서)를 함께 다루는 IAM 엔지니어. 감사 대응과 SOX·SOC2·ISO 27001 통제 구현, Saviynt 운영, 그리고 Python·Go·PowerShell 로 IAM 운영을 자동화하는 것이 핵심이다.",
+      "fit": {
+        "must_have": [
+          "IAM 8년 이상(IGA + 시크릿·머신 아이덴티티)",
+          "NHI 수명주기 도구·시크릿 관리 실무 + Python·PowerShell·Go",
+          "Saviynt(EIC/Cloud) 운영",
+          "감사인 대응",
+          "SSO·MFA·SAML·OIDC·AD·PAM·RBAC/ABAC"
+        ],
+        "can_learn": [
+          "쿠팡 내부 애플리케이션 연동 현황"
+        ]
+      },
+      "study": [
+        {
+          "topic": "비인간 아이덴티티(NHI) 수명주기와 시크릿 순환",
+          "from": "task",
+          "quote": "NHI Discovery & Rotation: Orphaned NHI를 지속적으로 탐지하고, 비정상적인 머신 간 통신(Machine-to-Machine Behavior)을 모니터링하며, 운영 환경에 영향을 주지 않는 자동 Secret Rotation 워크플로우 개발",
+          "priority": "core",
+          "why": "주인 없는(orphaned) NHI 탐지, 비정상 머신 간 통신 모니터링, 운영 영향 없는 자동 시크릿 순환이 자동화 과제의 첫 줄이다.",
+          "gap_check": "운영 중인 서비스의 DB 비밀번호를 무중단으로 바꾸려면 어떤 순서(새 값 생성 → 양쪽 허용 → 전환 → 이전 값 폐기)가 필요한가?",
+          "drill": "HashiCorp Vault 동적 DB 시크릿(또는 이중 자격 증명 방식)으로 애플리케이션이 재시작 없이 새 자격 증명을 받는 순환을 구현하고, 순환 중 오류가 없는지 부하를 걸어 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "HashiCorp Vault — Database secrets engine",
+              "url": "https://developer.hashicorp.com/vault/docs/secrets/databases",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "코드·CI/CD 속 하드코딩 시크릿 찾기와 이관",
+          "from": "task",
+          "quote": "소스코드 및 CI/CD 파이프라인 내 하드코딩되었거나 관리되지 않는 시크릿 탐지, Vault 이관 및 지속 관리",
+          "priority": "core",
+          "why": "관리되지 않는 시크릿을 찾아 Vault 로 옮기고 계속 관리하는 것이 NHI 전략의 실무다.",
+          "gap_check": "깃 히스토리에 이미 남은 시크릿은 삭제 커밋으로 충분한가? 발견 후 무엇부터 해야 하는가(폐기·교체·영향 조사)?",
+          "drill": "gitleaks 로 저장소 전체 히스토리를 스캔하고, 발견된 가짜 시크릿을 Vault 로 옮긴 뒤 CI 에서 새 시크릿 커밋을 막는 훅을 건다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Gitleaks",
+              "url": "https://github.com/gitleaks/gitleaks",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "컴플라이언스를 IAM 기술 통제로 옮기고 감사 증적 만들기",
+          "from": "task",
+          "quote": "SOX, SOC2, ISO 27001 등 다양한 컴플라이언스 프레임워크를 Human/Machine Identity에 적용 가능한 IAM 기술 통제로 변환 및 구현",
+          "priority": "core",
+          "why": "감사팀·리스크 조직과 협력해 증적을 내고 지적사항을 개선하는 것이 주요업무다. 자격에 감사인 대응 역량이 있다.",
+          "gap_check": "'퇴사자 계정은 24시간 내 비활성화' 통제를 증명하려면 어떤 데이터(HR 이벤트·계정 상태 변경 로그)를 어떤 형태로 남겨야 하는가?",
+          "drill": "가짜 HR 퇴사 이벤트와 계정 비활성화 로그를 조인해 '24시간 초과 건' 보고서를 자동 생성하는 스크립트를 만든다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "Zero-Touch 입·퇴사 프로비저닝과 자동 접근 재검토",
+          "from": "task",
+          "quote": "Zero-Touch Provisioning / Deprovisioning: 퇴사 시 접근 권한을 즉시 회수하는 자동화 프로세스 구축, 신규 입사자 또는 신규 마이크로서비스 생성 시 기본 권한(Baseline Access)을 자동 부여하는 워크플로우 개발",
+          "priority": "high",
+          "why": "퇴사 시 즉시 회수, 신규 입사자·신규 마이크로서비스의 기본 권한 자동 부여가 명시돼 있고, 부서 이동 같은 고위험 이벤트에 자동 재검토(micro-certification)를 건다.",
+          "gap_check": "부서 이동 시 이전 부서 권한을 즉시 빼면 업무가 멈출 수 있다 — 유예·재검토를 어떻게 설계하는가?",
+          "drill": "SCIM 으로 가짜 앱에 계정을 생성·비활성화하는 프로비저닝 흐름을 만들고, 부서 이동 이벤트에서 재검토 요청을 생성하는 규칙을 추가한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "RFC 7644 — SCIM Protocol",
+              "url": "https://www.rfc-editor.org/rfc/rfc7644",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IAM 핵심 개념 (SSO·SAML·OIDC·PAM·RBAC/ABAC)",
+          "from": "qualification",
+          "quote": "심화 IAM 지식: IAM 핵심 개념인 SSO, MFA, SAML, OIDC, Active Directory, PAM, RBAC/ABAC에 대한 포괄적인 이해",
+          "priority": "core",
+          "why": "자격요건에 핵심 개념이 나열돼 있다. 기본 커넥터가 없는 앱을 API 로 연동할 때 이 개념이 설계의 바탕이다.",
+          "gap_check": "SAML 과 OIDC 의 흐름 차이, 그리고 RBAC 로 표현하기 어려워 ABAC 가 필요한 경우를 예로 들 수 있는가?",
+          "drill": "Keycloak 을 로컬에 띄워 한 앱은 SAML, 다른 앱은 OIDC 로 SSO 를 붙이고, 부서 속성 기반 접근 정책(ABAC)을 하나 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Keycloak — Documentation",
+              "url": "https://www.keycloak.org/documentation",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "NHI 인벤토리 + 소유자 매핑 도구",
+          "why": "주인 없는 서비스 계정·키를 찾아 소유자를 붙이는 작은 도구는 이 자리의 핵심 문제를 정면으로 보여 준다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "무중단 시크릿 순환",
+          "유출된 시크릿 대응 순서",
+          "감사 증적 설계",
+          "입·퇴사 자동화와 예외",
+          "SAML vs OIDC, RBAC vs ABAC"
+        ],
+        "sources": [
+          {
+            "title": "Staff IAM Engineer (IAM Architecture & Governance)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8172668",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
