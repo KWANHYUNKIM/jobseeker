@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **184건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **185건**.
+직전 회차: ✅ `Staff Backend Engineer -  K8 (Envoy)`(greenhouse 8222609) 3항목 — **벵갈루루**, AI 추론 게이트웨이(라우팅·토큰 할당량·TTFT SLO). 남은 미완: 모의해킹 4건·Mobile Security(사람 판단 대기)·`Staff Computer Vision Engineer - Search AI Product Engineering`(greenhouse 8207114). `--gaps` 는 앞 5줄만 보여 준다 — 전체는 validate.load_jobs 로 직접 뽑았다.
 직전 회차: ✅ `Security Automation Engineer [L5]`(8207116) 3항목 — **시애틀**, AI-SOC 자동화(정규화·LLM 분류·SOAR 연동), $152K~$169K.
 직전 회차: ✅ `Sr. Software Engineer - Rocket Growth Inbound & Global Logistics`(8210358) 3항목 — **상하이**, 로켓그로스 입고(pre-ship~stow·Kafka/ES·멱등), 4년.
 직전 회차: ✅ `Senior Staff Cloud Backend Engineer`(8205728) 3항목 — **시애틀**, 제목 Cloud Backend 지만 본문은 데이터센터 SRE·관측성. '$174,00' 오타. `--gaps` 미완 10건.

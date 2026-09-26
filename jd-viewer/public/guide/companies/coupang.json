@@ -18693,6 +18693,110 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/coupang/jobs/8222609",
+      "title": "Staff Backend Engineer -  K8 (Envoy)",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 벵갈루루 근무다. 소프트웨어 8년 이상·대규모 분산 시스템 운영 5년 이상의 스태프 백엔드로, 쿠팡의 차세대 AI 추론 게이트웨이(AI Inference Gateway) 플랫폼을 설계·구축한다 — ML·생성형 AI 추론 서비스를 위한 요청 라우팅·모델 엔드포인트 추상화·트래픽 셰이핑·부하 분산·장애 전환·캐싱·정책 적용과, 인증·인가·할당량·비용 귀속·속도 제한 같은 멀티테넌트 기능이다. 클라우드와 온프레미스 모두를 다룬다. 같은 벵갈루루 `Senior Staff Backend Engineer - (K8)`(7912287)와 소개 문장 틀(Java·AWS·Kafka·Kubernetes·Kubeflow·Argo CD·gRPC)이 같지만 이쪽은 추론 게이트웨이가 중심이다. 제목의 'K8 (Envoy)' 는 설명이 없지만 우대에 Envoy 가 이름으로 나온다.",
+      "fit": {
+        "must_have": [
+          "소프트웨어 8년 이상·대규모 분산 시스템 5년 이상",
+          "Go·Java·Python",
+          "고가용 핵심 플랫폼 서비스",
+          "API 플랫폼·서비스 게이트웨이·서비스 메시·대규모 네트워킹",
+          "Kubernetes 운영",
+          "관측성·신뢰성·용량 계획"
+        ],
+        "can_learn": [
+          "AI 추론 플랫폼·LLM 게이트웨이(우대)",
+          "Gateway API·Istio·Envoy(우대)",
+          "vLLM·Triton·KServe 등(우대)",
+          "라우팅·재시도·서킷 브레이커·속도 제한(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AI 추론 게이트웨이 — 라우팅·장애 전환·트래픽 셰이핑",
+          "from": "task",
+          "quote": "Design and develop high-performance request routing, model endpoint abstraction, traffic shaping, load balancing, failover, caching, and policy enforcement mechanisms for inference services.",
+          "priority": "core",
+          "why": "추론 서비스를 위한 고성능 요청 라우팅·모델 엔드포인트 추상화·트래픽 셰이핑·부하 분산·장애 전환·캐싱·정책 적용 설계·개발이 주요업무이고, Gateway API·Envoy 등이 우대사항이다.",
+          "gap_check": "LLM 요청은 길이·출력 토큰 수에 따라 처리 시간이 수백 배 차이 난다. 일반 라운드로빈 부하 분산이 왜 한쪽 모델 서버를 막히게 하고, 게이트웨이가 무엇(대기 요청 수·KV 캐시 사용량)을 보고 라우팅해야 하는가?",
+          "drill": "Kubernetes Gateway API 문서와 Envoy AI Gateway 저장소를 읽고, 모델 서버 두 개 앞에 게이트웨이를 두어 모델 이름 기반 라우팅과 한쪽 장애 시 전환을 설정한 뒤, 긴 요청을 섞었을 때 라운드로빈과 최소 대기 요청 방식의 지연을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Kubernetes Gateway API",
+              "url": "https://gateway-api.sigs.k8s.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "envoyproxy/ai-gateway",
+              "url": "https://github.com/envoyproxy/ai-gateway",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "멀티테넌트 — 할당량·속도 제한·비용 귀속",
+          "from": "task",
+          "quote": "Design multi-tenant platform capabilities including authentication, authorization, quota management, cost attribution, rate limiting, and governance controls.",
+          "priority": "core",
+          "why": "인증·인가·할당량 관리·비용 귀속·속도 제한·거버넌스 통제를 포함한 멀티테넌트 플랫폼 기능 설계가 주요업무다.",
+          "gap_check": "LLM 추론은 요청 수가 아니라 토큰 수로 비용이 난다. 팀별 할당량과 속도 제한을 요청 수로 걸 때와 토큰 수로 걸 때 무엇이 달라지고, 출력 토큰 수를 미리 모르는 상태에서 한도를 어떻게 적용하는가?",
+          "drill": "Envoy 전역 속도 제한 문서를 읽고, 팀 헤더 기준 속도 제한을 설정한 뒤, 응답의 토큰 사용량을 팀별로 누적해 한도 초과 시 거절하는 간단한 사후 차감 방식을 게이트웨이 옆 서비스로 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Envoy — Global rate limiting",
+              "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/other_features/global_rate_limiting",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "추론 서비스 SLO 와 관측성",
+          "from": "task",
+          "quote": "Define observability standards through metrics, tracing, logging, and SLO-based operations for business-critical AI services.",
+          "priority": "high",
+          "why": "업무 핵심 AI 서비스를 위한 지표·트레이싱·로깅·SLO 기반 운영의 관측성 표준을 정하는 것이 주요업무다.",
+          "gap_check": "LLM 추론 서비스의 지연 SLO 를 '요청 전체 시간'으로만 두면 무엇을 놓치고, 첫 토큰까지 시간(TTFT)·토큰 간 간격을 따로 재야 하는 이유는 무엇인가?",
+          "drill": "게이트웨이에서 요청별 TTFT·총 시간·입출력 토큰 수·모델명을 지표로 내보내고, 모델별 TTFT p95 SLO 와 에러 버짓 알림 규칙을 정한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Google SRE Book — Service Level Objectives",
+              "url": "https://sre.google/sre-book/service-level-objectives/",
+              "kind": "book"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "LLM 게이트웨이 라우팅·토큰 할당량 데모",
+          "why": "추론 게이트웨이의 두 축(부하 인지 라우팅, 토큰 기반 멀티테넌트 한도)을 작게 재현하면 이 자리의 핵심 설계 문제를 이해했다는 증거가 된다.",
+          "effort": "3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "LLM 부하 분산 기준",
+          "토큰 기반 할당량",
+          "TTFT SLO",
+          "클라우드·온프레미스 장애 전환",
+          "여러 팀 설계 리뷰"
+        ],
+        "sources": [
+          {
+            "title": "Staff Backend Engineer -  K8 (Envoy)",
+            "url": "https://job-boards.greenhouse.io/coupang/jobs/8222609",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
