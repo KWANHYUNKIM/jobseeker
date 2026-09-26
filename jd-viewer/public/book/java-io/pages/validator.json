@@ -1,0 +1,221 @@
+{
+  "book": "java-io",
+  "id": "validator",
+  "no": "11.5",
+  "chapter": 11,
+  "title": "검증기 만들기",
+  "summary": "@NotNull 을 직접.",
+  "minutes": 13,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "필드 애노테이션으로 검증한다.",
+    "폼 본문을 객체에 채운다.",
+    "바인딩 실패와 검증 실패의 틈을 찾는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.4절은 메서드 애노테이션이었다. 필드 애노테이션으로는 **검증**을 만든다 — `@NotNull` 을 직접 쓴다.\n\n9.2절에서 읽은 POST 본문(`name=홍길동&age=30`)을 객체로 채우고, 그 객체를 검사해 400 을 만드는 것까지."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "애노테이션 셋",
+      "code": "@Retention(RUNTIME) @Target(FIELD)\npublic @interface NotNull { String message() default \"값이 필요합니다\"; }\n\n@Retention(RUNTIME) @Target(FIELD)\npublic @interface Size { int min() default 0; int max() default Integer.MAX_VALUE;\n                         String message() default \"길이가 맞지 않습니다\"; }\n\n@Retention(RUNTIME) @Target(FIELD)\npublic @interface Min { long value(); String message() default \"너무 작습니다\"; }"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "폼은 애노테이션만 붙인 평범한 클래스다",
+      "code": "public class JobForm {\n    @NotNull @Size(min = 2, max = 20)\n    public String title;\n\n    @NotNull\n    public String company;\n\n    @Min(0)\n    public Integer salary;\n\n    public String memo;          // 애노테이션 없음 — 검사하지 않는다\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "검증기는 필드를 훑는다",
+      "code": "for (Field f : o.getClass().getDeclaredFields()) {\n    f.setAccessible(true);                      // 10.4절\n    Object v = f.get(o);\n\n    NotNull nn = f.getAnnotation(NotNull.class);\n    if (nn != null && v == null) { errors.add(f.getName() + \": \" + nn.message()); continue; }\n\n    Size sz = f.getAnnotation(Size.class);\n    if (sz != null && v instanceof String s\n        && (s.length() < sz.min() || s.length() > sz.max()))\n        errors.add(f.getName() + \": \" + sz.message() + \" (...)\");\n\n    Min mn = f.getAnnotation(Min.class);\n    if (mn != null && v instanceof Number n && n.longValue() < mn.value())\n        errors.add(f.getName() + \": \" + mn.message() + \" (...)\");\n}"
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "`continue` 하나가 메시지 개수를 정한다",
+      "md": "`@NotNull` 이 걸렸을 때 `continue` 로 그 필드를 끝낸다.\n\n> 안 하면 `title` 이 `null` 일 때 `@Size` 도 같이 걸려 **한 필드에 메시지가 두 개** 나온다 — `\"값이 필요합니다\"` 와 `\"길이가 맞지 않습니다\"` 를 함께 받으면 쓰는 사람이 혼란스럽다.\n> Bean Validation 은 이 판단을 다르게 한다 — `@Size` 는 `null` 을 **통과**시키도록 규약이 정해져 있다. 즉 각 검증기가 스스로 `null` 을 넘기므로 `continue` 가 필요 없다.\n> 둘 중 어느 쪽이든 되지만, **어느 쪽인지 정해 두지 않으면** 애노테이션 조합에 따라 메시지 개수가 들쭉날쭉해진다."
+    },
+    {
+      "type": "prose",
+      "md": "## 본문을 객체에 채운다\n\n검증할 객체가 있어야 하니 바인딩부터. 9.2절의 `name=값&...` 을 필드에 넣는다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "타입 변환도 리플렉션으로",
+      "code": "T o = type.getDeclaredConstructor().newInstance();      // 10.5절\nfor (String kv : form.split(\"&\")) {\n    String k = URLDecoder.decode(..., \"UTF-8\");\n    String v = URLDecoder.decode(..., \"UTF-8\");\n    Field f;\n    try { f = type.getDeclaredField(k); }\n    catch (NoSuchFieldException e) { log(\"모르는 필드 무시: \" + k); continue; }\n    f.setAccessible(true);\n    Class<?> t = f.getType();\n    if (t == String.class)  f.set(o, v);\n    else if (t == Integer.class) f.set(o, Integer.valueOf(v));\n    else log(\"다룰 수 없는 타입: \" + t.getSimpleName());\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "여섯 입력을 넣어 봤다",
+      "sql": "입력: title=백엔드 개발자&company=클로봇&salary=5000\n    통과 -> JobForm{title=백엔드 개발자, company=클로봇, salary=5000, memo=null}\n\n입력: company=클로봇&salary=5000\n    실패 1건\n      title: 값이 필요합니다\n\n입력: title=A&company=클로봇&salary=5000\n    실패 1건\n      title: 길이가 맞지 않습니다 (2~20, 지금 1)\n\n입력: title=백엔드&company=클로봇&salary=-100\n    실패 1건\n      salary: 너무 작습니다 (최소 0, 지금 -100)\n\n입력: title=백엔드&company=클로봇&salary=많이\n    [바인딩] 숫자가 아니다: salary=많이\n    통과 -> JobForm{title=백엔드, company=클로봇, salary=null, memo=null}   <-- ?\n\n입력: title=백엔드&company=클로봇&nope=x&memo=아무거나\n    [바인딩] 모르는 필드 무시: nope\n    통과 -> JobForm{title=백엔드, company=클로봇, salary=null, memo=아무거나}",
+      "note": "**다섯째 줄이 문제다.** `salary=많이` 라는 잘못된 입력이 **통과**했다 — 바인딩이 실패해서 `salary` 가 `null` 이 됐고, `@Min(0)` 은 `null` 을 검사하지 않는다."
+    },
+    {
+      "type": "prose",
+      "md": "## HTTP 로 올려 보면 더 분명하다\n\n11.4절의 서버에 붙여 실제 응답을 받았다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 오간 것",
+      "sql": "$ curl -X POST -d '<본문>' http://localhost:12970/jobs/new\n\n  title=백엔드 개발자&company=클로봇&salary=5000\n    -> 만들었다: JobForm{title=백엔드 개발자, company=클로봇, salary=5000, memo=null}   [201]\n\n  company=클로봇&salary=5000\n    -> 검증 실패 1건 / title: 값이 필요합니다                                        [400]\n\n  title=A&company=클로봇&salary=5000\n    -> 검증 실패 1건 / title: 길이가 맞지 않습니다 (2~20, 지금 1)                     [400]\n\n  salary=-100\n    -> 검증 실패 3건 / title: 값이 필요합니다\n                     company: 값이 필요합니다\n                     salary: 너무 작습니다 (최소 0, 지금 -100)                        [400]\n\n  title=백엔드&company=클로봇&salary=많이\n    -> 만들었다: JobForm{title=백엔드, company=클로봇, salary=null, memo=null}         [201]",
+      "note": "**마지막 줄이 201 이다.** 잘못된 숫자를 보냈는데 성공 응답을 받고 `salary` 가 조용히 `null` 로 저장된다 — 400 이어야 하는 요청이 201 이 됐다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "바인딩과 검증은 다른 단계다",
+      "md": "이 구멍의 정체는 **단계가 둘인데 실패를 한 곳만 본다**는 것이다.\n\n> 바인딩은 \"글자를 값으로 바꾸는\" 일이고 검증은 \"값이 규칙에 맞는지\" 보는 일이다. `salary=많이` 는 **바인딩에서** 실패했는데 그 실패가 응답에 반영되지 않았다.\n> 우리 코드가 그 실패를 로그로만 흘렸기 때문이다 — `catch (NumberFormatException e) { System.out.println(...); }`.\n> 고치는 방법은 둘이다. **바인딩 오류도 errors 에 모으거나**, `@NotNull` 을 `salary` 에도 붙여 `null` 이 된 것을 잡거나.\n> 스프링에서 이것이 `BindingResult` 다. `@Valid` 옆에 `BindingResult` 를 받으면 바인딩 오류와 검증 오류가 **같은 그릇**에 담겨 오고, 그것을 안 보면 같은 구멍이 생긴다."
+    },
+    {
+      "type": "figure",
+      "caption": "two stages, one report",
+      "ascii": "        \"title=...&salary=many\"\n                |\n                v\n        +-----------------+   failure -> log only ?\n        | bind            |------------------+\n        |  String -> Int  |                  |\n        +--------+--------+                  | the hole\n                 | salary = null             |\n                 v                           |\n        +-----------------+                  |\n        | validate        |  @Min skips null |\n        +--------+--------+                  |\n                 |                           |\n                 v                           v\n               201 Created            should have been 400"
+    },
+    {
+      "type": "table",
+      "caption": "우리가 만든 것과 Bean Validation",
+      "columns": [
+        "우리",
+        "표준(Jakarta Validation)",
+        "차이"
+      ],
+      "rows": [
+        [
+          "`@NotNull`",
+          "`@NotNull`",
+          "같다"
+        ],
+        [
+          "`@Size(min, max)`",
+          "`@Size(min, max)`",
+          "표준은 컬렉션·배열에도 적용된다"
+        ],
+        [
+          "`@Min(0)`",
+          "`@Min(0)`",
+          "표준은 `BigDecimal` 까지 다룬다"
+        ],
+        [
+          "`List<String>` 반환",
+          "`Set<ConstraintViolation>`",
+          "표준은 경로·값·메타데이터를 담는다"
+        ],
+        [
+          "`if` 로 분기",
+          "`@Constraint` + `ConstraintValidator`",
+          "표준은 검증 로직을 애노테이션에 연결한다"
+        ],
+        [
+          "없음",
+          "그룹·메시지 보간·중첩 검증",
+          "안 만든 것들"
+        ]
+      ],
+      "note": "**구조는 같다.** 필드 애노테이션을 읽어 규칙을 적용하고 위반 목록을 돌려준다 — 우리가 30줄로 만든 것이 표준의 뼈대다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "`@Constraint` 가 해결하는 것",
+      "md": "우리 검증기의 약점은 **애노테이션이 늘면 `if` 가 늘어난다**는 것이다.\n\n> `@Email` 을 추가하려면 `Validator` 를 고쳐야 한다. 애노테이션과 검증 로직이 떨어져 있어서다.\n> 표준은 애노테이션에 `@Constraint(validatedBy = EmailValidator.class)` 를 붙여 **로직을 애노테이션 쪽에 매단다.** 그러면 검증기는 `@Constraint` 가 붙은 애노테이션을 찾아 그 클래스를 `newInstance` 하면 된다 — 10.5절이다.\n> 즉 11.4절에서 라우팅에 한 일과 같다. **표를 코드가 아니라 애노테이션이 채우게** 하는 것이고, 한 겹 더 가면 검증 규칙도 그렇게 된다.\n> 우리는 여기까지만 만든다. 다음 절에서 안 만든 것들을 정리한다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"`@Valid` 는 어떻게 동작합니까.\"**\n\n> 필드 애노테이션을 리플렉션으로 읽어 규칙을 적용하고 위반 목록을 돌려준다. 직접 만들어 봤다 — `getDeclaredFields`·`setAccessible`·`getAnnotation` 세 줄이 뼈대다.\n> \"바인딩 오류는 어떻게 되냐\" 가 핵심이다. 재 봤더니 `salary=많이` 가 **201** 을 받았다 — 바인딩이 실패해 `null` 이 됐고 `@Min` 은 `null` 을 검사하지 않는다.\n> 그래서 스프링에 `BindingResult` 가 있다. 바인딩 오류와 검증 오류를 같은 그릇에 담고, **그것을 안 보면 같은 구멍**이 생긴다.\n> \"새 제약을 추가하려면\" 에는 `@Constraint(validatedBy=...)` 다 — 검증 로직을 애노테이션에 매달아 검증기를 안 고치게 한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 오간 것 — 400 네 개와 201 두 개",
+      "sql": "$ java -cp out App out 12970\n  [스캔] 클래스 17개 중 @Route 메서드 8개 -> 라우트 7개\n\n$ curl -X POST -d '<본문>' .../jobs/new\n\n  title=백엔드 개발자&company=클로봇&salary=5000        [http=201]\n    만들었다: JobForm{title=백엔드 개발자, company=클로봇, salary=5000, memo=null}\n\n  company=클로봇&salary=5000                        [http=400]\n    검증 실패 1건 / title: 값이 필요합니다\n\n  title=A&company=클로봇&salary=5000                [http=400]\n    검증 실패 1건 / title: 길이가 맞지 않습니다 (2~20, 지금 1)\n\n  salary=-100                                    [http=400]\n    검증 실패 3건 / title: 값이 필요합니다\n                  company: 값이 필요합니다\n                  salary: 너무 작습니다 (최소 0, 지금 -100)\n\n  title=백엔드&company=클로봇&salary=많이             [http=201]  <-- 구멍\n    만들었다: JobForm{title=백엔드, company=클로봇, salary=null, memo=null}\n    [바인딩] 숫자가 아니다: salary=많이        (로그에만 남았다)\n\n# 애노테이션 셋과 30줄로 400 을 만들 수 있었다.\n# 그런데 바인딩 실패를 로그로만 흘린 한 줄이 201 을 만들었다.",
+      "note": "**마지막 `201` 이 이 절의 결론이다.** 검증기를 만드는 것은 쉬웠고, 어려운 것은 **실패를 어디서 모으느냐**였다. 다음 절에서 이 책을 닫는다 — 우리가 만든 것과 만들지 않은 것을 나란히 둔다."
+    }
+  ],
+  "recap": [
+    "검증기의 뼈대는 getDeclaredFields·setAccessible·getAnnotation 세 줄이다.",
+    "애노테이션 셋과 30줄로 HTTP 400 을 만들었다.",
+    "@NotNull 이 걸렸을 때 continue 할지가 한 필드의 메시지 개수를 정한다.",
+    "Bean Validation 은 각 제약이 null 을 통과시키도록 규약을 정해 그 판단을 없앴다.",
+    "바인딩은 글자를 값으로 바꾸고 검증은 값이 규칙에 맞는지 본다 — 다른 단계다.",
+    "salary=많이 가 201 을 받았다 — 바인딩이 실패해 null 이 되고 @Min 은 null 을 안 본다.",
+    "원인은 바인딩 실패를 로그로만 흘린 한 줄이다.",
+    "고치는 방법은 바인딩 오류도 같이 모으거나 @NotNull 을 붙이는 것이다.",
+    "스프링의 BindingResult 가 두 오류를 같은 그릇에 담는 장치다.",
+    "모르는 필드는 무시했다 — 그것도 조용한 실패라 정책을 정해야 한다.",
+    "애노테이션이 늘면 if 가 늘어나는 것이 우리 검증기의 약점이다.",
+    "표준은 @Constraint(validatedBy=...) 로 검증 로직을 애노테이션에 매단다."
+  ],
+  "drills": [
+    {
+      "task": "@NotNull·@Size·@Min 을 만들어 폼을 검증한다.",
+      "done_when": "위반 목록이 나오는지 확인한다.",
+      "minutes": 13
+    },
+    {
+      "task": "폼 본문을 객체에 바인딩한다.",
+      "done_when": "타입 변환 실패를 어떻게 다루는지 정한다.",
+      "minutes": 12
+    },
+    {
+      "task": "숫자 필드에 글자를 보내 본다.",
+      "done_when": "응답 코드가 무엇인지 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "바인딩 오류를 검증 오류와 같이 모아 고친다.",
+      "done_when": "400 이 나오는지 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "salary=많이 가 201 을 받은 이유는.",
+      "a": "바인딩이 실패해 null 이 됐고 @Min 은 null 을 검사하지 않는다."
+    },
+    {
+      "q": "그 구멍을 막는 두 방법은.",
+      "a": "바인딩 오류를 같은 목록에 모으거나 해당 필드에 @NotNull 을 붙인다."
+    },
+    {
+      "q": "스프링의 BindingResult 는 무엇인가.",
+      "a": "바인딩 오류와 검증 오류를 함께 담는 그릇이다."
+    },
+    {
+      "q": "새 제약을 추가할 때 검증기를 안 고치는 방법은.",
+      "a": "@Constraint(validatedBy=...) 로 검증 로직을 애노테이션에 매단다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "바인딩",
+      "what": "요청의 글자를 객체 필드의 값으로 바꾸는 일. 실패를 따로 모아야 한다."
+    },
+    {
+      "term": "BindingResult",
+      "what": "스프링에서 바인딩 오류와 검증 오류를 함께 담는 객체. 안 보면 잘못된 입력이 통과한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jakarta Bean Validation Specification",
+      "url": "https://jakarta.ee/specifications/bean-validation/",
+      "publisher": "Eclipse Foundation"
+    },
+    {
+      "title": "Spring Framework — Validation, Data Binding",
+      "url": "https://docs.spring.io/spring-framework/reference/core/validation.html",
+      "publisher": "VMware"
+    }
+  ]
+}

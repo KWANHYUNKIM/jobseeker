@@ -609,7 +609,7 @@
           "title": "주소를 애노테이션으로",
           "summary": "9.7 을 다시 쓴다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",
@@ -617,7 +617,7 @@
           "title": "검증기 만들기",
           "summary": "@NotNull 을 직접.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
@@ -625,7 +625,7 @@
           "title": "다음으로",
           "summary": "스프링이 대신하던 것.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     }

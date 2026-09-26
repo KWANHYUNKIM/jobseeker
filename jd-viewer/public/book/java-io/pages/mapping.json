@@ -1,0 +1,231 @@
+{
+  "book": "java-io",
+  "id": "mapping",
+  "no": "11.4",
+  "chapter": 11,
+  "title": "주소를 애노테이션으로",
+  "summary": "9.7 을 다시 쓴다.",
+  "minutes": 13,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "애노테이션만 보고 라우팅 표를 채운다.",
+    "클래스를 어떻게 찾을지 정한다.",
+    "같은 주소가 두 번 등록되면 어떻게 되는지 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "9.7절에서 이렇게 채웠다.\n\n```java\nget(\"/hello\", (q, s) -> { ... });\n```\n\n이제 그 줄을 없앤다. 핸들러에 `@Route` 를 붙이고, 표는 **프로그램이 채운다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "컨트롤러에는 표를 채우는 코드가 없다",
+      "code": "public class HelloController {\n    @Route(\"/\")\n    public void home(Req q, Res s) { s.text(\"첫 화면\\n\"); }\n\n    @Route(\"/hello\")\n    public void hello(Req q, Res s) {\n        String n = q.param(\"name\");\n        s.text(\"안녕하세요 \" + (n == null ? \"손님\" : n) + \"\\n\");\n    }\n\n    @Route(value = \"/echo\", method = \"POST\")\n    public void echo(Req q, Res s) { s.text(\"받았다: \" + q.bodyText() + \"\\n\"); }\n\n    public void notARoute(Req q, Res s) { s.text(\"등록되지 않는다\\n\"); }\n}"
+    },
+    {
+      "type": "prose",
+      "md": "## 먼저 막힌 것 — 클래스 목록을 어디서 얻나\n\n메서드를 훑으려면 `Class` 객체가 있어야 한다. 그런데 **\"클래스패스에 있는 클래스를 전부 달라\"는 표준 API 가 JDK 에 없다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "이것이 스프링이 ASM 을 쓰는 이유다",
+      "md": "`ClassLoader` 에는 \"이름으로 찾기\" 만 있고 \"목록 주기\" 가 없다.\n\n> 이유가 있다. 클래스 로더는 **필요할 때 찾아오는 것**이고, 네트워크나 데이터베이스에서 가져올 수도 있다 — 목록을 셀 수 있다는 보장이 없다.\n> 그래서 스프링은 파일 시스템과 jar 를 직접 훑어 `.class` 파일을 찾고, **ASM 으로 바이트코드를 읽어** 애노테이션이 있는지 본다. 애노테이션이 없는 클래스는 **로드조차 하지 않는다** — 로드 비용을 아끼려고.\n> 우리는 그 정도는 안 만든다. 디렉토리를 훑어 `.class` 파일 이름을 클래스 이름으로 바꾸고 `Class.forName` 을 부른다.\n> **대가는 전부 로드한다는 것**이다. 아래 측정에서 그 값이 보인다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "디렉토리를 훑는다",
+      "code": "try (var st = Files.walk(dir)) {\n    st.filter(p -> p.toString().endsWith(\".class\")).forEach(p -> {\n        String rel = dir.relativize(p).toString();\n        names.add(rel.substring(0, rel.length() - 6)      // \".class\" 를 떼고\n                     .replace(File.separatorChar, '.'));   // / 를 . 으로\n    });\n}"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "찾아서 표에 넣는다",
+      "code": "for (String n : names) {\n    Class<?> c;\n    try { c = Class.forName(n); } catch (Throwable e) { continue; }\n    for (Method m : c.getDeclaredMethods()) {          // 10.3절\n        Route r = m.getAnnotation(Route.class);        // 11.3절\n        if (r == null) continue;\n        String key = r.method() + \" \" + r.value();\n        Object bean = beans.computeIfAbsent(c.getName(),\n            k -> c.getDeclaredConstructor().newInstance());   // 10.5절\n        m.setAccessible(true);                                // 10.4절\n        routes.put(key, new Handler(bean, m));\n    }\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "기동할 때 찍힌 것",
+      "sql": "$ java -cp out App out 12960\n\n  [스캔] .class 8개 찾기 7,385 us, 로드+훑기 13,180 us, 전체 20,565 us\n  [스캔] 클래스 8개 중 @Route 메서드 6개 -> 라우트 6개\n          GET /hello\n          POST /echo\n          GET /\n          GET /boom\n          GET /jobs\n          POST /jobs",
+      "note": "**표를 채우는 코드를 한 줄도 안 썼는데 라우트 6개가 등록됐다.** `notARoute` 는 애노테이션이 없어 빠졌고, 두 컨트롤러가 섞여 있다 — 순서는 파일 이름 순이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 오간 것 — 아홉 요청",
+      "sql": "  GET  /                      -> 첫 화면                 [http=200]\n  GET  /hello?name=홍길동      -> 안녕하세요 홍길동         [http=200]\n  GET  /jobs                  -> 공고 3건                [http=200]\n  GET  /nope                  -> 없는 주소: /nope        [http=404]\n  GET  /boom                  -> 서버 오류               [http=500]\n  POST /jobs                  -> 만들었다                [http=201]\n  POST /echo                  -> 받았다: 본문이다         [http=200]\n  POST /hello                 -> 안 되는 메서드           [http=405]\n  GET  /notARoute             -> 없는 주소: /notARoute   [http=404]\n\n  [서버] /boom -> 500 (java.lang.IllegalStateException: 일부러)",
+      "note": "**9.7절과 똑같이 동작한다.** 404·405·500·201 이 다 나오고, 쿼리의 한글도 맞는다(9.7절의 그 왕복 한 줄이 들어 있다). 달라진 것은 표를 채우는 방법 하나뿐이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 같은 주소를 두 번 붙이면\n\n9.7절의 `switch` 였다면 컴파일러가 `duplicate case label` 로 잡아 줬다. `Map.put` 은 조용히 덮는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "메서드 7개에 라우트 6개",
+      "sql": "=== Dup.class 를 뺀 상태 ===\n  [스캔] 클래스 9개 중 @Route 메서드 6개 -> 라우트 6개\n\n=== Dup.class 를 넣은 상태 (같은 GET /jobs) ===\n  [스캔] 클래스 10개 중 @Route 메서드 7개 -> 라우트 6개\n  [스캔] 같은 주소가 두 번 등록됐다:\n          GET /jobs  (Dup.alsoJobs  vs  JobController.list)",
+      "note": "**7 과 6 의 차이가 사라진 하나다.** `put` 이 돌려준 이전 값이 `null` 이 아니면 중복이므로, 그것만 보면 잡힌다 — 세지 않으면 모른다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이기는 쪽은 스캔 순서가 정한다",
+      "md": "위 출력에서 `Dup.alsoJobs` 가 **먼저** 등록되고 `JobController.list` 가 덮었다.\n\n> 우리 스캔은 클래스 이름을 정렬하므로 `Dup` < `JobController` 순서다 — **알파벳 순이 승자를 정했다.** 아무 의미가 없다.\n> 파일 시스템 순서에 기대면 더 나쁘다. 기계마다 다르고, jar 로 묶으면 또 달라진다. **개발에서는 A 가 이기고 운영에서는 B 가 이기는** 일이 생긴다.\n> 그래서 프레임워크는 중복을 **찾으면 죽는다.** 스프링은 `Ambiguous mapping. Cannot map ... there is already ...` 로 기동을 멈춘다 — 조용히 하나를 고르는 것보다 안 뜨는 게 낫다는 판단이다.\n> 우리 코드도 경고만 하고 있는데, 실무라면 예외를 던지는 게 맞다."
+    },
+    {
+      "type": "prose",
+      "md": "## 기동에 얼마나 드나\n\n10.6절에서 \"찾기는 기동할 때 한 번\" 이라고 했다. 그 한 번의 값이다."
+    },
+    {
+      "type": "table",
+      "caption": "세 번 측정한 스캔 시간",
+      "columns": [
+        "`.class` 개수",
+        "파일 찾기",
+        "로드 + 훑기",
+        "전체"
+      ],
+      "rows": [
+        [
+          "8개",
+          "7,385 us",
+          "13,180 us",
+          "**20,565 us**"
+        ],
+        [
+          "10개",
+          "6,150 us",
+          "17,406 us",
+          "23,557 us"
+        ],
+        [
+          "16개",
+          "7,114 us",
+          "17,381 us",
+          "24,496 us"
+        ]
+      ],
+      "note": "**클래스 8개에 20ms 다.** 대부분이 첫 `Files.walk` 와 첫 `Class.forName` 의 준비 비용이라, 개수가 두 배가 돼도 시간은 두 배가 되지 않았다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "20ms 를 어떻게 읽을 것인가",
+      "md": "이 숫자만으로 큰 애플리케이션의 기동 시간을 짐작하면 안 된다.\n\n> 우리는 클래스가 8개다. 스프링 부트 애플리케이션은 **수천에서 수만 개**이고, 게다가 애노테이션이 없는 것까지 전부 훑어야 한다.\n> 그래서 스프링은 두 가지를 한다 — **ASM 으로 로드 없이 먼저 걸러내고**, `@ComponentScan` 의 `basePackages` 로 훑을 범위를 좁힌다. 패키지를 안 좁히면 의존 라이브러리까지 훑는다.\n> 우리 측정에서 \"파일 찾기\" 가 7ms 로 절반 가까이였다는 것이 그 이야기의 시작이다 — **디스크를 훑는 것부터가 비용**이다.\n> 그리고 이 전부가 11.2절에서 본 대안(애노테이션 프로세서)이 매력적인 이유다. 컴파일할 때 표를 만들어 두면 기동에 0ms 다."
+    },
+    {
+      "type": "figure",
+      "caption": "what replaced what",
+      "ascii": "        9.7                            11.4\n        +------------------------+     +------------------------+\n        | get(\"/\",      lambda); |     | Files.walk(dir)        |\n        | get(\"/hello\", lambda); |     |   -> class names       |\n        | post(\"/echo\", lambda); |     | Class.forName          |\n        | ... one line per route |     | getDeclaredMethods     |\n        +------------------------+     | getAnnotation(Route)   |\n                |                      | newInstance            |\n                |                      | routes.put             |\n                v                      +-----------+------------+\n        ROUTES : Map<String, Handler> <------------+\n                |\n                v\n        the serving code is identical."
+    },
+    {
+      "type": "compare",
+      "title": "무엇이 나아졌고 무엇을 잃었나",
+      "left": {
+        "title": "얻은 것",
+        "md": "- 주소가 **핸들러 옆에** 있다\n- 등록을 잊을 수 없다\n- 컨트롤러를 추가해도 등록 코드를 안 고친다\n- 표를 훑어 문서를 만들 수 있다"
+      },
+      "right": {
+        "title": "잃은 것",
+        "bad": true,
+        "md": "- 컴파일러가 **중복을 안 잡는다**\n- 오타 난 주소도 그냥 등록된다\n- 기동에 20ms\n- 어디서 등록되는지 코드에 안 보인다"
+      },
+      "note": "오른쪽 첫 줄이 가장 크다 — `switch` 였다면 `duplicate case label` 이었다. **검사를 컴파일러에서 스캐너로 옮긴 것**이고, 그러면 스캐너가 그 검사를 해 줘야 한다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"스프링은 `@Controller` 를 어떻게 찾습니까.\"**\n\n> 클래스패스를 훑는다 — 그런데 **JDK 에 \"클래스 목록\" API 가 없다.** 그래서 파일 시스템과 jar 를 직접 훑어 `.class` 를 찾고, **ASM 으로 바이트코드를 읽어** 애노테이션을 먼저 확인한다. 없는 클래스는 로드하지 않는다.\n> 직접 만들어 봤다 — `Files.walk` 로 이름을 모으고 `Class.forName`·`getDeclaredMethods`·`getAnnotation`·`newInstance` 로 표를 채웠다. 클래스 8개에 **20ms** 였고 절반이 디스크 훑기였다.\n> \"같은 주소가 두 번 붙으면\" 에는 — `Map.put` 이 조용히 덮는다. 우리 측정에서 **메서드 7개에 라우트 6개**였고 이기는 쪽은 알파벳 순이 정했다. 그래서 스프링은 `Ambiguous mapping` 으로 기동을 멈춘다.\n> 검사가 컴파일러에서 스캐너로 옮겨 간 것이므로 **스캐너가 그 검사를 해야 한다**는 게 요점이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 오간 것 — 등록 코드 없이 채운 표",
+      "sql": "$ java -cp out App out 12960\n  [스캔] .class 8개 찾기 7,385 us, 로드+훑기 13,180 us, 전체 20,565 us\n  [스캔] 클래스 8개 중 @Route 메서드 6개 -> 라우트 6개\n          GET /hello   POST /echo   GET /   GET /boom   GET /jobs   POST /jobs\n\n$ curl ...\n  GET  /                  -> 첫 화면              [200]\n  GET  /hello?name=홍길동  -> 안녕하세요 홍길동      [200]\n  GET  /jobs              -> 공고 3건             [200]\n  POST /jobs              -> 만들었다             [201]\n  POST /echo              -> 받았다: 본문이다      [200]\n  POST /hello             -> 안 되는 메서드        [405]\n  GET  /nope              -> 없는 주소: /nope     [404]\n  GET  /notARoute         -> 없는 주소            [404]   <- 애노테이션이 없어 안 걸렸다\n  GET  /boom              -> 서버 오류            [500]\n\n# 같은 주소를 두 클래스에 붙이면\n  [스캔] 클래스 10개 중 @Route 메서드 7개 -> 라우트 6개\n  [스캔] 같은 주소가 두 번 등록됐다:\n          GET /jobs  (Dup.alsoJobs  vs  JobController.list)\n\n# 9.7절과 응답이 똑같다. 바뀐 것은 표를 채우는 코드가 사라진 것뿐이고,\n# 그 대신 컴파일러가 해 주던 중복 검사를 스캐너가 하게 됐다.",
+      "note": "**7 과 6 이 이 절의 숫자다.** 애노테이션으로 옮기면서 편해진 만큼 검사 하나가 사라졌고, 그것을 되찾는 줄을 직접 써야 했다. 다음 절에서는 이 틀에 검증을 붙인다 — 필드 애노테이션으로 400 을 만든다."
+    }
+  ],
+  "recap": [
+    "핸들러에 @Route 를 붙이고 표는 스캔이 채운다 — 등록 코드가 한 줄도 없다.",
+    "JDK 에는 클래스패스의 클래스 목록을 주는 표준 API 가 없다.",
+    "클래스 로더는 이름으로 찾는 것이고 목록을 셀 수 있다는 보장이 없어서다.",
+    "그래서 스프링은 파일과 jar 를 직접 훑고 ASM 으로 바이트코드를 읽어 먼저 걸러낸다.",
+    "우리는 Files.walk 로 .class 를 모아 Class.forName 을 불렀다 — 전부 로드하는 대가를 진다.",
+    "스캔 한 번에 10장의 네 가지가 다 쓰인다 — forName·getDeclaredMethods·getAnnotation·newInstance.",
+    "클래스 8개에 20ms 였고 절반이 디스크 훑기였다.",
+    "개수가 두 배가 돼도 시간은 두 배가 안 됐다 — 대부분이 첫 호출의 준비 비용이다.",
+    "9.7절과 응답이 똑같다 — 404·405·500·201 이 다 나온다.",
+    "애노테이션이 없는 메서드는 등록되지 않는다.",
+    "같은 주소를 두 번 붙이면 Map.put 이 조용히 덮는다 — 메서드 7개에 라우트 6개였다.",
+    "이기는 쪽은 스캔 순서가 정한다 — 우리 경우 알파벳 순이었다.",
+    "스프링은 그래서 Ambiguous mapping 으로 기동을 멈춘다.",
+    "검사가 컴파일러에서 스캐너로 옮겨 갔으므로 스캐너가 그 검사를 해야 한다."
+  ],
+  "drills": [
+    {
+      "task": "@Route 를 만들고 컨트롤러 두 개에 붙인다.",
+      "done_when": "등록 코드 없이 라우트가 잡히는지 확인한다.",
+      "minutes": 13
+    },
+    {
+      "task": "디렉토리를 훑어 클래스 이름을 만든다.",
+      "done_when": "구분자 변환과 .class 제거를 맞춘다.",
+      "minutes": 12
+    },
+    {
+      "task": "스캔에 걸린 시간을 단계별로 찍는다.",
+      "done_when": "파일 찾기와 로드를 나눠 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "같은 주소를 두 클래스에 붙인다.",
+      "done_when": "메서드 수와 라우트 수가 달라지는 것을 확인한다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "JDK 로 클래스패스의 클래스 목록을 얻을 수 있나.",
+      "a": "없다. 클래스 로더는 이름으로 찾는 것이고 목록 API 가 없다."
+    },
+    {
+      "q": "스프링이 ASM 을 쓰는 이유는.",
+      "a": "애노테이션이 없는 클래스를 로드하지 않고 걸러내기 위해서다."
+    },
+    {
+      "q": "같은 주소가 두 번 등록되면 어떻게 아나.",
+      "a": "Map.put 이 돌려준 이전 값이 null 이 아니면 중복이다. 세지 않으면 모른다."
+    },
+    {
+      "q": "애노테이션 라우팅으로 옮기면서 잃는 것은.",
+      "a": "컴파일러의 중복 검사다. switch 였다면 duplicate case label 이었다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "컴포넌트 스캔",
+      "what": "클래스를 훑어 애노테이션이 붙은 것을 찾아 등록하는 것. 범위를 좁히지 않으면 라이브러리까지 훑는다."
+    },
+    {
+      "term": "Ambiguous mapping",
+      "what": "스프링이 같은 주소가 두 번 등록됐을 때 기동을 멈추며 내는 오류."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Spring Framework — Classpath Scanning",
+      "url": "https://docs.spring.io/spring-framework/reference/core/beans/classpath-scanning.html",
+      "publisher": "VMware"
+    },
+    {
+      "title": "Java SE 17 API — Files.walk",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
