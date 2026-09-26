@@ -1896,3 +1896,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Kanmu 회사 프로파일
 
 - kanmu.co.jp 첫 화면의 프로덕트 넷(밴들카드·Pool·사쿳토 자금 조달·분할)을 수익원 셋으로. 기술 글은 플랫폼 팀 위주 — 도메인 둘(pistachio 스키마 관리·qg 비동기 잡 스케일)을 밴들카드에 inferred.
+
+## 2026-09-26 Kanmu pistachio 선언적 스키마
+
+- 결정 6 — Alembic → 선언적·자작(pg_query_go, generic 수정·pgquery·pgschema 대신)·DROP 기본 무효·트랜잭션 기본 무효·디렉티브 셋·--explain(카탈로그 추정). Alembic→sqldef→pistachio 연도가 없어 history 대신 그림.

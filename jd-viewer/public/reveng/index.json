@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "핀테크",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "프리페이드 카드 밴들카드의 카무 — 결제 DB 의 스키마는 PostgreSQL 파서를 그대로 쓰는 자작 선언적 도구 pistachio 로 DROP·트랜잭션을 기본 무효로 두고 DDL 의 무게를 미리 어림하며, 월말 월초·일제 통지로 몰리는 PostgreSQL 큐 잡은 Datadog 모니터로 Worker 를 늘린다",
       "updated_at": "2026-09-26",
       "domain": "kanmu.co.jp"
