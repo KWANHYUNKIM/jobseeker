@@ -165,7 +165,9 @@
     "매출·고객 수·제품별 가격을 읽지 않았다",
     "feedernet.com 은 제목만 돌려줘(자바스크립트 렌더) 본문을 읽지 못했다",
     "salary: 공고에 금액이 없다 — 비워 둔다",
-    "jobkorea·사람인 데이터 엔지니어와 사람인 의료데이터 분석가는 원티드와 제목이 같다 — 본문 비교로 duplicate_of 판단할 것"
+    "jobkorea·사람인 데이터 엔지니어와 사람인 의료데이터 분석가는 원티드와 제목이 같다 — 본문 비교로 duplicate_of 판단할 것",
+    "NLP·AI 에이전트(375155)는 헤더가 경력 3-8년인데 자격요건 첫 줄은 'NLP 또는 자연어처리 관련 프로젝트 개발 경험 2년 이상' 이다",
+    "데이터 엔지니어(359557)는 신입-경력 4년인데 자격요건에 Spark·DuckDB 대규모 처리 인프라 '구축 및 운영 유경험자' 와 대용량 마이그레이션 병목 해결이 있다 — 신입에게 어디까지 요구하는지 공고로는 알 수 없다"
   ],
   "postings": [
     {
@@ -319,6 +321,145 @@
           {
             "title": "NLP·AI 에이전트 / 비정형 의무기록 분석 개발자",
             "url": "https://www.wanted.co.kr/wd/375155",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/359557",
+      "title": "데이터 엔지니어",
+      "site": "wanted",
+      "verdict": "신입부터 경력 4년까지 받는다. 병원 데이터를 모아 연구용으로 바꾸는 배치 파이프라인 자리다 — Linux·Docker 위에서 Embulk 로 수집하고, Digdag 또는 Airflow 로 스케줄링·모니터링하고, DQ 체크와 멱등성을 고려해 설계하고, 민감 정보 비식별화와 분석용 데이터셋 변환을 자동화한다. 자격요건은 신입 허용치고 무겁다 — Linux·Docker 운영, Digdag/Airflow 의존성 관리, SQLD 또는 그에 준하는 SQL 최적화, 대용량 마이그레이션의 성능 병목 해결, Spark·DuckDB 로 대규모 처리 인프라를 구축·운영한 경험. 우대는 EMR·CDM 과 개인정보보호법, 장애 시 트랜잭션 복구·정합성 노하우, Kubernetes·CI/CD, Great Expectations·Observability. 전형은 서류 → 실무 면접 → 임원 면접 → 처우협의 → 입사.",
+      "fit": {
+        "must_have": [
+          "Linux·Docker 컨테이너 운영",
+          "Digdag·Airflow 태스크 의존성 관리",
+          "SQL 최적화(SQLD 또는 준하는 수준)",
+          "ETL·대용량 마이그레이션 병목 해결",
+          "Spark·DuckDB 대규모 처리"
+        ],
+        "can_learn": [
+          "EMR·CDM 과 개인정보보호법",
+          "장애 시 복구·정합성 유지",
+          "Kubernetes·CI/CD",
+          "Great Expectations·Observability"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Embulk 수집과 Digdag/Airflow 오케스트레이션",
+          "from": "task",
+          "quote": "컨테이너 기반 데이터 파이프라인 구축: Linux 및 Docker 환경에서 Embulk를 활용한 고효율 데이터 수집(Ingestion) 프로세스 설계 및 운영",
+          "priority": "core",
+          "why": "첫 두 주요업무이고 자격요건에 'Digdag, Airflow 등 오픈소스 엔진을 활용한 태스크 의존성 관리 및 자동화 경험' 이 있다.",
+          "gap_check": "병원 DB 에서 매일 새로 들어온 진료 기록만 가져오려면 Embulk 설정에서 무엇을 기준으로 증분을 잡고, 앞 태스크가 실패하면 뒤 태스크는 어떻게 멈추는가?",
+          "drill": "Docker 로 PostgreSQL 두 개를 띄우고 Embulk 로 증분 적재 설정을 만든 뒤, Digdag(또는 Airflow)로 '수집 → 비식별화 → 적재 → DQ 체크' 워크플로우를 매일 돌게 스케줄한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Embulk",
+              "url": "https://www.embulk.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Digdag Documentation",
+              "url": "https://docs.digdag.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Airflow Documentation",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멱등한 파이프라인과 데이터 품질 체크",
+          "from": "task",
+          "quote": "데이터 품질 및 정합성 보장: DQ(Data Quality) 체크 로직 구현 및 멱등성(Idempotency)을 고려한 파이프라인 설계",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '파이프라인 장애 시 트랜잭션 복구 및 데이터 정합성 유지에 대한 본인만의 노하우' 와 Great Expectations 가 있다.",
+          "gap_check": "같은 날짜의 적재를 두 번 돌려도 행이 두 배가 되지 않게 하려면 무엇(파티션 덮어쓰기·UPSERT·스테이징 교체)을 쓰고, 적재 뒤 무엇을 체크해 실패로 판정하는가?",
+          "drill": "앞 드릴의 적재를 파티션 단위 교체로 바꾸고 일부러 두 번·중간 실패 후 재실행해 결과가 같은지 확인한 뒤, 건수·NULL·키 중복 체크를 Great Expectations 로 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Great Expectations Docs",
+              "url": "https://docs.greatexpectations.io/docs/home/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의료 데이터 비식별화와 CDM 변환",
+          "from": "task",
+          "quote": "의료 데이터 표준화: 의료 도메인 지식 기반 민감 정보 비식별화 및 분석용 데이터셋 변환 자동화",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'EMR, CDM 등 의료 데이터 처리 경험 및 관련 법규(개인정보보호법 등) 이해도' 가 있다. 회사가 병원 데이터를 OMOP-CDM 으로 구축한다.",
+          "gap_check": "환자 이름·주민번호·생년월일·내원일 중 무엇을 지우고 무엇을 바꾸며(예: 날짜 이동), 그렇게 바꾼 뒤에도 같은 환자의 기록이 어떻게 이어지는가?",
+          "drill": "가상 EMR 테이블(환자·방문·진단)을 만들어 가명화 규칙을 적용하고 OMOP CDM 의 PERSON·VISIT_OCCURRENCE·CONDITION_OCCURRENCE 로 변환하는 SQL 을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "The Book of OHDSI — Extract Transform Load",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/ExtractTransformLoad.html",
+              "kind": "docs"
+            },
+            {
+              "title": "OMOP Common Data Model",
+              "url": "https://ohdsi.github.io/CommonDataModel/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Spark·DuckDB 로 대용량 처리",
+          "from": "qualification",
+          "quote": "대용량 데이터 처리: Spark, DuckDB 등을 활용한 대규모 데이터 처리 인프라 구축 및 운영 유경험자",
+          "priority": "high",
+          "why": "자격요건이고, 다른 자격 줄이 '대용량 데이터 마이그레이션 시 성능 병목 해결 역량' 이다.",
+          "gap_check": "수억 행 진료 기록을 한 머신에서 DuckDB 로 처리할 때와 Spark 클러스터로 갈 때의 경계는 무엇이고, 느린 조인은 무엇부터 보는가?",
+          "drill": "수천만 행 가상 데이터를 Parquet 로 만들어 같은 집계를 DuckDB 와 로컬 Spark 로 돌려 시간·메모리를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "DuckDB Documentation",
+              "url": "https://duckdb.org/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Spark Documentation",
+              "url": "https://spark.apache.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "가상 EMR → 비식별화 → OMOP CDM 멱등 파이프라인 저장소",
+          "why": "주요업무 네 줄(수집·오케스트레이션·DQ·비식별화)을 한 저장소로 보여 준다. 재실행해도 결과가 같음을 시연한다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "SQLD 취득",
+          "why": "자격요건에 'SQLD 자격 보유자 또는 이에 준하는' 이 이름으로 적혀 있다. 신입이면 증빙이 된다.",
+          "effort": "수 주"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 실무 면접 → 임원 면접 → 처우협의 → 입사(공고 기준).",
+        "expect": [
+          "파이프라인 멱등성과 재실행",
+          "SQL 최적화 사례",
+          "대용량 마이그레이션 병목",
+          "의료 데이터 비식별화"
+        ],
+        "sources": [
+          {
+            "title": "데이터 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/359557",
             "publisher": "원티드"
           }
         ]
