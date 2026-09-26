@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**USEN ICT 기능 2(2026-09-26) — `cortex-two-tier-roles`. 두 도메인 featured, connections 서로 이어짐. 다음은 완주 점검: 수익원(법인 ICT · USEN GATE 02)의 도메인 연결이 inferred 라 검색 1(RSS 5편 — 이미 전부 봤다: 사업 글 없음) · 검색 2(Zenn 검색 API 'USEN GATE' · 'USEN ICT')로 찾고 없으면 hold_reason + STATE '재시도 안 함' + QUEUE hold. 대기 0 → 이 회사 뒤 후보 조사. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**USEN ICT hold(2026-09-26) — 법인 ICT 수익원에 이을 글을 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 후보 조사(대기 0/3 — 3순위): Zenn 검색 API 주제어(94번째에 쓴 15개에 새 낱말 더해 — 예: 障害対応 設計·コスト削減 アーキテクチャ·移行 段階的) · 94번째에서 거른 SmartShopping·SCOGR 은 다시 올리지 않는다. 비교 문서 재료(+IVRy·PKSHA·TRIBEAU 의 'LLM 을 믿지 않는 설계'): 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -389,6 +389,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **dely Kurashiru AI OS·TRILL/LIVEwith 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 4낱말, 해당 글 0). 그쪽 구조 글이 새로 나오면 다시.
 - **みてね 사진 프린트·포토북 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 3낱말 0건). 프린트·포토북 구조 글이 새로 나오면 다시.
 - **SODA 실매장 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 3낱말, Web 톱 리뉴얼 글뿐). 실매장·감정 구조 글이 새로 나오면 다시.
+- **USEN ICT 법인 ICT 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 5편 전부 사내 데이터·DX · Zenn 검색 API 3낱말, 무관한 글뿐). 네트워크·보안·클라우드 서비스 쪽 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

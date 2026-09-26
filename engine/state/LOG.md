@@ -2049,3 +2049,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 USEN ICT cortex-two-tier-roles
 
 - Cortex 롤 설계 글 끝까지. 결정 7, 그림 2(flow·failure).
+
+## 2026-09-26 USEN ICT 법인 ICT 수익원 보류
+
+- 검색 1: RSS 5편(전부 사내 데이터·DX). 검색 2: Zenn 검색 API 'USEN GATE'·'USEN ICT'·'USEN' — 무관한 글뿐. hold_reason 추가, in_progress 유지.
