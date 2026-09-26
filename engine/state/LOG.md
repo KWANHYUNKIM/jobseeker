@@ -2412,3 +2412,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 iCARE 사람 서비스 수익원 보류
 
 - 검색 1: RSS 20편 + 글 목록 2쪽 — 해당 없음. 검색 2: Zenn 검색 4낱말 — 0건. hold_reason, in_progress 유지.
+
+## 2026-09-27 e-dash 회사 프로파일
+
+- e-dash.co.jp 403 · WebFetch 도 403 → 三井物産 설립 토픽(1차) · e-dash.io 서비스 페이지 · THE BRIDGE 조달 보도(2차, 출처 명시)로 수익원 둘. 글 셋(OCR · 배출계수 · ALB 11KB)으로 도메인 셋.
