@@ -7,7 +7,7 @@
       "name_en": "neoAI",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 4,
       "one_liner": "도쿄대 마쓰오 연구실 발 법인용 생성 AI 플랫폼 'neoAI Chat' 의 회사 — 멀티테넌트 · 싱글테넌트 · 고객 환경에 모두 배포하므로 LLM 채팅만 떼고 나머지는 모듈러 모놀리스에 두고, 테넌트 경계는 RLS 에 맡기고, 외부 데이터 동기화는 큐와 DB 만으로 단단하게 만든다",
       "updated_at": "2026-09-27",
