@@ -205,7 +205,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "yesterday-optimized-today-raw"
+      ]
     }
   ],
   "features": [
@@ -617,6 +619,316 @@
           "summary": "Control Plane 의 **M2M Token Issuer**(OAuth 2.0 Client Credentials 로 사내 시스템 간·배치용 Internal Token 을 발급)를 고친 기록이다. 처음에는 **'움직이는 것을 빨리 내놓기'** 를 앞세워 **권한 제어를 최소한으로** 지었다. Client Credentials 에는 사용자가 없어 **동의 과정이 없으니** 허용 범위를 scope 로 명시해야 하는데, 사내에서 쓰임이 늘자 **'어느 클라이언트에 어느 서비스가 어떤 조작을 허락하나'** 를 통제하고 싶어졌다. **RFC 8707 Resource Indicators** 를 따랐다 — 토큰 요청의 `resource` 로 목적지를 지정하면 토큰의 `aud` 가 된다. **RFC 를 따르면 다른 팀 개발자에게 설명하기 쉽다**는 이점도 적는다. 받는 서비스는 **Istio RequestAuthentication 으로 aud 를, AuthorizationPolicy 로 scope 를** 검증하고, 자기 식별자와 다른 aud 는 거부한다 — **다른 서비스 앞 토큰으로는 못 들어온다.** 원칙은 **'토큰 하나 = 요청 하나'** 로 매번 받는 것이지만, 여러 `resource` 를 지정해 aud 여럿을 넣는 것도 지원한다. 이때 **scope 는 모든 resource 에 공통(교집합)** 이어야 하고, **resource 마다 다른 scope 는 지원하지 않기로 했다** — 권한 범위가 넓어져 **최소 권한이라는 목적과 맞지 않기** 때문이다. 그래서 서비스 사이로 요청이 사슬처럼 이어져도 **같은 토큰을 넘기며 각 서비스가 독립적으로 aud·scope 를 검증**한다. 식별자는 **URL 대신 URN** — 쿠버네티스 서비스 URL 이 가장 직관적이지만 **Control Plane 과 Data/Application Plane 을 다른 클러스터로 나눠** 두어 클러스터 내 URL 은 고유성을 보장 못 하고, URL 이면 **RFC 9728(Protected Resource Metadata) 엔드포인트로 오해**될 수 있다. 식별자는 aud 에 싣는 **논리 이름**일 뿐이다. 다만 **형식을 엄격히 강제하지 않고 규칙만 주고 쓰는 쪽에 맡긴다.** scope 운영 규칙을 어디까지 발급자가 정할지는 **아직 검토 중**이다."
         }
       ]
+    },
+    {
+      "key": "yesterday-optimized-today-raw",
+      "name": "어제까지는 풀어 두고, 오늘은 원본을 읽는다",
+      "domain": "쌓인 제조 데이터를 싸게 꺼낸다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "제조 데이터 플랫폼은 운영 데이터를 **분석에 쓰일 수 있게 쌓는 것**이 일이다. 그 분석이 도는 BigQuery 를 **On-demand(스캔량 과금)** 로 쓰니, 데이터가 쌓일수록 **같은 질의가 비싸진다.**\n\nFirestore 의 변경 이력을 실시간으로 받는 테이블이 문제였다. 확장 기능이 **문서 id·timestamp·갱신 후 전체 문서(JSON 한 컬럼)** 를 보내고, 문서의 최신 상태는 id 별 가장 늦은 timestamp 로 재현한다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 걸 수가 없고, 일부 필드만 읽어도 **거대한 JSON 을 거의 전부** 스캔했다 — **월 약 2,600달러.** 게다가 사용자는 **니어 리얼타임**을 원했다.\n\n답은 **시간으로 가르는 것**이다. 어제까지는 JSON 을 풀고 파티션을 건 테이블, 오늘은 원본을 바로 읽는 뷰 — 합쳐서 보여 준다. **서비스 수준을 낮추지 않고 월 240달러.**",
+        "metrics": [
+          {
+            "label": "쿼리 비용",
+            "value": "월 약 2,600달러 → 240달러 (약 90% 절감)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          },
+          {
+            "label": "과금 방식",
+            "value": "BigQuery On-demand — 스캔한 데이터 양에 과금",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          },
+          {
+            "label": "최적화 테이블의 되짚기",
+            "value": "매 실행 최근 7일 원본만 다시 읽어 merge",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          },
+          {
+            "label": "당일 뷰의 범위",
+            "value": "원본의 최근 1일",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "비용을 줄일 방법을 정리할 때",
+          "thought": "**스캔량을 줄이는 길은 셋뿐이다 — 행, 열, 횟수.** 파티션·클러스터로 행을, 필요한 컬럼·검색 색인으로 열을, 요약 테이블·요건 조정으로 횟수를 줄인다. 이 사례는 셋을 **전부** 쓴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+              "url": "https://caddi.tech/2024/12/04/100935",
+              "publisher": "CADDi",
+              "date": "2024-12-04",
+              "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+            }
+          ]
+        },
+        {
+          "at": "실시간 요구와 비용이 부딪칠 때",
+          "thought": "**요건을 깎지 않는다.** 흔한 답은 갱신 주기를 늦추는 것이지만, 여기서는 오늘치만 원본으로 읽고 나머지를 최적화해 **실시간성과 비용을 둘 다** 가져간다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+              "url": "https://caddi.tech/2024/12/04/100935",
+              "publisher": "CADDi",
+              "date": "2024-12-04",
+              "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+            }
+          ]
+        },
+        {
+          "at": "글을 쓰게 된 이유를 적을 때",
+          "thought": "**도구가 쉬워지면 비효율도 쉬워진다.** dbt 로 여러 배경의 사람이 모델을 만들게 된 것은 좋지만, 그만큼 비싼 테이블과 질의가 늘어난다 — 비용 줄이는 지식을 공유하지 않으면 새는 돈이 커진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+              "url": "https://caddi.tech/2024/12/04/100935",
+              "publisher": "CADDi",
+              "date": "2024-12-04",
+              "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "원본 테이블(변경 이력)",
+            "what": "Firestore 문서의 변경마다 document_id·timestamp·**갱신 후 전체 JSON(data)**. timestamp 로 파티션."
+          },
+          {
+            "name": "current_view",
+            "what": "원본의 **최근 1일**만 JSON 을 풀어 보여 주는 뷰 — 오늘의 실시간성."
+          },
+          {
+            "name": "optimized_table",
+            "what": "dbt incremental(merge, unique_key=job_id). **created_at 일 단위 파티션 + 클러스터.** 매번 최근 7일 원본만 되짚는다."
+          },
+          {
+            "name": "union_view",
+            "what": "두 쪽을 union 하고 job_id·created_at 마다 **updated_at 가 가장 늦은 행**만 남긴다."
+          }
+        ],
+        "invariants": [
+          "**문서의 최신 상태는 가장 늦은 변경 하나**로 정해진다.",
+          "오늘치는 **원본에서**, 어제까지는 **최적화 테이블에서** 읽는다.",
+          "두 쪽이 겹쳐도 **job_id·created_at 당 한 행**만 남는다.",
+          "필터 컬럼(created_at)이 **파티션 키**여야 스캔이 줄어든다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Firestore 변경이 확장 기능으로 원본 테이블에 쌓인다",
+            "why": "id·timestamp·전체 JSON — 실시간이지만 질의하기엔 비싸다."
+          },
+          {
+            "step": "dbt 가 최근 7일 원본을 읽어 JSON 을 풀고 optimized_table 에 job_id 로 merge 한다",
+            "why": "created_at 으로 파티션·클러스터를 걸 수 있게 된다."
+          },
+          {
+            "step": "current_view 는 원본의 최근 1일을 그 자리에서 풀어 보여 준다",
+            "why": "최적화 테이블이 따라오기 전 오늘치를 메운다."
+          },
+          {
+            "step": "union_view 가 두 쪽을 합치고 행마다 가장 늦은 updated_at 만 남긴다",
+            "why": "겹치는 구간의 중복을 걷어 한 문서 = 한 행."
+          },
+          {
+            "step": "사용자 질의는 union_view 를 created_at 으로 거른다",
+            "why": "과거는 파티션으로 좁혀지고, 오늘은 1일치만 스캔한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "BigQuery 를 어떤 과금으로 쓸 것인가?",
+            "chosen": "**On-demand — 스캔량에 과금.**",
+            "alternatives": [
+              "Capacity(슬롯을 미리 산다)"
+            ],
+            "tradeoff": "쓴 만큼만 낸다. 대가는 **거대한 컬럼·맞지 않는 파티션이 곧장 청구서**가 된다는 것 — 그래서 행·열·횟수를 줄이는 설계를 계속 해야 한다. Capacity 와 견준 이유는 글에 없다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          },
+          {
+            "question": "변경 이력 원본을 그대로 질의할 것인가?",
+            "chosen": "**아니다 — 원본은 받는 그릇으로 두고, 질의용 테이블을 따로 만든다.**",
+            "alternatives": [
+              "원본에 검색 색인·파티션을 더 건다"
+            ],
+            "tradeoff": "원본은 **timestamp 파티션**인데 필터는 **JSON 안의 created_at** 이라 원본만으로는 파티션을 못 건다. 따로 만들면 **같은 데이터가 두 곳**에 있다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          },
+          {
+            "question": "질의용 테이블을 어떻게 만들 것인가?",
+            "chosen": "**dbt incremental(merge, unique_key=job_id)로 JSON 을 풀고 created_at 일 단위 파티션 + 클러스터를 건다.**",
+            "alternatives": [
+              "매번 전체를 다시 만든다(full refresh)"
+            ],
+            "tradeoff": "필요한 컬럼만, 필요한 날짜만 읽게 된다. merge 라 **같은 job 의 최신 상태로 덮어쓴다.** 대가는 증분 로직을 유지해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          },
+          {
+            "question": "증분 실행 때 원본을 얼마나 되짚을 것인가?",
+            "chosen": "**최근 7일.**",
+            "alternatives": [
+              "직전 실행 이후만",
+              "전체"
+            ],
+            "tradeoff": "며칠 전 문서가 뒤늦게 갱신돼도 **7일 안이면 따라잡는다.** 대가는 매 실행 7일치 원본을 스캔하는 비용이고, **7일보다 늦게 바뀐 문서는 최적화 테이블에 반영되지 않을 수 있다**(이 사이트의 해석, 글은 7일을 고른 이유를 적지 않는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          },
+          {
+            "question": "니어 리얼타임 요구를 어떻게 지킬 것인가?",
+            "chosen": "**오늘치(최근 1일)는 원본을 바로 푸는 뷰로 보여 주고 최적화 테이블과 union 한다.**",
+            "alternatives": [
+              "갱신 주기를 늦추도록 요건을 조정",
+              "전부 원본 뷰로"
+            ],
+            "tradeoff": "실시간성을 잃지 않는다. 대가는 **당일 1일치는 여전히 JSON 전체를 스캔**한다는 것 — 그 범위를 하루로 묶어 비용을 가둔다. 글쓴이는 뒤에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          },
+          {
+            "question": "겹치는 구간의 중복을 어떻게 걷을 것인가?",
+            "chosen": "**union 뒤 job_id·created_at 마다 updated_at 가 가장 늦은 행만 남긴다(row_number · qualify).**",
+            "alternatives": [
+              "두 쪽의 날짜 경계를 정확히 잘라 겹치지 않게"
+            ],
+            "tradeoff": "경계가 조금 겹쳐도 결과는 맞다. 대가는 **읽을 때마다 윈도 함수로 중복을 거른다**는 계산이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+                "url": "https://caddi.tech/2024/12/04/100935",
+                "publisher": "CADDi",
+                "date": "2024-12-04",
+                "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "인증은 Auth0 에 맡기고, 토큰은 우리가 쥔다 (다른 도메인의 기능)",
+          "via": "Plane 의 경계",
+          "contract": "Control Plane 은 **관리 메타데이터만** 들고 고객 업무 데이터는 Data/Application Plane 에 둔다 — 이 기능이 다루는 운영 데이터가 그 바깥쪽이다. 두 글은 서로를 언급하지 않는다(이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "두 길로 읽고 하나로 합친다",
+          "question": "사용자의 질의는 어떤 데이터를 읽나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  F[\"Firestore 변경\"] --> R[\"원본 테이블\\nid · timestamp · 전체 JSON\"]\n  R -->|\"dbt · 최근 7일 되짚기\\nmerge job_id\"| O[\"optimized_table\\ncreated_at 파티션 · 클러스터\"]\n  R -->|\"최근 1일만 JSON 풀기\"| V[\"current_view\"]\n  O --> U[\"union_view\\n행마다 가장 늦은 updated_at\"]\n  V --> U\n  U --> Q[\"질의\\n월 2,600 → 240 달러\"]"
+        },
+        {
+          "title": "한 문서가 두 쪽에 나타나는 시간",
+          "question": "같은 job 은 언제 어디에 있나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 원본에만: 방금 생성·갱신\n  원본에만 --> 양쪽에: 다음 dbt 실행(최근 7일)\n  양쪽에 --> 최적화에만: 하루가 지나 뷰 범위 밖\n  양쪽에 --> 양쪽에: union 에서 가장 늦은 행만\n  최적화에만 --> 최적화에만: 7일 안의 갱신은 merge\n  최적화에만 --> [*]"
+        },
+        {
+          "title": "비싼 질의가 생기는 자리",
+          "question": "원본을 그대로 읽으면 무엇이 새나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"필터는 created_at\"] --> A1[\"created_at 은 JSON 안\"]\n  A1 --> A2[\"파티션을 못 건다\\n원본은 timestamp 파티션\"]\n  B[\"필드 몇 개만 필요\"] --> B1[\"전체 문서가 JSON 한 컬럼\"]\n  B1 --> B2[\"거의 전부 스캔\"]\n  A2 --> C[\"월 약 2,600달러\"]\n  B2 --> C\n  L[\"7일보다 늦게 바뀐 문서\"] -.-> L1[\"최적화 테이블에 안 들어올 수 있다(해석)\"]\n  T[\"당일 1일치\"] -.-> T1[\"여전히 원본 스캔 — 하루로 가둔다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "巨大JSONカラムをもつテーブルを最適化し、サービスレベルを下げずにBigQueryのクエリコストを90％カットした話",
+          "url": "https://caddi.tech/2024/12/04/100935",
+          "publisher": "CADDi",
+          "date": "2024-12-04",
+          "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -625,7 +937,8 @@
     "**Control Plane 분리는 진행 중**이라고만 적는다 — 무엇이 아직 Drawer 에 묶여 있는지, 언제 끝나는지 없다.",
     "**아직 안 읽은 것** — 도면 검색(`検索から探索へ` 3부작, Elasticsearch), Iceberg 레이크하우스, `RFC 8707 Resource Indicators`(2026-05-21), `Auth0を使って1年かけてSSOをサポートした話`, 특주 부품 수발주 쪽 시스템.",
     "**제조 데이터 자체(도면 해석·구조화)의 기술**을 아직 못 봤다 — 플랫폼 소개가 '제조 고유의 제품 데이터 해석에 강하다'고만 적는다.",
-    "**인증 게이트웨이의 가용성**이 없다 — 모든 앱이 한 경로를 지나는데 이중화·장애 시 동작·지연 수치를 적지 않는다. M2M 토큰의 수명·재사용 정책(요청마다 받는 비용)도 없다."
+    "**인증 게이트웨이의 가용성**이 없다 — 모든 앱이 한 경로를 지나는데 이중화·장애 시 동작·지연 수치를 적지 않는다. M2M 토큰의 수명·재사용 정책(요청마다 받는 비용)도 없다.",
+    "**JSON 컬럼 글에서 7일 되짚기를 고른 이유**가 없다 — 7일보다 늦게 바뀐 문서를 어떻게 다루는지, Capacity 과금과 견줬는지도 없다. 글이 2024-12 라 지금 데이터 기반(Iceberg 레이크하우스)으로 옮겨 갔는지는 아직 안 읽었다."
   ],
   "sources": [
     {
@@ -659,7 +972,7 @@
       "url": "https://caddi.tech/2024/12/04/100935",
       "publisher": "CADDi",
       "date": "2024-12-04",
-      "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감.**"
+      "summary": "Data Management 팀('필요 없어진 것을 바로 버릴 수 있는 데이터 기반')의 글이다. BigQuery 는 **On-demand(스캔량 과금)** 로 쓰고, 줄이는 방침을 **행·열·횟수** 셋으로 정리한다. 사례: Firestore 를 실시간으로 잇는 테이블(Stream Firestore to BigQuery 확장 — 문서 id·timestamp·**갱신 후 전체 데이터를 JSON 한 컬럼에**)을 보는 쿼리 비용이 **월 약 2,600달러**였다. 파티션은 timestamp 인데 실제 필터는 **JSON 안의 created_at** 이라 파티션을 못 걸고, 일부만 쓰려 해도 **거대한 JSON 을 거의 전부 스캔**했다. 게다가 사용자는 **니어 리얼타임** 연계를 요구했다. 해법: **전날까지는 JSON 을 풀고 파티션을 건 최적화 테이블**(dbt incremental), **당일은 원본을 읽는 뷰**와 union 해 실시간성을 지켰다 — 서비스 수준을 낮추지 않고 **쿼리 비용 90% 절감** — 월 **2,600달러 → 240달러.** 최적화 테이블은 dbt **incremental(merge, unique_key=job_id)** 로 **최근 7일 원본만** 다시 읽어 합치고 **created_at 일 단위 파티션 + 클러스터**를 건다. 당일 뷰는 **원본의 최근 1일**만 JSON 을 풀어 보여 준다. 둘을 union 한 뒤 **job_id·created_at 마다 updated_at 가 가장 늦은 행만**(row_number) 남긴다. 글쓴이는 나중에 이것이 **람다 아키텍처**라 불린다는 것을 알았다고 적고, dbt 로 누구나 테이블을 만들게 되며 **비효율 테이블이 늘어 비용이 새는** 위험을 글을 쓴 계기로 든다."
     },
     {
       "title": "RFC 8707 Resource Indicatorsの活用事例: マイクロサービス間のトークンの権限適正化",

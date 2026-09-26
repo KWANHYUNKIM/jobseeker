@@ -1192,3 +1192,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 CADDi 확장 — 인증 게이트웨이와 Internal Token
 
 - Control Plane 소개(02-24)와 RFC 8707 글(05-21)로 `gateway-and-internal-token`(결정 8). 게이트웨이의 단일 경로 위험·자체 발급 운영·URN 이름 짓기·메시 설정 가시성은 해석 표시.
+
+## 2026-09-26 CADDi 확장 — 어제까지는 풀어 두고 오늘은 원본
+
+- BigQuery JSON 컬럼 글(2024-12-04)로 `yesterday-optimized-today-raw`(결정 6, 월 2,600→240달러). 두 도메인이 찼으나 수발주 수익원에 기능이 없어 done 보류.
