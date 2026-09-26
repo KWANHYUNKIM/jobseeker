@@ -1816,3 +1816,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 PIVOT 시청 로그 큐잉 — 완주
 
 - 결정 6 — 10초 세그먼트·OS 별 시크 검출+패리티·로컬 DB 먼저+30초 50건·event_id 중복 제거·DispatchSourceTimer·재시도는 저장소 층 타이머에. 수익원 둘(inferred) 다 기능 → done.
+
+## 2026-09-26 Stock 회사 프로파일
+
+- stock-app.jp 는 로그인 화면 — 제품 사이트는 stock-app.info(요금제 pricing.html), 나레칸은 narekan.info. 기술 글 6편 모두 CTO 집필, 어느 제품인지 안 밝힌다 → 검색·OCR 두 도메인을 AI 지식 도구 나레칸에 inferred. 익명화 글은 사내 채용 업무라 제외.

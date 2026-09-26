@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "stock",
+      "name": "株式会社Stock",
+      "name_en": "Stock",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "팀 정보 관리 도구 Stock 과 비 IT 기업용 AI 지식 도구 나레칸 — 검색 적중률은 전건 고성능 모델 대신 싼 모델이 먼저 걸러 비용을 누르며 끌어올리고, 스캔 PDF OCR 은 엔진을 바꾸기 전에 회전 메타데이터·빈 페이지·감시 오판이라는 엔진 밖 실패부터 없앤다",
+      "updated_at": "2026-09-26",
+      "domain": "stock-app.info"
+    },
+    {
       "slug": "pivot",
       "name": "PIVOT",
       "name_en": "PIVOT",
@@ -3419,7 +3431,9 @@
     "전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다",
     "이상 때만 알리는 감시에서 침묵을 해석한다",
     "시청 습관을 만드는 미션과 마일을 서버가 판정한다",
-    "흔들리는 모바일 네트워크에서 시청 로그를 빠짐없이 보낸다"
+    "흔들리는 모바일 네트워크에서 시청 로그를 빠짐없이 보낸다",
+    "검색에 LLM 을 끼우되 호출마다의 비용을 누른다",
+    "스캔 PDF 를 OCR 로 빠짐없이 읽는다"
   ],
   "countries": {
     "KR": "한국",

@@ -42,13 +42,13 @@
 | **Finatext** | JP · 핀테크 인프라·금융 데이터 | 프로파일(2026-09-26). 도메인 둘 — 수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다 · BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다. 기능 2(`snowflake-pipeline-cost-cut` · `crest-dwh-layer-exposure`). **hold** — 증권·보험·지원 수익원 자료 두 번 없음(2026-09-26). 수익원 다섯 중 BaaS·Insurtech·Fintech SHIFT 는 도메인 없음. 입구 `zenn.dev/p/finatext/feed`. |
 | **KENCOPA** | JP · 건설 AI 에이전트 | 프로파일(2026-09-26). 도메인 둘 — 설계 도서로 공정표의 일수를 세운다 · 제각각인 PDF 표를 구조화 데이터로 뽑는다. 기능 2(`activity-rate-quantity-linking` · `sds-pdf-table-extraction`). **hold** — 적산 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 적산 AI 에이전트는 도메인 없음. 입구 `zenn.dev/p/kencopa/feed`(8편). |
 | **WWWAVE(ウェイブ)** | JP · 전자 코믹·아니메 제작·배신 | 프로파일(2026-09-26). 도메인 둘 — 전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다 · 이상 때만 알리는 감시에서 침묵을 해석한다. 기능 2(`access-vba-delivery-retirement` · `batch-silence-monitoring`). **hold** — 신규 사업 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 신규 사업은 도메인 없음. 입구 `zenn.dev/p/wwwave/feed`. |
+| **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 0. 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Stock** | JP · 정보 공유·업무 SaaS | Zenn Publication `zenn.dev/p/stock_inc`(RSS 6편, 8~9월 매주). **검색 적중률을 LLM 으로 올리면서 비용을 누르는 '싼 모델 사전 스크리닝'**(`cheap-model-prescreening-search`, 2026-09-09) — '후보는 나오는데 적중하지 않는' 검색 문제를 고성능 모델 전건 판정 대신 Haiku 급으로 먼저 거르는 다단 구성, 비용 견적 방법·단계적 도입·**임계값은 세 제약의 교점**·채택 안 한 안·예상 반론 절 있음. 곁글 — AI 채용 스크리닝 전 익명화 전처리(`anonymization-pipeline-before-ai-screening`)·스캔 PDF OCR 이 '못 읽는' 세 이유·ECS 태스크 정의 리비전을 돌려도 안 돌아가는 롤백. **업무 SaaS 축**. |
 | **1D(ワンディー)** | JP · 치과 의료 교육 플랫폼 | Zenn Publication `zenn.dev/p/oned_tech`(RSS 2편 — 적다). **Ory Hydra 로 자체 공통 인증 기반을 만들고 기존 사용자를 안은 채 인증 방식을 바꿨다**(`oned-idp-hydra-migration`, 2026-09-20) — 치과의사용 1D Web·앱·위생사용·국시 대책 앱으로 늘자 프로덕트 간 SSO 불가 등 한계 넷 → **Cognito 를 그만두고 Hydra + 자체 IDM**(Kratos 는 왜 아닌가·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 에 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 **이중 인증 미들웨어**. 곁글 — 기술 스택 선정 이유(`oned-tech-select`, Laravel → Go). **헬스케어 교육 축**. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
