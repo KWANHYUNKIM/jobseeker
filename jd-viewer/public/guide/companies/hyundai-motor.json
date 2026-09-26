@@ -160,5 +160,132 @@
     "근무지가 공고마다 다르다(의왕·판교·양재본사 등)",
     "salary: 공고 급여가 '면접 후 결정' — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022478&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=12594526-3409-4b8f-9fd5-75d092a64e50",
+      "title": "[로보틱스랩] Perceptive AI 개발",
+      "site": "saramin",
+      "verdict": "경력 5년 이상(Vision AI), **석사 이상**(전기·전자·AI·CS). 로보틱스랩에서 로봇이 물체를 집고 놓는 데 필요한 인식을 만든다 — 3D 비전 AI 로 타겟 물체 6DoF Pose·Grasp Pose 추정과 적재 위치 추정, Visual Prompt 기반 물체 검출과 조작용 공간 인식, 그리고 **비전 알고리즘 양산화**(data path·구조 개선, 양산 spec, 평가 방안 설계). 필수에 'Vision AI 를 활용한 알고리즘을 양산에 적용해 본 경험' 과 C/C++·git·Python·PyTorch 가 있다. 우대사항 칸은 비어 있다. 캐치에도 같은 제목(570794, 본문 없음)이 있다. 전형: 지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격('필요 시 전형단계에서 과제가 진행 될 수 있습니다'). 접수 2026년 09월 01일 ~ 09월 30일 23시 59분(채용 시 마감), 이력서·자기소개서, 홈페이지 지원. 급여 '면접 후 결정', 근무지 의왕.",
+      "fit": {
+        "must_have": [
+          "석사 이상(전기·전자·AI·CS)",
+          "Vision AI 5년 이상",
+          "Vision AI 알고리즘 양산 적용 경험",
+          "C/C++·git·Python·PyTorch"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "6DoF 물체 자세와 파지 자세 추정",
+          "from": "task",
+          "quote": "　　- 타겟 물체 6DoF Pose, Grasp Pose 추정 AI 알고리즘 개발",
+          "priority": "core",
+          "why": "주요업무이고 같은 묶음에 '물체 적재 위치 추정 알고리즘 개발' 이 있다. 부서 소개가 AI 인식 결과를 '적절히 활용할 수 있는 알고리즘' 까지 설계한다고 적는다.",
+          "gap_check": "CAD 모델이 있는 부품과 처음 보는 물체의 6DoF 추정은 방법이 어떻게 다르고, 추정한 자세에서 로봇이 실제로 집을 수 있는 파지 자세는 무엇(충돌·그리퍼 폭·접근 방향)을 걸러 고르는가?",
+          "drill": "FoundationPose 데모로 물체 자세를 추정하고, GraspNet 데이터셋 도구로 같은 장면의 파지 후보를 뽑아 충돌·접근 각도로 걸러 상위 후보를 시각화한다. BOP 벤치마크 지표로 자세 오차를 정리한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "FoundationPose: Unified 6D Pose Estimation and Tracking of Novel Objects",
+              "url": "https://arxiv.org/abs/2312.08344",
+              "kind": "paper"
+            },
+            {
+              "title": "GraspNet",
+              "url": "https://graspnet.net/",
+              "kind": "docs"
+            },
+            {
+              "title": "BOP benchmark",
+              "url": "https://bop.felk.cvut.cz/home/",
+              "kind": "docs"
+            },
+            {
+              "title": "Open3D documentation",
+              "url": "https://www.open3d.org/docs/release/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Visual Prompt 기반 물체 검출",
+          "from": "task",
+          "quote": "　　- Visual Prompt 기반 타겟 물체 검출 AI 알고리즘 개발",
+          "priority": "core",
+          "why": "주요업무이고 같은 묶음에 '물체조작을 위한 공간 인식 AI 알고리즘 개발' 이 있다.",
+          "gap_check": "새 부품이 들어올 때마다 재학습하지 않고 예시 이미지 몇 장(visual prompt)으로 찾게 하려면 어떤 모델 구조가 필요하고, 텍스트 프롬프트 검출과 비교해 공장 부품에서는 무엇이 유리한가?",
+          "drill": "T-Rex2·Grounding DINO 논문을 읽고, Grounding DINO(텍스트)와 예시 이미지 기반 검출 결과를 같은 부품 사진 세트에서 비교한 뒤 SAM 으로 마스크를 뽑아 3D 점군과 합친다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "T-Rex2: Towards Generic Object Detection via Text-Visual Prompt Synergy",
+              "url": "https://arxiv.org/abs/2403.14610",
+              "kind": "paper"
+            },
+            {
+              "title": "Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection",
+              "url": "https://arxiv.org/abs/2303.05499",
+              "kind": "paper"
+            },
+            {
+              "title": "Segment Anything",
+              "url": "https://arxiv.org/abs/2304.02643",
+              "kind": "paper"
+            },
+            {
+              "title": "GroundingDINO",
+              "url": "https://github.com/IDEA-Research/GroundingDINO",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "비전 AI 알고리즘 양산화",
+          "from": "qualification",
+          "quote": "· Vision AI 를 활용한 알고리즘을 양산에 적용해 본 경험을 보유하신 분",
+          "priority": "core",
+          "why": "필수이고 주요업무에 '알고리즘 data path 및 구조 개선', '비전 AI 알고리즘 양산 spec. 설계', '비전 AI 알고리즘 평가 방안 설계' 가 있다.",
+          "gap_check": "연구 코드로 90% 성공하던 인식 알고리즘을 공장 로봇에 넣을 때 양산 spec 에 무엇(사이클 타임·조명·물체 변형 범위·실패 시 동작)을 숫자로 못 박고, 평가 방안은 어떤 조건 조합으로 짜는가?",
+          "drill": "앞 드릴 파이프라인에 대해 양산 spec 한 장(입력 조건·처리 시간·성공률 기준·실패 처리)과 조명·배경·가림 조건별 평가 매트릭스를 만들고, Python 연구 코드 중 병목 단계를 C++ 로 옮길 부분을 표시한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "BOP benchmark",
+              "url": "https://bop.felk.cvut.cz/home/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "물체 인식 → 6DoF → 파지 후보까지 이어지는 데모 + 양산 spec·평가 매트릭스",
+          "why": "주요업무 세 묶음(3D vision·Perception·양산화)을 한 번에 보여 준다. 필수가 양산 적용 경험이다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "양산에 넣은 비전 알고리즘 사례를 spec·수치로 정리",
+          "why": "필수에 'Vision AI 를 활용한 알고리즘을 양산에 적용해 본 경험' 이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격('필요 시 전형단계에서 과제가 진행 될 수 있습니다'). 접수 2026년 09월 01일 ~ 09월 30일 23시 59분(채용 시 마감), 이력서·자기소개서, 홈페이지 지원. 급여 '면접 후 결정', 근무지 의왕.",
+        "expect": [
+          "양산 적용 경험",
+          "6DoF·파지 추정",
+          "검출·공간 인식",
+          "인성검사"
+        ],
+        "sources": [
+          {
+            "title": "[로보틱스랩] Perceptive AI 개발",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022478&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=12594526-3409-4b8f-9fd5-75d092a64e50",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    }
+  ]
 }
