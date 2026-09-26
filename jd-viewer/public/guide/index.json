@@ -833,6 +833,17 @@
       "postings": 5,
       "study_items": 13,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "open-source-consulting",
+      "name": "오픈소스컨설팅",
+      "aliases": [
+        "오픈소스컨설팅"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

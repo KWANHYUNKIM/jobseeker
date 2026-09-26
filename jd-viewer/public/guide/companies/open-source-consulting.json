@@ -1,0 +1,202 @@
+{
+  "slug": "open-source-consulting",
+  "name": "오픈소스컨설팅",
+  "name_en": "Open Source Consulting",
+  "aliases": [
+    "오픈소스컨설팅"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "osci.kr",
+  "one_liner": "오픈스택·쿠버네티스 클라우드 구축(Playce Cloud)과 아틀라시안(Jira·Confluence) 파트너 사업을 두 축으로 하는 클라우드·워크매니지먼트 컨설팅 기업",
+  "company": {
+    "business": "사이트(osci.kr) 메타 설명은 오픈소스컨설팅을 '고객의 Digital Transformation 을 실현해주는 **클라우드 및 AI 워크매니지먼트** 전문 기업' 으로 소개한다. 원티드 공고 머리말(다섯 건 공통)은 사업을 이렇게 나열한다 — **클라우드**: 오픈스택·쿠버네티스 기반 오픈소스 패키징 **'Playce Cloud'**, CNCF 실버 회원사로 클라우드 네이티브 환경 구축 / **워크매니지먼트**: **국내 1위 아틀라시안 플래티넘 파트너**(Atlassian Partner of the Year: Marketing Innovator 2회), monday.com 공식 파트너, **Atlassian Marketplace App(Flexible Apps)** 개발·공급 / **애자일**: Scaled Agile Silver Transformation Partner, 애자일 컨설팅·코칭. 모집중 공고도 이 축을 따른다 — 쿠버네티스 엔지니어·SM 엔지니어(OpenStack·Kubernetes·Ceph 클러스터 운영), DevOps 엔지니어(Jenkins 등 CI/CD 구성·컨설팅), 웹 서비스 개발자(Kubernetes·GPU 모니터링·DevOps 대시보드), WorkManagement 솔루션 개발(Jira·Confluence·Bitbucket 커스터마이징·플러그인). 매출·인원은 읽은 자료에 없다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "오픈소스컨설팅",
+        "url": "https://www.osci.kr/",
+        "publisher": "오픈소스컨설팅",
+        "summary": "메타 설명: 고객의 Digital Transformation 을 실현해주는 클라우드 및 AI 워크매니지먼트 전문 기업"
+      },
+      {
+        "title": "웹 서비스 개발자",
+        "url": "https://www.wanted.co.kr/wd/380645",
+        "publisher": "원티드",
+        "summary": "머리말: 클라우드 및 워크 매니지먼트 전문 기업. Playce Cloud(오픈스택·쿠버네티스 기반 오픈소스 패키징), CNCF 실버 회원, 국내 1위 아틀라시안 플래티넘 파트너, Atlassian Partner of the Year: Marketing Innovator 2회, Atlassian Marketplace App(Flexible Apps) 개발·공급, Scaled Agile Silver Transformation Partner, Atlassian·monday.com 공식 파트너"
+      },
+      {
+        "title": "쿠버네티스(Kubernetes) 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/375796",
+        "publisher": "원티드"
+      },
+      {
+        "title": "WorkManagement사업부문 솔루션 개발",
+        "url": "https://www.wanted.co.kr/wd/358430",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "클라우드 구축·운영(Playce Cloud)",
+        "how": "머리말이 오픈스택·쿠버네티스 기반 패키징 Playce Cloud 와 고객 맞춤 클라우드 네이티브 구축을 적고, SM 공고가 고객 환경의 VM 자원 할당·장애 관리·클러스터 점검 운영을 적는다. 과금(구축 SI, 운영 SM 계약 등)은 공고에 없다.",
+        "domains": [
+          "프라이빗 클라우드 구축·운영",
+          "CI/CD·DevOps 컨설팅",
+          "모니터링 대시보드 제품"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "웹 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/380645",
+            "publisher": "원티드",
+            "summary": "머리말: 클라우드 및 워크 매니지먼트 전문 기업. Playce Cloud(오픈스택·쿠버네티스 기반 오픈소스 패키징), CNCF 실버 회원, 국내 1위 아틀라시안 플래티넘 파트너, Atlassian Partner of the Year: Marketing Innovator 2회, Atlassian Marketplace App(Flexible Apps) 개발·공급, Scaled Agile Silver Transformation Partner, Atlassian·monday.com 공식 파트너"
+          },
+          {
+            "title": "쿠버네티스(Kubernetes) 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/375796",
+            "publisher": "원티드"
+          },
+          {
+            "title": "SM 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/384461",
+            "publisher": "원티드"
+          },
+          {
+            "title": "DevOps엔지니어",
+            "url": "https://www.wanted.co.kr/wd/388812",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "아틀라시안 파트너·워크매니지먼트",
+        "how": "국내 1위 아틀라시안 플래티넘 파트너이자 monday.com 파트너로 협업 솔루션·컨설팅을 제공하고, Marketplace App(Flexible Apps)을 개발·공급한다고 머리말이 적는다. 라이선스 재판매·컨설팅·앱 판매의 비중은 공고에 없다.",
+        "domains": [
+          "아틀라시안 커스터마이징·플러그인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "웹 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/380645",
+            "publisher": "원티드",
+            "summary": "머리말: 클라우드 및 워크 매니지먼트 전문 기업. Playce Cloud(오픈스택·쿠버네티스 기반 오픈소스 패키징), CNCF 실버 회원, 국내 1위 아틀라시안 플래티넘 파트너, Atlassian Partner of the Year: Marketing Innovator 2회, Atlassian Marketplace App(Flexible Apps) 개발·공급, Scaled Agile Silver Transformation Partner, Atlassian·monday.com 공식 파트너"
+          },
+          {
+            "title": "WorkManagement사업부문 솔루션 개발",
+            "url": "https://www.wanted.co.kr/wd/358430",
+            "publisher": "원티드"
+          },
+          {
+            "title": "오픈소스컨설팅",
+            "url": "https://www.osci.kr/",
+            "publisher": "오픈소스컨설팅",
+            "summary": "메타 설명: 고객의 Digital Transformation 을 실현해주는 클라우드 및 AI 워크매니지먼트 전문 기업"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "프라이빗 클라우드 구축·운영",
+        "why": "쿠버네티스 엔지니어 공고와 SM 엔지니어 공고가 OpenStack·Kubernetes·Ceph 클러스터, VM 자원 할당, 장애 관리·보고를 적는다.",
+        "what_to_know": [
+          "OpenStack",
+          "Kubernetes",
+          "Ceph"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "쿠버네티스(Kubernetes) 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/375796",
+            "publisher": "원티드"
+          },
+          {
+            "title": "SM 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/384461",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "CI/CD·DevOps 컨설팅",
+        "why": "DevOps 공고가 GitHub·GitLab·Bitbucket·Jenkins·Bamboo 로 CI/CD 구성·컨설팅, 오픈소스·엔터프라이즈 솔루션 결합 아키텍처를 적는다.",
+        "what_to_know": [
+          "Jenkins 파이프라인",
+          "컨테이너 CI/CD",
+          "API 연동 자동화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps엔지니어",
+            "url": "https://www.wanted.co.kr/wd/388812",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "모니터링 대시보드 제품",
+        "why": "웹 서비스 개발자 공고가 Kubernetes·GPU 모니터링·DevOps 솔루션 대시보드 커스터마이징과 기존 대시보드 제품 유지보수를 적는다.",
+        "what_to_know": [
+          "Java·Python 웹",
+          "React",
+          "모니터링 지표"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "웹 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/380645",
+            "publisher": "원티드",
+            "summary": "머리말: 클라우드 및 워크 매니지먼트 전문 기업. Playce Cloud(오픈스택·쿠버네티스 기반 오픈소스 패키징), CNCF 실버 회원, 국내 1위 아틀라시안 플래티넘 파트너, Atlassian Partner of the Year: Marketing Innovator 2회, Atlassian Marketplace App(Flexible Apps) 개발·공급, Scaled Agile Silver Transformation Partner, Atlassian·monday.com 공식 파트너"
+          }
+        ]
+      },
+      {
+        "name": "아틀라시안 커스터마이징·플러그인",
+        "why": "WorkManagement 솔루션 개발 공고가 Jira·Confluence·Bitbucket 서버/데이터센터·클라우드 제품 커스터마이징과 플러그인 개발을 적는다.",
+        "what_to_know": [
+          "Atlassian 플러그인(서버/DC)",
+          "Forge/Connect(클라우드)",
+          "Jira REST API"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "WorkManagement사업부문 솔루션 개발",
+            "url": "https://www.wanted.co.kr/wd/358430",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "고객사 현장 운영 성격의 자리가 섞여 있다",
+        "evidence": "요청 처리(CSR) : 인프라 운영 SM과 협업",
+        "so_what": "SM 엔지니어는 VM 생성 요청 처리·장애 보고·주간 보고를 한다 — 구축 컨설팅과 운영 대행은 근무 방식이 다르다. 상주 여부와 근무지는 면접에서 확인한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "경력직만 뽑는다",
+        "evidence": "웹 애플리케이션 개발 (5년 이상)",
+        "so_what": "모집중 다섯 건의 경력 표기가 모두 3년 이상(3~18년)이다. 신입 입구는 이 데이터에 없다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수는 읽지 않았다",
+    "Playce Cloud 판매 방식(패키지 라이선스·구축 SI·운영 계약)",
+    "SM 엔지니어의 고객사 상주 여부·근무지",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
