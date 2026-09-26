@@ -210,7 +210,8 @@
     "홈페이지 뉴스 목록의 '코스닥 상장예비심사 승인', '상반기 매출 전년比 331%↑' 는 제목만 봤고 기사 본문·공시는 읽지 않았다 — 매출 규모는 IR 메뉴·공시에서 확인할 것",
     "'200여개 이상의 AI 프로젝트', '국내 최초의 AI 전문 컨설팅펌' 은 회사가 공고에 적은 주장이다",
     "salary: 공고에 금액이 없다 — 비워 둔다",
-    "catch(dev) 게시 3건(Senior AI Engineer, AI Project Manager, AI Engineer)은 원티드와 제목이 겹친다 — 본문 비교로 duplicate_of 판단할 것"
+    "catch(dev) 게시 3건(Senior AI Engineer, AI Project Manager, AI Engineer)은 원티드와 제목이 겹친다 — 본문 비교로 duplicate_of 판단할 것",
+    "wd/377638: 공고 경력 표기는 5-10년인데 자격요건 첫 줄은 '경력 7년 이상' 이다 — 어느 쪽이 실제 기준인지 공고로 확인되지 않는다"
   ],
   "postings": [
     {
@@ -635,6 +636,163 @@
           {
             "title": "Agentic AI Engineer",
             "url": "https://www.wanted.co.kr/wd/376327",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/377638",
+      "title": "오픈스택 플랫폼 개발자",
+      "site": "wanted",
+      "verdict": "경력 표기는 5~10년인데 자격요건 첫 줄은 '오픈소스 기반 클라우드 인프라 솔루션 및 백엔드 개발 경력 7년 이상' 이다 — 실제 문턱은 7년으로 읽힌다(서울 강남). OpenStack·Cloud Native 기반 CMP(클라우드 관리 플랫폼) 아키텍처와 핵심 백엔드, AI/GPU 워크로드용 인프라 최적화·API, 오픈스택 연동 클라우드 보안 솔루션, 자체 데이터센터 제어 솔루션을 만든다. 자격요건에 Kubernetes·Helm 패키징·배포가 두 번 나오고, TA 또는 리드 개발자로서 기술 방향 제시가 필수다. 커널·하이퍼바이저·펌웨어, OpenStack-Helm, SR-IOV·DPDK, 오픈소스 기여는 우대다. 전형은 서류 → 1차/2차 면접 → 처우협의.",
+      "fit": {
+        "must_have": [
+          "오픈소스 클라우드 인프라·백엔드 7년 이상",
+          "Helm 차트 패키징·배포 파이프라인",
+          "Python·C++·Go 중 하나 이상 수준 높은 개발",
+          "Kubernetes 이해와 Helm 운영",
+          "TA 또는 리드 개발자 경험"
+        ],
+        "can_learn": [
+          "커널·하이퍼바이저·펌웨어 튜닝",
+          "멀티 클러스터·하이브리드 CMP",
+          "OpenStack-Helm",
+          "SR-IOV·DPDK",
+          "OpenStack·CNCF 기여",
+          "Terraform·Ansible"
+        ]
+      },
+      "study": [
+        {
+          "topic": "OpenStack 핵심 서비스와 CMP",
+          "from": "task",
+          "quote": "• CMP 아키텍처 설계 및 핵심 백엔드 기능 개발",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 다음 줄이 'OpenStack 및 Cloud Native 기술 기반의 솔루션 개발' 이다. 우대에 '다중 클러스터 및 하이브리드 클라우드 환경을 통합 관리하는 CMP 개발 경험' 이 있다.",
+          "gap_check": "Keystone·Nova·Neutron·Cinder·Glance 가 VM 하나를 만들 때 어떤 순서로 호출되고, CMP 가 OpenStack 과 Kubernetes 여러 클러스터를 함께 관리하려면 자원 모델·권한·할당량을 어떻게 추상화하는가?",
+          "drill": "Kolla-Ansible 로 단일 노드 OpenStack 을 세우고 API 로 VM 생성·삭제를 자동화한 뒤, 같은 인터페이스로 쿠버네티스 네임스페이스도 만드는 작은 CMP 백엔드(Python 또는 Go)를 짠다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "OpenStack — Installation Guide",
+              "url": "https://docs.openstack.org/2024.2/install/",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenStack Nova — Documentation",
+              "url": "https://docs.openstack.org/nova/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kolla-Ansible — Documentation",
+              "url": "https://docs.openstack.org/kolla-ansible/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Helm 차트로 패키징·배포",
+          "from": "qualification",
+          "quote": "• Helm 차트 기반 패키징 및 배포 파이프라인 구축 경험이 있으신 분",
+          "priority": "core",
+          "why": "자격요건이고 다른 줄에도 'Helm을 활용한 애플리케이션 패키징, 배포 및 운영' 이 반복된다. 우대에 OpenStack-Helm 이 있다 — OpenStack 자체를 쿠버네티스 위에 Helm 으로 올리는 방식이다.",
+          "gap_check": "차트의 values 로 고객사별 설정을 나눌 때 무엇을 기본값에 두고 무엇을 덮어쓰게 하며, helm upgrade 실패 시 롤백과 DB 마이그레이션 순서는 어떻게 맞추는가?",
+          "drill": "위 CMP 백엔드를 Helm 차트로 패키징해 values 두 벌(dev/prod)로 배포하고, 일부러 실패하는 업그레이드 후 helm rollback 과정을 기록한다. OpenStack-Helm 문서의 배포 구조를 요약한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Helm — Documentation",
+              "url": "https://helm.sh/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenStack-Helm — Documentation",
+              "url": "https://docs.openstack.org/openstack-helm/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI/GPU 워크로드를 위한 인프라",
+          "from": "task",
+          "quote": "• AI/GPU 워크로드 지원을 위한 클라우드 인프라 최적화 및 API 개발",
+          "priority": "high",
+          "why": "주요업무다. 회사가 생성형 AI 솔루션 회사라 자체 인프라가 GPU 를 잘 나눠 써야 한다(추론).",
+          "gap_check": "OpenStack VM 에 GPU 를 PCI 패스스루로 붙일 때와 쿠버네티스 파드에 디바이스 플러그인으로 붙일 때 스케줄링·격리·활용률이 어떻게 다른가?",
+          "drill": "Nova PCI 패스스루 설정 문서와 쿠버네티스 GPU 스케줄링 문서를 읽고, 같은 GPU 서버 풀을 두 방식으로 나눠 쓸 때의 설계안(할당 단위·격리·과금 지표)을 한 장으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OpenStack Nova — Attaching physical PCI devices to guests",
+              "url": "https://docs.openstack.org/nova/latest/admin/pci-passthrough.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — Schedule GPUs",
+              "url": "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "TA 로서 기술 방향 제시",
+          "from": "qualification",
+          "quote": "• Technical Architect(TA) 또는 리드 개발자로서 프로젝트의 기술 방향성을 제시할 수 있는 분",
+          "priority": "high",
+          "why": "자격요건이다. CMP·데이터센터 제어·보안 솔루션처럼 범위가 넓어 기술 선택을 문서로 남기는 사람이 필요하다(추론).",
+          "gap_check": "CMP 를 OpenStack API 위에 직접 짤지, Terraform 같은 IaC 를 엔진으로 쓸지 결정할 때 비교 기준(확장성·상태 관리·운영 인력)을 말할 수 있는가?",
+          "drill": "위 CMP 설계의 주요 결정 3개를 ADR(맥락·선택지·결정·결과) 형식으로 쓴다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "SR-IOV·DPDK 네트워크 최적화",
+          "from": "preference",
+          "quote": "• 오픈스택 환경에서의 보안 솔루션 개발 또는 SR-IOV, DPDK 등을 활용한 네트워크 최적화 경험",
+          "priority": "nice",
+          "why": "우대사항이다. 주요업무에 '클라우드 보안 솔루션 기획 및 오픈스택 연동 신규 개발' 이 있다.",
+          "gap_check": "SR-IOV 는 가상 스위치를 건너뛰어 무엇을 얻고 무엇(보안 그룹·라이브 마이그레이션)을 잃는가?",
+          "drill": "Neutron SR-IOV 설정 문서를 읽고 일반 OVS 포트와 SR-IOV 포트의 장단점 비교표를 만든다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "OpenStack Neutron — SR-IOV",
+              "url": "https://docs.openstack.org/neutron/latest/admin/config-sriov.html",
+              "kind": "docs"
+            },
+            {
+              "title": "DPDK",
+              "url": "https://www.dpdk.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Kolla 단일 노드 OpenStack + 작은 CMP 백엔드 + Helm 배포",
+          "why": "주요업무 두 줄(CMP, OpenStack 기반 솔루션)과 자격요건의 Helm·Kubernetes 를 한 저장소로 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "OpenStack·CNCF 기여 이력",
+          "why": "우대사항에 '오픈소스 생태계(OpenStack, CNCF 등)에 대한 높은 기여도' 가 있다. 있으면 첫 장에 둔다.",
+          "effort": "이미 있으면 정리 반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1차/2차 면접 - 처우협의(공고 기준).",
+        "expect": [
+          "OpenStack 서비스 흐름",
+          "Helm 배포·롤백",
+          "GPU 자원 관리",
+          "TA 로서 내린 기술 결정"
+        ],
+        "sources": [
+          {
+            "title": "오픈스택 플랫폼 개발자",
+            "url": "https://www.wanted.co.kr/wd/377638",
             "publisher": "원티드"
           }
         ]
