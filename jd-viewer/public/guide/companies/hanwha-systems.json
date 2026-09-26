@@ -771,6 +771,103 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55098196&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=90bb6122-74a9-4653-9608-7f92f11f3694",
+      "title": "스마트팩토리 운영 경력사원 채용 (스마트팩토리 지능화 시스템)",
+      "site": "saramin",
+      "verdict": "경력 5년 이상, 근무지 '서울전체'. 같은 날 올라온 MES 운영(55098406)의 짝으로, 스마트팩토리 **지능화 시스템 — RMS·SPC·FDC** 운영·유지보수다. 공고가 셋을 풀어 쓴다 — **RMS**: 실시간 설비 레시피 모니터링, 파라미터 기준정보·변경 이력으로 **오적용 방지** / **SPC**: 생산·측정 데이터 통계 모니터링과 **AI 비전 검사 이미지 시스템** 기반 품질 분석 지원 / **FDC**: 센서 데이터 실시간 감시로 **조기 경보**, Agent/서버(DC/AP) 아키텍처 관리. 연계는 Solace 공정망으로 One-ERP(PM 모듈) 작업 통지, ECS(설비제어)와 레시피 송수신, MES·QIS 품질 데이터 전송 정합성. 스택은 Java·Oracle·PL/SQL·BizActor, Spring Boot·React·JavaScript. 자격은 웹·DB 유지보수 5년, **실시간 데이터 처리와 대용량 조회 SQL 튜닝**, 방산 보안 신원조회 결격 없음. 우대 칸은 비어 있다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java·React·Oracle PL/SQL 유지보수 5년",
+          "대용량 조회 SQL 튜닝",
+          "신원조회 결격 없음"
+        ],
+        "can_learn": [
+          "SPC 관리도",
+          "FDC 이상 감지",
+          "레시피 관리"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SPC — 관리도로 공정이 흔들리는지 보기",
+          "from": "task",
+          "quote": "* 품질 관리(SPC): 생산·측정 데이터 통계 모니터링 및 AI 비전 검사 이미지 시스템 기반 품질 분석 지원",
+          "priority": "core",
+          "why": "주요업무가 SPC 운영이다. 시스템을 고치려면 관리도가 무엇을 판정하는지 알아야 한다.",
+          "gap_check": "X-bar/R 관리도의 중심선·관리 한계는 무엇으로 계산하고, 규격 한계(고객 요구)와 관리 한계(공정 자체 변동)는 왜 다른가? 한계 안이어도 '같은 쪽 연속 7점' 같은 패턴을 이상으로 보는 규칙은 무엇을 잡으려는 것인가? Cp·Cpk 는 무엇을 말하는가?",
+          "drill": "통계적 공정 관리·관리도·Western Electric 규칙 문서와 NIST 핸드북 관리도 절을 읽고, 측정값 500개(중간에 평균이 살짝 이동)를 만들어 SQL 로 부분군 평균·범위를 계산하고 규칙 위반 지점을 찾아낸다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Statistical process control — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Statistical_process_control",
+              "kind": "docs"
+            },
+            {
+              "title": "Control chart — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Control_chart",
+              "kind": "docs"
+            },
+            {
+              "title": "Western Electric rules — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Western_Electric_rules",
+              "kind": "docs"
+            },
+            {
+              "title": "NIST/SEMATECH e-Handbook — Univariate and Multivariate Control Charts",
+              "url": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc3.htm",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "FDC — 센서 데이터로 이상을 먼저 알리기",
+          "from": "task",
+          "quote": "* 이상 감지(FDC): 센서 데이터 실시간 감시 기반 조기 경보 운영 및 TBD Agent/서버(DC/AP) 아키텍처 관리",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "설비 센서 시계열에서 단순 임계값 경보와 다변량(여러 센서 조합) 이상 감지는 무엇을 다르게 잡는가? 경보가 너무 많으면 현장이 무시하게 되는데, 경보 기준은 무엇으로 조정하고 오경보율은 어떻게 추적하는가? 수집 Agent 가 멈추면 '정상' 과 '데이터 없음' 을 어떻게 구별하는가?",
+          "drill": "FDI 문서를 읽고, 센서 3개짜리 가상 설비 데이터(정상+드리프트+급변)를 만들어 임계값 방식과 평균·공분산 기반 거리 방식의 탐지 시점과 오경보 수를 비교한다. 수집 공백을 감지하는 heartbeat 경보도 넣는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Fault detection and isolation — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Fault_detection_and_isolation",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RMS — 레시피 오적용 막기",
+          "from": "task",
+          "quote": "* 공정 관리(RMS): 실시간 설비 레시피 모니터링, 파라미터 기준정보 및 변경 이력 관리 기반 오적용 방지",
+          "priority": "high",
+          "why": "주요업무이고 연계 업무에 ECS(설비제어)와의 레시피 송수신 상태 관리가 있다.",
+          "gap_check": "기준 레시피와 설비에 실제 적용된 레시피를 어떻게 비교하고, 파라미터 변경은 누가 승인하고 어떤 이력으로 남기는가? 레시피 전송이 중간에 실패하면 설비는 옛 값으로 도는가 새 값으로 도는가, 그걸 어떻게 확인하는가?",
+          "drill": "레시피 기준정보·버전·승인·설비 적용 이력 테이블을 Oracle 로 설계하고, 적용값이 기준과 다를 때 잡아내는 비교 쿼리와 변경 이력 조회 화면 요구사항을 작성한다.",
+          "hours": 4,
+          "resources": []
+        },
+        {
+          "topic": "실시간 대용량 조회 SQL 튜닝",
+          "from": "qualification",
+          "quote": "○ 제조 현장의 실시간 데이터 처리 및 대용량 데이터 조회 성능 최적화(SQL 튜닝) 가능자",
+          "priority": "high",
+          "why": "자격요건이다. SPC·FDC 는 측정·센서 데이터가 빠르게 쌓이는 테이블을 계속 조회한다.",
+          "gap_check": "시간순으로 쌓이는 수억 건 측정 테이블에서 '설비별 최근 1시간' 조회가 느릴 때 파티셔닝·복합 인덱스·집계 테이블 중 무엇부터 보는가? 실행 계획에서 풀 스캔이 나오는 흔한 이유(함수로 감싼 컬럼, 암묵적 형변환)는?",
+          "drill": "Use The Index, Luke 의 인덱스·범위 조건 장을 읽고, 1천만 건 측정 테이블에서 설비별 최근 구간 조회를 인덱스 없음/복합 인덱스/일자 파티션+인덱스로 실행 계획과 시간을 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Use The Index, Luke",
+              "url": "https://use-the-index-luke.com/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
