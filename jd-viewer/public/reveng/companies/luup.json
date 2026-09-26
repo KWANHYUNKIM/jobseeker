@@ -70,7 +70,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "zero-diff-benefit-migration"
+      ]
     },
     {
       "name": "여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다",
@@ -95,7 +97,395 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "zero-diff-benefit-migration",
+      "name": "지불에 닿는 특전 도메인을 'main 과 미승인 동작 차 제로' 로 옮긴다 — AI 에이전트와 7개 Stacked PR 로 새 구조를 나란히 세우고, 특성 테스트·본번 실측·의도적 차이 목록으로 차이를 잡아, 되돌릴 수 있는 채로 레거시를 걷어 냈다",
+      "domain": "돈에 닿는 특전 로직을 동작 차이 없이 새 구조로 옮긴다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "사용자 특전(할인 등)은 **지불 금액에 직결**된다. 코드 상당 부분이 DDD Modules 밖(Controller·공통층)에 흩어져 있어 새 시책을 더할 때마다 영향 범위를 코드를 읽어야 알았고, 도메인 로직만 단위 테스트하기 어려웠고, '이 계산 왜 이렇지' 가 사람에게 묶였다. 캠페인이 정기적으로 더해지는 영역이라 구조의 나쁨이 매번 복리로 돈다 — **이행 비용은 한 번, 구조의 나쁨은 시책마다.** 더는 안 만질 레거시였다면 두는 게 정답이었다고 글쓴이는 적는다.\n\n가장 무서운 건 버그 하나로 특전이 과하게 붙거나, 붙어야 할 특전이 사라지는 것. **성공해도 아무 일도 안 일어나는 게 옳은 결과**이고, 눈에 보이는 변화가 생기면 그것이 버그다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "약 1개월 · 엔지니어 1명 + Claude Code · 세션 59개 이상 · Stacked PR 7개 · 232 파일 +약 38,000 / -약 13,000행 · 커밋 약 50",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "label": "검증",
+            "value": "대상 Modules 의 jest 600건 넘게 green 유지 · AI 리뷰 수정 필수 1 · 수정 권장 10 · 오탐 기각 3 · 사람 리뷰 지적 대응 17",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "label": "본번 실측",
+            "value": "마스터 데이터 54만 건 넘게 중 현 규칙이 거부할 값 0건(count() 집계)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "원칙을 정할 때",
+          "thought": "'1비트도 안 바꾼다' 고 말하고 싶지만 완전히 같게 할 수 없거나 해선 안 되는 곳이 있다. 그래서 본체는 '차이 제로' 가 아니라 **'미승인 차이 제로'** — Firestore 영속 형식·API 입출력·계산 결과까지. 레이턴시·콜드 스타트 같은 비기능은 따로 감시한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+              "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-07-17",
+              "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+            }
+          ]
+        },
+        {
+          "at": "세션이 바뀔 때마다",
+          "thought": "Claude Code 세션은 오래 못 가서 매번 원칙을 다시 설명해야 했고 '지난번 정한 걸 잊었네' 가 몇 번 있었다. 원칙을 에이전트 메모리 파일에 적고, 세션마다 hand-off 문서와 결정 사항 파일을 읽고 시작하게 했다 — 그래도 '무엇이 넘길 가치가 있나' 를 고르는 건 사람 몫이라 세션 끝마다 몇 분 손질이 필요했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+              "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-07-17",
+              "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+            }
+          ]
+        },
+        {
+          "at": "검증을 더할지 망설일 때",
+          "thought": "DDD 교과서대로면 도메인 객체 생성 때 검증한다. 하지만 레거시가 통과시키던 레코드가 있으면 검증을 더하는 순간 그 레코드만 못 읽는다 — 동작 차다. 추측이 아니라 본번 데이터로 정한다. 측정할 수 없던 쪽은 '측정 못 했다' 를 적고 관계자 확인으로 근거를 바꿨다. 교훈은 '실측하면 안전' 이 아니라 **추측인 채로 나아가지 않는다.** AI 는 두면 추측으로 틈을 메운다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+              "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-07-17",
+              "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+            }
+          ]
+        },
+        {
+          "at": "AI 가 친절을 부릴 때",
+          "thought": "타입을 엄격하게 하려고 `undefined` 를 `null` 로 바꾼 커밋이 섞였다. `ignoreUndefinedProperties: true` 에서 undefined 필드는 문서에서 빠지고 null 은 값으로 쓰인다 — 영속되는 문서 모양이 바뀐다. 원칙이 있었기에 '개선인가 동작 차인가' 를 감각이 아니라 기계적으로 가렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+              "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-07-17",
+              "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+            }
+          ]
+        },
+        {
+          "at": "층을 정할 때",
+          "thought": "레이어 위치는 '교과서가 어느 층이라 하나' 가 아니라 **지식의 성질과 복제 비용**으로 정한다. 호출하는 쪽이 누구든 안 바뀌는 해결 정책이고, Application 으로 올리면 두 곳에 복제된다 — 둘 다 맞아 Domain Service 에 남겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+              "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-07-17",
+              "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "특전(할인 등)",
+            "what": "지불 금액에 적용되는 혜택. 라이드 종료 때 보상 부여 경로도 있다."
+          },
+          {
+            "name": "정의 맵 + DB 폴백",
+            "what": "코드로 특전을 찾는다 — 메모리 정의에 없으면 DB, 그래도 없으면 그 코드만 건너뛰고 로그."
+          },
+          {
+            "name": "Entity 생성 경로 둘",
+            "what": "`create`(새로 만들 때, 불변 조건 전부 검증) · `reconstruct`(영속 데이터 복원, 검증 없이 신뢰)."
+          },
+          {
+            "name": "ReadModel / QueryService",
+            "what": "판정 없는 조회. Entity 의 Mapped Type 대신 Firestore 문서 스키마에서 바로 끌어낸 plain DTO, 이름도 Repository → QueryService."
+          },
+          {
+            "name": "의도적 차이 목록",
+            "what": "같게 할 수 없거나 해선 안 되는 차이(예: 잔여 수 차감을 건너뛰는 분기)를 PR 본문에 전부."
+          }
+        ],
+        "invariants": [
+          "외부에서 관측 가능한 기능 동작에 미승인 차이가 없다.",
+          "영속 형식을 바꾸지 않는다 — 새 코드가 쓴 데이터를 레거시가 그대로 읽어야 pr6 revert 가 성립한다.",
+          "새것에는 지금의 규칙을 엄격하게, 이미 있는 것에는 관대하게(create/reconstruct 비대칭).",
+          "Domain 은 인프라(로거)를 import 하지 않는다 — 이상은 반환값으로, 로그는 Application 이."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "원칙을 메모리 파일에 적고, 세션마다 hand-off·결정 사항 파일을 읽고 시작",
+            "why": "앞 세션이 기각한 설계를 다음 세션이 선의로 다시 제안하는 무한 루프를 막는다."
+          },
+          {
+            "step": "기한 계산·직렬화 등 레거시의 **현실 동작**을 특성 테스트로 먼저 고정 — 스프레드로 저장하던 곳을 코덱으로 바꾸기 전에 앞뒤 저장 객체가 같음을 테스트로",
+            "why": "직관에 어긋나는 타임존 동작도 그대로 고정한다. 고치는 건 이행이 끝난 뒤 — 같이 하면 테스트가 떨어졌을 때 이행 실수인지 의도한 수정인지 못 가린다."
+          },
+          {
+            "step": "7개 Stacked PR 을 worktree 병렬 세션으로 — 세션 끝마다 타입 체크 빌드와 해당 층 jest 를 둘 다 green 이어야 커밋",
+            "why": "테스트만 green 이고 빌드가 깨진 상태를 여러 번 봤다. 대가는 main 갱신을 7단 스택에 전파하는 수고."
+          },
+          {
+            "step": "pr1~5: 새 Modules 코드를 더하기만(아무도 안 부름) → pr6: 새 코드가 트래픽 처리(레거시 남김) → pr7: 본번 확인 뒤 레거시 삭제",
+            "why": "Strangler Fig. pr6 까지는 revert 하나로 레거시 경로로 즉시 돌아간다. pr7 을 넘으면 되돌리는 비용이 뛴다."
+          },
+          {
+            "step": "동작 차·DDD 규약·KISS·성능·자체 PR 체크리스트, 5관점 AI 리뷰를 병렬 → 중요한 지적은 상위 모델로 재검증 → 실제로 돌려 보고 고친다",
+            "why": "AI 리뷰에는 일정 비율 오탐이 섞인다. 그대로 고치면 '불필요한 수정' 이라는 다른 잡음이 차이에 들어간다."
+          },
+          {
+            "step": "이행 중 모델이 바뀐 뒤(Fable) 같은 코드를 다시 검증 — 5관점이 모두 놓친 규약 위반 1건",
+            "why": "긴 프로젝트일수록 도중에 모델을 갈아 과거 산출물을 재검증할 가치가 있다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "건드려야 하나, 두어야 하나",
+            "chosen": "DDD Modules 로 이행 — 계속 만질 코드라서",
+            "alternatives": [
+              "그대로 둔다 — 더 안 만질 레거시였다면 정답"
+            ],
+            "tradeoff": "이행 비용은 한 번, 구조의 나쁨은 시책마다 낸다. 대가는 지불에 닿는 코드를 건드리는 위험 — 그래서 원칙이 필요했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 '성공' 으로 정의하나",
+            "chosen": "'main 과 미승인 동작 차 제로' — 영속 형식·API 입출력·계산 결과",
+            "alternatives": [
+              "'DDD 적으로 올바른 상태' 를 목표로",
+              "'1비트도 안 바꾼다'"
+            ],
+            "tradeoff": "개선인가 동작 차인가를 기계적으로 가르고, pr6 revert 를 가능하게 한다. 대가는 DDD 순도를 동작을 깨지 않는 범위로 미루는 것 — 순환 import 는 이번에 못 고치고 남겼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "question": "한 번에 바꾸나",
+            "chosen": "레이어별 7개 Stacked PR — Strangler Fig",
+            "alternatives": [
+              "Big Bang 이행"
+            ],
+            "tradeoff": "PR 마다 차이를 따라갈 수 있고 이상이 나도 피해가 한 단계에 갇힌다. 대가는 main 병합과 충돌 해결 지시를 7번 되풀이하는 수고 — '코드를 쓰게 하는 것보다 솔직히 힘들었다'.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "question": "스코프를 어디서 끊나",
+            "chosen": "3분류 — 관측 동작을 바꾸면 즉시 revert · 동작 불변으로 사내 규약 위반을 없애면 스코프 안 · 동작 불변의 새 개선은 별도 PR",
+            "alternatives": [
+              "에이전트가 만들 수 있는 건 만들게 둔다"
+            ],
+            "tradeoff": "'어디까지 하면 이행이 끝인가' 를 사람과 에이전트가 합의한다. 대가는 좋은 개선(pr8 — 판정 없는 조회를 ReadModel 로 직행)을 닫고 미룬 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "question": "복원 때 검증을 더하나",
+            "chosen": "마스터 데이터는 본번 count() 로 0건 확인 · 사용자 이력은 index 가 없어 실측 실패 → 관계자 확인으로 '검증 건너뜀(레거시 동등)' 유지",
+            "alternatives": [
+              "DDD 교과서대로 생성 때 검증",
+              "전 건을 앱에서 읽어 확인"
+            ],
+            "tradeoff": "count() 는 매칭 index 항목 1,000건당 1 read 라 수십만 건도 싸다. 대가는 index 신설이 스코프 밖이라 핵심 쪽은 실측이 아니라 사람의 확인에 기댄 것 — 그 사실을 적어 뒀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "question": "DDD 원칙과 과거 데이터가 부딪칠 때",
+            "chosen": "Entity 생성 경로를 둘로 — create 는 전부 검증, reconstruct 는 검증 없이 신뢰 · VO 마다 있던 무검증 복원은 없애고 입구를 reconstruct 하나로",
+            "alternatives": [
+              "모든 경로에서 지금 규칙을 강제",
+              "VO 마다 무검증 복원 메서드"
+            ],
+            "tradeoff": "스키마리스 Firestore 에서 과거 규칙으로 쓴 데이터를 지금 기준으로 검열하지 않는다. 대가는 reconstruct 가 손 뗀 듯 보이는 것 — 뒷문을 한 곳에 모아 'VO 생성 경로를 지나면 불변 조건을 만족한다' 는 보장을 지켰다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "question": "AI 리뷰가 잡은 fail-close 회귀를 어떻게 되돌리나",
+            "chosen": "레거시 동등으로 — 정의 맵 → DB 폴백 → 없으면 그 코드만 skip 하고 로그, 연결 오류는 위로. Application 층에 리포지터리 하나 주입",
+            "alternatives": [
+              "새 구현처럼 모르는 코드가 오면 전체 중단"
+            ],
+            "tradeoff": "라이드 종료 때 보상 부여 경로라, 두면 새 식별 코드 추가와 배포 시점에 따라 특전이 통째로 안 붙을 수 있었다. 이 회귀를 만든 건 이행 작업 자체(사람과 Claude Code) — 만드는 속도가 오른 만큼 버그를 넣는 속도도 오른다는 전제로 검증을 짠다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "question": "콜드 스타트 크래시를 어떻게 막나",
+            "chosen": "Logger 의 bind 는 모듈 로드 때 끝내고 환경 이름만 나중에 반영(toDynamicValue) · get() 은 모듈 수준에서 한 번",
+            "alternatives": [
+              "bind 를 요청 입구까지 미루고, 핸들러 안에서 get() 으로 피한다(기존 우회)"
+            ],
+            "tradeoff": "모듈 최상위에서 Logger 를 풀던 코드가 wrapper 실행 전에 돌면 binding 이 없어 떨어졌다. 대가는 Logger 를 get 마다 새로 만드는 것 — 생성이 가벼운 Logger 라서 성립한다. 옛 우회 코드는 이유가 사라져도 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          },
+          {
+            "question": "ReadModel 을 무엇에서 끌어내나",
+            "chosen": "Firestore 문서 스키마에서 바로 끌어낸 plain DTO, 이름은 QueryService",
+            "alternatives": [
+              "Entity 의 Mapped Type(Pick)"
+            ],
+            "tradeoff": "Entity 쪽 타입 변경(속성의 VO 화 등)이 ReadModel 로 번지지 않고 실제 문서 스키마와 어긋나지 않는다. 대가는 두 타입을 따로 유지하는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+                "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+                "publisher": "Luup Developers Blog (Zenn)",
+                "date": "2026-07-17",
+                "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다(같은 회사의 다른 도메인)",
+          "via": "같은 Firestore 와 Cloud Functions — 관리 화면은 쿠폰 같은 도메인 규칙을 다룬다",
+          "contract": "영속 형식은 백엔드 이행에서 바뀌지 않았으므로, Firestore 를 직접 읽던 관리 화면 쪽 코드도 그대로 읽힌다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "7단 스택과 되돌리는 값",
+          "question": "어디까지가 revert 한 번이면 돌아가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Added: pr1~pr5\\n새 Modules 추가만 · 아무도 안 부름\n  Added --> Coexist: pr6\\n새 코드가 트래픽 처리 · 레거시 남김\n  Coexist --> Added: pr6 revert\\n영속 형식 불변이라 즉시\n  Coexist --> Removed: pr7\\n본번 확인 뒤 레거시 삭제\n  Removed --> [*]"
+        },
+        {
+          "title": "새던 한 건 — fail-close 회귀",
+          "question": "AI 리뷰가 잡은 수정 필수 1건은 무엇을 깨뜨릴 뻔했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[\"라이드 종료\\n보상 부여\"] --> C{\"코드가 정의 맵에?\"}\n  C -->|예| OK[\"특전 부여\"]\n  C -->|아니오 · 이행 직후| X[\"전체 중단\\nDB 폴백 사라짐\"]\n  X --> BAD[\"새 코드 추가·배포 시점에\\n특전이 통째로 미부여\"]\n  C -->|아니오 · 복구 뒤| DB{\"DB 에?\"}\n  DB -->|예| OK\n  DB -->|아니오| SK[\"그 코드만 skip + 로그\\n나머지는 계속\"]"
+        },
+        {
+          "title": "차이를 잡는 그물",
+          "question": "미승인 차이는 어디서 걸리나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  CH[\"변경\"] --> CT[\"특성 테스트\\n레거시의 현실 동작\"]\n  CT --> MEAS[\"본번 count() 실측\\n못 재면 못 쟀다고 기록\"]\n  MEAS --> LIST[\"의도적 차이 목록\\nPR 본문\"]\n  LIST --> AIR[\"5관점 AI 리뷰\\n→ 상위 모델 재검증\"]\n  AIR --> HR[\"사람 리뷰 17건\"]\n  HR --> RE[\"새 모델로 재검증\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+          "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+          "publisher": "Luup Developers Blog (Zenn)",
+          "date": "2026-07-17",
+          "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출 규모와 포트 설치 파트너와의 돈 흐름을 확인하지 못했다.",
     "차량 측(IoT·배터리·재배치)의 기술 결정 글을 아직 못 봤다."

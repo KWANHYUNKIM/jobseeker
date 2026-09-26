@@ -1989,3 +1989,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Luup 회사 프로파일
 
 - luup.sc 요금표로 수익원 하나. RSS 20편 중 결정·대가를 말하는 두 편(레거시 이행 · 사내 관리 화면 아키텍처)을 도메인 둘로.
+
+## 2026-09-26 Luup zero-diff-benefit-migration
+
+- 레거시 이행 글 하나로 기능. 결정 9, 그림 3(state·failure·flow).
