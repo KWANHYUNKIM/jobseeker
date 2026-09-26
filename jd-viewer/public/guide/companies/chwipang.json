@@ -437,6 +437,130 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/381999",
+      "title": "프론트엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-8년(결과가 분명하면 경력이 짧아도 지원 가능하다고 적는다). 취팡 웹 서비스의 신규 화면과 사용자 기능, 진단·채용·회원 등 주요 플로우 구현·개선, 백엔드·기획·디자인과의 협업. 자격은 가볍다 — JavaScript 또는 TypeScript 기본, React·Next.js 등 프레임워크, REST API 연동과 Git. 반응형·모바일 웹 최적화, 디자인 시스템·공통 컴포넌트, 웹 성능·SEO·접근성은 우대다. 회사는 블로그 누적 방문자 1,700만을 자산으로 든다(회사 브리핑) — 검색 유입을 서비스로 잇는 SEO 가 중요할 것으로 보인다(추론). '모든 분야 공통' 요건은 AI 개발자 공고와 같다. 전형: 서류 → 인터뷰 → 실무과제 → 최종 인터뷰 및 조건 협의(분야·경력에 따라 조정). 실무과제는 판단력·정리 능력·실행 수준을 보는 범위이고 장시간 결과물을 무상으로 요구하지 않는다고 적는다. 이력서·경력기술서(직접 판단·실행한 범위와 결과 중심)·포트폴리오, 희망연봉 기재.",
+      "fit": {
+        "must_have": [
+          "JavaScript/TypeScript 기본",
+          "React·Next.js 등",
+          "REST API 연동·Git"
+        ],
+        "can_learn": [
+          "반응형·모바일 웹",
+          "디자인 시스템·공통 컴포넌트",
+          "웹 성능·SEO·접근성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "진단 플로우 화면(여러 단계 폼)",
+          "from": "task",
+          "quote": "진단·채용·회원 등 주요 서비스 플로우를 구현하고 개선합니다.",
+          "priority": "core",
+          "why": "주요업무이고 회사 서비스 흐름이 진단 → 입사지원서 작성 → 면접 준비 → 기업 연결이다(회사 브리핑). 자격요건에 REST API 연동이 있다.",
+          "gap_check": "여러 단계로 된 취업 진단 설문에서 중간에 나갔다 돌아오면 이어서 하게 하려면 상태를 어디에(서버·로컬) 저장하고, 단계별 입력 검증과 AI 결과 대기 화면(수 초~수십 초)은 어떻게 설계하는가?",
+          "drill": "Next.js 로 4단계 진단 폼을 만들고 react-hook-form + zod 로 단계별 검증, 서버 임시 저장·이어하기, AI 결과 폴링·대기 화면을 구현한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Next.js docs",
+              "url": "https://nextjs.org/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "React Hook Form — Get started",
+              "url": "https://react-hook-form.com/get-started",
+              "kind": "docs"
+            },
+            {
+              "title": "Zod",
+              "url": "https://zod.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SEO 와 검색 유입",
+          "from": "preference",
+          "quote": "웹 성능·SEO·접근성 개선 경험이 있는 분",
+          "priority": "core",
+          "why": "우대사항이고 회사가 블로그 누적 방문자 1,700만을 자산으로 든다(회사 브리핑). 공고가 이 기반을 서비스 성과로 바꿀 사람을 찾는다고 적는다.",
+          "gap_check": "채용공고·직무 가이드 같은 페이지가 검색에 잘 잡히게 하려면 렌더링 방식(SSR·SSG)과 메타데이터·구조화 데이터를 어떻게 두고, 로그인한 사람만 보는 진단 결과 페이지는 왜 색인에서 빼야 하는가?",
+          "drill": "Next.js 로 직무 가이드 페이지를 SSG 로 만들고 메타데이터·OG 이미지·sitemap 을 붙인 뒤, 진단 결과 페이지는 noindex 로 두고 Lighthouse SEO 점수를 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Google Search Central — SEO Starter Guide",
+              "url": "https://developers.google.com/search/docs/fundamentals/seo-starter-guide",
+              "kind": "docs"
+            },
+            {
+              "title": "Next.js — Metadata and OG images",
+              "url": "https://nextjs.org/docs/app/getting-started/metadata-and-og-images",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모바일 웹 성능과 접근성",
+          "from": "preference",
+          "quote": "반응형 웹 및 모바일 웹 최적화 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이고 다른 우대 줄이 '웹 성능·SEO·접근성 개선' 이다. 회사는 카카오톡 채널·단톡방에서 사용자를 모은다(회사 브리핑) — 모바일로 들어오는 사용자가 많을 것으로 보인다(추론).",
+          "gap_check": "카카오톡 인앱 브라우저로 들어온 사용자의 첫 화면 LCP 를 줄이려면 무엇부터 보고, 폼 입력 화면에서 스크린리더·키보드 사용자를 위해 반드시 챙길 것은 무엇인가?",
+          "drill": "앞 드릴 화면을 모바일 기준으로 Lighthouse·Core Web Vitals 를 재고 이미지·폰트·번들을 줄인 뒤, 폼에 레이블·오류 안내·포커스 이동을 WCAG 기준으로 점검한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "web.dev — Web Vitals",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — Responsive design",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
+              "kind": "docs"
+            },
+            {
+              "title": "W3C — WCAG",
+              "url": "https://www.w3.org/WAI/standards-guidelines/wcag/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "여러 단계 진단 폼 + SEO 된 직무 가이드 페이지 + 모바일 성능 전후 수치",
+          "why": "주요업무(진단 플로우)와 우대 셋(반응형·SEO·접근성)을 한 번에 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "직접 판단·실행한 범위와 결과 중심 경력기술서",
+          "why": "공고가 경력기술서를 결과 중심으로 쓰라고 한다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 → 인터뷰 → 실무과제 → 최종 인터뷰 및 조건 협의(분야·경력에 따라 조정). 실무과제는 판단력·정리 능력·실행 수준을 보는 범위이고 장시간 결과물을 무상으로 요구하지 않는다고 적는다. 이력서·경력기술서(직접 판단·실행한 범위와 결과 중심)·포트폴리오, 희망연봉 기재.",
+        "expect": [
+          "만든 화면과 결과 지표",
+          "폼·상태 설계",
+          "SEO·성능",
+          "대표에게 추천안 제시"
+        ],
+        "sources": [
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/381999",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
