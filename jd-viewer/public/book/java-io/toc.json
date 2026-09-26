@@ -1,0 +1,633 @@
+{
+  "id": "java-io",
+  "title": "실전 자바 — I/O, 네트워크, 리플렉션",
+  "subtitle": "문자는 없다, 바이트만 있다",
+  "blurb": "파일에도 소켓에도 문자는 없다. 바이트만 있고, 그 바이트를 문자로 읽는 약속이 따로 있다. 이 책은 그 약속이 어긋나는 자리와, 같은 바이트를 2,000배 느리게 옮기는 코드를 눈으로 본다. 매 절은 od 로 찍은 실제 바이트나 소켓에 오간 원문으로 끝난다.",
+  "updated_at": "2026-09-26",
+  "preface": "「실전 자바 — 멀티스레드와 동시성」의 마지막 장에서 스레드를 요청 하나에 붙이는 이야기를 했다. 그 요청이 어디서 들어오는지는 그 책이 다루지 않았다. 「모든 개발자를 위한 HTTP 웹 기본 지식」은 와이어에 오간 요청·응답 원문을 봤지만, 그 원문을 누가 읽어 객체로 만드는지는 서버의 일이라고 미뤘다.\n\n미뤄 둔 것이 이 책이다.\n\n시작은 더 아래다. 파일에도 소켓에도 문자는 없다 — 바이트만 있다. `\"안녕\"` 두 글자가 파일에서 6바이트가 되는 것을 찍어 보고, 그 6바이트를 다른 약속으로 읽으면 무엇이 되는지 본다. 그다음 그 바이트를 옮기는 네 가지 방법을 재는데, 가장 느린 것과 가장 빠른 것이 2,000배 차이다. 결과 바이트는 완전히 같다.\n\n중간에 소켓을 열고, 여러 손님을 받고, **순수 자바로 HTTP 서버를 만든다.** 톰캣이 하던 일을 직접 하는 것이고, 그러면 9장 끝에 서블릿 같은 것이 생긴다. 마지막 두 장은 그 서버의 주소 표를 없앤다 — 리플렉션과 애노테이션으로 `@Mapping(\"/hello\")` 을 만들면 스프링이 무엇을 대신해 주고 있었는지가 보인다.\n\n이 책에 라이브러리는 없다. JDK 에 있는 것만 쓴다.",
+  "how_to_read": "차례 순서대로 읽는다. 2장(문자 인코딩)과 3장(스트림)은 나머지 전부의 바닥이다 — 2장을 건너뛰면 9장에서 한글이 깨질 때 어디를 볼지 모르게 된다. 7장부터는 프로그램이 둘이 된다(서버와 클라이언트). 터미널을 두 개 띄우고 읽는 쪽이 편하다. 8장은 「실전 자바 — 멀티스레드와 동시성」의 스레드 풀을 그대로 쓴다. 9장은 「모든 개발자를 위한 HTTP 웹 기본 지식」을 읽었으면 훨씬 빠르게 지나간다. 10~11장은 「스프링 핵심 원리 — 기본편」의 컴포넌트 스캔이 무엇이었는지를 밑에서 본다.",
+  "prereq": "자바 문법과 클래스·인터페이스·예외·제네릭. try-with-resources 를 읽을 수 있으면 된다. 스레드는 8장에서 쓰지만 그 자리에서 다시 설명한다. HTTP 는 9장에서 필요한 만큼만 쓴다.",
+  "env": "OpenJDK 17.0.16, Apple M2 8코어 · 8GB, macOS. 바이트는 `od -c` 와 `od -An -tx1` 로 찍는다. 외부 라이브러리를 쓰지 않는다 — JDK 에 들어 있는 것만. 네트워크는 localhost 안에서만 열고 닫으며 포트는 12345 부터 쓴다. 자바 11·24 는 판이 달라지는 자리를 비교할 때만 쓴다.",
+  "rule": "매 절은 od 로 찍은 실제 바이트나 소켓에 오간 원문으로 끝난다. 같은 일을 여러 방법으로 하고 느린 쪽도 같이 싣는다.",
+  "source": {
+    "title": "김영한의 실전 자바 - 고급 2편, I/O, 네트워크, 리플렉션 (차례 출처)",
+    "url": "https://www.inflearn.com/course/김영한의-실전-자바-고급-2",
+    "publisher": "인프런 · 김영한",
+    "note": "열여섯 섹션 101강의 뼈대를 빌려 열한 장 67절로 묶었다. 6장(파일과 디렉토리)과 8장(여러 클라이언트)은 자바 공식 문서로 늘렸다. 본문·예제·출력은 직접 쓰고 직접 돌린 것이다."
+  },
+  "chapters": [
+    {
+      "no": 1,
+      "title": "시작하기 전에",
+      "goal": "이 책이 무엇으로 끝나는지 정하고, 바이트를 한 번 찍어 본다.",
+      "sections": [
+        {
+          "no": "1.1",
+          "id": "how-to-read",
+          "title": "이 책을 읽는 법",
+          "summary": "매 절은 od 로 찍은 바이트로 끝난다.",
+          "minutes": 10,
+          "status": "done"
+        },
+        {
+          "no": "1.2",
+          "id": "why-bytes",
+          "title": "왜 바이트인가",
+          "summary": "같은 1MB 를 2초와 1밀리초로 옮긴다.",
+          "minutes": 12,
+          "status": "done"
+        },
+        {
+          "no": "1.3",
+          "id": "env",
+          "title": "실습 환경",
+          "summary": "자바 17, od 와 hexdump, 외부 라이브러리 없음.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "1.4",
+          "id": "first-bytes",
+          "title": "첫 바이트",
+          "summary": "일곱 글자가 파일에서 몇 바이트인가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "1.5",
+          "id": "what-to-watch",
+          "title": "무엇을 볼 것인가",
+          "summary": "바이트 수 · 호출 횟수 · 걸린 시간.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": "문자 인코딩",
+      "goal": "문자와 바이트 사이의 약속을 정하고, 깨지는 자리를 만들어 본다.",
+      "sections": [
+        {
+          "no": "2.1",
+          "id": "data-and-bytes",
+          "title": "컴퓨터와 데이터",
+          "summary": "세상에 문자는 없다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.2",
+          "id": "charset",
+          "title": "문자 집합",
+          "summary": "아스키에서 유니코드까지.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.3",
+          "id": "utf8",
+          "title": "UTF-8 이 하는 일",
+          "summary": "한글은 왜 3바이트인가.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.4",
+          "id": "ms949",
+          "title": "MS949 와 만나면",
+          "summary": "같은 글자, 다른 바이트.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "2.5",
+          "id": "default-charset",
+          "title": "기본 charset",
+          "summary": "안 적으면 무엇이 쓰이나.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "2.6",
+          "id": "broken",
+          "title": "깨진 글자",
+          "summary": "물음표가 되는 자리와 되돌릴 수 없는 자리.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": "스트림의 기본",
+      "goal": "바이트를 옮기는 네 가지 방법을 재고, 왜 그만큼 차이 나는지 본다.",
+      "sections": [
+        {
+          "no": "3.1",
+          "id": "stream-io",
+          "title": "InputStream 과 OutputStream",
+          "summary": "바이트 하나를 옮기는 계약.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.2",
+          "id": "one-byte",
+          "title": "한 바이트씩",
+          "summary": "20초가 어디로 갔나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.3",
+          "id": "byte-array",
+          "title": "버퍼 배열",
+          "summary": "read(byte[]) 한 줄의 값.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.4",
+          "id": "buffered",
+          "title": "Buffered 스트림",
+          "summary": "버퍼를 대신 들어 준다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "3.5",
+          "id": "all-at-once",
+          "title": "한 번에 읽기",
+          "summary": "readAllBytes 의 값과 대가.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "3.6",
+          "id": "flush-close",
+          "title": "flush 와 close",
+          "summary": "안 쓴 바이트가 남는다.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": "문자 스트림",
+      "goal": "바이트 스트림 위에 문자를 얹는다. 인코딩을 정하는 자리가 여기다.",
+      "sections": [
+        {
+          "no": "4.1",
+          "id": "reader-writer",
+          "title": "Reader 와 Writer",
+          "summary": "바이트와 문자 사이.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.2",
+          "id": "stream-reader",
+          "title": "InputStreamReader",
+          "summary": "인코딩을 여기서 정한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "4.3",
+          "id": "buffered-reader",
+          "title": "BufferedReader",
+          "summary": "줄 단위로 읽는 법.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.4",
+          "id": "print-writer",
+          "title": "PrintWriter",
+          "summary": "편한 대신 삼키는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "4.5",
+          "id": "line-separator",
+          "title": "줄바꿈",
+          "summary": "\\n 과 \\r\\n.",
+          "minutes": 11,
+          "status": "todo"
+        },
+        {
+          "no": "4.6",
+          "id": "files-text",
+          "title": "Files 의 문자 메서드",
+          "summary": "readString 과 lines.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": "객체를 바이트로",
+      "goal": "숫자와 객체를 바이트로 적는 방법들, 그리고 직렬화를 피하는 이유.",
+      "sections": [
+        {
+          "no": "5.1",
+          "id": "data-stream",
+          "title": "DataOutputStream",
+          "summary": "숫자를 바이트로 적는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.2",
+          "id": "serialize",
+          "title": "직렬화",
+          "summary": "객체가 파일이 된다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.3",
+          "id": "serial-version",
+          "title": "serialVersionUID",
+          "summary": "클래스를 고치면 못 읽는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.4",
+          "id": "transient",
+          "title": "transient 와 상속",
+          "summary": "안 담기는 것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "5.5",
+          "id": "serial-problem",
+          "title": "직렬화를 쓰지 않는 이유",
+          "summary": "버전과 보안.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "5.6",
+          "id": "by-hand",
+          "title": "손으로 쓰는 형식",
+          "summary": "내가 정한 바이트.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 6,
+      "title": "파일과 디렉토리",
+      "goal": "File 과 Path, 그리고 크기에 따라 달라지는 읽는 법.",
+      "sections": [
+        {
+          "no": "6.1",
+          "id": "file-vs-path",
+          "title": "File 과 Path",
+          "summary": "옛것과 새것.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.2",
+          "id": "files-api",
+          "title": "Files 로 하는 일",
+          "summary": "만들고 지우고 옮긴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.3",
+          "id": "read-three-ways",
+          "title": "읽는 세 가지",
+          "summary": "크기가 방법을 정한다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.4",
+          "id": "big-file",
+          "title": "큰 파일",
+          "summary": "메모리에 다 올리면 죽는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "6.5",
+          "id": "walk",
+          "title": "디렉토리 순회",
+          "summary": "walk 와 자원 정리.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "6.6",
+          "id": "attributes",
+          "title": "파일의 정보",
+          "summary": "크기 · 시각 · 권한.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 7,
+      "title": "네트워크 기본",
+      "goal": "소켓도 스트림이다. 다만 끊어지고, 안 오고, 거부된다.",
+      "sections": [
+        {
+          "no": "7.1",
+          "id": "tcp-ip",
+          "title": "네트워크의 층",
+          "summary": "IP 와 포트, 그리고 스트림.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "7.2",
+          "id": "socket",
+          "title": "첫 소켓",
+          "summary": "서버와 클라이언트 두 프로그램.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.3",
+          "id": "exchange",
+          "title": "주고받기",
+          "summary": "소켓 스트림은 파일과 같다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.4",
+          "id": "close-order",
+          "title": "끝내는 순서",
+          "summary": "누가 먼저 닫나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.5",
+          "id": "exceptions",
+          "title": "네트워크 예외",
+          "summary": "Connection refused 부터 reset 까지.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "7.6",
+          "id": "timeout",
+          "title": "타임아웃",
+          "summary": "안 오는 응답을 기다리는 시간.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": "여러 클라이언트",
+      "goal": "두 번째 손님을 받는다. 고급 1편의 스레드가 여기서 쓰인다.",
+      "sections": [
+        {
+          "no": "8.1",
+          "id": "one-thread",
+          "title": "한 번에 하나",
+          "summary": "두 번째 손님은 기다린다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "8.2",
+          "id": "thread-per-connection",
+          "title": "연결마다 스레드",
+          "summary": "받자마자 넘긴다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.3",
+          "id": "thread-pool",
+          "title": "스레드 풀",
+          "summary": "몇 개까지 받나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.4",
+          "id": "shutdown",
+          "title": "우아한 종료",
+          "summary": "받던 것은 끝내고 닫는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.5",
+          "id": "blocking-limit",
+          "title": "블로킹의 한계",
+          "summary": "기다리는 스레드의 값.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "8.6",
+          "id": "concurrent-test",
+          "title": "동시에 붙여 본다",
+          "summary": "백 명이 한꺼번에.",
+          "minutes": 12,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": "HTTP 서버를 만든다",
+      "goal": "앞의 여덟 장을 한 프로그램에 모은다. 라이브러리는 쓰지 않는다.",
+      "sections": [
+        {
+          "no": "9.1",
+          "id": "request-line",
+          "title": "요청 한 줄 읽기",
+          "summary": "GET / HTTP/1.1",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.2",
+          "id": "headers",
+          "title": "헤더와 빈 줄",
+          "summary": "어디까지가 헤더인가.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.3",
+          "id": "response",
+          "title": "응답 만들기",
+          "summary": "상태 줄과 Content-Length.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.4",
+          "id": "not-found",
+          "title": "없는 주소",
+          "summary": "404 를 직접 쓴다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "9.5",
+          "id": "static-file",
+          "title": "정적 파일 주기",
+          "summary": "바이트를 그대로 흘린다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.6",
+          "id": "keep-alive",
+          "title": "연결 유지",
+          "summary": "닫지 않으면 무엇이 달라지나.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.7",
+          "id": "servlet",
+          "title": "서블릿 흉내",
+          "summary": "주소와 코드를 잇는다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "9.8",
+          "id": "concurrent-server",
+          "title": "동시에 여러 요청",
+          "summary": "8장을 여기에 붙인다.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": "리플렉션",
+      "goal": "이름만 아는 코드를 부른다. 스프링이 하던 일의 밑바닥.",
+      "sections": [
+        {
+          "no": "10.1",
+          "id": "why-reflection",
+          "title": "왜 리플렉션인가",
+          "summary": "이름만 아는 코드를 부른다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.2",
+          "id": "class-object",
+          "title": "Class 객체",
+          "summary": "클래스의 정보도 객체다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.3",
+          "id": "methods",
+          "title": "메서드 찾아 부르기",
+          "summary": "invoke.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.4",
+          "id": "fields",
+          "title": "필드 읽고 바꾸기",
+          "summary": "private 도 열린다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "10.5",
+          "id": "constructor",
+          "title": "객체 만들기",
+          "summary": "이름으로 만든다.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "10.6",
+          "id": "reflection-cost",
+          "title": "리플렉션의 값",
+          "summary": "얼마나 느린가.",
+          "minutes": 13,
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "no": 11,
+      "title": "애노테이션",
+      "goal": "리플렉션의 짝. 주소와 검증을 애노테이션으로 옮기고 책을 닫는다.",
+      "sections": [
+        {
+          "no": "11.1",
+          "id": "annotation",
+          "title": "애노테이션 만들기",
+          "summary": "@interface.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.2",
+          "id": "retention",
+          "title": "유지 정책",
+          "summary": "클래스에 남느냐 안 남느냐.",
+          "minutes": 12,
+          "status": "todo"
+        },
+        {
+          "no": "11.3",
+          "id": "read-annotation",
+          "title": "애노테이션 읽기",
+          "summary": "리플렉션과 짝이다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.4",
+          "id": "mapping",
+          "title": "주소를 애노테이션으로",
+          "summary": "9.7 을 다시 쓴다.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.5",
+          "id": "validator",
+          "title": "검증기 만들기",
+          "summary": "@NotNull 을 직접.",
+          "minutes": 13,
+          "status": "todo"
+        },
+        {
+          "no": "11.6",
+          "id": "to-next",
+          "title": "다음으로",
+          "summary": "스프링이 대신하던 것.",
+          "minutes": 11,
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}

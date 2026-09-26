@@ -1,0 +1,171 @@
+{
+  "book": "java-io",
+  "id": "why-bytes",
+  "no": "1.2",
+  "chapter": 1,
+  "title": "왜 바이트인가",
+  "summary": "같은 1MB 를 2초와 1밀리초로 옮긴다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "결과가 같은데 시간이 2,000배 다른 것을 본다.",
+    "그 시간이 어디로 갔는지 센다.",
+    "바이트를 세는 습관이 왜 이 책의 방법인지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "1.1절에서 일곱 글자가 11바이트가 되는 것을 봤다. 이 절은 **그 바이트를 옮기는 값**이다.\n\n1MB 짜리 파일을 복사하는 코드를 다섯 개 썼다. **결과 파일은 다섯 개가 바이트 하나까지 같다** — sha256 까지 맞춰 봤다. 걸린 시간은 **2,070ms 와 1ms** 다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "가장 느린 것과 가장 빠른 것",
+      "code": "// 1바이트씩 — 2,070 ms\ntry (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dst)) {\n    int b;\n    while ((b = in.read()) != -1) out.write(b);\n}\n\n// 8KB 버퍼 — 1 ms\ntry (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dst)) {\n    byte[] buf = new byte[8192];\n    int r;\n    while ((r = in.read(buf)) != -1) out.write(buf, 0, r);\n}"
+    },
+    {
+      "type": "figure",
+      "caption": "같은 1MB, 다섯 방법 (낮을수록 좋다)",
+      "ascii": "   one byte at a time   |###############################################| 2070 ms\n   BufferedOutputStream |#                                              |   17 ms\n   readAllBytes         |                                               |    6 ms\n   Files.copy           |                                               |    3 ms\n   read(byte[8192])     |                                               |    1 ms\n\n   sha256 of all five outputs and the source: 0b12e806d4df1b2a...\n   the bytes are identical. only the number of calls differs.",
+      "note": "**막대가 안 보이는 네 줄은 0 이 아니다.** 1~17ms 인데 2,070ms 옆에서 안 보이는 것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "시간이 어디로 갔나 — 세어 보면 나온다",
+      "md": "`read()` 와 `write()` 는 **커널에 부탁하는 일**이다. 그 왕복을 몇 번 했는지가 전부다.\n\n> **1바이트씩**: 1,048,576번 읽고 1,048,576번 쓴다 — **2,097,152번의 왕복**.\n> **8KB 버퍼**: 1MB ÷ 8KB = 128번 읽고 128번 쓴다 — **256번**.\n> 2,070ms ÷ 2,097,152 = **왕복 한 번에 약 1마이크로초**. 그 1마이크로초를 210만 번 낸 것이 2초다.\n> 코드에서 달라진 것은 **`read()` 가 `read(buf)` 가 된 것 한 줄**이다."
+    },
+    {
+      "type": "figure",
+      "caption": "한 줄 차이가 만드는 것",
+      "ascii": "   one byte at a time              read(byte[8192])\n   --------------------            --------------------\n     read()   -> kernel              read(buf)  -> kernel\n     write(b) -> kernel              write(buf) -> kernel\n     x 1,048,576                     x 128\n   --------------------            --------------------\n     2,097,152 crossings             256 crossings\n     ~1 us each                      the same ~1 us each\n     = 2,070 ms                      = 1 ms\n\n   the cost per crossing did not change. the count did.",
+      "note": "**왕복 하나의 값을 줄인 게 아니라 횟수를 줄인 것이다.** 3장이 이 표를 네 절에 걸쳐 늘린다."
+    },
+    {
+      "type": "prose",
+      "md": "## 10MB 로 늘리면\n\n1MB 에서 2초였으니 10MB 면 20초일 것이다. **그대로였다.**"
+    },
+    {
+      "type": "table",
+      "caption": "10MB 짜리 파일 하나",
+      "columns": [
+        "방법",
+        "옮긴 바이트",
+        "걸린 시간"
+      ],
+      "rows": [
+        [
+          "1바이트씩",
+          "10,485,760",
+          "**20,342 ms**"
+        ],
+        [
+          "8KB 버퍼",
+          "10,485,760",
+          "**34 ms**"
+        ]
+      ],
+      "note": "**598배.** 그리고 20초는 사람이 기다리는 시간이다 — 이 코드가 요청 처리 안에 있으면 그대로 응답 시간이 된다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "Buffered 스트림이 버퍼 배열보다 느린 것",
+      "md": "위 표에서 이상한 줄이 하나 있다 — **`BufferedOutputStream` 17ms vs `read(byte[])` 1ms.**\n\n> `Buffered` 계열은 **버퍼를 대신 들어 주지만 메서드 호출은 그대로 1바이트씩**이다. 커널 왕복은 사라지고 **자바 메서드 호출 210만 번**이 남는다.\n> 그래서 2,070 → 17ms 로 **122배** 좋아지지만, 호출 자체를 줄인 쪽을 못 이긴다.\n> \"버퍼를 쓰면 된다\" 가 아니라 **\"무엇의 횟수가 줄었나\"** 를 물어야 하는 이유다. 3.4절에서 다시 잰다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "가장 빠른 것이 가장 좋은 것은 아니다",
+      "md": "1ms 가 최고 기록이지만 **항상 그 코드를 쓰라는 뜻은 아니다.**\n\n> `readAllBytes`(6ms)는 **파일 전체를 메모리에 올린다** — 1MB 면 편하고 1GB 면 죽는다(6.4절).\n> `Files.copy`(3ms)는 **복사만** 할 수 있다. 중간에서 바이트를 보거나 바꿀 수 없다.\n> 크기와 목적이 방법을 정한다. 6.3절이 그 표다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"파일 복사가 느립니다. 어디를 보시겠습니까.\"**\n\n> \"버퍼를 쓰겠습니다\" 보다 **\"한 번에 몇 바이트씩 읽고 있는지 보겠습니다\"** 가 정확하다.\n> 1바이트씩 읽는 코드는 **입출력이 느린 것이 아니라 호출이 많은 것**이다. 디스크는 그대로다.\n> 숫자를 하나 들고 있으면 좋다 — **1MB 를 1바이트씩 옮기면 2초, 8KB 씩 옮기면 1ms.**"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 다섯 방법과 sha256",
+      "sql": "$ head -c 1048576 /dev/urandom > src1m.bin\n$ ls -l src1m.bin\n  1048576 src1m.bin\n\n# --- 각 방법을 3회씩 (단위 ms) ---\n\none              2147   2242   2070\nbufferedStream     15     18     17\nall                13      6      6\nfilesCopy           4      3      3\nbuf                 2      1      1\n\n# --- 결과 바이트가 같은지 확인한다 ---\n\n$ for m in one buf bufferedStream all filesCopy; do shasum -a 256 dst-$m.bin; done\none            0b12e806d4df1b2a\nbuf            0b12e806d4df1b2a\nbufferedStream 0b12e806d4df1b2a\nall            0b12e806d4df1b2a\nfilesCopy      0b12e806d4df1b2a\nsrc            0b12e806d4df1b2a\n# 다섯 개가 원본과 완전히 같다. 시간만 2,000배 다르다.\n\n# --- 10MB 로 늘려서 ---\n\n$ head -c 10485760 /dev/urandom > src10m.bin\n$ java -cp out Copy one src10m.bin dst10.bin\none            10,485,760 바이트  20,342 ms\n$ java -cp out Copy buf src10m.bin dst10.bin\nbuf            10,485,760 바이트      34 ms\n\n# 20초와 34밀리초. 코드에서 달라진 것은 read() 와 read(buf) 한 줄이다.",
+      "note": "**같은 바이트, 같은 해시, 2,000배.** 이 책이 시간을 같이 싣는 이유가 이 표다 — 바이트만 맞으면 끝이 아니다."
+    }
+  ],
+  "recap": [
+    "같은 1MB 를 다섯 방법으로 옮겼고 결과 파일은 sha256 까지 동일했다.",
+    "1바이트씩은 2,070ms, 8KB 버퍼는 1ms — 약 2,000배다.",
+    "차이는 커널 왕복 횟수다 — 2,097,152번 대 256번, 왕복 하나가 약 1마이크로초.",
+    "Buffered 스트림은 커널 왕복은 줄이지만 자바 메서드 호출 210만 번이 남아 17ms 였다.",
+    "10MB 에서는 20,342ms 대 34ms 로 598배였다.",
+    "가장 빠른 것이 항상 옳지는 않다 — readAllBytes 는 전부 메모리에 올리고 Files.copy 는 중간을 볼 수 없다."
+  ],
+  "drills": [
+    {
+      "task": "1MB 파일을 1바이트씩 복사해 시간을 잰다.",
+      "done_when": "초 단위가 나오는 것을 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "버퍼 크기를 512 · 8192 · 65536 으로 바꿔 잰다.",
+      "done_when": "어디서부터 안 빨라지는지 찾는다.",
+      "minutes": 12
+    },
+    {
+      "task": "두 결과 파일의 sha256 을 비교한다.",
+      "done_when": "같은 것을 확인한다.",
+      "minutes": 5
+    },
+    {
+      "task": "내 코드에서 read() 를 한 바이트씩 부르는 자리를 찾는다.",
+      "done_when": "있으면 버퍼 버전으로 바꿔 다시 잰다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "1바이트씩 복사가 느린 이유는.",
+      "a": "커널 왕복 횟수가 바이트 수만큼이기 때문이다. 왕복 하나의 값은 그대로다."
+    },
+    {
+      "q": "1MB 를 8KB 버퍼로 옮기면 왕복이 몇 번인가.",
+      "a": "읽기 128번 + 쓰기 128번 = 256번이다."
+    },
+    {
+      "q": "BufferedOutputStream 이 read(byte[]) 보다 느렸던 이유는.",
+      "a": "커널 왕복은 줄었지만 자바 메서드 호출은 여전히 바이트마다 일어난다."
+    },
+    {
+      "q": "readAllBytes 를 항상 쓰면 안 되는 이유는.",
+      "a": "파일 전체를 메모리에 올린다. 큰 파일에서 OutOfMemoryError 가 난다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "커널 왕복",
+      "what": "read·write 처럼 운영체제에 부탁하는 호출. 한 번에 약 1마이크로초가 들고, 횟수가 성능을 정한다."
+    },
+    {
+      "term": "버퍼",
+      "what": "한 번에 여러 바이트를 담아 옮기는 배열. 옮기는 양이 아니라 옮기는 횟수를 줄인다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — InputStream.read(byte[], int, int)",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/InputStream.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — Files.copy",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "김영한의 실전 자바 - 고급 2편, I/O, 네트워크, 리플렉션",
+      "url": "https://www.inflearn.com/course/김영한의-실전-자바-고급-2",
+      "publisher": "인프런 · 김영한"
+    }
+  ]
+}
