@@ -9973,6 +9973,148 @@
       "site": "ats",
       "duplicate_of": "https://www.wanted.co.kr/wd/385086",
       "verdict": "원티드 '[쿠팡] Senior Front-end Engineer (Coupang Ads-ACI Intelligence)'(wd/385086)의 쿠팡 채용 사이트 게시다. 세 절 25줄이 양방향으로 모두 같다. 브리핑은 원티드판을 본다."
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/coupang/jobs/8222501",
+      "title": "[Coupang Pay] Sr. Back-end Engineer (Fintech Developer Platform)",
+      "site": "ats",
+      "verdict": "서울 근무, Unix/Linux 백엔드 설계·개발 3년 이상. 쿠팡페이 사내 개발자 플랫폼 — 결제 서비스를 위한 플랫폼 서비스, 대규모 결제 트래픽 인프라, 고가용성·재해복구, 표준 CI/CD·DevOps 플랫폼, 금융 보안·규제 준수 — 을 설계·구축·운영하는 플랫폼 엔지니어. 결제 기능 자체보다 그걸 만드는 개발자들의 기반을 만든다.",
+      "fit": {
+        "must_have": [
+          "Unix/Linux 백엔드 3년 이상",
+          "Docker·Kubernetes·AWS",
+          "Python·Go·Java·Kotlin 중 하나 이상",
+          "Grafana·Loki·Prometheus 모니터링·장애 대응",
+          "CI/CD 설계·운영"
+        ],
+        "can_learn": [
+          "금융 IT 규제(우대)",
+          "API Gateway·Service Mesh(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "결제 플랫폼의 고가용성·재해복구",
+          "from": "task",
+          "quote": "고가용성 및 재해복구 아키텍처 설계 및 구현",
+          "priority": "core",
+          "why": "결제는 멈추면 바로 매출 손실이고, 금융 서비스라 재해복구 요건이 규제로도 요구된다(추론). 주요업무에 따로 한 줄이다.",
+          "gap_check": "결제 API 를 두 가용영역(AZ)에 걸쳐 둘 때 DB 장애 전환 중 들어온 결제 요청은 어떻게 되고, RPO·RTO 는 무엇으로 정해지는가?",
+          "drill": "kind 클러스터 두 개(또는 네임스페이스 두 개)에 같은 서비스를 띄우고 한쪽을 내렸을 때 트래픽 전환과 PostgreSQL 복제본 승격을 연습해 전환 시간을 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "AWS — Disaster Recovery of Workloads on AWS (whitepaper)",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-workloads-on-aws.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "사내 표준 CI/CD·DevOps 플랫폼",
+          "from": "task",
+          "quote": "사내 표준 CI/CD 및 DevOps 플랫폼 고도화와 엔지니어링 운영 원칙 수립",
+          "priority": "core",
+          "why": "여러 결제 서비스 팀이 같은 배포 파이프라인을 쓰게 하는 것이 개발자 경험 플랫폼의 중심이다. 자격에도 CI/CD 설계·운영이 있다.",
+          "gap_check": "서비스마다 파이프라인을 복사해 쓰지 않게 하려면 무엇을 공통 템플릿으로 두고, 금융 서비스라 어떤 단계(승인·감사 로그·보안 스캔)를 강제하는가?",
+          "drill": "GitHub Actions 재사용 워크플로(reusable workflow)로 빌드·테스트·이미지 스캔·배포 승인 단계를 표준화하고, 서비스 두 개가 같은 템플릿을 쓰게 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "GitHub Actions — Reusing workflows",
+              "url": "https://docs.github.com/en/actions/using-workflows/reusing-workflows",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모니터링·장애 대응 (Grafana·Loki·Prometheus)",
+          "from": "qualification",
+          "quote": "Grafana, Loki, Prometheus 등을 활용한 모니터링, 장애 대응 및 대규모 시스템 운영 경험을 보유하신 분",
+          "priority": "core",
+          "why": "자격에 도구 이름이 명시돼 있다. 대규모 결제 트래픽을 운영하려면 지표·로그를 한 화면에서 이어 봐야 한다.",
+          "gap_check": "결제 실패율이 오를 때 Prometheus 지표에서 Loki 로그로 넘어가 원인을 좁히는 순서를 설명할 수 있는가?",
+          "drill": "작은 결제 API 에 Prometheus 지표(요청·오류·지연)와 Loki 로그를 붙이고, 실패율 급등 알림과 해당 시간대 로그로 바로 가는 Grafana 대시보드를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Grafana Loki — Documentation",
+              "url": "https://grafana.com/docs/loki/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Prometheus — Documentation",
+              "url": "https://prometheus.io/docs/introduction/overview/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "금융 보안·규제를 플랫폼에 녹이기",
+          "from": "task",
+          "quote": "금융 보안 및 규제 요구사항을 준수하는 플랫폼 구축 및 운영",
+          "priority": "high",
+          "why": "쿠팡페이는 금융 서비스다(회사 브리핑). 규제 요구를 개별 팀이 아니라 플랫폼 기본값으로 만족시키는 것이 플랫폼 팀의 일이다(추론).",
+          "gap_check": "운영 서버 접근 기록·권한 분리·배포 승인 같은 요구를 플랫폼에서 기본값으로 강제하려면 어디에(CI 단계·쿠버네티스 정책·접근 게이트웨이) 두는가?",
+          "drill": "Kyverno(또는 OPA Gatekeeper)로 '승인된 레지스트리 이미지만 배포', 'privileged 컨테이너 금지' 정책을 걸고 위반 배포가 막히는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Kyverno — Documentation",
+              "url": "https://kyverno.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "API Gateway·Service Mesh",
+          "from": "preference",
+          "quote": "API Gateway 및 Service Mesh 구축 및 운영 경험을 보유하신 분",
+          "priority": "high",
+          "why": "여러 결제 마이크로서비스 사이의 인증·재시도·타임아웃·관측을 플랫폼이 공통으로 제공하는 방식이다.",
+          "gap_check": "서비스 메시에서 재시도를 켜면 결제 같은 비멱등 요청에서 무엇이 위험하고, 어떻게 막는가?",
+          "drill": "Istio(또는 Linkerd)를 kind 에 올려 두 서비스 간 mTLS·타임아웃·재시도 정책을 걸고, POST 요청에는 재시도가 적용되지 않게 설정한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Istio — Documentation",
+              "url": "https://istio.io/latest/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "결제 서비스용 '골든 패스' 템플릿",
+          "why": "개발자 경험 플랫폼의 결과물이 곧 이것이다. 서비스 생성 → 표준 CI/CD → 모니터링 → 정책까지 한 번에 되는 템플릿을 보여 주면 자리와 딱 맞는다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "결제 서비스 DR 설계",
+          "표준 CI/CD 로 강제할 단계",
+          "지표→로그 장애 추적",
+          "규제를 플랫폼 기본값으로",
+          "메시 재시도와 비멱등 요청"
+        ],
+        "sources": [
+          {
+            "title": "[Coupang Pay] Sr. Back-end Engineer (Fintech Developer Platform)",
+            "url": "https://job-boards.greenhouse.io/coupang/jobs/8222501",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/coupang/jobs/8212664",
+      "title": "[Coupang Pay] Staff Back-end Engineer (Fintech Developer Platform)",
+      "site": "ats",
+      "duplicate_of": "https://job-boards.greenhouse.io/coupang/jobs/8222501",
+      "verdict": "같은 팀(쿠팡페이 Fintech Developer Platform)의 Staff 판이다. 세 절 20줄 중 19줄이 Sr. 판과 같고, 다른 한 줄은 연차뿐이다 — 'Unix/Linux 환경에서 7년 이상의 백엔드 시스템 설계 및 개발 경험을 보유하신 분'(Sr. 판은 3년). Sr. 판 브리핑을 본다."
     }
   ],
   "open_questions": [

@@ -4,8 +4,9 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **91건**.
-직전 회차: 광고 Senior FE **ats 판(8172534) → dup wd/385086**(25줄 완전 일치).
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **93건**.
+직전 회차: ✅ `[Coupang Pay] Sr. Back-end Engineer (Fintech Developer Platform)`(greenhouse 8222501, **3년↑**) 5항목 + Staff 판(8212664, 7년↑) dup.
+⚠️ 새 크롤부터 쿠팡 공고 URL 이 `job-boards.greenhouse.io/coupang/jobs/<id>` 로 바뀐 것이 있다 — gh_jid 뒤 숫자로 찾는다.
 
 **남은 서울 ats 개발 공고**(보안 제외, 겹침 낮은 순) — 쌍이 많다, 한쪽을 쓰고 다른 쪽을 비교:
 - 쌍: `[Coupang Pay] Sr./Staff Back-end Engineer (Fintech Developer Platform)`(8222501 / 8212664),
@@ -15,7 +16,7 @@
 - 단독: `Staff Backend Engineer (Coupang Pay)`(8073876), `Staff, SRE (Tech Infra)`(8018258), `Staff iOS`(8146512),
   `[Coupang Pay Tech] Staff Mobile`(8194393), `Staff, ML Engineer - Coupang Play`(7927865), `Staff, Back-end (Traffic Management)`(8104792) 등
 - 보안 계열 남은 것: Cyber Threat Hunting·Control Assurance·Vendor Security·Pen Tester·Forensics·Attack Surface·Email Detection·Mobile Security 등
-⚠️ 다음 회차: `[Coupang Pay] Sr. Back-end Engineer (Fintech Developer Platform)`(8222501) → 같은 회차에 Staff 판(8212664)과 비교.
+⚠️ 다음 회차: `[Coupang Pay] Sr. Back-end Engineer (Pay Test Operations)`(8212748) → 같은 회차에 Staff 판(8212656)과 비교.
 ⚠️ 경고 80(마감·url 못 찾음)은 크롤 쪽 원인, 미확인. **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
