@@ -1,0 +1,259 @@
+{
+  "book": "jvm-tuning",
+  "id": "latency",
+  "no": "11.7",
+  "chapter": 11,
+  "title": "지연 분석",
+  "summary": "p99 가 나쁜 이유.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "서비스 시간과 응답 시간이 다른 것을 안다.",
+    "같은 실행에서 두 값의 p99 를 재서 비교한다.",
+    "p99 를 고치는 것과 멈춤 합을 줄이는 것이 다른 일임을 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.6절에서 **GC 로그에 없는 멈춤**이 있는 것을 봤다. 이 절은 반대쪽에서 묻는다 — **멈춤 숫자를 다 알아도 응답 시간을 모를 수 있다.**\n\n이 장의 마지막 두 절은 지금까지 모은 숫자를 사용자가 느낀 시간과 맞추는 자리다."
+    },
+    {
+      "type": "prose",
+      "md": "## 요청 하나에 시간이 두 개다\n\n요청을 처리하는 데 걸린 시간과, 요청한 사람이 기다린 시간은 **다른 값**이다. 멈춤이 없을 때는 같고, 멈춤이 있을 때만 갈라진다."
+    },
+    {
+      "type": "figure",
+      "caption": "10ms 멈춤 동안 20us 간격으로 요청이 도착하면",
+      "ascii": "   time ->\n        req arrives          gc pause 10 ms          served\n   r1   |------------------------------------------|   service  0.02 ms\n   r2     |----------------------------------------|   waited    9.98 ms\n   r3       |--------------------------------------|   waited    9.96 ms\n   ...                                                 ~500 requests queued\n   r500                                        |---|   waited    0.04 ms\n\n   service time  = the work itself                     stays tiny\n   response time = arrival -> done                      carries the pause",
+      "note": "**서비스 시간은 전부 짧다.** 멈춤을 온몸으로 받은 것은 그 사이에 도착한 500건의 응답 시간이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "부하 생성기가 같이 멈추면 이 500건이 사라진다",
+      "md": "**coordinated omission** — 같이 멈춰 버려서 빠지는 것.\n\n> 요청을 보내고 **응답을 받은 뒤에 다음 요청을 보내는** 도구로 재면, 멈춤 동안에는 요청 자체를 안 보낸다.\n> 그러면 오래 기다린 500건이 **측정에 아예 없다** — 남는 건 멈춤을 맞은 1건뿐이다.\n> 아래 실험은 그것을 피하려고 **요청이 나가야 할 시각(`due`)을 미리 정해 두고** 그 시각부터 재도록 했다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "같은 실행에서 두 값을 같이 잰다",
+      "code": "int n = 100_000;\nlong periodNs = 50_000;          // 20,000 건/초로 고정\n\nlong t0 = System.nanoTime();\nfor (int i = 0; i < n; i++) {\n    long due = t0 + i * periodNs;                 // 나가야 할 시각\n    long now;\n    while ((now = System.nanoTime()) < due) Thread.onSpinWait();\n    request(i);\n    long end = System.nanoTime();\n    service[i]  = end - now;                      // 일한 시간\n    response[i] = end - due;                      // 기다린 시간까지\n}"
+    },
+    {
+      "type": "prose",
+      "md": "`request()` 는 2,000회 산술 연산과 **16KB 짜리 배열 하나**를 만들고, 8,192칸짜리 `LinkedHashMap` 캐시에 넣는다. 살아 있는 것이 대략 128MB 이고 힙은 256MB 다 — 7장에서 본 대로 **살아 있는 것이 힙의 절반이면 G1 이 바쁘다.**"
+    },
+    {
+      "type": "table",
+      "caption": "기준 실행 (G1, 힙 256MB, 20,000 건/초, 5초)",
+      "columns": [
+        "",
+        "p50",
+        "p90",
+        "p99",
+        "p99.9",
+        "최대"
+      ],
+      "rows": [
+        [
+          "서비스 시간",
+          "0.002",
+          "0.004",
+          "**0.031**",
+          "1.891",
+          "16.229"
+        ],
+        [
+          "응답 시간",
+          "0.002",
+          "1.378",
+          "**13.158**",
+          "23.533",
+          "25.972"
+        ]
+      ],
+      "note": "단위 ms. **같은 요청 10만 건을 같은 실행에서 두 방식으로 잰 것**이다. p99 가 0.031 과 13.158 — 424배 차이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "p99 는 거의 전부 기다린 시간이다",
+      "md": "이 실행의 GC 멈춤은 **207건, 합 598.37ms, 최대 15.70ms** 였다.\n\n> 멈춤 합은 5초 중 **12.0%** 다. 나쁘지만 \"12% 느리다\" 정도로 들린다.\n> 그런데 응답 p99 는 13.158ms 이고 p50 은 0.002ms 다 — **6,579배**다.\n> 멈춤은 **골고루 12% 를 나눠 갖지 않는다.** 1%의 요청이 전부 가져간다."
+    },
+    {
+      "type": "prose",
+      "md": "## 힙을 키워 봤다 — p99 가 더 나빠졌다\n\n가장 먼저 떠오르는 처방은 힙을 키우는 것이다. 256MB 를 1GB 로 올렸다. **GC 횟수는 207에서 22로 줄었다.** 그런데."
+    },
+    {
+      "type": "table",
+      "caption": "힙만 4배로",
+      "columns": [
+        "설정",
+        "GC 건수",
+        "멈춤 합",
+        "최대 멈춤",
+        "응답 p99",
+        "응답 최대"
+      ],
+      "rows": [
+        [
+          "힙 256MB",
+          "207",
+          "598.37 ms",
+          "15.70 ms",
+          "**13.158 ms**",
+          "25.97 ms"
+        ],
+        [
+          "힙 1GB",
+          "**22**",
+          "521.03 ms",
+          "**62.80 ms**",
+          "**45.617 ms**",
+          "63.37 ms"
+        ]
+      ],
+      "note": "**건수는 1/9 로 줄었는데 멈춤 합은 거의 그대로(598 → 521)고 p99 는 3.5배 나빠졌다.** 한 번에 옮길 것이 많아져서 한 번이 길어졌다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "합을 줄이는 것과 p99 를 줄이는 것은 다른 일이다",
+      "md": "이 표가 12.1절(힙 크기 정하기)의 제목이 \"크면 좋은 게 아니다\"인 이유다.\n\n> **처리량**을 보면 힙을 키우는 게 맞다 — GC 에 쓴 총 시간이 조금 줄었다.\n> **지연**을 보면 반대다 — 한 번이 62.80ms 가 됐고 그때 도착한 요청은 전부 그만큼 기다렸다.\n> 둘 중 무엇을 고치는지 **먼저 정하지 않으면 옵션을 바꿀 수 없다.** 1.3절의 세 숫자로 돌아가는 자리다."
+    },
+    {
+      "type": "prose",
+      "md": "## 효과가 있었던 두 가지\n\n하나는 **수집기를 바꾸는 것**(8장), 하나는 **쓰레기를 줄이는 것**(12.2절)이다. 같은 프로그램, 같은 초당 요청 수로 둘 다 재 봤다. 쓰레기 줄이기는 요청당 16KB 를 2KB 로 바꾼 것 — **옵션이 아니라 코드를 고친 것**이다."
+    },
+    {
+      "type": "table",
+      "caption": "네 가지를 같은 부하로",
+      "columns": [
+        "설정",
+        "GC 멈춤",
+        "서비스 p99",
+        "응답 p99",
+        "응답 최대"
+      ],
+      "rows": [
+        [
+          "G1 256MB (기준)",
+          "207건 / 598.37 ms",
+          "0.031",
+          "13.158",
+          "25.97"
+        ],
+        [
+          "G1 1GB",
+          "22건 / 521.03 ms",
+          "0.045",
+          "45.617",
+          "63.37"
+        ],
+        [
+          "ZGC 256MB",
+          "로그에 멈춤 줄 0건",
+          "0.060",
+          "**1.743**",
+          "8.76"
+        ],
+        [
+          "G1 256MB + 쓰레기 1/8",
+          "**4건 / 10.37 ms**",
+          "**0.009**",
+          "**0.213**",
+          "**4.86**"
+        ]
+      ],
+      "note": "단위 ms. **코드를 고친 마지막 줄이 압도적이다** — 응답 p99 가 13.158 에서 0.213 로 62배 좋아졌다. ZGC 도 7.5배 좋아졌지만 코드만큼은 아니다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "ZGC 의 '멈춤 0건' 은 멈춤이 없다는 뜻이 아니다",
+      "md": "8.2절에서 본 그대로다 — **기본 `-Xlog:gc` 는 ZGC 의 멈춤 시간을 찍지 않는다.**\n\n> 그런데 응답 p99 가 1.743ms 이고 최대가 8.76ms 다. **멈춤은 있다.** 로그에만 없다.\n> `-Xlog:gc+phases=info` 로 `Pause Mark Start` / `Pause Relocate Start` 를 봐야 나온다.\n> 이것이 이 절의 교훈을 한 번 더 말한다 — **응답 시간 쪽에서 재면 로그가 숨기는 것도 보인다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"평균 응답은 2ms 인데 p99 가 40ms 입니다. 어디를 보시겠습니까.\"**\n\n> 평균과 p99 의 비가 크면 **간헐적인 정지**를 의심한다 — GC 멈춤, 세이프포인트, 락 경합, 그리고 다른 층(DB·네트워크).\n> GC 쪽이면 **p99 와 최대 멈춤 시간이 비슷한 값**으로 나온다. 위 기준 실행이 그랬다 — p99 13.158, 최대 멈춤 15.70.\n> 그 비교가 안 맞으면 GC 가 아니다. 11.8절이 그 순서를 정리한다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 네 번의 실행과 그때의 GC 로그",
+      "sql": "# --- 1) 기준: G1, 힙 256MB ---\n\n$ java -Xmx256m -Xms256m -Xlog:gc:file=lat1.log -cp out Lat 100000 50000\nwall 5000 ms  n=100000\nservice   mean    0.010  p50 0.002  p90 0.004  p99  0.031  p99.9  1.891  max 16.229  (ms)\nresponse  mean    0.652  p50 0.002  p90 1.378  p99 13.158  p99.9 23.533  max 25.972  (ms)\n\n$ awk '/Pause/{...}' lat1.log\ncount=207 sum=598.37 ms max=15.70 ms          # 5초의 12.0%\n\n# 가장 긴 멈춤과 그 순간의 힙\n[0.702s][info][gc] GC(40) Pause Young (Mixed) (G1 Evacuation Pause) 169M->166M(256M) 15.702ms\n                                                                    ^^^^^^^^^^\n# 15.7ms 를 쓰고 3M 을 비웠다 — 캐시 8192 x 16KB 가 계속 살아 있다.\n\n$ grep -oE 'Pause Young \\([A-Za-z ]+\\)' lat1.log | sort | uniq -c\n  25 Pause Young (Concurrent Start)\n  29 Pause Young (Mixed)\n  78 Pause Young (Normal)\n  25 Pause Young (Prepare Mixed)\n\n# --- 2) 힙만 1GB 로 ---\n\nresponse  mean    2.295  p50 0.003  p90 1.574  p99 45.617  p99.9 59.304  max 63.369  (ms)\ncount=22 sum=521.03 ms max=62.80 ms\n[4.067s][info][gc] GC(15) Pause Young (Normal) (G1 Evacuation Pause) 614M->577M(1024M) 62.803ms\n# 건수 207 -> 22, 그런데 한 번이 15.70 -> 62.80 ms. p99 는 나빠졌다.\n\n# --- 3) ZGC, 힙 256MB ---\n\n$ java -XX:+UseZGC -Xmx256m -Xms256m -Xlog:gc:file=lat_z.log -cp out Lat 100000 50000\nresponse  mean    0.063  p50 0.003  p90 0.014  p99  1.743  p99.9  6.560  max  8.760  (ms)\n# lat_z.log 의 Pause 줄에는 시간이 없다(8.2). p99 1.743ms 가 멈춤이 있다고 말한다.\n\n# --- 4) 요청당 쓰레기를 16KB -> 2KB (코드 수정) ---\n\n$ java -Xmx256m -Xms256m -Xlog:gc:file=lat_small.log -cp out Lat 100000 50000 2048\nresponse  mean    0.016  p50 0.002  p90 0.003  p99  0.213  p99.9  3.017  max  4.859  (ms)\n\n$ grep Pause lat_small.log\n[0.051s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause)  23M->18M(256M) 3.307ms\n[0.064s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause)  32M->29M(256M) 1.929ms\n[0.595s][info][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause)  57M->45M(256M) 2.299ms\n[2.769s][info][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 133M->59M(256M) 2.830ms\n\n# 207건 598ms 가 4건 10.37ms 가 됐다. 옵션이 아니라 코드를 고친 결과다.",
+      "note": "**같은 부하에 같은 요청 수다.** 옵션으로 얻은 최선이 1.743ms, 코드를 고쳐 얻은 것이 0.213ms 였다."
+    }
+  ],
+  "recap": [
+    "요청에는 시간이 둘이다 — 일한 시간(service)과 기다린 시간까지(response).",
+    "같은 실행에서 서비스 p99 는 0.031ms, 응답 p99 는 13.158ms 였다.",
+    "응답을 받은 뒤 다음 요청을 보내는 도구는 멈춤 동안 줄 선 요청을 아예 측정하지 않는다.",
+    "멈춤 합이 12% 여도 그 12% 를 1%의 요청이 다 가져간다.",
+    "힙을 4배로 키우니 GC 는 207건에서 22건이 됐지만 한 번이 62.80ms 가 되어 p99 가 3.5배 나빠졌다.",
+    "가장 크게 좋아진 것은 요청당 쓰레기를 1/8 로 줄인 것이다 — 응답 p99 13.158 → 0.213ms."
+  ],
+  "drills": [
+    {
+      "task": "내 부하 도구가 coordinated omission 을 피하는지 확인한다.",
+      "done_when": "요청 시각을 미리 정해 두는지 문서에서 찾는다.",
+      "minutes": 12
+    },
+    {
+      "task": "응답 p99 와 GC 로그의 최대 멈춤을 나란히 놓는다.",
+      "done_when": "두 값이 비슷한지 아닌지 말할 수 있다.",
+      "minutes": 12
+    },
+    {
+      "task": "힙을 두 배로 올려 p99 와 최대 멈춤을 다시 잰다.",
+      "done_when": "좋아졌는지 나빠졌는지 숫자로 안다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "서비스 시간과 응답 시간이 갈라지는 때는.",
+      "a": "멈춤이 있을 때다. 멈춤 동안 도착한 요청은 일하지 않은 채 기다린다."
+    },
+    {
+      "q": "coordinated omission 이란.",
+      "a": "응답을 받고 다음 요청을 보내는 측정 방식이 멈춤 동안 줄 선 요청을 아예 만들지 않아 통계에서 빠지는 것이다."
+    },
+    {
+      "q": "GC 가 p99 의 원인인지 판단하는 빠른 방법은.",
+      "a": "응답 p99 와 GC 로그의 최대 멈춤 시간을 비교한다. 비슷하면 GC 쪽이다."
+    },
+    {
+      "q": "힙을 키우면 p99 가 좋아지나.",
+      "a": "아니다. 횟수는 줄지만 한 번이 길어져서 이 실험에서는 13.158 → 45.617ms 로 나빠졌다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "서비스 시간",
+      "what": "요청 처리 자체에 걸린 시간. 멈춤 동안 줄 선 요청은 이 값이 짧다."
+    },
+    {
+      "term": "응답 시간",
+      "what": "요청이 나가야 할 시각부터 응답이 끝날 때까지. 기다린 시간이 여기 들어간다."
+    },
+    {
+      "term": "coordinated omission",
+      "what": "측정 도구가 대상과 같이 멈춰서 가장 느린 요청들이 통계에서 빠지는 현상."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command, -Xlog",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "HdrHistogram — Coordinated Omission",
+      "url": "https://github.com/HdrHistogram/HdrHistogram",
+      "publisher": "HdrHistogram"
+    }
+  ]
+}

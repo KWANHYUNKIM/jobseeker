@@ -657,7 +657,7 @@
           "title": "지연 분석",
           "summary": "p99 가 나쁜 이유.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.8",
@@ -665,7 +665,7 @@
           "title": "진단 순서",
           "summary": "무엇부터 보나.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
