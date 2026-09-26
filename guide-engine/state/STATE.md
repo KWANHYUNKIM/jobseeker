@@ -4,14 +4,16 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **75건**.
-직전 회차: `Senior, Network Security Engineer (Detection Operations)`(saramin, 5년↑) — **개발 직군이 아니라 보안 운영**임을
-verdict 첫 줄에 밝히고 6항목. 팀 소개(웹·네트워크·이메일·엔드포인트 보안 운영)는 `full_jd` 에만 있다.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **76건**. (크롤 갱신으로 모집중이 190건으로 늘었다.)
+직전 회차: `ML Lead (Coupang Eats Search)`(wd/382275) — 원티드 표기 7~14년 vs **본문 10년↑ + 석·박사**. 6항목.
+⚠️ 후보를 뽑을 때 제목 정규식(`Engineer|개발|…`)만 쓰면 **`ML Lead` 같은 제목을 놓친다** — `--gaps` 목록을 먼저 본다.
 
-⚠️ **원티드·사람인 쪽 미작성 개발 공고는 이제 없다.** 남은 것은 쿠팡 채용 사이트(ats) 영문 공고뿐 — 겹침 <0.5 인 새 공고를 쓴다.
-미국 공고면 base pay 를 salary.note 에. ats 공고는 세 절 중 일부 칸만 들어오는 경우가 많다 → quote 는 들어온 칸에서만.
-⚠️ 경고 증가(마감)는 크롤 갱신 탓 — 재방문 때 `closed: true`.
-**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다** — 쿠팡이 75건까지 왔다.
+⚠️ 다음 회차: `--gaps` 목록을 먼저 보고 **원티드·사람인 게시가 있으면 그것부터**(비개발 — CS 전문가 등 — 은 건너뛴다).
+없으면 ats 서울 공고 중 겹침 <0.5 인 것(`Senior Back-end Engineer (Developer Experience)` gh_jid=8146685,
+`Senior, Back-end Engineer(CX) - Coupang Play` 8186132 등). `Staff, AI Security Architect`(greenhouse)는 새 사이트 표기다.
+⚠️ 경고 80: '마감됐다' + **'공고 데이터에서 이 url 을 못 찾았다'**(메가존 6건 전부 등). 크롤 쪽 `store.export` 가
+사이트 간 중복을 한 건으로 내보내기 시작한 뒤라 **사본 url 이 데이터에서 빠졌을 가능성** — 미확인. 사용자에게 알렸다.
+**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.

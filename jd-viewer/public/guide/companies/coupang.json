@@ -8562,6 +8562,128 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382275",
+      "title": "ML Lead (Coupang Eats Search)",
+      "site": "wanted",
+      "verdict": "경력 7~14년(원티드 표기)이지만 자격요건 본문은 '검색·정보 검색·NLP 경력 10년 이상'과 석·박사 학위다 — 본문 기준으로 본다. 쿠팡이츠 검색의 쿼리 이해 → 후보 추출 → 연관성 평가 → 품질 측정까지 전체 스택을 소유하고, ML·인프라 엔지니어를 이끌며 검색 추출률과 전환율을 수치로 올리는 사람.",
+      "fit": {
+        "must_have": [
+          "검색·IR·NLP 10년 이상(본문)",
+          "Retrieval·Relevance·LLM 기법 전문성",
+          "대규모 소비자 검색 시스템으로 성과를 낸 경험",
+          "대용량·저지연 분산 환경의 추출 기법 설계",
+          "컴퓨터공학 등 석사 또는 박사"
+        ],
+        "can_learn": [
+          "음식 배달 검색의 초지역성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "하이브리드 검색 추출 (lexical + semantic)",
+          "from": "task",
+          "quote": "• 검색 결과 추출 (Retrieval): 텍스트 기반(lexical), 의미 기반(semantic) 및 하이브리드 추출 기법을 발전시킵니다. 색인(indexing), 피처 파이프라인, 모델 라이프사이클을 포함한 확장 가능하고 저지연을 보장하는 추출 전략을 설계합니다.",
+          "priority": "core",
+          "why": "주요업무가 텍스트 기반·의미 기반·하이브리드 추출과 저지연 색인·피처 파이프라인 설계를 명시한다.",
+          "gap_check": "BM25 와 임베딩 검색 결과를 합칠 때 RRF 같은 순위 결합과 점수 정규화 결합 중 무엇을 고르고, 음식 이름처럼 짧은 쿼리에서 각각 어디서 실패하는가?",
+          "drill": "메뉴·매장 이름 데이터(직접 만든 수천 건)로 BM25, 임베딩(ANN), 둘의 RRF 결합을 구현해 recall@50 과 지연을 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Elasticsearch — Reciprocal rank fusion",
+              "url": "https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "쿼리·메뉴 이해 (오타 교정·동의어·쿼리 재작성)",
+          "from": "task",
+          "quote": "• 쿼리 및 상품 이해 (Query and Product Understanding): 쿼리 의도 및 엔티티 이해, 메뉴 및 식당 표현(representation), 오타 교정, 동의어 확장, 쿼리 재작성(query rewriting) 기능을 고도화합니다.",
+          "priority": "core",
+          "why": "음식 검색 쿼리는 짧고 오타·줄임말·브랜드명이 섞인다(추론). 주요업무에 의도·엔티티 이해, 오타 교정, 동의어 확장, 쿼리 재작성이 나열돼 있다.",
+          "gap_check": "'엽떡'처럼 줄임말 쿼리를 브랜드로 연결하는 규칙 기반 방법과 LLM 기반 재작성의 비용·지연·오류 유형은 어떻게 다른가?",
+          "drill": "쿼리 로그 샘플(직접 만든 200개)에 오타 교정(편집 거리)과 동의어 사전을 붙이고, 같은 쿼리를 LLM 재작성과 비교해 recall 변화와 이상한 재작성 사례를 기록한다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "초지역·실시간 시그널을 반영한 랭킹",
+          "from": "preference",
+          "quote": "• 위치, 주문 가능 여부, 배달 시간, 가격, 프로모션 시그널을 활용한 초지역적(Hyperlocal)·실시간 랭킹 시스템 개발 경험",
+          "priority": "high",
+          "why": "본문이 음식 배달 검색은 위치·주문 가능 여부·배달 시간·가격·프로모션을 실시간으로 반영해야 한다고 적는다.",
+          "gap_check": "영업 종료·배달 불가 매장을 후보 추출 단계에서 거를지 랭킹 단계에서 내릴지, 지연과 정확도 관점에서 어떻게 정하는가?",
+          "drill": "매장 후보에 거리·영업 여부·예상 배달 시간 피처를 붙여 간단한 LTR(LightGBM ranker)을 학습하고, 실시간 필터 유무에 따른 nDCG·지연을 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LightGBM — Documentation",
+              "url": "https://lightgbm.readthedocs.io/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "연관성 측정 체계 (오프라인·human judgment·A/B·가드레일)",
+          "from": "task",
+          "quote": "• 연관성 측정 및 실험 (Relevance Measurement and Experimentation): 오프라인 평가, 정성 평가(human judgment), 온라인 A/B 테스트, 가드레일 지표, 롱테일(tail) 쿼리·콜드 스타트(cold-start)·고객 세그먼트 진단을 활용하여 엄격한 품질 평가 체계를 구축합니다.",
+          "priority": "core",
+          "why": "리드의 일은 모델보다 '좋아졌다'를 판정하는 체계를 세우는 것이다. 롱테일·콜드 스타트·세그먼트 진단까지 명시돼 있다.",
+          "gap_check": "오프라인 nDCG 는 올랐는데 온라인 전환율이 그대로일 때 무엇을 의심하고 어떤 가드레일 지표를 먼저 보는가?",
+          "drill": "쿼리 50개에 대해 3단계 연관성 판정 가이드라인을 쓰고 두 사람이 판정해 일치도(Cohen's kappa)를 계산한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "LLM 으로 라벨링·평가·오류 분석 비용 줄이기",
+          "from": "task",
+          "quote": "• ML 및 LLM 혁신: 최신 머신러닝, 임베딩, LLM 기술을 쿼리 및 메뉴 이해, 후보 생성(candidate generation), 라벨링, 평가, 오류 분석에 적용하여 명확한 고객 가치 창출과 비용 효율성을 달성합니다.",
+          "priority": "high",
+          "why": "주요업무가 LLM 을 쿼리 이해·후보 생성·라벨링·평가·오류 분석에 쓰되 '비용 효율성'을 함께 요구한다.",
+          "gap_check": "사람 판정 대신 LLM 판정을 쓸 때 사람과의 일치도를 어떻게 검증하고, 어느 쿼리 유형에서 LLM 판정을 믿지 않는가?",
+          "drill": "위 판정 셋 50개를 LLM 에게도 판정시켜 사람 판정과 일치도를 비교하고, 불일치 쿼리 유형을 분류한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "다국어·로컬라이제이션 검색",
+          "from": "preference",
+          "quote": "• 다양한 국가/시장에 대한 다국어 및 로컬라이제이션 검색 구축 경험",
+          "priority": "nice",
+          "why": "주요업무에 다중 시장·로컬라이제이션이 있다(언어 이해, 음식 카테고리 체계, 시장별 선호).",
+          "gap_check": "한국어 형태소 분석 기반 색인과 다국어 임베딩 검색을 다른 시장으로 옮길 때 무엇을 재사용하고 무엇을 새로 만드는가?",
+          "drill": "같은 메뉴 데이터를 한국어·영어 쿼리로 다국어 임베딩 검색해 언어별 recall 을 비교한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "음식 검색 미니 벤치마크 공개",
+          "why": "우대에 검색·NLP 학회 논문이 있다. 쿼리·판정·베이스라인을 묶은 작은 벤치마크를 공개하면 연구·실무를 함께 보여 준다.",
+          "effort": "3~5일"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 - 1차 면접 - 2차 면접 - 최종 합격 (모든 인터뷰 화상으로 진행, 공고 기준).",
+        "expect": [
+          "하이브리드 추출 설계와 지연",
+          "쿼리 재작성의 규칙 vs LLM",
+          "초지역 실시간 시그널 반영 위치",
+          "연관성 판정 체계와 오프라인-온라인 괴리",
+          "ML·인프라 엔지니어를 이끈 방식"
+        ],
+        "sources": [
+          {
+            "title": "ML Lead (Coupang Eats Search)",
+            "url": "https://www.wanted.co.kr/wd/382275",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
