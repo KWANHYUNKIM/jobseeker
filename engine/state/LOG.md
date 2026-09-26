@@ -1759,3 +1759,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Finatext Snowflake 파이프라인 비용
 
 - 결정 6 — 개편 대신 감사·추가만 되는 ID 미리 계산+JOIN·HASH·MOD 청크·SHA256 ID 형식 검사 제거·최근 7일 창·입구·출구 테스트. 글의 빌드 감소치가 표(-35%)와 본문(~45%)에서 달라 둘 다 적었다.
+
+## 2026-09-26 Finatext Crest DWH 층 노출
+
+- 결정 7 — Mart 만·필요충분 데이터만 싣기·BI JOIN 금지·정의는 Mart+Semantic View·AI 는 이번엔 Mart(본래는 Warehouse)·고객은 단계적으로·자작 BI. 사내 콘테스트 프로토타입이라 운영 지표는 없다.
