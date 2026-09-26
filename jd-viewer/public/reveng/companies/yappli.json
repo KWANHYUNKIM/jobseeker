@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "in_progress",
+  "hold_reason": "수익원 'Yappli CRM' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — tech.yappli.io 2024~2026 사이트맵 224편 제목에 CRM·회원·포인트·세그먼트 제품 구조 글 없음(푸시 분석·앱 분석 인턴 글뿐) / speakerdeck.com/yappli · yapplitech 404). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. CRM 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "yappli.co.jp",
   "one_liner": "노코드 앱 플랫폼 Yappli — 한 줄짜리 targetSdk 상향 뒤의 1년 4개월을 배치 패턴 관리와 라이브러리 고정으로 버티고, 서버 문의는 원인 특정까지만 맡아 조사의 손을 늘 비워 둔다",
@@ -762,9 +763,9 @@
   ],
   "open_questions": [
     "과금 구조·매출 비중을 1차 자료로 확인하지 못했다.",
-    "Yappli CRM 수익원의 기술 글은 아직 못 찾았다.",
     "두 도메인의 Yappli 수익원 연결은 inferred.",
-    "Claude Code 로 사양 누락 찾기(`create-qa-plan`)·Claude Code Hooks(`claude-code-hooks`)가 있다."
+    "Claude Code 로 사양 누락 찾기(`create-qa-plan`)·Claude Code Hooks(`claude-code-hooks`)가 있다.",
+    "Yappli CRM 수익원의 기술 글은 2026-09-26 두 번 찾아 없었다 — hold_reason 참고."
   ],
   "sources": [
     {
