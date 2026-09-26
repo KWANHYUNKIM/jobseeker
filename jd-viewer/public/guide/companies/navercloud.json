@@ -180,7 +180,7 @@
     "navercloudcorp.com 첫 화면 소식이 2021년 것에서 멈춰 있다 — 최신 회사 소개는 읽지 못했다",
     "특화 AI 모델 개발 엔지니어는 캐치·사람인·잡코리아에 같은 제목으로 올라와 있다 — 본문 비교 필요(잡코리아는 본문 칸이 비어 있다)",
     "salary: 공고에 금액이 없다 — 비워 둔다",
-    "Audio FM 인턴(571470)의 접수기간은 2026.09.23 18:00 까지였는데 크롤 데이터에는 모집중으로 남아 있다 — 마감 재확인(close_check) 대상"
+    "Audio FM 인턴(571470)·Multimodal MLOps 인턴(571463)의 접수기간은 2026.09.23 18:00 까지였는데 크롤 데이터에는 모집중으로 남아 있다 — 마감 재확인(close_check) 대상"
   ],
   "postings": [
     {
@@ -696,6 +696,138 @@
           {
             "title": "[NAVER Cloud] Audio Foundation Model Research Engineer (체험형 인턴) 채용",
             "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571470?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571463?ReturnUrl=RecruitInfo",
+      "title": "[NAVER Cloud] Multimodal MLOps (체험형 인턴) 채용",
+      "site": "dev",
+      "verdict": "**체험형 인턴(약 3개월, 2026년 10월 ~ 2027년 1월 중, 채용전제형 아님).** HyperCLOVA X 의 이미지·비디오 등 Multimodal 기능을 만드는 부서의 EvalOps 서브미션 자리다 — 부서 소개가 각 단계의 상태 변화를 메시지로 정의해 Event Bus 에 발행하는 Event-driven MLOps 프레임워크(VLOps)와 여러 추론 엔진·평가 프레임워크를 공통 스키마로 묶는 통합 평가 레이어(Omni-Evaluator)를 만든다고 적는다. 업무는 Kafka Event Bus·Airflow 로 학습·평가·서빙 파이프라인 자동화, vLLM·HuggingFace·사내 추론 엔진과 평가 프레임워크를 공통 스키마로 연결, 이미지·비디오·텍스트 벤치마크를 한 인터페이스로 실행하는 평가 환경, VLOps Dashboard. 자격은 학사·대학원 재학·졸업, API 서버·자동화 파이프라인 이해, 전처리→학습→평가→서빙 ML 파이프라인 이해, Multimodal Model(LLaVA·Qwen·DeepSeek-VL 등) 구조·학습·평가 기본 이해, Docker/Kubernetes. Airflow·Argo, Kafka·EDA, 평가 프레임워크(LMMs-Eval·VLMEvalKit·LM-Eval-Harness) 커스터마이징, vLLM 서빙은 우대다. 전형은 서류전형 → 필기전형(코딩테스트) → 인터뷰 전형 → 인턴십 입과. **공고의 접수기간은 2026.09.14 ~ 2026.09.23 (18:00)** 으로 이미 지났다 — 크롤 데이터는 모집중으로 남아 있다.",
+      "fit": {
+        "must_have": [
+          "학사·대학원 재학 또는 졸업",
+          "API 서버·자동화 파이프라인 이해",
+          "전처리→학습→평가→서빙 파이프라인 이해",
+          "Multimodal Model 구조·학습·평가 기본",
+          "Docker/Kubernetes"
+        ],
+        "can_learn": [
+          "Airflow·Argo Workflows",
+          "Kafka·Event-Driven Architecture",
+          "LMMs-Eval·VLMEvalKit 커스터마이징",
+          "vLLM 서빙"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Event-driven 학습·평가·서빙 파이프라인",
+          "from": "task",
+          "quote": "Kafka 기반 Event Bus와 Airflow를 활용한 학습·평가·서빙 파이프라인 자동화(VLOps) 개발",
+          "priority": "core",
+          "why": "첫 주요업무이고 우대에 Airflow·Argo Workflows 와 'Kafka 등 메시지 브로커 또는 Event-Driven Architecture 기반 시스템 개발 경험' 이 있다. 팀 메시지가 Event-driven 메시지 설계부터 GPU 자원 할당·회수까지 다룬다고 적는다.",
+          "gap_check": "'학습 체크포인트 저장됨' 이벤트가 평가 작업을 띄우고 '평가 완료' 가 서빙 후보 등록을 띄우는 흐름에서, 같은 이벤트가 두 번 오거나 소비자가 중간에 죽으면 어떻게 중복 실행과 유실을 막는가?",
+          "drill": "로컬 Kafka 와 Airflow 로 checkpoint_saved → eval_requested → eval_done 이벤트를 흘려 평가 DAG 를 트리거하는 파이프라인을 만들고, 이벤트 ID 로 멱등 처리한 뒤 소비자를 강제 종료했다가 다시 띄워 결과가 한 번만 기록되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apache Kafka documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Airflow Documentation",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Enterprise Integration Patterns — Messaging",
+              "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/",
+              "kind": "docs"
+            },
+            {
+              "title": "Argo Workflows",
+              "url": "https://argoproj.github.io/workflows/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 평가 프레임워크를 공통 스키마로(Omni-Evaluator)",
+          "from": "task",
+          "quote": "vLLM, HuggingFace, 사내 추론 엔진 등과 여러 평가 프레임워크를 공통 스키마로 연결하는 Omni-Evaluator 개발",
+          "priority": "core",
+          "why": "주요업무이고 다음 줄이 '이미지·비디오·텍스트 등 Multimodal 벤치마크를 동일한 인터페이스로 실행하기 위한 평가 환경 구축' 이다. 우대에 LMMs-Eval·VLMEvalKit·LM-Eval-Harness 커스터마이징이 있다.",
+          "gap_check": "lmms-eval 과 VLMEvalKit 이 같은 벤치마크에 다른 점수를 낼 때 무엇(프롬프트 템플릿·후처리·정답 추출)을 공통 스키마에 기록해야 비교가 되는가?",
+          "drill": "lmms-eval 과 VLMEvalKit 으로 같은 작은 VLM 을 같은 벤치마크 하나에 돌리고, 두 결과를 '모델·엔진·벤치마크·설정·점수·샘플별 출력' 공통 스키마(JSON)로 변환하는 어댑터를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "lmms-eval",
+              "url": "https://github.com/EvolvingLMMs-Lab/lmms-eval",
+              "kind": "repo"
+            },
+            {
+              "title": "VLMEvalKit",
+              "url": "https://github.com/open-compass/VLMEvalKit",
+              "kind": "repo"
+            },
+            {
+              "title": "vLLM Documentation",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kubernetes 에서 GPU 평가 작업 돌리기",
+          "from": "qualification",
+          "quote": "Docker/Kubernetes 기반 개발 경험을 보유하신 분",
+          "priority": "high",
+          "why": "자격요건이고 우대에 'Docker/Kubernetes 환경에서 워크로드를 운영한 경험' 과 vLLM 서빙이 있다. 팀 메시지가 GPU 자원의 할당과 회수를 적는다.",
+          "gap_check": "평가 작업을 Kubernetes Job 으로 띄울 때 GPU 요청·재시도·타임아웃은 어떻게 설정하고, 끝난 작업의 GPU 가 반환되지 않는 경우는 무엇 때문에 생기는가?",
+          "drill": "vLLM 서버를 띄우고 평가 스크립트를 실행하는 컨테이너를 만들어 Kubernetes Job(재시도·activeDeadlineSeconds 포함)으로 돌리고, 앞 드릴의 이벤트로 Job 을 생성·정리한다(GPU 가 없으면 CPU 작은 모델로 흐름만 검증).",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Kubernetes — Jobs",
+              "url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+              "kind": "docs"
+            },
+            {
+              "title": "vLLM Documentation",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "이벤트 기반 평가 파이프라인 + 두 평가 프레임워크 공통 스키마 어댑터 저장소",
+          "why": "주요업무 네 줄 중 셋(VLOps·Omni-Evaluator·평가 환경)을 작게 재현한다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "코딩테스트 대비",
+          "why": "전형에 필기전형(코딩테스트)이 있다.",
+          "effort": "꾸준히"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 필기전형(코딩테스트) → 인터뷰 전형 → 인턴십 입과(공고 기준). 접수 2026.09.14 ~ 2026.09.23 18:00 — 이미 지났다.",
+        "expect": [
+          "이벤트 기반 파이프라인 설계",
+          "평가 프레임워크 이해",
+          "Docker/Kubernetes",
+          "멀티모달 모델 기본"
+        ],
+        "sources": [
+          {
+            "title": "[NAVER Cloud] Multimodal MLOps (체험형 인턴) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571463?ReturnUrl=RecruitInfo",
             "publisher": "캐치"
           }
         ]
