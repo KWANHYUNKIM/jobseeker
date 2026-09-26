@@ -783,6 +783,19 @@
       "postings": 5,
       "study_items": 20,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "wizcore",
+      "name": "위즈코어",
+      "aliases": [
+        "위즈코어",
+        "위즈코어㈜",
+        "WIZCORE"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
