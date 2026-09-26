@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **126건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **127건**.
+직전 회차: ✅ `Staff, AI Security Architect`(greenhouse 8224844, 6년↑) 5항목 — LLM 위협·AI 파이프라인 위협 모델·AI RMF 지표·차등 프라이버시·Zero Trust. 한국어 요약 한 줄 글머리표 깨짐(원문 그대로).
 직전 회차: ✅ `Senior Staff, Data Scientist (Incrementality and Attribution)`(8029811, 석·박사+10년↑) 5항목 — MMM·지역 실험·인과추론(DML)·MTA·예산 배분. 크롤러가 본문 전체를 주요업무 칸에 넣어 자격 칸이 빔. GeoLift 저장소 404 라 뺌.
 직전 회차: ✅ `Sr. Security Engineer (Detection Ops-Email)`(7813854) → dup — gh 8161175 와 주요업무 10줄 동일, 자격·우대 18줄은 어미('~을 보유하신 분')만 다름. 차이는 '이메일 보안 3년 이상 우대' 한 줄.
 ⏭ `Senior Staff Security Engineer, Mobile Security (Digital Trust)`(8203471) — 작성 중 응답이 중단돼 건너뜀(파일 변경 없음). 사람이 판단할 때까지 다시 꺼내지 않는다.
@@ -33,9 +34,7 @@
 
 **남은 서울 공고(미작성, 모집중)** — 번호로 찾는다:
 - 개발: Senior QA (Advertiser Platform)(8222455)
-- 보안:
-  AI Security Architect(8224844)
-⚠️ 다음 회차: `AI Security Architect`(8224844). 목록의 Senior QA(8222455)는 coupang.json 에 이미 있는지 먼저 확인한다. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
+⚠️ 다음 회차: 남은 서울 목록의 Senior QA(8222455)는 coupang.json 에 greenhouse URL 로 이미 있다(감사 본문 dup) — 목록에서 지우고, `--gaps` 가 주는 다음 미완 공고로 간다. 건너뛴 두 건(Pen Tester·Mobile Security)은 사람 판단 대기. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
