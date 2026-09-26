@@ -1,0 +1,126 @@
+{
+  "slug": "luup",
+  "name": "Luup",
+  "name_en": "Luup",
+  "country": "JP",
+  "category": "모빌리티",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "luup.sc",
+  "one_liner": "전동 킥보드·자전거 셰어 LUUP — 지불 금액에 닿는 특전 도메인을 'main 과 미승인 동작 차 제로' 를 원칙으로 AI 에이전트와 7개 Stacked PR 로 DDD 구조에 옮기고, 프런트가 Firestore 를 직접 읽던 사내 관리 화면은 도메인 단위 폴더와 API 경유로 층을 세우는 중",
+  "business_model": "거리 곳곳의 포트에서 전동 킥보드·자전거를 빌리고 반납하는 셰어링. 이용자는 한 번 탈 때 기본 요금 50엔과 1분당 시간 요금(도쿄 25엔, 오사카 20엔, 그 밖 15엔)을 낸다. 포트를 둘 장소는 '포트 설치 상담' 으로 모은다 — 그 계약의 돈 흐름은 공개 자료에서 확인 못 함.",
+  "products": [
+    "LUUP 앱(전동 킥보드·전동 어시스트 자전거 셰어)",
+    "포트(대여·반납 거점)",
+    "사내 관리 화면(여러 사업부용)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "라이드 이용료",
+      "how": "기본 요금 50엔 + 1분당 시간 요금(도쿄 25엔 · 오사카 20엔 · 그 밖 15엔). 특전(할인 등)이 지불 금액에 적용된다.",
+      "weight": "비중 확인 못 함 — 드러난 유일한 과금",
+      "domains": [
+        "돈에 닿는 특전 로직을 동작 차이 없이 새 구조로 옮긴다",
+        "여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "LUUP（ループ） | 電動キックボードシェア/シェアサイクルアプリ",
+          "url": "https://luup.sc/",
+          "publisher": "株式会社Luup",
+          "date": "2026-09-26",
+          "summary": "전동 킥보드·자전거 셰어 앱 LUUP. 거리 곳곳의 포트에서 빌리고 반납 · 요금은 기본 50엔 + 1분당 시간 요금(도쿄 25엔 · 오사카/신오사카·에사카 20엔 · 그 밖 15엔) · 첫 등록 뒤 10일 무료 · 삿포로부터 나하까지 도시별 포트 맵 · '포트 설치 상담' 창구."
+        },
+        {
+          "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+          "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+          "publisher": "Luup Developers Blog (Zenn)",
+          "date": "2026-07-17",
+          "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "지불에 닿는 로직과 그것을 움직이는 사내 화면",
+    "question": "요금에 직결되는 특전 로직을 어떻게 멈추지 않고 옮기고, 여러 사업부의 관리 화면은 어떻게 층을 세우나?",
+    "code": "flowchart LR\n  U[\"이용자\\nLUUP 앱\"] -->|라이드 · 지불| BE[\"백엔드\\nCloud Functions · Firestore\"]\n  BE --> P[\"특전 도메인\\nDDD Modules 로 이행\"]\n  OPS[\"사업부\"] --> ADM[\"사내 관리 화면\\nNuxt SPA\"]\n  ADM -->|직접 읽기 → REST API| BE",
+    "_note": "두 도메인의 연결(관리 화면이 특전·쿠폰을 다룬다)은 사내 관리 화면 글의 '쿠폰 유효 기한 판정' 예시에서 짐작한 것이다."
+  },
+  "domains": [
+    {
+      "name": "돈에 닿는 특전 로직을 동작 차이 없이 새 구조로 옮긴다",
+      "why": "사용자 특전(할인 등)은 지불 금액에 직결되는데, 수년간 기능을 쌓은 결과 코드 상당 부분이 DDD Modules(Domain/Application/Infrastructure/Presentation) 밖 Controller·공통층에 흩어져 있었다. 캠페인이 정기적으로 더해지는 '앞으로도 계속 만질 코드' 라 구조의 나쁨이 개발 비용으로 복리가 된다.",
+      "tech": [
+        {
+          "tech": "TypeScript · Cloud Functions · Firestore · DI 컨테이너 · DDD Modules · Claude Code(메모리 파일·hand-off 문서·worktree 병렬 세션) · 특성 테스트 · 7개 Stacked PR",
+          "solves": "외부에서 관측 가능한 동작을 바꾸지 않고 구조만 바꾼다.",
+          "limits": "1개월·59세션 넘게, 7단 스택에 main 을 전파하는 수고. 5관점 AI 리뷰도 규약 위반 1건을 놓쳤다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+              "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-07-17",
+              "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다",
+      "why": "사내 관리 화면이 여러 사업부에서 쓰이며 기능·화면·개발자가 늘었다. 초기엔 속도가 먼저라 SFC 의 script 에 Firestore 쿼리·날짜 변환이 다 섞였고, 프런트가 API 가 할 일을 떠안고 있었다.",
+      "tech": [
+        {
+          "tech": "Vue 3 + Nuxt 4(SPA) · Firebase(Firestore/Storage/Functions/Hosting) · features/{domain} · repository → infrastructure · Hono + Zod OpenAPI REST · NuxtUI",
+          "solves": "'이 기능을 만지려면 여기만' 이 되고, 지금 어떤 쿼리가 나가는지 한곳에서 본다.",
+          "limits": "한꺼번에 못 옮겨 '새것은 새 규칙, 기존은 만질 때' — 경계 판단이 처음엔 사람마다 흔들렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "フロントエンドもアーキテクチャに向き合う！",
+              "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+              "publisher": "Luup Developers Blog (Zenn)",
+              "date": "2026-05-25",
+              "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 규모와 포트 설치 파트너와의 돈 흐름을 확인하지 못했다.",
+    "차량 측(IoT·배터리·재배치)의 기술 결정 글을 아직 못 봤다."
+  ],
+  "sources": [
+    {
+      "title": "LUUP（ループ） | 電動キックボードシェア/シェアサイクルアプリ",
+      "url": "https://luup.sc/",
+      "publisher": "株式会社Luup",
+      "date": "2026-09-26",
+      "summary": "전동 킥보드·자전거 셰어 앱 LUUP. 거리 곳곳의 포트에서 빌리고 반납 · 요금은 기본 50엔 + 1분당 시간 요금(도쿄 25엔 · 오사카/신오사카·에사카 20엔 · 그 밖 15엔) · 첫 등록 뒤 10일 무료 · 삿포로부터 나하까지 도시별 포트 맵 · '포트 설치 상담' 창구."
+    },
+    {
+      "title": "Claude Codeと取り組んだ大規模レガシー移行の記録",
+      "url": "https://zenn.dev/luup_developers/articles/server-jang-20260716",
+      "publisher": "Luup Developers Blog (Zenn)",
+      "date": "2026-07-17",
+      "summary": "사용자 특전(할인 등) 도메인 — 지불 금액에 직결되는데 코드가 DDD Modules 밖(Controller·공통층)에 흩어져 있었다 — 을 Claude Code 와 1개월·59세션 넘게 걸려 DDD Modules 로 이행(232 파일, +38,000/-13,000행). 제1 원칙 'main 과 동작 차 제로(미승인 차이 제로)' · 7개 Stacked PR(Strangler Fig) · 특성 테스트·본번 Firestore count() 실측·의도적 차이 목록 · AI 의 친절(undefined→null) · 5관점 병렬 AI 리뷰가 잡은 fail-close 회귀 · Cloud Functions 콜드 스타트 크래시 · create/reconstruct 두 생성 경로."
+    },
+    {
+      "title": "フロントエンドもアーキテクチャに向き合う！",
+      "url": "https://zenn.dev/luup_developers/articles/server-isamu-20260520",
+      "publisher": "Luup Developers Blog (Zenn)",
+      "date": "2026-05-25",
+      "summary": "여러 사업부가 쓰는 사내 관리 화면(Vue 3 + Nuxt 4 SPA, Firebase)을 단계적으로 정리한 기록. SFC 의 script 에 Firestore 쿼리가 다 섞여 있던 데서 ① features/{domain} + repository ② domains/models 분리 ③ infrastructure 도입 ④ Core 개념·공통 UI 를 NuxtUI 로. 프런트가 Firestore 를 직접 읽던 것을 Hono·Zod OpenAPI 의 REST API 경유로 바꿔 가는 방침. auto import 는 일부러 끈다."
+    }
+  ]
+}

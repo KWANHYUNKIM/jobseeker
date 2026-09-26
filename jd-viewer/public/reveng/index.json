@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "luup",
+      "name": "Luup",
+      "name_en": "Luup",
+      "country": "JP",
+      "category": "모빌리티",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "전동 킥보드·자전거 셰어 LUUP — 지불 금액에 닿는 특전 도메인을 'main 과 미승인 동작 차 제로' 를 원칙으로 AI 에이전트와 7개 Stacked PR 로 DDD 구조에 옮기고, 프런트가 Firestore 를 직접 읽던 사내 관리 화면은 도메인 단위 폴더와 API 경유로 층을 세우는 중",
+      "updated_at": "2026-09-26",
+      "domain": "luup.sc"
+    },
+    {
       "slug": "counterworks",
       "name": "カウンターワークス",
       "name_en": "COUNTERWORKS",
@@ -3561,7 +3573,9 @@
     "상태가 곱으로 불어나는 구입 흐름을 형식 검증으로 잡는다",
     "도입 기업마다 따로 서던 앱을 한 환경의 멀티테넌트로 합친다",
     "60개 넘는 백그라운드 잡을 멈추지 않고 새 큐로 옮긴다",
-    "매칭 뒤 멈춘 대화를 찾아 사람이 거든다"
+    "매칭 뒤 멈춘 대화를 찾아 사람이 거든다",
+    "돈에 닿는 특전 로직을 동작 차이 없이 새 구조로 옮긴다",
+    "여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다"
   ],
   "countries": {
     "KR": "한국",

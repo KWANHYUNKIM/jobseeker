@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**COUNTERWORKS done(2026-09-26) — 도메인 3·기능 3, connections 고아 없음, 수익원 둘 다 기능과 연결. 다음은 후보 조사(대기 1/3 — Luup 하나): Zenn 검색 API 주제어(設計判断·トレードオフ·移行 本番·マルチテナント·リプレイス)로 2026 년 글 센다. 보류 후보 USEN ICT·TRIBEAU 도 다시 본다. 그 뒤 Luup. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Luup 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '돈에 닿는 특전 로직을 동작 차이 없이 새 구조로 옮긴다' — `server-jang-20260716`(본문 다 읽음: 원칙·7 PR·count() 실측·undefined→null·fail-close 회귀·콜드 스타트·create/reconstruct). 그다음 '여러 사업부가 쓰는 사내 관리 화면을 도메인 단위로 나눈다' — `server-isamu-20260520`(①~④ Phase, 후반 아직). 수익원(라이드 이용료) 하나라 완주 점검은 연결만 보면 된다. 대기 0 → 이 회사 뒤 후보 조사(입구: Zenn 검색 API 주제어; USEN ICT·TRIBEAU 재검토). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
