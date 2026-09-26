@@ -1,0 +1,192 @@
+{
+  "slug": "channelcorp",
+  "name": "채널코퍼레이션",
+  "name_en": "Channel Corporation",
+  "aliases": [
+    "채널코퍼레이션",
+    "채널톡"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "channel.io",
+  "one_liner": "B2B '올인원 AI 메신저' 채널톡을 만드는 회사 — AI 상담 에이전트 ALF 가 이미 매출의 한 축이고, 일본 1위·미국 진출을 공고에 적는다",
+  "company": {
+    "business": "원티드 공고 머리말은 채널톡을 기업의 성장을 돕는 '올인원 AI 메신저' 로 소개하고, CRM 데이터 기반 상담 경험 설계와 AI 로 반복 문의를 처리해 CS 효율화부터 고객 경험 개선까지 한다고 적는다. 일본 시장 점유율 20% 이상으로 업계 1위, 미국 시장 진출, 임직원 절반 이상이 개발자라고 적는다. 회사 사이트는 채널톡(상담)과 채널웍스(업무)를 '고객 상담부터 데이터 분석, 마케팅, 팀 협업까지' 잇는 AI 비즈니스 OS 로 소개한다. AI Product Owner 공고는 AI 에이전트 ALF 가 매일 고객 상담을 사람 대신 해결하고 AI 가 이미 매출의 의미 있는 축이 되었다고 적고, 음성 AI 에이전트(VALF), 고객 데이터를 스스로 정리하는 Notebook, AI 마케팅을 다음 제품으로 꼽는다. ML 공고는 AI 음성 상담용 TTS/STT 모델을 직접 학습하는 3명 내외의 새 팀을 적는다. 매출·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[채널톡] Software Engineer",
+        "url": "https://www.wanted.co.kr/wd/222071",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[채널톡] AI Product Owner",
+        "url": "https://www.wanted.co.kr/wd/352565",
+        "publisher": "원티드"
+      },
+      {
+        "title": "상담은 채널톡, 업무는 채널웍스에서 시작하세요",
+        "url": "https://channel.io/ko",
+        "publisher": "채널코퍼레이션",
+        "summary": "메타 설명이 '고객 상담부터 데이터 분석, 마케팅, 팀 협업까지 비즈니스의 중심에 고객을 연결하는 AI 비즈니스 OS' 라고 적는다. 제목에 채널톡(상담)과 채널웍스(업무)가 나온다."
+      }
+    ],
+    "scale": [
+      {
+        "label": "일본 시장 점유율(회사 주장)",
+        "value": "20% 이상, 업계 1위",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[채널톡] Software Engineer",
+            "url": "https://www.wanted.co.kr/wd/222071",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "채널톡·채널웍스 B2B SaaS",
+        "how": "공고가 채널톡을 기업 고객이 쓰는 B2B 메신저·상담 도구로, 사이트가 상담·데이터 분석·마케팅·협업 AI 비즈니스 OS 로 적는다. 요금제 구조는 읽지 않았다.",
+        "domains": [
+          "고객 상담 메신저 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[채널톡] Software Engineer",
+            "url": "https://www.wanted.co.kr/wd/222071",
+            "publisher": "원티드"
+          },
+          {
+            "title": "상담은 채널톡, 업무는 채널웍스에서 시작하세요",
+            "url": "https://channel.io/ko",
+            "publisher": "채널코퍼레이션",
+            "summary": "메타 설명이 '고객 상담부터 데이터 분석, 마케팅, 팀 협업까지 비즈니스의 중심에 고객을 연결하는 AI 비즈니스 OS' 라고 적는다. 제목에 채널톡(상담)과 채널웍스(업무)가 나온다."
+          }
+        ]
+      },
+      {
+        "name": "AI 상담 에이전트(ALF 등)",
+        "how": "AI Product Owner 공고가 'AI가 사람 대신 일하고, 고객이 그 값을 매달 지불하는 제품' 이라고 적고, ALF 가 매출의 의미 있는 축이라고 적는다.",
+        "domains": [
+          "AI 상담 에이전트",
+          "자체 음성·AI 모델"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[채널톡] AI Product Owner",
+            "url": "https://www.wanted.co.kr/wd/352565",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[채널톡] MachineLearning Engineer(Model Training)",
+            "url": "https://www.wanted.co.kr/wd/346442",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "고객 상담 메신저 플랫폼",
+        "why": "공고 머리말이 CRM 데이터 기반 상담 경험과 올인원 메신저를 적고, Software Engineer 공고가 제품 전반을 맡는 엔지니어를 뽑는다.",
+        "what_to_know": [
+          "실시간 메시징",
+          "B2B SaaS 멀티테넌시",
+          "CRM 데이터"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[채널톡] Software Engineer",
+            "url": "https://www.wanted.co.kr/wd/222071",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "AI 상담 에이전트",
+        "why": "AI Product Owner 공고가 ALF, 음성 AI 에이전트 VALF, Notebook(고객 데이터를 스스로 학습·정리), AI 마케팅을 적는다.",
+        "what_to_know": [
+          "RAG",
+          "음성 에이전트",
+          "에이전트 평가"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[채널톡] AI Product Owner",
+            "url": "https://www.wanted.co.kr/wd/352565",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "자체 음성·AI 모델",
+        "why": "ML 공고가 AI 음성 상담용 TTS/STT 모델 성능 개선을 첫 과제로, 에이전트 라우팅용 경량 LLM·특화 소형 모델로의 확장을 적는다.",
+        "what_to_know": [
+          "TTS/STT 학습",
+          "저지연 추론",
+          "소형 모델"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[채널톡] MachineLearning Engineer(Model Training)",
+            "url": "https://www.wanted.co.kr/wd/346442",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "인프라·보안 플랫폼",
+        "why": "DevOps 공고가 셀프서비스 개발 플랫폼과 인프라를, Security 공고가 B2B 고객이 요구하는 보안 수준과 정책·인증·로그점검 자동화·침해대응, 엔드포인트·탐지·모니터링을 적는다. 수익원이 아니라 제품팀 공통 기반이다.",
+        "what_to_know": [
+          "플랫폼 엔지니어링",
+          "B2B 보안 인증",
+          "탐지·대응"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[채널톡] DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/162049",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[채널톡] Security Engineer",
+            "url": "https://www.wanted.co.kr/wd/377514",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "AI 에이전트가 매출로 이어지고 있다",
+        "evidence": "AI는 이미 우리 매출의 의미 있는 축이 되었습니다",
+        "so_what": "모집중 6건 중 AI Product Owner·ML(모델 학습) 두 자리가 AI 쪽이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "경력보다 CS 기초를 본다",
+        "evidence": "경력의 길고 짧음보다, 기술의 본질에 대한 태도를 더 중요하게 생각합니다.",
+        "so_what": "Software Engineer·ML 공고가 '신입-경력 10년' 으로 열려 있다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수는 읽지 않았다",
+    "요금제 구조와 AI 에이전트 과금 방식은 읽지 않았다",
+    "ML·DevOps 공고는 전문연구요원·산업기능요원(병역특례) 지원 가능이라고 적는다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
