@@ -791,6 +791,129 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382040",
+      "title": "웨어러블 로봇 AI 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3년 이상 — 자격요건은 **석사 이상**(기계·메카트로닉스·로봇공학 등)과 '석사 실무·연구 경력 3년 이상 (박사는 학위 중 연구 실적 보유)' 이다. 매출 제품(WIM) 쪽 선행연구 조직인 HRI 파트 자리다 — 부서 소개가 대규모 보행 데이터베이스 구축과 여러 의료기관·대학과의 재활 임상 효능 검증을 적는다. 일은 IMU·인코더 시계열로 동작·의도 인식 모델, 보행 패턴 분류와 패턴별 제어 파라미터 최적화, LLM 기반 웨어러블 로봇 제어 인터페이스와 데이터베이스, 신경망 설계·학습 파이프라인, 실로봇 적용성 검토와 실시간 추론 최적화, 논문·특허 문서. 필수는 Python·PyTorch/TensorFlow, 신경망 구현·튜닝과 시계열 처리, 선행기술 조사(SOTA survey), Git. IMU·sEMG 동작 인식 연구, RL·IL, 생체역학 시뮬레이션 sim-to-real, LLM fine-tuning, 학회·논문·특허는 우대다. 전형은 서류전형 → 직무 인터뷰 → 경영진 인터뷰 → 처우 협의 → 최종 합격('포지션에 따라 일부 단계가 생략되거나 추가될 수 있습니다').",
+      "fit": {
+        "must_have": [
+          "석사 이상(기계·메카트로닉스·로봇공학 등)",
+          "석사 후 실무·연구 3년 이상(박사는 연구 실적)",
+          "Python·PyTorch/TensorFlow",
+          "신경망 구현·튜닝과 시계열 처리",
+          "SOTA survey·Git 협업"
+        ],
+        "can_learn": [
+          "IMU·sEMG 동작/의도 인식 연구",
+          "RL·IL",
+          "생체역학 시뮬레이션 sim-to-real",
+          "LLM fine-tuning",
+          "논문·특허 실적"
+        ]
+      },
+      "study": [
+        {
+          "topic": "IMU·인코더 시계열로 동작·의도 인식",
+          "from": "task",
+          "quote": "• 웨어러블 센서(IMU·인코더) 시계열 데이터 기반 동작·의도 인식 모델 구현 및 학습",
+          "priority": "core",
+          "why": "첫 주요업무이고 필수 역량에 '신경망 구현·학습·튜닝 및 시계열 데이터 처리 실무 경험' 이, 우대에 IMU·sEMG 동작/의도 인식 연구가 있다. 대상은 회사 매출 제품인 보행보조 로봇 WIM 이다.",
+          "gap_check": "걷기에서 계단 오르기로 바뀌는 순간을 빨리 알아채려면 윈도 길이와 예측 지연을 어떻게 맞바꾸고, 학습에 쓴 사람과 다른 사람에게도 통하는지는 어떤 검증 분할(피험자 단위)로 확인하는가?",
+          "drill": "공개 웨어러블 IMU 데이터셋(UCI HAR)으로 CNN·LSTM 동작 분류기를 만들고, 무작위 분할과 피험자 단위 분할(GroupKFold)의 정확도 차이를 비교한다. 윈도 길이별 정확도-지연 곡선을 그린다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Deep, Convolutional, and Recurrent Models for Human Activity Recognition using Wearables",
+              "url": "https://arxiv.org/abs/1604.08880",
+              "kind": "paper"
+            },
+            {
+              "title": "UCI — Human Activity Recognition Using Smartphones",
+              "url": "https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones",
+              "kind": "dataset"
+            },
+            {
+              "title": "scikit-learn — GroupKFold",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GroupKFold.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보행 패턴 분류와 제어 파라미터 최적화",
+          "from": "task",
+          "quote": "• 보행 데이터 기반 패턴 분류 모델 개발 및 패턴별 제어 파라미터 최적화",
+          "priority": "core",
+          "why": "주요업무다. 부서 소개가 대규모 보행 데이터베이스 구축과 재활 임상 효능 검증을 적는다.",
+          "gap_check": "보행 패턴을 몇 가지로 나눴을 때 패턴마다 보조 토크 크기·타이밍 같은 제어 파라미터를 어떤 목표(대사량·보행 속도·사용자 평가)로 최적화하고, 사람마다 다른 최적값은 어떻게 찾는가?",
+          "drill": "보행 시계열 특징으로 패턴을 군집·분류한 뒤, 가상의 보조 효과 함수(파라미터→점수)를 두고 Optuna 로 패턴별 파라미터를 탐색하는 실험 틀을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "sktime",
+              "url": "https://www.sktime.net/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "Optuna",
+              "url": "https://optuna.readthedocs.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "학습 모델의 실로봇 실시간 추론",
+          "from": "task",
+          "quote": "• 학습 모델의 실로봇 적용성 검토 및 실시간 추론 최적화",
+          "priority": "high",
+          "why": "주요업무다. 웨어러블 로봇은 착용자 몸에서 실시간으로 돌아야 한다. 우대에 생체역학 시뮬레이션 기반 sim-to-real 검증이 있다.",
+          "gap_check": "보행 한 주기 안에 인식 결과가 나와야 할 때 모델 크기·입력 윈도·연산 장치를 어떻게 정하고, 인식이 틀렸을 때 제어가 사람을 해치지 않게 하는 장치는 무엇인가?",
+          "drill": "앞 드릴의 분류기를 작게 줄여(층 수·채널) 정확도-지연 표를 만들고, OpenSim 문서를 읽어 생체역학 시뮬레이션으로 보조 토크 효과를 미리 확인하는 절차를 정리한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OpenSim (SimTK)",
+              "url": "https://simtk.org/projects/opensim",
+              "kind": "docs"
+            },
+            {
+              "title": "tsai — time series deep learning",
+              "url": "https://github.com/timeseriesAI/tsai",
+              "kind": "repo"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "피험자 단위 검증을 지킨 IMU 동작 인식 + 정확도-지연 곡선 저장소",
+          "why": "첫 주요업무와 필수 역량(시계열·신경망 튜닝)을, 흔히 빠뜨리는 피험자 분할까지 보여 준다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "논문·학회·특허 실적과 SOTA survey 샘플",
+          "why": "자격요건에 선행기술 조사 역량이, 우대에 학회·논문·특허가, 주요업무에 논문화·특허 문서 작성이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 직무 인터뷰 → 경영진 인터뷰 → 처우 협의 → 최종 합격(공고 기준, 포지션에 따라 단계가 생략·추가될 수 있다).",
+        "expect": [
+          "시계열 동작 인식 연구",
+          "피험자 일반화 검증",
+          "실로봇 적용 경험",
+          "논문·특허 실적"
+        ],
+        "sources": [
+          {
+            "title": "웨어러블 로봇 AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/382040",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
