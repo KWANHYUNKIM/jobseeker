@@ -75,12 +75,14 @@
               "url": "https://tech.connehito.com/entry/2026/06/17/115912",
               "publisher": "コネヒト開発者ブログ",
               "date": "2026-06-17",
-              "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git."
+              "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "terms-consent-append-only"
+      ]
     },
     {
       "name": "메인 API 를 ARM 으로 옮겨 비용을 줄인다",
@@ -105,7 +107,325 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "terms-consent-append-only",
+      "name": "동의 플래그 하나로 끝내지 않는다 — 약관은 버전을 INSERT 로 쌓고, 동의는 append-only 로, 본문은 git 에 두되 증적은 DB 가 진다",
+      "domain": "약관 동의를 덮어쓰지 않고 이력으로 쌓는다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "마마리는 **레시트 에일**을 새로 냈다 — 대상 상품의 영수증을 올리면 코인이 돌아오는 베타 서비스다. 타사 사업과 연계하는 기능이라 **새 이용 약관**에 대한 사용자 동의가 필요했다.\n\n눈에 띄지 않는 기능이지만 법적 문서는 사업 변화와 법 개정에 맞춰 **갱신**되고, '누가 언제 어느 버전에 동의했나' 를 **남겨야** 한다. 소박하게 '동의 플래그 하나' 만 세우면 나중에 곤란해진다 — 데이터 설계가 서서히 효과를 내는 영역이다.",
+        "metrics": [
+          {
+            "label": "테이블",
+            "value": "2 — terms(약관 마스터) · term_agreements(동의 이력)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          },
+          {
+            "label": "활성 약관",
+            "value": "언제나 1 버전(UNIQUE active_key)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          },
+          {
+            "label": "동의 기록",
+            "value": "append-only — 갱신·삭제 없음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "약관 동의를 설계할 때",
+          "thought": "개정 가능성이 있는 약관이기에 '최신 상태' 만이 아니라 **'이력'** 이 중요하다 — 버전 관리, 동의 증적, 과거 약관 내용 보존.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "利用規約まわりの「履歴を積む」データ設計",
+              "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+              "publisher": "コネヒト開発者ブログ",
+              "date": "2026-06-17",
+              "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+            }
+          ]
+        },
+        {
+          "at": "본문을 git 에 둘 때",
+          "thought": "git 이력은 squash·force-push 로 다시 쓰일 수 있고 배포와 독립이다 — **증적의 주역으로 삼지 않는다.** 내용을 지우지 않고 남기는 보관소일 뿐이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "利用規約まわりの「履歴を積む」データ設計",
+              "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+              "publisher": "コネヒト開発者ブログ",
+              "date": "2026-06-17",
+              "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+            }
+          ]
+        },
+        {
+          "at": "개정 절차를 남길 때",
+          "thought": "문서는 덜 열수록 갱신이 밀린다 — **코드와 같은 리포지토리**에 두면 관련 구현을 바꿀 때 알아채기 쉽다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "利用規約まわりの「履歴を積む」データ設計",
+              "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+              "publisher": "コネヒト開発者ブログ",
+              "date": "2026-06-17",
+              "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "약관(terms)",
+            "what": "version · 본문 참조처 · active_key. 개정도 새 행 INSERT, 플래그만 바꿔 끼운다."
+          },
+          {
+            "name": "active_key",
+            "what": "활성 행만 고정값 1, 나머지 NULL 인 UNIQUE 컬럼 — NULL 은 UNIQUE 대상 밖이라 1 은 늘 한 건."
+          },
+          {
+            "name": "동의(term_agreements)",
+            "what": "user_id · version · agreed_at · app_version · user_agent. append-only."
+          },
+          {
+            "name": "약관 본문",
+            "what": "리포지토리의 md 파일. git 이 초안 단계 변경까지 남긴다."
+          },
+          {
+            "name": "TERMS_REVISION.md",
+            "what": "개정 절차(버전 번호 · 법무 리뷰 · 반영) 문서. 코드와 같은 리포지토리."
+          }
+        ],
+        "invariants": [
+          "활성 약관은 **언제나 한 버전**이다.",
+          "약관도 동의도 **덮어쓰지 않는다** — 새 행을 쌓는다.",
+          "**내용을 바꾸면 반드시 version 을 올린다.**",
+          "증적의 주역은 **DB** 다 — git 은 본문 보관소."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 레시트 에일을 쓰려 하면 terms 에서 active_key = 1 인 버전을 가져온다",
+            "why": "활성은 하나."
+          },
+          {
+            "step": "term_agreements 에서 그 사용자가 마지막으로 동의한 version 을 가져와 비교한다",
+            "why": "다르면 아직 동의 안 한 것."
+          },
+          {
+            "step": "다르면 약관 모달(본문은 md)을 띄우고, 동의하면 app_version·user_agent 와 함께 새 행을 INSERT 한다",
+            "why": "증적."
+          },
+          {
+            "step": "같으면 기능을 그대로 쓴다",
+            "why": "재동의 불요."
+          },
+          {
+            "step": "개정 때는 TERMS_REVISION.md 절차대로 — 버전을 올리고, 법무 리뷰, 새 terms 행 INSERT, active_key 교체",
+            "why": "드물고 사고 나기 쉬운 작업."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "동의를 무엇으로 기록하나?",
+            "chosen": "**'동의 플래그 하나' 대신 약관 버전과 동의 이력을 두 테이블로.**",
+            "alternatives": [
+              "사용자 행에 동의 플래그"
+            ],
+            "tradeoff": "개정 때 **재동의**를 받고 '누가·언제·어느 버전' 을 남긴다. 대가 — 기능을 쓸 때마다 **버전 비교**라는 판정이 끼어든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          },
+          {
+            "question": "'지금 유효한 약관' 을 어떻게 하나로 보장하나?",
+            "chosen": "**active_key 를 UNIQUE 로 — 활성 행만 1, 나머지 NULL(대부분의 DB 가 NULL 을 UNIQUE 에서 제외).**",
+            "alternatives": [
+              "애플리케이션에서 is_active 를 관리"
+            ],
+            "tradeoff": "DB 가 **활성 둘** 을 막고, 앱은 WHERE active_key = 1 로 망설임 없이 가져온다. 대가 — NULL 을 UNIQUE 대상 밖으로 두는 **DB 동작에 기댄다**(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          },
+          {
+            "question": "약관을 개정할 때 기존 행은?",
+            "chosen": "**고치지 않고 새 버전을 INSERT — active_key 교체만 UPDATE.**",
+            "alternatives": [
+              "기존 행의 본문·버전을 갱신"
+            ],
+            "tradeoff": "과거 약관이 **그대로 남는다**. 대가 — 행이 계속 쌓인다(약관이라 양은 적다 — 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          },
+          {
+            "question": "동의 기록을 고칠 일이 있나?",
+            "chosen": "**없다 — append-only, 갱신도 삭제도 안 한다. app_version·user_agent 도 증적으로.**",
+            "alternatives": [
+              "최신 동의만 덮어쓴다"
+            ],
+            "tradeoff": "동의가 **증적**으로 남는다. 대가 — '최신 동의' 를 알려면 사용자별 **마지막 행**을 찾아야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          },
+          {
+            "question": "동의했는지 어떻게 판정하나?",
+            "chosen": "**활성 version 과 사용자가 마지막으로 동의한 version 비교 — 다르면 약관 화면, 동의하면 새 행.**",
+            "alternatives": [
+              "동의 여부 불리언"
+            ],
+            "tradeoff": "개정되면 **자동으로 재동의 대상**이 된다. 대가 — 사소한 문구 개정도 버전을 올리면 **모든 사용자**에게 다시 묻는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          },
+          {
+            "question": "약관 본문은 어디에?",
+            "chosen": "**DB 가 아니라 리포지토리의 md 파일 — git 이 초안 단계 변경 이력까지 남긴다.**",
+            "alternatives": [
+              "DB 에 본문 저장",
+              "외부 CMS"
+            ],
+            "tradeoff": "내용이 덮어써지거나 지워지지 않는다. 대가 — git 이력은 squash·force-push 로 **다시 쓰일 수 있어** 증적의 주역이 못 된다 — 그래서 '내용을 바꾸면 반드시 version 을 올린다' 는 운용에 기댄다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          },
+          {
+            "question": "드문 개정 절차를 어떻게 지키나?",
+            "chosen": "**리포지토리의 TERMS_REVISION.md 에 버전 번호·법무 리뷰·반영 절차를 문서화.**",
+            "alternatives": [
+              "위키·사람의 기억"
+            ],
+            "tradeoff": "코드 가까이 있어 관련 구현을 바꿀 때 **알아채기 쉽고**, AI 에이전트에게 문서 갱신을 함께 맡기기 쉽다. 대가 — 결국 **사람이 절차를 지켜야** 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "利用規約まわりの「履歴を積む」データ設計",
+                "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+                "publisher": "コネヒト開発者ブログ",
+                "date": "2026-06-17",
+                "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "메인 API 를 ARM 으로 옮겨 비용을 줄인다(같은 회사의 다른 도메인)",
+          "via": "되돌릴 수 있게",
+          "contract": "약관은 덮어쓰지 않고 쌓아 과거로 돌아갈 수 있게, ARM 이행은 카나리아로 즉시 롤백할 수 있게 — 둘 다 **되돌릴 수 있는 형태**를 먼저 만든다(이 사이트의 해석 — 글끼리 서로 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "기능을 쓰려 할 때의 동의 판정",
+          "question": "사용자는 언제 약관 화면을 보나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"레시트 에일 사용 시도\"] --> B[\"terms: active_key = 1 의 version\"]\n  A --> C[\"term_agreements: 사용자의 마지막 version\"]\n  B --> D{\"같은가?\"}\n  C --> D\n  D -->|예| USE[\"기능 사용\"]\n  D -->|아니오| MD[\"약관 모달(본문 md)\"]\n  MD -->|동의| INS[\"새 행 INSERT\\napp_version · user_agent\"]\n  INS --> USE"
+        },
+        {
+          "title": "약관 한 버전의 일생",
+          "question": "약관이 개정되면 행은 어떻게 바뀌나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 초안: md 를 git 에서 편집\n  초안 --> 리뷰: TERMS_REVISION.md · 법무\n  리뷰 --> 활성: 새 행 INSERT · active_key = 1\n  활성 --> 과거: 다음 버전 활성 · active_key = NULL\n  과거 --> 과거: 지우지 않고 남음"
+        },
+        {
+          "title": "증적이 흐려지는 자리",
+          "question": "이 설계는 어디서 '누가 무엇에 동의했나' 를 잃을 수 있나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"내용을 바꾸고 version 은 그대로\"] --> B[\"같은 version 에 다른 본문\\n→ '바꾸면 반드시 올린다' 운용\"]\n  C[\"git squash · force-push\"] --> D[\"본문 이력 재작성\\n→ git 을 증적 주역으로 안 삼음\"]\n  E[\"활성 약관 둘\"] --> F[\"UNIQUE active_key 가 막음\"]\n  G[\"동의 행 갱신 · 삭제\"] --> H[\"append-only 로 금지\"]\n  I[\"개정 절차 잊음\"] --> J[\"TERMS_REVISION.md\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "利用規約まわりの「履歴を積む」データ設計",
+          "url": "https://tech.connehito.com/entry/2026/06/17/115912",
+          "publisher": "コネヒト開発者ブログ",
+          "date": "2026-06-17",
+          "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "과금 방식·매출(법인·관공서 비중)을 1차 자료로 확인하지 못했다 — 법인 수익원은 inferred.",
     "관공서 수익원의 기술 글은 아직 못 찾았다.",
@@ -124,7 +444,7 @@
       "url": "https://tech.connehito.com/entry/2026/06/17/115912",
       "publisher": "コネヒト開発者ブログ",
       "date": "2026-06-17",
-      "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git."
+      "summary": "마마리 새 기능 **레시트 에일**(대상 상품 영수증을 올리면 코인 환원, 타사 사업 연계라 **새 이용 약관 동의** 필요)의 약관 설계. 동의 플래그 하나로는 나중에 곤란 — **버전 관리**(개정 때마다 재동의), **동의 증적**(누가·언제·어느 버전), **과거 약관 내용 보존**. 두 테이블 — `terms`(version·본문 참조·`active_key`: 활성 행만 1, 나머지 NULL 인 **UNIQUE 플래그** → 활성은 늘 하나; 갱신도 **INSERT** 하고 플래그만 바꿔 끼움)와 `term_agreements`(user_id·version·agreed_at·app_version·user_agent, **append-only**). 동의 판정은 **활성 version 과 사용자가 마지막으로 동의한 version 비교** — 다르면 약관 화면, 동의하면 새 행 INSERT. 약관 본문은 **리포지토리의 md 파일**(git 으로 초안 단계 변경 이력까지) — DB 는 활성·동의 증적, 본문은 git. git 이력은 squash·force-push 로 **다시 쓰일 수 있고** 배포와도 독립이라 **증적의 주역으로 삼지 않는다** — 내용을 지우지 않고 남기는 보관소일 뿐; 그 전제를 지키려고 '내용을 바꾸면 반드시 version 을 올린다' 는 운용을 깨지 않는다. 개정 절차는 사고가 나기 쉬워 **리포지토리의 `TERMS_REVISION.md`** 에 문서화(버전 번호 정하는 법·법무 리뷰·반영 절차) — 코드 가까이 두면 관련 구현을 바꿀 때 알아채기 쉽고, AI 에이전트에 '이 문서도 고쳐 줘' 라고 맡기기 쉽다."
     },
     {
       "title": "x86_64からARM64（Graviton）へ──コスト約20%削減を目指したECS移行の記録",

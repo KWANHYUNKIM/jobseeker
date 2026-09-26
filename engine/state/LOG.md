@@ -1492,3 +1492,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 코네히토 회사 프로파일
 
 - 대기 맨 위. 코퍼레이트 페이지 + 기술 글 둘(약관 동의 이력 · Graviton 이행)로 도메인 둘. 수익원 법인·관공서 — 법인 연결은 inferred(메인 API·레시트 에일이 법인 매출과 이어진다는 1차 서술 없음). category '소셜'.
+
+## 2026-09-26 코네히토 약관 동의 이력
+
+- 약관 글 전문으로 `terms-consent-append-only`(결정 7 — 두 테이블·UNIQUE active_key·INSERT 개정·append-only·version 비교·md 본문(git 은 증적 아님)·TERMS_REVISION.md).

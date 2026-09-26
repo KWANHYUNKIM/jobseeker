@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**코네히토 — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '약관 동의를 덮어쓰지 않고 이력으로 쌓는다' 를 약관 글(`entry/2026/06/17/115912`, scratchpad `cn_terms.txt` — md 본문 이후·운용 부분 마저). 그 뒤 Graviton(`2026/07/02/093925`, `cn_graviton.txt` — 4·5절 미독). 완주 판정 때 관공서 수익원은 도메인이 없다. 대기 0/3 — 큐가 0 이라 후보 조사가 3순위로 먼저 걸릴 수 있다(`--gaps` 를 따른다). 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS(hold)·LayerX 는 in_progress.**
+**코네히토 — 확장 1(2026-09-26): 약관 도메인에 `terms-consent-append-only`(결정 7). 다음은 확장: '메인 API 를 ARM 으로 옮겨 비용을 줄인다' 를 Graviton 글(`entry/2026/07/02/093925`, scratchpad `cn_graviton.txt` — 4 단계 이행·5 주의점·6 효과 측정). 완주 판정 때 관공서 수익원은 도메인이 없다. 대기 0/3 — 코네히토 뒤 후보 조사. 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS(hold)·LayerX 는 in_progress.**
 
 
 

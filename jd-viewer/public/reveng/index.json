@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "소셜",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "임신·출산·육아 커뮤니티 앱 마마리 — 타사 연계 기능의 약관 동의는 플래그 대신 버전과 이력을 쌓고, 메인 API 는 카나리아로 ARM 에 옮겨 비용을 줄인다",
       "updated_at": "2026-09-26",
       "domain": "connehito.com"
