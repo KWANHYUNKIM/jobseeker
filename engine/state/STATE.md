@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — cedardb 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — cerebras 재방문에서 확장(`model-proposes-code-decides`, 새 도메인)을 마쳤다. 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **cerebras** — 2026-09-26 콘솔 QA 에이전트(09-08) → `model-proposes-code-decides`, 새 도메인. 수치 대부분이 이미지라 텍스트로 확인한 것만 씀. RSS 는 HTML — 목록은 r.jina.ai 로 `/blog`.
 - **cedardb** — 2026-09-26 없음 1회째. `cedardb.com/blog/index.xml` 로 09-07 이후는 Doom-in-SQL 시연(09-21) 하나. 출처에 없는 ClickHouse→CedarDB 이전(02-11)은 이전 글 쓰기 답을 받으면 후보.
 - **bun** — 2026-09-26 없음 1회째. `bun.com/rss.xml` 최신 09-05 v1.4.2 릴리스 노트. 대부분 릴리스 노트라 심층 글은 드물다.
 - **bluesky** — 2026-09-26 없음 1회째. 새 프로토콜 서비스 블로그 `bsky.network/blog`(RSS `docs.bsky.app/blog/rss.xml`) 최신 09-01, 회사 블로그 `/about/rss.xml` 최신 07-10. **4월 16~20일 서비스 장애 공지 넷이 출처에 없다** — 이전 글 쓰기 답을 받으면 장애 회고 후보.
