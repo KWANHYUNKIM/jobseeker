@@ -7965,6 +7965,89 @@
       "site": "ats",
       "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=7977000",
       "verdict": "'Senior Staff Ranking Engineer, Personalization'(gh_jid=7977000)과 세 절 55줄 중 52줄 이상이 같은 템플릿 공고다. 다른 곳은 경력 줄이 '4 years of professional experience in applied machine learning'이고, 과업 한 줄이 ad targeting 대신 personalization 을 적는다뿐이다(원문은 7+ years). 공부할 문장이 같으므로 그 브리핑을 본다 — 이 자리는 요구 연차가 더 낮다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8047677",
+      "title": "Staff Backend Engineer(Infrastructure)",
+      "site": "ats",
+      "verdict": "싱가포르 근무, 싱가포르 시민·영주권자만 지원 가능. 'Director - Backend Engineering (Infrastructure)'(gh_jid=8040140)와 같은 팀(durable execution 워크플로 플랫폼을 처음부터 만드는 greenfield 팀)의 공고지만, 이쪽은 팀장(TLM, 5~10명 관리)이 아니라 설계·구현을 이끄는 Senior/Staff 개인 기여자 자리다. 공통 공부거리(5~6 nines, 분산 락·타이머·결정적 실행, Temporal/Cadence)는 Director 브리핑을 보고, 여기서는 관리 요건이 빠진 IC 관점의 차이만 준비한다.",
+      "fit": {
+        "must_have": [
+          "싱가포르 시민 또는 영주권자",
+          "백엔드 8년 이상",
+          "Java·Spring",
+          "AWS",
+          "고가용 분산 시스템 구축·운영 경험"
+        ],
+        "can_learn": [
+          "Temporal/Cadence 내부 구조(우대)",
+          "Cassandra·TiDB(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "IC 로서 durable execution 엔진의 설계를 이끄는 법",
+          "from": "task",
+          "quote": "We are looking for a Senior/Staff Engineer to lead the architectural design and implementation of our next-generation durable execution platform. This team is tasked with building a highly scalable, fault-tolerant system from scratch that enables developers to write long-running, reliable workflows as code.",
+          "priority": "core",
+          "why": "Director 판의 같은 문장은 'Technical Lead Manager' 를 찾는다. 이 판은 같은 설계를 사람 관리 없이 이끄는 자리라, 설계 문서·리뷰·프로토타입으로 영향력을 보여 줘야 한다(추론).",
+          "gap_check": "팀장이 아닌 상태에서 워크플로 엔진의 상태 저장 방식(이벤트 소싱 vs 스냅숏)을 팀이 받아들이게 하려면 어떤 근거(벤치마크·장애 시나리오)를 준비하는가?",
+          "drill": "durable execution 엔진 설계 문서(RFC) 한 편 — 상태 저장 방식 두 가지를 비교하고 각각 장애(노드 사망·중복 실행) 시나리오별 동작을 표로 적는다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "자격 기준선 — 8년, Java/Spring, AWS, 고가용 분산 시스템",
+          "from": "task",
+          "quote": "Demonstrated experience in building and maintaining highly available, distributed systems",
+          "priority": "core",
+          "why": "이 게시의 Basic Qualifications 는 관리 경력 줄이 없고 8년·Java/Spring·AWS·고가용 분산 시스템만 요구한다. 우대의 12년+ 와 5~6 nines 는 그 위의 기대치다.",
+          "gap_check": "직접 운영한 시스템의 가용성 수치(SLO·실측)와, 그걸 떨어뜨린 장애 한 건의 원인·재발 방지를 수치로 말할 수 있는가?",
+          "drill": "운영해 본 시스템 하나의 가용성 계산(월간 다운타임 → nines)과 장애 한 건 포스트모템을 한 장으로 정리한다.",
+          "hours": 2,
+          "resources": []
+        },
+        {
+          "topic": "Temporal/Cadence 프로그래밍 모델",
+          "from": "preference",
+          "quote": "Specialized Knowledge: Deep familiarity with the Temporal or Cadence programming models and their underlying architecture. Experience in Kubernetes and containerization.",
+          "priority": "high",
+          "why": "만들려는 것이 '워크플로를 코드로' 쓰는 durable execution 플랫폼이라, 같은 문제를 푼 오픈소스의 모델을 아는지가 곧 설계 대화의 출발점이다.",
+          "gap_check": "Temporal 워크플로 코드가 결정적(deterministic)이어야 하는 이유와, 재실행(replay) 중 비결정적 코드가 있으면 무슨 일이 생기는지 설명할 수 있는가?",
+          "drill": "Temporal 로컬 서버로 타이머·재시도가 있는 워크플로를 만들고, 워커를 죽였다 살려 이어서 실행되는지, 워크플로 코드에 난수를 넣으면 어떻게 깨지는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Temporal — Documentation",
+              "url": "https://docs.temporal.io/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "싱가포르 팀에서 한국 로켓배송 워크플로를 받치는 구조 이해",
+          "why": "본문이 이 플랫폼 위로 로켓배송 같은 핵심 인프라가 흐른다고 적었다. 시차·지역을 넘어 도메인 팀을 지원하는 방식에 대한 질문에 답을 준비해 두면 좋다(추론).",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "Application Review - Phone Interview - Onsite (or Virtual Onsite) Interview – Offer (공고 기준).",
+        "expect": [
+          "관리 권한 없이 설계를 이끈 사례",
+          "운영한 시스템의 가용성 수치",
+          "Temporal/Cadence 의 결정적 실행",
+          "Director 브리핑의 공통 질문(분산 락·타이머)"
+        ],
+        "sources": [
+          {
+            "title": "Staff Backend Engineer(Infrastructure)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8047677",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
