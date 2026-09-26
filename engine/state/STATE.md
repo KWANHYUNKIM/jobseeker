@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**WWWAVE 확장 2/2(2026-09-26) — `batch-silence-monitoring` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 '신규 사업(Contents Start Up — AI 음악 채널 등)' 에 도메인 없음 — 검색 1 RSS 20편(신규 사업 글 없음) 이어 검색 2(Zenn 검색 API 'DAJI'·'AI Music'·'ウェイブ'), 없으면 hold. 단 --gaps 가 후보 조사(큐 0/3)를 먼저 부르면 그쪽. 대기 0/3 — **--gaps 가 후보 조사를 부르면 그쪽이 먼저.**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**90번째 후보 조사(2026-09-26) — 큐 3/3. 다음은 WWWAVE 완주 판정(진행 중이므로 신규보다 먼저): 수익원 신규 사업에 도메인 없음. 검색 1 RSS 20편(신규 사업 글 없음) · 검색 2 Zenn 검색 API 'DAJI'·'AI Music'·'ウェイブ'·'wwwave' — 사내 문화·행사 글뿐(2026-09-26). 두 번 찾았으니 다음 사이클은 hold_reason + '재시도 안 함' + QUEUE hold 만 하면 된다. 대기 3/3(PIVOT·Stock·1D — 90번째 후보 조사).. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

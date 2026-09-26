@@ -48,8 +48,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **PIVOT** | JP · 비즈니스 영상 미디어(앱·Web·TV) | Zenn Publication `zenn.dev/p/pivotmedia`(RSS 20편). **미션 기능을 다시 만들었다 — 접속 방향의 역전과 코드로 조립하는 미션 정의**(`pivot-mission-pull-architecture`, 2026-05-21) — 2025년경 최소 구현한 '데일리 액션'(시청·에피소드 평가로 마일 적립)을 Push 형·이벤트 구동으로 생각하다 상담 끝에 **Pull 형**으로(정기 잡이 당긴다), 미션 정의를 코드로 조립해 GW 한정 미션 같은 변형을 싸게, 의도적 트레이드오프 절 있음, 모듈러 모놀리스와 조합. 곁글 — iOS Widget 과 인증 토큰 크로스 프로세스 공유(`ios-widget-token-sharing`)·모노레포로 Android TV 시청 로그(`android-tv-viewing-log`)·'읽음' 은 언제 읽음인가(`concept-analysis-domain-modeling`). **미디어 축**. |
+| **Stock** | JP · 정보 공유·업무 SaaS | Zenn Publication `zenn.dev/p/stock_inc`(RSS 6편, 8~9월 매주). **검색 적중률을 LLM 으로 올리면서 비용을 누르는 '싼 모델 사전 스크리닝'**(`cheap-model-prescreening-search`, 2026-09-09) — '후보는 나오는데 적중하지 않는' 검색 문제를 고성능 모델 전건 판정 대신 Haiku 급으로 먼저 거르는 다단 구성, 비용 견적 방법·단계적 도입·**임계값은 세 제약의 교점**·채택 안 한 안·예상 반론 절 있음. 곁글 — AI 채용 스크리닝 전 익명화 전처리(`anonymization-pipeline-before-ai-screening`)·스캔 PDF OCR 이 '못 읽는' 세 이유·ECS 태스크 정의 리비전을 돌려도 안 돌아가는 롤백. **업무 SaaS 축**. |
+| **1D(ワンディー)** | JP · 치과 의료 교육 플랫폼 | Zenn Publication `zenn.dev/p/oned_tech`(RSS 2편 — 적다). **Ory Hydra 로 자체 공통 인증 기반을 만들고 기존 사용자를 안은 채 인증 방식을 바꿨다**(`oned-idp-hydra-migration`, 2026-09-20) — 치과의사용 1D Web·앱·위생사용·국시 대책 앱으로 늘자 프로덕트 간 SSO 불가 등 한계 넷 → **Cognito 를 그만두고 Hydra + 자체 IDM**(Kratos 는 왜 아닌가·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 에 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 **이중 인증 미들웨어**. 곁글 — 기술 스택 선정 이유(`oned-tech-select`, Laravel → Go). **헬스케어 교육 축**. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-26 아흔 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API 21~50쪽 publication 집계 → RSS.**
+  - **PIVOT** — **미디어 축.** 미션 기능 재설계에 '처음엔 Push 형으로 생각했다' 와 '의도적 트레이드오프' 가 있다.
+  - **Stock** — **업무 SaaS 축.** 짧은 글을 매주 내고, 글마다 '채택 안 한 안' 을 적는다.
+  - **1D** — **헬스케어 교육 축.** 글은 둘뿐이지만 인증 이행 글 하나가 결정·대가·이행 절차를 다 적는다. 두 번째 기능이 모자랄 수 있다.
+  - **통과 못 한 곳.** Kiva(판단 AI 평가·FDE 회고 위주) · MIERUNE(GIS 기술 조사 글) · Geekplus(AI 개발 과정 글) · pepabo·acntechjp·headwaters·ncdc·aws_japan 등(이미 통과 못 함 또는 벤더). 이 사이클의 Jev 관련 글 다수는 도구 시험.
 
 - **2026-09-26 여든아홉 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 최신 글 API(1~20쪽)의 publication 을 세고 RSS 확인.**
   - **Finatext** — **금융 데이터 축.** 보류해 둔 후보를 다시 봤다 — 비용 글에 '무엇을 안 해도 되는지' 의 판단이 셋씩 있다.
