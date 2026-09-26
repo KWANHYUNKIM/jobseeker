@@ -1,0 +1,210 @@
+{
+  "book": "java-io",
+  "id": "fields",
+  "no": "10.4",
+  "chapter": 10,
+  "title": "필드 읽고 바꾸기",
+  "summary": "private 도 열린다.",
+  "minutes": 13,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "private 필드를 읽고 바꾼다.",
+    "final 을 바꿨을 때 누가 그것을 보는지 확인한다.",
+    "막히는 자리를 찾는다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "10.3절의 메서드와 같은 구조다 — 찾는 방법이 둘이고, `private` 은 두 단계로 열린다. 그런데 **필드에는 메서드에 없던 문제가 하나 더 있다.** `final` 이다.\n\n먼저 목록부터."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "필드 일곱 개짜리 클래스",
+      "sql": "  getFields()         = 1개 (public + 물려받은 것)\n  getDeclaredFields() = 7개 (이 클래스에 적힌 것 전부)\n    public String name\n    private int age\n    protected String city\n    final String id\n    static int count\n    static final int LIMIT\n    static final String TAG",
+      "note": "**1 대 7 이다.** 메서드에서는 15 대 8 이었는데(`Object` 의 메서드가 섞여서), 필드는 `Object` 에 public 이 없어 반대 모양이 된다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "private 은 두 단계로 열린다",
+      "sql": "  그냥 get -> IllegalAccessException\n  setAccessible 후 get = 30\n  set 한 뒤            = 41",
+      "note": "10.3절의 메서드와 똑같다 — `getDeclaredField` 로 찾고 `setAccessible(true)` 로 연다. 읽기도 쓰기도 같은 문 하나다."
+    },
+    {
+      "type": "prose",
+      "md": "## final 을 바꾸면 누가 그것을 보나\n\n여기서 예상과 다른 것이 나왔다. 인스턴스 `final` 필드를 초기화 방식 세 가지로 두고, 리플렉션으로 바꾼 뒤 **두 가지 방법으로 읽었다.**"
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "초기화 방식만 다르다",
+      "code": "static class A {\n    final String lit  = \"P-1\";          // 리터럴로 초기화\n    final String made;                   // 생성자에서 초기화\n    final int    n    = 7;               // 원시 리터럴\n    A() { made = new String(\"M-1\"); }\n}"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "리플렉션으로 읽은 값과 코드로 읽은 값이 다르다",
+      "sql": "  lit   바꾸기전=P-1     리플렉션읽기=CHANGED   코드에서읽기=P-1       <-- 다르다\n  made  바꾸기전=M-1     리플렉션읽기=CHANGED   코드에서읽기=CHANGED\n  n     바꾸기전=7       리플렉션읽기=99        코드에서읽기=7         <-- 다르다",
+      "note": "**같은 객체의 같은 필드인데 읽는 방법에 따라 값이 다르다.** `set` 은 세 번 다 성공했다 — 실패한 것은 읽기 쪽이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "`javap -c` 가 이유를 보여 준다",
+      "sql": "$ javap -c -p -cp out Fin\n\n  245: ldc           #90    // String P-1        <- o.lit 은 상수 적재\n  251: getfield      #92    // Field Fin$A.made  <- o.made 는 진짜 필드 읽기\n  262: bipush        7                           <- o.n 도 상수 적재",
+      "note": "**`ldc` 와 `getfield` 가 갈렸다.** `o.lit` 은 컴파일될 때 이미 `\"P-1\"` 이라는 상수로 바뀌어 있었다 — 실행할 때 그 필드를 **읽지 않는다.** 그러니 바꿔도 소용이 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "상수 변수 — static 이 아니어도 박힌다",
+      "md": "흔히 `static final` 만 인라인된다고 알려져 있는데 **그렇지 않다.**\n\n> 자바 언어 명세가 말하는 **상수 변수**(constant variable)는 *원시 타입이거나 `String` 이면서, `final` 이고, 상수식으로 초기화된 변수*다. `static` 은 조건에 없다.\n> 그래서 `final String lit = \"P-1\"` 과 `final int n = 7` 은 인스턴스 필드인데도 읽는 자리에 값이 박힌다.\n> `final String made` 는 생성자에서 채웠으니 상수식이 아니고, 그래서 `getfield` 가 남았다 — **초기화 위치 하나가 갈랐다.**\n> 실무에서 걸리는 자리는 따로 있다. 라이브러리의 `public static final String VERSION = \"1.0\"` 을 쓰는 코드는 **컴파일할 때 값을 복사해 간다.** 라이브러리만 새로 올리면 옛날 값이 그대로 돈다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "`static final` 은 아예 못 바꾼다",
+      "sql": "  LIMIT 읽기 = 100\n  set -> IllegalAccessException: Can not set static final int field Person.LIMIT to (int)999\n  그런데 코드에서 Person.LIMIT 는 = 100  <- 컴파일 때 박혔다",
+      "note": "**두 겹으로 막혀 있다.** `setAccessible(true)` 를 해도 `static final` 은 `set` 이 거부되고, 설령 바꿔도 읽는 쪽이 상수라 안 보인다. 자바 9 이전에 쓰이던 `modifiers` 필드 조작 우회는 자바 12 부터 막혔다."
+    },
+    {
+      "type": "compare",
+      "title": "final 세 가지",
+      "left": {
+        "title": "바꿀 수 있는 것",
+        "md": "**`final` 인스턴스 필드 + 생성자 초기화**\n\n`setAccessible(true)` 후 `set` 이 통하고, 코드에서 읽어도 바뀐 값이 보인다.\n\n우리 `made` 가 그랬다."
+      },
+      "right": {
+        "title": "바꿔도 소용없거나 못 바꾸는 것",
+        "bad": true,
+        "md": "**상수 변수** — `set` 은 되는데 읽는 쪽이 상수라 안 보인다(`lit`, `n`).\n\n**`static final`** — `set` 자체가 `IllegalAccessException`.\n\n**레코드 컴포넌트** — `set` 이 `IllegalAccessException`."
+      },
+      "note": "`set` 이 성공했다고 바뀐 게 아니다 — **읽는 쪽을 같이 확인해야** 안다. 이 절에서 두 가지 방법으로 읽은 이유다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "레코드는 리플렉션으로도 안 열린다",
+      "sql": "  읽기 = 1\n  set -> IllegalAccessException: Can not set final int field Flds$Point.x to (int)99",
+      "note": "**레코드의 불변은 진짜다.** 자바 15 에서 레코드를 넣으며 그 컴포넌트는 `setAccessible` 로도 못 바꾸게 막았다 — 일반 `final` 인스턴스 필드와 다른 대우다."
+    },
+    {
+      "type": "prose",
+      "md": "## 남의 모듈 안쪽은 안 열린다\n\n10.3절에서 예고한 자리다. `String` 의 내부 배열을 열어 보려 했다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "자바 16 이후의 기본값",
+      "sql": "  InaccessibleObjectException\n  Unable to make field private final byte[] java.lang.String.value accessible:\n  module java.base does not \"opens java.lang\" to unnamed module @1c8912a5",
+      "note": "**`does not \"opens\"`** 가 핵심 낱말이다. `exports` 는 컴파일해서 쓰게 해 주는 것이고, `opens` 는 **리플렉션으로 열어 주는 것**이다 — 둘은 다른 허락이다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "--add-opens 를 보면 무엇을 뜻하나",
+      "md": "실행 옵션에 이런 줄이 있으면 누군가 남의 내부를 열고 있다.\n\n```\n--add-opens java.base/java.lang=ALL-UNNAMED\n```\n\n> 자바 9 에서 경고, **자바 16 에서 기본 거부**, 자바 17 부터는 되돌릴 수 없게 굳었다. 낡은 라이브러리가 자바를 못 올리는 흔한 이유가 이것이다.\n> 옵션을 붙이면 당장은 돌지만, **그 라이브러리가 JDK 내부 구조에 기대고 있다**는 뜻이므로 다음 판에서 또 깨진다.\n> 내 코드나 같은 모듈 안에서는 지금도 제한이 없다 — 11장에서 만들 것은 그 범위 안이다."
+    },
+    {
+      "type": "figure",
+      "caption": "what stops you, and where",
+      "ascii": "        getDeclaredField(name)\n              |\n              v\n        setAccessible(true)\n              |\n        +-----+--------------------------------+\n        | same module / my code     other module|\n        v                                      v\n        ok                    InaccessibleObjectException\n        |                                (java 16+)\n        v\n        set(obj, value)\n        |\n        +-- static final  -> IllegalAccessException\n        +-- record comp.  -> IllegalAccessException\n        +-- final field   -> ok\n                             |\n                             +-- constant variable -> readers still see the old value"
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "그래서 프레임워크는 필드에 직접 쓴다",
+      "md": "잭슨이 JSON 을 객체로 바꿀 때, JPA 가 엔티티를 채울 때 **setter 없이도 된다.**\n\n> `getDeclaredFields()` 로 필드를 훑고 `setAccessible(true)` 후 `set` 하면 끝이다 — `private` 이어도 상관없다.\n> 그래서 엔티티에 setter 를 안 만들어도 JPA 가 값을 채운다. 대신 **기본 생성자는 필요하다**(10.5절).\n> 그리고 이 절의 이유로 **엔티티 필드를 `final` 로 두지 않는다.** 상수 변수가 되면 읽는 쪽이 옛 값을 보고, 레코드로 만들면 아예 못 채운다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"리플렉션으로 `final` 필드를 바꿀 수 있습니까.\"**\n\n> 나눠서 답한다. **생성자에서 초기화한 `final` 인스턴스 필드**는 `setAccessible(true)` 후 바뀌고 코드에서도 보인다.\n> **리터럴로 초기화한 것**은 `set` 은 되는데 읽는 쪽이 상수라 안 보인다 — `javap` 으로 보면 `getfield` 가 아니라 `ldc` 다. `static` 이 아니어도 그렇다.\n> **`static final` 과 레코드 컴포넌트**는 `set` 자체가 `IllegalAccessException` 이다.\n> \"왜 JPA 엔티티에 setter 가 없어도 되냐\" 로 이어지면 — 프레임워크가 필드에 직접 쓴다. 그래서 엔티티 필드를 `final` 로 두면 안 된다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — set 은 됐는데 안 바뀐 것",
+      "sql": "$ java -cp out Flds\n  getFields() = 1개 / getDeclaredFields() = 7개\n  그냥 get -> IllegalAccessException\n  setAccessible 후 get = 30  ->  set 한 뒤 41\n  static 필드는 대상이 null 이다 -> count = 7\n\n$ java -cp out Fin\n  lit   바꾸기전=P-1  리플렉션읽기=CHANGED  코드에서읽기=P-1      <-- 다르다\n  made  바꾸기전=M-1  리플렉션읽기=CHANGED  코드에서읽기=CHANGED\n  n     바꾸기전=7    리플렉션읽기=99       코드에서읽기=7        <-- 다르다\n\n$ javap -c -p -cp out Fin\n  245: ldc       #90   // String P-1        <- o.lit\n  251: getfield  #92   // Field Fin$A.made  <- o.made\n  262: bipush    7                          <- o.n\n\n  LIMIT set -> IllegalAccessException: Can not set static final int field\n  레코드   set -> IllegalAccessException: Can not set final int field Point.x\n  String.value -> InaccessibleObjectException:\n      module java.base does not \"opens java.lang\" to unnamed module\n\n# set 이 예외 없이 끝난 것과 값이 바뀐 것은 다른 일이다.\n# ldc 와 getfield 가 그 차이를 바이트코드로 보여 준다.",
+      "note": "**`ldc` 대 `getfield` 가 이 절의 전부다.** 리플렉션은 필드를 바꿨지만 읽는 코드가 그 필드를 읽지 않았다. 다음 절에서는 필드가 아니라 객체 자체를 만든다 — 그리고 5장이 왜 생성자를 건너뛰었는지 확인한다."
+    }
+  ],
+  "recap": [
+    "getFields() 는 1개, getDeclaredFields() 는 7개였다 — Object 에 public 필드가 없어 메서드와 반대 모양이다.",
+    "private 필드도 getDeclaredField + setAccessible(true) 로 읽고 쓴다.",
+    "final 인스턴스 필드를 생성자에서 초기화했으면 리플렉션으로 바꾸고 코드에서도 보인다.",
+    "리터럴로 초기화한 final String·원시 필드는 set 이 되는데 읽는 쪽이 안 바뀐다.",
+    "javap 으로 보면 o.lit 은 ldc, o.made 는 getfield 다 — 상수는 읽지를 않는다.",
+    "상수 변수 조건에 static 은 없다 — 인스턴스 필드도 박힌다.",
+    "라이브러리의 public static final 상수는 쓰는 쪽이 값을 복사해 간다 — 갈아 끼워도 옛 값이 돈다.",
+    "static final 은 set 자체가 IllegalAccessException 이고 자바 12 부터 우회도 막혔다.",
+    "레코드 컴포넌트도 set 이 거부된다 — 일반 final 과 다른 대우다.",
+    "남의 모듈 내부는 InaccessibleObjectException 이다 — exports 와 opens 는 다른 허락이다.",
+    "--add-opens 가 보이면 누군가 JDK 내부에 기대고 있다는 신호다.",
+    "프레임워크가 setter 없이 값을 채우는 것이 이 기능이다 — 그래서 엔티티 필드를 final 로 두지 않는다."
+  ],
+  "drills": [
+    {
+      "task": "private 필드를 읽고 바꾼다.",
+      "done_when": "막히는 단계와 열리는 단계를 구분한다.",
+      "minutes": 10
+    },
+    {
+      "task": "final 필드를 초기화 방식 두 가지로 두고 각각 바꿔 본다.",
+      "done_when": "코드에서 읽은 값이 다른지 확인한다.",
+      "minutes": 13
+    },
+    {
+      "task": "javap -c 로 그 읽기가 ldc 인지 getfield 인지 본다.",
+      "done_when": "두 명령을 눈으로 찾는다.",
+      "minutes": 12
+    },
+    {
+      "task": "String 의 내부 필드를 열어 본다.",
+      "done_when": "예외 메시지의 opens 를 읽는다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "final 필드를 리플렉션으로 바꿨는데 코드에서 옛 값이 보인다. 왜인가.",
+      "a": "상수식으로 초기화된 final 이라 읽는 자리가 ldc 로 컴파일됐다."
+    },
+    {
+      "q": "상수 변수 조건에 static 이 필요한가.",
+      "a": "아니다. 원시 타입이나 String 이면서 final 이고 상수식 초기화면 된다."
+    },
+    {
+      "q": "static final 과 레코드 컴포넌트는 어떻게 다른가.",
+      "a": "둘 다 set 이 IllegalAccessException 이다. 레코드는 자바 15 에서 그렇게 막았다."
+    },
+    {
+      "q": "exports 와 opens 의 차이는.",
+      "a": "exports 는 컴파일해서 쓰게, opens 는 리플렉션으로 열게 해 준다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "상수 변수",
+      "what": "원시 타입이나 String 이면서 final 이고 상수식으로 초기화된 변수. 읽는 자리에 값이 박힌다."
+    },
+    {
+      "term": "opens",
+      "what": "모듈이 리플렉션 접근을 허락하는 선언. exports 와 별개이고 없으면 InaccessibleObjectException 이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java Language Specification — 4.12.4 final Variables",
+      "url": "https://docs.oracle.com/javase/specs/jls/se17/html/jls-4.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — java.lang.reflect.Field",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Field.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

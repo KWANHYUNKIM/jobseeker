@@ -1,0 +1,219 @@
+{
+  "book": "java-io",
+  "id": "constructor",
+  "no": "10.5",
+  "chapter": 10,
+  "title": "객체 만들기",
+  "summary": "이름으로 만든다.",
+  "minutes": 12,
+  "updated_at": "2026-09-27",
+  "goals": [
+    "생성자를 골라 객체를 만든다.",
+    "못 만드는 경우를 구분한다.",
+    "역직렬화가 생성자를 부르는지 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "10.1절에서 이미 한 줄 썼다 — `c.getDeclaredConstructor().newInstance()`. 그 줄을 풀어 본다.\n\n생성자도 `Method` 처럼 객체이고, 찾는 것과 부르는 것이 따로다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "생성자 넷을 가진 클래스",
+      "sql": "  생성자 목록 = 4개\n      Made(boolean)\n      private Made(int)\n      public Made(java.lang.String)\n      public Made()",
+      "note": "**`getDeclaredConstructors()` 는 접근 지정과 무관하게 전부 준다.** 순서는 약속돼 있지 않다 — 소스 순서도 아니고 위에서도 섞여 있다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "세 가지로 만들어 봤다",
+      "sql": "  기본 생성자로 만든다\n      [생성자] Made() 가 돌았다\n    how = 기본 생성자\n\n  인수 있는 생성자\n    how = 인수 생성자 A\n\n  private 생성자\n    그냥 newInstance -> IllegalAccessException\n    setAccessible 후 = private 생성자, n=5",
+      "note": "**생성자가 실제로 돌았다** — `[생성자]` 줄이 찍혔다. 리플렉션으로 만들어도 초기화 코드는 다 지나간다. `private` 은 10.3·10.4절과 같은 두 단계다."
+    },
+    {
+      "type": "prose",
+      "md": "## 못 만드는 경우가 세 가지다\n\n그리고 예외가 서로 다르다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "세 가지 실패",
+      "sql": "  기본 생성자가 없는 클래스\n    NoSuchMethodException: NoArg.<init>()\n\n  추상 클래스와 인터페이스\n    추상 클래스  -> InstantiationException\n    인터페이스   -> NoSuchMethodException: Ctor$Iface.<init>()",
+      "note": "**추상 클래스와 인터페이스가 다른 예외다.** 추상 클래스는 생성자가 있어서(자식이 부른다) `getDeclaredConstructor()` 는 성공하고 `newInstance` 에서 막힌다. 인터페이스는 생성자 자체가 없으니 찾는 단계에서 막힌다."
+    },
+    {
+      "type": "table",
+      "caption": "실패를 어디서 만나나",
+      "columns": [
+        "경우",
+        "예외",
+        "막히는 단계"
+      ],
+      "rows": [
+        [
+          "기본 생성자가 없다",
+          "`NoSuchMethodException`",
+          "찾기(`getDeclaredConstructor`)"
+        ],
+        [
+          "인터페이스",
+          "`NoSuchMethodException`",
+          "찾기 — 생성자가 없다"
+        ],
+        [
+          "추상 클래스",
+          "`InstantiationException`",
+          "부르기(`newInstance`)"
+        ],
+        [
+          "`private` 생성자",
+          "`IllegalAccessException`",
+          "부르기 — `setAccessible` 로 열린다"
+        ],
+        [
+          "생성자가 예외를 던짐",
+          "`InvocationTargetException`",
+          "부르기 — `getCause()` 로 벗긴다"
+        ]
+      ],
+      "note": "**`<init>()`** 라는 이름이 예외 메시지에 나온다 — 생성자의 진짜 이름이다. 클래스 파일에서 생성자는 `<init>`, 정적 초기화 블록은 `<clinit>` 라는 이름의 메서드다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "생성자가 던진 예외도 싸여 온다",
+      "sql": "  잡힌 것  = InvocationTargetException\n  getCause = java.lang.IllegalStateException: 생성자가 터졌다",
+      "note": "10.3절의 `invoke` 와 같다 — **`newInstance` 자체의 실패와 생성자가 던진 예외를 구분**해야 하므로 감싼다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "Class.newInstance() 는 쓰지 않는다",
+      "md": "`Class` 에도 `newInstance()` 가 있었는데 자바 9 에서 `@Deprecated` 가 붙었다.\n\n> 그 메서드는 생성자가 던진 **검사 예외를 그대로 던진다.** 선언에 없는 검사 예외가 튀어나오므로 컴파일러의 검사를 우회하게 된다.\n> `Constructor.newInstance()` 는 `InvocationTargetException` 으로 감싸서 그 문제가 없다.\n> 그래서 지금은 `getDeclaredConstructor().newInstance()` 가 표준 형태다 — 두 단계로 나뉘어 있는 것이 불편해 보이지만 그 덕에 생성자를 **고를 수** 있다."
+    },
+    {
+      "type": "prose",
+      "md": "## 5장은 생성자를 안 불렀다\n\n10.1절에서 역직렬화가 이름으로 클래스를 찾는다는 것을 확인했다. 그러면 객체는 어떻게 만드나 — 생성자를 부르는지 재 봤다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "생성자가 지나가면 표시를 남긴다",
+      "code": "static class Thing implements Serializable {\n    String mark; int n;\n    Thing() {\n        mark = \"생성자가 지나갔다\"; n = 1;\n        System.out.println(\"    [생성자] Thing() 이 돌았다\");\n    }\n}\n\nThing t = new Thing();\nt.mark = \"손으로 바꾼 값\"; t.n = 42;   // 만든 뒤에 바꿔 둔다\n// 직렬화하고 다시 읽는다"
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "`[생성자]` 줄이 한 번만 찍혔다",
+      "sql": "  객체를 만든다:\n      [생성자] Thing() 이 돌았다\n  써 놨다 (mark=손으로 바꾼 값, n=42)\n  다시 읽는다:\n  읽은 것 = mark=손으로 바꾼 값, n=42\n  위에 [생성자] 줄이 한 번만 찍혔으면 역직렬화는 생성자를 안 부른 것이다",
+      "note": "**`new Thing()` 때 한 번만 찍혔다.** 읽을 때는 안 찍혔고, 그런데도 `mark` 와 `n` 은 채워져 있다 — 생성자를 건너뛰고 필드에 직접 썼다는 뜻이다."
+    },
+    {
+      "type": "figure",
+      "caption": "two ways to fill an object",
+      "ascii": "        new Thing()                     readObject()\n        +----------------+              +----------------+\n        | allocate       |              | allocate       |\n        | run <init>     |              |  (no <init>)   |\n        |  -> mark=..    |              | write fields   |\n        |  -> n=1        |              |  <- from bytes |\n        +----------------+              +----------------+\n\n        both end with a valid-looking object.\n        only the left one ran your invariants."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "이것이 5장의 위험을 완성한다",
+      "md": "5.6절에서 필터를 봤고 10.1절에서 이름으로 로드하는 것을 봤다. 마지막 조각이 이것이다.\n\n> 생성자를 건너뛰므로 **생성자에 넣어 둔 검증이 전부 무효**다. `if (age < 0) throw ...` 를 생성자에 썼어도 역직렬화로는 음수 나이를 가진 객체가 만들어진다.\n> 싱글턴도 깨진다 — `private` 생성자로 하나만 만들게 해 놨는데 역직렬화는 그 생성자를 안 부르고 새 인스턴스를 만든다. `readResolve()` 를 쓰는 이유가 이것이다.\n> 그래서 `Serializable` 을 붙이는 것은 **생성자를 우회하는 또 하나의 public 생성자를 만드는 일**이다. 검증을 하려면 `readObject` 를 직접 써서 그 안에서 확인해야 한다.\n> 이 우회가 어떻게 가능한지가 이 절의 답이다 — `Unsafe.allocateInstance` 에 해당하는 일을 JDK 가 하고, 그다음 필드에 직접 쓴다(10.4절)."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "JPA 엔티티에 기본 생성자가 필요한 이유",
+      "md": "10.4절에서 setter 가 없어도 되는 이유를 봤다. 기본 생성자는 왜 필요한가.\n\n> JPA 는 역직렬화처럼 생성자를 우회하지 않는다 — **정상적으로 `getDeclaredConstructor().newInstance()`** 를 쓴다. 그래서 인수 없는 생성자가 있어야 한다.\n> `private` 이어도 된다. `setAccessible(true)` 로 열 수 있기 때문이다(위에서 확인했다) — 그래서 `protected NoArgEntity() {}` 로 숨겨 두는 관례가 생겼다.\n> 정리하면 JPA 가 요구하는 것은 **인수 없는 생성자 하나**이고, 필드는 직접 채운다. 그 둘이 10.4·10.5절이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"역직렬화는 생성자를 부릅니까.\"**\n\n> 안 부른다. 재 봤다 — 생성자에 출력문을 넣고 직렬화·역직렬화를 했더니 `[생성자]` 줄이 **한 번만** 찍혔고 필드는 채워져 있었다.\n> 그래서 **생성자의 검증이 전부 우회된다.** 싱글턴도 깨지고, 그래서 `readResolve()` 가 필요하다.\n> \"그러면 JPA 는 왜 기본 생성자를 요구하냐\" 로 이어지면 — JPA 는 우회하지 않고 정상적으로 `newInstance()` 를 쓴다. `private` 이어도 `setAccessible` 로 열 수 있다.\n> `Class.newInstance()` 를 쓰지 않는 이유도 물을 수 있다 — 검사 예외를 그대로 던져서 컴파일러 검사를 우회한다. 그래서 자바 9 에 deprecated 됐다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 만든 것과 못 만든 것",
+      "sql": "$ java -cp out Ctor\n  생성자 목록 = 4개\n      Made(boolean) / private Made(int) / public Made(String) / public Made()\n\n  기본 생성자      -> [생성자] Made() 가 돌았다 / how = 기본 생성자\n  인수 생성자      -> how = 인수 생성자 A\n  private 생성자   -> IllegalAccessException  ->  setAccessible 후 n=5\n\n  기본 생성자 없음  -> NoSuchMethodException: NoArg.<init>()\n  추상 클래스      -> InstantiationException\n  인터페이스       -> NoSuchMethodException: Ctor$Iface.<init>()\n  생성자가 예외    -> InvocationTargetException\n                     getCause = IllegalStateException: 생성자가 터졌다\n\n$ java -cp out SerCtor\n  객체를 만든다:\n      [생성자] Thing() 이 돌았다        <- 여기서 한 번\n  써 놨다 (mark=손으로 바꾼 값, n=42)\n  다시 읽는다:\n  읽은 것 = mark=손으로 바꾼 값, n=42   <- 채워져 있는데\n  ([생성자] 줄이 더 안 찍혔다)          <- 생성자는 안 돌았다\n\n# 리플렉션으로 만들면 생성자가 돈다. 역직렬화는 안 돈다.\n# 그 차이가 5장의 검증 우회 전부를 설명한다.",
+      "note": "**`[생성자]` 가 한 번 찍힌 것이 이 절의 증거다.** 리플렉션은 생성자를 부르고 역직렬화는 건너뛴다 — 같은 리플렉션 기반인데 다른 길을 간다. 다음 절에서는 이 모든 것의 값을 잰다. 얼마나 느린가는 **JIT 가 켜져 있느냐**로 갈린다."
+    }
+  ],
+  "recap": [
+    "getDeclaredConstructors() 는 접근 지정과 무관하게 전부 주고 순서는 약속돼 있지 않다.",
+    "리플렉션으로 만들면 생성자가 실제로 돈다 — 출력문이 찍혔다.",
+    "private 생성자는 setAccessible(true) 후 부를 수 있다.",
+    "기본 생성자가 없으면 NoSuchMethodException: <init>() 이다.",
+    "인터페이스는 찾기에서 막히고(생성자가 없다) 추상 클래스는 부르기에서 막힌다(InstantiationException).",
+    "생성자가 던진 예외는 InvocationTargetException 에 싸여 오고 getCause() 로 벗긴다.",
+    "Class.newInstance() 는 검사 예외를 그대로 던져서 자바 9 에 deprecated 됐다.",
+    "역직렬화는 생성자를 부르지 않는다 — [생성자] 줄이 한 번만 찍혔고 필드는 채워져 있었다.",
+    "그래서 생성자의 검증이 전부 우회되고 싱글턴도 깨진다 — readResolve() 가 필요한 이유다.",
+    "Serializable 을 붙이는 것은 생성자를 우회하는 또 하나의 생성자를 만드는 일이다.",
+    "JPA 는 우회하지 않고 정상적으로 newInstance() 를 쓴다 — 그래서 기본 생성자가 필요하다.",
+    "그 생성자는 private 이어도 된다. setAccessible 로 열 수 있다."
+  ],
+  "drills": [
+    {
+      "task": "생성자 네 종류를 리플렉션으로 각각 불러 본다.",
+      "done_when": "private 이 열리는 것을 확인한다.",
+      "minutes": 12
+    },
+    {
+      "task": "추상 클래스와 인터페이스를 만들어 본다.",
+      "done_when": "예외가 다른 것을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "생성자에 출력문을 넣고 직렬화·역직렬화한다.",
+      "done_when": "몇 번 찍히는지 센다.",
+      "minutes": 12
+    },
+    {
+      "task": "생성자에 검증을 넣고 역직렬화로 우회해 본다.",
+      "done_when": "잘못된 객체가 만들어지는지 확인한다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "추상 클래스와 인터페이스의 newInstance 예외가 다른 이유는.",
+      "a": "추상 클래스는 생성자가 있어 부르기에서 막히고, 인터페이스는 생성자가 없어 찾기에서 막힌다."
+    },
+    {
+      "q": "역직렬화는 생성자를 부르는가.",
+      "a": "안 부른다. 필드에 직접 쓴다. 그래서 생성자의 검증이 우회된다."
+    },
+    {
+      "q": "Class.newInstance() 가 deprecated 된 이유는.",
+      "a": "생성자의 검사 예외를 그대로 던져 컴파일러 검사를 우회한다."
+    },
+    {
+      "q": "JPA 엔티티에 기본 생성자가 필요한 이유는.",
+      "a": "JPA 는 정상적으로 newInstance() 를 쓴다. private 이어도 setAccessible 로 열린다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "<init>",
+      "what": "클래스 파일에서 생성자의 이름. 정적 초기화 블록은 <clinit> 다."
+    },
+    {
+      "term": "readResolve",
+      "what": "역직렬화가 만든 객체를 다른 것으로 바꿔치우는 메서드. 싱글턴을 지킬 때 쓴다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — java.lang.reflect.Constructor",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Constructor.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java Object Serialization Specification",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/serialization/index.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

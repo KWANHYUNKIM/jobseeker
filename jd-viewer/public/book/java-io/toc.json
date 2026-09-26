@@ -554,7 +554,7 @@
           "title": "필드 읽고 바꾸기",
           "summary": "private 도 열린다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",
@@ -562,7 +562,7 @@
           "title": "객체 만들기",
           "summary": "이름으로 만든다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",
@@ -570,7 +570,7 @@
           "title": "리플렉션의 값",
           "summary": "얼마나 느린가.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
