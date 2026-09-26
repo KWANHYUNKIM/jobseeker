@@ -210,5 +210,163 @@
     "회사 소개 페이지에 경영진 명단은 있으나 공개 작업물(발표·서명 글)을 확인하지 않아 people 에 넣지 않았다",
     "원티드·사람인에 같은 직무가 겹쳐 올라와 있다(Data Engineer, GCP Engineer, Okta, Senior AI Infrastructure) — 공고를 쓸 때 본문 비교로 duplicate_of 를 판단할 것"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/381981",
+      "title": "클라우드 기반 Data Engineer (과장급)",
+      "site": "wanted",
+      "verdict": "과장급 — IT 서비스 직무 4년 이상·총 경력 7년 이상(서울 서초). DFA실 Data팀에서 금융·제조·서비스 고객사의 AWS·Azure 기반 데이터 분석 플랫폼을 설계·구축하고 온프레미스를 이관할 사람. 필수 자격이 구체적이다 — 온프레미스 DW·Hadoop 클러스터 구축·운영 2년 이상, 복잡한 SQL(RDB·SparkSQL), ETL/ELT, Hadoop, 그리고 Databricks 및 Snowflake 프로젝트 경험까지 필수다. AWS Glue·EMR·Kinesis·Athena·Redshift 는 우대다. 팀 소개는 대한항공, 삼성생명, 우리자산운용 같은 고객사 프로젝트에 투입된다고 적는다. 전형은 서류 → 인터뷰(통상 1회) → 처우 협의다.",
+      "fit": {
+        "must_have": [
+          "초대졸 이상",
+          "IT 서비스 4년 이상·총 7년 이상(과장급)",
+          "온프레미스 DW·Hadoop 클러스터 구축·운영 2년 이상",
+          "RDB·SparkSQL 복잡한 쿼리",
+          "ETL/ELT 파이프라인",
+          "Hadoop 분산 처리",
+          "Databricks 및 Snowflake 프로젝트"
+        ],
+        "can_learn": [
+          "AWS Glue·EMR·Kinesis·Athena·Redshift 또는 Azure 데이터 서비스",
+          "ELK·NiFi",
+          "ML 데이터 파이프라인",
+          "Python·NodeJS·Java 중 하나"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Databricks 와 Snowflake — 둘 다 다뤄 본 사람의 말",
+          "from": "qualification",
+          "quote": "• Databricks 및 Snowflake 환경에서의 프로젝트 수행 경험이 있으신 분을 찾아요.",
+          "priority": "core",
+          "why": "필수 자격에 두 플랫폼이 '및' 으로 함께 있다. 고객사마다 다른 플랫폼을 쓰는 프로젝트형 조직이라 둘 다 요구하는 것으로 보인다(추론).",
+          "gap_check": "Delta Lake 테이블(Databricks)과 Snowflake 테이블은 저장·트랜잭션·시간여행(time travel)을 각각 어떻게 구현하고, 같은 적재 작업의 비용은 무엇(클러스터 시간 vs 웨어하우스 크레딧)으로 나가는가? 메달리온(bronze/silver/gold) 구조를 Snowflake 에서는 어떻게 흉내 내는가?",
+          "drill": "같은 공개 데이터셋을 Databricks Community Edition 의 Delta 테이블과 Snowflake 체험 계정에 bronze→silver→gold 로 적재하고, 증분 적재(MERGE)·시간여행 조회·비용 항목을 나란히 기록한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Databricks — What is Delta Lake",
+              "url": "https://docs.databricks.com/aws/en/delta/",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — Medallion architecture",
+              "url": "https://docs.databricks.com/aws/en/lakehouse/medallion",
+              "kind": "docs"
+            },
+            {
+              "title": "Snowflake — Key concepts and architecture",
+              "url": "https://docs.snowflake.com/en/user-guide/intro-key-concepts",
+              "kind": "docs"
+            },
+            {
+              "title": "Snowflake — Overview of data loading",
+              "url": "https://docs.snowflake.com/en/user-guide/data-load-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "온프레미스 DW·Hadoop 을 클라우드로 옮기기",
+          "from": "qualification",
+          "quote": "• On-Premise 분석 환경(DW, HD Cluster) 개발 구축 및 운영 경험이 2년 이상이신 분을 원해요.",
+          "priority": "core",
+          "why": "필수 자격이고 팀 소개가 '온프레미스 마이그레이션을 주도적으로' 이끈다고 적는다. 옮기는 사람은 옮겨지는 쪽을 알아야 한다.",
+          "gap_check": "HDFS·Hive 테이블과 온프레미스 DW 를 클라우드로 옮길 때 데이터 이동(일괄 vs CDC), 스키마·파티션 변환, 기존 배치 작업 재작성, 병행 운영·검증은 어떤 순서로 하고, 정합성은 무엇으로 확인하는가?",
+          "drill": "로컬 Docker 로 작은 Hadoop+Hive 를 띄워 파티션 테이블을 만들고, 그 데이터를 클라우드 객체 저장소(Parquet)로 옮긴 뒤 행 수·합계·체크섬으로 정합성을 비교하는 이관 체크리스트를 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apache Hadoop — HDFS Architecture",
+              "url": "https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS Database Migration Service — What is AWS DMS",
+              "url": "https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SparkSQL 로 복잡한 쿼리와 튜닝",
+          "from": "qualification",
+          "quote": "• RDB, SparkSQL 등 SQL 기반의 복잡한 쿼리(테이블 조인, 서브 쿼리 등) 작성이 능숙하신 분이 필요해요.",
+          "priority": "core",
+          "why": "필수 자격이다. RDB 에서 짜던 쿼리를 분산 엔진으로 옮기면 조인 방식과 셔플이 성능을 가른다.",
+          "gap_check": "큰 테이블 두 개의 조인에서 SparkSQL 이 broadcast join 과 sort-merge join 중 무엇을 고르는지 실행 계획(EXPLAIN)으로 읽을 수 있고, 한쪽 키가 치우쳤을(skew) 때 AQE 가 무엇을 해 주는가? 상관 서브쿼리를 윈도 함수로 바꾸면 무엇이 달라지는가?",
+          "drill": "주문·고객 합성 데이터로 조인·서브쿼리·윈도 함수 쿼리 5개를 SparkSQL 로 짜고, EXPLAIN 과 Spark UI 로 셔플 크기를 확인한 뒤 튜닝 전후 시간을 표로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spark SQL — Performance Tuning",
+              "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spark SQL Reference",
+              "url": "https://spark.apache.org/docs/latest/sql-ref.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "배치와 실시간을 함께 두는 수집 아키텍처",
+          "from": "task",
+          "quote": "• 데이터 분석을 위한 배치 및 실시간 데이터 수집/저장/활용 아키텍처를 직접 설계해요.",
+          "priority": "high",
+          "why": "주요업무 첫 줄이다. 우대사항의 AWS Kinesis(실시간)와 Glue·EMR(배치)이 두 경로에 대응한다.",
+          "gap_check": "같은 이벤트를 실시간 대시보드와 일 단위 정산에 모두 쓸 때 두 경로의 숫자가 어긋나는 이유는 무엇이고, 어느 쪽을 '정답' 으로 두며 어떻게 맞추는가?",
+          "drill": "이벤트 생성기 → 스트림(Kinesis 또는 Kafka) → 실시간 집계, 같은 이벤트 → 객체 저장소 → 일 배치 집계 두 경로를 만들고, 하루치 결과를 비교해 차이 원인(지연 도착·중복)을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AWS Glue — What is AWS Glue",
+              "url": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ETL/ELT 파이프라인 운영 자동화",
+          "from": "task",
+          "quote": "• 데이터 환경이 안정적으로 운영될 수 있도록 자동화 프로세스를 도입하고 인프라를 최적화하는 업무를 수행해요.",
+          "priority": "high",
+          "why": "주요업무이고 필수 자격에 'ETL/ELT 기반의 데이터 파이프라인 구축 경험' 이 있다. 여러 고객사 환경을 운영하려면 재실행·검증이 자동이어야 한다(추론).",
+          "gap_check": "실패한 적재를 다시 돌려도 결과가 두 번 쌓이지 않게(멱등) 하려면 무엇을 해야 하고, 데이터 품질 검사(행 수·NULL 비율)는 파이프라인 어디에 넣는가?",
+          "drill": "위 배치 경로를 오케스트레이터(Airflow 등) DAG 로 옮기고, 파티션 덮어쓰기로 멱등하게 만든 뒤 품질 검사 태스크와 실패 알림을 붙인다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Hive → 클라우드 레이크하우스 이관 데모(Databricks·Snowflake 양쪽 적재, 정합성 검증표 포함)",
+          "why": "필수 자격의 가장 드문 조합(온프레미스 DW/Hadoop + Databricks 및 Snowflake)을 한 결과물로 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "고객사 프로젝트 경험을 '이관 전·후 수치' 로 정리",
+          "why": "팀이 대형 엔터프라이즈 프로젝트에 투입되는 조직이고 인터뷰가 통상 1회다. 짧은 시간에 규모·기간·성과를 숫자로 말할 수 있어야 한다(추론).",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 > 인터뷰 > 처우 협의 > 최종 합격 > 채용검진 > 입사. 인터뷰는 통상 1회이나 추가될 수 있고, 필요 시 레퍼런스 체크가 있다(공고 기준).",
+        "expect": [
+          "온프레미스 → 클라우드 데이터 이관 경험",
+          "Databricks·Snowflake 선택 기준",
+          "SparkSQL 튜닝",
+          "배치·실시간 수치 불일치 처리"
+        ],
+        "sources": [
+          {
+            "title": "클라우드 기반 Data Engineer (과장급)",
+            "url": "https://www.wanted.co.kr/wd/381981",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
