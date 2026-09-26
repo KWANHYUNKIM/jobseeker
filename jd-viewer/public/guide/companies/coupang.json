@@ -10115,6 +10115,106 @@
       "site": "ats",
       "duplicate_of": "https://job-boards.greenhouse.io/coupang/jobs/8222501",
       "verdict": "같은 팀(쿠팡페이 Fintech Developer Platform)의 Staff 판이다. 세 절 20줄 중 19줄이 Sr. 판과 같고, 다른 한 줄은 연차뿐이다 — 'Unix/Linux 환경에서 7년 이상의 백엔드 시스템 설계 및 개발 경험을 보유하신 분'(Sr. 판은 3년). Sr. 판 브리핑을 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8212748",
+      "title": "[Coupang Pay] Sr. Back-end Engineer (Pay Test Operations)",
+      "site": "ats",
+      "verdict": "⚠️ 제목은 'Pay Test Operations' 인데 본문에는 테스트 운영 업무가 없다 — 기반 플랫폼, 무중단(Zero downtime) 차세대 인프라, HA/DR 아키텍처, 클라우드·온프레미스 CI/CD 가 적혀 있다. 본문 기준으로 보면 서울 근무, Unix/Linux 소프트웨어 엔지니어링 5년 + 백엔드 아키텍처 3년 이상의 쿠팡페이 플랫폼 엔지니어 자리다. 같은 조직의 Fintech Developer Platform 공고(gh 8222501)와 결이 비슷하다.",
+      "fit": {
+        "must_have": [
+          "Unix/Linux 소프트웨어 엔지니어링 5년 이상",
+          "백엔드 아키텍처 설계·구현 3년 이상",
+          "OOP + 스크립트 언어",
+          "장애 관리·모니터링이 있는 대규모 운영 시스템 경험"
+        ],
+        "can_learn": [
+          "온프레미스 환경의 CI/CD",
+          "company-wide Service Mesh(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "무중단(Zero downtime) 배포와 인프라 전환",
+          "from": "task",
+          "quote": "Zero downtime 을 달성하기 위한 쿠팡 Fintech 차세대 infrastructure & platform 의 설계 및 구현",
+          "priority": "core",
+          "why": "결제는 배포나 인프라 교체 중에도 멈추면 안 된다. 주요업무가 '차세대 infrastructure & platform' 설계를 무중단 목표와 함께 적는다.",
+          "gap_check": "DB 스키마 변경이 포함된 배포를 무중단으로 하려면 확장-이전-축소(expand-migrate-contract) 단계를 어떻게 나누는가?",
+          "drill": "결제 테이블에 컬럼 이름 변경을 expand→dual-write→backfill→contract 네 번의 배포로 나눠 해 보고, 각 단계에서 롤백이 가능한지 확인한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "HA/DR — 클러스터링과 복제",
+          "from": "task",
+          "quote": "HA/DR Architecture 설계 (clustering, replication 등)를 주도 및 구현",
+          "priority": "core",
+          "why": "주요업무에 clustering·replication 을 명시했다.",
+          "gap_check": "동기 복제와 비동기 복제 중 결제 원장에는 무엇을 쓰고, 그 선택이 지연과 데이터 유실(RPO)에 어떤 영향을 주는가?",
+          "drill": "PostgreSQL 주-복제 구성을 동기/비동기로 각각 만들어 쓰기 지연을 재고, 주 서버를 강제 종료해 유실 여부를 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "PostgreSQL — High Availability, Load Balancing, and Replication",
+              "url": "https://www.postgresql.org/docs/current/high-availability.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드·온프레미스를 함께 보는 CI/CD",
+          "from": "task",
+          "quote": "CI/CD DevOps 도구 고도화 및 최적화(considering both cloud and on-premise environments)",
+          "priority": "high",
+          "why": "괄호 안에 '클라우드와 온프레미스 모두 고려'가 적혀 있다. 금융 규제상 일부 시스템이 온프레미스에 남아 있을 수 있다(추론).",
+          "gap_check": "같은 파이프라인이 클라우드 쿠버네티스와 온프레미스 서버 양쪽에 배포해야 할 때, 무엇을 공통으로 두고 무엇을 환경별로 나누는가?",
+          "drill": "하나의 파이프라인에서 컨테이너 이미지를 만들어 kind(클라우드 가정)와 VM(온프레미스 가정, Ansible) 두 대상에 배포하게 한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "조직·시스템 성장기의 복잡성 해결",
+          "from": "qualification",
+          "quote": "조직이 확장되고 시스템이 복잡해지면서 발생하는 문제들을 겪고 구조적으로 해결해 본 경험",
+          "priority": "core",
+          "why": "자격요건 줄이다. 플랫폼 팀은 여러 도메인 팀이 쓰는 공통 기반을 만들기 때문에 성장기 문제를 먼저 맞는다.",
+          "gap_check": "팀이 늘면서 서비스마다 배포·모니터링 방식이 제각각이 됐을 때 무엇부터 표준화했는지 한 사례로 말할 수 있는가?",
+          "drill": "겪은 사례 하나를 '증상 → 원인 → 표준화한 것 → 채택률·결과' 네 줄로 정리한다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "무중단 DB 마이그레이션 실습 기록",
+          "why": "Zero downtime 과 HA/DR 을 동시에 보여 주는 가장 구체적인 증거다.",
+          "effort": "1일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "무중단 스키마 변경",
+          "동기/비동기 복제 선택",
+          "클라우드·온프레미스 공통 CI/CD",
+          "성장기 표준화 경험"
+        ],
+        "sources": [
+          {
+            "title": "[Coupang Pay] Sr. Back-end Engineer (Pay Test Operations)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8212748",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8212656",
+      "title": "[Coupang Pay] Staff Back-end Engineer (Pay Test Operations)",
+      "site": "ats",
+      "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=8212748",
+      "verdict": "같은 팀의 Staff 판이다. 세 절 17줄 중 15줄이 Sr. 판과 같고, 다른 두 줄은 연차뿐이다 — 'Unix/Linux 기반의 8년 이상의 소프트웨어 엔지니어링 경력', '5년 이상의 backend architecture 설계 및 구현 경험'(Sr. 판은 5년·3년). 제목과 본문이 어긋나는 점도 같다. Sr. 판 브리핑을 본다."
     }
   ],
   "open_questions": [
@@ -10138,6 +10238,7 @@
     "모집중 공고에는 **개발 직군이 아닌 자리도 섞여 있다**(사내변호사·CS·데이터 라벨링 등). 이 엔진은 공고 문장에서 학습 항목을 뽑으므로 그대로 쓰되, **`verdict` 첫 줄에 직군을 밝혀** 개발 직군을 찾는 사람이 헛걸음하지 않게 한다.",
     "`Manager, Back-end Engineering (Global Operations Technology)` 는 물류 운영 기술 조직인데 자격에 **`복잡한 금융 시스템 설계 및 개발 경력 10년 이상`** 을 요구한다. **운임·정산 같은 돈 계산을 뜻하는지, 결제·여신 계열을 뜻하는지 공고는 설명하지 않는다.** 확인하지 못했다.",
     "`SCMA Senior Staff Data Scientist` 는 **제목의 직함(`Senior Staff`)과 본문 첫 줄(`As a Principal Data Scientist`)이 다르다.** 표기 실수인지 직급이 조정 가능한 것인지 확인하지 못했다 — `Sr. Director, Back-End Engineering`(본문은 `Head of SRE`)에 이어 **두 번째 사례**다.",
-    "⚠️ `[쿠팡페이] Senior Back-end Engineer (계약직)`(ats)는 **본문이 `[쿠팡페이] Senior QA Engineer (계약직)`(saramin)와 16줄 전부 같은데 제목만 백엔드**다. 표기 실수인지 두 직무를 함께 뽑는 것인지 확인하지 못했다 — **제목과 본문이 어긋난 세 번째 사례**이고(앞의 둘은 `Sr. Director`=Head of SRE, `SCMA Senior Staff`=Principal), **이번은 직무 자체가 달라 보여 위험이 크다.**"
+    "⚠️ `[쿠팡페이] Senior Back-end Engineer (계약직)`(ats)는 **본문이 `[쿠팡페이] Senior QA Engineer (계약직)`(saramin)와 16줄 전부 같은데 제목만 백엔드**다. 표기 실수인지 두 직무를 함께 뽑는 것인지 확인하지 못했다 — **제목과 본문이 어긋난 세 번째 사례**이고(앞의 둘은 `Sr. Director`=Head of SRE, `SCMA Senior Staff`=Principal), **이번은 직무 자체가 달라 보여 위험이 크다.**",
+    "'[Coupang Pay] Sr./Staff Back-end Engineer (Pay Test Operations)'(gh 8212748·8212656)는 제목에 Test Operations 가 있지만 본문은 플랫폼·HA/DR·CI/CD 다 — 제목과 본문 중 어느 쪽이 맞는지 공고로는 알 수 없다"
   ]
 }
