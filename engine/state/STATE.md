@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — trainline 재방문에서 확장(`access-patterns-before-databases`, 새 도메인)을 마쳤다. 09-06 묶음 진행 중.**
+**없다 — trendyol 재방문에서 확장(`encode-the-input-not-the-product`, 기존 도메인 "찾게 한다")을 마쳤다. 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **trendyol** — 2026-09-26 이미지 임베딩 3배 절감(09-09) → `encode-the-input-not-the-product`, 기존 "찾게 한다". 안 읽은 새 글 둘(보안 리뷰 1.5만·NoSQL→PG). `medium.com/feed/trendyol-tech` 에 본문이 실려 온다.
 - **trainline** — 2026-09-26 DynamoDB 이전(09-25, Tech Summit 발표 정리) → `access-patterns-before-databases`, 새 도메인. `medium.com/feed/trainline` RSS 에 본문이 실려 온다(Medium 403 우회).
 - **temporal** — 2026-09-26 없음 1회째. 09-06 이후 글은 발표·예제·투자 소식. Standalone Activities GA(09-21)는 제품 안내. **단서: 그 글에 Coinbase 백그라운드 작업 서비스가 하루 2억~6억 작업·네임스페이스 186개, 1차로 17개 이전** — coinbase 재방문 때 1차 자료(08-13 웨비나)를 찾아볼 것. RSS 는 HTML 이 오니 r.jina.ai 로 `/blog`.
 - **tailscale** — 2026-09-26 데이터 평면 가속(09-22) → `lanes-not-one-line`, 새 도메인. `/blog/index.xml` 이 curl 로 온다. 멀티큐 처리량 수치는 v1.104 이후.

@@ -5,7 +5,7 @@
   "country": "기타",
   "category": "커머스",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "trendyol.com",
   "one_liner": "튀르키예 시장의 3분의 1을 쥔 마켓플레이스 — 물류·퀵커머스·결제까지 직접 굴린다",
   "business_model": "마켓플레이스이자 생태계다. 활성 고객 3,000만 명 이상과 3자 판매자 23만 명 이상을 잇고, 자체 물류와 퀵커머스와 결제 플랫폼까지 직접 굴린다. 2024년 총거래액이 125억 달러이고 2025년 trendyol.com 매출이 140억 900만 달러다. **튀르키예 시장 점유가 34~40%로 압도적이다.** 2025년 매출의 62%가 튀르키예에서 나오고, 국제 매출이 전체의 거의 20%로 커지는 중이며 걸프 지역 총거래액이 10억 달러를 넘겼다. 독일과 아제르바이잔을 현지화했고 UAE 와 사우디에 진출했다. 2010년에 창업했고 2018년 알리바바 그룹이 인수했다.",
@@ -19,7 +19,7 @@
   "domain_map": {
     "title": "마켓플레이스 하나가 아니라 생태계다",
     "question": "이 회사의 도메인들이 어떻게 맞물리나",
-    "code": "flowchart TD\n  U[\"<b>활성 고객 3,000만 명 이상</b>\"]:::list --> S[\"<b>찾게 한다</b><br/>• 검색 랭킹 · 벡터 검색<br/>• 백만 규모 카탈로그<br/>• ⏳ 미독\"]:::quiet\n  S --> M[\"<b>마켓플레이스</b><br/>• 판매자 23만 명 이상\"]:::list\n  M --> A[\"⚠️ <b>광고를 판다</b><br/>• 하드코딩을 동적 구조로<br/>• ✅ 본문 확인\"]:::accent\n  P[\"<b>인프라를 셀프서비스로</b><br/>• K8s 스토리지 · DB 이전<br/>• ⏳ 미독\"]:::quiet --> M\n  O[\"<b>장애를 AI 로 진단한다</b><br/>• Helyx · SRE 에이전트<br/>• ⏳ 미독\"]:::quiet --> P\n  M --> R[\"<b>GMV 125억 달러</b><br/>• 튀르키예 점유 34~40%\"]:::list"
+    "code": "flowchart TD\n  U[\"<b>활성 고객 3,000만 명 이상</b>\"]:::list --> S[\"<b>찾게 한다</b><br/>• 해시로 재색인 · 벡터 검색<br/>• 이미지 인코딩 3.6억 → 1.2억\"]:::accent\n  S --> M[\"<b>마켓플레이스</b><br/>• 판매자 23만 명 이상\"]:::list\n  M --> A[\"⚠️ <b>광고를 판다</b><br/>• 하드코딩을 동적 구조로<br/>• ✅ 본문 확인\"]:::accent\n  P[\"<b>인프라를 셀프서비스로</b><br/>• K8s 스토리지 · DB 이전<br/>• ⏳ 미독\"]:::quiet --> M\n  O[\"<b>장애를 AI 로 진단한다</b><br/>• Helyx · SRE 에이전트<br/>• ⏳ 미독\"]:::quiet --> P\n  M --> R[\"<b>GMV 125억 달러</b><br/>• 튀르키예 점유 34~40%\"]:::list"
   },
   "revenue_streams": [
     {
@@ -222,10 +222,26 @@
               "summary": "같은 인프라에서 900만 문서 색인(415차원+256차원 이중 벡터)과 복잡한 하이브리드 검색 질의로 v9 업그레이드 효과를 쟀다. 벡터 검색은 상품 추천·다국어 검색·시각 유사도·지원 서비스에 쓰인다. 본문 미독."
             }
           ]
+        },
+        {
+          "tech": "content_hash 기반 3단계 임베딩 파이프라인",
+          "solves": "인코더 입력이 같으면 한 번만 인코딩해 호출을 약 3배 줄이고, 세 단계를 떼어 인코딩이 느려도 발행이 돈다.",
+          "limits": "새 해시가 검색에 닿기까지 약 45분. reconcile 창보다 늦은 임베딩은 놓칠 수 있다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+              "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+              "publisher": "Trendyol Tech (Medium)",
+              "date": "2026-09-09",
+              "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+            }
+          ]
         }
       ],
       "features": [
-        "changed-vs-changed-for-me"
+        "changed-vs-changed-for-me",
+        "encode-the-input-not-the-product"
       ]
     },
     {
@@ -2441,6 +2457,266 @@
           "summary": "2024년 GMV 125억 달러, 2025년 trendyol.com 매출 140억 900만 달러. 튀르키예 시장 점유 34~40%, 2025년 매출의 62%가 튀르키예. 활성 고객 3,000만 명 이상, 3자 판매자 23만 명 이상. 국제 매출이 전체의 거의 20%, 걸프 지역 GMV 10억 달러 돌파."
         }
       ]
+    },
+    {
+      "key": "encode-the-input-not-the-product",
+      "name": "상품이 아니라 인코더 입력을 한 번만 인코딩한다",
+      "domain": "찾게 한다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "이미지로 찾는 검색은 상품 사진의 임베딩 위에서 돈다. 카탈로그가 약 1.5억 상품, 상품당 이미지 최대 3장이면 상품마다 새로 인코딩하는 것만으로 약 3.6억 번의 인코더 호출이 된다. 파이프라인은 '운영상 괜찮았다' — 지연 불만은 익숙했고 인코더 용량은 늘 빠듯했다. 모자랐던 것은 날카로운 진단이었다.\n\n진단은 질문 하나로 왔다 — 이 인코더 호출 가운데 실제로 고유한 것은 몇 개인가. 한 상품이 여러 나라에 팔리는데 인코더가 보는 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많고, 서로 다른 상품이 같은 이미지를 쓰기도 한다. 일은 상품 단위로 짜여 있었는데 비용은 인코더 입력 단위로 나왔다.\n\n**그래서 작업의 단위를 상품에서 인코더 입력의 해시로 바꿨다.** 같은 회사가 검색 색인에서 '바뀐 것'과 '나에게 바뀐 것'을 가르던 것과 같은 결의 결정이다 — 해시로 진짜 변화만 남긴다(이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "인코더 호출",
+            "value": "약 3.6억 → 약 1.2억 (약 3배 감소, 약 2.4억 호출 절감) — 카탈로그 규모 추정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+                "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+                "publisher": "Trendyol Tech (Medium)",
+                "date": "2026-09-09",
+                "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+              }
+            ]
+          },
+          {
+            "label": "고유 작업 단위",
+            "value": "약 1.5억 상품 → 약 5천만 content_hash",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+                "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+                "publisher": "Trendyol Tech (Medium)",
+                "date": "2026-09-09",
+                "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+              }
+            ]
+          },
+          {
+            "label": "새 해시가 검색에 닿는 시간",
+            "value": "약 45분 안 (prepare → 2분 → generate → 2분 → publish)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+                "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+                "publisher": "Trendyol Tech (Medium)",
+                "date": "2026-09-09",
+                "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "한 작업에 다 몰아넣었던 첫 설계를 볼 때",
+          "thought": "의도된 첫 판이었다 — 소유가 단순하고 흐름이 한곳에 있다. 규모에서 병목이 보이기 전까지는 맞았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "병목을 다시 정의할 때",
+          "thought": "상품 단위로 짠 작업 흐름을 최적화하고 있었는데, 실제 일은 인코더 입력 단위였다. 같은 이미지 URL 과 카테고리가 여러 상품과 한 상품의 여러 나라에 걸쳐 나타나는데 한 덩어리 작업은 그 겹침을 볼 수 없었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "해시에 무엇을 넣을지 정할 때",
+          "thought": "인코더가 실제로 보는 것만 넣는다. 모델 버전이나 A/B 를 해시에 넣으면 실험을 끝낼 때마다 지문이 다시 쓰인다 — 버전은 저장소 키에 둔다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "content_hash",
+            "what": "정규화한 이미지 URL 과 카테고리 계층으로 만든 해시. 상품 ID·시장·채널·A/B·인코더 버전은 넣지 않는다."
+          },
+          {
+            "name": "임베딩 저장소",
+            "what": "(content_hash, encoder_version) 을 키로 벡터를 둔다. 여러 상품·나라가 나눠 쓴다."
+          },
+          {
+            "name": "prepare 단계",
+            "what": "고유한 인코더 입력 목록을 만든다."
+          },
+          {
+            "name": "generate 단계",
+            "what": "모델 버전별로 저장소에 없는 해시만 인코더에 보낸다."
+          },
+          {
+            "name": "publish 단계",
+            "what": "상품과 저장소를 조인해 검색 변경 이벤트를 낸다. incremental 과 reconcile 두 패스."
+          },
+          {
+            "name": "reconcile 창",
+            "what": "전방 커서 뒤의 제한된 최근 구간. 늦게 생긴 임베딩을 여기서 찾아 발행한다."
+          }
+        ],
+        "invariants": [
+          "인코더 입력이 같으면 한 번만 인코딩한다 — 나라가 달라도, 상품이 달라도.",
+          "모델 버전은 해시가 아니라 저장소 키에 있다.",
+          "세 단계는 서로를 부르지 않는다 — 테이블로 상태를 나누고 스케줄로 순서를 잡는다.",
+          "새 모델은 저장소가 다 찰 때까지 검색에 닿지 않는다.",
+          "reconcile 은 incremental 을 앞지르지 않고 전체 이력을 다시 훑지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "prepare — 상품 변경에서 정규화한 이미지 URL·카테고리로 content_hash 를 만들어 고유 인코더 입력 목록을 쌓는다",
+            "why": "약 1.5억 상품이 약 5천만 해시로 접힌다."
+          },
+          {
+            "step": "약 2분 뒤 generate — 현재 모델 버전으로 저장소에 없는 해시만 인코딩해 (hash, version) 으로 쓴다",
+            "why": "같은 입력을 다시 인코딩하지 않는다."
+          },
+          {
+            "step": "약 2분 뒤 publish(incremental) — 새 상품 변경만 보고, 임베딩이 없으면 건너뛰고 전방 커서를 옮긴다",
+            "why": "저장소가 늦어도 발행이 멈추지 않는다."
+          },
+          {
+            "step": "덜 자주 reconcile — 전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 임베딩을 발행하며 후방 커서를 따라 올린다",
+            "why": "pending 테이블 없이 결국은 전달된다."
+          },
+          {
+            "step": "새 인코더는 generate 만 먼저 돌려 저장소를 데우고, 오프라인 검증 뒤에 publish·A/B 를 그 버전으로 돌린다",
+            "why": "절반만 인코딩된 모델이 검색에 새지 않는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 단위로 인코딩하나",
+            "chosen": "상품이 아니라 인코더 입력의 해시(content_hash). 나라마다 입력이 같으면 한 번, 다르면 따로.",
+            "alternatives": [
+              "상품 단위(기존)",
+              "상품 x 나라 단위"
+            ],
+            "tradeoff": "인코더 호출이 약 3배 줄어 GPU 와 이미지 다운로드·인코더 HTTP 가 함께 준다. 대가는 prepare 라는 단계와 해시 목록을 새로 유지해야 하고, 정규화 규칙이 조금만 어긋나도 같은 이미지가 다른 해시가 되어 절감이 샌다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+                "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+                "publisher": "Trendyol Tech (Medium)",
+                "date": "2026-09-09",
+                "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "해시에 무엇을 넣나",
+            "chosen": "정규화한 이미지 URL 과 카테고리 계층만. 상품 ID·시장·채널·A/B·인코더 버전은 뺀다.",
+            "alternatives": [
+              "모델 버전·실험 파라미터까지 지문에 넣는다(기존)"
+            ],
+            "tradeoff": "실험 종료·롤백이 지문 재작성이 아니게 되고, 서로 다른 상품의 같은 입력도 하나로 접힌다. 대가는 버전을 저장소 키로 옮겨 같은 해시에 버전마다 행이 쌓인다는 것이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+                "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+                "publisher": "Trendyol Tech (Medium)",
+                "date": "2026-09-09",
+                "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "읽기·인코딩·발행을 한 작업에 둘 것인가",
+            "chosen": "세 단계로 나눠 서로 부르지 않게 하고 테이블로 상태를 나눈다. 순서는 cron 스케줄(약 2분 간격)로 잡는다.",
+            "alternatives": [
+              "한 틱에 다 하는 한 작업(첫 설계)"
+            ],
+            "tradeoff": "인코딩이 느려도 발행이 계속 돌고, 실패가 그 단계에 머물러 귀속이 분명하며, 재시도가 단계 범위다. 대가는 새 해시가 검색에 닿기까지 약 45분이 걸리고, 느슨한 결합이라 순서를 스케줄로 신경 써서 맞춰야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+                "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+                "publisher": "Trendyol Tech (Medium)",
+                "date": "2026-09-09",
+                "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "저장소가 늦었을 때 발행을 어떻게 하나",
+            "chosen": "pending 테이블을 없애고 publish 를 incremental(없으면 건너뜀)과 reconcile(제한된 창을 다시 봄) 두 패스로 나눈다.",
+            "alternatives": [
+              "놓친 행을 pending 테이블에 세워 둔다(기존)",
+              "전체 이력을 다시 훑는다"
+            ],
+            "tradeoff": "pending 의 추가 상태·정리·유령 행이 사라지고 결국은 전달된다. 대가는 reconcile 창보다 더 늦게 생긴 임베딩은 창 밖으로 밀려 놓칠 수 있다는 것이다 — 창 크기와 지연 간격이 그 경계를 정한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+                "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+                "publisher": "Trendyol Tech (Medium)",
+                "date": "2026-09-09",
+                "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "새 인코더 모델을 어떻게 들이나",
+            "chosen": "generate 로 새 버전의 저장소를 미리 데우고 오프라인 검증(범위·품질·스모크) 뒤에야 publish 와 A/B 를 그 버전으로 돌린다.",
+            "alternatives": [
+              "전체 재인코딩을 실 경로에서 돌린다(첫 설계에서 막히거나 반쪽 모델이 샜다)"
+            ],
+            "tradeoff": "반쪽 모델이 검색 이벤트에 새지 않는다. 대가는 버전 전환 동안 두 버전의 임베딩을 저장소에 함께 두는 공간과, 전체 코퍼스를 새 버전으로 한 번 인코딩하는 시간이다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+                "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+                "publisher": "Trendyol Tech (Medium)",
+                "date": "2026-09-09",
+                "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "바뀌었다와 내가 신경 쓰는 게 바뀌었다는 다른 말이다 (같은 도메인의 앞 기능)",
+          "via": "해시로 진짜 변화만 남긴다",
+          "contract": "검색 색인에서 관련 필드의 XXHash 로 불필요한 재색인을 막은 것과, 인코더 입력의 해시로 중복 인코딩을 막은 것이 같은 발상이다(이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "검색 (하류 소비자)",
+          "via": "변경 이벤트",
+          "contract": "하류는 같은 이벤트 형태를 계속 받는다 — 다시 통합할 필요가 없었다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "세 단계, 하나의 해시",
+          "question": "상품 변경이 어떻게 한 번만 인코딩돼 검색에 닿나",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"<b>상품 변경</b><br/>• 약 1.5억 상품 · 나라별 행\"]:::quiet --> P[\"<b>prepare</b><br/>• content_hash = 이미지 URL + 카테고리\"]:::accent\n  P -->|\"약 2분\"| G[\"<b>generate</b><br/>• 저장소에 없는 해시만 인코딩\"]:::accent\n  G --> ST[\"<b>저장소 (hash, encoder_version)</b><br/>• 약 5천만 해시\"]:::list\n  ST -->|\"약 2분\"| PB[\"<b>publish</b><br/>• incremental · reconcile\"]:::accent\n  PB --> SE[\"<b>검색 이벤트</b><br/>• 같은 형태 · 약 45분 안\"]:::list"
+        },
+        {
+          "title": "한 덩어리 작업이 새던 자리",
+          "question": "첫 설계는 어디서 비용과 위험을 만들었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[\"<b>한 틱에 읽기 → 인코딩 → 발행</b>\"]:::quiet --> F1[\"<b>같은 입력을 나라마다 또 인코딩</b><br/>• 약 3.6억 호출\"]:::quiet\n  M --> F2[\"<b>인코딩이 느리면 발행도 멈춘다</b>\"]:::quiet\n  M --> F3[\"<b>지문에 모델·A/B</b><br/>• 실험 종료·롤백이 위험\"]:::quiet\n  M --> F4[\"<b>늦은 저장소 → pending 테이블</b><br/>• 유령 행 · 정리\"]:::quiet\n  F1 --> FIX[\"<b>해시 단위 · 세 단계 · reconcile</b><br/>• 약 1.2억 호출\"]:::accent\n  F2 --> FIX\n  F3 --> FIX\n  F4 --> FIX"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+          "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+          "publisher": "Trendyol Tech (Medium)",
+          "date": "2026-09-09",
+          "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -2454,7 +2730,8 @@
     "검색 도메인의 나머지 글 넷이 미독이다 — 벡터 검색 v9(2026-02-24, 주소 확보) · Vector Search at Trendyol Search Core(주소 확보) · 검색 랭킹 모델 배포 2편 · 백만 규모 카탈로그 건강. 검색은 이 회사에서 가장 자료가 두꺼운 도메인이다.",
     "이 회사의 두 셀프서비스가 반대 방향으로 간다 — 광고는 규칙을 코드에서 데이터로 열어 사업이 직접 공개·철회하게 했는데, DB 이전은 DDL 을 코드로 잠그고 되돌릴 수 없는 지점마다 사람을 세운다. 되돌릴 수 있느냐 가 자유의 크기를 가르는 것으로 보이는데, 회사가 이 둘을 이어 말한 자료는 없다(재구성).",
     "성과에 절대 수치가 없다 — 30~60분 → 2~5분 이라는 전후 비교는 있지만 MTTR 감소율·오진율·채택률이 없다. 특히 근본 원인이 맞았는가 를 어떻게 재는지가 없다 — 이 시스템에서 가장 중요한 물음인데(재구성).",
-    "Helyx(자체 데이터 관측 플랫폼) 글 넷과 SRE AI 에이전트(26분) · AI 가 다중 리전 쿠버네티스 장애의 근본 원인을 찾도록 어떻게 도왔나 가 미독이다 — 같은 도메인의 자료가 아직 두껍게 남아 있다."
+    "Helyx(자체 데이터 관측 플랫폼) 글 넷과 SRE AI 에이전트(26분) · AI 가 다중 리전 쿠버네티스 장애의 근본 원인을 찾도록 어떻게 도왔나 가 미독이다 — 같은 도메인의 자료가 아직 두껍게 남아 있다.",
+    "09-06 이후 글 가운데 보안 리뷰 1만 5천 건 자동화(09-16)·NoSQL→PostgreSQL 이전(09-07)은 아직 안 읽었다. 임베딩 3배 절감은 카탈로그 규모 추정치다 — 실측 GPU 비용 수치는 글에 없다."
   ],
   "sources": [
     {
@@ -2505,6 +2782,13 @@
       "publisher": "Trendyol Tech",
       "date": "2026-05-04",
       "summary": "사건의 시간 대부분이 해결이 아니라 진단에 쓰인다는 관찰에서 출발해, 경보를 자동으로 조사하고 근본 원인 분석을 Slack 에 올리는 다중 에이전트 플랫폼을 만들었다. 하나의 거대한 AI 대신 코디네이터 하나와 전문 에이전트 여섯을 두고, 경보를 네 종류로 먼저 분류해 조사 깊이를 정하며, 메트릭은 오류의 호출 사슬에 든 서비스만 본다. 자동 조치는 하지 않는다 — 분석을 올리고 사람이 결정한다."
+    },
+    {
+      "title": "How We Cut Image Embedding Cost by 3× — and Stopped Encoding the Same Products Twice",
+      "url": "https://medium.com/trendyol-tech/how-we-cut-image-embedding-cost-by-3-and-stopped-encoding-the-same-products-twice-fddb6acf7be1",
+      "publisher": "Trendyol Tech (Medium)",
+      "date": "2026-09-09",
+      "summary": "검색의 시각 임베딩 파이프라인을 다시 짰다. 처음에는 한 작업이 한 틱에 상품 변경 읽기·인코더 호출·이벤트 발행을 다 했다(의도된 첫 설계). 약 1.5억 상품, 상품당 이미지 최대 3장, 평균 인코더 호출 약 2.4회 → 약 3.6억 요청. 한 상품이 여러 나라에 팔리는데 인코더 입력(이미지 URL·카테고리)은 나라마다 같은 경우가 많아 중복 인코딩으로 GPU 와 네트워크를 다시 냈다. 아픔: 반복 인코딩으로 비용이 카탈로그에 비례, 인코딩이 느리면 발행이 멈추는 결합, 지문에 모델·A/B 가 섞여 실험 종료·롤백이 위험, 실패 귀속이 어려움, 발행을 놓치지 않으려 pending 테이블이 복잡해짐. 새 설계: prepare(고유 인코더 입력 목록, 단위는 content_hash) → generate(모델 버전별로 저장소에 없는 해시만 인코딩) → publish(상품과 저장소를 조인해 검색 이벤트 발행, 하류 지문은 content_hash) 세 단계가 서로 호출하지 않고 테이블로 상태를 나눈다. content_hash 에는 정규화한 이미지 URL 과 카테고리 계층만, 상품 ID·시장·채널·A/B·인코더 버전은 뺀다. 저장소 키는 (content_hash, encoder_version). 고유 작업이 약 1.5억 상품에서 약 5천만 해시로. 새 인코더는 generate 로 미리 저장소를 데워 오프라인 검증한 뒤 publish 를 돌린다. pending 테이블을 없애고 incremental(새 변경만, 임베딩 없으면 건너뜀)과 reconcile(전방 커서 뒤 제한된 창을 다시 보고 늦게 생긴 것을 발행)로 나눴다. prepare → 약 2분 → generate → 약 2분 → publish 순의 cron, 새 해시가 약 45분 안에 발행된다. 인코딩 약 3배 감소(약 3.6억 → 1.2억, 약 2.4억 호출 절감) — 카탈로그 규모 추정치. 하류 검색은 같은 이벤트 형태를 받는다."
     }
   ]
 }
