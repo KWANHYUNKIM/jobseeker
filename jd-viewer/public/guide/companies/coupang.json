@@ -12261,6 +12261,111 @@
       "site": "ats",
       "duplicate_of": "https://www.wanted.co.kr/wd/385087",
       "verdict": "⚠️ 제목은 'Senior QA Engineer (Advertiser Platform)' 이지만 본문은 내부 감사(Internal Audit) 자동화·데이터 분석 공고다 — 원티드 'Senior Data Analyst (Audit Automation & Data Analytics)'(wd/385087)와 주요업무·자격 문장이 같다. 제목과 본문이 어긋난 게시로 보고 원티드판 브리핑을 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163723",
+      "title": "Staff Security Engineer (Cyber Threat Hunting)",
+      "site": "ats",
+      "verdict": "서울 근무, 보안 운영·위협 헌팅·침해사고 대응 8년 이상. 보안 분석 직군이다(소프트웨어 개발 아님). 공격자 TTP·위협 인텔리전스로 가설을 세워 SIEM·EDR·NDR·클라우드·IAM 텔레메트리를 가로질러 기존 탐지가 놓친 침해 징후를 먼저 찾아 나서고(Proactive Threat Hunting), 그 결과를 Python·PowerShell 플레이북으로 재사용 가능하게 만든다. 한국어·영어 능통이 우대다.",
+      "fit": {
+        "must_have": [
+          "보안 운영·위협 헌팅·침해 대응 8년 이상",
+          "TTP·MITRE ATT&CK 를 엔터프라이즈 헌팅에 적용한 경험",
+          "대규모 SIEM·EDR·클라우드 보안·로그 분석 플랫폼 실무",
+          "복잡한 다단계 조사 역량"
+        ],
+        "can_learn": [
+          "쿠팡 로그 소스 구성",
+          "특정 쿼리 언어(SPL·KQL 등)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "가설 기반 위협 헌팅",
+          "from": "task",
+          "quote": "공격자 전술, 기법 및 절차(TTPs), 위협 인텔리전스, 그리고 방어 데이터 가시성을 기반으로 수립한 가설을 활용하여 전사 시스템 전반에 걸친 Proactive Threat Hunting활동을 주도하고 책임집니다.",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다. 경보를 기다리지 않고 공격자 TTP·인텔리전스로 가설을 세워 먼저 찾는다.",
+          "gap_check": "'도용된 클라우드 자격 증명으로 평소와 다른 리전에서 대량 API 호출' 같은 가설 하나를, 필요한 데이터·쿼리·정상 기준선·종료 조건까지 설계할 수 있는가?",
+          "drill": "공개 데이터셋(예: 보안 연습용 로그 데이터)으로 가설 하나를 세워 헌팅 쿼리를 쓰고, 결과를 '가설 → 데이터 → 발견 → 새 탐지 룰 제안' 보고서로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "MITRE ATT&CK",
+              "url": "https://attack.mitre.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "행위 기준선과 통계로 미묘한 이상 찾기",
+          "from": "task",
+          "quote": "대규모 다중 도메인 로그 데이터셋에 대해 고급 분석 기법, 행위 기반 기준선, 통계적 방법론을 적용하여, 기존 탐지 체계로는 발견되지 않는 미묘한 이상 징후 및 침해 지표(IOC)를 식별합니다.",
+          "priority": "core",
+          "why": "기존 탐지 체계로는 발견되지 않는 미묘한 이상을 찾는 수단으로 명시돼 있다.",
+          "gap_check": "드물게 일어나는 정상 행동(분기 결산 때만 쓰는 계정)과 공격을 가르려면 기준선을 어떤 단위·기간으로 잡는가?",
+          "drill": "가짜 로그인·프로세스 실행 로그로 사용자·호스트별 희귀 이벤트(stack counting)와 시간대 이상 점수를 계산해 상위 목록을 뽑는 Python 노트북을 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "도메인을 가로지르는 상관 분석 (EDR·네트워크·IAM·클라우드)",
+          "from": "task",
+          "quote": "SIEM, EDR, NDR, 클라우드, IAM(Identity), 네트워크 플랫폼 등 다양한 보안 데이터 원천의 텔레메트리를 조사하며, 특히 도메인 간 상관관계 분석 및 고급 행위 분석에 중점을 둡니다.",
+          "priority": "core",
+          "why": "도메인 간 상관관계와 고급 행위 분석이 중심이라고 적혀 있다. 횡적 이동은 한 도메인 로그만으로는 잘 안 보인다(추론).",
+          "gap_check": "한 계정이 사내 PC → 서버 → 클라우드 콘솔로 이동한 흔적을 EDR·인증 로그·CloudTrail 에서 어떻게 이어 붙이는가(시간·ID 정규화)?",
+          "drill": "세 소스(가짜 EDR 프로세스 로그·AD 로그인·CloudTrail)를 공통 사용자·시간 키로 조인해 한 계정의 이동 경로 타임라인을 만든다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "헌팅 플레이북 자동화 (Python·PowerShell)",
+          "from": "task",
+          "quote": "Python, PowerShell 등 스크립트 언어를 활용하여 재사용 가능한 위협 헌팅 플레이북과 자동화 프로세스를 개발합니다.",
+          "priority": "high",
+          "why": "한 번 쓴 헌팅을 반복 실행 가능한 플레이북으로 만드는 것이 주요업무다.",
+          "gap_check": "헌팅 쿼리를 정기 실행으로 돌릴 때 결과가 매번 너무 많으면 어떻게 줄이고, 언제 탐지 룰로 '승격'하는가?",
+          "drill": "위 헌팅 쿼리를 매일 돌리는 Python 스크립트로 만들고, 이미 확인된 항목은 허용 목록으로 빼며, 3일 연속 확인되면 룰 후보로 표시한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "로그 분석 쿼리 언어 (SPL·KQL·SQL)",
+          "from": "preference",
+          "quote": "Splunk, ELK, UEBA, QRadar 등의 엔터프라이즈 로그 분석 플랫폼과 SPL, KQL, SQL, LogScale 등 쿼리 언어 활용 역량",
+          "priority": "nice",
+          "why": "헌팅의 실제 손은 쿼리다. 우대에 여러 플랫폼과 쿼리 언어가 나열돼 있다.",
+          "gap_check": "같은 헌팅(드문 부모-자식 프로세스 조합)을 SQL 과 KQL 로 각각 쓸 수 있는가?",
+          "drill": "프로세스 생성 로그에서 드문 부모-자식 조합을 찾는 쿼리를 SQL(DuckDB)과 KQL(또는 SPL) 두 가지로 작성한다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "헌팅 보고서 한 편 공개",
+          "why": "가설·데이터·발견·새 탐지 제안까지 한 편으로 보여 주는 결과물은 이 자리의 일 자체다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "헌팅 가설 설계",
+          "기준선과 드문 정상 행동 구분",
+          "도메인 간 이동 추적",
+          "헌팅의 룰 승격 기준",
+          "쿼리 언어 실습"
+        ],
+        "sources": [
+          {
+            "title": "Staff Security Engineer (Cyber Threat Hunting)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163723",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
