@@ -242,6 +242,106 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/372348",
+      "title": "AI Solution Engineer",
+      "site": "wanted",
+      "verdict": "경력 2년 이상, 근무지 표기 서울 서초구. 업무는 'AI Agent 개발', 'AI 를 활용한 다양한 Application 개발' 두 줄이다. 필수는 실무 2년 이상, Python, **LangChain·LlamaIndex·LangGraph** 등 LLM 활용, **MCP(Model Context Protocol) 이해·개발**, **Function Calling**, 그리고 **'사이트 근무 가능자'** — 같은 회사 아산 Full stack 공고처럼 고객 현장 근무가 있을 수 있고 복지에 Onsite 수당·출장수당이 있다(어느 사이트인지는 공고에 없다). 우대는 RAG 구축, Vector DB, Agent Framework, **반도체 또는 제조업 데이터** 활용. 회사 브리핑대로 고객은 반도체·디스플레이·철강 등 제조사이고, 데이터 원천은 설비·공정·계측 데이터와 문서다. 전형: 서류전형 - 면접 - 최종합격. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "실무 2년 이상",
+          "Python",
+          "LangChain/LlamaIndex/LangGraph",
+          "MCP",
+          "Function Calling",
+          "사이트 근무 가능"
+        ],
+        "can_learn": [
+          "RAG·Vector DB",
+          "제조 데이터 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MCP 서버 만들기 — 제조 데이터를 도구로 열기",
+          "from": "qualification",
+          "quote": "4) MCP(Model Context Protocol) 이해 및 개발 능력 보유",
+          "priority": "core",
+          "why": "필수 자격요건이다. 고객사 설비·공정 데이터를 에이전트가 쓰게 하려면 표준 방식으로 도구를 노출해야 한다(회사 브리핑: 데이터 원천이 설비·공정·계측·레거시 시스템).",
+          "gap_check": "MCP 서버가 노출하는 tools·resources·prompts 는 각각 무엇이고, '설비 알람 조회' 도구를 MCP 로 만들면 LangGraph 에이전트·Claude Desktop 같은 여러 클라이언트가 무엇을 공유하게 되며, 고객사 DB 를 읽기 전용으로만 열려면 서버 쪽에서 무엇을 막는가?",
+          "drill": "MCP 공식 가이드를 따라 Python MCP 서버를 만들고 '설비 목록', '설비별 최근 알람'(가짜 SQLite) 두 도구를 노출한다. MCP 클라이언트(예: Claude Desktop 또는 inspector)로 연결해 호출하고, 쓰기 쿼리가 들어오면 거부하는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "What is the Model Context Protocol (MCP)?",
+              "url": "https://modelcontextprotocol.io/docs/getting-started/intro",
+              "kind": "docs"
+            },
+            {
+              "title": "Build an MCP server — Model Context Protocol",
+              "url": "https://modelcontextprotocol.io/docs/develop/build-server",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "자연어로 설비 데이터 묻기 — SQL 에이전트의 안전장치",
+          "from": "preference",
+          "quote": "4) 반도체 경험 혹은 제조업 데이터 활용 경험자",
+          "priority": "core",
+          "why": "우대사항이다. 같은 회사 점핏 Aidentyx 공고가 '반도체 및 제조업의 데이터 조회 및 분석을 수행하는 AI Agent 구축' 을 적는다.",
+          "gap_check": "'어제 3라인 식각 설비 중 알람이 가장 많았던 장비' 를 LLM 이 SQL 로 바꿀 때 테이블·컬럼 설명을 무엇으로 주고, 잘못된 SQL·너무 큰 결과·쓰기 쿼리는 어디서 막으며(읽기 전용 계정·LIMIT·검증), LLM 이 만든 SQL 을 사용자에게 보여줘야 하는 이유는 무엇인가?",
+          "drill": "LangChain SQL 에이전트 튜토리얼을 가짜 설비·알람 SQLite 로 따라 하고, 읽기 전용 연결·결과 행 제한·실행 전 쿼리 검사 단계를 넣는다. 자연어 질문 10개로 정답 SQL 과 비교해 정확도를 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Build a SQL agent — Docs by LangChain",
+              "url": "https://docs.langchain.com/oss/python/langchain/sql-agent",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Function Calling 과 LangGraph — 도구를 고르는 에이전트",
+          "from": "qualification",
+          "quote": "3) LangChain/LlamaIndex/LangGraph 등 LLM 활용 경험자",
+          "priority": "high",
+          "why": "필수 자격요건(LangChain·LangGraph)이고 바로 아래 줄이 Function Calling 이다.",
+          "gap_check": "설비 이상 문의에 에이전트가 '알람 조회 → 관련 매뉴얼 검색 → 조치 제안' 순서로 도구를 고르게 할 때, LangGraph 에서 상태·노드·조건 분기로 흐름을 고정하는 것과 LLM 이 매번 도구를 자유롭게 고르게 두는 것은 무엇이 다르고, 도구 호출이 실패하면 어느 노드로 돌아가는가?",
+          "drill": "LangGraph 로 위 MCP 도구(또는 같은 함수)를 쓰는 그래프를 만들고, 자유 선택 에이전트 버전과 고정 흐름 버전을 같은 질문 10개로 돌려 도구 호출 순서와 실패 처리 차이를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "LangGraph overview — Docs by LangChain",
+              "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "제조 문서 RAG — 벡터 DB 로 매뉴얼 찾기",
+          "from": "preference",
+          "quote": "1) RAG 개발/구축 경험자",
+          "priority": "nice",
+          "why": "우대사항이고 바로 아래 줄이 Vector DB 다. 회사 브리핑대로 문서도 데이터 원천이다.",
+          "gap_check": "설비 매뉴얼 PDF 를 쪼갤 때 고정 길이와 목차·절 단위 중 무엇이 검색에 유리하고, 알람 코드처럼 정확히 일치해야 하는 단어는 벡터 검색만으로 왜 놓치며(키워드 검색 병행), 답변에 출처 페이지를 붙이게 하려면 무엇을 메타데이터로 남기는가?",
+          "drill": "공개 장비 매뉴얼(또는 가짜 문서) 몇 개를 절 단위로 쪼개 Chroma(또는 pgvector)에 넣고, 알람 코드 질문 5개와 일반 질문 5개로 벡터 검색·키워드 병행 검색의 적중을 비교한다. 답변에 출처 페이지를 붙인다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Introduction — Chroma Docs",
+              "url": "https://docs.trychroma.com/docs/overview/introduction",
+              "kind": "docs"
+            },
+            {
+              "title": "pgvector — GitHub",
+              "url": "https://github.com/pgvector/pgvector",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
