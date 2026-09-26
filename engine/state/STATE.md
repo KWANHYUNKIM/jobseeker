@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**로그라스 완주 검사 1회차(2026-09-26) — 도메인 둘 추가: 인원 하나의 변화가 인건비 과목 전부로 번진다(note `n6a26a8d8e113` — 제품 글, 인건비 계산 모델링·두 계획 단위·접근 제어) · 신규 AI 사업의 병목을 따라 만드는 법을 옮긴다(Zenn `3f8a2c91d4e7b5` — AI IR 1년, coded prototype). 다음은 확장: 이 두 도메인에 기능 하나씩(`--gaps` 순서대로). AI IR 쪽은 PdM 글(note `ne17cf1352880`)·AI 솔루션 독립 조직 글(`n00f2be8cdf5b`)도 있다. 그다음 완주 검사 2회차 — 설비투자 계획·IT 투자 관리·석세스 파트너는 1회차(Zenn RSS 20편·note 36편)에 없음 → 한 번 더(speakerdeck·loglass.jp 제품 사이트) 없으면 hold_reason. 대기 2/3(Hacobu·estie). 비교 문서 재료 다섯 묶음. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
+**로그라스 확장 3/4(2026-09-26) — `headcount-cost-simulation` 완료(제품 글이라 결정 대가 대부분이 '이 사이트의 해석'). 다음은 확장: 'AI IR' 도메인(`신규 AI 사업의 병목을 따라 만드는 법을 옮긴다`) — Zenn `3f8a2c91d4e7b5`(병목 딜리버리→리뷰→디스커버리, coded prototype), 보조로 note `ne17cf1352880`(PdM)·`n00f2be8cdf5b`(AI 솔루션 독립 조직). 그다음 완주 검사 2회차 — 설비투자 계획·IT 투자 관리·석세스 파트너는 1회차(Zenn RSS 20편·note 36편)에 없음 → speakerdeck·loglass.jp 제품 사이트로 한 번 더, 없으면 hold_reason. 대기 2/3(Hacobu·estie). 비교 문서 재료 다섯 묶음. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
 
 
 
