@@ -131,7 +131,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "candidacy-csv-streaming"
+      ]
     },
     {
       "name": "언제 부채를 갚고, 갚은 부채가 돌아오지 않게 한다",
@@ -171,7 +173,405 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "candidacy-csv-streaming",
+      "name": "배열로 돌아가지 않는 한 줄기 — 커서에서 HTTP 까지",
+      "domain": "쌓여 가는 채용 데이터를 한 번에 들지 않고 흘려 내보낸다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "HERP Hire 의 채용 담당은 **선고 데이터를 CSV 로 내려받아** 집계하고 보고한다. 선고 한 건은 구인 · 매체 · 담당자 등 여러 테이블을 JOIN 한 한 줄이다. 사용자가 계속 쓸수록 선고 데이터는 쌓인다 — **반가운 성장이 그대로 부하의 증가**다.\n\n원래 구현은 전부 메모리에 꺼낸 뒤 가공했다. 출시 때는 멀쩡했지만 데이터가 늘며 **조용히, 연속적으로** 나빠졌다 — 어느 릴리스도 범인이 아니고, '몇 건까지 괜찮다'는 문턱도 없었다. 결국 **OOM 재기동 반복**, 그리고 Node.js 의 GC · 이벤트 루프 점유로 **같은 프로세스의 무관한 요청까지** 느려졌다. '재기동하니 괜찮다'로 미뤄지다가 **가용성이 SLO 를 밑돌아 사내 규칙상 배포가 동결**되고 나서야 우선순위가 올랐다 — 엔드포인트 하나가 팀 전체의 배포를 멈췄다.",
+        "metrics": [
+          {
+            "label": "변경 전",
+            "value": "OOM 으로 프로세스 재기동 반복 · 가용성 SLO 미달 · 배포 동결",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "label": "변경 후",
+            "value": "힙 사용량 대폭 감소 · SLO 회복 · 배포 동결 해제 · TTFB 단축",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "label": "HERP Hire",
+            "value": "2025 년 개발 9년째",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "技術的負債はいつ解消すべきか？ - HERP が React 移行で使った3つの判断軸",
+                "url": "https://zenn.dev/herp_inc/articles/when-to-resolve-technical-debt",
+                "publisher": "HERP",
+                "date": "2025-11-21",
+                "summary": "HERP Hire 는 2025 년 개발 9년째. 부채를 '**개발하며 얻는 지식 · 이해와 눈앞 시스템의 괴리가 일으키는 생산성 저하**'로 정의한다. 어려움은 '**부채 해소가 새 부채를 낳을 수 있다**'는 역설 — 여러 SaaS 를 전제로 기능을 **마이크로서비스로 떼어 냈다가** 방향이 멈추자 **분산 모놀리스**만 남았고, 코드베이스 전체를 **fp-ts 풍**으로 했다가 Effect-TS 가 대체해 전체가 부채가 됐다. 그래서 해소 시점의 세 조건 — ① 앞으로 개발량이 느는 방향이 분명해 **투자 효과가 크다** ② 얻는 자산이 **방향이 바뀌어도 가치를 잃지 않는다** ③ 사업과 기술이 **미래 전제를 맞추고 합의**했다. 사례: 2018 년부터 **jQuery + Pug** 로 만든 **구인 페이지**(당시 레거시 브라우저 · SSR 때문) — i18n · 폼 커스터마이즈 · 커스텀 항목 · note pro 연계로 복잡해져 응모 폼이 거대한 파일 하나. 개수 빈도가 낮아 미뤄 왔는데 2024~2025 년 **'SaaS × 매칭'** 으로 사업을 틀어 **구직자 체험**에 손댈 빈도가 확실히 늘어 React 이행을 결정."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "페이징을 떠올렸을 때",
+          "thought": "**마지막엔 CSV 한 개를 돌려줘야 한다.** 중간 어디서든 배열로 돌아가면 그곳이 새 피크다 — 끝에서 끝까지 흘려야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+              "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+              "publisher": "HERP",
+              "date": "2026-09-03",
+              "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+            }
+          ]
+        },
+        {
+          "at": "엔티티 변환을 직접 짤 때",
+          "thought": "**깨질 가능성을 0 으로 만들 수 없다.** 그렇다면 먼저 '일부 기업만 켜고, 깨지면 끈다'를 할 수 있는 상태부터 만든다 — 이번 변경에서 가장 중요한 설계 판단.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+              "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+              "publisher": "HERP",
+              "date": "2026-09-03",
+              "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+            }
+          ]
+        },
+        {
+          "at": "돌아볼 때",
+          "thought": "**그 코드는 쓰인 당시 틀리지 않았다.** 문제는 데이터가 늘었다는 것이고, 한계는 조용히 연속적으로 온다 — 문턱을 정해 감시하고 OOM · SLO 미달 전에 손대는 것이 갈림길이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+              "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+              "publisher": "HERP",
+              "date": "2026-09-03",
+              "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "선고(candidacy)",
+            "what": "한 후보자의 한 구인에 대한 선고. 구인 · 매체 · 담당자 등을 JOIN 해 CSV 한 줄이 된다."
+          },
+          {
+            "name": "DB 커서",
+            "what": "MySQL 에서 행을 조금씩 읽는 입구(TypeORM SelectQueryBuilder.stream — 생 행만 준다)."
+          },
+          {
+            "name": "chunk",
+            "what": "메인 별칭의 주키가 바뀌는 곳에서 끊은 생 행 묶음 — 한 엔티티가 두 chunk 로 갈리지 않는다."
+          },
+          {
+            "name": "엔티티 변환",
+            "what": "getMany() 가 안에서 하는 변환(RawSqlResultsToEntityTransformer · RelationIdLoader 등)을 직접 불러 chunk 를 엔티티로."
+          },
+          {
+            "name": "피처 플래그",
+            "what": "유스케이스 층에서 신(스트림) · 구(배열)를 기업 단위로 가른다."
+          }
+        ],
+        "invariants": [
+          "**파이프 어디서도 배열로 돌아가지 않는다** — 돌아가면 그곳이 피크다.",
+          "**한 엔티티는 한 chunk 안에 있다**(주키 경계에서 자른다).",
+          "**도중에 끊겨도 DB 커넥션은 돌려준다**(남은 결과를 읽어 버리고 release).",
+          "**동기 변환은 일정 건수마다 이벤트 루프를 양보한다.**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "유스케이스가 피처 플래그를 보고 스트림(신) · 배열(구)을 고른다",
+            "why": "일부 기업부터 켜고, 깨지면 끈다."
+          },
+          {
+            "step": "SelectQueryBuilder.stream() 으로 MySQL 커서에서 생 행을 흘린다",
+            "why": "전 건을 메모리에 올리지 않는다."
+          },
+          {
+            "step": "주키가 바뀌는 곳에서 chunk 를 끊는 Transform",
+            "why": "JOIN 때문에 한 엔티티가 여러 행이다 — 경계에서 갈리면 중복 · 누락."
+          },
+          {
+            "step": "chunk → 엔티티(관계 해결) → CSV 행 → csv-stringify(Duplex.toWeb) — Web Streams TransformStream 으로",
+            "why": "async 변환을 그대로 쓰고 파이프의 모양이 코드의 모양과 같다."
+          },
+          {
+            "step": "일정 건수마다 setImmediate 로 양보하는 Transform",
+            "why": "메모리가 풀려도 동기 변환이 이벤트 루프를 막으면 다른 요청이 선다."
+          },
+          {
+            "step": "Node Streams 로 되돌려 UTF-16LE + BOM 으로 바꿔 Koa 응답에 흘린다",
+            "why": "Excel 을 위한 인코딩 · 첫 바이트가 빨리 나간다."
+          },
+          {
+            "step": "다운로드가 도중에 끊기면 preventCancel 로 상류 취소를 막고, 남은 결과를 읽어 버린 뒤 release",
+            "why": "방치된 커서가 커넥션 풀을 고갈시키지 않게."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "늘어나는 CSV 내보내기를 어떻게 다룰 것인가?",
+            "chosen": "**전부 메모리에 꺼내 가공하던 것을 DB 커서부터 HTTP 응답까지 한 스트림으로.**",
+            "alternatives": [
+              "getMany() 로 전 건을 배열로(이전)",
+              "페이징으로 나눠 가져온다"
+            ],
+            "tradeoff": "피크 메모리가 **입력 크기에 비례하지 않는다** — 힙이 크게 줄고 SLO 가 회복, TTFB 도 짧아졌다. 페이징은 결국 CSV 한 개를 만들려고 어딘가 배열로 돌아가 그곳이 피크가 된다. 대가는 **'도중에 끊긴다'는 새 상태**가 생기고 엔티티 변환을 직접 해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "JOIN 된 생 행을 어디서 끊을 것인가?",
+            "chosen": "**메인 별칭의 주키가 바뀌는 위치에서 chunk 를 끊는다.**",
+            "alternatives": [
+              "고정 개수로 끊는다"
+            ],
+            "tradeoff": "한 엔티티가 여러 생 행으로 흩어져 있어 아무 데서나 끊으면 **경계에서 갈려 중복 · 누락**된다. 대가는 한 엔티티의 행이 아주 많으면 그 chunk 가 커진다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "생 행을 엔티티로 어떻게 바꿀 것인가?",
+            "chosen": "**getMany() 가 안에서 쓰는 변환기(RawSqlResultsToEntityTransformer · RelationIdLoader 등)를 직접 불러 쓴다.**",
+            "alternatives": [
+              "생 행 그대로 CSV 를 만든다(inferred)",
+              "ORM 을 쓰지 않고 생 SQL 로 다시 쓴다(inferred)"
+            ],
+            "tradeoff": "관계가 풀린 엔티티를 그대로 써 **기존 CSV 가공 로직을 살린다.** 대가는 **라이브러리 내부 구현에 기댄다**는 것 — 복잡한 쿼리에서 깨질 가능성을 0 으로 못 만든다(그래서 플래그를 먼저 만들었다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 스트림 API 로 파이프를 짤 것인가?",
+            "chosen": "**Node 의 stream.Transform 상속 대신 Web Streams(node:stream/web TransformStream) — 경계에서만 toWeb/fromWeb 으로 바꾼다.**",
+            "alternatives": [
+              "기존처럼 stream.Transform 을 상속한다"
+            ],
+            "tradeoff": "transform 을 **async 함수로 그대로** 쓰고(관계 해결의 await), pipeThrough 로 파이프의 모양이 코드와 같다. 기존 자산과도 공존한다. 대가는 @types/node 를 올려야 했고 Duplex.toWeb() 의 반환형이 실체와 맞지 않아 캐스트가 필요했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "기존 호출부를 어떻게 지킬 것인가?",
+            "chosen": "**Stream<Entity> 를 Entity[] 로 접는 collect() 를 두어 '전 건 취득' 인터페이스를 그대로 남긴다.**",
+            "alternatives": [
+              "모든 호출부를 한꺼번에 스트림으로 바꾼다"
+            ],
+            "tradeoff": "기존 호출부는 **무변경으로** 돌고, 스트림으로 옮길 가치가 있는 곳부터 차례로 옮긴다. 대가는 collect() 를 쓰는 곳은 **메모리 이점이 없다**는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "깨질 수 있는 변경을 어떻게 내보낼 것인가?",
+            "chosen": "**유스케이스 층의 피처 플래그로 신구를 가르고 일부 기업부터 켠다.**",
+            "alternatives": [
+              "한 번에 전 기업에 바꾼다"
+            ],
+            "tradeoff": "깨지면 플래그만 내리면 된다 — 글이 '이번 변경에서 가장 중요한 설계 판단'이라 부른다. 대가는 한동안 **두 경로를 같이 유지**한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "다운로드가 도중에 끊기면?",
+            "chosen": "**pipeTo 에 preventCancel: true 로 상류 취소를 막고, 중단되면 남은 결과를 읽어 버린(drain) 뒤 release.**",
+            "alternatives": [
+              "하류가 닫히면 상류도 그대로 취소되게 둔다(출시 직후의 상태)"
+            ],
+            "tradeoff": "방치된 DB 커서가 release 에 닿지 못해 **커넥션 풀이 고갈**되던 장애를 막는다 — 전 건을 읽던 시절엔 없던 종류의 장애다. 대가는 끊긴 뒤에도 **남은 결과를 끝까지 읽는** 비용을 치른다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "메모리가 풀려도 다른 요청이 느리면?",
+            "chosen": "**일정 건수마다 setImmediate 로 명시적으로 양보하는 Transform 을 파이프에 끼운다.**",
+            "alternatives": [
+              "스트림화만으로 끝낸다"
+            ],
+            "tradeoff": "스트림화는 **메모리 피크를 없애는 것**이고 **CPU 를 내주는 것**은 별개다 — 둘을 함께해야 다른 요청에 대한 영향이 사라진다. 대가는 한 번의 내보내기 자체는 양보한 만큼 조금 길어진다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+                "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+                "publisher": "HERP",
+                "date": "2026-09-03",
+                "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "언제 부채를 갚고, 갚은 부채가 돌아오지 않게 한다(같은 회사의 다른 도메인)",
+          "via": "'쓰일 당시 틀리지 않았던 코드'",
+          "contract": "CSV 구현은 데이터가 작을 때 옳았고 성장이 부채로 바꿨다 — 부채를 '지식 · 이해와 시스템의 괴리'로 보는 부채 글의 정의와 같다. 다만 이번엔 SLO 가 깨져 '언제'가 강제로 정해졌다. 같은 코드베이스(HERP Hire 서버, TypeORM)다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+              "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+              "publisher": "HERP",
+              "date": "2026-09-03",
+              "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+            },
+            {
+              "title": "技術的負債はいつ解消すべきか？ - HERP が React 移行で使った3つの判断軸",
+              "url": "https://zenn.dev/herp_inc/articles/when-to-resolve-technical-debt",
+              "publisher": "HERP",
+              "date": "2025-11-21",
+              "summary": "HERP Hire 는 2025 년 개발 9년째. 부채를 '**개발하며 얻는 지식 · 이해와 눈앞 시스템의 괴리가 일으키는 생산성 저하**'로 정의한다. 어려움은 '**부채 해소가 새 부채를 낳을 수 있다**'는 역설 — 여러 SaaS 를 전제로 기능을 **마이크로서비스로 떼어 냈다가** 방향이 멈추자 **분산 모놀리스**만 남았고, 코드베이스 전체를 **fp-ts 풍**으로 했다가 Effect-TS 가 대체해 전체가 부채가 됐다. 그래서 해소 시점의 세 조건 — ① 앞으로 개발량이 느는 방향이 분명해 **투자 효과가 크다** ② 얻는 자산이 **방향이 바뀌어도 가치를 잃지 않는다** ③ 사업과 기술이 **미래 전제를 맞추고 합의**했다. 사례: 2018 년부터 **jQuery + Pug** 로 만든 **구인 페이지**(당시 레거시 브라우저 · SSR 때문) — i18n · 폼 커스터마이즈 · 커스텀 항목 · note pro 연계로 복잡해져 응모 폼이 거대한 파일 하나. 개수 빈도가 낮아 미뤄 왔는데 2024~2025 년 **'SaaS × 매칭'** 으로 사업을 틀어 **구직자 체험**에 손댈 빈도가 확실히 늘어 React 이행을 결정."
+            }
+          ]
+        },
+        {
+          "to": "MySQL · TypeORM",
+          "via": "커서 스트림과 커넥션 풀",
+          "contract": "커서는 다 읽히거나 drain 된 뒤에만 커넥션을 돌려준다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+              "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+              "publisher": "HERP",
+              "date": "2026-09-03",
+              "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+            }
+          ]
+        },
+        {
+          "to": "채용 SaaS(수익원)",
+          "via": "선고 데이터 CSV 내보내기 · 같은 프로세스의 다른 기능",
+          "contract": "엔드포인트 하나가 무관한 기능의 가용성과 팀의 배포를 인질로 잡던 구조를 없앴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+              "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+              "publisher": "HERP",
+              "date": "2026-09-03",
+              "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "한 줄기로 흐르는 CSV",
+          "question": "선고 데이터는 어떤 단계를 배열 없이 지나 응답이 되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[\"MySQL 커서\"] --> B[\"생 행\"]\n  B --> C[\"주키 경계 chunk\"]\n  C --> D[\"엔티티\\n(관계 해결)\"]\n  D --> E[\"CSV 행\"]\n  E --> Y[\"setImmediate 양보\"]\n  Y --> F[\"csv-stringify\"]\n  F --> G[\"UTF-16LE + BOM\"]\n  G --> H[\"HTTP 응답(Koa)\"]"
+        },
+        {
+          "title": "내보내기 한 번의 상태",
+          "question": "도중에 끊기면 커넥션은 어디로 가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 흐름중: 플래그 ON · 커서 열림\n  흐름중 --> 완료: 모든 행 전송\n  흐름중 --> 끊김: 다운로드 취소 · 브라우저 닫힘\n  끊김 --> 드레인: preventCancel · 남은 결과 읽어 버림\n  드레인 --> 반환: release()\n  완료 --> 반환\n  반환 --> [*]"
+        },
+        {
+          "title": "전부 꺼내 가공할 때 무너지던 길",
+          "question": "왜 CSV 한 기능이 서비스 전체를 늦췄나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"getMany() — 전 건을 배열로\"] --> B[\"생 행 · 엔티티 · CSV 행 · 문자열 피크가 동시에\"]\n  B --> C[\"데이터 증가에 비례해 힙 팽창\"]\n  C --> D[\"GC 장기화 · 이벤트 루프 점유\"]\n  D --> E[\"같은 프로세스의 무관한 요청 지연\"]\n  C --> F[\"OOM 재기동 반복\"]\n  E --> G[\"가용성 SLO 미달 → 배포 동결\"]\n  F --> G"
+        }
+      ],
+      "sources": [
+        {
+          "title": "データを一気に取り出すのをやめて、DB から HTTP レスポンスまで Stream で繋いだらメモリ使用量が激減した",
+          "url": "https://zenn.dev/herp_inc/articles/92afb9a85d77d3",
+          "publisher": "HERP",
+          "date": "2026-09-03",
+          "summary": "HERP Hire 의 **선고(candidacy) 데이터 CSV 내보내기**는 구인 · 매체 · 담당자 등을 JOIN 해 한 줄로 만든다. TypeORM `getMany()` 로 **전부 메모리에 꺼낸 뒤** 가공했더니 생 행 · 엔티티 · CSV 행 · 직렬 문자열의 피크가 동시에 서, 데이터가 늘면서 **OOM 재기동 반복**, GC 가 CPU 를 점유해 **같은 프로세스의 무관한 요청 지연**까지 나빠졌다. 페이징은 결국 CSV 한 개를 돌려줘야 해 어딘가 배열로 돌아가면 그곳이 피크 — 그래서 **MySQL 커서 → 행 → (주키가 바뀌는 곳에서 chunk 분할) → 엔티티 → CSV → UTF-16LE + BOM → HTTP** 를 한 파이프로(SelectQueryBuilder.stream + Web Streams TransformStream, csv-stringify 는 Duplex.toWeb). TTFB 도 짧아졌다. 기존 호출부를 지키려 **collect()** 로 배열 API 를 남기고 **피처 플래그**로 신구를 갈랐다(엔티티 생성을 직접 구현해 깨질 가능성이 0 이 아니라서). 새 함정: **다운로드 취소 시 DB 커서가 방치돼 커넥션 풀 고갈** → preventCancel 로 뒷정리 주도권을 쥐고 남은 결과를 읽어 버린 뒤 release. 동기 변환이 이벤트 루프를 막지 않게 **일정 건수마다 setImmediate 로 양보**. 결과: 힙 대폭 감소, **가용성이 SLO 아래에서 회복 · 배포 동결 해제**. 교훈: 당시 코드는 틀리지 않았다 — 반가운 성장이 연속적으로 한계를 밀어 올렸고, '재기동하니 괜찮다'로 미루다 SLO 가 깨져 배포가 멈춘 뒤에야 우선순위가 올랐다."
+        },
+        {
+          "title": "技術的負債はいつ解消すべきか？ - HERP が React 移行で使った3つの判断軸",
+          "url": "https://zenn.dev/herp_inc/articles/when-to-resolve-technical-debt",
+          "publisher": "HERP",
+          "date": "2025-11-21",
+          "summary": "HERP Hire 는 2025 년 개발 9년째. 부채를 '**개발하며 얻는 지식 · 이해와 눈앞 시스템의 괴리가 일으키는 생산성 저하**'로 정의한다. 어려움은 '**부채 해소가 새 부채를 낳을 수 있다**'는 역설 — 여러 SaaS 를 전제로 기능을 **마이크로서비스로 떼어 냈다가** 방향이 멈추자 **분산 모놀리스**만 남았고, 코드베이스 전체를 **fp-ts 풍**으로 했다가 Effect-TS 가 대체해 전체가 부채가 됐다. 그래서 해소 시점의 세 조건 — ① 앞으로 개발량이 느는 방향이 분명해 **투자 효과가 크다** ② 얻는 자산이 **방향이 바뀌어도 가치를 잃지 않는다** ③ 사업과 기술이 **미래 전제를 맞추고 합의**했다. 사례: 2018 년부터 **jQuery + Pug** 로 만든 **구인 페이지**(당시 레거시 브라우저 · SSR 때문) — i18n · 폼 커스터마이즈 · 커스텀 항목 · note pro 연계로 복잡해져 응모 폼이 거대한 파일 하나. 개수 빈도가 낮아 미뤄 왔는데 2024~2025 년 **'SaaS × 매칭'** 으로 사업을 틀어 **구직자 체험**에 손댈 빈도가 확실히 늘어 React 이행을 결정."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**매출 · 제품별 비중 · 요금**이 공개 자료에 없다.",
     "**채용 컨설팅 · 재취직 지원**은 시스템 글이 없다 — 도메인이 없다.",

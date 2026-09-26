@@ -2251,3 +2251,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 HERP 회사 프로파일
 
 - 회사 페이지로 제품 10여 개를 수익원 셋으로 묶었다(채용 SaaS · 매칭 · 컨설팅/재취직). herp.cloud 는 CAPTCHA. 글 셋(스트림 · 부채 시점 · Ratcheting 앞부분)으로 도메인 둘.
+
+## 2026-09-27 HERP CSV 스트림
+
+- `92afb9a85d77d3` 로 기능 `candidacy-csv-streaming`, 결정 8.
