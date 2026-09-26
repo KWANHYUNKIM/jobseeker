@@ -521,6 +521,120 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/365859",
+      "title": "Site Reliability Engineer (SRE)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 중구. **전사** 신뢰성을 맡는 SRE 자리로, 인프라 구축보다 **장애 대응과 운영 표준**이 중심이다. 업무는 전사 서비스 장애 1차 대응과 **RCA 리드**, 포스트모템·재발 방지 액션 추적, **온콜/인시던트 체계 수립·표준화**, **SLI/SLO 정의**와 신뢰성 정량화, 서비스 레벨별 프로덕션 필수 점검항목 관리, **전사 배포/변경 관리 표준화**(배포 전 영향도 분석·리스크 검토), 장애 리스크 사전 진단과 **Chaos Engineering 훈련** 기획. 필수는 SRE·인프라 운영 5년 이상, **AWS 운영 3년 이상**, 여러 계층 장애를 1차 대응부터 RCA·재발방지까지 추적, 옵저버빌리티 플랫폼 진단, 서버/네트워크 레벨 진단, 시스템 연동 구조 분석과 영향도 평가. 우대는 대규모 트래픽, SLI/SLO/에러 버짓, **Java/Spring 성능 분석**, LLM/에이전트를 운영·진단에 활용, 상시 관측·개선, 포스트모템 문화, 배포/변경관리 자동화. 전형: 서류 ＞ **코딩테스트** ＞ 1차 인터뷰 ＞ 2차 인터뷰 ＞ 레퍼런스 체크 ＞ 처우협의 및 채용검진 ＞ 최종합격, 3개월 시용기간(급여 100%). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "SRE·인프라 운영 5년 이상",
+          "AWS 운영 3년 이상",
+          "장애 RCA·재발방지 추적",
+          "옵저버빌리티 진단",
+          "서버·네트워크 진단",
+          "연동 구조 영향도 평가"
+        ],
+        "can_learn": [
+          "에러 버짓 운영",
+          "Java/Spring 성능 분석",
+          "Chaos Engineering",
+          "LLM 활용 진단"
+        ]
+      },
+      "study": [
+        {
+          "topic": "여러 계층에 걸친 장애 — 트레이스로 RCA",
+          "from": "qualification",
+          "quote": "• 여러 계층에 걸친 IT 서비스 장애를 1차 대응부터 RCA, 재발방지까지 끝까지 추적, 해결한 경험을 보유하신 분",
+          "priority": "core",
+          "why": "필수 자격요건이고 주요업무 첫 줄이 '전사 서비스 장애의 1차 대응 및 RCA 리드' 다. 회사 브리핑대로 앱·검색·경로·대리운전·주차 등 여러 서비스가 서로 호출한다.",
+          "gap_check": "'경로 탐색이 느리다' 는 신고가 들어왔을 때 앱→게이트웨이→경로 서비스→교통 정보 서비스→DB 중 어느 계층이 느린지 로그만으로 찾기 어려운 이유는 무엇이고, 트레이스의 스팬과 전파되는 trace ID 가 이를 어떻게 풀며, '근본 원인' 과 '방아쇠(trigger)' 는 RCA 문서에서 왜 따로 적는가?",
+          "drill": "OpenTelemetry 로 서비스 세 개(게이트웨이·경로·교통정보)를 계측해 한 요청의 트레이스를 모으고, 교통정보 서비스에 지연을 주입해 트레이스에서 느린 스팬을 찾는다. 그 결과로 타임라인·영향·원인·방아쇠·재발 방지를 나눈 RCA 한 장을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Traces — OpenTelemetry",
+              "url": "https://opentelemetry.io/docs/concepts/signals/traces/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "에러 버짓 정책 — SLO 를 결정에 쓰기",
+          "from": "preference",
+          "quote": "• SLI/SLO/에러 버짓 운영 경험을 보유하신 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무에 'SLI/SLO 정의 및 신뢰성을 데이터 정량화' 가 있다.",
+          "gap_check": "경로 탐색 API 의 SLO 를 '28일 동안 요청 99.9% 가 1초 안에 성공' 으로 정하면 에러 버짓은 몇 분(또는 몇 건)이고, 버짓을 다 쓰면 기능 배포를 멈춘다는 정책은 누가 합의해야 하며, 버짓을 태운 원인이 외부(교통 정보 제공사)일 때는 어떻게 다루는가?",
+          "drill": "SRE 워크북의 에러 버짓 정책 예시를 읽고, 가상의 경로 탐색 API 로 SLI·SLO·버짓·소진 시 조치·예외 조건을 담은 정책 한 장을 쓴다. 지난 28일 가짜 요청 로그에서 버짓 소진율을 계산하는 쿼리를 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Error Budget Policy — Google SRE Workbook",
+              "url": "https://sre.google/workbook/error-budget-policy/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "배포·변경 관리 — 카나리로 영향 줄이기",
+          "from": "task",
+          "quote": "• 전사 배포/변경 관리 표준화를 합니다. (배포 전 영향도 분석, 리스크 검토)",
+          "priority": "high",
+          "why": "주요업무이고 우대에 '배포/변경관리 프로세스 설계 또는 자동화' 가 있다.",
+          "gap_check": "전사 배포 표준에 '배포 전 영향도 분석' 을 넣을 때 무엇(연동 서비스 목록·데이터 스키마 변경·되돌릴 수 있는가)을 묻고, 카나리 배포에서 새 버전을 1% 에 먼저 내보낸 뒤 무엇(오류율·지연을 기존 버전과 비교)을 기준으로 자동 중단하며, 카나리가 짧으면 놓치는 문제는 무엇인가?",
+          "drill": "SRE 워크북의 카나리 장을 읽고, 배포 요청서 양식(변경 내용·영향 서비스·롤백 방법·카나리 기준)과 카나리 판정 규칙(기존 대비 오류율 차이 임계값·관찰 시간)을 적는다. 두 버전의 가짜 지표로 판정 규칙이 통과·중단을 맞게 내는지 계산해 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Canarying Releases — Google SRE Workbook",
+              "url": "https://sre.google/workbook/canarying-releases/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "Chaos Engineering 훈련 기획",
+          "from": "task",
+          "quote": "• 장애 리스크 사전 진단 및 Chaos Engineering 훈련을 기획합니다.",
+          "priority": "high",
+          "why": "주요업무다. 필수에 'AWS 운영 경험 3년 이상' 이 있다 — AWS 환경에서 장애를 일부러 일으켜 대응을 연습한다.",
+          "gap_check": "첫 카오스 실험을 운영 환경에서 할 때 가설('교통정보 서비스 인스턴스 하나가 죽어도 경로 탐색 성공률은 99.9% 이상 유지')·폭발 반경(일부 트래픽·한 가용 영역)·중단 조건을 어떻게 정하고, 실험이 '실패' 했을 때 얻는 것은 무엇인가?",
+          "drill": "Principles of Chaos Engineering 을 읽고, 위 가설로 실험 계획서 한 장(정상 상태 지표·주입할 장애·범위·중단 조건·관찰자)을 쓴다. AWS FIS 문서로 인스턴스 중지 실험 템플릿과 중단 조건(CloudWatch 알람)을 어떻게 연결하는지 정리한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Principles of Chaos Engineering",
+              "url": "https://principlesofchaos.org/",
+              "kind": "article"
+            },
+            {
+              "title": "What is AWS Fault Injection Service?",
+              "url": "https://docs.aws.amazon.com/fis/latest/userguide/what-is.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Java/Spring 성능 분석 — 프로파일러로 보기",
+          "from": "preference",
+          "quote": "• Java/Spring 애플리케이션 성능 분석 경험을 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 장애 원인이 인프라가 아니라 애플리케이션 코드일 때 SRE 가 직접 짚어야 한다.",
+          "gap_check": "CPU 가 튀는 Spring 서비스에서 스레드 덤프 몇 장과 프로파일러 플레임 그래프는 각각 무엇을 보여주고, GC 가 원인인지 락 경합이 원인인지는 무엇으로 가리는가?",
+          "drill": "일부러 비효율적인 정규식·동기화 블록을 넣은 Spring 앱에 부하를 주고, async-profiler 로 CPU·락 플레임 그래프를 떠서 뜨거운 메서드를 찾는다. 고친 뒤 다시 떠서 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "async-profiler — GitHub",
+              "url": "https://github.com/async-profiler/async-profiler",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
