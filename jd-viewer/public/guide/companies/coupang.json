@@ -13696,6 +13696,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7923645",
+      "title": "Senior Manager, Back-End Engineering",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 인도 하이데라바드 근무다. 업계 12년 이상·소프트웨어 개발 관리 5년 이상의 관리자의 관리자 자리로, 엔지니어링 조직의 기술 방향을 주고 경력 개발자를 채용하며 매니저·테크 리드를 코칭하고, 제품·서비스의 운영 지표를 정의·측정·보고한다. 어느 사업·제품 팀인지는 공고에 적혀 있지 않다. 비슷한 제목의 8076295(벵갈루루, 운송 플랫폼)와는 공통 문구 외 겹치는 줄이 없다. 크롤러가 본문 전체를 주요업무 칸에 넣었다.",
+      "fit": {
+        "must_have": [
+          "업계 12년 이상 엔지니어링 리더십",
+          "소프트웨어 개발 관리 5년 이상·아키텍처 실무",
+          "글로벌 분산 팀 리딩·채용·유지",
+          "Java 스택·AWS·빅데이터",
+          "비전 수립과 교차 조직 영향력"
+        ],
+        "can_learn": [
+          "Agile/Scrum 실천 개선",
+          "운영 지표 체계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "운영 지표 정의·측정·보고 — SLO 와 전달 지표",
+          "from": "task",
+          "quote": "Drive and improve the operational excellence of your organization. Own definition, measurement, and reporting of operational metrics for your products & services",
+          "priority": "core",
+          "why": "조직의 운영 우수성을 높이고 제품·서비스의 운영 지표를 정의·측정·보고하는 것이 주요업무다.",
+          "gap_check": "서비스별 SLO(가용성·지연)와 팀 전달 지표(배포 빈도·변경 실패율·복구 시간)를 함께 보고할 때, 어떤 지표가 나빠지면 기능 개발을 멈추고 안정화로 돌리는가?",
+          "drill": "가상 서비스 세 개의 SLO·에러 버짓과 DORA 네 지표를 한 장의 월간 운영 보고서 양식으로 만들고, 에러 버짓 소진 시 결정 규칙을 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Google SRE Book — Service Level Objectives",
+              "url": "https://sre.google/sre-book/service-level-objectives/",
+              "kind": "book"
+            },
+            {
+              "title": "DORA — Four keys metrics",
+              "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "확장 가능·내결함성 시스템 설계와 장애 예방",
+          "from": "task",
+          "quote": "Dive deep to solve critical system issues. Ideally identify them before they happen and device plan to address them",
+          "priority": "core",
+          "why": "확장 가능하고 내결함성 있는 시스템을 짓도록 기술 방향을 주고, 중대한 시스템 문제를 깊이 파고들어 발생 전에 찾아 대응 계획을 세우는 것이 주요업무다(원문 'device plan' 표기 그대로).",
+          "gap_check": "장애가 나기 전에 위험을 찾으려면 무엇(용량 추세·의존성 단일 장애점·최근 변경)을 정기적으로 보고, 장애 후 회고는 어떤 형식으로 남기는가?",
+          "drill": "AWS Well-Architected 신뢰성 기둥의 질문으로 가상 주문 서비스를 점검해 위험 목록을 만들고, 가상 장애 하나에 대한 비난 없는 사후 검토 문서를 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "AWS Well-Architected — Reliability Pillar",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE Book — Postmortem Culture",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "관리자의 관리자 — 매니저·테크 리드 코칭과 채용",
+          "from": "task",
+          "quote": "Develop, mentor, and coach managers and tech leaders on career development and professional growth",
+          "priority": "high",
+          "why": "매니저·테크 리드의 경력 개발 코칭과 경력 개발자 채용으로 고성과 조직을 키우는 것이 주요업무이고, 글로벌 분산 팀에서 채용·유지·확장 경험이 최소 자격이다.",
+          "gap_check": "처음 매니저가 된 테크 리드가 코딩과 관리 사이에서 흔들릴 때 어떤 기준으로 시간을 나누게 돕고, 분기마다 무엇으로 성장을 확인하는가?",
+          "drill": "매니저 한 명을 위한 90일 성장 계획(기대 역할·1:1 주제·확인 지표)과 경력 개발자 채용 루프(면접 단계·평가 기준표)를 각각 한 장으로 쓴다.",
+          "hours": 3,
+          "resources": []
+        },
+        {
+          "topic": "Agile/Scrum 실천 개선",
+          "from": "task",
+          "quote": "Foster a culture that continuously innovates through frequent product iterations (Agile/Scrum) and help the team develop their Agile practices further",
+          "priority": "nice",
+          "why": "잦은 제품 반복(Agile/Scrum)으로 계속 혁신하는 문화를 만들고 팀의 Agile 실천을 더 발전시키는 것이 주요업무다.",
+          "gap_check": "스프린트 회고에서 같은 문제가 반복될 때 절차를 바꿀지, 스프린트 길이·범위를 바꿀지 무엇으로 판단하는가?",
+          "drill": "Scrum Guide 를 읽고 현재(또는 가상) 팀의 이벤트·산출물 운영을 가이드와 대조해 차이 세 가지와 개선안을 적는다.",
+          "hours": 2,
+          "resources": [
+            {
+              "title": "The Scrum Guide",
+              "url": "https://scrumguides.org/scrum-guide.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "운영 지표 월간 보고서 샘플",
+          "why": "주요업무의 '운영 지표 정의·측정·보고'를 구체적인 형태로 보여 준다. SLO·에러 버짓·DORA 지표와 결정 규칙을 담은 한 장은 관리자 면접의 대화 재료가 된다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "운영 지표와 결정 규칙",
+          "장애 예방과 사후 검토",
+          "매니저 코칭",
+          "글로벌 분산 팀 채용",
+          "성장과 수익성 사이 트레이드오프"
+        ],
+        "sources": [
+          {
+            "title": "Senior Manager, Back-End Engineering",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7923645",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
