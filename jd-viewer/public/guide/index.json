@@ -352,6 +352,17 @@
       "postings": 9,
       "study_items": 40,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "hyundai-autoever",
+      "name": "현대오토에버",
+      "aliases": [
+        "현대오토에버"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }
