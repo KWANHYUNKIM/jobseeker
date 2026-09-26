@@ -9468,6 +9468,148 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163725",
+      "title": "Staff Security Engineer (Continuous Threat Exposure Management)",
+      "site": "ats",
+      "verdict": "서울 근무, 사이버보안 8년 이상 + 보안 환경 내 플랫폼·도구 개발 2년 이상. 보안 솔루션·로그 소스·벤더 탐지 규칙·SIEM Use Case·ATT&CK 기법을 하나의 데이터 모델과 그래프로 엮어, 어디서 탐지가 비는지(로그 유실·매핑 불일치·중복 규칙)를 찾아내고 BAS(공격 시뮬레이션) 결과로 개선을 검증하는 플랫폼을 만드는 사람. 보안 분석과 Python 백엔드 개발이 반씩 섞인 자리다.",
+      "fit": {
+        "must_have": [
+          "사이버보안 8년 + 보안 플랫폼·도구 개발 2년",
+          "Detection Engineering·SIEM 실무",
+          "EDR·CSPM·WAF·SIEM·Identity Protection 통합",
+          "Python 백엔드·DB 스키마 설계·SQL",
+          "보안 솔루션 API 연동(REST·GraphQL·SDK)",
+          "영어(문서·협업) + 한국어 필수"
+        ],
+        "can_learn": [
+          "BAS 플랫폼(우대)",
+          "그래프 시각화(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보안 데이터 계보(Data Lineage) — 로그에서 Use Case 까지",
+          "from": "task",
+          "quote": "로그부터 정규화, 필드 매핑, 벤더 규칙 연계, Use Case 연결에 이르기까지 보안 데이터 흐름을 추적하는 데이터 계보 파이프라인을 구축하고 유지합니다.",
+          "priority": "core",
+          "why": "플랫폼의 뼈대다. 로그 → 정규화 → 필드 매핑 → 벤더 규칙 → Use Case 로 이어지는 사슬 중 한 곳이 끊기면 탐지가 조용히 멈춘다.",
+          "gap_check": "어떤 Use Case 가 참조하는 필드가 특정 로그 소스에서 이름이 바뀌었을 때, 계보 데이터로 영향을 받는 Use Case 를 어떻게 자동으로 찾아내는가?",
+          "drill": "로그 소스·필드·규칙·Use Case·ATT&CK 기법을 테이블(또는 그래프 DB)로 모델링하고, '필드 이름 변경 → 영향 받는 Use Case 목록'을 뽑는 쿼리를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Neo4j — Cypher Manual",
+              "url": "https://neo4j.com/docs/cypher-manual/current/introduction/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "벤더 규칙·스키마 자동 매핑 (Detection Mapping Engine)",
+          "from": "task",
+          "quote": "벤더 탐지 규칙과 로그 소스 스키마를 자동으로 연계하는 Detection Mapping Engine의 기능을 개발하고 개선합니다.",
+          "priority": "core",
+          "why": "벤더마다 필드 이름이 달라 규칙과 로그를 사람이 맞추면 끝이 없다. 벤더 기술 문서를 활용한 자동 보강도 주요업무에 있다.",
+          "gap_check": "벤더 A 의 'src_ip' 와 벤더 B 의 'SourceAddress' 를 같은 공통 필드로 매핑할 때, 이름 유사도만으로는 무엇을 틀리고 무엇을 추가로 봐야 하는가(값 형식·예시)?",
+          "drill": "두 벤더의 로그 샘플에서 필드를 추출해 이름 유사도 + 값 패턴(IP·타임스탬프·사용자) 기반으로 공통 스키마 매핑을 제안하는 스크립트를 만들고 정답 매핑과 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OCSF — Open Cybersecurity Schema Framework",
+              "url": "https://schema.ocsf.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "탐지 공백 분석 (ATT&CK 커버리지 vs 공격자 TTP)",
+          "from": "task",
+          "quote": "현재 MITRE ATT&CK 커버리지와 알려진 공격자 TTP를 비교하여 탐지 공백을 분석하고, 로그 분석 및 공격 시뮬레이션 결과를 근거로 우선순위가 지정된 탐지 규칙 개선안을 수립합니다.",
+          "priority": "core",
+          "why": "공백을 찾은 뒤 로그 분석·공격 시뮬레이션 근거로 우선순위를 매긴 개선안을 내는 것이 주요업무다.",
+          "gap_check": "ATT&CK 칸이 '덮였다'고 표시돼도 실제로는 탐지하지 못하는 경우(로그 유실·조건 불일치)를 커버리지 지표에 어떻게 반영하는가?",
+          "drill": "특정 공격 그룹의 TTP 목록과 가상의 현재 규칙 매핑을 비교해 공백 표를 만들고, 각 공백에 필요한 로그 소스·예상 난이도로 우선순위를 매긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MITRE ATT&CK",
+              "url": "https://attack.mitre.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "BAS 로 보안 통제 검증",
+          "from": "task",
+          "quote": "BAS 결과를 분석하여 탐지 커버리지를 검증하고, 탐지되지 않는 위협이 발견될 경우 근거 기반의 탐지 규칙 개선안을 도출합니다.",
+          "priority": "high",
+          "why": "규칙 개선이 실제 탐지율 향상으로 이어지는지 지속적으로 추적하는 검증 주기가 주요업무에 있다.",
+          "gap_check": "BAS 로 재현한 기법이 탐지되지 않았을 때 원인을 로그 미수집·필드 불일치·규칙 로직으로 나누는 절차는?",
+          "drill": "Atomic Red Team 테스트 3개를 실행하고 기대 로그·실제 로그·규칙 발화 여부를 표로 만들어 실패 원인을 분류한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Atomic Red Team",
+              "url": "https://github.com/redcanaryco/atomic-red-team",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "여러 보안 플랫폼 API 어댑터",
+          "from": "qualification",
+          "quote": "REST API, GraphQL, Vendor SDK 등 보안 솔루션 API 연동 경험",
+          "priority": "core",
+          "why": "EDR·CSPM·WAF·SIEM·Identity Protection·SaaS Security 데이터를 수집·정규화하는 어댑터를 유지하는 것이 주요업무다.",
+          "gap_check": "벤더 API 마다 페이징·레이트 리밋·인증 방식이 다를 때 어댑터 공통 인터페이스를 어떻게 설계하는가?",
+          "drill": "Python 으로 공통 어댑터 인터페이스(수집·정규화·재시도)를 만들고 공개 API 두 개(예: GitHub 감사 로그, 가짜 EDR API)를 붙인다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "그래프 기반 보안 관계 시각화",
+          "from": "preference",
+          "quote": "그래프 기반 데이터 시각화 개발 경험",
+          "priority": "nice",
+          "why": "보안 솔루션·로그 소스·규칙·Use Case·기법의 다계층 관계를 인터랙티브 그래프로 보여 주는 기능이 주요업무에 있다.",
+          "gap_check": "노드 수천 개 그래프에서 분석가가 길을 잃지 않게 하려면 필터·그룹핑·확장/축소를 어떤 기준으로 설계하는가?",
+          "drill": "위 계보 데이터를 Cytoscape.js(또는 D3)로 그려 'Use Case 하나 선택 → 연결된 로그 소스·규칙만 강조' 뷰를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Cytoscape.js",
+              "url": "https://js.cytoscape.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "'덮였다고 표시됐지만 실제로는 못 잡는' 사례 찾기 리포트",
+          "why": "주요업무의 로그 유실·Use Case 조건 불일치 검증을 정확히 겨냥한다. 가상 환경에서라도 이런 조용한 실패를 찾아낸 기록은 설득력이 크다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "데이터 계보로 영향 범위 찾기",
+          "벤더 필드 자동 매핑",
+          "ATT&CK 커버리지의 한계",
+          "BAS 실패 원인 분리",
+          "어댑터 설계"
+        ],
+        "sources": [
+          {
+            "title": "Staff Security Engineer (Continuous Threat Exposure Management)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163725",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
