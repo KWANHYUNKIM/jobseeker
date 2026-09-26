@@ -23,7 +23,7 @@
 
 | **ANDPAD(アンドパッド)** | JP · 건설 SaaS | 프로파일(2026-09-26). 도메인 셋 — 서비스 입구와 대피로 · 수발주에 붙은 청구서를 먼저 현금으로 · 도면의 표를 읽어 옮긴다. 기능 2(`single-entry-escape-route` · `model-and-hands-read-tables`). **청구서 선지급 도메인 hold**(자료 2회 없음) — 그 수익원이 기능과 안 이어져 완주 기준 셋째 미달, in_progress 로 둔다. |
 
-| **LayerX** | JP · 법인 지출 관리 SaaS·LLM 솔루션 | 프로파일(2026-09-26). 도메인 셋 — 테넌트 데이터는 하류에서도 잠근다 · LLM 호출을 한 관문에 모은다 · API 스키마를 먼저 쓴다. 기능 2(`rap-reconcile-and-check` · `residency-by-virtual-key`). 다음 — TypeSpec. Fintech·Security 수익원은 도메인 없음. |
+| **LayerX** | JP · 법인 지출 관리 SaaS·LLM 솔루션 | 프로파일(2026-09-26). 도메인 셋 — 테넌트 데이터는 하류에서도 잠근다 · LLM 호출을 한 관문에 모은다 · API 스키마를 먼저 쓴다. 기능 3(`rap-reconcile-and-check` · `residency-by-virtual-key` · `typespec-schema-first`). **Fintech·Security 수익원에 도메인이 없어 완주 기준 셋째 미달** — Fintech事業部 카테고리(22편) 확인이 남았다. |
 
 ## 대기
 

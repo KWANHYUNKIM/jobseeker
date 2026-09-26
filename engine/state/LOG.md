@@ -1288,3 +1288,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 LayerX 확장 — 처리 지역은 키가 정하고, 앱은 키만 고른다
 
 - Bifrost 글(08-28)로 `residency-by-virtual-key`(결정 8). 선택지 넷(앱·APIM·LiteLLM·Bifrost)·Virtual Key 레지던시·Key Vault·OTel 본문 마스크·본번 상당 리허설. 틀린 키 선택·이행 중 혼재는 해석 표시.
+
+## 2026-09-26 LayerX 확장 — 스키마를 먼저 쓰고, 구현은 에이전트가 맞춘다
+
+- TypeSpec 글(08-26)로 `typespec-schema-first`(결정 7). 네 형식 비교(410/437/673/771줄)·OpenAPI 변환·스키마 리뷰·CI 비교 스크립트·에러 타입·파일 배치 과제. 세 도메인 채움, Fintech·Security 수익원 때문에 in_progress.
