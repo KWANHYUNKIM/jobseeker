@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **140건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **141건**.
+직전 회차: ✅ `Senior Staff ll, AI Engineer (L7-2)`(7834206) 4항목 — **마운틴뷰**, 생성형 AI 앱(RAG·벡터 DB·에이전트·신뢰성), $171K~$351K. ⚠️ 직급 L7-2 인데 필수 3년(open_questions).
 직전 회차: ✅ `Senior Staff Data Scientist`(7997383) 4항목 — **마운틴뷰**, 검색 조직 DS(실험·검색 지표·데이터셋·랭킹 영향), $174K~$290K.
 직전 회차: ✅ `Senior Staff Backend Engineer (Service Mesh)`(7496873) 4항목 — **인도(도시 미기재)**, Gateway Services 팀 서비스 메시(Istio/Envoy·mTLS·관리 플레인·VPC), 13년↑.
 직전 회차: ✅ `Senior Staff Backend Engineer, Security`(7342961) 4항목 — **마운틴뷰**, Security Infrastructure 팀 IAM 플랫폼. 급여 원문 '$174,00' 오타 그대로 salary.note 에.

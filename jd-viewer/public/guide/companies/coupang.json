@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다.",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다. `Senior Staff Backend Engineer, Security`(Mountain View)는 `The base pay for this position ranges from $174,00/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 하단 '$174,00' 은 원문 오타로 보이나 그대로 둔다. 원화로 환산하지 않는다. `Senior Staff Data Scientist`(Mountain View, Search and Discovery)는 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills and experience.` 라고 적는다 — `Director, Data Engineering` 과 같은 범위다. 원화로 환산하지 않는다. `Senior Staff ll, AI Engineer (L7-2)`(Mountain View)는 `The base pay for this position ranges from $171,000/year in our lowest geographic market to $351,000/year in our highest geographic market. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience.` 라고 적는다 — 지금까지 본 미국 범위 중 상단이 가장 높다. 원화로 환산하지 않는다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -14727,6 +14727,125 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7834206",
+      "title": "Senior Staff ll, AI Engineer (L7-2)",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 미국 마운틴뷰 근무다. 생성형 AI·LLM 중심의 새 이커머스 애플리케이션을 처음부터 끝까지 설계·소유하는 AI 엔지니어 자리다 — 벡터 DB·고처리량 추론·실시간 컨텍스트 파이프라인 같은 운영 인프라, 자사 상품 카탈로그·사용자 이력·운영 지식에 근거한 RAG, 에이전트·LLM 체인, 환각 최소화·비용 효율을 위한 신뢰성·모니터링·안전. ⚠️ 제목은 'Senior Staff ll (L7-2)' 인데 필수 자격은 '3 years of experience in software engineering' 이다 — 직급 표기와 연차 요건이 크게 어긋난다. 연봉 범위가 원문에 있다(기본급 $171,000~$351,000) — 원화로 환산하지 않는다.",
+      "fit": {
+        "must_have": [
+          "소프트웨어 엔지니어링 3년(원문 표기)·코드 리뷰 역량",
+          "LLM·생성형 AI 깊은 전문성",
+          "에이전트·대화형 인터페이스·RAG·도메인 파인튜닝·AI 자동화 end-to-end 소유",
+          "AI 제품 개념→운영 실적",
+          "LangChain·LlamaIndex 등 오케스트레이션",
+          "벡터 DB·시맨틱 검색·비결정적 모델 MLOps"
+        ],
+        "can_learn": [
+          "대규모 소비자 AI 환경(우대)",
+          "0→1 생성형 AI 제품(우대)",
+          "이커머스 검색(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "카탈로그에 근거한 RAG 파이프라인",
+          "from": "task",
+          "quote": "Develop and maintain strong RAG frameworks, grounding AI applications in Coupang’s proprietary product catalog, user history, and operational knowledge bases for factual accuracy and relevance.",
+          "priority": "core",
+          "why": "자사 상품 카탈로그·사용자 이력·운영 지식에 근거한 RAG 프레임워크 개발·유지가 주요업무이고, RAG 파이프라인 소유 경험이 필수 자격이다.",
+          "gap_check": "상품 질의응답에서 가격·재고처럼 자주 바뀌는 사실과 상품 설명처럼 느리게 바뀌는 사실을 같은 벡터 색인에 넣으면 무엇이 틀어지고, 어떻게 나눠 가져오는가?",
+          "drill": "RAG 원 논문을 읽고, 가상 상품 500개로 설명은 벡터 검색·가격/재고는 구조화 조회로 가져오는 하이브리드 RAG 를 만든 뒤, RAGAS 로 근거 충실도(faithfulness)를 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Lewis et al. — Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+              "url": "https://arxiv.org/abs/2005.11401",
+              "kind": "paper"
+            },
+            {
+              "title": "explodinggradients/ragas",
+              "url": "https://github.com/explodinggradients/ragas",
+              "kind": "repo"
+            },
+            {
+              "title": "LlamaIndex Documentation",
+              "url": "https://docs.llamaindex.ai/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "벡터 DB·시맨틱 검색 운영 인프라",
+          "from": "task",
+          "quote": "Develop and manage production AI infrastructure, including vector databases, high-throughput inference, and real-time data pipelines for context enrichment and low-latency serving.",
+          "priority": "core",
+          "why": "벡터 DB·고처리량 추론·실시간 컨텍스트 파이프라인을 포함한 운영 AI 인프라 개발·관리가 주요업무이고, 벡터 DB·시맨틱 검색 아키텍처 이해가 필수 자격이다.",
+          "gap_check": "상품이 수백만 개일 때 근사 최근접 탐색(HNSW 등)의 재현율과 지연은 어떤 파라미터로 맞바꾸고, 상품이 새로 들어오거나 내려갈 때 색인은 어떻게 갱신하는가?",
+          "drill": "pgvector 로 상품 임베딩 색인을 만들고 HNSW 파라미터를 바꿔 가며 재현율·p95 지연을 표로 기록한 뒤, 판매 중지 상품이 결과에서 빠지는 갱신 경로를 구현한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "pgvector",
+              "url": "https://github.com/pgvector/pgvector",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "에이전트 설계와 LLM 체인",
+          "from": "task",
+          "quote": "Implement advanced prompt engineering, agentic design, and complex LLM chains to build intelligent, stable software services.",
+          "priority": "high",
+          "why": "고급 프롬프트 엔지니어링·에이전트 설계·복잡한 LLM 체인으로 안정적인 소프트웨어 서비스를 만드는 것이 주요업무이고, 생성형 AI 에이전트·대화형 인터페이스 소유 경험이 필수 자격이다.",
+          "gap_check": "주문 조회·반품 접수 같은 도구를 쓰는 쇼핑 도우미 에이전트에서, 도구 호출이 실패하거나 잘못된 인자를 만들 때 어떻게 감지하고 사용자에게 무엇을 돌려주는가?",
+          "drill": "LangChain 문서를 따라 도구 3개(상품 검색·주문 조회·반품 접수)를 가진 에이전트를 만들고, 도구 입력 스키마 검증과 실패 시 재시도·대체 응답 경로를 넣는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "LangChain — Introduction",
+              "url": "https://python.langchain.com/docs/introduction/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비결정적 모델의 신뢰성·모니터링·비용",
+          "from": "task",
+          "quote": "Enforce AI reliability, monitoring, and safety to manage model non-determinism, minimizing hallucinations and optimizing large-scale cost-efficiency.",
+          "priority": "high",
+          "why": "모델의 비결정성을 관리하고 환각을 줄이며 대규모 비용 효율을 최적화하는 신뢰성·모니터링·안전이 주요업무이고, 비결정적 모델을 위한 확장 가능한 MLOps 가 필수 자격이다.",
+          "gap_check": "같은 질문에 답이 매번 달라지는 시스템의 회귀를 배포 전에 어떻게 잡고, 운영 중에는 무엇(근거 없는 답 비율·토큰 비용·지연)을 지표로 보는가?",
+          "drill": "평가용 질문 50개와 기대 근거를 만들고, 프롬프트·모델을 바꿀 때마다 근거 충실도·비용·지연을 자동으로 비교하는 회귀 평가 스크립트를 만든다.",
+          "hours": 5,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "상품 질의응답 하이브리드 RAG + 회귀 평가",
+          "why": "카탈로그 근거 RAG 와 비결정성 관리가 이 공고의 두 축이다. 평가 스크립트까지 붙인 공개 저장소는 '개념→운영' 실적 요건을 작게나마 보여 준다.",
+          "effort": "3~4일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "변동 데이터와 RAG",
+          "벡터 색인 재현율·지연",
+          "에이전트 도구 실패 처리",
+          "LLM 회귀 평가",
+          "0→1 AI 제품 경험"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff ll, AI Engineer (L7-2)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7834206",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -14758,6 +14877,7 @@
     "사람인 '이츠 데이터 분석 어시스턴트'(rec_idx=54939508) 크롤 근무지 칸의 '216 만원' 이 무엇의 금액인지 공고 세 절에 설명이 없다.",
     "사람인 'CS 전문가 공개채용'(rec_idx=55110254)은 한 공고에 기술 상담·CS 정책 운영관리·본사 대외 민원 자리가 묶여 있고, 크롤 데이터에서 자리별 자격요건이 섞여 어느 요건이 어느 자리의 것인지 가를 수 없다.",
     "gh 7953042 'Senior Staff Backend Engineer'(하이데라바드)는 자격요건 7줄뿐이라 어느 팀·시스템인지 공고로 알 수 없다.",
-    "gh 7962133(Cloud Infrastructure, Mountain View)은 우대 칸의 연차 요건(15년·10년)과 'Basic Qualifications'(학사+7년)가 크게 어긋난다 — 어느 쪽이 실제 기준인지 공고로 알 수 없다."
+    "gh 7962133(Cloud Infrastructure, Mountain View)은 우대 칸의 연차 요건(15년·10년)과 'Basic Qualifications'(학사+7년)가 크게 어긋난다 — 어느 쪽이 실제 기준인지 공고로 알 수 없다.",
+    "gh 7834206 'Senior Staff ll, AI Engineer (L7-2)'는 직급 표기와 달리 필수 자격이 소프트웨어 3년이다 — 어느 쪽이 실제 기준인지 공고로 알 수 없다."
   ]
 }
