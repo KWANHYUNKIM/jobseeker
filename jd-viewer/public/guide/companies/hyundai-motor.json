@@ -981,6 +981,103 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387536",
+      "title": "[SDF] 데이터 아키텍트",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 서초구. 공고 머리말은 조직이 **Software Defined Factory(SDF)** 구현을 위한 DX 기술을 생산 현장에 펼치고 **현대자동차그룹 제조현장 전반**의 use case 개발을 위한 글로벌 거버넌스를 만든다고 적는다. 코드를 짜는 자리가 아니라 **데이터 모델과 표준을 정하는 자리**다 — 제조·공급망 데이터 요구사항 수집 프로세스, **OLTP 데이터 모델·카탈로그, OLAP 데이터 제품, 엔터프라이즈 지식 그래프** 설계·유지보수, 제조 데이터 표준 관리 항목 선정, 모델링 표준 지침, 통합 데이터 모델, 개발 센터·벤더별 코어 시스템에 적용할 논리·물리 모델. 자격요건에 **제조 환경에서 전사 데이터 거버넌스를 만들거나 시행한 경험**과 **비즈니스 영어 문서 작성**이 있고, 우대는 석사와 **원어민 수준 영어**다 — 글로벌 거버넌스 조직이라 영어가 거르는 조건이다. 기술 스택 이름은 공고에 없다('DBMS·빅데이터·클라우드·분석 도구 경험'). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 아키텍처·거버넌스 5년",
+          "제조 환경 전사 데이터 거버넌스",
+          "비즈니스 영어 문서"
+        ],
+        "can_learn": [
+          "엔터프라이즈 지식 그래프",
+          "제조 계층 모델(ISA-95)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "OLTP 모델과 OLAP 데이터 제품을 따로 설계하기",
+          "from": "task",
+          "quote": "• 제조 및 공급망 OLTP 데이터 모델 및 카탈로그, OLAP 데이터 제품, 엔터프라이즈 지식 그래프 설계 및 유지보수 주도",
+          "priority": "core",
+          "why": "주요업무 핵심 줄이다. 공장·공급망 운영 시스템의 모델과 분석용 데이터 제품을 둘 다 맡는다.",
+          "gap_check": "생산 실적·부품 입고를 기록하는 정규화된 OLTP 모델과, 공장별·라인별 불량률을 보는 스타 스키마는 무엇이 다르고, 사실(fact)의 입도(grain)를 먼저 정하지 않으면 어떤 중복 집계가 생기는가? 천천히 변하는 차원(라인 재편, 공급사 변경)은 어떻게 이력을 남기는가?",
+          "drill": "가상의 조립 공장(라인·공정·설비·부품·공급사·생산 실적)을 3정규형 OLTP 모델로 그리고, 같은 데이터를 '일별 라인별 생산량·불량' 스타 스키마로 옮긴다. 입도를 정해 문서로 쓰고 SCD Type 2 로 라인 재편 이력을 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Online analytical processing — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Online_analytical_processing",
+              "kind": "docs"
+            },
+            {
+              "title": "Star schema — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Star_schema",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "제조 데이터 표준 — 무엇을 표준 항목으로 고르나",
+          "from": "task",
+          "quote": "• 제조 데이터에 대한 표준 관리 항목 선정",
+          "priority": "high",
+          "why": "주요업무다. 여러 공장·개발 센터·벤더 시스템이 같은 말을 같은 뜻으로 쓰게 하는 일이다.",
+          "gap_check": "설비·공정·작업지시 같은 개념이 공장마다 다르게 불릴 때 표준 용어·코드·단위를 어떻게 정하고, ISA-95 같은 제조 계층 모델은 기업 시스템(ERP)과 현장(MES) 사이 무엇을 나눠 주는가? 표준을 정한 뒤 지켜지는지는 무엇으로 측정하는가?",
+          "drill": "ISA-95 설명을 읽고 계층(ERP–MES–제어)을 정리한 뒤, 두 가상 공장의 설비·불량 코드표를 비교해 표준 코드표·매핑표·데이터 사전 항목(정의·단위·소유자)을 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "ANSI/ISA-95 — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/ISA-95",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "엔터프라이즈 지식 그래프",
+          "from": "task",
+          "quote": "• 제조 및 공급망 OLTP 데이터 모델 및 카탈로그, OLAP 데이터 제품, 엔터프라이즈 지식 그래프 설계 및 유지보수 주도",
+          "priority": "high",
+          "why": "주요업무의 한 부분이다. 부품·공정·설비·공급사처럼 관계가 핵심인 제조 데이터를 잇는 방식이다.",
+          "gap_check": "관계형 조인으로 '이 불량 부품을 공급한 업체의 다른 부품이 들어간 차종' 을 찾는 것과 그래프로 찾는 것은 무엇이 다른가? RDF 트리플·온톨로지로 개념을 정의하면 스키마 변경이 어떻게 달라지는가?",
+          "drill": "RDF 1.1 Primer 를 읽고 부품–공급사–공정–차종 관계를 트리플로 작성해 그래프 DB 에 넣은 뒤, 위 질문을 SPARQL(또는 Cypher)로 질의하고 같은 질의를 SQL 로 쓴 것과 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "RDF 1.1 Primer — W3C",
+              "url": "https://www.w3.org/TR/rdf11-primer/",
+              "kind": "docs"
+            },
+            {
+              "title": "Knowledge graph — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Knowledge_graph",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "전사 데이터 거버넌스를 세우고 굴리기",
+          "from": "qualification",
+          "quote": "• 제조 관련 환경에서 전사적 데이터 거버넌스를 생성하거나 시행한 경험을 보유하신 분",
+          "priority": "nice",
+          "why": "자격요건이다. 머리말의 '글로벌 거버넌스 구축' 과 이어진다.",
+          "gap_check": "데이터 소유자·스튜어드·아키텍트의 역할을 어떻게 나누고, 요구사항 접수부터 모델 반영·카탈로그 등록까지의 승인 흐름에서 병목은 어디서 생기는가? 거버넌스가 개발 속도를 늦춘다는 반발에는 무엇으로 답하는가?",
+          "drill": "DAMA-DMBOK 의 지식 영역 목록을 읽고, 위 가상 공장 기준으로 역할 정의(RACI)·데이터 요구사항 접수 양식·변경 승인 흐름을 영어 문서 한 장으로 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "DAMA Data Management Body of Knowledge (DMBOK)",
+              "url": "https://dama.org/learning-resources/dama-data-management-body-of-knowledge-dmbok/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
