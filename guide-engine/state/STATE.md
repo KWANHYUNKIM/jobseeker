@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **111건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **112건**.
+직전 회차: ✅ `Senior Staff, ML Engineer (Coupang Eats Search)`(8146344) → dup wd/382275 (한국어 ML Lead 의 영문판 — 줄 비교로는 0 이지만 항목·순서·요건이 같다).
 직전 회차: ✅ `Staff~Sr. Staff, ML Engineer (Ads Engineering)`(8012236, 10년↑) 5항목 — 에이전트·RLHF·증류. **우대에 Claude Code 가 이름으로 나온다.**
 직전 회차: ✅ `Staff, Security Software Engineer - Coupang Play`(7956945) 5항목 — 연차 표기 없음.
 직전 회차: ✅ `Staff, Detection Platform Engineer`(8188124, 구의, 10년↑) 5항목 — SIEM+SOAR+AI-SOC. 앞선 보안 두 공고와 겹침 1줄.
@@ -16,13 +17,13 @@
 ⚠️ 그사이 마감·삭제: `Staff, Back-end (Traffic Management)`(8104792, closed), `Staff, ML Engineer - Coupang Play`(7927865, 데이터에 없음).
 
 **남은 서울 공고(미작성, 모집중)** — 번호로 찾는다:
-- 개발: Sr. Staff ML Eats Search(8146344), Sr. Staff AI Data Center Architect(7994883),
+- 개발: Sr. Staff AI Data Center Architect(7994883),
   System Eng(8040801), Network Eng(8171509), IAM Eng(8172668), Senior QA (Advertiser Platform)(8222455)
 - 보안: Attack Surface(8160905), Forensics(8052967), Pen Tester(8163504), Email Detection(7813854),
   Control Assurance(8163764), Threat Hunting(8163723), Info Sec CFS(8158581), Vendor Security(8163760),
   Mobile Security(8203471), AI Security Architect(8224844)
 - 데이터 사이언스: Sr. Staff DS Incrementality(8029811)
-⚠️ 다음 회차: `Senior Staff, ML Engineer (Coupang Eats Search)`(8146344) — 쿠팡이츠 검색 ML Lead(wd/382275)와 겹침부터.
+⚠️ 다음 회차: `Sr. Staff - AI Data Center Architect`(7994883).
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
@@ -44,6 +45,9 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **(쿠팡, 2026-09-26) 한국어판·영문판은 줄 비교로 안 잡힌다.** 원티드 한국어 공고와 쿠팡 채용 사이트 영문 공고가 같은 자리일 때
+  정규화 줄 겹침은 0 이다. **항목 제목·순서·연차·학위를 나란히 놓고** 번역 관계인지 본다(Eats Search ML Lead ↔ Senior Staff ML).
 
 - **(쿠팡 ats, 2026-09-26) 겹침 비율은 공통 꼬리 문구를 빼고 센다.** 쿠팡 채용 사이트 공고는 채용 절차·Details to Consider·
   Privacy Notice·Document Return Policy 가 20줄 넘게 똑같이 붙는다. 이걸 넣고 세면 전혀 다른 공고(추천 ML ↔ 데이터 보안 Director)도
