@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **101건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **102건**.
+직전 회차: ✅ `Staff iOS Engineer`(8146512, 쿠팡페이·로켓페이 iOS, 6년↑) 5항목.
 직전 회차: ✅ `Staff, SRE (Tech Infra)`(8018258, 선릉, 5년↑) 6항목.
 직전 회차: ✅ `Staff Backend Engineer (Coupang Pay)`(8073876) 4항목 — FDS·컴플라이언스. 우대 칸만 들어와 quote 는 우대에서만.
 직전 회차: ✅ `Staff, ML Engineer (Search & Discovery)`(8130043, 추천) 5항목 + Sr. Staff(8130040) dup. 기존 브리핑과의 0.52 겹침은 **채용 절차·서류 반환 같은 공통 문구** 탓이었다.
@@ -15,10 +16,9 @@
 
 **남은 서울 ats 개발 공고**(보안 제외):
 - 쌍: (쌍 모두 정리)
-- 단독: `Staff iOS`(8146512),
-  `[Coupang Pay Tech] Staff Mobile`(8194393), `Staff, ML Engineer - Coupang Play`(7927865), `Staff, Back-end (Traffic Management)`(8104792) 등
+- 단독: `[Coupang Pay Tech] Staff Mobile`(8194393), `Staff, ML Engineer - Coupang Play`(7927865), `Staff, Back-end (Traffic Management)`(8104792) 등
 - 보안 계열 남은 것: Cyber Threat Hunting·Control Assurance·Vendor Security·Pen Tester·Forensics·Attack Surface·Email Detection·Mobile Security 등
-⚠️ 다음 회차: 단독 공고 — `Staff iOS`(8146512)부터. ⚠️ 겹침을 셀 때 **채용 절차·Privacy·Document Return 공통 문구를 빼고** 센다(안 빼면 무관한 공고가 0.5 로 보인다).
+⚠️ 다음 회차: `[Coupang Pay Tech] Staff Mobile`(8194393) — 방금 쓴 Staff iOS 와 겹침부터(같은 조직일 수 있다). ⚠️ 겹침을 셀 때 **채용 절차·Privacy·Document Return 공통 문구를 빼고** 센다(안 빼면 무관한 공고가 0.5 로 보인다).
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
