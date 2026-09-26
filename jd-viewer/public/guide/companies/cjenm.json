@@ -6,7 +6,7 @@
     "씨제이이엔엠",
     "CJENM"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "cjenm.com",
   "one_liner": "방송·영화·음악·공연을 하는 CJ ENM — 개발 공고는 대부분 글로벌 K-POP 팬덤 플랫폼 'Mnet Plus'(투표·라이브·포토카드, 250여 개국) 자리다",
@@ -624,6 +624,83 @@
               "title": "Trustworthy Online Controlled Experiments — Experiment Guide",
               "url": "https://experimentguide.com/",
               "kind": "book"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55097586&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=94c64fef-4d6c-40ff-aed4-4d993d8b2368",
+      "title": "[CJ ENM] AI Producer",
+      "site": "saramin",
+      "verdict": "경력 3년 이상, 서울 마포구, 마감 2026-10-01. ⚠️ **개발자 자리가 아니라 영상 제작(VFX) 경력자 자리**다 — 자격요건 첫 두 줄이 '영화 및 드라마 VFX 제작 경력 3년 이상', 'VFX / CGI 슈퍼바이져 경력 보유' 이고 **포트폴리오 제출 필수**다. 조직은 **AI Studio Lab** 으로, 스토리 콘텐츠에 맞는 AI 영상 제작 기술과 제작 파이프라인을 고도화하고 글로벌 진출을 위한 기술 기반을 마련한다고 적는다. 업무는 생성형 AI 로 신유형 영상 콘텐츠 제작 방식 연구·개발, AI 기반 제작 프로세스 설계·고도화, 최신 AI 영상 기술 리서치와 실제작 적용 검증. 필수에는 AI 영상 콘텐츠 기획·제작·검증, 생성형 AI 이미지·영상 프로젝트, 제작 공정 내 AI 적용·운영, 생성형 AI·영상 편집 툴, **프로젝트 단위 AI 제작 파이프라인 설계**도 있다. 우대사항 칸은 비어 있다. 같은 회사 다른 사람인 공고 기준 전형은 서류 → 1차 면접 → CJ CFT → 2차 면접(이 공고 본문에는 전형이 따로 없다). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "영화·드라마 VFX 제작 3년 이상",
+          "VFX/CGI 슈퍼바이저 경력",
+          "생성형 AI 영상 프로젝트",
+          "AI 제작 파이프라인 설계",
+          "포트폴리오"
+        ],
+        "can_learn": [
+          "노드 기반 생성 워크플로우",
+          "실제작 적용 검증 기준"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AI 영상 제작 파이프라인 — 노드 워크플로우로 재현 가능하게",
+          "from": "qualification",
+          "quote": "- 프로젝트 단위 AI 제작 파이프라인 설계 및 제작 경험 보유",
+          "priority": "core",
+          "why": "필수 자격요건이고 주요업무에 '효율적이고 안정적인 AI 기반 제작 프로세스를 설계 및 고도화' 가 있다.",
+          "gap_check": "한 편의 에피소드에서 수백 컷을 생성할 때 같은 결과를 다시 뽑으려면 무엇(모델 버전·시드·프롬프트·설정을 워크플로우 파일로 저장)을 남겨야 하고, 컷마다 사람이 손으로 돌리는 방식과 워크플로우를 배치로 돌리는 방식은 수정 요청(리테이크)이 왔을 때 무엇이 다른가?",
+          "drill": "ComfyUI 문서를 따라 이미지 생성 워크플로우를 만들고 JSON 으로 저장한 뒤, 시드·프롬프트만 바꿔 컷 10장을 배치로 뽑는다. 한 컷의 리테이크(프롬프트 수정)를 그 워크플로우로 재생성하고, 컷별 설정을 기록하는 표(샷 번호·모델·시드·프롬프트·승인 여부)를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ComfyUI Official Documentation",
+              "url": "https://docs.comfy.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "컷 사이의 일관성 — 조건부 제어",
+          "from": "task",
+          "quote": "- AI 활용 영상 콘텐츠 제작 기술 연구",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다. 조직 소개가 '스토리 콘텐츠에 최적화된 AI 영상 제작 기술' 을 적는다 — 스토리물은 같은 인물·장소가 여러 컷에 이어져야 한다.",
+          "gap_check": "텍스트 프롬프트만으로 같은 인물을 여러 컷에 그리면 얼굴·의상·구도가 왜 흔들리고, 포즈·윤곽·깊이 같은 조건(ControlNet)을 주면 무엇을 고정할 수 있으며, 그래도 남는 불일치는 VFX 후반 작업의 어느 단계에서 잡는가?",
+          "drill": "ControlNet 논문 초록과 그림을 읽고, 같은 인물을 포즈 조건 없이·있이 각 5컷 생성해 얼굴·의상 일관성을 나란히 비교한다. 남는 불일치를 후반(합성·리터칭)에서 고칠 목록으로 정리한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Adding Conditional Control to Text-to-Image Diffusion Models (ControlNet)",
+              "url": "https://arxiv.org/abs/2302.05543",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "실제작 적용 검증 — 방송·영화 납품 기준에 맞추기",
+          "from": "task",
+          "quote": "최신 AI 기술 동향을 조사·분석하고, 실제작 적용 기술 검증",
+          "priority": "high",
+          "why": "주요업무다. 필수에 '콘텐츠 제작 공정 내 AI 기술 적용 및 운영 경험' 이 있다 — 연구 결과가 실제 드라마·영화 공정에 들어가려면 납품 규격을 통과해야 한다.",
+          "gap_check": "생성 영상을 기존 VFX 공정에 넣을 때 해상도·프레임레이트·색 공간·비트 심도가 맞지 않으면 무엇이 깨지고(합성 시 색 틀어짐·업스케일 흔적), 새 AI 도구를 '실제작 적용 가능' 으로 판정하는 체크리스트에는 무엇(규격·반복 재현성·권리·처리 시간)을 넣는가?",
+          "drill": "VFX Reference Platform 과 ACESCentral 을 참고해 가상의 드라마 납품 규격(해상도·fps·색 공간)을 정하고, 새 AI 영상 도구 하나를 그 기준으로 평가하는 검증표를 만든다. 생성 결과를 그 규격으로 변환했을 때 생기는 문제를 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "VFX Reference Platform",
+              "url": "https://vfxplatform.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "ACESCentral",
+              "url": "https://acescentral.com/",
+              "kind": "docs"
             }
           ]
         }
