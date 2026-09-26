@@ -253,5 +253,144 @@
     "salary: 공고에 금액이 없다 — 비워 둔다",
     "jumpit·사람인 데이터 분석가 4건(정규·계약직)은 원티드 387783 과 본문 비교가 필요하다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/367917",
+      "title": "백엔드 개발자 (Python)",
+      "site": "wanted",
+      "verdict": "경력 5-12년(자격요건은 '백엔드 개발 경력 5년 이상'). 전국 약국의 90% 이상이 쓴다는 의약품 통합 주문 플랫폼의 백엔드다 — 아키텍처 설계·개발, RESTful API 와 핵심 비즈니스 로직(주문·정산·결제 등), 파트너사 연동 API 와 관리자 기능, AWS 인프라 운영과 성능 최적화, 코드 리뷰·리팩토링·장애 대응. 자격은 Python 개발 경험과 확장 가능한 설계·코드 개선, 책임감, 유관부서와의 소통이다. 프레임워크(Django·FastAPI 등)나 DB 는 본문에 이름이 없다. 플랫폼 정산 개발, 대용량 트래픽 운영, 리팩토링, 효율·생산성을 고려한 설계는 우대다. 전형은 서류전형 → 1차면접(실무진) → 2차면접(임원진) → 입사.",
+      "fit": {
+        "must_have": [
+          "백엔드 개발 5년 이상",
+          "Python 개발",
+          "확장 가능한 설계와 지속적 코드 개선",
+          "유관부서 소통"
+        ],
+        "can_learn": [
+          "플랫폼 정산 개발",
+          "대용량 트래픽 운영",
+          "리팩토링",
+          "효율·생산성을 고려한 설계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "주문·결제의 멱등성과 정합성",
+          "from": "task",
+          "quote": "• RESTful API 및 핵심 비즈니스 로직(주문, 정산, 결제 등) 개발",
+          "priority": "core",
+          "why": "주요업무다. 약국이 여러 도매상에 한 번에 주문하는 플랫폼이라 한 주문이 여러 파트너 주문으로 갈라진다(회사 브리핑).",
+          "gap_check": "약국이 주문 버튼을 두 번 누르거나 결제 응답이 타임아웃으로 끊겼을 때 주문이 두 번 생기지 않게 하려면 어디에 무엇(멱등 키·유니크 제약·상태 전이)을 두는가?",
+          "drill": "Python 으로 주문 API 를 만들고 Idempotency-Key 헤더와 DB 유니크 제약으로 중복 요청을 막는다. 동시에 같은 요청 50개를 보내 주문이 하나만 생기는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Stripe — Idempotent requests",
+              "url": "https://docs.stripe.com/api/idempotent_requests",
+              "kind": "docs"
+            },
+            {
+              "title": "IETF — The Idempotency-Key HTTP Header Field (draft)",
+              "url": "https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/",
+              "kind": "docs"
+            },
+            {
+              "title": "PostgreSQL — Explicit Locking",
+              "url": "https://www.postgresql.org/docs/current/explicit-locking.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "플랫폼 정산",
+          "from": "preference",
+          "quote": "• 플랫폼 정산 관련 개발 경험하신 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무의 핵심 비즈니스 로직에 정산이 들어 있다.",
+          "gap_check": "부분 취소·반품이 섞인 한 달치 주문을 도매상별로 정산할 때 금액은 어떤 타입으로 계산하고, 정산 확정 뒤 들어온 취소는 어느 달 정산에 반영하는가?",
+          "drill": "주문·취소·반품 이벤트 테이블에서 도매상별 월 정산서를 만드는 배치를 쓰고(Decimal 사용), 확정 후 취소를 다음 달 조정 항목으로 넘기는 규칙을 구현한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Python — decimal",
+              "url": "https://docs.python.org/3/library/decimal.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "파트너사 연동 API",
+          "from": "task",
+          "quote": "• 파트너사 연동 API 및 관리자 기능 개발",
+          "priority": "high",
+          "why": "주요업무다. 통합 주문은 여러 도매상·온라인몰과의 연동 위에서 돈다(회사 브리핑).",
+          "gap_check": "파트너 API 가 느리거나 실패할 때 주문 요청 스레드를 붙잡지 않게 하려면 무엇(타임아웃·재시도·아웃박스·비동기 처리)을 쓰고, 파트너 쪽에서 중복 수신하면 어떻게 거르는가?",
+          "drill": "가짜 파트너 서버(지연·실패를 일부러 넣음)를 만들고, 주문 저장과 파트너 전송을 트랜잭셔널 아웃박스로 분리해 재시도하게 한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "microservices.io — Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            },
+            {
+              "title": "microservices.io — Saga",
+              "url": "https://microservices.io/patterns/data/saga.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 에서 성능 최적화와 장애 대응",
+          "from": "task",
+          "quote": "• AWS 기반 클라우드 인프라 운영 및 서비스 성능 최적화",
+          "priority": "high",
+          "why": "주요업무이고 다음 줄이 '코드 리뷰, 리팩토링, 장애 대응을 통한 서비스 안정화' 다. 우대에 대용량 트래픽 운영 경험이 있다.",
+          "gap_check": "주문 API 응답이 특정 시간대에만 느려지면 무엇(슬로 쿼리·커넥션 풀·외부 연동 지연)부터 보고, 장애가 끝난 뒤 무엇을 남기는가?",
+          "drill": "앞 드릴의 API 에 부하 테스트를 걸어 병목 하나를 찾고 고친 뒤, 전후 지표와 원인을 포스트모템 형식으로 한 장 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "AWS Well-Architected — Performance Efficiency Pillar",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE Book — Postmortem Culture",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "다중 파트너 주문 분할 + 멱등 주문 API + 월 정산 배치 저장소",
+          "why": "주요업무의 주문·정산·결제와 파트너 연동, 우대의 정산을 한 번에 보여 준다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "리팩토링·장애 대응 사례를 전후 지표로 정리",
+          "why": "우대에 리팩토링과 대용량 트래픽 운영이, 주요업무에 장애 대응이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 → 1차면접(실무진) → 2차면접(임원진) → 입사(공고 기준).",
+        "expect": [
+          "주문·정산·결제 설계",
+          "파트너 연동 실패 처리",
+          "성능 병목과 장애 대응",
+          "리팩토링 경험"
+        ],
+        "sources": [
+          {
+            "title": "백엔드 개발자 (Python)",
+            "url": "https://www.wanted.co.kr/wd/367917",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
