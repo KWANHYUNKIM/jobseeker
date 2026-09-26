@@ -42,7 +42,7 @@
 | **Finatext** | JP · 핀테크 인프라·금융 데이터 | 프로파일(2026-09-26). 도메인 둘 — 수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다 · BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다. 기능 2(`snowflake-pipeline-cost-cut` · `crest-dwh-layer-exposure`). **hold** — 증권·보험·지원 수익원 자료 두 번 없음(2026-09-26). 수익원 다섯 중 BaaS·Insurtech·Fintech SHIFT 는 도메인 없음. 입구 `zenn.dev/p/finatext/feed`. |
 | **KENCOPA** | JP · 건설 AI 에이전트 | 프로파일(2026-09-26). 도메인 둘 — 설계 도서로 공정표의 일수를 세운다 · 제각각인 PDF 표를 구조화 데이터로 뽑는다. 기능 2(`activity-rate-quantity-linking` · `sds-pdf-table-extraction`). **hold** — 적산 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 적산 AI 에이전트는 도메인 없음. 입구 `zenn.dev/p/kencopa/feed`(8편). |
 | **WWWAVE(ウェイブ)** | JP · 전자 코믹·아니메 제작·배신 | 프로파일(2026-09-26). 도메인 둘 — 전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다 · 이상 때만 알리는 감시에서 침묵을 해석한다. 기능 2(`access-vba-delivery-retirement` · `batch-silence-monitoring`). **hold** — 신규 사업 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 신규 사업은 도메인 없음. 입구 `zenn.dev/p/wwwave/feed`. |
-| **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 0. 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
+| **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 1(`cheap-model-prescreening`). 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
 
 
 ## 대기
