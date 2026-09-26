@@ -337,6 +337,129 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572490?ReturnUrl=RecruitInfo",
+      "title": "[NAVER Cloud] 신규 AX 사업개발 및 세일즈 (경력) 채용",
+      "site": "dev",
+      "verdict": "**개발 직무가 아니라 사업개발·영업 자리다.** 경력 5년 이상(클라우드 영업·파트너 세일즈·IT 솔루션 B2B 영업 기획·IT 컨설팅 등). NCP 클라우드 상품군과 초거대 AI(LLM)·생성형 AI·디지털트윈으로 신규 시장·고객을 발굴하고, AX/DX 니즈 기반 제안·RFP 대응·가격 협상·계약·사후 관리, Retention/Up-sell, 파트너(SI·ISV) 공동 영업, B2B·B2G 공동 사업, GTM 전략을 맡는다. 필수는 B2B 영업 사이클 전반, 클라우드·LLM·AI 이해와 AX/DX 사업 경험, 신사업 전략·기획·실행, 고객 과제를 분석해 솔루션을 구조화·제안하는 역량. 산업 특화 GTM, 신규 산업 영업 성과, MSP·SI·컨설팅 파트너 영업, 공공기관·협회·진흥원 연계 지원사업과 컨소시엄 수주, 소버린 클라우드와 CSAP 등 법·제도, GPU·서버부터 애플리케이션까지의 이해는 우대다. 전형은 서류 전형(기업문화적합도 검사 포함) → 1차 인터뷰 → 레퍼런스체크 및 2차 인터뷰 → 처우협의 → 최종합격. **접수 2026.09.14 ~ 2026.09.30 (17:00)**, 중복지원 불가, 근무지 서울 강남구 테헤란로 129.",
+      "fit": {
+        "must_have": [
+          "클라우드·IT 솔루션 B2B 영업·컨설팅 5년 이상",
+          "B2B 영업 사이클 전반(발굴→제안→협상→수주→관리)",
+          "클라우드·LLM·AI 이해와 AX/DX 사업 경험",
+          "신사업 전략·기획·실행",
+          "솔루션 구조화·제안"
+        ],
+        "can_learn": [
+          "산업 특화 GTM",
+          "MSP·SI 파트너 영업",
+          "공공 지원사업·컨소시엄 수주",
+          "소버린 클라우드·CSAP",
+          "GPU·서버 인프라 이해"
+        ]
+      },
+      "study": [
+        {
+          "topic": "NCP 상품과 HyperCLOVA X 로 AX 제안서 구조화",
+          "from": "qualification",
+          "quote": "고객의 비즈니스 과제와 기술 환경을 분석하고, 이에 적합한 클라우드 및 AI/DX 기반 솔루션의 구조화 및 제안 역량을 갖추신 분",
+          "priority": "core",
+          "why": "자격요건이고 첫 주요업무가 NCP 클라우드 상품군과 초거대 AI·생성형 AI·디지털트윈으로 신규 시장·고객을 발굴하는 일이다.",
+          "gap_check": "중견 제조사가 '사내 문서 검색에 생성형 AI 를 쓰고 싶다' 고 할 때 NCP 의 어떤 서비스(CLOVA Studio·서버·스토리지 등)를 어떻게 묶어 제안하고, 월 비용은 어떤 항목으로 추정하는가?",
+          "drill": "ncloud.com 서비스·요금 페이지와 하이퍼클로바X 솔루션 페이지를 읽고, 가상 고객 한 곳에 대한 제안서 요약(과제 → 구성도 → 사용 서비스 → 요금 계산 → 도입 단계)을 한 장으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "NAVER Cloud Platform — 서비스",
+              "url": "https://www.ncloud.com/product",
+              "kind": "docs"
+            },
+            {
+              "title": "NAVER Cloud Platform — 요금",
+              "url": "https://www.ncloud.com/charge/price",
+              "kind": "docs"
+            },
+            {
+              "title": "NAVER Cloud Platform — 하이퍼클로바X",
+              "url": "https://www.ncloud.com/solution/featured/hyperclovax",
+              "kind": "docs"
+            },
+            {
+              "title": "NAVER Cloud Platform — 고객사례",
+              "url": "https://www.ncloud.com/support/customerCase",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공공(B2G) 클라우드 사업과 CSAP",
+          "from": "preference",
+          "quote": "소버린 클라우드 및 클라우드 관련 법·제도(CSAP 등)에 대한 이해도를 갖추신 분",
+          "priority": "core",
+          "why": "우대사항이고 다른 우대 줄이 '공공기관·협회·진흥원 연계 지원사업 및 컨소시엄 구성을 통한 대규모 사업 수주·관리 경험' 이다. 주요업무에 B2B·B2G 공동 사업 기회 발굴과 RFP 대응이 있다. ncloud.com 에 공공 기관용 메뉴가 따로 있다(회사 브리핑).",
+          "gap_check": "공공기관이 민간 클라우드를 쓰려면 어떤 법·인증 요건을 거치고, 공공 RFP 에 대응할 때 SI 파트너와 컨소시엄을 짜는 이유는 무엇인가?",
+          "drill": "클라우드컴퓨팅법을 읽고 공공 클라우드 도입 조건을 정리한 뒤, 나라장터에서 클라우드·AI 관련 공고 하나를 골라 요구사항 표와 '우리(NCP)+SI 파트너' 역할 분담안을 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 클라우드컴퓨팅 발전 및 이용자 보호에 관한 법률",
+              "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%EC%BB%B4%ED%93%A8%ED%8C%85%EB%B0%9C%EC%A0%84%EB%B0%8F%EC%9D%B4%EC%9A%A9%EC%9E%90%EB%B3%B4%ED%98%B8%EC%97%90%EA%B4%80%ED%95%9C%EB%B2%95%EB%A5%A0",
+              "kind": "docs"
+            },
+            {
+              "title": "나라장터",
+              "url": "https://www.g2b.go.kr/",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "B2B 영업 사이클과 파트너 공동 영업",
+          "from": "qualification",
+          "quote": "신규 고객 발굴, 요구사항 분석, 제안, 가격 협상, 수주·계약 및 고객 관리 등 B2B 영업 사이클 전반에 대한 경험을 보유하신 분",
+          "priority": "high",
+          "why": "자격요건이고 주요업무에 Retention/Up-sell 과 '대내외 파트너십 발굴 및 세일즈 채널 확대를 통한 공동 영업', 우대에 MSP·SI·컨설팅 파트너 영업이 있다.",
+          "gap_check": "수주한 고객의 클라우드 사용량이 늘지 않을 때 Up-sell 기회를 무엇(사용 서비스 구성·신규 AI 과제)에서 찾고, MSP 파트너를 통한 영업과 직접 영업은 고객·마진·책임이 어떻게 갈리는가?",
+          "drill": "지금까지 맡은 딜 두세 건을 '발굴 → 요구 분석 → 제안 → 협상 → 수주 → 확장' 단계별로 쓰고, 단계마다 파트너가 들어왔다면 무엇이 달라졌을지 표로 정리한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "NAVER Cloud Platform — 고객사례",
+              "url": "https://www.ncloud.com/support/customerCase",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "가상 고객 AX 제안서 + 공공 RFP 대응 역할 분담안",
+          "why": "자격요건의 솔루션 구조화·제안 역량과 우대의 공공 컨소시엄·CSAP 이해를 한 번에 보여 준다.",
+          "effort": "3~5일"
+        },
+        {
+          "idea": "영업 성과를 수주액·신규 고객 수·Up-sell 로 수치화",
+          "why": "우대에 '신규 시장 및 신규 산업 고객 대상의 B2B IT 분야 영업 성과' 가 있다. 레퍼런스체크가 전형에 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형(기업문화적합도 검사 포함) → 1차 인터뷰 → 레퍼런스체크 및 2차 인터뷰 → 처우협의 → 최종합격(공고 기준, 절차가 추가될 수 있다). 접수 2026.09.14 ~ 2026.09.30 17:00, 중복지원 불가.",
+        "expect": [
+          "수주 사례와 영업 사이클",
+          "AX/DX 제안 구조화",
+          "공공·파트너 영업",
+          "클라우드·AI 기술 이해"
+        ],
+        "sources": [
+          {
+            "title": "[NAVER Cloud] 신규 AX 사업개발 및 세일즈 (경력) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572490?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }
