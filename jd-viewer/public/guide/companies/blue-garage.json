@@ -298,6 +298,97 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/358349",
+      "title": "FANS / 프론트엔드 개발자 (React Native)",
+      "site": "wanted",
+      "verdict": "경력 2년 이상, 서울 강동구. 팬 커뮤니티·커머스 앱 **FANS** 의 **React Native 프론트엔드** 개발자다. (원문 머리말 둘째 문단은 법무팀 소개가 잘못 붙어 있다 — 직무와 무관.) 주요업무는 RN 크로스 플랫폼 기능 개발·운영, **렌더링·응답성·성능 병목 해결**, 신규 기능과 사용자 피드백 개선, PM·디자이너·백엔드 협업, 코드 리뷰. 기여 도메인이 넷으로 구체적이다 — 커뮤니티(아티스트–팬 소통), **글로벌 커머스(다국어·국가별 가격·해외 배송)**, **라이브/채팅**, 오프라인 활동. 자격은 React·TypeScript, 재사용·유지보수 고려, 복잡한 요구사항 구조화, 주도적 문제 해결. 우대는 RN 앱 운영, **GraphQL·Expo**, **i18n**, 커머스·결제, VOD·라이브 스트리밍, 디자인 시스템. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "React·TypeScript",
+          "재사용·유지보수 고려 설계",
+          "요구사항 구조화"
+        ],
+        "can_learn": [
+          "RN 리스트 성능",
+          "i18n·다통화",
+          "GraphQL·Expo"
+        ]
+      },
+      "study": [
+        {
+          "topic": "RN 렌더링 성능 — 피드·채팅 목록이 버벅일 때",
+          "from": "task",
+          "quote": "• 서비스의 원할한 랜더링, 응답성, 성능을 보장하기 위해 병목 현상을 파악하고 해결합니다.",
+          "priority": "core",
+          "why": "주요업무다. 커뮤니티 피드와 라이브 채팅은 긴 목록이 빠르게 바뀌는 화면이다.",
+          "gap_check": "JS 스레드와 UI 스레드가 각각 막히면 어떤 증상(탭 반응 지연 vs 스크롤 끊김)이 나고, 개발 모드 성능 수치를 믿으면 안 되는 이유는? FlatList 의 windowSize·getItemLayout·keyExtractor·메모이제이션은 무엇을 줄이고, 셀 재활용 방식 리스트는 무엇이 다른가?",
+          "drill": "RN 성능 개요와 FlatList 최적화 문서를 읽고, 이미지·텍스트 셀 1만 개 피드를 FlatList 기본값 → 최적화 설정 → FlashList 로 바꿔 가며 릴리스 빌드에서 스크롤 프레임 드롭과 메모리를 기록한다. 초당 20개 메시지가 들어오는 채팅 목록도 같은 방식으로 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Performance Overview — React Native",
+              "url": "https://reactnative.dev/docs/performance",
+              "kind": "docs"
+            },
+            {
+              "title": "Optimizing FlatList Configuration — React Native",
+              "url": "https://reactnative.dev/docs/optimizing-flatlist-configuration",
+              "kind": "docs"
+            },
+            {
+              "title": "FlashList",
+              "url": "https://shopify.github.io/flash-list/",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "글로벌 커머스 화면 — 다국어·국가별 가격",
+          "from": "task",
+          "quote": "• 커머스: 팬 활동에 필수적인 굿즈를 글로벌로 판매하며, 다국어 지원, 국가별 가격 설정, 해외 배송 등 복잡성이 높은 커머스 기능을 구현해요.",
+          "priority": "core",
+          "why": "주요업무의 기여 도메인이고 우대사항에 i18n·커머스·결제 경험이 있다.",
+          "gap_check": "번역 키 관리·복수형·언어별 문장 길이 차이로 레이아웃이 깨지는 문제를 어떻게 다루는가? 가격을 통화별로 표시할 때 소수 자릿수·기호 위치·천 단위 구분을 직접 문자열로 만들면 무엇이 틀리는가? 표시 통화와 결제 통화가 다를 때 화면에 무엇을 보여 줘야 하는가?",
+          "drill": "i18next 소개 문서와 MDN Intl.NumberFormat 을 읽고, 굿즈 상세 화면을 한·영·일 3개 언어와 KRW·USD·JPY 로 전환되게 만든다. 긴 독일어 번역을 넣어 레이아웃이 깨지는 곳을 찾고 고친다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "i18next documentation — Introduction",
+              "url": "https://www.i18next.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Intl.NumberFormat — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "GraphQL 로 화면 데이터 가져오기",
+          "from": "preference",
+          "quote": "• GraphQL, Expo 등 관련 기술 사용 경험",
+          "priority": "high",
+          "why": "우대사항이고 tech_stack 에 GraphQL 이 있다.",
+          "gap_check": "화면에 필요한 필드만 한 번에 받는 GraphQL 쿼리가 REST 여러 번 호출보다 나은 경우와 나쁜 경우(캐싱·N+1)는? 클라이언트 캐시에서 같은 게시글이 여러 화면에 있을 때 좋아요 수를 한 곳에서 바꾸면 모든 화면이 갱신되는 원리는(정규화 캐시)?",
+          "drill": "GraphQL Learn 문서로 쿼리·뮤테이션·프래그먼트를 익히고, Expo 로 만든 작은 앱에서 공개 GraphQL API 를 붙여 목록·상세 화면이 같은 캐시를 쓰게 한 뒤 뮤테이션 후 두 화면이 함께 갱신되는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Learn — GraphQL",
+              "url": "https://graphql.org/learn/",
+              "kind": "docs"
+            },
+            {
+              "title": "Expo documentation",
+              "url": "https://docs.expo.dev/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
