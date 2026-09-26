@@ -7,11 +7,12 @@
 **쿠팡은 `done`(186건).** 남은 5건(모의해킹 4·Mobile Security 1)은 사용자 결정으로 보류 — QUEUE `## 미룸`.
 
 **사용자 지시(2026-09-26): 국내 사이트 회사를 공고 수 순서대로 전부 한다.** QUEUE `## 대기` 에 15곳을 순서대로 넣었다(기준·제외 목록은 대기 머리말). 대기가 비면 같은 기준으로 다음 15곳을 채운다.
-**현대오토에버(`hyundai-autoever`) — `in_progress`, 공고 4/12건(FE 385489 · BE 385488 · IVI 385519·385515 완료).**
+**현대오토에버(`hyundai-autoever`) — `in_progress`, 공고 5/12건(FE 385489 · BE 385488 · IVI 385519·385515 · Robot Data 385505 완료).**
 출처는 홈페이지 사업 영역 목록 + 원티드 공고의 팀 소개(`full_jd`). 매출·규모·연봉은 안 읽어서 비웠다(`open_questions`).
-⚠️ 다음 회차: 원티드 본문 있는 나머지를 한 사이클 한 건씩 — Robot Data(385505) · Physical AI(385504) · AI Researcher(385554) · AI Agent(385555) · Security Analyst(385520) · 보안성검토(385510)
+⚠️ 다음 회차: 원티드 본문 있는 나머지를 한 사이클 한 건씩 — Physical AI(385504) · AI Researcher(385554) · AI Agent(385555) · Security Analyst(385520) · 보안성검토(385510)
 · 북미 보안 주재원 2건(385495·385501, 해외 근무 — verdict 첫 줄 ⚠️).
 사람인 1건(서비스 Robot PM, 55092048)도 본문 있음. 12건에서 멈추고 다음은 **베스핀글로벌**.
+ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 주의: 원문에 zero-width space(U+200B)가 섞여 있다 — quote 는 main_tasks/qualifications/preferences 에서 그대로 복사한다.
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중

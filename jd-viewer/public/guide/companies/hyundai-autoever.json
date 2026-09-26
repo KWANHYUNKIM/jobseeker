@@ -939,6 +939,165 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385505",
+      "title": "[SDx] Data Engineer - Robot Data Engineer",
+      "site": "wanted",
+      "verdict": "경력 9~17년(서울 강남). SDF데이터팀에서 로봇 제조 공장·로봇 운영·로봇 학습 데이터를 ROS/ROS2, API, 로그, 메시지 브로커로 모으는 파이프라인과 로봇 데이터 플랫폼 아키텍처를 설계할 사람. 자격은 로봇 또는 스마트팩토리 데이터 수집 경험, Python 또는 Java 실시간/배치 처리 5년 이상, Kafka·Airflow·Spark 경험이다. 공고 전문의 팀 소개는 완성차뿐 아니라 다양한 제조업 고객사에 파이프라인 구축·운영 컨설팅을 한다고 적고, 주요업무에도 고객과의 데이터 요구사항 정의가 있다 — 순수 구현보다 설계·협의 비중이 큰 자리다. 전형에 직무역량테스트(코딩)가 있다.",
+      "fit": {
+        "must_have": [
+          "로봇 또는 스마트팩토리 데이터 수집",
+          "데이터 플랫폼 구축 또는 데이터 엔지니어링",
+          "Python/Java 실시간·배치 처리 5년 이상",
+          "Kafka·Airflow·Spark"
+        ],
+        "can_learn": [
+          "시계열 데이터 모델링",
+          "LiDAR·IMU·카메라·주행 로그·맵 데이터",
+          "AWS·GCP 데이터 플랫폼",
+          "데이터 PM/Tech Lead"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ROS/ROS2 에서 데이터를 꺼내는 법 — 토픽·QoS·rosbag",
+          "from": "task",
+          "quote": "• ROS/ROS2, API, 로그, 메시지 브로커 등 다양한 채널을 통해 로봇 데이터를 수집하는 파이프라인 구축",
+          "priority": "core",
+          "why": "수집 채널 중 ROS/ROS2 가 맨 앞에 있다. 데이터 엔지니어에게 가장 낯선 채널이기도 하다(추론).",
+          "gap_check": "ROS 2 토픽을 구독해 Kafka 로 넘길 때 QoS(Reliability·Durability·History)를 어떻게 골라야 메시지를 잃지 않고, rosbag2(MCAP) 파일로 모은 데이터를 배치로 적재할 때와 실시간 브리지로 보낼 때 무엇이 달라지는가?",
+          "drill": "turtlesim 이나 시뮬레이터에서 나오는 토픽을 ros2 bag 으로 MCAP 에 녹화하고, 같은 토픽을 구독해 Kafka 로 보내는 브리지 노드를 파이썬으로 만든 뒤, 두 경로로 모은 메시지 수를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "ROS 2 — Understanding topics",
+              "url": "https://docs.ros.org/en/jazzy/Concepts/Basic/About-Topics.html",
+              "kind": "docs"
+            },
+            {
+              "title": "ROS 2 — Quality of Service settings",
+              "url": "https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Quality-of-Service-Settings.html",
+              "kind": "docs"
+            },
+            {
+              "title": "ROS 2 — Recording and playing back data",
+              "url": "https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html",
+              "kind": "docs"
+            },
+            {
+              "title": "MCAP",
+              "url": "https://mcap.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kafka 로 실시간 수집, Airflow 로 배치 오케스트레이션",
+          "from": "qualification",
+          "quote": "• Kafka, Airflow, Spark 등 데이터 파이프라인 관련 기술 활용 경험",
+          "priority": "core",
+          "why": "자격요건이고 우대사항에도 '실시간/대용량 데이터 처리 환경(Spark, Kafka 등) 구축 및 운영 경험' 이 있다. 자격요건이 '실시간/배치' 를 둘 다 적는다.",
+          "gap_check": "로봇 수백 대가 보내는 텔레메트리를 Kafka 로 받을 때 파티션 키를 무엇으로 하고(로봇 ID?) 순서 보장·재처리를 어떻게 하는가? 같은 데이터를 Airflow 로 시간 단위 배치 적재할 때 늦게 도착한 데이터는 어떻게 다루는가?",
+          "drill": "로봇 텔레메트리 생성기 → Kafka → Spark Structured Streaming 집계 → Parquet 적재 경로를 만들고, Airflow DAG 로 매시간 파티션 검증·재적재를 돌린다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Apache Kafka — Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Airflow — Documentation",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spark Structured Streaming Programming Guide",
+              "url": "https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "로봇·센서·설비 데이터 인터페이스 정의",
+          "from": "task",
+          "quote": "• 로봇, 센서, 설비, 외부 시스템과의 데이터 인터페이스를 정의하고 수집 체계 구축",
+          "priority": "core",
+          "why": "주요업무 두 번째 줄이다. 팀 소개가 '이기종 시스템 간 IoT 수집' 을 적는다 — 제조사마다 다른 형식을 하나의 스키마로 모아야 한다(추론).",
+          "gap_check": "서로 다른 로봇 제조사의 상태 메시지를 공통 스키마로 맞출 때 무엇을 공통 필드로 두고 무엇을 확장 필드로 남기며, 스키마가 바뀌었을 때 과거 데이터와의 호환은 어떻게 지키는가?",
+          "drill": "가상 로봇 두 종의 상태 메시지(필드 이름·단위가 다른)를 정의하고, 공통 스키마로 변환하는 어댑터와 스키마 버전 필드를 만들어 v1·v2 데이터를 함께 조회해 본다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "시계열 데이터 모델링 (OLTP/OLAP)",
+          "from": "preference",
+          "quote": "• 데이터 모델링 경험(정규화/비정규화, 시계열 데이터 구조 설계 등)",
+          "priority": "high",
+          "why": "우대사항이고 해시태그가 #OLAP #OLTP #TimeSeries 다. 팀 리더는 '스마트팩토리 데이터모델링을 적용한 DW' 를 만든다고 적는다.",
+          "gap_check": "로봇 센서 시계열을 행 단위 테이블로 둘 때와 컬럼 기반(Parquet·OLAP)으로 둘 때 조회 패턴별 비용은 어떻게 다르고, 파티션을 시간·로봇 중 무엇으로 먼저 자르는가?",
+          "drill": "위에서 모은 텔레메트리를 시계열 DB 한 곳과 Parquet 파티션 두 방식으로 적재해 '로봇별 최근 1시간', '전체 로봇 일별 평균' 두 질의 시간을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Apache Parquet — Documentation",
+              "url": "https://parquet.apache.org/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Timescale — Documentation",
+              "url": "https://docs.timescale.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LiDAR·IMU·카메라 같은 센서 데이터 다루기",
+          "from": "preference",
+          "quote": "• LiDAR, IMU, 카메라, 주행 로그, 맵 데이터 등 로봇 센서 및 주행 데이터 처리 경험",
+          "priority": "nice",
+          "why": "우대사항이다. 주요업무의 '로봇 학습' 데이터 수집과 이어진다 — 학습용 데이터는 센서 원본이 크다(추론).",
+          "gap_check": "초당 수십 MB 인 포인트클라우드·영상을 텔레메트리와 같은 파이프라인으로 흘리면 무엇이 문제가 되고, 원본은 객체 저장소에·메타데이터만 스트림에 두는 방식은 어떤 조회를 어렵게 만드는가?",
+          "drill": "공개 로봇 데이터의 rosbag(MCAP) 하나에서 IMU 는 테이블로, 이미지·포인트클라우드는 파일로 분리 적재하고 시간 동기화 키로 다시 묶는 스크립트를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MCAP",
+              "url": "https://mcap.dev/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "ROS 2 → Kafka → Spark → Parquet 로봇 데이터 파이프라인 데모",
+          "why": "주요업무 세 줄(수집·인터페이스·채널)과 자격요건 기술(Kafka·Spark·Airflow)을 한 번에 보여 준다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "스마트팩토리·로봇 데이터 수집 경험을 '고객 요구 정의' 중심으로 정리",
+          "why": "주요업무 마지막 줄이 고객·유관 조직과의 요구사항 정의이고, 우대에 데이터 PM/Tech Lead 가 있다. 9~17년 자리라 설계·협의 사례가 핵심 증거다.",
+          "effort": "경험 정리 반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격(공고 기준).",
+        "expect": [
+          "로봇·설비 데이터 수집 체계를 설계한 사례",
+          "Kafka 파티션·재처리 전략",
+          "시계열 데이터 모델링",
+          "고객 요구사항을 데이터 인터페이스로 바꾼 경험"
+        ],
+        "sources": [
+          {
+            "title": "[SDx] Data Engineer - Robot Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/385505",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
