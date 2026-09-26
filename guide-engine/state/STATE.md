@@ -4,14 +4,19 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **62건**.
-직전 회차: `Staff Backend Engineer (Orchestration Platform)`(ats gh_jid=8168878) → **`duplicate_of` wd/383861**
-(세 절 모든 줄이 원티드판에 있음). ⚠️ 원티드 경력 표기 5~20년 vs 본문 **10년 이상** — verdict 에 본문 기준으로 적었다.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **63건**.
+직전 회차: `Staff Front-end Engineer (Eats Web)`(ats gh_jid=8093378) → **`duplicate_of` wd/376128**
+(ats 에서 읽힌 8줄 전부 원티드판에 있음. ats 판은 주요업무 칸이 비어 있다).
 
-⚠️ 다음 회차: `--gaps` 먼저. 남은 "차이만" 후보 1개: `Staff, Back-end Engineer (GOEX)` — 제목에 GOEX 가 든
-공고가 이번 조회에 안 걸렸다(모집중 목록에 없거나 제목 표기가 다름). **없으면 후보에서 지운다.**
-그다음은 `--gaps` 가 주는 목록에서 **개발 직군이고 아직 안 쓴 것** 을 고른다(비개발은 건너뛰고 이유를 적지 않아도 된다 — 완주 판단 때 한 줄로).
-**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
+**미작성 개발 공고 중 이미 쓴 공고와 겹침이 큰 것**(다음 회차들이 먼저 정리할 것, 정규화 줄 겹침 비율):
+- 1.00 `Senior Backend Engineer (Eats Merchant)`(ats 8107806) ↔ `Sr Backend Engineer (Eats Merchant)`
+- 0.96 `Staff ML Engineer, Personalization`(ats 8076145) ↔ `Senior Staff Ranking Engineer, Personalization…`
+- 0.95 `Staff ML Engineer, Search & Discovery`(ats 7931249), `Staff ML Engineer - Search Ranking`(ats 8204842) ↔ 같은 Ranking 공고
+- 0.91 `Staff Backend Engineer(Infrastructure)`(ats 8047677) ↔ `Director - Backend Engineering (Infrastructure)`
+- 0.89 `[쿠팡] 백엔드 개발자 (Cloud Infrastructure Automation)`(wd/382712) ↔ `Senior Back-end Engineer (Cloud Infra…)`
+⚠️ **겹침 1.00 이어도 제목의 직급이 다르면**(Staff ↔ Senior Staff, Staff ↔ Director) 세 절을 양방향으로 보고,
+자격 줄이 다르면 차이만 쓴다(`배운 것` 의 판단 순서). 같은 직급·같은 팀이면 duplicate.
+`Staff, Back-end Engineer (GOEX)` 는 공고 데이터에 있지만 회사명 표기가 달라 쿠팡 필터에 안 걸린다 — 회사명을 확인해 aliases 문제인지 본다.
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.
