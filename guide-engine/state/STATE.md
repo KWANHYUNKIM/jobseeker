@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **150건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **151건**.
+직전 회차: ✅ `Sr. Staff Backend Software Engineer`(7965062) 3항목 — **시애틀**, 팀 불명(얇음), 10년 vs Minimum 7년 어긋남(open_questions), $174K~$299K.
 직전 회차: ✅ `Sr.Staff Backend Engineer`(7925105) → dup 7953042 (하이데라바드, 자격 7줄 완전 일치, 제목 표기만 다름).
 직전 회차: ✅ `Principal Engineer, ML`(8175850) 3항목 — **시애틀**, 광고 서빙·ML 플랫폼(경매·페이싱·CTR 보정·GPU 서빙), $207,900~$386,100(미국 범위 최고).
 직전 회차: ✅ `Sr. Director, Search AI - Production Engineering`(7776741) 3항목 — **마운틴뷰**, 검색 E2E 소유·로드맵·조직, $184K~$376K(Sr. Director 세 건 동일 범위). 주요업무 한 줄 원문에서 끊김.
