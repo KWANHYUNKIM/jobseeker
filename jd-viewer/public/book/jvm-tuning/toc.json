@@ -570,7 +570,7 @@
           "title": "역최적화",
           "summary": "가정이 깨지면 되돌린다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.5",
@@ -578,7 +578,7 @@
           "title": "워밍업",
           "summary": "첫 요청이 느린 이유.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.6",
@@ -586,7 +586,7 @@
           "title": "코드 캐시가 차면",
           "summary": "조용히 해석으로 돌아간다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "10.7",

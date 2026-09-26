@@ -1,0 +1,175 @@
+{
+  "book": "jvm-tuning",
+  "id": "code-cache-full",
+  "no": "10.6",
+  "chapter": 10,
+  "title": "코드 캐시가 차면",
+  "summary": "조용히 해석으로 돌아간다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "차 있는 상태를 어떻게 확인하는지 안다.",
+    "경고 두 줄 말고는 아무 일도 안 일어나는 것을 본다.",
+    "캐시 크기가 컴파일 건수를 제한하는 것을 잰다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.4절에서 코드 캐시를 굶겨 **`nmethods` 가 1047 에서 0 이 되는 것**을 봤다. 10장까지 오면 그 숫자의 뜻이 달라진다 — **10.2 의 티어도, 10.3 의 인라이닝도, 10.4 의 가정도 전부 코드 캐시에 자리가 있어야 성립한다.**\n\n자리가 없으면 그 전부가 **한 번에 사라진다.** 그리고 **아무 소리도 안 난다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "일어나는 일은 경고 두 줄이 전부다",
+      "md": "```\n[warning][codecache] CodeCache is full. Compiler has been disabled.\n[warning][codecache] Try increasing the code cache size using -XX:ReservedCodeCacheSize=\n```\n\n> 예외도, 종료도, GC 로그의 흔적도 없다. **프로세스는 계속 돈다.**\n> 그 뒤로 애플리케이션은 **10.1절의 `-Xint` 와 같은 상태**로 돈다 — 3억 회에서 35배였던 그것이다.\n> **기동 로그의 `warning` 줄을 안 읽으면 모른다.** 11장의 점검표에 이것이 들어가는 이유다."
+    },
+    {
+      "type": "prose",
+      "md": "## 확인하는 자리\n\n상태는 **`jcmd <pid> Compiler.codecache`** 한 줄로 본다. 4.4절에서 본 그 출력이고, **볼 곳은 셋**이다."
+    },
+    {
+      "type": "table",
+      "caption": "`Compiler.codecache` 에서 볼 것",
+      "columns": [
+        "항목",
+        "정상",
+        "찼을 때"
+      ],
+      "rows": [
+        [
+          "`compilation`",
+          "`enabled`",
+          "**`disabled (not enough contiguous free space left)`**"
+        ],
+        [
+          "`full_count`",
+          "`0`",
+          "**1 이상**"
+        ],
+        [
+          "`nmethods`",
+          "수백~수천",
+          "**0 또는 한 자리**"
+        ]
+      ],
+      "note": "**셋 중 `full_count` 가 가장 확실하다.** 한 번이라도 찼으면 0이 아니다 — 지금 여유가 있어도 남는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 캐시 크기가 컴파일 건수를 정한다\n\n가득 차지 않더라도 **작으면 덜 컴파일된다.** 뜨거운 메서드 600개짜리 프로그램에서 캐시 크기만 바꿔 `nmethods` 를 셌다."
+    },
+    {
+      "type": "table",
+      "caption": "`-XX:ReservedCodeCacheSize` 별 컴파일 건수",
+      "columns": [
+        "크기",
+        "nmethods",
+        "CodeCache is full"
+      ],
+      "rows": [
+        [
+          "2,496k (최소)",
+          "704",
+          "0회"
+        ],
+        [
+          "4m",
+          "781",
+          "0회"
+        ],
+        [
+          "8m",
+          "918",
+          "0회"
+        ],
+        [
+          "240m (기본)",
+          "**1,267**",
+          "0회"
+        ]
+      ],
+      "note": "**넷 다 안 찼는데도 건수가 다르다.** 2,496k 에서 704개, 기본값에서 1,267개 — 거의 두 배다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "성능 차이는 재지 못했다",
+      "md": "**4.4절에서 미룬 숙제인데 이번에도 못 냈다.**\n\n> 2,496k 와 240m 를 번갈아 세 번씩 돌렸다 — **11,673 / 8,826 / 10,786ms 대 9,932 / 9,821 / 9,886ms** 다.\n> 240m 쪽이 **일정하고 조금 빠르긴** 하지만, 작은 쪽의 편차가 3초에 달해 **배수를 말할 수 없다.**\n> 실제로 캐시가 차는 상태(4.4절의 1MB)는 **C1·C2 초기화까지 실패해** 다섯 번 중 세 번만 완주했다 — 그 상태에서 잰 시간은 시간이 아니다.\n> **확인한 것은 상태와 건수까지**다. 비용은 10.1절의 `-Xint` 배수로 미루어 볼 뿐이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 언제 실제로 문제가 되나\n\n기본값 240MB 는 **웬만해선 안 찬다.** 차는 경우는 대개 셋이다 — **코드가 아주 많은 애플리케이션**(큰 프레임워크 여럿), **동적 생성 코드가 쌓이는 경우**(프록시·스크립트 엔진·리플렉션 다발), 그리고 **캐시를 손으로 줄여 놓은 경우**다.\n\n세 번째가 제일 흔하다. **줄일 이유가 없으면 안 줄인다** — 240MB 는 **예약**이고 4.6절에서 본 대로 실제 커밋은 7MB 남짓이었다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 크기별 컴파일 건수 (뜨거운 메서드 600개짜리) ---\n\n$ for CC in 2496k 4m 8m 240m; do\n    java -XX:ReservedCodeCacheSize=$CC -XX:-SegmentedCodeCache \\\n         -XX:+PrintCodeCache -cp out ManyHot2\n  done\n\n  2496k  nmethods=704    full=0\n  4m     nmethods=781    full=0\n  8m     nmethods=918    full=0\n  240m   nmethods=1267   full=0\n\n# --- 2) 시간은 재현되지 않았다 ---\n\n$ for R in 1 2 3; do (2496k 와 240m 를 번갈아 측정) done\n  2496k  11673 ms     240m   9932 ms\n  2496k   8826 ms     240m   9821 ms\n  2496k  10786 ms     240m   9886 ms\n\n# 240m 는 9.8~9.9초로 일정한데 2496k 는 8.8~11.7초로 흔들린다.\n# 배수를 말할 수 없어 표에 넣지 않았다.\n\n# --- 3) 실제로 차는 상태 (4.4 절) ---\n\n$ java -XX:InitialCodeCacheSize=512k -XX:ReservedCodeCacheSize=1m \\\n       -XX:-SegmentedCodeCache -cp out ManyHot\n[warning][codecache] CodeCache is full. Compiler has been disabled.\n[warning][codecache] Try increasing the code cache size using -XX:ReservedCodeCacheSize=\nCodeCache: size=1024Kb used=1023Kb max_used=1023Kb free=0Kb\n total_blobs=276 nmethods=1 adapters=195\n compilation: disabled (not enough contiguous free space left)\n\n# 같은 프로그램을 2496k 로 주면 nmethods=1047, compilation: enabled, full_count=0",
+      "note": "**건수는 재현되고 시간은 안 된다.** 이 책에서 두 번 시도해 두 번 다 못 냈고, 그 사실을 적는다."
+    }
+  ],
+  "recap": [
+    "코드 캐시가 차면 경고 두 줄만 찍히고 컴파일이 멈춘다 — 예외도 종료도 없다.",
+    "확인은 Compiler.codecache 의 compilation · full_count · nmethods 로 한다.",
+    "full_count 는 한 번이라도 찼으면 0이 아니라 가장 확실하다.",
+    "가득 차지 않아도 캐시가 작으면 덜 컴파일된다 — 704개 대 1,267개였다.",
+    "성능 차이는 두 번 시도해 두 번 다 재현하지 못했다."
+  ],
+  "drills": [
+    {
+      "task": "jcmd Compiler.codecache 로 내 애플리케이션의 full_count 를 본다.",
+      "done_when": "0 인지 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "기동 로그에서 codecache warning 을 찾는 grep 을 만든다.",
+      "done_when": "11 장 점검표에 넣는다.",
+      "minutes": 8
+    },
+    {
+      "task": "ReservedCodeCacheSize 를 줄여 가며 nmethods 를 센다.",
+      "done_when": "내 애플리케이션에 필요한 크기를 가늠한다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "코드 캐시가 찼을 때 일어나는 일은.",
+      "a": "경고 두 줄을 찍고 컴파일이 멈춘다. 예외도 종료도 없다."
+    },
+    {
+      "q": "찬 적이 있는지 확인하는 가장 확실한 항목은.",
+      "a": "full_count 다. 지금 여유가 있어도 한 번이라도 찼으면 0이 아니다."
+    },
+    {
+      "q": "캐시가 안 찼는데도 작으면 손해인가.",
+      "a": "그렇다. 2,496k 에서 704개, 240m 에서 1,267개가 컴파일됐다."
+    },
+    {
+      "q": "기본값 240MB 를 줄여야 하나.",
+      "a": "줄일 이유가 없으면 안 줄인다. 예약일 뿐이고 실제 커밋은 훨씬 작다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "full_count",
+      "what": "코드 캐시가 가득 찬 횟수. 한 번이라도 찼으면 0이 아니다."
+    },
+    {
+      "term": "nmethods",
+      "what": "컴파일된 자바 메서드 수. 캐시 크기가 이 수를 제한한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "JEP 197: Segmented Code Cache",
+      "url": "https://openjdk.org/jeps/197",
+      "publisher": "OpenJDK"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:ReservedCodeCacheSize",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

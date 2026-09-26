@@ -1,0 +1,156 @@
+{
+  "book": "jvm-tuning",
+  "id": "warmup",
+  "no": "10.5",
+  "chapter": 10,
+  "title": "워밍업",
+  "summary": "첫 요청이 느린 이유.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "워밍업 곡선을 직접 그린다.",
+    "첫 구간이 왜 느린지 셋으로 나눠 안다.",
+    "측정할 때 무엇을 버려야 하는지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "10.1~10.4 가 **JIT 이 하는 일**이었다면, 이 절은 **그 일이 끝나기 전의 시간**이다.\n\n기동 직후는 **컴파일이 아직 안 됐고, 프로파일도 없고, 클래스도 덜 읽혔다.** 그 구간이 얼마나 되는지 **재 보면 그림이 나온다.**"
+    },
+    {
+      "type": "table",
+      "caption": "같은 일을 30만 회씩 반복 (배치당 시간)",
+      "columns": [
+        "회차",
+        "시간",
+        "1회차 대비"
+      ],
+      "rows": [
+        [
+          "**1**",
+          "**28,995 us**",
+          "1.0"
+        ],
+        [
+          "2",
+          "5,703 us",
+          "**5.1배 빠름**"
+        ],
+        [
+          "3",
+          "5,129 us",
+          "5.7배"
+        ],
+        [
+          "6",
+          "4,529 us",
+          "6.4배"
+        ],
+        [
+          "**12**",
+          "**3,761 us**",
+          "**7.7배 빠름**"
+        ],
+        [
+          "14",
+          "3,770 us",
+          "7.7배"
+        ]
+      ],
+      "note": "**첫 배치가 29ms, 열두 번째가 3.8ms.** 같은 코드가 7.7배 빨라진다."
+    },
+    {
+      "type": "figure",
+      "caption": "곡선은 두 번 꺾인다",
+      "ascii": "   29 ms  |*\n          |\n          |\n    6 ms  | *  *  *  *  *  *  *  *\n    4 ms  |                        *  *  *\n          +--------------------------------\n           1  2  3  4  5  6  7  8  ... 12 13 14\n\n   a steep drop after batch 1, then a slow slide to a floor",
+      "note": "**급한 낙차와 완만한 미끄럼**이 있다. 앞은 클래스 로딩과 첫 컴파일, 뒤는 티어 3에서 4로 올라가는 구간이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "첫 구간이 느린 이유는 셋이다",
+      "md": "**하나가 아니라 셋이 겹쳐 있다.**\n\n> **클래스 로딩과 초기화** — 3.1·3.4절. 처음 쓰는 클래스마다 읽고 초기화한다. 2.1절에서 490개를 봤다.\n> **해석 실행** — 10.1절. 아직 컴파일 전이라 인터프리터로 돈다.\n> **프로파일 수집** — 10.2절의 티어 3. 컴파일은 됐지만 **세느라 느린** 판이다.\n> 이 실행에서 `Warm::` 메서드 컴파일이 **11건** 일어났다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그래서 첫 배치를 버리고 재야 한다",
+      "md": "**1회차를 넣고 평균을 내면 그 평균은 아무것도 안 가리킨다.**\n\n> 위 표에서 전체 평균은 약 5.9ms 인데, **실제 정상 상태는 3.8ms** 다.\n> JMH 가 워밍업 반복을 따로 두는 이유이고, 이 책이 배수를 잴 때 **여러 번 돌린** 이유다(5.1·10.3절).\n> 반대로 **기동 성능을 재는 것이 목적**이라면 버리면 안 된다 — 그때는 1회차가 답이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 운영에서 뜻하는 것\n\n**배포 직후의 첫 요청들이 이 구간을 문다.** 인스턴스를 새로 띄우고 바로 트래픽을 전부 넣으면 그 요청들이 29ms 쪽을 만난다.\n\n흔한 대응이 **웜업 요청을 미리 넣는 것**이다 — 로드밸런서에 붙이기 전에 몇 천 번 돌려 티어 4까지 올려 둔다. 10.7절의 AOT 와 CDS 는 **그 시간을 줄이려는** 다른 접근이다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Warm.java\npublic class Warm {\n    static long sink;\n    static final Map<String,Integer> m = new HashMap<>();\n    static int work(int x) {                       // 접기 어려운 일\n        String k = \"k\" + (x & 1023);\n        Integer v = m.get(k);\n        if (v == null) { m.put(k, x); return x; }\n        return v ^ x;\n    }\n    public static void main(String[] a) {\n        int batches = 16, per = 300_000;\n        for (int b = 1; b <= batches; b++) {\n            long t0 = System.nanoTime(), s = 0;\n            for (int i = 0; i < per; i++) s += work(i);\n            sink = s;\n            System.out.printf(\"  %2d회차  %,6d us%n\", b, (System.nanoTime()-t0)/1000);\n        }\n    }\n}\n\n$ java -cp out Warm\n   1회차  28,995 us\n   2회차   5,703 us\n   3회차   5,129 us\n   4회차   5,870 us\n   5회차   5,614 us\n   6회차   4,529 us\n   7회차   4,719 us\n   8회차   5,146 us\n   9회차   5,507 us\n  10회차   6,019 us\n  11회차   5,585 us\n  12회차   3,761 us\n  13회차   4,092 us\n  14회차   3,770 us\n\n$ java -XX:+PrintCompilation -cp out Warm | grep -c 'Warm::'\n11\n\n# --- 처음 쓴 벤치마크는 실패했다 ---\n# 순수 산술로 짰더니 회당 0 ns 로 나왔다 — 계산이 통째로 최적화돼 사라졌다.\n# 5.2 절의 그 함정이다. HashMap 조회를 넣어 접히지 않게 고쳤다.",
+      "note": "**곡선을 보려면 배치를 잘게 잘라야** 한다. 300만 회씩 하면 첫 배치 안에서 워밍업이 끝나 74ms 대 39ms 로만 보인다."
+    }
+  ],
+  "recap": [
+    "같은 코드가 첫 배치 29ms 에서 열두 번째 3.8ms 로 7.7배 빨라졌다.",
+    "곡선은 급한 낙차와 완만한 미끄럼 두 구간으로 나뉜다.",
+    "첫 구간이 느린 이유는 클래스 로딩·해석 실행·프로파일 수집 셋이다.",
+    "첫 배치를 넣고 평균을 내면 정상 상태와 다른 값이 나온다.",
+    "기동 성능을 재는 것이 목적이면 반대로 첫 배치가 답이다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션의 응답 시간을 배포 직후부터 기록한다.",
+      "done_when": "곡선이 언제 평평해지는지 안다.",
+      "minutes": 15
+    },
+    {
+      "task": "워밍업 요청을 넣고 안 넣고를 비교한다.",
+      "done_when": "첫 요청들의 차이를 숫자로 갖는다.",
+      "minutes": 15
+    },
+    {
+      "task": "-XX:+PrintCompilation 으로 정상 상태까지 몇 건이 컴파일되는지 센다.",
+      "done_when": "워밍업의 규모를 안다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "워밍업 곡선이 두 구간으로 나뉘는 이유는.",
+      "a": "앞은 클래스 로딩과 첫 컴파일, 뒤는 티어 3에서 4로 올라가는 구간이다."
+    },
+    {
+      "q": "첫 구간이 느린 이유 셋은.",
+      "a": "클래스 로딩과 초기화, 해석 실행, 프로파일 수집이다."
+    },
+    {
+      "q": "벤치마크에서 첫 배치를 버리는 이유는.",
+      "a": "정상 상태와 값이 달라 평균이 아무것도 안 가리키게 되기 때문이다."
+    },
+    {
+      "q": "첫 배치를 버리면 안 되는 경우는.",
+      "a": "기동 성능을 재는 것이 목적일 때다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "워밍업",
+      "what": "기동 직후 컴파일과 프로파일이 자리 잡기까지의 구간."
+    },
+    {
+      "term": "정상 상태",
+      "what": "워밍업이 끝나 성능이 평평해진 구간. 벤치마크가 재려는 대상이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Java HotSpot VM Performance Enhancements",
+      "url": "https://docs.oracle.com/en/java/javase/17/vm/java-hotspot-virtual-machine-performance-enhancements.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — java Command, -XX:+PrintCompilation",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    }
+  ]
+}
