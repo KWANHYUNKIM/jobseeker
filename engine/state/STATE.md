@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**없다(stmn 은 FANTS 미연결로 in_progress) — 81번째 후보 조사(2026-09-26)로 대기 2/3: LegalOn(리걸테크) · Findy(엔지니어 플랫폼). 다음 사이클: `--gaps` 가 찍는 대로 — 확장이 없으면 stmn FANTS 조사 1회째(tech.stmn.co.jp 검색 'FANTS'), 그다음 신규 LegalOn(`tech.legalforce.co.jp`, 하테나). 머니포워드(hold)·LayerX 는 in_progress.**
+**없다 — stmn 완주(2026-09-26, FANTS 조사 1회째에 2021 대시보드 글을 찾아 도메인을 더했다). 다음은 신규 — 대기 맨 위 **LegalOn**(`tech.legalforce.co.jp`, 하테나; 후보 글 `entry/yaml-json-config-optimization`·`entry/ai-data-governance-google-cloud`·`entry/support-team-datadog-analysis-with-codex`. 계약 검토 AI 본체 글이 있는지 먼저). 대기 2/3 — LegalOn 뒤 후보 조사. 머니포워드(hold)·LayerX 는 in_progress.**
+
 
 
 

@@ -1348,3 +1348,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 여든한 번째 후보 조사
 
 - 2/3 — LegalOn · Findy(하테나). every 는 사용법 위주로 통과 못 함, dely·Visional·JX·pixiv·Mercari·kaonavi 는 9월 사이트맵이 비어 미판정.
+
+## 2026-09-26 stmn FANTS 조사(1회째) → 새 도메인 → 완주
+
+- 블로그 검색 'FANTS' 로 2021-12 대시보드 글을 찾아 도메인 '살롱 운영 화면을 TUNAG 에서 떼어 낸다' + `fants-dashboard-nextjs`(결정 7). FANTS 수익원 연결 → done.

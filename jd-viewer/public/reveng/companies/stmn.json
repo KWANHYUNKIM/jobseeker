@@ -4,7 +4,7 @@
   "name_en": "stmn",
   "country": "JP",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "domain": "stmn.co.jp",
   "one_liner": "사내 커뮤니케이션 SaaS TUNAG — 8년 묵은 코드를 떼어 보안 검사를 필수 관문으로 만들고, 돌아가는 KMP 앱은 버리지 않고 iPad 로 옮긴다",
@@ -44,9 +44,11 @@
     },
     {
       "name": "FANTS(커뮤니티 인게이지먼트)",
-      "how": "팬 커뮤니티 운영 플랫폼. ARR 이 전년 대비 배증.",
+      "how": "구독형 온라인 팬 살롱 플랫폼 — 살롱 개설에 필요한 시스템·기획을 원스톱 제공(2021년 말 100 살롱 이상). ARR 이 전년 대비 배증.",
       "weight": "공개 없음(ARR 배증)",
-      "domains": [],
+      "domains": [
+        "살롱 운영 화면을 TUNAG 에서 떼어 낸다"
+      ],
       "confidence": "confirmed",
       "sources": [
         {
@@ -55,6 +57,13 @@
           "publisher": "株式会社スタメン",
           "date": "2025-11-14",
           "summary": "사업 둘 — **종업원 인게이지먼트(TUNAG)** 와 **커뮤니티 인게이지먼트(FANTS)**. 3분기 그룹 ARR **30.7억 엔**(전년 동기 22.9억), **TUNAG 이용 기업 1,266 사**(전년 동기 972 사), TUNAG **평균 MRR 20.2만 엔**, TUNAG 매출 스톡 비율 83.9%. 3분기(단일) 연결 매출 **10.25억 엔(+44.6%)**, 영업이익률 4.4%(일시적 매입 비용 증가). FANTS 사업 ARR 은 전년 대비 배증. 부대 서비스 매출이 성장을 이끈다."
+        },
+        {
+          "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+          "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+          "publisher": "stmn tech blog",
+          "date": "2021-12-01",
+          "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
         }
       ]
     }
@@ -62,7 +71,7 @@
   "domain_map": {
     "title": "있는 것을 어떻게 다루나",
     "question": "오래된 코드와 이미 돌아가는 앱을 버리지 않고 어떻게 앞으로 가나?",
-    "code": "flowchart LR\n  MR[\"메인 레포(10년+)\"] -->|8년 전 서드파티 235MB 분리| SEP[\"별 레포\"]\n  MR --> CQ[\"CodeQL 20분 → 3분\\nPR 필수 게이트\"]\n  KMM[\"수부 앱(KMM, 2022 Android)\"] --> KMP[\"KMP 공통 로직\"]\n  KMP --> AND[\"Android 태블릿\\nCircleCI\"]\n  KMP --> IPAD[\"iPad\\nSKIE · Xcode Cloud\"]",
+    "code": "flowchart LR\n  MR[\"메인 레포(10년+)\"] -->|8년 전 서드파티 235MB 분리| SEP[\"별 레포\"]\n  MR --> CQ[\"CodeQL 20분 → 3분\\nPR 필수 게이트\"]\n  KMM[\"수부 앱(KMM, 2022 Android)\"] --> KMP[\"KMP 공통 로직\"]\n  KMP --> AND[\"Android 태블릿\\nCircleCI\"]\n  KMP --> IPAD[\"iPad\\nSKIE · Xcode Cloud\"]\n  TA[\"TUNAG 관리 화면(erb)\"] -.->|분리| FDB[\"FANTS 대시보드\\nNext.js\"]",
     "_note": "위는 오래된 레포에서 무거운 짐을 떼어 보안 검사를 관문으로 세운 일, 아래는 이미 돌아가는 공통 코드 위에 새 기기를 얹은 일이다."
   },
   "domains": [
@@ -112,6 +121,30 @@
       ],
       "features": [
         "kmp-add-swiftui-only"
+      ]
+    },
+    {
+      "name": "살롱 운영 화면을 TUNAG 에서 떼어 낸다",
+      "why": "FANTS 는 TUNAG 코드를 바탕으로 시작해 살롱 오너용 관리 화면도 **TUNAG 관리 화면 코드에 FANTS 기능을 얹은** 형태였다. 두 제품의 사양이 섞여 알기 어렵고 Rails erb 라 확장이 막혔다.",
+      "tech": [
+        {
+          "tech": "Next.js(CSR) + SWR + Styled-Components + Storybook(Chromatic) + axios(JSON:API 역직렬화)",
+          "solves": "FANTS 전용 관리 화면을 TUNAG 에서 떼어 React 조직의 역량으로 빠르게 만든다.",
+          "limits": "관리 화면 코드베이스가 **TUNAG 과 FANTS 로 갈린다**(이 사이트의 해석). VRT 는 아직 없다. 2021년 글이라 이후 변화는 모른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+              "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+              "publisher": "stmn tech blog",
+              "date": "2021-12-01",
+              "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "fants-dashboard-nextjs"
       ]
     }
   ],
@@ -723,12 +756,310 @@
           "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
         }
       ]
+    },
+    {
+      "key": "fants-dashboard-nextjs",
+      "name": "남의 관리 화면에 얹혀 살던 것을 독립시켰다 — FANTS 대시보드",
+      "domain": "살롱 운영 화면을 TUNAG 에서 떼어 낸다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "**FANTS** 는 스타멘의 둘째 사업인 구독형 **온라인 팬 살롱 플랫폼**이다(2021년 말 **100 살롱 이상**, 2025년 ARR 은 전년 대비 배증). 살롱 오너가 로고·사용자 관리를 설정하는 **관리 화면(대시보드)** 이 운영의 입구다.\n\n그런데 FANTS 는 TUNAG 코드를 바탕으로 시작해, 관리 화면도 **TUNAG 관리 화면 코드에 FANTS 기능을 더한** 모양이었다. TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 Rails **erb** 라 확장이 어렵고, 개발 속도가 떨어졌다.\n\n그래서 대시보드를 **Next.js 로 따로** 만들었다. 이 기능은 그때의 기술 선택 — 무엇을 고르고 무엇을 뺐는지 — 의 기록이다(2021년 12월 글).",
+        "metrics": [
+          {
+            "label": "살롱 수(2021년 말)",
+            "value": "100 살롱 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+                "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+                "publisher": "stmn tech blog",
+                "date": "2021-12-01",
+                "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+              }
+            ]
+          },
+          {
+            "label": "FANTS ARR(2025년 3분기)",
+            "value": "전년 대비 배증",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "2025年12月期 第3四半期 決算説明資料",
+                "url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20251114/20251114503308.pdf",
+                "publisher": "株式会社スタメン",
+                "date": "2025-11-14",
+                "summary": "사업 둘 — **종업원 인게이지먼트(TUNAG)** 와 **커뮤니티 인게이지먼트(FANTS)**. 3분기 그룹 ARR **30.7억 엔**(전년 동기 22.9억), **TUNAG 이용 기업 1,266 사**(전년 동기 972 사), TUNAG **평균 MRR 20.2만 엔**, TUNAG 매출 스톡 비율 83.9%. 3분기(단일) 연결 매출 **10.25억 엔(+44.6%)**, 영업이익률 4.4%(일시적 매입 비용 증가). FANTS 사업 ARR 은 전년 대비 배증. 부대 서비스 매출이 성장을 이끈다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "관리 화면을 새로 만들 때",
+          "thought": "사업이 다른데 관리 화면을 **남의 코드에 얹어** 두면 고유 사양이 섞이고 둘 다 느려진다 — FANTS 만의 화면으로 떼어 낸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+              "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+              "publisher": "stmn tech blog",
+              "date": "2021-12-01",
+              "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+            }
+          ]
+        },
+        {
+          "at": "프레임워크를 고를 때",
+          "thought": "코드 분할·prefetch 같은 모범 사례를 **구현 비용 없이** 얻으면 엔지니어는 핵심 기능에 집중할 수 있다. 창업 때부터 React 를 써 온 조직이니 학습 비용도 낮다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+              "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+              "publisher": "stmn tech blog",
+              "date": "2021-12-01",
+              "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+            }
+          ]
+        },
+        {
+          "at": "컴포넌트를 나눠 본 뒤",
+          "thought": "Atomic Design 은 보이는 모양의 입도일 뿐 시스템 책임을 정하지 않는다 — 이름만 따르고 책임은 우리식으로. 그래도 너무 잘게 나눴다 — Templates 와 Organisms 는 합치자.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+              "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+              "publisher": "stmn tech blog",
+              "date": "2021-12-01",
+              "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "살롱 · 오너",
+            "what": "FANTS 위의 팬 살롱과 그 운영자. 오너가 대시보드에서 설정한다."
+          },
+          {
+            "name": "FANTS 대시보드",
+            "what": "살롱 설정(로고·사용자 관리 등) 관리 화면. TUNAG 관리 화면에서 독립한 Next.js 앱."
+          },
+          {
+            "name": "서버 상태 · 클라이언트 상태",
+            "what": "API 데이터는 SWR 캐시, 화면 고유 상태는 useContext + useState."
+          },
+          {
+            "name": "컴포넌트 층",
+            "what": "Atoms·Molecules(범용) · Organisms(도메인, Container/Presentational) · Templates(레이아웃) · Pages(라우팅)."
+          },
+          {
+            "name": "apis Adapter",
+            "what": "axios 기반 요청 함수와 JSON:API 역직렬화·카멜케이스 변환 인터셉터, 필요할 때만 mapper."
+          }
+        ],
+        "invariants": [
+          "대시보드는 **인증이 필요하고 SEO 가 필요 없다** — CSR 만 쓴다.",
+          "외부 데이터 접근은 **apis 층**에서만 — 컴포넌트는 직접 부르지 않는다.",
+          "hooks·context 의존은 **Container** 에 모은다 — Presentational 은 props 타입에만 기댄다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "오너가 대시보드(Next.js, CSR)에 로그인해 설정 화면을 연다",
+            "why": "인증 필요·SEO 불필요."
+          },
+          {
+            "step": "Organisms 의 Container 가 SWR 로 apis 층을 부른다",
+            "why": "서버 데이터를 캐시하고 뒤에서 다시 검증한다."
+          },
+          {
+            "step": "apis 층이 axios 로 요청하고 인터셉터에서 JSON:API 를 역직렬화·카멜케이스로 바꾼다",
+            "why": "백엔드 응답 형식(JSON:API)을 프런트 모양으로."
+          },
+          {
+            "step": "Presentational 컴포넌트가 props 로 받은 데이터를 그린다(범용 부품은 Storybook 으로 관리)",
+            "why": "재사용과 시각 확인."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "FANTS 관리 화면을 어디에 두나?",
+            "chosen": "**TUNAG 관리 화면 코드에 얹던 것을 떼어 Next.js 로 따로 만든다.**",
+            "alternatives": [
+              "TUNAG 관리 화면(Rails erb)에 계속 FANTS 기능을 더한다"
+            ],
+            "tradeoff": "TUNAG 고유 사양이 섞여 알기 어렵고, erb 라 확장이 어렵고, 개발 속도가 떨어졌다. 대가 — 관리 화면 **코드베이스가 둘로** 갈린다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+                "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+                "publisher": "stmn tech blog",
+                "date": "2021-12-01",
+                "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+              }
+            ]
+          },
+          {
+            "question": "프레임워크는?",
+            "chosen": "**Next.js** — CSR 만 쓴다.",
+            "alternatives": [
+              "CRA(create-react-app)",
+              "Nuxt.js"
+            ],
+            "tradeoff": "CRA 로도 코드 분할·prefetch 가 되지만 구현 비용이 들고 Next.js 는 기본이다. 창업 때부터 React 라 Nuxt 보다 학습 비용이 낮다. 인증이 필요하고 SEO 가 필요 없어 SSR·SG 는 쓰지 않는다. 대가 — Next.js 의 렌더링 선택지 대부분을 **쓰지 않는다**(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+                "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+                "publisher": "stmn tech blog",
+                "date": "2021-12-01",
+                "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+              }
+            ]
+          },
+          {
+            "question": "상태를 어떻게 관리하나?",
+            "chosen": "**서버 데이터는 SWR, 클라이언트 상태는 useContext + useState.**",
+            "alternatives": [
+              "지금까지처럼 API 응답을 Redux 로"
+            ],
+            "tradeoff": "Redux 의 비동기 보일러플레이트 비용과 캐시 구현의 어려움을 덜고, 진짜 클라이언트 상태는 적다. 대가 — 기존 TUNAG 쪽 Redux 관례와 **다른 방식**이 된다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+                "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+                "publisher": "stmn tech blog",
+                "date": "2021-12-01",
+                "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+              }
+            ]
+          },
+          {
+            "question": "스타일링은?",
+            "chosen": "**Styled-Components(런타임 CSS-in-JS).**",
+            "alternatives": [
+              "zero-runtime 인 Linaria"
+            ],
+            "tradeoff": "Linaria 의 성능 이득이 얼마인지 불확실했고, 관리 화면이라 성능 요구가 크지 않다. 대가 — 런타임에 CSS 를 만드는 **비용**을 받아들인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+                "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+                "publisher": "stmn tech blog",
+                "date": "2021-12-01",
+                "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+              }
+            ]
+          },
+          {
+            "question": "공통 부품을 어떻게 관리하나?",
+            "chosen": "**Storybook 으로 관리하고 Chromatic 에 CI 로 배포한다.**",
+            "alternatives": [
+              "문서 없이 코드로만 공유한다"
+            ],
+            "tradeoff": "이미 있는 부품을 눈으로 확인하고 외부 환경 없이 개발할 수 있다. 대가 — **Visual Regression Testing 은 아직** 없어 의도치 않은 변화를 못 잡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+                "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+                "publisher": "stmn tech blog",
+                "date": "2021-12-01",
+                "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+              }
+            ]
+          },
+          {
+            "question": "컴포넌트를 어떻게 나누나?",
+            "chosen": "**Atomic Design 이름만 따르고 책임은 독자적으로 — Organisms 는 Container/Presentational 로 나눠 의존을 Container 에.**",
+            "alternatives": [
+              "Atomic Design 을 책임까지 그대로"
+            ],
+            "tradeoff": "의존이 국소화되어 변경에 강하고 Presentational 은 재사용이 쉽다. 대가 — 입도가 **너무 잘다** — Templates 가 Organisms 를 감싸기만 해 둘을 합칠 생각이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+                "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+                "publisher": "stmn tech blog",
+                "date": "2021-12-01",
+                "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+              }
+            ]
+          },
+          {
+            "question": "API 응답 형식을 어디서 맞추나?",
+            "chosen": "**apis Adapter 층의 axios 인터셉터에서 JSON:API 역직렬화와 카멜케이스 변환. 엔드포인트별 파일, 복잡할 때만 mapper.**",
+            "alternatives": [
+              "컴포넌트마다 응답을 가공한다"
+            ],
+            "tradeoff": "백엔드의 JSON:API 형식을 한곳에서 프런트 모양으로 바꾼다. 대가 — 단순한 응답은 **API 타입을 그대로** 써서 층의 경계가 느슨해진다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+                "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+                "publisher": "stmn tech blog",
+                "date": "2021-12-01",
+                "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "split-the-vendor-code",
+          "via": "TUNAG 코드에서 떼어 낸다",
+          "contract": "FANTS 는 TUNAG 관리 화면에서 **자기 화면을 떼어 냈고**, TUNAG 메인 레포는 라이프사이클이 다른 **벤더 코드를 떼어 냈다** — 둘 다 한 코드베이스에 섞인 것을 가르는 판단이다(이 사이트의 해석 — 두 글은 서로를 언급하지 않고 시기도 다르다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "TUNAG 에 얹혀 있던 화면을 떼어 내기",
+          "question": "FANTS 대시보드는 어디서 어디로 옮겨졌나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph BEFORE[\"이전\"]\n    TA[\"TUNAG 관리 화면\\nRails erb\"] --> FF[\"+ FANTS 기능\"]\n  end\n  subgraph AFTER[\"리뉴얼\"]\n    FD[\"FANTS 대시보드\\nNext.js · CSR\"] --> SWR[\"SWR\"]\n    SWR --> AP[\"apis Adapter\\naxios · JSON:API 역직렬화\"]\n    AP --> BE[\"백엔드 API\"]\n  end\n  FF -.->|분리| FD"
+        },
+        {
+          "title": "컴포넌트 층과 의존",
+          "question": "어느 층이 외부에 기대고 어느 층이 순수한가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  PG[\"Pages\\n라우팅\"] --> TP[\"Templates\\n레이아웃\"]\n  TP --> OC[\"Organisms · Container\\nhooks · context · SWR\"]\n  OC --> OP[\"Organisms · Presentational\\nprops 타입만\"]\n  OP --> AM[\"Atoms · Molecules\\n범용(Storybook)\"]\n  OC --> API[\"apis\"]"
+        },
+        {
+          "title": "떼어 낸 뒤 생기는 틈",
+          "question": "독립한 대시보드는 어디서 흔들리나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"VRT 없음\"] --> B[\"공통 부품 변경이\\n화면을 몰래 깨뜨림\"]\n  C[\"관리 화면 코드베이스 둘\"] --> D[\"공통 변경을 두 번\\n(이 사이트의 해석)\"]\n  E[\"컴포넌트 입도가 잘다\"] --> F[\"Templates 는 감싸기만\\n→ 통합 예정\"]\n  G[\"단순 응답은 API 타입 그대로\"] --> H[\"백엔드 형식 변경이\\n컴포넌트까지 번짐\\n(이 사이트의 해석)\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+          "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+          "publisher": "stmn tech blog",
+          "date": "2021-12-01",
+          "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "**FANTS** 수익원에 이을 기술 글을 아직 못 봤다.",
     "CodeQL 글의 **메인 레포가 TUNAG 인지** 글이 명시하지 않는다(TUNAG 수익원에 둔 것은 이 사이트의 해석).",
-    "기술 글이 드물다(2026년 1~9월 약 20편 중 기술 글 네다섯) — 보강·재방문 자료가 적을 것이다."
+    "기술 글이 드물다(2026년 1~9월 약 20편 중 기술 글 네다섯) — 보강·재방문 자료가 적을 것이다.",
+    "FANTS 대시보드 글은 **2021년**이다 — 이후 FANTS 구조 변화는 모른다. `FANTSの開発技術・開発組織を紹介します！`(2022-01)는 아직 안 읽었다."
   ],
   "sources": [
     {
@@ -751,6 +1082,13 @@
       "publisher": "stmn tech blog",
       "date": "2026-06-26",
       "summary": "**TUNAG 수부(受付) 앱** — 2022년 7월 출시, 방문자가 태블릿(당시 Android)에서 담당 그룹·담당자를 골라 호출하면 담당자에게 알림. Android 엔지니어가 '장래 iOS 대응할 수 있게 KMM 으로 만든다' 고 판단해 두었다. iPad 대응 때 iOS 인원이 늘어 **네이티브로 처음부터 다시 만드는 선택지**도 충분했지만 **돌아가는 자산을 버리는 비용에 맞는 리턴이 없어** KMP 위에 올렸다 — 재구현해도 기능은 늘지 않고, 엔지니어를 새 비즈니스 가치에 쓰는 것이 합리적. Swift 연결에 SKIE(0.10.11). 빌드·배포는 Android 와 같은 **CircleCI 로 통일하는 안**을 검토했지만 App Store Connect 연동 인증 토큰 발급·관리와 스토어 업로드·사내 테스트 배포 구축이 **Xcode Cloud 보다 압도적으로 비싸** iOS 는 **Xcode Cloud**. **구성**: `shared` 의 commonMain 에 인증 흐름(비밀번호·SSO 판정)·그룹/사용자 목록·ViewModel UI State·API 클라이언트(Ktor)·쿠키 영속화가 다 있어 iPad 대응은 **SwiftUI 화면만 더하는** 일이었다. 규칙 — **ViewModel·Repository·Entity 는 반드시 shared, 플랫폼 모듈엔 View 만**(로직 이중 유지가 구조적으로 안 생긴다). 플랫폼 차이는 `expect/actual`(ApiClient: iOS 는 Darwin, Android 는 OkHttp) — 지금은 interface + DI 가 권장되지만 **2022 설계 자산을 그대로** 쓴다. 쿠키는 Multiplatform Settings 로 추상화한 PersistentCookieStorage; **Ktor 3 에서 `max-age=0` 이 '미설정' 에서 '즉시 삭제' 로 바뀌어** 로그아웃 직후 재로그인 때 쿠키가 사라지는 버그 → RFC 6265 대로 `maxAge <= 0` 을 삭제 처리. StateFlow 는 처음엔 Kotlin 쪽 iOS 전용 래퍼를 뒀지만 **SKIE**(Flow → AsyncSequence, sealed → Swift 패턴 매치)로 필요 없어졌고 Swift 쪽 얇은 Wrapper 만. 테스트는 UnitTest 수준이고 대부분 shared 에 있어 **CircleCI 기존 테스트 잡이 공통 로직을 커버**. Xcode Cloud 는 JDK 가 없어 `ci_post_clone.sh` 로 Adoptium 에서 **JDK 17** 을 받아 설치(uname 으로 Apple Silicon/Intel 판별)."
+    },
+    {
+      "title": "FANTS ダッシュボードを支えるフロントエンド技術",
+      "url": "https://tech.stmn.co.jp/entry/2021/12/01/191318",
+      "publisher": "stmn tech blog",
+      "date": "2021-12-01",
+      "summary": "**FANTS** 는 구독형 **온라인 팬 살롱 플랫폼**(살롱 개설에 필요한 시스템·기획을 원스톱 제공, 당시 **100 살롱 이상**). **FANTS 대시보드** 는 살롱 오너가 로고·사용자 관리 등을 설정하는 관리 화면. FANTS 는 **TUNAG 코드를 바탕으로** 시작해 관리 화면도 TUNAG 관리 화면 코드에 FANTS 기능을 더하는 형태였는데 — TUNAG 고유 사양이 섞여 알기 어렵고, 프런트가 **Rails erb** 라 확장이 어렵고, 개발 속도가 떨어져 **Next.js 로 리뉴얼**. **Next.js**: CRA 로도 코드 분할·prefetch 는 되지만 구현 비용이 들고 Next.js 는 기본 제공; 인증이 필요하고 SEO 가 필요 없어 SSR·SG 없이 **CSR**; 창업 때부터 React 라 Nuxt.js 보다 학습 비용이 낮다. **SWR**: API 응답을 Redux 로 관리하던 비동기 보일러플레이트와 캐시 구현의 어려움 때문에 서버 상태는 SWR, 진짜 클라이언트 상태는 적어 **useContext + useState**. **Styled-Components**: zero-runtime **Linaria** 도 봤지만 성능 차가 불확실하고 관리 화면이라 성능 요구가 크지 않아 제외. **Storybook**(Chromatic 호스팅, CI 배포) — VRT 는 아직. **컴포넌트**: Atomic Design 명명만 따르고 책임은 독자적(Atoms·Molecules 범용, Organisms 도메인 — Container/Presentational 로 나눠 hooks·context 의존을 Container 에), 너무 잘게 쪼갰다며 Templates 와 Organisms 를 합칠 생각. **apis**: Adapter 층 — axios 인터셉터로 **JSON:API 역직렬화와 카멜케이스 변환**, 엔드포인트별 파일, 복잡할 때만 mapper."
     }
   ]
 }
