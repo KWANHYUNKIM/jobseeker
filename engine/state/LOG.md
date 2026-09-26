@@ -2504,3 +2504,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GVA TECH 관련 계약 연결
 
 - `7ff1d69682a415` 로 기능 `olga-related-contract-linking`, 결정 6(법무 RAG 평가 결정은 제품명이 없어 inferred).
+
+## 2026-09-27 GVA TECH 법률 사무소용 · 인재 소개 수익원 보류
+
+- --gaps 는 후보 조사를 찍었지만 수익원 판정을 먼저 끝냈다. 둘째 Zenn 검색 5낱말 · benpal 사이트 모두 없음 → hold_reason.
