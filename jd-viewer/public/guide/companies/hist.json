@@ -132,7 +132,7 @@
       },
       {
         "name": "AI 풀스택(인턴십)",
-        "why": "인턴십 공고가 React·TypeScript, Java·Spring Boot REST, LLM RAG, 컨테이너 배포·CI 를 적는다.",
+        "why": "수익원이 아니라 신입 채용 경로다 — 채용연계형 대학 인턴십 공고가 현업 과제 기반으로 React·TypeScript, Java·Spring Boot REST, LLM RAG, 컨테이너 배포·CI 를 다룬다고 적는다.",
         "what_to_know": [
           "React·Spring Boot",
           "RAG",
@@ -172,5 +172,110 @@
     "보안 계약직의 정규직 전환 기준",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55001950&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dbaa2382-79a2-4557-a447-6dd72c234a6d",
+      "title": "[AX사업]데이터 아키텍트 / 데이터 엔지니어(경력)",
+      "site": "saramin",
+      "verdict": "경력 3년 이상(시니어 7년 이상), 4년대졸 이상, 서울 강서구 마곡. **AX사업 AX아키텍트팀 플랫폼그룹**의 데이터 아키텍트/엔지니어다. 업무는 네 묶음 — **GCP·AWS 레이크하우스 설계**(BigQuery·Databricks·Snowflake 구축과 비용/성능 최적화) / **배치·스트리밍 파이프라인**(Airflow·dbt·Spark·Kafka) / **Oracle 등 온프레미스 레거시 RDBMS 의 클라우드 이전**과 Cloud SQL·AlloyDB·RDS/Aurora 설계·튜닝 / **거버넌스**(메타데이터·카탈로그·Unity Catalog 접근 제어·품질 모니터링). 자격은 GCP 또는 AWS 데이터 인프라, BigQuery·Databricks·Snowflake 중 하나 이상, **Oracle 깊은 이해와 SQL 튜닝**, RDBMS→클라우드/레이크하우스 **마이그레이션 수행 경험**, Python·SQL·Scala·Java 중 하나, Spark·Airflow. 우대는 **그룹사·금융·물류·항공·모빌리티** 대규모 트랜잭션 도메인 프로젝트 리드, **CDC 로 전사 데이터 이전**, dbt·Unity Catalog·Debezium/Kafka·Iceberg/Delta, MLOps·피처 스토어, Terraform·CI/CD, 클라우드·Databricks·Snowflake 자격증. 우대 도메인이 회사의 항공·물류 부문과 겹친다. 같은 공고가 캐치(570692)에도 있다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어링·마이그레이션 3년",
+          "GCP/AWS 데이터 인프라",
+          "BigQuery·Databricks·Snowflake 중 하나",
+          "Oracle SQL 튜닝"
+        ],
+        "can_learn": [
+          "CDC(Debezium)",
+          "Unity Catalog",
+          "dbt"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Oracle 레거시를 멈추지 않고 클라우드로 — CDC 이전",
+          "from": "qualification",
+          "quote": "- RDBMS에서 클라우드 매니지드 DB 또는 데이터 레이크하우스로의 마이그레이션 수행 경험",
+          "priority": "core",
+          "why": "자격요건이고 우대사항에 CDC 솔루션을 활용한 전사 데이터 이전 성공 경험이 있다.",
+          "gap_check": "한 번에 옮기고 끊는 방식(덤프·적재)과 초기 적재 후 변경분을 CDC 로 따라가다 전환하는 방식은 다운타임·위험에서 무엇이 다른가? Oracle 의 변경 로그(redo/LogMiner)를 읽어 변경 이벤트를 만드는 원리와, 이전 후 원천·대상 정합성을 무엇(건수·체크섬·샘플 대조)으로 검증하는가? Oracle 전용 기능(시퀀스·패키지·데이터형)은 PostgreSQL 계열로 옮길 때 어떻게 바뀌는가?",
+          "drill": "Google Database Migration Service 의 Oracle→Cloud SQL for PostgreSQL 개요와 Debezium Oracle 커넥터 문서를 읽고, 로컬 Oracle(무료판)→Kafka→PostgreSQL 로 초기 적재+CDC 를 구성한다. 원천에 계속 쓰기를 넣는 동안 대상과 건수·체크섬을 대조하고 전환(cut-over) 절차서를 쓴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Oracle to Cloud SQL for PostgreSQL migration overview — Google Cloud",
+              "url": "https://docs.cloud.google.com/database-migration/docs/oracle-to-postgresql/scenario-overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Debezium Connector for Oracle",
+              "url": "https://debezium.io/documentation/reference/stable/connectors/oracle.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "레이크하우스 설계 — 어느 플랫폼에 무엇을",
+          "from": "task",
+          "quote": "- GCP, AWS 기반의 엔터프라이즈 데이터 레이크 및 레이크하우스(Lakehouse) 아키텍처 설계",
+          "priority": "core",
+          "why": "주요업무 첫 묶음이다.",
+          "gap_check": "레이크하우스가 데이터 레이크(객체 저장소)와 웨어하우스의 장점을 어떻게 합치는가(오픈 테이블 포맷·트랜잭션·스키마)? BigQuery(서버리스, 스캔량 과금)와 Databricks(클러스터·Delta)는 비용이 어디서 새고 무엇으로 줄이는가(파티션·클러스터링·자동 종료)? 메달리온(bronze·silver·gold) 계층은 무엇을 나누는가?",
+          "drill": "Databricks 레이크하우스 문서와 BigQuery 개요를 읽고, 가상 항공 예약 데이터로 bronze→silver→gold 계층 설계서(테이블·파티션 키·갱신 주기·소비자)를 쓴다. BigQuery 무료 사용량에서 파티션 유무에 따른 스캔 바이트를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "What is a data lakehouse? — Databricks",
+              "url": "https://docs.databricks.com/aws/en/lakehouse/",
+              "kind": "docs"
+            },
+            {
+              "title": "BigQuery overview — Google Cloud",
+              "url": "https://docs.cloud.google.com/bigquery/docs/introduction",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Airflow + dbt 로 ELT 자동화",
+          "from": "task",
+          "quote": "- Airflow, dbt, Spark, Kafka 등 데이터 오케스트레이션 및 파이프라인 툴을 활용한 파이프라인 자동화",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 Airflow 등 워크플로 툴 경험이 있다.",
+          "gap_check": "ELT 에서 변환을 웨어하우스 SQL(dbt 모델)로 두면 무엇이 좋아지고, dbt 의 ref·테스트·문서화는 무엇을 보장하는가? Airflow DAG 가 실패한 날짜만 다시 돌리려면(backfill) 태스크를 어떻게 멱등하게 짜야 하는가?",
+          "drill": "Airflow·dbt 소개 문서를 읽고, 원천 적재→dbt staging·mart 모델→dbt test 를 하나의 DAG 로 엮는다. 특정 날짜 태스크를 실패시킨 뒤 그 날짜만 재실행해 결과가 중복되지 않는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "What is Airflow? — Airflow Documentation",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "What is dbt? — dbt Developer Hub",
+              "url": "https://docs.getdbt.com/docs/introduction",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "거버넌스 — 카탈로그와 접근 제어",
+          "from": "task",
+          "quote": "- 메타데이터 관리, 데이터 카탈로그, 권한 및 접근 제어(Unity Catalog 등) 체계 설계",
+          "priority": "nice",
+          "why": "주요업무 마지막 묶음이다.",
+          "gap_check": "카탈로그·스키마·테이블 계층에서 권한을 어디에 걸고, 행·열 수준 보안(개인정보 마스킹)은 어떻게 표현하는가? 계보(lineage)가 자동 수집되면 감사·영향 분석에서 무엇이 쉬워지는가?",
+          "drill": "Unity Catalog 문서를 읽고, 분석가·엔지니어·외부 파트너 세 역할의 권한 매트릭스와 개인정보 컬럼 마스킹 정책을 설계 문서로 작성한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "What is Unity Catalog? — Databricks",
+              "url": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
