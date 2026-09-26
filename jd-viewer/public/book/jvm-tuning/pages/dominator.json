@@ -1,0 +1,177 @@
+{
+  "book": "jvm-tuning",
+  "id": "dominator",
+  "no": "11.4",
+  "chapter": 11,
+  "title": "누가 붙잡고 있나",
+  "summary": "지배자 트리.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "얕은 크기와 유지 크기를 가른다.",
+    "히스토그램 1위가 왜 원인이 아닌지 본다.",
+    "참조 경로를 얻으려면 무엇이 필요한지 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.3절의 히스토그램은 **무엇이 있는지**를 말했다. 5.4절의 결론은 **누수는 안 쓰는데 루트에서 닿는 것**이었다.\n\n두 문장을 이으면 남는 질문이 하나다 — **누가 그것을 붙잡고 있나.** 이 절은 그 질문의 도구와, **이 책이 어디까지 못 갔는지**다."
+    },
+    {
+      "type": "prose",
+      "md": "## 실전에서 가장 흔한 모양으로 새 본다\n\n`static` 레지스트리가 세션을 담고 **지우는 코드가 없는** 경우다. 세션 하나가 16KB 짜리 `byte[]` 를 들고 있다."
+    },
+    {
+      "type": "code",
+      "lang": "java",
+      "caption": "지우는 코드가 없다",
+      "code": "public class Leak {\n    static final Map<String, Session> REGISTRY = new HashMap<>();\n    static class Session {\n        final byte[] payload = new byte[16 * 1024];\n        final String id;\n        Session(String id) { this.id = id; }\n    }\n    public static void main(String[] a) throws Exception {\n        for (int i = 0; i < 4000; i++) {\n            REGISTRY.put(\"s\" + i, new Session(\"s\" + i));   // 지우는 코드가 없다\n            ...\n        }\n    }\n}"
+    },
+    {
+      "type": "table",
+      "caption": "그 프로세스의 히스토그램 (힙 사용 66,439K)",
+      "columns": [
+        "순위",
+        "개수",
+        "바이트",
+        "클래스"
+      ],
+      "rows": [
+        [
+          "**1**",
+          "19,072",
+          "**66,122,896**",
+          "`[B` (byte 배열)"
+        ],
+        [
+          "2",
+          "14,986",
+          "359,664",
+          "`java.lang.String`"
+        ],
+        [
+          "3",
+          "1,459",
+          "179,704",
+          "`java.lang.Class`"
+        ],
+        [
+          "4",
+          "5,000",
+          "160,000",
+          "`java.util.HashMap$Node`"
+        ],
+        [
+          "**5**",
+          "4,000",
+          "**96,000**",
+          "**`Leak$Session`**"
+        ]
+      ],
+      "note": "**1위는 66MB 인데 진짜 원인은 96KB 로 5위**다. 크기로 줄 세우면 원인이 안 보인다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "얕은 크기와 유지 크기",
+      "md": "**두 크기가 다른 것을 가리킨다.**\n\n> **얕은 크기** — 그 객체 자신의 바이트. `Session` 은 필드 두 개라 24바이트다.\n> **유지 크기** — 그것을 지우면 같이 사라지는 전부. `Session` 하나의 유지 크기는 **16KB + 24바이트**다.\n> 히스토그램은 **얕은 크기**로 줄 세운다. 그래서 `[B` 가 1위다 — 하지만 **`byte[]` 를 고칠 수는 없다.**\n> 고칠 곳은 **그것을 붙잡은 사슬의 위쪽**이다: `REGISTRY` → `HashMap$Node` → `Session` → `byte[]`."
+    },
+    {
+      "type": "figure",
+      "caption": "지배자는 사슬의 위쪽이다",
+      "ascii": "   static REGISTRY        remove this and 66 MB goes away\n        |\n        +-- HashMap$Node  x 5000       160 KB shallow\n              |\n              +-- Session x 4000        96 KB shallow\n                    |\n                    +-- byte[16K] x 4000    64 MB shallow   <- histogram rank 1\n\n   shallow size points at the leaf; retained size points at the root",
+      "note": "**지배자 트리는 이 사슬을 거꾸로 세운 것**이다 — 누구를 지우면 무엇이 같이 죽는지."
+    },
+    {
+      "type": "prose",
+      "md": "## JFR 로 얼마나 갈 수 있나\n\n11.2절의 `jdk.OldObjectSample` 은 **오래 살아남은 객체의 표본**이다. 나이와 할당 스택을 준다 — 누수 후보를 좁히는 데는 쓸 만하다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "root 필드가 있는데 비어 있다",
+      "md": "**이 빌드에서는 참조 경로를 못 얻었다.**\n\n```\njdk.OldObjectSample {\n  objectAge = 9.08 s\n  lastKnownHeapUsage = 1.4 MB\n  object = [ java.util.concurrent.ConcurrentHashMap$Node[65536] ]\n  root = N/A\n}\n```\n\n> 표본 **255건 전부 `root = N/A`** 이고 채워진 것이 **0건**이다.\n> `jcmd JFR.dump ... path-to-gc-root=true` 를 줘 봤더니 **`Unknown argument 'path-to-gc-root'`** 였다.\n> 즉 **경로 수집은 이 CLI 로는 안 켜진다** — JMC 쪽 기능이거나 다른 옵션이 필요하다. **확인하지 못했다.**"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그래서 지배자 트리는 이 책에서 못 그렸다",
+      "md": "**제대로 하려면 힙 덤프(11.3절)를 떠서 GUI 도구로 열어야** 한다.\n\n> Eclipse MAT 나 JDK Mission Control 이 `hprof` 를 읽어 **지배자 트리와 유지 크기**를 계산해 준다.\n> 이 책은 **명령줄에서 돌린 것만 싣는다**는 규칙이라 그 화면을 싣지 않았다 — 지어낼 수는 없다.\n> **명령줄에서 갈 수 있는 데까지가 위 표와 위 사슬**이다: 히스토그램에서 후보를 찾고, 11.5절의 할당 스택으로 그것을 만든 코드를 짚는다."
+    },
+    {
+      "type": "prose",
+      "md": "## 명령줄만으로 이 누수를 짚는 순서\n\n도구가 없어도 여기까지는 간다. **1)** 히스토그램에서 **개수가 비정상인 내 클래스**를 찾는다 — `Leak$Session` 4,000개. **2)** 그 옆의 바이트가 작은데 힙이 큰 것을 본다 — 96KB 인데 힙은 66MB. **3)** 그 클래스의 필드를 코드에서 읽는다 — `byte[16*1024]`. **4)** 4,000 × 16KB = 64MB, 힙의 거의 전부. **5)** 누가 4,000개를 들고 있는지 코드에서 찾는다 — `static final Map`.\n\n**히스토그램이 클래스 이름을 주면 나머지는 코드가 답한다.** 도구는 그 다섯 단계를 한 번에 보여 주는 것이고, 없으면 손으로 밟는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# --- 1) 히스토그램 ---\n\n$ jcmd <pid> GC.class_histogram\n num     #instances         #bytes  class name (module)\n-------------------------------------------------------\n   1:         19072       66122896  [B (java.base@17.0.16)\n   2:         14986         359664  java.lang.String (java.base@17.0.16)\n   3:          1459         179704  java.lang.Class (java.base@17.0.16)\n   4:          5000         160000  java.util.HashMap$Node (java.base@17.0.16)\n   5:          4000          96000  Leak$Session\n\n$ jcmd <pid> GC.heap_info\n garbage-first heap   total 114688K, used 66439K\n\n# 4000 x 16KB = 64MB. 힙 66MB 의 거의 전부다.\n# 그런데 Leak$Session 은 96,000 바이트로 5위다.\n\n# --- 2) JFR 로 오래 산 객체 ---\n\n$ java -Xmx160m -XX:StartFlightRecording=settings=profile,name=r1 -cp out Leak &\n$ jcmd <pid> JFR.dump name=r1 filename=leak.jfr\n$ jfr print --events jdk.OldObjectSample leak.jfr\njdk.OldObjectSample {\n  allocationTime = 12:00:02.486\n  objectAge = 9.08 s\n  lastKnownHeapUsage = 1.4 MB\n  object = [ java.util.concurrent.ConcurrentHashMap$Node[65536] ]\n  root = N/A\n  stackTrace = [ ... ]\n}\n\n$ jfr print --events jdk.OldObjectSample leak.jfr | grep -c 'root = N/A'\n255\n$ jfr print --events jdk.OldObjectSample leak.jfr | grep -v 'N/A' | grep -c 'root ='\n0\n\n# --- 3) 경로를 켜 보려 했으나 ---\n\n$ jcmd <pid> JFR.dump name=r1 filename=leak2.jfr path-to-gc-root=true\nUnknown argument 'path-to-gc-root' in diagnostic command.\n\n# 참조 경로는 이 CLI 로 얻지 못했다. 지배자 트리는 힙 덤프 + GUI 도구가 필요하다.",
+      "note": "**255건 전부 `root = N/A`** 다. 이 절이 명령줄에서 갈 수 있는 끝이고, 그 앞은 히스토그램과 코드로 밟았다."
+    }
+  ],
+  "recap": [
+    "얕은 크기는 객체 자신, 유지 크기는 그것을 지우면 같이 사라지는 전부다.",
+    "히스토그램은 얕은 크기로 줄 세우므로 1위가 원인이 아닌 경우가 많다.",
+    "이 누수에서 1위는 byte[] 66MB 이고 원인인 Session 은 96KB 로 5위였다.",
+    "고칠 곳은 사슬의 위쪽 — static REGISTRY 다.",
+    "JFR 의 OldObjectSample 은 나이와 할당 스택을 주지만 이 빌드에서 root 는 255건 전부 N/A 였다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션 히스토그램에서 개수가 비정상인 내 클래스를 찾는다.",
+      "done_when": "후보를 하나 짚는다.",
+      "minutes": 12
+    },
+    {
+      "task": "그 클래스의 필드를 읽어 유지 크기를 손으로 계산한다.",
+      "done_when": "힙 사용량과 맞춰 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "힙 덤프를 떠서 MAT 나 JMC 로 지배자 트리를 본다.",
+      "done_when": "손으로 계산한 것과 맞는지 확인한다.",
+      "minutes": 20
+    }
+  ],
+  "quiz": [
+    {
+      "q": "얕은 크기와 유지 크기의 차이는.",
+      "a": "얕은 크기는 그 객체 자신, 유지 크기는 지우면 같이 사라지는 전부다."
+    },
+    {
+      "q": "히스토그램 1위가 byte[] 인데 왜 원인이 아닌가.",
+      "a": "얕은 크기로 줄 세운 결과이고 byte[] 는 결과다. 고칠 곳은 그것을 붙잡은 사슬의 위쪽이다."
+    },
+    {
+      "q": "JFR 의 OldObjectSample 로 참조 경로를 얻었나.",
+      "a": "못 얻었다. 255건 전부 root = N/A 였고 CLI 에 path-to-gc-root 인자가 없었다."
+    },
+    {
+      "q": "도구 없이 누수를 짚는 첫 단계는.",
+      "a": "히스토그램에서 개수가 비정상인 내 클래스를 찾는 것이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "얕은 크기",
+      "what": "객체 자신이 차지하는 바이트. 히스토그램이 세는 값이다."
+    },
+    {
+      "term": "유지 크기",
+      "what": "그 객체를 지우면 같이 회수되는 전체 바이트. 지배자 트리가 계산한다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — Troubleshooting Memory Leaks",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/troubleshooting-memory-leaks.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — jcmd",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/jcmd.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

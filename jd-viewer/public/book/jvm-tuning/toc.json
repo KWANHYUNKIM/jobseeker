@@ -633,7 +633,7 @@
           "title": "누가 붙잡고 있나",
           "summary": "지배자 트리.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.5",
@@ -641,7 +641,7 @@
           "title": "할당 프로파일링",
           "summary": "누가 쓰레기를 만드나.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.6",
@@ -649,7 +649,7 @@
           "title": "세이프포인트",
           "summary": "GC 아닌 멈춤.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "11.7",

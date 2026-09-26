@@ -1,0 +1,184 @@
+{
+  "book": "jvm-tuning",
+  "id": "alloc-profiling",
+  "no": "11.5",
+  "chapter": 11,
+  "title": "할당 프로파일링",
+  "summary": "누가 쓰레기를 만드나.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "할당 표본에서 내 코드를 골라낸다.",
+    "타입이 아니라 프레임 빈도로 읽는 법을 안다.",
+    "weight 가 추정값인 것을 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.4절에서 히스토그램이 **`Leak$Session` 이라는 이름**까지 줬다. 남은 것은 **그것을 만든 코드 줄**이다.\n\n11.2절의 `jdk.ObjectAllocationSample` 이 그 답을 들고 있다 — 타입과 양과 **스택**이다. 이 절은 그 스택을 **어떻게 읽는지**다."
+    },
+    {
+      "type": "prose",
+      "md": "## 먼저 내 것과 도구의 것을 가른다\n\n11.2절에서 본 대로 **JFR 자신의 문자열 풀이 표본에 섞인다.** 읽기 전에 걸러 낸다."
+    },
+    {
+      "type": "table",
+      "caption": "11.4 의 누수 프로세스에서 뜬 표본 (15초 profile)",
+      "columns": [
+        "",
+        "건수",
+        "weight 합"
+      ],
+      "rows": [
+        [
+          "전체",
+          "210건",
+          "-"
+        ],
+        [
+          "**내 코드**",
+          "**203건**",
+          "**63.0 MB**"
+        ],
+        [
+          "JFR 자신(`jdk.jfr.internal`)",
+          "4건",
+          "18.6 MB"
+        ]
+      ],
+      "note": "**4건이 18.6MB** 를 들고 있다 — 건수로 줄 세우면 안 보이고 weight 로 줄 세우면 2위다. 둘 다 본다."
+    },
+    {
+      "type": "prose",
+      "md": "## 타입별로 모으면 범인이 하나다\n\n내 코드 표본만 타입으로 모으면 **`byte[]` 하나가 63.2MB** 다. 11.4절 히스토그램의 66MB 와 맞는다 — **같은 것을 다른 각도에서** 본 값이다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "맨 위 프레임만 보면 JDK 안을 짚는다",
+      "md": "**처음 집계했을 때 `java.util.Arrays.copyOfRange` 가 1위로 나왔다.**\n\n> 표본 하나의 스택에서 **아무 프레임 하나**를 뽑아 세면 그런 일이 난다 — 순서 없는 자료구조에서 꺼낸 것이 원인이었다.\n> 고칠 곳은 `Arrays.copyOfRange` 가 아니다. 그건 JDK 안이다.\n> **스택 전체를 프레임 빈도로** 세면 답이 바뀐다 — 아래."
+    },
+    {
+      "type": "table",
+      "caption": "`byte[]` 표본들의 스택에 나타난 프레임 빈도",
+      "columns": [
+        "빈도",
+        "프레임"
+      ],
+      "rows": [
+        [
+          "**201회**",
+          "**`Leak.main`**"
+        ],
+        [
+          "**200회**",
+          "**`Leak$Session.<init>`**"
+        ],
+        [
+          "3회",
+          "`java.lang.String.substring`"
+        ],
+        [
+          "2회",
+          "`java.util.Arrays.copyOfRange`"
+        ],
+        [
+          "2회",
+          "`java.lang.StringLatin1.newString`"
+        ],
+        [
+          "1회",
+          "`jdk.internal.org.objectweb.asm.Frame.getAbstractTypeFromDescriptor`"
+        ]
+      ],
+      "note": "**`Leak$Session.<init>` 200회**다. 줄 번호까지 나온다 — `line: 5`, 정확히 `new byte[16 * 1024]` 가 있는 줄이다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "그래서 이것이 힙 덤프와 다른 도구다",
+      "md": "**덤프는 '있다'를 말하고 할당 표본은 '만들었다'를 말한다.**\n\n> 11.4절의 히스토그램은 `Leak$Session` 4,000개가 **있다**고 했다. 어디서 만들었는지는 안 말한다.\n> 할당 표본은 **`Leak$Session.<init>(String) line: 5`** 를 짚는다 — **고칠 자리**다.\n> 그리고 **살다 죽은 것도 잡힌다.** 6.3절의 생존율이 낮은데 GC 가 잦으면 덤프에는 아무것도 없다 — 그때 볼 것이 이것이다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "weight 는 추정값이다",
+      "md": "**표본 하나가 수백 KB 를 들고 있다.**\n\n```\nobjectClass = java.lang.String\nweight = 236.8 kB\nstackTrace = [ Leak.main(String[]) line: 11 ]\n```\n\n> `String` 하나가 236.8kB 일 리 없다. **샘플러가 표본 하나로 전체 양을 추정한 값**이다.\n> 그래서 **절대값으로 읽지 않는다** — 순위와 배수로 읽는다. 위 표에서 `byte[]` 63.2MB 는 \"거의 전부\"라는 뜻이다.\n> 정확한 총량이 필요하면 **히스토그램**(11.3·11.4절)이나 **NMT**(9.1절) 쪽이다."
+    },
+    {
+      "type": "prose",
+      "md": "## 실무에서 읽는 순서\n\n**1)** `jdk.jfr.internal` 프레임이 든 표본을 걸러 낸다. **2)** 타입별 weight 로 줄 세워 **한두 타입이 압도적인지** 본다 — 여기서는 `byte[]` 하나였다. **3)** 그 타입의 표본들에서 **프레임 빈도**를 센다. **4)** 내 패키지의 프레임 중 가장 빈번한 것이 고칠 자리다.\n\n**4번에서 내 프레임이 안 나오면** 라이브러리가 만드는 것이다 — 그때는 그 라이브러리를 부르는 내 코드를 스택에서 더 아래로 찾는다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 11.4 의 누수 프로세스에 JFR 을 걸고 살아 있는 동안 뜬 기록\n\n$ jcmd <pid> JFR.dump name=r1 filename=leak.jfr\n$ ls -lh leak.jfr\n  398K\n\n# --- 1) 내 것과 JFR 의 것을 가른다 ---\n\n$ jfr print --events jdk.ObjectAllocationSample leak.jfr | (걸러 세기)\n  표본 210건 · 내 코드 203건 · JFR 자신 4건\n  weight 합 — 내 코드 63.0 MB · JFR 18.6 MB\n\n# --- 2) 타입별 weight ---\n\n     63.2 MB  203건  byte[]\n      0.2 MB    2건  java.lang.String\n      0.0 MB    1건  java.util.HashMap$Node\n\n# --- 3) byte[] 표본들의 프레임 빈도 ---\n\n  201회  Leak.main\n  200회  Leak$Session.<init>\n    3회  java.lang.String.substring\n    2회  java.util.Arrays.copyOfRange\n    2회  java.lang.StringLatin1.newString\n    1회  jdk.internal.org.objectweb.asm.Frame.getAbstractTypeFromDescriptor\n\n# --- 4) 줄 번호까지 ---\n\n$ jfr print --events jdk.ObjectAllocationSample leak.jfr | grep -oE 'Leak[^ ]*\\([^)]*\\) line: [0-9]+' | sort | uniq -c\n 202 Leak.main(String[]) line: 10\n   1 Leak.main(String[]) line: 11\n 200 Leak$Session.<init>(String) line: 5\n\n# line: 5 가 final byte[] payload = new byte[16 * 1024]; 이다.\n\n# --- 표본 하나의 원문 ---\n\njdk.ObjectAllocationSample {\n  startTime = 12:00:02.501\n  objectClass = java.lang.String (classLoader = bootstrap)\n  weight = 236.8 kB\n  eventThread = \"main\" (javaThreadId = 1)\n  stackTrace = [\n    Leak.main(String[]) line: 11\n  ]\n}",
+      "note": "**`200 Leak$Session.<init>(String) line: 5`** 가 이 절의 답이다 — 히스토그램이 준 이름에 줄 번호가 붙었다."
+    }
+  ],
+  "recap": [
+    "할당 표본은 타입과 양과 스택을 같이 준다 — 덤프가 못 하는 일이다.",
+    "읽기 전에 jdk.jfr.internal 프레임이 든 표본을 걸러 낸다.",
+    "타입별로 모으니 byte[] 하나가 63.2MB 로 압도적이었다.",
+    "스택은 맨 위 프레임이 아니라 프레임 빈도로 읽는다 — Leak$Session.<init> 200회.",
+    "weight 는 표본에서 추정한 값이라 순위와 배수로만 읽는다."
+  ],
+  "drills": [
+    {
+      "task": "내 애플리케이션 표본에서 타입별 weight 순위를 낸다.",
+      "done_when": "압도적인 타입이 있는지 본다.",
+      "minutes": 12
+    },
+    {
+      "task": "그 타입의 표본에서 내 패키지 프레임의 빈도를 센다.",
+      "done_when": "줄 번호까지 짚는다.",
+      "minutes": 15
+    },
+    {
+      "task": "히스토그램의 총량과 표본 weight 합을 비교한다.",
+      "done_when": "추정값의 오차 감각을 갖는다.",
+      "minutes": 12
+    }
+  ],
+  "quiz": [
+    {
+      "q": "할당 표본이 힙 덤프로 못 하는 일은.",
+      "a": "어디서 만들었는지(스택)를 말하고, 살다 죽은 것도 잡는다."
+    },
+    {
+      "q": "스택을 맨 위 프레임으로 읽으면 안 되는 이유는.",
+      "a": "JDK 안을 짚게 된다. 프레임 빈도로 세야 내 코드가 나온다."
+    },
+    {
+      "q": "weight 가 String 하나에 236.8kB 인 이유는.",
+      "a": "표본 하나로 전체 양을 추정한 값이다. 절대값이 아니다."
+    },
+    {
+      "q": "정확한 총량이 필요하면 무엇을 보나.",
+      "a": "히스토그램이나 NMT 다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "할당 표본",
+      "what": "JFR 의 ObjectAllocationSample. 타입·추정량·할당 스택을 담는다."
+    },
+    {
+      "term": "프레임 빈도",
+      "what": "표본들의 스택에 어떤 메서드가 몇 번 나타났는지. 고칠 자리를 짚는 읽기 방법이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — JDK Flight Recorder",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/diagnostic-tools.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JEP 349: JFR Event Streaming",
+      "url": "https://openjdk.org/jeps/349",
+      "publisher": "OpenJDK"
+    }
+  ]
+}

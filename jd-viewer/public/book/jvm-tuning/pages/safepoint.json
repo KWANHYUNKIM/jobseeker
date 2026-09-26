@@ -1,0 +1,184 @@
+{
+  "book": "jvm-tuning",
+  "id": "safepoint",
+  "no": "11.6",
+  "chapter": 11,
+  "title": "세이프포인트",
+  "summary": "GC 아닌 멈춤.",
+  "minutes": 13,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "멈춤이 두 토막인 것을 안다.",
+    "GC 로그의 숫자가 그중 하나뿐인 것을 확인한다.",
+    "도달 시간이 폭발하는 조건을 재 본다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "11.3절에서 힙 덤프의 멈춤을 재다가 **줄에 칸이 둘**인 것을 봤다 — `Reaching safepoint` 와 `At safepoint`.\n\n이 절의 요점은 하나다. **GC 로그가 말하는 멈춤은 뒤쪽 칸뿐이다.** 앞쪽 칸은 거기 없고, 그런데 **앞쪽이 1.7초까지 갈 수 있다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 멈춤은 두 토막이다\n\nJVM 이 힙을 만지려면 **모든 자바 스레드가 안전한 지점에 서 있어야** 한다. 그 지점이 세이프포인트이고, 멈춤은 **거기까지 모으는 시간**과 **거기서 일하는 시간**으로 나뉜다."
+    },
+    {
+      "type": "figure",
+      "caption": "한 줄에 든 두 토막",
+      "ascii": "   Safepoint \"G1CollectFull\"\n     Reaching safepoint:  30000 ns      gather every java thread\n     Cleanup:             25000 ns\n     At safepoint:      2033000 ns      do the actual work\n     Total:             2088000 ns\n\n   the gc log prints only the At safepoint part\n   a thread that will not stop shows up in the first line, not the third",
+      "note": "**GC 로그의 `2.033ms` 는 셋째 줄이다.** 첫째 줄은 GC 로그에 없다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "안 서는 스레드가 있으면 전부 기다린다",
+      "md": "**세이프포인트는 전원 합의**다.\n\n> 자바 코드는 **폴(poll)** 이라는 검사를 곳곳에 지나며 \"지금 서야 하나\"를 본다.\n> 그 검사가 **없는 구간에 들어가 있는 스레드 하나**가 있으면 나올 때까지 **나머지 전부가 멈춰** 있다.\n> 네이티브 코드(JNI)를 돌고 있는 스레드는 세이프포인트로 세지 **않는다** — 힙을 안 만지니까. 자바로 돌아올 때 걸린다."
+    },
+    {
+      "type": "prose",
+      "md": "## 폴이 없는 구간을 만들어 본다\n\n고전적인 자리가 **`int` 카운터 루프**다. 반복 횟수가 정해져 있고 안에서 객체를 안 만들면 컴파일러가 **폴을 뺀다** — 빼면 그만큼 빠르니까. 20억 번짜리 루프를 돌리면서 다른 스레드가 GC 를 불러 봤다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "요즘 JVM 은 이 루프를 쪼갠다",
+      "md": "```\nbool  UseCountedLoopSafepoints      = true     {default}\nuintx LoopStripMiningIter          = 1000     {default}\nuintx LoopStripMiningIterShortLoop = 100      {default}\n```\n\n> **루프를 1,000회씩 토막 내고 토막 사이에 폴을 넣는다.** 그래서 기본 설정에서는 이 문제가 안 난다.\n> 그것을 끄면 옛날 동작이 된다 — **아래가 그 비교**다.\n> 자바 10 에 들어온 기능이라, **그보다 낮은 판에서는 이 문제가 실재**했다."
+    },
+    {
+      "type": "table",
+      "caption": "20억 회 `int` 루프가 도는 중에 `jcmd GC.run` 을 세 번",
+      "columns": [
+        "설정",
+        "도달 시간 최대"
+      ],
+      "rows": [
+        [
+          "기본 (루프를 쪼갠다)",
+          "**0.12 ms**"
+        ],
+        [
+          "`-XX:-UseCountedLoopSafepoints`",
+          "**1,696.80 ms**"
+        ]
+      ],
+      "note": "**0.12ms 와 1.7초.** 약 14,000배다. 그리고 두 경우 다 GC 로그의 멈춤 숫자는 2ms 대였다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "1.7초 멈췄는데 GC 로그는 2ms 라고 한다",
+      "md": "**이것이 이 절을 쓴 이유다.**\n\n> 애플리케이션은 **1.7초 동안 아무것도 못 했다.** 응답 시간에 1.7초가 그대로 얹힌다.\n> 그런데 GC 로그에는 `2.033ms` 만 있다 — 7.5절에서 멈춤 목표를 맞췄다고 믿게 되는 자리다.\n> **GC 로그만 보면 이 멈춤은 존재하지 않는다.** `-Xlog:safepoint` 를 켜야 보인다."
+    },
+    {
+      "type": "prose",
+      "md": "## GC 가 아닌 세이프포인트들\n\n세이프포인트는 GC 만 쓰는 것이 아니다. 이 책에서 실제로 찍힌 이름들이다 — `G1CollectFull`(GC), `Cleanup`(주기적 정리), 그리고 11.3절의 **`HeapDumper`**."
+    },
+    {
+      "type": "table",
+      "caption": "이 책에서 실제로 찍힌 세이프포인트",
+      "columns": [
+        "이름",
+        "도달",
+        "머문 시간",
+        "어느 절"
+      ],
+      "rows": [
+        [
+          "`G1CollectFull`",
+          "0.03~0.08 ms",
+          "1.80~2.03 ms",
+          "여기"
+        ],
+        [
+          "`Cleanup`",
+          "0.08 ms",
+          "0.002 ms",
+          "여기"
+        ],
+        [
+          "**`HeapDumper`**",
+          "0.36 ms",
+          "**70.30 ms**",
+          "11.3"
+        ]
+      ],
+      "note": "**`HeapDumper` 가 70ms** 다 — 11.3절에서 본 그것이고, GC 가 아닌데 GC 만큼 멈춘다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"GC 로그의 멈춤이 다 합쳐 1%인데 응답 p99 가 나쁩니다.\"**\n\n> 답할 자리가 이 절이다. **GC 로그는 `At safepoint` 만 적는다** — 도달 시간과 GC 아닌 세이프포인트가 빠져 있다.\n> `-Xlog:safepoint` 를 켜서 `Reaching safepoint` 와 세이프포인트 이름을 본다.\n> 11.7절의 지연 분석이 이어서 그 숫자들을 응답 시간과 맞춘다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "$ cat Safe.java\npublic class Safe {\n    static long sink;\n    // int 카운터 루프 — 컴파일러가 폴을 빼는 자리\n    static long counted(int n) {\n        long s = 0;\n        for (int i = 0; i < n; i++) s += i ^ (i >> 3);\n        return s;\n    }\n    public static void main(String[] a) throws Exception {\n        for (int r = 0; r < 6; r++) sink = counted(Integer.MAX_VALUE - 1);\n    }\n}\n\n# --- 1) 기본값 확인 ---\n\n$ java -XX:+PrintFlagsFinal -version | grep -iE 'CountedLoopSafepoints|StripMining'\nbool  UseCountedLoopSafepoints      = true     {C2 product} {default}\nuintx LoopStripMiningIter          = 1000     {C2 product} {default}\nuintx LoopStripMiningIterShortLoop = 100      {C2 product} {default}\n\n# --- 2) 루프가 도는 중에 GC 를 세 번 부른다 ---\n\n$ java -Xmx256m -Xlog:safepoint -cp out Safe &\n$ for i in 1 2 3; do jcmd <pid> GC.run; sleep 1; done\n\n  기본(쪼갬)                        도달 최대     0.12 ms  (4건)\n  -XX:-UseCountedLoopSafepoints    도달 최대  1696.80 ms  (4건)\n\n# --- 3) 찍힌 세이프포인트들 ---\n\n  Cleanup              도달     0.08 ms   머문   0.002 ms\n  G1CollectFull        도달     0.08 ms   머문   1.801 ms\n  G1CollectFull        도달     0.07 ms   머문   1.806 ms\n  G1CollectFull        도달     0.03 ms   머문   2.033 ms\n\n# --- 4) 11.3 의 힙 덤프 세이프포인트 ---\n\n[4.988s][info][safepoint] Safepoint \"HeapDumper\", Time since last: 3874444292 ns,\n  Reaching safepoint: 358125 ns, Cleanup: 25417 ns,\n  At safepoint: 70297083 ns, Total: 70680625 ns\n\n# 도달 1.7초짜리 실행에서도 GC 로그의 멈춤은 2ms 대였다.\n# 그 1.7초는 -Xlog:safepoint 에만 있다.",
+      "note": "**같은 실행에서 GC 로그는 2ms, 세이프포인트 로그는 1,696ms** 다. 어느 쪽이 사용자가 느낀 시간인지는 분명하다."
+    }
+  ],
+  "recap": [
+    "멈춤은 세이프포인트까지 모으는 시간과 거기서 일하는 시간 두 토막이다.",
+    "GC 로그가 적는 멈춤은 뒤쪽(At safepoint)뿐이다.",
+    "폴이 없는 구간에 있는 스레드 하나가 나머지 전부를 기다리게 한다.",
+    "기본 설정은 카운터 루프를 1,000회씩 쪼개 폴을 넣는다 — 도달 최대 0.12ms 였다.",
+    "그것을 끄니 도달 최대가 1,696.80ms 였고 그때도 GC 로그의 멈춤은 2ms 대였다."
+  ],
+  "drills": [
+    {
+      "task": "-Xlog:safepoint 를 켜고 Reaching safepoint 의 최대값을 찾는다.",
+      "done_when": "At safepoint 와 비교한다.",
+      "minutes": 12
+    },
+    {
+      "task": "찍힌 세이프포인트 이름을 세어 GC 아닌 것을 골라낸다.",
+      "done_when": "무엇이 멈추게 하는지 목록을 갖는다.",
+      "minutes": 12
+    },
+    {
+      "task": "GC 로그의 멈춤 합과 세이프포인트 Total 합을 비교한다.",
+      "done_when": "차이가 얼마인지 안다.",
+      "minutes": 15
+    }
+  ],
+  "quiz": [
+    {
+      "q": "멈춤의 두 토막은.",
+      "a": "세이프포인트까지 모으는 시간(Reaching)과 거기서 일하는 시간(At safepoint)이다."
+    },
+    {
+      "q": "GC 로그가 적는 것은 그중 어느 쪽인가.",
+      "a": "At safepoint 뿐이다. 도달 시간은 없다."
+    },
+    {
+      "q": "도달 시간이 길어지는 조건은.",
+      "a": "세이프포인트 폴이 없는 구간에 스레드가 들어가 있을 때다."
+    },
+    {
+      "q": "기본 설정이 그 문제를 막는 방법은.",
+      "a": "카운터 루프를 LoopStripMiningIter(1,000)회씩 쪼개 토막 사이에 폴을 넣는다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "세이프포인트",
+      "what": "모든 자바 스레드가 힙을 안전하게 맡길 수 있는 지점. 여기 모여야 GC 가 돈다."
+    },
+    {
+      "term": "도달 시간",
+      "what": "Reaching safepoint. 모든 스레드를 그 지점에 모으는 데 걸린 시간. GC 로그에는 없다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command, -Xlog",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "JDK-8186027: C2: loop strip mining",
+      "url": "https://bugs.openjdk.org/browse/JDK-8186027",
+      "publisher": "OpenJDK"
+    }
+  ]
+}
