@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — classi 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — cockroach-labs 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **cockroach-labs** — 2026-09-26 없음 1회째. `/blog/engineering/` 맨 위는 차량 검색 튜토리얼, 그다음 Pebble 값 분리(이미 출처). RSS(`/blog/index.xml`)는 HTML. 출처에 없는 "Ideal isn't real" 복원력 스트레스 시험은 이전 글 쓰기 답을 받으면 후보.
 - **classi** — 2026-09-26 없음 1회째. `tech.classi.jp/feed` 최신 08-06(이미 출처). 출처에 없는 学トレAIコーチ(08-04)는 이전 글 쓰기 답을 받으면 후보.
 - **chroma** — 2026-09-26 없음 1회째. `/engineering` 맨 위가 transactions(이미 출처). 출처에 없는 BYOC·사용량 과금 글은 이전 글 쓰기 답을 받으면 후보.
 - **chainguard** — 2026-09-26 툴체인 버전 스트림(09-09) → `version-stream-the-toolchain`, 기존 "끊임없이 다시 짓는다". 같은 연재 둘(규제 환경·FIPS 포스트양자)은 다음. RSS 는 요약만 — 본문은 r.jina.ai.
