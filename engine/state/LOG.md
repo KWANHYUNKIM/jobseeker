@@ -1804,3 +1804,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 WWWAVE hold
 
 - 검색 1 RSS 20편 · 검색 2 Zenn 검색 API 4낱말(90번째 후보 조사 때). hold_reason·'재시도 안 함'·QUEUE hold.
+
+## 2026-09-26 PIVOT 회사 프로파일
+
+- 회사 페이지·요금 페이지를 jina 로 못 찾음(corp. 서브도메인 없음, /company·/premium 은 빈 SPA). 서비스 페이지의 무료 회원·마일과 시청 로그 글의 '광고 재생 중 제외' 로 수익원 둘을 inferred 로. 도메인 둘(미션 Pull 형·시청 로그 큐잉).

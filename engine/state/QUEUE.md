@@ -42,13 +42,13 @@
 | **Finatext** | JP · 핀테크 인프라·금융 데이터 | 프로파일(2026-09-26). 도메인 둘 — 수십억 행 금융 거래 데이터를 매일 납품하는 비용을 줄인다 · BI 와 AI 에 DWH 의 어느 층까지 보여줄지 정한다. 기능 2(`snowflake-pipeline-cost-cut` · `crest-dwh-layer-exposure`). **hold** — 증권·보험·지원 수익원 자료 두 번 없음(2026-09-26). 수익원 다섯 중 BaaS·Insurtech·Fintech SHIFT 는 도메인 없음. 입구 `zenn.dev/p/finatext/feed`. |
 | **KENCOPA** | JP · 건설 AI 에이전트 | 프로파일(2026-09-26). 도메인 둘 — 설계 도서로 공정표의 일수를 세운다 · 제각각인 PDF 표를 구조화 데이터로 뽑는다. 기능 2(`activity-rate-quantity-linking` · `sds-pdf-table-extraction`). **hold** — 적산 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 적산 AI 에이전트는 도메인 없음. 입구 `zenn.dev/p/kencopa/feed`(8편). |
 | **WWWAVE(ウェイブ)** | JP · 전자 코믹·아니메 제작·배신 | 프로파일(2026-09-26). 도메인 둘 — 전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다 · 이상 때만 알리는 감시에서 침묵을 해석한다. 기능 2(`access-vba-delivery-retirement` · `batch-silence-monitoring`). **hold** — 신규 사업 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 신규 사업은 도메인 없음. 입구 `zenn.dev/p/wwwave/feed`. |
+| **PIVOT** | JP · 비즈니스 영상 미디어 | 프로파일(2026-09-26). 도메인 둘 — 시청 습관을 만드는 미션과 마일을 서버가 판정한다 · 흔들리는 모바일 네트워크에서 시청 로그를 빠짐없이 보낸다. 기능 0. 과금 구조 미공개 — 수익원(영상 광고 · 회원 기반) 둘 다 inferred. 입구 `zenn.dev/p/pivotmedia/feed`. |
 
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **PIVOT** | JP · 비즈니스 영상 미디어(앱·Web·TV) | Zenn Publication `zenn.dev/p/pivotmedia`(RSS 20편). **미션 기능을 다시 만들었다 — 접속 방향의 역전과 코드로 조립하는 미션 정의**(`pivot-mission-pull-architecture`, 2026-05-21) — 2025년경 최소 구현한 '데일리 액션'(시청·에피소드 평가로 마일 적립)을 Push 형·이벤트 구동으로 생각하다 상담 끝에 **Pull 형**으로(정기 잡이 당긴다), 미션 정의를 코드로 조립해 GW 한정 미션 같은 변형을 싸게, 의도적 트레이드오프 절 있음, 모듈러 모놀리스와 조합. 곁글 — iOS Widget 과 인증 토큰 크로스 프로세스 공유(`ios-widget-token-sharing`)·모노레포로 Android TV 시청 로그(`android-tv-viewing-log`)·'읽음' 은 언제 읽음인가(`concept-analysis-domain-modeling`). **미디어 축**. |
 | **Stock** | JP · 정보 공유·업무 SaaS | Zenn Publication `zenn.dev/p/stock_inc`(RSS 6편, 8~9월 매주). **검색 적중률을 LLM 으로 올리면서 비용을 누르는 '싼 모델 사전 스크리닝'**(`cheap-model-prescreening-search`, 2026-09-09) — '후보는 나오는데 적중하지 않는' 검색 문제를 고성능 모델 전건 판정 대신 Haiku 급으로 먼저 거르는 다단 구성, 비용 견적 방법·단계적 도입·**임계값은 세 제약의 교점**·채택 안 한 안·예상 반론 절 있음. 곁글 — AI 채용 스크리닝 전 익명화 전처리(`anonymization-pipeline-before-ai-screening`)·스캔 PDF OCR 이 '못 읽는' 세 이유·ECS 태스크 정의 리비전을 돌려도 안 돌아가는 롤백. **업무 SaaS 축**. |
 | **1D(ワンディー)** | JP · 치과 의료 교육 플랫폼 | Zenn Publication `zenn.dev/p/oned_tech`(RSS 2편 — 적다). **Ory Hydra 로 자체 공통 인증 기반을 만들고 기존 사용자를 안은 채 인증 방식을 바꿨다**(`oned-idp-hydra-migration`, 2026-09-20) — 치과의사용 1D Web·앱·위생사용·국시 대책 앱으로 늘자 프로덕트 간 SSO 불가 등 한계 넷 → **Cognito 를 그만두고 Hydra + 자체 IDM**(Kratos 는 왜 아닌가·트레이드오프 절) · 기존 사용자를 DMS 로 IdP 에 복제 · `users.sub` 백필 · JIT 프로비저닝 · 모바일 앱 심사 시간차를 위한 **이중 인증 미들웨어**. 곁글 — 기술 스택 선정 이유(`oned-tech-select`, Laravel → Go). **헬스케어 교육 축**. |
 
