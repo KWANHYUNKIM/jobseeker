@@ -378,7 +378,7 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.**",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.** 같은 문장(`The base pay for Staff position ranges from $152K/year to $277K/year.`)이 Mountain View 근무 `Staff Machine Learning Engineer` 공고 세 건(Personalization · Search & Discovery · Search Ranking)에도 그대로 있다 — 같은 템플릿이라 새 범위는 아니다. ⚠️ **미국 범위가 하나 더 나왔다** — `Staff Data Engineer`(Mountain View)는 `The base pay for this position ranges from $164,000/year in our lowest geographic market to $282,000/year in our highest geographic market.` 와 `Annual bonus is 0-20% of the base salary` 를 적는다. 같은 팀 `Director, Data Engineering`($174K~$290K)보다 범위가 조금 낮다. 원화로 환산하지 않는다. `Staff ML Engineer – Search & Discovery Relevance`(Mountain View)는 `The base pay for this position ranges from $174,000K/year to $299,000K/year.` 라고 적는다 — 원문에 'K' 가 중복 표기돼 있어 $174,000~$299,000 으로 읽히지만 **원문 그대로 둔다.** `Senior Staff Backend Engineer - Cloud Infrastructure`(Mountain View)는 `The base pay for this position ranges from $174,000/year to $299,000/year. Pay is based on several factors including market location and may vary depending on job-related knowledge, skills, and experience. Annual bonus is 0-20% of the base salary.` 라고 적는다(연 보너스 기본급의 0~20%). 원화로 환산하지 않는다.",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
       "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
@@ -14010,6 +14010,119 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7962133",
+      "title": "Senior Staff Backend Engineer - Cloud Infrastructure",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 미국 마운틴뷰 근무다(보상이 US geographic markets 기준). 클라우드 인프라 엔지니어링 시니어 스태프로, 공고는 주요업무 없이 요건만 나열한다 — 클라우드 플랫폼 엔지니어링 15년 이상, 시스템 엔지니어링·Cloud DevOps·SRE 10년 이상, AWS/Azure 설계 7년 이상, IaC 10년 이상, 하이브리드 클라우드 7년 이상, 팀 리딩 경험. 크롤 데이터에서 이 요건 줄들이 우대 칸에 들어가 있고, 그 아래 'Basic Qualifications' 로 학사+7년 이상이 따로 적혀 있어 두 요건 수준이 크게 어긋난다. 연봉 범위가 원문에 있다(기본급 $174,000~$299,000/년, 연 보너스 기본급의 0~20%) — 원화로 환산하지 않는다.",
+      "fit": {
+        "must_have": [
+          "클라우드 플랫폼 엔지니어링 15년 이상(우대 칸 표기)",
+          "Cloud DevOps·SRE 10년 이상",
+          "AWS/Azure 기반 설계 7년 이상",
+          "IaC 10년 이상·Linux",
+          "하이브리드 클라우드 운영",
+          "팀 리딩"
+        ],
+        "can_learn": [
+          "AWS 자격(Advanced Architecting·Developing on AWS)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "IaC 로 앱 스택 배포 자동화 — Terraform",
+          "from": "preference",
+          "quote": "Strong hands-on experience on automating App stack deployments through IaC using Terraform, Python or Go.",
+          "priority": "core",
+          "why": "IaC 구축·운영 10년 이상과 Terraform·Python·Go 로 앱 스택 배포를 자동화한 실무가 요건으로 나열돼 있다.",
+          "gap_check": "여러 팀이 같은 Terraform 상태를 건드릴 때 상태 잠금·모듈 버전·환경별(dev/stage/prod) 분리를 어떻게 설계하고, 드리프트는 무엇으로 찾는가?",
+          "drill": "VPC·ALB·오토스케일링 그룹을 Terraform 모듈로 만들고 환경별 워크스페이스(또는 디렉터리)로 나눈 뒤, 원격 상태·잠금을 설정하고 plan 으로 드리프트를 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Terraform Documentation",
+              "url": "https://developer.hashicorp.com/terraform/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "하이브리드 클라우드 환경 구축·운영",
+          "from": "preference",
+          "quote": "7+ year’s of hands-on experience in building and managing high-performance, highly-available and scalable Hybrid Cloud cloud environments .",
+          "priority": "core",
+          "why": "고성능·고가용·확장 가능한 하이브리드 클라우드 환경 구축·관리 7년 이상이 요건이다.",
+          "gap_check": "온프레미스 데이터센터와 AWS 를 잇는 방법(Site-to-Site VPN·Direct Connect)을 대역폭·지연·가용성 기준으로 어떻게 고르고, 한쪽 연결이 끊겼을 때의 경로는 어떻게 두는가?",
+          "drill": "AWS 하이브리드 연결 백서를 읽고, 가상 데이터센터 두 곳과 AWS 리전 하나를 잇는 이중화 연결 설계도(주·보조 경로, 라우팅)를 그린다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "AWS Whitepaper — Hybrid Connectivity",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/hybrid-connectivity/hybrid-connectivity.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드 SRE — 고가용 분산 시스템 운영",
+          "from": "preference",
+          "quote": "10+ years of hands-on experience on system engineering, Cloud DevOps and Cloud SRE",
+          "priority": "high",
+          "why": "시스템 엔지니어링·Cloud DevOps·Cloud SRE 10년 이상과 클라우드에서 고성능·고가용 분산 시스템 구축 10년 이상이 요건이다.",
+          "gap_check": "인프라 플랫폼 팀이 여러 서비스 팀에 제공하는 공통 인프라의 SLO 는 무엇으로 정하고, 변경(배포·패치)이 장애로 이어지지 않게 어떤 절차를 두는가?",
+          "drill": "SRE 책의 SLO·변경 관리 장을 읽고, 공통 쿠버네티스 클러스터(또는 공통 네트워크)에 대한 SLO 세 개와 점진 배포 절차를 한 장으로 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Google SRE Book",
+              "url": "https://sre.google/sre-book/table-of-contents/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 아키텍처 설계 리딩",
+          "from": "preference",
+          "quote": "7+ years of hands-on experience leading system design, architecture leveraging AWS or Azure services",
+          "priority": "high",
+          "why": "AWS 또는 Azure 서비스를 활용한 시스템 설계·아키텍처 리딩 7년 이상이 요건이고, AWS 자격(Advanced Architecting·Developing on AWS)이 이름으로 나온다.",
+          "gap_check": "같은 워크로드를 비용·성능·신뢰성·보안 관점에서 두 설계안으로 비교할 때, Well-Architected 기둥별로 무엇을 질문하는가?",
+          "drill": "Well-Architected Framework 여섯 기둥의 질문으로 가상 서비스 설계 두 안을 비교한 결정 기록(ADR) 한 편을 쓴다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "AWS Well-Architected Framework",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Terraform 멀티 환경 모듈 저장소",
+          "why": "요건 중 가장 구체적인 것이 IaC 로 앱 스택 배포를 자동화한 실무다. 환경 분리·원격 상태·드리프트 점검을 갖춘 공개 모듈은 그 경험을 보여 준다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "Terraform 상태·모듈 설계",
+          "하이브리드 연결 이중화",
+          "공통 인프라 SLO",
+          "AWS 설계 트레이드오프",
+          "팀 리딩"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff Backend Engineer - Cloud Infrastructure",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7962133",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -14040,6 +14153,7 @@
     "gh 8158581 제목의 CFS·CLS·CES·DDnayo 가 각각 어느 법인·서비스를 가리키는지 공고에 풀이가 없다.",
     "사람인 '이츠 데이터 분석 어시스턴트'(rec_idx=54939508) 크롤 근무지 칸의 '216 만원' 이 무엇의 금액인지 공고 세 절에 설명이 없다.",
     "사람인 'CS 전문가 공개채용'(rec_idx=55110254)은 한 공고에 기술 상담·CS 정책 운영관리·본사 대외 민원 자리가 묶여 있고, 크롤 데이터에서 자리별 자격요건이 섞여 어느 요건이 어느 자리의 것인지 가를 수 없다.",
-    "gh 7953042 'Senior Staff Backend Engineer'(하이데라바드)는 자격요건 7줄뿐이라 어느 팀·시스템인지 공고로 알 수 없다."
+    "gh 7953042 'Senior Staff Backend Engineer'(하이데라바드)는 자격요건 7줄뿐이라 어느 팀·시스템인지 공고로 알 수 없다.",
+    "gh 7962133(Cloud Infrastructure, Mountain View)은 우대 칸의 연차 요건(15년·10년)과 'Basic Qualifications'(학사+7년)가 크게 어긋난다 — 어느 쪽이 실제 기준인지 공고로 알 수 없다."
   ]
 }
