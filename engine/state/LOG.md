@@ -1928,3 +1928,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 dely hold
 
 - 남은 수익원 둘(AI OS·TRILL/LIVEwith) — 검색 1 RSS 20편 · 검색 2 Zenn 검색 API(지난 사이클). hold_reason·'재시도 안 함'·QUEUE hold.
+
+## 2026-09-26 みてね 회사 프로파일
+
+- mitene.us(무료 무제한·프린트 11장)와 프리미엄 페이지(One·Family·Family Pro)로 수익원 둘. 기술 글에서 제품 쪽 자연어 검색(프리미엄 Pro)과 인프라 입구 이행 — 도메인 둘.

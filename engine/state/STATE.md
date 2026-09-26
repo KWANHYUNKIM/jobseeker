@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**dely hold(2026-09-26) — AI OS·TRILL/LIVEwith 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지(도메인 3·기능 3). 다음은 --gaps 를 따른다 — 큐 대기 みてね(`202604-ingress-nginx-to-envoy-gateway` · Hilt 이행) 또는 큐 1/3 이라 후보 조사(입구: note·Speaker Deck·하테나 — Zenn 최신 글 API 는 100쪽 상한). 대기 1/3(みてね) — --gaps 가 후보 조사를 부를 수 있다(입구: note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**みてね 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: '가족당 수백만 장에서 말로 사진을 찾는다' — `e345c6746eb3e3`(CLIP · OpenSearch 가족 멀티테넌트 · OR2 · Efficient k-NN Filtering · 모델 선정 T→I Precision@K · 임계값 · S3 Vectors 검토; 본문 아직). 그다음 '내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다' — `202604-ingress-nginx-to-envoy-gateway`. 수익원 사진 프린트·포토북은 도메인 없음 → 두 기능 뒤 두 번 찾고 없으면 hold. 대기 0/3 — --gaps 가 후보 조사를 부르면 그쪽(입구: note·Speaker Deck·하테나). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
