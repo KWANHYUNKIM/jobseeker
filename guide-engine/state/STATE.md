@@ -4,15 +4,13 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **72건**.
-이번 루프에서 정리한 겹침(전부 ✅): Rocket Pay Senior Staff(차이만) · Rocket Pay Staff 영문(dup) · Orchestration 영문(dup) ·
-Eats Web FE(dup) · Eats Merchant 재게시(dup) · ML Staff 3건(dup) · Infrastructure 싱가포르 IC(차이만) ·
-**Cloud Infra Automation 원티드(wd/382712 → dup gh_jid=8107804)**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **73건**.
+직전 회차: `Sr. Staff Back-end Engineer (Coupang Pay)`(ats 7936538, 서울) — 겹침 0.61 은 다른 팀(E-commerce Director)
+템플릿이라 **새 공고로 썼다**(4항목). ⚠️ 이 ats 공고는 **세 절 중 우대사항 칸만** 들어왔다 — 주요업무·기본 자격(15년+)은
+`full_jd` 에서 읽어 `verdict`·`why` 에만 쓰고, **quote 는 우대 칸에서만** 뽑았다(검증은 세 절만 본다).
 
-⚠️ 다음 회차: 겹침 0.9↑ 후보가 바닥났다. 다음 겹침 후보(0.5~0.8, 직급·팀이 다를 수 있어 **양방향 비교 필수**):
-✅ `Staff Data Engineer`(ats 8063701, Director 의 IC 판, 차이만 3 + **salary.note 에 $164K~$282K 추가**), ✅ `Staff ML Engineer – Search & Discovery Relevance`(8202824, 차이만 3 + 급여 $174,000K~$299,000K 원문 표기),
-✅ `Senior Staff / Staff Back-End Engineer`(7981493, 싱가포르판 Pricing 템플릿 → dup), `Sr. Staff Back-end Engineer (Coupang Pay)`(7936538).
-겹침이 낮으면(<0.5) 새 공고로 **전부** 쓴다. 비개발 공고는 건너뛴다.
+이번 루프의 쿠팡 겹침 후보(0.5↑)는 **모두 정리했다.** 다음 회차부터는 겹침이 낮은 **새 개발 공고**를 전부 쓴다.
+후보를 뽑을 때: 개발 직군 제목 + 미작성 + 겹침 <0.5. 비개발은 건너뛴다.
 `Staff, Back-end Engineer (GOEX)` — 회사명 표기가 달라 쿠팡 필터에 안 걸린다(미확인).
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 

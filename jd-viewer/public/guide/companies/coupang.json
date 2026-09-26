@@ -8210,6 +8210,97 @@
       "site": "ats",
       "duplicate_of": "https://www.coupang.jobs/en/jobs/?gh_jid=8120779",
       "verdict": "싱가포르 근무. 'Senior Staff Backend Engineer (Pricing)'(gh_jid=8120779, 미국)과 직무 설명·자격 문장이 모두 같은 템플릿이다. 다른 것은 근무지와, 미국 공고에만 있는 급여·복리후생 절(이쪽엔 없다), 채용 절차(Application Review - Phone Interview - Onsite (or Virtual Onsite) Interview – Offer)뿐이다. 브리핑은 Pricing 공고를 본다."
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7936538",
+      "title": "Sr. Staff Back-end Engineer (Coupang Pay)",
+      "site": "ats",
+      "verdict": "서울 근무, 15년 이상(본문 Basic Qualifications). 쿠페이·와우 카드·셀러 유동성(BaaS)을 아우르는 쿠팡페이 결제 마이크로서비스·이벤트 파이프라인을 직접 설계·코딩하면서, 결제 흐름에 AI 에이전트를 붙이는 일까지 이끄는 풀스택 성향의 최고참 IC. 영어가 유창해야 하고 한국어는 가점이다.",
+      "fit": {
+        "must_have": [
+          "소프트웨어 15년 이상, 대규모 분산 시스템(본문 기준)",
+          "풀스택(Java·Go·Python·JS/TS 등) + 핵심 결제 시스템",
+          "영어 유창(한국어는 plus)"
+        ],
+        "can_learn": [
+          "쿠팡페이 도메인(쿠페이·와우 카드·BaaS)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "글로벌 결제 회사 수준의 결제 시스템 설계",
+          "from": "preference",
+          "quote": "Payment systems experience at top global fintech companies (e.g., Stripe, PayPal, Razorpay, JusPay, AliPay, Visa, Adyen, Square, Mastercard).",
+          "priority": "high",
+          "why": "우대에 Stripe·PayPal·Adyen 같은 회사를 콕 집었다. 본문은 결제 마이크로서비스·이벤트 파이프라인·실시간 API 를 한 사람이 소유한다고 적는다.",
+          "gap_check": "결제 승인 요청이 PG 에서 타임아웃 났을 때 '승인됐는지 모르는' 상태를 어떻게 확정하고(조회·대사), 고객에게 이중 청구가 없게 하는가?",
+          "drill": "결제 상태 머신(요청·승인·실패·불명·취소)을 만들고, 불명 상태를 주기적 조회로 확정하는 복구 작업을 넣어 네트워크 단절 시나리오를 시험한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Stripe — Idempotent requests",
+              "url": "https://docs.stripe.com/api/idempotent_requests",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "결제 워크플로에 AI 에이전트를 운영 수준으로 넣기",
+          "from": "preference",
+          "quote": "Hands-on experience building and deploying AI Agents (GenAI, RAG, workflow automation, LLMs) into production-scale systems.",
+          "priority": "high",
+          "why": "본문 Key Responsibilities 에 '결제 워크플로에 AI 에이전트와 지능형 자동화를 구축·통합'이 있다. 결제에 붙이는 AI 는 틀렸을 때의 비용이 크다(추론).",
+          "gap_check": "결제 운영(예: 실패 결제 분류·환불 판단)에 LLM 에이전트를 넣을 때, 어느 결정은 사람이 승인하게 두고 어떤 기록을 남기는가?",
+          "drill": "실패한 결제 로그를 LLM 이 원인별로 분류하고 조치를 '제안'만 하는 에이전트를 만들고, 정답표 30건으로 정확도와 잘못 분류된 사례를 기록한다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "멀티 리전 확장과 클라우드 네이티브 분산 시스템",
+          "from": "preference",
+          "quote": "Deep knowledge of distributed microservices, cloud-native architectures (Kubernetes, containerization, serverless), and multi-region scaling.",
+          "priority": "high",
+          "why": "본문에 한국과 대만 고객을 대상으로 한다고 적혀 있고, 책임에 multi-region scaling 이 있다.",
+          "gap_check": "결제 원장을 두 리전에 둘 때 active-active 와 active-passive 중 무엇을 고르고, 리전 장애 시 이중 승인을 어떻게 막는가?",
+          "drill": "리전 장애 시나리오(한쪽 리전 격리)에서 결제 쓰기 경로가 어떻게 전환되는지 설계 문서 한 장으로 쓰고, 각 선택의 RPO/RTO 를 적는다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "조직이 커질 때 생기는 시스템 문제를 푼 경험",
+          "from": "preference",
+          "quote": "Experience in dealing with and resolving the issues that occur when an organization grows in size and the systems get complicated",
+          "priority": "nice",
+          "why": "본문 리더십 절이 시니어·Sr.Staff 동료 멘토링과 제품·인프라 리더와의 비전 수립을 적는다. 15년차에게 조직 확장기의 경험을 묻는 줄이다.",
+          "gap_check": "팀이 커지며 서비스 경계와 소유권이 흐려졌을 때 무엇을 기준으로 다시 나눴는지 한 사례로 말할 수 있는가?",
+          "drill": "겪은 사례 하나를 '증상 → 원인(조직·구조) → 바꾼 경계 → 결과' 순서로 한 쪽에 쓴다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "공개 글·특허·오픈소스 기여",
+          "why": "우대에 분산 시스템·결제·AI 분야 발표·특허·오픈소스 기여가 있다. 결제 도메인 글 한 편이라도 공개돼 있으면 드문 증거다.",
+          "effort": "기존 자료 정리"
+        }
+      ],
+      "interview": {
+        "process": "Application Review - 1st Interview - Virtual Onsite Interviews - Offer (공고 기준).",
+        "expect": [
+          "불명 상태 결제를 확정하는 방법",
+          "결제에 AI 에이전트를 넣을 때의 안전장치",
+          "멀티 리전 결제 원장 설계",
+          "조직 확장기 시스템 경계 재설계"
+        ],
+        "sources": [
+          {
+            "title": "Sr. Staff Back-end Engineer (Coupang Pay)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7936538",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
