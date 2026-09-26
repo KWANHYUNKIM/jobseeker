@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**로그라스 확장 1/2(2026-09-26) — `hierarchy-aware-olap-engine` 완료(OLAP 실험 — business·limits 에 '사흘 연휴 실험, 제품 반영 안 밝힘' 을 박았다). 다음은 확장: 남은 빈 도메인 '장애 때 '당시 구조' 를 다시 세운다' — `8d8d227e2fc017`(scratchpad 없으면 jina 로 다시): 이력 4축 판단·차분(이벤트 소싱) 대 템포럴 테이블·보고 3종(영향 범위·이상·불량)·2×2 표(입력·프로그램 되감기)·지킬 곳 사전 합의, Loglass 는 설정 데이터 전부에 이력(쇄신 진행 중). 그다음 완주 검사 — 인원 계획·설비투자·IT 투자·AI IR·석세스 파트너 수익원은 RSS(`zenn.dev/p/loglass/feed`)로 두 번 찾고 없으면 hold. 대기 2/3(Hacobu·estie). 비교 문서 재료 다섯 묶음(청구 검증·추천·AI 리뷰·첫 대응·검증 환경). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
+**로그라스 확장 2/2(2026-09-26) — `incident-history-data-model` 완료, 빈 도메인 없음. 다음은 완주 검사: 경영관리 외 수익원(인원 계획·설비투자 계획·IT 투자 관리·AI IR·석세스 파트너)에 도메인이 없다 — RSS(`zenn.dev/p/loglass/feed`)와 note/speakerdeck 로 **두 번** 찾고, 있으면 도메인 추가, 없으면 hold_reason. 남은 경영관리 글 후보(DuckDB GROUP BY·인가 하네스·인덱스 네 관문)는 완주와 무관 — 수익원이 아니면 보강으로. 대기 2/3(Hacobu·estie). 비교 문서 재료 다섯 묶음(청구 검증·추천·AI 리뷰·첫 대응·검증 환경). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli(hold)·LayerX 는 in_progress.**
 
 
 
