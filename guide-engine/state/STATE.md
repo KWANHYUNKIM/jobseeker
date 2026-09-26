@@ -19,8 +19,8 @@ jobkorea 에비드넷 데이터 엔지니어(49968005)는 본문 세 칸이 비�
 **위로보틱스(`wirobotics`) — `done`, 공고 7건(모바일 앱 386374 · Robot Learning 373647 · Inference System 328621 · 휴머노이드 SW 328617 · 웨어러블 AI 382040 · Framework S/W 385302 · Perception SLAM 385305).** 원티드 모집중 전부. 사람인 수시채용 1건은 본문이 비어 `--gaps` 가 세지 않는다. 출처: wirobotics.com 제품 구매·윔 보행운동 센터 페이지 + rih.wirobotics.com(휴머노이드) + 원티드 공고 머리말.
 **안랩(`ahnlab`) — `done`, 공고 7건(Mac OS 565713 · Windows 565711 · Cloud 570935 · AI 플랫폼 564869 · 연구소 집중 채용 553161 · Linux 572252 · Web 570940).** 전문연구요원 570603 은 본문이 없어 `--gaps` 가 세지 않는다. 출처: ahnlab.com/ko 첫 화면 + 전체 제품 및 서비스 페이지 + 캐치 공고 본문. 공고는 전부 캐치(site `dev`)다 — 본문이 빈 칸이면 full_jd 에 있는지 먼저 본다.
 **네이버클라우드(`navercloud`) — `done`, 공고 7건(특화 AI 572487 · AX 세일즈 572490 · Video Agent 인턴 572647 · Audio FM 인턴 571470 · Multimodal MLOps 인턴 571463 · 학습 데이터 인턴 572649 · 사람인 특화 AI 55052448 = 캐치 572487 중복).** 캐치 6건 전부. Audio·MLOps 인턴은 접수가 09-23 에 끝났는데 모집중으로 남아 있다. 출처: ncloud.com 첫 화면 + navercloudcorp.com + 캐치 공고 부서 소개. 모집중 본문은 캐치 6건(경력 2·인턴 4) + 사람인 특화 AI 1건.
-**핀다(`finda`) — `in_progress`, 공고 1건(Data Engineer 355267).** 출처: finda.co.kr 첫 화면(하단 대출모집법인 고지 포함) + 원티드 공고.
-⚠️ 다음 회차: 핀다 공고를 한 사이클 한 건씩 — 원티드 Data Platform Team Lead(382480) · DevOps(387464) · 점핏 안드로이드(55000479). 그다음 점핏 Data Engineer·DevOps, 사람인 DevOps 를 원티드와 본문 비교.
+**핀다(`finda`) — `in_progress`, 공고 2건(Data Engineer 355267 · Team Lead 382480).** 출처: finda.co.kr 첫 화면(하단 대출모집법인 고지 포함) + 원티드 공고.
+⚠️ 다음 회차: 핀다 공고를 한 사이클 한 건씩 — 원티드 DevOps(387464) · 점핏 안드로이드(55000479). 그다음 점핏 Data Engineer·DevOps, 사람인 DevOps 를 원티드와 본문 비교.
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
 ⚠️ **공고 본문은 `jd-viewer/public/all_jobs_enriched.json` 에서 읽는다 — `jd-viewer/dist/` 는 빌드 사본이라 낡는다.** 2026-09-26 피에프씨 Backend(388360)를 dist 에서 읽고 썼다가 public·검증기 데이터에 없어(내려간 공고) 되돌렸다. 대상은 `--gaps` 목록에 있는 url 만 쓴다.

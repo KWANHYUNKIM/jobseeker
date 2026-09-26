@@ -147,6 +147,12 @@
         "evidence": "AI 툴을 활용한 업무 자동화에 팀 전체가 함께 참여합니다.",
         "so_what": "Data Engineer 공고의 주요업무 한 줄이고, 안드로이드 공고에도 'AI 기반 개발 도구를 활용한 개발 생산성 향상' 이 있다.",
         "confidence": "inferred"
+      },
+      {
+        "reading": "'핀다뱅크' 런칭을 준비 중이다",
+        "evidence": "특히 지금은 핀다의 ​새로운 ​챕터를 ​열어줄 중대한 넥스트 ​스텝, '핀다뱅크' ​런칭에 ​집중하고 있어요.",
+        "so_what": "Data Platform 팀장 공고가 핀다뱅크의 데이터 환경과 AI 플랫폼 구축을 리드의 주 과제로 적는다. 핀다뱅크가 무엇인지는 공고에 설명이 없다.",
+        "confidence": "inferred"
       }
     ]
   },
@@ -154,7 +160,7 @@
   "people": [],
   "open_questions": [
     "매출·수수료율·임직원 수를 읽지 않았다",
-    "공고에 나오는 '핀다뱅크' 가 무엇인지(계열사·서비스) 읽지 않았다",
+    "'핀다뱅크' 는 Team Lead 공고가 '핀다의 새로운 챕터를 열어줄 중대한 넥스트 스텝, 핀다뱅크 런칭' 이라고만 적는다 — 무엇인지(인가·형태)는 읽지 않았다",
     "홈페이지의 파트너사 수가 '0개' 로 렌더링된다(자바스크립트 숫자 애니메이션) — 값을 읽지 못했다",
     "Data Engineer·DevOps 는 원티드·점핏·사람인에 같은 제목으로 올라와 있다 — 본문 비교 필요",
     "salary: 공고에 금액이 없다 — 비워 둔다"
@@ -270,6 +276,136 @@
           {
             "title": "Data Engineer",
             "url": "https://www.wanted.co.kr/wd/355267",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382480",
+      "title": "Data Platform Team Lead",
+      "site": "wanted",
+      "verdict": "경력 7년 이상(데이터 엔지니어링). Data Platform 팀 **리드** 자리이고, 공고는 지금 팀이 '핀다의 새로운 챕터를 열어줄 중대한 넥스트 스텝, **핀다뱅크 런칭**' 에 집중하고 있으며 그 데이터 환경과 AI 플랫폼 구축을 주도할 리드를 찾는다고 적는다. 일은 데이터 플랫폼 아키텍처 의사결정·기술 방향, 입수·적재·스트리밍·배치 파이프라인 직접 설계·운영, 핀다/핀다뱅크 AI 를 위한 ML/LLM 플랫폼 구축·운영, 데이터 보안·품질 거버넌스. 필수는 컨테이너 환경에서 오픈소스 수집·분석 플랫폼을 직접 설계·구축·운영한 경험과 Airflow. 데이터 엔지니어링 총괄, 대규모 스트리밍/배치 주도, AIOps, 금융권 IT 정보계는 우대다. 팀 기술은 Databricks·Iceberg·Airflow·Kafka Connect·Flink·StarRocks, AWS·Kubernetes·Terraform·Istio, GitHub Actions·Argo CD, Grafana·Prometheus. 전형: 서류 전형 → 1차 인터뷰(직무 기술, 핀다크루) → 2차 인터뷰 → 3차 인터뷰(2~3차는 포지션 리드·조직 장·CEO 와 조직적합성·컬쳐핏) → 레퍼런스 체크 → 처우 협의 → 최종 합격. 인터뷰는 40분~1시간, 포지션에 따라 1시간 이상.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어링 7년 이상",
+          "컨테이너 환경 오픈소스 수집·분석 플랫폼 설계·구축·운영",
+          "Airflow 워크플로우"
+        ],
+        "can_learn": [
+          "데이터 엔지니어링 총괄",
+          "대규모 스트리밍/배치 주도",
+          "AIOps",
+          "금융권 정보계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Kafka Connect·Flink·Iceberg 로 실시간 입수·적재",
+          "from": "task",
+          "quote": "- 안정적이고 효율적인 데이터 파이프라인(입수/적재/스트리밍/배치)을 직접 설계하고 운영합니다.",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '컨테이너 기반 환경에서 오픈소스 기반 수집·분석 플랫폼을 직접 설계·구축·운영한 경험' 이, 우대에 대규모 스트리밍/배치 주도가 있다. 팀 기술이 Kafka Connect·Flink·Iceberg·StarRocks 다.",
+          "gap_check": "운영 DB 변경을 CDC 로 Kafka 에 싣고 Flink 로 Iceberg 테이블에 쓸 때, 같은 행이 여러 번 바뀌거나 이벤트가 늦게 오면 최종 테이블의 정합성은 무엇(업서트·워터마크·정확히 한 번)으로 지키는가?",
+          "drill": "Docker Compose 로 PostgreSQL → Debezium(Kafka Connect) → Flink → Iceberg 를 연결해 CDC 파이프라인을 만들고, 같은 키를 연속 수정·삭제한 뒤 Iceberg 결과가 원본과 같은지 대조한다. StarRocks 에서 그 Iceberg 테이블을 조회해 본다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Debezium documentation",
+              "url": "https://debezium.io/documentation/reference/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Kafka — Connect",
+              "url": "https://kafka.apache.org/documentation/#connect",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Flink documentation",
+              "url": "https://nightlies.apache.org/flink/flink-docs-stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Iceberg documentation",
+              "url": "https://iceberg.apache.org/docs/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "StarRocks — Introduction",
+              "url": "https://docs.starrocks.io/docs/introduction/StarRocks_intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "금융 서비스용 ML/LLM 플랫폼",
+          "from": "task",
+          "quote": "- 핀다/핀다뱅크의 AI가 금융 서비스 안에서 안정적으로 활용될 수 있도록 ML/LLM 플랫폼을 만들고 운영합니다.",
+          "priority": "core",
+          "why": "주요업무이고 공고 소개가 핀다뱅크 런칭을 위한 'AI 플랫폼 구축을 메인으로 주도' 할 리드를 찾는다고 적는다. 우대에 AIOps 가 있다.",
+          "gap_check": "금융 서비스에서 모델(신용 평가·상담 LLM)을 운영할 때 실험 추적·모델 버전·승인·배포·모니터링 중 무엇을 플랫폼이 강제해야 하고, LLM 호출에 들어가는 개인정보는 어디서 거르는가?",
+          "drill": "MLflow 로 모델 레지스트리(스테이징·승인·운영)를 만들고, 작은 모델과 vLLM 서빙을 붙여 요청 로그·지연·드리프트 지표를 Prometheus 로 모으는 최소 플랫폼 구성도를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "MLflow docs",
+              "url": "https://mlflow.org/docs/latest/ml/",
+              "kind": "docs"
+            },
+            {
+              "title": "vLLM Documentation",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 플랫폼 아키텍처 의사결정",
+          "from": "task",
+          "quote": "- 데이터 플랫폼 전반의 아키텍처 의사결정과 기술 방향 수립을 리딩합니다.",
+          "priority": "high",
+          "why": "주요업무 첫 줄이고 우대에 '데이터 엔지니어링 업무를 총괄·관리한 경험' 과 '컴퓨터 사이언스 전반과 데이터에 대한 깊은 이해' 가 있다.",
+          "gap_check": "Databricks 와 StarRocks·Iceberg 를 함께 쓸 때 어떤 워크로드를 어디에 두는지(분석·실시간 대시보드·ML 피처) 기준을 어떻게 세우고, 새 은행 서비스의 데이터를 기존 플랫폼과 분리할지 합칠지는 무엇으로 결정하는가?",
+          "drill": "메달리온 구조와 데이터 메시 글을 읽고, '기존 핀다 + 신규 뱅크' 데이터 플랫폼 목표 구조와 결정 기록(ADR) 세 건(저장 포맷·실시간 조회 엔진·조직 간 데이터 분리)을 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Databricks — Medallion architecture",
+              "url": "https://www.databricks.com/glossary/medallion-architecture",
+              "kind": "docs"
+            },
+            {
+              "title": "Martin Fowler — Data Mesh Principles",
+              "url": "https://martinfowler.com/articles/data-mesh-principles.html",
+              "kind": "article"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "CDC → Kafka → Flink → Iceberg → StarRocks 파이프라인과 정합성 검증 기록",
+          "why": "필수(오픈소스 수집·분석 플랫폼 직접 구축)와 팀 기술 스택을 그대로 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "총괄한 데이터 조직의 규모·결정·성과 정리",
+          "why": "리드 자리이고 우대에 데이터 엔지니어링 총괄 경험이 있다. 전형에 레퍼런스 체크가 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 1차 인터뷰(직무 기술, 핀다크루) → 2차 인터뷰 → 3차 인터뷰(2~3차는 포지션 리드·조직 장·CEO 와 조직적합성·컬쳐핏) → 레퍼런스 체크 → 처우 협의 → 최종 합격. 인터뷰는 40분~1시간, 포지션에 따라 1시간 이상.",
+        "expect": [
+          "플랫폼 아키텍처 결정 사례",
+          "스트리밍 파이프라인 정합성",
+          "ML/LLM 플랫폼 구상",
+          "팀 리딩과 컬쳐핏"
+        ],
+        "sources": [
+          {
+            "title": "Data Platform Team Lead",
+            "url": "https://www.wanted.co.kr/wd/382480",
             "publisher": "원티드"
           }
         ]
