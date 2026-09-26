@@ -51,7 +51,8 @@
         "how": "홈페이지가 입법 동향·법령·국회의원 발언·보도자료를 '기업 맞춤형' 으로 제공한다고 적는다. 구독인지 계약인지, 가격은 읽지 않았다(추론).",
         "domains": [
           "입법·규제 데이터 수집",
-          "규제 AI(ChatCODIT·번역·추천)"
+          "규제 AI(ChatCODIT·번역·추천)",
+          "웹·앱 서비스"
         ],
         "confidence": "inferred",
         "sources": [
@@ -166,5 +167,143 @@
     "원티드 공고 번호가 낮은 것(46260 등)이 섞여 있다 — 게시일을 확인하지 못했다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/94542",
+      "title": "머신러닝 엔지니어 (2년이상)",
+      "site": "wanted",
+      "verdict": "경력 2-4년('신입 지원 불가'). 코딧의 AI 를 맡는 자리다 — 미국·일본·한국 데이터 기반 생성형 AI 규제 챗봇 ChatCODIT, 리포트 자동화 sLLM, 법률·규제 번역 NMT, 기업·산업별 추천 시스템, 그리고 학습 데이터 파이프라인(수집·전처리·검증·버전관리), 모델 버전 관리·배포 자동화, FastAPI·Docker API 서버까지. 필수는 ML 모델 개발 2년 이상, ML 파이프라인 설계·구축, TensorFlow/PyTorch, RDB·MongoDB·Elasticsearch. 프롬프트 오케스트레이션, 퀄리티 프로파일 기반 평가, Docker/Kubernetes, AWS/GCP, Hadoop·Kafka·Elasticsearch, 분산 대용량 처리는 우대다. 전형: 서류 전형 → 코딩 과제 테스트 → 온라인 면접 → 대면 면접 → 처우 협의 → 최종 합격(필요 시 레퍼런스 체크). 이력서·자기소개서는 '성장 배경보다 경험했던 업무에 대해' 쓰라고 하고, 포트폴리오는 선택.",
+      "fit": {
+        "must_have": [
+          "ML 모델 개발 2년 이상(신입 불가)",
+          "ML 파이프라인 설계·구축",
+          "TensorFlow/PyTorch",
+          "RDB·MongoDB·Elasticsearch"
+        ],
+        "can_learn": [
+          "프롬프트 오케스트레이션",
+          "퀄리티 프로파일 기반 평가",
+          "Docker/Kubernetes",
+          "AWS/GCP",
+          "Kafka·Hadoop"
+        ]
+      },
+      "study": [
+        {
+          "topic": "법령·규제 문서 RAG 챗봇",
+          "from": "task",
+          "quote": "• 미국/일본/한국 데이터를 활용한 정책 및 생성형 AI 규제 챗봇 ChatCODIT을 개발합니다.",
+          "priority": "core",
+          "why": "첫 주요업무이고 필수에 Elasticsearch 가, 우대에 '프롬프트 오케스트레이션(prompt orchestration)' 과 퀄리티 프로파일 기반 평가가 있다. 백엔드 공고가 수집된 법령·규제 데이터를 ELK 와 연동한다고 적는다.",
+          "gap_check": "'이번 달 국회에 올라온 개인정보 관련 법안' 을 묻는 질문에 답하려면 검색을 키워드(BM25)·벡터·날짜 필터 중 무엇으로 조합하고, 답변이 존재하지 않는 법안을 지어내지 않게 하려면 무엇(출처 인용·검색 결과 없음 처리)을 강제하는가?",
+          "drill": "국가법령정보센터에서 법령 몇 개를 받아 조문 단위로 Elasticsearch 에 넣고(키워드+벡터), 하이브리드 검색 → 조문 인용 답변 RAG 를 FastAPI 로 만든 뒤, 답이 없는 질문 20개로 '모른다' 응답률을 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+              "url": "https://arxiv.org/abs/2005.11401",
+              "kind": "paper"
+            },
+            {
+              "title": "Elasticsearch — Vector search",
+              "url": "https://www.elastic.co/docs/solutions/search/vector",
+              "kind": "docs"
+            },
+            {
+              "title": "국가법령정보센터",
+              "url": "https://www.law.go.kr/",
+              "kind": "tool"
+            },
+            {
+              "title": "Congress.gov API",
+              "url": "https://api.congress.gov/",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "법률·규제 번역 NMT",
+          "from": "task",
+          "quote": "• 법률 및 규제 번역 NMT 모델을 개발합니다.",
+          "priority": "high",
+          "why": "주요업무다. 회사가 한국·미국·일본 입법 데이터를 다룬다(회사 브리핑). 필수에 TensorFlow/PyTorch 가 있다.",
+          "gap_check": "법률 번역에서 '법률안·개정안·시행령' 같은 용어가 매번 다르게 번역되지 않게 하려면 무엇(용어집 제약·도메인 파인튜닝)을 쓰고, 번역 품질은 BLEU 외에 무엇으로 보는가?",
+          "drill": "Hugging Face 번역 튜토리얼로 공개 한-영 모델을 법령 문장 수백 쌍에 파인튜닝하고, 용어집 20개 항목의 일관성을 파인튜닝 전후로 세어 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Hugging Face — Translation",
+              "url": "https://huggingface.co/docs/transformers/tasks/translation",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "리포트 자동화 sLLM 과 모델 버전·배포",
+          "from": "task",
+          "quote": "• 리포트 자동화를 위한 sLLM 모델을 개발합니다.",
+          "priority": "high",
+          "why": "주요업무이고 다른 주요업무가 'ML 모델을 버전별로 관리하고 배포를 자동화' 와 데이터 수집·전처리·검증·버전관리 파이프라인이다.",
+          "gap_check": "작은 LLM 을 LoRA 로 리포트 형식에 맞춰 파인튜닝할 때 학습 데이터와 어댑터 버전은 어떻게 묶어 기록하고, 새 버전이 기존보다 나쁘면 무엇으로 알아채 되돌리는가?",
+          "drill": "작은 공개 모델에 PEFT LoRA 로 '법안 요약 리포트' 형식을 학습시키고, 데이터는 DVC, 모델·지표는 MLflow 로 버전을 남긴 뒤 FastAPI+Docker 로 서빙한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+              "url": "https://arxiv.org/abs/2106.09685",
+              "kind": "paper"
+            },
+            {
+              "title": "Hugging Face PEFT",
+              "url": "https://huggingface.co/docs/peft/index",
+              "kind": "docs"
+            },
+            {
+              "title": "MLflow docs",
+              "url": "https://mlflow.org/docs/latest/ml/",
+              "kind": "docs"
+            },
+            {
+              "title": "DVC docs",
+              "url": "https://dvc.org/doc",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "법령 조문 하이브리드 검색 RAG + '모른다' 응답률 평가",
+          "why": "첫 주요업무(ChatCODIT)와 우대(프롬프트 오케스트레이션·품질 평가)를 보여 준다. 전형에 코딩 과제 테스트가 있다.",
+          "effort": "1~2주"
+        },
+        {
+          "idea": "경험한 업무 중심 자기소개서",
+          "why": "공고가 '성장 배경보다 경험했던 업무에 대해 작성' 하라고 적는다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 코딩 과제 테스트 → 온라인 면접 → 대면 면접 → 처우 협의 → 최종 합격(필요 시 레퍼런스 체크). 이력서·자기소개서는 '성장 배경보다 경험했던 업무에 대해' 쓰라고 하고, 포트폴리오는 선택.",
+        "expect": [
+          "ML 파이프라인 경험",
+          "RAG·검색 설계",
+          "모델 버전·배포",
+          "코딩 과제"
+        ],
+        "sources": [
+          {
+            "title": "머신러닝 엔지니어 (2년이상)",
+            "url": "https://www.wanted.co.kr/wd/94542",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
