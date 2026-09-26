@@ -286,6 +286,122 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022391&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=6f2b6634-5973-48a0-8279-7650ed1e40d5",
+      "title": "[로보틱스랩] 모바일로봇 전장 시스템 개발",
+      "site": "saramin",
+      "verdict": "경력 5년 이상(회로 설계·임베디드), 학사 이상(전기·전자·메카트로닉스·로봇·자동차공학). **소프트웨어보다 하드웨어 자리다** — 로보틱스랩 모바일로봇의 제어기·모터드라이버 회로 설계와 부품 선정·회로 검증, 통신·전력 관리 회로, **기능안전 HW 아키텍처**(요구사항 분석·안전 목표 달성 회로 구조·기능안전 문서), 모터 구동 방식·제어 로직과 상태 진단·이상 감지·보호 기능, CAN 기반 제어기 연동, 전장품 간 인터페이스·전력 전달·신호 무결성·설치성 설계. 필수에 PADS·Altium·Allegro 같은 PCB 설계 툴과 비즈니스 영어가 있다. 우대사항 칸은 비어 있다. 전형: 지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격('필요 시 전형단계에서 과제가 진행 될 수 있습니다'). 접수 2026년 09월 01일 ~ 09월 30일 23시 59분(채용 시 마감), 이력서·자기소개서. 급여 '면접 후 결정', 근무지 의왕.",
+      "fit": {
+        "must_have": [
+          "회로 설계·임베디드 5년 이상",
+          "회로·전장 플랫폼 설계",
+          "PADS·Altium·Allegro 등 PCB 툴",
+          "비즈니스 영어·영어 문서"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "기능안전 HW 아키텍처",
+          "from": "task",
+          "quote": "　· 기능안전 HW 아키텍처 설계",
+          "priority": "core",
+          "why": "주요업무이고 같은 묶음에 '기능안전 요구사항 분석 및 HW 아키텍처 설계', '안전 목표 달성을 위한 회로 구조 검토', 기능안전 기술 문서 작성이 있다.",
+          "gap_check": "모바일로봇의 '의도치 않은 가속' 을 막는 안전 목표를 세웠을 때, 모터드라이버 회로에서 무엇(독립 감시 MCU·워치독·하드웨어 차단 경로)으로 단일 고장을 견디게 하고, 그 설계 근거를 어떤 문서로 남기는가?",
+          "drill": "ISO 26262·IEC 61508 개요로 위험 분석 → 안전 목표 → HW 안전 요구사항 흐름을 정리하고, 모터드라이버 블록도에 감시 채널·워치독·안전 정지(STO) 경로를 그려 고장 유형별로 어떻게 검출·차단되는지 표로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Wikipedia — ISO 26262",
+              "url": "https://en.wikipedia.org/wiki/ISO_26262",
+              "kind": "article"
+            },
+            {
+              "title": "Wikipedia — IEC 61508",
+              "url": "https://en.wikipedia.org/wiki/IEC_61508",
+              "kind": "article"
+            },
+            {
+              "title": "TI — Functional safety",
+              "url": "https://www.ti.com/technologies/functional-safety/overview.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모터 제어와 진단·보호 기능",
+          "from": "task",
+          "quote": "　　- 모터 상태 진단, 이상 감지 및 보호 기능 개발",
+          "priority": "core",
+          "why": "주요업무이고 같은 묶음에 '모터 구동 방식 및 제어 로직 설계·개발' 과 CAN 기반 제어기 연동이 있다.",
+          "gap_check": "BLDC 모터를 FOC 로 돌릴 때 과전류·과열·홀센서 이상·스톨을 각각 어떤 신호로 감지하고, 감지 후 보호 동작(전류 제한·정지)과 CAN 으로 상위 제어기에 알리는 순서는 어떻게 정하는가?",
+          "drill": "개발보드와 BLDC 모터(또는 시뮬레이션)로 FOC 속도 제어를 돌리고, 과전류·과열 조건을 주입해 보호 동작과 CAN 오류 메시지 송신을 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Wikipedia — Field-oriented control",
+              "url": "https://en.wikipedia.org/wiki/Field-oriented_control",
+              "kind": "article"
+            },
+            {
+              "title": "TI — Motor drivers",
+              "url": "https://www.ti.com/motor-drivers/overview.html",
+              "kind": "docs"
+            },
+            {
+              "title": "CSS Electronics — CAN bus simple intro",
+              "url": "https://www.csselectronics.com/pages/can-bus-simple-intro-tutorial",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "제어기·모터드라이버 회로 설계",
+          "from": "qualification",
+          "quote": "· PADS, Altium, Allegro 등의 PCB 설계 소프트웨어 활용이 가능하신 분",
+          "priority": "high",
+          "why": "필수이고 주요업무에 '제어기 및 모터드라이버 회로 설계, 부품 선정 및 회로 검증 수행' 과 '전력 전달, 신호 무결성, 설치성 등을 고려한 전장 설계' 가 있다.",
+          "gap_check": "모터드라이버 PCB 에서 큰 전류가 흐르는 전력 경로와 작은 신호(전류 센싱·통신)를 어떻게 분리 배치하고, 접지·디커플링을 잘못하면 어떤 증상(오동작·노이즈)이 나타나는가?",
+          "drill": "KiCad 로 MCU + 게이트 드라이버 + 3상 브리지 + 전류 센싱 + CAN 트랜시버 회로를 그리고 2층 PCB 로 배치해, 전력·신호 분리와 접지 설계 근거를 한 장으로 정리한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "KiCad documentation",
+              "url": "https://docs.kicad.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "모터드라이버 회로·PCB + FOC 보호 기능 + 기능안전 고장 분석 표",
+          "why": "주요업무 세 묶음(회로·모터 제어·기능안전)을 한 번에 보여 준다.",
+          "effort": "3~4주"
+        },
+        {
+          "idea": "설계한 전장 플랫폼과 검증 결과를 영어 문서로 정리",
+          "why": "필수에 비즈니스 영어와 영어 문서 작성이, 주요업무에 기능안전 기술 문서가 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격('필요 시 전형단계에서 과제가 진행 될 수 있습니다'). 접수 2026년 09월 01일 ~ 09월 30일 23시 59분(채용 시 마감), 이력서·자기소개서. 급여 '면접 후 결정', 근무지 의왕.",
+        "expect": [
+          "회로·전장 설계 사례",
+          "기능안전 설계 근거",
+          "모터 제어·진단",
+          "영어 소통"
+        ],
+        "sources": [
+          {
+            "title": "[로보틱스랩] 모바일로봇 전장 시스템 개발",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022391&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=6f2b6634-5973-48a0-8279-7650ed1e40d5",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ]
 }
