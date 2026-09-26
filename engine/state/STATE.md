@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**라쿠스 — 확장 2(2026-09-26): 楽楽明細 도메인에 `incident-triage-by-reach-and-cutoff`(결정 8). 두 도메인 모두 기능 있음. 다음은 완주 판정 — BlastMail·BlastEngine(메일 발송)·웹 미디어 수익원은 도메인이 없다: tech-blog.rakus.co.jp 사이트맵 2024~2026 제목에서 'メール配信'·'Blast'·'配信' 을 찾고(Findy 때처럼 전 제목을 병렬로 받아 grep), blastmail/blastengine 공식 블로그도 한 번. 두 번 없으면 회사 hold_reason + '재시도 안 함'. `--gaps` 는 신규(ENECHANGE)를 가리키지만 라쿠스를 먼저 닫는다. 대기 2/3(ENECHANGE·드왕고 교육). 머니포워드(hold)·LayerX 는 in_progress.**
+**라쿠스 — hold(2026-09-26, 도메인 2 · 기능 2). BlastMail·웹 미디어 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 신규: QUEUE 대기 맨 위(ENECHANGE — `tech.enechange.co.jp`, 과금 계산 golden master `entry/2026/09/13/003945` 부터). 대기 2/3(ENECHANGE·드왕고 교육). 머니포워드·라쿠스(hold)·LayerX 는 in_progress.**
 
 
 
@@ -365,6 +365,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **데브시스터즈 애니메이션·라이선싱 수익원** — 2026-09-26 두 번 찾아 없음(기술 블로그 RSS 약 70편 · 웹 검색). 라이선싱·굿즈·IP 관리 시스템 글이 새로 나오면 다시.
 - **ANDPAD 청구서 선지급 도메인** — 2026-09-26 두 번 찾아 없음(블로그 검색 5낱말 · 웹 검색). PdM 회고만 있다. 선지급·請求管理·심사 시스템 글이 새로 나오면 다시.
 - **머니포워드 X(금융기관 DX) 수익원** — 2026-09-26 두 번 찾아 기능으로 쓸 자료 없음(블로그 검색 · 웹 검색 — 2023 Go 도입 발표는 얕다). BANK APP·Mikatano 구조 글이 새로 나오면 다시.
+- **라쿠스 BlastMail·웹 미디어 수익원** — 2026-09-26 두 번 찾아 없음(tech-blog 사이트맵 329편 제목 · blastmail.jp 블로그). 발송 엔진·도달률 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
