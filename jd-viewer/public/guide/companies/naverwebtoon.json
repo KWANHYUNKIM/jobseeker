@@ -640,6 +640,112 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571972?ReturnUrl=RecruitInfo",
+      "title": "AI 서비스 기획 (체험형 인턴) 채용",
+      "site": "dev",
+      "verdict": "**개발 자리가 아니라 기획·QA 인턴**이다(체험형, 최소 3개월 full-time, 3~6개월 협의, 정규직 전환 연계 없음). 조직은 '누구나 쉽고 재미있게 숏폼 콘텐츠를 만들 수 있는 크리에이티브 툴' 을 기획한다. 업무는 생성형 모델 품질 측정·피드백, 개발된 기능의 정밀 테스트·사용성 점검(QA), 숏폼 트렌드·유저 니즈 리서치, 서비스 템플릿 제작·기획, **TTS(음성 합성)·숏폼 제작 시뮬레이션 테스트**. 필수는 숏폼 직접 제작·이용, AI 리터러시, 테스트 시트를 체계적으로 설계하는 꼼꼼함, 3개월 full-time. ChatGPT·Midjourney·Runway, CapCut·Premiere Pro, 웹툰·애니 서브컬처, 팬픽·팬아트·편집 영상, 팬덤 커뮤니티 밈 이해는 우대다. 사람인에도 같은 제목이 있다(주요업무·자격요건이 같고 우대 칸만 비어 있다). 전형: 지원서 리뷰 → 실무 인터뷰. **접수 2026.09.09 ~ 2026.09.27 23:59**, 인턴십 시작 2026년 10월 중(예정), 평일 10:00~19:00, 정자동 그린팩토리(원격근무 병행 가능). '정규직 채용과 연계되지 않는 체험형 인턴십'.",
+      "fit": {
+        "must_have": [
+          "숏폼 직접 제작·이용",
+          "AI 리터러시",
+          "테스트 시트 설계·데이터 도출",
+          "최소 3개월 full-time"
+        ],
+        "can_learn": [
+          "ChatGPT·Midjourney·Runway",
+          "CapCut·Premiere Pro",
+          "서브컬처·팬덤 커뮤니티",
+          "팬픽·팬아트·편집 영상"
+        ]
+      },
+      "study": [
+        {
+          "topic": "생성형 모델 품질 측정",
+          "from": "task",
+          "quote": "AI 모델 성능 고도화: 생성형 모델의 품질 측정 및 피드백",
+          "priority": "core",
+          "why": "첫 주요업무이고 자격요건에 '테스트 시트를 체계적으로 설계하고 유의미한 데이터 도출이 가능하신 분' 이 있다.",
+          "gap_check": "'웹툰 장면으로 15초 숏폼 만들기' 결과물의 품질을 사람마다 다르게 느끼지 않게 채점하려면 항목(원작 충실도·자막 정확도·음성 자연스러움·재미)과 척도를 어떻게 정하고, 두 모델 버전 차이는 몇 개 샘플로 판단하는가?",
+          "drill": "생성 도구로 같은 입력에서 숏폼 10개를 만들고 4항목 5점 척도 채점 시트를 설계해 두 사람이 채점한 뒤, 항목별 평균과 채점자 간 차이가 큰 항목을 정리한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "promptfoo — Intro",
+              "url": "https://www.promptfoo.dev/docs/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "기능 QA 와 사용성 점검",
+          "from": "task",
+          "quote": "제품 품질 관리(QA): 개발된 기능의 정밀 테스트 및 사용성 점검",
+          "priority": "core",
+          "why": "주요업무이고 조직이 '누구나 쉽고 재미있게' 숏폼을 만드는 툴을 기획한다고 적는다.",
+          "gap_check": "숏폼 제작 툴의 '템플릿 고르기 → 장면 넣기 → 자막·음성 → 내보내기' 흐름을 테스트할 때 기능 버그와 사용성 문제를 어떻게 나눠 기록하고, 처음 쓰는 사용자 5명 관찰에서 무엇을 봐야 하는가?",
+          "drill": "숏폼 편집 앱 하나를 골라 핵심 흐름 테스트 케이스 20개(기대 결과·재현 절차)를 쓰고, 지인 3명에게 과제를 주고 관찰해 막힌 지점과 개선안을 한 장으로 정리한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Nielsen Norman Group — Usability Testing 101",
+              "url": "https://www.nngroup.com/articles/usability-testing-101/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "TTS 와 숏폼 제작 시뮬레이션",
+          "from": "task",
+          "quote": "기술 검증: TTS(음성 합성) 및 숏폼 제작 시뮬레이션 테스트 수행",
+          "priority": "high",
+          "why": "주요업무이고 우대에 'AI 활용 숏폼 제작 프로세스 효율화에 관심' 과 ChatGPT·Midjourney·Runway 가 있다.",
+          "gap_check": "캐릭터 대사를 TTS 로 읽힐 때 억양·속도·감정이 장면과 안 맞는 경우를 어떻게 찾아 기록하고, 한국어 고유명사(작품·캐릭터 이름) 발음 오류는 어떻게 테스트하는가?",
+          "drill": "공개 TTS 도구 두 가지로 같은 대사 10줄을 읽히고 발음·억양·감정 적합도를 비교한 표와 '대사 → 음성 → 자막 → 영상' 제작 시뮬레이션 기록을 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Hugging Face — Text to speech",
+              "url": "https://huggingface.co/docs/transformers/tasks/text-to-speech",
+              "kind": "docs"
+            },
+            {
+              "title": "Wikipedia — Speech synthesis",
+              "url": "https://en.wikipedia.org/wiki/Speech_synthesis",
+              "kind": "article"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "생성 숏폼 채점 시트 + 기능 QA 케이스 + TTS 비교표",
+          "why": "주요업무 다섯 줄 중 셋(품질 측정·QA·TTS 검증)을 결과물로 보여 준다. 필수가 테스트 시트 설계 능력이다.",
+          "effort": "3~5일"
+        },
+        {
+          "idea": "직접 만든 숏폼·팬 창작물 모음",
+          "why": "필수가 숏폼 직접 제작 경험이고 우대에 팬픽·팬아트·편집 영상이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 리뷰 → 실무 인터뷰. **접수 2026.09.09 ~ 2026.09.27 23:59**, 인턴십 시작 2026년 10월 중(예정), 평일 10:00~19:00, 정자동 그린팩토리(원격근무 병행 가능). '정규직 채용과 연계되지 않는 체험형 인턴십'.",
+        "expect": [
+          "숏폼 제작 경험",
+          "테스트 시트 설계",
+          "AI 도구 활용",
+          "서브컬처 이해"
+        ],
+        "sources": [
+          {
+            "title": "AI 서비스 기획 (체험형 인턴) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/571972?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
     }
   ]
 }
