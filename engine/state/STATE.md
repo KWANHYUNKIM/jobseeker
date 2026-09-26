@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Findy — 확장 2(2026-09-26): 문의 조사 도메인에 `inquiry-agent-session-per-issue`(결정 8). 두 도메인 모두 기능 있음. 남은 것은 완주 판정 — 매칭(Findy·Freelance)·Tools/컨퍼런스 수익원에 도메인이 없다. `--gaps` 는 이 빈칸을 안 잡고 '후보 조사(큐가 비었다)' 를 가리킨다 — 큐 0 이면 후보 조사가 3순위라 **다음 사이클은 후보 조사**, 그 뒤 Findy 매칭 검색 두 번(tech.findy.co.jp 사이트맵 2025~2026 에서 '転職'·'マッチング'·'スカウト'·'Freelance' 제목) → 없으면 hold. 머니포워드(hold)·LayerX 는 in_progress.**
+**Findy — 두 도메인 모두 기능 있음(2026-09-26). 82번째 후보 조사로 대기 3/3(라쿠스·ENECHANGE·드왕고 교육). 다음은 Findy 완주 판정 — 매칭(Findy·Freelance)·Tools/컨퍼런스 수익원에 도메인이 없다: tech.findy.co.jp 사이트맵 2025~2026 에서 '転職'·'マッチング'·'スカウト'·'Freelance' 제목을 찾고, 두 번 없으면 회사 hold_reason + '재시도 안 함'. `--gaps` 는 이 빈칸을 안 잡고 신규(라쿠스)를 가리킬 것이다 — Findy 를 먼저 닫는다. 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 
