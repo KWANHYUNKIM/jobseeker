@@ -222,5 +222,82 @@
     "FANS 멤버십 등 과금 방식",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/388800",
+      "title": "AI Artist / AI Content Creator",
+      "site": "wanted",
+      "verdict": "**신입**, 서울 강동구, AI사업실. 개발직이 아니라 **생성형 AI 로 콘텐츠를 직접 만드는 크리에이터**다 — AI 아티스트 프로젝트의 비주얼과 세계관을 컨셉 포토·숏폼·댄스/챌린지 콘텐츠로 만들어 **팬에게 공개**한다. 업무는 다섯 묶음이다: 생성형 AI 영상·이미지 제작과 툴 선택 / **AI 아티스트의 얼굴·스타일·분위기·세계관 일관성** 유지, 인물·의상·동작·구도·조명·카메라를 의도대로 제어(퀄리티 컨트롤) / 프롬프트·레퍼런스·파라미터·제작 방식 실험과 **라이브러리화** / 기획을 빠르게 시각화 / **후반 작업** — 부자연스러운 얼굴·신체·동작·배경 보정, Photoshop·Premiere·After Effects 리터칭·편집·합성. 자격은 생성형 AI 로 직접 제작한 경험, 툴 특성 이해, **같은 인물의 일관성 유지**, 비주얼 연출 감각, 그래픽·영상 툴. 우대는 K-POP·아티스트 IP 이해, 제작 전 과정 주도, 일관성 워크플로 구축, 제작 기간·리소스 단축 경험. 포트폴리오로 판가름 나는 자리다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "생성형 AI 영상·이미지 직접 제작",
+          "같은 인물 비주얼 일관성 유지",
+          "Photoshop·Premiere·After Effects"
+        ],
+        "can_learn": [
+          "캐릭터 LoRA·레퍼런스 기반 생성",
+          "ControlNet 포즈 제어",
+          "노드 워크플로 라이브러리화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "같은 인물을 계속 같게 — 캐릭터 일관성",
+          "from": "qualification",
+          "quote": "• 동일한 인물 또는 캐릭터의 비주얼 일관성을 다양한 콘텐츠에서 유지할 수 있는 분",
+          "priority": "core",
+          "why": "자격요건이고 업무 묶음 하나가 통째로 AI 아티스트 비주얼 일관성이다.",
+          "gap_check": "특정 인물을 모델에 학습시키는 방식(DreamBooth·LoRA)과 참조 이미지만으로 얼굴·스타일을 붙이는 방식(IP-Adapter 계열)은 준비 비용·일관성·유연성에서 무엇이 다른가? 조명·각도·표정이 바뀌어도 얼굴이 흔들리지 않게 하려면 학습 이미지 세트를 어떻게 구성하는가?",
+          "drill": "DreamBooth·IP-Adapter 논문의 개요를 읽고, 가상의 캐릭터 한 명을 정해 (1) 참조 이미지 방식 (2) LoRA 학습 방식으로 같은 프롬프트 10종(의상·장소·표정 변경)을 생성해 얼굴 일관성을 나란히 비교하는 시트를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "DreamBooth: Fine Tuning Text-to-Image Diffusion Models for Subject-Driven Generation",
+              "url": "https://arxiv.org/abs/2208.12242",
+              "kind": "docs"
+            },
+            {
+              "title": "IP-Adapter: Text Compatible Image Prompt Adapter for Text-to-Image Diffusion Models",
+              "url": "https://arxiv.org/abs/2308.06721",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "동작·구도를 의도대로 — 조건 제어",
+          "from": "task",
+          "quote": "• 인물, 의상, 동작, 구도, 조명, 카메라 앵글 및 움직임 등을 의도에 맞게 제어 및 결과물 일관성 유지(퀄리티 컨트롤)",
+          "priority": "core",
+          "why": "주요업무다. 댄스·챌린지 콘텐츠는 동작과 카메라가 기획대로 나와야 한다.",
+          "gap_check": "포즈 골격·깊이·윤곽선 같은 조건 이미지로 생성 결과의 동작과 구도를 고정하는 방식(ControlNet)은 무엇을 제어하고 무엇은 여전히 프롬프트에 맡기는가? 영상에서 프레임마다 얼굴·의상이 깜박이는(일관성 붕괴) 문제는 어디서 오는가?",
+          "drill": "ControlNet 논문 개요를 읽고, 같은 캐릭터로 포즈 골격 5종을 조건으로 준 이미지 세트를 만든 뒤, 조건 강도를 바꿔 포즈 정확도와 얼굴 유지 정도가 어떻게 맞바뀌는지 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Adding Conditional Control to Text-to-Image Diffusion Models (ControlNet)",
+              "url": "https://arxiv.org/abs/2302.05543",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "제작 방식 라이브러리화 — 재현되는 워크플로",
+          "from": "task",
+          "quote": "• 효과적인 제작 방식을 라이브러리화하여 콘텐츠 품질과 제작 효율 향상",
+          "priority": "high",
+          "why": "주요업무이고 우대사항에 일관성 워크플로 구축·제작 기간 단축 경험이 있다.",
+          "gap_check": "'잘 나온 한 장' 을 다음 주에도 똑같이 재현하려면 무엇(모델 버전·시드·프롬프트·참조 이미지·파라미터)을 기록해야 하는가? 팀원이 같은 결과를 내려면 워크플로를 어떤 형태로 공유하는가?",
+          "drill": "ComfyUI 공식 문서로 노드 워크플로 기본을 익히고, 위 캐릭터 일관성 파이프라인을 워크플로 파일로 저장해 다른 PC 에서 같은 시드로 같은 결과가 나오는지 확인한다. 워크플로 설명서(입력·조절 파라미터·주의점)를 한 장 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "ComfyUI Official Documentation",
+              "url": "https://docs.comfy.org/",
+              "kind": "tool"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
