@@ -456,6 +456,100 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/376289",
+      "title": "데이터 사이언티스트",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 성동구. 게임 유저 행동으로 **LTV·이탈·결제를 예측**하는 데이터 사이언티스트다. 공고 머리말이 '유저의 성장, 이탈, 결제, 광고 반응 등' 이 얽혀 있다고 적고, '어떤 유저가 오래 남을지, 어떤 행동이 리텐션과 매출에 영향을 주는지' 를 판단하고 싶다고 쓴다. 업무는 문제 정의와 예측 모델, LTV·이탈·결제 예측 모델 개발·고도화, 결과를 기획·마케팅·사업이 실행할 액션으로 연결, **머신러닝과 A/B 테스트로 가설 검증**, 피처 엔지니어링·학습·검증·**배치 추론**·모델 관리·모니터링이 이어지는 **ML 파이프라인 자동화**. 필수는 DS 3년 이상, Python·SQL 로 추출·분석·모델링, 회귀·분류·클러스터링, 정확도뿐 아니라 서비스 적용성·비즈니스 임팩트 고려. 우대는 모바일·게임 데이터, LTV·리텐션·구매 예측 운영, 추천·개인화, 파이프라인 개선, MLOps. 기술 스택은 Python·SQL·Superset·Metabase·Looker·**Kubeflow Pipelines**·Airflow·Snowflake. 전형은 같은 회사 다른 공고와 같이 서류 ＞ 사전 질문 ＞ 대면 인터뷰 ＞ 최종 합격으로 보인다(이 공고 본문에는 전형 칸이 없다). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "DS 3년 이상",
+          "Python·SQL 모델링",
+          "회귀·분류·클러스터링",
+          "비즈니스 임팩트 고려"
+        ],
+        "can_learn": [
+          "LTV·리텐션 예측",
+          "Kubeflow 파이프라인",
+          "게임 데이터 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "이탈 예측 — 라벨 정의와 시간 순서 검증",
+          "from": "task",
+          "quote": "• 유저 행동 데이터를 기반으로 LTV, 이탈, 결제 등 주요 액션을 예측하는 모델을 개발하고 고도화합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'LTV, 리텐션, 구매 예측 모델' 이 있다. 방치형 게임은 접속 없이도 진행되는 장르라 '이탈' 정의가 까다롭다(회사 브리핑).",
+          "gap_check": "방치형 게임에서 '7일 미접속' 을 이탈로 정의하면 무엇(자동 사냥 중인 유저·주말만 접속하는 유저)을 잘못 분류하고, 특징은 기준일 이전 데이터로만 만들어야 하는 이유(미래 누수)는 무엇이며, 무작위 분할 대신 기간 순서대로 나눠 검증하면 점수가 어떻게 달라지는가?",
+          "drill": "가짜 게임 로그(접속·결제·스테이지 진행)로 기준일 이전 14일 특징과 이후 7일 이탈 라벨을 만들고, 무작위 분할과 TimeSeriesSplit(기간 순) 검증 점수를 비교한다. 미래 정보를 일부러 섞은 특징 하나를 넣어 점수가 비정상적으로 오르는 것을 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "TimeSeriesSplit — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Probability calibration — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/calibration.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LTV 예측 — 결제 빈도와 금액 모델",
+          "from": "preference",
+          "quote": "• LTV, 리텐션, 구매 예측 모델을 개발하거나 운영해 보신 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무에 LTV 예측이 있다. 회사 브리핑대로 매출 원천이 결제·광고다.",
+          "gap_check": "대부분 유저가 한 번도 결제하지 않는 게임에서 LTV 를 한 회귀 모델로 바로 예측하면 무엇이 문제이고(0 이 대부분인 분포), '결제할 확률 × 결제 시 금액' 으로 나누거나 BG/NBD·Gamma-Gamma 같은 구매 빈도·금액 모델을 쓰면 무엇이 나아지며, 마케팅이 LTV 예측을 광고 입찰에 쓸 때 몇 일차 예측이 필요한가?",
+          "drill": "lifetimes 라이브러리 예제를 따라 가짜 결제 기록으로 BG/NBD·Gamma-Gamma 모델을 맞춰 유저별 90일 LTV 를 예측하고, '결제 확률 분류 × 금액 회귀' 2단 모델과 상위 10% 유저 적중률을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "lifetimes — Lifetime value in Python",
+              "url": "https://github.com/CamDavidsonPilon/lifetimes",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "A/B 테스트로 가설 검증 — 게임 이벤트 실험",
+          "from": "task",
+          "quote": "• 가설을 수립하고 머신러닝 및 A/B 테스트를 통해 검증합니다.",
+          "priority": "high",
+          "why": "주요업무다. 예측 모델이 '누가 이탈할지' 를 알려줘도 '무엇을 하면 막을 수 있는지' 는 실험으로 확인해야 한다.",
+          "gap_check": "이탈 위험 유저에게 복귀 보상을 주는 실험에서 대조군을 두지 않으면 효과를 왜 알 수 없고, 7일 리텐션 30% 에서 2%p 개선을 잡으려면 그룹당 표본이 대략 얼마 필요하며, 보상이 리텐션은 올리고 결제를 줄였다면 무엇을 주 지표·가드레일로 봐야 했는가?",
+          "drill": "Evan Miller 계산기로 위 조건의 표본을 구하고, 실험 설계서(가설·대상·무작위 배정·주 지표·가드레일·기간)를 쓴다. 가짜 결과 데이터로 리텐션 차이의 신뢰구간과 결제 가드레일을 함께 판정한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Sample Size Calculator — Evan Miller",
+              "url": "https://www.evanmiller.org/ab-testing/sample-size.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ML 파이프라인 — 배치 추론과 모니터링 자동화",
+          "from": "task",
+          "quote": "• 피처 엔지니어링, 모델 학습과 검증, 배치 추론, 모델 관리 및 모니터링이 연결되는 ML 파이프라인을 구축하고 자동화합니다.",
+          "priority": "high",
+          "why": "주요업무이고 기술 스택에 Kubeflow Pipelines·Airflow 가 있다. 우대에 MLOps·모델 성능 모니터링이 있다.",
+          "gap_check": "매일 전 유저 이탈 점수를 배치 추론해 마케팅 툴에 넘길 때 학습·추론의 특징 계산 코드가 달라지면 무엇이 생기고(학습-서빙 불일치), 모델 성능이 떨어졌다는 것을 정답(실제 이탈)이 7일 뒤에야 나오는 상황에서 무엇(입력 분포 변화)으로 먼저 알아채는가?",
+          "drill": "Kubeflow Pipelines 개요를 읽고 '특징 생성 → 학습 → 평가(기준 미달이면 중단) → 배치 추론 → 결과 저장' 파이프라인 설계도를 그린다. 특징 생성은 하나의 함수로 학습·추론이 공유하게 하고, 입력 특징 분포(PSI)를 매일 기록하는 모니터링 단계를 추가한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Overview — Kubeflow Pipelines",
+              "url": "https://www.kubeflow.org/docs/components/pipelines/overview/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
