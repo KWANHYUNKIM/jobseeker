@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**로그라스 hold(2026-09-26) — 도메인 넷·기능 넷, 석세스 파트너·설비투자·IT 투자 수익원은 두 번 찾아 없음 → hold_reason. 다음은 `--gaps` 대로 — 대기 2/3(Hacobu·estie)라 후보 조사 한 번을 끼우거나 대기 맨 위(Hacobu) 신규. 로그라스 Zenn 에 남은 글(DuckDB GROUP BY·인가 하네스·인덱스 네 관문·비동기 처리 기반 `51447768d35958`·백엔드 스택 2023)은 보강 재료. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX AI 리뷰). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스(hold)·LayerX 는 in_progress.**
+**Hacobu 회사 프로파일(2026-09-26) — 도메인 둘: 장애 공지 스위치를 비개발자 손에 쥐여 준다(`87f8459315bc8c`) · 기능 패키지의 경계를 규약 대신 CI 가 지킨다(`5717458ca99f9b`). 다음은 확장: `--gaps` 순서대로 기능 하나씩(글은 scratchpad 없으면 jina 로 다시). 그다음 완주 검사 — 컨설팅(Strategy)·SI(Solution Studio)·인재 소개(Career) 수익원: Zenn RSS 20편엔 없음(1회차 셈 가능) → 두 번째는 Zenn 검색 API·hacobu.jp/solution-studio. 물류 도메인 로직(Berth 예약 슬롯·Fleet 위치) 글이 있으면 MOVO 도메인으로 추가. 대기 1/3(estie) — Hacobu 를 닫으면 **후보 조사** 먼저. 비교 문서 재료 다섯 묶음 + AI 에 쥐여 주는 환경(로그라스 OLAP·AI IR ↔ Nature·LayerX ↔ Hacobu CI 가드레일). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스(hold)·LayerX 는 in_progress.**
 
 
 

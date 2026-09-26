@@ -1628,3 +1628,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 로그라스 석세스 파트너 수익원 보류
 
 - 완주 검사 2회차: speakerdeck.com/loglass 404, Zenn 검색 API '設備投資計画'·'IT投資管理'·'設備投資'·'サクセスパートナー' 에 로그라스 글 0, 'ログラス' 20편 제목에도 없음. hold_reason 추가.
+
+## 2026-09-26 Hacobu 회사 프로파일
+
+- 회사 페이지(MOVO·Strategy·Solution Studio·Career)와 Zenn 두 편(점검 배너 Datadog Forms · MOVO Berth 프런트 템플릿 CI 강제). 피드 20편에 물류 도메인 로직 글 없음 — 사내 AI 글이 대부분. 도메인 둘, 기능 0.

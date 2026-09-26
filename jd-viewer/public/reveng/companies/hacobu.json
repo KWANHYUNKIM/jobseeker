@@ -1,0 +1,173 @@
+{
+  "slug": "hacobu",
+  "name": "Hacobu",
+  "name_en": "Hacobu",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "hacobu.jp",
+  "one_liner": "물류 DX 의 Hacobu(MOVO) — 로그인 화면의 장애 배너는 자작 대신 Datadog 폼으로 비개발자에게 넘기고 S3 파일 하나를 최후의 수단으로 남기며, 트럭 예약 화면의 프런트엔드는 기능 간 의존을 규약 문서가 아니라 CI 가 막는다",
+  "business_model": "트럭 예약 접수(**MOVO Berth**)·동태 관리(**MOVO Fleet**)·배차 수발주 관리(**MOVO Vista**) 등 클라우드 물류 관리 SaaS **MOVO** 가 중심이고, 물류 DX 컨설팅(**Hacobu Strategy**), 시스템 구축·AI 도입 지원(**Hacobu Solution Studio**), 물류 특화 인재 소개(**Hacobu Career**)를 곁에 둔다. 과금 구조·매출 비중은 1차 자료로 확인하지 못했다.\n\n'수배송 데이터를 가시화해 최적화로' 를 내건다 — SaaS 로 모은 데이터를 컨설팅·SI 로 현장에 심는 구조로 읽힌다(이 사이트의 해석).",
+  "products": [
+    "MOVO Berth(트럭 예약 접수)",
+    "MOVO Fleet(동태 관리)",
+    "MOVO Vista(배차 수발주·관리)",
+    "Hacobu Strategy(물류 DX 컨설팅)",
+    "Hacobu Solution Studio(시스템 구축·AI 도입 지원)",
+    "Hacobu Career(물류 특화 인재 소개)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "MOVO(클라우드 물류 관리 SaaS)",
+      "how": "트럭 예약 접수·동태 관리·배차 관리 등을 SaaS 로 제공한다. 과금 구조는 확인 못 함.",
+      "weight": "주력(비중 확인 못 함)",
+      "domains": [
+        "장애 공지 스위치를 비개발자 손에 쥐여 준다",
+        "기능 패키지의 경계를 규약 대신 CI 가 지킨다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "物流の課題を解決するDXパートナー｜株式会社Hacobu",
+          "url": "https://hacobu.jp/",
+          "publisher": "株式会社Hacobu",
+          "date": "2026-09-26",
+          "summary": "'데이터로 운반을 혁신한다' — 수배송 데이터를 가시화해 최적화로(Data-Driven Logistics®). 서비스: **MOVO**(클라우드 물류 관리 SaaS — 점유율 1위라 주장하는 트럭 예약 접수 **MOVO Berth**, 동태 관리 **MOVO Fleet**, 배차 수발주·관리 **MOVO Vista** 등), **Hacobu Strategy**(물류 DX 컨설팅), **Hacobu Solution Studio**(물류 DX 특화 시스템 구축·AI 도입 지원), **Hacobu Career**(물류 특화 인재 소개)."
+        }
+      ]
+    },
+    {
+      "name": "Hacobu Strategy(물류 DX 컨설팅)",
+      "how": "경영 전략 입안부터 테크놀로지 구현까지 물류 DX 컨설턴트가 동행한다.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "物流の課題を解決するDXパートナー｜株式会社Hacobu",
+          "url": "https://hacobu.jp/",
+          "publisher": "株式会社Hacobu",
+          "date": "2026-09-26",
+          "summary": "'데이터로 운반을 혁신한다' — 수배송 데이터를 가시화해 최적화로(Data-Driven Logistics®). 서비스: **MOVO**(클라우드 물류 관리 SaaS — 점유율 1위라 주장하는 트럭 예약 접수 **MOVO Berth**, 동태 관리 **MOVO Fleet**, 배차 수발주·관리 **MOVO Vista** 등), **Hacobu Strategy**(물류 DX 컨설팅), **Hacobu Solution Studio**(물류 DX 특화 시스템 구축·AI 도입 지원), **Hacobu Career**(물류 특화 인재 소개)."
+        }
+      ]
+    },
+    {
+      "name": "Hacobu Solution Studio(SI·AI 도입)",
+      "how": "기존 시스템 접속·커스터마이즈를 포함한 물류 DX 특화 시스템 구축과 AI 도입 지원.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "物流の課題を解決するDXパートナー｜株式会社Hacobu",
+          "url": "https://hacobu.jp/",
+          "publisher": "株式会社Hacobu",
+          "date": "2026-09-26",
+          "summary": "'데이터로 운반을 혁신한다' — 수배송 데이터를 가시화해 최적화로(Data-Driven Logistics®). 서비스: **MOVO**(클라우드 물류 관리 SaaS — 점유율 1위라 주장하는 트럭 예약 접수 **MOVO Berth**, 동태 관리 **MOVO Fleet**, 배차 수발주·관리 **MOVO Vista** 등), **Hacobu Strategy**(물류 DX 컨설팅), **Hacobu Solution Studio**(물류 DX 특화 시스템 구축·AI 도입 지원), **Hacobu Career**(물류 특화 인재 소개)."
+        }
+      ]
+    },
+    {
+      "name": "Hacobu Career(인재 소개)",
+      "how": "물류 기획·DX 추진·창고·배차 관리 인재를 소개한다.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "物流の課題を解決するDXパートナー｜株式会社Hacobu",
+          "url": "https://hacobu.jp/",
+          "publisher": "株式会社Hacobu",
+          "date": "2026-09-26",
+          "summary": "'데이터로 운반을 혁신한다' — 수배송 데이터를 가시화해 최적화로(Data-Driven Logistics®). 서비스: **MOVO**(클라우드 물류 관리 SaaS — 점유율 1위라 주장하는 트럭 예약 접수 **MOVO Berth**, 동태 관리 **MOVO Fleet**, 배차 수발주·관리 **MOVO Vista** 등), **Hacobu Strategy**(물류 DX 컨설팅), **Hacobu Solution Studio**(물류 DX 특화 시스템 구축·AI 도입 지원), **Hacobu Career**(물류 특화 인재 소개)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "물류 SaaS 의 바깥쪽 두 겹",
+    "question": "물류 SaaS 는 장애를 어떻게 알리고, 여러 제품의 화면 코드를 어떻게 썩지 않게 하나?",
+    "code": "flowchart LR\n  BIZ[\"비즈니스 멤버\"] --> FORM[\"Datadog Form\"] --> WF[\"Workflow\\nS3 JSON · CloudFront 무효화 · Slack\"]\n  WF --> LOGIN[\"MOVO 로그인 화면\\n장애 배너\"]\n  DEV[\"사람 · AI 에이전트\"] --> PR[\"PR\"] --> CI[\"CI\\ndependency-cruiser + check-structure\"]\n  CI -->|통과| TPL[\"공통 템플릿 위의\\nMOVO Berth 등 화면\"]\n  CI -->|위반| DEV",
+    "_note": "위는 장애 공지 운영, 아래는 프런트엔드 템플릿의 구조 강제다. 두 도메인을 MOVO 수익원에 이은 것은 이 사이트의 해석. 트럭 예약·동태 관리·배차 자체의 도메인 로직 글은 아직 못 찾았다 — Zenn 피드 20편 대부분이 사내 AI 활용·조직 글이다."
+  },
+  "domains": [
+    {
+      "name": "장애 공지 스위치를 비개발자 손에 쥐여 준다",
+      "why": "장애가 나면 로그인 화면에 '지금 장애 중' 을 빨리 띄워야 하는데, 그 순간 손이 비는 것은 엔지니어가 아니라 고객을 마주하는 비즈니스 멤버일 수 있다. PR 을 거치는 절차로는 늦다.",
+      "tech": [
+        {
+          "tech": "Datadog Forms(조작 UI·권한·응답 이력) + Workflow Automation(S3 상태 JSON PUT → CloudFront 무효화 → Slack) · Service Account 실행 · Okta 그룹으로 권한 · 프런트는 인증 없이 S3 JSON 만 읽는다",
+          "solves": "자작 UI·백엔드 API 없이 7가지 요건을 채우고 약 25초 만에 반영, 거의 무료.",
+          "limits": "장애 때 쓰는 것인데 Datadog 에 기댄다 — 불안정하면 S3 파일을 손으로 고친다. IAM Trust Policy·Resolver 권한 설정이 걸림돌.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+              "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+              "publisher": "Hacobu Tech Blog (Zenn)",
+              "date": "2026-07-19",
+              "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "기능 패키지의 경계를 규약 대신 CI 가 지킨다",
+      "why": "웹·네이티브 공통 템플릿 위에 제품 화면을 짓는데, 규약 문서는 쓴 사람 말고는 안 지킨다. 리뷰어는 import 방향을 손으로 못 쫓고, 신규 멤버·업무 위탁·AI 에이전트는 규약을 모르거나 잊어 반년 뒤엔 feature 끼리 엉킨다.",
+      "tech": [
+        {
+          "tech": "package-by-feature 5층 + dependency-cruiser 13 규칙(후방 참조로 feature 간 금지를 1 규칙에) + 자작 check-structure.mjs(존재·공존 검사) · baseline·allowlist 로만 여는 도피로",
+          "solves": "사람이 쓰든 AI 가 쓰든 의존 방향·구조·테스트 공존을 기계가 지켜 리뷰가 설계 판단에 집중한다. 네이티브 판에 이름만 바꿔 이식.",
+          "limits": "0-tolerance 라 굳으면 현장이 안 돈다 — 그래서 도피로를 두지만, 그 예외는 리뷰가 의도를 물어야 의미가 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "アーキテクチャを“規約”ではなく“CI”で守る — 依存方向を機械強制するフロントエンドテンプレートの設計",
+              "url": "https://zenn.dev/hacobu/articles/5717458ca99f9b",
+              "publisher": "Hacobu Tech Blog (Zenn)",
+              "date": "2026-06-18",
+              "summary": "**MOVO Berth** 설계·개발 담당이 사내 공통 프런트엔드 템플릿(웹 React · 네이티브 React Native/Expo)을 설명한다. 아키텍처 규약은 쓰는 순간 썩기 시작한다 — 사람도 **AI 에이전트**도 규약을 모르거나 잊는다 → **CI 로 0-tolerance 강제**(위반이면 머지 불가). src 를 5층(routes/app · features · components · shared · 기반)으로 나누고 하위 → 상위 역류·**feature 간 직접 의존**·순환을 금지. 2층 강제: ① **dependency-cruiser**(의존 **엣지** 검사, 13 규칙 — 정규식 후방 참조 `$1` 로 N×N 의 feature 간 금지를 1 규칙에, 미해결·phantom 의존·devDep·prod→test 금지, 최상위 디렉터리 allowlist) ② 자작 **check-structure.mjs**(파일 **존재** 검사 — import 없는 고립 파일은 엣지 규칙이 발화하지 않는다; 테스트·스토리·타입 테스트 **공존** 강제). 도피로: baseline(기존 위반 grandfather)·allowlist 갱신 — 반드시 diff 와 리뷰에 의도가 남는다. 네이티브 판에 이름만 바꿔 이식. AI 가 cross-feature import 를 쓰면 CI 가 떨어져 '공유는 하위층으로 추출' 로 되돌린다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 구조·매출 비중을 1차 자료로 확인하지 못했다.",
+    "트럭 예약 접수(MOVO Berth)의 예약 슬롯·동태 관리(MOVO Fleet)의 위치 데이터 같은 물류 도메인 로직 글은 아직 못 찾았다.",
+    "컨설팅·SI·인재 소개 수익원의 기술 글은 아직 못 찾았다.",
+    "두 도메인의 MOVO 수익원 연결은 inferred.",
+    "사내 AI 글이 많다 — 지불 신청 초안 AI(`f88df0929d285d`)·Managed Agents 데이터 분석(`3e16e7d1ae3b9a`)·사람 리뷰 3단계(`2ebef85abb40b7`)·AI 비용(`af3f6f10198ac4`)."
+  ],
+  "sources": [
+    {
+      "title": "物流の課題を解決するDXパートナー｜株式会社Hacobu",
+      "url": "https://hacobu.jp/",
+      "publisher": "株式会社Hacobu",
+      "date": "2026-09-26",
+      "summary": "'데이터로 운반을 혁신한다' — 수배송 데이터를 가시화해 최적화로(Data-Driven Logistics®). 서비스: **MOVO**(클라우드 물류 관리 SaaS — 점유율 1위라 주장하는 트럭 예약 접수 **MOVO Berth**, 동태 관리 **MOVO Fleet**, 배차 수발주·관리 **MOVO Vista** 등), **Hacobu Strategy**(물류 DX 컨설팅), **Hacobu Solution Studio**(물류 DX 특화 시스템 구축·AI 도입 지원), **Hacobu Career**(물류 특화 인재 소개)."
+    },
+    {
+      "title": "Datadog FormsとWorkflow Automationでログイン画面のメンテナンスバナーを簡単にON/OFFできるようにしました",
+      "url": "https://zenn.dev/hacobu/articles/87f8459315bc8c",
+      "publisher": "Hacobu Tech Blog (Zenn)",
+      "date": "2026-07-19",
+      "summary": "프로덕트 기반부가 로그인 화면의 **점검·장애 배너**를 엔지니어가 아닌 비즈니스 멤버도 켜고 끄게 했다. 요건 7(조작성 — PR 없이, 반영 속도, 상태 저장, **인증 없이** 프런트가 읽기, 권한, Slack 통지, 조작 이력)을 자작 대신 **Datadog Forms**(UI·권한·응답 이력) + **Workflow Automation**(S3 에 상태 JSON PUT → CloudFront 캐시 무효화 → Slack 통지)으로. 반영 약 **25초**. Workflow 실패 시 Slack 통지(바꾼 줄 알았는데 안 바뀐 상태 방지), 작성자 퇴직·권한 변경에 안 흔들리게 **Service Account** 로 실행, AWS 는 Connection(IAM Role 의 Trust Policy·Resolver 권한이 걸림돌). 권한은 Okta SAML Group Mapping — 전용 Okta 그룹. **Datadog 이 불안정하면 S3 파일을 손으로 고친다**(프런트는 S3 JSON 만 본다). Form 무료, Workflow 100회당 $14 — 거의 무료."
+    },
+    {
+      "title": "アーキテクチャを“規約”ではなく“CI”で守る — 依存方向を機械強制するフロントエンドテンプレートの設計",
+      "url": "https://zenn.dev/hacobu/articles/5717458ca99f9b",
+      "publisher": "Hacobu Tech Blog (Zenn)",
+      "date": "2026-06-18",
+      "summary": "**MOVO Berth** 설계·개발 담당이 사내 공통 프런트엔드 템플릿(웹 React · 네이티브 React Native/Expo)을 설명한다. 아키텍처 규약은 쓰는 순간 썩기 시작한다 — 사람도 **AI 에이전트**도 규약을 모르거나 잊는다 → **CI 로 0-tolerance 강제**(위반이면 머지 불가). src 를 5층(routes/app · features · components · shared · 기반)으로 나누고 하위 → 상위 역류·**feature 간 직접 의존**·순환을 금지. 2층 강제: ① **dependency-cruiser**(의존 **엣지** 검사, 13 규칙 — 정규식 후방 참조 `$1` 로 N×N 의 feature 간 금지를 1 규칙에, 미해결·phantom 의존·devDep·prod→test 금지, 최상위 디렉터리 allowlist) ② 자작 **check-structure.mjs**(파일 **존재** 검사 — import 없는 고립 파일은 엣지 규칙이 발화하지 않는다; 테스트·스토리·타입 테스트 **공존** 강제). 도피로: baseline(기존 위반 grandfather)·allowlist 갱신 — 반드시 diff 와 리뷰에 의도가 남는다. 네이티브 판에 이름만 바꿔 이식. AI 가 cross-feature import 를 쓰면 CI 가 떨어져 '공유는 하위층으로 추출' 로 되돌린다."
+    }
+  ]
+}

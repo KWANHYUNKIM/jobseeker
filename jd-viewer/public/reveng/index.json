@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "hacobu",
+      "name": "Hacobu",
+      "name_en": "Hacobu",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "물류 DX 의 Hacobu(MOVO) — 로그인 화면의 장애 배너는 자작 대신 Datadog 폼으로 비개발자에게 넘기고 S3 파일 하나를 최후의 수단으로 남기며, 트럭 예약 화면의 프런트엔드는 기능 간 의존을 규약 문서가 아니라 CI 가 막는다",
+      "updated_at": "2026-09-26",
+      "domain": "hacobu.jp"
+    },
+    {
       "slug": "loglass",
       "name": "ログラス",
       "name_en": "Loglass",
@@ -3251,7 +3263,9 @@
     "계층을 엔진이 알게 해 읽지 않는다",
     "장애 때 '당시 구조' 를 다시 세운다",
     "인원 하나의 변화가 인건비 과목 전부로 번진다",
-    "신규 AI 사업의 병목을 따라 만드는 법을 옮긴다"
+    "신규 AI 사업의 병목을 따라 만드는 법을 옮긴다",
+    "장애 공지 스위치를 비개발자 손에 쥐여 준다",
+    "기능 패키지의 경계를 규약 대신 CI 가 지킨다"
   ],
   "countries": {
     "KR": "한국",
