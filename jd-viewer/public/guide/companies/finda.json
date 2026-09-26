@@ -159,5 +159,121 @@
     "Data Engineer·DevOps 는 원티드·점핏·사람인에 같은 제목으로 올라와 있다 — 본문 비교 필요",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/355267",
+      "title": "Data Engineer",
+      "site": "wanted",
+      "verdict": "경력 2-7년(자격요건은 '데이터 엔지니어링 실무 경험 2년 이상'). Data Platform 팀 자리로, 팀 소개가 '데이터 분석 환경의 현대화와 인프라 자동화' 를 주요 과제로 적는다. 일은 Databricks 중심 분석 환경의 운영·개선·트러블슈팅, Airflow 워크플로우 개발·운영, IaC 로 데이터 인프라 관리·자동화, 데이터 보안 정책과 품질 관리(거버넌스), 팀 전체의 AI 툴 업무 자동화. 필수는 Kubernetes 서비스 운영과 Airflow 워크플로우 경험, 그리고 모호한 상황에서 스스로 방향을 잡는 태도. Databricks 구축·운영, IaC·자동화 스크립트, AI 툴로 반복 업무 효율화, 은행·저축은행 IT 정보계 경험은 우대다. 팀 기술은 Databricks(Spark)·Iceberg·Airflow·Flink·StarRocks, Kubernetes·Terraform. 전형: 서류 전형 → 1차 인터뷰(직무 기술, 포지션 리드·핀다 크루) → 2차 인터뷰 → 3차 인터뷰(2~3차는 CEO 와 조직 적합성·컬쳐핏) → 레퍼런스 체크 → 처우 협의 → 최종 합격. 인터뷰는 각 40분~1시간, 결과는 합격 여부와 상관없이 모두에게 전달한다고 적는다. 입사 후 수습 3개월.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어링 2년 이상",
+          "Kubernetes 서비스 운영",
+          "Airflow 워크플로우 개발·운영"
+        ],
+        "can_learn": [
+          "Databricks 구축·운영",
+          "IaC·자동화 스크립트",
+          "AI 툴로 반복 업무 효율화",
+          "금융권 정보계 경험"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Kubernetes 위에서 Airflow 운영",
+          "from": "qualification",
+          "quote": "• Kubernetes(k8s) 환경에서의 서비스 운영 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 두 줄이 Kubernetes 서비스 운영과 Airflow 워크플로우이고, 주요업무에 'Airflow 기반 워크플로우 파이프라인을 개발하고 안정적으로 운영' 이 있다.",
+          "gap_check": "Airflow 를 Kubernetes 에 올릴 때 태스크를 KubernetesPodOperator 로 격리 실행하는 것과 워커에서 바로 돌리는 것은 자원·의존성·실패 처리에서 무엇이 다르고, 스케줄러가 느려지면 무엇부터 보는가?",
+          "drill": "kind 클러스터에 Airflow 공식 Helm 차트를 올리고, 한 DAG 는 PythonOperator, 다른 DAG 는 KubernetesPodOperator 로 같은 작업을 돌려 자원 요청·로그·재시도 동작을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Airflow — Helm Chart",
+              "url": "https://airflow.apache.org/docs/helm-chart/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Airflow — KubernetesPodOperator",
+              "url": "https://airflow.apache.org/docs/apache-airflow-providers-cncf-kubernetes/stable/operators.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — Overview",
+              "url": "https://kubernetes.io/docs/concepts/overview/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Databricks 분석 환경과 데이터 거버넌스",
+          "from": "task",
+          "quote": "• Databricks를 중심으로 한 데이터 분석 환경의 운영, 개선, 트러블슈팅을 담당합니다.",
+          "priority": "core",
+          "why": "첫 주요업무이고 다른 주요업무가 '데이터 보안 정책 수립 및 품질 관리 등 데이터 거버넌스' 다. 우대에 Databricks 구축·운영이 있다. 회사는 대출 신청·신용 정보를 다룬다(회사 브리핑).",
+          "gap_check": "분석가가 대출 신청 테이블을 조회할 때 주민번호·소득 같은 컬럼은 누구에게 가리고, Unity Catalog 에서 그 권한과 접근 기록은 어떻게 관리하는가?",
+          "drill": "Databricks 무료 체험(또는 Community)에서 카탈로그·스키마·테이블을 만들고, 그룹별 권한과 민감 컬럼 마스킹을 적용한 뒤 권한이 다른 사용자로 조회해 결과를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Databricks documentation",
+              "url": "https://docs.databricks.com/aws/en/",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — Unity Catalog",
+              "url": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Terraform 으로 데이터 인프라 관리",
+          "from": "task",
+          "quote": "• IaC 기반으로 데이터 인프라를 관리하고, 반복 업무를 자동화합니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 'IaC 또는 자동화 스크립트를 활용한 인프라 관리 경험' 이 있다. 팀 기술 목록에 Terraform 이 있다.",
+          "gap_check": "콘솔에서 손으로 만든 Databricks 클러스터·권한을 Terraform 으로 옮길 때 기존 리소스는 어떻게 가져오고, 누군가 콘솔에서 다시 바꾸면(드리프트) 어떻게 알아채는가?",
+          "drill": "Databricks Terraform provider 로 클러스터 정책·작업(job)·권한을 코드로 정의하고, 콘솔에서 하나를 바꾼 뒤 plan 으로 드리프트를 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Terraform — Databricks provider",
+              "url": "https://registry.terraform.io/providers/databricks/databricks/latest/docs",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "kind + Airflow Helm + KubernetesPodOperator + Terraform 으로 만든 작은 데이터 플랫폼 저장소",
+          "why": "필수 두 줄(Kubernetes·Airflow)과 IaC 주요업무를 한 번에 보여 준다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "AI 툴로 반복 업무를 줄인 사례 정리",
+          "why": "주요업무와 우대에 AI 툴 활용 업무 자동화가 모두 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형 → 1차 인터뷰(직무 기술, 포지션 리드·핀다 크루) → 2차 인터뷰 → 3차 인터뷰(2~3차는 CEO 와 조직 적합성·컬쳐핏) → 레퍼런스 체크 → 처우 협의 → 최종 합격. 인터뷰는 각 40분~1시간, 결과는 합격 여부와 상관없이 모두에게 전달한다고 적는다. 입사 후 수습 3개월.",
+        "expect": [
+          "Kubernetes·Airflow 운영 경험",
+          "데이터 거버넌스",
+          "IaC",
+          "CEO 인터뷰에서 협업·컬쳐핏"
+        ],
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/355267",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
