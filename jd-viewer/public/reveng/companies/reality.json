@@ -134,7 +134,7 @@
         {
           "tech": "Datastream 백필 + CDC → GCS(Avro) → Pub/Sub → Dataflow 템플릿 → Spanner",
           "solves": "덤프 없이 기존 데이터와 이후 변경을 이어 옮겨 다운타임을 줄인다. shadow 테이블이 중복 제거 · 멱등성을 맡는다.",
-          "limits": "이번엔 샤딩 없는 단일 테이블 · UUID 문자열 PK · 같은 스키마였다 — Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다.",
+          "limits": "이번엔 샤딩 없는 단일 테이블 · UUID 문자열 PK · 같은 스키마였다 — Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 그리고 CDC 동기와 앱 쓰기의 배타 제어가 어려워 **완전 무중단은 못 했다** — 약 10 분의 점검 시간으로 전환했다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -142,12 +142,14 @@
               "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
               "publisher": "REALITY",
               "date": "2025-12-26",
-              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다."
+              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "mysql-to-spanner-cdc-dual-write"
+      ]
     }
   ],
   "features": [
@@ -869,6 +871,348 @@
           "summary": "스마트폰용 메타버스 'REALITY' 개발 · 운영 — 누구나 스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신 · 게임을 즐기는 커뮤니케이션 플랫폼, 전 세계 다운로드 2,000 만 돌파. 모회사는 GREE Holdings."
         }
       ]
+    },
+    {
+      "key": "mysql-to-spanner-cdc-dual-write",
+      "name": "무중단을 노렸다가 10 분 점검으로 — CDC 로 옮기고 이중 쓰기로 되돌릴 길을 남긴 MySQL → Spanner 이행",
+      "domain": "출시 때부터 쌓인 테이블을 서비스를 멈추지 않고 새 DB 로 옮긴다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "REALITY 는 출시 때 Cloud SQL for MySQL 로 시작했고 근년엔 Spanner 도 쓴다. 오래된 테이블을 Spanner 로 모으려는 흐름이 있었지만 사내에 경험이 없었다.\n\n그래서 가장 쉬운 테이블 — 샤딩 없는 단일 테이블, UUID 문자열 PK(그대로 Spanner PK 로), 수백만 레코드 — 부터 옮기며 방법을 만든다. 라이브 서비스라 멈추는 시간을 줄이고 싶었고, 문제가 나면 되돌릴 수 있어야 했다.",
+        "metrics": [
+          {
+            "label": "대상 테이블",
+            "value": "샤딩 없는 단일 테이블 · UUID 문자열 PK · 수백만 레코드",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+                "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+                "publisher": "REALITY",
+                "date": "2025-12-26",
+                "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+              }
+            ]
+          },
+          {
+            "label": "점검 시간",
+            "value": "쓰기가 멈춘 뒤 몇 분에 동기 완료 — 이행 작업 전체 약 10 분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+                "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+                "publisher": "REALITY",
+                "date": "2025-12-26",
+                "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "방식을 고를 때",
+          "thought": "레코드가 많아 덤프해서 한 번에 넣기 어렵고, 다운타임을 되도록 줄이고 싶다 — Datastream 의 백필과 CDC 로 옮긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+              "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+              "publisher": "REALITY",
+              "date": "2025-12-26",
+              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+            }
+          ]
+        },
+        {
+          "at": "전환 타이밍에서",
+          "thought": "처음엔 무중단을 기대하고 여러 가지를 찾아봤지만, CDC 동기와 앱 코드의 CRUD 를 배타 제어하기가 어려웠다 — 점검으로 쓰기가 없는 상태를 억지로 만들어 전환했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+              "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+              "publisher": "REALITY",
+              "date": "2025-12-26",
+              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+            }
+          ]
+        },
+        {
+          "at": "다음을 볼 때",
+          "thought": "이행마다 점검을 끼우면 이행 속도가 떨어진다 — 해결을 찾고, 구조가 다른 테이블도 옮기고 싶다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+              "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+              "publisher": "REALITY",
+              "date": "2025-12-26",
+              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "원본 테이블(MySQL)",
+            "what": "Cloud SQL for MySQL — 바이너리 로그를 켜고 Datastream 의 IP 를 허가해 둔다."
+          },
+          {
+            "name": "Datastream 스트림",
+            "what": "처음엔 전체를 스냅숏으로 백필, 이후 바이너리 로그의 INSERT/UPDATE/DELETE 를 CDC 로 GCS 에 Avro 로 쓴다."
+          },
+          {
+            "name": "Dataflow 스트리밍 잡",
+            "what": "GCS 파일 생성 통지(Pub/Sub)를 받아 Avro 를 읽고 변환 · 중복 확인 후 Spanner 트랜잭션으로 쓴다 — 실패는 GCS dlq/."
+          },
+          {
+            "name": "shadow 테이블",
+            "what": "Spanner 쪽 CDC 관리용 — 바이너리 로그 위치 추적 · 중복 제거 · 멱등성."
+          },
+          {
+            "name": "이중 쓰기 코드",
+            "what": "앱이 MySQL 과 Spanner 에 함께 쓴다 — 읽기 정본은 처음엔 MySQL."
+          }
+        ],
+        "invariants": [
+          "Spanner 스키마는 MySQL 과 형 호환을 맞춰 먼저 손으로 만든다.",
+          "전환 전에 동기 지연과 양쪽 레코드 수 일치를 확인한다.",
+          "읽기 정본이 Spanner 로 넘어가기 전까지 MySQL 에도 계속 쓴다 — 롤백할 수 있게."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Google 공개 Terraform 샘플(mysql-end-to-end)로 Datastream · GCS · Pub/Sub · Dataflow 를 한 번에 만든다",
+            "why": "하나씩 만들면 번거롭다 — 리소스 정보는 AI 에게 gcloud 로 가져오게 했다."
+          },
+          {
+            "step": "백필 → CDC 로 Spanner 를 따라잡게 한다",
+            "why": "덤프 없이 기존 데이터와 이후 변경을 이어 옮긴다."
+          },
+          {
+            "step": "점검 진입 → 동기 지연 · 레코드 수 일치 확인 → 이중 쓰기 코드 릴리스",
+            "why": "CDC 와 앱 쓰기가 겹치지 않는 순간을 억지로 만든다."
+          },
+          {
+            "step": "동기 리소스 terraform destroy",
+            "why": "이중 쓰기가 들어가면 필요 없고, 두면 그것만으로 비용이 든다."
+          },
+          {
+            "step": "읽기를 MySQL 정본 → Spanner 로 부하를 보며 서서히 → 100%",
+            "why": "문제가 나면 MySQL 로 되돌릴 수 있다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수백만 레코드를 어떻게 옮기나?",
+            "chosen": "**Datastream 백필 + CDC → GCS(Avro) → Pub/Sub → Dataflow → Spanner.**",
+            "alternatives": [
+              "덤프해서 일괄 임포트"
+            ],
+            "tradeoff": "크기 때문에 덤프가 어렵고, 기존 데이터와 이후 변경을 이어 옮겨 다운타임을 줄인다. 대가는 구성 요소가 다섯이라는 것 — Google 공개 Terraform 으로 거의 손대지 않고 준비했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+                "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+                "publisher": "REALITY",
+                "date": "2025-12-26",
+                "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+              }
+            ]
+          },
+          {
+            "question": "첫 이행 대상은?",
+            "chosen": "**가장 쉬운 테이블 — 샤딩 없음 · UUID 문자열 PK · 같은 스키마.**",
+            "alternatives": [
+              "Auto Increment PK 테이블",
+              "MySQL 에서 샤딩한 테이블",
+              "스키마가 다른 테이블"
+            ],
+            "tradeoff": "사내 지식이 없는 작업을 적은 위험으로 익힌다 — PK 를 그대로 쓸 수 있다. 대가는 나머지 유형에는 방법이 달라져 이번 절차를 그대로 못 쓴다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+                "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+                "publisher": "REALITY",
+                "date": "2025-12-26",
+                "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+              }
+            ]
+          },
+          {
+            "question": "전환을 어떻게 안전하게?",
+            "chosen": "**3 단계 — 이중 쓰기(읽기는 MySQL) → 읽기 비율을 서서히 → 100%.**",
+            "alternatives": [
+              "한 번에 Spanner 로 전환"
+            ],
+            "tradeoff": "문제가 나면 MySQL 로 롤백할 수 있고 Spanner 부하를 보며 연다. 대가는 이중 쓰기 기간 동안 쓰기 경로가 둘이라는 것 — 한쪽만 실패했을 때의 처리는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+                "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+                "publisher": "REALITY",
+                "date": "2025-12-26",
+                "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+              }
+            ]
+          },
+          {
+            "question": "무중단으로 전환하나?",
+            "chosen": "**점검 시간을 둔다(전체 약 10 분).**",
+            "alternatives": [
+              "CDC 가 도는 채로 이중 쓰기 코드를 배포(무중단)"
+            ],
+            "tradeoff": "CDC 동기와 앱 쓰기의 배타 제어가 어려워, 쓰기가 없는 상태를 만들어 동기를 강제로 끝내고 전환한다 — 확실하다. 대가는 다운타임 — 이행마다 점검을 끼우면 속도가 떨어져 다음 과제로 남겼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+                "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+                "publisher": "REALITY",
+                "date": "2025-12-26",
+                "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+              }
+            ]
+          },
+          {
+            "question": "백필의 쓰기 부하를 Spanner 가 어떻게 견디나?",
+            "chosen": "**(교훈) 워커 수를 줄이고(10→4) · Spanner 를 일시 증설 · 쿼리 우선순위를 Low 로.**",
+            "alternatives": [
+              "기본 설정(워커 과다 · 우선순위 High)"
+            ],
+            "tradeoff": "실제로는 워커가 과했고 우선순위가 High 로 돌아 Spanner CPU 가 치솟았다 — 비동기면 되니 Low 로 했어야 했다. 대가는 백필이 느려진다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+                "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+                "publisher": "REALITY",
+                "date": "2025-12-26",
+                "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+              }
+            ]
+          },
+          {
+            "question": "이행이 끝난 동기 리소스는?",
+            "chosen": "**이중 쓰기 릴리스 뒤 바로 terraform destroy.**",
+            "alternatives": [
+              "혹시 모를 재동기를 위해 남겨 둔다"
+            ],
+            "tradeoff": "두면 그것만으로 비용이 든다. 대가는 다시 동기가 필요하면 새로 만들어야 한다는 것 — Terraform 이라 다시 만들기는 쉽다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+                "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+                "publisher": "REALITY",
+                "date": "2025-12-26",
+                "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "valkey-key-by-key-migration",
+          "via": "조금씩 옮기는 이행",
+          "contract": "캐시는 키 하나씩, DB 는 테이블 하나씩 — 둘 다 한꺼번에 바꾸지 않고 쉬운 것부터 옮기며 방법을 쌓는다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+              "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+              "publisher": "REALITY",
+              "date": "2025-12-26",
+              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+            }
+          ]
+        },
+        {
+          "to": "아바타 · 룸 아이템 과금(수익원)",
+          "via": "출시 때부터의 MySQL 테이블",
+          "contract": "앱의 데이터가 있는 DB 다 — 옮긴 테이블이 무엇인지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+              "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+              "publisher": "REALITY",
+              "date": "2025-12-26",
+              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+            },
+            {
+              "title": "PRODUCT - REALITY株式会社",
+              "url": "https://reality.inc/products/",
+              "publisher": "REALITY",
+              "summary": "스마트폰용 메타버스 'REALITY' 개발 · 운영 — 누구나 스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신 · 게임을 즐기는 커뮤니케이션 플랫폼, 전 세계 다운로드 2,000 만 돌파. 모회사는 GREE Holdings."
+            }
+          ]
+        },
+        {
+          "to": "라이브 배신 기프팅(수익원)",
+          "via": "출시 때부터의 MySQL 테이블",
+          "contract": "같은 DB 가 앱 전체를 떠받친다 — 기프팅 테이블인지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+              "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+              "publisher": "REALITY",
+              "date": "2025-12-26",
+              "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+            },
+            {
+              "title": "PRODUCT - REALITY株式会社",
+              "url": "https://reality.inc/products/",
+              "publisher": "REALITY",
+              "summary": "스마트폰용 메타버스 'REALITY' 개발 · 운영 — 누구나 스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신 · 게임을 즐기는 커뮤니케이션 플랫폼, 전 세계 다운로드 2,000 만 돌파. 모회사는 GREE Holdings."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "변경 한 건이 Spanner 에 닿는 길",
+          "question": "MySQL 의 UPDATE 하나는 어디를 거쳐 Spanner 에 반영되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  M[\"Cloud SQL MySQL\\n바이너리 로그\"] --> DS[\"Datastream\\n백필 · CDC\"]\n  DS --> G[\"GCS Avro\"]\n  G -- OBJECT_FINALIZE --> PS[\"Pub/Sub\"]\n  PS --> DF[\"Dataflow 템플릿\\n변환 · 중복 확인\"]\n  DF --> SP[\"Spanner 테이블\"]\n  DF --> SH[\"shadow 테이블\\n위치 · 멱등\"]\n  DF -. 실패 .-> DLQ[\"GCS dlq/\"]"
+        },
+        {
+          "title": "전환의 단계",
+          "question": "MySQL 에서 Spanner 로 정본이 넘어가기까지 어떤 상태를 거치나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 백필: Terraform apply\n  백필 --> CDC동기: 전체 스냅숏 완료\n  CDC동기 --> 점검: 쓰기 정지\n  점검 --> 이중쓰기: 지연 · 레코드 수 확인 후 릴리스(약 10 분)\n  이중쓰기 --> 읽기이전: 동기 리소스 destroy · 읽기 비율 증가\n  읽기이전 --> Spanner정본: 읽기 100%\n  이중쓰기 --> MySQL정본: 문제 시 롤백"
+        },
+        {
+          "title": "무중단이 안 된 이유",
+          "question": "CDC 가 돌고 있는데 왜 점검이 필요했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"CDC 가 MySQL 변경을 Spanner 로 복사 중\"] --> B[\"앱이 이중 쓰기로 Spanner 에도 직접 씀\"]\n  B --> C[\"같은 행을 CDC 와 앱이 동시에 씀\"]\n  C --> D[\"배타 제어 어려움 · 순서 보장 불가\"]\n  D --> E[\"점검으로 쓰기를 멈추고 동기를 끝낸 뒤 전환\"]\n  E --> F[\"다운타임 · 이행 속도 저하 — 다음 과제\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Datastream + DataflowでMySQLからSpannerへ移行をした話",
+          "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
+          "publisher": "REALITY",
+          "date": "2025-12-26",
+          "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
+        },
+        {
+          "title": "PRODUCT - REALITY株式会社",
+          "url": "https://reality.inc/products/",
+          "publisher": "REALITY",
+          "summary": "스마트폰용 메타버스 'REALITY' 개발 · 운영 — 누구나 스마트폰 하나로 아바타가 되어 얼굴 없이 라이브 배신 · 게임을 즐기는 커뮤니케이션 플랫폼, 전 세계 다운로드 2,000 만 돌파. 모회사는 GREE Holdings."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -915,7 +1259,7 @@
       "url": "https://zenn.dev/nobtagon/articles/b94f27fff47c16",
       "publisher": "REALITY",
       "date": "2025-12-26",
-      "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다."
+      "summary": "출시 때부터 Cloud SQL for MySQL, 근년엔 Spanner 도 쓴다 — 오래된 테이블을 Spanner 로 옮기는 첫 작업(사내 지식 없음)으로 샤딩 안 된 단일 테이블 · UUID 문자열 PK · 수백만 레코드를 골랐다. 덤프 일괄 임포트는 크기 때문에 어렵고 다운타임을 줄이고 싶어 **Datastream 백필 + CDC** → GCS(Avro) → Pub/Sub → Dataflow(공식 템플릿) → Spanner, shadow 테이블로 중복 제거 · 멱등성, 실패는 GCS dlq. Google 공개 Terraform 으로 구성. Auto Increment PK · MySQL 샤딩 · 스키마가 다른 테이블은 방법이 달라진다. 전환은 3 단계 — CDC 완전 동기 뒤 MySQL · Spanner **이중 쓰기**(읽기는 MySQL 이 정본, 롤백 대비) → Spanner 부하를 보며 읽기 비율을 서서히 → 100%. CDC 동기와 앱 쓰기의 배타 제어가 어려워 **무중단은 포기하고 점검 시간**에 동기 지연 · 레코드 수 일치를 확인한 뒤 코드 릴리스(쓰기가 멈춘 뒤 몇 분에 동기 완료, 전체 약 10 분), 이후 동기 리소스를 terraform destroy. 백필 때 Dataflow 워커 과다 · 쿼리 우선순위 High 로 Spanner CPU 가 치솟음 → 워커 10→4 · 일시 증설 · 우선순위 Low 권장."
     }
   ]
 }

@@ -2588,3 +2588,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 REALITY Valkey 이행
 
 - `d4858623c73a6b` 전문으로 기능 `valkey-key-by-key-migration`, 결정 7(비교표의 대안 셋 포함).
+
+## 2026-09-27 REALITY Spanner 이행
+
+- `b94f27fff47c16` 후반(3 단계 전환 · 점검 10 분 · 백필 부하)까지 읽고 기능 `mysql-to-spanner-cdc-dual-write`, 결정 6. 도메인 이름의 '멈추지 않고'는 목표였고 실제는 약 10 분 점검이었다 — 이름은 공개 식별자라 두고, 도메인 tech.limits 와 기능에 명시.
