@@ -13,6 +13,7 @@
 ⚠️ 다음 회차: 원티드 나머지를 한 사이클 한 건씩 — B2B Data Engineer(379570) · B2B Senior Data Engineer(379567) · ML Engineer(377655) · Data Analyst(377730) · DevOps Lead(365587) · DevOps Engineer(367602) · B2B AI PO(338869) · iOS 경력(377626) · iOS 신입(384902). Data Engineer 두 건·iOS 두 건·DevOps 두 건은 본문 비교 후 판단(연차만 다르고 본문이 같으면 `duplicate_of`).
 사람인 공고는 우대사항이 자격요건 칸(또는 자격요건이 주요업무 칸) 안에 붙어 있는 경우가 있다 — `from` 은 인용이 실제로 들어 있는 필드로 맞춘다(검증은 필드별로 본다).
 ROS 2 문서는 `docs.ros.org/en/rolling/...` 이 404 — `en/jazzy/` 경로를 쓴다.
+⚠️ **공고 본문은 `jd-viewer/public/all_jobs_enriched.json` 에서 읽는다 — `jd-viewer/dist/` 는 빌드 사본이라 낡는다.** 2026-09-26 피에프씨 Backend(388360)를 dist 에서 읽고 썼다가 public·검증기 데이터에 없어(내려간 공고) 되돌렸다. 대상은 `--gaps` 목록에 있는 url 만 쓴다.
 주의: 원문에 zero-width space(U+200B)가 섞여 있다 — quote 는 main_tasks/qualifications/preferences 에서 그대로 복사한다.
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
