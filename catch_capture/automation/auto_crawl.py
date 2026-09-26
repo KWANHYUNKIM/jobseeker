@@ -472,6 +472,23 @@ def enrich_extras() -> None:
     run_engagement()
 
 
+def _reload_pipeline() -> None:
+    """통합·DB 적재·헬스 모듈을 회차마다 다시 읽는다(close_check 와 같은 이유).
+
+    크롤러는 하위 프로세스라 새 코드를 바로 쓰지만, 이쪽은 데몬 안에서 import 된다.
+    9/26 에 목록 기록(listed.json)을 넣었을 때 크롤러는 기록을 남기는데 데몬 속
+    aggregate 는 옛 판이라 그걸 안 읽고 사이클을 돌았다. 의존하는 쪽이 나중에 오도록
+    순서를 지킨다 — aggregate 는 함수 안에서 나머지를 import 하므로 맨 끝이면 된다.
+    """
+    import importlib
+    for name in ("crawlers.jobs_common", "store.upsert", "store.ledgers",
+                 "store.ingest_crawl", "monitoring.health", "pipeline.aggregate"):
+        try:
+            importlib.reload(importlib.import_module(name))
+        except Exception as e:                                      # noqa: BLE001
+            log(f"[reload] {name} 다시 읽기 실패 — 이전 판으로 계속: {e}")
+
+
 def run_cycle(keyword: str, count: int) -> bool:
     """크롤 1회 + (새 데이터면) 갱신. 새 데이터가 생겼으면 True.
 
@@ -479,6 +496,7 @@ def run_cycle(keyword: str, count: int) -> bool:
     여러 개면 키워드별로 크롤한 뒤 한 통합 폴더(all_통합_*)로 병합한다.
     """
     from automation.crawl_all import run_foreground
+    _reload_pipeline()
     from pipeline.aggregate import aggregate
 
     kws = [k.strip() for k in keyword.split(",") if k.strip()]
