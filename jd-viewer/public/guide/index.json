@@ -473,6 +473,17 @@
       "postings": 7,
       "study_items": 16,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "codit",
+      "name": "코딧",
+      "aliases": [
+        "코딧"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }

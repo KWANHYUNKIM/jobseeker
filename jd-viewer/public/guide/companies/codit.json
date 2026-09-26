@@ -1,0 +1,170 @@
+{
+  "slug": "codit",
+  "name": "코딧",
+  "name_en": "CODIT",
+  "aliases": [
+    "코딧"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "site": "thecodit.com",
+  "one_liner": "한국·미국·일본 등의 입법·규제 데이터를 모아 기업에 맞춤형 정책 모니터링과 AI 분석(ChatCODIT)을 파는 GovTech 플랫폼",
+  "company": {
+    "business": "공고 머리말은 코딧을 입법·규제 데이터를 실시간으로 분석하는 AI 기반 GovTech 플랫폼으로 소개하고, 한국·미국에서 총 16건의 특허(LLM 기반 법안 분석·맞춤형 법안 인사이트 포함)를 보유했다고 적는다. 한국·미국·일본 등의 입법·규제 데이터로 국내외 이해관계자에게 맞춤형 정책 인사이트를 제공하고, 중앙부처·국책 연구기관과 정책 프로젝트를 수행하며, 대만·미국·일본·싱가포르·홍콩에서 사업을 운영하고, 에이티넘인베스트먼트·프리미어파트너스로부터 투자를 받았다고 적는다. 홈페이지 설명은 실시간 입법 동향·법령 정보·국회의원 발언·보도자료를 기업 맞춤형으로 제공하는 정책 모니터링 플랫폼이라고 적는다. 공고들은 생성형 AI 규제 챗봇 ChatCODIT, 리포트 자동화 sLLM, 법률·규제 번역 NMT, 기업·산업별 추천 시스템, 법령·규제 데이터 크롤링을 적는다. 매출·임직원 수·요금제는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "코딧(CODIT) | 정책 모니터링과 규제 변화를 한눈에",
+        "url": "https://thecodit.com/kr-ko",
+        "publisher": "코딧",
+        "summary": "메타 설명이 코딧을 '규제 리스크에 선제적으로 대응할 수 있는 정책 모니터링 플랫폼' 으로 소개하고, 실시간 입법 동향·법령 정보·국회의원 발언·보도자료를 기업 맞춤형으로 제공한다고 적는다. 본문은 자바스크립트 렌더라 읽지 못했다"
+      },
+      {
+        "title": "머신러닝 엔지니어 (2년이상)",
+        "url": "https://www.wanted.co.kr/wd/94542",
+        "publisher": "원티드"
+      },
+      {
+        "title": "백엔드 개발자 (Node.js, 2년 이상)",
+        "url": "https://www.wanted.co.kr/wd/199386",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "보유 특허(회사 주장)",
+        "value": "한국·미국 총 16건",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "머신러닝 엔지니어 (2년이상)",
+            "url": "https://www.wanted.co.kr/wd/94542",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "기업 대상 정책 모니터링 서비스",
+        "how": "홈페이지가 입법 동향·법령·국회의원 발언·보도자료를 '기업 맞춤형' 으로 제공한다고 적는다. 구독인지 계약인지, 가격은 읽지 않았다(추론).",
+        "domains": [
+          "입법·규제 데이터 수집",
+          "규제 AI(ChatCODIT·번역·추천)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "코딧(CODIT) | 정책 모니터링과 규제 변화를 한눈에",
+            "url": "https://thecodit.com/kr-ko",
+            "publisher": "코딧",
+            "summary": "메타 설명이 코딧을 '규제 리스크에 선제적으로 대응할 수 있는 정책 모니터링 플랫폼' 으로 소개하고, 실시간 입법 동향·법령 정보·국회의원 발언·보도자료를 기업 맞춤형으로 제공한다고 적는다. 본문은 자바스크립트 렌더라 읽지 못했다"
+          }
+        ]
+      },
+      {
+        "name": "정부·공공 정책 프로젝트",
+        "how": "공고 머리말이 중앙부처·국책 연구기관과 협력해 정책 프로젝트를 수행한다고 적는다. 매출 비중은 읽지 않았다(추론).",
+        "domains": [
+          "입법·규제 데이터 수집"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "머신러닝 엔지니어 (2년이상)",
+            "url": "https://www.wanted.co.kr/wd/94542",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "입법·규제 데이터 수집",
+        "why": "웹 크롤링 공고가 다양한 소스에서 데이터를 수집·가공하는 크롤러와 AWS 데이터 인프라를, 백엔드 공고가 수집된 법령·규제 데이터를 ELK 와 연동한 API 서버를 적는다.",
+        "what_to_know": [
+          "웹 크롤러·스크래핑",
+          "ELK(Elasticsearch)",
+          "AWS 데이터 파이프라인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "웹 크롤링(스크래핑) 개발자 (2년 이상)",
+            "url": "https://www.wanted.co.kr/wd/94220",
+            "publisher": "원티드"
+          },
+          {
+            "title": "백엔드 개발자 (Node.js, 2년 이상)",
+            "url": "https://www.wanted.co.kr/wd/199386",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "규제 AI(ChatCODIT·번역·추천)",
+        "why": "머신러닝 공고가 미국·일본·한국 데이터 기반 규제 챗봇 ChatCODIT, 리포트 자동화 sLLM, 법률·규제 번역 NMT, 기업·산업별 추천 시스템을 적는다.",
+        "what_to_know": [
+          "RAG 챗봇",
+          "sLLM 파인튜닝",
+          "기계번역",
+          "추천 시스템"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "머신러닝 엔지니어 (2년이상)",
+            "url": "https://www.wanted.co.kr/wd/94542",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "웹·앱 서비스",
+        "why": "프론트엔드 공고가 코딧 웹 서비스와 ChatCODIT 화면을, 앱 공고가 React Native·Expo 앱과 Codit Design System 을 적는다.",
+        "what_to_know": [
+          "React",
+          "React Native·Expo",
+          "디자인 시스템"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자 (React.js 2년이상)",
+            "url": "https://www.wanted.co.kr/wd/216514",
+            "publisher": "원티드"
+          },
+          {
+            "title": "앱 개발자 (React Native,  2년 이상)",
+            "url": "https://www.wanted.co.kr/wd/135520",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "같은 공고를 오래 열어 두고 있다",
+        "evidence": "Node.js와 Typescript를 이용하여 코딧 API 서버를 구현하고, 기능을 추가 및 유지보수 업무를 하게 됩니다.",
+        "so_what": "원티드 공고 번호가 46260·93806·94220·94542 처럼 낮은 것이 섞여 있다 — 오래전에 올린 공고를 모집중으로 유지하는 것으로 보인다(추론). 지원 전 실제 채용 여부를 확인할 만하다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "생성형 AI 규제 챗봇을 여러 팀이 함께 만든다",
+        "evidence": "코딧 플랫폼 및 생성형 AI 기반의 대화형 정책 및 규제 챗봇 ChatCODIT을 개발합니다.",
+        "so_what": "백엔드·프론트엔드·머신러닝 공고가 모두 ChatCODIT 을 적는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "매출·임직원 수·요금제를 읽지 않았다",
+    "thecodit.com 본문은 자바스크립트 렌더라 메타 설명만 읽었다. codit.co.kr 은 다른 기관(고등학교 온라인 저지)의 사이트다",
+    "원티드 공고 번호가 낮은 것(46260 등)이 섞여 있다 — 게시일을 확인하지 못했다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
