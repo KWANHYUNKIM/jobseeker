@@ -4,16 +4,14 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **76건**. (크롤 갱신으로 모집중이 190건으로 늘었다.)
-직전 회차: `ML Lead (Coupang Eats Search)`(wd/382275) — 원티드 표기 7~14년 vs **본문 10년↑ + 석·박사**. 6항목.
-⚠️ 후보를 뽑을 때 제목 정규식(`Engineer|개발|…`)만 쓰면 **`ML Lead` 같은 제목을 놓친다** — `--gaps` 목록을 먼저 본다.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **77건**.
+직전 회차: `Senior Back-end Engineer (Developer Experience)`(ats 8146685, 서울, **한국어 본문**) — 개발자 플랫폼 팀, 6항목.
+자격이 연차가 아니라 **'최근 3년 이내 대규모 분산 시스템'** 이다.
 
-⚠️ 다음 회차: `--gaps` 목록을 먼저 보고 **원티드·사람인 게시가 있으면 그것부터**(비개발 — CS 전문가 등 — 은 건너뛴다).
-없으면 ats 서울 공고 중 겹침 <0.5 인 것(`Senior Back-end Engineer (Developer Experience)` gh_jid=8146685,
-`Senior, Back-end Engineer(CX) - Coupang Play` 8186132 등). `Staff, AI Security Architect`(greenhouse)는 새 사이트 표기다.
-⚠️ 경고 80: '마감됐다' + **'공고 데이터에서 이 url 을 못 찾았다'**(메가존 6건 전부 등). 크롤 쪽 `store.export` 가
-사이트 간 중복을 한 건으로 내보내기 시작한 뒤라 **사본 url 이 데이터에서 빠졌을 가능성** — 미확인. 사용자에게 알렸다.
-**새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
+**원티드·사람인에 남은 쿠팡 미작성 공고는 전부 비개발**(CS 전문가·카탈로그 검수·AI 콘텐츠 평가자·Data Analyst·데이터 분석 어시스턴트) — 건너뛴다.
+⚠️ 다음 회차: ats 서울 공고 중 겹침 <0.5 — `Senior, Back-end Engineer(CX) - Coupang Play`(8186132), `Senior DevOps Engineer (SPIR/OC)`(8078331)
+→ Staff 판(8078329)과 쌍일 수 있다, 보안 계열 여러 건(Attack Surface·Forensics·Pen Tester·Threat Detection·CTEM…)은 같은 팀 템플릿일 수 있어 **서로 겹침을 먼저 센다**.
+⚠️ 경고 80(마감·url 못 찾음)은 크롤 쪽 원인, 미확인. **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
 12건 상한을 넘겨 대기열에 자리를 내줬다(`--gaps` 가 미룬다). 남은 공고는 보강(4순위)에서 잇는다.

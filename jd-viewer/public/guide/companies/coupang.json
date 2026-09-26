@@ -8684,6 +8684,139 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8146685",
+      "title": "Senior Back-end Engineer (Developer Experience)",
+      "site": "ats",
+      "verdict": "서울 근무. 쿠팡의 수천 개 마이크로서비스를 받치는 내부 워크로드 관리·마이크로서비스 생태계(개발자 플랫폼 팀)를 설계하고 직접 만드는 사람. 직무 소개는 Kubernetes·gRPC·Service Mesh 실무를 갖춘 아키텍트를 찾는다고 적는다. 자격은 '최근 3년 이내 대규모 분산 시스템 설계·개발'이라 연차보다 최근성이 기준이다.",
+      "fit": {
+        "must_have": [
+          "최근 3년 이내 대규모 분산 시스템 설계·개발",
+          "Go·C/C++·Python·Java 중 하나 이상",
+          "미션 크리티컬 시스템 수행 경험",
+          "클라우드(AWS·Azure·GCP)"
+        ],
+        "can_learn": [
+          "Jsonnet",
+          "Service Mesh 운영 세부"
+        ]
+      },
+      "study": [
+        {
+          "topic": "수천 개 마이크로서비스의 워크로드 관리 인프라",
+          "from": "task",
+          "quote": "워크로드 및 서비스 관리 인프라 설계",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고, 직무 소개가 '수천 개의 마이크로서비스 규모로 확장되는 내부 워크로드 관리'를 이 팀의 책임으로 적는다.",
+          "gap_check": "서비스 수천 개가 각자 배포·스케일링 설정을 가질 때, 개발자가 쓰는 추상화(서비스 정의 한 파일)와 플랫폼이 숨기는 것(Deployment·HPA·PDB·네트워크 정책)의 경계를 어떻게 긋는가?",
+          "drill": "'서비스 정의 YAML 하나 → Kubernetes Deployment·Service·HPA·PDB 생성'을 하는 작은 컨트롤러(또는 생성기)를 Go 로 만들어 kind 클러스터에 적용한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Kubernetes — Operator pattern",
+              "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubebuilder Book",
+              "url": "https://book.kubebuilder.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kubernetes·Go·gRPC",
+          "from": "preference",
+          "quote": "Kubernetes, Go 언어 및 AWS 클라우드 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대 첫 줄과 직무 소개(Kubernetes·gRPC·Service Mesh)가 겹친다. 플랫폼 코드가 Go 로 짜여 있을 가능성이 크다(추론).",
+          "gap_check": "gRPC 가 HTTP/1.1 로드밸런서 뒤에서 왜 한 백엔드로만 몰리고, Service Mesh 나 클라이언트 측 로드밸런싱이 이를 어떻게 푸는가?",
+          "drill": "Go gRPC 서버 3개와 클라이언트를 kind 에 띄워 쿠버네티스 Service(L4)로 붙였을 때 연결이 한쪽에 몰리는 것을 확인하고, 클라이언트 측 round_robin 이나 Linkerd/Istio 로 고친다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "gRPC — Documentation",
+              "url": "https://grpc.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "설정 언어 (JSON·YAML·Jsonnet)",
+          "from": "preference",
+          "quote": "JSON, YAML, Jsonnet 및 gRPC 경험이 있으신 분",
+          "priority": "nice",
+          "why": "수천 개 서비스의 설정을 손으로 쓰면 복붙 오류가 쌓인다. Jsonnet 같은 설정 언어로 공통을 뽑는 방식이 쓰이는 것으로 보인다(추론).",
+          "gap_check": "YAML 템플릿(Helm)과 Jsonnet 의 차이, 그리고 설정 언어가 강력해질수록 생기는 위험은?",
+          "drill": "같은 서비스 5개의 Deployment 설정을 Jsonnet 으로 공통 함수 + 서비스별 차이로 나눠 생성한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Jsonnet",
+              "url": "https://jsonnet.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "동시성·Non-blocking IO",
+          "from": "preference",
+          "quote": "동시성(Concurrency), 멀티스레딩(Multi-threading), 동기화(Synchronization) 및 Non-blocking IO 경험이 있으신 분",
+          "priority": "high",
+          "why": "플랫폼 컴포넌트(컨트롤러·게이트웨이)는 많은 요청과 이벤트를 동시에 다룬다.",
+          "gap_check": "Go 의 goroutine·channel 모델과 Java 의 스레드풀 모델에서 블로킹 IO 가 각각 어떤 비용을 만드는가?",
+          "drill": "Go 로 초당 수천 건 이벤트를 처리하는 워커 풀을 만들고, 컨텍스트 취소·백프레셔를 넣어 부하 시 동작을 관찰한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "심각한 장애의 근본 원인을 선제적으로 없애기",
+          "from": "task",
+          "quote": "심각한 시스템 문제를 깊이 있게 분석(Dive deep)하고, 유사한 근본 원인을 선제적으로 해결하여 운영 우수성 수준 향상",
+          "priority": "core",
+          "why": "플랫폼 장애는 수천 개 서비스에 동시에 번진다(추론). 주요업무가 '유사한 근본 원인을 선제적으로 해결'까지 요구한다.",
+          "gap_check": "플랫폼 변경(예: 사이드카 버전업)이 전체 서비스로 번지지 않게 하는 점진 배포 장치(카나리·셀 단위)를 설명할 수 있는가?",
+          "drill": "위 컨트롤러에 '서비스 10% 먼저 적용 → 지표 확인 → 확대' 단계적 롤아웃을 넣고 실패 시 자동 중단되게 한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "분산 시스템 내부 (Kafka·Cassandra·Spanner·OS 커널)",
+          "from": "preference",
+          "quote": "운영체제(OS) 커널 및 Kafka, Cassandra, Google Spanner와 같은 분산 시스템에 대한 깊은 이해가 있으신 분",
+          "priority": "nice",
+          "why": "플랫폼 팀은 다른 팀이 쓰는 인프라의 한계를 먼저 알아야 한다.",
+          "gap_check": "Cassandra 의 일관성 수준(ONE·QUORUM)과 Spanner 의 외부 일관성은 쓰기 지연에서 어떻게 다른가?",
+          "drill": "Cassandra 3노드를 도커로 띄워 QUORUM/ONE 으로 쓰기·읽기 지연과 노드 하나 장애 시 동작을 비교한다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "내부 개발자 플랫폼(IDP) 미니 데모",
+          "why": "직무 소개가 '개발자 경험과 내부 인프라 혁신'이다. 서비스 템플릿 → 배포 → 관측까지 한 명령으로 되는 데모는 이 팀의 문제를 그대로 보여 준다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 자세히 적혀 있지 않다.",
+        "expect": [
+          "서비스 추상화와 쿠버네티스 경계",
+          "gRPC 로드밸런싱 문제",
+          "플랫폼 변경의 점진 배포",
+          "동시성 모델 비교",
+          "미션 크리티컬 시스템 경험"
+        ],
+        "sources": [
+          {
+            "title": "Senior Back-end Engineer (Developer Experience)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8146685",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
