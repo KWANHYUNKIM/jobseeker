@@ -2324,3 +2324,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 neoAI 큐 동기화
 
 - `878ed0b400f45d` 전문으로 기능 `queue-hardened-data-sync`, 결정 8. 글이 테넌트 처리를 적지 않아 RLS 기능과의 연결은 inferred.
+
+## 2026-09-27 neoAI RAG 생성 모델 선정
+
+- Enterprise 수익원 판정: Zenn 검색 4낱말은 0건이었지만 RSS 의 J-RAGBench(`0998f81c39a583`)가 '금융 · 제조업 등에 RAG 시스템을 도입하며 부딪힌 과제'를 반영했다고 적어, 보류 대신 도메인 넷째 + 기능 `jragbench-generator-selection`(결정 8). 대가 여럿은 '이 사이트의 해석'.
