@@ -1,0 +1,206 @@
+{
+  "slug": "ga-technologies",
+  "name": "GA technologies",
+  "name_en": "GA technologies",
+  "country": "JP",
+  "category": "기타",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "ga-tech.co.jp",
+  "one_liner": "부동산 투자 'RENOSY' 와 부동산 회사용 'ITANDI' 를 가진 부동산 테크 그룹 — 여러 도구에 흩어진 정기 처리를 dbt 와 사상이 맞는 Dagster 의 애셋 계보로 묶고, 늘어나는 ML 모델은 Snowflake 가 주도하는 단일 컨테이너 SageMaker 파이프라인 하나로 굴린다",
+  "business_model": "주력은 **RENOSY** — 개인이 부동산으로 자산을 만들게 하는 부동산 투자 서비스다. 기술과 데이터로 물건 가치를 추정해 투자 가치가 높은 물건을 골라 팔고(BUY), 매각(SELL)도 돕는다. 상담부터 계약까지 온라인으로.\n\n또 하나는 그룹사 **イタンジ(ITANDI)** — 관리회사 물건과 실시간 연계된 업자간 사이트 ITANDI BB, 임대 관리 · 중개 · 매매 도구를 부동산 회사에 낸다. 그 밖에 Modern Standard · 神居秒算 · dearlife, M&A 영역의 スピカコンサルティング. 상장사로 IR 메뉴가 있지만 이번에 읽은 페이지에 매출 수치는 없었다.",
+  "products": [
+    "RENOSY(부동산 투자 · 매매)",
+    "ITANDI BB · 임대 관리 · 중개 · 매매(부동산 회사용)",
+    "Modern Standard · 神居秒算 · dearlife",
+    "スピカコンサルティング(M&A)"
+  ],
+  "revenue_total": "확인하지 못했다. 재무 하이라이트 페이지를 열었지만 본문에 수치가 나오지 않았다.",
+  "revenue_streams": [
+    {
+      "name": "RENOSY(부동산 투자 · 매매)",
+      "how": "개인에게 투자용 부동산을 골라 팔고, 매각도 중개한다 — 데이터로 물건 가치를 추정한다.",
+      "weight": "공개 안 됨(주력으로 보임)",
+      "domains": [
+        "흩어진 정기 처리를 데이터 자산의 계보로 묶는다",
+        "늘어나는 ML 모델을 한 틀로 굴린다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RENOSY | GA technologies",
+          "url": "https://www.ga-tech.co.jp/services/renosy/",
+          "publisher": "GA technologies",
+          "summary": "**부동산 투자 서비스** — '부동산으로 자산 형성을 당연하게.' 사고(BUY): **기술과 데이터로 부동산 가치를 정밀하게 추정**해 자산 가치가 높은 물건을 고르고 상위 몇 % 를 눈으로 검사, 상담부터 계약까지 원스톱 온라인. 팔기(SELL): 적정 가격 매각. 검토 · 구입 · 관리 · 매각까지."
+        },
+        {
+          "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+          "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+          "publisher": "GA technologies",
+          "date": "2026-06-24",
+          "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+        },
+        {
+          "title": "データ基盤にDagsterを導入した話",
+          "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+          "publisher": "GA technologies",
+          "date": "2026-06-15",
+          "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다."
+        }
+      ]
+    },
+    {
+      "name": "ITANDI(부동산 회사용 SaaS · 업자간 사이트)",
+      "how": "관리회사 · 중개회사에 업자간 사이트와 임대 관리 · 중개 · 매매 도구를 제공한다.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "ITANDI | GA technologies",
+          "url": "https://www.ga-tech.co.jp/services/itandibb/",
+          "publisher": "GA technologies",
+          "summary": "イタンジ株式会社가 운영하는 부동산 회사용 서비스 — **ITANDI BB**(관리회사 물건 정보와 실시간 연계되는 업자간 사이트, 내견 예약 · 입주 신청까지, 365일 24시간), ITANDI 임대 관리 · 임대 중개 · 매매 Propocloud."
+        }
+      ]
+    },
+    {
+      "name": "M&A(スピカコンサルティング)",
+      "how": "M&A 영역의 그룹사.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社GA technologies - ジーエーテクノロジーズ",
+          "url": "https://www.ga-tech.co.jp/",
+          "publisher": "GA technologies",
+          "summary": "'가장 디지털화가 어렵고 가장 필요한 곳에 미래를.' 아날로그 업계(부동산부터)를 테크놀로지와 '인간력'으로 바꾼다 — M&A 등 다른 산업으로도. 서비스: 부동산 영역 **RENOSY** · Modern Standard · 神居秒算 · dearlife · **ITANDI**(イタンジ), M&A 영역 **スピカコンサルティング**. IR(주주 · 투자자 정보) 메뉴가 있다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "데이터가 모델의 판단이 되기까지",
+    "question": "자사 프로덕트와 외부 서비스의 데이터는 어떤 길을 지나 영업 · 마케팅의 판단이 되나?",
+    "code": "flowchart LR\n  SRC[\"외부 서비스 · 자사 프로덕트 DB\"] -- \"dlt\" --> S3[\"S3 · Iceberg\\nGlue Catalog\"]\n  S3 --> SF[(\"Snowflake\\ndbt 모델\")]\n  DG[\"Dagster\\n애셋 · Lineage\"] -. 오케스트레이션 .-> S3\n  DG -. 오케스트레이션 .-> SF\n  SF --> BI[\"BI\"]\n  SF -- \"Snowflake Tasks → S3\" --> EB[\"EventBridge\"] --> SMP[\"SageMaker Pipelines\\n단일 컨테이너\"]\n  SMP -- \"결과 CSV → S3\" --> SF\n  SF --> USE[\"마케팅 · 플래너 · CS 의 판단\"]",
+    "_note": "이 사이트의 해석 — 글 둘의 구성을 한 장에 모았다. 두 파이프라인이 실제로 같은 Snowflake 계정을 공유하는지는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "흩어진 정기 처리를 데이터 자산의 계보로 묶는다",
+      "why": "회사와 분석 기반이 커지며 정기 실행 처리가 **여러 도구에 흩어졌다** — 무엇이 어디서 도는지, 어떤 처리가 무엇에 기대는지 보이지 않아 데이터 품질과 효율을 담보하기 어려워졌다. 데이터는 외부 서비스 · 자사 프로덕트에서 S3 를 거쳐 Snowflake, BI 로 흐르고, 가공의 중심은 dbt 다.\n\n그래서 워크플로 엔진을 들이되, **dbt 모델 하나하나가 보이는** 것을 가장 먼저 따졌다.",
+      "tech": [
+        {
+          "tech": "Dagster OSS(애셋 지향 · @dbt_assets · Asset Checks · Backfill) on ECS Fargate, Terraform, Google Workspace 인증",
+          "solves": "dbt 모델이 그대로 애셋이 되고 S3 → Snowflake → BI 의 흐름이 Lineage Graph 한 장에 보인다.",
+          "limits": "OSS 의 역할 기반 접근 제어가 빈약해 세밀한 인가는 앞단 Proxy 등을 검토 중이고, 아직 이행 중인 시스템이 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다."
+            }
+          ]
+        },
+        {
+          "tech": "dlt 로 S3 적재 · Iceberg 테이블화 → Glue Catalog → Snowflake 카탈로그 통합",
+          "solves": "데이터 레이크의 테이블을 몇 줄로 만들고 DWH 에서 바로 읽는다.",
+          "limits": "S3 · Glue · Snowflake 세 곳에 걸친 구성을 함께 운용한다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤にDagsterを導入した話",
+              "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+              "publisher": "GA technologies",
+              "date": "2026-06-15",
+              "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "늘어나는 ML 모델을 한 틀로 굴린다",
+      "why": "Applied ML 부는 RENOSY 등 그룹 서비스의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 모델을 만든다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 **제각각**이라, 새 모델마다 처음부터 다시 만들어야 했다.\n\n여러 모델을 병행해 내고 늘려 가려면 **공통의 튼튼한 ML 파이프라인**이 필요했다 — 그리고 감시 도구를 새로 들이는 비용 · 운용 부하도 피하고 싶었다.",
+      "tech": [
+        {
+          "tech": "Snowflake 주도 S3 교환 + EventBridge 기동 + SageMaker Pipelines(단일 컨테이너 · 파라미터 계산 스텝) + CloudFormation",
+          "solves": "AWS 쪽이 DWH 접속 정보를 안 들고, 파일 착지로 파이프라인이 돌며, 이미지 하나로 모든 스텝을 돌린다.",
+          "limits": "파이프라인 파라미터가 문자열만이라 최신 모델 선택을 별도 스텝으로 풀어야 했고, 모든 의존을 한 이미지에 넣는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+            }
+          ]
+        },
+        {
+          "tech": "Pandera 검증 · Evidently 드리프트(PSI) · 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm",
+          "solves": "서드파티 없이 AWS 네이티브로 데이터 품질과 분포 이탈을 본다.",
+          "limits": "(글이 직접 적지 않음) 대시보드 · 알람을 로그 쿼리로 직접 짜야 한다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+              "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+              "publisher": "GA technologies",
+              "date": "2026-06-24",
+              "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**매출 · 사업별 비중**을 이번에 확인하지 못했다(IR 페이지 본문이 비어 보였다).",
+    "**RENOSY 의 물건 가치 추정 모델** 자체와, SageMaker 파이프라인이 어느 판단(마케팅 · 영업 · CS)에 쓰이는지 구체 사례가 글에 없다.",
+    "**ITANDI · M&A** 의 시스템 글을 아직 못 봤다 — 도메인이 없다. ITANDI 는 별도 기술 블로그가 있을 수 있다.",
+    "**아직 안 읽은 것** — `2026-05-11-shap-reflects-model-bias`(SHAP 과 모델 편향) · `2026-05-01-grm-with-pymc`(PyMC 단계 반응 모델) · Snowflake IaC 글."
+  ],
+  "sources": [
+    {
+      "title": "株式会社GA technologies - ジーエーテクノロジーズ",
+      "url": "https://www.ga-tech.co.jp/",
+      "publisher": "GA technologies",
+      "summary": "'가장 디지털화가 어렵고 가장 필요한 곳에 미래를.' 아날로그 업계(부동산부터)를 테크놀로지와 '인간력'으로 바꾼다 — M&A 등 다른 산업으로도. 서비스: 부동산 영역 **RENOSY** · Modern Standard · 神居秒算 · dearlife · **ITANDI**(イタンジ), M&A 영역 **スピカコンサルティング**. IR(주주 · 투자자 정보) 메뉴가 있다."
+    },
+    {
+      "title": "RENOSY | GA technologies",
+      "url": "https://www.ga-tech.co.jp/services/renosy/",
+      "publisher": "GA technologies",
+      "summary": "**부동산 투자 서비스** — '부동산으로 자산 형성을 당연하게.' 사고(BUY): **기술과 데이터로 부동산 가치를 정밀하게 추정**해 자산 가치가 높은 물건을 고르고 상위 몇 % 를 눈으로 검사, 상담부터 계약까지 원스톱 온라인. 팔기(SELL): 적정 가격 매각. 검토 · 구입 · 관리 · 매각까지."
+    },
+    {
+      "title": "ITANDI | GA technologies",
+      "url": "https://www.ga-tech.co.jp/services/itandibb/",
+      "publisher": "GA technologies",
+      "summary": "イタンジ株式会社가 운영하는 부동산 회사용 서비스 — **ITANDI BB**(관리회사 물건 정보와 실시간 연계되는 업자간 사이트, 내견 예약 · 입주 신청까지, 365일 24시간), ITANDI 임대 관리 · 임대 중개 · 매매 Propocloud."
+    },
+    {
+      "title": "データ基盤にDagsterを導入した話",
+      "url": "https://zenn.dev/gatechnologies/articles/76b3f400c26d1a",
+      "publisher": "GA technologies",
+      "date": "2026-06-15",
+      "summary": "정기 실행 처리가 **여러 도구에 흩어져** 회사 · 분석 기반이 커지며 무엇이 어디서 도는지, 처리의 의존 관계가 복잡해져 데이터 품질 · 효율을 담보하기 어려웠다 → 워크플로 엔진 도입. 후보 **Dagster · Kestra · Airflow · Airflow + Cosmos** 를 dbt 연계 깊이 · 커뮤니티 성숙도 · 확장성 등으로 비교 — Airflow 는 dbt 를 BashOperator 로 돌려 **개별 dbt 모델의 가시성이 떨어짐**(범용 태스크 비중이 크면 유력), Kestra 는 당시 국내 사례가 적어 미지의 오류 위험. 결정 요인은 **dbt 와의 매끄러운 통합** — 둘 다 **'애셋 지향'**(성과물 중심, Materialize) 이라 사상이 일치, 태스크 지향이면 `dbt build` 한 태스크에 모델이 숨는다. 인프라: **ECS on Fargate**(webserver · daemon · user code 분리, EC2 관리 불요), **Terraform**, 인증 · 인가는 **Google Workspace** 연계(OSS 의 RBAC 가 빈약 — 앞단 Proxy 검토 중). `@dbt_assets` 로 manifest 만 읽어 모델이 애셋이 되고 dbt 테스트가 Asset Checks 로. 흐름 '외부 서비스 · 자사 프로덕트 → S3 → Snowflake → BI' 를 **Lineage Graph** 로 한눈에(거버넌스에도). **dlt** 로 S3 적재 · **Iceberg** 테이블화, **Glue Catalog** 에 등록해 Snowflake 카탈로그 통합. 파티션 연동 스케줄 한 줄 · **Backfill** 이 쾌적 · Sensor · Dynamic Mapping. 아직 이행 중인 시스템이 있다."
+    },
+    {
+      "title": "SageMaker中心のスケールするMLパイプラインの構築 ~Snowflake連携から単一コンテナ設計、軽量監視まで~",
+      "url": "https://zenn.dev/gatechnologies/articles/sagemaker-ml-pipeline",
+      "publisher": "GA technologies",
+      "date": "2026-06-24",
+      "summary": "Data 본부 Applied ML 부 — **RENOSY 를 비롯한 부동산 테크 서비스**의 마케팅 · 플래너(부동산 영업) · 커스터머 석세스 데이터로 의사결정 · 업무 효율을 높인다. 여러 모델이 본번에서 도는데 모델마다 코드 · 배포 · 감시가 제각각이라 **공통 ML 파이프라인**이 필요했다. **Snowflake 가 주도권**: Snowflake Tasks 가 추론 데이터를 S3 에 내보내고 결과도 Snowflake 가 S3 를 확인해 수동적으로 회수 — AWS 쪽은 DWH 접속 정보를 안 든다. S3 Object Created → **EventBridge** → SageMaker Pipelines 자동 기동(폴링 불요). dev · stg · main 브랜치별 환경, ECR 이미지 + 파이프라인 JSON 을 **CloudFormation** 에 넣어 일괄 배포. **단일 컨테이너 · 여러 엔트리포인트**(스텝마다 이미지를 두면 빌드 · 관리 비용이 폭증). 파이프라인 파라미터가 문자열만이라 **파라미터 계산 스텝**이 최신 성공 학습 실행 → 모델명 → S3 경로를 PropertyFile 로 내고 JsonGet 으로 참조(학습 데이터도 복사해 드리프트 검지에). **Pandera** 검증(거부 레코드 · 사유를 따로 저장), **Evidently** 드리프트(PSI), 본번은 Batch Transform(Flask · Gunicorn 을 넣어 두어 설정만으로 실시간 추론 가능). docker-compose 로컬 통과 테스트. 감시는 **서드파티 없이 AWS 네이티브** — 구조화 JSON → CloudWatch Logs Insights · Dashboard · Alarm."
+    }
+  ]
+}

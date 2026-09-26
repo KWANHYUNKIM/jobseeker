@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "ga-technologies",
+      "name": "GA technologies",
+      "name_en": "GA technologies",
+      "country": "JP",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "부동산 투자 'RENOSY' 와 부동산 회사용 'ITANDI' 를 가진 부동산 테크 그룹 — 여러 도구에 흩어진 정기 처리를 dbt 와 사상이 맞는 Dagster 의 애셋 계보로 묶고, 늘어나는 ML 모델은 Snowflake 가 주도하는 단일 컨테이너 SageMaker 파이프라인 하나로 굴린다",
+      "updated_at": "2026-09-27",
+      "domain": "ga-tech.co.jp"
+    },
+    {
       "slug": "sumasate",
       "name": "スマサテ",
       "name_en": "SumaSate",
@@ -3845,7 +3857,9 @@
     "외부에서 끌어오는 데이터가 커져도 동기화가 무너지지 않게 한다",
     "RAG 에 넣을 생성 모델을 현장의 실패 방식으로 고른다",
     "출처마다 다르게 적힌 부동산 데이터를 한 물건으로 맞춘다",
-    "쓰고 있는 사정 화면을 멈추지 않고 새 틀로 옮긴다"
+    "쓰고 있는 사정 화면을 멈추지 않고 새 틀로 옮긴다",
+    "흩어진 정기 처리를 데이터 자산의 계보로 묶는다",
+    "늘어나는 ML 모델을 한 틀로 굴린다"
   ],
   "countries": {
     "KR": "한국",
