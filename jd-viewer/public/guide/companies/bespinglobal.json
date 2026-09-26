@@ -853,6 +853,153 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/381969",
+      "title": "SECaaS팀_Okta 담당 클라우드 보안 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 1년 이상(서울 서초) — 이 회사 모집중 공고 중 문턱이 가장 낮다. 고객사에 Okta 를 소개·데모하고 PoC·초기 아키텍처 구축을 지원하며, 운영 중 고난도 문의 트러블슈팅과 기술 가이드 작성을 맡는 기술 영업 지원(프리세일즈·기술지원) 성격의 자리. 자격요건은 SAML·OIDC 이해, 계정·자격 증명 메커니즘 이해, SSO·MFA 지식(있으면 좋음), 프로그래밍·API 기본이다. SCIM 프로비저닝과 IdP(Okta·AD·GWS) 정책 운영, 고객 응대 경험이 우대다. 공고 제목은 'SECaaS팀' 인데 본문 첫 문단은 'AI Expert실' 소개라 소속이 공고로 확인되지 않는다(open_questions). 전형은 서류 → 인터뷰(통상 1회) → 처우 협의다.",
+      "fit": {
+        "must_have": [
+          "SAML·OIDC 인증 프로토콜 이해",
+          "계정 관리·자격 증명(SAML, OIDC) 메커니즘 이해",
+          "프로그래밍·API 기본"
+        ],
+        "can_learn": [
+          "SSO·MFA 실무",
+          "Okta·AD·GWS IdP 정책",
+          "Cloud 보안 SaaS 운영",
+          "SCIM 프로비저닝",
+          "솔루션 소개·PoC·고객 응대"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SAML 과 OIDC — 같은 SSO, 다른 메시지",
+          "from": "qualification",
+          "quote": "• SAML, OIDC 등 인증 프로토콜에 대한 이해도가 있으신 분을 찾아요.",
+          "priority": "core",
+          "why": "자격요건 첫 줄이고 두 번째 줄도 같은 두 프로토콜을 다시 적는다. 고객사 앱을 Okta 에 붙이는 PoC 의 대부분이 둘 중 하나로 연동하는 일이다(추론).",
+          "gap_check": "SP-initiated SAML 로그인에서 AuthnRequest·Assertion 이 어디서 어디로 가고, 서명·Audience·NotOnOrAfter 중 무엇이 틀리면 어떤 오류가 나는가? 같은 앱을 OIDC 로 붙이면 ID Token 의 어떤 클레임이 SAML 속성(attribute)에 대응하는가?",
+          "drill": "Okta 개발자 계정을 만들고 테스트 앱 하나를 SAML 로, 다른 하나를 OIDC 로 붙인다. 브라우저 확장으로 SAML Assertion 을, 개발자 도구로 ID Token 을 캡처해 항목별로 설명을 단다. 일부러 Audience 를 틀려 오류 화면을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Okta Developer — SAML",
+              "url": "https://developer.okta.com/docs/concepts/saml/",
+              "kind": "docs"
+            },
+            {
+              "title": "Okta Developer — OAuth 2.0 and OpenID Connect overview",
+              "url": "https://developer.okta.com/docs/concepts/oauth-openid/",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenID Connect Core 1.0",
+              "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+              "kind": "docs"
+            },
+            {
+              "title": "OASIS — SAML 2.0 Core",
+              "url": "https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf",
+              "kind": "docs"
+            },
+            {
+              "title": "Okta Developer — Sign up",
+              "url": "https://developer.okta.com/signup/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객사 PoC — 데모에서 초기 아키텍처까지",
+          "from": "task",
+          "quote": "• 고객사 환경에 맞춘 Okta PoC를 수행하고, 초기 아키텍처 설계 및 구축 시 최적화된 가이드와 레퍼런스를 지원해요.",
+          "priority": "core",
+          "why": "주요업무 네 줄 중 셋(데모 시연, PoC, 기술 가이드)이 고객 앞에서 하는 일이다. 우대 마지막 줄이 '솔루션 소개, PoC 등 기술 지원 및 고객 응대 경험' 이다.",
+          "gap_check": "AD 를 쓰는 고객사가 Okta 를 도입할 때 사용자 원천(source of truth)을 어디에 두고, 기존 AD 비밀번호를 쓰게 할지(위임 인증) 새로 만들지, 첫 연동 앱은 무엇으로 고를지 PoC 계획에 어떻게 적는가?",
+          "drill": "가상의 고객(AD 사용, 앱 3개)에 대한 Okta PoC 계획서 한 장 — 목표·범위·성공 기준·연동 순서·일정 — 과 15분 데모 시나리오를 쓴다.",
+          "hours": 5,
+          "resources": []
+        },
+        {
+          "topic": "SCIM 으로 계정 자동 생성·삭제",
+          "from": "preference",
+          "quote": "• SCIM 프로토콜 기반의 사용자 계정 자동화(Provisioning) 구축 경험이 있으신 분이면 더 적극적으로 환영해요.",
+          "priority": "high",
+          "why": "우대사항이고 자격요건에 '사용자 계정 관리' 가 있다. 퇴사자 계정이 앱에 남는 문제를 막는 것이 IdP 도입의 핵심 이유 중 하나다(추론).",
+          "gap_check": "Okta 에서 사용자를 비활성화하면 SCIM 으로 앱에 어떤 요청(PATCH active=false 또는 DELETE)이 가고, 앱이 SCIM 을 지원하지 않으면 무엇으로 대신하는가?",
+          "drill": "작은 SCIM 2.0 서버(Users 엔드포인트만)를 직접 만들어 Okta 테스트 앱에 연결하고, 사용자 생성·수정·비활성화 때 들어오는 요청 본문을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Okta Developer — Understanding SCIM",
+              "url": "https://developer.okta.com/docs/concepts/scim/",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 7644 — SCIM Protocol",
+              "url": "https://datatracker.ietf.org/doc/html/rfc7644",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 7643 — SCIM Core Schema",
+              "url": "https://datatracker.ietf.org/doc/html/rfc7643",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SSO·MFA 정책과 트러블슈팅",
+          "from": "task",
+          "quote": "• Okta 운영 중 발생하는 고난도 기술 문의에 대응하고 트러블슈팅을 지원해요.",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 'SSO, MFA 등 인증과 관련된 보안 지식이나 실무 경험' 이 있다. 운영 문의 대부분이 로그인 실패·MFA 등록 문제일 가능성이 크다(추론).",
+          "gap_check": "'로그인이 안 된다' 는 문의를 받았을 때 IdP 로그(System Log)에서 무엇부터 보고, SAML 시계 오차·인증서 만료·정책 조건(위치·기기) 중 무엇인지 어떻게 좁히는가? 피싱에 강한 MFA 와 약한 MFA 는 무엇이 다른가?",
+          "drill": "위 테스트 앱에 MFA 정책(특정 그룹만 강제)을 걸고, 인증서 교체·정책 불일치·MFA 미등록 세 가지 장애를 재현해 원인별 점검 순서를 트러블슈팅 가이드로 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Okta Help — Multifactor authentication",
+              "url": "https://help.okta.com/en-us/content/topics/security/mfa/mfa-home.htm",
+              "kind": "docs"
+            },
+            {
+              "title": "NIST SP 800-63-4 — Digital Identity Guidelines",
+              "url": "https://pages.nist.gov/800-63-4/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Okta 개발자 계정으로 만든 SAML·OIDC·SCIM 연동 데모와 트러블슈팅 가이드",
+          "why": "1년차 자리에서 자격요건(SAML·OIDC)과 우대(SCIM, PoC)를 직접 해 본 증거가 가장 강하다. 주요업무에 '기술 가이드를 제작' 이 있어 가이드 문서 자체가 샘플이 된다.",
+          "effort": "1주"
+        },
+        {
+          "idea": "고객 앞 데모 연습",
+          "why": "주요업무 첫 줄이 '고객사 대상 Okta 솔루션 소개 및 맞춤형 데모 시연' 이다. 인터뷰가 통상 1회라 그 자리에서 짧은 시연을 요청받을 수 있다(추론).",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류전형 > 인터뷰 > 처우 협의 > 최종 합격 > 채용검진 > 입사. 인터뷰는 통상 1회이나 추가될 수 있고, 필요 시 레퍼런스 체크가 있다(공고 기준).",
+        "expect": [
+          "SAML 과 OIDC 차이",
+          "SCIM 프로비저닝 흐름",
+          "로그인 장애 트러블슈팅 순서",
+          "고객에게 솔루션을 설명한 경험"
+        ],
+        "sources": [
+          {
+            "title": "SECaaS팀_Okta 담당 클라우드 보안 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/381969",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
