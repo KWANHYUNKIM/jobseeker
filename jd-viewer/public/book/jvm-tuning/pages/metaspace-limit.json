@@ -1,0 +1,141 @@
+{
+  "book": "jvm-tuning",
+  "id": "metaspace-limit",
+  "no": "9.3",
+  "chapter": 9,
+  "title": "메타스페이스 한계",
+  "summary": "무한이 아니다.",
+  "minutes": 12,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "기본값이 무제한이라는 말의 뜻을 안다.",
+    "끝나는 방식이 세 가지인 것을 본다.",
+    "한도를 명시해야 하는 이유를 안다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "4.2절에서 **`MaxMetaspaceSize = 18446744073709551615`** 를 봤다. 2⁶⁴-1, 사실상 한도가 없다.\n\n그런데 **메모리는 무한하지 않다.** 한도를 안 걸면 **다른 무언가가 대신 끝낸다** — 그 '무언가' 가 무엇이냐에 따라 **남는 기록이 완전히 다르다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 같은 누수, 세 가지 끝\n\n3.6절의 재배포 누수 프로그램을 **조건만 바꿔** 세 번 돌렸다. 컨테이너 메모리는 256MB 로 같다."
+    },
+    {
+      "type": "table",
+      "caption": "같은 프로그램, 끝나는 방식만 다르다 (`--memory=256m`)",
+      "columns": [
+        "조건",
+        "종료 코드",
+        "남는 기록"
+      ],
+      "rows": [
+        [
+          "`-Xmx64m` `-XX:MaxMetaspaceSize=32m`",
+          "1",
+          "**`OutOfMemoryError: Metaspace`**"
+        ],
+        [
+          "`-Xmx64m` 한도 없음",
+          "1",
+          "`OutOfMemoryError: Java heap space`"
+        ],
+        [
+          "`-Xmx160m` 한도 없음",
+          "**137**",
+          "**없음**"
+        ]
+      ],
+      "note": "**셋째 줄이 문제다.** 메타스페이스가 46MB 에서 계속 오르던 중에 커널이 죽였고, 자바 쪽에는 한 줄도 안 남았다."
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "왜 둘째 줄은 힙 OOM 인가",
+      "md": "**누수 구조 때문**이다.\n\n> 3.6절의 프로그램은 `Class` 객체를 **힙의 리스트에 담아** 로더를 붙잡는다(3.5절).\n> 그래서 **메타스페이스가 차기 전에 그 리스트가 힙을 먼저 채운다** — 힙이 64MB 로 작으면 그쪽이 먼저 터진다.\n> 힙을 160MB 로 늘리자 **메타스페이스가 진짜 병목**이 됐고, 한도가 없으니 컨테이너까지 갔다.\n> **같은 누수가 힙 OOM 으로 보일 수 있다** — 메시지만 보고 힙을 늘리면 셋째 줄로 간다."
+    },
+    {
+      "type": "figure",
+      "caption": "한도를 안 걸면 더 나쁜 쪽으로 간다",
+      "ascii": "   MaxMetaspaceSize set     ->  OutOfMemoryError: Metaspace       exit 1\n                                stack trace, logs, heap dump hook\n\n   no limit, small heap     ->  OutOfMemoryError: Java heap space exit 1\n                                right kind of record, wrong culprit\n\n   no limit, big heap       ->  SIGKILL from the kernel           exit 137\n                                nothing at all",
+      "note": "**한도를 거는 것은 죽는 방식을 고르는 일**이다. 4.7절의 137 과 1 이 여기서 다시 나온다."
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "그래서 컨테이너에서는 명시한다",
+      "md": "**`-XX:MaxMetaspaceSize` 를 안 주면 진단 기회를 잃는다.**\n\n> 값은 **여유 있게** 잡는다 — 조이는 것이 목적이 아니라 **자바 쪽에서 먼저 터지게** 하는 것이 목적이다.\n> 4.6절의 합산식에서 메타스페이스 몫을 정했다면 그 값의 두세 배쯤이 무난하다.\n> 같은 이유로 **`-XX:MaxDirectMemorySize`**(4.5절)도 명시하는 편이 낫다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것",
+      "sql": "# 3.6 절의 Redeploy.java — 로더를 만들고 Class 를 static 리스트에 남긴다\n\n# --- 1) 메타스페이스 한도를 준다 ---\n\n$ docker run --rm --memory=256m -v $PWD:/app eclipse-temurin:17-jre \\\n      java -Xmx64m -XX:MaxMetaspaceSize=32m -cp /app Redeploy /app leak 200000\nException in thread \"main\" java.lang.OutOfMemoryError: Metaspace\n  종료 코드: 1\n\n# --- 2) 한도 없이, 힙이 작을 때 ---\n\n$ docker run --rm --memory=256m -v $PWD:/app eclipse-temurin:17-jre \\\n      java -Xmx64m -cp /app Redeploy /app leak 200000\n  19800회  메타스페이스 28,133 KB\nException in thread \"main\" java.lang.OutOfMemoryError: Java heap space\n  종료 코드: 1\n\n# 메타스페이스는 28MB 밖에 안 됐다. 힙에 담아 둔 Class 리스트가 먼저 찼다.\n\n# --- 3) 한도 없이, 힙이 넉넉할 때 ---\n\n$ docker run --rm --memory=256m -v $PWD:/app eclipse-temurin:17-jre \\\n      java -Xmx160m -cp /app Redeploy /app leak 200000\n  32800회  메타스페이스 45,863 KB\n  33000회  메타스페이스 46,135 KB\n  33200회  메타스페이스 46,407 KB\n  33400회  메타스페이스 46,679 KB\n  종료 코드: 137\n\n# 46MB 에서 계속 오르던 중에 끊겼다. 예외도 트레이스도 없다.",
+      "note": "**셋 다 같은 누수**다. 달라진 것은 한도와 힙 크기뿐인데 남는 기록이 전부 다르다."
+    }
+  ],
+  "recap": [
+    "MaxMetaspaceSize 기본값은 2^64-1 로 사실상 한도가 없다.",
+    "한도를 안 걸면 힙이나 컨테이너가 대신 끝낸다.",
+    "같은 누수가 한도 유무와 힙 크기에 따라 세 가지로 끝났다.",
+    "힙이 작으면 Class 를 담아 둔 리스트가 먼저 차서 힙 OOM 으로 보인다.",
+    "힙을 늘리면 메타스페이스가 병목이 되고 한도가 없으면 137 로 간다."
+  ],
+  "drills": [
+    {
+      "task": "내 기동 옵션에 MaxMetaspaceSize 가 있는지 확인한다.",
+      "done_when": "없으면 값을 정해 본다.",
+      "minutes": 10
+    },
+    {
+      "task": "3.6 의 Redeploy 를 세 조건으로 돌려 본다.",
+      "done_when": "종료 코드가 1·1·137 로 갈리는 것을 확인한다.",
+      "minutes": 15
+    },
+    {
+      "task": "MaxDirectMemorySize 도 명시돼 있는지 본다.",
+      "done_when": "힙 밖 한도를 목록으로 갖는다.",
+      "minutes": 10
+    }
+  ],
+  "quiz": [
+    {
+      "q": "MaxMetaspaceSize 를 안 주면 무엇이 대신 끝내나.",
+      "a": "힙이 먼저 차거나 컨테이너가 SIGKILL 한다."
+    },
+    {
+      "q": "메타스페이스 누수가 힙 OOM 으로 보일 수 있는 이유는.",
+      "a": "로더를 붙잡는 Class 참조가 힙에 담겨 있으면 힙이 먼저 차기 때문이다."
+    },
+    {
+      "q": "종료 코드 137 이 나쁜 이유는.",
+      "a": "예외도 스택 트레이스도 없이 커널이 죽여 아무 기록이 안 남는다."
+    },
+    {
+      "q": "한도를 거는 목적은.",
+      "a": "조이는 것이 아니라 자바 쪽에서 먼저 터지게 해 진단 기회를 남기는 것이다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "MaxMetaspaceSize",
+      "what": "메타스페이스 상한. 기본값이 사실상 무제한이라 명시하는 편이 낫다."
+    },
+    {
+      "term": "OOMKilled",
+      "what": "cgroup 한도를 넘겨 커널이 SIGKILL 한 상태. 종료 코드 137 이다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 — java Command, -XX:MaxMetaspaceSize",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 — Troubleshooting Memory Leaks",
+      "url": "https://docs.oracle.com/en/java/javase/17/troubleshoot/troubleshooting-memory-leaks.html",
+      "publisher": "Oracle"
+    }
+  ]
+}

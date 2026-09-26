@@ -491,7 +491,7 @@
           "title": "네이티브 메모리 추적",
           "summary": "JVM 이 스스로 세는 것.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.2",
@@ -499,7 +499,7 @@
           "title": "스레드 스택",
           "summary": "예약과 실제.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.3",
@@ -507,7 +507,7 @@
           "title": "메타스페이스 한계",
           "summary": "무한이 아니다.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "9.4",
