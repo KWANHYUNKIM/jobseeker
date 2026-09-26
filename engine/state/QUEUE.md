@@ -63,9 +63,17 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **スマサテ(SumaSate)** | JP · 부동산 임대료 AI 사정 · 부동산 데이터 | Zenn Publication `zenn.dev/p/sumasate_tec`(RSS 20편, 최신 2026-09). 대량 부동산 데이터를 어떻게 집계 · 정규화하나 — 주소 · 수치 · 건물명 표기 흔들림, 명기(名寄せ) · 정규화, 운용해 보고 안 함정 `2aad29ab70c76a` · '스마사테 for Owners'를 앱으로 만든다면 — **선택지 넷 비교**와 PWA 부터의 로드맵 `smasate-owners-mobile-app` · Rails 6→8 업그레이드로 API 응답이 96 초로 열화한 이야기 · Sorbet 단계 도입 · E2E 도구 비교와 비용 시산. **부동산 데이터 축.** 글이 짧은 편 — 프로파일 때 결정 수 재판정. |
+| **GA technologies(RENOSY)** | JP · 부동산 거래 플랫폼 · 데이터/ML | Zenn Publication `zenn.dev/p/gatechnologies`(RSS 20편, 최신 2026-08). 데이터 기반에 **Dagster 를 고른 경위**(사상의 일치 · dbt · dlt 연계 · 인증 인가) `76b3f400c26d1a` · **SageMaker 중심 ML 파이프라인** — Snowflake 연계 · 단일 컨테이너 설계 · 경량 감시 `sagemaker-ml-pipeline` · SHAP 과 모델 편향. **부동산 데이터 · ML 기반 축.** RSS 절반이 행사 · 학회 참가기 — 제품 수익원(RENOSY)과 데이터 팀 글을 잇는 게 관건. |
+| **Gakken LEAP** | JP · 교육(자격 학습 ShikakuPass 등) | Zenn Publication `zenn.dev/p/gakken_leap`(RSS 20편, 최신 2026-09). '전부 다시 만들기'를 버린 **Strangler Fig 프런트엔드 현대화** — 일괄이 아니라 단계로, Next.js 이행을 위한 '저금' `bd8167a771d2d5` · ShikakuPass 의 **로그 기반 · 데이터 분석 기반**(이벤트 로그 집계를 서비스로 환류) `010b927ba62ce7` · Sentry 월간 에러 87% 삭감(sentry-cli 저비용 AI 트리아지) · Java 8→21 · Spring Boot 3 이행 · CloudFront 정액 플랜. **교육 서비스 축.** 도구 · 입문 글이 섞였다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-27 백 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API 두 묶음 — ① '결과 · 구조' 주제어 15개(通知 配信 設計·検索 ランキング 改善·データ基盤 移行·課金 設計·在庫 同期·予約 競合·画像 配信 最適化·ジョブ スケジューラ 移行·ポイント 付与 設計·メール 配信 基盤·レコメンド 導入·決済 リトライ·ETL 刷新·キャンペーン 基盤·ログ基盤 刷新) × 2쪽 ② 업계 주제어 8개(マッチング · 配車 · 物流 · 動画配信 · 電子カルテ · 不動産 データ · EC 注文 · ストリーミング) → Publication 집계 → RSS 12곳 → 본문 8편 확인.**
+  - **スマサテ** — **부동산 데이터 축.** 앱화 글이 선택지 넷을 비교하고 로드맵을 단다.
+  - **GA technologies** — **부동산 데이터 · ML 기반 축.** Dagster 선정 경위가 '왜'를 적는다.
+  - **Gakken LEAP** — **교육 서비스 축(처음).** 프런트엔드 현대화를 일괄 대신 단계로 고른 이유.
+  - **걸렀다.** ジーニー(`geniee` — 제품 글이 부장 인터뷰 · 참가기 위주, 검색 기반 글은 회고) · macbee_planet · wn_engineering(이미 완주) · dotdtech_blog · lluminai_tech · retrieva_tech · my_vision · minedia · kitacom_blog(AI 도구 · 해설 · 소품) · bi_knowledge · truestar · intage_tech(도구 해설) · strixai · hagiwaraele(개인 · 소품).
 - **2026-09-27 아흔아홉 번째 후보 조사 — 목표 3곳 중 3곳. 입구: Zenn 검색 API '구조 주제어' 15개(権限 設計·マルチテナント 設計·監査ログ·帳票 生成·バッチ 刷新·ジョブキュー 導入·ワークフロー 設計·楽観ロック·イベントソーシング·CQRS·請求 計算·料金計算·BFF 導入·モノリス 分割·テナント分離) × 2쪽, 2026-02 이후 → Publication 별 집계, 이미 있는 회사 표시 → RSS 8곳 → 본문 3편 확인.**
   - **Seibii** — **차량 정비 축(처음).** ID 기반 분리가 이행 설계(이벤트 + 차분 배치)를 적는다.
   - **EVERSTEEL** — **현장 AI 축(처음).** 화상 해석 기술 선정 글이 선택지별 적합 · 부적합을 적는다.
