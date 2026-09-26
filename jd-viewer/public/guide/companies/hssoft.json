@@ -1,0 +1,182 @@
+{
+  "slug": "hssoft",
+  "name": "에이치에스소프트",
+  "name_en": "HS SOFT",
+  "aliases": [
+    "에이치에스소프트",
+    "HSSOFT"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "one_liner": "제조 현장에 AI 오케스트레이션·Physical AI·탄소추적 솔루션을 설계·납품하는 B2B 제조 DX 회사 — 인천 본사와 대구지사, 현장 상주가 잦다",
+  "company": {
+    "business": "원티드 공고 머리말은 에이치에스소프트를 '제조 AI 오케스트레이션과 Physical AI로 완성하는 지능형 제조혁신' 을 내건 B2B 솔루션 기업으로 소개한다. 분절된 AI 모델을 하나의 오픈소스 아키텍처로 통합하는 제조 AI 오케스트레이션, 제조 현장과 데이터를 실시간으로 잇는 Physical AI, 3D 메타버스·AI 기반 재난안전 솔루션, LCA 전 과정평가와 CBAM 대응 스마트 탄소추적 플랫폼을 꼽고, 자동차 부품·전자·장치산업 등 대기업부터 중소기업까지 제조 현장에 솔루션을 직접 설계하고 납품한다고 적는다. 근무지는 인천 연수구와 대구지사(대구 달서구, 대구테크노파크 성서캠퍼스)이며, PM 공고는 '주 3회 이상 현장 출장 및 상주 근무' 를, 대구 AI 공고는 '대구지사의 상주 개발자' 를 적는다. 회사 사이트는 찾지 못했다(hssoft.co.kr 응답 없음). 매출·임직원 수는 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI 개발자",
+        "url": "https://www.wanted.co.kr/wd/386011",
+        "publisher": "원티드"
+      },
+      {
+        "title": "빅데이터 플랫폼 개발 프로젝트 PM (기술 리드 겸임)",
+        "url": "https://www.wanted.co.kr/wd/386019",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[대구지사] AI개발자(1명)",
+        "url": "https://www.wanted.co.kr/wd/388730",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "제조 현장 솔루션 구축·납품",
+        "how": "공고가 '다양한 제조 현장에 솔루션을 직접 설계하고 납품합니다' 라고 적는다. 프로젝트 단위 계약인지 제품 라이선스인지는 읽지 않았다.",
+        "domains": [
+          "제조 AI·영상 분석",
+          "제조 빅데이터 플랫폼",
+          "제조 현장 웹 시스템"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/386011",
+            "publisher": "원티드"
+          },
+          {
+            "title": "빅데이터 플랫폼 개발 프로젝트 PM (기술 리드 겸임)",
+            "url": "https://www.wanted.co.kr/wd/386019",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "탄소추적·재난안전 솔루션",
+        "how": "공고 머리말이 LCA·CBAM 대응 스마트 탄소추적 플랫폼과 3D 메타버스·AI 기반 재난안전 솔루션을 사업으로 꼽는다. 모집중 공고 중 이 영역 전담 자리는 없다.",
+        "domains": [
+          "제조 빅데이터 플랫폼"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/386011",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "제조 AI·영상 분석",
+        "why": "대구 AI 공고가 OpenCV·딥러닝 기반 실시간 영상 인식, 학습·추론 파이프라인, 센서·PLC 등 타 장비와의 데이터 연동을 적는다.",
+        "what_to_know": [
+          "컴퓨터 비전",
+          "PLC·Modbus 연동",
+          "ROS2"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[대구지사] AI개발자(1명)",
+            "url": "https://www.wanted.co.kr/wd/388730",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "제조 빅데이터 플랫폼",
+        "why": "PM 공고가 제조업체 대상 빅데이터 플랫폼·대규모 데이터 처리 시스템 총괄, C# 백엔드·JavaScript 웹, 현장 시스템 연동을 적는다.",
+        "what_to_know": [
+          "C# 백엔드",
+          "대용량 데이터 처리",
+          "현장 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "빅데이터 플랫폼 개발 프로젝트 PM (기술 리드 겸임)",
+            "url": "https://www.wanted.co.kr/wd/386019",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "제조 현장 웹 시스템",
+        "why": "'제조 현장 AX 풀스택 웹 개발자' 공고가 제조 현장용 웹 시스템 개발을 뽑는다.",
+        "what_to_know": [
+          "풀스택 웹",
+          "현장 요구사항"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "제조 현장 AX 풀스택 웹 개발자",
+            "url": "https://www.wanted.co.kr/wd/384486",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "현장 상주·출장이 일의 일부다",
+        "evidence": "제조업·산업 현장 시스템 연동 및 현장 이슈 대응 (※ 주 3회 이상 현장 출장 및 상주 근무 포함)",
+        "so_what": "대구 AI 공고도 '대구지사의 상주 개발자' 로 적는다. 지원 전 근무지와 출장 빈도를 확인할 만하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": {
+    "unit": "만원",
+    "currency": "KRW",
+    "as_of": "2026-09",
+    "bands": [
+      {
+        "role": "AI 개발자(대구지사, 영상 분석)",
+        "level": "경력 5년 이상",
+        "low": 7000,
+        "high": 7000,
+        "basis": "posting",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[대구지사] AI 개발자 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55105410&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=5ddfe914-06cb-405d-a22e-d5b4a4bb397c",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "role": "빅데이터 플랫폼 PM(기술 리드 겸임)",
+        "level": "경력 10년 이상",
+        "low": 6000,
+        "high": 6000,
+        "basis": "posting",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "빅데이터 플랫폼 개발 프로젝트 PM (기술 리드 겸임)",
+            "url": "https://www.wanted.co.kr/wd/386019",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "note": "**하한만 적혀 있다** — 사람인 대구 AI 공고가 '급여 : 연봉 7,000만원' 과 우대사항 '경력에 따른 연봉 협상 (7,000만원 이상)' 을, 원티드 PM 공고가 '경력에 따른 연봉 협상 (6,000만원 이상)' 을 적는다. low=high 는 상한이 아니라 적힌 유일한 숫자다. 원티드 대구 AI 공고(388730)는 같은 문장에 금액이 없다.",
+    "open_questions": [
+      "인천 연수구 AI·풀스택 공고의 연봉은 적혀 있지 않다"
+    ]
+  },
+  "people": [],
+  "open_questions": [
+    "회사 사이트 주소를 찾지 못했다",
+    "매출·임직원 수는 읽지 않았다",
+    "솔루션이 프로젝트 납품인지 제품 라이선스인지는 읽지 않았다",
+    "원티드 대구 AI 개발자(388730)와 사람인 대구 AI 개발자(55105410), 원티드·사람인 풀스택 공고가 같은 자리인지 본문 비교가 필요하다"
+  ],
+  "postings": []
+}
