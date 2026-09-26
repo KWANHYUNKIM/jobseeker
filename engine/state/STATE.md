@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — deepgram 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — deepl 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **deepl** — 2026-09-26 없음 1회째. r.jina.ai 로 `/en/blog`·`/en/blog/tech`·`/en/ai-labs`. 기술 블로그는 2025-09 이후 새 글 없음. 09-07 이후는 MCP 연동·Voice 발표(09-15·09-22)뿐. AI Labs 글의 `Published Time` 은 전부 09-15 로 같아 사이트 배포 시각이지 발행일이 아니다 — voice-to-voice·Mixhalo 글은 홍보, "기다리면 지연·고치면 깜빡임" 문제만 있고 고른 방법과 대가가 없다.
 - **deepgram** — 2026-09-26 없음 1회째. r.jina.ai 로 `deepgram.com/learn` 목록(RSS 는 HTML). 09-07 이후 12편 — 발표·해설·순위, 09-21 "Three acknowledgements you cannot wait for" 는 DevRel 데모(Voice Comic)의 클라이언트 우회 튜토리얼이라 제외. 단서: Flux /v2/listen 은 KeepAlive 를 안 받고, UpdateListen 이 v1↔v2 를 넘을 때 ListenUpdated 가 빠진다는 관찰 — 자사 설계 글이 나오면 다시.
 - **curl** — 2026-09-26 없음 1회째. `daniel.haxx.se/blog/feed/` 로 09-07 이후는 "Apple 에서의 25년"(09-25) 회고 하나 — 결정 없음.
 - **cookpad** — 2026-09-26 없음 1회째. `techlife.cookpad.com/feed` 최신 09-02(코딩 에이전트용 Swift Macro 전개) — 09-07 이전이고 앱 개발 팁이라 시스템 결정 아님.
