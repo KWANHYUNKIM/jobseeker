@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**SODA 확장 2/2(2026-09-26) — `purchase-flow-tla-audit` 완료. 도메인 둘 다 기능. 다음은 완주 판정: 수익원 '실매장' 에 도메인 없음 — 검색 1 RSS 20편(실매장·감정 글 없음) 이어 검색 2(Zenn 검색 API '店舗 スニダン'·'鑑定'·'team_soda'), 없으면 hold. 대기 2/3(COUNTERWORKS·Luup). **후보 조사 입구: Zenn 검색 API 에 주제어.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**SODA hold(2026-09-26) — 실매장 수익원 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 --gaps 의 신규: 큐 맨 위 COUNTERWORKS — `3e0df3b62f55f9`(도입 기업마다 Rails 앱 → 10개월 한 환경 통합) · `0eb98271af2991`(본번 MySQL → PostgreSQL) · `1887cb36a1b701`(앱·DB 이중 방어 테넌트 분리) · `sidekiq-to-solidqueue-strategy` · 회사 사이트에서 수익원부터. 큐 2/3 → 이 회사 뒤 후보 조사(입구: Zenn 검색 API 주제어). 대기 2/3(COUNTERWORKS·Luup). **후보 조사 입구: Zenn 검색 API 에 주제어.** 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 
@@ -388,6 +388,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **Kanmu Pool·법인 금융 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 4낱말 0건). 제품 구조 글이 새로 나오면 다시.
 - **dely Kurashiru AI OS·TRILL/LIVEwith 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 4낱말, 해당 글 0). 그쪽 구조 글이 새로 나오면 다시.
 - **みてね 사진 프린트·포토북 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 3낱말 0건). 프린트·포토북 구조 글이 새로 나오면 다시.
+- **SODA 실매장 수익원** — 2026-09-26 두 번 찾아 없음(Zenn RSS 20편 · Zenn 검색 API 3낱말, Web 톱 리뉴얼 글뿐). 실매장·감정 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).
