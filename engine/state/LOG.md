@@ -1532,3 +1532,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Nature 스마트록 모델링
 
 - 스마트록 글 후반(세 모델·1door2lock·컨트롤러 디바이스)까지 읽고 `smartlock-aggregate-three-models`(결정 7). 모델 변천은 연도가 없어 history 대신 state 그림으로.
+
+## 2026-09-26 Nature 리팩터링 자동 머지
+
+- 자동 머지 글 전문으로 `review-refactoring-auto-merge`(결정 8 — 등가성만 AI·코멘트 기동·JSON 스키마·회의적 제3자·열거 강제·prompt tuning·E2E 안전망·건당 $1.35). 247건 · 팀 PR 3할.

@@ -123,12 +123,14 @@
               "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
               "publisher": "Nature Engineering Blog",
               "date": "2026-07-31",
-              "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용."
+              "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "review-refactoring-auto-merge"
+      ]
     }
   ],
   "features": [
@@ -441,6 +443,345 @@
           "summary": "새 제품 **Nature Lock**(스마트록)·**Nature Key** 를 서버 앱에서 어떻게 모델링했나. 기존 개념은 '홈'(현실의 집)·'디바이스'(홈에 등록하는 Nature 제품 — Remo·Remo E·EV Switch)·'가전'(Remo 가 적외선·BLE 등으로 제어하는 대상). 먼저 **도메인 용어 정의** — '열쇠'(Nature Key? BLE 인증 키? 물리 키? 섬턴? 데드볼트?)·'로크'(본체? 잠그기?)·'解錠/開錠' 표기 흔들림 — 를 Notion DB 로 두고 유스케이스에서 링크, 합의된 것만 채택. Nature Lock 은 **디바이스이자 가전**(Remo 와 BLE 연계 — 서비스에 없던 새 관계), Nature Key 는 디바이스지만 가전이 아니고 **서버와 통신 못 함**. 기존 '디바이스 = 서버와 통신하는 것' 정의가 안 맞고, '홈에 등록할 수 있는 것' 도 Key(Lock 에 반드시 연결)가 못 채워 → **'Nature Home 앱에 등록할 수 있는 Nature 제품'** 이라는 넓은 정의로. Lock 을 기존 디바이스와 전혀 다른 것으로 모델링하는 안은 기존 비즈니스 로직과 너무 멀어 불채택. 한때 채택하려던 **'가상 디바이스'** 라는 존재하지 않는 개념도 돌아보면 부자연스러웠다. 코드: 홈=`Home`, 디바이스=`Device`, 가전=`Appliance`, Nature Lock=`SmartLock`. **모델 ①** 기존 로직과의 친화성을 중시해 `Appliance` 를 루트 집약으로, 그 한 종류로 `SmartLock` — `Appliance` 는 반드시 `Device`(= Remo)에 묶여야 해 Remo 에 안 묶인 상태에서 임시로 묶는 **'가상 디바이스'** 도입(멤버도 납득 못 했고 서버 쪽 일부 말고는 아무도 그 말을 안 썼다). **모델 ②** `SmartLock` 을 루트 집약으로 다시 — 가전으로 조작할 땐 내포한 `Appliance`, 디바이스로 조작할 땐 내포한 `Device`; 대화 속 '스마트록' 과 모델이 일치. **모델 ③** 한 문에 자물쇠 둘(**1door2lock**)이면 사용자에겐 가전 하나인데 내부는 main/sub `SmartLock` 둘을 따로 부르고, '둘을 동시에 조작' 하는 책임이 **애플리케이션 층으로 새어** 여러 곳에서 sub 호출을 빠뜨릴 위험 → 자식으로 **`SmartLockUnit`**(메인·서브 유닛) — 가전 조작(해·시정·알림 설정)은 `SmartLock`, 디바이스 조작(FOTA·해시정 위치 조정)은 `SmartLockUnit`, `SmartLock` 메서드가 내부에서 유닛의 비공개 메서드를 불러 호출 누락이 사라짐. 결과적으로 멤버 구성은 모델 ① 과 같아졌지만 관계가 다듬어졌다. 여담: 가전을 조작하는 Remo 에 **'컨트롤러 디바이스'** 라는 이름을 새로 붙였다."
         }
       ]
+    },
+    {
+      "key": "review-refactoring-auto-merge",
+      "name": "설계는 사람이 먼저 합의하고, 동작 등가성만 회의적인 AI 에 — 통과하면 스스로 머지, 건당 1.35달러",
+      "domain": "동작을 안 바꾸는 PR 은 AI 가 증명하고 스스로 머지한다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "Nature Remo 는 에어컨 조작처럼 사용자의 일상에서 헤비하게 쓰인다. 그래서 Nature 는 기존 기능을 깨지 않도록 **리뷰와 CI 자동 테스트**를 무겁게 여겨 왔다. AI 에이전트로 코딩이 빨라지자 PR 이 쏟아져 '줄곧 리뷰만 하고 있다' 싶을 만큼 **리뷰가 병목**이 됐다.\n\n힌트는 오래 써 온 PR 템플릿에 있었다 — PR 을 '리팩터링만' 과 '그 밖의 변경 포함' 으로 나눠 왔다. 동작을 바꾸는 PR 은 과제 해결·인프라·DB·성능까지 신경 써서 봐야 하지만, 리팩터링 PR 에서 보는 '동작이 같은가' 는 차분의 왼쪽에서 사라진 것이 오른쪽 어디로 옮겨 갔는지 맞추는 **퍼즐 같은 기계적 작업**이다. 그 부분을 AI 에 넘겼다(백엔드는 Go 모노레포).",
+        "metrics": [
+          {
+            "label": "자동 머지",
+            "value": "3개월 반에 리팩터링 PR 247건 — 팀 PR 의 약 3할",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "2026-06 API $74.48 / 55건 ≈ 건당 $1.35",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "label": "판정 출력",
+            "value": "JSON 스키마(pass · report_file)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "리팩터링 리뷰를 쪼갤 때",
+          "thought": "리팩터링 PR 에서 보는 것은 두 축 — **설계가 좋아졌나**(사람의 판단이 필요하지만 설계가 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적). 뒤의 것만 기계에 맡기면 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+              "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+              "publisher": "Nature Engineering Blog",
+              "date": "2026-07-31",
+              "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+            }
+          ]
+        },
+        {
+          "at": "AI 에게 역할을 줄 때",
+          "thought": "AI 는 아무래도 사람에게 **동의하기 쉽다** — 적대적으로 리뷰하도록 '회의적인 제3자' 로 세운다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+              "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+              "publisher": "Nature Engineering Blog",
+              "date": "2026-07-31",
+              "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+            }
+          ]
+        },
+        {
+          "at": "자동 머지를 믿는 이유",
+          "thought": "오래 쌓아 온 **E2E 테스트** 자산이 있기에 안심하고 자동 머지할 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+              "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+              "publisher": "Nature Engineering Blog",
+              "date": "2026-07-31",
+              "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "리팩터링 PR",
+            "what": "PR 템플릿의 영향 범위 '리팩터링만'. 동작 변경과 섞지 않는다."
+          },
+          {
+            "name": "review-refactoring Skill",
+            "what": "'순수 리팩터링' 을 기계적으로 판정하는 프롬프트 — 마인드셋 · 실행 절차 · 원칙."
+          },
+          {
+            "name": "판정",
+            "what": "JSON — pass(true/false) · report_file. 합불 모두 리포트를 PR 코멘트에 접어 남긴다."
+          },
+          {
+            "name": "refactoring-only 라벨",
+            "what": "자동 머지된 PR 에 붙는 표시."
+          },
+          {
+            "name": "E2E 테스트",
+            "what": "http.Handler 에 요청을 넘겨 응답과 부작용을 확인. 자동 머지의 안전망."
+          }
+        ],
+        "invariants": [
+          "AI 가 보는 것은 **동작 등가성뿐** — 설계는 사람이 GitHub issue · 夕会 에서 미리 합의한다.",
+          "**하나라도** 동작 변경이 있으면 순수 리팩터링이 아니다.",
+          "'그 밖 다수 · 이하 동일' 같은 **생략을 금지** — 바뀐 파일 · 함수 · 참조를 전부 열거한다.",
+          "pass 가 아니면 **자동 머지하지 않는다** — 사람 리뷰로 넘긴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "설계 방향(이름 · 책임 분할 · 결합)을 GitHub issue 나 夕会 에서 먼저 합의하고, 리팩터링만 담은 PR 을 낸다",
+            "why": "AI 에 맡길 부분을 좁힌다."
+          },
+          {
+            "step": "(선택) 로컬 Claude Code 에서 같은 Skill 을 먼저 돌려 합불을 본다",
+            "why": "안 될 PR 로 CI 시간 · 비용을 쓰지 않게."
+          },
+          {
+            "step": "PR 에 /review_refactoring 코멘트 → GitHub Actions 가 Skill 본문을 그대로 Claude 에 주고 베이스 브랜치와의 차분을 리뷰시킨다",
+            "why": "PR 코멘트로 기동."
+          },
+          {
+            "step": "Claude 는 회의적인 제3자로, 테스트 변화를 징후 삼아 바뀐 파일 · 함수 · 참조를 하나씩 열거하며 등가성을 확인한다",
+            "why": "'아마 괜찮다' 가 아니라 '증명할 수 있다'."
+          },
+          {
+            "step": "출력을 JSON 스키마(pass · report_file)로 받아, pass 면 approve · squash auto-merge · refactoring-only 라벨",
+            "why": "판정을 기계적으로 꺼낸다."
+          },
+          {
+            "step": "fail 이면 사람 리뷰가 필요하다고 코멘트하고, 합불 모두 평가 리포트를 PR 에 접어 남긴다",
+            "why": "근거를 사람이 나중에 쫓는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "리뷰 병목을 어떻게 푸나?",
+            "chosen": "**모든 PR 을 AI 에 맡기는 대신, 리팩터링 PR 만 — 그중에서도 '동작 등가성' 만 AI 에. 설계는 사람이 미리 합의.**",
+            "alternatives": [
+              "AI 가 모든 PR 을 리뷰",
+              "사람이 계속 전부 리뷰"
+            ],
+            "tradeoff": "AI 에 맡기는 부분을 **한정해 신뢰성**을 담보한다. 대가 — PR 을 **목적별로 나눠** 내야 하고, 설계 합의를 먼저 해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "question": "어떻게 기동하나?",
+            "chosen": "**PR 에 /review_refactoring 코멘트 → GitHub Actions — 같은 Skill 은 로컬 Claude Code 에서도 돈다.**",
+            "alternatives": [
+              "모든 PR 에 자동 실행"
+            ],
+            "tradeoff": "필요한 PR 에만 돌고, 로컬에서 먼저 돌려 보면 안 될 PR 로 **CI 시간 · 실행 비용**을 낭비하지 않는다. 대가 — 사람이 **코멘트를 잊으면** 자동 머지도 없다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "question": "판정을 어떻게 꺼내나?",
+            "chosen": "**출력을 JSON 스키마(pass · report_file)로 묶는다.**",
+            "alternatives": [
+              "자유 문장에서 합격 여부를 읽는다"
+            ],
+            "tradeoff": "판정과 리포트를 **기계적으로** 꺼내 approve · auto-merge 로 잇는다. 대가 — 스키마 밖의 뉘앙스는 리포트 파일에만 남는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "question": "AI 를 어떤 태도로 세우나?",
+            "chosen": "**'회의적인 제3자 리뷰어' — 순수 리팩터링이라는 주장을 의심하고, '아마 괜찮다' 가 아니라 '증명할 수 있다' 수준으로, 하나라도 동작 변경이면 불합격.**",
+            "alternatives": [
+              "일반 리뷰어 프롬프트"
+            ],
+            "tradeoff": "AI 는 사람에게 **동의하기 쉬워** 적대적 리뷰 틀이 필요하다. 대가 — 엄격한 만큼 진짜 리팩터링도 **불합격**시켜 사람 리뷰로 돌릴 수 있다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "question": "AI 가 무엇을 보게 하나?",
+            "chosen": "**동작 변경이 숨기 쉬운 패턴 목록 + 테스트 변화를 징후로 + '그 밖 다수 · 이하 동일' 생략 금지(전부 열거).**",
+            "alternatives": [
+              "차분 전체를 알아서 보게"
+            ],
+            "tradeoff": "변경이 많으면 Claude 가 **생략**하는 일이 있었다 — 열거를 강제해 하나씩 확인한다; 패턴 목록은 리팩터링/비리팩터링 PR **테스트 세트**로 키웠다. 대가 — 큰 PR 일수록 토큰 · 시간이 는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "question": "CI 에서 판정이 흔들리면?",
+            "chosen": "**empirical-prompt-tuning 을 여러 번 돌려 프롬프트의 모호함을 없앤다 — 매번 새 에이전트가 실제로 돌려 보고 평가.**",
+            "alternatives": [
+              "프롬프트를 감으로 다듬는다"
+            ],
+            "tradeoff": "**flaky 한 판정**을 피한다. 대가 — 프롬프트 자체를 **키우는** 손이 계속 든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 믿고 자동 머지하나?",
+            "chosen": "**오래 쌓아 온 E2E 테스트(http.Handler 에 요청을 넘겨 응답 · 부작용 확인)가 CI 에서 통과하는 것.**",
+            "alternatives": [
+              "AI 판정만으로"
+            ],
+            "tradeoff": "AI 판정과 **실행되는 테스트**가 겹쳐 안심한다. 대가 — 테스트가 얇은 곳에서는 이 방식이 **성립하지 않는다**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          },
+          {
+            "question": "비용은 감당되나?",
+            "chosen": "**API 비용을 실측해 본다 — 2026-06 $74.48 / 55건, 건당 약 $1.35.**",
+            "alternatives": [
+              "비용을 안 본다"
+            ],
+            "tradeoff": "3개월 반에 247건(팀 PR 의 약 3할)을 사람 리뷰 없이 머지한 값이다. 대가 — PR 이 늘면 **비례해 는다**(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+                "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+                "publisher": "Nature Engineering Blog",
+                "date": "2026-07-31",
+                "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "자물쇠를 기존 디바이스 모델에 끼워 넣는다(같은 회사의 다른 도메인)",
+          "via": "Go 백엔드 모노레포",
+          "contract": "스마트록 모델을 세 번 고친 것 같은 구조 변경은 동작을 바꾸지 않는 리팩터링으로 쪼개면 AI 가 등가성을 증명해 머지할 수 있다 — 두 글은 같은 Go 모노레포의 이야기다(이 사이트의 해석 — 글끼리 서로 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "코멘트 한 줄에서 머지까지",
+          "question": "리팩터링 PR 은 어떻게 사람 리뷰 없이 머지되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  ISS[\"설계 합의\\nGitHub issue · 夕会\"] --> PR[\"리팩터링만 담은 PR\"]\n  PR --> CMT[\"/review_refactoring\"]\n  CMT --> GA[\"GitHub Actions\\nSkill 본문 → Claude\"]\n  GA --> J{\"JSON: pass?\"}\n  J -->|true| M[\"approve · squash auto-merge\\nrefactoring-only 라벨\"]\n  J -->|false| H[\"사람 리뷰 필요 코멘트\"]\n  GA --> RP[\"평가 리포트를 PR 에 접어 남김\"]\n  E2E[\"E2E 테스트(CI)\"] --> M"
+        },
+        {
+          "title": "두 축으로 나눈 리뷰",
+          "question": "리팩터링 PR 의 어느 부분을 누가 보나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  R[\"리팩터링 PR\"] --> A[\"설계가 좋아졌나\\n이름 · 책임 · 의존 · 결합\"]\n  R --> B[\"동작 등가성\\n기계적 · 퍼즐\"]\n  A --> H[\"사람 — 미리 합의\"]\n  B --> AI[\"AI — 회의적 제3자 · 전부 열거\"]\n  X[\"동작을 바꾸는 PR\"] --> HH[\"사람 — 과제 · 인프라 · DB · 성능\"]"
+        },
+        {
+          "title": "자동 머지가 틀리는 자리",
+          "question": "AI 가 '순수 리팩터링' 을 잘못 통과시키는 곳은?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"AI 가 사람에게 동의\"] --> B[\"회의적 제3자 프롬프트\"]\n  C[\"변경이 많아 '이하 동일' 생략\"] --> D[\"열거 강제\"]\n  E[\"테스트도 같이 바뀜\"] --> F[\"동작 변경의 징후로 주의\"]\n  G[\"판정이 매번 다름(flaky)\"] --> H2[\"empirical-prompt-tuning\"]\n  I[\"E2E 가 얇은 영역\"] --> J[\"AI 판정만 남아 위험\"]\n  K[\"동작 변경과 리팩터링이 섞인 PR\"] --> L[\"불합격 → 사람 리뷰\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "「純粋リファクタリング」をAIに証明させて自動マージする",
+          "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
+          "publisher": "Nature Engineering Blog",
+          "date": "2026-07-31",
+          "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -469,7 +810,7 @@
       "url": "https://engineering.nature.global/entry/2026/07/prove-pure-refactoring-with-ai-and-auto-merge",
       "publisher": "Nature Engineering Blog",
       "date": "2026-07-31",
-      "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용."
+      "summary": "CTO 발표. AI 로 개발이 빨라져 PR 이 쏟아지고 **리뷰가 병목**. Nature Remo 는 에어컨 조작 등 일상에서 헤비하게 쓰여 기존 기능을 깨지 않도록 리뷰·CI 를 중시해 왔다. 백엔드는 **Go 모노레포**. PR 템플릿의 영향 범위 — '리팩터링만' vs '그 밖의 코드 변경 포함' — 에 따라 리뷰 관점이 다르다. **`/review_refactoring`** 을 PR 에 코멘트하면 CI 에서 AI 가 '순수 리팩터링(동작 불변)' 인지 증명하고 합격하면 **자동 머지**. Skill 의 마인드셋·실행 절차·원칙, 프롬프트 자체를 키운다, **CI 가 충실하기에** 가능, 비용. 리팩터링 PR 은 두 축 — **설계가 좋아졌나**(사람 판단, 나빠지는 리팩터링은 드물다)와 **동작 등가성**(기계적) — 설계는 GitHub issue·'夕会' 에서 미리 합의하고 **등가성만 AI 에**. 흐름: `/review_refactoring` 코멘트 → Actions 에서 Skill 본문을 그대로 Claude 에 → 출력을 **JSON 스키마(pass·report_file)** 로 묶음 → pass 면 approve·squash auto-merge·`refactoring-only` 라벨, 아니면 사람 리뷰 필요 코멘트; 합불 모두 **평가 리포트를 PR 코멘트에 접어** 남김; 로컬 Claude Code 에서도 먼저 돌려 볼 수 있다. Skill: **'회의적인 제3자 리뷰어'**(AI 는 인간에 동의하기 쉽다), 동작 변경이 숨기 쉬운 패턴 목록(리팩터링/비리팩터링 PR 테스트 세트로 키움), **테스트 변화를 동작 변화의 징후**로, '그 밖 다수·이하 동일' **생략 금지** — 파일·함수·참조를 전부 열거. 프롬프트는 empirical-prompt-tuning 으로 **flaky 판정**을 줄였다. E2E(`http.Handler` 에 요청을 넘겨 응답·부작용 확인) 자산이 있어 안심하고 자동 머지. 3개월 반에 **247건** 자동 머지(팀 PR 의 **약 3할**), 2026-06 API 비용 **$74.48 / 55건 ≈ 건당 $1.35**. 동작을 바꾸는 PR 앞뒤로 리팩터링을 끼우는 문화가 생겨 동작 변경 차분이 국소화됐다."
     }
   ]
 }
