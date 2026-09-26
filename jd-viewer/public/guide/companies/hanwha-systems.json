@@ -505,6 +505,97 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387685",
+      "title": "[한화시스템/ICT] 금융프로젝트 시스템 개발",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 중구(ICT 부문). **금융 SI — 보험 계약관리 시스템** 개발자다. 주요업무는 보험 계약·**청약·유지·변경·해지** 프로세스, **상품 요율·업무 로직** 구현, 보험 업무 부서와 협업, **온라인·배치** 개발이고 도메인은 생명보험·손해보험 둘 다다. 자격은 **보험 업무 시스템 운영·개발 5년**, Java·JavaScript·HTML5·**OZ**(리포트 도구)·SQL, Oracle 등 DBMS, **SI 수행 방법론**, 고객·개발자 커뮤니케이션. 우대는 금융 SI 프로젝트·운영 PL 경험, AI·클라우드 기반 금융서비스 구축. 보험 업무 경력 5년이 문턱이라 도메인 없이 들어가기는 어렵다. 어느 고객사 프로젝트인지는 공고에 없다. 전형은 서류 → 직무면접 → 레퍼런스체크 → 그룹보고전형 → Offer Letter → 채용검진. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "보험 업무 시스템 5년",
+          "Java·SQL·Oracle",
+          "SI 방법론"
+        ],
+        "can_learn": [
+          "OZ 리포트",
+          "대량 배치 튜닝"
+        ]
+      },
+      "study": [
+        {
+          "topic": "보험 계약의 일생 — 청약에서 해지까지",
+          "from": "task",
+          "quote": "• 보험 계약, 청약, 유지, 변경, 해지 프로세스 개발",
+          "priority": "core",
+          "why": "주요업무 핵심 줄이고 자격요건이 보험 업무 시스템 경력 5년을 요구한다.",
+          "gap_check": "청약·승낙(심사)·성립·유지(납입·실효·부활)·변경(배서)·해지(환급금) 단계마다 계약 상태와 금액이 어떻게 바뀌는가? 생명보험과 손해보험은 계약 기간·갱신·보험금 지급 구조에서 무엇이 다르고, 변경 이력을 덮어쓰지 않고 남겨야 하는 이유는?",
+          "drill": "Life insurance 문서로 기본 용어(보험료·해지환급금·책임준비금 등)를 정리한 뒤, 계약 상태 전이도(청약→성립→유지→실효→부활/해지)와 변경 이력 테이블(유효 시작·종료일)을 설계하고 '3개월 미납 후 부활' 시나리오를 SQL 로 재현한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Life insurance — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Life_insurance",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "요율·업무 로직을 코드로 옮길 때",
+          "from": "task",
+          "quote": "• 보험 상품 요율 및 업무 로직 구현",
+          "priority": "high",
+          "why": "주요업무다. 상품마다 요율표와 규칙이 다르고 자주 바뀐다.",
+          "gap_check": "요율(나이·성별·보장금액·기간별 표)을 코드에 박지 않고 테이블로 관리하면 상품 개정 때 무엇이 쉬워지는가? 금액 계산에서 부동소수점을 쓰면 안 되는 이유와 반올림·절사 규칙을 어디서 정의하는가? 개정 전 계약과 개정 후 계약이 같은 로직을 타면 안 되는 이유는?",
+          "drill": "가상 상품의 요율표를 적용 기간이 있는 테이블로 만들고, Java(BigDecimal)로 보험료 계산기를 구현해 개정일 전후 계약이 각각 옛·새 요율을 쓰는지 단위 테스트로 확인한다.",
+          "hours": 5,
+          "resources": []
+        },
+        {
+          "topic": "온라인과 배치 — 대량 처리 설계",
+          "from": "task",
+          "quote": "• IT시스템 온라인, 배치업무 시스템 개발",
+          "priority": "high",
+          "why": "주요업무다. 월말 보험료 청구·실효 처리·환급금 계산은 수십만 건 배치로 돈다.",
+          "gap_check": "배치 중간에 실패했을 때 처음부터 다시 돌리지 않고 이어서 하려면 무엇(청크 커밋·재시작 지점·멱등 처리)이 필요한가? 배치와 온라인이 같은 테이블을 만질 때 잠금 경합은 어떻게 피하는가?",
+          "drill": "Spring Batch 문서의 청크 처리·재시작 개념을 읽고(공고가 프레임워크를 지정하지는 않는다), 10만 건 계약의 월 보험료 청구 배치를 청크 단위로 만들어 중간에 강제 종료한 뒤 재시작해 중복 청구가 없는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Spring Batch Reference — Overview",
+              "url": "https://docs.spring.io/spring-batch/reference/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Oracle SQL 과 튜닝",
+          "from": "qualification",
+          "quote": "• DBMS(Oracle 등) 활용 능력 보유",
+          "priority": "nice",
+          "why": "자격요건이다. 보험 코어 시스템의 업무 로직은 SQL·PL/SQL 에 많이 들어 있다.",
+          "gap_check": "실행 계획을 읽어 인덱스 범위 스캔과 풀 스캔, 중첩 루프와 해시 조인을 구분할 수 있는가? 복합 인덱스 컬럼 순서가 조회 조건과 맞지 않으면 무엇이 일어나는가? PL/SQL 로 로직을 DB 에 둘 때와 애플리케이션에 둘 때의 장단은?",
+          "drill": "Use The Index, Luke 의 인덱스 장을 읽고, 계약 테이블 100만 건에서 '특정 상품·상태·기간' 조회를 인덱스 없음/단일/복합(순서 두 가지)으로 실행 계획과 시간을 비교한다. Oracle SQL 튜닝 가이드에서 실행 계획 읽는 절을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Use The Index, Luke",
+              "url": "https://use-the-index-luke.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Oracle Database SQL Tuning Guide 19c",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Overview of PL/SQL — Oracle",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/overview.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
