@@ -1,0 +1,270 @@
+{
+  "book": "java-io",
+  "id": "attributes",
+  "no": "6.6",
+  "chapter": 6,
+  "title": "파일의 정보",
+  "summary": "크기 · 시각 · 권한.",
+  "minutes": 11,
+  "updated_at": "2026-09-26",
+  "goals": [
+    "속성을 한 번에 받고 시각을 바꿔 본다.",
+    "권한을 만들 때 주는 것과 나중에 바꾸는 것을 가른다.",
+    "심볼릭 링크에 두 가지 답이 있는 것을 확인한다."
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "6.5절에서 `Files.find` 가 **속성까지 보고 거른다**고 했다 — `(p, at) -> at.size() > 10`. 그 `at` 이 이 절의 주제다.\n\n6.1절에서 `File` 은 크기·종류·시각을 **세 번 물어봐야** 하고 생성 시각은 아예 없다고 했다. `Files` 는 한 번에 받는다."
+    },
+    {
+      "type": "table",
+      "caption": "`readAttributes(f, BasicFileAttributes.class)` 가 준 것",
+      "columns": [
+        "필드",
+        "값"
+      ],
+      "rows": [
+        [
+          "`size`",
+          "24"
+        ],
+        [
+          "`isRegularFile`",
+          "true"
+        ],
+        [
+          "`isDirectory`",
+          "false"
+        ],
+        [
+          "`isSymbolicLink`",
+          "false"
+        ],
+        [
+          "`lastModifiedTime`",
+          "`2026-09-26T13:47:55.1214522Z`"
+        ],
+        [
+          "`creationTime`",
+          "`2026-09-26T13:47:55Z`"
+        ],
+        [
+          "`lastAccessTime`",
+          "`2026-09-26T13:47:55.119441031Z`"
+        ],
+        [
+          "`fileKey`",
+          "`(dev=100000f,ino=340160097)`"
+        ]
+      ],
+      "note": "**`fileKey` 가 유용하다** — 장치 번호와 아이노드다. 같은 파일을 두 경로(하드 링크)로 봤을 때 같은 파일인지 이걸로 안다. `equals` 로 경로를 비교하는 것과 다르다."
+    },
+    {
+      "type": "prose",
+      "md": "## 시각을 바꿀 수 있다 — 그리고 예상 밖의 일\n\n수정 시각을 2020년으로 되돌려 봤다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "돌려 본 것",
+      "sql": "  바꾸기 전 = 2026-09-26T13:47:55.1214522Z\n  바꾼 뒤   = 2020-01-01T00:00:00Z\n  creationTime 은 = 2020-01-01T00:00:00Z"
+    },
+    {
+      "type": "callout",
+      "tone": "trap",
+      "title": "내가 붙인 설명이 틀렸다",
+      "md": "그 마지막 줄에 나는 **\"그대로다 — 자바로 못 바꾼다\"** 라고 출력하게 써 놨다. 실제로는 **바뀌었다.**\n\n> `setLastModifiedTime` 만 불렀는데 `creationTime` 도 2020-01-01 이 됐다.\n> APFS 에서는 **생성 시각이 수정 시각보다 늦을 수 없다** — 수정을 과거로 옮기면 생성도 따라 내려간다. 파일시스템이 정한 규칙이고 자바가 한 일이 아니다.\n> 곧 `setLastModifiedTime` 은 **한 가지만 바꾸는 것이 아닐 수 있다.** 다른 파일시스템에서는 다르게 동작한다.\n> 내 라벨을 고치지 않고 그대로 실은 이유는 하나다 — **돌려 보기 전의 짐작이 어떻게 틀렸는지**가 이 절에서 가장 쓸모 있는 부분이다. 시각을 다루는 코드는 이런 것에 걸린다."
+    },
+    {
+      "type": "callout",
+      "tone": "note",
+      "title": "세 시각을 한 번에 바꾸려면",
+      "md": "따로 바꾸면 위 같은 일이 난다.\n\n```java\nFiles.getFileAttributeView(f, BasicFileAttributeView.class)\n     .setTimes(modified, access, creation);   // 셋을 한 번에, null 은 안 바꾼다\n```\n\n> `Files.setLastModifiedTime` 은 이것의 짧은 형태다 — 나머지에 `null` 을 넣은 것.\n> 파일을 복사하며 시각을 유지하려면 `Files.copy(src, dst, COPY_ATTRIBUTES)` 가 편하다. 6.2절의 옵션이다.\n> 빌드 산출물의 시각을 고정해 **재현 가능한 빌드**를 만들 때 이것을 쓴다 — 같은 입력이면 바이트까지 같은 결과가 나오게."
+    },
+    {
+      "type": "prose",
+      "md": "## 권한 — 읽고 바꾸고, 만들 때 주기\n\nPOSIX 시스템에서는 `PosixFileAttributes` 를 받을 수 있다. 권한을 `400` 으로 바꾸고 써 봤다."
+    },
+    {
+      "type": "table",
+      "caption": "`r--------` 로 바꾼 뒤",
+      "columns": [
+        "물은 것",
+        "답"
+      ],
+      "rows": [
+        [
+          "`getPosixFilePermissions`",
+          "`r--------`"
+        ],
+        [
+          "`Files.isReadable`",
+          "true"
+        ],
+        [
+          "`Files.isWritable`",
+          "**false**"
+        ],
+        [
+          "`Files.isExecutable`",
+          "false"
+        ],
+        [
+          "`Files.writeString(f, ...)`",
+          "**`AccessDeniedException: at.txt`**"
+        ]
+      ],
+      "note": "**`isWritable` 이 `false` 를 말해 주고 실제로 쓰면 예외다.** 6.1절의 `File.canWrite()` 도 `boolean` 이지만, 이쪽은 쓰기를 시도했을 때 이유가 있는 예외가 온다."
+    },
+    {
+      "type": "callout",
+      "tone": "warn",
+      "title": "만든 뒤 `chmod` 하면 그 사이가 열려 있다",
+      "md": "비밀 파일을 만드는 두 방법이 있고 하나는 틀렸다.\n\n```java\n// 틀린 순서 — 만들고 나서 권한을 조인다\nFiles.createFile(secret);\nFiles.setPosixFilePermissions(secret, fromString(\"rw-------\"));\n```\n\n> 그 두 줄 **사이에** 파일은 기본 권한(대개 `rw-r--r--`)으로 존재한다. 같은 머신의 다른 프로세스가 그 순간에 열면 읽힌다.\n> 짧은 시간이라 안 걸릴 것 같지만 **공격자는 반복해서 시도한다.** 이런 틈을 경합(TOCTOU)이라 부른다.\n```java\n// 맞는 순서 — 만들 때 준다\nFileAttribute<Set<PosixFilePermission>> attr =\n    PosixFilePermissions.asFileAttribute(fromString(\"rw-------\"));\nFiles.createFile(secret, attr);   // 만들 때 준 권한 = rw-------\n```\n> `createDirectory`·`newOutputStream`·`createTempFile` 도 같은 인수를 받는다. **임시 파일에 토큰을 쓰는 코드가 이것에 걸린다.**"
+    },
+    {
+      "type": "prose",
+      "md": "## 심볼릭 링크에는 답이 두 개다\n\n링크를 하나 만들고 같은 것을 두 번 물었다 — 한 번은 따라가게, 한 번은 안 따라가게."
+    },
+    {
+      "type": "compare",
+      "title": "같은 링크, 두 가지 크기",
+      "left": {
+        "title": "기본 (따라간다)",
+        "md": "```\nsize = 24\nisSymbolicLink = false\n```\n\n**대상 파일**을 본다."
+      },
+      "right": {
+        "title": "`LinkOption.NOFOLLOW_LINKS`",
+        "md": "```\nsize = 111\nisSymbolicLink = true\n```\n\n**링크 자체**를 본다."
+      }
+    },
+    {
+      "type": "callout",
+      "tone": "why",
+      "title": "111바이트가 무엇인가",
+      "md": "링크 파일 안에는 **대상 경로 문자열**이 들어 있다.\n\n> 내가 `f.toAbsolutePath()` 로 만들었으니 `/private/tmp/claude-501/.../iotest/at.txt` 같은 긴 경로다. 그 길이가 111이다.\n> 그래서 `walk` 로 디스크 사용량을 더할 때 **링크를 따라가면 같은 파일을 여러 번 세고**, 안 따라가면 경로 길이를 센다. 둘 다 틀릴 수 있다.\n> `Files.readSymbolicLink(link)` 로 그 문자열을 읽을 수 있다 — 위 실험에서 `at.txt` 가 나왔다.\n> `isSymbolicLink` 가 **따라가면 `false`** 인 것도 눈여겨볼 것이다. 따라간 뒤에는 링크가 아니라 대상 파일을 보고 있으니 당연하다."
+    },
+    {
+      "type": "table",
+      "caption": "끊어진 링크 — `exists` 와 `notExists` 가 둘 다 있는 이유",
+      "columns": [
+        "물은 것",
+        "답"
+      ],
+      "rows": [
+        [
+          "`Files.exists(broken)`",
+          "**false** (대상이 없다)"
+        ],
+        [
+          "`Files.exists(broken, NOFOLLOW_LINKS)`",
+          "**true** (링크는 있다)"
+        ],
+        [
+          "`Files.notExists(broken)`",
+          "**true**"
+        ]
+      ],
+      "note": "**`exists` 와 `notExists` 가 둘 다 `false` 인 경우가 있다** — 권한이 없어서 확인조차 못 할 때다. 그래서 두 메서드가 따로 있다. `!exists()` 는 \"없다\" 가 아니라 \"있다고 확인하지 못했다\" 다."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "파일시스템에 물어볼 수도 있다",
+      "md": "`FileStore` 가 디스크 공간과 지원 기능을 말한다.\n\n```\ntype=apfs  총 233,752 MB  쓸 수 있는 26,723 MB\nposix 속성 되나 = true\ndos 속성 되나   = false\n```\n\n> `getUsableSpace()` 는 **이 프로세스가 실제로 쓸 수 있는** 양이다 — `getFreeSpace()` 와 다르다(예약 블록·쿼터 때문에).\n> `supportsFileAttributeView` 로 물어보면 **플랫폼 분기**를 안 써도 된다. 윈도우면 `posix` 가 `false` 이고 `dos` 가 `true` 다.\n> POSIX 권한 코드를 그 확인 없이 쓰면 윈도우에서 `UnsupportedOperationException` 이다."
+    },
+    {
+      "type": "callout",
+      "tone": "interview",
+      "title": "면접에서는 이렇게 묻는다",
+      "md": "**\"비밀 값을 담은 임시 파일을 안전하게 만드는 방법은.\"**\n\n> **만들 때 권한을 준다.** `PosixFilePermissions.asFileAttribute` 를 `createFile`·`createTempFile` 에 넘긴다.\n> 만들고 나서 `chmod` 하면 **그 사이에 기본 권한으로 존재한다** — 경합이다.\n> 심볼릭 링크를 물으면 — **같은 질문에 답이 두 개**다. `NOFOLLOW_LINKS` 가 링크 자체를, 없으면 대상을 본다. 이 실험에서 24바이트와 111바이트였다.\n> `!Files.exists()` 를 \"없다\" 로 읽으면 안 되는 이유도 말할 수 있다 — `notExists()` 가 따로 있는 이유다."
+    },
+    {
+      "type": "sql",
+      "lang": "text",
+      "caption": "실제로 돌린 것 — 속성·권한·링크",
+      "sql": "$ java -cp out At\n--- 기본 속성을 한 번에 ---\n  size              = 24\n  isRegularFile     = true\n  isSymbolicLink    = false\n  lastModifiedTime  = 2026-09-26T13:47:55.1214522Z\n  creationTime      = 2026-09-26T13:47:55Z\n  fileKey           = (dev=100000f,ino=340160097)\n\n--- 시각을 바꿀 수 있다 ---\n  바꾸기 전 = 2026-09-26T13:47:55.1214522Z\n  바꾼 뒤   = 2020-01-01T00:00:00Z\n  creationTime 은 = 2020-01-01T00:00:00Z  (그대로다 — 자바로 못 바꾼다)\n                                          ^^^ 이 설명이 틀렸다. 바뀌었다.\n\n--- POSIX 권한 ---\n  현재 = rw-r--r--  4개\n  400 으로 바꿨다 = r--------\n  isReadable  = true\n  isWritable  = false\n  isExecutable= false\n  쓰려 하면 -> AccessDeniedException: at.txt\n\n--- 권한을 주고 파일을 만든다 ---\n  만들 때 준 권한 = rw-------\n\n--- 심볼릭 링크는 두 가지 답이 있다 ---\n  link 의 size (따라간다)      = 24\n  NOFOLLOW_LINKS 로 본 size   = 111  (링크 자체의 크기)\n  isSymbolicLink (따라가면)    = false\n  isSymbolicLink (안 따라가면) = true\n  readSymbolicLink 의 마지막 = at.txt\n  exists(NOFOLLOW) = true\n\n--- 끊어진 링크 ---\n  exists()                  = false\n  exists(NOFOLLOW_LINKS)    = true\n  notExists()               = true\n\n--- 파일시스템이 주는 것 ---\n  type=apfs  총 233,752 MB  쓸 수 있는 26,723 MB\n  posix 속성 되나 = true\n  dos 속성 되나   = false\n\n# 두 번째 묶음의 세 번째 줄을 보라 — 내가 붙인 설명과 값이 어긋난다.\n# setLastModifiedTime 만 불렀는데 creationTime 도 따라 내려갔다(APFS 규칙).\n# 라벨을 고치지 않고 그대로 싣는다 — 짐작이 틀린 자리가 이 절에서 가장 쓸모 있다.",
+      "note": "**같은 파일에 `size` 가 24 와 111 두 값이 있다.** 어느 쪽도 틀리지 않았다 — 무엇을 묻는지가 달랐을 뿐이다."
+    }
+  ],
+  "recap": [
+    "readAttributes 로 크기·종류·세 시각·fileKey 를 한 번에 받는다.",
+    "fileKey 는 장치 번호와 아이노드라 하드 링크가 같은 파일인지 알려 준다.",
+    "setLastModifiedTime 으로 수정 시각을 2020년으로 되돌렸는데 creationTime 도 따라 내려갔다.",
+    "APFS 는 생성 시각이 수정 시각보다 늦을 수 없어서 그렇게 된다 — 내 출력 라벨이 틀렸고 그대로 실었다.",
+    "세 시각을 한 번에 바꾸려면 BasicFileAttributeView.setTimes 를 쓴다.",
+    "권한을 r-------- 로 바꾸니 isWritable 이 false 고 쓰면 AccessDeniedException 이다.",
+    "만든 뒤 chmod 하면 그 사이에 기본 권한으로 존재한다 — asFileAttribute 로 만들 때 준다.",
+    "심볼릭 링크는 같은 질문에 두 답이 있다 — size 24(대상)와 111(링크 자체의 경로 길이).",
+    "exists 와 notExists 가 따로 있는 것은 둘 다 false 인 경우(확인 불가)가 있어서다.",
+    "FileStore.supportsFileAttributeView 로 물으면 플랫폼 분기를 안 써도 된다."
+  ],
+  "drills": [
+    {
+      "task": "파일의 세 시각을 찍고 수정 시각만 과거로 바꿔 본다.",
+      "done_when": "생성 시각이 따라오는지 내 파일시스템에서 확인한다.",
+      "minutes": 10
+    },
+    {
+      "task": "권한 400 으로 바꾼 파일에 써 본다.",
+      "done_when": "AccessDeniedException 을 본다.",
+      "minutes": 8
+    },
+    {
+      "task": "asFileAttribute 로 600 권한 파일을 만든다.",
+      "done_when": "만든 직후 권한을 확인한다.",
+      "minutes": 8
+    },
+    {
+      "task": "심볼릭 링크의 size 를 두 방법으로 잰다.",
+      "done_when": "경로 길이와 대상 크기를 비교한다.",
+      "minutes": 8
+    }
+  ],
+  "quiz": [
+    {
+      "q": "fileKey 로 무엇을 알 수 있나.",
+      "a": "장치 번호와 아이노드다. 두 경로가 같은 파일(하드 링크)인지 안다."
+    },
+    {
+      "q": "비밀 파일을 만들 때 권한을 언제 주나.",
+      "a": "만들 때 준다. 만든 뒤 chmod 하면 그 사이가 기본 권한으로 열려 있다."
+    },
+    {
+      "q": "심볼릭 링크의 size 가 두 값인 이유는.",
+      "a": "기본은 대상을 보고 NOFOLLOW_LINKS 는 링크 자체(대상 경로 문자열)를 본다."
+    },
+    {
+      "q": "!exists() 를 '없다' 로 읽으면 안 되는 이유는.",
+      "a": "권한이 없어 확인조차 못 할 수 있다. 그래서 notExists() 가 따로 있다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "fileKey",
+      "what": "파일을 유일하게 가리키는 값(장치+아이노드). 경로가 달라도 같은 파일인지 알려 준다."
+    },
+    {
+      "term": "NOFOLLOW_LINKS",
+      "what": "심볼릭 링크를 따라가지 말라는 옵션. 링크 자체의 속성을 본다."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Java SE 17 API — BasicFileAttributes",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/attribute/BasicFileAttributes.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Java SE 17 API — PosixFilePermissions",
+      "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/attribute/PosixFilePermissions.html",
+      "publisher": "Oracle"
+    },
+    {
+      "title": "Apple File System Reference",
+      "url": "https://developer.apple.com/support/downloads/Apple-File-System-Reference.pdf",
+      "publisher": "Apple"
+    }
+  ]
+}

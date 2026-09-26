@@ -318,7 +318,7 @@
           "title": "큰 파일",
           "summary": "메모리에 다 올리면 죽는다.",
           "minutes": 13,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.5",
@@ -326,7 +326,7 @@
           "title": "디렉토리 순회",
           "summary": "walk 와 자원 정리.",
           "minutes": 12,
-          "status": "todo"
+          "status": "done"
         },
         {
           "no": "6.6",
@@ -334,7 +334,7 @@
           "title": "파일의 정보",
           "summary": "크기 · 시각 · 권한.",
           "minutes": 11,
-          "status": "todo"
+          "status": "done"
         }
       ]
     },
