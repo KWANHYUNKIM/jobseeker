@@ -334,6 +334,110 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/356350",
+      "title": "백엔드 엔지니어 (시니어)",
+      "site": "wanted",
+      "verdict": "경력 7년 이상(또는 그에 준하는 역량), 서울 서초구. '백엔드 엔지니어'(359638)와 같은 커머스 코어 자리(앱 커머스 백엔드·셀러 플랫폼·Open API·백오피스)에 **트래픽 증가에 대응하는 안정적 시스템 설계·운영**과 **신규 서비스 설계·개발**이 더해진 시니어 공고다. 필수는 7년 이상, Django·Spring 등과 RDBMS 로 **대규모 서비스 구축·운영**, **대용량 트래픽 안정 운영**. 우대는 고가용성·확장 가능한 아키텍처 설계, **운영 중 서비스의 MSA 마이그레이션 또는 MSA 개발**, 컨테이너, AWS·GCP. 기술 스택은 359638 과 같다(Python/Django, Kotlin/Spring, MySQL·Redis·ScyllaDB·Kafka·Elasticsearch, GitHub Actions·ArgoCD, Datadog·Grafana·Sentry). 전형은 359638 과 같은 흐름(서류 > 라이브 코딩테스트 > 직무 인터뷰 > 최종 인터뷰)으로 읽힌다.",
+      "fit": {
+        "must_have": [
+          "개발 경력 7년 이상",
+          "Django·Spring + RDBMS 로 대규모 서비스 구축·운영",
+          "대용량 트래픽 안정 운영"
+        ],
+        "can_learn": [
+          "MSA 마이그레이션",
+          "고가용성 아키텍처",
+          "컨테이너",
+          "AWS·GCP"
+        ]
+      },
+      "study": [
+        {
+          "topic": "운영 중 모놀리스를 MSA 로 — Strangler Fig",
+          "from": "preference",
+          "quote": "• 운영중인 서비스를 마이크로서비스 아키텍처로 마이그레이션 해본 경험, 또는 MSA 환경에서 개발해본 경험이 있으신 분이면 더 좋아요.",
+          "priority": "core",
+          "why": "우대사항이고 주요업무에 신규 서비스 설계·개발이 있다. 스택에 Python/Django 와 Kotlin/Spring 이 함께 있다.",
+          "gap_check": "Django 모놀리스에서 '정산' 이나 '쿠폰' 같은 기능 하나를 떼어 새 서비스로 옮길 때, 트래픽을 한 번에 넘기지 않고 조금씩 옮기려면 어디에 라우팅을 두고, 두 시스템이 같은 데이터를 쓰는 과도기에는 무엇을 원본으로 삼는가?",
+          "drill": "Strangler Fig 글을 읽고, 작은 Django 앱의 쿠폰 조회를 Spring(Kotlin) 서비스로 옮기되 앞단 프록시에서 사용자 ID 비율로 트래픽을 나눠 보내고, 두 응답을 비교 로그로 남기는 섀도 호출 단계를 거쳐 전환한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Strangler Fig",
+              "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Pattern: Strangler application",
+              "url": "https://microservices.io/patterns/refactoring/strangler-application.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대용량 트래픽 안정 운영 — 과부하 대응",
+          "from": "qualification",
+          "quote": "• 대용량 트래픽을 안정적으로 운영해본 경험이 있는 분을 찾고 있어요.",
+          "priority": "core",
+          "why": "필수 요건이고 주요업무가 '트래픽 증가에 대응할 수 있는 안정적인 시스템' 설계·운영이다.",
+          "gap_check": "세일 시작 순간 트래픽이 평소의 10배로 몰릴 때 DB 앞에서 무엇(캐시·대기열·요청 제한)으로 버티고, 버티지 못하면 어떤 요청부터 버려 핵심 기능(결제)을 지키는가?",
+          "drill": "SRE 책의 과부하 장을 읽고, 상품 상세 API 에 Redis 캐시와 캐시 스탬피드 방지(락 또는 조기 갱신)를 붙인 뒤 부하 도구로 캐시 만료 순간의 DB 쿼리 수를 전후 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Google SRE - Handling Overload",
+              "url": "https://sre.google/sre-book/handling-overload/",
+              "kind": "docs"
+            },
+            {
+              "title": "Develop with Redis",
+              "url": "https://redis.io/docs/latest/develop/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스택의 저장소 고르기 — MySQL·ScyllaDB·Elasticsearch",
+          "from": "preference",
+          "quote": "• Mysql, Redis, ScyllaDB, Kafka, Elasticsearch",
+          "priority": "high",
+          "why": "기술 스택 줄이다. 우대에 고가용성·확장 가능한 아키텍처 설계가 있다.",
+          "gap_check": "주문처럼 정합성이 중요한 데이터, 유저 행동 로그처럼 쓰기가 폭증하는 데이터, 상품 검색처럼 텍스트 조회가 중요한 데이터를 각각 MySQL·ScyllaDB·Elasticsearch 중 어디에 두고, ScyllaDB 에서 파티션 키를 잘못 잡으면 무엇이 생기는가(핫 파티션)?",
+          "drill": "ScyllaDB 아키텍처 문서를 읽고, '유저별 최근 본 상품' 테이블의 파티션 키·클러스터링 키를 설계해 도커 ScyllaDB 에 넣은 뒤, 특정 인기 유저에게 쓰기를 몰았을 때의 지연을 측정한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ScyllaDB Architecture",
+              "url": "https://docs.scylladb.com/manual/stable/architecture/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "서비스 사이 이벤트 — Kafka 와 Outbox",
+          "from": "preference",
+          "quote": "• 운영중인 서비스를 마이크로서비스 아키텍처로 마이그레이션 해본 경험, 또는 MSA 환경에서 개발해본 경험이 있으신 분이면 더 좋아요.",
+          "priority": "nice",
+          "why": "우대에 MSA 경험이 있고 스택에 Kafka 가 있다. 서비스를 나누면 서비스 간 데이터 전달이 필요해진다.",
+          "gap_check": "주문 서비스가 '주문 완료' 이벤트를 Kafka 로 보내 정산·알림이 받게 할 때, DB 저장과 이벤트 발행 중 하나만 성공하는 상황을 무엇으로 막는가?",
+          "drill": "주문 저장과 outbox 테이블 기록을 한 트랜잭션에 묶고, 별도 릴레이가 Kafka 로 발행하게 만든 뒤 릴레이를 중간에 죽였다 살려도 이벤트가 빠지지 않는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Pattern: Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Kafka Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
