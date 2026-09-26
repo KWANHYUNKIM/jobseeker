@@ -939,3 +939,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 comma 재방문 → 확장
 - ML 버그 편(2026-09-16) 으로 `precision-where-it-is-read` 추가. 새 도메인, 결정 6개, 그림 2장. 계획 머리 FP32, AllNorm, 랭크별 재시드 등.
+
+## 2026-09-26 convex 재방문
+- 새 자료 없음(1회째). Stack 최근 글에 결정·대가 없음. updated_at 만 올림.
