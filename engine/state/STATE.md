@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Findy — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: 'AI 가 쓴 코드의 품질을 점수로 읽힌다' 를 Team+ 코드 품질 글(`entry/2026/07/10/110000`, scratchpad `fd_0710.txt` — 네 지표·우선순위·FAQ). 그 뒤 문의 조사 에이전트(`entry/2026/08/21/070000`, `fd_0821.txt` — diff/apply·버전 적층). 완주 판정 때 매칭(Findy·Freelance)·Tools 수익원은 도메인이 없다 — 두 번 찾고 없으면 hold. 사이트맵 2026-07~09 12편 목록은 `fd_urls.txt`. 대기 0/3 — Findy 뒤 후보 조사. 머니포워드(hold)·LayerX 는 in_progress.**
+**Findy — 확장 1(2026-09-26): Team+ 도메인에 `code-quality-four-metrics-score`(결정 7). 다음은 확장: '사내 문의 조사를 부를 때만 뜨는 에이전트에 맡긴다' 를 문의 조사 글(`entry/2026/08/21/070000`, scratchpad `fd_0821.txt` — Actions 가 하는 두 가지·Sessions API·Agent 정의 diff/apply·버전 적층·세션 고정). 완주 판정 때 매칭(Findy·Freelance)·Tools 수익원은 도메인이 없다 — 두 번 찾고 없으면 hold. 사이트맵 2026-07~09 12편 목록은 `fd_urls.txt`. 대기 0/3 — Findy 뒤 후보 조사. 머니포워드(hold)·LayerX 는 in_progress.**
 
 
 

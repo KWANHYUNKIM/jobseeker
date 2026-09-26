@@ -1376,3 +1376,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Findy 회사 프로파일
 
 - 대기 맨 위. 서비스 페이지(매칭 둘·Team+·Tools·컨퍼런스) + 기술 글 둘(Team+ 코드 품질 분석 · Managed Agents 문의 조사)로 도메인 둘 · 수익원 셋(Team+ 만 도메인 연결). category 는 enum 이라 'SaaS'. 사이트맵 7~9월 12편 중 절반이 행사·인턴 글.
+
+## 2026-09-26 Findy Team+ 코드 품질 분석
+
+- 코드 품질 글 전문으로 `code-quality-four-metrics-score`(결정 7 — 지표 넷 조합·ISO 25010·파일 단위·개선 순서·목안은 신호·바꿀 파일부터·AI 코드 비교(inferred)). 조합식은 비공개.
