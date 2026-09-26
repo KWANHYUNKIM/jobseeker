@@ -324,6 +324,102 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/361706",
+      "title": "[헤렌/공비서] 시니어 프론트엔드 개발자 (7년차 ~)",
+      "site": "wanted",
+      "verdict": "경력 7년 이상, 서울 성동구. 공비서 웹의 **시니어 프론트엔드**로, 3~6년 공고(336266)와 달리 **아키텍처·기술 방향을 정하는 자리**다. 업무는 Next.js SSR 아키텍처와 중장기 기술 방향, **렌더링 전략·상태 관리·모듈 구조 결정 주도와 근거 문서화**, 기획·정책 리뷰부터 참여, 대규모 트래픽 **성능 목표 정의**, 디자인 시스템 설계·운영, WebView 브릿지·Universal Link·APNs 연동 설계, Sentry·Core Web Vitals 관리, **AI 도구 활용 방식·검증 기준 정립과 AI 코드 리뷰어 파이프라인 고도화**, 설계·코드 리뷰 문화. 필수는 FE 7년 이상, **기술 리딩 3년 이상**, React 원리(Fiber 까지), 브라우저 렌더링·이벤트 루프·네트워크, SSR/SSG/ISR·하이드레이션 최적화, TS 조건부 타입·타입 가드, 장기 운영·장애 대응, 기술 부채 우선순위 조율, 기획 참여, AI 워크플로우 정의·팀 전파, 수치로 설득. 우대는 뷰티·예약 도메인, DAU 1만+ B2C, 예약·결제·매출 B2B 흐름, A/B·퍼널, **대규모 마이그레이션(라우터 전환 등)**, 모노레포, **번들 최적화·코드 스플리팅**, 테스트 전략, 디자인 시스템, CI/CD, 채용·온보딩. 전형: 서류 ＞ 컬쳐핏 설문조사 ＞ 대면 인터뷰 ＞ 최종 컬쳐핏(CEO·CTO) ＞ 최종 합격, 수습 3개월(급여 100%). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "FE 7년 이상",
+          "기술 리딩 3년 이상",
+          "React·브라우저 원리",
+          "SSR/SSG/ISR·하이드레이션",
+          "장애·성능 주도",
+          "AI 워크플로우 팀 전파"
+        ],
+        "can_learn": [
+          "라우터 전환 마이그레이션",
+          "모노레포",
+          "예약·결제 B2B 흐름"
+        ]
+      },
+      "study": [
+        {
+          "topic": "기술 결정을 남기는 법 — ADR",
+          "from": "task",
+          "quote": "• 렌더링 전략·상태 관리·모듈 구조 등 핵심 기술 의사결정 주도 및 근거 문서화",
+          "priority": "core",
+          "why": "주요업무가 결정 주도와 '근거 문서화' 를 함께 적고, 필수에 '본인의 기술 결정을 수치·자료로 설명하고 이해관계자를 설득' 이 있다.",
+          "gap_check": "'Recoil 을 계속 쓸지 Zustand/Jotai 로 옮길지'(공고 기술 스택이 Recoil·Context 에 Zustand/Jotai 경험자 환영) 같은 결정을 문서로 남길 때 무엇(맥락·선택지·결정·결과·되돌리는 조건)을 적어야 1년 뒤 새 팀원이 이해하고, 결정을 뒤집을 때 기존 기록은 어떻게 처리하는가?",
+          "drill": "ADR 사이트의 템플릿 중 하나로 '공비서 웹 전역 상태 관리 선택' ADR 을 쓴다 — 번들 크기·학습 비용·마이그레이션 범위를 수치로 비교한 표를 넣고, 거절된 선택지와 이유도 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Architectural Decision Records (ADRs)",
+              "url": "https://adr.github.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Pages Router → App Router 마이그레이션 계획",
+          "from": "preference",
+          "quote": "• 대규모 마이그레이션(프레임워크 버전 업, 라우터 전환, 레거시 정리 등)을 주도한 경험",
+          "priority": "core",
+          "why": "우대사항이고 같은 회사 3~6년 공고 기술 스택이 'Next.js (Page Router)' 다 — 라우터 전환은 곧 닥칠 수 있는 대규모 작업이다.",
+          "gap_check": "Pages Router 에서 App Router 로 옮길 때 한 번에 바꾸지 않고 두 라우터를 함께 두며 페이지 단위로 옮길 수 있는 이유는 무엇이고, getServerSideProps·_app 전역 상태·데이터 패칭 방식은 각각 무엇으로 바뀌며, 서버 컴포넌트로 옮기면 기존 Recoil 같은 클라이언트 상태는 어디에 남는가?",
+          "drill": "Next.js 공식 마이그레이션 가이드를 읽고, Pages Router 샘플 앱의 페이지 하나(데이터 패칭 포함)를 app 디렉터리로 옮긴 뒤 두 라우터가 공존하는지 확인한다. 전체 전환을 '페이지 우선순위·위험·롤백' 으로 나눈 계획서 한 장을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Migrating: App Router — Next.js",
+              "url": "https://nextjs.org/docs/app/guides/migrating/app-router-migration",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "성능 목표 정의 — 성능 예산과 번들",
+          "from": "task",
+          "quote": "• 대규모 트래픽 환경에서의 성능 최적화 목표 정의 및 개선 주도",
+          "priority": "high",
+          "why": "주요업무이고 우대에 'Webpack/Turbopack 번들 최적화, 코드 스플리팅, Tree Shaking' 이 있다.",
+          "gap_check": "'성능을 개선한다' 가 아니라 목표로 정하려면 어떤 지표(LCP·INP·JS 번들 크기)에 어떤 예산을 걸고 CI 에서 넘으면 막을지 무엇으로 정하며, 예약 캘린더 같은 무거운 컴포넌트를 동적 import 로 나누면 첫 로딩과 상호작용 사이에 무엇을 맞바꾸는가?",
+          "drill": "web.dev 성능 예산 글을 읽고 공비서 핵심 페이지 세 곳의 예산(LCP·INP·JS KB)을 정한다. 샘플 앱에 번들 분석을 붙여 가장 큰 모듈을 찾고 동적 import 로 나눈 전후 번들 크기와 LCP 를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Performance budgets 101 — web.dev",
+              "url": "https://web.dev/articles/performance-budgets-101",
+              "kind": "docs"
+            },
+            {
+              "title": "Guides: Package Bundling — Next.js",
+              "url": "https://nextjs.org/docs/app/guides/package-bundling",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 코드 리뷰어 파이프라인과 검증 기준",
+          "from": "task",
+          "quote": "• 설계 리뷰·코드 리뷰 문화 운영, AI 코드 리뷰어 파이프라인 고도화",
+          "priority": "high",
+          "why": "주요업무이고 회사 공고가 '모든 코드는 PR 단위 리뷰를 거치며, 그 1차를 직접 세팅한 AI 리뷰어가 수행' 한다고 적는다(회사 브리핑).",
+          "gap_check": "AI 리뷰어가 PR 에 남기는 지적 가운데 무엇(스타일·명백한 버그·테스트 누락)은 믿고 자동 반영하고 무엇(설계 판단·도메인 규칙·보안)은 사람이 반드시 보게 하며, AI 리뷰어가 놓친 버그가 배포됐을 때 무엇(프롬프트·체크리스트)을 고쳐 재발을 막는가?",
+          "drill": "Claude Code GitHub Actions 문서를 따라 연습 저장소 PR 에 AI 리뷰를 붙이고, 프로젝트 규칙 파일에 '예약 시각은 매장 시간대로 표시' 같은 도메인 규칙을 넣는다. 규칙을 어긴 PR 을 올려 지적되는지 확인하고, 사람 리뷰 필수 항목 체크리스트를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Claude Code GitHub Actions",
+              "url": "https://code.claude.com/docs/en/github-actions",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
