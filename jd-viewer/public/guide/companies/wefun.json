@@ -212,5 +212,130 @@
     "jobkorea·사람인 백엔드·QA 게시는 본문이 이미지라 OCR 로 일부만 읽힌다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/382962",
+      "title": "프론트엔드 개발자 (React)",
+      "site": "wanted",
+      "verdict": "경력 5-10년, 서울 강남구. 위펀 웹 서비스(랜딩 페이지부터 **기업용 관리자 페이지**까지, 신규·기존)를 개발·고도화하는 자리다. 업무는 **서비스 신청–주문–결제 전환 구간 UX 개선과 데이터 기반 실험(가설 수립/검증)**, 디자인 시스템 활용·개선, 사용자 행동 데이터·시스템 로그 수집 기반과 장애 대응, 기술 부채 개선과 코드 리뷰. 필수가 여덟 줄로 구체적이다 — 웹 프론트엔드 5년 이상, React·Next.js 제품 개발·운영, ES6+·HTML5·CSS3·TypeScript 실무, React 3년 이상과 컴포넌트 설계·상태 관리, **웹 표준·시맨틱 마크업·접근성·크로스 브라우징·반응형**, **브라우저 렌더링·네트워크 이해와 성능 진단**, Git 협업, Webpack/Babel 빌드·배포. 우대는 초기 세팅부터 배포, 이벤트 설계·퍼널 분석·Heatmap, Sentry, Lighthouse·Core Web Vitals, Jest·Vitest, HR·전자결재·ERP 등 B2B 플랫폼, Storybook, Nx·Turborepo 모노레포, Scrum, 반복 업무 자동화, 지식 공유. 전형: 서류접수 - **코딩테스트(과제)** - 실무면접 - 컬처핏면접 - 레퍼런스체크 or 2차면접 - 처우협의 - 입사. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "웹 프론트엔드 5년 이상",
+          "React 3년 이상·Next.js",
+          "TypeScript",
+          "웹 표준·접근성·반응형",
+          "렌더링·네트워크 성능 진단",
+          "Webpack/Babel 빌드"
+        ],
+        "can_learn": [
+          "퍼널 분석·이벤트 설계",
+          "Sentry",
+          "Vitest·Jest",
+          "Storybook·모노레포"
+        ]
+      },
+      "study": [
+        {
+          "topic": "신청–주문–결제 퍼널 — 이벤트 설계와 실험",
+          "from": "task",
+          "quote": "• 서비스 신청–주문–결제 ​등 핵심 ​전환 ​구간의 UX를 ​개선하며, ​데이터 ​기반 실험(가설 수립/검증)에 ​참여해요.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '이벤트 설계, 퍼널 분석, Heatmap' 이 있다. 회사 브리핑대로 매출이 기업 고객의 구독 신청에서 나온다.",
+          "gap_check": "'간식 구독 견적 요청 → 상품 구성 → 주문 → 결제' 퍼널에서 각 단계 이벤트를 어떤 이름·속성(고객사 규모, 선택한 서비스)으로 남겨야 이탈 지점을 쪼개 볼 수 있고, 결제 버튼 문구를 바꾸는 A/B 실험에서 전환율 차이가 우연이 아닌지 보려면 무엇(표본 수·실험 기간)을 먼저 정하는가?",
+          "drill": "GA4 권장 이벤트(begin_checkout·add_payment_info·purchase)를 참고해 위펀 신청 흐름의 이벤트 명세표(이름·발생 시점·속성)를 만들고, Next.js 가짜 신청 화면에 붙여 로컬에서 이벤트가 순서대로 찍히는지 확인한다. PostHog 퍼널 문서로 단계별 전환율을 보는 방법을 정리한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Recommended events — Google Analytics",
+              "url": "https://developers.google.com/analytics/devguides/collection/ga4/reference/events",
+              "kind": "docs"
+            },
+            {
+              "title": "Funnels — PostHog Docs",
+              "url": "https://posthog.com/docs/product-analytics/funnels",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "접근성과 시맨틱 마크업 — 관리자 페이지의 폼과 표",
+          "from": "qualification",
+          "quote": "• 웹 표준, 시맨틱 마크업, 접근성, 크로스 브라우징, 반응형 웹을 실무에서 적용해 본 분.",
+          "priority": "core",
+          "why": "필수 자격요건이다. 주요업무에 '기업용 관리자 페이지' 가 있다 — 인사·총무 담당자가 긴 표와 폼을 키보드로 다룬다.",
+          "gap_check": "div 에 onClick 을 붙인 버튼과 button 요소는 키보드·스크린리더에서 무엇이 다르고, 모달을 열었을 때 초점이 어디로 가서 닫힌 뒤 어디로 돌아와야 하며, 정렬 가능한 표의 머리글에는 무엇(aria-sort)을 붙이는가?",
+          "drill": "관리자 페이지의 '주문 내역 표 + 수정 모달' 을 만들고, 마우스 없이 Tab·Enter·Esc 만으로 정렬·수정·닫기가 되는지 확인한다. ARIA APG 의 Dialog·Sortable Table 예제와 비교해 빠진 속성을 채운다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "ARIA Authoring Practices Guide — W3C WAI",
+              "url": "https://www.w3.org/WAI/ARIA/apg/",
+              "kind": "docs"
+            },
+            {
+              "title": "Accessibility on the web — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "랜딩 페이지 성능 — LCP 를 쪼개 보기",
+          "from": "qualification",
+          "quote": "• 브라우저 렌더링 과정과 네트워크 통신을 이해하고 기본적인 성능 이슈를 진단·개선할 수 있는 분.",
+          "priority": "high",
+          "why": "필수 자격요건이고 우대에 Lighthouse·Core Web Vitals 가 있다. 주요업무가 '랜딩 페이지부터' 시작한다 — 광고로 들어온 기업 담당자가 처음 보는 화면이다.",
+          "gap_check": "랜딩 페이지 LCP 가 4초일 때 그 시간을 TTFB·리소스 로드 지연·리소스 로드 시간·렌더 지연 네 조각으로 나누면 각각 무엇(서버 응답, 늦게 발견되는 히어로 이미지, 큰 이미지, 렌더 차단 JS)이 원인이고, Next.js 에서 히어로 이미지에 무엇(priority·크기 지정)을 해야 하는가?",
+          "drill": "큰 히어로 이미지와 무거운 스크립트를 가진 가짜 랜딩 페이지를 Next.js 로 만들고, Lighthouse 와 Chrome 성능 패널로 LCP 를 네 조각으로 기록한 뒤 이미지 최적화·스크립트 지연 로드를 하나씩 적용하며 변화를 표로 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Optimize Largest Contentful Paint — web.dev",
+              "url": "https://web.dev/articles/optimize-lcp",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "운영 중 오류 잡기 — Sentry",
+          "from": "preference",
+          "quote": "• Sentry 같은 모니터링/버그 트래킹 도구를 활용해 문제를 진단하고 해결해 보신 분.",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무에 '시스템 로그를 수집·분석하는 기반을 만들고, 장애 대응에 기여' 가 있다.",
+          "gap_check": "결제 단계에서만 드물게 나는 오류를 재현하지 못할 때 Sentry 이벤트에 무엇(릴리스 버전·소스맵·사용자/고객사 태그·직전 행동 breadcrumb)이 있어야 원인을 좁힐 수 있고, 고객사 담당자 개인정보는 어떻게 빼는가?",
+          "drill": "React 앱에 Sentry SDK 를 붙이고 결제 버튼에서 일부러 오류를 던져, 소스맵이 있을 때와 없을 때 스택 트레이스를 비교한다. beforeSend 로 이메일·전화번호를 지우는 처리를 넣고 이벤트에서 사라졌는지 확인한다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "React — Sentry for React",
+              "url": "https://docs.sentry.io/platforms/javascript/guides/react/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "코딩테스트(과제) 대비 — 테스트가 있는 컴포넌트",
+          "from": "preference",
+          "quote": "• 단위 테스트(Jest, Vitest 등)로 코드 신뢰성을 높여 보신 분.",
+          "priority": "high",
+          "why": "전형 둘째 단계가 코딩테스트(과제)이고 우대에 단위 테스트가 있다. 과제는 동작뿐 아니라 구조·테스트까지 보는 경우가 많다.",
+          "gap_check": "'상품 수량을 바꾸면 합계와 배송비(일정 금액 이상 무료)가 다시 계산되는 장바구니' 를 과제로 받았을 때 계산 로직을 컴포넌트에서 떼어 순수 함수로 두면 테스트가 어떻게 쉬워지고, 사용자 관점 테스트는 무엇(역할·라벨로 요소 찾기)으로 쓰는가?",
+          "drill": "위 장바구니를 React·TypeScript 로 만들고 계산 함수는 Vitest 단위 테스트로, 수량 변경 흐름은 React Testing Library 로 테스트한다. README 에 설계 선택과 한계를 적어 과제 제출물 형식으로 마무리한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Getting Started — Vitest",
+              "url": "https://vitest.dev/guide/",
+              "kind": "docs"
+            },
+            {
+              "title": "React Testing Library",
+              "url": "https://testing-library.com/docs/react-testing-library/intro/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
