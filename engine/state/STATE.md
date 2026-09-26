@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**ABEJA — 확장 2(2026-09-26): 증류 도메인에 `distillation-microbatch-interleave`(결정 6). 두 도메인 모두 기능. 다음은 완주 판정 — 컨설팅·Insight for Retail 수익원은 도메인이 없다(1회차: 사이트맵 2025~2026 114편 제목에 Platform·Retail 0). 2회차: 2022~2024 사이트맵 제목 또는 speakerdeck abeja 를 보고 없으면 hold. 대기 0/3 — 그 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST(hold)·LayerX 는 in_progress.**
+**ABEJA — hold(2026-09-26, 도메인 2 · 기능 2). 컨설팅·Retail 수익원은 두 번 찾아 없음 → hold_reason, in_progress 유지. 다음은 `--gaps` 가 가리키는 후보 조사(큐 0/3 — 3순위). 84번째에서 미판정·탈락 목록은 QUEUE '확인해 둔 후보' 참고. 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증, Findy ↔ YOUTRUST 추천, Nature ↔ LayerX AI 리뷰. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
 
 
 
@@ -371,6 +371,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 - **SMS 헬스케어·시니어·해외 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 156편 제목 · speakerdeck sms_tech 21건). 그쪽 구조 글이 새로 나오면 다시.
 - **코네히토 관공서 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 102편 제목 · note connehito_blog). 관공서 대상 개발 글이 새로 나오면 다시.
 - **YOUTRUST SALES·INSIGHT 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 193편 제목 · speakerdeck youtrust). 그쪽 구조 글이 새로 나오면 다시.
+- **ABEJA 컨설팅·인재 육성·Insight for Retail 수익원** — 2026-09-26 두 번 찾아 없음(tech 사이트맵 2025~2026 114편 · 2022~2024 130편 제목). 그쪽 구조 글이 새로 나오면 다시.
 
 - **zulip** — 2026-09-26 없음 1회째. `blog.zulip.com/rss/` 09-07 이후는 09-21 12.3 보안 릴리스(릴리스 노트). 이전 글 후보: 04-27 Zulip 12.0.
 - **zig** — 2026-09-26 없음 1회째. 피드 둘: `ziglang.org/devlog/index.xml`(마지막 08-27 ArrayList 포인터 안정성), `ziglang.org/news/index.xml`(06-16). 이전 글 후보: **06-30 패키지 관리를 컴파일러에서 빌드 시스템으로 옮김**, 05-26 빌드 시스템 재작업, 08-27 포인터 안정성(결정·대가가 있을 수 있다).

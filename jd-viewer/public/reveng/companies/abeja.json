@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "기타",
   "status": "in_progress",
+  "hold_reason": "수익원 '컨설팅 · 인재 육성 · Insight for Retail' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — tech-blog.abeja.asia 2025~2026 사이트맵 114편 제목 / 2022~2024 사이트맵 130편 제목에 Insight·Retail·점포·거버넌스·컨설팅·인재 육성 글 없음 — 블로그가 LLM 연구 중심). 엔터프라이즈 플랫폼 수익원은 의료 매핑 도메인에 inferred 로 이었다. 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 그쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "abejainc.com",
   "one_liner": "엔터프라이즈 AI 플랫폼 ABEJA — 국책 사업으로 자체 LLM 을 만들며 파이프라인 병렬 증류를 직접 구현하고, 병원마다 제각각인 검사 마스터를 표준 코드 JLAC11 에 잇는 의료 LLM 유스케이스를 검증한다",
@@ -782,9 +783,9 @@
   ],
   "open_questions": [
     "과금 방식·매출 비중을 1차 자료로 확인하지 못했다.",
-    "ABEJA Platform·Insight for Retail·컨설팅의 기술 글은 아직 못 찾았다 — 블로그가 LLM 연구 중심이다.",
     "의료 매핑을 엔터프라이즈 플랫폼 수익원에 이은 것은 inferred.",
-    "Reasoning 모델 공개(`geniac2-qwen25-32b-reasoning-v1.0`)·μP 하이퍼파라미터(`mup-qwen2_5-202505`)·Agentic RL(`geniac3-agentic-rl-process`)·Cloud Composer Redis OOM 대응(`managed-airflow-recovery-202608`)이 있다."
+    "Reasoning 모델 공개(`geniac2-qwen25-32b-reasoning-v1.0`)·μP 하이퍼파라미터(`mup-qwen2_5-202505`)·Agentic RL(`geniac3-agentic-rl-process`)·Cloud Composer Redis OOM 대응(`managed-airflow-recovery-202608`)이 있다.",
+    "ABEJA Platform·Insight for Retail·컨설팅의 기술 글은 2026-09-26 두 번(2022~2026 사이트맵 244편 제목) 찾아 없었다 — hold_reason 참고."
   ],
   "sources": [
     {

@@ -1556,3 +1556,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ABEJA 증류 pipeline parallel
 
 - 증류 글 전문으로 `distillation-microbatch-interleave`(결정 6 — 최종층 soft target·자체 구현·micro batch 교대·송수신 두 벌·학생만 backward·OOM 판정). global batch 64 OOM → 1024 통과. 본가가 곧 고침.
+
+## 2026-09-26 ABEJA 완주 판정 — 컨설팅·Retail hold
+
+- 2회차: 2022~2024 사이트맵 130편 제목 0건(1회차 2025~2026 114편). hold_reason 추가. 이번 회차에 hold 가 8곳으로 늘었다 — 대부분 '주력 1 + 부수 사업' 구조에서 부수 사업의 기술 글이 없는 경우.
