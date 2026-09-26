@@ -511,12 +511,13 @@
       "slug": "hyundai-motor",
       "name": "현대자동차",
       "aliases": [
-        "현대자동차"
+        "현대자동차",
+        "현대자동차그룹"
       ],
-      "status": "done",
+      "status": "in_progress",
       "postings": 6,
       "study_items": 18,
-      "updated_at": "2026-09-26"
+      "updated_at": "2026-09-27"
     },
     {
       "slug": "naverwebtoon",

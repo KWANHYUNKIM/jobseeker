@@ -3,14 +3,15 @@
   "name": "현대자동차",
   "name_en": "Hyundai Motor Company",
   "aliases": [
-    "현대자동차"
+    "현대자동차",
+    "현대자동차그룹"
   ],
-  "status": "done",
-  "updated_at": "2026-09-26",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
   "site": "hyundai.com",
   "one_liner": "완성차 회사 — 모집중 개발 공고는 차량 자체보다 로보틱스랩·제조로보틱스(휴머노이드·모바일로봇)와 보안(차량 사이버보안·사내 정보보호) 쪽이다",
   "company": {
-    "business": "현대자동차 공식 웹사이트는 차량 정보·브랜드 비전·클린 모빌리티·지속가능성을 소개하고, 메뉴에 모델·IR 정보·해외사업망과 '미래 모빌리티 > 로보틱스' 를 둔다. 첫 화면은 Pleos·Pleos Connect 의 OTA 업데이트·AI 기반 경험·커넥티드 서비스를 소개한다. IR 페이지는 2026년 2분기 실적발표와 감사보고서를 PDF 로 제공한다(수치는 읽지 않았다). 이 데이터에서 본문이 있는 모집중 공고는 사람인 6건 — 로보틱스랩(Perceptive AI·모바일로봇 전장), 제조로보틱스(휴머노이드 로봇 운영 솔루션), 차량 사이버보안, 통합보안(정보보호 전략·보안점검) — 이고, 캐치 공고 5건은 본문 칸이 비어 있다.",
+    "business": "현대자동차 공식 웹사이트는 차량 정보·브랜드 비전·클린 모빌리티·지속가능성을 소개하고, 메뉴에 모델·IR 정보·해외사업망과 '미래 모빌리티 > 로보틱스' 를 둔다. 첫 화면은 Pleos·Pleos Connect 의 OTA 업데이트·AI 기반 경험·커넥티드 서비스를 소개한다. IR 페이지는 2026년 2분기 실적발표와 감사보고서를 PDF 로 제공한다(수치는 읽지 않았다). 이 데이터에서 본문이 있는 모집중 공고는 사람인 6건 — 로보틱스랩(Perceptive AI·모바일로봇 전장), 제조로보틱스(휴머노이드 로봇 운영 솔루션), 차량 사이버보안, 통합보안(정보보호 전략·보안점검) — 이고, 캐치 공고 5건은 본문 칸이 비어 있다. 원티드는 같은 회사를 '현대자동차그룹 (HYUNDAI)' 표기로 올린다 — 모집중 5건(AVP 셔클 Data Engineer·Infra Engineer, SDF 데이터 아키텍트, 로보틱스랩 Bi-manipulation, 통합보안 Service Security Engineer)이고, 통합보안 공고는 '현대자동차에서 개발되는 모든 Web, API, Mobile App 서비스' 를 맡는다고 적는다. AVP 공고 머리말은 조직이 수요 응답 교통 '셔클'(MaaS) 플랫폼의 기획·개발·운영·사업을 직접 한다고 적는다.",
     "business_confidence": "confirmed",
     "business_sources": [
       {
@@ -29,6 +30,16 @@
         "title": "[로보틱스랩] Perceptive AI 개발",
         "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55022478&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=12594526-3409-4b8f-9fd5-75d092a64e50",
         "publisher": "사람인"
+      },
+      {
+        "title": "[통합보안] Service Security Engineer - 애플리케이션 보안",
+        "url": "https://www.wanted.co.kr/wd/387496",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[AVP] 모빌리티 서비스 Data Engineer",
+        "url": "https://www.wanted.co.kr/wd/387545",
+        "publisher": "원티드"
       }
     ],
     "scale": [],
