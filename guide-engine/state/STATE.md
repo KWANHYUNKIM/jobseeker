@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **175건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **176건**.
+직전 회차: ✅ `[TW Catalog] Staff Back-end Engineer`(8178865) 3항목 — **베이징**, TW Engineering. 제목 Catalog vs 팀 소개 마케팅 플랫폼 어긋남(open_questions).
 직전 회차: ✅ `Staff System Engineer`(8093677) 3항목 — **벵갈루루**, SLM 미세조정·엣지 추론·에이전트 운영 플랫폼(범위 넓음, 팀 불명). `--gaps` 미완 17건.
 직전 회차: ✅ `Staff Software Engineer, Ads`(8075427) 3항목 — **시애틀**, 광고 데이터 플랫폼(집계·정산·실시간 서빙·셀프서비스), 급여 '$164/year' K 누락 표기.
 직전 회차: ✅ `Staff Software Engineer`(8070738) 3항목 — **마운틴뷰/시애틀**, Resource Fabric(Resource Manager·이벤트 기반 자원 관리·데이터 거버넌스), $152K~$282K.

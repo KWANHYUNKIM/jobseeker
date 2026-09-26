@@ -17825,6 +17825,99 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8178865",
+      "title": "[TW Catalog] Staff Back-end Engineer",
+      "site": "ats",
+      "verdict": "⚠️ 한국이 아니라 중국 베이징 근무다. 대만 핵심 사업 전담 엔지니어링 조직(TW Engineering)의 스태프 백엔드로, 분산 시스템·웹 서비스·Java 7년 이상을 요구한다. ⚠️ 제목은 '[TW Catalog]' 인데 본문의 팀 소개는 검색 광고·제휴·디스플레이 타기팅·CRM·오디언스·푸시 마케팅 같은 마케팅 플랫폼을 나열한다 — 카탈로그는 우대사항('Catalog/Product management system')에서만 나온다. 중국·한국의 제품·기술팀과 긴밀히 일한다고 적혀 있다. 우대에 LLM 기반 애플리케이션 구축 경험이 '큰 이점'으로 있다.",
+      "fit": {
+        "must_have": [
+          "대규모 분산 시스템·웹 서비스 소프트웨어 개발·아키텍처 7년 이상·Java",
+          "고동시성·고가용·고확장 시스템",
+          "분산 시스템·MSA·메시지 큐·캐시·DB"
+        ],
+        "can_learn": [
+          "LLM 기반 애플리케이션(우대)",
+          "카탈로그/상품 관리 시스템·빅데이터 처리(우대)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "상품 카탈로그 관리 시스템",
+          "from": "task",
+          "quote": "Experienced in Catalog/Product management system and big data processing skills",
+          "priority": "core",
+          "why": "카탈로그/상품 관리 시스템과 빅데이터 처리 경험이 우대사항이고, 제목이 TW Catalog 다.",
+          "gap_check": "같은 상품이 여러 판매자·여러 표기로 들어올 때 하나의 상품으로 묶는(매칭·병합) 기준은 무엇이고, 병합이 잘못됐을 때 되돌릴 수 있게 데이터를 어떻게 남기는가?",
+          "drill": "가상 상품 데이터(제목·브랜드·규격 표기가 다른 중복 포함)로 규칙 기반 + 텍스트 유사도 매칭을 만들고, 병합 이력(누가·언제·무엇을 합쳤나)을 남겨 되돌리기를 구현한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "고동시성·고가용 백엔드 — 큐·캐시·DB",
+          "from": "qualification",
+          "quote": "Experienced in designing and implementing high-concurrency, high-availability and high-scalability systems",
+          "priority": "core",
+          "why": "고동시성·고가용·고확장 시스템 설계·구현 경험과 메시지 큐·캐시·DB 등 핵심 백엔드 지식이 기본 자격이다.",
+          "gap_check": "상품 가격·재고 변경이 초당 수천 건 들어올 때 캐시와 DB 의 값이 어긋나는 경우는 언제이고, 캐시 무효화를 메시지 큐 이벤트로 할 때 순서 뒤바뀜은 어떻게 막는가?",
+          "drill": "상품 조회 API 에 Redis 캐시를 두고, 가격 변경을 Kafka 이벤트로 받아 무효화하되 상품 ID 파티션 키와 버전 번호로 오래된 이벤트를 무시하게 만든 뒤 동시 변경 부하에서 불일치가 남는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Redis Documentation",
+              "url": "https://redis.io/docs/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Kafka Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 기반 애플리케이션",
+          "from": "task",
+          "quote": "Experience in building application on basis of LLM capabilities is a big plus",
+          "priority": "high",
+          "why": "LLM 기능을 바탕으로 애플리케이션을 만든 경험이 우대사항에서 '큰 이점'으로 적혀 있다.",
+          "gap_check": "카탈로그 작업(상품 속성 추출·표기 정규화)에 LLM 을 쓸 때 출력 형식을 어떻게 강제하고, 틀린 속성이 운영 데이터로 들어가기 전에 무엇으로 걸러내는가?",
+          "drill": "가상 상품 설명에서 LLM 으로 속성(브랜드·용량·색상)을 JSON 스키마로 추출하고, 스키마 검증·신뢰도 낮은 결과는 사람 검토 대기열로 보내는 흐름을 만든다. RAG 논문으로 외부 근거를 붙이는 방법도 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Lewis et al. — Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+              "url": "https://arxiv.org/abs/2005.11401",
+              "kind": "paper"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "상품 매칭 + LLM 속성 추출 파이프라인",
+          "why": "우대사항의 두 줄(카탈로그 관리·LLM 애플리케이션)을 한 저장소로 묶어 보여 준다.",
+          "effort": "2~3일"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차 문단이 들어오지 않았다.",
+        "expect": [
+          "상품 매칭·병합",
+          "캐시 무효화 순서",
+          "LLM 출력 검증",
+          "아키텍처 로드맵",
+          "중국·한국 팀 협업"
+        ],
+        "sources": [
+          {
+            "title": "[TW Catalog] Staff Back-end Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8178865",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -17864,6 +17957,7 @@
     "gh 8122290 제목의 'Gowri' 가 무엇(팀·시스템·사람)인지 공고 본문에 설명이 없다.",
     "gh 8171556(벵갈루루)은 제목이 'Staff Engineer - Cloud Backend Engineering' 인데 본문은 'Senior Staff Backend Engineer - Cloud Infrastructure' 라고 적는다 — 실제 직급을 공고로 알 수 없다.",
     "gh 8187428(Staff Robotics System Engineer)은 크롤 데이터 세 칸에 우대사항만 들어왔다 — 주요업무·기본 자격은 공고 전문(full_jd)에서만 읽힌다.",
-    "gh 8176234(벵갈루루)는 제목이 'Staff Site Reliability Engineer' 인데 본문은 보안 엔지니어링(민감 데이터 플랫폼) 직무를 설명하고 자격요건은 SRE 로 쓰여 있다 — 실제 직무를 공고로 알 수 없다."
+    "gh 8176234(벵갈루루)는 제목이 'Staff Site Reliability Engineer' 인데 본문은 보안 엔지니어링(민감 데이터 플랫폼) 직무를 설명하고 자격요건은 SRE 로 쓰여 있다 — 실제 직무를 공고로 알 수 없다.",
+    "gh 8178865(베이징)은 제목이 '[TW Catalog]' 인데 팀 소개는 마케팅 플랫폼(검색 광고·CRM 등)을 나열한다 — 실제로 카탈로그 팀인지 공고로 알 수 없다."
   ]
 }
