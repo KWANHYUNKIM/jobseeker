@@ -984,3 +984,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 electric 재방문
 
 - 블로그 마지막 글이 08-11(Databricks 합류). 09-07 이후 새 글 없음. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 ente 재방문 → 확장
+
+- 09-07 이후 7편. 09-09 "Ente's ML is now faster" 에서 결정 7개로 `gpu-without-the-bounce` 추가(features 3→4). 배치 1 고정·공통 부분집합·정답지 유지의 대가는 해석 표시.
