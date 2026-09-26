@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — rightmove 재방문은 새 자료 없음(1회째). 09-06 묶음 진행 중.**
+**없다 — scylladb 재방문에서 확장(`a-stream-per-call`, 기존 도메인)을 마쳤다. 09-06 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **scylladb** — 2026-09-26 Seastar QUIC(09-14, 학생 프로젝트·운영 전) → `a-stream-per-call`, 기존 shared-nothing 도메인. C# 드라이버(09-22)는 다음. `www.scylladb.com/feed/` 로 목록, 본문은 r.jina.ai(직접 curl 은 빈 페이지).
 - **rightmove** — 2026-09-26 없음 1회째. `rightmove.blog/feed/` 최신이 06-24 디자인 글, 기술 글은 2025-09 이후 없다. 출처에 없는 Policy as Code(2025-08)는 이전 글 쓰기 답을 받으면 후보.
 - **razorpay** — 2026-09-26 UPI Switch Kafka 5년(09-07) → `portability-hid-the-knobs`, 새 도메인. Kafka 비교 재료에 더할 만하다(연결·파티션이 처리량보다 먼저 한계). `engineering.razorpay.com/feed` 에 본문이 실려 온다.
 - **ramp** — 2026-09-26 OCA 당직 에이전트(09-09) → `detours-not-gates`, 새 도메인. `builders.ramp.com/rss.xml` 이 curl 로 온다. 09-06 이후 새 글은 이것 하나.
