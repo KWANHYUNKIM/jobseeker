@@ -644,9 +644,9 @@
       "country": "KR",
       "category": "커머스",
       "status": "done",
-      "features_done": 5,
+      "features_done": 6,
       "one_liner": "음식이 식기 전에 닿아야 하는 물류를 앱으로 만든 회사",
-      "updated_at": "2026-09-04",
+      "updated_at": "2026-09-26",
       "domain": "baemin.com"
     },
     {
@@ -2876,7 +2876,8 @@
     "사진 한 장을 요청마다 다시 그린다",
     "검색 엔진 안에서 순위를 매긴다",
     "에이전트가 사람 대신 들어간다",
-    "AI 가 개발 과정에 들어온다"
+    "AI 가 개발 과정에 들어온다",
+    "사장님 입점·계약 승인"
   ],
   "countries": {
     "KR": "한국",

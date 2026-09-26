@@ -691,3 +691,7 @@ zerodha.tech 최신 2024-03. 블로그 멈춤. updated_at 만. 1회째. 09-03 �
 ## adyen 재방문 → 확장 (2026-09-26)
 
 09-04 게시 AI 개발 과정 글로 ai-in-sdlc. 결정 7개, 새 도메인 하나. 사이트맵 lastmod 73건 중 엔지니어링 글은 이것 하나.
+
+## baemin 재방문 → 확장 (2026-09-26)
+
+09-23 입점 자동승인 글로 auto-approve. 결정 8개(큐 걷기·Kafka 대신 상태 조정·주기 분리·건 단위 락·Redis vs 조건부 UPDATE vs SKIP LOCKED·폴백 없음·fixedDelay+무작위·클렌징). 새 도메인 사장님 입점·계약 승인.

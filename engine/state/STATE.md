@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — adyen 재방문에서 확장(`ai-in-sdlc`)을 마쳤다. 09-04 묶음 진행 중(다음 baemin·canva …).** uber 의 안 쓴 새 글 셋은 아래.
+**없다 — baemin 재방문에서 확장(`auto-approve`)을 마쳤다. 09-04 묶음 진행 중(다음 canva …).** uber 의 안 쓴 새 글 셋은 아래.
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -324,6 +324,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **baemin** — 2026-09-26 09-04 이후 새 글 여럿. 입점 자동승인(27678, 09-23) → `auto-approve`. 안 쓴 후보: 배치→워크플로(26832, 09-08) · 아키텍처 규칙을 테스트로 강제(26835, 09-07) · 전자계약서 화면 개편(27604). 피드 `techblog.woowahan.com/feed/` 는 **브라우저 UA 가 있어야** 내용이 온다.
 - **adyen** — 2026-09-26 새 글 하나(AI in our development lifecycle, 게시 09-04·수정 09-11) → `ai-in-sdlc`. 새 글 찾기: `adyen.com/sitemap-en.xml` 의 knowledge-hub lastmod(대부분 마케팅 안내서 갱신이라 걸러야 한다), 글의 `datePublished`. `medium.com/feed/adyen` 최신 08-22(OpenRewrite). 본문이 링크한 Architect 설계 글은 아직 안 읽었다.
 - **zerodha** — 2026-09-26 **1회째 없음.** `zerodha.tech/index.xml` 최신이 **2024-03-28** — 엔지니어링 블로그가 멈췄다. CTO 개인 블로그 `nadh.in` 최신 2026-01-30(에세이). 다음 재방문에서도 없으면 `재시도 안 함` 으로.
 - **zalando** — 2026-09-26 새 글 하나(에이전트 신원 브로커, 09-25) → `agent-identity-broker`. 09-01 ZMS 예산 분할(광고 실험)·08-14 에이전틱 엔지니어링 스냅숏·07-24 Flink 이관은 아직 안 읽었다. `engineering.zalando.com/atom.xml` 이 열린다.
