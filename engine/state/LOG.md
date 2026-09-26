@@ -2500,3 +2500,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GVA TECH OLGA 수익원 확인
 
 - 수익원 판정 중 AI 글 6편 본문을 훑다가 평가 글에서 'OLGA 계약 관리 · 관련 계약 자동 연결'을 찾음 → 도메인 추가 · OLGA confirmed. 법률 사무소용 · 인재 소개는 본문에도 이름 없음(첫째 탐색).
+
+## 2026-09-27 GVA TECH 관련 계약 연결
+
+- `7ff1d69682a415` 로 기능 `olga-related-contract-linking`, 결정 6(법무 RAG 평가 결정은 제품명이 없어 inferred).
