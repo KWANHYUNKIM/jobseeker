@@ -181,5 +181,162 @@
     "특화 AI 모델 개발 엔지니어는 캐치·사람인·잡코리아에 같은 제목으로 올라와 있다 — 본문 비교 필요(잡코리아는 본문 칸이 비어 있다)",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572487?ReturnUrl=RecruitInfo",
+      "title": "[NAVER Cloud] 특화 AI 모델 개발 엔지니어 (경력) 채용",
+      "site": "dev",
+      "verdict": "경력 5년 이상(AI/ML 모델 개발 또는 대규모 데이터 엔지니어링). 보안 선행기술 조직이 주관하는 과기정통부·정보통신산업진흥원 「특화 AI 파운데이션 모델 개발(사이버 보안 분야)」 사업에서 **모델 학습 자체보다 그 앞뒤 — 학습 데이터, 학습·검증 환경, 평가 체계** 를 설계·구축하는 자리다(학습 실행은 AI 모델 개발 조직과 협업). 업무는 다섯 — 이기종 보안 데이터(악성코드·트래픽·관제 로그·취약점 정보) 수급·정제·중복제거와 개인정보·보안정보 자동 처리, 라벨 체계와 CPT/SFT/RLVR 단계별 데이터 mixture 설계, Sandbox·Verifier 운영과 대규모 Rollout 오케스트레이션, 벤치마크 평가·데이터 오염 검사·실패 원인 분류, 데이터 규격·계보(Lineage)·통제 환경. 필수는 사전학습/CPT/SFT/RLVR 중 하나 이상의 모델 개발, 데이터를 정제·라벨링해 학습에 넣고 지표로 검증한 경험, Ray·Spark, Python 프로덕션·PyTorch, 데이터 규격·평가 기준 문서화. 공고는 '보안 도메인 경험이 반드시 필요한 것은 아닙니다' 라고 적는다. 전형은 서류 전형(기업문화적합도 검사 및 직무 테스트 포함) → 1차 인터뷰 → 레퍼런스체크 및 2차 인터뷰 → 처우협의 → 최종합격. **접수 2026.09.14 ~ 2026.09.30 (17:00)**, 중복지원 불가, 근무지 분당 그린팩토리.",
+      "fit": {
+        "must_have": [
+          "AI/ML 모델 개발 또는 대규모 데이터 엔지니어링 5년 이상",
+          "사전학습·CPT·SFT·RLVR 중 하나 이상 모델 개발",
+          "데이터 정제·라벨링 → 학습 → 지표 검증 경험",
+          "Ray·Spark 파이프라인",
+          "Python 프로덕션·PyTorch",
+          "데이터 규격·평가 기준 문서화"
+        ],
+        "can_learn": [
+          "보안 도메인(필수 아님)",
+          "Sandbox·Verifier 채점 하네스",
+          "mixture ablation·토크나이저 확장",
+          "데이터 오염 검사",
+          "모델 카드·SBOM·라이선스"
+        ]
+      },
+      "study": [
+        {
+          "topic": "대규모 학습 데이터 정제·중복제거 파이프라인",
+          "from": "task",
+          "quote": "이기종 보안 데이터(악성코드·트래픽·관제 로그·취약점 정보)의 수급·정제·중복제거 및 개인정보·보안정보 자동 처리",
+          "priority": "core",
+          "why": "첫 주요업무이고 자격요건에 '원천 데이터를 수집·정제·중복제거·라벨링하여 학습에 투입하고, 그 결과를 지표로 검증한 경험' 과 Ray·Spark 가 있다.",
+          "gap_check": "관제 로그처럼 거의 같은 줄이 수억 개 반복되는 데이터에서 정확 중복과 근사 중복(MinHash)을 각각 어떻게 제거하고, 로그 안의 IP·계정·개인정보는 학습 전에 무엇으로 걸러 치환하는가?",
+          "drill": "공개 로그·텍스트 표본으로 Ray Data 파이프라인을 만들어 정규화 → 정확 중복 제거 → MinHash 근사 중복 제거 → Presidio 로 개인정보 치환을 돌리고, 단계별 남은 비율을 리포트로 낸다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Deduplicating Training Data Makes Language Models Better",
+              "url": "https://arxiv.org/abs/2107.06499",
+              "kind": "paper"
+            },
+            {
+              "title": "Ray Data",
+              "url": "https://docs.ray.io/en/latest/data/data.html",
+              "kind": "docs"
+            },
+            {
+              "title": "text-dedup",
+              "url": "https://github.com/ChenghaoMou/text-dedup",
+              "kind": "repo"
+            },
+            {
+              "title": "Microsoft Presidio",
+              "url": "https://github.com/microsoft/presidio",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "RLVR 용 Sandbox·Verifier 와 Rollout",
+          "from": "task",
+          "quote": "격리 실행 환경(Sandbox)·검증기(Verifier) 운영 및 대규모 Rollout 오케스트레이션",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 '검증 가능 보상 기반 강화학습(RLVR)' 이, 우대에 'Sandbox·Verifier 기반 학습·검증 파이프라인 또는 자동 채점 하네스 설계·구현 경험' 이 있다.",
+          "gap_check": "보안 과제(예: 로그에서 공격 기법 식별, 취약 코드 수정)를 RLVR 로 학습시키려면 정답을 무엇으로 자동 채점하고, 모델이 만든 코드나 명령을 실행해 채점할 때 격리 환경은 무엇을 막아야 하는가?",
+          "drill": "Tulu 3 논문의 RLVR 부분을 읽고, '주어진 로그에서 MITRE 기법 ID 맞히기' 와 '취약 함수 수정 후 테스트 통과' 두 과제의 verifier 를 만든다. 후자는 컨테이너 안에서 네트워크를 끊고 시간 제한을 걸어 실행한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Tulu 3: Pushing Frontiers in Open Language Model Post-Training",
+              "url": "https://arxiv.org/abs/2411.15124",
+              "kind": "paper"
+            },
+            {
+              "title": "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models",
+              "url": "https://arxiv.org/abs/2402.03300",
+              "kind": "paper"
+            },
+            {
+              "title": "Hugging Face TRL",
+              "url": "https://huggingface.co/docs/trl/index",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "평가 체계와 데이터 오염 검사",
+          "from": "task",
+          "quote": "벤치마크 기반 성능 평가, 데이터 오염(Contamination) 검사, 실패 원인 분류",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'LLM 평가 체계(벤치마크 설계, 데이터 오염 검사, 재현성 확보) 구축 경험' 이 있다.",
+          "gap_check": "공개 보안 벤치마크 문항이 학습 데이터에 섞였는지 n-gram 겹침으로 확인할 때 기준은 어떻게 잡고, 점수가 떨어졌을 때 '데이터 탓' 과 '평가 설정 탓' 을 가르려면 무엇을 고정해야 재현되는가?",
+          "drill": "lm-evaluation-harness 로 작은 모델을 공개 벤치마크에 돌려 점수를 기록하고, 벤치마크 문항 일부를 학습 데이터에 섞은 뒤 n-gram 겹침 검사로 찾아내는 스크립트를 만든다. 실패 문항을 유형별로 분류한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Investigating Data Contamination in Modern Benchmarks for Large Language Models",
+              "url": "https://arxiv.org/abs/2311.09783",
+              "kind": "paper"
+            },
+            {
+              "title": "lm-evaluation-harness",
+              "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "학습 단계별 데이터 mixture 설계",
+          "from": "task",
+          "quote": "위협정보 구조화, 라벨 체계 수립, 학습 단계별(CPT/SFT/RLVR) 데이터 요구사항 및 mixture 설계",
+          "priority": "high",
+          "why": "주요업무이고 우대에 '학습 데이터 혼합 비율(mixture) 설계·ablation 실험, 토크나이저 학습·도메인 어휘 확장 경험' 이 있다.",
+          "gap_check": "보안 도메인 CPT 에서 보안 데이터 비율을 높이면 일반 능력이 떨어지는 것(망각)을 어떻게 재고, 어떤 일반 데이터를 얼마나 섞어 막는가?",
+          "drill": "작은 모델로 보안 텍스트:일반 텍스트 비율 세 가지로 짧게 CPT 를 돌려 보안 과제 점수와 일반 벤치마크 점수를 함께 그리는 ablation 표를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "lm-evaluation-harness",
+              "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+              "kind": "repo"
+            },
+            {
+              "title": "Hugging Face — Model cards",
+              "url": "https://huggingface.co/docs/hub/model-cards",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "정제·중복제거 → verifier 채점 → 오염 검사까지 묶은 '도메인 특화 모델 데이터·평가 하네스' 저장소",
+          "why": "주요업무 다섯 중 넷(데이터·검증 환경·평가·거버넌스)을 한 번에 보여 준다. 공고가 모델 학습 결과와 데이터를 연결해 원인을 추적하는 역량을 강조한다.",
+          "effort": "2~3주"
+        },
+        {
+          "idea": "직접 학습시킨 모델과 그 데이터 설계를 지표로 정리",
+          "why": "자격요건이 모델 개발 경험과 '결과를 지표로 검증한 경험' 이다. 조직 구성원 Talk 가 '모델을 직접 학습시키고 결과를 확인해본 경험' 을 중요하다고 적는다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 전형(기업문화적합도 검사 및 직무 테스트 포함) → 1차 인터뷰 → 레퍼런스체크 및 2차 인터뷰 → 처우협의 → 최종합격(공고 기준, 절차가 추가될 수 있다). 접수 2026.09.14 ~ 2026.09.30 17:00, 중복지원 불가.",
+        "expect": [
+          "직접 학습시킨 모델과 데이터",
+          "데이터 정제·중복제거 규모",
+          "verifier·평가 설계",
+          "유관 조직과 규격 합의"
+        ],
+        "sources": [
+          {
+            "title": "[NAVER Cloud] 특화 AI 모델 개발 엔지니어 (경력) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/572487?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    }
+  ]
 }
