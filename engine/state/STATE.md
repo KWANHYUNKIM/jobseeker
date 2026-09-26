@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**드왕고 교육(`dwango-edu`) — 확장 1(2026-09-26): 교재 기반 도메인에 `materials-platform-university-first`(결정 8). 다음은 확장: '10년 된 앱을 Legacy 에 가두고 한 방향으로 빼낸다' 를 Android 재설계 글(`entry/2026/07/29/110000`, scratchpad `nnn_android.txt` — Step 0~4·진행 가시화 부분을 마저). 수익원 둘은 inferred — 완주 판정 때 학교 법인 관계를 한 번 더 찾는다. 대기 0/3 — 드왕고 교육 뒤 후보 조사. 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
+**드왕고 교육 — 완주(2026-09-26, 도메인 2 · 기능 2, 수익원 inferred). 다음은 `--gaps` 가 가리키는 후보 조사(큐 0/3 — 3순위). 하테나 사이트맵 7~9월로 세고 제목을 본다(82번째에서 9월이 빈 곳 16곳은 미판정). 머니포워드·라쿠스·ENECHANGE(hold)·LayerX 는 in_progress.**
 
 
 

@@ -4,7 +4,7 @@
   "name_en": "Dwango Education (ZEN Study)",
   "country": "JP",
   "category": "기타",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-26",
   "domain": "nnn.dev",
   "one_liner": "N고·ZEN 대학의 학습 플랫폼 ZEN Study — 부채 쌓인 교재 기반을 옛 시스템에 대학을 덧대는 대신 새 시스템으로 대학부터 옮기고, 10년 된 앱은 Legacy 에 가둬 한 방향으로만 빼낸다",
@@ -101,12 +101,14 @@
               "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
               "publisher": "ドワンゴ教育サービス開発者ブログ",
               "date": "2026-07-29",
-              "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'."
+              "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "android-legacy-module-one-way"
+      ]
     }
   ],
   "features": [
@@ -462,6 +464,358 @@
           "summary": "ZEN Study(옛 N予備校, 2026-04 10주년)의 **교재 기반 시스템**(교재 입고 데이터 관리·배포, 학습 진척·채점 관리)과 **교재 입고 시스템**의 2021~2025 변천. 교재는 N·S·R 고교 **고교 필수 교재**와 드왕고 자체 제작 **과외 교재**(대학 입시·크리에이티브·엔터·프로그래밍) 두 종류. 옛 시스템(Rails, 입고는 Jenkins 위 CLI + NAS·Excel)에 기술 부채가 쌓여 2021 개선 프로젝트 — 먼저 떨어져 있던 '시험 문제·채점' 도메인부터 재구축, 교재 기반의 핵심 개념부터 다시 설계, 언어는 도메인 표현력과 미경험자 학습 용이성의 균형으로 **Kotlin + gRPC**. 새 입고 'ZEN Import' 는 백엔드 엔지니어가 앞뒤를 다 만드는 체제라 **TypeScript(React·Vite / NestJS)** 로 통일(4명, TS 경험 없음). 2023 교재 기반 개발 섹션 독립. **ZEN 대학**(2023-06 발표)은 옛 시스템에 대학 코드를 더하는 대신 **개발 중인 새 시스템으로** — 이행 로드맵 **대학 단위 인정 → 고교 필수 → 과외**. 대학 사양에 최적화하지 않고 차이를 추상화해 확장성. 외부 연계 사양 미정이어도 공통 모듈은 먼저. 입고는 폴더를 Storage Gateway→S3 로 올려 검증·동영상 변환·등록을 **작은 task 의 workflow job** 으로, 입고 형식 그대로 **내보내기**로 수정 재입고. 2025-04 개학, 불량 거의 없이 가동; 지금은 가동 중 서비스의 사양을 안 바꾸고 **뒤만 바꾸는** 고교 필수 대응."
         }
       ]
+    },
+    {
+      "key": "android-legacy-module-one-way",
+      "name": "옛 코드를 전부 Legacy 에 넣고, 의존은 Legacy 에서 새 쪽으로만 — 데이터 층부터 빼내며 늘 릴리스할 수 있게 둔다",
+      "domain": "10년 된 앱을 Legacy 에 가두고 한 방향으로 빼낸다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "ZEN Study Android 는 10년 넘게 개발이 이어진 앱이다. RxJava 시절의 흔적으로 **UseCase 가 ViewModel 의 Flow 를 감시**하는 특수한 구성이 남았고, 그 대가가 쌓였다 — 버튼 하나를 누르면 어디서 무엇이 일어나는지 쫓으려면 여러 파일을 오가야 해 **신입의 학습 비용**이 높고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어가 복잡하며, UseCase 가 Fragment 의 수명에 묶여 화면 전환 때 **돌아야 할 처리가 취소**된다.\n\n그렇다고 10년 넘게 돌아온 앱을 한 번에 다시 만드는 것은 현실적이지 않다. 팀은 '돌아가는 코드를 부수지 않고 조금씩 옮긴다' 를 방침으로, 그 길을 **모두가 조금씩 오르는 큰 산**에 비유한다.",
+        "metrics": [
+          {
+            "label": "한 화면의 UseCase",
+            "value": "화면에 따라 십수 개가 독립 Flow 로 병렬 동작(재설계 전)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "label": "이행 단계",
+            "value": "Step 0 준비 → 1 모델 분리 → 2 데이터 층 → 3 UseCase 떼어 내기 → 4 ViewModel 로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "label": "진행 지표",
+            "value": "PR 마다 Legacy · 새 쪽 Kotlin 파일 수와 이행 비율",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "label": "끝나는 시점",
+            "value": "글에 없음 — '아직 오르는 중'",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "이행 중 유혹을 만날 때",
+          "thought": "'Legacy 에 이미 돌아가는 로직이 있으니 새 쪽에서 불러 버리면 빠르지 않나' — **절대 해서는 안 된다.** 새 쪽이 Legacy 를 참조하면 그 코드는 'Legacy 인데 지울 수 없는 토대' 가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+              "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+              "publisher": "ドワンゴ教育サービス開発者ブログ",
+              "date": "2026-07-29",
+              "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+            }
+          ]
+        },
+        {
+          "at": "Step 3 을 마쳤을 때",
+          "thought": "Legacy UseCase 에 남은 책임은 'UI 이벤트를 기점으로 상태를 갱신하며 UseCase 를 부른다' 뿐 — 이미 **ViewModel 이 되어 가는** 상태다. 그러니 그대로 ViewModel 로 옮기면 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+              "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+              "publisher": "ドワンゴ教育サービス開発者ブログ",
+              "date": "2026-07-29",
+              "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+            }
+          ]
+        },
+        {
+          "at": "긴 이행을 버틸 때",
+          "thought": "'언제까지·얼마나 남았나' 를 모르고 오르면 동기가 떨어진다 — **숫자로 보이게** 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+              "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+              "publisher": "ドワンゴ教育サービス開発者ブログ",
+              "date": "2026-07-29",
+              "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Legacy 모듈",
+            "what": "기존 코드를 전부 옮겨 둔 곳. '아직 이행 안 된 옛 구성' 의 표시. 비면 재설계 완료."
+          },
+          {
+            "name": "새 아키텍처 모듈",
+            "what": "domain(중심, 어디에도 의존 안 함) · repository · datasource(Remote API·DataStore·Room·Firebase) · feature."
+          },
+          {
+            "name": "Domain / Data 모델",
+            "what": "앱 안의 개념과 외부 사정(JSON 모양). toDomain() 이 경계."
+          },
+          {
+            "name": "새 UseCase",
+            "what": "operator fun invoke() 로 불리는 호출 전용 인터페이스. ViewModel 을 모른다."
+          },
+          {
+            "name": "이행 지표",
+            "what": "PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율."
+          }
+        ],
+        "invariants": [
+          "의존은 **Legacy → 새 아키텍처 한 방향**만 — 새 쪽이 Legacy 를 참조하는 것은 금지.",
+          "각 단계에서 **늘 빌드·릴리스 가능**한 상태를 유지한다.",
+          "domain 은 **다른 어느 층에도 의존하지 않는다** — repository 인터페이스는 domain 에 둔다.",
+          "UseCase 는 **ViewModel 을 모른다**."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Step 0 — 기존 코드를 전부 Legacy 모듈로 옮기고, 새 쪽에 빈 domain·repository·datasource·feature 모듈을 만든다",
+            "why": "무엇이 옛것이고 무엇이 새것인지 한눈에."
+          },
+          {
+            "step": "Step 1 — API 응답 모양을 화면까지 끌고 다니던 것을 Domain 모델과 Data 모델로 가르고 toDomain() 경계를 둔다",
+            "why": "API 변경이 domain 이후로 번지지 않게. 이후 단계의 전제."
+          },
+          {
+            "step": "Step 2 — 새 쪽에 datasource·repository 를 짓고, Legacy UseCase 가 쓰는 repository 를 새 것으로 바꿔 끼운다",
+            "why": "UI 동작을 안 바꾸고 데이터 층부터."
+          },
+          {
+            "step": "Step 3 — Legacy UseCase 의 처리를 덩어리로 떼어 새 UseCase 로 만들고, Legacy UseCase 는 그것을 부르는 얇은 껍질로",
+            "why": "로직의 옳음을 유지한 채 책임을 옮긴다."
+          },
+          {
+            "step": "Step 4 — '언제 무엇을 부를지' 와 로딩 상태를 ViewModel 로 옮기고 Legacy UseCase 를 해체한다",
+            "why": "제어의 주체를 ViewModel 로, viewModelScope 로."
+          },
+          {
+            "step": "PR 마다 Legacy·새 쪽 파일 수와 이행 비율을 집계한다",
+            "why": "정체·불필요한 Legacy 추가를 검지."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "10년 된 앱을 어떻게 바꾸나?",
+            "chosen": "**한 번에 다시 만드는 대신, 기존 코드를 전부 Legacy 모듈에 격리하고 새 아키텍처로 기능을 조금씩 떼어 낸다.**",
+            "alternatives": [
+              "처음부터 다시 작성"
+            ],
+            "tradeoff": "각 단계에서 **늘 빌드·릴리스 가능**하고 이행한 화면부터 '따라가기 쉬워졌다·테스트 쓰기 쉬워졌다' 는 효과가 온다. 대가 — 이행 중에는 옛·새 구조가 **한 앱 안에 공존**하고 끝나는 시점이 보이지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "question": "Legacy 와 새 쪽의 의존을 어떻게 두나?",
+            "chosen": "**이행 중 Legacy → 새 쪽 의존만 허용하고, 새 쪽 → Legacy 참조는 금지.**",
+            "alternatives": [
+              "양방향 허용(Legacy 의 돌아가는 로직을 새 쪽에서 재사용)"
+            ],
+            "tradeoff": "Legacy 가 새 부품을 쓰며 **단계적으로 대체**되고, Legacy 를 '지울 수 없는 토대' 로 만들지 않는다 — 되돌아가지 않게 하는 제동 장치다. 대가 — 이미 돌아가는 로직이 있어도 새 쪽에 **다시 지어야** 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "question": "어디를 목표로 삼나?",
+            "chosen": "**UseCase 가 ViewModel 을 감시하는 구성을 버리고, 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어는 ViewModel, UseCase 는 invoke() 호출 전용, 로직은 viewModelScope.**",
+            "alternatives": [
+              "지금의 역방향 구성을 다듬는다"
+            ],
+            "tradeoff": "일반적인 MVVM 지식이 통하고, UseCase 단독 테스트가 쉬워지며, Fragment 파기로 인한 **의도치 않은 취소**가 사라진다. 대가 — 멀티 모듈과 DI 도입이라는 구조 변경이 따라온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "question": "인터페이스와 구현을 다른 모듈에 어떻게 잇나?",
+            "chosen": "**의존 객체를 직접 만들어 넘기던 것을 버리고 Dagger Hilt 를 도입 — 인터페이스는 domain, 구현은 repository, 결합은 Hilt 모듈 정의에.**",
+            "alternatives": [
+              "수동 생성·전달 유지"
+            ],
+            "tradeoff": "의존 방향을 **안쪽으로 통일**하면서 모듈을 느슨하게 둔다. 대가 — 팀이 Hilt 를 새로 들여와 익혀야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "question": "무엇부터 옮기나?",
+            "chosen": "**Step 1 모델 분리 → Step 2 데이터 층 → Step 3·4 UI 쪽.**",
+            "alternatives": [
+              "화면 단위로 위에서부터"
+            ],
+            "tradeoff": "모델 분리가 이후 이행의 **전제**이고, 데이터 층은 UI 보다 **부작용이 적어** 독립적으로 옮기기 쉽다 — repository 만 바꿔 끼우면 UI 동작은 그대로다. 대가 — 사용자 눈에 보이는 개선은 **뒤에** 온다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "question": "API 응답 모양을 어떻게 다루나?",
+            "chosen": "**Domain 모델과 Data 모델로 가르고 toDomain() 변환 경계를 둔다 — id 같은 항목은 Int 대신 값 객체.**",
+            "alternatives": [
+              "API 응답을 화면까지 그대로 쓴다"
+            ],
+            "tradeoff": "API 사양 변경이 domain 이후로 **번지지 않고**, 타입 안전성과 도메인 로직의 자리를 얻는다. 대가 — 모델이 둘이 되어 **변환 코드**가 는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "question": "Legacy UseCase 를 언제 없애나?",
+            "chosen": "**곧바로 없애지 않고, 먼저 처리를 새 UseCase 로 떼어 Legacy UseCase 를 '얇은 껍질' 로 만든 뒤, 남은 제어를 ViewModel 로 합친다.**",
+            "alternatives": [
+              "ViewModel 까지 한 번에 다시 작성"
+            ],
+            "tradeoff": "로직의 옳음을 유지한 채 책임을 옮기고, 남은 책임이 ViewModel 과 같다는 것이 **다음 단계의 자연스러운 동기**가 된다. 대가 — 중간에 껍질 UseCase 라는 **과도기 코드**가 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          },
+          {
+            "question": "긴 이행을 어떻게 끌고 가나?",
+            "chosen": "**PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계해 가시화한다.**",
+            "alternatives": [
+              "완료 시점까지 감으로"
+            ],
+            "tradeoff": "목표가 보여 **동기**가 유지되고, 정체나 불필요한 Legacy 파일 추가를 **검지**한다. 대가 — 파일 수는 이행의 질이 아니라 **양**만 잰다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+                "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+                "publisher": "ドワンゴ教育サービス開発者ブログ",
+                "date": "2026-07-29",
+                "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "교재 기반을 대학부터 새 시스템으로 옮긴다(같은 회사의 다른 도메인)",
+          "via": "멈추지 않고 뒤를 바꾸는 이행",
+          "contract": "Android 앱은 Legacy 모듈에서 층 순으로, 교재 기반은 옛 시스템에서 학교 종류 순으로 새 쪽에 옮긴다 — 둘 다 **돌고 있는 것을 멈추지 않는** 이행이다(이 사이트의 해석 — 글끼리 서로 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "한 방향 의존",
+          "question": "이행 중 Legacy 와 새 아키텍처는 어떻게 이어지나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph LG[\"Legacy 모듈\"]\n    LVM[\"ViewModel\"] \n    LUC[\"Legacy UseCase\\nViewModel Flow 감시\"]\n  end\n  subgraph NA[\"새 아키텍처\"]\n    F[\"feature\"] --> DM[\"domain\\n(중심)\"]\n    RP[\"repository\"] --> DM\n    RP --> DS[\"datasource\\nAPI · DataStore · Room · Firebase\"]\n  end\n  LUC -->|허용| DM\n  LUC -->|허용| RP\n  NA -.->|금지| LG"
+        },
+        {
+          "title": "읽기 버튼의 처리가 옮겨 가는 길",
+          "question": "'읽기' 처리 하나는 단계마다 어디에 있나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 전부Legacy: Step 0·1\n  전부Legacy --> repository만새쪽: Step 2 — 바꿔 끼우기\n  repository만새쪽 --> 데이터취득새UseCase: Step 3 — Legacy UseCase 는 얇은 껍질\n  데이터취득새UseCase --> ViewModel이제어: Step 4 — Legacy UseCase 해체\n  ViewModel이제어 --> [*]: Legacy 가 비면 완료"
+        },
+        {
+          "title": "재설계가 멈추는 자리",
+          "question": "이 이행은 어디서 되돌아가거나 멈출 수 있나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"새 쪽이 Legacy 로직을 불러 씀\"] --> B[\"Legacy 가 지울 수 없는 토대가 됨\\n→ 재설계 정지\"]\n  C[\"새 기능을 Legacy 에 추가\"] --> D[\"Legacy 파일 수 증가\\n→ PR 지표로 검지\"]\n  E[\"끝이 안 보임\"] --> F[\"동기 저하\\n→ 이행 비율 가시화\"]\n  G[\"ViewModel 까지 한 번에\"] --> H[\"로직 옳음을 잃을 위험\\n→ 얇은 껍질 단계\"]\n  I[\"Fragment lifecycleScope\"] --> J[\"화면 전환 때 처리 취소(재설계 전)\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "リアーキテクチャという山にみんなで登るために - 10 年ものの Android アプリを壊さずに作り変える -",
+          "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
+          "publisher": "ドワンゴ教育サービス開発者ブログ",
+          "date": "2026-07-29",
+          "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -482,7 +836,7 @@
       "url": "https://blog.nnn.dev/entry/2026/07/29/110000",
       "publisher": "ドワンゴ教育サービス開発者ブログ",
       "date": "2026-07-29",
-      "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'."
+      "summary": "10년 넘은 **ZEN Study Android** 의 단계적 재설계. ViewModel 과 UseCase 의 연계가 RxJava 시절의 흔적으로 특수하다. 한 번에 다시 만들지 않고 **기존 코드를 전부 `Legacy` 모듈에 격리**한 뒤 새 아키텍처로 기능을 떼어 낸다. 의존은 **Legacy → 새 쪽 한 방향만** 허용 — 새 쪽이 Legacy 를 참조하면 Legacy 가 '지울 수 없는 토대' 가 되어 재설계가 멈춘다. 단계: 0 준비 → 1 데이터 모델을 Domain/Data 로 분리 → 2 repository·datasource 이행 → 3 Legacy UseCase 의 처리를 새 UseCase 로 → 4 ViewModel 로. **각 단계에서 늘 빌드·릴리스 가능**을 유지하고, 진행을 가시화한다. 이행한 화면부터 '처리를 따라가기 쉬워졌다·테스트 쓰기 쉬워졌다'. **과제 셋**: UseCase 가 ViewModel 의 Flow 를 **감시하는 역방향 의존**이라 버튼 하나의 동작을 쫓는 데 여러 파일을 오가 **신입의 학습 비용**이 크고, 한 화면에 UseCase 가 **십수 개** 병렬로 돌아 순서 제어를 debounce·진행 플래그로 짜내며, UseCase 가 **Fragment 의 lifecycleScope** 에서 돌아 화면 전환 때 의도치 않은 코루틴 취소(ViewModel 메서드 직접 호출이라는 대증 요법이 남아 있다). **목표**: 클린 아키텍처 기반 MVVM(Google 앱 아키텍처 가이드) — 제어를 ViewModel 로, UseCase 는 `operator fun invoke()` 호출 전용, domain·repository·datasource·feature 멀티 모듈로 의존을 안쪽으로, 로직은 viewModelScope 로. 인터페이스와 구현을 다른 모듈에 두려고 **Dagger Hilt** 도입(전에는 의존 객체를 직접 생성). Step 1 은 API 응답 모양을 화면까지 끌고 다니던 것을 `toDomain()` 경계로 Domain/Data 모델 분리(id 를 값 객체로); Step 2 는 UI 보다 부작용이 적은 **데이터 층부터**; Step 3 에서 Legacy UseCase 는 '새 UseCase 를 부르는 얇은 껍질' — 남은 책임이 **ViewModel 이 될 뻔한 것**이라 Step 4 에서 ViewModel 로 합친다. **PR 마다 Legacy·새 쪽 Kotlin 파일 수와 이행 비율을 집계**해 가시화 — 정체나 불필요한 Legacy 파일 추가를 검지."
     }
   ]
 }

@@ -1440,3 +1440,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 드왕고 교육 교재 기반 대학 우선 이행
 
 - 교재 기반 10년 회고로 `materials-platform-university-first`(결정 8 — 새 학교는 새 시스템·이행 순서·대학 비최적화·Kotlin+gRPC·TS 통일·미정 사양 선착수·workflow job 입고·내보내기 재입고). 대가 서술이 얕을 거라 우려했지만 결정 8 이 나왔다.
+
+## 2026-09-26 드왕고 교육 Android Legacy 격리 — 완주
+
+- Android 재설계 글 전문으로 `android-legacy-module-one-way`(결정 8 — Legacy 격리·한 방향 의존·클린 MVVM·Hilt·데이터 층부터·Domain/Data 모델·얇은 껍질 UseCase·PR 지표). 도메인 2 모두 기능 · 수익원 2 연결 → done(수익원 자체는 inferred).
