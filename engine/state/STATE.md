@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**없다 — convex 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
+**없다 — cookpad 재방문은 새 자료 없음(1회째). 09-07 묶음 진행 중.**
 uber 의 09-03 이후 안 쓴 새 글: `evolving-ubers-compute-platform`(09-09) · `uber-eats-search-pipeline`(09-10) ·
 `taming-ml-firehose`(09-22). 목록은 `www.uber.com/en-US/blog/engineering/` — 브라우저 UA·`Accept: text/html`
 없으면 406. 다음 uber 재방문 때 이 셋부터 본다.
@@ -326,6 +326,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 
 두 번 연속 없으면 `## 재시도 안 함` 으로 옮긴다(PROMPT 2‴). 한 회사 한 줄, 다음 확인 때 덮어쓴다.
 
+- **cookpad** — 2026-09-26 없음 1회째. `techlife.cookpad.com/feed` 최신 09-02(코딩 에이전트용 Swift Macro 전개) — 09-07 이전이고 앱 개발 팁이라 시스템 결정 아님.
 - **convex** — 2026-09-26 없음 1회째. `stack.convex.dev/articles`(r.jina.ai) 최근 글은 해설·마케팅 회고·고객 사례·벤치마크 입장 — 날짜가 목록에 안 나온다. RSS 는 HTML.
 - **comma** — 2026-09-26 ML 버그 편(09-16) → `precision-where-it-is-read`, 새 도메인 "학습과 추론의 숫자를 믿을 수 있게 만든다". `blog.comma.ai/feed.xml` 이 curl 로 온다.
 - **cockroach-labs** — 2026-09-26 없음 1회째. `/blog/engineering/` 맨 위는 차량 검색 튜토리얼, 그다음 Pebble 값 분리(이미 출처). RSS(`/blog/index.xml`)는 HTML. 출처에 없는 "Ideal isn't real" 복원력 스트레스 시험은 이전 글 쓰기 답을 받으면 후보.
