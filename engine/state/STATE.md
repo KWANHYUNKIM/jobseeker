@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**Sumzap — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '저메모리 단말에서 떨어지지 않게 배틀 리소스를 놓아준다' 를 메모리 글(`entry/unity-optimize-memory-in-jujutsuphanpara`, scratchpad `sz_mem.txt` — SceneManager 규칙 이후·iOS 고유 최적화·에셋 관리·결과). 그 뒤 동적 개발 환경(`dynamic-development-environment-provisioning`, `sz_env.txt`). 완주 판정 때 IP·이벤트 수익원은 도메인이 없다. 대기 1/3(Yappli `yp_inq.txt`). 다음 후보 조사는 Zenn Publication·note 기업 계정을 시험. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
+**Sumzap — 확장 1(2026-09-26): 메모리 도메인에 `battle-resource-lifetime-scene-manager`(결정 7). 다음은 확장: '기능 브랜치마다 개발 환경을 세우고 기한이 지나면 지운다' 를 동적 환경 글(`entry/dynamic-development-environment-provisioning`, scratchpad `sz_env.txt` — 공유/사용 후 폐기 설계·OAuth callback proxy·reaper). 완주 판정 때 IP·이벤트 수익원은 도메인이 없다. 대기 1/3(Yappli `yp_inq.txt`). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
 
 
 
