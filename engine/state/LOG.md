@@ -1248,3 +1248,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 ANDPAD 회사 프로파일
 
 - 대기 맨 위. andpad.jp(27.9만 사·81.8만 명) + 기술 글 셋(VPC Origins 장애·청구서 선지급 PdM 회고·표 캡처 인터뷰)으로 도메인 셋·수익원 셋, 기능 0. 매출 비공개.
+
+## 2026-09-26 ANDPAD 확장 — 입구를 하나로 모으고, 그 입구의 대피로를 남겨 둔다
+
+- Builder Work 구조 변경 글(06-26)과 VPC Origins 장애 글(08-06)로 `single-entry-escape-route`(결정 7·state 그림). 샤딩 폐지·VPC Origins(mTLS 안 기각)·Canary Ping-Pong 범용화·장애 당일 롤백 불가·대피로 상시 유지. 표 캡처와의 연결은 inferred.
