@@ -2348,3 +2348,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 スマサテ 화면 이행
 
 - `replace-to-react` + `rails8-upgrade` 전문으로 기능 `non-stop-screen-migration`, 결정 8. 두 글 요약에 교훈 · 수정 수치를 보탰다.
+
+## 2026-09-27 スマサテ 타운나비 수익원 보류
+
+- 검색 1: RSS 20편 · 공개 글 목록 — 해당 없음. 검색 2: Zenn 검색 3낱말 — 0건. hold_reason, in_progress 유지.
