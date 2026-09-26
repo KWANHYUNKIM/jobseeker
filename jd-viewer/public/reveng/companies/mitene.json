@@ -71,9 +71,9 @@
       "why": "みてね 는 가족 단위 앨범이라 한 가족에 여러 사용자가 있고, 프리미엄 Pro 가족만 쳐도 가족당 많게는 수십만~수백만 장이 올라온다. 날짜로 거슬러 올라가 찾는 대신 '아기가 웃는 사진' 처럼 말로 찾고 싶다.",
       "tech": [
         {
-          "tech": "CLIP 계열 텍스트·화상 공동 임베딩 · OpenSearch Service(가족 멀티테넌트 · OR2 데이터 노드 · Efficient k-NN Filtering) · 일본어 화상 검색에 강한 모델 · 점수 임계값",
-          "solves": "가족 범위 안에서 상위 100장을 자연어로 찾는다(2026-03 프리미엄 Pro·국내).",
-          "limits": "Efficient k-NN Filtering 은 약간 놓칠 수 있다. OpenSearch 비용 — S3 Vectors 이행을 검토 중.",
+          "tech": "clip-japanese-base(512차원) · OpenSearch Service — family_id 해시로 인덱스 분할 + 인덱스당 4샤드 + family_id 라우팅 · OR2 데이터 노드 레플리카 0 · Efficient k-NN Filtering · FAISS+HNSW on_disk 16x 압축 · L2 정규화 + dot product · 점수 임계값",
+          "solves": "가족 범위 안에서 상위 100장을 자연어로 찾는다 — p99 3~5초.",
+          "limits": "서버리스가 아니라 운영 부담이 있고 월 비용의 대부분이 Vector DB 다(S3 Vectors 이행 검토). 레플리카 0 이라 장애 때 S3 복구에 시간이 걸린다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -86,7 +86,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "natural-language-photo-search"
+      ]
     },
     {
       "name": "내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다",
@@ -111,11 +113,323 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "natural-language-photo-search",
+      "name": "'자유롭게 검색' — 가족당 수백만 장의 사진·동영상을 일본어 문장으로 찾는다: clip-japanese-base 로 임베딩하고, OpenSearch 에 가족을 해시로 나눠 담아 라우팅한 샤드 안에서만 k-NN 필터링하며, 레플리카를 0 으로 둬 비용을 누른다",
+      "domain": "가족당 수백만 장에서 말로 사진을 찾는다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "みてね 는 2026년 3월 **프리미엄 Pro·일본 국내 가족**용으로 '자유롭게 검색' 을 냈다 — 사용자가 올린 사진·동영상을 '아기가 웃는 사진' 같은 자연어로 찾아 추억을 쉽게 꺼낸다. 핵심은 텍스트와 화상을 같은 벡터 공간으로 바꿔 '가까움' 으로 관련성을 판단하는 CLIP 계열 방식이다.\n\n일반 사진 보관 앱과 달리 みてね 는 **가족 단위**로 앨범을 가져 한 가족에 여러 사용자가 있고, 프리미엄 Pro 가족만 쳐도 가족 수가 막대하며 가족당 많게는 **수십만~수백만** 개가 넘는 사진·동영상이 있다. 그래서 요건을 셋 뒀다 — 큰 데이터셋에서 **3초 안에** 결과, 큰 벡터 데이터를 **분산 저장**, 벡터 인덱스를 **가족 단위로 나눠** 검색 성능을 담보.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "가족당 많게는 수십만~수백만 장 · 결과 상위 100장",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "label": "응답 시간",
+            "value": "p99 3~5초(요건 3초 안을 거의 충족)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "label": "인덱스 설계",
+            "value": "인덱스당 약 60 GiB · 4샤드 · 샤드 10~30 GB(권장 50 GB 이하) · 512차원 · HNSW ef_construction 64 · m 8 · 16x 압축",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "label": "비용 구조",
+            "value": "월 비용의 대부분이 Vector DB(OpenSearch) — S3 Vectors 이행으로 절감 검토",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "레플리카를 0 으로 둘 때",
+          "thought": "'자유롭게 검색' 은 모든 서비스에 걸친 크리티컬 기능이 아니다. 그래서 약간의 복구 시간을 받아들이고 비용 최적화를 우선했다 — 그 덕에 큰 비용을 줄여 사용자에게 서비스를 내놓을 수 있었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+              "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+              "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+              "date": "2026-03-11",
+              "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+            }
+          ]
+        },
+        {
+          "at": "Top-K 뒤를 볼 때",
+          "thought": "벡터 검색은 Top-K 를 돌려주는데, 쿼리에 관련된 미디어가 적으면 나머지는 무관한 결과로 채워진다. 그대로 돌려주면 체험을 해친다 — 코사인 유사도 점수에 임계값을 둬 낮은 품질 결과를 뺀다. 값은 사내 도그푸딩과 눈 확인을 되풀이해 **약간의 잡음은 허용하고 놓침을 줄이는** 균형으로 정했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+              "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+              "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+              "date": "2026-03-11",
+              "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "가족",
+            "what": "앨범 단위. 여러 사용자가 속한다. family_id 가 인덱스 분할의 해시 키이자 검색 라우팅 키."
+          },
+          {
+            "name": "미디어 벡터",
+            "what": "사진·동영상을 clip-japanese-base 로 임베딩한 512차원 벡터. L2 정규화해 저장한다."
+          },
+          {
+            "name": "인덱스 · 샤드",
+            "what": "family_id 해시로 여러 인덱스에 나눠 인덱스당 약 60 GiB, 인덱스당 4샤드(10~30 GB). 한 인덱스에 여러 가족이 섞인다."
+          },
+          {
+            "name": "점수 임계값",
+            "what": "코사인 유사도 아래를 결과에서 뺀다 — 도그푸딩으로 정한 값."
+          }
+        ],
+        "invariants": [
+          "검색은 자기 가족의 미디어만 대상 — family_id 라우팅으로 샤드를 좁히고 k-NN 필터로 가족을 거른다.",
+          "유사도는 L2 정규화한 벡터의 dot product — 코사인과 수학적으로 같다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사진·동영상을 clip-japanese-base 로 임베딩해 L2 정규화한 512차원 벡터를 family_id 해시로 정해진 인덱스에 넣는다",
+            "why": "코사인 계산을 dot product 로 바꿔 비용을 줄인다."
+          },
+          {
+            "step": "사용자가 일본어 문장을 넣으면 텍스트 인코더로 같은 공간의 벡터로 바꾼다",
+            "why": "텍스트와 화상의 '가까움' 으로 관련성을 판단한다."
+          },
+          {
+            "step": "family_id 를 라우팅 키로 해당 샤드만 훑고, 그 안에서 Efficient k-NN Filtering 으로 HNSW 탐색 중에 가족 조건을 함께 평가한다",
+            "why": "주사 범위를 최소로 하면서 가족 단위로 새지 않는 결과."
+          },
+          {
+            "step": "상위 100장 중 점수 임계값 아래를 빼고 돌려준다",
+            "why": "관련 미디어가 적은 가족에 무관한 결과를 채우지 않는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Vector DB 는?",
+            "chosen": "**OpenSearch Service(관리형) — 사례가 많고 AWS 운영 실적이 있으며, みてね 가 AWS 라서. 비용 최적화까지 보고 Serverless 가 아니라 Service.**",
+            "alternatives": [
+              "OpenSearch Serverless"
+            ],
+            "tradeoff": "대규모 벡터를 분산 저장한다. 대가 — 서버리스가 아니라 인스턴스 감시·Bulk Insert 구조·버전 업·스토리지 압박 대응 같은 운영 부담이 있고, 월 비용의 대부분이 Vector DB 가 됐다(S3 Vectors 이행 검토).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "question": "가족을 어떻게 나눠 담을까?",
+            "chosen": "**인덱스 분할과 샤드 분할의 혼합 — family_id 해시로 여러 인덱스(인덱스당 약 60 GiB), 인덱스당 4샤드, 검색 때 family_id 로 라우팅.**",
+            "alternatives": [
+              "가족마다 인덱스(inferred)",
+              "한 인덱스에 전부(inferred)"
+            ],
+            "tradeoff": "데이터 노드별 EBS 상한과 샤드 수가 늘수록 커지는 Top-K 집약 부담을 피하며 해당 샤드만 훑는다. 대가 — 한 인덱스에 여러 가족이 섞여 가족 필터가 따로 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "question": "섞인 인덱스에서 자기 가족만 어떻게 거를까?",
+            "chosen": "**라우팅으로 샤드를 좁힌 뒤 Efficient k-NN Filtering(HNSW 탐색 중 필터 동시 평가) — 두 단계.**",
+            "alternatives": [
+              "Post-filtering(Top-K 뒤 필터)",
+              "Pre-filtering(Scoring Script Filter — 조건에 맞는 문서만 전건 거리 계산)"
+            ],
+            "tradeoff": "Post-filtering 은 멀티테넌트에서 필터 뒤 결과가 거의 빌 수 있고, Pre-filtering 은 수십만 건 가족에서 계산량이 막대하다. 대가 — 약간의 놓침이 생길 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "question": "데이터 노드와 레플리카는?",
+            "chosen": "**OR2 인스턴스 + gp3, 레플리카 0 — OR2 가 데이터를 EBS 와 S3 에 이중 저장해 레플리카 없이도 내구성을 담보한다.**",
+            "alternatives": [
+              "R6g·Im4gn 같은 범용 인스턴스 + 레플리카 1~2"
+            ],
+            "tradeoff": "레플리카 인스턴스가 필요 없어 스토리지 비용을 크게 줄이고, 장애 때 S3 에서 빠진 샤드를 자동 복원한다. 대가 — 즉시 페일오버가 아니라 S3 복구에 시간이 걸린다(크리티컬 기능이 아니라 허용).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "question": "벡터 인덱스를 어떻게 설정할까?",
+            "chosen": "**FAISS + HNSW(ef_construction 64 · m 8) · on_disk 저장 · 16x 압축 · 벡터를 L2 정규화해 dot product 로.**",
+            "alternatives": [
+              "메모리 상주·무압축 · 코사인 직접 계산(inferred)"
+            ],
+            "tradeoff": "메모리 사용을 누르며 대규모 데이터를 다루고, 코사인과 같은 결과를 더 싸게 계산한다. 대가 — 압축·파라미터가 정확도와 속도를 맞바꾼다(K 근방 탐색에서도 정확도 저하는 거의 없었다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "question": "임베딩 모델은?",
+            "chosen": "**LINE야후의 clip-japanese-base — STAIR Captions(상용 가능 화상)로 만든 평가 세트의 T→I Precision@K 가 가장 높고, 상용 가능, 가볍고, 512차원, 모의 가족 사진의 정성 평가에서 일본어 뉘앙스를 잘 잡았다.**",
+            "alternatives": [
+              "siglip2-so400m-patch16-512(Google, 다국어 1B)",
+              "siglip-base-patch16-256-multilingual",
+              "siglip2-base-patch16-512",
+              "CLIP-ViT-H-14 xlm-roberta-large(LAION, ~1.5B)"
+            ],
+            "tradeoff": "첫 출시를 일본 국내 가족으로 좁혀 일본어 화상 검색에 강한 모델을 골랐다. 대가 — 국외로 넓힐 땐 다국어 모델을 다시 봐야 한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          },
+          {
+            "question": "관련 결과가 적을 때 Top-K 를 다 돌려줄까?",
+            "chosen": "**코사인 유사도 임계값으로 낮은 품질을 뺀다 — 도그푸딩으로 '약간의 잡음 허용·놓침 줄이기' 균형을 잡았다.**",
+            "alternatives": [
+              "Top-100 을 그대로"
+            ],
+            "tradeoff": "무관한 결과로 채운 화면을 막는다. 대가 — 임계값 근처의 관련 사진이 빠질 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+                "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+                "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+                "date": "2026-03-11",
+                "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "내부 서비스의 입구를 은퇴한 ingress-nginx 에서 옮긴다(같은 회사의 다른 도메인)",
+          "via": "크리티컬하지 않은 곳에서 비용·위험을 받아들이기",
+          "contract": "자연어 검색은 모든 서비스에 걸친 크리티컬 기능이 아니라서 레플리카 0 의 복구 시간을 받아들였고, 입구 이행은 사용자용 라우팅엔 Ingress 가 없고 내부용이라 비교적 안전하게 검토했다 — 둘 다 영향 범위로 위험의 크기를 정한다(이 사이트의 해석 — 두 글은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "검색 한 번의 길",
+          "question": "문장 하나가 어떻게 가족의 사진 100장이 되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  Q[아기가 웃는 사진] --> TE[clip-japanese-base 텍스트 인코더<br/>512차원 · L2 정규화]\n  TE --> RT[family_id 라우팅<br/>해당 샤드만]\n  RT --> KNN[Efficient k-NN Filtering<br/>HNSW 탐색 중 가족 필터]\n  KNN --> TH[점수 임계값]\n  TH --> R[상위 100장 · p99 3~5초]"
+        },
+        {
+          "title": "필터링 셋의 실패 방식",
+          "question": "다른 필터링을 골랐다면 무엇이 무너졌나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[한 인덱스에 여러 가족] --> P1[Post-filtering<br/>Top-K 뒤 필터 → 거의 빈 결과]\n  M --> P2[Pre-filtering<br/>수십만 건 전건 거리 계산 → 느림]\n  M --> P3[Efficient k-NN Filtering<br/>약간의 놓침]\n  P3 --> OK[라우팅과 두 단계로 채택]\n  OR2[레플리카 0] -.장애.-> S3[S3 에서 샤드 복원 · 즉시 페일오버 없음]"
+        },
+        {
+          "title": "가족 벡터가 놓이는 자리",
+          "question": "한 가족의 벡터는 어디에 저장되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 해시: family_id\n  해시 --> 인덱스: 인덱스당 약 60 GiB\n  인덱스 --> 샤드: 4샤드 · 10~30 GB · family_id 라우팅\n  샤드 --> 이중저장: OR2 · EBS + S3 · 레플리카 0\n  이중저장 --> [*]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "みてねの大規模なメディアを自然言語検索できるようにしました",
+          "url": "https://zenn.dev/mitene/articles/e345c6746eb3e3",
+          "publisher": "家族アルバム みてね Tech Blog (Zenn)",
+          "date": "2026-03-11",
+          "summary": "2026년 3월 **프리미엄 Pro·일본 국내용** '자유롭게 검색' 기능 — 올린 사진·동영상을 자연어('아기가 웃는 사진')로 찾는다. 텍스트와 화상을 같은 벡터 공간에 두는 **CLIP** 계열. 가족 단위 앨범이라 한 가족에 여러 사용자, 많게는 **가족당 수십만~수백만 장**. Vector DB 선정 → **OpenSearch Service**(가족 멀티테넌트 운영 · OR2 데이터 노드로 비용 최적화 · 필터링 전략은 Pre-filtering 대신 **Efficient k-NN Filtering** — 약간의 놓침 가능 · 세부 파라미터) · 일본어 화상 검색에 강한 Embedding 모델 선정(T→I Precision@K, 상위 100장) · 점수 임계값 · 운영 결과·성능·과제 · 앞으로 OpenSearch → **S3 Vectors** 이행으로 비용 절감."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "요금 금액·매출 비중을 확인하지 않았다.",
     "사진 프린트·포토북(실물 주문)의 기술 글을 아직 못 봤다.",
-    "두 글 모두 본문 뒤쪽(선정 과정·전환 전략)은 다음 사이클에 읽는다.",
+    "Envoy Gateway 이행 글의 선택지 비교·전환 전략은 다음 사이클에 읽는다.",
     "다른 글: 한 건의 문의에서 하루 3만 건의 사용자 체험을 고친 CRE(`37670f812485b3`)·Android Hilt 이행·350화면 Edge-to-edge·10bit HDR 인코딩·EKS 업그레이드."
   ],
   "sources": [

@@ -1932,3 +1932,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 みてね 회사 프로파일
 
 - mitene.us(무료 무제한·프린트 11장)와 프리미엄 페이지(One·Family·Family Pro)로 수익원 둘. 기술 글에서 제품 쪽 자연어 검색(프리미엄 Pro)과 인프라 입구 이행 — 도메인 둘.
+
+## 2026-09-26 みてね 자연어 사진 검색
+
+- 결정 7 — OpenSearch Service·해시 인덱스+샤드+라우팅·Efficient k-NN Filtering(Post/Pre 대신)·OR2 레플리카 0·FAISS HNSW on_disk 16x·clip-japanese-base·점수 임계값.
