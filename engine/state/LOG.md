@@ -936,3 +936,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 cockroach-labs 재방문
 - 새 자료 없음(1회째). 엔지니어링 목록 최신은 튜토리얼과 이미 출처인 글. updated_at 만 올림.
+
+## 2026-09-26 comma 재방문 → 확장
+- ML 버그 편(2026-09-16) 으로 `precision-where-it-is-read` 추가. 새 도메인, 결정 6개, 그림 2장. 계획 머리 FP32, AllNorm, 랭크별 재시드 등.
