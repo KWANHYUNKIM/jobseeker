@@ -1684,6 +1684,134 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/385510",
+      "title": "[Tech] Security Engineer - 신규 IT시스템 보안성검토 및 운영시스템 보안관리",
+      "site": "wanted",
+      "verdict": "경력 3~8년(서울 강남). 현대오토에버 조직 전체의 보안을 맡는 정보보안팀에서 신규 시스템·인프라 도입 시 보안성 검토, 운영 시스템 취약점 점검 관리, 컴플라이언스 대응을 할 사람. 공고가 짧다 — 주요업무 세 줄, 자격요건 두 줄(보안성 검토·심의나 보안 프로세스 수립 경험, 정보보호 법규·인증심사 기준 이해), 우대 한 줄(ISO27001/ISMS/ISMS-P 심사원, CPPG, 정보보안기사, CISSP, CISA 등 자격증)이다. 개발·탐지 직무가 아니라 관리체계(GRC) 직무다. 팀 소개는 ISMS, ISO27001·27017 인증을 운영한다고 적고, 동료 한 마디는 맡은 업무를 책임질 수 있으면 재택 등 유연 근무를 보장받는다고 적는다. 전형의 직무역량테스트는 '과제' 다.",
+      "fit": {
+        "must_have": [
+          "보안성 검토·심의 또는 정보보안 프로세스 수립 경험",
+          "정보보호 법규·보안정책·인증심사 기준 이해"
+        ],
+        "can_learn": [
+          "ISO27001/ISMS/ISMS-P 심사원",
+          "CPPG·정보보안기사·CISSP·CISA"
+        ]
+      },
+      "study": [
+        {
+          "topic": "신규 시스템 보안성 검토 — 무엇을 어떤 순서로 보는가",
+          "from": "task",
+          "quote": "• 신규 시스템/인프라 도입 시 보안성 검토 수행",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 자격요건 첫 줄이 '보안성 검토/심의' 경험이다.",
+          "gap_check": "새 외부 SaaS 나 사내 웹 서비스 도입 요청이 왔을 때 데이터 분류·인증·권한·암호화·로그·개인정보 처리·외부 연동 중 무엇을 체크리스트로 묻고, 위험을 '조건부 승인' 으로 넘길 때 어떤 보완 조치를 요구하는가?",
+          "drill": "가상의 사내 웹 서비스 도입 요청서를 만들고, OWASP 위협 모델링 치트시트와 ASVS 를 참고해 검토 체크리스트와 검토 결과서(위험·조치·승인 조건) 한 장을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWASP — Threat Modeling Cheat Sheet",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP ASVS (GitHub)",
+              "url": "https://github.com/OWASP/ASVS",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "정보보호 법규와 인증 기준(ISMS-P·ISO27001)",
+          "from": "qualification",
+          "quote": "• 정보보호 관련 법규/보안정책/인증심사 기준 이해",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 '컴플라이언스 대응' 이 있다. 팀 소개가 ISMS, ISO27001 및 27017 인증 운영을 적는다.",
+          "gap_check": "개인정보보호법과 정보통신망법에서 보안성 검토 결과서에 근거로 자주 인용되는 의무(접근통제·암호화·접속기록 보관)는 무엇이고, ISMS-P 인증기준에서 그 의무는 어느 영역에 대응하는가?",
+          "drill": "법령 원문에서 안전조치 관련 조항을 찾아 요약하고, 위 검토 체크리스트 항목마다 근거 법 조항·인증 기준을 매핑한 표를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 개인정보 보호법",
+              "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B0%9C%EC%9D%B8%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8%EB%B2%95",
+              "kind": "docs"
+            },
+            {
+              "title": "국가법령정보센터 — 정보통신망 이용촉진 및 정보보호 등에 관한 법률",
+              "url": "https://www.law.go.kr/법령/정보통신망이용촉진및정보보호등에관한법률",
+              "kind": "docs"
+            },
+            {
+              "title": "한국인터넷진흥원(KISA)",
+              "url": "https://www.kisa.or.kr/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "운영 시스템 취약점 점검 관리",
+          "from": "task",
+          "quote": "• 운영시스템/인프라 보안취약점 점검 관리",
+          "priority": "high",
+          "why": "주요업무 두 번째 줄이다. '관리' 라는 말이 붙어 있어 직접 점검보다 점검 계획·결과 추적·조치 확인 비중이 클 수 있다(추론). 팀 소개는 국내·외 법인, 협력사, 외주인력을 주기적으로 점검한다고 적는다.",
+          "gap_check": "서버 설정 점검 결과 100건 중 무엇부터 조치하게 우선순위를 매기고, 조치 불가 항목은 어떤 보완 통제·예외 승인으로 관리하는가?",
+          "drill": "리눅스 VM 하나에 CIS Benchmark 항목 일부를 점검 스크립트로 확인하고, 결과를 위험도·조치 담당·기한·예외 사유 열이 있는 추적표로 정리한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "CIS Benchmarks",
+              "url": "https://www.cisecurity.org/cis-benchmarks/",
+              "kind": "docs"
+            },
+            {
+              "title": "NIST SP 800-115 — Technical Guide to Information Security Testing and Assessment",
+              "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보안 자격증 — 무엇을 먼저 딸까",
+          "from": "preference",
+          "quote": "• 보안 관련 자격증 보유자(ISO27001/ISMS/ISMS-P 심사원, CPPG, 정보보안기사, CISSP, CISA 등)",
+          "priority": "nice",
+          "why": "우대사항 유일한 줄이다. 공고가 짧아 자격증이 서류에서 차이를 만들 가능성이 크다(추론).",
+          "gap_check": "이 자리의 업무(보안성 검토·인증 대응)에 가장 가까운 자격은 심사원·CPPG 쪽이고, 기술 쪽(정보보안기사·CISSP)은 무엇을 보완하는가?",
+          "drill": "목록의 자격증별 시험 범위를 위 세 학습 항목과 대조해, 이미 채운 범위와 빈 범위를 표로 만든다.",
+          "hours": 2,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "보안성 검토 결과서 샘플(법 조항·인증 기준 매핑 포함)",
+          "why": "주요업무 첫 줄과 자격요건 두 줄을 한 문서로 보여 준다. 전형의 직무역량테스트가 '과제' 라 비슷한 문서를 쓸 가능성이 있다(추론).",
+          "effort": "2일"
+        },
+        {
+          "idea": "ISMS-P 또는 ISO27001 인증 대응 경험 정리",
+          "why": "팀이 ISMS, ISO27001·27017 인증을 운영한다. 인증심사 대응 경험이 있으면 첫 장에 둔다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(과제) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있다(공고 기준).",
+        "expect": [
+          "보안성 검토 절차와 판단 기준",
+          "관련 법규·인증 기준",
+          "취약점 조치 우선순위와 예외 관리",
+          "인증심사 대응 경험"
+        ],
+        "sources": [
+          {
+            "title": "[Tech] Security Engineer - 신규 IT시스템 보안성검토 및 운영시스템 보안관리",
+            "url": "https://www.wanted.co.kr/wd/385510",
+            "publisher": "원티드"
+          }
+        ]
+      }
     }
   ]
 }
