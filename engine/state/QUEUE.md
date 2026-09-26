@@ -44,7 +44,7 @@
 | **WWWAVE(ウェイブ)** | JP · 전자 코믹·아니메 제작·배신 | 프로파일(2026-09-26). 도메인 둘 — 전자 코믹을 여러 배신처에 납품하는 사내 도구를 테스트 가능한 형태로 옮긴다 · 이상 때만 알리는 감시에서 침묵을 해석한다. 기능 2(`access-vba-delivery-retirement` · `batch-silence-monitoring`). **hold** — 신규 사업 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 신규 사업은 도메인 없음. 입구 `zenn.dev/p/wwwave/feed`. |
 | **Stock** | JP · 팀 정보 관리·AI 지식 SaaS | 프로파일(2026-09-26). 도메인 둘 — 검색에 LLM 을 끼우되 호출마다의 비용을 누른다 · 스캔 PDF 를 OCR 로 빠짐없이 읽는다. 기능 2(`cheap-model-prescreening` · `scanned-pdf-ocr-triage`). **hold** — Stock 제품 수익원 자료 두 번 없음(2026-09-26). 수익원 Stock(인원 구간 구독)은 도메인 없음, 두 도메인은 나레칸에 inferred. 입구 `zenn.dev/p/stock_inc/feed`(6편). |
 | **ウェザーニューズ(Weathernews)** | JP · 기상 정보 | 프로파일(2026-09-26). 도메인 둘 — 기상과 실적으로 소매·제조의 반년 수요를 예측한다 · 수십만 개의 사용자 기상 조건을 10분마다 판정한다. 기능 2(`batch-gpu-demand-inference` · `my-solution-decision-tree`). **hold** — 방송 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 방송은 도메인 없음. 입구 `zenn.dev/p/weathernews/feed`. |
-| **Kanmu(カンム)** | JP · 프리페이드 카드 핀테크 | 프로파일(2026-09-26). 도메인 둘 — 결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다 · 월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다. 기능 2(`pistachio-declarative-schema` · `datadog-monitor-worker-scaling`). 수익원 셋 중 Pool·법인 금융은 도메인 없음. 입구 `zenn.dev/p/kanmu_dev/feed`. |
+| **Kanmu(カンム)** | JP · 프리페이드 카드 핀테크 | 프로파일(2026-09-26). 도메인 둘 — 결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다 · 월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다. 기능 2(`pistachio-declarative-schema` · `datadog-monitor-worker-scaling`). **hold** — Pool·법인 금융 수익원 자료 두 번 없음(2026-09-26). 수익원 셋 중 Pool·법인 금융은 도메인 없음. 입구 `zenn.dev/p/kanmu_dev/feed`. |
 
 
 ## 대기

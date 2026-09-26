@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "핀테크",
   "status": "in_progress",
+  "hold_reason": "수익원 'Pool(자산 형성 신용카드)'·'법인 금융(사쿳토 자금 조달·분할)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 20편: 플랫폼 팀 글 위주 / Zenn 검색 API 'バンドルカード'·'Pool カンム'·'サクっと'·'kanmu' 0건). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. Pool·법인 금융 쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "kanmu.co.jp",
   "one_liner": "프리페이드 카드 밴들카드의 카무 — 결제 DB 의 스키마는 PostgreSQL 파서를 그대로 쓰는 자작 선언적 도구 pistachio 로 DROP·트랜잭션을 기본 무효로 두고 DDL 의 무게를 미리 어림하며, 월말 월초·일제 통지로 몰리는 PostgreSQL 큐 잡은 Datadog 모니터로 Worker 를 늘린다",

@@ -1904,3 +1904,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Kanmu Datadog Monitor Worker 스케일
 
 - 결정 5 — CPU 대신 쌓인 잡 수·CloudWatch 대신 Datadog Monitor+SNS+Lambda·Min=Max 고정+ignore_changes·대수 검증+DRY_RUN·스케일 인 수동.
+
+## 2026-09-26 Kanmu hold
+
+- 검색 1 RSS 20편 · 검색 2 Zenn 검색 API 4낱말 0건. hold_reason·'재시도 안 함'·QUEUE hold.
