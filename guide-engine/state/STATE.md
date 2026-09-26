@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **183건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **184건**.
+직전 회차: ✅ `Security Automation Engineer [L5]`(8207116) 3항목 — **시애틀**, AI-SOC 자동화(정규화·LLM 분류·SOAR 연동), $152K~$169K.
 직전 회차: ✅ `Sr. Software Engineer - Rocket Growth Inbound & Global Logistics`(8210358) 3항목 — **상하이**, 로켓그로스 입고(pre-ship~stow·Kafka/ES·멱등), 4년.
 직전 회차: ✅ `Senior Staff Cloud Backend Engineer`(8205728) 3항목 — **시애틀**, 제목 Cloud Backend 지만 본문은 데이터센터 SRE·관측성. '$174,00' 오타. `--gaps` 미완 10건.
 직전 회차: ✅ `Senior Frontend Engineer`(8203746) 3항목 — **벵갈루루**, Micro Frontend Platform(성능·마이크로 프런트엔드·컴포넌트), 4~7년.
