@@ -37,7 +37,8 @@
         "how": "NetsPresso 공고들이 경량화·최적화 모듈로 고객 모델을 타겟 디바이스(CPU/GPU/NPU)에 맞추고 '고객사 모델 지원' 을 적는다. 과금 방식은 읽지 않았다(추론).",
         "domains": [
           "온디바이스 모델 최적화(NetsPresso)",
-          "AI 컴파일러·런타임 변환"
+          "AI 컴파일러·런타임 변환",
+          "Physical AI 연구"
         ],
         "confidence": "inferred",
         "sources": [
@@ -176,7 +177,137 @@
     "매출·임직원 수·NetsPresso 과금 방식을 읽지 않았다",
     "'삼성·LG 투자 유치', '두바이 교통국 계약', 'CB Insights AI 100' 은 공고 머리말(회사 주장)만 읽었다",
     "ML Researcher 는 유럽 법인(Nota AI GmbH) 자리다 — 근무지·고용 주체 확인 필요",
-    "salary: 공고에 금액이 없다 — 비워 둔다"
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "NetsPresso AI Engineer(368178)는 헤더가 '신입 이상' 인데 자격요건 첫 줄이 'AI/ML 등 관련 분야 석사 학위 이상 (또는 이에 준하는 실무 경력)' 이다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/368178",
+      "title": "[NetsPresso] AI Engineer",
+      "site": "wanted",
+      "verdict": "헤더는 '신입 이상' 이지만 자격요건은 **'AI/ML 등 관련 분야 석사 학위 이상 (또는 이에 준하는 실무 경력)'** 과 추론 엔진·서빙·양자화 도구 중 1개 이상 실사용이다. 노타의 핵심 제품 NetsPresso 의 경량화·최적화 모듈로 CV·LLM·VLM 모델을 타겟 디바이스에 맞게 최적화하고(성능·정확도·메모리 튜닝, 실험 결과 정리), **Agent 기반 최적화 자동화**를 설계하며, 고객사 디바이스 환경에 맞춘 최적화·기술 지원과 신규 모델·디바이스·기법 조사를 한다. 필수는 Python·Git, PyTorch 모델 개발·디버깅, 추론·배포·최적화 실무, 추론 파이프라인 성능 분석, 반복 작업 자동화 마인드, 해외 여행 결격 사유 없음. 양자화·가지치기·그래프 최적화, CPU/GPU/NPU, ExecuTorch·ONNX·TFLite·TensorRT, ML 파이프라인 자동화, Agent/AutoML, 고객 PoC 는 우대다. 전형: 서류 검토 → 사전과제 발표 → 1차 인터뷰 → 2차 인터뷰 → 3차 인터뷰 → 처우 협의 → 최종 선발('절차 간에 추가적인 과제가 있을 수 있습니다').",
+      "fit": {
+        "must_have": [
+          "AI/ML 석사 이상 또는 준하는 실무",
+          "Python·Git",
+          "PyTorch 개발·디버깅",
+          "추론 엔진·서빙·양자화 도구 중 1개 이상 실사용",
+          "추론 성능(정확도·지연·메모리) 분석"
+        ],
+        "can_learn": [
+          "양자화·가지치기·그래프 최적화",
+          "CPU/GPU/NPU",
+          "ExecuTorch·TFLite·TensorRT",
+          "Agent/AutoML 자동화",
+          "고객 PoC"
+        ]
+      },
+      "study": [
+        {
+          "topic": "디바이스별 양자화와 정확도·지연·메모리 trade-off",
+          "from": "task",
+          "quote": "- Computer Vision, Generative AI(LLM, VLM 등) 모델 대상 성능·정확도·메모리 중심 튜닝",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '추론 엔진(e.g. ONNX Runtime 등)… 최적화(e.g. Quantization 등) 도구 중 1개 이상 실사용' 과 '성능(정확도/지연/메모리) 분석 역량' 이, 우대에 양자화·가지치기·그래프 최적화가 있다.",
+          "gap_check": "같은 검출 모델을 CPU(INT8)·GPU(FP16)·NPU(INT8, 지원 연산 제한)에 올릴 때 정확도 하락과 지연 개선을 어떻게 한 표로 비교하고, 정확도가 크게 떨어지면 무엇(민감 층만 높은 정밀도·QAT)으로 되돌리는가?",
+          "drill": "작은 CV 모델 하나를 ONNX Runtime 정적 양자화(INT8)와 PyTorch 가지치기로 줄여, FP32 대비 정확도·지연·모델 크기·메모리를 표로 만들고 민감도가 큰 층을 찾아 혼합 정밀도로 다시 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "ONNX Runtime — Quantize ONNX models",
+              "url": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PyTorch — Quantization",
+              "url": "https://docs.pytorch.org/docs/stable/quantization.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PyTorch — Pruning tutorial",
+              "url": "https://docs.pytorch.org/tutorials/intermediate/pruning_tutorial.html",
+              "kind": "docs"
+            },
+            {
+              "title": "NetsPresso docs",
+              "url": "https://docs.netspresso.ai/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Agent 기반 최적화 자동화",
+          "from": "task",
+          "quote": "- 수동 설정에 의존하지 않는 Agent 기반 모델 최적화 실험 구조 설계",
+          "priority": "core",
+          "why": "주요업무이고 필수에 '반복 가능한 작업을 자동화 가능한 구조로 전환하려는 문제 해결 마인드', 우대에 'Agent/AutoML 기반 자동화 시스템' 과 ML 파이프라인 자동화가 있다.",
+          "gap_check": "'이 모델을 이 NPU 에서 30ms 이하로, 정확도 하락 1%p 이내' 라는 목표를 에이전트가 풀게 하려면 어떤 도구(변환·양자화·벤치마크·평가)를 어떤 입력·출력으로 열어 주고, 탐색이 끝나지 않거나 잘못된 설정을 반복할 때 무엇으로 멈추는가?",
+          "drill": "앞 드릴의 변환·양자화·벤치마크를 함수 도구로 감싸고, 목표 조건을 주면 설정을 바꿔 가며 시도하고 결과를 기록하는 단순 루프(규칙 기반 → LLM 에이전트)를 만든 뒤 시도 횟수·최종 결과를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Hugging Face Optimum",
+              "url": "https://github.com/huggingface/optimum",
+              "kind": "repo"
+            },
+            {
+              "title": "Nota-NetsPresso (GitHub)",
+              "url": "https://github.com/Nota-NetsPresso",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "엣지 배포 포맷(ExecuTorch·TFLite·TensorRT)",
+          "from": "preference",
+          "quote": "• 모델 변환/배포 도구 사용 경험 (ExecuTorch, ONNX, TFLite, TensorRT 등)",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 '고객사 디바이스 환경에 맞춘 모델 최적화 및 기술 지원' 이 있다.",
+          "gap_check": "고객이 모바일 CPU·Jetson GPU·특정 NPU 중 하나를 쓸 때 각각 어떤 배포 포맷을 고르고, 변환 중 '지원하지 않는 연산' 오류가 나면 모델 쪽에서 무엇을 바꾸는가?",
+          "drill": "같은 모델을 ExecuTorch·TFLite(LiteRT)·ONNX 로 내보내 보고, 변환이 실패하는 연산 하나를 찾아 등가 연산으로 바꾼 뒤 다시 변환해 출력 차이를 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ExecuTorch documentation",
+              "url": "https://docs.pytorch.org/executorch/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Google AI Edge — LiteRT",
+              "url": "https://ai.google.dev/edge/litert",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "한 모델의 디바이스별 최적화 비교표 + 목표 조건을 푸는 최적화 자동화 루프",
+          "why": "주요업무 세 묶음 중 둘(디바이스 최적화·Agent 자동화)을 결과로 보여 준다. 전형에 사전과제 발표가 있다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "복잡한 실험 결과를 정리한 문서 샘플",
+          "why": "우대에 '복잡한 실험 결과를 문서화하고 공유한 경험' 이 있고 주요업무에 실험 결과 정리가 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 검토 → 사전과제 발표 → 1차 인터뷰 → 2차 인터뷰 → 3차 인터뷰 → 처우 협의 → 최종 선발('절차 간에 추가적인 과제가 있을 수 있습니다').",
+        "expect": [
+          "최적화 실험과 trade-off 분석",
+          "자동화 설계",
+          "디바이스·배포 포맷 경험",
+          "사전과제 발표"
+        ],
+        "sources": [
+          {
+            "title": "[NetsPresso] AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/368178",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
