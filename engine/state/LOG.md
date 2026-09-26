@@ -976,3 +976,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 duckdb 재방문
 
 - 09-07 이후 4편, 발표 3·튜토리얼 1. 결정과 대가가 있는 글 없음. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 elastic 재방문 → 확장
+
+- 09-07 이후 엔지니어링 글 다수. 09-08 "Storing every field once" 에서 결정 6개로 `store-every-field-once` 추가(features 2→3). skipper 정렬 민감도·모드 7개의 선택 부담은 해석 표시.
