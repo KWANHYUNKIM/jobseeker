@@ -228,5 +228,142 @@
     "피지컬 AI 조직이 AI 사업(예지보전·비전 검사)과 같은 부서인지, 국책과제 뒤 사업 계획은 읽지 않았다",
     "후공정 고객사·매출 구성은 읽지 않았다(IR 자료 미확인)"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/570848?ReturnUrl=RecruitInfo",
+      "title": "피지컬 AI 개발 엔지니어 채용",
+      "site": "dev",
+      "verdict": "경력(회로 설계 실무 1년 이상), 대졸(4년제) 이상, 서울 캠퍼스(서초구 남부순환로 2415), 정규직(수습 3개월), 08:30~17:30. **소프트웨어가 아니라 로봇·보드 하드웨어 자리다.** 주요업무는 **EVK·로봇·기구 설계와 제작**, **CPU/GPU/NPU 회로 설계·분석**, 온디바이스 AI 임베디드 시스템과 통신·인터페이스 최적화 설계, 기구부 설계 병행, **로보틱스 시제품**과 피지컬 AI 탑재 프로토(자율주행·로보틱스), 외주 제작 관리, **정부 국책과제 실무 연구**. 필수는 **OrCAD 회로 설계 / AutoCAD 기구 설계**, 임베디드 구조 이해와 **NPU/GPU 칩셋 기반 회로 설계**, 로보틱스 하드웨어 지식과 프로토 제작. 우대는 기구부 설계, 자율주행로봇·협동로봇·휴머노이드·그리퍼 지식. 회로와 기구를 한 사람이 같이 보는 소규모 조직으로 읽힌다. 급여는 '회사 내규에 따름(경력직 처우 협의)' 뿐이다. 전형은 서류→인성검사→1차→2차 면접→처우협의.",
+      "fit": {
+        "must_have": [
+          "OrCAD 회로 설계",
+          "NPU/GPU 칩셋 보드",
+          "AutoCAD 기구 설계",
+          "로봇 프로토 제작"
+        ],
+        "can_learn": [
+          "고속 인터페이스 SI",
+          "발열 설계",
+          "그리퍼 설계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "OrCAD 로 회로도에서 PCB 까지",
+          "from": "qualification",
+          "quote": "전자 회로 이해 및 설계 경험 (OrCAD) / 기구 설계 경험 (AutoCAD)",
+          "priority": "core",
+          "why": "필수사항이고 주요업무가 EVK·로봇 하드웨어 설계·제작이다. 시제품은 외주 제작으로 나가므로(주요업무 '외주 제작 관리') 제작사에 넘길 산출물까지 챙겨야 한다.",
+          "gap_check": "회로도(Capture) 에서 넷리스트·풋프린트를 거쳐 PCB 아트웍, 거버·BOM 까지 가는 순서를 말할 수 있는가? 부품 풋프린트가 회로도 심볼과 핀 번호가 어긋나면 어느 단계에서 잡히고, 제작 후에 발견되면 무엇을 잃는가?",
+          "drill": "OrCAD·PCB 문서를 읽고, MCU 하나·전원 레귤레이터·USB 커넥터로 된 작은 보드를 회로도부터 2층 PCB 까지 그려 DRC 를 통과시키고 거버·BOM 을 뽑는다. 풋프린트 하나를 일부러 틀리게 넣어 어느 검사에서 잡히는지 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "OrCAD — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/OrCAD",
+              "kind": "docs"
+            },
+            {
+              "title": "Printed circuit board — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Printed_circuit_board",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "NPU/GPU 칩셋 보드의 전원·신호 무결성",
+          "from": "qualification",
+          "quote": "임베디드시스템 구조 이해 및 NPU/GPU 칩셋기반 회로 설계 경험",
+          "priority": "core",
+          "why": "필수사항이고 주요업무에 CPU/GPU/NPU 회로 설계 및 분석, 온디바이스 AI 임베디드 시스템 설계가 있다.",
+          "gap_check": "AI 가속 칩처럼 순간 전류가 크게 바뀌는 부하에서 디커플링 커패시터 배치와 전원층 설계가 왜 중요한가(전원 무결성)? DDR·고속 직렬 신호에서 임피던스 정합·길이 맞춤을 안 하면 어떤 증상이 나오는가(신호 무결성)?",
+          "drill": "Signal integrity·Power integrity·NPU 문서를 읽고, 공개된 AI 모듈 캐리어 보드 하나를 골라 전원 트리(입력→레귤레이터→각 레일)와 고속 인터페이스 목록을 표로 정리한다. 레일마다 필요한 디커플링과 배선 규칙(임피던스·길이)을 적어 설계 체크리스트를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Signal integrity — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Signal_integrity",
+              "kind": "docs"
+            },
+            {
+              "title": "Power integrity — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Power_integrity",
+              "kind": "docs"
+            },
+            {
+              "title": "Neural processing unit — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Neural_processing_unit",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "온디바이스 AI 보드의 인터페이스와 발열",
+          "from": "task",
+          "quote": "온디바이스AI 임베디스 시스템 설계 및 통신/인터페이스 최적화 설계",
+          "priority": "high",
+          "why": "주요업무이고 피지컬 AI 탑재 프로토(자율주행·로보틱스)가 이 보드 위에 선다.",
+          "gap_check": "로봇에 카메라·라이다·모터 드라이버를 붙일 때 MIPI CSI, USB, 이더넷, CAN 중 무엇을 어디에 쓰고 대역폭은 어떻게 계산하는가? 밀폐된 로봇 몸체 안에서 NPU 가 발열로 성능을 낮추지(스로틀링) 않게 하려면 방열 경로를 어떻게 잡는가?",
+          "drill": "Embedded system·MIPI·Thermal management 문서를 읽고, 카메라 2대·IMU·모터 4개를 가진 가상 로봇의 인터페이스 블록도를 그려 각 링크의 필요 대역폭과 여유를 계산한다. 칩 발열량과 허용 온도로 방열판·팬 필요 여부를 대략 계산해 표로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Embedded system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Embedded_system",
+              "kind": "docs"
+            },
+            {
+              "title": "MIPI Alliance — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Mobile_Industry_Processor_Interface",
+              "kind": "docs"
+            },
+            {
+              "title": "Thermal management (electronics) — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Thermal_management_(electronics)",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "외주 제작을 전제로 한 기구 설계 — 공차와 제작성",
+          "from": "preference",
+          "quote": "하드웨어 개발 및 기구부 설계 경험",
+          "priority": "high",
+          "why": "우대사항이고, 필수에 AutoCAD 기구 설계가, 주요업무에 기구부 설계 병행과 외주 제작 관리가 있다.",
+          "gap_check": "보드를 끼울 브래킷 도면에 치수 공차와 기하 공차를 어떻게 넣고, 공차를 너무 빡빡하게 주면 외주 가공비·납기가 어떻게 되는가? 판금·CNC·3D 프린팅 중 시제품 1~2개와 수십 개일 때 각각 무엇을 고르는가?",
+          "drill": "Design for manufacturability·GD&T 문서를 읽고, 앞 과제의 보드를 고정하는 브래킷을 AutoCAD 로 그려 치수·공차를 넣는다. 같은 부품을 판금과 3D 프린팅으로 만든다고 가정해 도면에서 바꿔야 할 곳을 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Design for manufacturability — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Design_for_manufacturability",
+              "kind": "docs"
+            },
+            {
+              "title": "Geometric dimensioning and tolerancing — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Geometric_dimensioning_and_tolerancing",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "로봇 그리퍼(엔드 이펙터)",
+          "from": "preference",
+          "quote": "자율주행로봇, 협동로봇, 휴머노이드로봇/그리퍼 지식 보유",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무의 로보틱스 시제품·피지컬 AI 탑재 프로토가 제조 현장 로봇으로 이어진다(신입 공고의 '제조분야 파운데이션 모델').",
+          "gap_check": "평행 그리퍼·진공 흡착·소프트 그리퍼는 잡을 수 있는 물체와 파지력 제어에서 무엇이 다른가? 그리퍼 무게와 크기가 협동로봇의 가반하중 안에서 어떻게 계산되는가?",
+          "drill": "Robot end effector 문서를 읽고, 반도체 트레이·박스·부드러운 부품 세 가지를 잡는 과제에 맞는 그리퍼 방식을 고르고 이유·필요 파지력·무게를 표로 비교한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Robot end effector — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Robot_end_effector",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
