@@ -711,3 +711,7 @@ zerodha.tech 최신 2024-03. 블로그 멈춤. updated_at 만. 1회째. 09-03 �
 ## bolt 재방문 → 확장 (2026-09-26)
 
 09-17 디자인 엔지니어링 글로 one-component-once. 결정 6개, 새 도메인 디자인에서 제품 코드까지. Wayfair design-qa-skill 과 짝으로 비교 재료에.
+
+## flyio 재방문 (2026-09-26)
+
+피드 최신 09-03, 지난 갱신 전. updated_at 만. 1회째.
