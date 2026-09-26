@@ -303,6 +303,129 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/346442",
+      "title": "[채널톡] MachineLearning Engineer(Model Training)",
+      "site": "wanted",
+      "verdict": "신입-경력 10년 표기지만 필수 요건이 **TTS 또는 STT 모델을 직접 학습시켜 서비스에 적용한 경험**이라 실제로는 음성 모델 학습 경험자 자리다. 전문연구요원 지원 가능. 외부 API 가 아니라 자체 모델을 설계·학습하는 3명 내외의 새 팀으로, 첫 과제가 AI 음성 상담용 TTS/STT 의 자연스러움·발음 정확도·낮은 latency 이고 이후 에이전트 라우팅용 경량 LLM·특화 소형 모델로 넓힌다고 적는다(팀 소개). 업무는 데이터 수집→전처리→학습→평가 end-to-end 파이프라인, 음성 품질의 정량 평가, 추론 지연·비용을 고려한 모델 구조·서빙, 제품 적용, 연구 로드맵. 필수는 TTS/STT 직접 학습·서비스 적용, PyTorch end-to-end 음성 모델 학습, Transformer 기반 음성 모델 구조의 깊은 이해, 음성 데이터셋 구축·품질 개선, multi-GPU 학습, 성능 개선 관여. 우대는 한국어/일본어 다국어, 스트리밍 인식·합성, DeepSpeed·FSDP, 논문 구현, 오픈소스 기여, ONNX·TensorRT, 경량 LLM. 전형: 서류 > 사전 기술 인터뷰(온라인, ML/AI Q&A 30분) > 1차(1시간 30분, 수행 프로젝트 중심) > 2차 > 최종 합격.",
+      "fit": {
+        "must_have": [
+          "TTS/STT 직접 학습·서비스 적용",
+          "PyTorch end-to-end 음성 모델 학습",
+          "Transformer 기반 음성 모델 구조",
+          "음성 데이터셋 구축·품질 개선",
+          "multi-GPU 학습"
+        ],
+        "can_learn": [
+          "한국어/일본어 다국어",
+          "스트리밍 인식·합성",
+          "DeepSpeed·FSDP",
+          "ONNX·TensorRT",
+          "경량 LLM"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Transformer 기반 STT — Whisper·Conformer 구조",
+          "from": "qualification",
+          "quote": "• Transformer 기반 음성 모델 구조에 대한 깊은 이해",
+          "priority": "core",
+          "why": "필수 요건이고 첫 과제가 AI 음성 상담용 STT/TTS 성능 개선이다. 우대에 한국어/일본어 다국어가 있다(회사가 일본 시장 1위를 적는다).",
+          "gap_check": "Whisper 같은 인코더-디코더 구조와 Conformer 같은 인코더 + CTC 구조는 스트리밍(말하는 도중 인식)에 각각 얼마나 맞고, 상담 전화 음질(8kHz 협대역)에서 인식률이 떨어지면 데이터 쪽에서 무엇을 하는가?",
+          "drill": "Whisper 작은 모델로 한국어 상담 느낌의 음성 몇 분을 인식시키고 jiwer 로 WER/CER 을 잰 뒤, 같은 음성을 8kHz 로 내려 다시 재서 차이를 기록한다. Conformer 논문의 그림 1 을 보고 Whisper 와 구조 차이를 세 줄로 적는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Robust Speech Recognition via Large-Scale Weak Supervision",
+              "url": "https://arxiv.org/abs/2212.04356",
+              "kind": "paper"
+            },
+            {
+              "title": "Conformer: Convolution-augmented Transformer for Speech Recognition",
+              "url": "https://arxiv.org/abs/2005.08100",
+              "kind": "paper"
+            },
+            {
+              "title": "openai/whisper",
+              "url": "https://github.com/openai/whisper",
+              "kind": "tool"
+            },
+            {
+              "title": "jitsi/jiwer",
+              "url": "https://github.com/jitsi/jiwer",
+              "kind": "tool"
+            }
+          ]
+        },
+        {
+          "topic": "TTS 학습과 음성 품질의 정량 평가",
+          "from": "task",
+          "quote": "• 음성 품질(자연스러움, 발음 정확도, 감정 표현 등)을 정량적으로 평가하고 개선합니다",
+          "priority": "core",
+          "why": "주요업무이고 필수에 TTS/STT 직접 학습 경험이 있다. 팀 소개가 자연스러운 음성·정확한 발음을 첫 과제로 적는다.",
+          "gap_check": "TTS 의 '자연스러움' 을 사람 청취 평가(MOS) 없이 매 실험마다 재려면 무엇(자동 MOS 예측·합성음을 다시 STT 로 돌린 CER)을 쓰고, 그 자동 지표가 사람 평가와 어긋나는 경우는 언제인가?",
+          "drill": "VITS 계열 공개 모델로 상담 문장 50개를 합성하고, 합성음을 Whisper 로 다시 인식한 CER(발음 정확도 대리)과 UTMOS 예측 점수를 표로 만든 뒤, 5문장은 직접 들어 점수와 어긋나는 사례를 적는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech",
+              "url": "https://arxiv.org/abs/2106.06103",
+              "kind": "paper"
+            },
+            {
+              "title": "UTMOS: UTokyo-SaruLab System for VoiceMOS Challenge 2022",
+              "url": "https://arxiv.org/abs/2204.02152",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "음성 데이터셋 구축·정제",
+          "from": "qualification",
+          "quote": "• 음성 데이터셋 구축 및 데이터 품질 개선 경험",
+          "priority": "high",
+          "why": "필수 요건이고 주요업무가 데이터 수집→전처리→학습→평가 end-to-end 파이프라인이다.",
+          "gap_check": "상담 녹취로 학습 데이터를 만들 때 발화 구간 자르기·전사 오류·화자 섞임·개인정보(전화번호·이름)를 각각 어떻게 거르고, 전사가 틀린 샘플은 무엇으로 자동 탐지하는가?",
+          "drill": "공개 한국어 음성 데이터 일부를 받아 VAD 로 구간을 자르고, 기존 전사와 Whisper 인식 결과의 CER 이 큰 샘플을 뽑아 직접 들어 진짜 전사 오류 비율을 센다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "multi-GPU 학습 — FSDP",
+          "from": "qualification",
+          "quote": "• GPU 환경에서 모델 학습을 수행해본 경험 (multi-GPU 등)",
+          "priority": "high",
+          "why": "필수 요건이고 우대에 DeepSpeed·FSDP 분산 학습이 있다.",
+          "gap_check": "DDP 는 GPU 마다 모델 전체를 복제하는데 FSDP 는 무엇을 나눠 갖고, 그 대가로 통신이 어디서 늘어나는가? 음성처럼 샘플 길이가 제각각인 데이터에서 GPU 간 배치 길이 불균형은 어떻게 줄이는가?",
+          "drill": "FSDP 튜토리얼을 GPU 두 장(또는 클라우드 인스턴스)에서 돌려 DDP 대비 GPU 메모리 사용량과 초당 스텝을 비교하고, 길이 기준 버킷 샘플러를 넣어 패딩 비율 변화를 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Getting Started with Fully Sharded Data Parallel (FSDP2)",
+              "url": "https://docs.pytorch.org/tutorials/intermediate/FSDP_tutorial.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "추론 지연·비용 최적화 — ONNX",
+          "from": "task",
+          "quote": "• inference latency 및 비용을 고려한 효율적인 모델 구조와 서빙 방식을 설계합니다",
+          "priority": "nice",
+          "why": "주요업무이고 우대에 ONNX·TensorRT 추론 최적화와 스트리밍 합성이 있다. 전화 상담은 응답이 늦으면 대화가 어색해진다.",
+          "gap_check": "음성 상담에서 '사용자 말이 끝나고 AI 음성이 나오기 시작할 때까지' 의 지연을 STT·LLM·TTS 단계별로 어떻게 나눠 재고, TTS 는 문장 전체를 다 만들기 전에 첫 조각을 먼저 내보내려면 무엇이 필요한가?",
+          "drill": "위 TTS 모델을 ONNX 로 내보내 ONNX Runtime 에서 문장 길이별 합성 시간을 PyTorch 와 비교하고, 문장을 쉼표 단위로 잘라 첫 조각 출력까지의 시간을 잰다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ONNX Runtime",
+              "url": "https://onnxruntime.ai/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
