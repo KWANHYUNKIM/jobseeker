@@ -785,3 +785,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 deliveroo 재방문 → 확장
 - Roonomics 이탈 예측(2026-09-22) 로 `flag-only-what-we-can-call` 추가. 새 도메인, 결정 6개, 그림 2장. 수치: 플래그 90%+ 감소, 정밀도 8배(오프라인). 사기(3DS)·실험 도메인과 연결.
+
+## 2026-09-26 doordash 재방문 → 확장
+- Triton Auto Tuner(2026-09-21) 로 `measure-the-serving-config` 추가. 새 도메인, 결정 7개, 그림 2장. 수치: 68→863 QPS, 퇴행 44/219 vs 0/206, 252 슬롯, 평균 QPS 1.75~6.78배.
+- 안 읽은 새 글 다섯은 open_questions 와 STATE 에 남김.

@@ -5,7 +5,7 @@
   "country": "US",
   "category": "커머스",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "doordash.com",
   "one_liner": "음식이 식기 전에 도착하게 만드는 회사 — 주문 하나에 손님과 가게와 배달원 셋의 시간이 걸려 있다",
   "business_model": "주문 하나가 오갈 때마다 몫을 받는다. 2026년 2분기 매출이 45억 달러(+36%), 조정 EBITDA 가 9억 1,400만 달러(+40%)이고, 주문은 9억 7,000만 건(+27%), 마켓플레이스 총거래액은 331억 달러(+36%)다. Deliveroo 인수분을 빼면 매출 +24%·총거래액 +23% 라고 회사가 함께 밝힌다.\n\n**이 사업의 기술 요구는 규모가 아니라 동시성에서 온다.** 주문 하나에 손님과 가게와 배달원 셋의 시간이 동시에 걸려 있고, 어느 하나가 어긋나면 음식이 식는다. 그래서 한 곳의 장애가 전체를 멈추지 않게 하는 일이 이 회사의 오랜 과제였고, 실제로 2018년에 신뢰성 위기로 코드 프리즈까지 갔다(재구성). 2026년의 이 회사는 만드는 방식 자체를 에이전트로 옮기고 있다 — 사내 플랫폼 Flux 가 한 달에 엔지니어링 작업 13만 건을 자동화하고 주당 코드 리뷰 2.5만 건을 돌린다.\n\n도메인 셋을 사업(음식 배달·마트·광고)으로 자르지 않고 **무엇을 다시 지었느냐**로 잘랐다. 회사가 공개한 시스템 글이 전부 다시 짓는 이야기이기 때문이다 — 모놀리스를 쪼갠 이야기, 에이전트의 실행 자리를 옮긴 이야기, 이벤트 처리를 통째로 바꾼 이야기. 사업으로 가르면 이 셋이 한 칸에 뭉치고 무엇이 언제 왜 바뀌었는지가 사라진다(재구성).",
@@ -20,7 +20,7 @@
   "domain_map": {
     "title": "DoorDash 도메인 지도",
     "question": "손님과 가게와 배달원 셋의 시간이 한 주문에 걸려 있을 때, 무엇이 그것을 어긋나지 않게 하는가?",
-    "code": "flowchart TD\n  C[\"<b>손님</b>\"]:::accent --> F[\"<b>프런트엔드</b>\"]\n  F --> B[\"<b>BFF 층</b><br/>• 백엔드 구조를 감춘다\"]:::list\n  B --> S[\"<b>백엔드 서비스 약 50개</b><br/>• 그중 20개가 크리티컬 패스\"]:::accent\n  S --> P[\"<b>플랫폼 층</b><br/>• 신원 · 통신\"]:::list\n  P --> I[\"<b>인프라 층</b><br/>• DB · 메시지 브로커\"]:::list\n  S -.->|\"⚠️ 아직 안 판 자리\"| D[\"⚠️ <b>주문과 배차를 흘린다</b>\"]:::gone\n  DEV[\"<b>만드는 쪽</b>\"]:::accent --> FL[\"<b>Flux</b><br/>• 한 달 13만 작업<br/>• 주당 코드 리뷰 2.5만\"]:::accent\n  FL -.->|\"이 모든 것을 짓는다\"| S\n  classDef gone stroke-dasharray: 4 3"
+    "code": "flowchart TD\n  C[\"<b>손님</b>\"]:::accent --> F[\"<b>프런트엔드</b>\"]\n  F --> B[\"<b>BFF 층</b><br/>• 백엔드 구조를 감춘다\"]:::list\n  B --> S[\"<b>백엔드 서비스 약 50개</b><br/>• 그중 20개가 크리티컬 패스\"]:::accent\n  S --> P[\"<b>플랫폼 층</b><br/>• 신원 · 통신\"]:::list\n  P --> I[\"<b>인프라 층</b><br/>• DB · 메시지 브로커\"]:::list\n  S -.->|\"⚠️ 아직 안 판 자리\"| D[\"⚠️ <b>주문과 배차를 흘린다</b>\"]:::gone\n  DEV[\"<b>만드는 쪽</b>\"]:::accent --> FL[\"<b>Flux</b><br/>• 한 달 13만 작업<br/>• 주당 코드 리뷰 2.5만\"]:::accent\n  FL -.->|\"이 모든 것을 짓는다\"| S\n  S --> T[\"<b>모델 서빙 설정을 잰다</b><br/>• Triton Auto Tuner · 252 슬롯<br/>• 같은 모델 68 → 863 QPS\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
   },
   "revenue_streams": [
     {
@@ -295,6 +295,45 @@
       ],
       "features": [
         "one-pipeline-per-event-not-per-kind"
+      ]
+    },
+    {
+      "name": "모델 서빙 설정을 짐작하지 않고 잰다",
+      "why": "검색·랭킹·배차·사기·광고의 PyTorch 모델이 모두 Triton 위에서 CPU 로 서빙되는데, 같은 모델 파일이 설정만으로 12배 갈렸다. 본문 확인함(2026-09-21). 이 도메인의 문제는 모델이 아니라 모델을 올리는 방식이다.",
+      "tech": [
+        {
+          "tech": "Triton Auto Tuner (공유 벤치마크 풀)",
+          "solves": "252개 고정 슬롯에서 티어 x 인스턴스 조합을 병렬로 재고, 지연 목표를 지키는 가장 싼 설정을 배포 오버라이드로 낸다. 수백 개 운영·섀도 모델을 다룬다.",
+          "limits": "지금은 CPU 모델뿐이다 — GPU 는 후속 편. 풀은 쓰지 않을 때도 서 있다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+              "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+              "publisher": "DoorDash Engineering",
+              "date": "2026-09-21",
+              "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+            }
+          ]
+        },
+        {
+          "tech": "NVIDIA Triton 명시적 모델 제어 + perf_analyzer",
+          "solves": "파드 재시작 없이 후보 설정을 로드·언로드하고, localhost gRPC 부하와 cgroup CPU 로 한 결과를 남긴다.",
+          "limits": "localhost 측정이라 네트워크 비용이 빠진다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+              "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+              "publisher": "DoorDash Engineering",
+              "date": "2026-09-21",
+              "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "measure-the-serving-config"
       ]
     }
   ],
@@ -1787,6 +1826,364 @@
           "summary": "2026년 2분기 매출 45억 달러(+36%), 조정 EBITDA 9억 1,400만 달러(+40%), 주문 9억 7,000만 건(+27%), 마켓플레이스 총거래액 331억 달러(+36%). Deliveroo 인수분을 빼면 매출 +24%·총거래액 +23%."
         }
       ]
+    },
+    {
+      "key": "measure-the-serving-config",
+      "name": "기본값 대신 모델마다 재서 고른다",
+      "domain": "모델 서빙 설정을 짐작하지 않고 잰다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "검색·랭킹·배차·사기·광고가 모두 Triton 위의 PyTorch 모델이다. 같은 모델 파일, 같은 32 vCPU 파드인데 설정만 달라서 68 QPS 와 863 QPS 로 갈렸다 — 재학습도 코드 최적화도 없이 12배가 서빙 기본값에 묻혀 있었다.\n\n실수는 파드 크기를 성능의 주된 결정으로 본 것이다. 코어를 늘려도 인스턴스 수와 스레드 수를 같이 맞추지 않으면 경합이 늘어 오히려 느려진다. 264개 모델 가운데 단일 인스턴스 설정은 219개 중 44개가 가장 큰 티어에서 처리량이 절반 이하로 떨어졌다.\n\n**그래서 규칙 하나를 정하지 않고 재는 시스템을 만들었다.** '4 vCPU 를 쓰라'나 'OpenMP 는 1'같은 규칙이 71.8% 의 모델에는 맞지만 나머지 28.2% 에는 틀리다. 수백 개 모델에서 그 차이를 사람이 매번 벤치마크할 수 없으니, 고정된 측정 풀과 선택 로직을 공유 경로로 만들었다.",
+        "metrics": [
+          {
+            "label": "같은 모델·같은 파드에서 설정만 바꿨을 때",
+            "value": "68 QPS → 863 QPS, p99 126ms → 14ms, CPU 67% → 16%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "label": "vCPU 당 인스턴스 하나의 평균 QPS 향상",
+            "value": "4 vCPU 1.75배 · 8 vCPU 2.31배 · 16 vCPU 3.65배 · 32 vCPU 6.78배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "label": "심각한 처리량 퇴행",
+            "value": "단일 인스턴스 219개 중 44개(20.1%) vs vCPU 당 인스턴스 206개 중 0개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "label": "벤치마크 풀",
+            "value": "252 슬롯 (21개 그룹 x 12, amd64·arm64)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "label": "선택된 CPU 티어",
+            "value": "4 vCPU 71.8% · 8 vCPU 14.9% · 16 vCPU 10.2% · 32 vCPU 3.1%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "label": "CPU 비례 오토스케일 예측의 오차",
+            "value": "한 8 vCPU 시험에서 1,252 QPS 로 예측, 실제 포화 829 QPS (1.5배 과대)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "코어를 늘렸는데 느려졌을 때",
+          "thought": "문제는 파드 크기가 아니라 병렬성 두 겹이 서로 모르는 것이다. Triton 은 모델 사본을 여럿 돌리고, 사본 하나는 OpenMP 스레드를 여럿 쓴다. 인스턴스마다 코어 수만큼의 스레드 풀을 만들면 같은 코어를 두고 싸운다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "전사 규칙으로 박을지 정할 때",
+          "thought": "vCPU 당 단일 스레드 인스턴스가 대부분 이긴다. 그래도 그것을 기본값으로 박지 않은 까닭은 인스턴스와 스레드 사이의 선택이 여전히 모델마다 다르기 때문이다. 규칙 대신 그 규칙을 모델마다 시험하는 장치를 만든다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "오토스케일 신호를 볼 때",
+          "thought": "측정해 보니 CPU 가 26% 에서 멈췄는데 처리량은 이미 포화였다. CPU 가 병목이 아닌 모델에서는 CPU 비례 예측이 용량을 부풀린다 — 그래서 큐 신호가 필요하다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "서빙 설정",
+            "what": "CPU 아키텍처, vCPU 티어, Triton 인스턴스 수, OpenMP 스레드 수, 동시성, 메모리의 묶음. 모델 파일은 같아도 이것만으로 성능이 12배 갈린다."
+          },
+          {
+            "name": "AutoTuneFlow",
+            "what": "오케스트레이션 층. 모델 파일·대표 입력·프로덕션 트래픽·지연 목표·후보 행렬을 모은다."
+          },
+          {
+            "name": "배포 그룹",
+            "what": "12개 슬롯 묶음 — 4개 CPU 티어 x 3개 인스턴스 수. 한 번의 스윕이 그룹 하나를 잡는다. 전체 21개."
+          },
+          {
+            "name": "S3 락",
+            "what": "어느 그룹이 쓰이는지 조정한다. 바쁘거나 건강하지 않으면 다른 그룹으로 간다."
+          },
+          {
+            "name": "후보 측정",
+            "what": "perf_analyzer 가 localhost gRPC 로 동시성 단계별 부하를 걸고 QPS·p99·cgroup CPU 를 한 결과로 남긴다."
+          },
+          {
+            "name": "배포 오버라이드",
+            "what": "선택 층의 산출물. 아키텍처·티어·메모리·인스턴스·스레드·예상 QPS·p99·최소/최대 레플리카·이미지·예상 비용."
+          }
+        ],
+        "invariants": [
+          "인스턴스 수와 스레드 수를 따로 정하지 않는다 — 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 본다.",
+          "측정은 프로덕션과 같은 Triton 런타임과 HPA 가 보는 것과 같은 CPU 신호로 한다.",
+          "지연 목표나 CPU 한도를 넘는 후보는 비용이 싸도 탈락이다.",
+          "측정·선택된 설정·비용 입력을 함께 저장한다 — 엔지니어의 노트북에 두지 않는다.",
+          "모델이 늘어도 풀은 늘리지 않는다 — 늘어나는 것은 풀의 사용률이다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "AutoTuneFlow 가 모델 파일·대표 입력·프로덕션 QPS·지연 목표·후보 행렬을 모은다",
+            "why": "모델 팀은 벤치마크 풀의 구조를, 측정 층은 그 모델의 사업 맥락을 몰라도 되게 오케스트레이션이 둘을 잇는다."
+          },
+          {
+            "step": "S3 락으로 비어 있는 배포 그룹 하나를 잡는다 — 바쁘거나 건강하지 않으면 다른 그룹",
+            "why": "여러 모델을 동시에 튜닝하면서 한 그룹을 두 스윕이 나눠 쓰지 않게."
+          },
+          {
+            "step": "그룹 안 12개 슬롯에서 티어 x 인스턴스 수 조합을 병렬로 돌린다",
+            "why": "비싼 조합을 동시에 돌려 탐색 행렬을 넓혀도 벽시계 시간이 그만큼 늘지 않는다."
+          },
+          {
+            "step": "후보마다 모델 제어 API 로 설정을 덮어 로드하고, 입력 검증·워밍업 뒤 perf_analyzer 로 동시성 단계를 훑는다",
+            "why": "S3 편집·저장소 폴링 지연·파드 재시작이 후보마다 붙지 않는다."
+          },
+          {
+            "step": "QPS·p99·cgroup CPU 를 기록하고 모델을 내린 뒤 그룹을 돌려준다",
+            "why": "같은 파드를 다음 스윕이 바로 쓴다."
+          },
+          {
+            "step": "지연·CPU 한도를 넘는 후보를 버리고, 남은 후보의 파드당 용량을 프로덕션 QPS 범위와 합쳐 레플리카 수와 비용을 계산한다",
+            "why": "순위표가 아니라 운영 가능한 설정이 답이어야 한다."
+          },
+          {
+            "step": "검증한 배포 오버라이드를 배포 워크플로로 넘기고 측정·설정·비용을 함께 저장한다",
+            "why": "추천을 재현할 수 있게."
+          },
+          {
+            "step": "플랫폼 이전과 연속 학습이 같은 경로를 탄다 — 새 환경, 새 모델 파일마다 다시 잰다",
+            "why": "이전 플랫폼의 가정을 그대로 가져가지 않고, 설정이 모델과 함께 바뀌게."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "서빙 설정을 전사 기본값으로 정할 것인가, 모델마다 잴 것인가",
+            "chosen": "모델마다 잰다. '4 vCPU' 같은 값은 첫 후보일 뿐 기본값이 아니다.",
+            "alternatives": [
+              "전사 기본값 하나(예: 4 vCPU, OpenMP 1)를 박는다",
+              "모델 팀이 각자 벤치마크한다"
+            ],
+            "tradeoff": "4 vCPU 가 71.8% 의 모델에 맞지만 28.2% 는 더 큰 티어가 이겼다 — 규칙 하나면 그만큼이 틀린다. 값은 상시 벤치마크 풀과 스윕 시간이다. 모델 팀이 각자 하면 측정 조건이 모델마다 달라 비교가 안 된다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "question": "인스턴스 수와 스레드 수를 어떻게 나누나",
+            "chosen": "하나의 결정으로 묶는다 — 인스턴스 수 x 스레드 수 ≈ vCPU. 많은 모델에서 N 코어에 단일 스레드 인스턴스 N 개가 이겼다.",
+            "alternatives": [
+              "기본 패턴 — N 코어에 인스턴스 하나, 스레드 N 개",
+              "둘을 따로 조정한다"
+            ],
+            "tradeoff": "한 모델이 68 → 863 QPS, 퇴행은 44/219 → 0/206. 인스턴스마다 모델 사본을 따로 올리므로 인스턴스를 늘리면 메모리가 는다(이 사이트의 해석) — 그래서 메모리 할당도 오버라이드에 들어간다. 그리고 여전히 모델마다 답이 달라서 규칙이 아니라 측정의 축으로 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "question": "벤치마크 인프라를 모델마다 띄울 것인가",
+            "chosen": "고정된 공유 풀. 21개 그룹 x 12슬롯 = 252 슬롯을 미리 띄워 두고 S3 락으로 나눠 쓴다.",
+            "alternatives": [
+              "튜닝할 때마다 모델별 인프라를 띄운다"
+            ],
+            "tradeoff": "모델이 늘면 풀의 사용률이 늘 뿐 인프라가 늘지 않는다. 대가는 쓰지 않을 때도 서 있는 252개 슬롯이고, 동시에 튜닝할 모델이 그룹 수를 넘으면 줄을 선다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "question": "후보마다 설정을 어떻게 갈아 끼우나",
+            "chosen": "Triton 명시적 모델 제어 모드. 모델 제어 API 로 후보 설정을 덮어 로드하고, 재고 나면 내린다.",
+            "alternatives": [
+              "후보마다 S3 의 모델 저장소를 고치고 폴링을 기다린다",
+              "후보마다 파드를 다시 띄운다"
+            ],
+            "tradeoff": "후보마다 붙던 저장소 편집·폴링 지연·파드 재시작이 사라져 같은 파드를 연달아 쓴다. 대신 한 파드에서 앞 후보의 흔적(메모리 단편화·캐시)이 다음 측정에 섞이지 않는지를 워밍업과 검증에 맡긴다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 재나",
+            "chosen": "프로덕션과 같은 Triton 런타임에서 perf_analyzer 가 localhost gRPC 로 동시성 단계별 부하를 걸고, CPU 는 cgroup 카운터로 — HPA 가 보는 것과 같은 신호로 읽는다.",
+            "alternatives": [
+              "별도 부하 도구로 네트워크 너머에서 친다",
+              "노드 수준 CPU 를 읽는다"
+            ],
+            "tradeoff": "측정한 CPU 가 운영의 오토스케일 신호와 같은 단위라 결과를 그대로 레플리카 계산에 쓸 수 있다. localhost 라 실제 요청이 겪는 네트워크 비용은 빠진다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "question": "오토스케일을 CPU 로만 할 것인가",
+            "chosen": "CPU 에 큐 압력(대기 요청 수·큐 대기 시간)을 합친 신호로 옮기는 중이다.",
+            "alternatives": [
+              "CPU 비례 예측 — 현재 QPS x 목표 CPU / 측정 CPU"
+            ],
+            "tradeoff": "CPU 가 병목이 아닌 모델에서는 CPU 비례 예측이 용량을 부풀린다 — 한 시험에서 1,252 QPS 로 봤는데 829 QPS 에서 포화였다(1.5배). 신호가 둘이 되면 둘을 합치는 규칙과 그 규칙의 튜닝이 새로 생긴다(이 사이트의 해석). 아직 진행 중이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          },
+          {
+            "question": "튜너의 산출물을 무엇으로 둘까",
+            "chosen": "순위표가 아니라 배포 오버라이드 — 레플리카 범위·이미지·예상 비용까지 계산해 배포 워크플로가 바로 먹는 형태로. 측정과 함께 저장한다.",
+            "alternatives": [
+              "벤치마크 결과를 표로 주고 모델 팀이 고른다"
+            ],
+            "tradeoff": "벤치마크와 운영 설정 사이의 틈이 닫히고 추천이 재현된다. 대신 튜너가 비용 모델과 배포 형식까지 알아야 해서 책임이 커진다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+                "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+                "publisher": "DoorDash Engineering",
+                "date": "2026-09-21",
+                "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "주문과 배차를 실시간으로 흘린다 (같은 회사 도메인)",
+          "via": "배차·사기 모델 서빙",
+          "contract": "배차와 사기가 이 튜너가 다루는 Triton 모델의 사용처로 글에 나온다. 두 도메인이 어떤 모델로 이어지는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Kubernetes HPA",
+          "via": "cgroup CPU 신호",
+          "contract": "측정을 HPA 가 보는 신호로 하고, 그 신호가 틀리는 자리(처리량이 먼저 포화)를 찾아 큐 신호를 더하는 중이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "연속 학습·플랫폼 이전 워크플로",
+          "via": "같은 벤치마크 풀과 선택 로직",
+          "contract": "새 모델 파일, 새 서빙 환경마다 다시 잰다. 모델 팀이 따로 벤치마크 인프라를 만들지 않는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "모델 파일에서 배포 설정까지",
+          "question": "튜너는 한 모델의 설정을 어떻게 정하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>AutoTuneFlow</b><br/>• 모델 파일 · 대표 입력<br/>• 프로덕션 QPS · 지연 목표 · 후보 행렬\"]:::accent --> L{\"S3 락<br/>빈 배포 그룹\"}\n  L -->|\"바쁨·불건강\"| L\n  L --> G[\"<b>배포 그룹 12슬롯</b><br/>• 4·8·16·32 vCPU x 인스턴스 수 3종<br/>• 병렬 실행\"]:::list\n  G --> M[\"<b>후보 측정</b><br/>• 모델 제어 API 로 설정 덮어 로드<br/>• perf_analyzer · cgroup CPU\"]:::list\n  M --> S[\"<b>선택</b><br/>• 지연·CPU 한도 넘는 후보 탈락<br/>• 프로덕션 QPS 와 합쳐 레플리카·비용\"]:::accent\n  S --> O[\"<b>배포 오버라이드</b><br/>• 측정·설정·비용 함께 저장\"]:::accent\n  CT[\"<b>연속 학습 · 플랫폼 이전</b>\"]:::quiet -.-> A"
+        },
+        {
+          "title": "코어를 늘렸는데 느려지는 경로",
+          "question": "왜 더 큰 파드가 처리량을 절반으로 떨어뜨리나",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[\"<b>파드를 32 vCPU 로 키운다</b>\"]:::quiet --> Q{\"인스턴스·스레드를 같이 안 맞추면\"}\n  Q -->|\"인스턴스 1 · 스레드 32\"| F1[\"<b>한 워커가 코어를 다 쓰려 한다</b><br/>• 68 QPS · p99 126ms\"]:::quiet\n  Q -->|\"인스턴스 여럿 · 각자 풀 크기 스레드\"| F2[\"<b>스레드 풀끼리 같은 코어를 두고 싸운다</b>\"]:::quiet\n  F1 --> R[\"<b>단일 인스턴스 219개 중 44개가<br/>처리량 절반 이하로</b>\"]:::quiet\n  Q -->|\"인스턴스 x 스레드 ≈ vCPU\"| OK[\"<b>인스턴스 32 · 스레드 1</b><br/>• 863 QPS · p99 14ms<br/>• 퇴행 206개 중 0개\"]:::accent\n  OK --> H{\"오토스케일을 CPU 로만 보면\"}\n  H -->|\"CPU 26% 에서 멈춘 채 포화\"| F3[\"<b>용량을 1.5배 과대 예측</b>\"]:::quiet\n  H -->|\"큐 압력을 더한다\"| OK2[\"<b>포화를 직접 본다</b> (진행 중)\"]:::list"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+          "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+          "publisher": "DoorDash Engineering",
+          "date": "2026-09-21",
+          "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
+        }
+      ]
     }
   ],
   "eras": [
@@ -1938,7 +2335,8 @@
     "gRPC·Kotlin 을 무엇과 견줘 왜 골랐는지가 없다 — 검토했다는 서술까지만 있고 판단 근거가 빠져 있다.",
     "careersatdoordash.com/blog 는 WebFetch 가 403 을 준다 — 브라우저로는 전문이 읽힌다. 이 회사의 자료는 브라우저로만 열린다.",
     "Deliveroo 인수 뒤의 기술 통합을 모른다 — 매출 성장의 상당 부분이 거기서 오는데(인수분을 빼면 +36%가 +24%로) 통합 이야기를 못 찾았다.",
-    "Flux 의 실패율·비용·되돌린 비율이 없다 — 채택 수치(한 달 13만 작업·주당 코드 리뷰 2.5만 건·플레이북 300개 이상)는 많은데 품질 수치가 없다."
+    "Flux 의 실패율·비용·되돌린 비율이 없다 — 채택 수치(한 달 13만 작업·주당 코드 리뷰 2.5만 건·플레이북 300개 이상)는 많은데 품질 수치가 없다.",
+    "Triton Auto Tuner 의 GPU 편이 후속으로 예고됐다(2026-09-21). 같은 09-06 이후 글 가운데 Vera(데이터 에이전트)·기능 플래그 정리 다중 에이전트·Ask DoorDash 5·6편·Dot 자율 배달은 아직 안 읽었다 — 다음 재방문 때 결정과 대가가 있는지 본다."
   ],
   "sources": [
     {
@@ -1968,6 +2366,13 @@
       "publisher": "DoorDash Engineering",
       "date": "2022-10-21",
       "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+    },
+    {
+      "title": "Triton Auto Tuner: Finding the Right Triton Configuration for Hundreds of Models",
+      "url": "https://careersatdoordash.com/blog/triton-auto-tuner-finding-the-right-triton-configuration-for-hundreds-of-models/",
+      "publisher": "DoorDash Engineering",
+      "date": "2026-09-21",
+      "summary": "검색·랭킹·배차·사기·광고의 PyTorch 모델을 NVIDIA Triton 으로 CPU 서빙하는데, 모델마다 CPU 아키텍처·파드 크기·Triton 인스턴스 수·OpenMP 스레드 수·동시성을 골라야 한다. 한 모델은 같은 32 vCPU 파드에서 설정만 바꿔 68 QPS 또는 863 QPS 였고 튜닝 뒤 p99 126ms→14ms, CPU 67%→16%. 264개 모델 분석에서 단일 인스턴스는 219개 중 44개가 가장 큰 티어에서 4 vCPU 처리량의 절반 이하로 떨어졌고 vCPU 당 인스턴스 하나는 206개 중 0개. 인스턴스 수 x 스레드 수 ≈ vCPU 를 한 결정으로 다룬다. 평균 QPS 향상 4 vCPU 1.75배 ~ 32 vCPU 6.78배. 오케스트레이션(AutoTuneFlow)·측정(공유 벤치마크 풀)·선택(지연·CPU 한도 탈락 후 프로덕션 QPS 와 결합해 배포 오버라이드 생성) 세 층. 풀은 amd64·arm64 에 21개 그룹 x 12슬롯 = 252 슬롯, S3 락으로 조정. 후보마다 파드 재시작 없이 Triton 명시적 모델 제어 API 로 로드·언로드. perf_analyzer 로 localhost gRPC 부하, cgroup CPU 로 HPA 와 같은 신호를 잰다. 4 vCPU 가 71.8% 로 가장 많이 뽑혔지만 28.2% 는 더 큰 티어가 이겼다. CPU 비례 HPA 예측이 한 시험에서 1.5배 과대추정 — 큐 압력 신호를 합치는 쪽으로 옮기는 중. 결과는 측정·설정·비용과 함께 저장되고 플랫폼 이전과 연속 학습에도 쓰인다. GPU 편은 후속."
     }
   ]
 }
