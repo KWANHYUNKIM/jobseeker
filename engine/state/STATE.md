@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**머니포워드 — 기능 1(`passkey-across-lifecycle`, 2026-09-26). 다음은 확장: 'PR 마다 기다리는 CI 를 줄인다' 를 CI 글(`entry/2026/09/11/100000` — 본문 전체를 새로 받아 '実測' 이후 해법·비교안 부분을). 그 뒤 완주 판정: X 수익원에 도메인이 없다 — X(금융기관 DX) 기술 글 조사, 없으면 두 번 뒤 hold. 대기 1/3(stmn). LayerX 는 in_progress.**
+**머니포워드 — 기능 2(`passkey-across-lifecycle` · `replace-the-coverage-tool`, 2026-09-26). 두 도메인 채움. X(금융기관 DX) 수익원에 도메인이 없어 완주 기준 셋째 미달 — 다음 사이클에 X 기술 글 조사 1회째(moneyforward-dev.jp 검색 'X'·'金融機関'·'マネーフォワード X'·'BaaS'). 있으면 도메인·기능을 더해 완주, 두 번 없으면 수익원 hold. `--gaps` 는 신규(stmn)를 찍지만 이 회사를 먼저 닫는다. 대기 1/3. LayerX 는 in_progress.**
+
 
 
 
