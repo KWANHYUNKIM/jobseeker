@@ -596,6 +596,105 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/387720",
+      "title": "[한화시스템/방산] 네트워크 개발",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 경기 성남시(방산 부문). **MANET(이동 애드혹 망)** 네트워크 개발자다 — 기지국 없이 이동하는 노드끼리 멀티홉으로 망을 이루는 전술 통신이다. 주요업무는 MANET 구조·프로토콜 설계, 이동 노드 **동적 토폴로지·라우팅**, Multi-hop/Relay 구성·최적화, 노드 가입·이탈·재구성과 **경로 복구**, **QoS·트래픽·자원 관리**, 이동 환경의 처리량·지연·패킷 손실 분석, **링크 상태 기반 적응형 라우팅**, 시뮬레이션과 실환경 검증, 이기종 무선망 **게이트웨이·연동**. 자격은 관련 학사, 유·무선/Ad-hoc 네트워크 5년, TCP/IP·Routing·QoS 이해, **L2/L3 프로토콜 개발·분석**, Linux 네트워크 개발. 우대가 길다 — OLSR·AODV·DSR·BATMAN, SDN·정책 라우팅, cross-layer 최적화, UAV·항공기·차량 고이동성 망, 전술망·군 통신, ns-3·OMNeT++, DTN·다중 경로·자가 치유 망. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "네트워크 개발 5년",
+          "L2/L3 프로토콜 개발·분석",
+          "TCP/IP·Routing·QoS",
+          "Linux"
+        ],
+        "can_learn": [
+          "OLSR·AODV",
+          "ns-3 시뮬레이션",
+          "DTN"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Ad-hoc 라우팅 — 사전형(OLSR)과 요청형(AODV)",
+          "from": "preference",
+          "quote": "• OLSR(Optimized Link State Routing Protocol), AODV, DSR, BATMAN 등 Ad-hoc Routing 경험",
+          "priority": "core",
+          "why": "우대사항이 프로토콜 이름을 들고, 주요업무가 동적 토폴로지·라우팅 기능 개발이다.",
+          "gap_check": "OLSR 이 MPR(다중점 중계)로 제어 메시지 범람을 줄이는 원리와, AODV 가 필요할 때만 경로를 찾는(RREQ/RREP) 방식을 비교해, 노드 이동 속도·트래픽 패턴에 따라 어느 쪽이 유리한지 말할 수 있는가? 링크가 끊겼을 때 각 프로토콜은 경로를 어떻게 복구하는가?",
+          "drill": "RFC 3626(OLSR)·3561(AODV)의 개요·메시지 절을 읽고, ns-3 로 노드 30개 무작위 이동 시나리오에서 두 프로토콜의 패킷 전달률·종단 지연·제어 오버헤드를 이동 속도별로 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "RFC 3626: Optimized Link State Routing Protocol (OLSR)",
+              "url": "https://www.rfc-editor.org/info/rfc3626/",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 3561: Ad hoc On-Demand Distance Vector (AODV) Routing",
+              "url": "https://www.rfc-editor.org/info/rfc3561/",
+              "kind": "docs"
+            },
+            {
+              "title": "ns-3 Documentation",
+              "url": "https://www.nsnam.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "링크 품질 기반 적응형 라우팅과 cross-layer",
+          "from": "task",
+          "quote": "• 무선링크 상태 기반 Adaptive Routing 기능 개발",
+          "priority": "high",
+          "why": "주요업무이고 우대사항에 Link Quality 기반 Adaptive Routing 과 Cross-layer Optimization 이 있다.",
+          "gap_check": "홉 수 최소 경로가 무선에서 나쁜 이유(약한 링크 여러 번 재전송)를 설명하고, ETX 같은 링크 품질 지표를 MAC 계층 정보로 어떻게 추정하는가? 품질 변화에 너무 빨리 반응하면 경로가 흔들리는(flapping) 문제는 어떻게 누르는가?",
+          "drill": "ns-3 에서 링크 손실률이 다른 두 경로(2홉 약한 링크 vs 3홉 강한 링크)를 만들고, 홉 수 기준과 링크 품질 기준 경로 선택의 처리량을 비교한다. 품질 지표에 이동평균·히스테리시스를 넣어 경로 전환 횟수를 줄인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "ns-3 Documentation",
+              "url": "https://www.nsnam.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "전술망 QoS — 좁은 대역폭에서 무엇을 먼저 보내나",
+          "from": "task",
+          "quote": "• QoS(Quality of Service), Traffic Management 및 자원관리 기능 개발",
+          "priority": "high",
+          "why": "주요업무이고 자격요건이 QoS 이해를 요구한다.",
+          "gap_check": "DiffServ 의 트래픽 분류·표시(DSCP)·큐잉·폐기 정책을 설명하고, 지휘 명령·위치 보고·영상처럼 성격이 다른 트래픽에 어떤 등급을 주는가? 멀티홉 무선에서는 홉마다 대역폭이 공유된다는 점이 QoS 설계를 어떻게 어렵게 하는가?",
+          "drill": "RFC 2475(DiffServ 구조)를 읽고, Linux tc 로 세 등급(우선·보장·최선) 큐를 설정해 대역폭을 제한한 링크에서 부하를 걸어 등급별 지연·손실을 측정한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "RFC 2475: An Architecture for Differentiated Services",
+              "url": "https://www.rfc-editor.org/info/rfc2475/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "끊겨도 전달되는 망 — DTN",
+          "from": "preference",
+          "quote": "• DTN, Multipath Routing, Self-Healing Network 경험",
+          "priority": "nice",
+          "why": "우대사항이다. 고이동성·통신 제약 환경에서는 종단 간 경로가 아예 없는 순간이 생긴다.",
+          "gap_check": "종단 간 경로가 동시에 존재하지 않을 때 저장-운반-전달(store-carry-forward)로 데이터를 넘기는 DTN 의 번들 계층은 TCP/IP 와 무엇이 다른가? 복제 기반 전달은 전달률과 자원 소모를 어떻게 맞바꾸는가?",
+          "drill": "RFC 4838(DTN 구조)을 읽고, 간헐적으로만 만나는 노드 5개 시나리오를 파이썬으로 시뮬레이션해 직접 전달·전염(epidemic) 전달의 전달률과 복제 수를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "RFC 4838: Delay-Tolerant Networking Architecture",
+              "url": "https://www.rfc-editor.org/info/rfc4838/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
