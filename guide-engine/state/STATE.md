@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **135건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **136건**.
+직전 회차: ✅ `Senior Staff Backend Engineer (IAM)`(8068982) 4항목 — **벵갈루루**, AI 클라우드 플랫폼 Identity 팀(OAuth2·OIDC·워크로드 신원·OPA), 13~17년.
 직전 회차: ✅ `Senior Staff Backend Engineer - Cloud Infrastructure`(7962133) 4항목 — **마운틴뷰**, $174K~$299K(salary.note 에 원문 추가), 우대 칸 연차(15/10년) vs Basic(7년) 어긋남(open_questions).
 직전 회차: ✅ `Senior Staff Backend Engineer`(7953042) 2항목 — **하이데라바드**, 자격 7줄뿐(팀 불명, open_questions). 얇은 대로 씀.
 직전 회차: ✅ `Senior Software Development Manager - ECommerce Engineering`(7988272) 4항목 — **벵갈루루**, SCMA(발주·재고 자동화), 대만 확장, 10~13년·관리 3년↑.
@@ -41,7 +42,7 @@
 ⚠️ 그사이 마감·삭제: `Staff, Back-end (Traffic Management)`(8104792, closed), `Staff, ML Engineer - Coupang Play`(7927865, 데이터에 없음).
 
 **남은 서울 목록은 다 썼다**(8222455 는 이미 dup 로 있음). 이제 `--gaps` 목록 순서대로 간다.
-⚠️ 다음 회차: `--gaps` 첫 줄을 따르되 **Pen Tester(8163504)가 맨 위에 나오면 건너뛰고 다음 줄**(사람 판단 대기). 다음은 `Senior Staff Backend Engineer (IAM)`(8068982) 예상. 건너뛴 두 건(Pen Tester·Mobile Security)은 사람 판단 대기. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
+⚠️ 다음 회차: `--gaps` 첫 줄을 따르되 **Pen Tester(8163504)가 맨 위에 나오면 건너뛰고 다음 줄**(사람 판단 대기). 다음은 `--gaps` 의 Pen Tester 다음 줄. 건너뛴 두 건(Pen Tester·Mobile Security)은 사람 판단 대기. ⚠️ schema 의 study.from 은 `task`/`qualification`/`preference` — `main_task` 아님.
 **새 회사를 원하면 사람이 QUEUE `## 대기` 에 넣는다.**
 
 ## ⏸ 쿠팡(`coupang`) — 확장 보류 중
