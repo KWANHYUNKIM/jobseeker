@@ -2532,3 +2532,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 シロク 회사 프로파일
 
 - sirok.co.jp 403 → WebSearch 로 sirok.jp(정기편 안내) 확인. 글 둘로 도메인 둘, 수익원 하나.
+
+## 2026-09-27 シロク 금액 로직 이행
+
+- `09ff5dc8e84cae` 전문으로 기능 `subscription-price-logic-migration`, 결정 7.
