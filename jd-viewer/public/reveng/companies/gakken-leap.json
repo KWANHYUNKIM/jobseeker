@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "기타",
   "status": "in_progress",
+  "hold_reason": "수익원 둘을 두 번 찾아 두 번 다 확인하지 못했다(2026-09-27). ① '그룹 · 그룹 밖 IT 사업 개발 · 운용 지원' 은 Strangler Fig 글에 inferred 로만 이어져 있다 — 그 글의 프로덕트가 그룹사 서비스라는 1차 자료를 찾지 못했다 ② '벤처 투자 · 육성' 은 도메인이 없다. 검색 1: Zenn Publication RSS 20편 + 공개 글 목록 2쪽 — 그룹사 서비스명(마나미루 · kimini · hugmo 등) · 투자를 다루는 글 없음, 대부분 ShikakuPass · 인프라 · 도구 글. 검색 2: Zenn 검색 'Gakken LEAP FreeMarker'·'Gakken LEAP Vue'·'学研 DX 開発'·'Gakken LEAP 投資' — 이 회사 글 0 건. 완주 기준 셋째를 못 채워 in_progress 로 두고 더 파지 않는다. 그룹사 서비스를 이름으로 다루는 개발 글이나 투자 사업 자료가 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-27",
   "domain": "gakken-leap.co.jp",
   "one_liner": "학연 그룹의 에드테크 · DX 회사 — 온라인 자격 강좌 ShikakuPass 의 학습 행동 로그를 Kinesis 와 BigQuery 로 모아 B2B 관리자 화면으로 되돌리고, 여러 세대의 프런트 기술이 겹친 화면은 일괄 대신 Strangler Fig 로 React 에 옮긴다",

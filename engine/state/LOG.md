@@ -2384,3 +2384,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Gakken LEAP Strangler Fig
 
 - `bd8167a771d2d5` 전문으로 기능 `strangler-fig-react-savings`, 결정 6. 글이 짧아 대가 몇은 '이 사이트의 해석'. 프로덕트명이 없어 수익원 연결은 inferred 유지.
+
+## 2026-09-27 Gakken LEAP 수익원 보류
+
+- 그룹 개발 지원 · 벤처 투자. 검색 1: RSS 20편 + 글 목록 2쪽 — 해당 없음. 검색 2: Zenn 검색 4낱말 — 0건. hold_reason 하나에 둘을 적고 in_progress 유지.
