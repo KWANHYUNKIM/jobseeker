@@ -1040,3 +1040,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 kakaopay 재방문
 
 - 09-07 이후 2편 모두 일반 가이드(Querydsl·MongoDB). 결정과 대가가 있는 자사 글 없음. updated_at 만 올림(없음 1회째).
+
+## 2026-09-26 kakehashi 재방문 → 확장
+
+- 09-10 "Pocket Musubiの配信処理を2時間半→11分に短縮した記録" 에서 결정 6개로 `daily-send-from-150-to-11-minutes` 를 새 도메인에 추가(features 2→3). 직접 검증의 누락 위험은 해석 표시.
