@@ -287,6 +287,83 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55059645&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=424d766c-c12d-4adc-b641-4783864ffc13",
+      "title": "[골프존] 데이터 사이언티스트",
+      "site": "saramin",
+      "verdict": "경력 2년 이상, 서울 강남구, 전공·학력 무관. **골프존 서비스 데이터를 다루는 데이터 사이언티스트**다. 포지션 소개는 데이터로 제품·서비스의 문제를 정의하고 분석·모델링으로 개선 방향을 찾으며, 사용자 행동·서비스 데이터로 인사이트를 발굴해 **예측·추천·자동화 AI 기능**을 고도화한다고 적는다. 주요업무는 제품 개선용 분석, **사용자 행동·서비스 로그로 예측/분류/추천 모델**, **주요 지표 설계와 A/B 테스트·통계 가설 검증**, AI/ML 성능 평가를 위한 데이터 실험 설계. 자격은 DBA·데이터 분석·ML·AI 서비스 경력 2년, Python·Pandas·NumPy·Scikit-learn, SQL 추출·가공, 전처리·피처 엔지니어링, 통계 해석·가설 검증. 우대는 추천·**군집화·이상탐지**, 하이퍼파라미터 튜닝, 실험 설계, 서비스 반영 경험, Airflow·MLflow·Vertex AI(원문 표기 'Verter AI'), LLM·RAG PoC, **GCP**, **로그·센서·사용자 행동 데이터**, 골프·스포츠 데이터 관심. 회사 소개의 530만 회원·하루 26만 라운드가 분석 재료다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 분석·ML 2년",
+          "Python·Pandas·Scikit-learn",
+          "SQL",
+          "통계 가설 검증"
+        ],
+        "can_learn": [
+          "A/B 테스트 설계",
+          "군집·이상탐지",
+          "GCP·Vertex AI"
+        ]
+      },
+      "study": [
+        {
+          "topic": "지표 설계와 A/B 테스트",
+          "from": "task",
+          "quote": "· 주요 지표 설계 및 실험/가설 검증 (A/B 테스트, 통계 분석 등)",
+          "priority": "core",
+          "why": "주요업무이고 우대사항에 실험 설계·분석 경험이 있다.",
+          "gap_check": "서비스 개선(예: 앱 라운드 예약 화면 변경)의 성공 지표와 가드레일 지표를 어떻게 나누고, 표본 크기·실험 기간은 무엇으로 정하는가? 결과를 매일 들여다보다 유의해지는 순간 멈추면 왜 틀리는가(피킹)? 사용자 단위가 아닌 매장 단위로 나눠야 하는 경우는?",
+          "drill": "A/B 테스트 문서를 읽고, 가상의 예약 전환율 개선 실험 계획서(가설·지표·최소 검출 효과·표본 수·기간·중단 기준)를 쓴 뒤, 시뮬레이션 데이터로 매일 검정해 멈추는 경우와 정해진 표본에서 한 번 검정하는 경우의 거짓 양성률을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "A/B testing — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/A/B_testing",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "행동 로그로 사용자 군집화와 이상탐지",
+          "from": "preference",
+          "quote": "· 추천, 군집화, 이상탐지 등 다양한 머신러닝 문제를 다뤄본 경험 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무가 사용자 행동·서비스 로그 기반 모델이다. 우대에 로그·센서 데이터 분석도 있다.",
+          "gap_check": "라운드 빈도·시간대·매장·스코어 추이 같은 행동 피처로 군집을 만들 때 스케일링과 군집 수는 무엇으로 정하고, 군집을 사업 부서가 쓸 수 있는 '페르소나' 로 어떻게 설명하는가? 이상탐지(예: 비정상 스코어·센서 오류)에서 정답 라벨이 없을 때 결과를 어떻게 검증하는가?",
+          "drill": "scikit-learn 군집화·이상치 탐지 문서를 읽고, 가상 라운드 로그(회원 1만 명)로 행동 피처를 만들어 K-means 군집 수를 실루엣 점수로 고르고 군집별 특징 표를 만든다. 스코어 분포에 이상치를 섞어 Isolation Forest 로 찾아내는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Clustering — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/clustering.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Novelty and Outlier Detection — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "예측·추천 모델 성능 개선 — 튜닝과 검증",
+          "from": "preference",
+          "quote": "· 모델 성능 개선을 위한 하이퍼파라미터 튜닝 및 피처 엔지니어링 경험 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 AI/ML 모델 성능 평가와 데이터 실험 설계가 있다.",
+          "gap_check": "시간 순서가 있는 로그 데이터에서 무작위 분할 교차검증을 쓰면 무엇이 새고(미래 정보 누수), 시간 기준 분할은 어떻게 하는가? 그리드 탐색과 무작위 탐색은 탐색 비용·결과에서 무엇이 다른가?",
+          "drill": "scikit-learn 하이퍼파라미터 튜닝 문서를 읽고, 가상 로그로 '다음 주 재방문 여부' 분류 모델을 만들어 무작위 분할·시간 분할 검증 점수를 비교하고, 무작위 탐색으로 튜닝한 결과를 표로 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Tuning the hyper-parameters of an estimator — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
