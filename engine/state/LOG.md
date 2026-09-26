@@ -1800,3 +1800,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - Zenn 최신 글 API 21~50쪽 → 제품 회사 6곳 RSS → 3편 본문 확인. 올림: PIVOT(미션 Pull 형)·Stock(싼 모델 사전 스크리닝)·1D(Hydra 인증 이행).
 - 겸사: WWWAVE 완주 판정 검색 2 — 신규 사업 글 0.
+
+## 2026-09-26 WWWAVE hold
+
+- 검색 1 RSS 20편 · 검색 2 Zenn 검색 API 4낱말(90번째 후보 조사 때). hold_reason·'재시도 안 함'·QUEUE hold.

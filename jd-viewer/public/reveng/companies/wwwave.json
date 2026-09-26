@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "커머스",
   "status": "in_progress",
+  "hold_reason": "수익원 '신규 사업(Contents Start Up — AI 음악 채널 등)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 20편 / Zenn 검색 API 'DAJI'·'AI Music'·'ウェイブ'·'wwwave' — 사내 문화·행사 글뿐). ComicFesta 등 배신 서비스 자체의 결정 글도 아직 없다. 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 신규 사업 쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "wwwave.jp",
   "one_liner": "전자 코믹·아니메를 만들고 자사 사이트로 배신하는 웨이브 — 여러 배신처로 코믹을 납품하는 4만 행 Access VBA 도구는 스키마 재설계를 미루고 테스트를 갖출 수 있는 Rails 와 PySide6 데스크톱 클라이언트로 먼저 옮기며, 이상 때만 알리는 배치 감시는 '와야 할 것' 을 전날 밤 먼저 만들어 침묵을 읽는다",
