@@ -797,6 +797,18 @@
       "postings": 5,
       "study_items": 21,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "hanwha-systems",
+      "name": "한화시스템",
+      "aliases": [
+        "한화시스템",
+        "한화그룹"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

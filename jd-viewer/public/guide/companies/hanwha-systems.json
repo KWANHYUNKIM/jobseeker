@@ -1,0 +1,226 @@
+{
+  "slug": "hanwha-systems",
+  "name": "한화시스템",
+  "name_en": "Hanwha Systems",
+  "aliases": [
+    "한화시스템",
+    "한화그룹"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "hanwhasystems.com",
+  "one_liner": "방산전자(무인체계·전술 통신·지휘통제·국방 클라우드)와 ICT(금융 SI·스마트팩토리 운영·데이터) 두 부문을 가진 한화 계열사",
+  "company": {
+    "business": "회사 사이트는 스스로를 '대한민국 대표 방산전자 기업' 으로 소개하고, 사업영역을 **Defense**(우주·항공, 감시·정찰, 지휘통제·통신·사이버, 해양시스템, 지상, 통합체계지원)와 **ICT**(컨설팅, 솔루션)로 나눈다. 채용도 방산 부문과 ICT 부문을 따로 공고한다. 원티드는 한화 계열사 공고를 '한화그룹 (Hanwha)' 표기로 올리는데, 이 데이터의 모집중 5건은 모두 제목이 '[한화시스템/방산]' 또는 '[한화시스템/ICT]' 로 시작한다 — 방산: 국방 Private Cloud·C4I 체계급 아키텍처, MANET(이동 애드혹 망) 네트워크 개발, 이종/다중 무인체계 군집제어 / ICT: 생명·손해보험 계약관리 시스템 개발(금융 SI), 시맨틱웹 온톨로지 구축. 사람인의 한화시스템 공고 3건은 스마트팩토리 MES·MCS(자재 제어)·지능화 시스템(RMS·SPC·FDC) **운영** 경력직이다(고객 공장이 어디인지는 공고에 없다). 원티드의 한화그룹 소개는 화약·발파에서 출발해 방산·우주, 친환경 에너지, 이차전지 설비, 건설, 금융, 레저로 사업을 넓혔다고 적는다. 매출 구성·부문별 비중은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "한화시스템",
+        "url": "https://www.hanwhasystems.com/kr/index.do",
+        "publisher": "한화시스템",
+        "summary": "'대한민국 대표 방산전자 기업'. 사업영역 메뉴: Defense(우주·항공, 감시·정찰, 지휘통제·통신·사이버, 해양시스템, 지상, 통합체계지원)와 ICT(컨설팅, 솔루션), Tech. 2026 신입 채용을 방산 부문·ICT 부문으로 나눠 공고한다"
+      },
+      {
+        "title": "[한화시스템/방산] On-Premise 클라우드 아키텍처 설계",
+        "url": "https://www.wanted.co.kr/wd/387726",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[한화시스템/ICT] 금융프로젝트 시스템 개발",
+        "url": "https://www.wanted.co.kr/wd/387685",
+        "publisher": "원티드"
+      },
+      {
+        "title": "스마트팩토리 운영 경력사원 채용 (스마트팩토리 MES)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55098406&location=ts",
+        "publisher": "사람인"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "방산 체계(Defense)",
+        "how": "사이트 사업영역 Defense — 우주·항공, 감시·정찰, 지휘통제·통신·사이버, 해양, 지상, 통합체계지원. 공고는 국방 Private Cloud·C4I 아키텍처, MANET 전술망, 무인체계 군집제어를 적는다. 계약 구조(국방 사업 수주 등)는 읽지 않았다.",
+        "domains": [
+          "국방 C4I·전술 네트워크",
+          "무인체계 군집제어"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "한화시스템",
+            "url": "https://www.hanwhasystems.com/kr/index.do",
+            "publisher": "한화시스템",
+            "summary": "'대한민국 대표 방산전자 기업'. 사업영역 메뉴: Defense(우주·항공, 감시·정찰, 지휘통제·통신·사이버, 해양시스템, 지상, 통합체계지원)와 ICT(컨설팅, 솔루션), Tech. 2026 신입 채용을 방산 부문·ICT 부문으로 나눠 공고한다"
+          },
+          {
+            "title": "[한화시스템/방산] On-Premise 클라우드 아키텍처 설계",
+            "url": "https://www.wanted.co.kr/wd/387726",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[한화시스템/방산] 네트워크 개발",
+            "url": "https://www.wanted.co.kr/wd/387720",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[한화시스템/방산] (차세대반도체) MMIC 회로설계",
+            "url": "https://www.wanted.co.kr/wd/387738",
+            "publisher": "원티드",
+            "summary": "제목은 MMIC 회로설계인데 원티드 원문 본문(JSON-LD 포함)은 이종/다중 무인체계 군집제어 알고리즘 개발이다 — 원본 게시가 어긋나 있다"
+          }
+        ]
+      },
+      {
+        "name": "ICT 컨설팅·솔루션",
+        "how": "사이트 사업영역 ICT — 컨설팅·솔루션. 공고는 보험 계약관리 시스템 개발(금융 SI), 온톨로지 기반 데이터 분석, 스마트팩토리 MES·MCS·RMS·SPC·FDC 운영을 적는다. 고객사와 과금 방식은 공고에 없다.",
+        "domains": [
+          "금융 SI(보험)",
+          "스마트팩토리 시스템 운영",
+          "온톨로지·지식 데이터"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "한화시스템",
+            "url": "https://www.hanwhasystems.com/kr/index.do",
+            "publisher": "한화시스템",
+            "summary": "'대한민국 대표 방산전자 기업'. 사업영역 메뉴: Defense(우주·항공, 감시·정찰, 지휘통제·통신·사이버, 해양시스템, 지상, 통합체계지원)와 ICT(컨설팅, 솔루션), Tech. 2026 신입 채용을 방산 부문·ICT 부문으로 나눠 공고한다"
+          },
+          {
+            "title": "[한화시스템/ICT] 금융프로젝트 시스템 개발",
+            "url": "https://www.wanted.co.kr/wd/387685",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[한화시스템/ICT] 온톨로지(Ontology) 전문가",
+            "url": "https://www.wanted.co.kr/wd/387677",
+            "publisher": "원티드"
+          },
+          {
+            "title": "스마트팩토리 운영 경력사원 채용 (스마트팩토리 MES)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55098406&location=ts",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "국방 C4I·전술 네트워크",
+        "why": "클라우드 공고가 국방 Private Cloud·C4I 체계급 아키텍처·x86 서버 인프라를, 네트워크 공고가 MANET 구조·동적 토폴로지 라우팅·QoS·이기종 무선망 연동을 적는다.",
+        "what_to_know": [
+          "MANET 라우팅",
+          "온프레미스 프라이빗 클라우드",
+          "C4I 체계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[한화시스템/방산] On-Premise 클라우드 아키텍처 설계",
+            "url": "https://www.wanted.co.kr/wd/387726",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[한화시스템/방산] 네트워크 개발",
+            "url": "https://www.wanted.co.kr/wd/387720",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "무인체계 군집제어",
+        "why": "원티드 387738 본문이 이종/다중 무인체계 중앙집중·분산 군집제어, 충돌 회피, Swarm Simulation 을 적는다(제목은 MMIC 회로설계로 어긋나 있다).",
+        "what_to_know": [
+          "Multi-Agent·Swarm",
+          "분산 제어",
+          "최적화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[한화시스템/방산] (차세대반도체) MMIC 회로설계",
+            "url": "https://www.wanted.co.kr/wd/387738",
+            "publisher": "원티드",
+            "summary": "제목은 MMIC 회로설계인데 원티드 원문 본문(JSON-LD 포함)은 이종/다중 무인체계 군집제어 알고리즘 개발이다 — 원본 게시가 어긋나 있다"
+          }
+        ]
+      },
+      {
+        "name": "금융 SI(보험)",
+        "why": "금융프로젝트 공고가 생명·손해보험 계약·청약·유지·변경·해지 프로세스, 요율·업무 로직, 온라인·배치 개발을 적고 Java·OZ·Oracle·SI 방법론을 요구한다.",
+        "what_to_know": [
+          "보험 계약관리 업무",
+          "Java·Oracle 배치",
+          "SI 방법론"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[한화시스템/ICT] 금융프로젝트 시스템 개발",
+            "url": "https://www.wanted.co.kr/wd/387685",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "스마트팩토리 시스템 운영",
+        "why": "사람인 3건이 MES(디스패칭 로직)·MCS(OHT 자재 이송 제어, 설비-MCS-MES 통신)·RMS·SPC·FDC 운영·유지보수를 적는다.",
+        "what_to_know": [
+          "MES·MCS",
+          "SPC·FDC",
+          "Java·Oracle PL/SQL"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "스마트팩토리 운영 경력사원 채용 (스마트팩토리 MES)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55098406&location=ts",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "온톨로지·지식 데이터",
+        "why": "온톨로지 공고가 RDF/OWL 모델링, SPARQL·추론 규칙, Protege·GraphDB, 제조 도메인 AI·폐쇄망 모델 개발 우대를 적는다.",
+        "what_to_know": [
+          "RDF/OWL",
+          "SPARQL",
+          "그래프 DB"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[한화시스템/ICT] 온톨로지(Ontology) 전문가",
+            "url": "https://www.wanted.co.kr/wd/387677",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "같은 회사 안에 성격이 전혀 다른 두 채용 시장이 있다",
+        "evidence": "방산 부문 : 3/9일(월) ~ 3/26일(목), 오전 11시까지",
+        "so_what": "사이트가 방산·ICT 부문 채용을 따로 받는다. 방산 공고는 성남·용인, 석사·연구 산출물(보고서·특허·논문)·국방 과제 문서를 말하고, ICT 공고는 서울 중구 본사·SI 방법론·고객 협업을 말한다. 지원 전 어느 부문인지부터 확인한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "원티드 '한화그룹' 표기는 계열사를 가린다",
+        "evidence": "[한화시스템/방산] (차세대반도체) MMIC 회로설계",
+        "so_what": "원티드는 계열사 공고를 그룹 이름으로 올리고 제목 앞머리에만 계열사를 적는다. 게다가 이 공고는 제목과 본문이 다른 직무다 — 지원 전에 원문과 채용 담당에게 실제 직무를 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "부문별 매출·임직원 수는 읽지 않았다(IR·사업보고서 미열람)",
+    "원티드 387738 은 제목(MMIC 회로설계)과 본문(무인체계 군집제어)이 다르다 — 어느 쪽이 실제 직무인지 확인하지 못했다",
+    "사람인 스마트팩토리 운영 3건의 고객 공장·근무처(충북 보은 등)가 어느 사업인지 공고에 없다",
+    "alias '한화그룹' 은 원티드의 그룹 표기를 잡기 위한 것이다 — 한화시스템이 아닌 계열사 공고가 이 표기로 올라오면 여기 잘못 붙는다",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}
