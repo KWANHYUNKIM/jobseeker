@@ -120,8 +120,8 @@
       "tech": [
         {
           "tech": "qg(PostgreSQL 큐) + 별도 Worker 서버 · 캘린더 기반 스케일 → Datadog Monitor + SNS + Lambda 스케일",
-          "solves": "예정에 없는 몰림에도 Worker 를 늘린다(이 사이트의 해석 — 본문을 다음에 읽는다).",
-          "limits": "큐가 PostgreSQL 이라 DB 부하와 함께 본다(이 사이트의 해석).",
+          "solves": "CPU 가 아니라 쌓인 잡 수로 Worker 를 늘려, 예정에 없는 몰림에도 잡이 쌓여 알람이 울리는 일을 줄인다.",
+          "limits": "줄이기(스케일 인)는 캘린더 기반 스케일 업과 부딪치지 않게 사람이 한다 — Slack 알림이 검토를 부른다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -134,7 +134,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "datadog-monitor-worker-scaling"
+      ]
     }
   ],
   "features": [
@@ -418,12 +420,240 @@
           "summary": "pistachio 에 각 DDL 이 얼마나 무거운지를 plan 에 보이는 `--explain` 을 더했다 — plan 은 무게를 알려 주지 않는다. 코멘트 읽는 법(rewrite 와 scan · 락이 막는 것 · 테이블 크기와 날짜 · 락에 휘말리는 테이블)과 패턴별 대책(rewrite·읽기/쓰기 차단 / scan·읽기/쓰기 차단 / scan·쓰기 차단 / scan·차단 없음)."
         }
       ]
+    },
+    {
+      "key": "datadog-monitor-worker-scaling",
+      "name": "PostgreSQL 큐의 쌓인 잡 수로 Worker 를 늘린다 — CPU 대상 추적도 CloudWatch 커스텀 메트릭도 아니라 이미 쓰는 Datadog Monitor 가 SNS 를 거쳐 Go Lambda 를 불러 ECS 의 최소·최대 대수를 한 값으로 고정하고, 줄이기는 사람에게 남긴다",
+      "domain": "월말 월초와 일제 통지로 몰리는 비동기 잡을 받아 낸다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 꺼내 처리한다. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다.\n\n예정에 없는 급증은 CPU 사용률을 대상으로 한 대상 추적 스케일링 정책으로 ECS 태스크를 늘리고 줄였는데, 비동기 잡에선 CPU 가 적절한 메트릭이 아니어서 알아채고 보면 잡이 쌓여 알람이 울리곤 했다.",
+        "metrics": [
+          {
+            "label": "스테이징 동작 확인",
+            "value": "Datadog Monitor → SNS → Lambda 실행 약 2초(2,037 ms) · ECS 태스크 수가 메시지에 적은 수로 늘었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+                "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+                "publisher": "Kanmu Tech Blog (Zenn)",
+                "date": "2026-02-16",
+                "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+              }
+            ]
+          },
+          {
+            "label": "본번",
+            "value": "dry-run 모드로 Lambda 실행과 Slack 알림을 먼저 확인",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+                "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+                "publisher": "Kanmu Tech Blog (Zenn)",
+                "date": "2026-02-16",
+                "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "CloudWatch 로 풀 수 있는지 볼 때",
+          "thought": "ECS 스케일링 정책은 CloudWatch 커스텀 메트릭을 지원하니 쌓인 잡 수를 대상 메트릭으로 하면 급증에 맞춰 늘릴 수 있다. 그러나 시스템 메트릭 수집은 Datadog 에 모아 두어 CloudWatch 와의 이중 관리가 달갑지 않고, **Datadog Monitor 의 평가값과 스케일링 정책의 평가값이 어긋날** 걱정도 있었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+              "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+              "publisher": "Kanmu Tech Blog (Zenn)",
+              "date": "2026-02-16",
+              "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "qg 큐",
+            "what": "PostgreSQL 에 쌓이는 비동기 잡(SMS·메일 등)."
+          },
+          {
+            "name": "Worker 서버",
+            "what": "ECS 서비스. API 서버와 다른 프로세스가 큐를 꺼내 처리한다."
+          },
+          {
+            "name": "Datadog Monitor",
+            "what": "쌓인 잡 수를 보고, 넘으면 `@sns-topic-name` 멘션으로 SNS 에 '클러스터·서비스·원하는 대수' 를 담은 메시지를 보낸다. 밑돌면 Slack 에 스케일 인 검토를 부른다."
+          },
+          {
+            "name": "스케일 Lambda",
+            "what": "Go(aws-sdk-go-v2). 메시지를 파싱해 원하는 대수(1 이상 · 상한 이하)를 검증하고 Application Auto Scaling 의 MinCapacity 와 MaxCapacity 를 모두 그 값으로 등록한다. DRY_RUN 모드가 있다."
+          }
+        ],
+        "invariants": [
+          "원하는 대수는 1 이상, 정해 둔 상한 이하여야 한다 — 아니면 Lambda 가 거부한다.",
+          "Terraform 은 min/max 를 더미로 두고 `ignore_changes` 로 Lambda 의 동적 변경을 덮어쓰지 않는다.",
+          "스케일 인은 자동으로 하지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "월말 월초·일제 통지가 예정돼 있으면 캘린더 기반으로 Worker 를 미리 늘린다",
+            "why": "예정된 몰림은 시간으로 안다."
+          },
+          {
+            "step": "예정에 없는 급증으로 쌓인 잡 수가 임계를 넘으면 Datadog Monitor 가 SNS 로 알린다",
+            "why": "비동기 잡엔 CPU 보다 쌓인 잡 수가 맞는 신호다."
+          },
+          {
+            "step": "SNS 가 Go Lambda 를 부르고, Lambda 가 메시지의 원하는 대수를 검증해 Application Auto Scaling 의 Min·Max 를 그 값으로 등록 — ECS 태스크 수가 늘어난다",
+            "why": "메트릭 수집을 Datadog 한곳에 둔다."
+          },
+          {
+            "step": "쌓인 잡이 임계 아래로 내려가면 Monitor 가 Slack 에서 담당 그룹을 멘션해 스케일 인 검토를 부르고, 사람이 줄인다(봇에 멘션하면 스케일 일정을 보여 준다)",
+            "why": "예정된 스케일 업과 부딪치지 않게."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "예정에 없는 급증을 무엇으로 잡을까?",
+            "chosen": "**CPU 가 아니라 쌓인 잡 수.**",
+            "alternatives": [
+              "CPU 사용률 대상 추적 스케일링(기존)"
+            ],
+            "tradeoff": "비동기 잡에선 CPU 가 부하를 대표하지 않아 알아채면 이미 잡이 쌓여 있었다. 대가 — 기존 ECS 표준 정책을 벗어나 경로를 스스로 짠다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+                "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+                "publisher": "Kanmu Tech Blog (Zenn)",
+                "date": "2026-02-16",
+                "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+              }
+            ]
+          },
+          {
+            "question": "쌓인 잡 수로 어떻게 스케일할까?",
+            "chosen": "**이미 메트릭을 모으는 Datadog Monitor → SNS 통합 → Lambda → Application Auto Scaling.**",
+            "alternatives": [
+              "CloudWatch 커스텀 메트릭을 대상으로 한 ECS 스케일링 정책"
+            ],
+            "tradeoff": "CloudWatch 와의 이중 관리와, 알람(Datadog)과 정책(CloudWatch)의 평가값이 어긋나는 것을 피한다. 대가 — SNS·Lambda·IAM 을 스스로 유지하고, 메시지 문자열을 파싱하는 약속이 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+                "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+                "publisher": "Kanmu Tech Blog (Zenn)",
+                "date": "2026-02-16",
+                "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+              }
+            ]
+          },
+          {
+            "question": "Lambda 는 대수를 어떻게 바꿀까?",
+            "chosen": "**Application Auto Scaling 에 MinCapacity 와 MaxCapacity 를 모두 원하는 대수로 등록 — Terraform 은 min/max 를 더미로 두고 `ignore_changes`.**",
+            "alternatives": [
+              "ECS 서비스의 desiredCount 를 직접 갱신(inferred)"
+            ],
+            "tradeoff": "다른 스케일링이 곧바로 되돌리지 못하게 그 대수로 묶고, Terraform 적용이 Lambda 가 바꾼 값을 덮어쓰지 않는다. 대가 — 묶인 대수는 누군가 풀 때까지 그대로다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+                "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+                "publisher": "Kanmu Tech Blog (Zenn)",
+                "date": "2026-02-16",
+                "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+              }
+            ]
+          },
+          {
+            "question": "메시지의 대수를 그대로 믿을까?",
+            "chosen": "**1 이상·정해 둔 상한 이하만 받아들이고 아니면 오류 — DRY_RUN 모드로 본번을 먼저 확인.**",
+            "alternatives": [
+              "검증 없이 적용(inferred)"
+            ],
+            "tradeoff": "Monitor 메시지 오타로 0대나 터무니없는 대수가 되는 사고를 막는다. 대가 — 상한을 바꾸려면 Lambda 설정을 고친다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+                "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+                "publisher": "Kanmu Tech Blog (Zenn)",
+                "date": "2026-02-16",
+                "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+              }
+            ]
+          },
+          {
+            "question": "줄이기도 자동으로 할까?",
+            "chosen": "**수동 — 쌓인 잡이 임계 아래면 Slack 에서 담당 그룹을 멘션해 검토를 부르고, 봇에 멘션하면 스케일 일정을 보여 준다.**",
+            "alternatives": [
+              "자동 스케일 인"
+            ],
+            "tradeoff": "예정된(캘린더) 스케일 업과 부딪쳐 필요한 Worker 를 줄이는 일을 막는다. 대가 — 사람이 줄일 때까지 여분 Worker 비용이 든다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+                "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+                "publisher": "Kanmu Tech Blog (Zenn)",
+                "date": "2026-02-16",
+                "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "결제 서비스의 DB 스키마를 본번에서 안전하게 바꾼다(같은 회사의 다른 도메인)",
+          "via": "같은 PostgreSQL 위의 두 부하",
+          "contract": "비동기 잡은 qg 로 PostgreSQL 큐에 쌓이고 Worker 를 늘리면 그 DB 를 읽는 쪽도 늘며, 스키마 변경은 같은 PostgreSQL 에 락을 건다 — 월말 월초에 Worker 가 늘어난 때 무거운 DDL 이 겹치면 두 쪽이 서로를 막는다(이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "쌓인 잡에서 Worker 대수까지",
+          "question": "알람 하나가 어떻게 태스크 수가 되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  API[API 서버] -->|SMS · 메일 잡| Q[(qg 큐 · PostgreSQL)]\n  Q --> W[Worker · ECS]\n  Q -.쌓인 잡 수.-> DD[Datadog Monitor]\n  DD -->|@sns-topic| SNS[SNS]\n  SNS --> L[Go Lambda<br/>대수 검증 · DRY_RUN]\n  L -->|Min = Max = N| AAS[Application Auto Scaling]\n  AAS --> W\n  DD -->|임계 아래| SL[Slack · 스케일 인 검토]"
+        },
+        {
+          "title": "Worker 대수의 상태",
+          "question": "누가 늘리고 누가 줄이나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 평상\n  평상 --> 예정증설: 캘린더 · 월말 월초 · 일제 통지\n  평상 --> 긴급증설: 쌓인 잡 임계 초과 · Monitor → Lambda\n  예정증설 --> 긴급증설: 그래도 쌓임\n  긴급증설 --> 검토대기: 쌓인 잡 임계 아래 · Slack\n  검토대기 --> 평상: 사람이 스케일 인"
+        },
+        {
+          "title": "CPU 로는 못 잡던 것",
+          "question": "기존 정책은 어디서 늦었나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  N[일제 통지 · 예정 밖 급증] --> Q[큐에 잡이 쌓임]\n  Q --> C[Worker CPU 는 그대로]\n  C --> T[대상 추적 정책이 안 움직임]\n  T --> A[잡 체류 · 알람]\n  A --> F[쌓인 잡 수 Monitor 로 교체]\n  CW[CloudWatch 커스텀 메트릭] -.이중 관리 · 평가값 어긋남.-> F"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Datadog Monitorを使った非同期ジョブのスケーリング",
+          "url": "https://zenn.dev/kanmu_dev/articles/d9db4fd4f543db",
+          "publisher": "Kanmu Tech Blog (Zenn)",
+          "date": "2026-02-16",
+          "summary": "카무의 서비스는 **qg** 라이브러리로 백그라운드 잡을 돌린다 — SMS·메일 발송처럼 비동기로 하고 싶은 처리를 **PostgreSQL 큐**에 넣고 API 서버와 다른 프로세스의 Worker 서버가 처리. 비동기 잡은 API 요청 증가보다 **월말 월초 처리나 마케팅 일제 통지**로 느는 일이 많아, 시간·캘린더 기반(Google 캘린더에 맞춘 ECS 스케일)으로 Worker 를 늘려 왔다 → Datadog Monitor + SNS + Lambda 로 스케일, 스테이징·본번 동작 확인."
+        }
+      ]
     }
   ],
   "open_questions": [
     "수수료 구조·매출 비중을 확인하지 않았다.",
     "Pool·법인 금융(사쿳토 자금 조달·분할)의 기술 결정 글을 아직 못 봤다.",
-    "스케일링 글의 왜 캘린더 기반에서 모니터 기반으로 옮겼나는 다음 사이클에 읽는다.",
     "다른 글: 선언적 스키마 관리의 데이터 마이그레이션(`fadd12ece9fbac`)·terraform plan 으로 IAM 정책 점검(`83fa84175b3ae6`)·S3 버킷별 Client 형(Go 제네릭)."
   ],
   "sources": [

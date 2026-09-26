@@ -1900,3 +1900,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 Kanmu pistachio 선언적 스키마
 
 - 결정 6 — Alembic → 선언적·자작(pg_query_go, generic 수정·pgquery·pgschema 대신)·DROP 기본 무효·트랜잭션 기본 무효·디렉티브 셋·--explain(카탈로그 추정). Alembic→sqldef→pistachio 연도가 없어 history 대신 그림.
+
+## 2026-09-26 Kanmu Datadog Monitor Worker 스케일
+
+- 결정 5 — CPU 대신 쌓인 잡 수·CloudWatch 대신 Datadog Monitor+SNS+Lambda·Min=Max 고정+ignore_changes·대수 검증+DRY_RUN·스케일 인 수동.
