@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**PKSHA 회사 프로파일(2026-09-26) — 도메인 둘: 외부 문서 저장소를 RAG 로 옮기는 동기화의 경합을 상태 기계가 받는다(`2088c13ac89ca6` — 패턴 넷과 대처 선택법; 기초 편 `18e25967d45855`) · 운용 중인 고객 LLM 서비스의 모델 EOL 을 사람 게이트 넷으로 넘긴다(`llm-replacer-workflow`). 제품 이름이 붙은 글이 있었다(AI 헬프데스크). 다음은 확장: `--gaps` 순서대로 기능 하나씩, 수익원 둘 다 도메인 있어 두 기능이면 **완주**. 대기 0/3 — `--gaps` 가 후보 조사를 먼저 찍으면 따를 것(큐 0 이면 3순위). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경(+ PKSHA shadow) + 결제 대장 + 첫 대응 봇 + LLM 평가(IVRy HITL ↔ PKSHA llm-replacer judge) + 워크플로 엔진(IVRy Durable ↔ PKSHA Saga ↔ ENECHANGE Step Functions). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**PKSHA 확장 1/2(2026-09-26) — `file-sync-saga-race-conditions` 완료. 다음은 확장: '운용 중인 고객 LLM 서비스의 모델 EOL 을 사람 게이트 넷으로 넘긴다' — `llm-replacer-workflow`(Issue 기동 · EC2 Claude Code 명령 복합체 · shadow 환경 · E2E A/B judge 위치 랜덤화 · 임계 메트릭 · 게이트 A~D · Draft PR 고정 · prod 차단 · Bedrock opt-out). 그 뒤 수익원 둘 다 기능이면 **완주 → done**. 대기 0/3 — PKSHA 를 닫으면 **후보 조사**. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경(+ PKSHA shadow) + 결제 대장 + 첫 대응 봇 + LLM 평가(IVRy HITL ↔ PKSHA judge) + 워크플로 엔진(IVRy Durable ↔ PKSHA Saga ↔ ENECHANGE Step Functions). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

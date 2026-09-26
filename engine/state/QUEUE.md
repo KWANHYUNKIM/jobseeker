@@ -38,7 +38,7 @@
 | **ログラス(Loglass)** | JP · 경영관리(FP&A) SaaS | 프로파일(2026-09-26). 도메인 둘 — 계층을 엔진이 알게 해 읽지 않는다(OLAP 엔진 실험) · 장애 때 '당시 구조' 를 다시 세운다(이력 데이터 모델). 기능 3(`hierarchy-aware-olap-engine` — 실험 · `incident-history-data-model` · `headcount-cost-simulation` · `ai-ir-bottleneck-driven-delivery`). 완주 검사 1회차에 도메인 둘 추가(인원 계획 · AI IR). **hold** — 석세스 파트너·설비투자·IT 투자 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 인원 계획·설비투자·IT 투자·AI IR·석세스 파트너는 도메인 없음. 입구 `zenn.dev/p/loglass/feed`. |
 | **Hacobu(ハコブ)** | JP · 물류 SaaS(MOVO) | 프로파일(2026-09-26). 도메인 둘 — 장애 공지 스위치를 비개발자 손에 쥐여 준다(Datadog Forms 배너) · 기능 패키지의 경계를 규약 대신 CI 가 지킨다(MOVO Berth 프런트 템플릿). 기능 2(`maintenance-banner-datadog-forms` · `frontend-template-dependency-ci`). **hold** — 컨설팅·SI·인재 소개 수익원 자료 두 번 없음(2026-09-26). 수익원 넷 중 컨설팅·SI·인재 소개는 도메인 없음. 입구 `zenn.dev/p/hacobu/feed`. |
 | **estie** | JP · 상업용 부동산 데이터 | 프로파일(2026-09-26). 도메인 둘 — 고객이 맡긴 데이터를 여러 서비스가 한 곳에 둔다(프라이빗 데이터 기반) · PR 마다 운영에 가까운 DB 를 빌려 쓰고 버린다(Aurora copy-on-write Preview). 기능 2(`private-data-platform` · `preview-with-db-aurora-clone`). **hold** — 스마트 리폼·DX 컨설팅 수익원 자료 두 번 없음(2026-09-26). 스마트 리폼·DX 컨설팅은 도메인 없음. 입구 `zenn.dev/p/estie/feed`. |
-| **PKSHA Technology** | JP · AI SaaS · AI Solution | 프로파일(2026-09-26). 도메인 둘 — 외부 문서 저장소를 RAG 로 옮기는 동기화의 경합을 상태 기계가 받는다(AI 헬프데스크 MassTransit Saga) · 운용 중인 고객 LLM 서비스의 모델 EOL 을 사람 게이트 넷으로 넘긴다(llm-replacer). 기능 0. 수익원 둘 다 도메인 있음. 입구 `zenn.dev/p/pksha/feed`. |
+| **PKSHA Technology** | JP · AI SaaS · AI Solution | 프로파일(2026-09-26). 도메인 둘 — 외부 문서 저장소를 RAG 로 옮기는 동기화의 경합을 상태 기계가 받는다(AI 헬프데스크 MassTransit Saga) · 운용 중인 고객 LLM 서비스의 모델 EOL 을 사람 게이트 넷으로 넘긴다(llm-replacer). 기능 1(`file-sync-saga-race-conditions`). 수익원 둘 다 도메인 있음. 입구 `zenn.dev/p/pksha/feed`. |
 
 
 ## 대기
