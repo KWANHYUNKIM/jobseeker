@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**아흔네 번째 후보 조사(2026-09-26) — 대기 3/3: TRIBEAU · Macbee Planet · USEN ICT. 다음은 --gaps 의 신규: 큐 맨 위 TRIBEAU — `72c9278da55a3b`(프런트편) · `69274df0a2084d`(백엔드편) · `0d03b4c9fdf360`(사내 MCP 기반) · 회사 사이트(tribeau.jp)에서 수익원부터. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**TRIBEAU 프로파일(2026-09-26) — 도메인 둘, 기능 0. 다음은 확장: 'LLM 에게 전부 맡기지 않는 미용 의료 AI 상담' — 프런트편 `72c9278da55a3b` + 백엔드편 `69274df0a2084d`(목차만 봄: 3과제·LLM/API/RAG 분담·지연 확장 RAG·모델 선정) 를 한 기능으로. 그다음 '전사원이 쓰는 사내 MCP 를 빠르고 안전하게 늘린다' — `0d03b4c9fdf360`. 수익원 하나(클리닉 게재) — 완주 점검은 연결만. 대기 2/3(Macbee Planet · USEN ICT). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

@@ -2005,3 +2005,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 아흔네 번째 후보 조사
 
 - Zenn 검색 API 주제어 15개 × 3쪽 → publication 집계 → RSS·목차 확인. TRIBEAU · Macbee Planet · USEN ICT 를 대기로. SmartShopping·SCOGR·BNX 는 거름.
+
+## 2026-09-26 TRIBEAU 회사 프로파일
+
+- corp.tribeau.jp·클리닉용 LP 로 수익원(클리닉 게재). AI 상담 두 편을 한 도메인, 사내 MCP 기반을 다른 도메인으로.
