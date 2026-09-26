@@ -451,6 +451,17 @@
       "postings": 7,
       "study_items": 22,
       "updated_at": "2026-09-26"
+    },
+    {
+      "slug": "navercloud",
+      "name": "네이버클라우드",
+      "aliases": [
+        "네이버클라우드"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-26"
     }
   ]
 }
