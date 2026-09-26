@@ -2496,3 +2496,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 GVA TECH 프롬프트 캐싱
 
 - `846faa50c60c86` 전문으로 기능 `multitenant-prompt-cache-layers`, 결정 6. 제품명 없는 글이라 OLGA 연결 inferred 유지.
+
+## 2026-09-27 GVA TECH OLGA 수익원 확인
+
+- 수익원 판정 중 AI 글 6편 본문을 훑다가 평가 글에서 'OLGA 계약 관리 · 관련 계약 자동 연결'을 찾음 → 도메인 추가 · OLGA confirmed. 법률 사무소용 · 인재 소개는 본문에도 이름 없음(첫째 탐색).
