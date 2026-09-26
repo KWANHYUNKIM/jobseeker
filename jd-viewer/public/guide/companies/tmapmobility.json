@@ -8,7 +8,7 @@
     "TMAP모빌리티",
     "TMAPMobility"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "tmapmobility.com",
   "one_liner": "내비게이션 TMAP 을 중심으로 대리운전·주차·보험혜택(UBI)·장소 추천까지 잇는 모빌리티 플랫폼 — 완성차 IVI(TMAP AUTO)와 API·데이터도 판다",
@@ -630,6 +630,101 @@
             {
               "title": "async-profiler — GitHub",
               "url": "https://github.com/async-profiler/async-profiler",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54654808&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=3d0181b0-92f7-483f-a9e9-3917df65439c",
+      "title": "[티맵모빌리티] QA Automation Engineer",
+      "site": "saramin",
+      "verdict": "서울 중구. ⚠️ **연차 표기가 어긋난다** — 사람인 경력 칸은 '경력2년↑' 인데 자격요건 첫 줄은 '자동화 테스트 환경 구축/운영/개선 관련 경력 5년 이상이거나 이에 준하는 경험' 이다. 업무는 **자동화 테스트 플랫폼** 구축·운영·개선, 자동화 테스트 케이스 설계·수행·개선, cloud 서비스·open source·사내 솔루션을 연동해 자동화 환경 보완. 필수는 위 경력, **UI/API 자동화 테스트 케이스**(python·java·javascript 등), github·jenkins·CI/CD 와 **Selenium·Appium·postman**, **비기능 영역 테스트**와 자동화 도구 개발, **API Mocking** 도구 개발·활용. 우대는 앱/웹 개발, 신규 자동화 환경 구축, 업무 개선 제안, 생성형 AI 로 자동화 테스트. 회사 브리핑대로 테스트 대상은 MAU 1,500만 명 이상 TMAP 앱과 여러 백엔드 서비스다. 전형: 서류전형 → 1차면접 → 2차면접 → 레퍼런스체크 → 채용검진 및 처우협의 → 최종합격(원티드 개발 공고들과 달리 코딩테스트 단계가 적혀 있지 않다). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "테스트 자동화 환경 구축·운영(공고상 5년 이상)",
+          "UI/API 자동화(Python·Java·JS)",
+          "Selenium·Appium·Postman",
+          "Jenkins·CI/CD",
+          "비기능 테스트",
+          "API Mocking"
+        ],
+        "can_learn": [
+          "생성형 AI 로 테스트 자동화",
+          "앱/웹 개발"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Appium 으로 앱 UI 자동화 — 깨지지 않는 테스트",
+          "from": "qualification",
+          "quote": "• ui/api 자동화 테스트 케이스 작성 경험을 보유하신 분 (python, java, javascript 등)",
+          "priority": "core",
+          "why": "필수 자격요건이고 도구 줄에 Appium 이 있다. TMAP 은 Android 앱이 핵심 제품이다(회사 브리핑).",
+          "gap_check": "'목적지 검색 → 경로 선택 → 안내 시작' 시나리오를 Appium 으로 자동화할 때 요소를 XPath 좌표 대신 무엇(accessibility id·resource-id)으로 찾아야 화면 개편에도 덜 깨지고, 경로 탐색 결과를 기다릴 때 고정 sleep 대신 무엇(명시적 대기)을 쓰며, 테스트 코드를 페이지 객체로 나누면 무엇이 좋아지는가?",
+          "drill": "샘플 Android 앱(검색 → 결과 목록 → 상세)을 Appium + Python 으로 자동화하되 페이지 객체 패턴으로 나누고 명시적 대기만 쓴다. 화면 문구를 바꿔도 통과하는지, 일부러 응답을 늦춰도 통과하는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Appium Documentation",
+              "url": "https://appium.io/docs/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Page object models — Selenium",
+              "url": "https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "API Mocking — 외부 의존을 떼고 테스트하기",
+          "from": "qualification",
+          "quote": "• API Mocking 관련 테스트 도구 개발 경험 및 활용 경험을 보유하신 분",
+          "priority": "core",
+          "why": "필수 자격요건이다. 경로·교통 정보처럼 결과가 매번 바뀌거나 외부에 의존하는 API 는 그대로 두면 테스트가 들쭉날쭉해진다.",
+          "gap_check": "실시간 교통 정보 API 를 목으로 바꾸면 무엇(결정적인 결과, 오류·지연 재현)을 얻고 무엇(실제 계약 변경 감지)을 잃으며, 목이 실제 API 와 어긋나는 것을 막으려면 무엇(계약 테스트·녹화 재생)을 함께 두는가?",
+          "drill": "WireMock 으로 교통 정보 API 를 흉내 내 정상·500·5초 지연·필드 누락 네 응답을 만들고, 앱(또는 API 클라이언트) 테스트를 이 목에 붙여 각 경우의 처리를 검증한다. 실제 API 응답을 녹화해 목 정의를 갱신하는 방법도 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "WireMock — API Mocking",
+              "url": "https://wiremock.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비기능 테스트 — 부하 테스트를 파이프라인에",
+          "from": "qualification",
+          "quote": "• 비기능 영역에 대한 테스트 경험 및 자동화 도구 개발 경험을 보유하신 분",
+          "priority": "high",
+          "why": "필수 자격요건이다. 출퇴근 시간 같은 피크에 경로 탐색 요청이 몰린다.",
+          "gap_check": "경로 탐색 API 의 부하 테스트에서 '동시 사용자 수' 와 '초당 요청 수' 중 무엇을 기준으로 시나리오를 짜고, 합격 기준을 p95 지연·오류율 임계값으로 적어 두면 CI 에서 무엇이 자동화되며, 운영 환경이 아닌 곳에서 한 결과를 얼마나 믿을 수 있는가?",
+          "drill": "k6 로 가짜 경로 API 에 램프업 시나리오를 만들고 thresholds(p95 < 500ms, 오류율 < 1%)를 걸어, 서버에 지연을 넣었을 때 k6 가 실패 종료 코드를 내는지 확인한다. 그 스크립트를 CI 단계로 붙이는 방법을 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Grafana k6 documentation",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "자동화 테스트 플랫폼 — Jenkins 파이프라인",
+          "from": "task",
+          "quote": "• 자동화 테스트 플랫폼을 구축하고 운영하며 개선합니다.",
+          "priority": "high",
+          "why": "주요업무 첫 줄이고 필수에 github·jenkins·CI/CD 가 있다.",
+          "gap_check": "UI 테스트 수백 개를 매 커밋마다 돌리면 무엇이 느려지고, 스모크·회귀·야간 전체로 나눠 어느 단계에서 무엇을 돌리며, 가끔 실패하는 불안정한 테스트(flaky)는 재시도로 덮지 않고 어떻게 추적하는가?",
+          "drill": "Jenkins 선언형 파이프라인으로 API 테스트(매 커밋)·UI 스모크(매 커밋)·UI 전체와 k6(야간) 세 단계를 만들고, JUnit 리포트를 모아 실패·재시도 횟수를 보이게 한다. 일부러 flaky 테스트를 하나 넣어 기록에 남는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Pipeline — Jenkins User Handbook",
+              "url": "https://www.jenkins.io/doc/book/pipeline/",
               "kind": "docs"
             }
           ]
