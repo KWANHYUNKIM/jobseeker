@@ -211,5 +211,130 @@
     "안랩클라우드메이트·안랩블록체인컴퍼니 공고는 자회사 이름으로 올라와 있어 여기서 다루지 않는다",
     "salary: 공고에 금액이 없다 — 비워 둔다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/565713?ReturnUrl=RecruitInfo",
+      "title": "[신입/경력] SW개발(Mac OS) 채용",
+      "site": "dev",
+      "verdict": "신입/경력. 담당 업무는 한 줄뿐이다 — 'ASD Engine MAC 플랫폼 개발 및 EDR Mac 경쟁력 강화'. 안랩의 엔드포인트 탐지·대응(EDR) 제품의 macOS 쪽 에이전트와 엔진 자리로 읽힌다. 자격은 Mac OS 애플리케이션 개발과 C/C++ 두 줄이다. Objective-C/Swift, macOS System Extension 또는 Kernel Extension, macOS 보안 프로그램, 취약점·악성코드 분석은 우대다. 전형은 서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사('직무에 따라 필요 시, 전형이 추가되거나 변동될 수 있습니다'), 접수는 ~2026.12.31 까지 안랩 홈페이지로 받는다. '해외여행에 결격 사유가 없으신 분', 석·박사는 학위 논문 첨부를 요청한다.",
+      "fit": {
+        "must_have": [
+          "macOS 애플리케이션 개발",
+          "C/C++"
+        ],
+        "can_learn": [
+          "Objective-C/Swift",
+          "System Extension·Kernel Extension",
+          "macOS 보안 프로그램",
+          "취약점·악성코드 분석"
+        ]
+      },
+      "study": [
+        {
+          "topic": "macOS Endpoint Security·System Extension",
+          "from": "preference",
+          "quote": "Mac OS 용 System Extension 또는 Kernel Extension 개발 경험",
+          "priority": "core",
+          "why": "우대사항이고 담당 업무가 EDR Mac 경쟁력 강화다. EDR 에이전트는 macOS 에서 프로세스 실행·파일 접근 같은 이벤트를 받아야 한다(추론).",
+          "gap_check": "Apple 이 Kernel Extension 대신 System Extension 과 Endpoint Security 프레임워크를 권하는 이유는 무엇이고, ES 클라이언트가 AUTH 이벤트(예: 실행 허용/차단)에 응답을 늦게 주면 무슨 일이 생기는가?",
+          "drill": "Endpoint Security 문서를 따라 프로세스 실행(EXEC)·파일 열기 이벤트를 받아 로그로 남기는 작은 ES 클라이언트를 만들고(SIP·엔타이틀먼트 조건은 개발 환경 기준), 특정 경로 실행을 AUTH 로 막아 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apple — Endpoint Security",
+              "url": "https://developer.apple.com/documentation/endpointsecurity",
+              "kind": "docs"
+            },
+            {
+              "title": "Apple — System Extensions",
+              "url": "https://developer.apple.com/documentation/systemextensions",
+              "kind": "docs"
+            },
+            {
+              "title": "Apple — Network Extension",
+              "url": "https://developer.apple.com/documentation/networkextension",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "C/C++ 로 macOS 시스템 프로그래밍",
+          "from": "qualification",
+          "quote": "C/C++ 기반 개발 경험자",
+          "priority": "core",
+          "why": "자격요건이고 다른 자격 줄이 'Mac OS 애플리케이션 개발 경험자' 다. 우대에 Objective-C/Swift 가 있다 — 엔진은 C/C++, 앱·확장은 Objective-C/Swift 로 나뉠 수 있다(추론).",
+          "gap_check": "C/C++ 엔진 라이브러리를 Swift 로 만든 시스템 확장·앱에서 부를 때 어떤 경계(브리징 헤더·Objective-C++ 래퍼)를 두고, 권한이 다른 두 프로세스 사이 통신은 무엇(XPC)으로 하는가?",
+          "drill": "C++ 로 파일 해시·시그니처 검사 라이브러리를 만들고 Objective-C++ 래퍼로 Swift 앱에서 부른 뒤, 검사 요청을 XPC 서비스로 분리해 앱과 통신시킨다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apple — XPC",
+              "url": "https://developer.apple.com/documentation/xpc",
+              "kind": "docs"
+            },
+            {
+              "title": "Apple — Notarizing macOS software before distribution",
+              "url": "https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "macOS 악성코드 분석",
+          "from": "preference",
+          "quote": "취약점, 악성코드 분석 경험",
+          "priority": "high",
+          "why": "우대사항이다. EDR 탐지 로직을 만들려면 macOS 에서 악성코드가 어떻게 지속·은닉하는지 알아야 한다(추론).",
+          "gap_check": "macOS 악성코드가 재부팅 뒤에도 살아남으려고 자주 쓰는 지속성 기법(LaunchAgents·LaunchDaemons·로그인 항목 등)은 무엇이고, EDR 에이전트는 각각을 어떤 이벤트로 잡을 수 있는가?",
+          "drill": "The Art of Mac Malware 와 MITRE ATT&CK macOS 매트릭스에서 지속성 기법 5개를 골라, 앞 드릴의 ES 클라이언트로 각 기법이 남기는 이벤트를 확인하는 탐지 표를 만든다(실제 악성코드 대신 무해한 재현 스크립트 사용).",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "The Art of Mac Malware",
+              "url": "https://taomm.org/",
+              "kind": "book"
+            },
+            {
+              "title": "MITRE ATT&CK — macOS Matrix",
+              "url": "https://attack.mitre.org/matrices/enterprise/macos/",
+              "kind": "docs"
+            },
+            {
+              "title": "Objective-See",
+              "url": "https://objective-see.org/",
+              "kind": "tool"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Endpoint Security 로 지속성 기법을 잡는 작은 macOS 탐지 에이전트",
+          "why": "담당 업무(EDR Mac)와 우대 셋(System Extension·보안 프로그램·악성코드 분석)을 한 번에 보여 준다. 신입이면 이것이 경험을 대신한다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "C/C++ 과 Swift/Objective-C 를 함께 쓴 macOS 앱 경험 정리",
+          "why": "자격요건 두 줄이 macOS 앱 개발과 C/C++ 이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류접수 → 1차면접 → 2차면접 → 처우협의 → 최종입사(공고 기준, 직무에 따라 전형이 추가·변동될 수 있다). 접수는 ~2026.12.31 안랩 홈페이지.",
+        "expect": [
+          "macOS 시스템 확장·ES 프레임워크",
+          "C/C++ 시스템 프로그래밍",
+          "악성코드 지속성 기법",
+          "보안 제품 경험"
+        ],
+        "sources": [
+          {
+            "title": "[신입/경력] SW개발(Mac OS) 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/565713?ReturnUrl=RecruitInfo",
+            "publisher": "캐치"
+          }
+        ]
+      }
+    }
+  ]
 }
