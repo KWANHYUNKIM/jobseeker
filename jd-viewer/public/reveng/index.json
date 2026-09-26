@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "개호 사업자 경영 지원 SaaS 카이포케 — 제도 규칙대로 금액을 내는 보수 산정의 정답을 QA 가 실무 양식 모양의 시트로 쌓아 CI 로 돌리고, PR 마다 쓰고 버리는 검증 환경으로 릴리스 트레인의 병목을 푼다",
       "updated_at": "2026-09-26",
       "domain": "bm-sms.co.jp"
