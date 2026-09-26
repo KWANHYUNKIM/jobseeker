@@ -831,3 +831,6 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 ## 2026-09-26 perplexity 재방문 → 확장
 - CobbleDB(2026-09-14) 로 `cobbledb-hot-store` 추가. 새 도메인, 결정 7개, 그림 2장. 수치: p50 31.4→5.6ms, p99 123→24.2ms, 비용 최소 -20%, 20만 rps.
+
+## 2026-09-26 pinterest 재방문 → 확장
+- 임베딩 검색 플랫폼(2026-09-11) 으로 `recall-for-memory` 추가. 새 도메인, 결정 6개, 그림 2장. 수치: 메모리 -50%+·비용 -20~30%, PQ recall 70~80 vs SQ 90+, SPANN+PQ QPS 3배·recall -5%.

@@ -5,7 +5,7 @@
   "country": "US",
   "category": "소셜",
   "status": "done",
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-26",
   "domain": "pinterest.com",
   "one_liner": "이미지로 무언가를 찾는 사람들의 발견 플랫폼 — 무엇을 보여 줄지를 조건에 따라 다르게 정한다",
   "business_model": "광고로 번다. 사람들이 관심사를 저장하고 찾는 자리에 상품과 광고를 놓는다. 2026년 2분기 매출이 11억 8,000만 달러로 18% 자랐고 월간 활성 사용자가 6억 4,000만 명으로 11% 늘어 최고치다. 미국과 캐나다가 1억 600만, 유럽이 1억 5,700만, 그 밖이 3억 7,700만이다. 하위 퍼널 광고 매출의 약 30%가 Performance+ 캠페인을 지나고, 광고 전달 모델을 고쳐 중소 광고주 시험에서 광고 지출 대비 매출을 28% 올렸다.\n\n**이 회사의 기술 이야기는 무엇을 보여 줄지로 모인다.** 홈피드에 무엇을 꺼내 올지, 사용자를 어떤 쓰임새로 이해할지, 그리고 그것을 굴리는 인프라를 어떻게 안전하게 둘지다(이 정리는 재구성이다).",
@@ -17,7 +17,7 @@
   "domain_map": {
     "title": "무엇을 보여 줄지가 이 회사의 문제다",
     "question": "이 회사의 도메인들이 어떻게 맞물리나",
-    "code": "flowchart TD\n  U[\"<b>월간 사용자 6억 4천만 명</b>\"]:::list --> P[\"<b>사용자를 쓰임새로 이해한다</b><br/>• Pinner Progression (⏳ 미독)\"]:::quiet\n  U --> R[\"⚠️ <b>조건에 따라 꺼내 온다</b><br/>• 관심사 · 보드 등<br/>• p90 80ms → 12ms\"]:::accent\n  P --> R\n  R --> F[\"<b>홈피드</b>\"]:::list\n  F --> A[\"<b>광고</b><br/>• 매출 11.8억 달러 (+18%)\"]:::list\n  I[\"<b>이것을 굴리는 인프라</b><br/>• 자원 프로비저닝 (⏳ 미독)\"]:::quiet --> R"
+    "code": "flowchart TD\n  U[\"<b>월간 사용자 6억 4천만 명</b>\"]:::list --> P[\"<b>사용자를 쓰임새로 이해한다</b><br/>• Pinner Progression (⏳ 미독)\"]:::quiet\n  U --> R[\"⚠️ <b>조건에 따라 꺼내 온다</b><br/>• 관심사 · 보드 등<br/>• p90 80ms → 12ms\"]:::accent\n  P --> R\n  R --> F[\"<b>홈피드</b>\"]:::list\n  E[\"<b>수십억 임베딩에서 싸게 찾는다</b><br/>• Manas · SQ/PQ 양자화 · SPANN(SSD)<br/>• 메모리 -50%+ · 비용 -20~30%\"]:::accent --> R\n  F --> A[\"<b>광고</b><br/>• 매출 11.8억 달러 (+18%)\"]:::list\n  I[\"<b>이것을 굴리는 인프라</b><br/>• 자원 프로비저닝 (⏳ 미독)\"]:::quiet --> R"
   },
   "revenue_streams": [
     {
@@ -322,6 +322,60 @@
       ],
       "features": [
         "code-does-not-name-its-own-blast-radius"
+      ]
+    },
+    {
+      "name": "수십억 임베딩에서 가까운 것을 싸게 찾는다",
+      "why": "모든 주요 표면이 자체 검색 플랫폼 Manas 의 임베딩 검색 위에 있고 코퍼스가 수백억으로 간다. 표준 HNSW 는 색인 전체가 RAM 에 있어야 해 비용이 코퍼스에 비례한다. 본문 확인함(2026-09-11). 홈피드 도메인이 무엇을 꺼낼지라면 여기는 그것을 얼마에 꺼내느냐라 따로 세웠다(이 사이트의 해석).",
+      "tech": [
+        {
+          "tech": "SQ·PQ 양자화 (Linear Scaling SQ + SIMD)",
+          "solves": "색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 쓰임새마다 온라인 A/B 로 양자화기를 고른다.",
+          "limits": "PQ 는 recall 이 70~80% 까지 떨어져 쓰임새를 가린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Evolving Pinterest's Embedding Retrieval Platform",
+              "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+              "publisher": "Pinterest Engineering Blog",
+              "date": "2026-09-11",
+              "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+            }
+          ]
+        },
+        {
+          "tech": "SPANN (메모리 중심점 + SSD 게시 목록, 디스크 PQ)",
+          "solves": "DiskANN 대비 QPS 3배 이상·지연 1/3, 50억+ 핀에서 HNSW 대비 CPU 40% 이상 절감.",
+          "limits": "recall 약 5% 하락. 아직 예비 평가 단계로 전면 도입 전이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Evolving Pinterest's Embedding Retrieval Platform",
+              "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+              "publisher": "Pinterest Engineering Blog",
+              "date": "2026-09-11",
+              "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+            }
+          ]
+        },
+        {
+          "tech": "다중 임베딩 검색 (후기 상호작용)",
+          "solves": "후보를 벡터 목록으로 두고 Sum of MaxSim 으로 더 풍부하게 점수를 매긴다.",
+          "limits": "질의 하나가 여러 ANN 검색이 된다. 파일럿 준비 중.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Evolving Pinterest's Embedding Retrieval Platform",
+              "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+              "publisher": "Pinterest Engineering Blog",
+              "date": "2026-09-11",
+              "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "recall-for-memory"
       ]
     }
   ],
@@ -1846,6 +1900,340 @@
           "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
         }
       ]
+    },
+    {
+      "key": "recall-for-memory",
+      "name": "recall 몇 %를 내주고 메모리를 산다",
+      "domain": "수십억 임베딩에서 가까운 것을 싸게 찾는다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "Pinterest 의 모든 주요 표면 — 홈피드·검색·연관 핀·광고·알림 — 이 자체 검색 플랫폼 Manas 의 임베딩 검색 위에 있다. 80개 넘는 클러스터에서 수십억 임베딩을 서빙하고, 코퍼스는 수백억으로 가고 있다.\n\n그런데 표준 ANN 인 HNSW 는 색인 전체가 RAM 에 있어야 빠르다. 코퍼스가 두 배가 되면 메모리 비용도 두 배다. 이 회사가 이미 조건부 검색으로 홈피드의 지연을 줄인 자리에서, 이번에는 그 검색이 기대는 색인 자체의 값을 낮추는 것이 문제다.\n\n**답은 세 번 모두 같은 거래다 — recall 몇 %를 내주고 메모리와 CPU 를 산다.** 벡터를 정수로 압축하고(양자화), 색인 대부분을 10배 싼 SSD 로 내리고(SPANN), 그 대가로 recall 이 얼마나 떨어져도 참여 지표가 안 움직이는지를 온라인 A/B 로 쓰임새마다 확인한다. 한편 투타워의 '후보 하나에 벡터 하나'를 넘어 다중 임베딩 검색으로 표현력을 되사는 쪽도 연다.",
+        "metrics": [
+          {
+            "label": "양자화 효과 (전 주요 쓰임새)",
+            "value": "색인 메모리 50% 이상 감소 · 서빙 비용 20~30% 절감",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "label": "SQ vs PQ (1억 임베딩 벤치마크)",
+            "value": "PQ: HNSW 색인 -74%·IVF -93%, recall 70~80% / SQ: HNSW -59%·IVF -75%, recall 90% 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "label": "SPANN+PQ vs DiskANN",
+            "value": "QPS 3배 이상 · 지연 1/3 · recall 약 5% 하락 (plain SPANN 대비 4.5배 빠름)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "label": "SPANN (50억+ 핀 추천, 예비 평가)",
+            "value": "HNSW 대비 CPU 40% 이상 절감 · recall 하락 5% 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "label": "Linear Scaling SQ + SIMD",
+            "value": "질의당 계산 자원 10~15% 절감",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "label": "규모",
+            "value": "80개 넘는 클러스터, 수십억 임베딩",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "정밀도를 줄일지 볼 때",
+          "thought": "16·32비트 부동소수로 서빙하는 것이 관행이었지만 이 규모에서 원 정밀도는 줄어드는 이득만 주는 사치다. 양자화가 비용 효율을 올리는 가장 효과적인 수단 가운데 하나였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "양자화가 CPU 병목이 될 때",
+          "thought": "SQ 는 보통 거리 계산 전에 디코딩이 필요하다. 스케일만으로 양자화하면 디코딩이 사라지고, SIMD 로 8비트 정수 연산을 한 명령에 여럿 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "SSD 로 내릴 때",
+          "thought": "SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초로 뛴다. 그래서 알고리즘이 요청당 무작위 읽기 수를 묶어야 한다 — 디스크를 빨리 만드는 것이 아니라 덜 읽는 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "투타워의 한계를 볼 때",
+          "thought": "투타워는 핀이나 질의 전체를 벡터 하나로 접어 토큰 수준의 결을 잃는다. 비용을 낮추는 것과 별개로 검색 단계의 표현력을 올려야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Manas",
+            "what": "Pinterest 자체 분산 검색 플랫폼. 여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신."
+          },
+          {
+            "name": "SQ (스칼라 양자화)",
+            "what": "차원마다 부동소수를 정수로 균일 이산화. 압축은 덜하지만 recall 을 지킨다."
+          },
+          {
+            "name": "PQ (곱 양자화)",
+            "what": "부분 공간마다 K-평균을 돌려 가장 가까운 중심점 ID 로 바꾼다. 압축은 크지만 recall 이 떨어진다."
+          },
+          {
+            "name": "SPANN",
+            "what": "중심점 색인은 메모리(HNSW), 긴 게시 목록은 디스크. 요청당 디스크 접근 수를 줄인다."
+          },
+          {
+            "name": "게시 목록",
+            "what": "중심점마다 딸린 벡터 목록. 계층적 균형 클러스터링으로 길이를 고르게 한다."
+          },
+          {
+            "name": "후기 상호작용",
+            "what": "질의와 문서를 벡터 목록으로 두고 질의 토큰마다 최대 유사도를 더한다(Sum of MaxSim). ColBERT 계열."
+          }
+        ],
+        "invariants": [
+          "양자화기는 오프라인 recall 만으로 고르지 않는다 — 쓰임새마다 온라인 A/B 로 참여 지표가 안 움직이는지 본다.",
+          "디스크 기반 ANN 은 요청당 무작위 읽기 수를 묶는다.",
+          "중심점은 원 정밀도로, 디스크의 벡터는 PQ 로 — 정밀도를 쓰는 자리와 아끼는 자리를 가른다.",
+          "게시 목록 길이를 고르게 둔다 — 긴 목록 하나가 꼬리 지연을 만든다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "1억 임베딩 벤치마크에서 SQ 와 PQ 를 HNSW·IVF 위에서 견준다",
+            "why": "PQ 는 더 압축하고 recall 이 떨어지며, SQ 는 덜 압축하고 recall 을 지킨다는 직관을 숫자로 확인한다."
+          },
+          {
+            "step": "쓰임새마다 온라인 A/B 로 양자화기를 골라 전 주요 쓰임새에 배포한다",
+            "why": "recall 몇 %가 실제 참여에 영향이 없는지는 쓰임새마다 다르다."
+          },
+          {
+            "step": "Linear Scaling SQ 와 SIMD 로 디코딩 없이 정수 거리 계산",
+            "why": "압축이 CPU 병목으로 바뀌지 않게."
+          },
+          {
+            "step": "DiskANN 과 SPANN 을 견주고 SPANN 을 택한다 — 디스크 쪽 벡터는 PQ, 중심점은 원 정밀도",
+            "why": "SPANN+PQ 가 DiskANN 보다 QPS 3배 이상, 지연 1/3."
+          },
+          {
+            "step": "중심점 색인을 메모리의 HNSW 로, 게시 목록을 디스크에. 색인 구축 때 계층적 균형 클러스터링",
+            "why": "요청당 디스크 접근을 줄이고 목록 길이를 고르게 해 꼬리 지연을 낮춘다."
+          },
+          {
+            "step": "다중 임베딩 질의를 새 질의 유형으로 넣는다 — 질의 파서 변경, 여러 ANN 검색 동시 실행",
+            "why": "투타워를 넘어 검색 단계에서 더 풍부한 점수를 매긴다. 파일럿 준비 중."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "임베딩을 원 정밀도로 둘 것인가",
+            "chosen": "정수로 양자화한다. 쓰임새마다 SQ 와 PQ 중 온라인 A/B 로 고른다.",
+            "alternatives": [
+              "16·32비트 부동소수 유지",
+              "한 양자화기를 일괄 적용"
+            ],
+            "tradeoff": "색인 메모리 50% 이상, 서빙 비용 20~30% 를 줄였다. 대가는 recall 이다 — PQ 는 70~80% 까지 떨어진다. 그래서 오프라인 recall 로 끝내지 않고 쓰임새마다 온라인 A/B 로 참여 지표가 안 움직이는지 확인하는 비용을 치른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "question": "양자화된 벡터의 거리를 어떻게 계산하나",
+            "chosen": "스케일만으로 양자화하는 Linear Scaling SQ 와 SIMD 정수 연산. 디코딩 단계를 없앤다.",
+            "alternatives": [
+              "디코딩한 뒤 부동소수로 거리 계산"
+            ],
+            "tradeoff": "질의당 계산 자원이 10~15% 줄었다. 대가는 스케일 하나로 표현할 수 있는 분포에 묶인다는 것이다 — 차원별 분포가 치우치면 정밀도 손실이 커진다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "question": "색인을 RAM 에 다 둘 것인가",
+            "chosen": "SSD 로 내린다 — 요청당 무작위 읽기를 묶은 디스크 기반 ANN.",
+            "alternatives": [
+              "HNSW 로 전부 메모리에 둔다"
+            ],
+            "tradeoff": "SSD 는 GB 당 약 10배 싸고 초기 실험에서 메모리 10배 절감·CPU 40% 절감. 대가는 지연이 나노초에서 마이크로초로 뛰어 I/O 를 잘못 다루면 질의가 느려진다는 것이다. 아직 전면 적용 전 — 다음 단계가 모든 주요 쓰임새 도입이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "question": "디스크 기반 ANN 으로 무엇을 쓰나",
+            "chosen": "SPANN — 중심점 색인은 메모리 HNSW, 게시 목록은 디스크. 원 논문에서 한 가지를 바꿔 디스크 쪽 벡터만 PQ 로, 중심점은 원 정밀도로.",
+            "alternatives": [
+              "DiskANN (그래프 기반)",
+              "plain SPANN"
+            ],
+            "tradeoff": "SPANN+PQ 가 plain SPANN 보다 4.5배 빠르고 DiskANN 보다 QPS 3배 이상·지연 1/3 이다. 대가는 recall 약 5% 하락이다. 50억+ 핀 추천에서는 HNSW 대비 CPU 40% 이상 절감에 recall 하락 5% 미만.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "question": "게시 목록 길이를 어떻게 다루나",
+            "chosen": "색인 구축 때 SPANN 의 계층적 균형 클러스터링으로 중심점을 골라 클러스터 크기를 고르게 한다.",
+            "alternatives": [
+              "일반 K-평균 클러스터링"
+            ],
+            "tradeoff": "목록 길이가 비슷해져 꼬리 지연이 낮아진다. 대가는 구축 단계가 무거워지고, 실시간 갱신으로 목록이 다시 치우치면 재균형이 필요하다 — 회사가 다음으로 SPFresh 를 꼽는 이유로 읽힌다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          },
+          {
+            "question": "후보 하나를 벡터 하나로 둘 것인가",
+            "chosen": "다중 임베딩 검색을 새 질의 유형으로 넣는다 — 후기 상호작용(Sum of MaxSim).",
+            "alternatives": [
+              "투타워의 단일 벡터 내적 유지"
+            ],
+            "tradeoff": "토큰 수준 의미를 살려 검색 단계에서 더 풍부한 점수를 매긴다. 대가는 질의 하나가 여러 ANN 검색이 되어 비용이 벡터 수만큼 늘고, 질의 파서와 서빙 경로를 바꿔야 한다는 것이다. 아직 파일럿 준비 단계다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Evolving Pinterest's Embedding Retrieval Platform",
+                "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+                "publisher": "Pinterest Engineering Blog",
+                "date": "2026-09-11",
+                "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "홈피드에 무엇을 꺼내 올지 조건에 따라 정한다 (같은 회사 도메인)",
+          "via": "Manas 임베딩 검색",
+          "contract": "홈피드 조건부 검색이 꺼내 오는 후보가 이 플랫폼의 ANN 에서 나온다. 저쪽이 무엇을 꺼낼지라면 이쪽은 그것을 얼마에 꺼내느냐다(이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "광고 · 검색 · 연관 핀 · 알림",
+          "via": "같은 검색 플랫폼",
+          "contract": "모든 주요 표면이 Manas 임베딩 검색을 쓴다. 양자화 기준을 쓰임새마다 A/B 로 정한 이유다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "SPANN · DiskANN · ColBERT (공개 연구)",
+          "via": "알고리즘",
+          "contract": "SPANN 을 원 논문에서 한 가지 바꿔(디스크 PQ, 중심점 원 정밀도) 구현했다. 다음은 SPFresh 와 GPU 검색(SilverTorch·TIGER).",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "메모리에 둘 것과 디스크로 내릴 것",
+          "question": "SPANN 질의 하나는 어디를 읽나",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"<b>질의 임베딩</b>\"]:::quiet --> C[\"<b>중심점 색인 (메모리 HNSW)</b><br/>• 원 정밀도\"]:::accent\n  C -->|\"가까운 중심점 몇 개\"| PL[\"<b>게시 목록 (SSD)</b><br/>• 벡터는 PQ<br/>• 균형 클러스터링으로 길이 고름\"]:::list\n  PL --> K[\"<b>후보 top-K</b>\"]:::accent\n  K --> O[\"<b>DiskANN 대비 QPS 3배 · 지연 1/3</b><br/>• recall 약 -5%\"]:::accent\n  Q2[\"<b>다중 임베딩 질의 (파일럿)</b>\"]:::quiet -.->|\"벡터마다 ANN 동시 실행\"| C"
+        },
+        {
+          "title": "각 선택이 내주는 것",
+          "question": "메모리를 줄일 때 무엇을 잃나",
+          "kind": "failure",
+          "code": "flowchart TD\n  H[\"<b>HNSW 전부 RAM</b><br/>• 비용이 코퍼스에 비례\"]:::quiet --> Q1{\"양자화\"}\n  Q1 -->|\"PQ\"| P1[\"<b>색인 -74~93%</b><br/>• recall 70~80%\"]:::quiet\n  Q1 -->|\"SQ\"| P2[\"<b>색인 -59~75%</b><br/>• recall 90%+\"]:::list\n  P1 --> AB{\"쓰임새마다 온라인 A/B\"}\n  P2 --> AB\n  AB --> OK1[\"<b>메모리 -50%+ · 비용 -20~30%</b>\"]:::accent\n  H --> Q2{\"SSD 로 내린다\"}\n  Q2 -->|\"I/O 를 안 묶으면\"| F[\"<b>마이크로초 지연이 질의를 늦춘다</b>\"]:::quiet\n  Q2 -->|\"SPANN + PQ\"| OK2[\"<b>CPU -40% · recall -5% 미만</b>\"]:::accent"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Evolving Pinterest's Embedding Retrieval Platform",
+          "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+          "publisher": "Pinterest Engineering Blog",
+          "date": "2026-09-11",
+          "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1860,7 +2248,8 @@
     "2부가 예고돼 있다 — 사용자가 새로 생긴 관심사를 명시적으로 신호하기 전에 미래 좌표를 생성하는 예측 UIC(기하학적 예측 · 모델 기반 세렌디피티 · LLM 기반 추론). AI 를 어디까지 믿나 축의 재료가 될 수 있다.",
     "광고 시스템의 기술 자료를 끝내 못 찾았다 — 매출의 전부가 광고인데 2026년 글 목록에 광고 인프라 이야기가 없다. 이 회사 프로파일의 가장 큰 구멍이다.",
     "시각 검색(이미지로 찾기)의 자료를 못 봤다 — 이 회사의 상징적 기능인데 최근 글에 없다.",
-    "AI 팀이 된다(2026-09)를 안 읽었다 — 조직 이야기라 도메인으로 세우지 않았지만 AI 를 어디까지 믿나 축의 재료가 될 수 있다."
+    "AI 팀이 된다(2026-09)를 안 읽었다 — 조직 이야기라 도메인으로 세우지 않았지만 AI 를 어디까지 믿나 축의 재료가 될 수 있다.",
+    "09-06 이후 글 가운데 VLM 서빙(NVIDIA Dynamo, 09-10)·3-타워 공동 학습 2편(09-17)·DB 수집 파티션 확정(09-25)은 아직 안 읽었다. SPANN 전면 도입 뒤의 운영 수치가 나오면 `recall-for-memory` 를 보강한다."
   ],
   "sources": [
     {
@@ -1890,6 +2279,13 @@
       "publisher": "CNBC",
       "date": "2026-08",
       "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
+    },
+    {
+      "title": "Evolving Pinterest's Embedding Retrieval Platform",
+      "url": "https://medium.com/pinterest-engineering/evolving-pinterests-embedding-retrieval-platform-aede4e831e01",
+      "publisher": "Pinterest Engineering Blog",
+      "date": "2026-09-11",
+      "summary": "자체 분산 검색 플랫폼 Manas 의 임베딩 검색은 80개 넘는 클러스터에서 수십억 임베딩을 서빙하며 홈피드·검색·연관 핀·광고·알림을 떠받친다(여러 ANN 알고리즘, 토큰+임베딩 혼합 질의, 수 초 안의 실시간 갱신). 코퍼스가 수백억으로 커지며 HNSW 는 색인 전체를 RAM 에 둬야 해 비용이 코퍼스에 비례하고, 투타워는 후보를 벡터 하나로 줄여 표현력이 모자라다. 세 갈래: ①양자화 — 1억 GraphSage 임베딩 벤치마크에서 PQ 는 HNSW 색인 74%·IVF 93% 감소에 recall 70~80%, SQ 는 HNSW 59%·IVF 75% 감소에 recall 90% 이상. 온라인 A/B 로 쓰임새마다 양자화기를 골라 전 주요 쓰임새에 배포 — 색인 메모리 50% 이상, 서빙 비용 20~30% 절감. 디코딩 없는 Linear Scaling SQ 와 SIMD 로 질의당 계산 10~15% 절감. ②SSD 서빙 — SSD 는 GB 당 약 10배 싸지만 지연이 나노초에서 마이크로초. 1억 검색 코퍼스에서 DiskANN 대신 SPANN, 디스크 쪽에 PQ·중심점은 원 정밀도 — SPANN+PQ 가 SPANN 대비 4.5배 빠르고 DiskANN 대비 QPS 3배 이상·지연 1/3, recall 약 5% 하락. 중심점 색인은 메모리의 HNSW, 게시 목록은 디스크, 계층적 균형 클러스터링으로 목록 길이를 고르게 해 꼬리 지연을 낮춘다. 50억 넘는 핀 추천에서 HNSW 대비 CPU 40% 이상 절감, recall 하락 5% 미만. 초기 실험 메모리 10배 절감. ③다중 임베딩 검색 — ColBERT 같은 후기 상호작용(Sum of MaxSim)을 새 질의 유형으로, 질의 파서 변경·여러 ANN 동시 검색. 파일럿 준비 중. 앞으로 SPANN·SPFresh, GPU 검색(SilverTorch·TIGER)."
     }
   ]
 }
