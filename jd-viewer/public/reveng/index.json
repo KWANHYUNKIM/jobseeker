@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "rehabforjapan",
+      "name": "Rehab for JAPAN",
+      "name_en": "Rehab for JAPAN",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "데이 서비스용 과학적 개호 SaaS Rehab Cloud — 여러 프로덕트 DB 를 BigQuery 로 모으는 멈출 수 없는 데이터 기반을, 하루 몇 시간 도는 ETL 에 월 $600~1,000 을 내던 상시 가동 Cloud Composer 에서 Cloud Run Jobs 와 시각차 기동으로 옮겨 월 $10~20 로 돌린다",
+      "updated_at": "2026-09-26",
+      "domain": "rehabforjapan.com"
+    },
+    {
       "slug": "aircloset",
       "name": "エアークローゼット",
       "name_en": "airCloset",
@@ -3350,7 +3362,8 @@
     "개인정보를 LLM 에 안 넘기고 문의 대응을 자동화한다",
     "고객 PII 를 관측 스택에 흘리지 않고 AI 가 조사하게 한다",
     "AI 로 빨라진 개발이 쌓는 클라우드 비용을 입구에서 막는다",
-    "새 렌털 서비스를 공통 이벤트 기반 위에 올린다"
+    "새 렌털 서비스를 공통 이벤트 기반 위에 올린다",
+    "멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다"
   ],
   "countries": {
     "KR": "한국",

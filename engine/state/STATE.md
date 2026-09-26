@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**에어클로젯 완주(2026-09-26) — 완주 판정 검색 2(Zenn 검색 'エアークローゼット')에서 10년 회고(`0e872a2432aa81`)가 걸려 hold 대신 셋째 도메인 '새 렌털 서비스를 공통 이벤트 기반 위에 올린다' + `event-driven-rental-platform`(2022 목표 `07ed9da7dd8d65` · 2023 기반 `aircloset_dev/7aa07583fd66d6` · 2024 Dress `ed4155d701a9ce`) → 주변 서비스 수익원에 연결, eras 셋(2015 Node.js 내제 · 2018 세분화 · 2021 이벤트 구동). done. **배운 것: RSS 는 최근 20편뿐이다 — 옛 글은 Zenn 검색 API 에 회사명 한 단어로 찾으면 나온다.** 대기 1/3(Rehab for Japan) — 목표 미달이라 --gaps 가 후보 조사를 부르면 그쪽이 먼저. 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
+**Rehab for JAPAN 프로파일(2026-09-26) — 도메인 하나, 기능 0. 다음은 확장: '멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다' — `composer-to-cloud-run-jobs`(상시 가동 Composer 월 $600~1,000 → Cloud Run Jobs+Scheduler 월 $10~20 · CrashLoopBackOff 인시던트 · Workflows 불채용 · 프로덕트×Job 3종 · product_etl 모듈 · v1/v2 체크섬 diff · 하류 수정 0 인 B안 · 120 테이블 OOM 만 8GiB). 수익원 Rehab Studio 는 도메인 없음, Rehab Cloud 제품 자체 글도 없음 → 기능 뒤 두 번 찾고(RSS 20편은 봤다 — Zenn 검색 'Rehab Cloud' 는 QA 팀 과거편 하나) 없으면 hold. **배운 것(에어클로젯): RSS 는 최근 20편뿐 — 옛 글은 Zenn 검색 API 에 회사명 한 단어로.** 대기 0/3 — **--gaps 가 후보 조사를 부르면 그쪽이 먼저**(보류 후보 Finatext·WWWAVE·TOKIUM·Aldagram). 비교 문서 재료: 다섯 묶음 + AI 에 쥐여 주는 환경 + 여러 제품이 한 데이터 기반에 + PR 환경 + 결제 대장 + 첫 대응 봇 + LLM 평가 + 워크플로 엔진 + 개인정보와 LLM(캔리 마스킹 3층 ↔ 에어클로젯 PII 해시 ↔ PKSHA opt-out) + **CDN 과 가용성**(캔리 SWR ↔ Hacobu 점검 배너 CloudFront). 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA·Sumzap·Yappli·로그라스·Hacobu·estie(hold)·LayerX 는 in_progress.**
 
 
 

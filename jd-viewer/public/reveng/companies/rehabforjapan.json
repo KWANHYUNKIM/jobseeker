@@ -1,0 +1,148 @@
+{
+  "slug": "rehabforjapan",
+  "name": "Rehab for JAPAN",
+  "name_en": "Rehab for JAPAN",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "rehabforjapan.com",
+  "one_liner": "데이 서비스용 과학적 개호 SaaS Rehab Cloud — 여러 프로덕트 DB 를 BigQuery 로 모으는 멈출 수 없는 데이터 기반을, 하루 몇 시간 도는 ETL 에 월 $600~1,000 을 내던 상시 가동 Cloud Composer 에서 Cloud Run Jobs 와 시각차 기동으로 옮겨 월 $10~20 로 돌린다",
+  "business_model": "개호 사업소(데이 서비스 중심, 2026년 여름부터 특양·특정 시설로 확대)에 **Rehab Cloud** 를 판다 — 리하비리 계획서 작성·태블릿 기록·개호 청구·AI 동작 분석·경영 관리를 묶은 '과학적 개호 소프트' 로, 서류 업무를 줄이고 이용자의 생활 기능 향상(아웃컴)을 뒷받침한다. 곁에 개호 보험 밖의 재택 온라인 리하비리 **Rehab Studio**, 사업소에 쌓인 개호 데이터를 익명화해 기업·학계·공공에 제공하는 **Rehab Insight**(데이터 사업)가 있다. 과금 구조·수익원 비중은 이번에 확인하지 못했다.",
+  "products": [
+    "Rehab Cloud(데이 서비스용 과학적 개호 소프트 — 리하비리 지원·태블릿 기록·개호 청구·AI 동작 분석·경영 관리)",
+    "Rehab Studio(보험 밖 재택 온라인 리하비리)",
+    "Rehab Insight(익명화 개호 데이터 분석 기반)",
+    "Rehab 스마트폰 연락장(LINE)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "Rehab Cloud(개호 사업소 SaaS)",
+      "how": "데이 서비스 등 개호 사업소에 리하비리 계획·기록·청구·경영 관리 소프트를 제공한다. 과금 구조는 확인 못 함.",
+      "weight": "주력(비중 확인 못 함)",
+      "domains": [
+        "멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "事業内容",
+          "url": "https://rehabforjapan.com/service/",
+          "publisher": "株式会社Rehab for JAPAN",
+          "date": "2026-09-26",
+          "summary": "① **리하비리 SaaS** — 데이 서비스용 '과학적 개호 소프트' **Rehab Cloud**(리하비리 지원·태블릿 기록·개호 청구·AI 동작 분석·경영 관리), 서류 업무 경감·사업소 차별화·매출 향상·이용자 생활 기능 향상. ② **온라인 리하비리** — 개호 보험 밖 재택 서비스 **Rehab Studio**(리하비리 전문직과 개인별 프로그램). ③ **데이터 사업** — 사업소에 쌓이는 개호 데이터를 익명화해 해석 가능하게 가공한 분석 기반 **Rehab Insight**, 헬스케어 기업·학계·공공에 데이터 제공·공창."
+        },
+        {
+          "title": "Claude Codeと挑む技術的負債の返済 — 止められない本番データ基盤を、一人で載せ替えた話",
+          "url": "https://zenn.dev/rehabforjapan/articles/composer-to-cloud-run-jobs",
+          "publisher": "Rehab for JAPAN (Zenn)",
+          "date": "2026-07-09",
+          "summary": "각 프로덕트 데이터를 BigQuery 로 모으는 Data Platform — 비즈니스(특히 CS)가 매일 기대는 멈출 수 없는 기반. Source 계 ETL(AWS 프로덕트 DB → S3 → GCS → BigQuery binlog → MERGE → fullload → 열 제외 → source_{product}, Airflow DAG 14개)을 하루 몇 시간 돌리려 **24시간 상시 가동 Cloud Composer** 에 dev/prod 월 $600~1,000. 이미지 업그레이드로 Worker Pod CrashLoopBackOff 인시던트 → 메모리 증강은 항구적 비용 증가 → '상시 가동 자체를 그만두자'. **Cloud Run Jobs + Cloud Scheduler**(월 $10~20), 전부 Python·DAG 간 의존이 같은 프로덕트 안 직렬뿐이라 **Cloud Workflows 불채용**(스텝 과금) — 시각차 기동의 소결합, 지금이라면 체인 실행으로 Workflows 도 있다. 프로덕트 × Job 3종, Terraform `product_etl` 모듈을 4프로덕트에 재사용. v1/v2 병행 운용과 행 수·행 순서 무관 체크섬 일일 diff, 하류 dbt·BI 수정 0 인 전환안. 최대 프로덕트(120 테이블) OOM 은 그 replicator 만 8GiB/4vCPU. 한 사람·다른 업무 사이·약 2개월, Claude Code 와 41 태스크·50+ PR·약 19,000행(테스트 약 8,500행). 월 $800 남짓 절감을 위해 수 인월 — 신기능과의 우선순위 경쟁에서 늘 지던 부채가 AI 로 수지가 맞게 됐다."
+        }
+      ]
+    },
+    {
+      "name": "Rehab Studio(온라인 리하비리)",
+      "how": "개호 보험 밖의 재택 서비스로 리하비리 전문직이 온라인으로 개인별 프로그램을 진행한다. 과금 구조는 확인 못 함.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "事業内容",
+          "url": "https://rehabforjapan.com/service/",
+          "publisher": "株式会社Rehab for JAPAN",
+          "date": "2026-09-26",
+          "summary": "① **리하비리 SaaS** — 데이 서비스용 '과학적 개호 소프트' **Rehab Cloud**(리하비리 지원·태블릿 기록·개호 청구·AI 동작 분석·경영 관리), 서류 업무 경감·사업소 차별화·매출 향상·이용자 생활 기능 향상. ② **온라인 리하비리** — 개호 보험 밖 재택 서비스 **Rehab Studio**(리하비리 전문직과 개인별 프로그램). ③ **데이터 사업** — 사업소에 쌓이는 개호 데이터를 익명화해 해석 가능하게 가공한 분석 기반 **Rehab Insight**, 헬스케어 기업·학계·공공에 데이터 제공·공창."
+        }
+      ]
+    },
+    {
+      "name": "Rehab Insight(데이터 사업)",
+      "how": "개호 사업소에 쌓인 데이터를 익명화·가공해 헬스케어 기업·학계·공공에 제공하고 공창한다. 과금 구조는 확인 못 함.",
+      "weight": "공개 없음",
+      "domains": [
+        "멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "事業内容",
+          "url": "https://rehabforjapan.com/service/",
+          "publisher": "株式会社Rehab for JAPAN",
+          "date": "2026-09-26",
+          "summary": "① **리하비리 SaaS** — 데이 서비스용 '과학적 개호 소프트' **Rehab Cloud**(리하비리 지원·태블릿 기록·개호 청구·AI 동작 분석·경영 관리), 서류 업무 경감·사업소 차별화·매출 향상·이용자 생활 기능 향상. ② **온라인 리하비리** — 개호 보험 밖 재택 서비스 **Rehab Studio**(리하비리 전문직과 개인별 프로그램). ③ **데이터 사업** — 사업소에 쌓이는 개호 데이터를 익명화해 해석 가능하게 가공한 분석 기반 **Rehab Insight**, 헬스케어 기업·학계·공공에 데이터 제공·공창."
+        },
+        {
+          "title": "Claude Codeと挑む技術的負債の返済 — 止められない本番データ基盤を、一人で載せ替えた話",
+          "url": "https://zenn.dev/rehabforjapan/articles/composer-to-cloud-run-jobs",
+          "publisher": "Rehab for JAPAN (Zenn)",
+          "date": "2026-07-09",
+          "summary": "각 프로덕트 데이터를 BigQuery 로 모으는 Data Platform — 비즈니스(특히 CS)가 매일 기대는 멈출 수 없는 기반. Source 계 ETL(AWS 프로덕트 DB → S3 → GCS → BigQuery binlog → MERGE → fullload → 열 제외 → source_{product}, Airflow DAG 14개)을 하루 몇 시간 돌리려 **24시간 상시 가동 Cloud Composer** 에 dev/prod 월 $600~1,000. 이미지 업그레이드로 Worker Pod CrashLoopBackOff 인시던트 → 메모리 증강은 항구적 비용 증가 → '상시 가동 자체를 그만두자'. **Cloud Run Jobs + Cloud Scheduler**(월 $10~20), 전부 Python·DAG 간 의존이 같은 프로덕트 안 직렬뿐이라 **Cloud Workflows 불채용**(스텝 과금) — 시각차 기동의 소결합, 지금이라면 체인 실행으로 Workflows 도 있다. 프로덕트 × Job 3종, Terraform `product_etl` 모듈을 4프로덕트에 재사용. v1/v2 병행 운용과 행 수·행 순서 무관 체크섬 일일 diff, 하류 dbt·BI 수정 0 인 전환안. 최대 프로덕트(120 테이블) OOM 은 그 replicator 만 8GiB/4vCPU. 한 사람·다른 업무 사이·약 2개월, Claude Code 와 41 태스크·50+ PR·약 19,000행(테스트 약 8,500행). 월 $800 남짓 절감을 위해 수 인월 — 신기능과의 우선순위 경쟁에서 늘 지던 부채가 AI 로 수지가 맞게 됐다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "개호 현장의 기록을 하루 한 번 모은다",
+    "question": "여러 프로덕트의 데이터를 매일 BigQuery 로 모으는 기반을, 하루 몇 시간만 도는데 상시 가동 비용을 내지 않고 어떻게 멈추지 않게 돌리나?",
+    "code": "flowchart LR\n  RC[\"Rehab Cloud 등 프로덕트 DB\\nAWS\"] --> S3[\"S3\"] --> GCS[\"GCS\"]\n  SCH[\"Cloud Scheduler\\n시각차 기동\"] --> JOB[\"Cloud Run Jobs\\n프로덕트 × 3종\"]\n  JOB --> GCS\n  JOB --> BQ[\"BigQuery\\nsource_{product}\"]\n  BQ --> DBT[\"dbt · BI\\nCS 가 매일 본다\"]\n  BQ -.-> INS[\"Rehab Insight\\n익명화 데이터\"]",
+    "_note": "Data Platform 을 Rehab Cloud 와 Rehab Insight 수익원에 이은 것은 이 사이트의 해석이다 — 글은 'CS 가 매일 의존한다' 까지만 말한다. Rehab Studio 와 제품 자체(계획서·청구·AI 동작 분석)의 기술 글은 아직 못 봤다."
+  },
+  "domains": [
+    {
+      "name": "멈출 수 없는 데이터 기반을 상시 가동 없이 돌린다",
+      "why": "각 프로덕트 데이터를 BigQuery 로 모으는 Data Platform 은 CS 가 매일 기대는 멈출 수 없는 기반인데, 실제로 도는 건 하루 몇 시간뿐이다. 그런데 오케스트레이터는 24시간 도는 Cloud Composer 라 dev/prod 월 $600~1,000 을 냈고, 멈출 수 없다는 이유로 옮기는 일은 신기능과의 우선순위 경쟁에서 늘 졌다.",
+      "tech": [
+        {
+          "tech": "Cloud Run Jobs + Cloud Scheduler 시각차 기동(Cloud Workflows 불채용) · 프로덕트 × Job 3종 · Terraform `product_etl` 모듈 4프로덕트 재사용 · v1/v2 병행과 체크섬 diff",
+          "solves": "해당 부분 러닝 코스트 월 $10~20, 프로덕트·테이블 사이 병렬, 무거운 프로덕트만 따로 스케일 업.",
+          "limits": "완료를 기다리지 않는 시각차 기동이라 데이터 신선도에 여유를 둬야 한다(체인 실행은 다음 수). 스키마 정의가 Job 인자 상한을 넘어 GCS 에서 가져온다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Claude Codeと挑む技術的負債の返済 — 止められない本番データ基盤を、一人で載せ替えた話",
+              "url": "https://zenn.dev/rehabforjapan/articles/composer-to-cloud-run-jobs",
+              "publisher": "Rehab for JAPAN (Zenn)",
+              "date": "2026-07-09",
+              "summary": "각 프로덕트 데이터를 BigQuery 로 모으는 Data Platform — 비즈니스(특히 CS)가 매일 기대는 멈출 수 없는 기반. Source 계 ETL(AWS 프로덕트 DB → S3 → GCS → BigQuery binlog → MERGE → fullload → 열 제외 → source_{product}, Airflow DAG 14개)을 하루 몇 시간 돌리려 **24시간 상시 가동 Cloud Composer** 에 dev/prod 월 $600~1,000. 이미지 업그레이드로 Worker Pod CrashLoopBackOff 인시던트 → 메모리 증강은 항구적 비용 증가 → '상시 가동 자체를 그만두자'. **Cloud Run Jobs + Cloud Scheduler**(월 $10~20), 전부 Python·DAG 간 의존이 같은 프로덕트 안 직렬뿐이라 **Cloud Workflows 불채용**(스텝 과금) — 시각차 기동의 소결합, 지금이라면 체인 실행으로 Workflows 도 있다. 프로덕트 × Job 3종, Terraform `product_etl` 모듈을 4프로덕트에 재사용. v1/v2 병행 운용과 행 수·행 순서 무관 체크섬 일일 diff, 하류 dbt·BI 수정 0 인 전환안. 최대 프로덕트(120 테이블) OOM 은 그 replicator 만 8GiB/4vCPU. 한 사람·다른 업무 사이·약 2개월, Claude Code 와 41 태스크·50+ PR·약 19,000행(테스트 약 8,500행). 월 $800 남짓 절감을 위해 수 인월 — 신기능과의 우선순위 경쟁에서 늘 지던 부채가 AI 로 수지가 맞게 됐다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 구조·수익원 비중을 확인하지 못했다.",
+    "Rehab Cloud 제품 자체(리하비리 계획서·개호 청구·AI 동작 분석)의 기술 결정 글은 아직 못 봤다 — '전자 서명' 출시 글(`solo-release-reflction`)은 회고 위주.",
+    "Rehab Studio 에 이어 줄 기술 글이 없다.",
+    "Data Platform 의 수익원 연결은 inferred.",
+    "다른 글: 도메인 규칙 단위 UT(`qa-ut-domain-guarantee-gap` — 예제가 카드 게임이라 제품 결정은 아님)·LLM Wiki(`llm-wiki-internal-research-practice-202607`)·QA 팀 과거편(`d92971fb9179fb`)."
+  ],
+  "sources": [
+    {
+      "title": "株式会社Rehab for JAPAN",
+      "url": "https://rehabforjapan.com/",
+      "publisher": "株式会社Rehab for JAPAN",
+      "date": "2026-09-26",
+      "summary": "개호 영역에 기술을 들여 고령자와 주변의 라이프스타일을 디자인한다. 축적한 독자 개호 리하비리 데이터로 헬스케어 데이터 플랫포머를 지향. 최근 소식 — Rehab Cloud 특양·특정 시설용 제공(2026 여름), 계획서 동의를 태블릿으로 끝내는 '전자 서명'(2026-07), 데이 서비스와 이용자·가족을 LINE 으로 잇는 'Rehab 스마트폰 연락장'(2026-08), 'Rehab Cloud 온라인 ST'(2026-09)."
+    },
+    {
+      "title": "事業内容",
+      "url": "https://rehabforjapan.com/service/",
+      "publisher": "株式会社Rehab for JAPAN",
+      "date": "2026-09-26",
+      "summary": "① **리하비리 SaaS** — 데이 서비스용 '과학적 개호 소프트' **Rehab Cloud**(리하비리 지원·태블릿 기록·개호 청구·AI 동작 분석·경영 관리), 서류 업무 경감·사업소 차별화·매출 향상·이용자 생활 기능 향상. ② **온라인 리하비리** — 개호 보험 밖 재택 서비스 **Rehab Studio**(리하비리 전문직과 개인별 프로그램). ③ **데이터 사업** — 사업소에 쌓이는 개호 데이터를 익명화해 해석 가능하게 가공한 분석 기반 **Rehab Insight**, 헬스케어 기업·학계·공공에 데이터 제공·공창."
+    },
+    {
+      "title": "Claude Codeと挑む技術的負債の返済 — 止められない本番データ基盤を、一人で載せ替えた話",
+      "url": "https://zenn.dev/rehabforjapan/articles/composer-to-cloud-run-jobs",
+      "publisher": "Rehab for JAPAN (Zenn)",
+      "date": "2026-07-09",
+      "summary": "각 프로덕트 데이터를 BigQuery 로 모으는 Data Platform — 비즈니스(특히 CS)가 매일 기대는 멈출 수 없는 기반. Source 계 ETL(AWS 프로덕트 DB → S3 → GCS → BigQuery binlog → MERGE → fullload → 열 제외 → source_{product}, Airflow DAG 14개)을 하루 몇 시간 돌리려 **24시간 상시 가동 Cloud Composer** 에 dev/prod 월 $600~1,000. 이미지 업그레이드로 Worker Pod CrashLoopBackOff 인시던트 → 메모리 증강은 항구적 비용 증가 → '상시 가동 자체를 그만두자'. **Cloud Run Jobs + Cloud Scheduler**(월 $10~20), 전부 Python·DAG 간 의존이 같은 프로덕트 안 직렬뿐이라 **Cloud Workflows 불채용**(스텝 과금) — 시각차 기동의 소결합, 지금이라면 체인 실행으로 Workflows 도 있다. 프로덕트 × Job 3종, Terraform `product_etl` 모듈을 4프로덕트에 재사용. v1/v2 병행 운용과 행 수·행 순서 무관 체크섬 일일 diff, 하류 dbt·BI 수정 0 인 전환안. 최대 프로덕트(120 테이블) OOM 은 그 replicator 만 8GiB/4vCPU. 한 사람·다른 업무 사이·약 2개월, Claude Code 와 41 태스크·50+ PR·약 19,000행(테스트 약 8,500행). 월 $800 남짓 절감을 위해 수 인월 — 신기능과의 우선순위 경쟁에서 늘 지던 부채가 AI 로 수지가 맞게 됐다."
+    }
+  ]
+}
