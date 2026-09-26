@@ -382,6 +382,104 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/375796",
+      "title": "쿠버네티스(Kubernetes) 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 5~18년, 서울 강남구. 회사 제품 **Playce Kube**(오픈소스 기반 쿠버네티스 패키지)로 **고객사 프라이빗 클라우드(PaaS)를 설계·구축**하는 엔지니어다. 주요업무는 Playce Kube 클라우드 설계·구축, 고객 요구사항 분석, **마이크로서비스용 클러스터 구성**, **YAML·Helm 인프라 코드화**, 공통으로 고객 맞춤 클라우드 제안·구현, 프라이빗 클라우드 구축, 기술 컨설팅. 자격은 오픈소스 인프라 구성, **쿠버네티스 기반 프라이빗 클라우드 구축 실무**, **Python·Shell·Ansible**, 기술 문서·소통, 다양한 OS. 우대는 **Ceph 분산 스토리지**, CI/CD, **GPU 가상화**, Grafana·Prometheus, **Kubeflow·MLflow·Argo Workflows MLOps**. 퍼블릭 클라우드 관리형 서비스가 아니라 고객 서버 위에 직접 올리는 구축형이다. 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "쿠버네티스 프라이빗 클라우드 구축",
+          "Python·Shell·Ansible",
+          "기술 문서"
+        ],
+        "can_learn": [
+          "Ceph(Rook)",
+          "GPU Operator",
+          "MLOps(Kubeflow 등)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "온프레미스 쿠버네티스 — 고가용 클러스터를 직접 세우기",
+          "from": "qualification",
+          "quote": "• Kubernetes 기반의 Private Cloud(PaaS) 구축 실무 경험",
+          "priority": "core",
+          "why": "자격요건 핵심이고 주요업무가 고객사 프라이빗 클라우드 설계·구축이다.",
+          "gap_check": "컨트롤 플레인 3대에 etcd 를 같이 두는 방식(stacked)과 따로 두는 방식(external)은 무엇을 맞바꾸는가? 로드밸런서가 없는 고객 환경에서 API 서버 앞 가상 IP 는 어떻게 만드는가? 폐쇄망 고객사라면 이미지 레지스트리와 패키지는 어떻게 준비하는가?",
+          "drill": "kubeadm 고가용 클러스터 문서를 읽고, VM 5대(컨트롤 3·워커 2)에 Ansible 플레이북으로 사전 설정(스왑·커널 모듈·런타임)을 자동화한 뒤 stacked etcd 클러스터를 세운다. 컨트롤 노드 1대를 끄고 API 가 계속 응답하는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Creating Highly Available Clusters with kubeadm — Kubernetes",
+              "url": "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/",
+              "kind": "docs"
+            },
+            {
+              "title": "Getting started with Ansible",
+              "url": "https://docs.ansible.com/projects/ansible/latest/getting_started/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Helm 으로 고객 환경마다 다르게 배포",
+          "from": "task",
+          "quote": "• YAML, Helm 등 인프라 코드화 지원",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "같은 차트를 고객사마다 다른 값(values)으로 설치할 때 무엇을 values 로 빼고 무엇을 차트에 고정하는가? helm upgrade 가 실패했을 때 rollback 은 무엇을 되돌리고 무엇(PVC·CRD)은 못 되돌리는가?",
+          "drill": "Using Helm 문서를 읽고, 마이크로서비스 2개짜리 차트를 만들어 고객 A·B 용 values 파일로 각각 설치한다. 일부러 잘못된 값으로 업그레이드해 실패시킨 뒤 rollback 으로 되돌리고 남는 자원을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Using Helm",
+              "url": "https://helm.sh/docs/intro/using_helm/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Ceph 분산 스토리지를 쿠버네티스에",
+          "from": "preference",
+          "quote": "• Ceph 분산 스토리지 클러스터 구축 및 운영 경험",
+          "priority": "high",
+          "why": "우대사항이다. 프라이빗 클라우드에는 퍼블릭 클라우드 디스크 대신 자체 스토리지가 필요하다.",
+          "gap_check": "Ceph 의 MON·OSD·MGR 역할과 CRUSH 로 데이터가 어디에 놓이는지 설명할 수 있는가? 복제 3 과 이레이저 코딩은 용량·성능·복구에서 무엇이 다른가? 쿠버네티스 PVC 가 Ceph RBD 이미지로 연결되는 경로는?",
+          "drill": "Ceph 아키텍처 문서와 Rook 소개를 읽고, 위 클러스터의 워커에 디스크를 붙여 Rook 으로 Ceph 를 올린다. RBD 스토리지 클래스로 PVC 를 만들어 파드에 붙인 뒤 OSD 하나를 내려 데이터가 유지되는지 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Architecture — Ceph Documentation",
+              "url": "https://docs.ceph.com/en/latest/architecture/",
+              "kind": "docs"
+            },
+            {
+              "title": "Rook Ceph Documentation",
+              "url": "https://rook.io/docs/rook/latest-release/Getting-Started/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "GPU 를 쿠버네티스에서 나눠 쓰기",
+          "from": "preference",
+          "quote": "• GPU 가상화 기술 경험자",
+          "priority": "nice",
+          "why": "우대사항이고 같은 우대 목록에 MLOps 파이프라인이 있다.",
+          "gap_check": "쿠버네티스가 GPU 를 자원으로 인식하려면 드라이버·컨테이너 툴킷·디바이스 플러그인이 각각 무엇을 해야 하는가? GPU 하나를 여러 파드가 나눠 쓰는 방식(MIG·시분할)은 격리와 효율에서 무엇을 맞바꾸는가?",
+          "drill": "NVIDIA GPU Operator 개요 문서를 읽고 구성 요소와 설치 순서를 정리한 뒤, GPU 노드가 있으면 Operator 로 설치해 nvidia.com/gpu 요청 파드를 띄운다. 없으면 구성 요소별 역할과 MIG·시분할 비교표를 작성한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "About the NVIDIA GPU Operator",
+              "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
