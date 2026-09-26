@@ -644,6 +644,111 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55070969&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=2121cf9f-1ac5-40f0-ad26-cc23606afe42",
+      "title": "[통합보안] Information Security Strategy",
+      "site": "saramin",
+      "verdict": "경력 3년 이상(보안전략), 학사 이상. **개발 자리가 아니라 정보보호 전략·운영 자리**다 — 국내외 연구소의 정보보호 체계 수립·운영과 임직원 보안의식 관리. 업무는 네 묶음: 보안 트렌드·위협 분석을 통한 위험 평가, 국내외 연구소 보안 정책·가이드라인 제·개정, 교육·캠페인; 신규 시스템 보안 요구사항·아키텍처 검토, **연구개발 망분리(OA망·시험망·DEV망)와 망연계** 정책·구축, 클라우드·SaaS 보안성 검토; EDR·DLP·방화벽·NAC 운영과 정책 최적화, MES·PLM 보안 요구사항; **국가핵심기술 보호** — 법령 분석과 관계 기관 대응, 기술 식별·유통경로 분석, 해외 연구소·협력사 협업을 위한 수출 신고. 자격은 학사, 보안전략 3년, 비즈니스 영어 셋뿐이고 우대사항 칸은 비어 있다. **접수 마감 2026.09.29 17시**. 전형: 지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격. 접수 2026년 09월 15일 09시 ~ 09월 29일 17시, 이력서·자기소개서. 급여 '면접 후 결정', 근무지 남양연구소.",
+      "fit": {
+        "must_have": [
+          "학사 이상",
+          "보안전략 3년 이상",
+          "비즈니스 영어·영어 문서"
+        ],
+        "can_learn": []
+      },
+      "study": [
+        {
+          "topic": "연구개발 망분리와 망연계",
+          "from": "task",
+          "quote": "　· 연구개발 환경의 망분리(OA망, 시험망, DEV망 등) 및 망연계에 대한 보안 정책 및 아키텍처 수립·구축",
+          "priority": "core",
+          "why": "주요업무이고 다른 묶음에 '연구개발 환경의 목적별 네트워크간 데이터 공유 등을 위한 망연계 솔루션 정책 최적화' 가 있다. 근무지가 남양연구소다.",
+          "gap_check": "OA망·시험망·DEV망을 나눈 연구소에서 개발자가 설계 데이터를 시험망으로 옮겨야 할 때 망연계 경로를 어떻게 설계하고(승인·검사·로그), 그 경로가 유출 통로가 되지 않게 무엇을 제한하는가? 제로 트러스트 관점은 망분리와 어떻게 다른가?",
+          "drill": "NIST SP 800-207(제로 트러스트)을 읽고, 가상 연구소의 세 망 구성도와 망간 데이터 이동 절차(요청 → 승인 → 악성코드·민감정보 검사 → 전송 → 기록)를 정책 문서 한 장으로 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "NIST SP 800-207 — Zero Trust Architecture",
+              "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+              "kind": "docs"
+            },
+            {
+              "title": "CISA — Zero Trust Maturity Model",
+              "url": "https://www.cisa.gov/zero-trust-maturity-model",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "국가핵심기술 보호",
+          "from": "task",
+          "quote": "　· 당사 취급 국가핵심기술 보호를 위한 법령 분석 및 관계 기관 대응",
+          "priority": "core",
+          "why": "주요업무이고 같은 묶음에 사내 국가핵심기술 식별·유통경로 분석과 '해외 연구소 및 협력사간 협업을 위한 국가핵심기술 수출 신고 대응' 이 있다.",
+          "gap_check": "산업기술보호법에서 국가핵심기술을 해외로 넘길 때 어떤 절차(승인·신고)를 거쳐야 하고, 사내에서 어떤 자료가 그 기술에 해당하는지 식별한 뒤 유통경로를 어떻게 추적하는가?",
+          "drill": "산업기술의 유출방지 및 보호에 관한 법률에서 국가핵심기술 정의·수출 승인·신고 조항을 찾아 요약하고, 가상 설계 문서 하나가 해외 연구소와 공유되기까지의 체크리스트를 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 산업기술의 유출방지 및 보호에 관한 법률",
+              "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EC%82%B0%EC%97%85%EA%B8%B0%EC%88%A0%EC%9D%98%EC%9C%A0%EC%B6%9C%EB%B0%A9%EC%A7%80%EB%B0%8F%EB%B3%B4%ED%98%B8%EC%97%90%EA%B4%80%ED%95%9C%EB%B2%95%EB%A5%A0",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "위험 평가와 보안 정책 체계",
+          "from": "task",
+          "quote": "　· 최신 보안 트렌드 및 위협 동향 분석을 통한 위험 평가 및 개선 과제 도출",
+          "priority": "high",
+          "why": "주요업무이고 같은 묶음에 국내외 연구소 보안 정책·가이드라인 제·개정과 보안 인식 교육·캠페인이 있다.",
+          "gap_check": "해외 연구소까지 같은 정책을 적용할 때 공통 기준과 현지 규제 차이를 어떻게 나누고, 위험 평가 결과를 개선 과제의 우선순위로 바꾸는 기준은 무엇인가?",
+          "drill": "NIST CSF 의 기능 구분(Govern·Identify·Protect·Detect·Respond·Recover)으로 가상 연구소의 현재 수준을 평가하고, CIS Controls 에서 우선 과제 5개를 골라 정책 개정안 목차를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "NIST Cybersecurity Framework",
+              "url": "https://www.nist.gov/cyberframework",
+              "kind": "docs"
+            },
+            {
+              "title": "CIS Critical Security Controls",
+              "url": "https://www.cisecurity.org/controls",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "망분리·망연계 정책서 + 국가핵심기술 공유 체크리스트",
+          "why": "주요업무 네 묶음 중 둘(보안 아키텍처·국가핵심기술)을 문서로 보여 준다. 이 자리의 결과물이 곧 정책 문서다.",
+          "effort": "3~5일"
+        },
+        {
+          "idea": "수립·개정한 보안 정책과 운영 개선 사례를 영어로도 정리",
+          "why": "국내외 연구소를 대상으로 하고, 필수에 비즈니스 영어·영어 문서 작성이 있다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "지원서 접수 → 서류전형 → 면접전형(인성검사) → 채용검진 → 최종합격. 접수 2026년 09월 15일 09시 ~ 09월 29일 17시, 이력서·자기소개서. 급여 '면접 후 결정', 근무지 남양연구소.",
+        "expect": [
+          "보안 정책 수립 경험",
+          "망분리·망연계 설계",
+          "국가핵심기술 보호",
+          "보안 솔루션 운영"
+        ],
+        "sources": [
+          {
+            "title": "[통합보안] Information Security Strategy",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55070969&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=2121cf9f-1ac5-40f0-ad26-cc23606afe42",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ]
 }
