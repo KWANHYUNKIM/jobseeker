@@ -1,0 +1,114 @@
+{
+  "slug": "cnu-global",
+  "name": "씨앤유글로벌",
+  "name_en": null,
+  "aliases": [
+    "씨앤유글로벌"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": null,
+  "one_liner": "자체 고속 PLC(전력선통신) 칩 기반 원격검침·에너지 관리 시스템을 만드는 전력 IT 기업",
+  "company": {
+    "business": "사람인 공고의 서비스 소개는 씨앤유글로벌을 **자체 개발한 고속 PLC칩 기반의 원격검침시스템, 에너지 관리 시스템** 등 전문 하드웨어·소프트웨어 공급사로, 고객이 원하는 사양에 맞춰 제품과 서비스를 제공하는 **전력 IT 전문 기업**이라고 적는다(여기서 PLC 는 산업용 제어기가 아니라 전력선통신 칩으로 읽힌다 — 원격검침과 함께 나오기 때문. 공고에 풀어 쓴 표현은 없다). 모집중 공고는 둘로 나뉜다 — **백엔드**(자사 솔루션 기반 프로젝트, Java·Spring·Oracle/MariaDB, 우대 Kafka·Spark·Redis)와 **HW 개발**(MCU/Processor 기반 하드웨어 설계, 시제품 제작·검증, 인증·신뢰성 시험, PADS/OrCAD, 기술스택 표기 Embedded Linux·Network). 같은 직무를 연차(5~10년 / 10년 이상)로 나눠 따로 올렸다. 근무지는 경기 성남시 분당구 판교역로 230. 회사 사이트는 찾지 못했고 매출·인원도 읽은 자료에 없다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "백엔드 개발자 채용(10년이상)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55100024&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5bdb4a13-6f1a-469d-8f6c-9b27fb77d388",
+        "publisher": "사람인",
+        "summary": "서비스 소개: 자체 개발한 고속 PLC칩 기반의 원격검침시스템, 에너지 관리 시스템 등 전문 하드웨어 및 소프트웨어 공급사로 고객 사양에 맞춰 제품·서비스를 제공하는 전력 IT 전문 기업"
+      },
+      {
+        "title": "백엔드 개발자 채용(5~10년)",
+        "url": "https://jumpit.saramin.co.kr/position/55100008",
+        "publisher": "점핏"
+      },
+      {
+        "title": "HW개발자 채용(5~10년)",
+        "url": "https://jumpit.saramin.co.kr/position/55099919",
+        "publisher": "점핏"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "원격검침·에너지 관리 시스템 공급",
+        "how": "서비스 소개가 자체 PLC 칩 기반 원격검침시스템·에너지 관리 시스템 등 HW·SW 를 고객 사양에 맞춰 공급한다고 적는다. 고객(전력사·지자체 등)과 계약 형태는 공고에 없다.",
+        "domains": [
+          "원격검침 하드웨어",
+          "검침·에너지 관리 서버"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 채용(10년이상)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55100024&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5bdb4a13-6f1a-469d-8f6c-9b27fb77d388",
+            "publisher": "사람인",
+            "summary": "서비스 소개: 자체 개발한 고속 PLC칩 기반의 원격검침시스템, 에너지 관리 시스템 등 전문 하드웨어 및 소프트웨어 공급사로 고객 사양에 맞춰 제품·서비스를 제공하는 전력 IT 전문 기업"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "원격검침 하드웨어",
+        "why": "HW 공고가 MCU/Processor 기반 설계, 시제품 제작·검증, 인증·신뢰성 시험, PADS/OrCAD 를 적는다.",
+        "what_to_know": [
+          "MCU 회로 설계",
+          "전자파·안전 인증 시험",
+          "PCB 설계 도구"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "HW개발자 채용(5~10년)",
+            "url": "https://jumpit.saramin.co.kr/position/55099919",
+            "publisher": "점핏"
+          }
+        ]
+      },
+      {
+        "name": "검침·에너지 관리 서버",
+        "why": "백엔드 공고가 자사 솔루션 기반 프로젝트를 Java·Spring·Oracle/MariaDB 로 수행하고 Kafka·Spark·Redis 경험을 우대한다고 적는다.",
+        "what_to_know": [
+          "Java·Spring",
+          "대량 검침 데이터 수집",
+          "Kafka·Redis"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 채용(5~10년)",
+            "url": "https://jumpit.saramin.co.kr/position/55100008",
+            "publisher": "점핏"
+          },
+          {
+            "title": "백엔드 개발자 채용(10년이상)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55100024&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5bdb4a13-6f1a-469d-8f6c-9b27fb77d388",
+            "publisher": "사람인",
+            "summary": "서비스 소개: 자체 개발한 고속 PLC칩 기반의 원격검침시스템, 에너지 관리 시스템 등 전문 하드웨어 및 소프트웨어 공급사로 고객 사양에 맞춰 제품·서비스를 제공하는 전력 IT 전문 기업"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "공고 본문이 매우 짧다",
+        "evidence": "자사 솔루션 기반 프로젝트 수행",
+        "so_what": "백엔드 공고의 주요업무는 이 한 줄과 언어·프레임워크·DBMS 나열뿐이다. 어떤 솔루션의 어떤 부분을 맡는지는 면접에서 직접 물어야 한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "회사 사이트를 찾지 못했다",
+    "'PLC칩' 이 전력선통신 칩인지 공고가 풀어 쓰지 않았다",
+    "원격검침·EMS 의 고객(전력사·지자체·건물)과 계약 형태",
+    "매출·임직원 수",
+    "salary: 공고에 금액이 없다 — 비워 둔다"
+  ],
+  "postings": []
+}

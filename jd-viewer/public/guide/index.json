@@ -844,6 +844,17 @@
       "postings": 5,
       "study_items": 19,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "cnu-global",
+      "name": "씨앤유글로벌",
+      "aliases": [
+        "씨앤유글로벌"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
