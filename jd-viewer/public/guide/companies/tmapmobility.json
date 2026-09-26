@@ -296,6 +296,129 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/378307",
+      "title": "Android SDK Engineer",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 서울 중구. 앱이 아니라 **남이 가져다 쓰는 Android SDK** 를 만드는 자리다. 업무는 Android SDK 설계·개발, **모듈화된 SDK 아키텍처와 안정적이고 확장 가능한 API**, SDK 성능 최적화·메모리 관리로 다양한 디바이스에서의 안정성, **지도/내비게이션 기능**, **AAOS 등 차량용 플랫폼** 대응, SDK API 문서화와 Sample App 으로 외부 개발자 연동 지원. 회사 브리핑대로 이 SDK 가 TMAP AUTO(완성차)·TMAP API & DATA 사업을 받친다. 필수는 Android 네이티브 5년 이상, Kotlin/Java, MVVM·Clean Architecture, 생명주기·메모리·성능 기본기, 기능 설계부터 출시까지 주도. 우대는 Navigation/Map SDK 연동, AAOS 앱, **경로 탐색·경로 안내·TBT**, OEM 납품·파트너 협업, 멀티스레드·실시간 데이터 스트림, **C/C++ 네이티브 모듈·JNI**. 전형: 서류 ＞ **코딩테스트** ＞ 1차 인터뷰 ＞ 2차 인터뷰 ＞ 레퍼런스 체크 ＞ 처우협의 및 채용검진 ＞ 최종합격, 3개월 시용기간(급여 100%). 연봉은 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Android 네이티브 5년 이상",
+          "Kotlin/Java",
+          "MVVM·Clean Architecture",
+          "생명주기·메모리·성능"
+        ],
+        "can_learn": [
+          "Navigation/Map SDK",
+          "AAOS",
+          "TBT 안내",
+          "JNI·C/C++",
+          "OEM 협업"
+        ]
+      },
+      "study": [
+        {
+          "topic": "남이 쓰는 API — SDK 공개 API 를 깨지 않기",
+          "from": "task",
+          "quote": "• ​모듈화된 SDK 아키텍처를 설계하고, 안정적이고 확장 가능한 API를 구현합니다.",
+          "priority": "core",
+          "why": "주요업무다. SDK 는 OEM·파트너 앱이 가져다 쓰므로 공개 API 를 한 번 바꾸면 남의 빌드가 깨진다(회사 브리핑: TMAP AUTO·API 사업).",
+          "gap_check": "SDK 의 공개 클래스에 파라미터 하나를 추가하면 소스 호환과 바이너리 호환은 각각 어떻게 되고(Kotlin 기본 인자), 내부 구현을 모듈로 쪼갤 때 무엇을 internal 로 숨겨야 하며, 공개 API 변경을 PR 단계에서 자동으로 잡으려면 무엇을 두는가?",
+          "drill": "Android 라이브러리 모듈로 작은 지도 SDK(초기화·경로 요청 콜백)를 만들고 샘플 앱에서 쓴다. binary-compatibility-validator 로 API 덤프를 커밋한 뒤, 공개 함수 시그니처를 바꿔 apiCheck 가 실패하는지 확인하고 @Deprecated 로 옛 API 를 남기는 방식으로 고친다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Create an Android library — Android Developers",
+              "url": "https://developer.android.com/studio/projects/android-library",
+              "kind": "docs"
+            },
+            {
+              "title": "binary-compatibility-validator — Kotlin",
+              "url": "https://github.com/Kotlin/binary-compatibility-validator",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SDK 의 메모리 — 호스트 앱을 새게 만들지 않기",
+          "from": "qualification",
+          "quote": "• ​Android 생명주기, 메모리 관리, 성능 최적화 등 기본기가 탄탄하신 분",
+          "priority": "core",
+          "why": "필수 자격요건이고 주요업무에 'SDK 성능 최적화 및 메모리 관리' 가 있다. SDK 가 새면 문제는 그 SDK 를 넣은 남의 앱에서 터진다.",
+          "gap_check": "SDK 가 초기화 때 받은 Activity Context 를 싱글턴에 붙잡아 두면 화면 회전 뒤 무엇이 새고, 콜백 리스너를 등록만 하고 해제하지 않으면 무엇이 남으며, 이를 막으려면 applicationContext·약한 참조·생명주기 관찰 중 무엇을 쓰는가?",
+          "drill": "위 SDK 에 일부러 Activity 를 붙잡는 싱글턴과 해제 안 되는 리스너를 넣고, 샘플 앱에 LeakCanary 를 붙여 화면 회전·뒤로 가기를 반복해 누수 경로를 확인한 뒤 고쳐서 누수 보고가 사라지는지 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "LeakCanary",
+              "url": "https://square.github.io/leakcanary/",
+              "kind": "docs"
+            },
+            {
+              "title": "Overview of memory management — Android Developers",
+              "url": "https://developer.android.com/topic/performance/memory-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "실시간 위치 스트림으로 TBT 안내",
+          "from": "preference",
+          "quote": "• ​경로 탐색, 경로 안내, TBT(Turn-by-Turn) 안내 기능 개발 경험을 보유하신 분",
+          "priority": "high",
+          "why": "우대사항이고 바로 아래 줄에 '멀티스레드 프로그래밍 및 실시간 데이터 스트림 처리' 가 있다. 주요업무에 지도/내비게이션 기능 개발이 있다.",
+          "gap_check": "초당 한 번 들어오는 위치를 경로 위의 가장 가까운 지점에 맞추고(맵 매칭), 다음 회전까지 남은 거리가 300m·100m 가 될 때 한 번씩만 안내하려면 상태를 어디에 두며, 위치 처리를 메인 스레드에서 하면 무엇이 생기는가? 경로 이탈은 몇 번 연속 벗어났을 때 판정하는가?",
+          "drill": "가짜 경로(좌표 목록)와 가짜 위치 스트림을 Kotlin Flow 로 만들고, 백그라운드 디스패처에서 경로 위 투영·남은 거리 계산·안내 시점 판정을 해 '300m 앞 우회전' 이벤트를 한 번씩만 내보내게 한다. 일부러 경로 밖 위치를 섞어 이탈 판정이 흔들리지 않는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Kotlin flows on Android",
+              "url": "https://developer.android.com/kotlin/flow",
+              "kind": "docs"
+            },
+            {
+              "title": "Request location updates — Android Developers",
+              "url": "https://developer.android.com/develop/sensors-and-location/location/request-updates",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "차량용 내비 앱 — Android for Cars",
+          "from": "preference",
+          "quote": "• ​차량용(AAOS, Android Automotive) 앱 개발 경험을 보유하신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 'AAOS 등 차량용 플랫폼을 포함한 다양한 Android 환경에 대응' 이 있다. 같은 회사 TMAP AUTO PM 공고가 IVI 양산 프로젝트를 적는다.",
+          "gap_check": "차량 화면용 내비 앱은 폰 앱처럼 자유롭게 레이아웃을 그리지 못하고 템플릿으로 그리는데, 이 제약은 왜 있고(운전 중 주의 분산), 지도 표면(surface)은 어떻게 직접 그리며, 주행 중에 막히는 입력은 무엇인가?",
+          "drill": "Android for Cars 의 내비게이션 앱 가이드를 따라 Car App Library 로 NavigationTemplate 샘플을 만들고 에뮬레이터(Desktop Head Unit 또는 AAOS 에뮬레이터)에서 경로 안내 카드가 뜨는지 확인한다. 폰 앱과 달라진 제약을 표로 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Build a navigation app — Android for Cars",
+              "url": "https://developer.android.com/training/cars/apps/navigation",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "C/C++ 엔진과 이어 붙이기 — JNI",
+          "from": "preference",
+          "quote": "• ​C/C++ 기반 네이티브 모듈 개발 또는 JNI 연동 경험을 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 경로 탐색 같은 계산 모듈이 C/C++ 로 있을 때 Kotlin SDK 가 JNI 로 부른다.",
+          "gap_check": "JNI 로 C++ 함수에 큰 좌표 배열을 넘길 때 호출마다 복사하면 무엇이 느려지고, 네이티브 쪽에서 만든 로컬 참조를 루프 안에서 해제하지 않으면 무엇이 넘치며, 네이티브 스레드에서 Java 콜백을 부르려면 무엇(AttachCurrentThread)이 필요한가?",
+          "drill": "NDK 로 좌표 배열의 총 거리를 계산하는 C++ 함수를 만들어 JNI 로 부르고, Kotlin 순수 구현과 속도를 비교한다. JNI tips 문서의 로컬 참조·스레드 부분을 읽고 루프 안 참조 해제를 빠뜨린 버전과 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "JNI tips — Android NDK",
+              "url": "https://developer.android.com/ndk/guides/jni-tips",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
