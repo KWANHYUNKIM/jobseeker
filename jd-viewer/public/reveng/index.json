@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "wealthnavi",
+      "name": "ウェルスナビ",
+      "name_en": "WealthNavi",
+      "country": "JP",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "전자동 자산 운용 WealthNavi — 예탁 자산 2.1조 엔을 굴리는 마이크로서비스 사이의 데이터 변화를 REST 직접 호출 대신 이벤트로 넘기며 DB 갱신과 publish 의 어긋남을 막고, 생성 AI 기능의 품질은 '전부 QA 가 본다' 를 버리고 기계·AI·사람이 나눠 맡는다",
+      "updated_at": "2026-09-26",
+      "domain": "wealthnavi.com"
+    },
+    {
       "slug": "oned",
       "name": "ワンディー",
       "name_en": "1D",
@@ -3447,7 +3459,9 @@
     "검색에 LLM 을 끼우되 호출마다의 비용을 누른다",
     "스캔 PDF 를 OCR 로 빠짐없이 읽는다",
     "여러 앱이 하나의 계정으로 로그인하게 한다",
-    "느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다"
+    "느린 Laravel 모놀리스를 Go 와 GraphQL 로 갈아 끼운다",
+    "서비스 사이의 데이터 변화를 이벤트로 잃지 않고 전한다",
+    "생성 AI 기능의 품질을 기계·AI·사람으로 나눠 보증한다"
   ],
   "countries": {
     "KR": "한국",
