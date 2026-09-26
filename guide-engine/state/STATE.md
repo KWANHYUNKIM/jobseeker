@@ -4,7 +4,8 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **181건**.
+**쿠팡**(`coupang`) — `in_progress`, 확장 중. 공고 **182건**.
+직전 회차: ✅ `Senior Staff Cloud Backend Engineer`(8205728) 3항목 — **시애틀**, 제목 Cloud Backend 지만 본문은 데이터센터 SRE·관측성. '$174,00' 오타. `--gaps` 미완 10건.
 직전 회차: ✅ `Senior Frontend Engineer`(8203746) 3항목 — **벵갈루루**, Micro Frontend Platform(성능·마이크로 프런트엔드·컴포넌트), 4~7년.
 직전 회차: ✅ `Sr. Staff Back-end engineer [Promise Platform]`(8187816) 3항목 — **시애틀**, 재고·Promise 플랫폼 재설계(약속일·재고 스트림·캐시). 주요업무는 full_jd 에서.
 직전 회차: ✅ `Staff, Full-Stack Engineer [Rocket Growth Engineering]`(8200007) 3항목 — **시애틀**, 로켓그로스 판매자(등록·풀필먼트·정산), '$164,00' 오타. `--gaps` 미완 13건.
