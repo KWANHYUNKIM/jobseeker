@@ -853,6 +853,154 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55028298&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=4d9d8336-7dcc-4ee2-af09-ada17c1e1311",
+      "title": "Medical AI 에이전트 개발",
+      "site": "saramin",
+      "verdict": "경력 3~5년. 제목은 'AI 에이전트 개발' 이지만 본문의 중심은 **의료 코드 매핑**이다 — 국내 의료기관 로컬 코드(진단·처방·검사·수술)를 OMOP CDM 표준 컨셉으로 매핑하고, KCD·HIRA EDI 같은 국내 코드체계와 SNOMED CT·LOINC·RxNorm·UCUM 사이의 매핑 규칙을 설계·유지한다. 그 위에 OMOP Vocabulary 기반 매핑 자동화 파이프라인(임베딩 유사도 검색, 계층 구조 기반 후보 필터링, 리랭킹), LLM 기반 매핑 추천과 휴먼 리뷰 큐, 품질 지표(커버리지·정확도·리뷰어 간 일치도), 용어 버전 업데이트에 따른 변경 관리·이력 추적, 병원 담당자와의 협업·가이드라인 문서화가 붙는다. 자격은 Python 데이터 파이프라인 3년 이상, SQL·PostgreSQL, 규칙과 예외를 구조화하는 꼼꼼함, 도메인 전문가 요구를 기술 스펙으로 옮기는 소통. 의료 용어체계, OMOP ETL·Athena, SNOMED CT 개념 모델(IS_A·attribute relationship), pgvector·Qdrant·RAG, 온톨로지, LangGraph·LangChain, 임상 NLP, 보건의료 데이터 거버넌스(생명윤리법·IRB·가명처리), 보건의료정보관리사 등은 우대다. 급여 '협의', 근무지·이전 예정·모집 인원 '0명' 표기는 사람인 Medical AI 공고와 같다. 접수 기간 2026.09.14 ~ 2026.10.13. 전형은 서류 평가 → 1차 면접 → 2차 면접 → 처우 협의 → 최종합격.",
+      "fit": {
+        "must_have": [
+          "Python 데이터 파이프라인 3년 이상",
+          "SQL·PostgreSQL",
+          "대량 코드 매핑의 규칙·예외 구조화",
+          "도메인 전문가 요구를 기술 스펙으로"
+        ],
+        "can_learn": [
+          "OMOP ETL·Athena Vocabulary",
+          "SNOMED CT 개념 모델",
+          "pgvector·Qdrant·RAG",
+          "보건의료 데이터 거버넌스(생명윤리법·IRB·가명처리)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "국내 코드체계 ↔ 국제 표준 용어",
+          "from": "task",
+          "quote": "ㆍKCD, HIRA EDI 등 국내 코드체계와 SNOMED CT, LOINC, RxNorm, UCUM 간",
+          "priority": "core",
+          "why": "주요업무 첫 두 줄이 로컬 코드→OMOP 표준 컨셉 매핑과 KCD·HIRA EDI↔SNOMED CT·LOINC·RxNorm·UCUM 매핑 규칙이다. 우대에 'OMOP CDM ETL 또는 Athena Vocabulary 실무 경험' 이 있다.",
+          "gap_check": "KCD 진단코드는 ICD-10 계열이라 어떤 경로로 SNOMED CT 표준 컨셉에 닿고, 검사 결과 단위가 병원마다 다를 때 UCUM 은 무엇을 맞춰 주는가?",
+          "drill": "Athena 에서 KCD7·SNOMED·LOINC·RxNorm 어휘를 받아 CONCEPT·CONCEPT_RELATIONSHIP 을 PostgreSQL 에 적재하고, 진단·검사·약 각 10개의 로컬 코드를 표준 컨셉으로 연결하는 SQL 과 규칙 문서를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "The Book of OHDSI — Standardized Vocabularies",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/StandardizedVocabularies.html",
+              "kind": "docs"
+            },
+            {
+              "title": "OHDSI Athena",
+              "url": "https://athena.ohdsi.org/",
+              "kind": "tool"
+            },
+            {
+              "title": "OMOP CDM v5.4",
+              "url": "https://ohdsi.github.io/CommonDataModel/cdm54.html",
+              "kind": "docs"
+            },
+            {
+              "title": "RxNorm",
+              "url": "https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "UCUM",
+              "url": "https://ucum.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "임베딩 후보 검색 + 계층 필터 + 리랭킹",
+          "from": "task",
+          "quote": "(임베딩 유사도 검색, 계층 구조 기반 후보 필터링, 리랭킹)",
+          "priority": "core",
+          "why": "주요업무이고 우대에 '벡터 검색(pgvector, Qdrant) 또는 RAG 파이프라인 구축 경험' 과 SNOMED CT IS_A 관계 이해가 있다.",
+          "gap_check": "임베딩 top-k 후보 가운데 도메인(진단/약/검사)이 다르거나 너무 상위 개념인 것은 IS_A 계층으로 어떻게 걸러내고, 리랭커는 무엇을 입력으로 받는가?",
+          "drill": "앞 드릴의 컨셉 이름을 pgvector 에 색인하고, '임베딩 top-20 → 도메인·표준 여부 필터 → 계층 깊이 기준 정리 → 리랭킹' 파이프라인을 만들어 정답 대비 top-1·top-5 정확도를 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "pgvector",
+              "url": "https://github.com/pgvector/pgvector",
+              "kind": "repo"
+            },
+            {
+              "title": "SNOMED International",
+              "url": "https://www.snomed.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 추천 + 휴먼 리뷰 큐 + 품질 지표",
+          "from": "task",
+          "quote": "ㆍLLM 기반 매핑 추천 및 휴먼 리뷰 큐 시스템 개발",
+          "priority": "core",
+          "why": "주요업무이고 다음 줄이 '매핑 결과 품질 지표 정의와 검증 체계 구축 (커버리지, 정확도, 리뷰어 간 일치도)' 다. 우대에 LangGraph·LangChain 이 있다.",
+          "gap_check": "LLM 이 제안한 매핑 중 어떤 것을 자동 승인하고 어떤 것을 리뷰 큐로 보내며, 두 리뷰어의 판정 일치도는 무엇(예: 코헨 카파)으로 재는가?",
+          "drill": "앞 파이프라인의 후보를 LLM 이 골라 근거와 확신도를 달게 하고, 확신도가 낮으면 리뷰 큐 테이블에 쌓는다. 가상 리뷰어 두 명의 판정으로 커버리지·정확도·일치도를 계산한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "LangGraph overview",
+              "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "OHDSI Usagi",
+              "url": "https://github.com/OHDSI/Usagi",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "용어 버전 업데이트와 매핑 이력",
+          "from": "task",
+          "quote": "ㆍ용어 버전 업데이트에 따른 매핑 변경 관리 및 이력 추적",
+          "priority": "high",
+          "why": "주요업무다. 자격요건에 '대량의 코드 매핑 작업에서 규칙과 예외를 구조화해 정리할 수 있는 꼼꼼함' 이 있다.",
+          "gap_check": "새 Vocabulary 릴리스에서 기존 표준 컨셉이 비표준으로 바뀌면(Maps to 변경) 이미 매핑된 로컬 코드를 어떻게 찾아 다시 붙이고, 그 변경 이력은 어떤 테이블에 남기는가?",
+          "drill": "어휘 두 버전의 CONCEPT 테이블을 비교해 invalid_reason 이 바뀐 컨셉을 뽑고, 영향받는 매핑 목록과 이력 테이블(이전값·새값·사유·일시) 설계를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "The Book of OHDSI — Standardized Vocabularies",
+              "url": "https://ohdsi.github.io/TheBookOfOhdsi/StandardizedVocabularies.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "로컬 코드 → OMOP 표준 매핑 파이프라인(pgvector + 계층 필터 + LLM 추천 + 리뷰 큐 + 품질 지표)",
+          "why": "주요업무 일곱 줄 중 다섯 줄을 한 저장소로 보여 준다.",
+          "effort": "2주"
+        },
+        {
+          "idea": "매핑 가이드라인 문서 샘플",
+          "why": "주요업무 마지막 줄이 매핑 가이드라인 문서화이고, 자격요건이 규칙·예외 구조화와 기술 스펙 작성이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "서류 평가 → 1차 면접 → 2차 면접 → 처우 협의 → 최종합격(공고 기준). 접수 기간 2026.09.14 ~ 2026.10.13, 사람인 온라인 입사지원.",
+        "expect": [
+          "코드 매핑 규칙·예외 정리 경험",
+          "벡터 검색 기반 후보 생성",
+          "매핑 품질 측정",
+          "도메인 전문가와의 협업"
+        ],
+        "sources": [
+          {
+            "title": "[에비드넷] Medical AI 에이전트 개발 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55028298&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=4d9d8336-7dcc-4ee2-af09-ada17c1e1311",
+            "publisher": "사람인"
+          }
+        ]
+      }
     }
   ]
 }
