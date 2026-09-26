@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "소셜",
   "status": "in_progress",
+  "hold_reason": "수익원 '사진 프린트 · 포토북(실물 주문)' 에 이을 기술 자료를 두 번 찾아 두 번 다 못 찾았다(2026-09-26 — Zenn Publication RSS 20편 / Zenn 검색 API 'フォトブック'·'写真プリント'·'mitene' — 해당 글 0). 완주 기준 셋째(수익원마다 기능)를 못 채워 in_progress 로 두고 더 파지 않는다. 프린트·포토북 쪽 구조 글이 나오면 지우고 다시 판다.",
   "updated_at": "2026-09-26",
   "domain": "mitene.us",
   "one_liner": "MIXI 의 가족 앨범 앱 みてね — 가족당 수십만~수백만 장을 쌓는 앨범을 CLIP 계열 임베딩과 OpenSearch 의 가족 멀티테넌트·효율적 k-NN 필터링으로 '아기가 웃는 사진' 처럼 말로 찾게 하고, 은퇴한 ingress-nginx 뒤의 내부 서비스 입구는 annotation 을 옮기는 대신 Gateway API 와 Envoy Gateway 로 다시 짠다",
