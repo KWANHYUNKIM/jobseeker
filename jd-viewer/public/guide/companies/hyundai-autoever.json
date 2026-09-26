@@ -252,5 +252,167 @@
     "salary: 공고에 금액이 없고 공개 연봉 자료를 확인하지 않았다 — 근거 없이 비워 둔다",
     "jobkorea·catch 게시 5건은 본문이 크롤되지 않아 브리핑 대상에서 빠진다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/385489",
+      "title": "[EnIT] Frontend Developer - 계정 시스템 프론트엔드 개발 및 운영",
+      "site": "wanted",
+      "verdict": "경력 5~15년(서울 강남). 현대자동차그룹 계정·인증 시스템 '플레오스 2.0' 의 로그인·SSO·OAuth2 화면과 Front/Back Office 를 React 또는 Vue 로 만들고, 공통 컴포넌트와 프론트엔드 표준을 세울 사람. 자격은 React/Vue 3년 이상이지만 공고 머리의 경력 표기는 5-15년이다. 공고 전문의 팀 소개는 현대·기아·제네시스 대고객 운영 서비스와 디자인 시스템 구축을 적는다. 전형에 직무역량테스트(코딩 테스트)가 있다.",
+      "fit": {
+        "must_have": [
+          "React 또는 Vue 3년 이상",
+          "JavaScript/TypeScript",
+          "REST API·비동기 데이터 처리",
+          "SPA 개발·운영",
+          "상태 관리 라이브러리(Redux·Zustand·Pinia·Vuex 등)",
+          "Git 협업·코드 리뷰"
+        ],
+        "can_learn": [
+          "OAuth2·OIDC·SSO 흐름",
+          "MSA 환경 프론트엔드",
+          "디자인 시스템 구축",
+          "GitLab CI/CD"
+        ]
+      },
+      "study": [
+        {
+          "topic": "OAuth2·OIDC·SSO — 로그인 화면이 실제로 하는 일",
+          "from": "task",
+          "quote": "• SSO·OAuth2 기반 인증/인가 서비스 화면 개발 및 사용자 경험 개선",
+          "priority": "core",
+          "why": "주요업무 첫 줄이 계정·인증 시스템이고, 이 줄이 그 화면을 만든다고 적는다. 우대사항에도 OAuth2, OIDC, SSO 가 다시 나온다.",
+          "gap_check": "Authorization Code + PKCE 흐름에서 브라우저가 오가는 리다이렉트를 순서대로 적고, code_verifier 가 왜 필요한지, SSO 로 두 번째 서비스에 들어갈 때 로그인 화면이 왜 안 뜨는지 설명할 수 있는가?",
+          "drill": "작은 인가 서버(Keycloak 등)를 띄우고 SPA 두 개를 붙여 PKCE 로그인과 SSO 를 구현한 뒤, 개발자도구 네트워크 탭의 리다이렉트·토큰 요청을 캡처해 단계별로 주석을 단다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "RFC 6749 — The OAuth 2.0 Authorization Framework",
+              "url": "https://datatracker.ietf.org/doc/html/rfc6749",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 7636 — Proof Key for Code Exchange (PKCE)",
+              "url": "https://datatracker.ietf.org/doc/html/rfc7636",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenID Connect Core 1.0",
+              "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+              "kind": "docs"
+            },
+            {
+              "title": "OAuth 2.0 for Browser-Based Apps",
+              "url": "https://oauth.net/2/browser-based-apps/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SPA 의 비동기 데이터 처리와 상태 관리",
+          "from": "qualification",
+          "quote": "• 상태 관리 라이브러리(Redux, Zustand, Pinia, Vuex 등) 활용 경험",
+          "priority": "core",
+          "why": "자격요건에 SPA 운영, REST API 연동·비동기 처리, 상태 관리가 연달아 있다. 공고가 React 와 Vue 쪽 라이브러리를 함께 적는다 — 어느 한쪽만 요구하지 않는다.",
+          "gap_check": "서버에서 받은 데이터(사용자 정보·권한)와 화면 상태(모달 열림)를 같은 스토어에 넣으면 무엇이 문제가 되고, 캐시 무효화는 누가 책임지는가?",
+          "drill": "같은 계정 관리 화면(목록·상세·수정)을 React+Redux Toolkit(또는 TanStack Query) 와 Vue+Pinia 로 각각 만들어, 수정 후 목록 갱신과 로딩·오류 처리를 비교한 표를 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Redux 공식 문서",
+              "url": "https://redux.js.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Pinia 공식 문서",
+              "url": "https://pinia.vuejs.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "TanStack Query — Overview",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 사용자 환경의 프론트엔드 성능",
+          "from": "task",
+          "quote": "• 대규모 사용자 환경에서의 성능 최적화 및 운영 안정성 확보",
+          "priority": "high",
+          "why": "계정 시스템은 로그인 첫 화면이라 모든 사용자가 거친다. 우대사항에도 '대규모 서비스 운영 및 성능 최적화 경험' 이 있다.",
+          "gap_check": "LCP·INP·CLS 가 각각 무엇을 재는지, 로그인 페이지 번들이 커졌을 때 어느 지표가 먼저 나빠지는지 말할 수 있는가?",
+          "drill": "위 SPA 에 Lighthouse 를 돌려 기준값을 잡고, 라우트 단위 코드 분할(React.lazy)과 이미지·폰트 최적화 전후 수치를 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "web.dev — Web Vitals",
+              "url": "https://web.dev/articles/vitals",
+              "kind": "docs"
+            },
+            {
+              "title": "React — lazy",
+              "url": "https://react.dev/reference/react/lazy",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공통 컴포넌트와 디자인 시스템",
+          "from": "task",
+          "quote": "• 공통 컴포넌트 및 프론트엔드 아키텍처 설계·표준화",
+          "priority": "high",
+          "why": "우대사항 '디자인 시스템 및 공통 컴포넌트 구축 경험' 과 팀 소개의 '디자인 시스템 구축 및 개발', '기술 Governance 수립' 이 같은 일을 가리킨다. Front Office 와 Back Office 가 같은 부품을 쓰게 만드는 자리로 보인다(추론).",
+          "gap_check": "버튼·입력창 컴포넌트의 API(props) 를 정할 때 접근성(label·aria)과 확장성(variant) 을 어떻게 동시에 지키고, 여러 서비스에 배포한 뒤 깨는 변경은 어떻게 알리는가?",
+          "drill": "입력창·버튼·모달 세 컴포넌트를 패키지로 묶어 Storybook 에 올리고, 버전을 올리며 CHANGELOG 에 깨는 변경을 기록해 본다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "GitLab CI/CD 로 프론트엔드 파이프라인",
+          "from": "preference",
+          "quote": "• GitLab CI/CD 기반 개발 환경 경험",
+          "priority": "nice",
+          "why": "우대사항이다. 같은 회사 BE엔지니어링팀 공고도 GitLab CI/CD 를 적는다.",
+          "gap_check": ".gitlab-ci.yml 에서 lint·test·build 단계를 나누고, merge request 에서만 도는 잡을 어떻게 지정하는가?",
+          "drill": "위 SPA 저장소에 lint→test→build 세 단계 파이프라인을 만들고 빌드 결과물을 artifact 로 남긴다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "GitLab CI/CD 문서",
+              "url": "https://docs.gitlab.com/ci/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "PKCE 로그인 + SSO 데모를 React·Vue 두 앱으로",
+          "why": "자격요건(React 또는 Vue)과 우대사항(React, Vue 모두 · OAuth2/OIDC/SSO)을 한 번에 보여 준다. 공고의 주요업무 첫 줄과 세 번째 줄이 바로 이 화면이다.",
+          "effort": "3~4일"
+        },
+        {
+          "idea": "공통 컴포넌트 패키지와 CHANGELOG",
+          "why": "'공통 컴포넌트 및 프론트엔드 아키텍처 설계·표준화' 를 결과물로 보여 준다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "서류 접수 > 서류 검토 > 직무역량테스트(코딩 테스트) 및 인성검사 > 1차면접 > 2차면접 > 처우협의 및 채용검진 > 최종 합격. 직무역량테스트 외 추가 역량평가가 있을 수 있고, 모집 분야에 따라 영어 구술평가·레퍼런스 체크가 있을 수 있다(공고 기준).",
+        "expect": [
+          "OAuth2·OIDC·SSO 흐름 설명",
+          "상태 관리 방식을 고른 이유",
+          "대규모 트래픽에서의 성능 최적화 경험",
+          "공통 컴포넌트·디자인 시스템 설계"
+        ],
+        "sources": [
+          {
+            "title": "[EnIT] Frontend Developer - 계정 시스템 프론트엔드 개발 및 운영",
+            "url": "https://www.wanted.co.kr/wd/385489",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    }
+  ]
 }
