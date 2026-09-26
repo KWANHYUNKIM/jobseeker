@@ -2061,3 +2061,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 TELLER 회사 프로파일
 
 - 특상법 표기로 유료 디지털 상품 확인, VIP 는 블로그 예에서. 열람 판정 DDD 글과 TTS 벤치마크 글을 도메인 둘로. RN QA 빌드 글은 개발 생산성이라 도메인으로 세우지 않음.
+
+## 2026-09-26 TELLER story-view-decision
+
+- 열람 판정 DDD 글 끝까지. 결정 7, 그림 3(flow·state·failure).

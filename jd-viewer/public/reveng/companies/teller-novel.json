@@ -85,7 +85,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "story-view-decision"
+      ]
     },
     {
       "name": "이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다",
@@ -110,7 +112,300 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "story-view-decision",
+      "name": "'이 이야기를 읽어도 되나' 판정을 domain 에 모은 채 DB 조회를 필요할 때만 한다 — 판정 함수가 bool 대신 '허가 / 거부 / 이것을 가져와 달라' 를 직합 타입으로 돌려주고 호출 쪽은 요구받은 것만 가져오는 대응표가 되며, 누락된 case 는 정적 검사로, 판단의 흐름은 코드에서 뽑은 결정 트리 그림으로 본다",
+      "domain": "누가 어떤 이야기를 읽을 수 있는지 판정한다",
+      "updated_at": "2026-09-26",
+      "business": {
+        "why": "소설 투고 서비스에서 한 이야기를 누가 읽을 수 있는지는 작가 본인인지 → 공개 범위(전체 / 팔로워 한정 …) → 팔로우 관계 → 유료 작품인지 → VIP 회원인지 → 한 화 구입 이력으로 이어진다. 전체 공개만 있을 땐 순수 함수였지만, 팔로워 한정이 들어오자 '팔로우했나' 는 Story 를 봐선 모르고 DB 에 물어야 한다 — **판단에 필요한 데이터가 판단해 봐야 안다**는 순환. 이 판정은 작품 상세·목록·알림 발송 여부·배치 재집계 등 여러 곳이 쓴다.",
+        "metrics": [
+          {
+            "label": "판정 단계",
+            "value": "작가 본인 → 공개 범위 → 팔로우 → 유료 → VIP → 한 화 구입 이력(6단) — 전체 공개면 쿼리 0, 작가 본인이면 공개 범위도 안 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+                "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-09-07",
+                "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "'전술적 DDD 는 의미 없다' 는 평가를 볼 때",
+          "thought": "대체로 동의하지만 거기서 멈추면 '전술 패턴엔 가치가 없다' 로 끝난다. 많은 코드가 빈혈 모델에 머무는 데는 구조적 이유가 있다 — **도메인 모델 빈혈증은 태만이 아니라 트릴레마에 대한 합리적인 답 중 하나**로 고른 결과다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+              "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+              "publisher": "Teller Novel Tech Blog (Zenn)",
+              "date": "2026-09-07",
+              "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+            }
+          ]
+        },
+        {
+          "at": "세 선택지를 저울질할 때",
+          "thought": "A(domain 이 repository 를 부른다)는 순수성, B(먼저 다 가져온다)는 성능, C(호출 쪽 분기)는 완전성을 버린다. 셋을 동시에 만족할 수 없다 — DDD 트릴레마. C 가 성능과 순수성을 지켜 현장에서 가장 많이 고르지만, 판정이 필요한 곳마다 같은 switch 가 복사되고 언젠가 동작이 어긋난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+              "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+              "publisher": "Teller Novel Tech Blog (Zenn)",
+              "date": "2026-09-07",
+              "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+            }
+          ]
+        },
+        {
+          "at": "AI 에이전트에게 코드를 쓰게 했을 때",
+          "thought": "같은 리포지터리에서도 준 문맥에 따라 매번 다른 선택을 한다 — 어떤 기능은 domain 에 repository 를 주입하고 어떤 기능은 usecase 에 분기를 쓴다. 각각은 말이 되니 리뷰에서 '이쪽으로 맞춰 달라' 고 하려면 기준을 말로 갖고 있어야 한다. 패턴은 매번의 판단을 없애려고 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+              "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+              "publisher": "Teller Novel Tech Blog (Zenn)",
+              "date": "2026-09-07",
+              "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "ViewDecision(직합 타입)",
+            "what": "비공개 메서드를 가진 interface 로 흉내 낸 직합 — 종단(ViewAllowed / Denied + Reason) 또는 도중 상태(ViewNeedFollowing · ViewNeedVIP · ViewNeedPurchase …: 'Need 뒤에 쓴 것을 가져와 달라')."
+          },
+          {
+            "name": "Decide",
+            "what": "각 도중 상태의 메서드 — 요구한 값을 받아 다음 상태를 돌려준다. context·error·Repository 가 없다."
+          },
+          {
+            "name": "사실(viewFacts)",
+            "what": "지금까지 확정한 사실(ViewerID·StoryID·IsPaid …)을 한 struct 로 모아 상태에 묻어 넘긴다. 비공개라 domain 밖에서 상태를 못 만든다."
+          },
+          {
+            "name": "usecase 의 for-switch",
+            "what": "돌아온 상태가 요구하는 것을 가져와 넘기기를 답이 나올 때까지 반복하는 대응표. 판단이 하나도 없다(if 는 err != nil 뿐)."
+          }
+        ],
+        "invariants": [
+          "업무의 말로 쓸 수 있는 분기(팔로워면 …)는 전부 domain 안에 있다.",
+          "domain 은 DB·context·error 를 모른다 — 값을 받아 값을 돌려준다.",
+          "어떤 상태에 도달했다면 그때까지 필요한 사실은 반드시 확정돼 있다(제로값이 없다).",
+          "usecase 의 switch 는 모든 상태를 다룬다 — go-check-sumtype 로 검사한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "판정 입구가 공개 범위를 보고 '판단하려면 무엇이 필요한가' 를 돌려준다(전체 공개면 곧 다음 축, 팔로워 한정이면 ViewNeedFollowing)",
+            "why": "필요할 때만 조회한다 — 전체 공개면 쿼리가 하나도 나가지 않는다."
+          },
+          {
+            "step": "usecase 가 for-switch 로 요구받은 것(팔로우 여부·VIP 여부·구입 이력)을 가져와 Decide 에 넘기기를 종단까지 반복",
+            "why": "호출 쪽은 순서도 규칙도 모르는 대응표 — 판단 순서를 바꿔도 domain 의 Decide 만 고친다."
+          },
+          {
+            "step": "공개 범위를 통과한 뒤 별도 축(유료 → VIP → 한 화 구입)으로 합류 — 합류점에선 Story 가 없으니 IsPaid 를 사실로 운반",
+            "why": "팔로우하지 않은 상대의 유료 작품이면 VIP 조회 없이 거부가 확정된다 — 이 조기 종료가 domain 구조로 보장된다."
+          },
+          {
+            "step": "새 조건(한 화 구입)은 ViewNeedVIP 의 판단 결과에 상태를 하나 더하고 usecase 엔 같은 모양의 case 둘만",
+            "why": "기존 분기를 건드리지 않는다. C 였다면 usecase 의 switch 가 중첩돼 자란다."
+          },
+          {
+            "step": "go-check-sumtype 를 `-default-signifies-exhaustive=false` 로 lint 와 따로 직접 실행",
+            "why": "case 를 빠뜨리면 상태가 갱신되지 않아 무한 루프 — 컴파일은 통한다. golangci-lint 경유로는 패키지를 넘는 `//sumtype:decl` 을 인식 못 한다."
+          },
+          {
+            "step": "`go tool decision-pattern flow` 로 domain 의 상태 전이를 정적 해석해 결정 트리 플로차트를 생성",
+            "why": "상태별 메서드와 순서 없는 대응표로는 전체 흐름이 코드 어디에도 안 보인다 — 그림에는 타입 이름이 아니라 판단(if·switch)과 거부 이유, 합류, 조기 종료가 나온다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "판정에 DB 조회가 필요해질 때 어디서 가져오나",
+            "chosen": "Decision 패턴 — domain 은 '무엇이 필요한가' 를 상태로 돌려주고 가져오기는 호출 쪽",
+            "alternatives": [
+              "A. domain 이 repository 를 부른다",
+              "B. 먼저 다 가져와 넘긴다",
+              "C. 호출 쪽에서 분기한다"
+            ],
+            "tradeoff": "순수성·완전성·성능을 모두 지킨다. 대가는 타입 수·호출 쪽 정형 코드·사실을 어떻게 끊을지의 설계 — 판정이 2단까지이고 조건도 안 늘 것 같으면 C 가 더 읽기 쉽다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+                "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-09-07",
+                "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+              }
+            ]
+          },
+          {
+            "question": "repository interface 를 domain 에 두고 주입하면 되지 않나",
+            "chosen": "하지 않는다 — 의존 방향은 지켜도 순수성은 잃는다",
+            "alternatives": [
+              "DIP 로 interface 를 domain 에 정의해 주입"
+            ],
+            "tradeoff": "interface 를 끼워도 error 가 섞이고, 반환이 '허가 / 거부 / 판단 못 함' 셋이 되고, context 가 들어온다 — 모두 인프라 사정이다. 도메인 판단을 확인하려는데 인프라 실패 경로를 만들어야 분기를 다 덮는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+                "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-09-07",
+                "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+              }
+            ]
+          },
+          {
+            "question": "bool 대신 무엇을 돌려주나",
+            "chosen": "직합 타입 — 허가 / 거부(이유) / '이것을 가져와 달라' · Go 엔 직합이 없어 비공개 메서드 interface 로 흉내",
+            "alternatives": [
+              "bool + error"
+            ],
+            "tradeoff": "다음에 무엇을 가져올지가 판단 결과에 따라 달라지는 것을 타입으로 표현한다. 대가는 Go 에서 직합을 흉내 내는 보일러플레이트.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+                "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-09-07",
+                "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+              }
+            ]
+          },
+          {
+            "question": "상태마다 필요한 필드만 가지게 하나",
+            "chosen": "확정된 사실을 한 struct 로 모아 상태에 묻어 넘기고, 사실이 새로 확정되면 단계별 struct(`xxxFactsYyy`)로 나눈다",
+            "alternatives": [
+              "상태마다 필요한 필드만"
+            ],
+            "tradeoff": "'이 상태에 왔다면 이 값은 확정' 이라는 보장이 유지된다 — 필드만 가지면 다음 상태를 만들 때 StoryID 가 제로값이 된다. 대가는 사실을 어디서 끊을지의 설계 — 잘못 묶으면 제로값을 가진 상태가 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+                "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-09-07",
+                "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+              }
+            ]
+          },
+          {
+            "question": "case 누락을 어떻게 막나",
+            "chosen": "go-check-sumtype, `-default-signifies-exhaustive=false`, lint 와 따로 직접 실행 — 이걸 못 넣으면 이 패턴을 고르지 않는다",
+            "alternatives": [
+              "리뷰로 막는다",
+              "golangci-lint 경유"
+            ],
+            "tradeoff": "누락이 무한 루프로 본번에서 도는 것을 정적으로 막는다. 기본 설정은 panic 하지 않는 default 가 있으면 망라로 봐 그냥 통과시킨다(실제로 case 를 지워도 보고가 없었다) — 옵션과 실행 경로를 알아야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+                "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-09-07",
+                "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+              }
+            ]
+          },
+          {
+            "question": "판단의 전체 흐름이 코드에 안 보이는 약점을 어떻게",
+            "chosen": "상태 전이를 정적 해석해 결정 트리 그림을 생성하는 도구를 동봉",
+            "alternatives": [
+              "사람이 Decide 반환을 따라가 머릿속에서 조립",
+              "문서로 따로 그린다(inferred)"
+            ],
+            "tradeoff": "그림엔 판단·요구 값·거부 이유·합류·조기 종료가 나오고 헬퍼 함수 같은 구현 사정은 안 나온다. domain 이 순수하고 완전해야 성립한다 — A 처럼 `if err != nil` 과 `if !following` 이 섞이면 정적 해석이 둘을 못 가른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+                "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-09-07",
+                "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+              }
+            ]
+          },
+          {
+            "question": "이 형태를 개인 선택으로 두나",
+            "chosen": "사내 규약으로 떼어 내고(go-decision-pattern) 검증 도구와 함께",
+            "alternatives": [
+              "상황마다 A/B/C 중 고른다"
+            ],
+            "tradeoff": "사람이 쓰든 에이전트가 쓰든 같은 모양이 나오고, 리뷰의 기준이 말로 있다. 대가는 규약을 모두가 익혀야 하는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+                "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+                "publisher": "Teller Novel Tech Blog (Zenn)",
+                "date": "2026-09-07",
+                "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "이야기를 소리로 전하기 전에 TTS 의 한자 읽기를 잰다(같은 회사의 다른 도메인)",
+          "via": "이야기 — 읽을 수 있다고 판정된 이야기가 소리로도 전해진다",
+          "contract": "음성으로 전하는 경로도 같은 열람 판정을 거쳐야 할 것이다 — 공개 자료엔 둘을 잇는 설명이 없다",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "열람 판정의 결정 트리",
+          "question": "누가 어떤 이야기를 읽을 수 있고, 어디서 쿼리가 멈추나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A{\"작가 본인?\"} -->|예| OK[\"허가\"]\n  A -->|아니오| B{\"공개 범위\"}\n  B -->|전체| P{\"유료?\"}\n  B -->|팔로워 한정| NF[\"Need 팔로우 여부\"] --> F{\"팔로우?\"}\n  F -->|아니오| D1[\"거부 · 팔로워 아님\\nVIP 조회 없음\"]\n  F -->|예| P\n  P -->|아니오| OK\n  P -->|예| NV[\"Need VIP\"] --> V{\"VIP?\"}\n  V -->|예| OK\n  V -->|아니오| NP[\"Need 구입 이력\"] --> PU{\"한 화 구입?\"}\n  PU -->|예| OK\n  PU -->|아니오| D2[\"거부\"]"
+        },
+        {
+          "title": "DDD 트릴레마",
+          "question": "세 가지 흔한 쓰기는 각각 무엇을 버리나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Pure: 전체 공개만 · 순수 함수\n  Pure --> A: 팔로워 한정 → domain 이 repository\\n순수성 잃음\n  Pure --> B: 먼저 다 가져옴\\n성능 잃음\n  Pure --> C: 호출 쪽 분기\\n완전성 잃음 · 빈혈 모델\n  Pure --> Decision: 필요한 것을 상태로 반환\\n셋 다 지킴"
+        },
+        {
+          "title": "case 하나를 빠뜨리면",
+          "question": "대응표의 누락은 어떻게 터지고 무엇이 막나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[\"usecase switch 에서\\nViewNeedVIP case 누락\"] --> L[\"상태가 갱신되지 않은 채\\nfor 처음으로\"]\n  L --> INF[\"무한 루프 · 컴파일은 통과\"]\n  M --> CK{\"go-check-sumtype\"}\n  CK -->|기본값: default 있으면 망라| MISS[\"보고 없음\"]\n  CK -->|-default-signifies-exhaustive=false| CATCH[\"exhaustiveness check failed\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "ドメインモデル貧血症はなぜ生まれるのか — Decision パターンで DDD トリレンマを解く",
+          "url": "https://zenn.dev/tellernovel_inc/articles/0193eb68cabb6e",
+          "publisher": "Teller Novel Tech Blog (Zenn)",
+          "date": "2026-09-07",
+          "summary": "Go 로 쓴 소설 투고 서비스의 '스토리 열람 판정' 을 소재로 — 팔로워 한정 작품처럼 판정에 DB 조회가 필요해지는 순간 A. domain 이 repository 를 부른다 / B. 먼저 다 가져와 넘긴다 / C. 호출 쪽에서 분기한다 의 셋 중 하나를 고르게 된다(DDD 트릴레마). Decision 패턴 — '판단하려면 무엇이 필요한가' 를 타입으로 돌려주고 호출 쪽은 대응표가 된다. 공개 범위와 별개 축으로 유료 작품(VIP 회원이면 읽는다)을 더한다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "유료 작품·VIP 회원의 가격과 매출 비중을 확인하지 못했다.",
     "출판·미디어믹스 쪽 기술 글은 아직 못 봤다.",
