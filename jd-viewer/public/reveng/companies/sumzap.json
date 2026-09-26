@@ -1,0 +1,138 @@
+{
+  "slug": "sumzap",
+  "name": "サムザップ",
+  "name_en": "Sumzap",
+  "country": "JP",
+  "category": "게임",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "sumzap.co.jp",
+  "one_liner": "『呪術廻戦 ファントムパレード』의 사무자프 — 2년 운영으로 불어난 배틀 리소스의 수명을 씬 관리자에게 넘겨 저메모리 iPhone 의 크래시를 줄이고, 개발 환경은 브랜치마다 세우고 기한이 지나면 알아서 지운다",
+  "business_model": "스마트폰 게임을 만들고 운영한다 — 『呪術廻戦 ファントムパレード』(2026년 8월 서비스 1000일), 『真 戦国炎舞 -KIZNA-』 등. GCRESTUDIO 레이블로 Paradox Live 같은 IP 사업도 한다. 과금 구조·매출은 1차 자료로 확인하지 못했다(모회사 그룹은 블로그상 CyberAgent 게임 사업부와 이어진다고 보이나 이 파일은 확인하지 않았다).\n\n운영형 게임은 **출시 뒤 몇 년 동안 콘텐츠가 계속 쌓인다** — 쌓인 만큼 메모리가 적은 단말이 먼저 떨어진다. 서버 쪽은 기능 브랜치가 여럿 동시에 돌아 개발 환경을 두고 줄을 선다(이 사이트의 해석).",
+  "products": [
+    "呪術廻戦 ファントムパレード",
+    "真 戦国炎舞 -KIZNA-",
+    "꿈 세계 시리즈",
+    "Paradox Live(GCRESTUDIO)"
+  ],
+  "revenue_total": "공개 자료에서 확인하지 못했다",
+  "revenue_streams": [
+    {
+      "name": "스마트폰 게임 운영",
+      "how": "『呪術廻戦 ファントムパレード』 등 운영형 스마트폰 게임. 과금 구조는 확인 못 함.",
+      "weight": "주력(비중 확인 못 함)",
+      "domains": [
+        "저메모리 단말에서 떨어지지 않게 배틀 리소스를 놓아준다",
+        "기능 브랜치마다 개발 환경을 세우고 기한이 지나면 지운다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社サムザップ",
+          "url": "https://www.sumzap.co.jp/",
+          "publisher": "株式会社サムザップ",
+          "date": "2026-09-26",
+          "summary": "'자랑할 수 있는 일로 사랑받는 콘텐츠를 만든다'. 스마트폰 게임 **『呪術廻戦 ファントムパレード』**(2026-08 서비스 1000일), **『真 戦国炎舞 -KIZNA-』**(『進撃の巨人』 콜라보), 꿈 세계 시리즈 등. GCRESTUDIO 레이블로 **Paradox Live** 이벤트. 엔지니어 블로그와 홍보 note 운영."
+        }
+      ]
+    },
+    {
+      "name": "IP · 이벤트(GCRESTUDIO)",
+      "how": "Paradox Live 같은 IP 의 이벤트.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "株式会社サムザップ",
+          "url": "https://www.sumzap.co.jp/",
+          "publisher": "株式会社サムザップ",
+          "date": "2026-09-26",
+          "summary": "'자랑할 수 있는 일로 사랑받는 콘텐츠를 만든다'. 스마트폰 게임 **『呪術廻戦 ファントムパレード』**(2026-08 서비스 1000일), **『真 戦国炎舞 -KIZNA-』**(『進撃の巨人』 콜라보), 꿈 세계 시리즈 등. GCRESTUDIO 레이블로 **Paradox Live** 이벤트. 엔지니어 블로그와 홍보 note 운영."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "쌓이는 콘텐츠와 늘어나는 브랜치",
+    "question": "운영형 게임 회사는 클라이언트의 메모리와 서버의 개발 환경을 어떻게 다루나?",
+    "code": "flowchart LR\n  BT[\"배틀 리소스\\nSpine · Timeline\"] -->|DontDestroyOnLoad 폐지| SM[\"SceneManager 관할 수명\"]\n  ADV[\"ADV 표시\"] -->|저메모리 단말| NOPRE[\"배틀 선로드 끔\"]\n  GA[\"GitHub Actions\\n이미지 태그 · suffix · TTL\"] --> TG[\"Terragrunt\"] --> ENV[\"브랜치별 환경\\nCloud Run · DB\"]\n  REAP[\"reaper\"] -->|TTL 초과| ENV\n  CB[\"callback host\"] -->|OAuth 전송| ENV",
+    "_note": "위는 게임 클라이언트의 메모리 최적화, 아래는 서버 개발 환경의 동적 추가·삭제다. 두 도메인을 게임 운영 수익원에 이은 것은 이 사이트의 해석(개발 환경 글은 어느 타이틀인지 밝히지 않는다). IP·이벤트 쪽 기술 글은 아직 못 찾았다."
+  },
+  "domains": [
+    {
+      "name": "저메모리 단말에서 떨어지지 않게 배틀 리소스를 놓아준다",
+      "why": "『呪術廻戦 ファントムパレード』는 2년 운영 동안 콘텐츠 추가·연출 호화화로 특정 이벤트에서 메모리 적은 iOS 단말의 **크래시**가 잦아졌다. 직근 1개월 액티브 중 3GB·4GB 단말 사용자가 무시할 수 없는 규모였다.",
+      "tech": [
+        {
+          "tech": "배틀 리소스 수명을 SceneManager 관할로 · 저메모리 단말 경량 품질(배틀 선로드 끔) · 에셋 관리 라이브러리 개선 + GC 시점",
+          "solves": "연속 배틀에서 쌓이던 상주 리소스를 씬 전이 규칙으로 놓아주고, 피크 메모리를 약 300MB 줄였다.",
+          "limits": "배틀 선로드를 끈 단말에서는 **로드 시간이 조금 늘어난다**(체감 허용 범위라고 판단).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "『呪術廻戦 ファントムパレード』におけるUnityメモリ最適化の取り組み - 低メモリ環境での安定動作を大幅改善",
+              "url": "https://tech.sumzap.co.jp/entry/unity-optimize-memory-in-jujutsuphanpara",
+              "publisher": "Sumzap Engineering Blog",
+              "date": "2026-08-12",
+              "summary": "출시 때는 쾌적했지만 **2년 운영** 동안 콘텐츠 추가·연출 호화화로, 특정 이벤트에서 **메모리가 적은 iOS 단말의 크래시**가 잦아졌다(단기 주회 배틀·강적 오토 주회·앞으로의 총력전). 직근 1개월 액티브 중 **3GB·4GB 단말 사용자가 상당수** → 2026-02 메모리 대응 전담 팀(코어테크 횡단 조직 + 타이틀 클라이언트). 방침: 사용량 삭감·**메모리 누수 해소**·iOS 고유 최적화·에셋 관리 재검토. ① 배틀 위에 ADV 를 띄울 때 **두 리소스가 동시에 상주** → 4GB 이하 단말에서 경량 품질이면 배틀 선로드를 끄고 iPhone 12·13(mini 포함)을 기본 경량 품질로, ADV 중엔 배틀 리소스를 안 들고 필요할 때 로드 — **로드 시간이 조금 늘었지만 체감 허용 범위**. ② 에셋 관리 라이브러리가 뒤 스레드 캐싱으로 GC 가 안 돌아 일시 300MB 이상 → 코드 개선으로 **300MB→200MB**, 적절한 시점에 GC. ③ **최대 효과**: 연속 배틀 때 Spine·Timeline 같은 배틀 에셋이 프리로드 고속화를 위해 **`DontDestroyOnLoad` 로 상주**해 쌓였다 — 특정 전이 흐름에서만 해제돼 에러 때 해제 누락 → 수명을 **SceneManager 관할**로 옮기고 전이 규칙(배틀로 = 유지, 아웃게임→ADV = 유지 …)으로 해제. 피크 약 300MB 감소."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "기능 브랜치마다 개발 환경을 세우고 기한이 지나면 지운다",
+      "why": "기능 브랜치가 여럿 동시에 도는데 dev 환경은 고정 수라 쟁탈·배포 덮어쓰기·빈자리 대기가 생겼다. 손으로 늘리면 인프라 부담이 크고, 지우는 걸 잊어 안 쓰는데 과금되는 환경이 쌓였다.",
+      "tech": [
+        {
+          "tech": "GitHub Actions workflow_dispatch + Terragrunt(suffix 로 리소스·URL·state 분리) + Cloud Run 0 스케일 + OAuth callback host + TTL reaper",
+          "solves": "개발자가 버튼 하나로 독립 환경(DB·호스트명)을 몇 분에 세우고, 기한이 지나면 자동으로 지운다.",
+          "limits": "공유할 것과 쓰고 버릴 것을 **나눠 설계**해야 비용이 눌린다. OAuth 는 상설 callback host 에 기대는 **단일 지점**이 생긴다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Terragrunt × GitHub Actions で開発環境をワンクリック追加・自動削除する仕組み",
+              "url": "https://tech.sumzap.co.jp/entry/dynamic-development-environment-provisioning",
+              "publisher": "Sumzap Engineering Blog",
+              "date": "2026-07-28",
+              "summary": "Google Cloud 위 개발 환경을 **GitHub Actions 한 번**으로 추가·삭제 — 기능 브랜치마다 독립 환경을 몇 분에, **TTL** 이 지나면 자동 삭제. 고정 dev 환경이면 '누가 dev2 쓰고 있나' 쟁탈·배포 덮어쓰기·빈자리 대기가 생기고, 손으로 늘리면 부담이 크고 지우는 걸 잊어 **안 쓰는데 과금**되는 환경이 쌓인다 → '신청해서 받는 것' 에서 '필요할 때 스스로 세우고 끝나면 알아서 사라지는 것' 으로. workflow_dispatch 에 이미지 태그·**suffix**(환경 이름이자 라이프사이클 키)·TTL(일수) — Terragrunt 가 suffix 로 리소스 이름·URL·state 를 가른다. 비용을 누르려 **공유할 것·쓰고 버릴 것**을 설계, Cloud Run 이라 요청 없으면 **0 스케일**. Google OAuth 는 redirect URI 를 미리 등록해야 해 **callback 을 상설 환경(callback host) 하나에 모아** 각 동적 환경으로 전송 — 등록은 한 줄. 기한 지난 환경은 **reaper** 가 지운다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "과금 구조·매출과 모회사(CyberAgent) 관계를 1차 자료로 확인하지 못했다.",
+    "IP·이벤트(GCRESTUDIO) 수익원의 기술 글은 아직 못 찾았다.",
+    "개발 환경 글이 어느 타이틀의 서버인지 밝히지 않는다 — 게임 운영 수익원 연결은 inferred.",
+    "Unity 에디터 확장(UI 프리팹 일원 관리·텍스처 임포트 규칙)·UI Toolkit 배칭·APV 조명 글이 있다."
+  ],
+  "sources": [
+    {
+      "title": "株式会社サムザップ",
+      "url": "https://www.sumzap.co.jp/",
+      "publisher": "株式会社サムザップ",
+      "date": "2026-09-26",
+      "summary": "'자랑할 수 있는 일로 사랑받는 콘텐츠를 만든다'. 스마트폰 게임 **『呪術廻戦 ファントムパレード』**(2026-08 서비스 1000일), **『真 戦国炎舞 -KIZNA-』**(『進撃の巨人』 콜라보), 꿈 세계 시리즈 등. GCRESTUDIO 레이블로 **Paradox Live** 이벤트. 엔지니어 블로그와 홍보 note 운영."
+    },
+    {
+      "title": "『呪術廻戦 ファントムパレード』におけるUnityメモリ最適化の取り組み - 低メモリ環境での安定動作を大幅改善",
+      "url": "https://tech.sumzap.co.jp/entry/unity-optimize-memory-in-jujutsuphanpara",
+      "publisher": "Sumzap Engineering Blog",
+      "date": "2026-08-12",
+      "summary": "출시 때는 쾌적했지만 **2년 운영** 동안 콘텐츠 추가·연출 호화화로, 특정 이벤트에서 **메모리가 적은 iOS 단말의 크래시**가 잦아졌다(단기 주회 배틀·강적 오토 주회·앞으로의 총력전). 직근 1개월 액티브 중 **3GB·4GB 단말 사용자가 상당수** → 2026-02 메모리 대응 전담 팀(코어테크 횡단 조직 + 타이틀 클라이언트). 방침: 사용량 삭감·**메모리 누수 해소**·iOS 고유 최적화·에셋 관리 재검토. ① 배틀 위에 ADV 를 띄울 때 **두 리소스가 동시에 상주** → 4GB 이하 단말에서 경량 품질이면 배틀 선로드를 끄고 iPhone 12·13(mini 포함)을 기본 경량 품질로, ADV 중엔 배틀 리소스를 안 들고 필요할 때 로드 — **로드 시간이 조금 늘었지만 체감 허용 범위**. ② 에셋 관리 라이브러리가 뒤 스레드 캐싱으로 GC 가 안 돌아 일시 300MB 이상 → 코드 개선으로 **300MB→200MB**, 적절한 시점에 GC. ③ **최대 효과**: 연속 배틀 때 Spine·Timeline 같은 배틀 에셋이 프리로드 고속화를 위해 **`DontDestroyOnLoad` 로 상주**해 쌓였다 — 특정 전이 흐름에서만 해제돼 에러 때 해제 누락 → 수명을 **SceneManager 관할**로 옮기고 전이 규칙(배틀로 = 유지, 아웃게임→ADV = 유지 …)으로 해제. 피크 약 300MB 감소."
+    },
+    {
+      "title": "Terragrunt × GitHub Actions で開発環境をワンクリック追加・自動削除する仕組み",
+      "url": "https://tech.sumzap.co.jp/entry/dynamic-development-environment-provisioning",
+      "publisher": "Sumzap Engineering Blog",
+      "date": "2026-07-28",
+      "summary": "Google Cloud 위 개발 환경을 **GitHub Actions 한 번**으로 추가·삭제 — 기능 브랜치마다 독립 환경을 몇 분에, **TTL** 이 지나면 자동 삭제. 고정 dev 환경이면 '누가 dev2 쓰고 있나' 쟁탈·배포 덮어쓰기·빈자리 대기가 생기고, 손으로 늘리면 부담이 크고 지우는 걸 잊어 **안 쓰는데 과금**되는 환경이 쌓인다 → '신청해서 받는 것' 에서 '필요할 때 스스로 세우고 끝나면 알아서 사라지는 것' 으로. workflow_dispatch 에 이미지 태그·**suffix**(환경 이름이자 라이프사이클 키)·TTL(일수) — Terragrunt 가 suffix 로 리소스 이름·URL·state 를 가른다. 비용을 누르려 **공유할 것·쓰고 버릴 것**을 설계, Cloud Run 이라 요청 없으면 **0 스케일**. Google OAuth 는 redirect URI 를 미리 등록해야 해 **callback 을 상설 환경(callback host) 하나에 모아** 각 동적 환경으로 전송 — 등록은 한 줄. 기한 지난 환경은 **reaper** 가 지운다."
+    }
+  ]
+}

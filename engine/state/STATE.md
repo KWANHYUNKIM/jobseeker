@@ -8,7 +8,7 @@
 
 ## 지금 파는 중
 
-**85번째 후보 조사(2026-09-26) — 대기 2/3(Sumzap·Yappli). 다음은 `--gaps` 가 가리키는 신규: 대기 맨 위(Sumzap — `tech.sumzap.co.jp`, 메모리 최적화 `entry/unity-optimize-memory-in-jujutsuphanpara` 부터, scratchpad `c85_*.txt`). 하테나 사이트맵 탐색이 바닥을 보인다 — 다음 후보 조사는 Zenn Publication·note 기업 계정 같은 다른 입구를 시험. 비교 문서 재료: ENECHANGE ↔ SMS 청구 계산 검증, Findy ↔ YOUTRUST 추천, Nature ↔ LayerX AI 리뷰. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
+**Sumzap — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '저메모리 단말에서 떨어지지 않게 배틀 리소스를 놓아준다' 를 메모리 글(`entry/unity-optimize-memory-in-jujutsuphanpara`, scratchpad `sz_mem.txt` — SceneManager 규칙 이후·iOS 고유 최적화·에셋 관리·결과). 그 뒤 동적 개발 환경(`dynamic-development-environment-provisioning`, `sz_env.txt`). 완주 판정 때 IP·이벤트 수익원은 도메인이 없다. 대기 1/3(Yappli `yp_inq.txt`). 다음 후보 조사는 Zenn Publication·note 기업 계정을 시험. 머니포워드·라쿠스·ENECHANGE·엔니고모·SMS·코네히토·YOUTRUST·ABEJA(hold)·LayerX 는 in_progress.**
 
 
 
