@@ -11029,6 +11029,123 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7919211",
+      "title": "Staff Backend Engineer (Streaming & AI Infrastructure)",
+      "site": "ats",
+      "verdict": "서울 근무(위치 표기에 'z-Test & Templates Only' 가 함께 붙어 있다 — 아래 open_questions). 백엔드 6년 이상 + Cassandra·TiDB·DynamoDB 중 하나 전문가 수준 + Java·Spring. 쿠팡 웹·앱을 받치는 실시간 스트리밍·AI 플랫폼(초당 10만 이벤트 이상, 종단 1초 미만 지연, 5~6 nines)을 설계하고, 도메인 팀의 배치를 실시간으로 옮기는 일을 권한 없이 이끄는 Staff.",
+      "fit": {
+        "must_have": [
+          "백엔드 6년 이상",
+          "Cassandra·TiDB·DynamoDB 전문가 수준",
+          "Java·Spring 전문가 수준",
+          "AWS 고가용 분산 시스템",
+          "Kafka·SQS 대용량 메시징"
+        ],
+        "can_learn": [
+          "쿠팡 도메인 팀의 배치 구성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "초당 10만 이벤트·1초 미만 지연 스트리밍 설계",
+          "from": "task",
+          "quote": "We are looking for a visionary Staff Software Engineer to lead the architectural design of a platform capable of processing over 100k+ events per second with sub-second, end-to-end latency. This system will serve as the central nervous system for Coupang, enabling real-time product and customer data and instant personalization. You will build a system that doesn't just meet industry standards but sets them, ensuring 5-6 nines availability while leveraging AI to optimize data flows and automate complex system behaviors.",
+          "priority": "core",
+          "why": "역할 정의 문장 자체가 처리량·지연 목표를 숫자로 적는다.",
+          "gap_check": "초당 10만 이벤트에서 파티션 수·컨슈머 수·배치 크기·linger 설정이 처리량과 지연을 어떻게 맞바꾸는가?",
+          "drill": "로컬 Kafka(또는 Redpanda)에 초당 수만 건을 넣고 프로듀서 batch.size·linger.ms, 컨슈머 수를 바꿔 가며 처리량·종단 지연 표를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apache Kafka — Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "exactly-once 처리와 백프레셔",
+          "from": "task",
+          "quote": "Solve Hard Problems: Address challenges related to distributed consistency, at times, exactly-once processing guarantees, and backpressure management. You must Be Data-Driven to validate architectural decisions against massive, bursty traffic patterns.",
+          "priority": "core",
+          "why": "분산 일관성·exactly-once·백프레셔가 '풀어야 할 어려운 문제'로 명시돼 있다. 폭발적(bursty) 트래픽도 적혀 있다.",
+          "gap_check": "Kafka 트랜잭션으로 읽기-처리-쓰기를 exactly-once 로 만들 때 외부 DB 쓰기까지 포함되면 무엇이 깨지고, 대신 어떻게 멱등하게 만드는가?",
+          "drill": "Kafka Streams(또는 트랜잭션 프로듀서)로 exactly-once 집계를 만들고, 소비자를 강제 종료·재시작해 중복 없이 이어지는지 확인한다. 순간 폭주 시 소비 지연(lag)이 어떻게 풀리는지도 기록한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Kafka Streams — Processing guarantees",
+              "url": "https://kafka.apache.org/documentation/streams/core-concepts#streams_processing_guarantee",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "JVM 저지연 튜닝",
+          "from": "preference",
+          "quote": "Performance Expert: Proven track record of optimizing JVM applications for ultra-low latency (<100ms p99s) and high concurrency.",
+          "priority": "high",
+          "why": "주요업무가 JVM 튜닝·메모리 관리·네트워크 I/O 까지 파고들어 1초 미만 지연을 지키라고 적는다. 우대는 p99 100ms 미만이다.",
+          "gap_check": "스트림 처리기의 p99 가 튈 때 GC 로그에서 무엇(정지 시간·할당률·승격)을 보고, G1 과 ZGC 중 무엇을 고르는가?",
+          "drill": "Java 소비자에 할당이 많은 처리를 넣고 G1·ZGC 로 각각 돌려 GC 로그와 p99 를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Oracle — HotSpot GC Tuning Guide (Java 21)",
+              "url": "https://docs.oracle.com/en/java/javase/21/gctuning/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "와이드 컬럼·분산 SQL 저장소 (Cassandra·TiDB·DynamoDB)",
+          "from": "task",
+          "quote": "Expert-level experience in Cassandra, TiDB, or DynamoDB",
+          "priority": "core",
+          "why": "기본 자격 줄이다. 스트림 결과를 저지연으로 서빙할 저장소로 쓰인다(추론).",
+          "gap_check": "Cassandra 에서 파티션 키를 잘못 잡아 핫 파티션이 생기면 어떤 증상이 나고, 시간 버킷을 섞은 키로 어떻게 푸는가?",
+          "drill": "Cassandra(도커)에 이벤트를 사용자 ID 단일 키 / (사용자 ID, 일자) 복합 키로 각각 넣어 부하를 주고 파티션 크기·지연을 비교한다.",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "배치를 실시간으로 옮기는 이관을 권한 없이 이끌기",
+          "from": "task",
+          "quote": "Lead with Influence: As a Staff Engineer, you will Influence without Authority, collaborating with domain teams to migrate legacy batch processes to real-time streaming architectures.",
+          "priority": "high",
+          "why": "도메인 팀의 레거시 배치를 실시간 스트리밍으로 옮기는 일을 영향력으로 이끌라고 명시했다.",
+          "gap_check": "매일 밤 도는 배치 하나를 스트리밍으로 옮길 때, 두 결과를 나란히 돌려(shadow) 어긋남을 검증하는 기간과 기준을 어떻게 정하는가?",
+          "drill": "일별 집계 배치와 같은 결과를 내는 스트리밍 집계를 만들고, 며칠치 가짜 데이터로 두 결과를 비교하는 검증 스크립트를 작성한다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "처리량·지연·정확성 세 축을 함께 잰 스트리밍 벤치마크",
+          "why": "이 자리의 목표가 전부 숫자다. 세 축을 한 표로 보여 주면 설계 판단 근거가 된다.",
+          "effort": "2일"
+        }
+      ],
+      "interview": {
+        "process": "공고 세 절 칸에 전형 절차가 들어오지 않았다.",
+        "expect": [
+          "처리량·지연 튜닝",
+          "exactly-once 와 외부 쓰기",
+          "JVM GC 선택",
+          "핫 파티션",
+          "배치→스트리밍 이관 검증"
+        ],
+        "sources": [
+          {
+            "title": "Staff Backend Engineer (Streaming & AI Infrastructure)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7919211",
+            "publisher": "Coupang Careers"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -11053,6 +11170,7 @@
     "`Manager, Back-end Engineering (Global Operations Technology)` 는 물류 운영 기술 조직인데 자격에 **`복잡한 금융 시스템 설계 및 개발 경력 10년 이상`** 을 요구한다. **운임·정산 같은 돈 계산을 뜻하는지, 결제·여신 계열을 뜻하는지 공고는 설명하지 않는다.** 확인하지 못했다.",
     "`SCMA Senior Staff Data Scientist` 는 **제목의 직함(`Senior Staff`)과 본문 첫 줄(`As a Principal Data Scientist`)이 다르다.** 표기 실수인지 직급이 조정 가능한 것인지 확인하지 못했다 — `Sr. Director, Back-End Engineering`(본문은 `Head of SRE`)에 이어 **두 번째 사례**다.",
     "⚠️ `[쿠팡페이] Senior Back-end Engineer (계약직)`(ats)는 **본문이 `[쿠팡페이] Senior QA Engineer (계약직)`(saramin)와 16줄 전부 같은데 제목만 백엔드**다. 표기 실수인지 두 직무를 함께 뽑는 것인지 확인하지 못했다 — **제목과 본문이 어긋난 세 번째 사례**이고(앞의 둘은 `Sr. Director`=Head of SRE, `SCMA Senior Staff`=Principal), **이번은 직무 자체가 달라 보여 위험이 크다.**",
-    "'[Coupang Pay] Sr./Staff Back-end Engineer (Pay Test Operations)'(gh 8212748·8212656)는 제목에 Test Operations 가 있지만 본문은 플랫폼·HA/DR·CI/CD 다 — 제목과 본문 중 어느 쪽이 맞는지 공고로는 알 수 없다"
+    "'[Coupang Pay] Sr./Staff Back-end Engineer (Pay Test Operations)'(gh 8212748·8212656)는 제목에 Test Operations 가 있지만 본문은 플랫폼·HA/DR·CI/CD 다 — 제목과 본문 중 어느 쪽이 맞는지 공고로는 알 수 없다",
+    "'Staff Backend Engineer (Streaming & AI Infrastructure)'(gh 7919211)의 근무지 표기가 'Seoul, South Korea; z-Test & Templates Only' 다 — 템플릿용 표기가 섞인 것으로 보이며 실제 근무지는 서울로만 읽었다"
   ]
 }
