@@ -1352,3 +1352,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 stmn FANTS 조사(1회째) → 새 도메인 → 완주
 
 - 블로그 검색 'FANTS' 로 2021-12 대시보드 글을 찾아 도메인 '살롱 운영 화면을 TUNAG 에서 떼어 낸다' + `fants-dashboard-nextjs`(결정 7). FANTS 수익원 연결 → done.
+
+## 2026-09-26 LegalOn 회사 프로파일
+
+- 대기 맨 위. 창립 9주년 발표(유상 도입 8,500 사·APAC·On Technologies) + 기술 글 둘(거버넌스 AI·지원 Codex+Datadog)로 도메인 둘·수익원 둘(On Tech 은 도메인 없음), 기능 0. 계약 검토 AI 본체 글은 아직 못 찾았다.

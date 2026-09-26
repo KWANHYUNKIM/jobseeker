@@ -2,6 +2,18 @@
   "updated_at": "2026-09-26",
   "companies": [
     {
+      "slug": "legalon",
+      "name": "LegalOn Technologies",
+      "name_en": "LegalOn Technologies",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "법무 특화 AI 에이전트 LegalOn — 사내에서도 AI 에 일을 맡긴다: 데이터 거버넌스 상담은 AI 가 먼저 진단하고, 비엔지니어도 자연어로 로그를 판다",
+      "updated_at": "2026-09-26",
+      "domain": "legalontech.jp"
+    },
+    {
       "slug": "stmn",
       "name": "スタメン",
       "name_en": "stmn",
@@ -3048,7 +3060,9 @@
     "PR 마다 기다리는 CI 를 줄인다",
     "10년 된 레포에 보안 관문을 세운다",
     "돌아가는 모바일 자산을 새 기기로 옮긴다",
-    "살롱 운영 화면을 TUNAG 에서 떼어 낸다"
+    "살롱 운영 화면을 TUNAG 에서 떼어 낸다",
+    "데이터 거버넌스 상담을 AI 가 먼저 받는다",
+    "비엔지니어가 자연어로 로그를 판다"
   ],
   "countries": {
     "KR": "한국",

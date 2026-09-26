@@ -27,12 +27,12 @@
 
 | **머니포워드(Money Forward)** | JP · 핀테크 SaaS | 프로파일(2026-09-26). 도메인 둘 — 비밀번호 없이 들어온다 · PR 마다 기다리는 CI 를 줄인다. 기능 2. **hold** — X 수익원 자료 2회 없음(완주 기준 셋째 미달). |
 
+| **LegalOn Technologies** | JP · 리걸테크(법무 AI) | 프로파일(2026-09-26). 도메인 둘 — 데이터 거버넌스 상담을 AI 가 먼저 받는다 · 비엔지니어가 자연어로 로그를 판다. 기능 0. 다음 — 거버넌스. On Technologies 수익원은 도메인 없음. |
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **LegalOn Technologies** | JP · 법무 SaaS(계약 검토 AI) | **리걸테크 축이 처음 열린다.** `tech.legalforce.co.jp`(하테나, 최신 2026-09). 글 폭이 넓다 — 데이터 거버넌스 문의를 AI 로(`ai-data-governance-google-cloud`), 비엔지니어 지원 담당이 Codex + Datadog 로 로그 조사(`support-team-datadog-analysis-with-codex`), 설정 파일에 '구조의 관계' 를 쓰는 층 JSON++·jq++(`yaml-json-config-optimization` — **기존 형식을 바꾸지 않고 처리 앞에 층 하나를 더한다**, IEEE Software 투고 중), 공통 기반 PoC. 먼저 팔 것 — **데이터 거버넌스·지원 조사의 AI 위임**. 계약 검토 AI 본체 글이 있는지는 프로파일 때 확인. |
 | **Findy(파인디)** | JP · 엔지니어 채용·개발 생산성 SaaS | `tech.findy.co.jp`(하테나, 최신 2026-09-14, 매주). `2026/08/21/070000` 은 Claude Managed Agents 로 만든 **문의 조사 에이전트**의 Agent 정의를 **IaC 처럼** 레포의 파일을 정본으로 두고 차분 확인·승인 뒤 반영하며, 갱신은 **버전이 쌓이고 돌고 있는 세션은 옛 버전 그대로** 라는 제약을 적는다. 스택 PR(`gh stack`)·디자인 시스템·카피 UI 검증 글이 뒤를 잇는다. 행사·인턴 글이 섞여 **기술 글을 골라야** 한다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

@@ -1,0 +1,137 @@
+{
+  "slug": "legalon",
+  "name": "LegalOn Technologies",
+  "name_en": "LegalOn Technologies",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-26",
+  "domain": "legalontech.jp",
+  "one_liner": "법무 특화 AI 에이전트 LegalOn — 사내에서도 AI 에 일을 맡긴다: 데이터 거버넌스 상담은 AI 가 먼저 진단하고, 비엔지니어도 자연어로 로그를 판다",
+  "business_model": "2017년 창업한 **리걸테크** 회사다. 계약 검토·심사·법무 상담을 돕는 법무 특화 AI 에이전트 **「LegalOn」**(Professional AI for Legal)을 판다. 글로벌 **유상 도입 8,500 사 이상**(2026년 4월), 미국·영국·APAC 로 넓히며 각국 법에 맞춘 계약 검토를 한다(비상장, 매출 공개 자료는 확인하지 못했다).\n\n법무에서 **코퍼레이트 전역**으로 넓히는 중이다 — 그룹사 On Technologies 가 경영(CXOn)·영업(DealOn)·HR(WorkOn) 용 Professional AI 를 낸다.\n\n고객의 **계약서·법무 자료**라는 민감한 데이터를 다루니 사내 데이터 거버넌스가 무겁고, AI 를 파는 회사답게 **사내 운영도 AI 에 맡기는** 글이 이어진다(이 사이트의 해석).",
+  "products": [
+    "LegalOn(법무 특화 AI 에이전트 · 계약 검토)",
+    "LegalOn 어시스턴트",
+    "CXOn · DealOn · WorkOn(On Technologies)"
+  ],
+  "revenue_total": "비공개 — 글로벌 유상 도입 8,500 사 이상(2026년 4월, 회사 발표)",
+  "revenue_streams": [
+    {
+      "name": "LegalOn(법무 AI SaaS)",
+      "how": "기업 법무 부서에 계약 검토·심사·상담 AI 를 구독으로 판다. 일본·미국·영국·APAC.",
+      "weight": "주력(유상 도입 8,500 사 이상)",
+      "domains": [
+        "데이터 거버넌스 상담을 AI 가 먼저 받는다",
+        "비엔지니어가 자연어로 로그를 판다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "LegalOn Technologiesは、”創立9周年”を迎えました。",
+          "url": "https://legalontech.jp/10705/",
+          "publisher": "株式会社LegalOn Technologies",
+          "date": "2026-04-21",
+          "summary": "2017년 창업. 법무 특화 AI 에이전트를 탑재한 **Professional AI for Legal 「LegalOn」** 을 제공하며, 글로벌 Professional AI 서비스 **유상 도입 8,500 사 돌파**. 미국·영국에 이어 **APAC** 로 넓히고 각국 법에 맞춘 계약 검토·심사를 한다. 법무에서 **코퍼레이트 전역**(차세대 거버넌스 플랫폼)으로 확장 중. 그룹사 On Technologies 를 세워 **CXOn(경영)·DealOn(영업)·WorkOn(HR)** 도 제공."
+        }
+      ]
+    },
+    {
+      "name": "On Technologies(CXOn · DealOn · WorkOn)",
+      "how": "경영·영업·HR 용 Professional AI. 2025년 제공 시작.",
+      "weight": "공개 없음",
+      "domains": [],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "LegalOn Technologiesは、”創立9周年”を迎えました。",
+          "url": "https://legalontech.jp/10705/",
+          "publisher": "株式会社LegalOn Technologies",
+          "date": "2026-04-21",
+          "summary": "2017년 창업. 법무 특화 AI 에이전트를 탑재한 **Professional AI for Legal 「LegalOn」** 을 제공하며, 글로벌 Professional AI 서비스 **유상 도입 8,500 사 돌파**. 미국·영국에 이어 **APAC** 로 넓히고 각국 법에 맞춘 계약 검토·심사를 한다. 법무에서 **코퍼레이트 전역**(차세대 거버넌스 플랫폼)으로 확장 중. 그룹사 On Technologies 를 세워 **CXOn(경영)·DealOn(영업)·WorkOn(HR)** 도 제공."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "AI 를 파는 회사의 사내 AI",
+    "question": "민감한 법무 데이터를 다루는 회사는 사내 운영을 어떻게 AI 에 맡기나?",
+    "code": "flowchart LR\n  PT[\"프로덕트 팀\\nTerraform · IAM 변경\"] --> DGA[\"거버넌스 AI\\nIA3~IA5 베이스라인 진단\"]\n  Q[\"데이터 이용 상담\"] --> DGA\n  DGA --> DWG[\"DWG\\n최종 판단\"]\n  C[\"고객 문의\"] --> CR[\"지원 담당(비엔지니어)\"]\n  CR --> CX[\"Codex\"] -->|MCP| DD[\"Datadog 로그\"]",
+    "_note": "위는 보안·데이터 이용 판단을 AI 가 먼저 받는 일, 아래는 비엔지니어가 AI 를 통해 로그를 직접 보는 일이다."
+  },
+  "domains": [
+    {
+      "name": "데이터 거버넌스 상담을 AI 가 먼저 받는다",
+      "why": "정보 자산 가이드라인(IA3~IA5)이 있어도 Terraform·IAM 변경 리뷰와 데이터 이용 상담을 **사람이 한 건씩** 대 봐야 했고, 프로덕트 팀이 늘수록 늘었다. 콘솔 수동 변경으로 코드와 실제가 어긋난 것은 코드 리뷰로 못 찾고, 답의 품질은 담당자에 달렸다.",
+      "tech": [
+        {
+          "tech": "Terraform 정적 분석 Skill(IA3~IA5 베이스라인 위반 검출) + Google Cloud 진단 + AI 상담 대응",
+          "solves": "리뷰와 상담의 첫 판단을 AI 가 하고, 코드와 실제 환경의 어긋남까지 본다.",
+          "limits": "Custom GPT·Gemini Gems 는 **되묻기가 약해** 전제가 모호하면 일반론을 준다 — 그래서 그것만으로는 부족했다. 세부 구현은 기능 사이클에서 판다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データガバナンス問い合わせの「待ち時間」をなくすために、Google Cloud診断と相談対応をAIに任せてみた",
+              "url": "https://tech.legalforce.co.jp/entry/ai-data-governance-google-cloud",
+              "publisher": "LegalOn Technologies Engineering Blog",
+              "date": "2026-07-23",
+              "summary": "데이터 거버넌스 워킹 그룹(DWG)이 **정보 자산 가이드라인**(정보 자산 레벨 IA3~IA5 의 베이스라인 보안 요건)을 만들었지만, 한 건씩 사람이 대 보는 판단은 여전히 중노동이었다. 과제 둘 — Google Cloud **Terraform 리소스·IAM 변경의 보안 리뷰**를 사람이 코드를 읽어 요건과 대조해야 하고(프로덕트 팀이 늘수록 증가), **콘솔 수동 변경으로 Terraform 과 실제 환경이 어긋난** 것은 코드 리뷰로 못 찾는다; **문의 대응 품질이 담당자에 의존**. **Custom GPT·Gemini Gems 만으로는 부족** — 불명점을 되묻는 상호작용이 약해 전제가 모호한 채 일반론을 돌려준다. 그래서 Terraform 코드를 정적 분석해 IA3~IA5 베이스라인 위반을 자동 검출하는 Skill 등으로 **진단과 상담 대응을 AI 에 맡긴다**."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "비엔지니어가 자연어로 로그를 판다",
+      "why": "지원 담당자는 장애 대응에 기여하고 싶어도 로그 해석·원인 분리의 장벽이 높았다. Datadog 은 다기능이라 비엔지니어가 쓰기 어렵다.",
+      "tech": [
+        {
+          "tech": "Codex(데스크톱 앱) + Datadog MCP 서버",
+          "solves": "자연어로 Datadog 로그를 조사해 지원 담당이 원인 분리에 직접 참여한다.",
+          "limits": "AI 가 요약한 조사 결과의 **정확성 검증**을 누가 어떻게 하는지는 기능 사이클에서 본다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "非エンジニアのサポート担当者がCodex + Datadogでログ調査できるようになった話",
+              "url": "https://tech.legalforce.co.jp/entry/support-team-datadog-analysis-with-codex",
+              "publisher": "LegalOn Technologies Engineering Blog",
+              "date": "2026-07-16",
+              "summary": "커스터머 릴레이션 그룹의 **비엔지니어 사용자 지원 담당자**가 장애 대응에 기여하고 싶어도 로그 해석·원인 분리의 기술 장벽이 높았고, 엔지니어가 쓰는 **Datadog** 은 다기능이라 비엔지니어가 쓰기 어렵다. Datadog 이 **MCP 서버**를 제공하므로 **Codex(데스크톱 앱)** 에서 MCP 로 붙어 **자연어로 Datadog 로그를 분석**하게 했다. 애드인 에러 조사 등 실제 조사 사례를 싣는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**계약 검토 AI 본체**(LegalOn 의 조항 판정·각국 법 대응)의 기술 글을 아직 못 찾았다 — 제품의 핵심이다.",
+    "**On Technologies** 수익원에 이을 기술 글이 없다.",
+    "설정 층 **JSON++·jq++**(`yaml-json-config-optimization`, IEEE Software 투고 중)도 도메인 후보다.",
+    "매출·ARR 을 1차 자료로 확인하지 못했다."
+  ],
+  "sources": [
+    {
+      "title": "LegalOn Technologiesは、”創立9周年”を迎えました。",
+      "url": "https://legalontech.jp/10705/",
+      "publisher": "株式会社LegalOn Technologies",
+      "date": "2026-04-21",
+      "summary": "2017년 창업. 법무 특화 AI 에이전트를 탑재한 **Professional AI for Legal 「LegalOn」** 을 제공하며, 글로벌 Professional AI 서비스 **유상 도입 8,500 사 돌파**. 미국·영국에 이어 **APAC** 로 넓히고 각국 법에 맞춘 계약 검토·심사를 한다. 법무에서 **코퍼레이트 전역**(차세대 거버넌스 플랫폼)으로 확장 중. 그룹사 On Technologies 를 세워 **CXOn(경영)·DealOn(영업)·WorkOn(HR)** 도 제공."
+    },
+    {
+      "title": "データガバナンス問い合わせの「待ち時間」をなくすために、Google Cloud診断と相談対応をAIに任せてみた",
+      "url": "https://tech.legalforce.co.jp/entry/ai-data-governance-google-cloud",
+      "publisher": "LegalOn Technologies Engineering Blog",
+      "date": "2026-07-23",
+      "summary": "데이터 거버넌스 워킹 그룹(DWG)이 **정보 자산 가이드라인**(정보 자산 레벨 IA3~IA5 의 베이스라인 보안 요건)을 만들었지만, 한 건씩 사람이 대 보는 판단은 여전히 중노동이었다. 과제 둘 — Google Cloud **Terraform 리소스·IAM 변경의 보안 리뷰**를 사람이 코드를 읽어 요건과 대조해야 하고(프로덕트 팀이 늘수록 증가), **콘솔 수동 변경으로 Terraform 과 실제 환경이 어긋난** 것은 코드 리뷰로 못 찾는다; **문의 대응 품질이 담당자에 의존**. **Custom GPT·Gemini Gems 만으로는 부족** — 불명점을 되묻는 상호작용이 약해 전제가 모호한 채 일반론을 돌려준다. 그래서 Terraform 코드를 정적 분석해 IA3~IA5 베이스라인 위반을 자동 검출하는 Skill 등으로 **진단과 상담 대응을 AI 에 맡긴다**."
+    },
+    {
+      "title": "非エンジニアのサポート担当者がCodex + Datadogでログ調査できるようになった話",
+      "url": "https://tech.legalforce.co.jp/entry/support-team-datadog-analysis-with-codex",
+      "publisher": "LegalOn Technologies Engineering Blog",
+      "date": "2026-07-16",
+      "summary": "커스터머 릴레이션 그룹의 **비엔지니어 사용자 지원 담당자**가 장애 대응에 기여하고 싶어도 로그 해석·원인 분리의 기술 장벽이 높았고, 엔지니어가 쓰는 **Datadog** 은 다기능이라 비엔지니어가 쓰기 어렵다. Datadog 이 **MCP 서버**를 제공하므로 **Codex(데스크톱 앱)** 에서 MCP 로 붙어 **자연어로 Datadog 로그를 분석**하게 했다. 애드인 에러 조사 등 실제 조사 사례를 싣는다."
+    }
+  ]
+}

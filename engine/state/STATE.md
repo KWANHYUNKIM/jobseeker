@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**없다 — stmn 완주(2026-09-26, FANTS 조사 1회째에 2021 대시보드 글을 찾아 도메인을 더했다). 다음은 신규 — 대기 맨 위 **LegalOn**(`tech.legalforce.co.jp`, 하테나; 후보 글 `entry/yaml-json-config-optimization`·`entry/ai-data-governance-google-cloud`·`entry/support-team-datadog-analysis-with-codex`. 계약 검토 AI 본체 글이 있는지 먼저). 대기 2/3 — LegalOn 뒤 후보 조사. 머니포워드(hold)·LayerX 는 in_progress.**
+**LegalOn — 프로파일(2026-09-26). 도메인 둘, 기능 0. 다음은 확장: '데이터 거버넌스 상담을 AI 가 먼저 받는다' 를 거버넌스 글(`entry/ai-data-governance-google-cloud`, scratchpad `lo_ai-data-governance-google-cloud.txt` — 'Custom GPT/Gemini Gems だけでは足りなかった' 이후 설계·결과를 마저). 그 뒤 지원 로그(`lo_support-team-datadog-analysis-with-codex.txt`). On Technologies 수익원은 도메인이 없다 — 완주 판정 때 확인. 대기 1/3(Findy). 머니포워드(hold)·LayerX 는 in_progress.**
+
 
 
 
