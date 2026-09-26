@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "커머스",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "감정 붙은 스니커·트레카 마켓 스니다ン — 구입과 결제는 DDD 모듈러 모놀리스로 나누되 PSP 제약 앞에선 원칙을 일부러 깨고, 모듈 사이 호출은 멱등성 규칙과 불일치 해소 배치로 원자성을 지키며, 주문·결제·상품·쿠폰 상태가 곱으로 불어나는 흐름은 형식 검증으로 비멱등 보상을 찾는다",
       "updated_at": "2026-09-26",
       "domain": "soda-inc.jp"
