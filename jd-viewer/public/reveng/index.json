@@ -7,8 +7,8 @@
       "name_en": "Uzabase",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "경제 정보 인프라 — 기업 데이터를 고객사 AWS 로 흘려보내되 줄어든 데이터는 막고, AI 에이전트의 '품질 실패' 와 '시스템 장애' 를 다른 칸에 담는다",
       "updated_at": "2026-09-26",
       "domain": "uzabase.com"
@@ -3018,7 +3018,8 @@
     "LLM 호출을 한 관문에 모은다",
     "API 스키마를 먼저 쓴다",
     "고객사 AWS 로 데이터를 흘려보낸다",
-    "AI 에이전트의 실패를 두 칸에 나눠 담는다"
+    "AI 에이전트의 실패를 두 칸에 나눠 담는다",
+    "기사를 목소리로 읽어 준다"
   ],
   "countries": {
     "KR": "한국",

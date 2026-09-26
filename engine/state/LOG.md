@@ -1308,3 +1308,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-26 유자베이스 확장 — HTTP 는 에이전트가 돌았는지를, status 는 슬라이드가 어땠는지를
 
 - 에이전트 트릴레마 글(09-16)로 `completed-or-degraded`(결정 6·state 그림). A2A 재의뢰 기대는 inferred. 두 도메인 채움, NewsPicks 수익원 미연결.
+
+## 2026-09-26 유자베이스 확장 — TTS 를 세 번 고른 이야기 → 완주
+
+- NewsPicks 기술 글 조사 1회째에서 음성 읽어 주기 글(2025-12-25)을 찾아 새 도메인 '기사를 목소리로 읽어 준다' + `tts-polly-to-chirp3`(결정 7·state 그림). NewsPicks 수익원 연결, 세 도메인 채움 → done.

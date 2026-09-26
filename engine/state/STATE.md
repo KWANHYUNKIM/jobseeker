@@ -8,7 +8,8 @@
 
 ## 지금 파는 중
 
-**유자베이스 — 기능 2(`stage-guard-then-deliver` · `completed-or-degraded`, 2026-09-26). 두 도메인 채움. NewsPicks 수익원에 도메인이 없어 완주 기준 셋째 미달 — 다음 사이클에 NewsPicks 기술 글 조사 1회째(tech.uzabase.com 의 NewsPicks 카테고리·검색). 없으면 두 번째 뒤 수익원 hold(회사 hold_reason — CADDi·데브시스터즈 선례). `--gaps` 는 '신규(머니포워드)' 를 찍지만 이 회사를 먼저 닫는다. 대기 2/3. LayerX 는 in_progress.**
+**없다 — 유자베이스 완주(2026-09-26, 도메인 3 · 기능 3; NewsPicks 조사 1회째에 음성 읽어 주기 글을 찾아 도메인을 더했다). 다음은 신규 — 대기 맨 위 **머니포워드**(`moneyforward-dev.jp`, 하테나 사이트맵; 첫 글 `entry/2026/09/11/100000` CI 40.7분→12.8분. 행사·회고가 섞여 기술 글을 골라 읽는다). 대기 2/3 — 머니포워드 뒤 후보 조사. LayerX 는 in_progress.**
+
 
 
 
