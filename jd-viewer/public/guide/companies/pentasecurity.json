@@ -165,5 +165,147 @@
     "보안 네트워크 공고의 TCP/IP 스택 엔진이 WAPPLES 에 들어가는지는 공고에 없다",
     "보안 네트워크 공고는 이미지 OCR 이라 일부 글자(기술 목록 등)가 깨져 있다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/387054",
+      "title": "인증보안 백엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 5-12년(원티드 표기, 자격 칸은 '백엔드 경력 5년 이상'), 서울 영등포구 여의공원로 115, 정규직(수습 3개월, 동일 급여), 수시 채용. **통합인증 제품 iSIGN 계열의 서버**를 만드는 자리다 — 주요업무는 한 줄, **SSO·인증·PKI 관련 제품 서버 개발**. 개발 환경은 **Java/Spring Boot, MariaDB, MyBatis, JPA**, Git·Mantis·Slack, Jenkins·Selenium 자동화. 자격은 Spring Boot·RDBMS·MyBatis/JPA, **라이브러리 개발 경험**, **다양한 인증 개발 경험**, RESTful API, **암호화 기본 이해**, 해외여행 결격 사유 없음. 우대는 Docker, Linux 운영, DB 설계·튜닝, 풀스택 관심, 유관 전공. 웹 서비스가 아니라 **고객사에 설치되는 보안 제품**이라(홈페이지: 국정원심사규정·전자금융감독규정 준수, 어플라이언스 모델) 여러 고객 환경에서 돌아가는 라이브러리·연동 모듈을 다루는 경험이 가장 크게 읽힌다. 전형은 서류전형 → **사전과제 및 면접 전형** → 최종 합류. 같은 본문이 점핏·사람인(55043913)·잡코리아(49997661)에도 있다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java/Spring Boot 5년",
+          "MyBatis·JPA",
+          "인증 개발",
+          "암호화 기본"
+        ],
+        "can_learn": [
+          "PKI 인증서 검증",
+          "FIDO·OTP",
+          "SSO 표준 프로토콜"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SSO 의 동작 — 세션·토큰·표준 프로토콜",
+          "from": "task",
+          "quote": "• SSO(Single Sign On), 인증, PKI 관련 제품 서버 개발",
+          "priority": "core",
+          "why": "주요업무 한 줄이 SSO·인증·PKI 제품 서버 개발이고, 회사 제품 iSIGN 이 Secure SSO 인증보안 플랫폼이다.",
+          "gap_check": "SSO 서버가 사용자를 한 번 인증한 뒤 연결된 여러 업무 시스템에 '이미 인증됨' 을 어떻게 전달하는가(쿠키 도메인·토큰·SAML Assertion·OIDC ID Token)? 한 시스템에서 로그아웃하면 나머지는 어떻게 되는가? 중복 로그인 방지(같은 계정 동시 접속 차단)는 서버에서 무엇을 저장해 구현하는가?",
+          "drill": "Single sign-on·SAML·OpenID Connect 문서를 읽고, Spring Boot 로 인증 서버 하나와 업무 앱 두 개를 만들어 한 번 로그인으로 두 앱에 들어가게 한다(서명된 토큰 전달). 같은 계정의 두 번째 로그인이 앞 세션을 끊게 하고, 전체 로그아웃이 두 앱에 전파되는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Single sign-on — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Single_sign-on",
+              "kind": "docs"
+            },
+            {
+              "title": "SAML — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Security_Assertion_Markup_Language",
+              "kind": "docs"
+            },
+            {
+              "title": "How OpenID Connect Works — OpenID Foundation",
+              "url": "https://openid.net/developers/how-connect-works/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "PKI 와 X.509 인증서 검증을 Java 로",
+          "from": "qualification",
+          "quote": "• 암호화에 대한 기본적인 이해가 있으신 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 PKI 관련 제품 서버가 있다. iSIGN PKI 가 별도 제품이다.",
+          "gap_check": "인증서 체인을 검증할 때 서명·유효기간·용도(Key Usage)·폐지 여부(CRL/OCSP)를 각각 어떻게 확인하는가? 대칭키와 공개키 암호는 인증 흐름에서 각각 어디에 쓰이고, 개인키는 서버 어디에 두는가?",
+          "drill": "PKI 문서와 RFC 5280, JCA Reference Guide 를 읽고, 자체 루트 CA → 중간 CA → 사용자 인증서를 만든다. Java(JCA)로 체인 검증기를 짜서 만료·중간 CA 누락·폐지 목록 등록 세 경우가 각각 어떤 예외로 떨어지는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Public key infrastructure — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Public_key_infrastructure",
+              "kind": "docs"
+            },
+            {
+              "title": "RFC 5280: Internet X.509 PKI Certificate and CRL Profile",
+              "url": "https://www.rfc-editor.org/info/rfc5280/",
+              "kind": "docs"
+            },
+            {
+              "title": "Java Cryptography Architecture (JCA) Reference Guide",
+              "url": "https://docs.oracle.com/en/java/javase/21/security/java-cryptography-architecture-jca-reference-guide.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "다양한 인증 방식 — OTP 와 FIDO",
+          "from": "qualification",
+          "quote": "• 다양한 인증 개발 경험이 있는 분",
+          "priority": "high",
+          "why": "자격요건이고, iSIGN 이 MOTP(모바일 일회용 인증번호)와 FIDO(UAF/U2F) 인증을 지원한다고 홈페이지가 적는다.",
+          "gap_check": "TOTP 는 서버와 앱이 무엇을 공유하고, 시계가 어긋나면 서버는 몇 칸까지 허용하는가? FIDO(패스키)는 비밀번호·OTP 와 달리 피싱 사이트에서 왜 통하지 않는가? 복합·추가 인증(중요 거래 승인 시)을 로그인 흐름에 어떻게 끼워 넣는가?",
+          "drill": "RFC 6238 과 FIDO Passkeys 문서를 읽고, 앞 과제 인증 서버에 TOTP 2단계 인증을 붙인다(등록 QR·검증·시간 허용 오차). '비밀번호 변경' 같은 중요 요청에만 추가 인증을 요구하도록 흐름을 나누고 테스트로 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "RFC 6238: TOTP",
+              "url": "https://www.rfc-editor.org/info/rfc6238/",
+              "kind": "docs"
+            },
+            {
+              "title": "FIDO Passkeys — FIDO Alliance",
+              "url": "https://fidoalliance.org/passkeys/",
+              "kind": "docs"
+            },
+            {
+              "title": "One-time password — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/One-time_password",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객사 시스템에 붙는 연동 라이브러리 설계",
+          "from": "qualification",
+          "quote": "• 라이브러리 개발 경험이 있는 분",
+          "priority": "high",
+          "why": "자격요건이다. SSO 제품은 고객사 업무 시스템마다 붙는 에이전트·연동 모듈이 있어야 동작한다(홈페이지: 시스템 구축 및 연동).",
+          "gap_check": "고객사마다 Java·Spring 버전이 다를 때 라이브러리의 의존성을 어떻게 최소화하고, 호환이 깨지는 변경은 버전 번호로 어떻게 알리는가? 라이브러리가 인증 서버에 못 붙을 때 고객 시스템 전체가 멈추지 않게 하려면 무엇을 해야 하는가?",
+          "drill": "Semantic Versioning 과 JAR 패키징 튜토리얼을 읽고, 앞 과제의 토큰 검증 로직을 외부 의존성 없는 JAR 로 떼어 낸다. Java 8 과 21 두 환경의 샘플 앱에 붙여 보고, 인증 서버가 죽었을 때 타임아웃·오류 메시지가 어떻게 나오는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Semantic Versioning 2.0.0",
+              "url": "https://semver.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "Packaging Programs in JAR Files — The Java Tutorials",
+              "url": "https://docs.oracle.com/javase/tutorial/deployment/jar/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MyBatis 와 JPA 를 한 제품에서",
+          "from": "qualification",
+          "quote": "• mybatis, JPA 사용 경험이 있는 분",
+          "priority": "nice",
+          "why": "자격요건이고 개발 환경에 MariaDB·MyBatis·JPA 가 함께 있다. 우대에 DB 설계·튜닝이 있다.",
+          "gap_check": "같은 테이블을 MyBatis 와 JPA 가 함께 쓰면 영속성 컨텍스트 캐시 때문에 어떤 불일치가 생기고, 한 트랜잭션 안에서 둘을 섞을 때 무엇을 조심하는가? 인증 로그처럼 대량으로 쌓이는 테이블은 어느 쪽으로 다루는 게 나은가?",
+          "drill": "MyBatis 문서를 읽고, 앞 과제의 사용자 테이블을 JPA 로, 로그인 이력 테이블을 MyBatis 로 다루게 만든다. JPA 로 읽은 사용자를 MyBatis 로 수정한 뒤 같은 트랜잭션에서 다시 읽어 옛 값이 보이는지 테스트로 확인한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "MyBatis 3 — Introduction",
+              "url": "https://mybatis.org/mybatis-3/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
