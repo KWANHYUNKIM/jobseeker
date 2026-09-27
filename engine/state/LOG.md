@@ -2668,3 +2668,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 NE 수주 데이터 기반
 
 - 상장 글 후반 · Fluid Scaling 글로 기능 `order-data-platform-bigquery`(결정 7). EC 컨설팅 수익원 confirmed.
+
+## 2026-09-27 NE 수익원 정정 · 보류
+
+- 1 차 neinc_tech 168편 제목 전수(관련 0), 2 차 Zenn 검색 5낱말 · 서비스 페이지. 서비스 페이지에서 후루사토 납세 지원 사업 양도(2026-07-31 → 사이버레코드)를 확인해 수익원 삭제. 라이프스타일 EC 보류, status in_progress 유지.
