@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "음식점은 LINE · FAX 로 발주하고 식품 도매업자는 클라우드에서 한꺼번에 받는 수발주 서비스 '크로스오더'(이용 점포 13 만) — 팩스 주문서 서식은 LLM 대신 손으로 설계한 특징량으로 98% 가르고, 35 만 명의 발주 화면은 1 주 간격 6 단계로 Vue2 에서 React 로 옮겼다",
       "updated_at": "2026-09-27",
       "domain": "xmart.co.jp"
