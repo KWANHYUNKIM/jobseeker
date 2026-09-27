@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "여러 쇼핑몰의 수주 · 재고 · 출하를 한곳에서 자동화하는 EC SaaS 'Next Engine' 의 회사 — 15 년 된 핵심 처리는 운영 환경에서 신구 로직을 나란히 돌려 비교하는 '펭귄 테스트'로 버그 0 교체했고, 300 만 테이블의 수주 데이터는 BigQuery 로 옮겨 고객 대시보드까지 싸게 돌린다",
       "updated_at": "2026-09-27",
       "domain": "ne-inc.jp"

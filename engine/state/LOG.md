@@ -2664,3 +2664,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 NE 펭귄 테스트
 
 - 레거시 풀 리플레이스 글 전문으로 기능 `penguin-test-legacy-replacement`, 결정 7.
+
+## 2026-09-27 NE 수주 데이터 기반
+
+- 상장 글 후반 · Fluid Scaling 글로 기능 `order-data-platform-bigquery`(결정 7). EC 컨설팅 수익원 confirmed.
