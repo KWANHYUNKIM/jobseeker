@@ -1,0 +1,194 @@
+{
+  "slug": "istyle",
+  "name": "アイスタイル",
+  "name_en": "istyle",
+  "country": "JP",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "istyle.co.jp",
+  "one_liner": "화장품 리뷰 사이트 '@cosme' 로 시작해 광고 · 매장 · EC 로 넓힌 뷰티 플랫폼 회사(2026 년 6 월기 매출 818 억 엔) — EOL 이 된 Nuxt2 페이지는 NuxtBridge 없이 대표 페이지부터 3 으로 다시 쓰고, 흩어진 데이터 파이프라인은 가공 전에 Great Expectations 로 책임 분계점을 둔다",
+  "business_model": "アイスタイル는 1999 년 설립해 화장품 리뷰 사이트 **@cosme** 를 운영한다 — 생활자와 기업의 마음을 데이터베이스로 만들어 사용자 기점의 마케팅을 한다는 발상이다. 화장품을 고른 건 광고 선전비 비중이 크고 인터넷으로 가장 크게 바뀌는 업계라서다.\n\n지금은 **브랜드 지원**(광고 · 마케팅 지원 · PR), **@cosme 매장 · EC**, **해외**(광고 · EC · 매장 · 도매), 기타(인재 서비스 · 투자 육성)로 2026 년 6 월기 매출 818 억 엔이다.\n\n기술 글은 매일 많이 읽히는 @cosme 페이지의 프레임워크 이행과, 흩어진 데이터 파이프라인의 품질 관리에 모여 있다.",
+  "products": [
+    "@cosme(화장품 리뷰 · 정보 사이트)",
+    "브랜드용 광고 · 마케팅 지원 · PR",
+    "@cosme STORE · @cosme SHOPPING(매장 · EC)",
+    "해외 사업 · 인재 서비스 · 투자 육성"
+  ],
+  "revenue_total": "2026 년 6 월기 매출 818 억 엔(주주 페이지).",
+  "revenue_streams": [
+    {
+      "name": "브랜드 지원(광고 · 마케팅 · PR)",
+      "how": "화장품 브랜드에 @cosme 의 광고 · 마케팅 지원 · PR 을 판다 — 화장품 업계는 광고 선전비 비중이 크다.",
+      "weight": "공개 안 됨(세그먼트 비중은 이번에 읽지 않았다)",
+      "domains": [
+        "매일 많이 읽히는 @cosme 페이지를, 멈추지 않고 EOL 프레임워크에서 옮긴다",
+        "여러 곳에서 흘러드는 데이터를, 가공 전에 품질부터 막는다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株主・投資家の皆様へ | 株式会社アイスタイル",
+          "url": "https://www.istyle.co.jp/ir/shareholders/",
+          "publisher": "アイスタイル",
+          "summary": "1999 년 설립, '생활자 중심의 시장 창조' — 생활자와 기업의 마음을 데이터베이스화해 사용자 기점의 마케팅을. 화장품에 주목한 이유는 광고 선전비 비중이 크고 인터넷으로 가장 크게 변하는 업계라서. **2026 년 6 월기 매출 818 억 엔**. 사업: **지원 사업**(광고 · 마케팅 지원 · PR 등) · **매장 · EC** · **해외**(광고 · 마케팅 지원 · EC · 매장 · 도매) · 기타(인재 서비스 · 투자 육성). 주주 우대로 그룹 EC · 매장 10% 할인권."
+        }
+      ]
+    },
+    {
+      "name": "@cosme 매장 · EC",
+      "how": "@cosme 브랜드의 실제 매장과 EC 로 화장품을 판다.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "매일 많이 읽히는 @cosme 페이지를, 멈추지 않고 EOL 프레임워크에서 옮긴다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株主・投資家の皆様へ | 株式会社アイスタイル",
+          "url": "https://www.istyle.co.jp/ir/shareholders/",
+          "publisher": "アイスタイル",
+          "summary": "1999 년 설립, '생활자 중심의 시장 창조' — 생활자와 기업의 마음을 데이터베이스화해 사용자 기점의 마케팅을. 화장품에 주목한 이유는 광고 선전비 비중이 크고 인터넷으로 가장 크게 변하는 업계라서. **2026 년 6 월기 매출 818 억 엔**. 사업: **지원 사업**(광고 · 마케팅 지원 · PR 등) · **매장 · EC** · **해외**(광고 · 마케팅 지원 · EC · 매장 · 도매) · 기타(인재 서비스 · 투자 육성). 주주 우대로 그룹 EC · 매장 10% 할인권."
+        }
+      ]
+    },
+    {
+      "name": "해외 사업",
+      "how": "해외의 광고 · 마케팅 지원 · EC · 매장 · 도매.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株主・投資家の皆様へ | 株式会社アイスタイル",
+          "url": "https://www.istyle.co.jp/ir/shareholders/",
+          "publisher": "アイスタイル",
+          "summary": "1999 년 설립, '생활자 중심의 시장 창조' — 생활자와 기업의 마음을 데이터베이스화해 사용자 기점의 마케팅을. 화장품에 주목한 이유는 광고 선전비 비중이 크고 인터넷으로 가장 크게 변하는 업계라서. **2026 년 6 월기 매출 818 억 엔**. 사업: **지원 사업**(광고 · 마케팅 지원 · PR 등) · **매장 · EC** · **해외**(광고 · 마케팅 지원 · EC · 매장 · 도매) · 기타(인재 서비스 · 투자 육성). 주주 우대로 그룹 EC · 매장 10% 할인권."
+        }
+      ]
+    },
+    {
+      "name": "인재 서비스 · 투자 육성",
+      "how": "기타 사업.",
+      "weight": "공개 안 됨",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株主・投資家の皆様へ | 株式会社アイスタイル",
+          "url": "https://www.istyle.co.jp/ir/shareholders/",
+          "publisher": "アイスタイル",
+          "summary": "1999 년 설립, '생활자 중심의 시장 창조' — 생활자와 기업의 마음을 데이터베이스화해 사용자 기점의 마케팅을. 화장품에 주목한 이유는 광고 선전비 비중이 크고 인터넷으로 가장 크게 변하는 업계라서. **2026 년 6 월기 매출 818 억 엔**. 사업: **지원 사업**(광고 · 마케팅 지원 · PR 등) · **매장 · EC** · **해외**(광고 · 마케팅 지원 · EC · 매장 · 도매) · 기타(인재 서비스 · 투자 육성). 주주 우대로 그룹 EC · 매장 10% 할인권."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "리뷰 한 편이 광고와 매장으로 이어지기까지",
+    "question": "@cosme 페이지는 어떤 기술 위에서 도는가, 그 데이터는 어디로 가나?",
+    "code": "flowchart LR\n  U[\"생활자\"] --> WEB[\"@cosme 페이지\\nNuxt2 → Nuxt3 · SSR\"]\n  WEB --> SRC[\"여러 소스 시스템\"]\n  SRC --> GX[\"Great Expectations\\n가공 전 품질 검증\"]\n  GX --> DBT[\"dbt 모델링\"]\n  DBT --> MKT[\"브랜드 지원 · 마케팅\"]\n  WEB --> SHOP[\"매장 · EC\"]",
+    "_note": "이 사이트의 해석 — 글들의 구성을 한 장에 모았다. 이행한 페이지가 무엇인지, 데이터 기반이 어느 사업에 쓰이는지는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "매일 많이 읽히는 @cosme 페이지를, 멈추지 않고 EOL 프레임워크에서 옮긴다",
+      "why": "@cosme 의 일부 페이지는 Vue 기반 Nuxt2 로 만들어졌고, Nuxt2 는 EOL 을 맞았다. 2 → 3 은 파괴적 변경이 많아 다른 회사들은 Next.js 로 갈아타거나 이행이 좌초된 채 쓰기도 한다.\n\n대상 페이지는 사용자가 매일 보고 분당 적지 않은 접근이 있는 SSR 페이지다. 팀엔 Nuxt 에 특별히 밝은 사람이 없었다 — 학습을 전제로, 멈추지 않고 옮겨야 했다.",
+      "tech": [
+        {
+          "tech": "Nuxt2 → Nuxt3 직접 이행(NuxtBridge 미사용) — Composition API · Fetch API · TypeScript · Pinia · Vitest, 대표 페이지부터",
+          "solves": "EOL 프레임워크에서 벗어나 형 · 테스트 · 단순한 상태 관리를 얻는다.",
+          "limits": "코드가 거의 다시 쓰여 비용이 크고, 범위를 지키려 실행 시 환경 변수 등에서 타협했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "NuxtVerup v2からv3へ - ①移行方針",
+              "url": "https://zenn.dev/itohis/articles/8f7684a2726c3f",
+              "publisher": "アイスタイル",
+              "date": "2025-12-17",
+              "summary": "@cosme 는 Vue 기반 Nuxt 로 만든 페이지가 있다. Nuxt2 는 EOL 이라 올려야 하지만 2 → 3 은 파괴적 변경이 많아 비용이 크다 — 타사는 Next.js(React)로 갈아타거나 이행이 좌초된 채 쓰기도. 팀엔 Nuxt 에 특히 밝은 사람이 없어 학습을 전제로. 기술 선정: Options API → Composition API(<script setup>) · Axios → Fetch API · JS → TypeScript · Vuex → Pinia · 유닛 테스트 없음 → Vitest. 한꺼번에는 너무 커서 **대표 페이지만** 먼저 — 반년~1 년, 3~5 명, 분당 X 건 접근 · SSR 전제 페이지. **NuxtBridge 는 채택 안 함** — 일정 버전까지 올려야 해 기존 npm 라이브러리 버전 조정 · 코드 수정 비용이 크다."
+            },
+            {
+              "title": "NuxtVerup v2からv3へ - ②VuexからPiniaへ",
+              "url": "https://zenn.dev/itohis/articles/8670d4e31c392d",
+              "publisher": "アイスタイル",
+              "date": "2025-12-21",
+              "summary": "Nuxt3 에선 Pinia 가 추천(Mutation 폐지 · TS 형 추론 · 크기 · Composition API). 이행 비용을 줄이려 기존 Vuex 를 쓰고 싶었지만, Vuex3 → Vuex4 로 TS 대응해도 차이가 크고 'Vuex 로 TS 를 쓰기 괴롭다'는 사례가 많아 **Pinia** 선택 — 구조가 단순해 팀 내 작법이 일찍 정해졌다. 밟은 안티패턴: 비동기 API 호출 결과를 $patch 로 store state 에 넣는 흐름."
+            },
+            {
+              "title": "NuxtVerup v2からv3へ - ④移行を終えて",
+              "url": "https://zenn.dev/itohis/articles/e516586e83ed0a",
+              "publisher": "アイスタイル",
+              "date": "2025-12-23",
+              "summary": "거의 다시 쓰는 비용은 컸지만 사전 조사대로 움직이게 해 이행이 가능함을 보였다 — Pinia · Composition API 학습을 먼저 조사해 공유, TS 경험자가 많았던 것이 도움. 공식 문서의 영상 해설이 중요. 안티패턴은 '한 번에 다 하려다 범위가 넓어지는 것' — 먼저 '버전 업 완료'를 우선하고 더 나은 구조는 뒤로 미뤄 타협한 장면도(실행 시 환경 변수 편). 다음은 v4(파괴적 변경이 적다)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "여러 곳에서 흘러드는 데이터를, 가공 전에 품질부터 막는다",
+      "why": "アイスタイル의 데이터 파이프라인은 분산돼 있고 관리자도 여럿이라 만들어지는 데이터의 품질이 들쭉날쭉했다. 소스 시스템 쪽과 소통이 부족해 데이터 기반에 들어오는 데이터의 품질도 담보하지 못했다.\n\n데이터로 브랜드의 마케팅을 돕는 회사에서, 데이터의 질이 흔들리면 지원의 질도 흔들린다(이 사이트의 해석).",
+      "tech": [
+        {
+          "tech": "Great Expectations 로 가공 전 들어오는 데이터를 검증(테이블마다 Expectation) + dbt",
+          "solves": "소스와 데이터 기반 사이에 책임 분계점을 두고, 여러 Metrics 로 들어오는 데이터의 품질을 본다.",
+          "limits": "스키마 변경 감지는 GX 로 어려워 따로 검토가 필요하다. 글 시점엔 구현 중이었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "新しいデータ基盤におけるGreat Expectationsの導入経緯と開発フロー",
+              "url": "https://zenn.dev/sugato/articles/214cac2199c3ca",
+              "publisher": "アイスタイル",
+              "date": "2023-12-25",
+              "summary": "Modern Data Stack 의 새 데이터 기반을 구축 중. 데이터 파이프라인이 분산되고 관리자도 여럿이라 생성 데이터의 품질이 들쭉날쭉하고, 소스 시스템 쪽과 소통이 부족해 들어오는 데이터 품질을 담보 못 했다. dbt 도 도입 예정이라 dbt test 로도 어느 정도 가능했지만, **책임 분계점**을 두려고 가공 전 들어오는 데이터의 품질을 여러 Metrics 로 보는 **Great Expectations(GX)** 를 채택 — 테이블마다 기대(Expectation) JSON 으로 검증. 스키마 변경 감지는 GX 로 어려워 별도 검토."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**세그먼트별 매출 비중**은 이번에 읽지 않았다(IR 자료).",
+    "**이행한 Nuxt 페이지가 어느 사업(광고 · EC)에 쓰이는지** 글에 없다 — 그래서 수익원 연결은 inferred.",
+    "**아직 안 읽은 것** — 검색 엔진에도 사용자와 같은 체험을(렌더링) · 실행 시 환경 변수 편 · Semantic Layer · k6 부하 시험 Executor 선정 · 아이스타일 데이터 컨설팅(ISDC)."
+  ],
+  "sources": [
+    {
+      "title": "株主・投資家の皆様へ | 株式会社アイスタイル",
+      "url": "https://www.istyle.co.jp/ir/shareholders/",
+      "publisher": "アイスタイル",
+      "summary": "1999 년 설립, '생활자 중심의 시장 창조' — 생활자와 기업의 마음을 데이터베이스화해 사용자 기점의 마케팅을. 화장품에 주목한 이유는 광고 선전비 비중이 크고 인터넷으로 가장 크게 변하는 업계라서. **2026 년 6 월기 매출 818 억 엔**. 사업: **지원 사업**(광고 · 마케팅 지원 · PR 등) · **매장 · EC** · **해외**(광고 · 마케팅 지원 · EC · 매장 · 도매) · 기타(인재 서비스 · 투자 육성). 주주 우대로 그룹 EC · 매장 10% 할인권."
+    },
+    {
+      "title": "NuxtVerup v2からv3へ - ①移行方針",
+      "url": "https://zenn.dev/itohis/articles/8f7684a2726c3f",
+      "publisher": "アイスタイル",
+      "date": "2025-12-17",
+      "summary": "@cosme 는 Vue 기반 Nuxt 로 만든 페이지가 있다. Nuxt2 는 EOL 이라 올려야 하지만 2 → 3 은 파괴적 변경이 많아 비용이 크다 — 타사는 Next.js(React)로 갈아타거나 이행이 좌초된 채 쓰기도. 팀엔 Nuxt 에 특히 밝은 사람이 없어 학습을 전제로. 기술 선정: Options API → Composition API(<script setup>) · Axios → Fetch API · JS → TypeScript · Vuex → Pinia · 유닛 테스트 없음 → Vitest. 한꺼번에는 너무 커서 **대표 페이지만** 먼저 — 반년~1 년, 3~5 명, 분당 X 건 접근 · SSR 전제 페이지. **NuxtBridge 는 채택 안 함** — 일정 버전까지 올려야 해 기존 npm 라이브러리 버전 조정 · 코드 수정 비용이 크다."
+    },
+    {
+      "title": "NuxtVerup v2からv3へ - ②VuexからPiniaへ",
+      "url": "https://zenn.dev/itohis/articles/8670d4e31c392d",
+      "publisher": "アイスタイル",
+      "date": "2025-12-21",
+      "summary": "Nuxt3 에선 Pinia 가 추천(Mutation 폐지 · TS 형 추론 · 크기 · Composition API). 이행 비용을 줄이려 기존 Vuex 를 쓰고 싶었지만, Vuex3 → Vuex4 로 TS 대응해도 차이가 크고 'Vuex 로 TS 를 쓰기 괴롭다'는 사례가 많아 **Pinia** 선택 — 구조가 단순해 팀 내 작법이 일찍 정해졌다. 밟은 안티패턴: 비동기 API 호출 결과를 $patch 로 store state 에 넣는 흐름."
+    },
+    {
+      "title": "NuxtVerup v2からv3へ - ④移行を終えて",
+      "url": "https://zenn.dev/itohis/articles/e516586e83ed0a",
+      "publisher": "アイスタイル",
+      "date": "2025-12-23",
+      "summary": "거의 다시 쓰는 비용은 컸지만 사전 조사대로 움직이게 해 이행이 가능함을 보였다 — Pinia · Composition API 학습을 먼저 조사해 공유, TS 경험자가 많았던 것이 도움. 공식 문서의 영상 해설이 중요. 안티패턴은 '한 번에 다 하려다 범위가 넓어지는 것' — 먼저 '버전 업 완료'를 우선하고 더 나은 구조는 뒤로 미뤄 타협한 장면도(실행 시 환경 변수 편). 다음은 v4(파괴적 변경이 적다)."
+    },
+    {
+      "title": "新しいデータ基盤におけるGreat Expectationsの導入経緯と開発フロー",
+      "url": "https://zenn.dev/sugato/articles/214cac2199c3ca",
+      "publisher": "アイスタイル",
+      "date": "2023-12-25",
+      "summary": "Modern Data Stack 의 새 데이터 기반을 구축 중. 데이터 파이프라인이 분산되고 관리자도 여럿이라 생성 데이터의 품질이 들쭉날쭉하고, 소스 시스템 쪽과 소통이 부족해 들어오는 데이터 품질을 담보 못 했다. dbt 도 도입 예정이라 dbt test 로도 어느 정도 가능했지만, **책임 분계점**을 두려고 가공 전 들어오는 데이터의 품질을 여러 Metrics 로 보는 **Great Expectations(GX)** 를 채택 — 테이블마다 기대(Expectation) JSON 으로 검증. 스키마 변경 감지는 GX 로 어려워 별도 검토."
+    }
+  ]
+}
