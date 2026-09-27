@@ -7,7 +7,7 @@
       "name_en": "Kyash",
       "country": "JP",
       "category": "핀테크",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 4,
       "one_liner": "심사 없는 Visa 프리페이드 카드 앱과 기업용 은행 송금 대행의 핀테크 — 은행업이 아니라 자금이동업자라 은행과 직접 이어 이체하고, 타임아웃과 나중에 오는 불능 통지 사이에서도 잔액을 맞추며, 모바일은 KMP 공통 로직을 서브모듈로 붙인다",
       "updated_at": "2026-09-27",

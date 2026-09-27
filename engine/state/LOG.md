@@ -2648,3 +2648,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Kyash 스포트머니 · 수익원 판정 2 차
 
 - Tech Talk #8 슬라이드 둘 중 Postman 편만 읽힘(`speakerdeck.com/tamadon/debug-menu-using-stubs` 는 r.jina 가 광고 스냅숏을 돌려줌). Postman 편 + Tech Talk 예고 + GeNiE PR 로 도메인 넷째 · 기능(결정 7). 후불 · 스포트머니 수익원 confirmed(후불 자체의 기술 글은 없음 — open_questions 에 명시).
+
+## 2026-09-27 Kyash 완주
+
+- 완주 기준 확인: 도메인 4 모두 기능 · 기능마다 connections 2 · 수익원 3 모두 confirmed 도메인 연결. status done, QUEUE 완료로 이동.
