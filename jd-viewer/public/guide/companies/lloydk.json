@@ -464,6 +464,134 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55062210&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=0c2750bb-5b4c-4246-a5f0-ff162b70db1e",
+      "title": "[로이드케이] 백엔드/풀스택 개발자 (10년 이상)",
+      "site": "saramin",
+      "verdict": "경력 10년 이상(백엔드 또는 풀스택), 대학졸업(2,3년) 이상, 경기 성남시 수정구 위례서일로 6, 정규직(수습 3개월), 09:00~18:00, 급여 면접 후 결정, 접수 2026-09-17 ~ 10-17. 크롤된 담당업무 칸은 비어 있고 본문은 담당업무 대신 **'프로젝트 리드 실증'** 을 요구한다 — 아이디어·요구사항만 받아 일정을 세우고 완료까지 끌고 간 사례를 일정 산정 기준·리스크 대응·결과 수치와 함께 설명할 수 있어야 한다. 자격은 **FastAPI/uvicorn·asyncio·Pydantic·pytest**, **Next.js(App Router) 로 프론트까지 단독 진행**, **PostgreSQL 스키마·인덱스 튜닝·RBAC/RLS**, **Docker/Compose·Traefik/Nginx·로그·헬스체크 장애 진단**, **LLM 실서비스(모델 API·tool calling·RAG·스트리밍 중 2개 이상)**, Git 협업('공유 워크트리에서의 안전한 변경 관리'). 우대는 ClickHouse·dbt·Text2SQL(원문 'Text2WQL'), **온프렘/폐쇄망 설치(오프라인 패키지·이미지 번들링·내부망 미러·vLLM 자체 서빙)**, code-server·SSH 터널링·**샌드박스 격리(seccomp/cgroup/네임스페이스)**, **PII 마스킹·자격증명 암호화·감사 로그·프롬프트 인젝션 대응**, Graph-RAG·문서 파싱·청킹, Kubernetes·Terraform, B2B 설치·기술지원, LLM 양자화. 우대 목록이 **고객사 폐쇄망에 설치하는 LLM 데이터 분석 제품**을 그린다 — 홈페이지의 DO-LLM·DO-SPE 와 맞닿는 자리로 읽힌다.",
+      "fit": {
+        "must_have": [
+          "10년 백엔드/풀스택",
+          "FastAPI·asyncio",
+          "Next.js 단독 구현",
+          "PostgreSQL RLS",
+          "Docker 운영",
+          "LLM 실서비스 2종"
+        ],
+        "can_learn": [
+          "vLLM 폐쇄망 서빙",
+          "샌드박스 격리",
+          "Text2SQL"
+        ]
+      },
+      "study": [
+        {
+          "topic": "PostgreSQL 행 수준 보안(RLS)으로 멀티 테넌트 권한",
+          "from": "qualification",
+          "quote": "- 관계형 DB 설계/운영: PostgreSQL 스키마 설계, 인덱스·성능 튜닝, 권한(RBAC/RLS) 개념",
+          "priority": "core",
+          "why": "필수 자격이고, 우대의 PII 마스킹·감사 로그와 함께 고객사 데이터를 LLM 에 붙이는 제품의 권한 경계가 된다.",
+          "gap_check": "애플리케이션 WHERE 절로 권한을 거는 것과 RLS 정책으로 거는 것은 버그 한 줄이 났을 때 결과가 어떻게 다른가? RLS 를 켠 테이블에서 테이블 소유자·BYPASSRLS 역할은 어떻게 동작하고, 연결 풀을 쓸 때 사용자 식별값은 어떻게 넘기는가?",
+          "drill": "Row Security Policies 문서를 읽고, 부서별 문서 테이블에 RLS 정책을 걸어 같은 쿼리가 부서마다 다른 행을 돌려주게 만든다. 세션 변수로 사용자를 넘기고, 정책이 인덱스를 타는지 EXPLAIN 으로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Row Security Policies — PostgreSQL Documentation",
+              "url": "https://www.postgresql.org/docs/current/ddl-rowsecurity.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 응답 스트리밍과 tool calling 을 실서비스로",
+          "from": "qualification",
+          "quote": "- LLM 애플리케이션 개발 경험: 모델 API 연동, function/tool calling, RAG, 스트리밍 응답 중 최소 2개 이상을 실서비스로 구현한 경험",
+          "priority": "core",
+          "why": "필수 자격이다(모델 API·tool calling·RAG·스트리밍 중 2개 이상 실서비스). FastAPI·asyncio 와 Next.js 를 한 사람이 다 해야 하니 서버에서 화면까지 흐름을 이어야 한다.",
+          "gap_check": "서버가 SSE 로 토큰을 흘리는 도중 모델이 도구를 부르면 화면에는 무엇을 보여 주고, 도구 결과를 받아 이어 쓰는 동안 연결이 끊기면 어떻게 복구하는가? 사용자가 중간에 '중지' 를 누르면 서버의 모델 호출은 실제로 취소되는가?",
+          "drill": "FastAPI 문서와 Next.js App Router 문서를 따라, 서버는 모델 응답을 SSE 로 스트리밍하고 도구 호출(예: SQL 조회)을 끼워 넣으며, 화면은 토큰·도구 실행 상태·중지 버튼을 보여 주는 채팅을 만든다. 중지 시 서버 로그에서 호출이 끊기는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Next.js Docs: App Router",
+              "url": "https://nextjs.org/docs/app",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Docker Compose·리버스 프록시 운영과 장애 진단",
+          "from": "qualification",
+          "quote": "- 컨테이너 기반 개발·운영: Docker/Compose, 이미지 빌드·배포, 리버스 프록시(Traefik/Nginx), 로그·헬스체크 기반 장애 진단",
+          "priority": "high",
+          "why": "필수 자격이고 우대의 온프렘/폐쇄망 설치가 결국 Compose 묶음을 고객 서버에 올리는 일이다.",
+          "gap_check": "헬스체크가 '프로세스는 살아 있지만 DB 연결이 끊긴' 상태를 잡으려면 무엇을 확인해야 하는가? Traefik 뒤에서 스트리밍 응답이 끊기거나 몰아서 오는 원인(버퍼링·타임아웃)은 어디서 찾는가?",
+          "drill": "Docker Compose·Traefik 문서를 읽고, 앞 과제의 API·프론트·PostgreSQL 을 Compose 로 묶어 Traefik 뒤에 띄운다. DB 를 내렸을 때 헬스체크가 실패로 바뀌는지, 프록시 타임아웃을 짧게 줬을 때 스트리밍이 어떻게 깨지는지 로그로 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Docker Compose — Docker Docs",
+              "url": "https://docs.docker.com/compose/",
+              "kind": "docs"
+            },
+            {
+              "title": "Traefik Proxy Documentation",
+              "url": "https://doc.traefik.io/traefik/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "폐쇄망에서 vLLM 으로 모델 자체 서빙",
+          "from": "preference",
+          "quote": "- 온프렘/폐쇄망 설치 경험 (오프라인 패키지 · 이미지 번들링 · 내부망 미러 · vLLM 자체 서빙)",
+          "priority": "high",
+          "why": "우대사항이고, 같은 우대에 LLM 양자화·모델 성능 비교와 B2B 제품 설치가 있다. 회사 고객군이 금융·공공기관이다.",
+          "gap_check": "인터넷이 없는 서버에 모델 가중치·파이썬 패키지·컨테이너 이미지를 들여갈 때 무엇을 미리 묶어야 하고, 버전이 어긋나면 어디서 터지는가? vLLM 의 OpenAI 호환 서버를 쓰면 애플리케이션 코드는 무엇을 안 바꿔도 되는가? 양자화 모델로 바꿀 때 품질 저하는 무엇으로 비교하는가?",
+          "drill": "vLLM 문서를 읽고, 작은 공개 모델을 vLLM OpenAI 호환 서버로 띄워 앞 과제의 채팅이 base URL 만 바꿔 붙게 한다. 모델·이미지·휠을 한 폴더로 번들링하는 스크립트를 쓰고 네트워크를 끊은 컨테이너에서 설치가 되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "vLLM",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 제품 보안 — 프롬프트 인젝션과 샌드박스",
+          "from": "preference",
+          "quote": "- 보안 (PII 마스킹, 자격증명 암호화, 감사 로그, 프롬포트 인젝션 대응) 경험",
+          "priority": "high",
+          "why": "우대사항이고, 바로 위 우대에 샌드박스 격리(seccomp/cgroup/네임스페이스)가 있다 — 모델이 코드를 돌리는 기능을 가진 제품으로 읽힌다.",
+          "gap_check": "RAG 로 가져온 문서 안에 '이전 지시를 무시하고…' 가 들어 있으면 무엇이 일어나고, 도구 권한을 어떻게 좁혀 피해를 줄이는가? 모델이 생성한 코드를 실행할 때 네임스페이스·cgroup·seccomp 는 각각 무엇을 막는가?",
+          "drill": "OWASP LLM Top 10 과 Prompt injection 문서를 읽고, 앞 과제의 에이전트에 악성 지시가 섞인 문서 5개를 넣어 공격이 통하는지 기록한다. 도구 권한 축소·출력 검증을 넣은 뒤 다시 돌리고, 생성 코드 실행을 네트워크 없는 컨테이너(메모리 제한)로 옮겨 namespaces 문서 기준으로 무엇이 격리됐는지 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Top 10 for Large Language Model Applications — OWASP",
+              "url": "https://owasp.org/projects/top-10-for-large-language-model-applications",
+              "kind": "docs"
+            },
+            {
+              "title": "Prompt injection — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Prompt_injection",
+              "kind": "docs"
+            },
+            {
+              "title": "namespaces(7) — Linux manual page",
+              "url": "https://man7.org/linux/man-pages/man7/namespaces.7.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
