@@ -2768,3 +2768,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Legalscape API 연계 수익원 보류
 
 - 첫째 기술 블로그 RSS 30편 제목 전수(API · Legal Intelligence 글 없음), 둘째 legal-intelligence.jp · LegalOn 연계 공지 · WebSearch(요금 없음). how 를 보강(출판사 30 곳 계약 · 양쪽 계정 연계)하고 출처 2 추가, hold_reason.
+
+## 2026-09-27 백열두 번째 후보 조사
+
+- yamadashy 기업 기술 블로그 목록 355 곳 → 도메인 대조로 156 곳 → 하테나 RSS 5 곳 → 본문 3편. コドモン · クロスマート · ゼスト 대기. クラウドワークス · asken 약함.
