@@ -2676,3 +2676,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 マイベスト 회사 프로파일
 
 - my-best.com/company · business.my-best.com(광고) · Zenn 3편(캐시 · Dataform · 클린룸)으로 프로파일. WebSearch 의 매출 50 억 · 영업이익 20 억은 X 게시물의 추정이라 쓰지 않음. FastGrow · media-radar 인터뷰는 본문에서 수익 구조를 못 뽑아 제휴 수익원은 inferred.
+
+## 2026-09-27 マイベスト 캐시 전략
+
+- 캐시 글 전문으로 기능 `swr-24h-cache-key-connection-drop`, 결정 6.
