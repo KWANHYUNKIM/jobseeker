@@ -956,6 +956,19 @@
       "postings": 5,
       "study_items": 9,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "supercent",
+      "name": "슈퍼센트",
+      "aliases": [
+        "슈퍼센트",
+        "슈퍼센트㈜",
+        "Supercent"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

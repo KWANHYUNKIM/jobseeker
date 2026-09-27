@@ -1,0 +1,213 @@
+{
+  "slug": "supercent",
+  "name": "슈퍼센트",
+  "name_en": "Supercent",
+  "aliases": [
+    "슈퍼센트",
+    "슈퍼센트㈜",
+    "Supercent"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "supercent.io",
+  "one_liner": "Pizza Ready·XP Hero 의 모바일 게임 퍼블리셔 — 지금 자체 광고 입찰 엔진(DSP)을 만들 Ad-Tech 팀 초기 멤버를 뽑는다",
+  "company": {
+    "business": "원티드 공고 머리말은 슈퍼센트를 **2021년 설립**, 누적 15억 다운로드(공고마다 13억·15억·16억으로 다르다), **국내 앱 퍼블리셔 1위·글로벌 13위**의 모바일 게임 퍼블리셔로 소개하고 대표작으로 **XP Hero·Pizza Ready·Burger Please!·Snake Clash** 를 든다. 홈페이지 메타는 '글로벌 콘텐츠테크 기업', '#7 global game publisher'(게임 카테고리), 1.5B+ 누적 다운로드를 적고 메뉴에 Publishing·Submit Your Game(외부 게임 퍼블리싱 접수)이 있다. 개발 공고 넷은 모두 **Ad Technology 팀** 자리다 — 공고는 이 팀을 '자체 모바일 게임을 서비스하는 게임 퍼블리셔로서' 수천만 유저의 게임 행동 데이터와 실시간 광고 시그널로 도는 **programmatic advertising 엔진**을 낙찰부터 노출·클릭·설치까지 **처음부터** 만드는 초기 팀으로, 목표를 **하루 3억 건 입찰 요청을 15ms 안에 처리하며 글로벌 DSP 들과 경쟁**하는 것으로 적는다. 그 밖에 서버 DevOps(잡코리아)가 있다. 근무지는 서울 송파구. 게임 매출 구조(인앱·광고)·매출액·인원은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[AD-Tech] 백엔드 개발자(8년 이상)",
+        "url": "https://www.wanted.co.kr/wd/356603",
+        "publisher": "원티드",
+        "summary": "머리말: 2021년 설립, 누적 15억 다운로드, 국내 앱 퍼블리셔 1위·글로벌 13위. XP Hero·Pizza Ready·Burger Please!·Snake Clash. Ad Technology 팀: 자체 모바일 게임 퍼블리셔로서 programmatic advertising 엔진(낙찰→노출→클릭→설치)을 처음부터 설계, 하루 3억 건 입찰 요청을 15ms 안에 처리, 글로벌 DSP 들과 경쟁."
+      },
+      {
+        "title": "Supercent | We Make the Future of Content-Tech",
+        "url": "https://supercent.io/",
+        "publisher": "슈퍼센트",
+        "summary": "메타: 글로벌 콘텐츠테크 기업, #7 global game publisher(게임 카테고리), 1.5B+ 누적 다운로드. 메뉴 Game·Publishing·Submit Your Game. 대표작 XP Hero·Pizza Ready."
+      },
+      {
+        "title": "[AD-Tech] 백엔드 개발자(4~8년)",
+        "url": "https://www.wanted.co.kr/wd/356602",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[AD-Tech] 머신러닝 엔지니어(7년 이상)",
+        "url": "https://www.wanted.co.kr/wd/356730",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[Server] DevOps 엔지니어",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49915496?Oem_Code=C1&logpath=1&stext=%EB%85%B8%EB%93%9C&listno=77&sc=630",
+        "publisher": "잡코리아"
+      }
+    ],
+    "scale": [
+      {
+        "label": "누적 다운로드",
+        "value": "15억 회 이상",
+        "as_of": "2026-09 공고·홈페이지 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AD-Tech] 백엔드 개발자(8년 이상)",
+            "url": "https://www.wanted.co.kr/wd/356603",
+            "publisher": "원티드",
+            "summary": "머리말: 2021년 설립, 누적 15억 다운로드, 국내 앱 퍼블리셔 1위·글로벌 13위. XP Hero·Pizza Ready·Burger Please!·Snake Clash. Ad Technology 팀: 자체 모바일 게임 퍼블리셔로서 programmatic advertising 엔진(낙찰→노출→클릭→설치)을 처음부터 설계, 하루 3억 건 입찰 요청을 15ms 안에 처리, 글로벌 DSP 들과 경쟁."
+          },
+          {
+            "title": "Supercent | We Make the Future of Content-Tech",
+            "url": "https://supercent.io/",
+            "publisher": "슈퍼센트",
+            "summary": "메타: 글로벌 콘텐츠테크 기업, #7 global game publisher(게임 카테고리), 1.5B+ 누적 다운로드. 메뉴 Game·Publishing·Submit Your Game. 대표작 XP Hero·Pizza Ready."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "자체 모바일 게임",
+        "how": "공고가 자체 모바일 게임을 서비스하는 퍼블리셔라고 적고 대표작을 든다. 수익이 인앱 결제인지 광고인지, 비중은 읽은 자료에 없다. 모집중 개발 공고 중 게임 개발 자리는 없다.",
+        "domains": [],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AD-Tech] 백엔드 개발자(8년 이상)",
+            "url": "https://www.wanted.co.kr/wd/356603",
+            "publisher": "원티드",
+            "summary": "머리말: 2021년 설립, 누적 15억 다운로드, 국내 앱 퍼블리셔 1위·글로벌 13위. XP Hero·Pizza Ready·Burger Please!·Snake Clash. Ad Technology 팀: 자체 모바일 게임 퍼블리셔로서 programmatic advertising 엔진(낙찰→노출→클릭→설치)을 처음부터 설계, 하루 3억 건 입찰 요청을 15ms 안에 처리, 글로벌 DSP 들과 경쟁."
+          },
+          {
+            "title": "Supercent | We Make the Future of Content-Tech",
+            "url": "https://supercent.io/",
+            "publisher": "슈퍼센트",
+            "summary": "메타: 글로벌 콘텐츠테크 기업, #7 global game publisher(게임 카테고리), 1.5B+ 누적 다운로드. 메뉴 Game·Publishing·Submit Your Game. 대표작 XP Hero·Pizza Ready."
+          }
+        ]
+      },
+      {
+        "name": "외부 게임 퍼블리싱",
+        "how": "홈페이지 메뉴에 Publishing 과 Submit Your Game 이 있다. 계약·수익 배분 방식은 읽지 않았다.",
+        "domains": [],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Supercent | We Make the Future of Content-Tech",
+            "url": "https://supercent.io/",
+            "publisher": "슈퍼센트",
+            "summary": "메타: 글로벌 콘텐츠테크 기업, #7 global game publisher(게임 카테고리), 1.5B+ 누적 다운로드. 메뉴 Game·Publishing·Submit Your Game. 대표작 XP Hero·Pizza Ready."
+          }
+        ]
+      },
+      {
+        "name": "프로그래매틱 광고 입찰 엔진(DSP, 구축 중)",
+        "how": "Ad-Tech 공고가 광고 입찰 엔진을 처음부터 만들고 글로벌 DSP 들과 경쟁해 '시장 위너' 가 되겠다고 적는다. 자사 게임 유저 확보(광고 구매)용인지 외부에 파는 사업인지는 공고에 없다.",
+        "domains": [
+          "광고 입찰 엔진 백엔드(DSP)",
+          "입찰 최적화 ML"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[AD-Tech] 백엔드 개발자(8년 이상)",
+            "url": "https://www.wanted.co.kr/wd/356603",
+            "publisher": "원티드",
+            "summary": "머리말: 2021년 설립, 누적 15억 다운로드, 국내 앱 퍼블리셔 1위·글로벌 13위. XP Hero·Pizza Ready·Burger Please!·Snake Clash. Ad Technology 팀: 자체 모바일 게임 퍼블리셔로서 programmatic advertising 엔진(낙찰→노출→클릭→설치)을 처음부터 설계, 하루 3억 건 입찰 요청을 15ms 안에 처리, 글로벌 DSP 들과 경쟁."
+          },
+          {
+            "title": "[AD-Tech] 머신러닝 엔지니어(7년 이상)",
+            "url": "https://www.wanted.co.kr/wd/356730",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "광고 입찰 엔진 백엔드(DSP)",
+        "why": "백엔드 공고 둘(8년↑·4~8년)이 Bidder Service·Budget Pacing·Event Processor 아키텍처, 하루 3억 건 입찰 요청의 레이턴시·처리량, 노출·클릭·설치 이벤트 실시간 파이프라인, MMP 데이터 ETL 을 적고 Go/C++/Java 를 요구한다(Rust 우대).",
+        "what_to_know": [
+          "RTB 입찰 흐름",
+          "저지연 분산 시스템",
+          "예산 페이싱"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AD-Tech] 백엔드 개발자(8년 이상)",
+            "url": "https://www.wanted.co.kr/wd/356603",
+            "publisher": "원티드",
+            "summary": "머리말: 2021년 설립, 누적 15억 다운로드, 국내 앱 퍼블리셔 1위·글로벌 13위. XP Hero·Pizza Ready·Burger Please!·Snake Clash. Ad Technology 팀: 자체 모바일 게임 퍼블리셔로서 programmatic advertising 엔진(낙찰→노출→클릭→설치)을 처음부터 설계, 하루 3억 건 입찰 요청을 15ms 안에 처리, 글로벌 DSP 들과 경쟁."
+          },
+          {
+            "title": "[AD-Tech] 백엔드 개발자(4~8년)",
+            "url": "https://www.wanted.co.kr/wd/356602",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "입찰 최적화 ML",
+        "why": "ML 공고 둘(7년↑·2~7년)이 예측 모델과 Bid Optimization 알고리즘, 하루 3억 건·15ms 실시간 ML 서빙, Feature Store·MLOps, A/B Testing·Causal Inference 로 KPI 임팩트 검증을 적는다.",
+        "what_to_know": [
+          "CTR/CVR 예측",
+          "입찰가 최적화",
+          "실시간 피처 서빙"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AD-Tech] 머신러닝 엔지니어(7년 이상)",
+            "url": "https://www.wanted.co.kr/wd/356730",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[AD-Tech] 머신러닝 엔지니어(2~7년)",
+            "url": "https://www.wanted.co.kr/wd/356689",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "클라우드 인프라·DevOps",
+        "why": "수익원이 아니라 서비스 전반의 공통 기반이다. DevOps 공고가 클라우드 서비스 환경 구축·운영, Docker 컨테이너화, CI/CD 를 적고 AWS·GCP·Terraform 을 우대한다.",
+        "what_to_know": [
+          "Docker",
+          "CI/CD",
+          "Terraform"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Server] DevOps 엔지니어",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49915496?Oem_Code=C1&logpath=1&stext=%EB%85%B8%EB%93%9C&listno=77&sc=630",
+            "publisher": "잡코리아"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "게임 회사가 광고 기술을 직접 만들기 시작했다",
+        "evidence": "Ad Technology 팀은 지금 초기 멤버를 찾고 있습니다.",
+        "so_what": "개발 공고 다섯 중 넷이 같은 신설 팀이다. 처음부터 설계하는 자리라 시니어(8년↑·7년↑)와 실무(4~8년·2~7년)를 쌍으로 뽑는다 — 초기 아키텍처 결정에 가까이 있고 싶다면 좋은 시점이고, 제품이 아직 없다는 뜻이기도 하다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "회사 숫자가 공고마다 조금씩 다르다",
+        "evidence": "2021년 설립 이후 누적 16억 다운로드",
+        "so_what": "다운로드는 13억·15억·16억, 순위는 공고 '글로벌 13위' 와 홈페이지 '#7(게임 카테고리)' 로 갈린다. 공고 작성 시점 차이로 보이며 기준을 면접에서 물을 것까지는 없지만 인용할 때는 출처를 붙인다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "게임 수익 구조(인앱·광고)와 매출액·인원은 읽지 않았다",
+    "Ad-Tech DSP 가 자사 유저 확보용인지 외부 판매용인지 공고에 없다"
+  ],
+  "postings": []
+}
