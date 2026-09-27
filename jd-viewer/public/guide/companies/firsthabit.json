@@ -365,6 +365,114 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/358184",
+      "title": "AI Scientist (Memory-Centric AI Systems)",
+      "site": "wanted",
+      "verdict": "경력 5-11년, 서울 강남구, **Cognitive AI Lab 의 연구직**. 머리말은 랩이 모델 성능 개선을 넘어 **대화와 경험을 구조화된 memory 로 표현**, **long-term history 에서 분산된 정보를 선택·조합해 맥락 구성**, **시간에 따른 memory 재구성**, 그 방법론의 **정량 평가**를 연구한다고 적는다 — 목적은 학생의 특성과 사고를 반영한 개인화 학습 AI(CHALK). 주요업무는 대화 history 를 ontology/graph memory 로 표현하는 방법, memory fragment 선택·조합 구조, 재구성 메커니즘, **맥락 이해 benchmark 설계·검증**, 서비스 적용 실험. 자격은 AI/CS 전공 수준 Python 연구·실험, 추상 개념의 구조화, **LLM·Retrieval·Agent 파이프라인 또는 context/harness engineering 실무**, **Knowledge Graph·Ontology·GraphDB**, **Agentic RAG·subgraph activation** 같은 query-relevant 맥락 구성. 우대는 benchmark·평가 프레임워크, 인지과학·의사결정과학, 논문·특허·오픈소스. 수습 3개월 계약직 이후 정규직 전환 결정. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python 연구·실험",
+          "LLM·Retrieval·Agent 파이프라인",
+          "Knowledge Graph·GraphDB",
+          "맥락 구성(Agentic RAG)"
+        ],
+        "can_learn": [
+          "장기 대화 기억 벤치마크",
+          "memory 재구성(요약·망각)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "대화 기록을 그래프 memory 로 — 무엇을 노드로 삼나",
+          "from": "task",
+          "quote": "• 대화 history를 구조화된 memory(ontology / graph)로 표현하는 방법 설계",
+          "priority": "core",
+          "why": "주요업무이고 자격에 Knowledge Graph·Ontology·GraphDB 등 구조 기반 representation 경험이 있다.",
+          "gap_check": "학생과의 대화에서 '개념·오개념·질문·감정·시점' 중 무엇을 노드로, 무엇을 관계로 둘 것인가? 온톨로지(스키마)를 먼저 고정하는 방식과 LLM 이 추출하며 스키마가 자라는 방식은 일관성·유연성에서 무엇이 다른가?",
+          "drill": "Knowledge graph·Ontology 문서와 Neo4j 시작 가이드를 읽고, 가상 튜터링 대화 20세션에서 LLM 으로 (학생, 개념, 이해도, 시점) 관계를 뽑아 Neo4j 에 넣는다. 작은 온톨로지(개념 선수 관계 포함)를 정의하고, 스키마를 벗어난 추출이 몇 건인지 센다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Knowledge graph — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Knowledge_graph",
+              "kind": "docs"
+            },
+            {
+              "title": "Ontology (information science) — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Ontology_(information_science)",
+              "kind": "docs"
+            },
+            {
+              "title": "Get started with Neo4j",
+              "url": "https://neo4j.com/docs/getting-started/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "질문에 맞는 기억 조각을 골라 맥락 만들기",
+          "from": "qualification",
+          "quote": "• Agentic RAG, subgraph activation 등 복잡한 구조에서 Query-relevant한 정보를 선택·조합하여 context를 구성하는 문제를 다뤄보신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 '분산된 memory fragment 를 선택·조합하여 context 를 구성하는 구조 설계' 가 있다.",
+          "gap_check": "벡터 유사도로 조각을 뽑는 것과 그래프에서 관련 노드의 이웃(부분 그래프)을 펼치는 것은 어떤 질문에서 각각 이기는가(예: '지난달 틀린 분수 문제와 비슷한 걸 또 틀렸나')? 맥락 창이 제한될 때 최신성·중요도·관련도를 어떻게 섞어 점수를 매기는가?",
+          "drill": "GraphRAG 문서와 Generative Agents 논문(기억 검색의 최신성·중요도·관련도 점수)을 읽고, 앞 과제 그래프에서 질문별로 (a) 벡터 검색 (b) 부분 그래프 확장 (c) 둘 결합으로 맥락을 만든다. 답이 과거 여러 세션을 이어야 풀리는 질문 15개로 세 방식의 정답률을 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "GraphRAG — Microsoft",
+              "url": "https://microsoft.github.io/graphrag/",
+              "kind": "docs"
+            },
+            {
+              "title": "Generative Agents: Interactive Simulacra of Human Behavior",
+              "url": "https://arxiv.org/abs/2304.03442",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "장기 대화 기억을 평가하는 벤치마크 설계",
+          "from": "task",
+          "quote": "• 복잡한 대화 history에서 맥락을 이해해야만 풀 수 있는 benchmark 설계 및 검증",
+          "priority": "high",
+          "why": "주요업무이고 우대에 benchmark dataset 설계·evaluation framework 구축 경험이 있다.",
+          "gap_check": "'기억을 잘한다' 를 무엇으로 쪼개 재는가(사실 회상·시간 추론·여러 세션 종합·바뀐 정보 갱신·모르는 것 인정)? 질문을 만들 때 정답이 한 세션 안에서 바로 보이면 왜 벤치마크가 무의미해지는가?",
+          "drill": "'Evaluating Very Long-Term Conversational Memory of LLM Agents' 논문을 읽고 질문 유형 분류를 정리한 뒤, 앞 과제 대화 데이터로 유형별 5문항씩 25문항 평가 세트를 만든다. 기억 없이 최근 세션만 넣은 기준선과 앞 과제 방식의 점수를 유형별로 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Evaluating Very Long-Term Conversational Memory of LLM Agents",
+              "url": "https://arxiv.org/abs/2402.17753",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "기억을 시간에 따라 재구성하기 — 요약·계층·망각",
+          "from": "task",
+          "quote": "• Memory 구조가 시간에 따라 재구성되는 메커니즘 연구",
+          "priority": "high",
+          "why": "주요업무이고 우대에 인지과학 관심이 있다. 학생 기록은 학기 내내 쌓여 그대로는 맥락 창에 못 넣는다.",
+          "gap_check": "오래된 대화를 요약해 상위 기억으로 올릴 때 무엇이 사라지고(구체적 오답 예시), 그것이 개인화 학습에 어떤 손해를 주는가? '이제는 이해함' 처럼 바뀐 사실은 덮어쓰는가, 이력으로 남기는가?",
+          "drill": "MemGPT 논문(메모리 계층)과 Episodic memory 문서를 읽고, 앞 과제 그래프에 주 단위 요약 노드를 만들어 원본 세션과 연결한다. 이해도가 바뀐 개념은 이력으로 남기도록 설계하고, 앞 과제 벤치마크 점수가 요약 전후로 어떻게 달라지는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "MemGPT: Towards LLMs as Operating Systems",
+              "url": "https://arxiv.org/abs/2310.08560",
+              "kind": "paper"
+            },
+            {
+              "title": "Episodic memory — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Episodic_memory",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
