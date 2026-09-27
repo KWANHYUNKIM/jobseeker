@@ -914,6 +914,19 @@
       "postings": 5,
       "study_items": 15,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "pentasecurity",
+      "name": "펜타시큐리티",
+      "aliases": [
+        "펜타시큐리티",
+        "펜타시큐리티㈜",
+        "PentaSecurity"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

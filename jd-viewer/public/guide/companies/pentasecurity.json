@@ -1,0 +1,169 @@
+{
+  "slug": "pentasecurity",
+  "name": "펜타시큐리티",
+  "name_en": "Penta Security",
+  "aliases": [
+    "펜타시큐리티",
+    "펜타시큐리티㈜",
+    "PentaSecurity"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "pentasecurity.co.kr",
+  "one_liner": "웹방화벽 WAPPLES·DB 암호화 D.AMO·통합인증 iSIGN·클라우드 웹보안 Cloudbric 을 만드는 암호기술 기반 보안 소프트웨어 회사",
+  "company": {
+    "business": "회사 소개 페이지는 펜타시큐리티를 **암호화 기술을 기반으로 한 정보보안 소프트웨어 전문기업**으로, **기업정보보안 시장(데이터 암호화, 웹 보안, 인증 보안) 점유율 1위 제조사**로 적는다. 제품은 넷이 축이다 — **WAPPLES**(웹 애플리케이션·API 보안, 웹방화벽), **D.AMO**(데이터 암호화, KMS 키관리), **iSIGN**(SSO·PKI 인증보안, FIDO·MOTP), **Cloudbric**(클라우드 SaaS 보안) — 여기에 암호모듈(CIS-CC, Penta IoT-CC)이 있다. iSIGN 페이지는 국정원심사규정·전자금융감독규정 준수와 1U/2U 어플라이언스 모델을 적는다. 최근 보도자료는 리눅스 비정형 데이터 암호화 D.AMO onOS v5.0 출시(2026-09), Cloudbric WAF+ 의 일본 매체 WAF 부문 1위(2026-08), 중동 보안 전시회 GISEC 참가(2026-09)다. 모집중 개발 공고는 두 자리다 — **인증보안 백엔드**(SSO·인증·PKI 제품 서버, Java/Spring Boot, 5년↑ — 원티드·점핏·잡코리아·사람인에 같은 본문)와 **보안 네트워크 개발자**(리눅스 커널 모듈, TCP/IP 스택 엔진, C — 캐치 이미지 공고). 근무지는 서울 영등포구 여의공원로 115(세우빌딩). 매출·인원은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "정보보안 소프트웨어 전문기업 | 펜타시큐리티",
+        "url": "https://www.pentasecurity.co.kr/company/",
+        "publisher": "펜타시큐리티",
+        "summary": "암호화 기술 기반 정보보안 소프트웨어 전문기업. 기업정보보안 시장(데이터 암호화, 웹 보안, 인증 보안) 점유율 1위 제조사라고 적는다."
+      },
+      {
+        "title": "펜타시큐리티 한국 공식 홈페이지",
+        "url": "https://www.pentasecurity.co.kr/",
+        "publisher": "펜타시큐리티",
+        "summary": "메타: 암호기술 기반 보안전문회사, 국내 1위 웹·데이터·인증 보안 기술을 클라우드 환경에서도 제공. 제품: WAPPLES(웹 애플리케이션·API 보안), D.AMO(데이터 암호화)·D.AMO KMS, iSIGN·iSIGN PKI(인증보안), Cloudbric(SaaS 보안), CIS-CC·Penta IoT-CC(암호모듈). 보도자료: D.AMO onOS v5.0 출시(2026-09-02), Cloudbric WAF+ 일본 IT 트렌드 WAF 부문 1위(2026-08-03), GISEC Global 2026 참가(2026-09-09). 대표 김태균."
+      },
+      {
+        "title": "통합인증 SSO 솔루션 iSIGN | 펜타시큐리티",
+        "url": "https://www.pentasecurity.co.kr/isign/",
+        "publisher": "펜타시큐리티",
+        "summary": "iSIGN: Secure SSO 인증보안 플랫폼, 국정원심사규정·전자금융감독규정 준수. UAF/U2F(FIDO), MOTP, WA(웹 공인인증·구간 암호화), MA(모바일). 중복 로그인 방지, 권한·IP 접근제어, Non-ActiveX PKI. 1U/2U 어플라이언스 모델(1700·2700·5700)."
+      },
+      {
+        "title": "인증보안 백엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/387054",
+        "publisher": "원티드"
+      },
+      {
+        "title": "[Penta Security] 보안 네트워크 개발자 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569093?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "이미지 OCR 본문: 리눅스 커널 모듈 개발·유지보수, TCP/IP 스택 엔진 개발, Linux kernel·C, gdb/crash, DPI 우대"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "인증보안 제품(iSIGN·iSIGN PKI)",
+        "how": "홈페이지가 SSO·PKI·FIDO·MOTP 인증 플랫폼과 어플라이언스 모델을 적고, 대기업·교육기관·공공기관을 대상으로 든다. 가격·판매 방식(라이선스·어플라이언스)은 읽지 않았다.",
+        "domains": [
+          "인증보안 서버(SSO·PKI)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "통합인증 SSO 솔루션 iSIGN | 펜타시큐리티",
+            "url": "https://www.pentasecurity.co.kr/isign/",
+            "publisher": "펜타시큐리티",
+            "summary": "iSIGN: Secure SSO 인증보안 플랫폼, 국정원심사규정·전자금융감독규정 준수. UAF/U2F(FIDO), MOTP, WA(웹 공인인증·구간 암호화), MA(모바일). 중복 로그인 방지, 권한·IP 접근제어, Non-ActiveX PKI. 1U/2U 어플라이언스 모델(1700·2700·5700)."
+          },
+          {
+            "title": "인증보안 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/387054",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "웹 애플리케이션·API 보안(WAPPLES)",
+        "how": "홈페이지가 WAPPLES 를 웹 애플리케이션·API 보안 제품으로 적고 '웹방화벽 시장 점유율 1위' 를 말한다. 보안 네트워크 공고의 TCP/IP 스택·커널 모듈·DPI 가 어느 제품에 들어가는지는 공고에 없다 — 네트워크 보안 제품 계열로 읽었다.",
+        "domains": [
+          "보안 네트워크·리눅스 커널"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "펜타시큐리티 한국 공식 홈페이지",
+            "url": "https://www.pentasecurity.co.kr/",
+            "publisher": "펜타시큐리티",
+            "summary": "메타: 암호기술 기반 보안전문회사, 국내 1위 웹·데이터·인증 보안 기술을 클라우드 환경에서도 제공. 제품: WAPPLES(웹 애플리케이션·API 보안), D.AMO(데이터 암호화)·D.AMO KMS, iSIGN·iSIGN PKI(인증보안), Cloudbric(SaaS 보안), CIS-CC·Penta IoT-CC(암호모듈). 보도자료: D.AMO onOS v5.0 출시(2026-09-02), Cloudbric WAF+ 일본 IT 트렌드 WAF 부문 1위(2026-08-03), GISEC Global 2026 참가(2026-09-09). 대표 김태균."
+          },
+          {
+            "title": "[Penta Security] 보안 네트워크 개발자 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569093?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "이미지 OCR 본문: 리눅스 커널 모듈 개발·유지보수, TCP/IP 스택 엔진 개발, Linux kernel·C, gdb/crash, DPI 우대"
+          }
+        ]
+      },
+      {
+        "name": "데이터 암호화(D.AMO)·클라우드 웹보안(Cloudbric)",
+        "how": "홈페이지가 D.AMO(데이터 암호화·KMS)와 Cloudbric(SaaS)을 적고 보도자료가 신제품 출시·일본 순위를 알린다. 지금 모집중인 개발 공고 중 이 제품을 맡는 자리는 없다.",
+        "domains": [],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "펜타시큐리티 한국 공식 홈페이지",
+            "url": "https://www.pentasecurity.co.kr/",
+            "publisher": "펜타시큐리티",
+            "summary": "메타: 암호기술 기반 보안전문회사, 국내 1위 웹·데이터·인증 보안 기술을 클라우드 환경에서도 제공. 제품: WAPPLES(웹 애플리케이션·API 보안), D.AMO(데이터 암호화)·D.AMO KMS, iSIGN·iSIGN PKI(인증보안), Cloudbric(SaaS 보안), CIS-CC·Penta IoT-CC(암호모듈). 보도자료: D.AMO onOS v5.0 출시(2026-09-02), Cloudbric WAF+ 일본 IT 트렌드 WAF 부문 1위(2026-08-03), GISEC Global 2026 참가(2026-09-09). 대표 김태균."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "인증보안 서버(SSO·PKI)",
+        "why": "인증보안 백엔드 공고가 SSO·인증·PKI 관련 제품 서버 개발을 적고 Java/Spring Boot·MariaDB·MyBatis·JPA, 라이브러리 개발, 다양한 인증 개발, 암호화 기본 이해를 요구한다.",
+        "what_to_know": [
+          "SSO 프로토콜",
+          "PKI·인증서",
+          "Spring Boot"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "인증보안 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/387054",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "보안 네트워크·리눅스 커널",
+        "why": "보안 네트워크 개발자 공고(이미지 OCR)가 리눅스 커널 모듈 개발·유지보수와 TCP/IP 스택 엔진 개발을 적고 Linux kernel·C, TCP/IP 지식을 요구하며 gdb/crash 디버깅·DPI·멀티코어 개발을 우대한다.",
+        "what_to_know": [
+          "리눅스 커널 모듈",
+          "TCP/IP 스택",
+          "DPI"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Penta Security] 보안 네트워크 개발자 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569093?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "이미지 OCR 본문: 리눅스 커널 모듈 개발·유지보수, TCP/IP 스택 엔진 개발, Linux kernel·C, gdb/crash, DPI 우대"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "인증 제품은 공공·금융 규제에 맞춘 온프레미스 제품이다",
+        "evidence": "iSIGN은 국정원심사규정 및 전자금융감독규정과 같은 주요 컴플라이언스를 준수하는 통합인증 보안플랫폼입니다.",
+        "so_what": "인증보안 백엔드는 트래픽 많은 웹 서비스보다 고객사 설치형 제품 서버에 가깝다. 공고가 '라이브러리 개발 경험' 과 Selenium·Jenkins 자동화를 적는 것도 제품 납품형 개발과 맞는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "해외 매출을 넓히는 중이다",
+        "evidence": "클라우드브릭 WAF+(Cloudbric WAF+)’가 일본 매체 ‘IT 트렌드(IT Trend)’의 ‘2026년 상반기 랭킹’에서 WAF(웹방화벽) 부문 1위",
+        "so_what": "홈페이지가 KR·EN·JP 세 언어이고 중동 전시회 참가를 알린다. 두 개발 공고 모두 '해외여행에 결격 사유가 없는 분' 을 적는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출·임직원 수는 읽지 않았다(홈페이지 숫자 칸은 스크립트로 채워져 정적 HTML 에 0 으로 보인다)",
+    "보안 네트워크 공고의 TCP/IP 스택 엔진이 WAPPLES 에 들어가는지는 공고에 없다",
+    "보안 네트워크 공고는 이미지 OCR 이라 일부 글자(기술 목록 등)가 깨져 있다"
+  ],
+  "postings": []
+}
