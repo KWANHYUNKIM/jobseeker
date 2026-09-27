@@ -421,6 +421,114 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/356730",
+      "title": "[AD-Tech] 머신러닝 엔지니어(7년 이상)",
+      "site": "wanted",
+      "verdict": "경력 7년 이상, 서울 송파구. 같은 Ad Technology 팀의 **시니어 ML** — 공고는 'Feature 파이프라인부터 Bid Optimization 알고리즘까지 전체 ML 시스템의 기술 방향을 주도' 할 사람을 찾으며 **'광고 도메인보다 ML 시스템 설계 역량을 우선시'** 한다고 적는다. 주요업무는 **Bid Optimization 알고리즘과 예측 모델 아키텍처**, **하루 3억 건·15ms 실시간 ML 서빙** 설계와 병목 개선, **Feature Store·MLOps 전사 표준**, **A/B Testing·Causal Inference 로 KPI 임팩트 검증**, 기술 의사결정·멘토링, 논문 반영. 자격은 ML 시스템 설계·운영 7년, 대규모 트래픽 서빙, 프레임워크 깊은 활용, **스트리밍+배치 파이프라인 동시 설계**, **MLOps 전 주기(Feature Store → 학습 → 배포 → 재학습 → 드리프트 감지)**. 우대는 Bid Optimization/RTB, 랭킹·검색·추천, 고성능 추론, 학회 논문. 같은 팀 실무 공고(356689, 2~7년)는 이 설계를 구현·운영한다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "ML 시스템 7년",
+          "대규모 실시간 서빙",
+          "스트리밍+배치 피처",
+          "MLOps 전 주기"
+        ],
+        "can_learn": [
+          "입찰가 최적화",
+          "경매 환경 실험 설계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "예측 확률에서 입찰가로 — 캘리브레이션이 중요한 이유",
+          "from": "task",
+          "quote": "• 아키텍처 주도: Bid Optimization 알고리즘과 예측 모델 전체 아키텍처를 설계하고 기술 방향을 이끕니다.",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 우대에 Bid Optimization·RTB 구축 경험이 있다. 팀 목표가 글로벌 DSP 들과 경쟁해 이기는 것이다.",
+          "gap_check": "설치당 가치가 정해진 캠페인에서 노출 한 번의 입찰가를 pCTR × pCVR × 가치로 잡을 때, 예측 확률이 체계적으로 두 배 높게 나오면 무슨 일이 생기는가? 순위만 맞추는 랭킹 모델과 확률 값 자체가 맞아야 하는 입찰 모델은 평가 지표가 왜 달라야 하는가? 두 번째 가격 경매와 첫 번째 가격 경매에서 입찰 전략은 어떻게 달라지는가?",
+          "drill": "Click-through rate 문서와 scikit-learn Probability calibration 을 읽고, 공개 CTR 데이터셋으로 모델을 학습해 AUC 와 신뢰도 곡선(캘리브레이션)을 함께 본다. 캘리브레이션 전후 예측으로 가상 경매를 돌려 같은 예산에서 얻은 클릭 수와 지출을 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Click-through rate — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Click-through_rate",
+              "kind": "docs"
+            },
+            {
+              "title": "Probability calibration — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/calibration.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Calibration (statistics) — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Calibration_(statistics)",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "15ms 안의 실시간 ML 서빙",
+          "from": "task",
+          "quote": "• 대규모 서빙 설계: 하루 3억 건, 15ms 이내의 실시간 ML 서빙 시스템을 설계·구현하고 성능 병목을 진단·개선합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 고성능 ML 추론 시스템 구현 경험이 있다. 입찰 전체가 15ms 안에 끝나야 한다.",
+          "gap_check": "15ms 중 모델 추론에 몇 ms 를 줄 수 있고, 피처 조회·직렬화·네트워크를 빼면 남는 시간은 얼마인가? 모델을 bidder 프로세스 안에 넣을 때와 별도 추론 서버로 뺄 때의 지연·배포·자원 격리 차이는? 무거운 모델을 가볍게 만드는 방법(작은 모델 증류·양자화·피처 사전 계산)은 각각 무엇을 잃는가?",
+          "drill": "ONNX Runtime 문서를 읽고, 앞 과제 모델을 ONNX 로 내보내 단건·배치 추론 지연을 잰다. 같은 모델을 HTTP 추론 서버 뒤에 두었을 때와 프로세스 안에서 부를 때의 p99 를 비교해 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "ONNX Runtime",
+              "url": "https://onnxruntime.ai/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Feature Store 와 학습-서빙 불일치",
+          "from": "qualification",
+          "quote": "• MLOps 전체 사이클(Feature Store → 학습 → 배포 → 재학습 → 드리프트 감지)을 설계·운영한 경험을 갖추신 분",
+          "priority": "high",
+          "why": "필수 자격이고 주요업무에 Feature Store·MLOps 전사 표준 수립이, 자격에 실시간 스트리밍과 배치 파이프라인 동시 설계가 있다.",
+          "gap_check": "학습 때는 배치로 계산한 피처를, 서빙 때는 스트리밍으로 계산한 피처를 쓰면 어떤 불일치가 생기는가? 과거 시점의 피처 값을 정확히 재현하지 못하면(point-in-time 오류) 학습 데이터에 미래 정보가 어떻게 새는가? 드리프트는 입력 분포와 예측 분포 중 무엇부터 감시하는가?",
+          "drill": "Feast 문서를 읽고, '유저 최근 1시간 클릭 수' 피처를 배치(학습용)와 온라인(서빙용) 두 경로로 정의해 같은 시점 값이 일치하는지 검증하는 테스트를 만든다. 입력 분포가 바뀐 가짜 데이터를 넣어 드리프트 경보가 울리는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Introduction — Feast",
+              "url": "https://docs.feast.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "경매 환경에서 A/B 테스트와 인과 추론",
+          "from": "task",
+          "quote": "• 실험 및 검증: A/B Testing과 Causal Inference를 통해 모델 개선의 비즈니스 KPI 임팩트를 정량적으로 검증합니다.",
+          "priority": "high",
+          "why": "주요업무다. 모델 개선이 실제 KPI(설치·ROAS)를 올렸는지 정량으로 보여야 한다.",
+          "gap_check": "두 입찰 모델을 트래픽 50:50 으로 나눠 같은 캠페인 예산을 쓰게 하면 서로의 낙찰가·예산 소진에 간섭해 결과가 어떻게 왜곡되는가(예산 분할 실험이 필요한 이유)? 광고를 본 사람의 설치가 광고 '때문' 인지 가리려면 무엇과 비교하는가(uplift)?",
+          "drill": "Causal inference·Uplift modelling·Multi-armed bandit 문서를 읽고, 앞 과제의 가상 경매 시뮬레이터에서 (a) 트래픽만 나눈 실험 (b) 예산까지 나눈 실험을 돌려 두 모델의 차이 추정치가 어떻게 다른지 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Causal inference — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Causal_inference",
+              "kind": "docs"
+            },
+            {
+              "title": "Uplift modelling — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Uplift_modelling",
+              "kind": "docs"
+            },
+            {
+              "title": "Multi-armed bandit — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Multi-armed_bandit",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
