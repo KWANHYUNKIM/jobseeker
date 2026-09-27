@@ -75,11 +75,20 @@
               "publisher": "MOSH",
               "date": "2025-04-17",
               "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+            },
+            {
+              "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+              "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+              "publisher": "MOSH",
+              "date": "2025-03-07",
+              "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "lambda-lith-portability-steps"
+      ]
     },
     {
       "name": "크리에이터가 게스트에게 보내는 통지를, 한 번도 빠뜨리지도 두 번 보내지도 않는다",
@@ -104,7 +113,411 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "lambda-lith-portability-steps",
+      "name": "배포가 두 번 멈춘 뒤 — 400 개 Lambda 를 Docker · OpenAPI · Lambda-lith 로 한 걸음씩 옮겨 어디서든 돌게 하기",
+      "domain": "Lambda 400 개에 묶인 앱을, 멈추지 않고 어디서든 도는 형태로 옮긴다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "MOSH 는 크리에이터의 판매 · 예약 · 결제를 떠받치는 올인원 제품이다. 백엔드는 API 엔드포인트마다 Lambda 를 둔 구조였고, 앱이 자라며 Lambda 가 400 개를 넘었다. 로컬 개발이 어렵고, 인프라와 앱을 늘 함께 릴리스해야 했고, 새 확인 환경을 만들면 Lambda 가 또 400 개 늘었다.\n\n계획대로 가기 전에 '그날'이 왔다. 모든 Lambda 가 공유하던 zip 아티팩트가 크기 상한(압축 후 50MB)에 닿아 **배포가 멈췄고**, 다음 달엔 CloudFormation 의 스택당 리소스 상한(500)에 닿아 **또 멈췄다**. 배포가 안 되면 크리에이터에게 새 기능도 고침도 못 낸다.",
+        "metrics": [
+          {
+            "label": "Lambda 수",
+            "value": "400 개 이상(API 엔드포인트마다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+                "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+                "publisher": "MOSH",
+                "date": "2025-04-17",
+                "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+              },
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          },
+          {
+            "label": "배포 불능 사건",
+            "value": "① zip 아티팩트 50MB 상한 ② 다음 달 CloudFormation 500 리소스/스택 상한",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          },
+          {
+            "label": "콜드 스타트 기동 시간",
+            "value": "Docker 화로 약 20% 감",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "원인을 정리하며",
+          "thought": "여러 문제의 뿌리는 Lambda · 앱 코드 · 빌드 · 배포 파이프라인 · 인프라 구성이 모두 밀결합한 것 — 이식성(다른 환경으로 옮길 수 있는 정도)을 높이면 부분적으로 고치며 리아키텍처의 위험을 줄일 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+              "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+              "publisher": "MOSH",
+              "date": "2025-04-17",
+              "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+            },
+            {
+              "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+              "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+              "publisher": "MOSH",
+              "date": "2025-03-07",
+              "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+            }
+          ]
+        },
+        {
+          "at": "한 번에 옮길지 고민하며",
+          "thought": "갑자기 대규모 리아키텍처를 하면 긴 개발 동안 기술 진화와 사업 요건 변화로 계획이 낡고 실현 가능성 위험이 커진다 — 단계마다 가치를 쌓으며 옮긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+              "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+              "publisher": "MOSH",
+              "date": "2025-04-17",
+              "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+            }
+          ]
+        },
+        {
+          "at": "Lambda-lith 를 고를 때",
+          "thought": "AWS 개발자 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 사례가 적고 장단점이 뚜렷하지만 ECS/EKS 로 가는 한 걸음으로 택한다. 우선 'FastAPI 가 도는 Docker 이미지'를 목표로.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+              "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+              "publisher": "MOSH",
+              "date": "2025-04-17",
+              "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+            },
+            {
+              "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+              "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+              "publisher": "MOSH",
+              "date": "2025-03-07",
+              "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Lambda(엔드포인트별)",
+            "what": "기존 — GET /users · POST /users 처럼 엔드포인트마다 하나, 모두 같은 zip 아티팩트를 공유."
+          },
+          {
+            "name": "serverless(CloudFormation) 스택",
+            "what": "API Gateway + Lambda 를 묶어 배포 — 스택당 리소스 500 상한."
+          },
+          {
+            "name": "Docker 이미지(ECR)",
+            "what": "zip 대신 쓰는 아티팩트 — 상한 10GB, 컨테이너가 도는 곳이면 어디서든."
+          },
+          {
+            "name": "openapi.yaml",
+            "what": "12,000 행 — 정리 · 구조화해 FastAPI 컨트롤러를 자동 생성하는 원천."
+          },
+          {
+            "name": "Lambda-lith",
+            "what": "API 라우팅을 한 Lambda 로 모으고 안에서 FastAPI 가 라우팅 — 'FastAPI 가 도는 Docker 이미지'."
+          }
+        ],
+        "invariants": [
+          "각 단계는 그 자체로 가치(배포 재개 · 성능 · 비용)를 내야 한다 — 최종 목표를 기다리지 않는다.",
+          "애플리케이션이 특정 실행 기반(Lambda · API Gateway)에 묶이지 않게 한다.",
+          "API 의 형태는 OpenAPI 가 원천이다(스키마 주도)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "① Lambda 아티팩트를 zip → Docker 이미지, GitHub Actions 로 빌드해 ECR 에",
+            "why": "50MB 상한을 넘어 배포를 되살리고, 빌드를 serverless 파이프라인에서 떼어 낸다."
+          },
+          {
+            "step": "② 12,000 행 openapi.yaml 을 paths · schemas 로 구조화",
+            "why": "FastAPI 컨트롤러를 자동 생성해 Lambda 에 묶인 앱을 '단순한 FastAPI'로 꺼낸다."
+          },
+          {
+            "step": "③ API Gateway 라우팅을 한 Lambda 로 모으고(Lambda-lith) FastAPI 가 라우팅",
+            "why": "CloudFormation 리소스 수가 줄어 배포가 되살아나고, API Gateway 분할이 필요 없어진다."
+          },
+          {
+            "step": "로컬에선 FastAPI 앱으로 개발, 인프라와 앱 배포를 분리",
+            "why": "'FastAPI 가 도는 Docker 이미지'라는 이식성의 이득."
+          },
+          {
+            "step": "다음: ④ ECS/EKS(API Gateway → ELB) ⑤ 경계 지은 리소스 서버의 하나로",
+            "why": "실행 기반을 바꾸고, 올인원 제품에 늘어날 리소스 서버 중 하나로 관리."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "한 번에 컨테이너로 옮기나, 조금씩 옮기나?",
+            "chosen": "**이식성을 높이는 점진적 리아키텍처 — Docker 화 → OpenAPI 정리 → Lambda-lith → ECS/EKS → 리소스 서버.**",
+            "alternatives": [
+              "ECS/EKS 로의 대규모 일괄 리아키텍처"
+            ],
+            "tradeoff": "단계마다 배포 안정성 · 성능 · 비용 이득을 얻고, 계획이 낡을 위험을 줄인다. 대가는 최종 형태까지 중간 구성(Lambda-lith 등)을 거쳐야 하고, 그 사이 앱이 계속 자란다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+                "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+                "publisher": "MOSH",
+                "date": "2025-04-17",
+                "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+              },
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          },
+          {
+            "question": "배포가 50MB 상한에 막혔을 때 무엇부터?",
+            "chosen": "**아티팩트를 zip 에서 Docker 이미지(상한 10GB)로 — GitHub Actions 로 빌드해 ECR 에.**",
+            "alternatives": [
+              "코드를 쪼개 zip 크기를 줄인다(이 사이트가 둔 대안)"
+            ],
+            "tradeoff": "배포를 되살리면서 빌드가 파이프라인에서 독립하고 실행 기반을 바꿀 수 있게 된다 — 콜드 스타트 기동 시간도 약 20% 줄었다. 대가는 이미지 빌드 · 레지스트리를 따로 관리해야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+                "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+                "publisher": "MOSH",
+                "date": "2025-04-17",
+                "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+              },
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          },
+          {
+            "question": "유지보수가 멈춘 12,000 행 OpenAPI 는?",
+            "chosen": "**정리 · 구조화(paths · schemas)해 FastAPI 컨트롤러를 자동 생성하는 원천으로.**",
+            "alternatives": [
+              "OpenAPI 를 버리고 코드에서 새로 정의"
+            ],
+            "tradeoff": "스키마 주도로 이행 비용을 낮추고 앞으로도 자동 생성의 혜택을 받는다. 대가는 거대한 yaml 을 먼저 손보는 수고.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+                "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+                "publisher": "MOSH",
+                "date": "2025-04-17",
+                "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+              },
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          },
+          {
+            "question": "엔드포인트마다의 Lambda 400 개를 어떻게?",
+            "chosen": "**Lambda-lith — 한 Lambda 로 모으고 FastAPI 가 앱 계층에서 라우팅.**",
+            "alternatives": [
+              "엔드포인트별 Lambda 유지",
+              "곧바로 ECS/EKS 로"
+            ],
+            "tradeoff": "CloudFormation 리소스가 줄어 배포가 되살아나고 API Gateway 와의 밀결합이 풀리며, 상시 기동으로 콜드 스타트가 줄어 평균 지연 · Lambda 비용 · 감시 도구 비용이 준다. 대가는 AWS 가이드가 이벤트 드리븐의 안티패턴으로 꼽는 구성이라는 것 — 사례가 적고, 함수 하나가 모든 API 를 떠안는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+                "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+                "publisher": "MOSH",
+                "date": "2025-04-17",
+                "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+              },
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          },
+          {
+            "question": "인프라와 앱의 배포를 어떻게 하나?",
+            "chosen": "**분리한다 — 'FastAPI 가 도는 Docker 이미지'가 되어 앱 배포를 serverless 파이프라인에서 떼어 낼 수 있게.**",
+            "alternatives": [
+              "인프라와 앱을 계속 한 파이프라인으로 동시 릴리스"
+            ],
+            "tradeoff": "배포 시간을 줄이고 CloudFormation 기인의 불안정을 피하며, 로컬에서 FastAPI 로 개발한다. 로그 · 인가 같은 미들웨어도 쉬워진다. 대가는 파이프라인 분리가 아직 앞으로의 일이라는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+                "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+                "publisher": "MOSH",
+                "date": "2025-04-17",
+                "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+              },
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          },
+          {
+            "question": "최종 실행 기반과 모양은?",
+            "chosen": "**ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가) → 경계 지은 리소스 서버의 하나로.**",
+            "alternatives": [
+              "Lambda-lith 에 머문다"
+            ],
+            "tradeoff": "올인원 제품 MOSH 에 경계 지은 리소스 서버가 늘어날 것을 대비한다. 대가는 인가를 컨테이너 쪽으로 옮기는 일 — Cognito 에서도 벗어나고 싶다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+                "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+                "publisher": "MOSH",
+                "date": "2025-03-07",
+                "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "결제 수수료(수익원)",
+          "via": "판매 · 결제 API",
+          "contract": "크리에이터의 판매 · 결제를 처리하는 백엔드 API 가 이 Lambda 들이다 — 배포가 멈추면 판매 기능의 수정 · 추가가 멈춘다(이 사이트의 해석). 어떤 API 가 결제인지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+              "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+              "publisher": "MOSH",
+              "date": "2025-04-17",
+              "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+            },
+            {
+              "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+              "url": "https://mosh.jp/pricing",
+              "publisher": "MOSH",
+              "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+            }
+          ]
+        },
+        {
+          "to": "월액 플랜(STARTER · GROW)(수익원)",
+          "via": "페이지 빌더 · 회원 사이트 API",
+          "contract": "월액 플랜이 여는 기능들도 같은 올인원 백엔드 위에 있다 — 어느 Lambda 가 맡는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+              "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+              "publisher": "MOSH",
+              "date": "2025-03-07",
+              "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+            },
+            {
+              "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+              "url": "https://mosh.jp/pricing",
+              "publisher": "MOSH",
+              "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나의 길 — 전과 후",
+          "question": "같은 API 요청이 리아키텍처 전후로 어디를 지나나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  C[\"클라이언트\"] --> APIGW[\"API Gateway\\nCognito 인가\"]\n  APIGW -- \"전\" --> L1[\"GET /users Lambda\"]\n  APIGW -- \"전\" --> L2[\"POST /users Lambda\"]\n  APIGW -- \"전\" --> LN[\"… 400 개\\n같은 zip 공유\"]\n  APIGW -- \"후\" --> LL[\"Lambda-lith\\nDocker · FastAPI 라우팅\"]\n  LL -. \"다음\" .-> ECS[\"ECS/EKS · ELB\"]\n  OA[\"openapi.yaml\"] --> GEN[\"FastAPI 컨트롤러 자동 생성\"]\n  GEN --> LL"
+        },
+        {
+          "title": "리아키텍처의 단계",
+          "question": "애플리케이션은 어떤 상태를 거쳐 어디로 가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 엔드포인트별: Lambda 400 개 · zip · 한 파이프라인\n  엔드포인트별 --> 배포불능: 사건 ① 50MB · 사건 ② 500 리소스\n  배포불능 --> Docker화: 상한 10GB · 기동 20% 감\n  Docker화 --> OpenAPI정리: 컨트롤러 자동 생성\n  OpenAPI정리 --> LambdaLith: 리소스 감소 · 배포 재개\n  LambdaLith --> ECS_EKS: 다음 단계\n  ECS_EKS --> 리소스서버: 경계 지은 서버 중 하나"
+        },
+        {
+          "title": "Xデー 두 번",
+          "question": "계획보다 먼저 무엇이 배포를 멈췄나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"앱 성장 · Lambda 400 개\"] --> B[\"모든 Lambda 가 같은 zip 공유\"]\n  B --> C[\"zip 이 50MB 상한에 닿음\"]\n  C --> D[\"사건 ① 배포 불가\"]\n  A --> E[\"serverless(CloudFormation) 스택\"]\n  E --> F[\"스택당 리소스 500 상한\"]\n  F --> G[\"사건 ② 다음 달 배포 불가\"]\n  D --> H[\"Docker 이미지\"]\n  G --> I[\"Lambda-lith 로 리소스 수 감소\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+          "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+          "publisher": "MOSH",
+          "date": "2025-04-17",
+          "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+        },
+        {
+          "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+          "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+          "publisher": "MOSH",
+          "date": "2025-03-07",
+          "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
+        },
+        {
+          "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+          "url": "https://mosh.jp/pricing",
+          "publisher": "MOSH",
+          "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**매출 규모 · 수수료와 월액의 비중**은 공개 자료에서 찾지 못했다.",
     "**Lambda 400 개 앱과 통지 기반 · 결제 기반의 관계**(어느 기능이 어디서 도는지)는 글에 없다.",
@@ -130,6 +543,13 @@
       "publisher": "MOSH",
       "date": "2025-12-24",
       "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등."
+    },
+    {
+      "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
+      "url": "https://speakerdeck.com/soarteclab/400chao-lambdagou-cheng-apurikesiyonnojian-jin-de-riakitekutiya",
+      "publisher": "MOSH",
+      "date": "2025-03-07",
+      "summary": "발표 슬라이드. 기존: Cognito 인증 + API Gateway 인가, **엔드포인트마다 Lambda**, serverless(CloudFormation)로 관리 — 스택당 리소스 상한 500 이라 API Gateway + Lambda 를 스택 분할. 파이프라인 하나가 파이썬 코드를 zip 해 다른 AWS 리소스와 함께 배포(인프라와 앱 동시 릴리스 강제). 새 확인 환경을 만들면 Lambda 가 또 같은 수만큼. 그 사이 앱은 400 개로 자라 **사건 ①** 전 Lambda 가 공유하는 zip 아티팩트가 상한(압축 후 50MB)에 닿아 배포 불가 **사건 ②** 다음 달 CloudFormation 리소스 상한으로 배포 불가. 단계 ① Docker 이미지(상한 10GB) · ECR — 배포 재개, 빌드가 파이프라인에서 독립, 콜드 스타트 기동 시간 20% 감 ② 12,000 행 OpenAPI 를 paths · schemas 로 구조화 — FastAPI 컨트롤러 자동 생성 ③ Lambda-lith — API Gateway 라우팅을 한 Lambda 로, FastAPI 가 라우팅, CloudFormation 리소스 수 감소로 배포 재개 · API Gateway 분할 불필요, 로컬에서 FastAPI 로 개발, 상시 기동으로 콜드 스타트 빈도 · 평균 지연 · Lambda 비용 · 감시 비용 감소. 다음 ④ ECS/EKS(API Gateway → ELB, 컨테이너에서 Cognito 인가 — Cognito 도 벗어나고 싶다) ⑤ 리소스 서버의 하나로(올인원 제품에 경계 지은 리소스 서버가 늘어날 것)."
     }
   ]
 }

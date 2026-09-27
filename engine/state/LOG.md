@@ -2712,3 +2712,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 MOSH 회사 프로파일
 
 - mosh.jp/pricing(수수료 · 월액) · Zenn 2편(Lambda 400 개 점진 리아키텍처 · 통지 기반 飛脚)으로 프로파일. 수익원 둘 confirmed.
+
+## 2026-09-27 MOSH Lambda-lith
+
+- Zenn 글 + Speaker Deck 슬라이드(배포 불능 사건 둘 · 단계 ④⑤)로 기능 `lambda-lith-portability-steps`, 결정 6. 수익원 연결은 inferred.
