@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "커머스",
   "status": "in_progress",
+  "hold_reason": "수익원 넷(브랜드 지원 · @cosme 매장/EC 는 도메인 연결이 inferred 뿐, 해외 · 인재/투자는 도메인 없음)을 기술 자료로 잇지 못했다(2026-09-27 — 첫째 Zenn Publication `istyle` 공개 글 26편 제목 전수: 광고 · EC · 매장 관련은 없고 '검색 엔진에도 사용자와 같은 체험을'(Bot 용 · 사용자용 서버 공용화 — 검색 유입 안정, 사업 연결은 없음) · @cosme 앱 KMP 두 편뿐. 둘째 Zenn 검색 6낱말(관련 0) · WebSearch → 회사 기술 블로그 `techblog.istyle.co.jp/feed` 10편(행사 · TypeScript 추천 언어 · 클라우드 이행 팀 · 앱 개발, 광고 · EC 없음), @cosme for BUSINESS 에 @cosme 데이터 DSP 가 있다는 것까지만). 광고 DSP · EC 기술 글이 나오면 다시.",
   "updated_at": "2026-09-27",
   "domain": "istyle.co.jp",
   "one_liner": "화장품 리뷰 사이트 '@cosme' 로 시작해 광고 · 매장 · EC 로 넓힌 뷰티 플랫폼 회사(2026 년 6 월기 매출 818 억 엔) — EOL 이 된 Nuxt2 페이지는 NuxtBridge 없이 대표 페이지부터 3 으로 다시 쓰고, 흩어진 데이터 파이프라인은 가공 전에 Great Expectations 로 책임 분계점을 둔다",

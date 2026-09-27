@@ -2740,3 +2740,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 アイスタイル GX 데이터 계약
 
 - GX 글 전문으로 기능 `gx-data-contract-before-transform`, 결정 6. 수익원 연결 inferred.
+
+## 2026-09-27 アイスタイル 수익원 보류
+
+- 1 차 Zenn 26편 제목(검색 엔진 공용화 글을 읽었지만 사업 연결 없음), 2 차 Zenn 검색 6낱말 · WebSearch → techblog.istyle.co.jp 10편. 보류, status in_progress 유지.
