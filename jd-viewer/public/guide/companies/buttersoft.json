@@ -1,0 +1,181 @@
+{
+  "slug": "buttersoft",
+  "name": "버터소프트",
+  "name_en": "Buttersoft",
+  "aliases": [
+    "버터소프트",
+    "㈜버터소프트",
+    "Buttersoft"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "buttersoft.io",
+  "one_liner": "성수동의 앱·웹 디지털 프로덕트 에이전시(2024년 설립, 19명) — 키움증권·이마트 에브리데이 등 고객사 프로젝트와 자체 장소 SNS '세이치즈'",
+  "company": {
+    "business": "홈페이지(buttersoft.io)는 버터소프트를 **앱·웹 기반 디지털 제품의 기획부터 개발·납품까지 전 과정을 책임지는 디지털 프로덕트 에이전시**로 소개하고, 작업 사례로 **키움증권**(모바일 앱 실시간 채팅), **이마트 에브리데이**(PDA 앱 관리 시스템·어드민), 연세대 의대 대학원 논문 통합관리 서비스, 블루노멀(기업 대출 비교중개 플랫폼), 사조 푸디스트(시스템 재구축)를 든다. 자체 제품으로 사진을 지도 위에 기록하는 장소 기반 SNS **'세이치즈'** 가 있다. 제공 서비스는 SW 개발·납품, AI 플랫폼 적용·개발, SW 플랫폼 제공·컨설팅이다. 잡코리아 공고의 회사 소개는 **2024년 설립, 매출액 12억 5,327만원, 사원수 19명**, 서울 성동구 성수동이라고 적는다(기준 연도 표기 없음). 공고 머리말은 긴 글로 개발 문화를 적는다 — **AI 활용을 장려하되 사람이 쓴 코드든 AI 가 만든 코드든 같은 기준으로 읽고 설명할 수 있어야 하며 코드 리뷰를 이어간다**, '개발의 종말을 믿지 않는다'. 모집중 공고는 두 자리가 사이트마다 올라 있다 — **프론트엔드**(원티드·잡코리아·사람인)와 **백엔드 Java/Spring**(원티드·사람인, 사람인은 '경력 3년 미만' 대상).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Buttersoft — Creative Digital Collective",
+        "url": "https://buttersoft.io/",
+        "publisher": "버터소프트",
+        "summary": "홈페이지: 앱·웹 디지털 제품의 기획부터 개발·납품까지 맡는 디지털 프로덕트 에이전시. 작업 사례: 키움증권 모바일 앱 실시간 채팅, 이마트 에브리데이 PDA 앱 관리 시스템·어드민, 연세대 의대 대학원 논문 통합관리 서비스, 블루노멀 기업 대출 비교중개 플랫폼, 사조 푸디스트 시스템 재구축 등. 자체 제품 '세이치즈'(사진을 지도 위에 기록하는 장소 기반 SNS). 제공: SW 개발·납품, AI 플랫폼 적용·개발, SW 플랫폼 제공·컨설팅."
+      },
+      {
+        "title": "프론트엔드 개발자",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49961951?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=11&sc=630",
+        "publisher": "잡코리아",
+        "summary": "회사 소개: 2024년 설립, 자본금 1,000만원, 매출액 12억 5,327만원, 사원수 19명, 서울 성동구 성수일로4가길 10, 소프트웨어개발사업."
+      },
+      {
+        "title": "프론트엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/385623",
+        "publisher": "원티드",
+        "summary": "머리말: 고객 서비스뿐 아니라 자체 서비스·솔루션을 만드는 SW 개발 회사. AI 적극 활용을 장려하되 사람이 쓴 코드든 AI 가 만든 코드든 같은 기준으로 읽고 설명할 수 있어야 하며 코드 리뷰를 이어간다. '개발의 종말을 믿지 않습니다.'"
+      },
+      {
+        "title": "백엔드 개발자 [Java/Spring]",
+        "url": "https://www.wanted.co.kr/wd/386905",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출액(공고 표기)",
+        "value": "12억 5,327만 원",
+        "as_of": "2026-09 공고 기준(연도 미기재)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49961951?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=11&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 2024년 설립, 자본금 1,000만원, 매출액 12억 5,327만원, 사원수 19명, 서울 성동구 성수일로4가길 10, 소프트웨어개발사업."
+          }
+        ]
+      },
+      {
+        "label": "사원수(공고 표기)",
+        "value": "19명",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49961951?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=11&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 2024년 설립, 자본금 1,000만원, 매출액 12억 5,327만원, 사원수 19명, 서울 성동구 성수일로4가길 10, 소프트웨어개발사업."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "고객사 앱·웹 개발 납품(에이전시)",
+        "how": "홈페이지가 기획부터 개발·납품까지 맡는 에이전시로 소개하고 금융·유통·교육 고객사 작업을 든다. 계약 규모·방식은 읽지 않았다.",
+        "domains": [
+          "웹·앱 프론트엔드(React·React Native)",
+          "Spring 백엔드·도메인 API"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Buttersoft — Creative Digital Collective",
+            "url": "https://buttersoft.io/",
+            "publisher": "버터소프트",
+            "summary": "홈페이지: 앱·웹 디지털 제품의 기획부터 개발·납품까지 맡는 디지털 프로덕트 에이전시. 작업 사례: 키움증권 모바일 앱 실시간 채팅, 이마트 에브리데이 PDA 앱 관리 시스템·어드민, 연세대 의대 대학원 논문 통합관리 서비스, 블루노멀 기업 대출 비교중개 플랫폼, 사조 푸디스트 시스템 재구축 등. 자체 제품 '세이치즈'(사진을 지도 위에 기록하는 장소 기반 SNS). 제공: SW 개발·납품, AI 플랫폼 적용·개발, SW 플랫폼 제공·컨설팅."
+          },
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/385623",
+            "publisher": "원티드",
+            "summary": "머리말: 고객 서비스뿐 아니라 자체 서비스·솔루션을 만드는 SW 개발 회사. AI 적극 활용을 장려하되 사람이 쓴 코드든 AI 가 만든 코드든 같은 기준으로 읽고 설명할 수 있어야 하며 코드 리뷰를 이어간다. '개발의 종말을 믿지 않습니다.'"
+          }
+        ]
+      },
+      {
+        "name": "자체 서비스 세이치즈",
+        "how": "홈페이지가 장소 기반 SNS 세이치즈를 자체 제품으로 적는다. 수익 모델은 읽은 자료에 없다.",
+        "domains": [
+          "웹·앱 프론트엔드(React·React Native)",
+          "Spring 백엔드·도메인 API"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Buttersoft — Creative Digital Collective",
+            "url": "https://buttersoft.io/",
+            "publisher": "버터소프트",
+            "summary": "홈페이지: 앱·웹 디지털 제품의 기획부터 개발·납품까지 맡는 디지털 프로덕트 에이전시. 작업 사례: 키움증권 모바일 앱 실시간 채팅, 이마트 에브리데이 PDA 앱 관리 시스템·어드민, 연세대 의대 대학원 논문 통합관리 서비스, 블루노멀 기업 대출 비교중개 플랫폼, 사조 푸디스트 시스템 재구축 등. 자체 제품 '세이치즈'(사진을 지도 위에 기록하는 장소 기반 SNS). 제공: SW 개발·납품, AI 플랫폼 적용·개발, SW 플랫폼 제공·컨설팅."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "웹·앱 프론트엔드(React·React Native)",
+        "why": "프론트엔드 공고가 기획·디자인·백엔드와 협업해 의도가 화면·동작에 반영되게 구현하고, 사용자 경험의 완성도를 책임지며, JavaScript 가 맞는 다양한 환경에서 개발한다고 적는다. 잡코리아 기술스택은 JavaScript·TypeScript·React·React Native.",
+        "what_to_know": [
+          "React·TypeScript",
+          "React Native",
+          "인터랙션 완성도"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/385623",
+            "publisher": "원티드",
+            "summary": "머리말: 고객 서비스뿐 아니라 자체 서비스·솔루션을 만드는 SW 개발 회사. AI 적극 활용을 장려하되 사람이 쓴 코드든 AI 가 만든 코드든 같은 기준으로 읽고 설명할 수 있어야 하며 코드 리뷰를 이어간다. '개발의 종말을 믿지 않습니다.'"
+          },
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49961951?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=11&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 2024년 설립, 자본금 1,000만원, 매출액 12억 5,327만원, 사원수 19명, 서울 성동구 성수일로4가길 10, 소프트웨어개발사업."
+          }
+        ]
+      },
+      {
+        "name": "Spring 백엔드·도메인 API",
+        "why": "백엔드 공고가 Spring 기반 server·library·client application, 핵심 비즈니스 도메인 모델링과 API·Event 제공, 다른 팀이 쉽게 통합하는 API 설계, 다양한 도메인의 외부 프로젝트를 적는다.",
+        "what_to_know": [
+          "Spring",
+          "도메인 모델링",
+          "API·이벤트 설계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 [Java/Spring]",
+            "url": "https://www.wanted.co.kr/wd/386905",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "AI 로 만든 코드도 사람 코드와 같은 기준으로 리뷰한다",
+        "evidence": "사람이 직접 작성한 코드든 AI가 생성한 코드든, 우리는 같은 기준으로 읽습니다.",
+        "so_what": "면접에서 '어떻게 동작하는지, 왜 이 방법을 선택했는지, 문제가 생기면 무엇을 살펴야 하는지' 를 설명하게 할 것으로 읽힌다. '무엇을 만들었는지와 함께 무엇을 고민하고 배웠는지 듣고 싶다' 고도 적는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "에이전시라 도메인이 자주 바뀐다",
+        "evidence": "다양한 도메인의 비즈니스 문제를 이해하고, 기획과 디자인, 기술을 연결해 사람들이 실제로 사용하는 제품을 만듭니다.",
+        "so_what": "증권 채팅·유통 PDA·대학원 논문 관리·대출 중개처럼 프로젝트마다 도메인이 다르다. 넓게 경험하기 좋지만 한 제품을 깊게 키우는 자리와는 다르다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출 12억·19명이 몇 년 기준인지 공고에 없다",
+    "원티드 프론트엔드 공고의 '신입 · 계약직' 표기가 실제 고용형태인지(사람인은 '신입/경력 채용')",
+    "세이치즈의 수익 모델은 읽지 않았다"
+  ],
+  "postings": []
+}

@@ -1046,6 +1046,19 @@
       "postings": 4,
       "study_items": 15,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "buttersoft",
+      "name": "버터소프트",
+      "aliases": [
+        "버터소프트",
+        "㈜버터소프트",
+        "Buttersoft"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
