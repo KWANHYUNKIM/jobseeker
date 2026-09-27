@@ -7,7 +7,7 @@
     "㈜파수에이아이",
     "파수AI"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "fasoo.ai",
   "one_liner": "문서보안(DRM)으로 출발한 상암동 보안 소프트웨어 회사(옛 파수) — 지금은 데이터 보안·AI 에이전트 플랫폼과 함께 OT/네트워크 보안 데이터 플랫폼 개발자를 뽑는다",
@@ -424,6 +424,20 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/568248?ReturnUrl=RecruitInfo",
+      "title": "[파수AI] OT/ICS 보안 데이터 분석 및 플랫폼 개발 채용",
+      "site": "dev",
+      "duplicate_of": "https://www.wanted.co.kr/wd/381668",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 캐치 공고는 이미지라 OCR 로 읽었고(글자가 일부 깨져 있다: 'OT' → '07', 'Parser' → 'ㅁ3[「56「' 등), 읽히는 범위에서 소개 두 문장, 주요업무 네 묶음, 자격요건, 우대사항 네 줄이 원티드 `OT/ICS 보안 데이터 분석 및 플랫폼 개발 (5년 이상)`(381668)과 같다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 접수 '08.20(목) ~ 채용시 마감' 이다. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49968886?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=50&sc=630",
+      "title": "[파수AI] 네트워크 보안 데이터 분석 시스템 개발 (경력 5년 이상)",
+      "site": "jobkorea",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55003650&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=a7a7f79d-2e4d-4f43-a393-720c3563ea72",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 소개 세 문장, 주요 업무 네 줄, 자격요건, 우대사항 네 줄이 사람인 `[파수AI] 네트워크 보안 데이터 분석 시스템 개발 (경력5년+)`(55003650)과 같다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 모집 인원 1명, 학력 '대졸이상', 스킬 목록(JAVA·PHP·Laravel·RestAPI·MySQL·MariaDB·Linux·TCP/IP·Wireshark/tshark·파서), 마감 10/10(토), 그리고 회사 소개(2000년 설립, 자본금 47억 7,323만원, 매출액 441억, 사원수 255명, 문서보안 DRM)다. 사람인은 접수를 11/09 까지로 적는다. 두 자리가 아니므로 한 곳으로만 지원한다."
     }
   ]
 }
