@@ -155,7 +155,7 @@
         {
           "tech": "Aurora 고급 감사 → CloudWatch Logs + 개인별 DB 사용자(RDS IAM 인증 15 분 토큰) + Identity Center 세션 태그로 자기 사용자에만 접속 + Terraform 으로 사용자 · 권한 선언 관리",
           "solves": "감사 로그 각 줄에 사람이 남고, 비밀번호 관리 없이 사칭을 막으며, 명단 한 줄로 모든 DB 에 반영된다.",
-          "limits": "사람 수만큼 DB 사용자가 생기고, MySQL IAM 사용자 · GRANT 는 프로바이더로 다루기 어려워 terraform_data + local-exec 로 SQL 을 직접 돌린다. 전 쿼리 감사 로그의 비용 · 양은 글에 없다.",
+          "limits": "사람 수만큼 DB 사용자가 생기고, MySQL IAM 사용자 · GRANT 는 프로바이더로 다루기 어려워 terraform_data + local-exec 로 SQL 을 직접 돌린다. CONNECT 이벤트는 제외한 사용자까지 찍혀 로그 양 · 비용 조정이 남았다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -163,12 +163,14 @@
               "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
               "publisher": "クロスマート",
               "date": "2026-09-16",
-              "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다)."
+              "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "per-person-db-audit-log"
+      ]
     }
   ],
   "features": [
@@ -983,6 +985,395 @@
           "summary": "음식점용 — 모든 발주를 LINE 으로(앱 설치 · 매번 로그인 불필요), 발주하면 내용이 LINE 메시지로 와 실수가 준다, 도매업자의 할인 상품 안내 · 카탈로그도 LINE 으로. 도매업자가 준 전단의 QR 로 친구 추가 → 로그인 ID · 거래 개시 코드 입력. PC 는 메일 등록 후 로그인 코드. 이용 점포 13 만 곳 돌파, LINE 주문 사용자 34 만 명 넘음(2026 년 1 월)."
         }
       ]
+    },
+    {
+      "key": "per-person-db-audit-log",
+      "name": "공유 DB 계정을 졸업한다 — 사람마다 IAM 인증 DB 사용자, 세션 태그로 남의 이름을 못 쓰게, 모든 쿼리를 이름 붙여 감사 로그로",
+      "domain": "모두가 같은 계정으로 들어가던 DB 에, 누가 무슨 쿼리를 했는지 남긴다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "DB 에 대해 '언제 · 누가 · 어떤 쿼리를 했나'를 나중에 좇을 수 있는 상태는 감사와 사고 대응에 빠질 수 없다. クロスマート의 엔지니어는 SSO 로 AWS CLI 를 인증하고 SSM Session Manager · ECS 위 bastion 으로 포트 포워딩해 Aurora 에 붙는데, 모두 같은 DB 사용자로 접속했다.\n\nCloudTrail 의 StartSession 으로 누가 언제 터널을 열었는지는 남지만, 터널 끝에서 실제로 어떤 쿼리를 흘렸는지는 남지 않았다. 설령 쿼리를 남겨도 DB 쪽에선 모두 같은 사람으로 보였다.\n\nDB 는 여러 제품에 걸쳐 MySQL · PostgreSQL 로 운영되고, 엔지니어의 입퇴사와 권한 재검토가 일어날 때마다 손으로 관리하기 어려워지고 있었다.",
+        "metrics": [
+          {
+            "label": "IAM 인증 토큰 수명",
+            "value": "15 분 — 비밀번호 대신",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "label": "사용자 추가",
+            "value": "공유 JSON 명단 한 줄 → PR → GitHub Actions apply 로 모든 DB 에 반영",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "label": "감사 이벤트",
+            "value": "CONNECT · QUERY · TABLE(앱용 사용자 · rdsadmin 제외)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "문제를 나눌 때",
+          "thought": "둘로 쪼갠다 — 쿼리 자체를 기록하는 것(감사 로그)과, 그 접속을 개인에 묶는 것(개인별 아이덴티티).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+              "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+              "publisher": "クロスマート",
+              "date": "2026-09-16",
+              "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+            }
+          ]
+        },
+        {
+          "at": "개인별 사용자를 만들고 나서",
+          "thought": "개인별 DB 사용자를 준비해도 A 씨가 'B 입니다' 하고 B 의 사용자로 접속할 수 있으면 개인 식별이 성립하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+              "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+              "publisher": "クロスマート",
+              "date": "2026-09-16",
+              "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+            }
+          ]
+        },
+        {
+          "at": "사용자 관리를 볼 때",
+          "thought": "여러 제품에서 DB 를 운영하니 입퇴사 · 권한 재검토 때마다 손으로 관리하기 어려워졌다 — 선언적으로 관리한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+              "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+              "publisher": "クロスマート",
+              "date": "2026-09-16",
+              "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+            }
+          ]
+        },
+        {
+          "at": "정리하며",
+          "thought": "감사 로그를 믿을 수 있는 증적으로 운영할 토대 — 사칭 방지와 선언적 관리 — 를 갖췄고, 로그 양 · 비용은 운영하며 조정한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+              "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+              "publisher": "クロスマート",
+              "date": "2026-09-16",
+              "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "개인별 DB 사용자",
+            "what": "사람 이름과 1:1 인 DB 사용자 — 비밀번호 없이 AWSAuthenticationPlugin(RDS IAM 인증)."
+          },
+          {
+            "name": "IAM 인증 토큰",
+            "what": "aws rds generate-db-auth-token 으로 받는 15 분짜리 토큰 — 비밀번호 자리에 쓴다."
+          },
+          {
+            "name": "세션 태그 DBUser",
+            "what": "Identity Center 가 SSO 로그인 때 사용자 속성(userName)에서 자동 주입 — 접속 가능한 DB 사용자 이름을 정한다."
+          },
+          {
+            "name": "권한 세트",
+            "what": "모두 같은 역할 · 정책 — rds-db:connect 리소스가 ${aws:PrincipalTag/DBUser}."
+          },
+          {
+            "name": "developers 롤",
+            "what": "DB 권한을 모아 둔 롤 — 개인 사용자는 멤버로 상속."
+          },
+          {
+            "name": "감사 로그",
+            "what": "Aurora 고급 감사 → CloudWatch Logs, 각 줄에 실행한 DB 사용자(= 사람)."
+          }
+        ],
+        "invariants": [
+          "각자는 자기 이름의 DB 사용자로만 접속할 수 있다.",
+          "DB 비밀번호를 사람에게 발급하지 않는다.",
+          "DB 사용자 · 권한은 코드(명단 · 모듈)로만 바뀐다 — 손으로 CREATE USER · GRANT 하지 않는다.",
+          "앱용 사용자와 AWS 관리 사용자는 감사 대상에서 뺀다 — 사람의 조작만 남긴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "SSO 로 AWS CLI 인증 — Identity Center 가 세션 태그 DBUser=본인 이름을 넣는다",
+            "why": "이후 접속할 수 있는 DB 사용자가 여기서 정해진다."
+          },
+          {
+            "step": "aws ssm start-session 으로 RDS 포트 포워딩(이전과 같다)",
+            "why": "접속 경로는 바꾸지 않는다."
+          },
+          {
+            "step": "aws rds generate-db-auth-token 으로 15 분 토큰을 받아 비밀번호 대신 로그인",
+            "why": "rds-db:connect 가 태그와 같은 이름만 허락한다."
+          },
+          {
+            "step": "Aurora 고급 감사가 모든 쿼리를 실행자 이름과 함께 CloudWatch Logs 로",
+            "why": "Logs Insights 에서 사람별로 찾는다."
+          },
+          {
+            "step": "사람이 오고 가면 공유 JSON 명단을 고쳐 PR → 머지 → GitHub Actions apply",
+            "why": "모든 제품 DB 에 한 번에 반영된다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "쿼리를 어디서 기록하나?",
+            "chosen": "**DB 쪽 — Aurora MySQL 고급 감사를 켜 CloudWatch Logs 로 내보낸다(CONNECT · QUERY · TABLE).**",
+            "alternatives": [
+              "지금처럼 CloudTrail 의 터널 개설 기록만"
+            ],
+            "tradeoff": "터널 너머 실제 쿼리가 남는다. 대가는 로그 양 · 비용 — 그래서 대상을 좁힌다(아래 마지막 결정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "question": "'누가'를 어떻게 남기나?",
+            "chosen": "**공유 DB 사용자를 없애고 사람마다 DB 사용자를 만든다 — 감사 로그 한 줄에 사람 이름.**",
+            "alternatives": [
+              "공유 사용자를 두고 다른 로그와 시간으로 맞춰 본다"
+            ],
+            "tradeoff": "사용자 이름 = 사람이 1:1 로 맞아 DB 로그 하나로 '언제 · 누가 · 어떤 쿼리'가 나온다. 대가는 사람 수만큼 DB 사용자와 권한을 관리해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "question": "개인 사용자에 비밀번호를 주나?",
+            "chosen": "**주지 않는다 — RDS IAM 인증으로 15 분짜리 토큰을 비밀번호 대신.**",
+            "alternatives": [
+              "사용자마다 비밀번호 발급 · 관리"
+            ],
+            "tradeoff": "비밀번호 발급 · 보관 · 교체가 없고, 기존 SSO 인증에 올라탄다. 대가는 접속 때마다 토큰 생성 한 단계가 늘고, DB 사용자 자체는 여전히 인원수만큼 만들어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "question": "남의 이름으로 접속하는 걸 어떻게 막나?",
+            "chosen": "**권한 세트의 rds-db:connect 리소스를 고정 이름 대신 ${aws:PrincipalTag/DBUser} 로 — 태그는 Identity Center 속성 매핑(userName)으로 로그인 때 자동 주입.**",
+            "alternatives": [
+              "사람마다 역할 · 정책을 따로 만든다"
+            ],
+            "tradeoff": "모두 같은 역할 · 정책을 쓰면서도 자기 DB 사용자에만 붙는다(ABAC). Google Workspace 연동으로 이미 있던 사용자 속성을 쓴다. 대가는 Identity Center 속성 매핑이 틀어지면 식별이 무너진다는 것 — CloudTrail 의 AssumeRoleWithSAML principalTags 로 확인한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "question": "DB 사용자 · 권한을 어떻게 관리하나?",
+            "chosen": "**Terraform 선언 관리 — 공유 JSON 명단 하나를 MySQL · PostgreSQL 모듈이 함께 읽고, 서비스 디렉터리는 모듈에 대상 DB 만 넘긴다.**",
+            "alternatives": [
+              "사람이 들고 날 때마다 CREATE USER · GRANT 를 손으로"
+            ],
+            "tradeoff": "명단 한 줄 추가로 모든 DB 에 반영되고, PR 로 남는다. 모듈 변수로 명단을 안 쓰는 것도 가능하다. 대가는 모듈 · 파이프라인을 유지해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "question": "프로바이더로 다루기 어려운 IAM 사용자 · GRANT 를 Terraform 에서 어떻게?",
+            "chosen": "**terraform_data 의 triggers_replace 에 실행할 SQL 을 담고 local-exec 로 mysql 클라이언트 실행 — 사용자 단위 for_each.**",
+            "alternatives": [
+              "전용 DB 프로바이더 리소스만으로"
+            ],
+            "tradeoff": "정의가 바뀐 SQL 만 다시 돌고 기존 사용자는 건드리지 않으며, plan 차이에 실제 SQL 이 그대로 보인다. 대가는 선언적 상태가 아니라 SQL 실행에 기대는 구성이라, 밖에서 바뀐 DB 상태를 Terraform 이 알아채지 못한다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "question": "권한을 누구에게 붙이나?",
+            "chosen": "**사용자마다 주지 않고 developers 롤에 모아, 개인 사용자는 멤버로 상속.**",
+            "alternatives": [
+              "사용자별 GRANT"
+            ],
+            "tradeoff": "권한 재검토가 롤 하나로 끝난다. 대가는 개인별로 권한 차이를 두기 어렵다는 것(이 사이트의 해석 — 글은 차이를 두는 경우를 다루지 않는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 감사 대상에서 빼나?",
+            "chosen": "**앱용 DB 사용자와 rdsadmin 을 server_audit_excl_users 로 — 로컬에서 사람이 한 조작만 남긴다.**",
+            "alternatives": [
+              "모든 사용자의 쿼리를 남긴다"
+            ],
+            "tradeoff": "사람의 조작에 초점을 맞춰 로그 양을 줄인다. 대가는 CONNECT 이벤트는 제외 사용자도 찍힌다는 것 — 로그 양을 줄이려면 CONNECT 를 빼는 것도 운영하며 검토한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+                "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+                "publisher": "クロスマート",
+                "date": "2026-09-16",
+                "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "order-screen-vue-to-react",
+          "via": "같은 제품 DB",
+          "contract": "발주 화면이 만든 주문은 결국 제품 DB(Aurora 등)에 쌓이고, 엔지니어가 그 DB 를 들여다보는 조작이 이 감사 로그에 남는다 — 발주 화면 뒤 DB 가 어느 것인지는 두 글 모두 적지 않는다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+              "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+              "publisher": "クロスマート",
+              "date": "2026-09-16",
+              "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+            },
+            {
+              "title": "Vue2 から React へ。35万ユーザーの発注画面を止めずにフルリプレイスした話",
+              "url": "https://xmart-techblog.hatenablog.com/entry/2026/01/26/110000",
+              "publisher": "クロスマート",
+              "date": "2026-01-26",
+              "summary": "음식점용 크로스오더 발주 화면(Vue2 / Nuxt, 약 5 년 기능 추가)을 React SPA 로 전면 교체. 책무가 흐려지고 영향 범위를 알기 어렵고 Vue2 · Nuxt2 가 EOL — 부분 개선의 한계로 풀 리플레이스. React 를 고른 이유: 사내에 Vue 외 프로젝트를 만들어 기술 고정화를 피함 · 생태계의 선택지(문제 시 대체 수단) · 담당자의 React 실무 5 년(가장 빠르고 안전). 기존 코드를 AI 로 그대로 변환하지 않음(부채를 이어받지 않으려) — AI 용 규칙(명명 · 디렉터리 · 책무 · 금지 구현)을 미리 정의. 처음엔 혼자 기초 설계 · 대표 기능 · 정답 예시를 만들고 이후 기능 단위로 분담. 사용자 단위 단계 릴리스 — 사내 10 명 → 100 → 1,000 → 10,000 → 50,000 → 전원 35 만, 1 주 간격, Feature Flag 로 즉시 옛 화면 복귀. 새 도메인 · 인프라 준비(일부 고객 환경에서 SNI 미송신), 로그인 상태 인계, CS 문의 증가 대비, 특정 iOS 버전에서만 나는 버그를 단계 릴리스 덕에 좁은 범위에서 조사."
+            }
+          ]
+        },
+        {
+          "to": "도매업자용 크로스오더 수발주(수익원)",
+          "via": "도매업자 · 음식점의 주문 데이터",
+          "contract": "여러 제품의 DB 에 도매업자 · 음식점의 거래 데이터가 있을 것이고, 누가 무엇을 조회 · 변경했는지 남기는 건 거래 데이터를 맡는 쪽의 감사 대응이다 — 고객 요구나 인증 때문이라는 말은 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+              "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+              "publisher": "クロスマート",
+              "date": "2026-09-16",
+              "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+            },
+            {
+              "title": "クロスマート株式会社 | 卸売業者・問屋向け受発注サービスならクロスオーダー",
+              "url": "https://xmart.co.jp/",
+              "publisher": "クロスマート",
+              "summary": "사명 '외식의 힘으로 일본을' — 음식점과 도매업자의 거래를 디지털로 일원 관리하는 플랫폼. 도매업자용은 FAX 주문을 줄이는 '크로스오더 수발주'를 중심으로 '크로스오더 판촉' · '크로스오더 청구서', 음식점용은 발주 수고를 줄이고 LINE 으로 할인 정보를 받는 크로스오더. 도매업자 쪽은 무료 데모 · 견적 의뢰 창구(요금 표기 없음)."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "엔지니어 한 명의 쿼리가 이름 붙은 로그가 되기까지",
+          "question": "접속부터 로그까지 어디서 신원이 붙나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  ENG[\"엔지니어\"] --> SSO[\"IAM Identity Center SSO\\nDBUser=본인 이름 태그\"]\n  SSO --> SSM[\"SSM 포트 포워딩\\nECS bastion\"]\n  SSO --> TOK[\"generate-db-auth-token\\n15 분 토큰\"]\n  TOK --> DB[(\"Aurora\\n개인 DB 사용자\")]\n  SSM --> DB\n  DB --> AUD[\"고급 감사\\nCONNECT · QUERY · TABLE\"]\n  AUD --> CW[\"CloudWatch Logs\\nLogs Insights 로 사람별 검색\"]"
+        },
+        {
+          "title": "DB 사용자 한 명의 일생",
+          "question": "사람이 들어오고 나갈 때 DB 사용자는 어떻게 바뀌나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 명단추가: 공유 JSON 에 한 줄 · PR\n  명단추가 --> 생성: 머지 → Actions apply\\nCREATE USER ... AWSAuthenticationPlugin\n  생성 --> 권한상속: developers 롤 멤버\n  권한상속 --> 사용중: 토큰으로 접속 · 쿼리가 이름과 함께 기록\n  사용중 --> 명단삭제: 퇴사 · 권한 재검토\n  명단삭제 --> [*]: apply 로 반영"
+        },
+        {
+          "title": "예전 구성에서 새던 것",
+          "question": "공유 계정이면 무엇이 안 남나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"모두 같은 DB 사용자\"] --> B[\"CloudTrail: 누가 터널을 열었는지만\"]\n  B --> C[\"어떤 쿼리를 흘렸는지 없음\"]\n  A --> D[\"쿼리를 남겨도 전원이 한 사람으로 보임\"]\n  E[\"개인 사용자만 만들면\"] --> F[\"A 가 B 의 사용자로 접속 가능 → 식별 붕괴\"]\n  F --> G[\"PrincipalTag 로 자기 이름에만 connect\"]\n  C --> H[\"고급 감사 + 개인 사용자\"]\n  D --> H"
+        }
+      ],
+      "sources": [
+        {
+          "title": "共有DBユーザーを卒業し、「いつ・誰が・どんなクエリ」を追えるようRDS監査ログを整備した",
+          "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
+          "publisher": "クロスマート",
+          "date": "2026-09-16",
+          "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1030,7 +1421,7 @@
       "url": "https://xmart-techblog.hatenablog.com/entry/2026/09/16/130335",
       "publisher": "クロスマート",
       "date": "2026-09-16",
-      "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다)."
+      "summary": "SRE 글. 엔지니어가 SSO → SSM Session Manager · ECS bastion 포트 포워딩으로 Aurora 에 들어가되 DB 사용자를 공유해, CloudTrail 로 누가 터널을 열었는지는 알아도 어떤 쿼리를 흘렸는지 · 누구인지는 몰랐다. ① Aurora MySQL 고급 감사로 전 쿼리를 CloudWatch Logs 로 ② DB 사용자를 사람마다 — 비밀번호 대신 RDS IAM 인증(15 분 토큰). 사칭 방지: IAM Identity Center 권한 세트의 rds-db:connect 리소스를 ${aws:PrincipalTag/DBUser} 로(Google Workspace 연동 속성 → 세션 태그 자동 주입) — 같은 역할 · 정책으로도 자기 DB 사용자에만 접속. 여러 제품 DB 의 사용자 · 권한은 Terraform 으로 선언 관리 — 공유 JSON 목록 한 줄 추가로 MySQL · PostgreSQL 에 반영, 권한은 developers 롤에 모음, terraform_data 의 triggers_replace 에 SQL 을 담아 local-exec 로 실행(plan 에 SQL 이 보인다). 사용자 추가 · 삭제는 명단 PR → GitHub Actions plan/apply 로 반영. 감사 파라미터는 server_audit_events=CONNECT,QUERY,TABLE, 로컬에서의 조작만 남기려 앱용 DB 사용자와 rdsadmin 은 제외(단 CONNECT 는 제외 사용자도 찍혀 로그 양에 따라 빼는 것도 검토) — CloudWatch Logs Insights 로 실행자별 검색."
     }
   ]
 }
