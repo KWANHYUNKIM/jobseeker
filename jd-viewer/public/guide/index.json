@@ -995,6 +995,19 @@
       "postings": 4,
       "study_items": 15,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "artience",
+      "name": "아티언스",
+      "aliases": [
+        "아티언스",
+        "㈜아티언스",
+        "Artience"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }

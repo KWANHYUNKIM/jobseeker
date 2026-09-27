@@ -1,0 +1,156 @@
+{
+  "slug": "artience",
+  "name": "아티언스",
+  "name_en": "Artience",
+  "aliases": [
+    "아티언스",
+    "㈜아티언스",
+    "Artience"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "artience.com",
+  "one_liner": "글로벌 SEO·퍼포먼스 마케팅 에이전시 — 새로 만든 AX팀이 사내 AI 서비스(RAG·에이전트)와 AX 컨설팅을 맡는다",
+  "company": {
+    "business": "공고 머리말은 아티언스를 **2009년 시작한 글로벌 디지털 마케팅 전문 기업**으로, 최근 3년간 3배 이상 성장했다고 소개하고 일을 '전 세계 디지털 미디어로 클라이언트의 글로벌 고객에게 메시지를 전달하고 측정 결과를 분석·최적화해 비즈니스 성과를 극대화' 하는 것으로 적는다. 홈페이지는 서비스를 넷으로 나눈다 — **SEO & GEO Consulting**(글로벌 AI 검색 환경 기반), **Digital Performance Marketing**, **Analytics & Automation**(데이터 마트 컨설팅), **Marketing Training Service** — 그리고 300건 이상 글로벌 프로젝트, 80개국, Fortune 500 포함 60개 이상 글로벌 고객사를 내세운다. 모집중 개발 관련 공고는 **AX팀** 두 자리다(원티드·사람인 같은 본문) — **AI 서비스 개발자**(생성형 AI 사내 서비스·업무 자동화, 사내 지식 RAG, 메일 분류·회의록 요약·리포트 QA 에이전트, 3~5년)와 **AI 서비스 기획자 PM/PO**(AI 서비스 기획, 자사·고객사 **AX 컨설팅**, AI 신규사업 기획, 3~5년). 근무지 서울 마포구(합정역). 매출·인원은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI 서비스 개발자",
+        "url": "https://www.wanted.co.kr/wd/357650",
+        "publisher": "원티드",
+        "summary": "머리말: 2009년 시작한 글로벌 디지털 마케팅 전문 기업, 최근 3년간 3배 이상 성장. 전 세계 디지털 미디어로 클라이언트의 글로벌 고객에게 메시지를 전달하고 측정 결과를 분석·최적화."
+      },
+      {
+        "title": "글로벌 디지털마케팅 전문 에이전시 | 아티언스",
+        "url": "https://www.artience.com/",
+        "publisher": "아티언스",
+        "summary": "홈페이지: Global SEO & Performance Marketing, 17년. 서비스 SEO & GEO Consulting · Digital Performance Marketing · Analytics & Automation(데이터 마트 컨설팅) · Marketing Training Service(시뮬레이션 솔루션). 300건 이상 글로벌 프로젝트, 80개국, 60개 이상 글로벌 고객사(Fortune 500 포함). 주소 서울 마포구 성지1길 30 아티언스 빌딩."
+      },
+      {
+        "title": "AI 서비스 기획자 (PM/PO) 3년 이상",
+        "url": "https://www.wanted.co.kr/wd/375416",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "글로벌 프로젝트·고객(홈페이지 주장)",
+        "value": "300건 이상 프로젝트, 80개국, 60개 이상 글로벌 고객사",
+        "as_of": "2026-09 홈페이지 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "글로벌 디지털마케팅 전문 에이전시 | 아티언스",
+            "url": "https://www.artience.com/",
+            "publisher": "아티언스",
+            "summary": "홈페이지: Global SEO & Performance Marketing, 17년. 서비스 SEO & GEO Consulting · Digital Performance Marketing · Analytics & Automation(데이터 마트 컨설팅) · Marketing Training Service(시뮬레이션 솔루션). 300건 이상 글로벌 프로젝트, 80개국, 60개 이상 글로벌 고객사(Fortune 500 포함). 주소 서울 마포구 성지1길 30 아티언스 빌딩."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "글로벌 디지털 마케팅 대행·컨설팅(SEO·GEO·퍼포먼스·분석)",
+        "how": "홈페이지와 공고 머리말이 글로벌 고객사 대상 SEO/GEO·퍼포먼스 마케팅·데이터 마트 컨설팅·교육을 적는다. 계약·과금 구조는 읽지 않았다. 모집중 AX팀 공고는 이 사업을 직접 맡지 않는다.",
+        "domains": [],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "글로벌 디지털마케팅 전문 에이전시 | 아티언스",
+            "url": "https://www.artience.com/",
+            "publisher": "아티언스",
+            "summary": "홈페이지: Global SEO & Performance Marketing, 17년. 서비스 SEO & GEO Consulting · Digital Performance Marketing · Analytics & Automation(데이터 마트 컨설팅) · Marketing Training Service(시뮬레이션 솔루션). 300건 이상 글로벌 프로젝트, 80개국, 60개 이상 글로벌 고객사(Fortune 500 포함). 주소 서울 마포구 성지1길 30 아티언스 빌딩."
+          },
+          {
+            "title": "AI 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/357650",
+            "publisher": "원티드",
+            "summary": "머리말: 2009년 시작한 글로벌 디지털 마케팅 전문 기업, 최근 3년간 3배 이상 성장. 전 세계 디지털 미디어로 클라이언트의 글로벌 고객에게 메시지를 전달하고 측정 결과를 분석·최적화."
+          }
+        ]
+      },
+      {
+        "name": "AX 컨설팅·AI 서비스 상품(신규)",
+        "how": "기획자 공고가 자사·고객사 업무 프로세스 분석과 AX 혁신 컨설팅 지원, AI 서비스/컨설팅 상품 기획을 적는다. 매출로 이어지고 있는지는 공고에 없다 — 사내 도구로 시작해 상품화를 검토하는 단계로 읽었다.",
+        "domains": [
+          "사내 AI 서비스·RAG·업무 에이전트",
+          "AI 서비스 기획·AX 컨설팅"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 서비스 기획자 (PM/PO) 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/375416",
+            "publisher": "원티드"
+          },
+          {
+            "title": "AI 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/357650",
+            "publisher": "원티드",
+            "summary": "머리말: 2009년 시작한 글로벌 디지털 마케팅 전문 기업, 최근 3년간 3배 이상 성장. 전 세계 디지털 미디어로 클라이언트의 글로벌 고객에게 메시지를 전달하고 측정 결과를 분석·최적화."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "사내 AI 서비스·RAG·업무 에이전트",
+        "why": "AI 서비스 개발자 공고가 상용 LLM API(OpenAI·Anthropic·Gemini) 기능, 사내 문서 RAG 파이프라인, 메일 분류·회의록 요약·리포트 QA·문서 생성 에이전트, Tool/Function Calling, API 비용·응답 속도 모니터링을 적는다.",
+        "what_to_know": [
+          "RAG 파이프라인",
+          "Tool Calling",
+          "LLM 비용 관리"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/357650",
+            "publisher": "원티드",
+            "summary": "머리말: 2009년 시작한 글로벌 디지털 마케팅 전문 기업, 최근 3년간 3배 이상 성장. 전 세계 디지털 미디어로 클라이언트의 글로벌 고객에게 메시지를 전달하고 측정 결과를 분석·최적화."
+          }
+        ]
+      },
+      {
+        "name": "AI 서비스 기획·AX 컨설팅",
+        "why": "기획자 공고가 생성형 AI 서비스·에이전트 기획과 PRD·화면설계서, 업무 프로세스 분석·인터뷰로 AI 적용 영역 발굴, 경쟁 서비스 분석과 신규사업 검토를 적는다.",
+        "what_to_know": [
+          "PRD 작성",
+          "업무 프로세스 분석",
+          "AI 적용 가능성 평가"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 서비스 기획자 (PM/PO) 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/375416",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "마케팅 에이전시가 AX팀을 새로 꾸리고 있다",
+        "evidence": "생성형 AI 기반 사내 서비스 및 업무 자동화 도구 개발",
+        "so_what": "두 공고 모두 [AX팀] 이고 대상은 먼저 사내 업무(메일·회의록·리포트)다. 개발자 자격이 'LLM API 활용 개발 경험(토이 프로젝트 수준 가능)' 으로 문턱이 낮다 — 웹 개발 3년차가 LLM 서비스로 옮겨 가기 좋은 입구다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "시간 외 수당을 명시한다",
+        "evidence": "연장/야간/휴일 근무 시 시간 외 수당 지급",
+        "so_what": "에이전시 업무 특성상 야근 가능성을 공고가 먼저 적는다. 실제 빈도는 면접에서 묻는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출·임직원 수는 읽지 않았다",
+    "AX 컨설팅이 이미 매출을 내는 상품인지 공고에 없다"
+  ],
+  "postings": []
+}
