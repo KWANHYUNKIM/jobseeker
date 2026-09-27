@@ -982,6 +982,19 @@
       "postings": 4,
       "study_items": 9,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "firsthabit",
+      "name": "퍼스트해빗",
+      "aliases": [
+        "퍼스트해빗",
+        "㈜퍼스트해빗",
+        "FIRSTHABIT"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
