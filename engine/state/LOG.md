@@ -2784,3 +2784,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 コドモン 모놀리스 7 년
 
 - 기능 `monolith-gradual-rearchitecture` — 재작성 대 유지 · Go 마이크로서비스 + 모놀리스 프록시 · 청구 관리 모듈러 모놀리스 · 팀별 언어 · 온프레 탈출 · 타각 수평 분리 · gauge + playwright · Laravel, 결정 8. 범용 테이블 해체와 confirmed 연결, 수수료 · 구독 수익원과 inferred.
+
+## 2026-09-27 コドモン 배치 기반 재설계
+
+- 기능 `batch-platform-rearchitecture` — 매니지드 조합 · Standard · EC2/Fargate 병용 · 입구 분리 + 운영 공통화 · 이미지 캐시 · FireLens 사이드카 · awsvpc · 단계 이행/분할 단위, 결정 8. 모놀리스 · 테이블 해체 · 구독과 inferred 연결. 도메인 3/3.
