@@ -213,5 +213,120 @@
     "ODiiN·Heiimdahl·VDC 의 요금·고객 수는 읽지 않았다",
     "잡코리아 백엔드·클라우드 게시(49985191·49985192)는 본문이 이미지라 원티드 게시와 같은 자리인지 확인하지 못했다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/380594",
+      "title": "백엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 1-5년(초대졸 이상), 서울 강남구. **멀티클라우드 운영 플랫폼 ODiiN 의 백엔드**다. 주요업무는 세 묶음 — (1) 기능·API·**권한 정책**·핵심 도메인 설계와 구현, **인증·인가·데이터 정합성·트랜잭션** (2) **AWS·Azure·GCP API 와 계정 연동**, **비용 파이프라인·배치·구독·결제** (3) 피드백 기반 개선·배포, AI 로 코드 리뷰·문서화·리서치 자동화. 자격은 백엔드 1년, **Kotlin·TypeScript·Python·Go·Java 중 하나**, MySQL 등 RDBMS, Docker·Git·Gradle, 그리고 필수 역량 셋 — **'왜 이 구조인가' 를 트레이드오프로 설명**, **AI 결과를 검증하고 책임지는 태도**, 근거 있는 커뮤니케이션. 우대는 대규모 시스템, 장애 대응, OOP·DDD, 복잡한 요구사항 설계, AI 개발 도구. 원격 근무 가능, 야근수당. 전형은 서류 → 실무 인터뷰(온라인) → 임원 인터뷰(오프라인), 이력서·포트폴리오·경력기술서(PDF). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 1년",
+          "Kotlin/TS/Python/Go/Java 중 하나",
+          "MySQL",
+          "설계 트레이드오프 설명"
+        ],
+        "can_learn": [
+          "클라우드 빌링 데이터",
+          "교차 계정 권한 위임",
+          "구독 결제"
+        ]
+      },
+      "study": [
+        {
+          "topic": "세 클라우드의 비용 데이터를 하나로 — 빌링 내보내기와 FOCUS",
+          "from": "task",
+          "quote": "- 비용 파이프라인, 배치, 구독·결제 프로세스 관리",
+          "priority": "core",
+          "why": "주요업무이고 회사 제품 ODiiN 이 여러 CSP 를 한 곳에서 관리해 비용을 줄인다고 홈페이지가 적는다.",
+          "gap_check": "AWS 비용·사용 보고서, Azure Cost Management, GCP BigQuery 빌링 내보내기는 컬럼·갱신 주기가 어떻게 다르고, 같은 달 비용이 며칠 뒤 정정되는 경우 배치는 어떻게 다시 계산하는가? 공통 스키마(FOCUS)로 맞추면 무엇이 쉬워지는가?",
+          "drill": "AWS CUR·Azure Cost Management·GCP 빌링 내보내기 문서와 FOCUS 사양을 읽고, 세 클라우드의 가짜 빌링 CSV 를 만들어 FOCUS 비슷한 공통 테이블(계정·서비스·기간·금액·통화·태그)로 합치는 배치를 짠다. 지난달 데이터 일부를 정정한 파일을 다시 넣어도 중복 없이 갱신되는지(멱등성) 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "What are AWS Cost and Usage Reports?",
+              "url": "https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Overview of Cost Management — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/overview-cost-management",
+              "kind": "docs"
+            },
+            {
+              "title": "Export Cloud Billing data to BigQuery — Google Cloud",
+              "url": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery",
+              "kind": "docs"
+            },
+            {
+              "title": "FOCUS — FinOps Open Cost & Usage Specification",
+              "url": "https://focus.finops.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객 클라우드 계정 연동 — 키를 받지 않고 권한 위임받기",
+          "from": "task",
+          "quote": "- AWS-Azure-GCP등 API 및 계정 연동",
+          "priority": "core",
+          "why": "주요업무이고 같은 공고가 인증·인가를 적는다. 홈페이지가 '저장된 자격증명 없이 매번 검증' 하는 제로트러스트를 내세운다.",
+          "gap_check": "고객이 액세스 키를 넘겨주는 대신, 고객 계정에 우리 계정이 맡을 역할을 만들어 두고 임시 자격증명을 받는 방식은 무엇이 안전한가? 외부 ID(external ID)는 어떤 공격(혼동된 대리인)을 막는가? 읽기 전용 권한과 자원을 바꿀 권한은 어떻게 나눠 요청하는가?",
+          "drill": "AWS 의 '제3자 소유 계정 접근' 문서를 읽고, 계정 두 개(또는 LocalStack)로 교차 계정 역할과 외부 ID 를 설정해 빌링 읽기 전용 권한으로 임시 자격증명을 받아 비용 API 를 호출한다. 외부 ID 를 틀리게 넣었을 때 거부되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Access to AWS accounts owned by third parties — AWS IAM",
+              "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_third-party.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "구독·결제의 데이터 정합성",
+          "from": "task",
+          "quote": "- 인증·인가, 데이터 정합성, 트랜잭션 관리",
+          "priority": "high",
+          "why": "주요업무이고 같은 공고의 비용·결제 묶음에 구독·결제 프로세스 관리가 있다.",
+          "gap_check": "결제 대행사 웹훅이 두 번 오거나 순서가 바뀌어 와도 구독 상태가 틀어지지 않게 하려면 무엇을 저장하는가(이벤트 ID·상태 전이 규칙)? 요금제를 월 중간에 바꿀 때 일할 계산은 어느 시점 사용량을 기준으로 하는가?",
+          "drill": "Stripe 'How subscriptions work' 와 Idempotence 문서를 읽고, 구독 상태(체험·활성·연체·해지)와 전이 규칙을 가진 테이블을 MySQL 로 만든다. 같은 웹훅을 두 번, 순서를 바꿔 보냈을 때 상태가 한 번만 바뀌는지 테스트한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "How subscriptions work — Stripe Documentation",
+              "url": "https://docs.stripe.com/billing/subscriptions/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Idempotence — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Idempotence",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "권한 정책과 도메인 설계 — 트레이드오프로 설명하기",
+          "from": "qualification",
+          "quote": "- \"왜 이 구조인가\"를 트레이드오프로 설명할 수 있고. 코드 리뷰를 통해 함께 성장하려는 의지",
+          "priority": "high",
+          "why": "필수 역량이고 주요업무에 권한 정책·핵심 도메인 설계가, 우대에 OOP·DDD 가 있다. 실무 인터뷰에서 설계 이유를 묻는다고 읽힌다.",
+          "gap_check": "고객사 안에서 '재무팀은 비용만 보고, 운영팀은 자원도 바꾼다' 를 역할 기반 권한(RBAC)으로 표현할 때 역할·권한·자원 범위를 어떻게 나누는가? '클라우드 계정' 과 '비용 항목' 을 같은 도메인 객체에 넣을지 나눌지 결정할 때 무엇을 근거로 드는가?",
+          "drill": "Role-based access control 과 Domain Driven Design 글을 읽고, 앞 과제들의 도메인(조직·사용자·클라우드 계정·비용·구독)을 그림으로 나누고 역할 세 개의 권한 표를 만든다. 설계 결정 두 개를 '선택지·고른 것·버린 이유' 형식으로 한 쪽에 적어 포트폴리오에 넣는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Role-based access control — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Role-based_access_control",
+              "kind": "docs"
+            },
+            {
+              "title": "Domain Driven Design — Martin Fowler",
+              "url": "https://martinfowler.com/bliki/DomainDrivenDesign.html",
+              "kind": "post"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
