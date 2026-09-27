@@ -407,6 +407,122 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/370379",
+      "title": "Security Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 서울 서초구, 보안/인프라팀. 머리말은 팀이 AI/ML 개발·서비스용 IT 인프라(온프레미스·클라우드)를 구축·운영하고, 표준화된 도구·아키텍처를 제공하는 **Platform Engineering** 을 하며, **정보보호 거버넌스와 인증 획득·유지**를 맡는다고 적는다. 출장·외근이 있을 수 있다. 주요업무는 **ISO 27001·ISMS-P 인증 획득·갱신과 보안 감사 대비**, **Kubernetes 보안 정책과 퍼블릭·프라이빗 클라우드 보안 설정**, 인프라·서비스 취약점 점검과 조치 가이드. 자격은 네트워크 보안장비 직접 설정·트러블슈팅, **클라우드 IAM 과 Private AI(Vertex AI) 인프라 보안 최적화**, ISO 27001/ISMS-P 심사 대응, 정책 수립부터 적용까지 End-to-End, **Terraform·CloudFormation 으로 보안 설정**, SIEM 이해. 우대는 K8s 서비스 보안 운영, 보안과 개발 생산성의 균형. 인증 문서 업무와 K8s·클라우드 설정 실무가 반반인 자리다. 전형은 서류→기술 인터뷰→Fit 인터뷰→평판조회. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "보안 3년",
+          "ISO 27001·ISMS-P 심사 대응",
+          "클라우드 IAM",
+          "네트워크 보안장비",
+          "IaC"
+        ],
+        "can_learn": [
+          "K8s Pod Security",
+          "Vertex AI 보안 경계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ISO 27001·ISMS-P 인증을 유지하는 일",
+          "from": "qualification",
+          "quote": "• ISO 27001 또는 ISMS-P 인증 심사 대응 및 인증 유지 실무 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무 첫 줄이 인증 거버넌스 운영(획득·갱신·감사 대비)이다.",
+          "gap_check": "ISO 27001 의 Annex A 통제와 ISMS-P 의 개인정보 요건은 어디가 겹치고 어디가 다른가? 심사원이 '정책이 있다' 가 아니라 '운영하고 있다' 를 확인할 때 무엇을 증적으로 보여 주는가(접근권한 검토 기록·로그·교육 이력)?",
+          "drill": "ISO/IEC 27001 문서를 읽고, 가상의 AI 스타트업(쿠버네티스·GCP 사용)에 대해 통제 10개를 골라 '정책 문장 → 운영 절차 → 증적(파일·로그·화면)' 매핑표를 만든다. 분기 권한 검토 증적을 스크립트로 자동 수집하는 방법까지 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "ISO/IEC 27001 — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/ISO/IEC_27001",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kubernetes 보안 정책",
+          "from": "task",
+          "quote": "• Kubernetes, 클라우드 보안: Kubernetes 보안 정책을 수립과 퍼블릭, 프라이빗 클라우드 보안 설정 수립및 최적화 업무를 수행합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 Kubernetes 환경 서비스 보안 운영이 있다. 회사 제품 Runway 가 K8s 멀티테넌트 플랫폼이다.",
+          "gap_check": "Pod Security Standards 의 privileged·baseline·restricted 는 무엇을 막고, AI 워크로드(GPU·호스트 경로 마운트)가 restricted 를 못 지킬 때 예외는 어떻게 관리하는가? RBAC 에서 흔히 과하게 주는 권한(시크릿 조회, pods/exec, 와일드카드)은 무엇인가?",
+          "drill": "Pod Security Standards·RBAC Good Practices 문서를 읽고, kind 클러스터에 네임스페이스별로 restricted 를 적용해 특권 파드가 거절되는지 확인한다. 일부러 과하게 만든 Role 3개를 점검해 최소 권한으로 줄이고 전후 차이를 표로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Pod Security Standards — Kubernetes",
+              "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+              "kind": "docs"
+            },
+            {
+              "title": "Role Based Access Control Good Practices — Kubernetes",
+              "url": "https://kubernetes.io/docs/concepts/security/rbac-good-practices/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드 IAM 최소 권한",
+          "from": "qualification",
+          "quote": "• 클라우드 CSP IAM 보안 및 Private AI (Vertex AI)인프라 보안 최적화 경험이 있으신",
+          "priority": "high",
+          "why": "필수 자격이고 주요업무에 퍼블릭·프라이빗 클라우드 보안 설정 수립·최적화가 있다.",
+          "gap_check": "GCP 에서 사람 계정과 서비스 계정 권한을 어떻게 나누고, 서비스 계정 키 파일을 발급하지 않고 워크로드가 인증하게 하려면 무엇을 쓰는가? 기본 역할(Owner/Editor)을 쓰면 왜 감사에서 지적받는가?",
+          "drill": "GCP IAM overview 를 읽고, ML 학습 파이프라인(버킷 읽기·모델 레지스트리 쓰기·로그 쓰기)에 필요한 최소 역할 조합을 표로 만든다. 같은 권한을 기본 역할로 줬을 때 추가로 열리는 권한을 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "IAM overview — Google Cloud Documentation",
+              "url": "https://docs.cloud.google.com/iam/docs/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Terraform 으로 보안 설정 코드화와 검사",
+          "from": "qualification",
+          "quote": "• IaC를 이용한 보안 설정의 경험이 있으신 분 (terraform, cloudformation)",
+          "priority": "high",
+          "why": "필수 자격이고, 정책을 코드로 두면 인증 심사의 변경 관리 증적이 된다.",
+          "gap_check": "콘솔에서 손으로 바꾼 설정(드리프트)은 Terraform 으로 어떻게 찾아내는가? 공개 버킷·전체 개방 방화벽 같은 실수를 배포 전에 잡으려면 파이프라인 어디에 검사를 넣는가?",
+          "drill": "What is Terraform 과 Checkov 문서를 읽고, 버킷·방화벽 규칙·서비스 계정을 Terraform 으로 정의한 뒤 일부러 공개 버킷과 0.0.0.0/0 규칙을 넣는다. Checkov 로 잡히는지 확인하고, 고친 뒤 통과한 결과를 증적처럼 저장한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "What is Terraform — HashiCorp Developer",
+              "url": "https://developer.hashicorp.com/terraform/intro",
+              "kind": "docs"
+            },
+            {
+              "title": "checkov",
+              "url": "https://www.checkov.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SIEM 으로 무엇을 모으고 무엇을 경보할까",
+          "from": "qualification",
+          "quote": "• SIEM 솔루션에 대한 이해가 있으신 분",
+          "priority": "nice",
+          "why": "필수 자격이고 인증 유지(로그 보관·이상 징후 대응)와 취약점 점검의 결과를 모으는 곳이다.",
+          "gap_check": "K8s 감사 로그·클라우드 감사 로그·보안장비 로그 중 먼저 모아야 할 것은 무엇이고, '관리자 권한 부여' 같은 이벤트에 경보를 걸 때 오탐을 어떻게 줄이는가?",
+          "drill": "SIEM 문서를 읽고, 앞 과제의 kind 클러스터 감사 로그에서 '시크릿 조회'·'clusterrolebinding 생성' 이벤트를 골라내는 탐지 규칙 3개를 쓴다. 정상 배포 작업에서 오탐이 나는지 확인하고 예외 조건을 붙인다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Security information and event management — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Security_information_and_event_management",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
