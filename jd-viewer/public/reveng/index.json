@@ -7,7 +7,7 @@
       "name_en": "Omiai",
       "country": "JP",
       "category": "소셜",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 2,
       "one_liner": "연애 · 결혼을 위한 13 년 된 매칭 앱 'Omiai' 의 회사(에니토 그룹) — 목적을 먼저 정의한 2 차 리아키텍처로 MySQL · Elasticsearch 혼합 검색을 일원화해 새 멤버 검색을 76% 줄이고 '좋아요' 데이터를 정리해 서버비를 월 1 만 달러 넘게 깎았으며, 과도하게 공통화된 API 를 떼어 놓는다",
       "updated_at": "2026-09-27",

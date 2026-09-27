@@ -2704,3 +2704,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Omiai API 분리
 
 - API 부채 글 후반까지 읽고 기능 `api-decoupling-feature-flag-java`, 결정 6. 완주 기준 충족 — 다음 사이클 완주 처리.
+
+## 2026-09-27 Omiai 완주
+
+- 완주 기준 확인: 도메인 2 모두 기능 · 기능마다 connections 2 · 수익원 2 모두 confirmed 도메인 연결. status done, QUEUE 완료로 이동.
