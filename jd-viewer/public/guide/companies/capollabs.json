@@ -355,6 +355,120 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382392",
+      "title": "[캐폴테스트] Flutter 앱 개발자 (2~7년)",
+      "site": "wanted",
+      "verdict": "경력 2-7년, 정규직(수시채용), 서울 종로구 새문안로 41. 머리말은 **캐폴테스트의 모바일 경험을 Flutter 로 새롭게 구축하고 iOS·Android 출시까지 이끌** 사람을 찾는다고 적는다 — 앱이 아직 없다. 주요업무는 **Flutter·Dart iOS·Android 앱 신규 개발·출시**, 이미지·음성 질문 재생·**마이크 녹음**·터치 응답·진행 상태·결과 리포트, Hono/OpenAPI API·Supabase 인증·데이터 연동, **앱 권한·오디오 세션·로컬 저장·오류 복구·스토어 배포 품질**, 웹·백엔드·디자인·심리전문가 협업. 자격은 Flutter 2년, Dart·상태 관리·REST API, **iOS 또는 Android 출시·운영 경험**, **모바일 권한과 생명주기 이해**, Git·코드 리뷰. 우대는 **음성 녹음·재생·업로드**, WebRTC, 접근성·테스트 자동화·**앱 심사 대응**, 교육·키즈·헬스케어. 같은 검사 흐름을 웹(382391)과 앱이 둘 다 구현하므로 두 공고의 학습 항목이 서로 이어진다. 급여·근무 방식은 면접 후 협의.",
+      "fit": {
+        "must_have": [
+          "Flutter 2년",
+          "Dart·상태 관리",
+          "앱 출시·운영",
+          "권한·생명주기"
+        ],
+        "can_learn": [
+          "오디오 세션",
+          "키즈 앱 심사",
+          "녹음 업로드 복구"
+        ]
+      },
+      "study": [
+        {
+          "topic": "녹음과 재생이 부딪히지 않게 — 오디오 세션과 권한",
+          "from": "task",
+          "quote": "• 앱 권한, 오디오 세션, 로컬 저장, 오류 복구, 앱스토어·플레이스토어 배포 품질 관리",
+          "priority": "core",
+          "why": "주요업무이고 우대에 음성 녹음·재생·업로드 경험이 있다. 검사가 '음성 안내 재생 → 아이 발화 녹음' 을 번갈아 한다.",
+          "gap_check": "iOS 에서 재생과 녹음을 번갈아 할 때 오디오 세션 카테고리를 어떻게 잡아야 안내 음성이 끊기거나 녹음에 안내가 섞이지 않는가? 전화가 오거나 이어폰을 뽑으면 녹음은 어떻게 되는가? 마이크 권한을 '다시 묻지 않음' 으로 거부한 사용자는 어떻게 안내하는가?",
+          "drill": "record·audio_session·permission_handler 패키지 문서와 Android 권한 개요를 읽고, 안내 음성 재생 → 녹음 3초 → 재생 확인을 반복하는 화면을 만든다. 재생 중 녹음 시작, 녹음 중 다른 앱 소리 재생, 권한 영구 거부 세 경우를 실제 기기에서 확인하고 처리한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "record — pub.dev",
+              "url": "https://pub.dev/packages/record",
+              "kind": "repo"
+            },
+            {
+              "title": "audio_session — pub.dev",
+              "url": "https://pub.dev/packages/audio_session",
+              "kind": "repo"
+            },
+            {
+              "title": "permission_handler — pub.dev",
+              "url": "https://pub.dev/packages/permission_handler",
+              "kind": "repo"
+            },
+            {
+              "title": "Permissions on Android — Android Developers",
+              "url": "https://developer.android.com/guide/topics/permissions/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "앱 생명주기와 검사 중단·복구",
+          "from": "qualification",
+          "quote": "• 모바일 권한과 생명주기를 이해하는 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 로컬 저장·오류 복구가 있다. 아이가 검사 중 앱을 벗어나는 일은 흔하다.",
+          "gap_check": "앱이 백그라운드로 가거나 OS 에 의해 종료될 때 진행 중인 검사 상태와 아직 못 올린 녹음 파일을 어디에 저장하는가? 다시 열었을 때 이어서 할지 처음부터 할지는 무엇으로 결정하는가?",
+          "drill": "AppLifecycleListener 문서를 읽고, 앞 과제 화면에 검사 진행 상태를 로컬에 저장하고 백그라운드 전환·앱 강제 종료 후 복구하는 흐름을 넣는다. 업로드 실패한 녹음이 다음 실행 때 재시도되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AppLifecycleListener class — Flutter API",
+              "url": "https://api.flutter.dev/flutter/widgets/AppLifecycleListener-class.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "키즈 앱 출시 — 스토어 배포와 심사",
+          "from": "task",
+          "quote": "• Flutter와 Dart 기반 iOS·Android 앱 신규 개발과 출시",
+          "priority": "high",
+          "why": "주요업무가 신규 개발과 출시이고 자격에 출시·운영 경험이, 우대에 앱 심사 대응 경험이 있다.",
+          "gap_check": "아동을 대상으로 한 앱은 스토어 심사에서 무엇을 더 요구받는가(외부 링크·결제·데이터 수집·보호자 확인)? iOS·Android 서명·빌드·내부 테스트 배포 순서는?",
+          "drill": "Apple App Review Guidelines 의 Kids Category 항과 Flutter iOS·Android 배포 문서를 읽고, 이 앱이 걸릴 만한 항목(마이크·음성 데이터 수집·보호자 동의)을 점검표로 만든다. 앞 과제 앱을 Android 내부 테스트 트랙까지 올려 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "App Review Guidelines — Apple Developer",
+              "url": "https://developer.apple.com/app-store/review/guidelines/",
+              "kind": "docs"
+            },
+            {
+              "title": "Build and release an iOS app — Flutter",
+              "url": "https://docs.flutter.dev/deployment/ios",
+              "kind": "docs"
+            },
+            {
+              "title": "Build and release an Android app — Flutter",
+              "url": "https://docs.flutter.dev/deployment/android",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Flutter 에서 Supabase 인증과 API 연동",
+          "from": "task",
+          "quote": "• Hono/OpenAPI 기반 캐폴테스트 API 및 Supabase 인증·데이터 연동",
+          "priority": "nice",
+          "why": "주요업무이고 같은 회사 웹 공고와 같은 백엔드를 쓴다.",
+          "gap_check": "Supabase 세션을 앱에 안전하게 저장하고 만료 전에 갱신하려면 무엇을 쓰는가? 네트워크가 끊겼을 때 응답을 로컬에 모아 두었다가 순서대로 보내려면?",
+          "drill": "Supabase Flutter 문서를 따라 보호자 로그인과 세션 유지를 만들고, 검사 응답을 API 로 보내는 부분에 오프라인 큐를 붙인다. 비행기 모드에서 응답 세 개를 쌓았다가 연결 복구 후 한 번씩만 전송되는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Flutter: Introduction — Supabase Docs",
+              "url": "https://supabase.com/docs/reference/dart/introduction",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
