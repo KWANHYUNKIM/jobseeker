@@ -281,6 +281,132 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/369738",
+      "title": "Backend Engineer (Runway Platform)",
+      "site": "wanted",
+      "verdict": "경력 10년 이상(또는 그에 준하는 역량), 서울 서초구, PD본부 플랫폼팀. 머리말은 Runway Platform 을 **Runway(AI OS)의 근간이 되는 Kubernetes 기반 멀티테넌트 AI/ML 플랫폼**으로 적고, 팀이 워크스페이스 컨트롤 플레인·통합 인증·인가·서비스 메시·GPU 자원 할당·Data/MLOps 스택·관측성을 **제품처럼 통합**하며 **Operator 와 컨트롤 플레인을 직접 구현**하고, 선언적 아키텍처와 GitOps 로 **온프레미스/사설망**까지 배포한다고 적는다. 주요업무는 **K8s 멀티테넌시·인증·인가 플랫폼**, 개발·운영 도구 설계·큐레이션·통합 자동화, 클러스터 자원 할당·모니터링, **GPU 분할·멀티 노드·멀티 GPU 지원**. 필수는 격리된 멀티테넌트 AI/ML 플랫폼을 K8s 위에 직접 설계·구현한 경험, **Go 로 Operator·CRD·Admission Webhook**, **Keycloak(OIDC/OAuth2)·OPA·OpenBao(Vault)** 로 SSO·세분화 권한·시크릿 통합, **Helm·ArgoCD GitOps(폐쇄망 레지스트리 포함)**. 우대는 Istio·Gateway API 인증·인가 흐름, DataOps/MLOps/LLMOps, 로그·메트릭 관측성, GPU 활용. 'Backend' 라는 제목과 달리 **플랫폼 엔지니어링 시니어** 자리다. 전형은 서류→기술 인터뷰→Fit 인터뷰→평판조회. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "10년",
+          "K8s 멀티테넌트 플랫폼 설계",
+          "Go Operator·CRD·Webhook",
+          "Keycloak·OPA·Vault 통합",
+          "Helm·ArgoCD 폐쇄망"
+        ],
+        "can_learn": [
+          "Istio Gateway API",
+          "GPU MIG 분할"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Go 로 Operator·CRD 만들기",
+          "from": "qualification",
+          "quote": "• Go 언어로 Operator·CRD·Admission Webhook을 설계·개발한 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 머리말이 'Kubernetes Operator 와 컨트롤 플레인을 직접 구현' 한다고 적는다.",
+          "gap_check": "리컨실 루프는 '원하는 상태' 와 '현재 상태' 를 어떻게 맞추고, 같은 이벤트가 두 번 와도 결과가 같게(멱등) 짜려면 무엇을 지켜야 하는가? 워크스페이스 CR 이 지워질 때 딸린 네임스페이스·시크릿을 정리하는 파이널라이저는 언제 필요한가?",
+          "drill": "Operator pattern 문서와 Kubebuilder Book 을 따라 Workspace CRD 를 만든다 — CR 하나가 생기면 네임스페이스·ResourceQuota·RoleBinding 을 만들고, 지우면 파이널라이저로 정리한다. 컨트롤러를 재시작해도 중복 생성이 없는지 확인한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Operator pattern — Kubernetes",
+              "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+              "kind": "docs"
+            },
+            {
+              "title": "The Kubebuilder Book",
+              "url": "https://book.kubebuilder.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티테넌트 격리 — 네임스페이스만으로 충분한가",
+          "from": "qualification",
+          "quote": "• 여러 사용자·조직이 안전하게 격리된 채 공유하는 AI/ML 플랫폼을 Kubernetes 위에서 직접 설계·구현해 보신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무 첫 줄이 Kubernetes 기반 멀티테넌시 & 인증·인가 플랫폼 개발이다.",
+          "gap_check": "네임스페이스 분리에 RBAC·NetworkPolicy·ResourceQuota·Pod Security 를 더해도 막지 못하는 것은 무엇이고(노드 공유·커널), 그때 노드 분리나 가상 클러스터를 언제 고르는가? 사용자가 만든 파드가 정책을 어기지 못하게 하는 Admission Webhook 은 어디서 거절하는가?",
+          "drill": "Multi-tenancy·Dynamic Admission Control 문서를 읽고, 앞 과제의 Workspace 에 NetworkPolicy(다른 테넌트 차단)와 특권 컨테이너를 거절하는 Validating Webhook 을 추가한다. 테넌트 A 파드에서 B 서비스로 접속이 막히는지, 특권 파드 생성이 거절되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Multi-tenancy — Kubernetes",
+              "url": "https://kubernetes.io/docs/concepts/security/multi-tenancy/",
+              "kind": "docs"
+            },
+            {
+              "title": "Dynamic Admission Control — Kubernetes",
+              "url": "https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Keycloak·OPA·OpenBao 로 플랫폼 ID·권한·시크릿",
+          "from": "qualification",
+          "quote": "• Keycloak(OIDC/OAuth2), OPA, OpenBao(Vault) 등을 활용해 SSO·세분화된 권한·시크릿 관리 등 플랫폼 전반의 ID·보안 체계를 통합한 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 머리말에 통합 인증·인가가 플랫폼 기능으로 적혀 있다. 우대에 Istio 기반 인증·인가 흐름이 있다.",
+          "gap_check": "Keycloak 이 발급한 토큰의 그룹 정보를 K8s RBAC 과 앱 권한에 어떻게 똑같이 반영하는가? '역할' 로 표현이 안 되는 세분화 권한(예: 이 워크스페이스의 이 모델만 배포)을 OPA 정책으로 옮기면 무엇이 좋아지는가? 시크릿을 K8s Secret 에 두지 않고 OpenBao 에서 동적으로 받는 이유는?",
+          "drill": "Keycloak Server Administration·OPA·OpenBao 문서를 읽고, Keycloak 로그인 → 토큰의 그룹으로 OPA 가 '워크스페이스별 배포 허용' 을 판정 → 허용되면 OpenBao 에서 DB 자격증명을 짧은 수명으로 받아오는 흐름을 kind 클러스터에서 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Server Administration Guide — Keycloak",
+              "url": "https://www.keycloak.org/docs/latest/server_admin/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Open Policy Agent (OPA)",
+              "url": "https://www.openpolicyagent.org/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Documentation — OpenBao",
+              "url": "https://openbao.org/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "폐쇄망 GitOps — Helm·ArgoCD 와 오프라인 레지스트리",
+          "from": "qualification",
+          "quote": "• Helm·ArgoCD(GitOps) 기반으로 배포 자동화와 안정적인 딜리버리 파이프라인을 구축할 수 있는 분 (사설·오프라인 레지스트리 등 폐쇄망 환경 경험 포함)",
+          "priority": "high",
+          "why": "필수 자격이고 머리말이 온프레미스/사설망을 포함한 환경 배포를 지향한다고 적는다. 회사 고객에 국방·중공업이 있다.",
+          "gap_check": "인터넷이 없는 고객 클러스터에 수십 개 오픈소스 차트를 올릴 때 이미지·차트·의존성을 무엇으로 묶어 들여가는가? ArgoCD 가 Git 과 클러스터의 차이를 감지했을 때 자동 동기화를 켜면 고객 현장에서 어떤 위험이 있는가?",
+          "drill": "Argo CD 문서를 읽고, 앞 과제의 Operator 와 Keycloak 을 Helm 차트로 묶어 ArgoCD 로 배포한다. 차트가 참조하는 이미지를 로컬 레지스트리로 옮겨 외부 네트워크를 끊은 상태에서 새로 설치가 되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Argo CD — Declarative GitOps CD for Kubernetes",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "GPU 분할과 스케줄링",
+          "from": "task",
+          "quote": "• GPU 분할·멀티 노드·멀티 GPU 환경 지원 등 사용자 워크로드가 GPU 자원을 효율적으로 활용할 수 있도록 합니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에도 같은 항목이 있다. 한정된 클러스터 자원 할당·모니터링이 바로 윗줄이다.",
+          "gap_check": "MIG 로 GPU 하나를 여러 인스턴스로 나눌 때와 시간 분할(time-slicing)할 때 격리·성능 보장은 무엇이 다른가? 여러 테넌트가 GPU 를 나눠 쓸 때 쿼터는 무엇 단위로 걸고, 멀티 노드 학습 작업은 왜 '전부 아니면 전무' 로 스케줄해야 하는가?",
+          "drill": "MIG User Guide 를 읽고, GPU 한 장을 가정해 MIG 프로필별 인스턴스 수·메모리를 표로 만든다. 앞 과제 Workspace 의 ResourceQuota 에 GPU 한도를 넣고, 한도를 넘는 파드가 Pending 으로 남는지 kind(또는 가짜 확장 자원)로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MIG User Guide — NVIDIA",
+              "url": "https://docs.nvidia.com/datacenter/tesla/mig-user-guide/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
