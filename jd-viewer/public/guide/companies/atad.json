@@ -1,0 +1,217 @@
+{
+  "slug": "atad",
+  "name": "아타드",
+  "name_en": "ATAD",
+  "aliases": [
+    "아타드",
+    "아타드㈜",
+    "ATAD"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "atad.ai",
+  "one_liner": "여러 클라우드를 AI 로 자율 운영해 비용을 줄이는 멀티클라우드 플랫폼 'ODiiN' 과 LLM 게이트웨이를 만드는 B2B 딥테크 스타트업",
+  "company": {
+    "business": "원티드 공고 머리말은 아타드를 **전세계 클라우드 인프라를 AI 로 24시간 자율운용하는 차세대 가상 데이터 센터(V.D.C) 플랫폼 '오딘(ODiiN)'** 을 서비스하는 B2B 딥테크 기업으로 소개하고, 개발자를 'AI-Native Engineer'(반복 구현은 AI 에 맡기고 설계·검증에 집중)로 뽑는다고 적는다. 홈페이지(atad.ai)는 솔루션을 셋으로 적는다 — **ODiiN**(여러 클라우드 사업자를 한 플랫폼에서 자율 관리해 비용 절감), **Heiimdahl**(모든 LLM 을 하나로 묶는 AI 게이트웨이), **VDC**(쓰지 않는 클라우드 자원을 필요한 기업에 확보) — 그리고 완전 자동 운영 루프, 제로트러스트, 금융·보안·CloudOps 특화 sLLM 을 기술로 든다. 뉴스 제목에 **시리즈 A 7M 투자 유치**가 있다(기사 본문은 읽지 않았다). 모집중 원티드 공고는 넷 — **백엔드**(멀티클라우드 API·계정 연동, 비용 파이프라인·구독 결제), **프론트엔드**(멀티클라우드 비용·자원 대시보드, 디자인 시스템), **AI LLM**(에이전트·RAG, FastAPI, LLM 서빙·프롬프트 캐싱), **클라우드 엔지니어**(설계·구축·운영) — 모두 경력 1-5년, 서울 강남구. 잡코리아에도 게시가 있으나 두 건은 본문이 이미지라 읽히지 않는다. 매출·인원은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "백엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/380594",
+        "publisher": "원티드",
+        "summary": "머리말: 전세계 클라우드 인프라를 AI 로 24시간 자율운용하는 차세대 가상 데이터 센터(V.D.C) 플랫폼 '오딘(ODiiN)' 을 서비스하는 B2B 딥테크 기업. AI-Native Engineer — 반복 구현은 AI 에 맡기고 설계·검증·문제 해결에 집중."
+      },
+      {
+        "title": "ATAD (AI IaaS Platform)",
+        "url": "https://www.atad.ai/",
+        "publisher": "아타드",
+        "summary": "메타: Infra as a service — we connect everything with AI. 솔루션 셋: ODiiN(여러 CSP 를 한 플랫폼에서 자율 관리해 클라우드 비용 절감), Heiimdahl(모든 LLM 을 하나로 묶는 AI Gateway, AI 비용 절감), VDC(쓰지 않는 클라우드 자원을 필요한 기업에 확보). 기술: 완전 자동 운영 루프, 제로트러스트, Fin·Sec·CloudOps 특화 Vertical sLLM. 뉴스 제목: Series A 7M 투자 유치(월드데일리·조선비즈·동아일보·한국경제TV)."
+      },
+      {
+        "title": "프론트엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/380606",
+        "publisher": "원티드"
+      },
+      {
+        "title": "AI LLM 개발자",
+        "url": "https://www.wanted.co.kr/wd/380620",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "투자(홈페이지 뉴스 제목)",
+        "value": "시리즈 A 7M",
+        "as_of": "2026-09 홈페이지 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ATAD (AI IaaS Platform)",
+            "url": "https://www.atad.ai/",
+            "publisher": "아타드",
+            "summary": "메타: Infra as a service — we connect everything with AI. 솔루션 셋: ODiiN(여러 CSP 를 한 플랫폼에서 자율 관리해 클라우드 비용 절감), Heiimdahl(모든 LLM 을 하나로 묶는 AI Gateway, AI 비용 절감), VDC(쓰지 않는 클라우드 자원을 필요한 기업에 확보). 기술: 완전 자동 운영 루프, 제로트러스트, Fin·Sec·CloudOps 특화 Vertical sLLM. 뉴스 제목: Series A 7M 투자 유치(월드데일리·조선비즈·동아일보·한국경제TV)."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "멀티클라우드 자율 운영 플랫폼 ODiiN",
+        "how": "홈페이지가 여러 CSP 를 한 플랫폼에서 자율 관리해 비용을 줄인다고 적고, 백엔드 공고가 비용 파이프라인·구독·결제 프로세스를 적는다 — 구독형 과금으로 읽힌다. 요금 수준은 읽지 않았다.",
+        "domains": [
+          "멀티클라우드 연동·비용 백엔드",
+          "클라우드 비용 대시보드 프론트엔드",
+          "클라우드 인프라 운영"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ATAD (AI IaaS Platform)",
+            "url": "https://www.atad.ai/",
+            "publisher": "아타드",
+            "summary": "메타: Infra as a service — we connect everything with AI. 솔루션 셋: ODiiN(여러 CSP 를 한 플랫폼에서 자율 관리해 클라우드 비용 절감), Heiimdahl(모든 LLM 을 하나로 묶는 AI Gateway, AI 비용 절감), VDC(쓰지 않는 클라우드 자원을 필요한 기업에 확보). 기술: 완전 자동 운영 루프, 제로트러스트, Fin·Sec·CloudOps 특화 Vertical sLLM. 뉴스 제목: Series A 7M 투자 유치(월드데일리·조선비즈·동아일보·한국경제TV)."
+          },
+          {
+            "title": "백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/380594",
+            "publisher": "원티드",
+            "summary": "머리말: 전세계 클라우드 인프라를 AI 로 24시간 자율운용하는 차세대 가상 데이터 센터(V.D.C) 플랫폼 '오딘(ODiiN)' 을 서비스하는 B2B 딥테크 기업. AI-Native Engineer — 반복 구현은 AI 에 맡기고 설계·검증·문제 해결에 집중."
+          },
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/380606",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "LLM 게이트웨이 Heiimdahl",
+        "how": "홈페이지가 모든 LLM 을 하나로 묶어 AI 비용을 줄이는 게이트웨이로 적는다. AI LLM 공고의 프롬프트 캐싱·멀티클라우드 LLM 운영과 맞닿는다. 과금 방식은 읽지 않았다.",
+        "domains": [
+          "LLM 에이전트·RAG"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ATAD (AI IaaS Platform)",
+            "url": "https://www.atad.ai/",
+            "publisher": "아타드",
+            "summary": "메타: Infra as a service — we connect everything with AI. 솔루션 셋: ODiiN(여러 CSP 를 한 플랫폼에서 자율 관리해 클라우드 비용 절감), Heiimdahl(모든 LLM 을 하나로 묶는 AI Gateway, AI 비용 절감), VDC(쓰지 않는 클라우드 자원을 필요한 기업에 확보). 기술: 완전 자동 운영 루프, 제로트러스트, Fin·Sec·CloudOps 특화 Vertical sLLM. 뉴스 제목: Series A 7M 투자 유치(월드데일리·조선비즈·동아일보·한국경제TV)."
+          },
+          {
+            "title": "AI LLM 개발자",
+            "url": "https://www.wanted.co.kr/wd/380620",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "가상 데이터 센터 VDC",
+        "how": "홈페이지가 쓰지 않는 클라우드 자원을 필요한 기업에 확보해 준다고 적는다. 거래 구조(중개·재판매)는 읽은 자료에 없다.",
+        "domains": [],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ATAD (AI IaaS Platform)",
+            "url": "https://www.atad.ai/",
+            "publisher": "아타드",
+            "summary": "메타: Infra as a service — we connect everything with AI. 솔루션 셋: ODiiN(여러 CSP 를 한 플랫폼에서 자율 관리해 클라우드 비용 절감), Heiimdahl(모든 LLM 을 하나로 묶는 AI Gateway, AI 비용 절감), VDC(쓰지 않는 클라우드 자원을 필요한 기업에 확보). 기술: 완전 자동 운영 루프, 제로트러스트, Fin·Sec·CloudOps 특화 Vertical sLLM. 뉴스 제목: Series A 7M 투자 유치(월드데일리·조선비즈·동아일보·한국경제TV)."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "멀티클라우드 연동·비용 백엔드",
+        "why": "백엔드 공고가 기능·API·권한 정책·핵심 도메인 설계, 인증·인가·데이터 정합성·트랜잭션, AWS·Azure·GCP API·계정 연동, 비용 파이프라인·배치·구독·결제를 적는다(Kotlin·TypeScript·Python·Go·Java 중 하나, MySQL).",
+        "what_to_know": [
+          "클라우드 빌링 API",
+          "구독 결제",
+          "트랜잭션 정합성"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/380594",
+            "publisher": "원티드",
+            "summary": "머리말: 전세계 클라우드 인프라를 AI 로 24시간 자율운용하는 차세대 가상 데이터 센터(V.D.C) 플랫폼 '오딘(ODiiN)' 을 서비스하는 B2B 딥테크 기업. AI-Native Engineer — 반복 구현은 AI 에 맡기고 설계·검증·문제 해결에 집중."
+          }
+        ]
+      },
+      {
+        "name": "클라우드 비용 대시보드 프론트엔드",
+        "why": "프론트엔드 공고가 AWS·Azure·GCP 비용·자원 데이터 위젯형 대시보드·차트, 리포트·결제 화면, 디자인 시스템(Storybook), 렌더링·번들 최적화를 적는다(React·Next.js).",
+        "what_to_know": [
+          "데이터 시각화",
+          "디자인 시스템",
+          "렌더링 성능"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/380606",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "LLM 에이전트·RAG",
+        "why": "AI LLM 공고가 Tool calling 에이전트 루프(도구 스키마, LLM 출력 서버 재검증), 벡터DB·임베딩·청킹, FastAPI, 컨테이너 배포·LLM 서빙·프롬프트 캐싱을 적는다.",
+        "what_to_know": [
+          "Tool calling",
+          "RAG",
+          "LLM 서빙 비용"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI LLM 개발자",
+            "url": "https://www.wanted.co.kr/wd/380620",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "클라우드 인프라 운영",
+        "why": "클라우드 엔지니어 공고가 클라우드 인프라 설계·구축·운영과 고객 요구 맞춤 솔루션·기술 지원을 적는다(AWS·Azure·GCP, 네트워크·보안 기본).",
+        "what_to_know": [
+          "AWS·Azure·GCP",
+          "네트워크·보안 기본"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "클라우드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/346638",
+            "publisher": "원티드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "'AI-Native Engineer' 를 내세운다",
+        "evidence": "반복적인 구현은 AI에 맡기고, 개발자는 무엇을 왜 만들어야하는지 판단하며, 제품 설계와 검증, 복잡한 문제 해결에 집중합니다.",
+        "so_what": "필수 역량에 'AI 를 도구로 쓰되 결과를 검증하고 최종 책임을 지는 태도' 와 '왜 이 구조인가를 트레이드오프로 설명' 이 있다. 면접에서 AI 도구로 만든 결과를 어떻게 검증했는지 구체적으로 물을 것으로 읽힌다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "근무지 표기가 사이트마다 다르다",
+        "evidence": "위치: 서울 서초구",
+        "so_what": "원티드는 서울 강남구, 잡코리아는 서울 서초구로 적는다. 지원 전에 실제 사무실 위치를 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "'Series A 7M' 의 통화 단위(원·달러)는 뉴스 제목만 읽어 확인하지 못했다",
+    "ODiiN·Heiimdahl·VDC 의 요금·고객 수는 읽지 않았다",
+    "잡코리아 백엔드·클라우드 게시(49985191·49985192)는 본문이 이미지라 원티드 게시와 같은 자리인지 확인하지 못했다"
+  ],
+  "postings": []
+}

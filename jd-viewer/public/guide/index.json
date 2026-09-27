@@ -1021,6 +1021,19 @@
       "postings": 5,
       "study_items": 15,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "atad",
+      "name": "아타드",
+      "aliases": [
+        "아타드",
+        "아타드㈜",
+        "ATAD"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
