@@ -177,5 +177,109 @@
     "원티드 프론트엔드 공고의 '신입 · 계약직' 표기가 실제 고용형태인지(사람인은 '신입/경력 채용')",
     "세이치즈의 수익 모델은 읽지 않았다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/385623",
+      "title": "프론트엔드 개발자",
+      "site": "wanted",
+      "verdict": "원티드 표기 '신입 · 계약직', 서울 성동구(성수). ⚠️ 사람인 게시(54992279)는 같은 자리를 '신입/경력 채용' 으로 적는다 — 고용형태를 지원 전에 확인한다. **에이전시의 프론트엔드**라 기술 영역이 넓다 — 주요업무는 기획·디자인·백엔드와 협업해 의도를 화면·동작에 반영, **사용자 경험의 완성도**, **JavaScript 가 맞는 환경이면 웹부터 서버·모바일 앱·데스크탑 애플리케이션까지**, 사용성·성능·안정성 문제의 원인 파악과 해결, **코드 리뷰와 문서화**. 자격은 기술 목록 대신 **태도·사고방식** 일곱 줄이다 — 원인 추적을 즐김, **JavaScript 와 웹의 기본 동작 이해와 코드 읽기**, **관찰→가설→확인**, **AI 제안을 스스로 검토하고 선택의 이유와 한계 설명**, 리뷰에 열린 태도, 모르는 것 솔직히 말하기, 끝까지 확인하고 마무리. 우대는 출시·운영, 낯선 JS 영역 도전, 도구 선택, **라이브러리 소스·설계 배경 탐구**, 성능 개선 확인, 기술 전환 비교, 지식 공유. 잡코리아 기술스택은 JavaScript·TypeScript·React·React Native. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "JavaScript·웹 기본 동작",
+          "코드 읽기와 디버깅",
+          "AI 결과 검토·설명"
+        ],
+        "can_learn": [
+          "React Native·Electron",
+          "성능 측정",
+          "라이브러리 소스 읽기"
+        ]
+      },
+      "study": [
+        {
+          "topic": "JavaScript 가 실제로 어떻게 실행되는가 — 이벤트 루프",
+          "from": "qualification",
+          "quote": "• JavaScript와 웹의 기본 동작을 이해하고, 코드를 읽으며 실행 흐름을 파악하고 필요한 부분을 수정할 수 있는 분",
+          "priority": "core",
+          "why": "필수 자격이다. 공고가 기술 목록 대신 '기본 동작을 이해하고 실행 흐름을 파악' 하는 능력을 적는다 — 면접에서 설명하게 할 가능성이 크다.",
+          "gap_check": "setTimeout(0)·Promise.then·await 뒤 코드가 어떤 순서로 실행되는지 예측하고 이유를 말할 수 있는가? 브라우저에서 무거운 계산이 화면을 멈추게 하는 이유와, 같은 코드가 Node.js 에서 서버 요청 처리를 어떻게 막는가?",
+          "drill": "MDN JavaScript execution model 과 Node.js Event Loop 문서를 읽고, 마이크로태스크·매크로태스크·렌더링 순서를 확인하는 작은 코드 10개를 만들어 실행 전에 순서를 예측하고 결과와 대조한다. 틀린 것마다 이유를 한 줄로 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "JavaScript execution model — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model",
+              "kind": "docs"
+            },
+            {
+              "title": "The Node.js Event Loop — Node.js",
+              "url": "https://nodejs.org/learn/asynchronous-work/event-loop-timers-and-nexttick",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "관찰→가설→확인으로 성능·버그 원인 찾기",
+          "from": "qualification",
+          "quote": "• 익숙하지 않은 문제도 관찰한 사실을 바탕으로 가설을 세워 확인하고, 근거에 따라 자신의 판단을 수정할 수 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 사용성·성능·안정성 문제의 원인 파악과 해결이, 우대에 '개선한 뒤 실제로 나아졌는지 확인' 이 있다.",
+          "gap_check": "'화면이 느리다' 는 제보를 받으면 무엇을 먼저 재는가(네트워크·스크립트 실행·렌더링)? 가설을 세운 뒤 그것이 틀렸음을 보여 줄 측정은 무엇인가? 고친 뒤 '나아졌다' 는 무엇으로 증명하는가?",
+          "drill": "Chrome DevTools 'Analyze runtime performance' 를 따라 일부러 느린 목록 화면(항목 5,000개 + 무거운 계산)을 만들고 성능 기록으로 원인을 찾는다. 가설·측정·수정·재측정을 표로 남기고 React 'Render and Commit' 을 읽어 불필요한 렌더를 줄인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Analyze runtime performance — Chrome DevTools",
+              "url": "https://developer.chrome.com/docs/devtools/performance",
+              "kind": "docs"
+            },
+            {
+              "title": "Render and Commit — React",
+              "url": "https://react.dev/learn/render-and-commit",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "JavaScript 로 웹 밖까지 — React Native 와 Electron",
+          "from": "task",
+          "quote": "• 프로젝트의 요구에 따라 웹 서비스부터 서버, 모바일 앱, 데스크탑 애플리케이션까지 다룹니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 '익숙하지 않은 영역에도 자신 있게 도전' 이 있다. 에이전시라 프로젝트마다 플랫폼이 바뀐다(홈페이지 사례: 증권 앱 채팅, 유통 PDA 앱, 웹 어드민).",
+          "gap_check": "같은 React 지식으로 React Native 앱을 만들 때 무엇이 그대로이고 무엇이 달라지는가(DOM 없음·네이티브 모듈·스타일)? Electron 데스크탑 앱에서 메인 프로세스와 렌더러 프로세스는 무엇을 나눠 맡고, 파일 접근 같은 권한은 왜 한쪽으로 모아야 하는가?",
+          "drill": "React Native Introduction 과 Electron 문서를 읽고, 같은 할 일 목록을 웹(React)·모바일(React Native)·데스크탑(Electron) 세 가지로 만든다. 공유한 코드와 플랫폼마다 새로 쓴 코드를 표로 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Introduction — React Native",
+              "url": "https://reactnative.dev/docs/getting-started",
+              "kind": "docs"
+            },
+            {
+              "title": "Introduction — Electron",
+              "url": "https://www.electronjs.org/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 가 제안한 코드를 스스로 검토하고 설명하기",
+          "from": "qualification",
+          "quote": "• AI를 포함한 개발 도구의 제안을 스스로 검토하고, 자신이 선택한 기술과 구현 방식의 이유와 한계를 설명할 수 있는 분",
+          "priority": "high",
+          "why": "필수 자격이고 회사 머리말이 '사람이 쓴 코드든 AI 가 생성한 코드든 같은 기준으로 읽는다' 고 적는다.",
+          "gap_check": "AI 가 짜 준 코드에서 그럴듯하지만 틀리기 쉬운 곳(경계 조건·비동기 순서·보안)은 어디이고, 그것을 무엇으로 확인하는가? '왜 이 방법인가' 를 AI 설명을 옮기지 않고 자기 말로 하려면 무엇을 해 봐야 하는가?",
+          "drill": "앞 과제 중 하나에 AI 도구로 기능 하나(검색·정렬)를 추가하게 한 뒤, 코드 리뷰 코멘트 5개를 직접 단다 — 동작 설명, 선택 이유, 대안, 경계 조건 테스트, 문제 시 확인할 곳. 테스트를 붙여 AI 코드의 결함을 하나 이상 찾아본다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "JavaScript execution model — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
