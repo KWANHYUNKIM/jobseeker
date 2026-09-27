@@ -1072,6 +1072,19 @@
       "postings": 5,
       "study_items": 12,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "macarongfactory",
+      "name": "마카롱팩토리",
+      "aliases": [
+        "마카롱팩토리",
+        "㈜마카롱팩토리",
+        "마이클"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
