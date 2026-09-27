@@ -2656,3 +2656,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 백여덟 번째 후보 조사
 
 - Zenn 검색 제품 주제어 15개 → 새 Publication 40여 곳 → RSS 6곳 → 본문 5편. NE · マイベスト 대기 등록. Turing · Voicy 약함 메모.
+
+## 2026-09-27 NE 회사 프로파일
+
+- ne-inc.jp · next-engine.net(요금) · Zenn 3편(레거시 리플레이스 · Fluid Scaling · 상장까지의 데이터 기반)으로 프로파일. Next Engine 요금이 수주 종량이라 구독 수익원 confirmed.
