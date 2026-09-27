@@ -523,6 +523,92 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/225016",
+      "title": "Forward Deployed Engineer - LLM",
+      "site": "wanted",
+      "verdict": "경력 2-8년(원티드 표기), 서울 서초구, FDE본부. 주요업무 여섯 줄은 창원 FDE-LLM(369421)과 같다 — 데이터 분석·문제 정의, LLM 연구, **Agent 연구개발**, RAG·Fine tuning, **설비 로그·이미지·문서 기반 LLM/VLM 분석·자동화**, 실적용 사례 확대. 그쪽의 학습 항목(RAG 평가·LoRA·VLM·현장 에이전트)이 이 자리에도 그대로 맞는다. 다른 것은 문턱이다 — 필수에 **LLM/VLM 프로젝트·연구 2년 이상**, **복잡한 문제를 구조적으로 분석하고 해결책을 주도적으로 실행한 경험**, **LLM/VLM 실무 적용 경험**이 더 있고, 우대에 **성능 모니터링·평가 지표 설계·품질 개선 사이클 운영**, **API·백엔드·MLOps 와 LLM 연동**, **실사용 수준 서비스의 개발·배포·운영**이 더 있다. 그래서 이 자리의 학습 항목은 '만들어 본 적' 보다 **운영하고 고객 현장에서 문제를 정의한 적**에 맞췄다. 전형은 서류→온라인 사전 인터뷰→기술 인터뷰→Fit 인터뷰→평판조회. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "LLM/VLM 2년",
+          "문제 구조화·주도 실행",
+          "LLM 실무 적용",
+          "Python"
+        ],
+        "can_learn": [
+          "LLM 관측성·평가 운영",
+          "모델 서빙 연동"
+        ]
+      },
+      "study": [
+        {
+          "topic": "현장 데이터로 AI 문제를 정의하기",
+          "from": "qualification",
+          "quote": "• 복잡한 문제를 구조적으로 분석하고, 기술적 해결 방안을 주도적으로 도출·실행해 본 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무 첫 줄이 '데이터를 분석하고 풀어야 할 문제를 정의' 다. FDE본부 소개가 실제 현장 데이터로 AI 문제를 정의하고 푸는 End-to-end 라이프사이클을 적는다.",
+          "gap_check": "고객이 'AI 로 불량을 줄여 달라' 고 할 때, 업무 이해 → 데이터 이해 → 준비 → 모델링 → 평가 → 배포 중 어디서 가장 자주 되돌아가는가? LLM 으로 풀 문제와 규칙·전통 ML 로 풀 문제는 무엇으로 가르는가?",
+          "drill": "CRISP-DM 문서를 읽고, 가상 과제 '정비 보고서 수천 건에서 반복 고장 원인 찾기' 를 단계별로 쪼갠다 — 성공 기준, 필요한 데이터와 접근 승인, LLM 이 맡을 부분과 아닌 부분, 첫 2주 PoC 계획. 한 장 문서로 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Cross-industry standard process for data mining — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Cross-industry_standard_process_for_data_mining",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 시스템의 평가 지표와 품질 개선 사이클",
+          "from": "preference",
+          "quote": "• LLM 기반 시스템의 성능 모니터링, 평가 지표 설계, 품질 개선 사이클 운영 경험이 있는 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무에 'LLM 실적용 성공 사례를 늘리고 수행 과정 효율을 개선할 체계' 가 있다.",
+          "gap_check": "배포한 뒤 사용자 질문 분포가 바뀌면 오프라인 평가 세트 점수는 어떻게 믿을 수 없게 되고, 운영 로그에서 무엇을 뽑아 평가 세트를 갱신하는가? 프롬프트·모델을 바꿀 때 회귀 여부는 무엇으로 판정하는가?",
+          "drill": "Claude 의 '성공 기준과 평가' 가이드와 Langfuse 문서를 읽고, 창원 공고 과제의 매뉴얼 RAG 에 추적(질문·검색 문서·답·지연·토큰)을 붙인다. 로그에서 실패 사례 10개를 골라 평가 세트에 넣고, 프롬프트를 바꾼 전후 점수를 비교하는 스크립트를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Define success criteria and build evaluations — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+              "kind": "docs"
+            },
+            {
+              "title": "Langfuse docs",
+              "url": "https://langfuse.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 을 API·MLOps 환경에 연동하기",
+          "from": "preference",
+          "quote": "• API, 백엔드 서비스, 또는 MLOps 환경과 LLM 시스템을 연동해 본 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이고 회사 제품 Runway 가 산업 AI 를 운영·오케스트레이션하는 AI OS 다. 고객 현장은 폐쇄망이 많다(백엔드 공고).",
+          "gap_check": "자체 호스팅 모델을 OpenAI 호환 API 로 띄우면 애플리케이션 쪽에서 무엇을 안 바꿔도 되는가? 모델 버전·프롬프트 버전·평가 결과를 함께 기록해 두지 않으면 현장에서 '어제랑 답이 다르다' 는 문의에 어떻게 답하게 되는가?",
+          "drill": "vLLM 과 MLflow GenAI 문서를 읽고, 작은 모델을 vLLM 으로 띄워 앞 과제의 RAG 가 base URL 만 바꿔 쓰게 한다. 모델·프롬프트 버전과 평가 점수를 MLflow 에 기록해 두 버전을 나란히 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "vLLM",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "MLflow for Agents and LLMs",
+              "url": "https://mlflow.org/docs/latest/genai/",
+              "kind": "docs"
+            },
+            {
+              "title": "MLOps — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/MLOps",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
