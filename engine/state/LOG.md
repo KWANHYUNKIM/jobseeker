@@ -2660,3 +2660,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 NE 회사 프로파일
 
 - ne-inc.jp · next-engine.net(요금) · Zenn 3편(레거시 리플레이스 · Fluid Scaling · 상장까지의 데이터 기반)으로 프로파일. Next Engine 요금이 수주 종량이라 구독 수익원 confirmed.
+
+## 2026-09-27 NE 펭귄 테스트
+
+- 레거시 풀 리플레이스 글 전문으로 기능 `penguin-test-legacy-replacement`, 결정 7.
