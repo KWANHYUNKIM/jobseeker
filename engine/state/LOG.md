@@ -2672,3 +2672,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 NE 수익원 정정 · 보류
 
 - 1 차 neinc_tech 168편 제목 전수(관련 0), 2 차 Zenn 검색 5낱말 · 서비스 페이지. 서비스 페이지에서 후루사토 납세 지원 사업 양도(2026-07-31 → 사이버레코드)를 확인해 수익원 삭제. 라이프스타일 EC 보류, status in_progress 유지.
+
+## 2026-09-27 マイベスト 회사 프로파일
+
+- my-best.com/company · business.my-best.com(광고) · Zenn 3편(캐시 · Dataform · 클린룸)으로 프로파일. WebSearch 의 매출 50 억 · 영업이익 20 억은 X 게시물의 추정이라 쓰지 않음. FastGrow · media-radar 인터뷰는 본문에서 수익 구조를 못 뽑아 제휴 수익원은 inferred.
