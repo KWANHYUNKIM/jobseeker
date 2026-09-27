@@ -43,18 +43,26 @@
     },
     {
       "name": "Visa 프리페이드 카드 결제",
-      "how": "사용자가 입금한 잔액으로 Visa 가맹점에서 결제한다 — 카드 결제에서 Kyash 가 어떻게 버는지(가맹점 수수료 배분 등)는 이번에 읽은 자료에 없다.",
+      "how": "사용자가 입금한 잔액으로 Visa 가맹점에서 결제한다 — Kyash 는 Visa 카드 발행 라이선스를 갖고 결제 처리(프로세싱)를 직접 운영한다. 카드 결제에서 Kyash 가 어떻게 버는지(가맹점 수수료 배분 등)는 읽은 자료에 없다.",
       "weight": "공개 안 됨",
       "domains": [
+        "남의 프로세서 없이 Visa 결제 한 건을 여러 서비스가 함께 승인한다",
         "iOS 와 Android 가 같은 로직을 한 번만 쓰되, 고치기 쉬움을 잃지 않는다"
       ],
-      "confidence": "inferred",
+      "confidence": "confirmed",
       "sources": [
         {
           "title": "Kyash - Visaプリペイドカードとスマホで、かんたんお支払い",
           "url": "https://www.kyash.co/",
           "publisher": "Kyash",
           "summary": "심사 · 서류 없이 무료로 발행하는 **Visa 프리페이드 카드**(가상 카드 최단 1 분)와 앱 — 미리 은행 계좌 · 편의점에서 입금한 잔액 범위에서 결제, 이용 내역 즉시 반영 · 자동 분류, Apple Pay · Google 월렛. 메뉴: 입금(차지) · 후불 '이마스구 입금' · 급한 지출 '스포트머니' · 잔액 출금 · 친구 송금 · Kyash 리워드 · 가계부 · 공유 계좌 · 법인용 송금 서비스."
+        },
+        {
+          "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+          "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+          "publisher": "Kyash(builderscon tokyo 2019)",
+          "date": "2019-08-30",
+          "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
         }
       ]
     },
@@ -149,6 +157,30 @@
       ],
       "features": [
         "kmp-reactor-shared-logic"
+      ]
+    },
+    {
+      "name": "남의 프로세서 없이 Visa 결제 한 건을 여러 서비스가 함께 승인한다",
+      "why": "Kyash 는 Visa 카드 발행 라이선스를 갖고, 국내외 Visa 가맹점에서 오는 결제를 처리하는 **프로세싱 시스템을 직접** 만들어 운영한다 — 발행 · 처리 · 앱을 수직 통합했다. 가맹점에서 카드를 긁는 순간 사용자 · 카드 · 잔액을 확인해 승인(오소리)을 돌려줘야 한다.\n\n월렛을 운영하며 쌓인 반성이 있었다 — 서비스 경계가 유스케이스 단위라 중요한 개념이 여기저기 흩어졌고, 물리 DB 를 공유해 SQL 이 사실상의 인터페이스가 됐고, 여러 서비스를 부르는 쪽이 모든 흐름을 알아야 했다. 2019 년 B 향 결제 플랫폼 Kyash Direct 를 만들며 이를 설계 수준에서 다시 풀었다.",
+      "tech": [
+        {
+          "tech": "경계 컨텍스트 단위 마이크로서비스 + Message Pub/Sub Choreography + 서비스별 DB · Event Store + CQRS + Saga(오소리)",
+          "solves": "서비스가 메시지 외엔 서로 모르게 해 변경을 국소화하고, 여러 서비스에 걸친 결제 승인의 일관성을 보상 트랜잭션으로 지킨다.",
+          "limits": "메시지가 공개 인터페이스라 변경 영향이 크고, 조회는 수 초 늦을 수 있으며, 여러 서비스에 걸친 처리를 추적하기 어렵다. 2019 년 Kyash Direct 설계 발표라 현재 구성과 같은지는 확인 못 함.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+              "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+              "publisher": "Kyash(builderscon tokyo 2019)",
+              "date": "2019-08-30",
+              "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "card-processing-choreography-saga"
       ]
     }
   ],
@@ -903,12 +935,356 @@
           "summary": "Kyash 모바일은 **KMP(Kotlin Multiplatform) + 서브모듈** 구성. 정말 최선인지 보려고 SDK 화를 개인 개발로 검증 — 서브모듈(소스 접근 · 디버그 · 즉시 수정, 대신 커밋 해시 버전 · 매번 풀 빌드 · 의도치 않은 의존)과 SDK(시맨틱 버전 · 바이너리라 빌드 빠름 · 명확한 public API · 사외 배포, 대신 디버그 어려움 · 포크 없이는 수정 불가)를 7 관점 비교. 표로는 SDK 가 이기지만 사내 전용으로 자주 바뀌고 API 가 안정 전이면 서브모듈 — XCFramework 생성이 CI 에서 길고 비용이 체감 3 배 이상, SDK 사양 코드와의 이중 관리로 개발 체험이 나빠질 수 있다. 개발 땐 서브모듈 · 운영엔 SDK 의 하이브리드도."
         }
       ]
+    },
+    {
+      "key": "card-processing-choreography-saga",
+      "name": "월렛에 덧대지 않고 처음부터 — Visa 오소리 한 건을 이벤트로 나눠 승인하는 결제 프로세싱",
+      "domain": "남의 프로세서 없이 Visa 결제 한 건을 여러 서비스가 함께 승인한다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "Kyash 는 카드 발행사(이슈어) 라이선스와 결제 처리(프로세싱)를 직접 갖는다. 2019 년 4 월 이를 기업에 여는 결제 플랫폼 **Kyash Direct** 를 발표했다 — 파트너의 앱에서 카드를 발행하고, 파트너가 관리하는 매출금 · 예금 · 여신 · 포인트를 그대로 Visa 결제의 자금원으로 쓰게 하는 것이다.\n\n처음엔 '월렛 Kyash 에 조금 더하면 된다'고 봤다. 그런데 멀티테넌트 · 법인 사용자 · 펀딩 소스의 유연성 · 파트너별 경리 집계 등, 월렛에 더하면 영향이 너무 컸다. 문서는 낡았고 아무도 건드려 본 적 없는 부분도 있었다. 결제 승인은 장애 영향이 가장 큰 곳이라, 이 결정이 곧 카드 결제의 신뢰성이다(이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "경계 컨텍스트",
+            "value": "Partner · User · Account · Card · Processing · Clearing · Funding",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          },
+          {
+            "label": "결제 가능 가맹점",
+            "value": "국내외 Visa 가맹점 5,390 만(2019 년 발표)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "Fit&Gap 을 해 보고",
+          "thought": "월렛에 억지로 기능을 더하면 가까운 장래에 수습이 안 된다 — 부채를 쌓는 느낌이다. 오히려 처음부터 만드는 편이 빠르고 앞으로의 문제에도 대처하기 쉽지 않을까.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+              "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+              "publisher": "Kyash(builderscon tokyo 2019)",
+              "date": "2019-08-30",
+              "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+            }
+          ]
+        },
+        {
+          "at": "Microservices 를 다시 고를 때",
+          "thought": "엔지니어가 서비스 수에 비해 전혀 모자라다 — 그래도 모놀리스의 문제(변경이 점점 어려워짐 · 배포가 초고위험)는 나중에 바꾸기 어렵고, 마이크로서비스의 문제(인원 · 운영 · 장애 조사)는 채용 · 도구 · 준비로 비교적 풀 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+              "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+              "publisher": "Kyash(builderscon tokyo 2019)",
+              "date": "2019-08-30",
+              "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+            }
+          ]
+        },
+        {
+          "at": "경계를 그을 때",
+          "thought": "월렛을 개발 · 운영하며 실컷 고민해 온 덕에 경계 컨텍스트가 의외로 쉽게 정해졌다 — 노하우 없이 시작했다면 무척 어려웠을 것이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+              "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+              "publisher": "Kyash(builderscon tokyo 2019)",
+              "date": "2019-08-30",
+              "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Processing",
+            "what": "Visa 네트워크에서 오소리 요청을 받아 최종 승인을 내리는 서비스 — 어느 서비스의 어떤 결과 이벤트가 필요한지 안다."
+          },
+          {
+            "name": "User · Card · Account",
+            "what": "오소리 요청 이벤트에 반응해 각자 확인 · 예약을 하고 결과 이벤트를 내는 서비스 — 거래 데이터는 먼저 Trying."
+          },
+          {
+            "name": "Message(Event · Command · Document)",
+            "what": "Event 는 일어난 사실(전 서비스에 Publish), Command 는 해 달라는 요청(제공 서비스에 Send), Document 는 Command 의 결과(ReplyTo 로 Send)."
+          },
+          {
+            "name": "API Facade",
+            "what": "HTTP 요청을 Command 로 바꿔 보내고, Document 가 오거나 타임아웃될 때까지 기다려 HTTP 응답으로 돌려준다."
+          },
+          {
+            "name": "Event Store · QueryDB",
+            "what": "버스의 모든 이벤트를 기록(복구 · 감사), 조회용 DB 는 이벤트로 따로 만든다(CQRS)."
+          }
+        ],
+        "invariants": [
+          "서비스끼리 직접 통신하지 않는다 — 반드시 Message Bus 를 거친다.",
+          "DB 는 서비스마다 물리적으로 나눈다 — 다른 서비스의 테이블을 읽거나 쓰지 않는다.",
+          "Aggregate 변경은 Event 생성 → Event 적용의 순서로 통일한다(이벤트 재생을 전제).",
+          "오소리 중의 거래 데이터는 Trying 이었다가 최종 판단 뒤 Confirmed 가 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Visa 에서 오소리 요청 → Processing 이 '오소리 요청 받음' Event 를 Publish",
+            "why": "처리를 한 서비스가 지휘하지 않고 이벤트로 알린다."
+          },
+          {
+            "step": "User · Card · Account 가 각자 반응해 확인 · 예약 — 거래 데이터는 Trying",
+            "why": "각 서비스는 자기 책임만 안다."
+          },
+          {
+            "step": "각 서비스가 결과 Event 를 Publish, Processing 은 필요한 결과가 모이길 기다린다",
+            "why": "최종 판단에 필요한 사실을 모은다."
+          },
+          {
+            "step": "Processing 이 '오소리 승인' Event 를 Publish 하고 네트워크에 응답",
+            "why": "승인과 기록이 같은 사실에서 나온다."
+          },
+          {
+            "step": "각 서비스가 Trying → Confirmed(거절이면 보상 처리)",
+            "why": "여러 DB 에 걸친 일관성을 Saga 로."
+          },
+          {
+            "step": "QueryMaterializer 가 이벤트로 조회용 DB 를 갱신 — 명세 같은 조회는 거기서",
+            "why": "조회 요건이 서비스 설계로 새지 않는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "B 향 결제 플랫폼을 월렛에 덧대나, 처음부터 만드나?",
+            "chosen": "**스크래치 개발 — 월렛 Kyash 도 장차 파트너 중 하나로 올리는 구도.**",
+            "alternatives": [
+              "기존 월렛 Kyash 에 기능을 더한다(Kyash - α + β)"
+            ],
+            "tradeoff": "월렛에서 겪은 과제를 아키텍처 수준에서 풀고, 쌓인 도메인 지식으로 더 나은 설계를 하며 기존 제약을 받지 않는다. 대가는 만들 것이 압도적으로 늘고 아키텍처 쇄신의 실패 위험 · 견적 어려움, **사내에 완전히 다른 계통의 시스템 둘**을 안는다는 것 — 자원이 한정된 스타트업엔 받아들이기 힘든 대가였지만 CTO 가 승인.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          },
+          {
+            "question": "사람이 모자란데 Microservices 인가, Monolith 인가?",
+            "chosen": "**Microservices — 대신 각 서비스의 독립성을 철저히 지킨다.**",
+            "alternatives": [
+              "Monolith"
+            ],
+            "tradeoff": "모놀리스의 문제(변경 · 스케일 · 초고위험 배포)는 나중에 바꾸기 어렵고, 마이크로서비스의 문제(인원 · 운영 · 장애 조사)는 채용 · 도구 · 사전 준비로 비교적 풀린다고 봤다. 대가는 설계 · 구현이 어렵고 최소 자원(컴퓨터 · 사람)이 많이 든다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          },
+          {
+            "question": "서비스를 어떤 단위로 나누나?",
+            "chosen": "**DDD 의 경계 컨텍스트 — Partner · User · Account · Card · Processing · Clearing · Funding.**",
+            "alternatives": [
+              "월렛처럼 유스케이스 단위(카드 발행 · 입금 · 통지 · 결제 …)"
+            ],
+            "tradeoff": "유스케이스 단위에선 사용자 · 카드 · 잔액 · 거래 이력 같은 중요한 개념이 소속 불명으로 흩어졌다(저응집) — 컨텍스트로 자르면 한곳에 모인다. 대가는 경계를 긋는 데 도메인 지식이 필요하다는 것 — 월렛 운영 경험이 있어 가능했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          },
+          {
+            "question": "서비스끼리 어떻게 협력하나?",
+            "chosen": "**Message Pub/Sub 으로 이벤트를 흘리는 Choreography — 서비스 간 직접 통신 금지.**",
+            "alternatives": [
+              "월렛처럼 동기 Request/Reply 의 Orchestration"
+            ],
+            "tradeoff": "의존이 메시지 하나로 모여 소결합 · 고응집, 각 처리는 특정 이벤트에 대한 반응이라 작게 유지된다. 오케스트레이터가 흐름 · 파라미터 · 순서를 다 알아야 하던 비대 문제를 없앤다. 대가는 메시지가 공개 인터페이스라 변경 영향이 크고(버전 관리), 동기 WebAPI · 일관성 · 추적을 따로 풀어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          },
+          {
+            "question": "데이터는 어디에 두나?",
+            "chosen": "**서비스마다 물리 DB + 버스의 모든 이벤트를 기록하는 Event Store.**",
+            "alternatives": [
+              "순수 Event Sourcing(매번 이벤트 재생)",
+              "월렛처럼 물리 DB 하나를 논리 분할해 공유"
+            ],
+            "tradeoff": "평소 읽기는 최신 DB 에서, 복구 · 감사 · 과거 시점 복원은 Event Store 로. 공유 DB 는 SQL 이 사실상의 인터페이스라 전부 알아야 바꿀 수 있었고, 순수 Event Sourcing 은 이벤트가 쌓이면 재생 성능이 문제. 대가는 서비스마다 배타 제어 · 보상 트랜잭션이 필요하고, 서비스 수만큼의 DB 와 Event Store 저장소가 든다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          },
+          {
+            "question": "동기 WebAPI 와 조회를 비동기 메시징 위에서 어떻게?",
+            "chosen": "**API Facade 가 HTTP ↔ Command/Document 를 변환, 조회는 CQRS(QueryMaterializer · QueryProcessor).**",
+            "alternatives": [
+              "조회도 각 서비스에 메시지로 묻고 결과를 합성"
+            ],
+            "tradeoff": "각 서비스는 이벤트만 성실히 내면 되고, 조회 요건 변경은 조회 쪽만 고치며 조회만 스케일한다. 대가는 최신 데이터 반영에 시차(수 초 이상도 실용상 문제없다고 봄), 이벤트를 놓치면 조회에 안 나타나 Event Store 로 복구해야 하고, API Facade 가 여러 노드일 때 Command 를 보낸 프로세스와 Document 를 받는 프로세스를 맞추는 장치가 필요하다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          },
+          {
+            "question": "여러 서비스에 걸친 결제 승인의 일관성은?",
+            "chosen": "**Saga — 각 서비스가 Trying 으로 처리하고, Processing 이 결과 이벤트를 모아 승인하면 Confirmed.**",
+            "alternatives": [
+              "분산 트랜잭션으로 한 번에 커밋(이 사이트가 둔 대안)"
+            ],
+            "tradeoff": "서비스 독립성을 지키면서 실패 시 보상 처리로 일관성을 되돌린다. 대가는 Processing 이 어떤 서비스의 어떤 이벤트가 필요한지 알아야 한다는 것 — 오케스트레이터의 지식이 일부 남는다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+                "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+                "publisher": "Kyash(builderscon tokyo 2019)",
+                "date": "2019-08-30",
+                "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Visa 프리페이드 카드 결제(수익원)",
+          "via": "자사 이슈잉 · 프로세싱",
+          "contract": "Kyash 는 Visa 카드 발행 라이선스와 가맹점 결제를 처리하는 프로세싱 시스템을 직접 운영한다 — 카드 결제 한 건의 승인이 이 구조를 지난다. 카드 결제에서 Kyash 가 받는 수익(수수료 배분 등)은 자료에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+              "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+              "publisher": "Kyash(builderscon tokyo 2019)",
+              "date": "2019-08-30",
+              "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+            },
+            {
+              "title": "Kyash - Visaプリペイドカードとスマホで、かんたんお支払い",
+              "url": "https://www.kyash.co/",
+              "publisher": "Kyash",
+              "summary": "심사 · 서류 없이 무료로 발행하는 **Visa 프리페이드 카드**(가상 카드 최단 1 분)와 앱 — 미리 은행 계좌 · 편의점에서 입금한 잔액 범위에서 결제, 이용 내역 즉시 반영 · 자동 분류, Apple Pay · Google 월렛. 메뉴: 입금(차지) · 후불 '이마스구 입금' · 급한 지출 '스포트머니' · 잔액 출금 · 친구 송금 · Kyash 리워드 · 가계부 · 공유 계좌 · 법인용 송금 서비스."
+            }
+          ]
+        },
+        {
+          "to": "bank-transfer-timeout-reconciliation",
+          "via": "타임아웃 · 비동기 결과",
+          "contract": "은행 이체의 '모름'과 이벤트 기반 오소리의 Trying 은 둘 다 결과가 늦게 확정되는 돈의 흐름을 다루는 방식이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+              "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+              "publisher": "Kyash(builderscon tokyo 2019)",
+              "date": "2019-08-30",
+              "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "오소리 한 건",
+          "question": "가맹점에서 카드를 긁으면 승인은 어떻게 내려지나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  V[\"Visa 네트워크\\n오소리 요청\"] --> P[\"Processing\"]\n  P -- \"오소리 요청 받음(Event)\" --> BUS[\"Message Bus\"]\n  BUS --> U[\"User: Trying\"]\n  BUS --> C[\"Card: Trying\"]\n  BUS --> A[\"Account: Trying\"]\n  U -- 결과 Event --> BUS\n  C -- 결과 Event --> BUS\n  A -- 결과 Event --> BUS\n  BUS --> P\n  P -- \"오소리 승인(Event) · 응답\" --> V\n  BUS --> Q[\"QueryMaterializer → QueryDB\"]\n  BUS --> ES[\"Event Store\"]"
+        },
+        {
+          "title": "거래 데이터의 상태",
+          "question": "오소리 중 각 서비스의 거래 데이터는 어떤 상태를 거치나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Trying: 오소리 요청 이벤트에 반응\n  Trying --> Confirmed: Processing 이 승인 이벤트 발행\n  Trying --> 보상: 거절 · 실패(Saga 보상 트랜잭션)\n  보상 --> [*]\n  Confirmed --> [*]"
+        },
+        {
+          "title": "월렛에서 겪은 결합",
+          "question": "월렛의 구성은 왜 그대로 넓힐 수 없었나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"유스케이스 단위 서비스 경계\"] --> B[\"사용자 · 카드 · 잔액 개념이 흩어짐\"]\n  C[\"물리 DB 하나를 공유\"] --> D[\"SQL 이 사실상의 공개 인터페이스 · 전부 알아야 변경\"]\n  E[\"동기 Request/Reply 오케스트레이션\"] --> F[\"호출 쪽이 흐름 · 순서 · 파라미터를 다 앎\"]\n  B --> G[\"멀티테넌트 · 법인 · 펀딩 소스 추가 영향이 거대\"]\n  D --> G\n  F --> G\n  G --> H[\"스크래치 개발 결정\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+          "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+          "publisher": "Kyash(builderscon tokyo 2019)",
+          "date": "2019-08-30",
+          "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+        },
+        {
+          "title": "Kyash - Visaプリペイドカードとスマホで、かんたんお支払い",
+          "url": "https://www.kyash.co/",
+          "publisher": "Kyash",
+          "summary": "심사 · 서류 없이 무료로 발행하는 **Visa 프리페이드 카드**(가상 카드 최단 1 분)와 앱 — 미리 은행 계좌 · 편의점에서 입금한 잔액 범위에서 결제, 이용 내역 즉시 반영 · 자동 분류, Apple Pay · Google 월렛. 메뉴: 입금(차지) · 후불 '이마스구 입금' · 급한 지출 '스포트머니' · 잔액 출금 · 친구 송금 · Kyash 리워드 · 가계부 · 공유 계좌 · 법인용 송금 서비스."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "**카드 결제 · 후불 · 스포트머니의 수익 구조**는 이번에 읽은 자료에 없다(비상장).",
+    "**카드 결제 · 후불 · 스포트머니의 수익 구조**는 읽은 자료에 없다(비상장). 카드 결제는 자사 프로세싱 발표(2019)로 기술 연결만 confirmed.",
     "**AML 모니터링**은 '그 자리에서 SQL 을 자사 시스템에 넣는다'는 강점만 있고 구조 글이 없다 — 도메인으로 세우지 않았다.",
-    "**아직 안 읽은 것** — 전은 포맷 · 트렁크 기반 개발을 떠받치는 기술 · 릴리스 트레인의 궤적 · 개발 완료부터 릴리스까지 리드타임 개선 · KMP suspend 함수를 iOS 에서 부르기 · 스포트머니 개발 Tech Talk(예고만)."
+    "**아직 안 읽은 것** — 전은 포맷 · 트렁크 기반 개발을 떠받치는 기술 · 릴리스 트레인의 궤적 · 개발 완료부터 릴리스까지 리드타임 개선 · KMP suspend 함수를 iOS 에서 부르기 · 스포트머니 개발 Tech Talk(예고만).",
+    "**Kyash Direct(2019 년 발표한 B 향 결제 플랫폼)가 지금도 사업으로 이어지는지** 확인 못 함 — 회사 개요의 ISMS 범위는 Kyash 앱과 법인 송금 서비스뿐이다."
   ],
   "sources": [
     {
@@ -978,6 +1354,13 @@
       "publisher": "Kyash",
       "date": "2024-12-22",
       "summary": "KMP 채용을 넓힌 결과, 기존 화면에 기능을 더할 때 **Reactor 로 화면 전체를 다시 만들 정도는 아니지만 UseCase 층까지는 KMP 로 공통화**하고 싶다는 요구. Swift 에서 메인 스레드 밖에서 Kotlin suspend 함수를 부르면 크래시 — SKIE 의 suspend 기능이 스레드 생성 차이를 흡수. 빌드 시간 때문에 전역으로 끈 기능을 `@SuspendInterop.Enabled` 로 **필요한 곳만 켠다**. 역사 있는 화면에서도 새 처리는 되도록 KMP 로 공통화해 개발 효율 · 인지 부하를 줄인다."
+    },
+    {
+      "title": "ウォレットアプリKyashの先 〜 Kyash Directのアーキテクチャ",
+      "url": "https://speakerdeck.com/k315k1010/uoretutoapurikyashfalsexian-kyash-directfalseakitekutiya",
+      "publisher": "Kyash(builderscon tokyo 2019)",
+      "date": "2019-08-30",
+      "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
     }
   ]
 }

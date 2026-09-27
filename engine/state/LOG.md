@@ -2640,3 +2640,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Kyash KMP Reactor
 
 - Zenn KMP 비교 + 블로그 셋(SKIE 도입 · 페어프로 · suspend 호출)으로 기능 `kmp-reactor-shared-logic`, 결정 7.
+
+## 2026-09-27 Kyash 카드 프로세싱 · 수익원 판정 1 차
+
+- 블로그 3편(COO 카드 · SRE 프로젝트 · 스포트머니 Tech Talk 예고) · GeNiE 제휴 PR · Zenn 검색 5낱말(관련 0) · WebSearch → Kyash Direct 아키텍처 발표(2019, 슬라이드 본문) 로 도메인 셋째 + 기능, 카드 결제 연결 confirmed. 스포트머니는 Tech Talk 슬라이드 둘이 남음.
