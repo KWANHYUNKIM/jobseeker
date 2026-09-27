@@ -519,6 +519,109 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55031598&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dcb2732a-4ee5-4722-91eb-e120984b30bb",
+      "title": "[의료IT 1위 이지케어텍] AI Engineer 채용 (전문연구요원 가능)",
+      "site": "saramin",
+      "verdict": "경력 1년 이상(사람인·잡코리아 표기), **석사 이상**, 서울 중구, **전문연구요원 지원 가능(신입·전직 가능)**. 머리말은 '의료 데이터를 기반으로 AI 모델과 서비스를 설계·개발·운영하는 핵심 직무' 라고 적는다. 주요업무는 **LLM 활용 연구개발**, **예측 모델·AI 서비스 개발**, **연구과제 관리** — 함께 다루는 기술로 Python·PyTorch·TensorFlow·Hugging Face·LangChain·RAG·Vector DB·MLOps·Docker 를 든다. 자격은 **연구과제 제안·관리 경험**, 통계·ML·DL 전문지식과 석사 이상, ML·DL 프레임워크, **LLM 프로젝트·서비스 개발 경험**. 우대는 대규모 연구과제 책임자, 대용량 텍스트·영상·음성 전처리, **언어모델 Fine Tuning**, 사전학습 언어모델 기반 NLP, 논문, AI 서비스, MLOps·모델 배포. 연구과제 제안·관리가 필수라 **정부 과제를 따 오고 운영하는 연구직** 성격이 강하다. 공고 태그에 '대형병원 현장 근무' 가 있다. 같은 본문이 잡코리아(49988051)에도 있다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "석사(통계·ML·DL)",
+          "연구과제 제안·관리",
+          "PyTorch·HuggingFace",
+          "LLM 프로젝트"
+        ],
+        "can_learn": [
+          "임상 텍스트 비식별화",
+          "의료 예측 모델 검증"
+        ]
+      },
+      "study": [
+        {
+          "topic": "의료 기록을 LLM 에 넣기 전 — 비식별화와 개체 추출",
+          "from": "task",
+          "quote": "● LLM을 활용한 연구 개발",
+          "priority": "core",
+          "why": "주요업무이고 우대에 사전학습 언어모델 기반 NLP·대용량 텍스트 전처리가 있다. 병원 데이터는 개인정보를 지우지 않고는 연구에 쓸 수 없다.",
+          "gap_check": "진료 기록에서 이름·주민번호·주소 같은 직접 식별자를 지워도 희귀 질환명+나이+날짜 조합으로 다시 식별될 수 있는 이유는? 약물·진단·검사값 같은 의료 개체를 뽑는 개체명 인식(NER)을 규칙과 언어모델 중 무엇으로 하고, 정밀도·재현율은 무엇으로 재는가?",
+          "drill": "De-identification·Named-entity recognition 문서를 읽고, 가상 한국어 진료기록 30건을 만들어 식별자 마스킹 규칙과 LLM 기반 마스킹을 비교한다. 같은 기록에서 약물·진단을 뽑아 정답과 대조해 정밀도·재현율을 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "De-identification — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/De-identification",
+              "kind": "docs"
+            },
+            {
+              "title": "Named-entity recognition — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Named-entity_recognition",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의료 예측 모델 — 만들기보다 검증이 어렵다",
+          "from": "task",
+          "quote": "● 예측 모델 및 AI 서비스 개발",
+          "priority": "core",
+          "why": "주요업무다. 회사는 병원에 HIS 를 공급하므로 예측 결과가 진료 화면(임상 의사결정 지원)에 들어갈 수 있다.",
+          "gap_check": "재입원·악화 예측 모델에서 입원 중 나중에야 생기는 검사값을 피처로 쓰면 무엇이 새는가(시점 누수)? 한 병원 데이터로 만든 모델이 다른 병원에서 성능이 떨어지는 이유와, 외부 검증은 어떻게 하는가? 의료진이 받아들일 설명은 무엇인가?",
+          "drill": "Clinical decision support system 문서를 읽고, 공개 의료 데이터 MIMIC-IV 의 접근 절차(자격 인증·교육 이수)를 확인한다. 접근 전이라면 합성 입원 데이터로 '퇴원 30일 내 재입원' 모델을 만들고, 예측 시점 이후 정보가 피처에 섞이지 않았는지 점검표를 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Clinical decision support system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Clinical_decision_support_system",
+              "kind": "docs"
+            },
+            {
+              "title": "MIMIC-IV — PhysioNet",
+              "url": "https://physionet.org/content/mimiciv/3.1/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "특정 의료 과제용 언어모델 파인튜닝",
+          "from": "preference",
+          "quote": "+ 특정 문제 해결을 위한 Language Model Fine Tuning 경험자",
+          "priority": "high",
+          "why": "우대사항이고 자격에 HuggingFace·PyTorch 딥러닝 프레임워크 경험이 있다.",
+          "gap_check": "진료기록 요약·분류 같은 좁은 과제에 전체 파인튜닝과 LoRA 중 무엇을 고르고, 병원 서버(GPU 제한)에서 돌릴 때 무엇이 결정 요인인가? 파인튜닝한 모델이 원래 일반 능력을 잃었는지 무엇으로 확인하는가?",
+          "drill": "Hugging Face Fine-tuning 과 PEFT 문서를 읽고, 앞 과제의 가상 진료기록으로 작은 모델을 진단 분류 과제에 LoRA 파인튜닝한다. 파인튜닝 전후 분류 정확도와 일반 질문 답변을 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Fine-tuning — Hugging Face Transformers",
+              "url": "https://huggingface.co/docs/transformers/main/en/training",
+              "kind": "docs"
+            },
+            {
+              "title": "PEFT — Hugging Face",
+              "url": "https://huggingface.co/docs/peft/index",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "연구과제 제안서 쓰기와 과제 관리",
+          "from": "qualification",
+          "quote": "● 연구과제 제안 및 관리 경험 보유자",
+          "priority": "high",
+          "why": "필수 자격이고 주요업무에 연구 과제 관리 담당이 있다. 우대에 대규모 연구과제 책임자 경험이 있다.",
+          "gap_check": "연구과제 제안서에서 심사자가 가장 먼저 보는 것(필요성·목표의 정량 지표·데이터 확보 방안·성과 활용)은 무엇이고, 의료 AI 과제에서 데이터 사용 승인(IRB 등) 일정은 계획에 어떻게 넣는가? 진행 중 목표 지표를 못 채울 때 무엇을 보고하는가?",
+          "drill": "Research proposal 문서를 읽고, 앞 과제들을 묶어 '진료기록 LLM 기반 재입원 위험 예측' 2년 과제 제안서 개요(배경·목표 지표·데이터·연차별 계획·위험과 대응·성과 활용)를 2쪽으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Research proposal — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Research_proposal",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
