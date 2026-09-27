@@ -2780,3 +2780,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 コドモン 범용 테이블 해체
 
 - 기능 `generic-table-dismantle` — 무정지 · 5 단계 · 개별 API · 접근 집약 · 토글 + dry run · 일괄 ON · 배치 단계 실행 · 중복 레코드, 결정 8. 구독 수익원과 inferred 연결.
+
+## 2026-09-27 コドモン 모놀리스 7 년
+
+- 기능 `monolith-gradual-rearchitecture` — 재작성 대 유지 · Go 마이크로서비스 + 모놀리스 프록시 · 청구 관리 모듈러 모놀리스 · 팀별 언어 · 온프레 탈출 · 타각 수평 분리 · gauge + playwright · Laravel, 결정 8. 범용 테이블 해체와 confirmed 연결, 수수료 · 구독 수익원과 inferred.

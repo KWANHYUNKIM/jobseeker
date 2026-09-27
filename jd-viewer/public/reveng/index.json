@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "보육원 · 학동 · 학교 등 25,000 곳 넘는 어린이 시설이 쓰는 업무 SaaS(계약 자치체 760) — 10 억 행 범용 테이블은 서비스를 돌린 채 동시 쓰기 · dry run · 토글로 해체하고, 다시 쓸 여유가 없던 PHP 모놀리스는 모듈러 모놀리스와 마이크로서비스로 7 년에 걸쳐 조금씩 바꿔 왔다",
       "updated_at": "2026-09-27",
       "domain": "codmon.com"
