@@ -2692,3 +2692,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 백아홉 번째 후보 조사
 
 - Zenn 검색 '실천' 주제어 15개 → 새 Publication 40곳 → RSS 6곳 → 본문 5편. Omiai · MOSH 대기 등록. YAMAP · ツクリンク · Unipos 약함 메모.
+
+## 2026-09-27 Omiai 회사 프로파일
+
+- 공식 요금표 · 리아키텍처 대담 · API 부채 글로 프로파일. 수익원 둘 confirmed.
