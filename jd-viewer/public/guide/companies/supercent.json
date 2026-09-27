@@ -209,5 +209,115 @@
     "게임 수익 구조(인앱·광고)와 매출액·인원은 읽지 않았다",
     "Ad-Tech DSP 가 자사 유저 확보용인지 외부 판매용인지 공고에 없다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/356603",
+      "title": "[AD-Tech] 백엔드 개발자(8년 이상)",
+      "site": "wanted",
+      "verdict": "경력 8년 이상, 서울 송파구. 신설 **Ad Technology 팀의 시니어 백엔드** — 공고는 Bidder 부터 Event Processor·ETL 파이프라인까지 **DSP 핵심 시스템의 기술 방향을 주도**할 사람을 찾는다고 적는다. 주요업무는 **Bidder Service·Budget Pacing·Event Processor 아키텍처 설계**, **하루 3억 건 입찰 요청의 핵심 처리 경로 레이턴시·처리량 개선**, 레이턴시·안정성·**비용** 최적화 방향, 코드 리뷰·멘토링. 자격은 Go/C++/Java 백엔드 8년, **고가용성·저지연 분산 시스템 설계·운영**, 자료구조·알고리즘과 고동시성 설계, 요구사항부터 모니터링까지 주도, 대규모 이벤트·실시간 파이프라인, **프로파일링으로 병목 근본 원인 해결**. 우대는 DSP/SSP·RTB, **OpenRTB**, Kafka, Rust, ML 서빙 통합, UA 지표(CVR·ROAS). 광고 경험은 우대일 뿐이고 필수는 **저지연 대규모 시스템** 경험이다. 같은 팀 실무 공고(356602, 4~8년)는 Bidder 기능·이벤트 파이프라인·MMP ETL 을 맡는다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Go/C++/Java 8년",
+          "저지연·고가용 분산 시스템",
+          "고동시성 설계",
+          "프로파일링"
+        ],
+        "can_learn": [
+          "OpenRTB",
+          "Budget Pacing",
+          "UA 지표"
+        ]
+      },
+      "study": [
+        {
+          "topic": "RTB 입찰 한 번의 흐름과 15ms 예산",
+          "from": "preference",
+          "quote": "• OpenRTB 프로토콜 이해 및 입찰 시스템 설계 경험을 갖추신 분",
+          "priority": "core",
+          "why": "우대사항이지만 주요업무(Bidder Service 아키텍처, 하루 3억 건 입찰 처리 경로)가 전부 이 흐름 위에 있다. 팀 소개가 '15ms 안에 처리' 를 목표로 적는다.",
+          "gap_check": "SSP 가 보낸 OpenRTB 입찰 요청(BidRequest)에서 DSP 는 무엇을 읽고, 응답하지 않으면(no-bid) 어떻게 표시하는가? 15ms 안에 파싱 → 대상 캠페인 필터 → 모델 예측 → 입찰가 결정 → 응답을 끝내려면 각 단계에 몇 ms 를 쓸 수 있고, 어느 단계가 외부 호출을 하면 안 되는가? 낙찰 후 노출·클릭·설치 이벤트는 어떻게 입찰과 이어지는가?",
+          "drill": "Real-time bidding·DSP 문서와 OpenRTB 사양 페이지를 읽고, Go 로 가짜 BidRequest(JSON)를 받아 인메모리 캠페인 목록에서 조건에 맞는 캠페인을 골라 BidResponse 를 돌려주는 bidder 를 만든다. 부하 도구로 초당 수천 건을 보내 p50·p99 지연을 측정한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Real-time bidding — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Real-time_bidding",
+              "kind": "docs"
+            },
+            {
+              "title": "Demand-side platform — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Demand-side_platform",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenRTB — IAB Tech Lab",
+              "url": "https://iabtechlab.com/standards/openrtb/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "꼬리 지연(p99)을 줄이는 설계",
+          "from": "qualification",
+          "quote": "• 고가용성·저지연 분산 시스템을 직접 설계하고 운영한 경험을 갖추신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 핵심 처리 경로의 레이턴시·처리량 개선과 레이턴시·안정성·비용 최적화가 있다.",
+          "gap_check": "평균 지연은 괜찮은데 p99 가 튀는 원인(GC 정지, 락 경합, 느린 하위 호출, 큐 적체)을 어떻게 가르는가? 하위 호출에 헤지 요청·타임아웃·부분 결과를 쓰면 꼬리 지연과 부하가 각각 어떻게 바뀌는가? 입찰 시스템에서 '늦은 응답' 과 '응답 안 함' 중 무엇이 나은가?",
+          "drill": "'The Tail at Scale' 과 Google SRE 모니터링 장을 읽고, 앞 과제 bidder 에 가끔 느려지는 가짜 피처 조회를 넣는다. 타임아웃 없이·5ms 타임아웃·타임아웃 시 no-bid 세 가지로 p50/p99/처리량을 비교해 표로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "The Tail at Scale — Google Research",
+              "url": "https://research.google/pubs/the-tail-at-scale/",
+              "kind": "docs"
+            },
+            {
+              "title": "Monitoring Distributed Systems — Google SRE Book",
+              "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "프로파일링으로 병목 찾기 — Go pprof 와 GC",
+          "from": "qualification",
+          "quote": "• 성능 병목을 프로파일링하고 근본 원인을 해결한 경험을 갖추신 분",
+          "priority": "high",
+          "why": "필수 자격이고 주요업무가 하루 3억 건 처리 경로의 레이턴시·처리량 개선이다. 자격 언어에 Go 가 있다.",
+          "gap_check": "CPU 프로파일과 힙(할당) 프로파일은 각각 무엇을 보여 주고, 요청마다 작은 객체를 많이 만들면 GC 가 지연에 어떻게 나타나는가? GOGC·메모리 한도를 바꾸면 무엇을 얻고 무엇을 잃는가?",
+          "drill": "Profiling Go Programs 와 Go GC 가이드를 읽고, 앞 과제 bidder 에 pprof 를 붙여 부하 중 CPU·할당 프로파일을 뜬다. 가장 많이 할당하는 경로를 하나 고쳐(버퍼 재사용 등) 할당량·GC 횟수·p99 가 어떻게 바뀌는지 전후를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Profiling Go Programs — The Go Blog",
+              "url": "https://go.dev/blog/pprof",
+              "kind": "docs"
+            },
+            {
+              "title": "A Guide to the Go Garbage Collector",
+              "url": "https://go.dev/doc/gc-guide",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Budget Pacing — 예산을 하루에 고르게 쓰기",
+          "from": "task",
+          "quote": "• 아키텍처 주도: Bidder Service, Budget Pacing, Event Processor 등 핵심 컴포넌트의 아키텍처를 설계하고 기술 방향을 이끕니다.",
+          "priority": "high",
+          "why": "주요업무가 Bidder Service·Budget Pacing·Event Processor 아키텍처 설계다. 우대에 UA 지표(CVR·ROAS) 이해가 있다.",
+          "gap_check": "하루 예산을 가진 캠페인이 오전에 예산을 다 쓰지 않게 하려면 입찰 참여 확률이나 입찰가를 어떻게 조절하는가? 수백 대 bidder 가 같은 예산을 나눠 쓸 때 중앙 카운터를 매 요청마다 부르지 않고 과소비를 막는 방법은(토큰 버킷·주기적 할당)?",
+          "drill": "Token bucket 문서를 읽고, 하루 트래픽 곡선(시간대별 요청 수)을 가정한 시뮬레이터에서 캠페인 예산을 (a) 제한 없이 (b) 시간대별 목표 대비 참여 확률 조절로 쓰게 해 소진 곡선을 비교한다. bidder 4대가 1분마다 예산 조각을 받아 쓰는 구조로 바꿨을 때 초과 소비가 얼마나 나는지 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Token bucket — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Token_bucket",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
