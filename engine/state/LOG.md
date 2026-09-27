@@ -2800,3 +2800,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 クロスマート 팩스 서식 분류기
 
 - 기능 `fax-form-layout-classifier` — 특징량 대 딥러닝/LLM · 행 간격 · 최소 구성 · 문자 행 · 독립 특징량 · 앙상블 · 라벨 수정 · 사전 탐색, 결정 8. 수발주 수익원과 inferred 연결.
+
+## 2026-09-27 クロスマート 발주 화면 Vue2 → React
+
+- 기능 `order-screen-vue-to-react` — 풀 리플레이스 · React 선정 · AI 변환 금지 · 혼자 기반 → 분담 · 6 단계 릴리스 · Feature Flag 복귀 · 로그인 인계/SNI · CS, 결정 8. 수발주 수익원 · 서식 분류기와 inferred 연결.
