@@ -1,0 +1,177 @@
+{
+  "slug": "checkmal",
+  "name": "체크멀",
+  "name_en": "CheckMAL",
+  "aliases": [
+    "체크멀",
+    "㈜체크멀",
+    "CheckMAL"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "checkmal.com",
+  "one_liner": "시그니처 없이 행위로 랜섬웨어를 잡는 'AppCheck' 를 만드는 용인의 보안 회사 — 윈도우·리눅스 커널 드라이버와 Go 중앙관리 서버",
+  "company": {
+    "business": "홈페이지는 체크멀의 주력을 **100% Signatureless Anti-Ransomware 'AppCheck'** 로 소개한다 — 시그니처 DB 업데이트 없이 **특허(No. 10-1828600) 받은 상황인식 기반 랜섬웨어 행위 탐지 엔진**으로 신종·변종을 잡고, 시스템 복원·백업 기능 무력화와 안전 모드 부팅 실행을 미리 막는다고 적는다. '106개국 150만 사용자' 를 내세우며 제품은 개인용 AppCheck, **AppCheck Pro for Windows Server·Linux Server**, 에이전트를 모아 관리하는 **CMS**, AppCheck Endpoint Protection 이다. 메뉴에 개인 구매·라이선스 갱신·견적 요청이 있다. 원티드 공고 머리말은 개발 영역을 넷으로 적는다 — ① 윈도우 보안 앱(**랜섬웨어 사전탐지·차단·자동복구 에이전트, 윈도우 커널 드라이버**) ② 리눅스 보안 앱(리눅스 커널 드라이버) ③ **CMS(Golang 백엔드·React 프런트)** ④ **3rd-Party 협력업체**용 백오피스. 개발 방식은 C/C++·Golang·TypeScript, AWS·MySQL·MongoDB·Jenkins, **주 3시간 이상 코드 리뷰**, Agile·Jira, **하루 7시간 집중 근무**. 근무지 경기 용인시. 매출·인원은 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "CheckMAL - Protect your PC with 100% Signatureless Anti-Ransomware AppCheck",
+        "url": "https://www.checkmal.com/",
+        "publisher": "체크멀",
+        "summary": "홈페이지: 100% Signatureless Anti-Ransomware AppCheck, 106개국 150만 사용자(Chosen by 1.5 million users in 106 countries), 특허 No. 10-1828600(상황인식 기반 랜섬웨어 행위 탐지 엔진), 제품 AppCheck·AppCheck Pro for Windows Server·AppCheck Pro for Linux Server·Centralized Management(CMS)·AppCheck Endpoint Protection. 메뉴에 Personal Purchase·Renew License·Request a Quote. 한국어·영어·일본어."
+      },
+      {
+        "title": "윈도우 보안 개발자(주니어)",
+        "url": "https://www.wanted.co.kr/wd/368114",
+        "publisher": "원티드",
+        "summary": "머리말: C/C++·Golang·TypeScript(React), AWS 백엔드, MySQL·MongoDB, Jenkins. 주 3시간 이상 코드 리뷰, Agile·Jira, 하루 7시간 집중 근무. 개발 영역 넷: ① AppCheck 윈도우 보안 앱(랜섬웨어 사전탐지·차단·자동복구 에이전트, 커널 드라이버, 화면, 서버 연동) ② AppCheck Linux ③ 에이전트 통합 관리 CMS(Golang 백엔드·React 프런트) ④ 3rd-Party 협력업체용·정보보호 백오피스."
+      },
+      {
+        "title": "리눅스 보안 개발자(주니어)",
+        "url": "https://www.wanted.co.kr/wd/368116",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "사용자(홈페이지 주장)",
+        "value": "106개국 150만 명",
+        "as_of": "2026-09 홈페이지 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "CheckMAL - Protect your PC with 100% Signatureless Anti-Ransomware AppCheck",
+            "url": "https://www.checkmal.com/",
+            "publisher": "체크멀",
+            "summary": "홈페이지: 100% Signatureless Anti-Ransomware AppCheck, 106개국 150만 사용자(Chosen by 1.5 million users in 106 countries), 특허 No. 10-1828600(상황인식 기반 랜섬웨어 행위 탐지 엔진), 제품 AppCheck·AppCheck Pro for Windows Server·AppCheck Pro for Linux Server·Centralized Management(CMS)·AppCheck Endpoint Protection. 메뉴에 Personal Purchase·Renew License·Request a Quote. 한국어·영어·일본어."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "AppCheck 라이선스(개인·서버·엔드포인트)",
+        "how": "홈페이지가 개인 구매·라이선스 갱신·견적 요청 메뉴와 Windows Server·Linux Server 판을 적는다. 가격·구독 여부는 읽지 않았다.",
+        "domains": [
+          "윈도우 랜섬웨어 방어 에이전트",
+          "리눅스 보안 에이전트",
+          "에이전트 중앙관리 CMS"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "CheckMAL - Protect your PC with 100% Signatureless Anti-Ransomware AppCheck",
+            "url": "https://www.checkmal.com/",
+            "publisher": "체크멀",
+            "summary": "홈페이지: 100% Signatureless Anti-Ransomware AppCheck, 106개국 150만 사용자(Chosen by 1.5 million users in 106 countries), 특허 No. 10-1828600(상황인식 기반 랜섬웨어 행위 탐지 엔진), 제품 AppCheck·AppCheck Pro for Windows Server·AppCheck Pro for Linux Server·Centralized Management(CMS)·AppCheck Endpoint Protection. 메뉴에 Personal Purchase·Renew License·Request a Quote. 한국어·영어·일본어."
+          },
+          {
+            "title": "윈도우 보안 개발자(주니어)",
+            "url": "https://www.wanted.co.kr/wd/368114",
+            "publisher": "원티드",
+            "summary": "머리말: C/C++·Golang·TypeScript(React), AWS 백엔드, MySQL·MongoDB, Jenkins. 주 3시간 이상 코드 리뷰, Agile·Jira, 하루 7시간 집중 근무. 개발 영역 넷: ① AppCheck 윈도우 보안 앱(랜섬웨어 사전탐지·차단·자동복구 에이전트, 커널 드라이버, 화면, 서버 연동) ② AppCheck Linux ③ 에이전트 통합 관리 CMS(Golang 백엔드·React 프런트) ④ 3rd-Party 협력업체용·정보보호 백오피스."
+          }
+        ]
+      },
+      {
+        "name": "협력업체(3rd-Party) 공급",
+        "how": "공고 머리말이 '3rd-Party 협력업체도 우리의 고객' 이라 적고 이들을 위한 백오피스를 운영한다고 적는다. 엔진 공급(OEM)인지 재판매인지는 읽은 자료에 없다.",
+        "domains": [
+          "에이전트 중앙관리 CMS"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "윈도우 보안 개발자(주니어)",
+            "url": "https://www.wanted.co.kr/wd/368114",
+            "publisher": "원티드",
+            "summary": "머리말: C/C++·Golang·TypeScript(React), AWS 백엔드, MySQL·MongoDB, Jenkins. 주 3시간 이상 코드 리뷰, Agile·Jira, 하루 7시간 집중 근무. 개발 영역 넷: ① AppCheck 윈도우 보안 앱(랜섬웨어 사전탐지·차단·자동복구 에이전트, 커널 드라이버, 화면, 서버 연동) ② AppCheck Linux ③ 에이전트 통합 관리 CMS(Golang 백엔드·React 프런트) ④ 3rd-Party 협력업체용·정보보호 백오피스."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "윈도우 랜섬웨어 방어 에이전트",
+        "why": "윈도우 보안 개발자 공고(주니어·시니어)가 AppCheck 윈도우 제품, 시스템 보호·악성코드 탐지, 윈도우 드라이버 개발과 내부동작 분석, 위협 분석·대응을 적는다. 우대에 WinAPI·MFC, 커널 구조, 파일 시스템 미니필터, DLP.",
+        "what_to_know": [
+          "파일 시스템 미니필터",
+          "윈도우 커널 드라이버",
+          "랜섬웨어 행위 탐지"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "윈도우 보안 개발자(주니어)",
+            "url": "https://www.wanted.co.kr/wd/368114",
+            "publisher": "원티드",
+            "summary": "머리말: C/C++·Golang·TypeScript(React), AWS 백엔드, MySQL·MongoDB, Jenkins. 주 3시간 이상 코드 리뷰, Agile·Jira, 하루 7시간 집중 근무. 개발 영역 넷: ① AppCheck 윈도우 보안 앱(랜섬웨어 사전탐지·차단·자동복구 에이전트, 커널 드라이버, 화면, 서버 연동) ② AppCheck Linux ③ 에이전트 통합 관리 CMS(Golang 백엔드·React 프런트) ④ 3rd-Party 협력업체용·정보보호 백오피스."
+          }
+        ]
+      },
+      {
+        "name": "리눅스 보안 에이전트",
+        "why": "리눅스 보안 개발자 공고(주니어·시니어)가 AppCheck 리눅스 제품, 리눅스 드라이버 개발·변경 대응, 리눅스 네트워크 앱(C/Golang)을 적는다.",
+        "what_to_know": [
+          "리눅스 커널 모듈",
+          "시스템 프로그래밍",
+          "Golang"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "리눅스 보안 개발자(주니어)",
+            "url": "https://www.wanted.co.kr/wd/368116",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "에이전트 중앙관리 CMS",
+        "why": "공고 머리말이 CMS 로 AppCheck 에이전트와 보안정책을 일괄 관리하며 백엔드는 Golang, 프런트는 React 라고 적는다. 지금 모집중 공고 중 CMS 전담 자리는 없다.",
+        "what_to_know": [
+          "Golang",
+          "에이전트-서버 통신"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "윈도우 보안 개발자(주니어)",
+            "url": "https://www.wanted.co.kr/wd/368114",
+            "publisher": "원티드",
+            "summary": "머리말: C/C++·Golang·TypeScript(React), AWS 백엔드, MySQL·MongoDB, Jenkins. 주 3시간 이상 코드 리뷰, Agile·Jira, 하루 7시간 집중 근무. 개발 영역 넷: ① AppCheck 윈도우 보안 앱(랜섬웨어 사전탐지·차단·자동복구 에이전트, 커널 드라이버, 화면, 서버 연동) ② AppCheck Linux ③ 에이전트 통합 관리 CMS(Golang 백엔드·React 프런트) ④ 3rd-Party 협력업체용·정보보호 백오피스."
+          },
+          {
+            "title": "CheckMAL - Protect your PC with 100% Signatureless Anti-Ransomware AppCheck",
+            "url": "https://www.checkmal.com/",
+            "publisher": "체크멀",
+            "summary": "홈페이지: 100% Signatureless Anti-Ransomware AppCheck, 106개국 150만 사용자(Chosen by 1.5 million users in 106 countries), 특허 No. 10-1828600(상황인식 기반 랜섬웨어 행위 탐지 엔진), 제품 AppCheck·AppCheck Pro for Windows Server·AppCheck Pro for Linux Server·Centralized Management(CMS)·AppCheck Endpoint Protection. 메뉴에 Personal Purchase·Renew License·Request a Quote. 한국어·영어·일본어."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "시니어 공고에 '처우 20% UP' 을 걸었다",
+        "evidence": "윈도우 보안 개발자(처우20% UP / 시니어 / 8년이상)",
+        "so_what": "커널·드라이버 경력자를 구하기 어려워 조건을 올린 것으로 읽힌다. 같은 업무의 주니어 공고(신입~3년)도 함께 열려 있어, 커널 경험이 없어도 C/C++·CS 기초로 들어갈 입구가 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "하루 7시간 근무를 공고 앞에 내세운다",
+        "evidence": "체크멀은 하루 7시간 집중 근무합니다.",
+        "so_what": "복지 칸에도 '주 35시간 / 일 7시간 탄력근무제' 가 있다. 근무지가 용인이라 출퇴근 거리와 함께 따져 볼 조건이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다('처우 20% UP' 은 기준 금액이 없다) — 비워 둔다",
+    "매출·임직원 수는 읽지 않았다",
+    "3rd-Party 협력업체에 무엇을(엔진·재판매) 공급하는지 읽은 자료에 없다"
+  ],
+  "postings": []
+}

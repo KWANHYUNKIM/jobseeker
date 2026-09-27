@@ -969,6 +969,19 @@
       "postings": 4,
       "study_items": 16,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "checkmal",
+      "name": "체크멀",
+      "aliases": [
+        "체크멀",
+        "㈜체크멀",
+        "CheckMAL"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
