@@ -155,5 +155,97 @@
     "회사 홈페이지를 찾지 못했다(추측한 도메인이 응답하지 않았다)",
     "캐폴테스트 과금 대상·요금, 투자·인원은 읽지 않았다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/382447",
+      "title": "[인턴] 개발자",
+      "site": "wanted",
+      "verdict": "신입·인턴, **정규직전환형 인턴 3개월**, 서울 종로구. 특정 기술 영역에 한정되지 않고 **캐폴테스트 웹·앱·API 전반과 캐폴AI 기초 연구개발**에 참여하는 개발 인턴이다. 주요업무는 서비스 개발 전반 참여, 기획 기반 기능 구현·개선, **데이터 연동·오류 처리·테스트·배포 준비**, 문제 정리와 팀 해결, 문서화, **캐폴AI·아동 음성 데이터 기초 연구개발 지원**. 자격은 **언어 하나로 서비스를 만들어 본 경험**, 웹·앱·서버·AI 관심, **Git 협업 기본**, 배우고 구현하는 태도, 질문하는 태도, **아동과 부모의 데이터를 책임감 있게** 다룰 것. 우대는 기획부터 구현까지 해 본 프로젝트, 실제 사용자 서비스 배포·운영, 웹·모바일·API·DB, **음성인식·생성형 AI**, 테스트·코드 리뷰, 초기 스타트업 관심. 같은 회사의 웹·Flutter·백엔드 공고(382391·382392·382393)와 같은 스택을 쓰게 된다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "언어 하나로 서비스 만든 경험",
+          "Git 기본",
+          "학습·질문 태도"
+        ],
+        "can_learn": [
+          "TypeScript 웹·API",
+          "음성 녹음·인식",
+          "아동 개인정보 보호"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Git 협업 — 브랜치·PR·리뷰의 흐름",
+          "from": "qualification",
+          "quote": "• Git을 활용한 협업 방식에 대한 기본적인 이해가 있는 분",
+          "priority": "core",
+          "why": "자격요건이고 우대에 테스트 코드·코드 리뷰·협업 도구 경험이 있다. 같은 회사 경력 공고 셋이 모두 'Git 기반 협업과 코드 리뷰' 를 요구한다.",
+          "gap_check": "기능 하나를 브랜치로 만들고 PR 을 올려 리뷰를 받고 합치기까지의 순서를 말할 수 있는가? 리뷰에서 수정 요청을 받으면 커밋을 어떻게 추가하고, 다른 사람의 변경과 충돌하면 어떻게 푸는가?",
+          "drill": "GitHub flow 문서와 Pro Git 앞 장을 읽고, 작은 저장소에서 기능 브랜치 두 개를 같은 파일에 만들어 충돌을 일부러 내고 해결한다. PR 설명에 '무엇을·왜·어떻게 확인했나' 를 쓰는 연습을 세 번 한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "GitHub flow — GitHub Docs",
+              "url": "https://docs.github.com/en/get-started/using-github/github-flow",
+              "kind": "docs"
+            },
+            {
+              "title": "Pro Git",
+              "url": "https://git-scm.com/book/en/v2",
+              "kind": "course"
+            }
+          ]
+        },
+        {
+          "topic": "브라우저에서 아이 음성 녹음하고 올리기",
+          "from": "task",
+          "quote": "• 캐폴AI와 아동 음성 데이터 관련 기초 연구개발을 지원합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 음성인식·생성형 AI 관심이 있다. 제품의 핵심 입력이 아이의 음성 응답이다(프론트엔드·백엔드 공고의 마이크 녹음·음성 업로드).",
+          "gap_check": "브라우저에서 마이크 권한을 얻고 녹음해 파일로 만드는 흐름은 어떻게 되는가? 아이가 말을 늦게 시작하거나 멈출 때 녹음 시작·종료를 어떻게 정하는가? 녹음 파일을 음성인식 모델에 넣으면 아동 발화에서 무엇이 어려울까?",
+          "drill": "MDN MediaStream Recording API 문서를 따라 버튼을 누르면 녹음하고 재생·업로드하는 웹 페이지를 만든다. 녹음한 짧은 문장을 Whisper(공개 모델)로 받아쓰기 해 보고, 또박또박 말한 경우와 흐리게 말한 경우 결과를 비교해 적는다(본인 음성만 사용).",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MediaStream Recording API — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API",
+              "kind": "docs"
+            },
+            {
+              "title": "openai/whisper — GitHub",
+              "url": "https://github.com/openai/whisper",
+              "kind": "repo"
+            },
+            {
+              "title": "Speech recognition — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Speech_recognition",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "아동·부모 데이터를 책임감 있게 다룬다는 것",
+          "from": "qualification",
+          "quote": "• 아동과 부모의 데이터를 책임감 있게 다룰 수 있는 분",
+          "priority": "high",
+          "why": "자격요건이다. 같은 회사 공고 모두가 개인정보·아동 데이터 보호를 최우선으로 적고, 백엔드 공고가 권한·동의·감사 추적 구조를 요구한다.",
+          "gap_check": "만 14세 미만 아동의 개인정보를 모을 때 누구의 동의가 필요한가? 음성 파일처럼 민감한 데이터는 누가 언제 볼 수 있어야 하고, 개발자가 디버깅하려고 실데이터를 로컬에 내려받으면 무엇이 문제인가?",
+          "drill": "개인정보보호위원회 사이트에서 아동 개인정보 관련 안내를 찾아 읽고, 미국 COPPA 문서와 비교해 '동의·수집 최소화·보관 기간·열람' 네 항목 표를 만든다. 앞 과제의 녹음 업로드에 '보호자 동의 확인' 단계와 업로드 기록 로그를 붙인다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "개인정보보호위원회",
+              "url": "https://pipc.go.kr/np/",
+              "kind": "docs"
+            },
+            {
+              "title": "Children's Online Privacy Protection Act — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
