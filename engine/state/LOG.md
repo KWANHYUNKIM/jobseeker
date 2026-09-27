@@ -2700,3 +2700,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Omiai 리아키텍처
 
 - 대담 전문으로 기능 `goal-first-rearchitecture-search-likes`, 결정 6.
+
+## 2026-09-27 Omiai API 분리
+
+- API 부채 글 후반까지 읽고 기능 `api-decoupling-feature-flag-java`, 결정 6. 완주 기준 충족 — 다음 사이클 완주 처리.
