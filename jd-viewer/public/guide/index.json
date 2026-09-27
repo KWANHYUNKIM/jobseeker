@@ -534,12 +534,15 @@
       "slug": "estsoft",
       "name": "이스트소프트",
       "aliases": [
-        "이스트소프트"
+        "이스트소프트",
+        "이스트시큐리티",
+        "㈜이스트시큐리티",
+        "ESTsecurity"
       ],
-      "status": "done",
+      "status": "in_progress",
       "postings": 6,
       "study_items": 26,
-      "updated_at": "2026-09-26"
+      "updated_at": "2026-09-27"
     },
     {
       "slug": "qpist",
