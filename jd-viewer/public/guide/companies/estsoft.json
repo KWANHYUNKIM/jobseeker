@@ -832,6 +832,97 @@
       "site": "jumpit",
       "duplicate_of": "https://www.wanted.co.kr/wd/374896",
       "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 주요업무 다섯 줄, 자격요건 다섯 줄, 우대사항 네 줄이 원티드 `[ESTsoft] AI 사업개발 매니저 5년 이상`(374896)과 같다(점핏 쪽은 '이런 업무를 담당합니다' 같은 소제목이 붙고 우대 마지막 줄의 '자격증' 이 '자걱증' 으로 오타). 브리핑은 그쪽을 본다. 점핏은 이 공고를 **회사명 '이스트시큐리티'** 로 올렸지만 원티드는 [ESTsoft] 로 표기하고 이스트소프트 본사 AX 조직 자리로 적는다 — 어느 법인 소속인지 지원 전에 확인한다. 점핏 기술스택 칸(AWS·HW·SW·ESET Endpoint Security·Google Cloud Endpoints)은 업무와 맞지 않는 자동 태그로 보인다. 경력 5~10년, 근무지 서울 서초구 반포대로3. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55104659&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=bf62239b-8596-48c8-ac64-857aee31c984",
+      "title": "보안S/W 기술지원 신입 채용",
+      "site": "saramin",
+      "verdict": "신입, 서울 서초구 반포대로 3, 마감 2026-10-21. **개발이 아니라 보안 제품 기술지원** 자리로, 공고 머리말이 **이스트시큐리티 ECM기술지원팀**을 알약 등 자사 보안 제품의 기술 지원 조직으로 소개한다 — 고객사 환경에 맞는 제품 운영 컨설팅, 인프라를 고려한 **제품 배포·서버 구축**, 운영 교육, 악성코드 대응. 주요업무는 **알약 백신·자사 보안 솔루션 기술지원(메일·원격·유선·외근·출장·상주)**, **악성코드 이슈 대응**, 제품 교육과 파트너 기술 지원. 자격은 IT 기술지원 지식, **OS(Linux, Windows)**, **DBMS·네트워크·엔드포인트** 지식, 고객 커뮤니케이션, 해외 출장 결격 사유 없음. 우대는 Endpoint 솔루션 구축·유지보수(신입 가능), 정보처리기사·PMP 등, IT 전공·보안 교육, 안티바이러스 배경지식, CISSP·CISA·정보보안기사. **외근·출장·상주**가 명시돼 있으니 근무 형태를 확인한다. 같은 본문의 경력 공고(55104732, 1~15년)와 신입/경력 공고(55104492)가 따로 있다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Linux·Windows 기초",
+          "네트워크·DB 기본",
+          "고객 커뮤니케이션"
+        ],
+        "can_learn": [
+          "엔드포인트 에이전트 배포",
+          "악성코드 1차 대응",
+          "보안 자격증"
+        ]
+      },
+      "study": [
+        {
+          "topic": "엔드포인트 보안 제품의 구조와 배포",
+          "from": "task",
+          "quote": "- 알약 백신 및 자사 보안 솔루션 기술지원(메일/원격/유선/외근/출장/상주 등)",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 팀 소개가 인프라 환경을 고려한 제품 배포 및 서버 구축을 적는다. 우대에 Endpoint 솔루션 구축·유지보수가 있다.",
+          "gap_check": "기업용 백신은 관리 서버·DB·PC 에이전트가 어떻게 이어지고, 수천 대 PC 에 업데이트를 한 번에 내리면 네트워크에 무슨 일이 생기는가? 에이전트가 관리 서버에 붙지 않을 때 PC·방화벽·서버 중 어디부터 확인하는가? 백신(시그니처)과 EDR(행위 기반 탐지·대응)은 무엇이 다른가?",
+          "drill": "Antivirus software·Endpoint security·EDR 문서를 읽고, 가상 머신 두 대(관리 서버 역할 Linux, 클라이언트 Windows)를 만들어 '에이전트가 서버에 접속 안 됨' 을 재현한다(방화벽 포트 차단·DNS 오류). 증상 → 확인 명령 → 원인 → 조치 순의 점검표를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Antivirus software — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Antivirus_software",
+              "kind": "docs"
+            },
+            {
+              "title": "Endpoint security — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Endpoint_security",
+              "kind": "docs"
+            },
+            {
+              "title": "Endpoint detection and response — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Endpoint_detection_and_response",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "악성코드 의심 PC 1차 대응",
+          "from": "task",
+          "quote": "- 악성코드 이슈 대응",
+          "priority": "core",
+          "why": "주요업무이고 팀 소개에도 악성 코드 대응이 있다. 우대에 안티바이러스·정보보호 제품 배경지식이 있다.",
+          "gap_check": "고객이 '백신이 못 잡는 이상한 프로그램이 있다' 고 할 때 무엇을 먼저 모으는가(프로세스·자동 실행 항목·해시·파일 경로·네트워크 연결)? 의심 파일을 고객 PC 에서 그대로 실행해 보면 안 되는 이유와, 해시로 평판을 확인하는 방법은?",
+          "drill": "Sysinternals Process Explorer·Autoruns 문서와 VirusTotal 'How it works' 를 읽고, 가상 머신에서 정상 프로그램 몇 개를 시작 프로그램에 등록한 뒤 Autoruns 로 찾아 서명·해시를 확인한다. 한 항목을 골라 '수집한 정보·판단 근거·조치' 를 고객 보고서 형식으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Process Explorer — Sysinternals",
+              "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer",
+              "kind": "docs"
+            },
+            {
+              "title": "Autoruns — Sysinternals",
+              "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns",
+              "kind": "docs"
+            },
+            {
+              "title": "How it works — VirusTotal",
+              "url": "https://docs.virustotal.com/docs/how-it-works",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Windows·Linux 에서 문제 원인 로그 찾기",
+          "from": "qualification",
+          "quote": "- OS(Linux, Windows) 지식 및 스킬이 있는 분",
+          "priority": "high",
+          "why": "자격요건이고, 원격·유선 기술지원은 결국 고객 PC·서버의 로그를 읽고 원인을 말하는 일이다.",
+          "gap_check": "Windows 이벤트 뷰어에서 서비스가 죽은 기록과 설치 실패 기록은 어느 로그에 남는가? Linux 서버에서 서비스 상태·최근 로그·디스크 부족을 확인하는 명령은 무엇인가?",
+          "drill": "Event Viewer 문서를 읽고, Windows 에서 서비스 하나를 강제로 중지·실패시켜 이벤트 로그에 무엇이 남는지 찾는다. Linux 에서는 서비스를 실패시켜 상태·로그 확인 명령으로 원인을 찾고, 두 OS 의 '원인 찾기 순서' 를 한 장으로 정리한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Event Viewer — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Event_Viewer",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
