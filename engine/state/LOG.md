@@ -2748,3 +2748,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 백열한 번째 후보 조사
 
 - WebSearch → hatena.blog/dev/companies(최신 글 피드) → 하테나 RSS 3곳 → 본문 4편. Legalscape 대기. Chatwork · リーディングマーク 약함. 다음 입구로 yamadashy 기업 기술 블로그 RSS 목록.
+
+## 2026-09-27 Legalscape 회사 프로파일
+
+- 기술 글 3편(쿼리 확장 LLM 비교 · ES 인라인 사용자 사전 · Cloud Run → GKE Zero Trust) + 서비스 사이트 · 공지 2건. 도메인 3, 수익원 2(구독 confirmed · API 연계 inferred). 다음은 첫 기능.
