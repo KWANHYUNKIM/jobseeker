@@ -2760,3 +2760,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Legalscape 인라인 사용자 사전
 
 - 기능 `kuromoji-inline-user-dictionary` — 토크나이저 · 분할 모양 · 인라인 대 파일 · Blue-Green 교체 · 규모 상한 · 계측 방법 · took 측정 · explain 확인, 결정 8. 쿼리 확장 기능 · 구독 수익원과 inferred 연결.
+
+## 2026-09-27 Legalscape Cloud Run → GKE Zero Trust
+
+- 기능 `cloudrun-to-gke-zero-trust` — GKE 도입 · 위치 대 신원 · Direct VPC Egress · L4/L7 · 인증 3 택 · 메시 보류 · 서버 인증 · 요건별 권장, 결정 8. 도메인 3/3 채움 — 다음은 API 수익원 두 번 찾기.

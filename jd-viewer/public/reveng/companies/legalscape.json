@@ -133,7 +133,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "cloudrun-to-gke-zero-trust"
+      ]
     }
   ],
   "features": [
@@ -922,6 +924,376 @@
           "publisher": "Legalscape",
           "date": "2026-05-20",
           "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+        }
+      ]
+    },
+    {
+      "key": "cloudrun-to-gke-zero-trust",
+      "name": "VPC 안이라고 믿지 않는다 — Cloud Run 에서 GKE 로 가는 사설 통신을 요청마다 신원으로 확인하고, 평문 HTTP + ID 토큰의 구멍을 막는 세 가지 길",
+      "domain": "Cloud Run 이 기본인 곳에서, GKE 로 넘어가는 호출을 위치가 아닌 신원으로 막는다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "Legalscape 는 Cloud Run 을 1 순위로 쓰고 Kubernetes 는 쓰지 않았다. 그런데 셀프 호스트로 올릴 서비스가 Helm chart 로 제공돼 Kubernetes 라면 비교적 쉽게 들일 수 있는 상황이 몇 번 생겼다 — 그래서 Cloud Run 위 서비스가 GKE 위 서비스를 부르는 길이 필요해졌다.\n\n경로를 VPC 안에 가두는 건 어렵지 않다. 문제는 그다음이다 — Zero Trust 는 네트워크 경계나 위치를 신뢰의 근거로 삼지 않고 요청마다 접근을 평가한다. 'VPC 안에 닫았으니 안전' 이 아니라, GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하느냐를 정해야 했다.",
+        "metrics": [
+          {
+            "label": "Direct VPC Egress 기동 지연",
+            "value": "인스턴스 기동 때 네트워크 확립까지 1 분 전후가 걸릴 수 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          },
+          {
+            "label": "Cloud Service Mesh 의 Cloud Run → GKE 구간",
+            "value": "2026 년 6 월 현재 퍼블릭 프리뷰 — Auto mTLS · Secure Naming 미적용, 평문",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "주제를 정할 때",
+          "thought": "생각하고 싶은 건 경로를 어떻게 마련하느냐가 아니라, Cloud Run 에서 온 요청을 GKE 쪽이 어떻게 인증하느냐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+              "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+              "publisher": "Legalscape",
+              "date": "2026-06-19",
+              "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+            }
+          ]
+        },
+        {
+          "at": "평문 + ID 토큰을 뜯어볼 때",
+          "thought": "'ID 토큰을 붙였으니 안전' 은 서버 인증이 빠져 있다는 사실과 함께 보면 무너진다 — 가짜 서버에 연결되면 채널에 묶이지 않은 토큰을 빼 가 진짜 백엔드에 다시 쓸 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+              "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+              "publisher": "Legalscape",
+              "date": "2026-06-19",
+              "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+            }
+          ]
+        },
+        {
+          "at": "메시를 볼 때",
+          "thought": "GKE 끼리라면 Auto mTLS 와 Secure Naming 이 GA 라 Zero Trust 채널로 1 순위지만, Cloud Run 을 클라이언트로 두는 길은 아직 프리뷰라 Zero Trust 로는 불충분하다 — 기대는 크다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+              "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+              "publisher": "Legalscape",
+              "date": "2026-06-19",
+              "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+            }
+          ]
+        },
+        {
+          "at": "정리하며",
+          "thought": "방법은 여럿이지만 은탄환은 없다 — 지키고 싶은 것과 운영 제약에 맞춰 고른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+              "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+              "publisher": "Legalscape",
+              "date": "2026-06-19",
+              "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "호출 측(Cloud Run 서비스)",
+            "what": "서비스 계정으로 OIDC ID 토큰을 발급해 요청에 싣는다 — Direct VPC Egress 로 VPC 에 들어간다."
+          },
+          {
+            "name": "피호출 측(GKE 서비스)",
+            "what": "Helm chart 로 올린 셀프 호스트 OSS 등 — 앱을 고칠 수 없을 수도 있다."
+          },
+          {
+            "name": "내부 로드밸런서",
+            "what": "L4 패스스루 NLB 또는 L7 내부 ALB(Gateway API, proxy-only 서브넷 필요) — 어느 쪽이냐가 쓸 수 있는 인증 방식을 정한다."
+          },
+          {
+            "name": "자격 증명",
+            "what": "OIDC ID 토큰(audience 를 피호출 서비스로 고정) · IAP 용 서비스 계정 서명 JWT · SPIFFE 기반 인증서."
+          },
+          {
+            "name": "위협 벡터",
+            "what": "경로 도청 · 패킷 주입 / 서버 사칭 / Bearer 토큰 리플레이."
+          }
+        ],
+        "invariants": [
+          "네트워크 위치(VPC 안)를 신뢰의 근거로 삼지 않는다 — 요청마다 신원을 확인한다.",
+          "ID 토큰의 audience 는 부르는 서비스로 고정한다 — 다른 서비스에 돌려쓰지 못하게.",
+          "서버 인증 없이 Bearer 토큰만 보내지 않는다 — 사칭되면 토큰이 새고 리플레이된다.",
+          "L4 패스스루라면 TLS 는 Pod 자신이 HTTPS 를 말해야 끝까지 간다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Cloud Run 에 Direct VPC Egress(private-ranges-only)를 켜고, startup probe 엔드포인트에 egress 대상 소통 확인을 넣는다",
+            "why": "커넥터 VM 없이 VPC 로 — 기동 직후 1 분 전후의 네트워크 지연 동안엔 트래픽을 안 받는다."
+          },
+          {
+            "step": "GKE 서비스를 L4 패스스루 NLB 나 L7 내부 ALB 로 내부에 노출한다",
+            "why": "L7 기능(프론트엔드 mTLS · TLS 종단 · 경로 라우팅)이 필요한지가 기준."
+          },
+          {
+            "step": "요청마다 신원을 확인한다 — 앱에서 ID 토큰 검증 / ALB 앞 IAP / ALB 프론트엔드 mTLS 중 하나",
+            "why": "위치 대신 신원."
+          },
+          {
+            "step": "서버 인증을 채운다 — HTTPS(L4 면 Pod 가 직접) 또는 ALB mTLS, LB → Pod 구간은 BackendTLSPolicy",
+            "why": "평문 HTTP 는 서버 사칭을 그냥 통과시킨다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "셀프 호스트 서비스를 어디에 올리나?",
+            "chosen": "**Cloud Run 1 순위 방침은 두되, Helm chart 가 있는 셀프 호스트 서비스는 GKE 에.**",
+            "alternatives": [
+              "그런 서비스도 Cloud Run 에 맞춰 올린다",
+              "Kubernetes 를 계속 안 쓴다"
+            ],
+            "tradeoff": "Helm chart 가 있으면 Kubernetes 쪽이 도입이 비교적 쉽다. 대가는 플랫폼이 둘이 되고, 둘 사이 통신을 따로 설계해야 한다는 것 — 이 글의 주제가 거기서 나왔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 신뢰의 근거로 삼나?",
+            "chosen": "**네트워크 위치가 아니라 요청마다의 신원 확인(NIST SP 800-207 의 Zero Trust).**",
+            "alternatives": [
+              "VPC 안에 닫았으니 안전하다고 본다"
+            ],
+            "tradeoff": "DNS 존 침해 · 부정한 백엔드 등록 · 방화벽 오설정 같은 내부 사고에도 버틴다. 대가는 인증 로직이나 인프라가 한 겹 는다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          },
+          {
+            "question": "Cloud Run 에서 VPC 로 어떻게 들어가나?",
+            "chosen": "**Direct VPC Egress — 내부 IP 대상만 VPC 로(private-ranges-only).**",
+            "alternatives": [
+              "Serverless VPC Access 커넥터"
+            ],
+            "tradeoff": "사이에 프록시 VM 이 없어 설정이 단순하고, 커넥터용 전용 서브넷 · 고정비가 없으며 인스턴스처럼 0 까지 줄어든다. 대가는 인스턴스 기동 때 네트워크 확립에 1 분 전후가 걸릴 수 있다는 것 — startup probe 에 소통 확인을 넣어 그동안 트래픽을 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          },
+          {
+            "question": "GKE 서비스를 어떤 로드밸런서로 내놓나?",
+            "chosen": "**L7 기능이 필요한지로 가른다 — 필요 없으면 L4 패스스루 NLB, 필요하면 L7 내부 ALB(Gateway API).**",
+            "alternatives": [
+              "늘 L7 ALB",
+              "늘 L4 NLB"
+            ],
+            "tradeoff": "L4 는 빠르고 단순하다. 대가는 TLS 가 Pod 자신이 HTTPS 를 말해야 끝까지 가고 IAP · ALB mTLS 를 못 쓴다는 것. L7 은 ALB 층의 mTLS · TLS 종단을 쓰지만 proxy-only 서브넷이 필요하다 — 이 선택이 다음 인증 방식을 정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          },
+          {
+            "question": "요청마다의 신원을 어떻게 확인하나?",
+            "chosen": "**요건에 따라 셋 중 하나 — (A) 앱에서 OIDC ID 토큰 검증 (B) 내부 ALB + IAP (C) 메시 mTLS 는 보류.**",
+            "alternatives": [
+              "(A) 하나로 통일",
+              "(B) 하나로 통일"
+            ],
+            "tradeoff": "(A) 는 추가 인프라가 거의 없고 audience 고정으로 다른 서비스로의 리플레이를 막는다 — 대가는 검증 로직이 앱에 올라가고, 그것만으론 채널 암호화 · 서버 인증이 없다는 것. (B) 는 인가를 ALB 층으로 빼 IAM 으로 일원화한다 — 대가는 L7 ALB 전제이고 GKE 에서 IAP 설정은 함정이 많다. 결론은 '은탄환은 없다'.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          },
+          {
+            "question": "서비스 메시 mTLS 를 지금 쓰나?",
+            "chosen": "**보류 — Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 이 구간이 평문으로 흐르고 GKE 쪽을 PERMISSIVE 로 받아야 한다.**",
+            "alternatives": [
+              "Cloud Service Mesh 로 Cloud Run 까지 mTLS"
+            ],
+            "tradeoff": "SPIFFE 신원 + 상호 TLS 는 토큰 대신 인증서로 피어를 인증해 GKE 끼리라면 1 순위다. 대가는 지금 쓰면 Zero Trust 로는 불충분한 상태를 받아들이는 것 — 장래 기대는 크다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          },
+          {
+            "question": "평문 HTTP + ID 토큰이면 충분한가?",
+            "chosen": "**아니다 — 서버 인증을 반드시 채운다: HTTPS 를 붙이거나 ALB 프론트엔드 mTLS, LB → Pod 구간은 BackendTLSPolicy 로.**",
+            "alternatives": [
+              "VPC 내부 암호화에 기대 평문 유지"
+            ],
+            "tradeoff": "GCP 사설 IP 통신은 네트워크 층에서 암호화 · 무결성 보호돼 도청엔 부분적 보험이 되지만, 서버 사칭은 그냥 통과하고 사칭이 성립하면 ID 토큰이 빠져나가 리플레이된다. 대가는 L4 라면 Pod 가 직접 HTTPS 를 해야 해 OSS 를 그대로 올릴 땐 불가능할 수 있다는 것, 내부 DNS 면 Certificate Manager 의 DNS 검증 인증서를 못 쓴다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          },
+          {
+            "question": "결국 무엇을 권하나?",
+            "chosen": "**요건별 권장표 — 앱 수정 가능 · 인프라 단순: ID 토큰 앱 검증 + HTTPS / 앱 수정 불가 · IAM 일원화: 내부 ALB + IAP / 앱 수정 불가 + 채널 인증 필요: 내부 ALB + 프론트엔드 mTLS(필요하면 BackendTLS).**",
+            "alternatives": [
+              "하나의 표준 구성을 정한다"
+            ],
+            "tradeoff": "셀프 호스트 OSS 처럼 앱을 못 고치는 경우와 자사 앱을 가를 수 있다. 대가는 구성이 서비스마다 달라질 수 있다는 것 — 실제로 어느 칸을 골랐는지는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+                "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+                "publisher": "Legalscape",
+                "date": "2026-06-19",
+                "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "리걸 리서치 구독(스탠더드 · 프리미엄)(수익원)",
+          "via": "서비스를 받치는 클라우드 기반",
+          "contract": "Cloud Run 1 순위 · GKE 는 셀프 호스트용이라는 방침은 회사 전체의 것이다 — 구독 서비스의 어느 부분이 GKE 위 서비스를 부르는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+              "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+              "publisher": "Legalscape",
+              "date": "2026-06-19",
+              "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+            },
+            {
+              "title": "AIリーガルリサーチ・判例検索なら「リーガルスケープ」",
+              "url": "https://www.legalscape.jp/",
+              "publisher": "Legalscape",
+              "summary": "업무용 전제(개인 · 학생 이용 불가)의 리걸 리서치 서비스. 4,500 권 넘는 법률 서적 · 판례(D1-Law.com 판례체계 연계) · 법령 약 8,000 건 · 가이드라인 · 퍼블릭 코멘트 약 28,000 건을 AI 가 가로질러 찾고, 출처를 밝혀 요약한다. 원전으로 건너가는 링크와 '지금 읽는 문헌을 인용한 다른 문헌' 역인용 기능, 바인더 공유. 플랜은 스탠더드 · 프리미엄 두 가지(금액 표기 없음). 무료 트라이얼 → 별도로 본 이용 신청(자동 전환 안 됨). 트라이얼 후 설문(N=633)에서 약 80% 가 리서치 시간 단축을 느꼈다고."
+            }
+          ]
+        },
+        {
+          "to": "llm-query-expansion-model-choice",
+          "via": "Cloud Run 위 서비스 호출",
+          "contract": "검색 앞단에서 LLM 을 부르는 서비스도 'Cloud Run 이 1 순위' 방침 아래 있을 것이고, 셀프 호스트 구성 요소가 GKE 로 가면 이 통신 설계를 거친다 — 검색 기능이 실제로 어디서 도는지는 어느 글에도 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+              "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+              "publisher": "Legalscape",
+              "date": "2026-06-19",
+              "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+            },
+            {
+              "title": "クエリ拡張に使うLLMの違いは、検索性能にどれくらい効くのか",
+              "url": "https://tech.legalscape.co.jp/entry/2026/05/29/095159",
+              "publisher": "Legalscape",
+              "date": "2026-05-29",
+              "summary": "Labs 팀 글. RAG 에서 쿼리 확장은 정석이지만 '어느 급의 LLM 으로 해야 하나'를 공개 데이터로 잰다 — FRAMES(824 문항, 한 문항에 정답 위키 문서 평균 3.2 개) · 영어 위키 약 650 만 쪽 · BM25 고정 · 1-hop 확장(질문당 쿼리 3 개, 하위 사실마다 다른 쿼리를 내라는 프롬프트 · Structured Output). 6 모델 + 확장 없는 bm25-only. 모든 모델이 확장 없음보다 낫고 Recall@10 개선은 gemini-3.5-flash +41.9% 최고, gpt-5.4-nano/mini 는 +16~18% 로 뒤처짐. 비용 대비로는 gemini-3.1-flash-lite 가 3 배 비싼 3-flash 에 근접. 표 읽기형 질문에서 개선이 가장 크다. 남은 과제: 지연 시간, dense · 하이브리드 검색에서의 효과, multi-step 검색 계획. 법률 질문도 '답에 필요한 출처가 여럿'이라 이 데이터셋을 골랐다고."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "Cloud Run 요청이 GKE 에 닿기까지",
+          "question": "경로와 인증은 각각 어디서 정해지나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  CR[\"Cloud Run 서비스\\nSA 로 ID 토큰 발급\"] --> EG[\"Direct VPC Egress\\nprivate-ranges-only\"]\n  EG --> LB{\"내부 LB\"}\n  LB -- \"L4 패스스루 NLB\" --> POD1[\"Pod 가 HTTPS · 토큰 검증 (A)\"]\n  LB -- \"L7 내부 ALB\" --> IAP[\"IAP (B)\\n또는 프론트엔드 mTLS\"]\n  IAP --> BT[\"BackendTLSPolicy\\nLB → Pod\"]\n  BT --> POD2[\"GKE 서비스\"]"
+        },
+        {
+          "title": "인스턴스 하나가 트래픽을 받기까지",
+          "question": "Egress 지연 동안 요청은 어떻게 되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 기동: Cloud Run 인스턴스\n  기동 --> 네트워크대기: Direct VPC Egress 확립 중(1 분 전후)\n  네트워크대기 --> 네트워크대기: startup probe 실패 · 재시도\n  네트워크대기 --> 준비: probe 가 egress 대상 소통 확인\n  준비 --> 서비스중: 트래픽 수신\n  서비스중 --> [*]: 0 까지 축소"
+        },
+        {
+          "title": "평문 HTTP + ID 토큰이 뚫리는 길",
+          "question": "토큰을 붙였는데 왜 안전하지 않나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"DNS 존 침해 · 부정 백엔드 등록 · 방화벽 오설정\"] --> B[\"Cloud Run 이 가짜 서버에 연결\"]\n  B --> C[\"평문 HTTP — 서버 인증 없음\"]\n  C --> D[\"ID 토큰 탈취\\n채널에 묶이지 않은 Bearer\"]\n  D --> E[\"진짜 백엔드에 리플레이\"]\n  F[\"VPC 내부 암호화\"] -. \"도청만 부분 방어\" .-> C\n  E --> G[\"막는 법: HTTPS · ALB mTLS · BackendTLS\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Cloud Run から GKE へのプライベート通信を Zero Trust で設計する",
+          "url": "https://tech.legalscape.co.jp/entry/2026/06/19/181512",
+          "publisher": "Legalscape",
+          "date": "2026-06-19",
+          "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
         }
       ]
     }
