@@ -7,7 +7,7 @@
     "㈜버터소프트",
     "Buttersoft"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "buttersoft.io",
   "one_liner": "성수동의 앱·웹 디지털 프로덕트 에이전시(2024년 설립, 19명) — 키움증권·이마트 에브리데이 등 고객사 프로젝트와 자체 장소 SNS '세이치즈'",
@@ -174,8 +174,8 @@
   "open_questions": [
     "salary: 공고에 금액이 없다 — 비워 둔다",
     "매출 12억·19명이 몇 년 기준인지 공고에 없다",
-    "원티드 프론트엔드 공고의 '신입 · 계약직' 표기가 실제 고용형태인지(사람인은 '신입/경력 채용')",
-    "세이치즈의 수익 모델은 읽지 않았다"
+    "세이치즈의 수익 모델은 읽지 않았다",
+    "고용형태는 사람인 게시 기준 프론트·백엔드 모두 '계약직 12개월(정규직 전환 가능)' 이다 — 전환 기준·비율은 공고에 없다"
   ],
   "postings": [
     {
@@ -366,6 +366,27 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54992279&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=52eec5cf-bd7d-48d4-b0f8-7b77360fb052",
+      "title": "버터소프트 개발팀 채용",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/385623",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 회사 머리말, 주요업무(협업·UX 완성도·웹부터 서버·모바일·데스크탑까지 JavaScript·문제 개선·코드 리뷰·문서화), 자격 일곱 줄이 원티드 `프론트엔드 개발자`(385623)와 같다. 브리핑은 그쪽을 본다. 여기에만 적힌 것이 중요하다 — **고용형태 '계약직 12개월 (정규직 전환 가능)'**, 급여 면접 후 결정, 근무지 서울 성동구 성수일로4가길 10, 주 5일, 접수 2026-09-09 ~ 채용시, 전형 **서류전형 → 직무 인터뷰 → 문화적합성 인터뷰 → 최종합격**. 원티드의 '계약직' 표기와 맞는다. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55043483&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=c20f1f1d-babf-4b03-bb4e-780010601d28",
+      "title": "버터소프트 개발팀 채용[백엔드 Java/Spring]",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/386905",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 회사 머리말과 주요업무·자격이 원티드 `백엔드 개발자 [Java/Spring]`(386905)와 같다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 **'백엔드 개발 경력이 총 3년 미만인 분들을 위한 공고'**, 연차보다 '밀도 있는 경험·가파른 성장 가능성' 을 본다는 설명, **고용형태 '계약직 12개월(정규직 전환 가능)'**, 급여 면접 후 결정, 근무지 성수일로4가길 10, 접수 2026-09-15 ~ 채용시, 전형 서류전형 → 직무 인터뷰 → 문화적합성 인터뷰 → 최종합격이다. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49961951?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=11&sc=630",
+      "title": "프론트엔드 개발자",
+      "site": "jobkorea",
+      "duplicate_of": "https://www.wanted.co.kr/wd/385623",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 회사 머리말과 업무가 원티드 `프론트엔드 개발자`(385623)와 같다(잡코리아 크롤은 업무·자격 칸이 비어 본문으로 대조했다). 브리핑은 그쪽을 본다. 여기에만 적힌 것은 회사 소개(2024년 설립, 자본금 1,000만원, 매출액 12억 5,327만원, 사원수 19명, 성수일로4가길 10), 기술스택 JavaScript·TypeScript·React·React Native, 상시채용이다. 두 자리가 아니므로 한 곳으로만 지원한다."
     }
   ]
 }
