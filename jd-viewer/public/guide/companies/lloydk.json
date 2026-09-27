@@ -1,0 +1,221 @@
+{
+  "slug": "lloydk",
+  "name": "로이드케이",
+  "name_en": "LLOYDK",
+  "aliases": [
+    "로이드케이",
+    "㈜로이드케이",
+    "LLOYDK"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "lloydk.co.kr",
+  "one_liner": "Elastic 등 데이터 플랫폼 구축에서 출발해 LLM·RAG 솔루션(DO 라인업)과 대기업·공공 AI 프로젝트를 하는 성남 위례의 IT 솔루션 기업",
+  "company": {
+    "business": "잡코리아 공고의 회사 소개는 로이드케이를 **데이터·인공지능·보안·클라우드 IT솔루션 기업**으로 적는다 — 빅데이터 분석 플랫폼, AI 기반 유통 데이터 연구, **Elastic Stack 기반 대규모 데이터 처리**, AI/ML 예측 시스템, 보안·클라우드 인프라 구축. 원티드 공고 머리말은 스스로를 '솔루션 엔지니어링 팀' 으로 부르고 **대기업 및 공공기관** 프로젝트를 앞세운다. 홈페이지는 자체 솔루션 셋을 적는다 — **DO-LLM 2.0**(멀티 LLM 연계·오케스트레이션), **DO-SPE 2.0**(RAG 도입, AI 기반 데이터 통합·검색, 대화형 검색), **DO-AST**(AI 통합관제, 사용자 행위기반 보안, 실시간 모니터링·권한관리). 파트너로 Elastic·Confluent·Hashicorp·MongoDB·Redis·AWS·Couchbase 를, 고객군으로 기업·금융·공공기관·유통·교육기관을 든다. 모집중 공고는 세 자리다 — **Python 백엔드(LLM Agent·데이터 파이프라인, 5년↑)** 가 원티드·잡코리아·사람인에 같은 본문으로 올라 있고, **백엔드/풀스택 10년↑**(폐쇄망 설치·vLLM 자체 서빙 우대), **AI Project Manager**(5년↑). 근무지는 성남 수정구 위례서일로 6.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[로이드케이] 백엔드(파이썬 Python) 개발자 모집",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49966191?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=17&sc=630",
+        "publisher": "잡코리아",
+        "summary": "회사 소개: 데이터·인공지능·보안·클라우드 IT솔루션 기업. 빅데이터 분석 플랫폼, AI 기반 유통 데이터 연구. 외부 투자 없이 연 매출 150억 원. Elastic Stack 기반 대규모 데이터 처리, AI/ML 예측 시스템, 보안·클라우드 인프라 구축."
+      },
+      {
+        "title": "백엔드(파이썬) 개발자",
+        "url": "https://www.wanted.co.kr/wd/328862",
+        "publisher": "원티드",
+        "summary": "머리말: 대규모 데이터를 처리하고 AI 기반 서비스를 구축하는 솔루션 엔지니어링 팀. AI 학습용 데이터 파이프라인부터 LLM 기반 응답 시스템까지, 다양한 산업군 프로젝트로 대기업·공공기관의 디지털 혁신 지원."
+      },
+      {
+        "title": "로이드케이 | Your Best Partner",
+        "url": "https://www.lloydk.co.kr/",
+        "publisher": "로이드케이",
+        "summary": "홈페이지: 자체 솔루션 DO-LLM 2.0(멀티 LLM 연계·오케스트레이션), DO-SPE 2.0(RAG 도입, AI 데이터 통합·검색, 대화형 검색), DO-AST(AI 통합관제, 사용자 행위기반 보안, 실시간 모니터링·권한관리). 파트너 Elastic·Confluent·Hashicorp·MongoDB·Redis·ETEVERS·AWS·Couchbase. 고객군: 기업, 금융, 공공기관·공기업, 유통·문화, 교육기관."
+      },
+      {
+        "title": "[로이드케이] 백엔드/풀스택 개발자 (10년 이상)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55062210&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=0c2750bb-5b4c-4246-a5f0-ff162b70db1e",
+        "publisher": "사람인"
+      },
+      {
+        "title": "AI Project Manager",
+        "url": "https://www.wanted.co.kr/wd/374804",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "연 매출(공고 주장)",
+        "value": "150억 원, 외부 투자 없음",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[로이드케이] 백엔드(파이썬 Python) 개발자 모집",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49966191?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=17&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 데이터·인공지능·보안·클라우드 IT솔루션 기업. 빅데이터 분석 플랫폼, AI 기반 유통 데이터 연구. 외부 투자 없이 연 매출 150억 원. Elastic Stack 기반 대규모 데이터 처리, AI/ML 예측 시스템, 보안·클라우드 인프라 구축."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "대기업·공공 AI/데이터 구축 프로젝트",
+        "how": "공고가 AI/데이터 프로젝트 수행과 고객사 시스템 통합, 대기업·공공기관 디지털 혁신 지원을 적고, AI PM 공고가 고객사 AI 부서와 PoC→Pilot→운영 전환을 적는다. 계약 형태(도급·용역)와 단가는 읽지 않았다.",
+        "domains": [
+          "LLM 에이전트·RAG 백엔드",
+          "검색·데이터 파이프라인(Elastic·Airflow)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드(파이썬) 개발자",
+            "url": "https://www.wanted.co.kr/wd/328862",
+            "publisher": "원티드",
+            "summary": "머리말: 대규모 데이터를 처리하고 AI 기반 서비스를 구축하는 솔루션 엔지니어링 팀. AI 학습용 데이터 파이프라인부터 LLM 기반 응답 시스템까지, 다양한 산업군 프로젝트로 대기업·공공기관의 디지털 혁신 지원."
+          },
+          {
+            "title": "AI Project Manager",
+            "url": "https://www.wanted.co.kr/wd/374804",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[로이드케이] 백엔드(파이썬 Python) 개발자 모집",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49966191?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=17&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 데이터·인공지능·보안·클라우드 IT솔루션 기업. 빅데이터 분석 플랫폼, AI 기반 유통 데이터 연구. 외부 투자 없이 연 매출 150억 원. Elastic Stack 기반 대규모 데이터 처리, AI/ML 예측 시스템, 보안·클라우드 인프라 구축."
+          }
+        ]
+      },
+      {
+        "name": "자체 솔루션 DO 라인업(DO-LLM·DO-SPE·DO-AST)",
+        "how": "홈페이지가 세 솔루션의 기능을 적는다. 라이선스·구독 등 과금 방식과 도입 고객 수는 읽지 않았다. 10년↑ 공고의 온프렘/폐쇄망 설치·vLLM 자체 서빙·B2B 제품 설치 우대가 이런 설치형 납품과 맞닿아 보인다.",
+        "domains": [
+          "폐쇄망 LLM 플랫폼 풀스택"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "로이드케이 | Your Best Partner",
+            "url": "https://www.lloydk.co.kr/",
+            "publisher": "로이드케이",
+            "summary": "홈페이지: 자체 솔루션 DO-LLM 2.0(멀티 LLM 연계·오케스트레이션), DO-SPE 2.0(RAG 도입, AI 데이터 통합·검색, 대화형 검색), DO-AST(AI 통합관제, 사용자 행위기반 보안, 실시간 모니터링·권한관리). 파트너 Elastic·Confluent·Hashicorp·MongoDB·Redis·ETEVERS·AWS·Couchbase. 고객군: 기업, 금융, 공공기관·공기업, 유통·문화, 교육기관."
+          },
+          {
+            "title": "[로이드케이] 백엔드/풀스택 개발자 (10년 이상)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55062210&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=0c2750bb-5b4c-4246-a5f0-ff162b70db1e",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "파트너 솔루션 기반 구축",
+        "how": "홈페이지가 Elastic·Confluent·Hashicorp·MongoDB·Redis·AWS 등을 파트너로 적고 공고 소개가 Elastic Stack 기반 대규모 데이터 처리를 적는다. 재판매 여부는 읽은 자료에 없다 — 파트너 제품으로 구축하는 사업으로 읽었다.",
+        "domains": [
+          "검색·데이터 파이프라인(Elastic·Airflow)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "로이드케이 | Your Best Partner",
+            "url": "https://www.lloydk.co.kr/",
+            "publisher": "로이드케이",
+            "summary": "홈페이지: 자체 솔루션 DO-LLM 2.0(멀티 LLM 연계·오케스트레이션), DO-SPE 2.0(RAG 도입, AI 데이터 통합·검색, 대화형 검색), DO-AST(AI 통합관제, 사용자 행위기반 보안, 실시간 모니터링·권한관리). 파트너 Elastic·Confluent·Hashicorp·MongoDB·Redis·ETEVERS·AWS·Couchbase. 고객군: 기업, 금융, 공공기관·공기업, 유통·문화, 교육기관."
+          },
+          {
+            "title": "[로이드케이] 백엔드(파이썬 Python) 개발자 모집",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49966191?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=17&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 데이터·인공지능·보안·클라우드 IT솔루션 기업. 빅데이터 분석 플랫폼, AI 기반 유통 데이터 연구. 외부 투자 없이 연 매출 150억 원. Elastic Stack 기반 대규모 데이터 처리, AI/ML 예측 시스템, 보안·클라우드 인프라 구축."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "LLM 에이전트·RAG 백엔드",
+        "why": "Python 백엔드 공고가 FastAPI API 서버, LLM·LangChain·LangGraph·Vector DB 개발을 적고 자격에 RAG·Function Calling 기반 AI Agent 실무 2년 이상을 필수로 둔다.",
+        "what_to_know": [
+          "FastAPI",
+          "LangGraph",
+          "RAG·Function Calling"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드(파이썬) 개발자",
+            "url": "https://www.wanted.co.kr/wd/328862",
+            "publisher": "원티드",
+            "summary": "머리말: 대규모 데이터를 처리하고 AI 기반 서비스를 구축하는 솔루션 엔지니어링 팀. AI 학습용 데이터 파이프라인부터 LLM 기반 응답 시스템까지, 다양한 산업군 프로젝트로 대기업·공공기관의 디지털 혁신 지원."
+          }
+        ]
+      },
+      {
+        "name": "검색·데이터 파이프라인(Elastic·Airflow)",
+        "why": "같은 공고가 ElasticSearch 혹은 Airflow 기반 데이터 파이프라인 설계·운영을, 우대에 대규모 데이터 처리·ETL 자동화·AI 학습용 데이터 구성을 적는다.",
+        "what_to_know": [
+          "Elasticsearch",
+          "Airflow",
+          "ETL"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드(파이썬) 개발자",
+            "url": "https://www.wanted.co.kr/wd/328862",
+            "publisher": "원티드",
+            "summary": "머리말: 대규모 데이터를 처리하고 AI 기반 서비스를 구축하는 솔루션 엔지니어링 팀. AI 학습용 데이터 파이프라인부터 LLM 기반 응답 시스템까지, 다양한 산업군 프로젝트로 대기업·공공기관의 디지털 혁신 지원."
+          },
+          {
+            "title": "[로이드케이] 백엔드(파이썬 Python) 개발자 모집",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49966191?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=17&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 데이터·인공지능·보안·클라우드 IT솔루션 기업. 빅데이터 분석 플랫폼, AI 기반 유통 데이터 연구. 외부 투자 없이 연 매출 150억 원. Elastic Stack 기반 대규모 데이터 처리, AI/ML 예측 시스템, 보안·클라우드 인프라 구축."
+          }
+        ]
+      },
+      {
+        "name": "폐쇄망 LLM 플랫폼 풀스택",
+        "why": "10년↑ 공고가 FastAPI·asyncio·Pydantic, Next.js(App Router), PostgreSQL RBAC/RLS, Docker/Compose·Traefik/Nginx, 실서비스 LLM(tool calling·RAG·스트리밍)을 요구하고, 우대에 ClickHouse·dbt·Text2SQL, 온프렘/폐쇄망 설치·vLLM 자체 서빙, 샌드박스 격리, PII 마스킹·프롬프트 인젝션 대응을 적는다.",
+        "what_to_know": [
+          "vLLM 자체 서빙",
+          "폐쇄망 배포",
+          "RLS 권한"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[로이드케이] 백엔드/풀스택 개발자 (10년 이상)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55062210&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=0c2750bb-5b4c-4246-a5f0-ff162b70db1e",
+            "publisher": "사람인"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "데이터 플랫폼 구축 회사가 LLM 제품 회사로 옮겨 가는 중이다",
+        "evidence": "LLM 기반 AI Agent 개발 경험이 있으신 분(RAG, Function Calling 등)",
+        "so_what": "마감된 공고들은 '빅데이터 솔루션 엔지니어'·'데이터 엔지니어' 였고, 지금 모집중인 개발 공고는 둘 다 LLM 에이전트 실무를 필수로 둔다. 홈페이지 솔루션 이름도 DO-LLM·DO-SPE(RAG) 다. Elastic 기반 경험이 RAG 검색 쪽으로 이어진다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "같은 백엔드 공고의 경력 기준이 사이트마다 다르다",
+        "evidence": "경력 3년 이상",
+        "so_what": "잡코리아 본문은 '경력 3년 이상' 인데 제목·조건과 사람인은 5년↑, 원티드는 5-20년이다. 잡코리아 본문 머리에는 다른 공고 제목('AI 솔루션 사업기획 기술지원 매니저')이 남아 있다. 지원 전 실제 기준을 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 사람인 공고가 '면접 후 결정' 만 적는다 — 비워 둔다",
+    "DO 솔루션의 과금 방식·도입 고객 수는 읽지 않았다",
+    "연 매출 150억 원이 몇 년 기준인지 공고에 없다",
+    "임직원 수는 읽지 않았다"
+  ],
+  "postings": []
+}
