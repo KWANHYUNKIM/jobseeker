@@ -320,6 +320,126 @@
       "site": "saramin",
       "duplicate_of": "https://www.wanted.co.kr/wd/387054",
       "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 주요업무·개발 환경, 자격요건 아홉 줄, 우대사항 여섯 줄이 원티드 `인증보안 백엔드 개발자`(387054)와 글자 그대로 같다. 브리핑은 그쪽을 본다. 본문은 점핏 게시(55043913)와 한 글자도 다르지 않다('AI 예상 면접 질문이 궁금하다면 점핏에서 확인해보세요!' 문구까지) — 점핏과 같은 번호의 사람인 원본이다. 여기에만 적힌 것은 경력 '5~20년', 마감일 2026년 10월 14일, 근무지 '여의공원로 115, 8층, 9층' 이다. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/569093?ReturnUrl=RecruitInfo",
+      "title": "[Penta Security] 보안 네트워크 개발자 채용",
+      "site": "dev",
+      "verdict": "경력(연차 표기 없음), 서울 영등포구, 정규직(수습 3개월, 동일 급여), 수시 채용. 캐치 공고가 **이미지**라 본문은 OCR 로 읽었고 일부 글자가 깨져 있다(엔진 이름 'YEAS', 기술 목록 '6, Shell Script, Python' 등). 주요업무는 **리눅스 커널 모듈 개발·유지보수**와 **자체 TCP/IP 스택 엔진 개발**. 개발 환경은 Shell Script·Python(첫 항목은 깨져 읽을 수 없다), Git·Mantis·Slack, 코드리뷰 Gerrit, Jenkins·Selenium·Python 자동화. 자격은 **Linux kernel 및 C 개발 경력**, TCP/IP 지식, Linux 개발 경험, 해외여행 결격 사유 없음. 우대는 **gdb/crash 디버깅**, **DPI(Deep Packet Inspection) 개발**, Git 형상관리·코드 리뷰, **멀티코어·멀티프로세서 개발**, 오픈소스 참여. 이 엔진이 어느 제품(예: 웹방화벽 WAPPLES)에 들어가는지는 공고에 없다. 문의 recruit@pentasecurity.com. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Linux kernel·C",
+          "TCP/IP",
+          "Linux 개발"
+        ],
+        "can_learn": [
+          "crash 덤프 분석",
+          "DPI",
+          "멀티코어 패킷 처리"
+        ]
+      },
+      "study": [
+        {
+          "topic": "리눅스 커널 모듈 — 빌드·적재·패킷 훅",
+          "from": "task",
+          "quote": "* 리눅스 커널 모듈 개발 및 유지보수",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 자격이 Linux kernel 및 C 개발 경력이다.",
+          "gap_check": "외부 모듈을 특정 커널 버전에 맞춰 빌드할 때 무엇이 필요하고, 고객 서버의 커널이 바뀌면 모듈은 왜 다시 빌드해야 하는가? 모듈 안에서 잠들 수 있는 문맥과 없는 문맥(인터럽트·softirq)은 어떻게 구분하고, 거기서 메모리를 할당할 때 플래그는 무엇이 다른가?",
+          "drill": "Building External Modules 문서와 LDD3 앞 장을 읽고, 들어오는 패킷 수를 프로토콜별로 세어 /proc 로 보여 주는 커널 모듈을 만든다(넷필터 훅 사용). 모듈을 적재·제거하며 dmesg 로 확인하고, 훅 안에서 잠드는 함수를 일부러 불러 어떤 경고가 나오는지 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Building External Modules — Linux Kernel documentation",
+              "url": "https://docs.kernel.org/kbuild/modules.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Linux Device Drivers, Third Edition — LWN.net",
+              "url": "https://lwn.net/Kernel/LDD3/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "TCP/IP 스택을 직접 구현한다는 것",
+          "from": "task",
+          "quote": "* YEAS TCP/IP 스택 엔진 개발",
+          "priority": "core",
+          "why": "주요업무이고 자격에 TCP/IP 기반 지식이 있다.",
+          "gap_check": "TCP 상태 기계(SYN_SENT·ESTABLISHED·TIME_WAIT 등)에서 각 전환을 일으키는 세그먼트는 무엇이고, 순서가 뒤바뀐 세그먼트·재전송은 스택이 어떻게 처리하는가? 보안 장비가 자체 스택으로 세션을 추적할 때 커널 스택과 다르게 해석하면 어떤 우회가 생기는가?",
+          "drill": "TCP·Internet protocol suite 문서를 읽고, 원시 소켓(또는 TUN 장치)으로 받은 패킷에서 TCP 세션을 추적하는 사용자 공간 프로그램을 C 로 만든다 — 3-way handshake, 데이터 순서 재조립, FIN/RST 종료. 세그먼트를 뒤섞어 보내는 테스트로 재조립이 맞는지 확인한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Transmission Control Protocol — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Transmission_Control_Protocol",
+              "kind": "docs"
+            },
+            {
+              "title": "Internet protocol suite — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Internet_protocol_suite",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "커널 크래시 덤프를 gdb/crash 로 읽기",
+          "from": "preference",
+          "quote": "¢ gdb/crash 디버깅 가능한 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 커널 모듈 유지보수가 있다 — 고객 장비에서 커널이 죽으면 덤프만 남는다.",
+          "gap_check": "kdump 는 커널이 죽은 순간 덤프를 어떻게 받아 내고, crash 로 열었을 때 bt·log·struct 로 무엇을 먼저 보는가? Oops 메시지의 RIP 주소를 모듈 소스의 줄 번호로 바꾸려면 무엇이 필요한가(디버그 심볼)?",
+          "drill": "Kdump 문서와 GDB 매뉴얼을 읽고, 가상 머신에 kdump 를 켠 뒤 앞 과제 모듈에 NULL 역참조를 넣어 커널을 죽인다. 남은 vmcore 를 crash 로 열어 호출 스택과 원인 줄을 찾아 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Documentation for Kdump — Linux Kernel documentation",
+              "url": "https://docs.kernel.org/admin-guide/kdump/kdump.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Debugging with GDB",
+              "url": "https://sourceware.org/gdb/current/onlinedocs/gdb.html/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DPI — 패킷 페이로드를 들여다보는 법",
+          "from": "preference",
+          "quote": "« DPI (Deep Packet Inspection) 개발 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이다. 회사가 웹 애플리케이션·API 보안(WAPPLES)을 만드는 보안 회사라 페이로드 검사가 제품의 핵심 기술이다.",
+          "gap_check": "여러 세그먼트로 쪼개져 온 공격 문자열을 탐지하려면 왜 스트림 재조립이 먼저 필요한가? 패턴 수천 개를 패킷마다 검사할 때 문자열을 하나씩 비교하지 않고 다중 패턴 알고리즘(Aho-Corasick 등)을 쓰는 이유는?",
+          "drill": "Deep packet inspection 문서를 읽고, 앞 과제의 재조립 결과에 HTTP 요청 파싱과 다중 패턴 매칭을 붙여 SQL 삽입 흔적 문자열을 탐지한다. 공격 문자열을 두 세그먼트로 쪼개 보냈을 때 재조립 전후 탐지 결과를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Deep packet inspection — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Deep_packet_inspection",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티코어에서 패킷 처리 나누기",
+          "from": "preference",
+          "quote": "* 멀티코어 및 멀티프로세서 환경 개발 경험이 있는 분",
+          "priority": "nice",
+          "why": "우대사항이고, 스택 엔진·DPI 처리량이 코어 수에 따라 늘어나야 보안 장비가 회선 속도를 따라간다.",
+          "gap_check": "같은 TCP 세션의 패킷이 서로 다른 코어로 가면 무엇이 깨지고, RSS/RPS 는 세션을 코어에 어떻게 고정하는가? 세션 테이블을 코어끼리 공유할 때 락 경합을 줄이는 방법은?",
+          "drill": "Scaling in the Linux Networking Stack 문서를 읽고, 앞 과제의 세션 추적기를 스레드 4개로 나눠 5-튜플 해시로 패킷을 분배한다. 해시 없이 라운드로빈으로 나눴을 때와 재조립 오류 수·처리량을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Scaling in the Linux Networking Stack — Linux Kernel documentation",
+              "url": "https://docs.kernel.org/networking/scaling.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
