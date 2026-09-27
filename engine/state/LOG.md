@@ -2744,3 +2744,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 アイスタイル 수익원 보류
 
 - 1 차 Zenn 26편 제목(검색 엔진 공용화 글을 읽었지만 사업 연결 없음), 2 차 Zenn 검색 6낱말 · WebSearch → techblog.istyle.co.jp 10편. 보류, status in_progress 유지.
+
+## 2026-09-27 백열한 번째 후보 조사
+
+- WebSearch → hatena.blog/dev/companies(최신 글 피드) → 하테나 RSS 3곳 → 본문 4편. Legalscape 대기. Chatwork · リーディングマーク 약함. 다음 입구로 yamadashy 기업 기술 블로그 RSS 목록.
