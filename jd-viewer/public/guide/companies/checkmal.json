@@ -173,5 +173,127 @@
     "매출·임직원 수는 읽지 않았다",
     "3rd-Party 협력업체에 무엇을(엔진·재판매) 공급하는지 읽은 자료에 없다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/368114",
+      "title": "윈도우 보안 개발자(주니어)",
+      "site": "wanted",
+      "verdict": "신입~경력 3년, 경기 용인시. **랜섬웨어 방어 제품 AppCheck 의 윈도우 에이전트**를 만든다. 주요업무는 AppCheck 윈도우 제품 개발·운영, **시스템 보호·악성코드 탐지 기술 구현**, **윈도우 드라이버 개발과 시스템 내부동작 분석**, 윈도우 위협 분석·대응, 보안 앱 개발. 자격은 **C/C++ 기본기와 프로젝트 경험(개인/팀)**, Visual Studio 등 윈도우 개발 경험, TCP/IP 소켓 기본, 운영체제·자료구조 CS 기초 — 커널 경험은 필수가 아니다. 우대는 WinAPI·MFC, **유저 모드/커널 모드·시스템 콜** 학습, 커널 동작 원리, **파일 시스템 미니필터·WFP 네트워크 필터** 개념, 'Windows Internals' 관심, 보안 동아리 등, 프로세스·스레드·메모리 관리 학습. 주니어가 커널 드라이버를 배우며 들어갈 수 있는 드문 입구다. 같은 업무의 시니어 공고(332487, 8년↑·처우 20% UP)가 따로 있다. 하루 7시간 근무, 주 3시간 이상 코드 리뷰. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "C/C++ 프로젝트",
+          "윈도우 개발(Visual Studio)",
+          "TCP/IP 기본",
+          "OS·자료구조"
+        ],
+        "can_learn": [
+          "미니필터 드라이버",
+          "WinAPI",
+          "랜섬웨어 행위 탐지"
+        ]
+      },
+      "study": [
+        {
+          "topic": "파일 시스템 미니필터 — 랜섬웨어를 커널에서 보는 자리",
+          "from": "preference",
+          "quote": "파일 시스템 미니필터, 네트워크 필터 드라이버(WFP) 등에 대한 개념적 이해",
+          "priority": "core",
+          "why": "우대사항이지만 주요업무가 윈도우 드라이버 개발과 시스템 보호다. 제품이 파일을 암호화하는 행위를 실시간으로 막으려면 파일 I/O 가 지나가는 자리에서 봐야 한다.",
+          "gap_check": "미니필터는 필터 관리자에 어떻게 등록되고, 쓰기 요청을 사전(pre)·사후(post) 콜백 어디서 보고 막는가? altitude 는 무엇을 정하고, 다른 백신 필터와 순서가 겹치면 어떤 일이 생기는가? 네트워크 쪽은 WFP 가 같은 역할을 어떻게 하는가?",
+          "drill": "Filter Manager Concepts 와 Windows Filtering Platform 문서를 읽고, Windows Driver Kit 의 미니필터 샘플을 테스트 서명 모드 가상 머신에 올려 특정 폴더의 파일 쓰기·이름 변경을 로그로 남긴다. 확장자를 바꾸는 이름 변경을 거부하도록 고쳐 동작을 확인한다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Filter Manager Concepts — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/filter-manager-concepts",
+              "kind": "docs"
+            },
+            {
+              "title": "Windows Filtering Platform — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/fwp/windows-filtering-platform-start-page",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "시그니처 없이 랜섬웨어 행위를 알아보는 법",
+          "from": "task",
+          "quote": "시스템 보호, 악성코드 탐지와 같은 보안 기술을 구현합니다.",
+          "priority": "core",
+          "why": "주요업무이고 회사 제품이 '100% Signatureless' 행위 기반 탐지를 내세운다(홈페이지).",
+          "gap_check": "한 프로세스가 짧은 시간에 많은 파일을 열어 덮어쓰고 이름을 바꾸는 패턴은 정상 프로그램(압축·백업)과 무엇으로 가르는가? 암호화된 파일은 내용 엔트로피가 어떻게 달라지는가? 탐지 후 '자동복구' 를 하려면 원본을 언제 어디에 남겨 둬야 하는가?",
+          "drill": "Ransomware·Entropy 문서와 File Management 문서를 읽고, 사용자 모드 C++ 프로그램으로 폴더 변경을 감시하며 프로세스별 초당 수정 파일 수와 쓰기 전후 엔트로피 변화를 기록한다. 압축 프로그램과 '파일을 XOR 로 덮어쓰는 테스트 프로그램' 을 돌려 두 패턴이 어떻게 다른지 표로 남긴다(실제 악성코드는 쓰지 않는다).",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Ransomware — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Ransomware",
+              "kind": "docs"
+            },
+            {
+              "title": "Entropy (information theory) — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Entropy_(information_theory)",
+              "kind": "docs"
+            },
+            {
+              "title": "File Management — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/fileio/file-management",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "유저 모드와 커널 모드, 그리고 윈도우 내부 구조",
+          "from": "preference",
+          "quote": "윈도우 커널 구조(유저 모드/커널 모드, 시스템 콜 등)에 대한 학습 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 윈도우 드라이버 개발과 시스템 내부동작 분석이 있다. 우대에 프로세스·스레드·메모리 관리 학습과 'Windows Internals' 가 함께 있다.",
+          "gap_check": "유저 모드 프로그램이 죽으면 그 프로세스만 끝나는데 커널 드라이버가 잘못 메모리를 건드리면 왜 전체 시스템이 멈추는가(블루스크린)? 에이전트가 유저 모드 서비스와 커널 드라이버로 나뉘면 둘은 무엇으로 통신하는가?",
+          "drill": "User Mode and Kernel Mode 문서를 읽고, 앞 과제의 미니필터가 잡은 이벤트를 유저 모드 서비스로 넘겨 화면에 띄우는 구조를 그림으로 그린다. 필터 통신 포트로 메시지를 주고받는 샘플을 돌려 드라이버 → 서비스 전달을 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "User Mode and Kernel Mode — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/user-mode-and-kernel-mode",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "에이전트와 서버의 소켓 통신",
+          "from": "qualification",
+          "quote": "TCP/IP 네트워크의 기본 개념(소켓 통신, 프로토콜 등)을 이해하고 있는 분",
+          "priority": "high",
+          "why": "자격요건이고 공고 머리말이 윈도우 에이전트의 '서버와 연동하는 네트워크 기능' 과 에이전트를 관리하는 CMS 를 적는다.",
+          "gap_check": "에이전트가 CMS 에 주기적으로 상태를 보고하고 정책을 받을 때, 연결이 끊기면 재연결·재전송을 어떻게 하는가? 수천 대 에이전트가 동시에 붙을 때 서버 쪽 부담을 줄이려면 보고 주기를 어떻게 흩뜨리는가?",
+          "drill": "Getting started with Winsock 을 따라 C++ 에이전트(1분마다 상태 JSON 전송, 정책 수신)와 간단한 서버를 만든다. 서버를 껐다 켰을 때 에이전트가 지수 백오프로 재연결하고 밀린 보고를 보내는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Getting started with Winsock — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/winsock/getting-started-with-winsock",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "복원 지점 보호 — 볼륨 섀도 복사본",
+          "from": "task",
+          "quote": "윈도우 환경의 다양한 위협을 분석하고 대응합니다.",
+          "priority": "nice",
+          "why": "주요업무이고 홈페이지가 '시스템 복원·백업 기능 무력화' 를 미리 막는다고 적는다.",
+          "gap_check": "볼륨 섀도 복사본은 무엇을 저장하고, 랜섬웨어가 암호화 전에 이것부터 지우려는 이유는? 관리 도구로 섀도 복사본을 지우는 정상 작업과 공격을 어떻게 구분할 수 있을까?",
+          "drill": "Volume Shadow Copy Service 문서를 읽고, 가상 머신에서 섀도 복사본을 만들고 지우는 명령을 실행하며 이벤트 로그·프로세스 명령줄에 무엇이 남는지 기록한다. '누가, 어떤 명령으로, 언제' 를 기준으로 차단 규칙 초안을 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Volume Shadow Copy Service — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/windows/win32/vss/volume-shadow-copy-service-portal",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
