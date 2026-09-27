@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "법률 서적 4,500 권 · 판례 · 법령 · 가이드라인을 AI 가 가로질러 찾아 출처와 함께 요약하는 업무용 리걸 리서치 서비스 — 검색어를 넓히는 LLM 은 어느 급이면 되는지 공개 데이터로 재 보고, 전문 용어를 쪼개는 사전은 서버리스 검색의 한계까지 재 본다",
       "updated_at": "2026-09-27",
       "domain": "legalscape.jp"
