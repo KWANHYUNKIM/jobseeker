@@ -11,7 +11,7 @@
   "site": null,
   "one_liner": "보안 솔루션과 AI 플랫폼을 만드는 서초의 AI 보안 기업 — Node.js 백엔드와 '확신도까지 재는' 보안 이상 탐지 연구원을 뽑는다",
   "company": {
-    "business": "공고 머리말은 ㈜시옷을 **다양한 정보보호 분야에서 축적한 기술력과 AI 경량 설계 경험을 바탕으로 보안 솔루션과 AI 플랫폼을 개발하는 AI 보안 전문 기업**으로 소개한다. 제품 이름·고객·매출은 공고에 없고 홈페이지는 찾지 못했다. 모집중 공고는 두 자리가 원티드·사람인에 함께 올라 있다 — **백엔드 개발자**(Node.js·TypeScript, RDBMS 설계·쿼리 튜닝, 대용량 트랜잭션, 3년↑)와 **시니어 AI/ML 연구원**(악성코드 정적 피처 데이터 BODMAS·내부자 위협 로그 CERT 로 **AE/VAE 기반 이상 징후 탐지와 MC Dropout 등 불확실성 정량화(UQ)**, **OOD·Zero-day** 대응, ECE·AUROC·AUPRC 신뢰도 평가와 실시간 서빙). 사람인의 연구원 게시 머리말은 '보안 플랫폼 및 AI Agent 관련 프로젝트를 함께 만들어갈 **팀원급** 개발자' 라고 적어 원티드의 '시니어/리드급' 과 어긋난다. 근무지 서울 서초구.",
+    "business": "공고 머리말은 ㈜시옷을 **다양한 정보보호 분야에서 축적한 기술력과 AI 경량 설계 경험을 바탕으로 보안 솔루션과 AI 플랫폼을 개발하는 AI 보안 전문 기업**으로 소개한다. 잡코리아 AI 개발자 공고는 **2015년 설립된 보안 전문기업**이라고 적는다. 제품 이름·고객·매출은 공고에 없고 홈페이지는 찾지 못했다. 모집중 공고는 두 자리가 원티드·사람인에 함께 올라 있다 — **백엔드 개발자**(Node.js·TypeScript, RDBMS 설계·쿼리 튜닝, 대용량 트랜잭션, 3년↑)와 **시니어 AI/ML 연구원**(악성코드 정적 피처 데이터 BODMAS·내부자 위협 로그 CERT 로 **AE/VAE 기반 이상 징후 탐지와 MC Dropout 등 불확실성 정량화(UQ)**, **OOD·Zero-day** 대응, ECE·AUROC·AUPRC 신뢰도 평가와 실시간 서빙). 사람인의 연구원 게시 머리말은 '보안 플랫폼 및 AI Agent 관련 프로젝트를 함께 만들어갈 **팀원급** 개발자' 라고 적어 원티드의 '시니어/리드급' 과 어긋난다. 근무지 서울 서초구.",
     "business_confidence": "confirmed",
     "business_sources": [
       {
@@ -30,6 +30,12 @@
         "title": "시니어 AI/ML 연구원 모집",
         "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55003866&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=a2c18168-c480-42c7-b617-10a36ba9706c",
         "publisher": "사람인"
+      },
+      {
+        "title": "개발자 모집",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49888581?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=59&sc=630",
+        "publisher": "잡코리아",
+        "summary": "머리말: 2015년 설립 보안 전문기업, 정보보호 R&D·실무 경험을 바탕으로 AI/ML·온디바이스 AI·AI Agent 등 AI 기반 보안 기술·서비스로 확대. 신입부터 경력까지."
       }
     ],
     "scale": [],
@@ -321,6 +327,109 @@
               "title": "ONNX Runtime",
               "url": "https://onnxruntime.ai/docs/",
               "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49888581?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=59&sc=630",
+      "title": "개발자 모집",
+      "site": "jobkorea",
+      "verdict": "**신입/경력 무관 AI 개발자**, 서울 서초구, 마감 09/30(수). 이 게시의 머리말만 회사를 **2015년 설립된 보안 전문기업**으로, 정보보호 연구개발·실무 경험을 바탕으로 AI/ML·온디바이스 AI·AI Agent 등 AI 기반 보안 기술로 넓히고 있다고 적는다. 원티드의 시니어 연구원(386351)과 달리 **경력·전공보다 기본 역량과 학습력**을 본다고 하고, 신입은 상용 서비스 경험이 필수가 아니며 개인 프로젝트·연구과제·논문·졸업작품·공모전을 검토한다. 주요업무는 다섯 갈래 — 시계열·로그·텍스트로 **이상징후 감지·상태 예측**, **LLM·AI Agent 와 RAG·Fine-tuning**, 전처리·피처 엔지니어링, **MLOps 와 제품 연동**, **경량 온디바이스 AI와 AI 기반 보안·데이터 보호** — 이고 '지원자의 전공·경험·역량에 따라 협의' 한다. 자격은 Python, AI/ML·데이터 분석 기본 이해, 스스로 학습, 논리·수학적 사고. 우대는 데이터사이언스·수학·통계·물리 전공, **확률·통계·선형대수·최적화** 기반, 온디바이스·경량화, 정보보안 자격증. 복지에 **국책 R&D 프로젝트 참여**가 있다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python",
+          "AI/ML 기본 이해",
+          "수학적 사고"
+        ],
+        "can_learn": [
+          "로그 이상 탐지",
+          "RAG·파인튜닝",
+          "모델 양자화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "로그·시계열 이상징후 감지의 기본기",
+          "from": "task",
+          "quote": "- 이상징후 감지 및 상태 예측 알고리즘 연구",
+          "priority": "core",
+          "why": "주요업무이고 회사가 보안 기업이다 — 같은 회사 시니어 연구원 공고가 같은 문제(보안 이상 징후 탐지)를 더 깊게 다룬다.",
+          "gap_check": "라벨이 거의 없는 보안 로그에서 지도학습 대신 이상 탐지를 쓰는 이유는? Isolation Forest·One-Class SVM·오토인코더는 각각 어떤 가정을 하는가? 로그를 모델에 넣기 전에 시간 창·사용자별 집계로 어떤 피처를 만드는가?",
+          "drill": "Anomaly detection 문서와 scikit-learn Novelty and Outlier Detection 을 읽고, 가상 로그인 로그(사용자·시각·IP·성공 여부)를 만들어 사용자·시간 창별 피처를 집계한다. 새벽 대량 실패·새 IP 같은 이상을 섞어 Isolation Forest 로 찾고, 정밀도·재현율을 적는다. 더 나아가려면 시니어 연구원 공고의 AE/VAE 항목을 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Anomaly detection — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Anomaly_detection",
+              "kind": "docs"
+            },
+            {
+              "title": "Novelty and Outlier Detection — scikit-learn",
+              "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RAG 와 파인튜닝 — 언제 무엇을 쓰나",
+          "from": "task",
+          "quote": "- RAG(검색증강생성), Fine-tuning 등 생성형 AI 기술 적용",
+          "priority": "high",
+          "why": "주요업무 LLM·AI Agent 갈래의 핵심이다. 회사가 AI Agent 기반 보안 서비스로 넓히고 있다고 머리말이 적는다.",
+          "gap_check": "보안 정책 문서에 대한 질의응답은 RAG 와 파인튜닝 중 무엇이 맞고, 문서가 자주 바뀐다면 선택이 어떻게 달라지는가? 보안 로그 요약처럼 형식이 정해진 출력은 파인튜닝이 더 나을 수 있는 이유는?",
+          "drill": "RAG 문서와 PEFT 문서를 읽고, 공개 보안 가이드 문서 몇 개로 작은 RAG 질의응답을 만든다. 같은 질문 20개를 RAG 와 LoRA 파인튜닝한 작은 모델에 각각 던져 정확도·문서 갱신 비용을 비교해 적는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Retrieval-augmented generation — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation",
+              "kind": "docs"
+            },
+            {
+              "title": "PEFT — Hugging Face",
+              "url": "https://huggingface.co/docs/peft/index",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "온디바이스 AI — 양자화로 모델 줄이기",
+          "from": "task",
+          "quote": "- 경량화된 온디바이스(On-Device) AI 기술 연구",
+          "priority": "high",
+          "why": "주요업무이고 우대에 온디바이스 AI·모델 경량화 경험이 있다. 머리말이 회사의 강점으로 'AI 경량 설계 경험' 을 든다(원티드 공고).",
+          "gap_check": "FP32 모델을 INT8 로 양자화하면 크기·속도·정확도가 어떻게 바뀌고, 동적 양자화와 정적 양자화(보정 데이터 필요)는 무엇이 다른가? 장비에서 돌리는 보안 탐지 모델이 정확도를 조금 잃는 대신 얻는 것은?",
+          "drill": "ONNX Runtime 양자화 문서와 torchao 문서를 읽고, 앞 과제 모델(또는 작은 분류 모델)을 ONNX 로 내보내 동적·정적 INT8 양자화를 적용한다. 원본과 두 양자화본의 파일 크기·CPU 추론 시간·정확도를 표로 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Quantize ONNX models — ONNX Runtime",
+              "url": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html",
+              "kind": "docs"
+            },
+            {
+              "title": "torchao Documentation — PyTorch",
+              "url": "https://docs.pytorch.org/ao/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ML 을 위한 수학 — 확률·선형대수·최적화",
+          "from": "preference",
+          "quote": "? 확률·통계, 선형대수, 최적화 등 AI/ML 모델링에 필요한 수학적 기반을 갖추신 분",
+          "priority": "nice",
+          "why": "우대사항이고 자격에 논리적·수학적 사고가 있다. 신입이 경력 없이 보여 줄 수 있는 가장 직접적인 기반이다.",
+          "gap_check": "경사하강법의 한 걸음을 행렬 미분으로 쓸 수 있는가? 주성분 분석(PCA)이 공분산 행렬의 고유벡터를 쓰는 이유를 설명할 수 있는가? 최대우도 추정과 교차 엔트로피 손실은 어떻게 이어지는가?",
+          "drill": "Mathematics for Machine Learning 의 선형대수·확률·최적화 장을 골라 읽고, NumPy 만으로 로지스틱 회귀(경사하강)와 PCA 를 구현해 scikit-learn 결과와 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Mathematics for Machine Learning",
+              "url": "https://mml-book.github.io/",
+              "kind": "course"
             }
           ]
         }
