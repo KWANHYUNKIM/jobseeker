@@ -2636,3 +2636,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Kyash 은행 이체 정합
 
 - 은행 이체 설계 · 전은 포맷 · 법인 송금 글로 기능 `bank-transfer-timeout-reconciliation`, 결정 7(대안 셋은 이 사이트가 둔 것이라 명시).
+
+## 2026-09-27 Kyash KMP Reactor
+
+- Zenn KMP 비교 + 블로그 셋(SKIE 도입 · 페어프로 · suspend 호출)으로 기능 `kmp-reactor-shared-logic`, 결정 7.

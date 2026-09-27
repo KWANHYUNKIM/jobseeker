@@ -110,6 +110,28 @@
       "why": "Kyash 앱은 iOS 와 Android 에 같은 기능을 낸다. 공통 로직을 KMP(Kotlin Multiplatform)로 한 번 쓰고 두 앱에 붙이는데, 붙이는 방식에 따라 빌드 시간 · 디버그 · 버전 관리가 크게 갈린다.\n\n사내 전용으로 자주 바뀌는 코드를 어떻게 붙이느냐는 개발 속도와 직결된다(이 사이트의 해석).",
       "tech": [
         {
+          "tech": "KMP 로 UI 레이어의 View 외(Reactor — State · Action · Event)를 공통화, UI 는 SwiftUI/Compose 네이티브 + SKIE 로 Swift 다운 사용",
+          "solves": "같은 로직을 두 번 쓰지 않고 OS 마다 로직이 달라 생기던 인시던트를 줄이면서 각 OS 다운 체험을 지킨다.",
+          "limits": "iOS 엔지니어도 Kotlin 을 써야 해 담당이 Android 로 쏠리기 쉽고, SKIE 는 빌드 시간 · 캐시 호환 문제를 가져온다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AndroidとiOSのエンジニアでKMPの実装をペアプロしている話",
+              "url": "https://blog.kyash.co/entry/2023/12/05/095604",
+              "publisher": "Kyash",
+              "date": "2023-12-05",
+              "summary": "KMP 로 UI 는 네이티브(Compose/SwiftUI), UI 레이어 중 View 외 — StateHolder(Reactor)부터 — 를 공통화. KMP 도입 과제였던 '같은 로직을 두 번 구현하는 문제'와 'OS 마다 로직이 달라 생긴 인시던트'는 꽤 해소. 새 과제: **KMP 담당 엔지니어의 편중**(바쁘면 Kotlin 에 익숙한 Android 가 맡고 iOS 는 오랜만에 쓸 때 비용이 큼) · **OS 차이를 포함한 인식 어긋남의 되돌림**. 팀이 Android/iOS 1 명씩이 된 것을 계기로 **페어 프로**로 Reactor 를 함께 구현 — 되돌림 · 리뷰 대기가 줄지만 시간 감각을 잃고 다른 팀 리뷰를 못 해 포모도로(25 분)로 체크포인트."
+            },
+            {
+              "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+              "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+              "publisher": "Kyash",
+              "date": "2023-12-01",
+              "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+            }
+          ]
+        },
+        {
           "tech": "KMP 공통 모듈을 Git 서브모듈로 두 앱에 붙임",
           "solves": "소스를 그대로 읽고 브레이크포인트를 걸고 바로 고친다.",
           "limits": "커밋 해시로 버전을 관리하고 매번 풀 빌드이며 의도치 않은 의존이 생기기 쉽다 — SDK 화는 개인 검증 단계.",
@@ -125,7 +147,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "kmp-reactor-shared-logic"
+      ]
     }
   ],
   "features": [
@@ -489,6 +513,396 @@
           "summary": "업무로 **전은(全銀) 포맷**(전은협 제정 레코드 포맷) 파서를 쓰며 조사한 사양 — 고정 길이 txt, 헤더(1: 종별 · 송금 계좌) · 데이터(2: 금액 · 수취 계좌, 한 헤더에 여러 건) · 트레일러(8: 합계 건수 · 금액) · 엔드(9), 한 파일에 여러 송금원도. 명의는 '전은 텔레 환 문자'로 쓸 수 있는 문자가 좁혀져 있는 등 세부 사양이 많아 파서 · 검증기를 만들 땐 상세 사양이 필요. Kyash 는 입출금에서 은행마다 연결하고 결제 전문 ISO8583 도 다룬다."
         }
       ]
+    },
+    {
+      "key": "kmp-reactor-shared-logic",
+      "name": "UI 는 각자, 판단은 한 번 — KMP 로 Reactor 를 공통화하고 SKIE · 서브모듈 · 페어프로로 그 대가를 메우기",
+      "domain": "iOS 와 Android 가 같은 로직을 한 번만 쓰되, 고치기 쉬움을 잃지 않는다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "Kyash 앱은 결제 · 송금 · 잔액을 다룬다. 같은 기능을 iOS 와 Android 에 따로 구현하면 두 번 만드는 비용이 들 뿐 아니라, **OS 마다 로직이 달라 인시던트**가 났다 — 돈을 다루는 앱에서 두 OS 가 다른 판단을 하면 곤란하다(이 사이트의 해석).\n\n그렇다고 UI 까지 한 벌로 만들면 각 OS 다운 체험을 잃는다. 그래서 **보이는 부분은 네이티브, 그 밑의 상태와 판단은 KMP 로 한 번**이라는 선을 그었다. 그 선이 만든 비용 — iOS 쪽 사용감, 빌드 시간, 담당 편중 — 을 어떻게 메웠는지가 이 기능이다.",
+        "metrics": [
+          {
+            "label": "KMP 로 만든 화면",
+            "value": "86 화면(2023 년 11 월)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+                "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+                "publisher": "Kyash",
+                "date": "2023-12-01",
+                "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+              }
+            ]
+          },
+          {
+            "label": "SKIE 도입 직후 iOS 풀 빌드",
+            "value": "3 분 → 12 분(0.5.2 이하, 0.5.3 으로 개선)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+                "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+                "publisher": "Kyash",
+                "date": "2023-12-01",
+                "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+              }
+            ]
+          },
+          {
+            "label": "XCFramework(SDK) 빌드의 CI 비용",
+            "value": "서브모듈 대비 체감 3 배 이상(개인 검증)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "【KMP】もう迷わない！iOS/Androidのサブモジュール vs SDK、選定基準を完全解説📦",
+                "url": "https://zenn.dev/r0w0120/articles/2cca663ca662b8",
+                "publisher": "Kyash",
+                "date": "2025-12-09",
+                "summary": "Kyash 모바일은 **KMP(Kotlin Multiplatform) + 서브모듈** 구성. 정말 최선인지 보려고 SDK 화를 개인 개발로 검증 — 서브모듈(소스 접근 · 디버그 · 즉시 수정, 대신 커밋 해시 버전 · 매번 풀 빌드 · 의도치 않은 의존)과 SDK(시맨틱 버전 · 바이너리라 빌드 빠름 · 명확한 public API · 사외 배포, 대신 디버그 어려움 · 포크 없이는 수정 불가)를 7 관점 비교. 표로는 SDK 가 이기지만 사내 전용으로 자주 바뀌고 API 가 안정 전이면 서브모듈 — XCFramework 생성이 CI 에서 길고 비용이 체감 3 배 이상, SDK 사양 코드와의 이중 관리로 개발 체험이 나빠질 수 있다. 개발 땐 서브모듈 · 운영엔 SDK 의 하이브리드도."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "KMP 를 쓴 결과",
+          "thought": "두 OS 에서 같은 로직을 두 번 구현하는 문제와 OS 마다 로직이 달라 생긴 인시던트는 꽤 해소됐다 — 그런데 KMP 담당이 편중되고 OS 차이를 포함한 인식 어긋남으로 되돌림이 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AndroidとiOSのエンジニアでKMPの実装をペアプロしている話",
+              "url": "https://blog.kyash.co/entry/2023/12/05/095604",
+              "publisher": "Kyash",
+              "date": "2023-12-05",
+              "summary": "KMP 로 UI 는 네이티브(Compose/SwiftUI), UI 레이어 중 View 외 — StateHolder(Reactor)부터 — 를 공통화. KMP 도입 과제였던 '같은 로직을 두 번 구현하는 문제'와 'OS 마다 로직이 달라 생긴 인시던트'는 꽤 해소. 새 과제: **KMP 담당 엔지니어의 편중**(바쁘면 Kotlin 에 익숙한 Android 가 맡고 iOS 는 오랜만에 쓸 때 비용이 큼) · **OS 차이를 포함한 인식 어긋남의 되돌림**. 팀이 Android/iOS 1 명씩이 된 것을 계기로 **페어 프로**로 Reactor 를 함께 구현 — 되돌림 · 리뷰 대기가 줄지만 시간 감각을 잃고 다른 팀 리뷰를 못 해 포모도로(25 분)로 체크포인트."
+            }
+          ]
+        },
+        {
+          "at": "SKIE 를 넣은 뒤",
+          "thought": "개발자 체험을 좋게 하려던 게 빌드 12 분으로 나빠졌다 — 쓰지 않는 기능은 끄고, 버전을 올려 되돌렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+              "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+              "publisher": "Kyash",
+              "date": "2023-12-01",
+              "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+            }
+          ]
+        },
+        {
+          "at": "서브모듈을 다시 볼 때",
+          "thought": "Kyash 같은 경우 정말 이 구성이 최선일까? — 비교표로는 SDK 가 이기지만, 소스 접근 · 즉시 반영 · 디버그 쉬움이라는 서브모듈의 중요한 이점이 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "【KMP】もう迷わない！iOS/Androidのサブモジュール vs SDK、選定基準を完全解説📦",
+              "url": "https://zenn.dev/r0w0120/articles/2cca663ca662b8",
+              "publisher": "Kyash",
+              "date": "2025-12-09",
+              "summary": "Kyash 모바일은 **KMP(Kotlin Multiplatform) + 서브모듈** 구성. 정말 최선인지 보려고 SDK 화를 개인 개발로 검증 — 서브모듈(소스 접근 · 디버그 · 즉시 수정, 대신 커밋 해시 버전 · 매번 풀 빌드 · 의도치 않은 의존)과 SDK(시맨틱 버전 · 바이너리라 빌드 빠름 · 명확한 public API · 사외 배포, 대신 디버그 어려움 · 포크 없이는 수정 불가)를 7 관점 비교. 표로는 SDK 가 이기지만 사내 전용으로 자주 바뀌고 API 가 안정 전이면 서브모듈 — XCFramework 생성이 CI 에서 길고 비용이 체감 3 배 이상, SDK 사양 코드와의 이중 관리로 개발 체험이 나빠질 수 있다. 개발 땐 서브모듈 · 운영엔 SDK 의 하이브리드도."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Reactor",
+            "what": "KMP 쪽 UI StateHolder — ReactorKit 을 참고한 자체 구현. Action 을 받아 State 를 갱신하고 단발 Event 를 낸다."
+          },
+          {
+            "name": "Event(sealed class)",
+            "what": "토스트 · 화면 전환 · 에러 다이얼로그 같은 단발 이벤트 — 에러 다이얼로그도 역사적 경위로 Event."
+          },
+          {
+            "name": "UseCase",
+            "what": "Reactor 아래의 처리 — 기존 네이티브 화면은 화면을 다시 만들지 않고 여기까지만 KMP 로."
+          },
+          {
+            "name": "SKIE",
+            "what": "KMP 를 Swift 다운 구문으로 쓰게 하는 플러그인 — sealed class → Swift enum(onEnum), suspend 호출의 스레드 차이 흡수."
+          },
+          {
+            "name": "공통 모듈(Git 서브모듈)",
+            "what": "두 앱이 소스로 참조하는 KMP 모듈 — 커밋 해시로 버전 관리."
+          }
+        ],
+        "invariants": [
+          "보이는 부분(SwiftUI/Compose)은 각 OS 가, 그 밑의 상태 · 판단은 KMP 가 한 번 쓴다.",
+          "Event 처리 누락은 두 OS 모두 빌드 오류가 되어야 한다.",
+          "빌드 시간을 늘리는 SKIE 기능은 필요한 곳에서만 켠다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "새 화면: Reactor(State · Action · Event)를 KMP 로 — Android/iOS 엔지니어가 페어로",
+            "why": "두 OS 의 UI 사정을 동시에 떠올리며 정의해 되돌림을 줄인다."
+          },
+          {
+            "step": "iOS 는 SKIE 의 onEnum 으로 Event 를 Swift enum 처럼 망라 처리",
+            "why": "누락이 빌드 오류가 된다."
+          },
+          {
+            "step": "기존 네이티브 화면: 화면은 그대로, UseCase 층만 KMP 로 추가",
+            "why": "화면을 다시 만드는 비용 없이 로직만 공통화."
+          },
+          {
+            "step": "그 UseCase 의 suspend 를 메인 밖에서 부르면 해당 함수만 @SuspendInterop.Enabled",
+            "why": "전역으로 켜면 빌드가 느려진다."
+          },
+          {
+            "step": "공통 모듈은 Git 서브모듈로 두 앱이 참조",
+            "why": "사내 전용 · 자주 바뀌는 코드라 소스를 바로 고치고 디버그한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "두 OS 에서 무엇을 공통화하나?",
+            "chosen": "**UI 는 네이티브(SwiftUI/Compose), UI 레이어 중 View 외 — StateHolder(Reactor)부터 — 를 KMP 로.**",
+            "alternatives": [
+              "두 OS 따로 구현",
+              "UI 까지 공유(이 사이트가 둔 대안)"
+            ],
+            "tradeoff": "각 OS 다운 체험을 지키면서, 같은 로직의 이중 구현과 OS 마다 로직이 달라 생긴 인시던트를 줄인다. 대가는 iOS 엔지니어도 Kotlin 을 써야 한다는 것 — 바쁠 땐 Android 가 맡게 되어 담당이 편중된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AndroidとiOSのエンジニアでKMPの実装をペアプロしている話",
+                "url": "https://blog.kyash.co/entry/2023/12/05/095604",
+                "publisher": "Kyash",
+                "date": "2023-12-05",
+                "summary": "KMP 로 UI 는 네이티브(Compose/SwiftUI), UI 레이어 중 View 외 — StateHolder(Reactor)부터 — 를 공통화. KMP 도입 과제였던 '같은 로직을 두 번 구현하는 문제'와 'OS 마다 로직이 달라 생긴 인시던트'는 꽤 해소. 새 과제: **KMP 담당 엔지니어의 편중**(바쁘면 Kotlin 에 익숙한 Android 가 맡고 iOS 는 오랜만에 쓸 때 비용이 큼) · **OS 차이를 포함한 인식 어긋남의 되돌림**. 팀이 Android/iOS 1 명씩이 된 것을 계기로 **페어 프로**로 Reactor 를 함께 구현 — 되돌림 · 리뷰 대기가 줄지만 시간 감각을 잃고 다른 팀 리뷰를 못 해 포모도로(25 분)로 체크포인트."
+              },
+              {
+                "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+                "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+                "publisher": "Kyash",
+                "date": "2023-12-01",
+                "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+              }
+            ]
+          },
+          {
+            "question": "공통 레이어의 모양은?",
+            "chosen": "**ReactorKit 을 참고한 자체 Reactor(MVI) — Action → State, 단발 Event 는 sealed class.**",
+            "alternatives": [
+              "OS 마다 다른 상태 관리(ViewModel 등)"
+            ],
+            "tradeoff": "두 OS 가 같은 State · Event 정의로 화면을 그린다. 대가는 정의할 때 두 OS 의 UI 구성 · 라이프사이클 · 화면 전환을 모두 떠올려야 해 인식 어긋남 · 되돌림이 생긴다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AndroidとiOSのエンジニアでKMPの実装をペアプロしている話",
+                "url": "https://blog.kyash.co/entry/2023/12/05/095604",
+                "publisher": "Kyash",
+                "date": "2023-12-05",
+                "summary": "KMP 로 UI 는 네이티브(Compose/SwiftUI), UI 레이어 중 View 외 — StateHolder(Reactor)부터 — 를 공통화. KMP 도입 과제였던 '같은 로직을 두 번 구현하는 문제'와 'OS 마다 로직이 달라 생긴 인시던트'는 꽤 해소. 새 과제: **KMP 담당 엔지니어의 편중**(바쁘면 Kotlin 에 익숙한 Android 가 맡고 iOS 는 오랜만에 쓸 때 비용이 큼) · **OS 차이를 포함한 인식 어긋남의 되돌림**. 팀이 Android/iOS 1 명씩이 된 것을 계기로 **페어 프로**로 Reactor 를 함께 구현 — 되돌림 · 리뷰 대기가 줄지만 시간 감각을 잃고 다른 팀 리뷰를 못 해 포모도로(25 분)로 체크포인트."
+              },
+              {
+                "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+                "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+                "publisher": "Kyash",
+                "date": "2023-12-01",
+                "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+              }
+            ]
+          },
+          {
+            "question": "iOS 에서 sealed class Event 를 어떻게 안전하게 다루나?",
+            "chosen": "**SKIE 를 도입해 onEnum 으로 Swift enum 처럼 망라 처리.**",
+            "alternatives": [
+              "switch + default 로 두고 리뷰로 누락을 잡는다"
+            ],
+            "tradeoff": "누락이 빌드 오류가 된다 — 실제로 에러 다이얼로그 Event 누락으로 네트워크 오류가 안 보이는 버그가 났었다. 대가는 도입 전후 빌드 캐시 비호환(CI 캐시 키를 나눔)과, 0.5.2 이하에서 풀 빌드 3 분 → 12 분(버전 업으로 해결).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+                "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+                "publisher": "Kyash",
+                "date": "2023-12-01",
+                "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+              }
+            ]
+          },
+          {
+            "question": "SKIE 의 다른 기능(Flow · suspend)은?",
+            "chosen": "**전역으로는 끄고, 필요한 함수에만 @SuspendInterop.Enabled 로 켠다.**",
+            "alternatives": [
+              "전부 켠다"
+            ],
+            "tradeoff": "쓰지 않는 기능의 빌드 시간을 만들지 않는다 — 기존 화면에서 UseCase 를 메인 밖에서 부를 때만 켜 크래시를 막는다. 대가는 켤 곳을 사람이 판단해 표시해야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+                "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+                "publisher": "Kyash",
+                "date": "2023-12-01",
+                "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+              },
+              {
+                "title": "iOSアプリからKMPで定義したsuspend関数を呼ぶ",
+                "url": "https://blog.kyash.co/entry/ios-app-call-suspend-function-kmp",
+                "publisher": "Kyash",
+                "date": "2024-12-22",
+                "summary": "KMP 채용을 넓힌 결과, 기존 화면에 기능을 더할 때 **Reactor 로 화면 전체를 다시 만들 정도는 아니지만 UseCase 층까지는 KMP 로 공통화**하고 싶다는 요구. Swift 에서 메인 스레드 밖에서 Kotlin suspend 함수를 부르면 크래시 — SKIE 의 suspend 기능이 스레드 생성 차이를 흡수. 빌드 시간 때문에 전역으로 끈 기능을 `@SuspendInterop.Enabled` 로 **필요한 곳만 켠다**. 역사 있는 화면에서도 새 처리는 되도록 KMP 로 공통화해 개발 효율 · 인지 부하를 줄인다."
+              }
+            ]
+          },
+          {
+            "question": "KMP 이전의 기존 화면에 새 로직을 넣을 때는?",
+            "chosen": "**Reactor 로 화면 전체를 다시 만들지 않고 UseCase 층만 KMP 로.**",
+            "alternatives": [
+              "화면을 Reactor 로 다시 만든다",
+              "기존처럼 OS 마다 구현"
+            ],
+            "tradeoff": "화면을 다시 만드는 비용 없이 로직만 공통화해 개발 효율 · 인지 부하를 개선. 대가는 한 화면 안에 네이티브 ViewModel 과 KMP UseCase 가 섞이고, Swift 에서 suspend 를 부를 때 스레드 제약을 신경 써야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "iOSアプリからKMPで定義したsuspend関数を呼ぶ",
+                "url": "https://blog.kyash.co/entry/ios-app-call-suspend-function-kmp",
+                "publisher": "Kyash",
+                "date": "2024-12-22",
+                "summary": "KMP 채용을 넓힌 결과, 기존 화면에 기능을 더할 때 **Reactor 로 화면 전체를 다시 만들 정도는 아니지만 UseCase 층까지는 KMP 로 공통화**하고 싶다는 요구. Swift 에서 메인 스레드 밖에서 Kotlin suspend 함수를 부르면 크래시 — SKIE 의 suspend 기능이 스레드 생성 차이를 흡수. 빌드 시간 때문에 전역으로 끈 기능을 `@SuspendInterop.Enabled` 로 **필요한 곳만 켠다**. 역사 있는 화면에서도 새 처리는 되도록 KMP 로 공통화해 개발 효율 · 인지 부하를 줄인다."
+              }
+            ]
+          },
+          {
+            "question": "공통 모듈을 두 앱에 어떻게 붙이나?",
+            "chosen": "**Git 서브모듈(소스 참조) — SDK(바이너리 배포)는 개인 검증 단계.**",
+            "alternatives": [
+              "SDK — iOS 는 SPM + XCFramework, Android 는 GitHub Packages AAR",
+              "개발 땐 서브모듈 · 운영엔 SDK 의 하이브리드"
+            ],
+            "tradeoff": "사내 전용으로 자주 바뀌고 API 가 안정 전이라 소스를 바로 읽고 고치고 디버그하는 쪽. SDK 는 버전 · 빌드 속도 · public API 가 명확하지만 XCFramework 생성의 CI 비용이 체감 3 배 이상이고 SDK 용 코드와의 이중 관리가 생긴다. 대가는 커밋 해시 버전 관리 · 매번 풀 빌드 · 의도치 않은 의존.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "【KMP】もう迷わない！iOS/Androidのサブモジュール vs SDK、選定基準を完全解説📦",
+                "url": "https://zenn.dev/r0w0120/articles/2cca663ca662b8",
+                "publisher": "Kyash",
+                "date": "2025-12-09",
+                "summary": "Kyash 모바일은 **KMP(Kotlin Multiplatform) + 서브모듈** 구성. 정말 최선인지 보려고 SDK 화를 개인 개발로 검증 — 서브모듈(소스 접근 · 디버그 · 즉시 수정, 대신 커밋 해시 버전 · 매번 풀 빌드 · 의도치 않은 의존)과 SDK(시맨틱 버전 · 바이너리라 빌드 빠름 · 명확한 public API · 사외 배포, 대신 디버그 어려움 · 포크 없이는 수정 불가)를 7 관점 비교. 표로는 SDK 가 이기지만 사내 전용으로 자주 바뀌고 API 가 안정 전이면 서브모듈 — XCFramework 생성이 CI 에서 길고 비용이 체감 3 배 이상, SDK 사양 코드와의 이중 관리로 개발 체험이 나빠질 수 있다. 개발 땐 서브모듈 · 운영엔 SDK 의 하이브리드도."
+              }
+            ]
+          },
+          {
+            "question": "KMP 담당 편중과 인식 어긋남을 어떻게 줄이나?",
+            "chosen": "**Android · iOS 엔지니어가 Reactor 를 페어 프로로 — 포모도로(25 분)를 체크포인트로.**",
+            "alternatives": [
+              "한쪽이 구현하고 다른 쪽이 리뷰"
+            ],
+            "tradeoff": "설계 판단을 그 자리에서 맞춰 리뷰 뒤 되돌림이 없고, iOS 도 Kotlin 을 계속 쓴다. KMP 는 빌드 대기가 적어 페어에 맞았다. 대가는 시간 감각을 잃고 슬랙 · 다른 팀 리뷰를 못 한다는 것 — 그래서 포모도로.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AndroidとiOSのエンジニアでKMPの実装をペアプロしている話",
+                "url": "https://blog.kyash.co/entry/2023/12/05/095604",
+                "publisher": "Kyash",
+                "date": "2023-12-05",
+                "summary": "KMP 로 UI 는 네이티브(Compose/SwiftUI), UI 레이어 중 View 외 — StateHolder(Reactor)부터 — 를 공통화. KMP 도입 과제였던 '같은 로직을 두 번 구현하는 문제'와 'OS 마다 로직이 달라 생긴 인시던트'는 꽤 해소. 새 과제: **KMP 담당 엔지니어의 편중**(바쁘면 Kotlin 에 익숙한 Android 가 맡고 iOS 는 오랜만에 쓸 때 비용이 큼) · **OS 차이를 포함한 인식 어긋남의 되돌림**. 팀이 Android/iOS 1 명씩이 된 것을 계기로 **페어 프로**로 Reactor 를 함께 구현 — 되돌림 · 리뷰 대기가 줄지만 시간 감각을 잃고 다른 팀 리뷰를 못 해 포모도로(25 분)로 체크포인트."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Visa 프리페이드 카드 결제(수익원)",
+          "via": "결제 · 송금 앱의 화면 로직",
+          "contract": "결제 목록 · 출금 계좌 등 앱 화면의 상태와 판단을 KMP 로 한 번 쓴다 — 카드 결제 수익 구조와의 관계는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+              "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+              "publisher": "Kyash",
+              "date": "2023-12-01",
+              "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+            },
+            {
+              "title": "Kyash - Visaプリペイドカードとスマホで、かんたんお支払い",
+              "url": "https://www.kyash.co/",
+              "publisher": "Kyash",
+              "summary": "심사 · 서류 없이 무료로 발행하는 **Visa 프리페이드 카드**(가상 카드 최단 1 분)와 앱 — 미리 은행 계좌 · 편의점에서 입금한 잔액 범위에서 결제, 이용 내역 즉시 반영 · 자동 분류, Apple Pay · Google 월렛. 메뉴: 입금(차지) · 후불 '이마스구 입금' · 급한 지출 '스포트머니' · 잔액 출금 · 친구 송금 · Kyash 리워드 · 가계부 · 공유 계좌 · 법인용 송금 서비스."
+            }
+          ]
+        },
+        {
+          "to": "bank-transfer-timeout-reconciliation",
+          "via": "잔액 출금 화면",
+          "contract": "출금 계좌 종류(BankWithdrawalAccountType) 같은 출금 모델이 KMP 에 있다 — 앱 쪽 출금 흐름과 서버의 이체 정합이 같은 돈의 길이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+              "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+              "publisher": "Kyash",
+              "date": "2023-12-01",
+              "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "화면 하나가 그려지기까지",
+          "question": "사용자 조작은 어디서 판단되고 어디서 그려지나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  U[\"사용자 조작\"] --> V1[\"SwiftUI / ViewController\"]\n  U --> V2[\"Compose / Fragment\"]\n  V1 -- Action --> R[\"KMP Reactor\\nState · Event(sealed)\"]\n  V2 -- Action --> R\n  R --> UC[\"KMP UseCase\"]\n  R -- \"State · Event\" --> V2\n  R -- \"SKIE onEnum\" --> V1\n  OLD[\"기존 iOS ViewModel\"] -- \"@SuspendInterop\" --> UC"
+        },
+        {
+          "title": "화면 로직의 이동",
+          "question": "한 화면의 로직은 어떤 상태를 거쳐 공통화되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> OS별구현: 두 번 구현 · OS 차이 인시던트\n  OS별구현 --> UseCase공통: 기존 화면 — UseCase 만 KMP\n  OS별구현 --> Reactor공통: 새 화면 — Reactor 부터 KMP(페어)\n  UseCase공통 --> Reactor공통: 화면을 다시 만들 때\n  Reactor공통 --> Reactor공통: SKIE 로 Swift 다운 사용"
+        },
+        {
+          "title": "Event 하나를 빠뜨리면",
+          "question": "iOS 에서 sealed class 를 그냥 받으면 무엇이 새나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"KMP sealed class Event\"] --> B[\"iOS 에선 클래스로 보임\"]\n  B --> C[\"switch 에 default 필요\"]\n  C --> D[\"ShowError 처리 누락해도 빌드 통과\"]\n  D --> E[\"네트워크 오류가 사용자에게 안 보임\"]\n  B --> F[\"SKIE onEnum → Swift enum\"]\n  F --> G[\"누락 = 빌드 오류\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "AndroidとiOSのエンジニアでKMPの実装をペアプロしている話",
+          "url": "https://blog.kyash.co/entry/2023/12/05/095604",
+          "publisher": "Kyash",
+          "date": "2023-12-05",
+          "summary": "KMP 로 UI 는 네이티브(Compose/SwiftUI), UI 레이어 중 View 외 — StateHolder(Reactor)부터 — 를 공통화. KMP 도입 과제였던 '같은 로직을 두 번 구현하는 문제'와 'OS 마다 로직이 달라 생긴 인시던트'는 꽤 해소. 새 과제: **KMP 담당 엔지니어의 편중**(바쁘면 Kotlin 에 익숙한 Android 가 맡고 iOS 는 오랜만에 쓸 때 비용이 큼) · **OS 차이를 포함한 인식 어긋남의 되돌림**. 팀이 Android/iOS 1 명씩이 된 것을 계기로 **페어 프로**로 Reactor 를 함께 구현 — 되돌림 · 리뷰 대기가 줄지만 시간 감각을 잃고 다른 팀 리뷰를 못 해 포모도로(25 분)로 체크포인트."
+        },
+        {
+          "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+          "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+          "publisher": "Kyash",
+          "date": "2023-12-01",
+          "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+        },
+        {
+          "title": "iOSアプリからKMPで定義したsuspend関数を呼ぶ",
+          "url": "https://blog.kyash.co/entry/ios-app-call-suspend-function-kmp",
+          "publisher": "Kyash",
+          "date": "2024-12-22",
+          "summary": "KMP 채용을 넓힌 결과, 기존 화면에 기능을 더할 때 **Reactor 로 화면 전체를 다시 만들 정도는 아니지만 UseCase 층까지는 KMP 로 공통화**하고 싶다는 요구. Swift 에서 메인 스레드 밖에서 Kotlin suspend 함수를 부르면 크래시 — SKIE 의 suspend 기능이 스레드 생성 차이를 흡수. 빌드 시간 때문에 전역으로 끈 기능을 `@SuspendInterop.Enabled` 로 **필요한 곳만 켠다**. 역사 있는 화면에서도 새 처리는 되도록 KMP 로 공통화해 개발 효율 · 인지 부하를 줄인다."
+        },
+        {
+          "title": "【KMP】もう迷わない！iOS/Androidのサブモジュール vs SDK、選定基準を完全解説📦",
+          "url": "https://zenn.dev/r0w0120/articles/2cca663ca662b8",
+          "publisher": "Kyash",
+          "date": "2025-12-09",
+          "summary": "Kyash 모바일은 **KMP(Kotlin Multiplatform) + 서브모듈** 구성. 정말 최선인지 보려고 SDK 화를 개인 개발로 검증 — 서브모듈(소스 접근 · 디버그 · 즉시 수정, 대신 커밋 해시 버전 · 매번 풀 빌드 · 의도치 않은 의존)과 SDK(시맨틱 버전 · 바이너리라 빌드 빠름 · 명확한 public API · 사외 배포, 대신 디버그 어려움 · 포크 없이는 수정 불가)를 7 관점 비교. 표로는 SDK 가 이기지만 사내 전용으로 자주 바뀌고 API 가 안정 전이면 서브모듈 — XCFramework 생성이 CI 에서 길고 비용이 체감 3 배 이상, SDK 사양 코드와의 이중 관리로 개발 체험이 나빠질 수 있다. 개발 땐 서브모듈 · 운영엔 SDK 의 하이브리드도."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -543,6 +957,27 @@
       "publisher": "Kyash",
       "date": "2023-12-07",
       "summary": "업무로 **전은(全銀) 포맷**(전은협 제정 레코드 포맷) 파서를 쓰며 조사한 사양 — 고정 길이 txt, 헤더(1: 종별 · 송금 계좌) · 데이터(2: 금액 · 수취 계좌, 한 헤더에 여러 건) · 트레일러(8: 합계 건수 · 금액) · 엔드(9), 한 파일에 여러 송금원도. 명의는 '전은 텔레 환 문자'로 쓸 수 있는 문자가 좁혀져 있는 등 세부 사양이 많아 파서 · 검증기를 만들 땐 상세 사양이 필요. Kyash 는 입출금에서 은행마다 연결하고 결제 전문 ISO8583 도 다룬다."
+    },
+    {
+      "title": "Kotlin Multiplatform の SKIE (スカイ)を導入して、iOS エンジニアの開発者体験を改善しました。",
+      "url": "https://blog.kyash.co/entry/2023/12/01/123716",
+      "publisher": "Kyash",
+      "date": "2023-12-01",
+      "summary": "Kyash 모바일은 작년부터 KMP — SwiftUI/Compose 등 보이는 부분 외를 Kotlin 으로 공통화해 'iOS/Android 다운 체험'과 '두 OS 의 사양 차이를 구조로 없애기'를 양립, 2023 년 11 월 86 화면. 아키텍처는 ReactorKit 을 참고한 자체 구현(Action → State · 단발 Event). Event 가 sealed class 라 iOS 에선 switch 에 쓸모없는 default 가 필요하고 **처리 누락이 빌드 오류가 안 된다**(에러 다이얼로그 Event 누락 버그가 실제로). **SKIE** 의 sealed class 기능(onEnum → Swift enum)으로 해결. Flow · suspend 기능은 Swift 에서 안 써 빌드 시간을 위해 끔, Analytics 도 끔. 문제: 도입 전후 빌드 캐시 비호환(CI 의 xcode-cache 키를 나눠 해결), 0.5.2 이하에서 풀 빌드 3 분 → 12 분(0.5.3 으로 개선)."
+    },
+    {
+      "title": "AndroidとiOSのエンジニアでKMPの実装をペアプロしている話",
+      "url": "https://blog.kyash.co/entry/2023/12/05/095604",
+      "publisher": "Kyash",
+      "date": "2023-12-05",
+      "summary": "KMP 로 UI 는 네이티브(Compose/SwiftUI), UI 레이어 중 View 외 — StateHolder(Reactor)부터 — 를 공통화. KMP 도입 과제였던 '같은 로직을 두 번 구현하는 문제'와 'OS 마다 로직이 달라 생긴 인시던트'는 꽤 해소. 새 과제: **KMP 담당 엔지니어의 편중**(바쁘면 Kotlin 에 익숙한 Android 가 맡고 iOS 는 오랜만에 쓸 때 비용이 큼) · **OS 차이를 포함한 인식 어긋남의 되돌림**. 팀이 Android/iOS 1 명씩이 된 것을 계기로 **페어 프로**로 Reactor 를 함께 구현 — 되돌림 · 리뷰 대기가 줄지만 시간 감각을 잃고 다른 팀 리뷰를 못 해 포모도로(25 분)로 체크포인트."
+    },
+    {
+      "title": "iOSアプリからKMPで定義したsuspend関数を呼ぶ",
+      "url": "https://blog.kyash.co/entry/ios-app-call-suspend-function-kmp",
+      "publisher": "Kyash",
+      "date": "2024-12-22",
+      "summary": "KMP 채용을 넓힌 결과, 기존 화면에 기능을 더할 때 **Reactor 로 화면 전체를 다시 만들 정도는 아니지만 UseCase 층까지는 KMP 로 공통화**하고 싶다는 요구. Swift 에서 메인 스레드 밖에서 Kotlin suspend 함수를 부르면 크래시 — SKIE 의 suspend 기능이 스레드 생성 차이를 흡수. 빌드 시간 때문에 전역으로 끈 기능을 `@SuspendInterop.Enabled` 로 **필요한 곳만 켠다**. 역사 있는 화면에서도 새 처리는 되도록 KMP 로 공통화해 개발 효율 · 인지 부하를 줄인다."
     }
   ]
 }
