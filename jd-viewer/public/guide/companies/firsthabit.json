@@ -266,6 +266,105 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/270970",
+      "title": "백엔드 개발자 (Python)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상(또는 그에 준하는 실력), 서울 강남구. **CHALK iPad 교육 앱의 Python 백엔드**다. 주요업무는 AI 기반 교육서비스 앱(iPad용) 백엔드 개발, **사업·운영팀 요청을 받아 문제 해결·시스템 구성**, 스프린트 단위 주도적 업무와 협업. 자격은 Django·Flask·FastAPI 등 프레임워크, **AWS**, **RDB 데이터 모델링**, **REST API 설계**. 우대는 프로젝트 A to Z, 타 팀 협업, **테스트 코드**, **OpenAPI 명세**, MSA. 공고 본문이 짧아 도메인 특유의 요구(학습 기록·진도·개인화 데이터)는 적혀 있지 않다 — 면접에서 앱의 데이터 구조와 AI 팀(Cognitive AI Lab)과의 연동 방식을 묻는다. 수습 3개월 계약직 이후 정규직 전환 결정. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 5년",
+          "Django/Flask/FastAPI",
+          "AWS",
+          "RDB 모델링",
+          "REST API"
+        ],
+        "can_learn": [
+          "OpenAPI 명세 우선 개발",
+          "학습 기록 데이터 모델"
+        ]
+      },
+      "study": [
+        {
+          "topic": "학습 앱의 RDB 데이터 모델링",
+          "from": "qualification",
+          "quote": "• RDB 기반의 데이터 모델링 경험이 있으신분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무가 AI 교육 앱 백엔드와 사업·운영팀 요청 대응이다 — 운영 요청은 대개 '이런 통계를 뽑아 달라' 로 온다.",
+          "gap_check": "학생·단원·문항·풀이 기록·진도를 테이블로 나눌 때, 풀이 기록처럼 계속 쌓이는 테이블과 단원처럼 거의 안 바뀌는 테이블은 인덱스·보존 정책을 어떻게 다르게 잡는가? 정규화를 어디까지 하고 조회용 집계는 어디에 둘 것인가?",
+          "drill": "Database normalization 문서와 Django Models 문서를 읽고, 학생·반·단원·문항·풀이 기록·진도 모델을 설계해 가짜 데이터 100만 건을 넣는다. '반별 단원 정답률' 과 '학생별 최근 7일 학습 시간' 쿼리를 인덱스 전후로 재고 설계 이유를 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Database normalization — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Database_normalization",
+              "kind": "docs"
+            },
+            {
+              "title": "Models — Django documentation",
+              "url": "https://docs.djangoproject.com/en/6.1/topics/db/models/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OpenAPI 명세를 먼저 쓰는 API 설계",
+          "from": "preference",
+          "quote": "• Open API Spec 기반의 명세서 작성 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 자격에 REST API 설계가 있다. iPad 앱 팀과 백엔드가 나뉘어 있으면 명세가 둘 사이의 계약이 된다.",
+          "gap_check": "명세를 먼저 합의하고 구현하는 것과 코드에서 명세를 자동 생성하는 것은 협업에서 무엇이 다른가? 앱이 이미 배포된 뒤 응답 필드를 바꾸거나 지워야 할 때 하위 호환은 어떻게 지키는가?",
+          "drill": "OpenAPI Specification 과 FastAPI 문서를 읽고, 앞 과제의 '학습 기록 저장'·'진도 조회' API 명세를 YAML 로 먼저 쓴 뒤 FastAPI 로 구현해 자동 생성된 명세와 비교한다. 필드를 하나 추가하고 하나를 폐기 예정(deprecated)으로 표시해 버전 전략을 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OpenAPI Specification — Swagger",
+              "url": "https://swagger.io/specification/",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "pytest 로 API 테스트 붙이기",
+          "from": "preference",
+          "quote": "• 테스트 코드 작성에 익숙하신 분",
+          "priority": "high",
+          "why": "우대사항이고 스프린트 단위로 각자 주도해 배포하는 팀이라 회귀를 막을 장치가 필요하다.",
+          "gap_check": "DB 를 쓰는 API 테스트에서 테스트마다 데이터를 깨끗이 되돌리려면 무엇을 쓰는가(트랜잭션 롤백·픽스처)? 외부 AI 서비스 호출은 테스트에서 어떻게 대체하는가?",
+          "drill": "pytest 문서를 읽고, 앞 과제 API 에 픽스처로 테스트 DB 를 준비하는 테스트 10개를 쓴다(정상·권한 없음·잘못된 입력). AI 추천 호출을 가짜 객체로 바꿔 네트워크 없이 돌아가게 한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "pytest documentation",
+              "url": "https://docs.pytest.org/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 위의 Python 백엔드 운영",
+          "from": "qualification",
+          "quote": "• AWS 서비스를 이용한 개발 경험이 있으신분",
+          "priority": "nice",
+          "why": "자격요건이다.",
+          "gap_check": "관리형 DB(RDS)를 쓰면 백업·장애 조치·버전 업그레이드 중 무엇을 맡기고 무엇이 여전히 내 일인가? 학기 초처럼 사용량이 몰리는 시기에 앱 서버와 DB 중 무엇부터 늘리는가?",
+          "drill": "Amazon RDS 문서를 읽고, 앞 과제 백엔드를 RDS(또는 로컬 PostgreSQL)에 붙여 연결 풀 크기를 바꿔 가며 동시 요청 부하를 넣는다. DB 연결 수 한계에 먼저 닿는지 CPU 에 먼저 닿는지 기록한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "What is Amazon RDS? — AWS",
+              "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
