@@ -2708,3 +2708,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Omiai 완주
 
 - 완주 기준 확인: 도메인 2 모두 기능 · 기능마다 connections 2 · 수익원 2 모두 confirmed 도메인 연결. status done, QUEUE 완료로 이동.
+
+## 2026-09-27 MOSH 회사 프로파일
+
+- mosh.jp/pricing(수수료 · 월액) · Zenn 2편(Lambda 400 개 점진 리아키텍처 · 통지 기반 飛脚)으로 프로파일. 수익원 둘 confirmed.

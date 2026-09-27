@@ -1,0 +1,135 @@
+{
+  "slug": "mosh",
+  "name": "MOSH",
+  "name_en": "MOSH",
+  "country": "JP",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "domain": "mosh.jp",
+  "one_liner": "크리에이터가 레슨 · 강좌 · 서비스를 팔고 예약 · 결제 · 회원 사이트까지 한곳에서 운영하는 플랫폼 'MOSH' 의 회사 — 400 개 넘는 Lambda 를 Docker 화 · OpenAPI 정리 · Lambda-lith 로 한 걸음씩 옮기고, 제품들이 함께 쓰는 통지 기반은 Step Functions Saga 와 DynamoDB 조건부 쓰기로 빠짐도 중복도 없이 보낸다",
+  "business_model": "MOSH 는 크리에이터(강사 · 코치 · 전문가 등)가 자기 서비스를 팔 수 있게 하는 플랫폼이다 — 판매 페이지, 예약, 결제, 게스트(고객) 관리, 회원 사이트, 스텝 메일까지 여러 제품을 조합하는 **컴파운드 전략**을 편다.\n\n돈은 두 곳에서 나온다. **팔렸을 때의 결제 수수료**(카드 6.5% + 99 엔/건, 은행 이체 3.0% + 99 엔/건, 연 1,200 만 엔 이상이면 낮아짐)와, 페이지 빌더 · 워크플로 · 회원 사이트를 규모에 맞게 쓰는 **월액 플랜**(STARTER · GROW, 무료 플랜은 고정비 0 엔)이다. 크리에이터가 많이 팔수록 MOSH 도 번다.\n\n기술 글은 400 개 넘는 Lambda 로 자란 애플리케이션을 옮기는 일과, 제품들이 함께 쓰는 통지 기반에 모여 있다.",
+  "products": [
+    "MOSH(크리에이터용 서비스 판매 · 예약 · 결제 · 게스트 관리)",
+    "회원 사이트 · 페이지 빌더 · 워크플로(월액 플랜)",
+    "MCP 서버(외부 AI 에서 MOSH 조작)"
+  ],
+  "revenue_total": "확인하지 못했다.",
+  "revenue_streams": [
+    {
+      "name": "결제 수수료",
+      "how": "팔렸을 때만 — 카드 6.5% + 99 엔/건, 은행 이체 3.0% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% · 2.0% + 99 엔). 국내 결제(fincode by GMO)는 +0.5%.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "Lambda 400 개에 묶인 앱을, 멈추지 않고 어디서든 도는 형태로 옮긴다",
+        "크리에이터가 게스트에게 보내는 통지를, 한 번도 빠뜨리지도 두 번 보내지도 않는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+          "url": "https://mosh.jp/pricing",
+          "publisher": "MOSH",
+          "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+        }
+      ]
+    },
+    {
+      "name": "월액 플랜(STARTER · GROW)",
+      "how": "페이지 빌더 · 워크플로 · 회원 사이트를 이용 규모에 맞게 쓰는 월액 요금 — 무료 플랜은 고정비 0 엔.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "크리에이터가 게스트에게 보내는 통지를, 한 번도 빠뜨리지도 두 번 보내지도 않는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+          "url": "https://mosh.jp/pricing",
+          "publisher": "MOSH",
+          "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "예약 하나가 들어오고 알림이 나가기까지",
+    "question": "게스트가 크리에이터의 서비스를 사면, 요청은 어디서 처리되고 알림은 어떻게 나가나?",
+    "code": "flowchart LR\n  G[\"게스트\"] --> APIGW[\"API Gateway\"]\n  APIGW --> LL[\"Lambda-lith\\nDocker · FastAPI 라우팅\"]\n  LL --> PAY[\"결제 · 게스트 관리 기반\"]\n  PAY --> HK[\"통지 기반 飛脚\\nStep Functions Saga\"]\n  HK --> DDB[\"DynamoDB\\n조건부 쓰기 · 멱등\"]\n  HK --> SES[\"SES 메일 등\"]\n  SES --> G\n  LL -. \"다음 단계\" .-> ECS[\"ECS/EKS\"]",
+    "_note": "이 사이트의 해석 — 글 둘을 한 장에 모았다. 결제 기반과 통지 기반을 잇는 구체적 이벤트는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "Lambda 400 개에 묶인 앱을, 멈추지 않고 어디서든 도는 형태로 옮긴다",
+      "why": "MOSH 의 애플리케이션은 API 액션마다 Lambda 를 둬서 400 개 넘게 늘었다. API Gateway · Lambda 에서만 돌아 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 한데 묶여 배포가 불안정하고 느렸다. 코드가 늘며 콜드 스타트 지연이 생겼고, 감시 도구 비용은 Lambda 수에 비례해 올랐다.\n\n목표는 컨테이너(ECS/EKS)지만, 한 번에 옮기면 긴 개발 동안 기술과 사업 요건이 바뀌어 계획이 낡는다.",
+      "tech": [
+        {
+          "tech": "이식성을 높이는 점진적 리아키텍처 — Lambda 아티팩트 Docker 화 · 12,000 행 OpenAPI 정리 · Lambda-lith(FastAPI 라우팅)",
+          "solves": "같은 앱이 Lambda · ECS/EKS · 로컬에서 돌게 해 단계마다 배포 안정성 · 성능 · 비용 이득을 얻는다.",
+          "limits": "Lambda-lith 는 AWS 가이드에서 안티패턴으로 소개될 만큼 단점이 뚜렷하고 사례가 적다. ECS/EKS 이행 · 배포 파이프라인 분리는 아직 앞으로의 일이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+              "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+              "publisher": "MOSH",
+              "date": "2025-04-17",
+              "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "크리에이터가 게스트에게 보내는 통지를, 한 번도 빠뜨리지도 두 번 보내지도 않는다",
+      "why": "MOSH 는 크리에이터와 게스트를 잇는다 — 예약 확인, 회원 사이트의 스텝 메일, 결제 정보 같은 통지가 게스트에게 바르게 닿는 건 당연 품질이다. 여러 제품이 저마다 통지를 만들면 품질이 갈리고, 결제 · 게스트 관리와 조합해 새 가치를 만들기도 어렵다.\n\n통지는 도중에 실패할 수 있다. 다시 보내면 되지만, 다시 보내다 같은 알림이 두 번 가면 그것도 사고다.",
+      "tech": [
+        {
+          "tech": "사내 공통 통지 기반 '飛脚' — Step Functions Saga 오케스트레이션 + Redrive + DynamoDB 조건부 쓰기(멱등) + S3(큰 페이로드) · EventBridge",
+          "solves": "통지 종류와 사전 · 사후 처리를 쉽게 늘리고, 부분 장애 뒤 재실행해도 같은 통지가 두 번 나가지 않는다.",
+          "limits": "Step Functions · DynamoDB · S3 · EventBridge · ECS 로 구성 요소가 많고, 멱등을 위한 상태 관리를 스스로 해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+              "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+              "publisher": "MOSH",
+              "date": "2025-12-24",
+              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**매출 규모 · 수수료와 월액의 비중**은 공개 자료에서 찾지 못했다.",
+    "**Lambda 400 개 앱과 통지 기반 · 결제 기반의 관계**(어느 기능이 어디서 도는지)는 글에 없다.",
+    "**아직 안 읽은 것** — 통지 기반 글 후반(워크플로 상세 · 멱등 설계) · Lambda 리아키텍처 슬라이드 · MOSH 의 MCP 를 떠받치는 기술 · monorepo 의 Sentry 운용(CODEOWNERS) · Safe Triangle 구현."
+  ],
+  "sources": [
+    {
+      "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+      "url": "https://mosh.jp/pricing",
+      "publisher": "MOSH",
+      "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+    },
+    {
+      "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+      "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+      "publisher": "MOSH",
+      "date": "2025-04-17",
+      "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+    },
+    {
+      "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+      "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+      "publisher": "MOSH",
+      "date": "2025-12-24",
+      "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등."
+    }
+  ]
+}

@@ -2,6 +2,18 @@
   "updated_at": "2026-09-27",
   "companies": [
     {
+      "slug": "mosh",
+      "name": "MOSH",
+      "name_en": "MOSH",
+      "country": "JP",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "크리에이터가 레슨 · 강좌 · 서비스를 팔고 예약 · 결제 · 회원 사이트까지 한곳에서 운영하는 플랫폼 'MOSH' 의 회사 — 400 개 넘는 Lambda 를 Docker 화 · OpenAPI 정리 · Lambda-lith 로 한 걸음씩 옮기고, 제품들이 함께 쓰는 통지 기반은 Step Functions Saga 와 DynamoDB 조건부 쓰기로 빠짐도 중복도 없이 보낸다",
+      "updated_at": "2026-09-27",
+      "domain": "mosh.jp"
+    },
+    {
       "slug": "omiai",
       "name": "Omiai",
       "name_en": "Omiai",
@@ -4093,7 +4105,9 @@
     "3,000 만 명이 여는 비교 기사를, 무거워져도 열리게 한다",
     "자사 검증 데이터를 싸게 가공하고, 밖과 안전하게 나눈다",
     "이성 검색을 1 분에서 0.1 초로 — 13 년 쌓인 검색 · '좋아요' 데이터를 싸고 빠르게",
-    "한 곳을 고치면 다른 곳이 깨지는 API 를, 떼어 놓고 한 언어로 모은다"
+    "한 곳을 고치면 다른 곳이 깨지는 API 를, 떼어 놓고 한 언어로 모은다",
+    "Lambda 400 개에 묶인 앱을, 멈추지 않고 어디서든 도는 형태로 옮긴다",
+    "크리에이터가 게스트에게 보내는 통지를, 한 번도 빠뜨리지도 두 번 보내지도 않는다"
   ],
   "countries": {
     "KR": "한국",
