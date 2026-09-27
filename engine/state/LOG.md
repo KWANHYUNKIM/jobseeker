@@ -2632,3 +2632,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Kyash 회사 프로파일
 
 - kyash.co(톱 · 회사 개요) · Zenn 2편(은행 이체 설계 · KMP) · 블로그 2편(법인 송금 · AML)으로 프로파일. 법인 송금은 수익 구조까지 글에 있어 confirmed. AML 은 구조 글이 없어 도메인에서 뺌.
+
+## 2026-09-27 Kyash 은행 이체 정합
+
+- 은행 이체 설계 · 전은 포맷 · 법인 송금 글로 기능 `bank-transfer-timeout-reconciliation`, 결정 7(대안 셋은 이 사이트가 둔 것이라 명시).
