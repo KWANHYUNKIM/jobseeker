@@ -1,0 +1,236 @@
+{
+  "slug": "ezcaretech",
+  "name": "이지케어텍",
+  "name_en": "ezCaretech",
+  "aliases": [
+    "이지케어텍",
+    "이지케어텍㈜",
+    "ezCaretech"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "ezcaretech.com",
+  "one_liner": "서울대병원에서 출발한 병원정보시스템(HIS) 회사 — 구축형 BESTCare·클라우드형 EDGE&NEXT 를 국내 대형병원과 사우디 등 해외에 판다(코스닥)",
+  "company": {
+    "business": "공고 머리말은 이지케어텍을 **병원정보시스템(HIS)을 국내 대형병원에 공급하고 해외로 수출하는 의료IT 기업**으로, **서울대학교병원에서 출발**했고 클라우드 기반 차세대 의료정보 플랫폼 **EDGE&NEXT** 를 내세우며 코스닥 상장사라고 소개한다. 원티드 머리말은 사업을 **병원시스템통합(SI)·병원시스템운영(SM)·병원정보화 컨설팅**으로 적고 신기술인증·IR52 장영실상·HIMSS Stage7 을 든다. 홈페이지는 솔루션을 **베스트케어(구축형)·엣지앤넥스트(클라우드형)·부가 솔루션**으로 나누고, 2026-07-31 보도자료에서 **사우디 민간 의료그룹 Care Med 와 약 100억 원(693만 달러) 규모 BESTCare 2.0 구축 계약**(4개 병원 약 1,300병상 + 2개 클리닉)과 전년 중동 매출 약 2배 성장, 구축 뒤 유지보수·운영의 반복 매출을 적는다. 모집중 공고는 다섯 — 의료IT S/W 개발(2년↑), 모바일(제목은 .NET 풀스택이나 본문은 **Flutter** 의료 앱, 전문연구요원), **클라우드 인프라·서버·네트워크**(24×365 병원 무중단), **AI Engineer**(LLM·예측 모델·연구과제, 석사↑, 전문연구요원), 정보보안 담당자. 근무지 서울 중구, 공고는 '대형병원 현장 근무' 를 태그로 단다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[의료IT 1위 이지케어텍] AI Engineer 채용 (전문연구요원 가능)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55031598&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dcb2732a-4ee5-4722-91eb-e120984b30bb",
+        "publisher": "사람인",
+        "summary": "머리말: HIS 를 국내 대형병원에 공급·수출, 서울대학교병원에서 출발, 클라우드 차세대 의료정보 플랫폼 EDGE&NEXT, 25년+ 의료IT, 국내 HIS 시장 선도, 코스닥 상장."
+      },
+      {
+        "title": "의료IT S/W 개발자 (2년 이상)",
+        "url": "https://www.wanted.co.kr/wd/331808",
+        "publisher": "원티드",
+        "summary": "머리말: 국내 중대형 병원 의료정보사업, 병원정보시스템 해외 수출 헬스케어IT 기업. 신기술인증(KT마크)·IR52 장영실상·HIMSS Stage7. 병원시스템통합(SI)·운영(SM)·병원정보화 컨설팅."
+      },
+      {
+        "title": "ezCaretech",
+        "url": "https://www.ezcaretech.com/",
+        "publisher": "이지케어텍",
+        "summary": "메타: 의료IT 전문기업, 병원정보시스템, BESTCare, EMR. 솔루션 베스트케어(구축형)·엣지앤넥스트(클라우드형)·부가 솔루션, 해외 BRANCH, 투자정보. 보도자료(2026-07-31): 사우디 민간 의료그룹 Care Med 와 약 693만 달러(약 100억 원) 규모 차세대 HIS 'BESTCare 2.0' 구축 계약, 4개 병원(약 1,300병상)+2개 클리닉, 중동 매출 전년 대비 약 2배, 구축 이후 유지보수·운영 반복 매출 기대. 대표이사 홍우선."
+      },
+      {
+        "title": "솔루션 풀스텍 .NET 개발자 (전문연구요원)",
+        "url": "https://www.wanted.co.kr/wd/361810",
+        "publisher": "원티드"
+      },
+      {
+        "title": "클라우드 인프라/서버/네트워크 3년 이상",
+        "url": "https://www.wanted.co.kr/wd/335131",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "사우디 Care Med 수주(보도자료)",
+        "value": "약 100억 원(693만 달러), 4개 병원 약 1,300병상 + 2개 클리닉",
+        "as_of": "2026-07-31",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ezCaretech",
+            "url": "https://www.ezcaretech.com/",
+            "publisher": "이지케어텍",
+            "summary": "메타: 의료IT 전문기업, 병원정보시스템, BESTCare, EMR. 솔루션 베스트케어(구축형)·엣지앤넥스트(클라우드형)·부가 솔루션, 해외 BRANCH, 투자정보. 보도자료(2026-07-31): 사우디 민간 의료그룹 Care Med 와 약 693만 달러(약 100억 원) 규모 차세대 HIS 'BESTCare 2.0' 구축 계약, 4개 병원(약 1,300병상)+2개 클리닉, 중동 매출 전년 대비 약 2배, 구축 이후 유지보수·운영 반복 매출 기대. 대표이사 홍우선."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "병원정보시스템 구축(SI)·운영(SM) — 국내",
+        "how": "공고가 국내 중대형 병원 의료정보사업과 병원시스템통합·운영·컨설팅을 적는다. 홈페이지는 구축형 베스트케어와 클라우드형 엣지앤넥스트를 나눈다. 병원별 계약 규모는 읽지 않았다.",
+        "domains": [
+          "병원정보시스템(HIS) 응용 개발",
+          "의료 모바일 앱(Flutter)",
+          "병원 인프라·클라우드 운영"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "의료IT S/W 개발자 (2년 이상)",
+            "url": "https://www.wanted.co.kr/wd/331808",
+            "publisher": "원티드",
+            "summary": "머리말: 국내 중대형 병원 의료정보사업, 병원정보시스템 해외 수출 헬스케어IT 기업. 신기술인증(KT마크)·IR52 장영실상·HIMSS Stage7. 병원시스템통합(SI)·운영(SM)·병원정보화 컨설팅."
+          },
+          {
+            "title": "ezCaretech",
+            "url": "https://www.ezcaretech.com/",
+            "publisher": "이지케어텍",
+            "summary": "메타: 의료IT 전문기업, 병원정보시스템, BESTCare, EMR. 솔루션 베스트케어(구축형)·엣지앤넥스트(클라우드형)·부가 솔루션, 해외 BRANCH, 투자정보. 보도자료(2026-07-31): 사우디 민간 의료그룹 Care Med 와 약 693만 달러(약 100억 원) 규모 차세대 HIS 'BESTCare 2.0' 구축 계약, 4개 병원(약 1,300병상)+2개 클리닉, 중동 매출 전년 대비 약 2배, 구축 이후 유지보수·운영 반복 매출 기대. 대표이사 홍우선."
+          },
+          {
+            "title": "클라우드 인프라/서버/네트워크 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/335131",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "HIS 해외 수출(중동 등)",
+        "how": "보도자료가 사우디 공공(국가방위부 등)에 이어 민간 병원 체인 수주, 구축 뒤 유지보수·운영 반복 매출을 적는다.",
+        "domains": [
+          "병원정보시스템(HIS) 응용 개발"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ezCaretech",
+            "url": "https://www.ezcaretech.com/",
+            "publisher": "이지케어텍",
+            "summary": "메타: 의료IT 전문기업, 병원정보시스템, BESTCare, EMR. 솔루션 베스트케어(구축형)·엣지앤넥스트(클라우드형)·부가 솔루션, 해외 BRANCH, 투자정보. 보도자료(2026-07-31): 사우디 민간 의료그룹 Care Med 와 약 693만 달러(약 100억 원) 규모 차세대 HIS 'BESTCare 2.0' 구축 계약, 4개 병원(약 1,300병상)+2개 클리닉, 중동 매출 전년 대비 약 2배, 구축 이후 유지보수·운영 반복 매출 기대. 대표이사 홍우선."
+          }
+        ]
+      },
+      {
+        "name": "의료 AI(연구과제·서비스)",
+        "how": "AI Engineer 공고가 LLM 연구개발, 예측 모델·AI 서비스, 연구과제 관리를 적는다. 매출로 이어지는 제품인지 정부 연구과제 중심인지는 공고에 없다.",
+        "domains": [
+          "의료 AI(LLM·예측 모델)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[의료IT 1위 이지케어텍] AI Engineer 채용 (전문연구요원 가능)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55031598&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dcb2732a-4ee5-4722-91eb-e120984b30bb",
+            "publisher": "사람인",
+            "summary": "머리말: HIS 를 국내 대형병원에 공급·수출, 서울대학교병원에서 출발, 클라우드 차세대 의료정보 플랫폼 EDGE&NEXT, 25년+ 의료IT, 국내 HIS 시장 선도, 코스닥 상장."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "병원정보시스템(HIS) 응용 개발",
+        "why": "의료IT S/W 개발자 공고가 응용소프트웨어 개발·구축·유지보수(On-Premise/Cloud)를 적고 병원정보시스템·대학병원 전산 개발 경력을 우대한다.",
+        "what_to_know": [
+          "EMR·HIS 업무 흐름",
+          "의료 데이터 표준"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "의료IT S/W 개발자 (2년 이상)",
+            "url": "https://www.wanted.co.kr/wd/331808",
+            "publisher": "원티드",
+            "summary": "머리말: 국내 중대형 병원 의료정보사업, 병원정보시스템 해외 수출 헬스케어IT 기업. 신기술인증(KT마크)·IR52 장영실상·HIMSS Stage7. 병원시스템통합(SI)·운영(SM)·병원정보화 컨설팅."
+          }
+        ]
+      },
+      {
+        "name": "의료 모바일 앱(Flutter)",
+        "why": "모바일 공고가 Flutter 크로스 플랫폼 앱, 환자·의료진용 인터페이스, RESTful API 로 HIS 데이터 연동, 네이티브·웹뷰 하이브리드를 적는다.",
+        "what_to_know": [
+          "Flutter",
+          "WebView JS Bridge",
+          "HIS 연동 API"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "솔루션 풀스텍 .NET 개발자 (전문연구요원)",
+            "url": "https://www.wanted.co.kr/wd/361810",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "병원 인프라·클라우드 운영",
+        "why": "인프라 공고가 HIS 인프라 24×365 무중단 운영, AWS·Azure·프라이빗 클라우드, HA·이중화·DR, VMware·Hyper-V, 병원 LAN/WAN/VPN·방화벽을 적는다.",
+        "what_to_know": [
+          "HA·DR 설계",
+          "가상화",
+          "의료 데이터 보호"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "클라우드 인프라/서버/네트워크 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/335131",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "의료 AI(LLM·예측 모델)",
+        "why": "AI Engineer 공고가 LLM 연구개발, 예측 모델·AI 서비스, 연구과제 관리를 적고 PyTorch·HuggingFace·LangChain·RAG·MLOps 를 든다(석사 이상).",
+        "what_to_know": [
+          "의료 LLM",
+          "연구과제 관리",
+          "MLOps"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[의료IT 1위 이지케어텍] AI Engineer 채용 (전문연구요원 가능)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55031598&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dcb2732a-4ee5-4722-91eb-e120984b30bb",
+            "publisher": "사람인",
+            "summary": "머리말: HIS 를 국내 대형병원에 공급·수출, 서울대학교병원에서 출발, 클라우드 차세대 의료정보 플랫폼 EDGE&NEXT, 25년+ 의료IT, 국내 HIS 시장 선도, 코스닥 상장."
+          }
+        ]
+      },
+      {
+        "name": "정보보안",
+        "why": "수익원이 아니라 회사·고객 병원 시스템의 공통 기반이다. 정보보안 담당자 공고(잡코리아)가 따로 열려 있다.",
+        "what_to_know": [
+          "의료정보 보호"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[의료IT 1위 이지케어텍] 정보보안 담당자",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49485000?Oem_Code=C1&logpath=1&stext=%EB%B3%B4%EC%95%88&listno=95&sc=630",
+            "publisher": "잡코리아"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "중동 수출이 커지고 있다",
+        "evidence": "이지케어텍, 사우디 대형 의료그룹 'Care Med'와 100억원 규모 차세대 HIS 수출 계약 체결",
+        "so_what": "보도자료가 중동 매출이 전년 대비 약 2배라고 적는다. 개발·인프라 자리에서 해외 구축 프로젝트 참여 가능성을 면접에서 묻는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "공고 제목과 본문이 어긋난 게시가 있다",
+        "evidence": "1. 의료 IT 모바일 솔루션 개발: Flutter 기반의 크로스 플랫폼 앱 개발 및 유지보수",
+        "so_what": "'솔루션 풀스텍 .NET 개발자' 제목 아래 본문은 전부 Flutter 모바일 앱 업무다. 지원 전에 실제 자리를 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다('업계 최고 대우' 는 금액이 아니다) — 비워 둔다",
+    "매출·임직원 수는 읽지 않았다(홈페이지 재무정보 메뉴 미확인)",
+    "'.NET 풀스택' 공고의 실제 업무가 Flutter 모바일인지 .NET 인지",
+    "'대형병원 현장 근무' 가 상주 근무를 뜻하는지"
+  ],
+  "postings": []
+}

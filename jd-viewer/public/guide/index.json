@@ -1008,6 +1008,19 @@
       "postings": 4,
       "study_items": 8,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "ezcaretech",
+      "name": "이지케어텍",
+      "aliases": [
+        "이지케어텍",
+        "이지케어텍㈜",
+        "ezCaretech"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
