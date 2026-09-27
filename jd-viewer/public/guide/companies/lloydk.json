@@ -7,7 +7,7 @@
     "㈜로이드케이",
     "LLOYDK"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "lloydk.co.kr",
   "one_liner": "Elastic 등 데이터 플랫폼 구축에서 출발해 LLM·RAG 솔루션(DO 라인업)과 대기업·공공 AI 프로젝트를 하는 성남 위례의 IT 솔루션 기업",
@@ -592,6 +592,20 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55000763&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=5fcb2f7b-652c-4b93-8e84-9747294dc55e",
+      "title": "[로이드케이] 백엔드(파이썬 Python) 개발자 모집",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/328862",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 주요업무 네 줄, 자격요건 두 묶음 여덟 줄, 우대사항 여섯 줄이 원티드 `백엔드(파이썬) 개발자`(328862)와 글자 그대로 같다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 경력 '5년 이상'(원티드 5-20년)과 학력 '대학졸업(2,3년)이상', 정규직(수습 3개월), 주 5일 09:00~18:00, 급여 '면접 후 결정', 접수기간 2026-09-10 14시 ~ 10-10 24시, 전형 서류전형 → 1차 인터뷰 → 채용검진&처우협의 → 최종합격이다. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49966191?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=17&sc=630",
+      "title": "[로이드케이] 백엔드(파이썬 Python) 개발자 모집",
+      "site": "jobkorea",
+      "duplicate_of": "https://www.wanted.co.kr/wd/328862",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 담당업무 네 줄, 자격요건 두 묶음, 우대사항 여섯 줄이 원티드 `백엔드(파이썬) 개발자`(328862)와 같다. 브리핑은 그쪽을 본다. 다른 점: 조건 칸은 '경력5년↑' 인데 **본문 자격요건은 '경력 3년 이상'** 이고, 본문 머리에 다른 공고 제목('AI 솔루션 사업기획 기술지원 매니저')이 남아 있다. 이 게시에만 회사 소개(데이터·AI·보안·클라우드 IT솔루션, 외부 투자 없이 연 매출 150억 원, Elastic Stack 기반 대규모 데이터 처리)가 실려 있다. 마감 10/10(토). 두 자리가 아니므로 한 곳으로만 지원한다."
     }
   ]
 }
