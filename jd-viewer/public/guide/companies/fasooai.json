@@ -187,5 +187,132 @@
     "OT 보안 플랫폼의 제품명·출시 여부·고객은 읽은 자료에 없다",
     "네트워크 보안 공고와 OT/ICS 공고가 같은 팀인지 공고에 없다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/381668",
+      "title": "OT/ICS 보안 데이터 분석 및 플랫폼 개발 (5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5-11년(원티드 표기, 자격 칸은 '경력 5년 이상'), 서울 마포구 상암동. **공장·발전소 같은 산업 제어망(OT/ICS)의 자산·통신·취약점·위협을 한 화면에 모으는 플랫폼**을 만든다. 주요업무는 네 묶음 — (1) OT 자산·네트워크 **가시화**, 자산·통신·취약점·위협 데이터 수집·분석, 대시보드, 대용량 검색, (2) **산업용 네트워크 패킷 분석과 OT/ICS 프로토콜 Parser 개발·확장**, (3) **OT 보안 솔루션 API 연동**(Asset·Vulnerability·Communication·Alert 수집, 정규화, 주기 동기화), (4) OT 데이터 저장·검색, REST API, 외부 시스템 연동. 자격은 **Java 또는 PHP**(Laravel 우대), REST API·외부 API 연동, MySQL/MariaDB, Linux, TCP/IP 기본. 우대는 OT/ICS 보안 솔루션, **산업용 프로토콜 분석·Parser**, **Wireshark/tshark**, 네트워크 보안·관제 시스템 개발. 웹 백엔드 개발자가 **산업 프로토콜 도메인**으로 넘어가는 자리로 읽힌다 — 자격은 웹 스택인데 업무 절반이 패킷·프로토콜이다. 같은 본문이 사람인(54797460)·캐치(568248, 이미지)에 있고, OT 를 뺀 네트워크판 공고(사람인 55003650)가 따로 있다. 급여는 공고에 없다(사람인: 면접 후 결정).",
+      "fit": {
+        "must_have": [
+          "Java 또는 PHP 5년",
+          "REST API·외부 API 연동",
+          "MySQL/MariaDB",
+          "Linux·TCP/IP"
+        ],
+        "can_learn": [
+          "Modbus·DNP3 등 산업 프로토콜",
+          "수동 자산 식별",
+          "tshark"
+        ]
+      },
+      "study": [
+        {
+          "topic": "산업용 프로토콜 파서 — Modbus·DNP3",
+          "from": "task",
+          "quote": "• OT/ICS 프로토콜 Parser 개발",
+          "priority": "core",
+          "why": "주요업무이고 같은 묶음에 산업용 패킷 분석·프로토콜별 자산/통신정보 추출·신규 프로토콜 Parser 확장이 있다. 우대에도 산업용 프로토콜 분석·Parser 개발이 있다.",
+          "gap_check": "Modbus/TCP 요청 한 개의 바이트 구조(트랜잭션 ID·유닛 ID·기능 코드·주소·개수)를 말할 수 있는가? 기능 코드만 보고 '읽기' 와 '쓰기(설정 변경)' 를 가르면 보안 관점에서 무엇을 경보할 수 있는가? 문서가 부족한 벤더 전용 프로토콜은 어떻게 분석을 시작하는가?",
+          "drill": "Modbus·DNP3 문서와 Wireshark 'Adding a basic dissector' 를 읽고, 공개된 Modbus/TCP pcap 을 받아 Java(또는 PHP)로 파서를 짠다 — 기능 코드별 개수, 마스터/슬레이브 IP 쌍, 쓰기 명령 목록을 뽑는다. 결과를 tshark 의 modbus 필드 출력과 대조해 맞는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Modbus — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Modbus",
+              "kind": "docs"
+            },
+            {
+              "title": "DNP3 — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/DNP3",
+              "kind": "docs"
+            },
+            {
+              "title": "Adding a basic dissector — Wireshark Developer's Guide",
+              "url": "https://www.wireshark.org/docs/wsdg_html_chunked/ChDissectAdd.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OT 자산·네트워크 가시화 — 수동 식별과 Purdue 모델",
+          "from": "task",
+          "quote": "• OT/ICS 자산 및 네트워크 가시화 기능 개발",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 회사 머리말이 'OT 자산 식별, 통신 현황, 취약점 및 보안 위협 정보를 통합적으로 제공하는 플랫폼' 을 적는다.",
+          "gap_check": "OT 망에서는 왜 능동 스캔을 조심하고 패킷을 듣기만 하는(수동) 방식으로 자산을 식별하는가? Purdue 모델의 레벨(현장 기기·제어·감독·기업망)로 자산을 나누면 '레벨 4 PC 가 레벨 1 PLC 와 직접 통신' 같은 이상을 어떻게 드러낼 수 있는가?",
+          "drill": "Industrial control system·Purdue 모델 문서를 읽고, 앞 과제의 파서 결과로 자산 목록(IP·MAC·역할 추정·프로토콜)과 통신 행렬을 만든다. 각 자산에 Purdue 레벨을 붙이고 레벨을 건너뛰는 통신을 표시하는 간단한 네트워크 그림을 그린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Industrial control system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Industrial_control_system",
+              "kind": "docs"
+            },
+            {
+              "title": "Purdue Enterprise Reference Architecture — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Purdue_Enterprise_Reference_Architecture",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 보안 솔루션 데이터를 하나의 모델로 정규화·동기화",
+          "from": "task",
+          "quote": "• 수집 데이터 정규화 및 데이터 모델 연계",
+          "priority": "high",
+          "why": "주요업무이고 같은 묶음에 OT 보안 솔루션 API 연동, Asset·Vulnerability·Communication·Alert 수집, 주기적 동기화·상태 관리가 있다. 자격이 REST API·외부 API 연동이다.",
+          "gap_check": "두 솔루션이 같은 PLC 를 서로 다른 ID·이름으로 보고할 때 무엇을 키로 하나의 자산으로 합치는가(IP·MAC·시리얼)? 주기 동기화 중 원천 API 가 일부만 응답하면 '사라진 자산' 과 '못 받아 온 자산' 을 어떻게 구분하는가?",
+          "drill": "Laravel Task Scheduling 문서를 읽고, 가짜 솔루션 API 두 개(필드명이 다른 자산 목록)를 만들어 10분마다 가져와 공통 자산 테이블에 합치는 작업을 만든다. 한쪽 API 를 실패시켜 마지막 성공 시각·상태가 기록되고 자산이 지워지지 않는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Task Scheduling — Laravel",
+              "url": "https://laravel.com/framework/docs/scheduling",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "tshark 로 패킷 분석 자동화",
+          "from": "preference",
+          "quote": "• Wireshark/tshark 등을 이용한 패킷 분석 경험",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 산업용 네트워크 패킷 분석이 있다.",
+          "gap_check": "캡처 필터와 표시 필터는 언제 적용되고 무엇이 다른가? tshark 로 필드만 뽑아(-T fields) 수백 MB pcap 을 처리할 때 메모리·속도를 어떻게 관리하는가?",
+          "drill": "tshark 매뉴얼을 읽고, 앞 과제의 pcap 에서 출발지·목적지·기능 코드·레지스터 주소를 CSV 로 뽑는 명령을 만든다. 같은 결과를 직접 짠 파서와 비교해 차이가 나는 패킷을 찾아 원인을 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "tshark(1) — Wireshark",
+              "url": "https://www.wireshark.org/docs/man-pages/tshark.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OT 보안 표준 IEC 62443 의 큰 그림",
+          "from": "preference",
+          "quote": "• OT/ICS 보안 솔루션 개발 경험",
+          "priority": "nice",
+          "why": "우대사항이고, 취약점·위협 정보를 보여 주는 플랫폼이 고객의 보안 요구(영역·통로 분리 등)를 이해해야 쓸모 있는 화면이 된다.",
+          "gap_check": "IEC 62443 의 영역(zone)과 통로(conduit) 개념은 무엇이고, 가시화 플랫폼이 그것을 어떻게 보여 줄 수 있는가? IT 보안과 달리 OT 에서 패치·재부팅이 어려운 이유는?",
+          "drill": "IEC 62443 문서와 CISA 산업제어시스템 페이지를 읽고, 앞 과제의 자산 그림을 영역·통로로 나눠 다시 그린다. 영역 밖으로 나가는 통신마다 '허용/검토 필요' 를 표시한 표를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "IEC 62443 — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/IEC_62443",
+              "kind": "docs"
+            },
+            {
+              "title": "Industrial Control Systems — CISA",
+              "url": "https://www.cisa.gov/topics/industrial-control-systems",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
