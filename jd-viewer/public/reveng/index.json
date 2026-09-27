@@ -8,7 +8,7 @@
       "country": "JP",
       "category": "커머스",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "화장품 리뷰 사이트 '@cosme' 로 시작해 광고 · 매장 · EC 로 넓힌 뷰티 플랫폼 회사(2026 년 6 월기 매출 818 억 엔) — EOL 이 된 Nuxt2 페이지는 NuxtBridge 없이 대표 페이지부터 3 으로 다시 쓰고, 흩어진 데이터 파이프라인은 가공 전에 Great Expectations 로 책임 분계점을 둔다",
       "updated_at": "2026-09-27",
       "domain": "istyle.co.jp"

@@ -2736,3 +2736,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 アイスタイル Nuxt 이행
 
 - Nuxt 연재 넷 전문으로 기능 `nuxt2-to-3-direct-migration`, 결정 6. 수익원 연결은 inferred.
+
+## 2026-09-27 アイスタイル GX 데이터 계약
+
+- GX 글 전문으로 기능 `gx-data-contract-before-transform`, 결정 6. 수익원 연결 inferred.
