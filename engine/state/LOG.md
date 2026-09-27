@@ -2680,3 +2680,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 マイベスト 캐시 전략
 
 - 캐시 글 전문으로 기능 `swr-24h-cache-key-connection-drop`, 결정 6.
+
+## 2026-09-27 マイベスト Dataform · 클린룸
+
+- Dataform 갈등 · 클린룸 글 전문으로 기능 `dataform-and-clean-room-sharing`, 결정 6.
