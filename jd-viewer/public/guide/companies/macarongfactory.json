@@ -304,6 +304,100 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382155",
+      "title": "안드로이드 개발 (5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 경기 성남시 분당구(판교). **마이클의 모든 Android 앱**을 맡는 안드로이드 팀이다. 팀 소개는 AI 도구가 개발 워크플로우에 녹아 있어 반복 작업을 줄이고 구조적 문제·품질에 집중한다고 적고, 기술 블로그 글('마카롱팩토리는 AI 를 어떻게 활용하는가')과 리드 인터뷰를 링크한다. 주요업무는 협업으로 앱 개발·개선, **Compose·Kotlin·Coroutines/Flow 신규 기능**, **Java·XML 레거시 유지보수와 운영 중 점진적 리팩토링**, AI 도구 활용, 맡은 서비스의 기술적 의사결정·우선순위. 스택은 Kotlin·Coroutines+Flow·Compose·**Hilt·Realm**·Java·XML. 자격은 5년, **동시성 제어·취소 전파·StateFlow/SharedFlow/Channel 차이**, **Compose 상태 호이스팅·리컴포지션 최적화**, **MVVM/MVI 트레이드오프 설명**, **전면 재작성이 아닌 단계적 전환 경험**, 설계·테스트 가능성 관점 리뷰, 요구사항 스스로 정의. 우대는 **멀티모듈 분리와 DI 경계**, Compose 디자인 시스템 라이브러리, RxJava↔Coroutines 공존, JUnit·MockK·Turbine, detekt·ktlint·CI, Crashlytics·Datadog 크래시/ANR, **Realm·Room 스키마 마이그레이션**. 자격 문장이 구체적이라 면접도 이 개념들을 깊이 물을 것으로 읽힌다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Android 5년",
+          "Coroutines/Flow 동시성",
+          "Compose 리컴포지션",
+          "단계적 레거시 전환"
+        ],
+        "can_learn": [
+          "멀티모듈·Hilt 경계",
+          "Realm 마이그레이션",
+          "Turbine 테스트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Coroutines/Flow — 취소 전파와 StateFlow·SharedFlow·Channel",
+          "from": "qualification",
+          "quote": "• Kotlin과 Coroutines/Flow 기반으로 동시성 제어, 취소 전파, StateFlow/SharedFlow/Channel 등의 차이를 이해하고 상황에 맞게 비동기 로직을 설계 및 구현할 수 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 공고가 개념 이름(취소 전파, StateFlow/SharedFlow/Channel)까지 적었다.",
+          "gap_check": "구조화된 동시성에서 자식 코루틴 하나가 실패하면 형제와 부모는 어떻게 되고, SupervisorJob 은 무엇을 바꾸는가? '정비 예약 완료' 같은 한 번뿐인 이벤트를 StateFlow 로 보내면 화면 회전 뒤 무슨 일이 생기고, SharedFlow·Channel 은 무엇이 다른가? 화면이 사라졌는데 네트워크 호출이 계속 돈다면 무엇을 확인하는가?",
+          "drill": "Kotlin flows on Android 문서를 읽고, 정비소 검색 화면을 만든다 — 검색어 입력을 debounce 한 Flow, 새 검색 시 이전 요청 취소, 결과 상태는 StateFlow, '예약 완료' 토스트는 Channel. Turbine 으로 취소·이벤트가 한 번만 나가는지 테스트한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Kotlin flows on Android — Android Developers",
+              "url": "https://developer.android.com/kotlin/flow",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Java·XML 레거시를 운영 중에 Compose 로 옮기기",
+          "from": "qualification",
+          "quote": "• Java·XML 레거시 코드가 공존하는 프로젝트에서 전면 재작성이 아닌, 서비스 운영 중 단계적 전환을 경험하신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 레거시 유지보수와 점진적 리팩토링이 있다. 스택에 Java·XML 과 Compose 가 함께 있다.",
+          "gap_check": "전면 재작성 대신 화면 단위·컴포넌트 단위로 옮길 때 XML 안에 Compose(ComposeView)를, Compose 안에 기존 View(AndroidView)를 넣는 방법은? 옮기는 도중 두 방식의 테마·상태가 어긋나지 않게 하려면 무엇을 공유하는가? 이전이 끝났다는 것은 무엇으로 판단하는가?",
+          "drill": "Migrate XML Views to Jetpack Compose 문서를 읽고, XML 로 된 예제 목록 화면에서 목록 아이템 하나만 Compose 로 바꿔 ComposeView 로 끼운다. 그다음 화면 전체를 Compose 로 옮기되 기존 커스텀 View 하나는 AndroidView 로 남겨, 단계별 차이를 커밋으로 나눠 기록한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Migrate XML Views to Jetpack Compose — Android Developers",
+              "url": "https://developer.android.com/develop/ui/compose/migrate/migrate-xml-views-to-jetpack-compose",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Compose 상태 호이스팅과 리컴포지션 최적화",
+          "from": "qualification",
+          "quote": "• Jetpack Compose로 프로덕션 화면을 개발하고, 상태 호이스팅 및 리컴포지션 최적화를 경험하신 분",
+          "priority": "high",
+          "why": "필수 자격이다.",
+          "gap_check": "상태를 어디까지 끌어올려야(호이스팅) 재사용·테스트가 쉬워지는가? 목록 아이템 하나가 바뀌었는데 전체가 다시 그려진다면 불안정한 파라미터·람다·key 중 무엇부터 의심하는가? Layout Inspector 로 리컴포지션 횟수를 어떻게 보는가?",
+          "drill": "Jetpack Compose Performance 문서를 읽고, 앞 과제 목록 화면에 일부러 불안정한 List 파라미터와 매번 새로 만드는 람다를 넣어 리컴포지션 횟수를 잰다. 안정 타입·remember·key 로 고친 뒤 횟수 차이를 표로 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Jetpack Compose Performance — Android Developers",
+              "url": "https://developer.android.com/develop/ui/compose/performance",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티모듈과 DI 경계 — 단방향 데이터 흐름 위에서",
+          "from": "preference",
+          "quote": "• 멀티모듈 프로젝트를 설계했거나, 단일 모듈을 멀티모듈로 분리해 본 분",
+          "priority": "nice",
+          "why": "우대사항이고 바로 다음 우대가 모듈 경계에 맞는 DI 구성이다. 자격에 MVVM/MVI 트레이드오프 설명이 있다.",
+          "gap_check": "기능 모듈끼리 서로를 직접 의존하지 않게 하려면 무엇을 인터페이스 모듈로 빼는가? Hilt 모듈을 어디에 두면 기능 모듈의 구현이 새지 않는가? 모듈을 나누면 빌드 시간과 코드 소유권은 어떻게 바뀌는가?",
+          "drill": "Guide to app architecture 와 Guide to Android app modularization 을 읽고, 앞 과제 앱을 app·feature-search·feature-booking·core-data 로 나눈다. feature 끼리 직접 의존이 없도록 인터페이스를 core 로 빼고 Hilt 바인딩 위치를 정한 뒤, 의존 그래프를 그림으로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Guide to app architecture — Android Developers",
+              "url": "https://developer.android.com/topic/architecture",
+              "kind": "docs"
+            },
+            {
+              "title": "Guide to Android app modularization — Android Developers",
+              "url": "https://developer.android.com/topic/modularization",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
