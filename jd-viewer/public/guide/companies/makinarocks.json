@@ -178,5 +178,109 @@
     "Runway·DrawX 의 과금 방식은 읽지 않았다",
     "사람인 2026 채용 공고는 이미지 OCR 이라 부문·근무지 표가 일부 깨져 있다"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/369421",
+      "title": "Forward Deployed Engineer - LLM (창원)",
+      "site": "wanted",
+      "verdict": "경력 1년 이상. **최초 3개월은 서울 온보딩 뒤 창원 오피스 근무**다. FDE본부 소속으로 산업 현장 데이터로 AI 문제를 정의·해결한다. 주요업무는 서울 FDE-LLM 공고(225016)와 여섯 줄이 같다 — 데이터 분석과 문제 정의, LLM 기술 연구, **Agent 연구개발**, **RAG·Fine tuning 으로 LLM 성능 향상**, **제조·산업 데이터(설비 로그·이미지·문서) 기반 LLM/VLM 지능형 분석·자동화**, 실적용 사례 확대. 다른 것은 자격이다 — 서울 공고가 필수로 두는 'LLM/VLM 프로젝트·연구 2년 이상' 과 'LLM/VLM 실무 적용 경험' 이 여기엔 없고, **Python 구현력·라이브러리 활용·최신 LLM 동향 실적용·협업** 네 줄뿐이다. 우대는 LLM/VLM 학습·평가, **LLM·RAG 파이프라인 평가**, 데이터 파이프라인, 다양한 도메인 데이터, AI Agent 설계, 코드 리뷰. 같은 일을 문턱을 낮춰 창원에서 뽑는 자리라, 영남권에 살거나 옮길 수 있는 주니어에게 입구가 넓다. 전형은 서류→온라인 사전 인터뷰→기술 인터뷰→Fit 인터뷰→평판조회, 추가 과제 가능. 수습 3개월(급여 100%). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python 구현력",
+          "LLM 동향을 실적용으로",
+          "협업·문제 정의"
+        ],
+        "can_learn": [
+          "RAG 평가",
+          "LoRA 파인튜닝",
+          "VLM 문서·이미지 분석"
+        ]
+      },
+      "study": [
+        {
+          "topic": "설비 문서·로그에 RAG 붙이고 평가하기",
+          "from": "task",
+          "quote": "• RAG, Fine tuning 등을 이용해 LLM 모델의 성능을 향상 시킵니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대사항에 LLM 또는 RAG 파이프라인 평가 경험이 있다. 다음 줄이 제조·산업 데이터(설비 로그·문서) 기반 분석이다.",
+          "gap_check": "설비 매뉴얼·정비 이력처럼 표와 약어가 많은 문서를 청킹할 때 무엇이 깨지고, 검색이 틀린 것과 생성이 틀린 것을 평가 지표로 어떻게 가르는가? RAG 로 안 풀리고 파인튜닝이 필요한 경우는 언제인가?",
+          "drill": "Ragas 문서를 읽고, 공개된 장비 매뉴얼 PDF 몇 개로 RAG 를 만든 뒤 '알람 코드 E-12 의 조치 방법은?' 같은 질문 30개와 정답·근거를 만든다. 청킹 크기 두 가지로 문맥 재현율·충실도를 비교해 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Ragas",
+              "url": "https://docs.ragas.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LoRA 로 작은 모델 파인튜닝",
+          "from": "preference",
+          "quote": "• LLM 또는 VLM 모델의 학습 및 평가 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 Fine tuning 으로 LLM 성능 향상이 있다.",
+          "gap_check": "전체 파인튜닝과 LoRA 같은 파라미터 효율 기법은 메모리·학습 속도·결과 모델 크기에서 무엇이 다른가? 현장 데이터 수백 건으로 파인튜닝할 때 과적합과 원래 능력 손실(망각)을 무엇으로 확인하는가?",
+          "drill": "Hugging Face PEFT 문서와 Fine-tuning 문서를 읽고, 작은 공개 모델을 정비 보고서 요약 데이터(가상 200건)로 LoRA 학습한다. 학습 전후 요약 품질과 일반 질문 답변을 같이 비교해 망각이 있는지 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "PEFT — Hugging Face",
+              "url": "https://huggingface.co/docs/peft/index",
+              "kind": "docs"
+            },
+            {
+              "title": "Fine-tuning (deep learning) — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Fine-tuning_(deep_learning)",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "VLM 으로 현장 이미지·도면 읽기",
+          "from": "task",
+          "quote": "• 제조·산업 데이터(설비 로그, 이미지, 문서 등)를 기반으로 LLM/VLM을 활용한 지능형 분석 및 자동화 시스템을 개발합니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 VLM 학습·평가가 있다. 회사 제품 DrawX 가 도면 분석 AI 에이전트다.",
+          "gap_check": "설비 사진이나 도면 속 글자를 읽을 때 OCR 후 LLM 에 넘기는 방식과 VLM 에 이미지를 바로 넣는 방식은 정확도·비용에서 무엇이 다른가? VLM 이 도면의 치수를 그럴듯하게 지어낼 때 어떻게 검증하는가?",
+          "drill": "Image-text-to-text 문서를 읽고, 작은 VLM 으로 설비 명판 사진·간단한 도면 이미지 20장에서 모델명·치수를 뽑게 한다. 같은 이미지를 OCR+LLM 으로 처리한 결과와 정답 대비 정확도를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Image-text-to-text — Hugging Face Transformers",
+              "url": "https://huggingface.co/docs/transformers/main/en/tasks/image_text_to_text",
+              "kind": "docs"
+            },
+            {
+              "title": "Optical character recognition — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Optical_character_recognition",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "산업 현장용 에이전트 설계",
+          "from": "task",
+          "quote": "• Agent 연구개발을 통해 산업현장의 문제를 해결합니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 AI Agent 설계·아키텍처 이해가 있다. 홈페이지가 에이전트 영역(전문가 증강·제어·예측 및 운영)을 든다.",
+          "gap_check": "설비 이상 알람이 오면 로그를 조회하고 매뉴얼을 찾아 조치안을 내는 에이전트에서, 사람 확인 없이 자동으로 해도 되는 단계와 안 되는 단계는 어떻게 가르는가? 도구 호출이 실패하거나 결과가 모호할 때 에이전트는 어떻게 멈추는가?",
+          "drill": "LangGraph overview 와 Predictive maintenance 문서를 읽고, 알람 분류 → 로그 조회 도구 → 매뉴얼 RAG(앞 과제) → 조치안 작성 → 사람 승인 대기로 이어지는 그래프를 만든다. 로그 조회 실패·알 수 없는 알람 두 경우의 동작을 테스트한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LangGraph overview — Docs by LangChain",
+              "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Predictive maintenance — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Predictive_maintenance",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
