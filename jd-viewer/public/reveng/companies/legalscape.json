@@ -5,6 +5,7 @@
   "country": "JP",
   "category": "SaaS",
   "status": "in_progress",
+  "hold_reason": "Legal Intelligence 연계(API) 수익원을 두 번 찾아 과금 · 기술 자료가 없다(2026-09-27 — 기술 블로그 RSS 30편 제목 전수 · legal-intelligence.jp · LegalOn 연계 공지 · WebSearch). 연계가 별도 매출인지 구독에 얹히는지도 공개되지 않았다.",
   "updated_at": "2026-09-27",
   "domain": "legalscape.jp",
   "one_liner": "법률 서적 4,500 권 · 판례 · 법령 · 가이드라인을 AI 가 가로질러 찾아 출처와 함께 요약하는 업무용 리걸 리서치 서비스 — 검색어를 넓히는 LLM 은 어느 급이면 되는지 공개 데이터로 재 보고, 전문 용어를 쪼개는 사전은 서버리스 검색의 한계까지 재 본다",
@@ -43,7 +44,7 @@
     },
     {
       "name": "Legal Intelligence 연계(API)",
-      "how": "법률 정보 · AI 를 API 로 외부 서비스(NIKKEI KAI · LegalOn)나 사내 시스템에 공급한다 — 과금 방식은 쓰여 있지 않다.",
+      "how": "법률 정보 검색 · 요약 AI 를 API 로 외부 서비스(NIKKEI KAI · LegalOn, 해외 3 곳 예정)나 사내 시스템에 공급한다 — 출판사 30 곳 이상과의 계약에 기반한 외부 제공. LegalOn 연계는 양쪽 계정 연계가 필요하다고만 적혀 있어, 따로 받는 요금인지 Legalscape 구독에 얹히는지는 알 수 없다.",
       "weight": "공개 안 됨(2026 년 시작)",
       "domains": [],
       "confidence": "inferred",
@@ -54,6 +55,19 @@
           "publisher": "Legalscape",
           "date": "2026-09-09",
           "summary": "2026 년 제공을 시작한 법률 특화 AI 시스템 'Legal Intelligence' 를 닛케이의 법인용 생성 AI 'NIKKEI KAI' 와 연계 — 비즈니스 정보 답변 옆에 실무 문헌 기반 법적 논점 요약을 붙인다. Legal Intelligence 는 API 로 외부 서비스 · 사내 시스템과 이어지며, 국내외 리걸테크 · 정보 서비스와 연계를 차례로 넓히는 중. 회사 개요: 2017 년 설립, 2021 년 6 월 리서치 플랫폼 출시, 2023 년 9 월 생성 AI 리서치 기능 도입, 출판사 40 곳 이상과 제휴, 국내 5 대 법률사무소 전부에 도입. 과금 방식은 쓰여 있지 않다."
+        },
+        {
+          "title": "法律書籍をはじめとする法情報のAPIを提供開始 —Legalscapeの「Legal Intelligence」、「LegalOn」と連携",
+          "url": "https://www.legalscape.jp/news/20260909-2",
+          "publisher": "Legalscape",
+          "date": "2026-09-09",
+          "summary": "2026-09-09 부터 Legal Intelligence 를 API 로 'LegalOn'(Professional AI 유상 도입 9,000 곳 넘음)에 제공 — LegalOn 어시스턴트 채팅에서 질문하면 제휴 출판사 30 곳 이상의 서적 · 행정 가이드라인을 검색해 요약과 참조 정보(제목 · 저자 · 공개일 · 해당 부분 발췌)를 돌려준다. 외부 서비스가 문헌을 쓰려면 권리 처리가 전제라, 출판사와의 계약에 기반해 외부에서 참조할 수 있게 한다. 이용하려면 Legalscape 와 LegalOn 양쪽 계정 연계가 필요. 한국 BHSN · Law&Company, 독일 Noxtua 와 2026 년 안 연계 예정. 과금 방식은 쓰여 있지 않다."
+        },
+        {
+          "title": "Legal Intelligence | Legalscapeが構築する法情報AIシステム",
+          "url": "https://legal-intelligence.jp/",
+          "publisher": "Legalscape",
+          "summary": "'일본의 법정보 AI 를 API 로 귀사 서비스 · 시스템에' — Legalscape 플랫폼에 탑재된 AI 시스템을 외부 서비스 · 사내 시스템에 넣을 수 있다. Legalscape 는 2026 년 현재 5 대 법률사무소 전부를 포함한 2,000 곳 넘는 클라이언트에 도입. 파트너(예정) 목록 · 문의 창구만 있고 요금 표기는 없다."
         }
       ]
     }
@@ -1345,6 +1359,19 @@
       "publisher": "Legalscape",
       "date": "2026-06-19",
       "summary": "VPoT 글. Legalscape 는 Cloud Run 이 1 순위이고 Kubernetes 는 안 쓰지만, Helm chart 로 쉽게 올릴 수 있는 셀프 호스트 서비스 때문에 GKE 가 몇 번 필요해졌다. 경로(Direct VPC Egress — 커넥터 VM 없이, 대신 기동 때 1 분 전후 네트워크 지연이 있어 startup probe 에 소통 확인을 넣음 · L4 패스스루 NLB 대 L7 내부 ALB)보다 'GKE 쪽이 Cloud Run 의 요청을 어떻게 인증하나'가 주제. 선택지: (A) 앱에서 OIDC ID 토큰 검증(인프라 추가 없음, 대신 채널 암호화 · 서버 인증 없음) (B) 내부 ALB + IAP(IAM 일원화, 대신 L7 전제 · GKE 설정 함정 많음) (C) Cloud Service Mesh mTLS(GKE 간이면 1 순위지만 Cloud Run → GKE 는 2026 년 6 월 현재 프리뷰라 평문 · PERMISSIVE). 평문 HTTP + ID 토큰은 서버 사칭 → 토큰 리플레이가 뚫린다. 결론은 요건별 권장표 — 앱 수정 가능하면 ID 토큰 + HTTPS, 앱 수정 불가면 ALB + IAP 또는 frontend mTLS(+BackendTLS)."
+    },
+    {
+      "title": "法律書籍をはじめとする法情報のAPIを提供開始 —Legalscapeの「Legal Intelligence」、「LegalOn」と連携",
+      "url": "https://www.legalscape.jp/news/20260909-2",
+      "publisher": "Legalscape",
+      "date": "2026-09-09",
+      "summary": "2026-09-09 부터 Legal Intelligence 를 API 로 'LegalOn'(Professional AI 유상 도입 9,000 곳 넘음)에 제공 — LegalOn 어시스턴트 채팅에서 질문하면 제휴 출판사 30 곳 이상의 서적 · 행정 가이드라인을 검색해 요약과 참조 정보(제목 · 저자 · 공개일 · 해당 부분 발췌)를 돌려준다. 외부 서비스가 문헌을 쓰려면 권리 처리가 전제라, 출판사와의 계약에 기반해 외부에서 참조할 수 있게 한다. 이용하려면 Legalscape 와 LegalOn 양쪽 계정 연계가 필요. 한국 BHSN · Law&Company, 독일 Noxtua 와 2026 년 안 연계 예정. 과금 방식은 쓰여 있지 않다."
+    },
+    {
+      "title": "Legal Intelligence | Legalscapeが構築する法情報AIシステム",
+      "url": "https://legal-intelligence.jp/",
+      "publisher": "Legalscape",
+      "summary": "'일본의 법정보 AI 를 API 로 귀사 서비스 · 시스템에' — Legalscape 플랫폼에 탑재된 AI 시스템을 외부 서비스 · 사내 시스템에 넣을 수 있다. Legalscape 는 2026 년 현재 5 대 법률사무소 전부를 포함한 2,000 곳 넘는 클라이언트에 도입. 파트너(예정) 목록 · 문의 창구만 있고 요금 표기는 없다."
     }
   ]
 }

@@ -2764,3 +2764,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Legalscape Cloud Run → GKE Zero Trust
 
 - 기능 `cloudrun-to-gke-zero-trust` — GKE 도입 · 위치 대 신원 · Direct VPC Egress · L4/L7 · 인증 3 택 · 메시 보류 · 서버 인증 · 요건별 권장, 결정 8. 도메인 3/3 채움 — 다음은 API 수익원 두 번 찾기.
+
+## 2026-09-27 Legalscape API 연계 수익원 보류
+
+- 첫째 기술 블로그 RSS 30편 제목 전수(API · Legal Intelligence 글 없음), 둘째 legal-intelligence.jp · LegalOn 연계 공지 · WebSearch(요금 없음). how 를 보강(출판사 30 곳 계약 · 양쪽 계정 연계)하고 출처 2 추가, hold_reason.
