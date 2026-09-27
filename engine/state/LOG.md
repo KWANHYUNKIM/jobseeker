@@ -2716,3 +2716,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 MOSH Lambda-lith
 
 - Zenn 글 + Speaker Deck 슬라이드(배포 불능 사건 둘 · 단계 ④⑤)로 기능 `lambda-lith-portability-steps`, 결정 6. 수익원 연결은 inferred.
+
+## 2026-09-27 MOSH 통지 기반 飛脚
+
+- 飛脚 글 전문으로 기능 `hikyaku-saga-idempotent-notify`, 결정 7. 두 수익원 연결 confirmed(회원 사이트 스텝 메일 · 결제 정보 통지). 완주 기준 충족.

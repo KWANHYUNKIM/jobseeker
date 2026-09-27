@@ -31,6 +31,13 @@
           "url": "https://mosh.jp/pricing",
           "publisher": "MOSH",
           "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+        },
+        {
+          "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+          "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+          "publisher": "MOSH",
+          "date": "2025-12-24",
+          "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
         }
       ]
     },
@@ -48,6 +55,13 @@
           "url": "https://mosh.jp/pricing",
           "publisher": "MOSH",
           "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+        },
+        {
+          "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+          "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+          "publisher": "MOSH",
+          "date": "2025-12-24",
+          "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
         }
       ]
     }
@@ -105,12 +119,14 @@
               "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
               "publisher": "MOSH",
               "date": "2025-12-24",
-              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등."
+              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "hikyaku-saga-idempotent-notify"
+      ]
     }
   ],
   "features": [
@@ -516,6 +532,374 @@
           "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
         }
       ]
+    },
+    {
+      "key": "hikyaku-saga-idempotent-notify",
+      "name": "다시 보내되 두 번은 안 보낸다 — Step Functions Saga · Redrive 와 DynamoDB 조건부 쓰기로 만든 통지 기반 '飛脚'",
+      "domain": "크리에이터가 게스트에게 보내는 통지를, 한 번도 빠뜨리지도 두 번 보내지도 않는다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "MOSH 는 크리에이터와 게스트를 잇는 플랫폼이라 **통지가 바르게 닿는 것이 당연 품질**이다. 고객 관리에선 크리에이터 → 게스트 통지가 핵심 요건이고, 회원 사이트의 스텝 메일, 결제 정보 통지처럼 통지 장면은 계속 는다.\n\nMOSH 는 여러 제품을 조합해 새 가치를 만드는 컴파운드 전략을 편다 — 통지를 제품마다 만들지 않고, 결제 · 게스트 관리 같은 다른 기반과 조합할 수 있는 공통 서비스로 둔다. 통지는 외부 서비스(LINE · 메일) 장애로 도중에 실패할 수 있고, 다시 보내다 이미 간 통지를 또 보내면 그것도 사고다.",
+        "metrics": [
+          {
+            "label": "통지 이력 보관",
+            "value": "DynamoDB TTL 60 일(Redrive 기간 14 일 고려)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          },
+          {
+            "label": "IN_PROGRESS 타임아웃",
+            "value": "3 분 — 넘으면 다시 잡아 재실행",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "왜 지금 통지 기반인가",
+          "thought": "통지 기반을 확장 가능하게 해 두면 결제 · 게스트 관리 같은 다른 기반과 조합해 새 사업 가치를 만들 수 있다 — 여러 관점에서 '지금 만들지 않으면 곤란하다'는 이야기가 됐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+              "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+              "publisher": "MOSH",
+              "date": "2025-12-24",
+              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+            }
+          ]
+        },
+        {
+          "at": "Redrive 를 쓰며",
+          "thought": "Redrive 로 다시 실행할 수 있어 편리하지만, 아무 대책이 없으면 이미 성공한 통지가 또 나간다 — 게다가 Map State Express 는 at-least-once 라 애초에 중복 실행될 수 있다. 통지 기반으로서 치명적이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+              "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+              "publisher": "MOSH",
+              "date": "2025-12-24",
+              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+            }
+          ]
+        },
+        {
+          "at": "맺으며",
+          "thought": "Saga 오케스트레이션과 DynamoDB 조건부 쓰기를 조합해 고가용성 · 확장성을 얻었다 — 컴파운드 전략을 떠받치는 기반으로 더 키운다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+              "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+              "publisher": "MOSH",
+              "date": "2025-12-24",
+              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "통지 요청",
+            "what": "메시지 하나에 수신자 전원을 배열로 — 1,000 명이면 1 요청. API 가 notificationId 를 돌려준다."
+          },
+          {
+            "name": "notificationMessageId",
+            "what": "수신자 1 명 · 채널 1 개의 통지 ID — 배열 인덱스를 %07d 로 이어 같은 페이로드에서 늘 같은 ID(예: abc123/line/0000001)."
+          },
+          {
+            "name": "통지 상태(DynamoDB)",
+            "what": "IN_PROGRESS · DONE · FAILED — 조건부 쓰기로 전이, TTL 60 일."
+          },
+          {
+            "name": "Step Functions 워크플로",
+            "what": "ETL(Fargate) → 채널별 Map State(Express) 병렬 — Saga 오케스트레이션, Redrive 로 재실행."
+          },
+          {
+            "name": "채널",
+            "what": "SES(메일) · LINE Messaging API — Parallel 브랜치에 Map State 를 더하면 SMS · 푸시도."
+          }
+        ],
+        "invariants": [
+          "같은 notificationMessageId 의 통지는 한 번만 성공한다.",
+          "IN_PROGRESS 가 3 분을 넘기면 죽은 것으로 보고 다시 잡을 수 있다.",
+          "한 채널의 추가 · 장애가 다른 채널의 통지에 영향을 주지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "제품이 통지 API 에 메시지와 수신자 배열을 한 번에 보낸다(OpenAPI · Orval 로 검증)",
+            "why": "클라이언트가 개별 재시도를 안 해도 되고, 한 실행으로 추적한다."
+          },
+          {
+            "step": "API 가 페이로드를 S3 에 저장 → EventBridge 로 Step Functions 기동 → notificationId 반환",
+            "why": "큰 페이로드를 워크플로 밖에 두고 진행을 추적하게 한다."
+          },
+          {
+            "step": "ETL(Fargate)이 채널별 JSONL 로 나누고 결정적 notificationMessageId 부여",
+            "why": "같은 페이로드에서 늘 같은 ID — 멱등의 열쇠."
+          },
+          {
+            "step": "채널별 Map State(Express)가 병렬로 보낸다 — 보내기 전 DynamoDB 조건부 쓰기로 IN_PROGRESS",
+            "why": "이미 DONE 이거나 누가 처리 중이면 건너뛴다."
+          },
+          {
+            "step": "성공이면 DONE, 실패면 FAILED — 실행이 멈추면 Redrive",
+            "why": "실패한 것만 다시, 성공한 것은 다시 안 보낸다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "통지를 제품마다 만드나, 공통 기반으로 두나?",
+            "chosen": "**사내 제품용 공통 통지 기반 '飛脚'.**",
+            "alternatives": [
+              "제품마다 통지 처리를 구현"
+            ],
+            "tradeoff": "컴파운드 전략에 맞춰 결제 · 게스트 관리 등 다른 기반과 조합하고, 통지 품질을 한곳에서 지킨다. 대가는 모든 제품의 통지가 한 기반에 기댄다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          },
+          {
+            "question": "통지 워크플로를 무엇으로 짜나?",
+            "chosen": "**AWS Step Functions 의 Saga 오케스트레이션.**",
+            "alternatives": [
+              "큐와 워커를 직접 조합(이 사이트가 둔 대안)"
+            ],
+            "tradeoff": "워크플로 전체가 보여 어디서 실패했는지 콘솔에서 바로 알고, Redrive 로 실패한 실행을 고친 정의로 다시 돌리며, 통지 전 필터 · 통지 후 집계 같은 단계를 앞뒤에 쉽게 더한다. 대가는 Step Functions 정의 자체에 버그가 있으면 Redrive 가 아니라 같은 파라미터로 새로 실행해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          },
+          {
+            "question": "통지 API 의 입력 단위는?",
+            "chosen": "**메시지 단위로 수신자 전원을 배열에 담아 한 번에 — 1,000 명이면 1 요청.**",
+            "alternatives": [
+              "수신자마다 개별 요청"
+            ],
+            "tradeoff": "전체를 한 트랜잭션처럼 다루고, 클라이언트가 개별 재시도를 안 해도 되며, Step Functions 에서 한 실행으로 추적한다. 대가는 큰 페이로드 — S3 에 두고 EventBridge 로 기동한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          },
+          {
+            "question": "중복 실행을 어떻게 막나?",
+            "chosen": "**결정적 notificationMessageId + DynamoDB 조건부 쓰기 — 없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 로 잡고 보낸다.**",
+            "alternatives": [
+              "중복을 받아들인다"
+            ],
+            "tradeoff": "Redrive 재실행에도, Map State Express 의 at-least-once 중복에도 같은 통지가 두 번 나가지 않는다 — 조건부 쓰기는 늘 강한 일관성이라 병렬에서도 배타 제어가 된다. 대가는 3 분 안에 끝나지 않는 통지가 있으면 다시 잡혀 두 번 갈 수 있다는 것(이 사이트의 해석 — 타임아웃 값의 근거는 글에 없다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          },
+          {
+            "question": "멱등 상태를 어디에 두나?",
+            "chosen": "**DynamoDB(TTL 60 일).**",
+            "alternatives": [
+              "RDB",
+              "EFS",
+              "Redis",
+              "S3"
+            ],
+            "tradeoff": "조건부 쓰기의 확실한 배타 제어 · 강한 일관성, 한 자릿수 ms 지연, 온디맨드 과금으로 고정비 없음, 풀 매니지드와 TTL 자동 정리 — Redrive 기간(14 일)을 고려해 60 일만 둔다. 대가는 60 일이 지난 이력은 남지 않는다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          },
+          {
+            "question": "보내기를 어떻게 나누나?",
+            "chosen": "**3 층 — API · ETL(Fargate, 채널별 JSONL) · 채널별 Map State(Express) 병렬.**",
+            "alternatives": [
+              "API 에서 곧바로 보낸다(이 사이트가 둔 대안)"
+            ],
+            "tradeoff": "각 층이 책임을 나눠 갖고, 채널이 서로 독립이라 SMS · 푸시를 Parallel 브랜치에 Map State 하나로 더한다. 대가는 S3 · EventBridge · Fargate · Step Functions · DynamoDB 로 구성 요소가 많다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          },
+          {
+            "question": "API 와 클라이언트의 형을 어떻게 맞추나?",
+            "chosen": "**OpenAPI 로 엄밀히 정의하고 Orval 로 코드 자동 생성(Zod 검증).**",
+            "alternatives": [
+              "손으로 쓴 클라이언트 · 검증"
+            ],
+            "tradeoff": "클라이언트와 서버의 형 불일치가 없고 입력 검증이 견고하다. 대가는 OpenAPI 를 원천으로 계속 유지해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+                "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+                "publisher": "MOSH",
+                "date": "2025-12-24",
+                "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "월액 플랜(STARTER · GROW)(수익원)",
+          "via": "회원 사이트의 스텝 메일",
+          "contract": "회원 사이트의 스텝 메일이 통지를 쓰는 장면이다 — 회원 사이트는 월액 플랜으로 쓰는 기능이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+              "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+              "publisher": "MOSH",
+              "date": "2025-12-24",
+              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+            },
+            {
+              "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+              "url": "https://mosh.jp/pricing",
+              "publisher": "MOSH",
+              "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+            }
+          ]
+        },
+        {
+          "to": "결제 수수료(수익원)",
+          "via": "결제 정보 통지",
+          "contract": "결제 정보 통지가 통지를 쓰는 장면이고, 통지 기반은 결제 기반과 조합해 새 가치를 만든다 — 결제는 팔렸을 때 수수료를 받는 경로다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+              "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+              "publisher": "MOSH",
+              "date": "2025-12-24",
+              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+            },
+            {
+              "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+              "url": "https://mosh.jp/pricing",
+              "publisher": "MOSH",
+              "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+            }
+          ]
+        },
+        {
+          "to": "lambda-lith-portability-steps",
+          "via": "프로덕티비티 팀 · OpenAPI 스키마 주도",
+          "contract": "두 기반 모두 같은 프로덕티비티(플랫폼) 팀의 일이고, 둘 다 OpenAPI 를 원천으로 코드를 자동 생성한다(FastAPI · Orval).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+              "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+              "publisher": "MOSH",
+              "date": "2025-12-24",
+              "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+            },
+            {
+              "title": "400超のLambda構成アプリケーションにおける漸進的リアーキテクチャ",
+              "url": "https://zenn.dev/soartec_lab/articles/7f25c754fa3687",
+              "publisher": "MOSH",
+              "date": "2025-04-17",
+              "summary": "프로덕티비티 팀. **AWS Lambda 400 개 이상**의 애플리케이션 — API Gateway · Lambda 전제라 로컬 개발이 어렵고, 코드 · 배포 파이프라인 · 인프라가 serverless 로 묶여 배포가 불안정 · 느리고, 코드 증가로 콜드 스타트 지연, Lambda 수에 비례하는 감시 도구 비용. 목표는 ECS/EKS 컨테이너지만 한 번에 하면 장기 개발 동안 계획이 낡는다 → **이식성(ISO/IEC 25010)** 을 높이는 **점진적 리아키텍처**: ① Lambda 아티팩트를 zip → **Docker**(부수 효과로 콜드 스타트 개선) ② 유지보수가 멈춘 12,000 행 openapi.yaml 을 정리 · 구조화(FastAPI 컨트롤러 자동 생성 · 스키마 주도) ③ API 액션마다의 Lambda 를 하나로 묶는 **Lambda-lith**(AWS 가이드에선 안티패턴, Compute Blog 에선 설계 접근의 하나 — 장단점이 뚜렷하지만 ECS/EKS 이행의 한 걸음), 라우팅은 FastAPI 로 앱 계층에서(API Gateway 와의 밀결합 해소). 다음: 배포를 serverless 파이프라인에서 독립 · ECS/EKS 이행."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "1,000 명에게 알림 한 번",
+          "question": "제품이 1,000 명에게 통지를 보내면 어디를 거치나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  P[\"제품(회원 사이트 · 결제 등)\"] --> API[\"통지 API\\nOpenAPI · Orval · Zod\"]\n  API --> S3[\"S3 페이로드\"]\n  S3 --> EB[\"EventBridge\"]\n  EB --> SF[\"Step Functions(Saga)\"]\n  SF --> ETL[\"ETL on Fargate\\n채널별 JSONL · 결정적 ID\"]\n  ETL --> ML[\"Map State LINE\"]\n  ETL --> MM[\"Map State Mail\"]\n  ML --> DDB{\"DynamoDB 조건부 쓰기\"}\n  MM --> DDB\n  DDB -- \"잡음\" --> SEND[\"LINE API · SES\"]\n  DDB -- \"이미 DONE · 처리 중\" --> SKIP[\"건너뜀\"]\n  API -. notificationId .-> P"
+        },
+        {
+          "title": "통지 한 건의 상태",
+          "question": "notificationMessageId 하나는 어떤 상태를 오가나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> IN_PROGRESS: 레코드 없음 → 조건부 쓰기\n  IN_PROGRESS --> DONE: 보내기 성공\n  IN_PROGRESS --> FAILED: 보내기 실패\n  FAILED --> IN_PROGRESS: Redrive 재실행\n  IN_PROGRESS --> IN_PROGRESS: 3 분 넘게 멈춤 → 다시 잡음\n  DONE --> [*]: 재실행 · 중복은 건너뜀(TTL 60 일)"
+        },
+        {
+          "title": "다시 보내다 두 번 보낼 때",
+          "question": "재실행과 at-least-once 는 어떻게 중복 통지를 만드나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"외부 장애로 실행이 도중 실패\"] --> B[\"Redrive 로 재실행\"]\n  B --> C[\"이미 보낸 통지도 다시 처리\"]\n  D[\"Map State Express = at-least-once\"] --> C\n  C --> E{\"DynamoDB 에 DONE?\"}\n  E -- 예 --> F[\"건너뜀 — 중복 없음\"]\n  E -- \"IN_PROGRESS 3 분 미만\" --> F\n  E -- \"없음 · FAILED · 3 분 경과\" --> G[\"보냄\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "AWS StepFunctions + DynamoDB で構築する堅牢かつ高可用性で拡張性のある通知基盤",
+          "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
+          "publisher": "MOSH",
+          "date": "2025-12-24",
+          "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
+        },
+        {
+          "title": "料金・決済手数料 | 月額0円から、手数料は売れたときだけ | MOSH",
+          "url": "https://mosh.jp/pricing",
+          "publisher": "MOSH",
+          "summary": "**월액 0 엔부터, 수수료는 팔렸을 때만** — 무료 플랜이면 고정비 0 엔. 월액 플랜(STARTER · GROW)과 팔렸을 때의 결제 수수료. **결제 수수료**: 카드 6.5% + 99 엔/건(연 결제액 1,200 만 엔 이상은 4.5% + 99 엔), 은행 이체 3.0% + 99 엔(이상은 2.0% + 99 엔); fincode by GMO 이용 시 +0.5%(국내 기준 심사로 계정 동결 위험 최소화 · 1 회 200 만 엔까지 · 분할 일괄 입금). 월 100 만 엔 이상이면 4.5%~ 특별 수수료 안내. 입금은 Stripe 매월 25 일경 · fincode 익월 말경, 이체 수수료 무료."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -542,7 +926,7 @@
       "url": "https://zenn.dev/doriven/articles/8d47769ebc548f",
       "publisher": "MOSH",
       "date": "2025-12-24",
-      "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등."
+      "summary": "프로덕티비티(플랫폼 엔지니어링) 팀의 사내 제품용 통지 기반 **'飛脚(Hikyaku)'**. MOSH 는 여러 제품을 조합해 새 가치를 만드는 **컴파운드 전략** — 통지 기반은 핵심 공통 서비스. 사용자 관점: 게스트에게 통지가 바르게 닿는 건 당연 품질(크리에이터와 게스트를 잇는 플랫폼). 사업 관점: 결제 · 게스트 관리 같은 기반과 조합. 제품 관점: 고객 관리의 크리에이터 → 게스트 통지, 회원 사이트의 스텝 메일, 결제 정보 통지. **Step Functions 의 Saga 오케스트레이션**으로 통지 워크플로 — 통지 종류 확장 · 사전 · 사후 처리 추가가 쉽다. 부분 장애로 도중 종료되면 **Redrive** 로 재실행하지만 중복 실행 우려 → **DynamoDB 조건부 쓰기**로 멱등성. ECS Fargate 실행, 큰 메시지 페이로드는 S3, S3 이벤트로 EventBridge → Step Functions, 채널 SES(메일) 등. 채널은 SES(메일) · LINE Messaging API, 개발은 TypeScript · Hono · OpenAPI + Orval + Zod. Step Functions 를 고른 이유: 처리 가시성 · **Redrive**(실행 시점의 정의로 재실행 — 정의 자체의 버그면 같은 파라미터로 새로 실행해야) · Saga 확장성. 3 층: API(메시지 단위로 수신자를 배열로 한 번에 — 1,000 명이면 1 요청, S3 저장 후 EventBridge 로 기동, notificationId 반환) → ETL(Fargate, 채널별 JSONL, notificationMessageId 는 배열 인덱스 %07d 로 결정적) → 통지(Map State Express 병렬). Express 는 at-least-once 라 중복 가능 → DynamoDB 조건부 쓰기(없음 · FAILED · IN_PROGRESS 3 분 경과일 때만 IN_PROGRESS 기록, 끝나면 DONE/FAILED). RDB · EFS · Redis · S3 도 검토 — 강한 일관성 · 한 자릿수 ms · 온디맨드 · TTL(60 일, Redrive 14 일 고려)로 DynamoDB."
     },
     {
       "title": "400超Lambda構成アプリケーションの漸進的リアーキテクチャ",
