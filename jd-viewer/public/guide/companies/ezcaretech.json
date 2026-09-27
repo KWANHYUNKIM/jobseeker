@@ -410,6 +410,115 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/335131",
+      "title": "클라우드 인프라/서버/네트워크 3년 이상",
+      "site": "wanted",
+      "verdict": "경력 3-20년, 서울 중구. **병원정보시스템(HIS)·의료 플랫폼 인프라 운영** 자리다. 주요업무는 다섯 묶음 — (1) HIS·의료 플랫폼 인프라 운영, **24×365 무중단 운영·장애 대응**, 서버·네트워크·클라우드 모니터링 (2) AWS·Azure·Private Cloud 설계·구축, **HA·이중화·DR 설계**, 온프레미스-클라우드 하이브리드 (3) Linux/Windows 서버, **VMware·Hyper-V 가상화**, 스토리지·백업/복구 (4) 병원·사내 **LAN/WAN/VPN**, 방화벽·접근제어, 의료 데이터 보호 (5) 의료기관 고객 인프라 기술 지원, 표준화·자동화·문서화, 신규 서비스 인프라 설계. 자격은 인프라 운영 3년, Linux/Windows, TCP/IP·VLAN·VPN, **장애 원인 분석·재발 방지 대책**, 의료·공공·금융 고안정성 환경. 우대는 HIS·미션 크리티컬, 클라우드, 하이브리드·멀티, VMware·컨테이너, 방화벽·VPN·NAC, Shell·Python 자동화, 문서화. 병원은 멈추면 안 되는 곳이라 '무중단·DR·장애 회고' 가 면접의 중심이 될 것이다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "인프라 운영 3년",
+          "Linux/Windows",
+          "TCP/IP·VLAN·VPN",
+          "장애 분석·재발 방지"
+        ],
+        "can_learn": [
+          "DR 전략(RTO/RPO)",
+          "하이브리드 클라우드",
+          "운영 자동화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "병원 시스템의 HA·이중화·DR — RTO/RPO 로 말하기",
+          "from": "task",
+          "quote": "• 의료 서비스 특성을 고려한 고가용성(HA), 이중화, DR(재해복구) 구조 설계",
+          "priority": "core",
+          "why": "주요업무이고 같은 공고가 24×365 무중단 운영을 적는다. 병원 시스템 중단은 진료 중단이다.",
+          "gap_check": "외래 진료 시스템과 야간 통계 배치는 허용 중단 시간(RTO)과 허용 데이터 손실(RPO)을 각각 얼마로 잡아야 하는가? 백업·복원, 파일럿 라이트, 웜 스탠바이, 액티브-액티브는 비용과 복구 시간이 어떻게 다른가? 이중화했는데도 같이 죽는 공통 원인(같은 전원·같은 설정 실수)은 무엇인가?",
+          "drill": "AWS 재해복구 옵션 문서와 IT disaster recovery·High-availability cluster 문서를 읽고, 가상의 병원 시스템 다섯 개(진료·처방·영상·원무·통계)에 RTO/RPO 와 DR 방식을 매겨 표로 만든다. 한 가지(DB 복제 기반 웜 스탠바이)를 가상 머신 두 대로 흉내 내 전환 시간을 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Disaster recovery options in the cloud — AWS",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+              "kind": "docs"
+            },
+            {
+              "title": "IT disaster recovery — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Recovery_point_objective",
+              "kind": "docs"
+            },
+            {
+              "title": "High-availability cluster — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/High-availability_cluster",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애 원인 분석과 재발 방지 — 비난 없는 회고",
+          "from": "qualification",
+          "quote": "• 장애 분석 및 원인 파악, 재발 방지 대책 수립 경험",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 24×365 장애 대응과 트러블슈팅이 있다.",
+          "gap_check": "장애 보고서에 '타임라인·영향 범위·근본 원인·재발 방지 조치' 를 쓸 때, 근본 원인을 '작업자 실수' 로 끝내면 왜 재발 방지가 안 되는가? 재발 방지 조치는 누가 언제까지 할지 어떻게 추적하는가?",
+          "drill": "Google SRE 의 Postmortem Culture 장과 Postmortem documentation 문서를 읽고, 가상의 장애('야간 백업이 스토리지를 가득 채워 아침 외래 진료 지연 40분')로 회고 문서를 쓴다. 조치를 탐지·완화·예방으로 나누고 담당·기한을 붙인다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Postmortem Culture — Google SRE Book",
+              "url": "https://sre.google/sre-book/postmortem-culture/",
+              "kind": "docs"
+            },
+            {
+              "title": "Postmortem documentation — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Postmortem_documentation",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "병원 네트워크 — VLAN 분리와 VPN",
+          "from": "qualification",
+          "quote": "• 네트워크 기본 지식 및 운영 경험 (TCP/IP, VLAN, VPN 등)",
+          "priority": "high",
+          "why": "필수 자격이고 주요업무에 병원·사내 LAN/WAN/VPN 설계·운영과 방화벽·접근제어 정책이 있다.",
+          "gap_check": "병원 안에서 진료용 PC·의료기기·방문객 와이파이·관리망을 VLAN 으로 나누면 무엇을 막을 수 있는가? 외부 협력업체가 원격 유지보수로 들어올 때 VPN 과 접근제어는 어디까지 허용해야 하는가?",
+          "drill": "VLAN 문서를 읽고, 병원 한 층의 망 구성도(VLAN 네 개, 방화벽 규칙, 원격 유지보수 VPN)를 그린다. 가상 스위치나 Linux 네트워크 네임스페이스로 VLAN 두 개를 만들어 서로 통신이 막히는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "VLAN — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Virtual_LAN",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "가상화와 백업/복구 체계",
+          "from": "task",
+          "quote": "• 스토리지, 백업/복구 체계 운영 및 데이터 보호 관리",
+          "priority": "nice",
+          "why": "주요업무이고 같은 묶음에 VMware·Hyper-V 가상화 운영이 있다.",
+          "gap_check": "가상 머신 스냅숏은 왜 백업이 아닌가? 백업이 있다는 것과 복구할 수 있다는 것은 어떻게 다르고, 복구 훈련은 얼마나 자주 해야 하는가?",
+          "drill": "Hypervisor·Backup 문서를 읽고, 가상 머신 하나에 DB 를 올려 전체 백업·증분 백업을 만든 뒤 실제로 다른 가상 머신에 복원해 걸린 시간과 빠진 데이터를 기록한다. 앞 과제의 RPO 목표와 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Hypervisor — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Hypervisor",
+              "kind": "docs"
+            },
+            {
+              "title": "Backup — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Backup",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
