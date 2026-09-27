@@ -2696,3 +2696,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Omiai 회사 프로파일
 
 - 공식 요금표 · 리아키텍처 대담 · API 부채 글로 프로파일. 수익원 둘 confirmed.
+
+## 2026-09-27 Omiai 리아키텍처
+
+- 대담 전문으로 기능 `goal-first-rearchitecture-search-likes`, 결정 6.
