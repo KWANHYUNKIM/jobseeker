@@ -2644,3 +2644,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Kyash 카드 프로세싱 · 수익원 판정 1 차
 
 - 블로그 3편(COO 카드 · SRE 프로젝트 · 스포트머니 Tech Talk 예고) · GeNiE 제휴 PR · Zenn 검색 5낱말(관련 0) · WebSearch → Kyash Direct 아키텍처 발표(2019, 슬라이드 본문) 로 도메인 셋째 + 기능, 카드 결제 연결 confirmed. 스포트머니는 Tech Talk 슬라이드 둘이 남음.
+
+## 2026-09-27 Kyash 스포트머니 · 수익원 판정 2 차
+
+- Tech Talk #8 슬라이드 둘 중 Postman 편만 읽힘(`speakerdeck.com/tamadon/debug-menu-using-stubs` 는 r.jina 가 광고 스냅숏을 돌려줌). Postman 편 + Tech Talk 예고 + GeNiE PR 로 도메인 넷째 · 기능(결정 7). 후불 · 스포트머니 수익원 confirmed(후불 자체의 기술 글은 없음 — open_questions 에 명시).

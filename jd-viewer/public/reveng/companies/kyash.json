@@ -68,16 +68,32 @@
     },
     {
       "name": "후불 입금 · 스포트머니",
-      "how": "'이마스구 입금'(후불로 쇼핑) · '스포트머니'(급한 지출) — 수수료 · 이자 구조는 이번에 읽은 자료에 없다.",
+      "how": "'이마스구 입금'(후불로 쇼핑) · '스포트머니'(급한 지출 — 2024 년 10 월, GeNiE 의 대부 특화 임베디드 금융 서비스를 앱에 넣은 공창 모델). 수수료 · 이자 구조와 Kyash 의 몫은 읽은 자료에 없다.",
       "weight": "공개 안 됨",
-      "domains": [],
-      "confidence": "inferred",
+      "domains": [
+        "남의 여신 API 위에서 돈을 빌려주는 기능을, 서로 기다리지 않고 틀리지 않게 만든다"
+      ],
+      "confidence": "confirmed",
       "sources": [
         {
           "title": "Kyash - Visaプリペイドカードとスマホで、かんたんお支払い",
           "url": "https://www.kyash.co/",
           "publisher": "Kyash",
           "summary": "심사 · 서류 없이 무료로 발행하는 **Visa 프리페이드 카드**(가상 카드 최단 1 분)와 앱 — 미리 은행 계좌 · 편의점에서 입금한 잔액 범위에서 결제, 이용 내역 즉시 반영 · 자동 분류, Apple Pay · Google 월렛. 메뉴: 입금(차지) · 후불 '이마스구 입금' · 급한 지출 '스포트머니' · 잔액 출금 · 친구 송금 · Kyash 리워드 · 가계부 · 공유 계좌 · 법인용 송금 서비스."
+        },
+        {
+          "title": "株式会社KyashとGeNiE株式会社が業務提携契約を締結〜日本初の金融ソリューション「Kyashスポットマネー」誕生〜",
+          "url": "https://www.kyash.co/press-release/20241008",
+          "publisher": "Kyash",
+          "date": "2024-10-08",
+          "summary": "GeNiE 가 제공하는 대부(렌딩) 특화 임베디드 금융 서비스 '마네의 램프'를 Kyash 앱에 도입 — 양사의 '사업 공창 모델'로 'Kyash 스포트머니'를 10 월 8 일부터 제공."
+        },
+        {
+          "title": "Kyash x Postman: Powering a Culture of Quality",
+          "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+          "publisher": "Kyash(Kyash TechTalk #8)",
+          "date": "2025-09-30",
+          "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
         }
       ]
     }
@@ -181,6 +197,30 @@
       ],
       "features": [
         "card-processing-choreography-saga"
+      ]
+    },
+    {
+      "name": "남의 여신 API 위에서 돈을 빌려주는 기능을, 서로 기다리지 않고 틀리지 않게 만든다",
+      "why": "스포트머니는 Kyash 혼자선 못 만든다 — 대부는 제휴사 GeNiE 의 임베디드 금융 서비스이고, Kyash 는 앱과 그 사이의 API 를 만든다. GeNiE 의 개발 멤버는 해외에 있고, 사양은 Excel 로 오고, 개발 리듬도 다르다(Kyash 는 1 주 스프린트).\n\n돈을 빌려주는 기능이라 작은 불량도 사용자 영향이 크다. 그런데 모바일은 Kyash API 가, Kyash API 는 GeNiE API 가 어느 정도 완성돼야 테스트할 수 있다 — 기다리면 늦고, 흉내 내면 부정확하다.",
+      "tech": [
+        {
+          "tech": "Postman mock server 로 앞 팀의 API 를 흉내 내되 운영 코드를 거쳐 요청 + 합의한 OpenAPI 로 먼저 쓰는 API 테스트",
+          "solves": "앞 팀이 끝나길 기다리지 않고 자기 개발 · 테스트를 진행하고, 엣지 케이스 · 5xx 까지 재현한다.",
+          "limits": "상대 사양이 Excel 이라 OpenAPI 로 옮기는 수고가 크고(AI 로 변환 후 사람이 팩트체크), 테스트는 아직 200 · 400 두 패턴뿐이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kyash x Postman: Powering a Culture of Quality",
+              "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+              "publisher": "Kyash(Kyash TechTalk #8)",
+              "date": "2025-09-30",
+              "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "spot-money-mock-server-spec-first"
       ]
     }
   ],
@@ -1278,10 +1318,377 @@
           "summary": "심사 · 서류 없이 무료로 발행하는 **Visa 프리페이드 카드**(가상 카드 최단 1 분)와 앱 — 미리 은행 계좌 · 편의점에서 입금한 잔액 범위에서 결제, 이용 내역 즉시 반영 · 자동 분류, Apple Pay · Google 월렛. 메뉴: 입금(차지) · 후불 '이마스구 입금' · 급한 지출 '스포트머니' · 잔액 출금 · 친구 송금 · Kyash 리워드 · 가계부 · 공유 계좌 · 법인용 송금 서비스."
         }
       ]
+    },
+    {
+      "key": "spot-money-mock-server-spec-first",
+      "name": "세 팀이 서로를 기다린다 — 스텁을 버리고 mock server 와 OpenAPI 먼저 테스트로 만든 제휴 여신 '스포트머니'",
+      "domain": "남의 여신 API 위에서 돈을 빌려주는 기능을, 서로 기다리지 않고 틀리지 않게 만든다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "2024 년 10 월 Kyash 는 GeNiE 의 대부 특화 임베디드 금융 서비스를 앱에 넣어 **스포트머니**를 냈다 — 기존 '후불'에 '빌린다'는 선택지를 더한 것이고, 출시 직후부터 폭발적으로 쓰였다. 금융 서비스에서 멀어진 사람(신용카드를 못 만드는 약 1,000 만 명 등)에게 닿으려는 Kyash 의 방향과 이어진다(이 사이트의 해석).\n\n돈을 빌려주는 체험은 민감해서 사용자가 내용을 바르게 이해해야 하고, 여신 제품이라 작은 불량도 영향이 크다. 그런데 개발은 세 팀 — Kyash 모바일, Kyash 백엔드, 해외의 GeNiE API 팀 — 이 줄지어 서로를 기다리는 구조였다.",
+        "metrics": [
+          {
+            "label": "출시",
+            "value": "2024 년 10 월 8 일 — 출시 직후부터 폭발적 이용",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "株式会社KyashとGeNiE株式会社が業務提携契約を締結〜日本初の金融ソリューション「Kyashスポットマネー」誕生〜",
+                "url": "https://www.kyash.co/press-release/20241008",
+                "publisher": "Kyash",
+                "date": "2024-10-08",
+                "summary": "GeNiE 가 제공하는 대부(렌딩) 특화 임베디드 금융 서비스 '마네의 램프'를 Kyash 앱에 도입 — 양사의 '사업 공창 모델'로 'Kyash 스포트머니'를 10 월 8 일부터 제공."
+              },
+              {
+                "title": "Kyashのローン機能 \"スポットマネー\" の開発の裏側を話す Kyash Tech Talk をやります",
+                "url": "https://blog.kyash.co/entry/2025/09/25/105246",
+                "publisher": "Kyash",
+                "date": "2025-09-25",
+                "summary": "크레디트 사업부가 2024 년 10 월 **스포트머니** 출시 — 기존 '후불'에 더해 '빌린다'는 선택지, 출시 직후부터 폭발적 이용. '돈을 빌려준다'는 민감한 체험에서 사용자가 내용을 바르게 이해하도록 디자인에 공을 들였고, 타사와의 협업 스킴에서 프로젝트를 진행한 지식이 쌓였다. 외부 서비스 연결 기능은 동작 검증이 어렵고 사용자 상태가 많아 **스텁으로 외부 의존을 떼어 낸 디버그 메뉴**, 여신이라 작은 불량도 영향이 커 **Postman API 테스트**. Kyash 는 1 주 스프린트, 제휴사 GeNiE 는 다른 리듬 — **애자일과 워터폴의 이인삼각**. 백엔드 엔지니어 채용 중."
+              }
+            ]
+          },
+          {
+            "label": "API 테스트 범위(도입 초기)",
+            "value": "200 OK · 400 Bad Request 두 패턴",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kyash x Postman: Powering a Culture of Quality",
+                "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+                "publisher": "Kyash(Kyash TechTalk #8)",
+                "date": "2025-09-30",
+                "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "협업 구조를 보며",
+          "thought": "개발 흐름이 자사 안에서 끝나는 일은 소통으로 움직일 변수가 많지만, 공창 모델로 태어난 제품은 움직일 변수가 한정된다 — 그래서 코드를 쓰는 시간보다 설계를 다듬어 인시던트와 불일치를 내지 않는 것을 첫째로 둔다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kyash x Postman: Powering a Culture of Quality",
+              "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+              "publisher": "Kyash(Kyash TechTalk #8)",
+              "date": "2025-09-30",
+              "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+            }
+          ]
+        },
+        {
+          "at": "매주 정례를 해도",
+          "thought": "매주 GeNiE 와 정례를 열어도 인식 차이가 생기고, 작은 어긋남이 되돌림 · 불량이 된다 — 테스트는 검증 수단이 아니라 설계의 일부다('자신 있게 코드를 쓴다').",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kyash x Postman: Powering a Culture of Quality",
+              "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+              "publisher": "Kyash(Kyash TechTalk #8)",
+              "date": "2025-09-30",
+              "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+            }
+          ]
+        },
+        {
+          "at": "보급하며",
+          "thought": "TDD · SDD 를 개발자에게 권하는 건 어렵다 — 톱다운이 아니라 개발자가 스스로 쓰고 싶은 도구 · 프로세스여야 퍼진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kyash x Postman: Powering a Culture of Quality",
+              "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+              "publisher": "Kyash(Kyash TechTalk #8)",
+              "date": "2025-09-30",
+              "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "GeNiE API",
+            "what": "제휴사의 대부(여신) 시스템 — 사양은 Excel(PDF)로 제공, 개발 멤버는 해외."
+          },
+          {
+            "name": "Kyash API",
+            "what": "Kyash 백엔드 — GeNiE API 와 모바일 사이에 끼어 있다."
+          },
+          {
+            "name": "Stub(초기)",
+            "what": "백엔드가 만든 가짜 구현 — 환경 변수로 인터페이스 구현을 바꾼다. 운영 코드를 거치지 않는다."
+          },
+          {
+            "name": "Mock server(Postman)",
+            "what": "요청 대상 엔드포인트만 환경 변수로 바꿔, 운영 코드를 거쳐 가짜 GeNiE · Kyash API 에 요청 — 엣지 케이스 · 5xx 재현."
+          },
+          {
+            "name": "OpenAPI 사양 · 테스트 스크립트",
+            "what": "팀이 합의한 사양에서 먼저 쓰는 Post-response 테스트 — 처음엔 실패, 통과하도록 구현."
+          }
+        ],
+        "invariants": [
+          "가짜 응답을 써도 요청은 운영 코드를 거친다.",
+          "구현보다 합의한 API 사양과 테스트가 먼저다.",
+          "여신 제품이라 불량을 최소로 — 사양 이해 · ITb · UAT 를 촘촘히."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "GeNiE 의 Excel 사양을 AI 로 OpenAPI yaml 로 바꾸고 사람이 팩트체크",
+            "why": "Postman Collection · mock 을 만들려면 기계가 읽는 사양이 필요하다 — 확인 과정에서 사양서를 다시 읽게 됐다."
+          },
+          {
+            "step": "모바일 ↔ 백엔드 API 는 팀이 합의한 OpenAPI 로",
+            "why": "사양을 먼저 굳힌다."
+          },
+          {
+            "step": "OpenAPI 에서 Postman 테스트를 먼저 쓴다(처음엔 Fail)",
+            "why": "테스트가 사양을 코드에 옮겼는지의 관점이 된다."
+          },
+          {
+            "step": "미완성인 앞 팀 API 는 mock server 로 — 대상 엔드포인트만 환경 변수로 전환",
+            "why": "기다리지 않고, 운영 코드를 거쳐 정밀하게 테스트한다."
+          },
+          {
+            "step": "ITb · UAT 를 GeNiE 와 촘촘히, 매주 정례",
+            "why": "개발 리듬이 다른 파트너와 인식 차이를 줄인다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "대부 기능을 누가 만드나?",
+            "chosen": "**GeNiE 의 대부 특화 임베디드 금융 서비스를 Kyash 앱에 넣는 공창 모델.**",
+            "alternatives": [
+              "Kyash 가 대부 시스템을 직접 만든다(이 사이트가 둔 대안)"
+            ],
+            "tradeoff": "Kyash 는 앱과 체험에 집중하고 대부 기능은 제휴사 것을 쓴다. 대가는 **움직일 수 있는 변수가 한정**된다는 것 — 해외 멤버 · Excel 사양 · 다른 개발 리듬과 맞춰야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "株式会社KyashとGeNiE株式会社が業務提携契約を締結〜日本初の金融ソリューション「Kyashスポットマネー」誕生〜",
+                "url": "https://www.kyash.co/press-release/20241008",
+                "publisher": "Kyash",
+                "date": "2024-10-08",
+                "summary": "GeNiE 가 제공하는 대부(렌딩) 특화 임베디드 금융 서비스 '마네의 램프'를 Kyash 앱에 도입 — 양사의 '사업 공창 모델'로 'Kyash 스포트머니'를 10 월 8 일부터 제공."
+              },
+              {
+                "title": "Kyash x Postman: Powering a Culture of Quality",
+                "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+                "publisher": "Kyash(Kyash TechTalk #8)",
+                "date": "2025-09-30",
+                "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+              }
+            ]
+          },
+          {
+            "question": "앞 팀 API 가 미완성일 때 어떻게 개발 · 테스트하나?(처음)",
+            "chosen": "**백엔드가 Stub 을 만들어 환경 변수로 인터페이스 구현을 바꾼다.**",
+            "alternatives": [
+              "앞 팀이 끝날 때까지 기다린다"
+            ],
+            "tradeoff": "모바일이 백엔드 완성 전에 테스트할 수 있게 됐다. 대가는 Stub 이 운영 코드를 거치지 않아 테스트 정밀도가 낮고, 백엔드의 보수 코드가 2 배가 됐다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kyash x Postman: Powering a Culture of Quality",
+                "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+                "publisher": "Kyash(Kyash TechTalk #8)",
+                "date": "2025-09-30",
+                "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+              }
+            ]
+          },
+          {
+            "question": "Stub 의 대가를 어떻게 줄이나?",
+            "chosen": "**Postman mock server — 요청 대상 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 가짜 API 에 요청.**",
+            "alternatives": [
+              "Stub 을 계속 키운다"
+            ],
+            "tradeoff": "운영 코드가 늘지 않으면서 정밀도가 높고, 특별한 데이터 · 타이밍이 필요한 요청이나 5xx 도 재현한다. 대가는 mock 이 상대 사양을 옮긴 것이라, 사양을 잘못 옮기면 mock 도 틀린다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kyash x Postman: Powering a Culture of Quality",
+                "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+                "publisher": "Kyash(Kyash TechTalk #8)",
+                "date": "2025-09-30",
+                "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+              }
+            ]
+          },
+          {
+            "question": "테스트를 언제 쓰나?",
+            "chosen": "**팀이 합의한 OpenAPI 에서 테스트를 먼저 쓰고, 통과하도록 구현(TDD · SDD) — 처음엔 200 · 400 두 패턴.**",
+            "alternatives": [
+              "구현 뒤에 검증용 테스트"
+            ],
+            "tradeoff": "테스트가 'API 사양을 코드에 옮겼나'의 관점이 되어 되돌림 · 불일치를 막는다. 대가는 설계에 시간을 먼저 쓴다는 것 — 급할수록 돌아가라. 커버리지는 아직 좁고, 장차 QA 팀도 쓰고 AI(Postbot)로 자동화할 계획.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kyash x Postman: Powering a Culture of Quality",
+                "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+                "publisher": "Kyash(Kyash TechTalk #8)",
+                "date": "2025-09-30",
+                "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+              }
+            ]
+          },
+          {
+            "question": "Excel 로 온 제휴사 사양을 어떻게 기계가 읽게 하나?",
+            "chosen": "**생성 AI 로 Excel(PDF) → OpenAPI yaml 로 바꿔 Postman Collection · mock 을 자동 생성.**",
+            "alternatives": [
+              "손으로 yaml 을 쓴다"
+            ],
+            "tradeoff": "뼈가 빠지는 작업을 줄였고, AI 출력의 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러났다. 대가는 아직 잘 안 되는 부분이 있어 사람의 확인이 필수라는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kyash x Postman: Powering a Culture of Quality",
+                "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+                "publisher": "Kyash(Kyash TechTalk #8)",
+                "date": "2025-09-30",
+                "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+              }
+            ]
+          },
+          {
+            "question": "도구를 어떻게 퍼뜨리나?",
+            "chosen": "**톱다운 지정이 아니라, 이미 많이 쓰던 Postman 을 개발 중 API 클라이언트로 쓰다가 자연스럽게 테스트를 쓰게.**",
+            "alternatives": [
+              "도구와 테스트를 규칙으로 지정"
+            ],
+            "tradeoff": "개발자가 스스로 쓰고 싶어야 퍼지고 품질이 오른다 — '테스트 쓰는 게 낫네요'라는 말이 나왔다. 대가는 보급에 시간이 걸린다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kyash x Postman: Powering a Culture of Quality",
+                "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+                "publisher": "Kyash(Kyash TechTalk #8)",
+                "date": "2025-09-30",
+                "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+              }
+            ]
+          },
+          {
+            "question": "개발 리듬이 다른 파트너와 어떻게 맞추나?",
+            "chosen": "**Kyash 의 1 주 스프린트(애자일)와 GeNiE 의 계획 중심 진행(워터폴)을 이인삼각으로 — 계획 · 관리 방법을 맞춰 간다.**",
+            "alternatives": [
+              "한쪽 방식으로 통일"
+            ],
+            "tradeoff": "양쪽의 장점을 적소에 쓴다. 대가는 계획 수립 · 프로젝트 관리를 계속 조율해야 하는 '진흙탕' 작업.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kyashのローン機能 \"スポットマネー\" の開発の裏側を話す Kyash Tech Talk をやります",
+                "url": "https://blog.kyash.co/entry/2025/09/25/105246",
+                "publisher": "Kyash",
+                "date": "2025-09-25",
+                "summary": "크레디트 사업부가 2024 년 10 월 **스포트머니** 출시 — 기존 '후불'에 더해 '빌린다'는 선택지, 출시 직후부터 폭발적 이용. '돈을 빌려준다'는 민감한 체험에서 사용자가 내용을 바르게 이해하도록 디자인에 공을 들였고, 타사와의 협업 스킴에서 프로젝트를 진행한 지식이 쌓였다. 외부 서비스 연결 기능은 동작 검증이 어렵고 사용자 상태가 많아 **스텁으로 외부 의존을 떼어 낸 디버그 메뉴**, 여신이라 작은 불량도 영향이 커 **Postman API 테스트**. Kyash 는 1 주 스프린트, 제휴사 GeNiE 는 다른 리듬 — **애자일과 워터폴의 이인삼각**. 백엔드 엔지니어 채용 중."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "후불 입금 · 스포트머니(수익원)",
+          "via": "스포트머니(GeNiE 공창)",
+          "contract": "스포트머니는 GeNiE 의 대부 시스템과 API 로 연계한 Kyash 앱 기능이다 — Kyash 가 받는 수익 구조와 '이마스구 입금'(후불)의 기술은 자료에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "株式会社KyashとGeNiE株式会社が業務提携契約を締結〜日本初の金融ソリューション「Kyashスポットマネー」誕生〜",
+              "url": "https://www.kyash.co/press-release/20241008",
+              "publisher": "Kyash",
+              "date": "2024-10-08",
+              "summary": "GeNiE 가 제공하는 대부(렌딩) 특화 임베디드 금융 서비스 '마네의 램프'를 Kyash 앱에 도입 — 양사의 '사업 공창 모델'로 'Kyash 스포트머니'를 10 월 8 일부터 제공."
+            },
+            {
+              "title": "Kyash x Postman: Powering a Culture of Quality",
+              "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+              "publisher": "Kyash(Kyash TechTalk #8)",
+              "date": "2025-09-30",
+              "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+            },
+            {
+              "title": "Kyashのローン機能 \"スポットマネー\" の開発の裏側を話す Kyash Tech Talk をやります",
+              "url": "https://blog.kyash.co/entry/2025/09/25/105246",
+              "publisher": "Kyash",
+              "date": "2025-09-25",
+              "summary": "크레디트 사업부가 2024 년 10 월 **스포트머니** 출시 — 기존 '후불'에 더해 '빌린다'는 선택지, 출시 직후부터 폭발적 이용. '돈을 빌려준다'는 민감한 체험에서 사용자가 내용을 바르게 이해하도록 디자인에 공을 들였고, 타사와의 협업 스킴에서 프로젝트를 진행한 지식이 쌓였다. 외부 서비스 연결 기능은 동작 검증이 어렵고 사용자 상태가 많아 **스텁으로 외부 의존을 떼어 낸 디버그 메뉴**, 여신이라 작은 불량도 영향이 커 **Postman API 테스트**. Kyash 는 1 주 스프린트, 제휴사 GeNiE 는 다른 리듬 — **애자일과 워터폴의 이인삼각**. 백엔드 엔지니어 채용 중."
+            }
+          ]
+        },
+        {
+          "to": "kmp-reactor-shared-logic",
+          "via": "모바일 앱 화면",
+          "contract": "스포트머니 화면도 Kyash 모바일 앱에서 만든다 — 디버그 메뉴를 만든 iOS 엔지니어는 KMP suspend 글의 필자다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Kyashのローン機能 \"スポットマネー\" の開発の裏側を話す Kyash Tech Talk をやります",
+              "url": "https://blog.kyash.co/entry/2025/09/25/105246",
+              "publisher": "Kyash",
+              "date": "2025-09-25",
+              "summary": "크레디트 사업부가 2024 년 10 월 **스포트머니** 출시 — 기존 '후불'에 더해 '빌린다'는 선택지, 출시 직후부터 폭발적 이용. '돈을 빌려준다'는 민감한 체험에서 사용자가 내용을 바르게 이해하도록 디자인에 공을 들였고, 타사와의 협업 스킴에서 프로젝트를 진행한 지식이 쌓였다. 외부 서비스 연결 기능은 동작 검증이 어렵고 사용자 상태가 많아 **스텁으로 외부 의존을 떼어 낸 디버그 메뉴**, 여신이라 작은 불량도 영향이 커 **Postman API 테스트**. Kyash 는 1 주 스프린트, 제휴사 GeNiE 는 다른 리듬 — **애자일과 워터폴의 이인삼각**. 백엔드 엔지니어 채용 중."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "세 팀이 서로를 기다리지 않게",
+          "question": "미완성인 앞 팀 API 를 두고 각 팀은 어떻게 개발하나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  M[\"mobile team\"] --> K[\"Kyash API\\n(backend team)\"]\n  K --> G[\"GeNiE API\\n(해외 · Excel 사양)\"]\n  K -. \"환경 변수로 대상만 전환\" .-> MG[\"Postman mock\\n가짜 GeNiE API\"]\n  M -. \"환경 변수로 대상만 전환\" .-> MK[\"Postman mock\\n가짜 Kyash API\"]\n  X[\"Excel 사양\"] -- \"AI → OpenAPI → 팩트체크\" --> MG\n  O[\"합의한 OpenAPI\"] --> T[\"먼저 쓰는 테스트\\n200 · 400\"]\n  T --> K"
+        },
+        {
+          "title": "API 하나의 개발 상태",
+          "question": "API 하나는 어떤 상태를 거쳐 완성되나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 사양합의: OpenAPI(또는 Excel → AI 변환)\n  사양합의 --> 테스트작성: Post-response 스크립트 · Fail\n  테스트작성 --> 구현: mock 으로 앞 팀 대체\n  구현 --> 통과: 테스트 Success\n  통과 --> ITbUAT: GeNiE 와 결합 시험\n  ITbUAT --> 사양합의: 인식 차이 발견\n  ITbUAT --> [*]"
+        },
+        {
+          "title": "Stub 이 가린 것",
+          "question": "Stub 으로 모바일을 풀었는데 왜 다시 바꿨나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"백엔드가 Stub 구현\"] --> B[\"운영 코드를 거치지 않음\"]\n  B --> C[\"테스트는 통과하지만 실제 경로는 미검증\"]\n  A --> D[\"보수 코드 2 배\"]\n  C --> E[\"여신 제품의 불량 위험\"]\n  D --> E\n  E --> F[\"Postman mock server\\n운영 코드 경유 · 5xx 재현\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Kyash x Postman: Powering a Culture of Quality",
+          "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+          "publisher": "Kyash(Kyash TechTalk #8)",
+          "date": "2025-09-30",
+          "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+        },
+        {
+          "title": "Kyashのローン機能 \"スポットマネー\" の開発の裏側を話す Kyash Tech Talk をやります",
+          "url": "https://blog.kyash.co/entry/2025/09/25/105246",
+          "publisher": "Kyash",
+          "date": "2025-09-25",
+          "summary": "크레디트 사업부가 2024 년 10 월 **스포트머니** 출시 — 기존 '후불'에 더해 '빌린다'는 선택지, 출시 직후부터 폭발적 이용. '돈을 빌려준다'는 민감한 체험에서 사용자가 내용을 바르게 이해하도록 디자인에 공을 들였고, 타사와의 협업 스킴에서 프로젝트를 진행한 지식이 쌓였다. 외부 서비스 연결 기능은 동작 검증이 어렵고 사용자 상태가 많아 **스텁으로 외부 의존을 떼어 낸 디버그 메뉴**, 여신이라 작은 불량도 영향이 커 **Postman API 테스트**. Kyash 는 1 주 스프린트, 제휴사 GeNiE 는 다른 리듬 — **애자일과 워터폴의 이인삼각**. 백엔드 엔지니어 채용 중."
+        },
+        {
+          "title": "株式会社KyashとGeNiE株式会社が業務提携契約を締結〜日本初の金融ソリューション「Kyashスポットマネー」誕生〜",
+          "url": "https://www.kyash.co/press-release/20241008",
+          "publisher": "Kyash",
+          "date": "2024-10-08",
+          "summary": "GeNiE 가 제공하는 대부(렌딩) 특화 임베디드 금융 서비스 '마네의 램프'를 Kyash 앱에 도입 — 양사의 '사업 공창 모델'로 'Kyash 스포트머니'를 10 월 8 일부터 제공."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "**카드 결제 · 후불 · 스포트머니의 수익 구조**는 읽은 자료에 없다(비상장). 카드 결제는 자사 프로세싱 발표(2019)로 기술 연결만 confirmed.",
+    "**카드 결제 · 후불 · 스포트머니의 수익 구조**는 읽은 자료에 없다(비상장). 기술 연결은 카드 결제(자사 프로세싱, 2019)와 스포트머니(GeNiE 공창, 2025)로 confirmed — **이마스구 입금(후불)의 기술 글은 없다**.",
     "**AML 모니터링**은 '그 자리에서 SQL 을 자사 시스템에 넣는다'는 강점만 있고 구조 글이 없다 — 도메인으로 세우지 않았다.",
     "**아직 안 읽은 것** — 전은 포맷 · 트렁크 기반 개발을 떠받치는 기술 · 릴리스 트레인의 궤적 · 개발 완료부터 릴리스까지 리드타임 개선 · KMP suspend 함수를 iOS 에서 부르기 · 스포트머니 개발 Tech Talk(예고만).",
     "**Kyash Direct(2019 년 발표한 B 향 결제 플랫폼)가 지금도 사업으로 이어지는지** 확인 못 함 — 회사 개요의 ISMS 범위는 Kyash 앱과 법인 송금 서비스뿐이다."
@@ -1361,6 +1768,27 @@
       "publisher": "Kyash(builderscon tokyo 2019)",
       "date": "2019-08-30",
       "summary": "Kyash 는 이슈잉(Visa 카드 발행 라이선스 · 자금결제법 등록) · **프로세싱**(국내외 Visa 가맹점 결제 처리 시스템) · 앱을 **수직 통합** — 2019 년 4 월 이를 B 향 결제 플랫폼 **Kyash Direct**(API 로 회원 · 카드 발행 · 잔액 · 거래, 파트너가 관리하는 자산을 펀딩 소스로)로 발표. 기존 월렛에 기능을 더하려다(Fit&Gap) 멀티테넌트 · 법인 · 펀딩 소스 확장성 등 영향이 커 **스크래치 개발**(장점: 근본 해결 · 쌓인 도메인 지식 · 기존 제약 없음 / 단점: 만들 게 많고 실패 위험 · 견적 어려움 · 두 계통 보유). 월렛의 반성 — 유스케이스 단위 서비스 경계 · 물리 DB 공유 · Orchestrator 비대. **Microservices 유지**(나중에 바꾸기 어려운 쪽의 이점), 경계는 **DDD 경계 컨텍스트**(Partner · User · Account · Card · Processing · Clearing · Funding), 연계는 **Message Pub/Sub 의 Choreography**, 저장은 **서비스별 DB + Event Store**(Event Sourcing 은 재생 성능 문제), WebAPI 는 **API Facade** 가 Command/Document 로 변환, 조회는 **CQRS**(QueryMaterializer — 수 초 지연 허용), 일관성은 **Saga**(오소리: Processing 이 각 서비스의 Trying 결과를 모아 판단 → Confirmed)."
+    },
+    {
+      "title": "Kyash x Postman: Powering a Culture of Quality",
+      "url": "https://speakerdeck.com/unionsep/kyash-x-postman-powering-a-culture-of-quality",
+      "publisher": "Kyash(Kyash TechTalk #8)",
+      "date": "2025-09-30",
+      "summary": "크레디트 사업부 QA · 백엔드. **스포트머니**는 Kyash 만으로 못 만드는 기능 — 공창 모델로 GeNiE 시스템과 API 연계해 여신 제품을 만들고, 해외의 사외 개발 멤버와 사양을 공유하며 ITb · UAT 를 촘촘히. 여신이라 불량을 최소로. 구성: mobile team — Kyash backend team — GeNiE API team 이 사이에 끼어, 앞이 완성되지 않으면 뒤가 테스트를 못 한다. 처음엔 백엔드가 **Stub** 을 만들어 모바일을 풀었지만 운영 코드를 거치지 않아 정밀도가 낮고 보수 코드가 2 배. → **Postman mock server**: 목 엔드포인트만 환경 변수로 바꿔 운영 코드를 거쳐 요청, 엣지 케이스 · 5xx 재현. 팀이 합의한 **OpenAPI 로 먼저 테스트를 쓰고**(처음엔 200 · 400 두 패턴) 통과하도록 구현. GeNiE 의 API 사양은 Excel — AI 로 OpenAPI yaml 로 바꿔 Collection · mock 을 만들었고, 그 팩트체크 과정에서 사람이 사양서를 다시 읽어 기존 구현의 개선점이 드러남. 톱다운이 아니라 개발자가 스스로 쓰고 싶게 보급. 매주 GeNiE 와 정례를 해도 인식 차이가 생긴다 — TDD · SDD."
+    },
+    {
+      "title": "Kyashのローン機能 \"スポットマネー\" の開発の裏側を話す Kyash Tech Talk をやります",
+      "url": "https://blog.kyash.co/entry/2025/09/25/105246",
+      "publisher": "Kyash",
+      "date": "2025-09-25",
+      "summary": "크레디트 사업부가 2024 년 10 월 **스포트머니** 출시 — 기존 '후불'에 더해 '빌린다'는 선택지, 출시 직후부터 폭발적 이용. '돈을 빌려준다'는 민감한 체험에서 사용자가 내용을 바르게 이해하도록 디자인에 공을 들였고, 타사와의 협업 스킴에서 프로젝트를 진행한 지식이 쌓였다. 외부 서비스 연결 기능은 동작 검증이 어렵고 사용자 상태가 많아 **스텁으로 외부 의존을 떼어 낸 디버그 메뉴**, 여신이라 작은 불량도 영향이 커 **Postman API 테스트**. Kyash 는 1 주 스프린트, 제휴사 GeNiE 는 다른 리듬 — **애자일과 워터폴의 이인삼각**. 백엔드 엔지니어 채용 중."
+    },
+    {
+      "title": "株式会社KyashとGeNiE株式会社が業務提携契約を締結〜日本初の金融ソリューション「Kyashスポットマネー」誕生〜",
+      "url": "https://www.kyash.co/press-release/20241008",
+      "publisher": "Kyash",
+      "date": "2024-10-08",
+      "summary": "GeNiE 가 제공하는 대부(렌딩) 특화 임베디드 금융 서비스 '마네의 램프'를 Kyash 앱에 도입 — 양사의 '사업 공창 모델'로 'Kyash 스포트머니'를 10 월 8 일부터 제공."
     }
   ]
 }
