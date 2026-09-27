@@ -1,0 +1,191 @@
+{
+  "slug": "fasooai",
+  "name": "파수에이아이",
+  "name_en": "Fasoo AI",
+  "aliases": [
+    "파수에이아이",
+    "㈜파수에이아이",
+    "파수AI"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": "fasoo.ai",
+  "one_liner": "문서보안(DRM)으로 출발한 상암동 보안 소프트웨어 회사(옛 파수) — 지금은 데이터 보안·AI 에이전트 플랫폼과 함께 OT/네트워크 보안 데이터 플랫폼 개발자를 뽑는다",
+  "company": {
+    "business": "잡코리아 공고의 회사 소개는 주식회사 파수에이아이를 **2000년 설립**, 자본금 47억 7,323만원, **매출액 441억, 사원수 255명** 규모의 벤처기업으로, **문서보안(DRM) 솔루션을 비롯한 기업용 보안 및 AI 솔루션 개발·판매** 회사로 적는다(기준 연도 표기 없음). fasoo.com 은 fasoo.ai 로 넘어가고, 그 푸터의 회사명이 '주식회사 파수에이아이' 다. 홈페이지 메뉴는 네 갈래다 — **AX Platform & AI Agent**(Ellm, 문서 검색·보고서 작성·코딩 등 ACE 에이전트), **AI Data Platform**(Wrapsody 문서중앙화·AI-Ready 데이터 플랫폼), **AI Security Platform**(AI Radar, LLM API 보안 AI-R Gateway, Shadow AI 탐지), **데이터 보안**(Fasoo Enterprise DRM, Data Radar, DSPM, 국정원 인증 암호화 모듈 Fasoo Crypto 등)과 Security(애플리케이션·공급망·네트워크 보안). 모집중 개발 공고는 두 자리이고 둘 다 5년↑·Java 또는 PHP(Laravel)다 — **OT/ICS 보안 데이터 분석 및 플랫폼 개발**(산업용 프로토콜 파서, OT 보안 솔루션 API 연동; 원티드·사람인·캐치)과 **네트워크 보안 데이터 분석 시스템 개발**(같은 가시화 업무의 일반 네트워크판; 잡코리아·사람인). 홈페이지 메뉴에서 OT 전용 제품은 찾지 못했다. 근무지는 서울 마포구 월드컵북로 396.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[파수AI] 네트워크 보안 데이터 분석 시스템 개발 (경력 5년 이상)",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49968886?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=50&sc=630",
+        "publisher": "잡코리아",
+        "summary": "회사 소개: 2000년 설립, 자본금 47억 7,323만원, 매출액 441억, 사원수 255명 규모의 벤처기업. 서울 마포구 상암동. 문서보안(DRM) 솔루션을 비롯한 기업용 보안 및 AI 솔루션 개발·판매."
+      },
+      {
+        "title": "AI 데이터 활용 및 보안 기업 | Fasoo AI-Ready Data and Security",
+        "url": "https://www.fasoo.ai/",
+        "publisher": "파수에이아이",
+        "summary": "푸터 회사명 '주식회사 파수에이아이'. 메타: AI 기술 기반 소프트웨어 기업 파수 — 제로 트러스트 정보보안, 데이터 보안 플랫폼, 생성형 AI 활용, 비식별, 문서관리 등. 메뉴: AX Platform & AI Agent(Ellm, ACE 에이전트들), AI Data Platform(Wrapsody), AI Security Platform(AI Radar, AI-R Gateway·Bridge·Endpoint), 데이터 보안(Fasoo Enterprise DRM, Data Radar, DSPM, Fasoo Crypto 등), Security(해킹 대비 기본 보안·애플리케이션 보안·공급망 보안·네트워크 보안 등). 패밀리 사이트에 Sparrow."
+      },
+      {
+        "title": "OT/ICS 보안 데이터 분석 및 플랫폼 개발 (5년 이상)",
+        "url": "https://www.wanted.co.kr/wd/381668",
+        "publisher": "원티드"
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출액(공고 표기)",
+        "value": "441억 원",
+        "as_of": "2026-09 공고 기준(연도 미기재)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[파수AI] 네트워크 보안 데이터 분석 시스템 개발 (경력 5년 이상)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49968886?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=50&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 2000년 설립, 자본금 47억 7,323만원, 매출액 441억, 사원수 255명 규모의 벤처기업. 서울 마포구 상암동. 문서보안(DRM) 솔루션을 비롯한 기업용 보안 및 AI 솔루션 개발·판매."
+          }
+        ]
+      },
+      {
+        "label": "사원수(공고 표기)",
+        "value": "255명",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[파수AI] 네트워크 보안 데이터 분석 시스템 개발 (경력 5년 이상)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49968886?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=50&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 2000년 설립, 자본금 47억 7,323만원, 매출액 441억, 사원수 255명 규모의 벤처기업. 서울 마포구 상암동. 문서보안(DRM) 솔루션을 비롯한 기업용 보안 및 AI 솔루션 개발·판매."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "데이터 보안 제품(Fasoo Enterprise DRM 등)",
+        "how": "공고 회사 소개가 문서보안(DRM) 솔루션 개발·판매를 첫 사업으로 적고, 홈페이지가 DRM·Data Radar·DSPM·암호화 모듈 등을 나열한다. 모집중 개발 공고 중 이 제품군을 맡는 자리는 없다.",
+        "domains": [],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[파수AI] 네트워크 보안 데이터 분석 시스템 개발 (경력 5년 이상)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49968886?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=50&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 2000년 설립, 자본금 47억 7,323만원, 매출액 441억, 사원수 255명 규모의 벤처기업. 서울 마포구 상암동. 문서보안(DRM) 솔루션을 비롯한 기업용 보안 및 AI 솔루션 개발·판매."
+          },
+          {
+            "title": "AI 데이터 활용 및 보안 기업 | Fasoo AI-Ready Data and Security",
+            "url": "https://www.fasoo.ai/",
+            "publisher": "파수에이아이",
+            "summary": "푸터 회사명 '주식회사 파수에이아이'. 메타: AI 기술 기반 소프트웨어 기업 파수 — 제로 트러스트 정보보안, 데이터 보안 플랫폼, 생성형 AI 활용, 비식별, 문서관리 등. 메뉴: AX Platform & AI Agent(Ellm, ACE 에이전트들), AI Data Platform(Wrapsody), AI Security Platform(AI Radar, AI-R Gateway·Bridge·Endpoint), 데이터 보안(Fasoo Enterprise DRM, Data Radar, DSPM, Fasoo Crypto 등), Security(해킹 대비 기본 보안·애플리케이션 보안·공급망 보안·네트워크 보안 등). 패밀리 사이트에 Sparrow."
+          }
+        ]
+      },
+      {
+        "name": "AX 플랫폼·AI 에이전트(Ellm·ACE)와 AI 보안(AI Radar)",
+        "how": "홈페이지가 AI 에이전트 플랫폼과 생성형 AI 정보유출 방지·LLM API 보안 제품을 앞세운다. 과금·매출 비중은 읽지 않았다. 모집중 개발 공고 중 이 제품군을 맡는 자리는 없다.",
+        "domains": [],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 데이터 활용 및 보안 기업 | Fasoo AI-Ready Data and Security",
+            "url": "https://www.fasoo.ai/",
+            "publisher": "파수에이아이",
+            "summary": "푸터 회사명 '주식회사 파수에이아이'. 메타: AI 기술 기반 소프트웨어 기업 파수 — 제로 트러스트 정보보안, 데이터 보안 플랫폼, 생성형 AI 활용, 비식별, 문서관리 등. 메뉴: AX Platform & AI Agent(Ellm, ACE 에이전트들), AI Data Platform(Wrapsody), AI Security Platform(AI Radar, AI-R Gateway·Bridge·Endpoint), 데이터 보안(Fasoo Enterprise DRM, Data Radar, DSPM, Fasoo Crypto 등), Security(해킹 대비 기본 보안·애플리케이션 보안·공급망 보안·네트워크 보안 등). 패밀리 사이트에 Sparrow."
+          }
+        ]
+      },
+      {
+        "name": "OT·네트워크 보안 데이터 플랫폼",
+        "how": "두 공고가 자산·통신·취약점·위협 정보를 통합 가시화하는 플랫폼/시스템을 개발한다고 적는다. 홈페이지 Security 메뉴에 '네트워크 보안' 이 있으나 OT 제품명과 판매 방식은 읽은 자료에 없다 — 개발 중이거나 새로 여는 제품으로 읽었다.",
+        "domains": [
+          "OT/ICS 보안 데이터 플랫폼",
+          "네트워크 보안 데이터 분석"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "OT/ICS 보안 데이터 분석 및 플랫폼 개발 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/381668",
+            "publisher": "원티드"
+          },
+          {
+            "title": "[파수AI] 네트워크 보안 데이터 분석 시스템 개발 (경력 5년 이상)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49968886?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=50&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 2000년 설립, 자본금 47억 7,323만원, 매출액 441억, 사원수 255명 규모의 벤처기업. 서울 마포구 상암동. 문서보안(DRM) 솔루션을 비롯한 기업용 보안 및 AI 솔루션 개발·판매."
+          },
+          {
+            "title": "AI 데이터 활용 및 보안 기업 | Fasoo AI-Ready Data and Security",
+            "url": "https://www.fasoo.ai/",
+            "publisher": "파수에이아이",
+            "summary": "푸터 회사명 '주식회사 파수에이아이'. 메타: AI 기술 기반 소프트웨어 기업 파수 — 제로 트러스트 정보보안, 데이터 보안 플랫폼, 생성형 AI 활용, 비식별, 문서관리 등. 메뉴: AX Platform & AI Agent(Ellm, ACE 에이전트들), AI Data Platform(Wrapsody), AI Security Platform(AI Radar, AI-R Gateway·Bridge·Endpoint), 데이터 보안(Fasoo Enterprise DRM, Data Radar, DSPM, Fasoo Crypto 등), Security(해킹 대비 기본 보안·애플리케이션 보안·공급망 보안·네트워크 보안 등). 패밀리 사이트에 Sparrow."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "OT/ICS 보안 데이터 플랫폼",
+        "why": "OT/ICS 공고가 OT 자산·네트워크 가시화, 산업용 네트워크 패킷 분석과 OT/ICS 프로토콜 Parser, OT 보안 솔루션 API 연동(Asset·Vulnerability·Communication·Alert)과 정규화, 대용량 데이터 저장·검색을 적는다. 자격은 Java 또는 PHP(Laravel), REST API, MySQL/MariaDB, Linux, TCP/IP.",
+        "what_to_know": [
+          "산업용 프로토콜(Modbus 등)",
+          "패킷 파싱",
+          "데이터 정규화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "OT/ICS 보안 데이터 분석 및 플랫폼 개발 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/381668",
+            "publisher": "원티드"
+          }
+        ]
+      },
+      {
+        "name": "네트워크 보안 데이터 분석",
+        "why": "네트워크 보안 공고가 같은 가시화·수집·대시보드·대용량 검색 업무를 일반 네트워크 대상으로 적고, 우대에 패킷·프로토콜 분석, Wireshark/tshark, 보안 관제 시스템 개발을 둔다.",
+        "what_to_know": [
+          "Wireshark/tshark",
+          "자산 식별",
+          "보안 관제"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[파수AI] 네트워크 보안 데이터 분석 시스템 개발 (경력 5년 이상)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49968886?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=50&sc=630",
+            "publisher": "잡코리아",
+            "summary": "회사 소개: 2000년 설립, 자본금 47억 7,323만원, 매출액 441억, 사원수 255명 규모의 벤처기업. 서울 마포구 상암동. 문서보안(DRM) 솔루션을 비롯한 기업용 보안 및 AI 솔루션 개발·판매."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "문서보안 회사가 네트워크·OT 가시화로 영역을 넓히고 있다",
+        "evidence": "OT/ICS 환경의 자산, 네트워크 및 보안 데이터를 통합 분석·가시화하는 기술 개발을 담당합니다.",
+        "so_what": "홈페이지의 주력은 DRM·데이터 보안·AI 에이전트인데 모집중 개발 공고 둘은 모두 패킷·프로토콜 기반 가시화다. 기존 제품 팀보다 새 제품 팀일 가능성이 높으니 면접에서 제품 단계·고객을 묻는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "기술 스택이 Java 또는 PHP(Laravel) 다",
+        "evidence": "PHP Laravel Framework 개발 경험 우대",
+        "so_what": "보안 제품 공고로는 드물게 PHP Laravel 을 우대로 둔다. 패킷 파싱은 C·Go 가 흔한데 이 자리는 수집된 데이터를 웹 플랫폼으로 보여 주는 쪽이 중심이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 사람인 공고가 '면접 후 결정' 만 적는다 — 비워 둔다",
+    "매출 441억·사원 255명이 몇 년 기준인지 공고에 없다",
+    "OT 보안 플랫폼의 제품명·출시 여부·고객은 읽은 자료에 없다",
+    "네트워크 보안 공고와 OT/ICS 공고가 같은 팀인지 공고에 없다"
+  ],
+  "postings": []
+}

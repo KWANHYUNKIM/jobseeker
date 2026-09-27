@@ -940,6 +940,19 @@
       "postings": 4,
       "study_items": 17,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "fasooai",
+      "name": "파수에이아이",
+      "aliases": [
+        "파수에이아이",
+        "㈜파수에이아이",
+        "파수AI"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
