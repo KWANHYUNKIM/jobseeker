@@ -419,6 +419,97 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/346638",
+      "title": "클라우드 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 1-5년, 서울 강남구. 다른 세 공고(380594·380606·380620)와 달리 머리말이 ODiiN·AI-Native 를 말하지 않고 '고객 맞춤형 클라우드 솔루션, 첨단 기술 R&D, 글로벌 네트워크' 로 회사를 일반적으로 소개한다 — 원티드 번호가 낮은 **먼저 올린 게시**로 보인다. 주요업무는 세 줄 — **클라우드 인프라 설계·구축**, 운영·유지보수, **고객 요구 맞춤 솔루션·기술 지원**. 자격은 컴퓨터공학 관련 학위, **AWS·Azure·GCP 경험**, **네트워크·보안 기본 지식**. 우대는 클라우드 자격증, 대규모 프로젝트, **DevOps·자동화 도구**. 본문이 얇아 제품(ODiiN·VDC) 가운데 어디를 맡는지, 고객사 인프라 구축을 하는지 면접에서 확인한다. 잡코리아 '클라우드 개발자 채용'(49985192)은 본문이 이미지라 같은 자리인지 알 수 없다. 전형은 서류 → 1차 기술 면접 → 2차 임원 면접. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "컴퓨터공학 학위",
+          "AWS·Azure·GCP 경험",
+          "네트워크·보안 기본"
+        ],
+        "can_learn": [
+          "세 클라우드 네트워크 비교",
+          "Terraform 멀티클라우드",
+          "클라우드 자격증"
+        ]
+      },
+      "study": [
+        {
+          "topic": "세 클라우드의 네트워크를 같은 말로 설명하기",
+          "from": "qualification",
+          "quote": "• 클라우드 플랫폼(AWS, Azure, GCP 등) 경험",
+          "priority": "core",
+          "why": "필수 자격이고 회사 제품이 여러 CSP 를 한 곳에서 다룬다(홈페이지 ODiiN). 자격에 네트워크 기본 지식이 함께 있다.",
+          "gap_check": "AWS VPC·Azure VNet·GCP VPC 는 범위(리전 한정 vs 전역), 서브넷 단위, 방화벽 규칙을 어디에 거는지가 어떻게 다른가? 같은 '3계층 웹 서비스(공개 LB·비공개 앱·비공개 DB)' 를 세 클라우드에 그리면 각각 어떤 부품으로 바뀌는가?",
+          "drill": "세 클라우드의 VPC/VNet 개요 문서를 읽고, 3계층 구조를 세 클라우드 용어로 각각 그린 대조표를 만든다. 무료 한도 안에서 한 곳(예: AWS)에 실제로 만들고 DB 가 인터넷에서 보이지 않는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "What is Amazon VPC?",
+              "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
+              "kind": "docs"
+            },
+            {
+              "title": "What is Azure Virtual Network? — Microsoft Learn",
+              "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview",
+              "kind": "docs"
+            },
+            {
+              "title": "VPC networks — Google Cloud",
+              "url": "https://docs.cloud.google.com/vpc/docs/vpc",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Terraform 으로 여러 클라우드 인프라를 코드로",
+          "from": "preference",
+          "quote": "• DevOps 및 자동화 도구 사용 경험",
+          "priority": "high",
+          "why": "우대사항이고 주요업무가 인프라 설계·구축과 운영·유지보수다 — 고객마다 반복되는 구축은 코드로 남겨야 한다.",
+          "gap_check": "Terraform 상태 파일은 무엇을 기록하고, 여러 사람이 같은 인프라를 고칠 때 상태를 어디에 두고 잠그는가? 클라우드마다 다른 리소스를 모듈 하나로 감추려 할 때 어디서 무리가 생기는가?",
+          "drill": "What is Terraform 을 읽고, 앞 과제의 AWS 3계층 네트워크를 Terraform 으로 다시 만든다. plan 결과를 읽고, 콘솔에서 손으로 규칙 하나를 바꾼 뒤 plan 이 차이를 잡는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "What is Terraform — HashiCorp Developer",
+              "url": "https://developer.hashicorp.com/terraform/intro",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객 요구를 아키텍처로 — Well-Architected 기준으로 설명하기",
+          "from": "task",
+          "quote": "• 고객 요구에 맞춘 솔루션 제공 및 기술 지원",
+          "priority": "high",
+          "why": "주요업무이고 우대에 클라우드 자격증·대규모 프로젝트 경험이 있다.",
+          "gap_check": "고객이 '싸게, 그런데 절대 안 멈추게' 를 동시에 요구할 때 비용 최적화와 안정성 사이에서 무엇을 먼저 묻는가? 클라우드와 고객 사이의 보안 책임 경계(공동 책임 모델)는 어디서 갈리는가?",
+          "drill": "AWS Well-Architected Framework 개요와 클라우드 보안(공동 책임) 문서를 읽고, 가상 고객 요구 세 줄(월 예산·허용 중단 시간·개인정보 포함 여부)에 맞는 구성안을 한 장으로 쓴다. 여섯 기둥별로 선택과 포기를 한 줄씩 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "AWS Well-Architected Framework",
+              "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Cloud computing security — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Shared_responsibility_model",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS Certified Solutions Architect – Associate",
+              "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+              "kind": "course"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
