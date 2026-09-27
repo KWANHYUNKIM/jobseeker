@@ -2684,3 +2684,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 マイベスト Dataform · 클린룸
 
 - Dataform 갈등 · 클린룸 글 전문으로 기능 `dataform-and-clean-room-sharing`, 결정 6.
+
+## 2026-09-27 マイベスト 제휴 수익원 보류
+
+- 1 차 mybest_dev 59편 제목 전수(관련 0), 2 차 Zenn 검색 5낱말 · 서비스 구성 글 · WebSearch. 보류, status in_progress 유지.
