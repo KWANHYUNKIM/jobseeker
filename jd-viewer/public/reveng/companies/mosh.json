@@ -4,7 +4,7 @@
   "name_en": "MOSH",
   "country": "JP",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "domain": "mosh.jp",
   "one_liner": "크리에이터가 레슨 · 강좌 · 서비스를 팔고 예약 · 결제 · 회원 사이트까지 한곳에서 운영하는 플랫폼 'MOSH' 의 회사 — 400 개 넘는 Lambda 를 Docker 화 · OpenAPI 정리 · Lambda-lith 로 한 걸음씩 옮기고, 제품들이 함께 쓰는 통지 기반은 Step Functions Saga 와 DynamoDB 조건부 쓰기로 빠짐도 중복도 없이 보낸다",

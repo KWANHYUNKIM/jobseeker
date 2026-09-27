@@ -2720,3 +2720,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 MOSH 통지 기반 飛脚
 
 - 飛脚 글 전문으로 기능 `hikyaku-saga-idempotent-notify`, 결정 7. 두 수익원 연결 confirmed(회원 사이트 스텝 메일 · 결제 정보 통지). 완주 기준 충족.
+
+## 2026-09-27 MOSH 완주
+
+- 완주 기준 확인: 도메인 2 모두 기능 · 기능 사이 연결(飛脚 ↔ Lambda-lith) · 수익원 2 모두 confirmed 도메인 연결. status done, QUEUE 완료로 이동.
