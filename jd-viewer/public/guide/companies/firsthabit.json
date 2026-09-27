@@ -7,7 +7,7 @@
     "㈜퍼스트해빗",
     "FIRSTHABIT"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "firsthabit.com",
   "one_liner": "교육 전용 AI 'CHALK' 로 iPad 학습 앱을 만드는 강남의 에듀테크 — 시각화(Visual LLM)와 학생 기억(Memory) 연구를 앞세워 미국 시장을 겨냥한다",
@@ -468,6 +468,109 @@
             {
               "title": "Episodic memory — Wikipedia",
               "url": "https://en.wikipedia.org/wiki/Episodic_memory",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/351000",
+      "title": "AI 모션 크리에이터",
+      "site": "wanted",
+      "verdict": "신입, 서울 강남구, **Visual Systems Squad**(CHALK AI 의 시각화 담당). 개발직이 아니라 **디자인·영상 직군**이지만 코드 기반 자산과 자동화 파이프라인을 함께 요구한다 — 머리말이 '크리에이티브한 연출력과 논리적인 시스템 설계를 동시에 요구하는 포지션' 이라고 적는다. 주요업무는 강의 스크립트·스토리보드 기반 AI 비주얼 기획·제작, 캐릭터 액션·감정선·**시네마틱 카메라 워크** 연출, **Gen-AI 영상/이미지 파이프라인 구축·워크플로우 최적화**, **SVG·JSON 코드 기반 어셋으로 데이터 중심 비주얼 자동화**, 스쿼드 그래픽 리소스 공급·품질 관리. 자격은 AI 영상(Seedance·Kling·Hailuo·Veo3)·이미지(Midjourney·Stable Diffusion·Nanobanana) 툴 능숙, After Effects·Premiere, 컷 구성·카메라 워크 감각, **Lottie(JSON)·SVG 로 인터랙티브·가변형 디자인 구현 경험**, 협업. 우대는 디자인 실무, 촬영·애니메이션 현장, 3D AI 영상, 워크플로우 자동화, **HTML/CSS/JavaScript 퍼블리싱**, 교육 영상. 수습 3개월 계약직 이후 정규직 전환 결정. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AI 영상·이미지 툴",
+          "After Effects·Premiere",
+          "컷·카메라 연출",
+          "Lottie·SVG"
+        ],
+        "can_learn": [
+          "JSON 로 비주얼 자동 생성",
+          "HTML/JS 퍼블리싱"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Lottie(JSON)와 SVG 의 구조 이해",
+          "from": "qualification",
+          "quote": "• Lottie(JSON), SVG 등 코드 기반의 자산을 활용해 인터랙티브한 모션이나 가변형 디자인을 구현해 본 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 SVG·JSON 코드 기반 어셋으로 비주얼 자동화가 있다. iPad 앱 안에서 움직이는 교육 그래픽은 영상 파일보다 가볍고 데이터로 바꿀 수 있는 형식이 필요하다.",
+          "gap_check": "Lottie 파일의 레이어·키프레임·속성은 JSON 에서 어디에 있고, 텍스트나 색 하나를 코드로 바꾸려면 어느 값을 건드리는가? SVG 의 path·viewBox 는 크기가 바뀌는 화면(가변형 디자인)에서 어떻게 동작하는가?",
+          "drill": "Lottie Docs 와 MDN 'Introducing SVG from scratch' 를 읽고, After Effects 로 만든 간단한 애니메이션(숫자가 올라가는 막대)을 Lottie 로 내보내 JSON 을 열어 막대 높이·색·텍스트 위치를 찾는다. 같은 그래픽을 SVG 로 손으로 다시 그려 두 형식의 파일 크기와 수정 방법을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Lottie Docs — LottieFiles",
+              "url": "https://lottiefiles.github.io/lottie-docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Introducing SVG from scratch — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터를 넣으면 그래픽이 나오는 자동화",
+          "from": "task",
+          "quote": "• SVG, JSON 등 코드 기반 어셋을 활용하여 데이터 중심의 비주얼 자동화 시스템 연구 및 구현",
+          "priority": "core",
+          "why": "주요업무이고 우대에 AI 기술로 영상 제작 워크플로우를 자동화한 경험, HTML/CSS/JavaScript 퍼블리싱 경험이 있다.",
+          "gap_check": "강의 스크립트가 '분수 3/4 을 피자로 보여 줘' 라고 할 때, 매번 손으로 그리지 않고 숫자만 바꿔 같은 스타일의 그래픽을 뽑으려면 템플릿의 어느 부분을 변수로 열어 두는가? 자동 생성물의 품질(겹침·잘림)을 어떻게 점검하는가?",
+          "drill": "앞 과제의 SVG·Lottie 를 템플릿으로 삼아, JSON 입력(분자·분모·색)을 받아 피자 분수 그림을 SVG 로 만드는 작은 JavaScript(또는 Python) 스크립트를 짠다. 입력 20개를 넣어 결과를 한 페이지에 모아 보고 깨지는 경우를 고친다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Introducing SVG from scratch — MDN",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch",
+              "kind": "docs"
+            },
+            {
+              "title": "Lottie Docs — LottieFiles",
+              "url": "https://lottiefiles.github.io/lottie-docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스토리보드에서 컷·카메라 워크로",
+          "from": "qualification",
+          "quote": "• 단순 편집을 넘어 컷 구성, 카메라 워크, 씨 연출에 대한 감각을 보유하신 분",
+          "priority": "high",
+          "why": "필수 자격이고 주요업무에 강의 스크립트·스토리보드 기반 제작과 캐릭터 액션·감정선·시네마틱 카메라 워크 연출이 있다.",
+          "gap_check": "설명하는 장면과 강조하는 장면에서 샷 크기(와이드·미디엄·클로즈업)와 카메라 움직임을 어떻게 바꾸는가? 교육 영상에서 화려한 카메라 워크가 오히려 이해를 방해하는 경우는?",
+          "drill": "Storyboard·Cinematic techniques 문서를 읽고, 1분 분량 강의 스크립트 하나로 8컷 스토리보드를 그린다(샷 크기·카메라 움직임·화면 속 텍스트 위치 표기). 같은 스크립트를 AI 영상 툴로 두 컷만 만들어 스토리보드 의도와 어긋난 점을 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Storyboard — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Storyboard",
+              "kind": "docs"
+            },
+            {
+              "title": "Cinematic techniques — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Cinematic_techniques",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "생성형 이미지·영상 파이프라인에서 일관성 지키기",
+          "from": "task",
+          "quote": "• 최신 Gen-AI 툴을 활용한 영상/이미지 제작 파이프라인 구축 및 워크플로우 최적화",
+          "priority": "nice",
+          "why": "주요업무이고 자격에 AI 영상·이미지 툴 능숙이 있다. 강의 시리즈 전체에서 캐릭터가 같은 얼굴로 나와야 한다.",
+          "gap_check": "같은 캐릭터를 여러 장면에 일관되게 뽑으려면 프롬프트 외에 무엇을 고정하는가(참조 이미지·시드·스타일 설정)? 툴이 바뀌어도 결과를 재현할 수 있게 작업 기록에 무엇을 남기는가?",
+          "drill": "Stable Diffusion 문서를 읽고, 캐릭터 하나를 정해 참조 이미지·프롬프트 템플릿·설정값을 기록한 '캐릭터 시트' 를 만든다. 서로 다른 장면 5개를 뽑아 일관성이 깨진 컷을 표시하고 원인을 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Stable Diffusion — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Stable_Diffusion",
               "kind": "docs"
             }
           ]
