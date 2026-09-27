@@ -2688,3 +2688,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 マイベスト 제휴 수익원 보류
 
 - 1 차 mybest_dev 59편 제목 전수(관련 0), 2 차 Zenn 검색 5낱말 · 서비스 구성 글 · WebSearch. 보류, status in_progress 유지.
+
+## 2026-09-27 백아홉 번째 후보 조사
+
+- Zenn 검색 '실천' 주제어 15개 → 새 Publication 40곳 → RSS 6곳 → 본문 5편. Omiai · MOSH 대기 등록. YAMAP · ツクリンク · Unipos 약함 메모.
