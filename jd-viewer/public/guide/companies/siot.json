@@ -6,7 +6,7 @@
     "시옷",
     "㈜시옷"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": null,
   "one_liner": "보안 솔루션과 AI 플랫폼을 만드는 서초의 AI 보안 기업 — Node.js 백엔드와 '확신도까지 재는' 보안 이상 탐지 연구원을 뽑는다",
@@ -434,6 +434,20 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55003885&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=33149bda-1347-4601-9d81-fc93e20590e1",
+      "title": "백엔드 개발자 모집",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/386353",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 회사 소개, 주요업무 일곱 줄, 자격요건, 우대사항이 원티드 `백엔드 개발자`(386353)와 글자 그대로 같다('제안할 수 이쓴 분' 오타까지). 브리핑은 그쪽을 본다. 여기에만 적힌 것은 고용형태 정규직(수습 3개월), 급여 면접 후 결정, 근무지 서울 서초구 서초대로74길 45 14층, 유연근무제, 접수 2026-09-10 ~ 10-10, 전형 서류전형 → 1차면접 → 임원면접 → 최종합격(경력 확인용 원천징수영수증 등 추가 서류 요청 가능)이다. 두 자리가 아니므로 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55003866&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=a2c18168-c480-42c7-b617-10a36ba9706c",
+      "title": "시니어 AI/ML 연구원 모집",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/386351",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 연구 방향, 주요업무 네 줄, 자격요건(ML/DL 5년 또는 석·박사+3년, ELBO·재매개화 수준의 VAE 이해 등)이 원티드 `시니어 AI/ML 연구원`(386351)과 같다. 브리핑은 그쪽을 본다. **다른 점이 하나 크다** — 이 게시의 머리말은 '보안 플랫폼 및 AI Agent 관련 프로젝트를 함께 만들어갈 **팀원급 개발자**' 를 뽑는다고 적어 원티드의 '시니어/리드급 R&D' 와 어긋난다(자격은 둘 다 같다). 여기에만 적힌 것은 고용형태 정규직(수습 3개월), 급여 면접 후 결정, 근무지 서울 서초구 서초대로74길 45 14층, 유연근무제, 접수 2026-09-10 ~ 10-10, 전형 서류전형 → 1차면접 → 임원면접 → 최종합격(경력 확인용 원천징수영수증 등 추가 서류 요청 가능)이다. 두 자리가 아니므로 한 곳으로만 지원한다."
     }
   ]
 }
