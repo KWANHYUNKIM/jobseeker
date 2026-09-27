@@ -294,6 +294,115 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/368116",
+      "title": "리눅스 보안 개발자(주니어)",
+      "site": "wanted",
+      "verdict": "신입~경력 3년, 경기 용인시. **AppCheck 리눅스판(Linux Server) 에이전트**를 만든다. 주요업무는 AppCheck 리눅스 제품 개발·운영, **리눅스 드라이버 개발과 변경 요청 대응**, **리눅스 네트워크 앱 개발·운영(C/Golang)**. 자격은 **C 기본기와 프로젝트 경험**, 리눅스 시스템 프로그래밍 관심과 셸·gcc/make 사용 경험, **Golang 학습 경험 또는 의지**, TCP/IP 소켓 기본, OS·자료구조 CS 기초. 우대는 **커널 모듈 프로그래밍**, 프로세스·스레드·IPC·시스템 콜, 소켓 프로그래밍. 윈도우 주니어(368114)와 짝을 이루는 자리이고, 같은 업무의 시니어 공고(332485, 8년↑·처우 20% UP)가 따로 있다. 하루 7시간 근무. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "C 프로젝트",
+          "리눅스 셸·gcc/make",
+          "TCP/IP 기본",
+          "OS·자료구조"
+        ],
+        "can_learn": [
+          "커널 모듈",
+          "fanotify 파일 감시",
+          "Golang 네트워크"
+        ]
+      },
+      "study": [
+        {
+          "topic": "리눅스 커널 모듈 — 배포판·커널 버전마다 다시 빌드하기",
+          "from": "task",
+          "quote": "리눅스 드라이버를 개발하고 변경 요청을 대응합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 커널 모듈 프로그래밍 학습이 있다. 서버용 제품이라 고객마다 배포판·커널이 다르다 — '변경 요청 대응' 이 그 일이다.",
+          "gap_check": "외부 모듈은 왜 대상 커널의 헤더로 빌드해야 하고, 고객 서버의 커널이 업데이트되면 무엇이 깨지는가? 커널 내부 API 가 버전마다 바뀔 때 한 소스로 여러 버전을 지원하는 방법은(버전 매크로 분기)? Secure Boot 가 켜진 서버에서는 모듈 적재에 무엇이 더 필요한가?",
+          "drill": "Building External Modules 문서와 LDD3 앞 장을 읽고, 간단한 모듈을 두 가지 커널 버전(예: 배포판 두 개의 가상 머신)에서 빌드·적재한다. 버전 매크로로 한쪽에만 있는 함수를 분기 처리하고, 빌드 스크립트가 현재 커널을 자동 감지하게 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Building External Modules — Linux Kernel documentation",
+              "url": "https://docs.kernel.org/kbuild/modules.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Linux Device Drivers, Third Edition — LWN.net",
+              "url": "https://lwn.net/Kernel/LDD3/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "파일 접근을 감시하고 막는 리눅스 인터페이스 — inotify·fanotify",
+          "from": "preference",
+          "quote": "리눅스 시스템 프로그래밍(프로세스, 스레드, IPC, 시스템 콜 등) 학습 또는 프로젝트 경험",
+          "priority": "high",
+          "why": "우대사항이고, 랜섬웨어 방어 에이전트는 파일 수정 행위를 실시간으로 보고 막아야 한다(홈페이지: 랜섬웨어 사전탐지·차단).",
+          "gap_check": "inotify 는 '무슨 파일이 바뀌었나' 만 알려 주는데 fanotify 는 무엇을 더 할 수 있는가(누가 접근했는지, 허가/거부 결정)? 사용자 공간 감시로 충분한 경우와 커널 모듈이 필요한 경우는 어떻게 가르는가?",
+          "drill": "inotify(7)·fanotify(7) 매뉴얼을 읽고, C 로 특정 디렉터리의 파일 수정 이벤트를 inotify 와 fanotify 로 각각 받아 프로세스 ID·경로를 출력한다. fanotify 권한 이벤트로 특정 확장자 쓰기를 거부해 보고, 두 방식이 줄 수 있는 정보의 차이를 표로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "fanotify(7) — Linux manual page",
+              "url": "https://man7.org/linux/man-pages/man7/fanotify.7.html",
+              "kind": "docs"
+            },
+            {
+              "title": "inotify(7) — Linux manual page",
+              "url": "https://man7.org/linux/man-pages/man7/inotify.7.html",
+              "kind": "docs"
+            },
+            {
+              "title": "syscalls(2) — Linux manual page",
+              "url": "https://man7.org/linux/man-pages/man2/syscalls.2.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Go 로 에이전트 네트워크 앱 만들기",
+          "from": "qualification",
+          "quote": "Golang에 대한 학습 경험이 있거나 배우고자 하는 의지가 있는 분",
+          "priority": "high",
+          "why": "자격요건이고 주요업무에 리눅스 네트워크 앱(C/Golang)이, 공고 머리말에 CMS 백엔드가 Golang 이라는 설명이 있다.",
+          "gap_check": "Go 의 고루틴과 채널로 '서버 연결 유지 + 주기 보고 + 정책 수신' 을 나누면 C 스레드로 짤 때보다 무엇이 쉬워지는가? 에이전트 바이너리를 여러 배포판에 배포할 때 Go 의 정적 빌드가 왜 편한가?",
+          "drill": "A Tour of Go 와 net 패키지 문서를 읽고, 리눅스 에이전트가 1분마다 상태를 서버로 보내고 서버가 정책을 내려 주는 TCP 클라이언트/서버를 Go 로 만든다. 서버를 껐다 켜 재연결을 확인하고, 정적 빌드한 바이너리를 다른 배포판에서 실행해 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "A Tour of Go",
+              "url": "https://go.dev/tour/welcome/1",
+              "kind": "docs"
+            },
+            {
+              "title": "net package — Go Packages",
+              "url": "https://pkg.go.dev/net",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "C 소켓 프로그래밍 기초",
+          "from": "preference",
+          "quote": "소켓 프로그래밍 등 네트워크 프로그래밍 학습/구현 경험",
+          "priority": "nice",
+          "why": "우대사항이고 자격에 TCP/IP 소켓 기본 이해가, 주요업무에 C 로 된 네트워크 앱이 있다.",
+          "gap_check": "TCP 는 메시지 경계를 지켜 주지 않는데, 에이전트가 보낸 메시지 두 개가 한 번에 붙어 오거나 반쪽만 오면 수신 쪽은 어떻게 나누는가(길이 접두사)? 블로킹 소켓과 epoll 기반 논블로킹 소켓은 연결 수가 늘 때 무엇이 다른가?",
+          "drill": "socket(7) 매뉴얼을 읽고, 길이 접두사 방식으로 메시지를 주고받는 C 서버·클라이언트를 만든다. 클라이언트가 메시지를 1바이트씩 쪼개 보내도 서버가 정확히 조립하는지 테스트한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "socket(7) — Linux manual page",
+              "url": "https://man7.org/linux/man-pages/man7/socket.7.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
