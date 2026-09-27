@@ -510,6 +510,127 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/380620",
+      "title": "AI LLM 개발자",
+      "site": "wanted",
+      "verdict": "경력 1-5년(대졸), 서울 강남구. 머리말은 '모델을 호출하는 데 그치지 않고, **에이전트와 RAG 로 실제 동작하는 AI 제품**을 설계하고 검증' 할 사람을 찾는다고 적는다. 주요업무는 두 묶음 — (1) 신규 AI 서비스 기획(시장·경쟁 리서치, 실현 가능성 검토), **LLM 기능·FastAPI 백엔드·API 연동·TTA 기술검증** (2) **Tool calling 에이전트 루프, 벡터DB·임베딩, 추론 파이프라인**, **컨테이너 배포·LLM 서빙·프롬프트 캐싱·멀티클라우드 운영**. 자격은 LLM API 프로젝트 경험(개인·팀 포함), **토큰·컨텍스트 윈도우 등 동작 원리 이해**, 필수 역량으로 **도구 스키마 설계·LLM 출력 서버 재검증·에이전트 루프**, **벡터DB·임베딩·청킹**. 우대는 vLLM·Ollama·Qwen 오픈소스 서빙, 클라우드, **프롬프트 캐싱·모델 티어링 비용 최적화**. 홈페이지의 LLM 게이트웨이 Heiimdahl('모든 LLM 을 하나로, AI 비용 절감')과 가장 가까운 자리로 읽힌다. 원격 근무 가능. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "LLM API 프로젝트",
+          "토큰·컨텍스트 이해",
+          "Tool calling 에이전트",
+          "RAG(벡터DB·청킹)"
+        ],
+        "can_learn": [
+          "오픈소스 LLM 서빙",
+          "모델 티어링",
+          "TTA 인증"
+        ]
+      },
+      "study": [
+        {
+          "topic": "도구 스키마 설계와 LLM 출력의 서버 재검증",
+          "from": "qualification",
+          "quote": "- 에이전트 개발 경험 (도구 스키마 설계, LLM 출력 서버 재검증, 에이전트 루프)",
+          "priority": "core",
+          "why": "필수 역량이고 주요업무가 Tool calling 에이전트 루프다. 회사 제품이 고객 클라우드를 자율 운영하므로 모델의 잘못된 호출은 실제 자원 변경으로 이어진다.",
+          "gap_check": "도구 설명·인자 스키마를 어떻게 쓰면 모델이 엉뚱한 도구를 덜 부르는가? 모델이 준 인자(예: 인스턴스 ID·삭제 여부)를 그대로 실행하지 않고 서버에서 무엇을 다시 확인하는가(타입·존재 여부·권한·위험 작업 확인)? 에이전트 루프는 언제 멈춰야 하는가(최대 반복·같은 호출 반복)?",
+          "drill": "Tool use with Claude 와 Pydantic 문서를 읽고, '비용 상위 자원 조회'·'자원 태그 변경'·'인스턴스 중지' 세 도구를 가진 에이전트를 FastAPI 뒤에 만든다. 인자를 Pydantic 으로 검증하고, 중지 같은 위험 작업은 사람 승인 없이는 실행하지 않게 한 뒤 잘못된 인자 10개로 막히는지 테스트한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Tool use with Claude — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Pydantic Validation",
+              "url": "https://pydantic.dev/docs/validation/latest/get-started/",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RAG — 청킹과 임베딩 선택",
+          "from": "qualification",
+          "quote": "- 벡터DB, 임베딩, 청킹",
+          "priority": "core",
+          "why": "필수 역량이고 주요업무에 에이전트·RAG 구축(벡터DB·임베딩·추론 파이프라인)이 있다.",
+          "gap_check": "클라우드 서비스 문서처럼 표·코드가 많은 문서는 고정 길이 청킹과 구조 기반 청킹 중 무엇이 나은가? 임베딩 모델을 바꾸면 기존 색인은 어떻게 해야 하는가? 검색 결과를 에이전트 도구로 줄 때와 프롬프트에 바로 넣을 때 무엇이 다른가?",
+          "drill": "Chroma Introduction 을 읽고, 클라우드 요금 문서 몇 개를 고정 길이·제목 기준 두 방식으로 청킹해 색인한다. 질문 20개로 상위 3개 적중률을 비교하고, 검색을 '문서 찾기' 도구로 앞 과제 에이전트에 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Introduction — Chroma Docs",
+              "url": "https://docs.trychroma.com/docs/overview/introduction",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "토큰·컨텍스트 윈도우와 비용 — 캐싱과 모델 티어링",
+          "from": "preference",
+          "quote": "• 프롬프트 캐싱,모델 티어링 등 비용 최적화 경험",
+          "priority": "high",
+          "why": "우대사항이고 자격에 토큰·컨텍스트 윈도우 이해가, 주요업무에 프롬프트 캐싱·LLM 서빙이 있다. 회사의 LLM 게이트웨이 제품이 AI 비용 절감을 내세운다(홈페이지).",
+          "gap_check": "에이전트 루프가 돌수록 대화가 길어져 입력 토큰이 어떻게 불어나고, 컨텍스트 창을 넘기 전에 무엇을 요약·삭제하는가? 캐시가 맞으려면 프롬프트 앞부분을 어떻게 고정해 두는가? 쉬운 요청은 작은 모델로 보내는 티어링은 무엇으로 난이도를 판정하는가?",
+          "drill": "Context windows·Prompt caching 문서를 읽고, 앞 과제 에이전트에 요청별 입력·출력·캐시 토큰과 비용을 기록한다. 긴 시스템 지침에 캐싱을 켜고, 조회성 질문은 작은 모델로 보내는 라우터를 넣어 전후 비용·정확도를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Context windows — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+              "kind": "docs"
+            },
+            {
+              "title": "Prompt caching — Claude Platform Docs",
+              "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "오픈소스 LLM 서빙 — vLLM 으로 자체 호스팅",
+          "from": "preference",
+          "quote": "• 오픈소스 LLM 서빙 경험 (vLLM/Ollama, Qwen 등)",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무에 컨테이너 배포·LLM 서빙·멀티클라우드 운영이 있다.",
+          "gap_check": "상용 API 대신 자체 서빙을 고르는 기준은 무엇인가(데이터 반출 제한·호출량·지연)? vLLM 의 OpenAI 호환 서버를 쓰면 게이트웨이 뒤에서 상용·오픈소스 모델을 어떻게 섞어 쓸 수 있는가?",
+          "drill": "vLLM 문서를 읽고, 작은 오픈소스 모델을 컨테이너로 띄워 OpenAI 호환 엔드포인트를 만든다. 앞 과제의 라우터가 작은 요청을 이 모델로 보내게 하고 지연·품질을 상용 API 와 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "vLLM",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "TTA 기술검증 — 무엇을 인증받는가",
+          "from": "task",
+          "quote": "- LLM 기능 구현, Fast API 백엔드, API 연동, TTA 기술검증",
+          "priority": "nice",
+          "why": "주요업무에 TTA 기술검증이 들어 있다 — B2B 고객(특히 공공·금융)에 AI 제품을 팔 때 시험·인증 결과가 요구되는 경우가 있다.",
+          "gap_check": "시험인증 기관에 AI 서비스를 맡길 때 기능 요구사항·성능 지표·시험 데이터를 무엇으로 정의해 두어야 결과가 재현되는가?",
+          "drill": "TTA 홈페이지에서 시험인증 분야를 확인하고, 앞 과제 에이전트에 대해 '기능 목록·성능 지표(정확도·응답 시간)·시험 절차' 를 한 장의 시험 계획서로 쓴다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "TTA 대표홈페이지",
+              "url": "https://www.tta.or.kr/tta",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
