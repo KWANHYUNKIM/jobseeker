@@ -7,7 +7,7 @@
     "이지케어텍㈜",
     "ezCaretech"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "ezcaretech.com",
   "one_liner": "서울대병원에서 출발한 병원정보시스템(HIS) 회사 — 구축형 BESTCare·클라우드형 EDGE&NEXT 를 국내 대형병원과 사우디 등 해외에 판다(코스닥)",
@@ -622,6 +622,13 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49988051?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=85&sc=630",
+      "title": "[의료IT 1위 이지케어텍] AI Engineer 경력직 채용(전문연구요원 가능)",
+      "site": "jobkorea",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55031598&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dcb2732a-4ee5-4722-91eb-e120984b30bb",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 제목(AI Engineer 경력직, 전문연구요원 가능)과 머리말('의료 데이터를 기반으로 AI 모델과 서비스를 설계·개발·운영하는 핵심 직무', HIS 공급·수출, 서울대학교병원 출발, EDGE&NEXT)이 사람인 `[의료IT 1위 이지케어텍] AI Engineer 채용 (전문연구요원 가능)`(55031598)과 같다. 잡코리아 크롤은 머리말까지만 잡혀 주요업무·자격 칸이 비어 있다 — 브리핑은 사람인 쪽을 본다. 여기에만 적힌 것은 마감 10/14(수)와 태그 '# 경력직'(사람인은 '# 경력 무관'), '26년+ 의료IT 전문 노하우'(사람인은 25년+)다. 두 자리가 아니므로 한 곳으로만 지원한다."
     }
   ]
 }
