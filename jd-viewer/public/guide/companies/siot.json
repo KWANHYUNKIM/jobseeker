@@ -1,0 +1,122 @@
+{
+  "slug": "siot",
+  "name": "시옷",
+  "name_en": null,
+  "aliases": [
+    "시옷",
+    "㈜시옷"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-27",
+  "site": null,
+  "one_liner": "보안 솔루션과 AI 플랫폼을 만드는 서초의 AI 보안 기업 — Node.js 백엔드와 '확신도까지 재는' 보안 이상 탐지 연구원을 뽑는다",
+  "company": {
+    "business": "공고 머리말은 ㈜시옷을 **다양한 정보보호 분야에서 축적한 기술력과 AI 경량 설계 경험을 바탕으로 보안 솔루션과 AI 플랫폼을 개발하는 AI 보안 전문 기업**으로 소개한다. 제품 이름·고객·매출은 공고에 없고 홈페이지는 찾지 못했다. 모집중 공고는 두 자리가 원티드·사람인에 함께 올라 있다 — **백엔드 개발자**(Node.js·TypeScript, RDBMS 설계·쿼리 튜닝, 대용량 트랜잭션, 3년↑)와 **시니어 AI/ML 연구원**(악성코드 정적 피처 데이터 BODMAS·내부자 위협 로그 CERT 로 **AE/VAE 기반 이상 징후 탐지와 MC Dropout 등 불확실성 정량화(UQ)**, **OOD·Zero-day** 대응, ECE·AUROC·AUPRC 신뢰도 평가와 실시간 서빙). 사람인의 연구원 게시 머리말은 '보안 플랫폼 및 AI Agent 관련 프로젝트를 함께 만들어갈 **팀원급** 개발자' 라고 적어 원티드의 '시니어/리드급' 과 어긋난다. 근무지 서울 서초구.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "백엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/386353",
+        "publisher": "원티드",
+        "summary": "머리말: 다양한 정보보호 분야에서 축적한 기술력과 AI 경량 설계 경험으로 보안 솔루션과 AI 플랫폼을 개발하는 AI 보안 전문 기업."
+      },
+      {
+        "title": "시니어 AI/ML 연구원",
+        "url": "https://www.wanted.co.kr/wd/386351",
+        "publisher": "원티드",
+        "summary": "머리말: BODMAS(악성코드 정적 피처)·CERT(내부자 위협 행위 로그) 실전 보안 데이터로 AE/VAE 표현 학습과 MC Dropout 등 불확실성 정량화를 융합한 이상 징후 탐지 파이프라인, OOD·Zero-day 대응 확률론적 딥러닝 연구를 주도할 시니어/리드급 R&D."
+      },
+      {
+        "title": "시니어 AI/ML 연구원 모집",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55003866&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=a2c18168-c480-42c7-b617-10a36ba9706c",
+        "publisher": "사람인"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "보안 솔루션·AI 플랫폼",
+        "how": "공고 머리말이 보안 솔루션과 AI 플랫폼을 개발한다고만 적는다. 제품명·고객·판매 방식은 읽은 자료에 없다.",
+        "domains": [
+          "보안 서비스 백엔드(Node.js)",
+          "보안 이상 징후 탐지 AI(불확실성 정량화)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/386353",
+            "publisher": "원티드",
+            "summary": "머리말: 다양한 정보보호 분야에서 축적한 기술력과 AI 경량 설계 경험으로 보안 솔루션과 AI 플랫폼을 개발하는 AI 보안 전문 기업."
+          },
+          {
+            "title": "시니어 AI/ML 연구원",
+            "url": "https://www.wanted.co.kr/wd/386351",
+            "publisher": "원티드",
+            "summary": "머리말: BODMAS(악성코드 정적 피처)·CERT(내부자 위협 행위 로그) 실전 보안 데이터로 AE/VAE 표현 학습과 MC Dropout 등 불확실성 정량화를 융합한 이상 징후 탐지 파이프라인, OOD·Zero-day 대응 확률론적 딥러닝 연구를 주도할 시니어/리드급 R&D."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "보안 서비스 백엔드(Node.js)",
+        "why": "백엔드 공고가 Node.js API 설계·개발·운영, RDBMS/NoSQL 데이터 모델링, 인덱싱·실행 계획 분석·쿼리 튜닝, 트래픽 급증·대용량 트랜잭션 대응, 레거시 리팩토링·테스트, CI/CD 를 적는다(우대: NestJS·Redis·MongoDB·AWS·Kubernetes·Kafka·BullMQ·TDD).",
+        "what_to_know": [
+          "쿼리 튜닝",
+          "NestJS",
+          "메시지 큐"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/386353",
+            "publisher": "원티드",
+            "summary": "머리말: 다양한 정보보호 분야에서 축적한 기술력과 AI 경량 설계 경험으로 보안 솔루션과 AI 플랫폼을 개발하는 AI 보안 전문 기업."
+          }
+        ]
+      },
+      {
+        "name": "보안 이상 징후 탐지 AI(불확실성 정량화)",
+        "why": "연구원 공고가 AE/VAE 표현 학습과 복원 오차·잠재 우도 기반 이상치 스코어링, MC Dropout·베이지안 근사 불확실성 추정과 OOD 선별, BODMAS·CERT 데이터 전처리와 개념 드리프트 대응, ECE·AUROC·AUPRC 신뢰도 평가와 실시간 서빙을 적는다.",
+        "what_to_know": [
+          "VAE",
+          "MC Dropout·UQ",
+          "OOD 탐지"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "시니어 AI/ML 연구원",
+            "url": "https://www.wanted.co.kr/wd/386351",
+            "publisher": "원티드",
+            "summary": "머리말: BODMAS(악성코드 정적 피처)·CERT(내부자 위협 행위 로그) 실전 보안 데이터로 AE/VAE 표현 학습과 MC Dropout 등 불확실성 정량화를 융합한 이상 징후 탐지 파이프라인, OOD·Zero-day 대응 확률론적 딥러닝 연구를 주도할 시니어/리드급 R&D."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "연구원 자리의 연차 기대가 공고마다 다르다",
+        "evidence": "이번 포지션은 보안 플랫폼 및 AI Agent 관련 프로젝트를 함께 만들어갈 팀원급 개발자를 채용하는 자리로,",
+        "so_what": "같은 제목이 원티드에서는 '시니어/리드급 R&D', 사람인에서는 '팀원급 개발자' 다. 연구 주도인지 구현 참여인지 면접에서 먼저 확인한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "탐지 정확도보다 '모델이 얼마나 확신하는가' 를 앞세운다",
+        "evidence": "보안 도메인의 탐지 모델은 `예측의 정확도`뿐만 아니라 `자신의 판단을 얼마나 확신하는가`를 측정할 수 있어야 합니다.",
+        "so_what": "연구 주제가 구체적으로 적혀 있어(AE/VAE·MC Dropout·ECE) 관련 논문·실험 경험을 그대로 보여 줄 수 있는 사람에게 유리하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지·제품명·고객·매출·인원을 찾지 못했다(추측 도메인 무응답)",
+    "연구원 자리가 시니어/리드급(원티드)인지 팀원급(사람인)인지"
+  ],
+  "postings": []
+}

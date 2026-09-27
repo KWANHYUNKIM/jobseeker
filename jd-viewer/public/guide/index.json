@@ -1060,6 +1060,18 @@
       "postings": 5,
       "study_items": 7,
       "updated_at": "2026-09-27"
+    },
+    {
+      "slug": "siot",
+      "name": "시옷",
+      "aliases": [
+        "시옷",
+        "㈜시옷"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-27"
     }
   ]
 }
