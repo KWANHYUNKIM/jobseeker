@@ -8,7 +8,7 @@
     "㈜이스트시큐리티",
     "ESTsecurity"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-27",
   "site": "estsoft.ai",
   "one_liner": "알툴즈·알약으로 알려진 SW 회사가 AI 아바타·대화형 AI·AI 더빙(Perso)·AI 검색(Alan)으로 옮겨 가는 중 — 모집중 공고 다수는 보안 자회사 이스트시큐리티 자리다",
@@ -923,6 +923,20 @@
           ]
         }
       ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55104732&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=97a531e5-43a4-4f9d-8fcf-4528ca229933",
+      "title": "보안S/W 기술지원 경력 채용",
+      "site": "saramin",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55104659&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=bf62239b-8596-48c8-ac64-857aee31c984",
+      "verdict": "⚠️ **같은 팀 같은 업무를 연차만 바꿔 따로 올린 게시다** — 팀 소개(ECM기술지원팀), 주요업무 세 줄, 자격요건 다섯 줄, 우대사항 다섯 줄이 사람인 `보안S/W 기술지원 신입 채용`(55104659)과 글자 그대로 같다. 학습 항목은 그쪽을 본다. 다른 것은 경력 표기 '1~15년' 뿐이고 마감(2026-10-21)·근무지(반포대로 3)도 같다. 경력자라면 우대의 'Endpoint 솔루션의 구축/유지보수 경력' 과 보안 자격증(CISSP·CISA·정보보안기사)이 신입보다 무겁게 읽힐 것이다."
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55104492&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=f96e3de5-3217-415d-bfe3-e3f91529e780",
+      "title": "[ESTsecurity] 보안S/W 기술지원 신입/경력",
+      "site": "saramin",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=55104659&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=bf62239b-8596-48c8-ac64-857aee31c984",
+      "verdict": "⚠️ **같은 자리를 신입/경력 묶음으로 한 번 더 올린 게시다** — 크롤된 업무·자격·우대 칸은 비어 있지만 본문의 회사·팀 소개, '이런 업무를 담당합니다' 세 줄, '이런 역량을 갖춘 분을 찾습니다' 다섯 줄, 우대 다섯 줄이 사람인 `보안S/W 기술지원 신입 채용`(55104659)과 같다. 학습 항목은 그쪽을 본다. 여기에만 적힌 것은 전형 '서류심사 > 실무진인터뷰 > 인성검사 > 최종인터뷰 > 처우협의 > 최종합격', 접수 '채용 시 마감'(수시, 조기 마감 가능), 마감 표기 10/22(목)이다. 신입(55104659)·경력(55104732) 공고와 같은 자리이므로 한 곳으로만 지원한다."
     }
   ]
 }
