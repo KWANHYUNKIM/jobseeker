@@ -2756,3 +2756,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 Legalscape 쿼리 확장 모델 선택
 
 - 기능 `llm-query-expansion-model-choice` — FRAMES · BM25 고정 · 6 모델, 결정 8(1-hop · 공개 데이터 · 검색 단계 지표 · 모델 구성 · 같은 프롬프트 · 하위 사실별 n=3 · 성능 대 값 · 다양성). 수익원 연결은 inferred.
+
+## 2026-09-27 Legalscape 인라인 사용자 사전
+
+- 기능 `kuromoji-inline-user-dictionary` — 토크나이저 · 분할 모양 · 인라인 대 파일 · Blue-Green 교체 · 규모 상한 · 계측 방법 · took 측정 · explain 확인, 결정 8. 쿼리 확장 기능 · 구독 수익원과 inferred 연결.

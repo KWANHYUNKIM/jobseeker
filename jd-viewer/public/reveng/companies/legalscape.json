@@ -109,7 +109,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "kuromoji-inline-user-dictionary"
+      ]
     },
     {
       "name": "Cloud Run 이 기본인 곳에서, GKE 로 넘어가는 호출을 위치가 아닌 신원으로 막는다",
@@ -516,6 +518,410 @@
           "publisher": "Legalscape",
           "date": "2026-05-29",
           "summary": "Labs 팀 글. RAG 에서 쿼리 확장은 정석이지만 '어느 급의 LLM 으로 해야 하나'를 공개 데이터로 잰다 — FRAMES(824 문항, 한 문항에 정답 위키 문서 평균 3.2 개) · 영어 위키 약 650 만 쪽 · BM25 고정 · 1-hop 확장(질문당 쿼리 3 개, 하위 사실마다 다른 쿼리를 내라는 프롬프트 · Structured Output). 6 모델 + 확장 없는 bm25-only. 모든 모델이 확장 없음보다 낫고 Recall@10 개선은 gemini-3.5-flash +41.9% 최고, gpt-5.4-nano/mini 는 +16~18% 로 뒤처짐. 비용 대비로는 gemini-3.1-flash-lite 가 3 배 비싼 3-flash 에 근접. 표 읽기형 질문에서 개선이 가장 크다. 남은 과제: 지연 시간, dense · 하이브리드 검색에서의 효과, multi-step 검색 계획. 법률 질문도 '답에 필요한 출처가 여럿'이라 이 데이터셋을 골랐다고."
+        }
+      ]
+    },
+    {
+      "key": "kuromoji-inline-user-dictionary",
+      "name": "'金融商品取引法' 을 어디서 자를까 — 서버리스 검색에 인라인 사용자 사전을 싣고, 몇 건까지 버티는지 재고, 바꿀 땐 인덱스째 갈아 끼운다",
+      "domain": "법률 용어를 어떻게 쪼갤지 — 전문 용어 사전을 서버리스 검색에 싣는다",
+      "updated_at": "2026-09-27",
+      "business": {
+        "why": "법률처럼 전문 용어가 많은 도메인에서는 토크나이저가 검색 품질을 크게 좌우한다. 기본 사전(IPADIC)대로 '金融商品取引法' 을 金融 / 商品 / 取引 / 法 으로 쪼개면 '金融商品' 검색이 '商品レビュー' · '金融政策' 에도 걸려 점수가 흩어지고(과분할), 통째로 한 토큰으로 두면 '取引法' 으로는 그 문서가 안 나온다(과통합).\n\n용어를 어떻게 자를지 토크나이저에 알려 주는 게 사용자 사전이다. 그런데 노드를 완전히 추상화한 서버리스 검색은 파일 시스템도 커스텀 플러그인도 막혀 사전 파일을 올릴 수 없다. Labs 팀은 서버리스에서 남는 유일한 길 — 인덱스 설정 안에 직접 적는 인라인 사전 — 이 몇 건까지 실용적인지 재 봤다.",
+        "metrics": [
+          {
+            "label": "질의 시간(서버 측 took 중앙값)",
+            "value": "사전 100 건 2 ms → 20 만 건 4 ms(크기 2,000 배에 약 2 배)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "label": "인덱스 설정 크기",
+            "value": "건당 약 107 바이트 — 20 만 건에 20 MB 넘음(클러스터 스테이트에 실림)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "label": "인덱스 생성 시간",
+            "value": "1 만 건 4.6 초 · 10 만 건 71 초 · 20 만 건 159 초 — 같은 데이터 재시험에선 50 만 건 36 초(측정 간 최대 약 9 배 차)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "label": "실패 조건",
+            "value": "건수 상한이 아니라 약 320 초 게이트웨이 타임아웃(Broken pipe)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "사전에 무엇을 넣을지",
+          "thought": "어떤 말을 어떤 분할 형식으로 사전에 넣을지는 검색 용도에 달렸고 한 가지 정답은 없다 — 과분할과 과통합 사이의 균형이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+              "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+              "publisher": "Legalscape",
+              "date": "2026-05-20",
+              "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+            }
+          ]
+        },
+        {
+          "at": "인라인 방식을 볼 때",
+          "thought": "인라인 사전은 API 만으로 끝나 손쉽지만, 사전이 문서처럼 '얼마든지 쌓을 수 있는' 성질은 아니다 — 메타데이터 경로(클러스터 스테이트)에 실린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+              "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+              "publisher": "Legalscape",
+              "date": "2026-05-20",
+              "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+            }
+          ]
+        },
+        {
+          "at": "실패를 읽을 때",
+          "thought": "50 만 건이 세 번 다 약 320 초에 끊겼다 — 건수 상한이 있다는 명시적 오류가 아니라 생성이 게이트웨이 타임아웃 안에 끝나지 못한 것이다. 그때의 클러스터 상태가 결과를 가른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+              "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+              "publisher": "Legalscape",
+              "date": "2026-05-20",
+              "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+            }
+          ]
+        },
+        {
+          "at": "비용이 어디 드는지",
+          "thought": "사전은 인덱스를 만들 때 한 번 FST 로 컴파일되고 질의는 완성된 FST 를 따라갈 뿐이다 — 사전을 키우는 비용은 질의 때가 아니라 인덱스를 만들 때 몰린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+              "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+              "publisher": "Legalscape",
+              "date": "2026-05-20",
+              "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "토크나이저",
+            "what": "텍스트를 검색 단위(토큰)로 자르는 것 — n-gram · Kuromoji · Sudachi. 무엇에 걸릴지를 정한다."
+          },
+          {
+            "name": "사용자 사전 엔트리",
+            "what": "표층형 · 분할 토큰열 · 읽기 · 품사 네 칸 CSV 한 줄 — 적힌 대로 강제로 자른다."
+          },
+          {
+            "name": "인라인 사전(user_dictionary_rules)",
+            "what": "인덱스 설정 JSON 안에 직접 적는 엔트리 목록 — 파일 배포가 필요 없다."
+          },
+          {
+            "name": "클러스터 스테이트",
+            "what": "모든 노드에 복제되는 메타데이터 — 인라인 사전이 여기 실린다."
+          },
+          {
+            "name": "인덱스 · 별칭",
+            "what": "사전은 인덱스 생성 때 굳는다 — 앱은 별칭만 바라보고 뒤의 인덱스를 갈아 끼운다."
+          }
+        ],
+        "invariants": [
+          "파일 사전(user_dictionary)과 인라인 사전은 한 토크나이저에 동시에 둘 수 없다.",
+          "같은 표층형 엔트리를 두 번 적으면 오류다.",
+          "사전을 바꾸면 기존 문서의 역색인은 옛 사전 그대로다 — 전체 재색인이 필요하다.",
+          "사전 엔트리는 문맥과 상관없이 적힌 대로 자른다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "용어마다 어떻게 자를지 정해 네 칸 CSV 엔트리로 적는다(金融商品取引法 → 金融商品 · 取引法)",
+            "why": "과분할과 과통합 사이 — 부분어로도 찾히고 엉뚱한 문서엔 덜 걸리게."
+          },
+          {
+            "step": "새 인덱스 설정의 kuromoji_tokenizer(search 모드)에 user_dictionary_rules 로 넣어 인덱스를 만든다",
+            "why": "서버리스에선 파일을 못 올린다."
+          },
+          {
+            "step": "_analyze(explain: true)로 토큰과 품사를 보고 사전 유래인지 확인한다",
+            "why": "사전이 실제로 먹었는지 눈으로 본다."
+          },
+          {
+            "step": "옛 인덱스에서 _reindex 로 문서를 복사한다",
+            "why": "옛 역색인은 옛 사전으로 만들어져 있다."
+          },
+          {
+            "step": "_aliases 한 번의 요청으로 별칭을 옛 인덱스에서 새 인덱스로 원자 교체한다",
+            "why": "서버리스는 _close 가 막혀 제자리 수정이 안 된다 — 끊김 없이 바꾸는 유일한 길."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "어떤 토크나이저로 일본어를 자르나?",
+            "chosen": "**Kuromoji(형태소 분석) + 사용자 사전 — 서버리스에 기본 동봉이라 추가 설치 없이 쓴다.**",
+            "alternatives": [
+              "n-gram(사전 불필요, 글자 수로 자름)",
+              "Sudachi(표기 정규화 · 3 단계 분할 입도, 전문가가 사전을 갱신)"
+            ],
+            "tradeoff": "의미 있는 단위로 잘리고 어디서나 돈다. 대가는 기본 사전에 없는 말에 약하다는 것 — 그래서 사용자 사전이 필요하다. Sudachi 는 '긴 단위 완전 일치 + 짧은 단위 부분 일치'를 함께 할 수 있지만 서버리스엔 못 올리고, 사전 빌드 · 관리 비용이 늘었다는 타사(엠스리) 사례가 있다. 서비스가 실제로 어느 쪽인지는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "question": "전문 용어를 사전에 어떤 모양으로 넣나?",
+            "chosen": "**용도에 맞춰 뜻 있는 부분어로 자른 모양을 적는다 — 金融商品取引法 → 金融商品 / 取引法, 機械学習은 한 토큰 그대로.**",
+            "alternatives": [
+              "기본 사전대로 둔다(과분할)",
+              "용어 전체를 한 토큰으로(과통합)"
+            ],
+            "tradeoff": "'金融商品' 이 한 토큰이 돼 엉뚱한 문맥에 덜 걸리고, '取引法' 으로도 찾힌다. 대가는 Kuromoji 사전이 적힌 대로 강제로 자를 뿐이라 문맥 따라 분할을 바꾸지 못한다는 것 — 한 가지 정답도 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "question": "사전을 파일로 두나, 인덱스 설정에 적나?",
+            "chosen": "**인라인(user_dictionary_rules) — 서버리스에서 사용자 사전을 쓰는 유일한 방법.**",
+            "alternatives": [
+              "파일(user_dictionary) — config 에 두고 모든 노드에 배포, 매니지드는 번들 · S3 패키지로 배포"
+            ],
+            "tradeoff": "파일 배포 없이 API 로 끝난다(ES 7.4 부터, 동의어 필터의 인라인 · 파일 이중 지원과 같은 설계). 대가는 사전이 클러스터 스테이트에 실려 모든 노드에 복제된다는 것 — 건수가 늘면 노드 기동 · 복구 비용에 영향이 간다. 둘은 동시에 못 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "question": "사전을 바꿀 때 어떻게 하나?",
+            "chosen": "**Blue-Green — 새 사전으로 새 인덱스를 만들고 _reindex 한 뒤 별칭을 원자 교체한다.**",
+            "alternatives": [
+              "인덱스를 닫고(_close) 설정을 고친 뒤 다시 연다",
+              "_reload_search_analyzers 로 핫 리로드"
+            ],
+            "tradeoff": "서버리스에선 _close 가 막혀 있고, 핫 리로드는 동의어 필터 전용이라 토크나이저 사전엔 안 먹는다. 별칭 교체면 검색이 끊기지 않는다. 대가는 매번 전체 재색인이고, 재색인 도중 들어온 등록 · 갱신을 어떻게 다룰지 미리 설계해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "question": "인라인 사전은 몇 건까지 싣나?",
+            "chosen": "**업무 도메인 전문 용어(수백~수천 건)까지 — 수십만 건은 운영에 부적합, NEologd 급(수백만)은 사실상 불가.**",
+            "alternatives": [
+              "범용 대사전(NEologd)을 통째로 싣는다",
+              "대규모 사전이 필요하면 셀프 호스트 · 매니지드의 파일 사전이나 Sudachi"
+            ],
+            "tradeoff": "수천 건이면 생성 수 초 · 설정 1 MB 미만으로 문제없다. 대가는 규모 — 설정이 건당 약 107 바이트로 선형 증가하고, 생성이 약 320 초를 넘으면 그때 클러스터 상태에 따라 실패한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "question": "'몇 건까지'를 어떻게 재나?",
+            "chosen": "**Sudachi full 사전에서 뽑은 복합어 약 140 만 건 중 100~500,000 건을 단계별로 — 단계마다 3 번 중앙값, 생성 시간 · 설정 크기 · _analyze · 갱신 가부를 잰다. 후일 재시험 · 최대 90 분 방치 뒤 재측정도 한다.**",
+            "alternatives": [
+              "문서 · 벤더 설명만 믿는다",
+              "한 번만 잰다"
+            ],
+            "tradeoff": "특정 도메인에 치우치지 않은 범용 어휘로 규모만 바꿔 본다. 재시험 덕에 생성 시간이 '그 시점 클러스터 상태의 스냅숏' 이라는 걸 알았다(같은 데이터 최대 약 9 배 차). 대가는 법률 용어 사전 자체로 잰 게 아니고, 결과가 GCP us-central1 · ES 9.5.0 한 환경의 값이라는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "question": "질의 속도는 무엇으로 재나?",
+            "chosen": "**서버 측 처리 시간(_search 의 took)을 사전을 실제로 타는 쿼리로 크기별 100 번씩.**",
+            "alternatives": [
+              "클라이언트에서 잰 _analyze 경과 시간만"
+            ],
+            "tradeoff": "_analyze 경과는 470~530 ms 로 왕복 시간이 지배해 사전 크기 영향을 가린다 — took 으로 보니 중앙값 2 → 4 ms. 대가는 가끔 10~20 ms 튐이 있다는 것(사전 크기와 상관은 없었다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          },
+          {
+            "question": "사전이 실제로 먹었는지 어떻게 확인하나?",
+            "chosen": "**_analyze API 에 explain: true — 토큰별 품사 · 읽기로 사전 유래 토큰을 가린다.**",
+            "alternatives": [
+              "검색 결과만 보고 짐작"
+            ],
+            "tradeoff": "'金融商品取引法についての解説' 이 金融商品 / 取引法 / について / の / 解説 로 나오는 걸 직접 본다. 대가는 토큰 확인이지 검색 품질 평가는 아니라는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+                "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+                "publisher": "Legalscape",
+                "date": "2026-05-20",
+                "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "llm-query-expansion-model-choice",
+          "via": "키워드 검색(BM25)",
+          "contract": "쿼리 확장이 만든 키워드 쿼리도 결국 토크나이저가 자른 토큰으로 문서에 맞춰진다 — 사전이 무엇에 걸릴지를 정한다. 다만 쿼리 확장 실험은 영어 위키 BM25 였고, 서비스 검색에서 두 글의 구성이 한 파이프라인에 있는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+              "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+              "publisher": "Legalscape",
+              "date": "2026-05-20",
+              "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+            },
+            {
+              "title": "クエリ拡張に使うLLMの違いは、検索性能にどれくらい効くのか",
+              "url": "https://tech.legalscape.co.jp/entry/2026/05/29/095159",
+              "publisher": "Legalscape",
+              "date": "2026-05-29",
+              "summary": "Labs 팀 글. RAG 에서 쿼리 확장은 정석이지만 '어느 급의 LLM 으로 해야 하나'를 공개 데이터로 잰다 — FRAMES(824 문항, 한 문항에 정답 위키 문서 평균 3.2 개) · 영어 위키 약 650 만 쪽 · BM25 고정 · 1-hop 확장(질문당 쿼리 3 개, 하위 사실마다 다른 쿼리를 내라는 프롬프트 · Structured Output). 6 모델 + 확장 없는 bm25-only. 모든 모델이 확장 없음보다 낫고 Recall@10 개선은 gemini-3.5-flash +41.9% 최고, gpt-5.4-nano/mini 는 +16~18% 로 뒤처짐. 비용 대비로는 gemini-3.1-flash-lite 가 3 배 비싼 3-flash 에 근접. 표 읽기형 질문에서 개선이 가장 크다. 남은 과제: 지연 시간, dense · 하이브리드 검색에서의 효과, multi-step 검색 계획. 법률 질문도 '답에 필요한 출처가 여럿'이라 이 데이터셋을 골랐다고."
+            }
+          ]
+        },
+        {
+          "to": "리걸 리서치 구독(스탠더드 · 프리미엄)(수익원)",
+          "via": "법률 문헌 검색",
+          "contract": "구독 서비스는 서적 · 판례 · 법령을 가로질러 찾는다 — 글은 법률 같은 전문 도메인에서 용어 분할이 검색 품질을 좌우한다는 데서 출발한다. 서비스가 서버리스 · 인라인 사전 구성인지는 쓰여 있지 않다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+              "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+              "publisher": "Legalscape",
+              "date": "2026-05-20",
+              "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
+            },
+            {
+              "title": "AIリーガルリサーチ・判例検索なら「リーガルスケープ」",
+              "url": "https://www.legalscape.jp/",
+              "publisher": "Legalscape",
+              "summary": "업무용 전제(개인 · 학생 이용 불가)의 리걸 리서치 서비스. 4,500 권 넘는 법률 서적 · 판례(D1-Law.com 판례체계 연계) · 법령 약 8,000 건 · 가이드라인 · 퍼블릭 코멘트 약 28,000 건을 AI 가 가로질러 찾고, 출처를 밝혀 요약한다. 원전으로 건너가는 링크와 '지금 읽는 문헌을 인용한 다른 문헌' 역인용 기능, 바인더 공유. 플랜은 스탠더드 · 프리미엄 두 가지(금액 표기 없음). 무료 트라이얼 → 별도로 본 이용 신청(자동 전환 안 됨). 트라이얼 후 설문(N=633)에서 약 80% 가 리서치 시간 단축을 느꼈다고."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "용어 하나가 검색 토큰이 되기까지",
+          "question": "사전 한 줄은 어디를 지나 검색에 먹나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  T[\"전문 용어\\n金融商品取引法\"] --> E[\"엔트리 CSV\\n金融商品 取引法\"]\n  E --> IX[\"새 인덱스 설정\\nuser_dictionary_rules\"]\n  IX --> CS[\"클러스터 스테이트\\n모든 노드에 복제\"]\n  IX --> FST[\"FST 컴파일\\n생성 때 한 번\"]\n  FST --> AN[\"_analyze explain\\n토큰 확인\"]\n  AN --> RX[\"_reindex\"]\n  RX --> AL[\"별칭 원자 교체\\n검색 무중단\"]"
+        },
+        {
+          "title": "사전 한 벌의 일생",
+          "question": "사전은 언제 굳고 어떻게 바뀌나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 작성: 엔트리 CSV\n  작성 --> 생성중: 새 인덱스 설정에 실음\n  생성중 --> 실패: 약 320 초 초과\n  실패 --> 작성: 건수 줄이기 · 다시 시도\n  생성중 --> 대기: FST 완성\n  대기 --> 서비스중: reindex 후 별칭 교체\n  서비스중 --> 작성: 용어 추가 · 분할 변경\n  서비스중 --> [*]: 다음 교체 뒤 옛 인덱스 폐기"
+        },
+        {
+          "title": "사전이 커질 때 무너지는 곳",
+          "question": "사전을 키우면 어디서 먼저 탈이 나나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"엔트리 수십만 건\"] --> B[\"설정 20 MB 넘음\\n건당 약 107 B\"]\n  B --> C[\"클러스터 스테이트 비대\\n노드 기동 · 복구 부담\"]\n  A --> D[\"인덱스 생성 수 분\"]\n  D --> E{\"약 320 초 안에 끝나나\"}\n  E -- \"아니오\" --> F[\"Broken pipe — 생성 실패\"]\n  E -- \"예\" --> G[\"질의는 여전히 수 ms\"]\n  H[\"_close 사용 불가\"] --> I[\"제자리 수정 불가 → 재색인만\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Elasticsearchにおける「ユーザー辞書」の利用方法を整理する — Serverlessならインライン辞書",
+          "url": "https://tech.legalscape.co.jp/entry/2026/05/20/132856",
+          "publisher": "Legalscape",
+          "date": "2026-05-20",
+          "summary": "Labs 팀 글. 법률처럼 전문 용어가 많은 도메인은 토크나이저가 검색 품질을 좌우한다 — n-gram · Kuromoji · Sudachi 비교, '金融商品取引法' 을 쪼개면 과분할(엉뚱한 문서에 걸림), 통째로 두면 과통합(부분어로 못 찾음). Kuromoji 사용자 사전은 파일 방식과 인라인(user_dictionary_rules) 방식이 있고, Serverless 에선 파일을 못 올려 인라인만 가능. 인라인 사전은 클러스터 스테이트에 실려 약 107 바이트/건씩 커지고, 만들 때만 비싸고 질의 시간은 사전 크기와 거의 무관(10 만 → 20 만 건에서도 수 ms). 수천 건은 문제없고 수십만 건은 약 320 초 게이트웨이 타임아웃에 걸릴 수 있다. Serverless 는 _close 가 막혀 사전을 바꾸려면 새 인덱스 + _reindex + 별칭 원자 교체(Blue-Green)뿐. 실제 서비스가 이 구성인지는 쓰여 있지 않다."
         }
       ]
     }
