@@ -232,5 +232,90 @@
     "'.NET 풀스택' 공고의 실제 업무가 Flutter 모바일인지 .NET 인지",
     "'대형병원 현장 근무' 가 상주 근무를 뜻하는지"
   ],
-  "postings": []
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/331808",
+      "title": "의료IT S/W 개발자 (2년 이상)",
+      "site": "wanted",
+      "verdict": "경력 2년 이상, IT 관련 전공·업무 경력, 서울 중구. **병원정보시스템(HIS) 응용 개발자**다. 공고 본문이 매우 짧다 — 주요업무는 '응용소프트웨어 개발 구축 및 유지보수', 구축형태 'On-Premise / Cloud' 두 줄뿐이고, 사용 언어·프레임워크는 적혀 있지 않다. 우대는 **병원정보시스템 개발 경력**, **대학병원·종합병원 전산 시스템 개발 경력**이며, 우대사항 적합자는 이력 확인 뒤 '업계 최고 대우' 를 한다고 적는다. 전형은 서류 → **코딩테스트** → 1차면접 → 2차면접. 회사가 구축형(BESTCare)과 클라우드형(EDGE&NEXT)을 함께 팔고(홈페이지) 사우디 등 해외 구축도 하므로, 어느 제품·어느 고객 병원 프로젝트에 배치되는지와 기술 스택을 면접에서 먼저 확인해야 한다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "개발 2년",
+          "IT 전공 또는 경력"
+        ],
+        "can_learn": [
+          "병원 업무 흐름(처방·진료·원무)",
+          "의료 데이터 표준(HL7·FHIR)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "병원정보시스템이 하는 일 — 처방·진료기록·원무",
+          "from": "preference",
+          "quote": "· 병원정보시스템 개발 업무 경력자",
+          "priority": "core",
+          "why": "우대사항이고, 공고 본문이 짧아 도메인 지식이 곧 차이를 만든다. 회사 전체 사업이 HIS 다.",
+          "gap_check": "의사가 처방을 입력하면(처방전달, CPOE) 약제·검사·원무로 무엇이 흘러가는가? 전자의무기록(EMR)과 병원 전체 HIS 는 범위가 어떻게 다른가? 병원 시스템에서 '저장 전 확인' 과 '수정 이력 보존' 이 일반 웹 서비스보다 엄격한 이유는?",
+          "drill": "Hospital information system·Electronic health record·CPOE 문서를 읽고, 외래 환자 한 명의 흐름(접수 → 진료 → 처방 → 수납 → 약 수령)을 그려 단계마다 생기는 데이터와 담당 부서를 표로 만든다. 처방 테이블에 수정 이력을 남기는 간단한 스키마를 설계한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Hospital information system — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Hospital_information_system",
+              "kind": "docs"
+            },
+            {
+              "title": "Electronic health record — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Electronic_health_record",
+              "kind": "docs"
+            },
+            {
+              "title": "Computerized physician order entry — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Computerized_physician_order_entry",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "병원 시스템 간 데이터 연동 표준 — HL7 과 FHIR",
+          "from": "preference",
+          "quote": "· 대학병원 및 종합병원 전산 시스템 개발 경력자",
+          "priority": "high",
+          "why": "우대사항이다. 대학병원 전산은 검사장비·영상·외부 기관과 연동이 많고, 해외 구축(사우디)에서는 국제 표준이 더 중요해진다.",
+          "gap_check": "HL7 v2 메시지와 FHIR 리소스(Patient, Observation 등)는 데이터를 어떻게 다르게 표현하는가? 병원마다 코드 체계가 다를 때 연동은 어디서 맞추는가?",
+          "drill": "HL7 문서와 FHIR Overview 를 읽고, 공개 FHIR 테스트 서버에서 Patient·Observation 을 조회·생성해 본다. 앞 과제의 처방 스키마를 FHIR 리소스로 옮길 때 대응되는 필드와 안 맞는 필드를 표로 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Overview — FHIR",
+              "url": "https://hl7.org/fhir/overview.html",
+              "kind": "docs"
+            },
+            {
+              "title": "HL7 — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Health_Level_7",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "구축형과 클라우드형 — 같은 제품을 두 방식으로 배포하기",
+          "from": "task",
+          "quote": "· 구축형태 : On-Premise / Cloud",
+          "priority": "high",
+          "why": "주요업무에 On-Premise / Cloud 두 구축형태가 적혀 있고, 회사가 구축형 BESTCare 와 클라우드형 EDGE&NEXT 를 나눠 판다(홈페이지).",
+          "gap_check": "병원마다 따로 설치하는 구축형과 여러 병원이 한 시스템을 쓰는 클라우드형(멀티테넌시)은 데이터 분리·업데이트·장애 영향 범위에서 무엇이 다른가? 병원별 맞춤 요구가 들어오면 두 방식에서 각각 어떻게 반영하는가?",
+          "drill": "Multitenancy 문서를 읽고, 앞 과제 스키마를 (a) 병원별 DB (b) 공유 DB + 병원 ID 컬럼 두 방식으로 만들어 본다. 병원 한 곳만 새 필드를 원할 때와 한 병원의 데이터를 통째로 내보내야 할 때 각 방식의 작업량을 비교해 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Multitenancy — Wikipedia",
+              "url": "https://en.wikipedia.org/wiki/Multitenancy",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
