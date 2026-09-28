@@ -72,8 +72,8 @@ def search_jobs(query: str, limit: int = 10, open_only: bool = True,
 
 @mcp.tool(annotations=RO)
 def get_job(job_id: str) -> dict:
-    """공고 한 건(job_id 는 search_jobs 결과의 id, 예: 'wanted-12345'). 주요업무·자격요건·우대사항은
-    앞부분만 준다 — 전문은 url 의 원문에서."""
+    """공고 한 건. job_id 는 search_jobs 결과의 id(예: 'wanted-12345') 또는 원문 URL.
+    주요업무·자격요건·우대사항은 앞부분만 준다 — 전문은 url 의 원문에서."""
     j = data.get_job(job_id)
     return _wrap(j) if j else _miss(f"공고 {job_id}")
 

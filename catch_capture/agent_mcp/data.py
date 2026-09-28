@@ -155,9 +155,18 @@ def search_jobs(query: str, *, limit: int = 10, open_only: bool = True,
     return {"engine": engine, "count": len(out), "jobs": out}
 
 
+def resolve_id(job_id_or_url: str) -> str | None:
+    """공고 id('wanted-12345') 또는 원문 URL → id. /apply 는 사용자가 붙여 넣은 URL 로 시작하기도 한다."""
+    j = jobs()
+    x = (job_id_or_url or "").strip()
+    if x in j["by_key"]:
+        return x
+    return j["by_url"].get(x) or j["by_url"].get(x.rstrip("/"))
+
+
 def get_job(job_id: str) -> dict | None:
-    s = jobs()["by_key"].get(job_id)
-    return job_card(s, full=True) if s else None
+    k = resolve_id(job_id)
+    return job_card(jobs()["by_key"][k], full=True) if k else None
 
 
 # ── 회사 ──────────────────────────────────────────────────────────────
@@ -272,9 +281,11 @@ KW_SPLIT = re.compile(r"[,\n/·•\-()\[\]]+")
 def job_keywords(job_id: str) -> dict | None:
     """공고가 요구하는 말 — 지원서가 이 말들을 담았는지 **사용자 쪽에서** 대조하게 준다.
     지원서 본문을 이 서버로 받지 않으려고 대조는 하지 않는다(개인정보가 우리를 거치지 않게)."""
-    s = jobs()["by_key"].get(job_id)
-    if not s:
+    k = resolve_id(job_id)
+    if not k:
         return None
+    s = jobs()["by_key"][k]
+    job_id = k
     tech = list(s.get("tech_stack") or [])
     phrases = []
     for k in ("qualifications", "preferences"):
