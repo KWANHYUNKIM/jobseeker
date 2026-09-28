@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { Sidebar } from './components/Sidebar'
 import { JobList } from './components/JobList'
 import { JobDetail } from './components/JobDetail'
@@ -93,9 +93,13 @@ function App() {
 
   const searchAvailable = useSearchAvailable()
   const semanticOn = semantic && searchAvailable
-  const { hits, loading: searching, engines } = useHybridSearch(filter.query, semanticOn, filter)
+  // 목록·칩 건수는 1만 7천 건을 다시 훑는 일이라 입력 칸과 같은 렌더에 두면 글자가
+  // 늦게 찍힌다. 입력 칸은 filter 로 바로 그리고, 무거운 계산은 한 박자 늦은 사본으로
+  // 한다 — 빠르게 치는 동안의 중간 값은 React 가 건너뛴다.
+  const view = useDeferredValue(filter)
+  const { hits, loading: searching, engines } = useHybridSearch(view.query, semanticOn, view)
 
-  const localFiltered = useMemo(() => applyFilter(jobs, filter), [jobs, filter])
+  const localFiltered = useMemo(() => applyFilter(jobs, view), [jobs, view])
 
   // 의미 검색이 돌 때는 API 가 매긴 관련도 순서가 결과의 핵심이라 그대로 따른다.
   // API 는 url 만 돌려주므로 여기서 실제 Job 으로 되돌린다.
@@ -104,11 +108,11 @@ function App() {
     const byUrl = new Map(jobs.map((j) => [j.url, j]))
     const found = hits.map((h) => byUrl.get(h.url)).filter((j): j is Job => Boolean(j))
     // 지역·규모는 API 가 모르는 축이라 여기서 한 번 더 건다(순서는 그대로 둔다).
-    return applyLocalFacets(found, filter)
-  }, [hits, localFiltered, jobs, filter])
+    return applyLocalFacets(found, view)
+  }, [hits, localFiltered, jobs, view])
   // 칩 건수는 필터를 타야 한다. 예전에는 jobs 전체로 셌더니, 목록은 '모집중만'
   // 3천 건인데 사이드바는 마감까지 합친 1만 건을 말하고 있었다.
-  const facets = useMemo(() => computeFacets(jobs, filter), [jobs, filter])
+  const facets = useMemo(() => computeFacets(jobs, view), [jobs, view])
 
   // 공고 상세는 공고별 제목·설명·JobPosting 구조화 데이터를 쓰고, 그 외 탭은
   // 탭 문구를 쓴다. 검색어가 걸린 목록은 색인하지 않는다(같은 목록의 무한 변형이라

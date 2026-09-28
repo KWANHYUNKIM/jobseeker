@@ -40,6 +40,19 @@ export function emptyFilter(): FilterState {
 // 않으므로 객체 자체를 키로 캐시한다.
 const placeCache = new WeakMap<object, Place>()
 const rolesCache = new WeakMap<object, string[]>()
+// 검색 대상 문자열. 본문(full_jd)이 전부 합쳐 3천만 자라 글자 하나 칠 때마다
+// 이어 붙이고 소문자로 바꾸면 그것만 100ms 가까이 들었다(목록·칩 건수에서 두 번).
+// 한 번 만들어 두면 includes 만 남는다 — 전량 6ms.
+const hayCache = new WeakMap<object, string>()
+
+function hayOf(j: Job): string {
+  let h = hayCache.get(j)
+  if (h === undefined) {
+    h = (j.company + '\n' + j.title + '\n' + j.full_jd).toLowerCase()
+    hayCache.set(j, h)
+  }
+  return h
+}
 
 function place(j: Job): Place {
   let p = placeCache.get(j)
@@ -92,10 +105,7 @@ function matchesBase(j: Job, f: FilterState, q: string): boolean {
   if (f.closed === 'only' && !isClosed) return false
   // 마감된 공고에는 적용하지 않는다 — 마감 여부가 이미 확정된 자리다.
   if (f.unverified === 'hide' && !isClosed && j.status_source === 'unknown') return false
-  if (q) {
-    const hay = (j.company + '\n' + j.title + '\n' + j.full_jd).toLowerCase()
-    if (!hay.includes(q)) return false
-  }
+  if (q && !hayOf(j).includes(q)) return false
   return true
 }
 
@@ -195,7 +205,7 @@ export function computeFacets(jobs: Job[], f: FilterState): Facets {
 export function roleCounts(jobs: Job[]): { name: string; count: number }[] {
   const c = new Map<string, number>()
   for (const j of jobs) {
-    for (const r of classifyRoles(j.title, j.tech_stack, j.qualifications || '')) {
+    for (const r of rolesOf(j)) {
       c.set(r, (c.get(r) ?? 0) + 1)
     }
   }
