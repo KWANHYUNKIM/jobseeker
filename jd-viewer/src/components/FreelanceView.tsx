@@ -33,13 +33,170 @@ interface Project {
   summary: string
   tags: string[]
   status: 'active' | 'closed'
+  closed_reason?: string
+  history?: HistoryEntry[]
   first_seen_at: string
   last_seen_at: string
+}
+
+/** 월 단가 가운데 값(만원). 월 단가가 아니면 null. */
+function monthlyMid(b: Budget | null): number | null {
+  if (!b || b.type !== 'monthly') return null
+  const lo = b.min ?? b.max
+  const hi = b.max ?? b.min
+  return lo != null && hi != null ? (lo + hi) / 2 : null
+}
+
+/** 올라온 뒤 단가가 바뀌었으면 첫 값→마지막 값. */
+function budgetMove(p: Project): { from: number; to: number; pct: number } | null {
+  const vals = (p.history ?? []).map((h) => monthlyMid(h.budget)).filter((v): v is number => v != null)
+  if (vals.length < 2 || vals[0] === vals[vals.length - 1]) return null
+  const from = vals[0]
+  const to = vals[vals.length - 1]
+  return { from, to, pct: Math.round(((to - from) / from) * 1000) / 10 }
+}
+
+// ── 단가 추이 — 주별 상주 월 단가 중앙값(막대) + 기술별 단가 표 + 단가를 바꾼 프로젝트 ──
+function TrendPanel({ trend }: { trend: Trend }) {
+  const [hover, setHover] = useState<number | null>(null)
+  const weeks = trend.weekly.filter((w) => w.onsite != null)
+  const max = Math.max(1, ...weeks.map((w) => w.onsite ?? 0))
+  const W = 560
+  const H = 150
+  const pad = { l: 36, r: 8, t: 10, b: 22 }
+  const bw = weeks.length ? (W - pad.l - pad.r) / weeks.length : 0
+  const y = (v: number) => pad.t + (H - pad.t - pad.b) * (1 - v / max)
+  const ticks = [0, Math.round(max / 2), Math.round(max)]
+  const hv = hover != null ? weeks[hover] : null
+
+  return (
+    <div className="grid gap-4 p-4 border-b border-(--color-border) bg-(--color-panel)/40 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+      <section>
+        <h3 className="text-sm font-semibold text-(--color-text)">상주 프로젝트 월 단가 중앙값 (주별, 만원)</h3>
+        <p className="text-[11px] text-(--color-muted) mb-1">
+          그 주에 새로 올라온 자리의 <b>올라올 때 단가</b>로 셉니다. 나중에 내린 값은 오른쪽 목록에서 따로 봅니다.
+        </p>
+        {weeks.length === 0 ? (
+          <p className="text-xs text-(--color-muted)">아직 주별로 셀 만큼 쌓이지 않았습니다. 사이클이 돌수록 채워집니다.</p>
+        ) : (
+          <div className="relative">
+            <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="주별 상주 월 단가 중앙값">
+              {ticks.map((t) => (
+                <g key={t}>
+                  <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="var(--color-border)" strokeWidth={1} />
+                  <text x={pad.l - 4} y={y(t) + 3} textAnchor="end" fontSize={9} fill="var(--color-muted)">
+                    {t}
+                  </text>
+                </g>
+              ))}
+              {weeks.map((w, i) => {
+                const v = w.onsite ?? 0
+                const x = pad.l + i * bw + 1
+                const top = y(v)
+                const h = H - pad.b - top
+                const r = Math.min(4, (bw - 2) / 2, h)
+                return (
+                  <g key={w.week} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
+                    {/* 막대보다 넓은 히트 영역 */}
+                    <rect x={pad.l + i * bw} y={pad.t} width={bw} height={H - pad.t - pad.b} fill="transparent" />
+                    <path
+                      d={`M${x},${H - pad.b} V${top + r} Q${x},${top} ${x + r},${top} H${x + bw - 2 - r} Q${x + bw - 2},${top} ${x + bw - 2},${top + r} V${H - pad.b} Z`}
+                      fill="var(--color-accent)"
+                      opacity={hover == null || hover === i ? 1 : 0.45}
+                    />
+                    {(i === 0 || i === weeks.length - 1 || i % 4 === 0) && (
+                      <text x={x + (bw - 2) / 2} y={H - 8} textAnchor="middle" fontSize={9} fill="var(--color-muted)">
+                        {w.week.slice(5)}
+                      </text>
+                    )}
+                  </g>
+                )
+              })}
+            </svg>
+            {hv && (
+              <div className="absolute top-0 right-0 text-[11px] rounded border border-(--color-border) bg-(--color-panel) px-2 py-1 shadow-sm">
+                <b className="text-(--color-text)">{hv.week} 주</b>
+                <div className="text-(--color-muted)">
+                  상주 {hv.onsite?.toLocaleString()}만원 · 전체 {hv.median?.toLocaleString()}만원 · {hv.n}건
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 min-w-0">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-(--color-text) mb-1">기술별 월 단가 (모집중)</h3>
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-(--color-muted)">
+                <th className="text-left font-normal">기술</th>
+                <th className="text-right font-normal">중앙값</th>
+                <th className="text-right font-normal">범위</th>
+                <th className="text-right font-normal">건</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trend.by_skill.slice(0, 10).map((s) => (
+                <tr key={s.skill} className="border-t border-(--color-border)">
+                  <td className="py-0.5 text-(--color-text)">{s.skill}</td>
+                  <td className="text-right tabular-nums text-(--color-text)">{Math.round(s.median).toLocaleString()}</td>
+                  <td className="text-right tabular-nums text-(--color-muted)">
+                    {Math.round(s.min)}~{Math.round(s.max)}
+                  </td>
+                  <td className="text-right tabular-nums text-(--color-muted)">{s.n}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-(--color-text) mb-1">올라온 뒤 단가를 바꾼 프로젝트</h3>
+          {trend.budget_moves.length === 0 ? (
+            <p className="text-xs text-(--color-muted)">
+              아직 없습니다. 같은 프로젝트의 단가가 사이클 사이에 바뀌면 여기에 쌓입니다.
+            </p>
+          ) : (
+            <ul className="text-xs flex flex-col gap-1">
+              {trend.budget_moves.slice(0, 8).map((m) => (
+                <li key={m.id} className="flex gap-2">
+                  <span className="truncate flex-1 text-(--color-text)">{m.title}</span>
+                  <span className="tabular-nums text-(--color-muted) shrink-0">
+                    {m.from}→{m.to}
+                  </span>
+                  <span className={`tabular-nums shrink-0 ${m.pct < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                    {m.pct > 0 ? '+' : ''}
+                    {m.pct}%
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+interface HistoryEntry {
+  at: string
+  budget: Budget | null
+  status: 'active' | 'closed'
+  duration: string
+  applicants: number | null
+}
+
+interface Trend {
+  weekly: { week: string; n: number; median: number | null; onsite: number | null; remote: number | null }[]
+  by_skill: { skill: string; n: number; median: number; min: number; max: number }[]
+  budget_moves: { id: string; title: string; from: number; to: number; pct: number; at: string }[]
 }
 
 interface FreelanceData {
   updated_at: string
   sources: Record<string, { ok: boolean; fetched: number; error?: string }>
+  trend?: Trend
   projects: Project[]
 }
 
@@ -134,6 +291,7 @@ export function FreelanceView() {
   const [sort, setSort] = useState<Sort>('new')
   const [query, setQuery] = useState('')
   const [expanded, setExpanded] = useState<string | null>(null)
+  const [showTrend, setShowTrend] = useState(false)
 
   // 마감일이 지났는데 원본 재확인 전이면 여기서 닫는다(뷰어의 useJobs 와 같은 규칙).
   const projects = useMemo(() => {
@@ -251,6 +409,11 @@ export function FreelanceView() {
             모집중만
           </button>
           <div className="ml-auto flex items-center gap-2">
+            {data.trend && (
+              <button className={chip(showTrend)} onClick={() => setShowTrend((v) => !v)}>
+                단가 추이
+              </button>
+            )}
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as Sort)}
@@ -265,12 +428,15 @@ export function FreelanceView() {
       </div>
 
       <main data-scroll className="flex-1 min-h-0 overflow-auto jd-panel">
+        {showTrend && data.trend && <TrendPanel trend={data.trend} />}
         {shown.length === 0 ? (
           <EmptyState title="조건에 맞는 프로젝트가 없습니다" hint="필터를 풀거나 검색어를 바꿔 보세요." />
         ) : (
           <ul className="grid gap-3 p-4 grid-cols-1 xl:grid-cols-2">
             {slice.map(({ p, open, stale }) => {
               const isOpen = expanded === p.id
+              const move = budgetMove(p)
+              const changes = (p.history ?? []).length
               const dday =
                 p.deadline && open
                   ? Math.ceil((Date.parse(p.deadline) - Date.parse(todayKst())) / 86_400_000)
@@ -297,8 +463,20 @@ export function FreelanceView() {
                           </span>
                         ))}
                         {!open && (
-                          <span className="px-1.5 py-0.5 rounded bg-(--color-bg) text-(--color-muted)">
+                          <span
+                            className="px-1.5 py-0.5 rounded bg-(--color-bg) text-(--color-muted)"
+                            title={p.closed_reason}
+                          >
                             {stale ? `${STALE_DAYS}일 넘게 안 보임` : '마감'}
+                          </span>
+                        )}
+                        {move && (
+                          <span
+                            className={`px-1.5 py-0.5 rounded ${move.pct < 0 ? 'bg-rose-500/15 text-rose-600' : 'bg-emerald-500/15 text-emerald-600'}`}
+                            title="올라온 뒤 월 단가가 바뀌었습니다"
+                          >
+                            단가 {move.from}→{move.to} ({move.pct > 0 ? '+' : ''}
+                            {move.pct}%)
                           </span>
                         )}
                         {dday !== null && dday <= 7 && (
@@ -342,16 +520,51 @@ export function FreelanceView() {
                   )}
 
                   {p.summary && p.summary.length > 30 && (
-                    <div className="text-xs text-(--color-muted)">
-                      <p className={`whitespace-pre-line ${isOpen ? '' : 'line-clamp-2'}`}>{p.summary}</p>
-                      <button
-                        className="mt-0.5 text-(--color-accent) hover:underline"
-                        onClick={() => setExpanded(isOpen ? null : p.id)}
-                      >
-                        {isOpen ? '접기' : '더 보기'}
-                      </button>
+                    <p className={`text-xs text-(--color-muted) whitespace-pre-line ${isOpen ? '' : 'line-clamp-2'}`}>
+                      {p.summary}
+                    </p>
+                  )}
+
+                  {isOpen && (
+                    <div className="text-xs border-t border-(--color-border) pt-2">
+                      <div className="text-(--color-muted) mb-1">
+                        처음 본 날 {p.first_seen_at.slice(0, 10)} · 마지막으로 본 날 {p.last_seen_at.slice(0, 10)}
+                        {p.closed_reason && ` · ${p.closed_reason}`}
+                      </div>
+                      <table className="w-full">
+                        <thead>
+                          <tr className="text-(--color-muted)">
+                            <th className="text-left font-normal">시각</th>
+                            <th className="text-left font-normal">단가</th>
+                            <th className="text-left font-normal">기간</th>
+                            <th className="text-left font-normal">상태</th>
+                            <th className="text-right font-normal">지원</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(p.history ?? []).map((h) => (
+                            <tr key={h.at} className="border-t border-(--color-border)">
+                              <td className="py-0.5 tabular-nums">{h.at.slice(0, 16).replace('T', ' ')}</td>
+                              <td>{budgetLabel(h.budget)}</td>
+                              <td>{h.duration || '—'}</td>
+                              <td>{h.status === 'closed' ? '마감' : '모집중'}</td>
+                              <td className="text-right tabular-nums">{h.applicants ?? '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {changes <= 1 && (
+                        <p className="mt-1 text-(--color-muted)">아직 바뀐 적이 없습니다 — 단가·상태·기간이 바뀌면 한 줄씩 쌓입니다.</p>
+                      )}
                     </div>
                   )}
+
+                  <button
+                    className="self-start text-xs text-(--color-accent) hover:underline"
+                    onClick={() => setExpanded(isOpen ? null : p.id)}
+                  >
+                    {isOpen ? '접기' : `세부 내역${changes > 1 ? ` · 변경 ${changes - 1}회` : ''}`}
+                  </button>
                 </li>
               )
             })}
