@@ -38,6 +38,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_captu
 import json
 import re
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, datetime
@@ -96,6 +97,14 @@ def _int(v) -> int | None:
         return None
 
 
+def _manwon(n: int | None) -> int | None:
+    """단가는 만원 단위로 맞춘다. 원 단위로 적힌 것('5,500,000원')을 만원으로 읽으면 월 550억이
+    된다 — DB 의 project_budget_sane 가 실제로 이걸 잡았다. 10만 이상이면 원으로 본다."""
+    if n is None:
+        return None
+    return round(n / 10000) if n >= 100000 else n
+
+
 def _skills(raw, text: str = "") -> list[str]:
     if isinstance(raw, list):
         items = [str(s).strip() for s in raw]
@@ -104,6 +113,8 @@ def _skills(raw, text: str = "") -> list[str]:
     items = [s for s in items if s and len(s) <= 40]
     if not items and text:
         items = extract_tech_stack(text)
+    # 표기를 채용 쪽 기술 사전에 맞춘다 — 'JAVA'·'java' 가 'Java' 와 따로 세어지지 않게.
+    items = [(c[0] if len(c := extract_tech_stack(s)) == 1 else s) for s in items]
     seen, out = set(), []
     for s in items:
         if s.lower() not in seen:
@@ -285,8 +296,8 @@ def fetch_elancer(limit: int, known: set[str]) -> list[dict]:
         desc = ld.get("description") or ""
         title = ld.get("title") or ""
         pay = EL_PAY_RE.search(desc)
-        lo = _int(pay.group(1)) if pay else None
-        hi = _int(pay.group(2)) if pay and pay.group(2) else lo
+        lo = _manwon(_int(pay.group(1))) if pay else None
+        hi = _manwon(_int(pay.group(2))) if pay and pay.group(2) else lo
         term = EL_TERM_RE.search(title) or EL_TERM_RE.search(desc)
         loc = ""
         for place in ld.get("jobLocation") or []:
@@ -470,7 +481,7 @@ IM_ITEM_RE = re.compile(r'<a href="/work/employ_detail\.html\?(?:page=\d+&(?:amp
 
 
 def _won_range(text: str) -> tuple[int | None, int | None]:
-    nums = [_int(n) for n in re.findall(r"[\d,]+", text or "")]
+    nums = [_manwon(_int(n)) for n in re.findall(r"[\d,]+", text or "")]
     nums = [n for n in nums if n]
     if not nums or "협의" in (text or ""):
         return None, None
@@ -589,6 +600,164 @@ def _load() -> dict:
         return {"projects": []}
 
 
+# ── 이력 — 단가가 얼마나 내려갔나 ─────────────────────────────────────
+# 프로젝트마다 '바뀐 순간'만 남긴다(매 회차 쌓으면 같은 말이 수백 줄). 단가·모집 상태·
+# 기간이 바뀌면 한 줄. 지원자 수는 계속 오르니 기준에서 빼고 그 순간 값만 싣는다.
+HISTORY_MAX = 30
+
+
+def _snap(p: dict, at: str) -> dict:
+    return {"at": at, "budget": p.get("budget"), "status": p.get("status"),
+            "duration": p.get("duration"), "applicants": p.get("applicants")}
+
+
+def _history(old: dict | None, new: dict, now: str) -> list[dict]:
+    if old is None:
+        return [_snap(new, now)]
+    hist = list(old.get("history") or []) or [_snap(old, old.get("first_seen_at") or now)]
+    last = hist[-1]
+    if (last.get("budget") != new.get("budget") or last.get("status") != new.get("status")
+            or last.get("duration") != new.get("duration")):
+        hist.append(_snap(new, now))
+    return hist[-HISTORY_MAX:]
+
+
+# ── 재확인 — 목록에서 빠진 모집중 프로젝트를 원본에 묻는다 ─────────────
+RECHECK_LIMIT = 60          # 회차당. 요청 간격(SLEEP_MS)을 지키면 1~2분
+SISM_GONE_DAYS = 2          # SISM 은 상세를 받지 않는다 — 게재 기간이 끝나면 목록에서 빠진다
+
+
+def _check(p: dict, today: date, cache: dict) -> tuple[str, str] | None:
+    """(status, 근거) — 모르면 None(모집중 유지)."""
+    site, pid = p["site"], p["pid"]
+    if site == "wanted_gigs":
+        try:
+            d = json.loads(_request(f"{WG_API}/{pid}", referer="https://www.wanted.co.kr/gigs/projects"))
+        except urllib.error.HTTPError as e:
+            return ("closed", f"원본 삭제(HTTP {e.code})") if e.code in (404, 410) else None
+        p["applicants"] = _int(d.get("apply_count")) or p.get("applicants")
+        if d.get("recruitingStatus") != "open" and not d.get("is_recruiting"):
+            return "closed", f"원본 상태 {d.get('recruitingStatus') or 'closed'}"
+        return "active", "원본 확인: 모집중"
+    if site == "elancer":
+        html = _request(p["url"]).decode("utf-8", "replace")
+        if "JobPosting" not in html:
+            return "closed", "원본 삭제(상세 없음)"
+        m = re.search(r'"validThrough"\s*:\s*"(\d{4}-\d{2}-\d{2})', html)
+        if m and m.group(1) < today.isoformat():
+            return "closed", f"마감일 경과({m.group(1)})"
+        return "active", "원본 확인: 모집중"
+    if site in ("jobkorea", "saramin"):
+        from pipeline.close_check import CHECKERS          # 채용 쪽 판정기를 그대로 쓴다
+        v = CHECKERS[site]({"site": site, "pid": pid, "url": p["url"]}, today, cache)
+        return (v.status, v.reason) if v.status in ("closed", "active") else None
+    if site == "imjob":
+        html = _request(p["url"]).decode("cp949", "replace")
+        st = _pick(r'<td class="employ-status"[^>]*>(.*?)</td>', html)
+        if "마감" in st:
+            return "closed", "원본 확인: 접수마감"
+        return ("active", "원본 확인: 모집중") if st else None
+    if site == "sism":
+        seen = datetime.fromisoformat(p["last_seen_at"])
+        if (datetime.now().astimezone() - seen).days >= SISM_GONE_DAYS:
+            return "closed", f"게재 기간 종료(목록에서 {SISM_GONE_DAYS}일 넘게 안 보임)"
+        return None
+    return None   # freemoa: 목록에 마감 표시가 같이 나온다 — 오래 안 보이면 화면이 stale 로 가린다
+
+
+def recheck(candidates: list[dict], now: str) -> list[dict]:
+    """오래 안 물어본 것부터 RECHECK_LIMIT 건. 닫힌 것은 status·closed_at·근거를 채운다."""
+    today = date.today()
+    cache: dict = {}
+    todo = sorted(candidates, key=lambda p: p.get("checked_at") or "")[:RECHECK_LIMIT]
+    changed, closed = [], 0
+    for p in todo:
+        try:
+            res = _check(p, today, cache)
+        except Exception as e:                                       # noqa: BLE001
+            res = None
+            print(f"  [recheck] {p['id']} 실패: {str(e)[:80]}", flush=True)
+        p["checked_at"] = now
+        if res and res[0] == "closed":
+            old_status = dict(p)
+            p["status"], p["closed_reason"], p["closed_at"] = "closed", res[1], now
+            p["history"] = _history(old_status, p, now)
+            closed += 1
+        changed.append(p)
+        if p["site"] != "sism":
+            _sleep()
+    if todo:
+        print(f"[freelance] 재확인 {len(todo)}건 → 마감 {closed}건", flush=True)
+    return changed
+
+
+# ── 추이 — 단가 흐름을 화면에 바로 그릴 수 있게 미리 센다 ───────────────
+def _median(xs: list[float]) -> float | None:
+    xs = sorted(xs)
+    if not xs:
+        return None
+    n = len(xs)
+    return xs[n // 2] if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2
+
+
+def _monthly(p: dict, first: bool = False) -> float | None:
+    """월 단가(만원). first=True 면 처음 봤을 때의 단가 — 시장 추이는 '올라올 때 값'으로 센다."""
+    b = ((p.get("history") or [{}])[0].get("budget") if first else None) or p.get("budget")
+    if not b or b.get("type") != "monthly":
+        return None
+    lo, hi = b.get("min"), b.get("max")
+    v = ((lo or hi) + (hi or lo)) / 2 if (lo or hi) else None
+    return v if v and 100 <= v <= 3000 else None      # 월 100만~3천만 밖은 표기 사고로 본다
+
+
+def trend(projects: list[dict], started_at: str = "") -> dict:
+    from collections import defaultdict
+    weeks: dict = defaultdict(lambda: defaultdict(list))
+    for p in projects:
+        v = _monthly(p, first=True)
+        if v is None:
+            continue
+        # 등록일이 없는 곳은 '처음 본 날'로 센다. 단 첫 수집 날 한꺼번에 들어온 것은 그 주에
+        # 올라온 게 아니라 이미 있던 자리라 뺀다 — 넣으면 첫 주 표본만 300건으로 부푼다.
+        if not p.get("posted_date") and (p.get("first_seen_at") or "")[:10] == started_at[:10]:
+            continue
+        d = (p.get("posted_date") or p.get("first_seen_at") or "")[:10]
+        try:
+            day = date.fromisoformat(d)
+        except ValueError:
+            continue
+        wk = (day.toordinal() - day.weekday())           # 그 주 월요일
+        key = date.fromordinal(wk).isoformat()
+        weeks[key]["all"].append(v)
+        weeks[key][p.get("kind") or "?"].append(v)
+    weekly = [{"week": k, "n": len(v["all"]), "median": _median(v["all"]),
+               "onsite": _median(v.get("onsite", [])), "remote": _median(v.get("remote", []))}
+              for k, v in sorted(weeks.items())][-16:]
+
+    by_skill: dict = defaultdict(list)
+    for p in projects:
+        v = _monthly(p)
+        if v is None or p.get("status") != "active":
+            continue
+        for s in set(_skills(p.get("skills") or [])):     # 옛 표기('JAVA')도 여기서 합친다
+            by_skill[s].append(v)
+    skills = sorted(({"skill": s, "n": len(v), "median": _median(v), "min": min(v), "max": max(v)}
+                     for s, v in by_skill.items() if len(v) >= 3), key=lambda x: -x["n"])[:20]
+
+    # 올라온 뒤 단가를 바꾼 프로젝트 — '얼마나 내렸나'의 직접 증거.
+    moves = []
+    for p in projects:
+        hist = [h for h in p.get("history") or [] if (h.get("budget") or {}).get("type") == "monthly"]
+        if len(hist) < 2:
+            continue
+        a, b = _monthly({"budget": hist[0]["budget"]}), _monthly({"budget": hist[-1]["budget"]})
+        if a and b and a != b:
+            moves.append({"id": p["id"], "title": p["title"], "from": a, "to": b,
+                          "pct": round((b - a) / a * 100, 1), "at": hist[-1]["at"]})
+    moves.sort(key=lambda m: m["pct"])
+    return {"weekly": weekly, "by_skill": skills, "budget_moves": moves[:50]}
+
+
 def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
     """모든 소스를 돌려 누적 파일을 갱신한다. 한 소스가 실패해도 나머지는 저장한다."""
     now = datetime.now().astimezone().isoformat(timespec="seconds")
@@ -623,15 +792,26 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
                     p.pop("closed_at", None)
             if p["status"] == "closed":
                 p["closed_at"] = (old or {}).get("closed_at") or now
+                p.setdefault("closed_reason", (old or {}).get("closed_reason") or "원본 목록: 모집 마감")
             p["last_seen_at"] = now
+            p["history"] = _history(old, p, now)
             by_id[p["id"]] = p
             touched.append(p)
         report[site]["elapsed"] = round(time.time() - t0, 1)
         print(f"[freelance] {site}: {report[site]['fetched']}건 ({report[site]['elapsed']}s)", flush=True)
 
+    # 사람을 구하면 목록에서 빠진다. 빠진 채로 두면 '모집중'으로 남으니 원본에 다시 묻는다.
+    seen_now = {p["id"] for p in touched}
+    rechecked = recheck([p for p in by_id.values()
+                         if p["status"] == "active" and p["id"] not in seen_now
+                         and (not only or p["site"] in only)], now)
+    touched.extend(rechecked)
+
     projects = sorted(by_id.values(),
                       key=lambda p: (p.get("posted_date") or p.get("first_seen_at") or ""), reverse=True)
-    out = {"updated_at": now, "sources": report, "projects": projects}
+    started_at = doc.get("started_at") or min((p.get("first_seen_at") or now for p in projects), default=now)
+    out = {"updated_at": now, "started_at": started_at, "sources": report,
+           "trend": trend(projects, started_at), "projects": projects}
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     tmp = OUT_PATH.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")

@@ -10,6 +10,11 @@
     all_jobs 와 섞지 않고 `public/freelance.json` 에 누적하며, 사이클 끝의 별도 단계로 돈다
     (crawl_all `--no-freelance` 로 끈다). 뷰어 `/freelance` 탭이 읽는다. DB 는 `project` 계열
     (`db/migrations/005`, `store/freelance.py` 로 이중 쓰기) — job 과 따로 두되 tech 사전은 공유한다.
+    **사람을 구하면 닫힌다** — 목록에서 빠진 모집중 프로젝트를 회차당 60건씩 원본에 다시 묻는다
+    (긱스 상세 API·이랜서 JSON-LD·잡코리아/사람인은 close_check 판정기·아임잡 상세 상태·SISM 은
+    이틀 안 보이면 게재 종료). **단가 이력**: 단가·상태·기간이 바뀐 순간만 프로젝트의 `history`
+    와 DB `project_version`(006)에 쌓고, 주별 월 단가 중앙값·기술별 단가·단가를 바꾼 프로젝트를
+    `trend` 로 미리 세어 둔다(화면의 '단가 추이'). 추이는 '올라올 때 단가'로 센다.
     위시켓(약관 금지)·OKKY(robots 전면 차단)·크몽(스크래핑 금지)은 일부러 뺐다.
   - `pipeline/` : 통합/중복제거/마감분류(aggregate, job_status), 수동보정(overrides)
     마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에
