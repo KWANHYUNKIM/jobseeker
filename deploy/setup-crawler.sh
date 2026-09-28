@@ -33,6 +33,16 @@ COUNT="${CRAWL_COUNT:-50}"
 # 중복 기동하지 않지만, 주기는 실제 소요에 맞춰 1시간으로 둔다.
 INTERVAL="${CRAWL_INTERVAL:-3600}"
 
+# 마감 재확인 — 크롤과 떼어 따로 돈다. 크롤 사이클 끝의 400건(시간당)만으로는
+# 모집중 9천여 건을 하루에 한 바퀴 돌기 빠듯했고, 크롤이 실패하면 재확인도 같이
+# 멈춰 '들어가 보니 채용 종료'인 공고가 쌓였다. auto_crawl 의 "대기 중 10분마다"
+# 루프는 데몬(start) 모드에만 있어서 launchd(once) 로 도는 여기서는 한 번도 안 돌았다.
+# 원장은 close_check 가 잠그므로 크롤 쪽 재확인과 겹치면 뒤에 온 쪽이 건너뛴다.
+CC_LABEL="com.jobseeker.closecheck"
+CC_PLIST="$HOME/Library/LaunchAgents/$CC_LABEL.plist"
+CC_INTERVAL="${CLOSE_CHECK_INTERVAL:-600}"
+CC_LIMIT="${CLOSE_CHECK_LIMIT:-100}"
+
 log()  { printf '\033[1;34m▶\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!\033[0m %s\n' "$*"; }
 die()  { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
@@ -42,6 +52,8 @@ if [ "${1:-}" = "--uninstall" ]; then
   log "스케줄 해제"
   launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || launchctl unload -w "$PLIST" 2>/dev/null || true
   rm -f "$PLIST"
+  launchctl bootout "gui/$(id -u)/$CC_LABEL" 2>/dev/null || true
+  rm -f "$CC_PLIST"
   log "해제 완료 (venv 와 데이터는 그대로 둔다)"
   exit 0
 fi
@@ -108,6 +120,65 @@ reload_plist() {
   launchctl print "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || die "launchd 등록 실패"
 }
 
+# 마감 재확인 plist. 크롤과 달리 등록 즉시 한 번 돈다 — 맥이 켜지자마자 밀린
+# 재확인부터 따라잡게.
+write_cc_plist() {  # $1 = 쓸 경로
+  cat > "$1" <<PLIST_EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$CC_LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$VENV/bin/python</string>
+    <string>-m</string>
+    <string>pipeline.close_check</string>
+    <string>--limit</string>
+    <string>$CC_LIMIT</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>$CATCH</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+  </dict>
+  <key>StartInterval</key>
+  <integer>$CC_INTERVAL</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>$HOME/Library/Logs/jobseeker-closecheck.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>$HOME/Library/Logs/jobseeker-closecheck.err.log</string>
+</dict>
+</plist>
+PLIST_EOF
+  plutil -lint "$1" >/dev/null || die "closecheck plist 문법 오류"
+}
+
+# 기본값이 바뀌었을 때만 다시 등록한다. 도는 중에 bootout 돼도 close_check 는
+# 25건마다 원장을 저장하므로 잃는 건 마지막 몇 건뿐이다.
+sync_cc_plist() {
+  local tmp
+  tmp="$(mktemp -t jobseeker-closecheck-plist)"
+  write_cc_plist "$tmp"
+  if [ -f "$CC_PLIST" ] && cmp -s "$tmp" "$CC_PLIST"; then
+    rm -f "$tmp"
+    log "마감 재확인 스케줄 최신 상태"
+    return
+  fi
+  mv "$tmp" "$CC_PLIST"
+  launchctl bootout "gui/$(id -u)/$CC_LABEL" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$CC_PLIST"
+  launchctl print "gui/$(id -u)/$CC_LABEL" >/dev/null 2>&1 || die "closecheck launchd 등록 실패"
+  log "마감 재확인 등록 — ${CC_INTERVAL}초마다 ${CC_LIMIT}건 ($CC_LABEL)"
+}
+
 # 실행 여부는 launchd 에 직접 묻는다. pgrep -f 는 명령줄에 이 문자열이 들어간
 # 아무 셸이나(모니터링 one-liner, 이 스크립트를 논하는 파이프라인) 함께 잡는다.
 crawl_running() {
@@ -123,6 +194,10 @@ crawl_running() {
 # 의존성 설치는 건드리지 않는다 — 배포마다 pip/Playwright 를 재설치할 이유가 없다.
 if [ "${1:-}" = "--reschedule" ]; then
   [ -f "$PLIST" ] || { log "크롤 스케줄이 등록돼 있지 않습니다 — 재등록 건너뜀"; exit 0; }
+
+  # 마감 재확인은 크롤이 돌고 있어도 갱신한다(원장 잠금이 겹침을 막는다).
+  # 크롤 스케줄이 있는 머신이면 이것도 있어야 한다 — 없으면 여기서 새로 깐다.
+  sync_cc_plist
 
   tmp="$(mktemp -t jobseeker-crawler-plist)"
   trap 'rm -f "$tmp"' EXIT
@@ -198,6 +273,7 @@ log "launchd 등록 ($LABEL, ${INTERVAL}초 주기)"
 write_plist "$PLIST"
 reload_plist
 log "등록 완료 — ${INTERVAL}초마다 '${KEYWORD}' ${COUNT}건 크롤"
+sync_cc_plist
 
 echo
 echo "  상태 :  launchctl print gui/\$(id -u)/$LABEL | head -20"

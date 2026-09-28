@@ -654,9 +654,48 @@ def due_jobs(jobs: list[dict], entries: dict, now: datetime, *,
     return mixed
 
 
+LOCK_PATH = CLOSURES_PATH.with_suffix(".lock")
+_EMPTY = {"checked": 0, "closed": 0, "active": 0, "unknown": 0, "posted": 0}
+
+
+def _try_lock(fh) -> bool:
+    """원장 잠금(비차단). 이미 누가 잡고 있으면 False."""
+    try:
+        if _sys.platform == "win32":
+            import msvcrt
+            msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return True
+    except OSError:
+        return False
+
+
 def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float | None = RECHECK_DAYS,
         sites: set[str] | None = None, dry_run: bool = False,
         recheck_closed: bool = False, verbose: bool = True) -> dict:
+    """원장을 잡고 한 회차를 돈다.
+
+    재확인은 두 곳에서 돈다 — 크롤 사이클 끝(auto_crawl)과, 크롤과 떼어 낸 주기 작업
+    (launchd `com.jobseeker.closecheck`, 10분마다). 둘 다 원장을 통째로 읽고 통째로
+    쓰므로 겹치면 늦게 끝난 쪽이 먼저 끝난 쪽의 판정을 지운다. 겹치면 뒤에 온 쪽이
+    이번 회차를 건너뛴다 — 다음 주기에 다시 온다. dry-run 은 쓰지 않으니 잡지 않는다.
+    """
+    if dry_run:
+        return _run(limit, recheck_days=recheck_days, sites=sites, dry_run=True,
+                    recheck_closed=recheck_closed, verbose=verbose)
+    LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(LOCK_PATH, "a+") as fh:
+        if not _try_lock(fh):
+            print("[close_check] 다른 재확인이 원장을 쓰는 중 — 이번 회차는 건너뜀", flush=True)
+            return dict(_EMPTY)
+        return _run(limit, recheck_days=recheck_days, sites=sites, dry_run=False,
+                    recheck_closed=recheck_closed, verbose=verbose)
+
+
+def _run(limit: int, *, recheck_days: float | None, sites: set[str] | None,
+         dry_run: bool, recheck_closed: bool, verbose: bool) -> dict:
     today = today_date()
     # 시간대를 붙여 둔다. 원장·DB 에 naive 로 쓰면 DB(UTC 세션)가 한국 시각을 UTC 로
     # 읽어 확인 시각이 9시간 미래로 저장된다(db/migrations/002).
@@ -664,7 +703,7 @@ def run(limit: int = LIMIT_DEFAULT, *, recheck_days: float | None = RECHECK_DAYS
     jobs, src = _source_jobs(recheck_closed)
     if not jobs:
         print("[close_check] 확인할 공고 목록을 찾지 못했습니다.", flush=True)
-        return {"checked": 0, "closed": 0, "active": 0, "unknown": 0, "posted": 0}
+        return dict(_EMPTY)
 
     ledger = load_closures(force=True)
     entries: dict = ledger.setdefault("checked", {})
