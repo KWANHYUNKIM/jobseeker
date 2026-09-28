@@ -616,6 +616,58 @@ async function pollAutoguide() {
   try { renderAutoguide(await fetchJSON("/api/autoguide")); } catch (e) {}
 }
 
+// 취업 브리핑 — 조사 끝난 회사 목록. 행을 누르면 브리핑이 다룬 공고가 펼쳐진다.
+let guideData = null;
+function renderGuide(g) {
+  if (g) guideData = g;
+  g = guideData;
+  if (!g) return;
+  const cs = g.companies || [];
+  const done = cs.filter((c) => c.status === "done").length;
+  $("guideSub").textContent = `index ${g.updated_at || "—"}`;
+  const cards = [
+    ["조사 완료", done], ["진행 중", cs.length - done], ["대기열", (g.queue || []).length],
+    ["공고", cs.reduce((a, c) => a + c.postings, 0)], ["학습 항목", cs.reduce((a, c) => a + c.study_items, 0)],
+  ];
+  $("guideStats").innerHTML = cards.map(([label, n]) =>
+    `<div class="site done"><div class="site-name">${label}</div>` +
+    `<div class="site-count">${n.toLocaleString()}</div><div class="site-status">&nbsp;</div></div>`).join("");
+  const doing = cs.filter((c) => c.status !== "done").map((c) => esc(c.name));
+  $("guideQueue").innerHTML =
+    (doing.length ? `진행 중: <b>${doing.join(", ")}</b> · ` : "") +
+    ((g.queue || []).length ? `다음 차례: ${g.queue.map((q) => esc(q.name)).join(" → ")}` : "대기열 비어 있음");
+
+  const q = ($("guideFilter").value || "").trim().toLowerCase();
+  const rows = cs.filter((c) => !q || `${c.name} ${c.name_en} ${c.one_liner}`.toLowerCase().includes(q));
+  $("guideTable").querySelector("tbody").innerHTML = rows.map((c, i) => {
+    const tag = c.status === "done" ? "" : ` <span class="pill pill-warn">진행 중</span>`;
+    const posts = (c.posting_list || []).map((p) =>
+      `<li><span class="muted">${esc(p.site)}</span> ` +
+      (p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>` : esc(p.title)) + `</li>`).join("");
+    return `<tr class="guiderow" data-i="${i}"><td class="nowrap"><b>${esc(c.name)}</b>${tag}` +
+      `${c.name_en ? `<div class="muted">${esc(c.name_en)}</div>` : ""}</td>` +
+      `<td>${esc((c.one_liner || "").replace(/\*\*/g, ""))}</td><td class="nowrap">${c.postings}</td><td class="nowrap">${c.study_items}</td>` +
+      `<td class="nowrap">${c.salary ? "O" : "—"}</td><td class="nowrap muted">${esc(c.updated_at)}</td></tr>` +
+      `<tr class="guidedetail hide" data-for="${i}"><td colspan="6"><ul>${posts || "<li class=muted>공고 없음</li>"}</ul>` +
+      `<div class="muted">공개 인물 ${c.people}명</div></td></tr>`;
+  }).join("") || `<tr><td colspan="6" class="muted">맞는 회사가 없습니다</td></tr>`;
+}
+$("guideFilter").addEventListener("input", () => renderGuide());
+$("guideTable").addEventListener("click", (e) => {
+  const tr = e.target.closest("tr.guiderow");
+  if (!tr || e.target.closest("a")) return;
+  const d = $("guideTable").querySelector(`tr[data-for="${tr.dataset.i}"]`);
+  if (d) d.classList.toggle("hide");
+});
+async function pollGuide() {
+  // 30초마다 다시 그리면 펼쳐 둔 행이 접힌다 — 목록이 바뀐 때만 다시 그린다.
+  try {
+    const g = await fetchJSON("/api/guide");
+    const sig = JSON.stringify([g.updated_at, g.companies.length, g.queue.length, g.companies.map((c) => c.status)]);
+    if (sig !== pollGuide.sig) { pollGuide.sig = sig; renderGuide(g); }
+  } catch (e) {}
+}
+
 async function pollHealth() {
   try { renderHistory(await fetchJSON("/api/health?n=30")); } catch (e) {}
   // 집계는 사이클마다 한 번이라 자주 볼 이유가 없다 — health 와 같은 주기에 얹는다.
@@ -626,11 +678,13 @@ pollState();
 pollEvents();
 pollHealth();
 pollAutoguide();
+pollGuide();
 pollPublish();
 setInterval(pollState, 2000);
 setInterval(pollEvents, 3000);
 setInterval(pollHealth, 10000);
 setInterval(pollAutoguide, 30000);
+setInterval(pollGuide, 30000);
 // 데몬이 5분마다 도니 15초면 충분하다.
 setInterval(pollPublish, 15000);
 setInterval(tickCountdown, 1000);

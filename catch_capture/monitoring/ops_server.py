@@ -10,6 +10,7 @@
   GET /api/health?n=N  → health_history.jsonl 최근 N줄 (기본 30)
   GET /api/engagement  → public/engagement.json (방문·유입·행동 점수)
   GET /api/publish     → 인스타 자동 발행 원장 요약(design-lab/state/, 읽기 전용)
+  GET /api/guide       → 취업 브리핑(guide-engine) 조사 완료 회사 + 대기열
 
 사용법:
     python -m monitoring.ops_server            # 8770 포트
@@ -204,6 +205,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._send_json(_autoguide_summary())
             return
 
+        if path == "/api/guide":
+            self._send_json(_guide_summary())
+            return
+
         if path == "/api/publish":
             self._send_json(_publish_summary())
             return
@@ -274,6 +279,47 @@ def _autoguide_summary() -> dict:
             "facts": bool(c.get("has_facts")), "salary": bool(c.get("has_salary")),
         } for c in cos[:AUTOGUIDE_TOP]],
     }
+
+
+# 취업 브리핑(guide-engine) — 사람이 쓴 브리핑. 뷰어는 공고 상세 패널에서 한 회사씩만
+# 보여 주므로 "어디까지 조사했나"를 볼 곳이 여기뿐이다. 읽는 것은 뷰어가 이미 공개로
+# 서빙하는 public/guide/ 와 대기열 회사 이름뿐 — 새로 드러나는 것은 없다.
+GUIDE_DIR = VIEWER_PUBLIC / "guide"
+GUIDE_QUEUE = CATCH_DIR.parent / "guide-engine" / "state" / "QUEUE.md"
+
+
+def _queue_names() -> list[dict]:
+    """QUEUE.md `## 대기` 표의 첫 두 열. 머리말에 같은 글자가 있어 줄 시작으로 찾는다."""
+    try:
+        md = GUIDE_QUEUE.read_text(encoding="utf-8")
+    except OSError:
+        return []
+    start = md.find("\n## 대기")
+    if start < 0:
+        return []
+    end = md.find("\n## ", start + 1)
+    rows = [ln.strip().strip("|").split("|") for ln in md[start:end if end > 0 else None].splitlines()
+            if ln.strip().startswith("|")][2:]
+    return [{"name": r[0].strip(), "counts": r[1].strip() if len(r) > 1 else ""} for r in rows]
+
+
+def _guide_summary() -> dict:
+    index = _read_json(GUIDE_DIR / "index.json")
+    out = []
+    for c in index.get("companies") or []:
+        doc = _read_json(GUIDE_DIR / "companies" / f"{c.get('slug')}.json")
+        bands = ((doc.get("salary") or {}).get("bands")) or []
+        out.append({
+            "name": c.get("name", ""), "name_en": doc.get("name_en", ""),
+            "status": c.get("status", ""), "postings": c.get("postings", 0),
+            "study_items": c.get("study_items", 0), "updated_at": c.get("updated_at", ""),
+            "one_liner": doc.get("one_liner", ""), "salary": bool(bands),
+            "people": len(doc.get("people") or []),
+            "posting_list": [{"title": p.get("title", ""), "url": p.get("url", ""), "site": p.get("site", "")}
+                             for p in doc.get("postings") or []],
+        })
+    out.sort(key=lambda c: c["updated_at"], reverse=True)
+    return {"updated_at": index.get("updated_at", ""), "companies": out, "queue": _queue_names()}
 
 
 # 인스타 자동 발행(design-lab/publish/daemon.py). 크롤과 같은 머신에서 launchd 로 5분마다 돈다.

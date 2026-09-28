@@ -172,3 +172,18 @@ a.igpost:hover { border-color: var(--accent); }
 @media (max-width: 720px) { #igStats { grid-template-columns: repeat(2, 1fr); } }
 .iglinks a { color: var(--accent); text-decoration: none; }
 .iglinks a:hover { text-decoration: underline; }
+
+/* 취업 브리핑 */
+.guidefilter { width: 100%; background: var(--card2); border: 1px solid var(--line); color: var(--txt);
+  border-radius: 6px; padding: 7px 10px; font: inherit; margin-bottom: 8px; }
+.guiderow { cursor: pointer; }
+.guiderow:hover td { background: var(--card2); }
+.guidedetail ul { margin: 4px 0 6px; padding-left: 18px; }
+.guidedetail a { color: var(--accent); }
+.nowrap { white-space: nowrap; }
+.hide { display: none; }
+.guidewrap { max-height: 640px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+#guideTable th { white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 1; }
+#guideTable td:first-child { color: var(--txt); }
+#guideTable th:nth-child(2), #guideTable td:nth-child(2) { text-align: left; font-weight: 400; color: var(--muted); }
+#guideTable .guidedetail td { text-align: left; }
