@@ -68,7 +68,7 @@ job as `expired`, as for LinkedIn's `isActive: false`.
 |---|---|
 | `mcp__jobseeker__company_brief(company)` | curated brief: business, salary bands (with source/confidence), per-posting verdict / study / interview questions, open questions. Human-researched — many companies have none |
 | `mcp__jobseeker__company_tech(company)` | tech stack counted from postings + reverse-engineered architecture (if any) |
-| `mcp__jobseeker__job_keywords(job_id)` | required tech + requirement phrases for ATS coverage. Compare **locally** — never send the CV to the server |
+| `mcp__jobseeker__job_keywords(job_id)` | `must_tech`, and the requirement lines split into `required` (자격요건) and `preferred` (우대) — one line per requirement, trailing '…을 보유한 분' removed. Compare **locally** — never send the CV to the server. A term that appears only inside a sentence stating a gap ('SAP 연동은 해 보지 않았다') is a gap, not coverage |
 | `mcp__jobseeker__freelance_rates()` / `search_freelance(...)` | freelance day-rate table by grade (초·중·고·특급) and open SI/SM projects |
 
 ## Example

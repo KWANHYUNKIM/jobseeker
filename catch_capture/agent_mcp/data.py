@@ -275,7 +275,16 @@ def search_freelance(query: str = "", *, grade: str = "", kind: str = "", limit:
 
 # ── ATS 키워드 ───────────────────────────────────────────────────────
 
-KW_SPLIT = re.compile(r"[,\n/·•\-()\[\]]+")
+# 요건은 **줄(항목) 단위**로 자른다. 예전엔 / - ( 로도 잘라 'MCP (Multi-Party Computation)' 이
+# 'Multi' 'Party Computation' 로, '설계/운영 경험' 이 '운영 경험을 보유한 분' 조각으로 흩어졌다.
+KW_LINE = re.compile(r"\n+|(?:^|\s)[•·▪■●◦\-*]\s+|\s+\d+[.)]\s+")
+# 꼬리 걷기 — '…경험을 보유한 분' → '…경험', '…이해가 있는 분' → '…이해', '…5년 이상인 분' → '…5년 이상'
+KW_TAIL = [
+    re.compile(r"\s*(?:을|를)\s*(?:보유|갖추|갖춘|가진|가지)\S*\s*(?:분|자|사람)\s*$"),
+    re.compile(r"\s*(?:이|가)\s*(?:있는|있으신|계신)\s*(?:분|자|사람)\s*$"),
+    re.compile(r"\s*(?:인|한|하신|이신|있는|된)\s*(?:분|자|사람)\s*$"),
+]
+KW_BULLET = re.compile(r"^[\s•·▪■●◦\-*]+")
 
 
 def job_keywords(job_id: str) -> dict | None:
@@ -288,11 +297,17 @@ def job_keywords(job_id: str) -> dict | None:
     job_id = k
     tech = list(s.get("tech_stack") or [])
     phrases = []
-    for k in ("qualifications", "preferences"):
-        for part in KW_SPLIT.split(s.get(k) or ""):
+    required, preferred = [], []
+    for k, bucket in (("qualifications", required), ("preferences", preferred)):
+        for part in KW_LINE.split(s.get(k) or ""):
+            part = KW_BULLET.sub("", (part or "").strip(" .:;…"))
+            for rx in KW_TAIL:
+                part = rx.sub("", part)
             part = part.strip(" .:;")
-            if 2 <= len(part) <= 40:
-                phrases.append(part)
-    return {"job_id": job_id, "must_tech": tech, "phrases": phrases[:40],
+            if 4 <= len(part) <= 120:
+                bucket.append(part)
+    phrases = required + preferred
+    return {"job_id": job_id, "must_tech": tech, "required": required[:20], "preferred": preferred[:15],
+            "phrases": phrases[:35],
             "how_to_use": "지원서 본문에 must_tech 가 몇 개 들어갔는지, phrases 의 요구를 어느 문장이 "
                           "받치는지 에이전트 쪽에서 세어 보라. 없는 경력을 지어내서 채우지 말 것."}

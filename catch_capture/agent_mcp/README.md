@@ -15,7 +15,7 @@
 |---|---|
 | `search_jobs(query, limit, open_only, location, career)` | 공고 검색. 문장으로 물어도 된다('재택 되는 React'). 의미 검색 색인이 없으면 키워드 검색 |
 | `get_job(job_id)` | 공고 한 건. 주요업무·자격요건·우대는 앞 400자 — 전문은 원문 링크에서 |
-| `job_keywords(job_id)` | 공고가 요구하는 기술·문구(ATS 대조용) |
+| `job_keywords(job_id)` | 공고가 요구하는 기술(`must_tech`)과 요건 줄(`required` 자격요건 · `preferred` 우대, 꼬리 '…을 보유한 분' 은 걷음) — ATS 대조용 |
 | `company_brief(company)` | 취업 브리핑 — 사업, 연봉 밴드(출처·확신도), 공고마다 공부할 것·면접 질문 |
 | `company_tech(company)` | 공고에서 센 기술스택·직군 분포 + 공개 자료로 재구성한 기술 역설계 |
 | `freelance_rates()` | 외주·프리 월 단가표(등급 × SI·SM) · 분야·직무별 단가 |
