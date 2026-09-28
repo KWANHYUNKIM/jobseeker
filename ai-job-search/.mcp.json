@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "jobseeker": {
+      "type": "http",
+      "url": "${JOBSEEKER_MCP_URL:-http://127.0.0.1:8790/mcp}"
+    }
+  }
+}

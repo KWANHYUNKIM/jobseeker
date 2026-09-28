@@ -60,6 +60,12 @@ ALLOWED_PERMISSIONS = {
     "Bash(python tools/verify_layout.py:*)",
     "Bash(python3 tools/verify_layout.py:*)",
     "Bash(pdftotext:*)",
+    # jobseeker: the Korean job-data MCP server (../catch_capture/agent_mcp, registered in
+    # .mcp.json). Every tool it exposes is read-only (ToolAnnotations readOnlyHint) - search,
+    # posting excerpts, company briefs, ATS keywords, freelance rates. It never receives the CV:
+    # job_keywords returns keywords and the comparison happens locally. No tool submits,
+    # sends or writes anything, so pre-approving the whole server widens nothing irreversible.
+    "mcp__jobseeker",
 }
 
 # Personal-data ignore rules that must never disappear from .gitignore.

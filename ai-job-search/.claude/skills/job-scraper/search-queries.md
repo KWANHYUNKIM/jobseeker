@@ -10,6 +10,23 @@ The `site:` query templates in this file are the **WebSearch fallback** — for 
 
 **Language scope:** write every query category in every language listed in your CLAUDE.md Languages table (typically 1-2, sometimes more). A posting requiring a language you have *not* declared, as a job condition, is excluded before scoring; a posting requiring a *higher level* than you declared in a language you *do* work in is flagged for your own judgment, not excluded — see `04-job-evaluation.md`'s Language Gate, the single source of truth for this rule. Translate each category's keywords rather than machine-translating word-for-word (e.g. "Frontend Developer" -> "Desarrollador Frontend", not a literal word-for-word translation) if you work in more than one language.
 
+## Korean market — jobseeker-kr (MCP) <!-- jobseeker -->
+
+For Korean roles the `jobseeker-kr` portal (MCP, see `.agents/skills/jobseeker-kr/SKILL.md`) covers
+원티드·점핏·잡코리아·사람인·catch and company career boards in one call, so no `site:` lines are
+needed for those. Write its queries as plain keywords or a short sentence, in Korean and English
+(tech names are usually written in English in Korean postings):
+
+```
+jobseeker-kr: "백엔드 Java Spring"          (Priority 1 example)
+jobseeker-kr: "금융 백엔드" location="서울"   (domain + location)
+jobseeker-kr: "재택 React"                   (remote-friendly)
+jobseeker-kr: "데이터 엔지니어 Spark"
+```
+
+For freelance/SI·SM work, ask for `mcp__jobseeker__search_freelance` (grade 초급/중급/고급/특급,
+kind onsite/remote) instead — those are projects, not job postings, and do not go into `seen_jobs.json`.
+
 ## Search Sites
 
 Primary (your market's job boards - scaffold one with `/add-portal`):
