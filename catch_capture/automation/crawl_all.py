@@ -22,6 +22,7 @@
     python crawl_all.py start 개발자 30 --no-aggregate   # 통합 단계 스킵
     python crawl_all.py start 개발자 30 --no-blog        # 기술 블로그 단계 스킵
     python crawl_all.py start 개발자 30 --blog-per-feed 40  # 블로그 피드당 수집 개수
+    python crawl_all.py start 개발자 30 --no-freelance   # 외주·프리 단계 스킵
 """
 from __future__ import annotations
 
@@ -118,8 +119,8 @@ def _parse_sources(only: str | None) -> list[str]:
 
 def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: bool = True,
                    depth: int | None = None, do_blog: bool = True,
-                   blog_per_feed: int = BLOG_PER_FEED_DEFAULT) -> int:
-    """지정한 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 크롤 호출."""
+                   blog_per_feed: int = BLOG_PER_FEED_DEFAULT, do_freelance: bool = True) -> int:
+    """지정한 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 + 외주·프리 크롤 호출."""
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
@@ -245,6 +246,31 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
                 orch.blog_finished(False, None, None, None,
                                    (datetime.now() - blog_start).total_seconds())
 
+    if do_freelance:
+        # 외주·프리랜서 프로젝트. 채용 공고와 섞지 않고 freelance.json 에 따로 쌓는다
+        # (crawlers/crawl_freelance.py 머리말). 실패해도 사이클은 계속 간다.
+        print(f"\n----- 외주·프리 프로젝트 크롤 -----", flush=True)
+        fl_start = datetime.now()
+        if orch:
+            orch.freelance_started()
+        try:
+            sys.path.insert(0, str(BASE_DIR))
+            from crawlers.crawl_freelance import run as _fl_run
+            stats = _fl_run()
+            elapsed = (datetime.now() - fl_start).total_seconds()
+            print(f"[OK] 외주·프리 완료({elapsed:.0f}s) — 누적 {stats.get('total')}건 "
+                  f"(모집중 {stats.get('active')}, 신규 {stats.get('new')}, 출처 {stats.get('sources')}곳) "
+                  f"→ jd-viewer/public/freelance.json", flush=True)
+            if orch:
+                orch.freelance_finished(bool(stats.get("sources")), stats.get("total"),
+                                        stats.get("new"), stats.get("active"), elapsed)
+        except Exception as e:
+            print(f"[!] 외주·프리 크롤 실패: {e}", flush=True)
+            failures.append("freelance")
+            if orch:
+                orch.freelance_finished(False, None, None, None,
+                                        (datetime.now() - fl_start).total_seconds())
+
     total = (datetime.now() - overall_start).total_seconds()
     print(f"\n========== 전체 완료 ({total:.0f}s) ==========", flush=True)
     if failures:
@@ -322,7 +348,11 @@ def cmd_logs(n: int) -> None:
     sys.stdout.write(b"".join(lines).decode("utf-8", errors="replace"))
 
 
-def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | None, bool, int]:
+def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | None, bool, int, bool]:
+    do_freelance = True
+    if "--no-freelance" in args:
+        do_freelance = False
+        args.remove("--no-freelance")
     do_aggregate = True
     if "--no-aggregate" in args:
         do_aggregate = False
@@ -357,7 +387,7 @@ def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | N
         del args[i:i + 2]
     keyword = args[0] if len(args) > 0 else "개발자"
     target = int(args[1]) if len(args) > 1 else 20
-    return keyword, target, _parse_sources(only), do_aggregate, depth, do_blog, blog_per_feed
+    return keyword, target, _parse_sources(only), do_aggregate, depth, do_blog, blog_per_feed, do_freelance
 
 
 def main() -> None:
@@ -378,8 +408,9 @@ def main() -> None:
         n = int(rest[0]) if rest and rest[0].isdigit() else 100
         cmd_logs(n)
     elif sub == "run":
-        keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed = _parse_run_args(rest)
-        sys.exit(run_foreground(keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed))
+        keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed, do_freelance = _parse_run_args(rest)
+        sys.exit(run_foreground(keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed,
+                                do_freelance))
     else:
         print(f"[!] 알 수 없는 명령: {sub}", flush=True)
         print(__doc__)

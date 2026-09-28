@@ -17,6 +17,7 @@ const PHASE_LABEL = {
   crawling: "크롤링 중",
   aggregating: "통합 중",
   blog: "기술 블로그 수집",
+  freelance: "외주·프리 수집",
   building: "대시보드 빌드",
   refreshing: "뷰어 갱신",
   waiting: "다음 주기 대기",
@@ -27,6 +28,7 @@ const STEPS = [
   { key: "crawling", name: "크롤", phases: ["crawling"] },
   { key: "aggregating", name: "통합", phases: ["aggregating"] },
   { key: "blog", name: "기술블로그", phases: ["blog"] },
+  { key: "freelance", name: "외주·프리", phases: ["freelance"] },
   { key: "building", name: "대시보드", phases: ["building"] },
   { key: "refreshing", name: "뷰어", phases: ["refreshing"] },
   { key: "waiting", name: "대기", phases: ["waiting", "idle"] },
@@ -170,6 +172,12 @@ function stepStateFor(step, s) {
     const b = cyc.blog || {};
     if (b.status === "done") return { cls: "done", label: `완료 · ${b.total ?? "?"}건(신규 ${b.new ?? "?"})${secs(b.elapsed)}` };
     if (b.status === "failed") return { cls: "failed", label: "실패" };
+    return { cls: "", label: "대기" };
+  }
+  if (step.key === "freelance") {
+    const f = cyc.freelance || {};
+    if (f.status === "done") return { cls: "done", label: `완료 · 모집중 ${f.active ?? "?"}건(신규 ${f.new ?? "?"})${secs(f.elapsed)}` };
+    if (f.status === "failed") return { cls: "failed", label: "실패" };
     return { cls: "", label: "대기" };
   }
   if (step.key === "building" || step.key === "refreshing") {
@@ -411,6 +419,8 @@ function evMessage(e) {
     case "aggregate_done": return `통합 ${e.ok ? "완료" : "실패"}${secs(e.elapsed)}`;
     case "blog_start": return `기술 블로그 수집 시작`;
     case "blog_done": return `기술 블로그 ${e.ok ? "완료" : "실패"} · ${e.total ?? "?"}건(신규 ${e.new ?? "?"}, 출처 ${e.sources ?? "?"})${secs(e.elapsed)}`;
+    case "freelance_start": return `외주·프리 프로젝트 수집 시작`;
+    case "freelance_done": return `외주·프리 ${e.ok ? "완료" : "실패"} · 누적 ${e.total ?? "?"}건(모집중 ${e.active ?? "?"}, 신규 ${e.new ?? "?"})${secs(e.elapsed)}`;
     case "refresh_start": return `${e.target === "dashboard" ? "대시보드" : "뷰어"} 갱신 시작`;
     case "refresh_done": return `${e.target === "dashboard" ? "대시보드" : "뷰어"} 갱신 ${e.ok ? "완료" : "실패"}`;
     case "cycle_done": return `사이클 완료 · ${e.new_data ? "새 데이터 반영" : "변경 없음"}${secs(e.elapsed)}`;

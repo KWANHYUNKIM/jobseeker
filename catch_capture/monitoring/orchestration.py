@@ -30,6 +30,7 @@ PHASE_IDLE = "idle"
 PHASE_CRAWLING = "crawling"
 PHASE_AGGREGATING = "aggregating"
 PHASE_BLOG = "blog"
+PHASE_FREELANCE = "freelance"
 PHASE_BUILDING = "building"
 PHASE_REFRESHING = "refreshing"
 PHASE_WAITING = "waiting"
@@ -221,6 +222,25 @@ def blog_finished(ok: bool, total: int | None, new: int | None,
               "new": new, "sources": sources, "elapsed": round(elapsed, 1)})
     save_state(state)
     emit("blog_done", ok=ok, total=total, new=new, sources=sources, elapsed=round(elapsed, 1))
+
+
+def freelance_started() -> None:
+    state = load_state()
+    state["phase"] = PHASE_FREELANCE
+    state.setdefault("cycle", {}).setdefault("freelance", {})["status"] = "running"
+    save_state(state)
+    emit("freelance_start")
+
+
+def freelance_finished(ok: bool, total: int | None, new: int | None,
+                       active: int | None, elapsed: float) -> None:
+    """외주·프리 프로젝트 크롤 결과. total/new/active = 누적·신규·모집중."""
+    state = load_state()
+    f = state.setdefault("cycle", {}).setdefault("freelance", {})
+    f.update({"status": "done" if ok else "failed", "total": total,
+              "new": new, "active": active, "elapsed": round(elapsed, 1)})
+    save_state(state)
+    emit("freelance_done", ok=ok, total=total, new=new, active=active, elapsed=round(elapsed, 1))
 
 
 def refresh_started(target: str) -> None:

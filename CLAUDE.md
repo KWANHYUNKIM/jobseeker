@@ -4,6 +4,13 @@
 
 - `catch_capture/` : 채용 크롤 파이프라인 (기능별 패키지)
   - `crawlers/` : 사이트별 크롤러(crawl_*.py) + 공통(jobs_common)
+    `crawl_freelance` 는 채용 공고가 아니라 **외주·프리랜서 프로젝트**(SI/SM 상주·도급·부업)를
+    모은다 — 원티드 긱스(API)·프리모아(목록 JSON, 의뢰인 이메일 필드는 버린다)·이랜서(사이트맵 →
+    상세 JSON-LD)·잡코리아(jobtype=6)·사람인(job_type=9)·아임잡·SISM(약관상 목록 요약과 링크만).
+    all_jobs 와 섞지 않고 `public/freelance.json` 에 누적하며, 사이클 끝의 별도 단계로 돈다
+    (crawl_all `--no-freelance` 로 끈다). 뷰어 `/freelance` 탭이 읽는다. DB 는 `project` 계열
+    (`db/migrations/005`, `store/freelance.py` 로 이중 쓰기) — job 과 따로 두되 tech 사전은 공유한다.
+    위시켓(약관 금지)·OKKY(robots 전면 차단)·크몽(스크래핑 금지)은 일부러 뺐다.
   - `pipeline/` : 통합/중복제거/마감분류(aggregate, job_status), 수동보정(overrides)
     마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에
     다시 물어보는 재확인(`close_check` → `job_closures.json` 원장). 원장이 우선한다.
