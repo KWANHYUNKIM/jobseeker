@@ -171,7 +171,7 @@ function write(path, html) {
 }
 
 // 모든 정적 본문에 공통으로 붙는 머리 — 크롤러가 여기서 다른 탭으로 건너간다.
-const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a></nav>`
+const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a> · <a href="/freelance">외주·프리</a></nav>`
 
 const section = (h, text, max = 1200) =>
   text ? `<section><h2>${esc(h)}</h2><p>${esc(clip(text, max))}</p></section>` : ''
@@ -223,6 +223,10 @@ const TAB_SEO = {
   '/calendar': {
     title: '개발자 채용 모집 캘린더',
     desc: '공고 마감일과 모집 시작일을 달력으로. 언제 열리고 언제 닫히는지 한눈에 봅니다.',
+  },
+  '/freelance': {
+    title: '외주·프리랜서 프로젝트',
+    desc: 'SI/SM 상주, 외주 도급, 부업으로 할 만한 IT 프로젝트를 단가·기간·상주 여부로 모아 봅니다.',
   },
   '/reposts': {
     title: '재공고 추적',

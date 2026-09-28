@@ -7,6 +7,7 @@ import { CompanyView } from './components/CompanyView'
 import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
 import { RepostView } from './components/RepostView'
+import { FreelanceView } from './components/FreelanceView'
 import { CalendarView } from './components/CalendarView'
 import { TrendView } from './components/TrendView'
 import { RevengView } from './components/RevengView'
@@ -21,7 +22,7 @@ import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
 import { applyFilter, applyLocalFacets, computeFacets, emptyFilter } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'book' | 'reveng' | 'reposts'
+type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'book' | 'reveng' | 'reposts' | 'freelance'
 
 // 경로 첫 세그먼트 → 탭. 루트(`/`)는 잡 리스트다.
 const TAB_BY_SEG: Record<string, Tab> = {
@@ -38,6 +39,7 @@ const TAB_BY_SEG: Record<string, Tab> = {
   wiki: 'book',
   reveng: 'reveng',
   reposts: 'reposts',
+  freelance: 'freelance',
 }
 
 function App() {
@@ -179,6 +181,9 @@ function App() {
           <TabLink active={tab === 'reposts'} to={paths.reposts()}>
             재공고
           </TabLink>
+          <TabLink active={tab === 'freelance'} to={paths.freelance()}>
+            외주·프리
+          </TabLink>
           <TabLink active={tab === 'trend'} to={paths.trend()}>
             개발 트렌드
           </TabLink>
@@ -224,6 +229,8 @@ function App() {
         </div>
       ) : tab === 'reposts' ? (
         <RepostView />
+      ) : tab === 'freelance' ? (
+        <FreelanceView />
       ) : tab === 'trend' ? (
         <div key="trend" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <TrendView onOpenCompany={(slug) => navigate(paths.company(slug))} focusTech={route.query.get('tech')} />
