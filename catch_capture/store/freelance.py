@@ -127,8 +127,17 @@ def ingest(projects: list[dict]) -> dict:
                 stats["skipped"] += 1
                 continue
             row = _row(p)
-            cur.execute(UPSERT_SQL, row)
-            r = cur.fetchone()
+            # 한 행이 제약에 걸려도 회차 전체를 되돌리지 않는다(ingest_crawl 과 같은 약속).
+            # 걸린 행은 세고 넘긴다 — 파서 사고의 신호라 숫자로 남아야 한다.
+            try:
+                with cur.connection.transaction():
+                    cur.execute(UPSERT_SQL, row)
+                    r = cur.fetchone()
+            except Exception as e:                                   # noqa: BLE001
+                stats["rejected"] = stats.get("rejected", 0) + 1
+                if stats["rejected"] <= 3:
+                    print(f"  [freelance] 거부 {p['site']}:{p['pid']} — {str(e).splitlines()[0][:120]}", flush=True)
+                continue
             pid, inserted = r["id"], r["inserted"]
             stats["upserted"] += 1
             stats["inserted"] += int(inserted)
@@ -141,17 +150,35 @@ def ingest(projects: list[dict]) -> dict:
                             "ON CONFLICT DO NOTHING", (pid, tid))
 
             # 모집 표시가 바뀐 때만 원장에 남긴다(처음 본 것도 한 줄 — 출발점).
+            # 재확인(목록에서 빠진 것을 원본에 물음)에서 왔으면 그 시각과 근거를 쓴다.
             closed = not row["source_open"]
+            at = max(p.get("checked_at") or "", row["seen_at"])     # ISO 문자열 — 사전순이 곧 시간순
+            reason = p.get("closed_reason") if closed else None
             cur.execute("SELECT closed FROM project_check_latest WHERE project_id = %s", (pid,))
             last = cur.fetchone()
             if last is None or last["closed"] != closed:
                 cur.execute(
                     "INSERT INTO project_check (project_id, checked_at, closed, deadline_on, evidence) "
                     "VALUES (%s, %s, %s, %s, %s)",
-                    (pid, row["seen_at"], closed, row["deadline_on"],
-                     "목록 모집 표시: " + ("마감" if closed else "모집중")),
+                    (pid, at, closed, row["deadline_on"],
+                     reason or ("목록 모집 표시: " + ("마감" if closed else "모집중"))),
                 )
                 stats["checks"] += 1
+
+            # 단가 이력(006). 단가·기간·모집 표시가 직전 버전과 다를 때만 한 행.
+            cur.execute("SELECT budget_basis::text AS b, budget_min, budget_max, duration_days, source_open "
+                        "FROM project_version WHERE project_id = %s ORDER BY seen_at DESC LIMIT 1", (pid,))
+            lv = cur.fetchone()
+            cur_v = (row["budget_basis"], row["budget_min"], row["budget_max"],
+                     row["duration_days"], row["source_open"])
+            if lv is None or (lv["b"], lv["budget_min"], lv["budget_max"],
+                              lv["duration_days"], lv["source_open"]) != cur_v:
+                cur.execute(
+                    "INSERT INTO project_version (project_id, seen_at, budget_basis, budget_min, budget_max, "
+                    "duration_days, source_open, applicants, reason) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                    (pid, at, *cur_v[:4], row["source_open"], row["applicants"], reason),
+                )
+                stats["versions"] = stats.get("versions", 0) + 1
     return stats
 
 
@@ -171,6 +198,20 @@ def export(path: Path = JSON_PATH) -> int:
     with cursor(autocommit=True) as cur:
         cur.execute("SELECT * FROM v_project ORDER BY COALESCE(posted_on, first_seen_at::date) DESC, id DESC")
         rows = cur.fetchall()
+        # 세부 내역(화면의 '세부 내역' 표)과 닫힌 근거.
+        cur.execute("SELECT project_id, seen_at, budget_basis::text AS b, budget_min, budget_max, "
+                    "duration_days, source_open, applicants FROM project_version ORDER BY project_id, seen_at")
+        hist: dict = {}
+        for v in cur.fetchall():
+            hist.setdefault(v["project_id"], []).append({
+                "at": v["seen_at"].isoformat(),
+                "budget": {"type": v["b"], "min": v["budget_min"], "max": v["budget_max"]} if v["b"] else None,
+                "status": "active" if v["source_open"] else "closed",
+                "duration": f"{v['duration_days']}일" if v["duration_days"] else "",
+                "applicants": v["applicants"],
+            })
+        cur.execute("SELECT project_id, evidence FROM project_check_latest WHERE closed")
+        reasons = {r["project_id"]: r["evidence"] for r in cur.fetchall()}
     projects = []
     for r in rows:
         budget = ({"type": r["budget_basis"], "min": r["budget_min"], "max": r["budget_max"]}
@@ -185,6 +226,8 @@ def export(path: Path = JSON_PATH) -> int:
             "applicants": r["applicants"], "summary": r["summary"], "tags": list(r["tags"] or []),
             # 화면은 active/closed 만 안다. stale 은 last_seen_at 으로 화면이 다시 가린다.
             "status": "closed" if r["status"] == "closed" else "active",
+            "closed_reason": reasons.get(r["id"]),
+            "history": hist.get(r["id"], [])[-30:],
             "first_seen_at": r["first_seen_at"].isoformat(), "last_seen_at": r["last_seen_at"].isoformat(),
         })
     prev = {}
@@ -193,7 +236,9 @@ def export(path: Path = JSON_PATH) -> int:
     except (OSError, json.JSONDecodeError):
         pass
     out = {"updated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
-           "sources": prev.get("sources") or {}, "source_of_truth": "db", "projects": projects}
+           "sources": prev.get("sources") or {}, "started_at": prev.get("started_at"),
+           # 추이는 크롤러가 계산해 둔 것을 잇는다(DB 판은 project_pay_weekly·project_budget_move).
+           "trend": prev.get("trend"), "source_of_truth": "db", "projects": projects}
     tmp = path.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
     tmp.replace(path)

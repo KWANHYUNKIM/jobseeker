@@ -916,4 +916,57 @@ SELECT p.id, p.site, p.pid, p.url, p.title, p.category, p.work_mode, p.location_
   FROM project p
   JOIN project_state s ON s.project_id = p.id;
 
+-- ════════════════════════════════════════════════════════════════════
+-- 15. 외주 프로젝트 이력 — 단가가 얼마나 내려갔나
+-- ════════════════════════════════════════════════════════════════════
+-- db/migrations/006_project_version.sql 과 글자 그대로 같다(설계 근거는 그쪽 머리말).
+CREATE TABLE IF NOT EXISTS project_version (
+    id            bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    project_id    bigint      NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+    seen_at       timestamptz NOT NULL,
+    budget_basis  budget_basis,
+    budget_min    integer,
+    budget_max    integer,
+    duration_days integer,
+    source_open   boolean     NOT NULL,
+    applicants    integer,
+    reason        text                    -- 닫힌 근거 등(재확인에서 왔을 때)
+);
+CREATE INDEX IF NOT EXISTS project_version_idx ON project_version (project_id, seen_at);
+
+-- 한 프로젝트의 첫 값과 마지막 값. 단가를 바꾼 자리만 뽑을 때 쓴다.
+CREATE OR REPLACE VIEW project_budget_move AS
+WITH v AS (
+    SELECT project_id, seen_at, budget_basis,
+           (COALESCE(budget_min, budget_max) + COALESCE(budget_max, budget_min)) / 2.0 AS mid,
+           row_number() OVER (PARTITION BY project_id ORDER BY seen_at)      AS rn_first,
+           row_number() OVER (PARTITION BY project_id ORDER BY seen_at DESC) AS rn_last
+      FROM project_version
+     WHERE budget_basis = 'monthly' AND COALESCE(budget_min, budget_max) IS NOT NULL
+)
+SELECT f.project_id, f.mid AS first_monthly, l.mid AS last_monthly,
+       round((l.mid - f.mid) / f.mid * 100, 1) AS pct, f.seen_at AS first_at, l.seen_at AS last_at
+  FROM v f JOIN v l ON l.project_id = f.project_id AND l.rn_last = 1
+ WHERE f.rn_first = 1 AND l.mid <> f.mid;
+
+CREATE OR REPLACE VIEW project_pay_weekly AS
+WITH first_v AS (
+    SELECT DISTINCT ON (project_id) project_id, budget_min, budget_max
+      FROM project_version
+     WHERE budget_basis = 'monthly' AND COALESCE(budget_min, budget_max) IS NOT NULL
+     ORDER BY project_id, seen_at
+)
+SELECT date_trunc('week', COALESCE(p.posted_on, p.first_seen_at::date))::date AS week,
+       p.work_mode,
+       count(*) AS n,
+       percentile_cont(0.5) WITHIN GROUP (
+           ORDER BY (COALESCE(fv.budget_min, fv.budget_max) + COALESCE(fv.budget_max, fv.budget_min)) / 2.0
+       ) AS median_monthly
+  FROM project p JOIN first_v fv ON fv.project_id = p.id
+ -- 등록일이 없는 곳은 '처음 본 날'로 센다. 첫 수집 날 한꺼번에 들어온 것은 그 주에 올라온
+ -- 자리가 아니라 이미 있던 자리라 뺀다(넣으면 첫 주만 수백 건으로 부푼다).
+ WHERE p.posted_on IS NOT NULL
+    OR p.first_seen_at::date > (SELECT min(first_seen_at)::date FROM project)
+ GROUP BY 1, 2;
+
 COMMIT;
