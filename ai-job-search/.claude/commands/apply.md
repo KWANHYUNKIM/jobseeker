@@ -45,6 +45,8 @@ python salary_lookup.py "<Company Name>" --json
 
 If the posting specifies a city, add `--city "<City>"` to narrow results. Parse the JSON output and include the salary benchmark in the evaluation. If the tool is not configured or returns an error, skip the salary benchmark.
 
+<!-- jobseeker --> For a Korean posting, call `mcp__jobseeker__salary_benchmark` with the company, the candidate's career stage and the posting's `family` when the tool is available; otherwise add `--career <신입|경력 N년>` to the command above (after `python tools/build_salary_kr.py` has built the Korean data file). Present it per the Korean block in `04-job-evaluation.md` §6 — three layers, never one blended number.
+
 ### Source Host Verification (when input is a URL)
 
 Before proceeding to drafting, inspect the posting URL's hostname to verify provenance (#431). Classify the host into one of three categories:

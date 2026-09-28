@@ -6,6 +6,30 @@ The salary lookup tool (`salary_lookup.py`) lets you benchmark company salaries 
 
 **This tool is optional.** If you don't have salary data, the salary step is simply skipped during `/apply`.
 
+## Korean data (jobseeker)
+
+<!-- jobseeker: 원본은 덴마크 조합 통계용이다. 국내엔 그런 공개 지수가 없어 우리 데이터로 만든다. -->
+
+Inside the jobseeker repository you do not need to supply a dataset:
+
+```bash
+python tools/build_salary_kr.py                      # writes salary_data.json (gitignored)
+python salary_lookup.py "재미스튜디오" --career 신입
+python salary_lookup.py "빗썸" --career "경력 5년" --json
+```
+
+Each Korean entry carries `salary_kr` (만원/년) instead of index `categories`:
+
+| field | what it is |
+|---|---|
+| `size` | 중소기업 / 중견기업 / 대기업 … (from jobseeker's company stacks) |
+| `bands` | researched salary bands from the employment brief, each with `basis`, `confidence` and `sources`. Often an all-staff pension-data average — **not** a starting salary |
+| `posted` | salaries the company's own postings state (range midpoint, `monthly` ones ×12) |
+
+`metadata.market` holds p25 / median / p75 of stated salaries by career stage (신입, 1~3년, 4~6년, 7년+, 무관) × company size, and `metadata.caveats` says what those numbers are not. `--career` picks the row. A company with neither a band nor a stated salary — the common case in Korea — still gets the market rows (`not_in_data: true`).
+
+Parsing lives in `catch_capture/agent_mcp/data.py` (`parse_pay`, `salary_benchmark`); the MCP tool `salary_benchmark` returns the same numbers without building a file.
+
 ## How it works
 
 The tool reads a `salary_data.json` file in the repo root containing company salary benchmarks. It uses fuzzy matching to find companies by name, handling Danish/Nordic characters, legal suffixes (A/S, ApS), and common spelling variations.

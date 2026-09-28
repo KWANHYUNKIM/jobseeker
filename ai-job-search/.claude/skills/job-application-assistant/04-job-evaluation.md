@@ -155,6 +155,19 @@ Interpret results relative to the baseline defined in the data file's metadata. 
 
 If the salary tool is not configured, skip this section.
 
+**Korean postings (jobseeker)** <!-- jobseeker: 국내엔 덴마크 조합 통계 같은 공개 지수가 없다 -->. Korean data is absolute 만원/년, not an index. Prefer `mcp__jobseeker__salary_benchmark(company=…, career=<candidate's stage>, family=<posting's family>)`; offline, run `python tools/build_salary_kr.py` once and then `python salary_lookup.py "<회사>" --career <신입|경력 N년> --json`. Both return the same three layers — present them separately, never blended into one number:
+
+```
+### 연봉 비교 (만원/년)
+| 근거 | 값 | 무엇인가 |
+|------|----|----------|
+| 회사 밴드 (브리핑) | 5,439 ~ 11,600 | 전 직군 평균 · 출처 · 확신도 |
+| 이 회사 공고에 적힌 연봉 | 3,300 ~ 3,800 | 이 회사가 직접 적은 값 (대개 없음) |
+| 비슷한 자리 시세 | p25 3,362 · 중앙 3,800 · p75 4,733 (n=38) | 같은 규모·경력 공고에 적힌 값 |
+```
+
+Relay the caveats: only a small minority of Korean postings state a salary, skewed toward smaller companies, so the market row is "what the companies that disclose pay" — not the market median. A band based on pension-enrolment averages is an all-staff average, not a starting salary. A company with neither a band nor a stated salary is the common case; show the market row and say the company's own number is unknown ("면접 후 결정").
+
 ## Output Format
 
 Present the evaluation as:

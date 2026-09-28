@@ -35,7 +35,8 @@ cd ai-job-search && claude
 | `.claude/skills/job-scraper/search-queries.md` | 국내 검색어 예시 |
 | `.claude/commands/apply.md` | Step 1: 국내 공고면 Market Reality Gate 를 먼저(평가 0번 항목). Step 0: 공고 id·국내 URL 이면 `get_job` 먼저(원문 전문은 그래도 WebFetch). Step 3 검토자: `company_brief`·`company_tech` 로 조사 시작(검증 규칙은 그대로). Step 5d: ATS 키워드에 `job_keywords` — **이력서는 서버로 보내지 않고** 로컬에서 대조 |
 | `.claude/commands/reality.md` (새) | `/reality` — 지원서를 쓰기 **전에** 목표 직군이 이 학력·지역·연차로 현실적인지 `market_check` 로 직군끼리 견주고, 판정(현실적/도전/지금은 비현실적)을 첫 줄에 말한 뒤 더 열린 경로 2~3개를 낸다. 원본의 적합도 평가는 '이 공고에 맞나'만 묻고 '이 방향이 맞나'는 묻지 않는다 — 전문학사 신입에게 AI 엔지니어 서류를 정성껏 만들어 준 일이 있어 넣었다 |
-| `.claude/skills/job-application-assistant/04-job-evaluation.md` | **Market Reality Gate** — 적힌 학력 관문을 못 넘으면 자격 관문처럼 멈추고, 문이 좁은 직군이면 평가 맨 앞에 깃발을 세우고 판정을 Moderate 이하로 묶는다 |
+| `.claude/skills/job-application-assistant/04-job-evaluation.md` | §6 연봉: 국내는 세 겹(회사 밴드·그 회사 공고에 적힌 값·비슷한 자리 시세)을 섞지 않고 따로 보인다. **Market Reality Gate** — 적힌 학력 관문을 못 넘으면 자격 관문처럼 멈추고, 문이 좁은 직군이면 평가 맨 앞에 깃발을 세우고 판정을 Moderate 이하로 묶는다 |
+| `salary_lookup.py` · `tools/build_salary_kr.py` (새) · `tests/test_salary_lookup_kr.py` (새) | **한국식 연봉 비교** — 원본은 덴마크 조합 통계(지수)용이라 한글 회사명을 아예 못 찾았다(정규화가 한글을 지웠다). 한글·(주)/㈜/주식회사를 알아듣게 하고, `build_salary_kr.py` 가 우리 데이터(브리핑 연봉 밴드 + 공고에 적힌 연봉 + 규모×경력 시세)로 `salary_data.json` 을 만든다. `--career` 로 시세 줄을 고른다. 회사가 데이터에 없어도 시세는 준다 |
 | `.claude/commands/interview.md` | Step 2: 브리핑의 공고별 면접 질문·공부할 것·차별점을 출발점으로 |
 | `.claude/settings.json` · `tools/security_guards.py` | `mcp__jobseeker` 허용 — 도구가 전부 읽기 전용이라 미리 허용해도 되돌릴 수 없는 일이 없다. 원본의 보안 검사 규칙대로 두 곳에 함께 올렸다 |
 
