@@ -163,7 +163,27 @@ def _project(site: str, pid, **kw) -> dict:
 WG_API = "https://www.wanted.co.kr/gigs/api-v2/projects"
 
 
-def fetch_wanted_gigs(pages: int) -> list[dict]:
+WG_DETAIL_LIMIT = 40        # 회차당 상세. 목록엔 경력·업무 내용이 없어 등급을 못 정한다
+
+
+def _wg_detail(p: dict) -> None:
+    """상세 API 로 요구 경력과 업무 내용을 채운다(등급 추정과 '세부 내역'의 재료)."""
+    d = json.loads(_request(f"{WG_API}/{p['pid']}", referer="https://www.wanted.co.kr/gigs/projects"))
+    lo, hi = _int(d.get("expert_career_year")), _int(d.get("expert_career_end_year"))
+    if lo:
+        p["career"] = f"경력 {lo}~{hi}년" if hi and hi != lo else f"경력 {lo}년↑"
+    parts = [("업무", d.get("work_desc")), ("범위", d.get("work_scope")),
+             ("진행", d.get("progress_desc")), ("기타", d.get("etc_desc"))]
+    body = "\n".join(f"[{k}] {v.strip()}" for k, v in parts if isinstance(v, str) and v.strip())
+    if body:
+        p["summary"] = _scrub(body)
+    if _int(d.get("expert_number")):
+        p["headcount"] = _int(d.get("expert_number"))
+    p["detail_at"] = datetime.now().astimezone().isoformat(timespec="seconds")
+
+
+def fetch_wanted_gigs(pages: int, known: dict | None = None) -> list[dict]:
+    known = known or {}
     out = []
     for page in range(1, pages + 1):
         raw = json.loads(_request(f"{WG_API}?page={page}", referer="https://www.wanted.co.kr/gigs/projects"))
@@ -191,6 +211,7 @@ def fetch_wanted_gigs(pages: int) -> list[dict]:
                 skills=_skills(r.get("skills")),
                 applicants=_int(r.get("apply_count")),
                 summary=jobs,
+                role_hint=jobs,          # '개발 > 자바 개발자' — 직무 분류의 재료(summary 는 상세로 바뀐다)
                 tags=_tags(title, jobs),
                 status="active" if r.get("is_recruiting") or r.get("recruitingStatus") == "open" else "closed",
             ))
@@ -198,6 +219,24 @@ def fetch_wanted_gigs(pages: int) -> list[dict]:
         if page >= pages_total or not rows or _all_closed(out[-len(rows):]):
             break
         _sleep()
+
+    # 상세 — 처음 본 모집중부터, 남는 몫으로 예전에 받아 둔 것 중 상세가 없는 것.
+    # 이미 받은 상세는 목록 값으로 덮이지 않게 옮겨 둔다.
+    need = []
+    for p in out:
+        old = known.get(p["id"]) or {}
+        if old.get("detail_at"):
+            for k in ("career", "summary", "headcount", "detail_at"):
+                if old.get(k):
+                    p[k] = old[k]
+        elif p["status"] == "active":
+            need.append((0 if p["id"] not in known else 1, p))
+    for _, p in sorted(need, key=lambda x: x[0])[:WG_DETAIL_LIMIT]:
+        _sleep()
+        try:
+            _wg_detail(p)
+        except Exception as e:                                       # noqa: BLE001
+            print(f"  [wanted_gigs] 상세 {p['pid']} 실패: {str(e)[:80]}", flush=True)
     return out
 
 
@@ -583,7 +622,7 @@ def fetch_sism(pages: int) -> list[dict]:
 # ── 누적·저장 ─────────────────────────────────────────────────────────
 
 SOURCES = {
-    "wanted_gigs": lambda pages, known: fetch_wanted_gigs(pages),
+    "wanted_gigs": lambda pages, known: fetch_wanted_gigs(pages, known),
     "freemoa": lambda pages, known: fetch_freemoa(pages),
     "elancer": lambda pages, known: fetch_elancer(pages * ELANCER_PER_PAGE, known),
     "jobkorea": lambda pages, known: fetch_jobkorea(pages),
@@ -763,7 +802,7 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
     now = datetime.now().astimezone().isoformat(timespec="seconds")
     doc = _load()
     by_id = {p["id"]: p for p in doc.get("projects") or []}
-    known = set(by_id)
+    known = dict(by_id)            # 사이트별 수집기가 예전 값(상세·이력)을 참고한다
     # --only 로 일부만 돌려도 나머지 소스의 직전 기록은 남긴다(화면이 소스별 건수를 보여 준다).
     report: dict = dict(doc.get("sources") or {})
     ran: set[str] = set()
@@ -810,8 +849,12 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
     projects = sorted(by_id.values(),
                       key=lambda p: (p.get("posted_date") or p.get("first_seen_at") or ""), reverse=True)
     started_at = doc.get("started_at") or min((p.get("first_seen_at") or now for p in projects), default=now)
+    # 등급·유형·분야·직무를 달고 그 축으로 단가를 나눠 센다(pipeline/freelance_rates.py).
+    from pipeline.freelance_rates import analyze, classify
+    for p in projects:
+        classify(p)
     out = {"updated_at": now, "started_at": started_at, "sources": report,
-           "trend": trend(projects, started_at), "projects": projects}
+           "trend": trend(projects, started_at), "analysis": analyze(projects), "projects": projects}
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     tmp = OUT_PATH.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")

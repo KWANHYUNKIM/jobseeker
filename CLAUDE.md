@@ -14,7 +14,11 @@
     (긱스 상세 API·이랜서 JSON-LD·잡코리아/사람인은 close_check 판정기·아임잡 상세 상태·SISM 은
     이틀 안 보이면 게재 종료). **단가 이력**: 단가·상태·기간이 바뀐 순간만 프로젝트의 `history`
     와 DB `project_version`(006)에 쌓고, 주별 월 단가 중앙값·기술별 단가·단가를 바꾼 프로젝트를
-    `trend` 로 미리 세어 둔다(화면의 '단가 추이'). 추이는 '올라올 때 단가'로 센다.
+    `trend` 로 미리 세어 둔다. 추이는 '올라올 때 단가'로 센다.
+    **단가 분석은 따로 뺀 페이지다**(`/freelance/rates`, 목록 위에 얹지 않는다). 몸값은 중간값
+    하나가 아니라 등급(초·중·고·특급 — 표기 우선, 없으면 경력으로 추정)과 SI/SM·분야·직무로
+    갈린다 — `pipeline/freelance_rates.py` 가 분류(classify)·분석(analyze)·요약 문장(insights)을
+    만들어 `analysis` 에 싣고, DB 는 007(`project_pay_by_grade`)이 같은 값을 낸다.
     위시켓(약관 금지)·OKKY(robots 전면 차단)·크몽(스크래핑 금지)은 일부러 뺐다.
   - `pipeline/` : 통합/중복제거/마감분류(aggregate, job_status), 수동보정(overrides)
     마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에
