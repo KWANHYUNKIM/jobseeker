@@ -17,7 +17,7 @@ The deliverable is an honest verdict, not encouragement. A candidate who spends 
 Read `.claude/skills/job-application-assistant/01-candidate-profile.md`. Extract, and ask the user for anything missing — never guess:
 
 - **Highest education** — one of 고졸 / 전문학사 / 학사 / 석사 / 박사 (a 2-year college is 전문학사)
-- **Commutable region** — the city to pass as `location` (e.g. 대전)
+- **Commutable region** — optional. A city or 시·도 to pass as `location` (e.g. 대전) if the candidate cannot relocate; leave it empty to look at the whole country
 - **Years of professional development experience** — 0 means entry-level; non-development jobs do not count here but are recorded for Step 5
 - **Skills with evidence** — only skills backed by a project, job, or public repository. A skill mentioned only in a course title or a "learning" line is not evidence.
 
@@ -29,7 +29,7 @@ If `mcp__jobseeker__market_check` is available, call it:
 market_check(education=<highest education>, location=<region>, entry_only=<true if 0-1 years>)
 ```
 
-It returns, per role family: `open` (currently open postings), `passable` (postings whose **written** education gate the candidate clears), `education_gate_pct`, `education_unknown_pct`, `grad_degree_mention_pct`, `local_open` / `local_passable`, `top_tech` (share of postings asking for each technology), `local_samples`, `thin_sample`, and a `caveats` list.
+It returns, per role family: `open` (currently open postings), `passable` (postings whose **written** education gate the candidate clears), `education_gate_pct`, `education_unknown_pct`, `grad_degree_mention_pct`, `local_open` / `local_passable` (only when `location` is given), `passable_by_region` (where the passable postings are, nationwide — `지역 표기 없음` is mostly wanted and can be anywhere), `top_tech` (share of postings asking for each technology), `samples` (recent passable postings — inside `location` if given, otherwise nationwide), `thin_sample`, and a `caveats` list. Senior titles (시니어·리드·팀장·책임…) are excluded from entry-level counts even when the career field says 경력무관.
 
 The candidate's skills are **not** sent to the server. Compute overlap locally in the next step.
 
@@ -39,8 +39,10 @@ If the tool is unavailable, say so and stop — do not substitute impressions fo
 
 One row per role family, target family first:
 
-| 직군 | 모집중 | 넘을 수 있는 공고 | 학력 관문 % | 석·박사 언급 % | 지역 안 넘을 수 있는 공고 | top_tech 중 증거 있는 기술 |
+| 직군 | 모집중 | 넘을 수 있는 공고 | 학력 관문 % | 석·박사 언급 % | 많은 지역 (상위 3) | top_tech 중 증거 있는 기술 |
 |---|---|---|---|---|---|---|
+
+If a `location` was given, add a column for `local_passable`. If the passable postings sit almost entirely in regions the candidate cannot move to, say so — that is part of the verdict.
 
 The last column is computed here, locally: sum the `pct` of every `top_tech` entry the candidate has **evidence** for (Step 1), divided by the sum of all listed `pct`. Report it as a percentage and name the matched technologies.
 
@@ -50,9 +52,9 @@ Mark `thin_sample` families as **데이터 부족** instead of scoring them — 
 
 Give one of three verdicts for the target family, **in the first line of your answer**:
 
-- **현실적** — passable share and evidence overlap are comparable to or better than the other families, and there are local passable postings.
+- **현실적** — passable share and evidence overlap are comparable to or better than the other families, and there are passable postings where the candidate can live.
 - **도전 (준비 후)** — the gates are passable but evidence overlap is low; name the specific artifacts (not courses) that would move the overlap, and how long they take.
-- **지금은 비현실적** — the target's door is clearly narrower than other families (higher gate %, higher graduate-degree mentions, few or no local passable postings) **and** overlap is low.
+- **지금은 비현실적** — the target's door is clearly narrower than other families (higher gate %, higher graduate-degree mentions, passable postings concentrated in regions the candidate cannot reach) **and** overlap is low.
 
 Rules:
 - Do not soften a 비현실적 verdict into 도전 because the user seems invested. The user asked for reality.
@@ -63,7 +65,7 @@ Rules:
 
 Propose 2-3 concrete paths, ordered by realism. Each path names:
 
-1. **Entry family** and 2-3 `local_samples` (or `search_jobs` results) that fit it today
+1. **Entry family** and 2-3 `samples` (or `search_jobs` results) that fit it today
 2. **What to build** in the next 1-2 months as evidence (a public repository with measured results beats a certificate; a certificate beats a course)
 3. **How it leads to the target** — e.g. two years in backend, then an internal move to ML platform work
 

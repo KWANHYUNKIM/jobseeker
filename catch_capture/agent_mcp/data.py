@@ -120,7 +120,33 @@ ROLE_FAMILIES = [
 ]
 ROLE_RX = [(n, re.compile(p, re.I)) for n, p in ROLE_FAMILIES]
 ENTRY_RX = re.compile(r"신입|무관")
+# 경력란이 '경력무관'이어도 제목이 시니어·리드면 신입 자리가 아니다(퓨텍 '(시니어)… ' 가 신입 표본에 섞였다).
+SENIOR_RX = re.compile(r"시니어|senior|(?<![a-z])lead(?![a-z])|리드|팀장|파트장|책임|수석|principal|staff|head of", re.I)
 GRAD_RX = re.compile(r"석사|박사")
+
+# 시·도 — 사이트마다 '서울 강남구'·'서울강남구'·'전남광주북구'·'[대전/IT]…' 처럼 제각각이다.
+REGIONS = ["서울", "경기", "인천", "부산", "대구", "광주", "대전", "울산", "세종", "강원",
+           "충북", "충남", "전북", "전남", "경북", "경남", "제주"]
+REGION_ALIAS = {"충청북": "충북", "충청남": "충남", "전라북": "전북", "전북특별": "전북", "전라남": "전남",
+                "경상북": "경북", "경상남": "경남", "강원특별": "강원", "제주특별": "제주", "Seoul": "서울"}
+FOREIGN_RX = re.compile(r"[A-Za-z]{3,}")
+
+
+def region_of(location: str | None) -> str:
+    loc = (location or "").strip()
+    if not loc:
+        return "지역 표기 없음"
+    if re.search(r"원격|재택|remote|anywhere", loc, re.I):
+        return "원격"
+    for k, v in REGION_ALIAS.items():
+        if k in loc:
+            return v
+    if loc.startswith("전남광주") or loc.startswith("광주"):
+        return "광주"          # 사람인은 광주광역시를 '전남광주…' 로 적는다
+    hit = [(loc.find(r), r) for r in REGIONS if r in loc]
+    if hit:
+        return min(hit)[1]
+    return "해외" if FOREIGN_RX.search(loc) else "기타"
 
 
 def role_family(title: str) -> str | None:
@@ -142,7 +168,8 @@ def _slim_jobs(raw: list[dict]) -> dict:
             s[k] = t[:SECTION_MAX] + ("…" if len(t) > SECTION_MAX else "")
         s["id"] = job_key(j)
         s["family"] = role_family(j.get("title") or "")
-        s["entry"] = bool(ENTRY_RX.search(j.get("career") or ""))
+        s["entry"] = bool(ENTRY_RX.search(j.get("career") or "")) and not SENIOR_RX.search(j.get("title") or "")
+        s["region"] = region_of(j.get("location"))
         s["grad_mention"] = bool(GRAD_RX.search((j.get("qualifications") or "") + (j.get("preferences") or "")))
         s["_hay"] = " ".join([j.get("company") or "", j.get("title") or "", " ".join(j.get("tech_stack") or []),
                               s["main_tasks"], s["qualifications"]]).lower()
@@ -236,6 +263,7 @@ MARKET_CAVEATS = [
     "색인은 개발 직군 검색어로 모은 것이라 임베디드·제조·SI 처럼 IT 채용 사이트 밖에서 많이 뽑는 직군은 "
     "적게 잡힌다. 표본이 작은 직군(open < 10)은 '데이터 부족'이지 '자리가 없다'가 아니다.",
     "지금 모집중인 공고만 센다(계절·시점에 따라 흔들린다). 합격률·경쟁률은 이 데이터로 알 수 없다.",
+    "지역 칸이 빈 공고가 많다(주로 원티드). passable_by_region 의 '지역 표기 없음'은 어디든 될 수 있다.",
 ]
 
 
@@ -256,7 +284,7 @@ def market_check(*, education: str = "", location: str = "", entry_only: bool = 
         if entry_only and not s.get("entry"):
             continue
         b = by.setdefault(fam, {"open": 0, "gated": 0, "unknown_edu": 0, "grad": 0, "tech": {},
-                                "local_open": 0, "local_pass": []})
+                                "local_open": 0, "pass": [], "regions": {}})
         b["open"] += 1
         lv = s.get("edu_min")
         gated = my_edu is not None and lv is not None and lv > my_edu
@@ -265,17 +293,18 @@ def market_check(*, education: str = "", location: str = "", entry_only: bool = 
         b["grad"] += bool(s.get("grad_mention"))
         for t in s.get("tech_stack") or []:
             b["tech"][t] = b["tech"].get(t, 0) + 1
-        local = bool(location) and location in (s.get("location") or "")
+        local = bool(location) and (location in (s.get("location") or "") or location == s.get("region"))
         b["local_open"] += local
         if not gated:
-            if local:
-                b["local_pass"].append(s)
+            b["regions"][s["region"]] = b["regions"].get(s["region"], 0) + 1
+            if local or not location:
+                b["pass"].append(s)
 
     pct = lambda n, d: round(100 * n / d) if d else None   # noqa: E731
     out = []
     for fam, b in by.items():
         n = b["open"]
-        local = sorted(b["local_pass"], key=lambda s: _neg(s.get("posted_date") or ""))
+        picks = sorted(b["pass"], key=lambda s: _neg(s.get("posted_date") or ""))
         out.append({
             "family": fam,
             "open": n,
@@ -284,10 +313,13 @@ def market_check(*, education: str = "", location: str = "", entry_only: bool = 
             "education_unknown_pct": pct(b["unknown_edu"], n),
             "grad_degree_mention_pct": pct(b["grad"], n),
             "local_open": b["local_open"] if location else None,
-            "local_passable": len(local) if location else None,
+            "local_passable": len(picks) if location else None,
+            # 넘을 수 있는 공고가 어느 시·도에 있나(전국). '지역 표기 없음'은 주로 원티드 — 원문에서 확인.
+            "passable_by_region": [{"region": r, "count": c} for r, c in
+                                   sorted(b["regions"].items(), key=lambda kv: -kv[1])],
             "top_tech": [{"name": t, "pct": pct(c, n)} for t, c in
                          sorted(b["tech"].items(), key=lambda kv: -kv[1])[:top_tech]],
-            "local_samples": [job_card(s) for s in local[:samples]],
+            "samples": [job_card(s) for s in picks[:samples]],   # location 을 주면 그 지역 안, 아니면 전국 최신
             "thin_sample": n < 10,
         })
     out.sort(key=lambda r: (-(r["local_passable"] or 0), -r["passable"]))

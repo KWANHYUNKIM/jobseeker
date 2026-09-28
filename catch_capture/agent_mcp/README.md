@@ -14,7 +14,7 @@
 | 도구 | 주는 것 |
 |---|---|
 | `search_jobs(query, limit, open_only, location, career, education)` | 공고 검색. 문장으로 물어도 된다('재택 되는 React'). `education` 에 지원자 최종학력(고졸/전문학사/학사/석사/박사)을 주면 넘을 수 없는 학력 관문('학부 4학년 이상', '4년제 졸업')이 있는 공고를 뺀다. 결과마다 `education_min`·근거 문구(모르면 null — 원문 확인). 의미 검색 색인이 없으면 키워드 검색 |
-| `market_check(education, location, entry_only, families)` | **현실 점검** — 직군별 모집중 공고 수, 적힌 학력 관문을 넘을 수 있는 수, 관문·석박사 언급 비율, 지역 안 표본, 자주 요구되는 기술 비율. 지원자 기술은 안 받는다(겹침은 에이전트가 센다). `caveats`(적히지 않은 서류 심사는 안 보인다·임베디드/SI 는 덜 잡힌다)를 같이 준다 |
+| `market_check(education, location, entry_only, families)` | **현실 점검** — 직군별 모집중 공고 수, 적힌 학력 관문을 넘을 수 있는 수, 관문·석박사 언급 비율, 넘을 수 있는 공고의 시·도 분포(전국), location 을 주면 그 지역 안 수, 최근 표본, 자주 요구되는 기술 비율. 지원자 기술은 안 받는다(겹침은 에이전트가 센다). `caveats`(적히지 않은 서류 심사는 안 보인다·임베디드/SI 는 덜 잡힌다)를 같이 준다 |
 | `get_job(job_id)` | 공고 한 건. 주요업무·자격요건·우대는 앞 400자 — 전문은 원문 링크에서 |
 | `job_keywords(job_id)` | 공고가 요구하는 기술(`must_tech`)과 요건 줄(`required` 자격요건 · `preferred` 우대, 꼬리 '…을 보유한 분' 은 걷음) — ATS 대조용 |
 | `company_brief(company)` | 취업 브리핑 — 사업, 연봉 밴드(출처·확신도), 공고마다 공부할 것·면접 질문 |

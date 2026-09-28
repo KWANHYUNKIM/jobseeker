@@ -43,7 +43,7 @@ async def main() -> int:
             ("search_jobs", {"query": "금융 백엔드 Java", "limit": 3}),
             ("company_brief", {"company": "빗썸"}),
             ("company_tech", {"company": "메가존클라우드"}),
-            ("market_check", {"education": "전문학사", "location": "대전"}),
+            ("market_check", {"education": "전문학사"}),
             ("freelance_rates", {}),
             ("search_freelance", {"query": "Java", "grade": "고급", "limit": 2}),
         ]
