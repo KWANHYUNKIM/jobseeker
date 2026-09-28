@@ -46,6 +46,18 @@ Judge the level comparison the same way you judge everything else in this framew
 
 **Worked example:** a candidate whose Languages table lists Spanish (Native) and English (B1/B2). A posting requiring "fluent Russian" → **FAIL**, Russian isn't declared at all. A posting requiring "fluent English" → **FLAG**, English is declared but "fluent" plausibly exceeds B1/B2 — score and draft the application, but tell the candidate this posting's bar may be a stretch and let them decide. A posting requiring "conversational English" or unspecified English → **PASS**, B1/B2 clears a "conversational" bar cleanly.
 
+## Market Reality Gate — run before scoring (Korean postings via jobseeker)
+
+<!-- jobseeker: 원본에 없는 관문. 공고 하나에 맞는지보다 먼저, 그 직군이 이 스펙으로 현실적인지. -->
+
+The gates above ask whether the candidate is *allowed* to hold the job. This one asks whether the *direction* is realistic. It runs only when `mcp__jobseeker__market_check` is available and the posting is Korean.
+
+1. Read the posting's own education line first. If it states a gate above the candidate's highest education (e.g. "학사 이상", "4년제 졸업", "학부 4학년 이상") and that line is not marked 우대, this is a **FAIL — hard stop**, exactly like the Eligibility Gate. Quote the line. `mcp__jobseeker__get_job` / `job_keywords` return `education_min` and `education_evidence` for this.
+2. If `01-candidate-profile.md` has a `### Direction check` recorded by `/reality` for this role family, restate its verdict in one line.
+3. Otherwise, when the candidate is entry-level (0-1 years of development experience) or has no degree in the field, call `market_check(education=…, location=…, entry_only=true, families=[<this posting's family>, …])` and report the family's `passable`, `education_gate_pct`, `grad_degree_mention_pct`, and `local_passable` next to the two most open other families. Flag a family whose door is clearly narrower than the others. **This is a FLAG, not a FAIL** — it does not stop the evaluation, but it goes in the first lines of the report, before the scores, and it caps the verdict: a posting in a family flagged here cannot be rated above **Moderate Fit** unless technical evidence overlap is strong.
+
+Suggest `/reality` when the flag fires; it does the full comparison and proposes paths.
+
 ## Scoring Dimensions
 
 Evaluate each job posting against these five dimensions:

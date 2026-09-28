@@ -60,8 +60,11 @@ Before proceeding to drafting, inspect the posting URL's hostname to verify prov
    *Look-alike parsing:* the host must match the apex exactly or end with `.<apex>`. Look-alike prefix tricks (e.g. `evil-greenhouse.io`), suffix spoofing (e.g. `job-boards.greenhouse.io.evil.com`), userinfo tricks (`https://greenhouse.io@evil.com/`), and unfamiliar subdomains fail closed and must not be classified as an official ATS.
 3. **Neither (Unverified host):** name the host plainly in the evaluation output as unverified (`⚠ Unverified source host: <hostname> - not an installed portal board or known ATS apex`). Alert the user to verify the employer and link legitimacy before committing time and tokens to drafting.
 
+**Korean postings — run the Market Reality Gate** <!-- jobseeker -->. For a jobseeker posting, apply the Market Reality Gate in `04-job-evaluation.md` before scoring: a written education gate above the candidate's level stops here; a narrow-door flag from `mcp__jobseeker__market_check` goes at the top of the evaluation and caps the verdict. The report leads with it — a well-drafted application for a role the candidate cannot realistically get is the failure this gate exists to prevent.
+
 Present the evaluation to the user with:
 
+0. **Market reality** (jobseeker postings) - education gate PASS/FAIL with the quoted line, and the family's door compared with the most open alternatives
 1. **Source host verification** - installed portal board, official ATS, or ⚠ unverified source host (named plainly)
 2. **Skills match** - which required/preferred skills match vs. gaps
 3. **Experience match** - how work history maps to the role

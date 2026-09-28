@@ -19,6 +19,7 @@ cd ai-job-search && claude
 
 # 3) 원본 흐름 그대로
 /setup            # 내 프로필(한 번)
+/reality          # 가려는 직군이 이 스펙으로 현실적인지 먼저(국내)
 /scrape 백엔드     # jobseeker-kr 포털로 국내 공고를 찾는다
 /apply wanted-334745   # 또는 원티드·사람인 등 공고 URL
 /interview ...
@@ -32,7 +33,9 @@ cd ai-job-search && claude
 | `.agents/skills/jobseeker-kr/SKILL.md` (새) | 국내 공고 포털. CLI 대신 MCP 도구(`search_jobs`/`get_job`)로 검색하고, 결과를 스크레이퍼의 검색 계약(제목·회사·지역·날짜·URL)에 맞춰 옮기는 표 |
 | `.claude/skills/job-scraper/SKILL.md` | `transport: mcp` 포털을 알아듣는 한 단락(Step 1b), bun 이 없어도 MCP 포털은 돈다(Step 1a), allowed-tools 에 두 도구 |
 | `.claude/skills/job-scraper/search-queries.md` | 국내 검색어 예시 |
-| `.claude/commands/apply.md` | Step 0: 공고 id·국내 URL 이면 `get_job` 먼저(원문 전문은 그래도 WebFetch). Step 3 검토자: `company_brief`·`company_tech` 로 조사 시작(검증 규칙은 그대로). Step 5d: ATS 키워드에 `job_keywords` — **이력서는 서버로 보내지 않고** 로컬에서 대조 |
+| `.claude/commands/apply.md` | Step 1: 국내 공고면 Market Reality Gate 를 먼저(평가 0번 항목). Step 0: 공고 id·국내 URL 이면 `get_job` 먼저(원문 전문은 그래도 WebFetch). Step 3 검토자: `company_brief`·`company_tech` 로 조사 시작(검증 규칙은 그대로). Step 5d: ATS 키워드에 `job_keywords` — **이력서는 서버로 보내지 않고** 로컬에서 대조 |
+| `.claude/commands/reality.md` (새) | `/reality` — 지원서를 쓰기 **전에** 목표 직군이 이 학력·지역·연차로 현실적인지 `market_check` 로 직군끼리 견주고, 판정(현실적/도전/지금은 비현실적)을 첫 줄에 말한 뒤 더 열린 경로 2~3개를 낸다. 원본의 적합도 평가는 '이 공고에 맞나'만 묻고 '이 방향이 맞나'는 묻지 않는다 — 전문학사 신입에게 AI 엔지니어 서류를 정성껏 만들어 준 일이 있어 넣었다 |
+| `.claude/skills/job-application-assistant/04-job-evaluation.md` | **Market Reality Gate** — 적힌 학력 관문을 못 넘으면 자격 관문처럼 멈추고, 문이 좁은 직군이면 평가 맨 앞에 깃발을 세우고 판정을 Moderate 이하로 묶는다 |
 | `.claude/commands/interview.md` | Step 2: 브리핑의 공고별 면접 질문·공부할 것·차별점을 출발점으로 |
 | `.claude/settings.json` · `tools/security_guards.py` | `mcp__jobseeker` 허용 — 도구가 전부 읽기 전용이라 미리 허용해도 되돌릴 수 없는 일이 없다. 원본의 보안 검사 규칙대로 두 곳에 함께 올렸다 |
 
