@@ -111,7 +111,16 @@ def _stat(xs: list[float]) -> dict | None:
             "p75": round(_q(xs, 0.75)), "min": round(min(xs)), "max": round(max(xs))}
 
 
+def _is_dev(p: dict) -> bool:
+    """개발 프로젝트인가. 원티드 긱스·프리모아는 디자인·기획·마케팅 자리도 올린다 —
+    섞으면 '고급 개발자 단가' 칸에 브랜드 디자인 프로젝트가 들어간다(실제로 들어갔다)."""
+    cat = p.get("category") or ""
+    return not cat or any(c.strip() == "개발" for c in cat.split(","))
+
+
 def _first_monthly(p: dict) -> float | None:
+    if not _is_dev(p):
+        return None
     b = ((p.get("history") or [{}])[0].get("budget")) or p.get("budget")
     if not b or b.get("type") != "monthly":
         return None
@@ -133,7 +142,70 @@ def _matrix(rows: list[tuple[str, str, float]], row_order: list[str]) -> list[di
     return out
 
 
-def analyze(projects: list[dict]) -> dict:
+# ── 현재 단가표 · 월별 추이 · 일별 스냅숏 ──────────────────────────────
+# '현재' = 최근 CURRENT_DAYS 안에 목록에서 본 자리. 마감된 것도 넣는다 — 단가는 올라올 때
+# 정해지고 사람을 구했다고 바뀌지 않는다. 칸마다 그 숫자를 만든 프로젝트 id 를 같이 싣는다
+# (화면이 '이 숫자의 근거'로 그대로 보여 준다 — 표와 근거가 따로 계산되면 어긋난다).
+CURRENT_DAYS = 90
+CURRENT_COLS = ("전체", "SI", "SM")
+
+
+def _day(s: str | None) -> str:
+    return (s or "")[:10]
+
+
+def current_table(projects: list[dict], today: str) -> dict:
+    from datetime import date, timedelta
+    since = (date.fromisoformat(today) - timedelta(days=CURRENT_DAYS)).isoformat()
+    cells: dict = {g: {c: [] for c in CURRENT_COLS} for g in GRADES}
+    for p in projects:
+        v = _first_monthly(p)
+        if v is None or p.get("grade") not in GRADES or _day(p.get("last_seen_at")) < since:
+            continue
+        for c in ("전체", p.get("work_type")):
+            if c in CURRENT_COLS:
+                cells[p["grade"]][c].append((v, p["id"]))
+    table = {}
+    for g in GRADES:
+        table[g] = {}
+        for c in CURRENT_COLS:
+            vs = cells[g][c]
+            st = _stat([v for v, _ in vs])
+            if st:
+                st["ids"] = [i for _, i in sorted(vs)]
+            table[g][c] = st
+    return {"since": since, "until": today, "days": CURRENT_DAYS, "cols": list(CURRENT_COLS), "table": table}
+
+
+def monthly(projects: list[dict], started_at: str) -> list[dict]:
+    """월별 코호트 — 그 달에 올라온 자리의 '올라올 때 단가'. 첫 수집 날 한꺼번에 들어온
+    것(등록일 없음)은 그 달에 올라온 게 아니라 이미 있던 자리라 뺀다."""
+    months: dict = defaultdict(lambda: defaultdict(list))
+    for p in projects:
+        v = _first_monthly(p)
+        if v is None or p.get("grade") not in GRADES:
+            continue
+        if not p.get("posted_date") and _day(p.get("first_seen_at")) == _day(started_at):
+            continue
+        m = (p.get("posted_date") or _day(p.get("first_seen_at")))[:7]
+        if len(m) == 7:
+            months[m][p["grade"]].append(v)
+            months[m]["_all"].append(v)
+    return [{"month": m, "n": len(v["_all"]), "grades": {g: _stat(v[g]) for g in GRADES if v.get(g)}}
+            for m, v in sorted(months.items())]
+
+
+def snapshot(cur: dict) -> dict:
+    """그날의 현재 단가표 한 줄(id 는 빼고 숫자만). 크롤러가 날짜별로 한 줄씩 쌓는다."""
+    return {"date": cur["until"],
+            "cells": {g: {c: {k: s[k] for k in ("n", "p25", "median", "p75")}
+                          for c, s in row.items() if s}
+                      for g, row in cur["table"].items()}}
+
+
+def analyze(projects: list[dict], started_at: str = "", today: str | None = None) -> dict:
+    from datetime import date
+    today = today or date.today().isoformat()
     data = []
     for p in projects:
         v = _first_monthly(p)
@@ -160,7 +232,8 @@ def analyze(projects: list[dict]) -> dict:
                               for s in {p["site"] for p, _ in data}), key=lambda x: -x[1])),
     }
     result = {"meta": meta, "grades": grades, "grades_explicit": grades_explicit,
-              "by_type": by_type, "by_domain": by_domain, "by_role": by_role, "by_mode": by_mode}
+              "by_type": by_type, "by_domain": by_domain, "by_role": by_role, "by_mode": by_mode,
+              "current": current_table(projects, today), "monthly": monthly(projects, started_at)}
     result["insights"] = insights(result)
     return result
 

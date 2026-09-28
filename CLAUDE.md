@@ -19,6 +19,11 @@
     하나가 아니라 등급(초·중·고·특급 — 표기 우선, 없으면 경력으로 추정)과 SI/SM·분야·직무로
     갈린다 — `pipeline/freelance_rates.py` 가 분류(classify)·분석(analyze)·요약 문장(insights)을
     만들어 `analysis` 에 싣고, DB 는 007(`project_pay_by_grade`)이 같은 값을 낸다.
+    분석 페이지의 첫 화면은 **현재 단가표**(최근 90일에 본 개발 프로젝트, 등급 × 전체·SI·SM)이고
+    칸을 누르면 그 숫자를 만든 프로젝트(원문·등급 근거)와 CSV 가 나온다 — 칸의 id 목록을 분석
+    모듈이 같이 실어서 표와 근거가 어긋날 수 없다. **기록은 매일, 보기는 월별**: 크롤마다 그날의
+    단가표를 `rate_history`(JSON)·`project_rate_snapshot`(DB 008)에 쌓고, 월별 추이는 그 달에
+    올라온 자리로 다시 센다(표본 3건 미만인 달은 선에 올리지 않는다).
     위시켓(약관 금지)·OKKY(robots 전면 차단)·크몽(스크래핑 금지)은 일부러 뺐다.
   - `pipeline/` : 통합/중복제거/마감분류(aggregate, job_status), 수동보정(overrides)
     마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에

@@ -850,11 +850,18 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
                       key=lambda p: (p.get("posted_date") or p.get("first_seen_at") or ""), reverse=True)
     started_at = doc.get("started_at") or min((p.get("first_seen_at") or now for p in projects), default=now)
     # 등급·유형·분야·직무를 달고 그 축으로 단가를 나눠 센다(pipeline/freelance_rates.py).
-    from pipeline.freelance_rates import analyze, classify
+    from pipeline.freelance_rates import analyze, classify, snapshot
     for p in projects:
         classify(p)
+    analysis = analyze(projects, started_at, now[:10])
+    # 그날의 현재 단가표를 한 줄씩 쌓는다 — 지난 시장은 다시 계산할 수 없다(목록에서 내려간
+    # 자리는 다시 못 본다). 같은 날 여러 번 돌면 마지막 것으로 바꾼다.
+    snap = snapshot(analysis["current"])
+    rate_history = [h for h in doc.get("rate_history") or [] if h.get("date") != snap["date"]]
+    rate_history = sorted(rate_history + [snap], key=lambda h: h["date"])[-1000:]
     out = {"updated_at": now, "started_at": started_at, "sources": report,
-           "trend": trend(projects, started_at), "analysis": analyze(projects), "projects": projects}
+           "trend": trend(projects, started_at), "analysis": analysis,
+           "rate_history": rate_history, "projects": projects}
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     tmp = OUT_PATH.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
@@ -867,6 +874,8 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
     try:
         from store import freelance as _db
         db = _db.dual_write(touched)
+        if db is not None:
+            _db.dual_write_snapshot(snap)
     except ImportError as e:
         db = None
         print(f"  [freelance] DB 모듈 없음 — JSON 만 씁니다: {e}", flush=True)
