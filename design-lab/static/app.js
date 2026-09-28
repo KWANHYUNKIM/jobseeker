@@ -16,7 +16,7 @@ const state = {
   refs: null, family: '', country: '',
   meta: null,                 // 템플릿·포맷·팔레트
   jobs: [], job: null,
-  template: 'role_hero', format: 'ig_portrait', palette: '',
+  template: '', format: 'ig_portrait', palette: '',   // 판은 공고를 고르면 그 회사 것으로 정해진다
   platforms: new Set(['instagram']),
 };
 
@@ -25,6 +25,7 @@ document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () 
   document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('on', x === b));
   document.querySelectorAll('.view').forEach((v) => v.classList.toggle('on', v.id === `view-${b.dataset.view}`));
   if (b.dataset.view === 'queue') loadQueue();
+  if (b.dataset.view === 'process') loadProcess();
 }));
 
 /* ---------------- 1. 레퍼런스 ---------------- */
@@ -145,7 +146,9 @@ function drawControls() {
     });
     box.append(g);
   };
-  group('템플릿', state.meta.templates.map((t) => ({ id: t.id, name: t.name })), 'template');
+  // 회사 전용 판은 그 회사 공고에만 붙는다 — 빗썸 공고를 42dot 판에 넣으면 남의 얼굴이 된다.
+  // 고른 공고의 회사와 맞는 판만 누를 수 있게 하고, 나머지는 보이되 꺼 둔다(무엇이 있는지는 보인다).
+  groupTemplates();
   group('포맷', state.meta.formats.map((f) => ({ id: f.id, name: `${f.label} ${f.w}×${f.h}` })), 'format');
   group('팔레트', [{ id: '', name: '자동' }, ...Object.keys(state.meta.palettes).map((p) => ({ id: p, name: p }))], 'palette');
 
@@ -153,7 +156,33 @@ function drawControls() {
   $('#tplnote').textContent = '';
   if (t) {
     $('#tplnote').append(el('b', null, `${t.name} — ${t.ref}`), document.createTextNode(t.note));
+  } else if (state.job) {
+    $('#tplnote').append(
+      el('b', null, `${state.job.company} 는 아직 전용 판이 없습니다`),
+      document.createTextNode('회사를 알아보게 하는 대표 물건부터 찾습니다 — BRAND_RESEARCH.md 절차.'));
   }
+
+  function groupTemplates() {
+    const g = el('div', 'grp');
+    g.append(el('span', null, '템플릿'));
+    state.meta.templates.forEach((t) => {
+      const ok = fitsJob(t);
+      const b = el('button', 'chip' + (state.template === t.id ? ' on' : '') + (ok ? '' : ' off'), t.name);
+      b.disabled = !ok;
+      if (!ok) b.title = `${t.company} 공고에만 쓰는 판입니다`;
+      b.addEventListener('click', () => { state.template = t.id; drawControls(); refreshPreview(); });
+      g.append(b);
+    });
+    box.append(g);
+  }
+}
+
+// 이 판이 지금 고른 공고에 쓸 수 있나. company 가 없는 판(범용)은 늘 쓸 수 있다.
+function fitsJob(t) {
+  if (!t.company) return true;
+  if (!state.job) return false;
+  const names = Array.isArray(t.company) ? t.company : [t.company];
+  return names.some((n) => state.job.company === n);
 }
 
 async function loadJobs(q = '') {
@@ -173,6 +202,10 @@ async function loadJobs(q = '') {
 
 async function pickJob(job) {
   state.job = job;
+  // 공고를 고르면 판은 따라온다 — 그 회사 전용 판이 있으면 그것, 없으면 아무것도 안 고른다.
+  const mine = (state.meta?.templates || []).find(fitsJob);
+  state.template = mine ? mine.id : '';
+  drawControls();
   document.querySelectorAll('.jobrow').forEach((r) => r.classList.remove('on'));
   loadJobs($('#job-q').value).then(() => {
     document.querySelectorAll('.jobrow').forEach((r) => {
@@ -193,6 +226,8 @@ async function pickJob(job) {
 
 function refreshPreview() {
   if (!state.job || !state.meta) return;
+  const frame0 = $('#preview');
+  if (!state.template) { frame0.removeAttribute('src'); return; }   // 판이 없으면 빈 캔버스
   const fmt = state.meta.formats.find((f) => f.id === state.format);
   const wrap = document.querySelector('.canvas-wrap').getBoundingClientRect();
   // 캔버스는 실제 픽셀(1080×1350)로 그리고, 화면에는 축소해서 보여 준다.
@@ -309,6 +344,113 @@ function queueRow(it) {
   btns.append(act('삭제', 'ghost', () => api('/api/queue/delete', { id: it.id })));
   row.append(btns);
   return row;
+}
+
+/* ---------------- 4. 프로세스 ----------------
+   여기서 절차를 적지 않는다. /api/process 가 BRAND_RESEARCH.md 의 표와
+   publish/queue.py 의 상태를 읽어 오고, 이 함수는 그걸 그리기만 한다.
+   절차서에 줄을 더하면 이 화면에 줄이 생긴다. */
+async function loadProcess() {
+  const box = $('#proc');
+  box.textContent = '';
+  box.append(el('div', 'empty', '읽는 중…'));
+  const p = await api('/api/process');
+  box.textContent = '';
+  if (p.error) { box.append(el('div', 'empty', p.error)); return; }
+
+  const section = (title, source) => {
+    const h = el('div', 'proc-h');
+    h.append(el('h3', null, title));
+    if (source) h.append(el('code', null, source));
+    box.append(h);
+  };
+
+  // ── 제작 — BRAND_RESEARCH.md 의 9단계. done 은 회사 몇 곳이 통과했나.
+  section('판 만들기', p.sources.steps);
+  const rail = el('div', 'rail');
+  p.steps.forEach((s) => {
+    const n = el('div', 'step' + (s.done === null ? ' unknown' : ''));
+    n.append(el('span', 'no', String(s.no)));
+    n.append(el('span', 'nm', s.name));
+    n.append(el('code', 'art', s.artifact));
+    const ratio = s.done === null ? '셀 수 없음' : `${s.done} / ${p.company_total}`;
+    n.append(el('span', 'cnt', ratio));
+    if (s.done !== null) {
+      const bar = el('div', 'bar');
+      const fill = el('i');
+      fill.style.width = `${Math.round((s.done / Math.max(1, p.company_total)) * 100)}%`;
+      bar.append(fill);
+      n.append(bar);
+    }
+    rail.append(n);
+  });
+  box.append(rail);
+
+  // ── 스튜디오 — 만든 판 중 몇 개가 실제로 고를 수 있나
+  section('스튜디오에 올라간 판', p.sources.studio);
+  box.append(el('div', 'note',
+    `회사 ${p.company_total}곳 중 ${p.studio_total}곳의 판이 스튜디오에서 선택 가능합니다. `
+    + '전용 판은 그 회사 공고에만 붙습니다.'));
+
+  // ── 발행 — queue.py 의 갈래 그림을 원문 그대로. 상태마다 지금 몇 건인지 붙인다.
+  section('발행', p.sources.publish);
+  if (p.publish.diagram.length) {
+    const pre = el('pre', 'flow', p.publish.diagram.join('\n'));
+    box.append(pre);
+  }
+  const chips = el('div', 'statuses');
+  const all = [...p.publish.pending, ...p.publish.final];
+  (all.length ? all : Object.keys(p.queue_counts)).forEach((s) => {
+    const n = p.queue_counts[s] || 0;
+    const c = el('span', 'st' + (p.publish.pending.includes(s) ? ' pending' : '') + (n ? ' has' : ''));
+    c.append(el('b', null, s), el('i', null, String(n)));
+    chips.append(c);
+  });
+  box.append(chips);
+  if (p.publish.note) box.append(el('div', 'note', p.publish.note));
+
+  // ── 회사별 현재 위치
+  section('회사마다 어디까지 왔나', 'brands/*.json · assets/ · out/');
+  const tbl = el('div', 'grid');
+  // 칸 수는 절차서의 단계 수를 따른다 — 표에 줄이 늘면 열도 는다
+  tbl.style.setProperty('--cols', `200px repeat(${p.steps.length},26px) 64px`);
+  const head = el('div', 'row head');
+  head.append(el('span', 'c-name', '회사'));
+  p.steps.forEach((s) => {
+    const c = el('span', 'c-s', String(s.no));
+    c.title = s.name;
+    head.append(c);
+  });
+  head.append(el('span', 'c-x', '모집중'));
+  tbl.append(head);
+  p.companies.forEach((r) => {
+    const row = el('div', 'row');
+    const nm = el('span', 'c-name');
+    nm.append(el('b', null, r.name));
+    if (r.researched_at) nm.append(el('i', null, r.researched_at));
+    row.append(nm);
+    p.steps.forEach((s) => {
+      const ok = r.stages[s.key];
+      const c = el('span', 'c-s ' + (ok ? 'ok' : 'no'), ok ? '●' : '·');
+      c.title = `${s.no}. ${s.name}`;
+      row.append(c);
+    });
+    row.append(el('span', 'c-x', r.open ? `${r.open}건` : '—'));
+    tbl.append(row);
+  });
+  box.append(tbl);
+
+  // ── 다음에 만들 회사 — 판이 없는데 공고가 많은 곳
+  if (p.next.length) {
+    section('다음에 만들 판', '모집중 공고 수 순 · 전용 판 없는 회사');
+    const nx = el('div', 'nexts');
+    p.next.forEach((n) => {
+      const c = el('span', 'nx');
+      c.append(el('b', null, n.company), el('i', null, `${n.open}건`));
+      nx.append(c);
+    });
+    box.append(nx);
+  }
 }
 
 /* ---------------- 시작 ---------------- */

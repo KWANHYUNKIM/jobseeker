@@ -1,0 +1,184 @@
+{
+  "names": [
+    "씨제이이엔엠",
+    "씨제이이엔엠(CJ ENM)",
+    "CJ ENM",
+    "CJ E&M",
+    "씨제이이엔엠 주식회사"
+  ],
+  "researched_at": "2026-09-17",
+  "wordmark": "CJ ENM",
+  "about": "드라마·예능·영화·음악·공연 콘텐츠 기업",
+  "facts": [],
+  "slogan": "Music Makes One",
+  "frame": "brand_cjenm.html",
+  "palette": {
+    "bg": "#000000",
+    "ink": "#ffffff",
+    "accent": "#ff9700",
+    "soft": "#141414"
+  },
+  "signature": {
+    "id": "hypercube-structure",
+    "what": "MAMA AWARDS 트로피 '하이퍼큐브'의 구조 — 큐브가 X자로 교차한 기둥 위에 얹히고 그 아래 계단형 받침이 받친다. 판이 그 구조를 빌린다: 큐브 자리에 공고가 들어가고, 아래를 교차 기둥과 받침이 받친다. **로고타이프는 그리지 않는다.**",
+    "evidence": [
+      "https://www.cjenm.com/ko/news/새롭게-진화하는-2022-mama-awards--new-트로피-최초-공개/ — CJ ENM 공식: '하이퍼큐브의 상단은 지난 21년간 MAMA 헤리티지로 유지했던 큐브 형태이며, 하단의 라인들은 팬과 아티스트들이 무한으로 연결되고 진화하는 과정을 여러 갈래의 빛으로 형상화했다.' / '하이퍼큐브의 여섯 면에는 각각 멈추지 않는 도전, 꺼지지 않는 열정, 끝이 없는 꿈, 한계가 없는 성장, 룰을 넘어선 확장, 나만이 가진 고유성의 의미를 담았다.'",
+      "https://img.cjnews.cj.net/wp-content/uploads/2022/11/ENM_ONLYONESTORY_221128_03.jpg — CJ 뉴스룸 공식 이미지. **실물을 눈으로 확인했다**: 금색 큐브가 X자로 교차한 네 기둥 위에 얹히고 계단형 직사각 받침이 받친다. 보도자료의 '여러 갈래의 빛'은 은유이고 실물은 교차 트러스다 — 글만 보고 빛줄기를 부채꼴로 그렸다면 틀렸을 것이다.",
+      "https://www.cjenm.com/en/music/live-entertainment/ — 'Mnet Plus is a global K-POP content platform available in 251 regions worldwide. Designed around fan experiences linked to CJ ENM's flagship IPs, including original series, Mnet, KCON, MAMA AWARDS, and more' — 회사명·공고 제목([Mnet Plus])·시그니처(MAMA) 세 이름이 한 판에 같이 있어도 되는 공식 근거",
+      "https://play.google.com/store/apps/details?id=world.mnetplus — Mnet Plus 공식 태그라인 'Vote, Play, Love / All of K-POP, Mnet Plus', 게시자 (주)씨제이이엔엠"
+    ],
+    "why_recognizable": "매년 200개국 이상에 생중계되는 시상식의 트로피이고 수상 사진마다 화면에 들어온다. 다만 **정직하게 적는다 — 이 판의 시그니처는 다섯 중 가장 약하다.** 큐브의 여섯 면이 MAMA 로고타이프 돋을새김이라 트로피 자체는 사실상 로고 조형물이고, 로고를 빼면 '금색 큐브 + 교차 기둥'이라는 구조만 남는다. 그 구조가 CJ ENM 으로 읽히는 정도는 트로피를 아는 사람에게 한정된다.",
+    "how_used": "머리의 구조로만. 큐브 자리를 공고가 채우고(토스플레이스 판이 화면을 빌린 것과 같은 논리), 그 아래를 X 교차 기둥과 계단 받침이 받친다. 금색은 선으로만 — 면으로 칠하지 않는다.",
+    "medium": {
+      "ground": "broadcast",
+      "text_load": "one-line",
+      "hand": "caption",
+      "dominant": "자막 띠 — 검은 화면 아래 한 줄",
+      "why": "이 회사가 만드는 것은 사람들이 '보는' 것이다. 그 화면에 글이 얹히는 방식이 자막이므로, 공고를 자막으로 얹으면 회사가 하는 일의 형식이 판의 형식이 된다. 출연자 사진·채널 로고는 권리상 못 쓰니 화면은 검게 둔다 — 비워 두는 편이 오히려 정직하고, 그 빈 화면 안에 하이퍼큐브의 구조가 금색 선으로 서 있다(시그니처가 무대 위 물건이 된다). 자막 글자는 방송 자막대로 검은 외곽선을 두른다 — 그래서 hand 가 print 가 아니라 caption 이다."
+    },
+    "job_link": "이 회사의 개발 공고는 전부 [Mnet Plus] 다. Mnet Plus 를 한 단어로 줄이면 공식 태그라인 첫 단어 그대로 'Vote' 이고, 그 투표가 가서 닿는 물건이 이 트로피다 — 판의 머리(제목 [Mnet Plus])와 얼굴(큐브)이 서로를 설명한다.",
+    "not_used": "**MAMA 로고타이프 돋을새김 — 큐브 면의 글자를 그리지 않는다(로고 변형 금지).** CJ 블로썸 심볼 / tvN·Mnet·OCN·티빙 로고 일체 / 무대·객석·출연자 사진(실존 인물) / MAMA 연도별 키비주얼(해마다 바뀌어 1년이면 낡는다) / Mpickard 포토카드(전부 실존 아이돌 사진) / 금색 면칠·글로우(공식 가이드가 디지털 골드를 별도로 규정하지 않아 근거가 없다 — 선으로만 쓰고 CJ Yellow 에서 파생한다)",
+    "alternatives": [
+      {
+        "what": "CJ 블로썸 심볼(꽃잎 3장)",
+        "why_not": "로고 변형 중심 → 즉시 탈락. 게다가 CJ ENM 만의 것이 아니라 CJ그룹 공용이라 회사를 구별하지 못한다."
+      },
+      {
+        "what": "Mnet Plus 앱 로고 / 핑크 워드마크",
+        "why_not": "로고 변형 중심 탈락. 색·웹 UI 로 가는 v1~v2 실패의 반복이다."
+      },
+      {
+        "what": "Mpickard(앱 내 디지털 포토카드)",
+        "why_not": "Mnet Plus 고유 물건이지만 내용물이 전부 실존 아이돌 사진이라 권리·실존인물 기준 탈락."
+      },
+      {
+        "what": "2025 MAMA '어-흥' 호랑이 키비주얼",
+        "why_not": "공식이고 인물도 없지만 1년짜리 캠페인 비주얼이라 판이 금방 낡는다."
+      },
+      {
+        "what": "CJ ENM 스튜디오센터(파주)",
+        "why_not": "업계 밖 인지가 거의 없고 외관 사진 없이는 그릴 수 없으며 앱·플랫폼 공고와의 연결이 약하다."
+      },
+      {
+        "what": "M COUNTDOWN 1위 트로피",
+        "why_not": "Mnet 채널 물건이라 채널 포스터가 된다."
+      },
+      {
+        "what": "'Music Makes One' 타이포 조판",
+        "why_not": "글자만으로는 물건이 아니다 — v1 실패의 재탕. 판의 꼬리 한 줄로만 쓴다."
+      }
+    ]
+  },
+  "points": [
+    {
+      "id": "six-faces",
+      "what": "큐브의 여섯 면에 도전·열정·꿈·성장·확장·고유성의 뜻이 담겼다(공식)",
+      "evidence": "https://www.cjenm.com/ko/news/새롭게-진화하는-2022-mama-awards--new-트로피-최초-공개/",
+      "meaning": "큐브가 '여섯 면을 가진 것'이라는 사실이 판의 구조를 정당화한다",
+      "use": "쓰지 않는다 — 여섯 단어를 판에 박으면 지어낸 카피처럼 읽힌다. 기록으로만 남긴다",
+      "avoid": "여섯 단어를 아이콘·칩으로 늘어놓는 것"
+    }
+  ],
+  "ui": {
+    "observed_at": "공식 CI 가이드라인 PDF 1쪽 PRIMARY COLORS 표(HEX + Pantone) · cjnews.cj.net 공식 트로피 이미지 육안 확인 · mnetplus.world 라이브 CSS",
+    "font": "'Pretendard','Montserrat','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "Pretendard": [
+        {
+          "src": "assets/companies/씨제이이엔엠/fonts/Pretendard-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/씨제이이엔엠/fonts/Pretendard-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/씨제이이엔엠/fonts/Pretendard-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/씨제이이엔엠/fonts/Pretendard-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/씨제이이엔엠/fonts/Pretendard-ExtraBold.woff2",
+          "weight": 800
+        }
+      ],
+      "Montserrat": "assets/companies/씨제이이엔엠/fonts/Montserrat-VF.ttf"
+    },
+    "display": "sans",
+    "paper": "#000000",
+    "ink": "#ffffff",
+    "text": "#d8d8da",
+    "sub": "#97999b",
+    "accent": "#ff9700",
+    "line": "#2a2a2c",
+    "gold": "#ff9700",
+    "gold_dim": "#8a5a10",
+    "rules": [
+      "큐브 면의 MAMA 로고타이프를 그리지 않는다 — 구조만 빌린다",
+      "금색은 선으로만. 면으로 칠하거나 글로우를 넣지 않는다",
+      "바탕은 #000000 — 공식 가이드가 'on Black' 을 허용 배경으로 명시한다",
+      "하위 채널 색(tvN·Mnet 등)을 쓰지 않는다. 쓰는 순간 그 채널 포스터가 된다",
+      "Mnet Plus 핑크(#FF3881)는 제목 대괄호까지만. 판을 지배하면 앱 광고가 된다",
+      "상승/경고 빨강(CJ Red)은 마감 임박 라벨에만",
+      "공고 제목의 [Mnet Plus] 를 한 글자도 건드리지 않는다"
+    ],
+    "honesty": "이 판은 다섯 중 시그니처가 가장 약하다. 트로피가 로고 조형물이라 로고를 빼고 구조만 남겼고, 그 구조의 식별력은 트로피를 아는 사람에게 한정된다. 더 나은 물건을 찾으면 갈아탄다.",
+    "fonts_research": {
+      "seen": {
+        "cjenm.com": "CJ ONLYONE NEW title/body + Circular Std — 둘 다 쓸 수 없다",
+        "mnetplus.world": "Pretendard(pretendard-dynamic-subset.css) + Montserrat"
+      },
+      "choice": "Pretendard (SIL OFL 1.1) + Montserrat (OFL) — Mnet Plus 가 실제로 서빙하는 조합",
+      "why": [
+        "공고 제목이 [Mnet Plus] 이고 그 제품이 실제로 쓰는 글자라 제목과 어긋나지 않는다",
+        "미디어 회사에 필요한 제목용 굵은 획이 둘 다 ExtraBold/Black 까지 있다",
+        "라이선스가 깨끗해 발행해도 안전하다"
+      ],
+      "not_used": "CJ ONLYONE(리드폰트 제작 CJ그룹 전용서체 — 공개 배포처를 찾지 못했고 유일한 경로가 CJ 사내 SharePoint 라 사용 불가) · Circular Std(Lineto 유료)"
+    },
+    "type_plan": {
+      "verbatim": "한 글자도 고치지 않는다. 제목 앞의 [Mnet Plus] 대괄호를 그대로 둔다 — 이 회사 개발 공고는 전부 이 이름으로 나온다.",
+      "scale": [
+        {
+          "what": "직무명",
+          "how": "판에서 가장 큼(5.8u, 800). 큐브 테두리 안에 들어간다",
+          "why": "글자가 트로피 큐브의 한 면이 된다 — 위계의 꼭대기가 곧 시그니처의 자리다"
+        },
+        {
+          "what": "회사명 CJ ENM",
+          "how": "2.3u 700 Montserrat, 자간 .02em",
+          "why": "공고 제목이 [Mnet Plus] 이므로 회사는 위에서 한 번만 말한다"
+        },
+        {
+          "what": "본문",
+          "how": "16px 이상",
+          "why": "-"
+        }
+      ],
+      "highlight": {
+        "what": "섹션 이름, 'A: B' 꼴의 라벨, [..] 소제목",
+        "how": "섹션 이름은 Montserrat 700 대문자 + 자간 .16em + 골드(#ff9700), 라벨은 굵기 600 + 흰색",
+        "avoid": "골드를 면으로 칠하지 않는다(선으로만). 하위 채널 색·Mnet Plus 핑크를 강조에 쓰지 않는다 — 쓰는 순간 그 채널 광고가 된다"
+      },
+      "as_image": {
+        "what": "직무명 — 큐브 면이 된다",
+        "how": "금색 2px 테두리 사각형 안에 제목을 넣고, 면을 2x2 로 가르는 헤어라인을 깐다(실물 큐브 면이 2x2 로 나뉘어 있다). 아래를 X 교차 기둥과 계단 받침이 받친다",
+        "avoid": "큐브 면의 MAMA 로고타이프를 그리지 않는다 — 트로피가 사실상 로고 조형물이라 글자를 옮기면 로고 변형이 된다"
+      }
+    },
+    "images": {},
+    "images_note": {
+      "pending": "트로피 사진(ENM_ONLYONESTORY_221128_03.jpg)은 형태 확인용으로만 보고 판에는 넣지 않았다. 공식 보도자료 이미지라 공개 게시 전 사용 허락 확인이 필요하다."
+    }
+  },
+  "sources": [
+    "https://www.cjenm.com/ko/news/새롭게-진화하는-2022-mama-awards--new-트로피-최초-공개/",
+    "https://cjnews.cj.net/새롭게-탈바꿈한-2022-mama-awards/",
+    "https://www.cjenm.com/en/music/live-entertainment/",
+    "https://web2-cf-image.cjenm.com/public/share/contentsmng/pdf/CJ_ENM_CI_GUIDELINE_PDF_ko.pdf",
+    "https://play.google.com/store/apps/details?id=world.mnetplus"
+  ]
+}

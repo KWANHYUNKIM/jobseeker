@@ -1,0 +1,291 @@
+<!-- brand_cjenm — 씨제이이엔엠 전용 판 v1. brands/씨제이이엔엠.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  hypercube-structure  MAMA AWARDS 트로피 '하이퍼큐브' 의 구조.
+                                     실물을 눈으로 확인했다(CJ 뉴스룸 공식 이미지): 금색 큐브가 X자로
+                                     교차한 네 기둥 위에 얹히고 계단형 직사각 받침이 받친다. 보도자료의
+                                     '여러 갈래의 빛' 은 은유이고 실물은 교차 트러스다.
+                                     판은 그 구조를 빌린다 — 큐브 자리를 공고가 채우고 아래를 기둥이 받친다.
+     **큐브 면의 MAMA 로고타이프는 그리지 않는다** — 트로피가 사실상 로고 조형물이라,
+       로고를 빼고 구조만 남기는 것이 이 랩의 규칙(로고 변형 금지)을 지키는 유일한 길이다.
+     안 쓰는 것: CJ 블로썸 심볼, 하위 채널 로고·색, 출연자 사진, 연도별 키비주얼, 포토카드,
+                 금색 면칠·글로우(공식 디지털 골드 규정이 없다 — 선으로만, CJ Yellow 에서 파생)
+     서체: Pretendard + Montserrat — Mnet Plus 가 실제로 서빙하는 조합(전용서체는 사용 불가) -->
+<meta charset="utf-8">
+<title>brand_cjenm</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#000}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{position:relative;width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);
+    font-family:var(--font);display:flex;flex-direction:column;overflow:hidden;
+    padding:calc(4*var(--u)) calc(4.4*var(--u)) calc(3*var(--u))}
+
+  .bar{flex:none;display:flex;align-items:baseline;gap:calc(1.3*var(--u))}
+  .co{font-family:'Montserrat',var(--font);font-size:calc(2.3*var(--u));font-weight:700;letter-spacing:.02em;color:var(--ink)}
+  .about{font-size:calc(1.45*var(--u));font-weight:400;color:var(--sub)}
+  .career{margin-left:auto;font-size:calc(1.6*var(--u));font-weight:500;color:var(--gold);white-space:nowrap}
+
+  /* 큐브 — 트로피 위쪽. 로고 대신 공고가 이 면을 채운다 */
+  .cube{flex:none;margin-top:calc(2.2*var(--u));border:2px solid var(--gold);
+    padding:calc(2.6*var(--u)) calc(2.8*var(--u));position:relative}
+  /* 면을 넷으로 나눈 돋을새김 격자 — 실물 큐브 면이 2x2 로 나뉘어 있다. 선만 남긴다 */
+  .cube::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:var(--gold-dim)}
+  .cube::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--gold-dim)}
+  h1{position:relative;z-index:1;font-size:calc(var(--TS)*var(--u));font-weight:800;letter-spacing:-.03em;
+    line-height:1.07;color:var(--ink);text-wrap:balance}
+
+  /* 기둥 — 바깥 다리 둘이 아래로 벌어지고, 가운데를 X 가새가 가로지른다. 실물 그대로 */
+  .truss{flex:none;height:var(--TR);position:relative;width:58%;margin:0 auto}
+  .truss i{position:absolute;background:var(--gold)}
+  /* 바깥 다리 — 위는 큐브 폭, 아래는 받침 폭으로 벌어진다 */
+  .truss i.l,.truss i.r{top:0;bottom:0;width:2px;transform-origin:50% 0}
+  .truss i.l{left:16%;transform:skewX(-9deg)}
+  .truss i.r{right:16%;transform:skewX(9deg)}
+  /* X 가새 — 가운데서 교차한다 */
+  .truss i.x1,.truss i.x2{left:14%;right:14%;top:50%;height:2px;transform-origin:50% 50%}
+  /* scaleX 로 늘려야 회전 뒤에도 가로 폭이 유지된다(안 늘리면 X 가 안쪽으로 오므라든다) */
+  .truss i.x1{transform:rotate(var(--XA)) scaleX(var(--XS))}
+  .truss i.x2{transform:rotate(calc(-1 * var(--XA))) scaleX(var(--XS))}
+  /* 계단형 받침 — 두 단 */
+  .base{flex:none;width:72%;margin:0 auto;border-top:2px solid var(--gold)}
+  .base i{display:block;height:calc(.9*var(--u));border-bottom:2px solid var(--gold);
+    margin:0 auto;width:86%}
+  .base i:last-child{width:100%}
+
+  /* 본문 옆 레일 — 트로피의 기둥이 판 끝까지 내려간다. 큐브(제목)를 받치던 것이
+     본문까지 받치는 셈이라 새 장치가 아니라 시그니처의 연장이다. */
+  .body{flex:1;min-height:0;display:flex;margin-top:calc(2.0*var(--u));
+    border-left:1px solid var(--gold-dim);border-right:1px solid var(--gold-dim);
+    padding:0 calc(2.2*var(--u))}
+  main{flex:1;min-width:0;min-height:0;overflow:hidden;
+    column-gap:calc(var(--f)*1.7);column-fill:auto}
+  .sec{break-inside:auto}
+  .sec + .sec{margin-top:calc(var(--f)*.88)}
+  h2{break-after:avoid;font-family:'Montserrat',var(--font);
+    font-size:calc(var(--f)*.8);font-weight:700;color:var(--gold);letter-spacing:.16em;
+    margin-bottom:calc(var(--f)*.48)}
+  .it{break-inside:avoid;position:relative;font-size:var(--f);line-height:1.52;color:var(--text);font-weight:400;
+    padding-left:calc(var(--f)*.95);margin-bottom:calc(var(--f)*.34);text-wrap:pretty}
+  .it::before{content:'';position:absolute;left:0;top:calc(var(--f)*.68);
+    width:calc(var(--f)*.34);height:1px;background:var(--sub)}
+  .it b{font-weight:600;color:var(--ink)}
+  .sub{break-after:avoid;font-size:calc(var(--f)*.94);font-weight:700;color:var(--ink);
+    margin:calc(var(--f)*.6) 0 calc(var(--f)*.28)}
+  .sub:first-of-type{margin-top:0}
+  .note{break-inside:avoid;font-size:calc(var(--f)*.82);line-height:1.45;color:var(--sub);margin-top:calc(var(--f)*.28)}
+
+  footer{flex:none;margin-top:calc(1.4*var(--u));padding-top:calc(1.2*var(--u));border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:flex-end;gap:calc(2*var(--u))}
+  .slogan{font-family:'Montserrat',var(--font);font-size:calc(1.9*var(--u));font-weight:600;
+    letter-spacing:.01em;color:var(--ink);white-space:nowrap}
+  .stack{margin-top:calc(.35*var(--u));font-size:calc(1.4*var(--u));font-weight:400;color:var(--sub)}
+  .apply{text-align:right;white-space:nowrap;color:var(--gold)}
+
+  /* ── 표지 ──────────────────────────────────────────────────────────────
+     brands/씨제이이엔엠.json 의 signature.medium 이 (broadcast · one-line · caption · 자막 띠)
+     라서 기본 판이 이것이다. 전문은 --variant full 로 부른다(2-1절).
+
+     이 회사가 만드는 것은 사람들이 '보는' 것이고, 그 화면에 글이 얹히는 방식이 자막이다.
+     출연자·채널 로고는 권리상 못 쓰니 화면은 검게 둔다 — 비워 두는 편이 정직하고,
+     그 빈 화면 안에 하이퍼큐브의 구조가 금색 선으로 서 있다. */
+  .cover{background:#000;padding:0}
+  .cover .top{flex:none;display:flex;align-items:baseline;gap:calc(1.2*var(--u));
+    padding:calc(4.4*var(--u)) calc(4.4*var(--u)) 0}
+  .cover .top .co{font-family:'Montserrat',var(--font);font-size:calc(2.2*var(--u));
+    font-weight:700;letter-spacing:.02em;color:#fff}
+  .cover .top .ab{font-size:calc(1.4*var(--u));color:var(--sub)}
+  .cover .top .career{margin-left:auto;font-size:calc(1.5*var(--u));color:var(--gold);white-space:nowrap}
+
+  /* 무대 — 검은 화면 안에 물건이 선다.
+     배경을 뗀 원본 사진(ui.images.cover)이 있으면 그것을 쓰고, 없을 때만 구조를 선으로 그린다.
+     흉내보다 원본이다(BRAND_RESEARCH 0절 4번) — poster/cutout.py 로 배경을 뗀다. */
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:0;padding:calc(2*var(--u)) 0}
+  .stage img.shot{max-width:72%;max-height:100%;object-fit:contain;display:block}
+  .stage .cube{width:calc(var(--CW)*var(--u));height:calc(var(--CW)*.86*var(--u));
+    border:2px solid var(--gold);position:relative;margin:0}
+  .stage .cube::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:var(--gold-dim)}
+  .stage .cube::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--gold-dim)}
+  .stage .truss{width:calc(var(--CW)*.62*var(--u));height:calc(var(--CW)*.42*var(--u))}
+  .stage .base{width:calc(var(--CW)*.78*var(--u))}
+
+  /* 자막 — 방송 자막대로 검은 외곽선을 두른다(그래서 hand 가 caption 이다) */
+  .caption{flex:none;padding:calc(2.4*var(--u)) calc(6*var(--u)) calc(2*var(--u));
+    text-align:center;background:linear-gradient(180deg,rgba(0,0,0,0) 0,rgba(0,0,0,.55) 40%)}
+  .caption .line{font-size:calc(var(--CS)*var(--u));font-weight:700;line-height:1.44;
+    color:#fff;letter-spacing:-.02em;word-break:keep-all;text-wrap:pretty;
+    paint-order:stroke fill;-webkit-text-stroke:calc(.42*var(--u)) #000}
+  .caption .role{margin-top:calc(1.6*var(--u));font-size:calc(1.8*var(--u));
+    font-weight:600;color:var(--gold)}
+  .caption .src{margin-top:calc(.6*var(--u));font-size:calc(1.2*var(--u));color:var(--sub)}
+  .cover .bar-b{flex:none;display:flex;justify-content:space-between;align-items:flex-end;
+    padding:0 calc(4.4*var(--u)) calc(3.2*var(--u));gap:calc(2*var(--u))}
+  .cover .slogan{font-family:'Montserrat',var(--font);font-size:calc(1.8*var(--u));
+    font-weight:600;color:#fff;white-space:nowrap}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  F.set('gold', ui.gold || '#ff9700');
+  F.set('gold-dim', ui.gold_dim || '#8a5a10');
+  F.set('line', ui.line || '#2a2a2c');
+
+  // 매체가 판을 정한다 — (broadcast · one-line · caption · 자막 띠) 라서 기본이 표지다.
+  const V = (D.variant || '').trim() || 'caption';
+  const sheet = el('section', 'sheet' + (V === 'caption' ? ' cover' : ''));
+  document.getElementById('root').append(sheet);
+
+  if (V === 'caption') {
+    const top = el('div', 'top');
+    top.append(el('div', 'co', B.wordmark || D.company));
+    if (B.about) top.append(el('div', 'ab', B.about));
+    top.append(el('div', 'career', D.meta.join(' · ')));
+    sheet.append(top);
+
+    // 무대 — 배경 뗀 원본 사진이 있으면 그것, 없으면 구조를 선으로.
+    const stage = el('div', 'stage');
+    const IMG = D.brand_images || {};
+    let truss = null;
+    if (IMG.cover) {
+      const im = el('img', 'shot'); im.src = IMG.cover; im.alt = '';
+      stage.append(im);
+    } else {
+      const cube = el('div', 'cube');
+      truss = el('div', 'truss');
+      truss.append(el('i', 'l'), el('i', 'r'), el('i', 'x1'), el('i', 'x2'));
+      const base = el('div', 'base');
+      base.append(el('i'), el('i'));
+      stage.append(cube, truss, base);
+    }
+    sheet.append(stage);
+
+    // 자막 — 공고에서 고른 한 줄. 고르는 것이지 고치는 것이 아니다
+    const pool = [];
+    S.tasks.forEach(t => (t.items || []).forEach(x => pool.push(['주요업무', typeof x === 'string' ? x : x.text])));
+    (S.qualifications || []).forEach(x => pool.push(['자격요건', typeof x === 'string' ? x : x.text]));
+    const ok = pool.filter(([, s]) => !/^[[*]/.test(s) && s.length >= 18 && s.length <= 62);
+    const [where, line] = (ok.length ? ok : pool)[0] || ['', ''];
+
+    const cap = el('div', 'caption');
+    cap.append(el('div', 'line', line));
+    cap.append(el('div', 'role', D.title || D.role));
+    cap.append(el('div', 'src', `${D.company} · ${where} 중에서`));
+    sheet.append(cap);
+
+    const bb = el('div', 'bar-b');
+    bb.append(el('div', 'slogan', B.slogan || ''), el('div', 'apply'));
+    sheet.append(bb);
+
+    const n = line.length;
+    F.set('CW', 34);
+    F.set('CS', n <= 28 ? 3.9 : n <= 44 ? 3.4 : 3.0);
+    // 트러스 각도는 기존 판과 같은 방식으로 역산한다
+    const U = D.fmt.w / 100;
+    const w = truss ? truss.getBoundingClientRect().width * 0.72 : 0;
+    if (w > 0) {
+      const a = Math.atan2(34 * 0.42 * U, w);
+      F.set('XA', `${(a * 180 / Math.PI).toFixed(2)}deg`);
+      F.set('XS', (1 / Math.cos(a)).toFixed(3));
+    }
+    Frame.fit(F, [{ columns: 1 }], () => true, { lo: 14, hi: 15 });
+    window.__layout.variant = 'caption';
+    return;
+  }
+
+  const bar = el('div', 'bar');
+  bar.append(el('div', 'co', B.wordmark || D.company));
+  if (B.about) bar.append(el('div', 'about', B.about));
+  const car = el('div', 'career'); car.textContent = D.meta.join(' · ');
+  bar.append(car);
+  sheet.append(bar);
+
+  // 큐브 — 공고 제목이 로고 자리를 대신 채운다
+  const cube = el('div', 'cube');
+  cube.append(el('h1', '', D.title || D.role));
+  sheet.append(cube);
+
+  // X자 교차 기둥 + 계단 받침
+  const truss = el('div', 'truss');
+  truss.append(el('i', 'l'), el('i', 'r'), el('i', 'x1'), el('i', 'x2'));
+  sheet.append(truss);
+  const base = el('div', 'base');
+  base.append(el('i'), el('i'));
+  sheet.append(base);
+
+  const body = el('div', 'body');
+  const main = el('main');
+  body.append(main);
+  sheet.append(body);
+
+  const footer = el('footer');
+  const left = el('div');
+  left.append(el('div', 'slogan', B.slogan || ''));
+  if (D.stack.length) left.append(el('div', 'stack', [...new Set(D.stack)].join(' · ')));
+  footer.append(left, el('div', 'apply'));   // .apply 는 Frame.period 가 마감을 넣는 자리
+  sheet.append(footer);
+
+  // 원문 → 섹션. 글자는 그대로, 'A: B' 는 A 만 굵게, '[..]' 는 소제목, '*' 로 시작하면 주석
+  const txt = it => (typeof it === 'string' ? it : it.text);
+  const item = s => {
+    const d = el('div', 'it');
+    const m = s.match(/^([^:：]{2,24})([:：]\s*)([\s\S]+)$/);
+    if (m) d.append(el('b', '', m[1] + m[2].trimEnd()), document.createTextNode(' ' + m[3]));
+    else d.textContent = s;
+    return d;
+  };
+  const secs = [];
+  const addSec = (title, items) => {
+    if (!items.length) return;
+    const s = el('div', 'sec'); s.append(el('h2', '', title));
+    for (const raw of items) {
+      const t = txt(raw);
+      if (/^\[.+\]$/.test(t)) s.append(el('div', 'sub', t));
+      else if (/^\*\s/.test(t)) s.append(el('div', 'note', t));
+      else if (typeof raw !== 'string' && raw.label) {
+        const d = el('div', 'it');
+        d.append(el('b', '', raw.label + ' '), document.createTextNode(raw.text));
+        s.append(d);
+      } else s.append(item(t));
+    }
+    secs.push(s);
+  };
+  S.tasks.forEach(t => addSec(t.title || '주요업무', t.items));
+  addSec('자격요건', S.qualifications);
+  addSec('우대사항', S.preferences);
+  addSec('복지', S.benefits);
+  main.append(...secs);
+
+  // 트로피가 크면 구조가 살지만 본문이 작아진다 — 16px 아래로 안 떨어지는 가장 큰 트로피.
+  // TS 제목, TR 기둥 높이 (모두 u)
+  const heads = [
+    { TS: 5.8, TR: 9.0 },
+    { TS: 5.3, TR: 7.0 },
+    { TS: 4.9, TR: 5.4 },
+    { TS: 4.5, TR: 4.2 },
+  ];
+  const U = D.fmt.w / 100;
+  const draw = c => {
+    F.set('TS', c.TS); F.set('TR', `calc(${c.TR}*var(--u))`);
+    // X 가새가 기둥 칸을 대각선으로 꽉 채우도록 각도를 높이에서 역산한다
+    const w = truss.getBoundingClientRect().width * 0.72;
+    if (w > 0) {
+      const a = Math.atan2(c.TR * U, w);
+      F.set('XA', `${(a * 180 / Math.PI).toFixed(2)}deg`);
+      F.set('XS', (1 / Math.cos(a)).toFixed(3));
+    }
+    main.style.columnCount = c.columns;
+    return !Frame.overflows(main);
+  };
+  const MIN = 16.2;
+  for (const h of heads) {
+    Frame.fit(F, [{ ...h, columns: 1 }, { ...h, columns: 2 }], draw, { lo: 10, hi: 30 });
+    window.__layout.head = h;
+    if (window.__layout.font_px >= MIN || h === heads[heads.length - 1]) break;
+  }
+})();
+</script>

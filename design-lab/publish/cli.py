@@ -1,7 +1,7 @@
 """발행 파이프라인 CLI.
 
     python -m publish.cli check                                  자격 점검
-    python -m publish.cli plan wanted-364663 -t role_hero -p instagram,linkedin
+    python -m publish.cli plan wanted-364663 -t brand_ridi -p instagram,linkedin
     python -m publish.cli render <item-id>                       큐 항목의 이미지를 굽는다
     python -m publish.cli caption <item-id>                      플랫폼별 캡션 미리보기
     python -m publish.cli publish <item-id>                      기본 dry-run
@@ -498,7 +498,7 @@ def main() -> int:
 
     p = sub.add_parser("plan")
     p.add_argument("job_key")
-    p.add_argument("-t", "--template", default="role_hero")
+    p.add_argument("-t", "--template", default="")
     p.add_argument("-p", "--platforms", default="instagram")
     p.add_argument("-f", "--formats", default="", help=f"쉼표 구분. 가능: {','.join(FORMATS)}")
     p.add_argument("--palette", default="")

@@ -1,0 +1,157 @@
+<!-- brand_ridi — 리디 전용 판 v1. brands/리디.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  ridibatang-typesetting  리디바탕 그 자체. 리디가 '전자책에서 잘 읽히는 글꼴'이 없어서
+                                        산돌과 1년 6개월 걸려 만들고 2019 한글날에 OFL 로 푼 전자책 본문 명조.
+                                        장식이 아니라 판 전체의 조판이 이것이다.
+     supporting single-weight           굵기가 하나뿐이다 — 위계는 크기·색·여백으로만. faux bold 금지.
+                official-credit-line    공식이 권장하는 출처 표기 한 줄이 곧 이 판의 마지막 문장.
+     안 쓰는 것: 작품 표지·썸네일(작가 저작물), R 심볼 변형, 리디페이퍼 기기, 파란 배경 전면,
+                 수치 카드·아이콘 그리드, faux bold·자간 과조정
+     판의 꼴: 종이 회색 위에 흰 페이지 한 장. 공고는 카드가 아니라 책 본문처럼 흐른다. -->
+<meta charset="utf-8">
+<title>brand_ridi</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#e8e8e8}
+  /* 굵기가 하나뿐인 서체다 — 어디서도 굵게 만들지 않는다. 합성 굵기는 이 서체의 설계를 망친다 */
+  body,b,strong,h1,h2{font-weight:400!important;font-synthesis:none}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{position:relative;width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);
+    font-family:var(--font);display:flex;flex-direction:column;overflow:hidden;
+    padding:calc(4.2*var(--u)) calc(4.2*var(--u)) calc(3.4*var(--u))}
+
+  /* 머리 — 큰 글자 「리디」. 이 크기라야 곧은 상투와 직선으로 다듬은 획이 보인다 */
+  header{flex:none;display:flex;align-items:flex-end;gap:calc(2.2*var(--u));
+    padding-bottom:calc(1.4*var(--u));border-bottom:1px solid var(--line)}
+  .mark{font-size:calc(var(--MS)*var(--u));line-height:.9;letter-spacing:-.045em;color:var(--ink)}
+  .about{padding-bottom:calc(.7*var(--u));font-size:calc(1.75*var(--u));color:var(--sub);letter-spacing:-.01em}
+  .career{margin-left:auto;padding-bottom:calc(.7*var(--u));font-size:calc(1.9*var(--u));color:var(--accent);white-space:nowrap}
+
+  h1{flex:none;margin:calc(2.0*var(--u)) 0 calc(1.8*var(--u));
+    font-size:calc(var(--TS)*var(--u));letter-spacing:-.035em;line-height:1.14;color:var(--ink);text-wrap:balance}
+
+  /* 흰 페이지 한 장 — 여기가 책 본문이다 */
+  .page{flex:1;min-height:0;background:var(--page);padding:calc(2.8*var(--u));overflow:hidden;
+    display:flex;flex-direction:column}
+  /* 본문 옆 레일 — 책배(冊背). 얇은 선이 겹겹이 쌓여 종이 두께가 된다.
+     이 판은 책 한 장이라는 뜻이고, 전자책 회사의 본문 서체가 시그니처이므로 그 연장이다. */
+  .body{flex:1;min-height:0;display:flex;gap:calc(2.2*var(--u))}
+  main{flex:1;min-width:0;min-height:0;overflow:hidden;column-gap:calc(var(--f)*2.0);column-fill:auto}
+  .rail{flex:none;width:calc(2.2*var(--u));display:flex;flex-direction:column;justify-content:space-between;
+    padding:calc(.5*var(--u)) 0}
+  .rail i{display:block;height:1px;background:var(--line)}
+  .rail i:nth-child(5n+1){background:#cfcfcf}
+  .sec{break-inside:auto}
+  .sec + .sec{margin-top:calc(var(--f)*1.0)}
+  /* 섹션 이름 — 굵기가 없으므로 크기를 줄이고 자간을 벌려 구분한다 */
+  h2{break-after:avoid;font-size:calc(var(--f)*.8);color:var(--sub);letter-spacing:.22em;
+    padding-bottom:calc(var(--f)*.3);margin-bottom:calc(var(--f)*.5);border-bottom:1px solid var(--line)}
+  .it{break-inside:avoid;font-size:var(--f);line-height:1.72;color:var(--text);
+    margin-bottom:calc(var(--f)*.42);text-indent:calc(var(--f)*-.95);padding-left:calc(var(--f)*.95);text-wrap:pretty}
+  /* 굵게 못 하니 잉크 검정과 흐린 회색의 대비로 위계를 만든다 */
+  .it b{color:var(--ink)}
+  .it{color:#3d3d3d}
+  .sub{break-after:avoid;font-size:calc(var(--f)*1.02);color:var(--ink);
+    margin:calc(var(--f)*.75) 0 calc(var(--f)*.34);letter-spacing:-.02em}
+  .sub:first-of-type{margin-top:0}
+  .note{break-inside:avoid;font-size:calc(var(--f)*.86);line-height:1.6;color:var(--sub);margin-top:calc(var(--f)*.3)}
+
+  footer{flex:none;margin-top:calc(1.5*var(--u));display:flex;justify-content:space-between;align-items:flex-end;gap:calc(2*var(--u))}
+  .slogan{font-size:calc(1.95*var(--u));color:var(--ink);letter-spacing:-.01em;white-space:nowrap}
+  .stack{margin-top:calc(.3*var(--u));font-size:calc(1.4*var(--u));color:var(--sub)}
+  .apply{text-align:right;white-space:nowrap;color:var(--accent)}
+  /* 공식이 권장하는 출처 표기 — 규정이자 이 판의 마지막 문장 */
+  .credit{flex:none;margin-top:calc(1.1*var(--u));font-size:calc(1.12*var(--u));color:var(--sub);letter-spacing:-.01em}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  F.set('page', ui.page || '#ffffff');
+  F.set('line', ui.line || '#e6e6e6');
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  const header = el('header');
+  header.append(el('div', 'mark', B.wordmark || D.company));
+  if (B.about) header.append(el('div', 'about', B.about));
+  const car = el('div', 'career'); car.textContent = D.meta.join(' · ');
+  header.append(car);
+  sheet.append(header);
+
+  sheet.append(el('h1', '', D.title || D.role));
+
+  const page = el('div', 'page'); sheet.append(page);
+  // 본문 + 책배. 얇은 선 서른 줄이 겹쳐 종이 두께가 된다.
+  const body = el('div', 'body');
+  const main = el('main');
+  const rail = el('aside', 'rail');
+  for (let i = 0; i < 30; i++) rail.append(el('i'));
+  body.append(main, rail);
+  page.append(body);
+
+  const footer = el('footer');
+  const left = el('div');
+  left.append(el('div', 'slogan', B.slogan || ''));
+  if (D.stack.length) left.append(el('div', 'stack', [...new Set(D.stack)].join(' · ')));
+  footer.append(left, el('div', 'apply'));   // .apply 는 Frame.period 가 마감을 넣는 자리
+  sheet.append(footer);
+  if (ui.credit) sheet.append(el('div', 'credit', ui.credit));
+
+  // 원문 → 섹션. 글자는 그대로, 'A: B' 는 A 만 잉크 검정, '[..]' 는 소제목, '*' 로 시작하면 주석
+  const txt = it => (typeof it === 'string' ? it : it.text);
+  const item = s => {
+    const d = el('div', 'it');
+    const m = s.match(/^([^:：]{2,24})([:：]\s*)([\s\S]+)$/);
+    if (m) d.append(el('b', '', m[1] + m[2].trimEnd()), document.createTextNode(' ' + m[3]));
+    else d.textContent = s;
+    return d;
+  };
+  const secs = [];
+  const addSec = (title, items) => {
+    if (!items.length) return;
+    const s = el('div', 'sec'); s.append(el('h2', '', title));
+    for (const raw of items) {
+      const t = txt(raw);
+      if (/^\[.+\]$/.test(t)) s.append(el('div', 'sub', t));
+      else if (/^\*\s/.test(t)) s.append(el('div', 'note', t));
+      else if (typeof raw !== 'string' && raw.label) {
+        const d = el('div', 'it');
+        d.append(el('b', '', raw.label + ' '), document.createTextNode(raw.text));
+        s.append(d);
+      } else s.append(item(t));
+    }
+    secs.push(s);
+  };
+  S.tasks.forEach(t => addSec(t.title || '주요업무', t.items));
+  addSec('자격요건', S.qualifications);
+  addSec('우대사항', S.preferences);
+  addSec('복지', S.benefits);
+  main.append(...secs);
+
+  // 머리 글자 크기 후보. 크면 서체의 생김새가 보이지만 본문이 작아진다 — 16px 아래로 안 떨어지는 가장 큰 머리.
+  // MS 「리디」 크기, TS 제목 (모두 u)
+  const heads = [
+    { MS: 13.0, TS: 5.4 },
+    { MS: 10.5, TS: 5.0 },
+    { MS: 8.6, TS: 4.7 },
+    { MS: 7.0, TS: 4.4 },
+  ];
+  const draw = c => {
+    F.set('MS', c.MS); F.set('TS', c.TS);
+    main.style.columnCount = c.columns;
+    return !Frame.overflows(main);
+  };
+  const MIN = 16.2;
+  for (const h of heads) {
+    // 책 본문이므로 한 단을 먼저 본다. 글이 많으면 두 단.
+    Frame.fit(F, [{ ...h, columns: 1 }, { ...h, columns: 2 }], draw, { lo: 10, hi: 30 });
+    window.__layout.head = h;
+    if (window.__layout.font_px >= MIN || h === heads[heads.length - 1]) break;
+  }
+})();
+</script>

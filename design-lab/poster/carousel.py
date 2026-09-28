@@ -152,8 +152,11 @@ def _brand_images(brand: dict | None) -> dict:
 
 
 def html_for(job_key: str, fmt_id: str = "ig_portrait", *, palette: str = "",
-             template: Path = TEMPLATE) -> str:
+             template: Path = TEMPLATE, variant: str = "") -> str:
     composed = compose(job_key, fmt_id, palette=palette)
+    # 한 판의 여러 변형을 나란히 보기 위한 꼬리표. 판이 D.variant 로 읽고 갈래를 고른다.
+    # 변형을 안 쓰는 판은 이 값을 무시하므로 전부 같은 그림이 나온다.
+    composed["variant"] = variant
     if template == BRAND_FRAME:
         brand = composed.get("brand") or {}
         if not brand.get("frame"):
@@ -167,13 +170,14 @@ def html_for(job_key: str, fmt_id: str = "ig_portrait", *, palette: str = "",
 
 
 def render_onepage(job_key: str, fmt_id: str = "ig_portrait", *, palette: str = "",
-                   frame: str = "onepage", out_dir: Path | None = None) -> tuple[Path, dict]:
+                   frame: str = "onepage", out_dir: Path | None = None,
+                   variant: str = "") -> tuple[Path, dict]:
     """전문을 한 장에. (경로, 스크립트가 고른 배치·글자 크기)."""
     fmt = FORMATS[fmt_id]
-    html = html_for(job_key, fmt_id, palette=palette, template=FRAMES[frame])
+    html = html_for(job_key, fmt_id, palette=palette, template=FRAMES[frame], variant=variant)
     dest_dir = out_dir or (OUT / job_key)
     dest_dir.mkdir(parents=True, exist_ok=True)
-    dest = dest_dir / f"{frame}_{fmt_id}.jpg"
+    dest = dest_dir / f"{frame}{'_' + variant if variant else ''}_{fmt_id}.jpg"
     page = _page_maker().new_page(viewport={"width": fmt["w"], "height": fmt["h"]})
     try:
         page.set_content(html, wait_until="load")
@@ -222,11 +226,13 @@ def main() -> None:
     ap.add_argument("--palette", default="", choices=["", *PALETTES])
     ap.add_argument("--one", action="store_true", help="여러 장 대신 한 장에 전부")
     ap.add_argument("--frame", default="onepage", choices=[*FRAMES, "all"], help="--one 일 때 쓸 틀")
+    ap.add_argument("--variant", default="", help="판이 여러 갈래를 가진 경우 그 이름(판이 D.variant 로 읽는다)")
     args = ap.parse_args()
     try:
         if args.one:
             for frame in (list(FRAMES) if args.frame == "all" else [args.frame]):
-                dest, layout = render_onepage(args.job_key, args.fmt, palette=args.palette, frame=frame)
+                dest, layout = render_onepage(args.job_key, args.fmt, palette=args.palette,
+                                              frame=frame, variant=args.variant)
                 print(f"[onepage] {frame}: {layout['columns']}단 · 본문 {layout['font_px']}px → {dest}")
             return
         paths = render(args.job_key, args.fmt, palette=args.palette)

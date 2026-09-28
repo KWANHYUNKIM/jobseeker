@@ -17,30 +17,62 @@ from pathlib import Path
 TPL_DIR = Path(__file__).resolve().parent / "templates"
 
 # id → (파일, 이름, 출처가 된 레퍼런스, 한 줄 설명)
+#
+# 2026-09-17: 처음 네 틀(role_hero/swiss_white/info_grid/point_cards)을 여기서 뺐다.
+# 레퍼런스를 그대로 옮긴 범용 판이라 회사가 색·글꼴로만 남았고, 그건 이 랩이
+# "너무 AI 스럽다" 로 이미 한 번 버린 판이다(BRAND_RESEARCH.md 0절). 스튜디오에는
+# 그 절차를 끝까지 밟은 회사 전용 판만 올린다. HTML 파일은 templates/ 에 그대로 두었다.
+# engine:"frame" 은 /*__DATA__*/ + _frame.js 로 그리는 판이다. 치환기로는 못 그리므로
+# render.html_for 가 carousel 로 넘긴다. company 는 이 판을 쓸 수 있는 공고의 회사 표기
+# (jobs_index 의 company 와 정확히 같아야 한다 — 스튜디오가 이걸로 칩을 잠근다).
 TEMPLATES: dict[str, dict] = {
-    "role_hero": {
-        "file": "role_hero.html",
-        "name": "직군이 주인공",
-        "ref": "hire-03 (imago.xyz)",
-        "note": "직군명을 화면 절반으로 키우고 위에 마감 한 줄. 회사는 오른쪽에 작게.",
+    "brand_tossplace": {
+        "file": "brand_tossplace.html",
+        "engine": "frame",
+        "company": ["토스플레이스"],
+        "name": "토스플레이스",
+        "ref": "front2-standing-screen",
+        "note": "판이 토스 프론트 2 의 세로 화면이 된다. 하우징이 판을 두르고 위에 카메라 눈, 아래에 카드 삽입구.",
     },
-    "swiss_white": {
-        "file": "swiss_white.html",
-        "name": "여백이 브랜드",
-        "ref": "hire-04 (df.designfever)",
-        "note": "가운데 마크 하나, 정보는 네 귀퉁이로 흩는다. 정보량 적은 공고용.",
+    "brand_42dot": {
+        "file": "brand_42dot.html",
+        "engine": "frame",
+        "company": ["포티투닷(42dot)", "포티투닷 (42dot)", "포티투닷"],
+        "name": "포티투닷",
+        "ref": "ascii-42-asterisk",
+        "note": "About 페이지의 ASCII 코드표. Code 42 에서 멈추고 그 자리 글자가 * 로 드러난다 — 회사 이름이 곧 이 장치다.",
     },
-    "info_grid": {
-        "file": "info_grid.html",
-        "name": "항목 그대로",
-        "ref": "hire-05 (sddaejeon)",
-        "note": "지원자격·우대사항·담당업무 라벨을 예쁜 말로 안 바꾸고 그대로 세운다.",
+    "brand_ridi": {
+        "file": "brand_ridi.html",
+        "engine": "frame",
+        "company": ["리디(RIDI)", "리디"],
+        "name": "리디",
+        "ref": "ridibatang-typesetting",
+        "note": "판 전체가 리디바탕으로 짜인다. 리디가 전자책을 위해 직접 만들어 푼 서체 — 굵기가 하나뿐이라 위계는 크기·여백으로만.",
     },
-    "point_cards": {
-        "file": "point_cards.html",
-        "name": "번호 카드",
-        "ref": "detail-04 (design_j_d)",
-        "note": "Point.01/02/03 으로 위치를 알려 준다. 캐러셀 2~4번째 장에 쓴다.",
+    "brand_bithumb": {
+        "file": "brand_bithumb.html",
+        "engine": "frame",
+        "company": ["빗썸", "주식회사 빗썸"],
+        "name": "빗썸",
+        "ref": "locked-digit-slots",
+        "note": "숫자가 자리칸에 잠긴다. Bithumb Trading Sans 는 숫자 열 개 폭이 전부 596/1000 로 같다 — 시세가 흔들리지 않게 깎은 서체다.",
+    },
+    "brand_miridih": {
+        "file": "brand_miridih.html",
+        "engine": "frame",
+        "company": ["미리디", "(주)미리디"],
+        "name": "미리디",
+        "ref": "size-first-canvas",
+        "note": "판이 자기 치수를 밝힌다. 미리캔버스에서 맨 처음 정하는 것은 그림도 글도 아니고 판의 크기다 — 자리가 글보다 먼저 있다.",
+    },
+    "brand_cjenm": {
+        "file": "brand_cjenm.html",
+        "engine": "frame",
+        "company": ["씨제이이엔엠(CJ ENM)", "CJ ENM", "씨제이이엔엠"],
+        "name": "씨제이이엔엠",
+        "ref": "hypercube-structure",
+        "note": "MAMA 트로피 하이퍼큐브의 구조 — 큐브 자리를 공고가 채우고 X 교차 기둥과 계단 받침이 받친다. 로고타이프는 그리지 않는다.",
     },
 }
 

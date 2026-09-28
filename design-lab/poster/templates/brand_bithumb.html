@@ -1,0 +1,417 @@
+<!-- brand_bithumb — 빗썸 전용 판 v1. brands/빗썸.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  locked-digit-slots  Bithumb Trading Sans 의 잠긴 숫자 자리. 숫자 0~9 의 폭이 전부
+                                    596/1000 em 으로 똑같다(폰트 파일 hmtx 직접 실측). 시세가 빨리
+                                    변해도 숫자가 좌우로 안 흔들리게 하려고 회사가 직접 깎은 서체다.
+                                    판에서는 공고의 숫자가 한 글자씩 자리칸에 앉는다.
+     supporting separators-are-narrow  쉼표 189 · 마침표 230 · 하이픈 430 — 구분자는 칸을 차지하지 못하고
+                                    틈에 끼어 앉는다. 넓은 칸 / 좁은 틈의 리듬이 이 판의 무늬다.
+     안 쓰는 것: 오렌지 b 심볼(로고 변형 금지), 캔들차트·호가창(모든 거래소가 같다),
+                 상승 빨강·하락 파랑(브랜드 색 아님), 코인 아이콘, 연예인, 그라디언트, 수치 카드, 골드(공식 불허)
+     숫자 규칙: 판에 들어가는 숫자는 공고에서 온 것뿐이다. 시세·거래대금을 지어내지 않는다. -->
+<meta charset="utf-8">
+<title>brand_bithumb</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#111}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  .sheet{position:relative;width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);
+    font-family:var(--font);display:flex;flex-direction:column;overflow:hidden;
+    font-variant-numeric:tabular-nums;
+    padding:calc(4.4*var(--u)) calc(4.4*var(--u)) calc(3.2*var(--u))}
+
+  .bar{flex:none;display:flex;align-items:baseline;gap:calc(1.3*var(--u))}
+  .co{font-size:calc(2.5*var(--u));font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+  .about{font-size:calc(1.5*var(--u));font-weight:400;color:var(--sub)}
+
+  /* 자리칸 — 숫자는 넓은 칸에, 구분자는 좁은 틈에. 서체의 596 을 그대로 옮긴 것 */
+  .slots{flex:none;display:flex;align-items:stretch;margin:calc(1.8*var(--u)) 0 calc(1.6*var(--u))}
+  .cell{display:flex;align-items:center;justify-content:center;
+    font-size:calc(var(--DS)*var(--u));font-weight:500;line-height:1;
+    padding:calc(var(--DS)*.17*var(--u)) 0}
+  /* 숫자 칸 — 폭이 잠겨 있다. .596em 은 hmtx 실측값이다 */
+  .cell.d{width:calc(var(--DS)*.596*var(--u) + var(--DS)*.30*var(--u));
+    background:var(--slot);border-left:1px solid var(--line);color:var(--ink)}
+  .cell.d:last-of-type{border-right:1px solid var(--line)}
+  .cell.d.hot{color:var(--accent)}
+  /* 구분자 — 칸을 차지하지 못한다 */
+  .cell.s{padding:0 calc(var(--DS)*.09*var(--u));color:var(--sub);font-weight:400;
+    font-size:calc(var(--DS)*.52*var(--u));align-self:flex-end;padding-bottom:calc(var(--DS)*.22*var(--u))}
+  .lab{margin-left:auto;align-self:flex-end;padding-bottom:calc(var(--DS)*.22*var(--u));
+    font-size:calc(1.5*var(--u));font-weight:400;color:var(--sub);letter-spacing:.14em}
+
+  h1{flex:none;margin-bottom:calc(1.7*var(--u));padding-bottom:calc(1.4*var(--u));border-bottom:1px solid var(--line);
+    font-size:calc(var(--TS)*var(--u));font-weight:700;letter-spacing:-.03em;line-height:1.08;color:var(--ink);text-wrap:balance}
+
+  /* 본문 옆 레일 — 빈 자리칸이 판 끝까지 이어진다. 칸은 늘 거기 있고 숫자가 들어올 뿐이라는 뜻.
+     머리의 잠긴 숫자와 같은 격자이므로 새 장치가 아니라 시그니처의 연장이다. */
+  /* 본문 뼈대가 시그니처에서 나온다 — 머리에만 얹지 않는다.
+     한 줄이 [이름 | 잠긴 건수 칸 | 내용] 이고, 이름 칸의 오른쪽 끝과 내용의 왼쪽 끝이
+     섹션마다 같은 x 에 잠겨 있다. 거래 화면이 숫자를 다루는 방식을 글에 그대로 적용한 것.
+     호가창·캔들차트를 그리지 않는다 — 격자만 가져오고 값은 전부 공고에서 온다. */
+  main{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+  /* 한 줄 걸러 바탕을 아주 옅게 — 거래 목록이 행을 구별하는 방식. 괘선만으로는 안 읽힌다.
+     바탕을 넓히려고 음수 마진을 쓰면 안 된다 — Frame.overflows 가 가로 넘침으로 읽어
+     글자 크기가 바닥(10px)까지 깎인다. 실제로 한 번 당했다. */
+  .sec{display:flex;gap:calc(1.8*var(--u));padding:calc(var(--f)*.62) 0;
+    border-top:1px solid var(--line)}
+  .sec:nth-child(even){background:rgba(255,255,255,.028)}
+  .sec:first-child{border-top:0;padding-top:0}
+  .tag{flex:none;width:calc(var(--TAG)*var(--u));display:flex;align-items:baseline;
+    gap:calc(.6*var(--u));padding-top:calc(var(--f)*.06)}
+  .tag .nm{font-size:calc(var(--f)*.92);font-weight:500;color:var(--mint);letter-spacing:.02em;white-space:nowrap}
+  /* 건수는 지어낸 숫자가 아니라 그 섹션의 항목 수다. 머리의 경력 칸과 같은 격자 */
+  .tag .cnt{display:flex;margin-left:auto;flex:none}
+  .tag .cnt i{font-style:normal;width:calc(var(--f)*.9);text-align:center;
+    background:var(--slot);border:1px solid var(--line);border-left-width:0;
+    font-size:calc(var(--f)*.8);line-height:1.5;color:var(--accent);font-weight:500;
+    font-variant-numeric:tabular-nums}
+  .tag .cnt i:first-child{border-left-width:1px}
+  .items{flex:1;min-width:0;column-gap:calc(var(--f)*1.6);column-fill:balance}
+  .it{break-inside:avoid;position:relative;font-size:var(--f);line-height:1.52;color:var(--text);font-weight:400;
+    padding-left:calc(var(--f)*.95);margin-bottom:calc(var(--f)*.36);text-wrap:pretty}
+  .it::before{content:'';position:absolute;left:0;top:calc(var(--f)*.7);
+    width:calc(var(--f)*.34);height:1px;background:var(--sub)}
+  .it b{font-weight:500;color:var(--ink)}
+  .sub{break-after:avoid;font-size:calc(var(--f)*.94);font-weight:500;color:var(--ink);
+    margin:calc(var(--f)*.62) 0 calc(var(--f)*.28)}
+  .sub:first-of-type{margin-top:0}
+  .note{break-inside:avoid;font-size:calc(var(--f)*.82);line-height:1.45;color:var(--sub);margin-top:calc(var(--f)*.28)}
+
+  footer{flex:none;margin-top:calc(1.5*var(--u));padding-top:calc(1.3*var(--u));border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:flex-end;gap:calc(2*var(--u))}
+  .slogan{font-size:calc(1.95*var(--u));font-weight:500;letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+  .stack{margin-top:calc(.35*var(--u));font-size:calc(1.4*var(--u));font-weight:400;color:var(--sub)}
+  .apply{text-align:right;white-space:nowrap;color:var(--accent)}
+
+  /* ── 변형 ──────────────────────────────────────────────────────────────
+     기본(변형 없음)은 위 그대로다. 아래는 같은 뼈대를 다르게 칠하거나 키운 갈래들.
+     어느 것도 새 장치를 더하지 않는다 — 칸·숫자·오렌지라는 같은 재료의 배합만 바꾼다. */
+
+  /* orange — 머리 칸 전체를 브랜드 오렌지 면으로. 숫자 칸은 검정이 되고 숫자가 오렌지 위에 선다 */
+  .v-orange .head{background:var(--accent);color:#141414;
+    margin:calc(-4.4*var(--u)) calc(-4.4*var(--u)) 0;padding:calc(4.4*var(--u)) calc(4.4*var(--u)) calc(2.6*var(--u))}
+  .v-orange .head .co,.v-orange .head h1{color:#141414}
+  .v-orange .head .about,.v-orange .head .lab,.v-orange .head .cell.s{color:rgba(20,20,20,.62)}
+  .v-orange .head .cell.d{background:#141414;color:var(--accent);border-color:#141414}
+  .v-orange h1{border-bottom:0;padding-bottom:0;margin-bottom:0}
+
+  /* huge — 숫자를 판의 얼굴로. 경력 칸이 머리 전체를 먹고 제목은 그 아래 한 줄 */
+  .v-huge .slots{margin:calc(1.2*var(--u)) 0 calc(1.2*var(--u))}
+  .v-huge .cell.d{background:transparent;border:2px solid var(--accent);color:var(--ink)}
+  .v-huge .cell.d + .cell.d{border-left-width:2px}
+  .v-huge .lab{font-size:calc(1.9*var(--u));color:var(--accent);letter-spacing:.3em}
+  .v-huge h1{font-size:calc(var(--TS)*.78*var(--u));color:var(--ink);font-weight:700}
+  .v-huge .co{font-size:calc(2.0*var(--u))}
+
+  /* split — 왼쪽 세로 오렌지 띠가 회사·숫자를 세우고, 오른쪽이 전부 본문.
+     거래 화면의 왼쪽 종목 목록과 오른쪽 상세가 갈리는 구조를 그대로 가져온 것. */
+  .v-split{flex-direction:row;padding:0;gap:0}
+  .pane{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column}
+  .v-split .head{flex:none;width:calc(30*var(--u));background:var(--accent);color:#141414;
+    display:flex;flex-direction:column;padding:calc(3.6*var(--u)) calc(2.6*var(--u))}
+  .v-split .head .co,.v-split .head h1{color:#141414}
+  .v-split .head .about,.v-split .head .lab{color:rgba(20,20,20,.6)}
+  .v-split .bar{flex-direction:column;align-items:flex-start;gap:calc(.3*var(--u))}
+  .v-split .slots{margin:calc(2.4*var(--u)) 0 auto;flex-wrap:wrap}
+  .v-split .cell.d{background:#141414;color:var(--accent);border-color:#141414}
+  .v-split .cell.s{color:rgba(20,20,20,.6)}
+  .v-split .lab{margin-left:0;margin-top:calc(.8*var(--u));width:100%}
+  .v-split h1{border-bottom:0;padding-bottom:0;margin:calc(2.2*var(--u)) 0 0;
+    font-size:calc(var(--TS)*.82*var(--u))}
+  .v-split main{padding:calc(3.6*var(--u)) calc(3.2*var(--u)) 0}
+  .v-split footer{margin:calc(1.2*var(--u)) calc(3.2*var(--u)) calc(2.6*var(--u))}
+
+  /* wongoji — 원고지. 글자마다 칸이 잠긴 격자다.
+     빗썸의 '숫자 폭이 596 으로 잠겨 있다' 와 원고지의 '글자마다 한 칸' 은 같은 생각이다 —
+     그래서 이건 새 장치가 아니라 시그니처를 한글에까지 밀어 본 것이다.
+     전문을 다 넣지 않는다. 공고에서 한 문장을 고르고(고르는 것이지 고치는 것이 아니다)
+     그 문장만 칸에 앉힌다. 나머지 전문은 다음 장의 몫이다. */
+  .v-wongoji{--paper:#f5f2ec;--ink:#17191d;--text:#3d434e;--sub:#8a8578;--line:#d9d3c6;
+    background:#f5f2ec;color:#17191d;padding:calc(5.5*var(--u)) calc(5*var(--u)) calc(4*var(--u))}
+  .v-wongoji .head{flex:none}
+  .v-wongoji .co{font-size:calc(2.8*var(--u));color:#17191d}
+  .v-wongoji .about{color:#8a8578}
+  .v-wongoji .slots{margin:calc(1.2*var(--u)) 0 0}
+  .v-wongoji .cell.d{background:transparent;border:0;color:#17191d;font-weight:700}
+  .v-wongoji .cell.s{color:#8a8578}
+  .v-wongoji .lab{color:#8a8578}
+  .v-wongoji h1{border-bottom:0;padding-bottom:0;margin:calc(1.2*var(--u)) 0 0;
+    font-size:calc(3.4*var(--u));font-weight:700;color:#17191d;letter-spacing:-.03em}
+
+  /* 격자 — 한 줄 20칸. 칸선은 원고지의 빨강 자리에 브랜드 오렌지를 놓는다 */
+  .grid{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;
+    gap:0;margin:calc(2.2*var(--u)) 0}
+  .gr{display:grid;grid-template-columns:repeat(var(--COLS),1fr)}
+  .gc{aspect-ratio:1;border:1px solid var(--accent);border-width:0 0 1px 1px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:calc(var(--GS)*var(--u));line-height:1;color:#17191d;font-weight:500}
+  .gr:first-child .gc{border-top-width:1px}
+  .gr .gc:last-child{border-right-width:1px}
+  .gc.sp{color:transparent}
+  .v-wongoji footer{border-top:1px solid var(--line)}
+  .v-wongoji .slogan{color:#17191d}
+  .v-wongoji .stack{color:#8a8578}
+  .v-wongoji .apply{color:var(--accent)}
+  /* 어디서 온 문장인지 밝힌다 — 지어낸 카피가 아니라는 표시 */
+  .src{flex:none;margin-top:calc(1.2*var(--u));font-size:calc(1.35*var(--u));color:#8a8578;letter-spacing:.02em}
+
+  /* paper — 원고지에 종이결을 얹는다. 바깥 파일을 안 쓰고 SVG 노이즈를 판 안에서 만든다 */
+  /* --slot 도 같이 뒤집어야 한다 — 안 그러면 머리의 경력 칸이 종이 위에서 검은 덩어리가 된다 */
+  .v-paper{--paper:#efe9dd;--ink:#17191d;--text:#3d434e;--sub:#8a8578;--line:#d5cdbc;--slot:transparent;
+    background:#efe9dd;color:#17191d;padding:calc(5.5*var(--u)) calc(5*var(--u)) calc(4*var(--u))}
+  .v-paper .cell.d{background:transparent;border:0;color:#17191d;font-weight:700}
+  .v-paper .cell.s,.v-paper .lab,.v-paper .about{color:#8a8578}
+  .v-paper .co{font-size:calc(2.8*var(--u))}
+  .v-paper h1{border-bottom:0;padding-bottom:0;margin:calc(1.2*var(--u)) 0 0;
+    font-size:calc(3.4*var(--u));font-weight:700;color:#17191d;letter-spacing:-.03em}
+  .v-paper footer{border-top:1px solid var(--line)}
+  .v-paper .slogan{color:#17191d} .v-paper .stack{color:#8a8578} .v-paper .apply{color:var(--accent)}
+  .v-paper::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;opacity:.22}
+  /* 종이가 눌린 자리 — 가장자리로 갈수록 살짝 어두워진다 */
+  .v-paper::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(120% 90% at 50% 45%,rgba(0,0,0,0) 55%,rgba(90,70,40,.13) 100%)}
+  .v-paper > *{position:relative;z-index:1}
+
+  /* hand — 칸을 지우고 한 문장을 손으로 쓴다. 레퍼런스 4·6번의 층위 */
+  .v-hand{--paper:#f7f5f0;--ink:#17191d;--sub:#9a958a;--line:#e0dbd0;
+    background:#f7f5f0;color:#17191d;padding:calc(6*var(--u)) calc(6*var(--u)) calc(4*var(--u))}
+  .v-hand .quote{flex:1;min-height:0;display:flex;align-items:center;
+    font-family:'BM KIRANGHAERANG','Bithumb Trading Sans',sans-serif;
+    font-size:calc(var(--QS)*var(--u));line-height:1.62;letter-spacing:-.01em;color:#17191d;
+    word-break:keep-all;text-wrap:pretty}
+  .v-hand .co{font-size:calc(2.2*var(--u))}
+  .v-hand h1{border-bottom:0;padding-bottom:0;margin:calc(1*var(--u)) 0 0;
+    font-size:calc(2.4*var(--u));font-weight:500;color:#5a5f6a}
+  .v-hand .cell.d{background:transparent;border:0;color:#17191d;font-weight:700}
+  .v-hand .cell.s,.v-hand .lab,.v-hand .about{color:#9a958a}
+  .v-hand footer{border-top:1px solid var(--line)}
+  .v-hand .slogan{color:#17191d} .v-hand .stack{color:#9a958a}
+
+  /* word — 낱말 하나를 판의 얼굴로. 레퍼런스 5번(문자도)의 층위 */
+  .v-word{background:#17191d}
+  .v-word .big{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
+    font-size:calc(var(--WS)*var(--u));font-weight:700;letter-spacing:-.06em;line-height:.92;
+    color:var(--accent);word-break:keep-all;text-align:center}
+  .v-word .lead{flex:none;font-size:calc(1.9*var(--u));color:var(--text);line-height:1.55;
+    max-width:74%;margin-top:calc(1.4*var(--u))}
+  .v-word h1{border-bottom:0;padding-bottom:0;margin-bottom:0;font-size:calc(3.0*var(--u))}
+
+  /* light — 거래소 라이트 모드. 바탕을 뒤집고 오렌지는 그대로 하나 */
+  .v-light{--paper:#ffffff;--ink:#141414;--text:#3d434e;--sub:#7c8494;--line:#e5e8eb;--slot:#f4f5f7;
+    background:#ffffff;color:#141414}
+  .v-light .tag .nm{color:#0f8d99}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  F.set('line', ui.line || '#2e3440');
+  F.set('slot', ui.slot || '#232833');
+  F.set('mint', ui.mint || '#3cb4c3');
+
+  // 변형 — 같은 뼈대로 여러 갈래를 찍어 나란히 본다(carousel --variant).
+  // 갈래가 판을 바꾸는 방식은 셋뿐이다: 머리를 면으로 칠하거나, 숫자를 키우거나, 바탕을 뒤집거나.
+  // brands/빗썸.json 의 signature.medium 이 (paper · one-line · grid-print) 라서
+  // 기본 판이 원고지다. 전문이 필요하면 --variant full 로 부른다(표지와 본문을 나눈다).
+  const V = (D.variant || '').trim() || 'paper';
+  const sheet = el('section', 'sheet' + (V ? ' v-' + V : ''));
+  document.getElementById('root').append(sheet);
+
+  const head = el('div', 'head'); sheet.append(head);
+  const bar = el('div', 'bar');
+  bar.append(el('div', 'co', B.wordmark || D.company));
+  if (B.about) bar.append(el('div', 'about', B.about));
+  head.append(bar);
+
+  // 자리칸 — 공고의 경력 표기를 한 글자씩 앉힌다. 숫자는 칸, 나머지는 틈.
+  // 판에 들어가는 숫자는 공고에서 온 것뿐이다(시세를 지어내지 않는다).
+  const figure = (D.meta.join(' · ') || D.career || '').replace(/^경력\s*/, '').trim();
+  if (figure) {
+    const slots = el('div', 'slots');
+    for (const ch of figure) {
+      if (/[0-9]/.test(ch)) slots.append(el('div', 'cell d', ch));
+      else if (ch === ' ') slots.append(el('div', 'cell s', ' '));
+      else slots.append(el('div', 'cell s', ch));
+    }
+    slots.append(el('div', 'lab', '경력'));
+    head.append(slots);
+  }
+
+  head.append(el('h1', '', D.title || D.role));
+
+  // 오른쪽 빈 칸 레일은 뺐다 — 본문 자체가 격자가 됐으므로 같은 말을 두 번 하는 셈이다.
+  // split 갈래는 머리가 왼쪽 세로 띠가 되므로 본문·꼬리를 오른쪽 칸으로 묶는다.
+  const main = el('main');
+  const pane = V === 'split' ? el('div', 'pane') : sheet;
+  if (pane !== sheet) sheet.append(pane);
+  pane.append(main);
+
+  const footer = el('footer');
+  const left = el('div');
+  left.append(el('div', 'slogan', B.slogan || ''));
+  if (D.stack.length) left.append(el('div', 'stack', [...new Set(D.stack)].join(' · ')));
+  footer.append(left, el('div', 'apply'));   // .apply 는 Frame.period 가 마감을 넣는 자리
+  pane.append(footer);
+
+  // 원문 → 섹션. 글자는 그대로, 'A: B' 는 A 만 강조, '[..]' 는 소제목, '*' 로 시작하면 주석
+  const txt = it => (typeof it === 'string' ? it : it.text);
+  const item = s => {
+    const d = el('div', 'it');
+    const m = s.match(/^([^:：]{2,24})([:：]\s*)([\s\S]+)$/);
+    if (m) d.append(el('b', '', m[1] + m[2].trimEnd()), document.createTextNode(' ' + m[3]));
+    else d.textContent = s;
+    return d;
+  };
+  // 한 섹션 = 한 줄. 왼쪽은 이름과 잠긴 건수 칸, 오른쪽은 내용.
+  // 건수는 그 섹션의 실제 항목 수다 — 판에 들어가는 숫자는 공고에서 온 것뿐이다.
+  const secs = [];
+  const bodies = [];
+  const addSec = (title, items) => {
+    if (!items.length) return;
+    const s = el('div', 'sec');
+    const tag = el('div', 'tag');
+    tag.append(el('span', 'nm', title));
+    const cnt = el('span', 'cnt');
+    for (const ch of String(items.length).padStart(2, '0')) cnt.append(el('i', '', ch));
+    tag.append(cnt);
+    const box = el('div', 'items');
+    for (const raw of items) {
+      const t = txt(raw);
+      if (/^\[.+\]$/.test(t)) box.append(el('div', 'sub', t));
+      else if (/^\*\s/.test(t)) box.append(el('div', 'note', t));
+      else if (typeof raw !== 'string' && raw.label) {
+        const d = el('div', 'it');
+        d.append(el('b', '', raw.label + ' '), document.createTextNode(raw.text));
+        box.append(d);
+      } else box.append(item(t));
+    }
+    s.append(tag, box);
+    secs.push(s);
+    bodies.push(box);
+  };
+  // 전문이 한 장에 안 들어가는 공고가 있다(빗썸은 34항목이 넘는다). 그때는 두 장으로 나눈다 —
+  // full-a 는 하는 일과 조건, full-b 는 우대와 복지. 순서는 원문 순서를 그대로 지킨다.
+  const HALF = V === 'full-a' ? 'a' : V === 'full-b' ? 'b' : '';
+  if (HALF !== 'b') {
+    S.tasks.forEach(t => addSec(t.title || '주요업무', t.items));
+    addSec('자격요건', S.qualifications);
+  }
+  if (HALF !== 'a') {
+    addSec('우대사항', S.preferences);
+    addSec('복지', S.benefits);
+  }
+  main.append(...secs);
+
+  // ── wongoji 갈래 — 전문 대신 한 문장을 칸에 앉힌다 ──────────────────────
+  // 고르는 것이지 고치는 것이 아니다. 자르거나 말을 바꾸지 않고, 칸에 들어갈 길이의
+  // 원문 한 줄을 그대로 쓴다. 어느 칸에서 왔는지도 판에 적는다.
+  // 세 갈래(hand·word)는 칸 대신 다른 층위를 쓴다 — 글을 줄이고 글자를 키운다.
+  if (V === 'hand' || V === 'word') {
+    const pool = [];
+    S.tasks.forEach(t => (t.items || []).forEach(x => pool.push(['주요업무', txt(x)])));
+    (S.qualifications || []).forEach(x => pool.push(['자격요건', txt(x)]));
+    const ok = pool.filter(([, s]) => !/^[[*]/.test(s) && s.length >= 20 && s.length <= 74);
+    const [where, line] = (ok.length ? ok : pool)[0];
+    main.remove();
+
+    if (V === 'hand') {
+      const q = el('div', 'quote', line);
+      sheet.insertBefore(q, footer);
+      sheet.insertBefore(el('div', 'src', `${D.company} · ${where} 중에서`), footer);
+      // 글이 길면 글자를 줄인다 — 손글씨는 커야 손글씨로 읽힌다
+      Frame.fit(F, [{}], () => {
+        F.set('QS', 3.2 + (74 - Math.min(74, line.length)) * 0.035);
+        return true;
+      }, { lo: 14, hi: 15 });
+    } else {
+      // 제목 안의 한글 낱말 중 가장 긴 것을 고른다. 없으면 직군명. 고르는 것이지 짓는 것이 아니다
+      const words = (D.title || D.role || '').match(/[가-힣]{2,}/g) || [];
+      const big = words.sort((a, b) => b.length - a.length)[0] || D.role || D.company;
+      sheet.insertBefore(el('div', 'big', big), footer);
+      const lead = el('div', 'lead', line);
+      sheet.insertBefore(lead, footer);
+      sheet.insertBefore(el('div', 'src', `${D.company} · ${where} 중에서`), footer);
+      F.set('WS', big.length <= 3 ? 26 : big.length <= 5 ? 18 : 13);
+      Frame.fit(F, [{}], () => true, { lo: 14, hi: 15 });
+    }
+    window.__layout.variant = V;
+    return;
+  }
+
+  if (V === 'wongoji' || V === 'paper') {   // 기본 판
+    const COLS = 10, ROWS = 8, CAP = COLS * ROWS;
+    const pool = [];
+    S.tasks.forEach(t => (t.items || []).forEach(x => pool.push(['주요업무', txt(x)])));
+    (S.qualifications || []).forEach(x => pool.push(['자격요건', txt(x)]));
+    (S.preferences || []).forEach(x => pool.push(['우대사항', txt(x)]));
+    const ok = pool.filter(([, s]) => !/^[[*]/.test(s) && s.length >= 18 && s.length <= CAP);
+    // 칸을 가장 알차게 채우는 줄. 같으면 앞 순서(주요업무)가 이긴다
+    const pick = (ok.length ? ok : pool).reduce((a, b) => (b[1].length > a[1].length && b[1].length <= CAP ? b : a));
+    const [where, line] = pick;
+
+    main.remove();
+    const grid = el('div', 'grid');
+    const chars = [...line];
+    const rows = Math.max(1, Math.ceil(chars.length / COLS));
+    for (let r = 0; r < rows; r++) {
+      const gr = el('div', 'gr');
+      for (let c = 0; c < COLS; c++) {
+        const ch = chars[r * COLS + c];
+        const cell = el('div', 'gc' + (ch === undefined || ch === ' ' ? ' sp' : ''), ch ?? '');
+        gr.append(cell);
+      }
+      grid.append(gr);
+    }
+    sheet.insertBefore(grid, pane === sheet ? footer : pane);
+    sheet.insertBefore(el('div', 'src', `${D.company} · ${where} 중에서`), grid.nextSibling);
+    F.set('COLS', COLS);
+    F.set('GS', 4.6);
+    Frame.fit(F, [{ columns: 1 }], () => true, { lo: 14, hi: 15 });
+    window.__layout.variant = 'wongoji';
+    return;
+  }
+
+  // 자리칸이 크면 장치가 살지만 본문이 작아진다 — 16px 아래로 안 떨어지는 가장 큰 칸.
+  // DS 자리칸 글자, TS 제목 (모두 u)
+  // TAG 는 이름 칸 폭(u). 섹션마다 같은 자리에 잠겨 있어야 표가 된다.
+  // huge 갈래는 숫자가 판의 얼굴이므로 칸부터 크게 잡고 내려온다.
+  const heads = V === 'huge' ? [
+    { DS: 26.0, TS: 5.8, TAG: 13 },
+    { DS: 22.0, TS: 5.4, TAG: 12 },
+    { DS: 18.0, TS: 5.0, TAG: 11 },
+    { DS: 14.0, TS: 4.7, TAG: 10 },
+  ] : V === 'split' ? [
+    { DS: 9.0, TS: 5.4, TAG: 12 },
+    { DS: 7.4, TS: 5.0, TAG: 11 },
+    { DS: 6.0, TS: 4.7, TAG: 10 },
+    { DS: 5.0, TS: 4.4, TAG: 9 },
+  ] : [
+    { DS: 11.0, TS: 5.8, TAG: 13 },
+    { DS: 9.0, TS: 5.4, TAG: 12 },
+    { DS: 7.4, TS: 5.0, TAG: 11 },
+    { DS: 6.0, TS: 4.7, TAG: 10 },
+  ];
+  const draw = c => {
+    F.set('DS', c.DS); F.set('TS', c.TS); F.set('TAG', c.TAG);
+    // 단은 섹션 안에서 나뉜다 — 항목이 적은 섹션까지 두 단으로 쪼개면 한 줄짜리 단이 생긴다
+    for (const b of bodies) {
+      const n = b.children.length;
+      b.style.columnCount = c.columns === 2 && n >= 4 ? 2 : 1;
+    }
+    return !Frame.overflows(main);
+  };
+  const MIN = 16.2;
+  for (const h of heads) {
+    Frame.fit(F, [{ ...h, columns: 1 }, { ...h, columns: 2 }], draw, { lo: 10, hi: 30 });
+    window.__layout.head = h;
+    if (window.__layout.font_px >= MIN || h === heads[heads.length - 1]) break;
+  }
+})();
+</script>

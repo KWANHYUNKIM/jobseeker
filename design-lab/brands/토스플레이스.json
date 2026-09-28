@@ -1,0 +1,210 @@
+{
+  "names": [
+    "토스플레이스",
+    "토스플레이스 주식회사",
+    "tossplace",
+    "toss place"
+  ],
+  "researched_at": "2026-09-17",
+  "wordmark": "토스플레이스",
+  "about": "오프라인 매장 사장님을 위한 결제 단말기와 포스를 만드는 회사",
+  "facts": [],
+  "slogan": "요즘 매장, 요즘 결제",
+  "frame": "brand_tossplace.html",
+  "palette": {
+    "bg": "#191f28",
+    "ink": "#ffffff",
+    "accent": "#4e5968",
+    "soft": "#f2f4f6"
+  },
+  "signature": {
+    "id": "front2-standing-screen",
+    "what": "카운터에 세로로 선 토스 프론트 2 의 7인치 화면. 판이 그 화면이 된다 — 검은 하우징이 판을 두르고, 위 정중앙에 카메라 눈 하나, 아래에 가로로 난 카드 삽입구 한 줄. 이 셋이 실루엣의 전부다.",
+    "evidence": [
+      "https://toss.tech/article/toss_front — 「하마터면 못생겨질 뻔했다 - 토스 프론트 2 제작기」(토스플레이스 Industrial Designer 류관준, 2026-04-09): '토스 프론트는 세로형 디스플레이 구조라, 제품 길이가 길어질수록 시각적으로도 불안정하게 느껴졌고요.' / '결국 프론트 전면에서 NFC 인식이 가능해지면서, 사용성과 심미성을 모두 만족시키는 완성도 높은 결과를 만들 수 있었어요.'",
+      "https://tossplace.com/product/front — 공식 제품 페이지: '디스플레이&터치: 7\"TFT 컬러 LCD (1280 x 800, 16:9)' / '카메라: RGB 카메라 5MP (2개)' / '크기: L120mm x W145.5mm x H192.5mm' / '매장 분위기에 맞게. 세련된 블랙'",
+      "https://static.toss.im/illusts-common/tossplace_brochure.pdf — 공식 브로슈어 3쪽 제목이 그대로 '고객이 보는 단말기', 5쪽 '첫 화면을 홍보 이미지로 꾸며보세요'",
+      "https://www.etnews.com/20250224000079 — 가맹점 10만 개, 신규 가맹점 점유율 25% 이상(2025-02)"
+    ],
+    "why_recognizable": "다른 결제 단말기는 사장님 쪽을 보고 손님에게는 서명패드만 내민다. 토스 프론트는 반대로 손님을 정면으로 본다 — 카페·식당 계산대 앞에서 손님이 화면에 카드를 직접 갖다 대는 물건은 사실상 이것뿐이다. 전면이 NFC 면이라 '화면에 카드를 댄다'는 동작 자체가 이 기기의 서명이 됐다(좋아하든 싫어하든 사람들이 '그 화면 보고 카드 대는 토스 기계'로 특정한다).",
+    "how_used": "판 전체. 공고 지면을 프론트의 세로 화면에 앉히고 바깥을 하우징 블랙(#191f28)으로 두른다. 위 정중앙 카메라 점 하나, 아래 가로 카드 삽입구 한 줄. 공식 브로슈어가 '첫 화면을 홍보 이미지로 꾸며보세요'라고 쓰므로, 이 화면에 공고를 띄우는 것은 기기의 실제 용법이지 지어낸 장치가 아니다.",
+    "medium": {
+      "ground": "screen",
+      "text_load": "full",
+      "hand": "print",
+      "dominant": "기기 — 판이 곧 화면",
+      "why": "시그니처가 실물 단말기의 세로 화면이다. 공고가 그 화면 안에 떠 있어야 하므로 전문이 들어가고, 화면 안의 글자는 인쇄 조판이어야 화면답다. 종이로 바꾸면 기기가 아니게 된다."
+    },
+    "job_link": "이 회사 개발자는 말 그대로 저 화면 안에서 도는 코드를 쓴다 — 프론트 2 는 Android 위에서 돌고, 안드로이드·결제·SRE 공고가 전부 같은 기기로 모인다. 판의 화면에 공고를 띄우면 '당신이 만들 화면이 이것'이 그림 하나로 끝난다.",
+    "not_used": "토스 로고·심볼(brand.toss.im 로고 규정 — 변형·결합 금지, 기존 토스 판도 안 그린다) · 토스 파랑 #3182f6 을 면으로 까는 것(토스 판 것이라 두 판이 붙는다) · Toss Product Sans(전용 서체) · 페이스페이의 얼굴(실존 인물) · 가맹점 10만·7.7조 같은 수치 카드(v0 의 실패 패턴) · 제품 모양을 SVG 로 그린 장식(v0 가 그걸로 죽었다 — 구조만 남긴다)",
+    "alternatives": [
+      {
+        "what": "토스 파랑 #3182f6 + Toss Product Sans 조합",
+        "why_not": "tossplace.com 은 토스 본사와 같은 TDS 토큰을 그대로 쓴다(font-family 도 색 빈도도 동일). 색·글꼴로는 토스플레이스를 토스와 구별할 방법이 원천적으로 없다 — v1·v2 가 실패한 바로 그 자리다."
+      },
+      {
+        "what": "토스플레이스 로고(logo-place.png)",
+        "why_not": "로고 변형 금지 규정에 걸리고(기준 3), 토스 워드마크를 그대로 물려받아 토스 판과 구별도 안 된다."
+      },
+      {
+        "what": "페이스페이(얼굴 결제)",
+        "why_not": "토스플레이스만의 기능은 맞지만 ① 물건이 아니라 기능이고 ② 그리려면 사람 얼굴이 필요해 기준 3 위반. 시그니처 안의 '카메라 점 하나'로만 흔적을 남긴다."
+      },
+      {
+        "what": "토스 터미널(3인치 영수증 프린터)",
+        "why_not": "토스플레이스만의 물건이지만 스스로를 '백업단말기 겸 영수증 프린터', '같이 구매하는 프론트와 함께면'이라고 부속품으로 규정한다. 주연이 아니다."
+      },
+      {
+        "what": "토스 포스(POS 소프트웨어)",
+        "why_not": "화면 UI 는 회사를 구별하지 못한다(v1 의 교훈). 배달 연동 화면은 어느 포스 회사나 비슷하다."
+      },
+      {
+        "what": "'단말기 무료 보급' 전략",
+        "why_not": "사업 전략이지 물건이 아니고, 적자 확장 비판 기사와 붙어 있어 채용 판에 쓸 성격이 아니다."
+      },
+      {
+        "what": "QR 테이블오더",
+        "why_not": "QR 코드는 세상에서 가장 회사를 구별 못 하는 그래픽이다."
+      }
+    ]
+  },
+  "points": [
+    {
+      "id": "front-nfc-face",
+      "what": "전면 유리면이 곧 NFC 태그 면 — 손님이 화면에 카드를 갖다 댄다",
+      "evidence": "https://toss.tech/article/toss_front — '결국 프론트 전면에서 NFC 인식이 가능해지면서'",
+      "meaning": "이 기기의 동작이 다른 단말기와 갈리는 지점",
+      "use": "화면 아래 카드 삽입구 한 줄로만. 손·카드는 그리지 않는다",
+      "avoid": "태그 동작을 일러스트로 그리는 것"
+    },
+    {
+      "id": "black-and-white-housing",
+      "what": "하우징 색은 화이트와 블랙 둘뿐. 1세대는 화이트만, 2세대에서 블랙이 추가됐다",
+      "evidence": "https://tossplace.com/product/front — '매장 분위기에 맞게. 세련된 블랙'",
+      "meaning": "공식 색 옵션이 정확히 둘이라 판도 두 벌이 가능하다",
+      "use": "기본은 블랙 판. 화이트는 나중에",
+      "avoid": "회사가 안 내는 제3의 하우징 색"
+    }
+  ],
+  "ui": {
+    "observed_at": "tossplace.com HTML/CSS 실측(색 출현 빈도) · toss.tech 프론트 2 제작기 · 공식 브로슈어 PDF. 하드웨어 하우징의 실제 픽셀 색은 뽑지 못했다 — 아래 hex 는 TDS 웹 토큰이다",
+    "font": "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
+    "embed_fonts": {
+      "Pretendard": [
+        {
+          "src": "assets/companies/토스플레이스/fonts/Pretendard-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/토스플레이스/fonts/Pretendard-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/토스플레이스/fonts/Pretendard-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/토스플레이스/fonts/Pretendard-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/토스플레이스/fonts/Pretendard-ExtraBold.woff2",
+          "weight": 800
+        }
+      ],
+      "IBM Plex Sans KR": [
+        {
+          "src": "assets/companies/토스플레이스/fonts/IBMPlexSansKR-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/토스플레이스/fonts/IBMPlexSansKR-SemiBold.woff2",
+          "weight": 600
+        }
+      ]
+    },
+    "display": "sans",
+    "paper": "#ffffff",
+    "ink": "#191f28",
+    "text": "#333d4b",
+    "sub": "#8b95a1",
+    "accent": "#4e5968",
+    "line": "#e5e8eb",
+    "shell": "#191f28",
+    "shell_edge": "#000000",
+    "shell_ink": "#8b95a1",
+    "glass_edge": "#f2f4f6",
+    "rules": [
+      "판은 프론트 2 의 세로 화면이다 — 하우징이 판을 두르고 공고는 화면 안에만 있다",
+      "카메라 점은 위 정중앙 하나. 둘 이상 찍지 않는다(스펙은 2개지만 보이는 건 하나다)",
+      "카드 삽입구는 화면 아래 가로 한 줄. 카드도 손도 그리지 않는다",
+      "토스 파랑을 면으로 깔지 않는다 — 토스 판 것이다",
+      "숫자(경력·기간)는 tabular-nums. 단말기 화면과 영수증의 숫자는 자리가 맞는다",
+      "지어낸 카피 금지 — 회사가 쓴 문장만 인용한다('요즘 매장, 요즘 결제' / '고객이 보는 단말기')",
+      "제품을 SVG 로 그려 장식하지 않는다. 화면 비율·카드 슬롯 선·카메라 점의 구조만 남긴다"
+    ],
+    "quote": "고객이 보는 단말기",
+    "quote_source": "공식 브로슈어 3쪽 제목 — https://static.toss.im/illusts-common/tossplace_brochure.pdf",
+    "fonts_research": {
+      "seen": {
+        "tossplace.com": "font-family:'Toss Product Sans','Tossface','SF Pro KR',... / 스타일시트 https://static.toss.im/tds/43.5.9/css/tds.min.css — 토스 본사와 동일한 TDS"
+      },
+      "choice": "Pretendard (SIL OFL 1.1) — 본문·제목 전부. 금액·경력·기간 자리는 tabular-nums",
+      "why": [
+        "토스플레이스 전용 서체는 없다. 사이트는 토스 본사와 똑같이 Toss Product Sans 를 쓰는데 그건 전용 서체라 쓸 수 없다",
+        "Wanted Sans 는 기존 토스 판의 서체다 — 같은 걸 쓰면 시그니처를 바꿔도 첫인상이 겹친다",
+        "Pretendard 는 Inter 계열이라 좁고 단단하다. 하드웨어 스펙표·화면 UI 의 인상이고 토스 판과 결이 확실히 다르다",
+        "서체의 역할은 둘뿐이다 — 토스 판과 안 겹치게 하는 것, 단말기 화면의 숫자 규율을 흉내 내는 것"
+      ],
+      "not_used": "Toss Product Sans(전용, 배포·이용허락 문서 없음 — CDN 서빙은 라이선스가 아니다) · Tossface(이모지 전용이라 본문이 못 되고, 기존 토스 판이 이미 쓴다) · Wanted Sans(토스 판과 겹친다)"
+    },
+    "type_plan": {
+      "verbatim": "한 글자도 고치지 않는다. 섹션 제목의 대괄호([합류하면 함께할 업무예요])도 원문 그대로 둔다.",
+      "scale": [
+        {
+          "what": "직무명",
+          "how": "판에서 가장 큰 글자(5.0~5.8u, 800). 화면 위쪽 3분의 1",
+          "why": "이 기기 화면에 지금 떠 있는 것이 무엇인지가 먼저 읽혀야 한다"
+        },
+        {
+          "what": "회사명 + '고객이 보는 단말기'",
+          "how": "2.4u 700 옆에 1.55u 500 회색",
+          "why": "공식 브로슈어 3쪽 제목을 그대로 인용해 화면의 성격을 말한다"
+        },
+        {
+          "what": "경력",
+          "how": "1.7u 600, 오른쪽 끝. tabular-nums",
+          "why": "단말기 화면의 숫자는 자리가 맞는다"
+        },
+        {
+          "what": "본문",
+          "how": "16px 이상. 못 맞추면 하우징 두께를 줄여서라도 지킨다",
+          "why": "유리면 안의 글은 읽히라고 있는 것이다"
+        }
+      ],
+      "highlight": {
+        "what": "'A: B' 꼴의 라벨 A, 그리고 [..] 소제목",
+        "how": "라벨은 굵기 600 + 잉크(#191f28), 소제목은 굵기 700. 색은 안 바꾼다",
+        "avoid": "형광펜·색 사각 불릿·알약 칩. 토스 파랑을 강조에 쓰지 않는다(토스 판 것이다)"
+      },
+      "as_image": {
+        "what": "",
+        "why_none": "판 자체가 기기다. 글자를 도형으로 키우면 '화면에 뜬 공고'가 아니라 그냥 포스터가 된다 — 여기서는 글자가 화면 안에 얌전히 있는 것이 시그니처를 지킨다.",
+        "how": "대신 화면 바깥(하우징·카메라 눈·카드 삽입구)이 그림 몫을 맡는다"
+      }
+    },
+    "images": {},
+    "images_note": {
+      "pending": "이미지 없이 만든 v1 이다. 하우징 블랙/화이트의 실제 픽셀 색은 공식 배경 없는 제품 PNG 에서 샘플링해야 한다 — https://static.toss.im/photos/place-original-front2-black-no-bg-13-2-edit.png · https://static.toss.im/photos/place-front-device-white-black.png (아직 받지 않았다). 지금 하우징 색 #191f28 은 TDS Grey900 이라는 웹 토큰이지 하드웨어 색이 아니다."
+    }
+  },
+  "sources": [
+    "https://toss.tech/article/toss_front",
+    "https://tossplace.com/",
+    "https://tossplace.com/product/front",
+    "https://static.toss.im/illusts-common/tossplace_brochure.pdf",
+    "https://toss.im/career/tossplace",
+    "https://www.etnews.com/20250224000079",
+    "https://github.com/orioncactus/pretendard"
+  ]
+}

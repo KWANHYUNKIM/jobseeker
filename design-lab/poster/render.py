@@ -1,7 +1,7 @@
 """HTML 한 장 → 실제 이미지. Playwright 크로미움으로 캔버스 크기 그대로 찍는다.
 
 브라우저는 비싸다(8GB 머신). 한 번 띄워 두고 페이지만 갈아 끼운다.
-    python -m poster.render wanted-364663 --template role_hero --format ig_portrait
+    python -m poster.render wanted-364663 --template brand_ridi --format ig_portrait
 """
 from __future__ import annotations
 
@@ -50,10 +50,19 @@ def html_for(job_key: str, template_id: str, fmt_id: str, *, palette: str = "") 
     fmt = FORMATS.get(fmt_id)
     if not fmt:
         raise KeyError(f"모르는 포맷: {fmt_id}")
+    # 판 엔진이 둘이다. 여기(templates.render)는 {{key}} 치환기 — 스튜디오가 처음부터 쓰던 길이다.
+    # 회사 전용 판은 그 길로 못 간다: /*__DATA__*/ 에 원고를 통째로 넣고 _frame.js 가 글자 크기를
+    # 맞추는 구조라 치환기로 그리면 빈 판이 나온다. 그래서 engine:"frame" 인 틀은 carousel 로 넘긴다.
+    # (carousel 을 위에서 import 하면 순환이 된다 — carousel 도 이 패키지를 쓴다.)
+    meta = templates.TEMPLATES.get(template_id)
+    if meta and meta.get("engine") == "frame":
+        from . import carousel
+        return carousel.html_for(job_key, fmt_id, palette=palette,
+                                 template=templates.TPL_DIR / meta["file"])
     return templates.render(template_id, compose(job_key, palette=palette), fmt)
 
 
-def render(job_key: str, template_id: str = "role_hero", fmt_id: str = "ig_portrait",
+def render(job_key: str, template_id: str = "", fmt_id: str = "ig_portrait",
            *, palette: str = "", out_dir: Path | None = None) -> Path:
     fmt = FORMATS[fmt_id]
     html = html_for(job_key, template_id, fmt_id, palette=palette)
@@ -75,7 +84,7 @@ def render(job_key: str, template_id: str = "role_hero", fmt_id: str = "ig_portr
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("job_key", help="예: wanted-364663")
-    ap.add_argument("--template", default="role_hero", choices=list(templates.TEMPLATES))
+    ap.add_argument("--template", required=True, choices=list(templates.TEMPLATES))
     ap.add_argument("--format", dest="fmt", default="ig_portrait", choices=list(FORMATS))
     ap.add_argument("--palette", default="")
     args = ap.parse_args()

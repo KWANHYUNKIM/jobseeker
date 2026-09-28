@@ -1,0 +1,185 @@
+<!-- brand_miridih — 미리디 전용 판 v1. brands/미리디.json 의 signature 를 판의 얼굴로 쓴다.
+     signature  size-first-canvas   먼저 정해진 판형. 미리캔버스에서 맨 처음 정하는 것은 그림도 글도
+                                    아니고 판의 크기다(1080×1350 인지 1920×1080 인지). 80만 장의
+                                    템플릿은 전부 '치수와 자리가 먼저 잡힌 빈 판' 이고, 사용자가 하는
+                                    일은 그 자리에 자기 말을 넣는 것이다. 그래서 이 판은 자기 치수를
+                                    밝힌다 — 위와 왼쪽에 청록 치수선이 서고 끝에 1080 · 1350 이 앉는다.
+     supporting slot-before-word    섹션 이름 앞에 자리 번호 01·02·03. 자리가 글보다 먼저 있었다.
+                official-line       '세상의 모든 디자인은 미리캔버스로 완성' — 공식 홈의 첫 문장.
+     안 쓰는 것: 에디터 화면(패널·도구막대·선택 핸들·확대 배율·체커보드), 템플릿 썸네일·요소 그림,
+                 워드마크/앱 아이콘 모양, 미리디 오렌지(#ff8c00), 회사 수치(80만·2,200만), 수치 카드
+     판의 꼴: 옅은 청록 작업면 위에 흰 판 한 장. 판 밖에 치수선, 판 안에 공고. 판이 커지는 것이
+              아니라 글자가 작아진다 — 판형이 먼저이기 때문이다. -->
+<meta charset="utf-8">
+<title>brand_miridih</title>
+<style>
+  /*__FONTS__*/
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#f2f8f9}
+  body{-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word;font-synthesis:none}
+  .sheet{position:relative;width:var(--w);height:var(--h);background:var(--paper);color:var(--ink);
+    font-family:var(--font);overflow:hidden;
+    padding:calc(5.0*var(--u)) calc(3.4*var(--u)) calc(3.4*var(--u)) calc(5.0*var(--u))}
+
+  /* 치수선 — 판 밖. 가로 하나 세로 하나, 둘뿐이다. 화살촉은 달지 않는다(제도 기호 흉내는 장식이다) */
+  .dim{position:absolute;color:var(--accent)}
+  .dim span{position:absolute;background:var(--paper);font-family:'Poppins',var(--font);font-weight:600;
+    font-size:calc(1.8*var(--u));letter-spacing:.05em;line-height:1;white-space:nowrap}
+  .dim.h{height:0;border-top:1px solid currentColor;
+    top:calc(2.5*var(--u));left:calc(5.0*var(--u));right:calc(3.4*var(--u))}
+  .dim.h::before,.dim.h::after{content:'';position:absolute;top:calc(-.6*var(--u));
+    width:1px;height:calc(1.2*var(--u));background:currentColor}
+  .dim.h::before{left:0}
+  .dim.h::after{right:0}
+  .dim.h span{left:50%;top:0;transform:translate(-50%,-50%);padding:0 calc(.9*var(--u))}
+  .dim.v{width:0;border-left:1px solid currentColor;
+    left:calc(2.5*var(--u));top:calc(5.0*var(--u));bottom:calc(3.4*var(--u))}
+  .dim.v::before,.dim.v::after{content:'';position:absolute;left:calc(-.6*var(--u));
+    height:1px;width:calc(1.2*var(--u));background:currentColor}
+  .dim.v::before{top:0}
+  .dim.v::after{bottom:0}
+  .dim.v span{top:50%;left:0;transform:translate(-50%,-50%) rotate(-90deg);padding:calc(.9*var(--u)) 0}
+
+  /* 흰 판 — 여기서부터가 '미리 정해진 판' 이다 */
+  .board{position:relative;width:100%;height:100%;background:var(--page);border:1px solid var(--line);
+    display:flex;flex-direction:column;overflow:hidden;padding:calc(3.2*var(--u))}
+
+  header{flex:none;display:flex;align-items:baseline;gap:calc(1.4*var(--u));
+    padding-bottom:calc(1.3*var(--u));border-bottom:1px solid var(--line)}
+  .co{font-size:calc(2.2*var(--u));font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+  .about{font-size:calc(1.65*var(--u));color:var(--sub);letter-spacing:-.01em}
+  .career{margin-left:auto;font-size:calc(1.65*var(--u));color:var(--sub);
+    letter-spacing:-.01em;white-space:nowrap}
+  /* 이 자리의 치수 — 판 밖에서 판을 재던 선이 판 안으로 들어와 경력을 잰다 */
+  .spec{flex:none;display:flex;align-items:baseline;gap:calc(1.1*var(--u));
+    margin-bottom:calc(1.1*var(--u));color:var(--accent);font-weight:700;
+    font-size:calc(2.0*var(--u));letter-spacing:-.02em}
+  .spec::before{content:'';align-self:center;width:calc(3.4*var(--u));height:1px;background:currentColor}
+  .spec i{font-style:normal;font-family:'Poppins',var(--font);font-weight:700;
+    font-size:calc(3.6*var(--u));line-height:.9;letter-spacing:0}
+
+  h1{flex:none;margin:calc(1.5*var(--u)) 0 calc(1.0*var(--u));font-weight:800;
+    font-size:calc(var(--TS)*var(--u));letter-spacing:-.038em;line-height:1.12;color:var(--ink);text-wrap:balance}
+
+  main{flex:1;min-height:0;overflow:hidden;column-gap:calc(var(--f)*2.2);column-fill:auto}
+  .sec{break-inside:auto}
+  .sec + .sec{margin-top:calc(var(--f)*1.0)}
+  /* 섹션 이름 — 자리 번호가 이름보다 먼저 온다. 자리가 글보다 먼저 있었다는 표시다 */
+  h2{break-after:avoid;display:flex;align-items:baseline;gap:calc(var(--f)*.5);
+    font-size:calc(var(--f)*.82);font-weight:700;color:var(--accent);letter-spacing:.16em;
+    padding-bottom:calc(var(--f)*.34);margin-bottom:calc(var(--f)*.6);border-bottom:1px solid var(--line)}
+  h2 .no{font-family:'Poppins',var(--font);font-weight:700;letter-spacing:0;
+    font-size:calc(var(--f)*1.75);line-height:.9}
+  .it{break-inside:avoid;font-size:var(--f);line-height:1.58;color:var(--text);
+    margin-bottom:calc(var(--f)*.38);text-indent:calc(var(--f)*-.9);padding-left:calc(var(--f)*.9);text-wrap:pretty}
+  .it b{font-weight:700;color:var(--ink)}
+  .sub{break-after:avoid;font-size:calc(var(--f)*1.04);font-weight:700;color:var(--ink);
+    margin:calc(var(--f)*.8) 0 calc(var(--f)*.38);letter-spacing:-.02em}
+  .sub:first-of-type{margin-top:0}
+  .note{break-inside:avoid;font-size:calc(var(--f)*.86);line-height:1.55;color:var(--sub);margin-top:calc(var(--f)*.3)}
+
+  footer{flex:none;margin-top:calc(1.4*var(--u));padding-top:calc(1.2*var(--u));
+    border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-end;
+    gap:calc(2*var(--u))}
+  /* 회사가 쓴 문장이라 그대로 인용한다 — 지어낸 카피를 대신한다 */
+  .slogan{font-size:calc(1.95*var(--u));font-weight:700;color:var(--ink);letter-spacing:-.025em}
+  .stack{margin-top:calc(.55*var(--u));font-size:calc(1.4*var(--u));color:var(--sub);letter-spacing:-.01em}
+  .apply{text-align:right;white-space:nowrap;color:var(--accent)}
+  .period{font-size:calc(1.7*var(--u))!important}
+</style>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__FRAME_JS__*/</script>
+<script>
+(async () => {
+  const F = await Frame.init();
+  const { D, S, el, ui } = F;
+  const B = F.brand || {};
+  F.set('page', ui.page || '#ffffff');
+  F.set('line', ui.line || '#dbe9ec');
+
+  const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 판이 자기 치수를 밝힌다. 숫자는 지어낸 것이 아니라 D.fmt 에서 온다.
+  const dim = (cls, text) => {
+    const d = el('div', 'dim ' + cls);
+    d.append(el('span', '', text));
+    return d;
+  };
+  sheet.append(dim('h', D.fmt.w + ' px'), dim('v', D.fmt.h + ' px'));
+
+  const board = el('div', 'board'); sheet.append(board);
+
+  const header = el('header');
+  header.append(el('div', 'co', B.wordmark || D.company));
+  if (B.about) header.append(el('div', 'about', B.about));
+  board.append(header);
+
+  board.append(el('h1', '', D.title || D.role));
+
+  // 경력 — 원문 그대로 두고 숫자만 Poppins 로 키운다. 판이 자기 치수를 재듯 자리의 치수를 잰다.
+  const spec = el('div', 'spec');
+  for (const part of D.meta.join(' · ').split(/(\d+)/)) {
+    if (!part) continue;
+    spec.append(/^\d+$/.test(part) ? el('i', '', part) : document.createTextNode(part));
+  }
+  if (D.meta.length) board.append(spec);
+
+  const main = el('main'); board.append(main);
+
+  const footer = el('footer');
+  const left = el('div');
+  left.append(el('div', 'slogan', B.slogan || ''));
+  if (D.stack.length) left.append(el('div', 'stack', [...new Set(D.stack)].join(' · ')));
+  footer.append(left, el('div', 'apply'));   // .apply 는 Frame.period 가 마감을 넣는 자리
+  board.append(footer);
+
+  // 원문 → 섹션. 글자는 그대로, 'A: B' 는 A 만 굵게, '[..]' 는 소제목, '*' 로 시작하면 주석
+  const txt = it => (typeof it === 'string' ? it : it.text);
+  const item = s => {
+    const d = el('div', 'it');
+    const m = s.match(/^([^:：]{2,24})([:：]\s*)([\s\S]+)$/);
+    if (m) d.append(el('b', '', m[1] + m[2].trimEnd()), document.createTextNode(' ' + m[3]));
+    else d.textContent = s;
+    return d;
+  };
+  const secs = [];
+  const addSec = (title, items) => {
+    if (!items.length) return;
+    const s = el('div', 'sec');
+    const h = el('h2');
+    h.append(el('span', 'no', String(secs.length + 1).padStart(2, '0')), el('span', '', title));
+    s.append(h);
+    for (const raw of items) {
+      const t = txt(raw);
+      if (/^\[.+\]$/.test(t) || /^\|\s/.test(t)) s.append(el('div', 'sub', t));
+      else if (/^\*\s/.test(t)) s.append(el('div', 'note', t));
+      else if (typeof raw !== 'string' && raw.label) {
+        const d = el('div', 'it');
+        d.append(el('b', '', raw.label + ' '), document.createTextNode(raw.text));
+        s.append(d);
+      } else s.append(item(t));
+    }
+    secs.push(s);
+  };
+  S.tasks.forEach(t => addSec(t.title || '주요업무', t.items));
+  addSec('자격요건', S.qualifications);
+  addSec('우대사항', S.preferences);
+  addSec('복지', S.benefits);
+  main.append(...secs);
+
+  // 제목 크기 후보. 판형이 먼저이므로 판이 커지는 일은 없다 — 제목부터 줄여 본문 16px 을 지킨다.
+  const heads = [{ TS: 6.4 }, { TS: 5.8 }, { TS: 5.2 }, { TS: 4.7 }, { TS: 4.3 }];
+  const draw = c => {
+    F.set('TS', c.TS);
+    main.style.columnCount = c.columns;
+    return !Frame.overflows(main);
+  };
+  const MIN = 16.2;
+  for (const h of heads) {
+    Frame.fit(F, [{ ...h, columns: 1 }, { ...h, columns: 2 }], draw, { lo: 10, hi: 30 });
+    window.__layout.head = h;
+    if (window.__layout.font_px >= MIN || h === heads[heads.length - 1]) break;
+  }
+})();
+</script>

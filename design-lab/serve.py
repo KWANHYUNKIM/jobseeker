@@ -24,7 +24,7 @@ from pathlib import Path
 LAB_DIR = Path(__file__).parent.resolve()
 sys.path.insert(0, str(LAB_DIR))
 
-from poster import assets, jobsource, render as renderer, templates   # noqa: E402
+from poster import assets, jobsource, process, render as renderer, templates   # noqa: E402
 from poster.model import FORMATS, PALETTES                            # noqa: E402
 from publish import caption as captions                               # noqa: E402
 from publish import queue                                             # noqa: E402
@@ -77,7 +77,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 spec = renderer.compose(one("job"), palette=one("palette"))
                 return self._json(captions.preview(spec))
             if path == "/api/preview":
-                html = renderer.html_for(one("job"), one("template", "role_hero"),
+                html = renderer.html_for(one("job"), one("template"),
                                          one("format", "ig_portrait"), palette=one("palette"))
                 return self._body(html.encode("utf-8"), "text/html; charset=utf-8")
             if path == "/api/queue":
@@ -88,6 +88,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 })
             if path == "/api/assets":
                 return self._json({"companies": assets.have()})
+            if path == "/api/process":
+                return self._json(process.snapshot())
         except Exception as e:                      # 랩이니까 실패는 화면에서 보이면 된다
             return self._json({"error": f"{type(e).__name__}: {e}"}, status=400)
 
@@ -108,7 +110,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             if self.path == "/api/queue":
                 item = queue.add(
                     payload["job_key"],
-                    template=payload.get("template", "role_hero"),
+                    template=payload.get("template", ""),
                     formats=payload.get("formats") or ["ig_portrait"],
                     platforms=payload.get("platforms") or ["instagram"],
                     palette=payload.get("palette", ""),

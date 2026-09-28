@@ -9,6 +9,7 @@
     <button class="tab on" data-view="refs">레퍼런스</button>
     <button class="tab" data-view="studio">포스터 스튜디오</button>
     <button class="tab" data-view="queue">발행 큐</button>
+    <button class="tab" data-view="process">프로세스</button>
   </nav>
   <span class="hint" id="hint">8780 · 파이프라인과 분리된 실험실</span>
 </header>
@@ -44,6 +45,12 @@
 <main id="view-queue" class="view">
   <div class="creds" id="creds"></div>
   <div class="items" id="items"></div>
+</main>
+
+<!-- 4. 판 하나가 어떻게 만들어져 어디로 나가는지. 화면에 절차를 적지 않는다 —
+     BRAND_RESEARCH.md 의 표와 publish/queue.py 의 상태를 읽어 그린다(poster/process.py). -->
+<main id="view-process" class="view">
+  <div class="proc" id="proc"></div>
 </main>
 
 <div class="lightbox" id="lightbox" hidden><img id="lightbox-img" alt=""></div>
