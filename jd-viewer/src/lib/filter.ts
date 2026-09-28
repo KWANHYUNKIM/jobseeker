@@ -111,9 +111,18 @@ function matchesBase(j: Job, f: FilterState, q: string): boolean {
 
 export function applyFilter(jobs: Job[], f: FilterState): Job[] {
   const q = f.query.trim().toLowerCase()
-  return byNewest(
+  const rows = byNewest(
     jobs.filter((j) => matchesBase(j, f, q) && FACET_KEYS.every((k) => DIMENSIONS[k](j, f))),
   )
+  if (!q) return rows
+  // 검색어가 있으면 어디에 걸렸는지로 먼저 줄 세운다. 본문까지 훑으니 '현대자동차' 를
+  // 치면 고객사·경력란에 그 이름을 적은 다른 회사 공고 53건이 최신순으로 앞을 차지하고,
+  // 정작 현대자동차의 공고 6건은 54번째부터였다. 같은 자리끼리는 최신순 그대로(안정 정렬).
+  const rank = new Map<Job, number>()
+  for (const j of rows) {
+    rank.set(j, j.company.toLowerCase().includes(q) ? 0 : j.title.toLowerCase().includes(q) ? 1 : 2)
+  }
+  return rows.sort((a, b) => rank.get(a)! - rank.get(b)!)
 }
 
 /**
