@@ -39,6 +39,7 @@ like a fetched posting.
 | `open_only` | default `true` — closed postings are already excluded |
 | `location` | substring match on the location text (`"서울"`, `"성남"` — not district nicknames like `"판교"`) |
 | `career` | substring match (`"신입"`, `"경력"`) |
+| `education` | the candidate's highest degree (`고졸`/`전문학사`/`학사`/`석사`/`박사`) — postings whose stated minimum is higher ('학부 4학년 이상', '4년제 졸업') are dropped. Each result carries `education_min` + `education_evidence`; `null` means the posting states none — check the original before applying. Pass this whenever CLAUDE.md records the candidate's degree: a 2-year graduate cannot apply to a 4-year-degree gate, and scoring such a posting wastes the run |
 
 Map each item of `data.jobs` to the scraper's search contract:
 

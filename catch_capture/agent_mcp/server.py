@@ -63,11 +63,14 @@ def _miss(what: str) -> dict:
 
 @mcp.tool(annotations=RO)
 def search_jobs(query: str, limit: int = 10, open_only: bool = True,
-                location: str = "", career: str = "") -> dict:
+                location: str = "", career: str = "", education: str = "") -> dict:
     """국내 IT 채용 공고를 찾는다. query 는 문장도 된다('재택 되는 백엔드', '금융권 React').
-    location('서울 강남' 등)·career('신입', '경력 3년' 등)는 포함 여부로 거른다. 최대 30건."""
+    location('서울 강남' 등)·career('신입', '경력 3년' 등)는 포함 여부로 거른다.
+    education 에 지원자 최종학력(고졸/전문학사/학사/석사/박사)을 주면, 그보다 높은 학력을 요구하는
+    공고('학부 4학년 이상', '4년제 졸업' 등)를 뺀다. 결과마다 education_min 과 근거 문구가 붙는다 —
+    None 은 공고에서 학력 조건을 못 찾았다는 뜻이니 원문을 확인할 것. 최대 30건."""
     return _wrap(data.search_jobs(query, limit=max(1, min(limit, 30)), open_only=open_only,
-                                  location=location, career=career))
+                                  location=location, career=career, education=education))
 
 
 @mcp.tool(annotations=RO)

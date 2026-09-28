@@ -64,6 +64,47 @@ def job_key(j: dict) -> str:
 
 # ── 공고 ──────────────────────────────────────────────────────────────
 
+# ── 학력 관문 ────────────────────────────────────────────────────────
+# 2년제 졸업자가 '학부 4학년 이상'·'4년제 졸업' 공고에 넣지 않게 하려고 판정한다. 데모에서
+# 자동 대조가 통과시킨 두 곳(에너자이 '학부 4학년 이상', 로봇웨어에이아이 '대학교졸업(4년)이상')이
+# 원문을 보니 막혀 있었다 — 요건 칸이 잘리기 전(적재 시점의 전문)으로 판정한다.
+EDU_LEVELS = ["무관", "고졸", "전문학사", "학사", "석사", "박사"]
+EDU_PATTERNS = [   # (단계, 정규식) — 한 줄에서 찾는다. '우대' 줄은 건너뛴다.
+    (5, r"박사\s*(?:학위)?\s*(?:이상|소지|취득|졸업|과정|님)"),
+    (4, r"석사\s*(?:학위)?\s*(?:이상|소지|취득|졸업|연구원)|석사\s*\(?전공"),
+    (3, r"학사\s*(?:학위)?\s*(?:이상|소지|졸업)|4\s*년제|학부\s*4\s*학년|대학교?\s*졸업\s*\(?\s*4\s*년|대졸\s*\(?\s*4|"
+        r"대졸\s*이상|대학교\s*졸업\s*이상|4년\s*대졸"),
+    (2, r"초대졸|전문\s*학사|전문대|전졸|대학\s*\(?\s*2\s*,?\s*3\s*년|2\s*,\s*3\s*년제|대학졸업\s*\(\s*2"),
+    (1, r"고졸|고등학교\s*졸업"),
+]
+EDU_RX = [(lv, re.compile(p)) for lv, p in EDU_PATTERNS]
+EDU_ANY = re.compile(r"학력\s*(?:무관|제한\s*없)|학력\s*:\s*무관")
+EDU_SKIP = re.compile(r"우대|preferred|plus|가산")
+
+
+def edu_gate(*texts: str) -> tuple[int | None, str]:
+    """(요구 최소 학력 단계, 근거 문구). 모르면 (None, '')."""
+    lines = [ln.strip() for t in texts for ln in re.split(r"[\n•·]", t or "") if ln.strip()]
+    for ln in lines:
+        if EDU_ANY.search(ln):
+            return 0, ln[:80]
+    for ln in lines:
+        if EDU_SKIP.search(ln):
+            continue
+        # 한 줄에 여러 단계가 있으면('초대졸 이상, 4년제 우대') 가장 낮은 것이 관문이다.
+        hits = [lv for lv, rx in EDU_RX if rx.search(ln)]
+        if hits:
+            return min(hits), ln[:80]
+    return None, ""
+
+
+def edu_level(label: str) -> int | None:
+    label = (label or "").strip()
+    aliases = {"고졸": 1, "고등학교": 1, "전문학사": 2, "초대졸": 2, "2년제": 2, "3년제": 2, "전문대": 2,
+               "학사": 3, "대졸": 3, "4년제": 3, "석사": 4, "박사": 5}
+    return next((v for k, v in aliases.items() if k in label), None)
+
+
 def _slim_jobs(raw: list[dict]) -> dict:
     """10만 줄짜리 원본에서 필요한 칸만 — 본문(full_jd)은 버리고 세 칸만 잘라 둔다."""
     by_key: dict[str, dict] = {}
@@ -72,6 +113,8 @@ def _slim_jobs(raw: list[dict]) -> dict:
         if not j.get("site") or not j.get("pid"):
             continue
         s = {k: j.get(k) for k in JOB_FIELDS}
+        edu = j.get("education") if len(j.get("education") or "") <= 40 else ""
+        s["edu_min"], s["edu_evidence"] = edu_gate(edu or "", j.get("qualifications") or "")
         for k in TEXT_FIELDS:
             t = (j.get(k) or "").strip()
             s[k] = t[:SECTION_MAX] + ("…" if len(t) > SECTION_MAX else "")
@@ -92,6 +135,9 @@ def job_card(s: dict, *, full: bool = False) -> dict:
     out = {k: s.get(k) for k in ("id", "company", "title", "career", "location", "tech_stack",
                                  "status", "deadline_date", "posted_date", "company_size", "url")}
     out["viewer_url"] = f"{SITE_URL}/jobs/{s['id']}"
+    lv = s.get("edu_min")
+    out["education_min"] = EDU_LEVELS[lv] if lv is not None else None     # None = 공고에서 못 찾음
+    out["education_evidence"] = s.get("edu_evidence") or None
     if full:
         out.update({k: s.get(k) for k in TEXT_FIELDS})
     return out
@@ -119,11 +165,14 @@ def _neg(iso: str) -> str:
 
 
 def search_jobs(query: str, *, limit: int = 10, open_only: bool = True,
-                location: str = "", career: str = "") -> dict:
+                location: str = "", career: str = "", education: str = "") -> dict:
     everything = jobs()["by_key"]
+    my_edu = edu_level(education)       # 지원자 최종학력 — 주면 넘을 수 없는 학력 관문을 뺀다
 
     def keep(s: dict) -> bool:
         if open_only and s.get("status") == "closed":
+            return False
+        if my_edu is not None and s.get("edu_min") is not None and s["edu_min"] > my_edu:
             return False
         if location and location not in (s.get("location") or ""):
             return False
@@ -307,7 +356,10 @@ def job_keywords(job_id: str) -> dict | None:
             if 4 <= len(part) <= 120:
                 bucket.append(part)
     phrases = required + preferred
+    lv = s.get("edu_min")
     return {"job_id": job_id, "must_tech": tech, "required": required[:20], "preferred": preferred[:15],
+            "education_min": EDU_LEVELS[lv] if lv is not None else None,
+            "education_evidence": s.get("edu_evidence") or None,
             "phrases": phrases[:35],
             "how_to_use": "지원서 본문에 must_tech 가 몇 개 들어갔는지, phrases 의 요구를 어느 문장이 "
                           "받치는지 에이전트 쪽에서 세어 보라. 없는 경력을 지어내서 채우지 말 것."}
