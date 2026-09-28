@@ -105,6 +105,28 @@ def edu_level(label: str) -> int | None:
     return next((v for k, v in aliases.items() if k in label), None)
 
 
+# 직군 — 공고 제목으로 가른다(첫 번째로 맞는 것). 현실 점검(market_check)이 직군끼리 견준다.
+ROLE_FAMILIES = [
+    ("AI/ML", r"(?<![a-z])ai(?![a-z])|인공지능|머신\s*러닝|딥\s*러닝|(?<![a-z])ml(?![a-z])|llm|컴퓨터\s*비전|vision"),
+    ("데이터", r"데이터|data|빅데이터|(?<![a-z])dba(?![a-z])"),
+    ("임베디드/펌웨어", r"임베디드|펌웨어|firmware|embedded|(?<![a-z])mcu(?![a-z])|제어|회로|fpga|하드웨어|반도체"),
+    ("모바일", r"안드로이드|android|모바일|(?<![a-z])ios(?![a-z])|flutter|앱\s*개발"),
+    ("프론트엔드", r"프론트|front|퍼블리|react|vue"),
+    ("백엔드", r"백엔드|back-?end|서버|java|spring|node|(?<![a-z])api(?![a-z])"),
+    ("풀스택/웹", r"풀스택|full-?stack|웹|web"),
+    ("DevOps/인프라", r"devops|인프라|클라우드|cloud|(?<![a-z])sre(?![a-z])|네트워크|보안"),
+    ("QA/테스트", r"(?<![a-z])qa(?![a-z])|테스트|품질"),
+    ("SI/유지보수·운영", r"(?<![a-z])si(?![a-z])|(?<![a-z])sm(?![a-z])|유지\s*보수|운영|전산|솔루션|erp|mes"),
+]
+ROLE_RX = [(n, re.compile(p, re.I)) for n, p in ROLE_FAMILIES]
+ENTRY_RX = re.compile(r"신입|무관")
+GRAD_RX = re.compile(r"석사|박사")
+
+
+def role_family(title: str) -> str | None:
+    return next((n for n, rx in ROLE_RX if rx.search(title)), None)
+
+
 def _slim_jobs(raw: list[dict]) -> dict:
     """10만 줄짜리 원본에서 필요한 칸만 — 본문(full_jd)은 버리고 세 칸만 잘라 둔다."""
     by_key: dict[str, dict] = {}
@@ -119,6 +141,9 @@ def _slim_jobs(raw: list[dict]) -> dict:
             t = (j.get(k) or "").strip()
             s[k] = t[:SECTION_MAX] + ("…" if len(t) > SECTION_MAX else "")
         s["id"] = job_key(j)
+        s["family"] = role_family(j.get("title") or "")
+        s["entry"] = bool(ENTRY_RX.search(j.get("career") or ""))
+        s["grad_mention"] = bool(GRAD_RX.search((j.get("qualifications") or "") + (j.get("preferences") or "")))
         s["_hay"] = " ".join([j.get("company") or "", j.get("title") or "", " ".join(j.get("tech_stack") or []),
                               s["main_tasks"], s["qualifications"]]).lower()
         by_key[s["id"]] = s
@@ -135,6 +160,7 @@ def job_card(s: dict, *, full: bool = False) -> dict:
     out = {k: s.get(k) for k in ("id", "company", "title", "career", "location", "tech_stack",
                                  "status", "deadline_date", "posted_date", "company_size", "url")}
     out["viewer_url"] = f"{SITE_URL}/jobs/{s['id']}"
+    out["family"] = s.get("family")                                       # 직군(market_check 와 같은 분류)
     lv = s.get("edu_min")
     out["education_min"] = EDU_LEVELS[lv] if lv is not None else None     # None = 공고에서 못 찾음
     out["education_evidence"] = s.get("edu_evidence") or None
@@ -202,6 +228,77 @@ def search_jobs(query: str, *, limit: int = 10, open_only: bool = True,
         ids.sort(key=rank)
     out = [job_card(data[k]) for k in ids[:limit] if k in data]
     return {"engine": engine, "count": len(out), "jobs": out}
+
+
+MARKET_CAVEATS = [
+    "공고에 '적힌' 학력 관문만 센다. 적히지 않은 서류 심사(학벌·전공·경력 선호)는 이 숫자에 안 보인다 — "
+    "실제 문은 이보다 좁다고 보고 말할 것.",
+    "색인은 개발 직군 검색어로 모은 것이라 임베디드·제조·SI 처럼 IT 채용 사이트 밖에서 많이 뽑는 직군은 "
+    "적게 잡힌다. 표본이 작은 직군(open < 10)은 '데이터 부족'이지 '자리가 없다'가 아니다.",
+    "지금 모집중인 공고만 센다(계절·시점에 따라 흔들린다). 합격률·경쟁률은 이 데이터로 알 수 없다.",
+]
+
+
+def market_check(*, education: str = "", location: str = "", entry_only: bool = True,
+                 families: list[str] | None = None, top_tech: int = 12, samples: int = 3) -> dict:
+    """직군별로 '이 학력·지역·연차로 문을 두드릴 수 있는 공고가 몇 개인가'를 센다.
+
+    지원자의 기술 목록은 받지 않는다(이력서가 서버에 오지 않는 원칙). 직군마다 자주 요구되는 기술을
+    비율로 돌려주니, 겹침은 에이전트가 자기 쪽 프로필로 센다.
+    """
+    my_edu = edu_level(education)
+    want = set(families or [])
+    by: dict[str, dict] = {}
+    for s in jobs()["by_key"].values():
+        fam = s.get("family")
+        if not fam or s.get("status") == "closed" or (want and fam not in want):
+            continue
+        if entry_only and not s.get("entry"):
+            continue
+        b = by.setdefault(fam, {"open": 0, "gated": 0, "unknown_edu": 0, "grad": 0, "tech": {},
+                                "local_open": 0, "local_pass": []})
+        b["open"] += 1
+        lv = s.get("edu_min")
+        gated = my_edu is not None and lv is not None and lv > my_edu
+        b["gated"] += gated
+        b["unknown_edu"] += lv is None
+        b["grad"] += bool(s.get("grad_mention"))
+        for t in s.get("tech_stack") or []:
+            b["tech"][t] = b["tech"].get(t, 0) + 1
+        local = bool(location) and location in (s.get("location") or "")
+        b["local_open"] += local
+        if not gated:
+            if local:
+                b["local_pass"].append(s)
+
+    pct = lambda n, d: round(100 * n / d) if d else None   # noqa: E731
+    out = []
+    for fam, b in by.items():
+        n = b["open"]
+        local = sorted(b["local_pass"], key=lambda s: _neg(s.get("posted_date") or ""))
+        out.append({
+            "family": fam,
+            "open": n,
+            "passable": n - b["gated"],
+            "education_gate_pct": pct(b["gated"], n) if my_edu is not None else None,
+            "education_unknown_pct": pct(b["unknown_edu"], n),
+            "grad_degree_mention_pct": pct(b["grad"], n),
+            "local_open": b["local_open"] if location else None,
+            "local_passable": len(local) if location else None,
+            "top_tech": [{"name": t, "pct": pct(c, n)} for t, c in
+                         sorted(b["tech"].items(), key=lambda kv: -kv[1])[:top_tech]],
+            "local_samples": [job_card(s) for s in local[:samples]],
+            "thin_sample": n < 10,
+        })
+    out.sort(key=lambda r: (-(r["local_passable"] or 0), -r["passable"]))
+    return {
+        "filters": {"education": education or None, "location": location or None, "entry_only": entry_only},
+        "families": out,
+        "caveats": MARKET_CAVEATS,
+        "how_to_use": "목표 직군과 다른 직군을 나란히 놓고 본다: passable(넘을 수 있는 공고 수)·local_passable·"
+                      "education_gate_pct·grad_degree_mention_pct, 그리고 top_tech 를 지원자 프로필과 에이전트 쪽에서 "
+                      "겹쳐 본 비율. 목표 직군이 다른 직군보다 문이 뚜렷이 좁으면 서류를 쓰기 전에 그 사실을 먼저 말한다.",
+    }
 
 
 def resolve_id(job_id_or_url: str) -> str | None:

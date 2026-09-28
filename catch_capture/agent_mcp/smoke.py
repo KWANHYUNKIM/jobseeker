@@ -43,6 +43,7 @@ async def main() -> int:
             ("search_jobs", {"query": "금융 백엔드 Java", "limit": 3}),
             ("company_brief", {"company": "빗썸"}),
             ("company_tech", {"company": "메가존클라우드"}),
+            ("market_check", {"education": "전문학사", "location": "대전"}),
             ("freelance_rates", {}),
             ("search_freelance", {"query": "Java", "grade": "고급", "limit": 2}),
         ]
@@ -68,6 +69,12 @@ async def main() -> int:
             pr = await c.get_prompt("write_application", {"job_id": first_job})
             text = pr.messages[0].content.text
             print(f"OK  prompt write_application: {len(text)}자 · 검토자 단계 {'있음' if '검토자' in text else '없음'}")
+
+        pr = await c.get_prompt("reality_check", {"target_role": "AI/ML"})
+        text = pr.messages[0].content.text
+        ok = "market_check" in text and "비현실적" in text
+        failed += not ok
+        print(f"{'OK ' if ok else 'ERR'} prompt reality_check: {len(text)}자")
 
         miss = _payload(await c.call_tool("company_brief", {"company": "없는회사xyz"}))
         print(f"{'OK ' if miss.get('error') else 'ERR'} 없는 회사 → {miss.get('error')}")
