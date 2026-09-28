@@ -100,6 +100,15 @@ export interface Analysis {
   }
   /** 월별 코호트 — 그 달에 올라온 자리의 '올라올 때 단가'. */
   monthly?: { month: string; n: number; grades: Partial<Record<Grade, Stat>> }[]
+  /** 주별·월별 코호트를 등급별로, '분야|유형' 조합마다(전체 포함). */
+  cohorts?: Record<'week' | 'month', Record<string, CohortRow[]>>
+  domains?: string[]
+}
+
+export interface CohortRow {
+  period: string
+  n: number
+  grades: Partial<Record<Grade, Stat>>
 }
 
 /** 그날의 현재 단가표(숫자만). 크롤러가 날짜별로 한 줄씩 쌓는다. */

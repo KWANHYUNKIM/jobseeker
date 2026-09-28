@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   GRADES,
   SITE_KO,
@@ -151,75 +150,12 @@ function Matrix({ rows, label }: { rows: MatrixRow[]; label: string }) {
   )
 }
 
-// ── 단가 추이 — 주별 상주 월 단가 중앙값(막대) + 기술별 단가 표 + 단가를 바꾼 프로젝트 ──
+// ── 기술별 단가 + 올라온 뒤 단가를 바꾼 프로젝트 ──
+// 주별 추이는 여기 두지 않는다 — 등급을 가르지 않은 '전체 중앙값'은 등급 구성이 바뀐 것과
+// 단가가 바뀐 것을 가를 수 없다. 추이는 '추이' 카드가 등급별·분야별로 본다.
 function TrendPanel({ trend }: { trend: Trend }) {
-  const [hover, setHover] = useState<number | null>(null)
-  const weeks = trend.weekly.filter((w) => w.onsite != null)
-  const max = Math.max(1, ...weeks.map((w) => w.onsite ?? 0))
-  const W = 560
-  const H = 150
-  const pad = { l: 36, r: 8, t: 10, b: 22 }
-  const bw = weeks.length ? (W - pad.l - pad.r) / weeks.length : 0
-  const y = (v: number) => pad.t + (H - pad.t - pad.b) * (1 - v / max)
-  const ticks = [0, Math.round(max / 2), Math.round(max)]
-  const hv = hover != null ? weeks[hover] : null
-
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-      <section>
-        <h3 className="text-sm font-semibold text-(--color-text)">상주 프로젝트 월 단가 중앙값 (주별, 만원)</h3>
-        <p className="text-[11px] text-(--color-muted) mb-1">
-          그 주에 새로 올라온 자리의 <b>올라올 때 단가</b>로 셉니다. 나중에 내린 값은 오른쪽 목록에서 따로 봅니다.
-        </p>
-        {weeks.length === 0 ? (
-          <p className="text-xs text-(--color-muted)">아직 주별로 셀 만큼 쌓이지 않았습니다. 사이클이 돌수록 채워집니다.</p>
-        ) : (
-          <div className="relative">
-            <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="주별 상주 월 단가 중앙값">
-              {ticks.map((t) => (
-                <g key={t}>
-                  <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="var(--color-border)" strokeWidth={1} />
-                  <text x={pad.l - 4} y={y(t) + 3} textAnchor="end" fontSize={9} fill="var(--color-muted)">
-                    {t}
-                  </text>
-                </g>
-              ))}
-              {weeks.map((w, i) => {
-                const v = w.onsite ?? 0
-                const x = pad.l + i * bw + 1
-                const top = y(v)
-                const h = H - pad.b - top
-                const r = Math.min(4, (bw - 2) / 2, h)
-                return (
-                  <g key={w.week} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
-                    {/* 막대보다 넓은 히트 영역 */}
-                    <rect x={pad.l + i * bw} y={pad.t} width={bw} height={H - pad.t - pad.b} fill="transparent" />
-                    <path
-                      d={`M${x},${H - pad.b} V${top + r} Q${x},${top} ${x + r},${top} H${x + bw - 2 - r} Q${x + bw - 2},${top} ${x + bw - 2},${top + r} V${H - pad.b} Z`}
-                      fill="var(--color-accent)"
-                      opacity={hover == null || hover === i ? 1 : 0.45}
-                    />
-                    {(i === 0 || i === weeks.length - 1 || i % 4 === 0) && (
-                      <text x={x + (bw - 2) / 2} y={H - 8} textAnchor="middle" fontSize={9} fill="var(--color-muted)">
-                        {w.week.slice(5)}
-                      </text>
-                    )}
-                  </g>
-                )
-              })}
-            </svg>
-            {hv && (
-              <div className="absolute top-0 right-0 text-[11px] rounded border border-(--color-border) bg-(--color-panel) px-2 py-1 shadow-sm">
-                <b className="text-(--color-text)">{hv.week} 주</b>
-                <div className="text-(--color-muted)">
-                  상주 {hv.onsite?.toLocaleString()}만원 · 전체 {hv.median?.toLocaleString()}만원 · {hv.n}건
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </section>
-
+    <div>
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 min-w-0">
         <div className="min-w-0">
           <h3 className="text-sm font-semibold text-(--color-text) mb-1">기술별 월 단가 (모집중)</h3>
@@ -335,8 +271,8 @@ export function FreelanceRatesView() {
             </ul>
           </Card>
 
-          <Card title="추이" sub="몸값이 어떻게 움직이는지 — 월별(그 달에 올라온 자리)과 일별 기록(그날의 단가표).">
-            <RateTrend months={a.monthly ?? []} history={data.rate_history ?? []} />
+          <Card title="추이" sub="늘 등급별로 긋습니다 — 분야·유형을 골라 그 안에서 봅니다. 주별/월별은 그 기간에 올라온 자리, 일별 기록은 그날의 단가표입니다.">
+            <RateTrend analysis={a} history={data.rate_history ?? []} />
           </Card>
 
           <Card
@@ -364,7 +300,7 @@ export function FreelanceRatesView() {
           </Card>
 
           {data.trend && (
-            <Card title="흐름" sub="주별 추이와 기술별 단가, 그리고 올라온 뒤 단가를 바꾼 프로젝트.">
+            <Card title="기술별 단가 · 단가를 바꾼 프로젝트">
               <TrendPanel trend={data.trend} />
             </Card>
           )}
