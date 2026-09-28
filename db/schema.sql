@@ -969,4 +969,59 @@ SELECT date_trunc('week', COALESCE(p.posted_on, p.first_seen_at::date))::date AS
     OR p.first_seen_at::date > (SELECT min(first_seen_at)::date FROM project)
  GROUP BY 1, 2;
 
+-- ════════════════════════════════════════════════════════════════════
+-- 16. 외주 프로젝트 등급 — 등급·유형·분야·직무로 나눠 본 단가
+-- ════════════════════════════════════════════════════════════════════
+-- db/migrations/007_project_grade.sql 과 글자 그대로 같다(설계 근거는 그쪽 머리말).
+ALTER TABLE project ADD COLUMN IF NOT EXISTS grade       text;
+ALTER TABLE project ADD COLUMN IF NOT EXISTS grade_basis text;
+ALTER TABLE project ADD COLUMN IF NOT EXISTS domain      text;
+ALTER TABLE project ADD COLUMN IF NOT EXISTS work_type   text;
+ALTER TABLE project ADD COLUMN IF NOT EXISTS role        text;
+
+DO $$ BEGIN
+    ALTER TABLE project ADD CONSTRAINT project_grade_known
+        CHECK (grade IS NULL OR grade IN ('초급','중급','고급','특급','혼합'));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+    ALTER TABLE project ADD CONSTRAINT project_grade_basis_known
+        CHECK (grade_basis IS NULL OR grade_basis IN ('표기','경력 추정'));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+    ALTER TABLE project ADD CONSTRAINT project_work_type_known
+        CHECK (work_type IS NULL OR work_type IN ('SI','SM'));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+CREATE INDEX IF NOT EXISTS project_grade_idx ON project (grade) WHERE grade IS NOT NULL;
+
+-- 등급 × (유형·분야·직무·근무) 월 단가. '올라올 때 값'(첫 버전)으로 센다.
+-- dim 이 축 이름, key 가 그 축의 값이다 — 축마다 뷰를 따로 두면 화면이 넷을 이어 붙여야 한다.
+CREATE OR REPLACE VIEW project_pay_by_grade AS
+WITH first_v AS (
+    SELECT DISTINCT ON (project_id) project_id,
+           (COALESCE(budget_min, budget_max) + COALESCE(budget_max, budget_min)) / 2.0 AS monthly
+      FROM project_version
+     WHERE budget_basis = 'monthly' AND COALESCE(budget_min, budget_max) IS NOT NULL
+     ORDER BY project_id, seen_at
+), base AS (
+    SELECT p.grade, p.grade_basis, fv.monthly, p.work_type, p.domain, p.role,
+           p.work_mode::text AS work_mode
+      FROM project p JOIN first_v fv ON fv.project_id = p.id
+     WHERE p.grade IN ('초급','중급','고급','특급') AND fv.monthly BETWEEN 150 AND 3000
+), dims AS (
+    SELECT 'all'       AS dim, '전체'      AS key, * FROM base
+    UNION ALL SELECT 'work_type', work_type, * FROM base WHERE work_type IS NOT NULL
+    UNION ALL SELECT 'domain',    domain,    * FROM base WHERE domain IS NOT NULL
+    UNION ALL SELECT 'role',      role,      * FROM base WHERE role IS NOT NULL
+    UNION ALL SELECT 'work_mode', work_mode, * FROM base WHERE work_mode IS NOT NULL
+)
+SELECT dim, key, grade,
+       count(*)                                                      AS n,
+       count(*) FILTER (WHERE grade_basis = '표기')                   AS n_explicit,
+       percentile_cont(0.25) WITHIN GROUP (ORDER BY monthly)         AS p25,
+       percentile_cont(0.5)  WITHIN GROUP (ORDER BY monthly)         AS median,
+       percentile_cont(0.75) WITHIN GROUP (ORDER BY monthly)         AS p75
+  FROM dims
+ GROUP BY dim, key, grade;
+
 COMMIT;

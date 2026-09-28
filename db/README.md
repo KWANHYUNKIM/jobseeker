@@ -411,6 +411,7 @@ psql "$JOBSEEKER_DSN" -f db/migrations/001_posted_on.sql
 | 001 | `job.posted_on` · `job_closure_check.posted_on` · `v_job.posted_on` | 공고 등록일. 위 "3-1" 참고 |
 | 005 | `project` · `project_tech` · `project_check` · `project_state` · `v_project` | 외주·프리 프로젝트. job 과 따로(회사가 대개 에이전시), tech 사전은 공유 |
 | 006 | `project_version` · `project_budget_move` · `project_pay_weekly` | 프로젝트 단가 이력과 주별 월 단가 — "단가가 얼마나 내려갔나" |
+| 007 | `project.grade`·`grade_basis`·`domain`·`work_type`·`role` · `project_pay_by_grade` | 등급(초·중·고·특급)과 SI/SM·분야·직무로 나눈 월 단가. 분류는 `pipeline/freelance_rates` |
 
 005·006 은 2026-09-28 에 위 절차로 검증했다(두 경로 519줄 일치, 두 번 적용 안전, 1,164건 적재).
 그때 `project_budget_sane` 이 이랜서의 원 단위 표기("5,500,000원" → 월 550억)를 잡았다 —

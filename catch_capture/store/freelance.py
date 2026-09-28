@@ -84,6 +84,9 @@ def _row(p: dict) -> dict:
         "posted_on": _date(p.get("posted_date")),
         "source_open": p.get("status") != "closed",
         "content_hash": _hash(p),
+        # 007 — pipeline/freelance_rates.classify 가 붙인 분류
+        "grade": p.get("grade"), "grade_basis": p.get("grade_basis"), "domain": p.get("domain"),
+        "work_type": p.get("work_type"), "role": p.get("role"),
         "seen_at": p.get("last_seen_at") or datetime.now().astimezone().isoformat(),
         "first_seen_at": p.get("first_seen_at") or p.get("last_seen_at"),
     }
@@ -93,12 +96,14 @@ UPSERT_SQL = """
 INSERT INTO project (site, pid, url, title, category, work_mode, location_text,
                      budget_basis, budget_min, budget_max, duration_text, duration_days,
                      start_text, career_text, summary, tags, applicants, deadline_on, posted_on,
-                     source_open, content_hash, first_seen_at, last_seen_at)
+                     source_open, content_hash, first_seen_at, last_seen_at,
+                     grade, grade_basis, domain, work_type, role)
 VALUES (%(site)s, %(pid)s, %(url)s, %(title)s, %(category)s, %(work_mode)s, %(location_text)s,
         %(budget_basis)s, %(budget_min)s, %(budget_max)s, %(duration_text)s, %(duration_days)s,
         %(start_text)s, %(career_text)s, %(summary)s, %(tags)s, %(applicants)s, %(deadline_on)s,
         %(posted_on)s, %(source_open)s, %(content_hash)s,
-        COALESCE(%(first_seen_at)s::timestamptz, %(seen_at)s::timestamptz), %(seen_at)s)
+        COALESCE(%(first_seen_at)s::timestamptz, %(seen_at)s::timestamptz), %(seen_at)s,
+        %(grade)s, %(grade_basis)s, %(domain)s, %(work_type)s, %(role)s)
 ON CONFLICT (site, pid) DO UPDATE SET
     url = EXCLUDED.url, title = EXCLUDED.title, category = EXCLUDED.category,
     work_mode = EXCLUDED.work_mode, location_text = EXCLUDED.location_text,
@@ -112,7 +117,9 @@ ON CONFLICT (site, pid) DO UPDATE SET
     posted_on = COALESCE(EXCLUDED.posted_on, project.posted_on),
     source_open = EXCLUDED.source_open, content_hash = EXCLUDED.content_hash,
     first_seen_at = LEAST(project.first_seen_at, EXCLUDED.first_seen_at),
-    last_seen_at = GREATEST(project.last_seen_at, EXCLUDED.last_seen_at)
+    last_seen_at = GREATEST(project.last_seen_at, EXCLUDED.last_seen_at),
+    grade = EXCLUDED.grade, grade_basis = EXCLUDED.grade_basis, domain = EXCLUDED.domain,
+    work_type = EXCLUDED.work_type, role = EXCLUDED.role
 RETURNING id, (xmax = 0) AS inserted
 """
 
