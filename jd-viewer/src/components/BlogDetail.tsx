@@ -83,7 +83,11 @@ export function BlogDetail({
     setState('loading')
     fetch(`/blog_content/${post.content_id}.json`)
       .then((r) => {
-        if (r.status === 404) {
+        // 본문 파일이 없으면 404 가 아니라 SPA 폴백(index.html, 200)이 온다 — vite 개발 서버도
+        // 운영 nginx 도 그렇다. 그걸 JSON 으로 읽다 깨져 '불러오지 못했습니다'가 떴다.
+        // JSON 이 아니면 '아직 수집 전'이다.
+        const isJson = (r.headers.get('content-type') ?? '').includes('json')
+        if (r.status === 404 || (r.ok && !isJson)) {
           if (!cancelled) setState('pending')
           return null
         }
