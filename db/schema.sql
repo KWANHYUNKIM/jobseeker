@@ -1024,4 +1024,21 @@ SELECT dim, key, grade,
   FROM dims
  GROUP BY dim, key, grade;
 
+-- ════════════════════════════════════════════════════════════════════
+-- 17. 외주 단가표 스냅숏 — 그날 시장이 어땠나
+-- ════════════════════════════════════════════════════════════════════
+-- db/migrations/008_project_rate_snapshot.sql 과 글자 그대로 같다(설계 근거는 그쪽 머리말).
+CREATE TABLE IF NOT EXISTS project_rate_snapshot (
+    day     date     NOT NULL,
+    grade   text     NOT NULL,
+    col     text     NOT NULL,          -- '전체' | 'SI' | 'SM'
+    n       integer  NOT NULL,
+    p25     integer,
+    median  integer,
+    p75     integer,
+    PRIMARY KEY (day, grade, col),
+    CONSTRAINT project_rate_snapshot_grade CHECK (grade IN ('초급','중급','고급','특급')),
+    CONSTRAINT project_rate_snapshot_col   CHECK (col IN ('전체','SI','SM'))
+);
+
 COMMIT;

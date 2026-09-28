@@ -200,6 +200,28 @@ def dual_write(projects: list[dict]) -> dict | None:
         return None
 
 
+def write_snapshot(snap: dict) -> int:
+    """그날의 현재 단가표(freelance_rates.snapshot) → project_rate_snapshot(008). 같은 날이면 바꾼다."""
+    rows = [(snap["date"], g, c, s["n"], s.get("p25"), s.get("median"), s.get("p75"))
+            for g, cols in (snap.get("cells") or {}).items() for c, s in cols.items()]
+    with cursor() as cur:
+        cur.execute("DELETE FROM project_rate_snapshot WHERE day = %s", (snap["date"],))
+        for r in rows:
+            cur.execute("INSERT INTO project_rate_snapshot (day, grade, col, n, p25, median, p75) "
+                        "VALUES (%s,%s,%s,%s,%s,%s,%s)", r)
+    return len(rows)
+
+
+def dual_write_snapshot(snap: dict) -> int | None:
+    if not enabled():
+        return None
+    try:
+        return write_snapshot(snap)
+    except Exception as e:                                           # noqa: BLE001
+        print(f"  [freelance] 단가표 스냅숏 DB 기록 실패: {str(e)[:160]}", flush=True)
+        return None
+
+
 def export(path: Path = JSON_PATH) -> int:
     """v_project → 뷰어 JSON. 크롤러가 쓰는 것과 같은 모양(site·pid·budget{…}·status…)."""
     with cursor(autocommit=True) as cur:
