@@ -37,18 +37,21 @@ _cache: dict[str, tuple[float, Any]] = {}
 def _load(name: str, build=None):
     """파일을 읽어 두고 수정 시각이 바뀌면 다시 읽는다. build 가 있으면 가공한 결과를 캐시한다."""
     path = PUBLIC / name
+    # 같은 파일을 원본으로도, 가공본으로도 읽는다(company_stacks → 회사 기술 / 회사 규모 표).
+    # 키에 build 를 넣지 않으면 먼저 읽은 쪽이 다른 쪽 자리를 차지한다.
+    key = f"{name}#{build.__qualname__}" if build else name
     try:
         mtime = path.stat().st_mtime
     except OSError:
         return None
     with _lock:
-        hit = _cache.get(name)
+        hit = _cache.get(key)
         if hit and hit[0] == mtime:
             return hit[1]
     raw = json.loads(path.read_text(encoding="utf-8"))
     value = build(raw) if build else raw
     with _lock:
-        _cache[name] = (mtime, value)
+        _cache[key] = (mtime, value)
     return value
 
 
@@ -170,6 +173,7 @@ def _slim_jobs(raw: list[dict]) -> dict:
         s["family"] = role_family(j.get("title") or "")
         s["entry"] = bool(ENTRY_RX.search(j.get("career") or "")) and not SENIOR_RX.search(j.get("title") or "")
         s["region"] = region_of(j.get("location"))
+        s["pay"] = parse_pay(j.get("full_jd") or "", j.get("benefits") or "")
         s["grad_mention"] = bool(GRAD_RX.search((j.get("qualifications") or "") + (j.get("preferences") or "")))
         s["_hay"] = " ".join([j.get("company") or "", j.get("title") or "", " ".join(j.get("tech_stack") or []),
                               s["main_tasks"], s["qualifications"]]).lower()
@@ -404,6 +408,146 @@ def company_tech(company: str) -> dict | None:
         ]
         out["reverse_engineered"]["viewer_url"] = f"{SITE_URL}/reveng/{rv['slug']}"
     return out
+
+
+# ── 연봉 ─────────────────────────────────────────────────────────────
+# 국내 공고는 대부분 '회사 내규에 따름'·'면접 후 결정'이다. 숫자를 적은 공고는 4% 남짓이고 사람인·작은
+# 회사 쪽에 쏠려 있다 — 그래서 시세표는 '적어 둔 곳들의 값'이지 시장 전체가 아니다(caveats 로 늘 같이 준다).
+# 회사 단위 값은 취업 브리핑(guide-engine)의 연봉 밴드가 우선이다(출처·확신도가 붙어 있다).
+PAY_LINE = re.compile(r"연봉|초봉|급여|월급|기본급|보수|salary", re.I)
+PAY_SKIP = re.compile(r"급여\s*외|별도|인센티브|성과급|보너스|상여|식대|교통비|지원금|포인트|퇴직|복지|수당\s*지급|"
+                      r"연간\s*\d+\s*만\s*원\s*\)")
+PAY_RANGE = re.compile(r"(\d[\d,]{2,6})\s*(?:만\s*원?)?\s*[~\-–]\s*(\d[\d,]{2,6})\s*만")
+# 금액 한 개: '3,500만'·'5천만'·'1억'·'1.2억'
+PAY_AMT = re.compile(r"(\d+(?:\.\d)?)\s*억(?:\s*(\d[\d,]*)\s*만)?|(\d)\s*천\s*(?:\d{1,3}\s*백\s*)?만|(\d[\d,]{2,6})\s*만")
+PAY_NOISE = re.compile(r"자본금|매출|투자|설립|\d,\s+\d")     # 회사 소개 줄, OCR 로 깨진 숫자
+PAY_MONTH = re.compile(r"월\s*급|월\s*급여|월\s*\d|월\s*평균|\(월\)|/\s*월")
+
+
+def _num(x: str) -> int:
+    return int(x.replace(",", ""))
+
+
+def _amounts(ln: str) -> list[int]:
+    out = []
+    for m in PAY_AMT.finditer(ln):
+        if m.group(1):
+            out.append(int(float(m.group(1)) * 10000) + (_num(m.group(2)) if m.group(2) else 0))
+        elif m.group(3):
+            out.append(int(m.group(3)) * 1000)
+        else:
+            out.append(_num(m.group(4)))
+    return out
+
+
+def parse_pay(*texts: str) -> dict | None:
+    """공고 본문에서 적힌 연봉(만원/년)을 한 줄 찾는다. 수당·성과급·복지·회사 소개 줄은 건너뛴다."""
+    for t in texts:
+        for ln in (t or "").split("\n"):
+            ln = ln.strip()
+            if not PAY_LINE.search(ln) or PAY_SKIP.search(ln) or PAY_NOISE.search(ln):
+                continue
+            lo = hi = None
+            if (m := PAY_RANGE.search(ln)):              # '4000~5500만원' — 앞 숫자에 단위가 없다
+                lo, hi = _num(m.group(1)), _num(m.group(2))
+            else:
+                amts = _amounts(ln)
+                if not amts:
+                    continue
+                lo = amts[0]
+                if len(amts) > 1 and re.search(r"[~\-–]", ln):
+                    hi = amts[1]
+            monthly = bool(PAY_MONTH.search(ln)) and lo < 1000
+            k = 12 if monthly else 1
+            lo, hi = lo * k, (hi * k if hi else None)
+            if hi and hi < lo:
+                lo, hi = hi, lo
+            if not 1800 <= lo <= 30000 or (hi and hi > 40000):
+                continue                      # 연봉으로 보기 어려운 숫자
+            return {"low": lo, "high": hi, "monthly": monthly, "text": ln[:90]}
+    return None
+
+
+def career_bucket(career: str | None) -> str:
+    c = career or ""
+    if re.search(r"신입", c):
+        return "신입"
+    m = re.search(r"(\d+)", c)
+    if m:
+        n = int(m.group(1))
+        return "1~3년" if n <= 3 else "4~6년" if n <= 6 else "7년+"
+    return "무관" if "무관" in c else "미상"
+
+
+def _sizes() -> dict[str, str]:
+    """회사 규모(중소·중견·대기업…) — 공고에는 없고 company_stacks 에 있다."""
+    def build(raw):
+        return {norm(c.get("name")): c.get("size") for c in raw.get("companies") or [] if c.get("size")}
+    return _load("company_stacks.json", build) or {}
+
+
+def _pct(vals: list[int], q: float) -> int:
+    v = sorted(vals)
+    i = (len(v) - 1) * q
+    lo, hi = int(i), min(int(i) + 1, len(v) - 1)
+    return round(v[lo] + (v[hi] - v[lo]) * (i - lo))
+
+
+SALARY_CAVEATS = [
+    "공고에 연봉 숫자를 적는 곳은 4% 남짓이고 사람인·작은 회사 쪽에 쏠려 있다 — market 은 '적어 둔 곳들'의 값이다. "
+    "숫자를 안 적는 큰 회사들이 빠져 있으니 시장 전체 중앙값으로 말하지 말 것.",
+    "범위로 적힌 공고는 가운데 값을 쓴다. '이상'만 적힌 공고는 그 하한을 쓴다. 월급으로 적힌 것은 ×12 했다.",
+    "회사 브리핑의 밴드는 국민연금 가입자 평균처럼 '전 직군 평균'인 경우가 많다 — 신입 초봉이 아니다(basis·note 확인).",
+    "표본이 5건 미만인 칸은 숫자를 주지 않는다.",
+]
+
+
+def salary_benchmark(company: str = "", career: str = "", family: str = "") -> dict:
+    """회사 연봉(브리핑 밴드 + 그 회사 공고에 적힌 값)과, 비슷한 자리의 시세(공고에 적힌 값으로 센 것)."""
+    sizes = _sizes()
+    want_bucket = career_bucket(career) if career else ""
+    rows: dict[tuple, list[int]] = {}
+    mine: list[dict] = []
+    n_company = norm(company) if company else ""
+    for s in jobs()["by_key"].values():
+        p = s.get("pay")
+        if not p:
+            continue
+        mid = (p["low"] + p["high"]) // 2 if p.get("high") else p["low"]
+        size = sizes.get(norm(s.get("company"))) or "규모 미상"
+        b = career_bucket(s.get("career"))
+        if not family or s.get("family") == family:
+            rows.setdefault((b, size), []).append(mid)
+            rows.setdefault((b, "전체"), []).append(mid)
+        if n_company and (norm(s.get("company")) == n_company):
+            mine.append({"id": s["id"], "title": s.get("title"), "career": s.get("career"),
+                         "status": s.get("status"), **p})
+
+    my_size = None
+    if company:
+        hit = _find((_load("company_stacks.json") or {}).get("companies") or [], company)
+        my_size = (hit or {}).get("size")
+    market = []
+    for (b, size), vals in sorted(rows.items()):
+        if want_bucket and b != want_bucket:
+            continue
+        if size not in ("전체", my_size) and my_size:
+            continue
+        if len(vals) < 5:
+            continue
+        market.append({"career": b, "size": size, "n": len(vals), "p25": _pct(vals, .25),
+                       "median": _pct(vals, .5), "p75": _pct(vals, .75)})
+
+    brief = company_brief(company) if company else None
+    return {
+        "unit": "만원/년",
+        "company": ({"name": (brief or {}).get("company") or company, "size": my_size,
+                     "brief_salary": (brief or {}).get("salary"),
+                     "posted": mine[:10]} if company else None),
+        "market": market,
+        "filters": {"career_bucket": want_bucket or None, "family": family or None},
+        "caveats": SALARY_CAVEATS,
+    }
 
 
 # ── 외주·프리 ────────────────────────────────────────────────────────

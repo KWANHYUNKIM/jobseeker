@@ -121,6 +121,15 @@ def company_tech(company: str) -> dict:
 
 
 @mcp.tool(annotations=RO)
+def salary_benchmark(company: str = "", career: str = "", family: str = "") -> dict:
+    """국내 연봉 비교(만원/년). company 를 주면 그 회사의 취업 브리핑 연봉 밴드(출처·확신도)와 그 회사
+    공고에 적힌 연봉을, career('신입'·'경력 3년' 등)와 family(market_check 의 직군)를 주면 비슷한 자리의
+    시세(공고에 적힌 값의 p25·중앙값·p75, 회사 규모별)를 준다. 공고에 연봉을 적는 곳은 소수이고 작은 회사에
+    쏠려 있다 — caveats 를 꼭 같이 전할 것."""
+    return _wrap(data.salary_benchmark(company=company, career=career, family=family))
+
+
+@mcp.tool(annotations=RO)
 def freelance_rates() -> dict:
     """외주·프리 월 단가표 — 등급(초·중·고·특급) × 전체·SI·SM, 분야·직무별 단가와 요약.
     단위는 만원/월, 최근 90일에 본 개발 프로젝트의 '올라올 때 단가'."""

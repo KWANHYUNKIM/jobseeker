@@ -19,6 +19,7 @@
 | `job_keywords(job_id)` | 공고가 요구하는 기술(`must_tech`)과 요건 줄(`required` 자격요건 · `preferred` 우대, 꼬리 '…을 보유한 분' 은 걷음) — ATS 대조용 |
 | `company_brief(company)` | 취업 브리핑 — 사업, 연봉 밴드(출처·확신도), 공고마다 공부할 것·면접 질문 |
 | `company_tech(company)` | 공고에서 센 기술스택·직군 분포 + 공개 자료로 재구성한 기술 역설계 |
+| `salary_benchmark(company, career, family)` | 국내 연봉(만원/년) — 회사 브리핑의 연봉 밴드(출처·확신도), 그 회사 공고에 적힌 연봉, 규모×경력별 시세(공고에 적힌 값의 p25·중앙값·p75). 연봉을 적는 공고는 4% 남짓이고 작은 회사에 쏠린다는 `caveats` 를 같이 준다 |
 | `freelance_rates()` | 외주·프리 월 단가표(등급 × SI·SM) · 분야·직무별 단가 |
 | `search_freelance(query, grade, kind, limit)` | 모집중인 외주·프리 프로젝트 |
 | `about()` | 데이터 규모와 갱신 시각 |

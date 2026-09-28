@@ -44,6 +44,7 @@ async def main() -> int:
             ("company_brief", {"company": "빗썸"}),
             ("company_tech", {"company": "메가존클라우드"}),
             ("market_check", {"education": "전문학사"}),
+            ("salary_benchmark", {"company": "빗썸", "career": "신입"}),
             ("freelance_rates", {}),
             ("search_freelance", {"query": "Java", "grade": "고급", "limit": 2}),
         ]
