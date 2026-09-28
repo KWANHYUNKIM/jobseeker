@@ -151,6 +151,13 @@
   **혼자 읽는 책이라 색인하지 않는다** — noindex + sitemap/prerender 제외 + robots
   Disallow. 형식과 집필 규칙(특히 ASCII 그림에서 한글을 테두리 왼쪽에 두지 않는 규칙)은
   `jd-viewer/public/book/README.md`.
+- `ai-job-search/` : [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)(MIT)를
+  **git subtree 로 들인 것**. Claude Code 위의 구직 워크플로(`/scrape`·`/apply` 작성→검토→ATS·`/interview`).
+  원본은 덴마크 사이트를 긁는데, 이걸 우리 MCP 서버(`catch_capture/agent_mcp`, 8790)의 국내 공고·회사
+  브리핑·단가 데이터로 바꿔 쓰려고 파일째 들였다(고칠 수 있게). 원본 갱신:
+  `git subtree pull --prefix=ai-job-search https://github.com/MadsLorentzen/ai-job-search master --squash`.
+  이 폴더 안의 CLAUDE.md·AGENTS.md·.claude/ 는 원본 것이다 — 그 폴더에서 작업할 때만 적용된다.
+  원본 테스트: `cd ai-job-search && python -m pytest tests` (들인 시점 488개 통과).
 - `design-lab/` : 공고 한 건을 한 장의 이미지로 접어 소셜에 올리는 실험실(8780).
   인스타에서 모은 상세페이지·채용포스터 캡처(`refs.json` — 읽은 것/훔칠 것/버릴 것)를
   템플릿으로 옮겨 놨다. `poster/`(공고 색인 → 원고 → HTML → Playwright 렌더) →
