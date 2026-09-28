@@ -23,6 +23,7 @@ export const paths = {
   calendar: () => '/calendar',
   reposts: () => '/reposts',
   freelance: () => '/freelance',
+  freelanceRates: () => '/freelance/rates',
   trend: (tech?: string) => (tech ? `/trend?tech=${encodeURIComponent(tech)}` : '/trend'),
   /** 책장. 예전 기술 백과사전이 쓰던 경로를 그대로 물려받았다(북마크가 안 깨지게). */
   wiki: () => '/wiki',
@@ -75,6 +76,10 @@ export const TAB_SEO: Record<string, { title: string; desc: string }> = {
   reposts: {
     title: '재공고 추적',
     desc: '같은 포지션이 반복해서 다시 올라오는 공고를 추적합니다. 자주 다시 뜨는 자리가 보입니다.',
+  },
+  freelanceRates: {
+    title: '외주·프리 단가 분석',
+    desc: '초급·중급·고급·특급 등급별 월 단가와, SI/SM·분야·직무에 따라 몸값이 어떻게 갈리는지 정리했습니다.',
   },
   freelance: {
     title: '외주·프리랜서 프로젝트',

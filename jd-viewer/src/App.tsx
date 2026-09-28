@@ -8,6 +8,7 @@ import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
 import { RepostView } from './components/RepostView'
 import { FreelanceView } from './components/FreelanceView'
+import { FreelanceRatesView } from './components/FreelanceRatesView'
 import { CalendarView } from './components/CalendarView'
 import { TrendView } from './components/TrendView'
 import { RevengView } from './components/RevengView'
@@ -144,7 +145,7 @@ function App() {
     // 책은 제목도 noindex 도 BookView 가 직접 단다(책·절 데이터를 그쪽이 들고 있다).
     if (tab === 'book') return null
 
-    const t = TAB_SEO[tab] ?? TAB_SEO.jobs
+    const t = TAB_SEO[tab === 'freelance' && detail === 'rates' ? 'freelanceRates' : tab] ?? TAB_SEO.jobs
     return {
       title: t.title,
       description: t.desc,
@@ -230,7 +231,8 @@ function App() {
       ) : tab === 'reposts' ? (
         <RepostView />
       ) : tab === 'freelance' ? (
-        <FreelanceView />
+        // 단가 분석은 목록 위에 얹지 않고 따로 뺀다(/freelance/rates).
+        detail === 'rates' ? <FreelanceRatesView /> : <FreelanceView />
       ) : tab === 'trend' ? (
         <div key="trend" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <TrendView onOpenCompany={(slug) => navigate(paths.company(slug))} focusTech={route.query.get('tech')} />
