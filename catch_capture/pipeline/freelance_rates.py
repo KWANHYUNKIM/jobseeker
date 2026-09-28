@@ -195,6 +195,46 @@ def monthly(projects: list[dict], started_at: str) -> list[dict]:
             for m, v in sorted(months.items())]
 
 
+def cohorts(projects: list[dict], started_at: str) -> dict:
+    """주별·월별 코호트를 등급별로, 분야 × 유형 조합마다 센다.
+
+    몸값 추이는 '전체 중앙값' 하나로 보면 등급 구성이 바뀐 것(이번 주엔 고급 자리가 많았다)과
+    단가가 바뀐 것을 가를 수 없다. 그래서 등급을 먼저 가르고, 분야·유형을 골라 볼 수 있게
+    조합(키 '분야|유형', '전체' 포함)마다 미리 세어 둔다. 기간은 그 자리가 올라온 때(등록일,
+    없으면 처음 본 날)이고 첫 수집 날 한꺼번에 들어온 것은 뺀다(monthly 와 같은 규칙).
+    """
+    from datetime import date as _date
+    buckets: dict = {"week": defaultdict(lambda: defaultdict(lambda: defaultdict(list))),
+                     "month": defaultdict(lambda: defaultdict(lambda: defaultdict(list)))}
+    for p in projects:
+        v = _first_monthly(p)
+        if v is None or p.get("grade") not in GRADES:
+            continue
+        if not p.get("posted_date") and _day(p.get("first_seen_at")) == _day(started_at):
+            continue
+        d = p.get("posted_date") or _day(p.get("first_seen_at"))
+        try:
+            day = _date.fromisoformat(d)
+        except ValueError:
+            continue
+        periods = {"week": _date.fromordinal(day.toordinal() - day.weekday()).isoformat(), "month": d[:7]}
+        for dom in ("전체", p.get("domain") or "기타"):
+            for typ in ("전체", p.get("work_type")):
+                if not typ:
+                    continue
+                for unit, per in periods.items():
+                    buckets[unit][f"{dom}|{typ}"][per][p["grade"]].append(v)
+    out: dict = {}
+    for unit, keys in buckets.items():
+        out[unit] = {}
+        for key, pers in keys.items():
+            out[unit][key] = [{"period": per,
+                               "n": sum(len(x) for x in gs.values()),
+                               "grades": {g: _stat(gs[g]) for g in GRADES if gs.get(g)}}
+                              for per, gs in sorted(pers.items())][-26:]
+    return out
+
+
 def snapshot(cur: dict) -> dict:
     """그날의 현재 단가표 한 줄(id 는 빼고 숫자만). 크롤러가 날짜별로 한 줄씩 쌓는다."""
     return {"date": cur["until"],
@@ -233,7 +273,9 @@ def analyze(projects: list[dict], started_at: str = "", today: str | None = None
     }
     result = {"meta": meta, "grades": grades, "grades_explicit": grades_explicit,
               "by_type": by_type, "by_domain": by_domain, "by_role": by_role, "by_mode": by_mode,
-              "current": current_table(projects, today), "monthly": monthly(projects, started_at)}
+              "current": current_table(projects, today), "monthly": monthly(projects, started_at),
+              "cohorts": cohorts(projects, started_at),
+              "domains": [n for n, _ in DOMAINS] + ["기타"]}
     result["insights"] = insights(result)
     return result
 
