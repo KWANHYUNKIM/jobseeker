@@ -121,13 +121,24 @@ def parse_deadline(job: dict, today: date | None = None) -> tuple[date | None, b
     if ALWAYS_OPEN_RE.search(text):
         return None, True
 
+    # 날짜(MM.DD)를 D-N 보다 먼저 본다. D-N 은 크롤한 날 기준의 상대값이라 목록에서
+    # 사라진 뒤에는 그 자리에 멈춘다 — 그걸 '오늘' 기준으로 읽으면 매일 새로 '5일 뒤'가
+    # 되어 영영 안 닫힌다. catch(dev)는 "~ 07.14(화) 17시" 와 "D-5" 를 함께 줘서,
+    # 2026-09 에 7월 마감 공고 225건이 모집중으로 남아 있었다.
+    md = _month_day(text, today)
+    if md:
+        return md, False
+
     # D-DAY / D-0 → 오늘 마감
     if DDAY_TODAY_RE.search(text):
         return today, False
     m = DDAY_RE.search(text)
     if m:
         return today + timedelta(days=int(m.group(1))), False
+    return None, False
 
+
+def _month_day(text: str, today: date) -> date | None:
     # MM/DD or MM.DD — 연도가 없으므로 어느 해인지 골라야 한다.
     #
     # 예전 규칙은 "60일 이상 과거면 내년으로 간주"였다. 연말(12월)에 본 '01/05'를
@@ -150,9 +161,8 @@ def parse_deadline(job: dict, today: date | None = None) -> tuple[date | None, b
                 except ValueError:  # 2/29 같은 날짜는 해당 연도에 없을 수 있다
                     continue
             if cands:
-                return min(cands, key=lambda c: abs((c - today).days)), False
-            return None, False
-    return None, False
+                return min(cands, key=lambda c: abs((c - today).days))
+    return None
 
 
 def classify_status(job: dict, today: date | None = None) -> tuple[str, str, str | None]:
@@ -204,6 +214,11 @@ def _selftest() -> int:
         ({"deadline": "상시채용"}, date(2026, 8, 18), "active"),
         ({"dday": "D-4"}, date(2026, 8, 18), "active"),
         ({"dday": "D-DAY"}, date(2026, 8, 18), "active"),             # 오늘 마감은 아직 모집중
+        # 크롤 때 찍힌 D-N 은 멈춰 있다. 확정 날짜가 함께 있으면 그게 답이다 —
+        # 거꾸로 하면 '오늘+5일'이 매일 새로 계산돼 7월 마감이 9월에도 모집중이었다.
+        ({"deadline": "~ 07.14(화) 17시", "dday": "D-5"}, date(2026, 9, 28), "closed"),
+        ({"deadline": "~ 10.02(금) 17시", "dday": "D-5"}, date(2026, 9, 28), "active"),
+        ({"deadline": "~ 06.10(수) 24시", "dday": "D-DAY"}, date(2026, 9, 28), "closed"),
         ({}, date(2026, 8, 18), "active"),                            # 마감일 정보 없음
     ]
     failed = 0
