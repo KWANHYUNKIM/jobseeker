@@ -90,6 +90,28 @@ export interface Analysis {
   by_role: MatrixRow[]
   by_mode: MatrixRow[]
   insights: string[]
+  /** 현재 단가표 — 최근 N일 안에 본 자리. 칸마다 근거가 된 프로젝트 id 를 싣는다. */
+  current?: {
+    since: string
+    until: string
+    days: number
+    cols: string[]
+    table: Record<Grade, Record<string, (Stat & { ids: string[] }) | null>>
+  }
+  /** 월별 코호트 — 그 달에 올라온 자리의 '올라올 때 단가'. */
+  monthly?: { month: string; n: number; grades: Partial<Record<Grade, Stat>> }[]
+}
+
+/** 그날의 현재 단가표(숫자만). 크롤러가 날짜별로 한 줄씩 쌓는다. */
+export interface RateSnapshot {
+  date: string
+  cells: Partial<Record<Grade, Record<string, { n: number; p25: number; median: number; p75: number }>>>
+}
+
+/** 올라올 때의 월 단가(만원) — 분석 모듈(_first_monthly)과 같은 규칙. */
+export function firstMonthly(p: Project): number | null {
+  const v = monthlyMid(p.history?.[0]?.budget ?? p.budget)
+  return v != null && v >= 150 && v <= 3000 ? v : null
 }
 
 export interface FreelanceData {
@@ -98,6 +120,7 @@ export interface FreelanceData {
   sources: Record<string, { ok: boolean; fetched: number; error?: string }>
   trend?: Trend
   analysis?: Analysis
+  rate_history?: RateSnapshot[]
   projects: Project[]
 }
 

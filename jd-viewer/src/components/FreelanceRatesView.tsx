@@ -10,6 +10,8 @@ import {
   type Trend,
 } from '../lib/freelance'
 import { FreelanceNav } from './FreelanceNav'
+import { CurrentRateTable } from './FreelanceRateTable'
+import { RateTrend } from './FreelanceRateTrend'
 import { ErrorState, Loader } from './ui'
 
 // 외주·프리 단가 분석 — 몸값은 중간값 하나로 말할 수 없다.
@@ -316,12 +318,25 @@ export function FreelanceRatesView() {
             <span className="text-xs text-(--color-muted) ml-auto">갱신 {data.updated_at.slice(0, 16).replace('T', ' ')}</span>
           </header>
 
+          {a.current && (
+            <Card
+              title="현재 단가표 (월 단가, 만원)"
+              sub="칸을 누르면 그 숫자를 만든 프로젝트가 아래에 나옵니다 — 원문 링크와 등급을 어떻게 정했는지까지. CSV 로 내려받아 직접 다시 셀 수 있습니다."
+            >
+              <CurrentRateTable cur={a.current} projects={data.projects} />
+            </Card>
+          )}
+
           <Card title="요약" sub="아래 표에서 읽어 낸 것. 표본이 3건 미만인 칸은 문장에 쓰지 않았습니다.">
             <ul className="flex flex-col gap-1.5 text-sm text-(--color-text) list-disc pl-5">
               {a.insights.map((s) => (
                 <li key={s}>{s}</li>
               ))}
             </ul>
+          </Card>
+
+          <Card title="추이" sub="몸값이 어떻게 움직이는지 — 월별(그 달에 올라온 자리)과 일별 기록(그날의 단가표).">
+            <RateTrend months={a.monthly ?? []} history={data.rate_history ?? []} />
           </Card>
 
           <Card
