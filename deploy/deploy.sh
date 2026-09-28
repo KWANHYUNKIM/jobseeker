@@ -129,9 +129,17 @@ case "${COMPOSE_PROFILES:-}" in
       die "quicktunnel 컨테이너가 running 상태가 아닙니다"
     }
     # 임시 터널 주소는 매번 바뀌므로 배포 로그에 남겨준다.
+    # 주소는 터널이 뜰 때 한 번만 찍힌다. 터널 컨테이너는 배포마다 다시 뜨지 않고
+    # 로그는 10m×3 으로 돌아가므로, 오래 살아 있으면 그 줄이 밀려 나간다. 그때 grep 이
+    # 1 로 끝나면 pipefail 에 걸려 배포가 아무 말 없이 죽는다 — 9/27 부터 뷰어는 다 떠
+    # 놓고도 배포가 전부 실패로 찍혔다. 주소를 못 찾는 것은 실패가 아니다.
     url=$(docker compose -f "$COMPOSE_FILE" logs quicktunnel 2>/dev/null \
-          | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1)
-    [ -n "$url" ] && log "임시 공개 주소: $url  (재시작하면 바뀜)"
+          | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1 || true)
+    if [ -n "$url" ]; then
+      log "임시 공개 주소: $url  (재시작하면 바뀜)"
+    else
+      log "임시 공개 주소는 터널 로그에서 밀려 나갔다 — ./deploy/tunnel-url.sh 로 확인"
+    fi
     ;;
   *ngrok*)
     [ -n "${NGROK_AUTHTOKEN:-}" ] && [ -n "${NGROK_DOMAIN:-}" ] \
