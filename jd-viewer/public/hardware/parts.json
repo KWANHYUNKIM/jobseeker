@@ -3338,6 +3338,61 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-core-ultra-5-235",
+   "category": "cpu",
+   "name": "Core Ultra 5 235",
+   "maker": "Intel",
+   "released": "2025-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1851",
+    "cores": 14,
+    "threads": 14,
+    "boost_ghz": 5.0,
+    "tdp_w": 65,
+    "max_power_w": 121,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 24,
+    "series": "코어 울트라 시리즈2",
+    "family": "코어 울트라5",
+    "igpu_name": "Intel Graphics",
+    "base_ghz": 3.4
+   },
+   "perf": {
+    "index": 65,
+    "multi": 50,
+    "confidence": "seed",
+    "basis": "추정 — Tom's 계층표 · TPU 에 없다. 같은 Arrow Lake 에 P코어 6 이 같고 E코어가 8(225 는 4), 터보 5.0GHz(225 4.9) — 게임은 225(64) 바로 위 65. 멀티는 E코어가 245K 와 같지만 전력 한도 121W(245K 159W)라 225(40)와 245K(58) 사이 50. 실측 대기"
+   },
+   "price_query": {
+    "q": "인텔 코어 울트라5 시리즈2 235",
+    "cate": "CPU",
+    "must": [
+     "235"
+    ],
+    "not": [
+     "235F",
+     "235T",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core Ultra 5 235(14코어 6P+8E · 14스레드 · 3.4/최대 5.0GHz · 24MB · 65/121W · LGA1851 · DDR5-6400 · Intel Graphics · NPU · 2025년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241674/intel-core-ultra-5-processor-235-24m-cache-up-to-5-00-ghz/specifications.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표 — 1080p 게임(Core Ultra 5 225 62.5%)",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-core-ultra-5-225f",
    "category": "cpu",
    "name": "Core Ultra 5 225F",
