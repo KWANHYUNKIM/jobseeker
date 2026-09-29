@@ -425,11 +425,17 @@ export function buildTotal(build: Build, parts: Part[], prices: Record<string, P
  *  2. 보드는 CPU 소켓에 맞는 것 중 가장 싼 것, 메모리는 보드가 받는 종류에서 용도의 최소 용량.
  *  3. 파워·쿨러는 계산한 전력을 넘는 것 중 가장 싼 것. 케이스는 중간 급.
  */
-export function autoBuild(budget: number, use: UseDef, data: HwData): Build {
+export function autoBuild(
+  budget: number,
+  use: UseDef,
+  data: HwData,
+  opts: { allow?: (p: Part) => boolean; noGpu?: boolean } = {},
+): Build {
   const { parts, prices } = data
+  const allow = opts.allow ?? (() => true)
   const priced = (c: Category) =>
     parts
-      .filter((p) => p.category === c && p.status === 'current')
+      .filter((p) => p.category === c && p.status === 'current' && allow(p))
       .map((p) => ({ p, price: priceOf(p, prices) }))
       .filter((x): x is { p: Part; price: number } => x.price != null)
   const best = (c: Category, cap: number, score: (p: Part) => number) => {
@@ -444,8 +450,10 @@ export function autoBuild(budget: number, use: UseDef, data: HwData): Build {
 
   const gpuScore = (p: Part) => (use.prefer === 'vram' ? Number(p.specs.vram_gb) * 10 + p.perf.index / 10 : p.perf.index)
   const cpuScore = (p: Part) => (use.prefer === 'multi' ? (p.perf.multi ?? p.perf.index) : p.perf.index)
-  const gpu = best('gpu', budget * use.weights.gpu, gpuScore)
-  const cpu = best('cpu', budget * use.weights.cpu, cpuScore)
+  // 내장 그래픽을 골랐으면 그래픽카드를 비우고, CPU 는 내장 그래픽이 있는 것만 본다.
+  const gpu = opts.noGpu ? undefined : best('gpu', budget * use.weights.gpu, gpuScore)
+  const cpuScoreFor = (p: Part) => (opts.noGpu && !p.specs.igpu ? -1 : cpuScore(p))
+  const cpu = best('cpu', budget * use.weights.cpu, cpuScoreFor)
   // 보드는 소켓이 맞는 것 중 경고(BIOS·전원부)까지 없는 가장 싼 것. 그런 게 없으면 소켓만 맞는 가장 싼 것.
   const clean = (p: Part) =>
     !!cpu && !checkBuild({ cpu: cpu.id, mainboard: p.id }, parts).some((c) => c.level !== 'ok')

@@ -25,6 +25,8 @@ import {
 import { onLinkClick } from '../lib/router'
 import { absUrl, useSeo } from '../lib/seo'
 import { paths, TAB_SEO } from '../lib/urls'
+import { allowedBy, buildFacets, optionStates, type Picked } from '../lib/hwFacets'
+import { FacetPanel } from './HardwareFacets'
 import { HardwareParts } from './HardwareParts'
 import { HardwarePrices } from './HardwarePrices'
 import { ErrorState, Loader } from './ui'
@@ -113,11 +115,22 @@ function Builder({ data }: { data: HwData }) {
   const use = data.uses.find((u) => u.key === useKey) ?? data.uses[0]
   const [build, setBuild] = useState<Build>(() => autoBuild(budget, use, data))
   const [saved, setSaved] = useState<Saved[]>(loadSaved)
-  // 용도·예산을 바꾸면 추천을 다시 짠다. 손으로 고친 부품은 그 뒤에 다시 고친다.
-  const choose = (nextUse: string, nextBudget: number) => {
+  // 왼쪽 조건 필터 — 체크한 조건 안에서만 조합을 짠다(hwFacets.ts 머리말).
+  const facets = useMemo(() => buildFacets(data), [data])
+  const [picked, setPicked] = useState<Picked>({})
+  const states = useMemo(() => optionStates(facets, picked, data), [facets, picked, data])
+  // 용도·예산·조건을 바꾸면 추천을 다시 짠다. 손으로 고친 부품은 그 뒤에 다시 고친다.
+  const replan = (nextUse: string, nextBudget: number, nextPicked: Picked) => {
     setUseKey(nextUse)
     setBudget(nextBudget)
-    setBuild(autoBuild(nextBudget, data.uses.find((u) => u.key === nextUse) ?? data.uses[0], data))
+    setPicked(nextPicked)
+    const { allow, noGpu } = allowedBy(facets, nextPicked, data)
+    setBuild(autoBuild(nextBudget, data.uses.find((u) => u.key === nextUse) ?? data.uses[0], data, { allow, noGpu }))
+  }
+  const choose = (nextUse: string, nextBudget: number) => replan(nextUse, nextBudget, picked)
+  const toggle = (facet: string, value: string) => {
+    const cur = picked[facet] ?? []
+    replan(useKey, budget, { ...picked, [facet]: cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value] })
   }
 
   const byId = useMemo(() => new Map(data.parts.map((p) => [p.id, p])), [data.parts])
@@ -127,6 +140,10 @@ function Builder({ data }: { data: HwData }) {
   const cpu = build.cpu ? byId.get(build.cpu) : undefined
   const ram = build.ram ? byId.get(build.ram) : undefined
   const errors = checks.filter((c) => c.level === 'error').length
+  // 조건에 맞는 부품이 없어 비운 칸 — 조건끼리 부딪쳤거나 너무 좁게 골랐다
+  const { noGpu } = allowedBy(facets, picked, data)
+  const REQUIRED: Category[] = ['cpu', 'mainboard', 'ram', 'ssd', 'psu', 'cooler', 'case', ...(noGpu ? [] : (['gpu'] as Category[]))]
+  const empty = REQUIRED.filter((c) => !build[c]).map((c) => data.categories.find((d) => d.key === c)?.name ?? c)
 
   const save = () => {
     const name = `${use.name} · ${won(total)}`
@@ -136,7 +153,7 @@ function Builder({ data }: { data: HwData }) {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4 flex flex-col gap-4">
+    <div className="max-w-[1600px] mx-auto p-4 flex flex-col gap-4">
       <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <h1 className="text-lg font-bold text-(--color-text)">PC 조립 · 성능 예측</h1>
         <span className="text-xs text-(--color-muted)">
@@ -187,7 +204,8 @@ function Builder({ data }: { data: HwData }) {
         </div>
       </section>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] items-start">
+        <FacetPanel facets={facets} picked={picked} states={states} onToggle={toggle} onReset={() => replan(useKey, budget, {})} />
         <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-3 min-w-0">
           <div className="flex items-baseline gap-2">
             <h2 className="text-base font-bold">부품 조합</h2>
@@ -199,6 +217,11 @@ function Builder({ data }: { data: HwData }) {
             {total > budget ? `예산보다 ${won(total - budget)} 많다` : `예산 안 · ${won(budget - total)} 남음`}
             {missing.length > 0 && ` · 가격 모름 ${missing.length}개 제외`}
           </div>
+          {empty.length > 0 && (
+            <div role="alert" className="rounded-md border border-(--color-red-400) bg-(--color-red-400)/8 px-3 py-2 text-sm text-(--color-red-400)">
+              <b>{empty.join(' · ')} 을(를) 못 골랐다</b> — 왼쪽에서 고른 조건에 맞는 부품이 없다. 빨갛게 표시된 조건을 풀면 다시 짠다.
+            </div>
+          )}
           {errors > 0 && (
             <div role="alert" className="rounded-md border border-(--color-red-400) bg-(--color-red-400)/8 px-3 py-2 text-sm text-(--color-red-400)">
               <b>호환 안 됨 {errors}건</b> — 이대로는 조립이 안 된다. 빨간 칸을 바꾸면 풀린다.
@@ -217,7 +240,7 @@ function Builder({ data }: { data: HwData }) {
             ))}
           </ul>
           <div className="flex flex-wrap gap-2 items-center">
-            <button onClick={save} className="px-3 py-1.5 text-sm rounded-md bg-(--color-accent) text-(--color-on-accent) font-semibold disabled:opacity-50" disabled={errors > 0}>
+            <button onClick={save} className="px-3 py-1.5 text-sm rounded-md bg-(--color-accent) text-(--color-on-accent) font-semibold disabled:opacity-50" disabled={errors > 0 || empty.length > 0}>
               이 조합 저장
             </button>
             <span className="text-[11px] text-(--color-muted)">이 브라우저에만 저장된다</span>
@@ -250,17 +273,19 @@ function Builder({ data }: { data: HwData }) {
             </div>
           )}
         </section>
+      </div>
 
-        <section className="flex flex-col gap-4 min-w-0">
+      <div className="flex flex-col gap-4 min-w-0">
           {errors > 0 && (
             <div className="rounded-md border border-(--color-red-400) bg-(--color-panel) px-3 py-2 text-sm text-(--color-red-400)">
               지금 조합은 조립이 안 된다 — 아래 숫자는 호환 문제를 고쳤다고 치고 계산한 값이다.
             </div>
           )}
-          {gpu ? <GameSim key={use.res} data={data} gpu={gpu} cpu={cpu ?? null} defaultRes={use.res} /> : <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 text-sm text-(--color-muted)">그래픽카드를 고르면 게임 성능이 나온다.</div>}
-          {gpu && <AiSim data={data} gpu={gpu} ram={ram} />}
-          {cpu && <DevSim data={data} cpu={cpu} ram={ram} />}
-        </section>
+          {gpu ? <GameSim key={use.res} data={data} gpu={gpu} cpu={cpu ?? null} defaultRes={use.res} /> : <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 text-sm text-(--color-muted)">그래픽카드가 없다(내장 그래픽) — 게임·AI 예측은 그래픽카드를 고르면 나온다.</div>}
+          <div className="grid gap-4 xl:grid-cols-2 items-start">
+            {gpu && <AiSim data={data} gpu={gpu} ram={ram} />}
+            {cpu && <DevSim data={data} cpu={cpu} ram={ram} />}
+          </div>
       </div>
     </div>
   )

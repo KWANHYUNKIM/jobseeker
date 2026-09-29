@@ -746,7 +746,9 @@
     "max_power_w": 230,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 128
+    "l3_mb": 128,
+    "series": "라이젠 9000 시리즈",
+    "family": "라이젠 9"
    },
    "perf": {
     "index": 99,
@@ -790,7 +792,9 @@
     "max_power_w": 230,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 64
+    "l3_mb": 64,
+    "series": "라이젠 9000 시리즈",
+    "family": "라이젠 9"
    },
    "perf": {
     "index": 84,
@@ -835,7 +839,9 @@
     "max_power_w": 162,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 64
+    "l3_mb": 64,
+    "series": "라이젠 9000 시리즈",
+    "family": "라이젠 9"
    },
    "perf": {
     "index": 82,
@@ -880,7 +886,9 @@
     "max_power_w": 162,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 96
+    "l3_mb": 96,
+    "series": "라이젠 9000 시리즈",
+    "family": "라이젠 7"
    },
    "perf": {
     "index": 100,
@@ -924,7 +932,9 @@
     "max_power_w": 88,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 32
+    "l3_mb": 32,
+    "series": "라이젠 9000 시리즈",
+    "family": "라이젠 7"
    },
    "perf": {
     "index": 81,
@@ -969,7 +979,9 @@
     "max_power_w": 162,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 96
+    "l3_mb": 96,
+    "series": "라이젠 7000 시리즈",
+    "family": "라이젠 7"
    },
    "perf": {
     "index": 89,
@@ -1013,7 +1025,9 @@
     "max_power_w": 88,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 32
+    "l3_mb": 32,
+    "series": "라이젠 9000 시리즈",
+    "family": "라이젠 5"
    },
    "perf": {
     "index": 78,
@@ -1058,7 +1072,9 @@
     "max_power_w": 88,
     "mem": "DDR5",
     "igpu": false,
-    "l3_mb": 32
+    "l3_mb": 32,
+    "series": "라이젠 7000 시리즈",
+    "family": "라이젠 5"
    },
    "perf": {
     "index": 73,
@@ -1103,7 +1119,9 @@
     "max_power_w": 142,
     "mem": "DDR4",
     "igpu": false,
-    "l3_mb": 96
+    "l3_mb": 96,
+    "series": "라이젠 5000 시리즈",
+    "family": "라이젠 7"
    },
    "perf": {
     "index": 72,
@@ -1147,7 +1165,9 @@
     "max_power_w": 88,
     "mem": "DDR4",
     "igpu": false,
-    "l3_mb": 32
+    "l3_mb": 32,
+    "series": "라이젠 5000 시리즈",
+    "family": "라이젠 5"
    },
    "perf": {
     "index": 60,
@@ -1197,7 +1217,9 @@
     "max_power_w": 250,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 36
+    "l3_mb": 36,
+    "series": "코어 울트라 시리즈2",
+    "family": "코어 울트라9"
    },
    "perf": {
     "index": 80,
@@ -1241,7 +1263,9 @@
     "max_power_w": 250,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 30
+    "l3_mb": 30,
+    "series": "코어 울트라 시리즈2",
+    "family": "코어 울트라7"
    },
    "perf": {
     "index": 79,
@@ -1285,7 +1309,9 @@
     "max_power_w": 159,
     "mem": "DDR5",
     "igpu": true,
-    "l3_mb": 24
+    "l3_mb": 24,
+    "series": "코어 울트라 시리즈2",
+    "family": "코어 울트라5"
    },
    "perf": {
     "index": 74,
@@ -1329,7 +1355,9 @@
     "max_power_w": 253,
     "mem": "DDR4/DDR5",
     "igpu": true,
-    "l3_mb": 33
+    "l3_mb": 33,
+    "series": "코어 14세대",
+    "family": "코어 i7"
    },
    "perf": {
     "index": 82,
@@ -1373,7 +1401,9 @@
     "max_power_w": 148,
     "mem": "DDR4/DDR5",
     "igpu": false,
-    "l3_mb": 20
+    "l3_mb": 20,
+    "series": "코어 14세대",
+    "family": "코어 i5"
    },
    "perf": {
     "index": 70,
