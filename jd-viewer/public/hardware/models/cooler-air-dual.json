@@ -240,6 +240,99 @@
    "confidence": "high",
    "checked_at": "2026-09-29",
    "note": "제조사가 감당 전력(TDP)을 적지 않는다. 블랙 · 화이트 공통. 팬 두 종류(TL-D14CB · TL-C12B)."
+  },
+  {
+   "id": "deepcool-ag620-g2",
+   "name": "DEEPCOOL AG620 G2",
+   "brand": "DEEPCOOL",
+   "code": "AG620 G2",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "AG620G2"
+    ],
+    "not": [
+     "ARGB"
+    ]
+   },
+   "specs": {
+    "height_mm": 159.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 23.08,
+    "sockets": null,
+    "heatpipes": "6개"
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AG620-G2-Superior-Performance-6-Heatpipe-Dual-Tower-CPU-Cooler/2025/22513.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "크기 129×136×159 mm(L×W×H). 이 제품 페이지는 감당 전력(TDP)을 적지 않는다. 블랙 · 화이트 공통."
+  },
+  {
+   "id": "deepcool-ag620-g2-argb",
+   "name": "DEEPCOOL AG620 G2 ARGB",
+   "brand": "DEEPCOOL",
+   "code": "AG620 G2 ARGB",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "AG620G2",
+     "ARGB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 159.0,
+    "fans": "120mm 2개(ARGB)",
+    "tdp_w": null,
+    "noise_dba": 28.1,
+    "sockets": null,
+    "heatpipes": "6개"
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AG620-G2-ARGB-Superior-Performance-6-Heatpipe-Dual-Tower-CPU-Cooler/2026/22801.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "크기 129×136×159 mm(L×W×H). 이 제품 페이지는 감당 전력(TDP)을 적지 않는다. 블랙 · 화이트 공통."
+  },
+  {
+   "id": "deepcool-ak620-digital-se",
+   "name": "DEEPCOOL AK620 DIGITAL SE",
+   "brand": "DEEPCOOL",
+   "code": "AK620 DIGITAL SE",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "AK620DIGITALSE"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 161.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 28.0,
+    "sockets": null,
+    "heatpipes": null
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AK620-DIGITAL-SE-Performance-CPU-Cooler-With-A-Status-Display/2025/21605.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "크기 129×138×161 mm(L×W×H). 이 제품 페이지는 감당 전력(TDP)을 적지 않는다. 상태 표시 화면 달린 판. 블랙 · 화이트 공통."
   }
  ]
 }

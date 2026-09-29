@@ -201,6 +201,69 @@
    "confidence": "high",
    "checked_at": "2026-09-29",
    "note": "92mm 팬 소형(히트파이프 5개) — 높이 125mm."
+  },
+  {
+   "id": "deepcool-ag400-g2",
+   "name": "DEEPCOOL AG400 G2",
+   "brand": "DEEPCOOL",
+   "code": "AG400 G2",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "AG400G2"
+    ],
+    "not": [
+     "ARGB",
+     "PLUS"
+    ]
+   },
+   "specs": {
+    "height_mm": 152.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 29.22,
+    "sockets": null,
+    "heatpipes": "4개"
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AG400-G2-Superior-Performance-4-Heatpipe-Single-Tower-CPU-Cooler/2025/22515.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "크기 125×92×152 mm(L×W×H). 이 제품 페이지는 감당 전력(TDP)을 적지 않는다. 블랙 · 화이트 공통."
+  },
+  {
+   "id": "deepcool-ak700-vc",
+   "name": "DEEPCOOL AK700 VC",
+   "brand": "DEEPCOOL",
+   "code": "AK700 VC",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "AK700VC"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 157.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 36.0,
+    "sockets": null,
+    "heatpipes": null
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AK700-VC-Vapor-Chamber-2.0-Air-Cooler-with-CoreAlign-Winding/2026/23083.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "크기 126×98×157 mm(L×W×H). 이 제품 페이지는 감당 전력(TDP)을 적지 않는다. 베이퍼 챔버 방식. 블랙 · 화이트 공통. 소음은 최대 회전 기준."
   }
  ]
 }

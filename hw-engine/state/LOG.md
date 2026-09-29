@@ -2,6 +2,11 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: DeepCool 공랭 5종(사다리 6)
+
+- 싱글 AG400 G2 · AK700 VC, 듀얼 AG620 G2 · AG620 G2 ARGB · AK620 DIGITAL SE 를 models/cooler-air-single · dual 에 더했다(공식 제품 페이지의 크기 · 소음).
+  주소는 DeepCool 쿨링 목록 페이지에서 찾았다. 이 제품들 페이지는 감당 전력(TDP)을 적지 않아 null — LE 수랭과 달리 G2 공랭은 표기가 없다.
+
 ## 2026-09-29 — 사이클: RTX 5080 파트너 16종(사다리 6, 조사 에이전트)
 
 - models/gpu-rtx-5080.json 새로 — ASUS Prime OC · ROG Astral OC · Palit GamingPro · Gainward Phoenix · GALAX 1-Click OC 3X · EX Gamer · HOF Black · HOF ·
