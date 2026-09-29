@@ -1,0 +1,759 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5050",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-dual-rtx5050-o8g",
+   "name": "ASUS DUAL RTX 5050 OC",
+   "brand": "ASUS",
+   "code": "DUAL-RTX5050-O8G",
+   "match": {
+    "must": [
+     "ASUS",
+     "DUAL",
+     "5050",
+     "OC"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2647,
+    "oc_mhz": 2677,
+    "length_mm": 203,
+    "width_mm": 120.2,
+    "thickness_mm": 40,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": null,
+    "bundle": [
+     "빠른 설치 설명서",
+     "감사 카드"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5050-o8g/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(Axial-tech 팬 2개·듀얼 BIOS·0dB·통풍 백플레이트)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5050-o8g/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "조명은 공식 페이지에 이 제품 얘기가 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/b71547c2-cda6-4c22-8522-725cb4cb1daa/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5050-o8g/"
+   }
+  },
+  {
+   "id": "asus-dual-rtx5050-8g",
+   "name": "ASUS DUAL RTX 5050",
+   "brand": "ASUS",
+   "code": "DUAL-RTX5050-8G",
+   "match": {
+    "must": [
+     "ASUS",
+     "DUAL",
+     "5050"
+    ],
+    "not": [
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": 2602,
+    "length_mm": 203,
+    "width_mm": 120.2,
+    "thickness_mm": 40,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": null,
+    "bundle": [
+     "빠른 설치 설명서",
+     "감사 카드"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5050-8g/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(Axial-tech 팬 2개·듀얼 BIOS·0dB·통풍 백플레이트)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5050-8g/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "조명은 공식 페이지에 이 제품 얘기가 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/493a6f05-4403-4ad5-9758-350ffbcc5b11/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5050-8g/"
+   }
+  },
+  {
+   "id": "palit-stormx-rtx5050",
+   "name": "PALIT RTX 5050 StormX",
+   "brand": "PALIT",
+   "code": "NE65050019P1-GB2070F",
+   "match": {
+    "must": [
+     "PALIT",
+     "5050",
+     "Storm X|StormX"
+    ],
+    "not": [
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 169.9,
+    "width_mm": 118,
+    "thickness_mm": 39.8,
+    "slots": 2,
+    "fans": null,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "Palit 공식 스펙",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5695&lang=en&tab=sp"
+    },
+    {
+     "title": "Palit 제품 소개(17cm 소형·0-dB)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5695&lang=en"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "팬 개수·백플레이트·조명은 공식 페이지에 적혀 있지 않아 비워 둔다. 이름이 같은 StormX OC(id=5705)는 따로 있다.",
+   "image": {
+    "url": "https://www.palit.com/product/vga/picture/p05695/p05695_propng_16276866185ac51a3.png",
+    "credit": "Palit",
+    "page": "https://www.palit.com/palit/vgapro.php?id=5695&lang=en"
+   }
+  },
+  {
+   "id": "palit-dual-rtx5050",
+   "name": "PALIT RTX 5050 Dual",
+   "brand": "PALIT",
+   "code": "NE65050019P1-GB2070D",
+   "match": {
+    "must": [
+     "PALIT",
+     "5050",
+     "DUAL"
+    ],
+    "not": [
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 262.1,
+    "width_mm": 126.3,
+    "thickness_mm": 40.1,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "Palit 공식 스펙",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5685&lang=en&tab=sp"
+    },
+    {
+     "title": "Palit 제품 소개(95mm 팬 2개·백플레이트·RGB)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5685&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.palit.com/product/vga/picture/p05685/p05685_propng_1211685ba1cd3b414.png",
+    "credit": "Palit",
+    "page": "https://www.palit.com/palit/vgapro.php?id=5685&lang=en"
+   }
+  },
+  {
+   "id": "gainward-ghost-rtx5050",
+   "name": "GAINWARD RTX 5050 Ghost",
+   "brand": "GAINWARD",
+   "code": "NE65050019P1-GB2070B",
+   "match": {
+    "must": [
+     "GAINWARD",
+     "5050",
+     "고스트|Ghost"
+    ],
+    "not": [
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 262.1,
+    "width_mm": 126.3,
+    "thickness_mm": 40.1,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": null,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB(측면)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "Gainward 공식 제품 페이지(스펙·95mm 팬 2개·백플레이트·ZERO RPM)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1258&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "권장 파워는 공식 페이지에 없어 비워 둔다. 같은 보드의 Ghost OC(id=1259)는 따로 있다.",
+   "image": {
+    "url": "https://www.gainward.com/main/product/vga/pro/p01258/p01258_pic2_1379684be753219eb.png",
+    "credit": "Gainward",
+    "page": "https://www.gainward.com/main/vgapro.php?id=1258&lang=en"
+   }
+  },
+  {
+   "id": "inno3d-twin-x2-rtx5050",
+   "name": "INNO3D RTX 5050 TWIN X2",
+   "brand": "INNO3D",
+   "code": "N50502-08D6-174071N",
+   "match": {
+    "must": [
+     "INNO3D",
+     "5050",
+     "TWIN X2"
+    ],
+    "not": [
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 225,
+    "width_mm": 116,
+    "thickness_mm": 41,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "INNO3D 공식 제품 페이지(스펙·팬 2개·백플레이트)",
+     "url": "https://www.inno3d.com/product/inno3d-geforce-rtx-5050-twin-x2"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 표의 Height 116mm·Width 41mm 를 각각 폭·두께로 옮겼다. 0dB 팬 정지와 조명은 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://www.inno3d.com/sites/default/files/2025-06/5050_TWIN_X2_set.png",
+    "credit": "INNO3D",
+    "page": "https://www.inno3d.com/product/inno3d-geforce-rtx-5050-twin-x2"
+   }
+  },
+  {
+   "id": "galax-black-oc-rtx5050",
+   "name": "GALAX RTX 5050 BLACK OC",
+   "brand": "GALAX",
+   "code": "55NSL8MHDCHD",
+   "match": {
+    "must": [
+     "갤럭시|GALAX|GALAZ",
+     "5050",
+     "BLACK"
+    ],
+    "not": [
+     "V2",
+     "WHITE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2587,
+    "oc_mhz": 2602,
+    "length_mm": 222,
+    "width_mm": 114,
+    "thickness_mm": 39.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x2",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "LED(카드의 스위치로 끔)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 — RTX 5050 BLACK OC",
+     "url": "https://galax.com/en/product/geforce-rtx-5050-1-click-oc/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "국내명 BLACK OC 를 글로벌명 1-Click OC 로 짝지은 것은 추정이다(국내 사이트 galax.kr 이 열리지 않는다). 치수는 브래킷을 뺀 값이고, 포함하면 234×129.5×40.6mm다. OC 클럭은 1-Click OC 값이다. 다나와 이름의 DUAL HDMI 는 공식 출력(HDMI 2개)과 맞는다. 다나와 이름 일부가 GALAZ 로 잘못 적혀 있어 그 표기도 받는다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/06/951A5802-gx.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5050-1-click-oc/"
+   }
+  },
+  {
+   "id": "galax-black-oc-v2-rtx5050",
+   "name": "GALAX RTX 5050 BLACK OC V2",
+   "brand": "GALAX",
+   "code": "55NSL8MHDXRE",
+   "match": {
+    "must": [
+     "갤럭시|GALAX|GALAZ",
+     "5050",
+     "BLACK",
+     "V2"
+    ],
+    "not": [
+     "WHITE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2587,
+    "oc_mhz": 2602,
+    "length_mm": 222,
+    "width_mm": 114,
+    "thickness_mm": 39.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x2",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "팬 LED(카드의 스위치로 끔)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 — RTX 5050 BLACK OC V2",
+     "url": "https://galax.com/en/product/geforce-rtx-5050-1-click-oc-2x-v2/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "국내명 BLACK OC V2 를 글로벌명 1-Click OC V2 로 짝지은 것은 추정이다. 치수는 브래킷을 뺀 값이고, 포함하면 234×129.5×40.6mm다. OC 클럭은 1-Click OC 값이다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/09/UKR_8814-gx-1024x683.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5050-1-click-oc-2x-v2/"
+   }
+  },
+  {
+   "id": "galax-white-oc-rtx5050",
+   "name": "GALAX RTX 5050 WHITE OC",
+   "brand": "GALAX",
+   "code": "55NSL8MHCZBS",
+   "match": {
+    "must": [
+     "갤럭시|GALAX|GALAZ",
+     "5050",
+     "WHITE"
+    ],
+    "not": [
+     "V2",
+     "BLACK"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2587,
+    "oc_mhz": 2602,
+    "length_mm": 222,
+    "width_mm": 114,
+    "thickness_mm": 39.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x2",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "LED(카드의 스위치로 끔)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 — RTX 5050 WHITE OC",
+     "url": "https://galax.com/en/product/geforce-rtx-5050-1-click-oc-white-2/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "국내명 WHITE OC 를 글로벌명 1-Click OC White 로 짝지은 것은 추정이다. 치수는 브래킷을 뺀 값이고, 포함하면 234×129.5×40.6mm다. OC 클럭은 1-Click OC 값이다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/07/951A5824-gx.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5050-1-click-oc-white-2/"
+   }
+  },
+  {
+   "id": "colorful-battle-ax-duo-rtx5050",
+   "name": "COLORFUL RTX 5050 Battle AX DUO",
+   "brand": "COLORFUL",
+   "code": "Colorful GeForce RTX 5050 Battle AX DUO 8GB-V",
+   "match": {
+    "must": [
+     "COLORFUL",
+     "5050",
+     "Battle AX|BattleAX",
+     "DUO"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 231,
+    "width_mm": 120,
+    "thickness_mm": 48.9,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 500,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB(측면)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙·금속 백플레이트·측면 RGB)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=1ec8f067-a96a-41e8-b74f-59df9de2f0f3"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "공식 이름은 'Battle AX DUO 8GB-V(NB DUO 8GB-V)'다. en.colorful.cn 은 colorfulgroup.com 으로 넘겨 준다. 스펙 값은 이 페이지가 불러오는 공식 스펙 표에서 읽었다. 팬 개수는 스펙 표에 'FAN' 만 있어 공식 모델명의 DUO 로 적었다. 슬롯 수는 적혀 있지 않다. 제품 이미지는 직접 요청하면 403 이라 싣지 않는다."
+  },
+  {
+   "id": "colorful-gaming-duo-rtx5050",
+   "name": "COLORFUL RTX 5050 GAMING DUO",
+   "brand": "COLORFUL",
+   "code": "Colorful GeForce RTX 5050 Gaming DUO 8GB-V",
+   "match": {
+    "must": [
+     "COLORFUL",
+     "5050",
+     "GAMING",
+     "DUO"
+    ],
+    "not": [
+     "iGame",
+     "ULTRA"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 200,
+    "width_mm": 120,
+    "thickness_mm": 40,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 500,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=fe868ae4-48ca-401c-b825-5b716574ffa8"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "백플레이트·조명은 공식 페이지에 없어 비워 둔다. DUO 가 없는 'Gaming 8GB-V' 는 다른 제품이다. en.colorful.cn 은 colorfulgroup.com 으로 넘겨 준다. 스펙 값은 이 페이지가 불러오는 공식 스펙 표에서 읽었다. 팬 개수는 스펙 표에 'FAN' 만 있어 공식 모델명의 DUO 로 적었다. 슬롯 수는 적혀 있지 않다. 제품 이미지는 직접 요청하면 403 이라 싣지 않는다."
+  },
+  {
+   "id": "colorful-igame-ultra-w-duo-oc-rtx5050",
+   "name": "COLORFUL iGame RTX 5050 Ultra W DUO OC",
+   "brand": "COLORFUL",
+   "code": "iGame GeForce RTX 5050 Ultra W DUO OC 8GB-V",
+   "match": {
+    "must": [
+     "COLORFUL",
+     "iGame",
+     "5050",
+     "ULTRA",
+     "DUO"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": 2647,
+    "length_mm": 231,
+    "width_mm": 120,
+    "thickness_mm": 49,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 500,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙·원키 OC·백플레이트·RGB)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=3bd62a5b-57f6-4a0b-b7ae-9c768397d288"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "다나와 이름 'ULTRA DUO OC White' 를 공식 'Ultra W DUO OC' 로 짝지었다. 부스트 2572MHz 는 기본값이고 2647MHz 는 원키 OC 값이다. en.colorful.cn 은 colorfulgroup.com 으로 넘겨 준다. 스펙 값은 이 페이지가 불러오는 공식 스펙 표에서 읽었다. 팬 개수는 스펙 표에 'FAN' 만 있어 공식 모델명의 DUO 로 적었다. 슬롯 수는 적혀 있지 않다. 제품 이미지는 직접 요청하면 403 이라 싣지 않는다."
+  },
+  {
+   "id": "pny-rtx5050-dual-fan",
+   "name": "PNY RTX 5050 Dual Fan",
+   "brand": "PNY",
+   "code": "VCG50508DFXPB1",
+   "match": {
+    "must": [
+     "PNY",
+     "5050",
+     "Dual Fan"
+    ],
+    "not": [
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 200,
+    "width_mm": 120,
+    "thickness_mm": 39.8,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "PNY 공식 제품 페이지",
+     "url": "https://www.pny.com/geforce-rtx-5050-models"
+    },
+    {
+     "title": "PNY 공식 브로슈어(스펙·치수)",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5050-8gb-dual-fan-brochure.pdf"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "0dB 팬 정지·백플레이트·조명은 공식 자료에 적혀 있지 않아 비워 둔다. 이미지는 pny.com 제품 페이지가 쓰는 PNY 이미지 CDN 에 있다.",
+   "image": {
+    "url": "https://d2vfia6k6wrouk.cloudfront.net/productimages/ff12ae0e-7cc3-41e0-86a2-b30d00981d97/images/1-pny-rtx-5050-std-dual-fan-ra.png",
+    "credit": "PNY",
+    "page": "https://www.pny.com/geforce-rtx-5050-models"
+   }
+  },
+  {
+   "id": "msi-ventus-2x-oc-rtx5050",
+   "name": "MSI RTX 5050 VENTUS 2X OC",
+   "brand": "MSI",
+   "code": "G5050-8V2C",
+   "match": {
+    "must": [
+     "MSI",
+     "5050",
+     "벤투스|VENTUS",
+     "OC"
+    ],
+    "not": [
+     "WHITE",
+     "화이트"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": 2617,
+    "length_mm": 197,
+    "width_mm": 120,
+    "thickness_mm": 41,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "MSI 공식 데이터시트",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5050-8G-VENTUS-2X-OC.pdf"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "msi.com 제품 페이지는 403 이라 공식 데이터시트만 썼다. OC 클럭은 MSI Center Extreme Performance 값이다. 슬롯 수·조명은 적혀 있지 않다."
+  },
+  {
+   "id": "msi-shadow-2x-oc-rtx5050",
+   "name": "MSI RTX 5050 SHADOW 2X OC",
+   "brand": "MSI",
+   "code": "G5050-8S2C",
+   "match": {
+    "must": [
+     "MSI",
+     "5050",
+     "쉐도우|섀도우|SHADOW"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": 2617,
+    "length_mm": 197,
+    "width_mm": 120,
+    "thickness_mm": 40,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "MSI 공식 데이터시트",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5050-8G-SHADOW-2X-OC.pdf"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "msi.com 제품 페이지는 403 이라 공식 데이터시트만 썼다. OC 클럭은 MSI Center Extreme Performance 값이다. 슬롯 수·조명은 적혀 있지 않다."
+  },
+  {
+   "id": "zotac-gaming-rtx5050-twin-edge-oc-white",
+   "name": "ZOTAC GAMING RTX 5050 Twin Edge OC White",
+   "brand": "ZOTAC",
+   "code": "ZT-B50500Q-10M",
+   "match": {
+    "must": [
+     "ZOTAC",
+     "5050",
+     "Twin Edge",
+     "OC",
+     "White|화이트"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": null,
+    "length_mm": 220.5,
+    "width_mm": 120.25,
+    "thickness_mm": 41.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": [
+     "사용자 설명서"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ZOTAC 공식 브로슈어(스펙·90mm 팬 2개·금속 백플레이트)",
+     "url": "https://www.zotac.com/download/mediadrivers/External/GraphicsCard/5050/Brochure/ZT-B50500Q-10M-brochure.pdf"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "zotac.com 제품 페이지는 차단(468)이라 공식 브로슈어 PDF 만 썼다. 0dB 팬 정지·조명은 적혀 있지 않다."
+  }
+ ]
+}

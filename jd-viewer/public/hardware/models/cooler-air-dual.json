@@ -1,0 +1,245 @@
+{
+ "schema": 1,
+ "part": "cooler-air-dual",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "thermalright-peerless-assassin-120-se",
+   "name": "Thermalright Peerless Assassin 120 SE",
+   "brand": "Thermalright",
+   "code": "Peerless Assassin 120 SE",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "PEERLESSASSASSIN120",
+     "SE"
+    ],
+    "not": [
+     "ARGB",
+     "DIGITAL"
+    ]
+   },
+   "specs": {
+    "height_mm": 155.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 25.6,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 6 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/peerless-assassin-120-se/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "제조사가 감당 전력(TDP)을 적지 않는다. 팬 개수는 공식 스펙에 적혀 있지 않다(팬 사양 한 종류만 나온다)."
+  },
+  {
+   "id": "thermalright-peerless-assassin-120-se-argb",
+   "name": "Thermalright Peerless Assassin 120 SE ARGB",
+   "brand": "Thermalright",
+   "code": "Peerless Assassin 120 SE ARGB",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "PEERLESSASSASSIN120",
+     "SE",
+     "ARGB"
+    ],
+    "not": [
+     "DIGITAL"
+    ]
+   },
+   "specs": {
+    "height_mm": 155.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 25.6,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 6 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/peerless-assassin-120-se-argb/"
+    },
+    {
+     "title": "Thermalright 공식 스펙(색·조명 변형)",
+     "url": "https://www.thermalright.com/product/peerless-assassin-120-se-white-argb/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "제조사가 감당 전력(TDP)을 적지 않는다. 블랙 · 화이트 공통. 팬 개수는 공식 스펙에 적혀 있지 않다."
+  },
+  {
+   "id": "thermalright-peerless-assassin-120-digital-argb",
+   "name": "Thermalright Peerless Assassin 120 Digital ARGB",
+   "brand": "Thermalright",
+   "code": "Peerless Assassin 120 Digital ARGB",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "PEERLESSASSASSIN120",
+     "DIGITAL"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 162.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 25.6,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 6 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/peerless-assassin-120-digital-argb/"
+    },
+    {
+     "title": "Thermalright 공식 스펙(색·조명 변형)",
+     "url": "https://www.thermalright.com/product/peerless-assassin-120-digital-argb-white/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "제조사가 감당 전력(TDP)을 적지 않는다. 온도 표시 화면 달린 판(높이 162mm). 블랙 · 화이트 공통."
+  },
+  {
+   "id": "thermalright-phantom-spirit-120-se",
+   "name": "Thermalright Phantom Spirit 120 SE",
+   "brand": "Thermalright",
+   "code": "Phantom Spirit 120 SE",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "PHANTOMSPIRIT120",
+     "SE"
+    ],
+    "not": [
+     "EVO"
+    ]
+   },
+   "specs": {
+    "height_mm": 154.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 25.6,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 7 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/phantom-spirit-120-se/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "제조사가 감당 전력(TDP)을 적지 않는다. 히트파이프 7개. 팬 개수는 공식 스펙에 적혀 있지 않다."
+  },
+  {
+   "id": "thermalright-phantom-spirit-120-evo",
+   "name": "Thermalright Phantom Spirit 120 EVO",
+   "brand": "Thermalright",
+   "code": "Phantom Spirit 120 EVO",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "PHANTOMSPIRIT120",
+     "EVO"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 157.0,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 27.0,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 7 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/phantom-spirit-120-evo/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "제조사가 감당 전력(TDP)을 적지 않는다. 히트파이프 7개 · TL-K12 팬. 팬 개수는 공식 스펙에 적혀 있지 않다."
+  },
+  {
+   "id": "thermalright-peerless-assassin-140-se",
+   "name": "Thermalright Peerless Assassin 140 SE",
+   "brand": "Thermalright",
+   "code": "Peerless Assassin 140 SE",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "PEERLESSASSASSIN140",
+     "SE"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 158.0,
+    "fans": "140mm 1 + 120mm 1",
+    "tdp_w": null,
+    "noise_dba": 29.5,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 6 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/peerless-assassin-140-se/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "제조사가 감당 전력(TDP)을 적지 않는다. 팬 두 종류(TL-D14CB · TL-C12C-X28)."
+  },
+  {
+   "id": "thermalright-peerless-assassin-140",
+   "name": "Thermalright Peerless Assassin 140",
+   "brand": "Thermalright",
+   "code": "Peerless Assassin 140",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "PEERLESSASSASSIN140"
+    ],
+    "not": [
+     "SE"
+    ]
+   },
+   "specs": {
+    "height_mm": 158.0,
+    "fans": "140mm 1 + 120mm 1",
+    "tdp_w": null,
+    "noise_dba": 25.6,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 6 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/peerless-assassin-140/"
+    },
+    {
+     "title": "Thermalright 공식 스펙(색·조명 변형)",
+     "url": "https://www.thermalright.com/product/peerless-assassin-140-white/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "제조사가 감당 전력(TDP)을 적지 않는다. 블랙 · 화이트 공통. 팬 두 종류(TL-D14CB · TL-C12B)."
+  }
+ ]
+}

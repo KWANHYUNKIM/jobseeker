@@ -2,6 +2,15 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: 듀얼타워 쿨러 Thermalright 7종 · RTX 5050 파트너 16종(사다리 6)
+
+- models/cooler-air-dual.json 새로 — Peerless Assassin 120 SE(무 ARGB · ARGB · Digital) · 140 · 140 SE · Phantom Spirit 120 SE · EVO. Thermalright 매물 10건 모두 한 모델.
+  팬 개수는 공식 스펙에 없어 null(140 계열만 팬 두 종류가 적혀 있어 '140mm 1 + 120mm 1').
+- models/gpu-rtx-5050.json 새로(조사 에이전트) — ASUS DUAL(OC · 무 OC) · Palit StormX · Dual · Gainward Ghost · INNO3D TWIN X2 · GALAX BLACK OC · V2 · WHITE OC ·
+  COLORFUL 3종 · PNY · MSI VENTUS · SHADOW(공식 데이터시트 PDF) · ZOTAC Twin Edge OC White(공식 브로슈어 PDF). 매물 30 중 21 이 한 모델에만 걸린다.
+  GALAX 국내명 ↔ 글로벌명 · COLORFUL 팬 개수(DUO)는 추정이라 medium. 뺐다: GIGABYTE 3(403) · MANLI 2(보안 검사) · ZOTAC Twin Edge(468) · 이엠텍(사이트 불통).
+  **msi.com · zotac.com 은 막혀도 공식 데이터시트 · 브로슈어 PDF 는 열린다** — 다른 그래픽카드에도 쓴다.
+
 ## 2026-09-29 — 사이클: 싱글타워 쿨러 Thermalright 6종(사다리 6)
 
 - models/cooler-air-single.json 새로 — Assassin X 120 Refined SE(무 ARGB · ARGB · PLUS) · X 120 R Digital · X 90 SE V2 · King 90 V2(공식 스펙).
