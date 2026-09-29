@@ -4096,6 +4096,10 @@
      "url": "https://www.arctic.de/en/Liquid-Freezer-III-240/ACFRE00134A"
     },
     {
+     "title": "DeepCool LE520 공식 사양 — 방열 220W TDP · 라디에이터 282×120×27mm(제조사 표기가 있는 보급형 수랭)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuliquidcoolers/LE520-240mm-Liquid-CPU-Cooler-1851-1700-AM5/2024/16608.shtml"
+    },
+    {
      "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
      "url": "https://www.noctua.at/en/tdp-guide"
     }
@@ -4106,7 +4110,7 @@
    "representative": {
     "name": "ARCTIC Liquid Freezer III 240",
     "url": "https://www.arctic.de/en/Liquid-Freezer-III-240/ACFRE00134A",
-    "note": "공식: 라디에이터 252×120×27mm · LGA1851/1700 접촉 프레임 · AM5. 공식 감당 전력(TDP) 표기가 없어 급 값(250W)은 아직 가정이다."
+    "note": "공식: 라디에이터 252×120×27mm · LGA1851/1700 접촉 프레임 · AM5. 공식 감당 전력(TDP) 표기가 없어 급 값(250W)은 아직 가정이다. 참고: 감당 전력을 공식 표기하는 수랭은 DeepCool LE520(220W)뿐인데, 같은 DeepCool 이 공랭 AK620 을 260W 로 적는다 — 제조사 TDP 로는 수랭과 공랭의 급을 견줄 수 없어 급 값을 이 숫자로 바꾸지 않았다. 실측(같은 시험대에서 잰 소음 기준 감당 전력)이 있어야 가정을 뗀다."
    }
   },
   {
@@ -4145,6 +4149,10 @@
      "url": "https://www.arctic.de/en/Liquid-Freezer-III-360/ACFRE00136A"
     },
     {
+     "title": "DeepCool LE720 공식 사양 — 방열 250W TDP · 라디에이터 402×120×27mm(제조사 표기가 있는 보급형 수랭)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuliquidcoolers/LE720-360mm-Liquid-CPU-Cooler-1851-1700-AM5/2024/16983.shtml"
+    },
+    {
      "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
      "url": "https://www.noctua.at/en/tdp-guide"
     }
@@ -4155,7 +4163,7 @@
    "representative": {
     "name": "ARCTIC Liquid Freezer III 360",
     "url": "https://www.arctic.de/en/Liquid-Freezer-III-360/ACFRE00136A",
-    "note": "공식: LGA1851 제한 없이 지원. 공식 감당 전력(TDP) 표기가 없어 급 값(320W)은 아직 가정이다."
+    "note": "공식: LGA1851 제한 없이 지원. 공식 감당 전력(TDP) 표기가 없어 급 값(320W)은 아직 가정이다. 참고: 감당 전력을 공식 표기하는 수랭은 DeepCool LE720(250W)뿐인데, 같은 DeepCool 이 공랭 AK620 을 260W 로 적는다 — 제조사 TDP 로는 수랭과 공랭의 급을 견줄 수 없어 급 값을 이 숫자로 바꾸지 않았다. 실측(같은 시험대에서 잰 소음 기준 감당 전력)이 있어야 가정을 뗀다."
    }
   },
   {
