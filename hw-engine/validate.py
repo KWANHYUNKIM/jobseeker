@@ -93,6 +93,51 @@ def check_models(ids: set[str], cats: dict[str, str], prices: dict) -> tuple[lis
     return errs, todo
 
 
+def check_guide(ids: set[str]) -> list[str]:
+    """public/hardware/guide.json — 판매 형태(정품·병행…)·유통사·내구성 메모.
+
+    소비자가 무엇을 살지 가르는 말이라 출처 없는 문장을 싣지 않는다.
+    """
+    path = HW / "guide.json"
+    if not path.exists():
+        return []
+    errs: list[str] = []
+    try:
+        g = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as e:
+        return [f"guide.json: JSON 이 깨졌다 {e}"]
+
+    def srcs(where: str, xs) -> None:
+        if not xs:
+            errs.append(f"guide.json {where}: 출처가 없다")
+        for s in xs or []:
+            if not str(s.get("url", "")).startswith(("http://", "https://")):
+                errs.append(f"guide.json {where}: 출처 url 이 이상하다")
+            if "danawa.com" in str(s.get("url", "")):
+                errs.append(f"guide.json {where}: 다나와 문구를 출처로 쓰지 않는다")
+
+    for f in g.get("forms", []):
+        for k in ("key", "label", "tokens", "plain", "official"):
+            if k not in f:
+                errs.append(f"guide.json forms/{f.get('key')}: {k} 없음")
+        srcs(f"forms/{f.get('key')}", f.get("sources"))
+    for d in g.get("distributors", []):
+        if not d.get("name"):
+            errs.append("guide.json distributors: 이름 없는 유통사")
+        srcs(f"distributors/{d.get('name')}", d.get("sources"))
+    for n in g.get("durability", []):
+        for a in n.get("applies_to", []):
+            if a.startswith("category:"):
+                if a.split(":", 1)[1] not in CATS:
+                    errs.append(f"guide.json durability/{n.get('key')}: 모르는 분류 {a}")
+            elif a not in ids:
+                errs.append(f"guide.json durability/{n.get('key')}: 모르는 부품 {a}")
+        if n.get("level") not in ("주의", "참고"):
+            errs.append(f"guide.json durability/{n.get('key')}: level 은 주의·참고")
+        srcs(f"durability/{n.get('key')}", n.get("sources"))
+    return errs
+
+
 def spec_keys() -> dict[str, set[str]]:
     """뷰어 표의 열(SPEC_COLUMNS) — 부품 specs 에 이 키가 없으면 표에 '—' 로 나온다."""
     src = VIEWER_LIB.read_text(encoding="utf-8")
@@ -162,6 +207,7 @@ def check() -> tuple[list[str], list[dict], dict, dict, dict]:
         for k in ("gpu100", "vram"):
             if set(g.get(k, {})) != {"fhd", "qhd", "uhd"}:
                 errs.append(f"bench.json {g.get('key')}: {k} 는 fhd·qhd·uhd 셋")
+    errs.extend(check_guide(ids))
     merrs, todo = check_models(ids, {p["id"]: p.get("category") for p in parts}, prices)
     errs.extend(merrs)
     prices["_model_todo"] = todo

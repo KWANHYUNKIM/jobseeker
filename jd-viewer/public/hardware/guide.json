@@ -1,0 +1,668 @@
+{
+ "schema": 1,
+ "updated_at": "2026-09-29",
+ "note": "판매 형태·유통사·내구성 안내. 출처가 있는 문장만 싣는다. 다나와 문구는 쓰지 않는다. 확인 못 한 값은 null.",
+ "forms": [
+  {
+   "key": "retail",
+   "label": "정품",
+   "tokens": [
+    "정품"
+   ],
+   "excludes": [
+    "멀티팩",
+    "밸류팩",
+    "벌크",
+    "병행"
+   ],
+   "box": true,
+   "official": true,
+   "warranty_years": 3,
+   "cooler": "모델마다 다르다 — K·KF 와 라이젠 X3D 처럼 원래 쿨러 없이 파는 모델은 없다",
+   "service": "AMD: 대원씨티에스·제이씨현시스템 · 인텔: 코잇·피씨디렉트·인텍앤컴퍼니(정품 바코드 PCD·INT·COT). 인텔 13·14세대 일부는 5년",
+   "plain": "공식 유통사가 들여와 봉인 박스째 파는 제품이다. 국내에서 3년 무상 A/S 를 받는다. 쿨러가 든 모델은 A/S 때 동봉 쿨러까지 있어야 완박스로 처리된다(인텍 규정).",
+   "sources": [
+    {
+     "title": "인텍앤컴퍼니 AS 규정",
+     "url": "https://www.intechn.com/Customer/Policy"
+    },
+    {
+     "title": "인텔 정품 CPU 확인(코잇·피씨디렉트·인텍 공동)",
+     "url": "https://www.realcpu.co.kr/web_2022/cpu.php"
+    },
+    {
+     "title": "대원씨티에스 보증 규정",
+     "url": "https://dwcts.co.kr/ServiceCenter/Warranty/Index"
+    },
+    {
+     "title": "AMD 박스 프로세서(PIB) 보증",
+     "url": "https://www.amd.com/ko/resources/support-articles/warranty/PIB.html"
+    },
+    {
+     "title": "미디어픽 — 'AMD 정품 프로세서' 어떻게 확인하나(2025-04-14)",
+     "url": "https://www.mediapic.co.kr/news/articleView.html?idxno=313"
+    },
+    {
+     "title": "위클리포스트 — 인텔 정품 CPU A/S 르포(2025-08-05)",
+     "url": "https://www.weeklypost.kr/news/articleView.html?idxno=9032"
+    }
+   ]
+  },
+  {
+   "key": "multipack",
+   "label": "멀티팩 정품",
+   "tokens": [
+    "멀티팩"
+   ],
+   "excludes": [],
+   "box": true,
+   "official": true,
+   "warranty_years": 3,
+   "cooler": "모델마다 다르다 — 상품명의 쿨러 포함 표기를 확인한다",
+   "service": "AMD 국내 유통사(대원씨티에스·제이씨현시스템)가 박스 정품과 같은 3년을 준다",
+   "plain": "AMD 가 트레이로 낸 CPU 를 국내 유통사가 간이 포장해 파는 제품이다. 포장만 간소하고 국내 A/S 는 박스 정품과 같은 3년이다.",
+   "sources": [
+    {
+     "title": "AMD 보증 서비스(트레이·MPK 구분)",
+     "url": "https://www.amd.com/ko/support/warranty.html"
+    },
+    {
+     "title": "미디어픽 — 'AMD 정품 프로세서' 어떻게 확인하나(2025-04-14)",
+     "url": "https://www.mediapic.co.kr/news/articleView.html?idxno=313"
+    },
+    {
+     "title": "보드나라 A/S센터 정보 — 대원CTS(정품 36개월·병행 0개월)",
+     "url": "https://m.bodnara.co.kr/spec/detail.html?num=33"
+    }
+   ]
+  },
+  {
+   "key": "valuepack",
+   "label": "밸류팩 정품",
+   "tokens": [
+    "밸류팩"
+   ],
+   "excludes": [],
+   "box": true,
+   "official": true,
+   "warranty_years": 3,
+   "cooler": "공식 발표에는 쿨러 언급이 없다 — 상품명의 쿨러 포함 표기를 확인한다",
+   "service": "인텔 공인 대리점 3사(피씨디렉트·코잇·인텍앤컴퍼니). 박스 정품과 같은 보증",
+   "plain": "인텔 공인 대리점 3사가 2025년 2월 한국에만 낸 간소 포장 정품이다. 포장만 단순하고 보증은 박스 정품과 같다.",
+   "sources": [
+    {
+     "title": "위클리포스트 — 인텔 대리점 3사 밸류팩 출시(2025-02-24)",
+     "url": "https://www.weeklypost.kr/news/articleView.html?idxno=8085"
+    },
+    {
+     "title": "디지털포스트 — 정품·벌크·병행·밸류팩",
+     "url": "https://www.ilovepc.co.kr/news/articleView.html?idxno=55891"
+    },
+    {
+     "title": "위클리포스트 — 인텔 정품 CPU A/S 르포(2025-08-05)",
+     "url": "https://www.weeklypost.kr/news/articleView.html?idxno=9032"
+    }
+   ]
+  },
+  {
+   "key": "bulk-retail",
+   "label": "벌크 정품",
+   "tokens": [
+    "벌크",
+    "정품"
+   ],
+   "excludes": [
+    "병행"
+   ],
+   "box": false,
+   "official": true,
+   "warranty_years": 3,
+   "cooler": "없다(CPU 단품)",
+   "service": "들여온 유통사가 맡는다. 인텔 12세대 이후 수입일 기준 3년, 11세대 이전 1년. AMD 벌크 정품의 규정은 아직 확인 못 했다",
+   "plain": "공식 유통사 정품 스티커가 붙은 트레이 CPU 다. 박스와 쿨러가 없다. 보증은 구매일이 아니라 수입일부터 센다.",
+   "sources": [
+    {
+     "title": "인텍앤컴퍼니 AS 규정",
+     "url": "https://www.intechn.com/Customer/Policy"
+    },
+    {
+     "title": "인텔 정품 CPU 확인(코잇·피씨디렉트·인텍 공동)",
+     "url": "https://www.realcpu.co.kr/web_2022/cpu.php"
+    },
+    {
+     "title": "피씨디렉트 인텔 CPU 보증",
+     "url": "http://pcdirect.co.kr/105"
+    },
+    {
+     "title": "Intel — 박스·트레이 프로세서 보증 정책",
+     "url": "https://www.intel.com/content/www/us/en/support/articles/000024255/processors.html"
+    }
+   ]
+  },
+  {
+   "key": "bulk-parallel",
+   "label": "벌크 병행",
+   "tokens": [
+    "벌크",
+    "병행"
+   ],
+   "excludes": [],
+   "box": false,
+   "official": false,
+   "warranty_years": null,
+   "cooler": "없다",
+   "service": "국내 공식 A/S 불가 — 판매처가 정한 만큼만 책임진다",
+   "plain": "공식 유통사를 거치지 않고 들어온 트레이 CPU 다. 가장 싸지만 국내 공식 A/S 가 안 되고, 고장 나면 판 곳이 정한 만큼만 책임진다.",
+   "sources": [
+    {
+     "title": "보드나라 A/S센터 정보 — 대원CTS(정품 36개월·병행 0개월)",
+     "url": "https://m.bodnara.co.kr/spec/detail.html?num=33"
+    },
+    {
+     "title": "보드나라 A/S센터 정보 — 제이씨현(정품 36개월·병행 0개월)",
+     "url": "https://www.bodnara.co.kr/spec/detail.html?num=32"
+    },
+    {
+     "title": "인텔 정품 CPU 확인(코잇·피씨디렉트·인텍 공동)",
+     "url": "https://www.realcpu.co.kr/web_2022/cpu.php"
+    },
+    {
+     "title": "위클리포스트 — 인텔 정품 CPU A/S 르포(2025-08-05)",
+     "url": "https://www.weeklypost.kr/news/articleView.html?idxno=9032"
+    },
+    {
+     "title": "디지털포스트 — 정품·벌크·병행·밸류팩",
+     "url": "https://www.ilovepc.co.kr/news/articleView.html?idxno=55891"
+    }
+   ]
+  },
+  {
+   "key": "retail-parallel",
+   "label": "병행(박스)",
+   "tokens": [
+    "병행"
+   ],
+   "excludes": [
+    "벌크"
+   ],
+   "box": true,
+   "official": false,
+   "warranty_years": null,
+   "cooler": "해외 박스 구성 그대로",
+   "service": "국내 유통사 A/S 불가. 제조사 보증은 해외 센터를 거친다(인텔 사례 약 5주)",
+   "plain": "해외 판매용 박스를 따로 들여온 제품이다. 국내 공식 A/S 가 안 되고, 제조사 보증은 해외를 거쳐 오래 걸린다.",
+   "sources": [
+    {
+     "title": "위클리포스트 — 인텔 정품 CPU A/S 르포(2025-08-05)",
+     "url": "https://www.weeklypost.kr/news/articleView.html?idxno=9032"
+    },
+    {
+     "title": "AMD 박스 프로세서(PIB) 보증",
+     "url": "https://www.amd.com/ko/resources/support-articles/warranty/PIB.html"
+    },
+    {
+     "title": "미디어픽 — 'AMD 정품 프로세서' 어떻게 확인하나(2025-04-14)",
+     "url": "https://www.mediapic.co.kr/news/articleView.html?idxno=313"
+    }
+   ]
+  }
+ ],
+ "distributors": [
+  {
+   "name": "이엠텍",
+   "aliases": [
+    "이엠텍아이엔씨"
+   ],
+   "brands": [
+    "EMTEK",
+    "PALIT",
+    "SAPPHIRE",
+    "EVGA"
+   ],
+   "warranty_years": 3,
+   "service": "방문·택배. 쿨러 보증은 XENON·HV·PALIT 2년, SAPPHIRE·EVGA 3년",
+   "parallel_import_service": "병행·직구 제품은 받지 않는다",
+   "as_url": "https://www.emtekinc.co.kr/m/html/dh/service_info_view?idx=20",
+   "sources": [
+    {
+     "title": "이엠텍 고객지원안내",
+     "url": "https://www.emtekinc.co.kr/m/html/dh/service_info_view?idx=20"
+    }
+   ]
+  },
+  {
+   "name": "대원씨티에스",
+   "brands": [
+    "ASUS",
+    "ASRock",
+    "POWERCOLOR",
+    "MANLI",
+    "AFOX",
+    "TUL",
+    "AMD CPU"
+   ],
+   "warranty_years": 3,
+   "service": "방문·택배(퀵 불가). ASRock 레퍼런스·TUL 은 2년",
+   "parallel_import_service": "해외구매·병행 제품은 A/S·기술지원을 하지 않는다",
+   "as_url": "https://dwcts.co.kr/servicecenter/warranty",
+   "sources": [
+    {
+     "title": "대원씨티에스 품질보증",
+     "url": "https://dwcts.co.kr/servicecenter/warranty"
+    },
+    {
+     "title": "대원씨티에스 보증 규정",
+     "url": "https://dwcts.co.kr/ServiceCenter/Warranty/Index"
+    },
+    {
+     "title": "미디어픽 — 'AMD 정품 프로세서' 어떻게 확인하나(2025-04-14)",
+     "url": "https://www.mediapic.co.kr/news/articleView.html?idxno=313"
+    }
+   ]
+  },
+  {
+   "name": "제이씨현",
+   "brands": [
+    "GIGABYTE",
+    "AMD CPU"
+   ],
+   "warranty_years": 3,
+   "service": "확인 못 함 — 공식 A/S 규정 페이지가 오류(HTTP 500)를 낸다",
+   "parallel_import_service": null,
+   "as_url": "http://www.jchyun.com/supp/service/Asrules.aspx",
+   "sources": [
+    {
+     "title": "제이씨현 A/S 규정(검색 요약으로만 확인)",
+     "url": "http://www.jchyun.com/supp/service/Asrules.aspx"
+    },
+    {
+     "title": "보드나라 A/S센터 정보 — 제이씨현(정품 36개월·병행 0개월)",
+     "url": "https://www.bodnara.co.kr/spec/detail.html?num=32"
+    },
+    {
+     "title": "미디어픽 — 'AMD 정품 프로세서' 어떻게 확인하나(2025-04-14)",
+     "url": "https://www.mediapic.co.kr/news/articleView.html?idxno=313"
+    }
+   ],
+   "aliases": [
+    "제이씨현시스템"
+   ]
+  },
+  {
+   "name": "인텍앤컴퍼니",
+   "brands": [
+    "ASUS",
+    "MANLI",
+    "Intel CPU"
+   ],
+   "warranty_years": 3,
+   "service": "방문·택배(출장·퀵 불가). 14일 이후 택배비는 반반",
+   "parallel_import_service": "직구·OEM·다른 유통사 제품은 받지 않는다",
+   "as_url": "https://www.intechn.com/Customer/Policy",
+   "sources": [
+    {
+     "title": "인텍앤컴퍼니 AS 규정",
+     "url": "https://www.intechn.com/Customer/Policy"
+    }
+   ]
+  },
+  {
+   "name": "피씨디렉트",
+   "brands": [
+    "GIGABYTE",
+    "Intel CPU"
+   ],
+   "warranty_years": 3,
+   "service": "시리얼 기준 3년. 14일 안 초기불량은 첫 구매자만 새 제품 교환",
+   "parallel_import_service": null,
+   "as_url": "http://pcdirect.co.kr/56",
+   "sources": [
+    {
+     "title": "피씨디렉트 서비스 규정",
+     "url": "http://pcdirect.co.kr/56"
+    },
+    {
+     "title": "피씨디렉트 인텔 CPU 보증",
+     "url": "http://pcdirect.co.kr/105"
+    }
+   ]
+  },
+  {
+   "name": "STCOM",
+   "brands": [
+    "ASUS",
+    "XFX",
+    "PNY"
+   ],
+   "warranty_years": null,
+   "service": "방문·택배(출장 없음). 쿨러는 소모품으로 본다. 브랜드별 보증 연수는 이미지 표라 아직 못 옮겼다",
+   "parallel_import_service": "해외구매·병행 제품은 A/S·상담을 하지 않는다",
+   "as_url": "http://stcom.co.kr/vga-service",
+   "sources": [
+    {
+     "title": "STCOM 그래픽카드 AS 규정",
+     "url": "http://stcom.co.kr/vga-service"
+    }
+   ]
+  },
+  {
+   "name": "코잇",
+   "brands": [
+    "ASUS",
+    "Intel CPU",
+    "Intel Arc"
+   ],
+   "warranty_years": 3,
+   "service": "확인 못 함(방문·택배 방식 미공개)",
+   "parallel_import_service": null,
+   "as_url": null,
+   "sources": [
+    {
+     "title": "베타뉴스 — 코잇, ASUS 그래픽카드 국내 공식 유통 확대(2026-07-10)",
+     "url": "https://www.betanews.net/article/view/beta202607100015"
+    },
+    {
+     "title": "인텔 정품 CPU 확인(코잇·피씨디렉트·인텍 공동)",
+     "url": "https://www.realcpu.co.kr/web_2022/cpu.php"
+    }
+   ]
+  },
+  {
+   "name": "서린씨앤아이",
+   "aliases": [
+    "서린"
+   ],
+   "brands": [],
+   "warranty_years": null,
+   "service": "방문·택배. 확인한 것은 주변기기 규정뿐이다",
+   "parallel_import_service": "정식 유통 제품이 아니면 받지 않는다(주변기기 규정)",
+   "as_url": "http://seorincni.co.kr/post/4",
+   "sources": [
+    {
+     "title": "서린씨앤아이 주변기기 A/S 규정",
+     "url": "http://seorincni.co.kr/post/4"
+    }
+   ]
+  },
+  {
+   "name": "디앤디컴",
+   "aliases": [
+    "디앤디"
+   ],
+   "brands": [
+    "GAINWARD",
+    "ASRock",
+    "MAXSUN",
+    "SOYO",
+    "AFOX"
+   ],
+   "warranty_years": 3,
+   "service": "택배(6개월 안 불량은 왕복 무료)·서울 서비스센터 방문",
+   "parallel_import_service": null,
+   "as_url": "https://www.dndcom.co.kr/care",
+   "sources": [
+    {
+     "title": "디앤디컴 다이나믹케어",
+     "url": "https://www.dndcom.co.kr/care"
+    }
+   ]
+  },
+  {
+   "name": "에즈윈",
+   "brands": [
+    "ASRock"
+   ],
+   "warranty_years": null,
+   "service": "용산 방문·선불 택배. 공식 페이지에는 메인보드 보증(3년)만 있다",
+   "parallel_import_service": null,
+   "as_url": "https://aswin.co.kr/mall/customer/asrule1",
+   "sources": [
+    {
+     "title": "에즈윈 ASRock A/S 규정",
+     "url": "https://aswin.co.kr/mall/customer/asrule1"
+    }
+   ]
+  },
+  {
+   "name": "도우정보",
+   "brands": [
+    "COLORFUL"
+   ],
+   "warranty_years": null,
+   "service": "확인 못 함 — 그래픽카드·메인보드를 한 곳에서 점검한다고만 밝혔다",
+   "parallel_import_service": null,
+   "as_url": null,
+   "sources": [
+    {
+     "title": "인벤 — 도우정보, COLORFUL 국내 유통 계약(2026-03-05)",
+     "url": "https://www.inven.co.kr/webzine/news/?news=314107"
+    }
+   ]
+  }
+ ],
+ "durability": [
+  {
+   "key": "16pin-full-seat",
+   "applies_to": [
+    "gpu-rtx-5090",
+    "gpu-rtx-5080",
+    "gpu-rtx-5070-ti"
+   ],
+   "level": "주의",
+   "title": "16핀 전원 커넥터는 끝까지 꽂는다",
+   "plain": "12V-2x6(16핀) 커넥터가 덜 꽂히면 일부 핀에 전류가 몰려 녹을 수 있다. NVIDIA 는 틈 없이 끝까지 고르게 꽂으라고 안내하고, 커넥터 바로 앞 약 35mm 안에서는 케이블을 꺾지 않는 것이 권장된다.",
+   "sources": [
+    {
+     "title": "NVIDIA 지원 — Power Connector Update",
+     "url": "https://nvidia.custhelp.com/app/answers/detail/a_id/5413/~/"
+    },
+    {
+     "title": "NVIDIA 지원 — RTX 40 Series & Power Specifications",
+     "url": "https://nvidia.custhelp.com/app/answers/detail/a_id/5396/~/geforce-rtx-40-series-&-power-specifications"
+    },
+    {
+     "title": "Wccftech — RTX 5090 커넥터 사고 모음",
+     "url": "https://wccftech.com/roundup/nvidia-rtx-5090-16-pin-connector-melting-issues-tracker/"
+    }
+   ]
+  },
+  {
+   "key": "rtx5090-connector-margin",
+   "applies_to": [
+    "gpu-rtx-5090"
+   ],
+   "level": "주의",
+   "title": "RTX 5090 은 커넥터 한계에 가깝다",
+   "plain": "그래픽 전력 575W 가 16핀 커넥터 정격 600W 에 거의 붙어 있고, 제대로 꽂은 상태에서도 녹은 사례가 계속 보고된다. 핀 사이 전류 불균형이 원인으로 지목된다.",
+   "sources": [
+    {
+     "title": "NVIDIA RTX 5090 공식 사양",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+    },
+    {
+     "title": "Wccftech — 커넥터 사고 모음",
+     "url": "https://wccftech.com/roundup/nvidia-rtx-5090-16-pin-connector-melting-issues-tracker/"
+    },
+    {
+     "title": "Guru3D — 500W 제한에서도 녹았다",
+     "url": "https://www.guru3d.com/story/geforce-rtx-5090-12v2x6-connector-melts-even-under-a-500w-cap/"
+    }
+   ]
+  },
+  {
+   "key": "rtx5080-connector-reports",
+   "applies_to": [
+    "gpu-rtx-5080"
+   ],
+   "level": "참고",
+   "title": "RTX 5080 도 드물게 케이블 손상 보고가 있다",
+   "plain": "360W 라 5090 보다 여유가 있지만 파워 쪽 16핀 케이블이 열로 손상된 사례가 보고된 적이 있다.",
+   "sources": [
+    {
+     "title": "HotHardware — RTX 5080 커넥터 손상 보고",
+     "url": "https://hothardware.com/news/rtx5080-melting-connector"
+    },
+    {
+     "title": "NVIDIA RTX 5080 공식 사양",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5080/"
+    }
+   ]
+  },
+  {
+   "key": "12v2x6-spec",
+   "applies_to": [
+    "category:psu"
+   ],
+   "level": "참고",
+   "title": "12V-2x6 는 12VHPWR 의 개정판이다",
+   "plain": "감지 핀을 짧게(4mm → 2.5mm) 하고 전원 핀을 길게 해서, 덜 꽂히면 전력이 먼저 끊기도록 바꾼 규격이다.",
+   "sources": [
+    {
+     "title": "Hardware Busters — 12V-2x6 해설",
+     "url": "https://hwbusters.com/news/no-more-12vhpwr-connector-say-hi-to-12v-2x6/"
+    }
+   ]
+  },
+  {
+   "key": "rx9070xt-16pin-adapter",
+   "applies_to": [
+    "gpu-rx-9070-xt"
+   ],
+   "level": "주의",
+   "title": "16핀을 단 RX 9070 XT 는 어댑터에 주의한다",
+   "plain": "대부분 8핀 전원이지만 16핀을 단 일부 모델(사파이어 NITRO+, ASRock Taichi)에서 커넥터가 탄 사례가 보고됐다. 대부분 동봉 3x8핀 어댑터를 ATX 3.1 이 아닌 파워에 쓴 경우였다.",
+   "sources": [
+    {
+     "title": "The FPS Review — NITRO+ 9070 XT 커넥터 손상",
+     "url": "https://www.thefpsreview.com/2025/11/03/yet-another-sapphire-nitro-9070xt-becomes-victim-of-burnt-12v-2x6-power-connector/"
+    }
+   ]
+  },
+  {
+   "key": "native-16pin-psu",
+   "applies_to": [
+    "category:psu",
+    "gpu-rtx-5090",
+    "gpu-rtx-5080"
+   ],
+   "level": "참고",
+   "title": "16핀 그래픽카드엔 ATX 3.1 파워가 낫다",
+   "plain": "8핀 여러 개를 모으는 어댑터보다 ATX 3.1(PCIe CEM 5.1) 파워의 전용 16핀 케이블로 잇는 편이 권장된다.",
+   "sources": [
+    {
+     "title": "NVIDIA RTX 5080 공식 사양",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5080/"
+    }
+   ]
+  },
+  {
+   "key": "gpu-sag-bracket",
+   "applies_to": [
+    "category:gpu"
+   ],
+   "level": "참고",
+   "title": "무거운 카드는 지지대를 쓴다",
+   "plain": "대형 카드는 자기 무게로 처지며 PCIe 슬롯 근처 기판에 금이 갈 수 있다. 이런 물리 파손은 유통사 규정상 유상 수리이거나 수리가 안 되는 경우가 많다.",
+   "sources": [
+    {
+     "title": "GPU Solutions — RTX 4080·4090 PCIe 균열",
+     "url": "https://gpusolutions.net/rtx-4080-4090-pcie-cracks-causes-prevention-and-expert-repair-solutions/"
+    },
+    {
+     "title": "STCOM 그래픽카드 AS 규정(기판 파손 수리 불가)",
+     "url": "http://stcom.co.kr/vga-service"
+    }
+   ]
+  },
+  {
+   "key": "fan-bearing",
+   "applies_to": [
+    "category:gpu",
+    "category:cooler",
+    "category:case"
+   ],
+   "level": "참고",
+   "title": "팬 베어링 종류가 수명을 가른다",
+   "plain": "50°C 가혹 조건에서 슬리브 베어링은 약 4만 시간, 볼 베어링은 약 6만 5천 시간, 유체(FDB) 베어링은 약 6만 시간으로 추정된다. 슬리브는 처음엔 조용하지만 빨리 닳는다.",
+   "sources": [
+    {
+     "title": "Coolerguys — 베어링 안내",
+     "url": "https://www.coolerguys.com/pages/bearing-option-guide"
+    }
+   ]
+  },
+  {
+   "key": "gpu-cooler-warranty-shorter",
+   "applies_to": [
+    "category:gpu"
+   ],
+   "level": "참고",
+   "title": "쿨러 보증이 본체보다 짧을 수 있다",
+   "plain": "본체가 3년 보증이어도 쿨러(팬)는 유통사·브랜드에 따라 2년이거나 소모품으로 분류된다.",
+   "sources": [
+    {
+     "title": "이엠텍 고객지원안내",
+     "url": "https://www.emtekinc.co.kr/m/html/dh/service_info_view?idx=20"
+    },
+    {
+     "title": "STCOM 그래픽카드 AS 규정",
+     "url": "http://stcom.co.kr/vga-service"
+    }
+   ]
+  },
+  {
+   "key": "ssd-tbw",
+   "applies_to": [
+    "category:ssd"
+   ],
+   "level": "참고",
+   "title": "SSD 보증은 기간과 TBW 중 먼저 끝나는 쪽까지다",
+   "plain": "TBW 는 보증이 인정하는 총 쓰기량이다. 삼성 990 PRO 는 1TB 600TB · 2TB 1,200TB 에 5년이다.",
+   "sources": [
+    {
+     "title": "삼성 SSD 제한 보증서",
+     "url": "https://download.semiconductor.samsung.com/resources/warranty/SAMSUNG_SSD_Limited_Warranty_English_US_10139419044524.pdf"
+    }
+   ]
+  },
+  {
+   "key": "psu-warranty-signal",
+   "applies_to": [
+    "category:psu"
+   ],
+   "level": "참고",
+   "title": "파워 보증기간은 등급 차이를 보여 준다",
+   "plain": "같은 제조사도 상위 라인일수록 보증이 길다. 시소닉은 PRIME 12년 · FOCUS 10년 · CORE 7년이다.",
+   "sources": [
+    {
+     "title": "TechPowerUp — 시소닉 PRIME 12년 보증",
+     "url": "https://www.techpowerup.com/231194/seasonic-increases-prime-series-psu-warranty-to-12-years"
+    },
+    {
+     "title": "시소닉 보증 정책",
+     "url": "https://seasonic.com/warranty-policy/"
+    }
+   ]
+  },
+  {
+   "key": "psu-wattage-5090-5080",
+   "applies_to": [
+    "gpu-rtx-5090",
+    "gpu-rtx-5080"
+   ],
+   "level": "참고",
+   "title": "권장 파워 용량을 지킨다",
+   "plain": "NVIDIA 권장 시스템 전원은 RTX 5090 1000W, RTX 5080 850W 다.",
+   "sources": [
+    {
+     "title": "NVIDIA RTX 5090 공식 사양",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+    },
+    {
+     "title": "NVIDIA RTX 5080 공식 사양",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5080/"
+    }
+   ]
+  }
+ ]
+}

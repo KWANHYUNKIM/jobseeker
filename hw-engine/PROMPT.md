@@ -15,6 +15,12 @@
 | 등급 문턱·용도·쉬운 설명 | **이 엔진** | `jd-viewer/public/hardware/index.json` |
 | 게임 fps·AI 기준값 | **이 엔진** | `jd-viewer/public/hardware/bench.json` |
 | **제품별 스펙**(보드 파트너 모델 — 길이·두께·팬·OC 클럭·전원·구성품) | **이 엔진** | `jd-viewer/public/hardware/models/<부품 id>.json` |
+| **유통·내구성 안내**(CPU 판매 형태 · 유통사 보증/A/S · 내구성 주의) | **이 엔진** | `jd-viewer/public/hardware/guide.json` |
+
+`guide.json` 은 소비자가 무엇을 살지 가르는 말이다. **유통사 공식 A/S 규정 페이지**가 원본이고,
+열리지 않으면 기사·요약으로 채우되 확인 못 한 칸은 `null` 로 둔다. 판매처 상품명(쿨러 포함 등)은
+근거로 쓰지 않는다. 유통사는 바뀐다(2026년에 코잇이 ASUS, 도우정보가 COLORFUL 을 새로 맡았다) —
+90일마다 다시 본다.
 | 매일의 최저가 | 크롤러 `catch_capture/crawlers/crawl_hardware.py` (맥의 크롤 사이클, 하루 1회) | `jd-viewer/public/hardware/prices.json` → DB `hw_price_day` |
 
 **가격은 엔진이 적지 않는다.** 엔진은 부품마다 `price_query`(검색어·거름 규칙)만 고치고,
