@@ -1,0 +1,228 @@
+{
+  "slug": "kickflow",
+  "name": "kickflow",
+  "name_en": "kickflow",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "kickflow.com",
+  "one_liner": "수백 ~ 수천 명 기업의 품의 · 결재 워크플로 SaaS — AI 기능은 여러 번 불러 채점하고, 190 개 시리얼라이저는 JSON 모양을 그대로 둔 채 갈아 끼운다",
+  "business_model": "kickflow 는 **수백 ~ 수천 명 규모 기업용 품의(稟議) · 클라우드 워크플로**를 판다 — 신청 · 승인 흐름을 만들고, **조직 개편 · 인사 이동에 강한 조직도 관리**와 **API · Webhook 연계**를 강점으로 든다. 최근엔 **AI 가 기안 · 요약 · 폼 작성**(견적서 PDF · 회의록에서 폼 자동 입력)을 돕는다. 도쿄증권 프라임 상장사부터 스타트업까지 쓰고 서비스 계속률 99.76% 라고 적는다(홈페이지).\n\n요금은 **초기 비용 0엔 + 월액**, 스탠다드 · 엔터프라이즈 두 플랜이며 **50 ID 부터** 계약하고 월액은 구성에 따라 **개별 견적**이다(요금 페이지). 신규 사업 본부가 따로 있다(Disk I/O 글) — 무엇을 만드는지는 읽은 자료에 없다.",
+  "products": [
+    "kickflow(품의 · 클라우드 워크플로)",
+    "AI 기능(입력 보조 · 티켓 요약 · 계산식 생성)",
+    "API · Webhook 연계",
+    "신규 사업(내용 비공개)"
+  ],
+  "revenue_total": "공개 안 됨(비상장 — 이번에 매출 자료를 찾지 않았다).",
+  "revenue_streams": [
+    {
+      "name": "kickflow 월액 라이선스(스탠다드 · 엔터프라이즈)",
+      "how": "초기 비용 0엔, 50 ID 부터, 구성에 따라 개별 견적(요금 페이지). 엔터프라이즈는 복잡한 승인 흐름 · 고급 보안 · 외부 연계가 필요한 기업용.",
+      "weight": "공개 안 됨(유일하게 확인된 수익원)",
+      "domains": [
+        "같은 입력에도 흔들리는 AI 기능의 품질을, 여러 번 불러 점수로 재고 모델을 바꿀지 정한다",
+        "수백 개 응답의 JSON 모양을 한 글자도 바꾸지 않은 채 안쪽(시리얼라이저 · 타입)을 갈아 끼운다",
+        "1,200 개 E2E 테스트가 '다시 돌리면 통과' 로 숨기던 불안정을 재고 줄여, CI 를 믿을 수 있게 한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "料金 | kickflow",
+          "url": "https://kickflow.com/pricing/",
+          "publisher": "kickflow",
+          "summary": "초기 비용 0엔 + 월액. 스탠다드(스타트업 · 중소기업) · 엔터프라이즈(복잡한 승인 흐름 · 고급 보안 · 외부 연계) 두 플랜, 월액은 구성에 따라 개별 견적, 50 ID 부터 계약. 아카데믹 · 거버먼트 특별가."
+        },
+        {
+          "title": "kickflow（キックフロー）| AI搭載の新しいワークフローシステム",
+          "url": "https://kickflow.com/",
+          "publisher": "kickflow",
+          "summary": "수백 ~ 수천 명 규모 기업용 품의(稟議) · 클라우드 워크플로. 직관적 UI, 조직 개편에 강한 조직도 관리, 풍부한 API · Webhook 연계. AI 가 기안 · 요약 · 폼 작성을 지원(AI 입력 보조: 견적서 PDF · 회의록으로 폼 자동 입력). 도쿄증권 프라임 기업부터 스타트업까지, 서비스 계속률 99.76%."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "신청 한 건이 화면에서 API 를 지나 검증되기까지",
+    "question": "제품의 어느 층을 어떤 장치가 지키나?",
+    "code": "flowchart LR\n  UI[\"Nuxt 프런트\\nOpenAPI 생성 타입\"] -->|\"REST · camelCase JSON\"| API[\"Rails API\\nAlba 시리얼라이저 약 190\"]\n  SPEC[\"OpenAPI YAML\\n(손으로 쓰는 spec-first)\"] --> UI\n  SPEC -.->|\"계약 테스트\"| API\n  UI --> AIF[\"AI 기능\\n입력 보조 · 요약 · 계산식\"]\n  AIF --> EVAL[\"eval\\n기계 채점 + LLM judge\"]\n  E2E[\"Playwright E2E 1,200\\nnightly CI\"] --> UI\n  API --> BQ[(\"BigQuery · dbt\\nMetabase MCP\")]",
+    "_note": "이 사이트의 해석 — 다섯 글의 구성을 한 장에 모았다. 결재 흐름 엔진 · 조직도 관리의 내부 구조는 읽은 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "같은 입력에도 흔들리는 AI 기능의 품질을, 여러 번 불러 점수로 재고 모델을 바꿀지 정한다",
+      "why": "kickflow 에 티켓 요약 · 계산식 생성 · 입력 보조 같은 AI 기능이 늘었다. 같은 입력에도 출력이 매번 달라, '기대값과 한 번 일치' 를 확인하는 기존 자동 테스트로는 품질을 보증할 수 없다 — 한 번 통과한 것은 우연일 수 있다. 모델 업데이트 때 '더 싼 모델로 바꿔도 되나' 를 판단할 근거도 필요하다.",
+      "tech": [
+        {
+          "tech": "본번과 같은 경로로 AI 를 여러 번 실제 호출해 채점 · 기록하는 eval 프레임워크(공통 기반 + 기능별 채점)",
+          "solves": "흔들림을 포함한 품질을 합격률 · 안정성으로 잰다. 첫 모델 업데이트에서 품질 기준을 지킨 채 더 싼 모델로 바꿀 수 있다고 판단했다.",
+          "limits": "실제 API 를 불러 과금되므로 PR 마다가 아니라 수동 기동. 문턱과 평가 데이터는 운용하며 키워야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AI機能の品質評価を自動化する：機械採点と LLM-as-a-Judge の役割分担",
+              "url": "https://tech.kickflow.co.jp/entry/2026/08/27/143040",
+              "publisher": "kickflow",
+              "summary": "티켓 요약 · 계산식 생성 · 입력 보조 같은 AI 기능은 같은 입력에도 출력이 흔들려 '기대값과 한 번 일치' 하는 기존 테스트로 품질을 못 잰다. 본번과 같은 경로로 실제로 여러 번 불러 채점 · 기록하는 eval 프레임워크. 결정적 판정은 기계 채점, 의미적 품질은 LLM judge. 일시 오류로 전체를 불합격시키지 않기, 문턱 · 평가 데이터는 운용하며 키운다, smoke/full 2단. 첫 모델 업데이트에서 품질 기준을 지킨 채 더 싼 모델로 바꿀 수 있다고 판단.",
+              "date": "2026-08-27"
+            }
+          ]
+        },
+        {
+          "tech": "결정적 판정은 기계 채점, 의미적 품질은 LLM-as-a-Judge · smoke/full 2단 · 일시 오류와 매번 실패를 가른다",
+          "solves": "채점기 자체의 흔들림을 줄이고, 일시 오류로 전체를 불합격시키지 않는다.",
+          "limits": "LLM judge 의 판정도 확률적이다 — 어느 항목을 judge 에 맡길지 경계를 계속 정해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AI機能の品質評価を自動化する：機械採点と LLM-as-a-Judge の役割分担",
+              "url": "https://tech.kickflow.co.jp/entry/2026/08/27/143040",
+              "publisher": "kickflow",
+              "summary": "티켓 요약 · 계산식 생성 · 입력 보조 같은 AI 기능은 같은 입력에도 출력이 흔들려 '기대값과 한 번 일치' 하는 기존 테스트로 품질을 못 잰다. 본번과 같은 경로로 실제로 여러 번 불러 채점 · 기록하는 eval 프레임워크. 결정적 판정은 기계 채점, 의미적 품질은 LLM judge. 일시 오류로 전체를 불합격시키지 않기, 문턱 · 평가 데이터는 운용하며 키운다, smoke/full 2단. 첫 모델 업데이트에서 품질 기준을 지킨 채 더 싼 모델로 바꿀 수 있다고 판단.",
+              "date": "2026-08-27"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "수백 개 응답의 JSON 모양을 한 글자도 바꾸지 않은 채 안쪽(시리얼라이저 · 타입)을 갈아 끼운다",
+      "why": "전 API 응답을 만드는 시리얼라이저 약 190 파일이 ActiveModelSerializers 위에 있었는데, 메인테이너가 거의 남지 않았다고 README 가 밝힌다. 둘수록 이행 비용이 커진다. API 는 camelCase 키와 엔드포인트별 관련 제어를 쓰고, 프런트(Nuxt)는 이 JSON 모양에 기대고 있다 — 모양이 한 글자라도 바뀌면 화면이 깨진다.\n\n한편 서버 실장 · OpenAPI 스키마 · 프런트 타입에 같은 모양을 세 번 쓰는 불편도 있었다.",
+      "tech": [
+        {
+          "tech": "Alba 로 일제 교체 · 관련은 기본 '전개 안 함' + within 으로 명시 · AMS 와 Alba 출력을 Hash 수준 완전 일치시키는 spec",
+          "solves": "약 190 파일을 JSON 모양을 바꾸지 않고 옮긴다. 어느 엔드포인트가 무엇을 내는지 컨트롤러에 다 적혀 가독성도 오른다.",
+          "limits": "Alba 는 within 이 없으면 모든 관련을 재귀 전개한다 — 기본값을 뒤집지 않으면 예전에 없던 관련이 JSON 에 섞여 하위 호환이 깨진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "kickflow のシリアライザを Alba に移行しました",
+              "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+              "publisher": "kickflow",
+              "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+              "date": "2026-08-07"
+            }
+          ]
+        },
+        {
+          "tech": "oRPC 를 조사하고 도입하지 않음 — 실장→OpenAPI→생성 타입→프런트 타입의 링크를 하나씩 점검해 끊긴 한 줄(손으로 쓴 응답 타입)만 생성 타입으로 넘긴다",
+          "solves": "Rails 서버를 TypeScript 로 바꾸지 않고도 타입 사슬을 닫는다.",
+          "limits": "Rails 실장과 OpenAPI YAML 사이는 계약 테스트에 기대며, 그 한계가 글에 따로 적혀 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "oRPC を調査したら、Rails + Nuxt の自分たちのスタックが思ったより型安全だと気づいた話",
+              "url": "https://tech.kickflow.co.jp/entry/2026/07/21/102711",
+              "publisher": "kickflow",
+              "summary": "백엔드 Rails · 프런트 Nuxt · OpenAPI YAML 을 손으로 쓰는 spec-first. 같은 모양을 세 곳에 쓴다는 불편에 oRPC 를 조사했지만 도입하지 않았다 — 하나의 정의에서 검증 · 타입 · OpenAPI 가 나오는 가치는 서버가 TypeScript 일 때만 성립. 대신 실장→스키마→프런트 타입의 '링크' 를 하나씩 점검하니 끊긴 것은 손으로 쓴 응답 타입 한 줄뿐 — OpenAPI 에서 생성한 타입으로 넘긴다.",
+              "date": "2026-07-21"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "1,200 개 E2E 테스트가 '다시 돌리면 통과' 로 숨기던 불안정을 재고 줄여, CI 를 믿을 수 있게 한다",
+      "why": "Playwright E2E 약 1,200 건을 nightly CI 에서 병렬로 돌리는데, 메인 워크플로가 30일간 67.9% 실패했고 retry 워크플로도 52.5% 실패, 실행은 50~70분 · 최장 180분이었다. 리트라이가 표면을 초록으로 만들며 불안정을 숨기고 있었다.",
+      "tech": [
+        {
+          "tech": "먼저 재기 — flaky 를 드러내는 커스텀 리포터 · waitForTimeout 래칫(새 고정 대기의 유입 차단)",
+          "solves": "무작정 고정 대기를 지우거나 병렬 수를 늘리지 않고, 어디가 불안정한지부터 숫자로 본다.",
+          "limits": "고정 대기 6,637 건(한 번 실행에 약 2.8시간 sleep)은 한 번에 못 지운다 — 늘지 않게 막고 줄여 간다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "flakyを可視化してから潰す：E2Eテストの安定化と高速化を同時に進めた話",
+              "url": "https://tech.kickflow.co.jp/entry/2026/07/22/072931",
+              "publisher": "kickflow",
+              "summary": "Playwright E2E 약 1,200 건을 nightly CI 에서 병렬 실행. 메인 워크플로 30일 실패율 67.9%(56 중 38), retry 워크플로 52.5%, 실행 50~70분 · 최장 180분. waitForTimeout 고정 대기 6,637 건(한 번 실행에 약 2.8시간 sleep), 테스트 데이터 준비의 약 9할이 UI 조작, force: true 85 건. 먼저 재는 장치(커스텀 리포터 · waitForTimeout 래칫)부터 만들고 줄이고 빠르게 — 가장 큰 원인은 공용 로그인 헬퍼, 빠르게 하니 flaky 가 늘어나는 역설.",
+              "date": "2026-07-22"
+            }
+          ]
+        },
+        {
+          "tech": "공용 로그인 헬퍼 수정 · 결정적 실패를 flaky 로 오인하지 않기 · force: true 재검토 · 관리형 러너로 고정 비용 삭감 · 일부러 흩어 놓기",
+          "solves": "가장 큰 원인이 개별 테스트가 아니라 공용 로그인 헬퍼였다. 빠르게 하면서 안정도 지킨다.",
+          "limits": "빠르게 하면 flaky 가 늘어나는 역설이 있다 — 속도와 안정을 함께 재며 나아가야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "flakyを可視化してから潰す：E2Eテストの安定化と高速化を同時に進めた話",
+              "url": "https://tech.kickflow.co.jp/entry/2026/07/22/072931",
+              "publisher": "kickflow",
+              "summary": "Playwright E2E 약 1,200 건을 nightly CI 에서 병렬 실행. 메인 워크플로 30일 실패율 67.9%(56 중 38), retry 워크플로 52.5%, 실행 50~70분 · 최장 180분. waitForTimeout 고정 대기 6,637 건(한 번 실행에 약 2.8시간 sleep), 테스트 데이터 준비의 약 9할이 UI 조작, force: true 85 건. 먼저 재는 장치(커스텀 리포터 · waitForTimeout 래칫)부터 만들고 줄이고 빠르게 — 가장 큰 원인은 공용 로그인 헬퍼, 빠르게 하니 flaky 가 늘어나는 역설.",
+              "date": "2026-07-22"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "월액 단가(ID 당 금액)는 개별 견적이라 공개되지 않았다.",
+    "결재 흐름 엔진 · 조직도(인사 이동) 관리의 내부 설계는 읽은 글에 없다 — 제품의 중심인데 기술 글이 아직 안 다룬다.",
+    "신규 사업 본부가 무엇을 만드는지(Supabase · Inngest 를 쓰는 Preview 환경만 보인다)는 읽은 자료에 없다.",
+    "데이터 분석 기반(BigQuery · dbt · Metabase MCP) 글은 사내 분석용이라 도메인으로 세우지 않았다 — AI eval 과 비교할 재료로만 둔다."
+  ],
+  "sources": [
+    {
+      "title": "kickflow（キックフロー）| AI搭載の新しいワークフローシステム",
+      "url": "https://kickflow.com/",
+      "publisher": "kickflow",
+      "summary": "수백 ~ 수천 명 규모 기업용 품의(稟議) · 클라우드 워크플로. 직관적 UI, 조직 개편에 강한 조직도 관리, 풍부한 API · Webhook 연계. AI 가 기안 · 요약 · 폼 작성을 지원(AI 입력 보조: 견적서 PDF · 회의록으로 폼 자동 입력). 도쿄증권 프라임 기업부터 스타트업까지, 서비스 계속률 99.76%."
+    },
+    {
+      "title": "料金 | kickflow",
+      "url": "https://kickflow.com/pricing/",
+      "publisher": "kickflow",
+      "summary": "초기 비용 0엔 + 월액. 스탠다드(스타트업 · 중소기업) · 엔터프라이즈(복잡한 승인 흐름 · 고급 보안 · 외부 연계) 두 플랜, 월액은 구성에 따라 개별 견적, 50 ID 부터 계약. 아카데믹 · 거버먼트 특별가."
+    },
+    {
+      "title": "AI機能の品質評価を自動化する：機械採点と LLM-as-a-Judge の役割分担",
+      "url": "https://tech.kickflow.co.jp/entry/2026/08/27/143040",
+      "publisher": "kickflow",
+      "summary": "티켓 요약 · 계산식 생성 · 입력 보조 같은 AI 기능은 같은 입력에도 출력이 흔들려 '기대값과 한 번 일치' 하는 기존 테스트로 품질을 못 잰다. 본번과 같은 경로로 실제로 여러 번 불러 채점 · 기록하는 eval 프레임워크. 결정적 판정은 기계 채점, 의미적 품질은 LLM judge. 일시 오류로 전체를 불합격시키지 않기, 문턱 · 평가 데이터는 운용하며 키운다, smoke/full 2단. 첫 모델 업데이트에서 품질 기준을 지킨 채 더 싼 모델로 바꿀 수 있다고 판단.",
+      "date": "2026-08-27"
+    },
+    {
+      "title": "kickflow のシリアライザを Alba に移行しました",
+      "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+      "publisher": "kickflow",
+      "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+      "date": "2026-08-07"
+    },
+    {
+      "title": "oRPC を調査したら、Rails + Nuxt の自分たちのスタックが思ったより型安全だと気づいた話",
+      "url": "https://tech.kickflow.co.jp/entry/2026/07/21/102711",
+      "publisher": "kickflow",
+      "summary": "백엔드 Rails · 프런트 Nuxt · OpenAPI YAML 을 손으로 쓰는 spec-first. 같은 모양을 세 곳에 쓴다는 불편에 oRPC 를 조사했지만 도입하지 않았다 — 하나의 정의에서 검증 · 타입 · OpenAPI 가 나오는 가치는 서버가 TypeScript 일 때만 성립. 대신 실장→스키마→프런트 타입의 '링크' 를 하나씩 점검하니 끊긴 것은 손으로 쓴 응답 타입 한 줄뿐 — OpenAPI 에서 생성한 타입으로 넘긴다.",
+      "date": "2026-07-21"
+    },
+    {
+      "title": "flakyを可視化してから潰す：E2Eテストの安定化と高速化を同時に進めた話",
+      "url": "https://tech.kickflow.co.jp/entry/2026/07/22/072931",
+      "publisher": "kickflow",
+      "summary": "Playwright E2E 약 1,200 건을 nightly CI 에서 병렬 실행. 메인 워크플로 30일 실패율 67.9%(56 중 38), retry 워크플로 52.5%, 실행 50~70분 · 최장 180분. waitForTimeout 고정 대기 6,637 건(한 번 실행에 약 2.8시간 sleep), 테스트 데이터 준비의 약 9할이 UI 조작, force: true 85 건. 먼저 재는 장치(커스텀 리포터 · waitForTimeout 래칫)부터 만들고 줄이고 빠르게 — 가장 큰 원인은 공용 로그인 헬퍼, 빠르게 하니 flaky 가 늘어나는 역설.",
+      "date": "2026-07-22"
+    },
+    {
+      "title": "Metabase MCPの「たぶん」を減らすために、dbtの資産を活かしてセマンティックタイプを整備した",
+      "url": "https://tech.kickflow.co.jp/entry/2026/07/24/105712",
+      "publisher": "kickflow",
+      "summary": "BigQuery + Metabase. 전 사원에게 Claude 계정, Metabase MCP 로 분석이 늘었지만 테이블 정의서가 없어 MCP 답이 '추정' 에 머문다 → 시맨틱 레이어보다 먼저 dbt 자산으로 Metabase 에 시맨틱 타입 · 컬럼 메타데이터를 채웠다.",
+      "date": "2026-07-24"
+    },
+    {
+      "title": "Disk I/O Budget 枯渇と監視を作り直した話",
+      "url": "https://tech.kickflow.co.jp/entry/2026/08/03/145309",
+      "publisher": "kickflow",
+      "summary": "신규 사업 본부의 Preview 환경(PR 마다 배포 · 공유 Preview DB · Supabase · Supavisor 풀러 · Inngest Cron)에서 DB 가 막혀 로그인이 불안정. 주요 지표(CPU · 메모리 · 접속 수)가 정상이라 'DB 는 문제없다' 고 오판 — 별축의 Disk I/O Budget 고갈. Cron 빈도 2분 → 1시간, 풀러 조정, Compute 업그레이드, Datadog 다층 모니터.",
+      "date": "2026-08-03"
+    }
+  ]
+}

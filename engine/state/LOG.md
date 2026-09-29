@@ -2847,3 +2847,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 - 외부 API 글(2022)로 `external-api-relay`. 결정 5 — 중계 서비스 신설(내부 API 그대로 공개 대신) / 외부는 REST · 내부는 GraphQL(외부 사용자에겐 GraphQL 불리함이 더 크다) / 외부용 이름 · 숫자 상태 → 문자열 / server_token · access_token 분리 · 비밀번호 방식은 테스트만 / Webhook + client_secret SHA256 서명. 그림 3.
 - 완주 기준 — 도메인 3 모두 기능 1, 기능 셋이 서로 이어짐, 수익원 셋 모두 기능과 연결. `status: done`, QUEUE 완료로 옮김.
 
+## 2026-09-30 kickflow 프로파일
+
+- 홈페이지 · 요금 페이지(초기 0엔 · 50 ID 부터 · 개별 견적) + 기술 글 6편(AI eval · Alba 이행 · oRPC 조사 · E2E flaky · Metabase 시맨틱 타입 · Disk I/O Budget). 도메인 3(AI 품질 · API 응답 모양 · E2E 신뢰), 수익원 1(confirmed). 결재 엔진 · 조직도 설계 글은 아직 없다. Metabase · Disk I/O 는 도메인으로 세우지 않고 sources 로만.
+
