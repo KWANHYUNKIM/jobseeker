@@ -14,6 +14,7 @@ import {
   type Offer,
   type Part,
 } from '../lib/hardware'
+import { CardDrawing } from './HardwareCharts'
 
 // 제품별 스펙 — 같은 칩을 얹은 제조사 제품들(ASUS ROG Astral · TUF · GIGABYTE GAMING OC …).
 //
@@ -65,9 +66,16 @@ export function ModelTable({ data, part }: { data: HwData; part: Part }) {
               <Fragment key={m.id}>
                 <tr className="border-t border-(--color-border-soft) hover:bg-(--color-band) cursor-pointer" onClick={() => setOpen(open === m.id ? null : m.id)}>
                   <td className="px-2 py-1.5 min-w-52">
-                    <div className="font-medium">
-                      <span className="text-(--color-faint) mr-1">{open === m.id ? '▾' : '▸'}</span>
-                      {m.name}
+                    <div className="flex items-center gap-2">
+                      {m.image ? (
+                        <img src={m.image.url} alt={m.name} loading="lazy" referrerPolicy="no-referrer" className="w-12 h-12 object-contain rounded bg-white shrink-0" />
+                      ) : (
+                        <span className="w-12 h-12 shrink-0 rounded bg-(--color-band) grid place-items-center text-[9px] text-(--color-faint)">사진 없음</span>
+                      )}
+                      <div className="font-medium">
+                        <span className="text-(--color-faint) mr-1">{open === m.id ? '▾' : '▸'}</span>
+                        {m.name}
+                      </div>
                     </div>
                     <div className="text-[10px] text-(--color-faint)">
                       {m.code} · {CONF[m.confidence]} {m.checked_at}
@@ -137,7 +145,7 @@ function ModelMore({ m, offers, cases, dists }: { m: Model; offers: Offer[]; cas
                 {o.name}
               </a>
               <DistChip d={distributorOf(o.name, dists)} />
-              <span className="ml-auto tabular-nums font-semibold">{o.price.toLocaleString()}원</span>
+              <span className="ml-auto tabular-nums font-semibold whitespace-nowrap">{o.price.toLocaleString()}원</span>
             </div>
           ))
         ) : (
@@ -145,6 +153,15 @@ function ModelMore({ m, offers, cases, dists }: { m: Model; offers: Offer[]; cas
         )}
       </div>
       <div className="flex flex-col gap-1">
+        {m.image && (
+          <figure className="mb-2">
+            <img src={m.image.url} alt={m.name} loading="lazy" referrerPolicy="no-referrer" className="w-full max-w-[320px] rounded bg-white" />
+            <figcaption className="text-[10px] text-(--color-faint)">
+              사진: <a href={m.image.page} target="_blank" rel="noreferrer" className="hover:underline">{m.image.credit} 공식 페이지</a>
+            </figcaption>
+          </figure>
+        )}
+        {len > 0 && <CardDrawing specs={m.specs} />}
         {len > 0 && (
           <>
             <div className="font-semibold text-(--color-muted)">케이스에 들어가나 (길이 {len}mm)</div>

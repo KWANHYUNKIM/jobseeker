@@ -91,6 +91,9 @@ export interface Bench {
   image: { name: string; model: string; anchor: { gpu: string; seconds: number }; min_vram_gb: number }
   finetune: { key: string; name: string; vram_gb: number; plain: string }[]
   dev: { name: string; model: string; anchor_minutes: number }
+  /** 제조사가 공개한 측정값 — 우리 추정(games)과 게임·옵션이 달라 따로 그린다 */
+  vendor?: { gpu: string; res: string; preset: string; footnote: string; by: string; games: { name: string; fps: number }[]; source: { title: string; url: string } }[]
+  vendor_note?: string
 }
 
 export interface PricePoint {
@@ -573,6 +576,8 @@ export interface Model {
   confidence: 'low' | 'medium' | 'high'
   checked_at: string
   note?: string
+  /** 제조사 공식 페이지의 대표 이미지 — 파일로 복사하지 않고 원본에서 불러온다(출처 표시) */
+  image?: { url: string; credit: string; page: string }
   /** 공식 페이지가 말하는 내구성 관련 사실(팬 베어링·금속 백플레이트 등) */
   durability?: { fan_bearing?: string | null; notes?: string[] }
 }

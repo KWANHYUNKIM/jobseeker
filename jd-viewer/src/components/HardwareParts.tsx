@@ -4,6 +4,7 @@ import { navigate, onLinkClick, useRoute, useSetQuery } from '../lib/router'
 import { absUrl, useSeo } from '../lib/seo'
 import { paths, TAB_SEO } from '../lib/urls'
 import { MoveBadge, NOINDEX, PriceChart } from './HardwarePrices'
+import { GameCompare, PerfLadder, VendorBench } from './HardwareCharts'
 import { DurabilityNotes, ModelTable, SaleForms } from './HardwareModels'
 import { TierBadge } from './HardwareView'
 
@@ -132,6 +133,12 @@ function PartTable({ data }: { data: HwData }) {
         </section>
       )}
 
+      {(cat === 'gpu' || cat === 'cpu') && (
+        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 grid gap-6 lg:grid-cols-2">
+          <PerfLadder data={data} cat={cat} />
+          {cat === 'cpu' ? <PerfLadder data={data} cat="cpu" measure="multi" /> : <LadderHelp />}
+        </section>
+      )}
       <div className="flex flex-wrap items-center gap-2 text-sm">
         {makers.length > 1 && (
           <select value={maker} onChange={(e) => setMaker(e.target.value)} className="border border-(--color-border) rounded px-2 py-1 bg-(--color-panel)">
@@ -358,6 +365,17 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
           <PriceChart history={rec?.history ?? []} />
         </section>
       </div>
+      {(part.category === 'gpu' || part.category === 'cpu') && (
+        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 grid gap-6 lg:grid-cols-2">
+          {part.category === 'gpu' ? <GameCompare data={data} part={part} /> : <PerfLadder data={data} cat="cpu" highlight={part.id} measure="multi" />}
+          <PerfLadder data={data} cat={part.category} highlight={part.id} />
+        </section>
+      )}
+      {part.category === 'gpu' && (data.bench.vendor ?? []).some((v) => v.gpu === part.id) && (
+        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
+          <VendorBench data={data} part={part} />
+        </section>
+      )}
       <DurabilityNotes part={part} />
       {part.category === 'cpu' ? <SaleForms data={data} part={part} /> : <ModelTable data={data} part={part} />}
       {peers.length > 0 && (
@@ -372,6 +390,19 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
           </div>
         </section>
       )}
+    </div>
+  )
+}
+
+function LadderHelp() {
+  return (
+    <div className="text-sm text-(--color-muted) flex flex-col gap-2 justify-center">
+      <p>
+        <b className="text-(--color-text)">읽는 법</b> — 막대 길이가 성능 지수다. RTX 4090 을 100 으로 두고 QHD 게임에서 몇 % 나오나를 잰 값이라, 50 이면
+        4090 의 절반쯤 프레임이 나온다.
+      </p>
+      <p>막대 색이 진할수록 높은 등급이다. 오른쪽 숫자는 오늘 최저가 — 막대가 비슷한데 값이 크게 다르면 싼 쪽이 가성비다.</p>
+      <p>막대를 누르면 그 카드의 게임별 예상 fps·제조사 공개 측정·제품별 사진과 스펙으로 간다.</p>
     </div>
   )
 }
