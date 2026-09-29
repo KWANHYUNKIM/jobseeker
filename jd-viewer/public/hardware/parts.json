@@ -3493,6 +3493,60 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-core-i5-14500",
+   "category": "cpu",
+   "name": "Core i5-14500",
+   "maker": "Intel",
+   "released": "2024-01",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 14,
+    "threads": 20,
+    "boost_ghz": 5.0,
+    "tdp_w": 65,
+    "max_power_w": 154,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "l3_mb": 24,
+    "series": "코어 14세대",
+    "family": "코어 i5",
+    "igpu_name": "Intel UHD 770"
+   },
+   "perf": {
+    "index": 64,
+    "multi": 43,
+    "confidence": "seed",
+    "basis": "추정 — Tom's 계층표 · TPU 에 없다. 14400(게임 60)보다 P코어 터보 0.3GHz 높고(5.0 vs 4.7) L3 24MB(20MB), 14600K(75)보다는 터보 0.3GHz 낮고 전력 한도가 낮다 — 둘 사이 아래쪽 64. 멀티는 E코어 8개(14400 은 4개)라 14400(34)과 14600K(56) 사이 43. 실측 대기"
+   },
+   "price_query": {
+    "q": "i5-14500",
+    "cate": "CPU",
+    "must": [
+     "14500"
+    ],
+    "not": [
+     "14500T",
+     "14500HX",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i5-14500(14코어 6P+8E · 20스레드 · 2.6/최대 5.0GHz · 24MB · 65/154W · UHD 770 · DDR4-3200/DDR5-4800 · 2024년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/236784/intel-core-i5-processor-14500-24m-cache-up-to-5-00-ghz/specifications.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-core-i5-14400f",
    "category": "cpu",
    "name": "Core i5-14400F",
