@@ -1783,10 +1783,10 @@
     "base_ghz": 3.0
    },
    "perf": {
-    "index": 72,
+    "index": 68,
     "multi": 34,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100 · 멀티: 9950X = 100. Tom's 표에 없어 이웃으로 옮겼다 — TechSpot 10게임 평균에서 5700X3D 는 5800X3D 보다 4% 느리고 7600X 보다 '조금' 느리다. 7600X 는 Tom's 표에서 우리 69 라 그 바로 아래 68. 다른 길(TPU 7700X3D 리뷰에서 5800X3D 가 9600X(75) 바로 아래 → −4%)은 약 71 — 두 길이 3 차이라 low",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 5700X3D",
@@ -1812,6 +1812,14 @@
     {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "TechSpot — Ryzen 7 5700X3D 리뷰(10게임 평균: 5800X3D 대비 −4%, 7600X 보다 조금 느림)",
+     "url": "https://www.techspot.com/review/2801-amd-ryzen-5700x3d/"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 7700X3D 리뷰, 1080p 게임 상대 성능(5800X3D 92.8% · 9600X 93.2%, RTX 5090)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-7700x3d/16.html"
     }
    ],
    "status": "current",
