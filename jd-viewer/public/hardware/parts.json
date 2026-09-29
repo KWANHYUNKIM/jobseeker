@@ -2255,6 +2255,63 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-core-i5-14400",
+   "category": "cpu",
+   "name": "Core i5-14400",
+   "maker": "Intel",
+   "released": "2024-01",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 10,
+    "threads": 16,
+    "boost_ghz": 4.7,
+    "tdp_w": 65,
+    "max_power_w": 148,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "l3_mb": 20,
+    "series": "코어 14세대",
+    "family": "코어 i5",
+    "igpu_name": "Intel UHD 730"
+   },
+   "perf": {
+    "index": 60,
+    "multi": 34,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표에서 잰 i5-14400 값 그대로(14400F 가 이 값을 빌려 쓴다)",
+    "confidence": "low"
+   },
+   "price_query": {
+    "q": "i5-14400",
+    "cate": "CPU",
+    "must": [
+     "14400"
+    ],
+    "not": [
+     "14400F",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i5-14400(10코어 6P+4E · 16스레드 · 4.7GHz · 20MB · 65/148W · UHD 730 · DDR4-3200/DDR5-4800 · 2024년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/236788/intel-core-i5-processor-14400-20m-cache-up-to-4-70-ghz/specifications.html"
+    },
+    {
+     "title": "Intel 공식 제품 페이지",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-core-i5-14400f",
    "category": "cpu",
    "name": "Core i5-14400F",
@@ -2453,7 +2510,10 @@
     "speed_mts": 6000,
     "cl": 30,
     "dual_bandwidth_gbs": 96,
-    "latency_ns": 10.0
+    "latency_ns": 10.0,
+    "voltage_v": 1.4,
+    "default_mts": 4800,
+    "profile": "XMP 3.0 / EXPO"
    },
    "perf": {
     "index": 96,
@@ -2477,12 +2537,22 @@
    },
    "sources": [
     {
+     "title": "G.SKILL 공식 사양 — Trident Z5 Neo RGB 6000 CL30 64GB(이 급의 대표 제품)",
+     "url": "https://www.gskill.com/specification/165/390/1665020865/F5-6000J3040G32GX2-TZ5NR-Specification"
+    },
+    {
      "title": "JEDEC DDR5 표준(JESD79-5)",
      "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "representative": {
+    "name": "G.SKILL Trident Z5 Neo RGB F5-6000J3040G32GX2-TZ5NR",
+    "url": "https://www.gskill.com/specification/165/390/1665020865/F5-6000J3040G32GX2-TZ5NR-Specification",
+    "note": "공식: DDR5 64GB(32GB×2) · XMP 3.0/EXPO 6000MT/s · 30-40-40-96 · 1.40V · 기본(SPD) 4800MT/s 1.10V · 언버퍼드 Non-ECC. 6000 은 BIOS 에서 EXPO/XMP 를 켜야 나온다 — 끄면 4800 으로 돈다."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ram-ddr4-3200-16",
