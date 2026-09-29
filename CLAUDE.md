@@ -27,6 +27,7 @@
     바뀐 것과 단가가 바뀐 것을 가를 수 없다. 주별·월별 코호트를 '분야|유형' 조합마다 미리 세어
     (`analysis.cohorts`) 화면이 분야·유형을 골라 본다(표본 3건 미만인 점은 선에 올리지 않는다).
     위시켓(약관 금지)·OKKY(robots 전면 차단)·크몽(스크래핑 금지)은 일부러 뺐다.
+    `crawl_hardware` 는 PC 부품 가격이다(`hw-engine/` 참조).
   - `pipeline/` : 통합/중복제거/마감분류(aggregate, job_status), 수동보정(overrides)
     마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에
     다시 물어보는 재확인(`close_check` → `job_closures.json` 원장). 원장이 우선한다.
@@ -97,6 +98,17 @@
   `jd-viewer/public/guide/` 에 쌓여 공고 상세 화면 오른쪽 패널이 읽는다.
   대기열은 `all_jobs_enriched.json` 에서 나온다 — `validate.py --gaps` 가 브리핑 없는
   회사를 모집중 공고 수로 줄 세워 준다.
+- `hw-engine/` : PC 하드웨어 조사 엔진. 역설계가 "그 회사가 무엇으로 만들어졌나"라면 여기는
+  "내 책상 위 기계가 무엇으로 만들어졌고 무엇을 사면 무엇이 얼마나 돌아가나"다. 구조는 `engine/` 과
+  같다(PROMPT/schema/state/validate). **두 겹이다** — 부품·스펙·성능 지수·게임/AI 기준값은 엔진이
+  제조사 공식 자료로 조사해 `jd-viewer/public/hardware/{parts,index,bench}.json` 에 두고, 가격은
+  크롤러 `crawl_hardware` 가 매일 다나와 통합검색에서 받아 `prices.json`·DB `hw_price_day`(009)에
+  쌓는다(사이클 끝의 별도 단계, **하루 한 번만** 실제로 돈다 — robots Crawl-delay 10초. `--no-hardware`).
+  **다나와에서는 가격·상품명·링크만 쓴다** — 콘진법 DB 보호 문구가 있어 스펙·이미지·설명은 안 받는다.
+  다나와의 가격 차트는 robots 가 막아서 추이는 우리가 찍은 날부터만 있다.
+  **등급은 부품에 적지 않는다** — `index.json` 의 문턱으로 `perf.index` 에서 계산한다(같은 성능 = 같은 등급).
+  뷰어 `/hardware`(조립·성능 예측) · `/hardware/parts`(등급·스펙 비교) · `/hardware/prices`(가격 추이).
+  가격이 실리는 화면(추이·부품 상세)은 noindex 이고 프리렌더·sitemap 에서 뺐다.
 - `study-engine/` : 기술 백과사전 엔진. 단위는 **낱말 하나**다 — ATmega128 핀맵·풀업
   저항부터 파이썬 자료구조 선택, 멱등성 같은 IT 용어까지. 구조는 `engine/` 과 같고
   산출물은 `jd-viewer/public/study/` 에 쌓인다.
