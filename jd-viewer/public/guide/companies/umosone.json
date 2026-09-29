@@ -1,0 +1,340 @@
+{
+  "slug": "umosone",
+  "name": "유모스원",
+  "name_en": "UMOS ONE",
+  "aliases": [
+    "유모스원",
+    "㈜유모스원",
+    "UMOSONE",
+    "umosone"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "umosone.ai",
+  "one_liner": "42dot(현대차그룹) 자회사 — 물류 TMS · WMS, 차량 관제 FMS, DRT 셔틀 TAP! 을 만들고, 3,000여 고객사 데이터를 지식그래프로 옮겨 AI 에이전트에 붙인다",
+  "company": {
+    "business": "유모스원(UMOS ONE)은 공고가 **42dot(포티투닷, 현대자동차그룹 소프트웨어 센터)의 자회사**로 소개하는 모빌리티 · 물류 솔루션 회사다 — 42dot 사이트의 Family Site 에도 유모스원이 걸려 있다. 홈페이지(umosone.ai)는 스스로를 'End-to-End 모빌리티 솔루션' 으로 부르고 세 갈래를 적는다. **물류**: AI 창고 관리(WMS, 멀티 테넌트 표준 데이터 · 입고부터 출고까지 실시간 재고)와 지능형 운송 플랫폼(TMS, **화주-차주 직접 매칭** · 자율주행 트럭 연계). **모빌리티**: 하이브리드 자율주행 셔틀과 **수요응답형(DRT) 셔틀 플랫폼 TAP! 을 직접 운영**(실시간 최적 배차 엔진)하고, **통합 관제(FMS)** 는 단말기 무설치(Deviceless) 방식 · AI 예지보전을 내세운다. **스마트시티**. 공고는 제품 이름으로 **TAP! · 차량 관제 · 운영 시스템 Pleos Fleet · AI 운송 관리 시스템 Capora** 를 들고, 데이터 공고는 **3,000여 엔터프라이즈 고객사**의 모빌리티 · 물류 데이터를 다룬다고 적는다. 모집중 공고는 둘 — FMS 프론트엔드(4년↑), 온톨로지 · 지식그래프 AI 데이터 엔지니어(5년↑).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "유모스원 | UMOS ONE - End-to-End Mobility Solution",
+        "url": "https://umosone.ai/",
+        "publisher": "유모스원",
+        "summary": "물류 · 모빌리티 · 스마트시티를 아우르는 End-to-End 모빌리티 솔루션. 물류: AI-Native 창고 관리(WMS, 멀티 테넌트 표준 데이터 · 실시간 재고 가시성), 지능형 운송 플랫폼(TMS, 화주-차주 직접 매칭 · 자율주행 트럭 연계). 모빌리티: 하이브리드 자율주행 셔틀 · 수요응답형(DRT) 셔틀 플랫폼 TAP! 직접 운영(실시간 최적 배차 엔진), 통합 관제(FMS, 단말기 무설치 · AI 예지보전). 스마트시티."
+      },
+      {
+        "title": "Frontend Engineer (Fleet Management System)",
+        "url": "https://www.wanted.co.kr/wd/373485",
+        "publisher": "원티드",
+        "summary": "UMOS ONE 은 42dot 의 자회사 — 도시교통 운영체제(UMOS) 기반 모빌리티 서비스의 플릿 운영과 자율주행 확장. 제품: 모빌리티 서비스 TAP!, 차량 관제 · 운영 시스템 Pleos Fleet, AI 기반 운송 관리 시스템 Capora. 프론트: React · TypeScript 모노레포 · 디자인 시스템, IoT/텔레매틱스 실시간 지도 관제 UI, 코딩테스트 포함 전형."
+      },
+      {
+        "title": "AI Data Engineer (Ontology & Knowledge Base)",
+        "url": "https://www.wanted.co.kr/wd/379390",
+        "publisher": "원티드",
+        "summary": "3,000여 엔터프라이즈 고객사의 모빌리티 · 물류 데이터를 Agentic AI 용 지식 기반(온톨로지 · 지식그래프, AWS Neptune)으로. TBox/ABox 매핑, Entity Resolution, SPARQL 생성 품질 · 라우팅 정확도 평가, Databricks 마트."
+      },
+      {
+        "title": "Fleet AI - 플릿 운영 최적화 및 예측 인텔리전스 솔루션 | 42dot",
+        "url": "https://42dot.ai/ko/ai/fleet-ai",
+        "publisher": "포티투닷",
+        "summary": "차량 데이터 · 운행 데이터 · 운전자 정보를 플릿 단위로 통합 분석해 예측 인텔리전스와 실시간 인사이트, 예지 정비, 운영 · 안전 · 사고 관리 자동화. 사이트 하단 Family Site 에 유모스원(umosone.ai)."
+      }
+    ],
+    "scale": [
+      {
+        "label": "엔터프라이즈 고객사(공고 주장)",
+        "value": "3,000여 곳",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Data Engineer (Ontology & Knowledge Base)",
+            "url": "https://www.wanted.co.kr/wd/379390",
+            "publisher": "원티드",
+            "summary": "3,000여 엔터프라이즈 고객사의 모빌리티 · 물류 데이터를 Agentic AI 용 지식 기반(온톨로지 · 지식그래프, AWS Neptune)으로. TBox/ABox 매핑, Entity Resolution, SPARQL 생성 품질 · 라우팅 정확도 평가, Databricks 마트."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "물류 SaaS(TMS · WMS)",
+        "how": "홈페이지가 화주-차주 직접 매칭 운송 플랫폼(TMS)과 멀티 테넌트 창고 관리(WMS)를 파는 솔루션으로 적고 문의 양식에서 고른다. 과금 방식(구독 · 거래 수수료)은 읽은 자료에 없다.",
+        "domains": [
+          "지식그래프 · 에이전트 데이터"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "유모스원 | UMOS ONE - End-to-End Mobility Solution",
+            "url": "https://umosone.ai/",
+            "publisher": "유모스원",
+            "summary": "물류 · 모빌리티 · 스마트시티를 아우르는 End-to-End 모빌리티 솔루션. 물류: AI-Native 창고 관리(WMS, 멀티 테넌트 표준 데이터 · 실시간 재고 가시성), 지능형 운송 플랫폼(TMS, 화주-차주 직접 매칭 · 자율주행 트럭 연계). 모빌리티: 하이브리드 자율주행 셔틀 · 수요응답형(DRT) 셔틀 플랫폼 TAP! 직접 운영(실시간 최적 배차 엔진), 통합 관제(FMS, 단말기 무설치 · AI 예지보전). 스마트시티."
+          },
+          {
+            "title": "AI Data Engineer (Ontology & Knowledge Base)",
+            "url": "https://www.wanted.co.kr/wd/379390",
+            "publisher": "원티드",
+            "summary": "3,000여 엔터프라이즈 고객사의 모빌리티 · 물류 데이터를 Agentic AI 용 지식 기반(온톨로지 · 지식그래프, AWS Neptune)으로. TBox/ABox 매핑, Entity Resolution, SPARQL 생성 품질 · 라우팅 정확도 평가, Databricks 마트."
+          }
+        ]
+      },
+      {
+        "name": "차량 관제(FMS · Pleos Fleet)",
+        "how": "홈페이지가 통합 관제 플랫폼 및 운영 센터(FMS)를, 공고가 차량 관제 · 운영 시스템 Pleos Fleet 을 든다. 판매 · 과금 방식은 읽은 자료에 없다.",
+        "domains": [
+          "플릿 관제 웹(FMS)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "유모스원 | UMOS ONE - End-to-End Mobility Solution",
+            "url": "https://umosone.ai/",
+            "publisher": "유모스원",
+            "summary": "물류 · 모빌리티 · 스마트시티를 아우르는 End-to-End 모빌리티 솔루션. 물류: AI-Native 창고 관리(WMS, 멀티 테넌트 표준 데이터 · 실시간 재고 가시성), 지능형 운송 플랫폼(TMS, 화주-차주 직접 매칭 · 자율주행 트럭 연계). 모빌리티: 하이브리드 자율주행 셔틀 · 수요응답형(DRT) 셔틀 플랫폼 TAP! 직접 운영(실시간 최적 배차 엔진), 통합 관제(FMS, 단말기 무설치 · AI 예지보전). 스마트시티."
+          },
+          {
+            "title": "Frontend Engineer (Fleet Management System)",
+            "url": "https://www.wanted.co.kr/wd/373485",
+            "publisher": "원티드",
+            "summary": "UMOS ONE 은 42dot 의 자회사 — 도시교통 운영체제(UMOS) 기반 모빌리티 서비스의 플릿 운영과 자율주행 확장. 제품: 모빌리티 서비스 TAP!, 차량 관제 · 운영 시스템 Pleos Fleet, AI 기반 운송 관리 시스템 Capora. 프론트: React · TypeScript 모노레포 · 디자인 시스템, IoT/텔레매틱스 실시간 지도 관제 UI, 코딩테스트 포함 전형."
+          }
+        ]
+      },
+      {
+        "name": "DRT · 자율주행 셔틀 운영(TAP!)",
+        "how": "홈페이지가 수요응답형 셔틀 플랫폼을 직접 운영하고 '실시간 최적 배차 엔진 기반의 수익형 모빌리티 모델' 을 확보한다고 적는다 — 운송 서비스 요금(또는 지자체 운영 계약)으로 읽히지만 확인하지 못했다.",
+        "domains": [
+          "플릿 관제 웹(FMS)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "유모스원 | UMOS ONE - End-to-End Mobility Solution",
+            "url": "https://umosone.ai/",
+            "publisher": "유모스원",
+            "summary": "물류 · 모빌리티 · 스마트시티를 아우르는 End-to-End 모빌리티 솔루션. 물류: AI-Native 창고 관리(WMS, 멀티 테넌트 표준 데이터 · 실시간 재고 가시성), 지능형 운송 플랫폼(TMS, 화주-차주 직접 매칭 · 자율주행 트럭 연계). 모빌리티: 하이브리드 자율주행 셔틀 · 수요응답형(DRT) 셔틀 플랫폼 TAP! 직접 운영(실시간 최적 배차 엔진), 통합 관제(FMS, 단말기 무설치 · AI 예지보전). 스마트시티."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "플릿 관제 웹(FMS)",
+        "why": "프론트 공고가 대규모 IoT/텔레매틱스 데이터의 실시간 시각화와 지도 기반 차량 관제 UI, 운행 데이터 대시보드를 적고 WebGL 지도 · GeoJSON 을 우대한다.",
+        "what_to_know": [
+          "WebGL 지도 레이어",
+          "서버 상태 분리",
+          "모노레포 디자인 시스템"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Frontend Engineer (Fleet Management System)",
+            "url": "https://www.wanted.co.kr/wd/373485",
+            "publisher": "원티드",
+            "summary": "UMOS ONE 은 42dot 의 자회사 — 도시교통 운영체제(UMOS) 기반 모빌리티 서비스의 플릿 운영과 자율주행 확장. 제품: 모빌리티 서비스 TAP!, 차량 관제 · 운영 시스템 Pleos Fleet, AI 기반 운송 관리 시스템 Capora. 프론트: React · TypeScript 모노레포 · 디자인 시스템, IoT/텔레매틱스 실시간 지도 관제 UI, 코딩테스트 포함 전형."
+          }
+        ]
+      },
+      {
+        "name": "지식그래프 · 에이전트 데이터",
+        "why": "데이터 공고가 고객사 모빌리티 · 물류 데이터를 온톨로지(TBox/ABox)와 지식그래프(AWS Neptune)로 옮기고 SPARQL 생성 · 라우팅 정확도를 평가한다고 적는다.",
+        "what_to_know": [
+          "RDF · OWL",
+          "SPARQL",
+          "Entity Resolution"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Data Engineer (Ontology & Knowledge Base)",
+            "url": "https://www.wanted.co.kr/wd/379390",
+            "publisher": "원티드",
+            "summary": "3,000여 엔터프라이즈 고객사의 모빌리티 · 물류 데이터를 Agentic AI 용 지식 기반(온톨로지 · 지식그래프, AWS Neptune)으로. TBox/ABox 매핑, Entity Resolution, SPARQL 생성 품질 · 라우팅 정확도 평가, Databricks 마트."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "Agentic AI 를 지식그래프 위에 세운다",
+        "evidence": "SPARQL 생성 품질, 라우팅 정확도 등 세부 지표 분석 및 실패 원인 분류 대시보드 구축",
+        "so_what": "벡터 RAG 가 아니라 온톨로지 · SPARQL 로 답을 뽑는 에이전트다 — 면접에서 'LLM 이 만든 SPARQL 이 틀렸을 때 어떻게 잡나' 를 물을 가능성이 높다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "현대차그룹 자회사의 상용화 조직",
+        "evidence": "UMOS ONE은 42dot의 자회사로",
+        "so_what": "42dot 이 연구 · 차량 소프트웨어를, 유모스원이 물류 · 셔틀 · 관제의 상용 서비스를 맡는 구도로 읽힌다(추정). 프론트 전형에 코딩테스트와 3시간 2차 면접이 있다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "TMS · WMS · FMS 의 과금 방식(구독 · 거래 수수료)은 읽은 자료에 없다",
+    "TAP! 셔틀이 요금으로 버는지 지자체 운영 계약인지 확인하지 못했다",
+    "Pleos Fleet · Capora 가 홈페이지의 FMS · TMS 와 같은 제품인지는 확인하지 못했다(이름이 다르다)",
+    "umos.one · tap.kr 은 이 회사 사이트가 아니다(각각 자리표시 페이지 · 무관한 단축 URL 서비스)"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/373485",
+      "title": "Frontend Engineer (Fleet Management System)",
+      "site": "wanted",
+      "verdict": "경력 4년 이상. **차량 관제 · 운영(FMS)** 웹 프론트엔드 — React · TypeScript, **모노레포 멀티 앱의 공유 패키지 · 디자인 시스템**, **서버 상태와 클라이언트 상태를 분리한 상태 관리**, 타입 안전 스타일링, **대규모 IoT/텔레매틱스 데이터의 실시간 시각화와 지도 기반 차량 관제 UI**, 런타임 검증 폼 · 다국어, TDD · 정적 분석, 멀티 환경 CI/CD, 운행 대시보드 · 통계 차트. 자격은 프론트 · 백오피스 4년, JS/TS/HTML/CSS 내부 원리, React 컴포넌트 설계, 서버/클라이언트 상태 분리, **B2B SaaS 어드민 · 대시보드**, 모던 빌드 · CI/CD. 우대는 모노레포, type-safe CSS-in-JS, 스키마 검증 폼, **WebGL 지도 · GeoJSON**, 디자인 시스템, 단위 · 통합 · E2E, SSO · OAuth 2.0, 실시간 대시보드, 성능(코드 스플리팅 · 가상화), 마이크로 프런트엔드, 모빌리티 · 물류 · 관제 도메인. 전형에 **코딩테스트 · 2차 면접 3시간**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "프론트 4년",
+          "React · TS 내부 이해",
+          "서버/클라 상태 분리",
+          "B2B 어드민 · 대시보드"
+        ],
+        "can_learn": [
+          "WebGL 지도",
+          "모노레포",
+          "스키마 검증 폼"
+        ]
+      },
+      "study": [
+        {
+          "topic": "수천 대 차량을 지도에 실시간으로 — WebGL 지도 레이어와 갱신 주기",
+          "from": "task",
+          "quote": "• 대규모 IoT/텔레매틱스 데이터의 실시간 시각화 및 지도 기반 차량 관제 UI 개발",
+          "priority": "core",
+          "why": "주요업무이고 우대에 'WebGL 기반 지도 라이브러리를 활용한 GeoJSON 데이터 시각화' 와 대규모 실시간 대시보드가 있다. 회사의 FMS 가 통합 관제 플랫폼이다.",
+          "gap_check": "차량 5,000대 위치가 1초마다 들어올 때 DOM 마커로 그리면 무엇이 먼저 무너지나? WebGL 레이어(점 · 아이콘)로 바꾸면 무엇을 한 번에 넘기나(GeoJSON 소스 갱신)? 1초마다 React 상태를 바꾸지 않고 지도에만 반영하려면? 확대 수준이 낮을 때 클러스터링은 어디서 하나?",
+          "drill": "MapLibre GL JS 문서의 'Add live realtime data' 예제를 따라, 가짜 차량 5,000대의 위치를 WebSocket(또는 setInterval)로 1초마다 흘려 GeoJSON 소스를 setData 로만 갱신하는 관제 화면을 만든다. 같은 데이터를 DOM 마커 판과 비교해 프레임 시간을 재고, 줌 아웃 시 클러스터 레이어를 켠다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "MapLibre GL JS — Add live realtime data",
+              "url": "https://maplibre.org/maplibre-gl-js/docs/examples/live-update-feature/",
+              "kind": "docs"
+            },
+            {
+              "title": "MapLibre GL JS — Create and style clusters",
+              "url": "https://maplibre.org/maplibre-gl-js/docs/examples/cluster/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "서버 상태와 클라이언트 상태를 가르기",
+          "from": "qualification",
+          "quote": "• 서버 상태와 클라이언트 상태를 분리하여 관리하는 전략에 대한 이해와 적용 경험을 보유하신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에도 같은 문장이 있다. 관제 화면은 서버에서 오는 차량 상태와 사용자가 고른 필터 · 선택 차량이 섞인다.",
+          "gap_check": "차량 목록은 TanStack Query 같은 서버 상태 캐시에, 선택한 차량 · 지도 뷰포트는 클라이언트 상태에 두는 이유는? 실시간 푸시(WebSocket)로 온 값을 쿼리 캐시에 어떻게 넣나(setQueryData)? 필터를 URL 에 두면 무엇이 좋아지나?",
+          "drill": "TanStack Query 문서의 'Does TanStack Query replace Redux' 와 'Updates from Mutation Responses' 를 읽고, 위 관제 화면에 차량 상세 조회(쿼리) · 선택 차량(Zustand) · 필터(URL 검색 파라미터)를 나눠 둔다. WebSocket 메시지로 쿼리 캐시의 차량 하나만 고쳐 재요청 없이 목록 · 지도가 함께 바뀌는지 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "TanStack Query — Does TanStack Query replace Redux, MobX or other global state managers?",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/guides/does-this-replace-client-state",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모노레포에서 여러 앱이 디자인 시스템을 나눠 쓰기",
+          "from": "task",
+          "quote": "• 모노레포 기반 멀티 앱 아키텍처에서 공유 패키지 및 내부 디자인 시스템 설계·운영",
+          "priority": "high",
+          "why": "주요업무이고 우대에 모노레포 · 디자인 시스템 · type-safe CSS-in-JS 가 있다. 제품이 여럿(TAP! · Pleos Fleet · Capora · WMS · TMS)이다.",
+          "gap_check": "공유 UI 패키지를 바꿨을 때 영향받는 앱만 빌드 · 테스트하려면 무엇을 쓰나(작업 그래프 · 캐시)? 공유 패키지를 빌드해서 쓰나, 소스로 바로 쓰나(내부 패키지 방식)? 디자인 토큰을 타입으로 강제하려면(예: vanilla-extract · Panda)?",
+          "drill": "Turborepo 문서의 'Structuring a repository' 와 'Internal Packages' 를 따라 apps/fleet · apps/tms 와 packages/ui · packages/tokens 를 가진 저장소를 만든다. ui 버튼 하나를 고친 뒤 `turbo run build --filter=...[HEAD^]` 로 영향받는 앱만 빌드되는지 확인하고, 토큰을 타입으로 고정해 잘못된 색 값이 컴파일에서 막히게 한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Turborepo — Internal Packages",
+              "url": "https://turborepo.com/docs/core-concepts/internal-packages",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/379390",
+      "title": "AI Data Engineer (Ontology & Knowledge Base)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. **3,000여 엔터프라이즈 고객사의 모빌리티 · 물류 데이터를 AI 가 이해할 지식 기반으로** 바꿔, Agentic AI 가 실행 가능한 인사이트를 주게 한다. 업무는 **온톨로지 스키마(TBox) 정의와 실데이터(ABox) 매핑** 파이프라인, 크로스 도메인 관계 정의 · **동일 개체 식별(Entity Resolution)**, **AWS Neptune** 적재 · 백업 · 검증 도구, **에이전트 평가 체계**(Test Case · Evaluator/Runner 자동화, **SPARQL 생성 품질 · 라우팅 정확도 · 실패 원인 분류** 대시보드), 지식그래프 연동 전후 커버리지 지표, **Databricks** 분석 마트 · LLM Call 흐름 분석. 자격은 데이터 엔지니어링 · 분석 5년, SQL · Python, 이종 데이터의 온톨로지 · 지식그래프 설계 경험, 평가 지표 설계, Databricks 마트 · BI. 우대는 **SPARQL · RDF · OWL · Neo4j/Neptune**, LLM 에이전트 · RAG 평가 파이프라인, Spark · dbt, 모빌리티 · 물류 도메인. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 5년",
+          "SQL · Python",
+          "온톨로지 · 지식그래프 설계",
+          "평가 지표 설계"
+        ],
+        "can_learn": [
+          "SPARQL",
+          "AWS Neptune",
+          "Entity Resolution"
+        ]
+      },
+      "study": [
+        {
+          "topic": "관계형 데이터를 온톨로지로 — TBox 설계와 ABox 매핑",
+          "from": "task",
+          "quote": "• RDB, NoSQL 등 이종 원천 데이터를 프로파일링하여 온톨로지 스키마(TBox)를 정의하고, 실데이터(ABox)로 인스턴스화 및 매핑하는 데이터 지식화 파이프라인 설계",
+          "priority": "core",
+          "why": "주요업무의 중심이고 필수 자격에 '이종 데이터를 지식 구조(Ontology/Knowledge Graph)로 설계 · 정제한 경험' 이 있다.",
+          "gap_check": "운송 주문 · 차량 · 기사 · 창고 테이블을 클래스와 속성으로 옮길 때, 외래키는 객체 속성이 되나 데이터 속성이 되나? 테이블 행에 안정적인 IRI 를 어떻게 부여하나? 고객사마다 컬럼 이름이 다른 같은 개념을 어디서 맞추나(매핑 층)? 스키마를 바꾸면 이미 적재한 트리플은 어떻게 옮기나?",
+          "drill": "W3C R2RML 명세의 예제를 읽고, 작은 PostgreSQL 물류 스키마(주문 · 차량 · 기사 · 거점)를 만들어 OWL 로 클래스 5개 · 속성 10개의 TBox 를 쓴다. R2RML(또는 파이썬 rdflib 스크립트)로 행을 트리플로 바꿔 로컬 트리플 저장소(Apache Jena Fuseki)에 올리고 SPARQL 로 '지난주 지연된 주문의 기사와 차량' 을 조회한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "R2RML: RDB to RDF Mapping Language — W3C",
+              "url": "https://www.w3.org/TR/r2rml/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Jena Fuseki",
+              "url": "https://jena.apache.org/documentation/fuseki2/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 이 만든 SPARQL 을 평가하기 — Test Case · Evaluator · 실패 분류",
+          "from": "task",
+          "quote": "• SPARQL 생성 품질, 라우팅 정확도 등 세부 지표 분석 및 실패 원인 분류 대시보드 구축",
+          "priority": "core",
+          "why": "주요업무이고 바로 위 항목이 'Test Case 설계 및 Evaluator/Runner 자동화' 다. 자격에 정량 평가 지표를 직접 설계한 경험, 우대에 LLM 에이전트 · RAG 평가 파이프라인이 있다.",
+          "gap_check": "생성된 SPARQL 이 '맞다' 는 것을 쿼리 문자열 비교가 아니라 무엇으로 판정하나(실행 결과 집합 비교)? 문법 오류 · 없는 속성 사용 · 결과는 나오지만 틀림 · 라우팅 실패를 어떻게 나눠 세나? 질문 세트가 바뀌어도 지표를 시간에 따라 비교하려면 무엇을 고정하나?",
+          "drill": "위 드릴 그래프에 자연어 질문 30개와 정답 SPARQL 을 만든다. LLM 에 스키마를 주고 SPARQL 을 생성시켜 (1) 파싱 성공 (2) 실행 성공 (3) 결과 집합 일치 세 단계로 채점하는 Runner 를 쓰고, 실패를 네 갈래로 분류한 표를 Databricks(또는 로컬 DuckDB) 대시보드로 그린다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "SPARQL 1.1 Query Language — W3C",
+              "url": "https://www.w3.org/TR/sparql11-query/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객사마다 다른 표기의 같은 개체를 합치기 — Entity Resolution",
+          "from": "task",
+          "quote": "• 크로스 도메인 개체 간 관계 정의 및 동일 개체 식별(Entity Resolution)을 통한 지식 구조(Knowledge Graph) 통합",
+          "priority": "high",
+          "why": "주요업무다. 3,000여 고객사의 데이터에는 같은 거점 · 차량 · 화주가 다른 이름 · 코드로 들어온다.",
+          "gap_check": "'㈜한빛물류 이천센터' 와 '한빛물류(이천)' 를 같은 개체로 볼지를 무엇으로 정하나(블로킹 · 유사도 · 문턱)? 잘못 합친 것과 못 합친 것 중 무엇이 더 비싼가, 그래서 문턱을 어디에 두나? 합친 결과를 지식그래프에서 owl:sameAs 로 두나, 대표 노드로 합치나?",
+          "drill": "Splink 문서의 튜토리얼을 따라 가상 거점 데이터 1,000행(이름 · 주소 · 좌표에 표기 흔들림을 섞은 것)으로 블로킹 규칙과 비교 규칙을 세우고 매칭 확률을 낸다. 정답 쌍 100개로 정밀도 · 재현율을 문턱별로 그려 문턱을 고르고, 합친 결과를 대표 노드 + 원본 링크로 그래프에 넣는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Splink — Probabilistic record linkage",
+              "url": "https://moj-analytical-services.github.io/splink/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

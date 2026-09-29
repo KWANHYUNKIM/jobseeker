@@ -4,6 +4,7 @@
 
 ## 지금 쓰는 중
 
+**유모스원(`umosone`) — `done`(2026-09-30), 공고 2건(FMS Frontend 373485 · AI Data Engineer 온톨로지 379390).** 원티드 모집중 전부. 출처: umosone.ai 첫 화면(42dot Fleet AI 페이지의 Family Site 링크로 찾음) + 42dot Fleet AI + 원티드 공고. umos.one · tap.kr 은 이 회사가 아니다(자리표시 · 무관한 단축 URL) — 쓰지 말 것.
 **일루니(`illuni`) — `done`(2026-09-29), 공고 3건(시니어 프론트엔드 360480 · AI Solution 영업 360479 · AI 엔지니어 378122).** 원티드 모집중 전부. 출처: illuni.com · knova.so 메타 설명(본문은 스크립트 렌더) + 원티드 공고. MoiiMe · S-HAS 사이트는 메타도 없어 수익원 둘은 inferred.
 **크로스이엔에프(`crossenf`) — `done`(2026-09-29), 공고 3건(Frontier Developer 356348 · Android 349762 · Data Scientist 344404).** 원티드 모집중 전부(대기열은 4건으로 적었으나 모집중은 3건). 출처: crossenf.com/ko 첫 화면(해외송금 83개국 · Cross Shop 식재료 1,300가지) + career.crossenf.com 미션·핵심가치 + 원티드 공고. 데이터 공고의 '신용 리스크·한도' 는 홈페이지에 상품이 안 보여 수익원을 inferred 로 뒀다.
 

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-29",
+  "updated_at": "2026-09-30",
   "companies": [
     {
       "slug": "glowuprizz",
@@ -1112,6 +1112,20 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-29"
+    },
+    {
+      "slug": "umosone",
+      "name": "유모스원",
+      "aliases": [
+        "유모스원",
+        "㈜유모스원",
+        "UMOSONE",
+        "umosone"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }
