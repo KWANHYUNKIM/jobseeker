@@ -2,6 +2,13 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: RTX 5080 파트너 16종(사다리 6, 조사 에이전트)
+
+- models/gpu-rtx-5080.json 새로 — ASUS Prime OC · ROG Astral OC · Palit GamingPro · Gainward Phoenix · GALAX 1-Click OC 3X · EX Gamer · HOF Black · HOF ·
+  COLORFUL iGame Ultra OC · Ultra W · Ultra V2 · Vulcan · PNY OC Triple · Slim OC Dual(공식 데이터시트) · 이엠텍 MIRACLE WHITE(emtekinc.co.kr — 회사 공식 사이트, 단종 표기) ·
+  MSI VANGUARD SOC(공식 데이터시트). 매물 40 중 19 가 한 모델에만 걸리고 두 모델에 걸리는 것은 없다.
+- 뺐다: GIGABYTE 7(403) · ZOTAC 4(468, 브로슈어도 막힘) · MANLI 2(보안 검사). GALAX 국내명 짝짓기 셋은 medium.
+
 ## 2026-09-29 — 사이클: 듀얼타워 쿨러 Thermalright 7종 · RTX 5050 파트너 16종(사다리 6)
 
 - models/cooler-air-dual.json 새로 — Peerless Assassin 120 SE(무 ARGB · ARGB · Digital) · 140 · 140 SE · Phantom Spirit 120 SE · EVO. Thermalright 매물 10건 모두 한 모델.

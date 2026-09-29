@@ -1,0 +1,799 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5080",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-rtx5080-o16g",
+   "name": "ASUS Prime RTX 5080 OC",
+   "brand": "ASUS",
+   "code": "PRIME-RTX5080-O16G",
+   "match": {
+    "must": [
+     "ASUS",
+     "PRIME",
+     "5080"
+    ],
+    "not": [
+     "White"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2655,
+    "oc_mhz": 2685,
+    "length_mm": 304,
+    "width_mm": 126,
+    "thickness_mm": 50,
+    "slots": 2.5,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": null,
+    "bundle": [
+     "벨크로",
+     "어댑터 케이블(1 to 3)"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/prime/prime-rtx5080-o16g/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(팬 3개·듀얼 BIOS·50°C 미만 팬 정지·백플레이트)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/prime/prime-rtx5080-o16g/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "SFF-Ready. 조명은 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/7a0d6188-aaf6-4892-b2b9-2214f40204cf/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/prime/prime-rtx5080-o16g/"
+   }
+  },
+  {
+   "id": "asus-rog-astral-rtx5080-o16g",
+   "name": "ASUS ROG Astral RTX 5080 OC",
+   "brand": "ASUS",
+   "code": "ROG-ASTRAL-RTX5080-O16G-GAMING",
+   "match": {
+    "must": [
+     "ASUS",
+     "Astral",
+     "5080"
+    ],
+    "not": [
+     "White",
+     "BTF"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2760,
+    "oc_mhz": 2790,
+    "length_mm": 357.6,
+    "width_mm": 149.3,
+    "thickness_mm": 76,
+    "slots": 3.8,
+    "fans": 4,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "그래픽카드 지지대",
+     "벨크로",
+     "자석",
+     "키캡",
+     "PCB 자",
+     "어댑터 케이블(1 to 3)"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS ROG 공식 스펙",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5080-o16g-gaming/spec/"
+    },
+    {
+     "title": "ASUS ROG 제품 소개(팬 4개·듀얼 BIOS·다이캐스트 백플레이트)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5080-o16g-gaming/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "0dB 팬 정지는 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/D2014DA5-2608-405F-A7AD-BDD8F6CE1F91",
+    "credit": "ASUS",
+    "page": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5080-o16g-gaming/spec/"
+   }
+  },
+  {
+   "id": "palit-rtx5080-gamingpro",
+   "name": "Palit RTX 5080 GamingPro",
+   "brand": "PALIT",
+   "code": null,
+   "match": {
+    "must": [
+     "PALIT",
+     "GAMINGPRO",
+     "5080"
+    ],
+    "not": [
+     "GAMINGPROOC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2617,
+    "oc_mhz": null,
+    "length_mm": 331.9,
+    "width_mm": 127.1,
+    "thickness_mm": 60,
+    "slots": 3,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "ARGB",
+    "bundle": [
+     "전원 케이블"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Palit 공식 스펙",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5395&lang=en&tab=sp"
+    },
+    {
+     "title": "Palit 제품 소개(듀얼 BIOS·0-dB)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5395&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "그래픽카드 전력 360W. OC 판(GamingPro OC)은 'GAMINGPROOC' 로 가른다. 공식 스펙에 팬 개수·백플레이트가 없어 비워 두고, HDMI 는 개수 없이 한 줄로 적혀 있어 1개로 본다. 듀얼 BIOS 는 Performance/Silent.",
+   "image": {
+    "url": "https://www.palit.com/product/vga/picture/p05395/p05395_propng_137967a05f72d8fa0.png",
+    "credit": "PALIT",
+    "page": "https://www.palit.com/palit/vgapro.php?id=5395&lang=en"
+   }
+  },
+  {
+   "id": "gainward-rtx5080-phoenix",
+   "name": "Gainward RTX 5080 Phoenix",
+   "brand": "GAINWARD",
+   "code": "NE75080019T2-GB2031X",
+   "match": {
+    "must": [
+     "GAINWARD",
+     "5080",
+     "피닉스|Phoenix"
+    ],
+    "not": [
+     "GS"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2617,
+    "oc_mhz": null,
+    "length_mm": 331.9,
+    "width_mm": 133.1,
+    "thickness_mm": 60,
+    "slots": 3,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": null,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "ARGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "Gainward 공식 제품 페이지(스펙·듀얼 BIOS·제로 RPM)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1229&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "Phoenix GS(공장 OC)와 다른 제품이다. 공식 페이지에 권장 파워·팬 개수가 없어 비워 둔다. 'Ultra-Dense Protection Plate' 가 백플레이트인지 문구로 확정할 수 없어 비워 둔다.",
+   "image": {
+    "url": "https://www.gainward.com/main/product/vga/pro/p01229/p01229_pic2_166067a02b119ca02.png",
+    "credit": "GAINWARD",
+    "page": "https://www.gainward.com/main/vgapro.php?id=1229&lang=en"
+   }
+  },
+  {
+   "id": "galax-rtx5080-1clickoc-3x",
+   "name": "GALAX RTX 5080 1-Click OC 3X",
+   "brand": "GALAX",
+   "code": "58NZN6MDBBOC",
+   "match": {
+    "must": [
+     "GALAX",
+     "5080",
+     "BLACK OC"
+    ],
+    "not": [
+     "EX GAMER",
+     "HOF",
+     "White"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2625,
+    "oc_mhz": 2640,
+    "length_mm": 315,
+    "width_mm": 140.5,
+    "thickness_mm": 50.7,
+    "slots": 2.5,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "ARGB(앞·옆면)",
+    "bundle": [
+     "1-Click Sync Pro 케이블",
+     "금속 지지대",
+     "16핀→8핀 x3 어댑터"
+    ]
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 제품 페이지(스펙)",
+     "url": "https://galax.com/en/product/geforce-rtx-5080-16gb-1-click-oc-3x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "치수는 브래킷 포함(제외 303 x 125 x 49.7mm). SFF-Ready. 국내명 'BLACK OC' 를 글로벌 '1-Click OC(3X)' 로 짝지은 것은 이름으로 한 추정.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/01/5080.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5080-16gb-1-click-oc-3x/"
+   }
+  },
+  {
+   "id": "galax-rtx5080-exg-1clickoc",
+   "name": "GALAX RTX 5080 EX Gamer 1-Click OC",
+   "brand": "GALAX",
+   "code": "58NZN6MDBYEX",
+   "match": {
+    "must": [
+     "GALAX",
+     "5080",
+     "EX GAMER"
+    ],
+    "not": [
+     "White",
+     "HOF"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2655,
+    "oc_mhz": 2670,
+    "length_mm": 334,
+    "width_mm": 144,
+    "thickness_mm": 52,
+    "slots": 2.5,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "1-Click Sync Pro 케이블",
+     "금속 지지대",
+     "16핀→8핀 x3 어댑터"
+    ]
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 제품 페이지(스펙)",
+     "url": "https://galax.com/en/product/geforce-rtx-5080-16gb-ex-gamer-1-click-oc-3x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "치수는 브래킷 포함(제외 322 x 130 x 52mm). 팬은 92·102·92mm. 국내명 'EX GAMER BLACK OC' 를 글로벌 'EX Gamer 1-Click OC' 로 짝지은 것은 이름으로 한 추정.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/01/UKR_7012-Gx-1.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5080-16gb-ex-gamer-1-click-oc-3x/"
+   }
+  },
+  {
+   "id": "galax-hof-rtx5080-black",
+   "name": "GALAX RTX 5080 HOF Gaming Black Edition",
+   "brand": "GALAX",
+   "code": "58NZN6MDCXHO",
+   "match": {
+    "must": [
+     "GALAX",
+     "5080",
+     "HOF",
+     "BLACK"
+    ],
+    "not": [
+     "White"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2760,
+    "oc_mhz": 2775,
+    "length_mm": 354,
+    "width_mm": 160,
+    "thickness_mm": 66.7,
+    "slots": 3,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "ARGB(윗면·앞·뒤·HOF 크라운)",
+    "bundle": [
+     "1-Click Sync Pro 케이블",
+     "금속 지지대",
+     "16핀→8핀 x3 어댑터"
+    ]
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 제품 페이지(스펙·듀얼 BIOS)",
+     "url": "https://galax.com/en/product/geforce-rtx-hof-5080-black-edition/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "치수는 브래킷 포함(제외 341 x 145 x 66.7mm). 팬은 102mm 2개 + 92mm 1개. 백플레이트는 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/04/UKR_8343.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-hof-5080-black-edition/"
+   }
+  },
+  {
+   "id": "galax-hof-rtx5080",
+   "name": "GALAX RTX 5080 HOF Gaming",
+   "brand": "GALAX",
+   "code": "58NZN6MDDPFG",
+   "match": {
+    "must": [
+     "GALAX",
+     "5080",
+     "HOF"
+    ],
+    "not": [
+     "BLACK"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2760,
+    "oc_mhz": 2775,
+    "length_mm": 354,
+    "width_mm": 160,
+    "thickness_mm": 66.7,
+    "slots": 3,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "ARGB(윗면·앞·뒤·HOF 크라운)",
+    "bundle": [
+     "1-Click Sync Pro 케이블",
+     "금속 지지대",
+     "16핀→8핀 x3 어댑터"
+    ]
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 제품 페이지(스펙·듀얼 BIOS)",
+     "url": "https://galax.com/en/product/geforce-rtx-hof-5080-white-edition/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "공식 페이지 제목은 'HOF Gaming'(주소는 white-edition)이라 색 표기 없는 국내 'HOF GAMING' 을 이것으로 본다. 치수는 브래킷 포함(제외 341 x 145 x 66.7mm). 백플레이트는 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/06/UKR_8301.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-hof-5080-white-edition/"
+   }
+  },
+  {
+   "id": "colorful-igame-rtx5080-ultra-oc",
+   "name": "COLORFUL iGame RTX 5080 Ultra OC",
+   "brand": "COLORFUL",
+   "code": null,
+   "match": {
+    "must": [
+     "COLORFUL",
+     "iGame",
+     "ULTRA",
+     "5080"
+    ],
+    "not": [
+     "White",
+     "V2"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2617,
+    "oc_mhz": 2655,
+    "length_mm": 331,
+    "width_mm": 139.3,
+    "thickness_mm": 59.7,
+    "slots": null,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지 — iGame GeForce RTX 5080 Ultra OC 16GB-V",
+     "url": "https://www.colorfulgroup.com/en/home/product?mid=102&id=b9d95135-c418-4817-809f-55efb0922f95"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "OC 클럭은 One-Key OC 버튼 값. TDP 380W, 무게 1.86kg. 백플레이트는 '뚫린 백보드(Hollowed Backboard)' 문구로 본다. 공식 페이지에 팬 개수·슬롯 수·듀얼 BIOS 가 없어 비워 둔다. 공식 이미지는 원본에서 직접 불러오기가 막혀(403) 비워 둔다."
+  },
+  {
+   "id": "colorful-igame-rtx5080-ultra-w-oc",
+   "name": "COLORFUL iGame RTX 5080 Ultra W OC",
+   "brand": "COLORFUL",
+   "code": null,
+   "match": {
+    "must": [
+     "COLORFUL",
+     "iGame",
+     "ULTRA",
+     "White",
+     "5080"
+    ],
+    "not": [
+     "V2"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2617,
+    "oc_mhz": 2655,
+    "length_mm": 331,
+    "width_mm": 139.3,
+    "thickness_mm": 59.7,
+    "slots": null,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지 — iGame GeForce RTX 5080 Ultra W OC 16GB-V",
+     "url": "https://www.colorfulgroup.com/en/home/product?mid=102&id=73c6fb0e-961c-4354-8bfa-31eb0dd89603"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "흰색·분홍 배색판. OC 클럭은 One-Key OC 버튼 값. TDP 380W. 공식 페이지에 팬 개수·슬롯 수·듀얼 BIOS 가 없어 비워 둔다. 공식 이미지는 원본에서 직접 불러오기가 막혀(403) 비워 둔다."
+  },
+  {
+   "id": "colorful-igame-rtx5080-ultra-oc-v2",
+   "name": "COLORFUL iGame RTX 5080 Ultra OC V2",
+   "brand": "COLORFUL",
+   "code": null,
+   "match": {
+    "must": [
+     "COLORFUL",
+     "iGame",
+     "ULTRA",
+     "V2",
+     "5080"
+    ],
+    "not": [
+     "White"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2617,
+    "oc_mhz": 2655,
+    "length_mm": 331,
+    "width_mm": 139.3,
+    "thickness_mm": 59.7,
+    "slots": null,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지 — iGame GeForce RTX 5080 Ultra OC 16GB V2-V",
+     "url": "https://www.colorfulgroup.com/en/home/product?mid=102&id=d49a3643-2368-4692-b3f4-6a986aa9d8f0"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 스펙은 V1(Ultra OC)과 같다. OC 클럭은 One-Key OC 버튼 값. TDP 380W. 공식 페이지에 팬 개수·슬롯 수·듀얼 BIOS 가 없어 비워 둔다. 공식 이미지는 원본에서 직접 불러오기가 막혀(403) 비워 둔다."
+  },
+  {
+   "id": "colorful-igame-rtx5080-vulcan-oc",
+   "name": "COLORFUL iGame RTX 5080 Vulcan OC",
+   "brand": "COLORFUL",
+   "code": null,
+   "match": {
+    "must": [
+     "COLORFUL",
+     "iGame",
+     "Vulcan",
+     "5080"
+    ],
+    "not": [
+     "White",
+     "VulcanW"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2617,
+    "oc_mhz": 2685,
+    "length_mm": 360,
+    "width_mm": 148.9,
+    "thickness_mm": 71,
+    "slots": null,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": null,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB(옆·뒤·백플레이트)",
+    "bundle": [
+     "금속 지지대"
+    ]
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지 — iGame GeForce RTX 5080 Vulcan OC 16GB-V",
+     "url": "https://www.colorfulgroup.com/en/home/product?mid=102&id=402c6898-8b47-4489-bbf9-e498fcd186ed"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "자석식 LCD 화면 포함. OC 클럭은 One-Key OC 버튼 값. TDP 400W, 무게 2.88kg. 권장 파워는 공식 페이지에 없어 비워 둔다. 공식 페이지에 팬 개수·슬롯 수·듀얼 BIOS 가 없어 비워 둔다. 공식 이미지는 원본에서 직접 불러오기가 막혀(403) 비워 둔다."
+  },
+  {
+   "id": "pny-rtx5080-oc-triple",
+   "name": "PNY RTX 5080 OC Triple Fan",
+   "brand": "PNY",
+   "code": "VCG508016TFXPB1-O",
+   "match": {
+    "must": [
+     "PNY",
+     "5080",
+     "OC",
+     "Triple"
+    ],
+    "not": [
+     "ARGB",
+     "EPIC",
+     "Slim"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2730,
+    "oc_mhz": null,
+    "length_mm": 328.7,
+    "width_mm": 137.7,
+    "thickness_mm": 59.7,
+    "slots": 3,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": null,
+    "lighting": null,
+    "bundle": [
+     "16핀→8핀 x3 어댑터"
+    ]
+   },
+   "sources": [
+    {
+     "title": "PNY 공식 데이터시트 — RTX 5080 16GB OC Triple Fan",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5080-16gb-triple-fan-oc-brochure.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "치수는 데이터시트의 인치 값(12.94 x 5.42 x 2.35in)을 mm 로 바꾼 것. TDP 360W. 제품 페이지가 변형을 탭으로만 보여 줘서 공식 데이터시트 PDF(2025-01)에서 읽었다."
+  },
+  {
+   "id": "pny-rtx5080-slim-oc-dual",
+   "name": "PNY RTX 5080 Slim OC Dual Fan",
+   "brand": "PNY",
+   "code": "VCG508016DFSXPB1-O",
+   "match": {
+    "must": [
+     "PNY",
+     "5080",
+     "Dual Fan",
+     "Slim"
+    ],
+    "not": [
+     "Triple",
+     "EPIC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2730,
+    "oc_mhz": null,
+    "length_mm": 300,
+    "width_mm": 150,
+    "thickness_mm": 40,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": [
+     "16핀→8핀 x3 어댑터"
+    ]
+   },
+   "sources": [
+    {
+     "title": "PNY 공식 데이터시트 — RTX 5080 Slim 16GB OC Dual Fan",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5080-slim-16gb-dual-fan-oc-brochure.pdf"
+    },
+    {
+     "title": "PNY RTX 5080 Slim 제품군 페이지",
+     "url": "https://www.pny.com/geforce-rtx-5080-slim-models"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "2슬롯, 120mm 팬 2개·금속 백플레이트(데이터시트). TDP 360W. 이미지는 PNY 제품 페이지가 쓰는 PNY 이미지 CDN 에서 불러온다.",
+   "image": {
+    "url": "https://d2vfia6k6wrouk.cloudfront.net/productimages/09cfd7f3-797e-4cb0-ac0d-b3ca00a12e69/images/1-pny-rtx-5080-slim-dual-fan-ra.png",
+    "credit": "PNY",
+    "page": "https://www.pny.com/geforce-rtx-5080-slim-models"
+   }
+  },
+  {
+   "id": "emtek-rtx5080-miracle-white",
+   "name": "이엠텍 RTX 5080 MIRACLE WHITE",
+   "brand": "이엠텍",
+   "code": null,
+   "match": {
+    "must": [
+     "이엠텍|EMTEK",
+     "5080",
+     "MIRACLE",
+     "WHITE"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2617,
+    "oc_mhz": null,
+    "length_mm": 348,
+    "width_mm": 137,
+    "thickness_mm": 62,
+    "slots": null,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1 x1 · DP 2.1 x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "3x8핀→16핀 커넥터",
+     "그래픽카드 지지대",
+     "USB-C 케이블"
+    ]
+   },
+   "sources": [
+    {
+     "title": "이엠텍아이엔씨 공식 제품 페이지(스펙)",
+     "url": "https://www.emtekinc.co.kr/html/dh_product/prd_detail/2250"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 페이지에 '단종상품' 표기가 있다. 사용 전력 360W. emtek.co.kr 은 빈 페이지라 이엠텍아이엔씨 공식 사이트(emtekinc.co.kr)에서 읽었다. HDMI/DP 는 세부 버전(2.1b) 없이 2.1 로 적혀 있다.",
+   "image": {
+    "url": "https://www.emtekinc.co.kr/_data/file/goodsImages/854159a7a1ecbb36b06076b96081c01b.jpg",
+    "credit": "이엠텍",
+    "page": "https://www.emtekinc.co.kr/html/dh_product/prd_detail/2250"
+   }
+  },
+  {
+   "id": "msi-rtx5080-vanguard-soc",
+   "name": "MSI RTX 5080 VANGUARD SOC",
+   "brand": "MSI",
+   "code": "G5080-16VGS",
+   "match": {
+    "must": [
+     "MSI",
+     "뱅가드|VANGUARD",
+     "5080",
+     "SOC"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2730,
+    "oc_mhz": 2745,
+    "length_mm": 357,
+    "width_mm": 151,
+    "thickness_mm": 66,
+    "slots": null,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 850,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "MSI 공식 데이터시트 — GeForce RTX 5080 16G VANGUARD SOC",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5080-16G-VANGUARD-SOC.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "msi.com 제품 페이지는 403 이라 공식 데이터시트 PDF(storage-asset.msi.com)만 읽었다. OC 클럭은 MSI Center 'Extreme Performance' 값. 무게 1945g, 전력 360W. 팬 개수·조명·0dB 는 데이터시트에 없어 비워 둔다."
+  }
+ ]
+}
