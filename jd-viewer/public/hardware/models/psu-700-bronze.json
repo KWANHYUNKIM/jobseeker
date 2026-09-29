@@ -1,0 +1,534 @@
+{
+ "schema": 1,
+ "part": "psu-700-bronze",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "micronics-classic-ii-fullchange-700w-atx31",
+   "name": "마이크로닉스 Classic II 풀체인지 700W 80PLUS 브론즈 ATX3.1",
+   "brand": "마이크로닉스",
+   "code": "HP1-N700ST-E12S",
+   "match": {
+    "must": [
+     "마이크로닉스",
+     "ClassicII풀체인지",
+     "700W",
+     "ATX3.1"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 7,
+    "pcie_12v2x6": true,
+    "atx": "ATX 3.1"
+   },
+   "sources": [
+    {
+     "title": "마이크로닉스 공식 스펙(블랙)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=07121"
+    },
+    {
+     "title": "마이크로닉스 공식 스펙(화이트)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=2J322"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙·화이트 모두 모델명 HP1-N700ST-E12S, 150×140×86mm, 무상 7년, 12V-2x6(12+4핀) 케이블 1개. 케이블은 본체 직결(케이블 도면에 전원부 쪽 커넥터가 없다). 팬은 120mm Long Life."
+  },
+  {
+   "id": "micronics-classic-ii-fullchange-700w-230v-eu",
+   "name": "마이크로닉스 Classic II 풀체인지 700W 80PLUS 브론즈 230V EU",
+   "brand": "마이크로닉스",
+   "code": "HP1-N700ST-E12S",
+   "match": {
+    "must": [
+     "마이크로닉스",
+     "ClassicII풀체인지",
+     "700W",
+     "230VEU"
+    ],
+    "not": [
+     "ATX3.1"
+    ]
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 7,
+    "pcie_12v2x6": true,
+    "atx": null
+   },
+   "sources": [
+    {
+     "title": "마이크로닉스 공식 스펙",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=TA131"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "ATX3.1 판 이전 판. 공식 스펙표 모델명은 ATX3.1 판과 같은 HP1-N700ST-E12S 로 적혀 있지만 커넥터가 12VHPWR(12+4핀) 1개다(ATX3.1 판은 12V-2x6). 페이지에 ATX 버전 표기가 없어 atx 는 비웠다."
+  },
+  {
+   "id": "micronics-performance-ii-pv-700w-fdb",
+   "name": "마이크로닉스 Performance II PV 700W 80PLUS 브론즈 FDB",
+   "brand": "마이크로닉스",
+   "code": "HPW-700BR-F12S",
+   "match": {
+    "must": [
+     "마이크로닉스",
+     "PerformanceIIPV",
+     "700W",
+     "FDB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 6,
+    "pcie_12v2x6": false,
+    "atx": null
+   },
+   "sources": [
+    {
+     "title": "마이크로닉스 공식 스펙",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=9371F"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "120mm FDB 팬, 무상 6년. PCIe 6+2핀 4개, 12V-2x6 없음. KC 인증번호상 모델은 HPW-700BR-F12S(Surge 4K 판과 같다). 공식 스펙에 ATX 버전 표기 없음."
+  },
+  {
+   "id": "micronics-performance-ii-pv-700w-surge-4k",
+   "name": "마이크로닉스 Performance II PV 700W 80PLUS 브론즈 Surge 4K",
+   "brand": "마이크로닉스",
+   "code": "HPW-700BR-F12S",
+   "match": {
+    "must": [
+     "마이크로닉스",
+     "PerformanceIIPV",
+     "700W",
+     "Surge4K"
+    ],
+    "not": [
+     "FDB"
+    ]
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 6,
+    "pcie_12v2x6": false,
+    "atx": null
+   },
+   "sources": [
+    {
+     "title": "마이크로닉스 공식 스펙",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=20OVQ"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "FDB 판과 같은 HPW-700BR-F12S. 오토 팬 컨트롤 120mm 팬, 6년 품질보증, PCIe 6+2핀 4개."
+  },
+  {
+   "id": "atum-ragex-enertic-700w",
+   "name": "아툼 RageX Enertic 700W 80PLUS 브론즈 ATX3.0",
+   "brand": "아툼",
+   "code": null,
+   "match": {
+    "must": [
+     "RageX",
+     "Enertic",
+     "700W"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 3,
+    "pcie_12v2x6": false,
+    "atx": "ATX 3.0"
+   },
+   "sources": [
+    {
+     "title": "아툼 공식 제품 페이지",
+     "url": "https://rage-x.co.kr/atum-ragex-enertic-700w-80plus-bronze-atx-3-0-%eb%b0%95%ec%8a%a4/"
+    },
+    {
+     "title": "아툼 공식 제품 페이지(벌크)",
+     "url": "https://rage-x.co.kr/atum-ragex-enertic-700w-80plus-bronze-atx-3-0-%eb%b2%8c%ed%81%ac/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "박스·벌크 같은 제품. 제품명은 ATX 3.0 이지만 12VHPWR 없이 PCIe 6+2핀 3개다. 품질보증 3년 무상 + 2년 유상. KC R-R-BcX-XR-ATX4380E — POWERCRASH 700W 와 같은 인증번호."
+  },
+  {
+   "id": "atum-powercrash-700w-atx31",
+   "name": "아툼 POWERCRASH 700W 80PLUS 브론즈 ATX3.1",
+   "brand": "아툼",
+   "code": null,
+   "match": {
+    "must": [
+     "POWERCRASH|POWECRASH",
+     "700W"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 3,
+    "pcie_12v2x6": false,
+    "atx": "ATX 3.1"
+   },
+   "sources": [
+    {
+     "title": "아툼 공식 제품 페이지",
+     "url": "https://rage-x.co.kr/powecrash-700w-80plus-bronze-atx-3-1/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 사이트 표기는 'POWECRASH'. 스펙·케이블 구성·KC 인증번호(R-R-BcX-XR-ATX4380E)가 RageX Enertic 700W 와 같다 — 같은 기판에 이름만 다른 것으로 보인다. ATX3.1 이라 적었지만 12V-2x6 없이 PCIe 6+2핀 3개."
+  },
+  {
+   "id": "eddy-reactor-700w-atx31",
+   "name": "EDDY REACTOR 700W 80PLUS 브론즈 ATX3.1",
+   "brand": "에디",
+   "code": null,
+   "match": {
+    "must": [
+     "REACTOR",
+     "700W"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": null,
+    "warranty_years": 6,
+    "pcie_12v2x6": false,
+    "atx": "ATX 3.1"
+   },
+   "sources": [
+    {
+     "title": "에디 공식 제품 페이지",
+     "url": "https://eddy.kr/product-details/eddy-reactor-700w-80plus-box"
+    },
+    {
+     "title": "에디 공식 제품 페이지(벌크)",
+     "url": "https://eddy.kr/product-details/eddy-reactor-700w-80plus-bulk"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "케이블 일체형, 깊이 140mm, 무상 6년·유상 3년. 커넥터에 12V-2x6 없음(PCIe 6+2핀 3개). 팬 크기는 공식 요약에 없다. 박스·벌크 같은 제품."
+  },
+  {
+   "id": "aone-storm-700w-bronze",
+   "name": "AONE STORM 700W 80PLUS 브론즈",
+   "brand": "AONE",
+   "code": null,
+   "match": {
+    "must": [
+     "AONE",
+     "STORM",
+     "700W"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 3,
+    "pcie_12v2x6": false,
+    "atx": null
+   },
+   "sources": [
+    {
+     "title": "에이원 공식 제품 페이지",
+     "url": "https://www.aoneint.com/default/aone/sub1.php?com_board_basic=read_form&com_board_idx=81&com_board_id=16"
+    },
+    {
+     "title": "에이원 공식 제품 페이지(화이트)",
+     "url": "https://www.aoneint.com/default/aone/sub1.php?com_board_basic=read_form&com_board_idx=116&com_board_id=16"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙·화이트·벌크 모두 KC XU102947-23004 로 같은 제품. 150×140×85mm, 120mm 팬, 무상 3년. PCIe 6+2핀 4개, 12V-2x6 없음. 공식 스펙에 ATX 버전 표기 없음."
+  },
+  {
+   "id": "energyoptimus-excel-classic-700w",
+   "name": "에너지옵티머스 EXCEL CLASSIC 700W 80PLUS 브론즈 230V EU",
+   "brand": "에너지옵티머스",
+   "code": null,
+   "match": {
+    "must": [
+     "EXCELCLASSIC",
+     "700W"
+    ],
+    "not": [
+     "풀모듈러"
+    ]
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 7,
+    "pcie_12v2x6": false,
+    "atx": null
+   },
+   "sources": [
+    {
+     "title": "에너지옵티머스 공식 제품 페이지",
+     "url": "https://eoptimus.kr/product/detail.html?product_no=55"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "무상 7년(새제품 1:1 교체), 120mm HYB 팬, PCIe 6+2핀 4개. 풀모듈러 판이 따로 있고 이 판은 직결형(전파인증 R-R-ary-EOP700)."
+  },
+  {
+   "id": "energyoptimus-excel-classic-700w-full-modular",
+   "name": "에너지옵티머스 EXCEL CLASSIC 700W 80PLUS 브론즈 230V EU 풀모듈러",
+   "brand": "에너지옵티머스",
+   "code": null,
+   "match": {
+    "must": [
+     "EXCELCLASSIC",
+     "700W",
+     "풀모듈러"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "풀모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 7,
+    "pcie_12v2x6": false,
+    "atx": null
+   },
+   "sources": [
+    {
+     "title": "에너지옵티머스 공식 제품 페이지",
+     "url": "https://eoptimus.kr/product/detail.html?product_no=57"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "전파인증 R-R-ary-EOP700-F(직결판은 EOP700). 무상 7년, 120mm 팬, PCIe 6+2핀 4개."
+  },
+  {
+   "id": "babel-bm-700vp-f",
+   "name": "BABEL BM-700VP-F 700W 80PLUS 브론즈 Blackbel Series",
+   "brand": "BABEL",
+   "code": "BM-700VP-F",
+   "match": {
+    "must": [
+     "BM-700VP-F"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": null,
+    "length_mm": 160,
+    "fan_mm": 120,
+    "warranty_years": null,
+    "pcie_12v2x6": false,
+    "atx": "ATX 2.31"
+   },
+   "sources": [
+    {
+     "title": "바벨 공식 제품 페이지",
+     "url": "http://www.babeltek.com/bm-700vp-f/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "깊이 160mm — 흔한 140mm 급보다 길다. 규격 ATX 12V Ver2.31, PCIe 6+2핀 4개. 보증기간·모듈러 여부는 공식 페이지에 없다."
+  },
+  {
+   "id": "darkflash-perfectmost-700w-bronze-atx31",
+   "name": "darkFlash 퍼펙트모스트 700W 80PLUS 브론즈 ATX3.1",
+   "brand": "darkFlash",
+   "code": null,
+   "match": {
+    "must": [
+     "퍼펙트모스트",
+     "700W"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 7,
+    "pcie_12v2x6": true,
+    "atx": "ATX 3.1"
+   },
+   "sources": [
+    {
+     "title": "다크플래쉬 공식 제품 페이지(블랙)",
+     "url": "https://www.darkflash.co.kr/product/detail2.html?product_no=897&cate_no=1&display_group=4"
+    },
+    {
+     "title": "다크플래쉬 공식 제품 페이지(화이트)",
+     "url": "https://www.darkflash.co.kr/product/detail2.html?product_no=899&cate_no=1&display_group=4"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "일체형 메쉬 플랫 케이블, 140×150×86mm, 120mm 하이드로 베어링 팬, 품질보증 7년, ATX 12V v3.1, 12V-2x6 1개. 블랙·화이트는 색만 다르다(블랙 페이지 기준으로 확인)."
+  },
+  {
+   "id": "zalman-megamax-ii-700w",
+   "name": "잘만 MegaMax II 700W 80PLUS 브론즈 ATX3.1",
+   "brand": "잘만",
+   "code": "ZM700-GV2SE",
+   "match": {
+    "must": [
+     "MegaMaxII",
+     "700W"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 7,
+    "pcie_12v2x6": true,
+    "atx": "ATX 3.1"
+   },
+   "sources": [
+    {
+     "title": "잘만 공식 스펙",
+     "url": "https://www.zalman.com/KO/Product/ProductDetail.do?productSeq=1610"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "모델 코드가 GV2SE 700W 와 같은 ZM700-GV2SE 지만 규격이 다르다 — MegaMax II 는 Intel ATX 12V 3.1 에 12V-2x6 케이블 1개, GV2SE 는 ATX 12V 2.52 에 12V-2x6 없음. 무상 7년, 120mm HDB 팬."
+  },
+  {
+   "id": "zalman-gv2se-700w",
+   "name": "잘만 GV2SE 700W 80PLUS 브론즈",
+   "brand": "잘만",
+   "code": "ZM700-GV2SE",
+   "match": {
+    "must": [
+     "GV2SE",
+     "700W"
+    ],
+    "not": [
+     "MegaMax"
+    ]
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 7,
+    "pcie_12v2x6": false,
+    "atx": "ATX 2.52"
+   },
+   "sources": [
+    {
+     "title": "잘만 공식 스펙",
+     "url": "https://www.zalman.com/KO/Product/ProductDetail.do?productSeq=1821"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "Intel ATX 12V Ver2.52, PCIe(2커넥터) 케이블 2개, 12V-2x6 없음. 무상 7년, 120mm HDB 팬. MegaMax II 700W(ATX3.1)와 모델 코드가 같으니 이름으로 가른다."
+  },
+  {
+   "id": "maxelite-maxwell-duo-700w",
+   "name": "맥스엘리트 MAXWELL DUO 700W 80PLUS 브론즈 PCIE5 플랫",
+   "brand": "맥스엘리트",
+   "code": "HA-700AC2",
+   "match": {
+    "must": [
+     "MAXWELLDUO",
+     "700W"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": "논모듈러",
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": 7,
+    "pcie_12v2x6": true,
+    "atx": null
+   },
+   "sources": [
+    {
+     "title": "맥스엘리트 공식 제품 페이지",
+     "url": "https://maxelite.co.kr/goods/read.php?M2_IDX=30562&SP_CODE=2410MS1V"
+    },
+    {
+     "title": "맥스엘리트 공식 제품 페이지(화이트)",
+     "url": "https://maxelite.co.kr/goods/read.php?M2_IDX=30562&SP_CODE=24107Q0Y"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "고정형 케이블, 140×150×86mm, 120mm 유체 베어링 팬, 무상 7년, GPU 12V-2x6 커넥터 1개. 80PLUS 230V EU 브론즈. 폼팩터는 'ATX'로만 적혀 있어 ATX 버전은 비웠다. 블랙 페이지로 확인."
+  },
+  {
+   "id": "fsp-hyper-k-pro-700w-bronze-atx31",
+   "name": "FSP HYPER K PRO(ATX3.1) 700W 80PLUS 브론즈",
+   "brand": "FSP",
+   "code": "HK-700",
+   "match": {
+    "must": [
+     "FSP",
+     "HYPERKPRO",
+     "700W"
+    ],
+    "not": []
+   },
+   "specs": {
+    "modular": null,
+    "length_mm": 140,
+    "fan_mm": 120,
+    "warranty_years": null,
+    "pcie_12v2x6": null,
+    "atx": "ATX 3.1"
+   },
+   "sources": [
+    {
+     "title": "FSP 공식 스펙(한국어)",
+     "url": "https://www.fsplifestyle.com/kr/product/HYPER_K_PRO700W_BR_ATX31.html"
+    },
+    {
+     "title": "FSP 공식 스펙(12V-2x6 판)",
+     "url": "https://www.fsplifestyle.com/kr/product/HYPER_K_PRO700W_BR_12V2X6.html"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "브론즈 판은 FSP 한국어 페이지에만 있다(글로벌 영어 페이지의 같은 이름 제품은 80PLUS 스탠다드/화이트). 700W 브론즈 ATX3.1 은 HK-700(PCIe 6+2핀 4개)과 HK-700,Gen5(12V-2x6 1개) 두 판이 있어 가격 목록 이름으로는 가를 수 없다 — pcie_12v2x6 은 비웠다. 공식 표기 150(L)×140(W)×86(H) 는 폭 150 의 표준 ATX 라 깊이를 140 으로 읽었다. 보증기간은 한국어 페이지에 없다."
+  }
+ ]
+}
