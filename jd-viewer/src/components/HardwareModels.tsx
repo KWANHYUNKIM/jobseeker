@@ -1,5 +1,19 @@
 import { Fragment, useState } from 'react'
-import { MODEL_COLUMNS, fmtSpec, groupOffers, useModels, type HwData, type Model, type Offer, type Part } from '../lib/hardware'
+import {
+  MODEL_COLUMNS,
+  distributorOf,
+  fmtSpec,
+  formOf,
+  groupOffers,
+  notesFor,
+  useGuide,
+  useModels,
+  type Distributor,
+  type HwData,
+  type Model,
+  type Offer,
+  type Part,
+} from '../lib/hardware'
 
 // 제품별 스펙 — 같은 칩을 얹은 제조사 제품들(ASUS ROG Astral · TUF · GIGABYTE GAMING OC …).
 //
@@ -11,6 +25,7 @@ const CONF: Record<Model['confidence'], string> = { high: '공식', medium: '공
 
 export function ModelTable({ data, part }: { data: HwData; part: Part }) {
   const models = useModels(part.id)
+  const guide = useGuide()
   const [open, setOpen] = useState<string | null>(null)
   const rec = data.prices[part.id]
   const offers = rec?.offers ?? []
@@ -77,7 +92,7 @@ export function ModelTable({ data, part }: { data: HwData; part: Part }) {
                 {open === m.id && (
                   <tr className="bg-(--color-band)">
                     <td colSpan={cols.length + 2} className="px-4 py-3">
-                      <ModelMore m={m} offers={os} cases={cases} />
+                      <ModelMore m={m} offers={os} cases={cases} dists={guide?.distributors ?? []} />
                     </td>
                   </tr>
                 )}
@@ -108,7 +123,7 @@ export function ModelTable({ data, part }: { data: HwData; part: Part }) {
   )
 }
 
-function ModelMore({ m, offers, cases }: { m: Model; offers: Offer[]; cases: Part[] }) {
+function ModelMore({ m, offers, cases, dists }: { m: Model; offers: Offer[]; cases: Part[]; dists: Distributor[] }) {
   const len = Number(m.specs.length_mm)
   const bundle = m.specs.bundle as string[] | undefined
   return (
@@ -117,10 +132,13 @@ function ModelMore({ m, offers, cases }: { m: Model; offers: Offer[]; cases: Par
         <div className="font-semibold text-(--color-muted)">판매처(유통사)</div>
         {offers.length ? (
           offers.map((o) => (
-            <a key={o.pcode} href={o.url} target="_blank" rel="noreferrer nofollow" className="flex gap-2 hover:underline">
-              <span className="truncate">{o.name}</span>
+            <div key={o.pcode} className="flex items-center gap-2">
+              <a href={o.url} target="_blank" rel="noreferrer nofollow" className="truncate hover:underline">
+                {o.name}
+              </a>
+              <DistChip d={distributorOf(o.name, dists)} />
               <span className="ml-auto tabular-nums font-semibold">{o.price.toLocaleString()}원</span>
-            </a>
+            </div>
           ))
         ) : (
           <span className="text-(--color-faint)">오늘 잡힌 매물이 없다</span>
@@ -149,7 +167,16 @@ function ModelMore({ m, offers, cases }: { m: Model; offers: Offer[]; cases: Par
         )}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="font-semibold text-(--color-muted)">출처</div>
+        {(m.durability?.fan_bearing || (m.durability?.notes ?? []).length > 0) && (
+          <>
+            <div className="font-semibold text-(--color-muted)">내구성</div>
+            {m.durability?.fan_bearing && <div>팬 베어링: {m.durability.fan_bearing}</div>}
+            {(m.durability?.notes ?? []).map((n) => (
+              <div key={n}>· {n}</div>
+            ))}
+          </>
+        )}
+        <div className="font-semibold text-(--color-muted) mt-1">출처</div>
         {m.sources.map((s) => (
           <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className="text-(--color-sky-400) hover:underline">
             {s.title}
@@ -158,5 +185,111 @@ function ModelMore({ m, offers, cases }: { m: Model; offers: Offer[]; cases: Par
         {m.note && <div className="text-(--color-faint) mt-1">{m.note}</div>}
       </div>
     </div>
+  )
+}
+
+function DistChip({ d }: { d: Distributor | null }) {
+  if (!d) return null
+  return (
+    <span
+      className="shrink-0 px-1.5 py-0.5 rounded bg-(--color-panel) border border-(--color-border-soft) text-[10px] text-(--color-muted)"
+      title={[d.service, d.parallel_import_service].filter(Boolean).join(' · ')}
+    >
+      {d.name}
+      {d.warranty_years ? ` · 보증 ${d.warranty_years}년` : ''}
+    </span>
+  )
+}
+
+// CPU 는 제품(보드 파트너)이 없다 — 같은 칩이 판매 형태로 갈린다. 형태마다 박스·쿨러·보증·A/S 가
+// 다르고 가격도 다르다. 병행은 싸지만 국내 정식 A/S 가 없다는 걸 가격 옆에 같이 둔다.
+export function SaleForms({ data, part }: { data: HwData; part: Part }) {
+  const guide = useGuide()
+  const offers = data.prices[part.id]?.offers ?? []
+  if (!guide || !offers.length) return null
+  const rows = offers.map((o) => ({ o, f: formOf(o.name, guide.forms) }))
+  const used = guide.forms.filter((f) => rows.some((r) => r.f?.key === f.key))
+  return (
+    <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-3">
+      <div className="flex flex-wrap items-baseline gap-2">
+        <h2 className="text-sm font-semibold">판매 형태별 가격</h2>
+        <span className="text-xs text-(--color-muted)">같은 칩이다. 박스·쿨러·보증·A/S 가 다르다 · 조립 견적은 정품 최저가로 계산한다</span>
+      </div>
+      <table className="w-full text-sm" data-nosnippet>
+        <thead>
+          <tr className="text-[11px] text-(--color-muted) text-left border-b border-(--color-border)">
+            <th className="font-normal px-2 py-2">형태</th>
+            <th className="font-normal px-2 py-2 text-right">가격</th>
+            <th className="font-normal px-2 py-2">박스</th>
+            <th className="font-normal px-2 py-2">보증</th>
+            <th className="font-normal px-2 py-2">A/S</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(({ o, f }) => (
+            <tr key={o.pcode} className="border-t border-(--color-border-soft)">
+              <td className="px-2 py-1.5">
+                <a href={o.url} target="_blank" rel="noreferrer nofollow" className="hover:underline font-medium">
+                  {f?.label ?? '모름'}
+                </a>
+                {f && !f.official && <span className="ml-1 text-[10px] text-(--color-red-400)">국내 정식 A/S 없음</span>}
+              </td>
+              <td className="px-2 text-right tabular-nums font-semibold">{o.price.toLocaleString()}원</td>
+              <td className="px-2 text-(--color-muted)">{f?.box == null ? '—' : f.box ? '있음' : '없음'}</td>
+              <td className="px-2 text-(--color-muted)">{f?.warranty_years ? `${f.warranty_years}년` : '—'}</td>
+              <td className="px-2 text-(--color-muted) text-xs">{f?.service ?? '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="grid gap-2 sm:grid-cols-2 text-xs">
+        {used.map((f) => (
+          <div key={f.key} className="rounded-md bg-(--color-band) p-2.5">
+            <div className="font-semibold">{f.label}</div>
+            <div className="mt-0.5">{f.plain}</div>
+            {f.cooler && <div className="mt-0.5 text-(--color-muted)">쿨러: {f.cooler}</div>}
+            <div className="mt-1 flex flex-wrap gap-x-2">
+              {f.sources.map((s) => (
+                <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className="text-(--color-sky-400) hover:underline">
+                  {s.title}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+// 알아 둘 것 — 이 부품(또는 이 분류)에 걸린 내구성·주의 메모. 출처가 있는 것만 싣는다.
+export function DurabilityNotes({ part }: { part: Part }) {
+  const guide = useGuide()
+  if (!guide) return null
+  const notes = notesFor(part, guide.durability)
+  if (!notes.length) return null
+  return (
+    <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-2">
+      <h2 className="text-sm font-semibold">알아 둘 것 — 내구성·주의</h2>
+      {notes.map((n) => (
+        <div key={n.key} className="text-sm flex gap-2">
+          <span
+            className={`shrink-0 h-fit px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+              n.level === '주의' ? 'bg-(--color-red-400)/12 text-(--color-red-400)' : 'bg-(--color-band) text-(--color-muted)'
+            }`}
+          >
+            {n.level}
+          </span>
+          <div>
+            <b>{n.title}</b> — {n.plain}
+            {n.sources.map((s, i) => (
+              <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className="text-xs text-(--color-sky-400) hover:underline ml-1">
+                [{i + 1}]
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
   )
 }

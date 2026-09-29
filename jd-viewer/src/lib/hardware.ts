@@ -177,7 +177,14 @@ export function tierOf(part: Part, cats: CategoryDef[]): TierDef | null {
 export function priceOf(part: Part, prices: Record<string, PriceRec>): number | null {
   const r = prices[part.id]
   if (!r || r.min == null) return null
-  return part.price_basis === 'median' ? (r.median ?? r.min) : r.min
+  if (part.price_basis === 'median') return r.median ?? r.min
+  // CPU 는 같은 칩이 정품·멀티팩·벌크·병행으로 팔리고 병행이 늘 가장 싸다. 병행은 국내 정식
+  // A/S 가 없어서 조립 견적의 기준값으로 쓰지 않는다 — '정품' 표기가 있는 매물의 최저가를 쓴다.
+  if (part.category === 'cpu') {
+    const official = (r.offers ?? []).filter((o) => o.name.includes('정품') && !o.name.includes('병행'))
+    if (official.length) return Math.min(...official.map((o) => o.price))
+  }
+  return r.min
 }
 
 export function won(n: number | null | undefined): string {
@@ -523,6 +530,8 @@ export interface Model {
   confidence: 'low' | 'medium' | 'high'
   checked_at: string
   note?: string
+  /** 공식 페이지가 말하는 내구성 관련 사실(팬 베어링·금속 백플레이트 등) */
+  durability?: { fan_bearing?: string | null; notes?: string[] }
 }
 
 const modelCache = new Map<string, Promise<Model[]>>()
@@ -566,6 +575,90 @@ export function groupOffers(offers: Offer[], models: Model[]): { byModel: Map<st
     else rest.push(o)
   }
   return { byModel, rest }
+}
+
+// ── 유통·내구성 안내 (public/hardware/guide.json) ─────────────────────
+//
+// 같은 물건이라도 '누가 들여왔고 어떤 형태로 파나'에 따라 보증과 A/S 가 다르다.
+//   CPU  — 정품 · 멀티팩 · 밸류팩 · 벌크 정품 · 벌크 병행. 병행은 국내 정식 A/S 가 없어 싸다.
+//   GPU  — 상품명 끝의 유통사(대원씨티에스·제이씨현·인텍앤컴퍼니…)가 A/S 를 맡는다.
+// 매물 이름에서 형태·유통사를 읽어 붙인다. 내구성 메모는 부품·분류에 걸린다.
+
+export interface SaleForm {
+  key: string
+  label: string
+  tokens: string[]
+  excludes?: string[]
+  box?: boolean | null
+  cooler?: string | null
+  warranty_years?: number | null
+  service?: string | null
+  plain: string
+  official: boolean
+  sources: { title: string; url: string }[]
+}
+
+export interface Distributor {
+  name: string
+  aliases?: string[]
+  brands: string[]
+  warranty_years?: number | null
+  service?: string | null
+  parallel_import_service?: string | null
+  as_url?: string | null
+  sources: { title: string; url: string }[]
+}
+
+export interface DurabilityNote {
+  key: string
+  applies_to: string[]
+  level: '주의' | '참고'
+  title: string
+  plain: string
+  sources: { title: string; url: string }[]
+}
+
+export interface Guide {
+  forms: SaleForm[]
+  distributors: Distributor[]
+  durability: DurabilityNote[]
+}
+
+let guideCache: Promise<Guide> | null = null
+
+export function useGuide(): Guide | null {
+  const [g, setG] = useState<Guide | null>(null)
+  useEffect(() => {
+    guideCache ??= fetch('/hardware/guide.json')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d ?? { forms: [], distributors: [], durability: [] })
+      .catch(() => ({ forms: [], distributors: [], durability: [] }))
+    let alive = true
+    guideCache.then((x) => alive && setG(x))
+    return () => {
+      alive = false
+    }
+  }, [])
+  return g
+}
+
+/** 매물 이름 → 판매 형태(CPU). 토큰이 모두 있고 제외어가 없는 첫 형태. 뒤에 적힌 형태일수록 구체적이라 긴 것부터 본다. */
+export function formOf(name: string, forms: SaleForm[]): SaleForm | null {
+  const n = norm(name)
+  const sorted = [...forms].sort((a, b) => b.tokens.length - a.tokens.length)
+  return (
+    sorted.find((f) => f.tokens.every((t) => has(n, t)) && !(f.excludes ?? []).some((t) => has(n, t))) ?? null
+  )
+}
+
+/** 매물 이름 → 유통사. 상품명 끝에 붙는 수입사 이름으로 찾는다. */
+export function distributorOf(name: string, ds: Distributor[]): Distributor | null {
+  const n = norm(name)
+  return ds.find((d) => [d.name, ...(d.aliases ?? [])].some((a) => n.includes(norm(a)))) ?? null
+}
+
+export function notesFor(part: Part, notes: DurabilityNote[]): DurabilityNote[] {
+  return notes.filter((x) => x.applies_to.some((a) => a === part.id || a === `category:${part.category}`))
 }
 
 /** 제품 스펙 표의 열 — 분류마다. 아직 조사 안 한 분류는 비어 있다. */

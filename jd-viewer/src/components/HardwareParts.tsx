@@ -4,7 +4,7 @@ import { navigate, onLinkClick, useRoute, useSetQuery } from '../lib/router'
 import { absUrl, useSeo } from '../lib/seo'
 import { paths, TAB_SEO } from '../lib/urls'
 import { MoveBadge, NOINDEX, PriceChart } from './HardwarePrices'
-import { ModelTable } from './HardwareModels'
+import { DurabilityNotes, ModelTable, SaleForms } from './HardwareModels'
 import { TierBadge } from './HardwareView'
 
 // 부품 비교 — 전문가용.
@@ -358,7 +358,8 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
           <PriceChart history={rec?.history ?? []} />
         </section>
       </div>
-      <ModelTable data={data} part={part} />
+      <DurabilityNotes part={part} />
+      {part.category === 'cpu' ? <SaleForms data={data} part={part} /> : <ModelTable data={data} part={part} />}
       {peers.length > 0 && (
         <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
           <h2 className="text-sm font-semibold mb-2">같은 {tier?.tier} 등급</h2>
