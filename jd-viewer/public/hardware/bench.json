@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "updated_at": "2026-09-29",
- "model": "예상 fps = min(그래픽카드가 내는 fps, CPU 가 내는 fps). 그래픽카드 fps = 기준값 × 성능 지수 ÷ 100, CPU fps = CPU 천장 × 게임 지수 ÷ 100. VRAM 이 권장보다 작으면 모자란 만큼 깎는다.",
+ "model": "예상 fps = min(그래픽카드가 내는 fps, CPU 가 내는 fps). 그래픽카드 fps = 기준값(RTX 4090 실측) × 성능 지수 ÷ 100, CPU fps = CPU 천장(9800X3D 실측) × 게임 지수 ÷ 100. VRAM 이 권장보다 작으면 모자란 만큼 깎는다. 여러 게임의 FHD 기준값은 이미 CPU 천장에 닿아 있어, 약한 그래픽카드의 FHD 예상은 실제보다 조금 낮게 나올 수 있다.",
  "games": [
   {
    "key": "lol",
@@ -9,18 +9,28 @@
    "preset": "매우 높음",
    "kind": "e스포츠",
    "gpu100": {
-    "fhd": 900,
-    "qhd": 800,
-    "uhd": 600
+    "fhd": 260,
+    "qhd": 260,
+    "uhd": 260
    },
-   "cpu100": 600,
+   "cpu100": 262,
    "vram": {
     "fhd": 2,
     "qhd": 3,
     "uhd": 4
    },
-   "confidence": "seed",
-   "sources": []
+   "confidence": "low",
+   "sources": [
+    {
+     "title": "퀘이사존 — 라이젠 7 9850X3D 벤치마크(9800X3D FHD 매우 높음 262fps, RTX 5090, 2026-01-28)",
+     "url": "https://quasarzone.com/bbs/qc_bench/views/96432"
+    },
+    {
+     "title": "퀘이사존 — 라이젠 7 7800X3D 벤치마크(RTX 4090, 해상도 무관 약 319fps, 2023-04-05)",
+     "url": "https://quasarzone.com/bbs/qc_bench/views/84662"
+    }
+   ],
+   "note": "해상도와 무관하게 CPU·엔진이 천장이다. 패치마다 값이 달라(2023년 약 319, 2026년 약 262) 최근 값으로 맞췄다."
   },
   {
    "key": "valorant",
@@ -39,7 +49,8 @@
     "uhd": 4
    },
    "confidence": "seed",
-   "sources": []
+   "sources": [],
+   "note": "공인 매체의 RTX 4090·9800X3D 실측이 없다 — 씨앗 추정 그대로."
   },
   {
    "key": "overwatch2",
@@ -47,18 +58,24 @@
    "preset": "에픽",
    "kind": "e스포츠",
    "gpu100": {
-    "fhd": 450,
-    "qhd": 330,
-    "uhd": 180
+    "fhd": 487,
+    "qhd": 379,
+    "uhd": 232
    },
-   "cpu100": 450,
+   "cpu100": 487,
    "vram": {
     "fhd": 4,
     "qhd": 5,
     "uhd": 7
    },
-   "confidence": "seed",
-   "sources": []
+   "confidence": "low",
+   "sources": [
+    {
+     "title": "퀘이사존 — 라이젠 7 9800X3D 20종 게임 벤치마크(9800X3D + RTX 4090, 2024-11-06)",
+     "url": "https://quasarzone.com/bbs/qc_bench/views/92090"
+    }
+   ],
+   "note": "FHD 는 CPU 천장에 닿아 있다(9950X 459)."
   },
   {
    "key": "pubg",
@@ -66,37 +83,49 @@
    "preset": "울트라",
    "kind": "경쟁 FPS",
    "gpu100": {
-    "fhd": 330,
-    "qhd": 260,
-    "uhd": 150
+    "fhd": 440,
+    "qhd": 337,
+    "uhd": 192
    },
-   "cpu100": 300,
+   "cpu100": 440,
    "vram": {
     "fhd": 4,
     "qhd": 6,
     "uhd": 8
    },
-   "confidence": "seed",
-   "sources": []
+   "confidence": "low",
+   "sources": [
+    {
+     "title": "퀘이사존 — 라이젠 7 9800X3D 20종 게임 벤치마크(9800X3D + RTX 4090, 2024-11-06)",
+     "url": "https://quasarzone.com/bbs/qc_bench/views/92090"
+    }
+   ],
+   "note": "FHD 는 CPU 천장(9950X 362)."
   },
   {
    "key": "lostark",
    "name": "로스트아크",
-   "preset": "최상",
+   "preset": "최상(EPIC)",
    "kind": "MMORPG",
    "gpu100": {
-    "fhd": 400,
-    "qhd": 300,
-    "uhd": 180
+    "fhd": 425,
+    "qhd": 381,
+    "uhd": 233
    },
-   "cpu100": 200,
+   "cpu100": 425,
    "vram": {
     "fhd": 4,
     "qhd": 5,
     "uhd": 7
    },
-   "confidence": "seed",
-   "sources": []
+   "confidence": "low",
+   "sources": [
+    {
+     "title": "퀘이사존 — 라이젠 7 9800X3D 20종 게임 벤치마크(9800X3D + RTX 4090, 2024-11-06) — 영광의 벽",
+     "url": "https://quasarzone.com/bbs/qc_bench/views/92090"
+    }
+   ],
+   "note": "FHD·QHD 가 CPU 에 크게 묶인다(9950X 347·324)."
   },
   {
    "key": "cyberpunk",
@@ -104,18 +133,28 @@
    "preset": "울트라 · 레이트레이싱 끔",
    "kind": "AAA",
    "gpu100": {
-    "fhd": 175,
-    "qhd": 135,
-    "uhd": 72
+    "fhd": 245,
+    "qhd": 166,
+    "uhd": 77
    },
-   "cpu100": 180,
+   "cpu100": 243,
    "vram": {
     "fhd": 7,
     "qhd": 9,
     "uhd": 12
    },
-   "confidence": "seed",
-   "sources": []
+   "confidence": "medium",
+   "sources": [
+    {
+     "title": "퀘이사존 — 라이젠 7 9800X3D 20종 게임 벤치마크(9800X3D + RTX 4090, 2024-11-06)",
+     "url": "https://quasarzone.com/bbs/qc_bench/views/92099"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰(720p CPU 천장 242.8, RTX 4090)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/17.html"
+    }
+   ],
+   "note": "TechPowerUp 자체 장면 227·155·79 와도 가깝다(리뷰 둘 → medium)."
   },
   {
    "key": "mhwilds",
@@ -134,26 +173,41 @@
     "uhd": 13
    },
    "confidence": "seed",
-   "sources": []
+   "sources": [],
+   "note": "업스케일을 끈 원본 해상도 실측이 없다(ComputerBase 는 DLSS 품질 87·71) — 섞지 않고 씨앗 추정 그대로."
   },
   {
    "key": "wukong",
    "name": "검은 신화: 오공",
-   "preset": "매우 높음 · 업스케일 끔",
+   "preset": "시네마틱 · 업스케일 끔",
    "kind": "AAA",
    "gpu100": {
-    "fhd": 100,
-    "qhd": 80,
-    "uhd": 50
+    "fhd": 88,
+    "qhd": 70,
+    "uhd": 47
    },
    "cpu100": 150,
    "vram": {
     "fhd": 8,
-    "qhd": 10,
-    "uhd": 12
+    "qhd": 8,
+    "uhd": 9
    },
-   "confidence": "seed",
-   "sources": []
+   "confidence": "medium",
+   "sources": [
+    {
+     "title": "퀘이사존 — 라이젠 7 9800X3D 20종 게임 벤치마크(9800X3D + RTX 4090, 2024-11-06)",
+     "url": "https://quasarzone.com/bbs/qc_bench/views/92097"
+    },
+    {
+     "title": "TechSpot — Black Myth: Wukong 벤치마크(시네마틱 90·73·48, RTX 4090)",
+     "url": "https://www.techspot.com/review/2883-black-myth-wukong-benchmark/"
+    },
+    {
+     "title": "TechPowerUp — Wukong VRAM 사용량(시네마틱 7.1·7.6·8.1GB)",
+     "url": "https://www.techpowerup.com/review/black-myth-wukong-fps-performance-benchmark/5.html"
+    }
+   ],
+   "note": "'매우 높음' 원본 해상도 실측을 낸 곳이 없어 옵션을 시네마틱으로 바꿨다. CPU 천장은 그래픽카드가 먼저 막혀 잴 수 없었다 — cpu100 은 씨앗 그대로."
   }
  ],
  "llm": {
