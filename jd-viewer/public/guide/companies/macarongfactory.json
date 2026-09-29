@@ -8,7 +8,7 @@
     "마이클"
   ],
   "status": "in_progress",
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-29",
   "site": "mycle.co.kr",
   "one_liner": "차량 관리·정비 예약 앱 '마이클' 을 만드는 판교 회사 — 연 매출 630억 흑자, 입점 정비소 2,400곳, 5년↑ 시니어만 뽑는다",
   "company": {
@@ -393,6 +393,112 @@
             {
               "title": "Guide to Android app modularization — Android Developers",
               "url": "https://developer.android.com/topic/modularization",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/378884",
+      "title": "Data Engineering (5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 경기 성남시 분당구(판교). 주요업무는 **레이크하우스 위 변환·모델링 레이어**(테스트·문서를 코드와 함께), 반복 조회를 **셀프서비스 도구**로 만들고 **지표 정의·데이터 출처를 한곳에**, **CDC 파이프라인 운영·확장**(소스 팀과 스키마 변경 규칙, 백필·재처리), 신선도·양·정확성 **검증 체계**와 지연·처리량 측정, **파티셔닝·파일 포맷·쿼리 최적화**로 성능과 비용 개선, 데이터 사용자와 직접 요구 정의, AI 로 맥락 파악·변환 로직·문서. 스택은 **Kafka·Flink CDC·Airflow**, **Iceberg·Athena·Druid·OpenSearch**, Aurora MySQL·PostgreSQL·DynamoDB·Redis, Superset·Grafana, AWS(ECS·EKS·k3s·Helm), Terraform·CDK·ArgoCD, Python·Kotlin/Java·SQL. 자격은 프로덕션 파이프라인 설계·운영, **데이터 모델링**, 배치·스트리밍 중 하나를 직접 책임, **스키마 변경·백필·재처리를 서비스 영향 없이 한 사례**, Python/JVM + SQL, **비개발자를 고객으로** 본 경험, AI 결과를 검증하는 본인 기준. 우대는 세그멘테이션·피처 스토어, dbt, Debezium/Flink CDC + Kafka, Iceberg·Delta·Parquet, 순서 역전·중복·지연 진단, 자연어→쿼리 층, 분석 엔진 비용 최적화, Kotlin/Spring 코드 읽기. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어 5년",
+          "프로덕션 파이프라인 운영",
+          "데이터 모델링",
+          "스키마 변경·백필 무중단",
+          "SQL"
+        ],
+        "can_learn": [
+          "Flink CDC",
+          "Iceberg",
+          "dbt",
+          "Druid"
+        ]
+      },
+      "study": [
+        {
+          "topic": "CDC 파이프라인 — 스키마 변경·백필·재처리를 서비스 영향 없이",
+          "from": "qualification",
+          "quote": "• 스키마 변경·백필·재처리를 서비스 영향 없이 수행한 사례를 설명할 수 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 'CDC 파이프라인을 운영하며 대상 도메인을 넓히고, 소스 팀과 스키마 변경 규칙을 맞춰 백필·재처리를 안전하게 수행' 이 있다. 스택이 Kafka·Flink CDC 다.",
+          "gap_check": "MySQL binlog 기반 CDC 는 스냅샷 단계와 증분 단계를 어떻게 이어 붙이는가(중복·누락 없이)? 소스 테이블에 컬럼이 추가·삭제·타입 변경되면 Flink CDC 작업과 Iceberg 테이블은 각각 어떻게 되는가? 과거 구간만 다시 채우는 백필을 실시간 흐름을 멈추지 않고 하려면 무엇으로 구간을 가르는가? 같은 키의 변경이 순서가 뒤집혀 도착하면 무엇으로 최신을 판정하는가?",
+          "drill": "Flink CDC MySQL 커넥터 문서(증분 스냅샷)와 Iceberg 스키마 진화 문서를 읽고, 로컬 MySQL(예약 테이블) → Flink CDC → Iceberg 파이프라인을 띄운다. 운영 중 컬럼을 하나 추가하고, 특정 날짜 구간을 다시 적재하는 백필을 흐름을 멈추지 않고 돌린 뒤, 원천과 행 수·키 합계를 대조하는 검증 쿼리로 끝낸다. 무엇이 깨졌고 어떻게 막았는지 한 쪽으로 적는다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "MySQL CDC Connector — Apache Flink CDC",
+              "url": "https://nightlies.apache.org/flink/flink-cdc-docs-stable/docs/connectors/flink-sources/mysql-cdc/",
+              "kind": "docs"
+            },
+            {
+              "title": "Schema Evolution — Apache Iceberg",
+              "url": "https://iceberg.apache.org/docs/latest/evolution/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "레이크하우스 변환·모델링 레이어를 테스트와 함께",
+          "from": "qualification",
+          "quote": "• 데이터 모델링에 강한 분. 원천 데이터를 쓰기 좋은 형태로 재구성하는 판단을 해 본 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무 첫 줄이 '레이크하우스 위에 변환·모델링 레이어를 설계하고 구현합니다. 테스트와 문서를 코드와 함께 관리' 다. 우대에 dbt 가 있다.",
+          "gap_check": "예약·정비소·차량 같은 원천 테이블을 사실(fact)과 차원(dimension)으로 나눌 때 한 행의 단위(grain)는 무엇으로 정하는가? 정비소 이름이 바뀌면 과거 예약 집계는 옛 이름으로 보여야 하는가, 새 이름인가(SCD)? 변환 결과가 틀렸다는 것을 사람이 알아채기 전에 무엇이 먼저 잡아 주는가(고유성·널·참조 테스트)?",
+          "drill": "dbt 문서의 모델·테스트·문서 부분을 읽고, 예약 원천 3개 테이블로 staging → 예약 fact · 정비소 dimension(스냅샷) 모델을 만든다. unique·not_null·relationships 테스트와 모델 설명을 달고 dbt docs 로 계보(lineage)를 띄운다. '월별 정비소당 예약 수' 지표 하나를 정의 문서와 함께 둔다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Add data tests to your DAG — dbt Developer Hub",
+              "url": "https://docs.getdbt.com/docs/build/data-tests",
+              "kind": "docs"
+            },
+            {
+              "title": "Snapshots — dbt Developer Hub",
+              "url": "https://docs.getdbt.com/docs/build/snapshots",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 품질 — 신선도·양·정확성을 검증 체계로",
+          "from": "task",
+          "quote": "• 데이터의 신선도·양·정확성을 검증 체계로 관리하고, 파이프라인의 지연·처리량·안정성을 측정해 개선합니다.",
+          "priority": "high",
+          "why": "주요업무다. 비개발자가 직접 뽑아 쓰는 환경을 만들면 틀린 숫자는 곧바로 의사결정으로 간다 — 먼저 잡는 쪽이 파이프라인이어야 한다.",
+          "gap_check": "'어제 예약 테이블이 늦게 찼다' 를 무엇으로 재는가(마지막 적재 시각 vs 이벤트 시각)? 행 수가 평소보다 30% 줄었을 때 장애인지 실제 감소인지 무엇으로 가르는가? 검증이 실패하면 다음 단계를 막는가, 알리기만 하는가 — 그 기준은?",
+          "drill": "Airflow 문서의 SLA·센서 부분을 읽고, 위 dbt 모델 앞뒤로 신선도(마지막 적재 1시간 이내)·양(지난 7일 같은 요일 대비 ±30%)·정확성(원천과 합계 일치) 검사를 DAG 에 넣는다. 일부러 원천 적재를 멈춰 알람이 어디로 가는지, 하류 작업이 막히는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Sensors — Apache Airflow",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/sensors.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Iceberg·Athena 조회 비용 — 파티셔닝과 파일 크기",
+          "from": "task",
+          "quote": "• 파티셔닝·파일 포맷·쿼리 최적화로 조회 성능과 비용을 개선합니다.",
+          "priority": "nice",
+          "why": "주요업무이고 스택이 Iceberg·Athena 다. Athena 는 스캔한 데이터 양으로 비용을 매기므로 파티션과 파일 배치가 곧 비용이다.",
+          "gap_check": "Iceberg 의 숨은 파티셔닝(hidden partitioning)은 Hive 식 파티션 컬럼과 무엇이 다른가? CDC 로 작은 파일이 계속 쌓이면 조회가 왜 느려지고 무엇으로 합치는가(compaction)? 같은 쿼리의 스캔 바이트를 줄였다는 것을 어디서 확인하는가?",
+          "drill": "Iceberg 파티셔닝·유지보수(rewrite_data_files, expire_snapshots) 문서와 Athena 성능 팁 문서를 읽는다. 예약 fact 를 일 단위 파티션으로 두고 작은 파일이 많은 상태와 합친 상태에서 같은 '지난 7일 지역별 예약' 쿼리의 스캔 바이트·시간을 비교해 표로 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Partitioning — Apache Iceberg",
+              "url": "https://iceberg.apache.org/docs/latest/partitioning/",
+              "kind": "docs"
+            },
+            {
+              "title": "Maintenance — Apache Iceberg",
+              "url": "https://iceberg.apache.org/docs/latest/maintenance/",
               "kind": "docs"
             }
           ]
