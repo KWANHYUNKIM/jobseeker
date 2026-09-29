@@ -4,7 +4,7 @@
   "name_en": "ZEST",
   "country": "JP",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-29",
   "domain": "zest.jp",
   "one_liner": "방문 간호 · 개호 · 진료 사업소의 방문 스케줄과 경로를 자동으로 짜는 클라우드 'ZEST' — AI 가 짠 방문표는 실행 당시 입력을 통째로 남겨 되짚고, 전자 카르테와의 연계는 연계처마다 다른 호출 한도에 맞춰 매 분 법인별로 나눠 보낸다",
@@ -141,7 +141,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "map-reuse"
+      ]
     }
   ],
   "features": [
@@ -774,6 +776,261 @@
           "url": "https://zest.jp/",
           "publisher": "ゼスト",
           "summary": "방문 간호 · 방문 개호 · 방문 진료 · 시설용 방문 스케줄 · 경로 자동 작성 클라우드. 이동 시간을 고려한 최적 스케줄 자동 작성(가동률), 지역 연계처 영업 추천 · 스마트폰 방문 기록, 경영 지표 자동 집계. 전자 카르테 · 개호 소프트와 이용자 정보 · 스케줄 양방향 연계. FAQ: 초기 비용 없음, 월 이용료만 — 금액은 사업소의 예상 이용 시간에 따라 달라져 개별 설명회에서 안내. ISO/IEC 27001:2022 · 3 성 2 가이드라인 대응. '디지털화 · AI 도입 보조금 2026' 대상 도구."
+        }
+      ]
+    },
+    {
+      "key": "map-reuse",
+      "name": "방문 경로를 지도에 그린다 — 읽을 때마다 과금되는 지도를 reuseMaps 로 한 번만 읽고, 핀은 React 컴포넌트로, 경로는 직접 만든 Polyline 으로",
+      "domain": "읽어 들일 때마다 돈이 드는 지도를, 화면을 여닫아도 다시 읽지 않게 한다",
+      "updated_at": "2026-09-29",
+      "business": {
+        "why": "ZEST SCHEDULE 은 이용자 주소를 정하고 하루 방문 예정을 지도 위에 보여 준다 — 누가 어느 집을 어떤 순서로 도는지가 한눈에 보여야 스케줄이 맞는지 판단할 수 있다.\n\nGoogle Maps JavaScript API 는 **지도를 읽어 들일 때(초기화)** 과금된다(마커 · 선을 그리는 것 자체는 아니다). 지도를 사이드 메뉴나 모달 안에 두면 여닫을 때마다 새로 읽혀 비용이 불어날 수 있다.",
+        "metrics": []
+      },
+      "thinking": [
+        {
+          "at": "라이브러리를 고를 때",
+          "thought": "Google 공식 @googlemaps/react-wrapper 는 아카이브됐고 공식 저장소가 @vis.gl/react-google-maps 로 옮기라고 안내한다 — Google 이 후원하고 문서에서 권하는 쪽을 쓴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+              "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+              "publisher": "ゼスト",
+              "date": "2025-12-22",
+              "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+            }
+          ]
+        },
+        {
+          "at": "비용을 볼 때",
+          "thought": "무엇에 과금되는지부터 조사했다 — 지도 읽기(초기화)만이다. 그렇다면 읽는 횟수를 줄이면 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+              "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+              "publisher": "ゼスト",
+              "date": "2025-12-22",
+              "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+            }
+          ]
+        },
+        {
+          "at": "모바일 클릭이 꼬였을 때",
+          "thought": "위에 그린 마커가 먼저 클릭을 받아야 하는데 폴리라인 → 마커 순으로 발화했다. pointer-events 로는 안 풀려 setTimeout 으로 순서를 제어하는 '썩 좋지 않은' 대응을 요구사항 때문에 택했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+              "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+              "publisher": "ゼスト",
+              "date": "2025-12-22",
+              "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "지도 인스턴스",
+            "what": "Google Maps Map 객체 — 만들 때(읽어 들일 때) 과금된다. reuseMaps 로 전역에 캐시한다."
+          },
+          {
+            "name": "방문지 핀",
+            "what": "이용자 집 · 방문 예정 — AdvancedMarker 안의 React 컴포넌트."
+          },
+          {
+            "name": "경로 선",
+            "what": "방문지를 잇는 Polyline(직선). 지난 경로는 점선, 테두리는 두 선을 겹쳐 표현."
+          }
+        ],
+        "invariants": [
+          "지도를 여닫아도 Map 인스턴스는 새로 만들지 않는다(reuseMaps).",
+          "마커를 탭하면 그 아래 폴리라인의 처리는 실행되지 않는다.",
+          "경로 검색 · Places 같은 다른 API 는 부르지 않는 한 과금이 늘지 않는다 — 선은 좌표를 이은 직선이다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "APIProvider 안의 Map 에 reuseMaps 를 켠다",
+            "why": "언마운트 때 인스턴스를 버리지 않고 전역에 두었다가 다시 마운트할 때 쓴다 — 여닫기마다 읽기가 생기지 않는다."
+          },
+          {
+            "step": "방문지마다 AdvancedMarker 로 React 컴포넌트 핀을 올린다",
+            "why": "예전 Marker 는 이미지 · SVG 만 받아 표현이 좁았다."
+          },
+          {
+            "step": "useMap · useMapsLibrary('maps') 로 Polyline 을 직접 만들어 지도에 붙이고, 언마운트 때 setMap(null)",
+            "why": "라이브러리에 Polyline 컴포넌트가 없다 — 공식 예제를 참고했다."
+          },
+          {
+            "step": "흰 굵은 선 위에 검은 얇은 선을 겹쳐 테두리, 투명 선에 Symbol 을 반복해 점선(지난 경로)",
+            "why": "Polyline 에 테두리 기능이 없다. 점선은 Google 문서의 방법."
+          },
+          {
+            "step": "마커 탭은 ref 플래그를 세우고, 폴리라인 탭은 50ms 기다린 뒤 플래그가 없을 때만 처리",
+            "why": "모바일에서 폴리라인 → 마커 순으로 클릭이 발화한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "React 에서 Google Maps 를 무엇으로 쓰나?",
+            "chosen": "**@vis.gl/react-google-maps** — vis.gl 커뮤니티(OpenJS Foundation)가 만들고 Google 이 후원 · 권장한다.",
+            "alternatives": [
+              "@googlemaps/react-wrapper(Google 공식, 아카이브됨)",
+              "Maps JavaScript API 를 직접 감싼다"
+            ],
+            "tradeoff": "TypeScript · useMap/useMapsLibrary 훅 · Map/AdvancedMarker/InfoWindow 컴포넌트가 있다. 대가는 Polyline 같은 일부 요소를 직접 만들어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+                "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+                "publisher": "ゼスト",
+                "date": "2025-12-22",
+                "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+              }
+            ]
+          },
+          {
+            "question": "지도 비용을 어떻게 줄이나?",
+            "chosen": "**reuseMaps** 로 Map 인스턴스를 캐시해 다시 쓴다 — 내부는 전역 변수에 인스턴스를 들고 있을 뿐이다.",
+            "alternatives": [
+              "지도를 늘 떠 있는 화면에만 둔다",
+              "정적 지도 이미지"
+            ],
+            "tradeoff": "간단한 설정인데 비용에 꽤 듣는다. 대가는 전역에 남은 인스턴스(한 화면에 지도가 여럿이면 어떻게 나뉘는지는 글에 없다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+                "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+                "publisher": "ゼスト",
+                "date": "2025-12-22",
+                "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+              }
+            ]
+          },
+          {
+            "question": "핀을 어떻게 그리나?",
+            "chosen": "**AdvancedMarker** 에 임의의 React 컴포넌트를 넣는다.",
+            "alternatives": [
+              "기존 Marker(이미지 · SVG 지정)"
+            ],
+            "tradeoff": "디자인 자유도가 높다. AdvancedMarker 는 지도 ID(mapId)가 필요하다(예제 코드에 mapId 가 있다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+                "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+                "publisher": "ゼスト",
+                "date": "2025-12-22",
+                "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+              }
+            ]
+          },
+          {
+            "question": "경로 선을 어떻게 그리고 꾸미나?",
+            "chosen": "**Polyline 을 useMap · useMapsLibrary 로 직접 만든다** — 테두리는 흰 굵은 선(6px) 위에 검은 얇은 선(4px)을 겹치고, 지난 경로는 투명 선에 Symbol 을 12px 마다 반복해 점선으로.",
+            "alternatives": [
+              "라이브러리 제공 컴포넌트를 기다린다",
+              "경로 검색 API(Directions)로 도로를 따르는 선"
+            ],
+            "tradeoff": "라이브러리에 Polyline 이 없어 공식 예제를 참고해 짰다('그럴 거면 제공해 주지' 라고 적는다). 선은 좌표를 이은 직선이라 추가 과금이 없지만 실제 도로 경로는 아니다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+                "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+                "publisher": "ゼスト",
+                "date": "2025-12-22",
+                "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+              }
+            ]
+          },
+          {
+            "question": "모바일에서 마커와 선이 겹쳐 탭될 때?",
+            "chosen": "**ref 플래그 + setTimeout(50ms)** 으로 폴리라인 처리를 미뤄, 그 사이 마커 탭이 오면 건너뛴다.",
+            "alternatives": [
+              "CSS pointer-events: none(효과 없었다)"
+            ],
+            "tradeoff": "요구사항은 채웠지만 글쓴이도 '썩 좋지 않은 대응' 이라 적는다 — 느린 기기에서 50ms 안에 마커 이벤트가 오지 않으면 둘 다 실행될 수 있다(이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+                "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+                "publisher": "ゼスト",
+                "date": "2025-12-22",
+                "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "스마트 할당 되짚기",
+          "via": "방문 예정 · 방문 순서",
+          "contract": "스마트 할당이 짠 방문표가 지도 위 핀 · 경로로 보인다(이 사이트의 해석 — 글은 '방문 예정의 시각화' 에 지도를 쓴다고만 적는다).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+              "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+              "publisher": "ゼスト",
+              "date": "2025-12-22",
+              "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+            }
+          ]
+        },
+        {
+          "to": "Google Maps JavaScript API",
+          "via": "APIProvider(API 키) · mapId",
+          "contract": "지도 읽기(초기화)만 과금 — 경로 검색 · Places 를 부르면 따로 과금된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+              "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+              "publisher": "ゼスト",
+              "date": "2025-12-22",
+              "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "모달을 여닫을 때 지도 읽기",
+          "question": "reuseMaps 가 있을 때와 없을 때 무엇이 달라지나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 사용자\n  participant M as 모달 속 지도\n  participant G as Google Maps(과금)\n  U->>M: 모달 열기\n  M->>G: Map 초기화(읽기 1회)\n  U->>M: 닫기 — 언마운트\n  Note over M: reuseMaps: 인스턴스를 전역에 보관\n  U->>M: 다시 열기\n  M-->>M: 보관한 인스턴스 재사용(읽기 없음)\n  Note over M,G: reuseMaps 가 없으면 열 때마다 초기화 = 과금"
+        },
+        {
+          "title": "지도 한 장의 층",
+          "question": "방문 경로 화면은 무엇으로 조립되나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  AP[\"APIProvider(API 키)\"] --> MAP[\"Map · mapId · reuseMaps\"]\n  MAP --> PIN[\"AdvancedMarker\\nReact 컴포넌트 핀\"]\n  MAP --> PL[\"직접 만든 Polyline\\nuseMap · useMapsLibrary\"]\n  PL --> BORDER[\"테두리 = 흰 6px + 검은 4px 겹침\"]\n  PL --> DASH[\"지난 경로 = 투명 선 + Symbol 반복 점선\"]"
+        },
+        {
+          "title": "모바일에서 마커를 탭했는데 선이 먼저 반응할 때",
+          "question": "이벤트 순서가 뒤집히면 무엇으로 막나?",
+          "kind": "failure",
+          "code": "sequenceDiagram\n  participant T as 탭\n  participant PL as 폴리라인 핸들러\n  participant MK as 마커 핸들러\n  T->>PL: (모바일) 폴리라인 클릭 먼저 발화\n  PL->>PL: 플래그 = false, 50ms 대기\n  T->>MK: 마커 클릭 발화\n  MK->>MK: 플래그 = true · 상세 표시\n  PL->>PL: 50ms 뒤 플래그 확인 — true 면 건너뜀\n  Note over PL: pointer-events: none 은 효과가 없었다"
+        }
+      ],
+      "sources": [
+        {
+          "title": "@vis.gl/react-google-maps で実装する地図のコスト削減とUXの工夫",
+          "url": "https://techblog.zest.jp/entry/2025/12/22/094059",
+          "publisher": "ゼスト",
+          "date": "2025-12-22",
+          "summary": "ZEST SCHEDULE 은 주소 설정 · 방문 예정 시각화에 Google Maps 를 쓴다. 아카이브된 @googlemaps/react-wrapper 대신 Google 이 권하는 @vis.gl/react-google-maps 채택. 과금은 지도를 읽어 들일 때(초기화)만 — 사이드 메뉴 · 모달의 여닫기마다 읽기가 생기지 않게 reuseMaps 로 Map 인스턴스를 캐시해 재사용. AdvancedMarker 로 React 컴포넌트 핀, Polyline 을 직접 구현(두 선 겹침으로 테두리, Symbol 로 점선). 모바일에서 폴리라인 → 마커 순으로 클릭이 발화하는 문제를 setTimeout · 플래그로 우회."
         }
       ]
     }
