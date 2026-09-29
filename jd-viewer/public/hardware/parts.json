@@ -1775,7 +1775,8 @@
     "l3_mb": 96,
     "series": "라이젠 5000 시리즈",
     "family": "라이젠 7",
-    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35",
+    "base_ghz": 3.0
    },
    "perf": {
     "index": 72,
@@ -1797,6 +1798,10 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양(지원 페이지 사양표) — 8C/16T · 3.0/4.1GHz · L3 96MB · 105W · AM4 · DDR4 · 외장 그래픽 필요 · 2024-01-08",
+     "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-7-5700x3d.html"
+    },
+    {
      "title": "AMD 보도자료(제품 페이지가 내려가 코어·클럭·TDP 만 확인)",
      "url": "https://www.amd.com/en/newsroom/press-releases/2024-1-8-amd-reveals-next-gen-desktop-processors-for-extrem.html"
     },
@@ -1806,7 +1811,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-5-5600",
@@ -1826,7 +1832,8 @@
     "l3_mb": 32,
     "series": "라이젠 5000 시리즈",
     "family": "라이젠 5",
-    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35",
+    "base_ghz": 3.5
    },
    "perf": {
     "index": 60,
@@ -1854,6 +1861,10 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양(지원 페이지 사양표) — 6C/12T · 3.5/4.4GHz · L3 32MB · 65W · AM4 · DDR4 · 외장 그래픽 필요 · 2022-04-04",
+     "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-5-5600.html"
+    },
+    {
      "title": "AMD 보도자료(제품 페이지가 내려가 코어·클럭·TDP 만 확인)",
      "url": "https://www.amd.com/en/newsroom/press-releases/2022-3-15-amd-launches-the-ultimate-gaming-processor-brings.html"
     },
@@ -1863,7 +1874,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-core-ultra-9-285k",
