@@ -318,7 +318,14 @@
   "name": "빌드 시간 (대형 C++/자바 프로젝트 풀 빌드)",
   "model": "병렬 빌드는 멀티 지수에 거의 비례한다. 9950X 가 10분 걸리는 빌드를 기준으로 잡는다.",
   "anchor_minutes": 10,
-  "confidence": "seed"
+  "confidence": "seed",
+  "note": "주의 — 실측은 이 모델보다 코어 수에 덜 민감하다. TechPowerUp 의 Visual Studio C++ 빌드: 9950X 40.2초 · 9800X3D 43.1초 · 9700X 44.1초 · 9600X 48.2초 · 7600X 49.5초(9950X 대비 9600X 1.2배). 멀티 지수 비례식은 9600X 를 약 2.4배로 본다 — 링크·단일 스레드 구간이 크다. 커널 · Chromium 같은 대형 병렬 빌드에서만 비례식에 가깝다. 식을 바꾸려면 뷰어 estimateBuildMin 을 고쳐야 한다(아직 안 바꿈).",
+  "sources": [
+   {
+    "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰, Visual Studio C++ 빌드 시간(9950X 40.2초 · 9600X 48.2초)",
+    "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/10.html"
+   }
+  ]
  },
  "vendor": [
   {
