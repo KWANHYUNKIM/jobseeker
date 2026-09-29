@@ -711,6 +711,125 @@
     ]
    },
    "note": "darkFlash 글로벌 사이트에 이 모델이 없어 국내 공식 유통사(투웨이) 페이지로 채웠다. 크기는 '413×210×450mm(가로×폭×높이)'를 깊이·너비·높이로 옮겼다. 파워 값은 '조립 여유 공간 230mm'다. 상단 팬 자리는 120mm 3개 또는 140mm 2개다. 측면 흡기 면 재질은 적혀 있지 않아 intake_panel 은 비웠다."
+  },
+  {
+   "id": "3rsys-r370-rgb",
+   "name": "3RSYS R370 RGB",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "R370"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX",
+    "boards": [
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 200,
+    "depth_mm": 317,
+    "height_mm": 390,
+    "max_gpu_mm": 275,
+    "max_cooler_mm": 158,
+    "max_radiator_mm": null,
+    "psu_max_mm": 160,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 120,
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": 120,
+      "n": 1
+     }
+    ],
+    "fan_mounts": null,
+    "intake_panel": "메시",
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 — 3RSYS R370 RGB 제품 상세",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1758587790"
+    }
+   ],
+   "confidence": "high",
+   "image": {
+    "url": "https://3rsys.com/data/item/1758587790/r370_img_01_1000px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1758587790"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬은 RGB 3개(전면 120mm 2 · 후면 120mm 1)다.",
+     "그래픽카드는 275mm 까지다 — 3팬 카드 상당수가 안 들어간다."
+    ]
+   },
+   "note": "공식 페이지 사양 요약에 라디에이터·팬 장착 칸·먼지 필터가 적혀 있지 않아 null 로 뒀다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "3rsys-r120",
+   "name": "3RSYS R120",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "R120"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX",
+    "boards": [
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 200,
+    "depth_mm": 340,
+    "height_mm": 426,
+    "max_gpu_mm": 320,
+    "max_cooler_mm": 160,
+    "max_radiator_mm": null,
+    "psu_max_mm": 180,
+    "fans_included": [
+     {
+      "pos": "rear",
+      "mm": 120,
+      "n": 1
+     }
+    ],
+    "fan_mounts": null,
+    "intake_panel": null,
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 — 3RSYS R120 제품 상세",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1681704457"
+    }
+   ],
+   "confidence": "high",
+   "image": {
+    "url": "https://3rsys.com/data/item/1681704457/r120_black_img_01_1024px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1681704457"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬은 후면 120mm 1개뿐이다.",
+     "측면은 스윙도어식 강화유리다."
+    ]
+   },
+   "note": "전면 패널 형태가 사양에 적혀 있지 않아 흡기 패널은 null 이다. 공식 페이지 사양 요약에 라디에이터·팬 장착 칸·먼지 필터가 적혀 있지 않아 null 로 뒀다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
   }
  ]
 }

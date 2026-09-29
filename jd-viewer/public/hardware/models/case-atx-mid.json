@@ -784,6 +784,74 @@
    },
    "note": "공식 사양표에 먼지 필터와 흡기 패널이 적혀 있지 않아 null 로 뒀다. og:image 가 없어 사진은 두지 않았다. BTF 지원 여부는 적혀 있지 않다.",
    "checked_at": "2026-09-29"
+  },
+  {
+   "id": "3rsys-rx500-quiet",
+   "name": "3RSYS RX500 Quiet",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "RX500"
+    ]
+   },
+   "specs": {
+    "form": "ATX",
+    "boards": [
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 225,
+    "depth_mm": 434,
+    "height_mm": 464,
+    "max_gpu_mm": 400,
+    "max_cooler_mm": 177,
+    "max_radiator_mm": null,
+    "psu_max_mm": 160,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     },
+     {
+      "pos": "bottom",
+      "mm": 120,
+      "n": 2
+     }
+    ],
+    "fan_mounts": null,
+    "intake_panel": "메시",
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 — 3RSYS RX500 Quiet 제품 상세",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1753858019"
+    }
+   ],
+   "confidence": "high",
+   "image": {
+    "url": "https://3rsys.com/data/item/1753858019/rx500quiet_black_img_01_1000px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1753858019"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬은 ARGB 5개(전면 140mm 2 · 후면 140mm 1 · 하단 120mm 2)다.",
+     "파워는 전면에 들어가고 장착 길이는 160mm 까지다 — 긴 파워는 안 들어간다."
+    ]
+   },
+   "note": "공식 페이지 사양 요약에 라디에이터·팬 장착 칸·먼지 필터가 적혀 있지 않아 null 로 뒀다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
   }
  ]
 }

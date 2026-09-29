@@ -608,6 +608,241 @@
     ]
    },
    "note": "크기는 L×W×H 503×240×509mm 를 깊이×폭×높이로 옮겼다. 그래픽카드는 전면 라디에이터를 달면 380mm 까지다. 상단 팬 자리는 120mm 3개, 140mm 2개, 180mm 2개 중 하나다. 라디에이터는 전면 420mm, 상단 360mm 까지다. 공식 사양에 후면 커넥터 보드 지원이 'No' 로 적혀 있다. 초크 화이트는 페이지 비교표에서 같은 수치로 나오지만 사양 전체는 차콜 블랙 페이지로만 확인했다."
+  },
+  {
+   "id": "3rsys-t840",
+   "name": "3RSYS T840 풍통",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "T840"
+    ]
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 249.1,
+    "depth_mm": 465.6,
+    "height_mm": 566.8,
+    "max_gpu_mm": 355,
+    "max_cooler_mm": 180,
+    "max_radiator_mm": null,
+    "psu_max_mm": null,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 2
+     }
+    ],
+    "fan_mounts": null,
+    "intake_panel": null,
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 — 3RSYS T840 풍통 제품 상세",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1610008937"
+    }
+   ],
+   "confidence": "high",
+   "image": {
+    "url": "https://3rsys.com/data/item/1610008937/t840_black_img01_1024px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1610008937"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬은 ARGB 140mm 5개(전면 3 · 후면 2)다.",
+     "파워가 상단에 들어간다. 그래픽카드는 355mm 까지라 빅타워치고 짧다."
+    ]
+   },
+   "note": "파워 장착 길이는 적혀 있지 않다. 공식 페이지 사양 요약에 라디에이터·팬 장착 칸·먼지 필터가 적혀 있지 않아 null 로 뒀다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "3rsys-t3000-quiet",
+   "name": "3RSYS T3000 Quiet",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "T3000"
+    ]
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 255,
+    "depth_mm": 550,
+    "height_mm": 600,
+    "max_gpu_mm": 480,
+    "max_cooler_mm": 190,
+    "max_radiator_mm": null,
+    "psu_max_mm": 240,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     }
+    ],
+    "fan_mounts": null,
+    "intake_panel": "메시",
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 — 3RSYS T3000 Quiet 제품 상세",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1698281544"
+    }
+   ],
+   "confidence": "high",
+   "image": {
+    "url": "https://3rsys.com/data/item/1698281544/t3000_img_01_1000px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1698281544"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬은 ARGB 140mm 4개(전면 3 · 후면 1)이고 팬·RGB 컨트롤러가 있다."
+    ]
+   },
+   "note": "공식 페이지 사양 요약에 라디에이터·팬 장착 칸·먼지 필터가 적혀 있지 않아 null 로 뒀다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "3rsys-t6000",
+   "name": "3RSYS T6000 워크스테이션",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "T6000"
+    ]
+   },
+   "specs": {
+    "form": "SSI-EEB",
+    "boards": [
+     "SSI-EEB",
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 260,
+    "depth_mm": 609,
+    "height_mm": 639,
+    "max_gpu_mm": 530,
+    "max_cooler_mm": 200,
+    "max_radiator_mm": null,
+    "psu_max_mm": 200,
+    "fans_included": [],
+    "fan_mounts": null,
+    "intake_panel": "메시",
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 — 3RSYS T6000 워크스테이션 제품 상세",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1770594525"
+    }
+   ],
+   "confidence": "high",
+   "image": {
+    "url": "https://3rsys.com/data/item/1770594525/t6000_img_01_1000px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1770594525"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬이 없다(사양표 '쿨링팬 미지원') — 팬을 따로 사야 한다.",
+     "측면이 유리가 아니라 통풍구 패널이다. SSI-EEB 서버 보드까지 들어간다."
+    ]
+   },
+   "note": "공식 페이지 사양 요약에 라디에이터·팬 장착 칸·먼지 필터가 적혀 있지 않아 null 로 뒀다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "3rsys-t9000",
+   "name": "3RSYS T9000 워크스테이션",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "T9000"
+    ]
+   },
+   "specs": {
+    "form": "SSI-EEB",
+    "boards": [
+     "SSI-EEB",
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 262,
+    "depth_mm": 581,
+    "height_mm": 658,
+    "max_gpu_mm": 475,
+    "max_cooler_mm": 195,
+    "max_radiator_mm": null,
+    "psu_max_mm": 210,
+    "fans_included": [],
+    "fan_mounts": null,
+    "intake_panel": "메시",
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 — 3RSYS T9000 워크스테이션 제품 상세",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1765244464"
+    }
+   ],
+   "confidence": "high",
+   "image": {
+    "url": "https://3rsys.com/data/item/1765244464/t9000_img_01_1000px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1765244464"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬이 없다(사양표 '쿨링팬 미지원') — 팬을 따로 사야 한다.",
+     "측면이 유리가 아니라 통풍구 패널이다. SSI-EEB 서버 보드까지 들어간다."
+    ]
+   },
+   "note": "공식 페이지 사양 요약에 라디에이터·팬 장착 칸·먼지 필터가 적혀 있지 않아 null 로 뒀다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
   }
  ]
 }

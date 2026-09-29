@@ -2,6 +2,12 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: i3-13100 정품 매물 · 3RSYS 케이스 7종(사다리 3 · 6)
+
+- i3-13100 정품 박스가 한 곳만 463,140원(벌크의 3배) — 단종 뒤 재고 호가라 `정품` 을 not 에 넣고 not_basis 에 적었다(앞 기록의 '그대로 둔다'를 뒤집음). 섞인 매물 0.
+- models/case-atx-mid(RX500 Quiet) · case-matx-mini(R370 RGB · R120) · case-atx-full(T840 풍통 · T3000 Quiet · T6000 · T9000 워크스테이션). 3RSYS 공식 상세의 사양 요약 한 줄에서
+  보드 규격 · 크기 · VGA · 쿨러 높이 · 파워 길이 · 기본 팬을 읽었다. 요약에 라디에이터 · 팬 장착 칸 · 먼지 필터가 없어 null. T6000 · T9000 은 기본 팬이 없다(사양 '미지원').
+
 ## 2026-09-29 — 사이클: X870 · H610 보드 ASUS 6종(사다리 6 · 9)
 
 - models/mb-x870.json(TUF X870-PLUS WIFI · X870-PRO WIFI7 W NEO · ROG STRIX X870-I) · mb-h610-ddr4(PRIME H610M-K D4 · H610M-A D4) · mb-h610-ddr5(PRIME H610I-PLUS).
