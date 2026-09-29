@@ -53,7 +53,7 @@ SEARCH_URL = "https://search.danawa.com/dsearch.php?query={q}&tab=goods"
 PRODUCT_URL = "https://prod.danawa.com/info/?pcode={pcode}"
 CRAWL_DELAY_MS = 10_500     # robots.txt 의 Crawl-delay: 10 보다 조금 넉넉하게
 TIMEOUT = 25
-KEEP_OFFERS = 8             # 부품마다 남기는 매물 수(가격 오름차순)
+KEEP_OFFERS = 60            # 부품마다 남기는 매물 수(가격 오름차순). 제품별 스펙(models/)이 제 가격을 찾으려면 잘리면 안 된다
 
 # 상품 한 줄은 다음 상품이 시작하는 곳까지다. 상품 안에도 <ul> 이 여럿이라 </ul> 로는 못 끊는다.
 # 마지막 상품은 쪽 끝까지 가므로 ITEM_MAX 로 자른다(한 상품은 20~30KB).
