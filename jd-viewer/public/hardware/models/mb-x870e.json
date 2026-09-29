@@ -1,0 +1,263 @@
+{
+ "schema": 1,
+ "part": "mb-x870e",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-rog-strix-x870e-h-gaming-wifi7",
+   "name": "ASUS ROG STRIX X870E-H GAMING WIFI7",
+   "brand": "ASUS",
+   "code": "ROG STRIX X870E-H GAMING WIFI7",
+   "match": {
+    "must": [
+     "ASUS",
+     "X870E-H"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 2개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 5Gb Ethernet",
+    "wifi": "Wi-Fi 7 (Realtek® RTL8922AE) 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 14,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-strix/rog-strix-x870e-h-gaming-wifi7/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-rog-strix-x870e-a-gaming-wifi7-neo",
+   "name": "ASUS ROG STRIX X870E-A GAMING WIFI7 NEO",
+   "brand": "ASUS",
+   "code": "ROG STRIX X870E-A GAMING WIFI7 NEO",
+   "match": {
+    "must": [
+     "ASUS",
+     "X870E-A"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 2개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek® 5Gb Ethernet",
+    "wifi": "Wi-Fi 7 (MediaTek MT7925) 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 12,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-strix/rog-strix-x870e-a-gaming-wifi7-neo/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-rog-strix-x870e-e-gaming-wifi7-neo",
+   "name": "ASUS ROG STRIX X870E-E GAMING WIFI7 NEO",
+   "brand": "ASUS",
+   "code": "ROG STRIX X870E-E GAMING WIFI7 NEO",
+   "match": {
+    "must": [
+     "ASUS",
+     "X870E-E"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "5(5.0 2개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek® 5Gb Ethernet",
+    "wifi": "Wi-Fi 7 (MediaTek MT7927) 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 13,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-strix/rog-strix-x870e-e-gaming-wifi7-neo/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-proart-x870e-creator-wifi",
+   "name": "ASUS ProArt X870E-CREATOR WIFI",
+   "brand": "ASUS",
+   "code": "PROART X870E-CREATOR WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "PROART",
+     "X870E"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 2개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Marvell® AQtion 10Gb Ethernet",
+    "wifi": "Wi-Fi 7 (Qualcomm QCNCM865 or MediaTek MT7927) 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 11,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/proart/proart-x870e-creator-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-rog-crosshair-x870e-apex",
+   "name": "ASUS ROG CROSSHAIR X870E APEX",
+   "brand": "ASUS",
+   "code": "ROG CROSSHAIR X870E APEX",
+   "match": {
+    "must": [
+     "ASUS",
+     "X870E",
+     "APEX"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "5(5.0 3개)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Realtek 5Gb Ethernet",
+    "wifi": "Wi-Fi 7 (Qualcomm QCNCM865 or MediaTek MT7927) 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 10,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-crosshair/rog-crosshair-x870e-apex/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "메모리 슬롯 2개 — 메모리 오버클럭용 설계."
+  },
+  {
+   "id": "asus-rog-crosshair-x870e-dark-hero",
+   "name": "ASUS ROG CROSSHAIR X870E DARK HERO",
+   "brand": "ASUS",
+   "code": "ROG CROSSHAIR X870E DARK HERO",
+   "match": {
+    "must": [
+     "ASUS",
+     "X870E",
+     "DARKHERO"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "5(5.0 2개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 10Gb Ethernet",
+    "wifi": "Wi-Fi 7 (MediaTek MT7927) 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 11,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-crosshair/rog-crosshair-x870e-dark-hero/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-rog-crosshair-x870e-hero-btf",
+   "name": "ASUS ROG CROSSHAIR X870E HERO BTF",
+   "brand": "ASUS",
+   "code": "ROG CROSSHAIR X870E HERO BTF",
+   "match": {
+    "must": [
+     "ASUS",
+     "X870E",
+     "HEROBTF"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "5(5.0 3개)",
+    "dimm_slots": null,
+    "lan": "Intel® 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 (MediaTek MT7927) 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 10,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-crosshair/rog-crosshair-x870e-hero-btf/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "커넥터가 뒷면에 있는 BTF 보드 — BTF 대응 케이스가 필요하다."
+  },
+  {
+   "id": "asus-rog-crosshair-x870e-extreme",
+   "name": "ASUS ROG CROSSHAIR X870E EXTREME",
+   "brand": "ASUS",
+   "code": "ROG CROSSHAIR X870E EXTREME",
+   "match": {
+    "must": [
+     "ASUS",
+     "X870E",
+     "EXTREME"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "E-ATX 30.5×27.7cm",
+    "vrm": null,
+    "m2_slots": null,
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 12,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-crosshair/rog-crosshair-x870e-extreme/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "M.2 개수는 스펙 페이지에서 한 줄로 읽히지 않아 비워 둔다."
+  }
+ ]
+}

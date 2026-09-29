@@ -2,6 +2,11 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: X870E · A620 보드 ASUS 15종(사다리 6)
+
+- models/mb-x870e.json(8) · mb-a620.json(7) 새로 — 같은 파서. ASUS 매물 21건이 모두 한 모델에만 걸린다. EXTREME M.2 개수는 null,
+  TUF A620M-PLUS WIFI 규격은 파서가 'ATX' 로 잘못 읽어 M-ATX 로 바로잡았다. A620 7종은 모두 그래픽 · M.2 PCIe 4.0 — 급 값과 같다.
+
 ## 2026-09-29 — 사이클: Z890 · B650 · B860 보드 ASUS 23종(사다리 6)
 
 - models/mb-z890.json(7) · mb-b650.json(5) · mb-b860.json(11) 새로 — ASUS 공식 techspec 을 파서(scratchpad asus_parse.py)로 읽고 행마다 눈으로 봤다.

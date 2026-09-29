@@ -1,0 +1,230 @@
+{
+ "schema": 1,
+ "part": "mb-a620",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-a620am-a",
+   "name": "ASUS PRIME A620AM-A",
+   "brand": "ASUS",
+   "code": "PRIME A620AM-A",
+   "match": {
+    "must": [
+     "ASUS",
+     "A620AM-A"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-a620am-a/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-a620am-k",
+   "name": "ASUS PRIME A620AM-K",
+   "brand": "ASUS",
+   "code": "PRIME A620AM-K",
+   "match": {
+    "must": [
+     "ASUS",
+     "A620AM-K"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 22.6×22.1cm",
+    "vrm": null,
+    "m2_slots": "1(5.0 0개)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Realtek 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-a620am-k/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-a620m-k",
+   "name": "ASUS PRIME A620M-K",
+   "brand": "ASUS",
+   "code": "PRIME A620M-K",
+   "match": {
+    "must": [
+     "ASUS",
+     "A620M-K"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 22.6×22.1cm",
+    "vrm": null,
+    "m2_slots": "1(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-a620m-k/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-a620m-a",
+   "name": "ASUS PRIME A620M-A",
+   "brand": "ASUS",
+   "code": "PRIME A620M-A",
+   "match": {
+    "must": [
+     "ASUS",
+     "A620M-A"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-a620m-a/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-a620m-plus",
+   "name": "ASUS TUF Gaming A620M-PLUS",
+   "brand": "ASUS",
+   "code": "TUF GAMING A620M-PLUS",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "A620M-PLUS"
+    ],
+    "not": [
+     "WIFI"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-a620m-plus/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-a620m-plus-wifi",
+   "name": "ASUS TUF Gaming A620M-PLUS WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING A620M-PLUS WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "A620M-PLUS",
+     "WIFI"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 6 1x1 Wi-Fi 6 (802.11 a/b/g/n/ac/ax)",
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-a620m-plus-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-a620-pro-wifi",
+   "name": "ASUS TUF Gaming A620-PRO WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING A620-PRO WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "A620-PRO"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 6 1x1 Wi-Fi 6 (802.11 a/b/g/n/ac/ax)",
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-a620-pro-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}
