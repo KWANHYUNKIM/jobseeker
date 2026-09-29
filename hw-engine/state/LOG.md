@@ -2,6 +2,14 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: RTX 5060 Ti 26종 · 수랭 Thermalright · ARCTIC 4종(사다리 6)
+
+- models/gpu-rtx-5060-ti-8(13) · -16(13) 새로(조사 에이전트) — ASUS · PNY(브로슈어) · GALAX · Palit · Gainward · INNO3D · COLORFUL. 8GB 18건 · 16GB 19건이 한 모델에만 걸린다
+  (모든 규칙이 8GB/16GB 토큰을 요구해 두 용량이 섞이지 않는다). 뺐다: GIGABYTE · MSI · ZOTAC · MANLI(봇 차단) · 이엠텍 · GALAX BLACK 3X(국내 전용으로 보임).
+  GALAX 공식 페이지 둘이 '8핀 1개'와 '16핀 어댑터 동봉'을 함께 적어 어긋난다 — 요구 쪽(8핀)을 따랐다.
+- 수랭: Thermalright FROZEN HORIZON 360 Digital · TROFEO VISION 360, ARCTIC Liquid Freezer III PRO 360 · 240(라디에이터 두께 38mm). TDP 표기는 여전히 없다.
+  Thermalright AQUA ELITE 240 V3 는 공식 주소를 못 찾았다(404).
+
 ## 2026-09-29 — 사이클: 수랭 DeepCool 4종 · 3RSYS 2종(사다리 6)
 
 - models/cooler-aio-360(LE360 V2 · LT360 VISION · 라니 SF 360 · 라니 FC 360) · cooler-aio-240(LE240 V2 · MYSTIQUE 240) 새로. 라디에이터 · 팬 · 소음은 공식 값.

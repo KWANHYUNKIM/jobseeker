@@ -64,6 +64,36 @@
    "confidence": "high",
    "checked_at": "2026-09-29",
    "note": "라디에이터 282×120×27 mm(L×W×H). 제품 페이지에 감당 전력(TDP) 표기가 없다. LCD 달린 판."
+  },
+  {
+   "id": "arctic-liquid-freezer-iii-pro-240",
+   "name": "ARCTIC Liquid Freezer III PRO 240",
+   "brand": "ARCTIC",
+   "code": "Liquid Freezer III PRO 240",
+   "match": {
+    "must": [
+     "ARCTIC",
+     "LIQUIDFREEZERIIIPRO240"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": "120mm 2개",
+    "tdp_w": null,
+    "noise_dba": null,
+    "sockets": null,
+    "radiator": "277×120×38mm"
+   },
+   "sources": [
+    {
+     "title": "ARCTIC 공식 스펙",
+     "url": "https://www.arctic.de/en/Liquid-Freezer-III-Pro-240/ACFRE00178A"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "라디에이터 두께 38mm. A-RGB · 화이트 판은 같은 라디에이터로 본다. TDP 표기 없음."
   }
  ]
 }

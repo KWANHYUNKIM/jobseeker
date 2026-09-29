@@ -122,6 +122,96 @@
    "confidence": "high",
    "checked_at": "2026-09-29",
    "note": "A/S 팬3년+누수보상6년. 블랙 · 화이트 공통. 제품 페이지에 TDP 표기가 없다."
+  },
+  {
+   "id": "thermalright-frozen-horizon-360-digital-argb",
+   "name": "Thermalright FROZEN HORIZON 360 Digital ARGB",
+   "brand": "Thermalright",
+   "code": "FROZEN HORIZON 360 Digital ARGB",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "FROZENHORIZON360"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 28.2,
+    "sockets": null,
+    "radiator": "397×120×27mm"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/frozen-horizon-360-digital-argb/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "보증 5년. 블랙 · 화이트 공통. TDP 표기 없음. 팬 개수는 공식 스펙에 없다."
+  },
+  {
+   "id": "thermalright-trofeo-vision-360-argb",
+   "name": "Thermalright TROFEO VISION 360 ARGB",
+   "brand": "Thermalright",
+   "code": "TROFEO VISION 360 ARGB",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "TROFEOVISION360"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": null,
+    "tdp_w": null,
+    "noise_dba": 27.0,
+    "sockets": null,
+    "radiator": "403×120×27mm"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/trofeo-vision-360-argb/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "보증 6년. 펌프 위 화면 달린 판. TDP 표기 없음."
+  },
+  {
+   "id": "arctic-liquid-freezer-iii-pro-360",
+   "name": "ARCTIC Liquid Freezer III PRO 360",
+   "brand": "ARCTIC",
+   "code": "Liquid Freezer III PRO 360",
+   "match": {
+    "must": [
+     "ARCTIC",
+     "LIQUIDFREEZERIIIPRO360"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": "120mm 3개",
+    "tdp_w": null,
+    "noise_dba": null,
+    "sockets": null,
+    "radiator": "398×120×38mm"
+   },
+   "sources": [
+    {
+     "title": "ARCTIC 공식 스펙",
+     "url": "https://www.arctic.de/en/Liquid-Freezer-III-Pro-360/ACFRE00180A"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "라디에이터 두께 38mm(일반 27mm보다 두껍다 — 케이스 공간 확인). A-RGB · 화이트 판은 같은 라디에이터로 본다. TDP 표기 없음."
   }
  ]
 }

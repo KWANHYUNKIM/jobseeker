@@ -1,0 +1,622 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5060-ti-16",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-dual-rtx5060ti-o16g",
+   "name": "ASUS Dual RTX 5060 Ti OC 16GB",
+   "brand": "ASUS",
+   "code": "DUAL-RTX5060TI-O16G",
+   "match": {
+    "must": [
+     "ASUS",
+     "DUAL",
+     "5060Ti",
+     "16GB"
+    ],
+    "not": [
+     "WHITE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": 2632,
+    "length_mm": 229,
+    "width_mm": 120,
+    "thickness_mm": 50,
+    "slots": 2.5,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o16g/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(Axial-tech 팬 2개·듀얼 BIOS·0dB·백플레이트)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o16g/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 스펙에 AURA 항목이 없어 조명은 비워 둔다. 메모리만 빼면 8GB 판과 같다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/d9408583-9a6f-4a2b-b721-c09f1fe8cf99/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o16g/"
+   }
+  },
+  {
+   "id": "pny-rtx5060ti-16gb-oc-dual-fan",
+   "name": "PNY RTX 5060 Ti 16GB OC Dual Fan",
+   "brand": "PNY",
+   "code": "VCG5060T16DFXPB1-O",
+   "match": {
+    "must": [
+     "PNY",
+     "5060Ti",
+     "16GB",
+     "DualFan"
+    ],
+    "not": [
+     "EPIC",
+     "TripleFan"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2692,
+    "oc_mhz": null,
+    "length_mm": 245,
+    "width_mm": 120,
+    "thickness_mm": 39.9,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5060-ti-16gb-dual-fan-oc-brochure.pdf"
+    },
+    {
+     "title": "PNY RTX 5060 Ti 16GB 모델 페이지",
+     "url": "https://www.pny.com/geforce-rtx-5060-ti-16gb-models"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 자료에 부스트 클럭이 2692MHz 하나뿐이라 boost_mhz 에 둔다. 0dB·조명은 언급이 없어 비워 둔다."
+  },
+  {
+   "id": "pny-rtx5060ti-16gb-epic-x-rgb-oc-triple-fan",
+   "name": "PNY RTX 5060 Ti 16GB EPIC-X RGB OC Triple Fan",
+   "brand": "PNY",
+   "code": "VCG5060T16TFXXPB1-O",
+   "match": {
+    "must": [
+     "PNY",
+     "5060Ti",
+     "16GB",
+     "EPIC-X|EPICX"
+    ],
+    "not": [
+     "DualFan"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2692,
+    "oc_mhz": null,
+    "length_mm": 299,
+    "width_mm": 120,
+    "thickness_mm": 39.9,
+    "slots": 2,
+    "fans": 3,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어",
+     "url": "https://www.pny.com/File%20Library/Company/Support/Product%20Brochures/GeForce%20Graphics/English/rtx-5060-ti-16gb-triple-fan-argb-oc-brochure.pdf"
+    },
+    {
+     "title": "PNY RTX 5060 Ti 16GB 모델 페이지",
+     "url": "https://www.pny.com/geforce-rtx-5060-ti-16gb-models"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "브로슈어의 카드 크기는 인치(11.77×4.72×1.57in)만 있어 mm 로 환산했다. 부스트 클럭은 2692MHz 하나뿐이다."
+  },
+  {
+   "id": "galax-black-oc-rtx5060ti-16g",
+   "name": "GALAX RTX 5060 Ti BLACK OC 16GB",
+   "brand": "GALAX",
+   "code": "56IZN8MDCPOC",
+   "match": {
+    "must": [
+     "GALAX",
+     "5060Ti",
+     "BLACKOC",
+     "16GB"
+    ],
+    "not": [
+     "3X",
+     "V2",
+     "DUALHDMI",
+     "WHITE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2587,
+    "oc_mhz": 2602,
+    "length_mm": 235,
+    "width_mm": 115.5,
+    "thickness_mm": 39.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "LED(카드의 스위치로 끔)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 — RTX 5060 Ti 1-Click OC 16GB",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-ti-16gb-1-click-oc-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "국내명 BLACK OC 16GB 를 글로벌명 1-Click OC 16GB 로 짝지은 것은 추정이다. 공식 페이지가 요구 전원은 8핀 1개라 하면서 동봉품에 16핀→8핀 x2 어댑터를 적어 두어 어긋난다 — 요구 사항 쪽을 따르고 동봉품은 비워 둔다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/04/UKR_7202-Gx.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5060-ti-16gb-1-click-oc-2x/"
+   }
+  },
+  {
+   "id": "palit-rtx5060ti-white-oc-16g",
+   "name": "PALIT RTX 5060 Ti White OC 16GB",
+   "brand": "PALIT",
+   "code": "NE7506TU19T1-GB2061M",
+   "match": {
+    "must": [
+     "PALIT",
+     "5060Ti",
+     "WHITEOC",
+     "16GB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": null,
+    "length_mm": 262.1,
+    "width_mm": 126.3,
+    "thickness_mm": 40.1,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "Palit 공식 스펙",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5735&lang=en&pn=NE7506TU19T1-GB2061M&tab=sp"
+    },
+    {
+     "title": "Palit 제품 소개(95mm 팬 2개·흰 백플레이트)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5735&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 스펙에 부스트 클럭이 2602MHz 하나뿐이라 boost_mhz 에 둔다.",
+   "image": {
+    "url": "https://www.palit.com/product/vga/picture/p05735/p05735_propng_263685ba93b2f4e7.png",
+    "credit": "Palit",
+    "page": "https://www.palit.com/palit/vgapro.php?id=5735&lang=en"
+   }
+  },
+  {
+   "id": "palit-rtx5060ti-infinity3-16g",
+   "name": "PALIT RTX 5060 Ti Infinity 3 16GB",
+   "brand": "PALIT",
+   "code": "NE7506T019T1-GB2061S",
+   "match": {
+    "must": [
+     "PALIT",
+     "5060Ti",
+     "INFINITY3",
+     "16GB"
+    ],
+    "not": [
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 291.9,
+    "width_mm": 116.6,
+    "thickness_mm": 41.3,
+    "slots": 2,
+    "fans": 3,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "Palit 공식 스펙",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5495&lang=en&pn=NE7506T019T1-GB2061S&tab=sp"
+    },
+    {
+     "title": "Palit 제품 소개",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5495&lang=en"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "팬 개수는 공식 페이지에 숫자로 적혀 있지 않아 제품군 이름(Infinity 3)으로 3개라 적었다. 백플레이트·조명은 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://www.palit.com/product/vga/picture/p05495/p05495_propng_192867dbab2f6a347.png",
+    "credit": "Palit",
+    "page": "https://www.palit.com/palit/vgapro.php?id=5495&lang=en"
+   }
+  },
+  {
+   "id": "inno3d-rtx5060ti-16g-twin-x2-oc",
+   "name": "INNO3D RTX 5060 Ti 16GB TWIN X2 OC",
+   "brand": "INNO3D",
+   "code": "N506T2-16D7X-191073N",
+   "match": {
+    "must": [
+     "INNO3D",
+     "5060Ti",
+     "16GB",
+     "TWINX2"
+    ],
+    "not": [
+     "WHITE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": null,
+    "length_mm": 250,
+    "width_mm": 116,
+    "thickness_mm": 41,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 650,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "INNO3D 공식 제품 페이지",
+     "url": "https://www.inno3d.com/product/inno3d-geforce-rtx-5060-ti-16gb-twin-x2-oc"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "0dB·조명은 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://www.inno3d.com/sites/default/files/2025-04/5060Ti_TWIN_X2_OC_card.png",
+    "credit": "INNO3D",
+    "page": "https://www.inno3d.com/product/inno3d-geforce-rtx-5060-ti-16gb-twin-x2-oc"
+   }
+  },
+  {
+   "id": "inno3d-rtx5060ti-16g-twin-x2-oc-white",
+   "name": "INNO3D RTX 5060 Ti 16GB TWIN X2 OC WHITE",
+   "brand": "INNO3D",
+   "code": "N506T2-16D7X-191073W",
+   "match": {
+    "must": [
+     "INNO3D",
+     "5060Ti",
+     "16GB",
+     "TWINX2",
+     "WHITE"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": null,
+    "length_mm": 250,
+    "width_mm": 116,
+    "thickness_mm": 41,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 650,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "INNO3D 공식 제품 페이지",
+     "url": "https://www.inno3d.com/product/inno3d-geforce-rtx-5060-ti-16gb-twin-x2-oc-white"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "색을 빼면 공식 사양은 검은 TWIN X2 OC 와 같다.",
+   "image": {
+    "url": "https://www.inno3d.com/sites/default/files/2025-04/5060Ti_TWIN_X2_OC_WHITE_card_0.png",
+    "credit": "INNO3D",
+    "page": "https://www.inno3d.com/product/inno3d-geforce-rtx-5060-ti-16gb-twin-x2-oc-white"
+   }
+  },
+  {
+   "id": "colorful-rtx5060ti-gaming-duo-16g",
+   "name": "COLORFUL RTX 5060 Ti GAMING DUO 16GB",
+   "brand": "COLORFUL",
+   "code": "RTX 5060 Ti Gaming DUO 16GB-V",
+   "match": {
+    "must": [
+     "COLORFUL",
+     "5060Ti",
+     "GAMINGDUO",
+     "16GB"
+    ],
+    "not": [
+     "iGame",
+     "V2",
+     "ULTRA",
+     "BATTLE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 200,
+    "width_mm": 120,
+    "thickness_mm": 40,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙 탭)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=c42d701b-32fc-47e7-a9f2-baee7d74b444"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "팬 개수는 이름(DUO)으로 2개라 적었다. 슬롯 수·백플레이트·조명은 공식 스펙에 없어 비워 둔다. 공식 이미지는 외부 요청을 403 으로 막아 싣지 않는다."
+  },
+  {
+   "id": "colorful-rtx5060ti-gaming-duo-v2-16g",
+   "name": "COLORFUL RTX 5060 Ti GAMING DUO V2 16GB",
+   "brand": "COLORFUL",
+   "code": "RTX 5060 Ti Gaming DUO 16GB V2-V",
+   "match": {
+    "must": [
+     "COLORFUL",
+     "5060Ti",
+     "GAMINGDUO",
+     "V2",
+     "16GB"
+    ],
+    "not": [
+     "iGame",
+     "ULTRA",
+     "BATTLE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 200,
+    "width_mm": 120,
+    "thickness_mm": 40,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙 탭)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=dd3136da-3cc5-4fd4-861f-a980d1dc6f4e"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 스펙은 V1 과 같다(200×120×40mm). 팬 개수는 이름(DUO)으로 2개라 적었다. 슬롯 수·백플레이트·조명은 공식 스펙에 없어 비워 둔다. 공식 이미지는 외부 요청을 403 으로 막아 싣지 않는다."
+  },
+  {
+   "id": "colorful-rtx5060ti-battle-ax-duo-16g",
+   "name": "COLORFUL RTX 5060 Ti BATTLE AX DUO 16GB",
+   "brand": "COLORFUL",
+   "code": "RTX 5060 Ti Battle AX DUO 16GB-V",
+   "match": {
+    "must": [
+     "COLORFUL",
+     "5060Ti",
+     "BATTLEAX",
+     "16GB"
+    ],
+    "not": [
+     "iGame"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 231,
+    "width_mm": 120,
+    "thickness_mm": 48.9,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙 탭)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=2aaf5211-ecce-4892-b52a-06baf55964b7"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "글로벌 별칭은 NB DUO 16GB-V 다. 팬 개수는 이름(DUO)으로 2개라 적었다. 슬롯 수·백플레이트·조명은 공식 스펙에 없어 비워 둔다. 공식 이미지는 외부 요청을 403 으로 막아 싣지 않는다."
+  },
+  {
+   "id": "colorful-igame-rtx5060ti-ultra-duo-oc-16g",
+   "name": "COLORFUL iGame RTX 5060 Ti ULTRA DUO OC 16GB",
+   "brand": "COLORFUL",
+   "code": "iGame RTX 5060 Ti Ultra DUO OC 16GB-V",
+   "match": {
+    "must": [
+     "iGame",
+     "5060Ti",
+     "ULTRADUO",
+     "16GB"
+    ],
+    "not": [
+     "White"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": 2632,
+    "length_mm": 231,
+    "width_mm": 120,
+    "thickness_mm": 49,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙 탭)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=4e9bd9f5-9265-43ec-ade2-e5d34c1286dc"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "OC 클럭은 One-Key OC 값이다. 팬 개수는 이름(DUO)으로 2개라 적었다. 슬롯 수·백플레이트·조명은 공식 스펙에 없어 비워 둔다. 공식 이미지는 외부 요청을 403 으로 막아 싣지 않는다."
+  },
+  {
+   "id": "colorful-igame-rtx5060ti-ultra-w-duo-oc-16g",
+   "name": "COLORFUL iGame RTX 5060 Ti ULTRA DUO OC White 16GB",
+   "brand": "COLORFUL",
+   "code": "iGame RTX 5060 Ti Ultra W DUO OC 16GB-V",
+   "match": {
+    "must": [
+     "iGame",
+     "5060Ti",
+     "ULTRADUO",
+     "White",
+     "16GB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": 2632,
+    "length_mm": 231,
+    "width_mm": 120,
+    "thickness_mm": 49,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙 탭)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=7232505c-4df2-419d-822e-832fdc872eee"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "글로벌명은 Ultra W DUO OC 다. OC 클럭은 One-Key OC 값이다. 팬 개수는 이름(DUO)으로 2개라 적었다. 슬롯 수·백플레이트·조명은 공식 스펙에 없어 비워 둔다. 공식 이미지는 외부 요청을 403 으로 막아 싣지 않는다."
+  }
+ ]
+}

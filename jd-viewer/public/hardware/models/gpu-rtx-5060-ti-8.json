@@ -1,0 +1,653 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5060-ti-8",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-tuf-rtx5060ti-o8g",
+   "name": "ASUS TUF Gaming RTX 5060 Ti OC 8GB",
+   "brand": "ASUS",
+   "code": "TUF-RTX5060TI-O8G-GAMING",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "5060Ti",
+     "8GB"
+    ],
+    "not": [
+     "WHITE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2662,
+    "oc_mhz": 2692,
+    "length_mm": 302,
+    "width_mm": 133.5,
+    "thickness_mm": 62,
+    "slots": 3.1,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "그래픽카드 지지대",
+     "벨크로",
+     "어댑터 케이블(1 to 2)"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5060ti-o8g-gaming/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(팬 3개·듀얼 BIOS·0dB·알루미늄 백플레이트)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5060ti-o8g-gaming/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "전원 단자는 공식 스펙대로 16핀이다(8핀 2개를 잇는 1 to 2 어댑터 동봉).",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/716691ca-50a0-4428-8f65-9ba5609e6714/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5060ti-o8g-gaming/"
+   }
+  },
+  {
+   "id": "asus-dual-rtx5060ti-o8g",
+   "name": "ASUS Dual RTX 5060 Ti OC 8GB",
+   "brand": "ASUS",
+   "code": "DUAL-RTX5060TI-O8G",
+   "match": {
+    "must": [
+     "ASUS",
+     "DUAL",
+     "5060Ti",
+     "8GB"
+    ],
+    "not": [
+     "WHITE",
+     "T1"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": 2632,
+    "length_mm": 229,
+    "width_mm": 120,
+    "thickness_mm": 50,
+    "slots": 2.5,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o8g/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(Axial-tech 팬 2개·듀얼 BIOS·0dB·백플레이트)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o8g/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 스펙에 AURA 항목이 없어 조명은 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/e4609242-8600-436e-8bfc-f0d27b6f0984/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o8g/"
+   }
+  },
+  {
+   "id": "asus-dual-rtx5060ti-o8g-white",
+   "name": "ASUS Dual RTX 5060 Ti WHITE OC 8GB",
+   "brand": "ASUS",
+   "code": "DUAL-RTX5060TI-O8G-WHITE",
+   "match": {
+    "must": [
+     "ASUS",
+     "DUAL",
+     "WHITE",
+     "5060Ti",
+     "8GB"
+    ],
+    "not": [
+     "T1"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2602,
+    "oc_mhz": 2632,
+    "length_mm": 229,
+    "width_mm": 120,
+    "thickness_mm": 50,
+    "slots": 2.5,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o8g-white/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(듀얼 BIOS·0dB·백플레이트)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o8g-white/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "색을 빼면 공식 사양은 검은 Dual OC 8GB 와 같다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/eb7daef4-d07e-4d30-b72c-7c7523700434/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o8g-white/"
+   }
+  },
+  {
+   "id": "asus-t1-rtx5060ti-o8g",
+   "name": "ASUS T1 Edition RTX 5060 Ti OC 8GB",
+   "brand": "ASUS",
+   "code": "T1-RTX5060TI-O8G-GAMING",
+   "match": {
+    "must": [
+     "ASUS",
+     "T1Edition",
+     "5060Ti",
+     "8GB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2632,
+    "oc_mhz": 2662,
+    "length_mm": 269,
+    "width_mm": 120,
+    "thickness_mm": 50,
+    "slots": 2.5,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 550,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": [
+     "T1 콜라보 자석",
+     "T1 콜라보 스티커"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙(한국)",
+     "url": "https://www.asus.com/kr/motherboards-components/graphics-cards/asus/t1-rtx5060ti-o8g-gaming/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(한국, Axial-tech 팬 2개·T1 백플레이트)",
+     "url": "https://www.asus.com/kr/motherboards-components/graphics-cards/asus/t1-rtx5060ti-o8g-gaming/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "듀얼 BIOS·0dB 는 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/98f249b8-690c-4584-9f2e-9cbd8b6a6bef/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/kr/motherboards-components/graphics-cards/asus/t1-rtx5060ti-o8g-gaming/"
+   }
+  },
+  {
+   "id": "pny-rtx5060ti-8gb-oc-dual-fan",
+   "name": "PNY RTX 5060 Ti 8GB OC Dual Fan",
+   "brand": "PNY",
+   "code": "VCG5060T8DFXPB1-O",
+   "match": {
+    "must": [
+     "PNY",
+     "5060Ti",
+     "8GB",
+     "DualFan"
+    ],
+    "not": [
+     "EPIC",
+     "TripleFan"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2692,
+    "oc_mhz": null,
+    "length_mm": 245,
+    "width_mm": 120,
+    "thickness_mm": 39.9,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5060-ti-8gb-dual-fan-oc-brochure.pdf"
+    },
+    {
+     "title": "PNY RTX 5060 Ti 8GB 모델 페이지",
+     "url": "https://www.pny.com/geforce-rtx-5060-ti-8gb-models"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 자료에 부스트 클럭이 2692MHz 하나뿐이라 boost_mhz 에 둔다. 0dB·조명은 언급이 없어 비워 둔다."
+  },
+  {
+   "id": "galax-black-oc-v2-rtx5060ti-8g",
+   "name": "GALAX RTX 5060 Ti BLACK OC V2 8GB",
+   "brand": "GALAX",
+   "code": "56ISN8MDEHER",
+   "match": {
+    "must": [
+     "GALAX",
+     "5060Ti",
+     "BLACK",
+     "V2",
+     "8GB"
+    ],
+    "not": [
+     "EX",
+     "WHITE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2587,
+    "oc_mhz": 2602,
+    "length_mm": 235,
+    "width_mm": 115.5,
+    "thickness_mm": 39.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "LED(카드의 스위치로 끔)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 — RTX 5060 Ti 1-Click OC V2",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-ti-1-click-oc-v2/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "국내명 BLACK OC V2 를 글로벌명 1-Click OC V2(8GB)로 짝지은 것은 추정이다. 공식 페이지가 요구 전원은 8핀 1개라 하면서 동봉품에 16핀→8핀 x2 어댑터를 적어 두어 서로 어긋난다 — 요구 사항 쪽(8핀)을 따르고 동봉품은 비워 둔다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/11/5060Ti-V2-front.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5060-ti-1-click-oc-v2/"
+   }
+  },
+  {
+   "id": "galax-ex-black-oc-rtx5060ti-8g",
+   "name": "GALAX RTX 5060 Ti EX BLACK OC 8GB",
+   "brand": "GALAX",
+   "code": "56ISN8MDCREX",
+   "match": {
+    "must": [
+     "GALAX",
+     "5060Ti",
+     "EXBLACK",
+     "8GB"
+    ],
+    "not": [
+     "WHITE",
+     "V2"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2617,
+    "oc_mhz": 2632,
+    "length_mm": 255,
+    "width_mm": 127,
+    "thickness_mm": 39.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "16핀 x1",
+    "psu_w": 650,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": [
+     "1-Click Sync Pro 케이블"
+    ]
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 — RTX 5060 Ti EX",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-ti-ex-8gb-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "국내명 EX BLACK OC 를 글로벌명 RTX 5060 Ti EX 로 짝지은 것은 추정이다. 102mm 팬 2개, 16핀(8핀 2개 + 동봉 어댑터로도 가능)이다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/04/UKR_7497-Gx.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5060-ti-ex-8gb-2x/"
+   }
+  },
+  {
+   "id": "galax-white-oc-rtx5060ti-8g",
+   "name": "GALAX RTX 5060 Ti WHITE OC 8GB",
+   "brand": "GALAX",
+   "code": "56ISN8MDCQWH",
+   "match": {
+    "must": [
+     "GALAX",
+     "5060Ti",
+     "WHITEOC",
+     "8GB"
+    ],
+    "not": [
+     "V2",
+     "EX",
+     "BLACK"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2587,
+    "oc_mhz": 2602,
+    "length_mm": 235,
+    "width_mm": 115.5,
+    "thickness_mm": 39.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "LED(카드의 스위치로 끔)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 — RTX 5060 Ti 1-Click OC 8GB White",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-ti-8gb-1-click-oc-white-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "국내명 WHITE OC 를 글로벌명 1-Click OC 8GB White 로 짝지은 것은 추정이다.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/04/UKR_7551-Gx.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5060-ti-8gb-1-click-oc-white-2x/"
+   }
+  },
+  {
+   "id": "palit-rtx5060ti-dual-8g",
+   "name": "PALIT RTX 5060 Ti Dual 8GB",
+   "brand": "PALIT",
+   "code": "NE7506T019P1-GB2062D",
+   "match": {
+    "must": [
+     "PALIT",
+     "5060Ti",
+     "DUAL",
+     "8GB"
+    ],
+    "not": [
+     "OC",
+     "WHITE",
+     "INFINITY"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 262.1,
+    "width_mm": 126.3,
+    "thickness_mm": 40.1,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "Palit 공식 스펙",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5545&lang=en&pn=NE7506T019P1-GB2062D&tab=sp"
+    },
+    {
+     "title": "Palit 제품 소개(95mm 팬 2개·백플레이트)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5545&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.palit.com/product/vga/picture/p05545/p05545_propng_40867dbac366447a.png",
+    "credit": "Palit",
+    "page": "https://www.palit.com/palit/vgapro.php?id=5545&lang=en"
+   }
+  },
+  {
+   "id": "gainward-rtx5060ti-ghost-8g",
+   "name": "GAINWARD RTX 5060 Ti Ghost 8GB",
+   "brand": "GAINWARD",
+   "code": "NE7506T019P1-GB2062B",
+   "match": {
+    "must": [
+     "GAINWARD",
+     "5060Ti",
+     "고스트|GHOST",
+     "8GB"
+    ],
+    "not": [
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 262.1,
+    "width_mm": 126.3,
+    "thickness_mm": 40.1,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": null,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "RGB(측면)",
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "Gainward 공식 제품 페이지",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1248&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "권장 파워·백플레이트는 공식 페이지에 없어 비워 둔다.",
+   "image": {
+    "url": "https://www.gainward.com/main/product/vga/pro/p01248/p01248_pic2_71267dbd6785a643.png",
+    "credit": "Gainward",
+    "page": "https://www.gainward.com/main/vgapro.php?id=1248&lang=en"
+   }
+  },
+  {
+   "id": "colorful-rtx5060ti-gaming-duo-8g",
+   "name": "COLORFUL RTX 5060 Ti GAMING DUO 8GB",
+   "brand": "COLORFUL",
+   "code": "RTX 5060 Ti Gaming DUO 8GB-V",
+   "match": {
+    "must": [
+     "COLORFUL",
+     "5060Ti",
+     "GAMINGDUO",
+     "8GB"
+    ],
+    "not": [
+     "iGame",
+     "V2",
+     "ULTRA",
+     "BATTLE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 200,
+    "width_mm": 120,
+    "thickness_mm": 40,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙 탭)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=f9f7d3eb-d401-45b5-a54f-05828569cc04"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "팬 개수는 이름(DUO)으로 2개라 적었다. 슬롯 수·백플레이트·조명은 공식 스펙에 없어 비워 둔다. 공식 이미지는 외부 요청을 403 으로 막아 싣지 않는다."
+  },
+  {
+   "id": "colorful-igame-rtx5060ti-ultra-duo-oc-8g",
+   "name": "COLORFUL iGame RTX 5060 Ti ULTRA DUO OC 8GB",
+   "brand": "COLORFUL",
+   "code": "iGame RTX 5060 Ti Ultra DUO OC 8GB-V",
+   "match": {
+    "must": [
+     "iGame",
+     "5060Ti",
+     "ULTRADUO",
+     "8GB"
+    ],
+    "not": [
+     "White"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": 2632,
+    "length_mm": 231,
+    "width_mm": 120,
+    "thickness_mm": 49,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙 탭)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=b8c70b33-186c-462d-81e4-6b6697eec5e6"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "OC 클럭은 One-Key OC 값이다. 팬 개수는 이름(DUO)으로 2개라 적었다. 슬롯 수·백플레이트·조명은 공식 스펙에 없어 비워 둔다. 공식 이미지는 외부 요청을 403 으로 막아 싣지 않는다."
+  },
+  {
+   "id": "colorful-igame-rtx5060ti-ultra-w-duo-oc-8g",
+   "name": "COLORFUL iGame RTX 5060 Ti ULTRA DUO OC White 8GB",
+   "brand": "COLORFUL",
+   "code": "iGame RTX 5060 Ti Ultra W DUO OC 8GB-V",
+   "match": {
+    "must": [
+     "iGame",
+     "5060Ti",
+     "ULTRADUO",
+     "White",
+     "8GB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": 2632,
+    "length_mm": 231,
+    "width_mm": 120,
+    "thickness_mm": 49,
+    "slots": null,
+    "fans": 2,
+    "power_connector": "8핀 x1",
+    "psu_w": 600,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지(스펙 탭)",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=d5c83d2a-f123-4ee6-8d47-81ac7f0ddca4"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "글로벌명은 Ultra W DUO OC 다. OC 클럭은 One-Key OC 값이다. 팬 개수는 이름(DUO)으로 2개라 적었다. 슬롯 수·백플레이트·조명은 공식 스펙에 없어 비워 둔다. 공식 이미지는 외부 요청을 403 으로 막아 싣지 않는다."
+  }
+ ]
+}
