@@ -1,0 +1,334 @@
+{
+  "slug": "gbike",
+  "name": "지바이크",
+  "name_en": "GBIKE",
+  "aliases": [
+    "지바이크",
+    "지쿠",
+    "GCOO",
+    "GBIKE"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "gcoo.io",
+  "one_liner": "공유 킥보드 · 전기자전거 '지쿠' — 5개국 140개 도시 · 탑승 2억 건, 기기와 플랫폼을 자체 개발했고 배터리 교환 스테이션 신사업을 Zero to One 으로 만든다",
+  "company": {
+    "business": "지바이크는 **전기자전거 · 전동킥보드 공유 서비스 '지쿠(GCOO)'** 를 운영한다(gcoo.io). 공고 머리말은 **5개국 140개 도시**, **누적 이용 480만 명 · 탑승 2억 건**, 지난 5년간 약 8배 성장, **매출 · 시장점유율 · MAU 1위**를 적고 스스로를 '아시아 No.1 퍼스널 모빌리티' 로 부른다. **하드웨어 · 소프트웨어 · 인프라를 아우르는 통합 플랫폼을 자체 개발**하고 **기기 국산화 · 운영 내재화**를 했다고 한다. 해외는 미국 · 괌 · 태국 · 베트남 · 가나. 신사업으로 **배터리 스와핑 스테이션(BSS)** 과 **모빌리티 렌탈**, 신규 국가 진출을 동시에 진행한다. 홈페이지는 앱의 **거리우선 요금제 · 할인 프로그램 · 에코포인트 · 안전모드** 와 **창업문의** 메뉴를 보여 준다 — 지역 운영을 창업 파트너에게 맡기는 구조로 읽힌다(추정). 모집중 공고는 둘 — React Native 모바일(5년↑), BSS 신사업 Product Engineer(5년↑).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "지쿠 | APAC No.1 공유 모빌리티",
+        "url": "https://gcoo.io/",
+        "publisher": "지바이크",
+        "summary": "전기자전거 · 전동킥보드 공유 서비스 지쿠(GCOO). 앱: 에코포인트, 지쿠케어 · 안전모드, 거리우선 요금제, 목적지 검색 · 구역 정보, 할인 프로그램. 메뉴에 회사소개 · 서비스 · 채용 · 블로그 · 창업문의 · 고객센터, 언어 한국어 · 영어 · 태국어 · 베트남어."
+      },
+      {
+        "title": "React Native (모바일 개발자)",
+        "url": "https://www.wanted.co.kr/wd/331703",
+        "publisher": "원티드",
+        "summary": "5개국 140개 도시에서 공유 모빌리티 GCOO 운영, 아시아 No.1 PM. 5년간 약 8배 성장, 누적 이용 480만 명 · 탑승 2억 건, 매출 · 점유율 · MAU 1위. 하드웨어 · 소프트웨어 · 인프라 통합 플랫폼 자체 개발, 기기 국산화 · 운영 내재화. 배터리 스와핑 스테이션(BSS) · 모빌리티 렌탈 신사업. 미국 · 괌 · 태국 · 베트남 · 가나."
+      },
+      {
+        "title": "[배터리 스테이션 신사업] Product Engineer",
+        "url": "https://www.wanted.co.kr/wd/380454",
+        "publisher": "원티드",
+        "summary": "BSS · 모빌리티 렌탈 · 신규 국가 진출 등 여러 신규 프로젝트를 Zero to One 으로 — 문제 정의부터 MVP · 출시 · 지표 검증, 모바일 앱과 백엔드 end-to-end, 앱-서버-IoT 인터페이스 RESTful API, 다국가 · 다국어 구조, A/B 테스트. 우대: AI 주도 개발, IoT · 하드웨어(BLE) 연동."
+      }
+    ],
+    "scale": [
+      {
+        "label": "운영 · 이용 규모(공고 주장)",
+        "value": "5개국 140개 도시 · 누적 이용 480만 명 · 탑승 2억 건",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "React Native (모바일 개발자)",
+            "url": "https://www.wanted.co.kr/wd/331703",
+            "publisher": "원티드",
+            "summary": "5개국 140개 도시에서 공유 모빌리티 GCOO 운영, 아시아 No.1 PM. 5년간 약 8배 성장, 누적 이용 480만 명 · 탑승 2억 건, 매출 · 점유율 · MAU 1위. 하드웨어 · 소프트웨어 · 인프라 통합 플랫폼 자체 개발, 기기 국산화 · 운영 내재화. 배터리 스와핑 스테이션(BSS) · 모빌리티 렌탈 신사업. 미국 · 괌 · 태국 · 베트남 · 가나."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "공유 킥보드 · 자전거 이용 요금",
+        "how": "앱이 거리우선 요금제 · 할인 프로그램을 내세운다(홈페이지). 요금표 금액은 읽지 않았다.",
+        "domains": [
+          "공유 모빌리티 앱",
+          "앱-서버-기기(IoT) 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "지쿠 | APAC No.1 공유 모빌리티",
+            "url": "https://gcoo.io/",
+            "publisher": "지바이크",
+            "summary": "전기자전거 · 전동킥보드 공유 서비스 지쿠(GCOO). 앱: 에코포인트, 지쿠케어 · 안전모드, 거리우선 요금제, 목적지 검색 · 구역 정보, 할인 프로그램. 메뉴에 회사소개 · 서비스 · 채용 · 블로그 · 창업문의 · 고객센터, 언어 한국어 · 영어 · 태국어 · 베트남어."
+          }
+        ]
+      },
+      {
+        "name": "지역 창업(가맹) 파트너",
+        "how": "홈페이지 메뉴에 '창업문의' 가 있다 — 지역 운영을 파트너에게 맡기고 수수료 · 기기 공급으로 버는 구조로 읽히지만 조건은 읽은 자료에 없다.",
+        "domains": [
+          "공유 모빌리티 앱"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "지쿠 | APAC No.1 공유 모빌리티",
+            "url": "https://gcoo.io/",
+            "publisher": "지바이크",
+            "summary": "전기자전거 · 전동킥보드 공유 서비스 지쿠(GCOO). 앱: 에코포인트, 지쿠케어 · 안전모드, 거리우선 요금제, 목적지 검색 · 구역 정보, 할인 프로그램. 메뉴에 회사소개 · 서비스 · 채용 · 블로그 · 창업문의 · 고객센터, 언어 한국어 · 영어 · 태국어 · 베트남어."
+          }
+        ]
+      },
+      {
+        "name": "배터리 스와핑 스테이션 · 모빌리티 렌탈(신사업)",
+        "how": "공고가 BSS · 모빌리티 렌탈을 신사업으로 적는다 — 과금 방식은 아직 정해지는 단계로 읽힌다.",
+        "domains": [
+          "앱-서버-기기(IoT) 연동"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[배터리 스테이션 신사업] Product Engineer",
+            "url": "https://www.wanted.co.kr/wd/380454",
+            "publisher": "원티드",
+            "summary": "BSS · 모빌리티 렌탈 · 신규 국가 진출 등 여러 신규 프로젝트를 Zero to One 으로 — 문제 정의부터 MVP · 출시 · 지표 검증, 모바일 앱과 백엔드 end-to-end, 앱-서버-IoT 인터페이스 RESTful API, 다국가 · 다국어 구조, A/B 테스트. 우대: AI 주도 개발, IoT · 하드웨어(BLE) 연동."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "공유 모빌리티 앱",
+        "why": "React Native 공고가 크로스 플랫폼 앱 · 성능 최적화 · 백엔드 연동을, 우대에 Google/Naver Map API 를 적는다. 앱이 목적지 검색 · 구역 정보 · 안전모드를 보여 준다.",
+        "what_to_know": [
+          "React Native 성능",
+          "지도 SDK",
+          "다국어"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "React Native (모바일 개발자)",
+            "url": "https://www.wanted.co.kr/wd/331703",
+            "publisher": "원티드",
+            "summary": "5개국 140개 도시에서 공유 모빌리티 GCOO 운영, 아시아 No.1 PM. 5년간 약 8배 성장, 누적 이용 480만 명 · 탑승 2억 건, 매출 · 점유율 · MAU 1위. 하드웨어 · 소프트웨어 · 인프라 통합 플랫폼 자체 개발, 기기 국산화 · 운영 내재화. 배터리 스와핑 스테이션(BSS) · 모빌리티 렌탈 신사업. 미국 · 괌 · 태국 · 베트남 · 가나."
+          },
+          {
+            "title": "지쿠 | APAC No.1 공유 모빌리티",
+            "url": "https://gcoo.io/",
+            "publisher": "지바이크",
+            "summary": "전기자전거 · 전동킥보드 공유 서비스 지쿠(GCOO). 앱: 에코포인트, 지쿠케어 · 안전모드, 거리우선 요금제, 목적지 검색 · 구역 정보, 할인 프로그램. 메뉴에 회사소개 · 서비스 · 채용 · 블로그 · 창업문의 · 고객센터, 언어 한국어 · 영어 · 태국어 · 베트남어."
+          }
+        ]
+      },
+      {
+        "name": "앱-서버-기기(IoT) 연동",
+        "why": "Product Engineer 공고가 앱-서버-IoT(기기) 인터페이스를 RESTful API 로 설계하고 BLE 연동을 우대한다. 기기 · 인프라를 자체 개발했다.",
+        "what_to_know": [
+          "BLE",
+          "기기 명령 멱등성",
+          "배터리 교환 흐름"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[배터리 스테이션 신사업] Product Engineer",
+            "url": "https://www.wanted.co.kr/wd/380454",
+            "publisher": "원티드",
+            "summary": "BSS · 모빌리티 렌탈 · 신규 국가 진출 등 여러 신규 프로젝트를 Zero to One 으로 — 문제 정의부터 MVP · 출시 · 지표 검증, 모바일 앱과 백엔드 end-to-end, 앱-서버-IoT 인터페이스 RESTful API, 다국가 · 다국어 구조, A/B 테스트. 우대: AI 주도 개발, IoT · 하드웨어(BLE) 연동."
+          },
+          {
+            "title": "React Native (모바일 개발자)",
+            "url": "https://www.wanted.co.kr/wd/331703",
+            "publisher": "원티드",
+            "summary": "5개국 140개 도시에서 공유 모빌리티 GCOO 운영, 아시아 No.1 PM. 5년간 약 8배 성장, 누적 이용 480만 명 · 탑승 2억 건, 매출 · 점유율 · MAU 1위. 하드웨어 · 소프트웨어 · 인프라 통합 플랫폼 자체 개발, 기기 국산화 · 운영 내재화. 배터리 스와핑 스테이션(BSS) · 모빌리티 렌탈 신사업. 미국 · 괌 · 태국 · 베트남 · 가나."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "신사업을 한 사람이 끝까지 만든다",
+        "evidence": "정해진 스펙을 받아 구현하는 것이 아니라, Zero to One 단계에서 스스로 판단하고 끝까지 만들어내는 빌더를 찾습니다.",
+        "so_what": "기획서 없는 문제를 정의하고 앱부터 서버까지 혼자 내보낸 뒤 지표로 고치는 자리다 — 면접에서 '접은 실험' 과 그 판단 근거를 물을 가능성이 높다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "해외 다국가 운영",
+        "evidence": "• 여러 국가·시장에 동시에 대응할 수 있는 다국가·다국어 서비스 구조를 설계합니다",
+        "so_what": "미국 · 태국 · 베트남 · 가나까지 한 앱으로 돌린다 — 통화 · 결제 · 규제(속도 제한 · 헬멧) 차이를 설정으로 가르는 설계가 핵심 질문이 된다(추정).",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "요금표 금액과 창업(가맹) 파트너 조건은 읽은 자료에 없다",
+    "BSS · 렌탈의 과금 방식은 모른다(신사업 초기)",
+    "gbike.io 는 제목만 읽혔다(본문 스크립트 렌더)"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/331703",
+      "title": "React Native (모바일 개발자)",
+      "site": "wanted",
+      "verdict": "경력 5-11년(자격은 관련 전공 학사 + 실무 5년). 지쿠 **크로스 플랫폼 모바일 앱** 개발 · 유지보수 — 최적화된 UI · **성능 향상**, RESTful API · 백엔드 연동, 코드 품질 · 재사용 · 지속 가능한 구조, 애자일 협업. 자격은 **React Native**, React · JavaScript(ES6+) 깊은 이해, **모바일 앱 성능 최적화**, Git · Jira. 우대는 석사, 서비스 운영, **Google Map / Naver Map API**, iOS · Android 네이티브, Node.js · Express, 애자일, UI/UX, 소통. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "실무 5년 · 학사",
+          "React Native",
+          "React · JS 깊은 이해",
+          "앱 성능 최적화"
+        ],
+        "can_learn": [
+          "지도 SDK 최적화",
+          "네이티브 모듈",
+          "다국어"
+        ]
+      },
+      "study": [
+        {
+          "topic": "React Native 앱 성능 — 무엇이 느린지부터 재기",
+          "from": "qualification",
+          "quote": "• 모바일 앱 성능 최적화 경험",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 '최적화된 사용자 인터페이스 구현 및 성능 향상 작업' 이 있다. 지도 위에 기기 수백 대를 띄우는 앱이다.",
+          "gap_check": "스크롤이 버벅일 때 JS 스레드와 UI 스레드 중 어디가 막혔는지 무엇으로 구분하나? 긴 목록은 FlatList 의 어떤 설정(windowSize · getItemLayout)으로 가볍게 하나? 불필요한 리렌더를 무엇으로 찾나(React DevTools Profiler)? 새 아키텍처(Fabric · TurboModules)는 무엇을 바꿨나?",
+          "drill": "React Native 문서의 'Performance Overview' 와 'Optimizing FlatList Configuration' 을 읽고, 기기 500개 목록 + 지도 화면 샘플 앱에서 Perf Monitor 로 JS/UI 프레임을 잰다. memo · 안정된 콜백 · getItemLayout 을 넣은 전후를 Profiler 로 비교해 표로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "React Native — Performance Overview",
+              "url": "https://reactnative.dev/docs/performance",
+              "kind": "docs"
+            },
+            {
+              "title": "React Native — Optimizing FlatList Configuration",
+              "url": "https://reactnative.dev/docs/optimizing-flatlist-configuration",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "지도에 기기 수백 대 — 마커 클러스터링과 영역 조회",
+          "from": "preference",
+          "quote": "• Google Map/Naver Map API 사용 경험",
+          "priority": "high",
+          "why": "우대사항이고 홈페이지의 앱이 목적지 검색 · 구역 정보를 보여 준다. 공유 킥보드 앱의 첫 화면은 주변 기기 지도다.",
+          "gap_check": "지도를 움직일 때마다 서버에 주변 기기를 다시 묻나, 어느 정도 움직여야 묻나(디바운스 · 화면 영역)? 줌 아웃 때 마커 수백 개를 어떻게 묶나(클러스터링)? 반납 금지 구역 · 요금 구역 같은 다각형은 어떻게 그리고 '지금 내가 구역 안인가' 를 어디서 판정하나?",
+          "drill": "react-native-maps 로 가짜 기기 1,000대를 띄우고 줌 수준별 클러스터링(supercluster)을 붙인다. 지도 이동이 멈춘 뒤 300ms 에만 화면 영역으로 조회하게 하고, 반납 금지 다각형을 그려 현재 위치가 안인지 앱에서 판정한다(turf).",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "react-native-maps",
+              "url": "https://github.com/react-native-maps/react-native-maps",
+              "kind": "docs"
+            },
+            {
+              "title": "supercluster",
+              "url": "https://github.com/mapbox/supercluster",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RESTful API 연동 — 느린 망 · 실패에 강한 앱",
+          "from": "task",
+          "quote": "• RESTful API 및 기타 백엔드 서비스와의 통합",
+          "priority": "nice",
+          "why": "주요업무다. 대여 시작 · 종료 같은 요청은 길 위에서 망이 흔들릴 때 일어난다.",
+          "gap_check": "'대여 종료' 요청이 타임아웃 났을 때 다시 보내면 두 번 종료되지 않게 하려면(멱등 키 · 서버 상태 조회)? 서버 상태 캐시(TanStack Query)와 앱 상태를 어떻게 가르나? 오프라인일 때 무엇을 보여 주나?",
+          "drill": "TanStack Query 의 React Native 문서대로 대여 시작 · 종료 흐름을 만들고, 종료 요청에 멱등 키를 붙여 목 서버가 응답 없이 끊겨도 재시도가 안전한지 확인한다. 비행기 모드 전환 시 화면 상태를 캡처해 남긴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "TanStack Query — React Native",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/react-native",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/380454",
+      "title": "[배터리 스테이션 신사업] Product Engineer",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. **배터리 스와핑 스테이션(BSS) · 모빌리티 렌탈 · 신규 국가 진출** 같은 신규 프로젝트를 **Zero to One** 으로 만드는 Product Engineer — 스펙을 받는 개발자가 아니라 무엇을 만들지 함께 정하고 끝까지 만드는 빌더. 업무는 문제 정의 · 스펙 · 출시 · **지표 검증** 전 사이클, **MVP · 프로토타입**과 확장/접기 판단, **모바일 앱(iOS/Android) + 백엔드 end-to-end**, **앱-서버-IoT(기기) 인터페이스**를 RESTful API 로, **다국가 · 다국어 구조**, 로그 · 지표 기반 가설과 **A/B 테스트**, DB 설계 · 성능 · 보안. 자격은 관련 학위 또는 상응 경험, 모바일(React Native · Flutter · Swift · Kotlin 중 하나), **RESTful API · 서버(Kotlin/Java 우대)**, RDBMS 또는 NoSQL, **기획부터 출시까지 이끈 경험**, Git · 배포 파이프라인. 우대는 완성도와 속도의 균형 판단, 바뀌는 요구 속 우선순위, **AI 주도 개발(Claude Code · Cursor)**, **IoT · 하드웨어(BLE) 연동**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "모바일 앱 1개 이상 언어",
+          "RESTful 서버",
+          "기획→출시 경험",
+          "DB"
+        ],
+        "can_learn": [
+          "BLE 연동",
+          "기기 명령 설계",
+          "A/B 테스트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "앱-서버-기기 명령 — 배터리 교환 스테이션을 원격으로 여는 흐름",
+          "from": "task",
+          "quote": "- 앱 – 서버 – IoT(기기)로 이어지는 인터페이스를 설계하고 RESTful API로 구현합니다",
+          "priority": "core",
+          "why": "주요업무이고 우대에 IoT · 하드웨어(BLE) 연동이 있다. 배터리 스와핑 스테이션은 앱에서 칸을 열고, 배터리를 넣고 빼는 기기다.",
+          "gap_check": "사용자가 앱에서 '교환' 을 누르면 서버가 스테이션에 명령을 보내고 결과를 받는다 — 명령이 두 번 도착하면(재전송) 칸이 두 번 열리지 않게 무엇을 두나(명령 ID)? 스테이션이 오프라인이면 BLE 로 앱이 직접 명령을 전달하는 대안은 어떻게 설계하나(서명된 1회용 토큰)? 반납한 배터리의 잔량 · 이상은 누가 판정하나?",
+          "drill": "AWS IoT Core 의 'Device Shadow' 와 'Jobs' 문서를 읽고, 교환 요청 → 서버 명령(ID 포함) → 기기 응답 → 결과 확정의 상태도를 그린다. 목 기기(파이썬 MQTT 클라이언트)로 같은 명령을 두 번 보내 한 번만 실행되는지, 응답이 안 오면 서버 상태가 '확인 중' 으로 남는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "AWS IoT Device Shadow service",
+              "url": "https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MVP 를 내보내고 지표로 접거나 키우기",
+          "from": "task",
+          "quote": "- 아직 검증되지 않은 아이디어를 MVP·프로토타입으로 빠르게 구현하고, 시장 반응에 따라 확장하거나 접는 판단에 참여합니다",
+          "priority": "core",
+          "why": "주요업무이고 포지션 설명이 '정해진 답이 없는 상태에서 시작해 시장에 내보내기까지' 를 반복한다고 적는다. 우대에 완성도와 속도의 균형 판단이 있다.",
+          "gap_check": "배터리 교환을 처음 여는 지역에서 '되는지' 를 어떤 숫자 하나로 정하나(교환 횟수 · 재이용률 · 교환당 원가)? 그 숫자가 몇 주 안에 얼마를 넘지 못하면 접을지 미리 적어 두나? A/B 테스트를 돌릴 만큼 사용자가 없을 때는 무엇으로 판단하나?",
+          "drill": "가상의 BSS 파일럿 하나를 두고 한 쪽 실험 계획서를 쓴다 — 가설 · 핵심 지표 · 보조 지표 · 판단 문턱 · 기간 · 접을 때 할 일. 실제 이벤트 로그(가짜 데이터)로 주간 대시보드를 만들어 3주 치를 채우고 '키우기/접기' 결론 문단을 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Trustworthy Online Controlled Experiments — Kohavi et al.",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "여러 나라를 한 앱으로 — 다국가 · 다국어 구조",
+          "from": "task",
+          "quote": "- 여러 국가·시장에 동시에 대응할 수 있는 다국가·다국어 서비스 구조를 설계합니다",
+          "priority": "high",
+          "why": "주요업무이고 회사가 미국 · 괌 · 태국 · 베트남 · 가나에서 운영하며 신규 국가 진출을 진행한다. 홈페이지가 네 개 언어를 지원한다.",
+          "gap_check": "국가마다 다른 것(통화 · 요금 정책 · 결제 수단 · 최고 속도 · 헬멧 규정 · 시간대)을 코드 분기가 아니라 무엇으로 두나(국가 설정 테이블 · 기능 플래그)? 금액은 어떤 단위로 저장하나(최소 통화 단위 정수)? 번역 문구는 앱에 넣나, 서버에서 받나?",
+          "drill": "국가 설정 스키마(통화 · 소수 자릿수 · 결제 수단 · 속도 상한 · 시간대 · 기본 언어)를 JSON Schema 로 정의하고, 한국 · 태국 · 미국 세 설정으로 같은 요금 계산 함수가 올바른 금액 · 표기를 내는지 단위 테스트를 쓴다. i18next 로 앱 문구를 세 언어로 바꿔 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Unicode CLDR — Currency data",
+              "url": "https://cldr.unicode.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

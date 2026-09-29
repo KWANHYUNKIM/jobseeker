@@ -4,6 +4,7 @@
 
 ## 지금 쓰는 중
 
+**지바이크(`gbike`) — `done`(2026-09-30), 공고 2건(React Native 331703 · BSS 신사업 Product Engineer 380454).** 원티드 모집중 전부. 출처: gcoo.io 첫 화면(요금제 · 창업문의 메뉴) + 원티드 공고 머리말(5개국 140개 도시 · 누적 480만 · 탑승 2억). 창업(가맹) · 신사업 수익은 inferred.
 **스트레스솔루션(`stresssolution`) — `done`(2026-09-30), 공고 3건(모바일 앱 380795 · 같은 자리 계약직 327656 = duplicate_of · 정부과제 PM 374224).** 원티드 모집중 전부. 출처: 원티드 공고 머리말뿐 — 홈페이지 못 찾음(healingbeat.com 은 도메인 판매 페이지). 수익원 둘 다 inferred.
 **피처링(`featuring`) — `done`(2026-09-30), 공고 3건(백엔드 346800 · AX 인플루언서 마케팅 AI Native 362092 · DevOps 366660).** 원티드 모집중 전부. 출처: featuring.co 첫 화면(16,000+ 기업 · 프리미엄 월 837,000원 체험 배너) + 원티드 공고 머리말(매출 100억 · 누적 투자 260억). AX 는 비개발 자리라 학습 항목을 보고서 · 노코드 · 매칭 기준으로 잡았다. 캠페인 집행 수익은 inferred.
 **메디트(`medit`) — `done`(2026-09-30), 공고 3건(Backend Architect AWS 317608 · 3D Reconstruction AI 356821 · DevOps 380517).** 원티드 모집중 전부. 출처: 원티드 공고 머리말 + meditlink.com 메타. **medit.com 은 봇 확인(Cloudflare) 페이지 — 우회하지 않는다.** 소프트웨어 수익원은 inferred.

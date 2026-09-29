@@ -1164,6 +1164,20 @@
       "postings": 3,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "gbike",
+      "name": "지바이크",
+      "aliases": [
+        "지바이크",
+        "지쿠",
+        "GCOO",
+        "GBIKE"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }
