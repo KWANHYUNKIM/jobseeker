@@ -1044,5 +1044,75 @@
     }
    ]
   }
+ ],
+ "memory_platforms": [
+  {
+   "socket": "AM5",
+   "mem": "DDR5",
+   "channels": 2,
+   "max_gb": 256,
+   "speed": {
+    "2": "DDR5-5600",
+    "4": "DDR5-3600"
+   },
+   "basis": "Ryzen 7 9800X3D 공식 사양 — 채널 2 · 최대 256GB · 2x1R/2x2R DDR5-5600 · 4x1R/4x2R DDR5-3600",
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — Ryzen 7 9800X3D(메모리)",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-7-9800x3d.html"
+    }
+   ]
+  },
+  {
+   "socket": "AM4",
+   "mem": "DDR4",
+   "channels": 2,
+   "max_gb": 128,
+   "speed": {
+    "2": "DDR4-3200",
+    "4": "DDR4-2933(한 면) · DDR4-2667(양면)"
+   },
+   "basis": "Ryzen 5 5600 공식 사양 — 채널 2 · 최대 128GB · 2x1R/2x2R DDR4-3200 · 4x1R DDR4-2933 · 4x2R DDR4-2667",
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — Ryzen 5 5600(메모리)",
+     "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-5-5600.html"
+    }
+   ]
+  },
+  {
+   "socket": "LGA1851",
+   "mem": "DDR5",
+   "channels": 2,
+   "max_gb": 256,
+   "speed": {
+    "2": "DDR5-6400",
+    "4": null
+   },
+   "basis": "Core Ultra 9 285K 공식 사양 — 채널 2 · 최대 256GB · DDR5-6400. 4개 장착 속도는 공식 표에 없다",
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core Ultra 9 285K(메모리)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241060/intel-core-ultra-9-processor-285k-36m-cache-up-to-5-70-ghz/specifications.html"
+    }
+   ]
+  },
+  {
+   "socket": "LGA1700",
+   "mem": "DDR5/DDR4",
+   "channels": 2,
+   "max_gb": 192,
+   "speed": {
+    "2": "DDR5-4800 · DDR4-3200",
+    "4": null
+   },
+   "basis": "Core i5-14400 공식 사양 — 채널 2 · 최대 192GB · DDR5-4800 / DDR4-3200. 4개 장착 속도는 공식 표에 없다",
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i5-14400(메모리)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/236788/intel-core-i5-processor-14400-20m-cache-up-to-4-70-ghz/specifications.html"
+    }
+   ]
+  }
  ]
 }

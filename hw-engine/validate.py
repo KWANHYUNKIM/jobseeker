@@ -191,6 +191,13 @@ def check_guide(ids: set[str]) -> list[str]:
             if a not in ids:
                 errs.append(f"guide.json {where}: 모르는 비교 부품 {a}")
         srcs(where, n.get("sources"))
+    # 소켓별 메모리 한도 — 최대 용량·채널·꽂은 개수별 공식 속도
+    for m in g.get("memory_platforms", []):
+        where = f"memory_platforms/{m.get('socket')}"
+        for k in ("socket", "mem", "channels", "max_gb", "speed"):
+            if k not in m:
+                errs.append(f"guide.json {where}: {k} 없음")
+        srcs(where, m.get("sources"))
     return errs
 
 
@@ -353,6 +360,31 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
             miss[f"mainboard:{chip}"] = miss.get(f"mainboard:{chip}", 0) + 1
     top = sorted(miss.items(), key=lambda kv: -kv[1])[:10]
     print(f"8. 완제품이 쓰는데 목록에 없는 부품 {len(miss)}: " + (", ".join(f"{k}×{v}" for k, v in top) or "-"))
+    # 조립 화면의 '메모리 슬롯' 칸 — 보드는 급 단위라 슬롯 수를 규격으로 짐작한다. 인기 매물부터
+    # 제품별 스펙(models/<보드 id>.json 의 dimm_slots·form)을 채우면 짐작이 사실로 바뀐다.
+    # 소켓별 최대 용량·꽂은 개수별 속도(guide.json memory_platforms)가 없는 소켓도 여기서 센다.
+    try:
+        guide = json.loads((HW / "guide.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        guide = {}
+    have = {m.get("socket") for m in guide.get("memory_platforms", [])}
+    sockets = sorted({str(p["specs"].get("socket")) for p in parts if p["category"] == "cpu" and p["specs"].get("socket")} - have)
+    no_slots: dict[str, int] = {}
+    for p in parts:
+        if p["category"] != "mainboard":
+            continue
+        mf = HW / "models" / f"{p['id']}.json"
+        try:
+            ms = json.loads(mf.read_text(encoding="utf-8")).get("models", []) if mf.exists() else []
+        except ValueError:
+            ms = []
+        n = sum(1 for m in ms if not (m.get("specs") or {}).get("dimm_slots"))
+        if n or not ms:
+            no_slots[p["id"]] = n or -1
+    top = sorted(no_slots.items(), key=lambda kv: -kv[1])
+    print(f"9. 메모리 슬롯 수 모르는 보드 제품 {sum(max(v, 0) for v in no_slots.values())}: "
+          + (", ".join(f"{k} {'파일 없음' if v < 0 else v}" for k, v in top) or "-")
+          + f" · 메모리 한도 없는 소켓 {len(sockets)}: {', '.join(sockets) or '-'}")
 
 
 def main(argv: list[str]) -> int:
