@@ -17,7 +17,9 @@
     "tdp_w": 575,
     "fp16_tflops": 209,
     "stack": "CUDA",
-    "psu_w": 1000
+    "psu_w": 1000,
+    "boost_ghz": 2.41,
+    "ai_tops": 3352
    },
    "perf": {
     "index": 127,
@@ -36,6 +38,10 @@
    },
    "sources": [
     {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
@@ -50,7 +56,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/rtx-5090/geforce-rtx-5090-learn-more-og-1200x630.jpg",
     "credit": "NVIDIA",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-5080",
@@ -67,7 +74,9 @@
     "tdp_w": 360,
     "fp16_tflops": 113,
     "stack": "CUDA",
-    "psu_w": 850
+    "psu_w": 850,
+    "boost_ghz": 2.62,
+    "ai_tops": 1801
    },
    "perf": {
     "index": 83,
@@ -86,6 +95,10 @@
    },
    "sources": [
     {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
@@ -100,7 +113,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/rtx-5080/geforce-rtx-5080-og-1200x630.jpg",
     "credit": "NVIDIA",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5080/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-5070-ti",
@@ -117,7 +131,9 @@
     "tdp_w": 300,
     "fp16_tflops": 88,
     "stack": "CUDA",
-    "psu_w": 750
+    "psu_w": 750,
+    "boost_ghz": 2.45,
+    "ai_tops": 1406
    },
    "perf": {
     "index": 72,
@@ -136,6 +152,10 @@
    },
    "sources": [
     {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
@@ -150,7 +170,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5070-family/geforce-rtx-5070-ti-og-image.jpg",
     "credit": "NVIDIA",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-5070",
@@ -167,7 +188,9 @@
     "tdp_w": 250,
     "fp16_tflops": 62,
     "stack": "CUDA",
-    "psu_w": 650
+    "psu_w": 650,
+    "boost_ghz": 2.51,
+    "ai_tops": 988
    },
    "perf": {
     "index": 57,
@@ -187,6 +210,10 @@
    },
    "sources": [
     {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
@@ -201,7 +228,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5070-family/geforce-rtx-5070-banner-xl-offset-desktop.jpg",
     "credit": "NVIDIA",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-5060-ti-16",
@@ -218,7 +246,9 @@
     "tdp_w": 180,
     "fp16_tflops": 47,
     "stack": "CUDA",
-    "psu_w": 600
+    "psu_w": 600,
+    "boost_ghz": 2.57,
+    "ai_tops": 759
    },
    "perf": {
     "index": 43,
@@ -238,6 +268,10 @@
    },
    "sources": [
     {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
@@ -252,7 +286,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5060-family/geforce-rtx-5060-family-og-1200x630@2x.jpg",
     "credit": "NVIDIA (RTX 5060 가족 사진)",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5060-family/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-5060-ti-8",
@@ -269,7 +304,9 @@
     "tdp_w": 180,
     "fp16_tflops": 47,
     "stack": "CUDA",
-    "psu_w": 600
+    "psu_w": 600,
+    "boost_ghz": 2.57,
+    "ai_tops": 759
    },
    "perf": {
     "index": 41,
@@ -289,6 +326,10 @@
    },
    "sources": [
     {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
@@ -303,7 +344,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5060-family/geforce-rtx-5060-family-og-1200x630@2x.jpg",
     "credit": "NVIDIA (RTX 5060 가족 사진)",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5060-family/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-5060",
@@ -320,7 +362,9 @@
     "tdp_w": 145,
     "fp16_tflops": 38,
     "stack": "CUDA",
-    "psu_w": 550
+    "psu_w": 550,
+    "boost_ghz": 2.5,
+    "ai_tops": 614
    },
    "perf": {
     "index": 35,
@@ -340,6 +384,10 @@
    },
    "sources": [
     {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
@@ -354,7 +402,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5060-family/geforce-rtx-5060-family-og-1200x630@2x.jpg",
     "credit": "NVIDIA (RTX 5060 가족 사진)",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5060-family/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-4090",

@@ -239,6 +239,7 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
     book = prices.get("parts", {})
     today = date.today()
     no_price, mixed, seed, stale = [], [], {}, []
+    spec_todo: dict[str, list[str]] = {}
     for p in parts:
         if p.get("status") == "legacy":
             continue
@@ -250,6 +251,8 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
             mixed.append(f"{p['id']} (최저 {rec['min']:,} · 중앙 {rec['median']:,})")
         if (p.get("perf") or {}).get("confidence") == "seed":
             seed.setdefault(p["category"], []).append(p["id"])
+        if not p.get("specs_verified"):
+            spec_todo.setdefault(p["category"], []).append(p["id"])
         try:
             if (today - datetime.strptime(p["checked_at"], "%Y-%m-%d").date()).days > STALE_DAYS:
                 stale.append(p["id"])
@@ -264,7 +267,9 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
     print(f"2. 가격 없음 {len(no_price)}: {', '.join(no_price) or '-'}")
     print(f"3. 섞인 매물 {len(mixed)}: {'; '.join(mixed) or '-'}")
     total_seed = sum(len(v) for v in seed.values())
-    print(f"4. 확인 전(seed) {total_seed}: " + (" · ".join(f"{c} {len(v)}" for c, v in seed.items()) or "-"))
+    # 스펙(제조사 표의 숫자)과 성능 지수(리뷰로 잰 상대값)는 확인하는 곳이 달라 따로 센다
+    print(f"4a. 스펙 확인 전 {sum(len(v) for v in spec_todo.values())}: " + (" · ".join(f"{c} {len(v)}" for c, v in spec_todo.items()) or "-"))
+    print(f"4b. 성능 지수 확인 전(seed) {total_seed}: " + (" · ".join(f"{c} {len(v)}" for c, v in seed.items()) or "-"))
     print(f"5. 기준값 seed {len(bench_seed)}: {', '.join(bench_seed) or '-'}")
     todo = prices.get("_model_todo", {})
     top = sorted(todo.items(), key=lambda kv: -kv[1])[:8]
