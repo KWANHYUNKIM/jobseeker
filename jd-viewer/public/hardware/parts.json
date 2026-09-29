@@ -450,6 +450,50 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "gpu-rtx-5050",
+   "category": "gpu",
+   "name": "GeForce RTX 5050",
+   "maker": "NVIDIA",
+   "released": "2025-07",
+   "status": "current",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR6",
+    "bus_bit": 128,
+    "bandwidth_gbs": null,
+    "cores": 2560,
+    "tdp_w": 130,
+    "fp16_tflops": null,
+    "stack": "CUDA",
+    "psu_w": 550,
+    "boost_ghz": 2.57,
+    "ai_tops": 421
+   },
+   "perf": {
+    "index": 32,
+    "basis": "추정 — RTX 5060(42) × CUDA 코어 비(2560/3840)에서 GDDR6 대역폭 차이를 더 깎았다. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 5050",
+    "cate": "그래픽카드",
+    "must": [
+     "5050"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 — RTX 5050(2560 CUDA · 8GB GDDR6 128-bit · 130W · 권장 550W)",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5050/"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "gpu-rtx-4090",
    "category": "gpu",
    "name": "GeForce RTX 4090",
@@ -1518,6 +1562,54 @@
     }
    ],
    "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-5-8400f",
+   "category": "cpu",
+   "name": "Ryzen 5 8400F",
+   "maker": "AMD",
+   "released": "2024-04",
+   "status": "current",
+   "specs": {
+    "socket": "AM5",
+    "cores": 6,
+    "threads": 12,
+    "boost_ghz": 4.7,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR5",
+    "igpu": false,
+    "l3_mb": 16,
+    "series": "라이젠 8000 시리즈",
+    "family": "라이젠 5",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
+   },
+   "perf": {
+    "index": 64,
+    "multi": 32,
+    "basis": "추정 — 7500F(게임 73·멀티 34)에서 L3 가 절반(16MB)인 만큼 게임을 깎았다. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 8400F",
+    "cate": "CPU",
+    "must": [
+     "8400F"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — Ryzen 5 8400F(6C/12T · 4.7GHz · L3 16MB · 65W · AM5 · 외장 그래픽 필요 · 2024-04-01)",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-5-8400f.html"
+    }
+   ],
    "checked_at": "2026-09-29",
    "specs_verified": "2026-09-29"
   },
