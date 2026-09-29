@@ -1,0 +1,435 @@
+{
+  "slug": "torder",
+  "name": "티오더",
+  "name_en": "T'order",
+  "aliases": [
+    "티오더",
+    "torder"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "torder.com",
+  "one_liner": "테이블오더 1위 — 매장 태블릿 13만 대로 주문 · 결제를 받고, 그 태블릿을 광고판으로, PHP 주문 시스템은 Java 로 옮기며 LLM 에이전트를 붙인다",
+  "company": {
+    "business": "티오더는 **음식점 테이블 위 태블릿으로 주문 · 결제하는 '테이블 오더'** 를 파는 회사다 — 공고는 2019년 출범해 오프라인 F&B 매장의 주문 · 운영 자동화를 정착시켰다고 적는다. 홈페이지는 스스로를 **'테이블오더 1위'** 로 부르고 제품을 넓게 편다: 티오더 스탠다드 · **PRO(올무선)**, **멀티오더(NFC · QR)**, **서빙로봇**, **티오더 CCTV**, **사장님 앱**, **티오더AI(소상공인 AI 매장 관리)**, **프랜차이즈 본사용 가맹점 관리**. 공고 머리말은 **2022년 매출 약 268억 원 · 기업가치 1,500억 원 · 시리즈A 100억 원**, 예비 유니콘을 들고, 다음 성장으로 **13만 대 이상 태블릿을 광고 매체로**, 다른 장소(Place) · 해외 진출을 적는다. 백엔드 조직은 **PHP 서비스를 Java 로 전환**하며 MSA 로 옮기고, **POS · 주문 시스템에 LLM AI 에이전트**를 넣어 고객 응대 · 정산 오류 · 주문 장애 대응을 자동화하려 한다. 모집중 공고는 셋 — 데이터 엔지니어(3년↑), 백엔드 시니어(7년↑), 광고플랫폼 백엔드(3-10년).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "오프라인 시장의 AI인프라를 선도하는 테이블오더 1위 기업 티오더",
+        "url": "https://www.torder.com/",
+        "publisher": "티오더",
+        "summary": "서비스: 티오더AI(소상공인 AI 매장 관리) · 티오더 PRO(프리미엄 올무선 테이블오더) · 티오더 스탠다드 · 서빙로봇 · 멀티오더(NFC · QR) · 사장님 앱 · 티오더 CCTV, 프랜차이즈 본사용 가맹점 관리 솔루션, 파트너 모집, 메뉴판 생성기. 상담 신청 폼이 테이블 대수(10대 이하 ~ 31대 이상)와 서빙로봇 · 인터넷 · CCTV 추가 상담을 받는다."
+      },
+      {
+        "title": "Data Engineer",
+        "url": "https://www.wanted.co.kr/wd/363020",
+        "publisher": "원티드",
+        "summary": "2019년 출범, 테이블 오더로 오프라인 F&B 주문 · 운영 자동화. 2022년 매출 약 268억 원, 기업가치 1,500억 원 · 시리즈A 100억 원, 예비 유니콘, 13만 대 이상 태블릿의 광고 매체 확장 · 다른 Place · 해외 진출. Data unit(DevOps Chapter): 주문 · 결제 · 광고 · 사용자 로그 배치/실시간, Apache Iceberg Medallion, 카탈로그 · Lineage, 추천 · AI 서빙 · LLM 데이터 인프라. Airflow · Kafka(MSK) · Kinesis · Flink · PySpark · EMR Serverless · Athena · Glue."
+      },
+      {
+        "title": "Back-End 시니어 개발자",
+        "url": "https://www.wanted.co.kr/wd/297702",
+        "publisher": "원티드",
+        "summary": "백엔드 챕터: 손님 · 사장님 태블릿 앱과 관리자 서버, POS · 주문 시스템에 LLM 기반 AI 에이전트(고객 응대 · 정산 오류 · 주문 장애 대응 자동화). 업무: 오더 플랫폼, PHP 서비스 Java 전환, 백오피스 API, 신규 주문 API, MSA. Java · Spring Boot · JPA · jOOQ · PHP/Laravel · MySQL · Redis · Kafka · RabbitMQ · K8s · ArgoCD."
+      },
+      {
+        "title": "광고플랫폼 Back-End 개발자",
+        "url": "https://www.wanted.co.kr/wd/364716",
+        "publisher": "원티드",
+        "summary": "광고플랫폼팀: 광고 상품 · 송출 엔진 · 인벤토리 관리 · 운영 자동화 · QA. 캠페인 · 타겟팅 · 전시 정책 · 실시간 통계. Spring Boot REST · 배치, WebFlux Reactive, Keycloak 인증 · SPI, DDD, JPA/QueryDSL. 우대 R2DBC · 광고 서버 · 타겟팅."
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출 · 투자(공고 주장)",
+        "value": "2022년 매출 약 268억 원 · 기업가치 1,500억 원 · 시리즈A 100억 원",
+        "as_of": "2022 기준(공고 머리말)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/363020",
+            "publisher": "원티드",
+            "summary": "2019년 출범, 테이블 오더로 오프라인 F&B 주문 · 운영 자동화. 2022년 매출 약 268억 원, 기업가치 1,500억 원 · 시리즈A 100억 원, 예비 유니콘, 13만 대 이상 태블릿의 광고 매체 확장 · 다른 Place · 해외 진출. Data unit(DevOps Chapter): 주문 · 결제 · 광고 · 사용자 로그 배치/실시간, Apache Iceberg Medallion, 카탈로그 · Lineage, 추천 · AI 서빙 · LLM 데이터 인프라. Airflow · Kafka(MSK) · Kinesis · Flink · PySpark · EMR Serverless · Athena · Glue."
+          }
+        ]
+      },
+      {
+        "label": "설치 태블릿(공고 주장)",
+        "value": "13만 대 이상",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/363020",
+            "publisher": "원티드",
+            "summary": "2019년 출범, 테이블 오더로 오프라인 F&B 주문 · 운영 자동화. 2022년 매출 약 268억 원, 기업가치 1,500억 원 · 시리즈A 100억 원, 예비 유니콘, 13만 대 이상 태블릿의 광고 매체 확장 · 다른 Place · 해외 진출. Data unit(DevOps Chapter): 주문 · 결제 · 광고 · 사용자 로그 배치/실시간, Apache Iceberg Medallion, 카탈로그 · Lineage, 추천 · AI 서빙 · LLM 데이터 인프라. Airflow · Kafka(MSK) · Kinesis · Flink · PySpark · EMR Serverless · Athena · Glue."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "테이블오더 · 매장 솔루션(태블릿 · 서빙로봇 · CCTV)",
+        "how": "홈페이지가 테이블 대수로 상담을 받고 서빙로봇 · 인터넷 · CCTV 를 함께 제안한다 — 월 이용료 · 기기 렌탈로 읽히지만 요금은 공개되지 않았다.",
+        "domains": [
+          "주문 · 결제 백엔드(PHP → Java)",
+          "매장 데이터 파이프라인"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "오프라인 시장의 AI인프라를 선도하는 테이블오더 1위 기업 티오더",
+            "url": "https://www.torder.com/",
+            "publisher": "티오더",
+            "summary": "서비스: 티오더AI(소상공인 AI 매장 관리) · 티오더 PRO(프리미엄 올무선 테이블오더) · 티오더 스탠다드 · 서빙로봇 · 멀티오더(NFC · QR) · 사장님 앱 · 티오더 CCTV, 프랜차이즈 본사용 가맹점 관리 솔루션, 파트너 모집, 메뉴판 생성기. 상담 신청 폼이 테이블 대수(10대 이하 ~ 31대 이상)와 서빙로봇 · 인터넷 · CCTV 추가 상담을 받는다."
+          }
+        ]
+      },
+      {
+        "name": "태블릿 광고",
+        "how": "공고가 13만 대 이상 태블릿을 새로운 광고 매체로 확장한다고 적고, 광고플랫폼팀이 캠페인 · 타겟팅 · 송출 엔진 · 인벤토리를 만든다.",
+        "domains": [
+          "태블릿 광고 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/363020",
+            "publisher": "원티드",
+            "summary": "2019년 출범, 테이블 오더로 오프라인 F&B 주문 · 운영 자동화. 2022년 매출 약 268억 원, 기업가치 1,500억 원 · 시리즈A 100억 원, 예비 유니콘, 13만 대 이상 태블릿의 광고 매체 확장 · 다른 Place · 해외 진출. Data unit(DevOps Chapter): 주문 · 결제 · 광고 · 사용자 로그 배치/실시간, Apache Iceberg Medallion, 카탈로그 · Lineage, 추천 · AI 서빙 · LLM 데이터 인프라. Airflow · Kafka(MSK) · Kinesis · Flink · PySpark · EMR Serverless · Athena · Glue."
+          },
+          {
+            "title": "광고플랫폼 Back-End 개발자",
+            "url": "https://www.wanted.co.kr/wd/364716",
+            "publisher": "원티드",
+            "summary": "광고플랫폼팀: 광고 상품 · 송출 엔진 · 인벤토리 관리 · 운영 자동화 · QA. 캠페인 · 타겟팅 · 전시 정책 · 실시간 통계. Spring Boot REST · 배치, WebFlux Reactive, Keycloak 인증 · SPI, DDD, JPA/QueryDSL. 우대 R2DBC · 광고 서버 · 타겟팅."
+          }
+        ]
+      },
+      {
+        "name": "프랜차이즈 본사 · AI 매장 관리",
+        "how": "홈페이지가 프랜차이즈 본사용 가맹점 관리 솔루션과 티오더AI 를 판다 — 과금 방식은 읽은 자료에 없다.",
+        "domains": [
+          "주문 · 결제 백엔드(PHP → Java)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "오프라인 시장의 AI인프라를 선도하는 테이블오더 1위 기업 티오더",
+            "url": "https://www.torder.com/",
+            "publisher": "티오더",
+            "summary": "서비스: 티오더AI(소상공인 AI 매장 관리) · 티오더 PRO(프리미엄 올무선 테이블오더) · 티오더 스탠다드 · 서빙로봇 · 멀티오더(NFC · QR) · 사장님 앱 · 티오더 CCTV, 프랜차이즈 본사용 가맹점 관리 솔루션, 파트너 모집, 메뉴판 생성기. 상담 신청 폼이 테이블 대수(10대 이하 ~ 31대 이상)와 서빙로봇 · 인터넷 · CCTV 추가 상담을 받는다."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "주문 · 결제 백엔드(PHP → Java)",
+        "why": "백엔드 공고가 오더 플랫폼, PHP 서비스의 Java 전환, 신규 주문 API, MSA, POS · 주문 시스템의 LLM 에이전트를 적는다.",
+        "what_to_know": [
+          "Strangler Fig 이행",
+          "주문 상태 전이",
+          "Kafka 이벤트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Back-End 시니어 개발자",
+            "url": "https://www.wanted.co.kr/wd/297702",
+            "publisher": "원티드",
+            "summary": "백엔드 챕터: 손님 · 사장님 태블릿 앱과 관리자 서버, POS · 주문 시스템에 LLM 기반 AI 에이전트(고객 응대 · 정산 오류 · 주문 장애 대응 자동화). 업무: 오더 플랫폼, PHP 서비스 Java 전환, 백오피스 API, 신규 주문 API, MSA. Java · Spring Boot · JPA · jOOQ · PHP/Laravel · MySQL · Redis · Kafka · RabbitMQ · K8s · ArgoCD."
+          }
+        ]
+      },
+      {
+        "name": "매장 데이터 파이프라인",
+        "why": "데이터 공고가 주문 · 결제 · 광고 · 사용자 로그의 배치/실시간 파이프라인, Iceberg Medallion, 카탈로그 · Lineage, 추천 · LLM 데이터 인프라를 적는다.",
+        "what_to_know": [
+          "Apache Iceberg",
+          "Backfill 전략",
+          "Flink"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/363020",
+            "publisher": "원티드",
+            "summary": "2019년 출범, 테이블 오더로 오프라인 F&B 주문 · 운영 자동화. 2022년 매출 약 268억 원, 기업가치 1,500억 원 · 시리즈A 100억 원, 예비 유니콘, 13만 대 이상 태블릿의 광고 매체 확장 · 다른 Place · 해외 진출. Data unit(DevOps Chapter): 주문 · 결제 · 광고 · 사용자 로그 배치/실시간, Apache Iceberg Medallion, 카탈로그 · Lineage, 추천 · AI 서빙 · LLM 데이터 인프라. Airflow · Kafka(MSK) · Kinesis · Flink · PySpark · EMR Serverless · Athena · Glue."
+          }
+        ]
+      },
+      {
+        "name": "태블릿 광고 플랫폼",
+        "why": "광고 공고가 캠페인 · 타겟팅 · 전시 정책 · 실시간 통계 · 송출 엔진 · 인벤토리와 WebFlux · Keycloak 을 적는다.",
+        "what_to_know": [
+          "광고 인벤토리",
+          "WebFlux",
+          "Keycloak SPI"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "광고플랫폼 Back-End 개발자",
+            "url": "https://www.wanted.co.kr/wd/364716",
+            "publisher": "원티드",
+            "summary": "광고플랫폼팀: 광고 상품 · 송출 엔진 · 인벤토리 관리 · 운영 자동화 · QA. 캠페인 · 타겟팅 · 전시 정책 · 실시간 통계. Spring Boot REST · 배치, WebFlux Reactive, Keycloak 인증 · SPI, DDD, JPA/QueryDSL. 우대 R2DBC · 광고 서버 · 타겟팅."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "레거시 PHP 를 걷어내는 중",
+        "evidence": "• PHP 개발 서비스 JAVA 전환",
+        "so_what": "매장 수천 곳이 쓰는 주문 시스템을 멈추지 않고 언어를 바꾼다 — 면접에서 이행 전략(어느 기능부터 · 어떻게 비교 검증)을 물을 가능성이 높다. PHP 경험이 우대에 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "태블릿이 광고판이 된다",
+        "evidence": "13만대 이상의 태블릿을 통한 새로운 광고 매체로서의 확장",
+        "so_what": "주문 기기가 광고 인벤토리가 되면서 광고 · 데이터 조직이 커진다 — 광고 공고와 데이터 공고의 광고 로그가 이어진다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "테이블오더 · 서빙로봇 · CCTV 의 요금(월 이용료 · 렌탈)은 공개되지 않았다",
+    "매출 수치는 2022년 기준(공고 머리말) — 최근 값은 읽지 않았다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/363020",
+      "title": "Data Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. DevOps Chapter 의 **Data unit** — **주문 · 결제 · 광고 · 사용자 로그**를 배치/실시간으로 수집 · 처리하는 파이프라인, **Apache Iceberg 기반 Medallion Architecture**, 파이프라인 · 데이터 모니터링과 품질 검증 · 장애 대응, **데이터 카탈로그 · Lineage · Self-service 분석**, 이벤트 수집 아키텍처와 분산 처리 성능 · 비용, **추천 · AI 모델 서빙 · LLM 서비스 데이터 인프라**. 스택은 Iceberg · Airflow · **Kafka(MSK) · Kinesis · Flink** · PySpark · **EMR Serverless** · Athena · Glue · EKS · Terraform · Redash · QuickSight. 자격은 분산 처리 3년, Airflow · Spark 운영, 파이프라인 전 수명주기 주도, **쿼리 최적화 · 파티셔닝 · Backfill 전략**, 주도성, 직군 간 소통. 우대는 AWS, K8s, **Iceberg · Hudi · Delta Lake**, Grafana · Datadog · Prometheus, 스트리밍, **DataHub · OpenMetadata**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "분산 처리 3년",
+          "Airflow · Spark 운영",
+          "파이프라인 전 수명주기",
+          "Backfill 전략"
+        ],
+        "can_learn": [
+          "Iceberg",
+          "Flink",
+          "DataHub"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Iceberg 로 Medallion — Bronze · Silver · Gold 와 되돌리기",
+          "from": "task",
+          "quote": "• Apache Iceberg 기반 Medallion Architecture를 운영하며, 데이터를 분석에 최적화된 구조로 만들어 나갑니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 Iceberg · Hudi · Delta Lake 실무가 있다. 주문 · 결제 데이터가 층을 거쳐 분석용이 된다.",
+          "gap_check": "주문 원본(Bronze)에서 정제(Silver) · 집계(Gold)로 갈 때 각 층에 무엇을 남기고 무엇을 버리나? Iceberg 의 스냅숏 · 타임 트래블로 잘못 적재된 하루를 어떻게 되돌리나? 작은 파일이 쌓이면 무엇으로 합치나(compaction)? 파티션 방식을 바꿔도 옛 쿼리가 안 깨지는 이유는(hidden partitioning · partition evolution)?",
+          "drill": "Apache Iceberg 의 'Spark Quickstart' 를 로컬(Docker)로 돌려 주문 Bronze → Silver(중복 제거 · 타입 정리) → Gold(매장별 일 매출) 테이블을 만든다. 하루치를 일부러 잘못 넣은 뒤 스냅숏으로 되돌리고, 파티션을 일 → 시간으로 바꿔도 기존 쿼리가 도는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apache Iceberg — Spark Quickstart",
+              "url": "https://iceberg.apache.org/spark-quickstart/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Iceberg — Partitioning (hidden partitioning · evolution)",
+              "url": "https://iceberg.apache.org/docs/latest/partitioning/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Backfill 전략 — 과거를 다시 채워도 안전하게",
+          "from": "qualification",
+          "quote": "• 쿼리 최적화, 파티셔닝, Backfill 전략 수립 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격이다. 로직을 고치면 지난 몇 달치를 다시 계산해야 하고, 그동안 매일 파이프라인도 돈다.",
+          "gap_check": "석 달치를 다시 돌릴 때 매일 도는 정규 작업과 같은 파티션을 동시에 쓰지 않게 하려면? Backfill 중에 대시보드가 반쯤 바뀐 숫자를 보이지 않게 하려면(새 테이블에 쓰고 교체 · Iceberg 브랜치)? 비용과 시간을 어떻게 나눠 돌리나(동시 실행 수 · 우선순위)?",
+          "drill": "Airflow 문서의 'Backfill' 과 catchup 을 읽고, 위 Gold 테이블 로직을 바꾼 뒤 30일치를 backfill 하는 DAG 를 만든다. 정규 DAG 와 겹치지 않게 max_active_runs · 풀을 걸고, 결과를 별도 테이블에 쓴 뒤 검증(행 수 · 합계 비교) 후 교체한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Apache Airflow — Backfill",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/backfill.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 카탈로그와 Lineage — 셀프 서비스 분석의 바닥",
+          "from": "task",
+          "quote": "• 데이터 민주화를 위해 데이터 카탈로그와 Lineage를 구성하고, Self-service 분석 환경을 만들어 갑니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 DataHub · OpenMetadata 가 있다. 부서 소개가 전사 데이터 거버넌스 · 민주화를 주도한다고 적는다.",
+          "gap_check": "분석가가 '매장 매출' 테이블을 찾았을 때 무엇이 보여야 믿고 쓰나(정의 · 담당자 · 갱신 시각 · 품질 결과)? Lineage 가 있으면 원천 컬럼을 바꿀 때 무엇을 미리 알 수 있나? 결제 정보처럼 민감한 컬럼은 카탈로그에서 어떻게 표시 · 제한하나?",
+          "drill": "OpenMetadata 의 Docker 퀵스타트로 띄우고 위 Iceberg 테이블(또는 Postgres)을 수집해 설명 · 담당자 · 태그(PII)를 붙인다. Airflow 계보를 연결해 Bronze → Gold 흐름이 보이는지 확인하고, 원천 컬럼 하나를 바꿨을 때 영향받는 테이블 목록을 뽑는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OpenMetadata — Quickstart",
+              "url": "https://docs.open-metadata.org/latest/quick-start/local-docker-deployment",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/297702",
+      "title": "Back-End 시니어 개발자",
+      "site": "wanted",
+      "verdict": "경력 7년 이상. 백엔드 챕터 — 손님 · 사장님 **태블릿 앱과 관리자 시스템의 서버**, **POS · 주문 시스템에 LLM 기반 AI 에이전트**를 넣어 고객 응대 · 정산 오류 · 주문 장애 대응을 자동화. 업무는 오더 플랫폼 신규 · 유지보수, **PHP 서비스 Java 전환**, 운영 업무 자동화, 백오피스 API, **신규 주문 API**, **MSA 고도화**. 스택은 Java · Spring Boot · JPA · **jOOQ** · PHP · Laravel · MySQL · Redis · **Kafka · RabbitMQ** · K8s · ArgoCD · Datadog · Sentry. 자격은 백엔드 7년, JVM 언어, Spring, MySQL 깊은 이해, Redis, AWS, 코드 품질, 데이터 기반 우선순위. 우대는 **주문/결제 시스템**, PHP, MSA, 대용량 트래픽, 프런트 협업, 문제 정의 · 협업. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 7년",
+          "JVM · Spring",
+          "MySQL 깊은 이해",
+          "Redis"
+        ],
+        "can_learn": [
+          "PHP → Java 이행",
+          "주문 이벤트 설계",
+          "LLM 에이전트 도구 설계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "매장이 쓰는 PHP 주문 시스템을 멈추지 않고 Java 로",
+          "from": "task",
+          "quote": "• PHP 개발 서비스 JAVA 전환",
+          "priority": "core",
+          "why": "주요업무이고 우대에 PHP 경험 · MSA 가 있다. 영업 중인 매장의 주문이 끊기면 안 된다.",
+          "gap_check": "어느 API 부터 옮기나(읽기 먼저 · 트래픽 작은 것 먼저)? 같은 요청을 PHP 와 Java 에 동시에 보내 응답을 비교하는 방법(섀도 트래픽 · 차이 로그)은? 두 시스템이 같은 MySQL 테이블을 쓰는 동안 쓰기 충돌을 어떻게 막나? 되돌리기는 무엇으로 하나(라우팅 플래그)?",
+          "drill": "Martin Fowler 의 'Strangler Fig Application' 과 'Parallel Change' 를 읽고, Laravel 로 된 주문 조회 API 하나를 Spring Boot 로 다시 만든다. 게이트웨이(NGINX)에서 비율로 나눠 보내고, 섀도 모드로 두 응답을 비교해 차이를 로그로 남기는 흐름을 docker compose 로 구성한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Strangler Fig Application — Martin Fowler",
+              "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "주문 상태와 이벤트 — 태블릿 · POS · 주방이 같은 주문을 본다",
+          "from": "task",
+          "quote": "• 신규 주문 서비스 API 개발",
+          "priority": "core",
+          "why": "주요업무이고 우대에 주문/결제 시스템 개발 · 운영이 있다. 스택에 Kafka · RabbitMQ 가 있다.",
+          "gap_check": "손님이 태블릿에서 두 번 눌러 같은 주문이 두 번 들어오지 않게 하려면(멱등 키)? 주문 생성과 'POS · 주방에 알림' 을 한 트랜잭션처럼 보장하려면(아웃박스)? 매장 인터넷이 잠깐 끊겼다 돌아올 때 태블릿이 쌓아 둔 주문은 어떤 순서로 들어가나?",
+          "drill": "Spring Boot 로 주문 생성 API(Idempotency-Key)와 트랜잭셔널 아웃박스 테이블을 만들고, 별도 퍼블리셔가 아웃박스를 읽어 Kafka 로 내보내게 한다. 같은 키로 두 번 요청 · 퍼블리셔 중단 후 재시작해도 주문과 이벤트가 한 번씩만 나가는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Pattern: Transactional outbox — microservices.io",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "주문 시스템에 LLM 에이전트 — 무엇을 맡기고 무엇을 막나",
+          "from": "task",
+          "quote": "• 서비스 운영 업무 자동화",
+          "priority": "high",
+          "why": "주요업무이고 부서 소개가 POS · 주문 시스템에 LLM 기반 AI 에이전트를 넣어 고객 응대 · 정산 오류 · 주문 장애 대응을 AI 가 스스로 판단 · 해결하는 시스템으로 바꾼다고 적는다.",
+          "gap_check": "정산 오류를 에이전트가 '고칠' 때 무엇은 자동으로 하고 무엇은 사람 승인을 받나(환불 · 금액 수정)? 에이전트가 부를 수 있는 도구(API)를 어떻게 좁히나(읽기 전용 · 금액 상한)? 에이전트가 한 일을 나중에 되짚으려면 무엇을 남기나?",
+          "drill": "Anthropic 의 'Building effective agents' 와 도구 사용 문서를 읽고, 주문 조회 · 정산 대사 결과 조회(읽기) · 환불 요청 생성(승인 대기) 세 도구만 가진 에이전트를 만든다. 금액 상한을 넘거나 승인 없는 쓰기를 시도하면 막히는지, 모든 도구 호출이 감사 로그에 남는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Building effective agents — Anthropic",
+              "url": "https://www.anthropic.com/engineering/building-effective-agents",
+              "kind": "blog"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/364716",
+      "title": "광고플랫폼 Back-End 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-10년. **광고플랫폼팀** — 광고 플랫폼 아키텍처, 광고 상품 개발 · 기술 검증, **광고 송출 엔진 · 인벤토리 관리**, 운영 자동화 · QA. **13만 대 이상 매장 태블릿**이 광고 매체다. 백엔드는 **캠페인 · 타겟팅 · 전시 정책 · 실시간 통계**를 전담하고 Java 대규모 서비스 · 클라우드 네이티브를 지향한다. 업무는 Spring Boot REST · 배치, **Spring WebFlux Reactive**, **Keycloak 인증 · 인가 · SPI**, **DDD**, JPA/QueryDSL, 코드 리뷰 · 멘토링. 자격은 Java 3-10년, Spring Boot · JPA 깊은 이해, WebFlux 비동기, Keycloak 또는 OAuth2 운영, MySQL · Redis · Kafka, REST, CI/CD, 테스트 · TDD/DDD. 우대는 **WebFlux + R2DBC**, Keycloak Realm · SPI 커스텀, **광고 서버 · 타겟팅**, 대용량 트래픽, MSA · 이벤트, 클라우드, ArgoCD. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java 3년",
+          "Spring Boot · JPA",
+          "WebFlux",
+          "Keycloak/OAuth2"
+        ],
+        "can_learn": [
+          "광고 인벤토리 · 페이싱",
+          "R2DBC",
+          "Keycloak SPI"
+        ]
+      },
+      "study": [
+        {
+          "topic": "태블릿 광고 송출 — 인벤토리 · 캠페인 · 노출 한도",
+          "from": "task",
+          "quote": "• 도메인 중심 설계(Domain-Driven Design) 기반 시스템 구조 개선",
+          "priority": "core",
+          "why": "주요업무이고 부서 소개가 캠페인 · 타겟팅 · 전시 정책 · 실시간 통계와 송출 엔진 · 인벤토리 관리를 적는다. 우대에 광고 서버 · 타겟팅이 있다.",
+          "gap_check": "매장 태블릿 13만 대의 '광고 자리' 를 인벤토리로 어떻게 모델링하나(매장 · 업종 · 시간대 · 화면 위치)? 캠페인 예산을 하루에 고르게 쓰게 하려면(페이싱)? 태블릿이 오프라인일 때 노출을 어떻게 세나(나중에 올라오는 로그 · 중복 제거)?",
+          "drill": "IAB 의 광고 용어 · OpenRTB 스펙 개요를 읽고, 캠페인(예산 · 기간 · 타깃 업종 · 시간대) · 인벤토리(매장 × 슬롯) · 노출 로그의 도메인 모델을 DDD 애그리거트로 나눠 그린다. 간단한 송출 API 가 예산 페이싱(시간당 상한)을 지키는지 테스트로 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OpenRTB — IAB Tech Lab",
+              "url": "https://iabtechlab.com/standards/openrtb/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "WebFlux 로 광고 요청을 받는다 — 블로킹을 섞지 않기",
+          "from": "qualification",
+          "quote": "• Spring WebFlux 기반 비동기 시스템 개발 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 WebFlux Reactive 서비스 개발 · 최적화가 있다. 우대에 WebFlux + R2DBC 가 있다.",
+          "gap_check": "WebFlux 핸들러 안에서 JPA(블로킹) 호출을 하면 무엇이 막히나 — 무엇으로 알아채나(BlockHound)? R2DBC 로 바꾸면 무엇을 잃나(지연 로딩 · JPA 기능)? 광고 요청 하나에서 Redis 조회 두 번과 외부 호출 하나를 동시에 하려면 무엇을 쓰나(Mono.zip)?",
+          "drill": "Spring 공식 'Building a Reactive RESTful Web Service' 를 따라 광고 선택 API 를 만들고, Redis(reactive) 조회 둘을 Mono.zip 으로 묶는다. 일부러 블로킹 JDBC 호출을 넣고 BlockHound 로 잡힌 로그를 확인한 뒤 R2DBC 로 바꿔 부하 도구로 처리량을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spring — Building a Reactive RESTful Web Service",
+              "url": "https://spring.io/guides/gs/reactive-rest-service",
+              "kind": "docs"
+            },
+            {
+              "title": "BlockHound",
+              "url": "https://github.com/reactor/BlockHound",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Keycloak 으로 광고주 · 운영자 인증 — Realm · 역할 · SPI",
+          "from": "qualification",
+          "quote": "• Keycloak 또는 OAuth2 기반 인증/인가 시스템 운영 경험이 있으신 분",
+          "priority": "high",
+          "why": "필수 자격이고 주요업무에 'Keycloak 기반 인증 · 인가 시스템 연동 및 설정 관리 SPI 개발' 이 있다. 우대에 Realm 구성 · SPI 커스터마이징이 있다.",
+          "gap_check": "광고주 · 대행사 · 사내 운영자를 한 Realm 에 두고 역할로 나누나, Realm 을 나누나? Spring 리소스 서버가 토큰의 역할을 어떻게 읽어 API 를 막나? 기존 회원 DB 로 로그인하게 하려면 어떤 SPI 를 구현하나(User Storage SPI)?",
+          "drill": "Keycloak 을 Docker 로 띄워 Realm · 클라이언트 · 역할(advertiser · agency · operator)을 만들고, Spring Boot 리소스 서버에서 역할별로 캠페인 API 를 막는다. Keycloak 문서의 User Storage SPI 예제를 따라 외부 사용자 테이블로 로그인하는 프로바이더를 붙여 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Keycloak — Server Developer Guide (SPIs)",
+              "url": "https://www.keycloak.org/docs/latest/server_development/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

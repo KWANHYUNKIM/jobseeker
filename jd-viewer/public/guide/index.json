@@ -1192,6 +1192,18 @@
       "postings": 2,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "torder",
+      "name": "티오더",
+      "aliases": [
+        "티오더",
+        "torder"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }
