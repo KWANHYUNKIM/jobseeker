@@ -1,0 +1,402 @@
+{
+  "slug": "featuring",
+  "name": "피처링",
+  "name_en": "Featuring",
+  "aliases": [
+    "피처링",
+    "Featuring"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "featuring.co",
+  "one_liner": "올인원 인플루언서 마케팅 SaaS — SNS 데이터를 긁어 인플루언서 검색 · 관리 · 성과 분석을 판다(16,000+ 기업, 매출 100억), 캠페인 집행 업무까지 AI 로 바꾸는 중",
+  "company": {
+    "business": "피처링은 **올인원 인플루언서 마케팅 플랫폼**을 판다 — 브랜드가 조건에 맞는 인플루언서를 **검색 · 영향력 분석**으로 찾고, 주제 · 프로젝트별로 **관리 · 소통 · 캠페인**을 돌리고, **콘텐츠 성과를 자동으로 추적 · 분석**한다(featuring.co). 공고는 이것을 'AI 엔진으로 SNS 의 모든 데이터를 분석하는 솔루션' 이라 부르고, 미션을 '온라인의 모든 영향력을 데이터화' 로 적는다. 홈페이지는 **16,000+ 기업**이 쓰고 **7일 무료 체험** 후 구독하는 구조를 보여 주며, 체험 배너에 **프리미엄 플랜 월 구독료 837,000원**이 적혀 있다. 공고 머리말은 **매출 100억 원 · 누적 투자 260억 원(Series B 포함) · 일본 법인 설립 · 아기 유니콘 선정**을 든다. 인플루언서 마케팅 **집행(AE)** 조직도 따로 있어, SaaS 와 캠페인 대행을 함께 하는 것으로 읽힌다. 모집중 공고는 셋 — 백엔드(2-5년), 인플루언서 마케팅 AI Native(비개발 가능), DevOps(3년↑).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "피처링 : 올인원 인플루언서 마케팅 플랫폼",
+        "url": "https://featuring.co/",
+        "publisher": "피처링",
+        "summary": "인플루언서 탐색(검색 · 영향력 분석) · 관리(그룹 · 소통 · 캠페인) · 분석(콘텐츠 트래킹)까지 한 곳에서. 16,000+ 기업 이용, 재계약률 25% · 고객사 평균 ROAS 400% · 운영 리소스 40% · 비용 25% 절감(회사 주장). 7일 무료 체험, '프리미엄 플랜 월 구독료 837,000원' 을 0원으로 지운 체험 배너. AI 리스트업 자동화."
+      },
+      {
+        "title": "[프로덕트] 백엔드 개발 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/346800",
+        "publisher": "원티드",
+        "summary": "AI 엔진으로 SNS 데이터를 분석해 인플루언서 발견부터 캠페인 성과 분석 · 소셜 계정 관리까지 하는 올인원 솔루션. 일본 법인 설립, 매출 100억, 누적 투자 260억(Series B 포함), 2026 청년일자리강소기업, 아기 유니콘. 백엔드: MSA 엔진 구조 · Python 서버 · 데이터 · 스크래핑 · 리포트 · 키워드 · IRM 기능 · 대규모 SNS ETL."
+      },
+      {
+        "title": "[AX] 인플루언서 마케팅 AI Native",
+        "url": "https://www.wanted.co.kr/wd/362092",
+        "publisher": "원티드",
+        "summary": "인플루언서 마케팅 AE 의 리서치 · 섭외 · 제안서 · 모니터링 · 보고서 작업을 AI 로 자동화하는 자리 — 개발 필수 아님, 실제로 업무 방식을 바꾼 프롬프트 · 자동화 플로우를 보여 달라. n8n · Zapier · Make, Claude Code · Codex, LLM API 우대."
+      },
+      {
+        "title": "[프로덕트] DevOps",
+        "url": "https://www.wanted.co.kr/wd/366660",
+        "publisher": "원티드",
+        "summary": "AWS(ECS · EKS · EC2 · RDS · S3 · Lambda), GitHub Actions · CodePipeline, 블루/그린 · 무중단 배포, CloudWatch · Datadog · Amplitude, SLI/SLO, IAM 최소 권한, 엔터프라이즈 고객사 보안 점검 · ISO · 개인정보 대응."
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출 · 누적 투자(공고 주장)",
+        "value": "매출 100억 원 · 누적 투자 260억 원(Series B 포함)",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[프로덕트] 백엔드 개발 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/346800",
+            "publisher": "원티드",
+            "summary": "AI 엔진으로 SNS 데이터를 분석해 인플루언서 발견부터 캠페인 성과 분석 · 소셜 계정 관리까지 하는 올인원 솔루션. 일본 법인 설립, 매출 100억, 누적 투자 260억(Series B 포함), 2026 청년일자리강소기업, 아기 유니콘. 백엔드: MSA 엔진 구조 · Python 서버 · 데이터 · 스크래핑 · 리포트 · 키워드 · IRM 기능 · 대규모 SNS ETL."
+          }
+        ]
+      },
+      {
+        "label": "이용 기업(홈페이지 주장)",
+        "value": "16,000+ 곳",
+        "as_of": "2026-09 홈페이지 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "피처링 : 올인원 인플루언서 마케팅 플랫폼",
+            "url": "https://featuring.co/",
+            "publisher": "피처링",
+            "summary": "인플루언서 탐색(검색 · 영향력 분석) · 관리(그룹 · 소통 · 캠페인) · 분석(콘텐츠 트래킹)까지 한 곳에서. 16,000+ 기업 이용, 재계약률 25% · 고객사 평균 ROAS 400% · 운영 리소스 40% · 비용 25% 절감(회사 주장). 7일 무료 체험, '프리미엄 플랜 월 구독료 837,000원' 을 0원으로 지운 체험 배너. AI 리스트업 자동화."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "인플루언서 마케팅 SaaS 구독",
+        "how": "홈페이지가 7일 무료 체험 뒤 구독을 권하고 체험 배너에 '프리미엄 플랜 월 구독료 837,000원' 을 적는다. 다른 요금제 금액은 읽지 않았다.",
+        "domains": [
+          "SNS 데이터 수집 · 엔진 백엔드",
+          "SaaS 인프라 · 배포"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "피처링 : 올인원 인플루언서 마케팅 플랫폼",
+            "url": "https://featuring.co/",
+            "publisher": "피처링",
+            "summary": "인플루언서 탐색(검색 · 영향력 분석) · 관리(그룹 · 소통 · 캠페인) · 분석(콘텐츠 트래킹)까지 한 곳에서. 16,000+ 기업 이용, 재계약률 25% · 고객사 평균 ROAS 400% · 운영 리소스 40% · 비용 25% 절감(회사 주장). 7일 무료 체험, '프리미엄 플랜 월 구독료 837,000원' 을 0원으로 지운 체험 배너. AI 리스트업 자동화."
+          }
+        ]
+      },
+      {
+        "name": "인플루언서 마케팅 캠페인 집행(AE)",
+        "how": "AX 공고가 인플루언서 마케팅 AE 의 리서치 · 섭외 · 제안서 · 모니터링 · 클라이언트 보고서 업무를 적는다 — 캠페인 대행 수수료로 읽히지만 금액 · 구조는 읽은 자료에 없다.",
+        "domains": [
+          "마케팅 운영 AI 자동화"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[AX] 인플루언서 마케팅 AI Native",
+            "url": "https://www.wanted.co.kr/wd/362092",
+            "publisher": "원티드",
+            "summary": "인플루언서 마케팅 AE 의 리서치 · 섭외 · 제안서 · 모니터링 · 보고서 작업을 AI 로 자동화하는 자리 — 개발 필수 아님, 실제로 업무 방식을 바꾼 프롬프트 · 자동화 플로우를 보여 달라. n8n · Zapier · Make, Claude Code · Codex, LLM API 우대."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "SNS 데이터 수집 · 엔진 백엔드",
+        "why": "백엔드 공고가 데이터 · 스크래핑 · 리포트 · 키워드 · IRM 기능과 SNS 데이터 대규모 ETL, MSA 엔진 구조를 적는다.",
+        "what_to_know": [
+          "스크래핑 파이프라인",
+          "FastAPI",
+          "ETL 멱등성"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[프로덕트] 백엔드 개발 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/346800",
+            "publisher": "원티드",
+            "summary": "AI 엔진으로 SNS 데이터를 분석해 인플루언서 발견부터 캠페인 성과 분석 · 소셜 계정 관리까지 하는 올인원 솔루션. 일본 법인 설립, 매출 100억, 누적 투자 260억(Series B 포함), 2026 청년일자리강소기업, 아기 유니콘. 백엔드: MSA 엔진 구조 · Python 서버 · 데이터 · 스크래핑 · 리포트 · 키워드 · IRM 기능 · 대규모 SNS ETL."
+          }
+        ]
+      },
+      {
+        "name": "마케팅 운영 AI 자동화",
+        "why": "AX 공고가 AE 업무(리서치 · 섭외 · 제안서 · 보고서)를 AI 에이전트 · LLM · 노코드 자동화로 바꾸는 역할을 만든 이유를 적는다.",
+        "what_to_know": [
+          "n8n",
+          "LLM 보고서 초안",
+          "평가 기준"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AX] 인플루언서 마케팅 AI Native",
+            "url": "https://www.wanted.co.kr/wd/362092",
+            "publisher": "원티드",
+            "summary": "인플루언서 마케팅 AE 의 리서치 · 섭외 · 제안서 · 모니터링 · 보고서 작업을 AI 로 자동화하는 자리 — 개발 필수 아님, 실제로 업무 방식을 바꾼 프롬프트 · 자동화 플로우를 보여 달라. n8n · Zapier · Make, Claude Code · Codex, LLM API 우대."
+          }
+        ]
+      },
+      {
+        "name": "SaaS 인프라 · 배포",
+        "why": "DevOps 공고가 AWS 컨테이너 · 무중단 배포 · SLI/SLO · IAM · 엔터프라이즈 보안 점검 대응을 적는다.",
+        "what_to_know": [
+          "ECS 블루/그린",
+          "SLO",
+          "IAM 최소 권한"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[프로덕트] DevOps",
+            "url": "https://www.wanted.co.kr/wd/366660",
+            "publisher": "원티드",
+            "summary": "AWS(ECS · EKS · EC2 · RDS · S3 · Lambda), GitHub Actions · CodePipeline, 블루/그린 · 무중단 배포, CloudWatch · Datadog · Amplitude, SLI/SLO, IAM 최소 권한, 엔터프라이즈 고객사 보안 점검 · ISO · 개인정보 대응."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "개발 없이도 AI 로 일하는 자리를 따로 뽑는다",
+        "evidence": "개발 능력이 필수는 아닙니다.",
+        "so_what": "AX 자리는 코드 실력보다 '업무 방식을 바꾼 흔적' 을 본다 — 직접 만든 프롬프트 · 자동화 플로우 · 도구를 어떤 형태로든 보여 달라고 적었다. 포트폴리오를 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "엔터프라이즈 고객 보안 요구가 늘었다",
+        "evidence": "외부 고객사 및 엔터프라이즈 프로젝트 대응을 위한 보안 요건 검토",
+        "so_what": "DevOps 가 ISO · 개인정보 · 고객사 보안 점검 대응까지 맡는다 — 대기업 고객이 늘며 보안 질의서에 답할 일이 생긴 단계로 읽힌다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "프리미엄 외 요금제 금액과 캠페인 집행(AE)의 수익 구조는 읽은 자료에 없다",
+    "SNS 데이터를 공식 API 와 스크래핑 중 무엇으로 얼마나 받는지는 공고에 '스크래핑' 이라는 말만 있다",
+    "임직원 수는 읽지 않았다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/346800",
+      "title": "[프로덕트] 백엔드 개발 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 2-5년. **MSA 기반 엔진 구조**를 설계하고 **Python 서버와 대규모 데이터 파이프라인**으로 서비스 운영 · 확장을 주도한다. 엔진 쪽은 **데이터 · 스크래핑 · 리포트 · 키워드 · IRM** 기능, 서비스 엔티티 구조 정의 · 모듈화, MSA 배포 · 운영 안정성, 코드 리뷰 · 테스트. 서비스 쪽은 Python 서버 로직 · 성능, **SNS 데이터 대규모 ETL** 설계 · 운영, 신규 서비스 · 트래픽 대비 확장 전략. 자격은 백엔드 2년, **Python(Django · FastAPI)** 또는 유사 언어, 빠른 학습, 비즈니스 로직 · 환경 구성. 우대는 대규모 데이터 · SNS 데이터, 초기 구축부터 안정화까지, 직군 간 소통, 서비스 아이데이션. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 2년",
+          "Python(Django/FastAPI)",
+          "비즈니스 로직 구성"
+        ],
+        "can_learn": [
+          "SNS 수집 파이프라인",
+          "MSA 배포",
+          "ETL 멱등성"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SNS 데이터 대규모 ETL — 다시 돌려도 안전한 파이프라인",
+          "from": "task",
+          "quote": "• SNS 데이터를 활용한 대규모 ETL 파이프라인 설계 및 운영",
+          "priority": "core",
+          "why": "주요업무이고 우대 1번이 대규모 데이터 처리 · SNS 데이터 활용이다. 인플루언서 검색 · 성과 추적이 모두 이 데이터 위에 선다.",
+          "gap_check": "인플루언서 수십만 명의 게시물 지표를 매일 갱신할 때 실패한 날만 다시 돌려도 중복이 안 생기게 하려면(날짜 파티션 덮어쓰기 · 업서트 키)? 팔로워 수처럼 매일 바뀌는 값은 최신값만 두나, 일자별 이력을 두나(성과 추적에는 무엇이 필요한가)? 원천 API · 페이지 구조가 바뀌어 수집이 조용히 0건이 되면 무엇으로 알아채나?",
+          "drill": "Airflow(또는 Dagster) 튜토리얼대로 '계정 목록 → 게시물 수집(목 API) → 지표 정규화 → 일자별 스냅숏 테이블 업서트' DAG 를 만든다. 같은 날짜를 두 번 돌려 행 수가 늘지 않는지, 목 API 가 빈 응답을 주면 '수집 0건' 경고가 뜨는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apache Airflow — Best Practices",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "FastAPI 로 서비스 백엔드 — 느린 작업은 요청 밖으로",
+          "from": "qualification",
+          "quote": "2. Python(Django, FastAPI 등) 또는 유사 언어 경험",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 Python 서버 로직 개발 · 성능 최적화가 있다. 리포트 생성 · 스크래핑 같은 오래 걸리는 일이 섞인다.",
+          "gap_check": "캠페인 리포트 생성에 30초가 걸리면 요청 안에서 기다리게 하나, 작업 큐로 보내고 상태를 조회하게 하나? FastAPI 의 async 핸들러 안에서 동기 DB 드라이버를 부르면 무엇이 막히나? 같은 리포트 요청이 두 번 오면?",
+          "drill": "FastAPI 공식 튜토리얼의 'Background Tasks' 와 Celery(또는 RQ)를 비교해, 리포트 생성 요청 → 작업 ID 반환 → 상태 조회 API 를 만든다. 같은 캠페인 · 기간으로 두 번 요청하면 진행 중 작업을 돌려주게 하고, async 핸들러에서 동기 호출을 넣었을 때 동시 요청 처리량이 어떻게 떨어지는지 부하 도구로 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "FastAPI — Background Tasks",
+              "url": "https://fastapi.tiangolo.com/tutorial/background-tasks/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공개 SNS 데이터 수집의 경계 — 공식 API 와 약관",
+          "from": "task",
+          "quote": "• 데이터, 스크래핑, 리포트, 키워드, IRM 등 핵심 프로젝트 기능 개발",
+          "priority": "high",
+          "why": "주요업무에 스크래핑이 명시돼 있다. SNS 데이터 수집은 플랫폼 약관 · 호출 한도 · 개인정보가 설계를 제약한다.",
+          "gap_check": "인스타그램 비즈니스 계정 지표를 공식 Graph API 로 받을 때 무엇이 되고(비즈니스 · 크리에이터 계정, 권한 승인) 무엇이 안 되나? 호출 한도를 넘지 않게 수집 순서를 어떻게 정하나(최근 활동 계정 우선)? 개인정보에 해당하는 필드는 무엇이고 어디까지 저장하나?",
+          "drill": "Meta 의 Instagram Graph API 문서에서 'Business Discovery' 와 'Insights' 로 받을 수 있는 필드와 권한 · 호출 한도를 표로 정리한다. 가상의 계정 1만 개를 두고 '하루 호출 한도 안에서 최근 활동 순으로 갱신' 하는 스케줄러 의사코드를 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Instagram Platform — Meta for Developers",
+              "url": "https://developers.facebook.com/docs/instagram-platform",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/362092",
+      "title": "[AX] 인플루언서 마케팅 AI Native",
+      "site": "wanted",
+      "verdict": "경력 2-7년. **인플루언서 마케팅 AE 의 반복 업무**(리서치 · 섭외 · 제안서/가이드라인 · 콘텐츠 모니터링 · 캠페인 보고서 · 데이터 취합)를 **AI 로 자동화 · 재설계**하는 자리 — 캠페인 업무를 직접 하면서 자동화를 만든다. 업무는 캠페인 과정 자동화, **AI 에이전트 + 피처링 AI 로 인플루언서 발굴 · 매칭 고도화**, **LLM 기반 제안서 · 보고서 초안 자동화**, AI 로 성과 분석 · 클라이언트 보고서, AI 도입 영역 발굴 · 실험. 자격은 ChatGPT · Claude · Perplexity 를 **에이전트 수준으로 구축해 쓴 경험**, AI 전후로 업무가 달라진 경험, 운영 비효율을 찾는 문제의식. 우대는 **n8n · Zapier · Make**, **Claude Code · Codex** 로 스크립트, **LLM API 프롬프트 · 파이프라인**, SNS · 마케팅 데이터, **MCN · 에이전시 · 광고대행 2년**. **개발 능력은 필수가 아니다** — 직접 만든 프롬프트 · 플로우 · 도구를 보여 달라. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AI 에이전트 실무 구축",
+          "AI 전후 업무 변화 사례",
+          "마케팅 운영 문제의식"
+        ],
+        "can_learn": [
+          "n8n",
+          "LLM API",
+          "캠페인 보고서 템플릿"
+        ]
+      },
+      "study": [
+        {
+          "topic": "캠페인 보고서 초안을 LLM 으로 — 숫자는 계산하고 문장만 맡긴다",
+          "from": "task",
+          "quote": "3. LLM 기반 제안서·보고서 초안 자동화, 반복 업무 프로세스 재설계",
+          "priority": "core",
+          "why": "주요업무이고 포지션이 생긴 이유 자체가 '보고서 정리 · 데이터 취합' 같은 반복 작업이다. 클라이언트 보고서의 숫자가 틀리면 신뢰가 무너진다.",
+          "gap_check": "도달 · 참여율 · 전환 같은 숫자를 LLM 에게 계산시키지 않고 표로 먼저 계산해 넘기는 이유는? 보고서 초안에서 LLM 이 지어낸 숫자를 무엇으로 걸러 내나(표에 없는 숫자 금지 · 대조)? 매번 같은 목차 · 톤이 나오게 하려면 무엇을 고정하나(템플릿 · 예시)?",
+          "drill": "가상 캠페인 결과 CSV(인플루언서 20명 × 게시물 지표)를 스프레드시트로 집계한 뒤, 표 · 목차 템플릿 · 좋은 보고서 예시 하나를 넣어 LLM 으로 보고서 초안을 쓰게 한다. 초안의 숫자를 표와 자동 대조하는 간단한 검사(정규식으로 숫자 추출 → 표에 있는지)를 붙이고, 걸린 문장 수를 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Anthropic — Prompt engineering overview",
+              "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "노코드 자동화로 섭외 · 모니터링 흐름 만들기",
+          "from": "preference",
+          "quote": "1. n8n, Zapier, Make 등 노코드/로우코드 자동화 툴 활용 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 자격에 'AI 도구를 에이전트 수준으로 구축해 사용한 경험' 이 있다. 개발 없이 흐름을 이어 붙이는 것이 이 자리의 기본 도구다.",
+          "gap_check": "섭외 메일 발송 → 회신 확인 → 시트 상태 갱신 흐름에서 같은 사람에게 두 번 보내지 않게 하려면 무엇을 기준으로 막나? LLM 이 쓴 메일을 사람이 확인하고 보내게 하려면 흐름 어디에 멈춤을 두나? 실패한 단계만 다시 돌리려면?",
+          "drill": "n8n 을 로컬(도커)로 띄워 '구글 시트의 섭외 대상 → LLM 으로 개인화 메일 초안 → 사람 승인(폼 또는 시트 체크) → 발송 → 상태 갱신' 흐름을 만든다. 같은 행으로 두 번 실행해도 한 번만 발송되는지 확인하고, 흐름 그림과 설명을 포트폴리오 한 쪽으로 남긴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "n8n Docs — Getting started",
+              "url": "https://docs.n8n.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인플루언서 매칭에 AI 에이전트를 붙이기 — 기준을 먼저 적는다",
+          "from": "task",
+          "quote": "2. SNS 인플루언서 발굴·매칭 과정에서 AI 에이전트와 피처링 AI를 결합해 더 효율적인 업무 고도화",
+          "priority": "high",
+          "why": "주요업무이고, 홈페이지가 'AI 리스트업 자동화' 를 내세운다. 매칭이 캠페인 성과를 가른다.",
+          "gap_check": "'이 브랜드에 맞는 인플루언서' 를 에이전트에게 맡기려면 무엇을 숫자 기준으로 먼저 적어야 하나(팔로워 구간 · 참여율 · 오디언스 연령 · 과거 광고 비율)? 에이전트가 고른 리스트를 사람이 고른 리스트와 무엇으로 비교해 좋아졌다고 말하나?",
+          "drill": "가상 브랜드 브리프 하나에 대해 매칭 기준표(필수 · 가점 · 제외)를 쓰고, 공개 프로필 30개를 사람이 먼저 고른 뒤 같은 기준을 LLM 에이전트에게 주어 고르게 한다. 두 리스트의 겹침 · 차이와 에이전트가 틀린 이유를 표로 정리한다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "피처링 — 인플루언서 검색 · 분석",
+              "url": "https://featuring.co/",
+              "kind": "site"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/366660",
+      "title": "[프로덕트] DevOps",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. 서비스와 **AI 데이터 엔진**이 안정적으로 돌도록 **AWS 인프라(ECS · EKS · EC2 · RDS · S3 · Lambda)** 와 배포 환경을 설계한다. 계정 · 네트워크 구조, 확장, 장애 원인 분석 · 재발 방지, **GitHub Actions · CodePipeline**, 백엔드 · 프론트 · **데이터 파이프라인 배포 자동화**, **롤백 · 블루/그린 · 무중단 배포**, CloudWatch · Datadog · Amplitude, **SLI/SLO**, 비용 · 성능 · 보안 개선, **IAM 최소 권한** · 접근 통제 · 백업 · 암호화 · 감사 로그, **엔터프라이즈 고객사 보안 요건 · ISO · 개인정보 대응**. 자격은 DevOps · SRE 3년, AWS, Docker · ECS · EKS, CI/CD, 네트워크 기초, **Terraform · CloudFormation**, 로그 · 메트릭 기반 원인 분석, 팀 간 소통. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "DevOps 3년",
+          "AWS 컨테이너",
+          "IaC",
+          "장애 원인 분석"
+        ],
+        "can_learn": [
+          "블루/그린 배포",
+          "SLO",
+          "보안 질의서 대응"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ECS 블루/그린 무중단 배포와 되돌리기",
+          "from": "task",
+          "quote": "• 배포 안정성 확보를 위한 롤백, 블루/그린 배포, 무중단 배포 전략 검토 및 적용",
+          "priority": "core",
+          "why": "주요업무이고 자격에 컨테이너 서비스 운영 · CI/CD 구축이 있다. 구독 고객이 쓰는 도중 배포가 일어난다.",
+          "gap_check": "ECS 롤링 배포와 CodeDeploy 블루/그린은 트래픽을 어떻게 다르게 옮기나? 새 버전이 오류를 내면 무엇을 기준으로 자동 되돌리나(CloudWatch 경보 · 테스트 트래픽)? DB 스키마 변경이 섞인 배포는 블루/그린으로 되돌릴 수 있나?",
+          "drill": "AWS 문서의 'Blue/green deployment with CodeDeploy' 를 따라 ECS 서비스 하나를 블루/그린으로 배포하고, 새 버전이 5xx 를 내게 만들어 경보로 자동 롤백되는지 본다. 스키마 변경은 '확장 → 이전 → 축소' 순서로 나눠야 하는 이유를 한 쪽으로 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Amazon ECS — Blue/green deployment with CodeDeploy",
+              "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SLI/SLO 로 안정성을 숫자로",
+          "from": "task",
+          "quote": "• 서비스별 SLI/SLO 관점의 안정성 지표 관리",
+          "priority": "high",
+          "why": "주요업무이고 로그 · 메트릭 · 알림 체계 정비와 장애 탐지 자동화가 같은 묶음에 있다. 자격에 로그 · 메트릭으로 원인을 분석하는 역량이 있다.",
+          "gap_check": "인플루언서 검색 API 의 SLI 를 무엇으로 두나(성공률 · p95 지연)? 데이터 파이프라인의 SLI 는 요청이 아니라 무엇으로 재나(데이터 신선도 · 수집 성공 계정 비율)? 에러 예산을 다 쓰면 무엇을 멈추나?",
+          "drill": "Google SRE 워크북의 'Implementing SLOs' 를 읽고, 검색 API(가용성 · 지연)와 수집 파이프라인(신선도) 각각의 SLI · SLO · 번 레이트 알림 규칙을 Datadog(또는 Prometheus) 규칙으로 쓴다. 가짜 장애를 넣어 알림이 몇 분 만에 오는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Implementing SLOs — Google SRE Workbook",
+              "url": "https://sre.google/workbook/implementing-slos/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "엔터프라이즈 고객 보안 점검에 답하는 인프라",
+          "from": "task",
+          "quote": "• 외부 고객사 및 엔터프라이즈 프로젝트 대응을 위한 보안 요건 검토",
+          "priority": "nice",
+          "why": "주요업무이고 바로 아래가 'ISO, 개인정보보호, 고객사 보안 점검 등에 필요한 기술적 대응 지원' 이다. 같은 묶음에 IAM 최소 권한 · 백업 · 암호화 · 감사 로그가 있다.",
+          "gap_check": "고객사 보안 질의서의 '운영 DB 접근 통제' · '저장 데이터 암호화' · '감사 로그 보관 기간' 질문에 각각 어떤 AWS 설정과 증적으로 답하나? 개발자가 운영 DB 에 직접 붙는 대신 무엇을 쓰게 하나(세션 매니저 · 읽기 전용 역할)?",
+          "drill": "가상의 고객사 보안 질의서 10문항(접근 통제 · 암호화 · 백업 · 로그 · 취약점)을 만들고, 각 항목에 대응하는 AWS 설정(IAM 정책 · KMS · Backup · CloudTrail · Inspector)과 증적(스크린숏 · 설정 내보내기)을 표로 채운다. 운영 DB 접근을 SSM 세션 매니저 + 읽기 전용 역할로 바꾸는 Terraform 조각을 쓴다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "AWS Systems Manager Session Manager",
+              "url": "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

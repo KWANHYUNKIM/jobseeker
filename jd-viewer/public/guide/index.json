@@ -1140,6 +1140,18 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "featuring",
+      "name": "피처링",
+      "aliases": [
+        "피처링",
+        "Featuring"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }

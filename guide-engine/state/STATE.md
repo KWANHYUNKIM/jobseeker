@@ -4,6 +4,7 @@
 
 ## 지금 쓰는 중
 
+**피처링(`featuring`) — `done`(2026-09-30), 공고 3건(백엔드 346800 · AX 인플루언서 마케팅 AI Native 362092 · DevOps 366660).** 원티드 모집중 전부. 출처: featuring.co 첫 화면(16,000+ 기업 · 프리미엄 월 837,000원 체험 배너) + 원티드 공고 머리말(매출 100억 · 누적 투자 260억). AX 는 비개발 자리라 학습 항목을 보고서 · 노코드 · 매칭 기준으로 잡았다. 캠페인 집행 수익은 inferred.
 **메디트(`medit`) — `done`(2026-09-30), 공고 3건(Backend Architect AWS 317608 · 3D Reconstruction AI 356821 · DevOps 380517).** 원티드 모집중 전부. 출처: 원티드 공고 머리말 + meditlink.com 메타. **medit.com 은 봇 확인(Cloudflare) 페이지 — 우회하지 않는다.** 소프트웨어 수익원은 inferred.
 **유모스원(`umosone`) — `done`(2026-09-30), 공고 2건(FMS Frontend 373485 · AI Data Engineer 온톨로지 379390).** 원티드 모집중 전부. 출처: umosone.ai 첫 화면(42dot Fleet AI 페이지의 Family Site 링크로 찾음) + 42dot Fleet AI + 원티드 공고. umos.one · tap.kr 은 이 회사가 아니다(자리표시 · 무관한 단축 URL) — 쓰지 말 것.
 **일루니(`illuni`) — `done`(2026-09-29), 공고 3건(시니어 프론트엔드 360480 · AI Solution 영업 360479 · AI 엔지니어 378122).** 원티드 모집중 전부. 출처: illuni.com · knova.so 메타 설명(본문은 스크립트 렌더) + 원티드 공고. MoiiMe · S-HAS 사이트는 메타도 없어 수익원 둘은 inferred.
