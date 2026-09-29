@@ -3503,6 +3503,61 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-core-i9-14900k",
+   "category": "cpu",
+   "name": "Core i9-14900K",
+   "maker": "Intel",
+   "released": "2023-10",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 24,
+    "threads": 32,
+    "boost_ghz": 6.0,
+    "tdp_w": 125,
+    "max_power_w": 253,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "l3_mb": 36,
+    "series": "코어 14세대",
+    "family": "코어 i9",
+    "base_ghz": 3.2,
+    "igpu_name": "Intel UHD 770"
+   },
+   "perf": {
+    "index": 81,
+    "multi": 87,
+    "confidence": "low",
+    "basis": "게임: 9800X3D = 100 · 멀티: 9950X = 100 — Tom's Hardware CPU 계층표 한 표. 1080p 게임 78.2% ÷ 9800X3D 97% = 81, 멀티 80.7% 는 같은 표 9800X3D 54.7% ↔ 우리 59 로 옮겨 87"
+   },
+   "price_query": {
+    "q": "14900K",
+    "cate": "CPU",
+    "must": [
+     "14900K"
+    ],
+    "not": [
+     "14900KF",
+     "14900KS",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i9-14900K(24코어 8P+16E · 32스레드 · 3.2/최대 6.0GHz · 36MB · 125/253W · UHD 770 · DDR4-3200/DDR5-5600 · 2023년 4분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/236773/intel-core-i9-processor-14900k-36m-cache-up-to-6-00-ghz/specifications.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-core-i7-14700k",
    "category": "cpu",
    "name": "Core i7-14700K",
