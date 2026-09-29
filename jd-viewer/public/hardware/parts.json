@@ -3802,7 +3802,7 @@
    "perf": {
     "index": 60,
     "basis": "소음 없이 감당하는 CPU 전력(W) ÷ 3 — 리뷰 평균에서 잡은 급",
-    "confidence": "seed"
+    "confidence": "medium"
    },
    "price_query": {
     "q": "싱글타워 CPU쿨러",
@@ -3817,13 +3817,22 @@
    "price_basis": "median",
    "sources": [
     {
+     "title": "DeepCool AK400 공식 사양(이 급의 대표 제품)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AK400-Performance-CPU-Cooler-1851-1700-AM5/2024/15222.shtml"
+    },
+    {
      "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
      "url": "https://www.noctua.at/en/tdp-guide"
     }
    ],
    "status": "current",
    "checked_at": "2026-09-29",
-   "class_assumption": true
+   "representative": {
+    "name": "DeepCool AK400",
+    "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AK400-Performance-CPU-Cooler-1851-1700-AM5/2024/15222.shtml",
+    "note": "공식: 220W · 높이 155mm · 6mm 히트파이프 4 · 500~1850RPM · LGA1851/1700/AM5. 급의 감당 전력은 제조사 표기보다 보수적으로 180W."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cooler-air-dual",
@@ -3904,13 +3913,22 @@
    "price_basis": "median",
    "sources": [
     {
+     "title": "ARCTIC Liquid Freezer III 240 공식 사양(이 급의 대표 제품)",
+     "url": "https://www.arctic.de/en/Liquid-Freezer-III-240/ACFRE00134A"
+    },
+    {
      "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
      "url": "https://www.noctua.at/en/tdp-guide"
     }
    ],
    "status": "current",
    "checked_at": "2026-09-29",
-   "class_assumption": true
+   "class_assumption": true,
+   "representative": {
+    "name": "ARCTIC Liquid Freezer III 240",
+    "url": "https://www.arctic.de/en/Liquid-Freezer-III-240/ACFRE00134A",
+    "note": "공식: 라디에이터 252×120×27mm · LGA1851/1700 접촉 프레임 · AM5. 공식 감당 전력(TDP) 표기가 없어 급 값(250W)은 아직 가정이다."
+   }
   },
   {
    "id": "cooler-aio-360",
@@ -3944,13 +3962,22 @@
    "price_basis": "median",
    "sources": [
     {
+     "title": "ARCTIC Liquid Freezer III 360 공식 사양(이 급의 대표 제품)",
+     "url": "https://www.arctic.de/en/Liquid-Freezer-III-360/ACFRE00136A"
+    },
+    {
      "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
      "url": "https://www.noctua.at/en/tdp-guide"
     }
    ],
    "status": "current",
    "checked_at": "2026-09-29",
-   "class_assumption": true
+   "class_assumption": true,
+   "representative": {
+    "name": "ARCTIC Liquid Freezer III 360",
+    "url": "https://www.arctic.de/en/Liquid-Freezer-III-360/ACFRE00136A",
+    "note": "공식: LGA1851 제한 없이 지원. 공식 감당 전력(TDP) 표기가 없어 급 값(320W)은 아직 가정이다."
+   }
   },
   {
    "id": "case-matx-mini",
@@ -3967,7 +3994,7 @@
    "perf": {
     "index": 66,
     "basis": "그래픽카드 장착 길이 ÷ 5 — 이 급의 흔한 값(제품마다 다르다)",
-    "confidence": "seed"
+    "confidence": "medium"
    },
    "price_query": {
     "q": "미니타워 케이스",
@@ -3980,13 +4007,22 @@
    "price_basis": "median",
    "sources": [
     {
+     "title": "Fractal Design Pop Mini Air 공식 사양(이 급의 대표 제품)",
+     "url": "https://www.fractal-design.com/products/cases/pop/pop-mini-air/rgb-black-tg-clear/"
+    },
+    {
      "title": "ATX 규격(Intel ATX Version 3.1)",
      "url": "https://www.intel.com/content/www/us/en/content-details/782152/atx-version-3-1-multi-rail-desktop-platform-power-supply-design-guide.html"
     }
    ],
    "status": "current",
    "checked_at": "2026-09-29",
-   "class_assumption": true
+   "representative": {
+    "name": "Fractal Design Pop Mini Air",
+    "url": "https://www.fractal-design.com/products/cases/pop/pop-mini-air/rgb-black-tg-clear/",
+    "note": "공식: GPU 365mm(앞 팬 장착) · 쿨러 170mm · 앞·위 240mm 라디에이터. 급 값(330·160)은 좁은 미니타워까지 담으려 보수적으로 잡았다."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "case-atx-mid",
@@ -4003,7 +4039,7 @@
    "perf": {
     "index": 76,
     "basis": "그래픽카드 장착 길이 ÷ 5 — 이 급의 흔한 값(제품마다 다르다)",
-    "confidence": "seed"
+    "confidence": "medium"
    },
    "price_query": {
     "q": "미들타워 케이스",
@@ -4016,13 +4052,22 @@
    "price_basis": "median",
    "sources": [
     {
+     "title": "Lian Li LANCOOL 216 공식 사양(이 급의 대표 제품)",
+     "url": "https://lian-li.com/product/lancool-216/"
+    },
+    {
      "title": "ATX 규격(Intel ATX Version 3.1)",
      "url": "https://www.intel.com/content/www/us/en/content-details/782152/atx-version-3-1-multi-rail-desktop-platform-power-supply-design-guide.html"
     }
    ],
    "status": "current",
    "checked_at": "2026-09-29",
-   "class_assumption": true
+   "representative": {
+    "name": "Lian Li LANCOOL 216",
+    "url": "https://lian-li.com/product/lancool-216/",
+    "note": "공식: GPU 392mm · 쿨러 180.5mm · 앞·위 360mm 라디에이터 · E-ATX(280mm 이하)까지. 급 값(380·170)은 보수적으로."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "case-atx-full",
@@ -4039,7 +4084,7 @@
    "perf": {
     "index": 90,
     "basis": "그래픽카드 장착 길이 ÷ 5 — 이 급의 흔한 값(제품마다 다르다)",
-    "confidence": "seed"
+    "confidence": "medium"
    },
    "price_query": {
     "q": "빅타워 케이스",
@@ -4052,13 +4097,22 @@
    "price_basis": "median",
    "sources": [
     {
+     "title": "Fractal Design Meshify 2 XL 공식 사양(이 급의 대표 제품)",
+     "url": "https://www.fractal-design.com/products/cases/meshify/meshify-2-xl-dark-tempered-glass/light-tempered-glass/"
+    },
+    {
      "title": "ATX 규격(Intel ATX Version 3.1)",
      "url": "https://www.intel.com/content/www/us/en/content-details/782152/atx-version-3-1-multi-rail-desktop-platform-power-supply-design-guide.html"
     }
    ],
    "status": "current",
    "checked_at": "2026-09-29",
-   "class_assumption": true
+   "representative": {
+    "name": "Fractal Design Meshify 2 XL",
+    "url": "https://www.fractal-design.com/products/cases/meshify/meshify-2-xl-dark-tempered-glass/light-tempered-glass/",
+    "note": "공식: 쿨러 185mm · 앞·위 480/420mm 라디에이터 · GPU 359mm(스토리지 배치)~549mm(오픈 배치) · E-ATX·SSI-EEB."
+   },
+   "specs_verified": "2026-09-29"
   }
  ]
 }
