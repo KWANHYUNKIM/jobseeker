@@ -1152,6 +1152,18 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "stresssolution",
+      "name": "스트레스솔루션",
+      "aliases": [
+        "스트레스솔루션",
+        "힐링비트"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }
