@@ -2,6 +2,13 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 확인: RTX 5090 파트너 모델 7종(사다리 6)
+
+- ASUS ROG Astral WHITE·LC(360mm 수랭)·BTF, TUF OC, Palit GameRock·GameRock OC, INNO3D iCHILL X3 를 제조사 공식 스펙으로 더했다(모델 2→9).
+  Palit 은 'GAMEROCK' 안의 'OC'(ROCK) 때문에 OC 판을 'GAMEROCKOC' 로 가른다. 다나와 5090 판매처 전부에 규칙을 돌려 두 모델에 동시에 걸리는 것이 없음을 확인.
+- 비운 값: Palit 팬 개수·백플레이트, INNO3D 슬롯·듀얼 BIOS·0dB·이미지(og:image 없음).
+- GIGABYTE(403)·MSI(403)·ZOTAC(WAF 468)·MANLI(JS 보안검사)는 봇 차단 — 우회하지 않고 남겼다.
+
 ## 2026-09-29 — 확인: 추정 지수 13개 중 6개를 실측으로
 
 - Tom's Hardware 계층표(같은 두 표)로: RTX 5050 32 · RX 7600 32 · RX 6600 17(QHD 울트라에서 8GB 가 모자라 급락 — 1080p 는 25.5%) ·

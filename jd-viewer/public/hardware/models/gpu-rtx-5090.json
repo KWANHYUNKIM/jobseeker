@@ -119,6 +119,399 @@
     "credit": "ASUS",
     "page": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/"
    }
+  },
+  {
+   "id": "asus-rog-astral-rtx5090-o32g-white",
+   "name": "ASUS ROG Astral RTX 5090 WHITE OC",
+   "brand": "ASUS",
+   "code": "ROG-ASTRAL-RTX5090-O32G-WHITE",
+   "match": {
+    "must": [
+     "ASUS",
+     "Astral",
+     "White",
+     "5090"
+    ],
+    "not": [
+     "LC",
+     "BTF"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2580,
+    "oc_mhz": 2610,
+    "length_mm": 357.6,
+    "width_mm": 149.3,
+    "thickness_mm": 76,
+    "slots": 3.8,
+    "fans": 4,
+    "power_connector": "16핀 x1",
+    "psu_w": 1000,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "그래픽카드 지지대",
+     "벨크로",
+     "자석",
+     "키캡",
+     "PCB 자",
+     "ROG 링",
+     "어댑터 케이블(1 to 4)"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS ROG 공식 스펙",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-white/spec/"
+    },
+    {
+     "title": "ASUS ROG 제품 소개(팬 4개·듀얼 BIOS)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-white/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "0dB 팬 정지는 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/4AD1A5AF-03E6-49EC-BD4B-18A665ACB983",
+    "credit": "ASUS",
+    "page": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-white/"
+   }
+  },
+  {
+   "id": "asus-rog-astral-lc-rtx5090-o32g",
+   "name": "ASUS ROG Astral LC RTX 5090 OC",
+   "brand": "ASUS",
+   "code": "ROG-ASTRAL-LC-RTX5090-O32G-GAMING",
+   "match": {
+    "must": [
+     "ASUS",
+     "Astral",
+     "LC",
+     "5090"
+    ],
+    "not": [
+     "White",
+     "BTF"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2580,
+    "oc_mhz": 2610,
+    "length_mm": 288.46,
+    "width_mm": 153.7,
+    "thickness_mm": 48,
+    "slots": 2.5,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 1000,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": null,
+    "backplate": null,
+    "lighting": "ARGB",
+    "bundle": [
+     "그래픽카드 지지대",
+     "벨크로",
+     "자석",
+     "PCB 자",
+     "어댑터 케이블(1 to 4)"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS ROG 공식 스펙",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-lc-rtx5090-o32g-gaming/spec/"
+    },
+    {
+     "title": "ASUS ROG 제품 소개(360mm 수랭·듀얼 BIOS)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-lc-rtx5090-o32g-gaming/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "일체형 수랭. 치수는 카드 본체 기준이고 라디에이터는 400 x 120 x 65mm(360mm). 팬 3개는 라디에이터 팬이며 카드 위에 전원부용 보조 팬 1개가 따로 있다. 0dB·백플레이트는 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/89CC6037-6B3D-4BAA-A17C-8B843D1D92E0",
+    "credit": "ASUS",
+    "page": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-lc-rtx5090-o32g-gaming/"
+   }
+  },
+  {
+   "id": "asus-rog-astral-rtx5090-o32g-btf",
+   "name": "ASUS ROG Astral RTX 5090 BTF OC",
+   "brand": "ASUS",
+   "code": "ROG-ASTRAL-RTX5090-O32G-BTF-GAMING",
+   "match": {
+    "must": [
+     "ASUS",
+     "Astral",
+     "BTF",
+     "5090"
+    ],
+    "not": [
+     "LC",
+     "White"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2580,
+    "oc_mhz": 2610,
+    "length_mm": 357.6,
+    "width_mm": 149.3,
+    "thickness_mm": 76,
+    "slots": 3.8,
+    "fans": 4,
+    "power_connector": "16핀 x1 · GC-HPWR 골드핑거",
+    "psu_w": 1000,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "그래픽카드 지지대",
+     "벨크로",
+     "자석",
+     "키캡",
+     "PCB 자",
+     "어댑터 케이블(1 to 4)"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS ROG 공식 스펙",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-btf-gaming/spec/"
+    },
+    {
+     "title": "ASUS ROG 제품 소개(팬 4개·듀얼 BIOS·GC-HPWR 어댑터)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-btf-gaming/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "BTF 메인보드용 GC-HPWR 골드핑거와 떼어 낼 수 있는 어댑터로 일반 보드(16핀)에도 쓴다. 0dB 팬 정지는 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/E87FA36E-F528-4775-9762-4F6996FFBC88",
+    "credit": "ASUS",
+    "page": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-btf-gaming/"
+   }
+  },
+  {
+   "id": "asus-tuf-rtx5090-o32g",
+   "name": "ASUS TUF Gaming RTX 5090 OC",
+   "brand": "ASUS",
+   "code": "TUF-RTX5090-O32G-GAMING",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "OC",
+     "5090"
+    ],
+    "not": [
+     "White",
+     "BTF"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2550,
+    "oc_mhz": 2580,
+    "length_mm": 348,
+    "width_mm": 146,
+    "thickness_mm": 72,
+    "slots": 3.6,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 1000,
+    "outputs": "HDMI 2.1b x2 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "그래픽카드 지지대",
+     "벨크로",
+     "자석",
+     "어댑터 케이블(1 to 4)"
+    ]
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-o32g-gaming/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(팬 3개·듀얼 BIOS·50°C 미만 팬 정지)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-o32g-gaming/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/4aad6290-f858-4712-b9a7-f37b33d5211a/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-o32g-gaming/"
+   }
+  },
+  {
+   "id": "palit-rtx5090-gamerock-oc",
+   "name": "Palit RTX 5090 GameRock OC",
+   "brand": "Palit",
+   "code": "NE75090S19R5-GB2020G",
+   "match": {
+    "must": [
+     "PALIT",
+     "GAMEROCKOC",
+     "5090"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2527,
+    "oc_mhz": null,
+    "length_mm": 331.9,
+    "width_mm": 150,
+    "thickness_mm": 70.4,
+    "slots": 3.5,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 1000,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "ARGB",
+    "bundle": [
+     "전원 케이블",
+     "ARGB 케이블",
+     "그래픽카드 지지대",
+     "지지대 연장대"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Palit 공식 스펙",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5335&lang=en&tab=sp"
+    },
+    {
+     "title": "Palit 제품 소개(듀얼 BIOS·0-dB)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5335&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "그래픽카드 전력 600W(기본판 575W). 공식 스펙에 팬 개수·백플레이트가 없어 비워 두고, HDMI 는 개수 없이 한 줄로 적혀 있어 1개로 본다. 듀얼 BIOS 는 Performance/Silent.",
+   "image": {
+    "url": "https://www.palit.com/product/vga/picture/p05335/p05335_propng_154685e555fdda48.png",
+    "credit": "Palit",
+    "page": "https://www.palit.com/palit/vgapro.php?id=5335&lang=en"
+   }
+  },
+  {
+   "id": "palit-rtx5090-gamerock",
+   "name": "Palit RTX 5090 GameRock",
+   "brand": "Palit",
+   "code": "NE75090019R5-GB2020G",
+   "match": {
+    "must": [
+     "PALIT",
+     "GAMEROCK",
+     "5090"
+    ],
+    "not": [
+     "GAMEROCKOC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2407,
+    "oc_mhz": null,
+    "length_mm": 331.9,
+    "width_mm": 150,
+    "thickness_mm": 70.4,
+    "slots": 3.5,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 1000,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "ARGB",
+    "bundle": [
+     "전원 케이블",
+     "ARGB 케이블",
+     "그래픽카드 지지대",
+     "지지대 연장대"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Palit 공식 스펙",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5345&lang=en&tab=sp"
+    },
+    {
+     "title": "Palit 제품 소개",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5345&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "그래픽카드 전력 575W. 'GAMEROCK' 안에 'OC' 가 들어 있어(ROCK) OC 판은 'GAMEROCKOC' 로 가른다. 공식 스펙에 팬 개수·백플레이트가 없어 비워 두고, HDMI 는 개수 없이 한 줄로 적혀 있어 1개로 본다.",
+   "image": {
+    "url": "https://www.palit.com/product/vga/picture/p05345/p05345_propng_1269685e54d9664c9.png",
+    "credit": "Palit",
+    "page": "https://www.palit.com/palit/vgapro.php?id=5345&lang=en"
+   }
+  },
+  {
+   "id": "inno3d-rtx5090-ichill-x3",
+   "name": "INNO3D RTX 5090 iCHILL X3",
+   "brand": "INNO3D",
+   "code": "C50903-32D7X-175967H",
+   "match": {
+    "must": [
+     "INNO3D",
+     "ICHILL",
+     "X3",
+     "5090"
+    ],
+    "not": [
+     "FROSTBITE"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2467,
+    "oc_mhz": null,
+    "length_mm": 334,
+    "width_mm": 148,
+    "thickness_mm": 73,
+    "slots": null,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 1000,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": "RGB",
+    "bundle": [
+     "그래픽카드 지지대(쿨러 일체형)",
+     "어댑터 케이블(8핀 x4)"
+    ]
+   },
+   "sources": [
+    {
+     "title": "INNO3D 공식 제품 페이지(스펙·특징)",
+     "url": "https://www.inno3d.com/product/inno3d-geforce-rtx-5090-ichill-x3"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "공식 페이지에 슬롯 수·듀얼 BIOS·0dB 언급이 없어 비워 둔다. 조명은 'Programmable RGB'(Aura Sync·Mystic Light·Polychrome 연동). og:image 가 없어 이미지는 뺐다."
   }
  ]
 }
