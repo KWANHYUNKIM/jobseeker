@@ -7,7 +7,7 @@
     "㈜마카롱팩토리",
     "마이클"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-29",
   "site": "mycle.co.kr",
   "one_liner": "차량 관리·정비 예약 앱 '마이클' 을 만드는 판교 회사 — 연 매출 630억 흑자, 입점 정비소 2,400곳, 5년↑ 시니어만 뽑는다",
@@ -81,7 +81,8 @@
         "domains": [
           "마이클 웹 프론트엔드",
           "마이클 안드로이드 앱",
-          "레이크하우스 데이터 엔지니어링"
+          "레이크하우스 데이터 엔지니어링",
+          "플랫폼 엔지니어링·SRE"
         ],
         "confidence": "confirmed",
         "sources": [
@@ -499,6 +500,116 @@
             {
               "title": "Maintenance — Apache Iceberg",
               "url": "https://iceberg.apache.org/docs/latest/maintenance/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/378889",
+      "title": "Platform Engineering (5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 경기 성남시 분당구(판교). **플랫폼을 제품으로 보고** 서비스를 만들고 운영하는 데 필요한 것을 직접 처리할 수 있는 환경을 만든다 — **표준 템플릿**(새 서비스에 CI·배포·관측성·시크릿 관리가 처음부터), 개발부터 상용까지 일관된 **개발환경과 배포**(인프라를 코드로, 개발자가 변경을 제안·리뷰), **SLI/SLO**·알람 심각도·서비스 간 요청 추적·인시던트 격상→포스트모템, **보안 운영**(의존성·이미지 취약점을 파이프라인에, 시크릿 저장 표준·프로덕션 접근 권한), **개발자 경험 측정**(인지 부하를 지표와 설문으로), **AI 로 운영 자동화**(프로덕션에 영향을 주는 작업은 어디까지 맡길지 기준). 스택은 AWS · **ECS · EKS · k3s · Helm** · **Terraform · AWS CDK · Atlantis** · GitHub Actions · ArgoCD · Ansible · Datadog · Sentry · Grafana · Prometheus · **AWS Secrets Manager · external-secrets · IAM Roles Anywhere · Wazuh**. 자격은 AWS 프로덕션 인프라, **Terraform 또는 CDK**, **장애 진단·완화·재발방지를 주도한 사례**, ECS 또는 Kubernetes 배포·운영, 반복 운영을 코드·워크플로로 없앤 경험, **개발자를 고객으로** 본 경험, 자동화된 판단을 어디까지 믿을지 본인 기준. 우대는 관측성 체계 정착, SLI/SLO 를 조직이 쓰게 만든 경험, 시크릿·접근통제·취약점 대응, 온콜·인시던트 체계, 클라우드 비용 최적화, AI 운영 자동화(알람 분류·런북·티켓·조사 보조), k3s·EKS 구축, Kotlin/Spring 코드 읽기. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AWS 프로덕션 5년",
+          "Terraform/CDK",
+          "장애 주도 대응",
+          "ECS 또는 Kubernetes"
+        ],
+        "can_learn": [
+          "Atlantis",
+          "external-secrets",
+          "SLO",
+          "Backstage식 템플릿"
+        ]
+      },
+      "study": [
+        {
+          "topic": "표준 서비스 템플릿 — CI·배포·관측성·시크릿이 처음부터 붙은 골격",
+          "from": "task",
+          "quote": "• ​표준 ​템플릿 : 새 ​서비스를 ​시작할 ​때 쓰는 기본 ​골격을 제공합니다. ​CI, ​배포, 관측성, ​시크릿 관리가 ​처음부터 ​붙어 있게 합니다.",
+          "priority": "core",
+          "why": "주요업무 첫 항목이고 '플랫폼을 제품으로 보고 쓰는 사람의 불편에서 출발' 이 맨 위 문장이다. 스택에 ArgoCD · Helm · GitHub Actions · external-secrets 가 모두 있다.",
+          "gap_check": "새 서비스 저장소를 만들 때 CI 워크플로 · Helm 차트 · ArgoCD Application · 대시보드 · 시크릿 참조가 한 번에 생기게 하려면 템플릿에 무엇을 넣고 무엇을 변수로 남기는가? 템플릿이 바뀌면 이미 만들어진 서비스들은 어떻게 따라오게 하는가(복사 vs 공용 워크플로 · 차트 의존)? 템플릿을 안 쓰는 팀이 생기면 무엇이 불편해서인지 어떻게 알아내는가?",
+          "drill": "GitHub 의 재사용 워크플로(reusable workflows) · Helm 라이브러리 차트 · ArgoCD ApplicationSet 문서를 읽고, 'new-service' 템플릿 저장소를 만든다 — 공용 CI 워크플로 호출, 공용 차트 의존, ExternalSecret 한 개, 기본 대시보드 · 알람 정의. 템플릿에서 서비스 두 개를 찍어 낸 뒤 공용 워크플로를 한 번 바꿔 두 서비스가 모두 따라오는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Reusing workflows — GitHub Docs",
+              "url": "https://docs.github.com/en/actions/sharing-automations/reusing-workflows",
+              "kind": "docs"
+            },
+            {
+              "title": "Generating Applications with ApplicationSet — Argo CD",
+              "url": "https://argo-cd.readthedocs.io/en/stable/user-guide/application-set/",
+              "kind": "docs"
+            },
+            {
+              "title": "Library Charts — Helm",
+              "url": "https://helm.sh/docs/topics/library_charts/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인프라를 코드로, 개발자가 변경을 제안·리뷰 — Terraform + Atlantis",
+          "from": "qualification",
+          "quote": "• Terraform 또는 AWS CDK 로 인프라를 코드로 관리한 실제 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 '인프라를 코드로 관리하고, 개발자가 직접 변경을 제안·리뷰할 수 있는 흐름' 이 있다. 스택에 Terraform · CDK · Atlantis 가 함께 있다.",
+          "gap_check": "Atlantis 는 PR 에 plan 을 달고 승인 뒤 apply 한다 — 두 PR 이 같은 상태 파일을 건드리면 무엇이 막아 주는가(잠금)? 개발자가 제안한 변경 중 무엇은 자동 승인하고 무엇은 플랫폼 팀 리뷰를 거치게 하는가? 콘솔에서 누가 손으로 바꾼 것(drift)은 어떻게 알아채는가?",
+          "drill": "Atlantis 문서(워크플로 · 잠금 · 승인 요건)를 읽고, 로컬(또는 개인 AWS 계정)에서 Terraform 모듈 하나(S3 버킷 + IAM 역할)를 Atlantis 로 운영한다. 두 PR 로 같은 모듈을 동시에 바꿔 잠금이 걸리는지, CODEOWNERS 로 IAM 변경만 플랫폼 팀 승인을 요구하게 한다. drift 는 정기 plan 으로 잡는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Atlantis Docs — Locking · Apply Requirements",
+              "url": "https://www.runatlantis.io/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Terraform — Manage resource drift",
+              "url": "https://developer.hashicorp.com/terraform/tutorials/state/resource-drift",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SLI/SLO 와 인시던트 절차 — 알람 심각도부터 포스트모템까지",
+          "from": "task",
+          "quote": "• 신뢰성과 관측성 : SLI/SLO 와 측정 체계를 세우고, 알람 심각도 분류와 서비스 간 요청 추적을 설계합니다. 인시던트는 격상·라우팅·포스트모템까지 하나의 절차로 연결합니다.",
+          "priority": "high",
+          "why": "주요업무이고, 필수 자격에 '실제 장애를 진단하고 완화한 뒤 재발방지까지 본인이 주도한 사례' 가, 우대에 SLI/SLO 를 조직이 실제로 쓰게 만든 경험 · 온콜 체계가 있다.",
+          "gap_check": "정비 예약 API 의 SLI 를 무엇으로 잡는가(성공률 · 지연 분위)? 에러 예산이 소진되면 무엇을 멈추는가? 알람을 '지금 사람을 깨울 것'과 '업무 시간에 볼 것'으로 가르는 기준은(번 레이트)? 서비스 간 요청 추적이 없을 때 장애 원인을 어떻게 좁히는가?",
+          "drill": "Google SRE 워크북의 'Implementing SLOs' · 'Alerting on SLOs' 장을 읽고, 예제 API 하나에 가용성 · 지연 SLO 와 멀티 윈도 번 레이트 알람을 Prometheus 규칙으로 쓴다. 일부러 오류를 넣어 알람이 몇 분 만에 울리는지 보고, 한 쪽짜리 포스트모템(영향 · 타임라인 · 원인 · 재발방지 항목)을 써 둔다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Implementing SLOs — Google SRE Workbook",
+              "url": "https://sre.google/workbook/implementing-slos/",
+              "kind": "book"
+            },
+            {
+              "title": "Alerting on SLOs — Google SRE Workbook",
+              "url": "https://sre.google/workbook/alerting-on-slos/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "시크릿 저장 표준 — AWS Secrets Manager + external-secrets",
+          "from": "task",
+          "quote": "• 보안 운영 : 의존성·이미지 취약점 대응을 파이프라인에 넣고, 시크릿 저장 표준과 프로덕션 접근 권한 체계를 만듭니다.",
+          "priority": "nice",
+          "why": "주요업무이고 보안 스택에 AWS Secrets Manager · external-secrets · IAM Roles Anywhere 가 적혀 있다. 우대에 시크릿 관리 · 접근통제 · 취약점 대응이 있다.",
+          "gap_check": "Kubernetes Secret 을 저장소에 두지 않고 Secrets Manager 값을 파드에 넣으려면 external-secrets 는 어떤 권한(IRSA 등)으로 무엇을 읽는가? 시크릿을 교체(rotation)하면 실행 중인 파드는 언제 새 값을 보는가? 이미지 취약점 스캔이 '심각'을 찾으면 배포를 막는가, 알리기만 하는가 — 기준은?",
+          "drill": "External Secrets Operator 문서의 AWS Secrets Manager 공급자 부분을 읽고, 로컬 k3s(또는 kind)에서 SecretStore · ExternalSecret 을 구성한다(자격은 최소 권한 IAM 정책). 값을 바꿔 refreshInterval 안에 Secret 이 갱신되는지, 파드가 재시작 없이 새 값을 보는지(볼륨 vs 환경변수) 확인한다. CI 에 이미지 스캔(Trivy 등) 단계를 넣고 '심각' 발견 시 실패시킨다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS Secrets Manager — External Secrets Operator",
+              "url": "https://external-secrets.io/latest/provider/aws-secrets-manager/",
               "kind": "docs"
             }
           ]
