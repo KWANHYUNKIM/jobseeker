@@ -109,6 +109,12 @@
   **등급은 부품에 적지 않는다** — `index.json` 의 문턱으로 `perf.index` 에서 계산한다(같은 성능 = 같은 등급).
   뷰어 `/hardware`(조립·성능 예측) · `/hardware/parts`(등급·스펙 비교) · `/hardware/prices`(가격 추이).
   가격이 실리는 화면(추이·부품 상세)은 noindex 이고 프리렌더·sitemap 에서 뺐다.
+  **완제품 조립PC**(`crawl_prebuilt`, 부품 가격 다음 단계): 다나와 통합검색의 조립PC 목록 + 상품 페이지
+  JSON-LD 에서 **부품 모델명만** 뽑아 `prebuilt.json` 에 쌓고 우리 부품 id 에 잇는다. 리뷰 글은 싣지 않는다
+  (별점·리뷰 수 숫자와 원문 링크만). 네이버는 공식 쇼핑 검색 API(`NAVER_CLIENT_ID/SECRET` 있을 때만),
+  쿠팡은 robots 부터 막혀 빼고 컴퓨존은 약관이 무단 수집을 제재해 뺐다. '왜 잘 만들었나/가성비' 분석은
+  뷰어 `lib/prebuilt.ts` 가 부품값 합계·조립 프리미엄·CPU–GPU 균형·파워 여유·예상 fps 로 계산한다
+  (`/hardware/prebuilt`). 완제품이 쓰는데 목록에 없는 부품은 `validate.py --gaps` 8번이 엔진 일감으로 올린다.
 - `study-engine/` : 기술 백과사전 엔진. 단위는 **낱말 하나**다 — ATmega128 핀맵·풀업
   저항부터 파이썬 자료구조 선택, 멱등성 같은 IT 용어까지. 구조는 `engine/` 과 같고
   산출물은 `jd-viewer/public/study/` 에 쌓인다.

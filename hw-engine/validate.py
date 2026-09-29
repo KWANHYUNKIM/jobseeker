@@ -251,6 +251,23 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
     top = sorted(todo.items(), key=lambda kv: -kv[1])[:8]
     print(f"6. 스펙 조사 전 매물 {sum(todo.values())}: " + (", ".join(f"{k} {v}" for k, v in top) or "-"))
     print(f"7. {STALE_DAYS}일 넘은 확인 {len(stale)}: {', '.join(stale[:10]) or '-'}")
+    # 완제품 조립PC 가 쓰는데 우리 목록에 없는 CPU·그래픽카드 — 많이 쓰이는 것부터 더할 부품이다
+    try:
+        pb = json.loads((HW / "prebuilt.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        pb = {}
+    miss: dict[str, int] = {}
+    for it in (pb.get("items") or {}).values():
+        comp, mapped = it.get("comp") or {}, it.get("mapped") or {}
+        for c in ("cpu", "gpu"):
+            t = comp.get(c)
+            if t and not mapped.get(c) and "내장" not in str(t) and it.get("source") == "danawa":
+                miss[f"{c}:{t}"] = miss.get(f"{c}:{t}", 0) + 1
+        chip = comp.get("chipset")
+        if chip and not mapped.get("mainboard") and it.get("source") == "danawa":
+            miss[f"mainboard:{chip}"] = miss.get(f"mainboard:{chip}", 0) + 1
+    top = sorted(miss.items(), key=lambda kv: -kv[1])[:10]
+    print(f"8. 완제품이 쓰는데 목록에 없는 부품 {len(miss)}: " + (", ".join(f"{k}×{v}" for k, v in top) or "-"))
 
 
 def main(argv: list[str]) -> int:

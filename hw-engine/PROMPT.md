@@ -15,6 +15,7 @@
 | 등급 문턱·용도·쉬운 설명 | **이 엔진** | `jd-viewer/public/hardware/index.json` |
 | 게임 fps·AI 기준값 | **이 엔진** | `jd-viewer/public/hardware/bench.json` |
 | **제품별 스펙**(보드 파트너 모델 — 길이·두께·팬·OC 클럭·전원·구성품) | **이 엔진** | `jd-viewer/public/hardware/models/<부품 id>.json` |
+| **완제품 조립PC**(가격·구성·별점 숫자) | 크롤러 `crawl_prebuilt` (하루 1회) | `jd-viewer/public/hardware/prebuilt.json` — 분석은 뷰어 `lib/prebuilt.ts` 가 계산한다 |
 | **유통·내구성 안내**(CPU 판매 형태 · 유통사 보증/A/S · 내구성 주의) | **이 엔진** | `jd-viewer/public/hardware/guide.json` |
 
 `guide.json` 은 소비자가 무엇을 살지 가르는 말이다. **유통사 공식 A/S 규정 페이지**가 원본이고,
@@ -67,6 +68,7 @@
 | 4 | `confidence: seed` 인 부품 | **분류 하나를 골라** 그 분류의 씨앗을 공식 자료로 확인한다(한 사이클에 5~10개) |
 | 5 | `bench.json` 에 seed 기준값 | 게임 하나씩 실측 리뷰로 바꾼다 |
 | 6 | **스펙 조사 전 매물** (`--gaps` 6번) | 매물이 가장 많이 남은 부품부터, 그 매물들의 제품을 `models/<부품 id>.json` 에 더한다(한 사이클에 제품 5~8개). 그래픽카드 → 메인보드 → 파워 → 쿨러 → 케이스 순 |
+| 6″ | **완제품이 쓰는데 목록에 없는 부품** (`--gaps` 8번) | 시중 조립PC 가 많이 쓰는 CPU·그래픽카드부터 `parts.json` 에 더한다 — 그래야 그 완제품의 부품값·가성비가 계산된다. 이름 표기(예: '270K Plus')가 `price_query.must` 에 걸리게 적는다 |
 | 6′ | 큐(QUEUE.md)에 부품 | 새 부품을 더한다(출시된 지 얼마 안 된 것, 조립 문의가 많은 것) |
 | 7 | 다 비었다 | 재방문 — `checked_at` 이 90일 넘은 부품 |
 
