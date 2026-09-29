@@ -1355,6 +1355,64 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-ryzen-9-9900x3d",
+   "category": "cpu",
+   "name": "Ryzen 9 9900X3D",
+   "maker": "AMD",
+   "released": "2025-03",
+   "specs": {
+    "socket": "AM5",
+    "cores": 12,
+    "threads": 24,
+    "boost_ghz": 5.5,
+    "tdp_w": 120,
+    "max_power_w": 162,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 128,
+    "series": "라이젠 9000 시리즈",
+    "family": "라이젠 9",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35",
+    "base_ghz": 4.4
+   },
+   "perf": {
+    "index": 90,
+    "multi": 80,
+    "confidence": "low",
+    "basis": "게임: 9800X3D = 100 · 멀티: 9950X = 100 — Tom's Hardware 한 표. 1080p 게임 86.9% ÷ 9800X3D 97% = 90, 멀티 74.1% 는 같은 표 9800X3D 54.7%(우리 59)로 환산해 80"
+   },
+   "price_query": {
+    "q": "AMD 9900X3D",
+    "cate": "CPU",
+    "must": [
+     "9900X3D"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — Ryzen 9 9900X3D(12C/24T · 4.4/5.5GHz · L3 128MB · 120W · AM5 · DDR5 · 2025-03-12)",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9900x3d.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표 — 1080p 게임(86.9%) · 멀티스레드(74.1%)",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/3021650-ryzen-9-9900x3d-product.jpg",
+    "credit": "AMD (X3D 공용 사진)",
+    "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x3d.html"
+   },
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-ryzen-9-9950x",
    "category": "cpu",
    "name": "Ryzen 9 9950X",
