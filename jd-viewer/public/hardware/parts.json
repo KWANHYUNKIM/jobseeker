@@ -2937,6 +2937,55 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-core-i3-13100",
+   "category": "cpu",
+   "name": "Core i3-13100",
+   "maker": "Intel",
+   "released": "2023-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 4,
+    "threads": 8,
+    "boost_ghz": 4.5,
+    "tdp_w": 60,
+    "max_power_w": 110,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "igpu_name": "Intel UHD 730",
+    "l3_mb": 12,
+    "series": "코어 13세대",
+    "family": "코어 i3"
+   },
+   "perf": {
+    "index": 53,
+    "multi": 20,
+    "confidence": "low",
+    "basis": "게임: 같은 4P 다이인 i3-14100(TPU 1080p 68.4% → 55)보다 터보가 0.2GHz 낮아 53. 멀티는 코어 수 추정(실측 대기)"
+   },
+   "price_query": {
+    "q": "i3-13100",
+    "cate": "CPU",
+    "must": [
+     "13100"
+    ],
+    "not": [
+     "13100F",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i3-13100(4P · 8스레드 · 4.5GHz · 12MB · 60/110W · UHD 730 · DDR4-3200/DDR5-4800 · 2023년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/230575/intel-core-i313100-processor-12m-cache-up-to-4-50-ghz/specifications.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-core-i3-14100",
    "category": "cpu",
    "name": "Core i3-14100",
@@ -4141,6 +4190,45 @@
     {
      "title": "칩셋 제조사 사양",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "mb-b450",
+   "category": "mainboard",
+   "name": "AMD B450",
+   "maker": "칩셋 AMD",
+   "released": "2018-07",
+   "specs": {
+    "socket": "AM4",
+    "mem": "DDR4",
+    "pcie_gpu": "PCIe 3.0",
+    "pcie_m2": "PCIe 3.0",
+    "cpu_oc": true,
+    "usb4": false,
+    "forms": "ATX · M-ATX",
+    "note": "AMD 표: 그래픽 PCIe 3.0 1x16 · NVMe 1x4 · 레인 36(쓸 수 있는 28) · CPU 오버클럭 가능 · SATA 6 · USB 10Gbps 2 · 전체 USB 14. 라이젠 5000 을 쓰려면 BIOS 갱신이 필요할 수 있다(AMD 표 각주)."
+   },
+   "perf": {
+    "index": 30,
+    "basis": "칩셋 급 = 규칙 점수(0~100, 공식 스펙에서 계산) — 기본 10 + DDR5 10 + 그래픽 슬롯(5.0 20 · 보드 선택 5.0 12 · 4.0 10 · 3.0 0) + M.2(같은 방식) + CPU 오버클럭 20 + USB4(표준 15 · 보드 선택 5). 성능 실측이 아니라 '무엇이 열려 있나'의 점수다",
+    "confidence": "medium"
+   },
+   "price_query": {
+    "q": "B450M",
+    "cate": "메인보드",
+    "must": [
+     "B450"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 — AM4 칩셋 사양표(B450)",
+     "url": "https://www.amd.com/en/products/processors/chipsets/am4.html"
     }
    ],
    "status": "current",
