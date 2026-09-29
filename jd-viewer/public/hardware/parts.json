@@ -3834,13 +3834,13 @@
    "specs": {
     "type": "공랭",
     "cpu_watt": 250,
-    "height_mm": 158,
+    "height_mm": 160,
     "radiator_mm": null
    },
    "perf": {
     "index": 83,
     "basis": "소음 없이 감당하는 CPU 전력(W) ÷ 3 — 리뷰 평균에서 잡은 급",
-    "confidence": "seed"
+    "confidence": "medium"
    },
    "price_query": {
     "q": "듀얼타워 CPU쿨러",
@@ -3855,13 +3855,22 @@
    "price_basis": "median",
    "sources": [
     {
+     "title": "DeepCool AK620 공식 사양(이 급의 대표 제품)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AK620-High-Performance-CPU-Cooler-1700-AM5/2021/13067.shtml"
+    },
+    {
      "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
      "url": "https://www.noctua.at/en/tdp-guide"
     }
    ],
    "status": "current",
    "checked_at": "2026-09-29",
-   "class_assumption": true
+   "representative": {
+    "name": "DeepCool AK620",
+    "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AK620-High-Performance-CPU-Cooler-1700-AM5/2021/13067.shtml",
+    "note": "공식: 높이 160mm · 260W · 120mm 팬 2개(유체 베어링) · 28dBA 이하 · AM5/AM4/LGA1700 — LGA1851 은 공식 지원 목록에 없다. 급의 감당 전력은 제조사 표기(260W)보다 보수적으로 250W."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cooler-aio-240",
