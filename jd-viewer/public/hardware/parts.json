@@ -2378,7 +2378,10 @@
     "speed_mts": 6000,
     "cl": 30,
     "dual_bandwidth_gbs": 96,
-    "latency_ns": 10.0
+    "latency_ns": 10.0,
+    "voltage_v": 1.35,
+    "default_mts": 4800,
+    "profile": "XMP 3.0 / EXPO"
    },
    "perf": {
     "index": 96,
@@ -2403,12 +2406,22 @@
    },
    "sources": [
     {
+     "title": "G.SKILL 공식 사양 — Flare X5 6000 CL30 32GB(16GB×2)(이 급의 대표 제품)",
+     "url": "https://www.gskill.com/specification/165/396/1673491242/F5-6000J3038F16GX2-FX5-Specification"
+    },
+    {
      "title": "JEDEC DDR5 표준(JESD79-5)",
      "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "representative": {
+    "name": "G.SKILL Flare X5 F5-6000J3038F16GX2-FX5",
+    "url": "https://www.gskill.com/specification/165/396/1673491242/F5-6000J3038F16GX2-FX5-Specification",
+    "note": "공식: DDR5 32GB(16GB×2) · XMP 3.0/EXPO 6000MT/s · 30-38-38-96 · 1.35V · 기본(SPD) 4800MT/s 1.10V · 언버퍼드 Non-ECC. 6000 은 BIOS 에서 EXPO/XMP 를 켜야 나온다 — 끄면 4800 으로 돈다."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ram-ddr5-5600-16",
