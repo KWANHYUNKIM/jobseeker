@@ -33,6 +33,9 @@ import { PrebuiltPicks } from './HardwarePicks'
 import { HardwarePrebuilt } from './HardwarePrebuilt'
 import { HardwarePrices } from './HardwarePrices'
 import { ErrorState, Loader } from './ui'
+import { AiUses, DevUses, VideoSim } from './HardwareWorkloads'
+import { MemorySlots } from './HardwareMemory'
+import { BuyRow } from './HardwareBuy'
 
 // PC 부품 — 기술 역설계가 "그 회사가 무엇으로 만들어졌나"라면 여기는 "내 책상 위 기계가 무엇으로
 // 만들어졌나"다. 화면 셋:
@@ -278,6 +281,7 @@ function Builder({ data }: { data: HwData }) {
               <PartPicker key={cat} cat={cat} data={data} build={build} onChange={(id) => setBuild({ ...build, [cat]: id || undefined })} />
             ))}
           </div>
+          <MemorySlots data={data} build={build} />
           <ul className="flex flex-col gap-1 text-sm">
             {checks.map((c, i) => (
               <li key={i} className={c.level === 'error' ? 'text-(--color-red-400)' : c.level === 'warn' ? 'text-(--color-amber-400)' : 'text-(--color-muted)'}>
@@ -351,11 +355,28 @@ function Builder({ data }: { data: HwData }) {
               지금 조합은 조립이 안 된다 — 아래 숫자는 호환 문제를 고쳤다고 치고 계산한 값이다.
             </div>
           )}
-          {gpu ? <GameSim key={use.res} data={data} gpu={gpu} cpu={cpu ?? null} defaultRes={use.res} /> : <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 text-sm text-(--color-muted)">그래픽카드가 없다(내장 그래픽) — 게임·AI 예측은 그래픽카드를 고르면 나온다.</div>}
-          <div className="grid gap-4 xl:grid-cols-2 items-start">
-            {gpu && <AiSim data={data} gpu={gpu} ram={ram} />}
-            {cpu && <DevSim data={data} cpu={cpu} ram={ram} />}
-          </div>
+          {/* 고른 용도의 성능이 맨 위 — 영상·개발·AI 는 게임 fps 보다 '이 일이 되나'가 먼저다 */}
+          {(() => {
+            const game = gpu ? <GameSim key={use.res} data={data} gpu={gpu} cpu={cpu ?? null} defaultRes={use.res} /> : null
+            const ai = gpu ? <AiSim data={data} gpu={gpu} ram={ram} /> : null
+            const dev = cpu ? <DevSim data={data} cpu={cpu} ram={ram} /> : null
+            const video = gpu ? <VideoSim data={data} gpu={gpu} cpu={cpu} ram={ram} /> : null
+            const lead = use.key === 'video' ? video : use.key === 'dev' ? dev : use.key === 'llm' ? ai : game
+            const rest = [game, ai, dev, video].filter((x) => x && x !== lead)
+            return (
+              <>
+                {!gpu && <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 text-sm text-(--color-muted)">그래픽카드가 없다(내장 그래픽) — 게임·AI·영상 예측은 그래픽카드를 고르면 나온다.</div>}
+                {lead}
+                <div className="grid gap-4 xl:grid-cols-2 items-start">
+                  {rest.map((x, i) => (
+                    <div key={i} className={`min-w-0 ${x === game ? 'xl:col-span-2' : ''}`}>
+                      {x}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )
+          })()}
       </div>
     </div>
   )
@@ -456,6 +477,7 @@ function PartPicker({ cat, data, build, onChange }: { cat: Category; data: HwDat
         {price != null ? won(price * (cat === 'ram' ? 2 : 1)) : '—'}
         {cat === 'ram' && price != null && <div className="text-[10px] text-(--color-faint)">두 장</div>}
       </div>
+      {cur && !bad && <BuyRow data={data} part={cur.p} />}
       {bad && (
         <div className="col-start-2 col-span-2 text-xs text-(--color-red-400)">
           {cur!.why.map((w) => (
@@ -610,6 +632,7 @@ function AiSim({ data, gpu, ram }: { data: HwData; gpu: Part; ram?: Part }) {
         </p>
         <p className="mt-1">{data.bench.image.model}</p>
       </details>
+      <AiUses data={data} gpu={gpu} ram={ram} />
     </div>
   )
 }
@@ -641,6 +664,7 @@ function DevSim({ data, cpu, ram }: { data: HwData; cpu: Part; ram?: Part }) {
           </div>
         </div>
       </div>
+      <DevUses data={data} cpu={cpu} ram={ram} />
     </div>
   )
 }

@@ -56,6 +56,10 @@ export interface UseDef {
   weights: { gpu: number; cpu: number }
   min_ram_gb?: number
   prefer?: 'multi' | 'vram'
+  /** 그래픽 메모리 최소(GB) — 넘는 카드가 있으면 그 아래는 조합 후보에서 뺀다 */
+  min_vram_gb?: number
+  /** 그래픽카드를 무엇으로 재나 — 'video' 면 bench.video 의 실측 효과 점수 */
+  gpu_score?: 'video'
   /** 그래픽카드 없이 내장 그래픽으로 짠다(사무용) */
   no_gpu?: boolean
   /** 이 용도를 누르면 예산을 여기로 옮긴다 — 조합은 예산을 채우므로 용도에 맞는 출발 금액이 필요하다 */
@@ -97,9 +101,37 @@ export interface Bench {
   image: { name: string; model: string; anchor: { gpu: string; seconds: number }; min_vram_gb: number }
   finetune: { key: string; name: string; vram_gb: number; plain: string }[]
   dev: { name: string; model: string; anchor_minutes: number }
+  /** 영상 편집 — 추정식이 아니라 PugetBench for DaVinci Resolve 실측(사용자 제출) 점수 */
+  video?: {
+    name: string
+    model: string
+    /** 효과 점수의 기준(RTX 5090) — 막대 길이를 여기에 맞춘다 */
+    effects_top: number
+    vram_min_gb: Record<'fhd' | 'uhd' | '8k', number>
+    ram_min_gb: Record<'fhd' | 'uhd' | '6k' | '8k', number>
+    gpu: Record<string, VideoScore>
+    gpu_note?: string
+    sources: { title: string; url: string }[]
+  }
   /** 제조사가 공개한 측정값 — 우리 추정(games)과 게임·옵션이 달라 따로 그린다 */
   vendor?: { gpu: string; res: string; preset: string; footnote: string; by: string; games: { name: string; fps: number }[]; source: { title: string; url: string } }[]
   vendor_note?: string
+}
+
+export interface VideoScore {
+  overall: number
+  /** 색보정·노이즈 제거 같은 GPU 효과 — 그래픽카드를 가장 잘 가른다 */
+  effects: number
+  /** 카메라·폰 원본(H.264·HEVC) 재생 */
+  longgop: number
+  raw: number
+  /** NVIDIA 하드웨어 인코더 수 — AMD 는 null */
+  nvenc: number | null
+  /** 10비트 4:2:2 를 하드웨어로 푸는 코덱 */
+  dec422: ('h264' | 'hevc')[]
+  av1_enc: boolean
+  src: string
+  note?: string
 }
 
 export interface PricePoint {
@@ -588,7 +620,10 @@ export function planBuild(
   const max = (xs: number[]) => Math.max(1e-9, ...xs)
   const noGpu = opts.noGpu || !!use.no_gpu
 
-  const gpus: (P | null)[] = noGpu ? [null] : priced('gpu')
+  // 용도의 그래픽 메모리 최소선(영상 4K = 12GB) — 넘는 카드가 있으면 그 아래는 후보에서 뺀다
+  const gpuAll = priced('gpu')
+  const gpuFit = use.min_vram_gb ? gpuAll.filter((x) => Number(x.p.specs.vram_gb) >= use.min_vram_gb!) : gpuAll
+  const gpus: (P | null)[] = noGpu ? [null] : gpuFit.length ? gpuFit : gpuAll
   // 내장 그래픽으로 짜면 내장 그래픽이 있는 CPU 만 — 없는 CPU 는 화면이 안 나온다
   const cpuAll = priced('cpu')
   const cpus = noGpu ? cpuAll.filter((x) => x.p.specs.igpu) : cpuAll
@@ -597,7 +632,14 @@ export function planBuild(
   if (!cpus.length) return { build: {}, cost: 0, stretched: null, next: null }
 
   // ── 쓸모 ──
-  const gpuScore = (p: Part) => (use.prefer === 'vram' ? Number(p.specs.vram_gb) * 10 + p.perf.index / 10 : p.perf.index)
+  // 영상 편집은 게임 지수가 아니라 Puget 실측 효과 점수로 잰다 — 실측 없는 카드(전부 8GB 이하)는 맨 뒤
+  const video = use.gpu_score === 'video' ? bench.video : undefined
+  const gpuScore = (p: Part) =>
+    use.prefer === 'vram'
+      ? Number(p.specs.vram_gb) * 10 + p.perf.index / 10
+      : video
+        ? (video.gpu[p.id]?.effects ?? 0)
+        : p.perf.index
   const cpuScore = (p: Part) => (use.prefer === 'multi' ? (p.perf.multi ?? p.perf.index) : p.perf.index)
   const gMax = max(gpus.map((g) => (g ? gpuScore(g.p) : 0)))
   const cMax = max(cpus.map((c) => cpuScore(c.p)))
@@ -605,8 +647,14 @@ export function planBuild(
   const fps = (g: Part, c: Part) => bench.games.reduce((s, x) => s + estimateFps(x, use.res, g, c).fps, 0) / max([bench.games.length])
   const fpsMax = game ? max(gpus.flatMap((g) => (g ? cpus.map((c) => fps(g.p, c.p)) : []))) : 1
   const wg = noGpu ? 0 : use.weights.gpu, wc = use.weights.cpu
+  // 영상: 카메라 원본(10비트 4:2:2)을 그래픽카드(RTX 50)도 인텔 내장 그래픽도 못 풀면 CPU 가 풀어
+  // 타임라인이 끊긴다 — 그런 조합은 15% 깎는다(깎는 폭은 우리 가중치)
+  const decodes422 = (g: Part | null, c: Part) =>
+    !!(g && video?.gpu[g.id]?.dec422.length) || (c.maker === 'Intel' && !!c.specs.igpu)
   const core = (g: Part | null, c: Part) =>
-    game && g ? fps(g, c) / fpsMax : (wg * (g ? gpuScore(g) / gMax : 0) + wc * (cpuScore(c) / cMax)) / (wg + wc)
+    game && g
+      ? fps(g, c) / fpsMax
+      : ((wg * (g ? gpuScore(g) / gMax : 0) + wc * (cpuScore(c) / cMax)) / (wg + wc)) * (video && !decodes422(g, c) ? 0.85 : 1)
   const ramMax = max(rams.map((r) => Number(r.p.specs.capacity_gb)))
   const ssdCap = max(ssds.map((s) => Number(s.p.specs.capacity_gb)))
   const ssdIdx = max(ssds.map((s) => s.p.perf.index))

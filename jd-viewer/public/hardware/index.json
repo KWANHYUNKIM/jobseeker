@@ -77,6 +77,6 @@
   {"key": "game-4k", "name": "게임 · 4K", "plain": "3840×2160 모니터", "res": "uhd", "weights": {"gpu": 0.55, "cpu": 0.15}},
   {"key": "dev", "name": "개발 · 컴파일", "plain": "IDE·도커·빌드를 여러 개 띄운다", "res": "fhd", "weights": {"gpu": 0.12, "cpu": 0.35}, "min_ram_gb": 32, "prefer": "multi"},
   {"key": "llm", "name": "로컬 AI · LLM", "plain": "언어 모델을 내 컴퓨터에서 돌린다", "res": "qhd", "weights": {"gpu": 0.55, "cpu": 0.12}, "min_ram_gb": 64, "prefer": "vram"},
-  {"key": "video", "name": "영상 편집", "plain": "4K 편집·인코딩", "res": "qhd", "weights": {"gpu": 0.3, "cpu": 0.3}, "min_ram_gb": 64, "prefer": "multi"}
+  {"key": "video", "name": "영상 편집", "plain": "4K 편집·인코딩", "res": "qhd", "weights": {"gpu": 0.3, "cpu": 0.3}, "min_ram_gb": 64, "prefer": "multi", "min_vram_gb": 12, "gpu_score": "video"}
  ]
 }

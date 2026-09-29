@@ -569,5 +569,201 @@
    "checked_at": "2026-09-29"
   }
  ],
- "vendor_note": "제조사가 자기 시험 조건(각주)으로 잰 값이다. 우리 추정(games)과 게임·옵션이 달라 한 차트에 섞지 않는다. 다른 회사 카드와 비교하는 근거로 쓰지 않는다."
+ "vendor_note": "제조사가 자기 시험 조건(각주)으로 잰 값이다. 우리 추정(games)과 게임·옵션이 달라 한 차트에 섞지 않는다. 다른 회사 카드와 비교하는 근거로 쓰지 않는다.",
+ "video": {
+  "name": "영상 편집 (DaVinci Resolve Studio)",
+  "model": "그래픽카드 점수는 PugetBench for DaVinci Resolve 2.0~2.1 Standard 의 사용자 제출 결과(Puget 결과 비교 페이지) 그대로다 — 추정식이 아니라 실측이다. 다만 제출한 사람마다 CPU·메모리가 달라 총점(overall)에는 CPU 몫이 섞여 있고, 효과(effects: 색보정·노이즈 제거·블러 같은 GPU 효과) 점수가 그래픽카드 자체를 가장 잘 가른다. 10비트 4:2:2(요즘 미러리스 카메라의 기본 녹화 형식) 하드웨어 디코딩은 RTX 50 이 H.264·HEVC 둘 다, 인텔 내장 그래픽(Quick Sync)이 HEVC 만 된다 — 나머지는 CPU 가 풀어서 4K 타임라인이 끊긴다.",
+  "confidence": "crowd",
+  "effects_top": 200.23,
+  "vram_min_gb": {
+   "fhd": 8,
+   "uhd": 12,
+   "8k": 20
+  },
+  "ram_min_gb": {
+   "fhd": 64,
+   "uhd": 96,
+   "6k": 128,
+   "8k": 192
+  },
+  "gpu": {
+   "gpu-rtx-5090": {
+    "overall": 14634,
+    "effects": 200.23,
+    "longgop": 193.25,
+    "raw": 143.07,
+    "nvenc": 3,
+    "dec422": [
+     "h264",
+     "hevc"
+    ],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%205090/NVIDIA%20GeForce%20RTX%205080/"
+   },
+   "gpu-rtx-5080": {
+    "overall": 11703,
+    "effects": 122.94,
+    "longgop": 167.39,
+    "raw": 121.88,
+    "nvenc": 2,
+    "dec422": [
+     "h264",
+     "hevc"
+    ],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%205090/NVIDIA%20GeForce%20RTX%205080/"
+   },
+   "gpu-rtx-5070-ti": {
+    "overall": 10714,
+    "effects": 108.1,
+    "longgop": 172.18,
+    "raw": 108.44,
+    "nvenc": 2,
+    "dec422": [
+     "h264",
+     "hevc"
+    ],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%205070%20Ti/NVIDIA%20GeForce%20RTX%205060/"
+   },
+   "gpu-rtx-5070": {
+    "overall": 9750,
+    "effects": 84.63,
+    "longgop": 154,
+    "raw": 96.26,
+    "nvenc": 1,
+    "dec422": [
+     "h264",
+     "hevc"
+    ],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%205060%20Ti/NVIDIA%20GeForce%20RTX%205070/"
+   },
+   "gpu-rtx-5060-ti-16": {
+    "overall": 8049,
+    "effects": 58.62,
+    "longgop": 133.78,
+    "raw": 76.27,
+    "nvenc": 1,
+    "dec422": [
+     "h264",
+     "hevc"
+    ],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%205060%20Ti/NVIDIA%20GeForce%20RTX%205070/",
+    "note": "Puget 결과가 8GB·16GB 를 가르지 않는다 — 두 카드에 같은 값"
+   },
+   "gpu-rtx-5060-ti-8": {
+    "overall": 8049,
+    "effects": 58.62,
+    "longgop": 133.78,
+    "raw": 76.27,
+    "nvenc": 1,
+    "dec422": [
+     "h264",
+     "hevc"
+    ],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%205060%20Ti/NVIDIA%20GeForce%20RTX%205070/",
+    "note": "Puget 결과가 8GB·16GB 를 가르지 않는다 — 두 카드에 같은 값"
+   },
+   "gpu-rtx-5060": {
+    "overall": 8245,
+    "effects": 55.23,
+    "longgop": 137.75,
+    "raw": 80.92,
+    "nvenc": 1,
+    "dec422": [
+     "h264",
+     "hevc"
+    ],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%205070%20Ti/NVIDIA%20GeForce%20RTX%205060/"
+   },
+   "gpu-rtx-5050": {
+    "overall": 6513,
+    "effects": 41.25,
+    "longgop": 124.5,
+    "raw": 56.9,
+    "nvenc": 1,
+    "dec422": [
+     "h264",
+     "hevc"
+    ],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%204060/NVIDIA%20GeForce%20RTX%205050/"
+   },
+   "gpu-rtx-4060": {
+    "overall": 6457,
+    "effects": 39.3,
+    "longgop": 96.19,
+    "raw": 64.4,
+    "nvenc": 1,
+    "dec422": [],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%204060/NVIDIA%20GeForce%20RTX%205050/"
+   },
+   "gpu-rx-9070-xt": {
+    "overall": 10467,
+    "effects": 75.01,
+    "longgop": 145.15,
+    "raw": 117.48,
+    "nvenc": null,
+    "dec422": [],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/AMD%20Radeon%20RX%209070%20XT/AMD%20Radeon%20RX%209070/"
+   },
+   "gpu-rx-9070": {
+    "overall": 9578,
+    "effects": 75.8,
+    "longgop": 143.8,
+    "raw": 94.63,
+    "nvenc": null,
+    "dec422": [],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/AMD%20Radeon%20RX%209070%20XT/AMD%20Radeon%20RX%209070/"
+   },
+   "gpu-rx-9060-xt-16": {
+    "overall": 7610,
+    "effects": 40.84,
+    "longgop": 134.84,
+    "raw": 71.74,
+    "nvenc": null,
+    "dec422": [],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/AMD%20Radeon%20RX%209060%20XT/AMD%20Radeon%20RX%207900%20XTX/",
+    "note": "Puget 결과가 8GB·16GB 를 가르지 않는다"
+   },
+   "gpu-rx-7900-xtx": {
+    "overall": 9354,
+    "effects": 86.69,
+    "longgop": 115.51,
+    "raw": 109.06,
+    "nvenc": null,
+    "dec422": [],
+    "av1_enc": true,
+    "src": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/AMD%20Radeon%20RX%209060%20XT/AMD%20Radeon%20RX%207900%20XTX/"
+   }
+  },
+  "gpu_note": "RX 9060·RX 7600·RX 6600·RTX 3050 6GB 는 2.x 판 결과가 없다(RX 7600·6600 은 점수 척도가 다른 1.x 판만 있다) — 점수 없이 코덱 지원만 보인다.",
+  "sources": [
+   {
+    "title": "Puget Systems — PugetBench for DaVinci Resolve 결과 비교(2.0~2.1, Standard)",
+    "url": "https://www.pugetsystems.com/pugetbench/results/compare/Puget%20Bench%20for%20DaVinci%20Resolve/27/GPU/NVIDIA%20GeForce%20RTX%205090/NVIDIA%20GeForce%20RTX%205080/"
+   },
+   {
+    "title": "Puget Systems — DaVinci Resolve 하드웨어 권장(VRAM·메모리 최소치)",
+    "url": "https://www.pugetsystems.com/solutions/video-editing-workstations/davinci-resolve/hardware-recommendations/"
+   },
+   {
+    "title": "Puget Systems — RTX 50 시리즈 크리에이터 기능(4:2:2 하드웨어 코덱, NVENC·NVDEC 수)",
+    "url": "https://www.pugetsystems.com/blog/2025/01/21/nvidia-geforce-rtx-50-series-features-for-content-creators/"
+   },
+   {
+    "title": "NVIDIA Video Encode and Decode GPU Support Matrix",
+    "url": "https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new"
+   }
+  ],
+  "checked_at": "2026-09-29"
+ }
 }
