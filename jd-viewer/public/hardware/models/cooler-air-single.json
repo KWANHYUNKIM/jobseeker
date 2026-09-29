@@ -1,0 +1,206 @@
+{
+ "schema": 1,
+ "part": "cooler-air-single",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "thermalright-assassin-x-120-refined-se",
+   "name": "Thermalright Assassin X 120 Refined SE",
+   "brand": "Thermalright",
+   "code": "Assassin X 120 Refined SE",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "ASSASSINX120REFINEDSE"
+    ],
+    "not": [
+     "ARGB",
+     "PLUS"
+    ]
+   },
+   "specs": {
+    "height_mm": 148.0,
+    "fans": "120mm 1개",
+    "tdp_w": null,
+    "noise_dba": 25.6,
+    "sockets": "Intel 115x/1200/1700/1851 · AMD AM4/AM5",
+    "heatpipes": "6mm heatpipe x 4 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/assassin-x-120-refined-se/"
+    },
+    {
+     "title": "Thermalright 공식 스펙(색·조명 변형)",
+     "url": "https://www.thermalright.com/product/assassin-x-120-refined-se-white/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. 제조사가 감당 전력(TDP)을 적지 않는다."
+  },
+  {
+   "id": "thermalright-assassin-x-120-refined-se-argb",
+   "name": "Thermalright Assassin X 120 Refined SE ARGB",
+   "brand": "Thermalright",
+   "code": "Assassin X 120 Refined SE ARGB",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "ASSASSINX120REFINEDSE",
+     "ARGB"
+    ],
+    "not": [
+     "PLUS"
+    ]
+   },
+   "specs": {
+    "height_mm": 148.0,
+    "fans": "120mm 1개(ARGB)",
+    "tdp_w": null,
+    "noise_dba": 25.6,
+    "sockets": "Intel 115x/1200/1700/1851 · AMD AM4/AM5",
+    "heatpipes": "6mm heatpipe x 4 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/assassin-x-120-refined-se-argb/"
+    },
+    {
+     "title": "Thermalright 공식 스펙(색·조명 변형)",
+     "url": "https://www.thermalright.com/product/assassin-x-120-refined-se-white-argb/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. 방열판은 무 ARGB 판과 같다."
+  },
+  {
+   "id": "thermalright-assassin-x-120-refined-se-plus",
+   "name": "Thermalright Assassin X 120 Refined SE PLUS",
+   "brand": "Thermalright",
+   "code": "Assassin X 120 Refined SE PLUS",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "ASSASSINX120REFINEDSE",
+     "PLUS"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 148.0,
+    "fans": "120mm 2개",
+    "tdp_w": null,
+    "noise_dba": 25.6,
+    "sockets": "Intel 115x/1200/1700/1851 · AMD AM4/AM5",
+    "heatpipes": "6mm heatpipe x 4 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/assassin-x-120-refined-se-plus/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "같은 방열판에 팬을 하나 더 단 판."
+  },
+  {
+   "id": "thermalright-assassin-x-120-r-digital-argb",
+   "name": "Thermalright Assassin X 120 R Digital ARGB",
+   "brand": "Thermalright",
+   "code": "Assassin X 120 R Digital ARGB",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "ASSASSINX120RDIGITAL"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 151.0,
+    "fans": "120mm 1개(ARGB)",
+    "tdp_w": null,
+    "noise_dba": 29.8,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 4 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/assassin-x-120-r-digital-argb/"
+    },
+    {
+     "title": "Thermalright 공식 스펙(색·조명 변형)",
+     "url": "https://www.thermalright.com/product/assassin-x-120-r-digital-argb-white/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "온도 표시 화면 달린 판. 블랙 · 화이트 공통."
+  },
+  {
+   "id": "thermalright-assassin-x-90-se-v2",
+   "name": "Thermalright Assassin X 90 SE V2",
+   "brand": "Thermalright",
+   "code": "Assassin X 90 SE V2",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "ASSASSINX90SE"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 118.0,
+    "fans": "92mm 1개",
+    "tdp_w": null,
+    "noise_dba": 23.85,
+    "sockets": null,
+    "heatpipes": "6mm heatpipe x 4 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/assassin-x-90-se-v2/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "92mm 팬 소형 — 높이 118mm 라 좁은 케이스용. 이 급(120mm 싱글)보다 식히는 힘이 작다."
+  },
+  {
+   "id": "thermalright-assassin-king-90-v2",
+   "name": "Thermalright Assassin King 90 V2",
+   "brand": "Thermalright",
+   "code": "Assassin King 90 V2",
+   "match": {
+    "must": [
+     "THERMALRIGHT",
+     "ASSASSINKING90"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 125.0,
+    "fans": "92mm 1개",
+    "tdp_w": null,
+    "noise_dba": 23.85,
+    "sockets": null,
+    "heatpipes": "6 mm heatpipe x 5 units"
+   },
+   "sources": [
+    {
+     "title": "Thermalright 공식 스펙",
+     "url": "https://www.thermalright.com/product/assassin-king-90-v2/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "92mm 팬 소형(히트파이프 5개) — 높이 125mm."
+  }
+ ]
+}

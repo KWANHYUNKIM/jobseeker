@@ -2,6 +2,13 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: 싱글타워 쿨러 Thermalright 6종(사다리 6)
+
+- models/cooler-air-single.json 새로 — Assassin X 120 Refined SE(무 ARGB · ARGB · PLUS) · X 120 R Digital · X 90 SE V2 · King 90 V2(공식 스펙).
+  색 · 조명만 다른 페이지는 높이 · 소음이 같아 한 모델로 묶었다. Thermalright 매물 9건이 모두 한 모델에만 걸린다.
+- 제조사가 감당 전력(TDP)을 적지 않아 tdp_w 는 null. 92mm 두 종(높이 118 · 125mm)은 이 급(120mm 싱글)보다 작다고 메모했다.
+  남은 싱글타워 매물: JIUSHARK 8 · 잘만 7 · 3RSYS 7 · 쿨러마스터 7 · 발키리 6 · PCCOOLER 5 · darkFlash 4 · DEEPCOOL 4.
+
 ## 2026-09-29 — 사이클: B550 · A520 · B760(DDR5/DDR4) 보드 ASUS 12종(사다리 6)
 
 - models/mb-b550(1) · mb-a520(2) · mb-b760-ddr5(6) · mb-b760-ddr4(3) 새로. 두 모델에 걸리는 매물 없음('B760M-K' ↔ D4, 'A520M-K' ↔ ARGB 는 not 으로).
