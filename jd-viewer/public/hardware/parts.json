@@ -1294,6 +1294,56 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "gpu-rtx-3060-12",
+   "category": "gpu",
+   "name": "GeForce RTX 3060 12GB",
+   "maker": "NVIDIA",
+   "released": "2021-02",
+   "status": "current",
+   "specs": {
+    "vram_gb": 12,
+    "mem_type": "GDDR6",
+    "bus_bit": 192,
+    "bandwidth_gbs": null,
+    "cores": 3584,
+    "tdp_w": 170,
+    "fp16_tflops": null,
+    "stack": "CUDA",
+    "psu_w": 550,
+    "boost_ghz": 1.78,
+    "note": "같은 이름의 8GB(128-bit) 판이 따로 있다 — 이 항목은 12GB(192-bit). 대역폭은 NVIDIA 표에 없어 비운다."
+   },
+   "perf": {
+    "index": 29,
+    "confidence": "low",
+    "basis": "RTX 4090 = 100, 1440p — TPU RTX 3050 6GB 리뷰 1440p 상대 성능에서 RTX 3060 12GB 183%, RTX 4090 636% → 28.8"
+   },
+   "price_query": {
+    "q": "RTX 3060 12GB",
+    "cate": "그래픽카드",
+    "must": [
+     "3060",
+     "12GB"
+    ],
+    "not": [
+     "노트북",
+     "Ti"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 사양 — RTX 3060(3584 CUDA · 1.78GHz · 12GB GDDR6 192-bit / 8GB 128-bit · 170W · 권장 550W)",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3060-3060ti/"
+    },
+    {
+     "title": "TechPowerUp — RTX 3050 6GB 리뷰, 1440p 상대 성능(RTX 3060 12GB 183% · RTX 4090 636%)",
+     "url": "https://www.techpowerup.com/review/nvidia-geforce-rtx-3050-6-gb/31.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "gpu-gtx-1660-super",
    "category": "gpu",
    "name": "GeForce GTX 1660 SUPER",
