@@ -2808,3 +2808,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-27 クロスマート 개인별 DB 감사 로그
 
 - 기능 `per-person-db-audit-log` — DB 쪽 감사 · 개인별 사용자 · IAM 토큰 · PrincipalTag · Terraform 명단 · terraform_data · developers 롤 · 제외 대상, 결정 8. 발주 화면 · 수발주 수익원과 inferred. 도메인 3/3.
+
+## 2026-09-29 ゼスト 회사 프로파일
+
+- 기술 글 3편(스마트 할당 해석 도구 · 타 시스템 데이터 연계 · react-google-maps 지도 비용) + CTO 2025 회고 + 회사 첫 화면(요금 FAQ). 도메인 3, 수익원 1(월 이용료 confirmed — 금액 비공개). eras 는 비움(2024 풀 리뉴얼의 기술 내용이 자료에 없다).
