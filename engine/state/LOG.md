@@ -2826,3 +2826,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 - 지도 글(@vis.gl/react-google-maps)로 `map-reuse`. 결정 5 — 라이브러리(아카이브된 react-wrapper 대신) / reuseMaps 로 읽기 과금 줄이기 / AdvancedMarker 로 React 핀 / Polyline 직접 구현 · 테두리 · 점선 / 모바일 클릭 순서 setTimeout 우회. 그림 3(시퀀스 · 층 · 실패).
 - 완주 기준 확인 — 도메인 3 모두 기능 1, 기능 셋이 서로 이어짐, 수익원(월 이용료)이 스마트 할당 · 연계와 연결. `status: done`, QUEUE 완료로 옮김. 큐 0/3 → 다음은 후보 조사.
 
+## 2026-09-30 후보 조사(백열세 번째)
+
+- yamadashy 기술 블로그 목록 421 도메인 → 기존 sources · QUEUE 와 대조 369 → 5 곳 RSS → 본문 3편. 대기로 올림: NearMe(상승 배차 · 최적화) · kickflow(결재 워크플로 SaaS) · newmo(택시 매출 대조 · 급여 — 얇을 수 있음). 약함: トレタ · bitbank.
+
