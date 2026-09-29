@@ -1,0 +1,127 @@
+{
+ "schema": 1,
+ "part": "cooler-aio-360",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "deepcool-le360v2",
+   "name": "DEEPCOOL LE360 V2 ARGB",
+   "brand": "DEEPCOOL",
+   "code": "LE360 V2 ARGB",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "LE360V2"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": "120mm 3개",
+    "tdp_w": null,
+    "noise_dba": 31.6,
+    "sockets": null,
+    "radiator": "402×120×27 mm(L×W×H)"
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuliquidcoolers/LE360-V2-Liquid-CPU-Cooler-1851-1700-AM5/2025/20138.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "라디에이터 402×120×27 mm(L×W×H). 제품 페이지에 감당 전력(TDP) 표기가 없다. 블랙 · 화이트 공통."
+  },
+  {
+   "id": "deepcool-lt360vision",
+   "name": "DEEPCOOL LT360 VISION ARGB",
+   "brand": "DEEPCOOL",
+   "code": "LT360 VISION ARGB",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "LT360VISION"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": "120mm 3개",
+    "tdp_w": null,
+    "noise_dba": null,
+    "sockets": null,
+    "radiator": "402×120×27 mm(L×W×H)"
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuliquidcoolers/LT360-VISION-ARGB-4.5-Ultrawide-LCD-Liquid-Cooler-with-Adjustable-Viewing-Angle/2026/22717.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "라디에이터 402×120×27 mm(L×W×H). 제품 페이지에 감당 전력(TDP) 표기가 없다. 4.5형 LCD 달린 판. 블랙 · 화이트 공통."
+  },
+  {
+   "id": "3rsys-rani-sf360-argb",
+   "name": "3RSYS 라니 SF 360 ARGB",
+   "brand": "3RSYS",
+   "code": "라니 SF 360 ARGB",
+   "match": {
+    "must": [
+     "3RSYS",
+     "라니SF360"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": "120mm 3개",
+    "tdp_w": null,
+    "noise_dba": 30.5,
+    "sockets": null,
+    "radiator": "360mm(3열)"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1761789754"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "A/S 6년+누수보상. 블랙 · 화이트 공통. 제품 페이지에 TDP 표기가 없다."
+  },
+  {
+   "id": "3rsys-rani-fc360-argb",
+   "name": "3RSYS 라니 FC 360 ARGB",
+   "brand": "3RSYS",
+   "code": "라니 FC 360 ARGB",
+   "match": {
+    "must": [
+     "3RSYS",
+     "라니FC360"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": "120mm 3개",
+    "tdp_w": null,
+    "noise_dba": 28.0,
+    "sockets": null,
+    "radiator": "360mm(3열)"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1753143518"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "A/S 팬3년+누수보상6년. 블랙 · 화이트 공통. 제품 페이지에 TDP 표기가 없다."
+  }
+ ]
+}

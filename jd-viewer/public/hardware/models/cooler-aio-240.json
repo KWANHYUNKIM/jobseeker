@@ -1,0 +1,69 @@
+{
+ "schema": 1,
+ "part": "cooler-aio-240",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "deepcool-le240v2",
+   "name": "DEEPCOOL LE240 V2 ARGB",
+   "brand": "DEEPCOOL",
+   "code": "LE240 V2 ARGB",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "LE240V2"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": "120mm 2개",
+    "tdp_w": null,
+    "noise_dba": 31.6,
+    "sockets": null,
+    "radiator": "282×120×27 mm(L×W×H)"
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuliquidcoolers/LE240-V2-Liquid-CPU-Cooler-1851-1700-AM5/2025/20136.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "라디에이터 282×120×27 mm(L×W×H). 제품 페이지에 감당 전력(TDP) 표기가 없다. 블랙 · 화이트 공통."
+  },
+  {
+   "id": "deepcool-mystique240",
+   "name": "DEEPCOOL MYSTIQUE 240",
+   "brand": "DEEPCOOL",
+   "code": "MYSTIQUE 240",
+   "match": {
+    "must": [
+     "DEEPCOOL",
+     "MYSTIQUE240"
+    ],
+    "not": [
+     "ARGB"
+    ]
+   },
+   "specs": {
+    "height_mm": null,
+    "fans": "120mm 2개",
+    "tdp_w": null,
+    "noise_dba": null,
+    "sockets": null,
+    "radiator": "282×120×27 mm(L×W×H)"
+   },
+   "sources": [
+    {
+     "title": "DeepCool 공식 스펙",
+     "url": "https://www.deepcool.com/products/Cooling/cpuliquidcoolers/MYSTIQUE-240-5th-Gen-Liquid-Cooler-with-LCD-1851-1700-AM5/2024/18058.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "라디에이터 282×120×27 mm(L×W×H). 제품 페이지에 감당 전력(TDP) 표기가 없다. LCD 달린 판."
+  }
+ ]
+}
