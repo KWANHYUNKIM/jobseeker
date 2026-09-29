@@ -5,6 +5,7 @@ import { absUrl, useSeo } from '../lib/seo'
 import { paths, TAB_SEO } from '../lib/urls'
 import { MoveBadge, NOINDEX, PriceChart } from './HardwarePrices'
 import { GameCompare, PerfLadder, VendorBench } from './HardwareCharts'
+import { OfficialImage } from './OfficialImage'
 import { DurabilityNotes, ModelTable, SaleForms } from './HardwareModels'
 import { TierBadge } from './HardwareView'
 
@@ -178,6 +179,11 @@ function PartTable({ data }: { data: HwData }) {
                 </td>
                 <td className="px-2 py-1.5">{tier && <TierBadge tier={tier.tier} />}</td>
                 <td className="px-2 py-1.5 min-w-44">
+                  <div className="flex items-center gap-2">
+                  {p.image ? (
+                    <OfficialImage image={p.image} alt="" className="w-10 h-10 rounded shrink-0" />
+                  ) : null}
+                  <div>
                   <a href={paths.hardwarePart(p.id)} onClick={onLinkClick(paths.hardwarePart(p.id))} className="font-medium hover:underline">
                     {p.name}
                   </a>
@@ -186,6 +192,8 @@ function PartTable({ data }: { data: HwData }) {
                     {p.maker}
                     {p.released && ` · ${p.released}`}
                     {p.perf.confidence === 'seed' && <span className="text-(--color-amber-400)"> · {confLabel.seed}</span>}
+                  </div>
+                  </div>
                   </div>
                 </td>
                 <td className="px-2 text-right font-bold tabular-nums">{p.perf.index}</td>
@@ -313,6 +321,11 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
         ← {def?.name} 비교로
       </a>
       <header className="flex flex-wrap items-center gap-3">
+        {part.image && (
+          <a href={part.image.page} target="_blank" rel="noreferrer" title={`사진: ${part.image.credit} 공식 페이지`}>
+            <OfficialImage image={part.image} alt={part.name} className="w-28 h-20 rounded border border-(--color-border-soft)" />
+          </a>
+        )}
         {tier && <TierBadge tier={tier.tier} />}
         <h1 className="text-xl font-bold">{part.name}</h1>
         <span className="text-sm text-(--color-muted)">

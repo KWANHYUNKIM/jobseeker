@@ -91,10 +91,10 @@ REGISTRY: list[Loop] = [
          "semantic.ingest → embed → similar", [], note="Ollama 가 꺼져 있으면 조용히 건너뛴다."),
 
     # ── Claude Code /loop 로 도는 조사 엔진 ───────────────────────────
-    Loop("reveng-engine", "기업 기술 역설계", "claude-loop", "any", "자율(사이클 끝에 다음 시각을 스스로 잡는다)", 72,
+    Loop("reveng-engine", "기업 기술 역설계", "claude-loop", "any", "2시간마다(짝수 시 :17, 세션 cron)", 72,
          "/loop <prompt>", ["engine/state/LOG.md", "jd-viewer/public/reveng/index.json"],
          check="python engine/validate.py --gaps", prompt=_engine_prompt("engine", "기업 기술 역설계 엔진")),
-    Loop("guide-engine", "취업 브리핑", "claude-loop", "any", "자율", 72,
+    Loop("guide-engine", "취업 브리핑", "claude-loop", "any", "2시간마다(홀수 시 :47, 세션 cron)", 72,
          "/loop <prompt>", ["guide-engine/state", "jd-viewer/public/guide"],
          check="python guide-engine/validate.py --gaps", prompt=_engine_prompt("guide-engine", "취업 브리핑 엔진")),
     Loop("study-engine", "기술 백과사전", "claude-loop", "any", "자율(화면에서는 빠져 있다)", 24 * 30,

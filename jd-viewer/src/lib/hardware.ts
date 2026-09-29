@@ -29,6 +29,8 @@ export interface Part {
   price_basis?: 'min' | 'median'
   sources: { title: string; url: string }[]
   checked_at: string
+  /** 제조사 공식 페이지의 대표 이미지 — 원본에서 불러오고 출처를 단다(급 단위 부품엔 없다) */
+  image?: { url: string; credit: string; page: string }
 }
 
 export interface TierDef {
