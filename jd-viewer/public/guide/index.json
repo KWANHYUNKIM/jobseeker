@@ -1099,6 +1099,19 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-29"
+    },
+    {
+      "slug": "illuni",
+      "name": "일루니",
+      "aliases": [
+        "일루니",
+        "㈜일루니",
+        "illuni"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-29"
     }
   ]
 }
