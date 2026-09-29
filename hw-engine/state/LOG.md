@@ -2,6 +2,13 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: B850 보드 ASUS 7종 · 그래픽 슬롯 급 되돌림(사다리 6)
+
+- models/mb-b850.json 새로 — PRIME B850M-A-CSM · TUF B850M-PLUS II · B850M-PLUS WIFI7 · WIFI7 W · B850-PLUS WIFI · ProArt B850-CREATOR WIFI NEO ·
+  ROG STRIX B850-I(공식 techspec). ASUS 매물 11건이 모두 한 모델에만 걸린다('WIFI7' ↔ 'WIFI7W' 는 not 으로 가른다).
+- **급 되돌림**: 오늘 AMD 칩셋표대로 B850 그래픽을 'PCIe 4.0' 으로 고쳤는데, ASUS 7종이 **모두 CPU 직결 5.0 x16** 이다 — AMD 표의 4.0 은 칩셋 최소다.
+  'PCIe 4.0(보드에 따라 5.0)' 으로 바꾸고 규칙 점수 75 → 77. 교훈: 칩셋표는 하한, 실제 슬롯은 보드 스펙에서 본다(H810 은 반대로 5.0 → 대부분 4.0 이었다).
+
 ## 2026-09-29 — 사이클: H810 보드 ASUS 6종(사다리 6)
 
 - models/mb-h810.json 새로 — ASUS PRIME H810M-K · -E · -X 2.5G · -A · -A WIFI · H810M AYW GAMING WIFI(공식 techspec). ASUS 매물 11건이 모두 한 모델에만 걸린다(-CSM 은 같은 보드).

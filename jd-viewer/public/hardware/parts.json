@@ -3353,17 +3353,17 @@
    "specs": {
     "socket": "AM5",
     "mem": "DDR5",
-    "pcie_gpu": "PCIe 4.0",
+    "pcie_gpu": "PCIe 4.0(보드에 따라 5.0)",
     "pcie_m2": "PCIe 5.0",
     "cpu_oc": true,
     "usb4": "보드 선택",
     "forms": "ATX · M-ATX",
     "pcie_lanes": "36 (5.0 은 4)",
     "usb_20g": 1,
-    "note": "AMD 표: 그래픽 PCIe 4.0 1x16 또는 2x8 · NVMe 1x4 PCIe 5.0 · 쓸 수 있는 레인 36(5.0 4) · CPU·DDR5 오버클럭 · USB 20Gbps 1 · SATA 4 · USB4 는 보드 선택."
+    "note": "AMD 표: 그래픽 PCIe 4.0 1x16 또는 2x8(칩셋 최소 — ASUS B850 보드 7종은 모두 CPU 직결 5.0 x16) · NVMe 1x4 PCIe 5.0 · 쓸 수 있는 레인 36(5.0 4) · CPU·DDR5 오버클럭 · USB 20Gbps 1 · SATA 4 · USB4 는 보드 선택."
    },
    "perf": {
-    "index": 75,
+    "index": 77,
     "basis": "칩셋 급 = 규칙 점수(0~100, 공식 스펙에서 계산) — 기본 10 + DDR5 10 + 그래픽 슬롯(5.0 20 · 보드 선택 5.0 12 · 4.0 10 · 3.0 0) + M.2(같은 방식) + CPU 오버클럭 20 + USB4(표준 15 · 보드 선택 5). 성능 실측이 아니라 '무엇이 열려 있나'의 점수다",
     "confidence": "medium"
    },
@@ -3379,6 +3379,10 @@
     {
      "title": "AMD 공식 — AM5 칩셋 사양표",
      "url": "https://www.amd.com/en/products/processors/chipsets/am5.html"
+    },
+    {
+     "title": "ASUS 공식 스펙 — B850 보드 7종 모두 그래픽 슬롯 PCIe 5.0 x16(라이젠 9000·7000)",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b850m-plus-ii/techspec/"
     }
    ],
    "status": "current",
