@@ -1010,13 +1010,14 @@
     "igpu": true,
     "l3_mb": 128,
     "series": "라이젠 9000 시리즈",
-    "family": "라이젠 9"
+    "family": "라이젠 9",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
     "index": 99,
-    "multi": 98,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "multi": 103,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 9950X3D",
@@ -1032,8 +1033,16 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — Ryzen 9 9950X3D",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x3d.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
@@ -1042,7 +1051,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/3021650-ryzen-9-9900x3d-product.jpg",
     "credit": "AMD (X3D 공용 사진)",
     "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x3d.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-9-9950x",
@@ -1061,13 +1071,14 @@
     "igpu": true,
     "l3_mb": 64,
     "series": "라이젠 9000 시리즈",
-    "family": "라이젠 9"
+    "family": "라이젠 9",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
-    "index": 84,
+    "index": 79,
     "multi": 100,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 9950X",
@@ -1084,8 +1095,16 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — Ryzen 9 9950X",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
@@ -1094,7 +1113,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-9-9950x-og.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-9-9900x",
@@ -1113,13 +1133,14 @@
     "igpu": true,
     "l3_mb": 64,
     "series": "라이젠 9000 시리즈",
-    "family": "라이젠 9"
+    "family": "라이젠 9",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
-    "index": 82,
-    "multi": 78,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "index": 76,
+    "multi": 79,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 9900X",
@@ -1136,8 +1157,16 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — Ryzen 9 9900X",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9900x.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
@@ -1146,7 +1175,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-9-9950x-og.jpg",
     "credit": "AMD (9950X 와 같은 사진)",
     "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9900x.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-7-9800x3d",
@@ -1165,13 +1195,14 @@
     "igpu": true,
     "l3_mb": 96,
     "series": "라이젠 9000 시리즈",
-    "family": "라이젠 7"
+    "family": "라이젠 7",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
     "index": 100,
-    "multi": 51,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "multi": 59,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 9800X3D",
@@ -1187,8 +1218,16 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — Ryzen 7 9800X3D",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-7-9800x3d.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
@@ -1197,7 +1236,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2900400-ryzen-7-9800x3d.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-7-9800x3d.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-7-9700x",
@@ -1216,12 +1256,13 @@
     "igpu": true,
     "l3_mb": 32,
     "series": "라이젠 9000 시리즈",
-    "family": "라이젠 7"
+    "family": "라이젠 7",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
     "index": 81,
-    "multi": 50,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "multi": 49,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표 · 게임 지수는 표에 없어 아직 씨앗 값",
     "confidence": "seed"
    },
    "price_query": {
@@ -1239,8 +1280,16 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — Ryzen 7 9700X",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-7-9700x.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
@@ -1249,7 +1298,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-7-9700x-og.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-7-9700x.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-7-7800x3d",
@@ -1268,13 +1318,14 @@
     "igpu": true,
     "l3_mb": 96,
     "series": "라이젠 7000 시리즈",
-    "family": "라이젠 7"
+    "family": "라이젠 7",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
-    "index": 89,
-    "multi": 44,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "index": 88,
+    "multi": 46,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 7800X3D",
@@ -1290,8 +1341,16 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — Ryzen 7 7800X3D",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/7000-series/amd-ryzen-7-7800x3d.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
@@ -1300,7 +1359,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2505503-ryzen-7-7800x3d-og.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/processors/desktops/ryzen/7000-series/amd-ryzen-7-7800x3d.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-5-9600x",
@@ -1319,13 +1379,14 @@
     "igpu": true,
     "l3_mb": 32,
     "series": "라이젠 9000 시리즈",
-    "family": "라이젠 5"
+    "family": "라이젠 5",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
-    "index": 78,
-    "multi": 39,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "index": 75,
+    "multi": 41,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 9600X",
@@ -1342,8 +1403,16 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — Ryzen 5 9600X",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-5-9600x.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
@@ -1352,7 +1421,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-5-9600x.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-5-7500f",
@@ -1371,7 +1441,8 @@
     "igpu": false,
     "l3_mb": 32,
     "series": "라이젠 7000 시리즈",
-    "family": "라이젠 5"
+    "family": "라이젠 5",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
     "index": 73,
@@ -1394,12 +1465,17 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — Ryzen 5 7500F",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/7000-series/amd-ryzen-5-7500f.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-7-5700x3d",
@@ -1418,7 +1494,8 @@
     "igpu": false,
     "l3_mb": 96,
     "series": "라이젠 5000 시리즈",
-    "family": "라이젠 7"
+    "family": "라이젠 7",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
     "index": 72,
@@ -1439,6 +1516,10 @@
     ]
    },
    "sources": [
+    {
+     "title": "AMD 보도자료(제품 페이지가 내려가 코어·클럭·TDP 만 확인)",
+     "url": "https://www.amd.com/en/newsroom/press-releases/2024-1-8-amd-reveals-next-gen-desktop-processors-for-extrem.html"
+    },
     {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
@@ -1464,7 +1545,8 @@
     "igpu": false,
     "l3_mb": 32,
     "series": "라이젠 5000 시리즈",
-    "family": "라이젠 5"
+    "family": "라이젠 5",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
     "index": 60,
@@ -1491,6 +1573,10 @@
     ]
    },
    "sources": [
+    {
+     "title": "AMD 보도자료(제품 페이지가 내려가 코어·클럭·TDP 만 확인)",
+     "url": "https://www.amd.com/en/newsroom/press-releases/2022-3-15-amd-launches-the-ultimate-gaming-processor-brings.html"
+    },
     {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
@@ -1519,10 +1605,10 @@
     "family": "코어 울트라9"
    },
    "perf": {
-    "index": 80,
-    "multi": 95,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "index": 74,
+    "multi": 92,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "285K",
@@ -1538,12 +1624,21 @@
    },
    "sources": [
     {
+     "title": "Intel 공식 사양 — Core Ultra 9 285K",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241060/intel-core-ultra-9-processor-285k-36m-cache-up-to-5-70-ghz/specifications.html"
+    },
+    {
      "title": "Intel 공식 제품 페이지",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-core-ultra-7-265k",
@@ -1565,10 +1660,10 @@
     "family": "코어 울트라7"
    },
    "perf": {
-    "index": 79,
-    "multi": 80,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "index": 72,
+    "multi": 82,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "265K",
@@ -1584,12 +1679,21 @@
    },
    "sources": [
     {
+     "title": "Intel 공식 사양 — Core Ultra 7 265K",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241063/intel-core-ultra-7-processor-265k-30m-cache-up-to-5-50-ghz/specifications.html"
+    },
+    {
      "title": "Intel 공식 제품 페이지",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-core-ultra-5-245k",
@@ -1611,10 +1715,10 @@
     "family": "코어 울트라5"
    },
    "perf": {
-    "index": 74,
+    "index": 69,
     "multi": 58,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "245K",
@@ -1630,12 +1734,21 @@
    },
    "sources": [
     {
+     "title": "Intel 공식 사양 — Core Ultra 5 245K",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241067/intel-core-ultra-5-processor-245k-24m-cache-up-to-5-20-ghz/specifications.html"
+    },
+    {
      "title": "Intel 공식 제품 페이지",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-core-i7-14700k",
@@ -1657,10 +1770,10 @@
     "family": "코어 i7"
    },
    "perf": {
-    "index": 82,
+    "index": 79,
     "multi": 78,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "14700K",
@@ -1676,12 +1789,21 @@
    },
    "sources": [
     {
+     "title": "Intel 공식 사양 — Core i7-14700K",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/236783/intel-core-i7-processor-14700k-33m-cache-up-to-5-60-ghz/specifications.html"
+    },
+    {
      "title": "Intel 공식 제품 페이지",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-core-i5-14400f",
@@ -1703,10 +1825,10 @@
     "family": "코어 i5"
    },
    "perf": {
-    "index": 70,
-    "multi": 38,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "index": 60,
+    "multi": 34,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표 · i5-14400(같은 코어·클럭, 내장 그래픽만 있음) 값을 대리로 썼다",
+    "confidence": "low"
    },
    "price_query": {
     "q": "14400F",
@@ -1722,12 +1844,21 @@
    },
    "sources": [
     {
+     "title": "Intel 공식 사양 — Core i5-14400F",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/236777/intel-core-i5-processor-14400f-20m-cache-up-to-4-70-ghz/specifications.html"
+    },
+    {
      "title": "Intel 공식 제품 페이지",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ram-ddr5-6000-16",

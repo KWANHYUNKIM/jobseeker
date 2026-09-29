@@ -13,7 +13,7 @@
     {"tier": "D", "min": 0, "plain": "FHD 중옵션·e스포츠 게임용. 사무·개발에는 넉넉하다."}
    ]},
   {"key": "cpu", "name": "CPU", "why": "게임에서는 프레임의 천장을, 개발에서는 빌드·컴파일 시간을 정한다.",
-   "index_label": "게임 지수", "index_basis": "9800X3D = 100 · 멀티 지수는 9950X = 100",
+   "index_label": "게임 지수", "index_basis": "9800X3D = 100(1080p 게임) · 멀티 지수는 9950X = 100 — Tom's Hardware 계층표",
    "tiers": [
     {"tier": "S", "min": 95, "plain": "고주사율 게임에서 CPU 가 발목을 잡지 않는다."},
     {"tier": "A", "min": 80, "plain": "어떤 그래픽카드를 붙여도 대부분 충분하다."},
