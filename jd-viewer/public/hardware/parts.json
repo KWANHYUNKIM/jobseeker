@@ -1492,10 +1492,10 @@
     "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
-    "index": 81,
+    "index": 77,
     "multi": 49,
-    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표 · 게임 지수는 표에 없어 아직 씨앗 값",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100 · 멀티: 9950X = 100 — 멀티는 Tom's Hardware 한 표. 게임은 Tom's 표에 없어 TechPowerUp 9800X3D 리뷰(1080p Ultra · RTX 4090, 게임 상대 성능)에서 9700X 88.8% 가 9600X 88.4%(우리 75) · 9950X 89.2%(우리 79) 사이라 그 사이를 이어 77 로 옮겼다 — TPU 는 GPU 가 더 걸리는 설정이라 차이가 좁게 나와 % 를 그대로 쓰지 않는다",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 9700X",
@@ -1522,6 +1522,10 @@
     {
      "title": "Tom's Hardware CPU 벤치마크 계층표(2026-08-26) — 1080p 게임 · 멀티스레드 순위",
      "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰, 1080p 게임 상대 성능(9700X 88.8% · 9600X 88.4% · 9950X 89.2%, RTX 4090)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/18.html"
     }
    ],
    "status": "current",
