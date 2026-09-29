@@ -1,0 +1,81 @@
+{
+ "schema": 1,
+ "updated_at": "2026-09-29",
+ "note": "등급은 여기 적힌 문턱으로 perf.index 에서 계산한다 — 부품 파일에 등급을 따로 적지 않는다. 같은 성능이면 같은 등급이 되는 것을 보장하려면 등급의 출처가 하나여야 한다.",
+ "categories": [
+  {"key": "gpu", "name": "그래픽카드", "why": "게임 프레임과 AI 속도를 거의 혼자 정한다. 예산의 40~50% 가 여기로 간다.",
+   "index_label": "성능 지수", "index_basis": "RTX 4090 = 100 · QHD 래스터 상대 성능",
+   "tiers": [
+    {"tier": "S", "min": 95, "plain": "4K 고옵션도 매끄럽다. 24GB 이상이면 30B 급 언어 모델을 통째로 올린다."},
+    {"tier": "A", "min": 65, "plain": "QHD 고옵션 100fps 안팎. 4K 는 옵션을 조금 내리면 된다."},
+    {"tier": "B", "min": 45, "plain": "QHD 고옵션 60fps 이상. FHD 는 고주사율 모니터를 채운다."},
+    {"tier": "C", "min": 30, "plain": "FHD 고옵션 60fps. 무거운 최신작은 옵션 조절이 필요하다."},
+    {"tier": "D", "min": 0, "plain": "FHD 중옵션·e스포츠 게임용. 사무·개발에는 넉넉하다."}
+   ]},
+  {"key": "cpu", "name": "CPU", "why": "게임에서는 프레임의 천장을, 개발에서는 빌드·컴파일 시간을 정한다.",
+   "index_label": "게임 지수", "index_basis": "9800X3D = 100 · 멀티 지수는 9950X = 100",
+   "tiers": [
+    {"tier": "S", "min": 95, "plain": "고주사율 게임에서 CPU 가 발목을 잡지 않는다."},
+    {"tier": "A", "min": 80, "plain": "어떤 그래픽카드를 붙여도 대부분 충분하다."},
+    {"tier": "B", "min": 72, "plain": "RTX 5070 급까지 무난하다. 게임·개발 모두 여유 있다."},
+    {"tier": "C", "min": 62, "plain": "FHD 게임·일반 개발에 충분하다. 최상급 그래픽카드와는 병목이 생긴다."},
+    {"tier": "D", "min": 0, "plain": "사무·가벼운 개발·e스포츠 게임."}
+   ]},
+  {"key": "ram", "name": "메모리", "why": "부족하면 느려지고, 남으면 아무 일도 없다. 용량이 먼저, 속도는 그다음이다.",
+   "index_label": "대역폭", "index_basis": "두 장 꽂은 듀얼 채널 GB/s",
+   "tiers": [
+    {"tier": "A", "min": 92, "plain": "DDR5 고클럭. AMD 라이젠에서 게임 프레임이 조금 더 나온다."},
+    {"tier": "B", "min": 80, "plain": "DDR5 표준 속도. 지금 조립의 기본값."},
+    {"tier": "C", "min": 0, "plain": "DDR4. 예전 플랫폼(AM4·12~14세대 DDR4 보드)용."}
+   ]},
+  {"key": "ssd", "name": "SSD", "why": "부팅·게임 로딩·빌드 캐시가 여기서 읽힌다. 체감 차이는 NVMe 냐 아니냐가 대부분이다.",
+   "index_label": "읽기 지수", "index_basis": "순차 읽기 MB/s ÷ 100",
+   "tiers": [
+    {"tier": "A", "min": 70, "plain": "PCIe 4.0 최상위. 큰 파일을 자주 옮기면 차이가 난다."},
+    {"tier": "B", "min": 45, "plain": "PCIe 4.0 보급형. 게임·개발 체감은 A 와 거의 같다."},
+    {"tier": "C", "min": 0, "plain": "PCIe 3.0 이하."}
+   ]},
+  {"key": "hdd", "name": "HDD", "why": "속도가 아니라 싼 용량. 사진·영상·백업 보관용이고 운영체제를 올리지 않는다.",
+   "index_label": "용량 지수", "index_basis": "TB × 10",
+   "tiers": [
+    {"tier": "A", "min": 40, "plain": "4TB 이상. NAS·백업용."},
+    {"tier": "B", "min": 0, "plain": "2TB 안팎. 데스크톱 보관용."}
+   ]},
+  {"key": "mainboard", "name": "메인보드", "why": "성능을 올려 주지는 않는다. 무엇을 꽂을 수 있는지(CPU 소켓·메모리 종류·확장)를 정한다.",
+   "index_label": "칩셋 급", "index_basis": "오버클럭·PCIe 세대·USB4·M.2 로 매긴 급",
+   "tiers": [
+    {"tier": "A", "min": 85, "plain": "최상위 칩셋. 오버클럭·PCIe 5.0·USB4 까지."},
+    {"tier": "B", "min": 55, "plain": "대부분의 조립에 맞는 중급 칩셋."},
+    {"tier": "C", "min": 0, "plain": "보급형. 확장이 적고 오버클럭이 안 된다."}
+   ]},
+  {"key": "psu", "name": "파워", "why": "부족하면 게임 중에 꺼진다. 그래픽카드 권장 파워보다 한 단계 여유 있게 고른다.",
+   "index_label": "용량 지수", "index_basis": "정격 W ÷ 10 + 효율 가산",
+   "tiers": [
+    {"tier": "A", "min": 100, "plain": "1000W 이상. RTX 5090·4090 급."},
+    {"tier": "B", "min": 80, "plain": "750~850W 골드. 대부분의 게이밍 조립."},
+    {"tier": "C", "min": 0, "plain": "600~700W 브론즈. 중급 그래픽카드까지."}
+   ]},
+  {"key": "cooler", "name": "CPU 쿨러", "why": "CPU 가 제 속도를 오래 내게 한다. 모자라면 성능이 떨어지고 시끄러워진다.",
+   "index_label": "냉각 지수", "index_basis": "감당하는 CPU 전력(W) ÷ 3",
+   "tiers": [
+    {"tier": "A", "min": 100, "plain": "250W 급 이상 CPU 도 조용히 식힌다."},
+    {"tier": "B", "min": 80, "plain": "고성능 CPU 까지 무난하다."},
+    {"tier": "C", "min": 0, "plain": "65~125W CPU 용."}
+   ]},
+  {"key": "case", "name": "케이스", "why": "들어가느냐의 문제다. 그래픽카드 길이와 쿨러 높이를 먼저 본다.",
+   "index_label": "장착 지수", "index_basis": "그래픽카드 장착 길이 ÷ 5",
+   "tiers": [
+    {"tier": "A", "min": 85, "plain": "큰 카드·360 수랭도 들어간다."},
+    {"tier": "B", "min": 75, "plain": "대부분의 카드가 들어간다."},
+    {"tier": "C", "min": 0, "plain": "작은 케이스. 3팬 대형 카드는 길이를 꼭 확인한다."}
+   ]}
+ ],
+ "uses": [
+  {"key": "game-fhd", "name": "게임 · FHD", "plain": "1920×1080 모니터로 최신 게임", "res": "fhd", "weights": {"gpu": 0.36, "cpu": 0.2}},
+  {"key": "game-qhd", "name": "게임 · QHD", "plain": "2560×1440 모니터로 고옵션", "res": "qhd", "weights": {"gpu": 0.45, "cpu": 0.18}},
+  {"key": "game-4k", "name": "게임 · 4K", "plain": "3840×2160 모니터", "res": "uhd", "weights": {"gpu": 0.55, "cpu": 0.15}},
+  {"key": "dev", "name": "개발 · 컴파일", "plain": "IDE·도커·빌드를 여러 개 띄운다", "res": "fhd", "weights": {"gpu": 0.12, "cpu": 0.35}, "min_ram_gb": 32, "prefer": "multi"},
+  {"key": "llm", "name": "로컬 AI · LLM", "plain": "언어 모델을 내 컴퓨터에서 돌린다", "res": "qhd", "weights": {"gpu": 0.55, "cpu": 0.12}, "min_ram_gb": 64, "prefer": "vram"},
+  {"key": "video", "name": "영상 편집", "plain": "4K 편집·인코딩", "res": "qhd", "weights": {"gpu": 0.3, "cpu": 0.3}, "min_ram_gb": 64, "prefer": "multi"}
+ ]
+}

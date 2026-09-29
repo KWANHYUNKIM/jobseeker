@@ -1,0 +1,2894 @@
+{
+ "schema": 1,
+ "updated_at": "2026-09-29",
+ "parts": [
+  {
+   "id": "gpu-rtx-5090",
+   "category": "gpu",
+   "name": "GeForce RTX 5090",
+   "maker": "NVIDIA",
+   "released": "2025-01",
+   "specs": {
+    "vram_gb": 32,
+    "mem_type": "GDDR7",
+    "bus_bit": 512,
+    "bandwidth_gbs": 1792,
+    "cores": 21760,
+    "tdp_w": 575,
+    "fp16_tflops": 209,
+    "stack": "CUDA",
+    "psu_w": 1000
+   },
+   "perf": {
+    "index": 127,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 5090",
+    "cate": "그래픽카드",
+    "must": [
+     "5090"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-5080",
+   "category": "gpu",
+   "name": "GeForce RTX 5080",
+   "maker": "NVIDIA",
+   "released": "2025-01",
+   "specs": {
+    "vram_gb": 16,
+    "mem_type": "GDDR7",
+    "bus_bit": 256,
+    "bandwidth_gbs": 960,
+    "cores": 10752,
+    "tdp_w": 360,
+    "fp16_tflops": 113,
+    "stack": "CUDA",
+    "psu_w": 850
+   },
+   "perf": {
+    "index": 83,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 5080",
+    "cate": "그래픽카드",
+    "must": [
+     "5080"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-5070-ti",
+   "category": "gpu",
+   "name": "GeForce RTX 5070 Ti",
+   "maker": "NVIDIA",
+   "released": "2025-02",
+   "specs": {
+    "vram_gb": 16,
+    "mem_type": "GDDR7",
+    "bus_bit": 256,
+    "bandwidth_gbs": 896,
+    "cores": 8960,
+    "tdp_w": 300,
+    "fp16_tflops": 88,
+    "stack": "CUDA",
+    "psu_w": 750
+   },
+   "perf": {
+    "index": 72,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 5070 Ti",
+    "cate": "그래픽카드",
+    "must": [
+     "5070 Ti"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-5070",
+   "category": "gpu",
+   "name": "GeForce RTX 5070",
+   "maker": "NVIDIA",
+   "released": "2025-03",
+   "specs": {
+    "vram_gb": 12,
+    "mem_type": "GDDR7",
+    "bus_bit": 192,
+    "bandwidth_gbs": 672,
+    "cores": 6144,
+    "tdp_w": 250,
+    "fp16_tflops": 62,
+    "stack": "CUDA",
+    "psu_w": 650
+   },
+   "perf": {
+    "index": 57,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 5070",
+    "cate": "그래픽카드",
+    "must": [
+     "5070"
+    ],
+    "not": [
+     "Ti",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-5060-ti-16",
+   "category": "gpu",
+   "name": "GeForce RTX 5060 Ti 16GB",
+   "maker": "NVIDIA",
+   "released": "2025-04",
+   "specs": {
+    "vram_gb": 16,
+    "mem_type": "GDDR7",
+    "bus_bit": 128,
+    "bandwidth_gbs": 448,
+    "cores": 4608,
+    "tdp_w": 180,
+    "fp16_tflops": 47,
+    "stack": "CUDA",
+    "psu_w": 600
+   },
+   "perf": {
+    "index": 43,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 5060 Ti 16GB",
+    "cate": "그래픽카드",
+    "must": [
+     "5060 Ti",
+     "16GB"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-5060-ti-8",
+   "category": "gpu",
+   "name": "GeForce RTX 5060 Ti 8GB",
+   "maker": "NVIDIA",
+   "released": "2025-04",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR7",
+    "bus_bit": 128,
+    "bandwidth_gbs": 448,
+    "cores": 4608,
+    "tdp_w": 180,
+    "fp16_tflops": 47,
+    "stack": "CUDA",
+    "psu_w": 600
+   },
+   "perf": {
+    "index": 41,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 5060 Ti 8GB",
+    "cate": "그래픽카드",
+    "must": [
+     "5060 Ti",
+     "8GB"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-5060",
+   "category": "gpu",
+   "name": "GeForce RTX 5060",
+   "maker": "NVIDIA",
+   "released": "2025-05",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR7",
+    "bus_bit": 128,
+    "bandwidth_gbs": 448,
+    "cores": 3840,
+    "tdp_w": 145,
+    "fp16_tflops": 38,
+    "stack": "CUDA",
+    "psu_w": 550
+   },
+   "perf": {
+    "index": 35,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 5060",
+    "cate": "그래픽카드",
+    "must": [
+     "5060"
+    ],
+    "not": [
+     "Ti",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-4090",
+   "category": "gpu",
+   "name": "GeForce RTX 4090",
+   "maker": "NVIDIA",
+   "released": "2022-10",
+   "specs": {
+    "vram_gb": 24,
+    "mem_type": "GDDR6X",
+    "bus_bit": 384,
+    "bandwidth_gbs": 1008,
+    "cores": 16384,
+    "tdp_w": 450,
+    "fp16_tflops": 165,
+    "stack": "CUDA",
+    "psu_w": 850
+   },
+   "perf": {
+    "index": 100,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 4090",
+    "cate": "그래픽카드",
+    "must": [
+     "4090"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "legacy",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-4070-super",
+   "category": "gpu",
+   "name": "GeForce RTX 4070 SUPER",
+   "maker": "NVIDIA",
+   "released": "2024-01",
+   "specs": {
+    "vram_gb": 12,
+    "mem_type": "GDDR6X",
+    "bus_bit": 192,
+    "bandwidth_gbs": 504,
+    "cores": 7168,
+    "tdp_w": 220,
+    "fp16_tflops": 71,
+    "stack": "CUDA",
+    "psu_w": 650
+   },
+   "perf": {
+    "index": 55,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 4070 SUPER",
+    "cate": "그래픽카드",
+    "must": [
+     "4070",
+     "SUPER"
+    ],
+    "not": [
+     "Ti",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-4060",
+   "category": "gpu",
+   "name": "GeForce RTX 4060",
+   "maker": "NVIDIA",
+   "released": "2023-06",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR6",
+    "bus_bit": 128,
+    "bandwidth_gbs": 272,
+    "cores": 3072,
+    "tdp_w": 115,
+    "fp16_tflops": 30,
+    "stack": "CUDA",
+    "psu_w": 550
+   },
+   "perf": {
+    "index": 30,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 4060",
+    "cate": "그래픽카드",
+    "must": [
+     "4060"
+    ],
+    "not": [
+     "Ti",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 제품 페이지",
+     "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rx-9070-xt",
+   "category": "gpu",
+   "name": "Radeon RX 9070 XT",
+   "maker": "AMD",
+   "released": "2025-03",
+   "specs": {
+    "vram_gb": 16,
+    "mem_type": "GDDR6",
+    "bus_bit": 256,
+    "bandwidth_gbs": 640,
+    "cores": 4096,
+    "tdp_w": 304,
+    "fp16_tflops": null,
+    "stack": "ROCm",
+    "psu_w": 750
+   },
+   "perf": {
+    "index": 72,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RX 9070 XT",
+    "cate": "그래픽카드",
+    "must": [
+     "9070 XT"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rx-9070",
+   "category": "gpu",
+   "name": "Radeon RX 9070",
+   "maker": "AMD",
+   "released": "2025-03",
+   "specs": {
+    "vram_gb": 16,
+    "mem_type": "GDDR6",
+    "bus_bit": 256,
+    "bandwidth_gbs": 640,
+    "cores": 3584,
+    "tdp_w": 220,
+    "fp16_tflops": null,
+    "stack": "ROCm",
+    "psu_w": 650
+   },
+   "perf": {
+    "index": 64,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RX 9070",
+    "cate": "그래픽카드",
+    "must": [
+     "9070"
+    ],
+    "not": [
+     "XT",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rx-9060-xt-16",
+   "category": "gpu",
+   "name": "Radeon RX 9060 XT 16GB",
+   "maker": "AMD",
+   "released": "2025-06",
+   "specs": {
+    "vram_gb": 16,
+    "mem_type": "GDDR6",
+    "bus_bit": 128,
+    "bandwidth_gbs": 320,
+    "cores": 2048,
+    "tdp_w": 160,
+    "fp16_tflops": null,
+    "stack": "ROCm",
+    "psu_w": 550
+   },
+   "perf": {
+    "index": 42,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RX 9060 XT 16GB",
+    "cate": "그래픽카드",
+    "must": [
+     "9060 XT",
+     "16GB"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rx-7900-xtx",
+   "category": "gpu",
+   "name": "Radeon RX 7900 XTX",
+   "maker": "AMD",
+   "released": "2022-12",
+   "specs": {
+    "vram_gb": 24,
+    "mem_type": "GDDR6",
+    "bus_bit": 384,
+    "bandwidth_gbs": 960,
+    "cores": 6144,
+    "tdp_w": 355,
+    "fp16_tflops": null,
+    "stack": "ROCm",
+    "psu_w": 800
+   },
+   "perf": {
+    "index": 77,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RX 7900 XTX",
+    "cate": "그래픽카드",
+    "must": [
+     "7900 XTX"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-rx-7800-xt",
+   "category": "gpu",
+   "name": "Radeon RX 7800 XT",
+   "maker": "AMD",
+   "released": "2023-09",
+   "specs": {
+    "vram_gb": 16,
+    "mem_type": "GDDR6",
+    "bus_bit": 256,
+    "bandwidth_gbs": 624,
+    "cores": 3840,
+    "tdp_w": 263,
+    "fp16_tflops": null,
+    "stack": "ROCm",
+    "psu_w": 700
+   },
+   "perf": {
+    "index": 50,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RX 7800 XT",
+    "cate": "그래픽카드",
+    "must": [
+     "7800 XT"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "gpu-arc-b580",
+   "category": "gpu",
+   "name": "Arc B580",
+   "maker": "Intel",
+   "released": "2024-12",
+   "specs": {
+    "vram_gb": 12,
+    "mem_type": "GDDR6",
+    "bus_bit": 192,
+    "bandwidth_gbs": 456,
+    "cores": 2560,
+    "tdp_w": 190,
+    "fp16_tflops": null,
+    "stack": "oneAPI",
+    "psu_w": 600
+   },
+   "perf": {
+    "index": 32,
+    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "ARC B580",
+    "cate": "그래픽카드",
+    "must": [
+     "B580"
+    ],
+    "not": [
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 제품 페이지",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/discrete-gpus/arc.html"
+    },
+    {
+     "title": "TechPowerUp GPU Database",
+     "url": "https://www.techpowerup.com/gpu-specs/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-9-9950x3d",
+   "category": "cpu",
+   "name": "Ryzen 9 9950X3D",
+   "maker": "AMD",
+   "released": "2025-03",
+   "specs": {
+    "socket": "AM5",
+    "cores": 16,
+    "threads": 32,
+    "boost_ghz": 5.7,
+    "tdp_w": 170,
+    "max_power_w": 230,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 128
+   },
+   "perf": {
+    "index": 99,
+    "multi": 98,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 9950X3D",
+    "cate": "CPU",
+    "must": [
+     "9950X3D"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-9-9950x",
+   "category": "cpu",
+   "name": "Ryzen 9 9950X",
+   "maker": "AMD",
+   "released": "2024-08",
+   "specs": {
+    "socket": "AM5",
+    "cores": 16,
+    "threads": 32,
+    "boost_ghz": 5.7,
+    "tdp_w": 170,
+    "max_power_w": 230,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 64
+   },
+   "perf": {
+    "index": 84,
+    "multi": 100,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 9950X",
+    "cate": "CPU",
+    "must": [
+     "9950X"
+    ],
+    "not": [
+     "X3D",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-9-9900x",
+   "category": "cpu",
+   "name": "Ryzen 9 9900X",
+   "maker": "AMD",
+   "released": "2024-08",
+   "specs": {
+    "socket": "AM5",
+    "cores": 12,
+    "threads": 24,
+    "boost_ghz": 5.6,
+    "tdp_w": 120,
+    "max_power_w": 162,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 64
+   },
+   "perf": {
+    "index": 82,
+    "multi": 78,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 9900X",
+    "cate": "CPU",
+    "must": [
+     "9900X"
+    ],
+    "not": [
+     "X3D",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-7-9800x3d",
+   "category": "cpu",
+   "name": "Ryzen 7 9800X3D",
+   "maker": "AMD",
+   "released": "2024-11",
+   "specs": {
+    "socket": "AM5",
+    "cores": 8,
+    "threads": 16,
+    "boost_ghz": 5.2,
+    "tdp_w": 120,
+    "max_power_w": 162,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 96
+   },
+   "perf": {
+    "index": 100,
+    "multi": 51,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 9800X3D",
+    "cate": "CPU",
+    "must": [
+     "9800X3D"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-7-9700x",
+   "category": "cpu",
+   "name": "Ryzen 7 9700X",
+   "maker": "AMD",
+   "released": "2024-08",
+   "specs": {
+    "socket": "AM5",
+    "cores": 8,
+    "threads": 16,
+    "boost_ghz": 5.5,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 32
+   },
+   "perf": {
+    "index": 81,
+    "multi": 50,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 9700X",
+    "cate": "CPU",
+    "must": [
+     "9700X"
+    ],
+    "not": [
+     "X3D",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-7-7800x3d",
+   "category": "cpu",
+   "name": "Ryzen 7 7800X3D",
+   "maker": "AMD",
+   "released": "2023-04",
+   "specs": {
+    "socket": "AM5",
+    "cores": 8,
+    "threads": 16,
+    "boost_ghz": 5.0,
+    "tdp_w": 120,
+    "max_power_w": 162,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 96
+   },
+   "perf": {
+    "index": 89,
+    "multi": 44,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 7800X3D",
+    "cate": "CPU",
+    "must": [
+     "7800X3D"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-5-9600x",
+   "category": "cpu",
+   "name": "Ryzen 5 9600X",
+   "maker": "AMD",
+   "released": "2024-08",
+   "specs": {
+    "socket": "AM5",
+    "cores": 6,
+    "threads": 12,
+    "boost_ghz": 5.4,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 32
+   },
+   "perf": {
+    "index": 78,
+    "multi": 39,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 9600X",
+    "cate": "CPU",
+    "must": [
+     "9600X"
+    ],
+    "not": [
+     "X3D",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-5-7500f",
+   "category": "cpu",
+   "name": "Ryzen 5 7500F",
+   "maker": "AMD",
+   "released": "2023-07",
+   "specs": {
+    "socket": "AM5",
+    "cores": 6,
+    "threads": 12,
+    "boost_ghz": 5.0,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR5",
+    "igpu": false,
+    "l3_mb": 32
+   },
+   "perf": {
+    "index": 73,
+    "multi": 34,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 7500F",
+    "cate": "CPU",
+    "must": [
+     "7500F"
+    ],
+    "not": [
+     "X3D",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-7-5700x3d",
+   "category": "cpu",
+   "name": "Ryzen 7 5700X3D",
+   "maker": "AMD",
+   "released": "2024-01",
+   "specs": {
+    "socket": "AM4",
+    "cores": 8,
+    "threads": 16,
+    "boost_ghz": 4.1,
+    "tdp_w": 105,
+    "max_power_w": 142,
+    "mem": "DDR4",
+    "igpu": false,
+    "l3_mb": 96
+   },
+   "perf": {
+    "index": 72,
+    "multi": 34,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 5700X3D",
+    "cate": "CPU",
+    "must": [
+     "5700X3D"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-ryzen-5-5600",
+   "category": "cpu",
+   "name": "Ryzen 5 5600",
+   "maker": "AMD",
+   "released": "2022-04",
+   "specs": {
+    "socket": "AM4",
+    "cores": 6,
+    "threads": 12,
+    "boost_ghz": 4.4,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR4",
+    "igpu": false,
+    "l3_mb": 32
+   },
+   "perf": {
+    "index": 60,
+    "multi": 27,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 5600",
+    "cate": "CPU",
+    "must": [
+     "5600"
+    ],
+    "not": [
+     "X3D",
+     "5600X",
+     "5600G",
+     "5600T",
+     "5600XT",
+     "5600GT",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-ultra-9-285k",
+   "category": "cpu",
+   "name": "Core Ultra 9 285K",
+   "maker": "Intel",
+   "released": "2024-10",
+   "specs": {
+    "socket": "LGA1851",
+    "cores": 24,
+    "threads": 24,
+    "boost_ghz": 5.7,
+    "tdp_w": 125,
+    "max_power_w": 250,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 36
+   },
+   "perf": {
+    "index": 80,
+    "multi": 95,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "285K",
+    "cate": "CPU",
+    "must": [
+     "285K"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 제품 페이지",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-ultra-7-265k",
+   "category": "cpu",
+   "name": "Core Ultra 7 265K",
+   "maker": "Intel",
+   "released": "2024-10",
+   "specs": {
+    "socket": "LGA1851",
+    "cores": 20,
+    "threads": 20,
+    "boost_ghz": 5.5,
+    "tdp_w": 125,
+    "max_power_w": 250,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 30
+   },
+   "perf": {
+    "index": 79,
+    "multi": 80,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "265K",
+    "cate": "CPU",
+    "must": [
+     "265K"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 제품 페이지",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-ultra-5-245k",
+   "category": "cpu",
+   "name": "Core Ultra 5 245K",
+   "maker": "Intel",
+   "released": "2024-10",
+   "specs": {
+    "socket": "LGA1851",
+    "cores": 14,
+    "threads": 14,
+    "boost_ghz": 5.2,
+    "tdp_w": 125,
+    "max_power_w": 159,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 24
+   },
+   "perf": {
+    "index": 74,
+    "multi": 58,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "245K",
+    "cate": "CPU",
+    "must": [
+     "245K"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 제품 페이지",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-i7-14700k",
+   "category": "cpu",
+   "name": "Core i7-14700K",
+   "maker": "Intel",
+   "released": "2023-10",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 20,
+    "threads": 28,
+    "boost_ghz": 5.6,
+    "tdp_w": 125,
+    "max_power_w": 253,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "l3_mb": 33
+   },
+   "perf": {
+    "index": 82,
+    "multi": 78,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "14700K",
+    "cate": "CPU",
+    "must": [
+     "14700K"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 제품 페이지",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-i5-14400f",
+   "category": "cpu",
+   "name": "Core i5-14400F",
+   "maker": "Intel",
+   "released": "2024-01",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 10,
+    "threads": 16,
+    "boost_ghz": 4.7,
+    "tdp_w": 65,
+    "max_power_w": 148,
+    "mem": "DDR4/DDR5",
+    "igpu": false,
+    "l3_mb": 20
+   },
+   "perf": {
+    "index": 70,
+    "multi": 38,
+    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "14400F",
+    "cate": "CPU",
+    "must": [
+     "14400F"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 제품 페이지",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/processors/core.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ram-ddr5-6000-16",
+   "category": "ram",
+   "name": "DDR5-6000 16GB (한 장)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "DDR5",
+    "capacity_gb": 16,
+    "speed_mts": 6000,
+    "cl": 30,
+    "dual_bandwidth_gbs": 96,
+    "latency_ns": 10.0
+   },
+   "perf": {
+    "index": 96,
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "DDR5-6000 16GB",
+    "cate": "RAM",
+    "must": [
+     "DDR5-6000",
+     "16GB"
+    ],
+    "not": [
+     "노트북",
+     "SO-DIMM",
+     "ECC",
+     "REG",
+     "x2",
+     "2개"
+    ]
+   },
+   "sources": [
+    {
+     "title": "JEDEC DDR5 표준(JESD79-5)",
+     "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ram-ddr5-5600-16",
+   "category": "ram",
+   "name": "DDR5-5600 16GB (한 장)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "DDR5",
+    "capacity_gb": 16,
+    "speed_mts": 5600,
+    "cl": 46,
+    "dual_bandwidth_gbs": 90,
+    "latency_ns": 16.4
+   },
+   "perf": {
+    "index": 90,
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "DDR5-5600 16GB",
+    "cate": "RAM",
+    "must": [
+     "DDR5-5600",
+     "16GB"
+    ],
+    "not": [
+     "노트북",
+     "SO-DIMM",
+     "ECC",
+     "REG",
+     "x2",
+     "2개"
+    ]
+   },
+   "sources": [
+    {
+     "title": "JEDEC DDR5 표준(JESD79-5)",
+     "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ram-ddr5-5600-32",
+   "category": "ram",
+   "name": "DDR5-5600 32GB (한 장)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "DDR5",
+    "capacity_gb": 32,
+    "speed_mts": 5600,
+    "cl": 46,
+    "dual_bandwidth_gbs": 90,
+    "latency_ns": 16.4
+   },
+   "perf": {
+    "index": 90,
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "DDR5-5600 32GB",
+    "cate": "RAM",
+    "must": [
+     "DDR5-5600",
+     "32GB"
+    ],
+    "not": [
+     "노트북",
+     "SO-DIMM",
+     "ECC",
+     "REG",
+     "x2",
+     "2개"
+    ]
+   },
+   "sources": [
+    {
+     "title": "JEDEC DDR5 표준(JESD79-5)",
+     "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ram-ddr5-6000-32",
+   "category": "ram",
+   "name": "DDR5-6000 32GB (한 장)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "DDR5",
+    "capacity_gb": 32,
+    "speed_mts": 6000,
+    "cl": 30,
+    "dual_bandwidth_gbs": 96,
+    "latency_ns": 10.0
+   },
+   "perf": {
+    "index": 96,
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "DDR5-6000 32GB",
+    "cate": "RAM",
+    "must": [
+     "DDR5-6000",
+     "32GB"
+    ],
+    "not": [
+     "노트북",
+     "SO-DIMM",
+     "ECC",
+     "REG",
+     "x2",
+     "2개"
+    ]
+   },
+   "sources": [
+    {
+     "title": "JEDEC DDR5 표준(JESD79-5)",
+     "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ram-ddr4-3200-16",
+   "category": "ram",
+   "name": "DDR4-3200 16GB (한 장)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "DDR4",
+    "capacity_gb": 16,
+    "speed_mts": 3200,
+    "cl": 22,
+    "dual_bandwidth_gbs": 51,
+    "latency_ns": 13.8
+   },
+   "perf": {
+    "index": 51,
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "DDR4-3200 16GB",
+    "cate": "RAM",
+    "must": [
+     "DDR4-3200",
+     "16GB"
+    ],
+    "not": [
+     "노트북",
+     "SO-DIMM",
+     "ECC",
+     "REG",
+     "x2",
+     "2개"
+    ]
+   },
+   "sources": [
+    {
+     "title": "JEDEC DDR5 표준(JESD79-5)",
+     "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ram-ddr4-3200-32",
+   "category": "ram",
+   "name": "DDR4-3200 32GB (한 장)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "DDR4",
+    "capacity_gb": 32,
+    "speed_mts": 3200,
+    "cl": 22,
+    "dual_bandwidth_gbs": 51,
+    "latency_ns": 13.8
+   },
+   "perf": {
+    "index": 51,
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "DDR4-3200 32GB",
+    "cate": "RAM",
+    "must": [
+     "DDR4-3200",
+     "32GB"
+    ],
+    "not": [
+     "노트북",
+     "SO-DIMM",
+     "ECC",
+     "REG",
+     "x2",
+     "2개"
+    ]
+   },
+   "sources": [
+    {
+     "title": "JEDEC DDR5 표준(JESD79-5)",
+     "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ssd-samsung-990-pro-2tb",
+   "category": "ssd",
+   "name": "삼성 990 PRO 2TB",
+   "maker": "삼성전자",
+   "released": "2022-10",
+   "specs": {
+    "interface": "PCIe 4.0 x4",
+    "form": "M.2 2280",
+    "capacity_gb": 2000,
+    "seq_read_mbs": 7450,
+    "seq_write_mbs": 6900,
+    "tbw": 1200,
+    "dram": true,
+    "nand": "TLC"
+   },
+   "perf": {
+    "index": 74,
+    "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "990 PRO 2TB",
+    "cate": "SSD",
+    "must": [
+     "990 PRO",
+     "2TB"
+    ],
+    "not": [
+     "히트싱크"
+    ]
+   },
+   "sources": [
+    {
+     "title": "삼성전자 공식 제품 페이지",
+     "url": "https://semiconductor.samsung.com/consumer-storage/internal-ssd/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ssd-samsung-990-pro-1tb",
+   "category": "ssd",
+   "name": "삼성 990 PRO 1TB",
+   "maker": "삼성전자",
+   "released": "2022-10",
+   "specs": {
+    "interface": "PCIe 4.0 x4",
+    "form": "M.2 2280",
+    "capacity_gb": 1000,
+    "seq_read_mbs": 7450,
+    "seq_write_mbs": 6900,
+    "tbw": 600,
+    "dram": true,
+    "nand": "TLC"
+   },
+   "perf": {
+    "index": 74,
+    "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "990 PRO 1TB",
+    "cate": "SSD",
+    "must": [
+     "990 PRO",
+     "1TB"
+    ],
+    "not": [
+     "히트싱크"
+    ]
+   },
+   "sources": [
+    {
+     "title": "삼성전자 공식 제품 페이지",
+     "url": "https://semiconductor.samsung.com/consumer-storage/internal-ssd/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ssd-samsung-990-evo-plus-1tb",
+   "category": "ssd",
+   "name": "삼성 990 EVO Plus 1TB",
+   "maker": "삼성전자",
+   "released": "2024-10",
+   "specs": {
+    "interface": "PCIe 4.0 x4 / 5.0 x2",
+    "form": "M.2 2280",
+    "capacity_gb": 1000,
+    "seq_read_mbs": 7150,
+    "seq_write_mbs": 6300,
+    "tbw": 600,
+    "dram": false,
+    "nand": "TLC"
+   },
+   "perf": {
+    "index": 72,
+    "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "990 EVO Plus 1TB",
+    "cate": "SSD",
+    "must": [
+     "990 EVO Plus",
+     "1TB"
+    ],
+    "not": [
+     "히트싱크"
+    ]
+   },
+   "sources": [
+    {
+     "title": "삼성전자 공식 제품 페이지",
+     "url": "https://semiconductor.samsung.com/consumer-storage/internal-ssd/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ssd-wd-sn850x-1tb",
+   "category": "ssd",
+   "name": "WD_BLACK SN850X 1TB",
+   "maker": "WD",
+   "released": "2022-08",
+   "specs": {
+    "interface": "PCIe 4.0 x4",
+    "form": "M.2 2280",
+    "capacity_gb": 1000,
+    "seq_read_mbs": 7300,
+    "seq_write_mbs": 6300,
+    "tbw": 600,
+    "dram": true,
+    "nand": "TLC"
+   },
+   "perf": {
+    "index": 73,
+    "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "SN850X 1TB",
+    "cate": "SSD",
+    "must": [
+     "SN850X",
+     "1TB"
+    ],
+    "not": [
+     "히트싱크"
+    ]
+   },
+   "sources": [
+    {
+     "title": "WD 공식 제품 페이지",
+     "url": "https://www.westerndigital.com/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ssd-skhynix-p41-1tb",
+   "category": "ssd",
+   "name": "SK하이닉스 Platinum P41 1TB",
+   "maker": "SK하이닉스",
+   "released": "2022-05",
+   "specs": {
+    "interface": "PCIe 4.0 x4",
+    "form": "M.2 2280",
+    "capacity_gb": 1000,
+    "seq_read_mbs": 7000,
+    "seq_write_mbs": 6500,
+    "tbw": 750,
+    "dram": true,
+    "nand": "TLC"
+   },
+   "perf": {
+    "index": 70,
+    "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "P41 1TB",
+    "cate": "SSD",
+    "must": [
+     "P41",
+     "1TB"
+    ],
+    "not": [
+     "히트싱크"
+    ]
+   },
+   "sources": [
+    {
+     "title": "SK하이닉스 공식 제품 페이지",
+     "url": "https://ssd.skhynix.com/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "ssd-crucial-p3-plus-1tb",
+   "category": "ssd",
+   "name": "Crucial P3 Plus 1TB",
+   "maker": "Micron",
+   "released": "2022-08",
+   "specs": {
+    "interface": "PCIe 4.0 x4",
+    "form": "M.2 2280",
+    "capacity_gb": 1000,
+    "seq_read_mbs": 5000,
+    "seq_write_mbs": 3600,
+    "tbw": 220,
+    "dram": false,
+    "nand": "QLC"
+   },
+   "perf": {
+    "index": 50,
+    "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "P3 Plus 1TB",
+    "cate": "SSD",
+    "must": [
+     "P3 Plus",
+     "1TB"
+    ],
+    "not": [
+     "히트싱크"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Micron 공식 제품 페이지",
+     "url": "https://www.crucial.com/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "hdd-seagate-barracuda-2tb",
+   "category": "hdd",
+   "name": "Seagate BarraCuda 2TB (ST2000DM008)",
+   "maker": "Seagate",
+   "released": null,
+   "specs": {
+    "capacity_tb": 2,
+    "rpm": 7200,
+    "cache_mb": 256,
+    "cmr": false,
+    "use": "데스크톱"
+   },
+   "perf": {
+    "index": 20,
+    "basis": "용량(TB) × 10",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "ST2000DM008",
+    "cate": "HDD",
+    "must": [
+     "BarraCuda",
+     "2TB"
+    ],
+    "not": [
+     "외장",
+     "Pro"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Seagate 공식 데이터시트",
+     "url": "https://www.seagate.com/kr/ko/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "hdd-wd-blue-2tb",
+   "category": "hdd",
+   "name": "WD Blue 2TB (WD20EZBX)",
+   "maker": "WD",
+   "released": null,
+   "specs": {
+    "capacity_tb": 2,
+    "rpm": 7200,
+    "cache_mb": 256,
+    "cmr": true,
+    "use": "데스크톱"
+   },
+   "perf": {
+    "index": 20,
+    "basis": "용량(TB) × 10",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "WD20EZBX",
+    "cate": "HDD",
+    "must": [
+     "WD Blue",
+     "2TB"
+    ],
+    "not": [
+     "외장",
+     "Pro"
+    ]
+   },
+   "sources": [
+    {
+     "title": "WD 공식 데이터시트",
+     "url": "https://www.westerndigital.com/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "hdd-seagate-ironwolf-4tb",
+   "category": "hdd",
+   "name": "Seagate IronWolf 4TB (ST4000VN006)",
+   "maker": "Seagate",
+   "released": null,
+   "specs": {
+    "capacity_tb": 4,
+    "rpm": 5400,
+    "cache_mb": 256,
+    "cmr": true,
+    "use": "NAS"
+   },
+   "perf": {
+    "index": 40,
+    "basis": "용량(TB) × 10",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "ST4000VN006",
+    "cate": "HDD",
+    "must": [
+     "IronWolf",
+     "4TB"
+    ],
+    "not": [
+     "외장",
+     "Pro"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Seagate 공식 데이터시트",
+     "url": "https://www.seagate.com/kr/ko/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "hdd-wd-red-plus-4tb",
+   "category": "hdd",
+   "name": "WD Red Plus 4TB (WD40EFPX)",
+   "maker": "WD",
+   "released": null,
+   "specs": {
+    "capacity_tb": 4,
+    "rpm": 5400,
+    "cache_mb": 256,
+    "cmr": true,
+    "use": "NAS"
+   },
+   "perf": {
+    "index": 40,
+    "basis": "용량(TB) × 10",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "WD40EFPX",
+    "cate": "HDD",
+    "must": [
+     "Red Plus",
+     "4TB"
+    ],
+    "not": [
+     "외장",
+     "Pro"
+    ]
+   },
+   "sources": [
+    {
+     "title": "WD 공식 데이터시트",
+     "url": "https://www.westerndigital.com/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-x870e",
+   "category": "mainboard",
+   "name": "AMD X870E",
+   "maker": "칩셋 AMD",
+   "released": null,
+   "specs": {
+    "socket": "AM5",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 5.0",
+    "pcie_m2": "PCIe 5.0",
+    "cpu_oc": true,
+    "usb4": true,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 95,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "X870E",
+    "cate": "메인보드",
+    "must": [
+     "X870E"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.amd.com/ko/products/processors/chipsets/am5.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-b850",
+   "category": "mainboard",
+   "name": "AMD B850",
+   "maker": "칩셋 AMD",
+   "released": null,
+   "specs": {
+    "socket": "AM5",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 4.0(5.0 선택)",
+    "pcie_m2": "PCIe 5.0",
+    "cpu_oc": true,
+    "usb4": false,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 70,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "B850M",
+    "cate": "메인보드",
+    "must": [
+     "B850"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.amd.com/ko/products/processors/chipsets/am5.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-b650",
+   "category": "mainboard",
+   "name": "AMD B650",
+   "maker": "칩셋 AMD",
+   "released": null,
+   "specs": {
+    "socket": "AM5",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 4.0",
+    "pcie_m2": "PCIe 4.0(5.0 선택)",
+    "cpu_oc": true,
+    "usb4": false,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 60,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "B650M",
+    "cate": "메인보드",
+    "must": [
+     "B650"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.amd.com/ko/products/processors/chipsets/am5.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-a620",
+   "category": "mainboard",
+   "name": "AMD A620",
+   "maker": "칩셋 AMD",
+   "released": null,
+   "specs": {
+    "socket": "AM5",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 4.0",
+    "pcie_m2": "PCIe 4.0",
+    "cpu_oc": false,
+    "usb4": false,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 35,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "A620M",
+    "cate": "메인보드",
+    "must": [
+     "A620"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.amd.com/ko/products/processors/chipsets/am5.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-b550",
+   "category": "mainboard",
+   "name": "AMD B550",
+   "maker": "칩셋 AMD",
+   "released": null,
+   "specs": {
+    "socket": "AM4",
+    "mem": "DDR4",
+    "pcie_gpu": "PCIe 4.0",
+    "pcie_m2": "PCIe 4.0",
+    "cpu_oc": true,
+    "usb4": false,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 40,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "B550M",
+    "cate": "메인보드",
+    "must": [
+     "B550"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-z890",
+   "category": "mainboard",
+   "name": "Intel Z890",
+   "maker": "칩셋 Intel",
+   "released": null,
+   "specs": {
+    "socket": "LGA1851",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 5.0",
+    "pcie_m2": "PCIe 5.0",
+    "cpu_oc": true,
+    "usb4": true,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 90,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "Z890",
+    "cate": "메인보드",
+    "must": [
+     "Z890"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-b860",
+   "category": "mainboard",
+   "name": "Intel B860",
+   "maker": "칩셋 Intel",
+   "released": null,
+   "specs": {
+    "socket": "LGA1851",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 5.0",
+    "pcie_m2": "PCIe 4.0",
+    "cpu_oc": false,
+    "usb4": false,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 60,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "B860M",
+    "cate": "메인보드",
+    "must": [
+     "B860"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-b760-ddr5",
+   "category": "mainboard",
+   "name": "Intel B760 (DDR5)",
+   "maker": "칩셋 Intel",
+   "released": null,
+   "specs": {
+    "socket": "LGA1700",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 4.0",
+    "pcie_m2": "PCIe 4.0",
+    "cpu_oc": false,
+    "usb4": false,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 50,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "B760M",
+    "cate": "메인보드",
+    "must": [
+     "B760"
+    ],
+    "not": [
+     "DDR4",
+     "D4"
+    ]
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "mb-b760-ddr4",
+   "category": "mainboard",
+   "name": "Intel B760 (DDR4)",
+   "maker": "칩셋 Intel",
+   "released": null,
+   "specs": {
+    "socket": "LGA1700",
+    "mem": "DDR4",
+    "pcie_gpu": "PCIe 4.0",
+    "pcie_m2": "PCIe 4.0",
+    "cpu_oc": false,
+    "usb4": false,
+    "forms": "ATX · M-ATX"
+   },
+   "perf": {
+    "index": 45,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "B760M",
+    "cate": "메인보드",
+    "must": [
+     "B760",
+     "DDR4|D4"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "칩셋 제조사 사양",
+     "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "psu-600-bronze",
+   "category": "psu",
+   "name": "600W 80PLUS 브론즈",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "watt": 600,
+    "rating": "Bronze",
+    "atx3": false,
+    "pcie_12v2x6": false,
+    "efficiency_50pct": 85
+   },
+   "perf": {
+    "index": 60,
+    "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "600W 80PLUS BRONZE",
+    "cate": "파워",
+    "must": [
+     "600W",
+     "BRONZE|브론즈"
+    ],
+    "not": [
+     "SFX"
+    ]
+   },
+   "sources": [
+    {
+     "title": "80 PLUS 인증 기준(CLEAResult)",
+     "url": "https://www.clearesult.com/80plus/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "psu-700-bronze",
+   "category": "psu",
+   "name": "700W 80PLUS 브론즈",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "watt": 700,
+    "rating": "Bronze",
+    "atx3": false,
+    "pcie_12v2x6": false,
+    "efficiency_50pct": 85
+   },
+   "perf": {
+    "index": 70,
+    "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "700W 80PLUS BRONZE",
+    "cate": "파워",
+    "must": [
+     "700W",
+     "BRONZE|브론즈"
+    ],
+    "not": [
+     "SFX"
+    ]
+   },
+   "sources": [
+    {
+     "title": "80 PLUS 인증 기준(CLEAResult)",
+     "url": "https://www.clearesult.com/80plus/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "psu-750-gold-atx3",
+   "category": "psu",
+   "name": "750W 80PLUS 골드 ATX3.1",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "watt": 750,
+    "rating": "Gold",
+    "atx3": true,
+    "pcie_12v2x6": true,
+    "efficiency_50pct": 90
+   },
+   "perf": {
+    "index": 80,
+    "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "750W 80PLUS GOLD ATX3.1",
+    "cate": "파워",
+    "must": [
+     "750W",
+     "GOLD|골드"
+    ],
+    "not": [
+     "SFX"
+    ]
+   },
+   "sources": [
+    {
+     "title": "80 PLUS 인증 기준(CLEAResult)",
+     "url": "https://www.clearesult.com/80plus/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "psu-850-gold-atx3",
+   "category": "psu",
+   "name": "850W 80PLUS 골드 ATX3.1",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "watt": 850,
+    "rating": "Gold",
+    "atx3": true,
+    "pcie_12v2x6": true,
+    "efficiency_50pct": 90
+   },
+   "perf": {
+    "index": 90,
+    "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "850W 80PLUS GOLD ATX3.1",
+    "cate": "파워",
+    "must": [
+     "850W",
+     "GOLD|골드"
+    ],
+    "not": [
+     "SFX"
+    ]
+   },
+   "sources": [
+    {
+     "title": "80 PLUS 인증 기준(CLEAResult)",
+     "url": "https://www.clearesult.com/80plus/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "psu-1000-gold-atx3",
+   "category": "psu",
+   "name": "1000W 80PLUS 골드 ATX3.1",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "watt": 1000,
+    "rating": "Gold",
+    "atx3": true,
+    "pcie_12v2x6": true,
+    "efficiency_50pct": 90
+   },
+   "perf": {
+    "index": 105,
+    "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "1000W 80PLUS GOLD ATX3.1",
+    "cate": "파워",
+    "must": [
+     "1000W",
+     "GOLD|골드"
+    ],
+    "not": [
+     "SFX"
+    ]
+   },
+   "sources": [
+    {
+     "title": "80 PLUS 인증 기준(CLEAResult)",
+     "url": "https://www.clearesult.com/80plus/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "psu-1200-platinum-atx3",
+   "category": "psu",
+   "name": "1200W 80PLUS 플래티넘 ATX3.1",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "watt": 1200,
+    "rating": "Platinum",
+    "atx3": true,
+    "pcie_12v2x6": true,
+    "efficiency_50pct": 92
+   },
+   "perf": {
+    "index": 128,
+    "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "1200W 80PLUS PLATINUM ATX3.1",
+    "cate": "파워",
+    "must": [
+     "1200W",
+     "PLATINUM|플래티넘"
+    ],
+    "not": [
+     "SFX"
+    ]
+   },
+   "sources": [
+    {
+     "title": "80 PLUS 인증 기준(CLEAResult)",
+     "url": "https://www.clearesult.com/80plus/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cooler-air-single",
+   "category": "cooler",
+   "name": "공랭 싱글타워 (120mm)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "공랭",
+    "cpu_watt": 180,
+    "height_mm": 155,
+    "radiator_mm": null
+   },
+   "perf": {
+    "index": 60,
+    "basis": "소음 없이 감당하는 CPU 전력(W) ÷ 3 — 리뷰 평균에서 잡은 급",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "싱글타워 CPU쿨러",
+    "cate": "쿨러",
+    "must": [],
+    "not": [
+     "케이스쿨러",
+     "VGA",
+     "써멀"
+    ]
+   },
+   "price_basis": "median",
+   "sources": [
+    {
+     "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
+     "url": "https://www.noctua.at/en/tdp-guide"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cooler-air-dual",
+   "category": "cooler",
+   "name": "공랭 듀얼타워",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "공랭",
+    "cpu_watt": 250,
+    "height_mm": 158,
+    "radiator_mm": null
+   },
+   "perf": {
+    "index": 83,
+    "basis": "소음 없이 감당하는 CPU 전력(W) ÷ 3 — 리뷰 평균에서 잡은 급",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "듀얼타워 CPU쿨러",
+    "cate": "쿨러",
+    "must": [],
+    "not": [
+     "케이스쿨러",
+     "VGA",
+     "써멀"
+    ]
+   },
+   "price_basis": "median",
+   "sources": [
+    {
+     "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
+     "url": "https://www.noctua.at/en/tdp-guide"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cooler-aio-240",
+   "category": "cooler",
+   "name": "일체형 수랭 240mm",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "수랭",
+    "cpu_watt": 250,
+    "height_mm": null,
+    "radiator_mm": 240
+   },
+   "perf": {
+    "index": 83,
+    "basis": "소음 없이 감당하는 CPU 전력(W) ÷ 3 — 리뷰 평균에서 잡은 급",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "240 수랭쿨러",
+    "cate": "쿨러",
+    "must": [
+     "240"
+    ],
+    "not": [
+     "케이스쿨러",
+     "VGA",
+     "써멀"
+    ]
+   },
+   "price_basis": "median",
+   "sources": [
+    {
+     "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
+     "url": "https://www.noctua.at/en/tdp-guide"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "cooler-aio-360",
+   "category": "cooler",
+   "name": "일체형 수랭 360mm",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "type": "수랭",
+    "cpu_watt": 320,
+    "height_mm": null,
+    "radiator_mm": 360
+   },
+   "perf": {
+    "index": 107,
+    "basis": "소음 없이 감당하는 CPU 전력(W) ÷ 3 — 리뷰 평균에서 잡은 급",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "360 수랭쿨러",
+    "cate": "쿨러",
+    "must": [
+     "360"
+    ],
+    "not": [
+     "케이스쿨러",
+     "VGA",
+     "써멀"
+    ]
+   },
+   "price_basis": "median",
+   "sources": [
+    {
+     "title": "제조사 TDP 표기(참고용 — 제조사마다 기준이 다르다)",
+     "url": "https://www.noctua.at/en/tdp-guide"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "case-matx-mini",
+   "category": "case",
+   "name": "미니타워 (M-ATX)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "form": "M-ATX",
+    "max_gpu_mm": 330,
+    "max_cooler_mm": 160,
+    "max_radiator_mm": 240
+   },
+   "perf": {
+    "index": 66,
+    "basis": "그래픽카드 장착 길이 ÷ 5 — 이 급의 흔한 값(제품마다 다르다)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "미니타워 케이스",
+    "cate": "케이스",
+    "must": [],
+    "not": [
+     "파워포함"
+    ]
+   },
+   "price_basis": "median",
+   "sources": [
+    {
+     "title": "ATX 규격(Intel ATX Version 3.1)",
+     "url": "https://www.intel.com/content/www/us/en/content-details/782152/atx-version-3-1-multi-rail-desktop-platform-power-supply-design-guide.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "case-atx-mid",
+   "category": "case",
+   "name": "미들타워 (ATX)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "form": "ATX",
+    "max_gpu_mm": 400,
+    "max_cooler_mm": 170,
+    "max_radiator_mm": 360
+   },
+   "perf": {
+    "index": 80,
+    "basis": "그래픽카드 장착 길이 ÷ 5 — 이 급의 흔한 값(제품마다 다르다)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "미들타워 케이스",
+    "cate": "케이스",
+    "must": [],
+    "not": [
+     "파워포함"
+    ]
+   },
+   "price_basis": "median",
+   "sources": [
+    {
+     "title": "ATX 규격(Intel ATX Version 3.1)",
+     "url": "https://www.intel.com/content/www/us/en/content-details/782152/atx-version-3-1-multi-rail-desktop-platform-power-supply-design-guide.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "case-atx-full",
+   "category": "case",
+   "name": "빅타워 (E-ATX)",
+   "maker": "여러 제조사",
+   "released": null,
+   "specs": {
+    "form": "E-ATX",
+    "max_gpu_mm": 450,
+    "max_cooler_mm": 185,
+    "max_radiator_mm": 420
+   },
+   "perf": {
+    "index": 90,
+    "basis": "그래픽카드 장착 길이 ÷ 5 — 이 급의 흔한 값(제품마다 다르다)",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "빅타워 케이스",
+    "cate": "케이스",
+    "must": [],
+    "not": [
+     "파워포함"
+    ]
+   },
+   "price_basis": "median",
+   "sources": [
+    {
+     "title": "ATX 규격(Intel ATX Version 3.1)",
+     "url": "https://www.intel.com/content/www/us/en/content-details/782152/atx-version-3-1-multi-rail-desktop-platform-power-supply-design-guide.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}
