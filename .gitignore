@@ -65,6 +65,8 @@ jd-viewer/bin/.refresh-learning.lock/
 # 며칠 막혀 뷰어가 낡은 채로 서비스됐다). 새 서버로 옮길 때는 deploy/seed-server.sh
 # 가 rsync 로 나른다. 사람이 쓴 파일(favicon.svg, icons.svg)은 그대로 추적한다.
 jd-viewer/public/*.json
+# 부품 가격 원장 — crawl_hardware 가 매일 쌓는다(부품 목록·등급·기준값은 hw-engine 이 쓰고 추적한다).
+jd-viewer/public/hardware/prices.json
 jd-viewer/public/mindmap.md
 jd-viewer/public/blog_keywords.md
 catch_capture/dashboard/data.json

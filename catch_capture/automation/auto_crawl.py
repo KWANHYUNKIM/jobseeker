@@ -510,10 +510,10 @@ def run_cycle(keyword: str, count: int) -> bool:
     rc_fail = 0
     for kw in kws:
         # 멀티 키워드면 키워드별 단일 통합은 생략하고 마지막에 1회만 통합한다.
-        # 기술 블로그·외주 프로젝트는 키워드와 무관 → 사이클당 1회(마지막 키워드)만 실행
+        # 기술 블로그·외주 프로젝트·부품 가격은 키워드와 무관 → 사이클당 1회(마지막 키워드)만 실행
         last = kw == kws[-1]
         rc = run_foreground(kw, count, KEYWORD_SITES + (AGNOSTIC_SITES if last else []),
-                            do_aggregate=not multi, do_blog=last, do_freelance=last)
+                            do_aggregate=not multi, do_blog=last, do_freelance=last, do_hardware=last)
         if rc != 0:
             rc_fail += 1
             log(f"[crawl] '{kw}' 일부 실패(rc={rc})")

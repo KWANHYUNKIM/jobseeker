@@ -23,6 +23,7 @@
     python crawl_all.py start 개발자 30 --no-blog        # 기술 블로그 단계 스킵
     python crawl_all.py start 개발자 30 --blog-per-feed 40  # 블로그 피드당 수집 개수
     python crawl_all.py start 개발자 30 --no-freelance   # 외주·프리 단계 스킵
+    python crawl_all.py start 개발자 30 --no-hardware    # PC 부품 가격 단계 스킵
 """
 from __future__ import annotations
 
@@ -119,8 +120,9 @@ def _parse_sources(only: str | None) -> list[str]:
 
 def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: bool = True,
                    depth: int | None = None, do_blog: bool = True,
-                   blog_per_feed: int = BLOG_PER_FEED_DEFAULT, do_freelance: bool = True) -> int:
-    """지정한 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 + 외주·프리 크롤 호출."""
+                   blog_per_feed: int = BLOG_PER_FEED_DEFAULT, do_freelance: bool = True,
+                   do_hardware: bool = True) -> int:
+    """지정한 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 + 외주·프리 + 부품 가격 크롤 호출."""
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
@@ -271,6 +273,26 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
                 orch.freelance_finished(False, None, None, None,
                                         (datetime.now() - fl_start).total_seconds())
 
+    if do_hardware:
+        # PC 부품 가격. 하루 한 번만 실제로 돈다(crawlers/crawl_hardware.py 머리말) —
+        # 그날 이미 받았으면 파일만 보고 바로 돌아온다. 실패해도 사이클은 계속 간다.
+        print(f"\n----- PC 부품 가격 크롤 -----", flush=True)
+        hw_start = datetime.now()
+        try:
+            sys.path.insert(0, str(BASE_DIR))
+            from crawlers.crawl_hardware import run as _hw_run
+            stats = _hw_run()
+            elapsed = (datetime.now() - hw_start).total_seconds()
+            if not stats.get("skipped"):
+                print(f"[OK] 부품 가격 완료({elapsed:.0f}s) — 부품 {stats.get('total')}개 중 "
+                      f"{stats.get('priced')}개 가격, 실패 {stats.get('failed')} "
+                      f"→ jd-viewer/public/hardware/prices.json", flush=True)
+            if stats.get("failed"):
+                failures.append("hardware")
+        except Exception as e:
+            print(f"[!] 부품 가격 크롤 실패: {e}", flush=True)
+            failures.append("hardware")
+
     total = (datetime.now() - overall_start).total_seconds()
     print(f"\n========== 전체 완료 ({total:.0f}s) ==========", flush=True)
     if failures:
@@ -348,7 +370,11 @@ def cmd_logs(n: int) -> None:
     sys.stdout.write(b"".join(lines).decode("utf-8", errors="replace"))
 
 
-def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | None, bool, int, bool]:
+def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | None, bool, int, bool, bool]:
+    do_hardware = True
+    if "--no-hardware" in args:
+        do_hardware = False
+        args.remove("--no-hardware")
     do_freelance = True
     if "--no-freelance" in args:
         do_freelance = False
@@ -387,7 +413,8 @@ def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | N
         del args[i:i + 2]
     keyword = args[0] if len(args) > 0 else "개발자"
     target = int(args[1]) if len(args) > 1 else 20
-    return keyword, target, _parse_sources(only), do_aggregate, depth, do_blog, blog_per_feed, do_freelance
+    return (keyword, target, _parse_sources(only), do_aggregate, depth, do_blog, blog_per_feed, do_freelance,
+            do_hardware)
 
 
 def main() -> None:
@@ -408,9 +435,10 @@ def main() -> None:
         n = int(rest[0]) if rest and rest[0].isdigit() else 100
         cmd_logs(n)
     elif sub == "run":
-        keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed, do_freelance = _parse_run_args(rest)
+        (keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed, do_freelance,
+         do_hardware) = _parse_run_args(rest)
         sys.exit(run_foreground(keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed,
-                                do_freelance))
+                                do_freelance, do_hardware))
     else:
         print(f"[!] 알 수 없는 명령: {sub}", flush=True)
         print(__doc__)
