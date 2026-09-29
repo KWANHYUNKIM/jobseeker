@@ -865,6 +865,66 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "gpu-rx-9060-xt-8",
+   "category": "gpu",
+   "name": "Radeon RX 9060 XT 8GB",
+   "maker": "AMD",
+   "released": "2025-06",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR6",
+    "bus_bit": 128,
+    "bandwidth_gbs": 320,
+    "cores": 2048,
+    "tdp_w": null,
+    "fp16_tflops": null,
+    "stack": "ROCm",
+    "psu_w": 450,
+    "boost_ghz": 3.13,
+    "fp16_matrix_dense_tflops": 103,
+    "note": "AMD 공식 페이지는 16GB 판 값만 적는다(보드 전력 160W). 8GB 판은 같은 칩(2048 SP · 128-bit · 20Gbps → 320GB/s)이고 보드 전력은 공식 표에 없어 비운다."
+   },
+   "perf": {
+    "index": 44,
+    "confidence": "low",
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터 — Tom's Hardware 한 표의 RX 9060 XT 8GB 37.3%(5090 = 100) ÷ 4090 85.7% = 43.5. 16GB 판(47)보다 낮은 것은 1440p 에서 VRAM 이 모자라는 게임 때문"
+   },
+   "price_query": {
+    "q": "RX 9060 XT 8GB",
+    "cate": "그래픽카드",
+    "must": [
+     "9060 XT",
+     "8GB"
+    ],
+    "not": [
+     "노트북",
+     "16GB"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — RX 9060 XT",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9060xt.html"
+    },
+    {
+     "title": "AMD 공식 제품 페이지",
+     "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/radeon-rx-9060xt/3248000-radeon-rx-9060xt.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9060xt.html"
+   },
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "gpu-rx-9060",
    "category": "gpu",
    "name": "Radeon RX 9060",
