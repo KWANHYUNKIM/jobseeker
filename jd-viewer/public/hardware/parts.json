@@ -1743,10 +1743,10 @@
     "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
-    "index": 64,
+    "index": 57,
     "multi": 32,
-    "basis": "추정 — 7500F(게임 73·멀티 34)에서 L3 가 절반(16MB)인 만큼 게임을 깎았다. 실측 대기",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100 · 멀티: 9950X = 100. Tom's 표에 없어 이웃으로 옮겼다 — TechSpot 12게임 평균: 7600X 가 7600 보다 2~3%, 7600 이 7500F 보다 2%, 7500F 가 7400F 보다 3~4%, 7400F 가 8400F 보다 12~14% 빠르다(L3 16MB 가 발목). 7500F(우리 67)에서 사슬로 내려와 57 — 같은 글의 7600X → 7500F 간격이 우리 69 → 67 과 맞는다",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 8400F",
@@ -1764,6 +1764,10 @@
     {
      "title": "AMD 공식 사양 — Ryzen 5 8400F(6C/12T · 4.7GHz · L3 16MB · 65W · AM5 · 외장 그래픽 필요 · 2024-04-01)",
      "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-5-8400f.html"
+    },
+    {
+     "title": "TechSpot — 보급형 라이젠 5 비교(12게임 평균: 7500F > 7400F 3~4% > 8400F 12~14%)",
+     "url": "https://www.techspot.com/review/3041-budget-ryzen-5-cpu/"
     }
    ],
    "checked_at": "2026-09-29",
