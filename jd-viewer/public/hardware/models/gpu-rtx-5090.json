@@ -8,43 +8,117 @@
    "name": "ASUS ROG Astral RTX 5090 OC",
    "brand": "ASUS",
    "code": "ROG-ASTRAL-RTX5090-O32G-GAMING",
-   "match": {"must": ["ASUS", "Astral", "5090"], "not": ["LC", "White", "BTF"]},
+   "match": {
+    "must": [
+     "ASUS",
+     "Astral",
+     "5090"
+    ],
+    "not": [
+     "LC",
+     "White",
+     "BTF"
+    ]
+   },
    "specs": {
-    "boost_mhz": 2580, "oc_mhz": 2610,
-    "length_mm": 357.6, "width_mm": 149.3, "thickness_mm": 76, "slots": 3.8,
-    "fans": 4, "power_connector": "16핀 x1", "psu_w": 1000,
+    "boost_mhz": 2580,
+    "oc_mhz": 2610,
+    "length_mm": 357.6,
+    "width_mm": 149.3,
+    "thickness_mm": 76,
+    "slots": 3.8,
+    "fans": 4,
+    "power_connector": "16핀 x1",
+    "psu_w": 1000,
     "outputs": "HDMI 2.1b x2 · DP 2.1b x3",
-    "dual_bios": true, "zero_fan": null, "backplate": true, "lighting": "ARGB",
-    "bundle": ["그래픽카드 지지대", "벨크로", "자석", "키캡", "PCB 자", "어댑터 케이블(1 to 4)"]
+    "dual_bios": true,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "그래픽카드 지지대",
+     "벨크로",
+     "자석",
+     "키캡",
+     "PCB 자",
+     "어댑터 케이블(1 to 4)"
+    ]
    },
    "sources": [
-    {"title": "ASUS ROG 공식 스펙", "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-gaming/spec/"},
-    {"title": "ASUS ROG 제품 소개(팬 4개·듀얼 BIOS)", "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-gaming/"}
+    {
+     "title": "ASUS ROG 공식 스펙",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-gaming/spec/"
+    },
+    {
+     "title": "ASUS ROG 제품 소개(팬 4개·듀얼 BIOS)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-gaming/"
+    }
    ],
    "confidence": "high",
    "checked_at": "2026-09-29",
-   "note": "0dB 팬 정지는 공식 페이지에 언급이 없어 비워 둔다."
+   "note": "0dB 팬 정지는 공식 페이지에 언급이 없어 비워 둔다.",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/128A96DB-DA90-4C45-A7A7-2A56F9F4F48A",
+    "credit": "ASUS",
+    "page": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-gaming/spec/"
+   }
   },
   {
    "id": "asus-tuf-rtx5090-32g",
    "name": "ASUS TUF Gaming RTX 5090",
    "brand": "ASUS",
    "code": "TUF-RTX5090-32G-GAMING",
-   "match": {"must": ["ASUS", "TUF", "5090"], "not": ["OC", "White", "BTF"]},
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "5090"
+    ],
+    "not": [
+     "OC",
+     "White",
+     "BTF"
+    ]
+   },
    "specs": {
-    "boost_mhz": 2407, "oc_mhz": 2437,
-    "length_mm": 348, "width_mm": 146, "thickness_mm": 72, "slots": 3.6,
-    "fans": 3, "power_connector": "16핀 x1", "psu_w": 1000,
+    "boost_mhz": 2407,
+    "oc_mhz": 2437,
+    "length_mm": 348,
+    "width_mm": 146,
+    "thickness_mm": 72,
+    "slots": 3.6,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 1000,
     "outputs": "HDMI 2.1b x2 · DP 2.1b x3",
-    "dual_bios": true, "zero_fan": true, "backplate": true, "lighting": "ARGB",
-    "bundle": ["그래픽카드 지지대", "벨크로", "자석", "어댑터 케이블"]
+    "dual_bios": true,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "그래픽카드 지지대",
+     "벨크로",
+     "자석",
+     "어댑터 케이블"
+    ]
    },
    "sources": [
-    {"title": "ASUS 공식 스펙", "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/techspec/"},
-    {"title": "ASUS 제품 소개(팬 3개·듀얼 BIOS·0dB)", "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/"}
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/techspec/"
+    },
+    {
+     "title": "ASUS 제품 소개(팬 3개·듀얼 BIOS·0dB)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/"
+    }
    ],
    "confidence": "high",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/02151c38-4d77-44c8-aa4a-24b6e7d1f4d6/",
+    "credit": "ASUS",
+    "page": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/"
+   }
   }
  ]
 }

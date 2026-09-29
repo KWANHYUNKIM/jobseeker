@@ -77,6 +77,12 @@ def check_models(ids: set[str], cats: dict[str, str], prices: dict) -> tuple[lis
                     errs.append(f"models/{pid}/{mid}: confidence 는 low·medium·high")
                 if not m.get("sources"):
                     errs.append(f"models/{pid}/{mid}: 출처가 없다")
+                img = m.get("image")
+                if img:
+                    if not all(img.get(k) for k in ("url", "credit", "page")):
+                        errs.append(f"models/{pid}/{mid}: image 는 url·credit·page 가 다 있어야 한다(출처 표시)")
+                    if any(h in str(img.get("url", "")) + str(img.get("page", "")) for h in ("danawa", "danuri", "coupang", "naver")):
+                        errs.append(f"models/{pid}/{mid}: 사진은 제조사 공식 페이지 것만 — 판매처 이미지는 쓰지 않는다")
                 for s in m.get("sources") or []:
                     if "danawa.com" in str(s.get("url", "")):
                         errs.append(f"models/{pid}/{mid}: 다나와는 스펙 출처로 쓰지 않는다 — 제조사 공식 페이지로")
@@ -200,6 +206,11 @@ def check() -> tuple[list[str], list[dict], dict, dict, dict]:
             errs.append(f"index.json {c.get('key')}: 등급 문턱은 내림차순이고 마지막이 0 이어야 한다")
     if {c.get("key") for c in index.get("categories", [])} != CATS:
         errs.append("index.json: 분류가 아홉 개와 다르다")
+    for v in bench.get("vendor", []):
+        if v.get("gpu") not in ids:
+            errs.append(f"bench.json vendor: 모르는 부품 {v.get('gpu')}")
+        if not (v.get("source") or {}).get("url") or not v.get("footnote"):
+            errs.append(f"bench.json vendor/{v.get('gpu')}: 제조사 측정값은 출처 url 과 각주가 있어야 한다")
     anchor = bench.get("image", {}).get("anchor", {}).get("gpu")
     if anchor not in ids:
         errs.append(f"bench.json: 이미지 기준 GPU {anchor!r} 가 parts 에 없다")

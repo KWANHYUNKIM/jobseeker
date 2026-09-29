@@ -3,42 +3,209 @@
  "updated_at": "2026-09-29",
  "model": "예상 fps = min(그래픽카드가 내는 fps, CPU 가 내는 fps). 그래픽카드 fps = 기준값 × 성능 지수 ÷ 100, CPU fps = CPU 천장 × 게임 지수 ÷ 100. VRAM 이 권장보다 작으면 모자란 만큼 깎는다.",
  "games": [
-  {"key": "lol", "name": "리그 오브 레전드", "preset": "매우 높음", "kind": "e스포츠",
-   "gpu100": {"fhd": 900, "qhd": 800, "uhd": 600}, "cpu100": 600, "vram": {"fhd": 2, "qhd": 3, "uhd": 4},
-   "confidence": "seed", "sources": []},
-  {"key": "valorant", "name": "발로란트", "preset": "높음", "kind": "e스포츠",
-   "gpu100": {"fhd": 900, "qhd": 800, "uhd": 550}, "cpu100": 700, "vram": {"fhd": 2, "qhd": 3, "uhd": 4},
-   "confidence": "seed", "sources": []},
-  {"key": "overwatch2", "name": "오버워치 2", "preset": "에픽", "kind": "e스포츠",
-   "gpu100": {"fhd": 450, "qhd": 330, "uhd": 180}, "cpu100": 450, "vram": {"fhd": 4, "qhd": 5, "uhd": 7},
-   "confidence": "seed", "sources": []},
-  {"key": "pubg", "name": "배틀그라운드", "preset": "울트라", "kind": "경쟁 FPS",
-   "gpu100": {"fhd": 330, "qhd": 260, "uhd": 150}, "cpu100": 300, "vram": {"fhd": 4, "qhd": 6, "uhd": 8},
-   "confidence": "seed", "sources": []},
-  {"key": "lostark", "name": "로스트아크", "preset": "최상", "kind": "MMORPG",
-   "gpu100": {"fhd": 400, "qhd": 300, "uhd": 180}, "cpu100": 200, "vram": {"fhd": 4, "qhd": 5, "uhd": 7},
-   "confidence": "seed", "sources": []},
-  {"key": "cyberpunk", "name": "사이버펑크 2077", "preset": "울트라 · 레이트레이싱 끔", "kind": "AAA",
-   "gpu100": {"fhd": 175, "qhd": 135, "uhd": 72}, "cpu100": 180, "vram": {"fhd": 7, "qhd": 9, "uhd": 12},
-   "confidence": "seed", "sources": []},
-  {"key": "mhwilds", "name": "몬스터 헌터 와일즈", "preset": "높음 · 업스케일 끔", "kind": "AAA",
-   "gpu100": {"fhd": 120, "qhd": 100, "uhd": 65}, "cpu100": 110, "vram": {"fhd": 8, "qhd": 10, "uhd": 13},
-   "confidence": "seed", "sources": []},
-  {"key": "wukong", "name": "검은 신화: 오공", "preset": "매우 높음 · 업스케일 끔", "kind": "AAA",
-   "gpu100": {"fhd": 100, "qhd": 80, "uhd": 50}, "cpu100": 150, "vram": {"fhd": 8, "qhd": 10, "uhd": 12},
-   "confidence": "seed", "sources": []}
+  {
+   "key": "lol",
+   "name": "리그 오브 레전드",
+   "preset": "매우 높음",
+   "kind": "e스포츠",
+   "gpu100": {
+    "fhd": 900,
+    "qhd": 800,
+    "uhd": 600
+   },
+   "cpu100": 600,
+   "vram": {
+    "fhd": 2,
+    "qhd": 3,
+    "uhd": 4
+   },
+   "confidence": "seed",
+   "sources": []
+  },
+  {
+   "key": "valorant",
+   "name": "발로란트",
+   "preset": "높음",
+   "kind": "e스포츠",
+   "gpu100": {
+    "fhd": 900,
+    "qhd": 800,
+    "uhd": 550
+   },
+   "cpu100": 700,
+   "vram": {
+    "fhd": 2,
+    "qhd": 3,
+    "uhd": 4
+   },
+   "confidence": "seed",
+   "sources": []
+  },
+  {
+   "key": "overwatch2",
+   "name": "오버워치 2",
+   "preset": "에픽",
+   "kind": "e스포츠",
+   "gpu100": {
+    "fhd": 450,
+    "qhd": 330,
+    "uhd": 180
+   },
+   "cpu100": 450,
+   "vram": {
+    "fhd": 4,
+    "qhd": 5,
+    "uhd": 7
+   },
+   "confidence": "seed",
+   "sources": []
+  },
+  {
+   "key": "pubg",
+   "name": "배틀그라운드",
+   "preset": "울트라",
+   "kind": "경쟁 FPS",
+   "gpu100": {
+    "fhd": 330,
+    "qhd": 260,
+    "uhd": 150
+   },
+   "cpu100": 300,
+   "vram": {
+    "fhd": 4,
+    "qhd": 6,
+    "uhd": 8
+   },
+   "confidence": "seed",
+   "sources": []
+  },
+  {
+   "key": "lostark",
+   "name": "로스트아크",
+   "preset": "최상",
+   "kind": "MMORPG",
+   "gpu100": {
+    "fhd": 400,
+    "qhd": 300,
+    "uhd": 180
+   },
+   "cpu100": 200,
+   "vram": {
+    "fhd": 4,
+    "qhd": 5,
+    "uhd": 7
+   },
+   "confidence": "seed",
+   "sources": []
+  },
+  {
+   "key": "cyberpunk",
+   "name": "사이버펑크 2077",
+   "preset": "울트라 · 레이트레이싱 끔",
+   "kind": "AAA",
+   "gpu100": {
+    "fhd": 175,
+    "qhd": 135,
+    "uhd": 72
+   },
+   "cpu100": 180,
+   "vram": {
+    "fhd": 7,
+    "qhd": 9,
+    "uhd": 12
+   },
+   "confidence": "seed",
+   "sources": []
+  },
+  {
+   "key": "mhwilds",
+   "name": "몬스터 헌터 와일즈",
+   "preset": "높음 · 업스케일 끔",
+   "kind": "AAA",
+   "gpu100": {
+    "fhd": 120,
+    "qhd": 100,
+    "uhd": 65
+   },
+   "cpu100": 110,
+   "vram": {
+    "fhd": 8,
+    "qhd": 10,
+    "uhd": 13
+   },
+   "confidence": "seed",
+   "sources": []
+  },
+  {
+   "key": "wukong",
+   "name": "검은 신화: 오공",
+   "preset": "매우 높음 · 업스케일 끔",
+   "kind": "AAA",
+   "gpu100": {
+    "fhd": 100,
+    "qhd": 80,
+    "uhd": 50
+   },
+   "cpu100": 150,
+   "vram": {
+    "fhd": 8,
+    "qhd": 10,
+    "uhd": 12
+   },
+   "confidence": "seed",
+   "sources": []
+  }
  ],
  "llm": {
   "model": "글자 하나(토큰)를 낼 때마다 모델 가중치 전체를 메모리에서 한 번 읽는다. 그래서 속도 ≈ 메모리 대역폭 × 효율 ÷ 모델 크기다. 그래픽카드 메모리에 다 안 들어가면 넘친 부분을 시스템 메모리에서 읽어서 급격히 느려진다.",
   "efficiency": 0.7,
   "overhead_gb": 1.5,
-  "stack_factor": {"CUDA": 1.0, "ROCm": 0.85, "oneAPI": 0.7},
+  "stack_factor": {
+   "CUDA": 1.0,
+   "ROCm": 0.85,
+   "oneAPI": 0.7
+  },
   "models": [
-   {"key": "8b", "name": "8B (Llama 3.1 8B 급)", "params_b": 8, "quant": "Q4_K_M", "size_gb": 4.9, "plain": "요약·번역·코드 자동완성"},
-   {"key": "14b", "name": "14B (Qwen 2.5 14B 급)", "params_b": 14, "quant": "Q4_K_M", "size_gb": 9.0, "plain": "코딩 도우미로 쓸 만해지는 크기"},
-   {"key": "27b", "name": "27B (Gemma 3 27B 급)", "params_b": 27, "quant": "Q4_K_M", "size_gb": 16.5, "plain": "일상 대화는 상용 모델과 비슷하게 느껴진다"},
-   {"key": "32b", "name": "32B (Qwen 2.5 32B 급)", "params_b": 32, "quant": "Q4_K_M", "size_gb": 19.9, "plain": "추론·코딩이 한 단계 좋아진다"},
-   {"key": "70b", "name": "70B (Llama 3.3 70B 급)", "params_b": 70, "quant": "Q4_K_M", "size_gb": 42.5, "plain": "그래픽카드 한 장으로는 거의 못 올린다"}
+   {
+    "key": "8b",
+    "name": "8B (Llama 3.1 8B 급)",
+    "params_b": 8,
+    "quant": "Q4_K_M",
+    "size_gb": 4.9,
+    "plain": "요약·번역·코드 자동완성"
+   },
+   {
+    "key": "14b",
+    "name": "14B (Qwen 2.5 14B 급)",
+    "params_b": 14,
+    "quant": "Q4_K_M",
+    "size_gb": 9.0,
+    "plain": "코딩 도우미로 쓸 만해지는 크기"
+   },
+   {
+    "key": "27b",
+    "name": "27B (Gemma 3 27B 급)",
+    "params_b": 27,
+    "quant": "Q4_K_M",
+    "size_gb": 16.5,
+    "plain": "일상 대화는 상용 모델과 비슷하게 느껴진다"
+   },
+   {
+    "key": "32b",
+    "name": "32B (Qwen 2.5 32B 급)",
+    "params_b": 32,
+    "quant": "Q4_K_M",
+    "size_gb": 19.9,
+    "plain": "추론·코딩이 한 단계 좋아진다"
+   },
+   {
+    "key": "70b",
+    "name": "70B (Llama 3.3 70B 급)",
+    "params_b": 70,
+    "quant": "Q4_K_M",
+    "size_gb": 42.5,
+    "plain": "그래픽카드 한 장으로는 거의 못 올린다"
+   }
   ],
   "readable_tps": 8,
   "comfortable_tps": 25
@@ -46,21 +213,287 @@
  "image": {
   "name": "이미지 생성 (SDXL 1024×1024 · 30스텝)",
   "model": "연산량이 정해진 일이라 FP16 연산 성능에 비례한다. FP16 값이 없는 카드는 성능 지수로 대신 잰다.",
-  "anchor": {"gpu": "gpu-rtx-4090", "seconds": 4.5},
+  "anchor": {
+   "gpu": "gpu-rtx-4090",
+   "seconds": 4.5
+  },
   "min_vram_gb": 8,
   "confidence": "seed",
   "sources": []
  },
  "finetune": [
-  {"key": "qlora-8b", "name": "8B QLoRA 미세조정", "vram_gb": 10, "plain": "내 데이터로 작은 모델을 길들인다"},
-  {"key": "lora-8b", "name": "8B LoRA (16비트)", "vram_gb": 22, "plain": "품질을 조금 더 챙긴 미세조정"},
-  {"key": "qlora-32b", "name": "32B QLoRA 미세조정", "vram_gb": 26, "plain": "큰 모델을 한 장으로 길들이는 한계선"},
-  {"key": "full-8b", "name": "8B 전체 미세조정", "vram_gb": 120, "plain": "데이터센터 GPU 여러 장의 일"}
+  {
+   "key": "qlora-8b",
+   "name": "8B QLoRA 미세조정",
+   "vram_gb": 10,
+   "plain": "내 데이터로 작은 모델을 길들인다"
+  },
+  {
+   "key": "lora-8b",
+   "name": "8B LoRA (16비트)",
+   "vram_gb": 22,
+   "plain": "품질을 조금 더 챙긴 미세조정"
+  },
+  {
+   "key": "qlora-32b",
+   "name": "32B QLoRA 미세조정",
+   "vram_gb": 26,
+   "plain": "큰 모델을 한 장으로 길들이는 한계선"
+  },
+  {
+   "key": "full-8b",
+   "name": "8B 전체 미세조정",
+   "vram_gb": 120,
+   "plain": "데이터센터 GPU 여러 장의 일"
+  }
  ],
  "dev": {
   "name": "빌드 시간 (대형 C++/자바 프로젝트 풀 빌드)",
   "model": "병렬 빌드는 멀티 지수에 거의 비례한다. 9950X 가 10분 걸리는 빌드를 기준으로 잡는다.",
   "anchor_minutes": 10,
   "confidence": "seed"
- }
+ },
+ "vendor": [
+  {
+   "gpu": "gpu-rx-9070-xt",
+   "res": "uhd",
+   "preset": "Ultra",
+   "footnote": "RX-1255~1258",
+   "by": "AMD",
+   "games": [
+    {
+     "name": "Arc Raiders",
+     "fps": 73
+    },
+    {
+     "name": "Call of Duty: Black Ops 7",
+     "fps": 82
+    },
+    {
+     "name": "The Last of Us Part II",
+     "fps": 68
+    },
+    {
+     "name": "Horizon Forbidden West",
+     "fps": 72
+    },
+    {
+     "name": "Marvel's Spider-Man 2",
+     "fps": 82
+    },
+    {
+     "name": "Ghost of Tsushima",
+     "fps": 73
+    },
+    {
+     "name": "Forza Horizon 5 (RT)",
+     "fps": 128
+    },
+    {
+     "name": "GTA V Enhanced (RT)",
+     "fps": 78
+    }
+   ],
+   "source": {
+    "title": "AMD 라데온 RX 그래픽 카드 — 성능",
+    "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+   },
+   "checked_at": "2026-09-29"
+  },
+  {
+   "gpu": "gpu-rx-9070",
+   "res": "uhd",
+   "preset": "Ultra",
+   "footnote": "RX-1255~1258",
+   "by": "AMD",
+   "games": [
+    {
+     "name": "Arc Raiders",
+     "fps": 64
+    },
+    {
+     "name": "Call of Duty: Black Ops 7",
+     "fps": 71
+    },
+    {
+     "name": "The Last of Us Part II",
+     "fps": 60
+    },
+    {
+     "name": "Horizon Forbidden West",
+     "fps": 63
+    },
+    {
+     "name": "Marvel's Spider-Man 2",
+     "fps": 71
+    },
+    {
+     "name": "Ghost of Tsushima",
+     "fps": 63
+    },
+    {
+     "name": "Forza Horizon 5 (RT)",
+     "fps": 112
+    },
+    {
+     "name": "GTA V Enhanced (RT)",
+     "fps": 68
+    }
+   ],
+   "source": {
+    "title": "AMD 라데온 RX 그래픽 카드 — 성능",
+    "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+   },
+   "checked_at": "2026-09-29"
+  },
+  {
+   "gpu": "gpu-rx-9060-xt-16",
+   "res": "qhd",
+   "preset": "Ultra",
+   "footnote": "RX-1255~1258",
+   "by": "AMD",
+   "games": [
+    {
+     "name": "Arc Raiders",
+     "fps": 75
+    },
+    {
+     "name": "Call of Duty: Black Ops 7",
+     "fps": 86
+    },
+    {
+     "name": "The Last of Us Part II",
+     "fps": 61
+    },
+    {
+     "name": "Horizon Forbidden West",
+     "fps": 64
+    },
+    {
+     "name": "Marvel's Spider-Man 2",
+     "fps": 83
+    },
+    {
+     "name": "Ghost of Tsushima",
+     "fps": 74
+    },
+    {
+     "name": "Forza Horizon 5 (RT)",
+     "fps": 115
+    },
+    {
+     "name": "GTA V Enhanced (RT)",
+     "fps": 84
+    }
+   ],
+   "source": {
+    "title": "AMD 라데온 RX 그래픽 카드 — 성능",
+    "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+   },
+   "checked_at": "2026-09-29"
+  },
+  {
+   "gpu": "gpu-rx-9070-xt",
+   "res": "qhd",
+   "preset": "Max",
+   "footnote": "13, 15",
+   "by": "AMD",
+   "games": [
+    {
+     "name": "Avatar: Frontiers of Pandora",
+     "fps": 75
+    },
+    {
+     "name": "Dying Light 2",
+     "fps": 89
+    },
+    {
+     "name": "F1 24",
+     "fps": 117
+    },
+    {
+     "name": "Hitman 3",
+     "fps": 84
+    },
+    {
+     "name": "Star Wars Outlaws",
+     "fps": 75
+    }
+   ],
+   "source": {
+    "title": "AMD 라데온 RX 그래픽 카드 — 성능",
+    "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+   },
+   "checked_at": "2026-09-29"
+  },
+  {
+   "gpu": "gpu-rx-9070",
+   "res": "qhd",
+   "preset": "Max",
+   "footnote": "13, 15",
+   "by": "AMD",
+   "games": [
+    {
+     "name": "Avatar: Frontiers of Pandora",
+     "fps": 63
+    },
+    {
+     "name": "Dying Light 2",
+     "fps": 74
+    },
+    {
+     "name": "F1 24",
+     "fps": 96
+    },
+    {
+     "name": "Hitman 3",
+     "fps": 69
+    },
+    {
+     "name": "Star Wars Outlaws",
+     "fps": 64
+    }
+   ],
+   "source": {
+    "title": "AMD 라데온 RX 그래픽 카드 — 성능",
+    "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+   },
+   "checked_at": "2026-09-29"
+  },
+  {
+   "gpu": "gpu-rx-9060-xt-16",
+   "res": "qhd",
+   "preset": "Max",
+   "footnote": "13, 15",
+   "by": "AMD",
+   "games": [
+    {
+     "name": "F1 24",
+     "fps": 65
+    },
+    {
+     "name": "Indiana Jones and the Great Circle",
+     "fps": 64
+    },
+    {
+     "name": "Shadow of the Tomb Raider",
+     "fps": 88
+    },
+    {
+     "name": "Far Cry 6",
+     "fps": 111
+    },
+    {
+     "name": "Forza Horizon 5",
+     "fps": 114
+    }
+   ],
+   "source": {
+    "title": "AMD 라데온 RX 그래픽 카드 — 성능",
+    "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
+   },
+   "checked_at": "2026-09-29"
+  }
+ ],
+ "vendor_note": "제조사가 자기 시험 조건(각주)으로 잰 값이다. 우리 추정(games)과 게임·옵션이 달라 한 차트에 섞지 않는다. 다른 회사 카드와 비교하는 근거로 쓰지 않는다."
 }
