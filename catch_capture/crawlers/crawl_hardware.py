@@ -12,6 +12,8 @@
            약관·콘텐츠이용안내가 콘텐츠산업 진흥법으로 DB 를 보호한다고 적고 있어
            **가격 숫자·상품명·링크만** 남긴다. 이미지·설명·스펙 문자열·리뷰는 받지 않는다.
            스펙은 parts.json 이 제조사 공식 자료에서 가져온다.
+           검색 결과의 기본 정렬은 **인기상품순**(saveDESC)이다 — 매물마다 그 쪽의 몇 번째였나를
+           `rank` 로 남긴다. 뷰어가 "같은 칩 중 가장 많이 팔리는 제품"을 이 순서로 고른다.
 
 누적 규칙:
   - 부품마다 그날의 최저가·중앙값·매물 수를 `history` 에 하루 한 줄 남긴다(같은 날 다시
@@ -95,7 +97,9 @@ def parse(page: str) -> list[dict]:
     상품명 뒤에 붙여 거름 규칙이 볼 수 있게 한다.
     """
     out, seen = [], set()
-    for m in ITEM_RE.finditer(page):
+    # rank: 쪽 안에서 몇 번째 상품이었나(1부터). 기본 정렬이 인기순이라 곧 인기 순위다.
+    # 옵션으로 펼친 매물(16GB·32GB)은 같은 줄의 순위를 나눠 가진다.
+    for rank, m in enumerate(ITEM_RE.finditer(page), 1):
         body = m.group(2)[:ITEM_MAX]
         cate, name = CATE_RE.search(body), NAME_RE.search(body)
         if not name:
@@ -111,7 +115,7 @@ def parse(page: str) -> list[dict]:
             if pcode in seen or price <= 0:
                 continue
             seen.add(pcode)
-            out.append({**base, "pcode": pcode, "price": price,
+            out.append({**base, "pcode": pcode, "price": price, "rank": rank,
                         "name": f"{base['name']} {label}".strip() if label and label not in base["name"] else base["name"]})
     return out
 
@@ -197,7 +201,7 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
             continue
         s = summarize(offers)
         rec.update(day=today, **s,
-                   offers=[{"pcode": o["pcode"], "name": o["name"], "price": o["price"],
+                   offers=[{"pcode": o["pcode"], "name": o["name"], "price": o["price"], "rank": o["rank"],
                             "url": PRODUCT_URL.format(pcode=o["pcode"])} for o in offers[:KEEP_OFFERS]])
         hist = [h for h in rec.get("history", []) if h.get("d") != today]
         hist.append({"d": today, **s})

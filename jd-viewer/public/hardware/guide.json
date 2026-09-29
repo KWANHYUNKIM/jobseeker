@@ -664,5 +664,385 @@
     }
    ]
   }
+ ],
+ "names": [
+  {
+   "key": "nv-number",
+   "applies": "gpu",
+   "maker": "NVIDIA",
+   "token": "RTX 50·60",
+   "match": "RTX\\s?\\d{4}",
+   "title": "숫자 네 자리 — 세대 + 급",
+   "plain": "앞 두 자리는 세대(50 = 2025년 블랙웰), 뒤 두 자리는 급이다. 같은 세대에서 뒤 숫자가 클수록 윗급 — 5090 > 5080 > 5070 > 5060 > 5050. 세대가 달라도 급이 높으면 더 빠를 수 있다(4090 이 5080 보다 빠르다).",
+   "compare": [
+    "gpu-rtx-4090",
+    "gpu-rtx-5080"
+   ],
+   "sources": [
+    {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    }
+   ]
+  },
+  {
+   "key": "nv-ti",
+   "applies": "gpu",
+   "maker": "NVIDIA",
+   "token": "Ti",
+   "match": "\\bTi\\b",
+   "title": "Ti — 같은 숫자의 한 단계 위",
+   "plain": "이름만 붙인 게 아니라 코어 수가 다른 칩 구성이다. 5060 Ti 는 5060 보다 코어가 20% 많다. 가격도 그만큼 위다.",
+   "compare": [
+    "gpu-rtx-5060-ti-8",
+    "gpu-rtx-5060"
+   ],
+   "sources": [
+    {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    }
+   ]
+  },
+  {
+   "key": "nv-super",
+   "applies": "gpu",
+   "maker": "NVIDIA",
+   "token": "SUPER",
+   "match": "SUPER",
+   "title": "SUPER — 나중에 나온 강화판",
+   "plain": "원판이 나오고 1년쯤 뒤 같은 가격대에 내놓는 강화판이다. 같은 숫자의 원판보다 코어가 많다. 4070 SUPER 는 4070 보다 코어가 약 20% 많다.",
+   "compare": [],
+   "sources": [
+    {
+     "title": "NVIDIA 공식 — RTX 4070 가족(4070 · 4070 SUPER)",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4070-family/"
+    }
+   ]
+  },
+  {
+   "key": "vram-size",
+   "applies": "gpu",
+   "maker": null,
+   "token": "8GB · 16GB",
+   "match": "\\d+GB",
+   "title": "8GB · 16GB — 같은 칩, 메모리 용량만 다르다",
+   "plain": "코어는 똑같다. 대부분의 게임에서 차이가 작지만, 고해상도 텍스처를 쓰는 최신작과 로컬 AI(모델을 메모리에 올린다)에서는 크게 갈린다. 오래 쓸 생각이면 큰 쪽이 안전하다.",
+   "compare": [
+    "gpu-rtx-5060-ti-16",
+    "gpu-rtx-5060-ti-8"
+   ],
+   "sources": [
+    {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    }
+   ]
+  },
+  {
+   "key": "amd-xt",
+   "applies": "gpu",
+   "maker": "AMD",
+   "token": "XT",
+   "match": "\\bXT\\b",
+   "title": "XT — AMD 의 윗판(NVIDIA 의 Ti 자리)",
+   "plain": "같은 숫자에서 XT 가 붙으면 코어가 많고 클럭이 높은 윗판이다. 9070 XT 는 9070 보다 코어가 약 14% 많다.",
+   "compare": [
+    "gpu-rx-9070-xt",
+    "gpu-rx-9070"
+   ],
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — RX 9070 XT",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070xt.html"
+    }
+   ]
+  },
+  {
+   "key": "amd-xtx",
+   "applies": "gpu",
+   "maker": "AMD",
+   "token": "XTX",
+   "match": "XTX",
+   "title": "XTX — XT 보다 한 단계 더 위",
+   "plain": "한 세대의 맨 윗판에만 붙는다(7900 XTX). 메모리도 24GB 로 가장 크다.",
+   "compare": [
+    "gpu-rx-7900-xtx",
+    "gpu-rx-7800-xt"
+   ],
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — RX 7900 XTX",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7900xtx.html"
+    }
+   ]
+  },
+  {
+   "key": "intel-arc",
+   "applies": "gpu",
+   "maker": "Intel",
+   "token": "B580",
+   "match": "Arc",
+   "title": "Arc B580 — 첫 글자는 세대",
+   "plain": "인텔 Arc 는 첫 글자가 세대다(A = 1세대, B = 2세대). 뒤 숫자가 급이다.",
+   "compare": [],
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Arc B580",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241598/intel-arc-b580-graphics/specifications.html"
+    }
+   ]
+  },
+  {
+   "key": "ryzen-number",
+   "applies": "cpu",
+   "maker": "AMD",
+   "token": "라이젠 5·7·9",
+   "match": "Ryzen",
+   "title": "라이젠 5 · 7 · 9 + 네 자리",
+   "plain": "라이젠 뒤 한 자리는 급(5 → 7 → 9, 코어가 는다), 네 자리의 첫 숫자는 세대(5000 → 7000·8000 → 9000)다. 5600 과 9600X 는 같은 '5급 6코어'지만 세대가 달라 게임 지수가 60 대 75 다.",
+   "compare": [
+    "cpu-ryzen-5-9600x",
+    "cpu-ryzen-5-5600"
+   ],
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지 — 라이젠 데스크톱",
+     "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    }
+   ]
+  },
+  {
+   "key": "amd-x",
+   "applies": "cpu",
+   "maker": "AMD",
+   "token": "X",
+   "match": "\\d{4}X\\b",
+   "title": "X — 클럭·전력을 올린 판",
+   "plain": "X 가 없는 판(5600·9600)보다 클럭과 전력 한도가 높다. 같은 코어라 차이는 몇 % 이고, 대신 발열이 늘어 쿨러가 조금 더 필요하다.",
+   "compare": [],
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — Ryzen 5 9600X",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-5-9600x.html"
+    }
+   ]
+  },
+  {
+   "key": "amd-x3d",
+   "applies": "cpu",
+   "maker": "AMD",
+   "token": "X3D",
+   "match": "X3D",
+   "title": "X3D — 캐시를 한 층 더 쌓은 게임용",
+   "plain": "3D V-Cache — L3 캐시를 칩 위에 한 층 더 쌓아 세 배로 늘렸다. 게임은 캐시를 많이 쓰기 때문에 같은 코어 수의 X 판보다 확실히 빠르다. 컴파일·렌더링(멀티)에서는 차이가 작다.",
+   "compare": [
+    "cpu-ryzen-7-9800x3d",
+    "cpu-ryzen-7-9700x"
+   ],
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — Ryzen 7 9800X3D",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-7-9800x3d.html"
+    }
+   ]
+  },
+  {
+   "key": "amd-f",
+   "applies": "cpu",
+   "maker": "AMD",
+   "token": "F",
+   "match": "\\d{4}F\\b",
+   "title": "F — 내장 그래픽 없음(AMD)",
+   "plain": "내장 그래픽을 끈 판이다. 그래픽카드를 꽂아야 화면이 나온다. 대신 싸다. 주의: 라이젠 5000 은 F 가 없어도 내장 그래픽이 없다(5600) — G 가 붙어야(5600G) 있다.",
+   "compare": [
+    "cpu-ryzen-5-8400f"
+   ],
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — Ryzen 5 8400F",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-5-8400f.html"
+    },
+    {
+     "title": "AMD 공식 사양 — Ryzen 5 5600(외장 그래픽 필요)",
+     "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-5-5600.html"
+    }
+   ]
+  },
+  {
+   "key": "intel-number",
+   "applies": "cpu",
+   "maker": "Intel",
+   "token": "i5-14400 · Ultra 5 245",
+   "match": "Core",
+   "title": "i5 · Ultra 5 + 숫자",
+   "plain": "i3·i5·i7(요즘은 Ultra 5·7·9)은 급이다. 옛 이름(i5-14400)의 앞 두 자리는 세대(14세대), 새 이름(Ultra 5 245K)은 첫 숫자 2 가 '2세대 코어 울트라'다.",
+   "compare": [
+    "cpu-core-ultra-5-245k",
+    "cpu-core-i5-14400f"
+   ],
+   "sources": [
+    {
+     "title": "Intel 공식 — 프로세서 이름 읽는 법(K: 고성능·언락 / F: 외장 그래픽 필요)",
+     "url": "https://www.intel.com/content/www/us/en/processors/processor-numbers.html"
+    }
+   ]
+  },
+  {
+   "key": "intel-k",
+   "applies": "cpu",
+   "maker": "Intel",
+   "token": "K",
+   "match": "\\d{3,5}K",
+   "title": "K — 고성능·언락",
+   "plain": "클럭을 사용자가 올릴 수 있게 잠금을 푼 고성능 판이다. 전력 한도도 높아 쿨러가 커야 하고, 오버클럭은 Z 칩셋 보드에서만 된다.",
+   "compare": [],
+   "sources": [
+    {
+     "title": "Intel 공식 — 프로세서 이름 읽는 법(K: 고성능·언락 / F: 외장 그래픽 필요)",
+     "url": "https://www.intel.com/content/www/us/en/processors/processor-numbers.html"
+    }
+   ]
+  },
+  {
+   "key": "intel-f",
+   "applies": "cpu",
+   "maker": "Intel",
+   "token": "F",
+   "match": "\\d{3,5}K?F\\b",
+   "title": "F — 외장 그래픽 필요(인텔)",
+   "plain": "내장 그래픽이 꺼져 있다. 14400F 와 14400 은 코어·클럭이 같고 내장 그래픽만 다르다 — 게임용이면 F, 그래픽카드 없는 사무용이면 F 없는 쪽이다. KF 는 K 와 F 를 둘 다 뜻한다.",
+   "compare": [
+    "cpu-core-i5-14400",
+    "cpu-core-i5-14400f"
+   ],
+   "sources": [
+    {
+     "title": "Intel 공식 — 프로세서 이름 읽는 법(K: 고성능·언락 / F: 외장 그래픽 필요)",
+     "url": "https://www.intel.com/content/www/us/en/processors/processor-numbers.html"
+    },
+    {
+     "title": "Intel 공식 사양 — Core i5-14400(10코어 6P+4E · 16스레드 · 4.7GHz · 20MB · 65/148W · UHD 730 · DDR4-3200/DDR5-4800 · 2024년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/236788/intel-core-i5-processor-14400-20m-cache-up-to-4-70-ghz/specifications.html"
+    }
+   ]
+  },
+  {
+   "key": "intel-plus",
+   "applies": "cpu",
+   "maker": "Intel",
+   "token": "Plus",
+   "match": "Plus",
+   "title": "Plus — 같은 세대의 개정판",
+   "plain": "같은 세대에서 나중에 코어를 늘려 다시 낸 판이다. 250K Plus 는 245K 보다 코어가 4개 많다.",
+   "compare": [
+    "cpu-core-ultra-5-250k-plus",
+    "cpu-core-ultra-5-245k"
+   ],
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core Ultra 5 250K Plus",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/245694/intel-core-ultra-5-processor-250k-plus-30m-cache-up-to-5-30-ghz/specifications.html"
+    }
+   ]
+  },
+  {
+   "key": "oc",
+   "applies": "product",
+   "maker": null,
+   "token": "OC",
+   "match": "\\bOC\\b",
+   "title": "OC — 공장에서 클럭을 올려 출고",
+   "plain": "칩 제조사 기준 클럭보다 조금 올려서 판다. 보통 기준보다 1% 안팎이라 체감은 거의 없다 — 제품별 성능 추정에 실제 클럭 차이를 적어 두었다.",
+   "sources": [
+    {
+     "title": "MSI 공식 사양서 — RTX 5060 VENTUS 2X OC",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5060-8G-VENTUS-2X-OC.pdf"
+    },
+    {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    }
+   ]
+  },
+  {
+   "key": "mem-d7",
+   "applies": "product",
+   "maker": null,
+   "token": "D7 · D6",
+   "match": "\\bD[67]X?\\b",
+   "title": "D7 · D6 — 그래픽 메모리 종류",
+   "plain": "D7 = GDDR7, D6 = GDDR6. 칩이 정하는 것이라 같은 칩이면 제품마다 다르지 않다.",
+   "sources": [
+    {
+     "title": "NVIDIA GeForce 공식 사양 비교",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/"
+    }
+   ]
+  },
+  {
+   "key": "fans",
+   "applies": "product",
+   "maker": null,
+   "token": "2X · 3X · Dual · Twin · Triple",
+   "match": "2X|3X|Dual|Twin|Triple|X2|X3",
+   "title": "2X · Dual · Twin — 팬 개수",
+   "plain": "팬 2개(2X·Dual·Twin·X2)는 짧아서 작은 케이스에도 들어간다. 3개(3X·Triple)는 길고 조용하다. 같은 칩이면 성능 차이는 거의 없다.",
+   "sources": [
+    {
+     "title": "MSI 공식 사양서 — RTX 5060 VENTUS 2X OC",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5060-8G-VENTUS-2X-OC.pdf"
+    }
+   ]
+  },
+  {
+   "key": "lp",
+   "applies": "product",
+   "maker": null,
+   "token": "LP · Low Profile",
+   "match": "\\bLP\\b|Low Profile",
+   "title": "LP — 슬림 PC 용 낮은 카드",
+   "plain": "높이가 절반인 카드다. 사무용 슬림 케이스에 들어간다. 작은 팬으로 식혀 조금 시끄럽고 클럭이 낮을 수 있다.",
+   "sources": [
+    {
+     "title": "ZOTAC 공식 사양서 — RTX 5060 Low Profile",
+     "url": "https://gzhls.at/blob/ldb/c/5/0/3/20c825303add044bac07acff1460babffb44.pdf"
+    }
+   ]
+  },
+  {
+   "key": "rev",
+   "applies": "product",
+   "maker": null,
+   "token": "V1 · V2",
+   "match": "\\bV[12]\\b",
+   "title": "V1 · V2 — 같은 이름의 개정판",
+   "plain": "쿨러·기판을 바꿔 다시 낸 판이다. 성능은 같거나 거의 같다. 가격이 다르면 싼 쪽을 사도 된다.",
+   "sources": [
+    {
+     "title": "MSI 공식 사양서 — RTX 5060 VENTUS 2X OC V1",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5060-8G-VENTUS-2X-OC-V1.pdf"
+    },
+    {
+     "title": "GALAX 공식 — RTX 5060 1-Click OC 2X V2",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-1-click-oc-2x-v2/"
+    }
+   ]
+  },
+  {
+   "key": "white",
+   "applies": "product",
+   "maker": null,
+   "token": "WHITE",
+   "match": "WHITE|화이트",
+   "title": "WHITE — 색만 다르다",
+   "plain": "흰색 판이다. 스펙은 같은 이름의 검은 판과 같고 보통 몇 만 원 비싸다.",
+   "sources": [
+    {
+     "title": "GALAX 공식 — RTX 5060 1-Click OC WHITE 2X V2",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-1-click-oc-white-2x-v2/"
+    }
+   ]
+  }
  ]
 }

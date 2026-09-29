@@ -142,6 +142,19 @@ def check_guide(ids: set[str]) -> list[str]:
         if n.get("level") not in ("주의", "참고"):
             errs.append(f"guide.json durability/{n.get('key')}: level 은 주의·참고")
         srcs(f"durability/{n.get('key')}", n.get("sources"))
+    # 이름 읽는 법(Ti·X3D·OC…) — 매물 이름에서 찾는 정규식과, 차이를 보여 줄 비교 부품
+    for n in g.get("names", []):
+        where = f"names/{n.get('key')}"
+        if n.get("applies") not in ("gpu", "cpu", "product"):
+            errs.append(f"guide.json {where}: applies 는 gpu·cpu·product")
+        try:
+            re.compile(n.get("match", ""))
+        except re.error as e:
+            errs.append(f"guide.json {where}: match 정규식이 깨졌다 {e}")
+        for a in n.get("compare", []):
+            if a not in ids:
+                errs.append(f"guide.json {where}: 모르는 비교 부품 {a}")
+        srcs(where, n.get("sources"))
     return errs
 
 
