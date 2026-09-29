@@ -71,6 +71,17 @@ CHIPSET_RE = re.compile(r"^\((인텔|AMD)\)\s*([A-Z]\d{3}[A-Z]?)$")
 GB_RE = re.compile(r"^(\d+)\s*(GB|TB)$")
 WATT_RE = re.compile(r"^(\d{3,4})\s*W$")
 CASES = {"미니타워": "case-matx-mini", "미들타워": "case-atx-mid", "빅타워": "case-atx-full"}
+# 내장 그래픽의 판매 표기 — 'UHD 730', '그래픽스 7', 'Vega 8', '760M' 따위. 그래픽카드 목록에서 찾을 것이 아니라
+# '내장'으로 적어 둬야 뷰어·검증기가 외장 그래픽카드가 빠졌다고 오해하지 않는다.
+IGPU_RE = re.compile(r"^(?:인텔\s*)?(?:UHD|Iris|Arc\s*그래픽스|(?:라데온\s*|Radeon\s*)?그래픽스|Radeon\s*Graphics|Intel\s*Graphics|Vega)(?:\s*[\w\d]+)?$|^(?:Radeon\s*)?\d{3}M$",
+                     re.I)
+
+
+def norm_gpu(tok: str | None) -> str | None:
+    """판매 표기의 그래픽 칸 → 내장 그래픽이면 '내장(원래 표기)'."""
+    if not tok or "내장" in tok:
+        return tok
+    return f"내장({tok})" if IGPU_RE.match(tok.strip()) else tok
 
 
 # ── 구성 파서 ─────────────────────────────────────────────────────────
@@ -94,7 +105,7 @@ def parse_composition(desc: str) -> dict:
                  "ram_type": None, "ram_gb": None, "storage": None, "storage_gb": None, "vram_gb": None,
                  "case": None, "purpose": None}
     if len(toks) > 1 and not CHIPSET_RE.match(toks[1]):
-        out["gpu"] = toks[1]
+        out["gpu"] = norm_gpu(toks[1])
     for i, t in enumerate(toks):
         m = CHIPSET_RE.match(t)
         if m and not out["chipset"]:
@@ -332,6 +343,7 @@ def run(force: bool = False, pages: int = PAGES, spec_per_run: int = SPEC_PER_RU
     unmapped = 0
     for r in items.values():
         if r.get("comp"):
+            r["comp"]["gpu"] = norm_gpu(r["comp"].get("gpu"))  # 예전에 읽은 구성도 같은 규칙으로
             r["mapped"] = map_parts(r["comp"], parts)
             unmapped += sum(1 for c in ("cpu", "gpu") if r["comp"].get(c) and not r["mapped"].get(c)
                             and not (c == "gpu" and "내장" in str(r["comp"].get("gpu"))))
@@ -358,6 +370,10 @@ def selftest() -> int:
     assert m2["gpu"] == "gpu-rtx-5060-ti-8" and m2["gpu_assumed"], m2
     t = parse_title("[모맨] 게이밍PC i5 14400F RTX5060 DDR5 32GB NVMe 1TB")
     assert t["ram_type"] == "DDR5" and t["ram_gb"] == 32 and t["storage_gb"] == 1000, t
+    for tok in ("UHD 730", "그래픽스 7", "인텔 그래픽스", "Vega 8", "760M", "Radeon 740M", "UHD 770", "그래픽스"):
+        assert norm_gpu(tok) == f"내장({tok})", tok
+    for tok in ("RTX 5060", "RX 9060 XT", "GTX 1660 SUPER", "Arc B580", "RX 580"):
+        assert norm_gpu(tok) == tok, tok
     print("[prebuilt] selftest ok")
     return 0
 
