@@ -19,6 +19,7 @@ import {
 } from '../lib/hardware'
 import { onLinkClick } from '../lib/router'
 import { paths } from '../lib/urls'
+import { ShopLink } from './HardwareBuy'
 
 // 같은 칩의 여러 제품 — "RTX 5060 은 종류가 엄청 많은데 뭘 사나".
 //
@@ -29,11 +30,9 @@ import { paths } from '../lib/urls'
 
 function ShopLinks({ v, guide }: { v: Variant; guide: Guide | null }) {
   return (
-    <span className="inline-flex flex-wrap gap-x-2 gap-y-0.5 text-[11px]">
+    <span className="inline-flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[11px]">
       {shopLinks(v, guide).map((l) => (
-        <a key={l.label} href={l.url} target="_blank" rel="noreferrer nofollow" className="text-(--color-accent) hover:underline whitespace-nowrap">
-          {l.label} ↗
-        </a>
+        <ShopLink key={l.label} shop={l.label} url={l.url} strong={l.label === '다나와'} />
       ))}
     </span>
   )
