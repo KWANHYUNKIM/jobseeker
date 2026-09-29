@@ -2167,6 +2167,64 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-ryzen-5-7500x3d",
+   "category": "cpu",
+   "name": "Ryzen 5 7500X3D",
+   "maker": "AMD",
+   "released": "2025-11",
+   "specs": {
+    "socket": "AM5",
+    "cores": 6,
+    "threads": 12,
+    "boost_ghz": 4.5,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 96,
+    "series": "라이젠 7000 시리즈",
+    "family": "라이젠 5",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35",
+    "base_ghz": 4.0,
+    "igpu_name": "Radeon Graphics(2코어)"
+   },
+   "perf": {
+    "index": 81,
+    "multi": 33,
+    "confidence": "low",
+    "basis": "게임: Tom's CPU 계층표(2026)에 7600X3D 1080p 80.6% → 우리 눈금 83(÷ 0.97). PC Gamer 7500X3D 리뷰가 '대부분의 게임에서 7600X3D 와 거의 나란하지만 조금 뒤' 라 해서(부스트 4.5 vs 4.7GHz) 81. 멀티: 같은 표 7600X3D 31.8% → 34, 7500X3D 는 Cinebench 에서 7600X3D 보다 조금 뒤라 33"
+   },
+   "price_query": {
+    "q": "AMD 7500X3D",
+    "cate": "CPU",
+    "must": [
+     "7500X3D"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지 — Ryzen 5 7500X3D(6C/12T · 최대 4.5GHz · L3 96MB · 65W · AM5 · DDR5 · Radeon Graphics 2코어 · 2025-11-12)",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/7000-series/amd-ryzen-5-7500x3d.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표 — 1080p 게임(7600X3D 80.6%) · 멀티(31.8%)",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
+    },
+    {
+     "title": "PC Gamer — Ryzen 5 7500X3D 리뷰(7600X3D 와 게임에서 거의 나란하되 조금 뒤, 기본 4.0GHz)",
+     "url": "https://www.pcgamer.com/hardware/processors/amd-ryzen-5-7500x3d-review/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-ryzen-5-7500f",
    "category": "cpu",
    "name": "Ryzen 5 7500F",
