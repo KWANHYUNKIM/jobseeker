@@ -265,15 +265,28 @@
   "comfortable_tps": 25
  },
  "image": {
-  "name": "이미지 생성 (SDXL 1024×1024 · 30스텝)",
-  "model": "연산량이 정해진 일이라 FP16 텐서 성능에 비례한다. fp16_tflops 는 NVIDIA 백서의 'FP16 텐서, FP32 누산, 희소성 없음' 값이다 (5090·4090·5080·5070 Ti·5070 확인). 이 값이 없는 카드(AMD·인텔·일부 NVIDIA)는 성능 지수로 대신 잰다 — AMD 의 'FP16 행렬' 값은 누산 기준이 달라 섞지 않는다.",
+  "name": "이미지 생성 (SDXL 1024×1024 · 30스텝 · TensorRT)",
+  "model": "연산량이 정해진 일이라 FP16 텐서 성능에 비례한다. fp16_tflops 는 NVIDIA 백서의 'FP16 텐서, FP32 누산, 희소성 없음' 값이다 (5090·4090·5080·5070 Ti·5070 확인). 이 값이 없는 카드(AMD·인텔·일부 NVIDIA)는 성능 지수로 대신 잰다 — AMD 의 'FP16 행렬' 값은 누산 기준이 달라 섞지 않는다. 기준값은 UL Procyon SDXL(FP16 · 1024×1024 · 배치 1 · 100스텝 · 16장, NVIDIA 는 TensorRT) 실측 — RTX 4090 점수 4942, UL 공식 점수식 5000 × 120 ÷ 실행 시간 → 16장 약 121초 · 장당 7.6초(100스텝) → 30스텝 약 2.3초. TensorRT 로 최적화한 값이라 일반 PyTorch(ComfyUI · WebUI)에서는 이보다 느리다.",
   "anchor": {
    "gpu": "gpu-rtx-4090",
-   "seconds": 4.5
+   "seconds": 2.3
   },
   "min_vram_gb": 8,
-  "confidence": "seed",
-  "sources": []
+  "confidence": "low",
+  "sources": [
+   {
+    "title": "UL — Procyon AI Image Generation 점수 계산(SDXL 점수 = 5000 × 120 ÷ 실행 시간)",
+    "url": "https://support.benchmarks.ul.com/support/solutions/articles/44002518754-how-is-the-ul-procyon-ai-image-generation-benchmark-score-calculated-"
+   },
+   {
+    "title": "UL — Procyon AI Image Generation 벤치마크(SDXL: 1024×1024 · 배치 1 · 100스텝, NVIDIA TensorRT)",
+    "url": "https://benchmarks.ul.com/procyon/ai-image-generation-benchmark"
+   },
+   {
+    "title": "Overclocking.com — RTX 5090 FE 리뷰, UL Procyon SDXL FP16(RTX 4090 4942점, i9-14900K)",
+    "url": "https://en.overclocking.com/review-nvidia-rtx-5090-founders-edition/8/"
+   }
+  ]
  },
  "finetune": [
   {
