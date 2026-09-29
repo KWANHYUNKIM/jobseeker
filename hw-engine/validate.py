@@ -30,6 +30,69 @@ def load(name: str):
     return json.loads((HW / name).read_text(encoding="utf-8"))
 
 
+def _norm(s: str) -> str:
+    return re.sub(r"\s+", "", s).lower()
+
+
+def _hit(name: str, rule: dict) -> bool:
+    """뷰어 offerMatches 와 같은 규칙 — 'A|B' 는 둘 중 하나."""
+    has = lambda t: any(_norm(x) in name for x in t.split("|"))
+    return all(has(t) for t in rule.get("must", [])) and not any(has(t) for t in rule.get("not", []))
+
+
+def check_models(ids: set[str], cats: dict[str, str], prices: dict) -> tuple[list[str], dict[str, int]]:
+    """public/hardware/models/<부품 id>.json — 제품(보드 파트너 모델) 단위 스펙.
+
+    돌려주는 두 번째 값은 부품별 '스펙 조사 전 매물 수' — 다음 사이클의 일감이다.
+    한 매물이 두 제품에 걸리면 이름 규칙이 겹친 것이라 오류로 본다(가격이 두 번 세어진다).
+    """
+    errs: list[str] = []
+    todo: dict[str, int] = {}
+    mdir = HW / "models"
+    files = {f.stem: f for f in mdir.glob("*.json")} if mdir.exists() else {}
+    for pid in ids:
+        offers = (prices.get("parts", {}).get(pid) or {}).get("offers") or []
+        models = []
+        if pid in files:
+            try:
+                doc = json.loads(files[pid].read_text(encoding="utf-8"))
+            except ValueError as e:
+                errs.append(f"models/{pid}.json: JSON 이 깨졌다 {e}")
+                continue
+            if doc.get("part") != pid:
+                errs.append(f"models/{pid}.json: part 가 파일 이름과 다르다")
+            models = doc.get("models") or []
+            seen = set()
+            for m in models:
+                mid = m.get("id", "?")
+                if mid in seen:
+                    errs.append(f"models/{pid}: 제품 id 중복 {mid}")
+                seen.add(mid)
+                for k in ("name", "brand", "match", "specs", "sources", "confidence", "checked_at"):
+                    if k not in m:
+                        errs.append(f"models/{pid}/{mid}: {k} 없음")
+                if not (m.get("match") or {}).get("must"):
+                    errs.append(f"models/{pid}/{mid}: match.must 가 비면 모든 매물을 가져간다")
+                if m.get("confidence") not in {"low", "medium", "high"}:
+                    errs.append(f"models/{pid}/{mid}: confidence 는 low·medium·high")
+                if not m.get("sources"):
+                    errs.append(f"models/{pid}/{mid}: 출처가 없다")
+                for s in m.get("sources") or []:
+                    if "danawa.com" in str(s.get("url", "")):
+                        errs.append(f"models/{pid}/{mid}: 다나와는 스펙 출처로 쓰지 않는다 — 제조사 공식 페이지로")
+        for o in offers:
+            name = _norm(o["name"])
+            hits = [m["id"] for m in models if _hit(name, m.get("match") or {})]
+            if len(hits) > 1:
+                errs.append(f"models/{pid}: 매물 '{o['name']}' 이 제품 {hits} 에 동시에 걸린다")
+            if not hits:
+                todo[pid] = todo.get(pid, 0) + 1
+    for stem in files:
+        if stem not in ids:
+            errs.append(f"models/{stem}.json: 그런 부품이 없다")
+    return errs, todo
+
+
 def spec_keys() -> dict[str, set[str]]:
     """뷰어 표의 열(SPEC_COLUMNS) — 부품 specs 에 이 키가 없으면 표에 '—' 로 나온다."""
     src = VIEWER_LIB.read_text(encoding="utf-8")
@@ -99,6 +162,9 @@ def check() -> tuple[list[str], list[dict], dict, dict, dict]:
         for k in ("gpu100", "vram"):
             if set(g.get(k, {})) != {"fhd", "qhd", "uhd"}:
                 errs.append(f"bench.json {g.get('key')}: {k} 는 fhd·qhd·uhd 셋")
+    merrs, todo = check_models(ids, {p["id"]: p.get("category") for p in parts}, prices)
+    errs.extend(merrs)
+    prices["_model_todo"] = todo
     stray = set(prices.get("parts", {})) - ids
     if stray:
         errs.append(f"prices.json: 목록에 없는 부품의 가격 {sorted(stray)[:5]} — 부품 id 를 바꿨나?")
@@ -135,6 +201,9 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
     total_seed = sum(len(v) for v in seed.values())
     print(f"4. 확인 전(seed) {total_seed}: " + (" · ".join(f"{c} {len(v)}" for c, v in seed.items()) or "-"))
     print(f"5. 기준값 seed {len(bench_seed)}: {', '.join(bench_seed) or '-'}")
+    todo = prices.get("_model_todo", {})
+    top = sorted(todo.items(), key=lambda kv: -kv[1])[:8]
+    print(f"6. 스펙 조사 전 매물 {sum(todo.values())}: " + (", ".join(f"{k} {v}" for k, v in top) or "-"))
     print(f"7. {STALE_DAYS}일 넘은 확인 {len(stale)}: {', '.join(stale[:10]) or '-'}")
 
 
