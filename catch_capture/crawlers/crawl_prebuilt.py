@@ -196,8 +196,18 @@ def map_parts(comp: dict, parts: list[dict]) -> dict:
             if len(base["must"]) < len(rule.get("must", [])) and _hit(comp["gpu"], base):
                 gpu, gpu_assumed = cand["id"], f"VRAM 표기가 없어 {cand['specs'].get('vram_gb')}GB 로 가정했다(낮은 쪽)"
                 break
+    # 'F'(내장 그래픽을 끈 판)가 목록에 따로 없으면 같은 칩의 기본판으로 잇는다 — 게임 · 멀티 성능은 같다.
+    cpu = first("cpu", comp.get("cpu"))
+    cpu_assumed = None
+    if not cpu and comp.get("cpu"):
+        base_tok = re.sub(r"(?<=\d)(K?)F\b", r"\1", comp["cpu"])
+        if base_tok != comp["cpu"]:
+            cpu = first("cpu", base_tok)
+            if cpu:
+                cpu_assumed = f"{comp['cpu']} 은 목록에 따로 없어 내장 그래픽만 다른 {base_tok} 으로 잇는다(성능 같음)"
     return {
-        "cpu": first("cpu", comp.get("cpu")),
+        "cpu": cpu,
+        "cpu_assumed": cpu_assumed,
         "gpu": gpu,
         "gpu_assumed": gpu_assumed,
         "mainboard": mb,
@@ -370,6 +380,9 @@ def selftest() -> int:
     assert m2["gpu"] == "gpu-rtx-5060-ti-8" and m2["gpu_assumed"], m2
     t = parse_title("[모맨] 게이밍PC i5 14400F RTX5060 DDR5 32GB NVMe 1TB")
     assert t["ram_type"] == "DDR5" and t["ram_gb"] == 32 and t["storage_gb"] == 1000, t
+    m3 = map_parts({"cpu": "i5-12400F"}, parts)
+    assert m3["cpu"] == "cpu-core-i5-12400" and m3["cpu_assumed"], m3
+    assert map_parts({"cpu": "i5-14400F"}, parts)["cpu"] == "cpu-core-i5-14400f"  # 목록에 있으면 그대로
     for tok in ("UHD 730", "그래픽스 7", "인텔 그래픽스", "Vega 8", "760M", "Radeon 740M", "UHD 770", "그래픽스"):
         assert norm_gpu(tok) == f"내장({tok})", tok
     for tok in ("RTX 5060", "RX 9060 XT", "GTX 1660 SUPER", "Arc B580", "RX 580"):
