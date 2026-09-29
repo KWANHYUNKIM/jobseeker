@@ -1201,8 +1201,8 @@
    },
    "perf": {
     "index": 16,
-    "basis": "추정 — 같은 표의 RTX 3050 8GB 가 21 이다. 6GB 판(코어 2304·96bit·70W)은 그보다 낮아 16 으로 잡았다. 6GB 판 실측 대기",
-    "confidence": "seed"
+    "basis": "RTX 4090 = 100, 1440p — TechPowerUp RTX 3050 6GB 리뷰의 1440p 상대 성능에서 4090 이 636%, 3050 6GB 가 100% → 15.7. 같은 표의 3050 8GB(130% → 20.4)가 Tom's 표(20.8)와 맞아 그대로 쓴다",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 3050 6GB",
@@ -1220,6 +1220,10 @@
     {
      "title": "NVIDIA 공식 — RTX 3050(6GB: 2304 CUDA · 96-bit · 70W · 권장 300W)",
      "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3050/"
+    },
+    {
+     "title": "TechPowerUp — RTX 3050 6GB 리뷰, 1440p 상대 성능(3050 6GB 100% · 3050 8GB 130% · RTX 4090 636%)",
+     "url": "https://www.techpowerup.com/review/nvidia-geforce-rtx-3050-6-gb/31.html"
     }
    ],
    "checked_at": "2026-09-29",
