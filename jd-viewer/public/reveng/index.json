@@ -3380,7 +3380,7 @@
       "country": "JP",
       "category": "모빌리티",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "같은 방향 사람을 AI 로 묶는 공항 송영 · 택시 셰어 승차 — 사전 예약이 들어올 때마다 상승 조합을 다시 짜고, 배차 조와 확정 시점을 시스템이 쥔다",
       "updated_at": "2026-09-30",
       "domain": "nearme.jp"
