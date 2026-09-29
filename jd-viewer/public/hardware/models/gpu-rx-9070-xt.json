@@ -1,0 +1,115 @@
+{
+ "schema": 1,
+ "part": "gpu-rx-9070-xt",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "xfx-swift-rx9070xt-white",
+   "name": "XFX Swift RX 9070 XT White",
+   "brand": "XFX",
+   "code": "RX-97TSWF3W9",
+   "match": {
+    "must": [
+     "XFX",
+     "SWIFT",
+     "WHITE",
+     "9070 XT"
+    ],
+    "not": []
+   },
+   "specs": {
+    "boost_mhz": 2970,
+    "oc_mhz": null,
+    "length_mm": 325,
+    "width_mm": 150,
+    "thickness_mm": 65,
+    "slots": 3.5,
+    "fans": 3,
+    "power_connector": "8핀 x2",
+    "psu_w": 800,
+    "outputs": "HDMI 2.1 x1 · DP 2.1 x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "durability": {
+    "fan_bearing": "더블 볼 베어링",
+    "notes": [
+     "니켈 도금 구리 콜드플레이트, 6mm 히트파이프.",
+     "GPU 열전도재로 PTM7950 을 쓴다."
+    ]
+   },
+   "sources": [
+    {
+     "title": "XFX 공식 제품 페이지(스펙)",
+     "url": "https://www.xfxforce.com/shop/xfx-swift-amd-radeon-rx-9070xt-white-triple-fan-gaming-edition"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "치수는 공식 '추정 치수' 32.5 x 15 x 6.5cm.",
+   "image": {
+    "url": "https://cdn.prod.website-files.com/5d1911406ad3cbdb9924a753/67aa491abd944435f2dc4a78_Swift-W-1.jpg",
+    "credit": "XFX",
+    "page": "https://www.xfxforce.com/shop/xfx-swift-amd-radeon-rx-9070xt-white-triple-fan-gaming-edition"
+   }
+  },
+  {
+   "id": "xfx-swift-rx9070xt",
+   "name": "XFX Swift RX 9070 XT",
+   "brand": "XFX",
+   "code": "RX-97TSWF3B9",
+   "match": {
+    "must": [
+     "XFX",
+     "SWIFT",
+     "9070 XT"
+    ],
+    "not": [
+     "WHITE",
+     "OC"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2970,
+    "oc_mhz": null,
+    "length_mm": 325,
+    "width_mm": 150,
+    "thickness_mm": 65,
+    "slots": 3.5,
+    "fans": 3,
+    "power_connector": "8핀 x2",
+    "psu_w": 800,
+    "outputs": "HDMI 2.1 x1 · DP 2.1 x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "durability": {
+    "fan_bearing": "더블 볼 베어링",
+    "notes": [
+     "니켈 도금 구리 콜드플레이트, 6mm 히트파이프.",
+     "GPU 열전도재로 PTM7950 을 쓴다."
+    ]
+   },
+   "sources": [
+    {
+     "title": "XFX 공식 제품 페이지(스펙)",
+     "url": "https://www.xfxforce.com/shop/xfx-swift-amd-radeon-rx-9070xt-triple-fan-gaming-edition"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "치수는 공식 '추정 치수' 32.5 x 15 x 6.5cm.",
+   "image": {
+    "url": "https://cdn.prod.website-files.com/5d1911406ad3cbdb9924a753/67aa487072f08720283eeef6_Swift-B-1.jpg",
+    "credit": "XFX",
+    "page": "https://www.xfxforce.com/shop/xfx-swift-amd-radeon-rx-9070xt-triple-fan-gaming-edition"
+   }
+  }
+ ]
+}

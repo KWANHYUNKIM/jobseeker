@@ -2,6 +2,13 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 제품: RTX 5070 Ti 3 · RTX 5070 5 · RX 9070 XT 2
+
+- 공식 제품 페이지·데이터시트로 GALAX·PNY·COLORFUL·GAINWARD·XFX 제품 10개를 채웠다(사진 6장). 매물과 이름 규칙이 겹치지 않는다.
+- GALAX 국내명(BLACK OC·BLACK 2X OC)을 글로벌 1-Click OC 로 짝지은 것은 이름 추정이라 medium.
+- 건너뜀(봇 차단, 우회 안 함): GIGABYTE(403) · MSI(403) · ZOTAC(WAF) · ASRock(Incapsula) · MANLI(WAF). 국내 매물에서 이 다섯이
+  큰 몫이라 제품 스펙 칸이 빈 채로 남는다 — 공식 사이트가 열리는 날 다시 본다.
+
 ## 2026-09-29 — 확인: 저장장치·칩셋·메모리·파워(사다리 4a) + A520·H810·WD40EFZZ 추가
 
 - **틀렸던 값**: WD Blue 2TB 는 CMR 이 아니라 **SMR**(WD 데이터시트) · B860 의 CPU M.2 는 PCIe 5.0 · B760 그래픽 슬롯은

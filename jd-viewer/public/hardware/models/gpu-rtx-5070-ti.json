@@ -1,0 +1,170 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5070-ti",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "galax-rtx5070ti-1clickoc-2x",
+   "name": "GALAX RTX 5070 Ti 1-Click OC 2X",
+   "brand": "GALAX",
+   "code": null,
+   "match": {
+    "must": [
+     "GALAX",
+     "5070 Ti",
+     "2X"
+    ],
+    "not": [
+     "White",
+     "EX GAMER",
+     "HOF"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2467,
+    "oc_mhz": 2482,
+    "length_mm": 251,
+    "width_mm": 134.9,
+    "thickness_mm": 45,
+    "slots": 2.2,
+    "fans": 2,
+    "power_connector": "16핀 x1",
+    "psu_w": 750,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "화이트 LED(팬, 온/오프 스위치)",
+    "bundle": [
+     "16핀→8핀 x3 어댑터"
+    ]
+   },
+   "durability": {
+    "fan_bearing": null,
+    "notes": [
+     "WINGS 3.0 92mm 팬 2개, 유휴 시 전 팬 정지."
+    ]
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 제품 페이지(스펙)",
+     "url": "https://galax.com/en/product/geforce-rtx-5070-ti-1-click-oc-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "치수는 브래킷 포함(제외 239 x 119.4 x 44mm). 국내명 'BLACK 2X OC' 를 글로벌 '1-Click OC 2X' 로 짝지은 것은 이름으로 한 추정.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/10/RTX5070TiOC_2x_B8424GX.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5070-ti-1-click-oc-2x/"
+   }
+  },
+  {
+   "id": "pny-rtx5070ti-oc-triple",
+   "name": "PNY RTX 5070 Ti OC Triple Fan",
+   "brand": "PNY",
+   "code": "VCG5070T16TFXPB1-O",
+   "match": {
+    "must": [
+     "PNY",
+     "5070 Ti",
+     "OC",
+     "Triple"
+    ],
+    "not": [
+     "ARGB",
+     "EPIC",
+     "Plus"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2572,
+    "oc_mhz": null,
+    "length_mm": 299.5,
+    "width_mm": 120.0,
+    "thickness_mm": 59.6,
+    "slots": 2.98,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 750,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": null,
+    "backplate": true,
+    "lighting": null,
+    "bundle": [
+     "16핀→8핀 x3 어댑터"
+    ]
+   },
+   "durability": {
+    "fan_bearing": null,
+    "notes": [
+     "금속 백플레이트가 휨(새깅)을 막는다고 공식 자료에 적혀 있다."
+    ]
+   },
+   "sources": [
+    {
+     "title": "PNY 공식 데이터시트 — RTX 5070 Ti 16GB OC Triple Fan",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5070-ti-16gb-triple-fan-oc-brochure.pdf"
+    },
+    {
+     "title": "PNY RTX 5070 Ti 제품군 페이지",
+     "url": "https://www.pny.com/geforce-rtx-5070-ti-models"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "제품 페이지가 변형을 탭으로만 보여 줘서 이 변형의 사양은 공식 데이터시트 PDF(2025-01)에서 읽었다."
+  },
+  {
+   "id": "colorful-battleax-rtx5070ti-sff",
+   "name": "COLORFUL RTX 5070 Ti Battle AX SFF",
+   "brand": "COLORFUL",
+   "code": null,
+   "match": {
+    "must": [
+     "COLORFUL",
+     "BATTLE AX",
+     "SFF",
+     "5070 Ti"
+    ],
+    "not": [
+     "iGame"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2452,
+    "oc_mhz": null,
+    "length_mm": 301.4,
+    "width_mm": 120,
+    "thickness_mm": 50,
+    "slots": null,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 750,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "durability": {
+    "fan_bearing": null,
+    "notes": [
+     "TDP 300W, 무게 1kg."
+    ]
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지 — RTX 5070 Ti Battle AX SFF 16GB-V",
+     "url": "https://www.colorfulgroup.com/en/home/product?mid=102&id=e367f2ac-c858-4204-b78c-1c4d1916abf1"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "일반 Battle AX(330.6mm)와 다른 제품이다. 공식 이미지는 원본에서 직접 불러오기가 막혀(403) 비워 둔다."
+  }
+ ]
+}

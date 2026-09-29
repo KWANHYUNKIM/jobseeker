@@ -1,0 +1,277 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5070",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "colorful-rtx5070-gaming",
+   "name": "COLORFUL RTX 5070 Gaming",
+   "brand": "COLORFUL",
+   "code": null,
+   "match": {
+    "must": [
+     "COLORFUL",
+     "5070",
+     "GAMING"
+    ],
+    "not": [
+     "iGame",
+     "BATTLE",
+     "DUO",
+     "Ti"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2512,
+    "oc_mhz": null,
+    "length_mm": 300,
+    "width_mm": 120,
+    "thickness_mm": 40.4,
+    "slots": null,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 650,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "durability": {
+    "fan_bearing": null,
+    "notes": [
+     "TDP 250W, 무게 0.90kg."
+    ]
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지 — RTX 5070 Gaming 12GB-V",
+     "url": "https://www.colorfulgroup.com/en/home/product?mid=102&id=2edb9fa9-91a9-40cd-9025-57bb8f9ceaa8"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "팬 개수는 공식 사양에 없다. 이미지는 원본 핫링크가 막혀(403) 비워 둔다."
+  },
+  {
+   "id": "galax-rtx5070-1clickoc-2x",
+   "name": "GALAX RTX 5070 1-Click OC 2X",
+   "brand": "GALAX",
+   "code": null,
+   "match": {
+    "must": [
+     "GALAX",
+     "5070",
+     "BLACK OC"
+    ],
+    "not": [
+     "EX GAMER",
+     "White",
+     "Ti"
+    ]
+   },
+   "specs": {
+    "boost_mhz": null,
+    "oc_mhz": null,
+    "length_mm": 252,
+    "width_mm": 131,
+    "thickness_mm": 40.6,
+    "slots": 2,
+    "fans": 2,
+    "power_connector": "16핀 x1",
+    "psu_w": 650,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": [
+     "16핀→8핀 x2 어댑터"
+    ]
+   },
+   "durability": {
+    "fan_bearing": null,
+    "notes": [
+     "WINGS 3.0 92mm 팬 2개, 유휴 시 전 팬 정지."
+    ]
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 제품 페이지(스펙)",
+     "url": "https://galax.com/en/product/geforce-rtx-5070-12gb-1-click-oc-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "공식 부스트·OC 클럭이 'TBC' 라 비워 둔다. 치수는 브래킷 포함. 국내명 'BLACK OC' 를 글로벌 '1-Click OC 2X' 로 짝지은 것은 이름 추정.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/01/UKR_6903_GX.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5070-12gb-1-click-oc-2x/"
+   }
+  },
+  {
+   "id": "galax-rtx5070-exg-1clickoc",
+   "name": "GALAX RTX 5070 EX Gamer 1-Click OC",
+   "brand": "GALAX",
+   "code": null,
+   "match": {
+    "must": [
+     "GALAX",
+     "5070",
+     "EX GAMER"
+    ],
+    "not": [
+     "White",
+     "Ti"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2557,
+    "oc_mhz": 2572,
+    "length_mm": 334,
+    "width_mm": 144,
+    "thickness_mm": 52,
+    "slots": 2.5,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": 650,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": true,
+    "lighting": "ARGB",
+    "bundle": [
+     "1-Click Sync Pro 케이블",
+     "16핀→8핀 x2 어댑터"
+    ]
+   },
+   "durability": {
+    "fan_bearing": null,
+    "notes": [
+     "WINGS 3.0 팬 92·102·92mm, 유휴 시 전 팬 정지."
+    ]
+   },
+   "sources": [
+    {
+     "title": "GALAX 공식 제품 페이지(스펙)",
+     "url": "https://galax.com/en/product/geforce-rtx-5070-ex-gamer-12gb-1-click-oc-3x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "치수는 브래킷 포함(제외 322 x 130 x 52mm). 국내명 'EX GAMER BLACK OC' 를 글로벌 'EX Gamer 1-Click OC' 로 짝지음.",
+   "image": {
+    "url": "https://galax.com/wp-content/uploads/2025/01/UKR_7012-Gx-3.png",
+    "credit": "GALAX",
+    "page": "https://galax.com/en/product/geforce-rtx-5070-ex-gamer-12gb-1-click-oc-3x/"
+   }
+  },
+  {
+   "id": "colorful-igame-rtx5070-ultra-w-oc",
+   "name": "COLORFUL iGame RTX 5070 Ultra W OC",
+   "brand": "COLORFUL",
+   "code": null,
+   "match": {
+    "must": [
+     "iGame",
+     "ULTRA",
+     "White",
+     "5070"
+    ],
+    "not": [
+     "Ti",
+     "SFF"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2512,
+    "oc_mhz": 2557,
+    "length_mm": 300.5,
+    "width_mm": 120,
+    "thickness_mm": 50,
+    "slots": null,
+    "fans": null,
+    "power_connector": "16핀 x1",
+    "psu_w": 650,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": "RGB",
+    "bundle": null
+   },
+   "durability": {
+    "fan_bearing": null,
+    "notes": [
+     "보증 1년 연장(등록 필요)을 공식 페이지가 내세운다.",
+     "TDP 250W, 무게 1.0kg."
+    ]
+   },
+   "sources": [
+    {
+     "title": "COLORFUL 공식 제품 페이지 — iGame RTX 5070 Ultra W OC 12GB-V",
+     "url": "https://www.colorfulgroup.com/en/home/product?mid=102&id=29650831-6094-41cc-8ab5-5fd6c8f6a32c"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "OC 클럭은 원키 OC 적용 시. 이미지는 원본 핫링크가 막혀(403) 비워 둔다."
+  },
+  {
+   "id": "gainward-python3-rtx5070",
+   "name": "GAINWARD RTX 5070 Python III",
+   "brand": "GAINWARD",
+   "code": "NE75070019K9-GB2050T",
+   "match": {
+    "must": [
+     "GAINWARD",
+     "5070",
+     "파이썬 III|Python III"
+    ],
+    "not": [
+     "OC",
+     "Ti"
+    ]
+   },
+   "specs": {
+    "boost_mhz": 2512,
+    "oc_mhz": null,
+    "length_mm": 291.9,
+    "width_mm": 116.5,
+    "thickness_mm": 41.3,
+    "slots": 2,
+    "fans": 3,
+    "power_connector": "16핀 x1",
+    "psu_w": null,
+    "outputs": "HDMI 2.1b x1 · DP 2.1b x3",
+    "dual_bios": null,
+    "zero_fan": true,
+    "backplate": null,
+    "lighting": null,
+    "bundle": null
+   },
+   "durability": {
+    "fan_bearing": null,
+    "notes": [
+     "GPU·메모리를 함께 덮는 산화 방지 구리 베이스."
+    ]
+   },
+   "sources": [
+    {
+     "title": "Gainward 공식 제품 페이지",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1237&lang=en"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "Python III OC(2542MHz)와 다른 제품이라 'OC' 를 제외한다. 권장 파워는 공식 페이지에 없다.",
+   "image": {
+    "url": "https://www.gainward.com/main/product/vga/pro/p01237/p01237_pic2_165767a46d13c0fd1.png",
+    "credit": "Gainward",
+    "page": "https://www.gainward.com/main/vgapro.php?id=1237&lang=en"
+   }
+  }
+ ]
+}
