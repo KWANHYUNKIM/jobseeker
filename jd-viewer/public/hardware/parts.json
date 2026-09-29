@@ -884,9 +884,9 @@
     "psu_w": 450
    },
    "perf": {
-    "index": 38,
-    "basis": "추정 — RX 9060 XT 16GB(47) × 컴퓨트 유닛 비(28/32) 에서 클럭 차이를 깎았다. 실측 대기",
-    "confidence": "seed"
+    "index": 40,
+    "basis": "RTX 4090 = 100, 1440p. Tom's 표에 없어 이웃으로 옮겼다 — TechSpot 7게임 기하평균: RX 9060 은 9060 XT 8GB 보다 13~14% 느리고 RTX 5060 과 거의 같다. Tom's 환산 9060 XT 8GB 43.5 × 0.865 ≈ 38, RTX 5060 42 — TechSpot 은 저·중 옵션이라 두 길이 어긋나 가운데 40",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RX 9060",
@@ -903,6 +903,10 @@
     {
      "title": "AMD 공식 사양 — RX 9060(28 CU, 1792 SP, 8GB 128-bit, 288GB/s, 132W, 권장 450W)",
      "url": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9060.html"
+    },
+    {
+     "title": "TechSpot — Radeon RX 9060(non-XT) 리뷰(7게임: 9060 XT 대비 −13~14%, RTX 5060 과 비슷, RX 7600 보다 23~29% 빠름)",
+     "url": "https://www.techspot.com/review/3060-amd-radeon-9060/"
     }
    ],
    "checked_at": "2026-09-29",
