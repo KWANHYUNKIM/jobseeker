@@ -2018,6 +2018,56 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-ryzen-3-3200g",
+   "category": "cpu",
+   "name": "Ryzen 3 3200G",
+   "maker": "AMD",
+   "released": "2019-07",
+   "status": "current",
+   "specs": {
+    "socket": "AM4",
+    "cores": 4,
+    "threads": 4,
+    "boost_ghz": 4.0,
+    "base_ghz": 3.6,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR4",
+    "igpu": true,
+    "igpu_name": "Radeon Vega 8(1250MHz)",
+    "l3_mb": 4,
+    "series": "라이젠 3000 시리즈",
+    "family": "라이젠 3",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
+   },
+   "perf": {
+    "index": 35,
+    "multi": 11,
+    "basis": "추정 — Tom's · TPU 표에 없다. 4코어 4스레드 Zen+ · L3 4MB 라 TPU 9800X3D 리뷰의 Ryzen 3 3300X(Zen 2 · 4C/8T, 55.1% → 우리 약 44)보다 한참 아래로 잡았다. 멀티는 5600(27)의 4할. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "AMD 3200G",
+    "cate": "CPU",
+    "must": [
+     "3200G"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양(지원 페이지 사양표) — 4C/4T · 3.6/4.0GHz · L3 4MB · 65W · AM4 · DDR4 · Radeon Vega 8 · 2019-07-07",
+     "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-3000-series/amd-ryzen-3-3200g.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-core-ultra-9-285k",
    "category": "cpu",
    "name": "Core Ultra 9 285K",
@@ -2282,6 +2332,61 @@
     },
     {
      "title": "Tom's Hardware CPU 벤치마크 계층표 — 1080p 게임 · 멀티스레드(2026-09-29 조회)",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-ultra-5-225",
+   "category": "cpu",
+   "name": "Core Ultra 5 225",
+   "maker": "Intel",
+   "released": "2025-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1851",
+    "cores": 10,
+    "threads": 10,
+    "boost_ghz": 4.9,
+    "tdp_w": 65,
+    "max_power_w": 121,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 20,
+    "series": "코어 울트라 시리즈2",
+    "family": "코어 울트라5",
+    "igpu_name": "Intel Graphics"
+   },
+   "perf": {
+    "index": 64,
+    "multi": 40,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100 — Tom's Hardware 한 표의 Core Ultra 5 225 값 그대로(62.5% → 64)",
+    "confidence": "low"
+   },
+   "price_query": {
+    "q": "울트라5 225",
+    "cate": "CPU",
+    "must": [
+     "225"
+    ],
+    "not": [
+     "225F",
+     "225T",
+     "225H",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core Ultra 5 225(6P+4E · 10스레드 · 4.9GHz · 20MB · 65/121W · Intel Graphics · DDR5-6400 · 2025년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241070/intel-core-ultra-5-processor-225-20m-cache-up-to-4-90-ghz/specifications.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표 — 1080p 게임(Core Ultra 5 225 62.5%)",
      "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
