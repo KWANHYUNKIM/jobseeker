@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { checkBuild, estimateFps, priceOf, systemWatts, tierOf, type Build, type HwData, type Part } from './hardware'
+import { checkBuild, estimateBuildMin, estimateFps, estimateLlm, priceOf, systemWatts, tierOf, type Build, type HwData, type Part } from './hardware'
 
 // 완제품 조립PC 분석 — '누가 설계해 파는 조립PC' 가 왜 잘 만들어졌나 / 가성비가 왜 좋은가.
 //
@@ -191,4 +191,172 @@ export function valueRanks(items: Prebuilt[], data: HwData): Map<string, { rank:
     .map((x) => ({ key: x.it.key, wonPerFps: x.it.price / x.a.qhdFps! }))
     .sort((a, b) => a.wonPerFps - b.wonPerFps)
   return new Map(scored.map((s, i) => [s.key, { rank: i + 1, of: scored.length, wonPerFps: s.wonPerFps }]))
+}
+
+// ── 성능 우선 ────────────────────────────────────────────────────────
+//
+// 가성비는 '1fps 에 얼마'다. 그런데 일(사업)에 쓰는 기계는 돈보다 성능이 먼저인 때가 있다 —
+// 렌더·빌드가 10분 줄면 사람 시간이 그만큼 산다. 그래서 가격은 보지 않고 용도별 성능만으로 줄 세운다.
+// 같은 성능이면 싼 쪽이 위다(돈을 아예 안 보는 건 아니다 — 같은 값을 더 주고 살 이유는 없다).
+//
+//   게임 QHD · 4K  — 예상 평균 fps(bench.games, CPU 천장 포함)
+//   로컬 AI        — 14B 언어 모델 생성 속도(토큰/초). 그래픽카드 메모리에 안 들어가면 급격히 느려진다
+//   빌드 · 렌더    — 멀티 지수로 잰 풀 빌드 시간(분). 짧을수록 위
+//
+// 성능만 보면 놓치는 것 — '다음 단계'. 이보다 빠른 완제품 중 가장 싼 것과, 성능 몇 % 에 얼마를 더 내나.
+
+export type PerfUse = 'game-qhd' | 'game-4k' | 'ai' | 'build'
+
+export const PERF_USES: { key: PerfUse; label: string; unit: string; plain: string }[] = [
+  { key: 'game-qhd', label: '게임 · QHD', unit: 'fps', plain: '예상 평균 fps (2560×1440 고옵션)' },
+  { key: 'game-4k', label: '게임 · 4K', unit: 'fps', plain: '예상 평균 fps (3840×2160 고옵션)' },
+  { key: 'ai', label: '로컬 AI', unit: '토큰/초', plain: '14B 언어 모델(코딩 도우미 급) 생성 속도' },
+  { key: 'build', label: '빌드 · 렌더', unit: '분', plain: '대형 프로젝트 풀 빌드 시간 — 짧을수록 좋다' },
+]
+
+export interface PerfScore {
+  /** 줄 세우는 값 — 클수록 좋다(빌드는 분이라 화면에는 display 를 쓴다) */
+  score: number | null
+  display: string
+  /** 이 기계에서 이 일의 천장이 되는 부품 */
+  bottleneck: string | null
+  cpu: Part | null
+  gpu: Part | null
+  /** 구성표가 없어 상품 이름에서 CPU·그래픽카드를 읽었다 */
+  fromName: boolean
+}
+
+// ── 상품 이름에서 부품 읽기 ──────────────────────────────────────────
+//
+// 크롤러가 상품 페이지 구성표(comp)를 아직 못 받은 완제품이 많다 — 그중에 9800X3D + 5080 같은
+// 최상위 기계가 섞여 있어, 성능으로 줄 세우면 1위가 빠진다. 이름에는 대개 부품이 적혀 있다
+// ("R7 9800X3D RTX5080 32GB"). 그래서 구성표가 없을 때만 이름에서 읽는다(화면에 그렇다고 적는다).
+// 메모리 용량만 다른 칩(5060 Ti 8GB/16GB)은 이름의 '16GB' 가 시스템 메모리일 때가 많아 8GB 로 둔다.
+
+let nameRules: { parts: Part[]; rules: { re: RegExp; part: Part }[] } | null = null
+
+function rulesFor(parts: Part[]) {
+  if (nameRules?.parts === parts) return nameRules.rules
+  const loose = (t: string) => t.replace(/(\d)([A-Z])/g, '$1\\s*$2').replace(/([A-Z])(\d)/g, '$1\\s*$2')
+  const rules: { re: RegExp; part: Part; len: number }[] = []
+  for (const p of parts) {
+    if (p.category !== 'gpu' && p.category !== 'cpu') continue
+    if (p.category === 'gpu' && /-16$/.test(p.id)) continue
+    const t = (
+      p.category === 'gpu'
+        ? p.name.replace(/^(GeForce RTX|Radeon RX|Arc)\s+/, '').replace(/\s*\d+GB$/, '')
+        : p.name.replace(/^(Ryzen \d|Core Ultra \d|Core)\s+/, '').replace(/^i\d-/, '')
+    )
+      .toUpperCase()
+      .replace(/\s+/g, '')
+    // 265K 는 265KF(내장 그래픽만 끈 판)도 같은 성능으로 읽는다
+    const tail = p.category === 'cpu' && t.endsWith('K') ? 'F?' : ''
+    rules.push({ re: new RegExp(`(?<![0-9])${loose(t)}${tail}(?![0-9A-Z])`), part: p, len: t.length })
+  }
+  rules.sort((a, b) => b.len - a.len)
+  nameRules = { parts, rules }
+  return rules
+}
+
+export function partsFromName(name: string, parts: Part[]): { cpu: Part | null; gpu: Part | null } {
+  const n = name.toUpperCase().replace(/[-_/]/g, ' ')
+  const rules = rulesFor(parts)
+  const find = (cat: 'cpu' | 'gpu') => rules.find((r) => r.part.category === cat && r.re.test(n))?.part ?? null
+  return { cpu: find('cpu'), gpu: n.includes('내장') ? null : find('gpu') }
+}
+
+const avgFps = (data: HwData, res: 'qhd' | 'uhd', gpu: Part, cpu: Part) => {
+  const gs = data.bench.games
+  const es = gs.map((g) => estimateFps(g, res, gpu, cpu))
+  return { fps: es.reduce((s, e) => s + e.fps, 0) / gs.length, cpuBound: es.filter((e) => e.bound === 'cpu').length, vramShort: es.filter((e) => e.vramShort > 0).length, n: gs.length }
+}
+
+export function perfOf(item: Prebuilt, data: HwData, use: PerfUse): PerfScore {
+  const byId = new Map(data.parts.map((p) => [p.id, p]))
+  const m = item.mapped ?? {}
+  const hasComp = !!(item.comp?.cpu || item.comp?.gpu)
+  const guess = hasComp ? { cpu: null, gpu: null } : partsFromName(item.name, data.parts)
+  const cpu = (m.cpu ? byId.get(m.cpu) : null) ?? guess.cpu
+  const integrated = !!item.comp?.gpu?.includes('내장')
+  const gpu = (m.gpu ? byId.get(m.gpu) : null) ?? (integrated ? null : guess.gpu)
+  const ram = m.ram ? (byId.get(m.ram) ?? null) : null
+  const fromName = !hasComp && !!(guess.cpu || guess.gpu)
+  const base = { cpu, gpu, fromName }
+  const none = (why: string): PerfScore => ({ score: null, display: '—', bottleneck: why, ...base })
+  if (use === 'game-qhd' || use === 'game-4k') {
+    if (!gpu || !cpu) return none(!gpu ? '그래픽카드를 모른다(내장 그래픽이거나 목록에 없다)' : 'CPU 를 모른다')
+    const r = avgFps(data, use === 'game-qhd' ? 'qhd' : 'uhd', gpu, cpu)
+    const bottleneck =
+      r.vramShort > r.n / 3
+        ? `그래픽 메모리 ${gpu.specs.vram_gb}GB — ${r.n}개 중 ${r.vramShort}개 게임에서 모자라 프레임이 깎인다`
+        : r.cpuBound > r.n / 2
+          ? `CPU(${cpu.name}) — ${r.n}개 중 ${r.cpuBound}개 게임에서 CPU 가 천장이다. 그래픽카드를 올려도 안 는다`
+          : `그래픽카드(${gpu.name}) — 성능을 올리려면 여기를 올린다`
+    return { score: r.fps, display: `${Math.round(r.fps)} fps`, bottleneck, ...base }
+  }
+  if (use === 'ai') {
+    if (!gpu) return none('그래픽카드를 모른다 — 내장 그래픽으로는 언어 모델이 사실상 안 돈다')
+    const model = data.bench.llm.models.find((x) => x.key === '14b') ?? data.bench.llm.models[0]
+    const e = estimateLlm(data.bench, model, gpu, ram ? Number(ram.specs.dual_bandwidth_gbs) || null : null)
+    const vram = Number(gpu.specs.vram_gb ?? 0)
+    const fitsMax = [...data.bench.llm.models].reverse().find((x) => x.size_gb <= vram - data.bench.llm.overhead_gb)
+    return {
+      score: e.tps,
+      display: `${e.tps >= 10 ? Math.round(e.tps) : e.tps.toFixed(1)} 토큰/초`,
+      bottleneck: e.fits
+        ? `그래픽 메모리 ${vram}GB — 통째로 올릴 수 있는 가장 큰 모델은 ${fitsMax?.name ?? '없음'}`
+        : `그래픽 메모리 ${vram}GB — 14B 가 다 안 들어가 ${e.note}`,
+      ...base,
+    }
+  }
+  if (!cpu) return none('CPU 를 모른다')
+  const min = estimateBuildMin(data.bench, cpu)
+  const gb = item.comp?.ram_gb
+  return {
+    score: -min,
+    display: `약 ${min < 10 ? min.toFixed(1) : Math.round(min)}분`,
+    bottleneck:
+      gb && gb < 32
+        ? `메모리 ${gb}GB — 병렬 빌드·도커를 같이 돌리면 모자란다(CPU 보다 먼저 막힌다)`
+        : `CPU(${cpu.name}, 멀티 지수 ${cpu.perf.multi ?? cpu.perf.index}) — 빌드 시간은 코어 수에 거의 비례한다`,
+    ...base,
+  }
+}
+
+export interface PerfRank {
+  rank: number
+  of: number
+  score: PerfScore
+  /** 1위 대비 성능(%) */
+  rel: number
+  /** 이보다 빠른 완제품 중 가장 싼 것 — 한 단계 올리는 데 드는 돈 */
+  next: { key: string; name: string; gainPct: number; extra: number } | null
+}
+
+export function perfRanks(items: Prebuilt[], data: HwData, use: PerfUse): Map<string, PerfRank> {
+  const xs = items
+    .map((it) => ({ it, s: perfOf(it, data, use) }))
+    .filter((x): x is { it: Prebuilt; s: PerfScore & { score: number } } => x.s.score != null)
+    .sort((a, b) => b.s.score - a.s.score || a.it.price - b.it.price)
+  if (!xs.length) return new Map()
+  const top = xs[0].s.score
+  // 빌드는 음수(분)라 1위 대비는 '시간의 역수' 비로 잰다
+  const rel = (v: number) => (use === 'build' ? (top / v) * 100 : (v / top) * 100)
+  return new Map(
+    xs.map((x, i) => {
+      const faster = xs.slice(0, i).filter((y) => y.s.score > x.s.score * (use === 'build' ? 0.95 : 1.05))
+      const cheapest = [...faster].sort((a, b) => a.it.price - b.it.price)[0]
+      const gain = cheapest ? (use === 'build' ? x.s.score / cheapest.s.score : cheapest.s.score / x.s.score) : 0
+      return [
+        x.it.key,
+        {
+          rank: i + 1,
+          of: xs.length,
+          score: x.s,
+          rel: rel(x.s.score),
+          next: cheapest ? { key: cheapest.it.key, name: cheapest.it.name, gainPct: (gain - 1) * 100, extra: cheapest.it.price - x.it.price } : null,
+        },
+      ]
+    }),
+  )
 }
