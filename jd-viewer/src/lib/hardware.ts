@@ -100,7 +100,7 @@ export interface Bench {
   }
   image: { name: string; model: string; anchor: { gpu: string; seconds: number }; min_vram_gb: number }
   finetune: { key: string; name: string; vram_gb: number; plain: string }[]
-  dev: { name: string; model: string; anchor_minutes: number }
+  dev: { name: string; model: string; anchor_minutes: number; serial_fraction?: number }
   /** 영상 편집 — 추정식이 아니라 PugetBench for DaVinci Resolve 실측(사용자 제출) 점수 */
   video?: {
     name: string
@@ -333,8 +333,14 @@ export function estimateImageSec(bench: Bench, gpu: Part, parts: Part[]): number
   return bench.image.anchor.seconds / (ratio * stack)
 }
 
+/**
+ * 빌드 시간 — 암달의 법칙. 9950X(멀티 100)의 시간을 기준으로, 병렬로 줄지 않는 몫(serial_fraction)과
+ * 멀티 지수에 반비례해 줄어드는 몫을 더한다. serial_fraction 이 없으면 0(순수 비례 — 예전 식).
+ */
 export function estimateBuildMin(bench: Bench, cpu: Part): number {
-  return bench.dev.anchor_minutes * (100 / (cpu.perf.multi ?? cpu.perf.index))
+  const s = Math.min(Math.max(bench.dev.serial_fraction ?? 0, 0), 1)
+  const multi = cpu.perf.multi ?? cpu.perf.index
+  return bench.dev.anchor_minutes * (s + (1 - s) * (100 / multi))
 }
 
 // ── 조립과 호환성 ────────────────────────────────────────────────────
