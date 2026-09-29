@@ -2,6 +2,13 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: Z890 · B650 · B860 보드 ASUS 23종(사다리 6)
+
+- models/mb-z890.json(7) · mb-b650.json(5) · mb-b860.json(11) 새로 — ASUS 공식 techspec 을 파서(scratchpad asus_parse.py)로 읽고 행마다 눈으로 봤다.
+  ASUS 매물 30건이 모두 한 모델에만 걸린다('Z890-P' ↔ PLUS/PRO, 'B650M-PLUS' ↔ WIFI, 'B860-PLUS' ↔ WIFI 는 not 으로 가른다).
+- 파서가 못 읽은 값은 null(B650 4종 메모리 슬롯 · Z890 HERO M.2 개수). ProArt · HERO · EXTREME 의 두 번째 유선은 손으로 확인해 적었다.
+- 급 메모: B650 은 그래픽 4.0 이지만 **B650E 는 5.0**, B860 은 대부분 5.0 이지만 **보급형(AYW · M-K)은 4.0** — 칩셋 이름만으로 슬롯을 단정하지 않는다(점수는 그대로).
+
 ## 2026-09-29 — 사이클: B850 보드 ASUS 7종 · 그래픽 슬롯 급 되돌림(사다리 6)
 
 - models/mb-b850.json 새로 — PRIME B850M-A-CSM · TUF B850M-PLUS II · B850M-PLUS WIFI7 · WIFI7 W · B850-PLUS WIFI · ProArt B850-CREATOR WIFI NEO ·

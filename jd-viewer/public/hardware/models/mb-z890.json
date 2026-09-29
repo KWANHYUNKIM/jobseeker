@@ -1,0 +1,237 @@
+{
+ "schema": 1,
+ "part": "mb-z890",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-z890-p-csm",
+   "name": "ASUS PRIME Z890-P-CSM",
+   "brand": "ASUS",
+   "code": "PRIME Z890-P-CSM",
+   "match": {
+    "must": [
+     "ASUS",
+     "PRIME",
+     "Z890-P"
+    ],
+    "not": [
+     "Z890-PLUS",
+     "Z890-PRO"
+    ]
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/csm/prime-z890-p-csm/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "-CSM 은 기업용 장기 공급판이다."
+  },
+  {
+   "id": "asus-tuf-z890-plus-wifi",
+   "name": "ASUS TUF Gaming Z890-PLUS WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING Z890-PLUS WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "Z890-PLUS"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Intel® 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-z890-plus-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-z890-pro-wifi",
+   "name": "ASUS TUF Gaming Z890-PRO WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING Z890-PRO WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "Z890-PRO"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Intel® 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-z890-pro-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-proart-z890-creator-wifi",
+   "name": "ASUS ProArt Z890-CREATOR WIFI",
+   "brand": "ASUS",
+   "code": "PROART Z890-CREATOR WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "PROART",
+     "Z890"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "5(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Marvell AQtion 10Gb + Intel 2.5Gb",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 10,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/proart/proart-z890-creator-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-rog-maximus-z890-apex",
+   "name": "ASUS ROG MAXIMUS Z890 APEX",
+   "brand": "ASUS",
+   "code": "ROG MAXIMUS Z890 APEX",
+   "match": {
+    "must": [
+     "ASUS",
+     "Z890",
+     "APEX"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "6(5.0 3개)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Realtek 5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 11,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-maximus/rog-maximus-z890-apex/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "메모리 슬롯 2개 — 메모리 오버클럭용 설계."
+  },
+  {
+   "id": "asus-rog-maximus-z890-hero",
+   "name": "ASUS ROG MAXIMUS Z890 HERO",
+   "brand": "ASUS",
+   "code": "ROG MAXIMUS Z890 HERO",
+   "match": {
+    "must": [
+     "ASUS",
+     "Z890",
+     "HERO"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": null,
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Intel 2.5Gb + Realtek 5Gb",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 11,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-maximus/rog-maximus-z890-hero/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "M.2 개수는 스펙 페이지에서 한 줄로 읽히지 않아 비워 둔다."
+  },
+  {
+   "id": "asus-rog-maximus-z890-extreme",
+   "name": "ASUS ROG MAXIMUS Z890 EXTREME",
+   "brand": "ASUS",
+   "code": "ROG MAXIMUS Z890 EXTREME",
+   "match": {
+    "must": [
+     "ASUS",
+     "Z890",
+     "EXTREME"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "E-ATX 30.5×27.7cm",
+    "vrm": null,
+    "m2_slots": "최대 6",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Intel 2.5Gb + Marvell AQtion 10Gb",
+    "wifi": "Intel® Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 10,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-maximus/rog-maximus-z890-extreme/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}

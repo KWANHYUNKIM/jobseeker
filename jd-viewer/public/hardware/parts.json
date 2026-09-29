@@ -3398,7 +3398,7 @@
    "specs": {
     "socket": "AM5",
     "mem": "DDR5",
-    "pcie_gpu": "PCIe 4.0",
+    "pcie_gpu": "PCIe 4.0(B650E 는 5.0)",
     "pcie_m2": "PCIe 4.0(5.0 선택)",
     "cpu_oc": true,
     "usb4": false,
@@ -3603,7 +3603,7 @@
    "specs": {
     "socket": "LGA1851",
     "mem": "DDR5",
-    "pcie_gpu": "PCIe 5.0",
+    "pcie_gpu": "PCIe 5.0(보급형 일부 4.0)",
     "pcie_m2": "PCIe 5.0(CPU x4)",
     "cpu_oc": false,
     "usb4": false,

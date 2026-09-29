@@ -1,0 +1,167 @@
+{
+ "schema": 1,
+ "part": "mb-b650",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-b650m-a-ii",
+   "name": "ASUS PRIME B650M-A II",
+   "brand": "ASUS",
+   "code": "PRIME B650M-A II",
+   "match": {
+    "must": [
+     "ASUS",
+     "B650M-A"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-b650m-a-ii/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-b650em-a",
+   "name": "ASUS PRIME B650EM-A",
+   "brand": "ASUS",
+   "code": "PRIME B650EM-A",
+   "match": {
+    "must": [
+     "ASUS",
+     "B650EM-A"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-b650em-a/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "B650E 라 그래픽 슬롯이 PCIe 5.0 — B650(무 E)은 4.0 이다."
+  },
+  {
+   "id": "asus-tuf-b650em-e-wifi",
+   "name": "ASUS TUF Gaming B650EM-E WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING B650EM-E WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "B650EM-E"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 1개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 6 1x1 Wi-Fi 6 (802.11 a/b/g/n/ac/ax)",
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b650em-e-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "B650E 라 그래픽 슬롯이 PCIe 5.0."
+  },
+  {
+   "id": "asus-tuf-b650m-plus-wifi",
+   "name": "ASUS TUF Gaming B650M-PLUS WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING B650M-PLUS WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "B650M-PLUS",
+     "WIFI"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 6 2x2 Wi-Fi 6 (802.11 a/b/g/n/ac/ax)",
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b650m-plus-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-b650m-plus",
+   "name": "ASUS TUF Gaming B650M-PLUS",
+   "brand": "ASUS",
+   "code": "TUF GAMING B650M-PLUS",
+   "match": {
+    "must": [
+     "ASUS",
+     "B650M-PLUS"
+    ],
+    "not": [
+     "WIFI"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b650m-plus/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}

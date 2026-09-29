@@ -1,0 +1,365 @@
+{
+ "schema": 1,
+ "part": "mb-b860",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-b860m-ayw-gaming-wifi",
+   "name": "ASUS B860M AYW GAMING WIFI",
+   "brand": "ASUS",
+   "code": "B860M AYW GAMING WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "B860M",
+     "AYW"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×22.2cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 6 1x1 Wi-Fi 6 (802.11ax)",
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/others/b860m-ayw-gaming-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "보급형이라 그래픽 슬롯이 PCIe 4.0 x16."
+  },
+  {
+   "id": "asus-prime-b860m-a-csm",
+   "name": "ASUS PRIME B860M-A-CSM",
+   "brand": "ASUS",
+   "code": "PRIME B860M-A-CSM",
+   "match": {
+    "must": [
+     "ASUS",
+     "B860M-A"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/csm/prime-b860m-a-csm/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "-CSM 은 기업용 장기 공급판이다."
+  },
+  {
+   "id": "asus-prime-b860m-k-csm",
+   "name": "ASUS PRIME B860M-K-CSM",
+   "brand": "ASUS",
+   "code": "PRIME B860M-K-CSM",
+   "match": {
+    "must": [
+     "ASUS",
+     "B860M-K"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×22.2cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/csm/prime-b860m-k-csm/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "보급형이라 그래픽 슬롯이 PCIe 4.0 x16. -CSM 은 기업용 장기 공급판이다."
+  },
+  {
+   "id": "asus-tuf-b860m-plus",
+   "name": "ASUS TUF Gaming B860M-PLUS",
+   "brand": "ASUS",
+   "code": "TUF GAMING B860M-PLUS",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "B860M-PLUS"
+    ],
+    "not": [
+     "WIFI"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b860m-plus/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-b860m-plus-wifi",
+   "name": "ASUS TUF Gaming B860M-PLUS WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING B860M-PLUS WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "B860M-PLUS",
+     "WIFI"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b860m-plus-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-b860-plus-wifi",
+   "name": "ASUS TUF Gaming B860-PLUS WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING B860-PLUS WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "B860-PLUS"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b860-plus-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-b860-plus-csm",
+   "name": "ASUS PRIME B860-PLUS-CSM",
+   "brand": "ASUS",
+   "code": "PRIME B860-PLUS-CSM",
+   "match": {
+    "must": [
+     "ASUS",
+     "PRIME",
+     "B860-PLUS"
+    ],
+    "not": [
+     "WIFI"
+    ]
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/csm/prime-b860-plus-csm/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "-CSM 은 기업용 장기 공급판이다."
+  },
+  {
+   "id": "asus-prime-b860-plus-wifi-csm",
+   "name": "ASUS PRIME B860-PLUS WIFI-CSM",
+   "brand": "ASUS",
+   "code": "PRIME B860-PLUS WIFI-CSM",
+   "match": {
+    "must": [
+     "ASUS",
+     "PRIME",
+     "B860-PLUS",
+     "WIFI"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 6E 2x2 Wi-Fi 6E (802.11ax)",
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/csm/prime-b860-plus-wifi-csm/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "-CSM 은 기업용 장기 공급판이다."
+  },
+  {
+   "id": "asus-rog-strix-b860-g-gaming-wifi",
+   "name": "ASUS ROG STRIX B860-G GAMING WIFI",
+   "brand": "ASUS",
+   "code": "ROG STRIX B860-G GAMING WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "B860-G"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Intel® 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 10,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-strix/rog-strix-b860-g-gaming-wifi/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-rog-strix-b860-i-gaming-wifi",
+   "name": "ASUS ROG STRIX B860-I GAMING WIFI",
+   "brand": "ASUS",
+   "code": "ROG STRIX B860-I GAMING WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "B860-I"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "Mini-ITX 17×17cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Intel® 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-strix/rog-strix-b860-i-gaming-wifi/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-rog-strix-b860-f-gaming-wifi",
+   "name": "ASUS ROG STRIX B860-F GAMING WIFI",
+   "brand": "ASUS",
+   "code": "ROG STRIX B860-F GAMING WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "B860-F"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 1개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Intel® 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 9,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-strix/rog-strix-b860-f-gaming-wifi/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}
