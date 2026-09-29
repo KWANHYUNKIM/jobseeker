@@ -642,7 +642,7 @@ function renderLoops(rows) {
     tr.innerHTML =
       `<td class="${cls}">${STATE[r.state] || r.state}</td>` +
       `<td>${KIND[r.kind] || r.kind}</td>` +
-      `<td title="${(r.note || "").replace(/"/g, "&quot;")}">${r.name}<div class="muted" style="font-size:11px">${r.key}</div></td>` +
+      `<td title="${(r.note || "").replace(/"/g, "&quot;")}">${r.name}<div class="muted" style="font-size:11px">${r.key}${r.backlog ? " · " + r.backlog : ""}</div></td>` +
       `<td>${r.cadence}</td>` +
       `<td>${age}</td>` +
       `<td style="font-size:11px">${r.kind === "claude-loop" ? "python -m automation.loops prompt " + r.key : r.run}</td>`;

@@ -47,6 +47,8 @@ class Loop:
     check: str | None = None     # 검증 명령(있으면)
     prompt: str | None = None    # claude-loop 의 /loop 프롬프트
     note: str = ""
+    owns: list[str] = field(default_factory=list)      # 이 레인이 고치고 커밋하는 경로(ROOT 기준) — 밖은 안 건드린다
+    backlog: str | None = None   # 남은 일감을 세는 함수 이름(BACKLOG) — 대시보드에 뜬다
 
 
 def _engine_prompt(dir_: str, what: str, extra: str = "") -> str:
@@ -55,6 +57,21 @@ def _engine_prompt(dir_: str, what: str, extra: str = "") -> str:
             f"모르는 값은 비워 둔다. validate.py 가 통과하면 state/LOG.md·STATE.md 를 갱신하고 Conventional Commits "
             f"로 커밋한다. 푸시는 하지 않는다. 무엇을 했는지 한두 줄로 보고한다.{extra}")
 
+
+def _lane(owns: list[str], request: str) -> str:
+    """같은 엔진을 여러 세션이 동시에 돌리면 같은 파일을 고쳐 서로의 변경을 커밋에 섞는다(2026-09-29 하드웨어).
+    그래서 레인마다 제 파일만 고치고 제 파일만 스테이징한다."""
+    return (f" 이 레인이 고치는 파일은 {' · '.join(owns)} 뿐이다 — 커밋할 때도 git add 는 이 경로만 준다"
+            f"(git add -A·commit -a 금지, 다른 세션의 변경이 섞인다). 형식(schema.json·validate.py·PROMPT.md·뷰어 코드)을 "
+            f"바꿔야 하면 고치지 말고 {request} 에 한 줄 적고 다음 일감으로 넘어간다.")
+
+
+HW_PARTS_OWNS = ["jd-viewer/public/hardware/parts.json", "jd-viewer/public/hardware/bench.json",
+                 "jd-viewer/public/hardware/index.json", "jd-viewer/public/hardware/guide.json",
+                 "hw-engine/state/LOG.md", "hw-engine/state/STATE.md", "hw-engine/state/QUEUE.md"]
+HW_REQUESTS = "hw-engine/state/REQUESTS.md"  # 두 레인이 형식 변경 요청을 한 줄씩 덧붙인다
+HW_PARTS_OWNS.append(HW_REQUESTS)
+HW_MODELS_OWNS = ["jd-viewer/public/hardware/models/", "hw-engine/state/models/", HW_REQUESTS]
 
 REGISTRY: list[Loop] = [
     # ── launchd (맥) ──────────────────────────────────────────────────
@@ -101,17 +118,74 @@ REGISTRY: list[Loop] = [
          "/loop <prompt>", ["study-engine/state", "jd-viewer/public/study"],
          check="python study-engine/validate.py", prompt=_engine_prompt("study-engine", "기술 백과사전 엔진"),
          note="2026-09-08 부터 뷰어 화면에서 빠졌다 — 데이터·엔진만 산다."),
-    Loop("hw-engine", "PC 하드웨어 조사", "claude-loop", "any", "자율(약 20분 간격)", 24,
+    # 하드웨어는 레인 둘 + 형식. 부품·벤치(hw-engine)와 제품 스펙(hw-models)은 따로 돌고 서로의 파일을
+    # 안 건드린다. 형식(schema·validate·PROMPT·뷰어 코드)은 루프가 아니라 사람이 지시한 세션이 바꾸고,
+    # 루프는 필요한 변경을 REQUESTS.md 에 적기만 한다. 가격·완제품은 크롤 단계(cycle-hardware·prebuilt)가 받는다.
+    Loop("hw-engine", "PC 하드웨어 — 부품·벤치", "claude-loop", "any", "자율(약 20분 간격)", 24,
          "/loop <prompt>", ["hw-engine/state/LOG.md", "jd-viewer/public/hardware/parts.json"],
-         check="python -X utf8 hw-engine/validate.py --gaps",
+         check="python -X utf8 hw-engine/validate.py --gaps", owns=HW_PARTS_OWNS,
          prompt=_engine_prompt(
-             "hw-engine", "하드웨어 엔진",
-             " 오늘 가격·완제품을 아직 안 받았으면 catch_capture 에서 python -m crawlers.crawl_hardware 와 "
-             "python -m crawlers.crawl_prebuilt 를 먼저 돌린다(하루 한 번 규칙은 크롤러가 지킨다). 다나와 스펙 문구·"
-             "리뷰 글은 쓰지 않는다. 두 크롤러의 --selftest 와 뷰어 tsc 도 통과해야 커밋한다.")),
+             "hw-engine", "하드웨어 엔진(부품·벤치 레인)",
+             " 일감은 --gaps 의 1~5·7·8번이다(6·9번 제품 스펙은 hw-models 레인 몫). 오늘 가격·완제품을 아직 안 받았으면 "
+             "catch_capture 에서 python -m crawlers.crawl_hardware 와 python -m crawlers.crawl_prebuilt 를 먼저 돌린다"
+             "(하루 한 번 규칙은 크롤러가 지킨다). 다나와 스펙 문구·리뷰 글은 쓰지 않는다."
+             + _lane(HW_PARTS_OWNS, HW_REQUESTS))),
+    Loop("hw-models", "PC 하드웨어 — 제품 스펙", "claude-loop", "any", "자율(약 20분 간격)", 48,
+         "/loop <prompt>", ["jd-viewer/public/hardware/models"],
+         check="python -X utf8 hw-engine/validate.py --gaps", owns=HW_MODELS_OWNS, backlog="hw_models",
+         prompt=(
+             "하드웨어 제품 스펙 레인 한 사이클: hw-engine/PROMPT.md 의 규칙 6·7 과 '케이스 제품' 형식을 따른다. "
+             "상태는 hw-engine/state/models/STATE.md 에서 읽는다. 일감은 validate.py --gaps 의 6번(스펙 조사 전 매물)과 "
+             "9번(메모리 슬롯 모르는 보드 제품)이다 — 매물이 많이 남은 부품부터, 그 부품의 다나와 인기순(prices.json 의 rank) "
+             "위 제품부터 models/<부품 id>.json 에 한 사이클 5~8개를 더한다. 순서는 그래픽카드 → 케이스 → 메인보드 → 파워 → 쿨러. "
+             "스펙은 제조사 공식 페이지만(봇 차단은 우회하지 않고 국내 공식 유통사 → medium), 모르는 값은 null, "
+             "상품명의 말('세븐팬' 등)로 스펙을 짐작하지 않는다. 한 매물이 두 제품에 걸리면 안 된다. "
+             "validate.py 가 통과하면 hw-engine/state/models/LOG.md 에 한 단락, STATE.md 를 갱신하고 "
+             "docs(hardware) 로 커밋한다. 푸시는 하지 않는다. 무엇을 했는지 한두 줄로 보고한다."
+             + _lane(HW_MODELS_OWNS, HW_REQUESTS))),
 ]
 
 BY_KEY = {l.key: l for l in REGISTRY}
+
+
+# ── 남은 일감 ────────────────────────────────────────────────────────
+
+def _norm(s: str) -> str:
+    return "".join(s.split()).lower()
+
+
+def _hit(name: str, rule: dict) -> bool:
+    """hw-engine/validate.py·뷰어 offerMatches 와 같은 규칙 — 'A|B' 는 둘 중 하나"""
+    has = lambda t: any(_norm(x) in name for x in t.split("|"))
+    return all(has(t) for t in rule.get("must", [])) and not any(has(t) for t in rule.get("not", []))
+
+
+def _hw_models_backlog() -> str | None:
+    """분류별 '스펙 조사 전 매물' 수 — 그날 다나와 매물 중 어느 제품(models/)에도 안 걸린 것"""
+    hw = PUBLIC / "hardware"
+    try:
+        parts = json.loads((hw / "parts.json").read_text(encoding="utf-8")).get("parts", [])
+        book = json.loads((hw / "prices.json").read_text(encoding="utf-8")).get("parts", {})
+    except (OSError, ValueError):
+        return None
+    left: dict[str, int] = {}
+    for p in parts:
+        if p.get("category") == "cpu":  # CPU 는 제품이 없다 — 판매 형태로 갈린다
+            continue
+        offers = (book.get(p["id"]) or {}).get("offers") or []
+        try:
+            models = json.loads((hw / "models" / f"{p['id']}.json").read_text(encoding="utf-8")).get("models", [])
+        except (OSError, ValueError):
+            models = []
+        n = sum(1 for o in offers if not any(_hit(_norm(o["name"]), m.get("match") or {}) for m in models))
+        if n:
+            left[p["category"]] = left.get(p["category"], 0) + n
+    if not left:
+        return "스펙 조사 전 매물 없음"
+    return "스펙 조사 전 매물 " + " · ".join(f"{c} {n}" for c, n in sorted(left.items(), key=lambda kv: -kv[1]))
+
+
+BACKLOG = {"hw_models": _hw_models_backlog}
 
 
 # ── 상태 ─────────────────────────────────────────────────────────────
@@ -166,7 +240,11 @@ def status(l: Loop) -> dict:
         state = "unknown"
     else:
         state = "ok"
-    return {**asdict(l), "last": last.isoformat(timespec="minutes") if last else None,
+    try:
+        backlog = BACKLOG[l.backlog]() if l.backlog else None
+    except Exception:
+        backlog = None
+    return {**asdict(l), "backlog": backlog, "last": last.isoformat(timespec="minutes") if last else None,
             "age_hours": round(age_h, 1) if age_h is not None else None, "launchd_alive": alive, "state": state}
 
 

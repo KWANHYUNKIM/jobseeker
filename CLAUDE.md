@@ -117,6 +117,9 @@
   **케이스**도 같은 방식이다 — 미니·미들·빅타워 급의 다나와 인기순 위부터 `models/case-*.json` 에 크기·기본 팬
   배치·팬 자리·흡기면(메시·틈새·막힘)을 공식 사양으로 적고, 뷰어가 부피와 '이 조합의 열을 빼나'(CPU 최대 + GPU TDP
   대 흡기·배기 팬 수 — 경험 규칙 `fansNeeded`, 측정값 아님)를 계산한다. 조립 점검에도 같은 규칙이 뜬다.
+  **레인이 둘이다**(`loops.py` 의 `hw-engine` = 부품·벤치, `hw-models` = 제품 스펙 models/). 루프는 제 레인 파일만
+  고치고 커밋하며, 형식(schema·validate·PROMPT·뷰어 코드)은 `hw-engine/state/REQUESTS.md` 에 요청만 남긴다 —
+  동시에 돈 세션들이 같은 파일을 고쳐 커밋이 섞이던 것을 막는다. 레인 표는 `hw-engine/PROMPT.md` 맨 앞.
   Ti·XT·X3D·F·OC·2X 같은 이름 읽는 법은 `guide.json` 의 `names`(출처 필수, validate 가 본다).
   뷰어 `/hardware`(조립·성능 예측) · `/hardware/parts`(등급·스펙 비교) · `/hardware/prices`(가격 추이).
   가격이 실리는 화면(추이·부품 상세)은 noindex 이고 프리렌더·sitemap 에서 뺐다.

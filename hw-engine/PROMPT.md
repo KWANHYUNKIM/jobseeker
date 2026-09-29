@@ -27,6 +27,21 @@
 **가격은 엔진이 적지 않는다.** 엔진은 부품마다 `price_query`(검색어·거름 규칙)만 고치고,
 가격은 크롤러가 받는다. 엔진이 가격 숫자를 손으로 넣으면 원장이 오염된다.
 
+## 레인 — 누가 어느 파일을 고치나
+
+같은 엔진을 세션 여럿이 동시에 돌리면 같은 파일을 고쳐 서로의 변경이 커밋에 섞인다. 그래서 나눈다.
+실행 프롬프트는 `python -m automation.loops prompt <키>` 에 있다(여기 적지 않는다).
+
+| 레인 | 등록부 키 | 일감(`--gaps`) | 고치고 커밋하는 파일 |
+|---|---|---|---|
+| 부품·벤치 | `hw-engine` | 1~5 · 7 · 8 | `parts.json` · `bench.json` · `index.json` · `guide.json` · `state/{LOG,STATE,QUEUE}.md` |
+| 제품 스펙 | `hw-models` | 6 · 9 | `models/*.json` · `state/models/` |
+| 형식 | (루프 아님) | `state/REQUESTS.md` | `schema.json` · `validate.py` · 이 문서 · 뷰어 코드 |
+
+- 루프는 **제 레인 파일만** 고치고, 커밋할 때도 그 경로만 `git add` 한다(`git add -A`·`commit -a` 금지).
+- 형식을 바꿔야 하면 루프는 고치지 않고 `state/REQUESTS.md` 에 한 줄 적는다 — 사람이 지시한 세션이 모아 처리한다.
+- 가격·완제품은 크롤 단계(`cycle-hardware` → `cycle-prebuilt`)가 하루 한 번 받는다. 두 레인 다 읽기만 한다.
+
 ## 규칙 (어기면 안 되는 것)
 
 1. **스펙은 제조사 공식 자료가 원본이다.** NVIDIA·AMD·Intel·삼성·WD·Seagate 의 제품 페이지·
