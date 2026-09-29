@@ -17,12 +17,14 @@
 
 누적 규칙:
   - 키는 "<출처>:<상품번호>". 처음·마지막으로 본 날, 가격 이력(하루 한 줄)을 남긴다.
+  - 목록은 검색어마다 PAGES 쪽까지 넘긴다(새 데스크탑이 없는 쪽에서 멈춘다).
   - 구성은 한 번 읽으면 30일 동안 다시 읽지 않는다(상품 페이지는 한 회차에 SPEC_PER_RUN 개까지).
   - 구성 → 부품 id 연결(mapped)은 매 회차 다시 한다 — parts.json 이 자라면 못 잇던 부품이 이어진다.
 
 사용:
     python -m crawlers.crawl_prebuilt              # 오늘 아직 안 돌았으면
     python -m crawlers.crawl_prebuilt --force
+    python -m crawlers.crawl_prebuilt --force --pages 8 --spec 600   # 밀린 구성을 한 번에 채울 때
     python -m crawlers.crawl_prebuilt --selftest   # 구성 파서 점검(네트워크 없이)
 """
 from __future__ import annotations
@@ -41,7 +43,7 @@ import urllib.request
 from datetime import date, datetime
 from pathlib import Path
 
-from crawlers.crawl_hardware import CRAWL_DELAY_MS, PRODUCT_URL, _norm, fetch, parse
+from crawlers.crawl_hardware import CRAWL_DELAY_MS, PRODUCT_URL, SEARCH_URL, _norm, parse
 from crawlers.jobs_common import USER_AGENT, jitter
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
@@ -52,8 +54,13 @@ OUT_PATH = HW_DIR / "prebuilt.json"
 # 검색 앞쪽은 100~200만원대가 차지한다 — 조립 화면이 1000만원대까지 짜므로 고가(5080·5090·워크스테이션)와
 # 사무용을 따로 물어 그 예산대에도 견줄 완제품이 있게 한다.
 QUERIES = ["게이밍 조립PC", "조립PC", "사무용 조립PC", "사무용 컴퓨터 본체", "영상편집 조립PC", "AI 조립PC",
-           "게이밍 컴퓨터 본체", "하이엔드 조립PC", "RTX5080 조립PC", "RTX5090 조립PC", "워크스테이션 조립PC"]
-SPEC_PER_RUN = 80          # 한 회차에 새로 읽는 상품 페이지 수(3초 간격 — 4분)
+           "게이밍 컴퓨터 본체", "하이엔드 조립PC", "RTX5080 조립PC", "RTX5090 조립PC", "워크스테이션 조립PC",
+           "가성비 게이밍PC", "RTX5060 조립PC", "RTX5070 조립PC", "RTX5070Ti 조립PC", "RX9070 조립PC",
+           "라이젠 조립PC", "인텔 조립PC", "9800X3D 조립PC", "방송용 조립PC"]
+# 검색 한 쪽은 40~100건이고 첫 쪽만 보면 같은 판매자가 겹친다 — 쪽을 넘겨 가며 읽는다(쪽마다 Crawl-delay 10초).
+# 새 데스크탑이 하나도 안 나온 쪽에서 그 검색어는 멈춘다.
+PAGES = 5
+SPEC_PER_RUN = 300         # 한 회차에 새로 읽는 상품 페이지 수(3초 간격 — 15분)
 SPEC_TTL_DAYS = 30
 PAGE_DELAY_MS = 3_000
 TIMEOUT = 25
@@ -243,7 +250,15 @@ def _load(path: Path, default):
         return default
 
 
-def run(force: bool = False) -> dict:
+def fetch(q: str, page: int = 1) -> str:
+    url = SEARCH_URL.format(q=urllib.parse.quote(q)) + (f"&page={page}" if page > 1 else "")
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html",
+                                               "Accept-Language": "ko-KR,ko;q=0.9"})
+    with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+        return resp.read().decode("utf-8", "ignore")
+
+
+def run(force: bool = False, pages: int = PAGES, spec_per_run: int = SPEC_PER_RUN) -> dict:
     today = date.today().isoformat()
     parts = _load(PARTS_PATH, {}).get("parts", [])
     doc = _load(OUT_PATH, {"schema": 1, "items": {}})
@@ -254,18 +269,27 @@ def run(force: bool = False) -> dict:
     seen: dict[str, dict] = {}
     failed = 0
 
-    # 1) 다나와 목록 — 이름·가격·상품번호
-    for i, q in enumerate(QUERIES):
-        if i:
-            time.sleep(jitter(CRAWL_DELAY_MS, ratio=0.1, floor_ms=CRAWL_DELAY_MS) / 1000)
-        try:
-            for it in parse(fetch(q)):
-                if "데스크탑" in it["cate"] and it["price"] > 0:
-                    seen.setdefault(f"danawa:{it['pcode']}", {"name": it["name"], "price": it["price"], "source": "danawa",
-                                                               "url": PRODUCT_URL.format(pcode=it["pcode"]), "pcode": it["pcode"]})
-        except Exception as e:
-            failed += 1
-            print(f"  [!] 다나와 '{q}' — {e}", flush=True)
+    # 1) 다나와 목록 — 이름·가격·상품번호(검색어마다 여러 쪽)
+    first = True
+    for q in QUERIES:
+        for page in range(1, pages + 1):
+            if not first:
+                time.sleep(jitter(CRAWL_DELAY_MS, ratio=0.1, floor_ms=CRAWL_DELAY_MS) / 1000)
+            first = False
+            try:
+                fresh = 0
+                for it in parse(fetch(q, page)):
+                    key = f"danawa:{it['pcode']}"
+                    if "데스크탑" in it["cate"] and it["price"] > 0 and key not in seen:
+                        seen[key] = {"name": it["name"], "price": it["price"], "source": "danawa",
+                                     "url": PRODUCT_URL.format(pcode=it["pcode"]), "pcode": it["pcode"]}
+                        fresh += 1
+            except Exception as e:
+                failed += 1
+                print(f"  [!] 다나와 '{q}' {page}쪽 — {e}", flush=True)
+                break
+            if not fresh:
+                break
     # 2) 네이버 공식 API(키가 있을 때만)
     for q in QUERIES:
         try:
@@ -287,7 +311,7 @@ def run(force: bool = False) -> dict:
             and (not r.get("spec_checked") or (date.fromisoformat(today) - date.fromisoformat(r["spec_checked"])).days > SPEC_TTL_DAYS)]
     todo.sort(key=lambda k: items[k].get("spec_checked") or "")
     got = 0
-    for k in todo[:SPEC_PER_RUN]:
+    for k in todo[:spec_per_run]:
         time.sleep(jitter(PAGE_DELAY_MS) / 1000)
         try:
             f = product_facts(items[k]["pcode"])
@@ -340,4 +364,9 @@ def selftest() -> int:
 
 if __name__ == "__main__":
     args = _sys.argv[1:]
-    raise SystemExit(selftest() if "--selftest" in args else (1 if run(force="--force" in args).get("failed") else 0))
+    def _opt(name: str, default: int) -> int:
+        return int(args[args.index(name) + 1]) if name in args else default
+    if "--selftest" in args:
+        raise SystemExit(selftest())
+    raise SystemExit(1 if run(force="--force" in args, pages=_opt("--pages", PAGES),
+                              spec_per_run=_opt("--spec", SPEC_PER_RUN)).get("failed") else 0)
