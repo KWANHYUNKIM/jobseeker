@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import {
   CATEGORY_ORDER,
   RES_LABEL,
-  autoBuild,
+  planBuild,
   buildTotal,
   checkBuild,
   conflictsOf,
@@ -28,6 +28,8 @@ import { paths, TAB_SEO } from '../lib/urls'
 import { allowedBy, buildFacets, optionStates, type Picked } from '../lib/hwFacets'
 import { FacetPanel } from './HardwareFacets'
 import { HardwareParts } from './HardwareParts'
+import { HardwareUseIcon } from './HardwareUseIcon'
+import { PrebuiltPicks } from './HardwarePicks'
 import { HardwarePrebuilt } from './HardwarePrebuilt'
 import { HardwarePrices } from './HardwarePrices'
 import { ErrorState, Loader } from './ui'
@@ -110,14 +112,25 @@ function storeSaved(xs: Saved[]) {
   }
 }
 
-const BUDGETS = [1_500_000, 2_000_000, 3_000_000, 4_000_000, 6_000_000, 10_000_000]
+// 조합은 고른 금액을 채운다(planBuild). 100만원 아래로는 지금 부품값으로 켜지는 조합이 안 나온다.
+const BUDGETS = [1_500_000, 2_000_000, 3_000_000, 4_000_000, 5_000_000, 6_000_000, 10_000_000, 12_000_000]
+
+/** 이 부품을 사러 갈 곳 — 가격을 매긴 그 매물(CPU 는 정품 최저가). 매물이 없으면 이름으로 검색한다 */
+function buyUrl(p: Part, data: HwData): string {
+  const offers = data.prices[p.id]?.offers ?? []
+  const pool = p.category === 'cpu' ? offers.filter((o) => o.name.includes('정품') && !o.name.includes('병행')) : []
+  const o = [...(pool.length ? pool : offers)].sort((a, b) => a.price - b.price)[0]
+  return o?.url ?? `https://search.danawa.com/dsearch.php?query=${encodeURIComponent(p.price_query?.q ?? p.name)}`
+}
 
 function Builder({ data }: { data: HwData }) {
   useSeo({ title: TAB_SEO.hardware.title, description: TAB_SEO.hardware.desc, canonical: absUrl(paths.hardware()) })
-  const [useKey, setUseKey] = useState(data.uses[1]?.key ?? data.uses[0].key)
+  const [useKey, setUseKey] = useState((data.uses.find((u) => u.key === 'game-qhd') ?? data.uses[0]).key)
   const [budget, setBudget] = useState(3_000_000)
   const use = data.uses.find((u) => u.key === useKey) ?? data.uses[0]
-  const [build, setBuild] = useState<Build>(() => autoBuild(budget, use, data))
+  const [plan, setPlan] = useState(() => planBuild(budget, use, data))
+  const [build, setBuild] = useState<Build>(plan.build)
+  const [copied, setCopied] = useState(false)
   const [saved, setSaved] = useState<Saved[]>(loadSaved)
   // 왼쪽 조건 필터 — 체크한 조건 안에서만 조합을 짠다(hwFacets.ts 머리말).
   const facets = useMemo(() => buildFacets(data), [data])
@@ -129,7 +142,9 @@ function Builder({ data }: { data: HwData }) {
     setBudget(nextBudget)
     setPicked(nextPicked)
     const { allow, noGpu } = allowedBy(facets, nextPicked, data)
-    setBuild(autoBuild(nextBudget, data.uses.find((u) => u.key === nextUse) ?? data.uses[0], data, { allow, noGpu }))
+    const next = planBuild(nextBudget, data.uses.find((u) => u.key === nextUse) ?? data.uses[0], data, { allow, noGpu })
+    setPlan(next)
+    setBuild(next.build)
   }
   const choose = (nextUse: string, nextBudget: number) => replan(nextUse, nextBudget, picked)
   const toggle = (facet: string, value: string) => {
@@ -145,7 +160,7 @@ function Builder({ data }: { data: HwData }) {
   const ram = build.ram ? byId.get(build.ram) : undefined
   const errors = checks.filter((c) => c.level === 'error').length
   // 조건에 맞는 부품이 없어 비운 칸 — 조건끼리 부딪쳤거나 너무 좁게 골랐다
-  const { noGpu } = allowedBy(facets, picked, data)
+  const noGpu = allowedBy(facets, picked, data).noGpu || !!use.no_gpu
   const REQUIRED: Category[] = ['cpu', 'mainboard', 'ram', 'ssd', 'psu', 'cooler', 'case', ...(noGpu ? [] : (['gpu'] as Category[]))]
   const empty = REQUIRED.filter((c) => !build[c]).map((c) => data.categories.find((d) => d.key === c)?.name ?? c)
 
@@ -171,13 +186,19 @@ function Builder({ data }: { data: HwData }) {
           {data.uses.map((u) => (
             <button
               key={u.key}
-              onClick={() => choose(u.key, budget)}
-              className={`px-3 py-2 rounded-lg border text-left transition ${
+              onClick={() => choose(u.key, u.budget ?? budget)}
+              className={`px-3 py-2 rounded-lg border text-left transition flex items-center gap-2.5 ${
                 u.key === useKey ? 'border-(--color-accent) bg-(--color-accent)/10' : 'border-(--color-border) hover:border-(--color-muted)'
               }`}
             >
-              <div className="text-sm font-semibold text-(--color-text)">{u.name}</div>
-              <div className="text-[11px] text-(--color-muted)">{u.plain}</div>
+              <HardwareUseIcon
+                useKey={u.key}
+                className={`w-8 h-8 shrink-0 ${u.key === useKey ? 'text-(--color-accent)' : 'text-(--color-muted)'}`}
+              />
+              <div>
+                <div className="text-sm font-semibold text-(--color-text)">{u.name}</div>
+                <div className="text-[11px] text-(--color-muted)">{u.plain}</div>
+              </div>
             </button>
           ))}
         </div>
@@ -197,7 +218,7 @@ function Builder({ data }: { data: HwData }) {
           <input
             type="range"
             min={1_000_000}
-            max={12_000_000}
+            max={13_000_000}
             step={100_000}
             value={budget}
             onChange={(e) => choose(useKey, Number(e.target.value))}
@@ -208,7 +229,7 @@ function Builder({ data }: { data: HwData }) {
         </div>
       </section>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] items-start">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] 2xl:grid-cols-[minmax(0,6fr)_minmax(0,5fr)_minmax(0,4fr)] items-start">
         <FacetPanel facets={facets} picked={picked} states={states} onToggle={toggle} onReset={() => replan(useKey, budget, {})} />
         <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-3 min-w-0">
           <div className="flex items-baseline gap-2">
@@ -221,6 +242,27 @@ function Builder({ data }: { data: HwData }) {
             {total > budget ? `예산보다 ${won(total - budget)} 많다` : `예산 안 · ${won(budget - total)} 남음`}
             {missing.length > 0 && ` · 가격 모름 ${missing.length}개 제외`}
           </div>
+          {build === plan.build && plan.stretched && (
+            <div className="rounded-md border border-(--color-border) bg-(--color-band) px-3 py-2 text-xs text-(--color-muted)">
+              예산 안에서는 {won(plan.stretched.within)}짜리까지만 짜진다(부품 급이 띄엄띄엄이다) — {won(budget)}대로 보고 한 급 위를 넣었다.
+            </div>
+          )}
+          {build === plan.build && !plan.stretched && total < budget * 0.9 && (
+            <div className="rounded-md border border-(--color-border) bg-(--color-band) px-3 py-2 text-xs text-(--color-muted)">
+              {plan.next
+                ? `${won(budget - total)} 남겼다 — 이 용도에서 더 빨라지는 다음 급은 ${won(plan.next.cost)}부터다.`
+                : `이 용도에서는 이보다 돈을 더 써도 빨라지지 않는다 — 가장 빠른 부품까지 다 넣었다.`}
+            </div>
+          )}
+          {build === plan.build && plan.next && (
+            <button
+              onClick={() => choose(useKey, Math.ceil(plan.next!.cost / 100_000) * 100_000)}
+              className="text-left rounded-md border border-(--color-accent)/40 px-3 py-2 text-xs hover:bg-(--color-accent)/8"
+            >
+              <b className="text-(--color-accent)">한 단계 위 ↑</b> {won(plan.next.cost)} — {[plan.next.gpu, plan.next.cpu].filter(Boolean).join(' + ')} ·{' '}
+              {use.key.startsWith('game') ? '예상 fps' : '성능'} +{Math.round(plan.next.gainPct)}%
+            </button>
+          )}
           {empty.length > 0 && (
             <div role="alert" className="rounded-md border border-(--color-red-400) bg-(--color-red-400)/8 px-3 py-2 text-sm text-(--color-red-400)">
               <b>{empty.join(' · ')} 을(를) 못 골랐다</b> — 왼쪽에서 고른 조건에 맞는 부품이 없다. 빨갛게 표시된 조건을 풀면 다시 짠다.
@@ -243,6 +285,26 @@ function Builder({ data }: { data: HwData }) {
               </li>
             ))}
           </ul>
+          <BuyList
+            data={data}
+            build={build}
+            total={total}
+            copied={copied}
+            onCopy={() => {
+              const lines = CATEGORY_ORDER.filter((c) => build[c]).map((c) => {
+                const p = byId.get(build[c]!)!
+                const pr = priceOf(p, data.prices)
+                const name = data.categories.find((d) => d.key === c)?.name ?? c
+                const price = pr != null ? won(pr * (c === 'ram' ? 2 : 1)) : '가격 모름'
+                return [name, `${p.name}${c === 'ram' ? ' ×2' : ''}`, price, buyUrl(p, data)].join('\t')
+              })
+              const text = [`${use.name} 조합 · 합계 ${won(total)}`, ...lines].join('\n')
+              navigator.clipboard?.writeText(text).then(() => {
+                setCopied(true)
+                setTimeout(() => setCopied(false), 1500)
+              }, () => {})
+            }}
+          />
           <div className="flex flex-wrap gap-2 items-center">
             <button onClick={save} className="px-3 py-1.5 text-sm rounded-md bg-(--color-accent) text-(--color-on-accent) font-semibold disabled:opacity-50" disabled={errors > 0 || empty.length > 0}>
               이 조합 저장
@@ -277,6 +339,10 @@ function Builder({ data }: { data: HwData }) {
             </div>
           )}
         </section>
+        {/* 같은 용도·예산의 완제품 — 넓은 화면에선 조합 옆, 좁으면 조합 아래 */}
+        <div className="lg:col-span-2 2xl:col-span-1">
+          <PrebuiltPicks data={data} use={use} budget={budget} build={build} buildCost={total} />
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 min-w-0">
@@ -292,6 +358,47 @@ function Builder({ data }: { data: HwData }) {
           </div>
       </div>
     </div>
+  )
+}
+
+// 구입 목록 — 조합을 그대로 사러 간다. 각 줄은 가격을 매긴 그 매물(다나와)로 바로 간다.
+// 복사하면 '분류 · 부품 · 가격 · 링크' 가 탭으로 나뉘어 붙는다(스프레드시트·메신저에 그대로 붙는다).
+function BuyList({ data, build, total, copied, onCopy }: { data: HwData; build: Build; total: number; copied: boolean; onCopy: () => void }) {
+  const byId = new Map(data.parts.map((p) => [p.id, p]))
+  const rows = CATEGORY_ORDER.filter((c) => build[c] && byId.has(build[c]!)).map((c) => ({ c, p: byId.get(build[c]!)! }))
+  if (!rows.length) return null
+  return (
+    <details className="rounded-md border border-(--color-border-soft)" open>
+      <summary className="cursor-pointer px-3 py-2 text-sm font-semibold flex items-baseline gap-2">
+        이 조합 사러 가기
+        <span className="text-[11px] font-normal text-(--color-muted)">부품마다 오늘 최저가 매물로 연결</span>
+      </summary>
+      <ul className="px-3 pb-2 flex flex-col gap-1 text-xs">
+        {rows.map(({ c, p }) => {
+          const pr = priceOf(p, data.prices)
+          return (
+            <li key={c} className="flex items-baseline gap-2">
+              <span className="w-14 shrink-0 text-(--color-muted)">{data.categories.find((d) => d.key === c)?.name ?? c}</span>
+              <a href={buyUrl(p, data)} target="_blank" rel="noopener noreferrer nofollow" className="truncate text-(--color-accent) hover:underline">
+                {p.name}
+                {c === 'ram' && ' ×2'} ↗
+              </a>
+              <span className="ml-auto tabular-nums shrink-0" data-nosnippet>
+                {pr != null ? won(pr * (c === 'ram' ? 2 : 1)) : '—'}
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+      <div className="px-3 pb-2 flex items-center gap-2">
+        <button onClick={onCopy} className="px-2.5 py-1 text-xs rounded-md bg-(--color-band) hover:bg-(--color-border-soft)">
+          {copied ? '복사했다 ✓' : '목록 복사'}
+        </button>
+        <span className="text-[11px] text-(--color-muted)" data-nosnippet>
+          합계 {won(total)} · 급(級) 부품은 같은 급의 인기 제품으로 간다
+        </span>
+      </div>
+    </details>
   )
 }
 

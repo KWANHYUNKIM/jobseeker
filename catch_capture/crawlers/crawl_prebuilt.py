@@ -49,7 +49,10 @@ HW_DIR = ROOT_DIR / "jd-viewer" / "public" / "hardware"
 PARTS_PATH = HW_DIR / "parts.json"
 OUT_PATH = HW_DIR / "prebuilt.json"
 
-QUERIES = ["게이밍 조립PC", "조립PC", "사무용 조립PC", "영상편집 조립PC", "AI 조립PC", "게이밍 컴퓨터 본체"]
+# 검색 앞쪽은 100~200만원대가 차지한다 — 조립 화면이 1000만원대까지 짜므로 고가(5080·5090·워크스테이션)와
+# 사무용을 따로 물어 그 예산대에도 견줄 완제품이 있게 한다.
+QUERIES = ["게이밍 조립PC", "조립PC", "사무용 조립PC", "사무용 컴퓨터 본체", "영상편집 조립PC", "AI 조립PC",
+           "게이밍 컴퓨터 본체", "하이엔드 조립PC", "RTX5080 조립PC", "RTX5090 조립PC", "워크스테이션 조립PC"]
 SPEC_PER_RUN = 80          # 한 회차에 새로 읽는 상품 페이지 수(3초 간격 — 4분)
 SPEC_TTL_DAYS = 30
 PAGE_DELAY_MS = 3_000

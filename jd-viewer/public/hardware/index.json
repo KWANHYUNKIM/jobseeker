@@ -71,6 +71,7 @@
    ]}
  ],
  "uses": [
+  {"key": "office", "name": "사무 · 문서", "plain": "문서·웹·화상회의 — 그래픽카드 없이 내장 그래픽으로", "res": "fhd", "weights": {"gpu": 0, "cpu": 0.35}, "min_ram_gb": 16, "no_gpu": true, "budget": 1500000},
   {"key": "game-fhd", "name": "게임 · FHD", "plain": "1920×1080 모니터로 최신 게임", "res": "fhd", "weights": {"gpu": 0.36, "cpu": 0.2}},
   {"key": "game-qhd", "name": "게임 · QHD", "plain": "2560×1440 모니터로 고옵션", "res": "qhd", "weights": {"gpu": 0.45, "cpu": 0.18}},
   {"key": "game-4k", "name": "게임 · 4K", "plain": "3840×2160 모니터", "res": "uhd", "weights": {"gpu": 0.55, "cpu": 0.15}},

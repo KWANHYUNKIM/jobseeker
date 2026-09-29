@@ -56,6 +56,10 @@ export interface UseDef {
   weights: { gpu: number; cpu: number }
   min_ram_gb?: number
   prefer?: 'multi' | 'vram'
+  /** 그래픽카드 없이 내장 그래픽으로 짠다(사무용) */
+  no_gpu?: boolean
+  /** 이 용도를 누르면 예산을 여기로 옮긴다 — 조합은 예산을 채우므로 용도에 맞는 출발 금액이 필요하다 */
+  budget?: number
 }
 
 export interface Game {
@@ -110,6 +114,8 @@ export interface Offer {
   name: string
   price: number
   url: string
+  /** 다나와 통합검색(기본 정렬 = 인기상품순)에서 몇 번째였나. 순위가 생기기 전 원장에는 없다 */
+  rank?: number
 }
 
 export interface PriceRec {
@@ -425,58 +431,188 @@ export function buildTotal(build: Build, parts: Part[], prices: Record<string, P
 }
 
 /**
- * 예산·용도로 조합을 고른다. 욕심 많은 규칙 몇 줄이다 — 최적해가 아니라 '출발점'이다.
- *  1. 용도 비중만큼 GPU·CPU 예산을 떼고, 그 안에서 지수가 가장 높은 것을 고른다.
- *  2. 보드는 CPU 소켓에 맞는 것 중 가장 싼 것, 메모리는 보드가 받는 종류에서 용도의 최소 용량.
- *  3. 파워·쿨러는 계산한 전력을 넘는 것 중 가장 싼 것. 케이스는 중간 급.
+ * 예산·용도로 조합을 고른다 — **예산을 채운다**. 고른 금액이 1000만원이면 1000만원어치를 짠다.
+ * 비싼 기계는 돈으로 시간을 사는 일이라, 남는 돈을 두고 싼 부품에 멈추지 않는다.
+ *
+ *  1. 그래픽카드 × CPU 쌍을 모두 본다. 각 쌍에 보드·메모리·SSD 후보를 붙이고, 파워·쿨러·케이스는
+ *     '켜지고 식는' 가장 싼 것으로 두어 예산 안에 드는 조합만 남긴다.
+ *  2. 그중 쓸모(utility)가 가장 큰 것 — 게임 용도는 예상 평균 fps(CPU 가 천장인 것까지 센다),
+ *     나머지는 용도 비중으로 섞은 GPU·CPU 지수. 여기에 메모리·SSD·보드를 조금 더한다.
+ *  3. 남은 돈으로 쿨러(최대 전력까지)·파워(여유 50%)·케이스를 올린다.
+ * 예산 안에 드는 조합이 없으면 가장 싼 조합을 낸다(화면이 '예산보다 얼마 많다'를 말한다).
+ *
+ * 부품 목록은 급이 띄엄띄엄이라(RTX 5080 다음이 5090) 예산을 다 못 쓰는 구간이 있다. 예산의 90% 도
+ * 못 쓰게 되면 예산의 110% 까지('1000만원대') 넓혀 한 급 위를 넣고, 그랬다는 것을 stretched 로 알린다.
+ * 그래도 남으면 억지로 쓰지 않고 **한 단계 위**(성능이 3% 넘게 오르는 가장 싼 조합)의 값과 오르는 폭을 낸다.
  */
-export function autoBuild(
+export interface BuildPlan {
+  build: Build
+  cost: number
+  /** 예산 안에서는 이 값까지밖에 못 써서 110% 까지 넓혔다 — 넓히지 않았으면 null */
+  stretched: { within: number } | null
+  /** 예산을 넘지만 더 빠른 가장 싼 조합 — 없으면 null */
+  next: { cost: number; gainPct: number; gpu: string | null; cpu: string } | null
+}
+
+export function autoBuild(budget: number, use: UseDef, data: HwData, opts: { allow?: (p: Part) => boolean; noGpu?: boolean } = {}): Build {
+  return planBuild(budget, use, data, opts).build
+}
+
+export function planBuild(
   budget: number,
   use: UseDef,
   data: HwData,
   opts: { allow?: (p: Part) => boolean; noGpu?: boolean } = {},
-): Build {
-  const { parts, prices } = data
+): BuildPlan {
+  const { parts, prices, bench } = data
   const allow = opts.allow ?? (() => true)
-  const priced = (c: Category) =>
+  type P = { p: Part; price: number }
+  const priced = (c: Category): P[] =>
     parts
       .filter((p) => p.category === c && p.status === 'current' && allow(p))
       .map((p) => ({ p, price: priceOf(p, prices) }))
-      .filter((x): x is { p: Part; price: number } => x.price != null)
-  const best = (c: Category, cap: number, score: (p: Part) => number) => {
-    const xs = priced(c).filter((x) => x.price <= cap)
-    xs.sort((a, b) => score(b.p) - score(a.p) || a.price - b.price)
-    return xs[0]?.p ?? priced(c).sort((a, b) => a.price - b.price)[0]?.p
-  }
-  const cheapest = (c: Category, ok: (p: Part) => boolean) =>
-    priced(c)
-      .filter((x) => ok(x.p))
-      .sort((a, b) => a.price - b.price)[0]?.p
+      .filter((x): x is P => x.price != null)
+      .sort((a, b) => a.price - b.price)
+  const max = (xs: number[]) => Math.max(1e-9, ...xs)
+  const noGpu = opts.noGpu || !!use.no_gpu
 
+  const gpus: (P | null)[] = noGpu ? [null] : priced('gpu')
+  // 내장 그래픽으로 짜면 내장 그래픽이 있는 CPU 만 — 없는 CPU 는 화면이 안 나온다
+  const cpuAll = priced('cpu')
+  const cpus = noGpu ? cpuAll.filter((x) => x.p.specs.igpu) : cpuAll
+  const boards = priced('mainboard'), rams = priced('ram'), ssds = priced('ssd')
+  const psus = priced('psu'), coolers = priced('cooler'), cases = priced('case')
+  if (!cpus.length) return { build: {}, cost: 0, stretched: null, next: null }
+
+  // ── 쓸모 ──
   const gpuScore = (p: Part) => (use.prefer === 'vram' ? Number(p.specs.vram_gb) * 10 + p.perf.index / 10 : p.perf.index)
   const cpuScore = (p: Part) => (use.prefer === 'multi' ? (p.perf.multi ?? p.perf.index) : p.perf.index)
-  // 내장 그래픽을 골랐으면 그래픽카드를 비우고, CPU 는 내장 그래픽이 있는 것만 본다.
-  const gpu = opts.noGpu ? undefined : best('gpu', budget * use.weights.gpu, gpuScore)
-  const cpuScoreFor = (p: Part) => (opts.noGpu && !p.specs.igpu ? -1 : cpuScore(p))
-  const cpu = best('cpu', budget * use.weights.cpu, cpuScoreFor)
-  // 보드는 소켓이 맞는 것 중 경고(BIOS·전원부)까지 없는 가장 싼 것. 그런 게 없으면 소켓만 맞는 가장 싼 것.
-  const clean = (p: Part) =>
-    !!cpu && !checkBuild({ cpu: cpu.id, mainboard: p.id }, parts).some((c) => c.level !== 'ok')
-  const mb = cpu
-    ? (cheapest('mainboard', clean) ?? cheapest('mainboard', (p) => p.specs.socket === cpu.specs.socket))
-    : undefined
-  const minGb = use.min_ram_gb ?? 32
-  const perStick = minGb / 2
-  const ram = mb
-    ? (cheapest('ram', (p) => String(mb.specs.mem).includes(String(p.specs.type)) && Number(p.specs.capacity_gb) >= perStick) ??
-      cheapest('ram', (p) => String(mb.specs.mem).includes(String(p.specs.type))))
-    : undefined
-  const need = systemWatts(cpu, gpu)
-  const psu = cheapest('psu', (p) => Number(p.specs.watt) >= Math.max(need * 1.3, Number(gpu?.specs.psu_w ?? 0)))
-  const cooler = cpu ? cheapest('cooler', (p) => Number(p.specs.cpu_watt) >= Number(cpu.specs.max_power_w) * 0.9) : undefined
-  const ssd = best('ssd', budget * 0.08, (p) => Number(p.specs.capacity_gb) * 10 + p.perf.index)
-  const cs = cheapest('case', (p) => Number(p.specs.max_gpu_mm) >= 380 && (!cooler?.specs.radiator_mm || Number(cooler.specs.radiator_mm) <= Number(p.specs.max_radiator_mm)))
-  return { gpu: gpu?.id, cpu: cpu?.id, mainboard: mb?.id, ram: ram?.id, psu: psu?.id, cooler: cooler?.id, ssd: ssd?.id, case: cs?.id }
+  const gMax = max(gpus.map((g) => (g ? gpuScore(g.p) : 0)))
+  const cMax = max(cpus.map((c) => cpuScore(c.p)))
+  const game = use.key.startsWith('game') && !noGpu
+  const fps = (g: Part, c: Part) => bench.games.reduce((s, x) => s + estimateFps(x, use.res, g, c).fps, 0) / max([bench.games.length])
+  const fpsMax = game ? max(gpus.flatMap((g) => (g ? cpus.map((c) => fps(g.p, c.p)) : []))) : 1
+  const wg = noGpu ? 0 : use.weights.gpu, wc = use.weights.cpu
+  const core = (g: Part | null, c: Part) =>
+    game && g ? fps(g, c) / fpsMax : (wg * (g ? gpuScore(g) / gMax : 0) + wc * (cpuScore(c) / cMax)) / (wg + wc)
+  const ramMax = max(rams.map((r) => Number(r.p.specs.capacity_gb)))
+  const ssdCap = max(ssds.map((s) => Number(s.p.specs.capacity_gb)))
+  const ssdIdx = max(ssds.map((s) => s.p.perf.index))
+  const mbIdx = max(boards.map((b) => b.p.perf.index))
+  const ramIdx = max(rams.map((r) => r.p.perf.index))
+  // 메모리를 많이 쓰는 용도(개발·AI·영상)는 메모리·저장장치에 더 쓴다
+  const heavy = (use.min_ram_gb ?? 32) >= 32
+  const side = heavy ? 0.25 : 0.15
+  const extra = (mb: P, ram: P, ssd: P) =>
+    (heavy ? 0.5 : 0.35) * (0.8 * (Number(ram.p.specs.capacity_gb) / ramMax) + 0.2 * (ram.p.perf.index / ramIdx)) +
+    0.35 * (0.6 * (Number(ssd.p.specs.capacity_gb) / ssdCap) + 0.4 * (ssd.p.perf.index / ssdIdx)) +
+    (heavy ? 0.15 : 0.3) * (mb.p.perf.index / mbIdx)
+
+  // ── 켜지고 식고 들어가는 가장 싼 것 ──
+  const psuNeed = (g: Part | null, c: Part) => Math.max(systemWatts(c, g ?? undefined) * 1.3, Number(g?.specs.psu_w ?? 0))
+  const coolerFor = (c: Part, full = false) =>
+    coolers.find((x) => Number(x.p.specs.cpu_watt) >= Number(c.specs.max_power_w) * (full ? 1 : 0.9))
+  const caseFor = (cooler: P | undefined, big = false) =>
+    cases.find(
+      (x) =>
+        Number(x.p.specs.max_gpu_mm) >= (big ? 400 : 380) &&
+        (!cooler?.p.specs.radiator_mm || Number(cooler.p.specs.radiator_mm) <= Number(x.p.specs.max_radiator_mm)),
+    )
+  // 보드: 경고(BIOS·전원부)까지 없는 것만, 그런 게 없으면 소켓만 맞는 것
+  const boardsFor = new Map(
+    cpus.map((c) => {
+      const sock = boards.filter((b) => b.p.specs.socket === c.p.specs.socket)
+      const clean = sock.filter((b) => !checkBuild({ cpu: c.p.id, mainboard: b.p.id }, parts).some((x) => x.level !== 'ok'))
+      return [c.p.id, { list: clean.length ? clean : sock, clean: clean.length > 0 }]
+    }),
+  )
+  const perStick = (use.min_ram_gb ?? 32) / 2
+  const ramsFor = (mb: P, c: Part) => {
+    const fit = rams.filter((r) => String(mb.p.specs.mem).includes(String(r.p.specs.type)) && String(c.specs.mem).includes(String(r.p.specs.type)))
+    const enough = fit.filter((r) => Number(r.p.specs.capacity_gb) >= perStick)
+    return enough.length ? enough : fit
+  }
+
+  type Pick = { g: P | null; c: P; mb: P; ram: P; ssd: P; psu: P; cooler: P; cs: P; cost: number; u: number }
+  let best: Pick | null = null
+  let loose: Pick | null = null
+  let cheapest: Pick | null = null
+  const better = (x: Pick, y: Pick | null) => !y || x.u > y.u + 1e-9 || (Math.abs(x.u - y.u) <= 1e-9 && x.cost < y.cost)
+  // 쌍마다 가장 싸게 짠 값과 그 성능 — '한 단계 위'를 찾는 데 쓴다
+  const pairs: { g: P | null; c: P; cost: number; core: number }[] = []
+  for (const g of gpus) {
+    for (const c of cpus) {
+      const need = psuNeed(g?.p ?? null, c.p)
+      const psu = psus.find((x) => Number(x.p.specs.watt) >= need) ?? psus[psus.length - 1]
+      const cooler = coolerFor(c.p) ?? coolers[coolers.length - 1]
+      const cs = caseFor(cooler) ?? cases[cases.length - 1]
+      if (!psu || !cooler || !cs) continue
+      const coreU = core(g?.p ?? null, c.p)
+      const fixed = (g?.price ?? 0) + c.price + psu.price + cooler.price + cs.price
+      const bf = boardsFor.get(c.p.id) ?? { list: [], clean: false }
+      let pairMin = Infinity
+      for (const mb of bf.list) {
+        for (const ram of ramsFor(mb, c.p)) {
+          for (const ssd of ssds) {
+            const cost = fixed + mb.price + ram.price * 2 + ssd.price
+            // BIOS·전원부 경고가 붙는 보드밖에 없는 CPU 는 조금 뒤로 민다(되기는 한다)
+            const u = (1 - side) * coreU + side * extra(mb, ram, ssd) - (bf.clean ? 0 : 0.01)
+            pairMin = Math.min(pairMin, cost)
+            const pick = { g, c, mb, ram, ssd, psu, cooler, cs, cost, u }
+            if (!cheapest || cost < cheapest.cost) cheapest = pick
+            if (cost <= budget && better(pick, best)) best = pick
+            if (cost <= budget * 1.1 && better(pick, loose)) loose = pick
+          }
+        }
+      }
+      if (pairMin < Infinity) pairs.push({ g, c, cost: pairMin, core: coreU })
+    }
+  }
+  const stretch = !!best && !!loose && best.cost < budget * 0.9 && loose.u > best.u + 1e-9
+  const stretched = stretch ? { within: best!.cost } : null
+  if (stretch) best = loose
+  const pick = best ?? cheapest
+  if (!pick) return { build: {}, cost: 0, stretched: null, next: null }
+  const pickCore = core(pick.g?.p ?? null, pick.c.p)
+  const up = pairs.filter((x) => x.cost > budget && x.core > pickCore * 1.03).sort((a, b) => a.cost - b.cost)[0]
+  const next = best && up ? { cost: up.cost, gainPct: (up.core / pickCore - 1) * 100, gpu: up.g?.p.name ?? null, cpu: up.c.p.name } : null
+
+  // ── 남은 돈으로 올린다 — 안정성(쿨러·파워)이 먼저, 그다음 케이스 ──
+  let left = Math.max(0, budget - pick.cost)
+  const upgrade = (cur: P, next: P | undefined, set: (x: P) => void) => {
+    if (next && next.price > cur.price && next.price - cur.price <= left) {
+      left -= next.price - cur.price
+      set(next)
+    }
+  }
+  upgrade(pick.cooler, coolerFor(pick.c.p, true), (x) => (pick.cooler = x))
+  const g = pick.g?.p
+  upgrade(
+    pick.psu,
+    psus.find(
+      (x) =>
+        Number(x.p.specs.watt) >= Math.max(systemWatts(pick.c.p, g) * 1.5, Number(g?.specs.psu_w ?? 0)) &&
+        (!g || Number(g.specs.tdp_w) < 250 || !!x.p.specs.atx3),
+    ),
+    (x) => (pick.psu = x),
+  )
+  if (g && Number(g.specs.tdp_w) >= 300) upgrade(pick.cs, caseFor(pick.cooler, true), (x) => (pick.cs = x))
+  // 쿨러를 수랭으로 올렸으면 케이스가 라디에이터를 받는지 다시 본다
+  const csOk = caseFor(pick.cooler)
+  if (csOk && pick.cooler.p.specs.radiator_mm && Number(pick.cooler.p.specs.radiator_mm) > Number(pick.cs.p.specs.max_radiator_mm)) pick.cs = csOk
+
+  const build: Build = {
+    gpu: pick.g?.p.id,
+    cpu: pick.c.p.id,
+    mainboard: pick.mb.p.id,
+    ram: pick.ram.p.id,
+    ssd: pick.ssd.p.id,
+    psu: pick.psu.p.id,
+    cooler: pick.cooler.p.id,
+    case: pick.cs.p.id,
+  }
+  const cost = buildTotal(build, parts, prices).total
+  return { build, cost, stretched, next: next && next.cost > cost ? next : null }
 }
 
 export const CATEGORY_ORDER: Category[] = ['cpu', 'gpu', 'mainboard', 'ram', 'ssd', 'hdd', 'psu', 'cooler', 'case']
@@ -668,10 +804,31 @@ export interface DurabilityNote {
   sources: { title: string; url: string }[]
 }
 
+/** 이름 읽는 법 — Ti·SUPER·XT·X3D·F·K 같은 칩 접미사와 OC·2X·LP 같은 제품 이름 */
+export interface NameNote {
+  key: string
+  /** gpu·cpu = 칩 이름, product = 같은 칩을 얹은 제품 이름 */
+  applies: 'gpu' | 'cpu' | 'product'
+  maker: string | null
+  token: string
+  /** 이름에서 이 말을 찾는 정규식(대소문자 무시) */
+  match: string
+  title: string
+  plain: string
+  /** 차이를 숫자로 보여 줄 부품 — [이 말이 붙은 것, 안 붙은 것] */
+  compare?: string[]
+  sources: { title: string; url: string }[]
+}
+
 export interface Guide {
   forms: SaleForm[]
   distributors: Distributor[]
   durability: DurabilityNote[]
+  names?: NameNote[]
+}
+
+export function namesIn(name: string, notes: NameNote[], applies: NameNote['applies'][]): NameNote[] {
+  return notes.filter((n) => applies.includes(n.applies) && new RegExp(n.match, 'i').test(name))
 }
 
 let guideCache: Promise<Guide> | null = null
@@ -765,4 +922,138 @@ export function fmtSpec(v: string | number | boolean | string[] | null | undefin
   if (Array.isArray(v)) return v.join(', ')
   if (typeof v === 'boolean') return v ? '있음' : '없음'
   return unit ? `${typeof v === 'number' ? v.toLocaleString() : v} ${unit}` : String(v)
+}
+
+// ── 같은 칩의 여러 제품 — 무엇이 가장 많이 팔리나 ─────────────────────
+//
+// "RTX 5060" 은 칩 이름이고 실제로 사는 물건은 수십 가지다(MSI 벤투스·GALAX·ZOTAC…).
+// 크롤러가 다나와 통합검색의 기본 정렬(인기상품순) 순서를 매물마다 rank 로 남긴다 —
+// 판매량 숫자는 공개되지 않으니 이 순서가 '많이 쓰는 제품'의 근거다.
+//
+// 성능: 같은 칩이면 성능은 거의 같다. 그래픽카드는 제품마다 부스트 클럭만 조금 다르니
+// 칩 지수 × (제품 클럭 ÷ 기준 클럭)으로 잰다. 게임 성능은 클럭만큼 늘지 않으니 이 값은 상한이다.
+
+export interface Variant {
+  key: string
+  /** 화면에 쓸 이름 — 조사한 제품이면 제품 이름, 아니면 매물 이름 */
+  name: string
+  model: Model | null
+  offers: Offer[]
+  /** 이 칩 제품 중 인기 순위(1부터). 원장에 순위가 없으면 null */
+  pop: number | null
+  price: number
+  /** 제품의 성능 지수 — 그래픽카드는 클럭 비례 추정(조사한 제품만), CPU 는 칩 지수 그대로 */
+  index: number | null
+  clockPct: number | null
+  form: SaleForm | null
+  distributor: Distributor | null
+}
+
+const bestRank = (os: Offer[]) => Math.min(...os.map((o) => o.rank ?? Infinity))
+
+export function variantsOf(part: Part, rec: PriceRec | undefined, models: Model[], guide: Guide | null): Variant[] {
+  const offers = rec?.offers ?? []
+  const ref = Number(part.specs.boost_ghz ?? 0) * 1000
+  const groups: { key: string; name: string; model: Model | null; offers: Offer[] }[] = []
+  if (part.category === 'gpu' && models.length) {
+    const { byModel, rest } = groupOffers(offers, models)
+    for (const m of models) {
+      const os = byModel.get(m.id) ?? []
+      if (os.length) groups.push({ key: m.id, name: m.name, model: m, offers: os })
+    }
+    for (const o of rest) groups.push({ key: o.pcode, name: o.name, model: null, offers: [o] })
+  } else {
+    for (const o of offers) groups.push({ key: o.pcode, name: o.name, model: null, offers: [o] })
+  }
+  const hasRank = offers.some((o) => o.rank != null)
+  const ordered = [...groups].sort((a, b) =>
+    hasRank ? bestRank(a.offers) - bestRank(b.offers) : Math.min(...a.offers.map((o) => o.price)) - Math.min(...b.offers.map((o) => o.price)),
+  )
+  // 다나와는 용량·판매 형태만 다른 옵션(정품·멀티팩·병행)을 한 줄에 묶는다 — 같은 줄이면 같은 순위다
+  const ranks = [...new Set(ordered.map((g) => bestRank(g.offers)))]
+  return ordered.map((g) => {
+    const boost = Number(g.model?.specs.boost_mhz ?? 0)
+    const ratio = part.category === 'gpu' && boost && ref ? boost / ref : null
+    const cheapest = [...g.offers].sort((a, b) => a.price - b.price)[0]
+    return {
+      key: g.key,
+      name: g.name,
+      model: g.model,
+      offers: g.offers,
+      pop: hasRank ? ranks.indexOf(bestRank(g.offers)) + 1 : null,
+      price: cheapest.price,
+      index: ratio ? Math.round(part.perf.index * ratio * 10) / 10 : part.category === 'cpu' ? part.perf.index : null,
+      clockPct: ratio ? (ratio - 1) * 100 : null,
+      form: part.category === 'cpu' && guide ? formOf(cheapest.name, guide.forms) : null,
+      distributor: guide ? distributorOf(cheapest.name, guide.distributors) : null,
+    }
+  })
+}
+
+/** 대표 제품 — 인기 순위가 가장 높은 것. CPU 는 병행(국내 정식 A/S 없음)을 대표로 두지 않는다. */
+export function pickOf(vs: Variant[]): Variant | null {
+  const ok = vs.filter((v) => !v.form || v.form.official)
+  return (ok.length ? ok : vs)[0] ?? null
+}
+
+const shortName = (p: Part) => p.name.replace('GeForce ', '').replace('Radeon ', '')
+
+/** 왜 이 제품이 많이 팔리나 — 데이터에서 말할 수 있는 것만 문장으로 */
+export function whyPopular(v: Variant, vs: Variant[], part: Part, data: HwData): string[] {
+  const out: string[] = []
+  if (v.pop != null) {
+    out.push(`다나와 인기상품순에서 ${shortName(part)} 제품 ${vs.length}종 중 ${v.pop}위다. 인기순은 다나와가 판매·조회로 매긴 순서다 — 판매량 숫자는 공개되지 않는다.`)
+  } else {
+    out.push('아직 인기 순위를 받기 전의 가격 원장이라 가장 싼 제품을 대표로 두었다.')
+  }
+  const prices = vs.map((x) => x.price).sort((a, b) => a - b)
+  if (prices.length > 2) {
+    const at = prices.indexOf(v.price) + 1
+    out.push(
+      at === 1
+        ? `이 칩 제품 ${prices.length}종 가운데 가장 싸다.`
+        : v.price <= prices[Math.floor(prices.length / 2)]
+        ? `값이 싼 편이다 — ${prices.length}종 중 ${at}번째로 싸고, 가장 싼 것과 ${won(v.price - prices[0])} 차이다.`
+        : `가장 싼 제품보다 ${won(v.price - prices[0])} 비싸다 — 값보다 브랜드·A/S·만듦새를 보고 고르는 사람이 많다는 뜻이다.`,
+    )
+  }
+  const s = v.model?.specs
+  if (s) {
+    if (Number(s.fans) === 2 && s.length_mm) out.push(`팬 2개 · 길이 ${s.length_mm}mm 로 짧다 — 작은 케이스에도 들어간다.`)
+    else if (s.length_mm) out.push(`길이 ${s.length_mm}mm · 팬 ${s.fans ?? '?'}개.`)
+    if (s.zero_fan) out.push('가벼운 작업 때는 팬이 멈춘다(0dB) — 조용하다.')
+    if (s.low_profile) out.push('높이가 낮은 카드라 슬림 케이스에 들어간다.')
+  }
+  if (v.distributor?.warranty_years) out.push(`${v.distributor.name} 유통 — 국내 무상 보증 ${v.distributor.warranty_years}년.`)
+  if (v.form) out.push(`${v.form.label} — ${v.form.warranty_years ? `국내 A/S ${v.form.warranty_years}년` : v.form.official ? '국내 정식 유통' : '국내 정식 A/S 가 없다'}.`)
+  // 칩 자체가 왜 많이 팔리나 — 같은 등급 안에서 성능 1점당 가격 순위
+  const tier = tierOf(part, data.categories)
+  const peers = data.parts
+    .filter((p) => p.category === part.category && p.status === 'current' && tierOf(p, data.categories)?.tier === tier?.tier)
+    .map((p) => ({ p, v: (priceOf(p, data.prices) ?? Infinity) / (p.perf.index || 1) }))
+    .filter((x) => Number.isFinite(x.v))
+    .sort((a, b) => a.v - b.v)
+  const at = peers.findIndex((x) => x.p.id === part.id)
+  if (at >= 0 && peers.length > 1) {
+    out.push(
+      at === 0
+        ? `칩 자체도 ${tier?.tier} 등급 ${peers.length}개 중 성능 1점당 가장 싸다 — 이 급을 사는 사람이 몰리는 이유다.`
+        : `칩은 ${tier?.tier} 등급 ${peers.length}개 중 성능 1점당 ${at + 1}번째로 싸다.`,
+    )
+  }
+  return out
+}
+
+/** 판매처 링크 — 다나와는 그 매물, 나머지는 같은 이름으로 검색한 결과다(긁지 않고 링크만 건다) */
+export function shopLinks(v: Variant, guide: Guide | null): { label: string; url: string }[] {
+  const cheapest = [...v.offers].sort((a, b) => a.price - b.price)[0]
+  let q = v.model?.name ?? cheapest.name
+  for (const d of guide?.distributors ?? []) for (const a of [d.name, ...(d.aliases ?? [])]) q = q.replace(a, '')
+  q = q.replace(/\(÷\d+\)/, '').replace(/\s+/g, ' ').trim()
+  const e = encodeURIComponent(q)
+  return [
+    { label: '다나와', url: cheapest.url },
+    { label: '네이버쇼핑', url: `https://search.shopping.naver.com/search/all?query=${e}` },
+    { label: '쿠팡', url: `https://www.coupang.com/np/search?q=${e}` },
+  ]
 }
