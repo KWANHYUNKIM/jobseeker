@@ -77,6 +77,8 @@ export interface Analysis {
   sum: number | null
   premium: number | null
   premiumPct: number | null
+  /** 남기는 돈이 판매가에서 차지하는 비율(%) — 마진율 */
+  marginPct: number | null
   unknown: string[]
   cpu: Part | null
   gpu: Part | null
@@ -137,6 +139,7 @@ export function analyze(item: Prebuilt, data: HwData): Analysis {
   const sum = essentialMissing ? null : known.reduce((s, l) => s + (l.price ?? 0), 0)
   const premium = sum != null ? item.price - sum : null
   const premiumPct = sum ? (premium! / sum) * 100 : null
+  const marginPct = sum != null ? (premium! / item.price) * 100 : null
 
   // 호환성 — 판매 구성이 우리 검사에 걸리면 표기가 잘못됐거나 정말 문제가 있는 것이다
   const build: Build = { cpu: cpu?.id, gpu: gpu?.id, mainboard: mb?.id, ram: ram?.id, psu: psu?.id }
@@ -149,10 +152,10 @@ export function analyze(item: Prebuilt, data: HwData): Analysis {
   const good: string[] = []
   const bad: string[] = []
   if (premiumPct != null) {
-    if (premiumPct <= 5) good.push(`부품값 합계와 거의 같다(+${Math.round(premiumPct)}%) — 조립·검수값을 거의 안 받는 셈이다`)
-    else if (premiumPct <= 15) good.push(`조립 프리미엄 +${Math.round(premiumPct)}% — 조립·검수·A/S 값으로 흔한 범위다`)
+    if (premiumPct <= 5) good.push(`원가와 거의 같다(원가 대비 +${Math.round(premiumPct)}%) — 조립·검수값을 거의 안 받는 셈이다`)
+    else if (premiumPct <= 15) good.push(`남기는 돈 원가 대비 +${Math.round(premiumPct)}% — 조립·검수·A/S 값으로 흔한 범위다`)
     else if (premiumPct >= 25) bad.push(`부품을 따로 사면 약 ${Math.round(premium! / 10000)}만원(${Math.round(premiumPct)}%) 싸다`)
-    else bad.push(`조립 프리미엄 +${Math.round(premiumPct)}% — 조금 비싸다`)
+    else bad.push(`남기는 돈 원가 대비 +${Math.round(premiumPct)}% — 조금 비싸다`)
   }
   if (cpu && gpu) {
     const ct = tierOf(cpu, data.categories)?.tier, gt = tierOf(gpu, data.categories)?.tier
@@ -177,7 +180,7 @@ export function analyze(item: Prebuilt, data: HwData): Analysis {
   if (m.gpu_assumed) bad.push(`판매 표기에 그래픽 메모리 용량이 없다 — ${m.gpu_assumed}`)
   if (unknown.length) bad.push(`우리 부품 목록에 없는 부품이 있어 계산에서 뺐다: ${unknown.join(', ')}`)
 
-  return { lines, sum, premium, premiumPct, unknown, cpu, gpu, qhdFps, good, bad, errors }
+  return { lines, sum, premium, premiumPct, marginPct, unknown, cpu, gpu, qhdFps, good, bad, errors }
 }
 
 /** 같은 목록 안에서 '예상 QHD 평균 fps 1 당 가격' 순위(낮을수록 싸게 먹힌다). 1 = 가장 가성비 좋음. */

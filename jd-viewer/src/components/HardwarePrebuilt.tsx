@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { tierOf, won, type HwData } from '../lib/hardware'
-import { analyze, usePrebuilt, valueRanks, type Prebuilt } from '../lib/prebuilt'
+import { analyze, usePrebuilt, valueRanks, type Analysis, type Prebuilt } from '../lib/prebuilt'
 import { onLinkClick } from '../lib/router'
 import { absUrl, useSeo } from '../lib/seo'
 import { paths } from '../lib/urls'
@@ -58,10 +58,10 @@ function List({ data, items, day }: { data: HwData; items: Prebuilt[]; day: stri
       </header>
       <div className="flex flex-wrap items-center gap-3 text-sm">
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="이름·부품으로 찾기 (예: 5070, 9800X3D)" className="border border-(--color-border) rounded px-2 py-1 bg-(--color-panel) w-72" />
-        <span className="text-xs text-(--color-muted)">가성비 = 예상 QHD 평균 fps 1 당 가격(낮을수록 좋다) · 부품값 대비 = 부품을 따로 샀을 때보다 얼마나 비싼가</span>
+        <span className="text-xs text-(--color-muted)">가성비 = 예상 QHD 평균 fps 1 당 가격(낮을수록 좋다) · 원가 = 같은 날 부품 최저가 합계 · 남기는 돈 = 판매가 − 원가</span>
       </div>
       <div className="rounded-lg border border-(--color-border) bg-(--color-panel) overflow-x-auto">
-        <table className="w-full text-sm min-w-[1000px]" data-nosnippet>
+        <table className="w-full text-sm min-w-[1200px]" data-nosnippet>
           <thead>
             <tr className="text-[11px] text-(--color-muted) text-left border-b border-(--color-border)">
               <th className="font-normal px-3 py-2">{th('value', '가성비 순위')}</th>
@@ -69,9 +69,11 @@ function List({ data, items, day }: { data: HwData; items: Prebuilt[]; day: stri
               <th className="font-normal px-3 py-2">CPU · 그래픽</th>
               <th className="font-normal px-3 py-2">메모리 · SSD</th>
               <th className="font-normal px-3 py-2 text-right">{th('price', '가격')}</th>
-              <th className="font-normal px-3 py-2 text-right">{th('premium', '부품값 대비')}</th>
+              <th className="font-normal px-3 py-2 text-right">원가(부품값)</th>
+              <th className="font-normal px-3 py-2 text-right">{th('premium', '남기는 돈')}</th>
               <th className="font-normal px-3 py-2 text-right">{th('fps', 'QHD 예상')}</th>
               <th className="font-normal px-3 py-2">의견</th>
+              <th className="font-normal px-3 py-2">판매처</th>
             </tr>
           </thead>
           <tbody>
@@ -94,11 +96,28 @@ function List({ data, items, day }: { data: HwData; items: Prebuilt[]; day: stri
                   {it.comp?.storage_gb ? (it.comp.storage_gb >= 1000 ? `${it.comp.storage_gb / 1000}TB` : `${it.comp.storage_gb}GB`) : '—'}
                 </td>
                 <td className="px-3 py-2 text-right font-bold tabular-nums">{won(it.price)}</td>
+                <td className="px-3 py-2 text-right tabular-nums text-(--color-muted)">{a.sum != null ? won(a.sum) : '—'}</td>
                 <td className={`px-3 py-2 text-right tabular-nums ${a.premiumPct == null ? 'text-(--color-faint)' : a.premiumPct >= 25 ? 'text-(--color-red-400)' : a.premiumPct <= 10 ? 'text-(--color-accent) font-semibold' : ''}`}>
-                  {a.premiumPct == null ? '계산 불가' : `${a.premiumPct >= 0 ? '+' : ''}${Math.round(a.premiumPct)}%`}
+                  {a.premium == null ? (
+                    '계산 불가'
+                  ) : (
+                    <>
+                      {a.premium >= 0 ? '+' : '−'}
+                      {won(Math.abs(a.premium))}
+                      <div className="text-[10px] font-normal text-(--color-muted)">
+                        마진율 {Math.round(a.marginPct ?? 0)}% · 원가 대비 {(a.premiumPct ?? 0) >= 0 ? '+' : ''}
+                        {Math.round(a.premiumPct ?? 0)}%
+                      </div>
+                    </>
+                  )}
                 </td>
                 <td className="px-3 py-2 text-right tabular-nums">{a.qhdFps ?? '—'}</td>
                 <td className="px-3 py-2 text-xs text-(--color-muted)">{it.rating ? `★ ${it.rating.avg.toFixed(1)} (${it.rating.count})` : '—'}</td>
+                <td className="px-3 py-2 text-xs whitespace-nowrap">
+                  <a href={it.url} target="_blank" rel="noreferrer nofollow" className="text-(--color-sky-400) hover:underline">
+                    {it.source === 'naver' ? (it.mall ?? '네이버') : '다나와'} ↗
+                  </a>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -136,19 +155,20 @@ function Detail({ data, item, all }: { data: HwData; item: Prebuilt; all: Prebui
       <header className="flex flex-wrap items-baseline gap-3">
         <h1 className="text-xl font-bold">{item.name}</h1>
         <a href={item.url} target="_blank" rel="noreferrer nofollow" className="text-xs text-(--color-sky-400) hover:underline">
-          원문 보기{item.rating ? ` · ★ ${item.rating.avg.toFixed(1)} 리뷰 ${item.rating.count}건` : ' · 상품의견은 원문에서'}
+          {item.source === 'naver' ? (item.mall ?? '네이버') : '다나와'} 판매 페이지 ↗{item.rating ? ` · ★ ${item.rating.avg.toFixed(1)} 리뷰 ${item.rating.count}건` : ' · 상품의견은 원문에서'}
         </a>
       </header>
       <div className="grid gap-3 sm:grid-cols-4" data-nosnippet>
         <Stat label="판매가" value={won(item.price)} sub={item.offer_count ? `판매처 ${item.offer_count}곳` : undefined} />
-        <Stat label="부품값 합계(추정)" value={a.sum != null ? won(a.sum) : '계산 불가'} sub={a.unknown.length ? '목록에 없는 부품 제외' : '같은 날 최저가 기준'} />
+        <Stat label="원가(부품값 합계)" value={a.sum != null ? won(a.sum) : '계산 불가'} sub={a.unknown.length ? '목록에 없는 부품 제외' : '같은 날 부품 최저가 기준'} />
         <Stat
-          label="조립 프리미엄"
-          value={a.premium != null ? `${a.premium >= 0 ? '+' : ''}${won(Math.abs(a.premium)).replace('원', '')}원` : '—'}
-          sub={a.premiumPct != null ? `${a.premiumPct >= 0 ? '+' : ''}${Math.round(a.premiumPct)}% — 조립·검수·A/S·배송값` : undefined}
+          label="남기는 돈"
+          value={a.premium != null ? `${a.premium >= 0 ? '+' : '−'}${won(Math.abs(a.premium))}` : '—'}
+          sub={a.premium != null ? `마진율 ${Math.round(a.marginPct ?? 0)}% · 원가 대비 ${(a.premiumPct ?? 0) >= 0 ? '+' : ''}${Math.round(a.premiumPct ?? 0)}%` : undefined}
         />
         <Stat label="가성비 순위" value={r ? `${r.rank} / ${r.of}` : '—'} sub={r ? `QHD 예상 ${a.qhdFps}fps · fps 당 ${Math.round(r.wonPerFps).toLocaleString()}원` : undefined} />
       </div>
+      {a.sum != null && <PriceSplit item={item} a={a} />}
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
           <h2 className="text-sm font-semibold mb-2">왜 이런 값인가</h2>
@@ -227,5 +247,57 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
       <div className="text-xl font-bold tabular-nums">{value}</div>
       {sub && <div className="text-[11px] text-(--color-faint)">{sub}</div>}
     </div>
+  )
+}
+
+// 판매가는 이렇게 나뉜다 — 부품별 원가 칸(회색 진하기) + 남기는 돈(강조색). 한 줄 막대라 합이 곧 판매가다.
+// 남기는 돈이 음수(부품값보다 싸다)면 원가 칸들이 막대를 다 채우고, 그 사실을 범례에 적는다.
+function PriceSplit({ item, a }: { item: Prebuilt; a: Analysis }) {
+  const [tip, setTip] = useState<string | null>(null)
+  const lines = a.lines.filter((l) => l.price)
+  const total = Math.max(item.price, a.sum ?? 0)
+  const pct = (v: number) => `${(v / total) * 100}%`
+  const margin = a.premium ?? 0
+  const grey = (i: number) => `color-mix(in srgb, var(--color-muted) ${70 - (i % 2) * 25}%, var(--color-panel))`
+  return (
+    <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4" data-nosnippet>
+      <div className="flex flex-wrap items-baseline gap-2 mb-2">
+        <h2 className="text-sm font-semibold">판매가 {won(item.price)} 는 이렇게 나뉜다</h2>
+        <span className="text-xs text-(--color-muted)">{tip ?? '칸에 마우스를 올리면 부품과 값이 나온다'}</span>
+      </div>
+      <div className="flex h-8 w-full gap-[2px]" role="img" aria-label={`원가 ${won(a.sum)} + 남기는 돈 ${won(margin)}`}>
+        {lines.map((l, i) => (
+          <div
+            key={l.label}
+            className="h-full first:rounded-l-[4px]"
+            style={{ width: pct(l.price!), background: grey(i) }}
+            onMouseEnter={() => setTip(`${l.label} ${l.part?.name ?? ''} · ${won(l.price)}${l.note ? ` (${l.note})` : ''}`)}
+            onMouseLeave={() => setTip(null)}
+          />
+        ))}
+        {margin > 0 && (
+          <div
+            className="h-full rounded-r-[4px] bg-(--color-accent)"
+            style={{ width: pct(margin) }}
+            onMouseEnter={() => setTip(`남기는 돈 ${won(margin)} — 판매가의 ${Math.round(a.marginPct ?? 0)}%`)}
+            onMouseLeave={() => setTip(null)}
+          />
+        )}
+      </div>
+      <div className="flex flex-wrap justify-between gap-2 text-[11px] text-(--color-muted) mt-1">
+        <span>
+          <span className="inline-block w-2.5 h-2.5 rounded-sm align-middle mr-1" style={{ background: grey(0) }} />
+          원가 {won(a.sum)} (부품 {lines.length}칸)
+        </span>
+        <span>
+          <span className="inline-block w-2.5 h-2.5 rounded-sm align-middle mr-1 bg-(--color-accent)" />
+          남기는 돈 {margin >= 0 ? won(margin) : `−${won(-margin)} (부품값보다 싸다)`}
+        </span>
+      </div>
+      <p className="text-[11px] text-(--color-faint) mt-2">
+        원가는 같은 날 소비자가 살 수 있는 부품 최저가의 합이다. 조립 업체의 실제 매입가는 이보다 낮을 수 있어 실제로 남는 돈은 더 클 수 있고,
+        남기는 돈 안에서 조립·검수·A/S·배송·결제 수수료가 나간다. 표기가 없는 칸(쿨러·SSD 제조사 등)은 아래 표에 가정을 적었다.
+      </p>
+    </section>
   )
 }
