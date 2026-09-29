@@ -2289,8 +2289,8 @@
    },
    "perf": {
     "index": 96,
-    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
-    "confidence": "seed"
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도(MT/s) × 8바이트 × 2채널 — 공식으로 계산되는 값",
+    "confidence": "high"
    },
    "price_query": {
     "q": "DDR5-6000 16GB",
@@ -2333,8 +2333,8 @@
    },
    "perf": {
     "index": 90,
-    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
-    "confidence": "seed"
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도(MT/s) × 8바이트 × 2채널 — 공식으로 계산되는 값",
+    "confidence": "high"
    },
    "price_query": {
     "q": "DDR5-5600 16GB",
@@ -2377,8 +2377,8 @@
    },
    "perf": {
     "index": 90,
-    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
-    "confidence": "seed"
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도(MT/s) × 8바이트 × 2채널 — 공식으로 계산되는 값",
+    "confidence": "high"
    },
    "price_query": {
     "q": "DDR5-5600 32GB",
@@ -2421,8 +2421,8 @@
    },
    "perf": {
     "index": 96,
-    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
-    "confidence": "seed"
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도(MT/s) × 8바이트 × 2채널 — 공식으로 계산되는 값",
+    "confidence": "high"
    },
    "price_query": {
     "q": "DDR5-6000 64GB 32Gx2",
@@ -2464,8 +2464,8 @@
    },
    "perf": {
     "index": 51,
-    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
-    "confidence": "seed"
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도(MT/s) × 8바이트 × 2채널 — 공식으로 계산되는 값",
+    "confidence": "high"
    },
    "price_query": {
     "q": "DDR4-3200 16GB",
@@ -2508,8 +2508,8 @@
    },
    "perf": {
     "index": 51,
-    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도 × 8바이트 × 2채널",
-    "confidence": "seed"
+    "basis": "두 장 꽂았을 때 듀얼 채널 대역폭(GB/s) = 속도(MT/s) × 8바이트 × 2채널 — 공식으로 계산되는 값",
+    "confidence": "high"
    },
    "price_query": {
     "q": "DDR4-3200 32GB",
