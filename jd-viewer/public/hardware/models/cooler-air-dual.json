@@ -333,6 +333,211 @@
    "confidence": "high",
    "checked_at": "2026-09-29",
    "note": "크기 129×138×161 mm(L×W×H). 이 제품 페이지는 감당 전력(TDP)을 적지 않는다. 상태 표시 화면 달린 판. 블랙 · 화이트 공통."
+  },
+  {
+   "id": "3rsys-rc1080",
+   "name": "3RSYS Socoool RC1080",
+   "brand": "3RSYS",
+   "code": "Socoool RC1080",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC1080"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 151.0,
+    "fans": "120mm 2개",
+    "tdp_w": 240,
+    "noise_dba": 33.4,
+    "sockets": "Intel LGA1851/LGA1700/LGA1200 · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1747893429"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. A/S 3년."
+  },
+  {
+   "id": "3rsys-rc980n",
+   "name": "3RSYS Socoool RC980N",
+   "brand": "3RSYS",
+   "code": "Socoool RC980N",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC980N"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 137.0,
+    "fans": "100mm 2개",
+    "tdp_w": 210,
+    "noise_dba": 32.51,
+    "sockets": "Intel LGA115x/LGA1200/LGA1851/LGA1700 · AMD AM4/AM5"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1751344194"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. A/S 히트싱크 5년+팬 3년. 100mm 팬 소형 듀얼 — 높이 137mm, 이 급(듀얼 250W)보다 작다(TDP 210W)."
+  },
+  {
+   "id": "3rsys-rc1500n-lite",
+   "name": "3RSYS RC1500N PWM LITE",
+   "brand": "3RSYS",
+   "code": "RC1500N PWM LITE",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC1500N"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 158.0,
+    "fans": "120mm 2개",
+    "tdp_w": 260,
+    "noise_dba": 27.8,
+    "sockets": "Intel LGA1851/LGA1700/LGA1200/LGA115x · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1781068456"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통."
+  },
+  {
+   "id": "3rsys-rc1500-argb-lite",
+   "name": "3RSYS RC1500 ARGB LITE",
+   "brand": "3RSYS",
+   "code": "RC1500 ARGB LITE",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC1500",
+     "ARGB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 158.0,
+    "fans": "120mm 2개",
+    "tdp_w": 260,
+    "noise_dba": 27.8,
+    "sockets": "Intel LGA1851/LGA1700/LGA1200/LGA115x · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1781068291"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통."
+  },
+  {
+   "id": "3rsys-rc1900n",
+   "name": "3RSYS Socoool RC1900N",
+   "brand": "3RSYS",
+   "code": "Socoool RC1900N",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC1900N"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 157.0,
+    "fans": "130mm 2개",
+    "tdp_w": 280,
+    "noise_dba": 30.0,
+    "sockets": "Intel LGA1851/LGA1700/LGA1200/LGA115x · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1702860370"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. A/S 5년+팬3년."
+  },
+  {
+   "id": "3rsys-rc1900-argb",
+   "name": "3RSYS Socoool RC1900 ARGB",
+   "brand": "3RSYS",
+   "code": "Socoool RC1900 ARGB",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC1900",
+     "ARGB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 157.0,
+    "fans": "130mm 2개",
+    "tdp_w": 280,
+    "noise_dba": 30.0,
+    "sockets": "Intel LGA1851/LGA1700/LGA1200/LGA115x · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1701066030"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. A/S 5년+팬3년."
+  },
+  {
+   "id": "3rsys-rc1910",
+   "name": "3RSYS Socoool RC1910 Quiet",
+   "brand": "3RSYS",
+   "code": "Socoool RC1910 Quiet",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC1910"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 157.0,
+    "fans": "120mm 2개",
+    "tdp_w": 280,
+    "noise_dba": 24.0,
+    "sockets": "Intel LGA1851/LGA1700/LGA1200/LGA115x · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1734915258"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. A/S 팬 3년+ 히트싱크5년."
   }
  ]
 }

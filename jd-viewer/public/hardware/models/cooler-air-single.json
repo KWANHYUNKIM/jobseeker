@@ -264,6 +264,93 @@
    "confidence": "high",
    "checked_at": "2026-09-29",
    "note": "크기 126×98×157 mm(L×W×H). 이 제품 페이지는 감당 전력(TDP)을 적지 않는다. 베이퍼 챔버 방식. 블랙 · 화이트 공통. 소음은 최대 회전 기준."
+  },
+  {
+   "id": "3rsys-rc260n",
+   "name": "3RSYS Socoool RC260N",
+   "brand": "3RSYS",
+   "code": "Socoool RC260N",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC260N"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 127.8,
+    "fans": "100mm 1개",
+    "tdp_w": 95,
+    "noise_dba": 33.0,
+    "sockets": "Intel LGA1851/LGA1700/LGA1200/LGA115x · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1732257489"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. A/S 히트싱크 3년. 100mm 팬 소형 — 제조사 TDP 95W 로 이 급(싱글 180W)의 절반이다."
+  },
+  {
+   "id": "3rsys-rc250-argb",
+   "name": "3RSYS Socoool RC250 ARGB",
+   "brand": "3RSYS",
+   "code": "Socoool RC250 ARGB",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC250"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 119.0,
+    "fans": "92mm 1개",
+    "tdp_w": 95,
+    "noise_dba": 30.0,
+    "sockets": "Intel LGA1700/LGA1200/LGA115x · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1714625821"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통. A/S 3년+팬1년. 92mm 팬 소형 — 제조사 TDP 95W, 높이 119mm."
+  },
+  {
+   "id": "3rsys-rc380n",
+   "name": "3RSYS RC380N PWM",
+   "brand": "3RSYS",
+   "code": "RC380N PWM",
+   "match": {
+    "must": [
+     "3RSYS",
+     "RC380N"
+    ],
+    "not": []
+   },
+   "specs": {
+    "height_mm": 152.0,
+    "fans": "120mm 1개",
+    "tdp_w": 210,
+    "noise_dba": 37.0,
+    "sockets": "Intel LGA1851/LGA1200/LGA115x/LGA1700 · AMD AM5/AM4"
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 쇼핑몰 제품 페이지(스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1777262537"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "블랙 · 화이트 공통."
   }
  ]
 }
