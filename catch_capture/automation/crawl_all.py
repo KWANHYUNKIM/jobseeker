@@ -292,6 +292,19 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
         except Exception as e:
             print(f"[!] 부품 가격 크롤 실패: {e}", flush=True)
             failures.append("hardware")
+        # 완제품 조립PC — 부품 가격 다음에 돈다(구성을 그날 부품 목록에 잇는다). 역시 하루 한 번.
+        try:
+            from crawlers.crawl_prebuilt import run as _pb_run
+            stats = _pb_run()
+            if not stats.get("skipped"):
+                print(f"[OK] 완제품 {stats.get('total')}개(오늘 {stats.get('seen_today')}) · 구성 새로 읽음 "
+                      f"{stats.get('specs_read')} · 목록에 없는 CPU·GPU {stats.get('unmapped_cpu_gpu')}"
+                      f" → jd-viewer/public/hardware/prebuilt.json", flush=True)
+            if stats.get("failed"):
+                failures.append("prebuilt")
+        except Exception as e:
+            print(f"[!] 완제품 크롤 실패: {e}", flush=True)
+            failures.append("prebuilt")
 
     total = (datetime.now() - overall_start).total_seconds()
     print(f"\n========== 전체 완료 ({total:.0f}s) ==========", flush=True)
