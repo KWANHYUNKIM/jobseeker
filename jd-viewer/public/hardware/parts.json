@@ -624,6 +624,110 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "gpu-rtx-4070",
+   "category": "gpu",
+   "name": "GeForce RTX 4070",
+   "maker": "NVIDIA",
+   "released": "2023-04",
+   "specs": {
+    "vram_gb": 12,
+    "mem_type": "GDDR6X",
+    "bus_bit": 192,
+    "bandwidth_gbs": null,
+    "cores": 5888,
+    "tdp_w": 200,
+    "fp16_tflops": null,
+    "stack": "CUDA",
+    "psu_w": 650,
+    "boost_ghz": 2.48,
+    "note": "NVIDIA 표는 메모리를 'GDDR6 / GDDR6X' 로 적는다 — 나중에 GDDR6 판이 나왔다(성능 차이는 작다). 대역폭·FP16 은 표에 없어 비운다. 다나와 검색에 걸리는 새 매물이 없다(2026-09-29) — 단종으로 보고 legacy 로 둔다(완제품 구성 · 성능 비교용)."
+   },
+   "perf": {
+    "index": 55,
+    "confidence": "low",
+    "basis": "RTX 4090 = 100, 1440p — TPU RTX 3050 6GB 리뷰 1440p 상대 성능에서 RTX 4070 348%, RTX 4090 636% → 54.7"
+   },
+   "price_query": {
+    "q": "RTX 4070",
+    "cate": "그래픽카드",
+    "must": [
+     "4070"
+    ],
+    "not": [
+     "Ti",
+     "SUPER",
+     "슈퍼",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 사양 — RTX 4070 패밀리(4070: 5888 CUDA · 2.48GHz · 12GB GDDR6/GDDR6X 192-bit · 200W · 권장 650W)",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4070-family/"
+    },
+    {
+     "title": "TechPowerUp — RTX 3050 6GB 리뷰, 1440p 상대 성능(RTX 4070 348% · RTX 4060 Ti 8GB 260% · 16GB 263% · RTX 4090 636%)",
+     "url": "https://www.techpowerup.com/review/nvidia-geforce-rtx-3050-6-gb/31.html"
+    }
+   ],
+   "status": "legacy",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-4060-ti-8",
+   "category": "gpu",
+   "name": "GeForce RTX 4060 Ti 8GB",
+   "maker": "NVIDIA",
+   "released": "2023-05",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR6",
+    "bus_bit": 128,
+    "bandwidth_gbs": null,
+    "cores": 4352,
+    "tdp_w": 160,
+    "fp16_tflops": null,
+    "stack": "CUDA",
+    "psu_w": 550,
+    "boost_ghz": 2.54,
+    "note": "같은 이름의 16GB 판(165W)이 따로 있다 — 이 항목은 8GB(160W). 대역폭·FP16 은 표에 없어 비운다."
+   },
+   "perf": {
+    "index": 41,
+    "confidence": "low",
+    "basis": "RTX 4090 = 100, 1440p — TPU RTX 3050 6GB 리뷰 1440p 상대 성능에서 RTX 4060 Ti 8GB 260%, RTX 4090 636% → 40.9 (16GB 판은 263%로 거의 같다)"
+   },
+   "price_query": {
+    "q": "RTX 4060 Ti 8GB",
+    "cate": "그래픽카드",
+    "must": [
+     "4060 Ti|4060Ti",
+     "8GB"
+    ],
+    "not": [
+     "16GB",
+     "노트북",
+     "WINDFORCE",
+     "STORM X"
+    ],
+    "not_basis": "GIGABYTE WINDFORCE OC · 이엠텍 STORM X Dual OC 매물 셋이 모두 2,615,550원(다른 매물 65만~97만 원)으로 올라 있다 — 단종 재고의 자리표시 가격이라 뺀다 — 2026-09-29"
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 사양 — RTX 4060 Ti(4352 CUDA · 2.54GHz · 16GB 또는 8GB GDDR6 128-bit · 165W/160W · 권장 550W)",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4060-4060ti/"
+    },
+    {
+     "title": "TechPowerUp — RTX 3050 6GB 리뷰, 1440p 상대 성능(RTX 4070 348% · RTX 4060 Ti 8GB 260% · 16GB 263% · RTX 4090 636%)",
+     "url": "https://www.techpowerup.com/review/nvidia-geforce-rtx-3050-6-gb/31.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "gpu-rtx-4060",
    "category": "gpu",
    "name": "GeForce RTX 4060",
