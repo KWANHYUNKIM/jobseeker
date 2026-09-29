@@ -22,9 +22,9 @@
     "ai_tops": 3352
    },
    "perf": {
-    "index": 127,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 117,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 5090",
@@ -48,6 +48,10 @@
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -79,9 +83,9 @@
     "ai_tops": 1801
    },
    "perf": {
-    "index": 83,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 89,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 5080",
@@ -105,6 +109,10 @@
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -136,9 +144,9 @@
     "ai_tops": 1406
    },
    "perf": {
-    "index": 72,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 81,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 5070 Ti",
@@ -162,6 +170,10 @@
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -193,9 +205,9 @@
     "ai_tops": 988
    },
    "perf": {
-    "index": 57,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 67,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 5070",
@@ -220,6 +232,10 @@
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -251,9 +267,9 @@
     "ai_tops": 759
    },
    "perf": {
-    "index": 43,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 51,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 5060 Ti 16GB",
@@ -278,6 +294,10 @@
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -309,9 +329,9 @@
     "ai_tops": 759
    },
    "perf": {
-    "index": 41,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 48,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 5060 Ti 8GB",
@@ -336,6 +356,10 @@
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -367,9 +391,9 @@
     "ai_tops": 614
    },
    "perf": {
-    "index": 35,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 42,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 5060",
@@ -394,6 +418,10 @@
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -420,12 +448,13 @@
     "tdp_w": 450,
     "fp16_tflops": 165,
     "stack": "CUDA",
-    "psu_w": 850
+    "psu_w": 850,
+    "boost_ghz": 2.52
    },
    "perf": {
     "index": 100,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 4090",
@@ -439,12 +468,20 @@
    },
    "sources": [
     {
+     "title": "NVIDIA 공식 — RTX 4090",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4090/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "legacy",
@@ -453,7 +490,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4090/geforce-ada-4090-web-og-1200x630.jpg",
     "credit": "NVIDIA",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4090/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-4070-super",
@@ -470,12 +508,13 @@
     "tdp_w": 220,
     "fp16_tflops": 71,
     "stack": "CUDA",
-    "psu_w": 650
+    "psu_w": 650,
+    "boost_ghz": 2.48
    },
    "perf": {
-    "index": 55,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 64,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 4070 SUPER",
@@ -491,12 +530,20 @@
    },
    "sources": [
     {
+     "title": "NVIDIA 공식 — RTX 4070 가족",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4070-family/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "legacy",
@@ -505,7 +552,8 @@
     "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/40-series/rtx-4070-4070ti/geforce-rtx-4070-super-og-1200x630.jpg",
     "credit": "NVIDIA",
     "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4070-family/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rtx-4060",
@@ -522,12 +570,13 @@
     "tdp_w": 115,
     "fp16_tflops": 30,
     "stack": "CUDA",
-    "psu_w": 550
+    "psu_w": 550,
+    "boost_ghz": 2.46
    },
    "perf": {
-    "index": 30,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 33,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 4060",
@@ -542,16 +591,25 @@
    },
    "sources": [
     {
+     "title": "NVIDIA 공식 — RTX 4060 가족",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4060-4060ti/"
+    },
+    {
      "title": "NVIDIA 공식 제품 페이지",
      "url": "https://www.nvidia.com/ko-kr/geforce/graphics-cards/"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rx-9070-xt",
@@ -568,12 +626,14 @@
     "tdp_w": 304,
     "fp16_tflops": null,
     "stack": "ROCm",
-    "psu_w": 750
+    "psu_w": 750,
+    "boost_ghz": 2.97,
+    "fp16_matrix_dense_tflops": 195
    },
    "perf": {
-    "index": 72,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 81,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RX 9070 XT",
@@ -587,12 +647,20 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — RX 9070 XT",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070xt.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -601,7 +669,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/radeon-rx-9070/2922918-radeon-rx-9070xt.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070xt.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rx-9070",
@@ -618,12 +687,14 @@
     "tdp_w": 220,
     "fp16_tflops": null,
     "stack": "ROCm",
-    "psu_w": 650
+    "psu_w": 650,
+    "boost_ghz": 2.52,
+    "fp16_matrix_dense_tflops": 145
    },
    "perf": {
-    "index": 64,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 73,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RX 9070",
@@ -638,12 +709,20 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — RX 9070",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -652,7 +731,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/radeon-rx-9070/2922918-radeon-rx-9070.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rx-9060-xt-16",
@@ -669,12 +749,14 @@
     "tdp_w": 160,
     "fp16_tflops": null,
     "stack": "ROCm",
-    "psu_w": 550
+    "psu_w": 450,
+    "boost_ghz": 3.13,
+    "fp16_matrix_dense_tflops": 103
    },
    "perf": {
-    "index": 42,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 47,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RX 9060 XT 16GB",
@@ -689,12 +771,20 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — RX 9060 XT",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9060xt.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -703,7 +793,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/radeon-rx-9060xt/3248000-radeon-rx-9060xt.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9060xt.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rx-7900-xtx",
@@ -720,12 +811,14 @@
     "tdp_w": 355,
     "fp16_tflops": null,
     "stack": "ROCm",
-    "psu_w": 800
+    "psu_w": 800,
+    "boost_ghz": 2.5,
+    "fp16_matrix_dense_tflops": 123
    },
    "perf": {
-    "index": 77,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 85,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RX 7900 XTX",
@@ -739,12 +832,20 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — RX 7900 XTX",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7900xtx.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "current",
@@ -753,7 +854,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/2648997-amd-radeon-7900xtx.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7900xtx.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-rx-7800-xt",
@@ -770,12 +872,14 @@
     "tdp_w": 263,
     "fp16_tflops": null,
     "stack": "ROCm",
-    "psu_w": 700
+    "psu_w": 700,
+    "boost_ghz": 2.43,
+    "fp16_matrix_dense_tflops": 74.6
    },
    "perf": {
-    "index": 50,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 59,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RX 7800 XT",
@@ -789,12 +893,20 @@
    },
    "sources": [
     {
+     "title": "AMD 공식 사양 — RX 7800 XT",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7800-xt.html"
+    },
+    {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/graphics/desktops/radeon.html"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "legacy",
@@ -803,7 +915,8 @@
     "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/2648997-amd-radeon-7800xt.jpg",
     "credit": "AMD",
     "page": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7800-xt.html"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "gpu-arc-b580",
@@ -816,16 +929,17 @@
     "mem_type": "GDDR6",
     "bus_bit": 192,
     "bandwidth_gbs": 456,
-    "cores": 2560,
+    "cores": "Xe 코어 20개",
     "tdp_w": 190,
     "fp16_tflops": null,
     "stack": "oneAPI",
-    "psu_w": 600
+    "psu_w": 600,
+    "boost_ghz": 2.67
    },
    "perf": {
-    "index": 32,
-    "basis": "RTX 4090 = 100 · QHD 래스터 상대 성능(레이트레이싱·업스케일 끔)",
-    "confidence": "seed"
+    "index": 35,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "ARC B580",
@@ -839,16 +953,25 @@
    },
    "sources": [
     {
+     "title": "Intel 공식 사양 — Arc B580",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241598/intel-arc-b580-graphics/specifications.html"
+    },
+    {
      "title": "Intel 공식 제품 페이지",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/discrete-gpus/arc.html"
     },
     {
      "title": "TechPowerUp GPU Database",
      "url": "https://www.techpowerup.com/gpu-specs/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-06-24)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "status": "legacy",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cpu-ryzen-9-9950x3d",

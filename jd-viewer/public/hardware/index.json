@@ -4,7 +4,7 @@
  "note": "등급은 여기 적힌 문턱으로 perf.index 에서 계산한다 — 부품 파일에 등급을 따로 적지 않는다. 같은 성능이면 같은 등급이 되는 것을 보장하려면 등급의 출처가 하나여야 한다.",
  "categories": [
   {"key": "gpu", "name": "그래픽카드", "why": "게임 프레임과 AI 속도를 거의 혼자 정한다. 예산의 40~50% 가 여기로 간다.",
-   "index_label": "성능 지수", "index_basis": "RTX 4090 = 100 · QHD 래스터 상대 성능",
+   "index_label": "성능 지수", "index_basis": "RTX 4090 = 100 · 1440p Ultra 래스터 상대 성능(Tom's Hardware 계층표)",
    "tiers": [
     {"tier": "S", "min": 95, "plain": "4K 고옵션도 매끄럽다. 24GB 이상이면 30B 급 언어 모델을 통째로 올린다."},
     {"tier": "A", "min": 65, "plain": "QHD 고옵션 100fps 안팎. 4K 는 옵션을 조금 내리면 된다."},
