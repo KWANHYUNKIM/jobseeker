@@ -1178,6 +1178,20 @@
       "postings": 2,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "lululab",
+      "name": "룰루랩",
+      "aliases": [
+        "룰루랩",
+        "Lululab",
+        "루미니",
+        "루디언트"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }
