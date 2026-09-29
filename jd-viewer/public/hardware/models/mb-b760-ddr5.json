@@ -1,0 +1,204 @@
+{
+ "schema": 1,
+ "part": "mb-b760-ddr5",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-b760m-k",
+   "name": "ASUS PRIME B760M-K",
+   "brand": "ASUS",
+   "code": "PRIME B760M-K",
+   "match": {
+    "must": [
+     "ASUS",
+     "B760M-K"
+    ],
+    "not": [
+     "D4"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX 24.4×21.1cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-b760m-k/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "보급형이라 그래픽 슬롯이 PCIe 4.0 x16."
+  },
+  {
+   "id": "asus-prime-b760m-a",
+   "name": "ASUS PRIME B760M-A",
+   "brand": "ASUS",
+   "code": "PRIME B760M-A",
+   "match": {
+    "must": [
+     "ASUS",
+     "B760M-A"
+    ],
+    "not": [
+     "D4"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-b760m-a/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "보급형이라 그래픽 슬롯이 PCIe 4.0 x16."
+  },
+  {
+   "id": "asus-tuf-b760m-plus-ii",
+   "name": "ASUS TUF Gaming B760M-PLUS II",
+   "brand": "ASUS",
+   "code": "TUF GAMING B760M-PLUS II",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "B760M-PLUS"
+    ],
+    "not": [
+     "D4"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 8,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b760m-plus-ii/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-rog-strix-b760-g-gaming-wifi",
+   "name": "ASUS ROG STRIX B760-G GAMING WIFI",
+   "brand": "ASUS",
+   "code": "ROG STRIX B760-G GAMING WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "B760-G"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Intel® 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 6E 2x2 Wi-Fi 6E (802.11 a/b/g/n/ac/ax)",
+    "usb_rear": 9,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-strix/rog-strix-b760-g-gaming-wifi/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-b760-plus",
+   "name": "ASUS PRIME B760-PLUS",
+   "brand": "ASUS",
+   "code": "PRIME B760-PLUS",
+   "match": {
+    "must": [
+     "ASUS",
+     "PRIME",
+     "B760-PLUS"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-b760-plus/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-b760-plus-wifi",
+   "name": "ASUS TUF Gaming B760-PLUS WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING B760-PLUS WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "B760-PLUS"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "3(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 6 2x2 Wi-Fi 6 (802.11 a/b/g/n/ac/ax)",
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-b760-plus-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}

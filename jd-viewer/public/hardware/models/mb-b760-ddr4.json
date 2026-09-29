@@ -1,0 +1,102 @@
+{
+ "schema": 1,
+ "part": "mb-b760-ddr4",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-ex-b760m-v5-d4",
+   "name": "ASUS EX B760M-V5 D4",
+   "brand": "ASUS",
+   "code": "EX-B760M-V5 D4",
+   "match": {
+    "must": [
+     "ASUS",
+     "B760M-V5"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×21.1cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/others/ex-b760m-v5-d4/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-b760m-k-d4",
+   "name": "ASUS PRIME B760M-K D4",
+   "brand": "ASUS",
+   "code": "PRIME B760M-K D4",
+   "match": {
+    "must": [
+     "ASUS",
+     "B760M-K",
+     "D4"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×21.1cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-b760m-k-d4/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-b760m-a-d4",
+   "name": "ASUS PRIME B760M-A D4",
+   "brand": "ASUS",
+   "code": "PRIME B760M-A D4",
+   "match": {
+    "must": [
+     "ASUS",
+     "B760M-A",
+     "D4"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×24.4cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": null,
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-b760m-a-d4/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}

@@ -2,6 +2,12 @@
 
 엔진은 이 파일을 읽지 않는다. 사람이 "무엇이 언제 왜 바뀌었나"를 볼 때 쓴다. 새 기록은 위에.
 
+## 2026-09-29 — 사이클: B550 · A520 · B760(DDR5/DDR4) 보드 ASUS 12종(사다리 6)
+
+- models/mb-b550(1) · mb-a520(2) · mb-b760-ddr5(6) · mb-b760-ddr4(3) 새로. 두 모델에 걸리는 매물 없음('B760M-K' ↔ D4, 'A520M-K' ↔ ARGB 는 not 으로).
+- 뺐다(다음에): PRIME B550M-A · TUF B550M-PLUS · PRIME A520M-A II(구형 페이지라 파서가 못 읽음), ROG STRIX B760-I(스펙 주소 404).
+- **ASUS 보드는 여기까지 7 칩셋 · 59종.** 남은 보드 매물은 대부분 GIGABYTE · ASRock · MSI(봇 차단) — MAXSUN · BIOSTAR 몇 건.
+
 ## 2026-09-29 — 사이클: X870E · A620 보드 ASUS 15종(사다리 6)
 
 - models/mb-x870e.json(8) · mb-a620.json(7) 새로 — 같은 파서. ASUS 매물 21건이 모두 한 모델에만 걸린다. EXTREME M.2 개수는 null,

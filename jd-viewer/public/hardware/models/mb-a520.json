@@ -1,0 +1,72 @@
+{
+ "schema": 1,
+ "part": "mb-a520",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-a520m-k",
+   "name": "ASUS PRIME A520M-K",
+   "brand": "ASUS",
+   "code": "PRIME A520M-K",
+   "match": {
+    "must": [
+     "ASUS",
+     "A520M-K"
+    ],
+    "not": [
+     "ARGB"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX 22.6×22.1cm",
+    "vrm": null,
+    "m2_slots": "1(5.0 0개)",
+    "dimm_slots": "2 · DDR4 최대 64GB",
+    "lan": "Realtek RTL8111H 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 3.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-a520m-k/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-a520m-k-argb",
+   "name": "ASUS PRIME A520M-K ARGB",
+   "brand": "ASUS",
+   "code": "PRIME A520M-K ARGB",
+   "match": {
+    "must": [
+     "ASUS",
+     "A520M-K",
+     "ARGB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 22.6×22.6cm",
+    "vrm": null,
+    "m2_slots": "1(5.0 0개)",
+    "dimm_slots": "2 · DDR4 최대 64GB",
+    "lan": "Realtek® 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 3.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-a520m-k-argb/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}
