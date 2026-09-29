@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { RES_LABEL, estimateFps, priceOf, tierOf, won, type Category, type HwData, type Part, type Res } from '../lib/hardware'
 import { onLinkClick } from '../lib/router'
 import { paths } from '../lib/urls'
+import { VariantList } from './HardwarePopular'
 
 // 성능을 눈으로 — 세 가지 차트와 한 가지 그림.
 //
 //  PerfLadder     성능 사다리. 한 분류(GPU·CPU)를 지수 순으로 세운 막대. 값 하나(크기)라 한 색이고,
 //                 등급은 순서가 있는 값이라 같은 색의 진하기로 가른다. 보고 있는 부품만 테두리로 짚는다.
+//                 줄 끝의 ▾ 를 누르면 그 칩을 얹은 제품들(인기순·제품별 지수·판매처)이 펼쳐진다.
 //  GameCompare    게임별 예상 fps — 이 카드 vs 바로 위·아래 카드. 주인공 하나 + 비교 둘이라
 //                 주인공은 강조색, 비교는 회색 두 단계(강조형). 막대 끝에 값, 위에 범례.
 //  VendorBench    제조사가 공개한 측정값. 게임·옵션이 우리 추정과 달라 한 차트에 섞지 않는다.
@@ -52,6 +54,7 @@ function useTip() {
 
 export function PerfLadder({ data, cat, highlight, measure = 'index' }: { data: HwData; cat: Category; highlight?: string; measure?: 'index' | 'multi' }) {
   const { tip, on, off } = useTip()
+  const [open, setOpen] = useState<string | null>(null)
   const rows = data.parts
     .filter((p) => p.category === cat)
     .map((p) => ({ p, v: measure === 'multi' ? (p.perf.multi ?? 0) : p.perf.index, t: tierOf(p, data.categories)?.tier, price: priceOf(p, data.prices) }))
@@ -68,34 +71,52 @@ export function PerfLadder({ data, cat, highlight, measure = 'index' }: { data: 
       <div className="flex flex-col gap-[2px]" role="list">
         {rows.map(({ p, v, t, price }) => {
           const me = p.id === highlight
+          const shown = open === p.id
           return (
-            <a
-              key={p.id}
-              href={paths.hardwarePart(p.id)}
-              onClick={onLinkClick(paths.hardwarePart(p.id))}
-              role="listitem"
-              className={`grid grid-cols-[9.5rem_minmax(0,1fr)_6.5rem] items-center gap-2 py-0.5 rounded ${me ? 'bg-(--color-accent)/8' : 'hover:bg-(--color-band)'} ${p.status === 'legacy' ? 'opacity-60' : ''}`}
-              onMouseMove={on([
-                p.name,
-                `${label} ${v}${t ? ` · ${t} 등급` : ''}`,
-                price != null ? `가격 ${won(price)} · 1점당 ${Math.round(price / (v || 1)).toLocaleString()}원` : '가격 모름',
-                ...(p.status === 'legacy' ? ['단품 판매 끝남'] : []),
-              ])}
-            >
-              <span className={`text-xs truncate text-right ${me ? 'font-bold text-(--color-text)' : 'text-(--color-muted)'}`}>{p.name.replace('GeForce ', '').replace('Radeon ', '')}</span>
-              <span className="relative h-4">
-                <span
-                  className="absolute inset-y-0 left-0 rounded-r-[4px]"
-                  style={{ width: `${(v / max) * 100}%`, background: tierFill(t), outline: me ? '2px solid var(--color-text)' : undefined, outlineOffset: 1 }}
-                />
-                <span className="absolute inset-y-0 flex items-center text-[11px] font-semibold tabular-nums pl-1" style={{ left: `${(v / max) * 100}%` }}>
-                  {v}
-                </span>
-              </span>
-              <span className="text-[11px] text-(--color-muted) tabular-nums text-right" data-nosnippet>
-                {price != null ? won(price) : '—'}
-              </span>
-            </a>
+            <div key={p.id} role="listitem" className="flex flex-col">
+              <div className="flex items-center gap-1">
+                <a
+                  href={paths.hardwarePart(p.id)}
+                  onClick={onLinkClick(paths.hardwarePart(p.id))}
+                  className={`flex-1 min-w-0 grid grid-cols-[9.5rem_minmax(0,1fr)_6.5rem] items-center gap-2 py-0.5 rounded ${me ? 'bg-(--color-accent)/8' : 'hover:bg-(--color-band)'} ${p.status === 'legacy' ? 'opacity-60' : ''}`}
+                  onMouseMove={on([
+                    p.name,
+                    `${label} ${v}${t ? ` · ${t} 등급` : ''}`,
+                    price != null ? `가격 ${won(price)} · 1점당 ${Math.round(price / (v || 1)).toLocaleString()}원` : '가격 모름',
+                    ...(p.status === 'legacy' ? ['단품 판매 끝남'] : []),
+                  ])}
+                >
+                  <span className={`text-xs truncate text-right ${me ? 'font-bold text-(--color-text)' : 'text-(--color-muted)'}`}>{p.name.replace('GeForce ', '').replace('Radeon ', '')}</span>
+                  <span className="relative h-4">
+                    <span
+                      className="absolute inset-y-0 left-0 rounded-r-[4px]"
+                      style={{ width: `${(v / max) * 100}%`, background: tierFill(t), outline: me ? '2px solid var(--color-text)' : undefined, outlineOffset: 1 }}
+                    />
+                    <span className="absolute inset-y-0 flex items-center text-[11px] font-semibold tabular-nums pl-1" style={{ left: `${(v / max) * 100}%` }}>
+                      {v}
+                    </span>
+                  </span>
+                  <span className="text-[11px] text-(--color-muted) tabular-nums text-right" data-nosnippet>
+                    {price != null ? won(price) : '—'}
+                  </span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setOpen(shown ? null : p.id)}
+                  aria-expanded={shown}
+                  aria-label={`${p.name} 제품별 보기`}
+                  title="이 칩을 얹은 제품들 — 인기순·제품별 성능·판매처"
+                  className={`w-5 h-5 shrink-0 rounded text-[11px] leading-none ${shown ? 'bg-(--color-accent) text-(--color-on-accent)' : 'text-(--color-muted) hover:bg-(--color-band)'}`}
+                >
+                  {shown ? '▴' : '▾'}
+                </button>
+              </div>
+              {shown && (
+                <div className="ml-2 my-1 pl-2 border-l-2 border-(--color-accent)/50">
+                  <VariantList data={data} part={p} />
+                </div>
+              )}
+            </div>
           )
         })}
       </div>

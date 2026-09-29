@@ -8,6 +8,7 @@ import { GameCompare, PerfLadder, VendorBench } from './HardwareCharts'
 import { OfficialImage } from './OfficialImage'
 import { DurabilityNotes, ModelTable, SaleForms } from './HardwareModels'
 import { TierBadge } from './HardwareView'
+import { NameGuide, PopularPick } from './HardwarePopular'
 
 // 부품 비교 — 전문가용.
 //
@@ -140,6 +141,7 @@ function PartTable({ data }: { data: HwData }) {
           {cat === 'cpu' ? <PerfLadder data={data} cat="cpu" measure="multi" /> : <LadderHelp />}
         </section>
       )}
+      {(cat === 'gpu' || cat === 'cpu') && <NameGuide data={data} cat={cat} />}
       <div className="flex flex-wrap items-center gap-2 text-sm">
         {makers.length > 1 && (
           <select value={maker} onChange={(e) => setMaker(e.target.value)} className="border border-(--color-border) rounded px-2 py-1 bg-(--color-panel)">
@@ -338,6 +340,7 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
           <b>{tier.tier} 등급</b> — {tier.plain}
         </p>
       )}
+      {(part.category === 'gpu' || part.category === 'cpu') && <PopularPick data={data} part={part} />}
       <div className="grid gap-4 md:grid-cols-2">
         <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
           <h2 className="text-sm font-semibold mb-2">스펙</h2>
@@ -416,6 +419,10 @@ function LadderHelp() {
       </p>
       <p>막대 색이 진할수록 높은 등급이다. 오른쪽 숫자는 오늘 최저가 — 막대가 비슷한데 값이 크게 다르면 싼 쪽이 가성비다.</p>
       <p>막대를 누르면 그 카드의 게임별 예상 fps·제조사 공개 측정·제품별 사진과 스펙으로 간다.</p>
+      <p>
+        줄 끝의 <b className="text-(--color-text)">▾</b> 를 누르면 같은 칩을 얹은 제품들(MSI·GALAX·ZOTAC…)이 다나와 인기순으로 펼쳐진다 — 제품마다
+        성능 지수와 최저가, 다나와·네이버쇼핑·쿠팡 링크가 붙는다. 맨 위 '대표' 가 가장 많이 팔리는 제품이다.
+      </p>
     </div>
   )
 }
