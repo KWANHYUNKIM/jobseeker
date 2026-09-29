@@ -240,6 +240,7 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
     today = date.today()
     no_price, mixed, seed, stale = [], [], {}, []
     spec_todo: dict[str, list[str]] = {}
+    assumed: list[str] = []
     for p in parts:
         if p.get("status") == "legacy":
             continue
@@ -249,6 +250,10 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
         # 칩셋·용량 '급' 단위 분류(보드·파워·쿨러·케이스)는 보급형부터 고급형까지 원래 값 폭이 넓다 — 섞임으로 보지 않는다
         elif rec.get("min") and p.get("price_basis") != "median" and p["category"] not in CLASS_CATS                 and rec.get("median", 0) / rec["min"] > MIXED_RATIO:
             mixed.append(f"{p['id']} (최저 {rec['min']:,} · 중앙 {rec['median']:,})")
+        if p.get("class_assumption"):
+            # 급 가정(쿨러·케이스 급) — 확인할 제조사 표가 없다. 대표 제품으로 바꿀 때까지 따로 센다
+            assumed.append(p["id"])
+            continue
         if (p.get("perf") or {}).get("confidence") == "seed":
             seed.setdefault(p["category"], []).append(p["id"])
         if not p.get("specs_verified"):
@@ -269,6 +274,7 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
     total_seed = sum(len(v) for v in seed.values())
     # 스펙(제조사 표의 숫자)과 성능 지수(리뷰로 잰 상대값)는 확인하는 곳이 달라 따로 센다
     print(f"4a. 스펙 확인 전 {sum(len(v) for v in spec_todo.values())}: " + (" · ".join(f"{c} {len(v)}" for c, v in spec_todo.items()) or "-"))
+    print(f"4c. 급 가정(대표 제품으로 바꿀 후보) {len(assumed)}: {', '.join(assumed) or '-'}")
     print(f"4b. 성능 지수 확인 전(seed) {total_seed}: " + (" · ".join(f"{c} {len(v)}" for c, v in seed.items()) or "-"))
     print(f"5. 기준값 seed {len(bench_seed)}: {', '.join(bench_seed) or '-'}")
     todo = prices.get("_model_todo", {})

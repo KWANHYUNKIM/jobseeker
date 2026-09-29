@@ -2072,8 +2072,8 @@
    },
    "sources": [
     {
-     "title": "JEDEC DDR5 표준(JESD79-5)",
-     "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
+     "title": "JEDEC DDR4 표준(JESD79-4)",
+     "url": "https://www.jedec.org/standards-documents/docs/jesd79-4a"
     }
    ],
    "status": "current",
@@ -2116,8 +2116,8 @@
    },
    "sources": [
     {
-     "title": "JEDEC DDR5 표준(JESD79-5)",
-     "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
+     "title": "JEDEC DDR4 표준(JESD79-4)",
+     "url": "https://www.jedec.org/standards-documents/docs/jesd79-4a"
     }
    ],
    "status": "current",
@@ -2142,7 +2142,7 @@
    "perf": {
     "index": 74,
     "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "990 PRO 2TB",
@@ -2157,6 +2157,10 @@
    },
    "sources": [
     {
+     "title": "삼성 990 PRO 데이터시트 Rev.1.0",
+     "url": "https://download.semiconductor.samsung.com/resources/data-sheet/Samsung_NVMe_SSD_990_PRO_Datasheet_Rev.1.0.pdf"
+    },
+    {
      "title": "삼성전자 공식 제품 페이지",
      "url": "https://semiconductor.samsung.com/consumer-storage/internal-ssd/"
     }
@@ -2167,7 +2171,8 @@
     "url": "https://images.samsung.com/is/image/samsung/p6pim/ae/mz-v9p2t0bw/gallery/ae-990pro-nvme-m2-ssd-mz-v9p2t0bw-537744289?$650_519_PNG$",
     "credit": "Samsung",
     "page": "https://www.samsung.com/ae/memory-storage/nvme-ssd/990-pro-2tb-nvme-pcie-gen-4-mz-v9p2t0bw/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ssd-samsung-990-pro-1tb",
@@ -2188,7 +2193,7 @@
    "perf": {
     "index": 74,
     "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "990 PRO 1TB",
@@ -2203,6 +2208,10 @@
    },
    "sources": [
     {
+     "title": "삼성 990 PRO 데이터시트 Rev.1.0",
+     "url": "https://download.semiconductor.samsung.com/resources/data-sheet/Samsung_NVMe_SSD_990_PRO_Datasheet_Rev.1.0.pdf"
+    },
+    {
      "title": "삼성전자 공식 제품 페이지",
      "url": "https://semiconductor.samsung.com/consumer-storage/internal-ssd/"
     }
@@ -2213,7 +2222,8 @@
     "url": "https://images.samsung.com/is/image/samsung/p6pim/us/mz-v9p1t0b-am/gallery/us-nvme-ssd-mz-v9p1t0b-am-----pro---tb-ssd-nvme--m---black-551141121?$650_519_PNG$",
     "credit": "Samsung",
     "page": "https://www.samsung.com/us/memory-storage/nvme-ssd/990-pro-pcie-4-0-nvme-ssd-2tb-sku-mz-v9p1t0b-am/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ssd-samsung-990-evo-plus-1tb",
@@ -2234,7 +2244,7 @@
    "perf": {
     "index": 72,
     "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "990 EVO Plus 1TB",
@@ -2249,6 +2259,10 @@
    },
    "sources": [
     {
+     "title": "삼성 990 EVO Plus 데이터시트 Rev.1.0",
+     "url": "https://download.semiconductor.samsung.com/resources/data-sheet/samsung_nvme_ssd_990_evo_plus_datasheet_rev.1.0.pdf"
+    },
+    {
      "title": "삼성전자 공식 제품 페이지",
      "url": "https://semiconductor.samsung.com/consumer-storage/internal-ssd/"
     }
@@ -2259,7 +2273,8 @@
     "url": "https://images.samsung.com/is/image/samsung/p6pim/us/mz-v9s1t0b-am/gallery/us-990-evo-plus-nvme-m2-ssd-mz-v9s1t0b-am-550538037?$650_519_PNG$",
     "credit": "Samsung",
     "page": "https://www.samsung.com/us/memory-storage/nvme-ssd/990-evo-plus-gen4-nvme-ssd-1tb-sku-mz-v9s1t0b-am/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ssd-wd-sn850x-1tb",
@@ -2274,13 +2289,13 @@
     "seq_read_mbs": 7300,
     "seq_write_mbs": 6300,
     "tbw": 600,
-    "dram": true,
+    "dram": null,
     "nand": "TLC"
    },
    "perf": {
     "index": 73,
     "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "SN850X 1TB",
@@ -2295,6 +2310,10 @@
    },
    "sources": [
     {
+     "title": "샌디스크 WD_BLACK SN850X 데이터시트(2025-07)",
+     "url": "https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/sandisk/product/internal-drives/wd-black-ssd/data-sheet-wd-black-sn850x-nvme-ssd.pdf"
+    },
+    {
      "title": "WD 공식 제품 페이지",
      "url": "https://www.westerndigital.com/"
     }
@@ -2305,7 +2324,8 @@
     "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/wd-black-sn850x-nvme-ssd/gallery/wd-black-sn850x-nvme-ssd-front.png",
     "credit": "SanDisk (구 WD SSD 사업)",
     "page": "https://www.sandisk.com/products/ssd/internal-ssd/wd-black-sn850x-nvme-ssd"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ssd-skhynix-p41-1tb",
@@ -2320,13 +2340,13 @@
     "seq_read_mbs": 7000,
     "seq_write_mbs": 6500,
     "tbw": 750,
-    "dram": true,
+    "dram": null,
     "nand": "TLC"
    },
    "perf": {
     "index": 70,
     "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "P41 1TB",
@@ -2341,6 +2361,10 @@
    },
    "sources": [
     {
+     "title": "SK hynix Platinum P41 공식 페이지",
+     "url": "https://ssd.skhynix.com/platinum_p41/"
+    },
+    {
      "title": "SK하이닉스 공식 제품 페이지",
      "url": "https://ssd.skhynix.com/"
     }
@@ -2351,7 +2375,8 @@
     "url": "https://ssd.skhynix.com/wp-content/uploads/2021/07/p41_1080.jpg",
     "credit": "SK hynix",
     "page": "https://ssd.skhynix.com/platinum_p41/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ssd-crucial-p3-plus-1tb",
@@ -2366,13 +2391,13 @@
     "seq_read_mbs": 5000,
     "seq_write_mbs": 3600,
     "tbw": 220,
-    "dram": false,
-    "nand": "QLC"
+    "dram": null,
+    "nand": null
    },
    "perf": {
     "index": 50,
     "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "P3 Plus 1TB",
@@ -2387,6 +2412,10 @@
    },
    "sources": [
     {
+     "title": "Crucial P3 Plus 1TB 공식 페이지(CT1000P3PSSD8)",
+     "url": "https://www.crucial.com/ssd/p3-plus/ct1000p3pssd8"
+    },
+    {
      "title": "Micron 공식 제품 페이지",
      "url": "https://www.crucial.com/"
     }
@@ -2397,7 +2426,8 @@
     "url": "https://assets.micron.com/adobe/assets/urn:aaid:aem:7f5fc122-7774-417e-9806-59baf7d2569f/as/crucial-p3-plus-ssd-flat-front-image.png",
     "credit": "Crucial (Micron)",
     "page": "https://www.crucial.com/ssd/p3-plus/ct1000p3pssd8"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "hdd-seagate-barracuda-2tb",
@@ -2415,7 +2445,7 @@
    "perf": {
     "index": 20,
     "basis": "용량(TB) × 10",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "ST2000DM008",
@@ -2431,6 +2461,10 @@
    },
    "sources": [
     {
+     "title": "Seagate BarraCuda 데이터시트 DS1900-14",
+     "url": "https://www.seagate.com/content/dam/seagate/migrated-assets/www-content/datasheets/pdfs/3-5-barracudaDS1900-14-2007US-en_US.pdf"
+    },
+    {
      "title": "Seagate 공식 데이터시트",
      "url": "https://www.seagate.com/kr/ko/"
     }
@@ -2441,7 +2475,8 @@
     "url": "https://www.seagate.com/content/dam/seagate/migrated-assets/www-content/products/hard-drives/barracuda-hard-drive/_shared/images/row-4-640x640.jpg",
     "credit": "Seagate",
     "page": "https://www.seagate.com/products/hard-drives/barracuda-hard-drive/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "hdd-wd-blue-2tb",
@@ -2453,13 +2488,13 @@
     "capacity_tb": 2,
     "rpm": 7200,
     "cache_mb": 256,
-    "cmr": true,
+    "cmr": false,
     "use": "데스크톱"
    },
    "perf": {
     "index": 20,
     "basis": "용량(TB) × 10",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "WD20EZBX",
@@ -2475,6 +2510,10 @@
    },
    "sources": [
     {
+     "title": "WD Blue PC HDD 데이터시트",
+     "url": "https://documents.westerndigital.com/content/dam/doc-library/en_us/assets/public/western-digital/product/internal-drives/wd-blue-hdd/data-sheet-western-digital-wd-blue-pc-hdd.pdf"
+    },
+    {
      "title": "WD 공식 데이터시트",
      "url": "https://www.westerndigital.com/"
     }
@@ -2485,7 +2524,8 @@
     "url": "https://www.westerndigital.com/content/dam/store/en-us/assets/products/internal-storage/wd-blue-desktop-sata-hdd/gallery/wd-blue-pc-desktop-hard-drive-1tb.png",
     "credit": "Western Digital",
     "page": "https://www.westerndigital.com/products/internal-drives/wd-blue-desktop-sata-hdd"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "hdd-seagate-ironwolf-4tb",
@@ -2503,7 +2543,7 @@
    "perf": {
     "index": 40,
     "basis": "용량(TB) × 10",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "ST4000VN006",
@@ -2522,6 +2562,10 @@
    },
    "sources": [
     {
+     "title": "Seagate IronWolf 데이터시트 DS1904-23",
+     "url": "https://www.seagate.com/content/dam/seagate/en_as/content-fragments/products/datasheets/ironwolf-12tb/ironwolf-16tb-DS1904-23-2509US-en_AS.pdf"
+    },
+    {
      "title": "Seagate 공식 데이터시트",
      "url": "https://www.seagate.com/kr/ko/"
     }
@@ -2532,7 +2576,8 @@
     "url": "https://www.seagate.com/content/dam/seagate/assets/products/nas-drives/ironwolf-hard-drive/ironwolf-product-page-update-row-3-slide-5.jpg",
     "credit": "Seagate",
     "page": "https://www.seagate.com/products/nas-drives/ironwolf-hard-drive/"
-   }
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "hdd-wd-red-plus-4tb",
@@ -2550,7 +2595,7 @@
    "perf": {
     "index": 40,
     "basis": "용량(TB) × 10",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "WD40EFPX",
@@ -2566,6 +2611,10 @@
    },
    "sources": [
     {
+     "title": "WD Red Plus 데이터시트",
+     "url": "https://documents.westerndigital.com/content/dam/doc-library/en_us/assets/public/western-digital/product/internal-drives/wd-red-plus-hdd/data-sheet-western-digital-wd-red-plus-hdd.pdf"
+    },
+    {
      "title": "WD 공식 데이터시트",
      "url": "https://www.westerndigital.com/"
     }
@@ -2576,7 +2625,58 @@
     "url": "https://www.westerndigital.com/content/dam/store/en-us/assets/products/internal-storage/wd-red-plus-sata-3-5-hdd/gallery/wd-red-plus-sata-3-5-hdd-2tb.png",
     "credit": "Western Digital",
     "page": "https://www.westerndigital.com/products/internal-drives/wd-red-plus-sata-3-5-hdd"
-   }
+   },
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "hdd-wd-red-plus-4tb-efzz",
+   "category": "hdd",
+   "name": "WD Red Plus 4TB (WD40EFZZ)",
+   "maker": "WD",
+   "released": null,
+   "specs": {
+    "capacity_tb": 4,
+    "rpm": 5400,
+    "cache_mb": 128,
+    "cmr": true,
+    "use": "NAS"
+   },
+   "perf": {
+    "index": 40,
+    "basis": "용량(TB) × 10",
+    "confidence": "high"
+   },
+   "price_query": {
+    "q": "WD Red Plus 4TB WD40EFZZ",
+    "cate": "HDD",
+    "must": [
+     "Red Plus",
+     "4TB",
+     "128M"
+    ],
+    "not": [
+     "외장",
+     "Pro"
+    ]
+   },
+   "sources": [
+    {
+     "title": "WD Red Plus 데이터시트",
+     "url": "https://documents.westerndigital.com/content/dam/doc-library/en_us/assets/public/western-digital/product/internal-drives/wd-red-plus-hdd/data-sheet-western-digital-wd-red-plus-hdd.pdf"
+    },
+    {
+     "title": "WD 공식 데이터시트",
+     "url": "https://www.westerndigital.com/"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.westerndigital.com/content/dam/store/en-us/assets/products/internal-storage/wd-red-plus-sata-3-5-hdd/gallery/wd-red-plus-sata-3-5-hdd-2tb.png",
+    "credit": "Western Digital",
+    "page": "https://www.westerndigital.com/products/internal-drives/wd-red-plus-sata-3-5-hdd"
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-x870e",
@@ -2608,12 +2708,17 @@
    },
    "sources": [
     {
+     "title": "AMD 보도자료 — Zen 5 라이젠·X870E(USB4 기본, PCIe 5.0)",
+     "url": "https://ir.amd.com/news-events/press-releases/detail/1202/amd-unveils-next-gen-zen-5-ryzen-processors-to-power-advanced-ai-experiences"
+    },
+    {
      "title": "칩셋 제조사 사양",
      "url": "https://www.amd.com/ko/products/processors/chipsets/am5.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-b850",
@@ -2682,12 +2787,17 @@
    },
    "sources": [
     {
+     "title": "AMD 보도자료 — 라이젠 7000·B650(PCIe 5.0 선택)",
+     "url": "https://ir.amd.com/news-events/press-releases/detail/1089/amdlaunches-ryzen-7000-series-desktop-processors-with-zen-4-architecture-the-fastest-core-in-gaming"
+    },
+    {
      "title": "칩셋 제조사 사양",
      "url": "https://www.amd.com/ko/products/processors/chipsets/am5.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-a620",
@@ -2756,12 +2866,55 @@
    },
    "sources": [
     {
+     "title": "AMD AM4 칩셋 사양표",
+     "url": "https://www.amd.com/en/products/processors/chipsets/am4.html"
+    },
+    {
      "title": "칩셋 제조사 사양",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "mb-a520",
+   "category": "mainboard",
+   "name": "AMD A520",
+   "maker": "칩셋 AMD",
+   "released": null,
+   "status": "current",
+   "specs": {
+    "socket": "AM4",
+    "mem": "DDR4",
+    "pcie_gpu": "PCIe 3.0",
+    "pcie_m2": "PCIe 3.0",
+    "cpu_oc": false,
+    "usb4": false,
+    "forms": "M-ATX · ITX"
+   },
+   "perf": {
+    "index": 30,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "low"
+   },
+   "price_query": {
+    "q": "A520M",
+    "cate": "메인보드",
+    "must": [
+     "A520"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "AMD AM4 칩셋 사양표(A520: 그래픽 1x16·NVMe 1x4 PCIe 3.0, 오버클럭 No)",
+     "url": "https://www.amd.com/en/products/processors/chipsets/am4.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-z890",
@@ -2775,7 +2928,7 @@
     "pcie_gpu": "PCIe 5.0",
     "pcie_m2": "PCIe 5.0",
     "cpu_oc": true,
-    "usb4": true,
+    "usb4": "보드마다 다름",
     "forms": "ATX · M-ATX"
    },
    "perf": {
@@ -2793,12 +2946,17 @@
    },
    "sources": [
     {
+     "title": "Intel Z890 칩셋 사양",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/237777/intel-z890-chipset/specifications.html"
+    },
+    {
      "title": "칩셋 제조사 사양",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-b860",
@@ -2810,7 +2968,7 @@
     "socket": "LGA1851",
     "mem": "DDR5",
     "pcie_gpu": "PCIe 5.0",
-    "pcie_m2": "PCIe 4.0",
+    "pcie_m2": "PCIe 5.0(CPU x4)",
     "cpu_oc": false,
     "usb4": false,
     "forms": "ATX · M-ATX"
@@ -2830,12 +2988,17 @@
    },
    "sources": [
     {
+     "title": "Intel B860 칩셋 사양",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241152/intel-b860-chipset/specifications.html"
+    },
+    {
      "title": "칩셋 제조사 사양",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-b760-ddr5",
@@ -2846,7 +3009,7 @@
    "specs": {
     "socket": "LGA1700",
     "mem": "DDR5",
-    "pcie_gpu": "PCIe 4.0",
+    "pcie_gpu": "PCIe 4.0(보드에 따라 5.0)",
     "pcie_m2": "PCIe 4.0",
     "cpu_oc": false,
     "usb4": false,
@@ -2870,12 +3033,21 @@
    },
    "sources": [
     {
+     "title": "Intel B760 칩셋 사양",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/229719/intel-b760-chipset/specifications.html"
+    },
+    {
      "title": "칩셋 제조사 사양",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
+    },
+    {
+     "title": "Intel 700 시리즈 칩셋 브리프",
+     "url": "https://cdrdv2-public.intel.com/786840/700-series-chipset-brief.pdf"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-b760-ddr4",
@@ -2886,7 +3058,7 @@
    "specs": {
     "socket": "LGA1700",
     "mem": "DDR4",
-    "pcie_gpu": "PCIe 4.0",
+    "pcie_gpu": "PCIe 4.0(보드에 따라 5.0)",
     "pcie_m2": "PCIe 4.0",
     "cpu_oc": false,
     "usb4": false,
@@ -2908,12 +3080,59 @@
    },
    "sources": [
     {
+     "title": "Intel B760 칩셋 사양",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/229719/intel-b760-chipset/specifications.html"
+    },
+    {
      "title": "칩셋 제조사 사양",
      "url": "https://www.intel.co.kr/content/www/kr/ko/products/details/chipsets.html"
+    },
+    {
+     "title": "Intel 700 시리즈 칩셋 브리프",
+     "url": "https://cdrdv2-public.intel.com/786840/700-series-chipset-brief.pdf"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "mb-h810",
+   "category": "mainboard",
+   "name": "Intel H810",
+   "maker": "칩셋 Intel",
+   "released": "2025-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1851",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 5.0",
+    "pcie_m2": "PCIe 4.0(칩셋 레인)",
+    "cpu_oc": false,
+    "usb4": null,
+    "forms": "M-ATX"
+   },
+   "perf": {
+    "index": 40,
+    "basis": "칩셋 급 — 오버클럭·PCIe 세대·USB4·M.2 개수로 매긴 급(0~100)",
+    "confidence": "low"
+   },
+   "price_query": {
+    "q": "H810M",
+    "cate": "메인보드",
+    "must": [
+     "H810"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "Intel H810 칩셋 사양(Q1'25, CPU PCIe 5.0 1x16, 칩셋 PCIe 4.0 8레인, 채널당 1장, 메모리 OC 없음)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241150/intel-h810-chipset/specifications.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "psu-600-bronze",
@@ -2926,12 +3145,13 @@
     "rating": "Bronze",
     "atx3": false,
     "pcie_12v2x6": false,
-    "efficiency_50pct": 85
+    "efficiency_50pct": 88,
+    "efficiency_basis": "80 PLUS 230V EU 내부형, 50% 부하(한국 220V 에 가깝다)"
    },
    "perf": {
     "index": 60,
     "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "600W 80PLUS BRONZE",
@@ -2946,12 +3166,13 @@
    },
    "sources": [
     {
-     "title": "80 PLUS 인증 기준(CLEAResult)",
-     "url": "https://www.clearesult.com/80plus/"
+     "title": "CLEAResult 80 PLUS 등급표",
+     "url": "https://www.clearesult.com/80plus/80plus-psu-ratings-explained"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "psu-700-bronze",
@@ -2964,12 +3185,13 @@
     "rating": "Bronze",
     "atx3": false,
     "pcie_12v2x6": false,
-    "efficiency_50pct": 85
+    "efficiency_50pct": 88,
+    "efficiency_basis": "80 PLUS 230V EU 내부형, 50% 부하(한국 220V 에 가깝다)"
    },
    "perf": {
     "index": 70,
     "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "700W 80PLUS BRONZE",
@@ -2984,12 +3206,13 @@
    },
    "sources": [
     {
-     "title": "80 PLUS 인증 기준(CLEAResult)",
-     "url": "https://www.clearesult.com/80plus/"
+     "title": "CLEAResult 80 PLUS 등급표",
+     "url": "https://www.clearesult.com/80plus/80plus-psu-ratings-explained"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "psu-750-gold-atx3",
@@ -3002,12 +3225,13 @@
     "rating": "Gold",
     "atx3": true,
     "pcie_12v2x6": true,
-    "efficiency_50pct": 90
+    "efficiency_50pct": 92,
+    "efficiency_basis": "80 PLUS 230V EU 내부형, 50% 부하(한국 220V 에 가깝다)"
    },
    "perf": {
     "index": 80,
     "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "750W 80PLUS GOLD ATX3.1",
@@ -3022,12 +3246,13 @@
    },
    "sources": [
     {
-     "title": "80 PLUS 인증 기준(CLEAResult)",
-     "url": "https://www.clearesult.com/80plus/"
+     "title": "CLEAResult 80 PLUS 등급표",
+     "url": "https://www.clearesult.com/80plus/80plus-psu-ratings-explained"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "psu-850-gold-atx3",
@@ -3040,12 +3265,13 @@
     "rating": "Gold",
     "atx3": true,
     "pcie_12v2x6": true,
-    "efficiency_50pct": 90
+    "efficiency_50pct": 92,
+    "efficiency_basis": "80 PLUS 230V EU 내부형, 50% 부하(한국 220V 에 가깝다)"
    },
    "perf": {
     "index": 90,
     "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "850W 80PLUS GOLD ATX3.1",
@@ -3060,12 +3286,13 @@
    },
    "sources": [
     {
-     "title": "80 PLUS 인증 기준(CLEAResult)",
-     "url": "https://www.clearesult.com/80plus/"
+     "title": "CLEAResult 80 PLUS 등급표",
+     "url": "https://www.clearesult.com/80plus/80plus-psu-ratings-explained"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "psu-1000-gold-atx3",
@@ -3078,12 +3305,13 @@
     "rating": "Gold",
     "atx3": true,
     "pcie_12v2x6": true,
-    "efficiency_50pct": 90
+    "efficiency_50pct": 92,
+    "efficiency_basis": "80 PLUS 230V EU 내부형, 50% 부하(한국 220V 에 가깝다)"
    },
    "perf": {
     "index": 105,
     "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "1000W 80PLUS GOLD ATX3.1",
@@ -3098,12 +3326,13 @@
    },
    "sources": [
     {
-     "title": "80 PLUS 인증 기준(CLEAResult)",
-     "url": "https://www.clearesult.com/80plus/"
+     "title": "CLEAResult 80 PLUS 등급표",
+     "url": "https://www.clearesult.com/80plus/80plus-psu-ratings-explained"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "psu-1200-platinum-atx3",
@@ -3116,12 +3345,13 @@
     "rating": "Platinum",
     "atx3": true,
     "pcie_12v2x6": true,
-    "efficiency_50pct": 92
+    "efficiency_50pct": 94,
+    "efficiency_basis": "80 PLUS 230V EU 내부형, 50% 부하(한국 220V 에 가깝다)"
    },
    "perf": {
     "index": 128,
     "basis": "정격 W ÷ 10 + 효율 가산(골드 5 · 플래티넘 8)",
-    "confidence": "seed"
+    "confidence": "high"
    },
    "price_query": {
     "q": "1200W 80PLUS PLATINUM ATX3.1",
@@ -3136,12 +3366,13 @@
    },
    "sources": [
     {
-     "title": "80 PLUS 인증 기준(CLEAResult)",
-     "url": "https://www.clearesult.com/80plus/"
+     "title": "CLEAResult 80 PLUS 등급표",
+     "url": "https://www.clearesult.com/80plus/80plus-psu-ratings-explained"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "cooler-air-single",
@@ -3178,7 +3409,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "class_assumption": true
   },
   {
    "id": "cooler-air-dual",
@@ -3215,7 +3447,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "class_assumption": true
   },
   {
    "id": "cooler-aio-240",
@@ -3254,7 +3487,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "class_assumption": true
   },
   {
    "id": "cooler-aio-360",
@@ -3293,7 +3527,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "class_assumption": true
   },
   {
    "id": "case-matx-mini",
@@ -3328,7 +3563,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "class_assumption": true
   },
   {
    "id": "case-atx-mid",
@@ -3338,12 +3574,12 @@
    "released": null,
    "specs": {
     "form": "ATX",
-    "max_gpu_mm": 400,
+    "max_gpu_mm": 380,
     "max_cooler_mm": 170,
     "max_radiator_mm": 360
    },
    "perf": {
-    "index": 80,
+    "index": 76,
     "basis": "그래픽카드 장착 길이 ÷ 5 — 이 급의 흔한 값(제품마다 다르다)",
     "confidence": "seed"
    },
@@ -3363,7 +3599,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "class_assumption": true
   },
   {
    "id": "case-atx-full",
@@ -3398,7 +3635,8 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "class_assumption": true
   }
  ]
 }
