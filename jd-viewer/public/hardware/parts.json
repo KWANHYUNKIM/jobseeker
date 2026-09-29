@@ -4614,6 +4614,49 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "mb-x870",
+   "category": "mainboard",
+   "name": "AMD X870",
+   "maker": "칩셋 AMD",
+   "released": "2024-09",
+   "specs": {
+    "socket": "AM5",
+    "mem": "DDR5",
+    "pcie_gpu": "PCIe 5.0",
+    "pcie_m2": "PCIe 5.0",
+    "cpu_oc": true,
+    "usb4": true,
+    "forms": "ATX · M-ATX",
+    "pcie_lanes": "36 (5.0 은 24)",
+    "usb_20g": 1,
+    "note": "AMD 표: 그래픽 PCIe 5.0 1x16 또는 2x8 · NVMe 1x4 PCIe 5.0 + GPP 4 · 쓸 수 있는 레인 36(5.0 24) · CPU · DDR5 오버클럭 · USB 20Gbps 1 · 10Gbps 6 · SATA 4 · USB4 표준. X870E(레인 44 · USB 20Gbps 2 · 10Gbps 12 · SATA 8)보다 레인 · 포트가 적다 — 칩셋 급 규칙 점수(95)에는 안 드러난다."
+   },
+   "perf": {
+    "index": 95,
+    "basis": "칩셋 급 = 규칙 점수(0~100, 공식 스펙에서 계산) — 기본 10 + DDR5 10 + 그래픽 슬롯(5.0 20 · 보드 선택 5.0 12 · 4.0 10 · 3.0 0) + M.2(같은 방식) + CPU 오버클럭 20 + USB4(표준 15 · 보드 선택 5). 성능 실측이 아니라 '무엇이 열려 있나'의 점수다",
+    "confidence": "medium"
+   },
+   "price_query": {
+    "q": "X870",
+    "cate": "메인보드",
+    "must": [
+     "X870"
+    ],
+    "not": [
+     "X870E"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 — AM5 칩셋 사양표(X870)",
+     "url": "https://www.amd.com/en/products/processors/chipsets/am5.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "mb-b850",
    "category": "mainboard",
    "name": "AMD B850",
