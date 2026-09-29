@@ -1294,6 +1294,60 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "gpu-gtx-1660-super",
+   "category": "gpu",
+   "name": "GeForce GTX 1660 SUPER",
+   "maker": "NVIDIA",
+   "released": "2019-11",
+   "status": "current",
+   "specs": {
+    "vram_gb": 6,
+    "mem_type": "GDDR6",
+    "bus_bit": 192,
+    "bandwidth_gbs": 336,
+    "cores": 1408,
+    "tdp_w": 125,
+    "fp16_tflops": null,
+    "stack": "CUDA",
+    "psu_w": 450,
+    "boost_ghz": 1.785,
+    "note": "Turing(RT · 텐서 코어 없음) — DLSS · 레이 트레이싱 가속을 쓸 수 없다."
+   },
+   "perf": {
+    "index": 18,
+    "confidence": "low",
+    "basis": "RTX 4090 = 100, 1440p — TPU RTX 3050 6GB 리뷰 1440p 상대 성능에서 GTX 1660 Ti 가 120%(4090 636%) → 18.9. 1660 SUPER 는 같은 TU116 에 코어가 적고(1408 vs 1536) 메모리는 같은 14Gbps GDDR6 이라 그보다 조금 낮게 18"
+   },
+   "price_query": {
+    "q": "GTX 1660 SUPER",
+    "cate": "그래픽카드",
+    "must": [
+     "1660",
+     "SUPER"
+    ],
+    "not": [
+     "노트북",
+     "Ti"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 사양 — GTX 1660 SUPER(1408 CUDA · 1785MHz · 6GB GDDR6 192-bit · 336GB/s · 125W · 권장 450W)",
+     "url": "https://www.nvidia.com/en-ph/geforce/graphics-cards/gtx-1660-super/"
+    },
+    {
+     "title": "NVIDIA 발표 — GTX 1660 SUPER · 1650 SUPER(2019-11-22, $229)",
+     "url": "https://www.nvidia.com/en-us/geforce/news/nvidia-geforce-gtx-1660-super-1650-super/"
+    },
+    {
+     "title": "TechPowerUp — RTX 3050 6GB 리뷰, 1440p 상대 성능(GTX 1660 Ti 120% · RTX 4090 636%)",
+     "url": "https://www.techpowerup.com/review/nvidia-geforce-rtx-3050-6-gb/31.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-ryzen-9-9950x3d",
    "category": "cpu",
    "name": "Ryzen 9 9950X3D",
