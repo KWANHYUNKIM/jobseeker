@@ -2856,6 +2856,56 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-ryzen-3-5300g",
+   "category": "cpu",
+   "name": "Ryzen 3 5300G",
+   "maker": "AMD",
+   "released": "2021-04",
+   "status": "current",
+   "specs": {
+    "socket": "AM4",
+    "cores": 4,
+    "threads": 8,
+    "boost_ghz": 4.2,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR4",
+    "igpu": true,
+    "igpu_name": "Radeon Graphics(6코어)",
+    "l3_mb": 8,
+    "series": "라이젠 5000 시리즈",
+    "family": "라이젠 3",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35",
+    "note": "AMD 지원 페이지 사양표에서 기본 클럭은 읽히지 않았다. 원래 OEM(완제품) 전용으로 나온 칩이다."
+   },
+   "perf": {
+    "index": 43,
+    "multi": 17,
+    "confidence": "seed",
+    "basis": "추정 — Tom's · TPU 표에 없다. 같은 세잔 다이(Zen 3)인 5600G(Tom's 사슬 49)에서 코어 6 → 4, L3 16 → 8MB, 부스트 4.4 → 4.2GHz 만큼 깎아 43. 멀티는 5600G(26)의 코어 비(4/6)로 17. 실측 대기"
+   },
+   "price_query": {
+    "q": "AMD 5300G",
+    "cate": "CPU",
+    "must": [
+     "5300G"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양(지원 페이지 사양표) — Ryzen 3 5300G(4C/8T · 최대 4.2GHz · L3 8MB · 65W · AM4 · DDR4 · Radeon 6코어 · 2021-04-13)",
+     "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-3-5300g.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-ryzen-5-4600g",
    "category": "cpu",
    "name": "Ryzen 5 4600G / PRO 4650G",
