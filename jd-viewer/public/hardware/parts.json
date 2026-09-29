@@ -2720,6 +2720,112 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-core-i5-13400",
+   "category": "cpu",
+   "name": "Core i5-13400",
+   "maker": "Intel",
+   "released": "2023-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 10,
+    "threads": 16,
+    "boost_ghz": 4.6,
+    "tdp_w": 65,
+    "max_power_w": 148,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "igpu_name": "Intel UHD 730",
+    "l3_mb": 20,
+    "series": "코어 13세대",
+    "family": "코어 i5"
+   },
+   "perf": {
+    "index": 60,
+    "multi": 33,
+    "basis": "게임: TPU 9800X3D 리뷰 1080p 에서 i5-13400F 74.3% — 우리 눈금(5600X 72.1% ↔ 58, 12600K 77.9% ↔ 63 의 기울기)으로 옮겼다. 멀티는 코어 수로 잡은 추정(실측 대기)",
+    "confidence": "low"
+   },
+   "price_query": {
+    "q": "i5-13400",
+    "cate": "CPU",
+    "must": [
+     "13400"
+    ],
+    "not": [
+     "13400F",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i5-13400(6P+4E · 16스레드 · 4.6GHz · 20MB · 65/148W · UHD 730 · DDR4-3200/DDR5-4800 · 2023년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/230495/intel-core-i513400-processor-20m-cache-up-to-4-60-ghz/specifications.html"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰, 1080p 게임 상대 성능(i5-13400F 74.3%)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/18.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-i3-14100",
+   "category": "cpu",
+   "name": "Core i3-14100",
+   "maker": "Intel",
+   "released": "2024-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 4,
+    "threads": 8,
+    "boost_ghz": 4.7,
+    "tdp_w": 60,
+    "max_power_w": 110,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "igpu_name": "Intel UHD 730",
+    "l3_mb": 12,
+    "series": "코어 14세대",
+    "family": "코어 i3"
+   },
+   "perf": {
+    "index": 55,
+    "multi": 21,
+    "basis": "게임: TPU 9800X3D 리뷰 1080p 에서 i3-14100 68.4% — 우리 눈금(5600X 72.1% ↔ 58, 12600K 77.9% ↔ 63 의 기울기)으로 옮겼다. 멀티는 코어 수로 잡은 추정(실측 대기)",
+    "confidence": "low"
+   },
+   "price_query": {
+    "q": "i3-14100",
+    "cate": "CPU",
+    "must": [
+     "14100"
+    ],
+    "not": [
+     "14100F",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i3-14100(4P · 8스레드 · 4.7GHz · 12MB · 60/110W · UHD 730 · DDR4-3200/DDR5-4800 · 2024년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/236774/intel-core-i3-processor-14100-12m-cache-up-to-4-70-ghz/specifications.html"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰, 1080p 게임 상대 성능(i3-14100 68.4%)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/18.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "ram-ddr5-6000-16",
    "category": "ram",
    "name": "DDR5-6000 16GB (한 장)",
