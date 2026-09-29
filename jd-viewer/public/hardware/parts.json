@@ -2856,6 +2856,65 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-ryzen-5-4600g",
+   "category": "cpu",
+   "name": "Ryzen 5 4600G / PRO 4650G",
+   "maker": "AMD",
+   "released": "2020-07",
+   "status": "legacy",
+   "specs": {
+    "socket": "AM4",
+    "cores": 6,
+    "threads": 12,
+    "boost_ghz": 4.2,
+    "base_ghz": 3.7,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR4",
+    "igpu": true,
+    "igpu_name": "Radeon Graphics(7코어)",
+    "l3_mb": 8,
+    "series": "라이젠 4000 시리즈",
+    "family": "라이젠 5",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35",
+    "note": "4600G(일반판)와 PRO 4650G(기업용 PRO 판)는 AMD 사양표가 같다 — 6C/12T · 3.7/최대 4.2GHz · L3 8MB · 65W · Radeon 7코어. PRO 판은 관리 · 보안 기능만 더한다. 한 항목으로 묶는다. 다나와에 걸리는 새 매물이 없다(2026-09-29) — legacy(완제품 구성 · 성능 비교용)."
+   },
+   "perf": {
+    "index": 39,
+    "multi": 24,
+    "confidence": "low",
+    "basis": "게임: Tom's 5600G 리뷰(RTX 3090 1080p, 5800X = 100%)에서 같은 르누아르 다이 8코어 4750G 64.5% · 5600G 79.5% → 5600G(우리 49)로 옮기면 4750G 40. 4600G/4650G 는 6코어에 부스트 4.2GHz(4750G 4.4)라 한 칸 아래 39. 멀티는 추정 — Zen 2 6코어 · L3 8MB 라 5600G(26)보다 조금 낮게 24"
+   },
+   "price_query": {
+    "q": "AMD 4600G",
+    "cate": "CPU",
+    "must": [
+     "4600G|4650G"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양(지원 페이지 사양표) — Ryzen 5 4600G(6C/12T · 3.7/최대 4.2GHz · L3 8MB · 65W · AM4 · DDR4 · Radeon 7코어 · 2020-07-21)",
+     "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-4000-series/amd-ryzen-5-4600g.html"
+    },
+    {
+     "title": "AMD 공식 사양(지원 페이지 사양표) — Ryzen 5 PRO 4650G(같은 값)",
+     "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen-pro/ryzen-pro-4000-series/amd-ryzen-5-pro-4650g.html"
+    },
+    {
+     "title": "Tom's Hardware — Ryzen 5 5600G 리뷰, 외장 GPU 게임(1080p: 5600G 79.5% · 4750G 64.5%, 5800X = 100%)",
+     "url": "https://www.tomshardware.com/reviews/amd-ryzen-5-5600g-review/4"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-ryzen-5-5500gt",
    "category": "cpu",
    "name": "Ryzen 5 5500GT",
