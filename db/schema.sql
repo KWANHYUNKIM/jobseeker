@@ -1041,4 +1041,39 @@ CREATE TABLE IF NOT EXISTS project_rate_snapshot (
     CONSTRAINT project_rate_snapshot_col   CHECK (col IN ('전체','SI','SM'))
 );
 
+-- ════════════════════════════════════════════════════════════════════
+-- 18. PC 부품 가격 — 지난날 가격은 다시 받을 수 없다
+-- ════════════════════════════════════════════════════════════════════
+-- db/migrations/009_hardware_price.sql 과 글자 그대로 같다(설계 근거는 그쪽 머리말).
+CREATE TABLE IF NOT EXISTS hw_part (
+    id          text PRIMARY KEY,               -- 'gpu-rtx-5070-ti'
+    category    text NOT NULL,
+    name        text NOT NULL,
+    maker       text,
+    specs       jsonb NOT NULL DEFAULT '{}'::jsonb,
+    perf_index  real,
+    updated_at  timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT hw_part_category CHECK (category IN ('gpu','cpu','ram','ssd','hdd','mainboard','psu','cooler','case'))
+);
+
+CREATE TABLE IF NOT EXISTS hw_price_day (
+    day           date    NOT NULL,
+    part_id       text    NOT NULL REFERENCES hw_part(id) ON DELETE CASCADE,
+    min_price     integer NOT NULL,
+    median_price  integer NOT NULL,
+    n             integer NOT NULL,
+    source        text    NOT NULL DEFAULT 'danawa',
+    PRIMARY KEY (day, part_id)
+);
+CREATE INDEX IF NOT EXISTS hw_price_day_part ON hw_price_day (part_id, day);
+
+CREATE TABLE IF NOT EXISTS hw_offer_day (
+    day      date    NOT NULL,
+    part_id  text    NOT NULL REFERENCES hw_part(id) ON DELETE CASCADE,
+    pcode    text    NOT NULL,
+    name     text    NOT NULL,
+    price    integer NOT NULL,
+    PRIMARY KEY (day, part_id, pcode)
+);
+
 COMMIT;
