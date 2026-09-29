@@ -7,6 +7,7 @@
 
 | 부품 | 분류 | 왜 |
 |---|---|---|
+| **WD Red Plus 4TB (WD40EFZZ)** | hdd | 국내 정식 유통되는 Red Plus 4TB — EFPX 대신. 캐시 128MB, WD 공식 사양으로 확인 |
 | **Radeon RX 9060 XT 8GB** | gpu | 9060 XT 16GB 와 VRAM 만 다르다 — 8GB 가 게임·AI 에서 어디서 막히는지 보여 주는 쌍 |
 | **Arc B570** | gpu | 보급형 선택지 |
 | **Ryzen 5 9600** | cpu | 9600X 와 거의 같은 성능, 더 싸다 |

@@ -36,7 +36,8 @@
               "q": {"type": "string"},
               "cate": {"type": "string", "description": "다나와 분류 표기의 일부 — 그래픽카드·CPU·RAM·SSD·HDD·메인보드·파워·쿨러·케이스"},
               "must": {"type": "array", "items": {"type": "string"}, "description": "상품명에 모두 있어야 할 말. 'GOLD|골드' 처럼 | 로 적으면 그중 하나"},
-              "not": {"type": "array", "items": {"type": "string"}}
+              "not": {"type": "array", "items": {"type": "string"}},
+              "per": {"type": "integer", "minimum": 2, "description": "묶음으로만 파는 부품 — 묶음 가격을 이 수로 나눠 한 개 값으로 적는다(예: 메모리 32Gx2 패키지 → 2)"}
             }
           },
           "price_basis": {"enum": ["min", "median"], "description": "median — 특정 상품이 아니라 급(級)이라 매물 가운데 값을 쓴다"},

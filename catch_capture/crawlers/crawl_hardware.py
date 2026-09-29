@@ -185,6 +185,10 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
             print(f"  [!] {p['id']} — {e}", flush=True)
             continue
         offers = sorted(match(items, rule), key=lambda o: o["price"])
+        # 묶음으로만 파는 부품(메모리 '32Gx2' 패키지) — 한 개 값으로 나눠 부품의 단위와 맞춘다
+        per = int(rule.get("per") or 1)
+        if per > 1:
+            offers = [{**o, "price": o["price"] // per, "name": f"{o['name']} (÷{per})"} for o in offers]
         rec = book.setdefault(p["id"], {"history": []})
         if not offers:
             empty += 1

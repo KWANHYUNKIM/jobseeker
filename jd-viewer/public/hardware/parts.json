@@ -683,7 +683,7 @@
      "url": "https://www.techpowerup.com/gpu-specs/"
     }
    ],
-   "status": "current",
+   "status": "legacy",
    "checked_at": "2026-09-29"
   },
   {
@@ -728,7 +728,7 @@
      "url": "https://www.techpowerup.com/gpu-specs/"
     }
    ],
-   "status": "current",
+   "status": "legacy",
    "checked_at": "2026-09-29"
   },
   {
@@ -1584,20 +1584,19 @@
     "confidence": "seed"
    },
    "price_query": {
-    "q": "DDR5-6000 32GB",
+    "q": "DDR5-6000 64GB 32Gx2",
     "cate": "RAM",
     "must": [
      "DDR5-6000",
-     "32GB"
+     "32Gx2"
     ],
     "not": [
      "노트북",
      "SO-DIMM",
      "ECC",
-     "REG",
-     "x2",
-     "2개"
-    ]
+     "REG"
+    ],
+    "per": 2
    },
    "sources": [
     {
@@ -1939,7 +1938,7 @@
      "url": "https://www.crucial.com/"
     }
    ],
-   "status": "current",
+   "status": "legacy",
    "checked_at": "2026-09-29"
   },
   {
@@ -2095,7 +2094,7 @@
      "url": "https://www.westerndigital.com/"
     }
    ],
-   "status": "current",
+   "status": "legacy",
    "checked_at": "2026-09-29"
   },
   {
