@@ -2422,7 +2422,10 @@
     "speed_mts": 5600,
     "cl": 46,
     "dual_bandwidth_gbs": 90,
-    "latency_ns": 16.4
+    "latency_ns": 16.4,
+    "voltage_v": 1.1,
+    "default_mts": 5600,
+    "profile": "JEDEC 기본"
    },
    "perf": {
     "index": 90,
@@ -2447,12 +2450,22 @@
    },
    "sources": [
     {
+     "title": "Crucial 공식 사양 — Crucial CT16G56C46U5(이 급의 대표 제품)",
+     "url": "https://www.crucial.com/memory/ddr5/ct16g56c46u5"
+    },
+    {
      "title": "JEDEC DDR5 표준(JESD79-5)",
      "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "representative": {
+    "name": "Crucial CT16G56C46U5",
+    "url": "https://www.crucial.com/memory/ddr5/ct16g56c46u5",
+    "note": "공식: 16GB DDR5-5600 UDIMM · CL46(46-45-45, JEDEC 기본) · 1.1V · PC5-44800 · XMP/EXPO 프로필 1 도 같은 5600 46-45-45. JEDEC 기본값이라 BIOS 설정 없이 이 속도로 돈다."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ram-ddr5-5600-32",
@@ -2466,7 +2479,10 @@
     "speed_mts": 5600,
     "cl": 46,
     "dual_bandwidth_gbs": 90,
-    "latency_ns": 16.4
+    "latency_ns": 16.4,
+    "voltage_v": 1.1,
+    "default_mts": 5600,
+    "profile": "JEDEC 기본"
    },
    "perf": {
     "index": 90,
@@ -2491,12 +2507,22 @@
    },
    "sources": [
     {
+     "title": "Crucial 공식 사양 — Crucial CT32G56C46U5(이 급의 대표 제품)",
+     "url": "https://www.crucial.com/memory/ddr5/ct32g56c46u5"
+    },
+    {
      "title": "JEDEC DDR5 표준(JESD79-5)",
      "url": "https://www.jedec.org/standards-documents/docs/jesd79-5c"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "representative": {
+    "name": "Crucial CT32G56C46U5",
+    "url": "https://www.crucial.com/memory/ddr5/ct32g56c46u5",
+    "note": "공식: 32GB DDR5-5600 UDIMM · CL46(46-45-45, JEDEC 기본) · 1.1V · PC5-44800. JEDEC 기본값이라 BIOS 설정 없이 이 속도로 돈다."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ram-ddr5-6000-32",
@@ -2566,7 +2592,10 @@
     "speed_mts": 3200,
     "cl": 22,
     "dual_bandwidth_gbs": 51,
-    "latency_ns": 13.8
+    "latency_ns": 13.8,
+    "voltage_v": 1.2,
+    "default_mts": 3200,
+    "profile": "JEDEC 기본"
    },
    "perf": {
     "index": 51,
@@ -2591,12 +2620,22 @@
    },
    "sources": [
     {
+     "title": "Crucial 공식 사양 — Crucial CT16G4DFRA32A(이 급의 대표 제품)",
+     "url": "https://www.crucial.com/memory/ddr4/ct16g4dfra32a"
+    },
+    {
      "title": "JEDEC DDR4 표준(JESD79-4)",
      "url": "https://www.jedec.org/standards-documents/docs/jesd79-4a"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "representative": {
+    "name": "Crucial CT16G4DFRA32A",
+    "url": "https://www.crucial.com/memory/ddr4/ct16g4dfra32a",
+    "note": "공식: 16GB DDR4-3200 UDIMM · CL22(22-22-22, JEDEC 기본) · 1.2V · PC4-25600. JEDEC 기본값이라 BIOS 설정 없이 이 속도로 돈다."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ram-ddr4-3200-32",
@@ -2610,7 +2649,10 @@
     "speed_mts": 3200,
     "cl": 22,
     "dual_bandwidth_gbs": 51,
-    "latency_ns": 13.8
+    "latency_ns": 13.8,
+    "voltage_v": 1.2,
+    "default_mts": 3200,
+    "profile": "JEDEC 기본"
    },
    "perf": {
     "index": 51,
@@ -2635,12 +2677,22 @@
    },
    "sources": [
     {
+     "title": "Crucial 공식 사양 — Crucial CT32G4DFD832A(이 급의 대표 제품)",
+     "url": "https://www.crucial.com/memory/ddr4/ct32g4dfd832a"
+    },
+    {
      "title": "JEDEC DDR4 표준(JESD79-4)",
      "url": "https://www.jedec.org/standards-documents/docs/jesd79-4a"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "representative": {
+    "name": "Crucial CT32G4DFD832A",
+    "url": "https://www.crucial.com/memory/ddr4/ct32g4dfd832a",
+    "note": "공식: 32GB DDR4-3200 UDIMM · CL22(22-22-22, JEDEC 기본) · 1.2V · PC4-25600. JEDEC 기본값이라 BIOS 설정 없이 이 속도로 돈다."
+   },
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "ssd-samsung-990-pro-2tb",
