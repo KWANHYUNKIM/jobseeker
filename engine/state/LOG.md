@@ -2842,3 +2842,8 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - 세 글(배차 조 자동화 2023 · LNS 2024 · 예약 틀 2026)을 한 기능 `auto-dispatch-lns` 로 묶었다 — 같은 도메인(배정과 해의 재구축)이고 서로를 입력으로 쓴다. 결정 6 — 메인 밖 K8s 배치 + GraphQL / 규칙 점수(RL 은 연구 중) / 운영자 파라미터(JsonLogic 은 장래) / LNS 별도 계통 / Ride 다층 검증 / 예약 틀은 요일 패턴과 공존. 지표: 사람 배차 조 하루 약 6시간. 그림 3(두 계통 · 예약 틀 시퀀스 · 조용한 실패 — 원인 연결은 _note).
 
+## 2026-09-30 NearMe 외부 API 중계(기능 3/3) · 완주
+
+- 외부 API 글(2022)로 `external-api-relay`. 결정 5 — 중계 서비스 신설(내부 API 그대로 공개 대신) / 외부는 REST · 내부는 GraphQL(외부 사용자에겐 GraphQL 불리함이 더 크다) / 외부용 이름 · 숫자 상태 → 문자열 / server_token · access_token 분리 · 비밀번호 방식은 테스트만 / Webhook + client_secret SHA256 서명. 그림 3.
+- 완주 기준 — 도메인 3 모두 기능 1, 기능 셋이 서로 이어짐, 수익원 셋 모두 기능과 연결. `status: done`, QUEUE 완료로 옮김.
+

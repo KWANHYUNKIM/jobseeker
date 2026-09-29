@@ -4,7 +4,7 @@
   "name_en": "NearMe",
   "country": "JP",
   "category": "모빌리티",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-30",
   "domain": "nearme.jp",
   "one_liner": "같은 방향 사람을 AI 로 묶는 공항 송영 · 택시 셰어 승차 — 사전 예약이 들어올 때마다 상승 조합을 다시 짜고, 배차 조와 확정 시점을 시스템이 쥔다",
@@ -230,7 +230,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "external-api-relay"
+      ]
     }
   ],
   "features": [
@@ -883,6 +885,295 @@
           "publisher": "NearMe",
           "summary": "운행 회사가 좋은 주문을 찾으려 관리 화면을 몇 분마다 새로 고치며 심야까지 감시하던 부담. 운행 가능 시간이 요일 반복 패턴이라 특정 날만 바꿀 수 없고 바꾸면 미래 예약에 영향, 드라이버별 스케줄을 못 담고, 막고 싶은 시간은 더미 예약(블록 틀)으로 막았다 → 시간 단위로 관리하는 '예약 틀'.",
           "date": "2026-01-08"
+        }
+      ]
+    },
+    {
+      "key": "external-api-relay",
+      "name": "밖으로 여는 배차 API 는 안쪽 API 를 그대로 내놓지 않는다 — 중계 서비스가 GraphQL 을 REST 로, 숫자 상태를 읽을 수 있는 이름으로 바꾼다",
+      "domain": "다른 앱 · LINE · 지자체 셔틀이 같은 배차 엔진을 쓰게 여는 외부 API 와 멀티테넌트",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "NearMe 의 상승 배차는 자사 공항 송영 앱만이 아니라 **다른 앱에서 바로 주문하거나 LINE 미니 앱 같은 새 채널 UI** 로도 쓰이게 하려 한다 — 지자체 · 기업의 '지역 셔틀' · '스쿨 송영' 같은 서비스가 같은 배차 엔진 위에 선다(홈페이지의 지역 셔틀 · LINE 배차 시스템).\n\n안쪽(내부용) API 는 이미 있었다. 권한만 고쳐 그대로 공개하는 것도 가능했지만, **밖의 개발자가 쓰는 API 는 한번 공개하면 바꾸기 어렵고, 안정성과 알아보기 쉬움이 더 중요하다.**",
+        "metrics": []
+      },
+      "thinking": [
+        {
+          "at": "내부 API 를 그대로 열까 할 때",
+          "thought": "권한만 고쳐 공개할 수도 있지만, 외부 API 는 안정성 · 인지성을 더 중시하므로 요청을 중계하는 서비스를 새로 두어 성격 차이를 흡수시킨다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "外部向けAPIプラットフォームの設計について",
+              "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+              "publisher": "NearMe",
+              "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+              "date": "2022-12-30"
+            }
+          ]
+        },
+        {
+          "at": "GraphQL 이냐 REST 냐",
+          "thought": "안쪽에서 개발할 때는 GraphQL 의 불리한 점이 크지 않지만, 밖의 사람이 쓸 때는 REST 의 불리한 점보다 GraphQL 의 불리한 점이 더 클 것이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "外部向けAPIプラットフォームの設計について",
+              "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+              "publisher": "NearMe",
+              "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+              "date": "2022-12-30"
+            }
+          ]
+        },
+        {
+          "at": "이름을 정할 때",
+          "thought": "외부 API 는 한번 공개하면 좀처럼 못 바꾼다 — 되도록 숙고해서 이름을 정한다. 변환이 필요해진 덕에 이름을 고칠 기회가 생겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "外部向けAPIプラットフォームの設計について",
+              "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+              "publisher": "NearMe",
+              "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+              "date": "2022-12-30"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "조직",
+            "what": "외부 연계처. server_token 으로 신뢰할 수 있는 서버에서 요청한다."
+          },
+          {
+            "name": "서비스",
+            "what": "조직이 만드는 '○○ 지역 셔틀' · '○○ 스쿨 송영' — 멀티테넌트 전용 서비스로 사용자 · 차량 · 주문 관리를 관리 화면째 쓴다."
+          },
+          {
+            "name": "애플리케이션",
+            "what": "API 연계의 기본 정보 — 인증 정보 · Webhook URL. 이 ID 로 '이 주문은 이 외부 연계에서 왔다' 를 가른다."
+          },
+          {
+            "name": "사용자 토큰",
+            "what": "사용자별 access_token — 외부 사용자 연계는 server_token 으로 사용자를 만들고 토큰을 받고, 아니면 OAuth(client_id/secret)."
+          },
+          {
+            "name": "Webhook 이벤트",
+            "what": "'운행 완료' 같은 상태 변화를 외부 시스템으로 보낸다. 서명 = client_secret 을 키로 요청 본문 SHA256."
+          }
+        ],
+        "invariants": [
+          "외부 연계에서 만든 주문은 애플리케이션 ID 로 출처를 추적할 수 있다.",
+          "외부 API 는 내부 API 를 중계 서비스를 거쳐서만 부른다 — 안쪽 스키마가 바뀌어도 바깥 계약은 중계가 지킨다.",
+          "외부 API 의 상태 값은 숫자가 아니라 뜻을 가진 문자열이다.",
+          "비밀번호 방식 토큰 발급은 테스트 용도로만 쓴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "외부 연계처 '조직' 을 만들고 그 아래 '서비스'(지역 셔틀 등)를 만든다",
+            "why": "멀티테넌트 전용 서비스가 생겨 사용자 · 차량 · 주문 관리를 관리 화면에서 쓴다."
+          },
+          {
+            "step": "'애플리케이션' 에 인증 정보 · Webhook URL 을 등록한다",
+            "why": "주문의 출처를 이 ID 로 가른다."
+          },
+          {
+            "step": "Jupyter Notebook · Postman(환경 변수 · 전후 스크립트 · 문서 · 저장 응답)으로 주요 API 를 시험한다",
+            "why": "연계처가 바로 두드려 볼 수 있게 한다."
+          },
+          {
+            "step": "신뢰할 수 있는 서버가 server_token(조직) · access_token(사용자)으로 REST API 를 부른다",
+            "why": "토큰을 앱이 아니라 서버가 쥔다."
+          },
+          {
+            "step": "중계 서비스가 REST 요청을 내부 GraphQL 로 바꾸고, 숫자 상태를 문자열로 바꿔 돌려준다",
+            "why": "내부 · 외부 API 의 성격 차이를 흡수한다."
+          },
+          {
+            "step": "운행 완료 같은 이벤트를 Webhook(서명 포함)으로 외부 시스템에 보낸다 — 외부 사용자에게 푸시는 그 시스템이 보낸다",
+            "why": "NearMe 가 외부 사용자에게 직접 알림을 보낼 수 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "내부 API 를 권한만 고쳐 그대로 공개할까?",
+            "chosen": "**요청을 중계하는 서비스를 새로 둔다** — 외부 API 의 안정성 · 인지성을 중계가 맡는다.",
+            "alternatives": [
+              "내부 API 를 권한만 바꿔 공개"
+            ],
+            "tradeoff": "안쪽 API 가 바뀌어도 바깥 계약을 지킬 층이 생긴다. 대가는 서비스가 하나 늘고, 새 기능마다 중계에도 변환을 더해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "外部向けAPIプラットフォームの設計について",
+                "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+                "publisher": "NearMe",
+                "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+                "date": "2022-12-30"
+              }
+            ]
+          },
+          {
+            "question": "외부 API 를 GraphQL 로 낼까, REST 로 낼까?",
+            "chosen": "**내부는 GraphQL 그대로, 외부는 REST.**",
+            "alternatives": [
+              "외부도 GraphQL"
+            ],
+            "tradeoff": "GraphQL 은 타입이 엄격해 실수를 빨리 알고 필요한 데이터만 받지만, 작은 스키마 변화에도 오류가 나고 어떤 쿼리를 짜야 할지 알기 어렵고 학습이 필요하다. REST 는 어느 API 를 어떻게 부를지 분명하고 작은 스키마 변화에 응답이 깨지지 않지만, 필요 없는 데이터를 받거나 여러 번 불러야 한다 — 외부 사용자에게는 GraphQL 의 불리함이 더 크다고 판단했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "外部向けAPIプラットフォームの設計について",
+                "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+                "publisher": "NearMe",
+                "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+                "date": "2022-12-30"
+              }
+            ]
+          },
+          {
+            "question": "변환하는 김에 이름은?",
+            "chosen": "**외부용 이름을 새로 다듬는다** — 예: 내부에서 숫자로 관리하던 '배차 상태' 를 알기 쉬운 문자열로.",
+            "alternatives": [
+              "내부 필드 이름 · 값을 그대로 노출"
+            ],
+            "tradeoff": "내부의 숫자 상태는 데이터를 아끼고 이름을 깊이 고민하지 않아도 돼 개발이 빨랐지만, 외부에는 쓸데없는 불편이다. 외부 API 는 한번 공개하면 못 바꾸므로 숙고해서 정한다 — 대가는 매핑 표를 중계가 계속 들고 있어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "外部向けAPIプラットフォームの設計について",
+                "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+                "publisher": "NearMe",
+                "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+                "date": "2022-12-30"
+              }
+            ]
+          },
+          {
+            "question": "인증을 어떻게 나누나?",
+            "chosen": "**조직용 server_token 과 사용자용 access_token 으로 나눈다** — 외부 사용자 연계면 server_token 으로 NearMe 사용자를 만들고 토큰을 받고, 아니면 OAuth(client_id/secret). 비밀번호 방식은 테스트에만.",
+            "alternatives": [
+              "API 키 하나로 모든 요청",
+              "사용자마다 NearMe 로그인"
+            ],
+            "tradeoff": "외부 서비스의 사용자를 NearMe 에 그대로 이어 붙일 수 있고, 조직 작업과 사용자 작업의 권한이 갈린다. 대가는 토큰을 반드시 신뢰할 수 있는 서버에서 다뤄야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "外部向けAPIプラットフォームの設計について",
+                "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+                "publisher": "NearMe",
+                "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+                "date": "2022-12-30"
+              }
+            ]
+          },
+          {
+            "question": "상태 변화를 외부에 어떻게 알리나?",
+            "chosen": "**Webhook** — URL · 인증은 애플리케이션에 두고 외부 시스템 사정에 맞춰 유연하게 설정하되, 기본으로 **client_secret 을 키로 한 요청 본문 SHA256 서명**을 붙인다.",
+            "alternatives": [
+              "외부가 주기적으로 폴링",
+              "NearMe 가 외부 사용자에게 직접 푸시"
+            ],
+            "tradeoff": "외부 사용자에게 직접 푸시할 수 없으니 외부 시스템을 거쳐 알린다. 서명으로 받는 쪽이 송신원을 검증한다. 대가는 외부마다 인증 방식이 달라 설정 폭이 넓어진다는 것 — 재전송 · 순서 보장은 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "外部向けAPIプラットフォームの設計について",
+                "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+                "publisher": "NearMe",
+                "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+                "date": "2022-12-30"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "상승 주문 두 층 상태",
+          "via": "외부 주문 → 같은 주문 · 운행 상태 전이",
+          "contract": "외부 앱 · LINE 미니 앱에서 들어온 주문도 같은 상승 · 배차 흐름을 탄다 — 애플리케이션 ID 로 출처만 다르다(이 사이트가 두 글을 이음).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "外部向けAPIプラットフォームの設計について",
+              "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+              "publisher": "NearMe",
+              "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+              "date": "2022-12-30"
+            }
+          ]
+        },
+        {
+          "to": "자동 배차 조",
+          "via": "서비스 ID",
+          "contract": "지역 셔틀 같은 외부 '서비스' 도 차량 ↔ 서비스 ID 매핑으로 자동 배차 대상이 된다(자동 배차 글의 서비스 ID 설정).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "配車組作業（6時間 / 日）を自動化した話",
+              "url": "https://tech.nearme.jp/blog/2023-11-02-automated-dispatch-assignment/",
+              "publisher": "NearMe",
+              "summary": "상승으로 묶인 트립을 차량에 배정하는 '배차 조' 를 사람이 하루 약 6시간(하네다 송영 하루 3회 × 2시간) 하던 것을 자동화. 메인 시스템과 따로 Kubernetes 위 배치로 — DB 에서 차량 · 트립을 읽어 배차 조 검증(정원 · 짐 · 운행 가능 시간 · 겹침 · 앞뒤 이동 시간)과 트립 점수(탑승 인원 · 상승 쉬움 예측)로 순서대로 배정하고 GraphQL 배차 관리 API 를 부른다. 심층 강화학습 도입 계획.",
+              "date": "2023-11-02"
+            }
+          ]
+        },
+        {
+          "to": "법인용 LINE 배차 시스템 · 지역 셔틀(수익원)",
+          "via": "외부 채널 UI 와 멀티테넌트 서비스",
+          "contract": "LINE 미니 앱 같은 채널 UI 와 지역 셔틀 · 스쿨 송영 서비스가 이 API 위에 선다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "外部向けAPIプラットフォームの設計について",
+              "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+              "publisher": "NearMe",
+              "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+              "date": "2022-12-30"
+            },
+            {
+              "title": "株式会社NearMe｜人と地域の豊かさを紡ぎ、未来を拓く",
+              "url": "https://nearme.jp/",
+              "publisher": "NearMe",
+              "summary": "서비스: 공항 송영 셰어 승차(자택 · 호텔 ↔ 전국 공항 도어투도어, 자체 AI 로 경로 최적화 · 같은 방향 이용자 매칭), 공항 전세 하이어 · 택시(정액, 최대 9명), 관광 · 전세 점보 택시(도쿄 · 오사카 · 교토 · 나라), 일상 택시 셰어 승차(최대 50% 할인 · 사전 예약 · 24시간, 도쿄 · 오사카 · 시즈오카 · 홋카이도), 지역 셔틀(지자체 · 기업과 연계한 예약제 셰어 승차), 법인용 LINE 배차 시스템(운행 회사용 LINE + 배차 올인원). 2026-09 이벤트 특화 예약 사이트 · 고베 실증 · 아소 구마모토 공항 송영."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "안쪽 API 와 바깥 API 사이",
+          "question": "외부 요청은 무엇을 거쳐 배차 엔진에 닿나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  EXT[\"외부 앱 · LINE 미니 앱\\n(신뢰할 수 있는 서버)\"] -->|\"REST + server_token / access_token\"| RELAY[\"중계 서비스\\nREST → GraphQL · 이름 · 상태 변환\"]\n  RELAY -->|\"GraphQL\"| CORE[\"내부 API\\n주문 · 운행 · 배차\"]\n  CORE -->|\"운행 완료 등\"| WH[\"Webhook\\nSHA256(client_secret, body) 서명\"]\n  WH --> EXT\n  EXT --> PUSH[\"외부 시스템이 자기 사용자에게 푸시\"]"
+        },
+        {
+          "title": "연계처를 여는 순서",
+          "question": "외부 연계처 하나가 API 를 쓰기까지 무엇을 만드나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant N as NearMe\n  participant O as 조직(연계처)\n  participant S as 서비스(○○ 지역 셔틀)\n  participant A as 애플리케이션\n  N->>O: 조직 생성\n  O->>S: 서비스 생성 — 사용자 · 차량 · 주문 관리 화면\n  O->>A: 인증 정보 · Webhook URL 등록\n  A->>N: server_token 으로 사용자 생성 → access_token\n  A->>N: 주문 API(출처 = 애플리케이션 ID)\n  N-->>A: Webhook: 운행 완료"
+        },
+        {
+          "title": "안쪽 스키마가 바뀌면",
+          "question": "내부 API 를 그대로 공개했다면 무엇이 깨졌을까?",
+          "kind": "failure",
+          "code": "flowchart TD\n  CH[\"내부 GraphQL 스키마 · 상태 숫자 변경\"] --> Q{\"외부에 무엇이 보이나\"}\n  Q -->|\"그대로 공개했다면\"| BREAK[\"외부 쿼리 오류 · 숫자 의미 바뀜\\n연계처 코드 수정 강요\"]\n  Q -->|\"중계가 있을 때\"| KEEP[\"중계의 변환만 고친다\\nREST · 문자열 상태 계약 유지\"]",
+          "_note": "'그대로 공개했다면' 쪽은 글이 GraphQL 의 약점으로 든 '작은 스키마 변화에도 오류' 를 이 사이트가 그림으로 옮긴 것이다."
+        }
+      ],
+      "sources": [
+        {
+          "title": "外部向けAPIプラットフォームの設計について",
+          "url": "https://tech.nearme.jp/blog/2022-12-30-external-api-platform/",
+          "publisher": "NearMe",
+          "summary": "상승 배차의 외부용 API 플랫폼 — 다른 앱에서 주문하거나 LINE 미니 앱 같은 새 채널 UI 를 만들게 한다. 외부 연계처 '조직' → '서비스'(지역 셔틀 · 스쿨 송영 등, 멀티테넌트) → '애플리케이션'(인증 정보 · Webhook URL, 주문의 출처 키). 인증은 조직용 server_token 과 사용자용 access_token(외부 사용자 연계 또는 OAuth client_id/secret).",
+          "date": "2022-12-30"
         }
       ]
     }
