@@ -5,6 +5,7 @@ import {
   autoBuild,
   buildTotal,
   checkBuild,
+  conflictsOf,
   estimateBuildMin,
   estimateFps,
   estimateImageSec,
@@ -198,9 +199,14 @@ function Builder({ data }: { data: HwData }) {
             {total > budget ? `예산보다 ${won(total - budget)} 많다` : `예산 안 · ${won(budget - total)} 남음`}
             {missing.length > 0 && ` · 가격 모름 ${missing.length}개 제외`}
           </div>
+          {errors > 0 && (
+            <div role="alert" className="rounded-md border border-(--color-red-400) bg-(--color-red-400)/8 px-3 py-2 text-sm text-(--color-red-400)">
+              <b>호환 안 됨 {errors}건</b> — 이대로는 조립이 안 된다. 빨간 칸을 바꾸면 풀린다.
+            </div>
+          )}
           <div className="flex flex-col divide-y divide-(--color-border-soft)">
             {CATEGORY_ORDER.map((cat) => (
-              <PartPicker key={cat} cat={cat} data={data} value={build[cat]} onChange={(id) => setBuild({ ...build, [cat]: id || undefined })} />
+              <PartPicker key={cat} cat={cat} data={data} build={build} onChange={(id) => setBuild({ ...build, [cat]: id || undefined })} />
             ))}
           </div>
           <ul className="flex flex-col gap-1 text-sm">
@@ -246,6 +252,11 @@ function Builder({ data }: { data: HwData }) {
         </section>
 
         <section className="flex flex-col gap-4 min-w-0">
+          {errors > 0 && (
+            <div className="rounded-md border border-(--color-red-400) bg-(--color-panel) px-3 py-2 text-sm text-(--color-red-400)">
+              지금 조합은 조립이 안 된다 — 아래 숫자는 호환 문제를 고쳤다고 치고 계산한 값이다.
+            </div>
+          )}
           {gpu ? <GameSim key={use.res} data={data} gpu={gpu} cpu={cpu ?? null} defaultRes={use.res} /> : <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 text-sm text-(--color-muted)">그래픽카드를 고르면 게임 성능이 나온다.</div>}
           {gpu && <AiSim data={data} gpu={gpu} ram={ram} />}
           {cpu && <DevSim data={data} cpu={cpu} ram={ram} />}
@@ -255,14 +266,26 @@ function Builder({ data }: { data: HwData }) {
   )
 }
 
-function PartPicker({ cat, data, value, onChange }: { cat: Category; data: HwData; value?: string; onChange: (id: string) => void }) {
+// 고르는 목록 — 지금 조합에 넣었을 때 '안 된다'가 생기는 후보는 이유를 달고 아래로 내린다.
+// 고를 수는 있게 둔다(무엇이 왜 안 되는지 직접 보는 것도 배우는 일이다). 골랐으면 그 칸이 빨개진다.
+function PartPicker({ cat, data, build, onChange }: { cat: Category; data: HwData; build: Build; onChange: (id: string) => void }) {
   const def = data.categories.find((c) => c.key === cat)
-  const opts = data.parts.filter((p) => p.category === cat)
-  const cur = opts.find((p) => p.id === value)
-  const tier = cur ? tierOf(cur, data.categories) : null
-  const price = cur ? priceOf(cur, data.prices) : null
+  const value = build[cat]
+  const opts = data.parts
+    .filter((p) => p.category === cat)
+    .map((p) => ({ p, why: conflictsOf(cat, p.id, build, data.parts) }))
+  const okOpts = opts.filter((o) => !o.why.length)
+  const badOpts = opts.filter((o) => o.why.length)
+  const cur = opts.find((o) => o.p.id === value)
+  const tier = cur ? tierOf(cur.p, data.categories) : null
+  const price = cur ? priceOf(cur.p, data.prices) : null
+  const bad = !!cur?.why.length
+  const label = (p: Part) => {
+    const pr = priceOf(p, data.prices)
+    return `${p.name} ${pr != null ? `· ${won(pr)}` : '· 가격 모름'}`
+  }
   return (
-    <div className="py-2 grid grid-cols-[5.5rem_minmax(0,1fr)_auto] items-center gap-2">
+    <div className={`py-2 grid grid-cols-[5.5rem_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 ${bad ? 'bg-(--color-red-400)/6 -mx-2 px-2 rounded' : ''}`}>
       <div className="text-xs font-semibold text-(--color-muted)" title={def?.why}>
         {def?.name ?? cat}
       </div>
@@ -271,23 +294,39 @@ function PartPicker({ cat, data, value, onChange }: { cat: Category; data: HwDat
         <select
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value)}
-          className="min-w-0 flex-1 bg-transparent text-sm text-(--color-text) border border-(--color-border-soft) rounded px-1.5 py-1"
+          aria-invalid={bad}
+          className={`min-w-0 flex-1 bg-transparent text-sm text-(--color-text) border rounded px-1.5 py-1 ${
+            bad ? 'border-(--color-red-400)' : 'border-(--color-border-soft)'
+          }`}
         >
           <option value="">{cat === 'hdd' ? '없음' : '고르기'}</option>
-          {opts.map((p) => {
-            const pr = priceOf(p, data.prices)
-            return (
-              <option key={p.id} value={p.id}>
-                {p.name} {pr != null ? `· ${won(pr)}` : '· 가격 모름'}
-              </option>
-            )
-          })}
+          {okOpts.map(({ p }) => (
+            <option key={p.id} value={p.id}>
+              {label(p)}
+            </option>
+          ))}
+          {badOpts.length > 0 && (
+            <optgroup label="✕ 지금 조합과 호환 안 됨">
+              {badOpts.map(({ p, why }) => (
+                <option key={p.id} value={p.id}>
+                  ✕ {p.name} — {why[0].split(' — ')[0]}
+                </option>
+              ))}
+            </optgroup>
+          )}
         </select>
       </div>
       <div className="text-sm tabular-nums text-right w-20" data-nosnippet>
         {price != null ? won(price * (cat === 'ram' ? 2 : 1)) : '—'}
         {cat === 'ram' && price != null && <div className="text-[10px] text-(--color-faint)">두 장</div>}
       </div>
+      {bad && (
+        <div className="col-start-2 col-span-2 text-xs text-(--color-red-400)">
+          {cur!.why.map((w) => (
+            <div key={w}>✕ {w}</div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -302,6 +302,8 @@ export interface Check {
   ok: boolean
   level: 'error' | 'warn' | 'ok'
   text: string
+  /** 이 검사에 걸린 분류들 — 고르는 목록이 '이 부품을 넣으면 무엇이 깨지나'를 물을 때 쓴다 */
+  cats: Category[]
 }
 
 const byId = (parts: Part[]) => new Map(parts.map((p) => [p.id, p]))
@@ -311,67 +313,95 @@ export function systemWatts(cpu: Part | undefined, gpu: Part | undefined): numbe
   return Number(cpu?.specs.max_power_w ?? 150) + Number(gpu?.specs.tdp_w ?? 0) + 80
 }
 
+/**
+ * 호환성 검사. error = 꽂히지 않거나 켜지지 않는다 · warn = 되지만 조건이 붙는다 · ok = 확인했다.
+ *
+ * 부품 목록(parts.json)은 칩·급 단위라 제품마다 다른 값(그래픽카드 길이, 보드 규격)은 여기서
+ * 확정할 수 없다 — 그런 것은 error 가 아니라 warn 으로 '무엇을 확인하라'를 말한다.
+ * 고르는 목록은 후보 하나를 넣은 조합으로 이 함수를 다시 돌려 그 분류가 걸린 error 를 보여 준다.
+ */
 export function checkBuild(build: Build, parts: Part[]): Check[] {
   const m = byId(parts)
   const get = (c: Category) => (build[c] ? m.get(build[c]!) : undefined)
   const cpu = get('cpu'), mb = get('mainboard'), ram = get('ram'), gpu = get('gpu')
   const psu = get('psu'), cooler = get('cooler'), cs = get('case')
   const out: Check[] = []
+  const push = (level: Check['level'], text: string, cats: Category[]) => out.push({ ok: level === 'ok', level, text, cats })
+
+  // ── 꽂히나 ──
   if (cpu && mb) {
-    const ok = cpu.specs.socket === mb.specs.socket
-    out.push({ ok, level: ok ? 'ok' : 'error', text: ok ? `소켓 ${cpu.specs.socket} — CPU 와 보드가 맞는다` : `CPU 는 ${cpu.specs.socket}, 보드는 ${mb.specs.socket} — 꽂히지 않는다` })
+    if (cpu.specs.socket === mb.specs.socket) push('ok', `소켓 ${cpu.specs.socket} — CPU 와 보드가 맞는다`, ['cpu', 'mainboard'])
+    else push('error', `소켓이 다르다 — CPU 는 ${cpu.specs.socket}, 보드는 ${mb.specs.socket}. 꽂히지 않는다`, ['cpu', 'mainboard'])
   }
   if (ram && mb) {
-    const ok = String(mb.specs.mem).includes(String(ram.specs.type))
-    out.push({ ok, level: ok ? 'ok' : 'error', text: ok ? `${ram.specs.type} — 보드가 받는 메모리다` : `보드는 ${mb.specs.mem} 만 받는데 메모리가 ${ram.specs.type} 다` })
+    if (String(mb.specs.mem).includes(String(ram.specs.type))) push('ok', `${ram.specs.type} — 보드가 받는 메모리다`, ['ram', 'mainboard'])
+    else push('error', `메모리 종류가 다르다 — 보드는 ${mb.specs.mem}, 메모리는 ${ram.specs.type}. 홈 모양이 달라 꽂히지 않는다`, ['ram', 'mainboard'])
   }
   if (ram && cpu && !String(cpu.specs.mem).includes(String(ram.specs.type))) {
-    out.push({ ok: false, level: 'error', text: `CPU 가 ${cpu.specs.mem} 만 지원한다` })
+    push('error', `${cpu.name} 은 ${cpu.specs.mem} 만 지원한다 — ${ram.specs.type} 로는 안 켜진다`, ['ram', 'cpu'])
   }
+  if (cpu && !gpu && !cpu.specs.igpu) {
+    push('error', `${cpu.name} 은 내장 그래픽이 없다 — 그래픽카드 없이는 화면이 안 나온다`, ['cpu', 'gpu'])
+  }
+
+  // ── 켜지나 ──
   if (psu && (cpu || gpu)) {
     const need = systemWatts(cpu, gpu)
     const rec = Math.max(need * 1.3, Number(gpu?.specs.psu_w ?? 0))
     const w = Number(psu.specs.watt)
-    const level = w >= rec ? 'ok' : w >= need ? 'warn' : 'error'
-    out.push({
-      ok: level === 'ok',
-      level,
-      text:
-        level === 'ok'
-          ? `파워 ${w}W — 최대 ${need}W 추정, 여유 충분`
-          : level === 'warn'
-            ? `파워 ${w}W — 최대 ${need}W 는 버티지만 권장 ${Math.ceil(rec / 50) * 50}W 보다 작다`
-            : `파워 ${w}W 가 최대 소비 ${need}W 보다 작다 — 부하 때 꺼진다`,
-    })
+    const cats: Category[] = ['psu', ...(gpu ? (['gpu'] as Category[]) : []), ...(cpu ? (['cpu'] as Category[]) : [])]
+    if (w >= rec) push('ok', `파워 ${w}W — 최대 ${need}W 추정, 여유 충분`, cats)
+    else if (w >= need) push('warn', `파워 ${w}W — 최대 ${need}W 는 버티지만 권장 ${Math.ceil(rec / 50) * 50}W 보다 작다`, cats)
+    else push('error', `파워가 모자란다 — ${w}W 인데 최대 소비가 ${need}W 다. 부하 때 꺼진다`, cats)
   }
+  if (psu && gpu && Number(gpu.specs.tdp_w) >= 250 && !psu.specs.atx3) {
+    push('warn', `${gpu.name} 급은 16핀(12V-2x6) 전원을 쓰는 제품이 많다 — ATX 3.x 가 아닌 파워는 동봉 어댑터로 이어야 한다`, ['psu', 'gpu'])
+  }
+
+  // ── 식히나 ──
   if (cooler && cpu) {
     const need = Number(cpu.specs.max_power_w)
     const cap = Number(cooler.specs.cpu_watt)
-    const level = cap >= need ? 'ok' : cap >= Number(cpu.specs.tdp_w) ? 'warn' : 'error'
-    out.push({
-      ok: level === 'ok',
-      level,
-      text:
-        level === 'ok'
-          ? `쿨러가 CPU 최대 ${need}W 를 감당한다`
-          : level === 'warn'
-            ? `쿨러 ${cap}W 급 — 평소엔 되지만 최대 ${need}W 부하에선 클럭이 내려간다`
-            : `쿨러 ${cap}W 급으로는 CPU ${cpu.specs.tdp_w}W 도 버겁다`,
-    })
+    if (cap >= need) push('ok', `쿨러가 CPU 최대 ${need}W 를 감당한다`, ['cooler', 'cpu'])
+    else if (cap >= Number(cpu.specs.tdp_w)) push('warn', `쿨러 ${cap}W 급 — 평소엔 되지만 최대 ${need}W 부하에선 클럭이 내려간다`, ['cooler', 'cpu'])
+    else push('error', `쿨러가 모자란다 — ${cap}W 급으로 CPU 기본 ${cpu.specs.tdp_w}W 도 못 식힌다`, ['cooler', 'cpu'])
   }
+
+  // ── 들어가나 ──
   if (cooler && cs && cooler.specs.radiator_mm && Number(cooler.specs.radiator_mm) > Number(cs.specs.max_radiator_mm)) {
-    out.push({ ok: false, level: 'error', text: `케이스가 ${cs.specs.max_radiator_mm}mm 라디에이터까지만 받는다` })
+    push('error', `라디에이터가 안 들어간다 — ${cooler.specs.radiator_mm}mm 인데 케이스는 ${cs.specs.max_radiator_mm}mm 까지다`, ['cooler', 'case'])
   }
   if (cooler && cs && cooler.specs.height_mm && Number(cooler.specs.height_mm) > Number(cs.specs.max_cooler_mm)) {
-    out.push({ ok: false, level: 'error', text: `쿨러 높이 ${cooler.specs.height_mm}mm 가 케이스 한도 ${cs.specs.max_cooler_mm}mm 를 넘는다` })
+    push('error', `쿨러가 안 들어간다 — 높이 ${cooler.specs.height_mm}mm 인데 케이스는 ${cs.specs.max_cooler_mm}mm 까지다`, ['cooler', 'case'])
+  }
+  if (mb && cs && cs.specs.form === 'M-ATX') {
+    push('warn', `미니타워(M-ATX) 케이스다 — 보드는 ${mb.name} 중 M-ATX 규격으로 골라야 들어간다`, ['mainboard', 'case'])
   }
   if (gpu && cs && Number(gpu.specs.tdp_w) >= 300 && Number(cs.specs.max_gpu_mm) < 360) {
-    out.push({ ok: false, level: 'warn', text: `${gpu.name} 대형 카드는 330mm 를 넘는 모델이 많다 — 케이스 길이(${cs.specs.max_gpu_mm}mm)를 상품마다 확인` })
+    push('warn', `${gpu.name} 급은 330mm 를 넘는 제품이 많다 — 케이스 한도 ${cs.specs.max_gpu_mm}mm 와 제품 길이를 맞춰 본다(부품 상세의 제품별 스펙)`, ['gpu', 'case'])
   }
-  if (cpu && !gpu && !cpu.specs.igpu) {
-    out.push({ ok: false, level: 'error', text: `${cpu.name} 은 내장 그래픽이 없다 — 그래픽카드가 없으면 화면이 안 나온다` })
+
+  // ── 켜지긴 하지만 조건이 붙는다 ──
+  if (cpu && mb && cpu.specs.socket === mb.specs.socket && cpu.released && mb.released && monthsBetween(mb.released, cpu.released) > 3) {
+    push('warn', `${mb.name} 은 ${cpu.name} 보다 먼저 나온 칩셋이다 — 재고 보드는 BIOS 를 올려야 인식할 수 있다. CPU 없이 BIOS 를 올리는 기능(플래시백)이 있는 보드를 고르거나 판매처에 업데이트 여부를 묻는다`, ['cpu', 'mainboard'])
+  }
+  if (cpu && mb && mb.id === 'mb-a620' && Number(cpu.specs.tdp_w) >= 120) {
+    push('warn', `A620 보드는 전원부가 작아 제조사마다 고전력 CPU 지원이 다르다 — 보드의 CPU 지원 목록에 ${cpu.name} 이 있는지 확인한다`, ['cpu', 'mainboard'])
   }
   return out
+}
+
+function monthsBetween(from: string, to: string): number {
+  const [y1, m1] = from.split('-').map(Number)
+  const [y2, m2] = to.split('-').map(Number)
+  return (y2 - y1) * 12 + (m2 - m1)
+}
+
+/** 후보 하나를 이 분류에 넣으면 생기는 '안 된다'(error) — 고르는 목록에 이유로 붙인다. */
+export function conflictsOf(cat: Category, id: string, build: Build, parts: Part[]): string[] {
+  return checkBuild({ ...build, [cat]: id }, parts)
+    .filter((c) => c.level === 'error' && c.cats.includes(cat))
+    .map((c) => c.text)
 }
 
 export function buildTotal(build: Build, parts: Part[], prices: Record<string, PriceRec>): { total: number; missing: string[] } {
@@ -416,7 +446,12 @@ export function autoBuild(budget: number, use: UseDef, data: HwData): Build {
   const cpuScore = (p: Part) => (use.prefer === 'multi' ? (p.perf.multi ?? p.perf.index) : p.perf.index)
   const gpu = best('gpu', budget * use.weights.gpu, gpuScore)
   const cpu = best('cpu', budget * use.weights.cpu, cpuScore)
-  const mb = cpu ? cheapest('mainboard', (p) => p.specs.socket === cpu.specs.socket) : undefined
+  // 보드는 소켓이 맞는 것 중 경고(BIOS·전원부)까지 없는 가장 싼 것. 그런 게 없으면 소켓만 맞는 가장 싼 것.
+  const clean = (p: Part) =>
+    !!cpu && !checkBuild({ cpu: cpu.id, mainboard: p.id }, parts).some((c) => c.level !== 'ok')
+  const mb = cpu
+    ? (cheapest('mainboard', clean) ?? cheapest('mainboard', (p) => p.specs.socket === cpu.specs.socket))
+    : undefined
   const minGb = use.min_ram_gb ?? 32
   const perStick = minGb / 2
   const ram = mb
