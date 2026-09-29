@@ -471,8 +471,8 @@
    },
    "perf": {
     "index": 32,
-    "basis": "추정 — RTX 5060(42) × CUDA 코어 비(2560/3840)에서 GDDR6 대역폭 차이를 더 깎았다. 실측 대기",
-    "confidence": "seed"
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RTX 5050",
@@ -488,6 +488,10 @@
     {
      "title": "NVIDIA 공식 — RTX 5050(2560 CUDA · 8GB GDDR6 128-bit · 130W · 권장 550W)",
      "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5050/"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-09-29 조회)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "checked_at": "2026-09-29",
@@ -1102,8 +1106,8 @@
    },
    "perf": {
     "index": 32,
-    "basis": "추정 — RTX 4060(33)과 같은 급으로 보고 잡았다. 실측 대기",
-    "confidence": "seed"
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RX 7600",
@@ -1120,6 +1124,10 @@
     {
      "title": "AMD 공식 사양 — RX 7600(2048 SP · 8GB 128-bit · 288GB/s · 165W · 권장 550W)",
      "url": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7600.html"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-09-29 조회)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "checked_at": "2026-09-29",
@@ -1144,9 +1152,9 @@
     "psu_w": 450
    },
    "perf": {
-    "index": 26,
-    "basis": "추정 — RX 7600(32)보다 한 세대 아래(약 8할)로 잡았다. 실측 대기",
-    "confidence": "seed"
+    "index": 17,
+    "basis": "RTX 4090 = 100 · 1440p Ultra 래스터(RT·업스케일·프레임 생성 끔) 11개 게임 기하평균 — Tom's Hardware 한 표, 9800X3D 시험대 · QHD 울트라에서 8GB VRAM 이 모자라 크게 떨어진 값(1080p 는 25.5%)",
+    "confidence": "low"
    },
    "price_query": {
     "q": "RX 6600",
@@ -1163,6 +1171,10 @@
     {
      "title": "AMD 공식 사양 — RX 6600(1792 SP · 8GB 128-bit · 224GB/s · 132W · 권장 450W · 2021-10-13)",
      "url": "https://www.amd.com/en/products/graphics/desktops/radeon/6000-series/amd-radeon-rx-6600.html"
+    },
+    {
+     "title": "Tom's Hardware GPU 벤치마크 계층표 — 1440p Ultra 래스터(2026-09-29 조회)",
+     "url": "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html"
     }
    ],
    "checked_at": "2026-09-29",
@@ -1189,7 +1201,7 @@
    },
    "perf": {
     "index": 16,
-    "basis": "추정 — 8GB 판의 7할 정도로 잡았다(코어 2304·버스 96bit·70W). 실측 대기",
+    "basis": "추정 — 같은 표의 RTX 3050 8GB 가 21 이다. 6GB 판(코어 2304·96bit·70W)은 그보다 낮아 16 으로 잡았다. 6GB 판 실측 대기",
     "confidence": "seed"
    },
    "price_query": {
@@ -1984,10 +1996,10 @@
     "family": "코어 울트라7"
    },
    "perf": {
-    "index": 75,
-    "multi": 90,
-    "basis": "추정 — 265K(게임 72·멀티 82)에 코어 4개(20→24)와 D2D 클럭 상향을 더했다. 실측 대기",
-    "confidence": "seed"
+    "index": 80,
+    "multi": 99,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "270K Plus",
@@ -2007,6 +2019,10 @@
     {
      "title": "Intel 공식 사양 — Core Ultra 7 270K Plus",
      "url": "https://www.intel.com/content/www/us/en/products/sku/245692/intel-core-ultra-7-processor-270k-plus-36m-cache-up-to-5-50-ghz/specifications.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표 — 1080p 게임 · 멀티스레드(2026-09-29 조회)",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "checked_at": "2026-09-29",
@@ -2088,10 +2104,10 @@
     "family": "코어 울트라5"
    },
    "perf": {
-    "index": 71,
-    "multi": 70,
-    "basis": "추정 — 245K(게임 69·멀티 58)에 코어 4개(14→18)를 더했다. 실측 대기",
-    "confidence": "seed"
+    "index": 76,
+    "multi": 73,
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표",
+    "confidence": "low"
    },
    "price_query": {
     "q": "250K Plus",
@@ -2111,6 +2127,10 @@
     {
      "title": "Intel 공식 사양 — Core Ultra 5 250K Plus",
      "url": "https://www.intel.com/content/www/us/en/products/sku/245694/intel-core-ultra-5-processor-250k-plus-30m-cache-up-to-5-30-ghz/specifications.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표 — 1080p 게임 · 멀티스레드(2026-09-29 조회)",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "checked_at": "2026-09-29",
@@ -2139,8 +2159,8 @@
    "perf": {
     "index": 64,
     "multi": 40,
-    "basis": "추정 — 245K(게임 69·멀티 58)에서 코어 수(10/14)와 전력(65W/125W)으로 깎았다. 실측 대기",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100(1080p·RTX 5090, 17게임 기하평균) · 멀티: 9950X = 100(Cinebench·Blender 등 합성) — Tom's Hardware 한 표 · 표의 Core Ultra 5 225(같은 칩·클럭, 내장 그래픽만 켜짐) 값을 대리로 썼다",
+    "confidence": "low"
    },
    "price_query": {
     "q": "225F",
@@ -2158,6 +2178,10 @@
     {
      "title": "Intel 공식 사양 — Core Ultra 5 225F",
      "url": "https://www.intel.com/content/www/us/en/products/sku/241069/intel-core-ultra-5-processor-225f-20m-cache-up-to-4-90-ghz/specifications.html"
+    },
+    {
+     "title": "Tom's Hardware CPU 벤치마크 계층표 — 1080p 게임 · 멀티스레드(2026-09-29 조회)",
+     "url": "https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html"
     }
    ],
    "checked_at": "2026-09-29",
