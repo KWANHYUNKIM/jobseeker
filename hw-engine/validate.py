@@ -23,7 +23,8 @@ ID_PREFIX = {"mainboard": "mb"}
 CONF = {"seed", "low", "medium", "high"}
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 STALE_DAYS = 90
-MIXED_RATIO = 1.6  # 중앙값이 최저가의 1.6배를 넘으면 다른 물건이 섞였다고 본다
+MIXED_RATIO = 1.6
+CLASS_CATS = {"mainboard", "psu", "cooler", "case"}  # 중앙값이 최저가의 1.6배를 넘으면 다른 물건이 섞였다고 본다
 
 
 def load(name: str):
@@ -238,7 +239,8 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
         rec = book.get(p["id"]) or {}
         if p.get("price_query") and rec.get("min") is None:
             no_price.append(p["id"])
-        elif rec.get("min") and p.get("price_basis") != "median" and rec.get("median", 0) / rec["min"] > MIXED_RATIO:
+        # 칩셋·용량 '급' 단위 분류(보드·파워·쿨러·케이스)는 보급형부터 고급형까지 원래 값 폭이 넓다 — 섞임으로 보지 않는다
+        elif rec.get("min") and p.get("price_basis") != "median" and p["category"] not in CLASS_CATS                 and rec.get("median", 0) / rec["min"] > MIXED_RATIO:
             mixed.append(f"{p['id']} (최저 {rec['min']:,} · 중앙 {rec['median']:,})")
         if (p.get("perf") or {}).get("confidence") == "seed":
             seed.setdefault(p["category"], []).append(p["id"])

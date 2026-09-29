@@ -410,7 +410,7 @@
      "url": "https://www.techpowerup.com/gpu-specs/"
     }
    ],
-   "status": "current",
+   "status": "legacy",
    "checked_at": "2026-09-29"
   },
   {
@@ -2045,8 +2045,11 @@
      "4TB"
     ],
     "not": [
+     "2x4TB",
+     "4x4TB",
+     "Pro",
      "외장",
-     "Pro"
+     "패키지"
     ]
    },
    "sources": [
