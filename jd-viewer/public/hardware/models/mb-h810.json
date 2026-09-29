@@ -1,0 +1,204 @@
+{
+ "schema": 1,
+ "part": "mb-h810",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-h810m-k",
+   "name": "ASUS PRIME H810M-K",
+   "brand": "ASUS",
+   "code": "PRIME H810M-K",
+   "match": {
+    "must": [
+     "ASUS",
+     "H810M-K"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 23.4×21.1cm",
+    "vrm": null,
+    "m2_slots": "1(PCIe 4.0 x4)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Realtek 1Gb",
+    "wifi": null,
+    "usb_rear": "6(5Gbps 2 · USB 2.0 4)",
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-h810m-k/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "그래픽 슬롯이 PCIe 4.0 x16 이다 — H810 칩셋 급은 CPU 직결 5.0 을 쓸 수 있지만 이 보드는 4.0 으로 배선했다. DIMM 2 · M.2 1 — 가장 싼 급."
+  },
+  {
+   "id": "asus-prime-h810m-e",
+   "name": "ASUS PRIME H810M-E",
+   "brand": "ASUS",
+   "code": "PRIME H810M-E",
+   "match": {
+    "must": [
+     "ASUS",
+     "H810M-E"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×22.2cm",
+    "vrm": null,
+    "m2_slots": "2(4.0 x4 · 4.0 x2)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Realtek 1Gb",
+    "wifi": null,
+    "usb_rear": "6(5Gbps 2 · USB 2.0 4)",
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-h810m-e/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "그래픽 슬롯이 PCIe 4.0 x16 이다 — H810 칩셋 급은 CPU 직결 5.0 을 쓸 수 있지만 이 보드는 4.0 으로 배선했다."
+  },
+  {
+   "id": "asus-prime-h810m-x-2-5g",
+   "name": "ASUS PRIME H810M-X 2.5G",
+   "brand": "ASUS",
+   "code": "PRIME H810M-X 2.5G",
+   "match": {
+    "must": [
+     "ASUS",
+     "H810M-X"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 23.4×20.8cm",
+    "vrm": null,
+    "m2_slots": "1(PCIe 4.0 x4)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Realtek 2.5Gb",
+    "wifi": null,
+    "usb_rear": "6(5Gbps 2 · USB 2.0 4)",
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-h810m-x-2-5g/techspec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "note": "다나와 표기 'PRIME H810M-X 2.5G Gen5' 를 이 보드로 본다 — ASUS 에 'Gen5' 가 붙은 이름은 없고, 이 보드만 그래픽 슬롯이 PCIe 5.0 이다(이름 대응은 추정)."
+  },
+  {
+   "id": "asus-prime-h810m-a",
+   "name": "ASUS PRIME H810M-A",
+   "brand": "ASUS",
+   "code": "PRIME H810M-A",
+   "match": {
+    "must": [
+     "ASUS",
+     "PRIME",
+     "H810M-A"
+    ],
+    "not": [
+     "WIFI"
+    ]
+   },
+   "specs": {
+    "form": "M-ATX 24.4×22.2cm",
+    "vrm": null,
+    "m2_slots": "2(4.0 x4 · 4.0 x2)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Intel 1Gb(I219V)",
+    "wifi": "없음(Key E 슬롯만, 모듈 별매)",
+    "usb_rear": "6(10Gbps 2 · USB 2.0 4)",
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-h810m-a/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "그래픽 슬롯이 PCIe 4.0 x16 이다 — H810 칩셋 급은 CPU 직결 5.0 을 쓸 수 있지만 이 보드는 4.0 으로 배선했다. -CSM 은 같은 보드의 기업용 장기 공급판이다."
+  },
+  {
+   "id": "asus-prime-h810m-a-wifi",
+   "name": "ASUS PRIME H810M-A WIFI",
+   "brand": "ASUS",
+   "code": "PRIME H810M-A WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "PRIME",
+     "H810M-A",
+     "WIFI"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×22.2cm",
+    "vrm": null,
+    "m2_slots": "2(4.0 x4 · 4.0 x2)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Intel 1Gb(I219V)",
+    "wifi": "Wi-Fi 6 1×1 · BT 5.3",
+    "usb_rear": "6(10Gbps 2 · USB 2.0 4)",
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-h810m-a-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "그래픽 슬롯이 PCIe 4.0 x16 이다 — H810 칩셋 급은 CPU 직결 5.0 을 쓸 수 있지만 이 보드는 4.0 으로 배선했다. -CSM 은 같은 보드의 기업용 장기 공급판이다."
+  },
+  {
+   "id": "asus-h810m-ayw-gaming-wifi",
+   "name": "ASUS H810M AYW GAMING WIFI",
+   "brand": "ASUS",
+   "code": "H810M AYW GAMING WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "AYW"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×22.2cm",
+    "vrm": null,
+    "m2_slots": "2(4.0 x4 · 4.0 x2)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Intel 1Gb(I219V)",
+    "wifi": "Wi-Fi 6 1×1 · BT 5.3",
+    "usb_rear": "6(10Gbps 2 · USB 2.0 4)",
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/others/h810m-ayw-gaming-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "그래픽 슬롯이 PCIe 4.0 x16 이다 — H810 칩셋 급은 CPU 직결 5.0 을 쓸 수 있지만 이 보드는 4.0 으로 배선했다. -CSM 은 같은 보드의 기업용 장기 공급판이다."
+  }
+ ]
+}

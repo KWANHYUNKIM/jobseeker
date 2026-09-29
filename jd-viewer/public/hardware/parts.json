@@ -3738,14 +3738,14 @@
    "specs": {
     "socket": "LGA1851",
     "mem": "DDR5",
-    "pcie_gpu": "PCIe 5.0",
+    "pcie_gpu": "PCIe 4.0(보드에 따라 5.0)",
     "pcie_m2": "PCIe 4.0(칩셋 레인)",
     "cpu_oc": false,
     "usb4": null,
     "forms": "M-ATX"
    },
    "perf": {
-    "index": 50,
+    "index": 42,
     "basis": "칩셋 급 = 규칙 점수(0~100, 공식 스펙에서 계산) — 기본 10 + DDR5 10 + 그래픽 슬롯(5.0 20 · 보드 선택 5.0 12 · 4.0 10 · 3.0 0) + M.2(같은 방식) + CPU 오버클럭 20 + USB4(표준 15 · 보드 선택 5). 성능 실측이 아니라 '무엇이 열려 있나'의 점수다",
     "confidence": "medium"
    },
@@ -3761,6 +3761,10 @@
     {
      "title": "Intel H810 칩셋 사양(Q1'25, CPU PCIe 5.0 1x16, 칩셋 PCIe 4.0 8레인, 채널당 1장, 메모리 OC 없음)",
      "url": "https://www.intel.com/content/www/us/en/products/sku/241150/intel-h810-chipset/specifications.html"
+    },
+    {
+     "title": "ASUS 공식 스펙 — H810 보드 6종 중 5종이 그래픽 슬롯 PCIe 4.0 x16(PRIME H810M-X 2.5G 만 5.0)",
+     "url": "https://www.asus.com/motherboards-components/motherboards/all-series/filter?SubSpec=353388"
     }
    ],
    "checked_at": "2026-09-29",
