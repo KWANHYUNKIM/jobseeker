@@ -622,6 +622,38 @@ async function pollPublish() {
   try { renderPublish(await fetchJSON("/api/publish")); } catch (_) { /* 연결 표시는 pollState 가 한다 */ }
 }
 
+// 반복 작업 등록부 — 멈춘 것을 산출물의 나이로 드러낸다. 데몬 상태만 보면 /loop 엔진이
+// 세션과 함께 꺼진 것은 영영 안 보인다.
+function renderLoops(rows) {
+  const tb = document.querySelector("#loopsTable tbody");
+  if (!Array.isArray(rows)) {
+    tb.innerHTML = `<tr><td colspan="6" class="muted">등록부를 읽지 못했습니다${rows && rows.error ? ": " + rows.error : ""}</td></tr>`;
+    return;
+  }
+  const KIND = { launchd: "launchd", cycle: "크롤 단계", "claude-loop": "/loop 엔진" };
+  const STATE = { ok: "정상", stale: "멈춤?", stopped: "꺼짐", unknown: "모름" };
+  const bad = rows.filter((r) => r.state === "stale" || r.state === "stopped");
+  $("loopsSub").textContent = bad.length ? `${bad.length}개 확인 필요 · 전체 ${rows.length}` : `전체 ${rows.length} · 모두 정상`;
+  tb.innerHTML = "";
+  for (const r of rows) {
+    const tr = document.createElement("tr");
+    const age = r.age_hours == null ? "—" : fmtAge(Math.round(r.age_hours * 3600)) + " 전";
+    const cls = r.state === "ok" ? "" : r.state === "unknown" ? "muted" : "warn";
+    tr.innerHTML =
+      `<td class="${cls}">${STATE[r.state] || r.state}</td>` +
+      `<td>${KIND[r.kind] || r.kind}</td>` +
+      `<td title="${(r.note || "").replace(/"/g, "&quot;")}">${r.name}<div class="muted" style="font-size:11px">${r.key}</div></td>` +
+      `<td>${r.cadence}</td>` +
+      `<td>${age}</td>` +
+      `<td style="font-size:11px">${r.kind === "claude-loop" ? "python -m automation.loops prompt " + r.key : r.run}</td>`;
+    tb.appendChild(tr);
+  }
+}
+
+async function pollLoops() {
+  try { renderLoops(await fetchJSON("/api/loops")); } catch (_) {}
+}
+
 async function pollAutoguide() {
   try { renderAutoguide(await fetchJSON("/api/autoguide")); } catch (e) {}
 }
@@ -689,12 +721,14 @@ pollEvents();
 pollHealth();
 pollAutoguide();
 pollGuide();
+pollLoops();
 pollPublish();
 setInterval(pollState, 2000);
 setInterval(pollEvents, 3000);
 setInterval(pollHealth, 10000);
 setInterval(pollAutoguide, 30000);
 setInterval(pollGuide, 30000);
+setInterval(pollLoops, 60000);
 // 데몬이 5분마다 도니 15초면 충분하다.
 setInterval(pollPublish, 15000);
 setInterval(tickCountdown, 1000);

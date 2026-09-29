@@ -278,11 +278,15 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
         # 그날 이미 받았으면 파일만 보고 바로 돌아온다. 실패해도 사이클은 계속 간다.
         print(f"\n----- PC 부품 가격 크롤 -----", flush=True)
         hw_start = datetime.now()
+        if orch:
+            orch.stage_started("hardware")
         try:
             sys.path.insert(0, str(BASE_DIR))
             from crawlers.crawl_hardware import run as _hw_run
             stats = _hw_run()
             elapsed = (datetime.now() - hw_start).total_seconds()
+            if orch:
+                orch.stage_finished("hardware", not stats.get("failed"), elapsed, **stats)
             if not stats.get("skipped"):
                 print(f"[OK] 부품 가격 완료({elapsed:.0f}s) — 부품 {stats.get('total')}개 중 "
                       f"{stats.get('priced')}개 가격, 실패 {stats.get('failed')} "
@@ -292,10 +296,17 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
         except Exception as e:
             print(f"[!] 부품 가격 크롤 실패: {e}", flush=True)
             failures.append("hardware")
+            if orch:
+                orch.stage_finished("hardware", False, (datetime.now() - hw_start).total_seconds(), error=str(e)[:200])
         # 완제품 조립PC — 부품 가격 다음에 돈다(구성을 그날 부품 목록에 잇는다). 역시 하루 한 번.
+        pb_start = datetime.now()
+        if orch:
+            orch.stage_started("prebuilt")
         try:
             from crawlers.crawl_prebuilt import run as _pb_run
             stats = _pb_run()
+            if orch:
+                orch.stage_finished("prebuilt", not stats.get("failed"), (datetime.now() - pb_start).total_seconds(), **stats)
             if not stats.get("skipped"):
                 print(f"[OK] 완제품 {stats.get('total')}개(오늘 {stats.get('seen_today')}) · 구성 새로 읽음 "
                       f"{stats.get('specs_read')} · 목록에 없는 CPU·GPU {stats.get('unmapped_cpu_gpu')}"
@@ -305,6 +316,8 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
         except Exception as e:
             print(f"[!] 완제품 크롤 실패: {e}", flush=True)
             failures.append("prebuilt")
+            if orch:
+                orch.stage_finished("prebuilt", False, (datetime.now() - pb_start).total_seconds(), error=str(e)[:200])
 
     total = (datetime.now() - overall_start).total_seconds()
     print(f"\n========== 전체 완료 ({total:.0f}s) ==========", flush=True)

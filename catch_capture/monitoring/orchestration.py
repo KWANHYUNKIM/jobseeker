@@ -243,6 +243,25 @@ def freelance_finished(ok: bool, total: int | None, new: int | None,
     emit("freelance_done", ok=ok, total=total, new=new, active=active, elapsed=round(elapsed, 1))
 
 
+def stage_started(name: str) -> None:
+    """사이클 끝에 붙는 부가 단계(부품 가격·완제품 …). 새 단계를 더할 때마다 함수 둘을 만들지 않으려고 이름으로 받는다.
+    어떤 단계가 있는지는 automation/loops.py 등록부가 원본이다."""
+    state = load_state()
+    state.setdefault("cycle", {}).setdefault(name, {})["status"] = "running"
+    save_state(state)
+    emit(f"{name}_start")
+
+
+def stage_finished(name: str, ok: bool, elapsed: float, **fields) -> None:
+    """부가 단계 결과. skipped=True 면 '오늘 이미 받았다' 같은 건너뜀이다(실패가 아니다)."""
+    state = load_state()
+    f = state.setdefault("cycle", {}).setdefault(name, {})
+    status = "skipped" if fields.get("skipped") else ("done" if ok else "failed")
+    f.update({"status": status, "elapsed": round(elapsed, 1), **fields})
+    save_state(state)
+    emit(f"{name}_done", ok=ok, elapsed=round(elapsed, 1), **fields)
+
+
 def refresh_started(target: str) -> None:
     """target: 'dashboard' | 'viewer'"""
     state = load_state()

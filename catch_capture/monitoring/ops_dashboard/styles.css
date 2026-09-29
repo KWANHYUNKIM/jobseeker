@@ -190,3 +190,6 @@ a.igpost:hover { border-color: var(--accent); }
 
 /* 빈 상태 안내문이 격자 한 칸에 끼어 세로로 깨지지 않게 줄 전체를 쓴다 */
 .sites > .muted, .igposts > .muted { grid-column: 1 / -1; }
+
+/* 반복 작업 표 — 멈춘 줄 */
+#loopsTable td.warn { color: var(--amber); font-weight: 700; }

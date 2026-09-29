@@ -11,6 +11,7 @@
   GET /api/engagement  → public/engagement.json (방문·유입·행동 점수)
   GET /api/publish     → 인스타 자동 발행 원장 요약(design-lab/state/, 읽기 전용)
   GET /api/guide       → 취업 브리핑(guide-engine) 조사 완료 회사 + 대기열
+  GET /api/loops       → 반복 작업 등록부(automation/loops.py) + 산출물 나이로 본 상태
 
 사용법:
     python -m monitoring.ops_server            # 8770 포트
@@ -213,12 +214,33 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._send_json(_publish_summary())
             return
 
+        if path == "/api/loops":
+            self._send_json(_loops_status())
+            return
+
         if path == "/api/health":
             n = self._query_int(qs, "n", 30)
             self._send_json(_tail_jsonl(HEALTH_HISTORY, n))
             return
 
         self._send(404, b"not found", "text/plain")
+
+
+_LOOPS_CACHE: dict = {"at": 0.0, "data": None}
+
+
+def _loops_status():
+    """등록부 상태. git log 를 여러 번 부르므로 60초 동안 재사용한다(대시보드는 1분마다 묻는다)."""
+    import time
+    if _LOOPS_CACHE["data"] is not None and time.time() - _LOOPS_CACHE["at"] < 60:
+        return _LOOPS_CACHE["data"]
+    try:
+        from automation.loops import status_all
+        data = status_all()
+    except Exception as e:  # 등록부가 깨져도 대시보드는 떠 있어야 한다
+        data = {"error": str(e)}
+    _LOOPS_CACHE.update(at=time.time(), data=data)
+    return data
 
 
 # 뷰어가 실제로 읽는 산출물. 사이클 상태(run_state)만 보면 데몬이 멈춘 뒤로는 아무것도

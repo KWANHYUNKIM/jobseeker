@@ -48,6 +48,10 @@
     (추정값이라 화면이 구분해 보여준다). 출처표는 `db/README.md` 의 "3-1".
   - `monitoring/` : 헬스 기록·이상탐지(health)
   - `automation/` : 크롤 오케스트레이션(crawl_all) + 자동화 데몬(auto_crawl)
+    + **반복 작업 등록부(`loops.py`)** — launchd 작업·크롤 회차의 단계·Claude `/loop` 조사 엔진(역설계·브리핑·
+    백과사전·하드웨어)을 한 표로 모았다. `/loop` 엔진의 실행 프롬프트는 여기에만 있다 —
+    다시 시작할 때 `python -m automation.loops prompt <키>` 출력을 `/loop` 에 준다. 상태는 산출물의 나이로 보고
+    8770 대시보드 '반복 작업' 칸(`/api/loops`)에 뜬다. **새 반복 작업은 먼저 여기 한 줄을 더한다.**
   - `dashboard/` : 통계 대시보드(serve.py, 8765)
   - `semantic/` : 임베딩 기반 추천·검색 (SQLite+sqlite-vec 저장, Ollama bge-m3 증분 임베딩,
     코사인 top-K → `public/similar_*.json`). 크롤 사이클 끝에 auto_crawl 이 자동 실행.
