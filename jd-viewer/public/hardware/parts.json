@@ -2507,6 +2507,114 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-core-i5-12400",
+   "category": "cpu",
+   "name": "Core i5-12400",
+   "maker": "Intel",
+   "released": "2022-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 6,
+    "threads": 12,
+    "boost_ghz": 4.4,
+    "base_ghz": 2.5,
+    "tdp_w": 65,
+    "max_power_w": 117,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "igpu_name": "Intel UHD 730",
+    "l3_mb": 18,
+    "series": "코어 12세대",
+    "family": "코어 i5"
+   },
+   "perf": {
+    "index": 58,
+    "multi": 28,
+    "basis": "게임: TPU 9800X3D 리뷰 1080p 에서 F 판 72.7% — 우리 눈금(5600X 72.1% ↔ 58, 12600K 77.9% ↔ 63 의 기울기)으로 옮겼다(내장 그래픽 유무는 게임 성능과 무관). 멀티는 코어 수로 잡은 추정(실측 대기)",
+    "confidence": "low"
+   },
+   "price_query": {
+    "q": "i5-12400",
+    "cate": "CPU",
+    "must": [
+     "12400"
+    ],
+    "not": [
+     "12400F",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i5-12400(6코어 · 12스레드 · 4.4GHz · 18MB · 65/117W · UHD 730 · DDR4-3200/DDR5-4800 · 2022년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/134586/intel-core-i512400-processor-18m-cache-up-to-4-40-ghz/specifications.html"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰, 1080p 게임 상대 성능(Core i5-12400F 72.7%)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/18.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-i3-12100",
+   "category": "cpu",
+   "name": "Core i3-12100",
+   "maker": "Intel",
+   "released": "2022-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1700",
+    "cores": 4,
+    "threads": 8,
+    "boost_ghz": 4.3,
+    "base_ghz": 3.3,
+    "tdp_w": 60,
+    "max_power_w": 89,
+    "mem": "DDR4/DDR5",
+    "igpu": true,
+    "igpu_name": "Intel UHD 730",
+    "l3_mb": 12,
+    "series": "코어 12세대",
+    "family": "코어 i3"
+   },
+   "perf": {
+    "index": 52,
+    "multi": 19,
+    "basis": "게임: TPU 9800X3D 리뷰 1080p 에서 F 판 64.8% — 우리 눈금(5600X 72.1% ↔ 58, 12600K 77.9% ↔ 63 의 기울기)으로 옮겼다(내장 그래픽 유무는 게임 성능과 무관). 멀티는 코어 수로 잡은 추정(실측 대기)",
+    "confidence": "low"
+   },
+   "price_query": {
+    "q": "i3-12100",
+    "cate": "CPU",
+    "must": [
+     "12100"
+    ],
+    "not": [
+     "12100F",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core i3-12100(4코어 · 8스레드 · 4.3GHz · 12MB · 60/89W · UHD 730 · DDR4-3200/DDR5-4800 · 2022년 1분기)",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/134584/intel-core-i312100-processor-12m-cache-up-to-4-30-ghz/specifications.html"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰, 1080p 게임 상대 성능(Core i3-12100F 64.8%)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/18.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "ram-ddr5-6000-16",
    "category": "ram",
    "name": "DDR5-6000 16GB (한 장)",
