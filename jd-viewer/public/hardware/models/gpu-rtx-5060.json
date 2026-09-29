@@ -272,7 +272,12 @@
     }
    ],
    "confidence": "high",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://d2vfia6k6wrouk.cloudfront.net/productimages/026769ef-e581-4b5f-bc57-b2c0009c7bee/images/1-pny-rtx-5060-std-oc-dual-fan-ra.png",
+    "credit": "PNY",
+    "page": "https://www.pny.com/geforce-rtx-5060-8gb-models?sku=VCG50608DFXPB1-O"
+   }
   },
   {
    "id": "msi-ventus-2x-oc-v1-rtx5060",

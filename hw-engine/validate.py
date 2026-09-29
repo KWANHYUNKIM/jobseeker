@@ -198,6 +198,12 @@ def check() -> tuple[list[str], list[dict], dict, dict, dict]:
         missing = cols.get(cat, set()) - set((p.get("specs") or {}).keys())
         if missing:
             errs.append(f"{pid}: specs 에 표 열 {sorted(missing)} 이 없다")
+        img = p.get("image")
+        if img:
+            if not all(img.get(k) for k in ("url", "credit", "page")):
+                errs.append(f"{pid}: image 는 url·credit·page 가 다 있어야 한다(출처 표시)")
+            if any(h in str(img.get("url", "")) + str(img.get("page", "")) for h in ("danawa", "danuri", "coupang", "naver")):
+                errs.append(f"{pid}: 사진은 제조사 공식 페이지 것만 — 판매처 이미지는 쓰지 않는다")
         q = p.get("price_query")
         if q is not None and not q.get("q"):
             errs.append(f"{pid}: price_query.q 가 비었다")

@@ -45,7 +45,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/rtx-5090/geforce-rtx-5090-learn-more-og-1200x630.jpg",
+    "credit": "NVIDIA",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+   }
   },
   {
    "id": "gpu-rtx-5080",
@@ -90,7 +95,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/rtx-5080/geforce-rtx-5080-og-1200x630.jpg",
+    "credit": "NVIDIA",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5080/"
+   }
   },
   {
    "id": "gpu-rtx-5070-ti",
@@ -135,7 +145,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5070-family/geforce-rtx-5070-ti-og-image.jpg",
+    "credit": "NVIDIA",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/"
+   }
   },
   {
    "id": "gpu-rtx-5070",
@@ -181,7 +196,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5070-family/geforce-rtx-5070-banner-xl-offset-desktop.jpg",
+    "credit": "NVIDIA",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/"
+   }
   },
   {
    "id": "gpu-rtx-5060-ti-16",
@@ -227,7 +247,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5060-family/geforce-rtx-5060-family-og-1200x630@2x.jpg",
+    "credit": "NVIDIA (RTX 5060 가족 사진)",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5060-family/"
+   }
   },
   {
    "id": "gpu-rtx-5060-ti-8",
@@ -273,7 +298,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5060-family/geforce-rtx-5060-family-og-1200x630@2x.jpg",
+    "credit": "NVIDIA (RTX 5060 가족 사진)",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5060-family/"
+   }
   },
   {
    "id": "gpu-rtx-5060",
@@ -319,7 +349,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5060-family/geforce-rtx-5060-family-og-1200x630@2x.jpg",
+    "credit": "NVIDIA (RTX 5060 가족 사진)",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5060-family/"
+   }
   },
   {
    "id": "gpu-rtx-4090",
@@ -364,7 +399,12 @@
     }
    ],
    "status": "legacy",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4090/geforce-ada-4090-web-og-1200x630.jpg",
+    "credit": "NVIDIA",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4090/"
+   }
   },
   {
    "id": "gpu-rtx-4070-super",
@@ -411,7 +451,12 @@
     }
    ],
    "status": "legacy",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/40-series/rtx-4070-4070ti/geforce-rtx-4070-super-og-1200x630.jpg",
+    "credit": "NVIDIA",
+    "page": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4070-family/"
+   }
   },
   {
    "id": "gpu-rtx-4060",
@@ -502,7 +547,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/radeon-rx-9070/2922918-radeon-rx-9070xt.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070xt.html"
+   }
   },
   {
    "id": "gpu-rx-9070",
@@ -548,7 +598,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/radeon-rx-9070/2922918-radeon-rx-9070.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070.html"
+   }
   },
   {
    "id": "gpu-rx-9060-xt-16",
@@ -594,7 +649,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/radeon-rx-9060xt/3248000-radeon-rx-9060xt.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9060xt.html"
+   }
   },
   {
    "id": "gpu-rx-7900-xtx",
@@ -639,7 +699,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/2648997-amd-radeon-7900xtx.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7900xtx.html"
+   }
   },
   {
    "id": "gpu-rx-7800-xt",
@@ -684,7 +749,12 @@
     }
    ],
    "status": "legacy",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/graphics/2648997-amd-radeon-7800xt.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7800-xt.html"
+   }
   },
   {
    "id": "gpu-arc-b580",
@@ -775,7 +845,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/3021650-ryzen-9-9900x3d-product.jpg",
+    "credit": "AMD (X3D 공용 사진)",
+    "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x3d.html"
+   }
   },
   {
    "id": "cpu-ryzen-9-9950x",
@@ -822,7 +897,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-9-9950x-og.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x.html"
+   }
   },
   {
    "id": "cpu-ryzen-9-9900x",
@@ -869,7 +949,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-9-9950x-og.jpg",
+    "credit": "AMD (9950X 와 같은 사진)",
+    "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9900x.html"
+   }
   },
   {
    "id": "cpu-ryzen-7-9800x3d",
@@ -915,7 +1000,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2900400-ryzen-7-9800x3d.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-7-9800x3d.html"
+   }
   },
   {
    "id": "cpu-ryzen-7-9700x",
@@ -962,7 +1052,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-7-9700x-og.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-7-9700x.html"
+   }
   },
   {
    "id": "cpu-ryzen-7-7800x3d",
@@ -1008,7 +1103,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2505503-ryzen-7-7800x3d-og.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/processors/desktops/ryzen/7000-series/amd-ryzen-7-7800x3d.html"
+   }
   },
   {
    "id": "cpu-ryzen-5-9600x",
@@ -1055,7 +1155,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg",
+    "credit": "AMD",
+    "page": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-5-9600x.html"
+   }
   },
   {
    "id": "cpu-ryzen-5-7500f",
@@ -1734,7 +1839,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://images.samsung.com/is/image/samsung/p6pim/ae/mz-v9p2t0bw/gallery/ae-990pro-nvme-m2-ssd-mz-v9p2t0bw-537744289?$650_519_PNG$",
+    "credit": "Samsung",
+    "page": "https://www.samsung.com/ae/memory-storage/nvme-ssd/990-pro-2tb-nvme-pcie-gen-4-mz-v9p2t0bw/"
+   }
   },
   {
    "id": "ssd-samsung-990-pro-1tb",
@@ -1775,7 +1885,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://images.samsung.com/is/image/samsung/p6pim/us/mz-v9p1t0b-am/gallery/us-nvme-ssd-mz-v9p1t0b-am-----pro---tb-ssd-nvme--m---black-551141121?$650_519_PNG$",
+    "credit": "Samsung",
+    "page": "https://www.samsung.com/us/memory-storage/nvme-ssd/990-pro-pcie-4-0-nvme-ssd-2tb-sku-mz-v9p1t0b-am/"
+   }
   },
   {
    "id": "ssd-samsung-990-evo-plus-1tb",
@@ -1816,7 +1931,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://images.samsung.com/is/image/samsung/p6pim/us/mz-v9s1t0b-am/gallery/us-990-evo-plus-nvme-m2-ssd-mz-v9s1t0b-am-550538037?$650_519_PNG$",
+    "credit": "Samsung",
+    "page": "https://www.samsung.com/us/memory-storage/nvme-ssd/990-evo-plus-gen4-nvme-ssd-1tb-sku-mz-v9s1t0b-am/"
+   }
   },
   {
    "id": "ssd-wd-sn850x-1tb",
@@ -1857,7 +1977,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/wd-black-sn850x-nvme-ssd/gallery/wd-black-sn850x-nvme-ssd-front.png",
+    "credit": "SanDisk (구 WD SSD 사업)",
+    "page": "https://www.sandisk.com/products/ssd/internal-ssd/wd-black-sn850x-nvme-ssd"
+   }
   },
   {
    "id": "ssd-skhynix-p41-1tb",
@@ -1898,7 +2023,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://ssd.skhynix.com/wp-content/uploads/2021/07/p41_1080.jpg",
+    "credit": "SK hynix",
+    "page": "https://ssd.skhynix.com/platinum_p41/"
+   }
   },
   {
    "id": "ssd-crucial-p3-plus-1tb",
@@ -1939,7 +2069,12 @@
     }
    ],
    "status": "legacy",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://assets.micron.com/adobe/assets/urn:aaid:aem:7f5fc122-7774-417e-9806-59baf7d2569f/as/crucial-p3-plus-ssd-flat-front-image.png",
+    "credit": "Crucial (Micron)",
+    "page": "https://www.crucial.com/ssd/p3-plus/ct1000p3pssd8"
+   }
   },
   {
    "id": "hdd-seagate-barracuda-2tb",
@@ -1978,7 +2113,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.seagate.com/content/dam/seagate/migrated-assets/www-content/products/hard-drives/barracuda-hard-drive/_shared/images/row-4-640x640.jpg",
+    "credit": "Seagate",
+    "page": "https://www.seagate.com/products/hard-drives/barracuda-hard-drive/"
+   }
   },
   {
    "id": "hdd-wd-blue-2tb",
@@ -2017,7 +2157,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.westerndigital.com/content/dam/store/en-us/assets/products/internal-storage/wd-blue-desktop-sata-hdd/gallery/wd-blue-pc-desktop-hard-drive-1tb.png",
+    "credit": "Western Digital",
+    "page": "https://www.westerndigital.com/products/internal-drives/wd-blue-desktop-sata-hdd"
+   }
   },
   {
    "id": "hdd-seagate-ironwolf-4tb",
@@ -2059,7 +2204,12 @@
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.seagate.com/content/dam/seagate/assets/products/nas-drives/ironwolf-hard-drive/ironwolf-product-page-update-row-3-slide-5.jpg",
+    "credit": "Seagate",
+    "page": "https://www.seagate.com/products/nas-drives/ironwolf-hard-drive/"
+   }
   },
   {
    "id": "hdd-wd-red-plus-4tb",
@@ -2098,7 +2248,12 @@
     }
    ],
    "status": "legacy",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://www.westerndigital.com/content/dam/store/en-us/assets/products/internal-storage/wd-red-plus-sata-3-5-hdd/gallery/wd-red-plus-sata-3-5-hdd-2tb.png",
+    "credit": "Western Digital",
+    "page": "https://www.westerndigital.com/products/internal-drives/wd-red-plus-sata-3-5-hdd"
+   }
   },
   {
    "id": "mb-x870e",
