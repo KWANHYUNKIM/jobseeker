@@ -1,0 +1,103 @@
+{
+ "schema": 1,
+ "part": "mb-x870",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-tuf-x870-plus-wifi",
+   "name": "ASUS TUF Gaming X870-PLUS WIFI",
+   "brand": "ASUS",
+   "code": "TUF GAMING X870-PLUS WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "X870-PLUS"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 2개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 10,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-x870-plus-wifi/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-tuf-x870-pro-wifi7-w-neo",
+   "name": "ASUS TUF Gaming X870-PRO WIFI7 W NEO",
+   "brand": "ASUS",
+   "code": "TUF GAMING X870-PRO WIFI7 W NEO",
+   "match": {
+    "must": [
+     "ASUS",
+     "TUF",
+     "X870-PRO"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "ATX 30.5×24.4cm",
+    "vrm": null,
+    "m2_slots": "4(5.0 2개)",
+    "dimm_slots": "4 · DDR5 최대 256GB",
+    "lan": "Realtek 5Gb",
+    "wifi": "Wi-Fi 7 (Realtek® RTL8922AE) 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 10,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/tuf-gaming/tuf-gaming-x870-pro-wifi7-w-neo/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "note": "흰색판."
+  },
+  {
+   "id": "asus-rog-strix-x870-i-gaming-wifi",
+   "name": "ASUS ROG STRIX X870-I GAMING WIFI",
+   "brand": "ASUS",
+   "code": "ROG STRIX X870-I GAMING WIFI",
+   "match": {
+    "must": [
+     "ASUS",
+     "X870-I"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "Mini-ITX 17×17cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 1개)",
+    "dimm_slots": "2 · DDR5 최대 128GB",
+    "lan": "Intel® 2.5Gb Ethernet",
+    "wifi": "Wi-Fi 7 2x2 Wi-Fi 7 (802.11be)",
+    "usb_rear": 10,
+    "pcie_gpu": "PCIe 5.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://rog.asus.com/motherboards/rog-strix/rog-strix-x870-i-gaming-wifi/spec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}

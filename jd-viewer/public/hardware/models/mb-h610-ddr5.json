@@ -1,0 +1,38 @@
+{
+ "schema": 1,
+ "part": "mb-h610-ddr5",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-h610i-plus",
+   "name": "ASUS PRIME H610I-PLUS",
+   "brand": "ASUS",
+   "code": "PRIME H610I-PLUS",
+   "match": {
+    "must": [
+     "ASUS",
+     "H610I-PLUS"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "Mini-ITX 17×17cm",
+    "vrm": null,
+    "m2_slots": "1(5.0 0개)",
+    "dimm_slots": "2 · DDR5 최대 96GB",
+    "lan": "Intel® 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 4,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-h610i-plus/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}

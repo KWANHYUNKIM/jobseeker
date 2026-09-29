@@ -1,0 +1,69 @@
+{
+ "schema": 1,
+ "part": "mb-h610-ddr4",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "asus-prime-h610m-k-d4",
+   "name": "ASUS PRIME H610M-K D4",
+   "brand": "ASUS",
+   "code": "PRIME H610M-K D4",
+   "match": {
+    "must": [
+     "ASUS",
+     "H610M-K"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 23.4×20.3cm",
+    "vrm": null,
+    "m2_slots": "1(5.0 0개)",
+    "dimm_slots": "2 · DDR4 최대 64GB",
+    "lan": "Realtek 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-h610m-k-d4/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "asus-prime-h610m-a-d4",
+   "name": "ASUS PRIME H610M-A D4",
+   "brand": "ASUS",
+   "code": "PRIME H610M-A D4",
+   "match": {
+    "must": [
+     "ASUS",
+     "H610M-A"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "M-ATX 24.4×21.1cm",
+    "vrm": null,
+    "m2_slots": "2(5.0 0개)",
+    "dimm_slots": "2 · DDR4 최대 64GB",
+    "lan": "Intel® 1Gb Ethernet",
+    "wifi": null,
+    "usb_rear": 6,
+    "pcie_gpu": "PCIe 4.0 x16"
+   },
+   "sources": [
+    {
+     "title": "ASUS 공식 스펙",
+     "url": "https://www.asus.com/motherboards-components/motherboards/prime/prime-h610m-a-d4/techspec/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}
