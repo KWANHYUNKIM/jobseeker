@@ -3166,11 +3166,14 @@
    "specs": {
     "socket": "AM5",
     "mem": "DDR5",
-    "pcie_gpu": "PCIe 4.0(5.0 선택)",
+    "pcie_gpu": "PCIe 4.0",
     "pcie_m2": "PCIe 5.0",
     "cpu_oc": true,
-    "usb4": false,
-    "forms": "ATX · M-ATX"
+    "usb4": "보드 선택",
+    "forms": "ATX · M-ATX",
+    "pcie_lanes": "36 (5.0 은 4)",
+    "usb_20g": 1,
+    "note": "AMD 표: 그래픽 PCIe 4.0 1x16 또는 2x8 · NVMe 1x4 PCIe 5.0 · 쓸 수 있는 레인 36(5.0 4) · CPU·DDR5 오버클럭 · USB 20Gbps 1 · SATA 4 · USB4 는 보드 선택."
    },
    "perf": {
     "index": 70,
@@ -3187,12 +3190,13 @@
    },
    "sources": [
     {
-     "title": "칩셋 제조사 사양",
-     "url": "https://www.amd.com/ko/products/processors/chipsets/am5.html"
+     "title": "AMD 공식 — AM5 칩셋 사양표",
+     "url": "https://www.amd.com/en/products/processors/chipsets/am5.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-b650",
@@ -3248,8 +3252,11 @@
     "pcie_gpu": "PCIe 4.0",
     "pcie_m2": "PCIe 4.0",
     "cpu_oc": false,
-    "usb4": false,
-    "forms": "ATX · M-ATX"
+    "usb4": "보드 선택",
+    "forms": "ATX · M-ATX",
+    "pcie_lanes": "32 (5.0 없음)",
+    "usb_20g": 0,
+    "note": "AMD 표(A620/A620A): 그래픽 PCIe 4.0 1x16 · NVMe 1x4 PCIe 4.0 · 레인 32 · CPU 오버클럭 불가 · DDR5 EXPO 는 가능 · USB 20Gbps 없음 · SATA 4 · USB4 는 보드 선택."
    },
    "perf": {
     "index": 35,
@@ -3266,12 +3273,13 @@
    },
    "sources": [
     {
-     "title": "칩셋 제조사 사양",
-     "url": "https://www.amd.com/ko/products/processors/chipsets/am5.html"
+     "title": "AMD 공식 — AM5 칩셋 사양표",
+     "url": "https://www.amd.com/en/products/processors/chipsets/am5.html"
     }
    ],
    "status": "current",
-   "checked_at": "2026-09-29"
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
   },
   {
    "id": "mb-b550",
