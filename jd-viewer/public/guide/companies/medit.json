@@ -1,0 +1,409 @@
+{
+  "slug": "medit",
+  "name": "메디트",
+  "name_en": "Medit",
+  "aliases": [
+    "메디트",
+    "㈜메디트",
+    "MEDIT",
+    "medit"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "medit.com",
+  "one_liner": "임상용 3D 구강스캐너와 치과 · 기공소 플랫폼 Medit Link — 스캔 3D 데이터에 AI 를 얹고, 여러 나라 환자 데이터를 멀티리전 · 의료 규격으로 다룬다",
+  "company": {
+    "business": "메디트(Medit)는 공고 머리말이 **임상에 쓰는 3D 구강스캐너**를 개발한 회사로 소개한다 — '제품 출시 1년 만에 글로벌 업계 선두 주자' 가 됐고, 스캐너로 쌓인 **3D 데이터에 AI · 머신러닝을 접목**해 **전 세계 치과와 기공소**가 쓰는 소프트웨어를 만든다고 적는다. 소프트웨어 쪽 대표는 **Medit Link** — 디지털 스캔과 환자 소통을 묶고 치과 · 기공소의 업무 관리를 간소화하는 플랫폼이다(meditlink.com 메타 설명). 백엔드 공고는 이 플랫폼을 **B2B2C 글로벌 서비스**로 부르고 **결제 · 정산**, 멀티리전, **SaMD(의료기기 소프트웨어) · ISO 27001 · HIPAA · IEC 62443 · MDR** 같은 국제 규격을 적는다. 모집중 공고는 셋 — 백엔드 아키텍트(10년↑), 3D 재구성 AI 엔지니어(석사 · 5년↑), DevOps(7년↑). medit.com 은 봇 확인 페이지로 막혀 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Backend Architect (AWS)",
+        "url": "https://www.wanted.co.kr/wd/317608",
+        "publisher": "원티드",
+        "summary": "머리말: 임상 활용 가능한 3D 구강스캐너를 개발, 제품 출시 1년 만에 글로벌 업계 선두 주자. 축적된 3D 데이터에 AI · 머신러닝을 접목해 전 세계 치과와 기공소용 소프트웨어를 만든다. 업무: Java Spring 글로벌 백엔드, B2B2C, AWS(EKS · ECS · Lambda · RDS · S3 · CloudFront), 결제 · 정산, OAuth2 · JWT · KMS, 멀티리전. 우대: SaMD · ISO 27001 · HIPAA · IEC 62443 · MDR."
+      },
+      {
+        "title": "Medit Link",
+        "url": "https://www.meditlink.com/",
+        "publisher": "메디트",
+        "summary": "메타 설명: 디지털 스캐닝과 환자 소통을 통합하고, 치과와 기공소의 업무 관리를 간소화한다. (본문은 스크립트 렌더라 메타만 읽었다. medit.com 은 봇 확인 페이지가 막아 읽지 않았다.)"
+      },
+      {
+        "title": "3D Reconstruction AI Engineer",
+        "url": "https://www.wanted.co.kr/wd/356821",
+        "publisher": "원티드",
+        "summary": "AI 기반 3D 재구성, contrastive learning 이미지 임베딩 · 검색, point cloud / mesh 딥러닝, 스캔 정렬 · geometry 최적화, 다중 스캔 merge / fusion, 노이즈 제거 · hole filling · mesh refinement. 석사 이상 · CV/ML 5년."
+      },
+      {
+        "title": "DevOps Engineer",
+        "url": "https://www.wanted.co.kr/wd/380517",
+        "publisher": "원티드",
+        "summary": "AWS 인프라 · EKS · Terraform CI/CD · OTel 모니터링 · 보안 컴플라이언스 감사 대응 · Glue/dbt ETL · DW/DL · 결제 정산 보안 검증. 우대: ISO 27001 · CSAP · HIPAA · GDPR, MLOps, SOC/CSIRT."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "3D 구강스캐너(하드웨어)",
+        "how": "공고 머리말이 회사를 3D 구강스캐너 개발사로 소개하고 출시 1년 만에 업계 선두라고 적는다 — 스캐너 판매가 본업으로 읽힌다. 가격 · 판매 채널은 읽은 자료에 없다.",
+        "domains": [
+          "3D 스캔 재구성"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Architect (AWS)",
+            "url": "https://www.wanted.co.kr/wd/317608",
+            "publisher": "원티드",
+            "summary": "머리말: 임상 활용 가능한 3D 구강스캐너를 개발, 제품 출시 1년 만에 글로벌 업계 선두 주자. 축적된 3D 데이터에 AI · 머신러닝을 접목해 전 세계 치과와 기공소용 소프트웨어를 만든다. 업무: Java Spring 글로벌 백엔드, B2B2C, AWS(EKS · ECS · Lambda · RDS · S3 · CloudFront), 결제 · 정산, OAuth2 · JWT · KMS, 멀티리전. 우대: SaMD · ISO 27001 · HIPAA · IEC 62443 · MDR."
+          }
+        ]
+      },
+      {
+        "name": "Medit Link · 치과/기공소 소프트웨어(결제 · 정산 포함)",
+        "how": "백엔드 공고가 B2B2C 서비스의 결제 · 정산 시스템 설계를 업무로 적고, Medit Link 가 치과 · 기공소 업무 관리를 한다 — 앱 · 구독 · 치과-기공소 간 거래 정산 중 무엇으로 버는지는 읽은 자료에 없다.",
+        "domains": [
+          "글로벌 덴탈 플랫폼 백엔드",
+          "의료 클라우드 인프라 · 컴플라이언스"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Backend Architect (AWS)",
+            "url": "https://www.wanted.co.kr/wd/317608",
+            "publisher": "원티드",
+            "summary": "머리말: 임상 활용 가능한 3D 구강스캐너를 개발, 제품 출시 1년 만에 글로벌 업계 선두 주자. 축적된 3D 데이터에 AI · 머신러닝을 접목해 전 세계 치과와 기공소용 소프트웨어를 만든다. 업무: Java Spring 글로벌 백엔드, B2B2C, AWS(EKS · ECS · Lambda · RDS · S3 · CloudFront), 결제 · 정산, OAuth2 · JWT · KMS, 멀티리전. 우대: SaMD · ISO 27001 · HIPAA · IEC 62443 · MDR."
+          },
+          {
+            "title": "Medit Link",
+            "url": "https://www.meditlink.com/",
+            "publisher": "메디트",
+            "summary": "메타 설명: 디지털 스캐닝과 환자 소통을 통합하고, 치과와 기공소의 업무 관리를 간소화한다. (본문은 스크립트 렌더라 메타만 읽었다. medit.com 은 봇 확인 페이지가 막아 읽지 않았다.)"
+          },
+          {
+            "title": "DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/380517",
+            "publisher": "원티드",
+            "summary": "AWS 인프라 · EKS · Terraform CI/CD · OTel 모니터링 · 보안 컴플라이언스 감사 대응 · Glue/dbt ETL · DW/DL · 결제 정산 보안 검증. 우대: ISO 27001 · CSAP · HIPAA · GDPR, MLOps, SOC/CSIRT."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "3D 스캔 재구성",
+        "why": "AI 엔지니어 공고가 3D 재구성, point cloud · mesh 딥러닝, 다중 스캔 정렬 · 병합, 노이즈 제거 · hole filling 을 적는다.",
+        "what_to_know": [
+          "ICP 정합",
+          "TSDF 융합",
+          "PointNet"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "3D Reconstruction AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/356821",
+            "publisher": "원티드",
+            "summary": "AI 기반 3D 재구성, contrastive learning 이미지 임베딩 · 검색, point cloud / mesh 딥러닝, 스캔 정렬 · geometry 최적화, 다중 스캔 merge / fusion, 노이즈 제거 · hole filling · mesh refinement. 석사 이상 · CV/ML 5년."
+          }
+        ]
+      },
+      {
+        "name": "글로벌 덴탈 플랫폼 백엔드",
+        "why": "백엔드 공고가 Java Spring · AWS 멀티리전 · 결제 · 정산 · OAuth2/JWT/KMS 를 적는다.",
+        "what_to_know": [
+          "멀티리전 데이터 거주",
+          "정산 원장",
+          "OAuth2"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Architect (AWS)",
+            "url": "https://www.wanted.co.kr/wd/317608",
+            "publisher": "원티드",
+            "summary": "머리말: 임상 활용 가능한 3D 구강스캐너를 개발, 제품 출시 1년 만에 글로벌 업계 선두 주자. 축적된 3D 데이터에 AI · 머신러닝을 접목해 전 세계 치과와 기공소용 소프트웨어를 만든다. 업무: Java Spring 글로벌 백엔드, B2B2C, AWS(EKS · ECS · Lambda · RDS · S3 · CloudFront), 결제 · 정산, OAuth2 · JWT · KMS, 멀티리전. 우대: SaMD · ISO 27001 · HIPAA · IEC 62443 · MDR."
+          }
+        ]
+      },
+      {
+        "name": "의료 클라우드 인프라 · 컴플라이언스",
+        "why": "DevOps 공고가 보안 규정 준수 정책 · 감사 대응과 ISO 27001 · CSAP · HIPAA · GDPR 을, 백엔드 공고가 SaMD · MDR 을 적는다.",
+        "what_to_know": [
+          "HIPAA 기술적 보호조치",
+          "감사 로그",
+          "Terraform 멀티 계정"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/380517",
+            "publisher": "원티드",
+            "summary": "AWS 인프라 · EKS · Terraform CI/CD · OTel 모니터링 · 보안 컴플라이언스 감사 대응 · Glue/dbt ETL · DW/DL · 결제 정산 보안 검증. 우대: ISO 27001 · CSAP · HIPAA · GDPR, MLOps, SOC/CSIRT."
+          },
+          {
+            "title": "Backend Architect (AWS)",
+            "url": "https://www.wanted.co.kr/wd/317608",
+            "publisher": "원티드",
+            "summary": "머리말: 임상 활용 가능한 3D 구강스캐너를 개발, 제품 출시 1년 만에 글로벌 업계 선두 주자. 축적된 3D 데이터에 AI · 머신러닝을 접목해 전 세계 치과와 기공소용 소프트웨어를 만든다. 업무: Java Spring 글로벌 백엔드, B2B2C, AWS(EKS · ECS · Lambda · RDS · S3 · CloudFront), 결제 · 정산, OAuth2 · JWT · KMS, 멀티리전. 우대: SaMD · ISO 27001 · HIPAA · IEC 62443 · MDR."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "환자 데이터가 여러 나라를 오간다",
+        "evidence": "글로벌 서비스 확장을 위한 고가용성(HA), 자동확장(Auto Scaling), 멀티리전 아키텍처 설계",
+        "so_what": "HIPAA(미국) · GDPR(유럽) · CSAP(한국 공공) 이 함께 우대로 적혀 있다 — 면접에서 '어느 나라 환자의 스캔을 어느 리전에 두나' 를 물을 가능성이 높다(추정).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "고연차 · 고학력 채용",
+        "evidence": "1.관련 분야 석사 학위 이상 보유자",
+        "so_what": "세 공고가 10년↑ · 석사 5년↑ · 7년↑ 이다. 신입 · 저연차 문은 이 세 자리에는 없다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "medit.com 은 봇 확인 페이지가 막아 읽지 않았다(우회하지 않음) — 매출 · 임직원 수 · 제품 가격은 읽은 자료에 없다",
+    "Medit Link 와 결제 · 정산이 무엇으로 버는지(구독 · 앱 · 거래 정산)는 모른다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/317608",
+      "title": "Backend Architect (AWS)",
+      "site": "wanted",
+      "verdict": "경력 10-19년. **Java Spring / Spring Boot 기반 글로벌 백엔드 플랫폼**(B2B2C) 아키텍처를 세운다 — **AWS(EKS · ECS · Lambda · RDS · S3 · CloudFront)**, 대규모 DB(RDS · DynamoDB · Redshift), **결제 · 정산 시스템 아키텍처**, **보안 · 인증(OAuth2.0 · JWT · TLS · IAM Policy · KMS)**, **고가용성 · 자동확장 · 멀티리전**, 방향성 수립 · 멘토링 · 표준화. 자격은 백엔드 · 시스템 설계 10년, Java/Spring 전문, **AWS 아키텍처 7년**, DB 설계 · 튜닝 · 이중화 · 보안, 보안 · 인증. 우대는 분산 시스템, AI 서비스, **의료기기 클라우드 · SaMD**, **ISO 27001 · HIPAA · IEC 62443 · MDR**, IaC, 결제 · 정산, MSA · 이벤트 기반, 글로벌 협업 · 기술 문서. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 10년",
+          "Java/Spring 전문",
+          "AWS 7년",
+          "보안 · 인증"
+        ],
+        "can_learn": [
+          "멀티리전 데이터 거주",
+          "SaMD 규격",
+          "정산 원장"
+        ]
+      },
+      "study": [
+        {
+          "topic": "멀티리전 — 환자 데이터를 어느 리전에 두나",
+          "from": "task",
+          "quote": "글로벌 서비스 확장을 위한 고가용성(HA), 자동확장(Auto Scaling), 멀티리전 아키텍처 설계",
+          "priority": "core",
+          "why": "주요업무이고 우대에 HIPAA · MDR 이 있다. 글로벌 치과 · 기공소가 쓰는 플랫폼이라 스캔 데이터가 여러 나라에서 올라온다.",
+          "gap_check": "리전을 여럿 두는 목적이 장애 대비(액티브-스탠바이)인가, 데이터 거주 요건(나라별 저장)인가 — 둘은 설계가 어떻게 다른가? 사용자 계정 · 로그인은 전역 하나로 두고 스캔 데이터만 리전에 두려면 무엇을 나누나? 리전 간 복제가 늦을 때 사용자에게 무엇이 보이나?",
+          "drill": "AWS 'Multi-Region fundamentals' 백서를 읽고, 계정 서비스(전역) + 스캔 메타데이터(리전별 RDS) + 스캔 파일(리전별 S3) 구성의 아키텍처 그림과 데이터 흐름표를 그린다. 사용자의 '홈 리전' 을 가입 때 정해 라우팅하는 방식과, 한 리전 장애 때 무엇이 멈추고 무엇이 계속되는지를 한 쪽으로 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AWS Multi-Region Fundamentals — AWS Whitepaper",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-multi-region-fundamentals/aws-multi-region-fundamentals.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "결제 · 정산 아키텍처 — 원장과 멱등성",
+          "from": "task",
+          "quote": "결제(Payment) 및 정산 시스템 아키텍처 설계",
+          "priority": "high",
+          "why": "주요업무이고 우대에도 결제 · 정산 설계가 있다. B2B2C 플랫폼이라 치과 · 기공소 · 최종 사용자 사이 돈의 흐름을 기록해야 한다.",
+          "gap_check": "결제 요청이 타임아웃 났을 때 다시 보내도 두 번 청구되지 않게 하려면(멱등 키)? 정산 금액을 '잔액 컬럼 갱신' 이 아니라 '거래 기록의 합' 으로 두는 이유(복식 원장)? 결제대행사(PG) 기록과 우리 기록이 다를 때 매일 무엇으로 맞추나(대사)?",
+          "drill": "Stripe 의 멱등 요청 문서를 읽고, Spring Boot 로 결제 요청 API(Idempotency-Key)와 복식 원장 테이블(계정 · 차변 · 대변)을 만든다. PG 목 서버가 가끔 타임아웃을 내게 하고, 하루치 거래를 PG 파일과 대사해 불일치를 찾는 배치를 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Idempotent requests — Stripe API",
+              "url": "https://docs.stripe.com/api/idempotent_requests",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의료기기 소프트웨어(SaMD)가 요구하는 것",
+          "from": "preference",
+          "quote": "의료기기 관련 클라우드 플랫폼 또는 SaMD(Software as a Medical Device) 구축 경험",
+          "priority": "nice",
+          "why": "우대사항이고 바로 뒤에 ISO 27001 · HIPAA · IEC 62443 · MDR 이 있다. 구강스캐너와 연결된 소프트웨어는 의료기기 규제 안에 들어올 수 있다.",
+          "gap_check": "소프트웨어 개발 생명주기에 IEC 62304 는 무엇을 요구하나(요구사항 추적 · 위험 관리 · 변경 관리)? 클라우드 백엔드 배포가 잦을 때 이 요구를 어떻게 자동화하나(변경마다 추적성 기록)? HIPAA 의 기술적 보호조치(접근 통제 · 감사 로그 · 전송 암호화)를 AWS 서비스로 무엇에 매핑하나?",
+          "drill": "FDA 'Software as a Medical Device (SaMD)' 안내 페이지와 HHS HIPAA Security Rule 요약을 읽고, 이 회사 플랫폼을 가정해 '요구사항 → 설계 → 테스트 → 배포' 추적 표 한 쪽과 HIPAA 기술적 보호조치 ↔ AWS 서비스(CloudTrail · KMS · IAM) 매핑 표를 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Software as a Medical Device (SaMD) — U.S. FDA",
+              "url": "https://www.fda.gov/medical-devices/digital-health-center-excellence/software-medical-device-samd",
+              "kind": "docs"
+            },
+            {
+              "title": "Summary of the HIPAA Security Rule — HHS",
+              "url": "https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/356821",
+      "title": "3D Reconstruction AI Engineer",
+      "site": "wanted",
+      "verdict": "경력 5-8년, **석사 이상**(컴퓨터비전 · AI · 로보틱스 등). 구강스캐너의 **AI 기반 3D 재구성** — contrastive learning 이미지 임베딩 · 검색, **point cloud / mesh 딥러닝**, **스캔 정렬 · geometry 최적화**, **다중 스캔 merge / fusion**, 후처리(**노이즈 제거 · smoothing · hole filling · mesh refinement**), 제품 적용 · 성능 최적화. 자격은 CV/ML 5년, TensorFlow · PyTorch, 영상처리 · 머신비전, **3D 데이터 처리**, **C++ / Python**, 제품 적용 · 최적화, 최신 논문 구현. 우대는 contrastive · self-supervised, **NeRF · PointNet**, 실시간 · 모바일 최적화, 의료기기 · 덴탈, **의료기기 인증 문서**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "석사 · CV/ML 5년",
+          "3D 데이터 처리",
+          "C++ / Python",
+          "제품 적용 경험"
+        ],
+        "can_learn": [
+          "TSDF 융합",
+          "PointNet",
+          "의료기기 문서"
+        ]
+      },
+      "study": [
+        {
+          "topic": "여러 번 찍은 스캔을 하나로 — 정합(ICP)과 융합",
+          "from": "task",
+          "quote": "5. 다중 스캔 데이터의 merge / fusion 알고리즘 개발",
+          "priority": "core",
+          "why": "주요업무이고 바로 위가 '스캔 데이터 정렬 및 geometry 최적화' 다. 구강스캐너는 입안을 여러 조각으로 찍어 하나의 치아 모델로 이어 붙인다.",
+          "gap_check": "두 조각의 점군을 맞출 때 ICP 는 초기 위치가 나쁘면 왜 틀린 해에 빠지나 — 초기 정합은 무엇으로(특징점 · FPFH)? 조각을 순서대로 이으면 오차가 쌓인다 — 전체를 한 번에 다시 맞추는 방법은(포즈 그래프 최적화)? 겹친 영역의 점을 평균 낼지, 거리장(TSDF)으로 융합할지 무엇으로 고르나?",
+          "drill": "Open3D 튜토리얼의 'Global registration' · 'ICP registration' · 'Multiway registration' · 'TSDF integration' 을 따라, 공개 RGB-D 조각(튜토리얼 데이터)을 FPFH 초기 정합 → ICP → 포즈 그래프 → TSDF 로 하나의 메시로 만든다. 초기 정합을 뺀 판과 포즈 그래프를 뺀 판의 오차를 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Open3D — Multiway registration",
+              "url": "https://www.open3d.org/docs/release/tutorial/pipelines/multiway_registration.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Open3D — TSDF integration",
+              "url": "https://www.open3d.org/docs/release/tutorial/pipelines/rgbd_integration.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "point cloud 딥러닝 — PointNet 부터",
+          "from": "task",
+          "quote": "3. Point cloud / Mesh 기반 3D 딥러닝 모델 개발",
+          "priority": "core",
+          "why": "주요업무이고 우대에 NeRF · PointNet 이 있다. 치아 분할 · 불량 영역 검출 같은 일을 점군 위에서 한다(이 사이트의 해석).",
+          "gap_check": "점군은 순서가 없다 — PointNet 은 순서에 상관없는 결과를 어떻게 만드나(대칭 함수 · max pooling)? 국소 형태(치아 경계)를 못 보는 약점을 PointNet++ 는 어떻게 보완하나? 스캔마다 점 수가 다를 때 배치로 어떻게 묶나?",
+          "drill": "PointNet 논문을 읽고 PyTorch 로 분류 모델을 짜서 ModelNet40 에서 학습한다. 입력 점 순서를 섞어도 예측이 같은지 확인하고, 점 수를 1024 → 256 으로 줄였을 때 정확도가 어떻게 떨어지는지 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation",
+              "url": "https://arxiv.org/abs/1612.00593",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "스캔 메시 후처리 — 노이즈 제거와 hole filling",
+          "from": "task",
+          "quote": "6. 3D 스캔 결과의 post-processing 알고리즘 개발",
+          "priority": "high",
+          "why": "주요업무이고 아래에 노이즈 제거 · smoothing/sharpening · hole filling · mesh refinement 가 나열돼 있다. 치과의사가 보는 최종 모델의 품질을 정한다.",
+          "gap_check": "라플라시안 smoothing 은 왜 모델을 쪼그라뜨리고 날카로운 치아 경계를 뭉개나 — 무엇으로 보완하나(Taubin · 양방향 필터)? 스캔 구멍을 메울 때 평평하게 채우는 것과 주변 곡률을 이어 채우는 것은 어떻게 다른가? 후처리가 진단에 필요한 형상을 바꾸지 않았음을 무엇으로 확인하나(원본과의 거리 지도)?",
+          "drill": "Open3D 의 mesh filtering 예제로 잡음 섞은 메시에 라플라시안 · Taubin 을 각각 걸어 부피 변화와 원본 대비 거리 분포를 비교한다. 일부 삼각형을 지워 구멍을 만든 뒤 PyMeshLab 의 hole filling 으로 메우고 원본과의 거리 지도를 색으로 칠한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Open3D — Mesh (filtering)",
+              "url": "https://www.open3d.org/docs/release/tutorial/geometry/mesh.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PyMeshLab",
+              "url": "https://pymeshlab.readthedocs.io/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/380517",
+      "title": "DevOps Engineer",
+      "site": "wanted",
+      "verdict": "경력 7-10년(자격은 5년 이상). **AWS 인프라 구축 · 운영 · 정책 · 자동화**, 컨테이너 서비스, **Terraform CI/CD**, 모니터링 · 장애 대응, **보안 규정 준수 정책 · 감사 대응**, **ETL · DW/DL 인프라**, 결제 · 정산 · 보안 · 인증 설계 검증, 코드 리뷰 · 멘토링. 자격은 AWS 아키텍처 · 보안 서비스, **Docker · Kubernetes(EKS)** 운영 · 트러블슈팅, **IaC 멀티 계정 · 멀티 리전**, **OTel 모니터링 · 로깅**, RDS · DynamoDB · OpenSearch, **Glue/dbt ETL · DW/DL**. 우대는 **ISO 27001 · CSAP · HIPAA · GDPR**, 헬스케어, APM · DORA · SIEM, MLOps, SOC/CSIRT, 글로벌 협업. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "DevOps 5년",
+          "EKS 운영",
+          "IaC 멀티 계정 · 리전",
+          "OTel"
+        ],
+        "can_learn": [
+          "감사 증적 자동화",
+          "Glue/dbt",
+          "SIEM"
+        ]
+      },
+      "study": [
+        {
+          "topic": "멀티 계정 · 멀티 리전 AWS 를 Terraform 으로",
+          "from": "qualification",
+          "quote": "4. IaC 기반의 멀티 계정/멀티 리전 인프라 관리 및 CI/CD 시스템 구축 경험",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무가 AWS 인프라 정책 수립 · 자동화와 Terraform CI/CD 다. 백엔드 공고도 멀티리전 아키텍처를 적는다.",
+          "gap_check": "계정을 무엇 단위로 나누나(환경 · 리전 · 워크로드)와 그 이유(피해 범위 · 청구 · 권한)? Terraform 상태를 계정 · 리전마다 어떻게 나누고 잠그나? 모든 계정에 같은 보안 기준(CloudTrail · GuardDuty · 암호화)을 강제하려면(조직 SCP · 공통 모듈)?",
+          "drill": "AWS Organizations 에 dev · prod 두 계정을 만들고, Terraform 공통 모듈(VPC · KMS · CloudTrail)을 두 리전에 적용하는 저장소를 만든다. 상태는 계정 · 리전별 S3 백엔드 + 잠금으로 나누고, GitHub Actions 가 PR 에 plan 을 달게 한다. SCP 로 '암호화 안 된 S3 버킷 생성 금지' 를 걸어 실제로 막히는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Organizing Your AWS Environment Using Multiple Accounts — AWS Whitepaper",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/organizing-your-aws-environment.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OpenTelemetry 로 모니터링 · 로깅을 한 줄기로",
+          "from": "qualification",
+          "quote": "5. OTel 기반의 모니터링 및 로깅 시스템 구축 경험",
+          "priority": "high",
+          "why": "필수 자격이고 주요업무에 시스템 모니터링 · 장애 대응 체계, 우대에 APM · DORA · SIEM 이 있다.",
+          "gap_check": "EKS 에서 OTel Collector 를 데몬셋 · 게이트웨이 중 무엇으로 두나, 둘을 같이 쓰면 각각 무슨 일을 하나? 트레이스 샘플링을 어디서 하나(head vs tail)? 로그에 trace_id 를 넣어 트레이스와 로그를 잇는 방법은?",
+          "drill": "OTel Collector 문서의 'Deployment' 를 읽고, kind(로컬 쿠버네티스)에 Spring Boot 앱 두 개 + Collector(에이전트 데몬셋 → 게이트웨이) + Jaeger · Loki 를 띄운다. tail sampling 으로 오류 트레이스만 남기고, 로그의 trace_id 로 트레이스와 로그가 이어지는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OpenTelemetry Collector — Deployment",
+              "url": "https://opentelemetry.io/docs/collector/deployment/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보안 인증 감사에 대응하는 인프라 — 증적을 자동으로",
+          "from": "task",
+          "quote": "5. 보안 규정 준수(Cybersecurity & Compliance)를 위한 정책 수립 및 감사 대응",
+          "priority": "high",
+          "why": "주요업무이고 우대에 ISO 27001 · CSAP · HIPAA · GDPR 이 있다. 의료 데이터를 여러 나라에서 다룬다.",
+          "gap_check": "감사관이 '지난 1년간 운영 DB 접근 기록' 을 달라면 무엇을 내나(CloudTrail · DB 감사 로그 · 보관 기간)? 규정 위반 설정(공개 S3 · 암호화 안 된 볼륨)을 사람 점검이 아니라 무엇으로 계속 찾나(AWS Config 규칙 · Security Hub)? 여러 인증의 같은 통제 항목을 한 번에 관리하려면?",
+          "drill": "AWS Config 에 관리형 규칙 5개(S3 공개 차단 · EBS 암호화 · CloudTrail 켜짐 · 루트 MFA · RDS 암호화)를 Terraform 으로 걸고 일부러 위반 리소스를 만들어 탐지되는지 본다. Security Hub 의 표준 점수를 캡처하고, ISO 27001 통제 몇 개 ↔ 이 규칙들의 매핑 표를 한 쪽으로 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS Config — Managed rules",
+              "url": "https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1126,6 +1126,20 @@
       "postings": 2,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "medit",
+      "name": "메디트",
+      "aliases": [
+        "메디트",
+        "㈜메디트",
+        "MEDIT",
+        "medit"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }
