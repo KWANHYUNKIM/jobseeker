@@ -2333,6 +2333,60 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-ryzen-7-8700g",
+   "category": "cpu",
+   "name": "Ryzen 7 8700G",
+   "maker": "AMD",
+   "released": "2024-01",
+   "status": "current",
+   "specs": {
+    "socket": "AM5",
+    "cores": 8,
+    "threads": 16,
+    "boost_ghz": 5.1,
+    "tdp_w": 65,
+    "max_power_w": 88,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 16,
+    "series": "라이젠 8000 시리즈",
+    "family": "라이젠 7",
+    "base_ghz": 4.2,
+    "igpu_name": "Radeon 780M(12코어)",
+    "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
+   },
+   "perf": {
+    "index": 61,
+    "multi": 42,
+    "confidence": "low",
+    "basis": "게임: Tom's 8600G 리뷰(외장 RTX 4090) — 'i5-13400 이 8600G 와 8700G 사이, 양쪽 차이는 근소' → 13400(우리 60) 바로 위 61. 멀티는 추정 — 같은 피닉스 다이 8코어라 8600G(33)의 코어 비(8/6)보다 조금 낮게 42(실측 대기)"
+   },
+   "price_query": {
+    "q": "AMD 8700G",
+    "cate": "CPU",
+    "must": [
+     "8700G"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 제품 페이지 — Ryzen 7 8700G(8C/16T · 4.2/최대 5.1GHz · L3 16MB · 65W · AM5 · DDR5 · Radeon 780M 12코어 · 2024년 1분기)",
+     "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700g.html"
+    },
+    {
+     "title": "Tom's Hardware — Ryzen 5 8600G 리뷰, 외장 그래픽(RTX 4090) 게임: 7600X 가 15% 빠르고 8600G 는 5600G 보다 20% · i3-13100 보다 22% 빠르다",
+     "url": "https://www.tomshardware.com/pc-components/cpus/amd-ryzen-5-8600g-cpu-review/4"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-ryzen-5-8600g",
    "category": "cpu",
    "name": "Ryzen 5 8600G",
