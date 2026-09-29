@@ -1082,6 +1082,138 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "gpu-rx-7600",
+   "category": "gpu",
+   "name": "Radeon RX 7600",
+   "maker": "AMD",
+   "released": "2023-05",
+   "status": "current",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR6",
+    "bus_bit": 128,
+    "bandwidth_gbs": 288,
+    "cores": 2048,
+    "tdp_w": 165,
+    "fp16_tflops": null,
+    "stack": "ROCm",
+    "psu_w": 550,
+    "fp16_matrix_dense_tflops": 43.5
+   },
+   "perf": {
+    "index": 32,
+    "basis": "추정 — RTX 4060(33)과 같은 급으로 보고 잡았다. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RX 7600",
+    "cate": "그래픽카드",
+    "must": [
+     "7600"
+    ],
+    "not": [
+     "XT",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — RX 7600(2048 SP · 8GB 128-bit · 288GB/s · 165W · 권장 550W)",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/7000-series/amd-radeon-rx-7600.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "gpu-rx-6600",
+   "category": "gpu",
+   "name": "Radeon RX 6600",
+   "maker": "AMD",
+   "released": "2021-10",
+   "status": "current",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR6",
+    "bus_bit": 128,
+    "bandwidth_gbs": 224,
+    "cores": 1792,
+    "tdp_w": 132,
+    "fp16_tflops": null,
+    "stack": "ROCm",
+    "psu_w": 450
+   },
+   "perf": {
+    "index": 26,
+    "basis": "추정 — RX 7600(32)보다 한 세대 아래(약 8할)로 잡았다. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RX 6600",
+    "cate": "그래픽카드",
+    "must": [
+     "6600"
+    ],
+    "not": [
+     "XT",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — RX 6600(1792 SP · 8GB 128-bit · 224GB/s · 132W · 권장 450W · 2021-10-13)",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/6000-series/amd-radeon-rx-6600.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "gpu-rtx-3050-6",
+   "category": "gpu",
+   "name": "GeForce RTX 3050 6GB",
+   "maker": "NVIDIA",
+   "released": null,
+   "status": "current",
+   "specs": {
+    "vram_gb": 6,
+    "mem_type": "GDDR6",
+    "bus_bit": 96,
+    "bandwidth_gbs": null,
+    "cores": 2304,
+    "tdp_w": 70,
+    "fp16_tflops": null,
+    "stack": "CUDA",
+    "psu_w": 300,
+    "boost_ghz": 1.47
+   },
+   "perf": {
+    "index": 16,
+    "basis": "추정 — 8GB 판의 7할 정도로 잡았다(코어 2304·버스 96bit·70W). 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RTX 3050 6GB",
+    "cate": "그래픽카드",
+    "must": [
+     "3050",
+     "6GB"
+    ],
+    "not": [
+     "8GB",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "NVIDIA 공식 — RTX 3050(6GB: 2304 CUDA · 96-bit · 70W · 권장 300W)",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3050/"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-ryzen-9-9950x3d",
    "category": "cpu",
    "name": "Ryzen 9 9950X3D",
