@@ -1681,10 +1681,10 @@
     "max_power_basis": "추정 — AMD 는 PPT 를 공식 표기하지 않는다. 관례식 TDP × 1.35"
    },
    "perf": {
-    "index": 73,
+    "index": 67,
     "multi": 34,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100 · 멀티: 9950X = 100. Tom's 표에 없어 이웃으로 옮겼다 — 7500F 는 7600 에서 내장 그래픽을 끄고 클럭을 100MHz 내린 칩(TechSpot). TechSpot 1080p 평균 7500F = 13400F × 1.12, TPU 9800X3D 리뷰 1080p 7600 84.0% · 13400F 74.3%(× 1.13) · 7600X 85.3% — 7500F 는 7600 보다 1% 남짓 아래, 7600X(Tom's 환산 69)보다 2~3% 아래라 67",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 7500F",
@@ -1707,6 +1707,14 @@
     {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "TechSpot — Ryzen 5 7500F vs Core i5-13400F(1080p 평균 +12%, 7600 보다 클럭 100MHz 낮음)",
+     "url": "https://www.techspot.com/review/2728-ryzen-7500f-vs-core-13400f/"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰, 1080p 게임 상대 성능(7600X 85.3% · 7600 84.0% · 13400F 74.3%)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/18.html"
     }
    ],
    "status": "current",
