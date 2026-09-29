@@ -1856,10 +1856,10 @@
     "base_ghz": 3.5
    },
    "perf": {
-    "index": 60,
+    "index": 56,
     "multi": 27,
-    "basis": "게임: 9800X3D = 100(FHD·최상급 GPU로 CPU 병목만 본 값) · 멀티: 9950X = 100",
-    "confidence": "seed"
+    "basis": "게임: 9800X3D = 100 · 멀티: 9950X = 100. Tom's 표에 없어 이웃으로 옮겼다 — TPU 9800X3D 리뷰 1080p 에서 5600X 72.1%. 같은 표의 12600K 77.9% · 7600X 85.3% 가 Tom's 환산 63 · 69 라 그 기울기로 5600X ≈ 58. TechSpot(2026 재측정)은 5600X 가 5600 보다 4% 빠르다 → 5600 은 56",
+    "confidence": "low"
    },
    "price_query": {
     "q": "AMD 5600",
@@ -1891,6 +1891,14 @@
     {
      "title": "AMD 공식 제품 페이지",
      "url": "https://www.amd.com/ko/products/processors/desktops/ryzen.html"
+    },
+    {
+     "title": "TechSpot — Zen 3 재검증(2026): 5600X 는 5600 보다 약 4% 빠르다",
+     "url": "https://www.techspot.com/review/3079-amd-ryzen-am4-5600x-5700x-5800xt-revisit/"
+    },
+    {
+     "title": "TechPowerUp — Ryzen 7 9800X3D 리뷰, 1080p 게임 상대 성능(5600X 72.1% · 12600K 77.9% · 7600X 85.3%)",
+     "url": "https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/18.html"
     }
    ],
    "status": "current",
