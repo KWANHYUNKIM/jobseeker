@@ -817,6 +817,50 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "gpu-rx-9060",
+   "category": "gpu",
+   "name": "Radeon RX 9060",
+   "maker": "AMD",
+   "released": null,
+   "status": "current",
+   "specs": {
+    "vram_gb": 8,
+    "mem_type": "GDDR6",
+    "bus_bit": 128,
+    "bandwidth_gbs": 288,
+    "cores": 1792,
+    "tdp_w": 132,
+    "fp16_tflops": null,
+    "fp16_matrix_dense_tflops": 86,
+    "stack": "ROCm",
+    "psu_w": 450
+   },
+   "perf": {
+    "index": 38,
+    "basis": "추정 — RX 9060 XT 16GB(47) × 컴퓨트 유닛 비(28/32) 에서 클럭 차이를 깎았다. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "RX 9060",
+    "cate": "그래픽카드",
+    "must": [
+     "9060"
+    ],
+    "not": [
+     "XT",
+     "노트북"
+    ]
+   },
+   "sources": [
+    {
+     "title": "AMD 공식 사양 — RX 9060(28 CU, 1792 SP, 8GB 128-bit, 288GB/s, 132W, 권장 450W)",
+     "url": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9060.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "gpu-rx-7900-xtx",
    "category": "gpu",
    "name": "Radeon RX 7900 XTX",
@@ -1747,6 +1791,53 @@
     }
    ],
    "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-ultra-5-225f",
+   "category": "cpu",
+   "name": "Core Ultra 5 225F",
+   "maker": "Intel",
+   "released": "2025-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1851",
+    "cores": 10,
+    "threads": 10,
+    "boost_ghz": 4.9,
+    "tdp_w": 65,
+    "max_power_w": 121,
+    "mem": "DDR5",
+    "igpu": false,
+    "l3_mb": 20,
+    "series": "코어 울트라 시리즈2",
+    "family": "코어 울트라5"
+   },
+   "perf": {
+    "index": 64,
+    "multi": 40,
+    "basis": "추정 — 245K(게임 69·멀티 58)에서 코어 수(10/14)와 전력(65W/125W)으로 깎았다. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "225F",
+    "cate": "CPU",
+    "must": [
+     "225F"
+    ],
+    "not": [
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core Ultra 5 225F",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/241069/intel-core-ultra-5-processor-225f-20m-cache-up-to-4-90-ghz/specifications.html"
+    }
+   ],
    "checked_at": "2026-09-29",
    "specs_verified": "2026-09-29"
   },
