@@ -12,6 +12,7 @@ import { FreelanceRatesView } from './components/FreelanceRatesView'
 import { CalendarView } from './components/CalendarView'
 import { TrendView } from './components/TrendView'
 import { RevengView } from './components/RevengView'
+import { HardwareView } from './components/HardwareView'
 import { BookView } from './components/BookView'
 import { Loader, ErrorState, MobileBar } from './components/ui'
 import { useJobs } from './lib/useJobs'
@@ -23,7 +24,7 @@ import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
 import { applyFilter, applyLocalFacets, computeFacets, emptyFilter } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'book' | 'reveng' | 'reposts' | 'freelance'
+type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'book' | 'reveng' | 'reposts' | 'freelance' | 'hardware'
 
 // 경로 첫 세그먼트 → 탭. 루트(`/`)는 잡 리스트다.
 const TAB_BY_SEG: Record<string, Tab> = {
@@ -41,6 +42,7 @@ const TAB_BY_SEG: Record<string, Tab> = {
   reveng: 'reveng',
   reposts: 'reposts',
   freelance: 'freelance',
+  hardware: 'hardware',
 }
 
 function App() {
@@ -144,6 +146,8 @@ function App() {
     if (detail && (tab === 'companies' || tab === 'radar' || tab === 'reveng' || tab === 'blog')) return null
     // 책은 제목도 noindex 도 BookView 가 직접 단다(책·절 데이터를 그쪽이 들고 있다).
     if (tab === 'book') return null
+    // 부품 화면은 하위 화면(조립·비교·가격)마다 제목과 noindex 를 HardwareView 가 직접 단다.
+    if (tab === 'hardware') return null
 
     const t = TAB_SEO[tab === 'freelance' && detail === 'rates' ? 'freelanceRates' : tab] ?? TAB_SEO.jobs
     return {
@@ -193,6 +197,9 @@ function App() {
           </TabLink>
           <TabLink active={tab === 'reveng'} to={paths.reveng()}>
             기술 역설계
+          </TabLink>
+          <TabLink active={tab === 'hardware'} to={paths.hardware()}>
+            PC 하드웨어
           </TabLink>
         </div>
         <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
@@ -244,6 +251,10 @@ function App() {
       ) : tab === 'reveng' ? (
         <div key="reveng" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <RevengView seg={route.seg.slice(1)} />
+        </div>
+      ) : tab === 'hardware' ? (
+        <div key="hardware" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
+          <HardwareView seg={route.seg.slice(1)} />
         </div>
       ) : tab === 'jobs' ? (
         loading ? (

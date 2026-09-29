@@ -1,0 +1,509 @@
+import { useEffect, useState } from 'react'
+
+// PC 부품 화면(/hardware)이 함께 쓰는 모양·등급·시뮬레이션.
+//
+// 데이터 (public/hardware/)
+//   parts.json  — 부품·스펙·성능 지수. hw-engine 이 제조사 공식 자료로 조사해 고친다.
+//   index.json  — 분류·등급 문턱·용도. **등급은 여기 문턱으로 계산한다** — 부품에 등급을 적어
+//                 두면 같은 성능인데 등급이 다른 일이 생긴다. 출처가 하나여야 한다.
+//   bench.json  — 게임·AI 시뮬레이션의 기준값과 계산식 설명.
+//   prices.json — catch_capture/crawlers/crawl_hardware.py 가 매일 찍는 다나와 최저가 원장.
+//
+// 시뮬레이션은 '추정'이다. 화면은 늘 계산 근거(기준값·식)를 같이 보여 준다.
+
+export type Category = 'gpu' | 'cpu' | 'ram' | 'ssd' | 'hdd' | 'mainboard' | 'psu' | 'cooler' | 'case'
+export type Res = 'fhd' | 'qhd' | 'uhd'
+export const RES_LABEL: Record<Res, string> = { fhd: 'FHD', qhd: 'QHD', uhd: '4K' }
+
+export interface Part {
+  id: string
+  category: Category
+  name: string
+  maker: string
+  released: string | null
+  status: 'current' | 'legacy'
+  specs: Record<string, string | number | boolean | null>
+  perf: { index: number; multi?: number; basis: string; confidence: 'seed' | 'low' | 'medium' | 'high' }
+  price_query?: { q: string }
+  /** 'median' 이면 이 부품은 특정 상품이 아니라 급(級)이라 최저가보다 보통 가격이 맞다 */
+  price_basis?: 'min' | 'median'
+  sources: { title: string; url: string }[]
+  checked_at: string
+}
+
+export interface TierDef {
+  tier: string
+  min: number
+  plain: string
+}
+
+export interface CategoryDef {
+  key: Category
+  name: string
+  why: string
+  index_label: string
+  index_basis: string
+  tiers: TierDef[]
+}
+
+export interface UseDef {
+  key: string
+  name: string
+  plain: string
+  res: Res
+  weights: { gpu: number; cpu: number }
+  min_ram_gb?: number
+  prefer?: 'multi' | 'vram'
+}
+
+export interface Game {
+  key: string
+  name: string
+  preset: string
+  kind: string
+  gpu100: Record<Res, number>
+  cpu100: number
+  vram: Record<Res, number>
+  confidence: string
+}
+
+export interface LlmModel {
+  key: string
+  name: string
+  params_b: number
+  quant: string
+  size_gb: number
+  plain: string
+}
+
+export interface Bench {
+  model: string
+  games: Game[]
+  llm: {
+    model: string
+    efficiency: number
+    overhead_gb: number
+    stack_factor: Record<string, number>
+    models: LlmModel[]
+    readable_tps: number
+    comfortable_tps: number
+  }
+  image: { name: string; model: string; anchor: { gpu: string; seconds: number }; min_vram_gb: number }
+  finetune: { key: string; name: string; vram_gb: number; plain: string }[]
+  dev: { name: string; model: string; anchor_minutes: number }
+}
+
+export interface PricePoint {
+  d: string
+  min: number
+  median: number
+  n: number
+}
+
+export interface Offer {
+  pcode: string
+  name: string
+  price: number
+  url: string
+}
+
+export interface PriceRec {
+  day?: string
+  min?: number
+  median?: number
+  n?: number
+  offers?: Offer[]
+  history: PricePoint[]
+  last_empty?: string
+}
+
+export interface HwData {
+  parts: Part[]
+  categories: CategoryDef[]
+  uses: UseDef[]
+  bench: Bench
+  prices: Record<string, PriceRec>
+  priceDay: string | null
+}
+
+let cache: Promise<HwData> | null = null
+
+async function getJson<T>(path: string, fallback?: T): Promise<T> {
+  const r = await fetch(path)
+  if (!r.ok) {
+    if (fallback !== undefined) return fallback
+    throw new Error(`${path} ${r.status}`)
+  }
+  return r.json()
+}
+
+function load(): Promise<HwData> {
+  cache ??= Promise.all([
+    getJson<{ parts: Part[] }>('/hardware/parts.json'),
+    getJson<{ categories: CategoryDef[]; uses: UseDef[] }>('/hardware/index.json'),
+    getJson<Bench>('/hardware/bench.json'),
+    // 가격 원장은 크롤러가 한 번이라도 돌아야 생긴다. 없으면 가격 없이 보여 준다.
+    getJson<{ day?: string; parts: Record<string, PriceRec> }>('/hardware/prices.json', { parts: {} }),
+  ]).then(([p, idx, bench, prices]) => ({
+    parts: p.parts,
+    categories: idx.categories,
+    uses: idx.uses,
+    bench,
+    prices: prices.parts ?? {},
+    priceDay: prices.day ?? null,
+  }))
+  cache.catch(() => (cache = null))
+  return cache
+}
+
+export function useHardware(): { data: HwData | null; error: string | null } {
+  const [data, setData] = useState<HwData | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  useEffect(() => {
+    load().then(setData, (e) => setError(String(e)))
+  }, [])
+  return { data, error }
+}
+
+// ── 등급 ────────────────────────────────────────────────────────────
+
+export function tierOf(part: Part, cats: CategoryDef[]): TierDef | null {
+  const def = cats.find((c) => c.key === part.category)
+  if (!def) return null
+  return def.tiers.find((t) => part.perf.index >= t.min) ?? def.tiers[def.tiers.length - 1]
+}
+
+/** 부품의 오늘 가격 — 급(級) 부품은 중앙값, 상품 부품은 최저가. 모르면 null */
+export function priceOf(part: Part, prices: Record<string, PriceRec>): number | null {
+  const r = prices[part.id]
+  if (!r || r.min == null) return null
+  return part.price_basis === 'median' ? (r.median ?? r.min) : r.min
+}
+
+export function won(n: number | null | undefined): string {
+  if (n == null) return '—'
+  if (n >= 10_000) {
+    const man = n / 10_000
+    return `${man >= 100 ? Math.round(man).toLocaleString() : man.toFixed(1).replace(/\.0$/, '')}만원`
+  }
+  return `${n.toLocaleString()}원`
+}
+
+/** 가격 흐름 — 지난 N일 중앙값 대비 오늘이 얼마나 싼가/비싼가(%) */
+export function priceMove(rec: PriceRec | undefined, days = 30): { pct: number; low: number; high: number; days: number } | null {
+  const h = rec?.history ?? []
+  if (h.length < 2) return null
+  const last = h[h.length - 1]
+  const cutoff = new Date(last.d)
+  cutoff.setDate(cutoff.getDate() - days)
+  const win = h.filter((p) => new Date(p.d) >= cutoff)
+  const mins = win.map((p) => p.min).sort((a, b) => a - b)
+  const med = mins[Math.floor(mins.length / 2)]
+  return { pct: ((last.min - med) / med) * 100, low: mins[0], high: mins[mins.length - 1], days: win.length }
+}
+
+// ── 게임 시뮬레이션 ──────────────────────────────────────────────────
+
+export interface FpsEstimate {
+  fps: number
+  gpuFps: number
+  cpuFps: number
+  bound: 'gpu' | 'cpu'
+  vramShort: number
+}
+
+export function estimateFps(game: Game, res: Res, gpu: Part, cpu: Part | null): FpsEstimate {
+  const gpuRaw = (game.gpu100[res] * gpu.perf.index) / 100
+  const vram = Number(gpu.specs.vram_gb ?? 0)
+  const need = game.vram[res]
+  // VRAM 이 모자라면 텍스처를 시스템 메모리로 넘기며 급격히 느려진다. 모자란 비율만큼 깎는 단순한 근사.
+  const vramShort = Math.max(0, need - vram)
+  const gpuFps = vramShort > 0 ? gpuRaw * Math.max(0.35, 1 - (vramShort / need) * 1.5) : gpuRaw
+  const cpuFps = cpu ? (game.cpu100 * cpu.perf.index) / 100 : Infinity
+  const fps = Math.min(gpuFps, cpuFps)
+  return { fps: Math.round(fps), gpuFps: Math.round(gpuFps), cpuFps: Math.round(cpuFps), bound: gpuFps <= cpuFps ? 'gpu' : 'cpu', vramShort }
+}
+
+export function fpsWord(fps: number): { word: string; tone: 'good' | 'ok' | 'bad' } {
+  if (fps >= 144) return { word: '고주사율 모니터까지 채운다', tone: 'good' }
+  if (fps >= 90) return { word: '매우 부드럽다', tone: 'good' }
+  if (fps >= 60) return { word: '부드럽다', tone: 'ok' }
+  if (fps >= 40) return { word: '할 만하다 — 옵션을 조금 내리면 60', tone: 'ok' }
+  return { word: '버벅인다 — 옵션·해상도를 내려야 한다', tone: 'bad' }
+}
+
+// ── AI 시뮬레이션 ────────────────────────────────────────────────────
+
+export interface LlmEstimate {
+  fits: boolean
+  tps: number
+  gpuShare: number
+  note: string
+}
+
+/** 언어 모델 한 개를 돌렸을 때의 생성 속도(토큰/초). 식은 bench.llm.model 에 적혀 있다. */
+export function estimateLlm(bench: Bench, m: LlmModel, gpu: Part, ramBwGbs: number | null): LlmEstimate {
+  const vram = Number(gpu.specs.vram_gb ?? 0)
+  const bw = Number(gpu.specs.bandwidth_gbs ?? 0)
+  const stack = bench.llm.stack_factor[String(gpu.specs.stack)] ?? 0.8
+  const eff = bench.llm.efficiency * stack
+  const room = vram - bench.llm.overhead_gb
+  if (m.size_gb <= room) {
+    return { fits: true, tps: (bw * eff) / m.size_gb, gpuShare: 1, note: '그래픽카드 메모리에 통째로 들어간다' }
+  }
+  // 넘친 부분은 시스템 메모리에서 읽는다. 한 토큰의 시간 = GPU 몫 + CPU 몫(직렬).
+  const onGpu = Math.max(0, room)
+  const off = m.size_gb - onGpu
+  const sysBw = ramBwGbs ?? 60
+  const t = onGpu / (bw * eff) + off / (sysBw * bench.llm.efficiency)
+  return {
+    fits: false,
+    tps: 1 / t,
+    gpuShare: onGpu / m.size_gb,
+    note: `${Math.round((off / m.size_gb) * 100)}% 가 그래픽카드에 안 들어가 시스템 메모리에서 읽는다`,
+  }
+}
+
+export function tpsWord(bench: Bench, tps: number): { word: string; tone: 'good' | 'ok' | 'bad' } {
+  if (tps >= bench.llm.comfortable_tps) return { word: '말하는 속도보다 빠르다', tone: 'good' }
+  if (tps >= bench.llm.readable_tps) return { word: '읽는 속도로 나온다', tone: 'ok' }
+  if (tps >= 2) return { word: '기다려야 한다', tone: 'bad' }
+  return { word: '사실상 못 쓴다', tone: 'bad' }
+}
+
+/** 이미지 한 장(SDXL 1024²·30스텝)에 걸리는 초. FP16 이 없으면 성능 지수로 잰다. */
+export function estimateImageSec(bench: Bench, gpu: Part, parts: Part[]): number | null {
+  const anchor = parts.find((p) => p.id === bench.image.anchor.gpu)
+  if (!anchor) return null
+  if (Number(gpu.specs.vram_gb ?? 0) < bench.image.min_vram_gb) return null
+  const stack = bench.llm.stack_factor[String(gpu.specs.stack)] ?? 0.8
+  const f = Number(gpu.specs.fp16_tflops)
+  const fa = Number(anchor.specs.fp16_tflops)
+  const ratio = f && fa ? f / fa : gpu.perf.index / anchor.perf.index
+  return bench.image.anchor.seconds / (ratio * stack)
+}
+
+export function estimateBuildMin(bench: Bench, cpu: Part): number {
+  return bench.dev.anchor_minutes * (100 / (cpu.perf.multi ?? cpu.perf.index))
+}
+
+// ── 조립과 호환성 ────────────────────────────────────────────────────
+
+export type Build = Partial<Record<Category, string>>
+
+export interface Check {
+  ok: boolean
+  level: 'error' | 'warn' | 'ok'
+  text: string
+}
+
+const byId = (parts: Part[]) => new Map(parts.map((p) => [p.id, p]))
+
+/** 시스템 전체 소비 전력(W) 추정 — CPU 최대 + GPU TDP + 나머지 80W */
+export function systemWatts(cpu: Part | undefined, gpu: Part | undefined): number {
+  return Number(cpu?.specs.max_power_w ?? 150) + Number(gpu?.specs.tdp_w ?? 0) + 80
+}
+
+export function checkBuild(build: Build, parts: Part[]): Check[] {
+  const m = byId(parts)
+  const get = (c: Category) => (build[c] ? m.get(build[c]!) : undefined)
+  const cpu = get('cpu'), mb = get('mainboard'), ram = get('ram'), gpu = get('gpu')
+  const psu = get('psu'), cooler = get('cooler'), cs = get('case')
+  const out: Check[] = []
+  if (cpu && mb) {
+    const ok = cpu.specs.socket === mb.specs.socket
+    out.push({ ok, level: ok ? 'ok' : 'error', text: ok ? `소켓 ${cpu.specs.socket} — CPU 와 보드가 맞는다` : `CPU 는 ${cpu.specs.socket}, 보드는 ${mb.specs.socket} — 꽂히지 않는다` })
+  }
+  if (ram && mb) {
+    const ok = String(mb.specs.mem).includes(String(ram.specs.type))
+    out.push({ ok, level: ok ? 'ok' : 'error', text: ok ? `${ram.specs.type} — 보드가 받는 메모리다` : `보드는 ${mb.specs.mem} 만 받는데 메모리가 ${ram.specs.type} 다` })
+  }
+  if (ram && cpu && !String(cpu.specs.mem).includes(String(ram.specs.type))) {
+    out.push({ ok: false, level: 'error', text: `CPU 가 ${cpu.specs.mem} 만 지원한다` })
+  }
+  if (psu && (cpu || gpu)) {
+    const need = systemWatts(cpu, gpu)
+    const rec = Math.max(need * 1.3, Number(gpu?.specs.psu_w ?? 0))
+    const w = Number(psu.specs.watt)
+    const level = w >= rec ? 'ok' : w >= need ? 'warn' : 'error'
+    out.push({
+      ok: level === 'ok',
+      level,
+      text:
+        level === 'ok'
+          ? `파워 ${w}W — 최대 ${need}W 추정, 여유 충분`
+          : level === 'warn'
+            ? `파워 ${w}W — 최대 ${need}W 는 버티지만 권장 ${Math.ceil(rec / 50) * 50}W 보다 작다`
+            : `파워 ${w}W 가 최대 소비 ${need}W 보다 작다 — 부하 때 꺼진다`,
+    })
+  }
+  if (cooler && cpu) {
+    const need = Number(cpu.specs.max_power_w)
+    const cap = Number(cooler.specs.cpu_watt)
+    const level = cap >= need ? 'ok' : cap >= Number(cpu.specs.tdp_w) ? 'warn' : 'error'
+    out.push({
+      ok: level === 'ok',
+      level,
+      text:
+        level === 'ok'
+          ? `쿨러가 CPU 최대 ${need}W 를 감당한다`
+          : level === 'warn'
+            ? `쿨러 ${cap}W 급 — 평소엔 되지만 최대 ${need}W 부하에선 클럭이 내려간다`
+            : `쿨러 ${cap}W 급으로는 CPU ${cpu.specs.tdp_w}W 도 버겁다`,
+    })
+  }
+  if (cooler && cs && cooler.specs.radiator_mm && Number(cooler.specs.radiator_mm) > Number(cs.specs.max_radiator_mm)) {
+    out.push({ ok: false, level: 'error', text: `케이스가 ${cs.specs.max_radiator_mm}mm 라디에이터까지만 받는다` })
+  }
+  if (cooler && cs && cooler.specs.height_mm && Number(cooler.specs.height_mm) > Number(cs.specs.max_cooler_mm)) {
+    out.push({ ok: false, level: 'error', text: `쿨러 높이 ${cooler.specs.height_mm}mm 가 케이스 한도 ${cs.specs.max_cooler_mm}mm 를 넘는다` })
+  }
+  if (gpu && cs && Number(gpu.specs.tdp_w) >= 300 && Number(cs.specs.max_gpu_mm) < 360) {
+    out.push({ ok: false, level: 'warn', text: `${gpu.name} 대형 카드는 330mm 를 넘는 모델이 많다 — 케이스 길이(${cs.specs.max_gpu_mm}mm)를 상품마다 확인` })
+  }
+  if (cpu && !gpu && !cpu.specs.igpu) {
+    out.push({ ok: false, level: 'error', text: `${cpu.name} 은 내장 그래픽이 없다 — 그래픽카드가 없으면 화면이 안 나온다` })
+  }
+  return out
+}
+
+export function buildTotal(build: Build, parts: Part[], prices: Record<string, PriceRec>): { total: number; missing: string[] } {
+  const m = byId(parts)
+  let total = 0
+  const missing: string[] = []
+  for (const [cat, id] of Object.entries(build) as [Category, string | undefined][]) {
+    if (!id) continue
+    const p = m.get(id)
+    if (!p) continue
+    const price = priceOf(p, prices)
+    if (price == null) missing.push(p.name)
+    else total += price * (cat === 'ram' ? 2 : 1) // 메모리는 두 장(듀얼 채널)
+  }
+  return { total, missing }
+}
+
+/**
+ * 예산·용도로 조합을 고른다. 욕심 많은 규칙 몇 줄이다 — 최적해가 아니라 '출발점'이다.
+ *  1. 용도 비중만큼 GPU·CPU 예산을 떼고, 그 안에서 지수가 가장 높은 것을 고른다.
+ *  2. 보드는 CPU 소켓에 맞는 것 중 가장 싼 것, 메모리는 보드가 받는 종류에서 용도의 최소 용량.
+ *  3. 파워·쿨러는 계산한 전력을 넘는 것 중 가장 싼 것. 케이스는 중간 급.
+ */
+export function autoBuild(budget: number, use: UseDef, data: HwData): Build {
+  const { parts, prices } = data
+  const priced = (c: Category) =>
+    parts
+      .filter((p) => p.category === c && p.status === 'current')
+      .map((p) => ({ p, price: priceOf(p, prices) }))
+      .filter((x): x is { p: Part; price: number } => x.price != null)
+  const best = (c: Category, cap: number, score: (p: Part) => number) => {
+    const xs = priced(c).filter((x) => x.price <= cap)
+    xs.sort((a, b) => score(b.p) - score(a.p) || a.price - b.price)
+    return xs[0]?.p ?? priced(c).sort((a, b) => a.price - b.price)[0]?.p
+  }
+  const cheapest = (c: Category, ok: (p: Part) => boolean) =>
+    priced(c)
+      .filter((x) => ok(x.p))
+      .sort((a, b) => a.price - b.price)[0]?.p
+
+  const gpuScore = (p: Part) => (use.prefer === 'vram' ? Number(p.specs.vram_gb) * 10 + p.perf.index / 10 : p.perf.index)
+  const cpuScore = (p: Part) => (use.prefer === 'multi' ? (p.perf.multi ?? p.perf.index) : p.perf.index)
+  const gpu = best('gpu', budget * use.weights.gpu, gpuScore)
+  const cpu = best('cpu', budget * use.weights.cpu, cpuScore)
+  const mb = cpu ? cheapest('mainboard', (p) => p.specs.socket === cpu.specs.socket) : undefined
+  const minGb = use.min_ram_gb ?? 32
+  const perStick = minGb / 2
+  const ram = mb
+    ? (cheapest('ram', (p) => String(mb.specs.mem).includes(String(p.specs.type)) && Number(p.specs.capacity_gb) >= perStick) ??
+      cheapest('ram', (p) => String(mb.specs.mem).includes(String(p.specs.type))))
+    : undefined
+  const need = systemWatts(cpu, gpu)
+  const psu = cheapest('psu', (p) => Number(p.specs.watt) >= Math.max(need * 1.3, Number(gpu?.specs.psu_w ?? 0)))
+  const cooler = cpu ? cheapest('cooler', (p) => Number(p.specs.cpu_watt) >= Number(cpu.specs.max_power_w) * 0.9) : undefined
+  const ssd = best('ssd', budget * 0.08, (p) => Number(p.specs.capacity_gb) * 10 + p.perf.index)
+  const cs = cheapest('case', (p) => Number(p.specs.max_gpu_mm) >= 380 && (!cooler?.specs.radiator_mm || Number(cooler.specs.radiator_mm) <= Number(p.specs.max_radiator_mm)))
+  return { gpu: gpu?.id, cpu: cpu?.id, mainboard: mb?.id, ram: ram?.id, psu: psu?.id, cooler: cooler?.id, ssd: ssd?.id, case: cs?.id }
+}
+
+export const CATEGORY_ORDER: Category[] = ['cpu', 'gpu', 'mainboard', 'ram', 'ssd', 'hdd', 'psu', 'cooler', 'case']
+
+/** 스펙 표의 열 — 분류마다 전문가가 비교하는 값 */
+export const SPEC_COLUMNS: Record<Category, { key: string; label: string; unit?: string }[]> = {
+  gpu: [
+    { key: 'vram_gb', label: 'VRAM', unit: 'GB' },
+    { key: 'mem_type', label: '메모리' },
+    { key: 'bandwidth_gbs', label: '대역폭', unit: 'GB/s' },
+    { key: 'cores', label: '코어' },
+    { key: 'fp16_tflops', label: 'FP16', unit: 'TF' },
+    { key: 'tdp_w', label: '전력', unit: 'W' },
+    { key: 'psu_w', label: '권장 파워', unit: 'W' },
+    { key: 'stack', label: 'AI 스택' },
+  ],
+  cpu: [
+    { key: 'socket', label: '소켓' },
+    { key: 'cores', label: '코어' },
+    { key: 'threads', label: '스레드' },
+    { key: 'boost_ghz', label: '부스트', unit: 'GHz' },
+    { key: 'l3_mb', label: 'L3', unit: 'MB' },
+    { key: 'tdp_w', label: 'TDP', unit: 'W' },
+    { key: 'max_power_w', label: '최대', unit: 'W' },
+    { key: 'mem', label: '메모리' },
+    { key: 'igpu', label: '내장 GPU' },
+  ],
+  ram: [
+    { key: 'type', label: '종류' },
+    { key: 'capacity_gb', label: '용량', unit: 'GB' },
+    { key: 'speed_mts', label: '속도', unit: 'MT/s' },
+    { key: 'cl', label: 'CL' },
+    { key: 'latency_ns', label: '지연', unit: 'ns' },
+    { key: 'dual_bandwidth_gbs', label: '2장 대역폭', unit: 'GB/s' },
+  ],
+  ssd: [
+    { key: 'interface', label: '인터페이스' },
+    { key: 'capacity_gb', label: '용량', unit: 'GB' },
+    { key: 'seq_read_mbs', label: '읽기', unit: 'MB/s' },
+    { key: 'seq_write_mbs', label: '쓰기', unit: 'MB/s' },
+    { key: 'tbw', label: '수명', unit: 'TBW' },
+    { key: 'dram', label: 'DRAM' },
+    { key: 'nand', label: '낸드' },
+  ],
+  hdd: [
+    { key: 'capacity_tb', label: '용량', unit: 'TB' },
+    { key: 'rpm', label: '회전', unit: 'rpm' },
+    { key: 'cache_mb', label: '캐시', unit: 'MB' },
+    { key: 'cmr', label: 'CMR' },
+    { key: 'use', label: '용도' },
+  ],
+  mainboard: [
+    { key: 'socket', label: '소켓' },
+    { key: 'mem', label: '메모리' },
+    { key: 'pcie_gpu', label: '그래픽 슬롯' },
+    { key: 'pcie_m2', label: 'M.2' },
+    { key: 'cpu_oc', label: 'CPU 오버클럭' },
+    { key: 'usb4', label: 'USB4' },
+  ],
+  psu: [
+    { key: 'watt', label: '정격', unit: 'W' },
+    { key: 'rating', label: '80PLUS' },
+    { key: 'efficiency_50pct', label: '효율(50%)', unit: '%' },
+    { key: 'atx3', label: 'ATX 3.x' },
+    { key: 'pcie_12v2x6', label: '12V-2x6' },
+  ],
+  cooler: [
+    { key: 'type', label: '방식' },
+    { key: 'cpu_watt', label: '감당 전력', unit: 'W' },
+    { key: 'height_mm', label: '높이', unit: 'mm' },
+    { key: 'radiator_mm', label: '라디에이터', unit: 'mm' },
+  ],
+  case: [
+    { key: 'form', label: '규격' },
+    { key: 'max_gpu_mm', label: 'GPU 길이', unit: 'mm' },
+    { key: 'max_cooler_mm', label: '쿨러 높이', unit: 'mm' },
+    { key: 'max_radiator_mm', label: '라디에이터', unit: 'mm' },
+  ],
+}
+
+export function fmtSpec(v: string | number | boolean | null | undefined, unit?: string): string {
+  if (v == null || v === '') return '—'
+  if (typeof v === 'boolean') return v ? '있음' : '없음'
+  return unit ? `${typeof v === 'number' ? v.toLocaleString() : v} ${unit}` : String(v)
+}

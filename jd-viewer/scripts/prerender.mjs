@@ -171,7 +171,7 @@ function write(path, html) {
 }
 
 // 모든 정적 본문에 공통으로 붙는 머리 — 크롤러가 여기서 다른 탭으로 건너간다.
-const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a> · <a href="/freelance">외주·프리</a></nav>`
+const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a> · <a href="/freelance">외주·프리</a> · <a href="/hardware">PC 하드웨어</a></nav>`
 
 const section = (h, text, max = 1200) =>
   text ? `<section><h2>${esc(h)}</h2><p>${esc(clip(text, max))}</p></section>` : ''
@@ -244,6 +244,16 @@ const TAB_SEO = {
     title: '기업 기술 역설계',
     desc: '공개 자료만으로 재구성한 기업의 비즈니스 모델 → 도메인 → 기능 구현 → 시스템 연결.',
   },
+  // 부품 화면은 조립·비교만 싣는다. 가격 추이(/hardware/prices)와 부품 상세는 다나와 가격을
+  // 다시 싣는 화면이라 정적 HTML·sitemap 에 넣지 않고, 앱이 noindex 를 단다.
+  '/hardware': {
+    title: 'PC 조립 · 성능 예측',
+    desc: '용도와 예산을 고르면 부품 조합과 게임 fps·로컬 AI 속도·빌드 시간 예상치를 보여 줍니다. 부품은 성능이 같으면 같은 등급으로 묶었습니다.',
+  },
+  '/hardware/parts': {
+    title: 'PC 부품 등급·스펙 비교',
+    desc: '그래픽카드·CPU·메모리·SSD·메인보드·파워·쿨러·케이스를 성능 지수로 등급을 매기고, 같은 등급 안에서 성능 1점당 가격으로 줄 세웠습니다.',
+  },
   // `/wiki` 는 혼자 읽으려고 쓰는 책이다. 정적 HTML 은 만들되(직접 열었을 때
   // 빈 껍데기가 아니게) 색인은 막고 sitemap 에도 넣지 않는다. NOINDEX 목록이
   // 그 판단을 한 곳에서 한다.
@@ -282,7 +292,20 @@ const revengLinks = revengList
   .map((c) => `<li><a href="/reveng/${encodeURIComponent(c.slug)}">${esc(c.name)} 기술 역설계</a></li>`)
   .join('')
 
+// 부품 허브에는 등급 설명과 분류 링크만 깐다 — 가격 숫자는 정적 HTML 에 넣지 않는다.
+const hwIndex = readJson('hardware/index.json')
+const hwParts = readJson('hardware/parts.json')?.parts ?? []
+const hwHub = (hwIndex?.categories ?? [])
+  .map((c) => {
+    const names = hwParts.filter((p) => p.category === c.key).map((p) => esc(p.name)).join(', ')
+    const tiers = c.tiers.map((t) => `<li>${esc(t.tier)} 등급 — ${esc(t.plain)}</li>`).join('')
+    return `<section><h2><a href="/hardware/parts?cat=${c.key}">${esc(c.name)}</a></h2><p>${esc(c.why)}</p><ul>${tiers}</ul><p>${names}</p></section>`
+  })
+  .join('')
+
 const HUB_LINKS = {
+  '/hardware': hwHub,
+  '/hardware/parts': hwHub,
   '/': `<h2>최근 채용공고</h2><ul>${jobLinks}</ul>`,
   '/companies': `<h2>회사 목록</h2><ul>${companyLinks}</ul>`,
   '/radar': `<h2>기업 목록</h2><ul>${radarLinks}</ul>`,

@@ -34,6 +34,10 @@ export const paths = {
   reveng: () => '/reveng',
   revengCompany: (slug: string) => `/reveng/${encodeURIComponent(slug)}`,
   revengDoc: (slug: string) => `/reveng/docs/${encodeURIComponent(slug)}`,
+  hardware: () => '/hardware',
+  hardwareParts: () => '/hardware/parts',
+  hardwarePart: (id: string) => `/hardware/parts/${encodeURIComponent(id)}`,
+  hardwarePrices: () => '/hardware/prices',
 }
 
 /** 블로그 글의 주소 키 — 본문 id 가 있으면 그걸, 없으면 원문 URL 로 만든 짧은 해시. */
@@ -93,6 +97,14 @@ export const TAB_SEO: Record<string, { title: string; desc: string }> = {
   wiki: {
     title: '기술도서',
     desc: '혼자 읽으려고 쓰는 책.',
+  },
+  hardware: {
+    title: 'PC 조립 · 성능 예측',
+    desc: '용도와 예산을 고르면 부품 조합과 게임 fps·로컬 AI 속도·빌드 시간 예상치를 보여 줍니다. 부품은 성능이 같으면 같은 등급으로 묶었습니다.',
+  },
+  hardwareParts: {
+    title: 'PC 부품 등급·스펙 비교',
+    desc: '그래픽카드·CPU·메모리·SSD·메인보드·파워·쿨러·케이스를 성능 지수로 등급을 매기고, 같은 등급 안에서 성능 1점당 가격으로 줄 세웠습니다.',
   },
   reveng: {
     title: '기업 기술 역설계',
