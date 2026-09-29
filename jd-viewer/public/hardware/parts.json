@@ -1832,6 +1832,55 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "cpu-core-ultra-7-270k-plus",
+   "category": "cpu",
+   "name": "Core Ultra 7 270K Plus",
+   "maker": "Intel",
+   "released": "2026-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1851",
+    "cores": 24,
+    "threads": 24,
+    "boost_ghz": 5.5,
+    "tdp_w": 125,
+    "max_power_w": 250,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 36,
+    "series": "코어 울트라 시리즈2",
+    "family": "코어 울트라7"
+   },
+   "perf": {
+    "index": 75,
+    "multi": 90,
+    "basis": "추정 — 265K(게임 72·멀티 82)에 코어 4개(20→24)와 D2D 클럭 상향을 더했다. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "270K Plus",
+    "cate": "CPU",
+    "must": [
+     "270K",
+     "Plus|플러스"
+    ],
+    "not": [
+     "KF",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core Ultra 7 270K Plus",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/245692/intel-core-ultra-7-processor-270k-plus-36m-cache-up-to-5-50-ghz/specifications.html"
+    }
+   ],
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
    "id": "cpu-core-ultra-5-245k",
    "category": "cpu",
    "name": "Core Ultra 5 245K",
@@ -1883,6 +1932,55 @@
     }
    ],
    "status": "current",
+   "checked_at": "2026-09-29",
+   "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "cpu-core-ultra-5-250k-plus",
+   "category": "cpu",
+   "name": "Core Ultra 5 250K Plus",
+   "maker": "Intel",
+   "released": "2026-01",
+   "status": "current",
+   "specs": {
+    "socket": "LGA1851",
+    "cores": 18,
+    "threads": 18,
+    "boost_ghz": 5.3,
+    "tdp_w": 125,
+    "max_power_w": 159,
+    "mem": "DDR5",
+    "igpu": true,
+    "l3_mb": 30,
+    "series": "코어 울트라 시리즈2",
+    "family": "코어 울트라5"
+   },
+   "perf": {
+    "index": 71,
+    "multi": 70,
+    "basis": "추정 — 245K(게임 69·멀티 58)에 코어 4개(14→18)를 더했다. 실측 대기",
+    "confidence": "seed"
+   },
+   "price_query": {
+    "q": "250K Plus",
+    "cate": "CPU",
+    "must": [
+     "250K",
+     "Plus|플러스"
+    ],
+    "not": [
+     "KF",
+     "쿨러",
+     "노트북",
+     "세트"
+    ]
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 사양 — Core Ultra 5 250K Plus",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/245694/intel-core-ultra-5-processor-250k-plus-30m-cache-up-to-5-30-ghz/specifications.html"
+    }
+   ],
    "checked_at": "2026-09-29",
    "specs_verified": "2026-09-29"
   },
