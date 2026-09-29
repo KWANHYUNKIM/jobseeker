@@ -1,0 +1,789 @@
+{
+ "schema": 1,
+ "part": "case-atx-mid",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "darkflash-ds500-rgb",
+   "name": "darkFlash DS500 RGB",
+   "brand": "darkFlash",
+   "code": null,
+   "match": {
+    "must": [
+     "darkFlash",
+     "DS500"
+    ],
+    "not": [
+     "DS5000",
+     "DS500M"
+    ]
+   },
+   "specs": {
+    "form": "ATX",
+    "boards": [
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 210,
+    "depth_mm": 413,
+    "height_mm": 485,
+    "max_gpu_mm": 405,
+    "max_cooler_mm": 165,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 230,
+    "fans_included": [
+     {
+      "pos": "side",
+      "mm": 120,
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": 120,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120",
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": "120",
+      "n": 1
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     }
+    ],
+    "intake_panel": "틈새",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "다크플래쉬(국내 공식 파트너 투웨이) DS500 RGB (블랙) 상세 사양",
+     "url": "https://darkflash.co.kr/product/detail.html?product_no=796"
+    }
+   ],
+   "confidence": "medium",
+   "durability": {
+    "notes": [
+     "전면·좌측이 강화유리이고, 안쪽 측면 팬 2개(C7RS RGB, 역방향)가 바람을 들인다.",
+     "상단·측면 자석식, 하단 탈착식 먼지 필터가 기본이다.",
+     "하단 파워 커버에 120mm 팬 3개를 더 달 수 있다."
+    ]
+   },
+   "note": "제조사 글로벌 사이트(darkflash.com)에 DS500 페이지가 없어 국내 공식 파트너(투웨이) 페이지로 채웠다. 파워 칸은 '조립 여유 공간 230mm' 표기다. 상단 팬 칸은 120mm 3개 또는 140mm 2개다. BTF 보드 지원은 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "daven-d7-mesh-sevenfan",
+   "name": "DAVEN D7 Mesh 세븐팬",
+   "brand": "DAVEN",
+   "code": null,
+   "match": {
+    "must": [
+     "DAVEN",
+     "D7 Mesh",
+     "세븐팬"
+    ],
+    "not": [
+     "ARGB"
+    ]
+   },
+   "specs": {
+    "form": "ATX",
+    "boards": [
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 218,
+    "depth_mm": 441,
+    "height_mm": 473,
+    "max_gpu_mm": 400,
+    "max_cooler_mm": 170,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 200,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 120,
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": 120,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 120,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "120",
+      "n": 1
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "데이븐 공식 — DAVEN D7 Mesh 세븐팬 BLACK 제품 상세",
+     "url": "https://daven.co.kr/board/product/151"
+    }
+   ],
+   "confidence": "high",
+   "durability": {
+    "notes": [
+     "기본 팬은 유체(Hydraulic) 베어링, 800±10% RPM, 3색 고정 RGB 이고 IDE 4핀 전원이다.",
+     "전면·상단에 3연결 RGB 360mm 팬 묶음이 하나씩, 후면에 120mm RGB 팬 1개가 달려 온다.",
+     "상단·하단 먼지 필터가 달려 있다."
+    ]
+   },
+   "note": "공식 페이지에 대표 이미지(og:image)가 없어 사진은 두지 않았다. 전면·상단 팬 칸은 120mm 3개 또는 140mm 2개다. BTF 보드 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "daven-d7-mesh-sevenfan-argb-pwm",
+   "name": "DAVEN D7 Mesh 세븐팬 ARGB PWM",
+   "brand": "DAVEN",
+   "code": null,
+   "match": {
+    "must": [
+     "DAVEN",
+     "D7 Mesh",
+     "세븐팬",
+     "ARGB"
+    ]
+   },
+   "specs": {
+    "form": "ATX",
+    "boards": [
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 218,
+    "depth_mm": 441,
+    "height_mm": 473,
+    "max_gpu_mm": 400,
+    "max_cooler_mm": 170,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 200,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 120,
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": 120,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 120,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "120",
+      "n": 1
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "데이븐 공식 — DAVEN D7 Mesh 세븐팬 ARGB PWM 블랙 제품 상세",
+     "url": "https://daven.co.kr/board/product/190"
+    }
+   ],
+   "confidence": "high",
+   "durability": {
+    "notes": [
+     "기본 팬은 800~1700 RPM PWM, 5V ARGB 이고 메인보드에 연결한다(수명 40,000시간 표기).",
+     "케이스 크기·호환 규격은 일반 세븐팬과 같고 팬만 다르다.",
+     "상단·하단 먼지 필터가 달려 있다."
+    ]
+   },
+   "note": "팬 베어링 종류는 적혀 있지 않다. 공식 페이지에 og:image 가 없어 사진은 두지 않았다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "abko-g31-omegaforce-sevenfan",
+   "name": "앱코 G31 오메가포스 세븐팬",
+   "brand": "ABKO",
+   "code": null,
+   "match": {
+    "must": [
+     "앱코|ABKO",
+     "G31",
+     "오메가포스"
+    ]
+   },
+   "specs": {
+    "form": "ATX",
+    "boards": [
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 212,
+    "depth_mm": 460,
+    "height_mm": 490,
+    "max_gpu_mm": 400,
+    "max_cooler_mm": 165,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 200,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": 120,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 120,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "120",
+      "n": 1
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "앱코 공식 — G31 오메가포스 제품 상세",
+     "url": "https://www.abko.co.kr/brand/detail.php?it_id=1770684489&device=pc"
+    }
+   ],
+   "confidence": "high",
+   "durability": {
+    "notes": [
+     "기본 팬 7개는 FRGB IDE 4핀이라 LED 색·팬 속도를 조절할 수 없다고 적혀 있다.",
+     "전면과 파워 커버가 메시다.",
+     "상단·우측 자석식, 하단 필름형 먼지 필터가 있다."
+    ]
+   },
+   "note": "공식 페이지 제목은 'G31 오메가포스'이고 7팬 구성이 기본이다. 전면 먼지 필터는 따로 적혀 있지 않다. 전면·상단 팬 칸은 120mm 3개 또는 140mm 3개/2개다. og:image 가 없어 사진은 두지 않았다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "3rsys-l600-quiet",
+   "name": "3RSYS L600 Quiet",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "L600"
+    ]
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 233,
+    "depth_mm": 484,
+    "height_mm": 487,
+    "max_gpu_mm": 400,
+    "max_cooler_mm": 180,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 200,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     },
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120",
+      "n": 2
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "3RSYS 공식 — L600 Quiet 블랙 제품 상세",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1652073119"
+    }
+   ],
+   "confidence": "high",
+   "image": {
+    "url": "https://3rsys.com/data/item/1652073119/l600quiet_black_img_01_1024px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1652073119"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬은 Socoool SILENCE PWM14(140mm, 1700 RPM, 27dBA, 라이플 베어링, 보증 3년) 4개다.",
+     "전면 메시 베젤, 우측 타공 철판 패널이다.",
+     "전면·상단·우측 자석식, 하단 슬라이딩 먼지 필터가 있다.",
+     "후면에는 라디에이터를 달 수 없다. E-ATX 는 가로 27.7cm 까지 권장한다."
+    ]
+   },
+   "note": "상단 팬 칸은 120mm 3개 또는 140mm 2개다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "daven-aqua-diver",
+   "name": "DAVEN AQUA 다이버",
+   "brand": "DAVEN",
+   "code": null,
+   "match": {
+    "must": [
+     "DAVEN",
+     "AQUA",
+     "다이버"
+    ]
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 215,
+    "depth_mm": 425,
+    "height_mm": 490,
+    "max_gpu_mm": 400,
+    "max_cooler_mm": 165,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 220,
+    "fans_included": [
+     {
+      "pos": "side",
+      "mm": 120,
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": 120,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120",
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": "120",
+      "n": 1
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     }
+    ],
+    "intake_panel": "틈새",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "데이븐 공식 — DAVEN AQUA 다이버 (블랙) 제품 상세",
+     "url": "https://daven.co.kr/board/product/98"
+    }
+   ],
+   "confidence": "high",
+   "durability": {
+    "notes": [
+     "전면·좌측이 3mm 강화유리인 어항형이고, 측면 팬 2개(RGB 리버스)가 흡기한다.",
+     "기본 팬은 하이드로 베어링, 1000 RPM, 3색 고정 RGB, IDE 4핀이라 속도 조절이 안 된다.",
+     "상단·하단·측면 3면에 먼지 필터가 있다.",
+     "라디에이터는 상단(최대 360mm)과 후면(120mm)에만 달 수 있다."
+    ]
+   },
+   "note": "상단 팬 칸은 120mm 3개 또는 140mm 2개다. og:image 가 없어 사진은 두지 않았다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "darkflash-dlx21-rgb-mesh",
+   "name": "darkFlash DLX21 RGB MESH 강화유리",
+   "brand": "darkFlash",
+   "code": null,
+   "match": {
+    "must": [
+     "darkFlash",
+     "DLX21",
+     "MESH"
+    ]
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 233,
+    "depth_mm": 448,
+    "height_mm": 493,
+    "max_gpu_mm": 400,
+    "max_cooler_mm": 180,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 235,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     },
+     {
+      "pos": "side",
+      "mm": "120",
+      "n": 2
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 2
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "다크플래쉬(국내 공식 파트너 투웨이) DLX21 RGB MESH 강화유리 (블랙) 상세 사양",
+     "url": "https://darkflash.co.kr/product/detail.html?product_no=110"
+    },
+    {
+     "title": "darkFlash 글로벌 — DLX21 Mesh EATX PC Case",
+     "url": "https://www.darkflash.com/product/dlx21mesh"
+    }
+   ],
+   "confidence": "medium",
+   "image": {
+    "url": "https://darkflash-image-cloud.s3.us-west-2.amazonaws.com/cdn/product/cover/000000000000270/202403080018802.png",
+    "credit": "darkFlash",
+    "page": "https://www.darkflash.com/product/dlx21mesh"
+   },
+   "durability": {
+    "notes": [
+     "기본 팬은 후면 C6AM 140mm 1개와 전면 C6S 140mm 3개다.",
+     "전면 패널 안쪽·상단(자석)·하단(탈착)·측면(자석)에 먼지 필터가 기본으로 달려 있다.",
+     "좌측은 강화유리 스윙 도어, 우측은 일반 철판 스윙 도어다.",
+     "측면 120mm 팬 2개는 하단 멀티 브라켓을 빼야 달 수 있다."
+    ]
+   },
+   "note": "국내 페이지(V3)의 사양표 모델명은 'DLX21 MESH ARGB 강화유리'라 팬 조명 표기가 상품명(RGB)과 다르다. 상단 팬 칸은 120mm 3개 또는 140mm 2개다. 사진은 글로벌 페이지 것이라 국내판 팬 조명과 다를 수 있다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "zalman-n30-140",
+   "name": "잘만 N30 백사십",
+   "brand": "ZALMAN",
+   "code": null,
+   "match": {
+    "must": [
+     "잘만|ZALMAN",
+     "N30",
+     "백사십"
+    ],
+    "not": [
+     "PLUS"
+    ]
+   },
+   "specs": {
+    "form": "ATX",
+    "boards": [
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 220,
+    "depth_mm": 474,
+    "height_mm": 459,
+    "max_gpu_mm": 430,
+    "max_cooler_mm": 180,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 200,
+    "fans_included": [
+     {
+      "pos": "side",
+      "mm": 120,
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120",
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     }
+    ],
+    "intake_panel": null,
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "잘만 공식 — N30 백사십 BLACK 제품 상세",
+     "url": "https://www.zalman.com/KO/Product/ProductDetail.do?productSeq=1694"
+    }
+   ],
+   "confidence": "high",
+   "durability": {
+    "notes": [
+     "기본 팬은 측면 120mm RGB 2개와 후면 140mm RGB 1개다.",
+     "라디에이터는 상단(최대 360mm)과 후면(120/140mm)에 달 수 있다."
+    ]
+   },
+   "note": "공식 사양표에 먼지 필터와 흡기 패널(측면 타공 여부)이 적혀 있지 않아 null 로 뒀다. 상단 팬 칸은 120mm 3개 또는 140mm 2개다. og:image 가 없어 사진은 두지 않았다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  },
+  {
+   "id": "zalman-n30-140-plus",
+   "name": "잘만 N30 백사십 PLUS",
+   "brand": "ZALMAN",
+   "code": null,
+   "match": {
+    "must": [
+     "잘만|ZALMAN",
+     "N30",
+     "백사십",
+     "PLUS"
+    ]
+   },
+   "specs": {
+    "form": "ATX",
+    "boards": [
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 220,
+    "depth_mm": 474,
+    "height_mm": 459,
+    "max_gpu_mm": 430,
+    "max_cooler_mm": 180,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 200,
+    "fans_included": [
+     {
+      "pos": "side",
+      "mm": 120,
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120",
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     }
+    ],
+    "intake_panel": null,
+    "dust_filter": null,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "잘만 공식 — N30 백사십 PLUS BLACK 제품 상세",
+     "url": "https://www.zalman.com/KO/Product/ProductDetail.do?productSeq=1696"
+    }
+   ],
+   "confidence": "high",
+   "durability": {
+    "notes": [
+     "기본 팬은 측면 120mm PWM ARGB 2개와 후면 140mm PWM ARGB 1개다 — 일반판과 팬만 다르다.",
+     "라디에이터는 상단(최대 360mm)과 후면(120/140mm)에 달 수 있다."
+    ]
+   },
+   "note": "공식 사양표에 먼지 필터와 흡기 패널이 적혀 있지 않아 null 로 뒀다. og:image 가 없어 사진은 두지 않았다. BTF 지원 여부는 적혀 있지 않다.",
+   "checked_at": "2026-09-29"
+  }
+ ]
+}

@@ -392,6 +392,14 @@ export function checkBuild(build: Build, parts: Part[]): Check[] {
     push('warn', `${gpu.name} 급은 330mm 를 넘는 제품이 많다 — 케이스 한도 ${cs.specs.max_gpu_mm}mm 와 제품 길이를 맞춰 본다(부품 상세의 제품별 스펙)`, ['gpu', 'case'])
   }
 
+  // ── 열을 빼나 ── 케이스는 급 단위라 팬 배치를 모른다 — 이 발열에 필요한 팬 수를 말하고 제품은 상세에서 고른다
+  if (cs && (cpu || gpu)) {
+    const heat = caseHeat(cpu, gpu)
+    const need = fansNeeded(heat)
+    const text = `CPU+그래픽카드 발열 최대 ${heat}W — 흡기 ${need.intake}·배기 ${need.exhaust} 이상${need.mesh ? ', 앞면 메시' : ''}인 케이스로 고른다(부품 상세의 제품별 팬 배치)`
+    push(need.mesh ? 'warn' : 'ok', text, ['case', ...(gpu ? (['gpu'] as Category[]) : []), ...(cpu ? (['cpu'] as Category[]) : [])])
+  }
+
   // ── 켜지긴 하지만 조건이 붙는다 ──
   if (cpu && mb && cpu.specs.socket === mb.specs.socket && cpu.released && mb.released && monthsBetween(mb.released, cpu.released) > 3) {
     push('warn', `${mb.name} 은 ${cpu.name} 보다 먼저 나온 칩셋이다 — 재고 보드는 BIOS 를 올려야 인식할 수 있다. CPU 없이 BIOS 를 올리는 기능(플래시백)이 있는 보드를 고르거나 판매처에 업데이트 여부를 묻는다`, ['cpu', 'mainboard'])
@@ -400,6 +408,110 @@ export function checkBuild(build: Build, parts: Part[]): Check[] {
     push('warn', `A620 보드는 전원부가 작아 제조사마다 고전력 CPU 지원이 다르다 — 보드의 CPU 지원 목록에 ${cpu.name} 이 있는지 확인한다`, ['cpu', 'mainboard'])
   }
   return out
+}
+
+// ── 케이스 — 크기와 바람길 ──────────────────────────────────────────
+//
+// 케이스는 부품을 담는 통이면서 열을 빼는 길이다. CPU·그래픽카드가 낸 열은 결국 케이스 팬이
+// 밖으로 내보낸다 — 앞·옆·아래로 찬 공기를 들이고(흡기) 뒤·위로 더운 공기를 뺀다(배기).
+// 제품마다 기본으로 들어 있는 팬(fans_included)과 더 달 수 있는 자리(fan_mounts), 공기가 들어오는
+// 면(intake_panel: 메시·틈새·막힘)은 models/case-*.json 에 제조사 공식 사양으로 적혀 있다.
+//
+// 몇 W 에 팬 몇 개가 필요한가는 측정값이 아니라 **우리 경험 규칙**이다(fansNeeded). 화면도 그렇게 적는다.
+
+export type FanPos = 'front' | 'side' | 'bottom' | 'top' | 'rear'
+export interface CaseFan {
+  pos: FanPos
+  mm: number | string
+  n: number
+}
+
+export const FAN_POS: Record<FanPos, string> = { front: '앞', side: '옆', bottom: '아래', top: '위', rear: '뒤' }
+const INTAKE_POS: FanPos[] = ['front', 'side', 'bottom']
+
+/** 케이스가 빼야 하는 열(W) — CPU 최대 전력 + 그래픽카드 TDP. 보드·메모리·SSD 몫은 작아서 뺀다 */
+export function caseHeat(cpu: Part | undefined, gpu: Part | undefined): number {
+  return Number(cpu?.specs.max_power_w ?? 0) + Number(gpu?.specs.tdp_w ?? 0)
+}
+
+/** 경험 규칙 — 이 발열이면 흡기·배기 팬이 몇 개 있어야 하나, 앞면이 메시여야 하나 */
+export function fansNeeded(heat: number): { intake: number; exhaust: number; mesh: boolean } {
+  if (heat < 250) return { intake: 1, exhaust: 1, mesh: false }
+  if (heat < 450) return { intake: 2, exhaust: 1, mesh: false }
+  return { intake: 3, exhaust: 1, mesh: true }
+}
+
+export function caseFans(specs: Model['specs']) {
+  const list = (k: string) => (Array.isArray(specs[k]) ? (specs[k] as unknown as CaseFan[]) : null)
+  const inc = list('fans_included')
+  const mounts = list('fan_mounts')
+  const sum = (xs: CaseFan[] | null, pos?: FanPos[]) =>
+    xs == null ? null : xs.filter((f) => !pos || pos.includes(f.pos)).reduce((a, f) => a + Number(f.n || 0), 0)
+  return {
+    included: inc,
+    mounts,
+    intake: sum(inc, INTAKE_POS),
+    exhaust: sum(inc, ['top', 'rear']),
+    total: sum(inc),
+    slots: sum(mounts),
+  }
+}
+
+/** '앞 120×3 · 뒤 120×1' — 기본 팬 배치를 한 줄로 */
+export function fanLayout(fans: CaseFan[] | null): string {
+  if (fans == null) return '—'
+  if (!fans.length) return '없음'
+  return fans.map((f) => `${FAN_POS[f.pos] ?? f.pos} ${f.mm}×${f.n}`).join(' · ')
+}
+
+/** 바깥 크기 '가로×깊이×높이' 와 부피(L) */
+export function caseSize(specs: Model['specs']): { text: string; liters: number | null } {
+  const w = Number(specs.width_mm), d = Number(specs.depth_mm), h = Number(specs.height_mm)
+  if (!w || !d || !h) return { text: '—', liters: null }
+  return { text: `${w}×${d}×${h}`, liters: Math.round((w * d * h) / 1e5) / 10 }
+}
+
+export interface AirflowVerdict {
+  level: 'ok' | 'warn' | 'bad'
+  lines: string[]
+}
+
+/** 이 케이스(기본 구성 그대로)가 이 발열을 빼나 — 부족하면 무엇을 더하면 되나 */
+export function airflowFor(specs: Model['specs'], heat: number): AirflowVerdict {
+  const f = caseFans(specs)
+  const need = fansNeeded(heat)
+  const panel = specs.intake_panel as string | null
+  const lines: string[] = []
+  let level: AirflowVerdict['level'] = 'ok'
+  const worse = (l: AirflowVerdict['level']) => {
+    if (l === 'bad' || (l === 'warn' && level === 'ok')) level = l
+  }
+  if (f.included == null) return { level: 'warn', lines: ['기본 팬 구성을 아직 확인하지 못했다.'] }
+  const addIn = Math.max(0, need.intake - (f.intake ?? 0))
+  const addOut = Math.max(0, need.exhaust - (f.exhaust ?? 0))
+  if (!f.total) {
+    worse(heat >= 250 ? 'bad' : 'warn')
+    lines.push('기본 팬이 없다 — 케이스 팬을 따로 사서 달아야 한다.')
+  }
+  if (addIn || addOut) {
+    worse(f.total ? 'warn' : level)
+    const more = [addIn ? `흡기 ${addIn}개` : '', addOut ? `배기 ${addOut}개` : ''].filter(Boolean).join(' · ')
+    const room = f.slots != null && f.total != null ? ` (팬 자리 ${f.slots}곳 중 ${f.total}곳이 차 있다)` : ''
+    lines.push(`${heat}W 를 빼려면 ${more} 를 더 단다${room}.`)
+  } else {
+    lines.push(`기본 팬(흡기 ${f.intake} · 배기 ${f.exhaust})으로 ${heat}W 를 뺀다.`)
+  }
+  if ((f.exhaust ?? 0) > (f.intake ?? 0) && (f.intake ?? 0) > 0) {
+    lines.push('배기가 흡기보다 많다(음압) — 필터 없는 틈으로 먼지가 든다. 위 팬 하나를 흡기로 돌려 달면 균형이 맞는다.')
+  }
+  if (panel === '막힘') {
+    worse(heat >= 300 ? 'bad' : 'warn')
+    lines.push('공기가 들어오는 면이 막혀 있다 — 팬을 늘려도 들어올 길이 좁아 소음이 커진다.')
+  } else if (panel === '틈새' && need.mesh) {
+    worse('warn')
+    lines.push('앞면이 유리·판이고 틈으로 공기를 들인다 — 이 발열이면 메시 앞면이 더 식는다.')
+  }
+  return { level, lines }
 }
 
 function monthsBetween(from: string, to: string): number {
@@ -869,7 +981,15 @@ export function notesFor(part: Part, notes: DurabilityNote[]): DurabilityNote[] 
 }
 
 /** 제품 스펙 표의 열 — 분류마다. 아직 조사 안 한 분류는 비어 있다. */
-export const MODEL_COLUMNS: Partial<Record<Category, { key: string; label: string; unit?: string }[]>> = {
+export interface ModelColumn {
+  key: string
+  label: string
+  unit?: string
+  /** 스펙 값 하나로 안 되는 열(크기·팬 배치) — 스펙 전체를 받아 글자로 */
+  fmt?: (specs: Model['specs']) => string
+}
+
+export const MODEL_COLUMNS: Partial<Record<Category, ModelColumn[]>> = {
   gpu: [
     { key: 'boost_mhz', label: '부스트', unit: 'MHz' },
     { key: 'oc_mhz', label: 'OC', unit: 'MHz' },
@@ -903,10 +1023,14 @@ export const MODEL_COLUMNS: Partial<Record<Category, { key: string; label: strin
   ],
   case: [
     { key: 'form', label: '규격' },
+    { key: 'size', label: '크기(가로×깊이×높이)', fmt: (s) => caseSize(s).text },
+    { key: 'liters', label: '부피', fmt: (s) => (caseSize(s).liters == null ? '—' : `${caseSize(s).liters} L`) },
     { key: 'max_gpu_mm', label: 'GPU 길이', unit: 'mm' },
     { key: 'max_cooler_mm', label: '쿨러 높이', unit: 'mm' },
     { key: 'max_radiator_mm', label: '라디에이터', unit: 'mm' },
-    { key: 'fans_included', label: '기본 팬' },
+    { key: 'fans_included', label: '기본 팬', fmt: (s) => fanLayout(caseFans(s).included) },
+    { key: 'slots', label: '팬 자리', fmt: (s) => (caseFans(s).slots == null ? '—' : `${caseFans(s).slots}곳`) },
+    { key: 'intake_panel', label: '흡기면' },
   ],
   psu: [
     { key: 'modular', label: '모듈러' },
@@ -955,7 +1079,7 @@ export function variantsOf(part: Part, rec: PriceRec | undefined, models: Model[
   const offers = rec?.offers ?? []
   const ref = Number(part.specs.boost_ghz ?? 0) * 1000
   const groups: { key: string; name: string; model: Model | null; offers: Offer[] }[] = []
-  if (part.category === 'gpu' && models.length) {
+  if (part.category !== 'cpu' && models.length) {
     const { byModel, rest } = groupOffers(offers, models)
     for (const m of models) {
       const os = byModel.get(m.id) ?? []
@@ -1006,19 +1130,27 @@ export function whyPopular(v: Variant, vs: Variant[], part: Part, data: HwData):
   } else {
     out.push('아직 인기 순위를 받기 전의 가격 원장이라 가장 싼 제품을 대표로 두었다.')
   }
+  const unit = part.category === 'gpu' || part.category === 'cpu' ? '이 칩 제품' : '이 급 제품'
   const prices = vs.map((x) => x.price).sort((a, b) => a - b)
   if (prices.length > 2) {
     const at = prices.indexOf(v.price) + 1
     out.push(
       at === 1
-        ? `이 칩 제품 ${prices.length}종 가운데 가장 싸다.`
+        ? `${unit} ${prices.length}종 가운데 가장 싸다.`
         : v.price <= prices[Math.floor(prices.length / 2)]
         ? `값이 싼 편이다 — ${prices.length}종 중 ${at}번째로 싸고, 가장 싼 것과 ${won(v.price - prices[0])} 차이다.`
         : `가장 싼 제품보다 ${won(v.price - prices[0])} 비싸다 — 값보다 브랜드·A/S·만듦새를 보고 고르는 사람이 많다는 뜻이다.`,
     )
   }
   const s = v.model?.specs
-  if (s) {
+  if (s && part.category === 'case') {
+    const size = caseSize(s)
+    const f = caseFans(s)
+    if (size.liters != null) out.push(`크기 ${size.text}mm · ${size.liters}L — 그래픽카드 ${s.max_gpu_mm ?? '?'}mm · CPU 쿨러 ${s.max_cooler_mm ?? '?'}mm 까지 들어간다.`)
+    if (f.total) out.push(`기본 팬 ${f.total}개(${fanLayout(f.included)})가 들어 있다 — 팬을 따로 안 사도 흡기 ${f.intake} · 배기 ${f.exhaust} 로 바람길이 선다.`)
+    else if (f.total === 0) out.push('기본 팬이 없다 — 값이 싼 대신 케이스 팬을 따로 사야 한다.')
+    if (s.intake_panel === '메시') out.push('공기가 들어오는 면이 메시라 흡기가 막히지 않는다.')
+  } else if (s) {
     if (Number(s.fans) === 2 && s.length_mm) out.push(`팬 2개 · 길이 ${s.length_mm}mm 로 짧다 — 작은 케이스에도 들어간다.`)
     else if (s.length_mm) out.push(`길이 ${s.length_mm}mm · 팬 ${s.fans ?? '?'}개.`)
     if (s.zero_fan) out.push('가벼운 작업 때는 팬이 멈춘다(0dB) — 조용하다.')
@@ -1026,6 +1158,7 @@ export function whyPopular(v: Variant, vs: Variant[], part: Part, data: HwData):
   }
   if (v.distributor?.warranty_years) out.push(`${v.distributor.name} 유통 — 국내 무상 보증 ${v.distributor.warranty_years}년.`)
   if (v.form) out.push(`${v.form.label} — ${v.form.warranty_years ? `국내 A/S ${v.form.warranty_years}년` : v.form.official ? '국내 정식 유통' : '국내 정식 A/S 가 없다'}.`)
+  if (part.category !== 'gpu' && part.category !== 'cpu') return out
   // 칩 자체가 왜 많이 팔리나 — 같은 등급 안에서 성능 1점당 가격 순위
   const tier = tierOf(part, data.categories)
   const peers = data.parts

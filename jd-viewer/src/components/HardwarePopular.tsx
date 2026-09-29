@@ -1,4 +1,6 @@
 import {
+  caseFans,
+  fanLayout,
   namesIn,
   pickOf,
   priceOf,
@@ -45,6 +47,8 @@ function useVariants(data: HwData, part: Part) {
 }
 
 const perfCell = (v: Variant, part: Part) => {
+  // 케이스는 성능 지수가 아니라 기본 팬 배치로 견준다
+  if (part.category === 'case') return <span>{v.model ? fanLayout(caseFans(v.model.specs).included) : '—'}</span>
   if (v.index == null) return <span className="text-(--color-faint)">{part.perf.index} (칩)</span>
   if (v.clockPct == null) return <span>{v.index}</span>
   const d = v.clockPct
@@ -72,7 +76,7 @@ export function VariantList({ data, part, limit = 8 }: { data: HwData; part: Par
           <tr className="text-[10px] text-(--color-muted) text-left">
             <th className="font-normal px-1 w-10">{vs[0].pop != null ? '인기' : '순서'}</th>
             <th className="font-normal px-1">제품</th>
-            <th className="font-normal px-1 text-right whitespace-nowrap">성능 지수</th>
+            <th className="font-normal px-1 text-right whitespace-nowrap">{part.category === 'case' ? '기본 팬' : '성능 지수'}</th>
             <th className="font-normal px-1 text-right">최저가</th>
             <th className="font-normal px-1">사는 곳</th>
           </tr>
@@ -98,7 +102,9 @@ export function VariantList({ data, part, limit = 8 }: { data: HwData; part: Par
       </table>
       <p className="text-[10px] text-(--color-faint)">
         {vs.length > limit && `${vs.length}종 중 ${limit}종 · `}
-        {part.category === 'gpu'
+        {part.category === 'case'
+          ? '같은 급이라도 크기·기본 팬·흡기면이 제품마다 다르다. 스펙을 아직 조사 안 한 제품은 기본 팬 칸이 비어 있다 — 아래 제품별 스펙에서 펼쳐 본다.'
+          : part.category === 'gpu'
           ? '성능 지수는 칩 지수를 제품 부스트 클럭으로 옮긴 추정(상한)이다. 제품 사양을 아직 조사 안 한 것은 칩 지수만 적었다 — 같은 칩이면 차이는 대개 1~2% 안이다.'
           : '같은 칩이라 성능은 같다. 차이는 판매 형태(정품·멀티팩·벌크)와 보증이다.'}
         {' '}네이버쇼핑·쿠팡은 같은 이름의 검색 결과로 이어진다.
@@ -128,7 +134,9 @@ export function PopularPick({ data, part }: { data: HwData; part: Part }) {
         <span className="text-base font-semibold tabular-nums" data-nosnippet>
           {won(pick.price)}
         </span>
-        <span className="text-xs text-(--color-muted)">성능 지수 {perfCell(pick, part)}</span>
+        <span className="text-xs text-(--color-muted)">
+          {part.category === 'case' ? '기본 팬' : '성능 지수'} {perfCell(pick, part)}
+        </span>
         <ShopLinks v={pick} guide={guide} />
       </div>
       <div>
@@ -146,7 +154,7 @@ export function PopularPick({ data, part }: { data: HwData; part: Part }) {
         </div>
       )}
       <div>
-        <div className="text-xs font-semibold text-(--color-muted) mb-1">같은 칩의 다른 제품</div>
+        <div className="text-xs font-semibold text-(--color-muted) mb-1">{part.category === 'case' ? '같은 급의 다른 제품' : '같은 칩의 다른 제품'}</div>
         <VariantList data={data} part={part} limit={12} />
       </div>
     </section>

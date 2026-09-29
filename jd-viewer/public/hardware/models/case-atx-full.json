@@ -1,0 +1,613 @@
+{
+ "schema": 1,
+ "part": "case-atx-full",
+ "updated_at": "2026-09-29",
+ "models": [
+  {
+   "id": "coolermaster-haf-ii-500",
+   "name": "쿨러마스터 HAF II 500",
+   "brand": "Cooler Master",
+   "code": null,
+   "match": {
+    "must": [
+     "쿨러마스터|Cooler Master|CoolerMaster",
+     "HAF II 500"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 262,
+    "depth_mm": 557,
+    "height_mm": 548,
+    "max_gpu_mm": 430,
+    "max_cooler_mm": 220,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 210,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 220,
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": 180,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140/160/180/220",
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": "120/140/160/180",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "180",
+      "n": 1
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "Cooler Master HAF II 500 공식 제품 페이지(사양 표)",
+     "url": "https://www.coolermaster.com/en-global/products/HAFII-500.html"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "durability": {
+    "notes": [
+     "전면에 220mm 팬 2개(Mighty40 F220), 후면에 180mm 팬 1개(Mighty40 V180)가 들어 있다. 두 팬 모두 두께 40mm 에 듀얼 볼 베어링이다.",
+     "팬 보증은 5년, 케이스 보증은 2년이다.",
+     "먼지 필터는 상단·전면·하단(파워) 세 곳에 있다.",
+     "GPU 쪽으로 바람을 모는 에어 가이드와 그래픽카드 지지대가 들어 있다."
+    ]
+   },
+   "note": "크기는 돌출부 포함 L×W×H 557×262×548mm 를 깊이×폭×높이로 옮겼다. E-ATX 는 폭 310mm 까지다. 전면 팬 자리는 기본 220mm 2개이고 MasterRail 로 120/140mm 3개나 160/180mm 2개로 바꾼다. 상단도 120/140mm 3개 또는 160/180mm 2개다. CPU 쿨러는 인텔 221mm·AMD 220mm 라 작은 값을 적었고, 파워는 가로 배치 때 210mm(세로 배치 150mm)다. 전면은 '저저항 전면 패널'로만 적혀 있어 메시 비율은 확인하지 못했다. 후면 커넥터(BTF) 보드 지원은 공식 페이지에 없다. 공식 페이지에 og:image 가 없어 사진은 두지 않았다."
+  },
+  {
+   "id": "micronics-wizmax-woodrian-max",
+   "name": "마이크로닉스 WIZMAX 우드리안 MAX",
+   "brand": "마이크로닉스",
+   "code": null,
+   "match": {
+    "must": [
+     "마이크로닉스|Micronics",
+     "우드리안 MAX"
+    ],
+    "not": [
+     "파워업"
+    ]
+   },
+   "specs": {
+    "form": "ATX",
+    "boards": [
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 285,
+    "depth_mm": 425,
+    "height_mm": 448,
+    "max_gpu_mm": 410,
+    "max_cooler_mm": 160,
+    "max_radiator_mm": 360,
+    "psu_max_mm": null,
+    "fans_included": [
+     {
+      "pos": "side",
+      "mm": 120,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 120,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "120",
+      "n": 1
+     }
+    ],
+    "intake_panel": null,
+    "dust_filter": true,
+    "btf": true
+   },
+   "sources": [
+    {
+     "title": "한미마이크로닉스 WIZMAX 우드리안 MAX 제품 페이지(상세 이미지의 사양 표)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=5051M"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "durability": {
+    "notes": [
+     "측면에 역방향 120mm aRGB PWM 팬 3개(ICEROCK G30 인피니티 RVS), 후면에 정방향 120mm 팬 1개가 기본으로 달려 있다.",
+     "듀얼 챔버 구조이고 PCI 슬롯이 9개다.",
+     "후면 커넥터 보드는 ATX·M-ATX 까지 받는다."
+    ]
+   },
+   "note": "빅타워 칸에 올라 있지만 공식 사양의 최대 보드는 ATX 다(E-ATX 미지원). 크기는 425(길이)×285(폭)×448(높이)mm 다. 옵션 팬 자리는 상단 140mm 2개 또는 120mm 3개, 측면 140mm 2개(120mm 는 기본 장착 3개), 하단 120mm 3개다. 수랭은 상단·측면 360mm, 하단 360/240mm 까지다. 파워 최대 길이는 사양 표에 없다. 공기가 들어오는 면이 메시인지는 사양 표에 적혀 있지 않아 비워 뒀다. 먼지 필터는 상세 이미지의 먼지 차단 안내로만 확인했고 위치는 적지 않았다. '우드리안 MAX 파워업'은 따로 나온 제품이라 뺐다. 공식 페이지에 og:image 가 없어 사진은 두지 않았다."
+  },
+  {
+   "id": "antec-c8-mesh",
+   "name": "Antec C8 MESH",
+   "brand": "Antec",
+   "code": null,
+   "match": {
+    "must": [
+     "Antec",
+     "C8",
+     "MESH"
+    ],
+    "not": [
+     "QUAD",
+     "CURVE",
+     "ARGB"
+    ]
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 303,
+    "depth_mm": 464,
+    "height_mm": 476,
+    "max_gpu_mm": 440,
+    "max_cooler_mm": 175,
+    "max_radiator_mm": 360,
+    "psu_max_mm": 210,
+    "fans_included": [],
+    "fan_mounts": [
+     {
+      "pos": "top",
+      "mm": "120/140/160",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": "120/140/160",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "Antec C8 공식 제품 페이지(사양 표)",
+     "url": "https://www.antec.com/product/case/c8"
+    },
+    {
+     "title": "Antec C8 Wood 공식 제품 페이지",
+     "url": "https://www.antec.com/product/case/c8-wood"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "durability": {
+    "notes": [
+     "상단과 우측 면이 통 메시 패널이고 하단에 풀 사이즈 슬라이드식 먼지 필터가 있다.",
+     "0.8mm·1.0mm 강판을 쓴 듀얼 챔버 구조다.",
+     "상단·하단·측면 세 곳에 360mm 라디에이터를 동시에 달 수 있다."
+    ]
+   },
+   "note": "국내 'C8 MESH'는 Antec 글로벌 이름으로 C8 이다(크기 464×303×476mm 가 같다). 공식 사양 표에 기본 팬 항목이 없고(팬을 넣은 C8 ARGB 에만 있다) 기본 팬이 없는 제품으로 적었다. 팬 자리는 상단·하단 120/140mm 3개 또는 160mm 2개, 측면 120mm 3개 또는 140mm 2개, 후면 1개다. 앞면·왼쪽은 유리라 공기는 하단·우측 메시로 들어온다. 알루미늄 색상은 글로벌 페이지에 없어 확인하지 못했다. 후면 커넥터(BTF) 지원은 적혀 있지 않다(별도 제품 C8 CURVE BTF 가 있다). 공식 페이지의 og:image 는 사이트 공용 그림이라 쓰지 않았다."
+  },
+  {
+   "id": "darkflash-dlx-ultra-mesh-argb",
+   "name": "darkFlash DLX ULTRA MESH ARGB",
+   "brand": "darkFlash",
+   "code": null,
+   "match": {
+    "must": [
+     "darkFlash",
+     "DLX ULTRA",
+     "MESH",
+     "ARGB"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 249,
+    "depth_mm": 560,
+    "height_mm": 535,
+    "max_gpu_mm": 480,
+    "max_cooler_mm": 190,
+    "max_radiator_mm": 420,
+    "psu_max_mm": 260,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": null,
+    "btf": true
+   },
+   "sources": [
+    {
+     "title": "다크플래쉬 한국 공식 사이트(투웨이) — DLX ULTRA MESH ARGB 화이트 상세 사양",
+     "url": "https://darkflash.co.kr/product/dlx-ultra-mesh-argb-%ED%99%94%EC%9D%B4%ED%8A%B8/966/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://darkflash.co.kr/web/product/big/202604/1940eeb8b5a03ae115eab43f48b74e7d.jpg",
+    "credit": "darkFlash(투웨이)",
+    "page": "https://darkflash.co.kr/product/dlx-ultra-mesh-argb-%ED%99%94%EC%9D%B4%ED%8A%B8/966/"
+   },
+   "durability": {
+    "notes": [
+     "전면 140mm ARGB PWM 팬 3개와 후면 140mm 팬 1개가 정방향으로 기본 장착된다.",
+     "팬 자리는 전면·상단·하단(파워 덮개)·측면 3개씩, 후면 1개로 모두 13개다.",
+     "라디에이터는 상단·측면 420mm, 후면 120mm 까지 단다.",
+     "ARGB·PWM 6포트 허브가 기본으로 들어 있다."
+    ]
+   },
+   "note": "darkflash.com 글로벌 사이트에는 이 제품 페이지가 없어 국내 공식 수입사(투웨이)가 운영하는 한국 공식 사이트의 상세 이미지 사양 표로 채웠다. 크기는 560(가로)×249(폭)×535(높이)mm 다. 후면 커넥터 보드는 ATX·M-ATX 까지 지원한다. 파워는 조립 여유 공간 260mm 다. 먼지 필터 유무는 사양 표에 없다. 조명 없는 'DLX ULTRA MESH'는 다른 제품이라 match 에 ARGB 를 넣어 갈랐다."
+  },
+  {
+   "id": "antec-flux-pro-mesh",
+   "name": "Antec FLUX PRO MESH",
+   "brand": "Antec",
+   "code": null,
+   "match": {
+    "must": [
+     "Antec",
+     "FLUX PRO",
+     "MESH"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 245,
+    "depth_mm": 530,
+    "height_mm": 545,
+    "max_gpu_mm": 455,
+    "max_cooler_mm": 190,
+    "max_radiator_mm": 420,
+    "psu_max_mm": 180,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": 120,
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     },
+     {
+      "pos": "bottom",
+      "mm": "120/140",
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "Antec FLUX PRO 공식 제품 페이지(사양 표)",
+     "url": "https://www.antec.com/product/case/flux-pro"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "durability": {
+    "notes": [
+     "팬 6개가 기본이다 — 전면 140mm Tranquil PWM 3개, 파워 덮개 위 120mm P12R 역방향 PWM 2개, 후면 140mm 1개.",
+     "전면은 금속 메시와 월넛 원목을 섞은 패널이고 하단·파워실·아래 측면에도 흡기구가 있다.",
+     "하단에 풀 사이즈 슬라이드식 먼지 필터가 있다.",
+     "상단 420mm + 전면 360mm, 또는 전면 420mm + 상단 360mm 라디에이터를 함께 달 수 있다."
+    ]
+   },
+   "note": "국내 'FLUX PRO MESH'는 Antec 글로벌 이름으로 FLUX PRO 다(화이트는 FLUX PRO WHITE 페이지). 크기는 530×245×545mm(DWH)다. 하단 팬 자리는 파워 덮개 위 120mm 3개와 케이스 바닥 120/140mm 2개 두 가지라 둘 다 bottom 으로 적었다. 파워 길이는 옆으로 눕힌 장착 180mm 를 적었고, HDD 케이지를 빼면 케이블 포함 470mm 까지 들어간다. 후면 커넥터(BTF) 지원은 적혀 있지 않다. 공식 페이지의 og:image 는 사이트 공용 그림이라 쓰지 않았다."
+  },
+  {
+   "id": "3rsys-t2000-quiet",
+   "name": "3RSYS T2000 Quiet",
+   "brand": "3RSYS",
+   "code": null,
+   "match": {
+    "must": [
+     "3RSYS",
+     "T2000",
+     "Quiet"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 258,
+    "depth_mm": 451,
+    "height_mm": 572,
+    "max_gpu_mm": 420,
+    "max_cooler_mm": 180,
+    "max_radiator_mm": 480,
+    "psu_max_mm": 250,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 120,
+      "n": 3
+     },
+     {
+      "pos": "rear",
+      "mm": 140,
+      "n": 1
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "top",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 4
+     },
+     {
+      "pos": "side",
+      "mm": "120/140",
+      "n": 4
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     },
+     {
+      "pos": "bottom",
+      "mm": "120",
+      "n": 3
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": null
+   },
+   "sources": [
+    {
+     "title": "쓰리알시스 T2000 Quiet 블랙 공식 제품 페이지(상세 이미지의 제품 스펙)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1744089698"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://3rsys.com/data/item/1744089698/t2000q_black_img_01_1000px.jpg",
+    "credit": "3RSYS",
+    "page": "https://www.3rsys.com/shop/item.php?it_id=1744089698"
+   },
+   "durability": {
+    "notes": [
+     "전면 120mm Silence SE 팬 3개와 후면 140mm Silence SE 팬 1개가 기본이다.",
+     "상단·전면·측면에 자석 먼지 필터, 하단에 풀 사이즈 탈착식 먼지 필터가 있다.",
+     "상단·우측은 슬라이드식 미세 타공 패널, 전면은 원터치 미세 타공 패널이다."
+    ]
+   },
+   "note": "전체 크기 W×H×L 258×572×451mm 를 폭×높이×깊이로 옮겼다(섀시만은 높이 537mm). 전면 팬 4개(120mm)·3개(140mm)와 360mm 이상 전면 라디에이터는 HDD 베이를 빼야 들어간다. 라디에이터 최대는 전면·측면 480mm 이고 측면은 그래픽카드와 부딪칠 수 있다. 하단 팬을 달면 그래픽카드 지지대를 못 쓴다. 후면 커넥터(BTF) 지원은 적혀 있지 않다."
+  },
+  {
+   "id": "fractal-north-xl-mesh",
+   "name": "Fractal Design North XL MESH",
+   "brand": "Fractal Design",
+   "code": "FD-C-NOR1X-01",
+   "match": {
+    "must": [
+     "Fractal",
+     "North XL",
+     "MESH"
+    ],
+    "not": []
+   },
+   "specs": {
+    "form": "E-ATX",
+    "boards": [
+     "E-ATX",
+     "ATX",
+     "M-ATX",
+     "Mini-ITX"
+    ],
+    "width_mm": 240,
+    "depth_mm": 503,
+    "height_mm": 509,
+    "max_gpu_mm": 413,
+    "max_cooler_mm": 185,
+    "max_radiator_mm": 420,
+    "psu_max_mm": 290,
+    "fans_included": [
+     {
+      "pos": "front",
+      "mm": 140,
+      "n": 3
+     }
+    ],
+    "fan_mounts": [
+     {
+      "pos": "front",
+      "mm": "120/140",
+      "n": 3
+     },
+     {
+      "pos": "top",
+      "mm": "120/140/180",
+      "n": 3
+     },
+     {
+      "pos": "side",
+      "mm": "120/140",
+      "n": 2
+     },
+     {
+      "pos": "rear",
+      "mm": "120/140",
+      "n": 1
+     }
+    ],
+    "intake_panel": "메시",
+    "dust_filter": true,
+    "btf": false
+   },
+   "sources": [
+    {
+     "title": "Fractal Design North XL Charcoal Black Mesh 공식 제품 페이지(사양)",
+     "url": "https://www.fractal-design.com/products/cases/north-series/north-xl/north-xl-charcoal-black-mesh/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-09-29",
+   "image": {
+    "url": "https://assets.fractal-design.com/images/uxzbxy2o/production/1d30913173340ec3066800938816cc20e6a6e227-2460x1845.jpg?w=1200&h=630&fit=crop&auto=format&q=80",
+    "credit": "Fractal Design",
+    "page": "https://www.fractal-design.com/products/cases/north-series/north-xl/north-xl-charcoal-black-mesh/"
+   },
+   "durability": {
+    "notes": [
+     "전면에 140mm Aspect 14 PWM 팬 3개가 기본이다.",
+     "앞면이 열린 구조이고 왼쪽 측판이 통풍 메시다.",
+     "먼지 필터는 전면과 파워 자리에 있다."
+    ]
+   },
+   "note": "크기는 L×W×H 503×240×509mm 를 깊이×폭×높이로 옮겼다. 그래픽카드는 전면 라디에이터를 달면 380mm 까지다. 상단 팬 자리는 120mm 3개, 140mm 2개, 180mm 2개 중 하나다. 라디에이터는 전면 420mm, 상단 360mm 까지다. 공식 사양에 후면 커넥터 보드 지원이 'No' 로 적혀 있다. 초크 화이트는 페이지 비교표에서 같은 수치로 나오지만 사양 전체는 차콜 블랙 페이지로만 확인했다."
+  }
+ ]
+}

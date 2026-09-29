@@ -340,7 +340,7 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
           <b>{tier.tier} 등급</b> — {tier.plain}
         </p>
       )}
-      {(part.category === 'gpu' || part.category === 'cpu') && <PopularPick data={data} part={part} />}
+      {(part.category === 'gpu' || part.category === 'cpu' || part.category === 'case') && <PopularPick data={data} part={part} />}
       <div className="grid gap-4 md:grid-cols-2">
         <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
           <h2 className="text-sm font-semibold mb-2">스펙</h2>

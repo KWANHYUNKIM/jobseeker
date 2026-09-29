@@ -41,6 +41,40 @@ def _hit(name: str, rule: dict) -> bool:
     return all(has(t) for t in rule.get("must", [])) and not any(has(t) for t in rule.get("not", []))
 
 
+FAN_POS = {"front", "side", "bottom", "top", "rear"}
+INTAKE_PANELS = {"메시", "틈새", "막힘"}
+
+
+def _check_case_specs(s: dict) -> list[str]:
+    """케이스 제품 — 크기·팬 배치는 뷰어가 계산(부피·흡기/배기 수·열 빼기)에 쓰니 형식이 맞아야 한다.
+    모르는 값은 null 로 둔다. 팬 목록은 null(모름)과 [](기본 팬 없음)이 다르다."""
+    errs = []
+    for k in ("width_mm", "depth_mm", "height_mm", "max_gpu_mm", "max_cooler_mm", "max_radiator_mm"):
+        v = s.get(k)
+        if v is not None and not (isinstance(v, (int, float)) and 0 < v < 1000):
+            errs.append(f"{k} 는 mm 숫자(또는 null)")
+    for k in ("fans_included", "fan_mounts"):
+        fans = s.get(k)
+        if fans is None:
+            continue
+        if not isinstance(fans, list):
+            errs.append(f"{k} 는 [{{pos, mm, n}}] 목록(또는 null)")
+            continue
+        for f in fans:
+            if f.get("pos") not in FAN_POS or not isinstance(f.get("n"), int) or f["n"] < 1 or not f.get("mm"):
+                errs.append(f"{k}: {f} — pos 는 front·side·bottom·top·rear, n 은 1 이상, mm 필수")
+    inc, mounts = s.get("fans_included"), s.get("fan_mounts")
+    if isinstance(inc, list) and isinstance(mounts, list) and mounts:
+        for pos in FAN_POS:
+            a = sum(f.get("n", 0) for f in inc if f.get("pos") == pos)
+            b = sum(f.get("n", 0) for f in mounts if f.get("pos") == pos)
+            if a > b:
+                errs.append(f"{pos} 기본 팬 {a}개가 그 자리 수 {b}보다 많다(fan_mounts 는 차 있는 자리까지 센다)")
+    if s.get("intake_panel") not in INTAKE_PANELS | {None}:
+        errs.append("intake_panel 은 메시·틈새·막힘(또는 null)")
+    return errs
+
+
 def check_models(ids: set[str], cats: dict[str, str], prices: dict) -> tuple[list[str], dict[str, int]]:
     """public/hardware/models/<부품 id>.json — 제품(보드 파트너 모델) 단위 스펙.
 
@@ -87,6 +121,8 @@ def check_models(ids: set[str], cats: dict[str, str], prices: dict) -> tuple[lis
                 for s in m.get("sources") or []:
                     if "danawa.com" in str(s.get("url", "")):
                         errs.append(f"models/{pid}/{mid}: 다나와는 스펙 출처로 쓰지 않는다 — 제조사 공식 페이지로")
+                if cats.get(pid) == "case":
+                    errs += [f"models/{pid}/{mid}: {e}" for e in _check_case_specs(m.get("specs") or {})]
         for o in offers:
             name = _norm(o["name"])
             hits = [m["id"] for m in models if _hit(name, m.get("match") or {})]
@@ -234,6 +270,12 @@ def check() -> tuple[list[str], list[dict], dict, dict, dict]:
     anchor = bench.get("image", {}).get("anchor", {}).get("gpu")
     if anchor not in ids:
         errs.append(f"bench.json: 이미지 기준 GPU {anchor!r} 가 parts 에 없다")
+    # 영상 편집 점수는 추정이 아니라 Puget 실측이다 — 카드마다 그 값을 본 비교 페이지를 남긴다
+    for gid, v in bench.get("video", {}).get("gpu", {}).items():
+        if gid not in ids:
+            errs.append(f"bench.json video: 모르는 부품 {gid}")
+        if not str(v.get("src", "")).startswith("https://"):
+            errs.append(f"bench.json video/{gid}: 실측 점수는 출처 url(src)이 있어야 한다")
     for g in bench.get("games", []):
         for k in ("gpu100", "vram"):
             if set(g.get(k, {})) != {"fhd", "qhd", "uhd"}:

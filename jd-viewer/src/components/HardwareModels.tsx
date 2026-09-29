@@ -14,6 +14,7 @@ import {
   type Offer,
   type Part,
 } from '../lib/hardware'
+import { CaseMore } from './HardwareCase'
 import { CardDrawing } from './HardwareCharts'
 import { OfficialImage } from './OfficialImage'
 
@@ -94,14 +95,14 @@ export function ModelTable({ data, part }: { data: HwData; part: Part }) {
                   </td>
                   {cols.map((c) => (
                     <td key={c.key} className="px-2 whitespace-nowrap tabular-nums text-(--color-muted)">
-                      {fmtSpec(m.specs[c.key] as string | number | boolean | null, c.unit)}
+                      {c.fmt ? c.fmt(m.specs) : fmtSpec(m.specs[c.key] as string | number | boolean | null, c.unit)}
                     </td>
                   ))}
                 </tr>
                 {open === m.id && (
                   <tr className="bg-(--color-band)">
                     <td colSpan={cols.length + 2} className="px-4 py-3">
-                      <ModelMore m={m} offers={os} cases={cases} dists={guide?.distributors ?? []} />
+                      <ModelMore m={m} offers={os} cases={cases} dists={guide?.distributors ?? []} data={data} />
                     </td>
                   </tr>
                 )}
@@ -132,7 +133,7 @@ export function ModelTable({ data, part }: { data: HwData; part: Part }) {
   )
 }
 
-function ModelMore({ m, offers, cases, dists }: { m: Model; offers: Offer[]; cases: Part[]; dists: Distributor[] }) {
+function ModelMore({ m, offers, cases, dists, data }: { m: Model; offers: Offer[]; cases: Part[]; dists: Distributor[]; data: HwData }) {
   const len = Number(m.specs.length_mm)
   const bundle = m.specs.bundle as string[] | undefined
   return (
@@ -159,6 +160,7 @@ function ModelMore({ m, offers, cases, dists }: { m: Model; offers: Offer[]; cas
             <OfficialImage image={m.image} alt={m.name} className="w-full max-w-[320px] rounded" caption />
           </div>
         )}
+        {m.specs.depth_mm != null && m.specs.height_mm != null && <CaseMore m={m} data={data} />}
         {len > 0 && <CardDrawing specs={m.specs} />}
         {len > 0 && (
           <>
