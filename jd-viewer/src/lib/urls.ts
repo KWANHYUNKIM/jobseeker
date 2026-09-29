@@ -38,6 +38,8 @@ export const paths = {
   hardwareParts: () => '/hardware/parts',
   hardwarePart: (id: string) => `/hardware/parts/${encodeURIComponent(id)}`,
   hardwarePrices: () => '/hardware/prices',
+  hardwarePrebuilt: () => '/hardware/prebuilt',
+  hardwarePrebuiltItem: (key: string) => `/hardware/prebuilt/${encodeURIComponent(key)}`,
 }
 
 /** 블로그 글의 주소 키 — 본문 id 가 있으면 그걸, 없으면 원문 URL 로 만든 짧은 해시. */
