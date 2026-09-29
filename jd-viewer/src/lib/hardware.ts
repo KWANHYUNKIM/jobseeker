@@ -502,8 +502,124 @@ export const SPEC_COLUMNS: Record<Category, { key: string; label: string; unit?:
   ],
 }
 
-export function fmtSpec(v: string | number | boolean | null | undefined, unit?: string): string {
+// ── 제품(보드 파트너 모델) ──────────────────────────────────────────
+//
+// 부품(parts.json)은 칩 단위다 — "RTX 5090". 실제로 사는 물건은 그 칩을 얹은 제품이다 —
+// "ASUS ROG Astral RTX 5090 OC". 길이·두께·팬·OC 클럭·구성품은 제품마다 다르고, 케이스에
+// 들어가느냐는 이 값으로 갈린다. 파일은 부품마다 하나(public/hardware/models/<부품 id>.json),
+// 상세 화면을 열 때만 받는다. 스펙은 제조사 공식 페이지에서 채운다(다나와 스펙 문자열은 쓰지 않는다).
+//
+// 같은 제품이라도 유통사마다 다나와 상품번호가 다르다(피씨디렉트·제이씨현…). 그래서 제품은
+// 이름 규칙(match)으로 그날의 매물들을 모아 가진다 — 크롤러의 거름 규칙과 같은 방식이다.
+
+export interface Model {
+  id: string
+  name: string
+  brand: string
+  code?: string
+  match: { must: string[]; not?: string[] }
+  specs: Record<string, string | number | boolean | string[] | null>
+  sources: { title: string; url: string }[]
+  confidence: 'low' | 'medium' | 'high'
+  checked_at: string
+  note?: string
+}
+
+const modelCache = new Map<string, Promise<Model[]>>()
+
+export function useModels(partId: string): Model[] | null {
+  const [models, setModels] = useState<{ id: string; list: Model[] } | null>(null)
+  useEffect(() => {
+    let p = modelCache.get(partId)
+    if (!p) {
+      // 아직 조사 안 한 부품은 파일이 없다 — 빈 목록으로 본다.
+      p = fetch(`/hardware/models/${partId}.json`)
+        .then((r) => (r.ok ? r.json() : { models: [] }))
+        .then((d: { models?: Model[] }) => d.models ?? [])
+        .catch(() => [])
+      modelCache.set(partId, p)
+    }
+    let alive = true
+    p.then((list) => alive && setModels({ id: partId, list }))
+    return () => {
+      alive = false
+    }
+  }, [partId])
+  return models?.id === partId ? models.list : null
+}
+
+const norm = (s: string) => s.replace(/\s+/g, '').toLowerCase()
+const has = (name: string, token: string) => token.split('|').some((t) => name.includes(norm(t)))
+
+export function offerMatches(offer: Offer, m: Model): boolean {
+  const n = norm(offer.name)
+  return m.match.must.every((t) => has(n, t)) && !(m.match.not ?? []).some((t) => has(n, t))
+}
+
+/** 매물 → 제품. 어느 제품에도 안 걸린 매물은 '스펙 조사 전' 으로 따로 돌려준다. */
+export function groupOffers(offers: Offer[], models: Model[]): { byModel: Map<string, Offer[]>; rest: Offer[] } {
+  const byModel = new Map<string, Offer[]>(models.map((m) => [m.id, []]))
+  const rest: Offer[] = []
+  for (const o of offers) {
+    const m = models.find((x) => offerMatches(o, x))
+    if (m) byModel.get(m.id)!.push(o)
+    else rest.push(o)
+  }
+  return { byModel, rest }
+}
+
+/** 제품 스펙 표의 열 — 분류마다. 아직 조사 안 한 분류는 비어 있다. */
+export const MODEL_COLUMNS: Partial<Record<Category, { key: string; label: string; unit?: string }[]>> = {
+  gpu: [
+    { key: 'boost_mhz', label: '부스트', unit: 'MHz' },
+    { key: 'oc_mhz', label: 'OC', unit: 'MHz' },
+    { key: 'length_mm', label: '길이', unit: 'mm' },
+    { key: 'thickness_mm', label: '두께', unit: 'mm' },
+    { key: 'slots', label: '슬롯' },
+    { key: 'fans', label: '팬' },
+    { key: 'power_connector', label: '전원' },
+    { key: 'psu_w', label: '권장 파워', unit: 'W' },
+    { key: 'outputs', label: '출력' },
+    { key: 'dual_bios', label: '듀얼 BIOS' },
+    { key: 'zero_fan', label: '0dB' },
+    { key: 'backplate', label: '백플레이트' },
+    { key: 'lighting', label: '조명' },
+  ],
+  mainboard: [
+    { key: 'form', label: '규격' },
+    { key: 'vrm', label: '전원부' },
+    { key: 'm2_slots', label: 'M.2' },
+    { key: 'dimm_slots', label: '메모리 슬롯' },
+    { key: 'lan', label: '유선' },
+    { key: 'wifi', label: '무선' },
+    { key: 'usb_rear', label: '후면 USB' },
+  ],
+  cooler: [
+    { key: 'height_mm', label: '높이', unit: 'mm' },
+    { key: 'fans', label: '팬' },
+    { key: 'tdp_w', label: '제조사 TDP', unit: 'W' },
+    { key: 'noise_dba', label: '소음', unit: 'dBA' },
+    { key: 'sockets', label: '소켓' },
+  ],
+  case: [
+    { key: 'form', label: '규격' },
+    { key: 'max_gpu_mm', label: 'GPU 길이', unit: 'mm' },
+    { key: 'max_cooler_mm', label: '쿨러 높이', unit: 'mm' },
+    { key: 'max_radiator_mm', label: '라디에이터', unit: 'mm' },
+    { key: 'fans_included', label: '기본 팬' },
+  ],
+  psu: [
+    { key: 'modular', label: '모듈러' },
+    { key: 'length_mm', label: '길이', unit: 'mm' },
+    { key: 'fan_mm', label: '팬', unit: 'mm' },
+    { key: 'warranty_years', label: '보증', unit: '년' },
+    { key: 'pcie_12v2x6', label: '12V-2x6' },
+  ],
+}
+
+export function fmtSpec(v: string | number | boolean | string[] | null | undefined, unit?: string): string {
   if (v == null || v === '') return '—'
+  if (Array.isArray(v)) return v.join(', ')
   if (typeof v === 'boolean') return v ? '있음' : '없음'
   return unit ? `${typeof v === 'number' ? v.toLocaleString() : v} ${unit}` : String(v)
 }

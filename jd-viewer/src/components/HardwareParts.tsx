@@ -4,6 +4,7 @@ import { navigate, onLinkClick, useRoute, useSetQuery } from '../lib/router'
 import { absUrl, useSeo } from '../lib/seo'
 import { paths, TAB_SEO } from '../lib/urls'
 import { MoveBadge, NOINDEX, PriceChart } from './HardwarePrices'
+import { ModelTable } from './HardwareModels'
 import { TierBadge } from './HardwareView'
 
 // 부품 비교 — 전문가용.
@@ -293,7 +294,7 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
     .filter((p) => p.category === part.category && p.id !== part.id && tierOf(p, data.categories)?.tier === tier?.tier)
     .map((p) => ({ p, price: priceOf(p, data.prices) }))
   return (
-    <div className="max-w-[1100px] mx-auto p-4 flex flex-col gap-4">
+    <div className="max-w-[1500px] mx-auto p-4 flex flex-col gap-4">
       <a
         href={`${paths.hardwareParts()}?cat=${part.category}`}
         onClick={(e) => {
@@ -357,23 +358,7 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
           <PriceChart history={rec?.history ?? []} />
         </section>
       </div>
-      {rec?.offers && rec.offers.length > 0 && (
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4" data-nosnippet>
-          <h2 className="text-sm font-semibold mb-2">
-            오늘 잡힌 매물 <span className="font-normal text-xs text-(--color-muted)">({rec.day} · 다나와 · 싼 순)</span>
-          </h2>
-          <ul className="flex flex-col divide-y divide-(--color-border-soft)">
-            {rec.offers.map((o) => (
-              <li key={o.pcode} className="flex items-center gap-2 py-1.5 text-sm">
-                <a href={o.url} target="_blank" rel="noreferrer nofollow" className="hover:underline truncate">
-                  {o.name}
-                </a>
-                <span className="ml-auto font-semibold tabular-nums">{o.price.toLocaleString()}원</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <ModelTable data={data} part={part} />
       {peers.length > 0 && (
         <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
           <h2 className="text-sm font-semibold mb-2">같은 {tier?.tier} 등급</h2>
