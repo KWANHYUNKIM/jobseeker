@@ -3028,3 +3028,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 スタンバイ 광고 로그 리아키(기능 2/3)
 
 - `adlog-billing-rearchitecture`. 결정 5 — 사양 불변 / 신구 병행 · 2 단계 / 청구 가진 배치 B 부터 / 데이터 기반 리아키와 전체 최적 / 경로 통일 · 일원 관리 목표. 다음: Databricks.
+
+## 2026-09-30 スタンバイ Databricks 이행(기능 3/3) — 완주
+
+- `data-platform-databricks-dbt`. 결정 6 — DMMA + 설문 / dbt 먼저 / 두 제품 PoC → Databricks(오픈 포맷 · 약 3 할 · Genie) / 메달리온 · Lakeflow Jobs / Fivetran → Lakeflow Connect / 이용 측 이행 5 단계 + 분석가의 SQL 변환 도구. 모든 도메인에 기능 → `done`.

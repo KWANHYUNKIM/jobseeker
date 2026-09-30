@@ -4,7 +4,7 @@
   "name_en": "Stanby",
   "country": "JP",
   "category": "검색",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-30",
   "domain": "stanby.co.jp",
   "one_liner": "구인 검색 엔진 스탠바이 — 검색 결과의 광고 틀을 Vespa Parent/Child 로 바꿔 캠페인 갱신을 30 분에서 수 초로, 청구가 걸린 광고 로그 집계를 사양을 바꾸지 않고 옮기고, 데이터 기반을 과제부터 다시 짠다",
@@ -120,7 +120,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "data-platform-databricks-dbt"
+      ]
     }
   ],
   "features": [
@@ -712,6 +714,335 @@
           "publisher": "スタンバイ",
           "summary": "광고 관리 화면의 리포트 · 청구 데이터를 만드는 광고 로그 기반 — 집계 경로 3 개(데이터 기반 · 배치 A · 배치 B)가 서로 다른 기술, 이중 관리, 배치 B 에 청구 처리. 신구 병행 가동 · 2 단계(1: 배치 B 폐지, 로그 → 배치 X · 청구 → 배치 Y, 2: 배치 A 폐지). 좋았던 방침: 원칙적으로 사양을 바꾸지 않는다 · 범위를 좁혀 단계 출시 · 전체 최적(데이터 기반 리아키와 맞춰 '새 데이터 기반 초기엔 광고 로그 우선').",
           "date": "2025-11-14"
+        }
+      ]
+    },
+    {
+      "key": "data-platform-databricks-dbt",
+      "name": "데이터 기반을 '멋진 스택' 이 아니라 과제부터 — 성숙도 평가 77 문항과 이용자 설문으로 5 대 과제를 뽑고, 변환은 dbt 로 모으고 실행 기반은 두 제품 PoC 로 Databricks 를 고르며, 가장 힘든 이용자 이행은 분석가가 만든 SQL 변환 도구로 줄인다",
+      "domain": "데이터 기반을 과제부터 다시 — Athena/Glue 에서 Databricks 로",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "スタンバイ 의 옛 데이터 기반은 **S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA(Airflow) · Redash · Looker Studio** 였다. 과제가 산적했지만 '모던 데이터 스택으로 멋지게 바꾸자' 로 가면 위험하다고 보고 과제를 하나씩 드러냈다. 나온 다섯 — ① **GA4 · Salesforce 같은 중요 데이터가 기반에 들어오지 않아 사일로**(S3 + Athena 는 새 데이터 추가에 품이 든다), ② **ER 도가 없다**, ③ **리니지가 불완전**(변환 자유도가 너무 높아 통제가 안 된다), ④ **부서 · 담당자마다 KPI(세션 수 등) 계산식이 다르다**, ⑤ **품질 테스트 부족** — 실제로 칼럼 결함이 몇 주 발견되지 않아 **머신러닝 모델에 영향**을 준 일이 있었다.",
+        "metrics": [
+          {
+            "label": "성숙도 평가 문항",
+            "value": "DMBOK2 지식 영역 기준 77 문항 × 5 단계",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          },
+          {
+            "label": "PoC 컴퓨팅 비용(같은 집계 시나리오)",
+            "value": "비교 제품 대비 약 3 할 절감 전망",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          },
+          {
+            "label": "5 대 과제 중 해결",
+            "value": "리니지 해결 · 나머지 넷은 토대 정비(글 시점)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "시작할 때",
+          "thought": "'모던 데이터 스택으로 멋지게 바꾸고 싶다' 로 밀어붙이는 것은 위험하다 — 과제를 하나하나 드러낸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+              "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+              "publisher": "スタンバイ",
+              "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+              "date": "2026-07-14"
+            }
+          ]
+        },
+        {
+          "at": "이행할 때",
+          "thought": "결론부터 말하면 개발보다 이용 쪽 이행 작업이 더 힘들었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+              "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+              "publisher": "スタンバイ",
+              "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+              "date": "2026-07-14"
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "처음엔 '데이터 기반을 새로 만든다' 는 수단이 앞섰다 — 멈춰서 배경을 파고, 개발자뿐 아니라 이용자 시점을 넣어 점수로 우선순위를 매긴 과제 설정이 열쇠였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+              "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+              "publisher": "スタンバイ",
+              "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+              "date": "2026-07-14"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "DMMA(데이터 관리 성숙도 평가)",
+            "what": "DMBOK2 지식 영역별 77 문항에 데이터 엔지니어가 5 단계로 답한 평가 — 레이더 차트로 강점 · 약점."
+          },
+          {
+            "name": "이용자 설문",
+            "what": "선택식 위주로 목적 · 도구 · 데이터 · 만족도 · 문제를 물은 설문."
+          },
+          {
+            "name": "메달리온 레이어",
+            "what": "Bronze · Silver · Gold — 레이어마다 책임 경계."
+          },
+          {
+            "name": "시맨틱 레이어",
+            "what": "dbt Semantic Layer · Databricks metric view — KPI 계산의 단일 원천(SSOT)."
+          },
+          {
+            "name": "Unity Catalog",
+            "what": "카탈로그 · 권한 · 테이블/칼럼 리니지를 한곳에서."
+          }
+        ],
+        "invariants": [
+          "모든 변환은 dbt 아래에 있다 — 그래서 리니지가 끊기지 않는다.",
+          "KPI 계산식은 한 곳에 코드로 있다.",
+          "중요 테이블 · 칼럼은 파이프라인 실행 흐름 안에서 non-null · 유일성 테스트를 받는다.",
+          "데이터는 S3 위 Delta Lake(오픈 포맷)에 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "DMMA + 이용자 설문 → 5 대 중점 과제와 해결 방침",
+            "why": "수단이 아니라 과제부터."
+          },
+          {
+            "step": "변환 도구로 dbt 를 먼저 확정(ELT · 테스트 · 리니지 · 시맨틱 레이어)",
+            "why": "과제 다수가 변환 · 거버넌스."
+          },
+          {
+            "step": "당시 Athena 는 dbt 공식 어댑터 지원이 부족 → DWH 교체 필요 → 후보 둘로 좁혀 실제 워크로드 PoC(엔지니어 기술 검증 + 이용자 UI 평가)",
+            "why": "실행 기반 선정."
+          },
+          {
+            "step": "새 구성: S3 · Unity Catalog · dbt × Databricks SQL · Lakeflow Jobs · Databricks Dashboard, 메달리온 · Delta Lake · Liquid 클러스터링",
+            "why": "과제별 해법."
+          },
+          {
+            "step": "이용 측 이행: 옛 기반 이용처 전수 목록 → 부서 인터뷰 · 공수 추정 → 병행 기간 · 정지 시점 확정 → 기한 안 이행(Athena → Databricks SQL 변환 도구) → 옛 처리 정지 뒤 오류 확인",
+            "why": "가장 힘든 부분."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 고칠지 어떻게 정하나?",
+            "chosen": "**DMBOK2 기반 데이터 관리 성숙도 평가(DMMA, 77 문항 · 5 단계)** 를 데이터 엔지니어가 하고, **이용자 설문**(선택식 위주 + 자유 기술)으로 개발자에게 안 보이는 시점을 모아, 둘을 합쳐 **5 대 중점 과제**로 정리한다.",
+            "alternatives": [
+              "모던 데이터 스택 도입을 먼저 정하고 이행"
+            ],
+            "tradeoff": "지식 영역별 강약이 드러나고, 정기 평가로 성숙도를 잴 수 있다. 이용자 요구(통일된 SQL · 관계 파악 · KPI 통일 · 결함)가 분명해졌다. 대가는 착수 전 조사 기간 — 그러나 글쓴이는 이것을 성공의 열쇠로 꼽는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          },
+          {
+            "question": "변환은 무엇으로 하나?",
+            "chosen": "**dbt** 를 일찍 확정 — Glue Job(PySpark) 중심의 복잡한 ETL 에서 **SQL 중심 ELT** 로. 테스트 자동 검증 · 문서 자동 생성 · 리니지 추적 · 시맨틱 레이어가 기본으로 있고, 주요 DWH 어댑터 생태계가 성숙해 이식성이 있다.",
+            "alternatives": [
+              "Glue Job(PySpark) 유지"
+            ],
+            "tradeoff": "DMMA 에서 특히 낮았던 품질 · 리니지에 dbt test 와 자동 리니지가 결정타였다. Spark 코드 유지보수에서 풀려 학습 비용이 준다. 대가는 dbt 를 제대로 쓰려면 실행 기반(DWH) 자체를 바꿔야 했다는 것 — 당시 Athena 는 공식 어댑터 지원이 부족했다(지금은 dbt Labs 공식 지원).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          },
+          {
+            "question": "실행 기반(DWH)은 무엇으로?",
+            "chosen": "**후보 둘로 좁혀 실제 워크로드 PoC** — 비용 · 데이터 로드 · 개발 경험 · 생태계 · 거버넌스 · AI/ML 여섯 항목을 엔지니어 기술 검증과 이용자 UI 평가로 점수 매겨 **Databricks** 를 골랐다.",
+            "alternatives": [
+              "비교한 다른 DWH(글은 이름을 밝히지 않았다 — SQL 중심으로 세련됐다고만 적었다)"
+            ],
+            "tradeoff": "Databricks 를 고른 이유 셋 — S3 위 **Delta Lake(오픈 포맷)** 로 벤더 전용 저장소에 잠기지 않음, 같은 집계 시나리오에서 **컴퓨팅 비용 약 3 할 절감** 전망(대량 로그 워크로드), **Genie** 같은 AI 기능으로 비엔지니어의 자율 분석(데이터 민주화). 대가는 사내 첫 도입이라 초기에 이용자 문의가 많았다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          },
+          {
+            "question": "새 기반 안의 구조는?",
+            "chosen": "**메달리온 아키텍처(Bronze · Silver · Gold)** 로 레이어 책임 경계, **Delta Lake**(Liquid 클러스터링 · 스키마 진화), 오케스트레이션은 **Lakeflow Jobs**(Terraform 관리), 과제별로 dbterd · Constraints(ER 도), dbt · Unity Catalog(리니지), Semantic Layer · metric view(KPI), dbt Data Test · Anomaly detection(품질).",
+            "alternatives": [
+              "Airflow(MWAA) 유지"
+            ],
+            "tradeoff": "Lakeflow Jobs 는 Airflow 만큼 유연하지 않지만 단순하고 Terraform 으로 관리된다. 옛 기반에선 '테이블 C 는 A · B 가 끝나야' 같은 의존을 ExternalTaskSensor 로 따로 관리해 테이블이 늘수록 힘들었는데, dbt 리니지가 그것을 대신한다. 대가는 플랫폼에 기능이 모이는 만큼 한 벤더 의존이 커진다는 것(이 사이트의 해석 — 저장은 오픈 포맷으로 완화).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          },
+          {
+            "question": "외부 데이터 통합은 무엇으로?",
+            "chosen": "처음엔 **Fivetran · Airbyte** 같은 통합 도구를 계획했지만, 이행 중에 **Databricks Lakeflow Connect** 가 나와 **매니지드 커넥터로 방침을 바꿨다**.",
+            "alternatives": [
+              "계획대로 별도 통합 도구"
+            ],
+            "tradeoff": "도구 하나를 덜 들인다. 대가는 글 시점엔 토대만 정비된 상태 — GA4 · Salesforce 통합은 아직 진행 중.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          },
+          {
+            "question": "이용자 쪽 이행은 어떻게 하나?",
+            "chosen": "**옛 기반 이용처를 전수 목록화 → 부서별 인터뷰 · 공수 추정 → 신구 병행 기간과 옛 기반 정지 시점 확정 → 기한 안 이행 → 정지 뒤 오류 없음 확인.** 이행 공정은 **Athena SQL → Databricks SQL 변환 도구**(사내 웹 앱)로 줄였는데, 이 도구는 데이터 엔지니어가 아니라 **분석가가 자발적으로** 만들었다.",
+            "alternatives": [
+              "데이터 엔지니어가 모든 대시보드를 대신 이행"
+            ],
+            "tradeoff": "코드로 관리되는 참조는 찾기 쉬웠지만 대시보드 데이터 소스는 범위가 방대해 전 부서 인터뷰가 필요했다 — 개발보다 힘들었다. 중요도 높은 데이터부터 옮기고 있다. 대가는 이행이 길어져 병행 기간 동안 두 기반을 모두 운영한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+                "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+                "publisher": "スタンバイ",
+                "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+                "date": "2026-07-14"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "검색 연동형 구인 광고(수익원)",
+          "via": "KPI · 분석",
+          "contract": "세션 수 같은 사업 KPI 를 한 계산식으로 보고, 품질 결함이 ML 모델에 번지는 것을 막는다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+              "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+              "publisher": "スタンバイ",
+              "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+              "date": "2026-07-14"
+            }
+          ]
+        },
+        {
+          "to": "광고 로그 · 청구 집계",
+          "via": "새 데이터 기반 파이프라인",
+          "contract": "광고 로그 리아키는 새 데이터 기반에서 광고 로그를 집계하는 방향에 맞췄고, 새 기반 초기에 광고 로그를 우선 구현했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+              "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+              "publisher": "スタンバイ",
+              "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+              "date": "2026-07-14"
+            },
+            {
+              "title": "広告ログ基盤リアーキテクチャと良かった方針のご紹介",
+              "url": "https://techblog.stanby.co.jp/entry/howto_carryout_adlog_rearchitecture",
+              "publisher": "スタンバイ",
+              "summary": "광고 관리 화면의 리포트 · 청구 데이터를 만드는 광고 로그 기반 — 집계 경로 3 개(데이터 기반 · 배치 A · 배치 B)가 서로 다른 기술, 이중 관리, 배치 B 에 청구 처리. 신구 병행 가동 · 2 단계(1: 배치 B 폐지, 로그 → 배치 X · 청구 → 배치 Y, 2: 배치 A 폐지). 좋았던 방침: 원칙적으로 사양을 바꾸지 않는다 · 범위를 좁혀 단계 출시 · 전체 최적(데이터 기반 리아키와 맞춰 '새 데이터 기반 초기엔 광고 로그 우선').",
+              "date": "2025-11-14"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "과제에서 해법까지",
+          "question": "다섯 과제는 무엇으로 풀었나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  DMMA[\"DMMA 77 문항\"] --> K[\"5 대 과제\"]\n  SUR[\"이용자 설문\"] --> K\n  K --> P1[\"① 사일로 → Lakeflow Connect\"]\n  K --> P2[\"② ER 도 없음 → dbterd · Constraints\"]\n  K --> P3[\"③ 리니지 불완전 → dbt · Unity Catalog ✅\"]\n  K --> P4[\"④ KPI 불일치 → Semantic Layer · metric view\"]\n  K --> P5[\"⑤ 품질 테스트 부족 → dbt test · Anomaly detection\"]"
+        },
+        {
+          "title": "옛 기반과 새 기반",
+          "question": "무엇이 바뀌었나?",
+          "kind": "flow",
+          "code": "flowchart TB\n  subgraph OLD[\"옛\"]\n    S3a[\"S3\"] --> GL[\"Glue Catalog · Glue Job(PySpark)\"] --> AT[\"Athena\"] --> RD[\"Redash · Looker Studio\"]\n    MW[\"MWAA(ExternalTaskSensor 의존)\"] -.-> GL\n  end\n  subgraph NEW[\"새\"]\n    S3b[\"S3 · Delta Lake\"] --> UC[\"Unity Catalog\"] --> DBT[\"dbt × Databricks SQL\\nBronze → Silver → Gold\"] --> DASH[\"Databricks Dashboard · Genie\"]\n    LJ[\"Lakeflow Jobs(Terraform)\"] -.-> DBT\n  end"
+        },
+        {
+          "title": "품질 테스트가 없을 때",
+          "question": "무엇이 실제로 일어났나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  BAD[\"칼럼 내용 결함\"] --> SILENT[\"테스트 없음 → 몇 주 발견 안 됨\"]\n  SILENT --> ML[\"머신러닝 모델에 영향\"]\n  ML --> TRUST[\"기반에 대한 이용자 신뢰 하락\"]\n  TRUST --> FIX[\"dbt test 를 실행 흐름에 · non-null · 유일성 자동화\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+          "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+          "publisher": "スタンバイ",
+          "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+          "date": "2026-07-14"
         }
       ]
     }
